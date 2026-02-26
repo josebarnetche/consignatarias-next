@@ -117,10 +117,10 @@ export default function HomePage() {
       <div className="border-b border-terminal-border bg-terminal-panel flex-shrink-0">
         <div className="flex items-center gap-0 px-4 h-7 overflow-x-auto text-data font-terminal tabular-nums whitespace-nowrap">
           {/* INMAG */}
-          <span className="text-slate-500 text-xxs uppercase tracking-wider mr-1.5">
+          <span className="text-zinc-500 text-xxs uppercase tracking-wider mr-1.5">
             INMAG
           </span>
-          <span className="text-slate-100 font-semibold mr-1">
+          <span className="text-zinc-100 font-semibold mr-1">
             {fmt(inmag.current)}
           </span>
           <span className={changeArrow(inmag.change).cls + " text-xxs mr-3"}>
@@ -131,10 +131,10 @@ export default function HomePage() {
           <span className="text-terminal-border mx-1 select-none">|</span>
 
           {/* NOV */}
-          <span className="text-slate-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
+          <span className="text-zinc-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
             NOV
           </span>
-          <span className="text-slate-300 mr-1">{fmt(cats.novillos.current)}</span>
+          <span className="text-zinc-300 mr-1">{fmt(cats.novillos.current)}</span>
           <span
             className={changeArrow(cats.novillos.change).cls + " text-xxs mr-3"}
           >
@@ -145,10 +145,10 @@ export default function HomePage() {
           <span className="text-terminal-border mx-1 select-none">|</span>
 
           {/* TERN */}
-          <span className="text-slate-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
+          <span className="text-zinc-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
             TERN
           </span>
-          <span className="text-slate-300 mr-1">{fmt(cats.terneros.current)}</span>
+          <span className="text-zinc-300 mr-1">{fmt(cats.terneros.current)}</span>
           <span
             className={changeArrow(cats.terneros.change).cls + " text-xxs mr-3"}
           >
@@ -159,13 +159,13 @@ export default function HomePage() {
           <span className="text-terminal-border mx-1 select-none">|</span>
 
           {/* CORN */}
-          <span className="text-slate-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
+          <span className="text-zinc-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
             CORN
           </span>
-          <span className="text-slate-300 mr-1">
+          <span className="text-zinc-300 mr-1">
             {fmt(corn.current, 1)}
           </span>
-          <span className="text-slate-500 text-xxs mr-1">USD/tn</span>
+          <span className="text-zinc-500 text-xxs mr-1">USD/tn</span>
           <span className={changeArrow(corn.change).cls + " text-xxs mr-3"}>
             {changeArrow(corn.change).arrow}
             {fmt(corn.change, 1)}%
@@ -174,10 +174,10 @@ export default function HomePage() {
           <span className="text-terminal-border mx-1 select-none">|</span>
 
           {/* USD BLUE */}
-          <span className="text-slate-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
+          <span className="text-zinc-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
             USD/BLUE
           </span>
-          <span className="text-slate-300 mr-1">{fmt(usd.current)}</span>
+          <span className="text-zinc-300 mr-1">{fmt(usd.current)}</span>
           <span className={changeArrow(usd.change).cls + " text-xxs mr-3"}>
             {changeArrow(usd.change).arrow}
             {fmt(usd.change, 1)}%
@@ -186,7 +186,7 @@ export default function HomePage() {
           <span className="text-terminal-border mx-1 select-none">|</span>
 
           {/* REMATES HOY */}
-          <span className="text-slate-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
+          <span className="text-zinc-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
             REMATES HOY
           </span>
           <span className="text-warning font-semibold">{rematesToday.length}</span>
@@ -194,10 +194,10 @@ export default function HomePage() {
           <span className="text-terminal-border mx-1 select-none">|</span>
 
           {/* FRIGORIFICOS */}
-          <span className="text-slate-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
+          <span className="text-zinc-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
             FRIGO
           </span>
-          <span className="text-slate-300">{frigorificosSummary.total}</span>
+          <span className="text-zinc-300">{frigorificosSummary.total}</span>
         </div>
       </div>
 
@@ -221,7 +221,7 @@ export default function HomePage() {
             <div className="flex items-baseline gap-3">
               <div className="terminal-stat">
                 <span className="terminal-stat-label">INMAG $/kg vivo</span>
-                <span className="terminal-stat-value text-2xl text-slate-50">
+                <span className="terminal-stat-value text-2xl text-zinc-50">
                   {fmt(inmag.current)}
                 </span>
               </div>
@@ -234,7 +234,7 @@ export default function HomePage() {
                 >
                   {changeArrow(inmag.change).arrow} {fmt(inmag.change, 1)}%
                 </span>
-                <span className="text-xxs text-slate-500 tabular-nums">
+                <span className="text-xxs text-zinc-500 tabular-nums">
                   ant. {fmt(inmag.prev)}
                 </span>
               </div>
@@ -258,13 +258,13 @@ export default function HomePage() {
                   const { arrow, cls } = changeArrow(c.change);
                   return (
                     <tr key={key}>
-                      <td className="text-slate-400 uppercase text-xxs tracking-wider">
+                      <td className="text-zinc-400 uppercase text-xxs tracking-wider">
                         {categoryLabels[key] || key}
                       </td>
-                      <td className="num text-slate-100 font-semibold">
+                      <td className="num text-zinc-100 font-semibold">
                         {fmt(c.current)}
                       </td>
-                      <td className="num text-slate-500">{fmt(c.prev)}</td>
+                      <td className="num text-zinc-500">{fmt(c.prev)}</td>
                       <td className={"num " + cls}>
                         {arrow}
                         {fmt(Math.abs(c.change), 1)}%
@@ -316,18 +316,18 @@ export default function HomePage() {
             {/* Consignatarias quick stat */}
             <div className="terminal-divider-dashed" />
             <div className="flex items-center justify-between text-xxs">
-              <span className="text-slate-500 uppercase tracking-wider">
+              <span className="text-zinc-500 uppercase tracking-wider">
                 Consignatarias registradas
               </span>
-              <span className="text-slate-300 tabular-nums font-semibold">
+              <span className="text-zinc-300 tabular-nums font-semibold">
                 {consignatariasData.length}
               </span>
             </div>
             <div className="flex items-center justify-between text-xxs">
-              <span className="text-slate-500 uppercase tracking-wider">
+              <span className="text-zinc-500 uppercase tracking-wider">
                 Provincias c/ consignatarias
               </span>
-              <span className="text-slate-300 tabular-nums font-semibold">
+              <span className="text-zinc-300 tabular-nums font-semibold">
                 {consigProvinceCount}
               </span>
             </div>
@@ -347,7 +347,7 @@ export default function HomePage() {
                   {rematesToday.length} HOY
                 </span>
               )}
-              <span className="text-xxs text-slate-500 tabular-nums">
+              <span className="text-xxs text-zinc-500 tabular-nums">
                 {rematesUpcoming.length + rematesToday.length} prog.
               </span>
             </div>
@@ -363,7 +363,7 @@ export default function HomePage() {
               </div>
               <div className="terminal-stat">
                 <span className="terminal-stat-label">Completados</span>
-                <span className="terminal-stat-value text-base text-slate-400 tabular-nums">
+                <span className="terminal-stat-value text-base text-zinc-400 tabular-nums">
                   {rematesPast.length}
                 </span>
               </div>
@@ -396,24 +396,24 @@ export default function HomePage() {
                             {dateDisplay}
                           </span>
                         ) : (
-                          <span className="text-slate-400 tabular-nums">
+                          <span className="text-zinc-400 tabular-nums">
                             {dateDisplay}
                           </span>
                         )}
                         {r.time && (
-                          <span className="text-slate-600 ml-1 text-xxs">
+                          <span className="text-zinc-600 ml-1 text-xxs">
                             {r.time}
                           </span>
                         )}
                       </td>
                       <td
-                        className="cell-truncate text-slate-200"
+                        className="cell-truncate text-zinc-200"
                         title={r.consignatariaName}
                       >
                         {r.consignatariaName}
                       </td>
                       <td
-                        className="cell-truncate text-slate-400"
+                        className="cell-truncate text-zinc-400"
                         title={r.location}
                       >
                         {r.location}
@@ -421,7 +421,7 @@ export default function HomePage() {
                       <td className="text-xxs uppercase text-accent tracking-wider">
                         {r.type}
                       </td>
-                      <td className="num text-slate-100 font-semibold tabular-nums">
+                      <td className="num text-zinc-100 font-semibold tabular-nums">
                         {r.estimatedHeads != null ? fmt(r.estimatedHeads) : '—'}
                       </td>
                     </tr>
@@ -435,7 +435,7 @@ export default function HomePage() {
               <>
                 <div className="terminal-divider-dashed mt-2" />
                 <div className="mt-2">
-                  <span className="text-xxs text-slate-500 uppercase tracking-wider">
+                  <span className="text-xxs text-zinc-500 uppercase tracking-wider">
                     Detalle remates hoy ({TODAY})
                   </span>
                   {rematesToday.map((r) => (
@@ -443,10 +443,10 @@ export default function HomePage() {
                       key={r.id}
                       className="mt-1.5 border-l-2 border-positive pl-2"
                     >
-                      <div className="text-data text-slate-200 font-semibold">
+                      <div className="text-data text-zinc-200 font-semibold">
                         {r.title}
                       </div>
-                      <div className="text-xxs text-slate-400">
+                      <div className="text-xxs text-zinc-400">
                         {r.time ? `${r.time} — ` : ''}{r.location}
                         {r.estimatedHeads != null && (
                           <>
@@ -481,7 +481,7 @@ export default function HomePage() {
         <div className="terminal-panel flex flex-col">
           <div className="terminal-panel-header flex items-center justify-between">
             <span>Frigorificos</span>
-            <span className="text-xxs text-slate-400 tabular-nums">
+            <span className="text-xxs text-zinc-400 tabular-nums">
               {frigorificosSummary.total} habilitados
             </span>
           </div>
@@ -511,7 +511,7 @@ export default function HomePage() {
             <div className="terminal-divider" />
 
             {/* Province breakdown: top 8 with ASCII bars */}
-            <div className="text-xxs text-slate-500 uppercase tracking-wider mb-1">
+            <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-1">
               Distribucion por provincia (top 8)
             </div>
             <table className="terminal-table">
@@ -526,15 +526,15 @@ export default function HomePage() {
               <tbody>
                 {topProvincesDisplay.map((p) => (
                   <tr key={p.province}>
-                    <td className="text-slate-300 text-xxs uppercase tracking-wider">
+                    <td className="text-zinc-300 text-xxs uppercase tracking-wider">
                       {p.province.length > 14
                         ? p.province.slice(0, 12) + ".."
                         : p.province}
                     </td>
-                    <td className="num text-slate-100 font-semibold tabular-nums">
+                    <td className="num text-zinc-100 font-semibold tabular-nums">
                       {p.count}
                     </td>
-                    <td className="num text-slate-500 tabular-nums">
+                    <td className="num text-zinc-500 tabular-nums">
                       {fmt(p.pct, 1)}
                     </td>
                     <td className="text-positive font-terminal text-xxs tracking-tighter">
@@ -552,10 +552,10 @@ export default function HomePage() {
 
             {/* Remaining count */}
             <div className="flex items-center justify-between text-xxs">
-              <span className="text-slate-500 uppercase tracking-wider">
+              <span className="text-zinc-500 uppercase tracking-wider">
                 Otras 15 provincias
               </span>
-              <span className="text-slate-400 tabular-nums">
+              <span className="text-zinc-400 tabular-nums">
                 {frigorificosSummary.total -
                   topProvincesDisplay.reduce(
                     (s: number, p: { count: number }) => s + p.count,
@@ -584,7 +584,7 @@ export default function HomePage() {
       <div className="terminal-panel border-t border-terminal-border">
         <div className="terminal-panel-header flex items-center justify-between">
           <span>INMAG Tendencia 8 Semanas</span>
-          <span className="text-xxs text-slate-500 tabular-nums">
+          <span className="text-xxs text-zinc-500 tabular-nums">
             {marketPrices.inmag.series[0].date} &mdash;{" "}
             {
               marketPrices.inmag.series[marketPrices.inmag.series.length - 1]
@@ -597,10 +597,10 @@ export default function HomePage() {
             {/* Sparkline */}
             <div className="flex-1">
               <div className="flex items-end justify-between mb-1">
-                <span className="text-xxs text-slate-500 tabular-nums">
+                <span className="text-xxs text-zinc-500 tabular-nums">
                   Min: {fmt(Math.min(...inmagSeries))}
                 </span>
-                <span className="text-xxs text-slate-500 tabular-nums">
+                <span className="text-xxs text-zinc-500 tabular-nums">
                   Max: {fmt(Math.max(...inmagSeries))}
                 </span>
               </div>
@@ -614,7 +614,7 @@ export default function HomePage() {
                   (pt: { date: string; value: number }) => (
                     <span
                       key={pt.date}
-                      className="text-xxs text-slate-600 tabular-nums"
+                      className="text-xxs text-zinc-600 tabular-nums"
                     >
                       {pt.date.slice(5)}
                     </span>
@@ -627,7 +627,7 @@ export default function HomePage() {
                   (pt: { date: string; value: number }) => (
                     <span
                       key={pt.date + "-val"}
-                      className="text-xxs text-slate-500 tabular-nums"
+                      className="text-xxs text-zinc-500 tabular-nums"
                     >
                       {fmt(pt.value)}
                     </span>
@@ -653,13 +653,13 @@ export default function HomePage() {
               </div>
               <div className="terminal-stat items-end">
                 <span className="terminal-stat-label text-right">8W Abs</span>
-                <span className="text-data text-slate-300 tabular-nums">
+                <span className="text-data text-zinc-300 tabular-nums">
                   +{fmt(inmagSeries[inmagSeries.length - 1] - inmagSeries[0])} $/kg
                 </span>
               </div>
               <div className="terminal-stat items-end">
                 <span className="terminal-stat-label text-right">Media 8W</span>
-                <span className="text-data text-slate-300 tabular-nums">
+                <span className="text-data text-zinc-300 tabular-nums">
                   {fmt(
                     inmagSeries.reduce((a: number, b: number) => a + b, 0) /
                       inmagSeries.length,
@@ -676,11 +676,11 @@ export default function HomePage() {
       {/*  FOOTER STATUS BAR                                            */}
       {/* ============================================================ */}
       <div className="border-t border-terminal-border bg-terminal-panel flex-shrink-0">
-        <div className="flex items-center justify-between px-4 h-6 text-xxs font-terminal text-slate-600">
+        <div className="flex items-center justify-between px-4 h-6 text-xxs font-terminal text-zinc-600">
           <div className="flex items-center gap-3">
             <span>
               ULT. ACT.:{" "}
-              <span className="text-slate-500 tabular-nums">
+              <span className="text-zinc-500 tabular-nums">
                 {new Date(marketPrices.lastUpdate).toLocaleString("es-AR", {
                   day: "2-digit",
                   month: "2-digit",
@@ -701,7 +701,7 @@ export default function HomePage() {
               {rematesData.length}
             </span>
             <span className="text-terminal-border">|</span>
-            <span className="text-slate-500">GANADO TERMINAL v0.1</span>
+            <span className="text-zinc-500">GANADO TERMINAL v0.1</span>
           </div>
         </div>
       </div>

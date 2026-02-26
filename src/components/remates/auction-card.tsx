@@ -15,7 +15,7 @@ const typeAccent: Record<Auction['type'], string> = {
   invernada: 'border-l-campo-600',
   cria: 'border-l-violet-500',
   reproductores: 'border-l-amber-500',
-  general: 'border-l-slate-400',
+  general: 'border-l-zinc-400',
   especial: 'border-l-rose-500',
 }
 
@@ -23,7 +23,7 @@ const typeBadge: Record<Auction['type'], string> = {
   invernada: 'bg-campo-50 text-campo-700 ring-campo-200',
   cria: 'bg-violet-50 text-violet-700 ring-violet-200',
   reproductores: 'bg-amber-50 text-amber-700 ring-amber-200',
-  general: 'bg-slate-50 text-slate-600 ring-slate-200',
+  general: 'bg-zinc-50 text-zinc-600 ring-zinc-200',
   especial: 'bg-rose-50 text-rose-700 ring-rose-200',
 }
 

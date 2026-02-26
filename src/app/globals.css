@@ -82,7 +82,7 @@
   .terminal-panel-header {
     @apply px-panel py-cell border-b border-terminal-border
            text-label font-terminal uppercase tracking-widest
-           text-slate-400;
+           text-zinc-400;
   }
 
   .terminal-panel-body {
@@ -97,18 +97,18 @@
 
   .terminal-table thead {
     @apply sticky top-0 z-10;
-    background-color: #0f172a;
+    background-color: #18181b;
   }
 
   .terminal-table th {
     @apply px-cell py-px2 text-left text-xxs font-medium
-           uppercase tracking-wider text-slate-500
+           uppercase tracking-wider text-zinc-500
            border-b border-terminal-border;
     white-space: nowrap;
   }
 
   .terminal-table td {
-    @apply px-cell py-px2 text-data text-slate-300
+    @apply px-cell py-px2 text-data text-zinc-300
            border-b border-terminal-border;
     white-space: nowrap;
   }
@@ -141,14 +141,14 @@
     @apply text-warning;
   }
   .val-neutral {
-    @apply text-slate-400;
+    @apply text-zinc-400;
   }
 
   /* --- Ticker / Tag --------------------------------------- */
   .terminal-tag {
     @apply inline-flex items-center px-1.5 py-px
            text-xxs font-terminal uppercase tracking-wider
-           border border-terminal-border text-slate-400;
+           border border-terminal-border text-zinc-400;
     border-radius: 0;
   }
 
@@ -165,7 +165,7 @@
     @apply inline-flex items-center justify-center
            px-3 py-1 text-label font-terminal uppercase
            tracking-wider border border-terminal-border
-           text-slate-300 bg-terminal-panel
+           text-zinc-300 bg-terminal-panel
            transition-colors duration-100;
     border-radius: 0;
   }
@@ -186,7 +186,7 @@
   .terminal-input {
     @apply w-full px-2 py-1 text-data font-terminal
            bg-terminal-bg border border-terminal-border
-           text-slate-100 placeholder-slate-600;
+           text-zinc-100 placeholder-zinc-600;
     border-radius: 0;
   }
 
@@ -197,13 +197,13 @@
   /* --- Nav link ------------------------------------------- */
   .terminal-nav-link {
     @apply px-3 py-1.5 text-label font-terminal uppercase
-           tracking-widest text-slate-500
+           tracking-widest text-zinc-500
            border-b-2 border-transparent
            transition-colors duration-100;
   }
 
   .terminal-nav-link:hover {
-    @apply text-slate-200;
+    @apply text-zinc-200;
   }
 
   .terminal-nav-link-active {
@@ -230,7 +230,7 @@
   }
 
   .status-dot-offline {
-    @apply status-dot bg-slate-600;
+    @apply status-dot bg-zinc-600;
   }
 
   .status-dot-warning {
@@ -243,17 +243,17 @@
   }
 
   .terminal-stat-label {
-    @apply text-xxs uppercase tracking-wider text-slate-500 font-terminal;
+    @apply text-xxs uppercase tracking-wider text-zinc-500 font-terminal;
   }
 
   .terminal-stat-value {
-    @apply text-lg font-terminal tabular-nums text-slate-100 leading-tight;
+    @apply text-lg font-terminal tabular-nums text-zinc-100 leading-tight;
   }
 
   /* --- Grid layout helpers -------------------------------- */
   .terminal-grid {
     @apply grid gap-px;
-    background-color: #1e293b;
+    background-color: #27272a;
   }
 
   .terminal-grid > * {

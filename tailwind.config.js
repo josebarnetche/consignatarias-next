@@ -9,10 +9,10 @@ module.exports = {
     extend: {
       colors: {
         terminal: {
-          bg: '#020617',       // slate-950 - main background
-          panel: '#0f172a',    // slate-900 - panel/card background
-          border: '#1e293b',   // slate-800 - borders
-          'border-light': '#334155', // slate-700 - hover borders
+          bg: '#09090b',       // zinc-950 - main background
+          panel: '#18181b',    // zinc-900 - panel/card background
+          border: '#27272a',   // zinc-800 - borders
+          'border-light': '#3f3f46', // zinc-700 - hover borders
         },
         positive: '#34d399',   // emerald-400 - gains, up
         negative: '#f87171',   // red-400 - losses, down
@@ -82,7 +82,7 @@ module.exports = {
         'thin': '0.5px',
       },
       boxShadow: {
-        'panel': '0 0 0 1px rgba(30, 41, 59, 0.5)',
+        'panel': '0 0 0 1px rgba(39, 39, 42, 0.5)',
         'panel-hover': '0 0 0 1px rgba(56, 189, 248, 0.3)',
         'glow-green': '0 0 8px rgba(52, 211, 153, 0.15)',
         'glow-red': '0 0 8px rgba(248, 113, 113, 0.15)',

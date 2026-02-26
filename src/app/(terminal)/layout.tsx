@@ -25,7 +25,7 @@ function TerminalClock() {
     return () => clearInterval(id);
   }, []);
 
-  if (!now) return <span className="text-slate-600">--:--:--</span>;
+  if (!now) return <span className="text-zinc-600">--:--:--</span>;
 
   const date = now.toLocaleDateString("es-AR", {
     day: "2-digit",
@@ -41,10 +41,10 @@ function TerminalClock() {
   });
 
   return (
-    <span className="tabular-nums text-slate-400 text-data font-terminal tracking-wide">
-      <span className="text-slate-500">{date.toUpperCase()}</span>
+    <span className="tabular-nums text-zinc-400 text-data font-terminal tracking-wide">
+      <span className="text-zinc-500">{date.toUpperCase()}</span>
       <span className="mx-1.5 text-terminal-border">|</span>
-      <span className="text-slate-300">{time}</span>
+      <span className="text-zinc-300">{time}</span>
     </span>
   );
 }
@@ -58,7 +58,7 @@ export default function TerminalLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-terminal-bg text-slate-100 min-h-screen flex flex-col font-terminal text-xs">
+    <div className="bg-terminal-bg text-zinc-100 min-h-screen flex flex-col font-terminal text-xs">
       {/* -- HEADER BAR ------------------------------------------- */}
       <header className="border-b border-terminal-border bg-terminal-panel flex-shrink-0">
         <div className="flex items-center justify-between px-4 h-10">
@@ -66,7 +66,7 @@ export default function TerminalLayout({
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2 group">
               <span className="inline-block w-2 h-2 bg-positive animate-pulse-live flex-shrink-0" />
-              <span className="font-terminal text-sm font-semibold tracking-widest text-slate-100 group-hover:text-accent transition-colors">
+              <span className="font-terminal text-sm font-semibold tracking-widest text-zinc-100 group-hover:text-accent transition-colors">
                 GANADO TERMINAL
               </span>
             </Link>
@@ -83,7 +83,7 @@ export default function TerminalLayout({
                   )}
                   <Link
                     href={item.href}
-                    className="px-2 py-1 text-xxs font-terminal uppercase tracking-widest text-slate-500 hover:text-slate-100 transition-colors duration-100"
+                    className="px-2 py-1 text-xxs font-terminal uppercase tracking-widest text-zinc-500 hover:text-zinc-100 transition-colors duration-100"
                   >
                     {item.label}
                   </Link>
@@ -95,11 +95,6 @@ export default function TerminalLayout({
           {/* -- RIGHT: Clock + Badge -- */}
           <div className="flex items-center gap-4">
             <TerminalClock />
-
-            <span className="terminal-tag-warning text-xxs">
-              <span className="inline-block w-1 h-1 bg-warning mr-1.5 animate-pulse-live" />
-              SAMPLE DATA
-            </span>
           </div>
         </div>
 
@@ -114,7 +109,7 @@ export default function TerminalLayout({
               )}
               <Link
                 href={item.href}
-                className="px-1.5 py-0.5 text-xxs font-terminal uppercase tracking-widest text-slate-500 hover:text-slate-100 transition-colors"
+                className="px-1.5 py-0.5 text-xxs font-terminal uppercase tracking-widest text-zinc-500 hover:text-zinc-100 transition-colors"
               >
                 {item.label}
               </Link>

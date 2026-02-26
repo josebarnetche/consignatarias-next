@@ -103,9 +103,9 @@ export default function MercadoPage() {
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between">
           <span>
-            MERCADO <span className="text-slate-600 mx-1">&mdash;</span> INDICES Y PRECIOS DE REFERENCIA
+            MERCADO <span className="text-zinc-600 mx-1">&mdash;</span> INDICES Y PRECIOS DE REFERENCIA
           </span>
-          <span className="text-slate-500 tabular-nums normal-case tracking-normal">
+          <span className="text-zinc-500 tabular-nums normal-case tracking-normal">
             Ult: {fmtUpdate(lastUpdate)}
           </span>
         </div>
@@ -117,7 +117,7 @@ export default function MercadoPage() {
         {/* -- INMAG panel (2/3 width) -- */}
         <div className="terminal-panel md:col-span-2">
           <div className="terminal-panel-header">
-            INMAG <span className="text-slate-600 mx-1">&mdash;</span> INDICE NOVILLO MAG
+            INMAG <span className="text-zinc-600 mx-1">&mdash;</span> INDICE NOVILLO MAG
           </div>
           <div className="px-panel py-3">
             {/* Hero number */}
@@ -125,7 +125,7 @@ export default function MercadoPage() {
               <span className="text-2xl font-terminal tabular-nums text-positive glow-positive font-semibold leading-none">
                 {fmt(inmag.current, 2)}
               </span>
-              <span className="text-xxs text-slate-500 uppercase tracking-wider">
+              <span className="text-xxs text-zinc-500 uppercase tracking-wider">
                 {inmag.unit}
               </span>
             </div>
@@ -133,7 +133,7 @@ export default function MercadoPage() {
               <span className={`text-data font-terminal tabular-nums ${inmag.change >= 0 ? 'val-positive' : 'val-negative'}`}>
                 {inmag.change >= 0 ? '\u25B2' : '\u25BC'} {inmag.change >= 0 ? '+' : ''}{fmt(inmag.change, 1)}%
               </span>
-              <span className="text-xxs text-slate-600">vs ant.</span>
+              <span className="text-xxs text-zinc-600">vs ant.</span>
             </div>
 
             {/* ASCII bar chart */}
@@ -155,7 +155,7 @@ export default function MercadoPage() {
                 })}
               </div>
               {/* Date labels */}
-              <div className="flex gap-0 text-xxs text-slate-600">
+              <div className="flex gap-0 text-xxs text-zinc-600">
                 {series.map((pt) => (
                   <div key={pt.date} className="text-center" style={{ width: '3ch' }}>
                     {shortDate(pt.date)}
@@ -163,7 +163,7 @@ export default function MercadoPage() {
                 ))}
               </div>
               {/* Value labels */}
-              <div className="flex gap-0 text-xxs text-slate-700 mt-px">
+              <div className="flex gap-0 text-xxs text-zinc-700 mt-px">
                 {series.map((pt) => (
                   <div key={pt.date} className="text-center tabular-nums" style={{ width: '3ch' }}>
                     {Math.round(pt.value / 100)}
@@ -186,7 +186,7 @@ export default function MercadoPage() {
                 <span className="terminal-stat-value tabular-nums">
                   {fmt(corn.current, 2)}
                 </span>
-                <span className="text-xxs text-slate-500">{corn.unit}</span>
+                <span className="text-xxs text-zinc-500">{corn.unit}</span>
                 <span className={`text-data tabular-nums ml-auto ${corn.change >= 0 ? 'val-positive' : 'val-negative'}`}>
                   {corn.change >= 0 ? '\u25B2' : '\u25BC'}{corn.change >= 0 ? '+' : ''}{fmt(corn.change, 1)}%
                 </span>
@@ -200,7 +200,7 @@ export default function MercadoPage() {
                 <span className="terminal-stat-value tabular-nums">
                   {fmt(usdBlue.current)}
                 </span>
-                <span className="text-xxs text-slate-500">{usdBlue.unit}</span>
+                <span className="text-xxs text-zinc-500">{usdBlue.unit}</span>
                 <span className={`text-data tabular-nums ml-auto ${usdBlue.change >= 0 ? 'val-positive' : 'val-negative'}`}>
                   {usdBlue.change >= 0 ? '\u25B2' : '\u25BC'}{usdBlue.change >= 0 ? '+' : ''}{fmt(usdBlue.change, 1)}%
                 </span>
@@ -218,9 +218,9 @@ export default function MercadoPage() {
                 <span className="terminal-stat-value tabular-nums">
                   {fmt(ratio, 2)}
                 </span>
-                <span className="text-xxs text-slate-500">kg/tn</span>
+                <span className="text-xxs text-zinc-500">kg/tn</span>
               </div>
-              <span className="text-xxs text-slate-600 mt-0.5">(INMAG / MAIZ)</span>
+              <span className="text-xxs text-zinc-600 mt-0.5">(INMAG / MAIZ)</span>
             </div>
 
           </div>
@@ -247,21 +247,21 @@ export default function MercadoPage() {
                 const isPositive = cat.change >= 0
                 return (
                   <tr key={cat.name}>
-                    <td className="font-semibold text-slate-200">{cat.name}</td>
-                    <td className="num tabular-nums text-slate-100">{fmt(cat.current)}</td>
-                    <td className="num tabular-nums text-slate-500">{fmt(cat.prev)}</td>
+                    <td className="font-semibold text-zinc-200">{cat.name}</td>
+                    <td className="num tabular-nums text-zinc-100">{fmt(cat.current)}</td>
+                    <td className="num tabular-nums text-zinc-500">{fmt(cat.prev)}</td>
                     <td className={`num tabular-nums ${isPositive ? 'val-positive' : 'val-negative'}`}>
                       {isPositive ? '\u25B2' : '\u25BC'} {isPositive ? '+' : ''}{fmt(cat.change, 1)}%
                     </td>
                     <td>
                       <div className="flex items-center gap-1">
-                        <div className="h-2.5 flex-1 bg-slate-800 relative overflow-hidden">
+                        <div className="h-2.5 flex-1 bg-zinc-800 relative overflow-hidden">
                           <div
                             className="absolute inset-y-0 left-0 bg-positive/60"
                             style={{ width: `${barPct}%` }}
                           />
                         </div>
-                        <span className="text-xxs text-slate-600 tabular-nums w-[3ch] text-right">
+                        <span className="text-xxs text-zinc-600 tabular-nums w-[3ch] text-right">
                           {barPct}
                         </span>
                       </div>
@@ -277,10 +277,10 @@ export default function MercadoPage() {
       {/* ── Source attribution ─────────────────────────────────── */}
       <div className="terminal-panel">
         <div className="px-panel py-cell flex items-center justify-between">
-          <span className="text-xxs text-slate-600">
+          <span className="text-xxs text-zinc-600">
             FUENTES: Mercado Agroganadero (MAG), MAGYP, dolarapi.com
           </span>
-          <span className="text-xxs text-slate-600 tabular-nums">
+          <span className="text-xxs text-zinc-600 tabular-nums">
             Ult. act.: {lastUpdate}
           </span>
         </div>

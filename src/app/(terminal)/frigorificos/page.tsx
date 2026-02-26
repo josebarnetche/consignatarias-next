@@ -99,7 +99,7 @@ function AsciiBar({
   return (
     <span className={`font-terminal ${colorClass}`}>
       {'\u2588'.repeat(filled)}
-      <span className="text-slate-700">{'\u2591'.repeat(empty)}</span>
+      <span className="text-zinc-700">{'\u2591'.repeat(empty)}</span>
     </span>
   )
 }
@@ -153,7 +153,7 @@ function SortHeader({
   const arrow = isActive ? (currentDir === 'asc' ? ' \u25B2' : ' \u25BC') : ''
   return (
     <th
-      className={`cursor-pointer select-none hover:text-slate-300 transition-colors ${className}`}
+      className={`cursor-pointer select-none hover:text-zinc-300 transition-colors ${className}`}
       onClick={() => onSort(field)}
     >
       {label}
@@ -237,24 +237,24 @@ export default function FrigorificosPage() {
       {/* ── PAGE HEADER ──────────────────────────────────────────── */}
       <div className="border-b border-terminal-border bg-terminal-panel px-4 py-2 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
-          <h1 className="text-label font-terminal uppercase tracking-widest text-slate-100">
+          <h1 className="text-label font-terminal uppercase tracking-widest text-zinc-100">
             FRIGORIFICOS
           </h1>
-          <span className="text-slate-600 font-terminal text-xxs">&mdash;</span>
-          <span className="text-xxs font-terminal uppercase tracking-wider text-slate-500">
+          <span className="text-zinc-600 font-terminal text-xxs">&mdash;</span>
+          <span className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">
             Registro Nacional SENASA
           </span>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-xxs font-terminal text-slate-500 uppercase tracking-wider">
+          <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">
             Mostrando{' '}
-            <span className="text-slate-300 tabular-nums">{filtered.length}</span>
+            <span className="text-zinc-300 tabular-nums">{filtered.length}</span>
             {' '}de{' '}
-            <span className="text-slate-300 tabular-nums">{summary.total}</span>
+            <span className="text-zinc-300 tabular-nums">{summary.total}</span>
           </span>
           <span className="terminal-tag text-xxs">
-            <span className="tabular-nums text-slate-300">{summary.total}</span>
-            <span className="ml-1 text-slate-500">registros</span>
+            <span className="tabular-nums text-zinc-300">{summary.total}</span>
+            <span className="ml-1 text-zinc-500">registros</span>
           </span>
         </div>
       </div>
@@ -331,11 +331,11 @@ export default function FrigorificosPage() {
                       className={`w-full flex items-center justify-between px-1 py-px2 text-data font-terminal transition-colors hover:bg-accent/5 ${
                         isActive
                           ? 'text-accent bg-accent/5'
-                          : 'text-slate-400 hover:text-slate-200'
+                          : 'text-zinc-400 hover:text-zinc-200'
                       }`}
                     >
                       <span className="truncate">{province}</span>
-                      <span className="tabular-nums text-slate-500 ml-2 flex-shrink-0">
+                      <span className="tabular-nums text-zinc-500 ml-2 flex-shrink-0">
                         {count}
                       </span>
                     </button>
@@ -363,21 +363,21 @@ export default function FrigorificosPage() {
                       <span className={`w-16 ${stageColor(stage)} tabular-nums`}>
                         ETAPA {stage}
                       </span>
-                      <div className="flex-1 h-3 bg-slate-800/50 relative overflow-hidden">
+                      <div className="flex-1 h-3 bg-zinc-800/50 relative overflow-hidden">
                         <div
                           className={`absolute inset-y-0 left-0 ${stageBarColor(stage)} opacity-80`}
                           style={{ width: `${maxStage > 0 ? (count / maxStage) * 100 : 0}%` }}
                         />
                       </div>
-                      <span className="tabular-nums text-slate-300 w-8 text-right">{count}</span>
-                      <span className="tabular-nums text-slate-600 w-10 text-right">({pct}%)</span>
+                      <span className="tabular-nums text-zinc-300 w-8 text-right">{count}</span>
+                      <span className="tabular-nums text-zinc-600 w-10 text-right">({pct}%)</span>
                     </div>
                   )
                 })}
 
                 {/* Stage legend */}
                 <div className="terminal-divider-dashed" />
-                <div className="flex gap-4 text-xxs text-slate-600 font-terminal">
+                <div className="flex gap-4 text-xxs text-zinc-600 font-terminal">
                   <span>
                     <span className="val-positive">E1</span> Faena + desposte
                   </span>
@@ -407,7 +407,7 @@ export default function FrigorificosPage() {
                   >
                     <span
                       className={`w-10 text-xxs tracking-wider flex-shrink-0 ${
-                        filterProvince === province ? 'text-accent' : 'text-slate-500'
+                        filterProvince === province ? 'text-accent' : 'text-zinc-500'
                       } group-hover:text-accent transition-colors`}
                     >
                       {abbr(province)}
@@ -419,10 +419,10 @@ export default function FrigorificosPage() {
                       colorClass={
                         filterProvince === province
                           ? 'text-accent'
-                          : 'text-slate-500 group-hover:text-accent'
+                          : 'text-zinc-500 group-hover:text-accent'
                       }
                     />
-                    <span className="tabular-nums text-slate-400 w-6 text-right flex-shrink-0">
+                    <span className="tabular-nums text-zinc-400 w-6 text-right flex-shrink-0">
                       {count}
                     </span>
                   </div>
@@ -472,16 +472,16 @@ export default function FrigorificosPage() {
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="text-center py-8 text-slate-600">
+                    <td colSpan={4} className="text-center py-8 text-zinc-600">
                       No se encontraron resultados para los filtros aplicados.
                     </td>
                   </tr>
                 ) : (
                   filtered.map((f) => (
                     <tr key={f.cuit}>
-                      <td className="tabular-nums text-slate-500">{f.matricula}</td>
-                      <td className="text-slate-200 cell-truncate max-w-xs">{f.name}</td>
-                      <td className="text-slate-500 text-xxs tracking-wider">
+                      <td className="tabular-nums text-zinc-500">{f.matricula}</td>
+                      <td className="text-zinc-200 cell-truncate max-w-xs">{f.name}</td>
+                      <td className="text-zinc-500 text-xxs tracking-wider">
                         {abbr(f.province)}
                       </td>
                       <td className={`text-center tabular-nums ${stageColor(f.stage)}`}>
@@ -496,14 +496,14 @@ export default function FrigorificosPage() {
 
           {/* ── FOOTER STATUS BAR ──────────────────────────────────── */}
           <div className="border-t border-terminal-border bg-terminal-panel px-4 py-1 flex items-center justify-between flex-shrink-0">
-            <div className="flex items-center gap-4 text-xxs font-terminal text-slate-600">
+            <div className="flex items-center gap-4 text-xxs font-terminal text-zinc-600">
               <span>
-                SRC: <span className="text-slate-500">SENASA / MAGyP</span>
+                SRC: <span className="text-zinc-500">SENASA / MAGyP</span>
               </span>
               <span className="text-terminal-border">|</span>
               <span>
                 TOTAL:{' '}
-                <span className="text-slate-400 tabular-nums">{summary.total}</span>
+                <span className="text-zinc-400 tabular-nums">{summary.total}</span>
               </span>
               <span className="text-terminal-border">|</span>
               <span>
@@ -515,8 +515,8 @@ export default function FrigorificosPage() {
                 <span className="val-negative tabular-nums">{summary.byStage['3']}</span>
               </span>
             </div>
-            <div className="text-xxs font-terminal text-slate-600">
-              <span className="tabular-nums text-slate-500">{filtered.length}</span>
+            <div className="text-xxs font-terminal text-zinc-600">
+              <span className="tabular-nums text-zinc-500">{filtered.length}</span>
               <span className="mx-1">/</span>
               <span className="tabular-nums">{summary.total}</span>
               <span className="ml-1">visible</span>
