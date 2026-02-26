@@ -22,9 +22,8 @@ Thumbs.db
 .vscode/
 .idea/
 
-# research / scraping artifacts (not part of the app)
+# research artifacts (not part of the app)
 research/
 rosgan_auctions_2026.json
 NEA-REMATES-CALENDAR-2026.json
 NEA-REMATES-CALENDAR-2026.md
-scripts/

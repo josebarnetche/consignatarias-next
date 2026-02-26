@@ -5,43 +5,91 @@
     "change": 2.3,
     "unit": "$/kg vivo",
     "series": [
-      { "date": "2026-01-05", "value": 2650 },
-      { "date": "2026-01-12", "value": 2690 },
-      { "date": "2026-01-19", "value": 2725 },
-      { "date": "2026-01-26", "value": 2710 },
-      { "date": "2026-02-02", "value": 2755 },
-      { "date": "2026-02-09", "value": 2807 },
-      { "date": "2026-02-16", "value": 2838 },
-      { "date": "2026-02-23", "value": 2872 }
+      {
+        "date": "2026-01-05",
+        "value": 2650
+      },
+      {
+        "date": "2026-01-12",
+        "value": 2690
+      },
+      {
+        "date": "2026-01-19",
+        "value": 2725
+      },
+      {
+        "date": "2026-01-26",
+        "value": 2710
+      },
+      {
+        "date": "2026-02-02",
+        "value": 2755
+      },
+      {
+        "date": "2026-02-09",
+        "value": 2807
+      },
+      {
+        "date": "2026-02-16",
+        "value": 2838
+      },
+      {
+        "date": "2026-02-23",
+        "value": 2872
+      }
     ]
   },
   "categories": {
-    "novillos": { "current": 2950, "prev": 2880, "change": 2.4 },
-    "novillitos": { "current": 2780, "prev": 2720, "change": 2.2 },
-    "vaquillonas": { "current": 2650, "prev": 2600, "change": 1.9 },
-    "vacas": { "current": 2100, "prev": 2050, "change": 2.4 },
-    "toros": { "current": 1850, "prev": 1820, "change": 1.6 },
-    "terneros": { "current": 3200, "prev": 3100, "change": 3.2 }
+    "novillos": {
+      "current": 2950,
+      "prev": 2880,
+      "change": 2.4
+    },
+    "novillitos": {
+      "current": 2780,
+      "prev": 2720,
+      "change": 2.2
+    },
+    "vaquillonas": {
+      "current": 2650,
+      "prev": 2600,
+      "change": 1.9
+    },
+    "vacas": {
+      "current": 2100,
+      "prev": 2050,
+      "change": 2.4
+    },
+    "toros": {
+      "current": 1850,
+      "prev": 1820,
+      "change": 1.6
+    },
+    "terneros": {
+      "current": 3200,
+      "prev": 3100,
+      "change": 3.2
+    }
   },
   "corn": {
     "current": 185.5,
-    "prev": 182.0,
+    "prev": 182,
     "change": 1.9,
     "unit": "USD/tn"
   },
   "usdBlue": {
     "current": 1445,
-    "prev": 1425,
-    "change": 1.4,
+    "prev": 1445,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
     "current": 1415,
-    "prev": 1390,
-    "change": 1.8,
+    "prev": 1415,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-02-26T14:00:00-03:00"
+  "lastUpdate": "2026-02-26"
 }

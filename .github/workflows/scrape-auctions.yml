@@ -1,0 +1,38 @@
+name: Scrape Auctions & Update Data
+
+on:
+  schedule:
+    # 14:00 Argentina time (ART = UTC-3) = 17:00 UTC
+    - cron: '0 17 * * *'
+  workflow_dispatch: # manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run scraper
+        run: node scripts/scrape-auctions.mjs
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --quiet src/lib/data/ && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/lib/data/remates.json src/lib/data/market-prices.json
+          AUCTION_COUNT=$(node -e "console.log(require('./src/lib/data/remates.json').length)")
+          git commit -m "data: update auctions ($AUCTION_COUNT) and market prices — $(date -u +%Y-%m-%d)"
+          git push
