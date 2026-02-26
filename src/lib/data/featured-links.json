@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "title": "Remate Invernada Corrientes — Febrero 2026",
+    "url": "https://youtube.com/watch?v=example-recording",
+    "type": "video",
+    "description": "Grabación completa del remate de invernada en Curuzú Cuatiá con más de 300 cabezas."
+  },
+  {
+    "id": 2,
+    "title": "Requisitos SENASA para transporte de hacienda",
+    "url": "https://www.senasa.gob.ar/cadena-animal/bovinos-y-bubalinos/produccion-primaria/establecimiento-pecuario",
+    "type": "pdf",
+    "description": "Documentación oficial sobre DT-e, guías de tránsito y requisitos sanitarios."
+  },
+  {
+    "id": 3,
+    "title": "Análisis del mercado ganadero — Febrero 2026",
+    "url": "https://example.com/analisis-mercado-feb-2026",
+    "type": "nota",
+    "description": "Tendencias de precios, oferta y demanda en los principales mercados del NEA."
+  },
+  {
+    "id": 4,
+    "title": "Guía del comprador: cómo participar en un remate",
+    "url": "https://example.com/guia-comprador-remate",
+    "type": "guia",
+    "description": "Paso a paso para inscribirse, ofertar y liquidar en remates presenciales y virtuales."
+  },
+  {
+    "id": 5,
+    "title": "Índice INMAG — Evolución mensual",
+    "url": "https://example.com/inmag-evolucion",
+    "type": "nota",
+    "description": "Gráfico interactivo con la evolución del índice novillo del Mercado Agroganadero."
+  },
+  {
+    "id": 6,
+    "title": "Webinar: Claves de la invernada 2026",
+    "url": "https://youtube.com/watch?v=example-webinar",
+    "type": "video",
+    "description": "Charla con especialistas sobre proyecciones de precios y estrategias de compra."
+  },
+  {
+    "id": 7,
+    "title": "Modelo de contrato de consignación",
+    "url": "https://example.com/contrato-consignacion-modelo.pdf",
+    "type": "pdf",
+    "description": "Contrato tipo para consignación de hacienda con cláusulas actualizadas."
+  }
+]

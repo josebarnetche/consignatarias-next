@@ -1,0 +1,150 @@
+{
+  "total": 364,
+  "byProvince": {
+    "BUENOS AIRES": 96,
+    "CATAMARCA": 4,
+    "CHACO": 33,
+    "CHUBUT": 10,
+    "CORDOBA": 23,
+    "CORRIENTES": 32,
+    "ENTRE RIOS": 32,
+    "FORMOSA": 5,
+    "JUJUY": 3,
+    "LA PAMPA": 8,
+    "LA RIOJA": 2,
+    "MENDOZA": 8,
+    "MISIONES": 18,
+    "NEUQUEN": 8,
+    "RIO NEGRO": 7,
+    "SALTA": 16,
+    "SAN JUAN": 1,
+    "SAN LUIS": 6,
+    "SANTA CRUZ": 7,
+    "SANTA FE": 27,
+    "SANTIAGO DEL ESTERO": 5,
+    "TIERRA DEL FUEGO": 2,
+    "TUCUMAN": 11
+  },
+  "byStage": {
+    "1": 124,
+    "2": 59,
+    "3": 181
+  },
+  "topProvinces": [
+    {
+      "province": "BUENOS AIRES",
+      "count": 96,
+      "pct": 26.4
+    },
+    {
+      "province": "CHACO",
+      "count": 33,
+      "pct": 9.1
+    },
+    {
+      "province": "ENTRE RIOS",
+      "count": 32,
+      "pct": 8.8
+    },
+    {
+      "province": "CORRIENTES",
+      "count": 32,
+      "pct": 8.8
+    },
+    {
+      "province": "SANTA FE",
+      "count": 27,
+      "pct": 7.4
+    },
+    {
+      "province": "CORDOBA",
+      "count": 23,
+      "pct": 6.3
+    },
+    {
+      "province": "MISIONES",
+      "count": 18,
+      "pct": 4.9
+    },
+    {
+      "province": "SALTA",
+      "count": 16,
+      "pct": 4.4
+    },
+    {
+      "province": "TUCUMAN",
+      "count": 11,
+      "pct": 3.0
+    },
+    {
+      "province": "CHUBUT",
+      "count": 10,
+      "pct": 2.7
+    },
+    {
+      "province": "LA PAMPA",
+      "count": 8,
+      "pct": 2.2
+    },
+    {
+      "province": "MENDOZA",
+      "count": 8,
+      "pct": 2.2
+    },
+    {
+      "province": "NEUQUEN",
+      "count": 8,
+      "pct": 2.2
+    },
+    {
+      "province": "RIO NEGRO",
+      "count": 7,
+      "pct": 1.9
+    },
+    {
+      "province": "SANTA CRUZ",
+      "count": 7,
+      "pct": 1.9
+    },
+    {
+      "province": "SAN LUIS",
+      "count": 6,
+      "pct": 1.6
+    },
+    {
+      "province": "FORMOSA",
+      "count": 5,
+      "pct": 1.4
+    },
+    {
+      "province": "SANTIAGO DEL ESTERO",
+      "count": 5,
+      "pct": 1.4
+    },
+    {
+      "province": "CATAMARCA",
+      "count": 4,
+      "pct": 1.1
+    },
+    {
+      "province": "JUJUY",
+      "count": 3,
+      "pct": 0.8
+    },
+    {
+      "province": "LA RIOJA",
+      "count": 2,
+      "pct": 0.5
+    },
+    {
+      "province": "TIERRA DEL FUEGO",
+      "count": 2,
+      "pct": 0.5
+    },
+    {
+      "province": "SAN JUAN",
+      "count": 1,
+      "pct": 0.3
+    }
+  ]
+}

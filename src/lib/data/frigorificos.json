@@ -1,0 +1,2550 @@
+[
+  {
+    "cuit": "30716219190",
+    "name": "LOS VALIENTES S.R.L.",
+    "matricula": "39195",
+    "province": "FORMOSA",
+    "stage": 1
+  },
+  {
+    "cuit": "30560378056",
+    "name": "SWIFT ARGENTINA SA",
+    "matricula": "1727",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "30540080298",
+    "name": "FRIGORIFICO RIOPLATENSE S.A.I.C.I.F.",
+    "matricula": "3678",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30666277550",
+    "name": "ARRE BEEF S A",
+    "matricula": "4066",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30537869158",
+    "name": "FRIGORIFICO GORINA S A I C",
+    "matricula": "15",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30548083156",
+    "name": "COTO CICSA",
+    "matricula": "67",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30711952841",
+    "name": "COMPAÑIA BERNAL S.A.",
+    "matricula": "3545",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "33707751059",
+    "name": "ECOCARNES S.A.",
+    "matricula": "5726",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30710014287",
+    "name": "FRIGORIFICO FORRES BELTRAN SA",
+    "matricula": "4311",
+    "province": "SANTIAGO DEL ESTERO",
+    "stage": 1
+  },
+  {
+    "cuit": "30504005085",
+    "name": "F R I A R S A",
+    "matricula": "1686",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "33653249549",
+    "name": "RUNFO S.A",
+    "matricula": "3385",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "33653239829",
+    "name": "FRIMSA SA",
+    "matricula": "6814",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30707916075",
+    "name": "SANTA GIULIA S.A.",
+    "matricula": "24222",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30689138051",
+    "name": "FINLAR S.A.",
+    "matricula": "4793",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "30609363785",
+    "name": "MATADERO Y FRIGORIFICO MERLO S.A.",
+    "matricula": "299",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "33684058679",
+    "name": "DELTACAR S A",
+    "matricula": "7730",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30707656480",
+    "name": "FRIGORIFICO VISOM SA",
+    "matricula": "125",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30504131889",
+    "name": "QUICKFOOD S.A",
+    "matricula": "3590",
+    "province": "SAN LUIS",
+    "stage": 1
+  },
+  {
+    "cuit": "30716286823",
+    "name": "INDUSTRIA CARNICA DEL OESTE SRL",
+    "matricula": "37755",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30709684317",
+    "name": "COOPERATIVA DE TRABAJO SUBPGA DE LOS TRABAJADORES LTDA",
+    "matricula": "5357",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30597318584",
+    "name": "FRIGORIFICO REGIONAL GENERAL LAS HERAS S.A.",
+    "matricula": "1116",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30565654019",
+    "name": "FRIGOLAR S.A.",
+    "matricula": "3511",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30708051191",
+    "name": "LOGROS SA",
+    "matricula": "1540",
+    "province": "CORDOBA",
+    "stage": 1
+  },
+  {
+    "cuit": "33639585889",
+    "name": "JORGE LUIS TOLOSA S A",
+    "matricula": "3164",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "33500529909",
+    "name": "RAFAELA ALIMENTOS S.A.",
+    "matricula": "4943",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "30708330295",
+    "name": "ARENALES 1842 VELSUD S.A.",
+    "matricula": "783",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "33707409059",
+    "name": "GANADERA SAN ROQUE S.A.",
+    "matricula": "1115",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30715228277",
+    "name": "AZUL NATURAL BEEF S.A.",
+    "matricula": "24297",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30716169703",
+    "name": "GANADERA DE LAS PAMPAS S.A.",
+    "matricula": "33930",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "33614072429",
+    "name": "MATADERO Y FRIGORIFICO FEDERAL S.A.",
+    "matricula": "7677",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30678597194",
+    "name": "SOCIEDAD ANONIMA CARNES PAMPEANAS SA",
+    "matricula": "5373",
+    "province": "LA PAMPA",
+    "stage": 1
+  },
+  {
+    "cuit": "30506730038",
+    "name": "S A IMPORTADORA Y EXPORTADORA DE LA PATAGONIA",
+    "matricula": "2642",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30604999657",
+    "name": "FRIGORIFICO BERMEJO S.A.",
+    "matricula": "2447",
+    "province": "SALTA",
+    "stage": 1
+  },
+  {
+    "cuit": "30585790822",
+    "name": "FRIGORIFICO GENERAL PICO S A",
+    "matricula": "6341",
+    "province": "LA PAMPA",
+    "stage": 1
+  },
+  {
+    "cuit": "33715866809",
+    "name": "EL CHILLEN S.A.",
+    "matricula": "30953",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30663416975",
+    "name": "MATADERO Y FRIGORIFICO EL MERCEDINO SA",
+    "matricula": "4919",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30709160989",
+    "name": "COOPERATIVA DE TRABAJO FRIGOCARNE MAXIMO PAZ LIMITADA",
+    "matricula": "7538",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "33609706959",
+    "name": "FRIGORIFICO ALBERDI S.A.",
+    "matricula": "4684",
+    "province": "ENTRE RIOS",
+    "stage": 1
+  },
+  {
+    "cuit": "30715068768",
+    "name": "BLACK BAMBOO ENTERPRISES S.A.U",
+    "matricula": "22754",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "33626365669",
+    "name": "MATTIEVICH S A",
+    "matricula": "81",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "30712019340",
+    "name": "PROCESADORA GANADERA ENTRERRIANA S.A.",
+    "matricula": "2970",
+    "province": "ENTRE RIOS",
+    "stage": 1
+  },
+  {
+    "cuit": "30710915969",
+    "name": "GRUPO TRESNAL SRL",
+    "matricula": "412",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30504677032",
+    "name": "INDUSTRIAS FRIGORIFICAS RECREO SAIC",
+    "matricula": "4121",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "30707521992",
+    "name": "COOPERATIVA DE TRABAJO DE SERVICIOS AGROINDUSTRIALES LIMITADA",
+    "matricula": "5691",
+    "province": "TUCUMAN",
+    "stage": 1
+  },
+  {
+    "cuit": "30710163592",
+    "name": "INDUSTRIAS FRIGORIFICAS SUR S.A.",
+    "matricula": "2607",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30707283250",
+    "name": "AGROINDUSTRIAS QUILMES S.A.",
+    "matricula": "1773",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30714124842",
+    "name": "INDUSTRIA FRIGORIFICA LOBOS S.A.",
+    "matricula": "25637",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30707393897",
+    "name": "LA GANADERA ARENALES S A",
+    "matricula": "5186",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30631536790",
+    "name": "FRIGORIFICO Y MATADERO CHIVILCOY S.A.",
+    "matricula": "447",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30715891480",
+    "name": "FAENADORES UNIDOS SRL",
+    "matricula": "31271",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30716069245",
+    "name": "MATADERO OLIVERA S.A.",
+    "matricula": "35839",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30505773817",
+    "name": "FRIGORIFICO REGIONAL VILDOZA S.A.",
+    "matricula": "1455",
+    "province": "MENDOZA",
+    "stage": 1
+  },
+  {
+    "cuit": "30715191217",
+    "name": "CAMPO Y FAENA SA",
+    "matricula": "24015",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30564189657",
+    "name": "BUSTOS Y BELTRAN S.A.",
+    "matricula": "399",
+    "province": "CORDOBA",
+    "stage": 1
+  },
+  {
+    "cuit": "30708465646",
+    "name": "FRIGORIFICO CORONEL MOLDES S.A.",
+    "matricula": "2191",
+    "province": "CORDOBA",
+    "stage": 1
+  },
+  {
+    "cuit": "30539592676",
+    "name": "MATADERO FRIGORIFICO MARIA DEL CARMEN S.A.C.I.G.A.",
+    "matricula": "4655",
+    "province": "MENDOZA",
+    "stage": 1
+  },
+  {
+    "cuit": "30500689443",
+    "name": "FRIGORIFICO NOVARA S.A.",
+    "matricula": "322",
+    "province": "CORDOBA",
+    "stage": 1
+  },
+  {
+    "cuit": "30516241612",
+    "name": "FRIGORIFICO REGIONAL SAN ANTONIO DE ARECO SA C E I",
+    "matricula": "12838",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30605624010",
+    "name": "MATADERO FRIGORIFICO SAN JAVIER S.A.",
+    "matricula": "7718",
+    "province": "MENDOZA",
+    "stage": 1
+  },
+  {
+    "cuit": "30688400240",
+    "name": "PLANTA FAENADORA BANCALARI S.A.",
+    "matricula": "4976",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30715713299",
+    "name": "FRIGORIFICO LA CANARIA SA",
+    "matricula": "37293",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30550196022",
+    "name": "FRIGORIFICO GENERAL DEHEZA SA",
+    "matricula": "4202",
+    "province": "CORDOBA",
+    "stage": 1
+  },
+  {
+    "cuit": "30716874938",
+    "name": "LARAGON S.A",
+    "matricula": "48416",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "33708906269",
+    "name": "MICROGAUSS S A",
+    "matricula": "4736",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30583438412",
+    "name": "PILOTTI S.A.E.F.",
+    "matricula": "2810",
+    "province": "LA PAMPA",
+    "stage": 1
+  },
+  {
+    "cuit": "33714356459",
+    "name": "INDUSTRIAS FRIGORIFICAS JUNCAR S.A.",
+    "matricula": "14597",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30503625721",
+    "name": "SUBPRODUCTOS GANADEROS ROSARIO SAICYF",
+    "matricula": "3050",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "30622456032",
+    "name": "MATADERO FRIGORIFICO UNION S. A.",
+    "matricula": "417",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "30715642855",
+    "name": "COOPERATIVA DE TRABAJO DE EMPLEADOS FRIGORIFICO LIMITADA",
+    "matricula": "30137",
+    "province": "ENTRE RIOS",
+    "stage": 1
+  },
+  {
+    "cuit": "30660375631",
+    "name": "FRIGORIFICO H V S A",
+    "matricula": "363",
+    "province": "LA PAMPA",
+    "stage": 1
+  },
+  {
+    "cuit": "30710972466",
+    "name": "LOS LEONES AGROPECUARIA S.A.",
+    "matricula": "27804",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30710981813",
+    "name": "FRIGORIFICO BOLIVAR S.A",
+    "matricula": "9075",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "33709191999",
+    "name": "COOPERATIVA DE TRABAJO LA FORESTA LIMITADA",
+    "matricula": "14510",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30708728035",
+    "name": "COOPERATIVA DE TRABAJO FRIGORIFICO J.J. GOMEZ LTDA",
+    "matricula": "9171",
+    "province": "RIO NEGRO",
+    "stage": 1
+  },
+  {
+    "cuit": "30602260336",
+    "name": "FRIDEVI S.A.F.I.C.",
+    "matricula": "826",
+    "province": "RIO NEGRO",
+    "stage": 1
+  },
+  {
+    "cuit": "30716219328",
+    "name": "PACAG S.A.",
+    "matricula": "37767",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30695160417",
+    "name": "NATILLA S.A",
+    "matricula": "2068",
+    "province": "CATAMARCA",
+    "stage": 1
+  },
+  {
+    "cuit": "30711679517",
+    "name": "AGROTRES S.A.",
+    "matricula": "29462",
+    "province": "CHUBUT",
+    "stage": 1
+  },
+  {
+    "cuit": "30606054633",
+    "name": "FRIGORIFICO VILLA OLGA SA",
+    "matricula": "52144",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30707508759",
+    "name": "MATADERO MUNICIPAL DE LUIS BELTRAN S.E.",
+    "matricula": "2931",
+    "province": "RIO NEGRO",
+    "stage": 1
+  },
+  {
+    "cuit": "33709828369",
+    "name": "CUNDIR S.A.",
+    "matricula": "886",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30708327162",
+    "name": "AGROPECUARIA TRANSUR S.A.",
+    "matricula": "2883",
+    "province": "CORDOBA",
+    "stage": 1
+  },
+  {
+    "cuit": "30710138911",
+    "name": "LIVORNO S.A",
+    "matricula": "942",
+    "province": "CORDOBA",
+    "stage": 1
+  },
+  {
+    "cuit": "30707148345",
+    "name": "LA PUNA S.R.L.",
+    "matricula": "2928",
+    "province": "JUJUY",
+    "stage": 1
+  },
+  {
+    "cuit": "30682950087",
+    "name": "LA PELLEGRINENSE SA",
+    "matricula": "1028",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "30580828104",
+    "name": "FRIGORIFICO MARU SA",
+    "matricula": "3595",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "30711225915",
+    "name": "FRIGORIFICO ALSINA S.A.",
+    "matricula": "1962",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30704584357",
+    "name": "FRIGORIFICO SAN FRANCISCO SA",
+    "matricula": "8290",
+    "province": "CORDOBA",
+    "stage": 1
+  },
+  {
+    "cuit": "30598842007",
+    "name": "FRIGORIFICO MORTEROS S A",
+    "matricula": "1094",
+    "province": "CORDOBA",
+    "stage": 1
+  },
+  {
+    "cuit": "30690466984",
+    "name": "MERCO MEAT SA",
+    "matricula": "8735",
+    "province": "ENTRE RIOS",
+    "stage": 1
+  },
+  {
+    "cuit": "33708693079",
+    "name": "SAN ISIDRO SA",
+    "matricula": "1878",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "33716344989",
+    "name": "LA MURALLA CHINA S.A.",
+    "matricula": "43112",
+    "province": "CORRIENTES",
+    "stage": 1
+  },
+  {
+    "cuit": "30692337847",
+    "name": "MATADERO FRIGORIFICO DON RAUL S.A.",
+    "matricula": "4387",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "30623965852",
+    "name": "EL NONO SRL",
+    "matricula": "1163",
+    "province": "ENTRE RIOS",
+    "stage": 1
+  },
+  {
+    "cuit": "30581619800",
+    "name": "MATADERO FRIGORIFICO SAN RAFAEL S.A.",
+    "matricula": "889",
+    "province": "MENDOZA",
+    "stage": 1
+  },
+  {
+    "cuit": "30670212358",
+    "name": "FRI-NEA SRL",
+    "matricula": "3504",
+    "province": "CHACO",
+    "stage": 1
+  },
+  {
+    "cuit": "30707899197",
+    "name": "EL HUECO SOCIEDAD ANONIMA",
+    "matricula": "2136",
+    "province": "CATAMARCA",
+    "stage": 1
+  },
+  {
+    "cuit": "30707549145",
+    "name": "DISTRIMEAT SA",
+    "matricula": "562",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "30643859544",
+    "name": "SUDESTE SA",
+    "matricula": "1705",
+    "province": "CORDOBA",
+    "stage": 1
+  },
+  {
+    "cuit": "30709900915",
+    "name": "GUAY MEAT SOCIEDAD ANONIMA",
+    "matricula": "6097",
+    "province": "ENTRE RIOS",
+    "stage": 1
+  },
+  {
+    "cuit": "30586313335",
+    "name": "VICENTIN FAENAS S.R.L.",
+    "matricula": "8336",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "30657849894",
+    "name": "SUPERCARNE S.A.",
+    "matricula": "1408",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30709208256",
+    "name": "FRIGORIFICO ORONA SA",
+    "matricula": "4162",
+    "province": "CORDOBA",
+    "stage": 1
+  },
+  {
+    "cuit": "30709066591",
+    "name": "ALBA Y CO SA",
+    "matricula": "2061",
+    "province": "ENTRE RIOS",
+    "stage": 1
+  },
+  {
+    "cuit": "30631009103",
+    "name": "COOPERATIVA DE PRODUCTORES GANADEROS VILLA ANGELA",
+    "matricula": "8570",
+    "province": "CHACO",
+    "stage": 1
+  },
+  {
+    "cuit": "30595177517",
+    "name": "COMPAÑIA INDUSTRIALIZADORA ARGENTINA DE CARNES S.A.C.I. Y A",
+    "matricula": "8479",
+    "province": "SALTA",
+    "stage": 1
+  },
+  {
+    "cuit": "30561051794",
+    "name": "FRIGORIFICO REGIONAL COLONIA TIROLESA SRL",
+    "matricula": "3146",
+    "province": "CORDOBA",
+    "stage": 1
+  },
+  {
+    "cuit": "30712060677",
+    "name": "AGROSERVICE SA",
+    "matricula": "28677",
+    "province": "NEUQUEN",
+    "stage": 1
+  },
+  {
+    "cuit": "30641416955",
+    "name": "LA ESPERANZA SRL",
+    "matricula": "1882",
+    "province": "ENTRE RIOS",
+    "stage": 1
+  },
+  {
+    "cuit": "30514264771",
+    "name": "COOPERATIVA GANADERA LIMITADA MANUEL GREGORET",
+    "matricula": "5068",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "30709555126",
+    "name": "COOPERATIVA DE TRABAJO FRIGORIFICO Y MATADERO BRAGADO LTDA.",
+    "matricula": "4197",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30716303183",
+    "name": "PLANTA DE FAENA Y FRIGORIFICO PROVINCIAL MEC S.A.S",
+    "matricula": "42048",
+    "province": "SAN JUAN",
+    "stage": 1
+  },
+  {
+    "cuit": "30709878901",
+    "name": "COOPERATIVA DE TRABAJO INCOB LTDA",
+    "matricula": "9333",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30707024085",
+    "name": "DISTRIBUIDORA DE CARNES DEL SUR SRL",
+    "matricula": "823",
+    "province": "CHUBUT",
+    "stage": 1
+  },
+  {
+    "cuit": "30716263645",
+    "name": "PAMPA COMPANIA DE CARNES",
+    "matricula": "37643",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30600489522",
+    "name": "CONCORDIA CARNES SOCIEDAD ANONIMA",
+    "matricula": "3937",
+    "province": "ENTRE RIOS",
+    "stage": 1
+  },
+  {
+    "cuit": "30674829287",
+    "name": "SANTA INES MEAT S.R.L.",
+    "matricula": "8370",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "30710697236",
+    "name": "GUILLERMO HUARTE S.A.",
+    "matricula": "1959",
+    "province": "ENTRE RIOS",
+    "stage": 1
+  },
+  {
+    "cuit": "30648831826",
+    "name": "LA MULITA SA",
+    "matricula": "8732",
+    "province": "ENTRE RIOS",
+    "stage": 1
+  },
+  {
+    "cuit": "30707985468",
+    "name": "ARMANDO S.R.L.",
+    "matricula": "5551",
+    "province": "SANTA FE",
+    "stage": 1
+  },
+  {
+    "cuit": "30529178316",
+    "name": "VIÑUELA Y CIA SCA",
+    "matricula": "8782",
+    "province": "BUENOS AIRES",
+    "stage": 1
+  },
+  {
+    "cuit": "30709141267",
+    "name": "EL TURCO S.R.L.",
+    "matricula": "2587",
+    "province": "ENTRE RIOS",
+    "stage": 1
+  },
+  {
+    "cuit": "20076151084",
+    "name": "HERMOSO CARLOS ALBERTO",
+    "matricula": "3745",
+    "province": "CHUBUT",
+    "stage": 1
+  },
+  {
+    "cuit": "30670479907",
+    "name": "FRIGORIFICO TRELEW SRL",
+    "matricula": "3988",
+    "province": "CHUBUT",
+    "stage": 1
+  },
+  {
+    "cuit": "30716158663",
+    "name": "ENTE FRIGORIFICO CHICOANA",
+    "matricula": "34923",
+    "province": "SALTA",
+    "stage": 2
+  },
+  {
+    "cuit": "30716213354",
+    "name": "FRIGORIFICO DOLORES S.A.",
+    "matricula": "38000",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "20145573298",
+    "name": "CARLOS FERNANDEZ",
+    "matricula": "26518",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "30715809466",
+    "name": "CARNICA DEL OESTE SRL",
+    "matricula": "30686",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "30641193514",
+    "name": "LA SUPERIOR S.A.",
+    "matricula": "2627",
+    "province": "CORDOBA",
+    "stage": 2
+  },
+  {
+    "cuit": "30716096773",
+    "name": "LOS GANSOS S.R.L",
+    "matricula": "39031",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "30715881922",
+    "name": "FRIGORIFICO CAÑUELAS CARNES S.R.L.",
+    "matricula": "45281",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "30712348190",
+    "name": "FRIGORIFICO CHAVES SA",
+    "matricula": "51497",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "30517700246",
+    "name": "FRIGORIFICO CALCHAQUI S.A",
+    "matricula": "5695",
+    "province": "TUCUMAN",
+    "stage": 2
+  },
+  {
+    "cuit": "30603866092",
+    "name": "FRIGORIFICO SAN FRANCISCO SAICYA",
+    "matricula": "8749",
+    "province": "MISIONES",
+    "stage": 2
+  },
+  {
+    "cuit": "30707810692",
+    "name": "LA BRAVA S.A.",
+    "matricula": "9096",
+    "province": "CORRIENTES",
+    "stage": 2
+  },
+  {
+    "cuit": "30715649337",
+    "name": "FRIGOMAYO 25 S.A.",
+    "matricula": "42568",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "30710869789",
+    "name": "COOPERATIVA DE TRABAJO Y CONSUMO UNIDOS LIMITADA",
+    "matricula": "5096",
+    "province": "CHACO",
+    "stage": 2
+  },
+  {
+    "cuit": "30612160240",
+    "name": "MATADERO FRIGORIFICO LA CORINA S.A.",
+    "matricula": "7044",
+    "province": "MENDOZA",
+    "stage": 2
+  },
+  {
+    "cuit": "30716142864",
+    "name": "ESTABLECIMIENTO FAENADOR DEL SALADO S.A.",
+    "matricula": "33991",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "30567676613",
+    "name": "MIRASUR S.A.",
+    "matricula": "3700",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "30502973130",
+    "name": "FRIGORIFICO INDUSTRIAL DEL NORTE SA",
+    "matricula": "5706",
+    "province": "TUCUMAN",
+    "stage": 2
+  },
+  {
+    "cuit": "30717225097",
+    "name": "KORY GROUP S.A.",
+    "matricula": "53558",
+    "province": "MENDOZA",
+    "stage": 2
+  },
+  {
+    "cuit": "30709340243",
+    "name": "AREZZO S A",
+    "matricula": "1208",
+    "province": "CORDOBA",
+    "stage": 2
+  },
+  {
+    "cuit": "30714725390",
+    "name": "FRIGORIFICO VIDAL S.A.",
+    "matricula": "27354",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "20103532346",
+    "name": "RAUL REMORINI",
+    "matricula": "6443",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "30715599542",
+    "name": "SUPERBEEF S.A",
+    "matricula": "29688",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "27309076368",
+    "name": "PANICCIA FLAVIA ANALIA",
+    "matricula": "19357",
+    "province": "TUCUMAN",
+    "stage": 2
+  },
+  {
+    "cuit": "30687409422",
+    "name": "PROYAJO S.A.",
+    "matricula": "7054",
+    "province": "JUJUY",
+    "stage": 2
+  },
+  {
+    "cuit": "30708172657",
+    "name": "MEAT S.A.",
+    "matricula": "4958",
+    "province": "CORDOBA",
+    "stage": 2
+  },
+  {
+    "cuit": "30710412231",
+    "name": "T.C.B. TRANSPORTE DE CARGAS BERISSO S.A.",
+    "matricula": "31965",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "20280919331",
+    "name": "CARDINALI CESAR ALEJANDRO",
+    "matricula": "101",
+    "province": "SAN LUIS",
+    "stage": 2
+  },
+  {
+    "cuit": "30707735135",
+    "name": "LA TABA S.R.L.",
+    "matricula": "8284",
+    "province": "CORDOBA",
+    "stage": 2
+  },
+  {
+    "cuit": "30714668001",
+    "name": "COOPERATIVA DE TRABAJO SUITRAB LIMITADA",
+    "matricula": "18477",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "30596746949",
+    "name": "CENTRO DE CARNICEROS Y MATARIFES DE AZUL SA",
+    "matricula": "9367",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "30715287001",
+    "name": "FRIGORIFICO RINCON DEL TORO SA.",
+    "matricula": "37698",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "30593740206",
+    "name": "FAENADORES FLORENSES SA",
+    "matricula": "22154",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "30716886006",
+    "name": "ANDRES E IVAN MUHIC S.A.S.",
+    "matricula": "48710",
+    "province": "TUCUMAN",
+    "stage": 2
+  },
+  {
+    "cuit": "20324163876",
+    "name": "SALE LUCAS RENE",
+    "matricula": "11783",
+    "province": "TUCUMAN",
+    "stage": 2
+  },
+  {
+    "cuit": "33641440219",
+    "name": "MATADERO FRIGORIFICO SAN JUSTO S.A.",
+    "matricula": "1391",
+    "province": "SANTA FE",
+    "stage": 2
+  },
+  {
+    "cuit": "30715740830",
+    "name": "ZORRCHAC SRL",
+    "matricula": "30979",
+    "province": "SANTA FE",
+    "stage": 2
+  },
+  {
+    "cuit": "30714678589",
+    "name": "FRIGORIFICO LOS ALAMOS S.R.L.",
+    "matricula": "21227",
+    "province": "TUCUMAN",
+    "stage": 2
+  },
+  {
+    "cuit": "20314597274",
+    "name": "LOPEZ PABLOS SEBASTIAN MIGUEL",
+    "matricula": "11720",
+    "province": "CHACO",
+    "stage": 2
+  },
+  {
+    "cuit": "30616750638",
+    "name": "CARNICEROS ASOCIADOS VILLA DEL ROSARIO S A",
+    "matricula": "365",
+    "province": "CORDOBA",
+    "stage": 2
+  },
+  {
+    "cuit": "30672505743",
+    "name": "FREMAR SRL",
+    "matricula": "7035",
+    "province": "MISIONES",
+    "stage": 2
+  },
+  {
+    "cuit": "30716619784",
+    "name": "GANADERA EL PORVENIR S.A.",
+    "matricula": "45018",
+    "province": "MISIONES",
+    "stage": 2
+  },
+  {
+    "cuit": "20206625504",
+    "name": "GIMENEZ MANUEL ALBERTO",
+    "matricula": "52181",
+    "province": "FORMOSA",
+    "stage": 2
+  },
+  {
+    "cuit": "30707445862",
+    "name": "CONSIGNATARIA FERNA SA",
+    "matricula": "38732",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "30712415130",
+    "name": "COOPERATIVA DE TRABAJO AGUA VIVA LIMITADA",
+    "matricula": "4002",
+    "province": "TUCUMAN",
+    "stage": 2
+  },
+  {
+    "cuit": "30714131431",
+    "name": "FAUNO SRL",
+    "matricula": "7312",
+    "province": "LA RIOJA",
+    "stage": 2
+  },
+  {
+    "cuit": "30670043793",
+    "name": "COOPERATIVA DE PROVISION DE SERVICIOS PARA MATARIFES LTDA",
+    "matricula": "7115",
+    "province": "CHACO",
+    "stage": 2
+  },
+  {
+    "cuit": "30709975699",
+    "name": "MATADERO DUDIGNAC S.A.",
+    "matricula": "573",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "30708987863",
+    "name": "FRIGORIFICO LA RURAL S.R.L.",
+    "matricula": "3223",
+    "province": "FORMOSA",
+    "stage": 2
+  },
+  {
+    "cuit": "30686054272",
+    "name": "GLACIAL S.R.L.",
+    "matricula": "4264",
+    "province": "CHACO",
+    "stage": 2
+  },
+  {
+    "cuit": "30714796085",
+    "name": "FRIGORIFICO PETE SRL",
+    "matricula": "20260",
+    "province": "CHACO",
+    "stage": 2
+  },
+  {
+    "cuit": "30717071316",
+    "name": "LARETUC SAS",
+    "matricula": "51415",
+    "province": "TUCUMAN",
+    "stage": 2
+  },
+  {
+    "cuit": "30714150649",
+    "name": "KAUR S.A.",
+    "matricula": "9493",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "33682731619",
+    "name": "PENNY LANE SA",
+    "matricula": "3589",
+    "province": "CORDOBA",
+    "stage": 2
+  },
+  {
+    "cuit": "33670121149",
+    "name": "AGROINDUSTRIAS EL GAUCHITO S.R.L.",
+    "matricula": "1472",
+    "province": "CHACO",
+    "stage": 2
+  },
+  {
+    "cuit": "30708799072",
+    "name": "VITALE CARNES S.A.",
+    "matricula": "8710",
+    "province": "BUENOS AIRES",
+    "stage": 2
+  },
+  {
+    "cuit": "20119144656",
+    "name": "GONZALEZ NELLO ENRIQUE",
+    "matricula": "6232",
+    "province": "SAN LUIS",
+    "stage": 2
+  },
+  {
+    "cuit": "30712246541",
+    "name": "FRIGORIFICO SANTA ANA SRL",
+    "matricula": "20040",
+    "province": "LA PAMPA",
+    "stage": 2
+  },
+  {
+    "cuit": "30714227102",
+    "name": "EL OMBU PORA SRL",
+    "matricula": "27608",
+    "province": "CORRIENTES",
+    "stage": 2
+  },
+  {
+    "cuit": "30670042185",
+    "name": "FRIGORIFICO QUITILIPI SRL",
+    "matricula": "8057",
+    "province": "CHACO",
+    "stage": 2
+  },
+  {
+    "cuit": "30709105414",
+    "name": "CARNES DEL INTERIOR S.A.",
+    "matricula": "4222",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "30717476146",
+    "name": "COOPERATIVA DE TRABAJO FRIGORIFICO JESUS ARROYO LIMITADA",
+    "matricula": "55171",
+    "province": "RIO NEGRO",
+    "stage": 3
+  },
+  {
+    "cuit": "30711162646",
+    "name": "FRIGORIFICO MISION LAISHI S.A.",
+    "matricula": "13982",
+    "province": "FORMOSA",
+    "stage": 3
+  },
+  {
+    "cuit": "30714029157",
+    "name": "COOPERATIVA DE TRABAJO EL ZAIMAN LIMITADA",
+    "matricula": "14292",
+    "province": "MISIONES",
+    "stage": 3
+  },
+  {
+    "cuit": "30715343750",
+    "name": "GRUPO GH S.R.L.",
+    "matricula": "41802",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "20348026055",
+    "name": "GARCIA JUAN MARIA",
+    "matricula": "5255",
+    "province": "MISIONES",
+    "stage": 3
+  },
+  {
+    "cuit": "30716356481",
+    "name": "CARNES DE LA CUENCA SAS",
+    "matricula": "38499",
+    "province": "SANTA CRUZ",
+    "stage": 3
+  },
+  {
+    "cuit": "30670092204",
+    "name": "MA KOR SRL",
+    "matricula": "6551",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30546662817",
+    "name": "MUNICIPALIDAD DE USHUAIA",
+    "matricula": "12901",
+    "province": "TIERRA DEL FUEGO",
+    "stage": 3
+  },
+  {
+    "cuit": "30656187588",
+    "name": "MUNICIPALIDAD DE SANTA SYLVINA",
+    "matricula": "8701",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30672335716",
+    "name": "MUNICIPALIDAD DE SAN JAVIER",
+    "matricula": "32421",
+    "province": "MISIONES",
+    "stage": 3
+  },
+  {
+    "cuit": "30681278334",
+    "name": "MUNICIPALIDAD DE JOAQUIN V. GONZALEZ",
+    "matricula": "9572",
+    "province": "SALTA",
+    "stage": 3
+  },
+  {
+    "cuit": "30999173930",
+    "name": "MUNICIPALIDAD DE PRESIDENCIA ROCA",
+    "matricula": "8829",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "33711630959",
+    "name": "CARNES ITATI S.R.L",
+    "matricula": "9742",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30645795462",
+    "name": "MUNICIPALIDAD DE GOYA",
+    "matricula": "5379",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30670439433",
+    "name": "COMISION DE FOMENTO DE 28 DE JULIO",
+    "matricula": "16",
+    "province": "CHUBUT",
+    "stage": 3
+  },
+  {
+    "cuit": "30636027754",
+    "name": "MUNICIPALIDAD DE JUAN JOSE CASTELLI",
+    "matricula": "4042",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30546662981",
+    "name": "MUNICIPALIDAD DE RIO GRANDE",
+    "matricula": "8533",
+    "province": "TIERRA DEL FUEGO",
+    "stage": 3
+  },
+  {
+    "cuit": "30673137675",
+    "name": "MATADERO MUNICIPALIDAD DE TARTAGAL",
+    "matricula": "6854",
+    "province": "SALTA",
+    "stage": 3
+  },
+  {
+    "cuit": "30999054885",
+    "name": "MUNICIPALIDAD DE MONTE CASEROS",
+    "matricula": "8807",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30716388693",
+    "name": "ENTE MATADERO PROVINCIAL DEL MUNICIPIO DE LA MERCED",
+    "matricula": "44903",
+    "province": "SALTA",
+    "stage": 3
+  },
+  {
+    "cuit": "30999021510",
+    "name": "MUNICIPALIDAD DE SAN PEDRO DE JUJUY",
+    "matricula": "432",
+    "province": "JUJUY",
+    "stage": 3
+  },
+  {
+    "cuit": "33656441009",
+    "name": "MUNICIPALIDAD DE EL BORDO",
+    "matricula": "1384",
+    "province": "SALTA",
+    "stage": 3
+  },
+  {
+    "cuit": "30675074417",
+    "name": "MATADERO MUNICIPAL AÑATUYA",
+    "matricula": "6853",
+    "province": "SANTIAGO DEL ESTERO",
+    "stage": 3
+  },
+  {
+    "cuit": "30714407674",
+    "name": "MUNICIPALIDAD DE ITUZAINGO",
+    "matricula": "8286",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "33999005379",
+    "name": "MUNICIPALIDAD DE TAPALQUE",
+    "matricula": "5665",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "30999167728",
+    "name": "MUNICIPALIDAD DE PAMPA DEL INFIERNO",
+    "matricula": "7039",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30669836135",
+    "name": "MUNICIPALIDAD DE ESQUINA",
+    "matricula": "7412",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "33634792509",
+    "name": "MUNICIPALIDAD DE TRES ISLETAS",
+    "matricula": "4091",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30675058721",
+    "name": "MUNICIPALIDAD DE BANDERA",
+    "matricula": "1017",
+    "province": "SANTIAGO DEL ESTERO",
+    "stage": 3
+  },
+  {
+    "cuit": "33707910289",
+    "name": "MUNICIPALIDAD DE SAN ROQUE",
+    "matricula": "7891",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30668045819",
+    "name": "MUNICIPALIDAD DE BELEN",
+    "matricula": "6557",
+    "province": "CATAMARCA",
+    "stage": 3
+  },
+  {
+    "cuit": "30669667953",
+    "name": "MUNICIPALIDAD DE SANTA ROSA",
+    "matricula": "8998",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30669668259",
+    "name": "MUNICIPALIDAD DE SAN MIGUEL",
+    "matricula": "8817",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30669835902",
+    "name": "MUNIC DE GDOR MARTINEZ",
+    "matricula": "38492",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30672042433",
+    "name": "MUNICIPALIDAD DE LA PAZ",
+    "matricula": "5898",
+    "province": "MENDOZA",
+    "stage": 3
+  },
+  {
+    "cuit": "30656335714",
+    "name": "MUNICIPALIDAD DE COLONIA ELISA",
+    "matricula": "8924",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30688012070",
+    "name": "MUNICIPALIDAD DE MBURUCUYA",
+    "matricula": "8463",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "33686659599",
+    "name": "MATADERO MUNICIPAL CAMPO GALLO",
+    "matricula": "2067",
+    "province": "SANTIAGO DEL ESTERO",
+    "stage": 3
+  },
+  {
+    "cuit": "30999161789",
+    "name": "MUNICIPALIDAD DE CHOS MALAL",
+    "matricula": "1462",
+    "province": "NEUQUEN",
+    "stage": 3
+  },
+  {
+    "cuit": "30657006137",
+    "name": "MUNICIPALIDAD DE LAS LAJITAS",
+    "matricula": "61178",
+    "province": "SALTA",
+    "stage": 3
+  },
+  {
+    "cuit": "30999172632",
+    "name": "MUNICIPALIDAD VILLA BERTHET",
+    "matricula": "5144",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "33658914389",
+    "name": "MUNICIPALIDAD DE LAS GARCITAS",
+    "matricula": "8828",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30716460866",
+    "name": "ENTE MATADERO MUNICIPAL LA VIÑA",
+    "matricula": "43074",
+    "province": "SALTA",
+    "stage": 3
+  },
+  {
+    "cuit": "30999104084",
+    "name": "MUNICIPALIDAD DE SAUCE",
+    "matricula": "8619",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30708246278",
+    "name": "MATADERO MUNICIPAL APOLINARIO SARAVIA",
+    "matricula": "8717",
+    "province": "SALTA",
+    "stage": 3
+  },
+  {
+    "cuit": "30999260329",
+    "name": "MUNICIPALIDAD DE LONCOPUE",
+    "matricula": "37437",
+    "province": "NEUQUEN",
+    "stage": 3
+  },
+  {
+    "cuit": "30660910359",
+    "name": "COMUNA DE CHRISTOPHERSEN",
+    "matricula": "21207",
+    "province": "SANTA FE",
+    "stage": 3
+  },
+  {
+    "cuit": "30656371605",
+    "name": "MUNICIPALIDAD DE EL GALPON",
+    "matricula": "6999",
+    "province": "SALTA",
+    "stage": 3
+  },
+  {
+    "cuit": "30669676138",
+    "name": "MUNICIPALIDAD DE LORETO",
+    "matricula": "8915",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30669676758",
+    "name": "MUNICIPALIDAD DE PUEBLO LIBERTADOR",
+    "matricula": "33482",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30683263156",
+    "name": "MUNICIPALIDAD CONCEPCION DE LA SIERRA",
+    "matricula": "7362",
+    "province": "MISIONES",
+    "stage": 3
+  },
+  {
+    "cuit": "30999274869",
+    "name": "MUNICIPALIDAD DE ALUMINE",
+    "matricula": "37456",
+    "province": "NEUQUEN",
+    "stage": 3
+  },
+  {
+    "cuit": "33647267209",
+    "name": "MUNICIPALIDAD DE CAA CATI",
+    "matricula": "5584",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30687989585",
+    "name": "MUNICIPALIDAD DE EMPEDRADO",
+    "matricula": "8434",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30673057175",
+    "name": "MUNICIPALIDAD DE LA CANDELARIA",
+    "matricula": "7125",
+    "province": "SALTA",
+    "stage": 3
+  },
+  {
+    "cuit": "30999161851",
+    "name": "MUNICIPALIDAD DE ANDACOLLO",
+    "matricula": "37504",
+    "province": "NEUQUEN",
+    "stage": 3
+  },
+  {
+    "cuit": "30648166105",
+    "name": "MUNICIPALIDAD DE BERON DE ASTRADA",
+    "matricula": "8836",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30669701949",
+    "name": "MUNICIPALIDAD DE ITATI",
+    "matricula": "8758",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30675537654",
+    "name": "MUNICIPALIDAD DE COLONIA LIEBIG",
+    "matricula": "8412",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30999120772",
+    "name": "MUNICIPALIDAD DE JACINTO ARAUZ",
+    "matricula": "5807",
+    "province": "LA PAMPA",
+    "stage": 3
+  },
+  {
+    "cuit": "33669675769",
+    "name": "MUNICIPALIDAD DE CONCEPCION CORRIENTES",
+    "matricula": "8618",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30670194988",
+    "name": "MUNICIPALIDAD DE PAMPA DEL INDIO",
+    "matricula": "8274",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30999136741",
+    "name": "COMUNA DE VILLA MINETTI",
+    "matricula": "21884",
+    "province": "SANTA FE",
+    "stage": 3
+  },
+  {
+    "cuit": "30670064987",
+    "name": "MUNICIPALIDAD DE FUERTE ESPERANZA",
+    "matricula": "9394",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30999064120",
+    "name": "MUNICIPALIDAD DE RIVADAVIA",
+    "matricula": "443",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "33670193999",
+    "name": "MUNICIPALIDAD DE PAMPA ALMIRON",
+    "matricula": "3011",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30709760978",
+    "name": "MATADERO MUNICIPAL DE EL QUEBRACHAL",
+    "matricula": "13750",
+    "province": "SALTA",
+    "stage": 3
+  },
+  {
+    "cuit": "30687849864",
+    "name": "MUNICIPALIDAD DE SAN JOSE",
+    "matricula": "23078",
+    "province": "MISIONES",
+    "stage": 3
+  },
+  {
+    "cuit": "30999134072",
+    "name": "MUNICIPALIDAD DE PERUGORRIA",
+    "matricula": "14418",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30999002230",
+    "name": "MUNICIPALIDAD DE CORONEL SUAREZ",
+    "matricula": "2291",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "30636844582",
+    "name": "MATADERO MUNICIPAL PERITO MORENO",
+    "matricula": "5400",
+    "province": "SANTA CRUZ",
+    "stage": 3
+  },
+  {
+    "cuit": "20393560127",
+    "name": "ISA MASSA CAMILO EMIR",
+    "matricula": "49290",
+    "province": "TUCUMAN",
+    "stage": 3
+  },
+  {
+    "cuit": "30658756989",
+    "name": "MUNICIPALIDAD DE LAGUNA LIMPIA",
+    "matricula": "7081",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30999002303",
+    "name": "MUNICIPALIDAD DE CORONEL DORREGO",
+    "matricula": "8168",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "30683251077",
+    "name": "MUNICIPALIDAD DE CERRO AZUL",
+    "matricula": "7892",
+    "province": "MISIONES",
+    "stage": 3
+  },
+  {
+    "cuit": "30999190541",
+    "name": "MUNICIPALIDAD DE GOBERNADOR GREGORES",
+    "matricula": "14423",
+    "province": "SANTA CRUZ",
+    "stage": 3
+  },
+  {
+    "cuit": "30669655327",
+    "name": "MATADERO MUNICIPAL DE PALMAR GRANDE",
+    "matricula": "49083",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30670040417",
+    "name": "MUNICIPALIDAD DE TACO POZO",
+    "matricula": "9019",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30715405292",
+    "name": "EL SAUCESITO S.A.",
+    "matricula": "44875",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "20239260692",
+    "name": "MARTIN ANGEL DARIO",
+    "matricula": "26715",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "27230935055",
+    "name": "ANALIA VERONICA TYMCZYSZYN",
+    "matricula": "8238",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "20116873827",
+    "name": "AGUIRRE HUGO OMAR",
+    "matricula": "21545",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "20301684240",
+    "name": "BARRETO ALEJANDRO RAUL",
+    "matricula": "54168",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "20138116825",
+    "name": "FLOR HILARIO EDMUNDO",
+    "matricula": "9405",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "20134275236",
+    "name": "GREGORIO GODOY",
+    "matricula": "8922",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "20139034016",
+    "name": "CANTERO OMAR DANIEL",
+    "matricula": "4419",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "20139019114",
+    "name": "SOLIS MIGUEL ALBERTO",
+    "matricula": "6607",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "20161737039",
+    "name": "ZULPO CARLOS ANGEL",
+    "matricula": "1035",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "20058577929",
+    "name": "SUC. DE AURELIO CASAS",
+    "matricula": "540",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "33709606129",
+    "name": "FRIGORIFICO FLOR DE CEIBO S.A.",
+    "matricula": "4024",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "30605100739",
+    "name": "FRIGORIFICO EL BRILLANTE S.R.L.",
+    "matricula": "5327",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "30674338100",
+    "name": "MUNICIPALIDAD DE MALABRIGO",
+    "matricula": "37524",
+    "province": "SANTA FE",
+    "stage": 3
+  },
+  {
+    "cuit": "30503348728",
+    "name": "PALADINI S.A.",
+    "matricula": "6335",
+    "province": "SANTA FE",
+    "stage": 3
+  },
+  {
+    "cuit": "30669639259",
+    "name": "MUNICIPALIDAD DE RIACHUELO",
+    "matricula": "18297",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30999069483",
+    "name": "MUNICIPALIDAD DE ZAPALA",
+    "matricula": "6844",
+    "province": "NEUQUEN",
+    "stage": 3
+  },
+  {
+    "cuit": "30716396696",
+    "name": "CARNES ESPECIALES ENTRERRIANAS SRL",
+    "matricula": "48621",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "30707396586",
+    "name": "ESTANCIAS DE PATAGONIA S.A.",
+    "matricula": "7617",
+    "province": "SANTA CRUZ",
+    "stage": 3
+  },
+  {
+    "cuit": "30712415130",
+    "name": "COOPERATIVA DE TRABAJO AGUA VIVA LIMITADA",
+    "matricula": "4002",
+    "province": "SANTA FE",
+    "stage": 3
+  },
+  {
+    "cuit": "33500635989",
+    "name": "FRIGORIFICO ANSELMO S.A.",
+    "matricula": "3516",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "30710802617",
+    "name": "AMERICAN MEAT S.A.",
+    "matricula": "38870",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "30717114066",
+    "name": "INDUSTRIAS CARNICAS SAN MIGUEL S.A.",
+    "matricula": "54653",
+    "province": "LA PAMPA",
+    "stage": 3
+  },
+  {
+    "cuit": "30670852578",
+    "name": "FRIGORIFICO SAN JOSE DE FELICIANO S A",
+    "matricula": "3683",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "30670795930",
+    "name": "CARNES DEL LITORAL S.A.",
+    "matricula": "2356",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "30642224952",
+    "name": "DUHALDE Y CIA S.R.L.",
+    "matricula": "433",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30699379146",
+    "name": "SIPER SA",
+    "matricula": "40827",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "30637530158",
+    "name": "COOPERATIVA FRIGORIFICA LEANDRO N. ALEM LTDA.",
+    "matricula": "1812",
+    "province": "MISIONES",
+    "stage": 3
+  },
+  {
+    "cuit": "33710976649",
+    "name": "CARNES PREMIUM SRL",
+    "matricula": "8711",
+    "province": "TUCUMAN",
+    "stage": 3
+  },
+  {
+    "cuit": "30702544226",
+    "name": "FRIGORIFICO MONTECARLO S.A.",
+    "matricula": "7695",
+    "province": "SANTA CRUZ",
+    "stage": 3
+  },
+  {
+    "cuit": "30709133493",
+    "name": "FRIGORIFICO RIESTRA S. A.",
+    "matricula": "8777",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "30672499212",
+    "name": "MC CARNES SRL",
+    "matricula": "8940",
+    "province": "MISIONES",
+    "stage": 3
+  },
+  {
+    "cuit": "30717452468",
+    "name": "MATADERO FRIGORIFICO CAMPO ANDINO S.A.S.",
+    "matricula": "52455",
+    "province": "MENDOZA",
+    "stage": 3
+  },
+  {
+    "cuit": "30688735145",
+    "name": "PONZONI HERMANOS SRL",
+    "matricula": "4290",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "30709979899",
+    "name": "FP CARNES S.R.L",
+    "matricula": "8753",
+    "province": "FORMOSA",
+    "stage": 3
+  },
+  {
+    "cuit": "33693146149",
+    "name": "MARILAO S A",
+    "matricula": "780",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "20075846046",
+    "name": "STAUDT ROQUE LUIS",
+    "matricula": "7263",
+    "province": "MISIONES",
+    "stage": 3
+  },
+  {
+    "cuit": "33622266739",
+    "name": "PERUZOTTI HNOS S.R.L.",
+    "matricula": "1077",
+    "province": "CHUBUT",
+    "stage": 3
+  },
+  {
+    "cuit": "30707892540",
+    "name": "SOL PUNTANO S.A.P.E.M.",
+    "matricula": "28978",
+    "province": "SAN LUIS",
+    "stage": 3
+  },
+  {
+    "cuit": "30645101169",
+    "name": "FRIGORIFICO SUR S.A.",
+    "matricula": "7932",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "30707013660",
+    "name": "FRIGORIFICO Y MATADERO EL RODEO S.R.L.",
+    "matricula": "8795",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "33708490739",
+    "name": "FRIGORIFICO LA FLORIDA SRL",
+    "matricula": "343",
+    "province": "SALTA",
+    "stage": 3
+  },
+  {
+    "cuit": "30710781504",
+    "name": "NUEVO FRIGORIFICO LA PAZ S.A",
+    "matricula": "1556",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "30715070274",
+    "name": "COOPERATIVA DE TRABAJO LOS OBREROS DE LA CARNE LIMITADA",
+    "matricula": "22856",
+    "province": "SALTA",
+    "stage": 3
+  },
+  {
+    "cuit": "30710658842",
+    "name": "NELSON SRL",
+    "matricula": "781",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30600578754",
+    "name": "MATARIFES DE MERCEDES SA",
+    "matricula": "14",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30611921086",
+    "name": "CATA SA",
+    "matricula": "7408",
+    "province": "NEUQUEN",
+    "stage": 3
+  },
+  {
+    "cuit": "30668228085",
+    "name": "FRIGORIFICO LABOULAYE SRL",
+    "matricula": "8163",
+    "province": "CORDOBA",
+    "stage": 3
+  },
+  {
+    "cuit": "30714993875",
+    "name": "MATADERO FRIGORIFICO SAN AGUSTIN S.R.L.",
+    "matricula": "22269",
+    "province": "SAN LUIS",
+    "stage": 3
+  },
+  {
+    "cuit": "30714373095",
+    "name": "FRIGORIFICO B. JUAREZ S.A.",
+    "matricula": "8920",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "30641942932",
+    "name": "COOPERATIVA DE TRABAJO OBRERA PRIMERO DE DICIEMBRE LIMITADA",
+    "matricula": "928",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "30708419695",
+    "name": "NORTH TRADING SOLUTIONS S.R.L.",
+    "matricula": "1605",
+    "province": "SANTIAGO DEL ESTERO",
+    "stage": 3
+  },
+  {
+    "cuit": "30707711848",
+    "name": "MATADERO BRUNT S.R.L.",
+    "matricula": "649",
+    "province": "CHUBUT",
+    "stage": 3
+  },
+  {
+    "cuit": "30708767790",
+    "name": "COOP DE PROVISION Y TRANSFORMACION DE CARNICEROS DE CAÑADA DE GOMEZ LTDA",
+    "matricula": "7611",
+    "province": "SANTA FE",
+    "stage": 3
+  },
+  {
+    "cuit": "30686034522",
+    "name": "COOP TRABAJO Y CONSUMO PTO VILELAS LTDA",
+    "matricula": "4944",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30690184938",
+    "name": "FRIGORIFICO NUEVO COLON S A",
+    "matricula": "7464",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "30668439884",
+    "name": "CARIGNANO Y POZZI S R L",
+    "matricula": "8918",
+    "province": "CORDOBA",
+    "stage": 3
+  },
+  {
+    "cuit": "30672450973",
+    "name": "COOP DE PROV DE SERV PARA PROD. DE CARNES ANDRESITO LTDA",
+    "matricula": "8867",
+    "province": "MISIONES",
+    "stage": 3
+  },
+  {
+    "cuit": "30669407641",
+    "name": "LA.MA.CE. S.R.L.",
+    "matricula": "2742",
+    "province": "CORDOBA",
+    "stage": 3
+  },
+  {
+    "cuit": "33708289529",
+    "name": "DON LUCIANO S.R.L.",
+    "matricula": "8917",
+    "province": "MISIONES",
+    "stage": 3
+  },
+  {
+    "cuit": "30717409910",
+    "name": "GRUPO ICQ S. R. L.",
+    "matricula": "53328",
+    "province": "RIO NEGRO",
+    "stage": 3
+  },
+  {
+    "cuit": "33611146499",
+    "name": "ORENAIKE S.A.",
+    "matricula": "2709",
+    "province": "SANTA CRUZ",
+    "stage": 3
+  },
+  {
+    "cuit": "30609042180",
+    "name": "COOP. DE PROV. Y SERV. PARA CARNICEROS Y MATARIFES DE GDOR. VIRASORO LTDA",
+    "matricula": "9207",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30670121077",
+    "name": "FRIGORIFICO MACHAGAI S.R.L.",
+    "matricula": "8804",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30712487123",
+    "name": "BRAGOLI S.A.",
+    "matricula": "8713",
+    "province": "CHUBUT",
+    "stage": 3
+  },
+  {
+    "cuit": "20140855309",
+    "name": "ARANA RAUL ALBERTO",
+    "matricula": "8923",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "30708888598",
+    "name": "DON FABRICIO S.A.",
+    "matricula": "6215",
+    "province": "CHUBUT",
+    "stage": 3
+  },
+  {
+    "cuit": "27203475611",
+    "name": "GARCIA MONICA PATRICIA",
+    "matricula": "6234",
+    "province": "SALTA",
+    "stage": 3
+  },
+  {
+    "cuit": "30651315707",
+    "name": "FRIGORIFICO MERCOSUR S.A.",
+    "matricula": "3542",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "30710724020",
+    "name": "AMEL SRL",
+    "matricula": "13913",
+    "province": "MISIONES",
+    "stage": 3
+  },
+  {
+    "cuit": "30708546972",
+    "name": "COOP. GANADERA BELLA VISTA LTDA.",
+    "matricula": "8313",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30708345950",
+    "name": "ARGENASE S.A.",
+    "matricula": "5245",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "30615251778",
+    "name": "COOP DE TRANSF Y COMERC GANADERA DE GRAL. LA MADRID LTDA.",
+    "matricula": "7785",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "33711413699",
+    "name": "EL GRILLITO S.R.L.",
+    "matricula": "9666",
+    "province": "CORDOBA",
+    "stage": 3
+  },
+  {
+    "cuit": "30717137473",
+    "name": "RES BEEF",
+    "matricula": "52095",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "33709736669",
+    "name": "MAFRILAC SACPEM",
+    "matricula": "6764",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30687947580",
+    "name": "COOP. DE PROV. PARA CARNICEROS MATARIFES Y GANADEROS LA ESPERANZA LTDA.",
+    "matricula": "9024",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30715156594",
+    "name": "FRIGORIFICO RIO MOCORETA S.R.L.",
+    "matricula": "23819",
+    "province": "CORRIENTES",
+    "stage": 3
+  },
+  {
+    "cuit": "30709414425",
+    "name": "MATADERO FRIGORIFICO VILLA ELISA S.R.L.",
+    "matricula": "7658",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "23238723019",
+    "name": "CLELAND DARIO SEBASTIAN",
+    "matricula": "12185",
+    "province": "CHUBUT",
+    "stage": 3
+  },
+  {
+    "cuit": "30709390356",
+    "name": "ANTU MALAL SRL",
+    "matricula": "8794",
+    "province": "RIO NEGRO",
+    "stage": 3
+  },
+  {
+    "cuit": "30715854801",
+    "name": "POSTES DORADOS S.A.",
+    "matricula": "45968",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "30710408498",
+    "name": "RIO - CAR SRL.",
+    "matricula": "5370",
+    "province": "LA RIOJA",
+    "stage": 3
+  },
+  {
+    "cuit": "30688036611",
+    "name": "ANAHUAC S.R.L.",
+    "matricula": "9099",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "30717340600",
+    "name": "INDUSTRIAS FRIGORIFICAS CATAMARCA SOSTENIBLE S.A.",
+    "matricula": "51925",
+    "province": "CATAMARCA",
+    "stage": 3
+  },
+  {
+    "cuit": "30615328347",
+    "name": "C I F A D S.R.L.",
+    "matricula": "6117",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "33708593899",
+    "name": "FRIGORIFICO REGIONAL SAMPACHO S.R.L.",
+    "matricula": "4595",
+    "province": "CORDOBA",
+    "stage": 3
+  },
+  {
+    "cuit": "30711922004",
+    "name": "DON JOSE SRL",
+    "matricula": "4857",
+    "province": "MISIONES",
+    "stage": 3
+  },
+  {
+    "cuit": "30710630409",
+    "name": "SAN ROQUE SRL",
+    "matricula": "7459",
+    "province": "MISIONES",
+    "stage": 3
+  },
+  {
+    "cuit": "30710758081",
+    "name": "FRIGORIFICO QUIMO SRL",
+    "matricula": "13916",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "20172708014",
+    "name": "RIGONI ANDRES",
+    "matricula": "10673",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "30707505636",
+    "name": "LA PALOMA SRL",
+    "matricula": "4129",
+    "province": "LA PAMPA",
+    "stage": 3
+  },
+  {
+    "cuit": "30716942194",
+    "name": "FRIGORIFICO ANELO SAPEM",
+    "matricula": "49386",
+    "province": "NEUQUEN",
+    "stage": 3
+  },
+  {
+    "cuit": "30708728035",
+    "name": "COOPERATIVA DE TRABAJO FRIGORIFICO J.J. GOMEZ LTDA",
+    "matricula": "9171",
+    "province": "RIO NEGRO",
+    "stage": 3
+  },
+  {
+    "cuit": "30716930943",
+    "name": "CARBEEF S.R.L",
+    "matricula": "50667",
+    "province": "SANTA FE",
+    "stage": 3
+  },
+  {
+    "cuit": "30711278865",
+    "name": "COOP DE TRABAJO FRIGORIFICO Y MATADERO VICTORIA LIMITADA",
+    "matricula": "6199",
+    "province": "ENTRE RIOS",
+    "stage": 3
+  },
+  {
+    "cuit": "33717588199",
+    "name": "AGROPECUARIA PUNILLITA S.A.S.",
+    "matricula": "62729",
+    "province": "SAN LUIS",
+    "stage": 3
+  },
+  {
+    "cuit": "30716888319",
+    "name": "COOPERATIVA DE TRABAJO LA UNION LIMITADA",
+    "matricula": "50010",
+    "province": "CHACO",
+    "stage": 3
+  },
+  {
+    "cuit": "20183559622",
+    "name": "OSCAR HORACIO SALOMON",
+    "matricula": "10758",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "30664163752",
+    "name": "MUNICIPALIDAD DE PUAN",
+    "matricula": "37461",
+    "province": "BUENOS AIRES",
+    "stage": 3
+  },
+  {
+    "cuit": "33687880329",
+    "name": "SANTA MONICA SRL",
+    "matricula": "5529",
+    "province": "MISIONES",
+    "stage": 3
+  },
+  {
+    "cuit": "20351822164",
+    "name": "NOVOSEL JUAN PABLO",
+    "matricula": "50659",
+    "province": "SANTA CRUZ",
+    "stage": 3
+  }
+]

@@ -1,0 +1,342 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   GANADO TERMINAL — Shared base + Terminal + Landing styles
+   ============================================================ */
+
+/* --- Base layer ------------------------------------------- */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: #27272a; /* zinc-800 default border */
+  }
+
+  html {
+    background-color: #09090b;
+    color: #d4d4d8;
+    font-feature-settings: 'tnum' 1, 'ss01' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #09090b;
+    min-height: 100vh;
+  }
+
+  :focus-visible {
+    outline: 1px solid #38bdf8;
+    outline-offset: -1px;
+  }
+
+  ::selection {
+    background-color: rgba(161, 161, 170, 0.2);
+    color: #fafafa;
+  }
+}
+
+/* --- Scrollbar -------------------------------------------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #09090b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #52525b;
+}
+
+::-webkit-scrollbar-corner {
+  background: #09090b;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3f3f46 #09090b;
+}
+
+/* ============================================================
+   TERMINAL STYLES — used inside (terminal) route group
+   ============================================================ */
+@layer components {
+
+  /* --- Panel / Card --------------------------------------- */
+  .terminal-panel {
+    @apply bg-terminal-panel border border-terminal-border;
+    border-radius: 0;
+  }
+
+  .terminal-panel-header {
+    @apply px-panel py-cell border-b border-terminal-border
+           text-label font-terminal uppercase tracking-widest
+           text-slate-400;
+  }
+
+  .terminal-panel-body {
+    @apply px-panel py-cell;
+  }
+
+  /* --- Tables --------------------------------------------- */
+  .terminal-table {
+    @apply w-full text-data font-terminal;
+    border-collapse: collapse;
+  }
+
+  .terminal-table thead {
+    @apply sticky top-0 z-10;
+    background-color: #0f172a;
+  }
+
+  .terminal-table th {
+    @apply px-cell py-px2 text-left text-xxs font-medium
+           uppercase tracking-wider text-slate-500
+           border-b border-terminal-border;
+    white-space: nowrap;
+  }
+
+  .terminal-table td {
+    @apply px-cell py-px2 text-data text-slate-300
+           border-b border-terminal-border;
+    white-space: nowrap;
+  }
+
+  .terminal-table tbody tr {
+    transition: background-color 0.08s ease;
+  }
+
+  .terminal-table tbody tr:hover {
+    background-color: rgba(56, 189, 248, 0.04);
+  }
+
+  .terminal-table tbody tr:hover td {
+    color: #f1f5f9;
+  }
+
+  .terminal-table td.num,
+  .terminal-table th.num {
+    @apply text-right tabular-nums;
+  }
+
+  /* --- Value colors --------------------------------------- */
+  .val-positive {
+    @apply text-positive;
+  }
+  .val-negative {
+    @apply text-negative;
+  }
+  .val-warning {
+    @apply text-warning;
+  }
+  .val-neutral {
+    @apply text-slate-400;
+  }
+
+  /* --- Ticker / Tag --------------------------------------- */
+  .terminal-tag {
+    @apply inline-flex items-center px-1.5 py-px
+           text-xxs font-terminal uppercase tracking-wider
+           border border-terminal-border text-slate-400;
+    border-radius: 0;
+  }
+
+  .terminal-tag-live {
+    @apply terminal-tag border-positive text-positive;
+  }
+
+  .terminal-tag-warning {
+    @apply terminal-tag border-warning text-warning bg-warning/5;
+  }
+
+  /* --- Buttons -------------------------------------------- */
+  .terminal-btn {
+    @apply inline-flex items-center justify-center
+           px-3 py-1 text-label font-terminal uppercase
+           tracking-wider border border-terminal-border
+           text-slate-300 bg-terminal-panel
+           transition-colors duration-100;
+    border-radius: 0;
+  }
+
+  .terminal-btn:hover {
+    @apply border-accent text-accent bg-accent/5;
+  }
+
+  .terminal-btn:active {
+    @apply bg-accent/10;
+  }
+
+  .terminal-btn-primary {
+    @apply terminal-btn border-accent text-accent;
+  }
+
+  /* --- Input ---------------------------------------------- */
+  .terminal-input {
+    @apply w-full px-2 py-1 text-data font-terminal
+           bg-terminal-bg border border-terminal-border
+           text-slate-100 placeholder-slate-600;
+    border-radius: 0;
+  }
+
+  .terminal-input:focus {
+    @apply border-accent outline-none;
+  }
+
+  /* --- Nav link ------------------------------------------- */
+  .terminal-nav-link {
+    @apply px-3 py-1.5 text-label font-terminal uppercase
+           tracking-widest text-slate-500
+           border-b-2 border-transparent
+           transition-colors duration-100;
+  }
+
+  .terminal-nav-link:hover {
+    @apply text-slate-200;
+  }
+
+  .terminal-nav-link-active {
+    @apply terminal-nav-link text-accent border-accent;
+  }
+
+  /* --- Dividers ------------------------------------------- */
+  .terminal-divider {
+    @apply border-t border-terminal-border my-1;
+  }
+
+  .terminal-divider-dashed {
+    @apply border-t border-dashed border-terminal-border my-1;
+  }
+
+  /* --- Status dot ----------------------------------------- */
+  .status-dot {
+    @apply inline-block w-1.5 h-1.5;
+    border-radius: 0;
+  }
+
+  .status-dot-live {
+    @apply status-dot bg-positive animate-pulse-live;
+  }
+
+  .status-dot-offline {
+    @apply status-dot bg-slate-600;
+  }
+
+  .status-dot-warning {
+    @apply status-dot bg-warning animate-pulse-live;
+  }
+
+  /* --- Stat block ----------------------------------------- */
+  .terminal-stat {
+    @apply flex flex-col gap-0;
+  }
+
+  .terminal-stat-label {
+    @apply text-xxs uppercase tracking-wider text-slate-500 font-terminal;
+  }
+
+  .terminal-stat-value {
+    @apply text-lg font-terminal tabular-nums text-slate-100 leading-tight;
+  }
+
+  /* --- Grid layout helpers -------------------------------- */
+  .terminal-grid {
+    @apply grid gap-px;
+    background-color: #1e293b;
+  }
+
+  .terminal-grid > * {
+    @apply bg-terminal-panel;
+  }
+}
+
+/* ============================================================
+   LANDING PAGE STYLES
+   ============================================================ */
+
+/* Subtle float animation */
+@keyframes float-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* Beam flow along SVG paths */
+@keyframes dash-flow {
+  0% { stroke-dashoffset: 400; }
+  100% { stroke-dashoffset: 0; }
+}
+
+/* Soft pulse for indicators */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* --- Utility layer ---------------------------------------- */
+@layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .font-terminal {
+    font-family: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', 'Fira Code',
+      Consolas, Monaco, 'Liberation Mono', 'Courier New', monospace;
+  }
+
+  .text-mono {
+    font-family: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', 'Fira Code',
+      Consolas, Monaco, 'Liberation Mono', 'Courier New', monospace;
+  }
+
+  .cell-truncate {
+    @apply overflow-hidden text-ellipsis whitespace-nowrap;
+    max-width: 200px;
+  }
+
+  .dense {
+    @apply text-data leading-tight tracking-tight;
+  }
+
+  .glow-positive {
+    text-shadow: 0 0 6px rgba(52, 211, 153, 0.3);
+  }
+
+  .glow-negative {
+    text-shadow: 0 0 6px rgba(248, 113, 113, 0.3);
+  }
+
+  /* Landing-specific utilities */
+  .animate-float {
+    animation: float-subtle 8s ease-in-out infinite;
+  }
+
+  .animate-float-delay-200 {
+    animation: float-subtle 8s ease-in-out infinite;
+    animation-delay: 200ms;
+  }
+
+  .animate-float-delay-500 {
+    animation: float-subtle 8s ease-in-out infinite;
+    animation-delay: 500ms;
+  }
+
+  .animate-beam {
+    stroke-dasharray: 20 200;
+    animation: dash-flow 8s linear infinite;
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
