@@ -52,7 +52,7 @@ function changeArrow(change: number): { arrow: string; cls: string } {
 /*  DATA PREP                                                          */
 /* ================================================================== */
 
-const TODAY = "2026-02-26";
+const TODAY = new Date().toISOString().split("T")[0];
 
 // Remates: today, upcoming (future, sorted by date), past
 const rematesToday = rematesData.filter((r) => r.date === TODAY);
@@ -691,7 +691,7 @@ export default function HomePage() {
             </span>
             <span className="text-terminal-border">|</span>
             <span>
-              FUENTES: MAGYP, ROSGAN, MERCADO DE LINIERS
+              FUENTES: MAG, MAGYP, dolarapi.com
             </span>
           </div>
           <div className="flex items-center gap-3">

@@ -10,6 +10,8 @@
  *   4. Cooperativa Lehmann (cooperativalehmann.coop/hacienda/remates)
  *   5. Madelan (madelan.com.ar/proximos)
  *   6. dolarapi.com — USD blue/oficial exchange rates
+ *   7. ganaderiaynegocios.com — MAG cattle prices ($/kg vivo)
+ *   8. magyp.gob.ar — Corn FOB prices (USD/tn)
  */
 
 import { readFileSync, writeFileSync } from "node:fs";
@@ -148,7 +150,7 @@ function mapMainCategory(title) {
 // ---------------------------------------------------------------------------
 
 async function scrapeCACG() {
-  console.log("[1/6] Scraping CACG API...");
+  console.log("[1/8] Scraping CACG API...");
   const data = await fetchJSON("https://cacg.org.ar/iapi/auctions");
   if (!data?.dataset?.rows) return [];
 
@@ -190,7 +192,7 @@ async function scrapeCACG() {
 // ---------------------------------------------------------------------------
 
 async function scrapeColombo() {
-  console.log("[2/6] Scraping Colombo y Colombo...");
+  console.log("[2/8] Scraping Colombo y Colombo...");
   const html = await fetchHTML("https://www.colomboycolombo.com.ar/remates");
   if (!html) return [];
 
@@ -255,7 +257,7 @@ async function scrapeColombo() {
 // ---------------------------------------------------------------------------
 
 async function scrapeOFarrell() {
-  console.log("[3/6] Scraping O'Farrell...");
+  console.log("[3/8] Scraping O'Farrell...");
   const html = await fetchHTML("https://www.ivanofarrell.com.ar/remates");
   if (!html) return [];
 
@@ -317,7 +319,7 @@ async function scrapeOFarrell() {
 // ---------------------------------------------------------------------------
 
 async function scrapeLehmann() {
-  console.log("[4/6] Scraping Cooperativa Lehmann...");
+  console.log("[4/8] Scraping Cooperativa Lehmann...");
   const html = await fetchHTML(
     "https://www.cooperativalehmann.coop/hacienda/remates"
   );
@@ -374,7 +376,7 @@ async function scrapeLehmann() {
 // ---------------------------------------------------------------------------
 
 async function scrapeMadelan() {
-  console.log("[5/6] Scraping Madelan...");
+  console.log("[5/8] Scraping Madelan...");
   const html = await fetchHTML("https://www.madelan.com.ar/proximos");
   if (!html) return [];
 
@@ -420,11 +422,123 @@ async function scrapeMadelan() {
 }
 
 // ---------------------------------------------------------------------------
+// Source 7: Cattle prices from MAG (ganaderiaynegocios.com)
+// ---------------------------------------------------------------------------
+
+async function scrapeCattlePrices() {
+  console.log("[7/8] Scraping INMAG from mercadoagroganadero.com.ar...");
+
+  // Same source as cattle-tracker: the official MAG hacienda report
+  // Requires date range parameters to get historical data
+  const now = new Date();
+  const endDate = `${now.getDate().toString().padStart(2, "0")}/${(now.getMonth() + 1).toString().padStart(2, "0")}/${now.getFullYear()}`;
+  // Start 60 days back to get enough data for the series
+  const startD = new Date(now);
+  startD.setDate(startD.getDate() - 60);
+  const startDate = `${startD.getDate().toString().padStart(2, "0")}/${(startD.getMonth() + 1).toString().padStart(2, "0")}/${startD.getFullYear()}`;
+
+  const MAG_URL = `https://www.mercadoagroganadero.com.ar/dll/hacienda2.dll/haciinfo000011?txtFECHAINI=${startDate}&txtFECHAFIN=${endDate}&CP=&LISTADO=SI`;
+  const html = await fetchHTML(MAG_URL);
+  if (!html) return null;
+
+  // Parse table rows: columns are Fecha | Cabezas | Importe | INMAG
+  const records = [];
+  const tableRows = html.match(/<tr[^>]*>[\s\S]*?<\/tr>/gi) || [];
+
+  for (const row of tableRows) {
+    const cells = [...row.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)].map((m) =>
+      m[1].replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").trim()
+    );
+
+    if (cells.length >= 4) {
+      const fechaStr = cells[0];
+      // Parse Argentine number format: dots are thousands, commas are decimals
+      const parseNum = (s) => {
+        const cleaned = s.replace(/\./g, "").replace(",", ".").replace(/[^\d.-]/g, "");
+        return parseFloat(cleaned) || 0;
+      };
+
+      const cabezas = parseNum(cells[1]);
+      const inmag = parseNum(cells[3]);
+
+      // Validate: must have a date pattern, reasonable INMAG (100-50000), cabezas > 0
+      // Skip rows with "Falta Cerrar", "- *", "TOTAL", "totales"
+      const dateMatch = fechaStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      const inmagStr = cells[3];
+      if (dateMatch && inmag > 100 && inmag < 50000 && cabezas > 0 &&
+          !fechaStr.includes("TOTAL") && !fechaStr.toLowerCase().includes("totales") &&
+          !inmagStr.includes("Falta") && !inmagStr.includes("- *")) {
+        const [, day, month, year] = dateMatch;
+        const fecha = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+        records.push({ fecha, cabezas, inmag });
+      }
+    }
+  }
+
+  if (records.length === 0) {
+    console.warn("  [WARN] No INMAG records found from MAG site");
+    return null;
+  }
+
+  // Sort by date descending, take the latest entry as current INMAG
+  records.sort((a, b) => b.fecha.localeCompare(a.fecha));
+  const latest = records[0];
+
+  console.log(`  Found ${records.length} MAG records, latest: ${latest.fecha} INMAG=${latest.inmag.toFixed(2)}`);
+
+  // Return the INMAG value and full records for historical series
+  return {
+    inmag: Math.round(latest.inmag * 100) / 100,
+    date: latest.fecha,
+    records, // all records for series building
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Source 8: Corn FOB price from MAGYP
+// ---------------------------------------------------------------------------
+
+async function scrapeCornPrice() {
+  console.log("[8/8] Fetching corn FOB price from MAGYP...");
+
+  // Try today, then yesterday (API may not have today's data yet)
+  for (let daysBack = 0; daysBack <= 1; daysBack++) {
+    const d = new Date();
+    d.setDate(d.getDate() - daysBack);
+    const dateStr = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+    const url = `https://www.magyp.gob.ar/sitio/areas/ss_mercados_agropecuarios/ws/ssma/precios_fob.php?Fecha=${dateStr}`;
+
+    const data = await fetchJSON(url);
+    if (!data?.posts || data.posts.length === 0) continue;
+
+    // Filter for maíz positions (HS 1005 = maize)
+    const cornPrices = data.posts
+      .filter((p) => p.posicion && p.posicion.startsWith("1005"))
+      .map((p) => parseFloat(p.precio))
+      .filter((p) => p > 0);
+
+    if (cornPrices.length === 0) continue;
+
+    const avg = Math.round(
+      (cornPrices.reduce((a, b) => a + b, 0) / cornPrices.length) * 100
+    ) / 100;
+
+    console.log(
+      `  Corn FOB (${dateStr}): ${cornPrices.length} positions, avg $${avg} USD/tn`
+    );
+    return avg;
+  }
+
+  console.warn("  [WARN] Could not fetch corn prices");
+  return null;
+}
+
+// ---------------------------------------------------------------------------
 // Source 6: Dollar rates
 // ---------------------------------------------------------------------------
 
 async function scrapeDollar() {
-  console.log("[6/6] Fetching USD rates from dolarapi.com...");
+  console.log("[6/8] Fetching USD rates from dolarapi.com...");
   const [blue, oficial] = await Promise.all([
     fetchJSON("https://dolarapi.com/v1/dolares/blue"),
     fetchJSON("https://dolarapi.com/v1/dolares/oficial"),
@@ -474,13 +588,15 @@ async function main() {
   console.log(`\n=== Ganado Terminal Scraper — ${todayISO()} ===\n`);
 
   // Scrape all sources in parallel
-  const [cacg, colombo, ofarrell, lehmann, madelan, dollar] = await Promise.all([
+  const [cacg, colombo, ofarrell, lehmann, madelan, dollar, cattlePrices, cornPrice] = await Promise.all([
     scrapeCACG(),
     scrapeColombo(),
     scrapeOFarrell(),
     scrapeLehmann(),
     scrapeMadelan(),
     scrapeDollar(),
+    scrapeCattlePrices(),
+    scrapeCornPrice(),
   ]);
 
   // Combine all scraped auctions
@@ -545,9 +661,79 @@ async function main() {
   writeFileSync(REMATES_PATH, JSON.stringify(merged, null, 2) + "\n");
   console.log(`\nWritten: ${merged.length} auctions to remates.json`);
 
+  // Update market-prices.json with all available data
+  const market = JSON.parse(readFileSync(MARKET_PATH, "utf-8"));
+
+  // Update INMAG from official MAG data (cattle-tracker approach)
+  if (cattlePrices) {
+    const inmagValue = cattlePrices.inmag;
+    // Use second-to-last scraped record as prev (more accurate than stale stored prev)
+    const sortedRecs = [...cattlePrices.records].sort((a, b) => b.fecha.localeCompare(a.fecha));
+    const inmagPrev = sortedRecs.length >= 2
+      ? Math.round(sortedRecs[1].inmag * 100) / 100
+      : market.inmag.current;
+    market.inmag.prev = inmagPrev;
+    market.inmag.current = inmagValue;
+    market.inmag.change = inmagPrev
+      ? parseFloat((((inmagValue - inmagPrev) / inmagPrev) * 100).toFixed(1))
+      : 0;
+    market.inmag.source = "mercadoagroganadero.com.ar";
+
+    // Update INMAG historical series from scraped records
+    if (!market.inmag.series) market.inmag.series = [];
+    const existingDates = new Set(market.inmag.series.map((pt) => pt.date));
+    for (const rec of cattlePrices.records) {
+      if (!existingDates.has(rec.fecha)) {
+        market.inmag.series.push({ date: rec.fecha, value: Math.round(rec.inmag * 100) / 100 });
+      }
+    }
+    // Sort by date and keep last 56 entries (8 weeks of daily data)
+    market.inmag.series.sort((a, b) => a.date.localeCompare(b.date));
+    if (market.inmag.series.length > 56) {
+      market.inmag.series = market.inmag.series.slice(-56);
+    }
+
+    // Update category prices proportionally from INMAG
+    // INMAG is the composite novillo price — derive categories as ratios of INMAG
+    // Typical market ratios (relative to novillos/INMAG):
+    // novillos: 1.0x, novillitos: 0.95x, vaquillonas: 0.90x,
+    // vacas: 0.72x, toros: 0.65x, terneros: 1.10x
+    const ratios = {
+      novillos: 1.0,
+      novillitos: 0.95,
+      vaquillonas: 0.90,
+      vacas: 0.72,
+      toros: 0.65,
+      terneros: 1.10,
+    };
+    for (const [key, ratio] of Object.entries(ratios)) {
+      const newVal = Math.round(inmagValue * ratio);
+      const prevVal = Math.round(inmagPrev * ratio);
+      market.categories[key].prev = prevVal;
+      market.categories[key].current = newVal;
+      market.categories[key].change = prevVal
+        ? parseFloat((((newVal - prevVal) / prevVal) * 100).toFixed(1))
+        : 0;
+      market.categories[key].source = "MAG (derived from INMAG)";
+    }
+
+    console.log(`Updated INMAG=${inmagValue} (${cattlePrices.date}), ${cattlePrices.records.length} series points`);
+  }
+
+  // Update corn price if available
+  if (cornPrice != null) {
+    const prev = market.corn.current;
+    market.corn.prev = prev;
+    market.corn.current = cornPrice;
+    market.corn.change = prev
+      ? parseFloat((((cornPrice - prev) / prev) * 100).toFixed(1))
+      : 0;
+    market.corn.source = "MAGYP FOB API";
+    console.log(`Updated corn: $${cornPrice} USD/tn`);
+  }
+
   // Update dollar rates if available
   if (dollar) {
-    const market = JSON.parse(readFileSync(MARKET_PATH, "utf-8"));
     if (dollar.blue) {
       const prev = market.usdBlue.current;
       market.usdBlue.prev = prev;
@@ -566,12 +752,14 @@ async function main() {
         : 0;
       market.usdOficial.source = "dolarapi.com/v1/dolares/oficial";
     }
-    market.lastUpdate = todayISO();
-    writeFileSync(MARKET_PATH, JSON.stringify(market, null, 2) + "\n");
     console.log(
       `Updated USD: blue=$${dollar.blue?.venta || "?"}, oficial=$${dollar.oficial?.venta || "?"}`
     );
   }
+
+  market.lastUpdate = todayISO();
+  writeFileSync(MARKET_PATH, JSON.stringify(market, null, 2) + "\n");
+  console.log(`Market prices written to market-prices.json`);
 
   // Summary
   const provinces = [...new Set(merged.map((a) => a.province))];

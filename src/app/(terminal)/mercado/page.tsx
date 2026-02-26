@@ -130,8 +130,8 @@ export default function MercadoPage() {
               </span>
             </div>
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-data val-positive font-terminal tabular-nums">
-                {'\u25B2'} +{fmt(inmag.change, 1)}%
+              <span className={`text-data font-terminal tabular-nums ${inmag.change >= 0 ? 'val-positive' : 'val-negative'}`}>
+                {inmag.change >= 0 ? '\u25B2' : '\u25BC'} {inmag.change >= 0 ? '+' : ''}{fmt(inmag.change, 1)}%
               </span>
               <span className="text-xxs text-slate-600">vs ant.</span>
             </div>
@@ -187,8 +187,8 @@ export default function MercadoPage() {
                   {fmt(corn.current, 2)}
                 </span>
                 <span className="text-xxs text-slate-500">{corn.unit}</span>
-                <span className="text-data val-positive tabular-nums ml-auto">
-                  {'\u25B2'}{fmt(corn.change, 1)}%
+                <span className={`text-data tabular-nums ml-auto ${corn.change >= 0 ? 'val-positive' : 'val-negative'}`}>
+                  {corn.change >= 0 ? '\u25B2' : '\u25BC'}{corn.change >= 0 ? '+' : ''}{fmt(corn.change, 1)}%
                 </span>
               </div>
             </div>
@@ -201,8 +201,8 @@ export default function MercadoPage() {
                   {fmt(usdBlue.current)}
                 </span>
                 <span className="text-xxs text-slate-500">{usdBlue.unit}</span>
-                <span className="text-data val-positive tabular-nums ml-auto">
-                  {'\u25B2'}{fmt(usdBlue.change, 1)}%
+                <span className={`text-data tabular-nums ml-auto ${usdBlue.change >= 0 ? 'val-positive' : 'val-negative'}`}>
+                  {usdBlue.change >= 0 ? '\u25B2' : '\u25BC'}{usdBlue.change >= 0 ? '+' : ''}{fmt(usdBlue.change, 1)}%
                 </span>
               </div>
             </div>
@@ -274,12 +274,15 @@ export default function MercadoPage() {
         </div>
       </div>
 
-      {/* ── Disclaimer ──────────────────────────────────────────── */}
+      {/* ── Source attribution ─────────────────────────────────── */}
       <div className="terminal-panel">
-        <div className="px-panel py-cell">
-          <p className="terminal-tag-warning inline-flex text-xxs leading-relaxed">
-            DISCLAIMER: Datos de muestra para demostracion. No usar como referencia de mercado. Fuente real: Mercado Agroganadero.
-          </p>
+        <div className="px-panel py-cell flex items-center justify-between">
+          <span className="text-xxs text-slate-600">
+            FUENTES: Mercado Agroganadero (MAG), MAGYP, dolarapi.com
+          </span>
+          <span className="text-xxs text-slate-600 tabular-nums">
+            Ult. act.: {lastUpdate}
+          </span>
         </div>
       </div>
 

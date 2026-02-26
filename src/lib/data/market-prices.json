@@ -1,81 +1,149 @@
 {
   "inmag": {
-    "current": 2872,
-    "prev": 2807,
-    "change": 2.3,
+    "current": 4644.05,
+    "prev": 4618.77,
+    "change": 0.5,
     "unit": "$/kg vivo",
+    "source": "mercadoagroganadero.com.ar",
     "series": [
       {
-        "date": "2026-01-05",
-        "value": 2650
+        "date": "2025-12-30",
+        "value": 4162.86
       },
       {
-        "date": "2026-01-12",
-        "value": 2690
+        "date": "2026-01-06",
+        "value": 4093.77
       },
       {
-        "date": "2026-01-19",
-        "value": 2725
+        "date": "2026-01-07",
+        "value": 4044.95
       },
       {
-        "date": "2026-01-26",
-        "value": 2710
+        "date": "2026-01-09",
+        "value": 4225.17
       },
       {
-        "date": "2026-02-02",
-        "value": 2755
+        "date": "2026-01-13",
+        "value": 4061.17
       },
       {
-        "date": "2026-02-09",
-        "value": 2807
+        "date": "2026-01-14",
+        "value": 3947.27
       },
       {
-        "date": "2026-02-16",
-        "value": 2838
+        "date": "2026-01-16",
+        "value": 4235.23
       },
       {
-        "date": "2026-02-23",
-        "value": 2872
+        "date": "2026-01-20",
+        "value": 4178.5
+      },
+      {
+        "date": "2026-01-21",
+        "value": 4050.82
+      },
+      {
+        "date": "2026-01-23",
+        "value": 3991.22
+      },
+      {
+        "date": "2026-01-27",
+        "value": 4202.48
+      },
+      {
+        "date": "2026-01-28",
+        "value": 4062.48
+      },
+      {
+        "date": "2026-01-30",
+        "value": 4527.26
+      },
+      {
+        "date": "2026-02-03",
+        "value": 4373.27
+      },
+      {
+        "date": "2026-02-04",
+        "value": 4081
+      },
+      {
+        "date": "2026-02-06",
+        "value": 4410.6
+      },
+      {
+        "date": "2026-02-10",
+        "value": 4328.29
+      },
+      {
+        "date": "2026-02-11",
+        "value": 4361.25
+      },
+      {
+        "date": "2026-02-13",
+        "value": 4483.6
+      },
+      {
+        "date": "2026-02-18",
+        "value": 4559.04
+      },
+      {
+        "date": "2026-02-20",
+        "value": 4684.54
+      },
+      {
+        "date": "2026-02-24",
+        "value": 4618.77
+      },
+      {
+        "date": "2026-02-25",
+        "value": 4644.05
       }
     ]
   },
   "categories": {
     "novillos": {
-      "current": 2950,
-      "prev": 2880,
-      "change": 2.4
+      "current": 4644,
+      "prev": 4619,
+      "change": 0.5,
+      "source": "MAG (derived from INMAG)"
     },
     "novillitos": {
-      "current": 2780,
-      "prev": 2720,
-      "change": 2.2
+      "current": 4412,
+      "prev": 4388,
+      "change": 0.5,
+      "source": "MAG (derived from INMAG)"
     },
     "vaquillonas": {
-      "current": 2650,
-      "prev": 2600,
-      "change": 1.9
+      "current": 4180,
+      "prev": 4157,
+      "change": 0.6,
+      "source": "MAG (derived from INMAG)"
     },
     "vacas": {
-      "current": 2100,
-      "prev": 2050,
-      "change": 2.4
+      "current": 3344,
+      "prev": 3326,
+      "change": 0.5,
+      "source": "MAG (derived from INMAG)"
     },
     "toros": {
-      "current": 1850,
-      "prev": 1820,
-      "change": 1.6
+      "current": 3019,
+      "prev": 3002,
+      "change": 0.6,
+      "source": "MAG (derived from INMAG)"
     },
     "terneros": {
-      "current": 3200,
-      "prev": 3100,
-      "change": 3.2
+      "current": 5108,
+      "prev": 5081,
+      "change": 0.5,
+      "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
-    "current": 185.5,
-    "prev": 182,
-    "change": 1.9,
-    "unit": "USD/tn"
+    "current": 223,
+    "prev": 223,
+    "change": 0,
+    "unit": "USD/tn",
+    "source": "MAGYP FOB API"
   },
   "usdBlue": {
     "current": 1445,
