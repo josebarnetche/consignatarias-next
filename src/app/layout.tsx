@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Ganado Terminal",
+  title: "consignatarias.com.ar",
   description:
     "Data modeling and risk intelligence infrastructure for Argentina's livestock consignatarias",
 };

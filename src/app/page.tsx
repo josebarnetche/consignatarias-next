@@ -112,7 +112,7 @@ export default function LandingPage() {
               <IconLayers />
             </div>
             <span className="text-sm font-medium text-zinc-100 tracking-tight">
-              Ganado Terminal
+              consignatarias.com.ar
             </span>
           </div>
 
@@ -491,7 +491,7 @@ export default function LandingPage() {
                 <IconLayers className="w-3.5 h-3.5" />
               </div>
               <span className="text-xs font-medium text-zinc-500 tracking-tight">
-                Ganado Terminal &copy; 2026
+                consignatarias.com.ar &copy; 2026
               </span>
             </div>
 
