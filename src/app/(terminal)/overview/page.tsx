@@ -371,64 +371,48 @@ export default function HomePage() {
 
             <div className="terminal-divider" />
 
-            {/* Next 5 auctions table */}
-            <table className="terminal-table">
-              <thead>
-                <tr>
-                  <th>Fecha</th>
-                  <th>Consignataria</th>
-                  <th>Ubicacion</th>
-                  <th>Tipo</th>
-                  <th className="num">Cab.</th>
-                </tr>
-              </thead>
-              <tbody>
-                {nextAuctions.map((r) => {
-                  const isToday = r.date === TODAY;
-                  const dateDisplay = isToday
-                    ? "HOY"
-                    : r.date.slice(5).replace("-", "/");
-                  return (
-                    <tr key={r.id}>
-                      <td>
-                        {isToday ? (
-                          <span className="text-positive font-semibold">
-                            {dateDisplay}
-                          </span>
-                        ) : (
-                          <span className="text-zinc-400 tabular-nums">
-                            {dateDisplay}
-                          </span>
-                        )}
-                        {r.time && (
-                          <span className="text-zinc-600 ml-1 text-xxs">
-                            {r.time}
-                          </span>
-                        )}
-                      </td>
-                      <td
-                        className="cell-truncate text-zinc-200"
-                        title={r.consignatariaName}
-                      >
-                        {r.consignatariaName}
-                      </td>
-                      <td
-                        className="cell-truncate text-zinc-400"
-                        title={r.location}
-                      >
-                        {r.location}
-                      </td>
-                      <td className="text-xxs uppercase text-accent tracking-wider">
-                        {r.type}
-                      </td>
-                      <td className="num text-zinc-100 font-semibold tabular-nums">
-                        {r.estimatedHeads != null ? fmt(r.estimatedHeads) : '—'}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            {/* Next 5 auctions — compact list */}
+            <div className="space-y-0">
+              {nextAuctions.map((r) => {
+                const isToday = r.date === TODAY;
+                const dateDisplay = isToday
+                  ? "HOY"
+                  : r.date.slice(5).replace("-", "/");
+                const href = r.sourceUrl || r.catalogUrl || `/consignatarias/${r.consignatariaSlug}`;
+                const isExternal = href.startsWith('http');
+                const Wrapper = isExternal ? 'a' : Link;
+                const wrapperProps = isExternal
+                  ? { href, target: "_blank" as const, rel: "noopener noreferrer" }
+                  : { href };
+                return (
+                  <Wrapper
+                    key={r.id}
+                    {...wrapperProps}
+                    className="flex items-center gap-2 px-cell py-px2 border-b border-terminal-border hover:bg-zinc-800/50 transition-colors cursor-pointer group"
+                  >
+                    <span className="w-[52px] flex-shrink-0 tabular-nums text-data font-terminal">
+                      {isToday ? (
+                        <span className="text-positive font-semibold">{dateDisplay}</span>
+                      ) : (
+                        <span className="text-zinc-400">{dateDisplay}</span>
+                      )}
+                    </span>
+                    <span className="w-[38px] flex-shrink-0 text-data font-terminal text-zinc-500 tabular-nums">
+                      {r.time ?? '—'}
+                    </span>
+                    <span className="flex-1 min-w-0 text-data font-terminal text-zinc-200 truncate group-hover:text-accent transition-colors" title={r.consignatariaName}>
+                      {r.consignatariaName}
+                    </span>
+                    <span className="hidden sm:inline text-xxs text-zinc-600 truncate max-w-[100px]">
+                      {r.location.split(',')[0]}
+                    </span>
+                    <span className="text-data font-terminal tabular-nums text-zinc-400 flex-shrink-0">
+                      {r.estimatedHeads != null ? `~${fmt(r.estimatedHeads)}` : ''}
+                    </span>
+                  </Wrapper>
+                );
+              })}
+            </div>
 
             {/* Today's detail */}
             {rematesToday.length > 0 && (
@@ -593,9 +577,9 @@ export default function HomePage() {
           </span>
         </div>
         <div className="terminal-panel-body">
-          <div className="flex items-end gap-4">
+          <div className="flex flex-col md:flex-row md:items-end gap-4">
             {/* Sparkline */}
-            <div className="flex-1">
+            <div className="flex-1 min-w-0 overflow-x-auto">
               <div className="flex items-end justify-between mb-1">
                 <span className="text-xxs text-zinc-500 tabular-nums">
                   Min: {fmt(Math.min(...inmagSeries))}
@@ -605,11 +589,11 @@ export default function HomePage() {
                 </span>
               </div>
               {/* Large ASCII sparkline */}
-              <div className="font-terminal text-3xl text-positive tracking-[0.25em] leading-none glow-positive select-none">
+              <div className="font-terminal text-2xl md:text-3xl text-positive tracking-[0.15em] md:tracking-[0.25em] leading-none glow-positive select-none whitespace-nowrap">
                 {inmagSparkline}
               </div>
-              {/* Date axis */}
-              <div className="flex justify-between mt-1">
+              {/* Date axis — hidden on mobile to prevent overflow */}
+              <div className="hidden md:flex justify-between mt-1">
                 {marketPrices.inmag.series.map(
                   (pt: { date: string; value: number }) => (
                     <span
@@ -621,8 +605,8 @@ export default function HomePage() {
                   )
                 )}
               </div>
-              {/* Value axis */}
-              <div className="flex justify-between mt-0.5">
+              {/* Value axis — hidden on mobile */}
+              <div className="hidden md:flex justify-between mt-0.5">
                 {marketPrices.inmag.series.map(
                   (pt: { date: string; value: number }) => (
                     <span
@@ -637,10 +621,10 @@ export default function HomePage() {
             </div>
 
             {/* Summary column */}
-            <div className="flex-shrink-0 flex flex-col items-end gap-1 pl-4 border-l border-terminal-border">
-              <div className="terminal-stat items-end">
-                <span className="terminal-stat-label text-right">8W Change</span>
-                <span className="terminal-stat-value text-positive glow-positive tabular-nums">
+            <div className="flex-shrink-0 flex md:flex-col items-center md:items-end gap-3 md:gap-1 md:pl-4 pt-2 md:pt-0 border-t md:border-t-0 md:border-l border-terminal-border">
+              <div className="terminal-stat md:items-end">
+                <span className="terminal-stat-label md:text-right">8W Change</span>
+                <span className="terminal-stat-value text-sm md:text-lg text-positive glow-positive tabular-nums">
                   +
                   {fmt(
                     ((inmagSeries[inmagSeries.length - 1] - inmagSeries[0]) /
@@ -651,14 +635,14 @@ export default function HomePage() {
                   %
                 </span>
               </div>
-              <div className="terminal-stat items-end">
-                <span className="terminal-stat-label text-right">8W Abs</span>
+              <div className="terminal-stat md:items-end">
+                <span className="terminal-stat-label md:text-right">8W Abs</span>
                 <span className="text-data text-zinc-300 tabular-nums">
                   +{fmt(inmagSeries[inmagSeries.length - 1] - inmagSeries[0])} $/kg
                 </span>
               </div>
-              <div className="terminal-stat items-end">
-                <span className="terminal-stat-label text-right">Media 8W</span>
+              <div className="terminal-stat md:items-end">
+                <span className="terminal-stat-label md:text-right">Media 8W</span>
                 <span className="text-data text-zinc-300 tabular-nums">
                   {fmt(
                     inmagSeries.reduce((a: number, b: number) => a + b, 0) /
@@ -701,7 +685,7 @@ export default function HomePage() {
               {rematesData.length}
             </span>
             <span className="text-terminal-border">|</span>
-            <span className="text-zinc-500">GANADO TERMINAL v0.1</span>
+            <span className="text-zinc-500">consignatarias.com.ar</span>
           </div>
         </div>
       </div>

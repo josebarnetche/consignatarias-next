@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 
@@ -150,8 +149,24 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
   const href = getAuctionHref(auction)
   const external = isExternalLink(href)
 
-  const rowContent = (
-    <>
+  function handleRowClick() {
+    if (external) {
+      window.open(href, '_blank', 'noopener,noreferrer')
+    } else {
+      window.location.href = href
+    }
+  }
+
+  return (
+    <div
+      role="link"
+      tabIndex={0}
+      onClick={handleRowClick}
+      onKeyDown={(e) => { if (e.key === 'Enter') handleRowClick() }}
+      className={`group border-b border-terminal-border hover:bg-zinc-800/50 transition-colors duration-75 cursor-pointer ${
+        isToday ? 'bg-positive/[0.02]' : ''
+      }`}
+    >
       {/* Line 1: date time consignataria location province */}
       <div className="flex items-center gap-0 px-cell py-px2">
         {/* Date */}
@@ -168,18 +183,14 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
           {auction.time ? (
             <span className="text-zinc-300">{auction.time}</span>
           ) : auction.sourceUrl ? (
-            <a
-              href={auction.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-accent hover:text-accent-bright transition-colors text-xxs"
-              onClick={(e) => e.stopPropagation()}
+            <span
+              className="text-accent text-xxs cursor-pointer"
               title="Ver horario en fuente"
             >
               VER &rarr;
-            </a>
+            </span>
           ) : (
-            <span className="text-zinc-600">—</span>
+            <span className="text-zinc-600">&mdash;</span>
           )}
         </span>
 
@@ -229,7 +240,7 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
         {/* Spacer */}
         <span className="flex-1" />
 
-        {/* Links */}
+        {/* Links — stop propagation so they don't trigger row click */}
         <span className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
           {auction.catalogUrl && (
             <a
@@ -266,34 +277,7 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
           )}
         </span>
       </div>
-    </>
-  )
-
-  // Wrap entire row in a link — external or internal
-  if (external) {
-    return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`group block border-b border-terminal-border hover:bg-zinc-800/50 transition-colors duration-75 cursor-pointer ${
-          isToday ? 'bg-positive/[0.02]' : ''
-        }`}
-      >
-        {rowContent}
-      </a>
-    )
-  }
-
-  return (
-    <Link
-      href={href}
-      className={`group block border-b border-terminal-border hover:bg-zinc-800/50 transition-colors duration-75 cursor-pointer ${
-        isToday ? 'bg-positive/[0.02]' : ''
-      }`}
-    >
-      {rowContent}
-    </Link>
+    </div>
   )
 }
 

@@ -67,7 +67,7 @@ export default function TerminalLayout({
             <Link href="/" className="flex items-center gap-2 group">
               <span className="inline-block w-2 h-2 bg-positive animate-pulse-live flex-shrink-0" />
               <span className="font-terminal text-sm font-semibold tracking-widest text-zinc-100 group-hover:text-accent transition-colors">
-                GANADO TERMINAL
+                consignatarias.com.ar
               </span>
             </Link>
 
