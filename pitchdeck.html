@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>consignatarias.com.ar — Pitch Deck</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #09090b;
+    --panel: #18181b;
+    --border: #27272a;
+    --text: #fafafa;
+    --text-2: #a1a1aa;
+    --text-3: #71717a;
+    --text-4: #52525b;
+    --green: #34d399;
+    --green-dim: rgba(52, 211, 153, 0.15);
+    --red: #f87171;
+    --amber: #fbbf24;
+    --blue: #38bdf8;
+  }
+
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  /* ── SLIDE ───────────────────────────────────────────── */
+  .slide {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3rem 2rem;
+    scroll-snap-align: start;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide-inner {
+    max-width: 960px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* ── SLIDE NUMBER ────────────────────────────────────── */
+  .slide-num {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-4);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── TYPOGRAPHY ──────────────────────────────────────── */
+  h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+
+  h2 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 0.75rem;
+  }
+
+  .subtitle {
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    color: var(--text-2);
+    font-weight: 400;
+    max-width: 680px;
+    line-height: 1.5;
+  }
+
+  .big-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--green);
+    text-shadow: 0 0 40px rgba(52, 211, 153, 0.2);
+  }
+
+  .mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .green { color: var(--green); }
+  .red { color: var(--red); }
+  .amber { color: var(--amber); }
+  .blue { color: var(--blue); }
+  .dim { color: var(--text-3); }
+
+  /* ── GRID ────────────────────────────────────────────── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem; }
+
+  @media (max-width: 640px) {
+    .grid-2, .grid-3, .grid-4 {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (min-width: 641px) and (max-width: 900px) {
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ── CARDS ───────────────────────────────────────────── */
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+  }
+
+  .card h3 { color: var(--text); }
+  .card p { color: var(--text-2); font-size: 0.95rem; }
+
+  .stat-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    text-align: center;
+  }
+
+  .stat-card .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .stat-card .stat-label {
+    font-size: 0.75rem;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 0.25rem;
+  }
+
+  /* ── PAIN POINTS ─────────────────────────────────────── */
+  .pain-list {
+    list-style: none;
+    margin-top: 1.5rem;
+  }
+
+  .pain-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 1.05rem;
+    color: var(--text-2);
+  }
+
+  .pain-list li:last-child { border-bottom: none; }
+
+  .pain-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  /* ── TIMELINE ────────────────────────────────────────── */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 1.5rem;
+  }
+
+  .timeline-item {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1rem 0;
+    border-left: 2px solid var(--border);
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 1.25rem;
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+  }
+
+  .timeline-item .phase {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--green);
+    min-width: 80px;
+    flex-shrink: 0;
+    padding-top: 0.15rem;
+  }
+
+  /* ── QUOTE ───────────────────────────────────────────── */
+  blockquote {
+    border-left: 3px solid var(--green);
+    padding-left: 1.5rem;
+    margin: 2rem 0;
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--text-2);
+    max-width: 700px;
+  }
+
+  /* ── TABLE ───────────────────────────────────────────── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+  }
+
+  .data-table th {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-3);
+    font-weight: 500;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .data-table td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-2);
+  }
+
+  .data-table td:first-child { color: var(--text); }
+
+  .data-table tr:hover td { color: var(--text); }
+
+  /* ── BAR CHART ───────────────────────────────────────── */
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .bar-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-3);
+    width: 90px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 20px;
+    background: rgba(39, 39, 42, 0.5);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    background: var(--green);
+    opacity: 0.7;
+    transition: width 1s ease;
+  }
+
+  .bar-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-2);
+    width: 40px;
+    flex-shrink: 0;
+  }
+
+  /* ── DIVIDER ─────────────────────────────────────────── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
+  }
+
+  /* ── FOOTER ──────────────────────────────────────────── */
+  .slide-footer {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-4);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── ACCENT BORDER CARDS ─────────────────────────────── */
+  .card-accent-green { border-left: 3px solid var(--green); }
+  .card-accent-blue { border-left: 3px solid var(--blue); }
+  .card-accent-amber { border-left: 3px solid var(--amber); }
+  .card-accent-red { border-left: 3px solid var(--red); }
+
+  /* ── CTA SLIDE ───────────────────────────────────────── */
+  .cta-link {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.75rem 2rem;
+    border: 1px solid var(--green);
+    color: var(--green);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+  .cta-link:hover {
+    background: var(--green);
+    color: var(--bg);
+  }
+
+  /* ── PULSE DOT ───────────────────────────────────────── */
+  .pulse-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    animation: pulse 2s infinite;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ── FLOW DIAGRAM ────────────────────────────────────── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+  }
+
+  .flow-node {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    color: var(--text-2);
+  }
+
+  .flow-arrow { color: var(--text-4); }
+
+  .flow-node.active {
+    border-color: var(--green);
+    color: var(--green);
+    box-shadow: 0 0 15px rgba(52, 211, 153, 0.1);
+  }
+</style>
+</head>
+<body>
+
+<!-- ================================================================ -->
+<!--  SLIDE 1 — COVER                                                  -->
+<!-- ================================================================ -->
+<section class="slide" style="justify-content: center;">
+  <div class="slide-inner" style="text-align: center;">
+    <div style="margin-bottom: 2rem;">
+      <span class="pulse-dot"></span>
+      <span class="mono" style="font-size: 0.8rem; color: var(--green); letter-spacing: 0.15em;">LIVE</span>
+    </div>
+    <h1 style="max-width: 800px; margin: 0 auto 1.5rem;">consignatarias<span class="dim">.com.ar</span></h1>
+    <p class="subtitle" style="margin: 0 auto 3rem; text-align: center;">
+      La infraestructura de datos abiertos del mercado ganadero argentino.
+      <br>Remates, frigorificos y precios en un solo lugar.
+    </p>
+    <div class="grid-3" style="max-width: 500px; margin: 0 auto;">
+      <div class="stat-card">
+        <div class="value green">414</div>
+        <div class="stat-label">Remates</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">364</div>
+        <div class="stat-label">Frigorificos</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">56</div>
+        <div class="stat-label">Consignatarias</div>
+      </div>
+    </div>
+    <p style="margin-top: 3rem; color: var(--text-4); font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">
+      Febrero 2026
+    </p>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!--  SLIDE 2 — EL PROBLEMA                                            -->
+<!-- ================================================================ -->
+<section class="slide">
+  <span class="slide-num">02</span>
+  <div class="slide-inner">
+    <div class="label">El Problema</div>
+    <h2>Argentina tiene 54 millones de cabezas de ganado<br>y <span class="red">cero infraestructura de datos.</span></h2>
+
+    <ul class="pain-list">
+      <li>
+        <span class="pain-icon">&#x1F50D;</span>
+        <div>
+          <strong style="color: var(--text);">Informacion fragmentada en 50+ sitios.</strong><br>
+          Un ganadero que quiere saber cuando hay remate en su zona tiene que visitar 20 paginas de consignatarias distintas, cada una con su propio formato.
+        </div>
+      </li>
+      <li>
+        <span class="pain-icon">&#x1F4CA;</span>
+        <div>
+          <strong style="color: var(--text);">Precios dispersos y dificiles de interpretar.</strong><br>
+          El INMAG, precios por categoria, dolar blue, maiz FOB... todo en fuentes distintas. No existe un dashboard unificado para tomar decisiones.
+        </div>
+      </li>
+      <li>
+        <span class="pain-icon">&#x1F3ED;</span>
+        <div>
+          <strong style="color: var(--text);">Datos de frigorificos enterrados en registros gubernamentales.</strong><br>
+          SENASA tiene los datos pero en formatos inaccesibles. Nadie sabe cuantas plantas hay en su provincia ni en que etapa estan.
+        </div>
+      </li>
+      <li>
+        <span class="pain-icon">&#x23F0;</span>
+        <div>
+          <strong style="color: var(--text);">Sin nocion de tiempo real.</strong><br>
+          Los remates se publican sin horario, sin links de transmision, sin catalogos centralizados. El productor se entera tarde o no se entera.
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!--  SLIDE 3 — CONTEXTO DE MERCADO                                    -->
+<!-- ================================================================ -->
+<section class="slide">
+  <span class="slide-num">03</span>
+  <div class="slide-inner">
+    <div class="label">El Mercado</div>
+    <h2>Un mercado de USD 30B+ sin digitalizacion</h2>
+
+    <div class="grid-4" style="margin-top: 2rem;">
+      <div class="stat-card">
+        <div class="value" style="font-size: 2.5rem;">54M</div>
+        <div class="stat-label">Cabezas de ganado</div>
+      </div>
+      <div class="stat-card">
+        <div class="value" style="font-size: 2.5rem;">14M</div>
+        <div class="stat-label">Faenadas / ano</div>
+      </div>
+      <div class="stat-card">
+        <div class="value" style="font-size: 2.5rem;">200K</div>
+        <div class="stat-label">Productores</div>
+      </div>
+      <div class="stat-card">
+        <div class="value amber" style="font-size: 2.5rem;">$0</div>
+        <div class="stat-label">Plataformas de datos</div>
+      </div>
+    </div>
+
+    <blockquote style="margin-top: 3rem;">
+      "La ganaderia argentina mueve miles de millones de dolares al ano,
+      pero los participantes del mercado toman decisiones con menos informacion
+      que un trader de crypto promedio."
+    </blockquote>
+
+    <div class="grid-2" style="margin-top: 2rem;">
+      <div class="card card-accent-green">
+        <h3>3er stock mundial</h3>
+        <p>Argentina es el tercer pais con mas ganado bovino del mundo, detras de Brasil e India.</p>
+      </div>
+      <div class="card card-accent-blue">
+        <h3>USD 3-4B en exportaciones</h3>
+        <p>Solo las exportaciones de carne generan miles de millones anuales. El mercado interno es aun mayor.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!--  SLIDE 4 — LA SOLUCION                                            -->
+<!-- ================================================================ -->
+<section class="slide">
+  <span class="slide-num">04</span>
+  <div class="slide-inner">
+    <div class="label">La Solucion</div>
+    <h2>El Bloomberg Terminal del campo argentino.</h2>
+
+    <p class="subtitle" style="margin-bottom: 2rem;">
+      consignatarias.com.ar agrega, normaliza y presenta toda la informacion
+      del mercado ganadero en una interfaz profesional de datos abiertos.
+    </p>
+
+    <div class="grid-3" style="margin-top: 1.5rem;">
+      <div class="card card-accent-green">
+        <h3>&#x1F4C5; Remates</h3>
+        <p>Calendario unificado de 414 remates de 87 consignatarias en 12 provincias.
+          Filtros por tipo, provincia, categoria. Links a catalogos y transmisiones.</p>
+      </div>
+      <div class="card card-accent-blue">
+        <h3>&#x1F4C8; Mercado</h3>
+        <p>INMAG en tiempo real, precios por 6 categorias de hacienda,
+          maiz FOB, dolar blue/oficial. Serie historica de 8 semanas con tendencia.</p>
+      </div>
+      <div class="card card-accent-amber">
+        <h3>&#x1F3ED; Frigorificos</h3>
+        <p>Directorio de 364 plantas habilitadas por SENASA en 23 provincias.
+          Filtrable por etapa de procesamiento, provincia y razon social.</p>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="flow">
+      <div class="flow-node">8 fuentes de datos</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-node active">Scraper diario 14h ART</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-node">Normalizacion</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-node active">consignatarias.com.ar</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-node">Datos abiertos</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!--  SLIDE 5 — PRODUCTO EN VIVO                                       -->
+<!-- ================================================================ -->
+<section class="slide">
+  <span class="slide-num">05</span>
+  <div class="slide-inner">
+    <div class="label"><span class="pulse-dot"></span> Producto en vivo</div>
+    <h2>Ya esta corriendo. Datos actualizados hoy.</h2>
+
+    <div class="grid-2" style="margin-top: 2rem;">
+      <div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Categoria</th>
+              <th>$/kg vivo</th>
+              <th>Var%</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Terneros</td><td class="mono">5.108</td><td class="green mono">&#x25B2; +0.5%</td></tr>
+            <tr><td>Novillos</td><td class="mono">4.644</td><td class="green mono">&#x25B2; +0.5%</td></tr>
+            <tr><td>Novillitos</td><td class="mono">4.412</td><td class="green mono">&#x25B2; +0.5%</td></tr>
+            <tr><td>Vaquillonas</td><td class="mono">4.180</td><td class="green mono">&#x25B2; +0.6%</td></tr>
+            <tr><td>Vacas</td><td class="mono">3.344</td><td class="green mono">&#x25B2; +0.5%</td></tr>
+            <tr><td>Toros</td><td class="mono">3.019</td><td class="green mono">&#x25B2; +0.6%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom: 1rem;">
+          <div style="font-size: 0.7rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">INMAG $/kg vivo</div>
+          <div class="mono" style="font-size: 2.5rem; font-weight: 700; color: var(--green); text-shadow: 0 0 30px rgba(52,211,153,0.2);">4.644,05</div>
+          <div class="mono green" style="font-size: 0.85rem; margin-top: 0.25rem;">&#x25B2; +0.5% vs anterior</div>
+        </div>
+        <div class="grid-2" style="gap: 0.75rem;">
+          <div class="card" style="padding: 1rem;">
+            <div style="font-size: 0.65rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em;">Maiz FOB</div>
+            <div class="mono" style="font-size: 1.3rem; font-weight: 600;">223 <span style="font-size: 0.7rem; color: var(--text-3);">USD/tn</span></div>
+          </div>
+          <div class="card" style="padding: 1rem;">
+            <div style="font-size: 0.65rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em;">USD Blue</div>
+            <div class="mono" style="font-size: 1.3rem; font-weight: 600;">1.435 <span style="font-size: 0.7rem; color: var(--text-3);">ARS</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      <div class="label">Remates por provincia (top 6)</div>
+      <div class="bar-row"><div class="bar-label">BSAS</div><div class="bar-track"><div class="bar-fill" style="width: 100%;"></div></div><div class="bar-value">96</div></div>
+      <div class="bar-row"><div class="bar-label">CHACO</div><div class="bar-track"><div class="bar-fill" style="width: 34%;"></div></div><div class="bar-value">33</div></div>
+      <div class="bar-row"><div class="bar-label">E. RIOS</div><div class="bar-track"><div class="bar-fill" style="width: 33%;"></div></div><div class="bar-value">32</div></div>
+      <div class="bar-row"><div class="bar-label">CORR</div><div class="bar-track"><div class="bar-fill" style="width: 33%;"></div></div><div class="bar-value">32</div></div>
+      <div class="bar-row"><div class="bar-label">STA FE</div><div class="bar-track"><div class="bar-fill" style="width: 28%;"></div></div><div class="bar-value">27</div></div>
+      <div class="bar-row"><div class="bar-label">CORDOBA</div><div class="bar-track"><div class="bar-fill" style="width: 24%;"></div></div><div class="bar-value">23</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!--  SLIDE 6 — TRACCION / DATA MOAT                                   -->
+<!-- ================================================================ -->
+<section class="slide">
+  <span class="slide-num">06</span>
+  <div class="slide-inner">
+    <div class="label">Traccion y Defensibilidad</div>
+    <h2>Dominio exacto + datos propietarios + efectos de red</h2>
+
+    <div class="grid-2" style="margin-top: 2rem;">
+      <div>
+        <div class="card card-accent-green" style="margin-bottom: 1rem;">
+          <h3>Dominio generico de industria</h3>
+          <p><strong>consignatarias.com.ar</strong> es el termino exacto de la industria.
+            Es como tener hotels.com para hoteleria. SEO natural y autoridad de marca inmediata.</p>
+        </div>
+        <div class="card card-accent-blue" style="margin-bottom: 1rem;">
+          <h3>Agregacion no trivial</h3>
+          <p>Scrapear 8+ fuentes con formatos distintos (HTML, APIs, PDFs), normalizar
+            y enriquecer datos requiere trabajo continuo. Es un moat operacional.</p>
+        </div>
+        <div class="card card-accent-amber">
+          <h3>Network effects</h3>
+          <p>A medida que mas consignatarias ven sus remates listados, tienen incentivo
+            a proveer datos. Mas datos = mas usuarios = mas datos.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="height: 100%;">
+          <div style="font-size: 0.7rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.5rem;">
+            Lo que ya tenemos
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <div>
+              <div class="mono" style="font-size: 1.8rem; font-weight: 700; color: var(--green);">414</div>
+              <div style="font-size: 0.8rem; color: var(--text-3);">Remates indexados de 87 consignatarias</div>
+            </div>
+            <div>
+              <div class="mono" style="font-size: 1.8rem; font-weight: 700;">364</div>
+              <div style="font-size: 0.8rem; color: var(--text-3);">Frigorificos en 23 provincias</div>
+            </div>
+            <div>
+              <div class="mono" style="font-size: 1.8rem; font-weight: 700;">56</div>
+              <div style="font-size: 0.8rem; color: var(--text-3);">Consignatarias con datos verificados</div>
+            </div>
+            <div>
+              <div class="mono" style="font-size: 1.8rem; font-weight: 700;">8</div>
+              <div style="font-size: 0.8rem; color: var(--text-3);">Fuentes automatizadas (scraper diario)</div>
+            </div>
+            <div>
+              <div class="mono" style="font-size: 1.8rem; font-weight: 700; color: var(--green);">$0</div>
+              <div style="font-size: 0.8rem; color: var(--text-3);">Costo de infraestructura (Vercel + GH Actions)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!--  SLIDE 7 — MODELO DE NEGOCIO                                      -->
+<!-- ================================================================ -->
+<section class="slide">
+  <span class="slide-num">07</span>
+  <div class="slide-inner">
+    <div class="label">Modelo de Negocio</div>
+    <h2>Tres capas de monetizacion</h2>
+
+    <div class="grid-3" style="margin-top: 2rem;">
+      <div class="card card-accent-green">
+        <div style="font-size: 0.65rem; color: var(--green); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">Ahora</div>
+        <h3>Listings Premium</h3>
+        <p>Consignatarias pagan para destacar sus remates, agregar catalogos, videos y verificacion.
+          <strong style="color: var(--text);">87 consignatarias &times; USD 50-200/mes.</strong></p>
+        <div class="mono green" style="margin-top: 1rem; font-size: 1.1rem;">USD 4-17K/mes</div>
+      </div>
+      <div class="card card-accent-blue">
+        <div style="font-size: 0.65rem; color: var(--blue); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">6 meses</div>
+        <h3>Alertas + API</h3>
+        <p>Alertas por WhatsApp/SMS: "Nuevo remate de invernada en Corrientes, 500+ cabezas."
+          API de datos historicos para fondos agricolas y bancos.</p>
+        <div class="mono blue" style="margin-top: 1rem; font-size: 1.1rem;">SaaS recurrente</div>
+      </div>
+      <div class="card card-accent-amber">
+        <div style="font-size: 0.65rem; color: var(--amber); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">12+ meses</div>
+        <h3>Marketplace</h3>
+        <p>Facilitar transacciones de compra-venta directa.
+          Comision de 0.5-1% sobre el precio del ganado transaccionado.</p>
+        <div class="mono amber" style="margin-top: 1rem; font-size: 1.1rem;">Comision x volumen</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="grid-2">
+      <div>
+        <h3 style="color: var(--text-2); font-size: 1rem;">Unidad economica del listing premium</h3>
+        <table class="data-table" style="margin-top: 0.5rem;">
+          <tbody>
+            <tr><td>Consignatarias activas</td><td class="mono" style="text-align: right;">87</td></tr>
+            <tr><td>Conversion estimada (20%)</td><td class="mono" style="text-align: right;">~18</td></tr>
+            <tr><td>ARPU (USD/mes)</td><td class="mono" style="text-align: right;">150</td></tr>
+            <tr><td style="color: var(--green);"><strong>MRR proyectado</strong></td><td class="mono green" style="text-align: right;"><strong>USD 2.700</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3 style="color: var(--text-2); font-size: 1rem;">Escala con mas consignatarias</h3>
+        <table class="data-table" style="margin-top: 0.5rem;">
+          <tbody>
+            <tr><td>Consignatarias Argentina (est.)</td><td class="mono" style="text-align: right;">500+</td></tr>
+            <tr><td>Cobertura actual</td><td class="mono" style="text-align: right;">17%</td></tr>
+            <tr><td>Meta 12 meses (50%)</td><td class="mono" style="text-align: right;">250</td></tr>
+            <tr><td style="color: var(--green);"><strong>MRR potencial</strong></td><td class="mono green" style="text-align: right;"><strong>USD 12.500+</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!--  SLIDE 8 — POR QUE AHORA                                          -->
+<!-- ================================================================ -->
+<section class="slide">
+  <span class="slide-num">08</span>
+  <div class="slide-inner">
+    <div class="label">Por que ahora</div>
+    <h2>Convergencia de factores unicos</h2>
+
+    <div class="grid-2" style="margin-top: 2rem;">
+      <div class="card card-accent-green">
+        <h3>Apertura economica</h3>
+        <p>Argentina esta en un proceso de desregulacion y apertura de mercados.
+          Las exportaciones de carne crecen. Los participantes necesitan mas transparencia
+          y datos para competir globalmente.</p>
+      </div>
+      <div class="card card-accent-blue">
+        <h3>Digitalizacion del campo</h3>
+        <p>La adopcion de tecnologia en el agro argentino se acelera.
+          Mas productores usan WhatsApp para negocios, mas consignatarias
+          tienen presencia web. Pero nadie agrega la informacion.</p>
+      </div>
+      <div class="card card-accent-amber">
+        <h3>Costo de infraestructura ~ $0</h3>
+        <p>Next.js + Vercel + GitHub Actions permite correr una plataforma
+          de datos con cero costo de servidor. Hace 5 anos esto requeria
+          un equipo de backend. Hoy lo hace un scraper y deploy automatico.</p>
+      </div>
+      <div class="card card-accent-red">
+        <h3>Momento de captura de dominio</h3>
+        <p><strong>consignatarias.com.ar</strong> esta disponible. El momento de
+          establecer autoridad de dominio y ser el "Google Maps de los remates" es ahora,
+          antes de que alguien mas lo haga.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!--  SLIDE 9 — ROADMAP                                                -->
+<!-- ================================================================ -->
+<section class="slide">
+  <span class="slide-num">09</span>
+  <div class="slide-inner">
+    <div class="label">Roadmap</div>
+    <h2>De datos abiertos a marketplace</h2>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <span class="phase">Q1 2026</span>
+        <div>
+          <strong style="color: var(--text);">Plataforma de datos abiertos</strong>
+          <span style="display: inline-block; padding: 0.1rem 0.5rem; background: var(--green-dim); color: var(--green); font-size: 0.65rem; margin-left: 0.5rem; font-family: 'JetBrains Mono', monospace;">COMPLETADO</span>
+          <p style="color: var(--text-2); margin-top: 0.25rem;">
+            Scraper de 8 fuentes, 414 remates, 364 frigorificos, precios en tiempo real.
+            Sitio en produccion con dominio propio.
+          </p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span class="phase">Q2 2026</span>
+        <div>
+          <strong style="color: var(--text);">Cuentas de consignatarias + listings premium</strong>
+          <p style="color: var(--text-2); margin-top: 0.25rem;">
+            Login para consignatarias. Publicacion directa de remates.
+            Perfiles verificados con logo, contacto y metricas.
+            Primer revenue: listing fees.
+          </p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span class="phase">Q3 2026</span>
+        <div>
+          <strong style="color: var(--text);">Alertas + API de datos</strong>
+          <p style="color: var(--text-2); margin-top: 0.25rem;">
+            Notificaciones por WhatsApp/email para ganaderos.
+            API de precios historicos y remates para integradores.
+            Expansion a 250+ consignatarias.
+          </p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span class="phase">Q4 2026</span>
+        <div>
+          <strong style="color: var(--text);">Marketplace y transacciones</strong>
+          <p style="color: var(--text-2); margin-top: 0.25rem;">
+            Facilitar matching comprador-vendedor. Integracion con logistica
+            y certificaciones sanitarias. Comision por transaccion.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!--  SLIDE 10 — ASK / CIERRE                                          -->
+<!-- ================================================================ -->
+<section class="slide" style="justify-content: center;">
+  <div class="slide-inner" style="text-align: center;">
+    <div class="label" style="text-align: center;">El Ask</div>
+    <h1 style="max-width: 700px; margin: 0 auto 1.5rem;">
+      Buscamos USD 150K para capturar el mercado en 12 meses.
+    </h1>
+    <p class="subtitle" style="margin: 0 auto 2.5rem; text-align: center;">
+      Expansion del scraper a 500+ consignatarias. Desarrollo de cuentas
+      y listings premium. Primeros 50 clientes pagos.
+    </p>
+
+    <div class="grid-3" style="max-width: 600px; margin: 0 auto 3rem;">
+      <div class="stat-card">
+        <div class="value green" style="font-size: 1.5rem;">60%</div>
+        <div class="stat-label">Producto</div>
+      </div>
+      <div class="stat-card">
+        <div class="value blue" style="font-size: 1.5rem;">25%</div>
+        <div class="stat-label">Ventas</div>
+      </div>
+      <div class="stat-card">
+        <div class="value amber" style="font-size: 1.5rem;">15%</div>
+        <div class="stat-label">Operaciones</div>
+      </div>
+    </div>
+
+    <hr class="divider" style="max-width: 200px; margin: 2rem auto;">
+
+    <p style="color: var(--text-2); font-size: 1.1rem; margin-bottom: 0.5rem;">
+      <span class="pulse-dot"></span>
+      El producto ya esta en produccion.
+    </p>
+    <a href="https://consignatarias.com.ar" class="cta-link" target="_blank">consignatarias.com.ar &rarr;</a>
+
+    <p style="margin-top: 3rem; color: var(--text-4); font-size: 0.8rem;">
+      Jose Barnetche &middot; jose.barnetche19@gmail.com
+    </p>
+  </div>
+  <div class="slide-footer">consignatarias.com.ar &mdash; 2026</div>
+</section>
+
+</body>
+</html>
