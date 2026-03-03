@@ -1,8 +1,8 @@
 {
   "inmag": {
-    "current": 4497.16,
-    "prev": 4644.05,
-    "change": -3.2,
+    "current": 4503.68,
+    "prev": 4497.16,
+    "change": 0.1,
     "unit": "$/kg vivo",
     "source": "mercadoagroganadero.com.ar",
     "series": [
@@ -101,67 +101,71 @@
       {
         "date": "2026-02-27",
         "value": 4497.16
+      },
+      {
+        "date": "2026-03-03",
+        "value": 4503.68
       }
     ]
   },
   "categories": {
     "novillos": {
-      "current": 4497,
-      "prev": 4644,
-      "change": -3.2,
+      "current": 4504,
+      "prev": 4497,
+      "change": 0.2,
       "source": "MAG (derived from INMAG)"
     },
     "novillitos": {
-      "current": 4272,
-      "prev": 4412,
-      "change": -3.2,
+      "current": 4278,
+      "prev": 4272,
+      "change": 0.1,
       "source": "MAG (derived from INMAG)"
     },
     "vaquillonas": {
-      "current": 4047,
-      "prev": 4180,
-      "change": -3.2,
+      "current": 4053,
+      "prev": 4047,
+      "change": 0.1,
       "source": "MAG (derived from INMAG)"
     },
     "vacas": {
-      "current": 3238,
-      "prev": 3344,
-      "change": -3.2,
+      "current": 3243,
+      "prev": 3238,
+      "change": 0.2,
       "source": "MAG (derived from INMAG)"
     },
     "toros": {
-      "current": 2923,
-      "prev": 3019,
-      "change": -3.2,
+      "current": 2927,
+      "prev": 2923,
+      "change": 0.1,
       "source": "MAG (derived from INMAG)"
     },
     "terneros": {
-      "current": 4947,
-      "prev": 5108,
-      "change": -3.2,
+      "current": 4954,
+      "prev": 4947,
+      "change": 0.1,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
-    "current": 224.9,
-    "prev": 224.17,
-    "change": 0.3,
+    "current": 224.3,
+    "prev": 224.9,
+    "change": -0.3,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
     "current": 1420,
-    "prev": 1425,
-    "change": -0.4,
+    "prev": 1420,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
-    "current": 1425,
-    "prev": 1420,
-    "change": 0.4,
+    "current": 1435,
+    "prev": 1425,
+    "change": 0.7,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-03-02"
+  "lastUpdate": "2026-03-03"
 }
