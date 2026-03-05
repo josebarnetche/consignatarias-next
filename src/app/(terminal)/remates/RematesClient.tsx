@@ -93,9 +93,21 @@ function getProvinceCode(province: string): string {
   return PROVINCE_CODES[province] || province.substring(0, 4).toUpperCase()
 }
 
+/** Normalize URL to ensure it has a protocol */
+function normalizeUrl(url: string | null | undefined): string | null {
+  if (!url) return null
+  // If it starts with www. but no protocol, add https://
+  if (url.startsWith('www.')) {
+    return `https://${url}`
+  }
+  return url
+}
+
 /** Get the best link for an auction row click */
 function getAuctionHref(auction: Auction): string {
-  return auction.sourceUrl || auction.catalogUrl || `/consignatarias/${auction.consignatariaSlug}`
+  const sourceUrl = normalizeUrl(auction.sourceUrl)
+  const catalogUrl = normalizeUrl(auction.catalogUrl)
+  return sourceUrl || catalogUrl || `/consignatarias/${auction.consignatariaSlug}`
 }
 
 function isExternalLink(href: string): boolean {
@@ -244,7 +256,7 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
         <span className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
           {auction.catalogUrl && (
             <a
-              href={auction.catalogUrl}
+              href={normalizeUrl(auction.catalogUrl) || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors"
@@ -255,7 +267,7 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
           )}
           {auction.youtubeUrl && (
             <a
-              href={auction.youtubeUrl}
+              href={normalizeUrl(auction.youtubeUrl) || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors"
@@ -266,7 +278,7 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
           )}
           {auction.sourceUrl && (
             <a
-              href={auction.sourceUrl}
+              href={normalizeUrl(auction.sourceUrl) || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xxs font-terminal text-zinc-600 hover:text-zinc-400 transition-colors hidden md:inline"
