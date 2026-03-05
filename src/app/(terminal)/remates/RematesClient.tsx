@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
+import { normalizeUrl } from '@/lib/utils/url'
 
 /* ------------------------------------------------------------------ */
 /*  CONSTANTS                                                          */
@@ -91,16 +92,6 @@ function getCity(location: string): string {
 
 function getProvinceCode(province: string): string {
   return PROVINCE_CODES[province] || province.substring(0, 4).toUpperCase()
-}
-
-/** Normalize URL to ensure it has a protocol */
-function normalizeUrl(url: string | null | undefined): string | null {
-  if (!url) return null
-  // If it starts with www. but no protocol, add https://
-  if (url.startsWith('www.')) {
-    return `https://${url}`
-  }
-  return url
 }
 
 /** Get the best link for an auction row click */

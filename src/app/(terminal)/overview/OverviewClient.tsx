@@ -3,6 +3,7 @@ import marketPrices from "@/lib/data/market-prices.json";
 import frigorificosSummary from "@/lib/data/frigorificos-summary.json";
 import rematesData from "@/lib/data/remates.json";
 import consignatariasData from "@/lib/data/consignatarias.json";
+import { normalizeUrl } from "@/lib/utils/url";
 
 /* ================================================================== */
 /*  HELPER: format number with locale                                  */
@@ -378,7 +379,7 @@ export default function HomePage() {
                 const dateDisplay = isToday
                   ? "HOY"
                   : r.date.slice(5).replace("-", "/");
-                const href = r.sourceUrl || r.catalogUrl || `/consignatarias/${r.consignatariaSlug}`;
+                const href = normalizeUrl(r.sourceUrl) || normalizeUrl(r.catalogUrl) || `/consignatarias/${r.consignatariaSlug}`;
                 const isExternal = href.startsWith('http');
                 const Wrapper = isExternal ? 'a' : Link;
                 const wrapperProps = isExternal

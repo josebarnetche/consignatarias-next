@@ -1,5 +1,6 @@
 import type { Auction } from '@/lib/db/schema'
 import { typeLabels, categoryLabels, statusLabels } from '@/lib/db/schema'
+import { normalizeUrl } from '@/lib/utils/url'
 
 interface AuctionCardProps {
   auction: Auction
@@ -101,7 +102,7 @@ export default function AuctionCard({ auction }: AuctionCardProps) {
         <div className="px-5 py-2.5 bg-stone-50 border-t border-stone-100 flex items-center gap-4">
           {auction.catalogUrl && (
             <a
-              href={auction.catalogUrl}
+              href={normalizeUrl(auction.catalogUrl) || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-campo-700 hover:text-campo-900 transition-colors"
@@ -114,7 +115,7 @@ export default function AuctionCard({ auction }: AuctionCardProps) {
           )}
           {auction.youtubeUrl && (
             <a
-              href={auction.youtubeUrl}
+              href={normalizeUrl(auction.youtubeUrl) || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-800 transition-colors"
@@ -127,12 +128,12 @@ export default function AuctionCard({ auction }: AuctionCardProps) {
           )}
           {auction.sourceUrl && (
             <a
-              href={auction.sourceUrl}
+              href={normalizeUrl(auction.sourceUrl) || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="ml-auto text-[10px] text-stone-400 hover:text-stone-600 transition-colors"
             >
-              {(() => { try { return new URL(auction.sourceUrl).hostname } catch { return 'fuente' } })()}
+              {(() => { try { return new URL(normalizeUrl(auction.sourceUrl) || '').hostname } catch { return 'fuente' } })()}
             </a>
           )}
         </div>
