@@ -1,10 +1,11 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import type { Auction } from '@/lib/db/schema'
 import type { ConsignatariaProfile } from '@/lib/data/consignataria-slugs'
 import { normalizeUrl } from '@/lib/utils/url'
+import { trackProfileView, trackOutboundClick } from '@/lib/analytics'
 import {
   TYPE_COLORS,
   TYPE_LABELS,
@@ -65,7 +66,10 @@ function ProfileAuctionRow({ auction, today }: { auction: Auction; today: string
   const href = sourceUrl || catalogUrl || null
 
   function handleRowClick() {
-    if (href) window.open(href, '_blank', 'noopener,noreferrer')
+    if (href) {
+      trackOutboundClick(href, sourceUrl ? 'source' : 'catalog')
+      window.open(href, '_blank', 'noopener,noreferrer')
+    }
   }
 
   return (
@@ -110,10 +114,12 @@ function ProfileAuctionRow({ auction, today }: { auction: Auction; today: string
         <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
           {auction.catalogUrl && (
             <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
+              onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
               className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors" aria-label="Descargar catálogo">Catálogo</a>
           )}
           {auction.youtubeUrl && (
             <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
+              onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
               className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión">YouTube</a>
           )}
         </div>
@@ -161,14 +167,17 @@ function ProfileAuctionRow({ auction, today }: { auction: Auction; today: string
           <span className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
             {auction.catalogUrl && (
               <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
+                onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
                 className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors" aria-label="Descargar catálogo" title="Catálogo">CAT</a>
             )}
             {auction.youtubeUrl && (
               <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
+                onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
                 className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión" title="YouTube">YT</a>
             )}
             {auction.sourceUrl && (
               <a href={normalizeUrl(auction.sourceUrl) || '#'} target="_blank" rel="noopener noreferrer"
+                onClick={() => trackOutboundClick(normalizeUrl(auction.sourceUrl) || '', 'source')}
                 className="text-xxs font-terminal text-zinc-600 hover:text-zinc-400 transition-colors" aria-label="Ver fuente" title="Fuente">SRC</a>
             )}
           </span>
@@ -271,6 +280,10 @@ interface ConsignatariaProfileClientProps {
 
 export default function ConsignatariaProfileClient({ profile, auctions }: ConsignatariaProfileClientProps) {
   const today = getEffectiveToday()
+
+  useEffect(() => {
+    trackProfileView(profile.canonicalSlug, profile.displayName, auctions.length)
+  }, [profile.canonicalSlug, profile.displayName, auctions.length])
 
   const sorted = useMemo(
     () => [...auctions].sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? '')),

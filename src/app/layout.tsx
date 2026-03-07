@@ -1,6 +1,9 @@
 import "./globals.css";
 import { Metadata } from 'next';
 import Script from 'next/script';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import AnalyticsProvider from '@/components/AnalyticsProvider';
 
 const GA_ID = 'G-6CZMZH9S6Y';
 
@@ -113,7 +116,10 @@ export default function RootLayout({
         <Script id="ga4-init" strategy="afterInteractive">
           {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
         </Script>
+        <AnalyticsProvider />
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

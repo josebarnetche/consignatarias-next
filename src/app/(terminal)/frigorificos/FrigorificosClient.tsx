@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import summaryData from '@/lib/data/frigorificos-summary.json'
+import { trackSearch, trackFilterApply } from '@/lib/analytics'
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
@@ -199,6 +200,19 @@ export default function FrigorificosPage() {
     [],
   )
 
+  /* -- Debounced search tracking ----------------------------------- */
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    if (!search.trim()) return
+    if (searchTimer.current) clearTimeout(searchTimer.current)
+    searchTimer.current = setTimeout(() => {
+      const q = search.trim().toLowerCase()
+      const count = frigorificos.filter((f) => f.name.toLowerCase().includes(q)).length
+      trackSearch(q, count, 'frigorificos')
+    }, 800)
+    return () => { if (searchTimer.current) clearTimeout(searchTimer.current) }
+  }, [search])
+
   /* -- Filtered + sorted data -------------------------------------- */
   const filtered = useMemo(() => {
     let result = frigorificos
@@ -292,7 +306,7 @@ export default function FrigorificosPage() {
             {/* Province dropdown */}
             <select
               value={filterProvince}
-              onChange={(e) => setFilterProvince(e.target.value)}
+              onChange={(e) => { setFilterProvince(e.target.value); if (e.target.value) trackFilterApply('province', e.target.value) }}
               className="terminal-input"
             >
               <option value="">Todas las provincias</option>
@@ -306,7 +320,7 @@ export default function FrigorificosPage() {
             {/* Stage dropdown */}
             <select
               value={filterStage}
-              onChange={(e) => setFilterStage(e.target.value)}
+              onChange={(e) => { setFilterStage(e.target.value); if (e.target.value) trackFilterApply('type', e.target.value) }}
               className="terminal-input"
             >
               <option value="">Todas las etapas</option>

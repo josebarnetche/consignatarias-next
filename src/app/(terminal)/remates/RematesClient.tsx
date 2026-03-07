@@ -17,6 +17,7 @@ import {
   getProvinceCode,
   getEffectiveToday,
 } from '@/lib/ui/tokens'
+import { trackAuctionClick, trackFilterApply, trackOutboundClick } from '@/lib/analytics'
 
 /* ------------------------------------------------------------------ */
 /*  CONSTANTS                                                          */
@@ -89,6 +90,8 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
   const external = isExternalLink(href)
 
   function handleRowClick() {
+    const dest = href.includes('/consignatarias/') ? 'profile' as const : 'source' as const
+    trackAuctionClick(auction as Auction & { featured?: boolean }, dest)
     if (external) {
       window.open(href, '_blank', 'noopener,noreferrer')
     } else {
@@ -208,10 +211,12 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
             <span className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
               {auction.catalogUrl && (
                 <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
+                  onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
                   className="text-xxs font-terminal text-amber-400 hover:text-amber-200 transition-colors" aria-label="Descargar catálogo" title="Catálogo">CAT</a>
               )}
               {auction.youtubeUrl && (
                 <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
+                  onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
                   className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión en YouTube" title="YouTube">YT</a>
               )}
             </span>
@@ -270,10 +275,12 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
         <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
           {auction.catalogUrl && (
             <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
+              onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
               className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors" aria-label="Descargar catálogo">Catálogo</a>
           )}
           {auction.youtubeUrl && (
             <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
+              onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
               className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión">YouTube</a>
           )}
         </div>
@@ -336,14 +343,17 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
           <span className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
             {auction.catalogUrl && (
               <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
+                onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
                 className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors" aria-label="Descargar catálogo" title="Catálogo">CAT</a>
             )}
             {auction.youtubeUrl && (
               <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
+                onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
                 className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión" title="YouTube">YT</a>
             )}
             {auction.sourceUrl && (
               <a href={normalizeUrl(auction.sourceUrl) || '#'} target="_blank" rel="noopener noreferrer"
+                onClick={() => trackOutboundClick(normalizeUrl(auction.sourceUrl) || '', 'source')}
                 className="text-xxs font-terminal text-zinc-600 hover:text-zinc-400 transition-colors" aria-label="Ver fuente" title="Fuente">SRC</a>
             )}
           </span>
@@ -589,7 +599,7 @@ export default function RematesPage() {
             ]).map((tab) => (
               <button
                 key={tab.key}
-                onClick={() => setPeriod(tab.key)}
+                onClick={() => { setPeriod(tab.key); trackFilterApply('period', tab.key) }}
                 className={`terminal-btn text-xxs px-3 py-1 ${
                   period === tab.key
                     ? 'border-accent text-accent bg-accent/5'
@@ -610,13 +620,13 @@ export default function RematesPage() {
           <div className="flex items-center gap-2">
             <TerminalSelect
               value={filterProvince}
-              onChange={setFilterProvince}
+              onChange={(v: string) => { setFilterProvince(v); if (v) trackFilterApply('province', v) }}
               options={provinces}
               placeholder="Provincia"
             />
             <TerminalSelect
               value={filterType}
-              onChange={setFilterType}
+              onChange={(v: string) => { setFilterType(v); if (v) trackFilterApply('type', v) }}
               options={types}
               placeholder="Tipo"
             />
