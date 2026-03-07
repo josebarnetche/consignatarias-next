@@ -147,6 +147,7 @@ function StatusBadge({ status, date, today }: { status: Auction['status']; date:
 
 function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
   const isToday = auction.date === today
+  const isFeatured = !!(auction as Auction & { featured?: boolean }).featured
   const city = getCity(auction.location)
   const prvCode = getProvinceCode(auction.province)
   const href = getAuctionHref(auction)
@@ -158,6 +159,109 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
     } else {
       window.location.href = href
     }
+  }
+
+  if (isFeatured) {
+    return (
+      <div
+        role="link"
+        tabIndex={0}
+        onClick={handleRowClick}
+        onKeyDown={(e) => { if (e.key === 'Enter') handleRowClick() }}
+        className="group border-b-2 border-amber-500/30 bg-amber-500/[0.04] hover:bg-amber-500/[0.08] transition-colors duration-75 cursor-pointer relative overflow-hidden"
+      >
+        {/* Amber left accent bar */}
+        <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-amber-400" />
+
+        {/* Line 1: PRO badge + date time consignataria location province */}
+        <div className="flex items-center gap-0 px-cell py-px2 pl-3">
+          {/* PRO badge */}
+          <span className="inline-flex items-center gap-1 mr-2 px-1.5 py-px border border-amber-500/50 bg-amber-500/10 flex-shrink-0">
+            <span className="text-amber-400 text-[9px]">★</span>
+            <span className="text-amber-400 font-terminal text-[9px] font-bold tracking-wider">PRO</span>
+          </span>
+
+          {/* Date */}
+          <span className="w-[52px] flex-shrink-0 text-data tabular-nums font-terminal text-amber-300 font-medium">
+            {formatDateShort(auction.date)}
+          </span>
+
+          {/* Time or source link */}
+          <span className="w-[52px] flex-shrink-0 text-data tabular-nums font-terminal">
+            {auction.time ? (
+              <span className="text-amber-300/70">{auction.time}</span>
+            ) : (
+              <span className="text-amber-500/30">&mdash;</span>
+            )}
+          </span>
+
+          {/* Consignataria name */}
+          <span
+            className="flex-1 min-w-0 text-data font-terminal text-amber-200 font-medium truncate group-hover:text-amber-100 transition-colors"
+            title={auction.consignatariaName}
+          >
+            {auction.consignatariaName}
+          </span>
+
+          {/* Location city */}
+          <span className="hidden sm:block w-[140px] flex-shrink-0 text-data font-terminal text-amber-400/50 truncate text-right pr-2">
+            {city}
+          </span>
+
+          {/* Province code */}
+          <span className="w-[36px] flex-shrink-0 text-xxs font-terminal text-amber-500/50 text-right">
+            {prvCode}
+          </span>
+        </div>
+
+        {/* Line 2: title (truncated) */}
+        <div className="flex items-center gap-0 px-cell pl-3 pb-px">
+          <span className="text-[10px] font-terminal text-amber-300/60 truncate">
+            {auction.title}
+          </span>
+        </div>
+
+        {/* Line 3: type badge, category, heads, status, description snippet */}
+        <div className="flex items-center gap-0 px-cell pl-3 pb-[5px]">
+          {/* Type tag */}
+          <span className="terminal-tag border-amber-500 text-amber-400 mr-1.5 text-[9px]">
+            {TYPE_LABELS[auction.type]}
+          </span>
+
+          {/* Category */}
+          <span className="w-[42px] flex-shrink-0 text-xxs font-terminal text-amber-400/60">
+            {CAT_CODES[auction.mainCategory]}
+          </span>
+
+          {/* Estimated heads */}
+          <span className="w-[50px] flex-shrink-0 text-data font-terminal tabular-nums text-amber-300 text-right font-medium">
+            {auction.estimatedHeads != null ? `~${auction.estimatedHeads.toLocaleString('es-AR')}` : '—'}
+          </span>
+
+          {/* Status */}
+          <span className="w-[56px] flex-shrink-0 ml-2">
+            <StatusBadge status={auction.status} date={auction.date} today={today} />
+          </span>
+
+          {/* Description snippet */}
+          <span className="flex-1 min-w-0 ml-2 text-[10px] font-terminal text-amber-400/40 truncate hidden md:block">
+            {auction.description}
+          </span>
+
+          {/* Links */}
+          <span className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+            {auction.catalogUrl && (
+              <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
+                className="text-xxs font-terminal text-amber-400 hover:text-amber-200 transition-colors" title="Descargar catálogo">CAT</a>
+            )}
+            {auction.youtubeUrl && (
+              <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
+                className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" title="Ver transmisión">YT</a>
+            )}
+          </span>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -412,7 +516,13 @@ export default function RematesPage() {
     [today]
   )
   const upcomingAuctions = useMemo(
-    () => auctions.filter((a) => a.date >= today).sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? '')),
+    () => auctions.filter((a) => a.date >= today).sort((a, b) => {
+      // Featured auctions pinned to top
+      const aFeat = (a as Auction & { featured?: boolean }).featured ? 1 : 0
+      const bFeat = (b as Auction & { featured?: boolean }).featured ? 1 : 0
+      if (aFeat !== bFeat) return bFeat - aFeat
+      return a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? '')
+    }),
     [today]
   )
   const pastAuctions = useMemo(
@@ -630,6 +740,10 @@ export default function RematesPage() {
       {/* ============================================================ */}
       <div className="terminal-panel mt-px">
         <div className="px-panel py-[5px] flex items-center flex-wrap gap-x-4 gap-y-1">
+          <span className="inline-flex items-center gap-1 mr-3 px-1.5 py-px border border-amber-500/50 bg-amber-500/10">
+            <span className="text-amber-400 text-[9px]">★</span>
+            <span className="text-amber-400 font-terminal text-[9px] font-bold tracking-wider">PRO</span>
+          </span>
           <span className="text-xxs text-zinc-600 font-terminal mr-1">TIPOS:</span>
           {(Object.entries(TYPE_COLORS) as [Auction['type'], string][]).map(([type, cls]) => (
             <span key={type} className="flex items-center gap-1">

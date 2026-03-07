@@ -8358,5 +8358,25 @@
     "sourceUrl": "www.feriasrauch.com",
     "id": 440,
     "status": "scheduled"
+  },
+  {
+    "id": 443,
+    "title": "34° Remate Anual Cabaña El Tigre — Reproductores Braford, Brangus y P. Hereford",
+    "consignatariaName": "Reggi y Cía.",
+    "consignatariaSlug": "reggi-y-cia",
+    "date": "2026-07-17",
+    "time": null,
+    "location": "Corrientes, Corrientes",
+    "province": "CORRIENTES",
+    "type": "reproductores",
+    "mainCategory": "mixto",
+    "estimatedHeads": 178,
+    "description": "34° Remate Anual Cabaña El Tigre. 70 toros Braford, Brangus y Polled Hereford. 100 vaquillas Braford preñadas. 5 vaquillas élite Braford preñadas. 3 terneras élite Braford. Con la participación de Cabaña Doña Julia y Cabaña La Correntina. Remata Reggi y Cía.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "manual",
+    "sourceUrl": null,
+    "status": "scheduled",
+    "featured": true
   }
 ]

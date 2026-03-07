@@ -19,6 +19,7 @@ export interface Auction {
   source: 'web' | 'social' | 'tv' | 'manual'
   sourceUrl: string | null
   status: 'scheduled' | 'live' | 'completed'
+  featured?: boolean
 }
 
 export interface FeaturedLink {
