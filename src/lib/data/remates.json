@@ -8378,5 +8378,24 @@
     "sourceUrl": null,
     "status": "scheduled",
     "featured": true
+  },
+  {
+    "id": 444,
+    "title": "Remate Feria — General",
+    "consignatariaName": "Javier Ulises Avalos",
+    "consignatariaSlug": "javier-ulises-avalos",
+    "date": "2026-04-10",
+    "time": "15:00",
+    "location": "Mercedes, Corrientes",
+    "province": "CORRIENTES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": 1500,
+    "description": "Remate feria general en Mercedes, Corrientes.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "manual",
+    "sourceUrl": "https://wa.me/+5493773450982",
+    "status": "scheduled"
   }
 ]

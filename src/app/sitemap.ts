@@ -1,8 +1,5 @@
 import { MetadataRoute } from 'next'
-
-// TODO: Import these from your data sources
-// import { getRemates } from '@/lib/remates'
-// import { getFrigorificos } from '@/lib/frigorificos'
+import { getAllCanonicalSlugs } from '@/lib/data/consignataria-slugs'
 
 const PROVINCES = [
   'buenos-aires', 'cordoba', 'santa-fe', 'corrientes', 'entre-rios',
@@ -65,19 +62,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }))
 
-  // TODO: When you have dynamic data, uncomment and use:
-  // const remates = await getRemates()
-  // const rematePages: MetadataRoute.Sitemap = remates.map((remate) => ({
-  //   url: `${baseUrl}/remates/${remate.id}`,
-  //   lastModified: new Date(remate.updatedAt),
-  //   changeFrequency: 'daily',
-  //   priority: 0.6,
-  // }))
+  // Consignataria profile pages
+  const consignatariaPages: MetadataRoute.Sitemap = getAllCanonicalSlugs().map((slug) => ({
+    url: `${baseUrl}/consignatarias/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }))
 
   return [
     ...staticPages,
     ...provincePages,
     ...frigorificoProvincePages,
-    // ...rematePages,
+    ...consignatariaPages,
   ]
 }

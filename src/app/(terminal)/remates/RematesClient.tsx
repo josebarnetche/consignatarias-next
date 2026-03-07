@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { normalizeUrl } from '@/lib/utils/url'
+import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 
 /* ------------------------------------------------------------------ */
 /*  CONSTANTS                                                          */
@@ -98,7 +99,7 @@ function getProvinceCode(province: string): string {
 function getAuctionHref(auction: Auction): string {
   const sourceUrl = normalizeUrl(auction.sourceUrl)
   const catalogUrl = normalizeUrl(auction.catalogUrl)
-  return sourceUrl || catalogUrl || `/consignatarias/${auction.consignatariaSlug}`
+  return sourceUrl || catalogUrl || `/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`
 }
 
 function isExternalLink(href: string): boolean {
@@ -195,12 +196,15 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
             )}
           </span>
 
-          {/* Consignataria name */}
-          <span
-            className="flex-1 min-w-0 text-data font-terminal text-amber-200 font-medium truncate group-hover:text-amber-100 transition-colors"
-            title={auction.consignatariaName}
-          >
-            {auction.consignatariaName}
+          {/* Consignataria name — clickable link to profile */}
+          <span className="flex-1 min-w-0 text-data font-terminal truncate" onClick={(e) => e.stopPropagation()}>
+            <a
+              href={`/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`}
+              className="text-amber-200 font-medium hover:text-amber-100 hover:underline transition-colors"
+              title={auction.consignatariaName}
+            >
+              {auction.consignatariaName}
+            </a>
           </span>
 
           {/* Location city */}
@@ -301,12 +305,15 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
           )}
         </span>
 
-        {/* Consignataria name */}
-        <span
-          className="flex-1 min-w-0 text-data font-terminal text-zinc-200 truncate group-hover:text-accent transition-colors"
-          title={auction.consignatariaName}
-        >
-          {auction.consignatariaName}
+        {/* Consignataria name — clickable link to profile */}
+        <span className="flex-1 min-w-0 text-data font-terminal truncate" onClick={(e) => e.stopPropagation()}>
+          <a
+            href={`/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`}
+            className="text-zinc-200 hover:text-accent hover:underline transition-colors"
+            title={auction.consignatariaName}
+          >
+            {auction.consignatariaName}
+          </a>
         </span>
 
         {/* Location city */}
