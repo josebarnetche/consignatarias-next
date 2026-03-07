@@ -75,34 +75,13 @@ function stageColor(stage: number): string {
   return 'val-negative'
 }
 
-function stageBarColor(stage: number): string {
-  if (stage === 1) return 'bg-positive'
-  if (stage === 2) return 'bg-warning'
-  return 'bg-negative'
-}
-
 /* ------------------------------------------------------------------ */
-/*  ASCII BAR                                                          */
+/*  STAGE BAR CLASS                                                    */
 /* ------------------------------------------------------------------ */
-function AsciiBar({
-  value,
-  max,
-  width = 20,
-  colorClass = 'text-accent',
-}: {
-  value: number
-  max: number
-  width?: number
-  colorClass?: string
-}) {
-  const filled = max > 0 ? Math.round((value / max) * width) : 0
-  const empty = width - filled
-  return (
-    <span className={`font-terminal ${colorClass}`}>
-      {'\u2588'.repeat(filled)}
-      <span className="text-zinc-700">{'\u2591'.repeat(empty)}</span>
-    </span>
-  )
+function stageBarFillClass(stage: number): string {
+  if (stage === 1) return 'gradient-bar-fill-positive'
+  if (stage === 2) return 'gradient-bar-fill-warning'
+  return 'gradient-bar-fill-negative'
 }
 
 /* ------------------------------------------------------------------ */
@@ -251,7 +230,7 @@ export default function FrigorificosPage() {
       {/* ── PAGE HEADER ──────────────────────────────────────────── */}
       <div className="border-b border-terminal-border bg-terminal-panel px-4 py-2 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
-          <h1 className="text-label font-terminal uppercase tracking-widest text-zinc-100">
+          <h1 className="section-heading text-label uppercase tracking-widest text-zinc-100">
             FRIGORIFICOS
           </h1>
           <span className="text-zinc-600 font-terminal text-xxs">&mdash;</span>
@@ -276,7 +255,7 @@ export default function FrigorificosPage() {
       {/* ── MAIN CONTENT ─────────────────────────────────────────── */}
       <div className="flex-1 min-h-0 flex flex-col lg:flex-row">
         {/* ── LEFT SIDEBAR: Filters + Province list ───────────────── */}
-        <aside className="w-full lg:w-64 xl:w-72 border-b lg:border-b-0 lg:border-r border-terminal-border bg-terminal-panel flex-shrink-0 overflow-y-auto">
+        <aside className="w-full lg:w-64 xl:w-72 border-b lg:border-b-0 lg:border-r border-terminal-border glass-panel flex-shrink-0 overflow-y-auto">
           {/* -- FILTROS -------------------------------------------- */}
           <div className="terminal-panel-header flex items-center justify-between">
             <span>FILTROS</span>
@@ -333,30 +312,27 @@ export default function FrigorificosPage() {
           {/* -- PROVINCIAS (sidebar list) -------------------------- */}
           <div className="terminal-panel-header mt-0">PROVINCIAS</div>
           <div className="terminal-panel-body">
-            <ul className="space-y-0">
+            <div className="flex flex-wrap gap-1.5">
               {provinces.map(({ province, count }) => {
                 const isActive = filterProvince === province
                 return (
-                  <li key={province}>
-                    <button
-                      onClick={() =>
-                        setFilterProvince((prev) => (prev === province ? '' : province))
-                      }
-                      className={`w-full flex items-center justify-between px-1 py-px2 text-data font-terminal transition-colors hover:bg-accent/5 ${
-                        isActive
-                          ? 'text-accent bg-accent/5'
-                          : 'text-zinc-400 hover:text-zinc-200'
-                      }`}
-                    >
-                      <span className="truncate">{province}</span>
-                      <span className="tabular-nums text-zinc-500 ml-2 flex-shrink-0">
-                        {count}
-                      </span>
-                    </button>
-                  </li>
+                  <button
+                    key={province}
+                    onClick={() =>
+                      setFilterProvince((prev) => (prev === province ? '' : province))
+                    }
+                    className={`rounded-terminal px-2 py-0.5 text-data font-terminal transition-colors flex items-center gap-1.5 ${
+                      isActive
+                        ? 'bg-accent/10 border border-accent/30 text-accent'
+                        : 'bg-terminal-panel border border-terminal-border text-zinc-400 hover:text-zinc-200 hover:border-zinc-600'
+                    }`}
+                  >
+                    <span className="truncate">{abbr(province)}</span>
+                    <span className="tabular-nums text-zinc-500 text-xxs">{count}</span>
+                  </button>
                 )
               })}
-            </ul>
+            </div>
           </div>
         </aside>
 
@@ -377,9 +353,9 @@ export default function FrigorificosPage() {
                       <span className={`w-16 ${stageColor(stage)} tabular-nums`}>
                         ETAPA {stage}
                       </span>
-                      <div className="flex-1 h-3 bg-zinc-800/50 relative overflow-hidden">
+                      <div className="gradient-bar flex-1 h-3">
                         <div
-                          className={`absolute inset-y-0 left-0 ${stageBarColor(stage)} opacity-80`}
+                          className={`${stageBarFillClass(stage)} h-full`}
                           style={{ width: `${maxStage > 0 ? (count / maxStage) * 100 : 0}%` }}
                         />
                       </div>
@@ -411,36 +387,37 @@ export default function FrigorificosPage() {
                 COBERTURA POR PROVINCIA
               </div>
               <div className="terminal-panel-body space-y-0.5 max-h-48 overflow-y-auto">
-                {summary.topProvinces.map(({ province, count }) => (
-                  <div
-                    key={province}
-                    className="flex items-center gap-2 text-data font-terminal group cursor-pointer hover:bg-accent/5 px-0.5"
-                    onClick={() =>
-                      setFilterProvince((prev) => (prev === province ? '' : province))
-                    }
-                  >
-                    <span
-                      className={`w-10 text-xxs tracking-wider flex-shrink-0 ${
-                        filterProvince === province ? 'text-accent' : 'text-zinc-500'
-                      } group-hover:text-accent transition-colors`}
-                    >
-                      {abbr(province)}
-                    </span>
-                    <AsciiBar
-                      value={count}
-                      max={maxProvince}
-                      width={18}
-                      colorClass={
-                        filterProvince === province
-                          ? 'text-accent'
-                          : 'text-zinc-500 group-hover:text-accent'
+                {summary.topProvinces.map(({ province, count }) => {
+                  const isActive = filterProvince === province
+                  return (
+                    <div
+                      key={province}
+                      className="flex items-center gap-2 text-data font-terminal group cursor-pointer hover:bg-accent/5 px-0.5"
+                      onClick={() =>
+                        setFilterProvince((prev) => (prev === province ? '' : province))
                       }
-                    />
-                    <span className="tabular-nums text-zinc-400 w-6 text-right flex-shrink-0">
-                      {count}
-                    </span>
-                  </div>
-                ))}
+                    >
+                      <span
+                        className={`w-10 text-xxs tracking-wider flex-shrink-0 ${
+                          isActive ? 'text-accent' : 'text-zinc-500'
+                        } group-hover:text-accent transition-colors`}
+                      >
+                        {abbr(province)}
+                      </span>
+                      <div className="gradient-bar flex-1 h-2.5">
+                        <div
+                          className={`gradient-bar-fill h-full transition-all ${
+                            isActive ? 'opacity-100' : 'opacity-60 group-hover:opacity-100'
+                          }`}
+                          style={{ width: `${maxProvince > 0 ? (count / maxProvince) * 100 : 0}%` }}
+                        />
+                      </div>
+                      <span className="tabular-nums text-zinc-400 w-6 text-right flex-shrink-0">
+                        {count}
+                      </span>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </div>
@@ -491,8 +468,14 @@ export default function FrigorificosPage() {
                     </td>
                   </tr>
                 ) : (
-                  filtered.map((f) => (
-                    <tr key={f.cuit}>
+                  filtered.map((f, i) => (
+                    <tr
+                      key={f.cuit}
+                      className={`hover:bg-accent/[0.03] transition-colors ${
+                        i < 30 ? 'row-enter' : ''
+                      }`}
+                      style={i < 30 ? { animationDelay: `${i * 20}ms` } : undefined}
+                    >
                       <td className="tabular-nums text-zinc-500">{f.matricula}</td>
                       <td className="text-zinc-200 cell-truncate max-w-xs">{f.name}</td>
                       <td className="text-zinc-500 text-xxs tracking-wider">

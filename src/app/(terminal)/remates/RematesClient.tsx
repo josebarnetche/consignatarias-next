@@ -51,9 +51,9 @@ function StatusBadge({ status, date, today }: { status: Auction['status']; date:
 
   if (status === 'live') {
     return (
-      <span className="inline-flex items-center gap-1.5" role="img" aria-label="En vivo">
-        <span className="status-dot-live" />
-        <span className="text-positive font-terminal text-xxs">EN VIVO</span>
+      <span className="live-badge" role="img" aria-label="En vivo">
+        <span className="live-indicator" style={{width:'6px',height:'6px'}} />
+        <span>EN VIVO</span>
       </span>
     )
   }
@@ -68,12 +68,18 @@ function StatusBadge({ status, date, today }: { status: Auction['status']; date:
   }
 
   // scheduled
-  return (
-    <span className="inline-flex items-center gap-1.5" role="img" aria-label={isToday ? 'Hoy' : 'Programado'}>
-      <span className={`status-dot ${isToday ? 'bg-positive animate-pulse-live' : 'bg-sky-400'}`} />
-      <span className={`font-terminal text-xxs ${isToday ? 'text-positive' : 'text-sky-400'}`}>
-        {isToday ? 'HOY' : 'PROGRAMADO'}
+  if (isToday) {
+    return (
+      <span className="live-badge-amber" role="img" aria-label="Hoy">
+        <span>HOY</span>
       </span>
+    )
+  }
+
+  return (
+    <span className="inline-flex items-center gap-1.5" role="img" aria-label="Programado">
+      <span className="status-dot bg-sky-400" />
+      <span className="font-terminal text-xxs text-sky-400">PROGRAMADO</span>
     </span>
   )
 }
@@ -82,7 +88,7 @@ function StatusBadge({ status, date, today }: { status: Auction['status']; date:
 /*  AUCTION ROW — responsive: card on mobile, dense on desktop         */
 /* ------------------------------------------------------------------ */
 
-function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
+function AuctionRow({ auction, today, index }: { auction: Auction; today: string; index: number }) {
   const isToday = auction.date === today
   const isFeatured = !!(auction as Auction & { featured?: boolean }).featured
   const city = getCity(auction.location)
@@ -107,13 +113,14 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
         tabIndex={0}
         onClick={handleRowClick}
         onKeyDown={(e) => { if (e.key === 'Enter') handleRowClick() }}
-        className="group border-b-2 border-amber-500/30 bg-amber-500/[0.04] hover:bg-amber-500/[0.08] transition-colors duration-75 cursor-pointer relative overflow-hidden"
+        className={`group border-b-2 border-amber-500/30 bg-amber-500/[0.04] hover:bg-amber-500/[0.08] transition-colors duration-75 cursor-pointer relative overflow-hidden shadow-amber-glow${index < 20 ? ' row-enter' : ''}`}
+        style={index < 20 ? { animationDelay: `${index * 30}ms` } : undefined}
       >
         {/* Amber left accent bar */}
         <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-amber-400" />
 
         {/* --- MOBILE CARD (shown below md) --- */}
-        <div className="md:hidden p-3 pl-4 space-y-1.5">
+        <div className="md:hidden p-3 pl-4 space-y-1.5 rounded-terminal shadow-panel">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 border border-amber-500/50 bg-amber-500/10">
@@ -127,7 +134,15 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
                 <span className="text-data tabular-nums font-terminal text-amber-300/70">{auction.time}</span>
               )}
             </div>
-            <StatusBadge status={auction.status} date={auction.date} today={today} />
+            <div className="flex items-center gap-1.5">
+              <StatusBadge status={auction.status} date={auction.date} today={today} />
+              {auction.youtubeUrl && (
+                <span className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-red-600/20 border border-red-500/30 rounded-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                  <span className="text-red-400 font-terminal text-[9px] font-bold">LIVE</span>
+                </span>
+              )}
+            </div>
           </div>
           <div onClick={(e) => e.stopPropagation()}>
             <a
@@ -234,11 +249,12 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
       onClick={handleRowClick}
       onKeyDown={(e) => { if (e.key === 'Enter') handleRowClick() }}
       className={`group border-b border-terminal-border hover:bg-zinc-800/50 transition-colors duration-75 cursor-pointer ${
-        isToday ? 'bg-positive/[0.02]' : ''
-      }`}
+        isToday ? 'bg-amber-500/[0.03]' : ''
+      }${index < 20 ? ' row-enter' : ''}`}
+      style={index < 20 ? { animationDelay: `${index * 30}ms` } : undefined}
     >
       {/* --- MOBILE CARD (shown below md) --- */}
-      <div className="md:hidden p-3 space-y-1.5">
+      <div className="md:hidden p-3 space-y-1.5 rounded-terminal shadow-panel">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className={`text-data tabular-nums font-terminal ${isToday ? 'text-positive font-medium' : 'text-zinc-300'}`}>
@@ -248,7 +264,15 @@ function AuctionRow({ auction, today }: { auction: Auction; today: string }) {
               <span className="text-data tabular-nums font-terminal text-zinc-400">{auction.time}</span>
             )}
           </div>
-          <StatusBadge status={auction.status} date={auction.date} today={today} />
+          <div className="flex items-center gap-1.5">
+            <StatusBadge status={auction.status} date={auction.date} today={today} />
+            {auction.youtubeUrl && (
+              <span className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-red-600/20 border border-red-500/30 rounded-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                <span className="text-red-400 font-terminal text-[9px] font-bold">LIVE</span>
+              </span>
+            )}
+          </div>
         </div>
         <div onClick={(e) => e.stopPropagation()}>
           <a
@@ -541,7 +565,7 @@ export default function RematesPage() {
         {/* -- Panel header ----------------------------------------- */}
         <div className="terminal-panel-header flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-3">
-            <span className="text-zinc-200 text-label tracking-widest">REMATES</span>
+            <span className="section-heading text-zinc-200 text-sm tracking-widest">REMATES</span>
             <span className="text-terminal-border hidden sm:inline">&mdash;</span>
             <span className="text-xxs text-zinc-500 uppercase tracking-wider hidden sm:inline">
               Cronograma de Remates Ganaderos
@@ -645,6 +669,25 @@ export default function RematesPage() {
           </div>
         </div>
 
+        {/* -- Active filter pills ------------------------------------ */}
+        {(filterProvince || filterType) && (
+          <div className="border-b border-terminal-border px-panel py-1.5 flex items-center gap-2 flex-wrap">
+            <span className="text-xxs text-zinc-600 font-terminal">Filtros:</span>
+            {filterProvince && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xxs bg-accent/10 text-accent border border-accent/20 rounded-terminal">
+                <span>{filterProvince}</span>
+                <button onClick={() => setFilterProvince('')} className="hover:text-accent-bright transition-colors" aria-label="Quitar filtro provincia">&times;</button>
+              </span>
+            )}
+            {filterType && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xxs bg-accent/10 text-accent border border-accent/20 rounded-terminal">
+                <span>{TYPE_LABELS[filterType] || filterType.toUpperCase()}</span>
+                <button onClick={() => setFilterType('')} className="hover:text-accent-bright transition-colors" aria-label="Quitar filtro tipo">&times;</button>
+              </span>
+            )}
+          </div>
+        )}
+
         {/* -- Column headers (desktop only) ----------------------- */}
         <div className="border-b border-terminal-border px-cell py-px2 hidden md:flex items-center gap-0 bg-terminal-panel">
           <span className="w-[56px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">
@@ -682,8 +725,8 @@ export default function RematesPage() {
               </button>
             </div>
           ) : (
-            filteredAuctions.map((auction) => (
-              <AuctionRow key={auction.id} auction={auction} today={today} />
+            filteredAuctions.map((auction, index) => (
+              <AuctionRow key={auction.id} auction={auction} today={today} index={index} />
             ))
           )}
         </div>

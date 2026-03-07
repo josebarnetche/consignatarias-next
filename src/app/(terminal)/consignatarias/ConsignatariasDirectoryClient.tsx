@@ -44,7 +44,7 @@ export default function ConsignatariasDirectoryClient({ entries }: { entries: Di
       {/* HEADER */}
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between flex-wrap gap-2">
-          <h1 className="text-zinc-200 text-label tracking-widest">DIRECTORIO DE CONSIGNATARIAS</h1>
+          <h1 className="section-heading text-label tracking-widest">DIRECTORIO DE CONSIGNATARIAS</h1>
           <span className="text-xxs tabular-nums text-zinc-500 font-terminal">
             {entries.length} consignatarias
           </span>
@@ -58,7 +58,7 @@ export default function ConsignatariasDirectoryClient({ entries }: { entries: Di
           </div>
           <div className="text-terminal-border text-xxs select-none hidden sm:block">|</div>
           <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-600 uppercase">Próximos:</span>
+            <span className="text-xxs text-zinc-600 uppercase">Proximos:</span>
             <span className={`text-data tabular-nums font-terminal ${totalUpcoming > 0 ? 'text-positive' : 'text-zinc-500'}`}>
               {totalUpcoming}
             </span>
@@ -79,8 +79,10 @@ export default function ConsignatariasDirectoryClient({ entries }: { entries: Di
               <button
                 key={key}
                 onClick={() => setSortBy(key)}
-                className={`px-2 py-1 text-xxs font-terminal uppercase tracking-wider transition-colors ${
-                  sortBy === key ? 'text-accent bg-accent/10' : 'text-zinc-600 hover:text-zinc-400'
+                className={`px-2 py-1 text-xxs font-terminal uppercase tracking-wider transition-colors rounded-terminal ${
+                  sortBy === key
+                    ? 'bg-accent/10 border border-accent/30 text-accent'
+                    : 'border border-terminal-border text-zinc-600 hover:text-zinc-400'
                 }`}
               >
                 {key === 'auctions' ? 'REMATES' : key === 'upcoming' ? 'PROX' : 'A-Z'}
@@ -96,8 +98,8 @@ export default function ConsignatariasDirectoryClient({ entries }: { entries: Di
         <div className="border-b border-terminal-border px-cell py-px2 hidden md:flex items-center gap-0 bg-terminal-panel">
           <span className="w-[40px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right pr-2">#</span>
           <span className="flex-1 min-w-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">Consignataria</span>
-          <span className="w-[100px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">Tipos</span>
-          <span className="w-[140px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right pr-2">Provincias</span>
+          <span className="w-[120px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">Tipos</span>
+          <span className="w-[130px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right pr-2">Provincias</span>
           <span className="w-[60px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right pr-2">Prox</span>
           <span className="w-[60px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right">Total</span>
         </div>
@@ -106,7 +108,8 @@ export default function ConsignatariasDirectoryClient({ entries }: { entries: Di
           <Link
             key={entry.slug}
             href={`/consignatarias/${entry.slug}`}
-            className="group border-b border-terminal-border hover:bg-zinc-800/50 transition-colors block"
+            className={`group border-b border-terminal-border hover:bg-zinc-800/50 hover:shadow-panel-hover transition-colors block rounded-terminal row-enter`}
+            style={i < 20 ? { animationDelay: `${i * 30}ms` } : undefined}
           >
             {/* MOBILE */}
             <div className="md:hidden p-3 space-y-1">
@@ -120,7 +123,10 @@ export default function ConsignatariasDirectoryClient({ entries }: { entries: Di
               </div>
               <div className="flex items-center gap-2 flex-wrap">
                 {entry.upcoming > 0 && (
-                  <span className="text-xxs font-terminal text-positive tabular-nums">{entry.upcoming} prox</span>
+                  <span className="inline-flex items-center gap-1 text-xxs font-terminal text-positive tabular-nums">
+                    <span className="live-indicator" style={{ width: '6px', height: '6px' }} />
+                    {entry.upcoming} prox
+                  </span>
                 )}
                 <span className="text-xxs text-zinc-500">{entry.provinces.slice(0, 2).join(', ')}</span>
                 {entry.types.slice(0, 3).map(t => (
@@ -139,19 +145,22 @@ export default function ConsignatariasDirectoryClient({ entries }: { entries: Di
               <span className="flex-1 min-w-0 text-data font-terminal text-zinc-200 truncate group-hover:text-accent transition-colors">
                 {entry.displayName}
               </span>
-              <span className="w-[100px] flex-shrink-0 flex items-center gap-1">
+              <span className="w-[120px] flex-shrink-0 flex items-center gap-1 overflow-hidden">
                 {entry.types.slice(0, 3).map(t => (
-                  <span key={t} className={`terminal-tag ${TYPE_COLORS[t] || 'border-zinc-500 text-zinc-400'} text-[10px]`}>
+                  <span key={t} className={`terminal-tag ${TYPE_COLORS[t] || 'border-zinc-500 text-zinc-400'} text-[10px] flex-shrink-0`}>
                     {TYPE_LABELS_SHORT[t] || t.toUpperCase()}
                   </span>
                 ))}
               </span>
-              <span className="w-[140px] flex-shrink-0 text-xxs font-terminal text-zinc-500 text-right pr-2 truncate">
+              <span className="w-[130px] flex-shrink-0 text-xxs font-terminal text-zinc-500 text-right pr-2 truncate">
                 {entry.provinces.slice(0, 2).join(', ')}
               </span>
-              <span className={`w-[60px] flex-shrink-0 text-data tabular-nums font-terminal text-right pr-2 ${
+              <span className={`w-[60px] flex-shrink-0 text-data tabular-nums font-terminal text-right pr-2 inline-flex items-center justify-end gap-1 ${
                 entry.upcoming > 0 ? 'text-positive' : 'text-zinc-600'
               }`}>
+                {entry.upcoming > 0 && (
+                  <span className="live-indicator" style={{ width: '6px', height: '6px' }} />
+                )}
                 {entry.upcoming > 0 ? entry.upcoming : '\u2014'}
               </span>
               <span className="w-[60px] flex-shrink-0 text-data tabular-nums font-terminal text-zinc-300 text-right">

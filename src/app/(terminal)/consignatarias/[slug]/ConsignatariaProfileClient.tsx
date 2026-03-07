@@ -115,12 +115,12 @@ function ProfileAuctionRow({ auction, today }: { auction: Auction; today: string
           {auction.catalogUrl && (
             <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
               onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
-              className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors" aria-label="Descargar catálogo">Catálogo</a>
+              className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors" aria-label="Descargar catalogo">Catalogo</a>
           )}
           {auction.youtubeUrl && (
             <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
               onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
-              className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión">YouTube</a>
+              className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmision">YouTube</a>
           )}
         </div>
       </div>
@@ -168,12 +168,12 @@ function ProfileAuctionRow({ auction, today }: { auction: Auction; today: string
             {auction.catalogUrl && (
               <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
                 onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
-                className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors" aria-label="Descargar catálogo" title="Catálogo">CAT</a>
+                className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors" aria-label="Descargar catalogo" title="Catalogo">CAT</a>
             )}
             {auction.youtubeUrl && (
               <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
                 onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
-                className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión" title="YouTube">YT</a>
+                className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmision" title="YouTube">YT</a>
             )}
             {auction.sourceUrl && (
               <a href={normalizeUrl(auction.sourceUrl) || '#'} target="_blank" rel="noopener noreferrer"
@@ -216,10 +216,15 @@ function CalendarHeatmap({ auctions }: { auctions: Auction[] }) {
             )}
             <div className="w-full relative" style={{ height: '48px' }}>
               <div
-                className={`absolute bottom-0 w-full transition-all ${
-                  isCurrent ? 'bg-accent' : count > 0 ? 'bg-positive/70' : 'bg-zinc-800'
-                }`}
-                style={{ height: count > 0 ? `${Math.max(pct, 8)}%` : '2px' }}
+                className="absolute bottom-0 w-full transition-all rounded-terminal"
+                style={{
+                  height: count > 0 ? `${Math.max(pct, 8)}%` : '2px',
+                  background: count > 0
+                    ? isCurrent
+                      ? 'linear-gradient(to top, var(--accent, #06b6d4), var(--accent-bright, #67e8f9))'
+                      : 'linear-gradient(to top, #059669, #34d399)'
+                    : '#27272a',
+                }}
               />
             </div>
             <span className={`text-[10px] font-terminal ${isCurrent ? 'text-accent font-medium' : 'text-zinc-600'}`}>
@@ -235,6 +240,15 @@ function CalendarHeatmap({ auctions }: { auctions: Auction[] }) {
 /* ------------------------------------------------------------------ */
 /*  TYPE DISTRIBUTION                                                  */
 /* ------------------------------------------------------------------ */
+
+/** Map auction type keys to gradient CSS for bars */
+const TYPE_GRADIENT_MAP: Record<string, string> = {
+  invernada:     'linear-gradient(to right, #059669, #34d399)',
+  cria:          'linear-gradient(to right, #0284c7, #38bdf8)',
+  reproductores: 'linear-gradient(to right, #7c3aed, #a78bfa)',
+  general:       'linear-gradient(to right, #ca8a04, #facc15)',
+  especial:      'linear-gradient(to right, #dc2626, #f87171)',
+}
 
 function TypeDistribution({ auctions }: { auctions: Auction[] }) {
   const typeCounts = useMemo(() => {
@@ -256,8 +270,14 @@ function TypeDistribution({ auctions }: { auctions: Auction[] }) {
             <span className={`w-[80px] flex-shrink-0 text-xxs font-terminal ${(TYPE_COLORS[type] || 'border-zinc-500 text-zinc-400').split(' ')[1]}`}>
               {TYPE_LABELS[type] || type.toUpperCase()}
             </span>
-            <div className="flex-1 h-2.5 bg-zinc-900 relative">
-              <div className={`h-full ${TYPE_BAR_COLORS[type] || 'bg-zinc-500'}`} style={{ width: `${barWidth}%` }} />
+            <div className="flex-1 h-2.5 bg-zinc-900 relative rounded-terminal overflow-hidden">
+              <div
+                className="h-full rounded-terminal"
+                style={{
+                  width: `${barWidth}%`,
+                  background: TYPE_GRADIENT_MAP[type] || 'linear-gradient(to right, #71717a, #a1a1aa)',
+                }}
+              />
             </div>
             <span className="w-[60px] flex-shrink-0 text-xxs font-terminal tabular-nums text-zinc-400 text-right">
               {count} ({pct.toFixed(0)}%)
@@ -323,7 +343,14 @@ export default function ConsignatariaProfileClient({ profile, auctions }: Consig
               &larr; DIRECTORIO
             </Link>
             <span className="text-terminal-border">&mdash;</span>
-            <h1 className="text-zinc-200 text-label tracking-widest">{profile.displayName.toUpperCase()}</h1>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="section-heading text-label tracking-widest">{profile.displayName.toUpperCase()}</h1>
+              {provinces.map(prov => (
+                <span key={prov} className="inline-flex px-1.5 py-0.5 text-xxs border border-terminal-border text-zinc-500 rounded-terminal">
+                  {prov}
+                </span>
+              ))}
+            </div>
           </div>
           <span className="text-xxs tabular-nums text-zinc-500 font-terminal">
             {auctions.length} remates
@@ -345,7 +372,7 @@ export default function ConsignatariaProfileClient({ profile, auctions }: Consig
           </div>
           <div className="text-terminal-border text-xxs select-none hidden sm:block">|</div>
           <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-600 uppercase">Próximos:</span>
+            <span className="text-xxs text-zinc-600 uppercase">Proximos:</span>
             <span className={`text-data tabular-nums font-terminal ${upcoming.length > 0 ? 'text-positive' : 'text-zinc-500'}`}>
               {upcoming.length}
             </span>
@@ -374,15 +401,15 @@ export default function ConsignatariaProfileClient({ profile, auctions }: Consig
       {/* ============================================================ */}
       {/*  CLAIM CTA + COMPLETENESS                                     */}
       {/* ============================================================ */}
-      <div className="terminal-panel mt-px">
+      <div className="glass-panel mt-px">
         <div className="px-panel py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1.5">
               <span className="text-xxs text-zinc-600 uppercase font-terminal tracking-wider">Perfil completo:</span>
               <span className="text-xxs tabular-nums font-terminal text-warning">30%</span>
             </div>
-            <div className="h-1.5 w-full max-w-[200px] bg-zinc-900 rounded-full overflow-hidden">
-              <div className="h-full bg-warning/70 rounded-full" style={{ width: '30%' }} />
+            <div className="gradient-bar w-full max-w-[200px]">
+              <div className="gradient-bar-fill-amber" style={{ width: '30%' }} />
             </div>
             <p className="text-xxs text-zinc-600 font-terminal mt-1.5">
               Faltan: logo, descripcion, telefono, email, whatsapp, sitio web
@@ -395,7 +422,7 @@ export default function ConsignatariaProfileClient({ profile, auctions }: Consig
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackClaimCTA(profile.canonicalSlug, profile.displayName)}
-            className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors"
+            className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors shadow-live-glow"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-positive animate-pulse-live" />
             Reclamar este perfil
@@ -427,13 +454,34 @@ export default function ConsignatariaProfileClient({ profile, auctions }: Consig
       </div>
 
       {/* ============================================================ */}
+      {/*  YOUTUBE-READY ZONE                                            */}
+      {/* ============================================================ */}
+      <div className="terminal-panel mt-px">
+        <div className="terminal-panel-header flex items-center gap-2">
+          <span className="section-heading text-xxs">TRANSMISIONES EN VIVO</span>
+          <span className="live-badge text-[10px]">
+            <span className="live-indicator" style={{ width: '5px', height: '5px' }} />
+            PRONTO
+          </span>
+        </div>
+        <div className="px-panel py-6 flex flex-col items-center justify-center gap-3">
+          <div className="w-16 h-16 rounded-terminal border border-terminal-border flex items-center justify-center bg-terminal-bg">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-zinc-600">
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+          </div>
+          <span className="text-xxs text-zinc-600 font-terminal uppercase tracking-wider">Proximamente</span>
+        </div>
+      </div>
+
+      {/* ============================================================ */}
       {/*  AUCTION LIST GROUPED BY MONTH                                */}
       {/* ============================================================ */}
       <div className="terminal-panel mt-px">
         <div className="terminal-panel-header flex items-center justify-between">
           <span className="text-zinc-200 text-label tracking-widest">CRONOGRAMA</span>
           <span className="text-xxs text-zinc-600 font-terminal hidden sm:inline">
-            {auctions.length} remates &middot; orden cronológico
+            {auctions.length} remates &middot; orden cronologico
           </span>
         </div>
 

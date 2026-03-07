@@ -9,8 +9,8 @@ module.exports = {
     extend: {
       colors: {
         terminal: {
-          bg: '#09090b',       // zinc-950 - main background
-          panel: '#18181b',    // zinc-900 - panel/card background
+          bg: '#0a0a0f',       // tinted zinc-950 (slight blue)
+          panel: '#16161d',    // tinted zinc-900
           border: '#27272a',   // zinc-800 - borders
           'border-light': '#3f3f46', // zinc-700 - hover borders
         },
@@ -19,6 +19,7 @@ module.exports = {
         warning: '#fbbf24',    // amber-400 - warnings, neutral
         accent: '#38bdf8',     // sky-400 - links, interactive
         'accent-bright': '#0ea5e9', // sky-500 - active states
+        live: '#10b981',       // emerald-500 - live states
       },
       fontFamily: {
         terminal: [
@@ -31,6 +32,14 @@ module.exports = {
           'Liberation Mono',
           'Courier New',
           'monospace',
+        ],
+        heading: [
+          'Inter',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'sans-serif',
         ],
         display: [
           'Inter',
@@ -59,10 +68,17 @@ module.exports = {
         'cell': '10px',   // cell padding — comfortable touch
         'panel': '16px',  // panel internal padding
       },
+      borderRadius: {
+        'terminal': '2px',
+      },
       animation: {
         'pulse-live': 'pulse-live 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'blink': 'blink 1s step-end infinite',
         'scan': 'scan 4s linear infinite',
+        'fade-in-up': 'fade-in-up 0.4s ease-out both',
+        'count-up': 'count-up 0.6s ease-out both',
+        'ring-pulse': 'ring-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'scan-line': 'scan-line 8s linear infinite',
       },
       keyframes: {
         'pulse-live': {
@@ -77,6 +93,23 @@ module.exports = {
           '0%': { backgroundPosition: '0% 0%' },
           '100%': { backgroundPosition: '0% 100%' },
         },
+        'fade-in-up': {
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'count-up': {
+          '0%': { opacity: '0', transform: 'translateY(4px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'ring-pulse': {
+          '0%': { transform: 'scale(1)', opacity: '0.8' },
+          '50%': { transform: 'scale(1.8)', opacity: '0' },
+          '100%': { transform: 'scale(1.8)', opacity: '0' },
+        },
+        'scan-line': {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
       },
       borderWidth: {
         'thin': '0.5px',
@@ -90,6 +123,9 @@ module.exports = {
         'glow-white-sm': '0 0 15px rgba(255, 255, 255, 0.05)',
         'glow-bar': '0 0 10px rgba(255, 255, 255, 0.3)',
         'glow-bar-sm': '0 0 15px rgba(255, 255, 255, 0.2)',
+        'live-glow': '0 0 12px rgba(16, 185, 129, 0.2)',
+        'live-glow-lg': '0 0 20px rgba(16, 185, 129, 0.3)',
+        'amber-glow': '0 0 12px rgba(251, 191, 36, 0.15)',
       },
     },
   },

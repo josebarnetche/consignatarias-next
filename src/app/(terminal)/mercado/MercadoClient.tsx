@@ -46,15 +46,11 @@ function shortDate(iso: string): string {
   return (monthMap[parts[1]] ?? '?') + parts[2]
 }
 
-/**
- * Map a value within [min, max] to one of 8 block characters.
- * ▁▂▃▄▅▆▇█
- */
-function barChar(value: number, min: number, max: number): string {
-  const blocks = ['\u2581', '\u2582', '\u2583', '\u2584', '\u2585', '\u2586', '\u2587', '\u2588']
-  if (max === min) return blocks[7]
-  const idx = Math.round(((value - min) / (max - min)) * 7)
-  return blocks[Math.min(Math.max(idx, 0), 7)]
+/** Compute CSS bar height (4–120 px) proportional to value within [min, max] */
+function barHeight(value: number, min: number, max: number): number {
+  if (max === min) return 120
+  const ratio = (value - min) / (max - min)
+  return Math.round(4 + ratio * 116) // 4px min, 120px max
 }
 
 /** Format the lastUpdate timestamp: "2026-02-26T14:00:00-03:00" -> "26 FEB 14h" */
@@ -102,7 +98,7 @@ export default function MercadoPage() {
       {/* ── Page header ─────────────────────────────────────────── */}
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between">
-          <span>
+          <span className="section-heading">
             MERCADO <span className="text-zinc-600 mx-1">&mdash;</span> INDICES Y PRECIOS DE REFERENCIA
           </span>
           <span className="text-zinc-500 tabular-nums normal-case tracking-normal">
@@ -115,14 +111,14 @@ export default function MercadoPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-px">
 
         {/* -- INMAG panel (2/3 width) -- */}
-        <div className="terminal-panel md:col-span-2">
-          <div className="terminal-panel-header">
+        <div className={`terminal-panel md:col-span-2${inmag.change >= 0 ? ' shadow-live-glow' : ''}`}>
+          <div className="terminal-panel-header font-heading">
             INMAG <span className="text-zinc-600 mx-1">&mdash;</span> INDICE NOVILLO MAG
           </div>
           <div className="px-panel py-3">
             {/* Hero number */}
             <div className="flex items-baseline gap-3 mb-1">
-              <span className="text-2xl font-terminal tabular-nums text-positive glow-positive font-semibold leading-none">
+              <span className="text-4xl font-terminal tabular-nums text-positive glow-positive font-semibold leading-none stat-countup">
                 {fmt(inmag.current, 2)}
               </span>
               <span className="text-xxs text-zinc-500 uppercase tracking-wider">
@@ -136,36 +132,41 @@ export default function MercadoPage() {
               <span className="text-xxs text-zinc-600">vs ant.</span>
             </div>
 
-            {/* ASCII bar chart */}
+            {/* CSS bar chart */}
             <div className="font-terminal text-data leading-tight">
-              {/* Spark line using block chars */}
-              <div className="flex items-end gap-0 mb-1">
+              {/* Bar columns */}
+              <div className="flex items-end gap-px mb-1" style={{ height: '120px' }}>
                 {series.map((pt) => {
-                  const char = barChar(pt.value, seriesMin, seriesMax)
-                  // Scale height: min bar ~1 line, max bar ~7 lines via repeated chars
-                  const level = Math.round(((pt.value - seriesMin) / (seriesMax - seriesMin || 1)) * 6) + 1
-                  const column = char.repeat(level)
+                  const h = barHeight(pt.value, seriesMin, seriesMax)
                   return (
-                    <div key={pt.date} className="flex flex-col items-center" style={{ width: '3ch' }}>
-                      <span className="text-positive leading-none whitespace-pre" style={{ writingMode: 'vertical-lr', letterSpacing: '-0.15em', fontSize: '0.8rem' }}>
-                        {column}
+                    <div
+                      key={pt.date}
+                      className="group relative flex-1 min-w-0 rounded-t-sm transition-opacity hover:opacity-80"
+                      style={{
+                        height: `${h}px`,
+                        background: 'linear-gradient(to top, #059669, #34d399)',
+                      }}
+                    >
+                      {/* Tooltip on hover */}
+                      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-zinc-900 border border-zinc-700 text-zinc-200 text-xxs tabular-nums px-1.5 py-0.5 rounded whitespace-nowrap z-10">
+                        {fmt(pt.value, 0)}
                       </span>
                     </div>
                   )
                 })}
               </div>
               {/* Date labels */}
-              <div className="flex gap-0 text-xxs text-zinc-600">
+              <div className="flex gap-px text-xxs text-zinc-600">
                 {series.map((pt) => (
-                  <div key={pt.date} className="text-center" style={{ width: '3ch' }}>
+                  <div key={pt.date} className="flex-1 min-w-0 text-center truncate">
                     {shortDate(pt.date)}
                   </div>
                 ))}
               </div>
               {/* Value labels */}
-              <div className="flex gap-0 text-xxs text-zinc-700 mt-px">
+              <div className="flex gap-px text-xxs text-zinc-700 mt-px">
                 {series.map((pt) => (
-                  <div key={pt.date} className="text-center tabular-nums" style={{ width: '3ch' }}>
+                  <div key={pt.date} className="flex-1 min-w-0 text-center tabular-nums truncate">
                     {Math.round(pt.value / 100)}
                   </div>
                 ))}
@@ -175,8 +176,8 @@ export default function MercadoPage() {
         </div>
 
         {/* -- Macro references (1/3 width) -- */}
-        <div className="terminal-panel">
-          <div className="terminal-panel-header">REFERENCIAS MACRO</div>
+        <div className="terminal-panel glass-panel">
+          <div className="terminal-panel-header font-heading">REFERENCIAS MACRO</div>
           <div className="px-panel py-3 space-y-4">
 
             {/* Corn */}
@@ -229,7 +230,7 @@ export default function MercadoPage() {
 
       {/* ── Categories table ────────────────────────────────────── */}
       <div className="terminal-panel">
-        <div className="terminal-panel-header">PRECIOS POR CATEGORIA</div>
+        <div className="terminal-panel-header font-heading">PRECIOS POR CATEGORIA</div>
         <div className="overflow-x-auto">
           <table className="terminal-table">
             <thead>
@@ -246,7 +247,7 @@ export default function MercadoPage() {
                 const barPct = Math.round((cat.current / maxCategoryPrice) * 100)
                 const isPositive = cat.change >= 0
                 return (
-                  <tr key={cat.name}>
+                  <tr key={cat.name} className={isPositive ? 'bg-positive/[0.03]' : 'bg-negative/[0.03]'}>
                     <td className="font-semibold text-zinc-200">{cat.name}</td>
                     <td className="num tabular-nums text-zinc-100">{fmt(cat.current)}</td>
                     <td className="num tabular-nums text-zinc-500">{fmt(cat.prev)}</td>
@@ -255,9 +256,9 @@ export default function MercadoPage() {
                     </td>
                     <td>
                       <div className="flex items-center gap-1">
-                        <div className="h-2.5 flex-1 bg-zinc-800 relative overflow-hidden">
+                        <div className="gradient-bar flex-1">
                           <div
-                            className="absolute inset-y-0 left-0 bg-positive/60"
+                            className={`gradient-bar-fill${isPositive ? '-positive' : '-negative'}`}
                             style={{ width: `${barPct}%` }}
                           />
                         </div>
