@@ -6,7 +6,7 @@ import ConsignatariasDirectoryClient from './ConsignatariasDirectoryClient'
 
 export const metadata: Metadata = {
   title: 'Directorio de Consignatarias de Hacienda Argentina',
-  description: 'Directorio completo de 73 consignatarias de hacienda en Argentina. Calendario de remates, provincias, contacto. Ordená por cantidad de remates o nombre.',
+  description: 'Directorio completo de 77 consignatarias de hacienda en Argentina. Calendario de remates, provincias, contacto. Ordená por cantidad de remates o nombre.',
   keywords: [
     'consignatarias argentina',
     'consignatarias de hacienda',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     'remates ganaderos',
   ],
   openGraph: {
-    title: 'Directorio de 73 Consignatarias | Consignatarias.com.ar',
+    title: 'Directorio de 77 Consignatarias | Consignatarias.com.ar',
     description: 'Todas las consignatarias de hacienda en un solo directorio. Remates, provincias, contacto.',
     url: 'https://www.consignatarias.com.ar/consignatarias',
     type: 'website',

@@ -10,8 +10,8 @@ Consignatarias.com.ar agrega datos de multiples consignatarias de hacienda en un
 
 ## Que incluye
 
-- **443 remates** de 73 consignatarias en 12 provincias (Feb–Dic 2026)
-- **73 perfiles de consignatarias** con calendario anual, heatmap y distribucion por tipo
+- **443 remates** de 77 consignatarias en 12 provincias (Feb–Dic 2026)
+- **77 perfiles de consignatarias** con calendario anual, heatmap y distribucion por tipo
 - **364 frigorificos** con datos de SENASA/MAGYP (matricula, etapa, CUIT)
 - **Precios de mercado** con indice INMAG, categorias ganaderas, USD blue/oficial
 - **Remates PRO** — sistema de destacados con tratamiento visual amber/gold
