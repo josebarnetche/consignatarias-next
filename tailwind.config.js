@@ -50,14 +50,14 @@ module.exports = {
         ],
       },
       fontSize: {
-        'xxs': ['0.625rem', { lineHeight: '0.875rem' }],  // 10px - ultra dense
-        'data': ['0.6875rem', { lineHeight: '1rem' }],     // 11px - data cells
-        'label': ['0.75rem', { lineHeight: '1rem' }],      // 12px - labels
+        'xxs': ['0.6875rem', { lineHeight: '1rem' }],      // 11px - smallest allowed
+        'data': ['0.8125rem', { lineHeight: '1.25rem' }],   // 13px - data cells
+        'label': ['0.875rem', { lineHeight: '1.25rem' }],   // 14px - labels, headers
       },
       spacing: {
-        'px2': '2px',
-        'cell': '6px',   // tight cell padding
-        'panel': '12px', // panel internal padding
+        'px2': '4px',
+        'cell': '10px',   // cell padding — comfortable touch
+        'panel': '16px',  // panel internal padding
       },
       animation: {
         'pulse-live': 'pulse-live 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',

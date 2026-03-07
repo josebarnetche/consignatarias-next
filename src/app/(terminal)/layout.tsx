@@ -7,9 +7,9 @@ import { useEffect, useState } from "react";
 /*  NAV ITEMS                                                          */
 /* ------------------------------------------------------------------ */
 const NAV_ITEMS = [
-  { label: "OVERVIEW", href: "/overview" },
-  { label: "FRIGORIFICOS", href: "/frigorificos" },
+  { label: "INICIO", href: "/overview" },
   { label: "REMATES", href: "/remates" },
+  { label: "FRIGORIFICOS", href: "/frigorificos" },
   { label: "MERCADO", href: "/mercado" },
 ] as const;
 
@@ -42,8 +42,8 @@ function TerminalClock() {
 
   return (
     <span className="tabular-nums text-zinc-400 text-data font-terminal tracking-wide">
-      <span className="text-zinc-500">{date.toUpperCase()}</span>
-      <span className="mx-1.5 text-terminal-border">|</span>
+      <span className="text-zinc-500 hidden sm:inline">{date.toUpperCase()}</span>
+      <span className="mx-1.5 text-terminal-border hidden sm:inline">|</span>
       <span className="text-zinc-300">{time}</span>
     </span>
   );
@@ -58,10 +58,10 @@ export default function TerminalLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-terminal-bg text-zinc-100 min-h-screen flex flex-col font-terminal text-xs">
+    <div className="bg-terminal-bg text-zinc-100 min-h-screen flex flex-col font-terminal text-sm">
       {/* -- HEADER BAR ------------------------------------------- */}
       <header className="border-b border-terminal-border bg-terminal-panel flex-shrink-0">
-        <div className="flex items-center justify-between px-4 h-10">
+        <div className="flex items-center justify-between px-4 h-12">
           {/* -- LEFT: Logo -- */}
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2 group">
@@ -71,19 +71,19 @@ export default function TerminalLayout({
               </span>
             </Link>
 
-            {/* -- NAV -- */}
+            {/* -- NAV (desktop) -- */}
             <nav className="hidden md:flex items-center">
               <span className="text-terminal-border mr-3">|</span>
               {NAV_ITEMS.map((item, i) => (
                 <span key={item.href} className="flex items-center">
                   {i > 0 && (
-                    <span className="text-terminal-border mx-0.5 text-xxs select-none">
+                    <span className="text-terminal-border mx-1 text-xxs select-none">
                       /
                     </span>
                   )}
                   <Link
                     href={item.href}
-                    className="px-2 py-1 text-xxs font-terminal uppercase tracking-widest text-zinc-500 hover:text-zinc-100 transition-colors duration-100"
+                    className="px-2 py-1.5 text-xxs font-terminal uppercase tracking-widest text-zinc-500 hover:text-zinc-100 transition-colors duration-100"
                   >
                     {item.label}
                   </Link>
@@ -92,24 +92,24 @@ export default function TerminalLayout({
             </nav>
           </div>
 
-          {/* -- RIGHT: Clock + Badge -- */}
+          {/* -- RIGHT: Clock -- */}
           <div className="flex items-center gap-4">
             <TerminalClock />
           </div>
         </div>
 
         {/* -- Mobile nav -- */}
-        <nav className="md:hidden flex items-center border-t border-terminal-border px-4 h-8 gap-1 overflow-x-auto">
+        <nav className="md:hidden flex items-center border-t border-terminal-border px-2 h-11 gap-0 overflow-x-auto">
           {NAV_ITEMS.map((item, i) => (
             <span key={item.href} className="flex items-center flex-shrink-0">
               {i > 0 && (
-                <span className="text-terminal-border mx-1 text-xxs select-none">
+                <span className="text-terminal-border mx-0.5 text-xxs select-none">
                   /
                 </span>
               )}
               <Link
                 href={item.href}
-                className="px-1.5 py-0.5 text-xxs font-terminal uppercase tracking-widest text-zinc-500 hover:text-zinc-100 transition-colors"
+                className="px-2.5 py-2 text-xxs font-terminal uppercase tracking-widest text-zinc-500 hover:text-zinc-100 transition-colors"
               >
                 {item.label}
               </Link>

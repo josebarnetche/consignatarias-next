@@ -113,10 +113,10 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-0">
       {/* ============================================================ */}
-      {/*  TICKER BAR                                                   */}
+      {/*  TICKER BAR (hidden on mobile — too dense)                    */}
       {/* ============================================================ */}
-      <div className="border-b border-terminal-border bg-terminal-panel flex-shrink-0">
-        <div className="flex items-center gap-0 px-4 h-7 overflow-x-auto text-data font-terminal tabular-nums whitespace-nowrap">
+      <div className="border-b border-terminal-border bg-terminal-panel flex-shrink-0 hidden md:block">
+        <div className="flex items-center gap-0 px-4 h-8 overflow-x-auto text-data font-terminal tabular-nums whitespace-nowrap">
           {/* INMAG */}
           <span className="text-zinc-500 text-xxs uppercase tracking-wider mr-1.5">
             INMAG
@@ -379,7 +379,7 @@ export default function HomePage() {
                 const dateDisplay = isToday
                   ? "HOY"
                   : r.date.slice(5).replace("-", "/");
-                const href = normalizeUrl(r.sourceUrl) || normalizeUrl(r.catalogUrl) || `/consignatarias/${r.consignatariaSlug}`;
+                const href = normalizeUrl(r.sourceUrl) || normalizeUrl(r.catalogUrl) || `/consignatarias/${r.consignatariaSlug || 'unknown'}`;
                 const isExternal = href.startsWith('http');
                 const Wrapper = isExternal ? 'a' : Link;
                 const wrapperProps = isExternal
@@ -658,10 +658,10 @@ export default function HomePage() {
       </div>
 
       {/* ============================================================ */}
-      {/*  FOOTER STATUS BAR                                            */}
+      {/*  FOOTER STATUS BAR (hidden on mobile)                         */}
       {/* ============================================================ */}
-      <div className="border-t border-terminal-border bg-terminal-panel flex-shrink-0">
-        <div className="flex items-center justify-between px-4 h-6 text-xxs font-terminal text-zinc-600">
+      <div className="border-t border-terminal-border bg-terminal-panel flex-shrink-0 hidden md:block">
+        <div className="flex items-center justify-between px-4 h-7 text-xxs font-terminal text-zinc-600">
           <div className="flex items-center gap-3">
             <span>
               ULT. ACT.:{" "}

@@ -30,8 +30,8 @@
   }
 
   :focus-visible {
-    outline: 1px solid #38bdf8;
-    outline-offset: -1px;
+    outline: 2px solid #38bdf8;
+    outline-offset: 1px;
   }
 
   ::selection {
@@ -68,6 +68,17 @@
   scrollbar-color: #3f3f46 #09090b;
 }
 
+/* --- Reduced motion --------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ============================================================
    TERMINAL STYLES — used inside (terminal) route group
    ============================================================ */
@@ -80,7 +91,7 @@
   }
 
   .terminal-panel-header {
-    @apply px-panel py-cell border-b border-terminal-border
+    @apply px-panel py-2 border-b border-terminal-border
            text-label font-terminal uppercase tracking-widest
            text-zinc-400;
   }
@@ -101,14 +112,14 @@
   }
 
   .terminal-table th {
-    @apply px-cell py-px2 text-left text-xxs font-medium
+    @apply px-cell py-1.5 text-left text-xxs font-medium
            uppercase tracking-wider text-zinc-500
            border-b border-terminal-border;
     white-space: nowrap;
   }
 
   .terminal-table td {
-    @apply px-cell py-px2 text-data text-zinc-300
+    @apply px-cell py-2 text-data text-zinc-300
            border-b border-terminal-border;
     white-space: nowrap;
   }
@@ -146,7 +157,7 @@
 
   /* --- Ticker / Tag --------------------------------------- */
   .terminal-tag {
-    @apply inline-flex items-center px-1.5 py-px
+    @apply inline-flex items-center px-1.5 py-0.5
            text-xxs font-terminal uppercase tracking-wider
            border border-terminal-border text-zinc-400;
     border-radius: 0;
@@ -163,11 +174,12 @@
   /* --- Buttons -------------------------------------------- */
   .terminal-btn {
     @apply inline-flex items-center justify-center
-           px-3 py-1 text-label font-terminal uppercase
+           px-3 py-1.5 text-label font-terminal uppercase
            tracking-wider border border-terminal-border
            text-zinc-300 bg-terminal-panel
            transition-colors duration-100;
     border-radius: 0;
+    min-height: 36px;
   }
 
   .terminal-btn:hover {
@@ -184,10 +196,11 @@
 
   /* --- Input ---------------------------------------------- */
   .terminal-input {
-    @apply w-full px-2 py-1 text-data font-terminal
+    @apply w-full px-3 py-1.5 text-data font-terminal
            bg-terminal-bg border border-terminal-border
            text-zinc-100 placeholder-zinc-600;
     border-radius: 0;
+    min-height: 36px;
   }
 
   .terminal-input:focus {
@@ -212,16 +225,16 @@
 
   /* --- Dividers ------------------------------------------- */
   .terminal-divider {
-    @apply border-t border-terminal-border my-1;
+    @apply border-t border-terminal-border my-2;
   }
 
   .terminal-divider-dashed {
-    @apply border-t border-dashed border-terminal-border my-1;
+    @apply border-t border-dashed border-terminal-border my-2;
   }
 
   /* --- Status dot ----------------------------------------- */
   .status-dot {
-    @apply inline-block w-1.5 h-1.5;
+    @apply inline-block w-2 h-2;
     border-radius: 0;
   }
 
