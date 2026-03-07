@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: '%s | Consignatarias.com.ar',
   },
   description:
-    'Calendario unificado de remates ganaderos de múltiples consignatarias argentinas. 440+ remates, 364 frigoríficos MAGYP, precios INMAG en tiempo real. Acceso libre.',
+    'Calendario unificado de remates ganaderos de múltiples consignatarias argentinas. 443 remates, 364 frigoríficos MAGYP, precios INMAG en tiempo real. Acceso libre.',
   keywords: [
     'remates ganaderos',
     'consignatarias argentina',
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     url: 'https://www.consignatarias.com.ar',
     siteName: 'Consignatarias.com.ar',
     title: 'Remates Ganaderos Argentina | Calendario 2026 | Consignatarias.com.ar',
-    description: 'Calendario unificado de 440+ remates ganaderos, 364 frigoríficos y precios INMAG. La plataforma de inteligencia del mercado ganadero argentino.',
+    description: 'Calendario unificado de 443 remates ganaderos, 364 frigoríficos y precios INMAG. La plataforma de inteligencia del mercado ganadero argentino.',
     images: [
       {
         url: '/og-image.png',
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Remates Ganaderos Argentina | Consignatarias.com.ar',
-    description: 'Calendario unificado de 440+ remates ganaderos y precios INMAG en tiempo real.',
+    description: 'Calendario unificado de 443 remates ganaderos y precios INMAG en tiempo real.',
     images: ['/og-image.png'],
   },
   alternates: {
