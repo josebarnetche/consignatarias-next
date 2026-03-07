@@ -14,6 +14,11 @@ next-env.d.ts
 .env
 .env.*
 
+# oauth / api credentials
+scripts/oauth-credentials.json
+scripts/oauth-token.json
+scripts/client_secret_*
+
 # os
 .DS_Store
 Thumbs.db
@@ -21,6 +26,12 @@ Thumbs.db
 # ide
 .vscode/
 .idea/
+
+# v4.0 future work (auction price extraction — not ready for production)
+scripts/extract-auction-prices.mjs
+scripts/transcript-*.txt
+src/lib/data/auction-results/
+.claude/v4-prototype/
 
 # research artifacts (not part of the app)
 research/

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: '%s | Consignatarias.com.ar',
   },
   description:
-    'Calendario unificado de remates ganaderos de múltiples consignatarias argentinas. 370+ remates, 364 frigoríficos MAGYP, precios INMAG en tiempo real. Acceso libre.',
+    'Calendario unificado de remates ganaderos de múltiples consignatarias argentinas. 440+ remates, 364 frigoríficos MAGYP, precios INMAG en tiempo real. Acceso libre.',
   keywords: [
     'remates ganaderos',
     'consignatarias argentina',
@@ -46,8 +46,8 @@ export const metadata: Metadata = {
     locale: 'es_AR',
     url: 'https://www.consignatarias.com.ar',
     siteName: 'Consignatarias.com.ar',
-    title: 'Remates Ganaderos Argentina | Consignatarias.com.ar',
-    description: 'Calendario unificado de 370+ remates ganaderos, 364 frigoríficos y precios INMAG. La plataforma de inteligencia del mercado ganadero argentino.',
+    title: 'Remates Ganaderos Argentina | Calendario 2026 | Consignatarias.com.ar',
+    description: 'Calendario unificado de 440+ remates ganaderos, 364 frigoríficos y precios INMAG. La plataforma de inteligencia del mercado ganadero argentino.',
     images: [
       {
         url: '/og-image.png',
@@ -60,14 +60,17 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Remates Ganaderos Argentina | Consignatarias.com.ar',
-    description: 'Calendario unificado de 370+ remates ganaderos y precios INMAG en tiempo real.',
+    description: 'Calendario unificado de 440+ remates ganaderos y precios INMAG en tiempo real.',
     images: ['/og-image.png'],
   },
   alternates: {
     canonical: 'https://www.consignatarias.com.ar',
+    languages: {
+      'es-AR': 'https://www.consignatarias.com.ar',
+    },
   },
   verification: {
-    // google: 'tu-codigo-de-verificacion',
+    google: 'yp0ZNCGnizkAx0V1VuG_eIsS3g-AavcABk64J4_neW8',
   },
   category: 'business',
 };
@@ -80,7 +83,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className="dark">
+    <html lang="es-AR" className="dark">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
