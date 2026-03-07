@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 const NAV_ITEMS = [
   { label: "INICIO", href: "/overview" },
   { label: "REMATES", href: "/remates" },
+  { label: "CONSIGNATARIAS", href: "/consignatarias" },
   { label: "FRIGORIFICOS", href: "/frigorificos" },
   { label: "MERCADO", href: "/mercado" },
 ] as const;

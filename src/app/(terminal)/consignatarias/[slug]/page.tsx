@@ -95,7 +95,7 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
       <BreadcrumbSchema
         items={[
           { name: 'Inicio', url: 'https://www.consignatarias.com.ar' },
-          { name: 'Remates', url: 'https://www.consignatarias.com.ar/remates' },
+          { name: 'Consignatarias', url: 'https://www.consignatarias.com.ar/consignatarias' },
           { name: profile.displayName, url: `https://www.consignatarias.com.ar/consignatarias/${canonical}` },
         ]}
       />

@@ -113,3 +113,11 @@ export function trackCTA(ctaName: string, location: string) {
     location,
   })
 }
+
+/** User clicked "Reclamar este perfil" */
+export function trackClaimCTA(slug: string, displayName: string) {
+  trackEvent('claim_cta_click', {
+    consignataria_slug: slug,
+    consignataria_name: displayName,
+  })
+}

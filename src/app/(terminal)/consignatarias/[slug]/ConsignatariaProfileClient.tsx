@@ -5,7 +5,7 @@ import Link from 'next/link'
 import type { Auction } from '@/lib/db/schema'
 import type { ConsignatariaProfile } from '@/lib/data/consignataria-slugs'
 import { normalizeUrl } from '@/lib/utils/url'
-import { trackProfileView, trackOutboundClick } from '@/lib/analytics'
+import { trackProfileView, trackOutboundClick, trackClaimCTA } from '@/lib/analytics'
 import {
   TYPE_COLORS,
   TYPE_LABELS,
@@ -319,8 +319,8 @@ export default function ConsignatariaProfileClient({ profile, auctions }: Consig
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-3">
-            <Link href="/remates" className="text-zinc-600 hover:text-accent transition-colors text-xxs font-terminal">
-              &larr; REMATES
+            <Link href="/consignatarias" className="text-zinc-600 hover:text-accent transition-colors text-xxs font-terminal">
+              &larr; DIRECTORIO
             </Link>
             <span className="text-terminal-border">&mdash;</span>
             <h1 className="text-zinc-200 text-label tracking-widest">{profile.displayName.toUpperCase()}</h1>
@@ -368,6 +368,38 @@ export default function ConsignatariaProfileClient({ profile, auctions }: Consig
               </div>
             </>
           )}
+        </div>
+      </div>
+
+      {/* ============================================================ */}
+      {/*  CLAIM CTA + COMPLETENESS                                     */}
+      {/* ============================================================ */}
+      <div className="terminal-panel mt-px">
+        <div className="px-panel py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="text-xxs text-zinc-600 uppercase font-terminal tracking-wider">Perfil completo:</span>
+              <span className="text-xxs tabular-nums font-terminal text-warning">30%</span>
+            </div>
+            <div className="h-1.5 w-full max-w-[200px] bg-zinc-900 rounded-full overflow-hidden">
+              <div className="h-full bg-warning/70 rounded-full" style={{ width: '30%' }} />
+            </div>
+            <p className="text-xxs text-zinc-600 font-terminal mt-1.5">
+              Faltan: logo, descripcion, telefono, email, whatsapp, sitio web
+            </p>
+          </div>
+          <a
+            href={`https://wa.me/5493773418130?text=${encodeURIComponent(
+              `Hola, quiero reclamar el perfil de ${profile.displayName} en consignatarias.com.ar/consignatarias/${profile.canonicalSlug}`
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackClaimCTA(profile.canonicalSlug, profile.displayName)}
+            className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-positive animate-pulse-live" />
+            Reclamar este perfil
+          </a>
         </div>
       </div>
 
