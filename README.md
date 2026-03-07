@@ -1,4 +1,4 @@
-# consignatarias.com
+# consignatarias.com.ar
 
 Plataforma de inteligencia del mercado ganadero argentino. Calendario unificado de remates, directorio de frigorificos y precios de mercado.
 
@@ -6,7 +6,7 @@ Plataforma de inteligencia del mercado ganadero argentino. Calendario unificado 
 
 ## Que es
 
-Consignatarias.com.ar agrega datos de multiples consignatarias de hacienda en una sola interfaz estilo Bloomberg Terminal. Un productor ganadero puede ver todos los remates del pais, filtrar por provincia o tipo, y acceder al calendario completo de cada consignataria.
+consignatarias.com.ar agrega datos de multiples consignatarias de hacienda en una sola interfaz estilo terminal en vivo. Un productor ganadero puede ver todos los remates del pais, filtrar por provincia o tipo, y acceder al calendario completo de cada consignataria.
 
 ## Que incluye
 
@@ -32,7 +32,7 @@ Consignatarias.com.ar agrega datos de multiples consignatarias de hacienda en un
 | Ruta | Descripcion |
 |------|-------------|
 | `/` | Landing page con previews de datos en vivo |
-| `/overview` | Dashboard general estilo Bloomberg Terminal |
+| `/overview` | Dashboard general con mercado, remates y frigorificos |
 | `/remates` | Feed cronologico de remates con filtros (provincia, tipo, periodo) |
 | `/consignatarias/[slug]` | Perfil de consignataria con calendario anual (~70 paginas estaticas) |
 | `/frigorificos` | Directorio de 364 frigorificos con busqueda y filtros |

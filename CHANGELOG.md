@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.6.0] — 2026-03-07
+
+### Added
+- **Live Terminal redesign** — new visual language across all dashboard pages
+  - Tinted backgrounds with subtle blue hue (`#0a0a0f`, `#16161d`)
+  - Emerald `live` color system for live indicators and badges
+  - CSS gradient bars replacing ASCII sparklines and bar charts
+  - Glass panels with backdrop blur and gradient backgrounds
+  - Row enter animations (`fade-in-up`) and stat count-up effects
+  - Scan-line activity bar with data counts (443 remates, 77 consignatarias, 12 provincias)
+  - Rounded corners (2px) across all components
+- **Sans-serif headings** — Inter font (`font-heading`) for section headers, improving visual hierarchy
+- **Active nav state** — current page highlighted with accent color and bottom indicator line
+- **Mobile nav improvements** — swipe gradient hints on horizontal scroll
+- **Live indicator system** — pulsing ring animation for live dots, live badges with glow effects
+
+### Changed
+- Logo font changed from monospace to sans-serif (Inter)
+- LIVE badge on Mercado panel now conditional — only shows when auctions are happening today
+- Activity bar shows data counts instead of always-on "Sistema Activo"
+- Province breakdown bars: ASCII `█░` replaced with CSS gradient fills
+- INMAG trend chart: ASCII sparkline replaced with proportional bar chart
+- Status dots changed from square to round (`border-radius: 50%`)
+- Consignatarias directory: Tipos column widened (100px → 120px) with overflow protection
+
+### Fixed
+- Consignatarias directory tags no longer overlap with provincias column
+- IderCor auction links fixed — 6 auctions had broken `sourceUrl` pointing to dead news article, now link to `/consignatarias/idercor` profile
+
 ## [0.5.0] — 2026-03-07
 
 ### Added
