@@ -12,6 +12,7 @@
  *   6. dolarapi.com — USD blue/oficial exchange rates
  *   7. ganaderiaynegocios.com — MAG cattle prices ($/kg vivo)
  *   8. magyp.gob.ar — Corn FOB prices (USD/tn)
+ *   9. UMC Haciendas Villaguay (umchv.ar/auctions/get-list) — Entre Rios, Corrientes, Buenos Aires
  */
 
 import { readFileSync, writeFileSync } from "node:fs";
@@ -422,6 +423,100 @@ async function scrapeMadelan() {
 }
 
 // ---------------------------------------------------------------------------
+// Source 9: UMC Haciendas Villaguay (umchv.ar)
+// ---------------------------------------------------------------------------
+
+async function scrapeUMCHV() {
+  console.log("[9/9] Scraping UMC Haciendas Villaguay...");
+  const year = new Date().getFullYear();
+  const html = await fetchHTML(`https://umchv.ar/auctions/get-list?year=${year}`);
+  if (!html) return [];
+
+  const auctions = [];
+
+  // Month abbreviations used by the site: "En." "Feb." "Mar." etc.
+  const monthAbbr = {
+    "en": "01", "feb": "02", "mar": "03", "abr": "04",
+    "may": "05", "jun": "06", "jul": "07", "ago": "08",
+    "sep": "09", "oct": "10", "nov": "11", "dic": "12",
+  };
+
+  // Extract auction blocks: each has <h5><a href="...">Title</a></h5> followed by <h6> tags
+  const blocks = html.split(/<h5>/gi).slice(1); // split on <h5>, skip preamble
+
+  for (const block of blocks) {
+    // Title
+    const titleMatch = block.match(/<a[^>]*>([^<]+)<\/a>/i);
+    const title = titleMatch ? titleMatch[1].trim() : "Remate UMC";
+
+    // URL
+    const urlMatch = block.match(/href="(\/auctions\/view\/[^"]+)"/i);
+    const auctionUrl = urlMatch ? `https://umchv.ar${urlMatch[1]}` : "https://umchv.ar/auctions";
+
+    // Date + time from <h6>: pattern like "Vie 09 En. 26 14:00hs"
+    const dateMatch = block.match(/(\d{1,2})\s+([\wáéíóú]+)\.?\s+(\d{2})\s+(\d{1,2}:\d{2})/i);
+    if (!dateMatch) continue;
+
+    const [, day, monthStr, yr, time] = dateMatch;
+    const monthKey = monthStr.toLowerCase().replace(".", "").slice(0, 3);
+    const month = monthAbbr[monthKey];
+    if (!month) continue;
+
+    const fullYear = parseInt(yr, 10) < 50 ? `20${yr}` : `19${yr}`;
+    const date = `${fullYear}-${month}-${day.padStart(2, "0")}`;
+    if (!isValidDate(date)) continue;
+
+    // Location: look for "Soc Rural de X" or city names in the block text
+    const cleanText = block.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+    let location = "Villaguay, Entre Rios";
+    let province = "ENTRE RIOS";
+
+    if (/mercedes/i.test(cleanText)) {
+      location = "Mercedes, Corrientes";
+      province = "CORRIENTES";
+    } else if (/goya/i.test(cleanText)) {
+      location = "Goya, Corrientes";
+      province = "CORRIENTES";
+    } else if (/corrientes/i.test(cleanText) && !/villaguay/i.test(cleanText)) {
+      location = "Corrientes, Corrientes";
+      province = "CORRIENTES";
+    } else if (/san\s*nicol[áa]s/i.test(cleanText)) {
+      location = "San Nicolas, Buenos Aires";
+      province = "BUENOS AIRES";
+    } else if (/rosario\s*del\s*tala/i.test(cleanText)) {
+      location = "Rosario del Tala, Entre Rios";
+    } else if (/villaguay/i.test(cleanText)) {
+      location = "Villaguay, Entre Rios";
+    }
+
+    const isTv = /\btv\b/i.test(title);
+
+    auctions.push({
+      title: `UMC HV — ${title}`,
+      consignatariaName: "UMC SA - Haciendas Villaguay SRL",
+      consignatariaSlug: "umc-haciendas-villaguay",
+      date,
+      time: time || null,
+      location,
+      province,
+      type: isTv ? "especial" : "general",
+      mainCategory: "mixto",
+      estimatedHeads: null,
+      description: isTv
+        ? "Remate televisado UMC Haciendas Villaguay"
+        : "Remate feria UMC Haciendas Villaguay",
+      youtubeUrl: null,
+      catalogUrl: null,
+      source: "web",
+      sourceUrl: auctionUrl,
+    });
+  }
+
+  console.log(`  Found ${auctions.length} UMC HV auctions`);
+  return auctions;
+}
+
+// ---------------------------------------------------------------------------
 // Source 7: Cattle prices from MAG (ganaderiaynegocios.com)
 // ---------------------------------------------------------------------------
 
@@ -588,19 +683,20 @@ async function main() {
   console.log(`\n=== Ganado Terminal Scraper — ${todayISO()} ===\n`);
 
   // Scrape all sources in parallel
-  const [cacg, colombo, ofarrell, lehmann, madelan, dollar, cattlePrices, cornPrice] = await Promise.all([
+  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, dollar, cattlePrices, cornPrice] = await Promise.all([
     scrapeCACG(),
     scrapeColombo(),
     scrapeOFarrell(),
     scrapeLehmann(),
     scrapeMadelan(),
+    scrapeUMCHV(),
     scrapeDollar(),
     scrapeCattlePrices(),
     scrapeCornPrice(),
   ]);
 
   // Combine all scraped auctions
-  const allScraped = [...cacg, ...colombo, ...ofarrell, ...lehmann, ...madelan];
+  const allScraped = [...cacg, ...colombo, ...ofarrell, ...lehmann, ...madelan, ...umchv];
   console.log(`\nTotal scraped: ${allScraped.length} auctions`);
 
   // Load existing data
@@ -614,6 +710,7 @@ async function main() {
     "ofarrell",
     "coop-lehmann",
     "madelan",
+    "umc-haciendas-villaguay",
   ]);
 
   // Keep curated entries that aren't from scrapable sources
