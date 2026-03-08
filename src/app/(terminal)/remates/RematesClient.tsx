@@ -515,9 +515,6 @@ export default function RematesPage() {
   )
   const upcomingAuctions = useMemo(
     () => auctions.filter((a) => a.date >= today).sort((a, b) => {
-      const aFeat = (a as Auction & { featured?: boolean }).featured ? 1 : 0
-      const bFeat = (b as Auction & { featured?: boolean }).featured ? 1 : 0
-      if (aFeat !== bFeat) return bFeat - aFeat
       return a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? '')
     }),
     [today]

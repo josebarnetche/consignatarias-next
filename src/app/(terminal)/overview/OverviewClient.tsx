@@ -393,7 +393,7 @@ export default function HomePage() {
                 const isToday = r.date === TODAY;
                 const dateDisplay = isToday
                   ? "HOY"
-                  : r.date.slice(5).replace("-", "/");
+                  : (() => { const [,m,d] = r.date.split('-'); return `${d}/${m}`; })();
                 const href = normalizeUrl(r.sourceUrl) || normalizeUrl(r.catalogUrl) || `/consignatarias/${r.consignatariaSlug || 'unknown'}`;
                 const isExternal = href.startsWith('http');
                 const Wrapper = isExternal ? 'a' : Link;
@@ -440,7 +440,7 @@ export default function HomePage() {
                 <div className="terminal-divider-dashed mt-2" />
                 <div className="mt-2">
                   <span className="text-xxs text-zinc-500 uppercase tracking-wider">
-                    Detalle remates hoy ({TODAY})
+                    Detalle remates hoy ({TODAY.split('-').reverse().join('/')})
                   </span>
                   {rematesToday.map((r) => (
                     <div

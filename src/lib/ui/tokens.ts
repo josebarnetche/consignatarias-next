@@ -100,7 +100,8 @@ export const MONTH_FULL = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'
 export function formatDateShort(dateStr: string): string {
   const d = new Date(dateStr + 'T12:00:00')
   const day = d.getDate().toString().padStart(2, '0')
-  return `${day} ${MONTH_NAMES[d.getMonth()]}`
+  const month = (d.getMonth() + 1).toString().padStart(2, '0')
+  return `${day}/${month}`
 }
 
 export function getCity(location: string): string {
