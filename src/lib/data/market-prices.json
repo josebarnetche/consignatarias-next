@@ -163,8 +163,8 @@
   },
   "usdBlue": {
     "current": 1415,
-    "prev": 1400,
-    "change": 1.1,
+    "prev": 1415,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
@@ -175,5 +175,5 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-03-07"
+  "lastUpdate": "2026-03-08"
 }
