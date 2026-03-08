@@ -1,6 +1,5 @@
 import "./globals.css";
 import { Metadata } from 'next';
-import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import AnalyticsProvider from '@/components/AnalyticsProvider';
@@ -96,6 +95,13 @@ export default function RootLayout({
   return (
     <html lang="es-AR" className="dark">
       <head>
+        {/* Google tag (gtag.js) — standard async placement per Google docs */}
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`,
+          }}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -123,13 +129,6 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-          strategy="afterInteractive"
-        />
-        <Script id="ga4-init" strategy="afterInteractive">
-          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
-        </Script>
         <AnalyticsProvider />
         {children}
         <Analytics />
