@@ -65,7 +65,7 @@ function IconTrending({ className = "" }: { className?: string }) {
 /* ================================================================== */
 /*  DATA                                                               */
 /* ================================================================== */
-const TODAY = "2026-02-26";
+const TODAY = new Date().toISOString().slice(0, 10);
 
 const rematesProximos = rematesData.filter(
   (r) => r.date >= TODAY && r.status === "scheduled"

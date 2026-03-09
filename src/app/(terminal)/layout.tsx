@@ -77,7 +77,7 @@ export default function TerminalLayout({
       <div className="activity-bar hidden md:flex justify-between">
         <div className="flex items-center gap-3">
           <span className="text-zinc-500 tracking-widest uppercase">
-            443 REMATES
+            366 REMATES
           </span>
           <span className="text-terminal-border">&middot;</span>
           <span className="text-zinc-500 tracking-widest uppercase">

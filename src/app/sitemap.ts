@@ -1,17 +1,9 @@
 import { MetadataRoute } from 'next'
 import { getAllCanonicalSlugs } from '@/lib/data/consignataria-slugs'
 
-const PROVINCES = [
-  'buenos-aires', 'cordoba', 'santa-fe', 'corrientes', 'entre-rios',
-  'chaco', 'formosa', 'misiones', 'la-pampa', 'san-luis', 'mendoza',
-  'salta', 'jujuy', 'tucuman', 'santiago-del-estero', 'catamarca',
-  'la-rioja', 'san-juan', 'neuquen', 'rio-negro', 'chubut',
-  'santa-cruz', 'tierra-del-fuego'
-]
-
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.consignatarias.com.ar'
-  
+
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
     {
@@ -52,22 +44,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
-  // Province pages for remates
-  const provincePages: MetadataRoute.Sitemap = PROVINCES.map((province) => ({
-    url: `${baseUrl}/remates/${province}`,
-    lastModified: new Date(),
-    changeFrequency: 'daily' as const,
-    priority: 0.7,
-  }))
-
-  // Province pages for frigorificos
-  const frigorificoProvincePages: MetadataRoute.Sitemap = PROVINCES.map((province) => ({
-    url: `${baseUrl}/frigorificos/${province}`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly' as const,
-    priority: 0.6,
-  }))
-
   // Consignataria profile pages
   const consignatariaPages: MetadataRoute.Sitemap = getAllCanonicalSlugs().map((slug) => ({
     url: `${baseUrl}/consignatarias/${slug}`,
@@ -78,8 +54,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticPages,
-    ...provincePages,
-    ...frigorificoProvincePages,
     ...consignatariaPages,
   ]
 }

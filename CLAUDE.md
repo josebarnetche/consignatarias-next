@@ -8,8 +8,8 @@
 
 ### What it does
 
-- **Unified auction calendar** — 440+ remates (cattle auctions) searchable by province, type, date
-- **Consignataria profiles** — 70 dedicated pages with annual calendars, heatmaps, auction history
+- **Unified auction calendar** — 366+ remates (cattle auctions) searchable by province, type, date
+- **Consignataria profiles** — 74 dedicated pages with annual calendars, heatmaps, auction history
 - **Frigorifico directory** — 364 slaughterhouses from SENASA/MAGYP data
 - **Market prices** — INMAG index ($/kg vivo), category prices, corn FOB, USD rates
 - **Daily scraping** — Automated data collection at 14:00 ART via GitHub Actions
@@ -29,9 +29,11 @@
 | Framework | Next.js 15 (App Router, SSG) |
 | Styling | Tailwind CSS 3.4 (terminal dark theme) |
 | Language | TypeScript (strict mode) |
+| Database | Supabase (project: `nyqkgorazkwcufkzxmhd`) — migration target for v0.8.0 |
 | Hosting | Vercel (Hobby plan, zero serverless) |
 | CI/CD | GitHub Actions (daily scraper) |
 | Analytics | GA4 (G-6CZMZH9S6Y) |
+| MCP | Supabase MCP connected for DB management |
 
 ### Architecture
 
@@ -43,7 +45,7 @@
                                                     CDN edge (Vercel)
 ```
 
-**Key point:** No database, no API routes, no serverless functions. All data lives in JSON files. Build generates static HTML. TTFB < 50ms. Cost: $0.
+**Current state (v0.7.0):** No database yet — all data lives in JSON files. Build generates static HTML. TTFB < 50ms. Cost: $0. Supabase project provisioned for v0.8.0 migration.
 
 ---
 
@@ -61,7 +63,7 @@ interface Auction {
   time: string | null             // "HH:MM" or null
   location: string                // "Ciudad, Provincia"
   province: string                // uppercase, no accents
-  type: 'invernada' | 'cria' | 'reproductores' | 'general' | 'especial'
+  type: 'invernada' | 'cria' | 'general' | 'especial'
   mainCategory: 'terneros' | 'novillos' | 'vaca_gorda' | 'vaquillonas' | 'toros' | 'mixto'
   estimatedHeads: number | null
   description: string
@@ -131,7 +133,7 @@ IderCor, Etchevehere Rural, Coop. La Ganadera, Tradición Ganadera, Nangapiry SA
 
 | File | Records | Source |
 |------|---------|--------|
-| `remates.json` | 440+ auctions | Scraper + curated |
+| `remates.json` | 366 auctions | Scraper + curated |
 | `frigorificos.json` | 364 | SENASA/MAGYP |
 | `consignatarias.json` | 56 | Registro público + research |
 | `market-prices.json` | INMAG + 6 categories | Scraped daily |
@@ -177,7 +179,7 @@ consignatarias/
 │   ├── app/
 │   │   ├── page.tsx                    # Landing page
 │   │   ├── layout.tsx                  # Root layout + GA4
-│   │   ├── sitemap.ts                  # Dynamic sitemap (~140 URLs)
+│   │   ├── sitemap.ts                  # Dynamic sitemap (~80 URLs)
 │   │   ├── robots.ts                   # robots.txt
 │   │   ├── globals.css                 # Terminal + landing styles
 │   │   └── (terminal)/                 # Route group — dashboard
@@ -198,7 +200,7 @@ consignatarias/
 │   │   └── AnalyticsProvider.tsx       # GA4
 │   └── lib/
 │       ├── data/                       # JSON data files
-│       │   ├── remates.json            # 440+ auctions
+│       │   ├── remates.json            # 366 auctions
 │       │   ├── consignataria-slugs.ts  # Canonical slug map
 │       │   ├── frigorificos.json       # 364 frigorificos
 │       │   ├── consignatarias.json     # 56 consignatarias
@@ -215,10 +217,11 @@ consignatarias/
 ├── public/                             # Static assets
 ├── .github/workflows/
 │   └── scrape-auctions.yml             # Cron: 14:00 ART daily
-├── vercel.json                         # Redirects, headers
+├── .eslintrc.json                      # ESLint config (next/core-web-vitals)
+├── vercel.json                         # Redirects, cache headers (single source of truth)
 ├── package.json
 ├── tailwind.config.js
-└── next.config.js
+└── next.config.js                      # Security headers only (no redirects)
 ```
 
 ---
@@ -243,17 +246,17 @@ consignatarias/
 Featured auctions get special treatment:
 
 - `★ PRO` badge with amber/gold styling
-- Pinned to top of feed within time period
+- Chronological order (NOT pinned to top), just visually highlighted
 - 3-line expanded layout with description
 - Left accent bar in amber
 
-**Implementation:** `featured: true` in auction schema. Sort puts featured first within same date range.
+**Implementation:** `featured: true` in auction schema. Sort is purely chronological — PRO listings are visually distinct but not reordered.
 
 ---
 
 ## SEO
 
-- **Sitemap:** Dynamic, ~140 URLs (static + provinces + consignatarias)
+- **Sitemap:** Dynamic, ~80 URLs (static pages + consignataria profiles)
 - **JSON-LD:** Organization, WebSite, Dataset, Event, LocalBusiness, Breadcrumb
 - **Open Graph / Twitter Cards:** All pages
 - **Canonical URLs:** non-www → www redirect (301)
@@ -280,7 +283,7 @@ pnpm start
 node scripts/scrape-auctions.mjs
 ```
 
-**No database needed.** All data from JSON files.
+**No database yet.** All data from JSON files. Supabase migration planned for v0.8.0.
 
 ---
 
