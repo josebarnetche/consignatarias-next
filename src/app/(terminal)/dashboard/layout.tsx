@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase'
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -10,6 +10,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect('/login')
   }
 
+  // Check if user has any role
   const service = createServiceClient()
   const { data: role } = await service
     .from('user_roles')
@@ -17,8 +18,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     .eq('user_id', user.id)
     .single()
 
-  if (!role || role.role !== 'admin') {
-    redirect('/overview')
+  // Admin users go to admin panel
+  if (role?.role === 'admin') {
+    redirect('/admin/claims')
   }
 
   return <>{children}</>

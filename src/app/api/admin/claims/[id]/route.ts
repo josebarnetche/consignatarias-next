@@ -7,7 +7,7 @@ import { sendClaimApproved, sendClaimRejected } from '@/lib/email'
 type Props = { params: Promise<{ id: string }> }
 
 export async function PATCH(req: NextRequest, { params }: Props) {
-  const auth = requireAdmin(req)
+  const auth = await requireAdmin()
   if (!auth.authorized) return auth.response!
 
   const { id } = await params
@@ -77,6 +77,36 @@ export async function PATCH(req: NextRequest, { params }: Props) {
       .eq('consignataria_slug', claim.consignataria_slug)
       .eq('status', 'pending')
       .neq('id', id)
+
+    // Auto-invite: create Supabase Auth user + owner role
+    try {
+      const { data: authUser, error: createError } = await supabase.auth.admin.createUser({
+        email: claim.claimant_email,
+        email_confirm: true,
+      })
+
+      if (!createError && authUser?.user) {
+        await supabase.from('user_roles').upsert({
+          user_id: authUser.user.id,
+          email: claim.claimant_email,
+          role: 'owner',
+        }, { onConflict: 'user_id' })
+      } else if (createError?.message?.includes('already been registered')) {
+        // User already exists — ensure they have owner role
+        const { data: existingUser } = await supabase.auth.admin.listUsers()
+        const found = existingUser?.users?.find(u => u.email === claim.claimant_email)
+        if (found) {
+          await supabase.from('user_roles').upsert({
+            user_id: found.id,
+            email: claim.claimant_email,
+            role: 'owner',
+          }, { onConflict: 'user_id' })
+        }
+      }
+    } catch (e) {
+      console.error('Auto-invite error:', e)
+      // Non-blocking — claim is already approved
+    }
 
     sendClaimApproved(claim.claimant_email, displayName, claim.consignataria_slug)
   } else {

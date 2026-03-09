@@ -3,7 +3,7 @@ import { createServiceClient } from '@/lib/supabase'
 import { requireAdmin } from '@/lib/admin-auth'
 
 export async function GET(req: NextRequest) {
-  const auth = requireAdmin(req)
+  const auth = await requireAdmin()
   if (!auth.authorized) return auth.response!
 
   const status = req.nextUrl.searchParams.get('status') || 'all'

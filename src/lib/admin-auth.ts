@@ -1,34 +1,72 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase-server'
+import { createServiceClient } from '@/lib/supabase'
 
 interface AuthResult {
   authorized: boolean
   response?: NextResponse
+  userId?: string
+  email?: string
+  role?: string
 }
 
-export function requireAdmin(req: NextRequest): AuthResult {
-  const secret = process.env.ADMIN_SECRET
-  if (!secret) {
+/**
+ * Require admin role. Reads session from cookies (no request param needed).
+ * Uses service client to check user_roles since RLS only allows own-row reads.
+ */
+export async function requireAdmin(): Promise<AuthResult> {
+  const supabase = await createClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+
+  if (error || !user) {
     return {
       authorized: false,
-      response: NextResponse.json(
-        { error: 'Admin auth not configured' },
-        { status: 500 },
-      ),
+      response: NextResponse.json({ error: 'No autorizado' }, { status: 401 }),
     }
   }
 
-  const header = req.headers.get('authorization')
-  const token = header?.startsWith('Bearer ') ? header.slice(7) : null
+  const service = createServiceClient()
+  const { data: role } = await service
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', user.id)
+    .single()
 
-  if (!token || token !== secret) {
+  if (!role || role.role !== 'admin') {
     return {
       authorized: false,
-      response: NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 },
-      ),
+      response: NextResponse.json({ error: 'Acceso denegado' }, { status: 403 }),
     }
   }
 
-  return { authorized: true }
+  return { authorized: true, userId: user.id, email: user.email, role: 'admin' }
+}
+
+/**
+ * Require any authenticated user (admin or owner).
+ */
+export async function requireAuth(): Promise<AuthResult> {
+  const supabase = await createClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+
+  if (error || !user) {
+    return {
+      authorized: false,
+      response: NextResponse.json({ error: 'No autorizado' }, { status: 401 }),
+    }
+  }
+
+  const service = createServiceClient()
+  const { data: role } = await service
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', user.id)
+    .single()
+
+  return {
+    authorized: true,
+    userId: user.id,
+    email: user.email,
+    role: role?.role ?? undefined,
+  }
 }

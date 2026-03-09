@@ -80,6 +80,8 @@ export async function sendClaimApproved(email: string, displayName: string, slug
       <h2>Tu perfil fue aprobado</h2>
       <p>Tu solicitud de verificación del perfil de <strong>${safeName}</strong> fue aprobada.</p>
       <p><a href="${APP_URL}/consignatarias/${slug}">Ver tu perfil</a></p>
+      <p>Ya podés acceder a tu panel de consignataria:</p>
+      <p><a href="${APP_URL}/login" style="background:#22c55e;color:#fff;padding:8px 16px;text-decoration:none;border-radius:4px;display:inline-block">Acceder a mi panel</a></p>
       <hr>
       <p style="color:#888;font-size:12px">Consignatarias.com.ar — Directorio ganadero</p>
     `,

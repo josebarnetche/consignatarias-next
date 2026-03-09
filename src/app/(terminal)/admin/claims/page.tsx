@@ -19,31 +19,18 @@ interface Claim {
 type Tab = 'pending' | 'approved' | 'rejected' | 'all'
 
 export default function AdminClaimsPage() {
-  const [secret, setSecret] = useState('')
-  const [authenticated, setAuthenticated] = useState(false)
   const [claims, setClaims] = useState<Claim[]>([])
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState<Tab>('pending')
   const [actionError, setActionError] = useState('')
 
-  useEffect(() => {
-    const stored = sessionStorage.getItem('admin_secret')
-    if (stored) {
-      setSecret(stored)
-      setAuthenticated(true)
-    }
-  }, [])
-
   const fetchClaims = useCallback(async (tab: Tab) => {
     setLoading(true)
     setActionError('')
     try {
-      const res = await fetch(`/api/admin/claims?status=${tab}`, {
-        headers: { Authorization: `Bearer ${secret}` },
-      })
-      if (res.status === 401) {
-        setAuthenticated(false)
-        sessionStorage.removeItem('admin_secret')
+      const res = await fetch(`/api/admin/claims?status=${tab}`)
+      if (res.status === 401 || res.status === 403) {
+        window.location.href = '/login'
         return
       }
       const data = await res.json()
@@ -53,17 +40,11 @@ export default function AdminClaimsPage() {
     } finally {
       setLoading(false)
     }
-  }, [secret])
+  }, [])
 
   useEffect(() => {
-    if (authenticated) fetchClaims(activeTab)
-  }, [authenticated, activeTab, fetchClaims])
-
-  function handleLogin(e: React.FormEvent) {
-    e.preventDefault()
-    sessionStorage.setItem('admin_secret', secret)
-    setAuthenticated(true)
-  }
+    fetchClaims(activeTab)
+  }, [activeTab, fetchClaims])
 
   async function handleReview(id: string, status: 'approved' | 'rejected') {
     const notes = status === 'rejected' ? prompt('Motivo del rechazo (opcional):') ?? null : null
@@ -71,10 +52,7 @@ export default function AdminClaimsPage() {
     try {
       const res = await fetch(`/api/admin/claims/${id}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${secret}`,
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status, admin_notes: notes || '' }),
       })
       if (!res.ok) {
@@ -88,37 +66,6 @@ export default function AdminClaimsPage() {
     } finally {
       setLoading(false)
     }
-  }
-
-  if (!authenticated) {
-    return (
-      <div className="max-w-sm mx-auto px-4 py-12">
-        <form onSubmit={handleLogin} className="terminal-panel">
-          <div className="terminal-panel-header">
-            <span className="text-zinc-200 text-label tracking-widest">ADMIN — VERIFICACIONES</span>
-          </div>
-          <div className="px-panel py-4 space-y-3">
-            <label className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider">
-              Admin Secret
-            </label>
-            <input
-              type="password"
-              value={secret}
-              onChange={e => setSecret(e.target.value)}
-              className="terminal-input w-full"
-              placeholder="Ingresá el secreto"
-              autoFocus
-            />
-            <button
-              type="submit"
-              className="w-full px-4 py-2 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors"
-            >
-              Ingresar
-            </button>
-          </div>
-        </form>
-      </div>
-    )
   }
 
   const TABS: { key: Tab; label: string }[] = [
