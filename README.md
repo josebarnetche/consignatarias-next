@@ -10,8 +10,9 @@ consignatarias.com.ar agrega datos de multiples consignatarias de hacienda en un
 
 ## Que incluye
 
-- **443 remates** de 77 consignatarias en 12 provincias (Feb–Dic 2026)
-- **77 perfiles de consignatarias** con calendario anual, heatmap y distribucion por tipo
+- **366+ remates** de 74 consignatarias en 12 provincias (Feb–Dic 2026)
+- **74 perfiles de consignatarias** con calendario anual, heatmap y distribucion por tipo
+- **Verificacion de perfiles** — los dueños pueden solicitar verificacion y gestionar su perfil
 - **364 frigorificos** con datos de SENASA/MAGYP (matricula, etapa, CUIT)
 - **Precios de mercado** con indice INMAG, categorias ganaderas, USD blue/oficial
 - **Remates PRO** — sistema de destacados con tratamiento visual amber/gold
@@ -20,10 +21,13 @@ consignatarias.com.ar agrega datos de multiples consignatarias de hacienda en un
 
 ## Stack
 
-- **Next.js 15** — App Router, static generation (SSG)
+- **Next.js 15** — App Router, static generation (SSG) + API routes
 - **Tailwind CSS 3.4** — Terminal dark theme con colores custom
 - **TypeScript** — Strict mode
-- **Vercel** — Deploy automatico, zero serverless functions
+- **Supabase** — PostgreSQL para consignatarias y solicitudes de verificacion
+- **Resend** — Emails transaccionales (confirmacion, notificacion admin, aprobacion/rechazo)
+- **Zod** — Validacion de schemas
+- **Vercel** — Deploy automatico
 - **GitHub Actions** — Scraper diario (CACG, Colombo y Colombo, O'Farrell, Madelan, dolarapi)
 - **GA4** — Google Analytics (G-6CZMZH9S6Y)
 
@@ -34,9 +38,11 @@ consignatarias.com.ar agrega datos de multiples consignatarias de hacienda en un
 | `/` | Landing page con previews de datos en vivo |
 | `/overview` | Dashboard general con mercado, remates y frigorificos |
 | `/remates` | Feed cronologico de remates con filtros (provincia, tipo, periodo) |
-| `/consignatarias/[slug]` | Perfil de consignataria con calendario anual (~70 paginas estaticas) |
+| `/consignatarias/[slug]` | Perfil de consignataria con calendario anual (~74 paginas estaticas) |
+| `/consignatarias/[slug]/verificar` | Formulario de verificacion de perfil |
 | `/frigorificos` | Directorio de 364 frigorificos con busqueda y filtros |
 | `/mercado` | Precios de mercado, indice INMAG, cotizacion USD |
+| `/admin/claims` | Dashboard admin para revisar solicitudes de verificacion |
 
 ## Perfil de Consignataria
 
@@ -46,7 +52,23 @@ Cada consignataria tiene una pagina dedicada en `/consignatarias/[slug]` que inc
 - **Calendario anual** — Heatmap de 12 meses mostrando densidad de remates por mes
 - **Distribucion por tipo** — Barras visuales (Invernada, Cria, Reproductores, General, Especial)
 - **Cronograma completo** — Remates agrupados por mes con fecha, hora, titulo, tipo, cabezas estimadas, status
+- **Verificacion** — CTA "Verificar este perfil" para que los dueños reclamen su perfil
 - **Structured data** — BreadcrumbSchema, LocalBusinessSchema, EventSchema (Google rich results)
+
+## Verificacion de Perfiles
+
+Los dueños de consignatarias pueden verificar su perfil:
+
+1. Click en "Verificar este perfil" en la pagina del perfil
+2. Completan formulario con email, nombre, CUIT, telefono y rol
+3. Reciben confirmacion por email (Resend)
+4. Admin revisa en `/admin/claims` (autenticacion por `ADMIN_SECRET`)
+5. Al aprobar: perfil verificado, email de notificacion enviado
+
+**API:**
+- `POST /api/claims` — enviar solicitud (publico)
+- `GET /api/admin/claims?status=pending` — listar solicitudes (admin)
+- `PATCH /api/admin/claims/[id]` — aprobar/rechazar (admin)
 
 ### Sistema de slugs canonicos
 
@@ -153,7 +175,7 @@ pnpm build        # Genera ~80 paginas estaticas
 pnpm start        # Serve produccion local
 ```
 
-No requiere base de datos — todos los datos se leen de archivos JSON estaticos en `src/lib/data/`.
+Requiere `.env.local` con credenciales de Supabase, Resend y admin. Los datos de remates/frigorificos/mercado se leen de archivos JSON estaticos en `src/lib/data/`.
 
 ## Scraper
 
@@ -186,7 +208,7 @@ Para ejecutarlo manualmente desde GitHub: Actions → "Scrape Auctions & Update 
                                                     CDN edge (Vercel)
 ```
 
-Todo es estatico. No hay base de datos, no hay API routes, no hay serverless functions. El build genera HTML puro que se sirve desde el edge de Vercel. Costo: $0 (Vercel Hobby). TTFB < 50ms.
+Arquitectura hibrida: paginas estaticas (SSG) para remates, frigorificos y mercado + Supabase para consignatarias y solicitudes de verificacion + API routes para el flujo de verificacion. Costo: $0 (Vercel Hobby + Supabase Free). TTFB < 50ms.
 
 ## Provincias cubiertas
 

@@ -6,6 +6,66 @@ Built in 11 days (Feb 26 – Mar 8, 2026). 41 commits. One human, one AI.
 
 ---
 
+## [0.8.1] — 2026-03-09
+
+### Verificación de perfiles — Supabase, Resend, admin dashboard
+
+> `68e47bd` — feat: v0.8.1 claim flow — Supabase + Resend + admin dashboard
+> `b86071e` — refactor: rename reclamar → verificar across claim flow
+
+La primera feature que conecta la plataforma con los dueños reales de las consignatarias. Cualquier persona puede solicitar la verificación de un perfil — sin necesidad de cuenta.
+
+**Flujo de verificación:**
+1. El usuario visita `/consignatarias/[slug]` y ve el botón "Verificar este perfil"
+2. Completa el formulario en `/consignatarias/[slug]/verificar` (email, nombre, CUIT, teléfono, rol)
+3. Recibe email de confirmación vía Resend
+4. Admin recibe notificación por email
+5. Admin revisa en `/admin/claims` — aprueba o rechaza
+6. Al aprobar: perfil marcado como verificado, otros reclamos pendientes auto-rechazados
+7. El solicitante recibe email de aprobación/rechazo
+
+**Arquitectura híbrida:**
+- Supabase para `consignatarias` (74 registros) y `consignataria_claims` (nuevas solicitudes)
+- JSON files sin cambios — remates, frigoríficos, precios de mercado siguen estáticos
+- Scraper diario no fue tocado
+- API routes: `POST /api/claims` (público), `GET /api/admin/claims`, `PATCH /api/admin/claims/[id]`
+
+**Admin dashboard (`/admin/claims`):**
+- Autenticación por Bearer token (`ADMIN_SECRET` env var) — sin sistema de auth completo
+- Tabs: Pendientes / Aprobados / Rechazados / Todos
+- Aprobar/Rechazar con nota opcional
+- Terminal dark theme consistente con el resto del sitio
+
+**Emails transaccionales (Resend):**
+- Confirmación de solicitud al solicitante
+- Notificación al admin (`agro@memola.com.ar`)
+- Aprobación con link al perfil
+- Rechazo con motivo opcional
+- Lazy init del SDK (no rompe el build sin API key)
+- `escapeHtml()` en todos los inputs de usuario
+
+**Seguridad:**
+- Zod validation en todos los inputs
+- UUID validation en admin routes
+- CUIT regex (`^\d{2}-\d{8}-\d$`)
+- RLS habilitado en ambas tablas (sin políticas anon — solo `service_role`)
+- Unique partial index previene duplicados pendientes
+- Email normalization (lowercase + trim)
+
+**Dependencias nuevas:**
+- `@supabase/supabase-js` — cliente Supabase
+- `resend` — emails transaccionales
+- `zod` — validación de schemas
+
+**GA4 tracking nuevo:**
+- `claim_cta_click` — click en "Verificar este perfil"
+- `claim_submit` — envío del formulario
+- `claim_success` — solicitud exitosa
+
+**Cobertura:** 366 remates, 74 consignatarias verificables, 164 páginas estáticas (87 existentes + 74 verificar + admin + API).
+
+---
+
 ## [0.7.0] — 2026-03-08
 
 ### SEO, locale, and the 9th scraper source
@@ -347,19 +407,20 @@ No state management. No ORM. No component library. No testing framework. Just Ne
 
 ## The numbers
 
-| Metric | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) |
-|--------|-----------------|-----------------|
-| Auctions | 0 → 92 → 414 | 450 |
-| Consignatarias | 49 | 77 |
-| Profile pages | 0 | 70 |
-| Scraper sources | 0 → 6 | 9 |
-| Provinces | 10 | 12 |
-| Frigoríficos | 364 | 364 |
-| Static HTML pages | ~10 | ~80 |
-| Dependencies | 3 | 5 |
-| DevDependencies | 7 | 11 |
-| Daily scrapes | 0 | 12 (and counting) |
-| Hosting cost | $0 | $0 |
+| Metric | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) | 0.8.1 (Mar 9) |
+|--------|-----------------|-----------------|-----------------|
+| Auctions | 0 → 92 → 414 | 450 | 366 |
+| Consignatarias | 49 | 77 | 74 (verificables) |
+| Profile pages | 0 | 70 | 74 + 74 verificar |
+| Scraper sources | 0 → 6 | 9 | 9 |
+| Provinces | 10 | 12 | 12 |
+| Frigoríficos | 364 | 364 | 364 |
+| Static HTML pages | ~10 | ~80 | ~164 |
+| Dependencies | 3 | 5 | 8 |
+| DevDependencies | 7 | 11 | 11 |
+| Daily scrapes | 0 | 12 (and counting) | 13+ |
+| Database | none | none | Supabase (2 tables) |
+| Hosting cost | $0 | $0 | $0 |
 
 ---
 
