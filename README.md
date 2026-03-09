@@ -10,7 +10,7 @@ consignatarias.com.ar agrega datos de multiples consignatarias de hacienda en un
 
 ## Que incluye
 
-- **366+ remates** de 74 consignatarias en 12 provincias (Feb–Dic 2026)
+- **384+ remates** de 67 consignatarias en 10 provincias (Ene–Dic 2026)
 - **74 perfiles de consignatarias** con calendario anual, heatmap y distribucion por tipo
 - **Verificacion de perfiles** — los dueños pueden solicitar verificacion y gestionar su perfil
 - **364 frigorificos** con datos de SENASA/MAGYP (matricula, etapa, CUIT)
@@ -98,7 +98,11 @@ Las consignatarias pueden destacar remates con el sistema PRO:
 | [Colombo y Colombo](https://www.colomboycolombo.com.ar/remates) | Buenos Aires, Santa Fe, Corrientes |
 | [O'Farrell](https://www.ivanofarrell.com.ar/remates) | Chaco, Santiago del Estero |
 | [Madelan](https://www.madelan.com.ar/proximos) | NEA (streaming) |
+| [Coop. Lehmann](https://www.cooperativalehmann.coop/hacienda/remates) | Santa Fe |
+| [UMC Haciendas Villaguay](https://umchv.ar) | Entre Rios, Corrientes |
 | [dolarapi.com](https://dolarapi.com/) | USD blue y oficial |
+| [mercadoagroganadero.com.ar](https://www.mercadoagroganadero.com.ar) | INMAG ($/kg vivo) |
+| [MAGYP](https://www.magyp.gob.ar) | Maiz FOB (USD/tn) |
 
 ### Datos curados (manuales)
 
@@ -147,7 +151,7 @@ src/
 │   └── seo/JsonLd.tsx                 # Schema.org structured data components
 └── lib/
     ├── data/
-    │   ├── remates.json               # 442 auctions
+    │   ├── remates.json               # 384 auctions
     │   ├── consignataria-slugs.ts     # Canonical slug map (109 → 70 entities)
     │   ├── frigorificos.json          # 364 frigorificos
     │   ├── consignatarias.json        # 56 consignatarias con CUIT
@@ -160,7 +164,7 @@ src/
         └── url.ts                     # URL normalization
 
 scripts/
-└── scrape-auctions.mjs               # Daily scraper (6 sources)
+└── scrape-auctions.mjs               # Daily scraper (9 sources + CITY_PROVINCE_MAP correction)
 
 .github/workflows/
 └── scrape-auctions.yml               # Cron: 14:00 ART daily
@@ -188,6 +192,8 @@ node scripts/scrape-auctions.mjs
 
 Flujo: scraper → commit automatico → Vercel rebuild → sitio actualizado.
 
+**Correccion de provincias:** El scraper incluye un `CITY_PROVINCE_MAP` (~70 ciudades) que corrige provincias mal asignadas por la API de CACG o entradas curadas con errores. La correccion se aplica automaticamente en cada ejecucion, antes de la deduplicacion.
+
 Para ejecutarlo manualmente desde GitHub: Actions → "Scrape Auctions & Update Data" → Run workflow.
 
 ## SEO
@@ -212,7 +218,9 @@ Arquitectura hibrida: paginas estaticas (SSG) para remates, frigorificos y merca
 
 ## Provincias cubiertas
 
-Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misiones, Neuquen, San Luis, Santa Fe, Santiago del Estero.
+Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misiones, San Luis, Santa Fe.
+
+*Nota: Neuquen y Santiago del Estero no tienen remates activos actualmente. Apareceran automaticamente cuando se agreguen remates en esas provincias.*
 
 ## Licencia
 

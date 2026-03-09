@@ -115,6 +115,94 @@ const PROVINCE_MAP = {
   "24": "CAPITAL FEDERAL",
 };
 
+// City-to-province correction map — overrides bad API/curated province data
+const CITY_PROVINCE_MAP = {
+  // BUENOS AIRES
+  "AYACUCHO": "BUENOS AIRES",
+  "AZUL": "BUENOS AIRES",
+  "CARHUE": "BUENOS AIRES",
+  "CASTELLI": "BUENOS AIRES",
+  "CHIVILCOY": "BUENOS AIRES",
+  "CORONEL BRANDSEN": "BUENOS AIRES",
+  "CORONEL SUAREZ": "BUENOS AIRES",
+  "DAIREAUX": "BUENOS AIRES",
+  "GENERAL ALVEAR": "BUENOS AIRES",
+  "GENERAL BELGRANO": "BUENOS AIRES",
+  "GENERAL JUAN MADARIAGA": "BUENOS AIRES",
+  "GENERAL VILLEGAS": "BUENOS AIRES",
+  "LA PLATA": "BUENOS AIRES",
+  "LAPRIDA": "BUENOS AIRES",
+  "LAS FLORES": "BUENOS AIRES",
+  "NECOCHEA": "BUENOS AIRES",
+  "OLAVARRIA": "BUENOS AIRES",
+  "RAUCH": "BUENOS AIRES",
+  "SALADILLO": "BUENOS AIRES",
+  "SALLIQUELO": "BUENOS AIRES",
+  "SAN MIGUEL DEL MONTE": "BUENOS AIRES",
+  "SAN NICOLAS DE LOS ARROYOS": "BUENOS AIRES",
+  "SAN NICOLAS": "BUENOS AIRES",
+  "SUIPACHA": "BUENOS AIRES",
+  "TANDIL": "BUENOS AIRES",
+  "TAPALQUE": "BUENOS AIRES",
+  "VEDIA": "BUENOS AIRES",
+  "VIEYTES": "BUENOS AIRES",
+  "25 DE MAYO": "BUENOS AIRES",
+  "WASHINGTON": "BUENOS AIRES",
+  "CANUELAS": "BUENOS AIRES",
+  // CORDOBA
+  "RIO CUARTO": "CORDOBA",
+  "SAMPACHO": "CORDOBA",
+  "SAN BASILIO": "CORDOBA",
+  "MARCOS JUAREZ": "CORDOBA",
+  "HUINCA RENANCO": "CORDOBA",
+  // CORRIENTES
+  "MERCEDES": "CORRIENTES",
+  "GOYA": "CORRIENTES",
+  "BELLA VISTA": "CORRIENTES",
+  "SAUCE": "CORRIENTES",
+  "RIACHUELO": "CORRIENTES",
+  "CAA CATA": "CORRIENTES",
+  "CHAVARRIA": "CORRIENTES",
+  // SANTA FE
+  "ROSARIO": "SANTA FE",
+  "LEHMANN": "SANTA FE",
+  "RAFAELA": "SANTA FE",
+  // ENTRE RIOS
+  "VILLAGUAY": "ENTRE RIOS",
+  "GUALEGUAYCHU": "ENTRE RIOS",
+  "LA PAZ": "ENTRE RIOS",
+  // CHACO
+  "MACHAGAI": "CHACO",
+  "RESISTENCIA": "CHACO",
+  "PRESIDENCIA ROQUE SAENZ PENA": "CHACO",
+  "MARGARITA BELEN": "CHACO",
+  // SANTIAGO DEL ESTERO
+  "CAMPO GALLO": "SANTIAGO DEL ESTERO",
+  // LA PAMPA
+  "SANTA ROSA": "LA PAMPA",
+  "GENERAL PICO": "LA PAMPA",
+  // SAN LUIS
+  "VILLA MERCEDES": "SAN LUIS",
+  // FORMOSA
+  "FORMOSA": "FORMOSA",
+};
+
+/**
+ * Correct province based on city name.
+ * Overrides bad API or curated province assignments.
+ */
+function correctProvince(auction) {
+  const rawCity = (auction.location || "").split(",")[0].trim();
+  const city = rawCity.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+  const correctProv = CITY_PROVINCE_MAP[city];
+  if (correctProv && correctProv !== auction.province) {
+    console.log(`  [FIX] ${rawCity}: ${auction.province} → ${correctProv}`);
+    auction.province = correctProv;
+    auction.location = `${rawCity}, ${correctProv}`;
+  }
+}
+
 // Map auction_mode to our type
 function mapAuctionType(mode, title) {
   const lower = (title || "").toLowerCase();
@@ -158,11 +246,13 @@ async function scrapeCACG() {
   return data.dataset.rows
     .filter((r) => r.auction_is_disabled !== "1")
     .map((r) => {
-      const province =
+      const rawProvince =
         PROVINCE_MAP[r.state_id] ||
         (r.state_name || "").toUpperCase() ||
         "BUENOS AIRES";
       const city = r.city_name || r.building_name || "";
+      const cityNorm = city.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const province = CITY_PROVINCE_MAP[cityNorm] || rawProvince;
       const location = city ? `${city}, ${province}` : province;
 
       return {
@@ -727,6 +817,11 @@ async function main() {
   // Normalize province names (remove accents)
   for (const a of [...validCurated, ...validScraped]) {
     a.province = normalizeProvince(a.province);
+  }
+
+  // Correct province based on city name (overrides bad API/curated data)
+  for (const a of [...validCurated, ...validScraped]) {
+    correctProvince(a);
   }
 
   // Merge curated + freshly scraped

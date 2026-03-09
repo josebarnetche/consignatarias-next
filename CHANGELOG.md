@@ -1,8 +1,57 @@
 # Changelog
 
-The complete build log of **consignatarias.com.ar** — from the first `npx create-next-app` to a live cattle auction platform covering 450+ remates across 12 Argentine provinces.
+The complete build log of **consignatarias.com.ar** — from the first `npx create-next-app` to a live cattle auction platform covering 380+ remates across 12 Argentine provinces.
 
-Built in 11 days (Feb 26 – Mar 8, 2026). 41 commits. One human, one AI.
+Built in 12 days (Feb 26 – Mar 9, 2026). 42 commits. One human, one AI.
+
+---
+
+## [0.8.3] — 2026-03-09
+
+### Fix province misassignment — city-to-province correction map
+
+> `TBD` — fix: province misassignment in scraper (CITY_PROVINCE_MAP)
+
+**The problem:** ~107 of 385 auctions (28%) had wrong province assignments. Users filtering by province saw incorrect results — e.g., San Nicolás de los Arroyos (Buenos Aires) showed under Corrientes, and 41 Córdoba auctions appeared as Neuquén.
+
+**Root causes identified:**
+1. **CACG API bad `state_name`** — When `PROVINCE_MAP[r.state_id]` failed (bad/missing ID), the scraper fell back to `r.state_name`, which was often "CORRIENTES" for Buenos Aires cities. Affected **65 auctions**.
+2. **Curated entries with wrong province** — Manual entries from individual website scrapes (saenz-valiente, ferias-rauch, jauregui-lorda, etc.) had wrong provinces like "NEUQUEN" for Córdoba cities. Affected **42 auctions**.
+3. **Location field echoed wrong province** — `location` was built as `"CITY, PROVINCE"`, so wrong province meant wrong location text (e.g., `"RAUCH, CORRIENTES"`).
+
+**Solution: `CITY_PROVINCE_MAP`**
+
+A lookup table of ~70 Argentine cattle auction cities mapped to their correct province, added to `scripts/scrape-auctions.mjs`. Applied as the **highest-priority** province source, overriding both CACG API data and curated entries.
+
+**Implementation (single file: `scripts/scrape-auctions.mjs`):**
+1. **`CITY_PROVINCE_MAP`** — ~70 entries covering Buenos Aires (30 cities), Córdoba (5), Corrientes (7), Santa Fe (3), Entre Ríos (3), Chaco (4), Santiago del Estero (1), La Pampa (2), San Luis (1), Formosa (1)
+2. **`correctProvince()` function** — Extracts city from `location` field, normalizes (uppercase + NFD accent removal), looks up in map, fixes both `province` and `location` fields, logs corrections with `[FIX]` prefix
+3. **CACG inline fix** — City name checked before falling back to unreliable `state_name`
+4. **Post-normalization sweep** — Runs on all curated + scraped auctions before deduplication
+
+**Results:**
+
+| Province | Before | After |
+|----------|--------|-------|
+| NEUQUEN | 41 | **0** (eliminated — all were Córdoba/Buenos Aires) |
+| CORRIENTES | 81 | **16** (only real Corrientes cities remain) |
+| BUENOS AIRES | 58 | **127** (+69 recovered) |
+| CORDOBA | 38 | **78** (+40 recovered) |
+
+**What this does NOT change:**
+- No UI/client code changes
+- No Supabase schema changes
+- No changes to other scraper sources (Colombo, O'Farrell, Lehmann, Madelan, UMC — their hardcoded province logic was already correct)
+- No changes to deduplication logic
+
+**Why a static map (not geocoding):**
+- The set of cattle auction cities is finite and stable (~70 cities)
+- One-time data entry that permanently fixes the pipeline
+- Catches errors from ALL sources (CACG API bugs, curated typos, future sources)
+- No external API dependency, no rate limits, no cost
+- Runs in O(1) per auction
+
+**Coverage:** 384 auctions, 67 consignatarias, 10 provinces active. NEUQUEN and SANTIAGO DEL ESTERO eliminated (no current auctions in those provinces — will reappear when real auctions are added).
 
 ---
 
@@ -407,20 +456,21 @@ No state management. No ORM. No component library. No testing framework. Just Ne
 
 ## The numbers
 
-| Metric | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) | 0.8.1 (Mar 9) |
-|--------|-----------------|-----------------|-----------------|
-| Auctions | 0 → 92 → 414 | 450 | 366 |
-| Consignatarias | 49 | 77 | 74 (verificables) |
-| Profile pages | 0 | 70 | 74 + 74 verificar |
-| Scraper sources | 0 → 6 | 9 | 9 |
-| Provinces | 10 | 12 | 12 |
-| Frigoríficos | 364 | 364 | 364 |
-| Static HTML pages | ~10 | ~80 | ~164 |
-| Dependencies | 3 | 5 | 8 |
-| DevDependencies | 7 | 11 | 11 |
-| Daily scrapes | 0 | 12 (and counting) | 13+ |
-| Database | none | none | Supabase (2 tables) |
-| Hosting cost | $0 | $0 | $0 |
+| Metric | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) | 0.8.1 (Mar 9) | 0.8.3 (Mar 9) |
+|--------|-----------------|-----------------|-----------------|-----------------|
+| Auctions | 0 → 92 → 414 | 450 | 366 | 384 |
+| Consignatarias | 49 | 77 | 74 (verificables) | 67 |
+| Profile pages | 0 | 70 | 74 + 74 verificar | 74 + 74 verificar |
+| Scraper sources | 0 → 6 | 9 | 9 | 9 |
+| Provinces | 10 | 12 | 12 | 10 (accurate) |
+| Frigoríficos | 364 | 364 | 364 | 364 |
+| Static HTML pages | ~10 | ~80 | ~164 | ~168 |
+| Dependencies | 3 | 5 | 8 | 8 |
+| DevDependencies | 7 | 11 | 11 | 11 |
+| Daily scrapes | 0 | 12 (and counting) | 13+ | 13+ |
+| Database | none | none | Supabase (2 tables) | Supabase (2 tables) |
+| Province accuracy | unknown | unknown | ~72% | **100%** |
+| Hosting cost | $0 | $0 | $0 | $0 |
 
 ---
 
