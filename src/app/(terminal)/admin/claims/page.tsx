@@ -76,7 +76,7 @@ export default function AdminClaimsPage() {
   ]
 
   return (
-    <div className="max-w-5xl mx-auto px-2 sm:px-4 py-4 space-y-0">
+    <div className="space-y-0">
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between">
           <span className="text-zinc-200 text-label tracking-widest">ADMIN — VERIFICACIONES</span>
