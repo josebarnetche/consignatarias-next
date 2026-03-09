@@ -530,17 +530,17 @@ export default function RematesPage() {
   /* ---- Classify auctions ---- */
   const todayAuctions = useMemo(
     () => auctions.filter((a) => a.date === today),
-    [today]
+    [today, auctions]
   )
   const upcomingAuctions = useMemo(
     () => auctions.filter((a) => a.date >= today).sort((a, b) => {
       return a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? '')
     }),
-    [today]
+    [today, auctions]
   )
   const pastAuctions = useMemo(
     () => auctions.filter((a) => a.date < today).sort((a, b) => b.date.localeCompare(a.date) || (b.time ?? '').localeCompare(a.time ?? '')),
-    [today]
+    [today, auctions]
   )
 
   const counts: Record<Period, number> = {
