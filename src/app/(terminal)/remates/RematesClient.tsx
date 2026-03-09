@@ -23,7 +23,7 @@ import { trackAuctionClick, trackFilterApply, trackOutboundClick } from '@/lib/a
 /*  CONSTANTS                                                          */
 /* ------------------------------------------------------------------ */
 
-const auctions = rematesData as Auction[]
+const rawAuctions = rematesData as Auction[]
 
 type Period = 'hoy' | 'proximos' | 'pasados'
 
@@ -499,6 +499,25 @@ export default function RematesPage() {
   const [filterProvince, setFilterProvince] = useState('')
   const [filterType, setFilterType] = useState('')
   const [showAddModal, setShowAddModal] = useState(false)
+  const [featuredSlugs, setFeaturedSlugs] = useState<Set<string>>(new Set())
+
+  // Fetch featured consignataria slugs from Supabase
+  useEffect(() => {
+    fetch('/api/featured-slugs')
+      .then(r => r.json())
+      .then(d => setFeaturedSlugs(new Set(d.slugs || [])))
+      .catch(() => {})
+  }, [])
+
+  // Merge featured flag from DB into auctions
+  const auctions = useMemo(() =>
+    rawAuctions.map(a => {
+      const canonical = getCanonicalSlug(a.consignatariaSlug) || a.consignatariaSlug
+      const dbFeatured = featuredSlugs.has(canonical)
+      return dbFeatured ? { ...a, featured: true } : a
+    }),
+    [featuredSlugs]
+  )
 
   // Dynamic "today" — after 20:00 ART, shifts to tomorrow
   const [today, setToday] = useState(() => getEffectiveToday())
