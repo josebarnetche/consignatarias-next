@@ -66,7 +66,7 @@ export default function AdminClaimsPage() {
   }
 
   async function handleReview(id: string, status: 'approved' | 'rejected') {
-    const notes = status === 'rejected' ? prompt('Motivo del rechazo (opcional):') : null
+    const notes = status === 'rejected' ? prompt('Motivo del rechazo (opcional):') ?? null : null
     setLoading(true)
     try {
       const res = await fetch(`/api/admin/claims/${id}`, {
@@ -95,7 +95,7 @@ export default function AdminClaimsPage() {
       <div className="max-w-sm mx-auto px-4 py-12">
         <form onSubmit={handleLogin} className="terminal-panel">
           <div className="terminal-panel-header">
-            <span className="text-zinc-200 text-label tracking-widest">ADMIN — CLAIMS</span>
+            <span className="text-zinc-200 text-label tracking-widest">ADMIN — VERIFICACIONES</span>
           </div>
           <div className="px-panel py-4 space-y-3">
             <label className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider">
@@ -132,7 +132,7 @@ export default function AdminClaimsPage() {
     <div className="max-w-5xl mx-auto px-2 sm:px-4 py-4 space-y-0">
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between">
-          <span className="text-zinc-200 text-label tracking-widest">ADMIN — RECLAMOS</span>
+          <span className="text-zinc-200 text-label tracking-widest">ADMIN — VERIFICACIONES</span>
           <span className="text-xxs text-zinc-600 font-terminal">{claims.length} resultado(s)</span>
         </div>
 
@@ -163,7 +163,7 @@ export default function AdminClaimsPage() {
           </div>
         ) : claims.length === 0 ? (
           <div className="px-panel py-8 text-center">
-            <span className="text-zinc-600 text-data font-terminal">No hay reclamos</span>
+            <span className="text-zinc-600 text-data font-terminal">No hay solicitudes</span>
           </div>
         ) : (
           <div className="divide-y divide-terminal-border">

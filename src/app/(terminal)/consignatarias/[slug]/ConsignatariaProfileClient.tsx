@@ -416,12 +416,12 @@ export default function ConsignatariaProfileClient({ profile, auctions }: Consig
             </p>
           </div>
           <Link
-            href={`/consignatarias/${profile.canonicalSlug}/reclamar`}
+            href={`/consignatarias/${profile.canonicalSlug}/verificar`}
             onClick={() => trackClaimCTA(profile.canonicalSlug, profile.displayName)}
             className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors shadow-live-glow"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-positive animate-pulse-live" />
-            Reclamar este perfil
+            Verificar este perfil
           </Link>
         </div>
       </div>

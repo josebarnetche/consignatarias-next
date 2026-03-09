@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
   if (error) {
     console.error('Admin claims fetch error:', error)
     return NextResponse.json(
-      { error: 'Error al obtener reclamos' },
+      { error: 'Error al obtener solicitudes' },
       { status: 500 },
     )
   }

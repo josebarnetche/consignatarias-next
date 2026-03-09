@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
 
     if (existing) {
       return NextResponse.json(
-        { error: 'Ya tenés un reclamo pendiente para este perfil' },
+        { error: 'Ya tenés una solicitud pendiente para este perfil' },
         { status: 409 },
       )
     }
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
     if (insertError) {
       console.error('Claim insert error:', insertError)
       return NextResponse.json(
-        { error: 'Error al guardar el reclamo' },
+        { error: 'Error al guardar la solicitud' },
         { status: 500 },
       )
     }
@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
     )
 
     return NextResponse.json(
-      { message: 'Reclamo enviado correctamente' },
+      { message: 'Solicitud enviada correctamente' },
       { status: 201 },
     )
   } catch {

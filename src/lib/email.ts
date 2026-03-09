@@ -30,10 +30,10 @@ export async function sendClaimConfirmation(email: string, displayName: string, 
   resend.emails.send({
     from: FROM,
     to: email,
-    subject: `Reclamo recibido — ${displayName}`,
+    subject: `Solicitud de verificación — ${displayName}`,
     html: `
-      <h2>Reclamo recibido</h2>
-      <p>Recibimos tu solicitud para reclamar el perfil de <strong>${safeName}</strong>.</p>
+      <h2>Solicitud recibida</h2>
+      <p>Recibimos tu solicitud de verificación del perfil de <strong>${safeName}</strong>.</p>
       <p>Nuestro equipo revisará tu solicitud y te contactaremos a la brevedad.</p>
       <p><a href="${APP_URL}/consignatarias/${slug}">Ver perfil</a></p>
       <hr>
@@ -56,9 +56,9 @@ export async function sendClaimNotificationToAdmin(
   resend.emails.send({
     from: FROM,
     to: ADMIN_EMAIL,
-    subject: `Nuevo reclamo: ${displayName}`,
+    subject: `Nueva solicitud de verificación: ${displayName}`,
     html: `
-      <h2>Nuevo reclamo de perfil</h2>
+      <h2>Nueva solicitud de verificación</h2>
       <p><strong>Consignataria:</strong> ${safeName} (<code>${slug}</code>)</p>
       <p><strong>Email:</strong> ${safeClaim}</p>
       ${claimantName ? `<p><strong>Nombre:</strong> ${escapeHtml(claimantName)}</p>` : ''}
@@ -78,7 +78,7 @@ export async function sendClaimApproved(email: string, displayName: string, slug
     subject: `Perfil aprobado — ${displayName}`,
     html: `
       <h2>Tu perfil fue aprobado</h2>
-      <p>Tu reclamo del perfil de <strong>${safeName}</strong> fue aprobado.</p>
+      <p>Tu solicitud de verificación del perfil de <strong>${safeName}</strong> fue aprobada.</p>
       <p><a href="${APP_URL}/consignatarias/${slug}">Ver tu perfil</a></p>
       <hr>
       <p style="color:#888;font-size:12px">Consignatarias.com.ar — Directorio ganadero</p>
@@ -93,10 +93,10 @@ export async function sendClaimRejected(email: string, displayName: string, reas
   resend.emails.send({
     from: FROM,
     to: email,
-    subject: `Reclamo rechazado — ${displayName}`,
+    subject: `Verificación rechazada — ${displayName}`,
     html: `
-      <h2>Reclamo rechazado</h2>
-      <p>Lamentamos informarte que tu reclamo del perfil de <strong>${safeName}</strong> fue rechazado.</p>
+      <h2>Verificación rechazada</h2>
+      <p>Lamentamos informarte que tu solicitud de verificación del perfil de <strong>${safeName}</strong> fue rechazada.</p>
       ${reason ? `<p><strong>Motivo:</strong> ${escapeHtml(reason)}</p>` : ''}
       <p>Si creés que es un error, contactanos a <a href="mailto:${ADMIN_EMAIL}">${ADMIN_EMAIL}</a>.</p>
       <hr>

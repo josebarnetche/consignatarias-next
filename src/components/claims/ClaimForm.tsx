@@ -47,7 +47,7 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
       }
 
       const data = await res.json()
-      setErrorMsg(data.error || 'Error al enviar el reclamo')
+      setErrorMsg(data.error || 'Error al enviar la solicitud')
       setState('error')
     } catch {
       setErrorMsg('Error de conexión. Intentá de nuevo.')
@@ -59,9 +59,9 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
     return (
       <div className="terminal-panel border-positive/30">
         <div className="px-panel py-6 text-center space-y-3">
-          <div className="text-positive text-lg font-terminal">RECLAMO ENVIADO</div>
+          <div className="text-positive text-lg font-terminal">SOLICITUD ENVIADA</div>
           <p className="text-zinc-400 text-data font-terminal">
-            Recibimos tu solicitud para <span className="text-zinc-200">{displayName}</span>.
+            Recibimos tu solicitud de verificación para <span className="text-zinc-200">{displayName}</span>.
             Te contactaremos a la brevedad por email.
           </p>
           <Link
@@ -78,7 +78,7 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
   return (
     <form onSubmit={handleSubmit} className="terminal-panel">
       <div className="terminal-panel-header flex items-center justify-between">
-        <span className="text-zinc-200 text-label tracking-widest">RECLAMAR PERFIL</span>
+        <span className="text-zinc-200 text-label tracking-widest">VERIFICAR PERFIL</span>
         <Link
           href={`/consignatarias/${slug}`}
           className="text-zinc-600 hover:text-accent text-xxs font-terminal transition-colors"
@@ -89,9 +89,9 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
 
       <div className="px-panel py-4 space-y-4">
         <p className="text-data text-zinc-400 font-terminal">
-          Completá el formulario para reclamar el perfil de{' '}
+          Completá el formulario para verificar el perfil de{' '}
           <span className="text-zinc-200">{displayName}</span>.
-          Verificaremos tu identidad y te contactaremos.
+          Confirmaremos tu identidad y te contactaremos.
         </p>
 
         {state === 'error' && (
@@ -192,7 +192,7 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
           disabled={state === 'submitting'}
           className="w-full px-4 py-2.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {state === 'submitting' ? 'Enviando...' : 'Enviar reclamo'}
+          {state === 'submitting' ? 'Enviando...' : 'Solicitar verificación'}
         </button>
       </div>
     </form>

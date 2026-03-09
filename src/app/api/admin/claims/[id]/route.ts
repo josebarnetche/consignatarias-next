@@ -43,7 +43,7 @@ export async function PATCH(req: NextRequest, { params }: Props) {
   }
 
   if (claim.status !== 'pending') {
-    return NextResponse.json({ error: 'Este reclamo ya fue procesado' }, { status: 409 })
+    return NextResponse.json({ error: 'Esta solicitud ya fue procesada' }, { status: 409 })
   }
 
   // Update claim status
@@ -73,7 +73,7 @@ export async function PATCH(req: NextRequest, { params }: Props) {
     // Auto-reject other pending claims for this consignataria
     await supabase
       .from('consignataria_claims')
-      .update({ status: 'rejected', admin_notes: 'Otro reclamo fue aprobado' })
+      .update({ status: 'rejected', admin_notes: 'Otra solicitud fue aprobada' })
       .eq('consignataria_slug', claim.consignataria_slug)
       .eq('status', 'pending')
       .neq('id', id)
@@ -83,5 +83,5 @@ export async function PATCH(req: NextRequest, { params }: Props) {
     sendClaimRejected(claim.claimant_email, displayName, admin_notes || undefined)
   }
 
-  return NextResponse.json({ message: `Reclamo ${status === 'approved' ? 'aprobado' : 'rechazado'}` })
+  return NextResponse.json({ message: `Solicitud ${status === 'approved' ? 'aprobada' : 'rechazada'}` })
 }

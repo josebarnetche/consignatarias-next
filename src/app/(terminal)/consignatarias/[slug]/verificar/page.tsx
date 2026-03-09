@@ -30,10 +30,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!profile) return {}
 
   return {
-    title: `Reclamar perfil — ${profile.displayName}`,
-    description: `Reclamá el perfil de ${profile.displayName} en Consignatarias.com.ar y completá tu información.`,
+    title: `Verificar perfil — ${profile.displayName}`,
+    description: `Verificá el perfil de ${profile.displayName} en Consignatarias.com.ar y completá tu información.`,
     alternates: {
-      canonical: `https://www.consignatarias.com.ar/consignatarias/${canonical}/reclamar`,
+      canonical: `https://www.consignatarias.com.ar/consignatarias/${canonical}/verificar`,
     },
   }
 }
@@ -49,7 +49,7 @@ export default async function ClaimPage({ params }: Props) {
   if (!canonical) notFound()
 
   if (slug !== canonical) {
-    permanentRedirect(`/consignatarias/${canonical}/reclamar`)
+    permanentRedirect(`/consignatarias/${canonical}/verificar`)
   }
 
   const profile = getProfile(canonical)!
