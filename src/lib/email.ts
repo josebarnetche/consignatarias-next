@@ -1,0 +1,106 @@
+import type { Resend } from 'resend'
+
+let resendInstance: Resend | null = null
+
+async function getResend(): Promise<Resend | null> {
+  const key = process.env.RESEND_API_KEY
+  if (!key) return null
+  if (resendInstance) return resendInstance
+  const { Resend: R } = await import('resend')
+  resendInstance = new R(key)
+  return resendInstance
+}
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+const FROM = 'Consignatarias.com.ar <noreply@consignatarias.com.ar>'
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'agro@memola.com.ar'
+
+export async function sendClaimConfirmation(email: string, displayName: string, slug: string) {
+  const resend = await getResend()
+  if (!resend) return
+  const safeName = escapeHtml(displayName)
+  resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: `Reclamo recibido — ${displayName}`,
+    html: `
+      <h2>Reclamo recibido</h2>
+      <p>Recibimos tu solicitud para reclamar el perfil de <strong>${safeName}</strong>.</p>
+      <p>Nuestro equipo revisará tu solicitud y te contactaremos a la brevedad.</p>
+      <p><a href="${APP_URL}/consignatarias/${slug}">Ver perfil</a></p>
+      <hr>
+      <p style="color:#888;font-size:12px">Consignatarias.com.ar — Directorio ganadero</p>
+    `,
+  }).catch(() => {})
+}
+
+export async function sendClaimNotificationToAdmin(
+  displayName: string,
+  slug: string,
+  claimantEmail: string,
+  claimantName?: string,
+  cuit?: string,
+) {
+  const resend = await getResend()
+  if (!resend) return
+  const safeName = escapeHtml(displayName)
+  const safeClaim = escapeHtml(claimantEmail)
+  resend.emails.send({
+    from: FROM,
+    to: ADMIN_EMAIL,
+    subject: `Nuevo reclamo: ${displayName}`,
+    html: `
+      <h2>Nuevo reclamo de perfil</h2>
+      <p><strong>Consignataria:</strong> ${safeName} (<code>${slug}</code>)</p>
+      <p><strong>Email:</strong> ${safeClaim}</p>
+      ${claimantName ? `<p><strong>Nombre:</strong> ${escapeHtml(claimantName)}</p>` : ''}
+      ${cuit ? `<p><strong>CUIT:</strong> ${escapeHtml(cuit)}</p>` : ''}
+      <p><a href="${APP_URL}/admin/claims">Revisar en admin</a></p>
+    `,
+  }).catch(() => {})
+}
+
+export async function sendClaimApproved(email: string, displayName: string, slug: string) {
+  const resend = await getResend()
+  if (!resend) return
+  const safeName = escapeHtml(displayName)
+  resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: `Perfil aprobado — ${displayName}`,
+    html: `
+      <h2>Tu perfil fue aprobado</h2>
+      <p>Tu reclamo del perfil de <strong>${safeName}</strong> fue aprobado.</p>
+      <p><a href="${APP_URL}/consignatarias/${slug}">Ver tu perfil</a></p>
+      <hr>
+      <p style="color:#888;font-size:12px">Consignatarias.com.ar — Directorio ganadero</p>
+    `,
+  }).catch(() => {})
+}
+
+export async function sendClaimRejected(email: string, displayName: string, reason?: string) {
+  const resend = await getResend()
+  if (!resend) return
+  const safeName = escapeHtml(displayName)
+  resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: `Reclamo rechazado — ${displayName}`,
+    html: `
+      <h2>Reclamo rechazado</h2>
+      <p>Lamentamos informarte que tu reclamo del perfil de <strong>${safeName}</strong> fue rechazado.</p>
+      ${reason ? `<p><strong>Motivo:</strong> ${escapeHtml(reason)}</p>` : ''}
+      <p>Si creés que es un error, contactanos a <a href="mailto:${ADMIN_EMAIL}">${ADMIN_EMAIL}</a>.</p>
+      <hr>
+      <p style="color:#888;font-size:12px">Consignatarias.com.ar — Directorio ganadero</p>
+    `,
+  }).catch(() => {})
+}

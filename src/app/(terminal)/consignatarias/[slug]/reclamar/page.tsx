@@ -1,0 +1,62 @@
+import { Metadata } from 'next'
+import { notFound, permanentRedirect } from 'next/navigation'
+import {
+  getAllCanonicalSlugs,
+  getCanonicalSlug,
+  getProfile,
+} from '@/lib/data/consignataria-slugs'
+import ClaimForm from '@/components/claims/ClaimForm'
+
+/* ------------------------------------------------------------------ */
+/*  STATIC PARAMS                                                      */
+/* ------------------------------------------------------------------ */
+
+export function generateStaticParams() {
+  return getAllCanonicalSlugs().map(slug => ({ slug }))
+}
+
+/* ------------------------------------------------------------------ */
+/*  METADATA                                                           */
+/* ------------------------------------------------------------------ */
+
+type Props = { params: Promise<{ slug: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const canonical = getCanonicalSlug(slug)
+  if (!canonical) return {}
+
+  const profile = getProfile(canonical)
+  if (!profile) return {}
+
+  return {
+    title: `Reclamar perfil — ${profile.displayName}`,
+    description: `Reclamá el perfil de ${profile.displayName} en Consignatarias.com.ar y completá tu información.`,
+    alternates: {
+      canonical: `https://www.consignatarias.com.ar/consignatarias/${canonical}/reclamar`,
+    },
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  PAGE                                                               */
+/* ------------------------------------------------------------------ */
+
+export default async function ClaimPage({ params }: Props) {
+  const { slug } = await params
+
+  const canonical = getCanonicalSlug(slug)
+  if (!canonical) notFound()
+
+  if (slug !== canonical) {
+    permanentRedirect(`/consignatarias/${canonical}/reclamar`)
+  }
+
+  const profile = getProfile(canonical)!
+
+  return (
+    <div className="max-w-lg mx-auto px-2 sm:px-4 py-6">
+      <ClaimForm slug={canonical} displayName={profile.displayName} />
+    </div>
+  )
+}

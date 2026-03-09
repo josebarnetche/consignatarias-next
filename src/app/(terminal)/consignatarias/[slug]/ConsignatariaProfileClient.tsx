@@ -415,18 +415,14 @@ export default function ConsignatariaProfileClient({ profile, auctions }: Consig
               Faltan: logo, descripcion, telefono, email, whatsapp, sitio web
             </p>
           </div>
-          <a
-            href={`https://wa.me/5493773418130?text=${encodeURIComponent(
-              `Hola, quiero reclamar el perfil de ${profile.displayName} en consignatarias.com.ar/consignatarias/${profile.canonicalSlug}`
-            )}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href={`/consignatarias/${profile.canonicalSlug}/reclamar`}
             onClick={() => trackClaimCTA(profile.canonicalSlug, profile.displayName)}
             className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors shadow-live-glow"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-positive animate-pulse-live" />
             Reclamar este perfil
-          </a>
+          </Link>
         </div>
       </div>
 

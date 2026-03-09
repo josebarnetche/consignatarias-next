@@ -121,3 +121,19 @@ export function trackClaimCTA(slug: string, displayName: string) {
     consignataria_name: displayName,
   })
 }
+
+/** User submitted a claim form */
+export function trackClaimSubmit(slug: string, displayName: string) {
+  trackEvent('claim_submit', {
+    consignataria_slug: slug,
+    consignataria_name: displayName,
+  })
+}
+
+/** Claim form submitted successfully */
+export function trackClaimSuccess(slug: string, displayName: string) {
+  trackEvent('claim_success', {
+    consignataria_slug: slug,
+    consignataria_name: displayName,
+  })
+}

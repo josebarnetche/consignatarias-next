@@ -52,8 +52,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
+  // Claim pages
+  const claimPages: MetadataRoute.Sitemap = getAllCanonicalSlugs().map((slug) => ({
+    url: `${baseUrl}/consignatarias/${slug}/reclamar`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.5,
+  }))
+
   return [
     ...staticPages,
     ...consignatariaPages,
+    ...claimPages,
   ]
 }

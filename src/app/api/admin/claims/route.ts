@@ -1,0 +1,32 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { createServiceClient } from '@/lib/supabase'
+import { requireAdmin } from '@/lib/admin-auth'
+
+export async function GET(req: NextRequest) {
+  const auth = requireAdmin(req)
+  if (!auth.authorized) return auth.response!
+
+  const status = req.nextUrl.searchParams.get('status') || 'all'
+  const supabase = createServiceClient()
+
+  let query = supabase
+    .from('consignataria_claims')
+    .select('*, consignatarias(display_name)')
+    .order('created_at', { ascending: false })
+
+  if (status !== 'all') {
+    query = query.eq('status', status)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Admin claims fetch error:', error)
+    return NextResponse.json(
+      { error: 'Error al obtener reclamos' },
+      { status: 500 },
+    )
+  }
+
+  return NextResponse.json({ claims: data })
+}
