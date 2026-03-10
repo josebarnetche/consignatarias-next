@@ -104,7 +104,7 @@ function fmt(n: number, d = 0) {
 /* ================================================================== */
 export const metadata: Metadata = {
   title: "Remates Ganaderos Argentina 2026 | Calendario de Remates | Consignatarias.com.ar",
-  description: `Calendario de remates ganaderos de ${totalConsignatarias}+ consignatarias en 12 provincias. ${frigorificosSummary.total} frigorificos habilitados, precios INMAG y dolar blue actualizados cada dia. Acceso libre.`,
+  description: `Calendario de remates ganaderos de ${totalConsignatarias}+ consignatarias en 10 provincias. ${frigorificosSummary.total} frigoríficos habilitados, precios INMAG y dólar blue actualizados cada día. Acceso libre.`,
 };
 
 /* ================================================================== */
@@ -129,7 +129,7 @@ export default function LandingPage() {
 
           <div className="hidden md:flex items-center gap-8 text-sm font-normal text-zinc-400">
             <a href="#remates" className="hover:text-zinc-100 transition-colors">Remates</a>
-            <a href="#frigorificos" className="hover:text-zinc-100 transition-colors">Frigorificos</a>
+            <a href="#frigorificos" className="hover:text-zinc-100 transition-colors">Frigoríficos</a>
             <a href="#mercado" className="hover:text-zinc-100 transition-colors">Mercado</a>
           </div>
 
@@ -163,7 +163,7 @@ export default function LandingPage() {
             <div className="inline-flex items-center gap-2 rounded border border-zinc-800 bg-zinc-900/50 py-1 px-3 mb-8 shadow-sm backdrop-blur-sm">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-soft" />
               <span className="text-xs font-medium text-zinc-300 uppercase tracking-widest">
-                {rematesProximos.length} remates programados en 12 provincias
+                {rematesProximos.length} remates programados en 10 provincias
               </span>
             </div>
 
@@ -173,7 +173,7 @@ export default function LandingPage() {
             </h1>
 
             <p className="text-lg md:text-xl font-normal text-zinc-400 mb-10 max-w-2xl leading-relaxed">
-              Calendario unificado de {totalConsignatarias}+ consignatarias con filtros por provincia, tipo de remate y fecha. Actualizado todos los dias con datos de multiples fuentes.
+              Calendario unificado de {totalConsignatarias}+ consignatarias con filtros por provincia, tipo de remate y fecha. Actualizado todos los días con datos de múltiples fuentes.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
@@ -181,14 +181,14 @@ export default function LandingPage() {
                 href="/remates"
                 className="flex items-center justify-center gap-2 text-sm font-medium text-zinc-900 bg-zinc-100 hover:bg-white transition-all rounded py-3 px-6 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
               >
-                Ver proximos remates
+                Ver próximos remates
                 <IconArrowRight />
               </Link>
               <a
                 href="#como-funciona"
                 className="flex items-center justify-center text-sm font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 transition-all rounded py-3 px-6"
               >
-                Como funciona
+                Cómo funciona
               </a>
             </div>
           </div>
@@ -201,7 +201,7 @@ export default function LandingPage() {
               <div className="text-xs text-emerald-400 mt-1">+{fmt(marketPrices.inmag.change, 1)}% vs. semana anterior</div>
             </div>
             <div className="bg-zinc-900/60 border border-zinc-800 rounded p-5">
-              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2">Proximos remates</div>
+              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2">Próximos remates</div>
               <div className="text-2xl font-medium text-zinc-100 tracking-tight">{rematesProximos.length}</div>
               <div className="text-xs text-zinc-500 mt-1">~{fmt(totalHeads)} cabezas</div>
             </div>
@@ -226,14 +226,14 @@ export default function LandingPage() {
         <section className="max-w-7xl mx-auto px-6 pt-32 pb-32">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-2xl md:text-3xl font-medium text-zinc-100 tracking-tight mb-10">
-              La informacion ganadera esta fragmentada
+              La información ganadera está fragmentada
             </h2>
             <div className="space-y-6 text-base md:text-lg text-zinc-400 leading-relaxed">
               <p>
-                Cada consignataria publica sus remates por separado. Algunas en su web. Otras en Facebook. Muchas solo por WhatsApp.
+                Cada consignataria publica sus remates por separado. Algunas en su web. Otras en Facebook. Muchas sólo por WhatsApp.
               </p>
               <p>
-                Para armar tu agenda de remates tenes que revisar decenas de fuentes distintas, y aun asi te perdes oportunidades.
+                Para armar tu agenda de remates tenés que revisar decenas de fuentes distintas, y aún así te perdés oportunidades.
               </p>
               <p className="text-zinc-200 font-medium">
                 El mercado no tiene un lugar central donde ver que pasa. Hasta ahora.
@@ -249,7 +249,7 @@ export default function LandingPage() {
         {/* ============================================================ */}
         <section id="como-funciona" className="max-w-7xl mx-auto px-6 pt-32 pb-32">
           <h2 className="text-2xl md:text-3xl font-medium text-zinc-100 tracking-tight text-center mb-16">
-            Como funciona
+            Cómo funciona
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Step 1 */}
@@ -258,7 +258,7 @@ export default function LandingPage() {
               <div className="relative z-10">
                 <div className="text-xs font-medium text-emerald-400 uppercase tracking-widest mb-3">Recopilamos</div>
                 <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
-                  Datos de {totalConsignatarias}+ consignatarias, cada dia
+                  Datos de {totalConsignatarias}+ consignatarias, cada día
                 </p>
               </div>
             </div>
@@ -276,9 +276,9 @@ export default function LandingPage() {
             <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-8 relative">
               <div className="text-5xl font-bold text-zinc-800 absolute top-4 right-6 select-none">3</div>
               <div className="relative z-10">
-                <div className="text-xs font-medium text-emerald-400 uppercase tracking-widest mb-3">Vos filtras</div>
+                <div className="text-xs font-medium text-emerald-400 uppercase tracking-widest mb-3">Vos filtrás</div>
                 <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
-                  Y tenes todo el mercado en una pantalla
+                  Y tenés todo el mercado en una pantalla
                 </p>
               </div>
             </div>
@@ -300,29 +300,29 @@ export default function LandingPage() {
                 Un solo calendario. Todas las consignatarias.
               </h2>
               <p className="text-sm md:text-base text-zinc-400 leading-relaxed mb-6">
-                No necesitas recorrer 20 sitios web para saber que remates hay esta semana. Aca estan todos: filtra por provincia, tipo de remate, categoria de hacienda o fecha. Cada remate incluye consignataria, ubicacion, cabezas estimadas y links directos a catalogos y transmisiones.
+                No necesitás recorrer 20 sitios web para saber qué remates hay esta semana. Acá están todos: filtrá por provincia, tipo de remate, categoría de hacienda o fecha. Cada remate incluye consignataria, ubicación, cabezas estimadas y links directos a catálogos y transmisiones.
               </p>
               <ul className="space-y-3 text-sm text-zinc-400">
                 <li className="flex items-start gap-3">
                   <span className="w-1 h-1 rounded-full bg-zinc-500 mt-2 shrink-0" />
-                  Filtros por provincia, tipo y categoria
+                  Filtros por provincia, tipo y categoría
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-1 h-1 rounded-full bg-zinc-500 mt-2 shrink-0" />
-                  Vista por periodo: hoy, proximos 7 dias, pasados
+                  Vista por período: hoy, próximos 7 días, pasados
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-1 h-1 rounded-full bg-zinc-500 mt-2 shrink-0" />
-                  Links a catalogos y transmisiones en vivo
+                  Links a catálogos y transmisiones en vivo
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-1 h-1 rounded-full bg-zinc-500 mt-2 shrink-0" />
-                  Datos de {totalConsignatarias}+ consignatarias de 12 provincias
+                  Datos de {totalConsignatarias}+ consignatarias de 10 provincias
                 </li>
               </ul>
               <div className="mt-8">
                 <Link href="/remates" className="inline-flex items-center gap-2 text-sm font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 transition-all rounded py-2.5 px-5">
-                  Ver proximos remates <IconArrowRight className="w-4 h-4" />
+                  Ver próximos remates <IconArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             </div>
@@ -330,7 +330,7 @@ export default function LandingPage() {
             {/* Preview snippet */}
             <div className="bg-[#09090b] border border-zinc-800 rounded-lg p-5 shadow-2xl">
               <div className="flex items-center justify-between border-b border-zinc-800/50 pb-3 mb-4">
-                <span className="text-xs font-medium text-zinc-300 uppercase tracking-widest">Proximos Remates</span>
+                <span className="text-xs font-medium text-zinc-300 uppercase tracking-widest">Próximos Remates</span>
                 <span className="text-[0.65rem] text-zinc-500">{rematesProximos.length} programados</span>
               </div>
               <div className="space-y-0">
@@ -402,32 +402,32 @@ export default function LandingPage() {
                 <IconBuilding />
               </div>
               <h2 className="text-2xl md:text-3xl font-medium text-zinc-100 tracking-tight mb-4">
-                {fmt(frigorificosSummary.total)} frigorificos habilitados. Una sola base de datos.
+                {fmt(frigorificosSummary.total)} frigoríficos habilitados. Una sola base de datos.
               </h2>
               <p className="text-sm md:text-base text-zinc-400 leading-relaxed mb-6">
-                La base completa de plantas frigorificas habilitadas por MAGYP. Busca por nombre, filtra por provincia o etapa habilitada. Con datos oficiales: CUIT, matricula, razon social y clasificacion por ciclo.
+                La base completa de plantas frigoríficas habilitadas por MAGYP. Buscá por nombre, filtrá por provincia o etapa habilitada. Con datos oficiales: CUIT, matrícula, razón social y clasificación por ciclo.
               </p>
               <ul className="space-y-3 text-sm text-zinc-400">
                 <li className="flex items-start gap-3">
                   <span className="w-1 h-1 rounded-full bg-zinc-500 mt-2 shrink-0" />
-                  Datos oficiales MAGYP: CUIT, matricula, razon social
+                  Datos oficiales MAGYP: CUIT, matrícula, razón social
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-1 h-1 rounded-full bg-zinc-500 mt-2 shrink-0" />
-                  Clasificacion por etapa: Transito ({frigorificosSummary.byStage["1"]}), Ciclo II ({frigorificosSummary.byStage["2"]}), Ciclo III ({frigorificosSummary.byStage["3"]})
+                  Clasificación por etapa: Tránsito ({frigorificosSummary.byStage["1"]}), Ciclo II ({frigorificosSummary.byStage["2"]}), Ciclo III ({frigorificosSummary.byStage["3"]})
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-1 h-1 rounded-full bg-zinc-500 mt-2 shrink-0" />
-                  Busqueda instantanea y ordenamiento por columna
+                  Búsqueda instantánea y ordenamiento por columna
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-1 h-1 rounded-full bg-zinc-500 mt-2 shrink-0" />
-                  Distribucion por provincia con barras visuales
+                  Distribución por provincia con barras visuales
                 </li>
               </ul>
               <div className="mt-8">
                 <Link href="/frigorificos" className="inline-flex items-center gap-2 text-sm font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 transition-all rounded py-2.5 px-5">
-                  Buscar frigorificos <IconArrowRight className="w-4 h-4" />
+                  Buscar frigoríficos <IconArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             </div>
@@ -449,20 +449,20 @@ export default function LandingPage() {
                 Precios de hacienda y contexto macro. Actualizados.
               </h2>
               <p className="text-sm md:text-base text-zinc-400 leading-relaxed mb-6">
-                INMAG promedio, precios por categoria (novillos, terneros, vaquillonas, vacas, toros), maiz en dolares y cotizacion del dolar blue. Todo con variacion semanal para que veas la tendencia, no solo el numero.
+                INMAG promedio, precios por categoría (novillos, terneros, vaquillonas, vacas, toros), maíz en dólares y cotización del dólar blue. Todo con variación semanal para que veas la tendencia, no sólo el número.
               </p>
               <ul className="space-y-3 text-sm text-zinc-400">
                 <li className="flex items-start gap-3">
                   <span className="w-1 h-1 rounded-full bg-zinc-500 mt-2 shrink-0" />
-                  INMAG con serie historica de 8 semanas y variacion porcentual
+                  INMAG con serie histórica de 8 semanas y variación porcentual
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-1 h-1 rounded-full bg-zinc-500 mt-2 shrink-0" />
-                  6 categorias de hacienda con precio actual, anterior y cambio
+                  6 categorías de hacienda con precio actual, anterior y cambio
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-1 h-1 rounded-full bg-zinc-500 mt-2 shrink-0" />
-                  Maiz (USD/tn) y dolar blue como contexto macro
+                  Maíz (USD/tn) y dólar blue como contexto macro
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-1 h-1 rounded-full bg-zinc-500 mt-2 shrink-0" />
@@ -521,7 +521,7 @@ export default function LandingPage() {
 
               <div className="mt-4 pt-3 border-t border-zinc-800/50 grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-1">Maiz</div>
+                  <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-1">Maíz</div>
                   <div className="text-sm text-zinc-200 font-mono">{fmt(marketPrices.corn.current, 1)} USD/tn</div>
                 </div>
                 <div>
@@ -560,10 +560,10 @@ export default function LandingPage() {
               {[
                 ["Flyers sueltos en WhatsApp", "Calendario unificado y filtrable"],
                 ["Revisar 20 sitios web", "Una sola pantalla"],
-                ["Informacion incompleta o desactualizada", "Datos actualizados automaticamente cada dia"],
-                [`No sabes que te perdiste`, `Cobertura de 12 provincias, ${totalConsignatarias}+ consignatarias`],
-                ["Sin historial ni busqueda", "Base de datos buscable y estructurada"],
-                ["Precios dispersos en distintas fuentes", "INMAG, categorias y macro en un solo panel"],
+                ["Información incompleta o desactualizada", "Datos actualizados automáticamente cada día"],
+                [`No sabés qué te perdiste`, `Cobertura de 10 provincias, ${totalConsignatarias}+ consignatarias`],
+                ["Sin historial ni búsqueda", "Base de datos buscable y estructurada"],
+                ["Precios dispersos en distintas fuentes", "INMAG, categorías y macro en un solo panel"],
               ].map(([antes, despues], i, arr) => (
                 <div
                   key={i}
@@ -594,7 +594,7 @@ export default function LandingPage() {
               El mercado ganadero, en una sola pantalla
             </h2>
             <p className="text-sm text-zinc-400 mb-8 max-w-lg mx-auto">
-              {rematesProximos.length} remates de {totalConsignatarias}+ consignatarias. {fmt(frigorificosSummary.total)} frigorificos habilitados. Precios de 6 categorias y referencias macro. Acceso libre. Sin registro. Actualizado todos los dias.
+              {rematesProximos.length} remates de {totalConsignatarias}+ consignatarias. {fmt(frigorificosSummary.total)} frigoríficos habilitados. Precios de 6 categorías y referencias macro. Acceso libre. Sin registro. Actualizado todos los días.
             </p>
             <Link
               href="/overview"
@@ -626,7 +626,7 @@ export default function LandingPage() {
               <Link href="/overview" className="hover:text-zinc-300 transition-colors">Terminal</Link>
               <Link href="/remates" className="hover:text-zinc-300 transition-colors">Remates</Link>
               <Link href="/consignatarias" className="hover:text-zinc-300 transition-colors">Directorio</Link>
-              <Link href="/frigorificos" className="hover:text-zinc-300 transition-colors">Frigorificos</Link>
+              <Link href="/frigorificos" className="hover:text-zinc-300 transition-colors">Frigoríficos</Link>
               <Link href="/mercado" className="hover:text-zinc-300 transition-colors">Mercado</Link>
             </div>
 

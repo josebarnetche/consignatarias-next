@@ -155,9 +155,9 @@
     }
   },
   "corn": {
-    "current": 227.5,
+    "current": 225.67,
     "prev": 225.67,
-    "change": 0.8,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
@@ -170,10 +170,10 @@
   },
   "usdOficial": {
     "current": 1435,
-    "prev": 1440,
-    "change": -0.3,
+    "prev": 1435,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-03-09"
+  "lastUpdate": "2026-03-10"
 }

@@ -738,13 +738,31 @@ async function scrapeDollar() {
 // Merge logic
 // ---------------------------------------------------------------------------
 
+// Slug aliases for dedup — maps variant slugs to a canonical form
+// so curated and CACG entries for the same consignataria merge correctly.
+const SLUG_DEDUP_MAP = {
+  'travaglia': 'eduardo-a-travaglia-y-cia',
+  'eduardo-a-travaglia-y-cia-s-a': 'eduardo-a-travaglia-y-cia',
+  'eduardo-a-travaglia-y-cia-sa': 'eduardo-a-travaglia-y-cia',
+  'bressan': 'bressan-y-cia',
+  'bressan-y-cia-s-r-l': 'bressan-y-cia',
+  'bressan-y-cia-srl': 'bressan-y-cia',
+};
+
 function deduplicateAuctions(auctions) {
   const seen = new Map();
 
   for (const a of auctions) {
-    // Key: date + consignataria slug + location (first word)
+    // Normalize slug for dedup: check alias map, then strip legal suffixes
+    let normSlug = SLUG_DEDUP_MAP[a.consignatariaSlug] ||
+      (a.consignatariaSlug || "")
+        .replace(/-s-a$/, "")
+        .replace(/-sa$/, "")
+        .replace(/-s-r-l$/, "")
+        .replace(/-srl$/, "");
+    // Key: date + normalized slug + location (first word)
     const locKey = (a.location || "").split(",")[0].trim().toLowerCase();
-    const key = `${a.date}|${a.consignatariaSlug}|${locKey}`;
+    const key = `${a.date}|${normSlug}|${locKey}`;
 
     if (!seen.has(key)) {
       seen.set(key, a);
