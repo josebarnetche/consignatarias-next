@@ -45,3 +45,35 @@ export const claimReviewSchema = z.object({
 })
 
 export type ClaimReviewInput = z.infer<typeof claimReviewSchema>
+
+export const frigorificoClaimSchema = z.object({
+  frigorifico_cuit: z
+    .string()
+    .min(1, 'El CUIT es obligatorio')
+    .max(20),
+  frigorifico_name: z
+    .string()
+    .min(1, 'El nombre es obligatorio')
+    .max(255),
+  claimant_email: z
+    .string()
+    .email('Email inválido')
+    .max(255),
+  claimant_name: z
+    .string()
+    .max(255)
+    .optional()
+    .or(z.literal('')),
+  claimant_phone: z
+    .string()
+    .max(50)
+    .optional()
+    .or(z.literal('')),
+  claimant_role: z
+    .string()
+    .max(100)
+    .optional()
+    .or(z.literal('')),
+})
+
+export type FrigorificoClaimInput = z.infer<typeof frigorificoClaimSchema>

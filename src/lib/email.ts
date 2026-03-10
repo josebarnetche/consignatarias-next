@@ -88,6 +88,54 @@ export async function sendClaimApproved(email: string, displayName: string, slug
   }).catch(() => {})
 }
 
+/* ------------------------------------------------------------------ */
+/*  FRIGORIFICO CLAIMS                                                 */
+/* ------------------------------------------------------------------ */
+
+export async function sendFrigorificoClaimConfirmation(email: string, frigorificoName: string) {
+  const resend = await getResend()
+  if (!resend) return
+  const safeName = escapeHtml(frigorificoName)
+  resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: `Solicitud de registro — ${frigorificoName}`,
+    html: `
+      <h2>Solicitud recibida</h2>
+      <p>Recibimos tu solicitud de registro del frigorífico <strong>${safeName}</strong>.</p>
+      <p>Nuestro equipo revisará tu solicitud y te contactaremos a la brevedad.</p>
+      <p><a href="${APP_URL}/frigorificos">Ver directorio de frigoríficos</a></p>
+      <hr>
+      <p style="color:#888;font-size:12px">Consignatarias.com.ar — Directorio ganadero</p>
+    `,
+  }).catch(() => {})
+}
+
+export async function sendFrigorificoClaimNotificationToAdmin(
+  frigorificoName: string,
+  cuit: string,
+  claimantEmail: string,
+  claimantName?: string,
+) {
+  const resend = await getResend()
+  if (!resend) return
+  const safeName = escapeHtml(frigorificoName)
+  const safeClaim = escapeHtml(claimantEmail)
+  resend.emails.send({
+    from: FROM,
+    to: ADMIN_EMAIL,
+    subject: `Nuevo registro frigorífico: ${frigorificoName}`,
+    html: `
+      <h2>Nueva solicitud de registro (frigorífico)</h2>
+      <p><strong>Frigorífico:</strong> ${safeName}</p>
+      <p><strong>CUIT:</strong> ${escapeHtml(cuit)}</p>
+      <p><strong>Email:</strong> ${safeClaim}</p>
+      ${claimantName ? `<p><strong>Nombre:</strong> ${escapeHtml(claimantName)}</p>` : ''}
+      <p><a href="${APP_URL}/admin/claims">Revisar en admin</a></p>
+    `,
+  }).catch(() => {})
+}
+
 export async function sendClaimRejected(email: string, displayName: string, reason?: string) {
   const resend = await getResend()
   if (!resend) return

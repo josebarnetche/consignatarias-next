@@ -1,8 +1,75 @@
 # Changelog
 
-The complete build log of **consignatarias.com.ar** — from the first `npx create-next-app` to a live cattle auction platform covering 385+ remates across 10 Argentine provinces, with Supabase auth and a full SEO stack.
+The complete build log of **consignatarias.com.ar** — from the first `npx create-next-app` to a live cattle auction platform covering 385+ remates across 10 Argentine provinces, with Supabase auth, frigorífico enrichment, and a full SEO stack.
 
-Built in 12 days (Feb 26 – Mar 9, 2026). One human, one AI.
+Built in 13 days (Feb 26 – Mar 10, 2026). One human, one AI.
+
+---
+
+## [0.9.1] — 2026-03-10
+
+### FrigoConnect — registro de frigoríficos + enriquecimiento de datos
+
+> feat: add frigorifico claim flow + enrich 364 frigoríficos with web research
+
+**Dos bloques de trabajo en una sesión:**
+
+**1. Enriquecimiento masivo de datos de frigoríficos**
+
+Los 364 frigoríficos de SENASA solo tenían 5 campos básicos (CUIT, nombre, matrícula, provincia, etapa). Se creó un pipeline de enriquecimiento:
+
+- **Script de merge** (`scripts/enrich-frigorificos.mjs`) — fuzzy-match entre `frigorificos.json` (364 entries) y `frigorificos_target.csv` (40 entries investigados manualmente). Normalización: strip acentos, sufijos legales (SA/SRL/SAS/SAIC), colapso de letras espaciadas ("F R I A R" → "FRIAR")
+- **4 agentes de investigación en paralelo** — cada uno investigó ~27 frigoríficos Stage 1 usando web search. Resultado: 107 frigoríficos investigados
+- **Script de merge final** (`scripts/merge-enrichment.mjs`) — combina resultados de agentes con datos CSV y base
+
+**Cobertura final del dataset enriquecido (`frigorificos-enriched.json`):**
+
+| Campo | Encontrados | Cobertura |
+|-------|-------------|-----------|
+| Teléfono | 89 | 24.5% |
+| Email | 42 | 11.5% |
+| Sitio web | 79 | 21.7% |
+| Localidad | 123 | 33.8% |
+| Dirección | 117 | 32.1% |
+| Tipo (export/consumo) | 126 | 34.6% |
+| **Stage 1 (compradores de hacienda)** | **124/124** | **100%** |
+
+**Hallazgos notables:**
+- FRIDEVI (Viedma) — único frigorífico argentino habilitado para exportar carne con hueso a Japón
+- Ganadera San Roque (Morón) — cerrado definitivamente Feb/Mar 2026
+- La Muralla China (Corrientes) — cerrado 2023, nunca obtuvo habilitación SENASA para exportar a China
+- Don Raúl (Vera) — concurso preventivo Nov 2025
+- LOGROS SA — primera empresa argentina con Declaración Ambiental de Producto para carne
+
+**2. Registro de frigoríficos — reclamar perfil**
+
+Replicación del flujo de verificación de consignatarias para frigoríficos:
+
+- **Botón "REGISTRAR FRIGORIFICO"** en sidebar del directorio (pulsing green dot, mismo estilo que consignatarias)
+- **Link "Reclamar"** en cada fila de la tabla de frigoríficos
+- **Página `/frigorificos/verificar`** — formulario de registro con selector de frigorífico por CUIT (query param) o listado completo
+- **`FrigorificoClaimForm`** — componente dedicado (email requerido, nombre/tel/rol opcionales)
+- **API `POST /api/frigorifico-claims`** — inserta en Supabase `frigorifico_claims`, envía emails de confirmación y notificación admin
+- **Validator `frigorificoClaimSchema`** (Zod) — validación de CUIT, nombre, email
+- **Emails** — `sendFrigorificoClaimConfirmation` + `sendFrigorificoClaimNotificationToAdmin`
+- **Migration** — `20260310_frigorifico_claims.sql` (tabla, índices, RLS, unique partial index para dedup pendientes)
+
+**Archivos nuevos:**
+- `src/components/claims/FrigorificoClaimForm.tsx`
+- `src/app/(terminal)/frigorificos/verificar/page.tsx`
+- `src/app/api/frigorifico-claims/route.ts`
+- `src/lib/data/frigorificos-enriched.json`
+- `scripts/enrich-frigorificos.mjs`
+- `scripts/merge-enrichment.mjs`
+- `scripts/results-{1,2,3,4}.json` (raw agent research)
+- `supabase/migrations/20260310_frigorifico_claims.sql`
+
+**Archivos modificados:**
+- `src/app/(terminal)/frigorificos/FrigorificosClient.tsx` — CTA sidebar + link "Reclamar" por fila
+- `src/lib/validators/claim.ts` — agregado `frigorificoClaimSchema`
+- `src/lib/email.ts` — funciones de email para claims de frigoríficos
+
+**Cobertura:** 385 remates, 77 consignatarias, 364 frigoríficos (126 enriquecidos), 10 provincias. Supabase: 4 tablas (consignatarias, consignataria_claims, frigorifico_claims, user_roles).
 
 ---
 
@@ -521,20 +588,19 @@ No state management. No ORM. No component library. No testing framework. Just Ne
 
 ## The numbers
 
-| Metric | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) | 0.8.3 (Mar 9) | 0.9.0 (Mar 9) |
+| Metric | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) | 0.9.0 (Mar 9) | 0.9.1 (Mar 10) |
 |--------|-----------------|-----------------|-----------------|-----------------|
-| Auctions | 0 → 92 → 414 | 450 | 384 | 385 |
-| Consignatarias | 49 | 77 | 67 | 77 |
-| Profile pages | 0 | 70 | 74 + 74 verificar | 77 + 77 verificar |
-| Province pages | 0 | 0 | 0 | 10 |
+| Auctions | 0 → 92 → 414 | 450 | 385 | 385 |
+| Consignatarias | 49 | 77 | 77 | 77 |
+| Profile pages | 0 | 70 | 77 + 77 verificar | 77 + 77 verificar |
+| Province pages | 0 | 0 | 10 | 10 |
 | Scraper sources | 0 → 6 | 9 | 9 | 9 |
-| Provinces | 10 | 12 | 10 (accurate) | 10 |
-| Frigoríficos | 364 | 364 | 364 | 364 |
-| Static HTML pages | ~10 | ~80 | ~168 | ~170+ |
-| Sitemap URLs | 0 | ~140 | ~140 | ~100 (optimized) |
-| Database | none | none | Supabase (2 tables) | Supabase (3 tables + auth) |
+| Provinces | 10 | 12 | 10 | 10 |
+| Frigoríficos | 364 | 364 | 364 | 364 (126 enriched) |
+| Static HTML pages | ~10 | ~80 | ~170+ | ~170+ |
+| Sitemap URLs | 0 | ~140 | ~100 | ~100 |
+| Database | none | none | Supabase (3 tables) | Supabase (4 tables) |
 | Province accuracy | unknown | unknown | **100%** | **100%** |
-| SEO pages indexed | 0 | ~2 | ~2 | TBD (submitted) |
 | Hosting cost | $0 | $0 | $0 | $0 |
 
 ---

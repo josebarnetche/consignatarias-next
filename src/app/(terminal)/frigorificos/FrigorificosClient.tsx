@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect, useRef } from 'react'
+import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import summaryData from '@/lib/data/frigorificos-summary.json'
 import { trackSearch, trackFilterApply } from '@/lib/analytics'
@@ -309,6 +310,20 @@ export default function FrigorificosPage() {
             </select>
           </div>
 
+          {/* -- REGISTRAR CTA ---------------------------------------- */}
+          <div className="px-panel py-3">
+            <Link
+              href="/frigorificos/verificar"
+              className="flex items-center gap-2 w-full px-3 py-2 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors shadow-live-glow"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-positive animate-pulse-live" />
+              Registrar frigorifico
+            </Link>
+            <p className="text-xxs text-zinc-600 font-terminal mt-1.5 leading-relaxed">
+              Sos dueño o representante de un frigorifico? Registrate para reclamar tu perfil.
+            </p>
+          </div>
+
           {/* -- PROVINCIAS (sidebar list) -------------------------- */}
           <div className="terminal-panel-header mt-0">PROVINCIAS</div>
           <div className="terminal-panel-body">
@@ -458,12 +473,13 @@ export default function FrigorificosPage() {
                     onSort={handleSort}
                     className="w-16 text-center"
                   />
+                  <th className="w-20"></th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="text-center py-8 text-zinc-600">
+                    <td colSpan={5} className="text-center py-8 text-zinc-600">
                       No se encontraron resultados para los filtros aplicados.
                     </td>
                   </tr>
@@ -483,6 +499,14 @@ export default function FrigorificosPage() {
                       </td>
                       <td className={`text-center tabular-nums ${stageColor(f.stage)}`}>
                         {f.stage}
+                      </td>
+                      <td className="text-right">
+                        <Link
+                          href={`/frigorificos/verificar?cuit=${f.cuit}`}
+                          className="text-positive/60 hover:text-positive text-xxs font-terminal uppercase tracking-wider transition-colors"
+                        >
+                          Reclamar
+                        </Link>
                       </td>
                     </tr>
                   ))
