@@ -175,6 +175,7 @@ export default function LandingPage() {
             <a href="#remates" className="hover:text-zinc-100 transition-colors">Remates</a>
             <a href="#frigorificos" className="hover:text-zinc-100 transition-colors">Frigoríficos</a>
             <a href="#mercado" className="hover:text-zinc-100 transition-colors">Mercado</a>
+            <Link href="/planes" className="hover:text-zinc-100 transition-colors">Planes</Link>
           </div>
 
           <Link
@@ -684,26 +685,38 @@ export default function LandingPage() {
       {/* ============================================================ */}
       <footer className="border-t border-zinc-800 bg-[#09090b]">
         <div className="max-w-7xl mx-auto px-6 py-12">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400">
-                <IconLayers className="w-3.5 h-3.5" />
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400">
+                  <IconLayers className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-xs font-medium text-zinc-500 tracking-tight">
+                  consignatarias.com.ar &copy; 2026
+                </span>
               </div>
-              <span className="text-xs font-medium text-zinc-500 tracking-tight">
-                consignatarias.com.ar &copy; 2026
-              </span>
+
+              <div className="flex items-center gap-6 text-xs text-zinc-600">
+                <Link href="/overview" className="hover:text-zinc-300 transition-colors">Terminal</Link>
+                <Link href="/remates" className="hover:text-zinc-300 transition-colors">Remates</Link>
+                <Link href="/consignatarias" className="hover:text-zinc-300 transition-colors">Directorio</Link>
+                <Link href="/frigorificos" className="hover:text-zinc-300 transition-colors">Frigoríficos</Link>
+                <Link href="/mercado" className="hover:text-zinc-300 transition-colors">Mercado</Link>
+              </div>
+
+              <div className="text-[0.65rem] text-zinc-600 uppercase tracking-widest">
+                Datos actualizados diariamente
+              </div>
             </div>
 
-            <div className="flex items-center gap-6 text-xs text-zinc-600">
-              <Link href="/overview" className="hover:text-zinc-300 transition-colors">Terminal</Link>
-              <Link href="/remates" className="hover:text-zinc-300 transition-colors">Remates</Link>
-              <Link href="/consignatarias" className="hover:text-zinc-300 transition-colors">Directorio</Link>
-              <Link href="/frigorificos" className="hover:text-zinc-300 transition-colors">Frigoríficos</Link>
-              <Link href="/mercado" className="hover:text-zinc-300 transition-colors">Mercado</Link>
-            </div>
-
-            <div className="text-[0.65rem] text-zinc-600 uppercase tracking-widest">
-              Datos actualizados diariamente
+            <div className="border-t border-zinc-800/50 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="flex items-center gap-6 text-xs text-zinc-600">
+                <Link href="/planes" className="hover:text-zinc-300 transition-colors">Planes</Link>
+                <Link href="/glosario" className="hover:text-zinc-300 transition-colors">Glosario</Link>
+                <Link href="/calidad" className="hover:text-zinc-300 transition-colors">Calidad de datos</Link>
+                <Link href="/quienes-somos" className="hover:text-zinc-300 transition-colors">Quiénes somos</Link>
+              </div>
+              <span className="text-xs text-zinc-700">agro@memola.com.ar</span>
             </div>
           </div>
         </div>

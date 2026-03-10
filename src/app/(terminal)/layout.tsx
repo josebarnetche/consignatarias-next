@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { label: "CONSIGNATARIAS", href: "/consignatarias" },
   { label: "FRIGORIFICOS", href: "/frigorificos" },
   { label: "MERCADO", href: "/mercado" },
+  { label: "PLANES", href: "/planes" },
 ] as const;
 
 /* ------------------------------------------------------------------ */
@@ -212,9 +213,21 @@ export default function TerminalLayout({
       {/* -- FOOTER ------------------------------------------------- */}
       <footer className="border-t border-terminal-border bg-terminal-panel px-4 py-3 flex items-center justify-between text-xxs text-zinc-600">
         <span>consignatarias.com.ar &copy; 2026</span>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 flex-wrap justify-end">
+          <Link href="/planes" className="hover:text-zinc-300 transition-colors">
+            Planes
+          </Link>
+          <span className="text-terminal-border">|</span>
+          <Link href="/glosario" className="hover:text-zinc-300 transition-colors">
+            Glosario
+          </Link>
+          <span className="text-terminal-border">|</span>
+          <Link href="/calidad" className="hover:text-zinc-300 transition-colors">
+            Calidad
+          </Link>
+          <span className="text-terminal-border">|</span>
           <Link href="/quienes-somos" className="hover:text-zinc-300 transition-colors">
-            Quienes Somos
+            Quiénes Somos
           </Link>
           <span className="text-terminal-border">|</span>
           <span>agro@memola.com.ar</span>
