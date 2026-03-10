@@ -6,6 +6,24 @@ Built in 12 days (Feb 26 – Mar 9, 2026). 42 commits. One human, one AI.
 
 ---
 
+## [0.8.3.1] — 2026-03-09
+
+### Remate Estancia Palmita + Trade Food confirmado
+
+> `eb39e36` — data: add Estancia Palmita auction (Colombo y Magliano, 16/04, Mercedes)
+
+**Nuevo remate curado:**
+- **Estancia Palmita** — 16 de abril, Sociedad Rural de Mercedes, Corrientes
+- 900 cabezas: 450 vacas y vaquillas preñadas + 450 vaquillonas para entorar
+- Remata: Colombo y Magliano SA
+- Tipo: cría, categoría principal: vaquillonas
+
+**Trade Food SA** — verificado que ya existía en los datos (35° Remate Virtual, 18/03, Parera, La Pampa). Su sitio no publica calendario de remates (opera por consignación directa productor→frigorífico), así que queda como entrada manual.
+
+**Coverage:** 385 auctions, 67 consignatarias, 10 provinces.
+
+---
+
 ## [0.8.3] — 2026-03-09
 
 ### Fix province misassignment — city-to-province correction map
