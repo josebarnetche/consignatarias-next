@@ -1,6 +1,6 @@
 # Changelog
 
-The complete build log of **consignatarias.com.ar** — from the first `npx create-next-app` to a live cattle auction platform covering 385+ remates across 10 Argentine provinces, with Supabase auth, frigorífico enrichment, and a full SEO stack.
+Registro completo de **consignatarias.com.ar** — desde el primer `npx create-next-app` hasta una plataforma de remates ganaderos con 385+ remates en 10 provincias argentinas, auth con Supabase, enriquecimiento de frigoríficos y SEO completo.
 
 ---
 
@@ -120,46 +120,46 @@ Replicación del flujo de verificación de consignatarias para frigoríficos:
 
 ## [0.9.0] — 2026-03-09
 
-### SEO overhaul — from 2 indexed pages to full discoverability
+### Revisión SEO completa — de 2 páginas indexadas a descubrimiento total
 
 > `47b74ea` — feat: comprehensive SEO overhaul for Google discoverability (v0.9.0)
 
-**The problem:** Only 2 of 168 pages were indexed by Google. Zero rankings for any keyword, brand or non-brand. The site was invisible to search.
+**El problema:** Solo 2 de 168 páginas estaban indexadas en Google. Cero rankings para cualquier keyword, de marca o genérica. El sitio era invisible para búsquedas.
 
-**What changed (4 parallel workstreams):**
+**Cambios (4 líneas de trabajo en paralelo):**
 
-**1. Homepage rewrite (`page.tsx`)**
-- Complete copy rewrite from `proposed-copies.md`
-- New H1: "Todos los remates ganaderos de Argentina en una sola pantalla"
-- Problem/solution structure: El Problema → Cómo Funciona → Comparación vs WhatsApp
-- Dynamic counts (auctions, consignatarias) from live data
-- New final CTA section
+**1. Reescritura del homepage (`page.tsx`)**
+- Reescritura completa del copy desde `proposed-copies.md`
+- Nuevo H1: "Todos los remates ganaderos de Argentina en una sola pantalla"
+- Estructura problema/solución: El Problema → Cómo Funciona → Comparación vs WhatsApp
+- Conteos dinámicos (remates, consignatarias) desde datos en vivo
+- Nueva sección CTA final
 
-**2. Province landing pages (10 new routes)**
-- `/remates/[provincia]` — 10 static pages targeting "remates hacienda [provincia]" keywords
-- 150-250 words of unique SEO copy per province with real cities and consignatarias
-- `generateStaticParams()` for SSG
-- BreadcrumbList + ItemList JSON-LD per page
-- Stats bar, server-rendered auction list, navigation links
+**2. Landing pages por provincia (10 rutas nuevas)**
+- `/remates/[provincia]` — 10 páginas estáticas apuntando a keywords "remates hacienda [provincia]"
+- 150-250 palabras de copy SEO único por provincia con ciudades y consignatarias reales
+- `generateStaticParams()` para SSG
+- BreadcrumbList + ItemList JSON-LD por página
+- Barra de stats, lista de remates server-rendered, links de navegación
 
-**3. Technical SEO fixes**
-- `next/font/google` replaces CDN `<link>` tags (eliminates render-blocking)
-- Twitter Cards auto-derived from OpenGraph (removed redundant `twitter` metadata)
-- Dynamic meta description with live auction count
-- `noindex` on thin pages: `/verificar` (77 pages), `/login`
-- Removed 77 `/verificar` URLs from sitemap (were diluting crawl budget)
-- `Permissions-Policy` header added to `vercel.json`
-- Login page refactored: extracted `LoginClient.tsx` so `page.tsx` can export metadata
+**3. Fixes técnicos de SEO**
+- `next/font/google` reemplaza tags CDN `<link>` (elimina render-blocking)
+- Twitter Cards derivadas automáticamente de OpenGraph (eliminado `twitter` metadata redundante)
+- Meta description dinámica con conteo de remates en vivo
+- `noindex` en páginas thin: `/verificar` (77 páginas), `/login`
+- Eliminadas 77 URLs `/verificar` del sitemap (diluían el crawl budget)
+- Header `Permissions-Policy` agregado en `vercel.json`
+- Login page refactorizada: extraído `LoginClient.tsx` para que `page.tsx` exporte metadata
 
 **4. Content SEO + E-E-A-T**
-- `/quienes-somos` — new institutional page (Memola Medios SAS, data sources, methodology, contact)
-- Server-rendered intro text on all sections: `/remates`, `/mercado`, `/frigorificos`, `/consignatarias`
-- `SectionBreadcrumbSchema` component for structured breadcrumbs on every section
-- Terminal footer with copyright, "Quiénes Somos" link, contact email
+- `/quienes-somos` — nueva página institucional (Memola Medios SAS, fuentes de datos, metodología, contacto)
+- Texto introductorio server-rendered en todas las secciones: `/remates`, `/mercado`, `/frigorificos`, `/consignatarias`
+- Componente `SectionBreadcrumbSchema` para breadcrumbs estructurados en cada sección
+- Footer terminal con copyright, link "Quiénes Somos", email de contacto
 
-**Sitemap:** ~140 URLs → ~100 URLs (removed thin pages, added provinces + quienes-somos). Quality over quantity.
+**Sitemap:** ~140 URLs → ~100 URLs (eliminadas páginas thin, agregadas provincias + quienes-somos). Calidad sobre cantidad.
 
-**Coverage:** 385 auctions, 77 consignatarias, 10 provinces, ~170+ static pages.
+**Cobertura:** 385 remates, 77 consignatarias, 10 provincias, ~170+ páginas estáticas.
 
 ---
 
@@ -177,56 +177,56 @@ Replicación del flujo de verificación de consignatarias para frigoríficos:
 
 **Trade Food SA** — verificado que ya existía en los datos (35° Remate Virtual, 18/03, Parera, La Pampa). Su sitio no publica calendario de remates (opera por consignación directa productor→frigorífico), así que queda como entrada manual.
 
-**Coverage:** 385 auctions, 67 consignatarias, 10 provinces.
+**Cobertura:** 385 remates, 67 consignatarias, 10 provincias.
 
 ---
 
 ## [0.8.3] — 2026-03-09
 
-### Fix province misassignment — city-to-province correction map
+### Fix de asignación de provincias — mapa de corrección ciudad-provincia
 
 > `TBD` — fix: province misassignment in scraper (CITY_PROVINCE_MAP)
 
-**The problem:** ~107 of 385 auctions (28%) had wrong province assignments. Users filtering by province saw incorrect results — e.g., San Nicolás de los Arroyos (Buenos Aires) showed under Corrientes, and 41 Córdoba auctions appeared as Neuquén.
+**El problema:** ~107 de 385 remates (28%) tenían provincias mal asignadas. Los usuarios filtrando por provincia veían resultados incorrectos — ej: San Nicolás de los Arroyos (Buenos Aires) aparecía en Corrientes, y 41 remates de Córdoba aparecían como Neuquén.
 
-**Root causes identified:**
-1. **CACG API bad `state_name`** — When `PROVINCE_MAP[r.state_id]` failed (bad/missing ID), the scraper fell back to `r.state_name`, which was often "CORRIENTES" for Buenos Aires cities. Affected **65 auctions**.
-2. **Curated entries with wrong province** — Manual entries from individual website scrapes (saenz-valiente, ferias-rauch, jauregui-lorda, etc.) had wrong provinces like "NEUQUEN" for Córdoba cities. Affected **42 auctions**.
-3. **Location field echoed wrong province** — `location` was built as `"CITY, PROVINCE"`, so wrong province meant wrong location text (e.g., `"RAUCH, CORRIENTES"`).
+**Causas raíz identificadas:**
+1. **API CACG con `state_name` incorrecto** — Cuando `PROVINCE_MAP[r.state_id]` fallaba (ID malo/faltante), el scraper usaba `r.state_name` como fallback, que frecuentemente era "CORRIENTES" para ciudades de Buenos Aires. Afectados: **65 remates**.
+2. **Entradas curadas con provincia incorrecta** — Entradas manuales de scrapes individuales (saenz-valiente, ferias-rauch, jauregui-lorda, etc.) tenían provincias como "NEUQUEN" para ciudades de Córdoba. Afectados: **42 remates**.
+3. **Campo location con provincia incorrecta** — `location` se construía como `"CIUDAD, PROVINCIA"`, provincia incorrecta significaba location incorrecto (ej: `"RAUCH, CORRIENTES"`).
 
-**Solution: `CITY_PROVINCE_MAP`**
+**Solución: `CITY_PROVINCE_MAP`**
 
-A lookup table of ~70 Argentine cattle auction cities mapped to their correct province, added to `scripts/scrape-auctions.mjs`. Applied as the **highest-priority** province source, overriding both CACG API data and curated entries.
+Una tabla de lookup de ~70 ciudades argentinas de remates ganaderos mapeadas a su provincia correcta, agregada a `scripts/scrape-auctions.mjs`. Se aplica con la **mayor prioridad**, sobreescribiendo datos de la API CACG y entradas curadas.
 
-**Implementation (single file: `scripts/scrape-auctions.mjs`):**
-1. **`CITY_PROVINCE_MAP`** — ~70 entries covering Buenos Aires (30 cities), Córdoba (5), Corrientes (7), Santa Fe (3), Entre Ríos (3), Chaco (4), Santiago del Estero (1), La Pampa (2), San Luis (1), Formosa (1)
-2. **`correctProvince()` function** — Extracts city from `location` field, normalizes (uppercase + NFD accent removal), looks up in map, fixes both `province` and `location` fields, logs corrections with `[FIX]` prefix
-3. **CACG inline fix** — City name checked before falling back to unreliable `state_name`
-4. **Post-normalization sweep** — Runs on all curated + scraped auctions before deduplication
+**Implementación (archivo único: `scripts/scrape-auctions.mjs`):**
+1. **`CITY_PROVINCE_MAP`** — ~70 entradas cubriendo Buenos Aires (30 ciudades), Córdoba (5), Corrientes (7), Santa Fe (3), Entre Ríos (3), Chaco (4), Santiago del Estero (1), La Pampa (2), San Luis (1), Formosa (1)
+2. **Función `correctProvince()`** — Extrae ciudad del campo `location`, normaliza (mayúsculas + NFD para acentos), busca en mapa, corrige campos `province` y `location`, loguea correcciones con prefijo `[FIX]`
+3. **Fix inline CACG** — Se verifica nombre de ciudad antes de usar el fallback poco confiable `state_name`
+4. **Barrido post-normalización** — Se ejecuta sobre todos los remates curados + scrapeados antes de deduplicación
 
-**Results:**
+**Resultados:**
 
-| Province | Before | After |
-|----------|--------|-------|
-| NEUQUEN | 41 | **0** (eliminated — all were Córdoba/Buenos Aires) |
-| CORRIENTES | 81 | **16** (only real Corrientes cities remain) |
-| BUENOS AIRES | 58 | **127** (+69 recovered) |
-| CORDOBA | 38 | **78** (+40 recovered) |
+| Provincia | Antes | Después |
+|-----------|-------|---------|
+| NEUQUEN | 41 | **0** (eliminada — todos eran Córdoba/Buenos Aires) |
+| CORRIENTES | 81 | **16** (solo ciudades reales de Corrientes) |
+| BUENOS AIRES | 58 | **127** (+69 recuperados) |
+| CORDOBA | 38 | **78** (+40 recuperados) |
 
-**What this does NOT change:**
-- No UI/client code changes
-- No Supabase schema changes
-- No changes to other scraper sources (Colombo, O'Farrell, Lehmann, Madelan, UMC — their hardcoded province logic was already correct)
-- No changes to deduplication logic
+**Lo que NO cambia:**
+- Sin cambios en UI/código cliente
+- Sin cambios en schema de Supabase
+- Sin cambios en otras fuentes del scraper (Colombo, O'Farrell, Lehmann, Madelan, UMC — su lógica de provincia hardcodeada ya era correcta)
+- Sin cambios en lógica de deduplicación
 
-**Why a static map (not geocoding):**
-- The set of cattle auction cities is finite and stable (~70 cities)
-- One-time data entry that permanently fixes the pipeline
-- Catches errors from ALL sources (CACG API bugs, curated typos, future sources)
-- No external API dependency, no rate limits, no cost
-- Runs in O(1) per auction
+**Por qué un mapa estático (no geocoding):**
+- El conjunto de ciudades de remates ganaderos es finito y estable (~70 ciudades)
+- Carga de datos única que corrige el pipeline permanentemente
+- Detecta errores de TODAS las fuentes (bugs de API CACG, typos curados, fuentes futuras)
+- Sin dependencia de API externa, sin rate limits, sin costo
+- Ejecuta en O(1) por remate
 
-**Coverage:** 384 auctions, 67 consignatarias, 10 provinces active. NEUQUEN and SANTIAGO DEL ESTERO eliminated (no current auctions in those provinces — will reappear when real auctions are added).
+**Cobertura:** 384 remates, 67 consignatarias, 10 provincias activas. NEUQUEN y SANTIAGO DEL ESTERO eliminadas (sin remates actuales en esas provincias — reaparecerán cuando se agreguen remates reales).
 
 ---
 
@@ -269,19 +269,19 @@ La primera feature que conecta la plataforma con los dueños reales de las consi
 - `escapeHtml()` en todos los inputs de usuario
 
 **Seguridad:**
-- Zod validation en todos los inputs
-- UUID validation en admin routes
+- Validación Zod en todos los inputs
+- Validación UUID en rutas admin
 - CUIT regex (`^\d{2}-\d{8}-\d$`)
 - RLS habilitado en ambas tablas (sin políticas anon — solo `service_role`)
 - Unique partial index previene duplicados pendientes
-- Email normalization (lowercase + trim)
+- Normalización de email (lowercase + trim)
 
 **Dependencias nuevas:**
 - `@supabase/supabase-js` — cliente Supabase
 - `resend` — emails transaccionales
 - `zod` — validación de schemas
 
-**GA4 tracking nuevo:**
+**Tracking GA4 nuevo:**
 - `claim_cta_click` — click en "Verificar este perfil"
 - `claim_submit` — envío del formulario
 - `claim_success` — solicitud exitosa
@@ -292,7 +292,7 @@ La primera feature que conecta la plataforma con los dueños reales de las consi
 
 ## [0.7.0] — 2026-03-08
 
-### SEO, locale, and the 9th scraper source
+### SEO, locale y la 9° fuente del scraper
 
 > `ea51d7b` — feat(seo): comprehensive SEO overhaul
 > `2ac9eaf` — feat: add OG image for social sharing
@@ -304,89 +304,89 @@ La primera feature que conecta la plataforma con los dueños reales de las consi
 > `8e0c29a` — seo: add full icon set (16, 32, 180, 192, 512px) + metadata
 > `263c511` — fix: DD/MM date format, remove PRO pinning, purge past auctions, clean tracked files
 
-After the terminal redesign shipped, three things needed attention: making Google understand the site, fixing locale details for the Argentine audience, and expanding data coverage.
+Después del rediseño terminal, había tres cosas pendientes: hacer que Google entienda el sitio, corregir detalles de locale para el público argentino, y expandir la cobertura de datos.
 
-**Structured data (JSON-LD):**
-- `Organization` — Memola Medios S.A.S., logo, social links
-- `WebSite` — search action, canonical URL
-- `Dataset` — 440+ auctions as a structured dataset
+**Datos estructurados (JSON-LD):**
+- `Organization` — Memola Medios S.A.S., logo, links sociales
+- `WebSite` — search action, URL canónica
+- `Dataset` — 440+ remates como dataset estructurado
 
-**Technical SEO:**
-- Dynamic `sitemap.ts` — ~140 URLs (static pages + 12 province filters + all consignataria profiles)
-- `robots.ts` — standard allow rules
-- Open Graph + Twitter Card meta tags on every page
-- `www` → `www` canonical redirect (301)
-- OG image with full-bleed bull photo, text overlay
+**SEO técnico:**
+- Sitemap dinámico `sitemap.ts` — ~140 URLs (páginas estáticas + 12 filtros por provincia + todos los perfiles de consignatarias)
+- `robots.ts` — reglas estándar de allow
+- Meta tags Open Graph + Twitter Card en cada página
+- Redirección canónica `www` → `www` (301)
+- Imagen OG con foto de toro a sangre completa, texto superpuesto
 
-**URL normalization (`src/lib/utils/url.ts`):**
-- Bare `www.` prefixes → `https://www.`
-- Consistent protocol handling across all external links
-- Applied site-wide to every `sourceUrl` in the auction feed
+**Normalización de URLs (`src/lib/utils/url.ts`):**
+- Prefijos `www.` sin protocolo → `https://www.`
+- Manejo consistente de protocolo en todos los links externos
+- Aplicado a todos los `sourceUrl` del feed de remates
 
-**DD/MM date format:**
-- Argentina uses DD/MM, not MM/DD. The central `formatDateShort()` in `src/lib/ui/tokens.ts` was updated to return `DD/MM`
-- Inline date formatting in `OverviewClient.tsx` also corrected
-- Every date visible to users now follows Argentine convention
+**Formato de fecha DD/MM:**
+- Argentina usa DD/MM, no MM/DD. Se actualizó `formatDateShort()` en `src/lib/ui/tokens.ts` para devolver `DD/MM`
+- Formato inline en `OverviewClient.tsx` también corregido
+- Todas las fechas visibles al usuario siguen la convención argentina
 
-**PRO sort logic corrected:**
-- Featured auctions no longer pin to top of feed — they appear in chronological order like everything else, just visually highlighted in amber/gold
-- Prominence without distortion
+**Lógica de ordenamiento PRO corregida:**
+- Los remates destacados ya no se fijan arriba del feed — aparecen en orden cronológico como todo, solo con destaque visual en ámbar/dorado
+- Prominencia sin distorsión
 
-**9th scraper source:**
-- **UMC Haciendas Villaguay** (`umchv.ar`) — Entre Ríos auctions
-- Scraper sources now: CACG, Colombo y Colombo, O'Farrell, Lehmann, Madelan, dolarapi, mercadoagroganadero, MAGYP, UMC Haciendas
+**9° fuente del scraper:**
+- **UMC Haciendas Villaguay** (`umchv.ar`) — remates de Entre Ríos
+- Fuentes del scraper: CACG, Colombo y Colombo, O'Farrell, Lehmann, Madelan, dolarapi, mercadoagroganadero, MAGYP, UMC Haciendas
 
-**Icons:**
-- Full icon set: 16px, 32px, 180px (Apple Touch), 192px, 512px
-- `favicon.ico` in root for legacy browser/Google indexing support
-- Manifest metadata updated
+**Íconos:**
+- Set completo: 16px, 32px, 180px (Apple Touch), 192px, 512px
+- `favicon.ico` en raíz para soporte de browsers legacy / indexación Google
+- Metadata de manifest actualizada
 
-**Data hygiene:**
-- Past auctions purged from `remates.json` to keep the feed relevant
-- Stale tracked files cleaned from git
+**Limpieza de datos:**
+- Remates pasados purgados de `remates.json` para mantener el feed relevante
+- Archivos trackeados obsoletos limpiados de git
 
-**Coverage:** 450 auctions, 77 consignatarias, 9 scraper sources, 12 provinces. All dates in DD/MM.
+**Cobertura:** 450 remates, 77 consignatarias, 9 fuentes de scraping, 12 provincias. Todas las fechas en DD/MM.
 
 ---
 
 ## [0.6.0] — 2026-03-07
 
-### Live terminal redesign
+### Rediseño terminal en vivo
 
 > `120299c` — refactor: simplify design system for mobile readability
 > `3af8817` — feat: live terminal redesign + bug fixes
 > `97340bd` — docs: update README and CHANGELOG for v0.6.0 live terminal redesign
 
-The dashboard needed to feel alive. This was a pure visual pass — no new features, just making the existing ones look and feel like a real trading terminal.
+El dashboard necesitaba sentirse vivo. Fue una pasada puramente visual — sin features nuevas, solo hacer que las existentes se vean y se sientan como una terminal de trading real.
 
-**New visual language:**
-- Tinted backgrounds with subtle blue hue (`#0a0a0f`, `#16161d`)
-- Emerald `live` color system for indicators and badges
-- CSS gradient bars replacing ASCII sparklines and bar charts
-- Glass panels with backdrop blur and gradient backgrounds
-- Row enter animations (`fade-in-up`) and stat count-up effects
-- Scan-line activity bar with live data counts (443 remates, 77 consignatarias, 12 provincias)
-- Rounded corners (2px) across all components
-- Sans-serif headings (Inter `font-heading`) for visual hierarchy
+**Nuevo lenguaje visual:**
+- Fondos tintados con tono azul sutil (`#0a0a0f`, `#16161d`)
+- Sistema de color emerald `live` para indicadores y badges
+- Barras con gradiente CSS reemplazando sparklines y barras ASCII
+- Paneles glass con backdrop blur y fondos con gradiente
+- Animaciones de entrada de fila (`fade-in-up`) y efectos de conteo de stats
+- Barra de actividad scan-line con conteos en vivo (443 remates, 77 consignatarias, 12 provincias)
+- Bordes redondeados (2px) en todos los componentes
+- Headings sans-serif (Inter `font-heading`) para jerarquía visual
 
-**Mobile improvements:**
-- Swipe gradient hints on horizontal nav scroll
-- Active nav state with accent color and bottom indicator line
-- Overflow protection on consignatarias directory tags column (100px → 120px)
+**Mejoras mobile:**
+- Hints de gradiente swipe en scroll horizontal de nav
+- Estado activo de nav con color accent y línea indicadora inferior
+- Protección de overflow en columna de tags del directorio de consignatarias (100px → 120px)
 
 **Fixes:**
-- IderCor auction links — 6 auctions had broken `sourceUrl` pointing to dead news article, now link to `/consignatarias/idercor` profile
-- Logo font changed from monospace to sans-serif
-- LIVE badge on Mercado panel now conditional — only shows when auctions are happening today
-- Province breakdown bars: ASCII `█░` replaced with proportional CSS gradient fills
-- INMAG trend chart: ASCII sparkline replaced with proportional bar chart
-- Status dots changed from square to round (`border-radius: 50%`)
+- Links de remates IderCor — 6 remates tenían `sourceUrl` roto apuntando a artículo de noticias muerto, ahora linkan al perfil `/consignatarias/idercor`
+- Font del logo cambiada de monospace a sans-serif
+- Badge LIVE en panel Mercado ahora condicional — solo se muestra cuando hay remates hoy
+- Barras de distribución por provincia: ASCII `█░` reemplazado con fills CSS proporcionales con gradiente
+- Gráfico de tendencia INMAG: sparkline ASCII reemplazado con gráfico de barras proporcional
+- Dots de estado cambiados de cuadrados a redondos (`border-radius: 50%`)
 
 ---
 
 ## [0.5.0] — 2026-03-07
 
-### Consignataria profiles — 70 static pages, one canonical slug system
+### Perfiles de consignatarias — 70 páginas estáticas, un sistema de slugs canónicos
 
 > `58afa46` — feat: add consignataria profile pages, GA4 tracking, canonical slug system
 > `9b354fd` — feat: add comprehensive GA4 analytics tracking across all pages
@@ -395,66 +395,66 @@ The dashboard needed to feel alive. This was a pure visual pass — no new featu
 > `3b5b314` — fix: sync auction/consignataria counts across layout, README, directory
 > `62be425` — feat: add 4 new consignataria profiles (77 total)
 
-The biggest structural addition. Every consignataria got its own page — generated at build time from the data.
+La adición estructural más grande. Cada consignataria recibió su propia página — generada en build time desde los datos.
 
-**Profile pages (`/consignatarias/[slug]`):**
-- 12-month calendar heatmap (ENE–DIC) showing auction density
-- Type distribution bar chart (INVERNADA / CRIA / GENERAL / REPROD / ESPECIAL)
-- Auction list grouped by month with full terminal-styled rows
-- Stats bar: total remates, estimated heads, upcoming count, provinces, main plazas
-- Past auctions shown at reduced opacity
+**Páginas de perfil (`/consignatarias/[slug]`):**
+- Heatmap de calendario 12 meses (ENE–DIC) mostrando densidad de remates
+- Gráfico de barras de distribución por tipo (INVERNADA / CRIA / GENERAL / REPROD / ESPECIAL)
+- Lista de remates agrupada por mes con filas estilo terminal
+- Barra de stats: total remates, cabezas estimadas, próximos, provincias, plazas principales
+- Remates pasados mostrados con opacidad reducida
 
-**Canonical slug system (`consignataria-slugs.ts`):**
-- 109 raw slugs from `remates.json` → 70 unique canonical entities
-- Handles duplicates: `bressan` + `bressan-y-cia-s-r-l` + `bressan-y-cia-srl` → `bressan-y-cia` (103 combined auctions)
-- Strips legal suffixes (`-s-a`, `-s-r-l`, `-sa`, `-srl`)
-- Non-canonical visits → 301 redirect to canonical URL
-- Unknown slugs → 404
-- Helper functions: `getCanonicalSlug()`, `getProfile()`, `getAuctionsForProfile()`, `getAllCanonicalSlugs()`
+**Sistema de slugs canónicos (`consignataria-slugs.ts`):**
+- 109 slugs raw de `remates.json` → 70 entidades canónicas únicas
+- Maneja duplicados: `bressan` + `bressan-y-cia-s-r-l` + `bressan-y-cia-srl` → `bressan-y-cia` (103 remates combinados)
+- Elimina sufijos legales (`-s-a`, `-s-r-l`, `-sa`, `-srl`)
+- Visitas a slugs no canónicos → redirect 301 a URL canónica
+- Slugs desconocidos → 404
+- Funciones helper: `getCanonicalSlug()`, `getProfile()`, `getAuctionsForProfile()`, `getAllCanonicalSlugs()`
 
-**Structured data per profile:**
-- `BreadcrumbSchema`: Inicio > Remates > [Consignataria Name]
-- `LocalBusinessSchema`: name, location, province
-- `EventSchema`: next 5 upcoming auctions (Google event rich results)
+**Datos estructurados por perfil:**
+- `BreadcrumbSchema`: Inicio > Remates > [Nombre de Consignataria]
+- `LocalBusinessSchema`: nombre, ubicación, provincia
+- `EventSchema`: próximos 5 remates (rich results de eventos de Google)
 
-**Also in this batch:**
-- **Google Analytics 4** (G-6CZMZH9S6Y) via `next/script` with `afterInteractive` strategy
-- **Consignatarias directory** (`/consignatarias`) — alphabetical listing with province tags and claim CTA
-- **Clickable names** in `/remates` feed — consignataria names link to their profile (with `stopPropagation` so row clicks still open source URLs)
-- **Favicon** + hreflang + Google Search Console verification
-- **Sitemap** expanded with 70 consignataria URLs at priority 0.7
+**También en este lote:**
+- **Google Analytics 4** (G-6CZMZH9S6Y) vía `next/script` con estrategia `afterInteractive`
+- **Directorio de consignatarias** (`/consignatarias`) — listado alfabético con tags de provincia y CTA de reclamo
+- **Nombres clickeables** en feed `/remates` — nombres de consignatarias linkan a su perfil (con `stopPropagation` para que clicks en la fila sigan abriendo URLs fuente)
+- **Favicon** + hreflang + verificación de Google Search Console
+- **Sitemap** expandido con 70 URLs de consignatarias a priority 0.7
 
-**Coverage:** 443 auctions, 77 consignatarias, 70 profile pages, 12 provinces.
+**Cobertura:** 443 remates, 77 consignatarias, 70 páginas de perfil, 12 provincias.
 
 ---
 
 ## [0.4.0] — 2026-03-06
 
-### Monetization — the PRO auction system
+### Monetización — el sistema de remates PRO
 
 > `c4d3fd5` — feat: add featured PRO auction system + pitch deck for consignatarias
 
-The first revenue feature. Consignatarias could now pay to feature their auctions in the feed — not with disruptive ads, but with tasteful visual prominence.
+La primera feature de revenue. Las consignatarias ahora podían pagar para destacar sus remates en el feed — no con publicidades disruptivas, sino con prominencia visual de buen gusto.
 
-**PRO auction treatment:**
-- `★ PRO` badge in amber/gold
-- Left accent bar in amber
-- 3-line expanded layout showing the full description
-- `featured: true` boolean flag on the Auction schema
-- Featured auctions sorted above regular ones within the same time period
+**Tratamiento de remate PRO:**
+- Badge `★ PRO` en ámbar/dorado
+- Barra de acento izquierda en ámbar
+- Layout expandido de 3 líneas mostrando la descripción completa
+- Flag booleano `featured: true` en el schema de Auction
+- Remates destacados ordenados por encima de los regulares dentro del mismo período
 
-**Business model crystallized:**
-1. **Remates PRO** — paid featured listings (amber/gold treatment)
-2. **Data subscriptions** — premium API access for market intelligence
-3. **Directory listings** — enhanced consignataria/frigorífico profiles
+**Modelo de negocio cristalizado:**
+1. **Remates PRO** — listados destacados pagos (tratamiento ámbar/dorado)
+2. **Suscripciones de datos** — acceso premium a API de inteligencia de mercado
+3. **Listados de directorio** — perfiles mejorados de consignatarias/frigoríficos
 
-**Coverage:** 440 auctions, 77 consignatarias.
+**Cobertura:** 440 remates, 77 consignatarias.
 
 ---
 
 ## [0.3.0] — 2026-02-26, 06:27 ART
 
-### Automation — scraper, live data, and the first identity
+### Automatización — scraper, datos en vivo y la primera identidad
 
 > `94b9887` — feat: add daily auction scraper + GitHub Actions workflow
 > `da864b3` — fix: upgrade Next.js 15.1.6 → 15.5.12 (CVE-2025-66478)
@@ -467,158 +467,158 @@ The first revenue feature. Consignatarias could now pay to feature their auction
 > `e8f9e6a` — fix: rename Ganado Terminal → consignatarias.com.ar on home + title
 > `c7aa30a` — feat: add YC-style pitch deck in Argentine Spanish
 
-This was the rest of day 1 — everything between the first commit at 04:46 and midnight. Three major things happened.
+El resto del día 1 — todo entre el primer commit a las 04:46 y la medianoche. Pasaron tres cosas importantes.
 
-**The scraper (05:04):**
+**El scraper (05:04):**
 
-18 minutes after the first commit, the scraper existed. It pulled from 6 sources in parallel:
+18 minutos después del primer commit, el scraper existía. Consultaba 6 fuentes en paralelo:
 
-1. **CACG API** (`cacg.org.ar/iapi/auctions`) — ~128 auctions from the Cámara Argentina de Consignatarios
+1. **CACG API** (`cacg.org.ar/iapi/auctions`) — ~128 remates de la Cámara Argentina de Consignatarios
 2. **Colombo y Colombo** (`colomboycolombo.com.ar/remates`) — Buenos Aires, Santa Fe, Corrientes
 3. **Ivan L. O'Farrell** (`ivanofarrell.com.ar/remates`) — Chaco, Santiago del Estero
 4. **Cooperativa Guillermo Lehmann** (`cooperativalehmann.coop/hacienda/remates`) — Santa Fe
-5. **Madelan** (`madelan.com.ar/proximos`) — NEA streaming auctions
-6. **dolarapi.com** — USD blue and oficial exchange rates
+5. **Madelan** (`madelan.com.ar/proximos`) — remates streaming NEA
+6. **dolarapi.com** — USD blue y oficial
 
-The GitHub Actions workflow ran daily at 14:00 ART (17:00 UTC), auto-committed data changes, and triggered Vercel rebuilds.
+El workflow de GitHub Actions corría diariamente a las 14:00 ART (17:00 UTC), auto-commiteaba cambios de datos, y disparaba rebuilds de Vercel.
 
-Key engineering: deduplication by date + slug + location, date validation (reject malformed CACG entries), province normalization, Next.js security upgrade 15.1.6 → 15.5.12 (CVE-2025-66478).
+Ingeniería clave: deduplicación por fecha + slug + ubicación, validación de fechas (rechazar entradas CACG malformadas), normalización de provincias, upgrade de seguridad Next.js 15.1.6 → 15.5.12 (CVE-2025-66478).
 
-**Live market data (06:27):**
+**Datos de mercado en vivo (06:27):**
 
-By 6:27 AM — less than 2 hours in — the market dashboard was pulling real data:
+A las 6:27 AM — menos de 2 horas desde el inicio — el dashboard de mercado estaba consultando datos reales:
 
-- **INMAG index** ($/kg vivo) scraped from `mercadoagroganadero.com.ar`
-- **Category prices** derived from INMAG using market ratios:
+- **Índice INMAG** ($/kg vivo) scrapeado de `mercadoagroganadero.com.ar`
+- **Precios por categoría** derivados de INMAG usando ratios de mercado:
   ```
   novillos: 1.0 (base), novillitos: 0.95, vaquillonas: 0.90,
   vacas: 0.72, toros: 0.65, terneros: 1.10
   ```
-- **Corn FOB** from MAGYP's JSON API
-- **USD blue/oficial** from dolarapi.com
+- **Maíz FOB** de la API JSON de MAGYP
+- **USD blue/oficial** de dolarapi.com
 
-At 17:55 UTC, the first automated scrape ran: **414 auctions**, fresh market prices. The pipeline was alive.
+A las 17:55 UTC, corrió el primer scrape automatizado: **414 remates**, precios de mercado frescos. El pipeline estaba vivo.
 
-**Identity (20:47–23:51):**
+**Identidad (20:47–23:51):**
 
-The afternoon/evening session was about identity. "Ganado Terminal" was a working title — good for the vibe, wrong for the domain.
+La sesión de tarde/noche fue sobre identidad. "Ganado Terminal" era un nombre de trabajo — bueno para la vibra, incorrecto para el dominio.
 
-- **Dark zinc theme** — `#0a0a0a` background, zinc-700 borders, the Bloomberg aesthetic dialed in
-- **Rename** — Ganado Terminal → consignatarias.com.ar everywhere (layout, title, meta tags, landing)
-- **Clickable rows** — auction rows linked to source URLs, opening in new tabs
-- **Smart dates** — relative dates ("Hoy", "Mañana") alongside absolute dates
-- **Mobile overflow fix** — horizontal scroll on small screens resolved
-- **Pitch deck** — YC-style PDF in Argentine Spanish
+- **Tema dark zinc** — background `#0a0a0a`, bordes zinc-700, la estética Bloomberg ajustada
+- **Rename** — Ganado Terminal → consignatarias.com.ar en todas partes (layout, título, meta tags, landing)
+- **Filas clickeables** — las filas de remates linkan a URLs fuente, abriendo en nueva pestaña
+- **Fechas inteligentes** — fechas relativas ("Hoy", "Mañana") junto a fechas absolutas
+- **Fix de overflow mobile** — scroll horizontal en pantallas chicas resuelto
+- **Pitch deck** — PDF estilo YC en español argentino
 
-The domain `consignatarias.com.ar` was registered and pointed to Vercel. The `.ar` TLD was deliberate — this is an Argentine product for the Argentine market.
+Se registró el dominio `consignatarias.com.ar` y se apuntó a Vercel. El TLD `.ar` fue deliberado — es un producto argentino para el mercado argentino.
 
-**Coverage:** 414 auctions, 86 consignatarias, 12 provinces. Market data updating daily. The daily cron ran quietly through the next 8 days (Feb 27 – Mar 5), accumulating 412 → 442 auctions.
+**Cobertura:** 414 remates, 86 consignatarias, 12 provincias. Datos de mercado actualizándose diariamente. El cron diario corrió silenciosamente durante los siguientes 8 días (Feb 27 – Mar 5), acumulando 412 → 442 remates.
 
 ---
 
 ## [0.2.0] — 2026-02-26, 04:46 ART
 
-### Data expansion — 92 to 277 auctions
+### Expansión de datos — 92 a 277 remates
 
-63 curated auctions were added from 15+ regional sources that can't be scraped:
+63 remates curados fueron agregados de 15+ fuentes regionales que no se pueden scrapear:
 
-- **Ivan L. O'Farrell** — 19 auctions across the Chaco circuit (Machagai, Gral. San Martín, Santa Sylvina)
-- **IderCor** — 6 small producer auctions in Corrientes (Mercedes, Ituzaingó, Caá Catí, Bella Vista, Sauce)
+- **Ivan L. O'Farrell** — 19 remates en el circuito chaqueño (Machagai, Gral. San Martín, Santa Sylvina)
+- **IderCor** — 6 remates de pequeños productores en Corrientes (Mercedes, Ituzaingó, Caá Catí, Bella Vista, Sauce)
 - **Nangapiry SA / Asoc. Ganadera Alto Paraná** — Misiones: Fiesta del Ternero Misionero
-- **Ganaderos de Formosa** — Comandante Fontana + additional dates
-- **Néstor Hugo Fuentes** — La Pampa circuit (Victorica, Gral. Acha, Algarrobo del Águila, Bernasconi)
-- **Tradición Ganadera / Porro** — Villa Ángela, Chaco (monthly)
+- **Ganaderos de Formosa** — Comandante Fontana + fechas adicionales
+- **Néstor Hugo Fuentes** — circuito pampeano (Victorica, Gral. Acha, Algarrobo del Águila, Bernasconi)
+- **Tradición Ganadera / Porro** — Villa Ángela, Chaco (mensual)
 - **Coop. La Ganadera** — Entre Ríos (La Paz, Villaguay, María Grande)
-- **Etchevehere Rural** — Entre Ríos (Federal, Gral. Ramírez special events)
+- **Etchevehere Rural** — Entre Ríos (Federal, Gral. Ramírez eventos especiales)
 - **Bressan y Cía** — Chajarí, Entre Ríos
-- **Expo events** — Agroactiva, Expo Rural Rafaela, Expo Gualeguaychú, Expo Rural Misiones, Expo Rural Chaco, Expo Rural Corrientes
+- **Eventos Expo** — Agroactiva, Expo Rural Rafaela, Expo Gualeguaychú, Expo Rural Misiones, Expo Rural Chaco, Expo Rural Corrientes
 
-Misiones province added (now 11 provinces).
+Se agregó la provincia de Misiones (ahora 11 provincias).
 
-**Coverage:** 277 auctions, 64 consignatarias, 11 provinces.
+**Cobertura:** 277 remates, 64 consignatarias, 11 provincias.
 
 ---
 
 ## [0.1.0] — 2026-02-26, 04:46 ART
 
-### First commit — a complete product in 28 files
+### Primer commit — un producto completo en 28 archivos
 
 > `c180601` — Initial release: Ganado Terminal — livestock market intelligence platform
 
-The first commit was not a skeleton. It was 13,764 lines across 28 files — a fully functional dashboard with data, navigation, filters, and styling. The name was "Ganado Terminal."
+El primer commit no fue un esqueleto. Fueron 13.764 líneas en 28 archivos — un dashboard completamente funcional con datos, navegación, filtros y estilos. El nombre era "Ganado Terminal".
 
-**What shipped:**
+**Lo que se shippeó:**
 
-- **Landing page** (`/`) — zinc palette, Inter font, 3 feature previews (Calendario de Remates, Directorio de Frigoríficos, Precios de Mercado), live stat cards pulling from JSON
-- **Terminal dashboard** with 4 pages behind a `(terminal)` route group:
-  - `/overview` — general stats, upcoming events, market summary
-  - `/remates` — auction feed with filters (province, type, category, time period tabs)
-  - `/frigorificos` — 364 slaughterhouses with search and province filters
-  - `/mercado` — INMAG index, category price breakdowns, USD blue/oficial rates
-- **Data files:**
-  - `remates.json` — 92 auctions (15 sample + 18 from Colombo y Colombo + CACG + others)
-  - `frigorificos.json` — 364 records from SENASA/MAGYP
-  - `consignatarias.json` — 56 entities with CUIT, matrícula, contact info
-  - `market-prices.json` — INMAG, 6 cattle categories, corn FOB, USD rates
-  - `featured-links.json` — curated community resources
-- **TypeScript schema** with nullable `time` and `estimatedHeads` fields
-- **Seed functions** — `getAuctions()`, `getUpcomingAuctions()`, data access layer
-- **Tailwind config** with terminal color palette, Inter font, custom animations (`float-subtle`, `dash-flow`, `pulse-soft`, `pulse-live`)
-- **CSS** — 342 lines of terminal styling and landing page animations
+- **Landing page** (`/`) — paleta zinc, fuente Inter, 3 previews de features (Calendario de Remates, Directorio de Frigoríficos, Precios de Mercado), cards de stats en vivo desde JSON
+- **Dashboard terminal** con 4 páginas detrás de un route group `(terminal)`:
+  - `/overview` — stats generales, próximos eventos, resumen de mercado
+  - `/remates` — feed de remates con filtros (provincia, tipo, categoría, tabs de período)
+  - `/frigorificos` — 364 plantas frigoríficas con búsqueda y filtros por provincia
+  - `/mercado` — índice INMAG, desglose de precios por categoría, cotización USD blue/oficial
+- **Archivos de datos:**
+  - `remates.json` — 92 remates (15 de muestra + 18 de Colombo y Colombo + CACG + otros)
+  - `frigorificos.json` — 364 registros de SENASA/MAGYP
+  - `consignatarias.json` — 56 entidades con CUIT, matrícula, info de contacto
+  - `market-prices.json` — INMAG, 6 categorías ganaderas, maíz FOB, cotización USD
+  - `featured-links.json` — recursos de la industria curados
+- **Schema TypeScript** con campos `time` y `estimatedHeads` nullable
+- **Funciones seed** — `getAuctions()`, `getUpcomingAuctions()`, capa de acceso a datos
+- **Config Tailwind** con paleta de colores terminal, fuente Inter, animaciones custom (`float-subtle`, `dash-flow`, `pulse-soft`, `pulse-live`)
+- **CSS** — 342 líneas de estilos terminal y animaciones de landing page
 
-**Coverage:** 92 auctions, 49 consignatarias, 10 provinces.
-
----
-
-## [0.0.2] — 2026-02-26, before dawn
-
-### Curating the first 92 auctions
-
-Before the first commit, 92 auctions were hand-curated to prove the concept. This meant:
-
-- Researching upcoming remates from consignataria websites, social media, and TV schedules
-- Designing the TypeScript schema: `Auction` interface with `id`, `title`, `consignatariaName`, `consignatariaSlug`, `date` (YYYY-MM-DD), `time` (HH:MM or null), `location`, `province`, `type` (invernada/cria/reproductores/general/especial), `mainCategory`, `estimatedHeads`, `description`, `youtubeUrl`, `catalogUrl`, `source`, `sourceUrl`, `status`
-- Building the seed functions: `getAuctions()`, `getUpcomingAuctions()`, `getAuctionsByProvince()`, `getAuctionsByType()`
-- Structuring `remates.json` so it could be both hand-edited and machine-written by a future scraper
-
-The 92 auctions came from: 15 sample entries to establish the format, 18 scraped from Colombo y Colombo's annual calendar, and the rest from CACG listings and manual research.
-
-15 sources already identified. 49 consignatarias. 10 provinces.
+**Cobertura:** 92 remates, 49 consignatarias, 10 provincias.
 
 ---
 
-## [0.0.1] — 2026-02-26, before dawn
+## [0.0.2] — 2026-02-26, antes del amanecer
 
-### Data first — frigoríficos, consignatarias, market prices
+### Curación de los primeros 92 remates
 
-Before writing a single React component, the data was collected:
+Antes del primer commit, se curaron 92 remates a mano para probar el concepto. Esto significó:
 
-- **364 frigoríficos** from SENASA/MAGYP open data — every registered slaughterhouse in Argentina with name, CUIT, province, locality, type (bovinos/porcinos/ovinos/aves), RENSPA number
-- **56 consignatarias** from the public registry — name, CUIT, matrícula number, contact info, province
-- **Market prices** — INMAG index ($/kg vivo), 6 category breakdowns (novillos, novillitos, vaquillonas, vacas, toros, terneros), corn FOB, USD blue/oficial rates
-- **Featured links** — curated list of industry resources (CACG, Rosgan, SENASA, etc.)
+- Investigar próximos remates desde sitios web de consignatarias, redes sociales y grillas de TV
+- Diseñar el schema TypeScript: interfaz `Auction` con `id`, `title`, `consignatariaName`, `consignatariaSlug`, `date` (YYYY-MM-DD), `time` (HH:MM o null), `location`, `province`, `type` (invernada/cria/reproductores/general/especial), `mainCategory`, `estimatedHeads`, `description`, `youtubeUrl`, `catalogUrl`, `source`, `sourceUrl`, `status`
+- Construir las funciones seed: `getAuctions()`, `getUpcomingAuctions()`, `getAuctionsByProvince()`, `getAuctionsByType()`
+- Estructurar `remates.json` para que pueda ser editado a mano y escrito por máquina con un futuro scraper
 
-This data became the JSON files that the entire platform reads from. No database — just structured JSON committed to git.
+Los 92 remates vinieron de: 15 entradas de muestra para establecer el formato, 18 scrapeadas del calendario anual de Colombo y Colombo, y el resto de listados CACG e investigación manual.
+
+15 fuentes ya identificadas. 49 consignatarias. 10 provincias.
 
 ---
 
-## [0.0.0] — 2026-02-26, before dawn
+## [0.0.1] — 2026-02-26, antes del amanecer
 
-### Genesis
+### Primero los datos — frigoríficos, consignatarias, precios de mercado
 
-Before the first commit, there was an idea: Argentina's cattle auction market is a $15B+ industry running on WhatsApp groups, PDF calendars, and word of mouth. No one had built a Bloomberg Terminal for it.
+Antes de escribir un solo componente React, se recolectaron los datos:
 
-The technical bet was made before writing a line of code:
+- **364 frigoríficos** de datos abiertos SENASA/MAGYP — cada planta frigorífica registrada en Argentina con nombre, CUIT, provincia, localidad, tipo (bovinos/porcinos/ovinos/aves), número RENSPA
+- **56 consignatarias** del registro público — nombre, CUIT, número de matrícula, info de contacto, provincia
+- **Precios de mercado** — índice INMAG ($/kg vivo), 6 categorías (novillos, novillitos, vaquillonas, vacas, toros, terneros), maíz FOB, cotización USD blue/oficial
+- **Links destacados** — lista curada de recursos de la industria (CACG, Rosgan, SENASA, etc.)
+
+Estos datos se convirtieron en los archivos JSON que toda la plataforma lee. Sin base de datos — solo JSON estructurado commiteado a git.
+
+---
+
+## [0.0.0] — 2026-02-26, antes del amanecer
+
+### Génesis
+
+Antes del primer commit, hubo una idea: el mercado de remates ganaderos de Argentina es una industria de USD 15B+ que funciona con grupos de WhatsApp, calendarios PDF y boca a boca. Nadie había construido una Bloomberg Terminal para eso.
+
+La apuesta técnica se hizo antes de escribir una línea de código:
 
 ```bash
 npx create-next-app@latest consignatarias-next --typescript --tailwind --app --src-dir
 ```
 
-**Why Next.js 15 + SSG + JSON?** Because the data changes once a day (auctions are scheduled weeks in advance), there's no user-generated content, and the entire dataset fits in memory. A static site on Vercel's CDN means TTFB < 50ms, zero hosting cost, and no database to manage.
+**¿Por qué Next.js 15 + SSG + JSON?** Porque los datos cambian una vez al día (los remates se programan con semanas de anticipación), no hay contenido generado por usuarios, y todo el dataset entra en memoria. Un sitio estático en el CDN de Vercel significa TTFB < 50ms, cero costo de hosting, y sin base de datos que administrar.
 
-*Update:* By v0.8.1, a Supabase PostgreSQL database was added for consignataria profiles, verification claims, and user authentication (magic link). But the core bet held — auction data, frigorificos, and market prices are still JSON files rebuilt daily. The database handles the parts that need persistence and auth, not the read-heavy public data.
+*Actualización:* En v0.8.1 se agregó una base de datos PostgreSQL en Supabase para perfiles de consignatarias, reclamos de verificación y autenticación (magic link). Pero la apuesta core se mantuvo — datos de remates, frigoríficos y precios de mercado siguen siendo archivos JSON rebuildeados diariamente. La base de datos maneja las partes que necesitan persistencia y auth, no los datos públicos de alta lectura.
 
-The initial `package.json` had exactly 3 dependencies and 7 devDependencies:
+El `package.json` inicial tenía exactamente 3 dependencias y 7 devDependencies:
 
 ```json
 {
@@ -627,33 +627,33 @@ The initial `package.json` had exactly 3 dependencies and 7 devDependencies:
 }
 ```
 
-No state management. No ORM. No component library. No testing framework. Just Next.js, Tailwind, and TypeScript. The core stack is still the same — we later added `@supabase/supabase-js` and `@supabase/ssr` (auth + database), `resend` (emails), `zod` (validation), `sharp` (image optimization), `@vercel/analytics`, and `@vercel/speed-insights`.
+Sin state management. Sin ORM. Sin librería de componentes. Sin framework de testing. Solo Next.js, Tailwind y TypeScript. El stack core sigue siendo el mismo — después se agregaron `@supabase/supabase-js` y `@supabase/ssr` (auth + base de datos), `resend` (emails), `zod` (validación), `sharp` (optimización de imágenes), `@vercel/analytics` y `@vercel/speed-insights`.
 
 ---
 
-## The numbers
+## Los números
 
-| Metric | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) | 0.9.0 (Mar 9) | 0.9.2 (Mar 10) |
-|--------|-----------------|-----------------|-----------------|-----------------|
-| Auctions | 0 → 92 → 414 | 450 | 385 | 385 |
+| Métrica | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) | 0.9.0 (Mar 9) | 0.9.2 (Mar 10) |
+|---------|-----------------|-----------------|-----------------|-----------------|
+| Remates | 0 → 92 → 414 | 450 | 385 | 385 |
 | Consignatarias | 49 | 77 | 77 | 77 |
-| Profile pages | 0 | 70 | 77 + 77 verificar | 77 + 77 verificar |
-| Frigorifico pages | 0 | 0 | 0 | **364** |
-| Province pages | 0 | 0 | 10 | 10 |
-| Scraper sources | 0 → 6 | 9 | 9 | 9 |
-| Provinces | 10 | 12 | 10 | 10 |
-| Frigoríficos | 364 | 364 | 364 | 364 (126 enriched) |
-| Static HTML pages | ~10 | ~80 | ~170+ | **~530+** |
-| Sitemap URLs | 0 | ~140 | ~100 | **~460** |
-| Database | none | none | Supabase (3 tables) | Supabase (5 tables) |
-| Province accuracy | unknown | unknown | **100%** | **100%** |
-| Hosting cost | $0 | $0 | $0 | $0 |
+| Páginas de perfil | 0 | 70 | 77 + 77 verificar | 77 + 77 verificar |
+| Páginas de frigoríficos | 0 | 0 | 0 | **364** |
+| Páginas por provincia | 0 | 0 | 10 | 10 |
+| Fuentes del scraper | 0 → 6 | 9 | 9 | 9 |
+| Provincias | 10 | 12 | 10 | 10 |
+| Frigoríficos | 364 | 364 | 364 | 364 (126 enriquecidos) |
+| Páginas HTML estáticas | ~10 | ~80 | ~170+ | **~530+** |
+| URLs en sitemap | 0 | ~140 | ~100 | **~460** |
+| Base de datos | ninguna | ninguna | Supabase (3 tablas) | Supabase (5 tablas) |
+| Precisión de provincias | desconocida | desconocida | **100%** | **100%** |
+| Costo de hosting | $0 | $0 | $0 | $0 |
 
 ---
 
-## Contributors
+## Contribuyentes
 
-- **Human** — product vision, market knowledge, data curation, manual auctions, business decisions
-- **Claude** (Anthropic) — architecture, code, scraper, SEO, styling, this changelog
+- **Humano** — visión de producto, conocimiento de mercado, curación de datos, remates manuales, decisiones de negocio
+- **Claude** (Anthropic) — arquitectura, código, scraper, SEO, estilos, este changelog
 
-Built with `claude-opus-4-6` via Claude Code CLI.
+Construido con `claude-opus-4-6` vía Claude Code CLI.
