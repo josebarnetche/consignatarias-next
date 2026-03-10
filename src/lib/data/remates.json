@@ -3876,6 +3876,24 @@
     "status": "scheduled"
   },
   {
+    "title": "Remate Estancia Palmita — 450 vacas y vaquillas preñadas + 450 vaquillonas para entorar",
+    "consignatariaName": "Colombo y Magliano SA",
+    "consignatariaSlug": "colombo-y-magliano",
+    "date": "2026-04-16",
+    "time": null,
+    "location": "Mercedes, CORRIENTES",
+    "province": "CORRIENTES",
+    "type": "cria",
+    "mainCategory": "vaquillonas",
+    "estimatedHeads": 900,
+    "description": "Remate Estancia Palmita. 450 vacas y vaquillas preñadas, 450 vaquillonas para entorar. Sociedad Rural de Mercedes, Corrientes.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "manual",
+    "sourceUrl": "https://colomboymagliano.com.ar/",
+    "status": "scheduled"
+  },
+  {
     "id": 205,
     "title": "Genetica Lechera",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
