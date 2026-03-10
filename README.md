@@ -21,7 +21,7 @@ There is no single place to see all upcoming auctions, compare prices, or browse
 
 **consignatarias.com.ar** aggregates data from 77+ consignatarias (cattle auction houses) across 10 provinces into a unified, real-time interface. A rancher can see every upcoming auction in the country, filter by province or type, check market prices, and find frigorificos — all in one screen.
 
-### Current UX (v0.9.7)
+### Current UX (v0.9.9)
 
 **For cattle ranchers (buyers):**
 - Open the site → see all upcoming auctions nationwide in a terminal-style feed
@@ -35,7 +35,9 @@ There is no single place to see all upcoming auctions, compare prices, or browse
 - Click "Verificar y acceder" → enter your email → profile is verified instantly + magic link sent
 - Log in → tabbed dashboard with: auction CRUD, profile editing, results upload, subscription management
 - Create, edit, and delete your own auctions — they appear on your public profile within 5 minutes (ISR)
-- Edit contact info (phone, email, website, WhatsApp, description) reflected on public profile
+- Edit contact info (phone, email, website, WhatsApp, description, CUIT) reflected on public profile
+- Upload logo — shows immediately on public profile (ISR, 5 min max)
+- Monthly metrics email (1st of each month) with profile view stats
 
 **For frigorificos (slaughterhouses):**
 - Find your listing at `/frigorificos` in the SENASA directory
@@ -47,6 +49,9 @@ There is no single place to see all upcoming auctions, compare prices, or browse
 - Province landing pages with localized content and auction listings
 - 77 consignataria profile pages with structured data for Google rich results
 - Source badges (CACG, CYC, OFAR, etc.) and freshness labels on auctions
+- `/glosario` — 17 livestock industry terms with DefinedTermSet schema
+- `/calidad` — data quality methodology, sources, SLA
+- "Reportar error" link on every consignataria profile
 
 ---
 
@@ -183,13 +188,17 @@ Tabbed interface for verified owners:
 
 10 static pages targeting "remates hacienda [provincia]" keywords. Each with 150-250 words of unique SEO copy mentioning local cities, consignatarias, and auction patterns. BreadcrumbList + ItemList JSON-LD.
 
-### SEO
+### SEO & AI Search Optimization
 
 - Dynamic sitemap (~100 URLs)
-- JSON-LD: Organization, WebSite, Dataset, Event, LocalBusiness, BreadcrumbList, ItemList
+- JSON-LD: Organization, WebSite, Dataset, Event, LocalBusiness, BreadcrumbList, ItemList, FAQPage, DefinedTermSet
 - Open Graph + Twitter Cards on all pages
 - `noindex` on thin pages (`/verificar`, `/login`)
 - `/quienes-somos` for E-E-A-T signals
+- `/glosario` — 17 terms with DefinedTermSet JSON-LD for AI definitional queries
+- `/calidad` — data methodology page for trust signals
+- FAQ section on landing page with FAQPage schema (10 Q&As)
+- AI bot access in robots.txt: GPTBot, ChatGPT-User, PerplexityBot, ClaudeBot, anthropic-ai, Google-Extended
 - Server-rendered intro text on all sections
 - `next/font/google` (no render-blocking CDN links)
 - Canonical URLs with non-www → www redirect (301)
@@ -230,6 +239,9 @@ Tabbed interface for verified owners:
 | `/frigorificos/verificar` | Dynamic | Frigorifico registration form (noindex) |
 | `/mercado` | Static | Market prices — INMAG, categories, USD, corn |
 | `/quienes-somos` | Static | Institutional page (E-E-A-T) |
+| `/glosario` | Static | 17 livestock terms with DefinedTermSet schema |
+| `/calidad` | Static | Data quality methodology and SLA |
+| `/planes` | Static | Pricing tiers (Free / PRO / Enterprise) |
 | `/login` | Static | Magic link authentication (noindex) |
 | `/dashboard` | Dynamic | Owner dashboard (authenticated) |
 | `/admin/claims` | Dynamic | Admin claim review panel |
@@ -251,12 +263,14 @@ src/
 │   │   ├── claims/route.ts                # POST claims (auto-approve + magic link)
 │   │   ├── consignatarias/[slug]/
 │   │   │   ├── route.ts                  # PATCH profile
+│   │   │   ├── logo/route.ts            # POST logo upload
 │   │   │   └── auctions/                 # GET/POST + [id] PATCH/DELETE
 │   │   ├── frigorifico-claims/route.ts    # POST frigorifico claims
 │   │   ├── subscribe/route.ts             # POST Rebill payment link
 │   │   ├── webhooks/rebill/route.ts       # Rebill webhook handler
 │   │   ├── profile-views/route.ts         # POST view tracking
 │   │   ├── auction-results/route.ts       # POST/GET results
+│   │   ├── cron/monthly-metrics/route.ts  # Monthly owner metrics email
 │   │   └── admin/                         # Claims + frigo claims review
 │   └── (terminal)/                         # Route group — dashboard
 │       ├── layout.tsx                      # Terminal chrome (nav, clock, footer)
@@ -277,6 +291,9 @@ src/
 │       │   └── verificar/page.tsx         # Registration form (noindex)
 │       ├── mercado/                        # Market prices
 │       ├── quienes-somos/                  # E-E-A-T page
+│       ├── glosario/                       # Livestock glossary (17 terms)
+│       ├── calidad/                        # Data quality methodology
+│       ├── planes/                         # Pricing page (Free/PRO/Enterprise)
 │       ├── login/                          # Magic link auth
 │       ├── dashboard/                      # Owner dashboard
 │       └── admin/claims/                   # Admin claim review
@@ -284,6 +301,7 @@ src/
 │   ├── claims/
 │   │   ├── ClaimForm.tsx                  # Consignataria claim form
 │   │   └── FrigorificoClaimForm.tsx       # Frigorifico claim form
+│   ├── onboarding/WelcomeChecklist.tsx    # Post-claim onboarding checklist
 │   ├── seo/JsonLd.tsx                     # Schema.org components
 │   └── AnalyticsProvider.tsx              # GA4
 └── lib/
@@ -328,7 +346,8 @@ supabase/migrations/
 └── 20260312_consignataria_auctions.sql    # Owner-managed auctions
 
 .github/workflows/
-└── scrape-auctions.yml                    # Cron: 14:00 ART daily
+├── scrape-auctions.yml                    # Cron: 14:00 ART daily
+└── monthly-metrics.yml                    # Cron: 1st of month, 10:00 ART
 ```
 
 ---
@@ -416,6 +435,8 @@ Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misione
 | 0.9.2 | Mar 10 | Frigorifico detail pages (364) + auction results backend |
 | 0.9.5 | Mar 10 | SaaS foundation — Rebill, DAL, profile editing, analytics, onboarding |
 | 0.9.7 | Mar 10 | Trust-first onboarding — auto-approve claims, auction CRUD, dashboard tabs |
+| 0.9.8 | Mar 10 | Q2 blueprint close — logo upload, /calidad, reportar error, monthly metrics |
+| 0.9.9 | Mar 10 | AI SEO — robots.txt AI bots, FAQ schema, /glosario with DefinedTermSet |
 
 Built in 13 days. One human, one AI. $0 hosting cost. 10 Supabase tables. See [CHANGELOG.md](CHANGELOG.md) for full details.
 
