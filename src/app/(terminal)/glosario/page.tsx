@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import Link from 'next/link'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
@@ -136,10 +137,10 @@ export default function GlosarioPage() {
 
         {/* Related links */}
         <div className="mt-10 border-t border-zinc-800 pt-4 flex flex-wrap gap-4 text-xs">
-          <a href="/calidad" className="text-zinc-500 hover:text-accent transition-colors">Calidad de datos</a>
-          <a href="/quienes-somos" className="text-zinc-500 hover:text-accent transition-colors">Quiénes somos</a>
-          <a href="/planes" className="text-zinc-500 hover:text-accent transition-colors">Planes</a>
-          <a href="/remates" className="text-zinc-500 hover:text-accent transition-colors">Ver remates</a>
+          <Link href="/calidad" className="text-zinc-500 hover:text-accent transition-colors">Calidad de datos</Link>
+          <Link href="/quienes-somos" className="text-zinc-500 hover:text-accent transition-colors">Quiénes somos</Link>
+          <Link href="/planes" className="text-zinc-500 hover:text-accent transition-colors">Planes</Link>
+          <Link href="/remates" className="text-zinc-500 hover:text-accent transition-colors">Ver remates</Link>
         </div>
 
         {/* Footer */}
