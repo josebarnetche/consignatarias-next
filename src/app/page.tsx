@@ -4,6 +4,7 @@ import marketPrices from "@/lib/data/market-prices.json";
 import frigorificosSummary from "@/lib/data/frigorificos-summary.json";
 import rematesData from "@/lib/data/remates.json";
 import { getAllProfiles } from "@/lib/data/consignataria-slugs";
+import { FAQPageSchema } from "@/components/seo/JsonLd";
 
 /* ================================================================== */
 /*  SVG ICONS                                                          */
@@ -98,6 +99,49 @@ function fmt(n: number, d = 0) {
     maximumFractionDigits: d,
   });
 }
+
+const FAQ_ITEMS = [
+  {
+    question: "¿Qué es una consignataria de hacienda?",
+    answer: "Una consignataria de hacienda es una empresa intermediaria autorizada que organiza remates ganaderos, actuando como nexo entre compradores y vendedores de ganado. En Argentina están reguladas por la Cámara Argentina de Consignatarios de Ganado (CACG) y operan en ferias y remates presenciales o televisados.",
+  },
+  {
+    question: "¿Cómo funciona consignatarias.com.ar?",
+    answer: `Recopilamos datos de remates de ${totalConsignatarias}+ consignatarias desde múltiples fuentes (webs, APIs, redes sociales) y los unificamos en un calendario filtrable por provincia, tipo de remate y fecha. Todo se actualiza automáticamente cada día a las 14:00 hora argentina.`,
+  },
+  {
+    question: "¿Cada cuánto se actualizan los datos?",
+    answer: "Los datos de remates, precios INMAG, cotización del dólar y maíz se actualizan diariamente de forma automática a las 14:00 ART. Las fuentes incluyen la CACG, sitios de consignatarias individuales, el Mercado Agroganadero y dolarapi.com.",
+  },
+  {
+    question: "¿Qué es el índice INMAG?",
+    answer: `El INMAG (Índice Nacional del Mercado Agroganadero) es el indicador de referencia del precio del ganado vacuno en Argentina, expresado en $/kg vivo. Actualmente está en $${fmt(marketPrices.inmag.current)}/kg. En la plataforma mostramos su serie histórica semanal y los precios desglosados por categoría.`,
+  },
+  {
+    question: "¿Cuántas consignatarias hay en Argentina?",
+    answer: `Argentina tiene cientos de consignatarias de hacienda registradas. En nuestra plataforma cubrimos ${totalConsignatarias}+ con perfiles dedicados que incluyen calendario anual de remates, historial y datos de contacto. La cobertura abarca 10 provincias ganaderas.`,
+  },
+  {
+    question: "¿Qué tipos de remates ganaderos existen?",
+    answer: "Los principales tipos son: remates de invernada (animales para engorde), remates de cría (vientres, toros reproductores), remates generales (múltiples categorías) y remates especiales (exposiciones, cabañas). En la plataforma podés filtrar por cada tipo.",
+  },
+  {
+    question: "¿Cómo verifico el perfil de mi consignataria?",
+    answer: "Si sos representante de una consignataria, podés reclamar tu perfil desde la página de tu empresa haciendo clic en \"Reclamar perfil\". Verificamos tu identidad por email y, una vez aprobado, podés editar los datos de contacto, descripción y mantener tu información actualizada con un badge de verificado.",
+  },
+  {
+    question: "¿Qué es un frigorífico?",
+    answer: `Un frigorífico es una planta habilitada por SENASA y MAGYP para la faena y procesamiento de carne vacuna. En nuestra base de datos tenemos ${fmt(frigorificosSummary.total)} plantas habilitadas en ${provinciasConFrigo} provincias, con datos de CUIT, matrícula y clasificación por ciclo (Tránsito, Ciclo II, Ciclo III).`,
+  },
+  {
+    question: "¿Consignatarias.com.ar es gratis?",
+    answer: "Sí. El acceso al calendario de remates, directorio de consignatarias, base de frigoríficos y precios de mercado es completamente libre y sin registro. Ofrecemos planes PRO para consignatarias que quieran destacar sus remates y acceder a herramientas de gestión avanzadas.",
+  },
+  {
+    question: "¿De dónde obtienen los datos de remates?",
+    answer: "Combinamos datos de la API de la CACG (Cámara Argentina de Consignatarios de Ganado), scraping de sitios web de consignatarias individuales como Colombo y Colombo, O'Farrell, Cooperativa Lehmann y Madelan, más carga manual de fuentes no digitalizables. Todo se actualiza cada día.",
+  },
+];
 
 /* ================================================================== */
 /*  METADATA                                                           */
@@ -580,6 +624,34 @@ export default function LandingPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
+
+        {/* ============================================================ */}
+        {/*  FAQ                                                          */}
+        {/* ============================================================ */}
+        <section id="faq" className="max-w-4xl mx-auto px-6 pt-32 pb-32">
+          <h2 className="text-2xl md:text-3xl font-medium text-zinc-100 tracking-tight text-center mb-16">
+            Preguntas frecuentes
+          </h2>
+          <FAQPageSchema items={FAQ_ITEMS} />
+          <div className="space-y-0">
+            {FAQ_ITEMS.map((item, i) => (
+              <details
+                key={i}
+                className={`group bg-zinc-900/40 border border-zinc-800 ${i === 0 ? 'rounded-t-lg' : ''} ${i === FAQ_ITEMS.length - 1 ? 'rounded-b-lg' : ''} ${i > 0 ? '-mt-px' : ''}`}
+              >
+                <summary className="flex items-center justify-between cursor-pointer px-6 py-4 text-sm text-zinc-200 hover:text-zinc-100 transition-colors list-none [&::-webkit-details-marker]:hidden">
+                  <span className="pr-4">{item.question}</span>
+                  <span className="text-zinc-600 group-open:rotate-45 transition-transform text-lg shrink-0">+</span>
+                </summary>
+                <div className="px-6 pb-4 text-xs text-zinc-400 leading-relaxed font-mono">
+                  {item.answer}
+                </div>
+              </details>
+            ))}
           </div>
         </section>
 

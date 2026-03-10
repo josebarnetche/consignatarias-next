@@ -252,6 +252,34 @@ export function BreadcrumbSchema({ items }: { items: BreadcrumbItem[] }) {
   );
 }
 
+// FAQ Page Schema
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+export function FAQPageSchema({ items }: { items: FAQItem[] }) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
 // Section Breadcrumb Schema — reusable for top-level section pages
 export function SectionBreadcrumbSchema({ section, sectionName }: { section: string; sectionName: string }) {
   const data = {
