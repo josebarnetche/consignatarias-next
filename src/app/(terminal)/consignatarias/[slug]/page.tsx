@@ -9,10 +9,42 @@ import {
   getAuctionsForProfile,
 } from '@/lib/data/consignataria-slugs'
 import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
+import { getEntityTier } from '@/lib/features'
+import { createServiceClient } from '@/lib/supabase'
 import { BreadcrumbSchema, LocalBusinessSchema, EventSchema } from '@/components/seo/JsonLd'
 import ConsignatariaProfileClient from './ConsignatariaProfileClient'
 
 const auctions = rematesData as Auction[]
+
+/* ------------------------------------------------------------------ */
+/*  AUCTION RESULTS from Supabase                                      */
+/* ------------------------------------------------------------------ */
+
+export interface AuctionResult {
+  id: number
+  auction_date: string
+  auction_title: string
+  total_heads_sold: number | null
+  average_price: number | null
+  max_price: number | null
+  location: string | null
+}
+
+async function fetchAuctionResults(slug: string): Promise<AuctionResult[]> {
+  try {
+    const service = createServiceClient()
+    const { data } = await service
+      .from('auction_results')
+      .select('id, auction_date, auction_title, total_heads_sold, average_price, max_price, location')
+      .eq('consignataria_slug', slug)
+      .order('auction_date', { ascending: false })
+      .limit(20)
+
+    return (data as AuctionResult[]) || []
+  } catch {
+    return []
+  }
+}
 
 /* ------------------------------------------------------------------ */
 /*  STATIC PARAMS  (~70 pages)                                         */
@@ -77,6 +109,11 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
   const enrichedProfile = await getConsignatariaProfile(canonical)
   if (!enrichedProfile) notFound()
 
+  const [tier, auctionResults] = await Promise.all([
+    getEntityTier('consignataria', canonical),
+    fetchAuctionResults(canonical),
+  ])
+
   const profileAuctions = getAuctionsForProfile(auctions, canonical)
 
   // Derive location info from auctions
@@ -129,6 +166,8 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
       <ConsignatariaProfileClient
         profile={enrichedProfile}
         auctions={profileAuctions}
+        tier={tier}
+        auctionResults={auctionResults}
       />
     </>
   )

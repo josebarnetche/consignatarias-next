@@ -2,8 +2,9 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
+import { getFrigorificoProfile } from '@/lib/dal/frigorificos'
 
-interface Frigorifico {
+interface BasicFrigorifico {
   cuit: string
   name: string
   matricula: string
@@ -11,7 +12,7 @@ interface Frigorifico {
   stage: number
 }
 
-const frigorificos = frigorificosData as Frigorifico[]
+const frigorificos = frigorificosData as BasicFrigorifico[]
 
 function formatCuit(cuit: string): string {
   if (cuit.length === 11) {
@@ -23,13 +24,13 @@ function formatCuit(cuit: string): string {
 function stageName(stage: number): string {
   if (stage === 1) return 'Etapa 1 — Faena + Desposte'
   if (stage === 2) return 'Etapa 2 — Desposte'
-  return 'Etapa 3 — Depósito'
+  return 'Etapa 3 — Deposito'
 }
 
 function stageDescription(stage: number): string {
-  if (stage === 1) return 'Planta habilitada para faena y desposte de reses. Autorizada para tránsito federal.'
+  if (stage === 1) return 'Planta habilitada para faena y desposte de reses. Autorizada para transito federal.'
   if (stage === 2) return 'Planta habilitada para desposte y procesamiento de medias reses. Sin faena propia.'
-  return 'Depósito frigorífico habilitado para almacenamiento y conservación de carnes.'
+  return 'Deposito frigorifico habilitado para almacenamiento y conservacion de carnes.'
 }
 
 function stageColor(stage: number): string {
@@ -55,10 +56,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { cuit } = await params
   const f = frigorificos.find((x) => x.cuit === cuit)
-  if (!f) return { title: 'Frigorífico no encontrado' }
+  if (!f) return { title: 'Frigorifico no encontrado' }
 
-  const title = `${f.name} — Frigorífico Mat. ${f.matricula} | Consignatarias.com.ar`
-  const description = `Ficha de ${f.name}: CUIT ${formatCuit(f.cuit)}, matrícula ${f.matricula}, ${f.province}. ${stageName(f.stage)}. Registro SENASA/MAGYP.`
+  const title = `${f.name} — Frigorifico Mat. ${f.matricula} | Consignatarias.com.ar`
+  const description = `Ficha de ${f.name}: CUIT ${formatCuit(f.cuit)}, matricula ${f.matricula}, ${f.province}. ${stageName(f.stage)}. Registro SENASA/MAGYP.`
 
   return {
     title,
@@ -81,8 +82,26 @@ export default async function FrigorificoDetailPage({
   params: Promise<{ cuit: string }>
 }) {
   const { cuit } = await params
-  const f = frigorificos.find((x) => x.cuit === cuit)
-  if (!f) notFound()
+  const basicF = frigorificos.find((x) => x.cuit === cuit)
+  if (!basicF) notFound()
+
+  // Try to get enriched profile from DAL (merges JSON + Supabase)
+  const profile = await getFrigorificoProfile(cuit)
+
+  // Use enriched data if available, fallback to basic
+  const name = profile?.name || basicF.name
+  const province = profile?.province || basicF.province
+  const localidad = profile?.localidad || null
+  const phone = profile?.phone || null
+  const email = profile?.email || null
+  const website = profile?.website || null
+  const description = profile?.description || null
+  const verified = profile?.verified || false
+  const grupoEmpresario = profile?.grupoEmpresario || null
+  const tipo = profile?.tipo || null
+  const direccion = profile?.direccion || null
+
+  const hasContact = phone || email || website
 
   return (
     <div className="max-w-2xl mx-auto px-2 sm:px-4 py-4 space-y-4">
@@ -92,23 +111,30 @@ export default async function FrigorificoDetailPage({
           FRIGORIFICOS
         </Link>
         <span>/</span>
-        <span className="text-zinc-400">MAT. {f.matricula}</span>
+        <span className="text-zinc-400">MAT. {basicF.matricula}</span>
       </div>
 
       {/* Header */}
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between">
-          <span className="text-zinc-200 text-label tracking-widest">FICHA DEL ESTABLECIMIENTO</span>
-          <span className={`text-xxs font-terminal px-1.5 py-0.5 border rounded-terminal ${stageBorderColor(f.stage)} ${stageColor(f.stage)}`}>
-            ETAPA {f.stage}
+          <div className="flex items-center gap-2">
+            <span className="text-zinc-200 text-label tracking-widest">FICHA DEL ESTABLECIMIENTO</span>
+            {verified && (
+              <span className="text-xxs font-terminal px-1.5 py-0.5 border border-positive/30 text-positive rounded-terminal">
+                VERIFICADO
+              </span>
+            )}
+          </div>
+          <span className={`text-xxs font-terminal px-1.5 py-0.5 border rounded-terminal ${stageBorderColor(basicF.stage)} ${stageColor(basicF.stage)}`}>
+            ETAPA {basicF.stage}
           </span>
         </div>
         <div className="px-panel py-4">
           <h1 className="text-lg font-medium text-zinc-100 leading-tight">
-            {f.name}
+            {name}
           </h1>
           <p className="text-xxs font-terminal text-zinc-500 mt-1">
-            {f.province}
+            {localidad || province}
           </p>
         </div>
       </div>
@@ -121,33 +147,101 @@ export default async function FrigorificoDetailPage({
         <div className="divide-y divide-terminal-border">
           <div className="px-panel py-2.5 flex items-center justify-between">
             <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">CUIT</span>
-            <span className="text-data font-terminal text-zinc-200 tabular-nums">{formatCuit(f.cuit)}</span>
+            <span className="text-data font-terminal text-zinc-200 tabular-nums">{formatCuit(basicF.cuit)}</span>
           </div>
           <div className="px-panel py-2.5 flex items-center justify-between">
-            <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Matrícula</span>
-            <span className="text-data font-terminal text-zinc-200 tabular-nums">{f.matricula}</span>
+            <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Matricula</span>
+            <span className="text-data font-terminal text-zinc-200 tabular-nums">{basicF.matricula}</span>
           </div>
           <div className="px-panel py-2.5 flex items-center justify-between">
             <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Provincia</span>
-            <span className="text-data font-terminal text-zinc-200">{f.province}</span>
+            <span className="text-data font-terminal text-zinc-200">{province}</span>
           </div>
           <div className="px-panel py-2.5 flex items-center justify-between">
             <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Etapa</span>
-            <span className={`text-data font-terminal ${stageColor(f.stage)}`}>
-              {stageName(f.stage)}
+            <span className={`text-data font-terminal ${stageColor(basicF.stage)}`}>
+              {stageName(basicF.stage)}
             </span>
           </div>
+          {grupoEmpresario && (
+            <div className="px-panel py-2.5 flex items-center justify-between">
+              <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Grupo</span>
+              <span className="text-data font-terminal text-zinc-200">{grupoEmpresario}</span>
+            </div>
+          )}
+          {tipo && (
+            <div className="px-panel py-2.5 flex items-center justify-between">
+              <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Tipo</span>
+              <span className="text-data font-terminal text-zinc-200">{tipo.replace(/_/g, ' ')}</span>
+            </div>
+          )}
+          {direccion && (
+            <div className="px-panel py-2.5 flex items-center justify-between">
+              <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Direccion</span>
+              <span className="text-data font-terminal text-zinc-200 text-right max-w-[60%]">{direccion}</span>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Contact info */}
+      {hasContact && (
+        <div className="terminal-panel">
+          <div className="terminal-panel-header">
+            <span className="text-zinc-200 text-label tracking-widest">CONTACTO</span>
+          </div>
+          <div className="divide-y divide-terminal-border">
+            {phone && (
+              <div className="px-panel py-2.5 flex items-center justify-between">
+                <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Telefono</span>
+                <span className="text-data font-terminal text-zinc-200">{phone}</span>
+              </div>
+            )}
+            {email && (
+              <div className="px-panel py-2.5 flex items-center justify-between">
+                <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Email</span>
+                <a href={`mailto:${email}`} className="text-data font-terminal text-accent hover:underline">{email}</a>
+              </div>
+            )}
+            {website && (
+              <div className="px-panel py-2.5 flex items-center justify-between">
+                <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Web</span>
+                <a
+                  href={website.startsWith('http') ? website : `https://${website}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-data font-terminal text-accent hover:underline"
+                >
+                  {website}
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Description */}
+      {description && (
+        <div className="terminal-panel">
+          <div className="terminal-panel-header">
+            <span className="text-zinc-200 text-label tracking-widest">DESCRIPCION</span>
+          </div>
+          <div className="px-panel py-3">
+            <p className="text-data font-terminal text-zinc-400 leading-relaxed">
+              {description}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Stage description */}
       <div className="terminal-panel">
         <div className="terminal-panel-header">
-          <span className="text-zinc-200 text-label tracking-widest">HABILITACIÓN</span>
+          <span className="text-zinc-200 text-label tracking-widest">HABILITACION</span>
         </div>
         <div className="px-panel py-3">
           <p className="text-data font-terminal text-zinc-400 leading-relaxed">
-            {stageDescription(f.stage)}
+            {stageDescription(basicF.stage)}
           </p>
           <p className="text-xxs font-terminal text-zinc-600 mt-2">
             Fuente: Registro Nacional SENASA / MAGyP
@@ -157,12 +251,14 @@ export default async function FrigorificoDetailPage({
 
       {/* Actions */}
       <div className="flex items-center gap-3">
-        <Link
-          href={`/frigorificos/verificar?cuit=${f.cuit}`}
-          className="px-4 py-2 bg-positive/10 border border-positive/30 text-positive text-data font-terminal rounded-terminal hover:bg-positive/20 transition-colors"
-        >
-          Reclamar este perfil
-        </Link>
+        {!verified && (
+          <Link
+            href={`/frigorificos/verificar?cuit=${basicF.cuit}`}
+            className="px-4 py-2 bg-positive/10 border border-positive/30 text-positive text-data font-terminal rounded-terminal hover:bg-positive/20 transition-colors"
+          >
+            Reclamar este perfil
+          </Link>
+        )}
         <Link
           href="/frigorificos"
           className="px-4 py-2 border border-terminal-border text-zinc-400 text-data font-terminal rounded-terminal hover:border-zinc-500 transition-colors"

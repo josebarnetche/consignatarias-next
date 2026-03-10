@@ -27,3 +27,20 @@ export async function createPaymentLink(
 
   return res.json()
 }
+
+export async function cancelSubscription(rebillSubscriptionId: string) {
+  const res = await fetch(`${REBILL_API}/subscriptions/${rebillSubscriptionId}/cancel`, {
+    method: 'POST',
+    headers: {
+      'x-api-key': process.env.REBILL_SECRET_KEY!,
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`Rebill cancel error: ${res.status} ${err}`)
+  }
+
+  return res.json()
+}

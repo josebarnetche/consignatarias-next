@@ -4,6 +4,9 @@ import { useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import type { Auction } from '@/lib/db/schema'
 import type { EnrichedProfile } from '@/lib/dal/consignatarias'
+import type { EntityTier } from '@/lib/features'
+import type { AuctionResult } from './page'
+import FeatureGate from '@/components/FeatureGate'
 import { normalizeUrl } from '@/lib/utils/url'
 import { trackProfileView, trackOutboundClick, trackClaimCTA } from '@/lib/analytics'
 import {
@@ -320,9 +323,11 @@ function TypeDistribution({ auctions }: { auctions: Auction[] }) {
 interface ConsignatariaProfileClientProps {
   profile: EnrichedProfile
   auctions: Auction[]
+  tier: EntityTier
+  auctionResults: AuctionResult[]
 }
 
-export default function ConsignatariaProfileClient({ profile, auctions }: ConsignatariaProfileClientProps) {
+export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults }: ConsignatariaProfileClientProps) {
   const today = getEffectiveToday()
 
   useEffect(() => {
@@ -383,6 +388,11 @@ export default function ConsignatariaProfileClient({ profile, auctions }: Consig
                 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-xxs border border-positive/30 text-positive rounded-terminal font-terminal">
                   <span className="w-1.5 h-1.5 rounded-full bg-positive" />
                   VERIFICADA
+                </span>
+              )}
+              {(tier === 'pro' || tier === 'enterprise') && (
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-xxs border border-amber-500/20 text-amber-400 bg-amber-500/10 rounded-terminal font-terminal">
+                  &#9733; PRO
                 </span>
               )}
               {provinces.map(prov => (
@@ -557,6 +567,102 @@ export default function ConsignatariaProfileClient({ profile, auctions }: Consig
           </div>
         </div>
       </div>
+
+      {/* ============================================================ */}
+      {/*  AUCTION RESULTS                                               */}
+      {/* ============================================================ */}
+      {auctionResults.length > 0 && (
+        <div className="terminal-panel mt-px">
+          <div className="terminal-panel-header flex items-center justify-between">
+            <span className="text-zinc-400 text-xxs tracking-widest">RESULTADOS DE REMATES</span>
+            <span className="text-xxs text-zinc-600 font-terminal">
+              {auctionResults.length} resultado{auctionResults.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+          <div className="border-b border-terminal-border px-cell py-px2 hidden md:flex items-center gap-0 bg-terminal-panel">
+            <span className="w-[56px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">Fecha</span>
+            <span className="flex-1 min-w-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">Remate</span>
+            <span className="w-[80px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right">Cab.</span>
+            <span className="w-[100px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right">$/kg prom.</span>
+            <span className="w-[100px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right">$/kg max.</span>
+          </div>
+          {auctionResults.map(result => (
+            <div key={result.id} className="border-b border-terminal-border">
+              {/* Mobile */}
+              <div className="md:hidden p-3 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-data tabular-nums font-terminal text-zinc-300">
+                    {formatDateShort(result.auction_date)}
+                  </span>
+                  {result.total_heads_sold != null && (
+                    <span className="text-data tabular-nums font-terminal text-zinc-400">
+                      {result.total_heads_sold.toLocaleString('es-AR')} cab.
+                    </span>
+                  )}
+                </div>
+                <div className="text-data font-terminal text-zinc-200 truncate">{result.auction_title}</div>
+                <div className="flex items-center gap-3">
+                  {result.average_price != null && (
+                    <span className="text-xxs text-zinc-500 font-terminal">
+                      Prom: <span className="text-zinc-300 tabular-nums">${result.average_price.toLocaleString('es-AR')}</span>
+                    </span>
+                  )}
+                  {result.max_price != null && (
+                    <span className="text-xxs text-zinc-500 font-terminal">
+                      Max: <span className="text-positive tabular-nums">${result.max_price.toLocaleString('es-AR')}</span>
+                    </span>
+                  )}
+                </div>
+              </div>
+              {/* Desktop */}
+              <div className="hidden md:flex items-center gap-0 px-cell py-px2">
+                <span className="w-[56px] flex-shrink-0 text-data tabular-nums font-terminal text-zinc-300">
+                  {formatDateShort(result.auction_date)}
+                </span>
+                <span className="flex-1 min-w-0 text-data font-terminal text-zinc-200 truncate">
+                  {result.auction_title}
+                </span>
+                <span className="w-[80px] flex-shrink-0 text-data tabular-nums font-terminal text-zinc-400 text-right">
+                  {result.total_heads_sold != null ? result.total_heads_sold.toLocaleString('es-AR') : '\u2014'}
+                </span>
+                <span className="w-[100px] flex-shrink-0 text-data tabular-nums font-terminal text-zinc-300 text-right">
+                  {result.average_price != null ? `$${result.average_price.toLocaleString('es-AR')}` : '\u2014'}
+                </span>
+                <span className="w-[100px] flex-shrink-0 text-data tabular-nums font-terminal text-positive text-right">
+                  {result.max_price != null ? `$${result.max_price.toLocaleString('es-AR')}` : '\u2014'}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/*  UPGRADE PROMPT (verified + free tier)                         */}
+      {/* ============================================================ */}
+      {profile.verified && tier === 'free' && (
+        <FeatureGate
+          tier={tier}
+          requiredTier="pro"
+          fallback={
+            <div className="terminal-panel mt-px">
+              <div className="px-panel py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <p className="text-xxs text-zinc-500 font-terminal">
+                  Upgrade a PRO para destacar tu perfil con badge dorado, resultados de remates y mas visibilidad.
+                </p>
+                <Link
+                  href="/planes"
+                  className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-500/20 transition-colors"
+                >
+                  Upgrade a PRO
+                </Link>
+              </div>
+            </div>
+          }
+        >
+          {null}
+        </FeatureGate>
+      )}
 
       {/* ============================================================ */}
       {/*  YOUTUBE-READY ZONE                                            */}

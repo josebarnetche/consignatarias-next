@@ -30,6 +30,20 @@ export default async function DashboardPage() {
     .eq('claimed_by_email', user.email!)
     .single()
 
+  // Get user's verified frigorifico (if any)
+  const { data: frigorifico } = await service
+    .from('frigorifico_profiles')
+    .select('cuit, display_name, verified, phone, email, website, description')
+    .eq('claimed_by_email', user.email!)
+    .single()
+
+  // Get user's frigorifico claims
+  const { data: frigoClaims } = await service
+    .from('frigorifico_claims')
+    .select('*')
+    .eq('claimant_email', user.email!)
+    .order('created_at', { ascending: false })
+
   // Get upcoming auctions for this consignataria
   const today = new Date().toISOString().slice(0, 10)
   const auctions = consignataria
@@ -59,6 +73,20 @@ export default async function DashboardPage() {
     viewCount = count ?? 0
   }
 
+  // Fetch subscription data
+  let subscription = null
+  if (consignataria) {
+    const { data: sub } = await service
+      .from('subscriptions')
+      .select('plan_name, status, current_period_end, rebill_subscription_id')
+      .eq('entity_type', 'consignataria')
+      .eq('entity_slug', consignataria.canonical_slug)
+      .in('status', ['active', 'past_due'])
+      .single()
+
+    subscription = sub
+  }
+
   // Compute completed fields for onboarding checklist
   const completedFields = consignataria
     ? {
@@ -79,6 +107,9 @@ export default async function DashboardPage() {
       auctionResults={auctionResults || []}
       viewCount={viewCount}
       completedFields={completedFields}
+      subscription={subscription}
+      frigorifico={frigorifico}
+      frigoClaims={frigoClaims || []}
     />
   )
 }
