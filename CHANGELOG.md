@@ -4,6 +4,96 @@ Registro completo de **consignatarias.com.ar** — desde el primer `npx create-n
 
 ---
 
+## [0.9.9] — 2026-03-10
+
+### Optimización AI SEO — estructura, autoridad y presencia
+
+> feat: v0.9.9 — AI SEO optimization (robots, FAQ, glossary, schema)
+
+Optimización completa para motores de búsqueda con IA (ChatGPT, Perplexity, Claude, Copilot, Google AI Overviews). Implementa los tres pilares del AI SEO: estructura extraíble, autoridad citable y presencia donde buscan las IAs.
+
+**1. robots.txt — acceso para crawlers de IA**
+
+- Reglas explícitas `Allow: /` para 6 user agents: GPTBot, ChatGPT-User, PerplexityBot, ClaudeBot, anthropic-ai, Google-Extended
+- Bloqueo selectivo de rutas internas (`/api/`, `/_next/`, `/admin/`) para todos los bots de IA
+- Mantiene reglas existentes para Googlebot y wildcard
+
+**2. FAQ con schema FAQPage (landing page)**
+
+- 10 preguntas frecuentes sobre el mercado ganadero argentino en la landing page
+- Componente `FAQPageSchema` en `JsonLd.tsx` que genera JSON-LD `FAQPage` con pares Question/AcceptedAnswer
+- Elementos `<details>` colapsables con estilo terminal dark theme
+- Preguntas redactadas en formato natural para voice search y AI extraction
+
+**3. Glosario ganadero (`/glosario`)**
+
+- 17 términos clave: Cabeza, Consignataria, Cría, CUIT, Frigorífico, Hacienda, INMAG, Invernada, Matrícula, Novillo, Novillito, Plaza, Remate, SENASA, Ternero, Vaca, Vaquillona
+- JSON-LD `DefinedTermSet` con cada término como `DefinedTerm`
+- HTML semántico con `<dl>/<dt>/<dd>` para máxima extractabilidad
+- Breadcrumb schema via `SectionBreadcrumbSchema`
+- Agregado al sitemap (prioridad 0.3, frecuencia monthly)
+
+**4. Skill AI SEO instalado**
+
+- `npx skills add` con skill `ai-seo` — referencia de patrones de contenido y factores de ranking por plataforma
+- Disponible en `.claude/skills/ai-seo/` para futuras optimizaciones
+
+**Archivos creados:** `src/app/(terminal)/glosario/page.tsx`
+**Archivos modificados:** `src/app/robots.ts`, `src/app/page.tsx`, `src/components/seo/JsonLd.tsx`, `src/app/sitemap.ts`
+
+---
+
+## [0.9.8] — 2026-03-10
+
+### Cierre Q2 blueprint — logo, calidad, reportar error, métricas mensuales
+
+> feat: v0.9.8 — complete Q2 blueprint: logo upload, /calidad, reportar error, monthly metrics
+
+Completa todos los ítems pendientes del roadmap Q2 del blueprint de producto.
+
+**1. Upload de logo para consignatarias**
+
+- Endpoint `POST /api/consignatarias/[slug]/logo` — acepta multipart/form-data
+- Validación: JPG/PNG/WebP/SVG, máximo 2 MB, verifica ownership
+- Almacenamiento en Supabase Storage bucket `consignataria-assets`
+- El logo se refleja inmediatamente en el perfil público (ISR revalidate 300s)
+- UI de upload con preview en el formulario de edición del dashboard
+
+**2. Campo CUIT en edición de perfil**
+
+- Nuevo campo `cuit` en el formulario de edición de perfil del owner
+- Validación Zod: string max 20 caracteres, opcional
+- Se muestra en el perfil público si está cargado
+
+**3. Página `/calidad` — metodología y calidad de datos**
+
+- 6 secciones: fuentes, metodología, frescura, cobertura, reporte de errores, SLA
+- Explica de dónde vienen los datos, cómo se procesan y con qué frecuencia se actualizan
+- Agregada al sitemap
+
+**4. Botón "Reportar error" en perfiles**
+
+- Link `mailto:agro@memola.com.ar` al pie de cada perfil de consignataria
+- Subject pre-rellenado con el nombre de la consignataria
+
+**5. Email mensual de métricas a owners**
+
+- Cron job mensual (1ro de cada mes, 10:00 ART) via GitHub Actions
+- API route `POST /api/cron/monthly-metrics` autenticada con ADMIN_SECRET
+- Consulta `profile_views` del mes anterior para cada consignataria claimed
+- Email HTML con estilo terminal: vistas del mes, mensajes condicionales según volumen
+- Enviado via Resend
+
+**6. Fix WhatsApp y link de edición**
+
+- Número de WhatsApp de soporte corregido a `+5493773418130` en WelcomeChecklist
+- Link "Editar perfil" corregido: ahora va a `/dashboard?tab=editar` en vez del perfil público
+
+**Archivos creados:** `src/app/api/consignatarias/[slug]/logo/route.ts`, `src/app/api/cron/monthly-metrics/route.ts`, `.github/workflows/monthly-metrics.yml`, `src/app/(terminal)/calidad/page.tsx`
+**Archivos modificados:** `src/app/(terminal)/dashboard/DashboardClient.tsx`, `src/app/(terminal)/dashboard/page.tsx`, `src/app/(terminal)/consignatarias/[slug]/ConsignatariaProfileClient.tsx`, `src/components/onboarding/WelcomeChecklist.tsx`, `src/lib/email.ts`, `src/lib/validators/consignataria-profile.ts`, `src/app/sitemap.ts`
+
+---
+
 ## [0.9.7] — 2026-03-10
 
 ### Trust-first onboarding + gestión de remates por owner
