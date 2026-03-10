@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import Link from 'next/link'
+import SubscribeButton from './SubscribeButton'
 
 export const metadata: Metadata = {
   title: 'Planes y Precios | Consignatarias.com.ar',
@@ -140,18 +140,7 @@ export default function PlanesPage() {
                 </li>
               ))}
             </ul>
-            <Link
-              href="/login?redirect=/planes"
-              className="block text-center py-2 text-data font-terminal uppercase tracking-wider transition-colors"
-              style={{
-                border: '1px solid rgba(245, 158, 11, 0.5)',
-                color: '#fbbf24',
-                background: 'rgba(245, 158, 11, 0.08)',
-                borderRadius: '2px',
-              }}
-            >
-              Suscribirse a PRO
-            </Link>
+            <SubscribeButton />
           </div>
         </div>
 
