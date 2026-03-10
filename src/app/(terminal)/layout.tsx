@@ -208,6 +208,18 @@ export default function TerminalLayout({
 
       {/* -- MAIN CONTENT ----------------------------------------- */}
       <main className="flex-1 min-h-0">{children}</main>
+
+      {/* -- FOOTER ------------------------------------------------- */}
+      <footer className="border-t border-terminal-border bg-terminal-panel px-4 py-3 flex items-center justify-between text-xxs text-zinc-600">
+        <span>consignatarias.com.ar &copy; 2026</span>
+        <div className="flex items-center gap-4">
+          <Link href="/quienes-somos" className="hover:text-zinc-300 transition-colors">
+            Quienes Somos
+          </Link>
+          <span className="text-terminal-border">|</span>
+          <span>agro@memola.com.ar</span>
+        </div>
+      </footer>
     </div>
   );
 }

@@ -251,3 +251,32 @@ export function BreadcrumbSchema({ items }: { items: BreadcrumbItem[] }) {
     />
   );
 }
+
+// Section Breadcrumb Schema — reusable for top-level section pages
+export function SectionBreadcrumbSchema({ section, sectionName }: { section: string; sectionName: string }) {
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Inicio',
+        item: 'https://www.consignatarias.com.ar',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: sectionName,
+        item: `https://www.consignatarias.com.ar/${section}`,
+      },
+    ],
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}

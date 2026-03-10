@@ -1,5 +1,7 @@
 import { Metadata } from 'next'
 import FrigorificosClient from './FrigorificosClient'
+import frigorificosData from '@/lib/data/frigorificos.json'
+import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Directorio de Frigoríficos MAGYP Argentina',
@@ -23,5 +25,22 @@ export const metadata: Metadata = {
 }
 
 export default function FrigorificosPage() {
-  return <FrigorificosClient />
+  const totalFrigorificos = frigorificosData.length
+
+  return (
+    <>
+      <SectionBreadcrumbSchema section="frigorificos" sectionName="Frigorificos" />
+      <section className="px-4 pt-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-3xl">
+        <h2 className="text-zinc-200 text-lg font-medium mb-2">Directorio de plantas frigorificas de Argentina</h2>
+        <p>
+          Directorio completo de plantas frigorificas habilitadas por el Ministerio de Agricultura,
+          Ganaderia y Pesca (MAGYP) de Argentina. Incluye {totalFrigorificos} establecimientos con datos
+          oficiales: razon social, CUIT, matricula, provincia, localidad, clasificacion por etapa (Transito
+          Federal, Ciclo I, Ciclo II, Ciclo III) y tipo de faena (bovinos, porcinos, ovinos, aves). Los datos
+          provienen del registro oficial de SENASA/MAGYP.
+        </p>
+      </section>
+      <FrigorificosClient />
+    </>
+  )
 }

@@ -1,19 +1,29 @@
 import "./globals.css";
 import { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import AnalyticsProvider from '@/components/AnalyticsProvider';
+import rematesData from '@/lib/data/remates.json';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 const GA_ID = 'G-6CZMZH9S6Y';
+
+const rematesCount = rematesData.length;
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.consignatarias.com.ar'),
   title: {
-    default: 'Remates Ganaderos Argentina | Calendario Unificado | Consignatarias.com.ar',
+    default: 'Remates Ganaderos Argentina 2026 | Consignatarias.com.ar',
     template: '%s | Consignatarias.com.ar',
   },
   description:
-    'Calendario unificado de remates ganaderos de múltiples consignatarias argentinas. 443 remates, 364 frigoríficos MAGYP, precios INMAG en tiempo real. Acceso libre.',
+    `Calendario unificado de remates ganaderos de múltiples consignatarias argentinas. ${rematesCount} remates, 364 frigoríficos MAGYP, precios INMAG en tiempo real. Acceso libre.`,
   keywords: [
     'remates ganaderos',
     'consignatarias argentina',
@@ -46,7 +56,7 @@ export const metadata: Metadata = {
     url: 'https://www.consignatarias.com.ar',
     siteName: 'Consignatarias.com.ar',
     title: 'Remates Ganaderos Argentina | Calendario 2026 | Consignatarias.com.ar',
-    description: 'Calendario unificado de 443 remates ganaderos, 364 frigoríficos y precios INMAG. La plataforma de inteligencia del mercado ganadero argentino.',
+    description: `Calendario unificado de ${rematesCount} remates ganaderos, 364 frigoríficos y precios INMAG. La plataforma de inteligencia del mercado ganadero argentino.`,
     images: [
       {
         url: '/og-image.png',
@@ -55,12 +65,6 @@ export const metadata: Metadata = {
         alt: 'Consignatarias.com.ar - Inteligencia del Mercado Ganadero',
       },
     ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Remates Ganaderos Argentina | Consignatarias.com.ar',
-    description: 'Calendario unificado de 443 remates ganaderos y precios INMAG en tiempo real.',
-    images: ['/og-image.png'],
   },
   alternates: {
     canonical: 'https://www.consignatarias.com.ar',
@@ -93,7 +97,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es-AR" className="dark">
+    <html lang="es-AR" className={`dark ${inter.variable}`}>
       <head>
         {/* Google tag (gtag.js) — standard async placement per Google docs */}
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
@@ -101,16 +105,6 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`,
           }}
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
         />
         {/* Schema.org Structured Data */}
         <OrganizationSchema />

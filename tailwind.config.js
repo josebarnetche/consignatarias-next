@@ -33,7 +33,7 @@ module.exports = {
           'monospace',
         ],
         heading: [
-          'Inter',
+          'var(--font-inter)',
           'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',
@@ -41,7 +41,7 @@ module.exports = {
           'sans-serif',
         ],
         display: [
-          'Inter',
+          'var(--font-inter)',
           'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',
@@ -49,7 +49,7 @@ module.exports = {
           'sans-serif',
         ],
         sans: [
-          'Inter',
+          'var(--font-inter)',
           'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',

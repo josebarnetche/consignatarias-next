@@ -32,6 +32,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `Verificar perfil — ${profile.displayName}`,
     description: `Verificá el perfil de ${profile.displayName} en Consignatarias.com.ar y completá tu información.`,
+    robots: {
+      index: false,
+      follow: false,
+    },
     alternates: {
       canonical: `https://www.consignatarias.com.ar/consignatarias/${canonical}/verificar`,
     },

@@ -3,6 +3,7 @@ import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { getAllProfiles, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import ConsignatariasDirectoryClient from './ConsignatariasDirectoryClient'
+import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Directorio de Consignatarias de Hacienda Argentina',
@@ -44,5 +45,19 @@ export default function ConsignatariasDirectoryPage() {
     }
   }).sort((a, b) => b.auctionCount - a.auctionCount)
 
-  return <ConsignatariasDirectoryClient entries={entries} />
+  return (
+    <>
+      <SectionBreadcrumbSchema section="consignatarias" sectionName="Consignatarias" />
+      <section className="px-4 pt-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-3xl">
+        <h2 className="text-zinc-200 text-lg font-medium mb-2">Directorio de consignatarias de hacienda</h2>
+        <p>
+          Directorio de consignatarias de hacienda con actividad en Argentina. Cada consignataria tiene
+          un perfil dedicado con su calendario anual de remates, heatmap de actividad por mes, distribucion
+          por tipo de remate y cronograma completo. Los datos se recopilan de multiples fuentes publicas
+          y se actualizan diariamente.
+        </p>
+      </section>
+      <ConsignatariasDirectoryClient entries={entries} />
+    </>
+  )
 }

@@ -1,5 +1,23 @@
 import { MetadataRoute } from 'next'
 import { getAllCanonicalSlugs } from '@/lib/data/consignataria-slugs'
+import rematesData from '@/lib/data/remates.json'
+
+/* ------------------------------------------------------------------ */
+/*  PROVINCE SLUG MAP (must match [provincia]/page.tsx)                 */
+/* ------------------------------------------------------------------ */
+
+const PROVINCE_SLUGS: Record<string, string> = {
+  'BUENOS AIRES': 'buenos-aires',
+  'CHACO': 'chaco',
+  'CORDOBA': 'cordoba',
+  'CORRIENTES': 'corrientes',
+  'ENTRE RIOS': 'entre-rios',
+  'FORMOSA': 'formosa',
+  'LA PAMPA': 'la-pampa',
+  'MISIONES': 'misiones',
+  'SAN LUIS': 'san-luis',
+  'SANTA FE': 'santa-fe',
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.consignatarias.com.ar'
@@ -42,7 +60,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
+    {
+      url: `${baseUrl}/quienes-somos`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
   ]
+
+  // Province landing pages — only for provinces with auctions
+  const provincesWithAuctions = new Set(
+    (rematesData as { province: string }[]).map(a => a.province)
+  )
+  const provincePages: MetadataRoute.Sitemap = Object.entries(PROVINCE_SLUGS)
+    .filter(([name]) => provincesWithAuctions.has(name))
+    .map(([, slug]) => ({
+      url: `${baseUrl}/remates/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }))
 
   // Consignataria profile pages
   const consignatariaPages: MetadataRoute.Sitemap = getAllCanonicalSlugs().map((slug) => ({
@@ -52,17 +89,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  // Claim pages
-  const claimPages: MetadataRoute.Sitemap = getAllCanonicalSlugs().map((slug) => ({
-    url: `${baseUrl}/consignatarias/${slug}/verificar`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly' as const,
-    priority: 0.5,
-  }))
+  // NOTE: /verificar pages intentionally excluded — thin form pages
+  // that dilute crawl budget. They have robots noindex set.
 
   return [
     ...staticPages,
+    ...provincePages,
     ...consignatariaPages,
-    ...claimPages,
   ]
 }
