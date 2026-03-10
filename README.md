@@ -10,13 +10,16 @@ consignatarias.com.ar agrega datos de multiples consignatarias de hacienda en un
 
 ## Que incluye
 
-- **384+ remates** de 67 consignatarias en 10 provincias (Ene–Dic 2026)
-- **74 perfiles de consignatarias** con calendario anual, heatmap y distribucion por tipo
+- **385+ remates** de 77 consignatarias en 10 provincias (Ene–Dic 2026)
+- **77 perfiles de consignatarias** con calendario anual, heatmap y distribucion por tipo
+- **10 landing pages por provincia** con contenido unico SEO y listado de remates
+- **Pagina "Quienes Somos"** con datos de la empresa, fuentes y metodologia (E-E-A-T)
 - **Verificacion de perfiles** — los dueños pueden solicitar verificacion y gestionar su perfil
 - **364 frigorificos** con datos de SENASA/MAGYP (matricula, etapa, CUIT)
 - **Precios de mercado** con indice INMAG, categorias ganaderas, USD blue/oficial
 - **Remates PRO** — sistema de destacados con tratamiento visual amber/gold
 - **Scraper automatico** que actualiza datos diariamente a las 14:00 ART
+- **Autenticacion** — Supabase Auth con magic link, roles admin/owner
 - **GA4** — Google Analytics integrado
 
 ## Stack
@@ -24,11 +27,11 @@ consignatarias.com.ar agrega datos de multiples consignatarias de hacienda en un
 - **Next.js 15** — App Router, static generation (SSG) + API routes
 - **Tailwind CSS 3.4** — Terminal dark theme con colores custom
 - **TypeScript** — Strict mode
-- **Supabase** — PostgreSQL para consignatarias y solicitudes de verificacion
+- **Supabase** — PostgreSQL para consignatarias, solicitudes de verificacion y auth (magic link)
 - **Resend** — Emails transaccionales (confirmacion, notificacion admin, aprobacion/rechazo)
 - **Zod** — Validacion de schemas
 - **Vercel** — Deploy automatico
-- **GitHub Actions** — Scraper diario (CACG, Colombo y Colombo, O'Farrell, Madelan, dolarapi)
+- **GitHub Actions** — Scraper diario (9 fuentes: CACG, Colombo y Colombo, O'Farrell, Lehmann, Madelan, UMC, dolarapi, INMAG, MAGYP)
 - **GA4** — Google Analytics (G-6CZMZH9S6Y)
 
 ## Paginas
@@ -38,10 +41,15 @@ consignatarias.com.ar agrega datos de multiples consignatarias de hacienda en un
 | `/` | Landing page con previews de datos en vivo |
 | `/overview` | Dashboard general con mercado, remates y frigorificos |
 | `/remates` | Feed cronologico de remates con filtros (provincia, tipo, periodo) |
-| `/consignatarias/[slug]` | Perfil de consignataria con calendario anual (~74 paginas estaticas) |
-| `/consignatarias/[slug]/verificar` | Formulario de verificacion de perfil |
+| `/remates/[provincia]` | Landing page por provincia con contenido SEO unico (~10 paginas) |
+| `/consignatarias` | Directorio de todas las consignatarias |
+| `/consignatarias/[slug]` | Perfil de consignataria con calendario anual (~77 paginas estaticas) |
+| `/consignatarias/[slug]/verificar` | Formulario de verificacion de perfil (noindex) |
 | `/frigorificos` | Directorio de 364 frigorificos con busqueda y filtros |
 | `/mercado` | Precios de mercado, indice INMAG, cotizacion USD |
+| `/quienes-somos` | Pagina institucional — empresa, fuentes, metodologia (E-E-A-T) |
+| `/login` | Inicio de sesion con magic link (noindex) |
+| `/dashboard` | Dashboard del propietario verificado |
 | `/admin/claims` | Dashboard admin para revisar solicitudes de verificacion |
 
 ## Perfil de Consignataria
@@ -84,7 +92,7 @@ El sistema mapea 109 slugs raw (de `remates.json`) a 70 entidades unicas:
 Las consignatarias pueden destacar remates con el sistema PRO:
 
 - Badge `★ PRO` con tratamiento visual amber/gold
-- Pin al tope del feed dentro del mismo periodo
+- Orden cronologico (NO fijados arriba), solo destacados visualmente
 - Layout de 3 lineas con titulo y descripcion expandida
 - Flag `featured: true` en el schema de remate
 
@@ -124,35 +132,45 @@ Las consignatarias pueden destacar remates con el sistema PRO:
 |---------|-----------|--------|
 | Frigorificos | 364 | SENASA / MAGYP |
 | Consignatarias | 56 | Registro publico + investigacion manual |
-| Precios | INMAG + 6 categorias | dolarapi.com, datos del mercado |
+| Precios | INMAG + 6 categorias | mercadoagroganadero.com.ar, dolarapi.com, MAGYP |
 
 ## Estructura del proyecto
 
 ```
 src/
 ├── app/
-│   ├── page.tsx                        # Landing page
-│   ├── layout.tsx                      # Root layout + GA4
-│   ├── sitemap.ts                      # Sitemap dinamico (~140 URLs)
+│   ├── page.tsx                        # Landing page (copy de proposed-copies.md)
+│   ├── layout.tsx                      # Root layout + GA4 + next/font
+│   ├── sitemap.ts                      # Sitemap dinamico (~100 URLs)
+│   ├── robots.ts                       # robots.txt
 │   ├── globals.css                     # Terminal + landing styles
+│   ├── middleware.ts                   # Supabase Auth session refresh
 │   └── (terminal)/                     # Route group — dashboard pages
-│       ├── layout.tsx                  # Terminal chrome (nav, clock)
+│       ├── layout.tsx                  # Terminal chrome (nav, clock, footer)
 │       ├── overview/                   # Dashboard overview
 │       ├── remates/                    # Auction feed + filters
-│       │   ├── page.tsx               # Server component + metadata
-│       │   └── RematesClient.tsx      # Client: rows, filters, tabs
+│       │   ├── page.tsx               # Server component + metadata + intro SEO
+│       │   ├── RematesClient.tsx      # Client: rows, filters, tabs
+│       │   └── [provincia]/page.tsx   # Province landing pages (~10)
 │       ├── consignatarias/
-│       │   └── [slug]/                # Dynamic profile pages (~70)
+│       │   ├── page.tsx               # Directory listing
+│       │   └── [slug]/                # Dynamic profile pages (~77)
 │       │       ├── page.tsx           # Server: SSG, metadata, redirects, JSON-LD
-│       │       └── ConsignatariaProfileClient.tsx  # Client: heatmap, rows, stats
+│       │       ├── ConsignatariaProfileClient.tsx  # Client: heatmap, rows, stats
+│       │       └── verificar/page.tsx # Claim form (noindex)
 │       ├── frigorificos/              # Frigorifico directory
-│       └── mercado/                   # Market prices
+│       ├── mercado/                   # Market prices
+│       ├── quienes-somos/             # E-E-A-T page (empresa, fuentes, metodologia)
+│       ├── login/                     # Magic link auth (noindex)
+│       ├── dashboard/                 # Owner dashboard
+│       └── admin/claims/              # Admin claim review
 ├── components/
-│   └── seo/JsonLd.tsx                 # Schema.org structured data components
+│   ├── seo/JsonLd.tsx                 # Schema.org structured data components
+│   └── AnalyticsProvider.tsx          # GA4
 └── lib/
     ├── data/
-    │   ├── remates.json               # 384 auctions
-    │   ├── consignataria-slugs.ts     # Canonical slug map (109 → 70 entities)
+    │   ├── remates.json               # 385 auctions
+    │   ├── consignataria-slugs.ts     # Canonical slug map (109 → 77 entities)
     │   ├── frigorificos.json          # 364 frigorificos
     │   ├── consignatarias.json        # 56 consignatarias con CUIT
     │   ├── market-prices.json         # INMAG, categorias, USD
@@ -160,6 +178,10 @@ src/
     ├── db/
     │   ├── schema.ts                  # TypeScript interfaces (Auction, etc.)
     │   └── seed.ts                    # Data access functions
+    ├── admin-auth.ts                  # requireAdmin() / requireAuth()
+    ├── supabase.ts                    # Service role client
+    ├── supabase-browser.ts            # Anon client (cookies)
+    ├── supabase-server.ts             # Server client (cookies)
     └── utils/
         └── url.ts                     # URL normalization
 
@@ -175,11 +197,11 @@ scripts/
 ```bash
 pnpm install
 pnpm dev          # http://localhost:3000
-pnpm build        # Genera ~80 paginas estaticas
+pnpm build        # Genera ~170+ paginas estaticas
 pnpm start        # Serve produccion local
 ```
 
-Requiere `.env.local` con credenciales de Supabase, Resend y admin. Los datos de remates/frigorificos/mercado se leen de archivos JSON estaticos en `src/lib/data/`.
+Requiere `.env.local` con credenciales de Supabase (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`), Resend (`RESEND_API_KEY`) y admin. Los datos de remates/frigorificos/mercado se leen de archivos JSON estaticos en `src/lib/data/`. Consignatarias y claims estan en Supabase.
 
 ## Scraper
 
@@ -198,10 +220,16 @@ Para ejecutarlo manualmente desde GitHub: Actions → "Scrape Auctions & Update 
 
 ## SEO
 
-- Sitemap dinamico con ~140 URLs (estaticas + provincias + consignatarias)
-- JSON-LD structured data: Organization, WebSite, Dataset, Event, LocalBusiness, Breadcrumb
-- Open Graph y Twitter Cards en todas las paginas
+- Sitemap dinamico con ~100 URLs (estaticas + 10 provincias + 77 consignatarias — sin /verificar ni /login)
+- JSON-LD structured data: Organization, WebSite, Dataset, Event, LocalBusiness, BreadcrumbList, ItemList
+- Open Graph en todas las paginas (Twitter Cards derivados automaticamente)
 - Canonical URLs con redirect non-www → www (301)
+- `noindex` en paginas thin: `/verificar`, `/login`
+- Texto introductorio server-rendered en todas las secciones (remates, mercado, frigorificos, consignatarias)
+- 10 landing pages por provincia con contenido SEO unico (150-250 palabras cada una)
+- Pagina `/quienes-somos` para señales E-E-A-T (Experience, Expertise, Authoritativeness, Trust)
+- `next/font/google` para carga de fuentes optimizada (sin CDN render-blocking)
+- `Permissions-Policy` header en vercel.json
 - Google Analytics 4
 
 ## Arquitectura
@@ -209,12 +237,17 @@ Para ejecutarlo manualmente desde GitHub: Actions → "Scrape Auctions & Update 
 ```
 [GitHub Actions] → scrape → remates.json → [git push] → [Vercel rebuild]
                                                               ↓
-                                               SSG: ~80 paginas HTML estaticas
+                                               SSG: ~170+ paginas HTML estaticas
                                                               ↓
                                                     CDN edge (Vercel)
+                                                              ↕
+                                                    Supabase (PostgreSQL)
+                                                    ├── consignatarias (77)
+                                                    ├── consignataria_claims
+                                                    └── user_roles (auth)
 ```
 
-Arquitectura hibrida: paginas estaticas (SSG) para remates, frigorificos y mercado + Supabase para consignatarias y solicitudes de verificacion + API routes para el flujo de verificacion. Costo: $0 (Vercel Hobby + Supabase Free). TTFB < 50ms.
+Arquitectura hibrida: paginas estaticas (SSG) para remates, frigorificos y mercado + Supabase PostgreSQL para consignatarias, solicitudes de verificacion y autenticacion (magic link) + API routes para claims y admin. Costo: $0 (Vercel Hobby + Supabase Free). TTFB < 50ms.
 
 ## Provincias cubiertas
 

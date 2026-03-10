@@ -1,8 +1,53 @@
 # Changelog
 
-The complete build log of **consignatarias.com.ar** — from the first `npx create-next-app` to a live cattle auction platform covering 380+ remates across 12 Argentine provinces.
+The complete build log of **consignatarias.com.ar** — from the first `npx create-next-app` to a live cattle auction platform covering 385+ remates across 10 Argentine provinces, with Supabase auth and a full SEO stack.
 
-Built in 12 days (Feb 26 – Mar 9, 2026). 42 commits. One human, one AI.
+Built in 12 days (Feb 26 – Mar 9, 2026). One human, one AI.
+
+---
+
+## [0.9.0] — 2026-03-09
+
+### SEO overhaul — from 2 indexed pages to full discoverability
+
+> `47b74ea` — feat: comprehensive SEO overhaul for Google discoverability (v0.9.0)
+
+**The problem:** Only 2 of 168 pages were indexed by Google. Zero rankings for any keyword, brand or non-brand. The site was invisible to search.
+
+**What changed (4 parallel workstreams):**
+
+**1. Homepage rewrite (`page.tsx`)**
+- Complete copy rewrite from `proposed-copies.md`
+- New H1: "Todos los remates ganaderos de Argentina en una sola pantalla"
+- Problem/solution structure: El Problema → Cómo Funciona → Comparación vs WhatsApp
+- Dynamic counts (auctions, consignatarias) from live data
+- New final CTA section
+
+**2. Province landing pages (10 new routes)**
+- `/remates/[provincia]` — 10 static pages targeting "remates hacienda [provincia]" keywords
+- 150-250 words of unique SEO copy per province with real cities and consignatarias
+- `generateStaticParams()` for SSG
+- BreadcrumbList + ItemList JSON-LD per page
+- Stats bar, server-rendered auction list, navigation links
+
+**3. Technical SEO fixes**
+- `next/font/google` replaces CDN `<link>` tags (eliminates render-blocking)
+- Twitter Cards auto-derived from OpenGraph (removed redundant `twitter` metadata)
+- Dynamic meta description with live auction count
+- `noindex` on thin pages: `/verificar` (77 pages), `/login`
+- Removed 77 `/verificar` URLs from sitemap (were diluting crawl budget)
+- `Permissions-Policy` header added to `vercel.json`
+- Login page refactored: extracted `LoginClient.tsx` so `page.tsx` can export metadata
+
+**4. Content SEO + E-E-A-T**
+- `/quienes-somos` — new institutional page (Memola Medios SAS, data sources, methodology, contact)
+- Server-rendered intro text on all sections: `/remates`, `/mercado`, `/frigorificos`, `/consignatarias`
+- `SectionBreadcrumbSchema` component for structured breadcrumbs on every section
+- Terminal footer with copyright, "Quiénes Somos" link, contact email
+
+**Sitemap:** ~140 URLs → ~100 URLs (removed thin pages, added provinces + quienes-somos). Quality over quantity.
+
+**Coverage:** 385 auctions, 77 consignatarias, 10 provinces, ~170+ static pages.
 
 ---
 
@@ -457,7 +502,9 @@ The technical bet was made before writing a line of code:
 npx create-next-app@latest consignatarias-next --typescript --tailwind --app --src-dir
 ```
 
-**Why Next.js 15 + SSG + JSON?** Because the data changes once a day (auctions are scheduled weeks in advance), there's no user-generated content, and the entire dataset fits in memory. A static site on Vercel's CDN means TTFB < 50ms, zero hosting cost, and no database to manage. This architecture decision never changed — it was right from minute one.
+**Why Next.js 15 + SSG + JSON?** Because the data changes once a day (auctions are scheduled weeks in advance), there's no user-generated content, and the entire dataset fits in memory. A static site on Vercel's CDN means TTFB < 50ms, zero hosting cost, and no database to manage.
+
+*Update:* By v0.8.1, a Supabase PostgreSQL database was added for consignataria profiles, verification claims, and user authentication (magic link). But the core bet held — auction data, frigorificos, and market prices are still JSON files rebuilt daily. The database handles the parts that need persistence and auth, not the read-heavy public data.
 
 The initial `package.json` had exactly 3 dependencies and 7 devDependencies:
 
@@ -468,26 +515,26 @@ The initial `package.json` had exactly 3 dependencies and 7 devDependencies:
 }
 ```
 
-No state management. No ORM. No component library. No testing framework. Just Next.js, Tailwind, and TypeScript. This stack is still nearly identical 11 days later — we only added `sharp` (image optimization), `@vercel/analytics`, and `@vercel/speed-insights`.
+No state management. No ORM. No component library. No testing framework. Just Next.js, Tailwind, and TypeScript. The core stack is still the same — we later added `@supabase/supabase-js` and `@supabase/ssr` (auth + database), `resend` (emails), `zod` (validation), `sharp` (image optimization), `@vercel/analytics`, and `@vercel/speed-insights`.
 
 ---
 
 ## The numbers
 
-| Metric | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) | 0.8.1 (Mar 9) | 0.8.3 (Mar 9) |
+| Metric | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) | 0.8.3 (Mar 9) | 0.9.0 (Mar 9) |
 |--------|-----------------|-----------------|-----------------|-----------------|
-| Auctions | 0 → 92 → 414 | 450 | 366 | 384 |
-| Consignatarias | 49 | 77 | 74 (verificables) | 67 |
-| Profile pages | 0 | 70 | 74 + 74 verificar | 74 + 74 verificar |
+| Auctions | 0 → 92 → 414 | 450 | 384 | 385 |
+| Consignatarias | 49 | 77 | 67 | 77 |
+| Profile pages | 0 | 70 | 74 + 74 verificar | 77 + 77 verificar |
+| Province pages | 0 | 0 | 0 | 10 |
 | Scraper sources | 0 → 6 | 9 | 9 | 9 |
-| Provinces | 10 | 12 | 12 | 10 (accurate) |
+| Provinces | 10 | 12 | 10 (accurate) | 10 |
 | Frigoríficos | 364 | 364 | 364 | 364 |
-| Static HTML pages | ~10 | ~80 | ~164 | ~168 |
-| Dependencies | 3 | 5 | 8 | 8 |
-| DevDependencies | 7 | 11 | 11 | 11 |
-| Daily scrapes | 0 | 12 (and counting) | 13+ | 13+ |
-| Database | none | none | Supabase (2 tables) | Supabase (2 tables) |
-| Province accuracy | unknown | unknown | ~72% | **100%** |
+| Static HTML pages | ~10 | ~80 | ~168 | ~170+ |
+| Sitemap URLs | 0 | ~140 | ~140 | ~100 (optimized) |
+| Database | none | none | Supabase (2 tables) | Supabase (3 tables + auth) |
+| Province accuracy | unknown | unknown | **100%** | **100%** |
+| SEO pages indexed | 0 | ~2 | ~2 | TBD (submitted) |
 | Hosting cost | $0 | $0 | $0 | $0 |
 
 ---
