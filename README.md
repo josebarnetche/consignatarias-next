@@ -21,7 +21,7 @@ There is no single place to see all upcoming auctions, compare prices, or browse
 
 **consignatarias.com.ar** aggregates data from 77+ consignatarias (cattle auction houses) across 10 provinces into a unified, real-time interface. A rancher can see every upcoming auction in the country, filter by province or type, check market prices, and find frigorificos — all in one screen.
 
-### Current UX (v0.9.1)
+### Current UX (v0.9.7)
 
 **For cattle ranchers (buyers):**
 - Open the site → see all upcoming auctions nationwide in a terminal-style feed
@@ -30,10 +30,12 @@ There is no single place to see all upcoming auctions, compare prices, or browse
 - Check `/mercado` for live INMAG index ($/kg vivo), category prices, corn FOB, USD rates
 - Browse `/frigorificos` for the 364 registered slaughterhouses with SENASA data
 
-**For consignatarias (auction houses):**
+**For consignatarias (auction houses) — trust-first onboarding:**
 - Find your profile at `/consignatarias/[your-name]` with your complete auction calendar
-- Click "Verificar este perfil" → submit your email and role → get verified by admin
-- Once verified, manage your profile and access the owner dashboard
+- Click "Verificar y acceder" → enter your email → profile is verified instantly + magic link sent
+- Log in → tabbed dashboard with: auction CRUD, profile editing, results upload, subscription management
+- Create, edit, and delete your own auctions — they appear on your public profile within 5 minutes (ISR)
+- Edit contact info (phone, email, website, WhatsApp, description) reflected on public profile
 
 **For frigorificos (slaughterhouses):**
 - Find your listing at `/frigorificos` in the SENASA directory
@@ -44,6 +46,7 @@ There is no single place to see all upcoming auctions, compare prices, or browse
 - Daily scraped prices: INMAG index, 6 cattle categories, corn FOB, USD blue/oficial
 - Province landing pages with localized content and auction listings
 - 77 consignataria profile pages with structured data for Google rich results
+- Source badges (CACG, CYC, OFAR, etc.) and freshness labels on auctions
 
 ---
 
@@ -65,11 +68,17 @@ There is no single place to see all upcoming auctions, compare prices, or browse
                                                         Supabase (PostgreSQL)
                                                         ├── consignatarias (77 profiles)
                                                         ├── consignataria_claims
+                                                        ├── consignataria_auctions (owner CRUD)
                                                         ├── frigorifico_claims
-                                                        └── user_roles (auth)
+                                                        ├── frigorifico_profiles
+                                                        ├── user_roles (auth)
+                                                        ├── subscriptions (Rebill)
+                                                        ├── auction_results
+                                                        ├── profile_views
+                                                        └── market_price_snapshots
 ```
 
-**Hybrid static + dynamic:** The read-heavy public data (auctions, frigorificos, market prices) lives in JSON files and is statically generated at build time — TTFB < 50ms, zero compute cost. The interactive parts (profile claims, authentication, admin) use Supabase PostgreSQL and API routes.
+**Hybrid static + dynamic:** The read-heavy public data (auctions, frigorificos, market prices) lives in JSON files and is statically generated at build time — TTFB < 50ms, zero compute cost. Profile pages use ISR (`revalidate = 300`) so owner edits reflect within 5 minutes. The interactive parts (claims, authentication, auction CRUD, subscriptions, admin) use Supabase PostgreSQL and API routes.
 
 ### Data Pipeline
 
@@ -152,13 +161,23 @@ Chronological feed of all upcoming auctions with filters:
 - USD blue and oficial rates
 - Updated daily by scraper
 
-### Profile Verification
+### Profile Verification (Trust-First)
 
-**Consignatarias:** Click "Verificar este perfil" on any profile → fill form (email, name, CUIT, phone, role) → admin reviews in `/admin/claims` → approved/rejected with email notification.
+**Consignatarias:** Click "Verificar y acceder" → enter email → profile auto-approved instantly → magic link sent → log in to tabbed dashboard. Admin notified, can revoke if needed.
 
 **Frigorificos:** Click "Reclamar" on any row or "REGISTRAR FRIGORIFICO" in sidebar → select plant → fill form → admin reviews → email confirmation.
 
 Both flows use Supabase for persistence, Zod for validation, Resend for transactional emails.
+
+### Owner Dashboard (`/dashboard`)
+
+Tabbed interface for verified owners:
+- **Resumen** — quick stats, profile views (30 days), quick actions
+- **Remates** — full CRUD: create, edit, delete auctions (merged with scraped data on public profile)
+- **Editar perfil** — phone, email, website, WhatsApp, description
+- **Resultados** — upload auction results (heads sold, prices, categories)
+- **Mi plan** — subscription status, upgrade to PRO via Rebill
+- **Frigorífico** — frigorifico claim status (if applicable)
 
 ### Province Landing Pages (`/remates/[provincia]`)
 
@@ -184,8 +203,9 @@ Both flows use Supabase for persistence, Zod for validation, Resend for transact
 | Framework | Next.js 15 (App Router, SSG + API routes) |
 | Styling | Tailwind CSS 3.4 (terminal dark theme) |
 | Language | TypeScript (strict mode) |
-| Database | Supabase PostgreSQL (4 tables + auth) |
+| Database | Supabase PostgreSQL (10 tables + auth) |
 | Email | Resend (transactional) |
+| Payments | Rebill (LATAM-native, ARS + USD) |
 | Validation | Zod |
 | Hosting | Vercel (Hobby plan, $0) |
 | CI/CD | GitHub Actions (daily scraper) |
@@ -228,9 +248,16 @@ src/
 │   ├── robots.ts                           # robots.txt
 │   ├── globals.css                         # Terminal + landing styles
 │   ├── api/
-│   │   ├── claims/route.ts                # POST consignataria claims
+│   │   ├── claims/route.ts                # POST claims (auto-approve + magic link)
+│   │   ├── consignatarias/[slug]/
+│   │   │   ├── route.ts                  # PATCH profile
+│   │   │   └── auctions/                 # GET/POST + [id] PATCH/DELETE
 │   │   ├── frigorifico-claims/route.ts    # POST frigorifico claims
-│   │   └── admin/claims/                  # GET/PATCH admin review
+│   │   ├── subscribe/route.ts             # POST Rebill payment link
+│   │   ├── webhooks/rebill/route.ts       # Rebill webhook handler
+│   │   ├── profile-views/route.ts         # POST view tracking
+│   │   ├── auction-results/route.ts       # POST/GET results
+│   │   └── admin/                         # Claims + frigo claims review
 │   └── (terminal)/                         # Route group — dashboard
 │       ├── layout.tsx                      # Terminal chrome (nav, clock, footer)
 │       ├── overview/                       # Dashboard overview
@@ -268,10 +295,16 @@ src/
     │   ├── consignatarias.json            # 56 consignatarias
     │   ├── market-prices.json             # INMAG, categories, USD, corn
     │   └── featured-links.json            # Curated resource links
+    ├── dal/consignatarias.ts              # DAL: merge static JSON + Supabase
     ├── db/
     │   ├── schema.ts                      # TypeScript interfaces
     │   └── seed.ts                        # Data access functions
-    ├── validators/claim.ts                # Zod schemas (consignataria + frigorifico)
+    ├── validators/
+    │   ├── claim.ts                       # Zod schemas (consignataria + frigorifico)
+    │   ├── consignataria-profile.ts       # Profile edit validation
+    │   └── auction-result.ts              # Auction result validation
+    ├── rebill.ts                          # Rebill payment link helper
+    ├── features.ts                        # Feature gating (free/pro/enterprise)
     ├── email.ts                           # Resend transactional emails
     ├── analytics.ts                       # GA4 event tracking
     ├── supabase.ts                        # Service role client
@@ -287,7 +320,12 @@ scripts/
 supabase/migrations/
 ├── 20260309_consignatarias_claims.sql     # consignatarias + claims tables
 ├── 20260310_auth_user_roles.sql           # Auth + user roles
-└── 20260310_frigorifico_claims.sql        # frigorifico_claims table
+├── 20260310_frigorifico_claims.sql        # frigorifico_claims table
+├── 20260311_consignataria_profile_fields.sql  # description, logo_url, whatsapp
+├── 20260311_subscriptions.sql             # Rebill subscriptions
+├── 20260311_profile_views.sql             # Profile view tracking
+├── 20260311_market_price_history.sql      # Market price snapshots
+└── 20260312_consignataria_auctions.sql    # Owner-managed auctions
 
 .github/workflows/
 └── scrape-auctions.yml                    # Cron: 14:00 ART daily
@@ -300,7 +338,7 @@ supabase/migrations/
 ```bash
 pnpm install
 pnpm dev          # http://localhost:3000
-pnpm build        # Generates ~170+ static pages
+pnpm build        # Generates ~552 static pages
 pnpm start        # Serve production locally
 ```
 
@@ -315,6 +353,8 @@ SUPABASE_SERVICE_ROLE_KEY=eyJ...
 RESEND_API_KEY=re_xxx
 ADMIN_SECRET=your-admin-secret
 ADMIN_EMAIL=admin@example.com
+REBILL_SECRET_KEY=sk_xxx
+NEXT_PUBLIC_REBILL_PUBLIC_KEY=pk_xxx
 ```
 
 Public data (auctions, frigorificos, market prices) works without any env vars — it reads from JSON files.
@@ -373,8 +413,11 @@ Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misione
 | 0.8.3 | Mar 9 | Province fix — CITY_PROVINCE_MAP, 100% accuracy |
 | 0.9.0 | Mar 9 | SEO overhaul — homepage rewrite, 10 province pages, E-E-A-T |
 | 0.9.1 | Mar 10 | FrigoConnect — frigorifico claims + 126 enriched profiles |
+| 0.9.2 | Mar 10 | Frigorifico detail pages (364) + auction results backend |
+| 0.9.5 | Mar 10 | SaaS foundation — Rebill, DAL, profile editing, analytics, onboarding |
+| 0.9.7 | Mar 10 | Trust-first onboarding — auto-approve claims, auction CRUD, dashboard tabs |
 
-Built in 13 days. One human, one AI. $0 hosting cost. See [CHANGELOG.md](CHANGELOG.md) for full details.
+Built in 13 days. One human, one AI. $0 hosting cost. 10 Supabase tables. See [CHANGELOG.md](CHANGELOG.md) for full details.
 
 ---
 

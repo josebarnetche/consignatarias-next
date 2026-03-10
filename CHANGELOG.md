@@ -4,6 +4,84 @@ Registro completo de **consignatarias.com.ar** — desde el primer `npx create-n
 
 ---
 
+## [0.9.7] — 2026-03-10
+
+### Trust-first onboarding + gestión de remates por owner
+
+> feat: v0.9.7 — auto-approve claims, magic link auto-send, auction CRUD, dashboard tabs
+
+**Cambio fundamental de flujo:** El onboarding pasa de "admin aprueba primero" a "trust-first" — el claim se auto-aprueba, el owner recibe un magic link instantáneo, y el admin puede revocar después. Esto elimina la fricción del primer contacto.
+
+**1. Auto-aprobación de claims**
+
+- El endpoint `POST /api/claims` ahora auto-aprueba la solicitud inmediatamente
+- Crea usuario en Supabase Auth (`auth.admin.createUser`)
+- Asigna rol `owner` en `user_roles`
+- Envía magic link vía `signInWithOtp` automáticamente
+- Notifica al admin por email (el admin puede revocar si es necesario)
+- La tabla `consignatarias` se marca `verified: true` y `claimed_by_email` al instante
+
+**2. Formulario de claim actualizado**
+
+- Botón cambia de "Solicitar verificación" a "Verificar y acceder"
+- Mensaje de éxito cambia de "SOLICITUD ENVIADA" a "PERFIL VERIFICADO"
+- Muestra "Te enviamos un enlace de acceso a tu email" con link a `/login`
+- Descripción del formulario actualizada: "Te enviaremos un enlace de acceso a tu email"
+
+**3. Gestión de remates por owner (CRUD completo)**
+
+Owners pueden crear, editar y eliminar sus propios remates desde el dashboard:
+
+- **Tabla `consignataria_auctions`** — nueva tabla en Supabase para remates creados por owners (separada del scraper)
+- **`GET/POST /api/consignatarias/[slug]/auctions`** — listar y crear remates (POST requiere auth + ownership)
+- **`PATCH/DELETE /api/consignatarias/[slug]/auctions/[id]`** — editar y eliminar (auth + ownership)
+- **Formulario completo** en dashboard: título, fecha, hora, ubicación, provincia, tipo, categoría, cabezas, descripción, URL catálogo, URL YouTube
+- **Edición inline** de remates existentes
+- **Eliminación con confirmación**
+- Validación de ownership via `claimed_by_email` en todas las operaciones
+
+**4. Merge de remates en perfil público**
+
+- Los perfiles públicos ahora muestran remates del scraper + remates del owner combinados
+- Deduplicación por `${date}|${title.toLowerCase()}` para evitar duplicados
+- ISR con `revalidate = 300` (5 min) para que los cambios del owner se reflejen rápidamente
+
+**5. Dashboard con navegación por tabs**
+
+El dashboard pasa de una página larga a tabs navegables:
+
+- **Resumen** — quick stats + acciones rápidas (agregar remate, editar perfil, cargar resultados)
+- **Remates (N)** — gestor de remates con CRUD, separando remates propios (editables) de scrapeados (read-only)
+- **Editar perfil** — formulario de edición de teléfono, email, web, WhatsApp, descripción
+- **Resultados** — carga de resultados de remates completados
+- **Mi plan** — estado de suscripción y upgrade
+- **Frigorífico** — estado del frigorífico (si aplica)
+
+**6. Mejoras de navegación**
+
+- **AuthButton** muestra "Mi Panel" con link a `/dashboard` cuando el usuario está logueado
+- **Auth callback** redirige a `/dashboard` en vez de `/overview`
+- **Dashboard page** redirige a `/login` si no hay sesión (antes retornaba null)
+
+**Migración Supabase aplicada:**
+- `20260312_consignataria_auctions.sql` — tabla de remates de owners con RLS
+
+**Archivos nuevos (3):**
+- `src/app/api/consignatarias/[slug]/auctions/route.ts`
+- `src/app/api/consignatarias/[slug]/auctions/[id]/route.ts`
+- `supabase/migrations/20260312_consignataria_auctions.sql`
+
+**Archivos modificados (7):**
+- `src/app/api/claims/route.ts` — auto-approve + magic link
+- `src/components/claims/ClaimForm.tsx` — nuevo mensaje de éxito
+- `src/components/auth/AuthButton.tsx` — link "Mi Panel"
+- `src/app/auth/callback/route.ts` — redirect a /dashboard
+- `src/app/(terminal)/consignatarias/[slug]/page.tsx` — ISR + merge owner auctions
+- `src/app/(terminal)/dashboard/DashboardClient.tsx` — tabs + auction manager
+- `src/app/(terminal)/dashboard/page.tsx` — force-dynamic + fetch owner auctions
+
+---
+
 ## [0.9.5] — 2026-03-10
 
 ### Blueprint SaaS — revenue foundation, Rebill, DAL, analytics, onboarding
@@ -750,9 +828,9 @@ Sin state management. Sin ORM. Sin librería de componentes. Sin framework de te
 
 ## Los números
 
-| Métrica | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) | 0.9.0 (Mar 9) | 0.9.2 (Mar 10) | 0.9.5 (Mar 10) |
+| Métrica | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) | 0.9.0 (Mar 9) | 0.9.5 (Mar 10) | 0.9.7 (Mar 10) |
 |---------|-----------------|-----------------|-----------------|-----------------|-----------------|
-| Remates | 0 → 92 → 414 | 450 | 385 | 385 | 385 |
+| Remates | 0 → 92 → 414 | 450 | 385 | 385 | 385 + owner CRUD |
 | Consignatarias | 49 | 77 | 77 | 77 | 77 |
 | Páginas de perfil | 0 | 70 | 77 + 77 verificar | 77 + 77 verificar | 77 + 77 verificar |
 | Páginas de frigoríficos | 0 | 0 | 0 | 364 | 364 |
@@ -760,10 +838,11 @@ Sin state management. Sin ORM. Sin librería de componentes. Sin framework de te
 | Fuentes del scraper | 0 → 6 | 9 | 9 | 9 | 9 |
 | Provincias | 10 | 12 | 10 | 10 | 10 |
 | Frigoríficos | 364 | 364 | 364 | 364 (126 enriq.) | 364 (126 enriq.) |
-| Páginas estáticas | ~10 | ~80 | ~170+ | ~530+ | **552** |
-| URLs en sitemap | 0 | ~140 | ~100 | ~460 | **~460** |
-| Base de datos | ninguna | ninguna | Supabase (3 tablas) | Supabase (5 tablas) | **Supabase (9 tablas)** |
-| Revenue | $0 | $0 | $0 | $0 | **Rebill integrado** |
+| Páginas estáticas | ~10 | ~80 | ~170+ | **552** | **552** |
+| URLs en sitemap | 0 | ~140 | ~100 | **~460** | **~460** |
+| Base de datos | ninguna | ninguna | Supabase (3 tablas) | **Supabase (9 tablas)** | **Supabase (10 tablas)** |
+| Revenue | $0 | $0 | $0 | **Rebill integrado** | **Rebill integrado** |
+| Onboarding | — | — | manual | admin-first | **trust-first** |
 | Costo de hosting | $0 | $0 | $0 | $0 | $0 |
 
 ---

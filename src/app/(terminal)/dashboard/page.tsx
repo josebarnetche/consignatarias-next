@@ -1,7 +1,10 @@
+import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase'
 import DashboardClient from './DashboardClient'
 import rematesData from '@/lib/data/remates.json'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata = {
   title: 'Mi Panel — Consignatarias.com.ar',
@@ -12,7 +15,7 @@ export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) return null
+  if (!user) redirect('/login')
 
   const service = createServiceClient()
 
@@ -44,14 +47,40 @@ export default async function DashboardPage() {
     .eq('claimant_email', user.email!)
     .order('created_at', { ascending: false })
 
-  // Get upcoming auctions for this consignataria
+  // Get upcoming scraped auctions for this consignataria
   const today = new Date().toISOString().slice(0, 10)
-  const auctions = consignataria
+  const scrapedAuctions = consignataria
     ? (rematesData as { consignatariaSlug: string; date: string; title: string; location: string; time: string | null }[])
         .filter(r => r.consignatariaSlug === consignataria.canonical_slug && r.date >= today)
         .sort((a, b) => a.date.localeCompare(b.date))
         .slice(0, 10)
     : []
+
+  // Get owner-managed auctions from Supabase
+  let ownerAuctions: {
+    id: number
+    title: string
+    date: string
+    time: string | null
+    location: string | null
+    province: string | null
+    type: string
+    main_category: string
+    estimated_heads: number | null
+    description: string | null
+    catalog_url: string | null
+    youtube_url: string | null
+    status: string
+  }[] = []
+  if (consignataria) {
+    const { data } = await service
+      .from('consignataria_auctions')
+      .select('*')
+      .eq('consignataria_slug', consignataria.canonical_slug)
+      .order('date', { ascending: true })
+
+    ownerAuctions = data || []
+  }
 
   // Get submitted auction results
   const { data: auctionResults } = await service
@@ -103,7 +132,8 @@ export default async function DashboardPage() {
       email={user.email!}
       consignataria={consignataria}
       claims={claims || []}
-      auctions={auctions}
+      scrapedAuctions={scrapedAuctions}
+      ownerAuctions={ownerAuctions}
       auctionResults={auctionResults || []}
       viewCount={viewCount}
       completedFields={completedFields}

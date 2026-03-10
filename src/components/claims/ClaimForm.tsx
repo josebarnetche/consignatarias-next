@@ -59,17 +59,28 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
     return (
       <div className="terminal-panel border-positive/30">
         <div className="px-panel py-6 text-center space-y-3">
-          <div className="text-positive text-lg font-terminal">SOLICITUD ENVIADA</div>
+          <div className="text-positive text-lg font-terminal">PERFIL VERIFICADO</div>
           <p className="text-zinc-400 text-data font-terminal">
-            Recibimos tu solicitud de verificación para <span className="text-zinc-200">{displayName}</span>.
-            Te contactaremos a la brevedad por email.
+            <span className="text-zinc-200">{displayName}</span> ahora es tuyo.
           </p>
-          <Link
-            href={`/consignatarias/${slug}`}
-            className="inline-block text-accent hover:text-accent-bright text-xxs font-terminal uppercase tracking-wider transition-colors mt-2"
-          >
-            &larr; Volver al perfil
-          </Link>
+          <p className="text-zinc-500 text-xxs font-terminal">
+            Te enviamos un enlace de acceso a <span className="text-zinc-300">{form.claimant_email}</span>.
+            Revisa tu email y hace click en el enlace para acceder a tu panel.
+          </p>
+          <div className="pt-2 flex items-center justify-center gap-4">
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors"
+            >
+              Ingresar con email →
+            </Link>
+            <Link
+              href={`/consignatarias/${slug}`}
+              className="text-accent hover:text-accent-bright text-xxs font-terminal uppercase tracking-wider transition-colors"
+            >
+              Ver perfil
+            </Link>
+          </div>
         </div>
       </div>
     )
@@ -89,9 +100,9 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
 
       <div className="px-panel py-4 space-y-4">
         <p className="text-data text-zinc-400 font-terminal">
-          Completá el formulario para verificar el perfil de{' '}
+          Completa el formulario para tomar control del perfil de{' '}
           <span className="text-zinc-200">{displayName}</span>.
-          Confirmaremos tu identidad y te contactaremos.
+          Te enviaremos un enlace de acceso a tu email.
         </p>
 
         {state === 'error' && (
@@ -192,7 +203,7 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
           disabled={state === 'submitting'}
           className="w-full px-4 py-2.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {state === 'submitting' ? 'Enviando...' : 'Solicitar verificación'}
+          {state === 'submitting' ? 'Verificando...' : 'Verificar y acceder'}
         </button>
       </div>
     </form>

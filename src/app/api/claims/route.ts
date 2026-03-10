@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
 import { claimSchema } from '@/lib/validators/claim'
-import { sendClaimConfirmation, sendClaimNotificationToAdmin } from '@/lib/email'
+import { sendClaimNotificationToAdmin } from '@/lib/email'
 
 export async function POST(req: NextRequest) {
   try {
@@ -40,23 +40,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Check for duplicate pending claim
-    const { data: existing } = await supabase
-      .from('consignataria_claims')
-      .select('id')
-      .eq('consignataria_slug', consignataria_slug)
-      .eq('claimant_email', claimant_email)
-      .eq('status', 'pending')
-      .maybeSingle()
-
-    if (existing) {
-      return NextResponse.json(
-        { error: 'Ya tenés una solicitud pendiente para este perfil' },
-        { status: 409 },
-      )
-    }
-
-    // Insert claim
+    // Insert claim as auto-approved
     const { error: insertError } = await supabase
       .from('consignataria_claims')
       .insert({
@@ -66,6 +50,7 @@ export async function POST(req: NextRequest) {
         claimant_phone: claimant_phone || null,
         claimant_role: claimant_role || null,
         cuit: cuit || null,
+        status: 'approved',
       })
 
     if (insertError) {
@@ -76,8 +61,78 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Fire emails (non-blocking)
-    sendClaimConfirmation(claimant_email, consignataria.display_name, consignataria_slug)
+    // Auto-approve: mark consignataria as claimed + verified
+    await supabase
+      .from('consignatarias')
+      .update({
+        verified: true,
+        claimed_at: new Date().toISOString(),
+        claimed_by_email: claimant_email,
+      })
+      .eq('canonical_slug', consignataria_slug)
+
+    // Create Supabase Auth user (or get existing) + assign owner role
+    try {
+      const { data: authUser, error: createError } = await supabase.auth.admin.createUser({
+        email: claimant_email,
+        email_confirm: true,
+      })
+
+      if (!createError && authUser?.user) {
+        await supabase.from('user_roles').upsert({
+          user_id: authUser.user.id,
+          email: claimant_email,
+          role: 'owner',
+        }, { onConflict: 'user_id' })
+      } else if (createError?.message?.includes('already been registered')) {
+        const { data: existingUsers } = await supabase.auth.admin.listUsers()
+        const found = existingUsers?.users?.find(u => u.email === claimant_email)
+        if (found) {
+          await supabase.from('user_roles').upsert({
+            user_id: found.id,
+            email: claimant_email,
+            role: 'owner',
+          }, { onConflict: 'user_id' })
+        }
+      }
+    } catch (e) {
+      console.error('Auto-invite error:', e)
+    }
+
+    // Send magic link so user can log in immediately
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
+    try {
+      await supabase.auth.admin.generateLink({
+        type: 'magiclink',
+        email: claimant_email,
+        options: {
+          redirectTo: `${appUrl}/auth/callback?next=/dashboard`,
+        },
+      })
+      // The generateLink with admin API doesn't send the email automatically.
+      // Use signInWithOtp via a server-side call instead:
+    } catch {
+      // Non-blocking
+    }
+
+    // Send magic link via OTP (this actually sends the email)
+    try {
+      const { createClient: createAnonClient } = await import('@supabase/supabase-js')
+      const anonClient = createAnonClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      )
+      await anonClient.auth.signInWithOtp({
+        email: claimant_email,
+        options: {
+          emailRedirectTo: `${appUrl}/auth/callback?next=/dashboard`,
+        },
+      })
+    } catch (e) {
+      console.error('Magic link send error:', e)
+    }
+
+    // Notify admin (non-blocking) — admin can review and revoke if needed
     sendClaimNotificationToAdmin(
       consignataria.display_name,
       consignataria_slug,
@@ -87,7 +142,7 @@ export async function POST(req: NextRequest) {
     )
 
     return NextResponse.json(
-      { message: 'Solicitud enviada correctamente' },
+      { message: 'Perfil verificado. Revisa tu email para acceder a tu panel.' },
       { status: 201 },
     )
   } catch {

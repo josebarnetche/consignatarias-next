@@ -14,6 +14,9 @@ import { createServiceClient } from '@/lib/supabase'
 import { BreadcrumbSchema, LocalBusinessSchema, EventSchema } from '@/components/seo/JsonLd'
 import ConsignatariaProfileClient from './ConsignatariaProfileClient'
 
+// ISR: revalidate every 5 minutes so Supabase data (verified, contact info) refreshes
+export const revalidate = 300
+
 const auctions = rematesData as Auction[]
 
 /* ------------------------------------------------------------------ */
@@ -114,7 +117,48 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
     fetchAuctionResults(canonical),
   ])
 
-  const profileAuctions = getAuctionsForProfile(auctions, canonical)
+  // Merge scraped auctions + owner-created auctions from Supabase
+  const scrapedAuctions = getAuctionsForProfile(auctions, canonical)
+
+  let ownerAuctions: Auction[] = []
+  try {
+    const service2 = createServiceClient()
+    const { data: dbAuctions } = await service2
+      .from('consignataria_auctions')
+      .select('*')
+      .eq('consignataria_slug', canonical)
+      .order('date', { ascending: true })
+
+    if (dbAuctions) {
+      ownerAuctions = dbAuctions.map((a: Record<string, unknown>, idx: number) => ({
+        id: 100000 + (a.id as number) + idx,
+        title: a.title as string,
+        consignatariaName: enrichedProfile.displayName,
+        consignatariaSlug: canonical,
+        date: (a.date as string).slice(0, 10),
+        time: (a.time as string) || null,
+        location: (a.location as string) || '',
+        province: (a.province as string) || '',
+        type: (a.type as Auction['type']) || 'general',
+        mainCategory: (a.main_category as Auction['mainCategory']) || 'mixto',
+        estimatedHeads: (a.estimated_heads as number) || null,
+        description: (a.description as string) || '',
+        youtubeUrl: (a.youtube_url as string) || null,
+        catalogUrl: (a.catalog_url as string) || null,
+        source: 'manual' as const,
+        sourceUrl: null,
+        status: (a.status as Auction['status']) || 'scheduled',
+      }))
+    }
+  } catch {
+    // Fallback to scraped only
+  }
+
+  // Deduplicate: if a scraped auction has same date+title, prefer scraped
+  const scrapedKeys = new Set(scrapedAuctions.map(a => `${a.date}|${a.title.toLowerCase()}`))
+  const uniqueOwner = ownerAuctions.filter(a => !scrapedKeys.has(`${a.date}|${a.title.toLowerCase()}`))
+  const profileAuctions = [...scrapedAuctions, ...uniqueOwner]
+    .sort((a, b) => a.date.localeCompare(b.date))
 
   // Derive location info from auctions
   const provinces = [...new Set(profileAuctions.map(a => a.province).filter(Boolean))]

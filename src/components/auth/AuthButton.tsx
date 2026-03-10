@@ -41,6 +41,13 @@ export default function AuthButton() {
 
   return (
     <div className="flex items-center gap-2">
+      <Link
+        href="/dashboard"
+        className="text-xxs font-terminal uppercase tracking-wider text-accent hover:text-accent-bright transition-colors"
+      >
+        Mi Panel
+      </Link>
+      <span className="text-zinc-700 text-xxs select-none hidden sm:inline">|</span>
       <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline" title={email}>
         {short}
       </span>
