@@ -21,7 +21,7 @@ There is no single place to see all upcoming auctions, compare prices, or browse
 
 **consignatarias.com.ar** aggregates data from 77+ consignatarias (cattle auction houses) across 10 provinces into a unified, real-time interface. A rancher can see every upcoming auction in the country, filter by province or type, check market prices, and find frigorificos — all in one screen.
 
-### Current UX (v0.9.9)
+### Current UX (v1.0)
 
 **For cattle ranchers (buyers):**
 - Open the site → see all upcoming auctions nationwide in a terminal-style feed
@@ -437,6 +437,7 @@ Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misione
 | 0.9.7 | Mar 10 | Trust-first onboarding — auto-approve claims, auction CRUD, dashboard tabs |
 | 0.9.8 | Mar 10 | Q2 blueprint close — logo upload, /calidad, reportar error, monthly metrics |
 | 0.9.9 | Mar 10 | AI SEO — robots.txt AI bots, FAQ schema, /glosario with DefinedTermSet |
+| **1.0.0** | **Mar 10** | **Full platform — navigation, subscribe flow, all pages discoverable** |
 
 Built in 13 days. One human, one AI. $0 hosting cost. 10 Supabase tables. See [CHANGELOG.md](CHANGELOG.md) for full details.
 

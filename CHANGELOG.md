@@ -1,6 +1,43 @@
 # Changelog
 
-Registro completo de **consignatarias.com.ar** — desde el primer `npx create-next-app` hasta una plataforma de remates ganaderos con 385+ remates en 10 provincias argentinas, auth con Supabase, enriquecimiento de frigoríficos y SEO completo.
+Registro completo de **consignatarias.com.ar** — desde el primer `npx create-next-app` hasta una plataforma SaaS de remates ganaderos con 385+ remates en 10 provincias argentinas, auth, pagos, perfiles verificados, AI SEO y navegación completa.
+
+---
+
+## [1.0.0] — 2026-03-10
+
+### v1.0 — Plataforma completa con navegación, suscripciones y AI SEO
+
+> feat: v1.0.0 — full platform release
+
+**Milestone:** Primera versión completa de la plataforma. Desde directorio estático hasta SaaS funcional con auth, pagos, perfiles verificados, dashboard de owner, AI SEO y navegación 100% descubrible. 13 días de desarrollo, $0 de hosting.
+
+**1. Navegabilidad — resolver páginas huérfanas**
+
+Auditoría UX completa reveló que `/planes`, `/glosario` y `/calidad` tenían 0 links entrantes (solo accesibles por URL directa). Corregido:
+
+- `PLANES` agregado al nav principal del terminal (6to item, desktop + mobile)
+- Footer del terminal expandido: Planes | Glosario | Calidad | Quiénes Somos | email
+- Landing page navbar: link "Planes" junto a Remates/Frigoríficos/Mercado
+- Landing page footer: nueva fila institucional (Planes, Glosario, Calidad de datos, Quiénes somos)
+- Cross-links al pie de `/glosario` y `/calidad` (enlaces entre sí + planes + remates)
+
+**2. Suscripción PRO funcional desde /planes**
+
+El botón "Suscribirse a PRO" redirigía siempre a `/login`, incluso para usuarios logueados. Reemplazado con `SubscribeButton` (client component):
+
+- Detecta estado de auth via Supabase
+- Si logueado → `POST /api/subscribe` → redirect a checkout de Rebill
+- Si no logueado → redirect a `/login?redirect=/planes`
+- Busca automáticamente el slug de la consignataria del owner
+
+**3. Fix ESLint para deploy**
+
+- Reemplazados `<a href>` por `<Link>` de Next.js en links internos de `/calidad` y `/glosario`
+- Build Vercel pasa limpio
+
+**Archivos creados:** `src/app/(terminal)/planes/SubscribeButton.tsx`
+**Archivos modificados:** `src/app/(terminal)/layout.tsx`, `src/app/page.tsx`, `src/app/(terminal)/planes/page.tsx`, `src/app/(terminal)/glosario/page.tsx`, `src/app/(terminal)/calidad/page.tsx`
 
 ---
 
