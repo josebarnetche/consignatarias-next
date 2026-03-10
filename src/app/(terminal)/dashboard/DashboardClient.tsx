@@ -14,6 +14,8 @@ interface Consignataria {
   website?: string | null
   description?: string | null
   whatsapp?: string | null
+  cuit?: string | null
+  logo_url?: string | null
 }
 
 interface Claim {
@@ -342,7 +344,9 @@ export default function DashboardClient({
             website: consignataria.website || '',
             description: consignataria.description || '',
             whatsapp: consignataria.whatsapp || '',
+            cuit: consignataria.cuit || '',
           }}
+          logoUrl={consignataria.logo_url}
         />
       )}
 
@@ -694,13 +698,17 @@ function AuctionManager({ slug, ownerAuctions, scrapedAuctions, onAuctionsChange
 
 interface ProfileEditFormProps {
   slug: string
-  initial: { phone: string; email: string; website: string; description: string; whatsapp: string }
+  initial: { phone: string; email: string; website: string; description: string; whatsapp: string; cuit: string }
+  logoUrl?: string | null
 }
 
-function ProfileEditForm({ slug, initial }: ProfileEditFormProps) {
+function ProfileEditForm({ slug, initial, logoUrl: initialLogoUrl }: ProfileEditFormProps) {
   const [form, setForm] = useState(initial)
   const [saving, setSaving] = useState(false)
   const [feedback, setFeedback] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
+  const [logoUrl, setLogoUrl] = useState(initialLogoUrl || '')
+  const [logoUploading, setLogoUploading] = useState(false)
+  const [logoFeedback, setLogoFeedback] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -725,6 +733,30 @@ function ProfileEditForm({ slug, initial }: ProfileEditFormProps) {
     }
   }
 
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setLogoUploading(true)
+    setLogoFeedback(null)
+    try {
+      const fd = new FormData()
+      fd.append('logo', file)
+      const res = await fetch(`/api/consignatarias/${slug}/logo`, { method: 'POST', body: fd })
+      const data = await res.json()
+      if (!res.ok) {
+        setLogoFeedback({ type: 'err', msg: data.error || 'Error al subir logo' })
+        return
+      }
+      setLogoUrl(data.logo_url)
+      setLogoFeedback({ type: 'ok', msg: 'Logo actualizado' })
+    } catch {
+      setLogoFeedback({ type: 'err', msg: 'Error de conexion' })
+    } finally {
+      setLogoUploading(false)
+      e.target.value = ''
+    }
+  }
+
   const inputClass = 'w-full bg-terminal-bg border border-terminal-border text-zinc-200 text-xxs font-terminal px-2 py-1.5 rounded-terminal focus:outline-none focus:border-accent transition-colors'
 
   return (
@@ -732,6 +764,27 @@ function ProfileEditForm({ slug, initial }: ProfileEditFormProps) {
       <div className="terminal-panel-header"><span className="text-zinc-200 text-label tracking-widest">EDITAR PERFIL</span></div>
       <form onSubmit={handleSubmit} className="px-panel py-3 space-y-3">
         <p className="text-xxs font-terminal text-zinc-600">Los datos que completes se muestran en tu perfil publico.</p>
+
+        {/* Logo upload */}
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 rounded-terminal border border-terminal-border bg-terminal-bg flex items-center justify-center overflow-hidden flex-shrink-0">
+            {logoUrl ? (
+              <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
+            ) : (
+              <span className="text-zinc-700 text-xxs font-terminal">LOGO</span>
+            )}
+          </div>
+          <div className="flex-1 space-y-1">
+            <label className="text-xxs text-zinc-600 uppercase font-terminal block">Logo</label>
+            <label className={`inline-block px-3 py-1 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors ${logoUploading ? 'opacity-50 pointer-events-none' : 'cursor-pointer'}`}>
+              {logoUploading ? 'Subiendo...' : 'Subir imagen'}
+              <input type="file" accept="image/jpeg,image/png,image/webp,image/svg+xml" onChange={handleLogoUpload} className="hidden" disabled={logoUploading} />
+            </label>
+            <p className="text-[10px] text-zinc-700 font-terminal">JPG, PNG, WebP o SVG. Max 2 MB.</p>
+            {logoFeedback && <span className={`text-xxs font-terminal ${logoFeedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{logoFeedback.msg}</span>}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Telefono</label>
@@ -748,6 +801,10 @@ function ProfileEditForm({ slug, initial }: ProfileEditFormProps) {
           <div>
             <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">WhatsApp</label>
             <input type="text" value={form.whatsapp} onChange={e => setForm(f => ({ ...f, whatsapp: e.target.value }))} className={inputClass} placeholder="+54 11 1234-5678" />
+          </div>
+          <div>
+            <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">CUIT</label>
+            <input type="text" value={form.cuit} onChange={e => setForm(f => ({ ...f, cuit: e.target.value }))} className={inputClass} placeholder="20-12345678-9" />
           </div>
         </div>
         <div>

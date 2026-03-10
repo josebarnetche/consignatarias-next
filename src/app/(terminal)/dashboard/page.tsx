@@ -29,7 +29,7 @@ export default async function DashboardPage() {
   // Get user's verified consignataria (if any)
   const { data: consignataria } = await service
     .from('consignatarias')
-    .select('display_name, canonical_slug, verified, phone, email, website, description, whatsapp')
+    .select('display_name, canonical_slug, verified, phone, email, website, description, whatsapp, cuit, logo_url')
     .eq('claimed_by_email', user.email!)
     .single()
 

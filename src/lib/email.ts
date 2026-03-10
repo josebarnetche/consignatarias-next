@@ -136,6 +136,69 @@ export async function sendFrigorificoClaimNotificationToAdmin(
   }).catch(() => {})
 }
 
+/* ------------------------------------------------------------------ */
+/*  MONTHLY METRICS                                                    */
+/* ------------------------------------------------------------------ */
+
+export async function sendMonthlyMetrics(
+  email: string,
+  displayName: string,
+  slug: string,
+  views: number,
+  monthName: string,
+) {
+  const resend = await getResend()
+  if (!resend) return
+  const safeName = escapeHtml(displayName)
+  const viewsFormatted = views.toLocaleString('es-AR')
+  resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: `Resumen ${monthName} — ${displayName}`,
+    html: `
+      <div style="font-family:monospace;max-width:480px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
+        <h2 style="color:#fff;font-size:16px;margin:0 0 4px">RESUMEN MENSUAL</h2>
+        <p style="color:#71717a;font-size:12px;margin:0 0 20px">${safeName} — ${escapeHtml(monthName)}</p>
+
+        <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;text-align:center;margin-bottom:16px">
+          <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Vistas del perfil</p>
+          <p style="color:#22c55e;font-size:32px;font-weight:bold;margin:0">${viewsFormatted}</p>
+          <p style="color:#71717a;font-size:11px;margin:4px 0 0">productores vieron tu perfil este mes</p>
+        </div>
+
+        ${views > 0 ? `
+        <p style="color:#a1a1aa;font-size:12px;line-height:1.5">
+          Tu perfil de <strong style="color:#e4e4e7">${safeName}</strong> recibio ${viewsFormatted} visitas en ${escapeHtml(monthName)}.
+          ${views >= 50 ? 'Excelente visibilidad.' : views >= 20 ? 'Buen alcance.' : 'Completa tu perfil para mejorar tu visibilidad.'}
+        </p>
+        ` : `
+        <p style="color:#a1a1aa;font-size:12px;line-height:1.5">
+          Tu perfil aun no recibio visitas este mes. Completa tus datos de contacto y descripcion para mejorar tu posicionamiento.
+        </p>
+        `}
+
+        <div style="margin:20px 0;text-align:center">
+          <a href="${APP_URL}/dashboard" style="background:#22c55e;color:#fff;padding:10px 20px;text-decoration:none;border-radius:4px;display:inline-block;font-size:12px;font-weight:bold;letter-spacing:1px">VER MI PANEL</a>
+        </div>
+
+        <div style="border-top:1px solid #27272a;padding-top:12px;margin-top:20px">
+          <p style="color:#52525b;font-size:11px;margin:0">
+            <a href="${APP_URL}/consignatarias/${slug}" style="color:#52525b">Ver perfil publico</a>
+            &nbsp;&bull;&nbsp;
+            <a href="${APP_URL}/planes" style="color:#52525b">Mejorar mi plan</a>
+          </p>
+        </div>
+
+        <p style="color:#3f3f46;font-size:10px;margin:16px 0 0">Consignatarias.com.ar — Directorio ganadero</p>
+      </div>
+    `,
+  }).catch(() => {})
+}
+
+/* ------------------------------------------------------------------ */
+/*  CLAIM REJECTION                                                    */
+/* ------------------------------------------------------------------ */
+
 export async function sendClaimRejected(email: string, displayName: string, reason?: string) {
   const resend = await getResend()
   if (!resend) return

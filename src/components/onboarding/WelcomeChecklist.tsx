@@ -67,13 +67,13 @@ export default function WelcomeChecklist({ profileSlug, displayName, completedFi
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
           <Link
-            href={`/consignatarias/${profileSlug}`}
+            href="/dashboard?tab=editar"
             className="text-xxs font-terminal text-accent hover:underline"
           >
             Editar perfil →
           </Link>
           <a
-            href={`https://wa.me/5493764331819?text=${encodeURIComponent(`Hola, necesito ayuda con mi perfil de ${displayName} en consignatarias.com.ar`)}`}
+            href={`https://wa.me/5493773418130?text=${encodeURIComponent(`Hola, necesito ayuda con mi perfil de ${displayName} en consignatarias.com.ar`)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-xxs font-terminal text-positive hover:underline"

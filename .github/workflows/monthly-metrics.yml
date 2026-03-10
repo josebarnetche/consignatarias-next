@@ -1,0 +1,21 @@
+name: Monthly Metrics Email
+
+on:
+  schedule:
+    # 1st of each month at 10:00 ART (13:00 UTC)
+    - cron: '0 13 1 * *'
+  workflow_dispatch: # manual trigger
+
+jobs:
+  send-metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send monthly metrics emails
+        run: |
+          curl -s -X POST \
+            "${{ secrets.APP_URL }}/api/cron/monthly-metrics?secret=${{ secrets.ADMIN_SECRET }}" \
+            -H "Content-Type: application/json" \
+            | jq .
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}

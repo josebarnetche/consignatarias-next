@@ -8,6 +8,7 @@ export const profileUpdateSchema = z.object({
   description: z.string().max(1000).optional().nullable(),
   logo_url: z.string().max(500).optional().nullable(),
   whatsapp: z.string().max(30).optional().nullable(),
+  cuit: z.string().max(20).optional().nullable(),
 })
 
 export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>

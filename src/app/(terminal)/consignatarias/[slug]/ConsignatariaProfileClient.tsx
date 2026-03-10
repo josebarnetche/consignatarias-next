@@ -382,6 +382,11 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               &larr; DIRECTORIO
             </Link>
             <span className="text-terminal-border">&mdash;</span>
+            {profile.logoUrl && (
+              <div className="w-8 h-8 rounded-terminal border border-terminal-border bg-terminal-bg overflow-hidden flex-shrink-0">
+                <img src={profile.logoUrl} alt={`Logo ${profile.displayName}`} className="w-full h-full object-contain" />
+              </div>
+            )}
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="section-heading text-label tracking-widest">{profile.displayName.toUpperCase()}</h1>
               {profile.verified && (
@@ -736,6 +741,18 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
             VER TODOS LOS REMATES
           </Link>
         </div>
+      </div>
+
+      {/* ============================================================ */}
+      {/*  REPORTAR ERROR                                               */}
+      {/* ============================================================ */}
+      <div className="text-center py-4">
+        <a
+          href={`mailto:datos@consignatarias.com.ar?subject=${encodeURIComponent(`Error en perfil: ${profile.displayName}`)}&body=${encodeURIComponent(`Hola,\n\nEncontre un error en el perfil de ${profile.displayName}:\nhttps://www.consignatarias.com.ar/consignatarias/${profile.canonicalSlug}\n\nDescripcion del error:\n`)}`}
+          className="text-xxs font-terminal text-zinc-600 hover:text-zinc-400 transition-colors"
+        >
+          Reportar error
+        </a>
       </div>
     </div>
   )
