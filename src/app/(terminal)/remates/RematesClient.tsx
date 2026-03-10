@@ -31,6 +31,30 @@ type Period = 'hoy' | 'proximos' | 'pasados'
 /*  HELPERS                                                            */
 /* ------------------------------------------------------------------ */
 
+/** Derive a short source badge label */
+function getSourceBadge(auction: Auction): string {
+  if (auction.sourceUrl?.includes('cacg.org.ar')) return 'CACG'
+  const slug = auction.consignatariaSlug
+  if (slug === 'colombo-y-colombo') return 'CYC'
+  if (slug === 'ofarrell') return 'OFAR'
+  if (slug === 'coop-lehmann') return 'LEHM'
+  if (slug === 'madelan') return 'MADL'
+  if (slug === 'umc-haciendas-villaguay') return 'UMCHV'
+  if (auction.source === 'manual') return 'MAN'
+  return 'WEB'
+}
+
+/** Freshness label for past auctions (relative to today) */
+function getFreshnessLabel(auctionDate: string, today: string): { text: string; className: string } | null {
+  const d = new Date(auctionDate + 'T12:00:00')
+  const t = new Date(today + 'T12:00:00')
+  const diff = Math.round((t.getTime() - d.getTime()) / 86400000)
+  if (diff <= 0) return null // future or same-day handled separately
+  if (diff === 1) return { text: 'AYER', className: 'text-zinc-400' }
+  if (diff <= 7) return { text: `HACE ${diff} DÍAS`, className: 'text-zinc-500' }
+  return null
+}
+
 /** Get the best link for an auction row click */
 function getAuctionHref(auction: Auction): string {
   const sourceUrl = normalizeUrl(auction.sourceUrl)
@@ -88,12 +112,16 @@ function StatusBadge({ status, date, today }: { status: Auction['status']; date:
 /*  AUCTION ROW — responsive: card on mobile, dense on desktop         */
 /* ------------------------------------------------------------------ */
 
-function AuctionRow({ auction, today, index }: { auction: Auction; today: string; index: number }) {
+function AuctionRow({ auction, today, index, period }: { auction: Auction; today: string; index: number; period: Period }) {
   const isToday = auction.date === today
   const isFeatured = !!(auction as Auction & { featured?: boolean }).featured
   const city = getCity(auction.location)
   const href = getAuctionHref(auction)
   const external = isExternalLink(href)
+  const sourceBadge = getSourceBadge(auction)
+  const freshness = period === 'pasados' ? getFreshnessLabel(auction.date, today) : null
+  // "HOY" freshness for pasados tab (same-day completed)
+  const isTodayPast = period === 'pasados' && auction.date === today
 
   function handleRowClick() {
     const dest = href.includes('/consignatarias/') ? 'profile' as const : 'source' as const
@@ -166,6 +194,11 @@ function AuctionRow({ auction, today, index }: { auction: Auction; today: string
               </span>
             )}
           </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] font-terminal text-amber-500/50 px-1 py-0.5 border border-amber-500/20 rounded-sm">{sourceBadge}</span>
+            {isTodayPast && <span className="text-[9px] font-terminal text-positive">HOY</span>}
+            {freshness && <span className={`text-[9px] font-terminal ${freshness.className}`}>{freshness.text}</span>}
+          </div>
         </div>
 
         {/* --- DESKTOP ROW (hidden below md) --- */}
@@ -214,6 +247,9 @@ function AuctionRow({ auction, today, index }: { auction: Auction; today: string
             <span className="w-[42px] flex-shrink-0 text-xxs font-terminal text-amber-400/60">
               {CAT_CODES[auction.mainCategory]}
             </span>
+            <span className="text-[9px] font-terminal text-amber-500/50 px-1 py-0.5 border border-amber-500/20 rounded-sm mr-1.5">{sourceBadge}</span>
+            {isTodayPast && <span className="text-[9px] font-terminal text-positive mr-1.5">HOY</span>}
+            {freshness && <span className={`text-[9px] font-terminal ${freshness.className} mr-1.5`}>{freshness.text}</span>}
             <span className="w-[60px] flex-shrink-0 text-data font-terminal tabular-nums text-amber-300 text-right font-medium">
               {auction.estimatedHeads != null ? `~${auction.estimatedHeads.toLocaleString('es-AR')}` : '—'}
             </span>
@@ -295,6 +331,11 @@ function AuctionRow({ auction, today, index }: { auction: Auction; today: string
             </span>
           )}
         </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[9px] font-terminal text-zinc-600 px-1 py-0.5 border border-zinc-800 rounded-sm">{sourceBadge}</span>
+          {isTodayPast && <span className="text-[9px] font-terminal text-positive">HOY</span>}
+          {freshness && <span className={`text-[9px] font-terminal ${freshness.className}`}>{freshness.text}</span>}
+        </div>
         {/* Links */}
         <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
           {auction.catalogUrl && (
@@ -349,7 +390,7 @@ function AuctionRow({ auction, today, index }: { auction: Auction; today: string
           </span>
         </div>
 
-        {/* Line 2: type badge, category, heads, status, links */}
+        {/* Line 2: type badge, category, source, freshness, heads, status, links */}
         <div className="flex items-center gap-0 px-cell pb-1">
           <span className={`terminal-tag ${TYPE_COLORS[auction.type] || 'border-zinc-500 text-zinc-400'} mr-1.5 text-[10px]`}>
             {TYPE_LABELS_SHORT[auction.type] || auction.type.toUpperCase()}
@@ -357,6 +398,9 @@ function AuctionRow({ auction, today, index }: { auction: Auction; today: string
           <span className="w-[42px] flex-shrink-0 text-xxs font-terminal text-zinc-500">
             {CAT_CODES[auction.mainCategory]}
           </span>
+          <span className="text-[9px] font-terminal text-zinc-600 px-1 py-0.5 border border-zinc-800 rounded-sm mr-1.5">{sourceBadge}</span>
+          {isTodayPast && <span className="text-[9px] font-terminal text-positive mr-1.5">HOY</span>}
+          {freshness && <span className={`text-[9px] font-terminal ${freshness.className} mr-1.5`}>{freshness.text}</span>}
           <span className="w-[60px] flex-shrink-0 text-data font-terminal tabular-nums text-zinc-400 text-right">
             {auction.estimatedHeads != null ? `~${auction.estimatedHeads.toLocaleString('es-AR')}` : '—'}
           </span>
@@ -742,7 +786,7 @@ export default function RematesPage() {
             </div>
           ) : (
             filteredAuctions.map((auction, index) => (
-              <AuctionRow key={auction.id} auction={auction} today={today} index={index} />
+              <AuctionRow key={auction.id} auction={auction} today={today} index={index} period={period} />
             ))
           )}
         </div>

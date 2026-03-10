@@ -4,6 +4,123 @@ Registro completo de **consignatarias.com.ar** — desde el primer `npx create-n
 
 ---
 
+## [0.9.5] — 2026-03-10
+
+### Blueprint SaaS — revenue foundation, Rebill, DAL, analytics, onboarding
+
+> feat: v0.9.5 — SaaS revenue foundation (Rebill, DAL, profile editing, analytics, onboarding, freshness badges)
+
+**La transformación de directorio estático a plataforma SaaS con revenue.** 10 acciones del blueprint ejecutadas en paralelo por 5 agentes.
+
+**1. Data Access Layer (DAL)**
+
+Los perfiles públicos ahora reflejan datos editados por el owner en tiempo real:
+
+- **`src/lib/dal/consignatarias.ts`** — merge de datos estáticos (JSON) + dinámicos (Supabase)
+- Campos Supabase prevalecen: teléfono, email, sitio web, descripción, WhatsApp, logo
+- Fallback gracioso a datos estáticos si Supabase no responde
+- Badge **VERIFICADA** en header del perfil cuando está claimed
+- Panel **CONTACTO** con teléfono, email, web, WhatsApp (solo si hay datos)
+
+**2. Edición de perfil por owner**
+
+- **API `PATCH /api/consignatarias/[slug]`** — validación Zod, ownership check via `claimed_by_email`
+- **Formulario en dashboard** — teléfono, email, sitio web, WhatsApp, descripción (1000 chars)
+- Feedback inline de éxito/error
+- Campos vacíos se convierten a `null`
+
+**3. Barra de completitud dinámica**
+
+- Reemplaza el 30% hardcodeado por cálculo real basado en 8 campos del perfil
+- Color verde (>=75%) o ámbar (<75%)
+- Lista dinámica de campos faltantes
+- CTA "Verificar este perfil" oculto si ya está claimed
+
+**4. Rebill — gateway de pagos LATAM**
+
+- **Rebill** reemplaza Stripe/MercadoPago — LATAM-native (Y Combinator), ARS + USD, tarjetas + transferencias + wallets
+- **Plan PRO Consignataria**: ARS $45.000/mes (`pln_f644261ffe68462497eeb78d4363f377`)
+- **Plan Portal Profesional Frigorífico**: ARS $35.000/mes (`pln_6d0f5e9726844b44b8f37822120f0b2d`)
+- **`src/lib/rebill.ts`** — helper API (createPaymentLink)
+- **`POST /api/subscribe`** — genera link de checkout Rebill (requiere auth)
+- **`POST /api/webhooks/rebill`** — handler de eventos: subscription.created, payment.success, payment.failure, subscription.cancelled
+- Actualiza tabla `subscriptions` + flag `featured` en consignatarias
+
+**5. Página de precios `/planes`**
+
+- 3 tiers: Gratuito ($0), PRO ($45.000/mes, tratamiento amber/gold), Enterprise (Contactar)
+- Feature list detallada por tier
+- FAQ section con 5 preguntas frecuentes
+- Metadata SEO completa
+
+**6. Feature gating**
+
+- **`src/lib/features.ts`** — `getEntityTier()` retorna 'free' | 'pro' | 'enterprise'
+- Consulta tabla `subscriptions` con status 'active' y período vigente
+
+**7. Source badges + freshness labels en remates**
+
+- **Badges de fuente**: CACG, CYC, OFAR, LEHM, MADL, UMCHV, MAN, WEB
+- **Indicadores de frescura** (solo en tab "pasados"): HOY, AYER, HACE N DÍAS
+- Estilo 9px con borde sutil, amber para PRO
+
+**8. Onboarding post-claim**
+
+- **`WelcomeChecklist.tsx`** — checklist de 5 items (teléfono, email, web, descripción, WhatsApp)
+- Barra de progreso, link a editar perfil, link de soporte WhatsApp
+- Se oculta cuando los 5 campos están completos
+- Aparece en dashboard antes de "MI CONSIGNATARIA"
+
+**9. Analytics de perfil**
+
+- **`POST /api/profile-views`** — registra vistas con filtro de bots por user-agent
+- Tabla `profile_views` con referrer y timestamp
+- **Widget en dashboard**: "Vistas últimos 30 días" con conteo real
+- Upsell: "Los perfiles PRO tienen analytics avanzados"
+
+**10. Scraper → Supabase**
+
+- `writeMarketToSupabase()` en `scrape-auctions.mjs` — escribe snapshot diario a `market_price_snapshots`
+- Usa REST API nativa de Supabase (sin dependencia npm)
+- Upsert con `Prefer: resolution=merge-duplicates` (sin duplicados)
+- Graceful skip si no hay env vars (desarrollo local sigue funcionando)
+- GitHub Actions actualizado con `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY`
+
+**Migraciones Supabase aplicadas:**
+- `20260311_consignataria_profile_fields.sql` — columnas description, logo_url, whatsapp
+- `20260311_subscriptions.sql` — tabla de suscripciones con RLS
+- `20260311_profile_views.sql` — tabla de vistas de perfil
+- `20260311_market_price_history.sql` — tabla de snapshots de mercado
+
+**Archivos nuevos (12):**
+- `src/lib/dal/consignatarias.ts`
+- `src/lib/rebill.ts`
+- `src/lib/features.ts`
+- `src/lib/validators/consignataria-profile.ts`
+- `src/app/api/consignatarias/[slug]/route.ts`
+- `src/app/api/subscribe/route.ts`
+- `src/app/api/webhooks/rebill/route.ts`
+- `src/app/api/profile-views/route.ts`
+- `src/app/(terminal)/planes/page.tsx`
+- `src/components/onboarding/WelcomeChecklist.tsx`
+- `supabase/migrations/20260311_*.sql` (4 archivos)
+
+**Archivos modificados (8):**
+- `scripts/scrape-auctions.mjs` — writeMarketToSupabase()
+- `.github/workflows/scrape-auctions.yml` — Supabase env vars
+- `src/app/(terminal)/consignatarias/[slug]/page.tsx` — usa DAL
+- `src/app/(terminal)/consignatarias/[slug]/ConsignatariaProfileClient.tsx` — contacto, verificada, completitud, views
+- `src/app/(terminal)/dashboard/page.tsx` — views count, completedFields
+- `src/app/(terminal)/dashboard/DashboardClient.tsx` — form, checklist, analytics
+- `src/app/(terminal)/remates/RematesClient.tsx` — source badges, freshness
+- `src/app/sitemap.ts` — /planes
+
+**Cobertura:** 385 remates, 77 consignatarias, 364 frigoríficos, 10 provincias. 552 páginas estáticas. Supabase: 9 tablas. Sitemap: ~460 URLs.
+
+**PENDIENTE para go-live:** Habilitar Magic Link en Supabase Dashboard, setear env vars de Rebill en Vercel, agregar GitHub secrets (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY), seed admin role.
+
+---
+
 ## [0.9.2] — 2026-03-10
 
 ### Fichas de frigoríficos + carga de resultados de remates
@@ -633,21 +750,21 @@ Sin state management. Sin ORM. Sin librería de componentes. Sin framework de te
 
 ## Los números
 
-| Métrica | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) | 0.9.0 (Mar 9) | 0.9.2 (Mar 10) |
-|---------|-----------------|-----------------|-----------------|-----------------|
-| Remates | 0 → 92 → 414 | 450 | 385 | 385 |
-| Consignatarias | 49 | 77 | 77 | 77 |
-| Páginas de perfil | 0 | 70 | 77 + 77 verificar | 77 + 77 verificar |
-| Páginas de frigoríficos | 0 | 0 | 0 | **364** |
-| Páginas por provincia | 0 | 0 | 10 | 10 |
-| Fuentes del scraper | 0 → 6 | 9 | 9 | 9 |
-| Provincias | 10 | 12 | 10 | 10 |
-| Frigoríficos | 364 | 364 | 364 | 364 (126 enriquecidos) |
-| Páginas HTML estáticas | ~10 | ~80 | ~170+ | **~530+** |
-| URLs en sitemap | 0 | ~140 | ~100 | **~460** |
-| Base de datos | ninguna | ninguna | Supabase (3 tablas) | Supabase (5 tablas) |
-| Precisión de provincias | desconocida | desconocida | **100%** | **100%** |
-| Costo de hosting | $0 | $0 | $0 | $0 |
+| Métrica | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) | 0.9.0 (Mar 9) | 0.9.2 (Mar 10) | 0.9.5 (Mar 10) |
+|---------|-----------------|-----------------|-----------------|-----------------|-----------------|
+| Remates | 0 → 92 → 414 | 450 | 385 | 385 | 385 |
+| Consignatarias | 49 | 77 | 77 | 77 | 77 |
+| Páginas de perfil | 0 | 70 | 77 + 77 verificar | 77 + 77 verificar | 77 + 77 verificar |
+| Páginas de frigoríficos | 0 | 0 | 0 | 364 | 364 |
+| Páginas por provincia | 0 | 0 | 10 | 10 | 10 |
+| Fuentes del scraper | 0 → 6 | 9 | 9 | 9 | 9 |
+| Provincias | 10 | 12 | 10 | 10 | 10 |
+| Frigoríficos | 364 | 364 | 364 | 364 (126 enriq.) | 364 (126 enriq.) |
+| Páginas estáticas | ~10 | ~80 | ~170+ | ~530+ | **552** |
+| URLs en sitemap | 0 | ~140 | ~100 | ~460 | **~460** |
+| Base de datos | ninguna | ninguna | Supabase (3 tablas) | Supabase (5 tablas) | **Supabase (9 tablas)** |
+| Revenue | $0 | $0 | $0 | $0 | **Rebill integrado** |
+| Costo de hosting | $0 | $0 | $0 | $0 | $0 |
 
 ---
 

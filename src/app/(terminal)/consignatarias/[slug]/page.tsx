@@ -8,6 +8,7 @@ import {
   getProfile,
   getAuctionsForProfile,
 } from '@/lib/data/consignataria-slugs'
+import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
 import { BreadcrumbSchema, LocalBusinessSchema, EventSchema } from '@/components/seo/JsonLd'
 import ConsignatariaProfileClient from './ConsignatariaProfileClient'
 
@@ -73,14 +74,16 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
     permanentRedirect(`/consignatarias/${canonical}`)
   }
 
-  const profile = getProfile(canonical)!
+  const enrichedProfile = await getConsignatariaProfile(canonical)
+  if (!enrichedProfile) notFound()
+
   const profileAuctions = getAuctionsForProfile(auctions, canonical)
 
   // Derive location info from auctions
   const provinces = [...new Set(profileAuctions.map(a => a.province).filter(Boolean))]
-  const primaryProvince = provinces[0] || 'Argentina'
+  const primaryProvince = enrichedProfile.province || provinces[0] || 'Argentina'
   const cities = [...new Set(profileAuctions.map(a => (a.location || '').split(',')[0].trim()).filter(Boolean))]
-  const primaryCity = cities[0] || ''
+  const primaryCity = enrichedProfile.location || cities[0] || ''
 
   // Next upcoming auctions for structured data
   const today = new Date().toISOString().slice(0, 10)
@@ -96,12 +99,12 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
         items={[
           { name: 'Inicio', url: 'https://www.consignatarias.com.ar' },
           { name: 'Consignatarias', url: 'https://www.consignatarias.com.ar/consignatarias' },
-          { name: profile.displayName, url: `https://www.consignatarias.com.ar/consignatarias/${canonical}` },
+          { name: enrichedProfile.displayName, url: `https://www.consignatarias.com.ar/consignatarias/${canonical}` },
         ]}
       />
       <LocalBusinessSchema
-        name={profile.displayName}
-        description={`Consignataria de hacienda. ${profileAuctions.length} remates programados en ${provinces.join(', ')}.`}
+        name={enrichedProfile.displayName}
+        description={enrichedProfile.description || `Consignataria de hacienda. ${profileAuctions.length} remates programados en ${provinces.join(', ')}.`}
         address={{
           addressLocality: primaryCity,
           addressRegion: primaryProvince,
@@ -118,13 +121,13 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
             name: (auction.location || '').split(',')[0].trim() || primaryCity,
             address: auction.location || primaryCity,
           }}
-          organizer={profile.displayName}
+          organizer={enrichedProfile.displayName}
           url={`https://www.consignatarias.com.ar/consignatarias/${canonical}`}
         />
       ))}
 
       <ConsignatariaProfileClient
-        profile={profile}
+        profile={enrichedProfile}
         auctions={profileAuctions}
       />
     </>

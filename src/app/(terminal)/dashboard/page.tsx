@@ -26,7 +26,7 @@ export default async function DashboardPage() {
   // Get user's verified consignataria (if any)
   const { data: consignataria } = await service
     .from('consignatarias')
-    .select('display_name, canonical_slug, verified')
+    .select('display_name, canonical_slug, verified, phone, email, website, description, whatsapp')
     .eq('claimed_by_email', user.email!)
     .single()
 
@@ -47,6 +47,29 @@ export default async function DashboardPage() {
     .order('auction_date', { ascending: false })
     .limit(20)
 
+  // Get profile views count (last 30 days)
+  let viewCount = 0
+  if (consignataria) {
+    const { count } = await service
+      .from('profile_views')
+      .select('*', { count: 'exact', head: true })
+      .eq('entity_slug', consignataria.canonical_slug)
+      .gte('viewed_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+
+    viewCount = count ?? 0
+  }
+
+  // Compute completed fields for onboarding checklist
+  const completedFields = consignataria
+    ? {
+        phone: !!consignataria.phone,
+        email: !!consignataria.email,
+        website: !!consignataria.website,
+        description: !!consignataria.description,
+        whatsapp: !!consignataria.whatsapp,
+      }
+    : null
+
   return (
     <DashboardClient
       email={user.email!}
@@ -54,6 +77,8 @@ export default async function DashboardPage() {
       claims={claims || []}
       auctions={auctions}
       auctionResults={auctionResults || []}
+      viewCount={viewCount}
+      completedFields={completedFields}
     />
   )
 }

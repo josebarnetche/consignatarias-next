@@ -3,7 +3,7 @@
 import { useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import type { Auction } from '@/lib/db/schema'
-import type { ConsignatariaProfile } from '@/lib/data/consignataria-slugs'
+import type { EnrichedProfile } from '@/lib/dal/consignatarias'
 import { normalizeUrl } from '@/lib/utils/url'
 import { trackProfileView, trackOutboundClick, trackClaimCTA } from '@/lib/analytics'
 import {
@@ -20,6 +20,30 @@ import {
   getProvinceCode,
   getEffectiveToday,
 } from '@/lib/ui/tokens'
+
+/* ------------------------------------------------------------------ */
+/*  COMPLETENESS CALCULATOR                                            */
+/* ------------------------------------------------------------------ */
+
+const COMPLETENESS_FIELDS: { key: keyof EnrichedProfile; label: string }[] = [
+  { key: 'phone', label: 'telefono' },
+  { key: 'email', label: 'email' },
+  { key: 'website', label: 'sitio web' },
+  { key: 'description', label: 'descripcion' },
+  { key: 'logoUrl', label: 'logo' },
+  { key: 'whatsapp', label: 'whatsapp' },
+  { key: 'cuit', label: 'CUIT' },
+  { key: 'category', label: 'categoria' },
+]
+
+function calculateCompleteness(profile: EnrichedProfile): { percent: number; missing: string[] } {
+  const missing: string[] = []
+  for (const f of COMPLETENESS_FIELDS) {
+    if (!profile[f.key]) missing.push(f.label)
+  }
+  const filled = COMPLETENESS_FIELDS.length - missing.length
+  return { percent: Math.round((filled / COMPLETENESS_FIELDS.length) * 100), missing }
+}
 
 /* ------------------------------------------------------------------ */
 /*  STATUS BADGE                                                       */
@@ -294,7 +318,7 @@ function TypeDistribution({ auctions }: { auctions: Auction[] }) {
 /* ------------------------------------------------------------------ */
 
 interface ConsignatariaProfileClientProps {
-  profile: ConsignatariaProfile
+  profile: EnrichedProfile
   auctions: Auction[]
 }
 
@@ -303,6 +327,16 @@ export default function ConsignatariaProfileClient({ profile, auctions }: Consig
 
   useEffect(() => {
     trackProfileView(profile.canonicalSlug, profile.displayName, auctions.length)
+
+    // Server-side view tracking
+    fetch('/api/profile-views', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        entityType: 'consignataria',
+        entitySlug: profile.canonicalSlug,
+      }),
+    }).catch(() => {}) // fire-and-forget
   }, [profile.canonicalSlug, profile.displayName, auctions.length])
 
   const sorted = useMemo(
@@ -345,6 +379,12 @@ export default function ConsignatariaProfileClient({ profile, auctions }: Consig
             <span className="text-terminal-border">&mdash;</span>
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="section-heading text-label tracking-widest">{profile.displayName.toUpperCase()}</h1>
+              {profile.verified && (
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-xxs border border-positive/30 text-positive rounded-terminal font-terminal">
+                  <span className="w-1.5 h-1.5 rounded-full bg-positive" />
+                  VERIFICADA
+                </span>
+              )}
               {provinces.map(prov => (
                 <span key={prov} className="inline-flex px-1.5 py-0.5 text-xxs border border-terminal-border text-zinc-500 rounded-terminal">
                   {prov}
@@ -399,32 +439,101 @@ export default function ConsignatariaProfileClient({ profile, auctions }: Consig
       </div>
 
       {/* ============================================================ */}
+      {/*  CONTACT INFO (only when data available)                       */}
+      {/* ============================================================ */}
+      {(profile.phone || profile.email || profile.website || profile.whatsapp || profile.description) && (
+        <div className="terminal-panel mt-px">
+          <div className="terminal-panel-header">
+            <span className="text-zinc-400 text-xxs tracking-widest">CONTACTO</span>
+          </div>
+          <div className="px-panel py-3 space-y-2">
+            {profile.description && (
+              <p className="text-xxs text-zinc-400 font-terminal">{profile.description}</p>
+            )}
+            <div className="flex flex-wrap gap-x-6 gap-y-1.5">
+              {profile.phone && (
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xxs text-zinc-600 uppercase font-terminal">Tel:</span>
+                  <span className="text-xxs text-zinc-300 font-terminal">{profile.phone}</span>
+                </div>
+              )}
+              {profile.email && (
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xxs text-zinc-600 uppercase font-terminal">Email:</span>
+                  <a href={`mailto:${profile.email}`} className="text-xxs text-accent hover:text-accent-bright font-terminal transition-colors">
+                    {profile.email}
+                  </a>
+                </div>
+              )}
+              {profile.website && (
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xxs text-zinc-600 uppercase font-terminal">Web:</span>
+                  <a
+                    href={normalizeUrl(profile.website) || '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackOutboundClick(profile.website || '', 'website')}
+                    className="text-xxs text-accent hover:text-accent-bright font-terminal transition-colors"
+                  >
+                    {profile.website.replace(/^https?:\/\//, '')}
+                  </a>
+                </div>
+              )}
+              {profile.whatsapp && (
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xxs text-zinc-600 uppercase font-terminal">WhatsApp:</span>
+                  <a
+                    href={`https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackOutboundClick(profile.whatsapp || '', 'whatsapp')}
+                    className="text-xxs text-positive hover:text-emerald-300 font-terminal transition-colors"
+                  >
+                    {profile.whatsapp}
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================ */}
       {/*  CLAIM CTA + COMPLETENESS                                     */}
       {/* ============================================================ */}
-      <div className="glass-panel mt-px">
-        <div className="px-panel py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-xxs text-zinc-600 uppercase font-terminal tracking-wider">Perfil completo:</span>
-              <span className="text-xxs tabular-nums font-terminal text-warning">30%</span>
+      {(() => {
+        const { percent, missing } = calculateCompleteness(profile)
+        return (
+          <div className="glass-panel mt-px">
+            <div className="px-panel py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-xxs text-zinc-600 uppercase font-terminal tracking-wider">Perfil completo:</span>
+                  <span className={`text-xxs tabular-nums font-terminal ${percent >= 75 ? 'text-positive' : 'text-warning'}`}>{percent}%</span>
+                </div>
+                <div className="gradient-bar w-full max-w-[200px]">
+                  <div className={percent >= 75 ? 'gradient-bar-fill-positive' : 'gradient-bar-fill-amber'} style={{ width: `${percent}%` }} />
+                </div>
+                {missing.length > 0 && (
+                  <p className="text-xxs text-zinc-600 font-terminal mt-1.5">
+                    Faltan: {missing.join(', ')}
+                  </p>
+                )}
+              </div>
+              {!profile.claimedAt && (
+                <Link
+                  href={`/consignatarias/${profile.canonicalSlug}/verificar`}
+                  onClick={() => trackClaimCTA(profile.canonicalSlug, profile.displayName)}
+                  className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors shadow-live-glow"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-positive animate-pulse-live" />
+                  Verificar este perfil
+                </Link>
+              )}
             </div>
-            <div className="gradient-bar w-full max-w-[200px]">
-              <div className="gradient-bar-fill-amber" style={{ width: '30%' }} />
-            </div>
-            <p className="text-xxs text-zinc-600 font-terminal mt-1.5">
-              Faltan: logo, descripcion, telefono, email, whatsapp, sitio web
-            </p>
           </div>
-          <Link
-            href={`/consignatarias/${profile.canonicalSlug}/verificar`}
-            onClick={() => trackClaimCTA(profile.canonicalSlug, profile.displayName)}
-            className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors shadow-live-glow"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-positive animate-pulse-live" />
-            Verificar este perfil
-          </Link>
-        </div>
-      </div>
+        )
+      })()}
 
       {/* ============================================================ */}
       {/*  CALENDAR HEATMAP + TYPE DISTRIBUTION                         */}

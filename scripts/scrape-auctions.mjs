@@ -784,8 +784,109 @@ function deduplicateAuctions(auctions) {
 }
 
 // ---------------------------------------------------------------------------
+// Supabase market price write
+// ---------------------------------------------------------------------------
+
+async function writeMarketToSupabase(market) {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) {
+    console.log("  [SKIP] No SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY — skipping DB write");
+    return;
+  }
+
+  const row = {
+    date: market.lastUpdate,
+    inmag_value: market.inmag.current,
+    inmag_prev: market.inmag.prev,
+    inmag_change_pct: market.inmag.change,
+    corn_usd_tn: market.corn.current,
+    corn_prev: market.corn.prev,
+    corn_change_pct: market.corn.change,
+    usd_blue: market.usdBlue.current,
+    usd_blue_prev: market.usdBlue.prev,
+    usd_oficial: market.usdOficial.current,
+    usd_oficial_prev: market.usdOficial.prev,
+    raw_data: market,
+  };
+
+  try {
+    const res = await fetch(`${url}/rest/v1/market_price_snapshots`, {
+      method: "POST",
+      headers: {
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+        "Content-Type": "application/json",
+        Prefer: "resolution=merge-duplicates",
+      },
+      body: JSON.stringify(row),
+    });
+
+    if (res.ok) {
+      console.log(`  [DB] Market snapshot written to Supabase (${market.lastUpdate})`);
+    } else {
+      const text = await res.text();
+      console.warn(`  [WARN] Supabase write failed: ${res.status} ${text}`);
+    }
+  } catch (err) {
+    console.warn(`  [WARN] Supabase write error: ${err.message}`);
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
+
+/**
+ * Write market price snapshot to Supabase (if env vars are set).
+ * Uses the REST API directly — no npm dependency needed.
+ */
+async function writeMarketToSupabase(market) {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    console.log("Supabase env vars not set — skipping market snapshot write.");
+    return;
+  }
+
+  const row = {
+    date: market.lastUpdate,
+    inmag_value: market.inmag.current,
+    inmag_prev: market.inmag.prev,
+    inmag_change_pct: market.inmag.change,
+    corn_usd_tn: market.corn.current,
+    corn_prev: market.corn.prev,
+    corn_change_pct: market.corn.change,
+    usd_blue: market.usdBlue.current,
+    usd_blue_prev: market.usdBlue.prev,
+    usd_oficial: market.usdOficial.current,
+    usd_oficial_prev: market.usdOficial.prev,
+    raw_data: market,
+  };
+
+  try {
+    const res = await fetch(`${supabaseUrl}/rest/v1/market_price_snapshots`, {
+      method: "POST",
+      headers: {
+        apikey: supabaseKey,
+        Authorization: `Bearer ${supabaseKey}`,
+        "Content-Type": "application/json",
+        Prefer: "resolution=merge-duplicates",
+      },
+      body: JSON.stringify(row),
+    });
+
+    if (!res.ok) {
+      const body = await res.text();
+      console.error(`Supabase market write failed (${res.status}): ${body}`);
+    } else {
+      console.log("Market snapshot written to Supabase.");
+    }
+  } catch (err) {
+    console.error("Supabase market write error:", err.message);
+  }
+}
 
 async function main() {
   console.log(`\n=== Ganado Terminal Scraper — ${todayISO()} ===\n`);
@@ -970,6 +1071,12 @@ async function main() {
   market.lastUpdate = todayISO();
   writeFileSync(MARKET_PATH, JSON.stringify(market, null, 2) + "\n");
   console.log(`Market prices written to market-prices.json`);
+
+  // Write market snapshot to Supabase (if env vars available)
+  await writeMarketToSupabase(market);
+
+  // Write market snapshot to Supabase
+  await writeMarketToSupabase(market);
 
   // Summary
   const provinces = [...new Set(merged.map((a) => a.province))];
