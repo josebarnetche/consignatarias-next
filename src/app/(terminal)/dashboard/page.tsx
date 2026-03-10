@@ -39,12 +39,21 @@ export default async function DashboardPage() {
         .slice(0, 10)
     : []
 
+  // Get submitted auction results
+  const { data: auctionResults } = await service
+    .from('auction_results')
+    .select('id, auction_date, auction_title, total_heads_sold, average_price')
+    .eq('submitted_by', user.id)
+    .order('auction_date', { ascending: false })
+    .limit(20)
+
   return (
     <DashboardClient
       email={user.email!}
       consignataria={consignataria}
       claims={claims || []}
       auctions={auctions}
+      auctionResults={auctionResults || []}
     />
   )
 }

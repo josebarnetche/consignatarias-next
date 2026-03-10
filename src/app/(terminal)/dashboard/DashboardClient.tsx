@@ -23,11 +23,20 @@ interface Auction {
   time: string | null
 }
 
+interface AuctionResult {
+  id: string
+  auction_date: string
+  auction_title: string
+  total_heads_sold: number | null
+  average_price: number | null
+}
+
 interface Props {
   email: string
   consignataria: Consignataria | null
   claims: Claim[]
   auctions: Auction[]
+  auctionResults: AuctionResult[]
 }
 
 function formatDate(d: string) {
@@ -35,7 +44,7 @@ function formatDate(d: string) {
   return `${day}/${m}`
 }
 
-export default function DashboardClient({ email, consignataria, claims, auctions }: Props) {
+export default function DashboardClient({ email, consignataria, claims, auctions, auctionResults }: Props) {
   return (
     <div className="max-w-3xl mx-auto px-2 sm:px-4 py-4 space-y-4">
       {/* Header */}
@@ -100,6 +109,51 @@ export default function DashboardClient({ email, consignataria, claims, auctions
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Auction results */}
+      {consignataria && (
+        <div className="terminal-panel">
+          <div className="terminal-panel-header flex items-center justify-between">
+            <span className="text-zinc-200 text-label tracking-widest">RESULTADOS</span>
+            <Link
+              href="/dashboard/resultados/nuevo"
+              className="text-xxs font-terminal text-accent hover:underline"
+            >
+              Cargar resultado →
+            </Link>
+          </div>
+          {auctionResults.length > 0 ? (
+            <div className="divide-y divide-terminal-border">
+              {auctionResults.map(r => (
+                <div key={r.id} className="px-panel py-2 flex items-center gap-4">
+                  <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">
+                    {formatDate(r.auction_date)}
+                  </span>
+                  <span className="text-data font-terminal text-zinc-300 flex-1 truncate">
+                    {r.auction_title}
+                  </span>
+                  {r.total_heads_sold != null && (
+                    <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline">
+                      {r.total_heads_sold} cab.
+                    </span>
+                  )}
+                  {r.average_price != null && (
+                    <span className="text-xxs font-terminal text-positive tabular-nums">
+                      ${Number(r.average_price).toLocaleString('es-AR')}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="px-panel py-3">
+              <span className="text-xxs font-terminal text-zinc-600">
+                No hay resultados cargados. Subí los resultados de tus remates completados.
+              </span>
+            </div>
+          )}
         </div>
       )}
 

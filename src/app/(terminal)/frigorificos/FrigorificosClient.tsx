@@ -487,13 +487,21 @@ export default function FrigorificosPage() {
                   filtered.map((f, i) => (
                     <tr
                       key={f.cuit}
-                      className={`hover:bg-accent/[0.03] transition-colors ${
+                      className={`hover:bg-accent/[0.03] transition-colors cursor-pointer ${
                         i < 30 ? 'row-enter' : ''
                       }`}
                       style={i < 30 ? { animationDelay: `${i * 20}ms` } : undefined}
                     >
-                      <td className="tabular-nums text-zinc-500">{f.matricula}</td>
-                      <td className="text-zinc-200 cell-truncate max-w-xs">{f.name}</td>
+                      <td className="tabular-nums text-zinc-500">
+                        <Link href={`/frigorificos/${f.cuit}`} className="hover:text-zinc-300 transition-colors">
+                          {f.matricula}
+                        </Link>
+                      </td>
+                      <td className="cell-truncate max-w-xs">
+                        <Link href={`/frigorificos/${f.cuit}`} className="text-zinc-200 hover:text-accent transition-colors">
+                          {f.name}
+                        </Link>
+                      </td>
                       <td className="text-zinc-500 text-xxs tracking-wider">
                         {abbr(f.province)}
                       </td>

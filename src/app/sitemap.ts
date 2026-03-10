@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import { getAllCanonicalSlugs } from '@/lib/data/consignataria-slugs'
 import rematesData from '@/lib/data/remates.json'
+import frigorificosData from '@/lib/data/frigorificos.json'
 
 /* ------------------------------------------------------------------ */
 /*  PROVINCE SLUG MAP (must match [provincia]/page.tsx)                 */
@@ -89,6 +90,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
+  // Frigorifico detail pages
+  const frigorificoPages: MetadataRoute.Sitemap = (frigorificosData as { cuit: string }[]).map((f) => ({
+    url: `${baseUrl}/frigorificos/${f.cuit}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.5,
+  }))
+
   // NOTE: /verificar pages intentionally excluded — thin form pages
   // that dilute crawl budget. They have robots noindex set.
 
@@ -96,5 +105,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...staticPages,
     ...provincePages,
     ...consignatariaPages,
+    ...frigorificoPages,
   ]
 }

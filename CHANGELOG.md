@@ -2,7 +2,52 @@
 
 The complete build log of **consignatarias.com.ar** — from the first `npx create-next-app` to a live cattle auction platform covering 385+ remates across 10 Argentine provinces, with Supabase auth, frigorífico enrichment, and a full SEO stack.
 
-Built in 13 days (Feb 26 – Mar 10, 2026). One human, one AI.
+---
+
+## [0.9.2] — 2026-03-10
+
+### Fichas de frigoríficos + carga de resultados de remates
+
+> feat: frigorifico detail pages (364) + auction results backend + owner upload form
+
+**Dos bloques de trabajo:**
+
+**1. Fichas de frigoríficos — 364 páginas nuevas**
+
+Cada frigorífico del directorio ahora tiene su propia página en `/frigorificos/[cuit]`:
+
+- **Datos registrales:** CUIT (formateado XX-XXXXXXXX-X), matrícula, provincia, etapa
+- **Descripción de habilitación:** texto explicativo por etapa (Faena + Desposte / Desposte / Depósito)
+- **Botón "Reclamar este perfil"** — link directo a `/frigorificos/verificar?cuit=...`
+- **SEO:** metadata, Open Graph, canonical URL por página
+- **SSG:** `generateStaticParams()` genera 362+ páginas estáticas
+- **Tabla clickeable:** nombre y matrícula en el directorio ahora linkan a la ficha
+- **Sitemap:** 364 URLs de frigoríficos agregadas (priority 0.5, monthly)
+
+**2. Carga de resultados de remates — backend completo**
+
+Consignatarias verificadas pueden cargar resultados de sus remates completados:
+
+- **Migration Supabase:** tabla `auction_results` (reemplaza tabla vacía anterior) con RLS — owners CRUD sus propios resultados, público lee todo
+- **API `POST|GET /api/auction-results`** — submit con verificación de ownership (`claimed_by_email`), fetch propios resultados
+- **Validator Zod** (`auction-result.ts`) — fecha, título, cabezas ofrecidas/vendidas, precios min/prom/máx, desglose por categoría (array JSONB)
+- **Formulario `/dashboard/resultados/nuevo`** — fecha, título, ubicación, cabezas, precios, categorías dinámicas (agregar/quitar filas), observaciones
+- **Dashboard actualizado** — sección RESULTADOS entre "Próximos Remates" y "Mis Solicitudes" con lista de resultados cargados y link "Cargar resultado →"
+
+**Archivos nuevos:**
+- `src/app/(terminal)/frigorificos/[cuit]/page.tsx`
+- `src/app/(terminal)/dashboard/resultados/nuevo/page.tsx`
+- `src/app/(terminal)/dashboard/resultados/nuevo/ResultadoForm.tsx`
+- `src/app/api/auction-results/route.ts`
+- `src/lib/validators/auction-result.ts`
+
+**Archivos modificados:**
+- `src/app/(terminal)/frigorificos/FrigorificosClient.tsx` — filas clickeables
+- `src/app/(terminal)/dashboard/page.tsx` — fetch de auction results
+- `src/app/(terminal)/dashboard/DashboardClient.tsx` — sección RESULTADOS
+- `src/app/sitemap.ts` — 364 URLs de frigoríficos
+
+**Cobertura:** 385 remates, 77 consignatarias, 364 frigoríficos (con ficha), 10 provincias. Supabase: 5 tablas. ~530+ páginas estáticas. Sitemap: ~460 URLs.
 
 ---
 
@@ -588,18 +633,19 @@ No state management. No ORM. No component library. No testing framework. Just Ne
 
 ## The numbers
 
-| Metric | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) | 0.9.0 (Mar 9) | 0.9.1 (Mar 10) |
+| Metric | 0.0.0 (Feb 26) | 0.7.0 (Mar 8) | 0.9.0 (Mar 9) | 0.9.2 (Mar 10) |
 |--------|-----------------|-----------------|-----------------|-----------------|
 | Auctions | 0 → 92 → 414 | 450 | 385 | 385 |
 | Consignatarias | 49 | 77 | 77 | 77 |
 | Profile pages | 0 | 70 | 77 + 77 verificar | 77 + 77 verificar |
+| Frigorifico pages | 0 | 0 | 0 | **364** |
 | Province pages | 0 | 0 | 10 | 10 |
 | Scraper sources | 0 → 6 | 9 | 9 | 9 |
 | Provinces | 10 | 12 | 10 | 10 |
 | Frigoríficos | 364 | 364 | 364 | 364 (126 enriched) |
-| Static HTML pages | ~10 | ~80 | ~170+ | ~170+ |
-| Sitemap URLs | 0 | ~140 | ~100 | ~100 |
-| Database | none | none | Supabase (3 tables) | Supabase (4 tables) |
+| Static HTML pages | ~10 | ~80 | ~170+ | **~530+** |
+| Sitemap URLs | 0 | ~140 | ~100 | **~460** |
+| Database | none | none | Supabase (3 tables) | Supabase (5 tables) |
 | Province accuracy | unknown | unknown | **100%** | **100%** |
 | Hosting cost | $0 | $0 | $0 | $0 |
 
