@@ -10,7 +10,7 @@ interface OrganizationSchemaProps {
 export function OrganizationSchema({
   name = 'Consignatarias.com.ar',
   url = 'https://www.consignatarias.com.ar',
-  logo = 'https://www.consignatarias.com.ar/og-image.png',
+  logo = 'https://www.consignatarias.com.ar/logo.png',
   description = 'Plataforma de inteligencia del mercado ganadero argentino. Calendario unificado de remates, directorio de frigoríficos y precios INMAG.',
 }: OrganizationSchemaProps) {
   const schema = {
@@ -18,7 +18,12 @@ export function OrganizationSchema({
     '@type': 'Organization',
     name,
     url,
-    logo,
+    logo: {
+      '@type': 'ImageObject',
+      url: logo,
+      width: 512,
+      height: 512,
+    },
     description,
     sameAs: [
       'https://twitter.com/consignatarias',

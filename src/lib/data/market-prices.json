@@ -121,19 +121,22 @@
       "current": 4392,
       "prev": 4721,
       "change": -7,
-      "source": "MAG (derived from INMAG)"
+      "source": "MAG (derived from INMAG)",
+      "sioWeek": "Sem 9"
     },
     "novillitos": {
       "current": 4173,
       "prev": 4485,
       "change": -7,
-      "source": "MAG (derived from INMAG)"
+      "source": "MAG (derived from INMAG)",
+      "sioWeek": "Sem 9"
     },
     "vaquillonas": {
       "current": 3953,
       "prev": 4249,
       "change": -7,
-      "source": "MAG (derived from INMAG)"
+      "source": "MAG (derived from INMAG)",
+      "sioWeek": "Sem 9"
     },
     "vacas": {
       "current": 3162,
@@ -145,7 +148,8 @@
       "current": 2855,
       "prev": 3069,
       "change": -7,
-      "source": "MAG (derived from INMAG)"
+      "source": "MAG (derived from INMAG)",
+      "sioWeek": "Sem 9"
     },
     "terneros": {
       "current": 4832,

@@ -163,9 +163,7 @@ export default function LandingPage() {
       <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-[#09090b]/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-100 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-              <IconLayers />
-            </div>
+            <img src="/logo.png" alt="Consignatarias.com.ar" width={32} height={32} className="rounded" />
             <span className="text-sm font-medium text-zinc-100 tracking-tight">
               consignatarias.com.ar
             </span>
@@ -688,9 +686,7 @@ export default function LandingPage() {
           <div className="flex flex-col gap-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400">
-                  <IconLayers className="w-3.5 h-3.5" />
-                </div>
+                <img src="/logo.png" alt="Consignatarias.com.ar" width={24} height={24} className="rounded opacity-60" />
                 <span className="text-xs font-medium text-zinc-500 tracking-tight">
                   consignatarias.com.ar &copy; 2026
                 </span>
