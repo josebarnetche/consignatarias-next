@@ -22,6 +22,7 @@ import {
   getCity,
   getProvinceCode,
   getEffectiveToday,
+  getEffectiveStatus,
 } from '@/lib/ui/tokens'
 
 /* ------------------------------------------------------------------ */
@@ -52,9 +53,10 @@ function calculateCompleteness(profile: EnrichedProfile): { percent: number; mis
 /*  STATUS BADGE                                                       */
 /* ------------------------------------------------------------------ */
 
-function StatusBadge({ status, date, today }: { status: Auction['status']; date: string; today: string }) {
+function StatusBadge({ date, time, today }: { date: string; time: string | null; today: string }) {
+  const effectiveStatus = getEffectiveStatus(date, time, today)
   const isToday = date === today
-  if (status === 'live') {
+  if (effectiveStatus === 'live') {
     return (
       <span className="inline-flex items-center gap-1.5" role="img" aria-label="En vivo">
         <span className="status-dot-live" />
@@ -62,7 +64,7 @@ function StatusBadge({ status, date, today }: { status: Auction['status']; date:
       </span>
     )
   }
-  if (status === 'completed') {
+  if (effectiveStatus === 'completed') {
     return (
       <span className="inline-flex items-center gap-1.5" role="img" aria-label="Finalizado">
         <span className="status-dot-offline" />
@@ -120,7 +122,7 @@ function ProfileAuctionRow({ auction, today }: { auction: Auction; today: string
               <span className="text-data tabular-nums font-terminal text-zinc-400">{auction.time}</span>
             )}
           </div>
-          <StatusBadge status={auction.status} date={auction.date} today={today} />
+          <StatusBadge date={auction.date} time={auction.time} today={today} />
         </div>
         <div className="text-data font-terminal text-zinc-200 group-hover:text-accent transition-colors truncate">
           {auction.title}
@@ -188,7 +190,7 @@ function ProfileAuctionRow({ auction, today }: { auction: Auction; today: string
             {auction.estimatedHeads != null ? `~${auction.estimatedHeads.toLocaleString('es-AR')}` : '\u2014'}
           </span>
           <span className="w-[80px] flex-shrink-0 ml-2">
-            <StatusBadge status={auction.status} date={auction.date} today={today} />
+            <StatusBadge date={auction.date} time={auction.time} today={today} />
           </span>
           <span className="flex-1" />
           <span className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>

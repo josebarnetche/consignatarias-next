@@ -132,3 +132,49 @@ export function getEffectiveToday(): string {
   const d = art.getDate().toString().padStart(2, '0')
   return `${y}-${m}-${d}`
 }
+
+/**
+ * Get current ART time as { hours, minutes } for status calculations.
+ */
+function getARTNow(): { hours: number; minutes: number } {
+  const art = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }))
+  return { hours: art.getHours(), minutes: art.getMinutes() }
+}
+
+/**
+ * Compute effective auction status based on real-time ART clock.
+ *
+ * Rules:
+ * - date < today → completed
+ * - date > today → scheduled
+ * - date === today:
+ *   - time known → scheduled until start, live during (up to 3h), completed after
+ *   - time null  → live from 08:00 ART, completed after 20:00 ART
+ */
+export function getEffectiveStatus(
+  date: string,
+  time: string | null,
+  today: string
+): Auction['status'] {
+  if (date < today) return 'completed'
+  if (date > today) return 'scheduled'
+
+  // date === today — compute based on current ART time
+  const { hours, minutes } = getARTNow()
+  const nowMinutes = hours * 60 + minutes
+
+  if (time) {
+    const [h, m] = time.split(':').map(Number)
+    const startMinutes = h * 60 + m
+    const endMinutes = startMinutes + 180 // 3 hours duration
+
+    if (nowMinutes < startMinutes) return 'scheduled'
+    if (nowMinutes < endMinutes) return 'live'
+    return 'completed'
+  }
+
+  // No time specified — live from 8:00, completed after 20:00
+  if (nowMinutes < 480) return 'scheduled'  // before 08:00
+  if (nowMinutes >= 1200) return 'completed' // after 20:00
+  return 'live'
+}

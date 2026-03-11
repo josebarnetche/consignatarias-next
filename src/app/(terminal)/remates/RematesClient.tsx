@@ -16,6 +16,7 @@ import {
   getCity,
   getProvinceCode,
   getEffectiveToday,
+  getEffectiveStatus,
 } from '@/lib/ui/tokens'
 import { trackAuctionClick, trackFilterApply, trackOutboundClick } from '@/lib/analytics'
 
@@ -70,10 +71,11 @@ function isExternalLink(href: string): boolean {
 /*  STATUS INDICATOR                                                   */
 /* ------------------------------------------------------------------ */
 
-function StatusBadge({ status, date, today }: { status: Auction['status']; date: string; today: string }) {
+function StatusBadge({ date, time, today }: { date: string; time: string | null; today: string }) {
+  const effectiveStatus = getEffectiveStatus(date, time, today)
   const isToday = date === today
 
-  if (status === 'live') {
+  if (effectiveStatus === 'live') {
     return (
       <span className="live-badge" role="img" aria-label="En vivo">
         <span className="live-indicator" style={{width:'6px',height:'6px'}} />
@@ -82,7 +84,7 @@ function StatusBadge({ status, date, today }: { status: Auction['status']; date:
     )
   }
 
-  if (status === 'completed') {
+  if (effectiveStatus === 'completed') {
     return (
       <span className="inline-flex items-center gap-1.5" role="img" aria-label="Finalizado">
         <span className="status-dot-offline" />
@@ -163,7 +165,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
               )}
             </div>
             <div className="flex items-center gap-1.5">
-              <StatusBadge status={auction.status} date={auction.date} today={today} />
+              <StatusBadge date={auction.date} time={auction.time} today={today} />
               {auction.youtubeUrl && (
                 <span className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-red-600/20 border border-red-500/30 rounded-sm">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
@@ -254,7 +256,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
               {auction.estimatedHeads != null ? `~${auction.estimatedHeads.toLocaleString('es-AR')}` : '—'}
             </span>
             <span className="w-[80px] flex-shrink-0 ml-2">
-              <StatusBadge status={auction.status} date={auction.date} today={today} />
+              <StatusBadge date={auction.date} time={auction.time} today={today} />
             </span>
             <span className="flex-1 min-w-0 ml-2 text-xxs font-terminal text-amber-400/40 truncate">
               {auction.description}
@@ -301,7 +303,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
             )}
           </div>
           <div className="flex items-center gap-1.5">
-            <StatusBadge status={auction.status} date={auction.date} today={today} />
+            <StatusBadge date={auction.date} time={auction.time} today={today} />
             {auction.youtubeUrl && (
               <span className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-red-600/20 border border-red-500/30 rounded-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
@@ -405,7 +407,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
             {auction.estimatedHeads != null ? `~${auction.estimatedHeads.toLocaleString('es-AR')}` : '—'}
           </span>
           <span className="w-[80px] flex-shrink-0 ml-2">
-            <StatusBadge status={auction.status} date={auction.date} today={today} />
+            <StatusBadge date={auction.date} time={auction.time} today={today} />
           </span>
           <span className="flex-1" />
           <span className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
