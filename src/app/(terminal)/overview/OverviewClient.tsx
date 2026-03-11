@@ -1,6 +1,5 @@
 import Link from "next/link";
 import marketPrices from "@/lib/data/market-prices.json";
-import frigorificosSummary from "@/lib/data/frigorificos-summary.json";
 import rematesData from "@/lib/data/remates.json";
 import consignatariasData from "@/lib/data/consignatarias.json";
 import { normalizeUrl } from "@/lib/utils/url";
@@ -63,10 +62,6 @@ const inmagSeries = marketPrices.inmag.series.map(
 const inmagSeriesMin = Math.min(...inmagSeries);
 const inmagSeriesMax = Math.max(...inmagSeries);
 const inmagSeriesRange = inmagSeriesMax - inmagSeriesMin || 1;
-
-// Frigorificos top 8 provinces
-const topProvincesDisplay = frigorificosSummary.topProvinces.slice(0, 8);
-const maxProvinceCount = topProvincesDisplay[0]?.count ?? 1;
 
 // Consignatarias summary
 const consigByProvince = consignatariasData.reduce<Record<string, number>>(
@@ -175,20 +170,13 @@ export default function HomePage() {
           </span>
           <span className="text-warning font-semibold">{rematesToday.length}</span>
 
-          <span className="text-terminal-border mx-1 select-none">|</span>
-
-          {/* FRIGORIFICOS */}
-          <span className="text-zinc-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
-            FRIGO
-          </span>
-          <span className="text-zinc-300">{frigorificosSummary.total}</span>
         </div>
       </div>
 
       {/* ============================================================ */}
       {/*  MAIN 3-COLUMN GRID                                           */}
       {/* ============================================================ */}
-      <div className="terminal-grid grid-cols-1 md:grid-cols-3 flex-1 min-h-0">
+      <div className="terminal-grid grid-cols-1 md:grid-cols-2 flex-1 min-h-0">
         {/* ----------------------------------------------------------
             COLUMN 1: MERCADO
         ---------------------------------------------------------- */}
@@ -474,113 +462,6 @@ export default function HomePage() {
                 className="text-xxs text-accent uppercase tracking-wider hover:text-accent-bright transition-colors"
               >
                 VER TODOS LOS REMATES &rarr;
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* ----------------------------------------------------------
-            COLUMN 3: FRIGORIFICOS
-        ---------------------------------------------------------- */}
-        <div className="terminal-panel flex flex-col">
-          <div className="terminal-panel-header flex items-center justify-between">
-            <span className="font-heading section-heading">Frigorificos</span>
-            <span className="text-xxs text-zinc-400 tabular-nums">
-              {frigorificosSummary.total} habilitados
-            </span>
-          </div>
-          <div className="terminal-panel-body flex-1 flex flex-col gap-2">
-            {/* Stages */}
-            <div className="grid grid-cols-3 gap-2">
-              <div className="terminal-stat">
-                <span className="terminal-stat-label">Transito</span>
-                <span className="terminal-stat-value text-base tabular-nums">
-                  {frigorificosSummary.byStage["1"]}
-                </span>
-              </div>
-              <div className="terminal-stat">
-                <span className="terminal-stat-label">Ciclo II</span>
-                <span className="terminal-stat-value text-base tabular-nums">
-                  {frigorificosSummary.byStage["2"]}
-                </span>
-              </div>
-              <div className="terminal-stat">
-                <span className="terminal-stat-label">Ciclo III</span>
-                <span className="terminal-stat-value text-base tabular-nums">
-                  {frigorificosSummary.byStage["3"]}
-                </span>
-              </div>
-            </div>
-
-            <div className="terminal-divider" />
-
-            {/* Province breakdown: top 8 with CSS gradient bars */}
-            <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-1">
-              Distribucion por provincia (top 8)
-            </div>
-            <table className="terminal-table">
-              <thead>
-                <tr>
-                  <th>Provincia</th>
-                  <th className="num">N</th>
-                  <th className="num">%</th>
-                  <th style={{ width: "35%" }}></th>
-                </tr>
-              </thead>
-              <tbody>
-                {topProvincesDisplay.map((p) => {
-                  const barPct = (p.count / maxProvinceCount) * 100;
-                  return (
-                    <tr key={p.province}>
-                      <td className="text-zinc-300 text-xxs uppercase tracking-wider">
-                        {p.province.length > 14
-                          ? p.province.slice(0, 12) + ".."
-                          : p.province}
-                      </td>
-                      <td className="num text-zinc-100 font-semibold tabular-nums">
-                        {p.count}
-                      </td>
-                      <td className="num text-zinc-500 tabular-nums">
-                        {fmt(p.pct, 1)}
-                      </td>
-                      <td>
-                        <div className="gradient-bar">
-                          <div
-                            className="gradient-bar-fill"
-                            style={{ width: `${barPct}%` }}
-                          />
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-
-            <div className="terminal-divider-dashed" />
-
-            {/* Remaining count */}
-            <div className="flex items-center justify-between text-xxs">
-              <span className="text-zinc-500 uppercase tracking-wider">
-                Otras 15 provincias
-              </span>
-              <span className="text-zinc-400 tabular-nums">
-                {frigorificosSummary.total -
-                  topProvincesDisplay.reduce(
-                    (s: number, p: { count: number }) => s + p.count,
-                    0
-                  )}{" "}
-                plantas
-              </span>
-            </div>
-
-            {/* Link */}
-            <div className="mt-auto pt-3">
-              <Link
-                href="/frigorificos"
-                className="text-xxs text-accent uppercase tracking-wider hover:text-accent-bright transition-colors"
-              >
-                VER DIRECTORIO COMPLETO &rarr;
               </Link>
             </div>
           </div>
