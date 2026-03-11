@@ -156,7 +156,7 @@ export default function AdminConsignatariasPage() {
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between">
           <span className="text-zinc-200 text-label tracking-widest">CONSIGNATARIAS</span>
-          <span className="text-xxs text-zinc-600 font-terminal">{filtered.length} de {consignatarias.length}</span>
+          <span className="text-xxs text-zinc-500 font-terminal">{filtered.length} de {consignatarias.length}</span>
         </div>
 
         {/* Search + Tabs */}
@@ -166,7 +166,7 @@ export default function AdminConsignatariasPage() {
               key={tab.key}
               onClick={() => { setActiveTab(tab.key); setSelected(null) }}
               className={`text-xxs font-terminal uppercase tracking-wider transition-colors ${
-                activeTab === tab.key ? 'text-accent' : 'text-zinc-600 hover:text-zinc-300'
+                activeTab === tab.key ? 'text-accent' : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
               {tab.label}
@@ -189,7 +189,7 @@ export default function AdminConsignatariasPage() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="px-panel py-8 text-center">
-            <span className="text-zinc-600 text-data font-terminal">Sin resultados</span>
+            <span className="text-zinc-500 text-data font-terminal">Sin resultados</span>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -215,7 +215,7 @@ export default function AdminConsignatariasPage() {
                         : ''
                     }`}
                   >
-                    <td className="text-zinc-600">{i + 1}</td>
+                    <td className="text-zinc-500">{i + 1}</td>
                     <td className="text-zinc-200 max-w-[200px] truncate">{c.display_name}</td>
                     <td className="hidden sm:table-cell text-zinc-500">{c.province || '—'}</td>
                     <td className="hidden md:table-cell text-zinc-500 tabular-nums">{c.cuit || '—'}</td>
@@ -240,7 +240,7 @@ export default function AdminConsignatariasPage() {
             <span className="text-zinc-200 text-label tracking-widest">EDITAR — {selectedData.display_name}</span>
             <button
               onClick={() => setSelected(null)}
-              className="text-xxs font-terminal text-zinc-600 hover:text-zinc-300 transition-colors"
+              className="text-xxs font-terminal text-zinc-500 hover:text-zinc-300 transition-colors"
             >
               CERRAR
             </button>
@@ -248,15 +248,15 @@ export default function AdminConsignatariasPage() {
 
           {/* Read-only info */}
           <div className="border-b border-terminal-border px-panel py-2 flex items-center gap-6 flex-wrap">
-            <span className="text-xxs font-terminal text-zinc-600">
+            <span className="text-xxs font-terminal text-zinc-500">
               slug: <span className="text-zinc-400">{selectedData.canonical_slug}</span>
             </span>
             {selectedData.claimed_by_email && (
-              <span className="text-xxs font-terminal text-zinc-600">
+              <span className="text-xxs font-terminal text-zinc-500">
                 reclamada: <span className="text-zinc-400">{selectedData.claimed_by_email}</span>
               </span>
             )}
-            <span className="text-xxs font-terminal text-zinc-600">
+            <span className="text-xxs font-terminal text-zinc-500">
               actualizado: <span className="text-zinc-400">{new Date(selectedData.updated_at).toLocaleDateString('es-AR')}</span>
             </span>
           </div>

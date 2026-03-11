@@ -106,7 +106,7 @@ export default async function FrigorificoDetailPage({
   return (
     <div className="max-w-2xl mx-auto px-2 sm:px-4 py-4 space-y-4">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-xxs font-terminal text-zinc-600">
+      <div className="flex items-center gap-2 text-xxs font-terminal text-zinc-500">
         <Link href="/frigorificos" className="hover:text-zinc-400 transition-colors">
           FRIGORIFICOS
         </Link>
@@ -243,7 +243,7 @@ export default async function FrigorificoDetailPage({
           <p className="text-data font-terminal text-zinc-400 leading-relaxed">
             {stageDescription(basicF.stage)}
           </p>
-          <p className="text-xxs font-terminal text-zinc-600 mt-2">
+          <p className="text-xxs font-terminal text-zinc-500 mt-2">
             Fuente: Registro Nacional SENASA / MAGyP
           </p>
         </div>

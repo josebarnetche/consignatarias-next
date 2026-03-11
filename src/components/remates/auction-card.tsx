@@ -24,7 +24,7 @@ const typeBadge: Record<Auction['type'], string> = {
   invernada: 'bg-campo-50 text-campo-700 ring-campo-200',
   cria: 'bg-violet-50 text-violet-700 ring-violet-200',
   reproductores: 'bg-amber-50 text-amber-700 ring-amber-200',
-  general: 'bg-zinc-50 text-zinc-600 ring-zinc-200',
+  general: 'bg-zinc-50 text-zinc-500 ring-zinc-200',
   especial: 'bg-rose-50 text-rose-700 ring-rose-200',
 }
 

@@ -14,7 +14,7 @@ export default function AdminNav() {
   return (
     <div className="terminal-panel mb-px">
       <div className="px-panel py-2 flex items-center gap-4">
-        <span className="text-xxs text-zinc-600 font-terminal uppercase tracking-wider mr-2">ADMIN</span>
+        <span className="text-xxs text-zinc-500 font-terminal uppercase tracking-wider mr-2">ADMIN</span>
         {ADMIN_TABS.map(tab => (
           <Link
             key={tab.href}
@@ -22,7 +22,7 @@ export default function AdminNav() {
             className={`text-xxs font-terminal uppercase tracking-wider transition-colors ${
               pathname.startsWith(tab.href)
                 ? 'text-accent'
-                : 'text-zinc-600 hover:text-zinc-300'
+                : 'text-zinc-500 hover:text-zinc-300'
             }`}
           >
             {tab.label}

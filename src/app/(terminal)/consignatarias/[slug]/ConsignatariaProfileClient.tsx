@@ -127,7 +127,7 @@ function ProfileAuctionRow({ auction, today }: { auction: Auction; today: string
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-xxs text-zinc-500">{city}</span>
-          <span className="text-xxs text-zinc-600">{auction.province}</span>
+          <span className="text-xxs text-zinc-500">{auction.province}</span>
           <span className={`terminal-tag ${TYPE_COLORS[auction.type] || 'border-zinc-500 text-zinc-400'} text-[10px]`}>
             {TYPE_LABELS[auction.type] || auction.type.toUpperCase()}
           </span>
@@ -164,7 +164,7 @@ function ProfileAuctionRow({ auction, today }: { auction: Auction; today: string
             {auction.time ? (
               <span className="text-zinc-300">{auction.time}</span>
             ) : (
-              <span className="text-zinc-600">&mdash;</span>
+              <span className="text-zinc-500">&mdash;</span>
             )}
           </span>
           <span className="flex-1 min-w-0 text-data font-terminal text-zinc-200 truncate group-hover:text-accent transition-colors" title={auction.title}>
@@ -173,7 +173,7 @@ function ProfileAuctionRow({ auction, today }: { auction: Auction; today: string
           <span className="w-[140px] flex-shrink-0 text-data font-terminal text-zinc-500 truncate text-right pr-2">
             {city}
           </span>
-          <span className="w-[36px] flex-shrink-0 text-xxs font-terminal text-zinc-600 text-right">
+          <span className="w-[36px] flex-shrink-0 text-xxs font-terminal text-zinc-500 text-right">
             {getProvinceCode(auction.province)}
           </span>
         </div>
@@ -205,7 +205,7 @@ function ProfileAuctionRow({ auction, today }: { auction: Auction; today: string
             {auction.sourceUrl && (
               <a href={normalizeUrl(auction.sourceUrl) || '#'} target="_blank" rel="noopener noreferrer"
                 onClick={() => trackOutboundClick(normalizeUrl(auction.sourceUrl) || '', 'source')}
-                className="text-xxs font-terminal text-zinc-600 hover:text-zinc-400 transition-colors" aria-label="Ver fuente" title="Fuente">SRC</a>
+                className="text-xxs font-terminal text-zinc-500 hover:text-zinc-400 transition-colors" aria-label="Ver fuente" title="Fuente">SRC</a>
             )}
           </span>
         </div>
@@ -254,7 +254,7 @@ function CalendarHeatmap({ auctions }: { auctions: Auction[] }) {
                 }}
               />
             </div>
-            <span className={`text-[10px] font-terminal ${isCurrent ? 'text-accent font-medium' : 'text-zinc-600'}`}>
+            <span className={`text-[10px] font-terminal ${isCurrent ? 'text-accent font-medium' : 'text-zinc-500'}`}>
               {MONTH_NAMES[i]}
             </span>
           </div>
@@ -378,7 +378,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-3">
-            <Link href="/consignatarias" className="text-zinc-600 hover:text-accent transition-colors text-xxs font-terminal">
+            <Link href="/consignatarias" className="text-zinc-500 hover:text-accent transition-colors text-xxs font-terminal">
               &larr; DIRECTORIO
             </Link>
             <span className="text-terminal-border">&mdash;</span>
@@ -415,26 +415,26 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
         {/* Stats bar */}
         <div className="border-b border-terminal-border px-panel py-1.5 flex items-center gap-4 md:gap-6 flex-wrap">
           <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-600 uppercase">Total:</span>
+            <span className="text-xxs text-zinc-500 uppercase">Total:</span>
             <span className="text-data tabular-nums text-zinc-300 font-terminal">{auctions.length}</span>
           </div>
           <div className="text-terminal-border text-xxs select-none hidden sm:block">|</div>
           <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-600 uppercase">Cabezas:</span>
+            <span className="text-xxs text-zinc-500 uppercase">Cabezas:</span>
             <span className="text-data tabular-nums text-zinc-300 font-terminal">
               ~{totalHeads.toLocaleString('es-AR')}
             </span>
           </div>
           <div className="text-terminal-border text-xxs select-none hidden sm:block">|</div>
           <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-600 uppercase">Proximos:</span>
+            <span className="text-xxs text-zinc-500 uppercase">Proximos:</span>
             <span className={`text-data tabular-nums font-terminal ${upcoming.length > 0 ? 'text-positive' : 'text-zinc-500'}`}>
               {upcoming.length}
             </span>
           </div>
           <div className="text-terminal-border text-xxs select-none hidden sm:block">|</div>
           <div className="flex items-center gap-1.5 hidden sm:flex">
-            <span className="text-xxs text-zinc-600 uppercase">Provincias:</span>
+            <span className="text-xxs text-zinc-500 uppercase">Provincias:</span>
             <span className="text-data text-zinc-400 font-terminal text-xxs">
               {provinces.join(', ')}
             </span>
@@ -443,7 +443,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
             <>
               <div className="text-terminal-border text-xxs select-none hidden md:block">|</div>
               <div className="flex items-center gap-1.5 hidden md:flex">
-                <span className="text-xxs text-zinc-600 uppercase">Plazas:</span>
+                <span className="text-xxs text-zinc-500 uppercase">Plazas:</span>
                 <span className="text-data text-zinc-400 font-terminal text-xxs truncate max-w-[200px]">
                   {cities.join(', ')}
                 </span>
@@ -468,13 +468,13 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
             <div className="flex flex-wrap gap-x-6 gap-y-1.5">
               {profile.phone && (
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xxs text-zinc-600 uppercase font-terminal">Tel:</span>
+                  <span className="text-xxs text-zinc-500 uppercase font-terminal">Tel:</span>
                   <span className="text-xxs text-zinc-300 font-terminal">{profile.phone}</span>
                 </div>
               )}
               {profile.email && (
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xxs text-zinc-600 uppercase font-terminal">Email:</span>
+                  <span className="text-xxs text-zinc-500 uppercase font-terminal">Email:</span>
                   <a href={`mailto:${profile.email}`} className="text-xxs text-accent hover:text-accent-bright font-terminal transition-colors">
                     {profile.email}
                   </a>
@@ -482,7 +482,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               )}
               {profile.website && (
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xxs text-zinc-600 uppercase font-terminal">Web:</span>
+                  <span className="text-xxs text-zinc-500 uppercase font-terminal">Web:</span>
                   <a
                     href={normalizeUrl(profile.website) || '#'}
                     target="_blank"
@@ -496,7 +496,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               )}
               {profile.whatsapp && (
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xxs text-zinc-600 uppercase font-terminal">WhatsApp:</span>
+                  <span className="text-xxs text-zinc-500 uppercase font-terminal">WhatsApp:</span>
                   <a
                     href={`https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`}
                     target="_blank"
@@ -523,14 +523,14 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
             <div className="px-panel py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-xxs text-zinc-600 uppercase font-terminal tracking-wider">Perfil completo:</span>
+                  <span className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider">Perfil completo:</span>
                   <span className={`text-xxs tabular-nums font-terminal ${percent >= 75 ? 'text-positive' : 'text-warning'}`}>{percent}%</span>
                 </div>
                 <div className="gradient-bar w-full max-w-[200px]">
                   <div className={percent >= 75 ? 'gradient-bar-fill-positive' : 'gradient-bar-fill-amber'} style={{ width: `${percent}%` }} />
                 </div>
                 {missing.length > 0 && (
-                  <p className="text-xxs text-zinc-600 font-terminal mt-1.5">
+                  <p className="text-xxs text-zinc-500 font-terminal mt-1.5">
                     Faltan: {missing.join(', ')}
                   </p>
                 )}
@@ -580,16 +580,16 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
         <div className="terminal-panel mt-px">
           <div className="terminal-panel-header flex items-center justify-between">
             <span className="text-zinc-400 text-xxs tracking-widest">RESULTADOS DE REMATES</span>
-            <span className="text-xxs text-zinc-600 font-terminal">
+            <span className="text-xxs text-zinc-500 font-terminal">
               {auctionResults.length} resultado{auctionResults.length !== 1 ? 's' : ''}
             </span>
           </div>
           <div className="border-b border-terminal-border px-cell py-px2 hidden md:flex items-center gap-0 bg-terminal-panel">
-            <span className="w-[56px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">Fecha</span>
-            <span className="flex-1 min-w-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">Remate</span>
-            <span className="w-[80px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right">Cab.</span>
-            <span className="w-[100px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right">$/kg prom.</span>
-            <span className="w-[100px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right">$/kg max.</span>
+            <span className="w-[56px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Fecha</span>
+            <span className="flex-1 min-w-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Remate</span>
+            <span className="w-[80px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">Cab.</span>
+            <span className="w-[100px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">$/kg prom.</span>
+            <span className="w-[100px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">$/kg max.</span>
           </div>
           {auctionResults.map(result => (
             <div key={result.id} className="border-b border-terminal-border">
@@ -682,11 +682,11 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
         </div>
         <div className="px-panel py-6 flex flex-col items-center justify-center gap-3">
           <div className="w-16 h-16 rounded-terminal border border-terminal-border flex items-center justify-center bg-terminal-bg">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-zinc-600">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-zinc-500">
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
           </div>
-          <span className="text-xxs text-zinc-600 font-terminal uppercase tracking-wider">Proximamente</span>
+          <span className="text-xxs text-zinc-500 font-terminal uppercase tracking-wider">Proximamente</span>
         </div>
       </div>
 
@@ -696,18 +696,18 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       <div className="terminal-panel mt-px">
         <div className="terminal-panel-header flex items-center justify-between">
           <span className="text-zinc-200 text-label tracking-widest">CRONOGRAMA</span>
-          <span className="text-xxs text-zinc-600 font-terminal hidden sm:inline">
+          <span className="text-xxs text-zinc-500 font-terminal hidden sm:inline">
             {auctions.length} remates &middot; orden cronologico
           </span>
         </div>
 
         {/* Column headers (desktop only) */}
         <div className="border-b border-terminal-border px-cell py-px2 hidden md:flex items-center gap-0 bg-terminal-panel">
-          <span className="w-[56px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">Fecha</span>
-          <span className="w-[52px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">Hora</span>
-          <span className="flex-1 min-w-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">Remate</span>
-          <span className="w-[140px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right pr-2">Plaza</span>
-          <span className="w-[36px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right">Prv</span>
+          <span className="w-[56px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Fecha</span>
+          <span className="w-[52px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Hora</span>
+          <span className="flex-1 min-w-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Remate</span>
+          <span className="w-[140px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right pr-2">Plaza</span>
+          <span className="w-[36px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">Prv</span>
         </div>
 
         {byMonth.map(group => (
@@ -716,7 +716,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               <span className="text-xxs font-terminal text-accent font-medium tracking-wider">
                 {group.label.toUpperCase()}
               </span>
-              <span className="text-xxs font-terminal tabular-nums text-zinc-600">
+              <span className="text-xxs font-terminal tabular-nums text-zinc-500">
                 {group.auctions.length} remate{group.auctions.length !== 1 ? 's' : ''}
               </span>
             </div>
@@ -728,13 +728,13 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
 
         {auctions.length === 0 && (
           <div className="px-panel py-8 text-center">
-            <p className="text-data text-zinc-600 font-terminal">No hay remates registrados.</p>
+            <p className="text-data text-zinc-500 font-terminal">No hay remates registrados.</p>
           </div>
         )}
 
         {/* Footer */}
         <div className="border-t border-terminal-border px-panel py-1.5 flex items-center justify-between">
-          <span className="text-xxs text-zinc-600 font-terminal">
+          <span className="text-xxs text-zinc-500 font-terminal">
             {auctions.length} resultado{auctions.length !== 1 ? 's' : ''}
           </span>
           <Link href="/remates" className="text-xxs text-accent hover:text-accent-bright font-terminal transition-colors">
@@ -749,7 +749,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       <div className="text-center py-4">
         <a
           href={`mailto:datos@consignatarias.com.ar?subject=${encodeURIComponent(`Error en perfil: ${profile.displayName}`)}&body=${encodeURIComponent(`Hola,\n\nEncontre un error en el perfil de ${profile.displayName}:\nhttps://www.consignatarias.com.ar/consignatarias/${profile.canonicalSlug}\n\nDescripcion del error:\n`)}`}
-          className="text-xxs font-terminal text-zinc-600 hover:text-zinc-400 transition-colors"
+          className="text-xxs font-terminal text-zinc-500 hover:text-zinc-400 transition-colors"
         >
           Reportar error
         </a>

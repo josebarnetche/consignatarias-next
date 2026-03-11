@@ -44,43 +44,43 @@ export default function QuienesSomosPage() {
         </p>
         <ul className="space-y-2 text-zinc-400 mb-6">
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>Camara Argentina de Consignatarios de Ganado (CACG) &mdash; API publica</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>Colombo y Colombo SA &mdash; calendario web</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>Ivan L. O&apos;Farrell Consignataria &mdash; calendario web</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>Cooperativa Guillermo Lehmann &mdash; calendario web</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>Madelan SA &mdash; calendario web</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>UMC Haciendas Villaguay &mdash; calendario web</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>Mercado Agroganadero (mercadoagroganadero.com.ar) &mdash; indice INMAG</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>Ministerio de Agricultura (MAGYP) &mdash; precios de maiz FOB y registro de frigorificos</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>dolarapi.com &mdash; cotizacion del dolar</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>Fuentes manuales: IderCor, Etchevehere Rural, Coop. La Ganadera, Tradicion Ganadera, y otras</span>
           </li>
         </ul>

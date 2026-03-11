@@ -73,12 +73,12 @@ export default function PlanesPage() {
                   key={f}
                   className="flex items-start gap-2 text-data text-zinc-400"
                 >
-                  <span className="text-zinc-600 mt-0.5">--</span>
+                  <span className="text-zinc-500 mt-0.5">--</span>
                   <span>{f}</span>
                 </li>
               ))}
             </ul>
-            <div className="text-data text-zinc-600 text-center py-2 border border-terminal-border"
+            <div className="text-data text-zinc-500 text-center py-2 border border-terminal-border"
               style={{ borderRadius: '2px' }}>
               Plan actual
             </div>

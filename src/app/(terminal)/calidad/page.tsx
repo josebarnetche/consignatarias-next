@@ -107,7 +107,7 @@ export default function CalidadPage() {
 
         <div className="space-y-4 mb-6">
           <div className="flex items-start gap-3">
-            <span className="text-zinc-600 font-mono text-xs mt-0.5 shrink-0">01</span>
+            <span className="text-zinc-500 font-mono text-xs mt-0.5 shrink-0">01</span>
             <div>
               <p className="text-zinc-200 font-medium text-xs mb-1">Recoleccion</p>
               <p className="text-zinc-500 text-xs">
@@ -117,7 +117,7 @@ export default function CalidadPage() {
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <span className="text-zinc-600 font-mono text-xs mt-0.5 shrink-0">02</span>
+            <span className="text-zinc-500 font-mono text-xs mt-0.5 shrink-0">02</span>
             <div>
               <p className="text-zinc-200 font-medium text-xs mb-1">Normalizacion</p>
               <p className="text-zinc-500 text-xs">
@@ -127,7 +127,7 @@ export default function CalidadPage() {
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <span className="text-zinc-600 font-mono text-xs mt-0.5 shrink-0">03</span>
+            <span className="text-zinc-500 font-mono text-xs mt-0.5 shrink-0">03</span>
             <div>
               <p className="text-zinc-200 font-medium text-xs mb-1">Deduplicacion</p>
               <p className="text-zinc-500 text-xs">
@@ -137,7 +137,7 @@ export default function CalidadPage() {
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <span className="text-zinc-600 font-mono text-xs mt-0.5 shrink-0">04</span>
+            <span className="text-zinc-500 font-mono text-xs mt-0.5 shrink-0">04</span>
             <div>
               <p className="text-zinc-200 font-medium text-xs mb-1">Validacion y publicacion</p>
               <p className="text-zinc-500 text-xs">
@@ -152,28 +152,28 @@ export default function CalidadPage() {
         <h2 className="text-zinc-200 text-lg font-medium mt-8 mb-3">Frescura de los datos</h2>
         <ul className="space-y-2 text-zinc-400 mb-6">
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>
               <strong className="text-zinc-300">Remates y precios de mercado:</strong> actualizacion diaria a las 14:00 ART.
               Los datos de precios (INMAG, dolar, maiz) se actualizan en cada ejecucion del scraper.
             </span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>
               <strong className="text-zinc-300">Perfiles reclamados:</strong> los perfiles de consignatarias verificadas
               se regeneran via ISR (Incremental Static Regeneration) cada 5 minutos.
             </span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>
               <strong className="text-zinc-300">Directorio de frigorificos:</strong> actualizado periodicamente
               en base al registro oficial de SENASA/MAGYP.
             </span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>
               <strong className="text-zinc-300">Etiquetas de frescura:</strong> los remates pasados muestran
               indicadores como &quot;AYER&quot; o &quot;HACE N DIAS&quot; para facilitar la lectura temporal.
@@ -221,28 +221,28 @@ export default function CalidadPage() {
         <h2 className="text-zinc-200 text-lg font-medium mt-8 mb-3">Compromisos de servicio</h2>
         <ul className="space-y-2 text-zinc-400 mb-6">
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>
               <strong className="text-zinc-300">Disponibilidad:</strong> los datos del dia estan publicados
               antes de las 14:30 ART, cada dia habil.
             </span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>
               <strong className="text-zinc-300">Uptime:</strong> 99%+ gracias a generacion estatica (SSG) y
               distribucion global via Vercel CDN. TTFB &lt; 50ms.
             </span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>
               <strong className="text-zinc-300">Correcciones:</strong> errores reportados se corrigen dentro
               de las 24 horas habiles.
             </span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-zinc-600 mt-1 shrink-0">&bull;</span>
+            <span className="text-zinc-500 mt-1 shrink-0">&bull;</span>
             <span>
               <strong className="text-zinc-300">Transparencia:</strong> el codigo del scraper y la metodologia
               son auditables. Ante cualquier duda, contactanos.
@@ -259,7 +259,7 @@ export default function CalidadPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-zinc-600 text-xs mt-4">
+        <p className="text-zinc-500 text-xs mt-4">
           Ultima actualizacion de esta pagina: Marzo 2026. Memola Medios S.A.S. &mdash; Todos los derechos reservados.
         </p>
       </div>

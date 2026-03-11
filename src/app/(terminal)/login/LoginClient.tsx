@@ -70,7 +70,7 @@ export default function LoginClient() {
             >
               {loading ? 'Enviando...' : 'Enviar enlace'}
             </button>
-            <p className="text-zinc-600 text-xxs font-terminal text-center">
+            <p className="text-zinc-500 text-xxs font-terminal text-center">
               Te enviaremos un enlace mágico para ingresar sin contraseña.
             </p>
           </form>

@@ -99,7 +99,7 @@ export default function MercadoPage() {
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between">
           <span className="section-heading">
-            MERCADO <span className="text-zinc-600 mx-1">&mdash;</span> INDICES Y PRECIOS DE REFERENCIA
+            MERCADO <span className="text-zinc-500 mx-1">&mdash;</span> INDICES Y PRECIOS DE REFERENCIA
           </span>
           <span className="text-zinc-500 tabular-nums normal-case tracking-normal">
             Ult: {fmtUpdate(lastUpdate)}
@@ -113,7 +113,7 @@ export default function MercadoPage() {
         {/* -- INMAG panel (2/3 width) -- */}
         <div className={`terminal-panel md:col-span-2${inmag.change >= 0 ? ' shadow-live-glow' : ''}`}>
           <div className="terminal-panel-header font-heading">
-            INMAG <span className="text-zinc-600 mx-1">&mdash;</span> INDICE NOVILLO MAG
+            INMAG <span className="text-zinc-500 mx-1">&mdash;</span> INDICE NOVILLO MAG
           </div>
           <div className="px-panel py-3">
             {/* Hero number */}
@@ -129,7 +129,7 @@ export default function MercadoPage() {
               <span className={`text-data font-terminal tabular-nums ${inmag.change >= 0 ? 'val-positive' : 'val-negative'}`}>
                 {inmag.change >= 0 ? '\u25B2' : '\u25BC'} {inmag.change >= 0 ? '+' : ''}{fmt(inmag.change, 1)}%
               </span>
-              <span className="text-xxs text-zinc-600">vs ant.</span>
+              <span className="text-xxs text-zinc-500">vs ant.</span>
             </div>
 
             {/* CSS bar chart */}
@@ -156,7 +156,7 @@ export default function MercadoPage() {
                 })}
               </div>
               {/* Date labels */}
-              <div className="flex gap-px text-xxs text-zinc-600">
+              <div className="flex gap-px text-xxs text-zinc-500">
                 {series.map((pt) => (
                   <div key={pt.date} className="flex-1 min-w-0 text-center truncate">
                     {shortDate(pt.date)}
@@ -221,7 +221,7 @@ export default function MercadoPage() {
                 </span>
                 <span className="text-xxs text-zinc-500">kg/tn</span>
               </div>
-              <span className="text-xxs text-zinc-600 mt-0.5">(INMAG / MAIZ)</span>
+              <span className="text-xxs text-zinc-500 mt-0.5">(INMAG / MAIZ)</span>
             </div>
 
           </div>
@@ -262,7 +262,7 @@ export default function MercadoPage() {
                             style={{ width: `${barPct}%` }}
                           />
                         </div>
-                        <span className="text-xxs text-zinc-600 tabular-nums w-[3ch] text-right">
+                        <span className="text-xxs text-zinc-500 tabular-nums w-[3ch] text-right">
                           {barPct}
                         </span>
                       </div>
@@ -278,10 +278,10 @@ export default function MercadoPage() {
       {/* ── Source attribution ─────────────────────────────────── */}
       <div className="terminal-panel">
         <div className="px-panel py-cell flex items-center justify-between">
-          <span className="text-xxs text-zinc-600">
+          <span className="text-xxs text-zinc-500">
             FUENTES: Mercado Agroganadero (MAG), MAGYP, dolarapi.com
           </span>
-          <span className="text-xxs text-zinc-600 tabular-nums">
+          <span className="text-xxs text-zinc-500 tabular-nums">
             Ult. act.: {lastUpdate}
           </span>
         </div>

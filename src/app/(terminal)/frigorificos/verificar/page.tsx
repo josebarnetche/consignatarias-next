@@ -73,7 +73,7 @@ function FrigorificoSelectForm() {
               className="flex items-center justify-between px-2 py-1.5 text-data font-terminal hover:bg-accent/5 transition-colors group"
             >
               <span className="text-zinc-300 group-hover:text-zinc-100 truncate">{f.name}</span>
-              <span className="text-zinc-600 text-xxs tracking-wider flex-shrink-0 ml-2">{f.province}</span>
+              <span className="text-zinc-500 text-xxs tracking-wider flex-shrink-0 ml-2">{f.province}</span>
             </a>
           ))}
         </div>

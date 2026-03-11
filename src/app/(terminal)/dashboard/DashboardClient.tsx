@@ -162,7 +162,7 @@ export default function DashboardClient({
           <div className="px-panel py-3 flex items-center gap-3">
             <span className="text-amber-400 font-terminal text-data">&#9733; PRO</span>
             <span className="text-zinc-200 text-xxs font-terminal">Bienvenido a PRO! Tu perfil ya esta destacado.</span>
-            <button onClick={() => setShowUpgradeToast(false)} className="ml-auto text-zinc-600 text-xxs font-terminal hover:text-zinc-400">Cerrar</button>
+            <button onClick={() => setShowUpgradeToast(false)} className="ml-auto text-zinc-500 text-xxs font-terminal hover:text-zinc-400">Cerrar</button>
           </div>
         </div>
       )}
@@ -226,7 +226,7 @@ export default function DashboardClient({
               <div className="terminal-panel-header"><span className="text-zinc-200 text-label tracking-widest">ANALYTICS</span></div>
               <div className="px-panel py-3 space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-xxs text-zinc-600 uppercase font-terminal">Vistas ultimos 30 dias:</span>
+                  <span className="text-xxs text-zinc-500 uppercase font-terminal">Vistas ultimos 30 dias:</span>
                   <span className="text-data font-terminal tabular-nums text-zinc-200">{viewCount}</span>
                 </div>
                 {tierLabel === 'FREE' && (
@@ -262,15 +262,15 @@ export default function DashboardClient({
             <div className="terminal-panel">
               <div className="terminal-panel-header flex items-center justify-between">
                 <span className="text-zinc-200 text-label tracking-widest">PROXIMOS REMATES</span>
-                <span className="text-xxs text-zinc-600 font-terminal">{scrapedAuctions.length} del scraper</span>
+                <span className="text-xxs text-zinc-500 font-terminal">{scrapedAuctions.length} del scraper</span>
               </div>
               <div className="divide-y divide-terminal-border">
                 {scrapedAuctions.map((a, i) => (
                   <div key={i} className="px-panel py-2 flex items-center gap-4">
                     <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">{formatDate(a.date)}</span>
-                    {a.time && <span className="text-xxs font-terminal text-zinc-600 w-12 flex-shrink-0">{a.time}</span>}
+                    {a.time && <span className="text-xxs font-terminal text-zinc-500 w-12 flex-shrink-0">{a.time}</span>}
                     <span className="text-data font-terminal text-zinc-300 flex-1 truncate">{a.title}</span>
-                    <span className="text-xxs font-terminal text-zinc-600 hidden sm:inline">{a.location}</span>
+                    <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline">{a.location}</span>
                   </div>
                 ))}
               </div>
@@ -372,7 +372,7 @@ export default function DashboardClient({
             </div>
           ) : (
             <div className="px-panel py-6 text-center">
-              <p className="text-xxs font-terminal text-zinc-600">No hay resultados. Subi los resultados de tus remates completados.</p>
+              <p className="text-xxs font-terminal text-zinc-500">No hay resultados. Subi los resultados de tus remates completados.</p>
             </div>
           )}
         </div>
@@ -560,32 +560,32 @@ function AuctionManager({ slug, ownerAuctions, scrapedAuctions, onAuctionsChange
         <div className="terminal-panel border-accent/30">
           <div className="terminal-panel-header flex items-center justify-between">
             <span className="text-zinc-200 text-label tracking-widest">{editingId ? 'EDITAR REMATE' : 'NUEVO REMATE'}</span>
-            <button onClick={() => { setShowForm(false); setEditingId(null) }} className="text-xxs font-terminal text-zinc-600 hover:text-zinc-400">Cancelar</button>
+            <button onClick={() => { setShowForm(false); setEditingId(null) }} className="text-xxs font-terminal text-zinc-500 hover:text-zinc-400">Cancelar</button>
           </div>
           <form onSubmit={handleSave} className="px-panel py-3 space-y-3">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="sm:col-span-2">
-                <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Titulo *</label>
+                <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Titulo *</label>
                 <input type="text" required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} className={inputClass} placeholder="Remate feria de invernada" />
               </div>
               <div>
-                <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Fecha *</label>
+                <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Fecha *</label>
                 <input type="date" required value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} className={inputClass} />
               </div>
               <div>
-                <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Hora</label>
+                <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Hora</label>
                 <input type="time" value={form.time} onChange={e => setForm(f => ({ ...f, time: e.target.value }))} className={inputClass} />
               </div>
               <div>
-                <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Ubicacion</label>
+                <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Ubicacion</label>
                 <input type="text" value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))} className={inputClass} placeholder="Mercedes, Buenos Aires" />
               </div>
               <div>
-                <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Provincia</label>
+                <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Provincia</label>
                 <input type="text" value={form.province} onChange={e => setForm(f => ({ ...f, province: e.target.value }))} className={inputClass} placeholder="BUENOS AIRES" />
               </div>
               <div>
-                <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Tipo</label>
+                <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Tipo</label>
                 <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))} className={inputClass}>
                   <option value="general">General</option>
                   <option value="invernada">Invernada</option>
@@ -595,7 +595,7 @@ function AuctionManager({ slug, ownerAuctions, scrapedAuctions, onAuctionsChange
                 </select>
               </div>
               <div>
-                <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Categoria</label>
+                <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Categoria</label>
                 <select value={form.main_category} onChange={e => setForm(f => ({ ...f, main_category: e.target.value }))} className={inputClass}>
                   <option value="mixto">Mixto</option>
                   <option value="terneros">Terneros</option>
@@ -606,20 +606,20 @@ function AuctionManager({ slug, ownerAuctions, scrapedAuctions, onAuctionsChange
                 </select>
               </div>
               <div>
-                <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Cabezas estimadas</label>
+                <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Cabezas estimadas</label>
                 <input type="number" value={form.estimated_heads} onChange={e => setForm(f => ({ ...f, estimated_heads: e.target.value }))} className={inputClass} placeholder="500" />
               </div>
               <div>
-                <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">URL catalogo</label>
+                <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">URL catalogo</label>
                 <input type="url" value={form.catalog_url} onChange={e => setForm(f => ({ ...f, catalog_url: e.target.value }))} className={inputClass} placeholder="https://..." />
               </div>
               <div>
-                <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">URL YouTube</label>
+                <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">URL YouTube</label>
                 <input type="url" value={form.youtube_url} onChange={e => setForm(f => ({ ...f, youtube_url: e.target.value }))} className={inputClass} placeholder="https://youtube.com/..." />
               </div>
             </div>
             <div>
-              <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Descripcion</label>
+              <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Descripcion</label>
               <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className={`${inputClass} resize-none`} rows={2} maxLength={500} placeholder="Detalles del remate..." />
             </div>
             <div className="flex items-center gap-3">
@@ -642,11 +642,11 @@ function AuctionManager({ slug, ownerAuctions, scrapedAuctions, onAuctionsChange
             {ownerAuctions.map(a => (
               <div key={a.id} className="px-panel py-2 flex items-center gap-3">
                 <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">{formatDate(a.date)}</span>
-                {a.time && <span className="text-xxs font-terminal text-zinc-600 w-12 flex-shrink-0">{a.time}</span>}
+                {a.time && <span className="text-xxs font-terminal text-zinc-500 w-12 flex-shrink-0">{a.time}</span>}
                 <span className="text-data font-terminal text-zinc-300 flex-1 truncate">{a.title}</span>
-                <span className="text-xxs font-terminal text-zinc-600 hidden sm:inline">{a.location}</span>
+                <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline">{a.location}</span>
                 <button onClick={() => startEdit(a)} className="text-xxs font-terminal text-accent hover:underline flex-shrink-0">Editar</button>
-                <button onClick={() => handleDelete(a.id)} disabled={deleting === a.id} className="text-xxs font-terminal text-zinc-600 hover:text-negative flex-shrink-0 disabled:opacity-50">
+                <button onClick={() => handleDelete(a.id)} disabled={deleting === a.id} className="text-xxs font-terminal text-zinc-500 hover:text-negative flex-shrink-0 disabled:opacity-50">
                   {deleting === a.id ? '...' : 'Eliminar'}
                 </button>
               </div>
@@ -660,13 +660,13 @@ function AuctionManager({ slug, ownerAuctions, scrapedAuctions, onAuctionsChange
         <div className="terminal-panel">
           <div className="terminal-panel-header flex items-center justify-between">
             <span className="text-zinc-400 text-xxs tracking-widest">REMATES DEL CALENDARIO (AUTOMATICOS)</span>
-            <span className="text-xxs text-zinc-600 font-terminal">{scrapedAuctions.length}</span>
+            <span className="text-xxs text-zinc-500 font-terminal">{scrapedAuctions.length}</span>
           </div>
           <div className="divide-y divide-terminal-border">
             {scrapedAuctions.map((a, i) => (
               <div key={i} className="px-panel py-2 flex items-center gap-4">
                 <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">{formatDate(a.date)}</span>
-                {a.time && <span className="text-xxs font-terminal text-zinc-600 w-12 flex-shrink-0">{a.time}</span>}
+                {a.time && <span className="text-xxs font-terminal text-zinc-500 w-12 flex-shrink-0">{a.time}</span>}
                 <span className="text-data font-terminal text-zinc-400 flex-1 truncate">{a.title}</span>
                 <span className="text-xxs font-terminal text-zinc-700 hidden sm:inline">{a.location}</span>
               </div>
@@ -681,7 +681,7 @@ function AuctionManager({ slug, ownerAuctions, scrapedAuctions, onAuctionsChange
       {ownerAuctions.length === 0 && scrapedAuctions.length === 0 && !showForm && (
         <div className="terminal-panel">
           <div className="px-panel py-6 text-center space-y-2">
-            <p className="text-xxs font-terminal text-zinc-600">No hay remates cargados todavia.</p>
+            <p className="text-xxs font-terminal text-zinc-500">No hay remates cargados todavia.</p>
             <button onClick={startCreate} className="text-xxs font-terminal text-positive hover:underline">
               Agregar tu primer remate →
             </button>
@@ -763,7 +763,7 @@ function ProfileEditForm({ slug, initial, logoUrl: initialLogoUrl }: ProfileEdit
     <div className="terminal-panel">
       <div className="terminal-panel-header"><span className="text-zinc-200 text-label tracking-widest">EDITAR PERFIL</span></div>
       <form onSubmit={handleSubmit} className="px-panel py-3 space-y-3">
-        <p className="text-xxs font-terminal text-zinc-600">Los datos que completes se muestran en tu perfil publico.</p>
+        <p className="text-xxs font-terminal text-zinc-500">Los datos que completes se muestran en tu perfil publico.</p>
 
         {/* Logo upload */}
         <div className="flex items-center gap-4">
@@ -775,7 +775,7 @@ function ProfileEditForm({ slug, initial, logoUrl: initialLogoUrl }: ProfileEdit
             )}
           </div>
           <div className="flex-1 space-y-1">
-            <label className="text-xxs text-zinc-600 uppercase font-terminal block">Logo</label>
+            <label className="text-xxs text-zinc-500 uppercase font-terminal block">Logo</label>
             <label className={`inline-block px-3 py-1 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors ${logoUploading ? 'opacity-50 pointer-events-none' : 'cursor-pointer'}`}>
               {logoUploading ? 'Subiendo...' : 'Subir imagen'}
               <input type="file" accept="image/jpeg,image/png,image/webp,image/svg+xml" onChange={handleLogoUpload} className="hidden" disabled={logoUploading} />
@@ -787,28 +787,28 @@ function ProfileEditForm({ slug, initial, logoUrl: initialLogoUrl }: ProfileEdit
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Telefono</label>
+            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Telefono</label>
             <input type="text" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} className={inputClass} placeholder="+54 11 1234-5678" />
           </div>
           <div>
-            <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Email</label>
+            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Email</label>
             <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className={inputClass} placeholder="contacto@ejemplo.com" />
           </div>
           <div>
-            <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Sitio web</label>
+            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Sitio web</label>
             <input type="text" value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} className={inputClass} placeholder="https://ejemplo.com" />
           </div>
           <div>
-            <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">WhatsApp</label>
+            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">WhatsApp</label>
             <input type="text" value={form.whatsapp} onChange={e => setForm(f => ({ ...f, whatsapp: e.target.value }))} className={inputClass} placeholder="+54 11 1234-5678" />
           </div>
           <div>
-            <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">CUIT</label>
+            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">CUIT</label>
             <input type="text" value={form.cuit} onChange={e => setForm(f => ({ ...f, cuit: e.target.value }))} className={inputClass} placeholder="20-12345678-9" />
           </div>
         </div>
         <div>
-          <label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Descripcion</label>
+          <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Descripcion</label>
           <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className={`${inputClass} resize-none`} rows={3} maxLength={1000} placeholder="Breve descripcion de la consignataria..." />
           <span className="text-[10px] text-zinc-700 font-terminal">{form.description.length}/1000</span>
         </div>
@@ -851,11 +851,11 @@ function FrigorificoEditForm({ cuit, initial }: { cuit: string; initial: { phone
       <div className="terminal-panel-header"><span className="text-zinc-200 text-label tracking-widest">EDITAR FRIGORIFICO</span></div>
       <form onSubmit={handleSubmit} className="px-panel py-3 space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div><label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Telefono</label><input type="text" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} className={inputClass} placeholder="+54 11 1234-5678" /></div>
-          <div><label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Email</label><input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className={inputClass} placeholder="contacto@ejemplo.com" /></div>
-          <div><label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Sitio web</label><input type="text" value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} className={inputClass} placeholder="https://ejemplo.com" /></div>
+          <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Telefono</label><input type="text" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} className={inputClass} placeholder="+54 11 1234-5678" /></div>
+          <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Email</label><input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className={inputClass} placeholder="contacto@ejemplo.com" /></div>
+          <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Sitio web</label><input type="text" value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} className={inputClass} placeholder="https://ejemplo.com" /></div>
         </div>
-        <div><label className="text-xxs text-zinc-600 uppercase font-terminal block mb-1">Descripcion</label><textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className={`${inputClass} resize-none`} rows={3} maxLength={1000} /><span className="text-[10px] text-zinc-700 font-terminal">{form.description.length}/1000</span></div>
+        <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Descripcion</label><textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className={`${inputClass} resize-none`} rows={3} maxLength={1000} /><span className="text-[10px] text-zinc-700 font-terminal">{form.description.length}/1000</span></div>
         <div className="flex items-center gap-3">
           <button type="submit" disabled={saving} className="px-4 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors disabled:opacity-50">{saving ? 'Guardando...' : 'Guardar cambios'}</button>
           {feedback && <span className={`text-xxs font-terminal ${feedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{feedback.msg}</span>}
@@ -899,18 +899,18 @@ function SubscriptionPanel({ tier, subscription }: { tier: string; subscription:
           <>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="text-xxs text-zinc-600 uppercase font-terminal">Estado:</span>
+                <span className="text-xxs text-zinc-500 uppercase font-terminal">Estado:</span>
                 <span className={`text-xxs font-terminal ${subscription.status === 'active' ? 'text-positive' : 'text-warning'}`}>
                   {subscription.status === 'active' ? 'ACTIVA' : 'PAGO PENDIENTE'}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xxs text-zinc-600 uppercase font-terminal">Vencimiento:</span>
+                <span className="text-xxs text-zinc-500 uppercase font-terminal">Vencimiento:</span>
                 <span className="text-xxs font-terminal text-zinc-300 tabular-nums">{formatDate(subscription.current_period_end.slice(0, 10))}</span>
               </div>
             </div>
             {!cancelled && (
-              <button onClick={handleCancel} disabled={cancelling} className="text-xxs font-terminal text-zinc-600 hover:text-negative transition-colors disabled:opacity-50">
+              <button onClick={handleCancel} disabled={cancelling} className="text-xxs font-terminal text-zinc-500 hover:text-negative transition-colors disabled:opacity-50">
                 {cancelling ? 'Cancelando...' : 'Cancelar suscripcion'}
               </button>
             )}

@@ -86,7 +86,7 @@ export default function AdminFrigorificoClaimsPage() {
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between">
           <span className="text-zinc-200 text-label tracking-widest">ADMIN — FRIGORIFICOS</span>
-          <span className="text-xxs text-zinc-600 font-terminal">{claims.length} resultado(s)</span>
+          <span className="text-xxs text-zinc-500 font-terminal">{claims.length} resultado(s)</span>
         </div>
 
         {/* Tabs */}
@@ -96,7 +96,7 @@ export default function AdminFrigorificoClaimsPage() {
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
               className={`text-xxs font-terminal uppercase tracking-wider transition-colors ${
-                activeTab === tab.key ? 'text-accent' : 'text-zinc-600 hover:text-zinc-300'
+                activeTab === tab.key ? 'text-accent' : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
               {tab.label}
@@ -116,7 +116,7 @@ export default function AdminFrigorificoClaimsPage() {
           </div>
         ) : claims.length === 0 ? (
           <div className="px-panel py-8 text-center">
-            <span className="text-zinc-600 text-data font-terminal">No hay solicitudes</span>
+            <span className="text-zinc-500 text-data font-terminal">No hay solicitudes</span>
           </div>
         ) : (
           <div className="divide-y divide-terminal-border">
@@ -145,7 +145,7 @@ export default function AdminFrigorificoClaimsPage() {
                       {claim.claimant_phone && <span>Tel: {claim.claimant_phone}</span>}
                       {claim.claimant_role && <span>Rol: {claim.claimant_role}</span>}
                     </div>
-                    <div className="text-xxs text-zinc-600 font-terminal mt-0.5">
+                    <div className="text-xxs text-zinc-500 font-terminal mt-0.5">
                       {new Date(claim.created_at).toLocaleString('es-AR')}
                     </div>
                     {claim.admin_notes && (

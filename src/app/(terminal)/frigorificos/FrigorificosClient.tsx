@@ -234,7 +234,7 @@ export default function FrigorificosPage() {
           <h1 className="section-heading text-label uppercase tracking-widest text-zinc-100">
             FRIGORIFICOS
           </h1>
-          <span className="text-zinc-600 font-terminal text-xxs">&mdash;</span>
+          <span className="text-zinc-500 font-terminal text-xxs">&mdash;</span>
           <span className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">
             Registro Nacional SENASA
           </span>
@@ -319,7 +319,7 @@ export default function FrigorificosPage() {
               <span className="w-1.5 h-1.5 rounded-full bg-positive animate-pulse-live" />
               Registrar frigorifico
             </Link>
-            <p className="text-xxs text-zinc-600 font-terminal mt-1.5 leading-relaxed">
+            <p className="text-xxs text-zinc-500 font-terminal mt-1.5 leading-relaxed">
               Sos dueño o representante de un frigorifico? Registrate para reclamar tu perfil.
             </p>
           </div>
@@ -375,14 +375,14 @@ export default function FrigorificosPage() {
                         />
                       </div>
                       <span className="tabular-nums text-zinc-300 w-8 text-right">{count}</span>
-                      <span className="tabular-nums text-zinc-600 w-10 text-right">({pct}%)</span>
+                      <span className="tabular-nums text-zinc-500 w-10 text-right">({pct}%)</span>
                     </div>
                   )
                 })}
 
                 {/* Stage legend */}
                 <div className="terminal-divider-dashed" />
-                <div className="flex gap-4 text-xxs text-zinc-600 font-terminal">
+                <div className="flex gap-4 text-xxs text-zinc-500 font-terminal">
                   <span>
                     <span className="val-positive">E1</span> Faena + desposte
                   </span>
@@ -479,7 +479,7 @@ export default function FrigorificosPage() {
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="text-center py-8 text-zinc-600">
+                    <td colSpan={5} className="text-center py-8 text-zinc-500">
                       No se encontraron resultados para los filtros aplicados.
                     </td>
                   </tr>
@@ -525,7 +525,7 @@ export default function FrigorificosPage() {
 
           {/* ── FOOTER STATUS BAR ──────────────────────────────────── */}
           <div className="border-t border-terminal-border bg-terminal-panel px-4 py-1 flex items-center justify-between flex-shrink-0">
-            <div className="flex items-center gap-4 text-xxs font-terminal text-zinc-600">
+            <div className="flex items-center gap-4 text-xxs font-terminal text-zinc-500">
               <span>
                 SRC: <span className="text-zinc-500">SENASA / MAGyP</span>
               </span>
@@ -544,7 +544,7 @@ export default function FrigorificosPage() {
                 <span className="val-negative tabular-nums">{summary.byStage['3']}</span>
               </span>
             </div>
-            <div className="text-xxs font-terminal text-zinc-600">
+            <div className="text-xxs font-terminal text-zinc-500">
               <span className="tabular-nums text-zinc-500">{filtered.length}</span>
               <span className="mx-1">/</span>
               <span className="tabular-nums">{summary.total}</span>

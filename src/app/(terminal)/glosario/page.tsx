@@ -144,7 +144,7 @@ export default function GlosarioPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-zinc-600 text-xs mt-4">
+        <p className="text-zinc-500 text-xs mt-4">
           Ultima actualizacion: Marzo 2026. Memola Medios S.A.S. &mdash; Todos los derechos reservados.
         </p>
       </div>

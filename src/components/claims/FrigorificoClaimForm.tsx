@@ -81,7 +81,7 @@ export default function FrigorificoClaimForm({ frigorificoName, frigorificoCuit 
         <span className="text-zinc-200 text-label tracking-widest">REGISTRAR FRIGORIFICO</span>
         <Link
           href="/frigorificos"
-          className="text-zinc-600 hover:text-accent text-xxs font-terminal transition-colors"
+          className="text-zinc-500 hover:text-accent text-xxs font-terminal transition-colors"
         >
           &larr; VOLVER
         </Link>

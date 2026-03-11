@@ -29,7 +29,7 @@ function TerminalClock() {
     return () => clearInterval(id);
   }, []);
 
-  if (!now) return <span className="text-zinc-600">--:--:--</span>;
+  if (!now) return <span className="text-zinc-500">--:--:--</span>;
 
   const date = now.toLocaleDateString("es-AR", {
     day: "2-digit",
@@ -91,7 +91,7 @@ export default function TerminalLayout({
           </span>
         </div>
         <div className="flex items-center">
-          <span className="text-zinc-600">
+          <span className="text-zinc-500">
             ULT. ACT. 14:00 ART
           </span>
         </div>
@@ -211,7 +211,7 @@ export default function TerminalLayout({
       <main className="flex-1 min-h-0">{children}</main>
 
       {/* -- FOOTER ------------------------------------------------- */}
-      <footer className="border-t border-terminal-border bg-terminal-panel px-4 py-3 flex items-center justify-between text-xxs text-zinc-600">
+      <footer className="border-t border-terminal-border bg-terminal-panel px-4 py-3 flex items-center justify-between text-xxs text-zinc-500">
         <span>consignatarias.com.ar &copy; 2026</span>
         <div className="flex items-center gap-3 flex-wrap justify-end">
           <Link href="/planes" className="hover:text-zinc-300 transition-colors">

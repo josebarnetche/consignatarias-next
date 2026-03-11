@@ -644,7 +644,7 @@ export default function LandingPage() {
               >
                 <summary className="flex items-center justify-between cursor-pointer px-6 py-4 text-sm text-zinc-200 hover:text-zinc-100 transition-colors list-none [&::-webkit-details-marker]:hidden">
                   <span className="pr-4">{item.question}</span>
-                  <span className="text-zinc-600 group-open:rotate-45 transition-transform text-lg shrink-0">+</span>
+                  <span className="text-zinc-500 group-open:rotate-45 transition-transform text-lg shrink-0">+</span>
                 </summary>
                 <div className="px-6 pb-4 text-xs text-zinc-400 leading-relaxed font-mono">
                   {item.answer}
@@ -692,7 +692,7 @@ export default function LandingPage() {
                 </span>
               </div>
 
-              <div className="flex items-center gap-6 text-xs text-zinc-600">
+              <div className="flex items-center gap-6 text-xs text-zinc-500">
                 <Link href="/overview" className="hover:text-zinc-300 transition-colors">Terminal</Link>
                 <Link href="/remates" className="hover:text-zinc-300 transition-colors">Remates</Link>
                 <Link href="/consignatarias" className="hover:text-zinc-300 transition-colors">Directorio</Link>
@@ -700,13 +700,13 @@ export default function LandingPage() {
                 <Link href="/mercado" className="hover:text-zinc-300 transition-colors">Mercado</Link>
               </div>
 
-              <div className="text-[0.65rem] text-zinc-600 uppercase tracking-widest">
+              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest">
                 Datos actualizados diariamente
               </div>
             </div>
 
             <div className="border-t border-zinc-800/50 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex items-center gap-6 text-xs text-zinc-600">
+              <div className="flex items-center gap-6 text-xs text-zinc-500">
                 <Link href="/planes" className="hover:text-zinc-300 transition-colors">Planes</Link>
                 <Link href="/glosario" className="hover:text-zinc-300 transition-colors">Glosario</Link>
                 <Link href="/calidad" className="hover:text-zinc-300 transition-colors">Calidad de datos</Link>

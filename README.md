@@ -438,6 +438,8 @@ Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misione
 | 0.9.8 | Mar 10 | Q2 blueprint close — logo upload, /calidad, reportar error, monthly metrics |
 | 0.9.9 | Mar 10 | AI SEO — robots.txt AI bots, FAQ schema, /glosario with DefinedTermSet |
 | **1.0.0** | **Mar 10** | **Full platform — navigation, subscribe flow, all pages discoverable** |
+| 1.0.1 | Mar 11 | Brand logo — new icon across all sizes, favicon, Google Search Organization schema |
+| 1.0.2 | Mar 11 | Contrast fix — eliminate text-zinc-600 sitewide, bump table headers/nav/labels to WCAG AA |
 
 Built in 13 days. One human, one AI. $0 hosting cost. 10 Supabase tables. See [CHANGELOG.md](CHANGELOG.md) for full details.
 

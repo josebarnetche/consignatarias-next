@@ -291,7 +291,7 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName }: 
           )}
           {categories.length === 0 && (
             <div className="px-panel py-3">
-              <span className="text-xxs font-terminal text-zinc-600">
+              <span className="text-xxs font-terminal text-zinc-500">
                 Opcional — agregá categorías para detallar precios por tipo de hacienda.
               </span>
             </div>

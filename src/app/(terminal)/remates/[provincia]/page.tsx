@@ -210,7 +210,7 @@ function AuctionRowStatic({ auction }: { auction: Auction }) {
           {auction.time ? (
             <span className={isFeatured ? 'text-amber-300/70' : 'text-zinc-300'}>{auction.time}</span>
           ) : (
-            <span className="text-zinc-600">&mdash;</span>
+            <span className="text-zinc-500">&mdash;</span>
           )}
         </span>
         <span className="flex-1 min-w-0 text-data font-terminal truncate">
@@ -338,25 +338,25 @@ export default async function ProvinciaRematesPage({ params }: Props) {
           {/* Stats bar */}
           <div className="border-b border-terminal-border px-panel py-2 flex items-center gap-6 flex-wrap">
             <div className="flex items-center gap-1.5">
-              <span className="text-xxs text-zinc-600 uppercase">Total:</span>
+              <span className="text-xxs text-zinc-500 uppercase">Total:</span>
               <span className="text-data tabular-nums text-zinc-300 font-terminal">{provinceAuctions.length}</span>
-              <span className="text-xxs text-zinc-600">remates</span>
+              <span className="text-xxs text-zinc-500">remates</span>
             </div>
             <div className="text-terminal-border text-xxs select-none">|</div>
             <div className="flex items-center gap-1.5">
-              <span className="text-xxs text-zinc-600 uppercase">Consignatarias:</span>
+              <span className="text-xxs text-zinc-500 uppercase">Consignatarias:</span>
               <span className="text-data tabular-nums text-zinc-300 font-terminal">{consignatarias.size}</span>
             </div>
             <div className="text-terminal-border text-xxs select-none">|</div>
             <div className="flex items-center gap-1.5">
-              <span className="text-xxs text-zinc-600 uppercase">Ciudades:</span>
+              <span className="text-xxs text-zinc-500 uppercase">Ciudades:</span>
               <span className="text-data tabular-nums text-zinc-300 font-terminal">{cities.size}</span>
             </div>
             {totalHeads > 0 && (
               <>
                 <div className="text-terminal-border text-xxs select-none hidden sm:block">|</div>
                 <div className="hidden sm:flex items-center gap-1.5">
-                  <span className="text-xxs text-zinc-600 uppercase">Cabezas est.:</span>
+                  <span className="text-xxs text-zinc-500 uppercase">Cabezas est.:</span>
                   <span className="text-data tabular-nums text-zinc-300 font-terminal">
                     ~{totalHeads.toLocaleString('es-AR')}
                   </span>
@@ -365,7 +365,7 @@ export default async function ProvinciaRematesPage({ params }: Props) {
             )}
             <div className="text-terminal-border text-xxs select-none hidden sm:block">|</div>
             <div className="hidden sm:flex items-center gap-1.5">
-              <span className="text-xxs text-zinc-600 uppercase">Tipos:</span>
+              <span className="text-xxs text-zinc-500 uppercase">Tipos:</span>
               <div className="flex items-center gap-1">
                 {[...types].map(t => (
                   <span key={t} className={`terminal-tag ${TYPE_COLORS[t] || 'border-zinc-500 text-zinc-400'} text-[10px]`}>
@@ -397,13 +397,13 @@ export default async function ProvinciaRematesPage({ params }: Props) {
 
               {/* Column headers (desktop) */}
               <div className="border-b border-terminal-border px-cell py-px2 hidden md:flex items-center gap-0 bg-terminal-panel">
-                <span className="w-[56px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">Fecha</span>
-                <span className="w-[52px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">Hora</span>
-                <span className="flex-1 min-w-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">Consignataria</span>
-                <span className="w-[140px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right pr-2">Plaza</span>
-                <span className="w-[70px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">Tipo</span>
-                <span className="w-[42px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">Cat.</span>
-                <span className="w-[60px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right">Cab.</span>
+                <span className="w-[56px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Fecha</span>
+                <span className="w-[52px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Hora</span>
+                <span className="flex-1 min-w-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Consignataria</span>
+                <span className="w-[140px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right pr-2">Plaza</span>
+                <span className="w-[70px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Tipo</span>
+                <span className="w-[42px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Cat.</span>
+                <span className="w-[60px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">Cab.</span>
               </div>
 
               <div className="divide-y-0">
@@ -429,7 +429,7 @@ export default async function ProvinciaRematesPage({ params }: Props) {
                 ))}
                 {pastAuctions.length > 20 && (
                   <div className="px-panel py-3 text-center">
-                    <span className="text-xxs text-zinc-600 font-terminal">
+                    <span className="text-xxs text-zinc-500 font-terminal">
                       +{pastAuctions.length - 20} remates anteriores
                     </span>
                   </div>
@@ -441,7 +441,7 @@ export default async function ProvinciaRematesPage({ params }: Props) {
           {/* Empty state */}
           {provinceAuctions.length === 0 && (
             <div className="px-panel py-8 text-center">
-              <p className="text-data text-zinc-600 font-terminal">
+              <p className="text-data text-zinc-500 font-terminal">
                 No hay remates registrados en {config.displayName}.
               </p>
             </div>
@@ -449,7 +449,7 @@ export default async function ProvinciaRematesPage({ params }: Props) {
 
           {/* Footer */}
           <div className="border-t border-terminal-border px-panel py-1.5 flex items-center justify-between">
-            <span className="text-xxs text-zinc-600 font-terminal">
+            <span className="text-xxs text-zinc-500 font-terminal">
               {provinceAuctions.length} resultado{provinceAuctions.length !== 1 ? 's' : ''} en {config.displayName}
             </span>
             <span className="text-xxs text-zinc-700 font-terminal hidden sm:inline">

@@ -54,7 +54,7 @@ export default function AuthButton() {
       <form action="/api/auth/logout" method="POST">
         <button
           type="submit"
-          className="text-xxs font-terminal uppercase tracking-wider text-zinc-600 hover:text-negative transition-colors"
+          className="text-xxs font-terminal uppercase tracking-wider text-zinc-500 hover:text-negative transition-colors"
         >
           Salir
         </button>

@@ -113,7 +113,7 @@
 
   .terminal-table th {
     @apply px-cell py-1.5 text-left text-xxs font-medium
-           uppercase tracking-wider text-zinc-500
+           uppercase tracking-wider text-zinc-400
            border-b border-terminal-border;
     white-space: nowrap;
   }
@@ -198,7 +198,7 @@
   .terminal-input {
     @apply w-full px-3 py-1.5 text-data font-terminal
            bg-terminal-bg border border-terminal-border
-           text-zinc-100 placeholder-zinc-600;
+           text-zinc-100 placeholder-zinc-500;
     border-radius: 2px;
     min-height: 36px;
   }
@@ -210,7 +210,7 @@
   /* --- Nav link ------------------------------------------- */
   .terminal-nav-link {
     @apply px-3 py-1.5 text-label font-terminal uppercase
-           tracking-widest text-zinc-500
+           tracking-widest text-zinc-400
            border-b-2 border-transparent
            transition-colors duration-100;
   }
@@ -256,7 +256,7 @@
   }
 
   .terminal-stat-label {
-    @apply text-xxs uppercase tracking-wider text-zinc-500 font-terminal;
+    @apply text-xxs uppercase tracking-wider text-zinc-400 font-terminal;
   }
 
   .terminal-stat-value {

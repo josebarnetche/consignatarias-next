@@ -423,7 +423,7 @@ export default function HomePage() {
                     <span className="flex-1 min-w-0 text-data font-terminal text-zinc-200 truncate group-hover:text-accent transition-colors" title={r.consignatariaName}>
                       {r.consignatariaName}
                     </span>
-                    <span className="hidden sm:inline text-xxs text-zinc-600 truncate max-w-[100px]">
+                    <span className="hidden sm:inline text-xxs text-zinc-500 truncate max-w-[100px]">
                       {r.location.split(',')[0]}
                     </span>
                     <span className="text-data font-terminal tabular-nums text-zinc-400 flex-shrink-0">
@@ -634,7 +634,7 @@ export default function HomePage() {
                   (pt: { date: string; value: number }) => (
                     <span
                       key={pt.date}
-                      className="text-xxs text-zinc-600 tabular-nums"
+                      className="text-xxs text-zinc-500 tabular-nums"
                     >
                       {pt.date.slice(5)}
                     </span>

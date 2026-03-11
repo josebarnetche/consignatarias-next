@@ -320,7 +320,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-xxs text-zinc-500">{city}</span>
-          <span className="text-xxs text-zinc-600">{auction.province}</span>
+          <span className="text-xxs text-zinc-500">{auction.province}</span>
           <span className={`terminal-tag ${TYPE_COLORS[auction.type] || 'border-zinc-500 text-zinc-400'} text-[10px]`}>
             {TYPE_LABELS[auction.type] || auction.type.toUpperCase()}
           </span>
@@ -332,7 +332,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
           )}
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[9px] font-terminal text-zinc-600 px-1 py-0.5 border border-zinc-800 rounded-sm">{sourceBadge}</span>
+          <span className="text-[9px] font-terminal text-zinc-500 px-1 py-0.5 border border-zinc-800 rounded-sm">{sourceBadge}</span>
           {isTodayPast && <span className="text-[9px] font-terminal text-positive">HOY</span>}
           {freshness && <span className={`text-[9px] font-terminal ${freshness.className}`}>{freshness.text}</span>}
         </div>
@@ -370,7 +370,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
                 VER &rarr;
               </span>
             ) : (
-              <span className="text-zinc-600">&mdash;</span>
+              <span className="text-zinc-500">&mdash;</span>
             )}
           </span>
           <span className="flex-1 min-w-0 text-data font-terminal truncate" onClick={(e) => e.stopPropagation()}>
@@ -385,7 +385,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
           <span className="w-[140px] flex-shrink-0 text-data font-terminal text-zinc-500 truncate text-right pr-2">
             {city}
           </span>
-          <span className="w-[36px] flex-shrink-0 text-xxs font-terminal text-zinc-600 text-right">
+          <span className="w-[36px] flex-shrink-0 text-xxs font-terminal text-zinc-500 text-right">
             {getProvinceCode(auction.province)}
           </span>
         </div>
@@ -398,7 +398,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
           <span className="w-[42px] flex-shrink-0 text-xxs font-terminal text-zinc-500">
             {CAT_CODES[auction.mainCategory]}
           </span>
-          <span className="text-[9px] font-terminal text-zinc-600 px-1 py-0.5 border border-zinc-800 rounded-sm mr-1.5">{sourceBadge}</span>
+          <span className="text-[9px] font-terminal text-zinc-500 px-1 py-0.5 border border-zinc-800 rounded-sm mr-1.5">{sourceBadge}</span>
           {isTodayPast && <span className="text-[9px] font-terminal text-positive mr-1.5">HOY</span>}
           {freshness && <span className={`text-[9px] font-terminal ${freshness.className} mr-1.5`}>{freshness.text}</span>}
           <span className="w-[60px] flex-shrink-0 text-data font-terminal tabular-nums text-zinc-400 text-right">
@@ -422,7 +422,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
             {auction.sourceUrl && (
               <a href={normalizeUrl(auction.sourceUrl) || '#'} target="_blank" rel="noopener noreferrer"
                 onClick={() => trackOutboundClick(normalizeUrl(auction.sourceUrl) || '', 'source')}
-                className="text-xxs font-terminal text-zinc-600 hover:text-zinc-400 transition-colors" aria-label="Ver fuente" title="Fuente">SRC</a>
+                className="text-xxs font-terminal text-zinc-500 hover:text-zinc-400 transition-colors" aria-label="Ver fuente" title="Fuente">SRC</a>
             )}
           </span>
         </div>
@@ -647,25 +647,25 @@ export default function RematesPage() {
         {/* -- Summary stats strip (hidden on mobile) --------------- */}
         <div className="border-b border-terminal-border px-panel py-1.5 hidden md:flex items-center gap-6 flex-wrap">
           <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-600 uppercase">Total:</span>
+            <span className="text-xxs text-zinc-500 uppercase">Total:</span>
             <span className="text-data tabular-nums text-zinc-300 font-terminal">{auctions.length}</span>
-            <span className="text-xxs text-zinc-600">remates</span>
+            <span className="text-xxs text-zinc-500">remates</span>
           </div>
           <div className="text-terminal-border text-xxs select-none">|</div>
           <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-600 uppercase">Cabezas est.:</span>
+            <span className="text-xxs text-zinc-500 uppercase">Cabezas est.:</span>
             <span className="text-data tabular-nums text-zinc-300 font-terminal">
               ~{totalHeads.toLocaleString('es-AR')}
             </span>
           </div>
           <div className="text-terminal-border text-xxs select-none">|</div>
           <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-600 uppercase">Provincias:</span>
+            <span className="text-xxs text-zinc-500 uppercase">Provincias:</span>
             <span className="text-data tabular-nums text-zinc-300 font-terminal">{uniqueProvinces}</span>
           </div>
           <div className="text-terminal-border text-xxs select-none">|</div>
           <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-600 uppercase">Hoy:</span>
+            <span className="text-xxs text-zinc-500 uppercase">Hoy:</span>
             <span className={`text-data tabular-nums font-terminal ${todayAuctions.length > 0 ? 'text-positive' : 'text-zinc-500'}`}>
               {todayAuctions.length}
             </span>
@@ -692,7 +692,7 @@ export default function RematesPage() {
               >
                 {tab.label}
                 <span className={`ml-1.5 tabular-nums ${
-                  period === tab.key ? 'text-accent' : 'text-zinc-600'
+                  period === tab.key ? 'text-accent' : 'text-zinc-500'
                 }`}>
                   {counts[tab.key]}
                 </span>
@@ -720,7 +720,7 @@ export default function RematesPage() {
                   setFilterProvince('')
                   setFilterType('')
                 }}
-                className="text-xxs text-zinc-600 hover:text-negative font-terminal transition-colors px-2 py-1"
+                className="text-xxs text-zinc-500 hover:text-negative font-terminal transition-colors px-2 py-1"
                 title="Limpiar filtros"
               >
                 LIMPIAR
@@ -732,7 +732,7 @@ export default function RematesPage() {
         {/* -- Active filter pills ------------------------------------ */}
         {(filterProvince || filterType) && (
           <div className="border-b border-terminal-border px-panel py-1.5 flex items-center gap-2 flex-wrap">
-            <span className="text-xxs text-zinc-600 font-terminal">Filtros:</span>
+            <span className="text-xxs text-zinc-500 font-terminal">Filtros:</span>
             {filterProvince && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xxs bg-accent/10 text-accent border border-accent/20 rounded-terminal">
                 <span>{filterProvince}</span>
@@ -750,19 +750,19 @@ export default function RematesPage() {
 
         {/* -- Column headers (desktop only) ----------------------- */}
         <div className="border-b border-terminal-border px-cell py-px2 hidden md:flex items-center gap-0 bg-terminal-panel">
-          <span className="w-[56px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">
+          <span className="w-[56px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">
             Fecha
           </span>
-          <span className="w-[52px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">
+          <span className="w-[52px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">
             Hora
           </span>
-          <span className="flex-1 min-w-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal">
+          <span className="flex-1 min-w-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">
             Consignataria
           </span>
-          <span className="w-[140px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right pr-2">
+          <span className="w-[140px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right pr-2">
             Plaza
           </span>
-          <span className="w-[36px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-600 font-terminal text-right">
+          <span className="w-[36px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">
             Prv
           </span>
         </div>
@@ -771,7 +771,7 @@ export default function RematesPage() {
         <div className="divide-y-0">
           {filteredAuctions.length === 0 ? (
             <div className="px-panel py-8 text-center">
-              <p className="text-data text-zinc-600 font-terminal">
+              <p className="text-data text-zinc-500 font-terminal">
                 No hay remates para este periodo con los filtros seleccionados.
               </p>
               <button
@@ -793,7 +793,7 @@ export default function RematesPage() {
 
         {/* -- Panel footer ----------------------------------------- */}
         <div className="border-t border-terminal-border px-panel py-1.5 flex items-center justify-between">
-          <span className="text-xxs text-zinc-600 font-terminal">
+          <span className="text-xxs text-zinc-500 font-terminal">
             {filteredAuctions.length} resultado{filteredAuctions.length !== 1 ? 's' : ''}
             {(filterProvince || filterType) && (
               <span className="text-zinc-700"> (filtrado)</span>
@@ -814,7 +814,7 @@ export default function RematesPage() {
             <span className="text-amber-400 text-[10px]">★</span>
             <span className="text-amber-400 font-terminal text-[10px] font-bold tracking-wider">PRO</span>
           </span>
-          <span className="text-xxs text-zinc-600 font-terminal mr-1">TIPOS:</span>
+          <span className="text-xxs text-zinc-500 font-terminal mr-1">TIPOS:</span>
           {(Object.entries(TYPE_COLORS)).map(([type, cls]) => (
             <span key={type} className="flex items-center gap-1">
               <span className={`terminal-tag ${cls} text-[10px]`}>{TYPE_LABELS_SHORT[type] || type}</span>
@@ -823,7 +823,7 @@ export default function RematesPage() {
 
           <span className="text-terminal-border text-xxs select-none hidden sm:inline">|</span>
 
-          <span className="text-xxs text-zinc-600 font-terminal mr-1 hidden sm:inline">STATUS:</span>
+          <span className="text-xxs text-zinc-500 font-terminal mr-1 hidden sm:inline">STATUS:</span>
           <span className="flex items-center gap-1.5 hidden sm:flex">
             <span className="status-dot bg-sky-400" />
             <span className="text-xxs text-zinc-500 font-terminal">Programado</span>

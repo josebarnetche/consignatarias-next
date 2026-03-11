@@ -92,7 +92,7 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
         <span className="text-zinc-200 text-label tracking-widest">VERIFICAR PERFIL</span>
         <Link
           href={`/consignatarias/${slug}`}
-          className="text-zinc-600 hover:text-accent text-xxs font-terminal transition-colors"
+          className="text-zinc-500 hover:text-accent text-xxs font-terminal transition-colors"
         >
           &larr; VOLVER
         </Link>

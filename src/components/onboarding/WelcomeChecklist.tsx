@@ -46,7 +46,7 @@ export default function WelcomeChecklist({ profileSlug, displayName, completedFi
             const done = completedFields[item.key]
             return (
               <div key={item.key} className="flex items-center gap-2">
-                <span className={`text-data font-terminal ${done ? 'text-positive' : 'text-zinc-600'}`}>
+                <span className={`text-data font-terminal ${done ? 'text-positive' : 'text-zinc-500'}`}>
                   {done ? '\u2713' : '\u25CB'}
                 </span>
                 <span className={`text-xxs font-terminal ${done ? 'text-zinc-500 line-through' : 'text-zinc-300'}`}>
