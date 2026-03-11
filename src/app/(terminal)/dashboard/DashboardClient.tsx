@@ -121,21 +121,38 @@ export default function DashboardClient({
   const justUpgraded = searchParams.get('upgraded') === 'true'
   const tabParam = searchParams.get('tab') as TabKey | null
   const [showUpgradeToast, setShowUpgradeToast] = useState(justUpgraded)
+  const [upgradeConfirmed, setUpgradeConfirmed] = useState(false)
+  const [upgradePollCount, setUpgradePollCount] = useState(0)
   const [activeTab, setActiveTab] = useState<TabKey>(tabParam || 'resumen')
   const [ownerAuctions, setOwnerAuctions] = useState(initialOwnerAuctions)
 
-  const tierLabel = subscription
-    ? subscription.plan_name.toLowerCase().includes('enterprise')
+  const tierLabel = (upgradeConfirmed || subscription)
+    ? (subscription?.plan_name || '').toLowerCase().includes('enterprise')
       ? 'ENTERPRISE'
       : 'PRO'
     : 'FREE'
 
+  // Poll subscription status after upgrade redirect
   useEffect(() => {
-    if (showUpgradeToast) {
-      const timer = setTimeout(() => setShowUpgradeToast(false), 8000)
-      return () => clearTimeout(timer)
-    }
-  }, [showUpgradeToast])
+    if (!justUpgraded || subscription || upgradeConfirmed) return
+    if (upgradePollCount >= 12) return // Stop after 60s (12 x 5s)
+
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch('/api/subscription-status')
+        const data = await res.json()
+        if (data.status === 'active') {
+          setUpgradeConfirmed(true)
+        } else {
+          setUpgradePollCount(prev => prev + 1)
+        }
+      } catch {
+        setUpgradePollCount(prev => prev + 1)
+      }
+    }, 5000)
+
+    return () => clearTimeout(timer)
+  }, [justUpgraded, subscription, upgradeConfirmed, upgradePollCount])
 
   // Build tab list
   const tabs: { key: TabKey; label: string }[] = [
@@ -158,11 +175,44 @@ export default function DashboardClient({
     <div className="max-w-3xl mx-auto px-2 sm:px-4 py-4 space-y-4">
       {/* Post-upgrade celebration */}
       {showUpgradeToast && (
-        <div className="terminal-panel border-amber-500/30">
-          <div className="px-panel py-3 flex items-center gap-3">
-            <span className="text-amber-400 font-terminal text-data">&#9733; PRO</span>
-            <span className="text-zinc-200 text-xxs font-terminal">Bienvenido a PRO! Tu perfil ya esta destacado.</span>
-            <button onClick={() => setShowUpgradeToast(false)} className="ml-auto text-zinc-500 text-xxs font-terminal hover:text-zinc-400">Cerrar</button>
+        <div className="terminal-panel border-amber-500/40" style={{ boxShadow: '0 0 20px rgba(251, 191, 36, 0.1)' }}>
+          <div className="px-panel py-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-amber-400 font-terminal text-lg">&#9733;</span>
+                <div>
+                  <div className="text-amber-300 font-terminal text-data font-semibold">
+                    {(subscription || upgradeConfirmed) ? 'PRO activado!' : 'Pago recibido — activando PRO...'}
+                  </div>
+                  <div className="text-zinc-400 text-xxs font-terminal mt-0.5">
+                    {(subscription || upgradeConfirmed)
+                      ? 'Tu perfil esta destacado y tus remates aparecen con badge dorado.'
+                      : 'Procesando tu suscripcion. Esto puede tomar unos segundos.'}
+                  </div>
+                </div>
+              </div>
+              <button onClick={() => setShowUpgradeToast(false)} className="text-zinc-500 text-xxs font-terminal hover:text-zinc-400 flex-shrink-0">Cerrar</button>
+            </div>
+            {(subscription || upgradeConfirmed) ? (
+              <div className="flex flex-wrap gap-2">
+                <button onClick={() => { setActiveTab('remates'); setShowUpgradeToast(false) }} className="px-3 py-1.5 bg-amber-400/10 border border-amber-500/30 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-400/20 transition-colors">
+                  Crear remate destacado
+                </button>
+                <button onClick={() => { setActiveTab('editar'); setShowUpgradeToast(false) }} className="px-3 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors">
+                  Completar perfil
+                </button>
+                {consignataria && (
+                  <Link href={`/consignatarias/${consignataria.canonical_slug}`} className="px-3 py-1.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors">
+                    Ver perfil publico
+                  </Link>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+                <span className="text-xxs font-terminal text-zinc-500">Verificando suscripcion...</span>
+              </div>
+            )}
           </div>
         </div>
       )}

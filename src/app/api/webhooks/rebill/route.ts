@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
           await service
             .from('consignatarias')
             .update({ featured: false })
-            .eq('slug', sub.entity_slug)
+            .eq('canonical_slug', sub.entity_slug)
         }
 
         break
