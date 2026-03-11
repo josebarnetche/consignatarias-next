@@ -6,22 +6,32 @@ export async function createPaymentLink(
   entitySlug: string,
   entityType: 'consignataria' | 'frigorifico'
 ) {
-  const res = await fetch(`${REBILL_API}/checkout`, {
+  const amount = planId === process.env.REBILL_FRIGO_PLAN_ID ? 35000 : 45000
+  const title = entityType === 'frigorifico'
+    ? 'Frigo PRO - Consignatarias.com.ar'
+    : 'PRO - Consignatarias.com.ar'
+
+  const res = await fetch(`${REBILL_API}/payment-links`, {
     method: 'POST',
     headers: {
       'x-api-key': process.env.REBILL_SECRET_KEY!,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      planId,
-      customer: { email: customerEmail },
-      metadata: { entitySlug, entityType },
-      redirectUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?upgraded=true`,
+      title: [{ language: 'es', text: title }],
+      paymentMethods: [{ methods: ['card'], currency: 'ARS' }],
+      prices: [{ amount, currency: 'ARS' }],
+      metadata: { entitySlug, entityType, customerEmail, planId },
+      redirectUrls: {
+        approved: `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'}/dashboard?upgraded=true`,
+      },
+      isSingleUse: true,
     }),
   })
 
   if (!res.ok) {
     const err = await res.text()
+    console.error('Rebill payment-links error:', res.status, err)
     throw new Error(`Rebill error: ${res.status} ${err}`)
   }
 
