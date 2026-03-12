@@ -1,0 +1,563 @@
+{
+  "version": 1,
+  "project": "FrigoConnect — Frigorifico Procurement Platform",
+  "overview": "B2B platform that replaces 50+ daily phone calls with a real-time dashboard for Argentine frigoríficos to discover cattle lots from connected consignatarias, place digital bids, negotiate counter-offers, and manage procurement. MVP scope: Live Supply Feed, Digital Bidding, and Company Profiles. Shared Supabase backend with consignatarias.com.ar, separate Next.js frontend deployed on Vercel. Spanish-only UI, phone OTP auth, mobile-first design.",
+  "goals": [
+    "Enable frigoríficos to discover available cattle lots in real-time instead of making 30-50 phone calls/day",
+    "Provide digital bidding with counter-offer negotiation workflow replacing verbal negotiations",
+    "Build frigorífico company profiles and consignatario directory for marketplace trust",
+    "Reduce procurement time by 70% (from 4-6 hours/day to under 30 minutes)",
+    "Create foundation for future modules (DTE automation, Payment Hub, Scorecards, Analytics)"
+  ],
+  "nonGoals": [
+    "No payment processing, escrow, or factoring in V1 (future Payment Hub module)",
+    "No DTE/SENASA document automation in V1 (future DocCenter module)",
+    "No supplier scorecards or historical yield tracking in V1 (future Quality module)",
+    "No analytics or reporting dashboard in V1 (future Analytics module)",
+    "No EUDR/Hilton compliance tracking in V1 (future Enterprise module)",
+    "No consignataria-side features (handled by existing consignatarias.com.ar)",
+    "No internationalization — Spanish only, no i18n framework needed",
+    "No WhatsApp Business API notifications in V1 (future enhancement)",
+    "No pricing tiers or billing in V1 — all users get full MVP features during Programa Pionero pilot"
+  ],
+  "successMetrics": [
+    "Frigorífico user can view available lots and place a bid within 3 minutes of first login",
+    "Bid counter-offer negotiation completes in under 5 round-trips",
+    "Real-time lot updates appear in feed within 2 seconds of consignataria posting",
+    "5+ frigoríficos onboarded and actively bidding during 90-day Programa Pionero pilot",
+    "npm run lint and npm run typecheck pass with zero errors on every story"
+  ],
+  "openQuestions": [
+    "How does consignatarias.com.ar post lots? Direct Supabase insert from their app or via shared API?",
+    "Should lot pricing support dual currency (ARS + USD) or ARS-only in V1?",
+    "What is the default lot expiration policy? 24h, 48h, or manual expiration by consignatario?",
+    "Should frigoríficos see how many competing bids exist on a lot (transparency vs. privacy)?",
+    "Domain strategy: frigorificos.consignatarias.com.ar vs. frigoconnect.com.ar vs. other?"
+  ],
+  "stack": {
+    "framework": "Next.js 14+ (App Router, TypeScript strict)",
+    "hosting": "Vercel",
+    "database": "Supabase (PostgreSQL + Realtime + Auth + Storage) — shared project with consignatarias.com.ar",
+    "auth": "Supabase Auth with Phone OTP",
+    "styling": "Tailwind CSS + shadcn/ui",
+    "language": "TypeScript (strict mode)",
+    "icons": "lucide-react",
+    "realtime": "Supabase Realtime (WebSocket subscriptions on lots and bids tables)"
+  },
+  "routes": [
+    { "path": "/", "name": "Landing", "purpose": "Marketing/hero page for unauthenticated visitors with login CTA" },
+    { "path": "/auth/login", "name": "Iniciar sesión", "purpose": "Phone number input + OTP verification" },
+    { "path": "/auth/registro", "name": "Registro", "purpose": "New user registration + company onboarding wizard (3 steps)" },
+    { "path": "/dashboard", "name": "Inicio", "purpose": "Home dashboard with overview cards, pending actions, recent lots" },
+    { "path": "/feed", "name": "Oferta disponible", "purpose": "Live paginated list of available cattle lots with filters and sorting" },
+    { "path": "/feed/[lotId]", "name": "Detalle de lote", "purpose": "Full lot information, photos, consignatario info, place bid CTA" },
+    { "path": "/ofertas", "name": "Mis ofertas", "purpose": "All bids organized by status tabs (pendientes, en negociación, ganadas, perdidas)" },
+    { "path": "/ofertas/[bidId]", "name": "Negociación", "purpose": "Bid thread view with counter-offer accept/counter/reject actions" },
+    { "path": "/watchlist", "name": "Favoritos", "purpose": "Saved lots of interest with status tracking" },
+    { "path": "/consignatarios", "name": "Consignatarios", "purpose": "Browse and search consignatarios on the platform" },
+    { "path": "/perfil", "name": "Mi empresa", "purpose": "View and edit company profile, team members list" },
+    { "path": "/configuracion", "name": "Configuración", "purpose": "Notification preferences, account settings" }
+  ],
+  "uiNotes": [
+    "Spanish-only UI — all labels, buttons, form fields, validation messages, empty states, and toasts in Spanish",
+    "Mobile-first responsive design — commercial directors check from phone at 5 AM in the campo",
+    "App shell: collapsible left sidebar on desktop (240px), bottom tab bar on mobile (5 items)",
+    "Lot cards: breed icon, category badge, head count, avg weight (kg), price ask (ARS/kg), provincia, consignatario name, time posted (relative: 'hace 2 horas')",
+    "Bid status colors: pending=yellow-500, countered=orange-500, accepted=green-600, rejected=red-500, expired=gray-400",
+    "ARS currency format: $ 1.234,56 (dot for thousands separator, comma for decimals)",
+    "Loading states: skeleton cards for feed, spinners for form submissions",
+    "Toast notifications via shadcn/ui toast component",
+    "Dark mode not required for V1",
+    "Minimum supported screen: 320px width (older Android phones common in rural areas)"
+  ],
+  "dataModel": [
+    {
+      "entity": "company",
+      "fields": [
+        "id uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+        "name text NOT NULL",
+        "cuit text UNIQUE",
+        "type text NOT NULL CHECK (type IN ('frigorifico', 'consignataria'))",
+        "provincia text",
+        "localidad text",
+        "direccion text",
+        "telefono text",
+        "email text",
+        "web text",
+        "capacity_heads_day integer",
+        "export_certified boolean DEFAULT false",
+        "logo_url text",
+        "created_at timestamptz DEFAULT now()"
+      ]
+    },
+    {
+      "entity": "user_profile",
+      "fields": [
+        "id uuid PRIMARY KEY REFERENCES auth.users ON DELETE CASCADE",
+        "company_id uuid REFERENCES company(id)",
+        "phone text NOT NULL",
+        "full_name text NOT NULL",
+        "role text NOT NULL CHECK (role IN ('admin', 'comprador', 'viewer')) DEFAULT 'viewer'",
+        "created_at timestamptz DEFAULT now()"
+      ]
+    },
+    {
+      "entity": "lot",
+      "fields": [
+        "id uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+        "consignataria_id uuid NOT NULL REFERENCES company(id)",
+        "posted_by uuid REFERENCES user_profile(id)",
+        "breed text NOT NULL",
+        "category text NOT NULL CHECK (category IN ('novillo', 'novillito', 'vaquillona', 'vaca', 'toro'))",
+        "head_count integer NOT NULL CHECK (head_count > 0)",
+        "avg_weight_kg numeric(8,2) NOT NULL",
+        "weight_source text CHECK (weight_source IN ('balanza', 'visual', 'feedlot'))",
+        "provincia text NOT NULL",
+        "localidad text",
+        "price_ask_ars_kg numeric(12,2)",
+        "price_ask_usd_kg numeric(12,2)",
+        "sanitary_status jsonb DEFAULT '{}'",
+        "delivery_date_earliest date",
+        "delivery_date_latest date",
+        "dte_pre_auth boolean DEFAULT false",
+        "photos text[]",
+        "notes text",
+        "status text NOT NULL CHECK (status IN ('available', 'under_negotiation', 'sold', 'expired', 'withdrawn')) DEFAULT 'available'",
+        "expires_at timestamptz",
+        "created_at timestamptz DEFAULT now()"
+      ]
+    },
+    {
+      "entity": "bid",
+      "fields": [
+        "id uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+        "lot_id uuid NOT NULL REFERENCES lot(id)",
+        "frigorifico_id uuid NOT NULL REFERENCES company(id)",
+        "user_id uuid NOT NULL REFERENCES user_profile(id)",
+        "price_offered_ars_kg numeric(12,2)",
+        "price_offered_usd_kg numeric(12,2)",
+        "head_count_requested integer NOT NULL CHECK (head_count_requested > 0)",
+        "message text",
+        "status text NOT NULL CHECK (status IN ('pending', 'countered', 'accepted', 'rejected', 'expired', 'withdrawn')) DEFAULT 'pending'",
+        "parent_bid_id uuid REFERENCES bid(id)",
+        "created_at timestamptz DEFAULT now()"
+      ]
+    },
+    {
+      "entity": "watchlist_item",
+      "fields": [
+        "id uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+        "user_id uuid NOT NULL REFERENCES user_profile(id)",
+        "lot_id uuid NOT NULL REFERENCES lot(id)",
+        "created_at timestamptz DEFAULT now()",
+        "UNIQUE(user_id, lot_id)"
+      ]
+    },
+    {
+      "entity": "notification",
+      "fields": [
+        "id uuid PRIMARY KEY DEFAULT gen_random_uuid()",
+        "user_id uuid NOT NULL REFERENCES user_profile(id)",
+        "type text NOT NULL CHECK (type IN ('new_lot', 'bid_received', 'bid_countered', 'bid_accepted', 'bid_rejected', 'lot_expired', 'system'))",
+        "title text NOT NULL",
+        "body text NOT NULL",
+        "data jsonb",
+        "read boolean DEFAULT false",
+        "created_at timestamptz DEFAULT now()"
+      ]
+    }
+  ],
+  "importFormat": {
+    "description": "Lots are created by consignatarias via consignatarias.com.ar (shared Supabase database). No external import needed on the frigorífico side. Seed data uses the same lot schema for development.",
+    "example": {
+      "breed": "Angus",
+      "category": "novillo",
+      "head_count": 120,
+      "avg_weight_kg": 420.5,
+      "price_ask_ars_kg": 2850.0,
+      "provincia": "Buenos Aires",
+      "localidad": "Cañuelas",
+      "status": "available"
+    }
+  },
+  "rules": [
+    "Only users with role 'comprador' or 'admin' can place bids",
+    "A lot can receive multiple bids from different frigoríficos simultaneously",
+    "A frigorífico can only have one active (pending) bid per lot — must withdraw previous bid to rebid",
+    "A bid can be countered by the consignatario, creating a new bid linked via parent_bid_id",
+    "When a bid is accepted: lot.status → 'sold', all other pending bids on that lot are auto-rejected",
+    "Lot feed shows only lots with status 'available' or 'under_negotiation'",
+    "Lots expire automatically when current time > expires_at — status changes to 'expired' via Supabase cron or app check",
+    "At least one price field (ARS or USD) must be provided on bids and lots",
+    "Company CUIT format validation: XX-XXXXXXXX-X (2 digits, dash, 8 digits, dash, 1 check digit)",
+    "Phone OTP codes expire after 60 seconds with max 3 attempts before 5-minute lockout",
+    "RLS policies: lots are readable by all authenticated users; bids are readable only by the frigorifico that placed them and the consignataria that owns the lot",
+    "Supabase Realtime subscriptions on lots (INSERT/UPDATE) and bids (INSERT/UPDATE) for live updates",
+    "Watchlist unique constraint: same user cannot save the same lot twice",
+    "Notifications are scoped to user_id — RLS prevents cross-company visibility"
+  ],
+  "qualityGates": ["npm run lint", "npm run typecheck"],
+  "stories": [
+    {
+      "id": "US-001",
+      "title": "Scaffold Next.js project with Supabase integration",
+      "status": "open",
+      "dependsOn": [],
+      "description": "As a developer, I want to scaffold the Next.js project with Supabase client configuration so that we have a deployable foundation for FrigoConnect.",
+      "acceptanceCriteria": [
+        "Create Next.js 14+ app with App Router and TypeScript strict mode: `npx create-next-app@latest frigoconnect --typescript --tailwind --eslint --app --src-dir`",
+        "Install core dependencies: `npm install @supabase/supabase-js @supabase/ssr`",
+        "Initialize shadcn/ui: `npx shadcn@latest init` with default config and install button + toast components: `npx shadcn@latest add button toast`",
+        "Install icon library: `npm install lucide-react`",
+        "Create `.env.local.example` with NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY placeholder values",
+        "Create Supabase browser client at `src/lib/supabase/client.ts` using createBrowserClient",
+        "Create Supabase server client at `src/lib/supabase/server.ts` using createServerClient with cookie handling",
+        "Create root layout `src/app/layout.tsx` with `<html lang='es'>`, basic metadata (title: 'FrigoConnect', description in Spanish)",
+        "Create minimal landing page at `src/app/page.tsx` with 'FrigoConnect' heading, tagline 'Tu oferta de hacienda en una pantalla', and 'Iniciar sesión' link to /auth/login",
+        "Add scripts to package.json: `\"lint\": \"next lint\"`, `\"typecheck\": \"tsc --noEmit\"`",
+        "Example: `npm run dev` starts the app on localhost:3000 showing the landing page with heading and login link",
+        "Negative case: accessing `/dashboard` returns Next.js default 404 page (no authenticated routes exist yet)",
+        "`npm run lint` and `npm run typecheck` pass with zero errors"
+      ]
+    },
+    {
+      "id": "US-002",
+      "title": "Database schema — companies, users, lots, bids, watchlist, notifications",
+      "status": "open",
+      "dependsOn": ["US-001"],
+      "description": "As a developer, I want to create the database schema in the shared Supabase project so that the app has the data foundation for all MVP features.",
+      "acceptanceCriteria": [
+        "Install Supabase CLI as dev dependency: `npm install -D supabase`",
+        "Initialize local Supabase: `npx supabase init`",
+        "Create migration file with CREATE TABLE statements for: company, user_profile, lot, bid, watchlist_item, notification — all with columns, constraints, and CHECK enums as defined in the data model",
+        "Add foreign key relationships: user_profile.company_id → company.id, lot.consignataria_id → company.id, bid.lot_id → lot.id, bid.frigorifico_id → company.id, bid.user_id → user_profile.id, bid.parent_bid_id → bid.id (self-referencing, nullable)",
+        "Add UNIQUE constraint on watchlist_item(user_id, lot_id)",
+        "Enable Row Level Security (RLS) on all tables",
+        "RLS policies: lots SELECT for all authenticated users; bids SELECT only where frigorifico_id = user's company OR lot's consignataria_id = user's company; user_profile SELECT/UPDATE only for same company_id; company SELECT for all authenticated, UPDATE only for own company admins; watchlist_item full CRUD only for own user_id; notification SELECT/UPDATE only for own user_id",
+        "Create seed file with: 3 consignataria companies (with realistic names/provinces), 2 frigorífico companies, 10 lots (mix of breeds/categories/provinces/statuses), 5 bids (mix of statuses including one counter-offer chain)",
+        "Generate TypeScript types: `npx supabase gen types typescript --local > src/lib/supabase/database.types.ts`",
+        "Create typed Supabase client helper at `src/lib/supabase/typed-client.ts` that uses generated types",
+        "Example: querying lots table returns typed results with all fields; seed lot with breed='Angus', category='novillo', head_count=120, status='available' is present",
+        "Negative case: inserting a lot with category='cerdo' fails with CHECK constraint violation",
+        "Negative case: inserting a watchlist_item with duplicate (user_id, lot_id) fails with UNIQUE constraint",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    },
+    {
+      "id": "US-003",
+      "title": "Phone OTP authentication — login flow",
+      "status": "open",
+      "dependsOn": ["US-002"],
+      "description": "As a frigorífico user, I want to log in with my phone number and a one-time code so that I can access the platform quickly without remembering passwords.",
+      "acceptanceCriteria": [
+        "Create `/auth/login` page with phone number input field",
+        "Phone input accepts Argentine format with country code pre-filled (+54) and placeholder showing format: 11 1234-5678",
+        "Validate phone format on submit — show inline error 'Ingresá un número de teléfono válido' for invalid input",
+        "On valid submit, call Supabase `auth.signInWithOtp({ phone })` to send OTP code",
+        "After OTP sent, show 6-digit code input with 60-second countdown timer and disabled 'Reenviar código' button that enables after countdown",
+        "On successful OTP verification: if user has a user_profile record, redirect to `/dashboard`; if no profile exists, redirect to `/auth/registro`",
+        "Create Next.js middleware at `src/middleware.ts` that checks Supabase session on all routes except `/`, `/auth/*`, and `/_next/*` — redirect unauthenticated users to `/auth/login`",
+        "Store return URL in query param so user is redirected back after login",
+        "Example: user enters +54 11 1234-5678 → receives OTP → enters 6-digit code → lands on /dashboard (if profile exists) or /auth/registro (if new)",
+        "Negative case: entering wrong OTP 3 times shows 'Demasiados intentos. Intentá de nuevo en 5 minutos.' and disables input",
+        "Negative case: accessing `/feed` while logged out redirects to `/auth/login?returnTo=/feed`",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    },
+    {
+      "id": "US-004",
+      "title": "User registration and company onboarding wizard",
+      "status": "open",
+      "dependsOn": ["US-003"],
+      "description": "As a new frigorífico user, I want to register my company details after phone verification so that my company profile is set up and I can start using the platform.",
+      "acceptanceCriteria": [
+        "Create `/auth/registro` page accessible only to authenticated users who do NOT yet have a user_profile record",
+        "Multi-step wizard with progress indicator (3 steps: 1. Tus datos, 2. Tu empresa, 3. Operación)",
+        "Step 1 — Personal: full_name (required text input)",
+        "Step 2 — Company: name (required), CUIT (required, validate XX-XXXXXXXX-X format with check digit), provincia (dropdown with all 24 Argentine provinces), localidad (text), dirección (text), teléfono fijo (text), email (email input), web (url input)",
+        "Step 3 — Operations: capacity_heads_day (number input, optional), export_certified (checkbox, default unchecked)",
+        "Back button on steps 2 and 3 to return to previous step without losing data",
+        "On final submit: create company record (type='frigorifico'), create user_profile record (role='admin', phone from auth session), redirect to `/dashboard`",
+        "If CUIT already exists in database, show message: 'Esta empresa ya está registrada. Contactanos para solicitar acceso.' with a mailto link",
+        "Example: user fills all 3 steps with valid data → company and user_profile created → redirected to /dashboard with welcome state",
+        "Negative case: CUIT '99-99999999-9' with invalid check digit shows 'CUIT inválido — verificá el número'",
+        "Negative case: submitting step 2 without company name shows 'Este campo es obligatorio'",
+        "Negative case: user who already has a profile visiting /auth/registro is redirected to /dashboard",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    },
+    {
+      "id": "US-005",
+      "title": "App shell layout with responsive navigation",
+      "status": "open",
+      "dependsOn": ["US-003"],
+      "description": "As a logged-in user, I want a consistent app shell with navigation so that I can move between platform sections easily on both desktop and mobile.",
+      "acceptanceCriteria": [
+        "Create authenticated layout at `src/app/(app)/layout.tsx` wrapping all protected routes",
+        "Desktop (≥768px): collapsible left sidebar (240px expanded, 64px collapsed) with nav items and icons — Inicio (/dashboard), Oferta (/feed), Mis ofertas (/ofertas), Favoritos (/watchlist), Consignatarios (/consignatarios), Mi empresa (/perfil)",
+        "Mobile (<768px): bottom tab bar with 5 items — Inicio, Oferta, Ofertas, Favoritos, Más (dropdown/sheet for Consignatarios, Mi empresa, Configuración, Cerrar sesión)",
+        "Sidebar header shows company name and user full_name (fetched from user_profile + company)",
+        "Active route is visually highlighted in nav (bold text + accent background)",
+        "Top bar on all screens: page title on left, notification bell icon on right with unread count badge (hardcoded to 0 for now)",
+        "'Cerrar sesión' in sidebar footer (desktop) and 'Más' menu (mobile) — calls auth.signOut() and redirects to `/`",
+        "Install shadcn sheet component for mobile menu: `npx shadcn@latest add sheet`",
+        "Example: navigating from /dashboard to /feed updates active highlight in sidebar and page title in top bar",
+        "Negative case: on 320px screen width, sidebar is hidden and bottom tabs render without overlapping content area",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    },
+    {
+      "id": "US-006",
+      "title": "Live Supply Feed — lot list view",
+      "status": "open",
+      "dependsOn": ["US-005", "US-002"],
+      "description": "As a frigorífico buyer, I want to see all available cattle lots in a real-time feed so that I can discover supply without making phone calls.",
+      "acceptanceCriteria": [
+        "Create `/feed` page at `src/app/(app)/feed/page.tsx`",
+        "Fetch and display paginated list of lots where status IN ('available', 'under_negotiation'), ordered by created_at DESC",
+        "Lot card component showing: breed, category badge (color-coded), head count, avg weight (kg), price ask formatted as ARS/kg ($ 2.850,00), provincia + localidad, consignataria company name, relative time posted ('hace 2 horas', 'hace 1 día')",
+        "Install date utility for relative time: `npm install date-fns` and use `formatDistanceToNow` with Spanish locale",
+        "Pagination: 20 lots per page with 'Cargar más' button at bottom (cursor-based pagination using created_at)",
+        "Loading state: 4 skeleton lot cards while initial data loads",
+        "Empty state when no lots: illustration placeholder + 'No hay lotes disponibles en este momento. Los consignatarios publicarán nuevos lotes pronto.'",
+        "Each card is clickable — navigates to `/feed/[lotId]`",
+        "Show total count: 'X lotes disponibles' above the list",
+        "Example: 10 seed lots appear in the feed, newest first, each card showing all required fields correctly formatted",
+        "Negative case: lots with status 'sold', 'expired', or 'withdrawn' do NOT appear in the feed",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    },
+    {
+      "id": "US-007",
+      "title": "Feed filtering and sorting controls",
+      "status": "open",
+      "dependsOn": ["US-006"],
+      "description": "As a frigorífico buyer, I want to filter and sort the supply feed so that I can quickly find lots matching my operational needs.",
+      "acceptanceCriteria": [
+        "Add filter panel to `/feed` page — collapsible sidebar on desktop, bottom sheet on mobile (triggered by 'Filtros' button with active filter count badge)",
+        "Filter controls: breed (multi-select checkboxes: Angus, Hereford, Brangus, Braford, Holando, Cruza, Otro), category (multi-select: novillo, novillito, vaquillona, vaca, toro), provincia (multi-select dropdown of 24 provinces), weight range (min/max number inputs, kg), price range (min/max number inputs, ARS/kg), head count (min/max number inputs)",
+        "Sort dropdown with options: 'Más recientes' (default), 'Menor precio', 'Mayor precio', 'Mayor cantidad', 'Menor cantidad'",
+        "All active filters are reflected in URL search params (e.g., ?breed=Angus,Hereford&provincia=Buenos+Aires&sort=price_asc) so filtered views are shareable/bookmarkable",
+        "'Limpiar filtros' button resets all filters and URL params",
+        "Results header updates: 'Mostrando X lotes' (filtered count)",
+        "Filters apply client-side for instant response on small datasets; Supabase query uses filters for pagination",
+        "Example: selecting breed='Angus' + provincia='Buenos Aires' shows only matching lots from seed data; URL updates accordingly",
+        "Negative case: setting min weight 500 and max weight 300 shows inline validation 'El peso mínimo debe ser menor al máximo'",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    },
+    {
+      "id": "US-008",
+      "title": "Lot detail page with full information",
+      "status": "open",
+      "dependsOn": ["US-006"],
+      "description": "As a frigorífico buyer, I want to view full details of a cattle lot so that I can make an informed decision before bidding.",
+      "acceptanceCriteria": [
+        "Create `/feed/[lotId]` page at `src/app/(app)/feed/[lotId]/page.tsx`",
+        "Fetch lot by ID with consignataria company data joined",
+        "Display sections: header (breed + category badge + head count + status badge), pricing card (ARS/kg and USD/kg if available, with total estimated value = price × heads × avg weight), weight details (avg kg + source label: Balanza/Estimación visual/Feedlot), location (provincia, localidad), delivery window (earliest to latest date formatted as 'DD/MM/YYYY'), sanitary status (render jsonb as key-value list), DTE pre-authorization status (Sí/No badge)",
+        "Photo gallery: horizontal scrollable thumbnails, click to expand (or placeholder 'Sin fotos disponibles' if photos array is empty)",
+        "Consignataria info card: company name, provincia, phone number as click-to-call link on mobile (tel: href)",
+        "Primary CTA: 'Hacer oferta' button (large, prominent) — navigates to bid form (placeholder alert until US-009 is implemented)",
+        "Secondary action: heart icon toggle for watchlist (functional if US-013 is done, otherwise non-functional placeholder)",
+        "Back link: '← Volver a oferta' returns to /feed preserving any active filter params",
+        "If lot status is 'sold': show green banner 'Este lote fue vendido' and disable bid button",
+        "If lot status is 'expired': show gray banner 'Este lote expiró' and disable bid button",
+        "Notes section: display lot.notes if present",
+        "Example: navigating to seed lot shows all fields correctly formatted; consignataria name and phone appear in info card",
+        "Negative case: navigating to `/feed/00000000-0000-0000-0000-000000000000` shows 'Lote no encontrado' with link back to feed",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    },
+    {
+      "id": "US-009",
+      "title": "Place bid on a cattle lot",
+      "status": "open",
+      "dependsOn": ["US-008"],
+      "description": "As a frigorífico buyer (comprador or admin role), I want to place a bid on a cattle lot so that I can initiate a purchase negotiation with the consignatario.",
+      "acceptanceCriteria": [
+        "Add bid form as a dialog/modal on the lot detail page, triggered by 'Hacer oferta' button",
+        "Install shadcn dialog component: `npx shadcn@latest add dialog input label textarea`",
+        "Form fields: price offered in ARS/kg (required number input, show lot's asking price for reference), head count requested (number input, default = lot's full head_count, max = lot's head_count), message to consignatario (optional textarea, max 500 chars, placeholder 'Mensaje opcional para el consignatario...')",
+        "Live calculation display: 'Valor total estimado: $ X' computed as price_offered × head_count × avg_weight_kg, formatted in ARS",
+        "Confirmation step before submit: summary showing 'Oferta de $X/kg por Y cabezas — Total estimado: $Z. ¿Confirmar?'",
+        "On confirm: insert bid record with status='pending', frigorifico_id=user's company, user_id=current user; show success toast '¡Oferta enviada!'; redirect to `/ofertas/[newBidId]`",
+        "Only users with role 'comprador' or 'admin' see the 'Hacer oferta' button; role='viewer' sees disabled button with tooltip 'No tenés permisos para ofertar'",
+        "Check for existing active bid: if user's company has a bid with status='pending' on this lot, show message 'Ya tenés una oferta activa en este lote. Retirala antes de hacer otra.' with link to existing bid",
+        "Example: user bids $2,500/kg for 100 heads on a 120-head Angus lot → bid created → redirected to bid detail showing pending status",
+        "Negative case: entering price 0 or negative number shows 'El precio debe ser mayor a cero'",
+        "Negative case: requesting 150 heads on a 120-head lot shows 'No podés solicitar más de 120 cabezas'",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    },
+    {
+      "id": "US-010",
+      "title": "Bid negotiation thread and counter-offer flow",
+      "status": "open",
+      "dependsOn": ["US-009"],
+      "description": "As a frigorífico buyer, I want to view the negotiation thread and respond to counter-offers so that I can negotiate towards a deal with the consignatario.",
+      "acceptanceCriteria": [
+        "Create `/ofertas/[bidId]` page at `src/app/(app)/ofertas/[bidId]/page.tsx`",
+        "Fetch the full bid chain by following parent_bid_id references (recursive query or multiple fetches)",
+        "Display as chronological thread: each entry shows who made the offer (role label: 'Tu oferta' or consignatario company name), price offered (ARS/kg), head count, message if present, timestamp, status badge",
+        "Visual distinction: user's bids on right side (blue background), consignatario's on left side (gray background) — chat-style layout",
+        "Lot summary card pinned at top: breed, category, original head count, consignataria name, lot status",
+        "When latest bid in thread has status='countered' and was made by consignatario (not user's company), show 3 action buttons: 'Aceptar oferta' (green), 'Contraoferta' (orange), 'Rechazar' (red outline)",
+        "'Aceptar': confirmation dialog '¿Aceptar la oferta de $X/kg por Y cabezas?' → on confirm: update bid status to 'accepted', update lot status to 'sold', auto-reject all other pending bids on same lot. Show success: '¡Trato cerrado! 🤝'",
+        "'Contraoferta': opens bid form pre-filled with counter's price and head count for editing. On submit: creates new bid with parent_bid_id pointing to the counter-offer. Previous bid status stays 'countered'",
+        "'Rechazar': confirmation dialog '¿Rechazar esta oferta?' → update bid status to 'rejected'. Show toast 'Oferta rechazada'",
+        "When bid is in terminal state (accepted/rejected/expired), hide action buttons and show status banner",
+        "Example: seed data includes a counter-offer chain — thread displays 3 entries (initial bid → counter → counter) with correct alignment and action buttons on latest",
+        "Negative case: trying to accept an already-accepted bid shows 'Esta negociación ya fue cerrada'",
+        "Negative case: accessing a bid belonging to another company returns 'No tenés acceso a esta oferta'",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    },
+    {
+      "id": "US-011",
+      "title": "Bid management dashboard with status tabs",
+      "status": "open",
+      "dependsOn": ["US-009"],
+      "description": "As a frigorífico buyer, I want to see all my company's bids in one place so that I can track negotiations and prioritize responses.",
+      "acceptanceCriteria": [
+        "Create `/ofertas` page at `src/app/(app)/ofertas/page.tsx`",
+        "Install shadcn tabs component: `npx shadcn@latest add tabs badge`",
+        "Tab filters: 'Todas', 'Pendientes' (status=pending), 'En negociación' (status=countered), 'Ganadas' (status=accepted), 'Perdidas' (status IN rejected, expired, withdrawn)",
+        "Each tab shows count in badge: 'Pendientes (3)'",
+        "Fetch all bids where frigorifico_id = user's company_id, join with lot data and consignataria name",
+        "Bid list item shows: lot summary (breed + category + head count), consignataria name, user's last offered price, consignatario's last price (if countered), status badge (colored per uiNotes), relative time since last update",
+        "Rows with status 'countered' are highlighted with left accent border (orange) and show '⚡ Requiere respuesta' label",
+        "Click row navigates to `/ofertas/[bidId]`",
+        "Default sort: most recent activity first (latest created_at in bid chain)",
+        "Empty state per tab: 'No tenés ofertas [pendientes/en negociación/ganadas/perdidas]' with CTA to browse feed",
+        "Example: seed bids appear correctly distributed across tabs based on their status values",
+        "Negative case: bids from a different company do not appear (RLS enforced at DB level)",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    },
+    {
+      "id": "US-012",
+      "title": "Dashboard home page with overview and actions",
+      "status": "open",
+      "dependsOn": ["US-005", "US-006", "US-011"],
+      "description": "As a frigorífico user, I want a home dashboard summarizing my platform activity so that I can quickly see what needs attention when I log in.",
+      "acceptanceCriteria": [
+        "Create `/dashboard` page at `src/app/(app)/dashboard/page.tsx`",
+        "Install shadcn card component: `npx shadcn@latest add card`",
+        "Welcome header: 'Hola, [full_name] — [company_name]'",
+        "4 overview cards in a responsive grid: 'Ofertas activas' (count of bids with status pending + countered), 'Lotes en favoritos' (watchlist count), 'Lotes disponibles' (total lots with status available), 'Tratos cerrados' (count of accepted bids)",
+        "Action required section: if any bids have status 'countered' (counter-offer pending response), list them with lot summary and 'Responder' button linking to `/ofertas/[bidId]`. Header: '⚡ Requieren tu respuesta'",
+        "Recent lots section: last 5 lots posted to feed as compact cards, with 'Ver toda la oferta →' link to /feed",
+        "Recent activity section: last 5 bid status changes for user's company (e.g., 'Oferta aceptada en lote Angus x120', 'Nueva contraoferta recibida') with timestamps",
+        "All counts are fetched server-side for fast initial load",
+        "Example: with seed data, dashboard shows correct counts and lists for active bids, recent lots, and activity",
+        "Negative case: new user with no bids, no watchlist, sees zeros in cards and empty states with CTAs ('Explorá la oferta disponible →', 'Hacé tu primera oferta →')",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    },
+    {
+      "id": "US-013",
+      "title": "Watchlist — save and track lots of interest",
+      "status": "open",
+      "dependsOn": ["US-008"],
+      "description": "As a frigorífico buyer, I want to save lots to a watchlist so that I can track interesting supply without committing to a bid yet.",
+      "acceptanceCriteria": [
+        "Add heart/bookmark toggle icon on lot cards in the feed list (US-006) and on the lot detail page (US-008)",
+        "Toggle inserts or deletes a watchlist_item record in Supabase for the current user",
+        "Heart icon: filled (solid) when lot is saved, outline when not — use lucide-react Heart icon",
+        "Optimistic UI: toggle state immediately on click, revert if DB operation fails",
+        "Create `/watchlist` page at `src/app/(app)/watchlist/page.tsx` showing all saved lots as cards (same component used in feed)",
+        "Watchlist cards include lot status badge — if lot was sold/expired, show muted/grayed card with status overlay",
+        "Remove from watchlist: click heart again on the card or detail page",
+        "Order by watchlist_item.created_at DESC (most recently saved first)",
+        "Empty state: 'No guardaste ningún lote todavía' with heart icon illustration and 'Explorar oferta →' CTA",
+        "Example: save 3 lots from feed → all 3 appear on /watchlist → remove one → only 2 remain",
+        "Negative case: saving the same lot twice does not create duplicate — UNIQUE constraint prevents it, UI stays in 'saved' state without error",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    },
+    {
+      "id": "US-014",
+      "title": "Real-time updates via Supabase Realtime subscriptions",
+      "status": "open",
+      "dependsOn": ["US-006", "US-009"],
+      "description": "As a frigorífico buyer, I want the feed and bid statuses to update in real-time so that I never miss new supply or counter-offers.",
+      "acceptanceCriteria": [
+        "Create a custom React hook `useRealtimeSubscription` that wraps Supabase Realtime channel subscriptions with automatic cleanup on unmount",
+        "On `/feed` page: subscribe to lot table INSERT events — new lots appear at top of feed without page refresh, with a subtle highlight animation (e.g., brief green border flash)",
+        "On `/feed` page: subscribe to lot table UPDATE events — lot status changes (e.g., sold) update the card in-place: sold lots show 'Vendido' badge and are moved to bottom or removed from visible list",
+        "On `/ofertas` and `/ofertas/[bidId]` pages: subscribe to bid table INSERT and UPDATE events filtered by user's company_id (frigorifico_id)",
+        "When a counter-offer arrives (new bid INSERT where lot_id matches user's active bid), show toast notification: 'Nueva contraoferta en [breed] x[head_count]' with 'Ver' action button",
+        "Bid status changes update in real-time on both the list and detail pages without refresh",
+        "Implement reconnection: if WebSocket disconnects, show subtle banner 'Reconectando...' and attempt reconnect with exponential backoff (1s, 2s, 4s, max 30s)",
+        "On successful reconnect, refetch latest data to catch any missed events during disconnect",
+        "Example: when a new lot is inserted into Supabase (simulated via seed script or Supabase dashboard), it appears in the buyer's open feed tab within 2 seconds",
+        "Example: when a consignatario counters a bid (simulated via Supabase dashboard update), buyer sees toast and bid thread updates live",
+        "Negative case: if Supabase Realtime is unavailable, the app still functions normally — data loads on page navigation (graceful degradation, no crash)",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    },
+    {
+      "id": "US-015",
+      "title": "Consignatario directory — browse suppliers",
+      "status": "open",
+      "dependsOn": ["US-005", "US-002"],
+      "description": "As a frigorífico buyer, I want to browse consignatarios registered on the platform so that I can discover new potential suppliers.",
+      "acceptanceCriteria": [
+        "Create `/consignatarios` page at `src/app/(app)/consignatarios/page.tsx`",
+        "Fetch and display all companies with type='consignataria' as cards",
+        "Card shows: company name, provincia, localidad, active lot count (lots with status='available'), phone (as click-to-call tel: link on mobile)",
+        "Search input at top: filter by company name (client-side for MVP, debounced 300ms)",
+        "Filter dropdown: provincia (multi-select, same 24 provinces list)",
+        "Sort options: 'Nombre (A-Z)' (default), 'Más lotes activos'",
+        "Click card expands inline or navigates to show: full contact info (address, email, web), 'Ver sus lotes →' button linking to /feed?consignataria=[id]",
+        "Empty state: 'Todavía no hay consignatarios registrados en la plataforma'",
+        "Example: 3 seed consignatarias appear with correct active lot counts; clicking 'Ver sus lotes' navigates to filtered feed",
+        "Negative case: companies with type='frigorifico' do NOT appear in this directory",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    },
+    {
+      "id": "US-016",
+      "title": "Company profile — view and edit",
+      "status": "open",
+      "dependsOn": ["US-004"],
+      "description": "As a frigorífico admin, I want to view and update my company's profile so that consignatarios see accurate information about us.",
+      "acceptanceCriteria": [
+        "Create `/perfil` page at `src/app/(app)/perfil/page.tsx`",
+        "Display company information in organized sections: Datos de la empresa (name, CUIT, address, phone, email, web), Operación (capacity, export certification), Equipo (list of user_profiles in same company with name, role, phone)",
+        "Admin role: show 'Editar perfil' button that toggles section to edit mode (inline form fields replace display text)",
+        "Editable fields: name, dirección, teléfono, email, web, capacity_heads_day, export_certified",
+        "Logo upload: file input accepting image/png, image/jpeg up to 2MB — upload to Supabase Storage bucket 'company-logos', save URL to company.logo_url",
+        "CUIT and provincia are displayed as read-only with helper text 'Para modificar estos datos, contactanos a soporte@frigoconnect.com.ar'",
+        "Save button validates and updates company record; show success toast 'Perfil actualizado'",
+        "Comprador and viewer roles: see full profile but no edit button",
+        "Example: admin changes capacity from 500 to 800 and saves → value persists on page reload",
+        "Negative case: user with role 'viewer' sees profile data but no 'Editar perfil' button",
+        "Negative case: uploading a 5MB PNG shows 'La imagen no puede superar los 2 MB'",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    },
+    {
+      "id": "US-017",
+      "title": "In-app notification center",
+      "status": "open",
+      "dependsOn": ["US-014"],
+      "description": "As a frigorífico user, I want a notification center so that I can see all platform updates and never miss an important event.",
+      "acceptanceCriteria": [
+        "Create notification panel as a slide-over sheet (from right) triggered by bell icon in top bar",
+        "Fetch notifications for current user ordered by created_at DESC",
+        "Notification item shows: type icon (lucide icons — PackagePlus for new_lot, ArrowDownCircle for bid_received, RefreshCw for bid_countered, CheckCircle2 for bid_accepted in green, XCircle for bid_rejected in red, Clock for lot_expired, Info for system), title, body text, relative timestamp",
+        "Unread notifications: bold text + blue dot indicator on left edge",
+        "Click notification: mark as read (update read=true), close panel, navigate to relevant page (lot detail for new_lot/lot_expired, bid detail for bid_* types)",
+        "'Marcar todo como leído' button at panel header — batch update all unread to read=true",
+        "Bell icon badge in top bar: show unread count (display number up to 9, then '9+' for 10+). Count updates in real-time via Supabase Realtime subscription on notification table",
+        "Create notifications via application logic: when bid status changes, insert notification for relevant user (this can be a Supabase database function/trigger or app-side insert)",
+        "Empty state in panel: 'No tenés notificaciones'",
+        "Example: when a bid is countered (US-010), a notification is created and appears in the bell panel with unread styling and correct count",
+        "Negative case: notifications belonging to other users are never returned (RLS on notification table enforces user_id match)",
+        "`npm run lint` and `npm run typecheck` pass"
+      ]
+    }
+  ]
+}
