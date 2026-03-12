@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const ADMIN_TABS = [
+  { href: '/admin/dashboard', label: 'DASHBOARD' },
   { href: '/admin/claims', label: 'VERIFICACIONES' },
   { href: '/admin/consignatarias', label: 'CONSIGNATARIAS' },
 ]

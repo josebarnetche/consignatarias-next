@@ -18,6 +18,7 @@ import {
   getEffectiveToday,
   getEffectiveStatus,
 } from '@/lib/ui/tokens'
+import CountdownBadge from '@/components/CountdownBadge'
 import { trackAuctionClick, trackFilterApply, trackOutboundClick } from '@/lib/analytics'
 
 /* ------------------------------------------------------------------ */
@@ -95,11 +96,15 @@ function StatusBadge({ date, time, today }: { date: string; time: string | null;
 
   // scheduled
   if (isToday) {
-    return (
+    const hoyBadge = (
       <span className="live-badge-amber" role="img" aria-label="Hoy">
         <span>HOY</span>
       </span>
     )
+    if (time) {
+      return <CountdownBadge auctionDate={date} auctionTime={time} fallback={hoyBadge} />
+    }
+    return hoyBadge
   }
 
   return (

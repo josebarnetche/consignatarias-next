@@ -35,7 +35,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/lib/data/remates.json src/lib/data/market-prices.json
+          git add src/lib/data/remates.json src/lib/data/market-prices.json src/lib/data/youtube-channels.json
           AUCTION_COUNT=$(node -e "console.log(require('./src/lib/data/remates.json').length)")
           git commit -m "data: update auctions ($AUCTION_COUNT) and market prices — $(date -u +%Y-%m-%d)"
           git push

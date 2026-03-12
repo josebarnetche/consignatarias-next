@@ -23,6 +23,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = resolve(__dirname, "../src/lib/data");
 const REMATES_PATH = resolve(DATA_DIR, "remates.json");
 const MARKET_PATH = resolve(DATA_DIR, "market-prices.json");
+const YOUTUBE_PATH = resolve(DATA_DIR, "youtube-channels.json");
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -834,6 +835,71 @@ async function writeMarketToSupabase(market) {
 }
 
 // ---------------------------------------------------------------------------
+// YouTube: fetch latest video via RSS (no API key needed)
+// ---------------------------------------------------------------------------
+
+async function scrapeYouTubeLatest() {
+  console.log("\n[YT] Updating YouTube channel latest videos via RSS...");
+
+  let channels;
+  try {
+    channels = JSON.parse(readFileSync(YOUTUBE_PATH, "utf-8"));
+  } catch {
+    console.log("  [SKIP] youtube-channels.json not found or empty");
+    return;
+  }
+
+  const channelIds = Object.entries(channels);
+  if (channelIds.length === 0) {
+    console.log("  [SKIP] No YouTube channels configured");
+    return;
+  }
+
+  let updated = 0;
+  for (const [slug, channel] of channelIds) {
+    const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channel.channelId}`;
+    const xml = await fetchHTML(rssUrl);
+    if (!xml) {
+      console.log(`  [WARN] RSS failed for ${slug} (${channel.channelId})`);
+      continue;
+    }
+
+    // Parse first <entry> from RSS feed
+    const entryMatch = xml.match(/<entry>[\s\S]*?<\/entry>/);
+    if (!entryMatch) {
+      console.log(`  [INFO] No videos found for ${slug}`);
+      channel.lastChecked = todayISO();
+      continue;
+    }
+
+    const entry = entryMatch[0];
+    const videoIdMatch = entry.match(/<yt:videoId>([^<]+)<\/yt:videoId>/);
+    const titleMatch = entry.match(/<title>([^<]+)<\/title>/);
+    const publishedMatch = entry.match(/<published>([^<]+)<\/published>/);
+
+    if (videoIdMatch) {
+      const videoId = videoIdMatch[1];
+      channel.latestVideo = {
+        videoId,
+        title: titleMatch ? titleMatch[1] : "Video",
+        publishedAt: publishedMatch ? publishedMatch[1] : todayISO(),
+        thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+      };
+      updated++;
+      console.log(`  [OK] ${slug}: "${channel.latestVideo.title}" (${videoId})`);
+    }
+
+    channel.lastChecked = todayISO();
+
+    // Small delay between requests
+    await new Promise((r) => setTimeout(r, 100));
+  }
+
+  writeFileSync(YOUTUBE_PATH, JSON.stringify(channels, null, 2) + "\n");
+  console.log(`[YT] Updated ${updated}/${channelIds.length} channels`);
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -1023,6 +1089,9 @@ async function main() {
 
   // Write market snapshot to Supabase (if env vars available)
   await writeMarketToSupabase(market);
+
+  // Update YouTube channel latest videos
+  await scrapeYouTubeLatest();
 
   // Summary
   const provinces = [...new Set(merged.map((a) => a.province))];

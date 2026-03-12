@@ -24,6 +24,7 @@ import {
   getEffectiveToday,
   getEffectiveStatus,
 } from '@/lib/ui/tokens'
+import CountdownBadge from '@/components/CountdownBadge'
 
 /* ------------------------------------------------------------------ */
 /*  COMPLETENESS CALCULATOR                                            */
@@ -72,7 +73,7 @@ function StatusBadge({ date, time, today }: { date: string; time: string | null;
       </span>
     )
   }
-  return (
+  const scheduledBadge = (
     <span className="inline-flex items-center gap-1.5" role="img" aria-label={isToday ? 'Hoy' : 'Programado'}>
       <span className={`status-dot ${isToday ? 'bg-positive animate-pulse-live' : 'bg-sky-400'}`} />
       <span className={`font-terminal text-xxs ${isToday ? 'text-positive' : 'text-sky-400'}`}>
@@ -80,6 +81,10 @@ function StatusBadge({ date, time, today }: { date: string; time: string | null;
       </span>
     </span>
   )
+  if (isToday && time) {
+    return <CountdownBadge auctionDate={date} auctionTime={time} fallback={scheduledBadge} />
+  }
+  return scheduledBadge
 }
 
 /* ------------------------------------------------------------------ */
@@ -322,14 +327,28 @@ function TypeDistribution({ auctions }: { auctions: Auction[] }) {
 /*  MAIN COMPONENT                                                     */
 /* ------------------------------------------------------------------ */
 
+export interface YouTubeChannelData {
+  channelId: string
+  channelTitle: string
+  channelUrl: string
+  latestVideo?: {
+    videoId: string
+    title: string
+    publishedAt: string
+    thumbnail: string
+  }
+  lastChecked: string
+}
+
 interface ConsignatariaProfileClientProps {
   profile: EnrichedProfile
   auctions: Auction[]
   tier: EntityTier
   auctionResults: AuctionResult[]
+  youtubeChannel?: YouTubeChannelData
 }
 
-export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults }: ConsignatariaProfileClientProps) {
+export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel }: ConsignatariaProfileClientProps) {
   const today = getEffectiveToday()
 
   useEffect(() => {
@@ -672,25 +691,79 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       )}
 
       {/* ============================================================ */}
-      {/*  YOUTUBE-READY ZONE                                            */}
+      {/*  YOUTUBE CHANNEL                                                */}
       {/* ============================================================ */}
-      <div className="terminal-panel mt-px">
-        <div className="terminal-panel-header flex items-center gap-2">
-          <span className="section-heading text-xxs">TRANSMISIONES EN VIVO</span>
-          <span className="live-badge text-[10px]">
-            <span className="live-indicator" style={{ width: '5px', height: '5px' }} />
-            PRONTO
-          </span>
-        </div>
-        <div className="px-panel py-6 flex flex-col items-center justify-center gap-3">
-          <div className="w-16 h-16 rounded-terminal border border-terminal-border flex items-center justify-center bg-terminal-bg">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-zinc-500">
-              <polygon points="5 3 19 12 5 21 5 3" />
-            </svg>
+      {youtubeChannel && (
+        <div className="terminal-panel mt-px">
+          <div className="terminal-panel-header flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="section-heading text-xxs">ULTIMO VIDEO</span>
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-red-600/20 border border-red-500/30 rounded-sm">
+                <span className="text-red-400 font-terminal text-[10px] font-bold">YT</span>
+              </span>
+            </div>
+            <a
+              href={youtubeChannel.channelUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors"
+            >
+              VER CANAL &rarr;
+            </a>
           </div>
-          <span className="text-xxs text-zinc-500 font-terminal uppercase tracking-wider">Proximamente</span>
+          <div className="px-panel py-3">
+            {youtubeChannel.latestVideo ? (
+              <div className="flex items-start gap-3">
+                <a
+                  href={`https://www.youtube.com/watch?v=${youtubeChannel.latestVideo.videoId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-shrink-0 relative group/thumb"
+                >
+                  <img
+                    src={youtubeChannel.latestVideo.thumbnail}
+                    alt={youtubeChannel.latestVideo.title}
+                    width={160}
+                    height={96}
+                    className="rounded-terminal border border-terminal-border object-cover"
+                    style={{ width: 160, height: 96 }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover/thumb:bg-black/20 transition-colors rounded-terminal">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="white" className="opacity-80 group-hover/thumb:opacity-100 transition-opacity">
+                      <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg>
+                  </div>
+                </a>
+                <div className="flex-1 min-w-0 space-y-1">
+                  <a
+                    href={`https://www.youtube.com/watch?v=${youtubeChannel.latestVideo.videoId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-data font-terminal text-zinc-200 hover:text-accent transition-colors line-clamp-2 block"
+                  >
+                    {youtubeChannel.latestVideo.title}
+                  </a>
+                  <p className="text-xxs text-zinc-500 font-terminal">
+                    {formatDateShort(youtubeChannel.latestVideo.publishedAt.slice(0, 10))}
+                  </p>
+                  <p className="text-xxs text-zinc-500 font-terminal truncate">
+                    {youtubeChannel.channelTitle}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <a
+                href={youtubeChannel.channelUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors"
+              >
+                {youtubeChannel.channelTitle}
+              </a>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ============================================================ */}
       {/*  AUCTION LIST GROUPED BY MONTH                                */}

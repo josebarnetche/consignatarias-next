@@ -12,7 +12,9 @@ import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
 import { getEntityTier } from '@/lib/features'
 import { createServiceClient } from '@/lib/supabase'
 import { BreadcrumbSchema, LocalBusinessSchema, EventSchema } from '@/components/seo/JsonLd'
+import youtubeChannelsData from '@/lib/data/youtube-channels.json'
 import ConsignatariaProfileClient from './ConsignatariaProfileClient'
+import type { YouTubeChannelData } from './ConsignatariaProfileClient'
 
 // ISR: revalidate every 5 minutes so Supabase data (verified, contact info) refreshes
 export const revalidate = 300
@@ -212,6 +214,7 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
         auctions={profileAuctions}
         tier={tier}
         auctionResults={auctionResults}
+        youtubeChannel={(youtubeChannelsData as Record<string, YouTubeChannelData>)[canonical]}
       />
     </>
   )
