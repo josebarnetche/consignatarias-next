@@ -16,6 +16,7 @@ export interface ConsignatariaProfile {
 
 const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'afa', displayName: 'Agricultores Federados Argentinos SCL', allSlugs: ['afa', 'agricultores-federados-argentinos-soc-coop-lt'] },
+  { canonicalSlug: 'aj-mendizabal', displayName: 'A.J. Mendizabal', allSlugs: ['aj-mendizabal'] },
   { canonicalSlug: 'agroactiva', displayName: 'Agroactiva', allSlugs: ['agroactiva'] },
   { canonicalSlug: 'aguerre', displayName: 'Aguerre SRL', allSlugs: ['aguerre', 'aguerre-srl'] },
   { canonicalSlug: 'aguirre-vazquez', displayName: 'Aguirre Vazquez SA', allSlugs: ['aguirre-vazquez', 'aguirre-vazquez-s-a'] },
