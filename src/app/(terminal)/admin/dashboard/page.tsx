@@ -13,7 +13,7 @@ interface DashboardData {
     mrrFormatted: string
     paidSubscriptions: number
     bonifiedSubscriptions: number
-    totalActiveSubscriptions: number
+    totalPro: number
     allSubscriptions: number
     proRate: number
   }
@@ -26,7 +26,7 @@ interface DashboardData {
   profiles: {
     totalConsignatarias: number
     verifiedConsignatarias: number
-    featuredConsignatarias: number
+    adminFeatured: number
     verificationRate: number
   }
   engagement: {
@@ -204,10 +204,16 @@ export default function AdminDashboardPage() {
             color={data.revenue.mrr > 0 ? 'text-positive' : 'text-zinc-500'}
           />
           <KPICard
-            label="Suscripciones pagas"
+            label="PRO total"
+            value={data.revenue.totalPro}
+            sub={`${data.revenue.paidSubscriptions} pagas · ${data.revenue.bonifiedSubscriptions} bonificadas`}
+            color={data.revenue.totalPro > 0 ? 'text-amber-400' : 'text-zinc-500'}
+          />
+          <KPICard
+            label="Pagas"
             value={data.revenue.paidSubscriptions}
-            sub={`de ${data.profiles.totalConsignatarias} perfiles`}
-            color={data.revenue.paidSubscriptions > 0 ? 'text-amber-400' : 'text-zinc-500'}
+            sub="con suscripcion Rebill"
+            color={data.revenue.paidSubscriptions > 0 ? 'text-positive' : 'text-zinc-500'}
           />
           <KPICard
             label="Bonificadas"
@@ -218,7 +224,7 @@ export default function AdminDashboardPage() {
           <KPICard
             label="% PRO"
             value={`${data.revenue.proRate}%`}
-            sub={`${data.revenue.totalActiveSubscriptions} activas`}
+            sub={`de ${data.profiles.totalConsignatarias} perfiles`}
             color={data.revenue.proRate > 10 ? 'text-positive' : 'text-zinc-400'}
           />
         </div>
@@ -383,9 +389,9 @@ export default function AdminDashboardPage() {
             color="text-positive"
           />
           <KPICard
-            label="Featured"
-            value={data.profiles.featuredConsignatarias}
-            sub="destacados"
+            label="Bonif. admin"
+            value={data.profiles.adminFeatured}
+            sub="destacados manualmente"
             color="text-amber-400"
           />
         </div>

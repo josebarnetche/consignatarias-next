@@ -1,19 +1,28 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase-server'
+import { createServiceClient } from '@/lib/supabase'
 
 export async function GET() {
-  const supabase = await createClient()
+  const supabase = createServiceClient()
 
-  const { data, error } = await supabase
-    .from('consignatarias')
-    .select('canonical_slug')
-    .eq('featured', true)
+  // Unified PRO: admin-featured OR active subscription
+  const [featuredRes, subsRes] = await Promise.all([
+    supabase
+      .from('consignatarias')
+      .select('canonical_slug')
+      .eq('featured', true),
+    supabase
+      .from('subscriptions')
+      .select('entity_slug')
+      .eq('entity_type', 'consignataria')
+      .eq('status', 'active'),
+  ])
 
-  if (error) {
-    return NextResponse.json({ slugs: [] })
-  }
+  const fromFeatured = (featuredRes.data || []).map(d => d.canonical_slug)
+  const fromSubs = (subsRes.data || []).map(d => d.entity_slug)
 
-  const slugs = (data || []).map(d => d.canonical_slug)
+  // Merge and deduplicate
+  const slugs = [...new Set([...fromFeatured, ...fromSubs])]
+
   return NextResponse.json({ slugs }, {
     headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' },
   })

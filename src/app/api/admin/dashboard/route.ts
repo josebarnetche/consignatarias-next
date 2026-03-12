@@ -77,13 +77,28 @@ export async function GET() {
   const consignatarias = consigRes.data || []
   const totalConsignatarias = consignatarias.length
   const verifiedConsignatarias = consignatarias.filter((c: { verified: boolean }) => c.verified).length
-  const featuredConsignatarias = consignatarias.filter((c: { featured: boolean }) => c.featured).length
+  const adminFeatured = consignatarias.filter((c: { featured: boolean }) => c.featured).length
 
   // Process subscriptions
   const subscriptions = subsRes.data || []
   const activeSubs = subscriptions.filter((s: { status: string }) => s.status === 'active')
   const paidSubs = activeSubs.filter((s: { plan_name: string }) => !s.plan_name.toLowerCase().includes('bonificad'))
-  const bonifiedSubs = activeSubs.filter((s: { plan_name: string }) => s.plan_name.toLowerCase().includes('bonificad'))
+
+  // Bonified = subscriptions marked bonificad + admin-featured without any subscription
+  const bonifiedSubSlugs = activeSubs
+    .filter((s: { plan_name: string }) => s.plan_name.toLowerCase().includes('bonificad'))
+    .map((s: { entity_slug: string }) => s.entity_slug)
+  const activeSubSlugs = new Set(activeSubs.map((s: { entity_slug: string }) => s.entity_slug))
+  const adminOnlyFeatured = consignatarias
+    .filter((c: { featured: boolean; canonical_slug: string }) => c.featured && !activeSubSlugs.has(c.canonical_slug))
+    .map((c: { canonical_slug: string }) => c.canonical_slug)
+  const totalBonified = bonifiedSubSlugs.length + adminOnlyFeatured.length
+
+  // Total PRO = paid subs + bonified subs + admin-featured without sub
+  const totalProSlugs = new Set([
+    ...activeSubs.map((s: { entity_slug: string }) => s.entity_slug),
+    ...consignatarias.filter((c: { featured: boolean }) => c.featured).map((c: { canonical_slug: string }) => c.canonical_slug),
+  ])
 
   // MRR calculation — PRO = 45000 ARS/mes, Frigo = 35000 ARS/mes
   const PRO_PRICE = 45000
@@ -111,11 +126,11 @@ export async function GET() {
       mrr,
       mrrFormatted: `$${mrr.toLocaleString('es-AR')}`,
       paidSubscriptions: paidSubs.length,
-      bonifiedSubscriptions: bonifiedSubs.length,
-      totalActiveSubscriptions: activeSubs.length,
+      bonifiedSubscriptions: totalBonified,
+      totalPro: totalProSlugs.size,
       allSubscriptions: subscriptions.length,
       proRate: totalConsignatarias > 0
-        ? Math.round((activeSubs.length / totalConsignatarias) * 100)
+        ? Math.round((totalProSlugs.size / totalConsignatarias) * 100)
         : 0,
     },
     // CRM / Claims
@@ -129,7 +144,7 @@ export async function GET() {
     profiles: {
       totalConsignatarias,
       verifiedConsignatarias,
-      featuredConsignatarias,
+      adminFeatured,
       verificationRate: totalConsignatarias > 0
         ? Math.round((verifiedConsignatarias / totalConsignatarias) * 100)
         : 0,
