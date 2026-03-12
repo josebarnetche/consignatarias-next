@@ -19,7 +19,7 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'agroactiva', displayName: 'Agroactiva', allSlugs: ['agroactiva'] },
   { canonicalSlug: 'aguerre', displayName: 'Aguerre SRL', allSlugs: ['aguerre', 'aguerre-srl'] },
   { canonicalSlug: 'aguirre-vazquez', displayName: 'Aguirre Vazquez SA', allSlugs: ['aguirre-vazquez', 'aguirre-vazquez-s-a'] },
-  { canonicalSlug: 'alfredo-smondino', displayName: 'Alfredo Smondino', allSlugs: ['alfredo-smondino'] },
+  
   { canonicalSlug: 'alianza-ganadera', displayName: 'Alianza Ganadera (Coop. Sunchales)', allSlugs: ['alianza-ganadera-coop-sunchale'] },
   { canonicalSlug: 'alzaga-unzue', displayName: 'Alzaga Unzué y Cia. SA', allSlugs: ['alzaga-unzue', 'alzaga-unzue-y-cia-s-a'] },
   { canonicalSlug: 'amoz', displayName: 'Pedro Manuel Amoz y Cia. SA', allSlugs: ['amoz', 'pedro-manuel-amoz-y-cia-s-a'] },
@@ -65,7 +65,7 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'lalor', displayName: 'Martin G. Lalor SA', allSlugs: ['lalor', 'martin-g-lalor-s-a'] },
   { canonicalSlug: 'lanser', displayName: 'Carlos J. Lanser SA', allSlugs: ['lanser', 'carlos-j-lanser-s-a'] },
   { canonicalSlug: 'marcos-matteucci', displayName: 'Marcos Matteucci', allSlugs: ['marcos-matteucci'] },
-  { canonicalSlug: 'mondino', displayName: 'Alfredo Sebastián Mondino', allSlugs: ['mondino', 'alfredo-sebastian-mondino'] },
+  { canonicalSlug: 'mondino', displayName: 'Alfredo Sebastián Mondino', allSlugs: ['mondino', 'alfredo-sebastian-mondino', 'alfredo-smondino'] },
   { canonicalSlug: 'monasterio-tattersall', displayName: 'Monasterio Tattersall SA', allSlugs: ['monasterio-tattersall', 'monasterio-tattersall-s-a'] },
   { canonicalSlug: 'nangapiry', displayName: 'Nangapiry SA', allSlugs: ['nangapiry'] },
   { canonicalSlug: 'nestor-fuentes', displayName: 'Nestor Hugo Fuentes', allSlugs: ['nestor-fuentes'] },
