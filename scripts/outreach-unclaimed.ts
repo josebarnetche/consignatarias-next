@@ -145,14 +145,16 @@ async function main() {
       console.log(`[OK] Sent: ${result.data?.id}\n`)
       sent++
       
-      // Log to outreach_log table
-      await supabase.from('outreach_log').insert({
-        consignataria_slug: consig.canonical_slug,
-        email: consig.email,
-        campaign: 'claim-outreach',
-        sent_at: new Date().toISOString(),
-        resend_id: result.data?.id
-      }).catch(() => {}) // Ignore if table doesn't exist
+      // Log to outreach_log table (ignore errors if table doesn't exist)
+      try {
+        await supabase.from('outreach_log').insert({
+          consignataria_slug: consig.canonical_slug,
+          email: consig.email,
+          campaign: 'claim-outreach',
+          sent_at: new Date().toISOString(),
+          resend_id: result.data?.id
+        })
+      } catch { /* ignore */ }
       
     } catch (err) {
       console.log(`[X] Failed: ${err}\n`)
