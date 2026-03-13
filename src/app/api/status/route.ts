@@ -47,6 +47,8 @@ export async function GET() {
       '/api/consignataria/[slug]': 'active',
       '/api/webhooks/register': 'active',
       '/api/precios': 'active',
+      '/api/alertas': 'active',
+      '/api/alertas/[alerta_id]': 'active',
       '/api/status': 'active'
     }
   }, {
