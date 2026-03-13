@@ -39,19 +39,31 @@ export async function GET() {
       rematesHoy: rematesHoy
     },
     endpoints: {
+      // Public APIs
       '/api/remates/proximos': 'active',
       '/api/remates/hoy': 'active',
       '/api/remates/stats': 'active',
       '/api/remates/buscar': 'active',
       '/api/remates/calendario': 'active',
+      '/api/remates/export': 'active',
       '/api/consignataria/[slug]': 'active',
-      '/api/webhooks/register': 'active',
       '/api/precios': 'active',
+      '/api/planes': 'active',
+      '/api/newsletter': 'active',
+      '/api/calendario/ical': 'active',
+      // Premium APIs
       '/api/alertas': 'active',
       '/api/alertas/[alerta_id]': 'active',
-      '/api/planes': 'active',
-      '/api/status': 'active'
-    }
+      '/api/webhooks/register': 'active',
+      // Subscriptions
+      '/api/subscribe': 'active',
+      '/api/subscription-status': 'active',
+      '/api/webhooks/rebill': 'active',
+      // Health
+      '/api/status': 'active',
+      '/api/health': 'active'
+    },
+    totalEndpoints: 18
   }, {
     headers: {
       'Cache-Control': 'no-cache, no-store, must-revalidate'
