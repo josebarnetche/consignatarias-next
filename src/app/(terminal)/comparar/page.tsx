@@ -43,7 +43,7 @@ export default function CompararPage() {
       provincias,
       tipos,
       totalCabezas,
-      verified: profile.verified || false,
+      verified: false, // TODO: fetch from Supabase consignatarias table
     }
   }).filter(c => c.totalRemates > 0)
     .sort((a, b) => b.totalRemates - a.totalRemates)
