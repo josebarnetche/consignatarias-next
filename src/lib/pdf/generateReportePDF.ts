@@ -1,23 +1,26 @@
 import { jsPDF } from 'jspdf'
 
+interface RemateItem {
+  fecha: string
+  consignataria: string
+  ubicacion: string
+  tipo: string
+  cabezas: number | null
+}
+
 interface ReportData {
   fecha: string
   inmag: { current: number; prev: number; change: number }
   categories: Record<string, { current: number; prev: number; change: number }>
   usdBlue: { current: number; prev: number; change: number }
   corn: { current: number; prev: number; change: number }
+  rematesHoy?: RemateItem[]
   remates: {
     total: number
     cabezas: number
     provincias: number
     consignatarias: number
-    top5: Array<{
-      fecha: string
-      consignataria: string
-      ubicacion: string
-      tipo: string
-      cabezas: number | null
-    }>
+    top5: RemateItem[]
   }
 }
 
@@ -45,7 +48,8 @@ export function generateReportePDF(data: ReportData): jsPDF {
   })
 
   const pageWidth = doc.internal.pageSize.getWidth()
-  const margin = 20
+  const pageHeight = doc.internal.pageSize.getHeight()
+  const margin = 15
   const contentWidth = pageWidth - margin * 2
   let y = margin
 
@@ -55,58 +59,79 @@ export function generateReportePDF(data: ReportData): jsPDF {
   const grayColor: [number, number, number] = [113, 113, 122] // zinc-500
   const lightGray: [number, number, number] = [228, 228, 231] // zinc-200
 
-  // Header background
+  // Header background (compact)
   doc.setFillColor(...darkColor)
-  doc.rect(0, 0, pageWidth, 45, 'F')
+  doc.rect(0, 0, pageWidth, 35, 'F')
 
   // Logo text
   doc.setTextColor(255, 255, 255)
-  doc.setFontSize(10)
+  doc.setFontSize(9)
   doc.setFont('helvetica', 'normal')
-  doc.text('CONSIGNATARIAS.COM.AR', margin, 15)
+  doc.text('CONSIGNATARIAS.COM.AR', margin, 12)
 
   // Title
-  doc.setFontSize(18)
+  doc.setFontSize(16)
   doc.setFont('helvetica', 'bold')
-  doc.text('Reporte Semanal del Mercado Ganadero', margin, 28)
+  doc.text('Reporte Diario del Mercado Ganadero', margin, 23)
 
   // Date
-  doc.setFontSize(10)
+  doc.setFontSize(9)
   doc.setFont('helvetica', 'normal')
   doc.setTextColor(156, 163, 175)
-  doc.text(data.fecha, margin, 38)
+  doc.text(data.fecha, margin, 31)
 
-  y = 55
+  y = 42
 
-  // INMAG Section
+  // === ROW 1: INMAG + Macro (side by side) ===
+  const halfWidth = contentWidth / 2 - 2
+
+  // INMAG box
   doc.setFillColor(250, 250, 250)
-  doc.rect(margin, y, contentWidth, 35, 'F')
+  doc.rect(margin, y, halfWidth, 28, 'F')
   doc.setDrawColor(...lightGray)
-  doc.rect(margin, y, contentWidth, 35, 'S')
+  doc.rect(margin, y, halfWidth, 28, 'S')
 
   doc.setTextColor(...grayColor)
-  doc.setFontSize(8)
+  doc.setFontSize(7)
   doc.setFont('helvetica', 'bold')
-  doc.text('ÍNDICE INMAG', margin + 5, y + 8)
+  doc.text('ÍNDICE INMAG', margin + 4, y + 6)
 
   doc.setTextColor(...darkColor)
-  doc.setFontSize(24)
+  doc.setFontSize(18)
   doc.setFont('helvetica', 'bold')
-  doc.text(`$${fmt(data.inmag.current)}`, margin + 5, y + 22)
+  doc.text(`$${fmt(data.inmag.current)}`, margin + 4, y + 17)
 
-  doc.setFontSize(10)
   const changeColor = data.inmag.change >= 0 ? primaryColor : [239, 68, 68] as [number, number, number]
   doc.setTextColor(...changeColor)
-  doc.text(`${data.inmag.change >= 0 ? '+' : ''}${fmt(data.inmag.change, 1)}% vs semana anterior`, margin + 5, y + 30)
-
-  y += 45
-
-  // Categories table
-  doc.setTextColor(...grayColor)
   doc.setFontSize(8)
+  doc.text(`${data.inmag.change >= 0 ? '+' : ''}${fmt(data.inmag.change, 1)}% semanal`, margin + 4, y + 24)
+
+  // Macro box (USD + Maíz)
+  const macroX = margin + halfWidth + 4
+  doc.setFillColor(250, 250, 250)
+  doc.rect(macroX, y, halfWidth, 28, 'F')
+  doc.setDrawColor(...lightGray)
+  doc.rect(macroX, y, halfWidth, 28, 'S')
+
+  doc.setTextColor(...grayColor)
+  doc.setFontSize(7)
+  doc.setFont('helvetica', 'bold')
+  doc.text('CONTEXTO MACRO', macroX + 4, y + 6)
+
+  doc.setTextColor(...darkColor)
+  doc.setFontSize(10)
+  doc.setFont('helvetica', 'bold')
+  doc.text(`Dólar Blue: $${fmt(data.usdBlue.current)}`, macroX + 4, y + 15)
+  doc.text(`Maíz: USD ${fmt(data.corn.current, 1)}/tn`, macroX + 4, y + 24)
+
+  y += 34
+
+  // === ROW 2: Categories (2 rows x 3 cols, compact) ===
+  doc.setTextColor(...grayColor)
+  doc.setFontSize(7)
   doc.setFont('helvetica', 'bold')
   doc.text('PRECIOS POR CATEGORÍA ($/kg vivo)', margin, y)
-  y += 8
+  y += 5
 
   const catEntries = Object.entries(data.categories)
   const colWidth = contentWidth / 3
@@ -115,25 +140,25 @@ export function generateReportePDF(data: ReportData): jsPDF {
 
   catEntries.forEach(([key, val]) => {
     const x = margin + col * colWidth
-    const yPos = y + row * 15
+    const yPos = y + row * 11
 
     doc.setFillColor(250, 250, 250)
-    doc.rect(x, yPos, colWidth - 2, 13, 'F')
+    doc.rect(x, yPos, colWidth - 1, 10, 'F')
 
     doc.setTextColor(...grayColor)
-    doc.setFontSize(8)
+    doc.setFontSize(7)
     doc.setFont('helvetica', 'normal')
-    doc.text(CATEGORY_LABELS[key] || key, x + 3, yPos + 5)
+    doc.text(CATEGORY_LABELS[key] || key, x + 2, yPos + 4)
 
     doc.setTextColor(...darkColor)
-    doc.setFontSize(11)
+    doc.setFontSize(9)
     doc.setFont('helvetica', 'bold')
-    doc.text(`$${fmt(val.current)}`, x + 3, yPos + 11)
+    doc.text(`$${fmt(val.current)}`, x + 2, yPos + 9)
 
     const catChangeColor = val.change >= 0 ? primaryColor : [239, 68, 68] as [number, number, number]
     doc.setTextColor(...catChangeColor)
-    doc.setFontSize(8)
-    doc.text(`${val.change >= 0 ? '+' : ''}${fmt(val.change, 1)}%`, x + colWidth - 20, yPos + 11)
+    doc.setFontSize(7)
+    doc.text(`${val.change >= 0 ? '+' : ''}${fmt(val.change, 1)}%`, x + colWidth - 12, yPos + 9)
 
     col++
     if (col >= 3) {
@@ -142,119 +167,132 @@ export function generateReportePDF(data: ReportData): jsPDF {
     }
   })
 
-  y += row * 15 + 25
+  y += row * 11 + 16
 
-  // Macro context
+  // === ROW 3: Remates HOY (if available) ===
+  if (data.rematesHoy && data.rematesHoy.length > 0) {
+    doc.setFillColor(...primaryColor)
+    doc.rect(margin, y, contentWidth, 7, 'F')
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(8)
+    doc.setFont('helvetica', 'bold')
+    doc.text(`REMATES HOY — ${data.rematesHoy.length} remates`, margin + 4, y + 5)
+    y += 9
+
+    // Show max 4 remates for today
+    const todayRemates = data.rematesHoy.slice(0, 4)
+    todayRemates.forEach((r, i) => {
+      const rowY = y + i * 9
+
+      doc.setFillColor(i % 2 === 0 ? 255 : 248, i % 2 === 0 ? 255 : 248, i % 2 === 0 ? 255 : 248)
+      doc.rect(margin, rowY, contentWidth, 8, 'F')
+
+      doc.setTextColor(...darkColor)
+      doc.setFontSize(8)
+      doc.setFont('helvetica', 'bold')
+      const name = r.consignataria.length > 30 ? r.consignataria.slice(0, 30) + '...' : r.consignataria
+      doc.text(name, margin + 2, rowY + 5.5)
+
+      doc.setTextColor(...grayColor)
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(7)
+      doc.text(r.ubicacion?.slice(0, 20) || '', margin + 80, rowY + 5.5)
+
+      if (r.cabezas) {
+        doc.text(`${fmt(r.cabezas)} cab`, margin + contentWidth - 3, rowY + 5.5, { align: 'right' })
+      }
+    })
+
+    if (data.rematesHoy.length > 4) {
+      doc.setTextColor(...grayColor)
+      doc.setFontSize(7)
+      doc.text(`+${data.rematesHoy.length - 4} más en consignatarias.com.ar`, margin + 2, y + todayRemates.length * 9 + 4)
+      y += 6
+    }
+
+    y += todayRemates.length * 9 + 6
+  }
+
+  // === ROW 4: Próximos 7 días stats bar ===
   doc.setTextColor(...grayColor)
-  doc.setFontSize(8)
-  doc.setFont('helvetica', 'bold')
-  doc.text('CONTEXTO MACRO', margin, y)
-  y += 8
-
-  // USD Blue
-  doc.setFillColor(245, 245, 245)
-  doc.rect(margin, y, contentWidth / 2 - 3, 20, 'F')
-  doc.setTextColor(...grayColor)
-  doc.setFontSize(8)
-  doc.setFont('helvetica', 'normal')
-  doc.text('Dólar Blue', margin + 5, y + 6)
-  doc.setTextColor(...darkColor)
-  doc.setFontSize(14)
-  doc.setFont('helvetica', 'bold')
-  doc.text(`$${fmt(data.usdBlue.current)}`, margin + 5, y + 15)
-
-  // Corn - explicit fill color reset
-  doc.setFillColor(245, 245, 245)
-  doc.rect(margin + contentWidth / 2 + 1, y, contentWidth / 2 - 3, 20, 'F')
-  doc.setTextColor(...grayColor)
-  doc.setFontSize(8)
-  doc.setFont('helvetica', 'normal')
-  doc.text('Maíz', margin + contentWidth / 2 + 6, y + 6)
-  doc.setTextColor(...darkColor)
-  doc.setFontSize(14)
-  doc.setFont('helvetica', 'bold')
-  doc.text(`USD ${fmt(data.corn.current, 1)}/tn`, margin + contentWidth / 2 + 6, y + 15)
-
-  y += 30
-
-  // Upcoming remates
-  doc.setTextColor(...grayColor)
-  doc.setFontSize(8)
+  doc.setFontSize(7)
   doc.setFont('helvetica', 'bold')
   doc.text('PRÓXIMOS 7 DÍAS', margin, y)
-  y += 8
+  y += 5
 
-  // Stats row
-  doc.setFillColor(...primaryColor)
-  doc.rect(margin, y, contentWidth, 18, 'F')
+  doc.setFillColor(...darkColor)
+  doc.rect(margin, y, contentWidth, 14, 'F')
 
   const statWidth = contentWidth / 4
   doc.setTextColor(255, 255, 255)
-  doc.setFontSize(14)
+  doc.setFontSize(12)
   doc.setFont('helvetica', 'bold')
 
-  doc.text(String(data.remates.total), margin + statWidth * 0.5, y + 10, { align: 'center' })
-  doc.text(`~${fmt(data.remates.cabezas)}`, margin + statWidth * 1.5, y + 10, { align: 'center' })
-  doc.text(String(data.remates.provincias), margin + statWidth * 2.5, y + 10, { align: 'center' })
-  doc.text(String(data.remates.consignatarias), margin + statWidth * 3.5, y + 10, { align: 'center' })
+  doc.text(String(data.remates.total), margin + statWidth * 0.5, y + 8, { align: 'center' })
+  doc.text(`~${fmt(data.remates.cabezas)}`, margin + statWidth * 1.5, y + 8, { align: 'center' })
+  doc.text(String(data.remates.provincias), margin + statWidth * 2.5, y + 8, { align: 'center' })
+  doc.text(String(data.remates.consignatarias), margin + statWidth * 3.5, y + 8, { align: 'center' })
 
-  doc.setFontSize(7)
+  doc.setFontSize(6)
   doc.setFont('helvetica', 'normal')
-  doc.text('Remates', margin + statWidth * 0.5, y + 16, { align: 'center' })
-  doc.text('Cabezas', margin + statWidth * 1.5, y + 16, { align: 'center' })
-  doc.text('Provincias', margin + statWidth * 2.5, y + 16, { align: 'center' })
-  doc.text('Consignatarias', margin + statWidth * 3.5, y + 16, { align: 'center' })
+  doc.text('Remates', margin + statWidth * 0.5, y + 12, { align: 'center' })
+  doc.text('Cabezas', margin + statWidth * 1.5, y + 12, { align: 'center' })
+  doc.text('Provincias', margin + statWidth * 2.5, y + 12, { align: 'center' })
+  doc.text('Consignatarias', margin + statWidth * 3.5, y + 12, { align: 'center' })
 
-  y += 25
+  y += 20
 
-  // Top 5 remates
-  if (data.remates.top5.length > 0) {
+  // === ROW 5: Destacados (max 5, only if space) ===
+  const remainingSpace = pageHeight - y - 25 // Leave room for footer
+  const maxRows = Math.min(5, Math.floor(remainingSpace / 9))
+
+  if (data.remates.top5.length > 0 && maxRows > 0) {
     doc.setTextColor(...grayColor)
-    doc.setFontSize(8)
+    doc.setFontSize(7)
     doc.setFont('helvetica', 'bold')
-    doc.text('DESTACADOS', margin, y)
-    y += 8
+    doc.text('DESTACADOS PRÓXIMOS', margin, y)
+    y += 5
 
-    data.remates.top5.forEach((r, i) => {
-      const rowY = y + i * 12
+    const showRemates = data.remates.top5.slice(0, maxRows)
+    showRemates.forEach((r, i) => {
+      const rowY = y + i * 8
 
       doc.setFillColor(i % 2 === 0 ? 255 : 248, i % 2 === 0 ? 255 : 248, i % 2 === 0 ? 255 : 248)
-      doc.rect(margin, rowY, contentWidth, 10, 'F')
+      doc.rect(margin, rowY, contentWidth, 7, 'F')
 
       // Date
       doc.setTextColor(...grayColor)
-      doc.setFontSize(8)
-      doc.setFont('helvetica', 'normal')
-      doc.text(r.fecha.slice(5).replace('-', '/'), margin + 3, rowY + 7)
-
-      // Consignataria name (truncate at 28 chars)
-      doc.setTextColor(...darkColor)
-      doc.setFontSize(9)
-      doc.setFont('helvetica', 'bold')
-      const consigName = r.consignataria.length > 28 ? r.consignataria.slice(0, 28) + '...' : r.consignataria
-      doc.text(consigName, margin + 18, rowY + 7)
-
-      // Type (right aligned, shorter)
-      doc.setTextColor(...grayColor)
       doc.setFontSize(7)
       doc.setFont('helvetica', 'normal')
-      const tipoShort = r.tipo.toUpperCase().slice(0, 8)
-      doc.text(tipoShort, margin + contentWidth - 5, rowY + 7, { align: 'right' })
+      doc.text(r.fecha.slice(5).replace('-', '/'), margin + 2, rowY + 5)
+
+      // Consignataria name
+      doc.setTextColor(...darkColor)
+      doc.setFontSize(8)
+      doc.setFont('helvetica', 'bold')
+      const consigName = r.consignataria.length > 25 ? r.consignataria.slice(0, 25) + '...' : r.consignataria
+      doc.text(consigName, margin + 15, rowY + 5)
+
+      // Type
+      doc.setTextColor(...grayColor)
+      doc.setFontSize(6)
+      doc.setFont('helvetica', 'normal')
+      const tipoShort = r.tipo.toUpperCase().slice(0, 10)
+      doc.text(tipoShort, margin + contentWidth - 3, rowY + 5, { align: 'right' })
     })
 
-    y += data.remates.top5.length * 12 + 10
+    y += showRemates.length * 8 + 5
   }
 
-  // Footer
-  const footerY = doc.internal.pageSize.getHeight() - 15
+  // === Footer ===
+  const footerY = pageHeight - 12
   doc.setDrawColor(...lightGray)
-  doc.line(margin, footerY - 5, pageWidth - margin, footerY - 5)
+  doc.line(margin, footerY - 3, pageWidth - margin, footerY - 3)
 
   doc.setTextColor(...grayColor)
-  doc.setFontSize(8)
+  doc.setFontSize(7)
   doc.setFont('helvetica', 'normal')
   doc.text('Generado por consignatarias.com.ar — El mercado ganadero en una sola pantalla', margin, footerY)
-  doc.text('Datos actualizados diariamente. Valores referenciales.', margin, footerY + 5)
 
   doc.setTextColor(...primaryColor)
   doc.text('www.consignatarias.com.ar', pageWidth - margin, footerY, { align: 'right' })

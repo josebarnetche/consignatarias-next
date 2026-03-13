@@ -23,6 +23,11 @@ export default function ReporteSemanalPage() {
   const auctions = rematesData as Auction[]
   const today = new Date().toISOString().slice(0, 10)
   
+  // Today's remates
+  const rematesHoy = auctions
+    .filter(a => a.date === today)
+    .sort((a, b) => (b.estimatedHeads || 0) - (a.estimatedHeads || 0))
+  
   // Next 7 days
   const nextWeek = new Date()
   nextWeek.setDate(nextWeek.getDate() + 7)
@@ -48,6 +53,13 @@ export default function ReporteSemanalPage() {
     categories: marketPrices.categories,
     usdBlue: marketPrices.usdBlue,
     corn: marketPrices.corn,
+    rematesHoy: rematesHoy.map(r => ({
+      fecha: r.date,
+      consignataria: r.consignatariaName,
+      ubicacion: r.location,
+      tipo: r.type,
+      cabezas: r.estimatedHeads,
+    })),
     remates: {
       total: upcomingRemates.length,
       cabezas: totalCabezas,

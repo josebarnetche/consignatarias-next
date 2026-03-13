@@ -4,24 +4,27 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { generateReportePDF } from '@/lib/pdf/generateReportePDF'
 
+interface RemateItem {
+  fecha: string
+  consignataria: string
+  ubicacion: string
+  tipo: string
+  cabezas: number | null
+}
+
 interface ReportData {
   fecha: string
   inmag: { current: number; prev: number; change: number }
   categories: Record<string, { current: number; prev: number; change: number }>
   usdBlue: { current: number; prev: number; change: number }
   corn: { current: number; prev: number; change: number }
+  rematesHoy?: RemateItem[]
   remates: {
     total: number
     cabezas: number
     provincias: number
     consignatarias: number
-    top5: Array<{
-      fecha: string
-      consignataria: string
-      ubicacion: string
-      tipo: string
-      cabezas: number | null
-    }>
+    top5: RemateItem[]
   }
 }
 
