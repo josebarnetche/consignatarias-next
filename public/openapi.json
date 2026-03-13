@@ -1,0 +1,398 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Consignatarias API",
+    "description": "API pública de datos del mercado ganadero argentino. Acceso a remates, consignatarias, precios INMAG y frigoríficos.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Memola Medios SAS",
+      "email": "agro@memola.com.ar",
+      "url": "https://www.consignatarias.com.ar"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://www.consignatarias.com.ar/api",
+      "description": "Producción"
+    }
+  ],
+  "paths": {
+    "/remates/stats": {
+      "get": {
+        "summary": "Estadísticas generales",
+        "description": "Resumen del mercado: total de remates, distribución por provincia, top consignatarias.",
+        "operationId": "getStats",
+        "tags": ["Remates"],
+        "responses": {
+          "200": {
+            "description": "Estadísticas del mercado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/remates/hoy": {
+      "get": {
+        "summary": "Remates de hoy",
+        "description": "Lista de remates programados para el día actual.",
+        "operationId": "getRematesHoy",
+        "tags": ["Remates"],
+        "responses": {
+          "200": {
+            "description": "Remates del día",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RematesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/remates/proximos": {
+      "get": {
+        "summary": "Próximos remates",
+        "description": "Remates programados para los próximos días.",
+        "operationId": "getRematesProximos",
+        "tags": ["Remates"],
+        "parameters": [
+          {
+            "name": "dias",
+            "in": "query",
+            "description": "Número de días a consultar (default: 7)",
+            "schema": {
+              "type": "integer",
+              "default": 7,
+              "maximum": 30
+            }
+          },
+          {
+            "name": "provincia",
+            "in": "query",
+            "description": "Filtrar por provincia",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de próximos remates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RematesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/remates/buscar": {
+      "get": {
+        "summary": "Buscar remates",
+        "description": "Búsqueda de remates por texto, provincia, tipo o fecha.",
+        "operationId": "buscarRemates",
+        "tags": ["Remates"],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Texto de búsqueda",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "provincia",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tipo",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["general", "invernada", "cria", "especial", "reproductores"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados de búsqueda",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RematesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/remates/calendario": {
+      "get": {
+        "summary": "Calendario semanal",
+        "description": "Vista de calendario con remates por día para los próximos 7 días.",
+        "operationId": "getCalendario",
+        "tags": ["Remates"],
+        "responses": {
+          "200": {
+            "description": "Calendario de remates"
+          }
+        }
+      }
+    },
+    "/precios": {
+      "get": {
+        "summary": "Precios INMAG",
+        "description": "Índice INMAG actual, precios por categoría y variaciones semanales.",
+        "operationId": "getPrecios",
+        "tags": ["Mercado"],
+        "responses": {
+          "200": {
+            "description": "Precios de mercado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreciosResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "summary": "Estado del sistema",
+        "description": "Health check y estadísticas de la API.",
+        "operationId": "getStatus",
+        "tags": ["Sistema"],
+        "responses": {
+          "200": {
+            "description": "Estado de la API"
+          }
+        }
+      }
+    },
+    "/consignataria/{slug}": {
+      "get": {
+        "summary": "Perfil de consignataria",
+        "description": "Datos de una consignataria específica.",
+        "operationId": "getConsignataria",
+        "tags": ["Consignatarias"],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Perfil de consignataria"
+          },
+          "404": {
+            "description": "Consignataria no encontrada"
+          }
+        }
+      }
+    },
+    "/planes": {
+      "get": {
+        "summary": "Planes disponibles",
+        "description": "Lista de planes de suscripción y precios.",
+        "operationId": "getPlanes",
+        "tags": ["Sistema"],
+        "responses": {
+          "200": {
+            "description": "Planes de suscripción"
+          }
+        }
+      }
+    },
+    "/alertas": {
+      "get": {
+        "summary": "Listar alertas",
+        "description": "Lista las alertas configuradas para el usuario autenticado.",
+        "operationId": "getAlertas",
+        "tags": ["Alertas"],
+        "security": [{"apiKey": []}],
+        "responses": {
+          "200": {
+            "description": "Lista de alertas"
+          },
+          "401": {
+            "description": "API key inválida"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear alerta",
+        "description": "Crea una nueva alerta de remates. Requiere suscripción PRO.",
+        "operationId": "createAlerta",
+        "tags": ["Alertas"],
+        "security": [{"apiKey": []}],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlertaInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Alerta creada"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "401": {
+            "description": "API key inválida"
+          },
+          "403": {
+            "description": "Límite de alertas alcanzado (3 para tier gratuito)"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Remate": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "integer"},
+          "title": {"type": "string"},
+          "consignatariaName": {"type": "string"},
+          "consignatariaSlug": {"type": "string"},
+          "date": {"type": "string", "format": "date"},
+          "time": {"type": "string", "nullable": true},
+          "location": {"type": "string"},
+          "province": {"type": "string"},
+          "type": {"type": "string", "enum": ["general", "invernada", "cria", "especial", "reproductores"]},
+          "estimatedHeads": {"type": "integer", "nullable": true},
+          "catalogUrl": {"type": "string", "nullable": true},
+          "youtubeUrl": {"type": "string", "nullable": true}
+        }
+      },
+      "RematesResponse": {
+        "type": "object",
+        "properties": {
+          "success": {"type": "boolean"},
+          "data": {
+            "type": "array",
+            "items": {"$ref": "#/components/schemas/Remate"}
+          },
+          "count": {"type": "integer"},
+          "timestamp": {"type": "string", "format": "date-time"}
+        }
+      },
+      "StatsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {"type": "boolean"},
+          "data": {
+            "type": "object",
+            "properties": {
+              "resumen": {
+                "type": "object",
+                "properties": {
+                  "totalRemates": {"type": "integer"},
+                  "rematesHoy": {"type": "integer"},
+                  "rematesProximos7dias": {"type": "integer"},
+                  "provinciasActivas": {"type": "integer"},
+                  "consignatariasActivas": {"type": "integer"}
+                }
+              },
+              "porProvincia": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "provincia": {"type": "string"},
+                    "total": {"type": "integer"},
+                    "proximos7dias": {"type": "integer"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "PreciosResponse": {
+        "type": "object",
+        "properties": {
+          "inmag": {
+            "type": "object",
+            "properties": {
+              "current": {"type": "number"},
+              "prev": {"type": "number"},
+              "change": {"type": "number"}
+            }
+          },
+          "categories": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "current": {"type": "number"},
+                "prev": {"type": "number"},
+                "change": {"type": "number"}
+              }
+            }
+          }
+        }
+      },
+      "AlertaInput": {
+        "type": "object",
+        "required": ["name", "filters"],
+        "properties": {
+          "name": {"type": "string"},
+          "filters": {
+            "type": "object",
+            "properties": {
+              "provincia": {"type": "string"},
+              "tipo": {"type": "string"},
+              "consignataria": {"type": "string"}
+            }
+          },
+          "notify_email": {"type": "boolean"},
+          "notify_webhook": {"type": "string"}
+        }
+      }
+    },
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    }
+  },
+  "tags": [
+    {"name": "Remates", "description": "Endpoints de remates ganaderos"},
+    {"name": "Mercado", "description": "Precios y datos de mercado"},
+    {"name": "Consignatarias", "description": "Perfiles de consignatarias"},
+    {"name": "Alertas", "description": "Sistema de alertas (requiere PRO)"},
+    {"name": "Sistema", "description": "Estado y configuración"}
+  ]
+}
