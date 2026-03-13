@@ -78,7 +78,13 @@ const ENTERPRISE_FEATURES = [
 
 export default function PlanesPage() {
   return (
-    <div className="px-4 py-6 max-w-5xl mx-auto">
+    <>
+      {/* SEO Schema Markup */}
+      <SaaSPricingSchema plans={PRICING_PLANS} />
+      <FAQPageSchema items={FAQ_ITEMS} />
+      <SectionBreadcrumbSchema section="planes" sectionName="Planes y Precios" />
+      
+      <div className="px-4 py-6 max-w-5xl mx-auto">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-xl font-heading text-zinc-100 mb-2">
@@ -252,5 +258,6 @@ export default function PlanesPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }
