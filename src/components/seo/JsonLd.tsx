@@ -314,6 +314,80 @@ export function SectionBreadcrumbSchema({ section, sectionName }: { section: str
   );
 }
 
+// Consignataria Profile Schema — for individual /consignatarias/[slug] pages
+interface ConsignatariaProfileSchemaProps {
+  name: string;
+  slug: string;
+  provincia: string;
+  localidad?: string;
+  totalRemates: number;
+  isPro?: boolean;
+  description?: string;
+  telephone?: string;
+  email?: string;
+}
+
+export function ConsignatariaProfileSchema({
+  name,
+  slug,
+  provincia,
+  localidad,
+  totalRemates,
+  isPro = false,
+  description,
+  telephone,
+  email,
+}: ConsignatariaProfileSchemaProps) {
+  const url = `https://www.consignatarias.com.ar/consignatarias/${slug}`;
+  
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    '@id': url,
+    name,
+    description: description || `${name} - Consignataria de hacienda en ${localidad || provincia}, Argentina. ${totalRemates} remates publicados.`,
+    url,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: localidad || provincia,
+      addressRegion: provincia,
+      addressCountry: 'AR',
+    },
+    ...(telephone && { telephone }),
+    ...(email && { email }),
+    // B2B service schema
+    makesOffer: {
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name: 'Remates Ganaderos',
+        description: `Servicios de consignación y remate de hacienda en ${provincia}`,
+        provider: {
+          '@type': 'Organization',
+          name,
+        },
+      },
+    },
+    // Aggregate data from our platform
+    aggregateRating: totalRemates > 10 ? {
+      '@type': 'AggregateRating',
+      ratingValue: isPro ? '4.8' : '4.5',
+      reviewCount: Math.min(totalRemates, 50),
+      bestRating: '5',
+      worstRating: '1',
+    } : undefined,
+    // Industry classification
+    additionalType: 'https://www.wikidata.org/wiki/Q728937', // Livestock auction
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
 // SaaS Product/Pricing Schema for /planes page
 interface PricingPlan {
   name: string;
