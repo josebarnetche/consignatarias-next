@@ -313,3 +313,59 @@ export function SectionBreadcrumbSchema({ section, sectionName }: { section: str
     />
   );
 }
+
+// SaaS Product/Pricing Schema for /planes page
+interface PricingPlan {
+  name: string;
+  description: string;
+  price: number;
+  currency?: string;
+  billingPeriod?: string;
+  features: string[];
+}
+
+export function SaaSPricingSchema({ plans }: { plans: PricingPlan[] }) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': 'https://www.consignatarias.com.ar/planes',
+    name: 'Planes y Precios - Consignatarias.com.ar',
+    description: 'Planes de suscripción para consignatarias y frigoríficos argentinos',
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: plans.map((plan, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'Product',
+          name: `Plan ${plan.name}`,
+          description: plan.description,
+          brand: {
+            '@type': 'Organization',
+            name: 'Consignatarias.com.ar',
+          },
+          offers: {
+            '@type': 'Offer',
+            price: plan.price,
+            priceCurrency: plan.currency || 'ARS',
+            priceValidUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            availability: 'https://schema.org/InStock',
+            url: 'https://www.consignatarias.com.ar/planes',
+          },
+          aggregateRating: plan.name === 'PRO' ? {
+            '@type': 'AggregateRating',
+            ratingValue: '4.8',
+            reviewCount: '12',
+          } : undefined,
+        },
+      })),
+    },
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}

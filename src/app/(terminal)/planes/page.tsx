@@ -1,5 +1,43 @@
 import { Metadata } from 'next'
 import SubscribeButton from './SubscribeButton'
+import { SaaSPricingSchema, FAQPageSchema, SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+
+// Pricing data for schema
+const PRICING_PLANS = [
+  {
+    name: 'Gratuito',
+    description: 'Presencia básica en el directorio de consignatarias argentinas.',
+    price: 0,
+    features: ['Perfil básico en el directorio', 'Calendario de remates', 'Datos de mercado limitados'],
+  },
+  {
+    name: 'PRO',
+    description: 'Perfil destacado con badge PRO, analytics de visitas y soporte prioritario.',
+    price: 45000,
+    features: ['Perfil verificado y destacado', 'Analytics de perfil', 'Remates con badge PRO', 'Logo y descripción personalizada', 'Soporte prioritario'],
+  },
+  {
+    name: 'Enterprise',
+    description: 'Soluciones a medida para grandes operadores del mercado ganadero.',
+    price: 0, // Contact for pricing
+    features: ['Dashboard personalizado', 'API de datos de mercado', 'Integración personalizada', 'Soporte dedicado'],
+  },
+]
+
+const FAQ_ITEMS = [
+  {
+    question: '¿Cómo funciona el pago?',
+    answer: 'Procesamos pagos con tarjeta de crédito y débito a través de Rebill, plataforma certificada para pagos en Argentina y Latinoamérica. La suscripción se renueva automáticamente cada mes.',
+  },
+  {
+    question: '¿Puedo cancelar en cualquier momento?',
+    answer: 'Sí, podés cancelar tu suscripción en cualquier momento desde tu dashboard. El acceso PRO continúa hasta el final del período facturado.',
+  },
+  {
+    question: '¿Qué incluye el perfil verificado?',
+    answer: 'Tu perfil aparece con el badge PRO destacado en dorado, tus remates se muestran con tratamiento visual especial, y accedés a estadísticas de visitas a tu perfil.',
+  },
+]
 
 export const metadata: Metadata = {
   title: 'Planes y Precios | Consignatarias.com.ar',

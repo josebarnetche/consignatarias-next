@@ -4,7 +4,7 @@ import marketPrices from "@/lib/data/market-prices.json";
 import frigorificosSummary from "@/lib/data/frigorificos-summary.json";
 import rematesData from "@/lib/data/remates.json";
 import { getAllProfiles } from "@/lib/data/consignataria-slugs";
-import { FAQPageSchema } from "@/components/seo/JsonLd";
+import { FAQPageSchema, OrganizationSchema, WebSiteSchema } from "@/components/seo/JsonLd";
 
 /* ================================================================== */
 /*  SVG ICONS                                                          */
@@ -157,6 +157,9 @@ export const metadata: Metadata = {
 export default function LandingPage() {
   return (
     <div className="font-sans text-zinc-300 selection:bg-zinc-800 selection:text-zinc-100">
+      {/* SEO Structured Data */}
+      <OrganizationSchema />
+      <WebSiteSchema />
       {/* ============================================================ */}
       {/*  NAVBAR                                                       */}
       {/* ============================================================ */}
