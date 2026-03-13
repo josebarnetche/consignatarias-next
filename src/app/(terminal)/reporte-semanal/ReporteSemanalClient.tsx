@@ -137,7 +137,7 @@ export default function ReporteSemanalClient({ data }: { data: ReportData }) {
           </div>
 
           {/* Report Content */}
-          <div ref={reportRef} className="space-y-6 print:space-y-4">
+          <div className="space-y-6">
             {/* Report Header */}
             <div className="terminal-panel print:border-black">
               <div className="px-panel py-6 text-center print:py-4">
