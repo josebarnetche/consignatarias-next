@@ -48,6 +48,7 @@ export async function GET() {
       '/api/remates/calendario': 'active',
       '/api/remates/export': 'active',
       '/api/consignataria/[slug]': 'active',
+      '/api/consignatarias/ranking': 'active',
       '/api/precios': 'active',
       '/api/planes': 'active',
       '/api/newsletter': 'active',
@@ -64,7 +65,7 @@ export async function GET() {
       '/api/status': 'active',
       '/api/health': 'active'
     },
-    totalEndpoints: 19
+    totalEndpoints: 20
   }, {
     headers: {
       'Cache-Control': 'no-cache, no-store, must-revalidate'
