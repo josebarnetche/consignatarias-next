@@ -5,6 +5,7 @@ import frigorificosSummary from "@/lib/data/frigorificos-summary.json";
 import rematesData from "@/lib/data/remates.json";
 import { getAllProfiles } from "@/lib/data/consignataria-slugs";
 import { FAQPageSchema, OrganizationSchema, WebSiteSchema } from "@/components/seo/JsonLd";
+import NewsletterSignup from "@/components/NewsletterSignup";
 
 /* ================================================================== */
 /*  SVG ICONS                                                          */
@@ -677,6 +678,23 @@ export default function LandingPage() {
               Acceder al Terminal
               <IconArrowRight />
             </Link>
+          </div>
+        </section>
+
+        {/* ============================================================ */}
+        {/*  NEWSLETTER                                                  */}
+        {/* ============================================================ */}
+        <section className="max-w-3xl mx-auto px-6 pb-16">
+          <div className="border-t border-zinc-800 pt-12 text-center">
+            <h3 className="text-lg font-medium text-zinc-200 mb-2">
+              Recibí las novedades del mercado ganadero
+            </h3>
+            <p className="text-sm text-zinc-500 mb-6">
+              Resumen semanal de remates, precios y tendencias. Sin spam.
+            </p>
+            <div className="flex justify-center relative">
+              <NewsletterSignup />
+            </div>
           </div>
         </section>
       </main>
