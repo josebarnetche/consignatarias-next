@@ -49,6 +49,7 @@ export async function GET() {
       '/api/precios': 'active',
       '/api/alertas': 'active',
       '/api/alertas/[alerta_id]': 'active',
+      '/api/planes': 'active',
       '/api/status': 'active'
     }
   }, {
