@@ -42,6 +42,7 @@ export async function GET() {
       // Public APIs
       '/api/remates/proximos': 'active',
       '/api/remates/hoy': 'active',
+      '/api/remates/top': 'active',
       '/api/remates/stats': 'active',
       '/api/remates/buscar': 'active',
       '/api/remates/calendario': 'active',
@@ -63,7 +64,7 @@ export async function GET() {
       '/api/status': 'active',
       '/api/health': 'active'
     },
-    totalEndpoints: 18
+    totalEndpoints: 19
   }, {
     headers: {
       'Cache-Control': 'no-cache, no-store, must-revalidate'
