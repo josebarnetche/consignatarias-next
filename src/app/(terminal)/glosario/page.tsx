@@ -3,8 +3,8 @@ import Link from 'next/link'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
-  title: 'Glosario Ganadero — Consignatarias.com.ar',
-  description: 'Definiciones de terminos clave del mercado ganadero argentino: remate, consignataria, INMAG, invernada, cria, frigorifico, hacienda, SENASA y mas.',
+  title: 'Glosario Ganadero — 38 Términos del Mercado | Consignatarias.com.ar',
+  description: 'Glosario completo con 38 definiciones del mercado ganadero argentino: remate, consignataria, INMAG, invernada, feedlot, Liniers, categorías de hacienda, razas y más.',
   openGraph: {
     title: 'Glosario Ganadero — Consignatarias.com.ar',
     description: 'Glosario con definiciones de terminos del mercado ganadero argentino: remate, consignataria, INMAG, invernada, cria, frigorifico y mas.',
@@ -18,8 +18,32 @@ export const metadata: Metadata = {
 
 const GLOSSARY_TERMS = [
   {
+    term: 'Balanza',
+    definition: 'Instrumento de pesaje utilizado en los remates para determinar el peso exacto de los animales. El precio final se calcula multiplicando el peso por el valor por kilogramo ofertado. La balanza debe estar calibrada y certificada.',
+  },
+  {
+    term: 'Braford',
+    definition: 'Raza bovina sintética originada del cruce entre Brahman y Hereford. Combina la rusticidad y adaptación al calor del cebú con la calidad carnicera del Hereford. Muy difundida en el norte argentino.',
+  },
+  {
+    term: 'Brangus',
+    definition: 'Raza bovina sintética resultado del cruce entre Brahman y Angus. Ofrece tolerancia al calor, resistencia a parásitos y buena calidad de carne. Popular en regiones subtropicales de Argentina.',
+  },
+  {
     term: 'Cabeza',
     definition: 'Unidad de conteo de ganado. 1 cabeza = 1 animal. Se usa para expresar el volumen de un remate o la capacidad de un establecimiento (ej. "remate de 2.000 cabezas").',
+  },
+  {
+    term: 'Cabaña',
+    definition: 'Establecimiento ganadero dedicado a la cría de reproductores de pedigree (puros de raza). Las cabañas venden toros y vientres de alta genética para mejoramiento de rodeos comerciales.',
+  },
+  {
+    term: 'Categoría',
+    definition: 'Clasificación del ganado según sexo, edad y estado reproductivo. Las principales categorías son: ternero/a, novillito/vaquillona, novillo/vaca, toro. Cada categoría tiene precios de referencia distintos.',
+  },
+  {
+    term: 'Ciclo completo',
+    definition: 'Sistema de producción ganadera que integra cría e invernada en un mismo establecimiento. El productor mantiene vacas de cría, desteta terneros y los engorda hasta peso de faena.',
   },
   {
     term: 'Consignataria',
@@ -84,6 +108,86 @@ const GLOSSARY_TERMS = [
   {
     term: 'Vaquillona',
     definition: 'Bovino hembra joven que aun no ha tenido su primer parto. Se comercializa tanto para invernada (engorde) como para cria (como futuro vientre reproductor).',
+  },
+  {
+    term: 'Destete',
+    definition: 'Separación del ternero de su madre, generalmente entre los 6 y 8 meses de edad. Los terneros destetados son la principal oferta en remates de invernada.',
+  },
+  {
+    term: 'DEP',
+    definition: 'Diferencia Esperada en la Progenie. Indicador genético que predice cómo se comportarán los hijos de un reproductor respecto al promedio de la raza. Se usa para selección de toros en cabañas.',
+  },
+  {
+    term: 'Faena',
+    definition: 'Proceso de sacrificio y procesamiento del ganado en frigoríficos. La faena está regulada por SENASA y debe realizarse en plantas habilitadas. Los datos de faena son indicadores del mercado.',
+  },
+  {
+    term: 'Feria',
+    definition: 'Lugar físico donde se realizan los remates ganaderos. Las ferias cuentan con corrales, mangas, balanzas y espacios para compradores. Algunas ferias tienen calendario fijo semanal o quincenal.',
+  },
+  {
+    term: 'Feedlot',
+    definition: 'Sistema de engorde intensivo a corral donde el ganado recibe alimentación balanceada (granos, silaje, núcleos vitamínicos). Permite terminar animales en menor tiempo que la invernada a campo.',
+  },
+  {
+    term: 'Gordura',
+    definition: 'Grado de terminación o engrasamiento de un animal. Se clasifica visualmente en escalas (ej. 1 a 4) y determina si está listo para faena. La gordura adecuada es clave para el precio final.',
+  },
+  {
+    term: 'Guía',
+    definition: 'Documento oficial emitido por SENASA que autoriza el traslado de hacienda entre establecimientos. Sin guía, el transporte de ganado es ilegal. Incluye datos del remitente, destinatario y sanidad.',
+  },
+  {
+    term: 'Kilo vivo',
+    definition: 'Unidad de medida estándar para la comercialización de hacienda en pie. El precio se expresa en $/kg vivo y se multiplica por el peso del animal para obtener el valor total.',
+  },
+  {
+    term: 'Liniers',
+    definition: 'Mercado de Hacienda de Liniers, ubicado en Buenos Aires. Es el principal mercado concentrador de ganado de Argentina y referencia nacional de precios. Opera diariamente con subastas públicas.',
+  },
+  {
+    term: 'Lote',
+    definition: 'Conjunto de animales agrupados para su venta en un remate. Los lotes se arman por categoría, peso y características similares. El comprador puja por el lote completo, no por animales individuales.',
+  },
+  {
+    term: 'Manga',
+    definition: 'Pasillo angosto por donde circula el ganado para pesaje, vacunación o embarque. En los remates, la manga permite que los animales pasen ordenadamente frente a los compradores.',
+  },
+  {
+    term: 'Martillero',
+    definition: 'Profesional habilitado que conduce la subasta, recibe las ofertas y adjudica los lotes al mejor postor. El martillero debe estar matriculado y actúa en representación de la consignataria.',
+  },
+  {
+    term: 'Merma',
+    definition: 'Pérdida de peso que sufre el ganado durante el transporte. Se expresa como porcentaje y se descuenta del peso de origen. La merma típica varía entre 2% y 6% según distancia y condiciones.',
+  },
+  {
+    term: 'Pedigree',
+    definition: 'Registro genealógico oficial de un animal de raza pura. Los animales con pedigree tienen trazabilidad completa de sus ancestros y se comercializan como reproductores a precios superiores.',
+  },
+  {
+    term: 'Rendimiento',
+    definition: 'Relación entre el peso vivo del animal y el peso de la res (carcasa). Se expresa como porcentaje: un novillo de 450 kg vivo con 58% de rendimiento produce una res de 261 kg.',
+  },
+  {
+    term: 'Rodeo',
+    definition: 'Conjunto total de animales de un establecimiento ganadero. Incluye todas las categorías: vacas, toros, terneros, novillos. "Armar rodeo" significa comprar hacienda para iniciar una explotación.',
+  },
+  {
+    term: 'Sanidad',
+    definition: 'Estado sanitario del ganado y cumplimiento del plan de vacunación obligatorio (aftosa, brucelosis, etc.). La sanidad se verifica mediante la guía de SENASA y es requisito para la comercialización.',
+  },
+  {
+    term: 'Toro',
+    definition: 'Bovino macho adulto no castrado, utilizado para reproducción. Los toros de pedigree se venden en remates de cabañas. Un toro puede servir entre 25 y 40 vacas por temporada.',
+  },
+  {
+    term: 'Tropa',
+    definition: 'Grupo de animales que se comercializan o transportan juntos. Similar a lote, pero más usado para referirse al ganado en tránsito. "Enviar una tropa" significa despachar animales a destino.',
+  },
+  {
+    term: 'Vientre',
+    definition: 'Hembra bovina apta para reproducción: vaca o vaquillona en servicio, preñada o con cría al pie. Los vientres son la base del rodeo de cría y se comercializan en remates especiales.',
   },
 ]
 
