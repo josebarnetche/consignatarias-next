@@ -152,26 +152,28 @@ export function generateReportePDF(data: ReportData): jsPDF {
   y += 8
 
   // USD Blue
-  doc.setFillColor(250, 250, 250)
-  doc.rect(margin, y, contentWidth / 2 - 2, 20, 'F')
+  doc.setFillColor(245, 245, 245)
+  doc.rect(margin, y, contentWidth / 2 - 3, 20, 'F')
   doc.setTextColor(...grayColor)
   doc.setFontSize(8)
+  doc.setFont('helvetica', 'normal')
   doc.text('Dólar Blue', margin + 5, y + 6)
   doc.setTextColor(...darkColor)
   doc.setFontSize(14)
   doc.setFont('helvetica', 'bold')
   doc.text(`$${fmt(data.usdBlue.current)}`, margin + 5, y + 15)
 
-  // Corn
-  doc.rect(margin + contentWidth / 2, y, contentWidth / 2 - 2, 20, 'F')
+  // Corn - explicit fill color reset
+  doc.setFillColor(245, 245, 245)
+  doc.rect(margin + contentWidth / 2 + 1, y, contentWidth / 2 - 3, 20, 'F')
   doc.setTextColor(...grayColor)
   doc.setFontSize(8)
   doc.setFont('helvetica', 'normal')
-  doc.text('Maíz', margin + contentWidth / 2 + 5, y + 6)
+  doc.text('Maíz', margin + contentWidth / 2 + 6, y + 6)
   doc.setTextColor(...darkColor)
   doc.setFontSize(14)
   doc.setFont('helvetica', 'bold')
-  doc.text(`USD ${fmt(data.corn.current, 1)}/tn`, margin + contentWidth / 2 + 5, y + 15)
+  doc.text(`USD ${fmt(data.corn.current, 1)}/tn`, margin + contentWidth / 2 + 6, y + 15)
 
   y += 30
 
@@ -211,34 +213,36 @@ export function generateReportePDF(data: ReportData): jsPDF {
     doc.setFontSize(8)
     doc.setFont('helvetica', 'bold')
     doc.text('DESTACADOS', margin, y)
-    y += 6
+    y += 8
 
     data.remates.top5.forEach((r, i) => {
-      const rowY = y + i * 10
+      const rowY = y + i * 12
 
-      doc.setFillColor(i % 2 === 0 ? 255 : 250, i % 2 === 0 ? 255 : 250, i % 2 === 0 ? 255 : 250)
-      doc.rect(margin, rowY, contentWidth, 9, 'F')
+      doc.setFillColor(i % 2 === 0 ? 255 : 248, i % 2 === 0 ? 255 : 248, i % 2 === 0 ? 255 : 248)
+      doc.rect(margin, rowY, contentWidth, 10, 'F')
 
+      // Date
       doc.setTextColor(...grayColor)
-      doc.setFontSize(9)
+      doc.setFontSize(8)
       doc.setFont('helvetica', 'normal')
-      doc.text(r.fecha.slice(5).replace('-', '/'), margin + 2, rowY + 6)
+      doc.text(r.fecha.slice(5).replace('-', '/'), margin + 3, rowY + 7)
 
+      // Consignataria name (truncate at 28 chars)
       doc.setTextColor(...darkColor)
+      doc.setFontSize(9)
       doc.setFont('helvetica', 'bold')
-      const consigName = r.consignataria.length > 35 ? r.consignataria.slice(0, 35) + '...' : r.consignataria
-      doc.text(consigName, margin + 20, rowY + 6)
+      const consigName = r.consignataria.length > 28 ? r.consignataria.slice(0, 28) + '...' : r.consignataria
+      doc.text(consigName, margin + 18, rowY + 7)
 
+      // Type (right aligned, shorter)
       doc.setTextColor(...grayColor)
+      doc.setFontSize(7)
       doc.setFont('helvetica', 'normal')
-      doc.text(r.tipo.toUpperCase(), margin + contentWidth - 40, rowY + 6)
-
-      if (r.cabezas) {
-        doc.text(`${fmt(r.cabezas)} cab`, margin + contentWidth - 15, rowY + 6, { align: 'right' })
-      }
+      const tipoShort = r.tipo.toUpperCase().slice(0, 8)
+      doc.text(tipoShort, margin + contentWidth - 5, rowY + 7, { align: 'right' })
     })
 
-    y += data.remates.top5.length * 10 + 10
+    y += data.remates.top5.length * 12 + 10
   }
 
   // Footer
