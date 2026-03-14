@@ -196,6 +196,96 @@ export async function sendMonthlyMetrics(
 }
 
 /* ------------------------------------------------------------------ */
+/*  WEEKLY NEWSLETTER                                                  */
+/* ------------------------------------------------------------------ */
+
+interface FeaturedRemate {
+  title: string
+  date: string
+  time: string | null
+  location: string
+  consignataria: string
+  slug: string
+  heads: number | null
+  isPro: boolean
+}
+
+export async function sendWeeklyNewsletter(
+  email: string,
+  featuredRemates: FeaturedRemate[],
+  totalRemates: number,
+  weekRange: string,
+) {
+  const resend = await getResend()
+  if (!resend) return
+
+  const formatDate = (dateStr: string) => {
+    const [y, m, d] = dateStr.split('-')
+    return `${d}/${m}`
+  }
+
+  const rematesHtml = featuredRemates.map(r => `
+    <div style="background:#16161d;border:1px solid ${r.isPro ? '#fbbf24' : '#27272a'};border-radius:4px;padding:12px;margin-bottom:8px;${r.isPro ? 'border-left:3px solid #fbbf24;' : ''}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+        <span style="color:${r.isPro ? '#fbbf24' : '#e4e4e7'};font-weight:bold;font-size:13px">
+          ${r.isPro ? '★ ' : ''}${escapeHtml(r.consignataria)}
+        </span>
+        <span style="color:#71717a;font-size:11px">${formatDate(r.date)}${r.time ? ` ${r.time}` : ''}</span>
+      </div>
+      <p style="color:#a1a1aa;font-size:12px;margin:0 0 4px">${escapeHtml(r.title)}</p>
+      <p style="color:#52525b;font-size:11px;margin:0">
+        📍 ${escapeHtml(r.location)}
+        ${r.heads ? ` · 🐄 ${r.heads.toLocaleString('es-AR')} cab` : ''}
+      </p>
+    </div>
+  `).join('')
+
+  resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: `🐄 ${featuredRemates.length} Remates Destacados — ${weekRange}`,
+    html: `
+      <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
+        <h2 style="color:#fff;font-size:16px;margin:0 0 4px">REMATES DE LA SEMANA</h2>
+        <p style="color:#71717a;font-size:12px;margin:0 0 20px">${escapeHtml(weekRange)} — ${totalRemates} remates programados</p>
+
+        <div style="margin-bottom:20px">
+          ${rematesHtml}
+        </div>
+
+        <div style="text-align:center;margin:20px 0">
+          <a href="${APP_URL}/remates" style="background:#22c55e;color:#fff;padding:10px 24px;text-decoration:none;border-radius:4px;display:inline-block;font-size:12px;font-weight:bold;letter-spacing:1px">VER TODOS LOS REMATES</a>
+        </div>
+
+        <div style="background:#16161d;border:1px solid #fbbf24;border-radius:4px;padding:12px;margin:20px 0;text-align:center">
+          <p style="color:#fbbf24;font-size:11px;margin:0 0 4px;font-weight:bold">★ CONSIGNATARIAS PRO</p>
+          <p style="color:#a1a1aa;font-size:11px;margin:0">
+            Los remates destacados son de consignatarias PRO verificadas.
+            <a href="${APP_URL}/planes" style="color:#fbbf24">Conocé los beneficios →</a>
+          </p>
+        </div>
+
+        <div style="border-top:1px solid #27272a;padding-top:12px;margin-top:20px">
+          <p style="color:#52525b;font-size:11px;margin:0">
+            <a href="${APP_URL}/remates" style="color:#52525b">Ver calendario</a>
+            &nbsp;&bull;&nbsp;
+            <a href="${APP_URL}/mercado" style="color:#52525b">Precios del mercado</a>
+            &nbsp;&bull;&nbsp;
+            <a href="${APP_URL}/consignatarias" style="color:#52525b">Directorio</a>
+          </p>
+        </div>
+
+        <p style="color:#3f3f46;font-size:10px;margin:16px 0 0">
+          Recibís este email porque te suscribiste a consignatarias.com.ar
+          <br>
+          <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#3f3f46">Desuscribirme</a>
+        </p>
+      </div>
+    `,
+  }).catch(() => {})
+}
+
+/* ------------------------------------------------------------------ */
 /*  CLAIM REJECTION                                                    */
 /* ------------------------------------------------------------------ */
 
