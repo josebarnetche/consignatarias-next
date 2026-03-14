@@ -142,22 +142,23 @@ export async function GET(req: NextRequest) {
         const filters = alert.filters as Record<string, string> || {}
         
         // Check provincia filter
-        if (filters.provincia && filters.provincia !== remate.location?.provincia) {
+        if (filters.provincia && filters.provincia !== remate.province) {
           continue
         }
 
         // Check tipo filter
-        if (filters.tipo && filters.tipo !== remate.tipo) {
+        if (filters.tipo && filters.tipo !== remate.type) {
           continue
         }
 
         // Check categoria filter  
-        if (filters.categoria && filters.categoria !== remate.categoria) {
+        if (filters.categoria && filters.categoria !== remate.mainCategory) {
           continue
         }
 
         // Match found!
-        const userEmail = (alert.users as { email: string })?.email
+        const users = alert.users as { email: string }[] | { email: string } | null
+        const userEmail = Array.isArray(users) ? users[0]?.email : users?.email
         if (!userEmail) continue
 
         matches.push({
@@ -167,7 +168,7 @@ export async function GET(req: NextRequest) {
           webhookUrl: alert.webhook_url || undefined,
           remateTitle: remate.title,
           consignataria: remate.consignatariaName || '',
-          provincia: remate.location?.provincia || '',
+          provincia: remate.province || '',
           fecha: remate.date,
           url: `https://consignatarias.com.ar/remates/${remate.id}`,
         })
