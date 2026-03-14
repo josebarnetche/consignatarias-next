@@ -19,7 +19,8 @@ function escapeHtml(str: string): string {
     .replace(/"/g, '&quot;')
 }
 
-const FROM = process.env.RESEND_FROM_EMAIL || 'Consignatarias.com.ar <agro@memola.com.ar>'
+// TODO: Change to noreply@consignatarias.com.ar once domain is verified in Resend
+const FROM = process.env.RESEND_FROM_EMAIL || 'Consignatarias.com.ar <onboarding@resend.dev>'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'agro@memola.com.ar'
 
