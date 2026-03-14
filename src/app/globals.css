@@ -410,6 +410,20 @@
   50% { opacity: 0.5; }
 }
 
+/* PRO badge glow animation */
+@keyframes pro-glow {
+  0%, 100% { 
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.2), 0 0 16px rgba(251, 191, 36, 0.1);
+  }
+  50% { 
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.35), 0 0 24px rgba(251, 191, 36, 0.15);
+  }
+}
+
+.pro-badge-glow {
+  animation: pro-glow 2s ease-in-out infinite;
+}
+
 /* --- Utility layer ---------------------------------------- */
 @layer utilities {
   .tabular-nums {

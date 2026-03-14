@@ -19,6 +19,7 @@ import {
   getEffectiveStatus,
 } from '@/lib/ui/tokens'
 import CountdownBadge from '@/components/CountdownBadge'
+import ProBadge from '@/components/badges/ProBadge'
 import { trackAuctionClick, trackFilterApply, trackOutboundClick } from '@/lib/analytics'
 
 /* ------------------------------------------------------------------ */
@@ -158,10 +159,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
         <div className="md:hidden p-3 pl-4 space-y-1.5 rounded-terminal shadow-panel">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 border border-amber-500/50 bg-amber-500/10">
-                <span className="text-amber-400 text-[10px]">★</span>
-                <span className="text-amber-400 font-terminal text-[10px] font-bold tracking-wider">PRO</span>
-              </span>
+              <ProBadge verified={true} size="sm" />
               <span className="text-data tabular-nums font-terminal text-amber-300 font-medium">
                 {formatDateShort(auction.date)}
               </span>
@@ -212,9 +210,8 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
         <div className="hidden md:block">
           {/* Line 1 */}
           <div className="flex items-center gap-0 px-cell py-px2 pl-4">
-            <span className="inline-flex items-center gap-1 mr-2 px-1.5 py-0.5 border border-amber-500/50 bg-amber-500/10 flex-shrink-0">
-              <span className="text-amber-400 text-[10px]">★</span>
-              <span className="text-amber-400 font-terminal text-[10px] font-bold tracking-wider">PRO</span>
+            <span className="mr-2 flex-shrink-0">
+              <ProBadge verified={true} size="sm" />
             </span>
             <span className="w-[56px] flex-shrink-0 text-data tabular-nums font-terminal text-amber-300 font-medium">
               {formatDateShort(auction.date)}
