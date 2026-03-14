@@ -529,6 +529,29 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                 </div>
               )}
             </div>
+            {/* Share & Subscribe row */}
+            <div className="flex flex-wrap gap-3 mt-3 pt-3 border-t border-zinc-800/50">
+              <Link
+                href={`/go/${profile.canonicalSlug}`}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-500/20 transition-colors rounded"
+              >
+                🎯 Link para compartir
+              </Link>
+              <a
+                href={`/api/calendario/${profile.canonicalSlug}`}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xxs font-terminal uppercase tracking-wider hover:bg-sky-500/20 transition-colors rounded"
+              >
+                📅 Suscribir calendario
+              </a>
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(`Mirá los remates de ${profile.displayName}: https://consignatarias.com.ar/go/${profile.canonicalSlug}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xxs font-terminal uppercase tracking-wider hover:bg-emerald-500/20 transition-colors rounded"
+              >
+                📤 Compartir WhatsApp
+              </a>
+            </div>
           </div>
         </div>
       )}
