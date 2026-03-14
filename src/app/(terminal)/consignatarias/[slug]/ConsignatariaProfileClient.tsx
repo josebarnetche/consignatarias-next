@@ -25,6 +25,7 @@ import {
   getEffectiveStatus,
 } from '@/lib/ui/tokens'
 import CountdownBadge from '@/components/CountdownBadge'
+import ProBadge, { VerifiedBadge } from '@/components/badges/ProBadge'
 
 /* ------------------------------------------------------------------ */
 /*  COMPLETENESS CALCULATOR                                            */
@@ -404,23 +405,21 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
             </Link>
             <span className="text-terminal-border">&mdash;</span>
             {profile.logoUrl && (
-              <div className="w-8 h-8 rounded-terminal border border-terminal-border bg-terminal-bg overflow-hidden flex-shrink-0">
+              <div className={`rounded-terminal border overflow-hidden flex-shrink-0 ${
+                tier === 'pro' || tier === 'enterprise' 
+                  ? 'w-16 h-16 border-amber-500/30 bg-amber-500/5 shadow-lg shadow-amber-500/10' 
+                  : 'w-8 h-8 border-terminal-border bg-terminal-bg'
+              }`}>
                 <img src={profile.logoUrl} alt={`Logo ${profile.displayName}`} className="w-full h-full object-contain" />
               </div>
             )}
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="section-heading text-label tracking-widest">{profile.displayName.toUpperCase()}</h1>
-              {profile.verified && (
-                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-xxs border border-positive/30 text-positive rounded-terminal font-terminal">
-                  <span className="w-1.5 h-1.5 rounded-full bg-positive" />
-                  VERIFICADA
-                </span>
-              )}
-              {(tier === 'pro' || tier === 'enterprise') && (
-                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-xxs border border-amber-500/20 text-amber-400 bg-amber-500/10 rounded-terminal font-terminal">
-                  &#9733; PRO
-                </span>
-              )}
+              {(tier === 'pro' || tier === 'enterprise') ? (
+                <ProBadge verified={profile.verified} size="md" />
+              ) : profile.verified ? (
+                <VerifiedBadge size="md" />
+              ) : null}
               {provinces.map(prov => (
                 <span key={prov} className="inline-flex px-1.5 py-0.5 text-xxs border border-terminal-border text-zinc-500 rounded-terminal">
                   {prov}
