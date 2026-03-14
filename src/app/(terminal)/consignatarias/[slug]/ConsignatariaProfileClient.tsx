@@ -537,12 +537,12 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               >
                 🎯 Link para compartir
               </Link>
-              <a
-                href={`/api/calendario/${profile.canonicalSlug}`}
+              <Link
+                href={`/calendario/${profile.canonicalSlug}`}
                 className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xxs font-terminal uppercase tracking-wider hover:bg-sky-500/20 transition-colors rounded"
               >
                 📅 Suscribir calendario
-              </a>
+              </Link>
               <a
                 href={`https://wa.me/?text=${encodeURIComponent(`Mirá los remates de ${profile.displayName}: https://consignatarias.com.ar/go/${profile.canonicalSlug}`)}`}
                 target="_blank"
