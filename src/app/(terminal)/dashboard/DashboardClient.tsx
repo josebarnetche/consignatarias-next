@@ -401,8 +401,8 @@ export default function DashboardClient({
                       Usá este QR en tus catálogos, tarjetas y carteles. Los compradores escanean y ven tu próximo remate al instante.
                     </p>
                     
-                    {/* Copy URL button */}
-                    <div className="flex flex-col sm:flex-row gap-2">
+                    {/* Actions */}
+                    <div className="flex flex-wrap gap-2">
                       <button
                         onClick={() => {
                           navigator.clipboard.writeText(`https://consignatarias.com.ar/go/${consignataria.canonical_slug}`)
@@ -410,7 +410,7 @@ export default function DashboardClient({
                         }}
                         className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
                       >
-                        📋 Copiar link
+                        📋 Copiar
                       </button>
                       <a
                         href={`https://wa.me/?text=${encodeURIComponent(`Mirá mis próximos remates: https://consignatarias.com.ar/go/${consignataria.canonical_slug}`)}`}
@@ -418,9 +418,19 @@ export default function DashboardClient({
                         rel="noopener noreferrer"
                         className="px-3 py-1.5 bg-[#25D366] hover:bg-[#20BD5A] text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors text-center"
                       >
-                        📤 Compartir
+                        📤 WhatsApp
+                      </a>
+                      <a
+                        href={`/api/calendario/${consignataria.canonical_slug}`}
+                        className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors text-center"
+                        title="Agregar a Google Calendar, Apple Calendar u Outlook"
+                      >
+                        📅 Calendario
                       </a>
                     </div>
+                    <p className="text-[10px] text-zinc-600 font-terminal mt-2">
+                      El calendario se sincroniza automáticamente con tus remates
+                    </p>
                   </div>
                 </div>
               </div>
