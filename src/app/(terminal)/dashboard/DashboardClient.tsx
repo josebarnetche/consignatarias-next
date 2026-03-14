@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import WelcomeChecklist from '@/components/onboarding/WelcomeChecklist'
 import { WhatsAppIconButton } from '@/components/share/WhatsAppShare'
+import QRCode from '@/components/QRCode'
 
 interface Consignataria {
   display_name: string
@@ -356,6 +357,63 @@ export default function DashboardClient({
                 <button onClick={() => setActiveTab('resultados')} className="px-3 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors">
                   Cargar resultados
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* QR Code + Landing Page Link */}
+          {consignataria?.verified && (
+            <div className="terminal-panel">
+              <div className="terminal-panel-header flex items-center justify-between">
+                <span className="text-zinc-200 text-label tracking-widest">📱 TU LINK Y QR</span>
+                <a 
+                  href={`/go/${consignataria.canonical_slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors"
+                >
+                  Ver landing →
+                </a>
+              </div>
+              <div className="px-panel py-4">
+                <div className="flex flex-col sm:flex-row items-center gap-6">
+                  {/* QR Code */}
+                  <div className="flex-shrink-0">
+                    <QRCode 
+                      url={`https://consignatarias.com.ar/go/${consignataria.canonical_slug}?utm_source=qr`}
+                      size={140}
+                      showDownload={true}
+                    />
+                  </div>
+                  
+                  {/* Info */}
+                  <div className="flex-1 text-center sm:text-left space-y-3">
+                    <p className="text-xxs text-zinc-400 font-terminal">
+                      Usá este QR en tus catálogos, tarjetas y carteles. Los compradores escanean y ven tu próximo remate al instante.
+                    </p>
+                    
+                    {/* Copy URL button */}
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(`https://consignatarias.com.ar/go/${consignataria.canonical_slug}`)
+                          alert('Link copiado!')
+                        }}
+                        className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
+                      >
+                        📋 Copiar link
+                      </button>
+                      <a
+                        href={`https://wa.me/?text=${encodeURIComponent(`Mirá mis próximos remates: https://consignatarias.com.ar/go/${consignataria.canonical_slug}`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1.5 bg-[#25D366] hover:bg-[#20BD5A] text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors text-center"
+                      >
+                        📤 Compartir
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
