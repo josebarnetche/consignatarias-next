@@ -335,3 +335,80 @@ export async function sendRemateReminder(email: string, subject: string, htmlBod
     `,
   }).catch(() => {})
 }
+
+/* ------------------------------------------------------------------ */
+/*  NEW REMATE ALERTS (PRO consignataria posts new auction)           */
+/* ------------------------------------------------------------------ */
+
+interface NewRemateAlertParams {
+  to: string
+  remateTitle: string
+  consignataria: string
+  provincia: string
+  fecha: string
+  url: string
+}
+
+export async function sendNewRemateAlert({
+  to,
+  remateTitle,
+  consignataria,
+  provincia,
+  fecha,
+  url,
+}: NewRemateAlertParams) {
+  const resend = await getResend()
+  if (!resend) return
+
+  const formatDate = (dateStr: string) => {
+    const [y, m, d] = dateStr.split('-')
+    const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+    return `${parseInt(d)} de ${months[parseInt(m) - 1]}`
+  }
+
+  const safeTitle = escapeHtml(remateTitle)
+  const safeConsig = escapeHtml(consignataria)
+  const safeProv = escapeHtml(provincia)
+
+  resend.emails.send({
+    from: FROM,
+    to,
+    subject: `🐄 Nuevo remate: ${consignataria} — ${formatDate(fecha)}`,
+    html: `
+      <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
+        <p style="color:#fbbf24;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">
+          ★ NUEVA PUBLICACIÓN
+        </p>
+        <h2 style="color:#fff;font-size:18px;margin:0 0 16px">${safeConsig}</h2>
+        
+        <div style="background:#16161d;border:1px solid #fbbf24;border-left:3px solid #fbbf24;border-radius:4px;padding:16px;margin-bottom:16px">
+          <p style="color:#e4e4e7;font-size:14px;margin:0 0 8px;font-weight:bold">${safeTitle}</p>
+          <p style="color:#a1a1aa;font-size:12px;margin:0">
+            📅 ${formatDate(fecha)} &nbsp;&bull;&nbsp; 📍 ${safeProv}
+          </p>
+        </div>
+
+        <p style="color:#a1a1aa;font-size:12px;line-height:1.5">
+          Una consignataria PRO que seguís acaba de publicar un nuevo remate. 
+          Visitá el link para ver los detalles completos.
+        </p>
+
+        <div style="text-align:center;margin:20px 0">
+          <a href="${url}" style="background:#22c55e;color:#fff;padding:10px 24px;text-decoration:none;border-radius:4px;display:inline-block;font-size:12px;font-weight:bold;letter-spacing:1px">VER REMATE</a>
+        </div>
+
+        <div style="border-top:1px solid #27272a;padding-top:12px;margin-top:20px">
+          <p style="color:#52525b;font-size:11px;margin:0">
+            Recibís este email porque tenés una alerta activa para ${safeProv || 'esta zona'}.
+            <br>
+            <a href="${APP_URL}/alertas/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">
+              Modificar mis alertas
+            </a>
+          </p>
+        </div>
+
+        <p style="color:#3f3f46;font-size:10px;margin:16px 0 0">Consignatarias.com.ar — Directorio ganadero</p>
+      </div>
+    `,
+  }).catch(() => {})
+}
