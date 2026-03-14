@@ -102,6 +102,33 @@ export default async function DashboardPage() {
     viewCount = count ?? 0
   }
 
+  // Calculate percentile vs other consignatarias (for PRO dashboard)
+  let viewPercentile = 0
+  if (consignataria && viewCount > 0) {
+    // Get view counts for all claimed consignatarias in last 30 days
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+    
+    const { data: allViews } = await service
+      .from('profile_views')
+      .select('entity_slug')
+      .eq('entity_type', 'consignataria')
+      .gte('viewed_at', thirtyDaysAgo)
+    
+    if (allViews && allViews.length > 0) {
+      // Count views per slug
+      const viewsBySlug: Record<string, number> = {}
+      for (const v of allViews) {
+        viewsBySlug[v.entity_slug] = (viewsBySlug[v.entity_slug] || 0) + 1
+      }
+      
+      // Calculate percentile
+      const allCounts = Object.values(viewsBySlug).sort((a, b) => a - b)
+      const myCount = viewCount
+      const belowMe = allCounts.filter(c => c < myCount).length
+      viewPercentile = Math.round((belowMe / allCounts.length) * 100)
+    }
+  }
+
   // Fetch subscription data
   let subscription = null
   if (consignataria) {
@@ -136,6 +163,7 @@ export default async function DashboardPage() {
       ownerAuctions={ownerAuctions}
       auctionResults={auctionResults || []}
       viewCount={viewCount}
+      viewPercentile={viewPercentile}
       completedFields={completedFields}
       subscription={subscription}
       frigorifico={frigorifico}

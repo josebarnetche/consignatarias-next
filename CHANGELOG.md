@@ -1,6 +1,125 @@
 # Changelog
 
-Registro completo de **consignatarias.com.ar** — desde el primer `npx create-next-app` hasta una plataforma SaaS de remates ganaderos con 20 API endpoints, 385+ remates en 10 provincias argentinas, auth, pagos, perfiles verificados, AI SEO, lead magnets y documentación completa.
+Registro completo de **consignatarias.com.ar** — desde el primer `npx create-next-app` hasta una plataforma SaaS de remates ganaderos con 20 API endpoints, 385+ remates en 10 provincias argentinas, auth, pagos, perfiles verificados, AI SEO, lead magnets, PRO tier con features premium y documentación completa.
+
+---
+
+## [1.4.0] — 2026-03-14
+
+### PRO Irresistible — Features premium para consignatarias
+
+> feat: v1.4.0 — PRO tier features to maximize conversion
+
+**Milestone:** Sistema completo de diferenciación PRO vs FREE. Badges visuales, estadísticas mejoradas, WhatsApp share, newsletter con PROs destacados. Diseñado para consignatarios no-técnicos que buscan visibilidad.
+
+**1. Sistema de Badges PRO**
+
+Nuevos componentes en `src/components/badges/`:
+
+- `ProBadge.tsx` — Badge PRO con estrella, glow animation, checkmark verificado opcional
+  - Props: `verified`, `size` (sm/md/lg), `animated`
+  - CSS animation: `pro-badge-glow` con keyframes (box-shadow pulsante amber)
+  - Gradiente: `from-amber-500/20 to-amber-600/10`
+- `VerifiedBadge.tsx` — Checkmark standalone para consignatarias verificadas
+  - SVG badge con tooltip "Consignataria verificada"
+  - Color `amber-400` para consistencia con PRO
+
+**Integración:**
+- `RematesClient.tsx` — ProBadge reemplaza inline badge en filas PRO
+- `ConsignatariaProfileClient.tsx` — ProBadge/VerifiedBadge en header de perfil
+
+**2. Logo Prominente para PRO**
+
+En `ConsignatariaProfileClient.tsx`:
+- FREE: `w-8 h-8` (32px) con borde `terminal-border`
+- PRO: `w-16 h-16` (64px) con borde `amber-500/30` + `shadow-amber-500/10`
+- Condicional basado en `tier === 'pro' || tier === 'enterprise'`
+
+**3. Dashboard "TU IMPACTO" Mejorado**
+
+En `DashboardClient.tsx`, reemplazo de sección Analytics:
+
+- Número de vistas en `text-3xl font-bold` (prominencia visual)
+- Subtítulo: "personas vieron tu perfil"
+- PRO users ven grid adicional:
+  - Visitas/día promedio (viewCount / 30)
+  - Percentil vs rubro ("Top 20%" hardcoded, TODO: calcular real)
+- FREE users ven panel bloqueado con:
+  - Mensaje: "🔒 Con PRO verás: visitas diarias, comparación con el rubro..."
+  - CTA: "★ Ver planes PRO" → `/planes`
+
+**4. WhatsApp Share en Dashboard**
+
+Nuevo componente `src/components/share/WhatsAppShare.tsx`:
+
+- `WhatsAppShare` — Botón completo con label
+  - Props: `title`, `date`, `time`, `location`, `heads`, `consignataria`, `url`, `size`, `showLabel`
+  - Genera URL: `https://wa.me/?text=...` con mensaje formateado
+  - Emojis: 🐄 título, 📅 fecha, 📍 ubicación, 🔢 cabezas, 🏢 consignataria, 👉 URL
+- `WhatsAppIconButton` — Versión compacta (solo icono)
+
+**Integración en `DashboardClient.tsx`:**
+- `AuctionManagerProps` extendido con `displayName`
+- WhatsAppIconButton en cada fila de remate (owner + scraped)
+- Mensaje pre-formateado listo para compartir en grupos
+
+**5. Newsletter Semanal con PROs Destacados**
+
+Nueva función en `src/lib/email.ts`:
+- `sendWeeklyNewsletter(email, featuredRemates, totalRemates, weekRange)`
+- Template HTML estilo terminal con:
+  - Remates PRO: borde amber-left 3px + estrella ★
+  - Remates regulares: borde gris
+  - Sección promocional: "Los remates destacados son de consignatarias PRO"
+  - Footer con unsubscribe link
+
+Nuevo endpoint `src/app/api/cron/weekly-newsletter/route.ts`:
+- Auth: `ADMIN_SECRET` (Bearer o query param)
+- Query: próximos 7 días de remates
+- Prioridad: PRO primero (featured OR subscription activa), luego por fecha
+- Máximo 10 remates por email
+- Envío a todos los suscriptores de `newsletter_subscribers` con status 'active'
+- Rate limiting: 100ms delay entre envíos
+
+**6. Rate Limiting para API**
+
+Nuevo archivo `src/lib/rate-limit.ts`:
+- `checkRateLimit(identifier, tier)` — Sliding window rate limiter
+- `getClientId(request)` — Extrae IP de headers (x-forwarded-for, x-real-ip)
+- `addRateLimitHeaders(headers, result)` — Agrega X-RateLimit-* headers
+
+Configuración:
+- FREE tier: **1 req/min** (99% reducción vs anterior 100 req/min)
+- PRO tier: 100 req/min
+- Enterprise: unlimited
+
+Middleware actualizado (`src/middleware.ts`):
+- Rate limiting aplicado a rutas públicas de API
+- Rutas excluidas: webhooks, admin, auth
+- Response 429 con `RATE_LIMIT_EXCEEDED` y `retryAfter`
+
+**7. Planes Actualizados**
+
+En `/api/planes/route.ts`:
+- `api_rate_limit` agregado a cada tier:
+  - Gratuito: "1 req/min"
+  - PRO: "100 req/min"
+  - Enterprise: "unlimited"
+
+**Archivos creados:**
+- `src/components/badges/ProBadge.tsx`
+- `src/components/share/WhatsAppShare.tsx`
+- `src/lib/rate-limit.ts`
+- `src/app/api/cron/weekly-newsletter/route.ts`
+
+**Archivos modificados:**
+- `src/app/globals.css` — Keyframes `pro-badge-glow`
+- `src/app/(terminal)/remates/RematesClient.tsx` — Import ProBadge
+- `src/app/(terminal)/consignatarias/[slug]/ConsignatariaProfileClient.tsx` — Logo PRO, badges
+- `src/app/(terminal)/dashboard/DashboardClient.tsx` — TU IMPACTO, WhatsApp buttons
+- `src/middleware.ts` — Rate limiting
+- `src/lib/email.ts` — sendWeeklyNewsletter
+- `src/app/api/planes/route.ts` — api_rate_limit field
 
 ---
 

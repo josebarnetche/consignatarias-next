@@ -99,6 +99,7 @@ interface Props {
   ownerAuctions: OwnerAuction[]
   auctionResults: AuctionResult[]
   viewCount: number
+  viewPercentile: number
   completedFields: CompletedFields | null
   subscription: Subscription | null
   frigorifico?: Frigorifico | null
@@ -115,7 +116,7 @@ type TabKey = 'resumen' | 'remates' | 'editar' | 'resultados' | 'plan' | 'frigor
 
 export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
-  auctionResults, viewCount, completedFields, subscription, frigorifico, frigoClaims = [],
+  auctionResults, viewCount, viewPercentile, completedFields, subscription, frigorifico, frigoClaims = [],
 }: Props) {
   const showChecklist = consignataria && completedFields && Object.values(completedFields).filter(Boolean).length < 5
   const searchParams = useSearchParams()
@@ -314,7 +315,7 @@ export default function DashboardClient({
                     </div>
                     <div className="bg-zinc-800/50 rounded-terminal p-2.5">
                       <div className="text-lg font-terminal tabular-nums text-amber-400">
-                        Top 20%
+                        {viewPercentile > 0 ? `Top ${100 - viewPercentile}%` : '—'}
                       </div>
                       <div className="text-[10px] text-zinc-500 uppercase font-terminal">
                         vs otras consignatarias
