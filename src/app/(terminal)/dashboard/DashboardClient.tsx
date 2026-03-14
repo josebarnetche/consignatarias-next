@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import WelcomeChecklist from '@/components/onboarding/WelcomeChecklist'
+import { WhatsAppIconButton } from '@/components/share/WhatsAppShare'
 
 interface Consignataria {
   display_name: string
@@ -429,6 +430,7 @@ export default function DashboardClient({
       {activeTab === 'remates' && consignataria?.verified && (
         <AuctionManager
           slug={consignataria.canonical_slug}
+          displayName={consignataria.display_name}
           ownerAuctions={ownerAuctions}
           scrapedAuctions={scrapedAuctions}
           onAuctionsChange={setOwnerAuctions}
@@ -510,6 +512,7 @@ export default function DashboardClient({
 
 interface AuctionManagerProps {
   slug: string
+  displayName: string
   ownerAuctions: OwnerAuction[]
   scrapedAuctions: ScrapedAuction[]
   onAuctionsChange: (auctions: OwnerAuction[]) => void
@@ -529,7 +532,7 @@ const EMPTY_AUCTION = {
   youtube_url: '',
 }
 
-function AuctionManager({ slug, ownerAuctions, scrapedAuctions, onAuctionsChange }: AuctionManagerProps) {
+function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onAuctionsChange }: AuctionManagerProps) {
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
   const [form, setForm] = useState(EMPTY_AUCTION)
@@ -740,18 +743,22 @@ function AuctionManager({ slug, ownerAuctions, scrapedAuctions, onAuctionsChange
             <span className="text-zinc-400 text-xxs tracking-widest">REMATES CARGADOS POR VOS</span>
           </div>
           <div className="divide-y divide-terminal-border">
-            {ownerAuctions.map(a => (
-              <div key={a.id} className="px-panel py-2 flex items-center gap-3">
-                <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">{formatDate(a.date)}</span>
-                {a.time && <span className="text-xxs font-terminal text-zinc-500 w-12 flex-shrink-0">{a.time}</span>}
-                <span className="text-data font-terminal text-zinc-300 flex-1 truncate">{a.title}</span>
-                <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline">{a.location}</span>
-                <button onClick={() => startEdit(a)} className="text-xxs font-terminal text-accent hover:underline flex-shrink-0">Editar</button>
-                <button onClick={() => handleDelete(a.id)} disabled={deleting === a.id} className="text-xxs font-terminal text-zinc-500 hover:text-negative flex-shrink-0 disabled:opacity-50">
-                  {deleting === a.id ? '...' : 'Eliminar'}
-                </button>
-              </div>
-            ))}
+            {ownerAuctions.map(a => {
+              const shareMsg = `🐄 *${a.title}*\n\n📅 ${formatDate(a.date)}${a.time ? ` a las ${a.time}` : ''}\n📍 ${a.location || 'Argentina'}\n${a.estimated_heads ? `🔢 ${a.estimated_heads.toLocaleString('es-AR')} cabezas\n` : ''}🏢 ${displayName}\n\n👉 Ver más: https://consignatarias.com.ar/consignatarias/${slug}`
+              return (
+                <div key={a.id} className="px-panel py-2 flex items-center gap-3">
+                  <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">{formatDate(a.date)}</span>
+                  {a.time && <span className="text-xxs font-terminal text-zinc-500 w-12 flex-shrink-0">{a.time}</span>}
+                  <span className="text-data font-terminal text-zinc-300 flex-1 truncate">{a.title}</span>
+                  <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline">{a.location}</span>
+                  <WhatsAppIconButton message={shareMsg} size="sm" className="flex-shrink-0" />
+                  <button onClick={() => startEdit(a)} className="text-xxs font-terminal text-accent hover:underline flex-shrink-0">Editar</button>
+                  <button onClick={() => handleDelete(a.id)} disabled={deleting === a.id} className="text-xxs font-terminal text-zinc-500 hover:text-negative flex-shrink-0 disabled:opacity-50">
+                    {deleting === a.id ? '...' : 'Eliminar'}
+                  </button>
+                </div>
+              )
+            })}
           </div>
         </div>
       )}
@@ -764,14 +771,18 @@ function AuctionManager({ slug, ownerAuctions, scrapedAuctions, onAuctionsChange
             <span className="text-xxs text-zinc-500 font-terminal">{scrapedAuctions.length}</span>
           </div>
           <div className="divide-y divide-terminal-border">
-            {scrapedAuctions.map((a, i) => (
-              <div key={i} className="px-panel py-2 flex items-center gap-4">
-                <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">{formatDate(a.date)}</span>
-                {a.time && <span className="text-xxs font-terminal text-zinc-500 w-12 flex-shrink-0">{a.time}</span>}
-                <span className="text-data font-terminal text-zinc-400 flex-1 truncate">{a.title}</span>
-                <span className="text-xxs font-terminal text-zinc-700 hidden sm:inline">{a.location}</span>
-              </div>
-            ))}
+            {scrapedAuctions.map((a, i) => {
+              const shareMsg = `🐄 *${a.title}*\n\n📅 ${formatDate(a.date)}${a.time ? ` a las ${a.time}` : ''}\n📍 ${a.location || 'Argentina'}\n🏢 ${displayName}\n\n👉 Ver más: https://consignatarias.com.ar/consignatarias/${slug}`
+              return (
+                <div key={i} className="px-panel py-2 flex items-center gap-4">
+                  <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">{formatDate(a.date)}</span>
+                  {a.time && <span className="text-xxs font-terminal text-zinc-500 w-12 flex-shrink-0">{a.time}</span>}
+                  <span className="text-data font-terminal text-zinc-400 flex-1 truncate">{a.title}</span>
+                  <span className="text-xxs font-terminal text-zinc-700 hidden sm:inline">{a.location}</span>
+                  <WhatsAppIconButton message={shareMsg} size="sm" className="flex-shrink-0" />
+                </div>
+              )
+            })}
           </div>
           <div className="px-panel py-2">
             <span className="text-[10px] font-terminal text-zinc-700">Estos remates se actualizan automaticamente por nuestro scraper diario.</span>
