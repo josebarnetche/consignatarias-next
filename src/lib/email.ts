@@ -307,3 +307,31 @@ export async function sendClaimRejected(email: string, displayName: string, reas
     `,
   }).catch(() => {})
 }
+
+/* ------------------------------------------------------------------ */
+/*  REMATE REMINDERS (PRO feature)                                     */
+/* ------------------------------------------------------------------ */
+
+export async function sendRemateReminder(email: string, subject: string, htmlBody: string) {
+  const resend = await getResend()
+  if (!resend) return
+  
+  resend.emails.send({
+    from: FROM,
+    to: email,
+    subject,
+    html: `
+      <div style="font-family:-apple-system,system-ui,sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#fafafa">
+        ${htmlBody}
+        <hr style="border:none;border-top:1px solid #e4e4e7;margin:24px 0">
+        <p style="color:#71717a;font-size:12px">
+          Consignatarias.com.ar — Directorio ganadero
+          <br>
+          <a href="${APP_URL}/alertas/unsubscribe?email=${encodeURIComponent(email)}" style="color:#3f3f46">
+            Desuscribirme de recordatorios
+          </a>
+        </p>
+      </div>
+    `,
+  }).catch(() => {})
+}
