@@ -445,6 +445,66 @@ export default function DashboardClient({
             </div>
           )}
 
+          {/* Embeddable Widget - PRO only */}
+          {consignataria?.verified && tierLabel !== 'FREE' && (
+            <div className="terminal-panel">
+              <div className="terminal-panel-header flex items-center justify-between">
+                <span className="text-zinc-200 text-label tracking-widest">🔗 WIDGET PARA TU WEB</span>
+                <a 
+                  href={`/api/widget/${consignataria.canonical_slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors"
+                >
+                  Ver preview →
+                </a>
+              </div>
+              <div className="px-panel py-4 space-y-4">
+                <p className="text-xxs text-zinc-400 font-terminal">
+                  Mostrá tus próximos remates en tu propia página web. Copiá este código y pegalo en tu sitio:
+                </p>
+                
+                {/* Code snippet */}
+                <div className="bg-zinc-900 border border-zinc-800 rounded p-3 font-mono text-[10px] text-zinc-300 overflow-x-auto">
+                  <code>{`<iframe src="https://consignatarias.com.ar/api/widget/${consignataria.canonical_slug}" width="400" height="300" frameborder="0"></iframe>`}</code>
+                </div>
+                
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => {
+                      const code = `<iframe src="https://consignatarias.com.ar/api/widget/${consignataria.canonical_slug}" width="400" height="300" frameborder="0"></iframe>`
+                      navigator.clipboard.writeText(code)
+                      alert('Código copiado!')
+                    }}
+                    className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
+                  >
+                    📋 Copiar código
+                  </button>
+                  <a
+                    href={`/api/widget/${consignataria.canonical_slug}?theme=light`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 bg-zinc-200 hover:bg-zinc-100 text-zinc-800 text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
+                  >
+                    ☀️ Tema claro
+                  </a>
+                  <a
+                    href={`/api/widget/${consignataria.canonical_slug}?theme=dark`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
+                  >
+                    🌙 Tema oscuro
+                  </a>
+                </div>
+                
+                <p className="text-[10px] text-zinc-600 font-terminal">
+                  Parámetros: ?theme=light|dark &amp; ?max=1-5
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Upcoming scraped auctions */}
           {scrapedAuctions.length > 0 && (
             <div className="terminal-panel">
