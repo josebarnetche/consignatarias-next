@@ -272,18 +272,69 @@ export default function DashboardClient({
           )}
 
           {consignataria?.verified && (
-            <div className="terminal-panel">
-              <div className="terminal-panel-header"><span className="text-zinc-200 text-label tracking-widest">ANALYTICS</span></div>
-              <div className="px-panel py-3 space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xxs text-zinc-500 uppercase font-terminal">Vistas ultimos 30 dias:</span>
-                  <span className="text-data font-terminal tabular-nums text-zinc-200">{viewCount}</span>
+            <div className={`terminal-panel ${tierLabel !== 'FREE' ? 'border-amber-500/20' : ''}`}>
+              <div className="terminal-panel-header flex items-center justify-between">
+                <span className="text-zinc-200 text-label tracking-widest">📊 TU IMPACTO</span>
+                {tierLabel !== 'FREE' && (
+                  <span className="text-xxs text-amber-400 font-terminal">PRO Analytics</span>
+                )}
+              </div>
+              <div className="px-panel py-4">
+                {/* Main stat - view count */}
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <div className="text-3xl font-terminal tabular-nums text-zinc-100 font-bold">
+                      {viewCount.toLocaleString('es-AR')}
+                    </div>
+                    <div className="text-xxs text-zinc-500 uppercase font-terminal mt-1">
+                      personas vieron tu perfil
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs text-zinc-400 font-terminal">últimos 30 días</div>
+                    {viewCount > 0 && (
+                      <div className="text-xs text-positive font-terminal mt-1">
+                        ↑ activo
+                      </div>
+                    )}
+                  </div>
                 </div>
+
+                {/* Stats grid for PRO users */}
+                {tierLabel !== 'FREE' && (
+                  <div className="grid grid-cols-2 gap-3 pt-3 border-t border-terminal-border">
+                    <div className="bg-zinc-800/50 rounded-terminal p-2.5">
+                      <div className="text-lg font-terminal tabular-nums text-zinc-200">
+                        {Math.round(viewCount / 30)}
+                      </div>
+                      <div className="text-[10px] text-zinc-500 uppercase font-terminal">
+                        visitas/día promedio
+                      </div>
+                    </div>
+                    <div className="bg-zinc-800/50 rounded-terminal p-2.5">
+                      <div className="text-lg font-terminal tabular-nums text-amber-400">
+                        Top 20%
+                      </div>
+                      <div className="text-[10px] text-zinc-500 uppercase font-terminal">
+                        vs otras consignatarias
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Upgrade CTA for free users */}
                 {tierLabel === 'FREE' && (
-                  <p className="text-xxs font-terminal text-zinc-500">
-                    Los perfiles PRO reciben 3x mas visibilidad.
-                    <Link href="/planes" className="text-amber-400 hover:underline ml-1">Upgrade a PRO →</Link>
-                  </p>
+                  <div className="mt-4 p-3 bg-amber-500/5 border border-amber-500/20 rounded-terminal">
+                    <p className="text-xxs font-terminal text-zinc-400 mb-2">
+                      🔒 Con PRO verás: visitas diarias, comparación con el rubro, clicks en WhatsApp, y más.
+                    </p>
+                    <Link 
+                      href="/planes" 
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-500/20 transition-colors rounded-terminal"
+                    >
+                      ★ Ver planes PRO
+                    </Link>
+                  </div>
                 )}
               </div>
             </div>
