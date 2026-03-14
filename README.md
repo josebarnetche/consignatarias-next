@@ -1,6 +1,8 @@
 # consignatarias.com.ar
 
-A cattle auction directory and market intelligence platform for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
+A cattle auction directory, market intelligence platform, and public API for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
+
+**20 public API endpoints** • **385+ remates** • **77 consignatarias** • **364 frigoríficos** • **10 provincias**
 
 **Live:** [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
 
@@ -188,6 +190,53 @@ Tabbed interface for verified owners:
 
 10 static pages targeting "remates hacienda [provincia]" keywords. Each with 150-250 words of unique SEO copy mentioning local cities, consignatarias, and auction patterns. BreadcrumbList + ItemList JSON-LD.
 
+### Subasto API (`/api/*`)
+
+Public REST API for the Argentine cattle market. 20 endpoints, free tier with rate limiting.
+
+**Auction Endpoints:**
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/remates/proximos` | Next 7 days of auctions |
+| `GET /api/remates/hoy` | Today's auctions |
+| `GET /api/remates/stats` | Aggregate statistics |
+| `GET /api/remates/buscar` | Full-text search with filters |
+| `GET /api/remates/calendario` | 7-day calendar view |
+| `GET /api/remates/top` | Highlighted auctions |
+
+**Market Endpoints:**
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/precios` | INMAG prices by category |
+| `GET /api/status` | API health check |
+| `GET /api/health` | Simple health probe |
+
+**Consignataria Endpoints:**
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/consignataria/[slug]` | Profile with auction history |
+| `GET /api/consignatarias/ranking` | Leaderboard by auction count |
+
+**Integration Endpoints:**
+| Endpoint | Description |
+|----------|-------------|
+| `POST /api/webhooks/register` | Register webhooks |
+| `GET/POST/DELETE /api/alertas` | Persistent alert subscriptions |
+| `GET /api/alertas/[id]` | Alert details |
+
+**Documentation:** `/api-docs` page with full documentation, `/api/openapi.json` for OpenAPI spec.
+
+### Lead Magnets (`/herramientas`)
+
+5 free tools for lead capture:
+- **Calculadora de Hacienda** — estimate lot value by category and weight
+- **Calendario de Remates** — weekly/monthly auction calendar
+- **Reporte Semanal** — downloadable PDF market summary
+- **Comparador de Precios** — compare prices by category and date
+- **Exportar Datos** — download auctions as CSV/JSON
+
+All tools include newsletter signup CTA.
+
 ### SEO & AI Search Optimization
 
 - Dynamic sitemap (~100 URLs)
@@ -245,6 +294,9 @@ Tabbed interface for verified owners:
 | `/login` | Static | Magic link authentication (noindex) |
 | `/dashboard` | Dynamic | Owner dashboard (authenticated) |
 | `/admin/claims` | Dynamic | Admin claim review panel |
+| `/herramientas` | Static | 5 lead magnet tools |
+| `/api-docs` | Static | API documentation page |
+| `/api/*` | Dynamic | 20 REST API endpoints |
 
 ---
 
@@ -438,10 +490,14 @@ Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misione
 | 0.9.8 | Mar 10 | Q2 blueprint close — logo upload, /calidad, reportar error, monthly metrics |
 | 0.9.9 | Mar 10 | AI SEO — robots.txt AI bots, FAQ schema, /glosario with DefinedTermSet |
 | **1.0.0** | **Mar 10** | **Full platform — navigation, subscribe flow, all pages discoverable** |
-| 1.0.1 | Mar 11 | Brand logo — new icon across all sizes, favicon, Google Search Organization schema |
-| 1.0.2 | Mar 11 | Contrast fix — eliminate text-zinc-600 sitewide, bump table headers/nav/labels to WCAG AA |
+| 1.0.1 | Mar 11 | Post-payment flow — Rebill fix, success page with polling, celebration panel |
+| 1.0.2 | Mar 11 | Contrast fix — eliminate text-zinc-600 sitewide, WCAG AA compliance |
+| 1.0.3 | Mar 11 | Real-time status — countdown timer, YouTube integration, admin KPIs |
+| **1.1.0** | **Mar 12** | **Subasto API — 11 public endpoints, webhooks, alertas, documentation** |
+| 1.2.0 | Mar 13 | Lead magnets — 5 tools, newsletter signup, glosario 38 terms, API docs page |
+| **1.3.0** | **Mar 14** | **API complete — 20 endpoints, ranking, PDF reports, B2B SEO schemas** |
 
-Built in 13 days. One human, one AI. $0 hosting cost. 10 Supabase tables. See [CHANGELOG.md](CHANGELOG.md) for full details.
+Built in 17 days. One human, one AI. $0 hosting cost. 10 Supabase tables. 20 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
 
 ---
 

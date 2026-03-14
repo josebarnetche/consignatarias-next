@@ -1,6 +1,237 @@
 # Changelog
 
-Registro completo de **consignatarias.com.ar** — desde el primer `npx create-next-app` hasta una plataforma SaaS de remates ganaderos con 385+ remates en 10 provincias argentinas, auth, pagos, perfiles verificados, AI SEO y navegación completa.
+Registro completo de **consignatarias.com.ar** — desde el primer `npx create-next-app` hasta una plataforma SaaS de remates ganaderos con 20 API endpoints, 385+ remates en 10 provincias argentinas, auth, pagos, perfiles verificados, AI SEO, lead magnets y documentación completa.
+
+---
+
+## [1.3.0] — 2026-03-14
+
+### Subasto API completa — 20 endpoints públicos
+
+> feat: v1.3.0 — Subasto API complete with 20 public endpoints
+
+**Milestone:** API pública completa para el mercado ganadero argentino. De 0 a 20 endpoints en 48 horas. Documentación OpenAPI, PDF profesional, y ranking de consignatarias.
+
+**1. Endpoints de Ranking y Top**
+
+- `/api/consignatarias/ranking` — Leaderboard de consignatarias por cantidad de remates
+  - Soporta `periodo` (historico/mes/semana) y paginación
+  - Powers leaderboards, B2B outreach, Remotion compositions
+- `/api/remates/top` — Remates destacados para content highlights
+  - Usa JSON data source para performance
+
+**2. PDF Profesional para Reportes**
+
+- Generación de PDF con jspdf para reporte semanal
+- Layout compacto que cabe en A4
+- Secciones: REMATES HOY, destacados, precios INMAG
+- Fix colores Maíz box, truncado de texto
+
+**3. SEO B2B**
+
+- `ConsignatariaProfileSchema` — JSON-LD para rich snippets B2B en perfiles
+- Mejora visibilidad en búsquedas de consignatarias específicas
+
+**4. Monitoreo**
+
+- `/api/health` — Health check endpoint (18→20 endpoints)
+- `/api/status` actualizado con conteo total de endpoints
+
+**Archivos creados:** `src/app/api/consignatarias/ranking/route.ts`, `src/app/api/remates/top/route.ts`, `src/app/api/health/route.ts`
+**Archivos modificados:** `src/components/seo/JsonLd.tsx`, `src/app/api/status/route.ts`
+
+---
+
+## [1.2.0] — 2026-03-13
+
+### Lead Magnets y Newsletter — 5 herramientas de captura
+
+> feat: v1.2.0 — lead magnets, newsletter signup, API docs, SEO expansion
+
+**Milestone:** Sistema completo de lead generation. 5 herramientas interactivas, newsletter con Supabase, documentación API pública, y glosario expandido a 38 términos.
+
+**1. Newsletter Signup**
+
+- Formulario de suscripción en homepage y páginas de herramientas
+- Storage en Supabase tabla `newsletter_subscribers`
+- Validación de email con Zod
+- Mensaje de confirmación inline
+
+**2. 5 Lead Magnets (Herramientas Gratuitas)**
+
+| Herramienta | Descripción |
+|-------------|-------------|
+| Calculadora de Hacienda | Estimar valor de lote por categoría y peso |
+| Calendario de Remates | Vista semanal/mensual de próximos remates |
+| Reporte Semanal | PDF descargable con resumen del mercado |
+| Comparador de Precios | Comparar precios por categoría y fecha |
+| Exportar Datos | Descargar remates en CSV/JSON |
+
+- Todas las herramientas incluyen CTA de newsletter
+- Sección "Herramientas" agregada a homepage
+- WhatsApp share en footer y herramientas
+
+**3. Documentación API Pública**
+
+- Página `/api-docs` con documentación completa de Subasto API
+- Especificación OpenAPI 3.0 en `/api/openapi.json`
+- Endpoint `/api/planes` para metadata de planes
+
+**4. Expansión SEO**
+
+- Glosario expandido de 17 a 38 términos ganaderos
+- Organization y WebSite schema en homepage
+- SEO schemas para página de planes
+
+**Archivos creados:** `src/app/(terminal)/herramientas/`, `src/app/(terminal)/api-docs/page.tsx`, `src/app/api/openapi.json/route.ts`, `src/app/api/planes/route.ts`
+**Archivos modificados:** `src/app/page.tsx`, `src/app/(terminal)/glosario/page.tsx`
+
+---
+
+## [1.1.0] — 2026-03-12
+
+### Subasto API — 11 endpoints públicos
+
+> feat: v1.1.0 — Subasto API foundation with 11 public endpoints
+
+**Milestone:** Lanzamiento de Subasto API — la primera API pública de remates ganaderos de Argentina. 11 endpoints RESTful con documentación.
+
+**1. Endpoints de Remates**
+
+| Endpoint | Descripción |
+|----------|-------------|
+| `GET /api/remates/proximos` | Próximos 7 días de remates |
+| `GET /api/remates/hoy` | Remates del día |
+| `GET /api/remates/stats` | Estadísticas agregadas (total, por provincia, por tipo) |
+| `GET /api/remates/buscar` | Búsqueda full-text con filtros |
+| `GET /api/remates/calendario` | Vista calendario 7 días (ICS-ready) |
+
+**2. Endpoints de Consignatarias**
+
+| Endpoint | Descripción |
+|----------|-------------|
+| `GET /api/consignataria/[slug]` | Perfil con historial de remates |
+
+**3. Endpoints de Mercado**
+
+| Endpoint | Descripción |
+|----------|-------------|
+| `GET /api/precios` | Precios INMAG por categoría |
+| `GET /api/status` | Health check con conteo de endpoints |
+
+**4. Integraciones**
+
+| Endpoint | Descripción |
+|----------|-------------|
+| `POST /api/webhooks/register` | Registro de webhooks para notificaciones |
+| `GET/POST/DELETE /api/alertas` | CRUD de alertas persistentes |
+| `GET /api/alertas/[id]` | Detalle de alerta específica |
+
+**5. Documentación**
+
+- `docs/SUBASTO-API.md` — Guía completa con ejemplos curl
+- Rate limiting documentado (100 req/min free, 1000 req/min PRO)
+
+**6. Nuevos Perfiles de Consignatarias**
+
+- Ildarraz Hnos, Alfredo Smondino (merged → Mondino), Cooperativa Lehmann
+- AJ Mendizábal
+- Normalización de slugs: colombo, ildarraz, lehmann
+
+**7. Scripts de Outreach**
+
+- `scripts/outreach-consignatarias.ts` — Script para contactar consignatarias sin verificar
+- FrigoConnect pitch deck para módulo frigoríficos
+
+**Archivos creados:** `src/app/api/remates/proximos/route.ts`, `src/app/api/remates/hoy/route.ts`, `src/app/api/remates/stats/route.ts`, `src/app/api/remates/buscar/route.ts`, `src/app/api/remates/calendario/route.ts`, `src/app/api/consignataria/[slug]/route.ts`, `src/app/api/precios/route.ts`, `src/app/api/webhooks/register/route.ts`, `src/app/api/alertas/route.ts`, `src/app/api/alertas/[id]/route.ts`, `src/app/api/status/route.ts`, `docs/SUBASTO-API.md`
+
+---
+
+## [1.0.3] — 2026-03-11
+
+### Real-time Auction Status y Countdown Timer
+
+> feat: v1.0.3 — real-time status transitions, countdown timer, YouTube integration
+
+**1. Transiciones de Estado en Tiempo Real**
+
+Sistema de estados dinámicos para remates basado en hora actual (ART):
+- `scheduled` → antes de la hora de inicio
+- `live` → durante el remate (ventana de 3 horas desde inicio)
+- `completed` → después de la ventana
+
+Función `getEffectiveStatus()` calcula estado en tiempo real sin depender de datos estáticos.
+
+**2. Countdown Timer**
+
+Componente `CountdownBadge` para remates del día:
+- Muestra countdown "EN MM:SS" cuando faltan ≤30 minutos
+- Actualización cada segundo con `setInterval`
+- Fallback a badge "HOY" fuera de la ventana de 30 min
+- Timezone-aware (ART)
+
+**3. YouTube Channel Integration**
+
+- Badge de YouTube en remates con transmisión en vivo
+- Link directo al stream desde el feed de remates
+
+**4. Admin KPI Dashboard**
+
+- Panel de métricas para administradores
+- Estadísticas de perfiles verificados, claims pendientes, suscripciones
+
+**5. Unificación PRO/Featured**
+
+- Remates PRO = suscripción activa OR admin-featured
+- Simplifica lógica de highlighting visual
+
+**Archivos creados:** `src/components/CountdownBadge.tsx`
+**Archivos modificados:** `src/app/(terminal)/remates/RematesClient.tsx`, `src/lib/ui/tokens.ts`
+
+---
+
+## [1.0.2] — 2026-03-11
+
+### Accesibilidad — Contraste WCAG AA
+
+> fix: v1.0.2 — improve text contrast sitewide, eliminate zinc-600
+
+Auditoría de contraste reveló que `text-zinc-600` fallaba WCAG AA en fondos oscuros. Corregido sitewide:
+
+- Table headers: `zinc-600` → `zinc-400`
+- Navigation labels: `zinc-600` → `zinc-400`
+- Form labels: `zinc-600` → `zinc-400`
+- Helper text: `zinc-600` → `zinc-500`
+
+Todas las combinaciones ahora pasan WCAG AA (ratio ≥4.5:1).
+
+**Archivos modificados:** `src/app/(terminal)/remates/RematesClient.tsx`, `src/app/(terminal)/frigorificos/FrigorificosClient.tsx`, `src/app/(terminal)/consignatarias/[slug]/page.tsx`, múltiples componentes
+
+---
+
+## [1.0.1] — 2026-03-11
+
+### Post-Payment Flow y Rebill Fix
+
+> fix: v1.0.1 — Rebill API endpoint, post-payment success flow
+
+**1. Fix Rebill API Endpoint**
+
+- Corregido endpoint de Rebill API para generación de payment links
+- Validación de respuesta mejorada
+
+**2. Post-Payment Success Flow**
+
+- Página de éxito con polling para confirmar suscripción
+- Panel de celebración con confetti
+- Redirect automático a dashboard después de confirmación
+
+**3. Refactor Overview**
+
+- Removido frigoríficos de overview para focus en mercado + remates
+- Simplificación de la página principal del dashboard
+
+**Archivos modificados:** `src/app/api/subscribe/route.ts`, `src/app/(terminal)/planes/success/page.tsx`, `src/app/(terminal)/overview/page.tsx`
 
 ---
 

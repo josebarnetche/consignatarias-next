@@ -43,20 +43,24 @@ export default function CountdownBadge({ auctionTime, auctionDate, fallback }: C
 
 /**
  * Calculate seconds remaining until auction start in ART timezone.
+ * ART is UTC-3, no daylight saving time.
  */
 function calcRemaining(dateStr: string, timeStr: string): number | null {
   try {
     const [h, m] = timeStr.split(':').map(Number)
-    // Build target datetime in ART
-    const now = new Date()
-    const artNow = new Date(now.toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }))
-
-    const artTarget = new Date(artNow)
     const [year, month, day] = dateStr.split('-').map(Number)
-    artTarget.setFullYear(year, month - 1, day)
-    artTarget.setHours(h, m, 0, 0)
-
-    const diffMs = artTarget.getTime() - artNow.getTime()
+    
+    // ART is UTC-3 (no DST)
+    const ART_OFFSET_MS = -3 * 60 * 60 * 1000
+    
+    // Current time in UTC
+    const nowUtc = Date.now()
+    
+    // Target time: build as UTC, then adjust for ART offset
+    // If auction is at 14:00 ART, that's 17:00 UTC
+    const targetUtc = Date.UTC(year, month - 1, day, h, m, 0, 0) - ART_OFFSET_MS
+    
+    const diffMs = targetUtc - nowUtc
     return Math.floor(diffMs / 1000)
   } catch {
     return null
