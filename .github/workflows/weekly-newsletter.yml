@@ -12,9 +12,9 @@ jobs:
     steps:
       - name: Send Weekly Newsletter
         run: |
-          curl -X POST \
+          curl -sL -X POST \
             -H "Authorization: Bearer ${{ secrets.ADMIN_SECRET }}" \
             -H "Content-Type: application/json" \
-            "https://consignatarias.com.ar/api/cron/weekly-newsletter"
+            "https://www.consignatarias.com.ar/api/cron/weekly-newsletter"
         env:
           ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}

@@ -12,9 +12,9 @@ jobs:
     steps:
       - name: Send Remate Reminders
         run: |
-          response=$(curl -s -w "\n%{http_code}" -X GET \
+          response=$(curl -sL -w "\n%{http_code}" -X GET \
             -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
-            "https://consignatarias.com.ar/api/cron/remate-reminders")
+            "https://www.consignatarias.com.ar/api/cron/remate-reminders")
           
           http_code=$(echo "$response" | tail -1)
           body=$(echo "$response" | head -n -1)
