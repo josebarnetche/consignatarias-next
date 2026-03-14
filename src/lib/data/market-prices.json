@@ -171,25 +171,25 @@
     }
   },
   "corn": {
-    "current": 228.5,
-    "prev": 227.67,
-    "change": 0.4,
+    "current": 229.83,
+    "prev": 228.5,
+    "change": 0.6,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1410,
-    "prev": 1420,
-    "change": -0.7,
+    "current": 1415,
+    "prev": 1410,
+    "change": 0.4,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
-    "current": 1410,
-    "prev": 1420,
-    "change": -0.7,
+    "current": 1420,
+    "prev": 1410,
+    "change": 0.7,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-03-13"
+  "lastUpdate": "2026-03-14"
 }
