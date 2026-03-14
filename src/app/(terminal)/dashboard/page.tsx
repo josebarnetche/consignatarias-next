@@ -129,6 +129,47 @@ export default async function DashboardPage() {
     }
   }
 
+  // Calculate provincial ranking (by number of remates)
+  let provincialRank = { position: 0, total: 0, province: '' }
+  if (consignataria) {
+    // Get all auctions grouped by consignataria
+    const allAuctions = rematesData as { consignatariaSlug: string; province: string }[]
+    
+    // Find this consignataria's province from their auctions
+    const myAuctions = allAuctions.filter(a => 
+      a.consignatariaSlug === consignataria.canonical_slug ||
+      a.consignatariaSlug?.toLowerCase().includes(consignataria.canonical_slug.toLowerCase())
+    )
+    const myProvince = myAuctions[0]?.province || ''
+    
+    if (myProvince) {
+      // Count remates per consignataria in this province
+      const provinceAuctions = allAuctions.filter(a => a.province === myProvince)
+      const remateCounts: Record<string, number> = {}
+      
+      for (const a of provinceAuctions) {
+        if (a.consignatariaSlug) {
+          remateCounts[a.consignatariaSlug] = (remateCounts[a.consignatariaSlug] || 0) + 1
+        }
+      }
+      
+      // Sort by count descending
+      const sorted = Object.entries(remateCounts)
+        .sort(([, a], [, b]) => b - a)
+      
+      const myPosition = sorted.findIndex(([slug]) => 
+        slug === consignataria.canonical_slug ||
+        slug.toLowerCase().includes(consignataria.canonical_slug.toLowerCase())
+      )
+      
+      provincialRank = {
+        position: myPosition >= 0 ? myPosition + 1 : 0,
+        total: sorted.length,
+        province: myProvince,
+      }
+    }
+  }
+
   // Fetch subscription data
   let subscription = null
   if (consignataria) {
@@ -164,6 +205,7 @@ export default async function DashboardPage() {
       auctionResults={auctionResults || []}
       viewCount={viewCount}
       viewPercentile={viewPercentile}
+      provincialRank={provincialRank}
       completedFields={completedFields}
       subscription={subscription}
       frigorifico={frigorifico}

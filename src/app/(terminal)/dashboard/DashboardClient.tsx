@@ -101,6 +101,7 @@ interface Props {
   auctionResults: AuctionResult[]
   viewCount: number
   viewPercentile: number
+  provincialRank: { position: number; total: number; province: string }
   completedFields: CompletedFields | null
   subscription: Subscription | null
   frigorifico?: Frigorifico | null
@@ -117,7 +118,7 @@ type TabKey = 'resumen' | 'remates' | 'editar' | 'resultados' | 'plan' | 'frigor
 
 export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
-  auctionResults, viewCount, viewPercentile, completedFields, subscription, frigorifico, frigoClaims = [],
+  auctionResults, viewCount, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
 }: Props) {
   const showChecklist = consignataria && completedFields && Object.values(completedFields).filter(Boolean).length < 5
   const searchParams = useSearchParams()
@@ -305,13 +306,13 @@ export default function DashboardClient({
 
                 {/* Stats grid for PRO users */}
                 {tierLabel !== 'FREE' && (
-                  <div className="grid grid-cols-2 gap-3 pt-3 border-t border-terminal-border">
+                  <div className="grid grid-cols-3 gap-3 pt-3 border-t border-terminal-border">
                     <div className="bg-zinc-800/50 rounded-terminal p-2.5">
                       <div className="text-lg font-terminal tabular-nums text-zinc-200">
                         {Math.round(viewCount / 30)}
                       </div>
                       <div className="text-[10px] text-zinc-500 uppercase font-terminal">
-                        visitas/día promedio
+                        visitas/día
                       </div>
                     </div>
                     <div className="bg-zinc-800/50 rounded-terminal p-2.5">
@@ -319,7 +320,15 @@ export default function DashboardClient({
                         {viewPercentile > 0 ? `Top ${100 - viewPercentile}%` : '—'}
                       </div>
                       <div className="text-[10px] text-zinc-500 uppercase font-terminal">
-                        vs otras consignatarias
+                        vs el país
+                      </div>
+                    </div>
+                    <div className="bg-zinc-800/50 rounded-terminal p-2.5">
+                      <div className="text-lg font-terminal tabular-nums text-emerald-400">
+                        {provincialRank.position > 0 ? `#${provincialRank.position}` : '—'}
+                      </div>
+                      <div className="text-[10px] text-zinc-500 uppercase font-terminal truncate" title={provincialRank.province}>
+                        en {provincialRank.province || 'provincia'}
                       </div>
                     </div>
                   </div>
