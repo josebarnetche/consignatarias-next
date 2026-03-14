@@ -1,0 +1,20 @@
+name: Weekly Newsletter
+
+on:
+  schedule:
+    # Mondays at 13:00 UTC = 10:00 ART (Argentina Time)
+    - cron: '0 13 * * 1'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  send-newsletter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Weekly Newsletter
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.ADMIN_SECRET }}" \
+            -H "Content-Type: application/json" \
+            "https://consignatarias.com.ar/api/cron/weekly-newsletter"
+        env:
+          ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}

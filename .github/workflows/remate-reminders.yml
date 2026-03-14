@@ -1,0 +1,30 @@
+name: Remate Reminders
+
+on:
+  schedule:
+    # Every hour, 5 minutes past the hour
+    - cron: '5 * * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  send-reminders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Remate Reminders
+        run: |
+          response=$(curl -s -w "\n%{http_code}" -X GET \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            "https://consignatarias.com.ar/api/cron/remate-reminders")
+          
+          http_code=$(echo "$response" | tail -1)
+          body=$(echo "$response" | head -n -1)
+          
+          echo "Response: $body"
+          echo "HTTP Code: $http_code"
+          
+          if [ "$http_code" -ne 200 ]; then
+            echo "Error: Reminder cron failed with HTTP $http_code"
+            exit 1
+          fi
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
