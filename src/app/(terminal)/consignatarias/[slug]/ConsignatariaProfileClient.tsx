@@ -845,7 +845,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       {/* ============================================================ */}
       <div className="text-center py-4">
         <a
-          href={`mailto:agro@memola.com.ar?subject=${encodeURIComponent(`Error en perfil: ${profile.displayName}`)}&body=${encodeURIComponent(`Hola,\n\nEncontre un error en el perfil de ${profile.displayName}:\nhttps://www.consignatarias.com.ar/consignatarias/${profile.canonicalSlug}\n\nDescripcion del error:\n`)}`}
+          href={`mailto:datos@consignatarias.com?subject=${encodeURIComponent(`Error en perfil: ${profile.displayName}`)}&body=${encodeURIComponent(`Hola,\n\nEncontre un error en el perfil de ${profile.displayName}:\nhttps://www.consignatarias.com.ar/consignatarias/${profile.canonicalSlug}\n\nDescripcion del error:\n`)}`}
           className="text-xxs font-terminal text-zinc-500 hover:text-zinc-400 transition-colors"
         >
           Reportar error
