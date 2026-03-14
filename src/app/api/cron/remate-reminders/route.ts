@@ -24,8 +24,27 @@ const auctions = rematesData as Auction[]
 export async function GET(req: NextRequest) {
   // Verify cron secret
   const cronSecret = req.headers.get('x-cron-secret') || req.nextUrl.searchParams.get('secret')
-  if (cronSecret !== process.env.CRON_SECRET && process.env.NODE_ENV === 'production') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const envSecret = process.env.CRON_SECRET
+  
+  // Debug: Log first 4 chars of each secret for comparison
+  console.log('[remate-reminders] Secret check:', {
+    provided: cronSecret?.substring(0, 4) + '...',
+    expected: envSecret?.substring(0, 4) + '...',
+    providedLen: cronSecret?.length,
+    expectedLen: envSecret?.length,
+    match: cronSecret === envSecret
+  })
+  
+  if (cronSecret !== envSecret && process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ 
+      error: 'Unauthorized',
+      debug: {
+        providedPrefix: cronSecret?.substring(0, 4),
+        expectedPrefix: envSecret?.substring(0, 4),
+        providedLen: cronSecret?.length,
+        expectedLen: envSecret?.length
+      }
+    }, { status: 401 })
   }
 
   const now = new Date()
