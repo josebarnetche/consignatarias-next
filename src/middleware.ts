@@ -1,7 +1,37 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { checkRateLimit, getClientId, addRateLimitHeaders } from '@/lib/rate-limit'
 
 export async function middleware(request: NextRequest) {
+  // Rate limit public API endpoints
+  if (request.nextUrl.pathname.startsWith('/api/') && isPublicApiRoute(request.nextUrl.pathname)) {
+    const clientId = getClientId(request)
+    // TODO: Check if user has PRO subscription via API key header
+    const tier = 'free' as const
+    const result = checkRateLimit(clientId, tier)
+    
+    if (!result.success) {
+      const response = NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'RATE_LIMIT_EXCEEDED',
+            message: `Límite de ${result.limit} solicitud(es) por minuto excedido. Actualiza a PRO para 100 req/min.`,
+            retryAfter: Math.ceil((result.resetAt - Date.now()) / 1000),
+          },
+        },
+        { status: 429 }
+      )
+      addRateLimitHeaders(response.headers, result)
+      return response
+    }
+    
+    // Continue with rate limit headers
+    const response = NextResponse.next({ request })
+    addRateLimitHeaders(response.headers, result)
+    return response
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -29,6 +59,25 @@ export async function middleware(request: NextRequest) {
   await supabase.auth.getUser()
 
   return supabaseResponse
+}
+
+/**
+ * Public API routes that should be rate limited.
+ * Excludes internal routes like webhooks, admin, auth.
+ */
+function isPublicApiRoute(pathname: string): boolean {
+  const publicRoutes = [
+    '/api/remates',
+    '/api/precios',
+    '/api/consignataria',
+    '/api/consignatarias',
+    '/api/alertas',
+    '/api/status',
+    '/api/health',
+    '/api/calendario',
+    '/api/planes',
+  ]
+  return publicRoutes.some(route => pathname.startsWith(route))
 }
 
 export const config = {
