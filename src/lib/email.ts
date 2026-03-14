@@ -19,7 +19,7 @@ function escapeHtml(str: string): string {
     .replace(/"/g, '&quot;')
 }
 
-const FROM = 'Consignatarias.com.ar <noreply@consignatarias.com.ar>'
+const FROM = process.env.RESEND_FROM_EMAIL || 'Consignatarias.com.ar <agro@memola.com.ar>'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'agro@memola.com.ar'
 

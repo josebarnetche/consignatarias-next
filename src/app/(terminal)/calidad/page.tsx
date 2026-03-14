@@ -211,8 +211,8 @@ export default function CalidadPage() {
         <p className="text-zinc-400 mb-6">
           Si encontras un dato incorrecto, un remate faltante o informacion desactualizada,
           por favor escribinos a{' '}
-          <a href="mailto:datos@consignatarias.com.ar" className="text-accent hover:underline">
-            datos@consignatarias.com.ar
+          <a href="mailto:agro@memola.com.ar" className="text-accent hover:underline">
+            agro@memola.com.ar
           </a>
           . Revisamos cada reporte e incorporamos correcciones dentro de las 24 horas habiles.
         </p>
