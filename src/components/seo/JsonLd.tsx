@@ -388,6 +388,63 @@ export function ConsignatariaProfileSchema({
   );
 }
 
+// VideoObject Schema for live-streamed auctions
+interface VideoObjectSchemaProps {
+  name: string;
+  description: string;
+  thumbnailUrl?: string;
+  uploadDate: string;
+  contentUrl?: string;
+  embedUrl?: string;
+  duration?: string; // ISO 8601 format: PT2H for 2 hours
+  publisher?: string;
+  isLive?: boolean;
+}
+
+export function VideoObjectSchema({
+  name,
+  description,
+  thumbnailUrl,
+  uploadDate,
+  contentUrl,
+  embedUrl,
+  duration = 'PT2H', // Default 2 hours for livestock auctions
+  publisher,
+  isLive = false,
+}: VideoObjectSchemaProps) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name,
+    description,
+    thumbnailUrl: thumbnailUrl || 'https://www.consignatarias.com.ar/og.png',
+    uploadDate,
+    duration,
+    contentUrl,
+    embedUrl,
+    publication: isLive ? {
+      '@type': 'BroadcastEvent',
+      isLiveBroadcast: true,
+      startDate: uploadDate,
+    } : undefined,
+    publisher: publisher ? {
+      '@type': 'Organization',
+      name: publisher,
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.consignatarias.com.ar/logo.png',
+      },
+    } : undefined,
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
 // SaaS Product/Pricing Schema for /planes page
 interface PricingPlan {
   name: string;

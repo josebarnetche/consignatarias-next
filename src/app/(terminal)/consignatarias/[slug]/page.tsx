@@ -11,7 +11,7 @@ import {
 import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
 import { getEntityTier } from '@/lib/features'
 import { createServiceClient } from '@/lib/supabase'
-import { BreadcrumbSchema, LocalBusinessSchema, EventSchema } from '@/components/seo/JsonLd'
+import { BreadcrumbSchema, LocalBusinessSchema, EventSchema, VideoObjectSchema } from '@/components/seo/JsonLd'
 import youtubeChannelsData from '@/lib/data/youtube-channels.json'
 import { getProfileSEO } from '@/lib/data/profile-seo'
 import ConsignatariaProfileClient from './ConsignatariaProfileClient'
@@ -217,6 +217,26 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
           url={`https://www.consignatarias.com.ar/consignatarias/${canonical}`}
         />
       ))}
+      {/* VideoObject schema for auctions with live streaming */}
+      {upcomingAuctions
+        .filter(a => a.youtubeUrl)
+        .slice(0, 3)
+        .map(auction => {
+          const videoId = auction.youtubeUrl?.match(/(?:v=|youtu\.be\/|\/live\/)([a-zA-Z0-9_-]{11})/)?.[1]
+          return (
+            <VideoObjectSchema
+              key={`video-${auction.id}`}
+              name={`${auction.title} — Remate en Vivo`}
+              description={`Transmisión en vivo del remate ganadero ${auction.title} organizado por ${enrichedProfile.displayName}. ${auction.description || ''}`}
+              thumbnailUrl={videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : undefined}
+              uploadDate={auction.date}
+              contentUrl={auction.youtubeUrl || undefined}
+              embedUrl={videoId ? `https://www.youtube.com/embed/${videoId}` : undefined}
+              publisher={enrichedProfile.displayName}
+              isLive={auction.date >= today}
+            />
+          )
+        })}
 
       <ConsignatariaProfileClient
         profile={enrichedProfile}
