@@ -79,9 +79,9 @@ export async function GET(req: NextRequest, { params }: Props) {
       verified: profile.verified,
       isPro,
       provincia: provinces[0],
-      phone: profile.phone,
-      email: profile.email,
-      website: profile.website,
+      phone: profile.phone ?? undefined,
+      email: profile.email ?? undefined,
+      website: profile.website ?? undefined,
     },
     stats: {
       totalRemates: profileAuctions.length,

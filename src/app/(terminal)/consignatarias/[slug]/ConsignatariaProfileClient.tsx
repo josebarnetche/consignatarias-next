@@ -333,13 +333,14 @@ export interface YouTubeChannelData {
   channelId: string
   channelTitle: string
   channelUrl: string
+  subscribers?: number | null
   latestVideo?: {
     videoId: string
     title: string
     publishedAt: string
     thumbnail: string
   }
-  lastChecked: string
+  lastChecked?: string
 }
 
 interface ConsignatariaProfileClientProps {
