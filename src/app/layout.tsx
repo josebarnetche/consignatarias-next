@@ -66,6 +66,14 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@consignatarias',
+    creator: '@memola_onbase',
+    title: 'Remates Ganaderos Argentina | Calendario 2026',
+    description: `Calendario unificado de ${rematesCount} remates ganaderos, 364 frigoríficos y precios INMAG. Inteligencia del mercado ganadero argentino.`,
+    images: ['/og-image.png'],
+  },
   alternates: {
     canonical: 'https://www.consignatarias.com.ar',
     languages: {
