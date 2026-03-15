@@ -4,6 +4,49 @@ Registro completo de **consignatarias.com.ar** — desde el primer `npx create-n
 
 ---
 
+## [1.6.1] — 2026-03-15
+
+### YouTube Channels Mapping for v1.7.0 Video Catalogs
+
+> feat: 14 official YouTube channels mapped for video catalog integration
+
+**YouTube Channel Discovery**
+
+Mapped official YouTube channels for consignatarias with own streaming:
+
+| Consignataria | Canal | Suscriptores |
+|---------------|-------|--------------|
+| La Ganadera Ramirez | @LaGanaderaRamirez | 4,100 |
+| Rosgan | @RosganBCR | 3,000 |
+| AFA | @AFACooperativa | 2,930 |
+| UMC Haciendas Villaguay | @UMCSA-HVILLAGUAY | 1,190 |
+| Tradición Ganadera | @TRADICIONGANADERAENVIVO | 739 |
+| Cooperativa Lehmann | @cooperativaguillermolehmann | 737 |
+| Bressan y Cia | @bressanycia | 316 |
+| Iván L. O'farrell | @ivanlofarrellsrloficial7544 | 170 |
+| Vicar Ganadera | @vicarganadera | 65 |
+| Sáenz Valiente Bullrich | @SVBREMATENET | — |
+| Eduardo Travaglia | @travagliaycia | — |
+| Colombo y Magliano | @ColomboyMaglianosa | — |
+| Ferias Rauch | @feriasrauch374 | — |
+| Colombo y Colombo | @ColomboyColomboConsignataria | — |
+
+**Total reach:** ~13,000+ subscribers
+
+**Consignatarias sin canal propio** (usan plataformas):
+- Canal Rural (@canalrural)
+- ClicRural (@clicruralar5804, etc.)
+- Entre Surcos y Corrales (@entresurcosycorrales2456)
+- De Frente al Campo (@DeFrentealCampo)
+- Remates Pampeanos DFC (@RematesPampeanosDFC)
+
+**Files:**
+- `src/lib/data/youtube-channels.json` — Channel mapping data
+
+**Commits:** `6436fe0`, `6897776`, `005b690`, `98be315`
+
+---
+
 ## [1.6.0] — 2026-03-15
 
 ### PRO PDF Reports + v1.6.0 Milestone

@@ -158,6 +158,25 @@ Chronological feed of all upcoming auctions with filters:
 - "Reclamar" link on each row
 - "REGISTRAR FRIGORIFICO" CTA in sidebar
 
+### YouTube Channel Mapping (v1.7.0 prep)
+
+14 official YouTube channels mapped for video catalog integration:
+
+| Consignataria | Canal | Suscriptores |
+|---------------|-------|--------------|
+| La Ganadera Ramirez | @LaGanaderaRamirez | 4,100 |
+| Rosgan | @RosganBCR | 3,000 |
+| AFA | @AFACooperativa | 2,930 |
+| UMC Haciendas Villaguay | @UMCSA-HVILLAGUAY | 1,190 |
+| + 10 more | — | ~5,000 |
+
+**Total reach:** ~13,000+ subscribers
+
+Consignatarias without own channels use transmission platforms:
+- Canal Rural, ClicRural, Entre Surcos y Corrales, De Frente al Campo
+
+**Data file:** `src/lib/data/youtube-channels.json`
+
 **Enriched data:** 126 frigorificos (all Stage 1) enriched with contact info, location, export classification via automated web research. Stored in `frigorificos-enriched.json`.
 
 ### Market Prices (`/mercado`)
