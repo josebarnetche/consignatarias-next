@@ -4,6 +4,58 @@ Registro completo de **consignatarias.com.ar** — desde el primer `npx create-n
 
 ---
 
+## [1.5.1] — 2026-03-15
+
+### SEO Blitz + Date Format Fix
+
+> seo: optimize key pages for search rankings + fix date format
+
+**1. SEO Optimizations**
+
+**`/frigorificos` (pos 13 → target top 5):**
+- Title: "Frigoríficos Habilitados Argentina 2026 | Directorio MAGYP Completo (364)"
+- H1 semántico en intro section
+- H2 para secciones de filtros y distribución
+- Schema ItemList con top 10 frigoríficos
+- Keywords expandidas: 10 términos de alta intención
+- Meta description optimizada con conteo dinámico
+
+**`/consignatarias` (mantener pos 4):**
+- Title: "Consignatarias de Hacienda Argentina 2026 | Directorio Completo"
+- H1 con keyword principal
+- Schema ItemList Organization
+- Stats dinámicas en intro (total remates, próximos)
+- Keywords: 10 términos incluyendo "consignatario de hacienda"
+
+**`/mercado/inmag` (NUEVA página):**
+- Landing dedicada para keyword "inmag" (12 imp, pos 6.33)
+- Precio INMAG actual con variación
+- Tabla histórica últimos 15 días
+- Sección "¿Qué es el INMAG?" para long-tail
+- Schema Dataset para rich snippets
+- Breadcrumbs y CTA a /mercado completo
+
+**2. Bug Fixes**
+
+**Homepage date format:**
+- Antes: `03/15` (MM/DD - formato US)
+- Ahora: `15/03` (DD/MM - formato Argentina)
+
+**Error reporting email:**
+- Cambiado `datos@consignatarias.com` → `agro@memola.com.ar`
+- Resend solo envía, no recibe emails
+
+**3. Files Changed**
+- `src/app/(terminal)/frigorificos/page.tsx` — SEO metadata + ItemList schema
+- `src/app/(terminal)/frigorificos/FrigorificosClient.tsx` — H2 semánticos
+- `src/app/(terminal)/consignatarias/page.tsx` — SEO metadata + ItemList schema
+- `src/app/(terminal)/mercado/inmag/page.tsx` — NEW landing page
+- `src/app/page.tsx` — Date format fix (DD/MM)
+- `src/app/(terminal)/consignatarias/[slug]/ConsignatariaProfileClient.tsx` — Email fix
+- `src/app/(terminal)/calidad/page.tsx` — Email fix
+
+---
+
 ## [1.5.0] — 2026-03-15
 
 ### Email Marketing Automatizado — Promoción de Remates PRO

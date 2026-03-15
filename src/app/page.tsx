@@ -391,7 +391,7 @@ export default function LandingPage() {
                     <div className="min-w-0">
                       <div className="text-sm text-zinc-200 truncate">{r.consignatariaName}</div>
                       <div className="text-[0.65rem] text-zinc-500">
-                        {r.date.slice(5).replace("-", "/")}{r.time ? ` · ${r.time}` : ''} &middot; {r.location}
+                        {r.date.slice(8)}/{r.date.slice(5, 7)}{r.time ? ` · ${r.time}` : ''} &middot; {r.location}
                       </div>
                     </div>
                     <div className="flex items-center gap-3 shrink-0 ml-4">
