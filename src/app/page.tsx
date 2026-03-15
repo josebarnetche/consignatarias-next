@@ -216,12 +216,12 @@ export default function LandingPage() {
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-normal text-zinc-100 tracking-tight leading-[1.1] mb-6">
-              Todos los remates ganaderos de Argentina{" "}
-              <span className="text-zinc-500">en una sola pantalla</span>
+              El calendario de remates ganaderos{" "}
+              <span className="text-zinc-500">de Argentina</span>
             </h1>
 
             <p className="text-lg md:text-xl font-normal text-zinc-400 mb-10 max-w-2xl leading-relaxed">
-              Calendario unificado de {totalConsignatarias}+ consignatarias con filtros por provincia, tipo de remate y fecha. Actualizado todos los días con datos de múltiples fuentes.
+              Todos los remates de {totalConsignatarias}+ consignatarias en una sola pantalla. Filtros por provincia, tipo y fecha. Actualizado cada día con datos de múltiples fuentes.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
