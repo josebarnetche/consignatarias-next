@@ -28,5 +28,23 @@
     "channelUrl": "https://www.youtube.com/@AFACooperativa",
     "channelTitle": "AFA SCL",
     "subscribers": 2930
+  },
+  "eduardo-a-travaglia-y-cia-sa": {
+    "channelId": "@travagliaycia",
+    "channelUrl": "https://www.youtube.com/@travagliaycia",
+    "channelTitle": "EDUARDO TRAVAGLIA & CIA S.A.",
+    "subscribers": null
+  },
+  "colombo-y-magliano-sa": {
+    "channelId": "@ColomboyMaglianosa",
+    "channelUrl": "https://www.youtube.com/@ColomboyMaglianosa",
+    "channelTitle": "Colombo y Magliano",
+    "subscribers": null
+  },
+  "vicar-ganadera-sa": {
+    "channelId": "@vicarganadera",
+    "channelUrl": "https://www.youtube.com/@vicarganadera",
+    "channelTitle": "Vicar Ganadera S.A.",
+    "subscribers": 65
   }
 }
