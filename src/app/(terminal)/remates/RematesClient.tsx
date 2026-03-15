@@ -615,8 +615,8 @@ export default function RematesPage() {
   }, [baseAuctions, filterProvince, filterType])
 
   /* ---- Dropdown options ---- */
-  const provinces = useMemo(() => [...new Set(auctions.map((a) => a.province))].sort(), [])
-  const types = useMemo(() => [...new Set(auctions.map((a) => a.type))].sort(), [])
+  const provinces = useMemo(() => [...new Set(auctions.map((a) => a.province))].sort(), [auctions])
+  const types = useMemo(() => [...new Set(auctions.map((a) => a.type))].sort(), [auctions])
 
   /* ---- Summary stats ---- */
   const totalHeads = auctions.reduce((s, a) => s + (a.estimatedHeads ?? 0), 0)
