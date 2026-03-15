@@ -16,6 +16,7 @@ import youtubeChannelsData from '@/lib/data/youtube-channels.json'
 import { getProfileSEO } from '@/lib/data/profile-seo'
 import ConsignatariaProfileClient from './ConsignatariaProfileClient'
 import type { YouTubeChannelData } from './ConsignatariaProfileClient'
+import type { ConsignatariaVideo } from '@/components/video/VideoGallery'
 
 // ISR: revalidate every 5 minutes so Supabase data (verified, contact info) refreshes
 export const revalidate = 300
@@ -47,6 +48,38 @@ async function fetchAuctionResults(slug: string): Promise<AuctionResult[]> {
       .limit(20)
 
     return (data as AuctionResult[]) || []
+  } catch {
+    return []
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  VIDEO GALLERY from Supabase                                        */
+/* ------------------------------------------------------------------ */
+
+async function fetchConsignatariaVideos(slug: string): Promise<ConsignatariaVideo[]> {
+  try {
+    const service = createServiceClient()
+    
+    // First get consignataria ID
+    const { data: consignataria } = await service
+      .from('consignatarias')
+      .select('id')
+      .eq('slug', slug)
+      .single()
+
+    if (!consignataria) return []
+
+    // Fetch videos
+    const { data: videos } = await service
+      .from('consignataria_videos')
+      .select('id, youtube_video_id, title, description, video_type, published_at, thumbnail_url, duration_seconds, view_count, is_featured')
+      .eq('consignataria_id', consignataria.id)
+      .order('is_featured', { ascending: false })
+      .order('published_at', { ascending: false })
+      .limit(12)
+
+    return (videos as ConsignatariaVideo[]) || []
   } catch {
     return []
   }
@@ -123,9 +156,10 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
   const enrichedProfile = await getConsignatariaProfile(canonical)
   if (!enrichedProfile) notFound()
 
-  const [tier, auctionResults] = await Promise.all([
+  const [tier, auctionResults, videos] = await Promise.all([
     getEntityTier('consignataria', canonical),
     fetchAuctionResults(canonical),
+    fetchConsignatariaVideos(canonical),
   ])
 
   // Merge scraped auctions + owner-created auctions from Supabase
@@ -244,6 +278,7 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
         tier={tier}
         auctionResults={auctionResults}
         youtubeChannel={(youtubeChannelsData as Record<string, YouTubeChannelData>)[canonical]}
+        videos={videos}
       />
     </>
   )

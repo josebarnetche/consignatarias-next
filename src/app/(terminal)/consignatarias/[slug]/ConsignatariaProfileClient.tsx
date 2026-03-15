@@ -27,6 +27,7 @@ import {
 } from '@/lib/ui/tokens'
 import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge, { VerifiedBadge } from '@/components/badges/ProBadge'
+import VideoGallery, { type ConsignatariaVideo } from '@/components/video/VideoGallery'
 
 /* ------------------------------------------------------------------ */
 /*  COMPLETENESS CALCULATOR                                            */
@@ -349,9 +350,10 @@ interface ConsignatariaProfileClientProps {
   tier: EntityTier
   auctionResults: AuctionResult[]
   youtubeChannel?: YouTubeChannelData
+  videos?: ConsignatariaVideo[]
 }
 
-export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel }: ConsignatariaProfileClientProps) {
+export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [] }: ConsignatariaProfileClientProps) {
   const today = getEffectiveToday()
 
   useEffect(() => {
@@ -785,6 +787,28 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                 {youtubeChannel.channelTitle}
               </a>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/*  VIDEO GALLERY                                                 */}
+      {/* ============================================================ */}
+      {videos.length > 0 && (
+        <div className="terminal-panel mt-px">
+          <div className="terminal-panel-header flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="section-heading text-xxs">GALERÍA DE VIDEOS</span>
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-red-600/20 border border-red-500/30 rounded-sm">
+                <span className="text-red-400 font-terminal text-[10px] font-bold">YT</span>
+              </span>
+            </div>
+            <span className="text-xxs text-zinc-500 font-terminal">
+              {videos.length} video{videos.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+          <div className="px-panel py-3">
+            <VideoGallery videos={videos} consignatariaName={profile.displayName} />
           </div>
         </div>
       )}
