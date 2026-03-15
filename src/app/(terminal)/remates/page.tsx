@@ -4,26 +4,40 @@ import rematesData from '@/lib/data/remates.json'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
-export const metadata: Metadata = {
-  title: 'Calendario de Remates Ganaderos Argentina',
-  description: 'Calendario unificado de remates ganaderos de múltiples consignatarias argentinas. Filtrá por provincia, tipo de remate y fecha. Actualizado en tiempo real.',
-  keywords: [
-    'remates ganaderos',
-    'calendario remates',
-    'subastas hacienda',
-    'remates invernada',
-    'remates cria',
-    'consignatarias argentina',
-  ],
-  openGraph: {
-    title: 'Calendario de Remates Ganaderos | Consignatarias.com.ar',
-    description: 'Todos los remates de múltiples consignatarias en un solo calendario. Filtros por provincia, tipo y fecha.',
-    url: 'https://www.consignatarias.com.ar/remates',
-    type: 'website',
-  },
-  alternates: {
-    canonical: 'https://www.consignatarias.com.ar/remates',
-  },
+// Month names in Spanish
+const MONTHS_ES = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+]
+
+export async function generateMetadata(): Promise<Metadata> {
+  const now = new Date()
+  const monthName = MONTHS_ES[now.getMonth()]
+  const year = now.getFullYear()
+  const totalAuctions = rematesData.length
+  
+  return {
+    title: `Remates Ganaderos ${monthName} ${year} — Calendario Argentina`,
+    description: `Calendario de ${totalAuctions} remates ganaderos en Argentina, ${monthName} ${year}. Filtrá por provincia, tipo de remate y fecha. Actualizado diariamente.`,
+    keywords: [
+      'remates ganaderos',
+      'calendario remates',
+      `remates ${monthName.toLowerCase()} ${year}`,
+      'subastas hacienda',
+      'remates invernada',
+      'remates cria',
+      'consignatarias argentina',
+    ],
+    openGraph: {
+      title: `Remates Ganaderos ${monthName} ${year} | Consignatarias.com.ar`,
+      description: `Calendario de ${totalAuctions} remates ganaderos en Argentina. Filtros por provincia, tipo y fecha.`,
+      url: 'https://www.consignatarias.com.ar/remates',
+      type: 'website',
+    },
+    alternates: {
+      canonical: 'https://www.consignatarias.com.ar/remates',
+    },
+  }
 }
 
 export default function RematesPage() {
