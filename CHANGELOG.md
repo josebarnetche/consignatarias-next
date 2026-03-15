@@ -4,7 +4,197 @@ Registro completo de **consignatarias.com.ar** — desde el primer `npx create-n
 
 ---
 
-## [1.6.1] — 2026-03-15
+## [1.7.0] — 2026-03-15
+
+### Video Catalogs Infrastructure — Complete Pipeline
+
+> feat: v1.7.0 — Automated YouTube video matching for consignataria profiles
+
+**Overview**
+
+Full video catalog system that automatically matches YouTube videos/livestreams to auctions. When a consignataria with a mapped YouTube channel has a remate, the system searches their channel for matching content and links it to the auction.
+
+---
+
+#### 1. Database Schema
+
+New `consignataria_videos` table for storing video metadata:
+
+```sql
+CREATE TABLE consignataria_videos (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  consignataria_id UUID NOT NULL REFERENCES consignatarias(id),
+  youtube_video_id VARCHAR(11) NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  remate_id UUID REFERENCES remates(id),
+  video_type VARCHAR(20) CHECK (video_type IN ('remate', 'lote', 'institucional', 'tour')),
+  published_at TIMESTAMP WITH TIME ZONE,
+  thumbnail_url TEXT,
+  duration_seconds INTEGER,
+  view_count INTEGER DEFAULT 0,
+  is_featured BOOLEAN DEFAULT FALSE,
+  UNIQUE(consignataria_id, youtube_video_id)
+);
+```
+
+**Indexes:**
+- `idx_videos_consignataria` — Profile galleries (featured first, then by date)
+- `idx_videos_remate` — Auction video lookup
+
+**RLS:** Public read, writes via service role only.
+
+**Migration:** `supabase/migrations/20260315_consignataria_videos.sql`
+
+---
+
+#### 2. YouTube Video Matcher Script
+
+Automated matching script that runs post-scraper in GitHub Actions:
+
+```typescript
+// scripts/match-youtube-videos.ts
+// Flow:
+// 1. Load remates for TODAY
+// 2. Filter to consignatarias with mapped YouTube channels
+// 3. Search each channel for videos published today
+// 4. Match by: live/upcoming status > location in title > most recent
+// 5. Update remates.json with youtubeUrl field
+```
+
+**Matching Priority:**
+1. Live or upcoming livestream (highest priority)
+2. Video title contains auction location
+3. Most recent video from the day (fallback)
+
+**Rate Limiting:** 1 request/second to respect YouTube API quotas.
+
+**File:** `scripts/match-youtube-videos.ts`
+
+---
+
+#### 3. Channel ID Resolution
+
+YouTube Data API v3 requires channel IDs (`UCxxxxxxx`), not handles (`@username`). Implemented automatic resolution:
+
+```javascript
+// @LaGanaderaRamirez → UCrAG-793MFmRqqlVzEHQJwg
+fetch(`https://www.googleapis.com/youtube/v3/channels?forHandle=${handle}&key=${API_KEY}`)
+```
+
+All 15 channels now have resolved UCxxxxxxx IDs stored in `youtube-channels.json`.
+
+---
+
+#### 4. GitHub Actions Integration
+
+Updated `scrape-auctions.yml` workflow:
+
+```yaml
+- name: Run scraper
+  run: node scripts/scrape-auctions.mjs
+
+- name: Match YouTube videos  # NEW
+  run: npx tsx scripts/match-youtube-videos.ts
+  env:
+    YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+
+- name: Commit and push
+  run: git add src/lib/data/ && git commit -m "data: update auctions + match videos"
+```
+
+**Schedule:** Daily at 14:00 ART (17:00 UTC)
+
+---
+
+#### 5. VideoGallery Component
+
+React component for displaying video galleries on consignataria profiles:
+
+```typescript
+// src/components/video/VideoGallery.tsx
+interface VideoGalleryProps {
+  videos: ConsignatariaVideo[];
+  maxVideos?: number;
+}
+
+// Features:
+// - Responsive grid layout (1-3 columns)
+// - YouTube thumbnail display
+// - Video type badges (remate, institucional, etc.)
+// - View count display
+// - Featured video highlighting
+```
+
+---
+
+#### 6. Videos API Endpoint
+
+```typescript
+// GET /api/consignatarias/[slug]/videos
+// Returns: { videos: ConsignatariaVideo[], total: number }
+
+// Query params:
+// - limit: number (default 10)
+// - type: 'remate' | 'lote' | 'institucional' | 'tour'
+// - featured: boolean
+```
+
+**File:** `src/app/api/consignatarias/[slug]/videos/route.ts`
+
+---
+
+#### 7. YouTube Channels Mapped (15 total)
+
+| Consignataria | Channel ID | Subscribers |
+|---------------|------------|-------------|
+| La Ganadera Ramírez | UCrAG-793MFmRqqlVzEHQJwg | 4,100 |
+| Rosgan BCR | UCvO_FXYeiyj5QYqL9cWOUeQ | 3,000 |
+| AFA SCL | UC1XGF4vhAKosCWHR-74C-Ng | 2,930 |
+| Reggi y Cia | UCDp9jvg607ey7p6sHowOjYw | 1,260 |
+| UMC Haciendas | UCPzo8IxRDGZcI5rH9IS9fhA | 1,190 |
+| Tradición Ganadera | UCUrUHr8QbQizYer2kI20mhA | 739 |
+| Cooperativa Lehmann | UCIHhaaYzJSCAfqnUEAW4ZpQ | 737 |
+| Bressan y Cia | UCVCtVthepYltxxUbuf14fLw | 316 |
+| Iván L. O'farrell | UCR4g7aa2EyXDafHQnqvA8vw | 170 |
+| Vicar Ganadera | UCE1_4Ki_lzvLhxFcYu4ZGpA | 65 |
+| SVB Rematenet | UCaarhFa2peyJOG-tMqbsByw | — |
+| Eduardo Travaglia | UCfPvgVUfTzGOuups_EN6J3Q | — |
+| Colombo y Magliano | UCre8ZZIykhnEFbK0R8nFdEg | — |
+| Ferias Rauch | UCggQXhO2mIzIoKfVGCxIkpg | — |
+| Colombo y Colombo | UCW3SRpohecSX8TXOwZ17cZw | — |
+
+**Total reach:** ~14,500+ subscribers
+
+---
+
+#### Environment Variables Required
+
+```bash
+# Vercel
+YOUTUBE_API_KEY=AIzaSy...
+
+# GitHub Secrets
+YOUTUBE_API_KEY=AIzaSy...
+```
+
+---
+
+#### Commits
+
+| Hash | Description |
+|------|-------------|
+| `01fa667` | feat: YouTube video matcher script |
+| `d574848` | fix: resolve @handles to UCxxxxxxx channel IDs |
+| `59a583f` | feat: VideoGallery component + videos API endpoint |
+| `342050a` | fix: correct migration (UUID types, RLS policies) |
+| `b004b10` | feat: add matcher to GitHub Actions workflow |
+| `ee6499a` | fix: use npm install in workflow |
+| `ec4056c` | feat: add Reggi y Cia channel (15 total) |
+
+---
+
+## [1.6.1] — 2026-03-15 (superseded by 1.7.0)
 
 ### YouTube Channels Mapping for v1.7.0 Video Catalogs
 

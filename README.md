@@ -2,7 +2,7 @@
 
 A cattle auction directory, market intelligence platform, and public API for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
 
-**21 public API endpoints** • **289 remates** • **58 consignatarias** • **364 frigoríficos** • **10 provincias** • **Automated email marketing**
+**21 public API endpoints** • **320 remates** • **77 consignatarias** • **364 frigoríficos** • **13 provincias** • **15 YouTube channels** • **Automated video matching**
 
 **Live:** [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
 
@@ -158,24 +158,53 @@ Chronological feed of all upcoming auctions with filters:
 - "Reclamar" link on each row
 - "REGISTRAR FRIGORIFICO" CTA in sidebar
 
-### YouTube Channel Mapping (v1.7.0 prep)
+### Video Catalogs (v1.7.0)
 
-14 official YouTube channels mapped for video catalog integration:
+Automated YouTube video matching system that links auction livestreams and videos to consignataria profiles.
 
-| Consignataria | Canal | Suscriptores |
-|---------------|-------|--------------|
-| La Ganadera Ramirez | @LaGanaderaRamirez | 4,100 |
-| Rosgan | @RosganBCR | 3,000 |
-| AFA | @AFACooperativa | 2,930 |
-| UMC Haciendas Villaguay | @UMCSA-HVILLAGUAY | 1,190 |
-| + 10 more | — | ~5,000 |
+**Architecture:**
 
-**Total reach:** ~13,000+ subscribers
+```
+Daily Scraper (14:00 ART)
+        │
+        ▼
+YouTube Video Matcher
+        │
+        ├── Load remates for TODAY
+        ├── Filter consignatarias with mapped channels
+        ├── Search YouTube Data API v3 for each
+        ├── Match by: live status > location > date
+        └── Update remates.json with youtubeUrl
+        │
+        ▼
+Vercel Deploy (auto-triggered)
+```
 
-Consignatarias without own channels use transmission platforms:
-- Canal Rural, ClicRural, Entre Surcos y Corrales, De Frente al Campo
+**15 YouTube Channels Mapped:**
 
-**Data file:** `src/lib/data/youtube-channels.json`
+| Consignataria | Channel ID | Subscribers |
+|---------------|------------|-------------|
+| La Ganadera Ramírez | UCrAG-793MFmRqqlVzEHQJwg | 4,100 |
+| Rosgan BCR | UCvO_FXYeiyj5QYqL9cWOUeQ | 3,000 |
+| AFA SCL | UC1XGF4vhAKosCWHR-74C-Ng | 2,930 |
+| Reggi y Cia | UCDp9jvg607ey7p6sHowOjYw | 1,260 |
+| UMC Haciendas | UCPzo8IxRDGZcI5rH9IS9fhA | 1,190 |
+| + 10 more | — | ~1,900 |
+
+**Total reach:** ~14,500+ subscribers
+
+**Components:**
+- `scripts/match-youtube-videos.ts` — Matcher script (runs in GitHub Actions)
+- `src/components/video/VideoGallery.tsx` — Profile video gallery component
+- `src/app/api/consignatarias/[slug]/videos/route.ts` — Videos API endpoint
+- `src/lib/data/youtube-channels.json` — Channel mapping with resolved UCxxxxxxx IDs
+- `supabase/migrations/20260315_consignataria_videos.sql` — Database schema
+
+**Third-party Platforms** (consignatarias without own channels):
+- Canal Rural (@canalrural)
+- ClicRural (@clicruralar5804)
+- Entre Surcos y Corrales (@entresurcosycorrales2456)
+- De Frente al Campo (@DeFrentealCampo)
 
 **Enriched data:** 126 frigorificos (all Stage 1) enriched with contact info, location, export classification via automated web research. Stored in `frigorificos-enriched.json`.
 
