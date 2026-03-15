@@ -101,9 +101,9 @@ export default function PlanesPage() {
       </div>
 
       {/* Pricing Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-4">
         {/* FREE */}
-        <div className="terminal-panel flex flex-col">
+        <div className="terminal-panel flex flex-col overflow-visible">
           <div className="terminal-panel-header">Gratuito</div>
           <div className="px-panel py-4 flex-1 flex flex-col">
             <div className="mb-4">
@@ -135,7 +135,7 @@ export default function PlanesPage() {
 
         {/* PRO */}
         <div
-          className="terminal-panel flex flex-col relative"
+          className="terminal-panel flex flex-col relative mt-6 md:mt-0"
           style={{
             borderColor: 'rgba(245, 158, 11, 0.5)',
             boxShadow: '0 0 20px rgba(251, 191, 36, 0.08)',
@@ -143,11 +143,11 @@ export default function PlanesPage() {
         >
           {/* PRO badge */}
           <div
-            className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 text-xxs font-terminal uppercase tracking-widest"
+            className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 text-xxs font-terminal uppercase tracking-widest z-10"
             style={{
-              background: 'rgba(245, 158, 11, 0.15)',
+              background: 'rgba(245, 158, 11, 0.9)',
               border: '1px solid rgba(245, 158, 11, 0.4)',
-              color: '#fbbf24',
+              color: '#000',
               borderRadius: '2px',
             }}
           >
