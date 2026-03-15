@@ -53,3 +53,45 @@ export const statusLabels: Record<Auction['status'], string> = {
   live: 'En vivo',
   completed: 'Finalizado',
 }
+
+// ----------------------------------------------------------------
+// Video Catalogs (v1.7.0)
+// ----------------------------------------------------------------
+
+export type VideoType = 'remate' | 'lote' | 'institucional' | 'tour'
+
+export interface ConsignatariaVideo {
+  id: string
+  consignatariaId: string
+  youtubeVideoId: string
+  title: string
+  description: string | null
+  remateId: number | null
+  videoType: VideoType
+  publishedAt: string | null
+  thumbnailUrl: string | null
+  durationSeconds: number | null
+  viewCount: number
+  createdAt: string
+  updatedAt: string
+  isFeatured: boolean
+  sortOrder: number
+}
+
+export interface VideoMetadata {
+  videoId: string
+  title: string
+  description: string
+  thumbnailUrl: string
+  publishedAt: string
+  durationSeconds: number
+  viewCount: number
+  channelTitle: string
+}
+
+export const videoTypeLabels: Record<VideoType, string> = {
+  remate: 'Remate',
+  lote: 'Lote',
+  institucional: 'Institucional',
+  tour: 'Recorrida',
+}
