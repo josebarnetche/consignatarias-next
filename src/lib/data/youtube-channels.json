@@ -46,5 +46,29 @@
     "channelUrl": "https://www.youtube.com/@vicarganadera",
     "channelTitle": "Vicar Ganadera S.A.",
     "subscribers": 65
+  },
+  "umc-sa-haciendas-villaguay-srl": {
+    "channelId": "@UMCSA-HVILLAGUAY",
+    "channelUrl": "https://www.youtube.com/@UMCSA-HVILLAGUAY",
+    "channelTitle": "UMC S.A. y H.VILLAGUAY S.R.L.",
+    "subscribers": 1190
+  },
+  "ferias-rauch-sa": {
+    "channelId": "@feriasrauch374",
+    "channelUrl": "https://www.youtube.com/@feriasrauch374",
+    "channelTitle": "Ferias Rauch",
+    "subscribers": null
+  },
+  "coop-la-ganadera-gral-ramirez-ltda": {
+    "channelId": "@LaGanaderaRamirez",
+    "channelUrl": "https://www.youtube.com/@LaGanaderaRamirez",
+    "channelTitle": "La Ganadera Ramirez",
+    "subscribers": 4100
+  },
+  "tradicion-ganadera-sa-porro-srl": {
+    "channelId": "@TRADICIONGANADERAENVIVO",
+    "channelUrl": "https://www.youtube.com/@TRADICIONGANADERAENVIVO",
+    "channelTitle": "TRADICIONGANADERA EN VIVO",
+    "subscribers": 739
   }
 }
