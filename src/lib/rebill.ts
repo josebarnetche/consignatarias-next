@@ -1,12 +1,15 @@
 const REBILL_API = 'https://api.rebill.com/v3'
 
+// TEMPORARY HARDCODE - Vercel env vars not loading, investigating
+const HARDCODED_KEY = 'sk_7ed9e63a1b8c4f36bfb8f50433b8a396'
+
 export async function createPaymentLink(
   planId: string,
   customerEmail: string,
   entitySlug: string,
   entityType: 'consignataria' | 'frigorifico'
 ) {
-  const secretKey = process.env.REBILL_SECRET_KEY
+  const secretKey = process.env.REBILL_SECRET_KEY || HARDCODED_KEY
   
   // Debug logging
   console.log('[Rebill] createPaymentLink called')

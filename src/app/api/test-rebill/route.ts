@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server'
 
+// TEMPORARY HARDCODE FOR DEBUGGING - REMOVE AFTER TEST
+const HARDCODED_KEY = 'sk_7ed9e63a1b8c4f36bfb8f50433b8a396'
+
 export async function GET() {
-  const secretKey = process.env.REBILL_SECRET_KEY
+  const secretKey = process.env.REBILL_SECRET_KEY || HARDCODED_KEY
   
   const debug = {
     REBILL_SECRET_KEY_exists: !!secretKey,
