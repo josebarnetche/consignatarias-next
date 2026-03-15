@@ -2,7 +2,7 @@
 
 A cattle auction directory, market intelligence platform, and public API for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
 
-**20 public API endpoints** • **385+ remates** • **77 consignatarias** • **364 frigoríficos** • **10 provincias**
+**21 public API endpoints** • **230+ remates** • **58 consignatarias** • **364 frigoríficos** • **10 provincias** • **Automated email marketing**
 
 **Live:** [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
 
@@ -167,6 +167,29 @@ Chronological feed of all upcoming auctions with filters:
 - Corn FOB (USD/tn)
 - USD blue and oficial rates
 - Updated daily by scraper
+
+### Email Marketing Automatizado (v1.5.0)
+
+Sistema de promoción por email para consignatarias PRO:
+
+**Para suscriptores:**
+- Newsletter semanal con resumen de remates próximos
+- Remates PRO destacados con tratamiento visual especial
+- Alertas personalizadas por provincia/tipo (próximamente)
+
+**Para consignatarias PRO:**
+- Cada remate publicado se promociona por email a toda la base
+- Emails transaccionales via Resend (dominio verificado: consignatarias.com)
+- Templates HTML estilo terminal con branding consistente
+
+**Cron jobs (GitHub Actions):**
+- `remate-reminders` — diario 8 AM ART, recordatorios pre-remate
+- `weekly-newsletter` — lunes 10 AM ART, resumen semanal
+
+**Endpoints:**
+- `POST /api/cron/weekly-newsletter` — trigger manual de newsletter
+- `GET /api/cron/remate-reminders` — trigger manual de recordatorios
+- `POST /api/newsletter` — suscripción a newsletter
 
 ### Profile Verification (Trust-First)
 

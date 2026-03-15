@@ -1,6 +1,231 @@
 # Changelog
 
-Registro completo de **consignatarias.com.ar** — desde el primer `npx create-next-app` hasta una plataforma SaaS de remates ganaderos con 20 API endpoints, 385+ remates en 10 provincias argentinas, auth, pagos, perfiles verificados, AI SEO, lead magnets, PRO tier con features premium y documentación completa.
+Registro completo de **consignatarias.com.ar** — desde el primer `npx create-next-app` hasta una plataforma SaaS de remates ganaderos con 21 API endpoints, 230+ remates en 10 provincias argentinas, auth, pagos, perfiles verificados, AI SEO, lead magnets, PRO tier con features premium, email marketing automatizado y documentación completa.
+
+---
+
+## [1.5.0] — 2026-03-15
+
+### Email Marketing Automatizado — Promoción de Remates PRO
+
+> feat: v1.5.0 — automated email promotion for PRO consignatarias
+
+**Milestone:** Sistema completo de email marketing. Cada remate de consignatarias PRO se promociona automáticamente por email a todos los suscriptores del newsletter. La propuesta de valor principal del tier PRO.
+
+**1. Promoción por Email como Feature Principal PRO**
+
+Nuevo copy en landing y /planes:
+- **Landing (sección PRO):** "Cada remate que publiques lo promocionamos por email a todos nuestros suscriptores. Todo el año."
+- **Feature card:** 📧 Promoción por Email (primera posición, badge "NUEVO")
+- **Página /planes:** 9 features PRO listadas, promoción por email como #1
+
+**Implementación en `src/app/page.tsx`:**
+- Nuevo feature card con borde amber destacado
+- Badge "NUEVO" absoluto en esquina superior derecha
+- Copy enfocado en beneficio: "Cada remate que publiques llega directo al inbox"
+
+**Implementación en `src/app/(terminal)/planes/page.tsx`:**
+- `PRO_FEATURES` array expandido de 5 a 9 items
+- Descripción actualizada: foco en email marketing
+- Schema SEO actualizado con nuevos features
+
+**2. Sistema de Alertas (Supabase)**
+
+Nueva tabla `alertas` para suscripciones de notificaciones:
+
+```sql
+CREATE TABLE alertas (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id),
+  api_key TEXT NOT NULL,
+  name TEXT NOT NULL,
+  webhook_url TEXT NOT NULL,
+  filters JSONB DEFAULT '{}',
+  events TEXT[] DEFAULT ARRAY['remate.created'],
+  frequency TEXT DEFAULT 'immediate',
+  status TEXT DEFAULT 'active',
+  triggers_count INT DEFAULT 0,
+  last_triggered_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+**RLS habilitado** con política de service role.
+
+**Archivos modificados:**
+- `src/app/page.tsx` — nuevo feature card, copy actualizado
+- `src/app/(terminal)/planes/page.tsx` — PRO features expandido
+
+---
+
+## [1.4.5] — 2026-03-15
+
+### Fix PRO Badge Mobile + UX Planes
+
+> fix: v1.4.5 — PRO badge visibility on mobile, planes page UX
+
+**El problema:** En mobile, el badge "RECOMENDADO" del plan PRO era tapado por el card del plan gratuito arriba.
+
+**Solución:**
+- **margin-top mobile:** `mt-6 md:mt-0` en card PRO para separación del card anterior
+- **z-index:** `z-10` en badge para asegurar visibilidad sobre otros elementos
+- **Fondo sólido:** Badge cambiado de `rgba(245, 158, 11, 0.15)` a `rgba(245, 158, 11, 0.9)` con texto negro para mayor contraste
+- **overflow-visible:** Agregado al card FREE para no clipear elementos adyacentes
+
+**Archivos modificados:**
+- `src/app/(terminal)/planes/page.tsx` — CSS fixes para mobile
+
+---
+
+## [1.4.4] — 2026-03-15
+
+### GitHub Actions Cron — Recordatorios y Newsletter
+
+> feat: v1.4.4 — GitHub Actions cron jobs for remate reminders and weekly newsletter
+
+**1. Workflow Remate Reminders**
+
+Archivo `.github/workflows/remate-reminders.yml`:
+- **Schedule:** Diario a las 8 AM Argentina (11:00 UTC)
+- **Endpoint:** `GET /api/cron/remate-reminders`
+- **Auth:** Header `x-cron-secret` con `CRON_SECRET`
+- **Fallback:** Manual dispatch disponible
+
+**2. Workflow Weekly Newsletter**
+
+Archivo `.github/workflows/weekly-newsletter.yml`:
+- **Schedule:** Lunes 10 AM Argentina (13:00 UTC)
+- **Endpoint:** `POST /api/cron/weekly-newsletter`
+- **Auth:** Bearer token con `ADMIN_SECRET`
+
+**3. Fix URL Redirect**
+
+- URLs cambiadas de `consignatarias.com.ar` a `www.consignatarias.com.ar`
+- El dominio sin www redirige (307), causaba fallo en cron
+- Flag `-L` (follow redirects) agregado como backup
+
+**4. Graceful Handling de Tabla Faltante**
+
+En `/api/cron/remate-reminders/route.ts`:
+- Si tabla `alertas` no existe, retorna 200 con mensaje "table not configured"
+- Evita fallo del cron antes de setup de Supabase
+
+**Archivos creados:**
+- `.github/workflows/remate-reminders.yml`
+- `.github/workflows/weekly-newsletter.yml`
+
+**Archivos modificados:**
+- `src/app/api/cron/remate-reminders/route.ts` — graceful handling
+
+---
+
+## [1.4.3] — 2026-03-15
+
+### Fix Email Domain — Resend Verificado
+
+> fix: v1.4.3 — use verified domain for transactional emails
+
+**El problema:** Los emails se enviaban desde `@consignatarias.com.ar` (no verificado en Resend), causando fallo silencioso.
+
+**Solución:**
+- **FROM email:** `noreply@consignatarias.com` (dominio verificado)
+- **Contact email:** `datos@consignatarias.com`
+- El dominio `.com` tiene Resend verificado; `.com.ar` redirige al sitio
+
+**Test enviado exitosamente** desde `noreply@consignatarias.com`.
+
+**Archivos modificados:**
+- `src/lib/email.ts` — FROM email
+- `src/app/(terminal)/calidad/page.tsx` — contact email
+- `src/app/(terminal)/consignatarias/[slug]/ConsignatariaProfileClient.tsx` — report error email
+
+---
+
+## [1.4.2] — 2026-03-14
+
+### Nueva OG Image — Estilo App
+
+> feat: v1.4.2 — new OG image with app-style design
+
+**Diseño nuevo:**
+- **Layout:** Logo "C" prominente a la izquierda, texto a la derecha
+- **Título:** `consignatarias.com.ar` en una línea, `.com.ar` en cyan
+- **Subtítulo:** "Inteligencia del mercado ganadero argentino"
+- **Stats:** Remates, Frigoríficos, Precios INMAG en verde
+- **Acento:** Línea cyan en la parte inferior
+- **Fondo:** Gradiente dark con grid sutil
+
+**Generación:**
+- Script `scripts/generate-og-image.js` genera SVG
+- Conversión a PNG con `sharp-cli`
+- Dimensiones: 1200x630 (estándar OG)
+
+**Archivos creados:**
+- `scripts/generate-og-image.js`
+- `public/og-image.png` (reemplazado)
+- `public/og-image-new.svg`
+
+---
+
+## [1.4.1] — 2026-03-14
+
+### Phase 5 PRO Features — Calendario, PDF, Alertas
+
+> feat: v1.4.1 — Phase 5 PRO features (calendar, PDF reports, alerts cron)
+
+**1. Calendario ICS Sincronizable**
+
+- **Página:** `/calendario/[slug]` — página user-friendly para suscribir calendario
+- **API:** `/api/calendario/[slug]` — endpoint ICS con eventos de remates
+- **Compatibilidad:** Google Calendar, Apple Calendar, Outlook
+- Botones de un click para cada plataforma
+
+**2. Reporte PDF Mensual**
+
+- **API:** `/api/consignatarias/[slug]/report`
+- PDF profesional con jsPDF
+- Secciones: header con logo, stats, lista de remates, precios INMAG
+
+**3. Badge "Destacado del Mes"**
+
+- **API:** `/api/featured/check` — verifica si consignataria califica
+- **Componente:** `FeaturedBadge.tsx` — badge dorado animado
+- Criterio: top 3 por cantidad de remates en el mes
+
+**4. Widget Embebible**
+
+- **API:** `/api/widget/[slug]` — HTML/JS widget para sitios externos
+- Muestra próximos 5 remates de la consignataria
+- Estilo terminal dark, responsive
+
+**5. QR Code para Catálogos**
+
+- **Componente:** `QRCode.tsx` — genera QR con URL del perfil
+- Descargable en PNG y SVG
+- Para imprimir en catálogos físicos
+
+**6. Landing Personalizada**
+
+- **Página:** `/go/[slug]` — landing optimizada para compartir
+- Open Graph optimizado para WhatsApp/redes
+- CTA directo a perfil completo
+
+**7. Recordatorios Pre-Remate (Cron)**
+
+- **API:** `/api/cron/remate-reminders`
+- Notifica suscriptores 24h y 1h antes de remates PRO
+- Matching contra tabla `alertas`
+
+**Archivos creados:**
+- `src/app/calendario/[slug]/page.tsx`
+- `src/app/api/calendario/[slug]/route.ts`
+- `src/app/api/consignatarias/[slug]/report/route.ts`
+- `src/app/api/featured/check/route.ts`
+- `src/app/api/widget/[slug]/route.ts`
+- `src/app/go/[slug]/page.tsx`
+- `src/app/api/cron/remate-reminders/route.ts`
+- `src/components/QRCode.tsx`
+- `src/components/badges/FeaturedBadge.tsx`
 
 ---
 
