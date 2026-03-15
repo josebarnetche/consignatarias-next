@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Metadata } from "next";
 import marketPrices from "@/lib/data/market-prices.json";
 import frigorificosSummary from "@/lib/data/frigorificos-summary.json";
@@ -167,7 +168,7 @@ export default function LandingPage() {
       <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-[#09090b]/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Consignatarias.com.ar" width={32} height={32} className="rounded" />
+            <Image src="/logo.png" alt="Consignatarias.com.ar" width={32} height={32} className="rounded" />
             <span className="text-sm font-medium text-zinc-100 tracking-tight">
               consignatarias.com.ar
             </span>
@@ -975,7 +976,7 @@ export default function LandingPage() {
           <div className="flex flex-col gap-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="flex items-center gap-3">
-                <img src="/logo.png" alt="Consignatarias.com.ar" width={24} height={24} className="rounded opacity-60" />
+                <Image src="/logo.png" alt="Consignatarias.com.ar" width={24} height={24} className="rounded opacity-60" />
                 <span className="text-xs font-medium text-zinc-500 tracking-tight">
                   consignatarias.com.ar &copy; 2026
                 </span>

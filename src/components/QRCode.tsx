@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 
 interface QRCodeProps {
   /** URL to encode in QR */
@@ -54,12 +55,13 @@ export default function QRCode({
     <div className={`flex flex-col items-center gap-4 ${className}`}>
       {/* QR Code Image */}
       <div className="bg-white p-3 rounded-lg">
-        <img 
+        <Image 
           src={qrUrl} 
           alt="QR Code" 
           width={size} 
           height={size}
           className="block"
+          unoptimized
         />
       </div>
 
