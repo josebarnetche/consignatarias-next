@@ -16,7 +16,13 @@ export const metadata: Metadata = {
   },
 }
 
-const GLOSSARY_TERMS = [
+interface GlossaryTerm {
+  term: string
+  definition: string
+  link?: { href: string; text: string }
+}
+
+const GLOSSARY_TERMS: GlossaryTerm[] = [
   {
     term: 'Balanza',
     definition: 'Instrumento de pesaje utilizado en los remates para determinar el peso exacto de los animales. El precio final se calcula multiplicando el peso por el valor por kilogramo ofertado. La balanza debe estar calibrada y certificada.',
@@ -48,6 +54,7 @@ const GLOSSARY_TERMS = [
   {
     term: 'Consignataria',
     definition: 'Intermediario habilitado por matricula entre productores ganaderos y compradores en remates de hacienda. La consignataria organiza la subasta, garantiza la operacion y cobra una comision sobre la venta.',
+    link: { href: '/consignatarias', text: 'Ver directorio de consignatarias →' },
   },
   {
     term: 'Cria',
@@ -60,6 +67,7 @@ const GLOSSARY_TERMS = [
   {
     term: 'Frigorifico',
     definition: 'Planta procesadora de carne habilitada por SENASA para faena, desposte y/o procesamiento de productos carnicos. Cada frigorifico cuenta con un numero de establecimiento oficial y esta sujeto a inspecciones sanitarias regulares.',
+    link: { href: '/frigorificos', text: 'Ver directorio de frigoríficos →' },
   },
   {
     term: 'Hacienda',
@@ -68,6 +76,7 @@ const GLOSSARY_TERMS = [
   {
     term: 'INMAG',
     definition: 'Indice Novillo del Mercado Agroganadero. Precio de referencia del kilogramo vivo de novillo, publicado por el Mercado Agroganadero de Liniers. Es el principal indicador de precios de la hacienda vacuna en Argentina, expresado en $/kg vivo.',
+    link: { href: '/mercado/inmag', text: 'Ver precio INMAG actual →' },
   },
   {
     term: 'Invernada',
@@ -92,6 +101,7 @@ const GLOSSARY_TERMS = [
   {
     term: 'Remate',
     definition: 'Evento de venta de ganado mediante subasta publica, organizado por una consignataria habilitada. Los compradores pujan por lotes de animales y el mejor postor se adjudica la compra. Puede ser presencial, televisado o por streaming.',
+    link: { href: '/remates', text: 'Ver calendario de remates →' },
   },
   {
     term: 'SENASA',
@@ -234,7 +244,17 @@ export default function GlosarioPage() {
           {GLOSSARY_TERMS.map((entry) => (
             <div key={entry.term} className="border-l-2 border-zinc-700 pl-4">
               <dt className="text-accent font-medium text-base mb-1">{entry.term}</dt>
-              <dd className="text-zinc-400">{entry.definition}</dd>
+              <dd className="text-zinc-400">
+                {entry.definition}
+                {entry.link && (
+                  <Link 
+                    href={entry.link.href} 
+                    className="block mt-2 text-xs text-amber-400 hover:text-amber-300 transition-colors"
+                  >
+                    {entry.link.text}
+                  </Link>
+                )}
+              </dd>
             </div>
           ))}
         </dl>
