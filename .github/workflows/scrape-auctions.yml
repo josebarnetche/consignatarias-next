@@ -1,4 +1,4 @@
-name: Scrape Auctions & Update Data
+name: Scrape Auctions & Match Videos
 
 on:
   schedule:
@@ -19,11 +19,19 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Install dependencies
+        run: npm ci
+
       - name: Run scraper
         run: node scripts/scrape-auctions.mjs
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Match YouTube videos
+        run: npx tsx scripts/match-youtube-videos.ts
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
 
       - name: Check for changes
         id: changes
@@ -35,7 +43,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/lib/data/remates.json src/lib/data/market-prices.json src/lib/data/youtube-channels.json
+          git add src/lib/data/
           AUCTION_COUNT=$(node -e "console.log(require('./src/lib/data/remates.json').length)")
-          git commit -m "data: update auctions ($AUCTION_COUNT) and market prices — $(date -u +%Y-%m-%d)"
+          git commit -m "data: update auctions ($AUCTION_COUNT) + match videos — $(date -u +%Y-%m-%d)"
           git push
