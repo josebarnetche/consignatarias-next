@@ -6,8 +6,8 @@ import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { createServiceClient } from '@/lib/supabase'
 
-// Revalidate every hour (verified status doesn't change often)
-export const revalidate = 3600
+// Force dynamic rendering - needs Supabase at runtime
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Comparar Consignatarias | Consignatarias.com.ar',
