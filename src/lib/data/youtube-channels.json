@@ -70,5 +70,17 @@
     "channelUrl": "https://www.youtube.com/@TRADICIONGANADERAENVIVO",
     "channelTitle": "TRADICIONGANADERA EN VIVO",
     "subscribers": 739
+  },
+  "ivan-l-ofarrell-srl": {
+    "channelId": "@ivanlofarrellsrloficial7544",
+    "channelUrl": "https://www.youtube.com/@ivanlofarrellsrloficial7544",
+    "channelTitle": "Iván L O'farrell SRL Oficial",
+    "subscribers": 170
+  },
+  "colombo-y-colombo-sa": {
+    "channelId": "@ColomboyColomboConsignataria",
+    "channelUrl": "https://www.youtube.com/@ColomboyColomboConsignataria",
+    "channelTitle": "Colombo y Colombo",
+    "subscribers": null
   }
 }
