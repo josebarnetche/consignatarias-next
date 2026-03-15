@@ -6,6 +6,9 @@ import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { createServiceClient } from '@/lib/supabase'
 
+// Revalidate every hour (verified status doesn't change often)
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: 'Comparar Consignatarias | Consignatarias.com.ar',
   description: 'Compará consignatarias de hacienda lado a lado. Remates programados, provincias de operación, tipos de remate y más.',
