@@ -41,11 +41,19 @@ export async function GET(req: NextRequest) {
   try {
     const service = createServiceClient()
 
-    // Get all active alerts
+    // Get all active alerts (table may not exist yet)
     const { data: alerts, error: alertsError } = await service
       .from('alertas')
       .select('*')
-      .eq('activa', true)
+      .eq('status', 'active')
+
+    // If table doesn't exist, return success (no alerts to send)
+    if (alertsError?.message?.includes('does not exist') || alertsError?.message?.includes('schema cache')) {
+      return NextResponse.json({ 
+        message: 'Alertas table not configured yet - skipping',
+        ...results 
+      })
+    }
 
     if (alertsError) {
       return NextResponse.json({ error: alertsError.message }, { status: 500 })
