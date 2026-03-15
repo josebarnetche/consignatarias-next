@@ -61,7 +61,7 @@ export async function POST(
 ) {
   try {
     const { slug } = await params
-    const supabase = createServerClient()
+    const supabase = await createClient()
     
     // Check authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser()
