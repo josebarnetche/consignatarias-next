@@ -13,6 +13,7 @@ import { getEntityTier } from '@/lib/features'
 import { createServiceClient } from '@/lib/supabase'
 import { BreadcrumbSchema, LocalBusinessSchema, EventSchema } from '@/components/seo/JsonLd'
 import youtubeChannelsData from '@/lib/data/youtube-channels.json'
+import { getProfileSEO } from '@/lib/data/profile-seo'
 import ConsignatariaProfileClient from './ConsignatariaProfileClient'
 import type { YouTubeChannelData } from './ConsignatariaProfileClient'
 
@@ -77,12 +78,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const upcoming = profileAuctions.filter(a => a.date >= new Date().toISOString().slice(0, 10)).length
   const provinces = [...new Set(profileAuctions.map(a => a.province))]
 
-  const title = `${profile.displayName} — Calendario de Remates`
-  const description = `Calendario completo de remates ganaderos de ${profile.displayName}. ${profileAuctions.length} remates programados${upcoming > 0 ? `, ${upcoming} próximos` : ''}. ${provinces.join(', ')}.`
+  // Check for profile-specific SEO enhancements (top traffic profiles)
+  const customSEO = getProfileSEO(canonical)
+
+  const title = customSEO
+    ? `${profile.displayName} — ${customSEO.titleSuffix}`
+    : `${profile.displayName} — Calendario de Remates`
+
+  const description = customSEO?.description
+    || `Calendario completo de remates ganaderos de ${profile.displayName}. ${profileAuctions.length} remates programados${upcoming > 0 ? `, ${upcoming} próximos` : ''}. ${provinces.join(', ')}.`
 
   return {
     title,
     description,
+    keywords: customSEO?.keywords,
     openGraph: {
       title: `${profile.displayName} | Consignatarias.com.ar`,
       description,

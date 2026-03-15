@@ -633,6 +633,56 @@ export default function LandingPage() {
         <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
 
         {/* ============================================================ */}
+        {/*  CONSIGNATARIAS DESTACADAS                                    */}
+        {/* ============================================================ */}
+        <section className="max-w-7xl mx-auto px-6 pt-32 pb-32">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl md:text-3xl font-medium text-zinc-100 tracking-tight mb-4">
+              Consignatarias destacadas
+            </h2>
+            <p className="text-sm md:text-base text-zinc-400 max-w-2xl mx-auto">
+              Las consignatarias con más actividad en la plataforma. Cada perfil incluye calendario completo, historial de remates y datos de contacto.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[
+              { slug: 'bressan-y-cia', name: 'Bressan y Cia.', region: 'Entre Ríos' },
+              { slug: 'rosgan', name: 'Rosgan', region: 'Santa Fe' },
+              { slug: 'colombo-y-colombo', name: 'Colombo y Colombo', region: 'Santa Fe' },
+              { slug: 'campos-y-ganados', name: 'Campos y Ganados', region: 'Buenos Aires' },
+              { slug: 'reggi', name: 'Reggi y Cia.', region: 'Buenos Aires' },
+              { slug: 'ofarrell', name: "O'Farrell", region: 'Buenos Aires' },
+            ].map((consig) => (
+              <Link
+                key={consig.slug}
+                href={`/consignatarias/${consig.slug}`}
+                className="group bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700 rounded-lg p-4 transition-all text-center"
+              >
+                <div className="text-sm font-medium text-zinc-100 group-hover:text-emerald-400 transition-colors mb-1">
+                  {consig.name}
+                </div>
+                <div className="text-xs text-zinc-500">
+                  {consig.region}
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <Link
+              href="/consignatarias"
+              className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100 transition-colors"
+            >
+              Ver todas las {totalConsignatarias}+ consignatarias
+              <IconArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </section>
+
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
+
+        {/* ============================================================ */}
         {/*  FAQ                                                          */}
         {/* ============================================================ */}
         <section id="faq" className="max-w-4xl mx-auto px-6 pt-32 pb-32">
