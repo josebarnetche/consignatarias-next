@@ -35,9 +35,9 @@ interface AlertMatch {
 }
 
 export async function GET(req: NextRequest) {
-  // Verify cron secret
+  // Verify cron secret (trim to handle any trailing whitespace from env injection)
   const cronSecret = req.headers.get('x-cron-secret') || req.nextUrl.searchParams.get('secret')
-  if (cronSecret !== process.env.CRON_SECRET && process.env.NODE_ENV === 'production') {
+  if (cronSecret !== process.env.CRON_SECRET?.trim() && process.env.NODE_ENV === 'production') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
