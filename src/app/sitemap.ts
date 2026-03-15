@@ -20,6 +20,12 @@ const PROVINCE_SLUGS: Record<string, string> = {
   'SANTA FE': 'santa-fe',
 }
 
+/* ------------------------------------------------------------------ */
+/*  TYPE SLUGS (must match tipo/[tipo]/page.tsx)                        */
+/* ------------------------------------------------------------------ */
+
+const TYPE_SLUGS = ['invernada', 'cria', 'general', 'especial', 'reproductores']
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.consignatarias.com.ar'
 
@@ -142,6 +148,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }))
 
+  // Type landing pages (/remates/tipo/invernada, etc.)
+  const typePages: MetadataRoute.Sitemap = TYPE_SLUGS.map((slug) => ({
+    url: `${baseUrl}/remates/tipo/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }))
+
   // Consignataria profile pages
   const consignatariaPages: MetadataRoute.Sitemap = getAllCanonicalSlugs().map((slug) => ({
     url: `${baseUrl}/consignatarias/${slug}`,
@@ -164,6 +178,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticPages,
     ...provincePages,
+    ...typePages,
     ...consignatariaPages,
     ...frigorificoPages,
   ]
