@@ -2,7 +2,7 @@
 
 A cattle auction directory, market intelligence platform, and public API for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
 
-**21 public API endpoints** • **280+ remates** • **58 consignatarias** • **364 frigoríficos** • **10 provincias** • **Automated email marketing**
+**21 public API endpoints** • **289 remates** • **58 consignatarias** • **364 frigoríficos** • **10 provincias** • **Automated email marketing**
 
 **Live:** [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
 
