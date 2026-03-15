@@ -2,8 +2,8 @@ name: Remate Reminders
 
 on:
   schedule:
-    # Every hour, 5 minutes past the hour
-    - cron: '5 * * * *'
+    # Daily at 8 AM Argentina (11:00 UTC)
+    - cron: '0 11 * * *'
   workflow_dispatch: # Allow manual trigger
 
 jobs:
