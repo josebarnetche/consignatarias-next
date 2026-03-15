@@ -35,9 +35,10 @@ interface AlertMatch {
 }
 
 export async function GET(req: NextRequest) {
-  // Verify cron secret (trim to handle any trailing whitespace from env injection)
+  // Verify cron secret (strip literal \r\n that Windows CLI may add to env vars)
   const cronSecret = req.headers.get('x-cron-secret') || req.nextUrl.searchParams.get('secret')
-  if (cronSecret !== process.env.CRON_SECRET?.trim() && process.env.NODE_ENV === 'production') {
+  const envSecret = process.env.CRON_SECRET?.replace(/\\r\\n$/, '').trim()
+  if (cronSecret !== envSecret && process.env.NODE_ENV === 'production') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
