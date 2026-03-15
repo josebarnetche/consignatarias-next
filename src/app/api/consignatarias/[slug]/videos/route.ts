@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase-server'
+import { createClient } from '@/lib/supabase-server'
 
 // GET /api/consignatarias/[slug]/videos - Get video gallery for a consignataria
 export async function GET(
@@ -8,7 +8,7 @@ export async function GET(
 ) {
   try {
     const { slug } = await params
-    const supabase = createServerClient()
+    const supabase = await createClient()
 
     // First get the consignataria ID from slug
     const { data: consignataria, error: consigError } = await supabase
