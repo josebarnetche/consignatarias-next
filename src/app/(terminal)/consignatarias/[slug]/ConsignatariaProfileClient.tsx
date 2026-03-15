@@ -28,6 +28,7 @@ import {
 import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge, { VerifiedBadge } from '@/components/badges/ProBadge'
 import VideoGallery, { type ConsignatariaVideo } from '@/components/video/VideoGallery'
+import type { RelatedConsignataria } from '@/lib/dal/consignatarias'
 
 /* ------------------------------------------------------------------ */
 /*  COMPLETENESS CALCULATOR                                            */
@@ -351,9 +352,10 @@ interface ConsignatariaProfileClientProps {
   auctionResults: AuctionResult[]
   youtubeChannel?: YouTubeChannelData
   videos?: ConsignatariaVideo[]
+  relatedConsignatarias?: RelatedConsignataria[]
 }
 
-export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [] }: ConsignatariaProfileClientProps) {
+export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [], relatedConsignatarias = [] }: ConsignatariaProfileClientProps) {
   const today = getEffectiveToday()
 
   useEffect(() => {
@@ -809,6 +811,54 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           </div>
           <div className="px-panel py-3">
             <VideoGallery videos={videos} consignatariaName={profile.displayName} />
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/*  RELATED CONSIGNATARIAS (same province)                       */}
+      {/* ============================================================ */}
+      {relatedConsignatarias.length > 0 && (
+        <div className="terminal-panel mt-px">
+          <div className="terminal-panel-header flex items-center justify-between">
+            <span className="section-heading text-xxs">TAMBIÉN EN {profile.province?.toUpperCase() || 'LA ZONA'}</span>
+            <Link
+              href={`/consignatarias?provincia=${encodeURIComponent(profile.province || '')}`}
+              className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors"
+            >
+              VER MÁS &rarr;
+            </Link>
+          </div>
+          <div className="px-panel py-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {relatedConsignatarias.map((related) => (
+                <Link
+                  key={related.slug}
+                  href={`/consignatarias/${related.slug}`}
+                  className="group flex flex-col items-center gap-2 p-3 bg-zinc-900/50 border border-terminal-border rounded-terminal hover:border-accent/30 hover:bg-zinc-800/50 transition-colors"
+                >
+                  {related.logoUrl ? (
+                    <Image
+                      src={related.logoUrl}
+                      alt={`Logo ${related.name}`}
+                      width={48}
+                      height={48}
+                      className="rounded-terminal object-contain bg-white"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-terminal bg-zinc-800 flex items-center justify-center">
+                      <span className="text-lg font-terminal text-zinc-500">
+                        {related.name.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                  )}
+                  <span className="text-xxs font-terminal text-zinc-300 group-hover:text-accent text-center line-clamp-2 transition-colors">
+                    {related.name}
+                  </span>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       )}

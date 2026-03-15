@@ -8,7 +8,7 @@ import {
   getProfile,
   getAuctionsForProfile,
 } from '@/lib/data/consignataria-slugs'
-import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
+import { getConsignatariaProfile, getRelatedConsignatarias } from '@/lib/dal/consignatarias'
 import { getEntityTier } from '@/lib/features'
 import { createServiceClient } from '@/lib/supabase'
 import { BreadcrumbSchema, LocalBusinessSchema, EventSchema, VideoObjectSchema } from '@/components/seo/JsonLd'
@@ -156,10 +156,11 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
   const enrichedProfile = await getConsignatariaProfile(canonical)
   if (!enrichedProfile) notFound()
 
-  const [tier, auctionResults, videos] = await Promise.all([
+  const [tier, auctionResults, videos, relatedConsignatarias] = await Promise.all([
     getEntityTier('consignataria', canonical),
     fetchAuctionResults(canonical),
     fetchConsignatariaVideos(canonical),
+    getRelatedConsignatarias(canonical, enrichedProfile.province, 4),
   ])
 
   // Merge scraped auctions + owner-created auctions from Supabase
@@ -279,6 +280,7 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
         auctionResults={auctionResults}
         youtubeChannel={(youtubeChannelsData as Record<string, YouTubeChannelData>)[canonical]}
         videos={videos}
+        relatedConsignatarias={relatedConsignatarias}
       />
     </>
   )
