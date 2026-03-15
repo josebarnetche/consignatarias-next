@@ -4,6 +4,29 @@ Registro completo de **consignatarias.com.ar** — desde el primer `npx create-n
 
 ---
 
+## [1.6.0] — 2026-03-15
+
+### PRO PDF Reports + v1.6.0 Milestone
+
+> feat: v1.6.0 — PRO-branded PDF reports
+
+**Feature: Branded PDF Reports for Consignatarias**
+
+New PDF generator with PRO/FREE differentiation:
+- **PRO users** get gold accent bars, PRO badge, and contact info section
+- Stats: total remates, upcoming, cabezas, provinces
+- Upcoming remates table (max 15 remates)
+- Dynamic branding based on subscription status
+- Download from dashboard → "Reporte PDF" button
+
+**Files:**
+- `src/lib/pdf/generateConsignatariaPDF.ts` — New PRO-aware PDF generator
+- `src/app/api/consignatarias/[slug]/report/route.ts` — Updated endpoint
+
+**Commit:** `e54168b`
+
+---
+
 ## [1.5.1] — 2026-03-15
 
 ### SEO Blitz + Date Format Fix
