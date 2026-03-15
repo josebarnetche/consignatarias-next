@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useSearchParams, useRouter } from 'next/navigation'
 import WelcomeChecklist from '@/components/onboarding/WelcomeChecklist'
 import { WhatsAppIconButton } from '@/components/share/WhatsAppShare'
@@ -1025,9 +1026,9 @@ function ProfileEditForm({ slug, initial, logoUrl: initialLogoUrl }: ProfileEdit
 
         {/* Logo upload */}
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-terminal border border-terminal-border bg-terminal-bg flex items-center justify-center overflow-hidden flex-shrink-0">
+          <div className="w-16 h-16 rounded-terminal border border-terminal-border bg-terminal-bg flex items-center justify-center overflow-hidden flex-shrink-0 relative">
             {logoUrl ? (
-              <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
+              <Image src={logoUrl} alt="Logo" className="object-contain" fill unoptimized />
             ) : (
               <span className="text-zinc-700 text-xxs font-terminal">LOGO</span>
             )}

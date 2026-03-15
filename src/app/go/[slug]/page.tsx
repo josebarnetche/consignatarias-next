@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { getCanonicalSlug, getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
 import { getEntityTier } from '@/lib/features'
@@ -119,8 +120,8 @@ export default async function GoLandingPage({ params }: Props) {
           {/* Logo + Name */}
           <div className="text-center mb-8">
             {profile.logoUrl && isPro && (
-              <div className="w-24 h-24 mx-auto mb-4 rounded-xl border-2 border-amber-500/30 bg-zinc-800/50 overflow-hidden shadow-lg shadow-amber-500/10">
-                <img src={profile.logoUrl} alt={profile.displayName} className="w-full h-full object-contain" />
+              <div className="w-24 h-24 mx-auto mb-4 rounded-xl border-2 border-amber-500/30 bg-zinc-800/50 overflow-hidden shadow-lg shadow-amber-500/10 relative">
+                <Image src={profile.logoUrl} alt={profile.displayName} className="object-contain" fill unoptimized />
               </div>
             )}
             

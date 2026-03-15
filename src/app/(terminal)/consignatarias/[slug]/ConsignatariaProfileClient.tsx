@@ -2,6 +2,7 @@
 
 import { useMemo, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Auction } from '@/lib/db/schema'
 import type { EnrichedProfile } from '@/lib/dal/consignatarias'
 import type { EntityTier } from '@/lib/features'
@@ -405,12 +406,12 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
             </Link>
             <span className="text-terminal-border">&mdash;</span>
             {profile.logoUrl && (
-              <div className={`rounded-terminal border overflow-hidden flex-shrink-0 ${
+              <div className={`rounded-terminal border overflow-hidden flex-shrink-0 relative ${
                 tier === 'pro' || tier === 'enterprise' 
                   ? 'w-16 h-16 border-amber-500/30 bg-amber-500/5 shadow-lg shadow-amber-500/10' 
                   : 'w-8 h-8 border-terminal-border bg-terminal-bg'
               }`}>
-                <img src={profile.logoUrl} alt={`Logo ${profile.displayName}`} className="w-full h-full object-contain" />
+                <Image src={profile.logoUrl} alt={`Logo ${profile.displayName}`} className="object-contain" fill unoptimized />
               </div>
             )}
             <div className="flex items-center gap-2 flex-wrap">
@@ -742,13 +743,13 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                   rel="noopener noreferrer"
                   className="flex-shrink-0 relative group/thumb"
                 >
-                  <img
+                  <Image
                     src={youtubeChannel.latestVideo.thumbnail}
                     alt={youtubeChannel.latestVideo.title}
                     width={160}
                     height={96}
                     className="rounded-terminal border border-terminal-border object-cover"
-                    style={{ width: 160, height: 96 }}
+                    unoptimized
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover/thumb:bg-black/20 transition-colors rounded-terminal">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="white" className="opacity-80 group-hover/thumb:opacity-100 transition-opacity">
