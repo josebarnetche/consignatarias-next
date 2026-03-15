@@ -23,12 +23,13 @@ const channelMap: Record<string, { channelId: string; channelUrl: string; channe
 const rematesPath = path.join(__dirname, '../src/lib/data/remates.json');
 
 interface Remate {
-  id: string;
-  fecha: string; // YYYY-MM-DD
-  consignataria: string;
-  slug: string;
-  ubicacion?: string;
-  youtubeUrl?: string;
+  id: number;
+  date: string; // YYYY-MM-DD
+  consignatariaName: string;
+  consignatariaSlug: string;
+  location?: string;
+  youtubeUrl?: string | null;
+  status?: string;
 }
 
 interface YouTubeSearchResult {
@@ -87,8 +88,8 @@ async function searchChannelForVideo(
     type: 'video',
     order: 'date',
     maxResults: '5',
-    publishedAfter: `${remate.fecha}T00:00:00Z`,
-    publishedBefore: `${remate.fecha}T23:59:59Z`,
+    publishedAfter: `${remate.date}T00:00:00Z`,
+    publishedBefore: `${remate.date}T23:59:59Z`,
     key: YOUTUBE_API_KEY,
   });
 
@@ -101,7 +102,7 @@ async function searchChannelForVideo(
     }
 
     // Find best match: prefer live/upcoming, or title containing location
-    const ubicacion = remate.ubicacion?.toLowerCase() || '';
+    const ubicacion = remate.location?.toLowerCase() || '';
     
     for (const item of data.items) {
       const title = item.snippet.title.toLowerCase();
@@ -142,8 +143,8 @@ async function main() {
   console.log(`📅 Today: ${today}`);
   console.log(`📊 Total remates: ${remates.length}`);
 
-  // Filter remates for today
-  const todayRemates = remates.filter(r => r.fecha === today);
+  // Filter remates for today (or upcoming if testing)
+  const todayRemates = remates.filter(r => r.date === today && r.status !== 'completed');
   console.log(`🎯 Remates today: ${todayRemates.length}\n`);
 
   if (todayRemates.length === 0) {
@@ -154,17 +155,17 @@ async function main() {
   // Match with YouTube channels
   let matched = 0;
   let searched = 0;
-  const updates: Array<{ id: string; youtubeUrl: string }> = [];
+  const updates: Array<{ id: number; youtubeUrl: string }> = [];
 
   for (const remate of todayRemates) {
-    const channel = findChannelForSlug(remate.slug);
+    const channel = findChannelForSlug(remate.consignatariaSlug);
     
     if (!channel) {
-      console.log(`⏭️  ${remate.consignataria} — no channel mapped`);
+      console.log(`⏭️  ${remate.consignatariaName} — no channel mapped`);
       continue;
     }
 
-    console.log(`🔍 ${remate.consignataria} → searching ${channel.channelTitle}...`);
+    console.log(`🔍 ${remate.consignatariaName} → searching ${channel.channelTitle}...`);
     searched++;
 
     const videoUrl = await searchChannelForVideo(channel.channelId, remate);
