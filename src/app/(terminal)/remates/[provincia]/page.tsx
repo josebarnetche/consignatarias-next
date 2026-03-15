@@ -86,6 +86,24 @@ const PROVINCES: ProvinceConfig[] = [
     displayName: 'Formosa',
     intro: 'Formosa es una provincia del norte argentino con una ganadería en expansión, caracterizada por sistemas de cría extensiva adaptados al clima subtropical. Los remates se realizan en localidades como Comandante Fontana, donde opera Ganaderos de Formosa SRL, una consignataria local que concentra buena parte de la actividad comercial de la provincia. La ganadería formoseña se basa principalmente en razas índicas y sus cruzas, adaptadas a las condiciones de calor y humedad de la región. Los campos formoseños ofrecen grandes extensiones de pastizales naturales aptos para la cría, y la provincia ha avanzado en la mejora genética y sanitaria de sus rodeos. Los remates generales son los más habituales, con oferta de hacienda mixta que incluye terneros, novillos y vacas. Si bien el calendario de remates formoseño es más acotado que el de otras provincias, la tendencia es de crecimiento sostenido, acompañando el desarrollo productivo de la región y la mayor conectividad con los mercados del Litoral y el centro del país.',
   },
+  {
+    slug: 'neuquen',
+    name: 'NEUQUEN',
+    displayName: 'Neuquén',
+    intro: 'Neuquén es una provincia patagónica con una ganadería orientada principalmente a la cría ovina y caprina, aunque la producción bovina ha crecido en los últimos años, especialmente en el norte provincial y la zona de influencia de la Confluencia. Los remates se realizan en localidades como Chos Malal, Zapala, Centenario y la ciudad de Neuquén, donde operan consignatarias locales y regionales que atienden tanto a productores de la provincia como de zonas limítrofes con Río Negro, La Pampa y Mendoza. La ganadería neuquina se caracteriza por sistemas extensivos en campos de precordillera y estepa, con razas adaptadas al clima seco y frío de la región. Los remates generales incluyen hacienda bovina, ovina y caprina, siendo estos últimos particularmente relevantes en la economía regional. La provincia ha impulsado programas de mejora genética y sanitaria, y las ferias ganaderas locales son un importante punto de encuentro para productores del oeste argentino. El calendario de remates neuquino, si bien más acotado que el de provincias pampeanas, mantiene una actividad regular especialmente en otoño y primavera.',
+  },
+  {
+    slug: 'santiago-del-estero',
+    name: 'SANTIAGO DEL ESTERO',
+    displayName: 'Santiago del Estero',
+    intro: 'Santiago del Estero es una provincia del noroeste argentino con una importante tradición ganadera de cría, aprovechando los extensos campos del Chaco Seco y las zonas de riego del río Dulce y Salado. Los remates se realizan en localidades como Añatuya, Quimilí, Monte Quemado, Fernández, La Banda y la ciudad capital. Las consignatarias que operan en la provincia incluyen organizaciones locales y regionales, así como la Sociedad Rural de Santiago del Estero que promueve la actividad ganadera provincial. La ganadería santiagueña se basa principalmente en razas índicas y sus cruzas (Brahman, Braford, Brangus), adaptadas al clima cálido y seco característico de la región. Los remates generales son los más frecuentes, con una oferta que incluye terneros, novillos, vaquillonas y vacas de descarte. Santiago del Estero ha experimentado un crecimiento sostenido de su stock ganadero, posicionándose como un importante proveedor de terneros para la invernada en provincias del centro y sur del país. Las ferias ganaderas provinciales son un motor económico regional significativo.',
+  },
+  {
+    slug: 'tucuman',
+    name: 'TUCUMAN',
+    displayName: 'Tucumán',
+    intro: 'Tucumán, la provincia más pequeña de Argentina, cuenta con una actividad ganadera que complementa su tradicional producción azucarera y citrícola. Los remates se realizan principalmente en la Sociedad Rural de Tucumán y en localidades del interior como Concepción, Monteros, Aguilares y Tafí del Valle. La ganadería tucumana aprovecha las zonas de piedemonte y llanura no aptas para cultivos, con sistemas mixtos de cría y recría. Las consignatarias que operan en la provincia incluyen firmas locales y organizaciones rurales que concentran la comercialización de hacienda. Las razas predominantes son Braford, Brangus y cruzas índicas, adaptadas al clima subtropical de la región. Los remates generales y especiales ofrecen hacienda de cría, siendo los terneros el principal producto comercializado hacia provincias del centro del país para su terminación. Si bien Tucumán no es una provincia tradicionalmente ganadera, el sector ha mostrado crecimiento en las últimas décadas, diversificando la matriz productiva provincial y generando oportunidades para productores de pequeña y mediana escala.',
+  },
 ]
 
 const PROVINCE_MAP = new Map(PROVINCES.map(p => [p.slug, p]))

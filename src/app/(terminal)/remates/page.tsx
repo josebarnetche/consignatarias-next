@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import RematesClient from './RematesClient'
 import rematesData from '@/lib/data/remates.json'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
-import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 
 // Month names in Spanish
 const MONTHS_ES = [
@@ -40,6 +40,30 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
+// FAQ items for rich snippets
+const FAQ_ITEMS = [
+  {
+    question: '¿Qué es un remate ganadero?',
+    answer: 'Un remate ganadero es una subasta pública de hacienda (ganado bovino, ovino, porcino u otros) organizada por una consignataria de hacienda. Los productores consignan sus animales y los compradores ofertan en vivo o por TV/streaming. Es el principal método de comercialización de ganado en Argentina.',
+  },
+  {
+    question: '¿Cómo puedo participar en un remate ganadero?',
+    answer: 'Para participar como comprador, debés registrarte previamente en la consignataria organizadora, presentar documentación (CUIT, habilitación SENASA) y obtener una paleta de postor. Podés asistir presencialmente a la feria o participar a través de transmisiones en vivo por TV o internet.',
+  },
+  {
+    question: '¿Qué tipos de remates ganaderos existen?',
+    answer: 'Los principales tipos son: remates de invernada (terneros y vaquillonas para engorde), remates de cría (vientres y reproductores), remates generales (hacienda mixta), remates especiales (animales de pedigrí o exposición) y remates de hacienda gorda (animales terminados para faena).',
+  },
+  {
+    question: '¿Cada cuánto se actualizan los datos del calendario?',
+    answer: 'El calendario de consignatarias.com.ar se actualiza automáticamente todos los días a las 14:00 hora argentina (ART). Los datos provienen de fuentes oficiales como la Cámara Argentina de Consignatarios de Ganado (CACG) y las propias consignatarias.',
+  },
+  {
+    question: '¿Qué información incluye cada remate del calendario?',
+    answer: 'Cada remate incluye: fecha y hora, consignataria responsable, ubicación (localidad y provincia), tipo de remate, categoría de hacienda, cantidad estimada de cabezas, y cuando están disponibles, enlaces al catálogo y transmisión en vivo.',
+  },
+]
+
 export default function RematesPage() {
   const totalAuctions = rematesData.length
   const totalProfiles = getAllProfiles().length
@@ -49,6 +73,7 @@ export default function RematesPage() {
   return (
     <>
       <SectionBreadcrumbSchema section="remates" sectionName="Remates" />
+      <FAQPageSchema items={FAQ_ITEMS} />
       <section className="px-4 pt-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-3xl">
         <h2 className="text-zinc-200 text-lg font-medium mb-2">Calendario de remates ganaderos de Argentina</h2>
         <p>
