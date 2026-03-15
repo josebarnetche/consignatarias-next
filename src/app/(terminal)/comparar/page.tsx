@@ -4,6 +4,7 @@ import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
+import { createServiceClient } from '@/lib/supabase'
 
 export const metadata: Metadata = {
   title: 'Comparar Consignatarias | Consignatarias.com.ar',
@@ -19,10 +20,20 @@ export const metadata: Metadata = {
   },
 }
 
-export default function CompararPage() {
+export default async function CompararPage() {
   const profiles = getAllProfiles()
   const auctions = rematesData as Auction[]
   const today = new Date().toISOString().slice(0, 10)
+
+  // Fetch verified status from Supabase
+  const supabase = createServiceClient()
+  const { data: verifiedData } = await supabase
+    .from('consignatarias')
+    .select('canonical_slug, verified')
+  
+  const verifiedMap = new Map(
+    (verifiedData || []).map(c => [c.canonical_slug, c.verified === true])
+  )
 
   // Build consignataria stats
   const consignatariaStats = profiles.map(profile => {
@@ -43,7 +54,7 @@ export default function CompararPage() {
       provincias,
       tipos,
       totalCabezas,
-      verified: false, // TODO: fetch from Supabase consignatarias table
+      verified: verifiedMap.get(profile.canonicalSlug) || false,
     }
   }).filter(c => c.totalRemates > 0)
     .sort((a, b) => b.totalRemates - a.totalRemates)
