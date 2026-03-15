@@ -5,18 +5,27 @@ import { getAllProfiles, getAuctionsForProfile } from '@/lib/data/consignataria-
 import ConsignatariasDirectoryClient from './ConsignatariasDirectoryClient'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
+const profiles = getAllProfiles()
+const totalConsignatarias = profiles.length
+
 export const metadata: Metadata = {
-  title: 'Directorio de Consignatarias de Hacienda Argentina',
-  description: 'Directorio completo de 77 consignatarias de hacienda en Argentina. Calendario de remates, provincias, contacto. Ordená por cantidad de remates o nombre.',
+  title: `Consignatarias de Hacienda Argentina 2026 | Directorio Completo (${totalConsignatarias})`,
+  description: `Directorio de ${totalConsignatarias} consignatarias de hacienda en Argentina. Calendario de remates ganaderos, provincias de operación, tipos de remate. Datos actualizados 2026.`,
   keywords: [
     'consignatarias argentina',
     'consignatarias de hacienda',
+    'consignatarias de hacienda argentina',
     'directorio consignatarias',
-    'remates ganaderos',
+    'remates ganaderos argentina',
+    'calendario remates ganaderos',
+    'subastas ganaderas',
+    'consignatario de hacienda',
+    'remates de hacienda',
+    'ferias ganaderas argentina',
   ],
   openGraph: {
-    title: 'Directorio de 77 Consignatarias | Consignatarias.com.ar',
-    description: 'Todas las consignatarias de hacienda en un solo directorio. Remates, provincias, contacto.',
+    title: `Consignatarias de Hacienda Argentina | ${totalConsignatarias} en Directorio`,
+    description: `Directorio completo de consignatarias de hacienda con calendario de remates ganaderos. ${totalConsignatarias} consignatarias activas en Argentina.`,
     url: 'https://www.consignatarias.com.ar/consignatarias',
     type: 'website',
   },
@@ -25,9 +34,38 @@ export const metadata: Metadata = {
   },
 }
 
+// Generate ItemList schema for consignatarias
+function ConsignatariasItemListSchema({ entries }: { entries: Array<{ slug: string; displayName: string; auctionCount: number }> }) {
+  const topItems = entries.slice(0, 10)
+  
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Consignatarias de Hacienda Argentina',
+    description: `Directorio de ${totalConsignatarias} consignatarias de hacienda con actividad en Argentina`,
+    numberOfItems: totalConsignatarias,
+    itemListElement: topItems.map((c, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Organization',
+        '@id': `https://www.consignatarias.com.ar/consignatarias/${c.slug}`,
+        name: c.displayName,
+        url: `https://www.consignatarias.com.ar/consignatarias/${c.slug}`,
+      },
+    })),
+  }
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  )
+}
+
 export default function ConsignatariasDirectoryPage() {
   const auctions = rematesData as Auction[]
-  const profiles = getAllProfiles()
   const today = new Date().toISOString().slice(0, 10)
 
   const entries = profiles.map(p => {
@@ -45,18 +83,32 @@ export default function ConsignatariasDirectoryPage() {
     }
   }).sort((a, b) => b.auctionCount - a.auctionCount)
 
+  // Calculate stats for intro
+  const totalRemates = entries.reduce((sum, e) => sum + e.auctionCount, 0)
+  const totalUpcoming = entries.reduce((sum, e) => sum + e.upcoming, 0)
+
   return (
     <>
       <SectionBreadcrumbSchema section="consignatarias" sectionName="Consignatarias" />
-      <section className="px-4 pt-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-3xl">
-        <h2 className="text-zinc-200 text-lg font-medium mb-2">Directorio de consignatarias de hacienda</h2>
-        <p>
-          Directorio de consignatarias de hacienda con actividad en Argentina. Cada consignataria tiene
-          un perfil dedicado con su calendario anual de remates, heatmap de actividad por mes, distribucion
-          por tipo de remate y cronograma completo. Los datos se recopilan de multiples fuentes publicas
-          y se actualizan diariamente.
+      <ConsignatariasItemListSchema entries={entries} />
+      
+      {/* SEO-optimized intro section */}
+      <section className="px-4 pt-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-4xl">
+        <h1 className="text-zinc-100 text-xl font-semibold mb-3">
+          Directorio de Consignatarias de Hacienda en Argentina
+        </h1>
+        <p className="mb-3">
+          Listado completo de <strong className="text-zinc-200">{totalConsignatarias} consignatarias de hacienda</strong> con 
+          actividad en Argentina. Actualmente hay <strong className="text-zinc-200">{totalRemates} remates programados</strong> en 
+          el sistema, con <strong className="text-zinc-200">{totalUpcoming} próximos</strong> a realizarse.
+        </p>
+        <p className="text-zinc-500 text-xs">
+          Cada consignataria tiene un perfil dedicado con calendario anual de remates, distribución por tipo 
+          (general, especial, invernada, reproductores), provincias de operación y cronograma completo. 
+          Datos actualizados diariamente desde fuentes públicas.
         </p>
       </section>
+      
       <ConsignatariasDirectoryClient entries={entries} />
     </>
   )
