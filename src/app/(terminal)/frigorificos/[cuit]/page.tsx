@@ -76,6 +76,58 @@ export async function generateMetadata({
   }
 }
 
+function LocalBusinessSchema({ 
+  name, 
+  cuit, 
+  province, 
+  localidad, 
+  phone, 
+  email, 
+  website,
+  direccion,
+  stage 
+}: { 
+  name: string
+  cuit: string
+  province: string
+  localidad: string | null
+  phone: string | null
+  email: string | null
+  website: string | null
+  direccion: string | null
+  stage: number
+}) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    '@id': `https://www.consignatarias.com.ar/frigorificos/${cuit}`,
+    name,
+    description: `Frigorífico ${stage === 1 ? 'de faena y desposte' : stage === 2 ? 'de desposte' : 'depósito'} en ${localidad || province}, Argentina. Matricula SENASA/MAGYP.`,
+    url: `https://www.consignatarias.com.ar/frigorificos/${cuit}`,
+    ...(phone && { telephone: phone }),
+    ...(email && { email }),
+    ...(website && { sameAs: website.startsWith('http') ? website : `https://${website}` }),
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: localidad || province,
+      addressRegion: province,
+      addressCountry: 'AR',
+      ...(direccion && { streetAddress: direccion }),
+    },
+    areaServed: {
+      '@type': 'Country',
+      name: 'Argentina',
+    },
+    priceRange: '$$',
+  }
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  )
+}
+
 export default async function FrigorificoDetailPage({
   params,
 }: {
@@ -104,6 +156,18 @@ export default async function FrigorificoDetailPage({
   const hasContact = phone || email || website
 
   return (
+    <>
+      <LocalBusinessSchema
+        name={name}
+        cuit={cuit}
+        province={province}
+        localidad={localidad}
+        phone={phone}
+        email={email}
+        website={website}
+        direccion={direccion}
+        stage={basicF.stage}
+      />
     <div className="max-w-2xl mx-auto px-2 sm:px-4 py-4 space-y-4">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-xxs font-terminal text-zinc-500">
@@ -267,5 +331,6 @@ export default async function FrigorificoDetailPage({
         </Link>
       </div>
     </div>
+    </>
   )
 }

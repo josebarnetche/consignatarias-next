@@ -59,6 +59,7 @@ const GLOSSARY_TERMS: GlossaryTerm[] = [
   {
     term: 'Cria',
     definition: 'Tipo de remate enfocado en ganado reproductor: vientres (vacas y vaquillonas preñadas o con cria al pie), toros y reproductores. Orientado a establecimientos que buscan mejorar o ampliar su rodeo.',
+    link: { href: '/remates?tipo=cria', text: 'Ver remates de cría →' },
   },
   {
     term: 'CUIT',
@@ -81,6 +82,7 @@ const GLOSSARY_TERMS: GlossaryTerm[] = [
   {
     term: 'Invernada',
     definition: 'Tipo de remate enfocado en ganado para engorde: novillitos, terneros y vaquillonas. El comprador adquiere animales jovenes para llevarlos a peso de faena en su establecimiento (feedlot o campo).',
+    link: { href: '/remates?tipo=invernada', text: 'Ver remates de invernada →' },
   },
   {
     term: 'Matricula',
@@ -130,6 +132,7 @@ const GLOSSARY_TERMS: GlossaryTerm[] = [
   {
     term: 'Faena',
     definition: 'Proceso de sacrificio y procesamiento del ganado en frigoríficos. La faena está regulada por SENASA y debe realizarse en plantas habilitadas. Los datos de faena son indicadores del mercado.',
+    link: { href: '/frigorificos', text: 'Ver frigoríficos habilitados →' },
   },
   {
     term: 'Feria',
@@ -154,6 +157,7 @@ const GLOSSARY_TERMS: GlossaryTerm[] = [
   {
     term: 'Liniers',
     definition: 'Mercado de Hacienda de Liniers, ubicado en Buenos Aires. Es el principal mercado concentrador de ganado de Argentina y referencia nacional de precios. Opera diariamente con subastas públicas.',
+    link: { href: '/mercado/inmag', text: 'Ver precio INMAG (referencia Liniers) →' },
   },
   {
     term: 'Lote',
