@@ -26,6 +26,25 @@ import { trackAuctionClick, trackFilterApply, trackOutboundClick } from '@/lib/a
 /*  CONSTANTS                                                          */
 /* ------------------------------------------------------------------ */
 
+/** Generate WhatsApp share URL for an auction */
+function getWhatsAppShareUrl(auction: Auction): string {
+  const formatDate = (dateStr: string) => {
+    const [year, month, day] = dateStr.split('-')
+    return `${day}/${month}`
+  }
+  const parts = [
+    `🐄 *${auction.title}*`,
+    '',
+    `📅 ${formatDate(auction.date)}${auction.time ? ` a las ${auction.time}` : ''}`,
+    auction.location ? `📍 ${auction.location}` : null,
+    auction.estimatedHeads ? `🔢 ${auction.estimatedHeads.toLocaleString('es-AR')} cabezas` : null,
+    `🏢 ${auction.consignatariaName}`,
+    '',
+    `👉 Ver más: https://consignatarias.com.ar/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`,
+  ].filter(Boolean)
+  return `https://wa.me/?text=${encodeURIComponent(parts.join('\n'))}`
+}
+
 const rawAuctions = rematesData as Auction[]
 
 type Period = 'hoy' | 'proximos' | 'pasados'
@@ -204,6 +223,21 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
             {isTodayPast && <span className="text-[9px] font-terminal text-positive">HOY</span>}
             {freshness && <span className={`text-[9px] font-terminal ${freshness.className}`}>{freshness.text}</span>}
           </div>
+          {/* Links */}
+          <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+            {auction.catalogUrl && (
+              <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
+                onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
+                className="text-xxs font-terminal text-amber-400 hover:text-amber-200 transition-colors" aria-label="Descargar catálogo">Catálogo</a>
+            )}
+            {auction.youtubeUrl && (
+              <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
+                onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
+                className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión">YouTube</a>
+            )}
+            <a href={getWhatsAppShareUrl(auction)} target="_blank" rel="noopener noreferrer"
+              className="text-xxs font-terminal text-emerald-500 hover:text-emerald-400 transition-colors" aria-label="Compartir en WhatsApp">WhatsApp</a>
+          </div>
         </div>
 
         {/* --- DESKTOP ROW (hidden below md) --- */}
@@ -274,6 +308,8 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
                   onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
                   className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión en YouTube" title="YouTube">YT</a>
               )}
+              <a href={getWhatsAppShareUrl(auction)} target="_blank" rel="noopener noreferrer"
+                className="text-xxs font-terminal text-emerald-500 hover:text-emerald-400 transition-colors" aria-label="Compartir en WhatsApp" title="Compartir">WA</a>
             </span>
           </div>
         </div>
@@ -352,6 +388,8 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
               onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
               className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión">YouTube</a>
           )}
+          <a href={getWhatsAppShareUrl(auction)} target="_blank" rel="noopener noreferrer"
+            className="text-xxs font-terminal text-emerald-500 hover:text-emerald-400 transition-colors" aria-label="Compartir en WhatsApp">WhatsApp</a>
         </div>
       </div>
 
@@ -428,6 +466,8 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
                 onClick={() => trackOutboundClick(normalizeUrl(auction.sourceUrl) || '', 'source')}
                 className="text-xxs font-terminal text-zinc-500 hover:text-zinc-400 transition-colors" aria-label="Ver fuente" title="Fuente">SRC</a>
             )}
+            <a href={getWhatsAppShareUrl(auction)} target="_blank" rel="noopener noreferrer"
+              className="text-xxs font-terminal text-emerald-500 hover:text-emerald-400 transition-colors" aria-label="Compartir en WhatsApp" title="Compartir">WA</a>
           </span>
         </div>
       </div>
