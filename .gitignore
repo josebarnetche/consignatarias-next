@@ -13,6 +13,9 @@ next-env.d.ts
 # env
 .env
 .env.*
+.env.production
+.env.local
+.env.*.local
 
 # oauth / api credentials
 scripts/oauth-credentials.json
@@ -29,6 +32,31 @@ Thumbs.db
 
 # claude local settings
 .claude/settings.local.json
+
+# AI/IDE agent directories (not part of the project)
+.adal/
+.agents/
+.augment/
+.codebuddy/
+.commandcode/
+.continue/
+.factory/
+.iflow/
+.junie/
+.kilocode/
+.kiro/
+.kode/
+.mcpjam/
+.mux/
+.neovate/
+.openhands/
+.pochi/
+.qoder/
+.qwen/
+.roo/
+.trae/
+.vibe/
+.zencoder/
 
 # v4.0 future work (auction price extraction — not ready for production)
 scripts/extract-auction-prices.mjs

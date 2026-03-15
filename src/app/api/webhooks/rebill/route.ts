@@ -1,9 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
+import crypto from 'crypto'
+
+// Verify Rebill webhook signature (HMAC-SHA256)
+function verifySignature(payload: string, signature: string | null, secret: string): boolean {
+  if (!signature || !secret) return false
+  
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(payload)
+    .digest('hex')
+  
+  // Constant-time comparison to prevent timing attacks
+  try {
+    return crypto.timingSafeEqual(
+      Buffer.from(signature),
+      Buffer.from(expectedSignature)
+    )
+  } catch {
+    return false
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const payload = await request.json()
+    // Get raw body for signature verification
+    const rawBody = await request.text()
+    
+    // Verify webhook signature
+    const signature = request.headers.get('x-rebill-signature') 
+      || request.headers.get('x-webhook-signature')
+    const webhookSecret = process.env.REBILL_WEBHOOK_SECRET
+    
+    if (webhookSecret && !verifySignature(rawBody, signature, webhookSecret)) {
+      console.error('Webhook signature verification failed')
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
+    }
+    
+    const payload = JSON.parse(rawBody)
     const { event, data } = payload
 
     const service = createServiceClient()
