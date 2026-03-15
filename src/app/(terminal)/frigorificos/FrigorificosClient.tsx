@@ -231,9 +231,9 @@ export default function FrigorificosPage() {
       {/* ── PAGE HEADER ──────────────────────────────────────────── */}
       <div className="border-b border-terminal-border bg-terminal-panel px-4 py-2 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
-          <h1 className="section-heading text-label uppercase tracking-widest text-zinc-100">
+          <span className="section-heading text-label uppercase tracking-widest text-zinc-100" aria-label="Sección frigoríficos">
             FRIGORIFICOS
-          </h1>
+          </span>
           <span className="text-zinc-500 font-terminal text-xxs">&mdash;</span>
           <span className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">
             Registro Nacional SENASA
@@ -325,7 +325,7 @@ export default function FrigorificosPage() {
           </div>
 
           {/* -- PROVINCIAS (sidebar list) -------------------------- */}
-          <div className="terminal-panel-header mt-0">PROVINCIAS</div>
+          <h2 className="terminal-panel-header mt-0">FRIGORÍFICOS POR PROVINCIA</h2>
           <div className="terminal-panel-body">
             <div className="flex flex-wrap gap-1.5">
               {provinces.map(({ province, count }) => {
@@ -357,9 +357,9 @@ export default function FrigorificosPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 border-b border-terminal-border flex-shrink-0">
             {/* -- STAGE DISTRIBUTION -------------------------------- */}
             <div className="border-b md:border-b-0 md:border-r border-terminal-border">
-              <div className="terminal-panel-header">
-                DISTRIBUCION POR ETAPA
-              </div>
+              <h2 className="terminal-panel-header">
+                DISTRIBUCIÓN DE FRIGORÍFICOS POR ETAPA
+              </h2>
               <div className="terminal-panel-body space-y-1.5">
                 {stages.map(({ stage, count }) => {
                   const pct = stageTotal > 0 ? ((count / stageTotal) * 100).toFixed(0) : '0'
