@@ -12,9 +12,9 @@ const PRICING_PLANS = [
   },
   {
     name: 'PRO',
-    description: 'Perfil destacado con badge PRO, analytics de visitas y soporte prioritario.',
+    description: 'Promoción de cada remate por email a todos los suscriptores. Badge PRO, analytics y herramientas exclusivas.',
     price: 45000,
-    features: ['Perfil verificado y destacado', 'Analytics de perfil', 'Remates con badge PRO', 'Logo y descripción personalizada', 'Soporte prioritario'],
+    features: ['Promoción de remates por email', 'Perfil verificado y destacado', 'Analytics de perfil', 'Remates con badge PRO', 'Landing personalizada', 'QR para catálogos', 'Calendario sincronizable'],
   },
   {
     name: 'Enterprise',
@@ -62,10 +62,14 @@ const FREE_FEATURES = [
 ]
 
 const PRO_FEATURES = [
+  'Promocion de remates por email a todos los suscriptores',
   'Perfil verificado y destacado',
   'Analytics de perfil (vistas)',
   'Remates con badge PRO',
   'Logo y descripcion personalizada',
+  'Landing personalizada (/go/tu-nombre)',
+  'QR para catalogos y carteles',
+  'Calendario sincronizable (Google, Outlook)',
   'Soporte prioritario',
 ]
 
@@ -169,7 +173,7 @@ export default function PlanesPage() {
               <span className="text-zinc-500 text-data ml-1">/mes</span>
             </div>
             <p className="text-zinc-400 text-data mb-4">
-              Perfil destacado con badge PRO y analytics de visitas.
+              Cada remate que publiques lo enviamos por email a todos nuestros suscriptores. Todo el año.
             </p>
             <ul className="space-y-2 mb-6 flex-1">
               {PRO_FEATURES.map((f) => (

@@ -773,11 +773,26 @@ export default function LandingPage() {
                 Herramientas PRO para consignatarios
               </h2>
               <p className="text-sm md:text-base text-zinc-400 max-w-2xl mx-auto">
-                Destacá tu empresa, llegá a más compradores y medí tu impacto con herramientas exclusivas.
+                Cada remate que publiques lo promocionamos por email a todos nuestros suscriptores. Todo el año.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              {/* Email Promotion - HERO FEATURE */}
+              <div className="bg-zinc-900/80 border border-amber-500/40 rounded-lg p-5 relative overflow-hidden">
+                <div className="absolute top-0 right-0 px-2 py-0.5 bg-amber-500 text-black text-[10px] font-medium rounded-bl">
+                  NUEVO
+                </div>
+                <div className="w-9 h-9 rounded border border-amber-500/30 bg-amber-500/10 flex items-center justify-center text-amber-400 mb-3">
+                  📧
+                </div>
+                <h3 className="text-sm font-medium text-zinc-100 mb-1.5">Promoción por Email</h3>
+                <p className="text-xs text-zinc-500 mb-3">
+                  Cada remate que publiques llega directo al inbox de todos nuestros suscriptores.
+                </p>
+                <span className="text-xs text-amber-400/70">Promoción automática todo el año</span>
+              </div>
+
               {/* Landing Page */}
               <div className="bg-zinc-900/80 border border-zinc-800 rounded-lg p-5">
                 <div className="w-9 h-9 rounded border border-amber-500/30 bg-amber-500/10 flex items-center justify-center text-amber-400 mb-3">
