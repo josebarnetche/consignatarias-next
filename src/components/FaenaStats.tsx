@@ -11,16 +11,16 @@ export async function FaenaStats() {
 
   const trendColor =
     stats.yearlyChange > 1
-      ? 'text-green-600'
+      ? 'text-emerald-400'
       : stats.yearlyChange < -1
-        ? 'text-red-600'
-        : 'text-gray-600';
+        ? 'text-red-400'
+        : 'text-zinc-400';
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6">
+    <div className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-6">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900">Faena Nacional</h3>
-        <span className="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-700">
+        <h3 className="text-lg font-semibold text-zinc-100">Faena Nacional</h3>
+        <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 text-xs text-emerald-400">
           Datos oficiales
         </span>
       </div>
@@ -28,26 +28,26 @@ export async function FaenaStats() {
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {/* Current Month */}
         <div>
-          <p className="text-sm text-gray-500">{formatFaenaDate(stats.current.date)}</p>
-          <p className="text-2xl font-bold text-gray-900">{formatCabezas(stats.current.cabezas)}</p>
-          <p className="text-xs text-gray-400">cabezas</p>
+          <p className="text-sm text-zinc-500">{formatFaenaDate(stats.current.date)}</p>
+          <p className="text-2xl font-bold text-zinc-100">{formatCabezas(stats.current.cabezas)}</p>
+          <p className="text-xs text-zinc-500">cabezas</p>
         </div>
 
         {/* Monthly Change */}
         <div>
-          <p className="text-sm text-gray-500">vs. mes anterior</p>
+          <p className="text-sm text-zinc-500">vs. mes anterior</p>
           <p
-            className={`text-lg font-semibold ${stats.monthlyChange > 0 ? 'text-green-600' : stats.monthlyChange < 0 ? 'text-red-600' : 'text-gray-600'}`}
+            className={`text-lg font-semibold ${stats.monthlyChange > 0 ? 'text-emerald-400' : stats.monthlyChange < 0 ? 'text-red-400' : 'text-zinc-400'}`}
           >
             {stats.monthlyChange > 0 ? '+' : ''}
             {stats.monthlyChange.toFixed(1)}%
           </p>
-          <p className="text-xs text-gray-400">{formatCabezas(stats.previous.cabezas)}</p>
+          <p className="text-xs text-zinc-500">{formatCabezas(stats.previous.cabezas)}</p>
         </div>
 
         {/* YoY Change */}
         <div>
-          <p className="text-sm text-gray-500">vs. año anterior</p>
+          <p className="text-sm text-zinc-500">vs. año anterior</p>
           <div className="flex items-center gap-1">
             <TrendIcon className={`h-5 w-5 ${trendColor}`} />
             <p className={`text-lg font-semibold ${trendColor}`}>
@@ -55,18 +55,18 @@ export async function FaenaStats() {
               {stats.yearlyChange.toFixed(1)}%
             </p>
           </div>
-          <p className="text-xs text-gray-400">{formatCabezas(stats.yearAgo.cabezas)}</p>
+          <p className="text-xs text-zinc-500">{formatCabezas(stats.yearAgo.cabezas)}</p>
         </div>
 
         {/* 12-Month Total */}
         <div>
-          <p className="text-sm text-gray-500">Últimos 12 meses</p>
-          <p className="text-2xl font-bold text-gray-900">{formatCabezas(stats.total12Months)}</p>
-          <p className="text-xs text-gray-400">cabezas faenadas</p>
+          <p className="text-sm text-zinc-500">Últimos 12 meses</p>
+          <p className="text-2xl font-bold text-zinc-100">{formatCabezas(stats.total12Months)}</p>
+          <p className="text-xs text-zinc-500">cabezas faenadas</p>
         </div>
       </div>
 
-      <p className="mt-4 text-xs text-gray-400">
+      <p className="mt-4 text-xs text-zinc-600">
         Fuente: Secretaría de Agricultura, Ganadería y Pesca
       </p>
     </div>
