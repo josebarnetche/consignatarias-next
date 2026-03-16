@@ -106,9 +106,29 @@ export async function POST(
       )
     }
 
-    // TODO: Fetch metadata from YouTube Data API
-    // For now, use provided title or placeholder
-    const videoTitle = title || `Video de ${consignataria.nombre}`
+    // Fetch metadata from YouTube Data API if available
+    let videoTitle = title
+    let videoDescription = description
+    
+    if (!videoTitle && process.env.YOUTUBE_API_KEY) {
+      try {
+        const ytResponse = await fetch(
+          `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${process.env.YOUTUBE_API_KEY}`
+        )
+        if (ytResponse.ok) {
+          const ytData = await ytResponse.json()
+          if (ytData.items?.[0]?.snippet) {
+            videoTitle = ytData.items[0].snippet.title
+            videoDescription = videoDescription || ytData.items[0].snippet.description?.slice(0, 500)
+          }
+        }
+      } catch (e) {
+        console.error('YouTube API fetch failed:', e)
+      }
+    }
+    
+    // Fallback to provided title or placeholder
+    videoTitle = videoTitle || `Video de ${consignataria.nombre}`
 
     // Insert video
     const { data: video, error: insertError } = await supabase
