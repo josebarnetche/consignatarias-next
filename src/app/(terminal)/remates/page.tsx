@@ -3,6 +3,7 @@ import RematesClient from './RematesClient'
 import rematesData from '@/lib/data/remates.json'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import NewsletterSignup from '@/components/NewsletterSignup'
 
 // Month names in Spanish
 const MONTHS_ES = [
@@ -85,6 +86,19 @@ export default function RematesPage() {
           hacienda o periodo. Cada remate incluye fecha, hora, ubicacion, consignataria responsable, cabezas
           estimadas y links a catalogos y transmisiones en vivo.
         </p>
+      </section>
+      
+      {/* Email capture for remates */}
+      <section className="px-4 py-3 border-b border-zinc-800">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <span className="text-zinc-400 text-sm whitespace-nowrap">📅 Recibí el resumen semanal de remates:</span>
+          <NewsletterSignup 
+            source="remates" 
+            buttonText="Suscribirme"
+            placeholder="tu@email.com"
+            compact
+          />
+        </div>
       </section>
       <RematesClient />
     </>
