@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
     
     if (auction.time) {
       // Parse time like "10:00" or "10:30"
-      const [hours, minutes] = auction.time.split(':').map(Number)
+      const [hours] = auction.time.split(':').map(Number)
       const auctionStartHour = hours
       // Assume auctions last ~2 hours, so ended = start + 2, plus 3h buffer = start + 5h
       // We want to send 3h after end, so roughly start + 5h

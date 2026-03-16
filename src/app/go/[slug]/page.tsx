@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 /* ------------------------------------------------------------------ */
 
 function formatDate(dateStr: string): string {
-  const [y, m, d] = dateStr.split('-')
+  const [_y, m, d] = dateStr.split('-')
   const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
   return `${parseInt(d)} ${months[parseInt(m) - 1]}`
 }

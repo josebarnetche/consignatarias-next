@@ -220,7 +220,7 @@ export async function sendWeeklyNewsletter(
   if (!resend) return
 
   const formatDate = (dateStr: string) => {
-    const [y, m, d] = dateStr.split('-')
+    const [_y, m, d] = dateStr.split('-')
     return `${d}/${m}`
   }
 
@@ -354,21 +354,19 @@ export async function sendPostRemateResultsRequest({
   consignatariaName,
   slug,
   location,
-  remateDate,
+  remateDate: _remateDate,
   remateTitle,
 }: PostRemateRequestParams) {
   const resend = await getResend()
   if (!resend) return { success: false, error: 'Resend not configured' }
 
-  const formatDate = (dateStr: string) => {
-    const [y, m, d] = dateStr.split('-')
-    const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
-    return `${parseInt(d)} de ${months[parseInt(m) - 1]}`
-  }
+  // Reserved for future use: format date for email body
+  void _remateDate
 
   const safeName = escapeHtml(consignatariaName)
   const safeLocation = escapeHtml(location)
-  const safeTitle = escapeHtml(remateTitle)
+  // Reserved for future use: remate title in email
+  void remateTitle
   const profileUrl = `${APP_URL}/consignatarias/${slug}`
 
   try {
@@ -463,7 +461,7 @@ export async function sendNewRemateAlert({
   if (!resend) return
 
   const formatDate = (dateStr: string) => {
-    const [y, m, d] = dateStr.split('-')
+    const [_y, m, d] = dateStr.split('-')
     const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
     return `${parseInt(d)} de ${months[parseInt(m) - 1]}`
   }

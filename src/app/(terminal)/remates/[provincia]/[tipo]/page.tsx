@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
-import { BreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { BreadcrumbSchema } from '@/components/seo/JsonLd'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import {
   formatDateShort,

@@ -55,7 +55,7 @@ function VideoTypeLabel({ type }: { type: string }) {
   )
 }
 
-export function VideoGallery({ videos, consignatariaName }: VideoGalleryProps) {
+export function VideoGallery({ videos, consignatariaName: _consignatariaName }: VideoGalleryProps) {
   const [activeVideo, setActiveVideo] = useState<ConsignatariaVideo | null>(null)
 
   if (!videos.length) {

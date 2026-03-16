@@ -137,7 +137,7 @@ export async function POST(
         consignataria_id: consignataria.id,
         youtube_video_id: videoId,
         title: videoTitle,
-        description: description || null,
+        description: videoDescription || null,
         video_type: videoType,
         remate_id: remateId || null,
         thumbnail_url: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,

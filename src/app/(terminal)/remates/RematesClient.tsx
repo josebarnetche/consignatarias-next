@@ -11,7 +11,6 @@ import {
   TYPE_LABELS_SHORT,
   CAT_LABELS,
   CAT_CODES,
-  PROVINCE_CODES,
   formatDateShort,
   getCity,
   getProvinceCode,
@@ -29,7 +28,7 @@ import { trackAuctionClick, trackFilterApply, trackOutboundClick } from '@/lib/a
 /** Generate WhatsApp share URL for an auction */
 function getWhatsAppShareUrl(auction: Auction): string {
   const formatDate = (dateStr: string) => {
-    const [year, month, day] = dateStr.split('-')
+    const [_year, month, day] = dateStr.split('-')
     return `${day}/${month}`
   }
   const parts = [

@@ -23,7 +23,7 @@ export async function GET() {
     } else {
       apiStatus = 'degraded'
     }
-  } catch (error) {
+  } catch (_error) {
     apiStatus = 'degraded'
   }
   

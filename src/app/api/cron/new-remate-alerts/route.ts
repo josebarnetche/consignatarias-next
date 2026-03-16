@@ -43,7 +43,8 @@ export async function GET(req: NextRequest) {
   }
 
   const now = new Date()
-  const thirtyMinAgo = new Date(now.getTime() - 30 * 60 * 1000)
+  // Could be used to filter "new since last run" in future
+  const _thirtyMinAgo = new Date(now.getTime() - 30 * 60 * 1000)
   
   const results = {
     checked: 0,
@@ -64,9 +65,8 @@ export async function GET(req: NextRequest) {
       .eq('job_name', 'new-remate-alerts')
       .single()
 
-    const lastRun = lastRunData?.last_run 
-      ? new Date(lastRunData.last_run) 
-      : thirtyMinAgo
+    // lastRunData available for future use if we want to filter by new-since-last-run
+    void lastRunData
 
     // Get all active alerts with filters
     const { data: alerts, error: alertsError } = await service

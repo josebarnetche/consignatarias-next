@@ -43,7 +43,7 @@ export default function WhatsAppShare({
   className = '',
 }: WhatsAppShareProps) {
   const formatDate = (dateStr: string) => {
-    const [year, month, day] = dateStr.split('-')
+    const [_year, month, day] = dateStr.split('-')
     return `${day}/${month}`
   }
 

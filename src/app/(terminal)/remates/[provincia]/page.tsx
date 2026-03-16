@@ -8,7 +8,6 @@ import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import {
   formatDateShort,
   getCity,
-  getProvinceCode,
   TYPE_LABELS,
   TYPE_COLORS,
   CAT_LABELS,

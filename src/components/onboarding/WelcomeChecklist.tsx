@@ -22,7 +22,7 @@ const CHECKLIST_ITEMS: { key: keyof WelcomeChecklistProps['completedFields']; la
   { key: 'whatsapp', label: 'Agregar WhatsApp' },
 ]
 
-export default function WelcomeChecklist({ profileSlug, displayName, completedFields }: WelcomeChecklistProps) {
+export default function WelcomeChecklist({ profileSlug: _profileSlug, displayName, completedFields }: WelcomeChecklistProps) {
   const completed = Object.values(completedFields).filter(Boolean).length
   const total = CHECKLIST_ITEMS.length
 
