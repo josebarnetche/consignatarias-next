@@ -60,129 +60,95 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
     (
       <div
         style={{
-          background: 'linear-gradient(135deg, #0a0a0a 0%, #111111 50%, #0a0a0a 100%)',
+          background: 'linear-gradient(145deg, #0a0a0a 0%, #0f1f0f 50%, #0a0a0a 100%)',
           width: '100%',
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          padding: '60px',
+          padding: '50px 70px',
           fontFamily: 'system-ui, sans-serif',
         }}
       >
-        {/* Top bar */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '40px',
-          }}
-        >
-          <div style={{ color: '#22c55e', fontSize: 24, fontWeight: 'bold', letterSpacing: '0.1em' }}>
-            CONSIGNATARIAS.COM.AR
-          </div>
+        {/* Main content - centered vertically */}
+        <div style={{ display: 'flex', flex: 1, alignItems: 'center', gap: '50px' }}>
+          {/* Logo placeholder - bigger */}
           <div
             style={{
-              background: 'rgba(34, 197, 94, 0.1)',
-              border: '1px solid rgba(34, 197, 94, 0.3)',
-              padding: '8px 16px',
-              borderRadius: '4px',
-              color: '#22c55e',
-              fontSize: 16,
-            }}
-          >
-            PERFIL VERIFICADO
-          </div>
-        </div>
-
-        {/* Main content */}
-        <div style={{ display: 'flex', flex: 1, alignItems: 'center', gap: '60px' }}>
-          {/* Logo placeholder */}
-          <div
-            style={{
-              width: '180px',
-              height: '180px',
+              width: '220px',
+              height: '220px',
               background: 'linear-gradient(135deg, #166534 0%, #22c55e 100%)',
-              borderRadius: '16px',
+              borderRadius: '24px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '72px',
+              fontSize: '100px',
               color: 'white',
               fontWeight: 'bold',
+              flexShrink: 0,
             }}
           >
             {profile.displayName.charAt(0).toUpperCase()}
           </div>
 
-          {/* Info */}
+          {/* Info - bigger text */}
           <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
             <div
               style={{
                 color: 'white',
-                fontSize: 56,
+                fontSize: 72,
                 fontWeight: 'bold',
-                marginBottom: '16px',
-                lineHeight: 1.1,
+                marginBottom: '12px',
+                lineHeight: 1.0,
+                letterSpacing: '-0.02em',
               }}
             >
-              {profile.displayName}
+              {profile.displayName.length > 25 
+                ? profile.displayName.slice(0, 25) + '...' 
+                : profile.displayName}
             </div>
             
-            <div style={{ color: '#71717a', fontSize: 28, marginBottom: '32px' }}>
-              {provinces.slice(0, 3).join(' · ') || 'Argentina'}
+            <div style={{ color: '#a1a1aa', fontSize: 36, marginBottom: '40px', fontWeight: 500 }}>
+              {provinces.slice(0, 2).join(' · ') || 'Argentina'}
             </div>
 
-            {/* Stats row */}
-            <div style={{ display: 'flex', gap: '40px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ color: '#22c55e', fontSize: 48, fontWeight: 'bold' }}>
+            {/* Stats row - bigger and bolder */}
+            <div style={{ display: 'flex', gap: '60px' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+                <div style={{ color: '#22c55e', fontSize: 72, fontWeight: 'bold' }}>
                   {profileAuctions.length}
                 </div>
-                <div style={{ color: '#71717a', fontSize: 20 }}>
-                  remates totales
+                <div style={{ color: '#71717a', fontSize: 28 }}>
+                  remates
                 </div>
               </div>
               
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ color: '#06b6d4', fontSize: 48, fontWeight: 'bold' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+                <div style={{ color: '#22c55e', fontSize: 72, fontWeight: 'bold' }}>
                   {upcomingCount}
                 </div>
-                <div style={{ color: '#71717a', fontSize: 20 }}>
+                <div style={{ color: '#71717a', fontSize: 28 }}>
                   próximos
                 </div>
               </div>
-
-              {topType && (
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ color: '#a78bfa', fontSize: 48, fontWeight: 'bold' }}>
-                    {typeLabels[topType] || topType}
-                  </div>
-                  <div style={{ color: '#71717a', fontSize: 20 }}>
-                    especialidad
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
 
-        {/* Bottom bar */}
+        {/* Bottom bar - simpler */}
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginTop: '40px',
-            paddingTop: '24px',
-            borderTop: '1px solid #27272a',
+            paddingTop: '20px',
+            borderTop: '2px solid #22c55e33',
           }}
         >
-          <div style={{ color: '#52525b', fontSize: 18 }}>
-            Calendario de remates ganaderos de Argentina
+          <div style={{ color: '#22c55e', fontSize: 28, fontWeight: 'bold', letterSpacing: '0.05em' }}>
+            CONSIGNATARIAS.COM.AR
           </div>
-          <div style={{ color: '#52525b', fontSize: 18 }}>
-            consignatarias.com.ar/consignatarias/{slug}
+          <div style={{ color: '#52525b', fontSize: 24 }}>
+            Remates Ganaderos Argentina
           </div>
         </div>
       </div>

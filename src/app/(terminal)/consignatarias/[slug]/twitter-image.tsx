@@ -46,58 +46,73 @@ export default async function TwitterImage({ params }: { params: Promise<{ slug:
     (
       <div
         style={{
-          background: 'linear-gradient(135deg, #0a0a0a 0%, #111111 50%, #0a0a0a 100%)',
+          background: 'linear-gradient(145deg, #0a0a0a 0%, #0f1f0f 50%, #0a0a0a 100%)',
           width: '100%',
           height: '100%',
           display: 'flex',
-          padding: '48px',
+          alignItems: 'center',
+          padding: '50px 60px',
           fontFamily: 'system-ui, sans-serif',
         }}
       >
-        {/* Logo placeholder */}
+        {/* Logo placeholder - bigger */}
         <div
           style={{
-            width: '140px',
-            height: '140px',
+            width: '200px',
+            height: '200px',
             background: 'linear-gradient(135deg, #166534 0%, #22c55e 100%)',
-            borderRadius: '12px',
+            borderRadius: '20px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '56px',
+            fontSize: '90px',
             color: 'white',
             fontWeight: 'bold',
-            marginRight: '40px',
+            marginRight: '50px',
+            flexShrink: 0,
           }}
         >
           {profile.displayName.charAt(0).toUpperCase()}
         </div>
 
-        {/* Info */}
+        {/* Info - much bigger */}
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
-          <div style={{ color: '#22c55e', fontSize: 18, fontWeight: 'bold', letterSpacing: '0.1em', marginBottom: '8px' }}>
-            CONSIGNATARIAS.COM.AR
+          <div style={{ color: 'white', fontSize: 64, fontWeight: 'bold', marginBottom: '12px', lineHeight: 1.0, letterSpacing: '-0.02em' }}>
+            {profile.displayName.length > 22 
+              ? profile.displayName.slice(0, 22) + '...' 
+              : profile.displayName}
           </div>
           
-          <div style={{ color: 'white', fontSize: 42, fontWeight: 'bold', marginBottom: '12px', lineHeight: 1.1 }}>
-            {profile.displayName}
-          </div>
-          
-          <div style={{ color: '#71717a', fontSize: 22, marginBottom: '24px' }}>
-            {provinces.slice(0, 3).join(' · ') || 'Argentina'}
+          <div style={{ color: '#a1a1aa', fontSize: 32, marginBottom: '36px', fontWeight: 500 }}>
+            {provinces.slice(0, 2).join(' · ') || 'Argentina'}
           </div>
 
-          {/* Stats row */}
-          <div style={{ display: 'flex', gap: '32px' }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-              <span style={{ color: '#22c55e', fontSize: 36, fontWeight: 'bold' }}>{profileAuctions.length}</span>
-              <span style={{ color: '#71717a', fontSize: 18 }}>remates</span>
+          {/* Stats row - bigger */}
+          <div style={{ display: 'flex', gap: '50px' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+              <span style={{ color: '#22c55e', fontSize: 64, fontWeight: 'bold' }}>{profileAuctions.length}</span>
+              <span style={{ color: '#71717a', fontSize: 26 }}>remates</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-              <span style={{ color: '#06b6d4', fontSize: 36, fontWeight: 'bold' }}>{upcomingCount}</span>
-              <span style={{ color: '#71717a', fontSize: 18 }}>próximos</span>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+              <span style={{ color: '#22c55e', fontSize: 64, fontWeight: 'bold' }}>{upcomingCount}</span>
+              <span style={{ color: '#71717a', fontSize: 26 }}>próximos</span>
             </div>
           </div>
+        </div>
+
+        {/* Brand mark - bottom right */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '30px',
+            right: '50px',
+            color: '#22c55e',
+            fontSize: 24,
+            fontWeight: 'bold',
+            letterSpacing: '0.05em',
+          }}
+        >
+          CONSIGNATARIAS.COM.AR
         </div>
       </div>
     ),
