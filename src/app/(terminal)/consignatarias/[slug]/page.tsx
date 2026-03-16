@@ -13,6 +13,7 @@ import { getEntityTier } from '@/lib/features'
 import { createServiceClient } from '@/lib/supabase'
 import { BreadcrumbSchema, LocalBusinessSchema, EventSchema, VideoObjectSchema } from '@/components/seo/JsonLd'
 import youtubeChannelsData from '@/lib/data/youtube-channels.json'
+import consignatariaResources from '@/lib/data/consignataria-resources.json'
 import { getProfileSEO } from '@/lib/data/profile-seo'
 import ConsignatariaProfileClient from './ConsignatariaProfileClient'
 import type { YouTubeChannelData } from './ConsignatariaProfileClient'
@@ -281,6 +282,7 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
         youtubeChannel={(youtubeChannelsData as Record<string, YouTubeChannelData>)[canonical]}
         videos={videos}
         relatedConsignatarias={relatedConsignatarias}
+        externalResources={(consignatariaResources as Record<string, { displayName: string; resources: Array<{ type: string; label: string; url: string; description?: string }> }>)[canonical]?.resources}
       />
     </>
   )

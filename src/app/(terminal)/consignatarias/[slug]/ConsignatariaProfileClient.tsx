@@ -345,6 +345,13 @@ export interface YouTubeChannelData {
   lastChecked?: string
 }
 
+export interface ExternalResource {
+  type: string
+  label: string
+  url: string
+  description?: string
+}
+
 interface ConsignatariaProfileClientProps {
   profile: EnrichedProfile
   auctions: Auction[]
@@ -353,9 +360,10 @@ interface ConsignatariaProfileClientProps {
   youtubeChannel?: YouTubeChannelData
   videos?: ConsignatariaVideo[]
   relatedConsignatarias?: RelatedConsignataria[]
+  externalResources?: ExternalResource[]
 }
 
-export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [], relatedConsignatarias = [] }: ConsignatariaProfileClientProps) {
+export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [], relatedConsignatarias = [], externalResources = [] }: ConsignatariaProfileClientProps) {
   const today = getEffectiveToday()
 
   useEffect(() => {
@@ -811,6 +819,67 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           </div>
           <div className="px-panel py-3">
             <VideoGallery videos={videos} consignatariaName={profile.displayName} />
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/*  EXTERNAL RESOURCES (catalog, app, etc.)                      */}
+      {/* ============================================================ */}
+      {externalResources.length > 0 && (
+        <div className="terminal-panel mt-px">
+          <div className="terminal-panel-header">
+            <span className="section-heading text-xxs">RECURSOS Y ENLACES</span>
+          </div>
+          <div className="px-panel py-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {externalResources.map((resource, idx) => (
+                <a
+                  key={idx}
+                  href={resource.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackOutboundClick(resource.url, resource.type as 'catalog' | 'website')}
+                  className="group flex items-start gap-3 p-3 border border-terminal-border rounded-terminal hover:border-accent/50 hover:bg-zinc-900/50 transition-colors"
+                >
+                  <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-terminal bg-zinc-800 group-hover:bg-accent/10 transition-colors">
+                    {resource.type === 'catalog' && (
+                      <svg className="w-4 h-4 text-zinc-400 group-hover:text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    )}
+                    {resource.type === 'app' && (
+                      <svg className="w-4 h-4 text-zinc-400 group-hover:text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                    )}
+                    {resource.type === 'results' && (
+                      <svg className="w-4 h-4 text-zinc-400 group-hover:text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    )}
+                    {resource.type === 'website' && (
+                      <svg className="w-4 h-4 text-zinc-400 group-hover:text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                      </svg>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-data font-terminal text-zinc-200 group-hover:text-accent transition-colors block">
+                      {resource.label}
+                    </span>
+                    {resource.description && (
+                      <span className="text-xxs text-zinc-500 font-terminal line-clamp-1 block mt-0.5">
+                        {resource.description}
+                      </span>
+                    )}
+                  </div>
+                  <svg className="w-4 h-4 text-zinc-600 group-hover:text-accent flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       )}

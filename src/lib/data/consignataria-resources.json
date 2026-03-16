@@ -1,0 +1,47 @@
+{
+  "rosgan": {
+    "displayName": "Rosgan",
+    "resources": [
+      {
+        "type": "catalog",
+        "label": "Catálogo de Lotes",
+        "url": "https://www.rosgan.com.ar/",
+        "description": "Ver lotes disponibles y próximos remates"
+      },
+      {
+        "type": "app",
+        "label": "Rosgan App",
+        "url": "https://app.rosgannet.com.ar/",
+        "description": "Plataforma de subastas online"
+      },
+      {
+        "type": "results",
+        "label": "Resultados Históricos",
+        "url": "https://www.rosgan.com.ar/resultados/",
+        "description": "Precios y estadísticas de remates anteriores"
+      }
+    ]
+  },
+  "afa": {
+    "displayName": "AFA - Agricultores Federados Argentinos",
+    "resources": [
+      {
+        "type": "catalog",
+        "label": "Catálogo AFA",
+        "url": "https://www.afascl.coop/hacienda",
+        "description": "Sección de hacienda de AFA"
+      }
+    ]
+  },
+  "coop-guillermo-lehmann": {
+    "displayName": "Cooperativa Guillermo Lehmann",
+    "resources": [
+      {
+        "type": "website",
+        "label": "Sitio Oficial",
+        "url": "https://www.cooplehmann.com.ar/",
+        "description": "Información de remates y servicios"
+      }
+    ]
+  }
+}
