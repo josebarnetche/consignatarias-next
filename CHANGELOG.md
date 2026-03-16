@@ -4,6 +4,115 @@ Registro completo de **consignatarias.com.ar** — desde el primer `npx create-n
 
 ---
 
+## [1.7.2] — 2026-03-16
+
+### Post-Remate Outreach + Email Database
+
+> feat: v1.7.2 — automated email outreach asking consignatarias for results + 83% email coverage
+
+**Milestone:** Sistema completo de outreach post-remate. Cada remate que termina dispara un email automático a la consignataria pidiéndole los promedios. Las respuestas llegan a agro@memola.com.ar (IMAP conectado). De 9 emails (10%) a 71 emails (83% coverage) en una sesión.
+
+**1. Post-Remate Email Outreach**
+
+Sistema automatizado que contacta consignatarias 3-5 horas después de cada remate:
+
+```
+Remate termina (tenemos horario)
+        ↓
+Cron detecta (+3-5h después)
+        ↓
+Email automático firmado por José
+        ↓
+Reply-to: agro@memola.com.ar
+        ↓
+Consignataria responde con promedios
+        ↓
+Se publica con su data oficial
+```
+
+**Email template incluye:**
+- Introducción a Memola Medios SAS y consignatarias.com.ar
+- Link al perfil de la consignataria
+- CTA claro pidiendo promedios (imagen o números)
+- Firma profesional: José Barnetche, Director, +54 3773 418130
+
+**Archivos creados:**
+- `src/lib/email.ts` — función `sendPostRemateResultsRequest()`
+- `src/app/api/cron/post-remate-outreach/route.ts` — cron endpoint (hourly)
+- `supabase/migrations/20260316_outreach_log.sql` — tracking table
+
+**Cron features:**
+- Detecta remates del día que terminaron hace ~3-5 horas
+- Busca email de la consignataria en Supabase
+- Evita duplicados (no envía 2 veces al mismo slug por día)
+- Logging en tabla `outreach_log`
+- Auth via `CRON_SECRET` header
+
+**2. Email Database Expansion**
+
+Scraping masivo de emails de consignatarias usando sub-agentes paralelos:
+
+| Métrica | Antes | Después |
+|---------|-------|---------|
+| Emails | 9 | **71** |
+| Coverage | 10% | **83%** |
+| Método | Manual | Web scraping + redes sociales |
+
+**Pipeline de scraping:**
+- 7 sub-agentes en paralelo buscando en Google, sitios web, Facebook, Instagram
+- Actualización directa a Supabase via REST API
+- Fuentes: sitios oficiales, ClicRural, páginas de contacto, redes sociales
+
+**Consignatarias sin email encontrado (15):**
+- Sin presencia web: lesiukhnos, j-s-russo, h-nieva, nangapiry, s-l-ledesma
+- Solo redes sociales: idercor, javier-bardin, rural-misiones
+- Eventos (no consignatarias): las-nacionales
+- Web sin email visible: oregui, kofman-y-lissarrague, lanser
+- Individuos: marcos-matteucci, javier-ulises-avalos, travaglia
+
+**Commits:** `a6bb165` (outreach system)
+
+---
+
+## [1.7.1] — 2026-03-15
+
+### Province+Type Combo Pages + Dynamic OG + External Resources
+
+> feat: v1.7.1 — SEO long-tail pages, profile OG images, external resources section
+
+**Deployed:** 2026-03-15 (commits: `52e59aa`, `9daebc1`, `d600b3c`)
+
+**1. Province + Type Combo Landing Pages (35 pages)**
+
+New route `/remates/[provincia]/[tipo]` for long-tail SEO:
+- Examples: `/remates/cordoba/invernada`, `/remates/buenos-aires/cria`
+- Only generates pages for combos that have auctions (35 total)
+- Sitemap priority 0.6 (lower than standalone province/type pages)
+- Unique SEO title/description per combo
+
+**2. Dynamic OG Images for Consignataria Profiles**
+
+Each profile now generates custom Open Graph images:
+- `opengraph-image.tsx` and `twitter-image.tsx` in `[slug]/` folder
+- Shows consignataria name, province, and stats
+- 1200x630 terminal-style design
+
+**3. External Resources Section**
+
+New section on consignataria profiles linking to:
+- Rosgan catalog if available
+- AFA (Agricultores Federados) info
+- Cooperativa Lehmann resources
+- Data stored in `consignataria-resources.json`
+
+**Files created:**
+- `src/app/(terminal)/remates/[provincia]/[tipo]/page.tsx`
+- `src/app/(terminal)/consignatarias/[slug]/opengraph-image.tsx`
+- `src/app/(terminal)/consignatarias/[slug]/twitter-image.tsx`
+- `src/lib/data/consignataria-resources.json`
+
+---
+
 ## [1.7.0] — 2026-03-15
 
 ### Video Catalogs + SEO Expansion + WhatsApp Share

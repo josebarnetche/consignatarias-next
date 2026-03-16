@@ -2,7 +2,7 @@
 
 A cattle auction directory, market intelligence platform, and public API for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
 
-**21 public API endpoints** • **270+ remates** • **86 consignatarias** • **364 frigoríficos** • **13 provincias** • **15 YouTube channels** • **Automated video matching** • **5 type landing pages**
+**21 public API endpoints** • **270+ remates** • **86 consignatarias** • **364 frigoríficos** • **13 provincias** • **15 YouTube channels** • **Automated video matching** • **5 type landing pages** • **Automated post-remate outreach** • **83% email coverage**
 
 **Live:** [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
 
@@ -219,6 +219,37 @@ Vercel Deploy (auto-triggered)
 - Corn FOB (USD/tn)
 - USD blue and oficial rates
 - Updated daily by scraper
+
+### Post-Remate Outreach System (v1.7.2)
+
+Automated email outreach to consignatarias after their auctions, requesting official results:
+
+**How it works:**
+```
+Auction ends (we have the schedule)
+        ↓
+Cron detects (+3-5h after)
+        ↓
+Automated email sent (signed by José Barnetche)
+        ↓
+Reply-to: agro@memola.com.ar
+        ↓
+Consignataria responds with averages
+        ↓
+Published with their official data
+```
+
+**Email database:** 71 of 86 consignatarias (83% coverage) — scraped from websites, social media, and public directories using parallel sub-agents.
+
+**Components:**
+- `src/lib/email.ts` — `sendPostRemateResultsRequest()` function
+- `src/app/api/cron/post-remate-outreach/route.ts` — hourly cron endpoint
+- `supabase/migrations/20260316_outreach_log.sql` — tracking table
+- `vercel.json` — cron schedule
+
+**Tracking:** `outreach_log` table prevents duplicate emails and tracks response rates.
+
+---
 
 ### Email Marketing Automatizado (v1.5.0)
 
@@ -571,8 +602,11 @@ Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misione
 | **1.1.0** | **Mar 12** | **Subasto API — 11 public endpoints, webhooks, alertas, documentation** |
 | 1.2.0 | Mar 13 | Lead magnets — 5 tools, newsletter signup, glosario 38 terms, API docs page |
 | **1.3.0** | **Mar 14** | **API complete — 20 endpoints, ranking, PDF reports, B2B SEO schemas** |
+| 1.7.0 | Mar 15 | Video catalogs — 15 YouTube channels, automated matching, VideoGallery component |
+| 1.7.1 | Mar 15 | SEO expansion — 35 province+type combo pages, dynamic OG images, external resources |
+| **1.7.2** | **Mar 16** | **Post-remate outreach — automated emails, 83% email coverage (71/86 consignatarias)** |
 
-Built in 17 days. One human, one AI. $0 hosting cost. 10 Supabase tables. 20 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
+Built in 18 days. One human, one AI. $0 hosting cost. 10 Supabase tables. 20 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
 
 ---
 
