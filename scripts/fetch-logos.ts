@@ -59,7 +59,7 @@ async function fetchFavicon(slug: string, baseUrl: string): Promise<void> {
         console.log(`✓ Saved ${slug}.${ext} (${data.length} bytes)`)
         return
       }
-    } catch (e) {
+    } catch {
       // Continue to next path
     }
   }
@@ -77,7 +77,7 @@ async function fetchFavicon(slug: string, baseUrl: string): Promise<void> {
       console.log(`✓ Saved ${slug}.png via Google (${data.length} bytes)`)
       return
     }
-  } catch (e) {
+  } catch {
     console.log(`✗ Failed for ${slug}`)
   }
 }

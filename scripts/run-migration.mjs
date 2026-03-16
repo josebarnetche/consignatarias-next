@@ -14,7 +14,7 @@ const sql = readFileSync('supabase/migrations/20260313_newsletter_subscribers.sq
 async function runMigration() {
   console.log('Running migration...')
   
-  const { data, error } = await supabase.rpc('exec_sql', { sql })
+  const { error } = await supabase.rpc('exec_sql', { sql })
   
   if (error) {
     // Try direct query approach

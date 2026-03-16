@@ -79,7 +79,7 @@ console.log(`Loaded ${frigorificos.length} frigoríficos from JSON`);
 // 2. Parse CSV target
 const csvRaw = readFileSync(CSV_TARGET, 'utf-8');
 const csvLines = csvRaw.split('\n').filter(l => l.trim());
-const csvHeader = csvLines[0];
+// csvLines[0] is header row
 const csvData = csvLines.slice(1).map(line => {
   const fields = parseCSVLine(line);
   // empresa,grupo_empresario,tipo,provincia,localidad,direccion,telefono,email,web,volumen_faena_cabezas,notas

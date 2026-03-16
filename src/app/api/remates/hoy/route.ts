@@ -62,7 +62,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<SuccessRes
     const todayStr = today.toISOString().split('T')[0]
 
     // Filter to today's remates only
-    let filtered = (remates as Array<{
+    const filtered = (remates as Array<{
       id: number
       title: string
       consignatariaName: string

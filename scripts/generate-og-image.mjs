@@ -1,5 +1,8 @@
-const fs = require('fs');
-const path = require('path');
+import { writeFileSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Generate SVG for OG image (1200x630)
 const svg = `
@@ -56,8 +59,8 @@ const svg = `
 `;
 
 // Save SVG
-const svgPath = path.join(__dirname, '..', 'public', 'og-image-new.svg');
-fs.writeFileSync(svgPath, svg.trim());
+const svgPath = join(__dirname, '..', 'public', 'og-image-new.svg');
+writeFileSync(svgPath, svg.trim());
 console.log('SVG saved to:', svgPath);
 
 // For PNG conversion, we'd need sharp or canvas

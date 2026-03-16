@@ -115,7 +115,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<SuccessRes
     const endDateStr = endDate.toISOString().split('T')[0]
 
     // Filter remates
-    let filtered = (remates as Array<{
+    const filtered = (remates as Array<{
       id: number
       title: string
       consignatariaName: string
