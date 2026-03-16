@@ -202,12 +202,7 @@ export default function HomePage() {
             <div className="flex items-baseline gap-3">
               <div className="terminal-stat">
                 <span className="terminal-stat-label">INMAG $/kg vivo</span>
-                <span
-                  className={
-                    "terminal-stat-value text-3xl text-zinc-50 stat-countup" +
-                    (inmag.change > 0 ? " shadow-live-glow" : "")
-                  }
-                >
+                <span className="terminal-stat-value text-3xl text-zinc-50 stat-countup">
                   {fmt(inmag.current)}
                 </span>
               </div>
