@@ -3,67 +3,75 @@ import rematesData from '@/lib/data/remates.json'
 
 interface Remate {
   id: number
-  consignataria: string
-  slug: string
-  fecha: string
-  lugar: string
-  provincia: string
-  tipo: string
-  cabezas?: number | null
-  descripcion?: string | null
-  youtube_url?: string | null
+  title: string
+  consignatariaName: string
+  consignatariaSlug: string
+  date: string // YYYY-MM-DD format
+  time: string | null
+  location: string
+  province: string
+  type: string
+  mainCategory: string
+  estimatedHeads: number | null
+  description: string | null
+  youtubeUrl: string | null
+  catalogUrl: string | null
+  source: string
+  sourceUrl: string | null
+  status?: string
+  featured?: boolean
 }
 
 const remates = rematesData as Remate[]
 
 /**
  * RSS 2.0 Feed for Remates Ganaderos
- * Insight #41 — Enables syndication via feed readers, aggregators, and auto-newsletters
+ * Insight #41 - Enables syndication via feed readers, aggregators, and auto-newsletters
  */
 export async function GET(_request: NextRequest) {
   const baseUrl = 'https://www.consignatarias.com.ar'
   const now = new Date()
   
-  // Get upcoming remates (next 30 days), sorted by date
+  // Get upcoming remates (future dates), sorted by date
   const upcomingRemates = remates
     .filter(r => {
-      const remateDate = parseDate(r.fecha)
+      const remateDate = parseDate(r.date)
       return remateDate && remateDate >= now
     })
     .sort((a, b) => {
-      const dateA = parseDate(a.fecha)
-      const dateB = parseDate(b.fecha)
+      const dateA = parseDate(a.date)
+      const dateB = parseDate(b.date)
       return (dateA?.getTime() || 0) - (dateB?.getTime() || 0)
     })
     .slice(0, 50) // Limit to 50 items
 
   const items = upcomingRemates.map(r => {
-    const remateDate = parseDate(r.fecha)
+    const remateDate = parseDate(r.date)
     const pubDate = remateDate ? remateDate.toUTCString() : now.toUTCString()
-    const cabezasText = r.cabezas ? ` — ${r.cabezas.toLocaleString('es-AR')} cabezas` : ''
-    const description = r.descripcion || `Remate de ${r.tipo} en ${r.lugar}, ${r.provincia}${cabezasText}`
+    const cabezasText = r.estimatedHeads ? ` - ${r.estimatedHeads.toLocaleString('es-AR')} cabezas` : ''
+    const description = r.description || `Remate de ${r.type} en ${r.location}${cabezasText}`
     
     // Link to remates page with province filter if available
-    const provinceSlug = r.provincia ? r.provincia.toLowerCase().replace(/ /g, '-') : ''
+    const provinceSlug = r.province ? r.province.toLowerCase().replace(/ /g, '-') : ''
     const link = provinceSlug 
       ? `${baseUrl}/remates/${provinceSlug}` 
       : `${baseUrl}/remates`
 
     return `    <item>
-      <title><![CDATA[${escapeXml(r.consignataria)} — ${r.tipo} en ${r.lugar}]]></title>
+      <title><![CDATA[${escapeXml(r.consignatariaName)} - ${r.type} en ${r.location}]]></title>
       <link>${link}</link>
       <description><![CDATA[${escapeXml(description)}]]></description>
       <pubDate>${pubDate}</pubDate>
       <guid isPermaLink="false">remate-${r.id}</guid>
-      <category>${escapeXml(r.tipo)}</category>
-      <category>${escapeXml(r.provincia)}</category>
+      <category>${escapeXml(r.type)}</category>
+      <category>${escapeXml(r.province)}</category>
     </item>`
   }).join('\n')
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Remates Ganaderos de Argentina — consignatarias.com.ar</title>
+    <title>Remates Ganaderos de Argentina - consignatarias.com.ar</title>
     <link>${baseUrl}</link>
     <description>Calendario de remates ganaderos de Argentina. Actualizaciones diarias de remates de hacienda, invernada, cría, reproductores y más.</description>
     <language>es-AR</language>
@@ -88,15 +96,12 @@ ${items}
 }
 
 /**
- * Parse DD/MM/YYYY date format
+ * Parse YYYY-MM-DD date format
  */
 function parseDate(dateStr: string): Date | null {
   if (!dateStr) return null
-  const parts = dateStr.split('/')
-  if (parts.length !== 3) return null
-  const [day, month, year] = parts.map(Number)
-  if (isNaN(day) || isNaN(month) || isNaN(year)) return null
-  return new Date(year, month - 1, day)
+  const date = new Date(dateStr)
+  return isNaN(date.getTime()) ? null : date
 }
 
 /**
