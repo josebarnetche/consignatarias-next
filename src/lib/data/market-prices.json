@@ -178,18 +178,18 @@
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1415,
+    "current": 1425,
     "prev": 1415,
-    "change": 0,
+    "change": 0.7,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
-    "current": 1420,
+    "current": 1415,
     "prev": 1420,
-    "change": 0,
+    "change": -0.4,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-03-15"
+  "lastUpdate": "2026-03-16"
 }
