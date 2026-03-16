@@ -6,8 +6,9 @@ export async function middleware(request: NextRequest) {
   // Rate limit public API endpoints
   if (request.nextUrl.pathname.startsWith('/api/') && isPublicApiRoute(request.nextUrl.pathname)) {
     const clientId = getClientId(request)
-    // TODO: Check if user has PRO subscription via API key header
-    const tier = 'free' as const
+    // Check for PRO API key (sk_live_ prefix = PRO user)
+    const apiKey = request.headers.get('api_key') || request.headers.get('x-api-key')
+    const tier = (apiKey && apiKey.startsWith('sk_live_')) ? 'pro' as const : 'free' as const
     const result = checkRateLimit(clientId, tier)
     
     if (!result.success) {

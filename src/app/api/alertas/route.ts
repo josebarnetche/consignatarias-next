@@ -27,8 +27,21 @@ interface ErrorResponse {
   }
 }
 
-// Free tier limit
-const FREE_TIER_LIMIT = 3
+// Alert limits by plan
+const PLAN_LIMITS = {
+  free: 3,
+  pro: 25,
+  enterprise: 100,
+} as const
+
+type PlanType = keyof typeof PLAN_LIMITS
+
+function getAlertLimit(plan?: string): number {
+  if (plan && plan in PLAN_LIMITS) {
+    return PLAN_LIMITS[plan as PlanType]
+  }
+  return PLAN_LIMITS.free
+}
 
 /**
  * Validate API key from header and get user info
@@ -122,7 +135,7 @@ export async function POST(
       .eq('api_key', auth.apiKey)
       .eq('status', 'active')
 
-    const limit = FREE_TIER_LIMIT // TODO: Get from user plan
+    const limit = getAlertLimit(auth.user?.plan)
     if (count !== null && count >= limit) {
       return NextResponse.json({
         success: false,
@@ -246,7 +259,7 @@ export async function GET(
       })
     }
 
-    const limit = FREE_TIER_LIMIT // TODO: Get from user plan
+    const limit = getAlertLimit(auth.user?.plan)
 
     return NextResponse.json({
       success: true,
