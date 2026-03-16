@@ -79,6 +79,9 @@ export const metadata: Metadata = {
     languages: {
       'es-AR': 'https://www.consignatarias.com.ar',
     },
+    types: {
+      'application/rss+xml': 'https://www.consignatarias.com.ar/rss.xml',
+    },
   },
   verification: {
     google: 'yp0ZNCGnizkAx0V1VuG_eIsS3g-AavcABk64J4_neW8',
