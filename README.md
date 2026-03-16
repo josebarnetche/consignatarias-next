@@ -2,7 +2,7 @@
 
 A cattle auction directory, market intelligence platform, and public API for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
 
-**21 public API endpoints** • **320 remates** • **77 consignatarias** • **364 frigoríficos** • **13 provincias** • **15 YouTube channels** • **Automated video matching**
+**21 public API endpoints** • **270+ remates** • **86 consignatarias** • **364 frigoríficos** • **13 provincias** • **15 YouTube channels** • **Automated video matching** • **5 type landing pages**
 
 **Live:** [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
 
@@ -23,12 +23,16 @@ There is no single place to see all upcoming auctions, compare prices, or browse
 
 **consignatarias.com.ar** aggregates data from 77+ consignatarias (cattle auction houses) across 10 provinces into a unified, real-time interface. A rancher can see every upcoming auction in the country, filter by province or type, check market prices, and find frigorificos — all in one screen.
 
-### Current UX (v1.5.1)
+### Current UX (v1.7.0)
 
 **For cattle ranchers (buyers):**
 - Open the site → see all upcoming auctions nationwide in a terminal-style feed
 - Filter by province (Buenos Aires, Chaco, Cordoba...), type (invernada, cria, general), or time period
+- Browse `/remates/tipo/invernada` (and cria, general, especial, reproductores) for type-specific landing pages
 - Click any consignataria name → see their full annual calendar with heatmap, type distribution, and chronological auction list
+- View YouTube videos and livestreams directly on consignataria profiles (auto-matched from 15 channels)
+- Discover related consignatarias on each profile (same province + type)
+- Share any auction via WhatsApp with one click
 - Check `/mercado` for live INMAG index ($/kg vivo), category prices, corn FOB, USD rates
 - Browse `/frigorificos` for the 364 registered slaughterhouses with SENASA data
 

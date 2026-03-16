@@ -6,9 +6,25 @@ Registro completo de **consignatarias.com.ar** — desde el primer `npx create-n
 
 ## [1.7.0] — 2026-03-15
 
+### Video Catalogs + SEO Expansion + WhatsApp Share
+
+> feat: v1.7.0 — Automated YouTube video matching, type landing pages, related consignatarias, WhatsApp sharing
+
+**Deployed:** 2026-03-16 00:00 ART (33 commits, daily record)
+
+**Highlights:**
+- **Video Catalogs** — Auto-match YouTube videos/livestreams to auctions (15 channels, ~14k subs)
+- **Type Landing Pages** — `/remates/tipo/invernada`, `/cria`, `/general`, `/especial`, `/reproductores`
+- **Related Consignatarias** — SEO internal linking on every profile page
+- **WhatsApp Share** — One-click share buttons on all auction cards
+- **Slug Normalization** — Cleaned 84 → 63 unique slugs for consistency
+- **DB Cleanup** — Merged duplicates (reggi-y-cia → reggi)
+
+---
+
 ### Video Catalogs Infrastructure — Complete Pipeline
 
-> feat: v1.7.0 — Automated YouTube video matching for consignataria profiles
+> feat: Automated YouTube video matching for consignataria profiles
 
 **Overview**
 
