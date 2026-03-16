@@ -1,8 +1,10 @@
 import { Metadata } from 'next'
+import { Suspense } from 'react'
 import FrigorificosClient from './FrigorificosClient'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import NewsletterSignup from '@/components/NewsletterSignup'
+import { FaenaStats } from '@/components/FaenaStats'
 
 const totalFrigorificos = frigorificosData.length
 
@@ -103,6 +105,13 @@ export default function FrigorificosPage() {
               compact
             />
           </div>
+        </div>
+        
+        {/* Live faena stats from government API */}
+        <div className="mt-4">
+          <Suspense fallback={<div className="h-32 animate-pulse bg-zinc-900/50 rounded-lg" />}>
+            <FaenaStats />
+          </Suspense>
         </div>
       </section>
       
