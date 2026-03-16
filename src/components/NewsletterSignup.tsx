@@ -2,7 +2,19 @@
 
 import { useState } from 'react'
 
-export default function NewsletterSignup() {
+interface NewsletterSignupProps {
+  source?: string
+  buttonText?: string
+  placeholder?: string
+  compact?: boolean
+}
+
+export default function NewsletterSignup({ 
+  source = 'homepage',
+  buttonText = 'Suscribirme',
+  placeholder = 'tu@email.com',
+  compact = false
+}: NewsletterSignupProps) {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
@@ -18,7 +30,7 @@ export default function NewsletterSignup() {
       const res = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: 'homepage' }),
+        body: JSON.stringify({ email, source }),
       })
 
       const data = await res.json()
@@ -44,22 +56,22 @@ export default function NewsletterSignup() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+    <form onSubmit={handleSubmit} className={`flex ${compact ? 'flex-row gap-2' : 'flex-col sm:flex-row gap-3'} w-full ${compact ? 'max-w-sm' : 'max-w-md'}`}>
       <input
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="tu@email.com"
+        placeholder={placeholder}
         required
         disabled={status === 'loading' || status === 'success'}
-        className="flex-1 px-4 py-3 bg-zinc-900 border border-zinc-800 rounded text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-colors disabled:opacity-50"
+        className={`flex-1 ${compact ? 'px-3 py-2 text-xs' : 'px-4 py-3 text-sm'} bg-zinc-900 border border-zinc-800 rounded text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-colors disabled:opacity-50`}
       />
       <button
         type="submit"
         disabled={status === 'loading' || status === 'success'}
-        className="px-6 py-3 bg-zinc-100 hover:bg-white text-zinc-900 text-sm font-medium rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+        className={`${compact ? 'px-4 py-2 text-xs' : 'px-6 py-3 text-sm'} bg-zinc-100 hover:bg-white text-zinc-900 font-medium rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap`}
       >
-        {status === 'loading' ? 'Enviando...' : status === 'success' ? '✓ Listo' : 'Suscribirme'}
+        {status === 'loading' ? 'Enviando...' : status === 'success' ? '✓ Listo' : buttonText}
       </button>
       
       {message && (

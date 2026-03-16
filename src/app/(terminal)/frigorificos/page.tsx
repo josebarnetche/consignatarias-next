@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import FrigorificosClient from './FrigorificosClient'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import NewsletterSignup from '@/components/NewsletterSignup'
 
 const totalFrigorificos = frigorificosData.length
 
@@ -83,6 +84,26 @@ export default function FrigorificosPage() {
           Datos oficiales actualizados: razón social, CUIT, matrícula, ubicación y clasificación por etapa 
           (Tránsito Federal, Ciclo I, Ciclo II, Ciclo III). Fuente: Registro Nacional de Establecimientos SENASA/MAGYP.
         </p>
+        
+        {/* Email capture CTA */}
+        <div className="mt-4 p-4 bg-zinc-900/50 border border-zinc-800 rounded-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex-1">
+              <p className="text-zinc-300 text-sm font-medium">
+                📊 Recibí el reporte semanal de faena
+              </p>
+              <p className="text-zinc-500 text-xs mt-0.5">
+                Volúmenes por frigorífico, precios INMAG y tendencias del mercado.
+              </p>
+            </div>
+            <NewsletterSignup 
+              source="frigorificos" 
+              buttonText="Suscribirme" 
+              placeholder="tu@email.com"
+              compact
+            />
+          </div>
+        </div>
       </section>
       
       <FrigorificosClient />
