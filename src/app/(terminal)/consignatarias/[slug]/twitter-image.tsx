@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og'
 import { getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
+import { LOGO_MAP } from '@/lib/data/logo-map'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 
@@ -9,6 +10,25 @@ export const runtime = 'edge'
 export const alt = 'Perfil de Consignataria'
 export const size = { width: 1200, height: 600 }
 export const contentType = 'image/png'
+
+// Fetch logo as base64 for embedding in OG image
+async function fetchLogo(slug: string): Promise<string | null> {
+  const filename = LOGO_MAP[slug]
+  if (!filename) return null
+  
+  try {
+    const url = `https://www.consignatarias.com.ar/logos/${filename}`
+    const res = await fetch(url)
+    if (!res.ok) return null
+    
+    const buffer = await res.arrayBuffer()
+    const base64 = Buffer.from(buffer).toString('base64')
+    const mimeType = filename.endsWith('.ico') ? 'image/x-icon' : 'image/png'
+    return `data:${mimeType};base64,${base64}`
+  } catch {
+    return null
+  }
+}
 
 export default async function TwitterImage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -42,6 +62,9 @@ export default async function TwitterImage({ params }: { params: Promise<{ slug:
   const provinces = [...new Set(profileAuctions.map(a => a.province).filter(Boolean))]
   const upcomingCount = profileAuctions.filter(a => a.date >= new Date().toISOString().slice(0, 10)).length
 
+  // Try to fetch the logo
+  const logoSrc = await fetchLogo(profile.canonicalSlug)
+
   return new ImageResponse(
     (
       <div
@@ -55,25 +78,49 @@ export default async function TwitterImage({ params }: { params: Promise<{ slug:
           fontFamily: 'system-ui, sans-serif',
         }}
       >
-        {/* Logo placeholder - bigger */}
-        <div
-          style={{
-            width: '200px',
-            height: '200px',
-            background: 'linear-gradient(135deg, #166534 0%, #22c55e 100%)',
-            borderRadius: '20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '90px',
-            color: 'white',
-            fontWeight: 'bold',
-            marginRight: '50px',
-            flexShrink: 0,
-          }}
-        >
-          {profile.displayName.charAt(0).toUpperCase()}
-        </div>
+        {/* Logo or initial */}
+        {logoSrc ? (
+          <div
+            style={{
+              width: '200px',
+              height: '200px',
+              background: '#ffffff',
+              borderRadius: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: '50px',
+              flexShrink: 0,
+              padding: '16px',
+            }}
+          >
+            <img
+              src={logoSrc}
+              width={168}
+              height={168}
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
+        ) : (
+          <div
+            style={{
+              width: '200px',
+              height: '200px',
+              background: 'linear-gradient(135deg, #166534 0%, #22c55e 100%)',
+              borderRadius: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '90px',
+              color: 'white',
+              fontWeight: 'bold',
+              marginRight: '50px',
+              flexShrink: 0,
+            }}
+          >
+            {profile.displayName.charAt(0).toUpperCase()}
+          </div>
+        )}
 
         {/* Info - much bigger */}
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
