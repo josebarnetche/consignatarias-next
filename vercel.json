@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/post-remate-outreach",
-      "schedule": "0 * * * *"
+      "schedule": "0 8 * * *"
     }
   ],
   "redirects": [
