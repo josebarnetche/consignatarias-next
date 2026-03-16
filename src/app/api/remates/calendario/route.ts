@@ -170,6 +170,14 @@ export async function GET(request: NextRequest): Promise<NextResponse<SuccessRes
 
     // Cache for 15 minutes
     response.headers.set('Cache-Control', 'public, max-age=900, s-maxage=900, stale-while-revalidate=300')
+    
+    // Last-Modified: data updates daily at 14:00 ART (17:00 UTC)
+    const lastUpdate = new Date()
+    lastUpdate.setUTCHours(17, 0, 0, 0)
+    if (new Date() < lastUpdate) {
+      lastUpdate.setDate(lastUpdate.getDate() - 1)
+    }
+    response.headers.set('Last-Modified', lastUpdate.toUTCString())
 
     return response
 
