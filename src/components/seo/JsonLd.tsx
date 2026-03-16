@@ -445,6 +445,73 @@ export function VideoObjectSchema({
   );
 }
 
+// ItemList Schema for remates listing (helps Google understand it's a list of events)
+interface RemateListItem {
+  id: string | number;
+  name: string;
+  date: string;
+  time?: string;
+  location: string;
+  province: string;
+  consignatariaName: string;
+  type: string;
+  estimatedHeads?: number;
+  url?: string;
+}
+
+export function RematesListSchema({ remates }: { remates: RemateListItem[] }) {
+  // Only include first 10 remates to keep schema size reasonable
+  const topRemates = remates.slice(0, 10);
+  
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Próximos Remates Ganaderos en Argentina',
+    description: `Calendario de ${remates.length} remates ganaderos programados`,
+    numberOfItems: remates.length,
+    itemListElement: topRemates.map((remate, index) => {
+      const startDateTime = remate.time 
+        ? `${remate.date}T${remate.time}:00` 
+        : `${remate.date}T10:00:00`;
+      
+      return {
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'Event',
+          name: `Remate ${remate.type} - ${remate.consignatariaName}`,
+          description: `Remate de ${remate.type} organizado por ${remate.consignatariaName}${remate.estimatedHeads ? ` (~${remate.estimatedHeads} cabezas)` : ''}`,
+          startDate: startDateTime,
+          eventAttendanceMode: 'https://schema.org/MixedEventAttendanceMode',
+          eventStatus: 'https://schema.org/EventScheduled',
+          location: {
+            '@type': 'Place',
+            name: remate.location,
+            address: {
+              '@type': 'PostalAddress',
+              addressLocality: remate.location,
+              addressRegion: remate.province,
+              addressCountry: 'AR',
+            },
+          },
+          organizer: {
+            '@type': 'Organization',
+            name: remate.consignatariaName,
+          },
+          url: remate.url || `https://www.consignatarias.com.ar/remates`,
+        },
+      };
+    }),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
 // SaaS Product/Pricing Schema for /planes page
 interface PricingPlan {
   name: string;

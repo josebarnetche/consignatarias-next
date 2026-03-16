@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import RematesClient from './RematesClient'
 import rematesData from '@/lib/data/remates.json'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
-import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, FAQPageSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import NewsletterSignup from '@/components/NewsletterSignup'
 
 // Month names in Spanish
@@ -70,11 +70,29 @@ export default function RematesPage() {
   const totalProfiles = getAllProfiles().length
   const provinces = new Set(rematesData.map((r) => r.province))
   const totalProvinces = provinces.size
+  
+  // Get upcoming remates for structured data
+  const today = new Date().toISOString().slice(0, 10)
+  const upcomingRemates = rematesData
+    .filter((r) => r.date >= today && r.status === 'scheduled')
+    .slice(0, 20)
+    .map((r) => ({
+      id: r.id,
+      name: `${r.consignatariaName} - ${r.type}`,
+      date: r.date,
+      time: r.time || undefined,
+      location: r.location,
+      province: r.province,
+      consignatariaName: r.consignatariaName,
+      type: r.type,
+      estimatedHeads: r.estimatedHeads ?? undefined,
+    }))
 
   return (
     <>
       <SectionBreadcrumbSchema section="remates" sectionName="Remates" />
       <FAQPageSchema items={FAQ_ITEMS} />
+      <RematesListSchema remates={upcomingRemates} />
       <section className="px-4 pt-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-3xl">
         <h2 className="text-zinc-200 text-lg font-medium mb-2">Calendario de remates ganaderos de Argentina</h2>
         <p>
