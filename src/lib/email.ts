@@ -337,6 +337,108 @@ export async function sendRemateReminder(email: string, subject: string, htmlBod
 }
 
 /* ------------------------------------------------------------------ */
+/*  POST-REMATE RESULTS REQUEST                                        */
+/* ------------------------------------------------------------------ */
+
+interface PostRemateRequestParams {
+  to: string
+  consignatariaName: string
+  slug: string
+  location: string
+  remateDate: string
+  remateTitle: string
+}
+
+export async function sendPostRemateResultsRequest({
+  to,
+  consignatariaName,
+  slug,
+  location,
+  remateDate,
+  remateTitle,
+}: PostRemateRequestParams) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+
+  const formatDate = (dateStr: string) => {
+    const [y, m, d] = dateStr.split('-')
+    const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+    return `${parseInt(d)} de ${months[parseInt(m) - 1]}`
+  }
+
+  const safeName = escapeHtml(consignatariaName)
+  const safeLocation = escapeHtml(location)
+  const safeTitle = escapeHtml(remateTitle)
+  const profileUrl = `${APP_URL}/consignatarias/${slug}`
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to,
+      replyTo: 'agro@memola.com.ar',
+      subject: `Resultados de su remate de hoy — consignatarias.com.ar`,
+      html: `
+        <div style="font-family:-apple-system,system-ui,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#ffffff;color:#1a1a1a">
+          <p style="margin:0 0 20px;font-size:15px;line-height:1.6">
+            Estimados <strong>${safeName}</strong>,
+          </p>
+          
+          <p style="margin:0 0 16px;font-size:15px;line-height:1.6">
+            Mi nombre es José Barnetche, Director de <strong>Memola Medios SAS</strong>, la empresa detrás de 
+            <a href="${APP_URL}" style="color:#16a34a;text-decoration:none;font-weight:500">consignatarias.com.ar</a> 
+            — un directorio gratuito de consignatarias y remates ganaderos de Argentina.
+          </p>
+          
+          <p style="margin:0 0 16px;font-size:15px;line-height:1.6">
+            Notamos que hoy tuvieron un remate en <strong>${safeLocation}</strong>. 
+            Estamos construyendo una base de datos pública de resultados de remates para darle más visibilidad al sector.
+          </p>
+          
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:20px;margin:24px 0">
+            <p style="margin:0 0 8px;font-size:15px;font-weight:600;color:#166534">
+              ¿Nos podrían compartir los promedios de su remate?
+            </p>
+            <p style="margin:0;font-size:14px;color:#166534">
+              Pueden responder a este email con una imagen o los números directamente.
+            </p>
+          </div>
+          
+          <p style="margin:0 0 16px;font-size:15px;line-height:1.6">
+            Su consignataria ya tiene un perfil en nuestra plataforma:
+          </p>
+          
+          <p style="margin:0 0 24px">
+            <a href="${profileUrl}" style="display:inline-block;background:#16a34a;color:#ffffff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:500;font-size:14px">
+              👉 Ver perfil de ${safeName}
+            </a>
+          </p>
+          
+          <p style="margin:0 0 24px;font-size:15px;line-height:1.6">
+            Publicamos los resultados con su nombre y un link a su perfil, dándoles exposición a compradores de todo el país.
+          </p>
+          
+          <p style="margin:0 0 8px;font-size:15px;line-height:1.6">
+            ¡Desde ya muchas gracias!
+          </p>
+          
+          <div style="margin-top:32px;padding-top:20px;border-top:1px solid #e5e7eb">
+            <p style="margin:0 0 4px;font-size:14px;font-weight:600">José Barnetche</p>
+            <p style="margin:0 0 4px;font-size:13px;color:#6b7280">Director — Memola Medios SAS</p>
+            <p style="margin:0 0 4px;font-size:13px">
+              <a href="${APP_URL}" style="color:#16a34a;text-decoration:none">consignatarias.com.ar</a>
+            </p>
+            <p style="margin:0;font-size:13px;color:#6b7280">+54 3773 418130</p>
+          </div>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /*  NEW REMATE ALERTS (PRO consignataria posts new auction)           */
 /* ------------------------------------------------------------------ */
 

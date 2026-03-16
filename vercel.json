@@ -1,4 +1,10 @@
 {
+  "crons": [
+    {
+      "path": "/api/cron/post-remate-outreach",
+      "schedule": "0 * * * *"
+    }
+  ],
   "redirects": [
     {
       "source": "/:path((?!_next|api|favicon|robots|sitemap|manifest|icon|og).*)*",
