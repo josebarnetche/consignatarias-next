@@ -16,8 +16,11 @@ const PROVINCE_SLUGS: Record<string, string> = {
   'FORMOSA': 'formosa',
   'LA PAMPA': 'la-pampa',
   'MISIONES': 'misiones',
+  'NEUQUEN': 'neuquen',
   'SAN LUIS': 'san-luis',
   'SANTA FE': 'santa-fe',
+  'SANTIAGO DEL ESTERO': 'santiago-del-estero',
+  'TUCUMAN': 'tucuman',
 }
 
 /* ------------------------------------------------------------------ */
@@ -156,6 +159,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
+  // Province + Type combo pages (/remates/cordoba/invernada, etc.)
+  // Only include combinations that have auctions
+  const remates = rematesData as { province: string; type?: string }[]
+  const provinceTypePages: MetadataRoute.Sitemap = []
+  for (const [provinceName, provinceSlug] of Object.entries(PROVINCE_SLUGS)) {
+    for (const typeSlug of TYPE_SLUGS) {
+      const hasAuctions = remates.some(
+        (r) => r.province === provinceName && r.type?.toLowerCase() === typeSlug
+      )
+      if (hasAuctions) {
+        provinceTypePages.push({
+          url: `${baseUrl}/remates/${provinceSlug}/${typeSlug}`,
+          lastModified: new Date(),
+          changeFrequency: 'weekly' as const,
+          priority: 0.6,
+        })
+      }
+    }
+  }
+
   // Consignataria profile pages
   const consignatariaPages: MetadataRoute.Sitemap = getAllCanonicalSlugs().map((slug) => ({
     url: `${baseUrl}/consignatarias/${slug}`,
@@ -179,6 +202,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...staticPages,
     ...provincePages,
     ...typePages,
+    ...provinceTypePages,
     ...consignatariaPages,
     ...frigorificoPages,
   ]
