@@ -449,6 +449,102 @@ interface NewRemateAlertParams {
   url: string
 }
 
+/* ------------------------------------------------------------------ */
+/*  FAENA NEWSLETTER (Monthly cattle slaughter stats)                  */
+/* ------------------------------------------------------------------ */
+
+interface FaenaNewsletterParams {
+  to: string
+  currentMonth: string // e.g., "enero 2026"
+  cabezas: number
+  monthlyChange: number // percentage
+  yearlyChange: number // percentage
+  total12Months: number
+}
+
+export async function sendFaenaNewsletter({
+  to,
+  currentMonth,
+  cabezas,
+  monthlyChange,
+  yearlyChange,
+  total12Months,
+}: FaenaNewsletterParams) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+
+  const formatNumber = (n: number) => n.toLocaleString('es-AR')
+  const formatChange = (pct: number) => {
+    const sign = pct >= 0 ? '+' : ''
+    const color = pct >= 0 ? '#22c55e' : '#ef4444'
+    return `<span style="color:${color};font-weight:bold">${sign}${pct.toFixed(1)}%</span>`
+  }
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to,
+      subject: `📊 Faena ${currentMonth}: ${formatNumber(cabezas)} cabezas`,
+      html: `
+        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
+          <h2 style="color:#fff;font-size:16px;margin:0 0 4px">REPORTE MENSUAL DE FAENA</h2>
+          <p style="color:#71717a;font-size:12px;margin:0 0 20px">${escapeHtml(currentMonth)} — Datos oficiales</p>
+
+          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:20px;text-align:center;margin-bottom:16px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">Faena total</p>
+            <p style="color:#22c55e;font-size:36px;font-weight:bold;margin:0">${formatNumber(cabezas)}</p>
+            <p style="color:#71717a;font-size:12px;margin:8px 0 0">cabezas faenadas</p>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+            <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;text-align:center">
+              <p style="color:#71717a;font-size:10px;margin:0 0 6px;text-transform:uppercase">vs mes anterior</p>
+              <p style="font-size:18px;margin:0">${formatChange(monthlyChange)}</p>
+            </div>
+            <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;text-align:center">
+              <p style="color:#71717a;font-size:10px;margin:0 0 6px;text-transform:uppercase">vs año anterior</p>
+              <p style="font-size:18px;margin:0">${formatChange(yearlyChange)}</p>
+            </div>
+          </div>
+
+          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;margin-bottom:20px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">Últimos 12 meses</p>
+            <p style="color:#fff;font-size:24px;font-weight:bold;margin:0">${formatNumber(total12Months)}</p>
+            <p style="color:#71717a;font-size:11px;margin:4px 0 0">cabezas faenadas (acumulado)</p>
+          </div>
+
+          <p style="color:#a1a1aa;font-size:11px;line-height:1.5;margin-bottom:16px">
+            Fuente: Secretaría de Agricultura, Ganadería y Pesca — datos.gob.ar
+          </p>
+
+          <div style="text-align:center;margin:20px 0">
+            <a href="${APP_URL}/frigorificos" style="background:#22c55e;color:#fff;padding:10px 24px;text-decoration:none;border-radius:4px;display:inline-block;font-size:12px;font-weight:bold;letter-spacing:1px">VER FRIGORÍFICOS</a>
+          </div>
+
+          <div style="border-top:1px solid #27272a;padding-top:12px;margin-top:20px">
+            <p style="color:#52525b;font-size:11px;margin:0">
+              <a href="${APP_URL}/remates" style="color:#52525b">Ver remates</a>
+              &nbsp;&bull;&nbsp;
+              <a href="${APP_URL}/mercado" style="color:#52525b">Precios del mercado</a>
+              &nbsp;&bull;&nbsp;
+              <a href="${APP_URL}/frigorificos" style="color:#52525b">Directorio</a>
+            </p>
+          </div>
+
+          <p style="color:#3f3f46;font-size:10px;margin:16px 0 0">
+            Recibís este email porque te suscribiste al reporte de faena.
+            <br>
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#3f3f46">Desuscribirme</a>
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
 export async function sendNewRemateAlert({
   to,
   remateTitle,
