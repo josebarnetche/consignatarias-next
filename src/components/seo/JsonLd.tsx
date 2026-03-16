@@ -567,3 +567,78 @@ export function SaaSPricingSchema({ plans }: { plans: PricingPlan[] }) {
     />
   );
 }
+
+// Speakable Schema for voice search optimization (Google Assistant, etc.)
+interface SpeakableSchemaProps {
+  url: string;
+  headline: string;
+  cssSelectors?: string[];
+}
+
+export function SpeakableSchema({
+  url,
+  headline,
+  cssSelectors = ['h1', '.speakable-content'],
+}: SpeakableSchemaProps) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': url,
+    name: headline,
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: cssSelectors,
+    },
+    url,
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+// HowTo Schema for instructional content
+interface HowToStep {
+  name: string;
+  text: string;
+  url?: string;
+  image?: string;
+}
+
+export function HowToSchema({
+  name,
+  description,
+  steps,
+  totalTime,
+}: {
+  name: string;
+  description: string;
+  steps: HowToStep[];
+  totalTime?: string;
+}) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name,
+    description,
+    ...(totalTime && { totalTime }),
+    step: steps.map((step, index) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: step.name,
+      text: step.text,
+      ...(step.url && { url: step.url }),
+      ...(step.image && { image: step.image }),
+    })),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
