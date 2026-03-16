@@ -104,7 +104,7 @@ export default function FAQPage() {
   return (
     <>
       <SectionBreadcrumbSchema section="preguntas-frecuentes" sectionName="Preguntas Frecuentes" />
-      <FAQPageSchema faqs={FAQS.map(f => ({ question: f.question, answer: f.answer }))} />
+      <FAQPageSchema items={FAQS.map(f => ({ question: f.question, answer: f.answer }))} />
       
       <div className="min-h-screen bg-gradient-to-b from-gray-950 to-black">
         {/* Header */}
