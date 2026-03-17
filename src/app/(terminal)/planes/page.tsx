@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import SubscribeButton from './SubscribeButton'
 import PlanesTracker from './PlanesTracker'
 import MobileStickyCTA from './MobileStickyCTA'
+import PlatformStats from './PlatformStats'
 import { SaaSPricingSchema, FAQPageSchema, SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 // Pricing data for schema
@@ -104,21 +105,8 @@ export default function PlanesPage() {
           Destaca tu perfil, accede a analytics y llega a mas productores.
         </p>
         
-        {/* Social Proof (Insight #61) */}
-        <div className="mt-4 flex flex-wrap gap-4 text-data">
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900/50 border border-terminal-border rounded">
-            <span className="text-positive font-terminal tabular-nums">70+</span>
-            <span className="text-zinc-500">consignatarias en el directorio</span>
-          </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900/50 border border-terminal-border rounded">
-            <span className="text-sky-400 font-terminal tabular-nums">345+</span>
-            <span className="text-zinc-500">remates trackeados</span>
-          </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900/50 border border-terminal-border rounded">
-            <span className="text-amber-400 font-terminal tabular-nums">364</span>
-            <span className="text-zinc-500">frigorificos registrados</span>
-          </div>
-        </div>
+        {/* Dynamic Social Proof (Insight #70) */}
+        <PlatformStats />
       </div>
 
       {/* Pricing Cards */}
