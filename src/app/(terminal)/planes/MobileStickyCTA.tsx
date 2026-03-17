@@ -43,7 +43,7 @@ export default function MobileStickyCTA() {
     }
 
     setLoading(true)
-    trackCheckoutStart(entitySlug || 'unknown', 'mobile_sticky')
+    trackCheckoutStart('PRO', 45000)
     
     try {
       const res = await fetch('/api/subscribe', {

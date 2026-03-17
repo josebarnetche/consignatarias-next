@@ -4,6 +4,7 @@ import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
 import { SectionBreadcrumbSchema, EventSchema } from '@/components/seo/JsonLd'
+import { AddToCalendarButton } from '@/components/ui/AddToCalendarButton'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import { 
   Calendar, 
@@ -359,44 +360,54 @@ export default async function RemateDetailPage({ params }: Props) {
               </div>
             )}
             
-            {/* External links */}
-            {(remate.catalogUrl || remate.youtubeUrl || remate.sourceUrl) && (
-              <div className="px-6 pb-6 flex flex-wrap gap-3">
-                {remate.catalogUrl && (
-                  <a
-                    href={remate.catalogUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-colors"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    Ver catálogo
-                  </a>
-                )}
-                {remate.youtubeUrl && (
-                  <a
-                    href={remate.youtubeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-medium transition-colors"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    Ver transmisión
-                  </a>
-                )}
-                {remate.sourceUrl && (
-                  <a
-                    href={remate.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    Fuente original
-                  </a>
-                )}
-              </div>
-            )}
+            {/* Action buttons */}
+            <div className="px-6 pb-6 flex flex-wrap gap-3">
+              {remate.catalogUrl && (
+                <a
+                  href={remate.catalogUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-colors"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Ver catálogo
+                </a>
+              )}
+              {remate.youtubeUrl && (
+                <a
+                  href={remate.youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-medium transition-colors"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Ver transmisión
+                </a>
+              )}
+              {!isPast && (
+                <AddToCalendarButton
+                  title={remate.title}
+                  description={remate.description || `Remate ${typeName.toLowerCase()} organizado por ${remate.consignatariaName}`}
+                  location={`${remate.location}, ${provinceName}, Argentina`}
+                  startDate={remate.date}
+                  startTime={remate.time}
+                  organizer={remate.consignatariaName}
+                  url={`https://www.consignatarias.com.ar/remates/${slug}`}
+                  className="text-sm !py-2"
+                />
+              )}
+              {remate.sourceUrl && (
+                <a
+                  href={remate.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Fuente original
+                </a>
+              )}
+            </div>
           </div>
           
           {/* Consignataria profile card */}

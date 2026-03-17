@@ -8,6 +8,7 @@ import { getEntityTier } from '@/lib/features'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { ConsignatariaProfileSchema, BreadcrumbSchema, EventSchema } from '@/components/seo/JsonLd'
+import { AddToCalendarButton } from '@/components/ui/AddToCalendarButton'
 
 const auctions = rematesData as Auction[]
 
@@ -228,6 +229,16 @@ export default async function GoLandingPage({ params }: Props) {
                     ▶️ Ver en Vivo
                   </a>
                 )}
+                <AddToCalendarButton
+                  title={`${nextRemate.type} - ${profile.displayName}`}
+                  description={nextRemate.title}
+                  location={nextRemate.location || nextRemate.province || 'Argentina'}
+                  startDate={nextRemate.date}
+                  startTime={nextRemate.time}
+                  organizer={profile.displayName}
+                  url={`https://www.consignatarias.com.ar/go/${canonical}`}
+                  className="flex-1 min-w-[140px]"
+                />
               </div>
             </div>
           )}
