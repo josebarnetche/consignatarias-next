@@ -251,6 +251,68 @@ export default function PlanesPage() {
         </div>
       </div>
 
+      {/* Trust Badges (Insight #62) */}
+      <div className="mt-6 flex flex-wrap justify-center gap-4 md:gap-6">
+        <div className="flex items-center gap-2 text-zinc-500 text-data">
+          <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+          <span>Pago seguro via Rebill</span>
+        </div>
+        <div className="flex items-center gap-2 text-zinc-500 text-data">
+          <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          <span>SSL encriptado</span>
+        </div>
+        <div className="flex items-center gap-2 text-zinc-500 text-data">
+          <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          <span>Cancela cuando quieras</span>
+        </div>
+        <div className="flex items-center gap-2 text-zinc-500 text-data">
+          <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+          </svg>
+          <span>Tarjeta credito/debito</span>
+        </div>
+      </div>
+
+      {/* Why PRO? Benefits (Insight #63) */}
+      <div className="mt-8 terminal-panel">
+        <div className="terminal-panel-header">Por que elegir PRO?</div>
+        <div className="px-panel py-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-amber-400 text-lg">📧</span>
+              <span className="text-zinc-200 text-sm font-medium">Llegá a más productores</span>
+            </div>
+            <p className="text-zinc-500 text-data">
+              Cada remate que publiques lo enviamos por email a toda nuestra base de suscriptores. Sin costo extra.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-amber-400 text-lg">📊</span>
+              <span className="text-zinc-200 text-sm font-medium">Medí tu impacto</span>
+            </div>
+            <p className="text-zinc-500 text-data">
+              Analytics de perfil: vistas, clicks, consultas. Sabé cuántos productores te encuentran cada semana.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-amber-400 text-lg">🏆</span>
+              <span className="text-zinc-200 text-sm font-medium">Destacate de la competencia</span>
+            </div>
+            <p className="text-zinc-500 text-data">
+              Badge PRO dorado, perfil verificado, landing personalizada. Tu consignataria se ve profesional.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* FAQ / Details */}
       <div className="mt-8 terminal-panel">
         <div className="terminal-panel-header">Preguntas frecuentes</div>
