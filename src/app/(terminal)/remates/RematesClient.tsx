@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { normalizeUrl } from '@/lib/utils/url'
@@ -582,11 +583,19 @@ function AddRemateModal({ onClose }: { onClose: () => void }) {
 /* ------------------------------------------------------------------ */
 
 export default function RematesPage() {
+  const searchParams = useSearchParams()
   const [period, setPeriod] = useState<Period>('proximos')
   const [filterProvince, setFilterProvince] = useState('')
   const [filterType, setFilterType] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
   const [showAddModal, setShowAddModal] = useState(false)
   const [featuredSlugs, setFeaturedSlugs] = useState<Set<string>>(new Set())
+
+  // Initialize search from URL `q` param (for Google Sitelinks Searchbox)
+  useEffect(() => {
+    const q = searchParams.get('q')
+    if (q) setSearchQuery(q)
+  }, [searchParams])
 
   // Fetch featured consignataria slugs from Supabase
   useEffect(() => {
@@ -650,8 +659,18 @@ export default function RematesPage() {
     let result = baseAuctions
     if (filterProvince) result = result.filter((a) => a.province === filterProvince)
     if (filterType) result = result.filter((a) => a.type === filterType)
+    // Text search: matches consignataria name, location, or type
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase()
+      result = result.filter((a) =>
+        a.consignatariaName.toLowerCase().includes(q) ||
+        (a.location && a.location.toLowerCase().includes(q)) ||
+        a.type.toLowerCase().includes(q) ||
+        a.province.toLowerCase().includes(q)
+      )
+    }
     return result
-  }, [baseAuctions, filterProvince, filterType])
+  }, [baseAuctions, filterProvince, filterType, searchQuery])
 
   /* ---- Dropdown options ---- */
   const provinces = useMemo(() => [...new Set(auctions.map((a) => a.province))].sort(), [auctions])
@@ -745,6 +764,26 @@ export default function RematesPage() {
 
           {/* Filters */}
           <div className="flex items-center gap-2">
+            {/* Search input */}
+            <div className="relative">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Buscar..."
+                className="terminal-input text-xxs w-24 sm:w-32 pl-2 pr-6 py-1 bg-zinc-900 border border-terminal-border rounded-terminal focus:border-accent focus:outline-none placeholder:text-zinc-600"
+                aria-label="Buscar remates"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-negative text-xs"
+                  aria-label="Limpiar búsqueda"
+                >
+                  ×
+                </button>
+              )}
+            </div>
             <TerminalSelect
               value={filterProvince}
               onChange={(v: string) => { setFilterProvince(v); if (v) trackFilterApply('province', v) }}
@@ -757,11 +796,12 @@ export default function RematesPage() {
               options={types}
               placeholder="Tipo"
             />
-            {(filterProvince || filterType) && (
+            {(filterProvince || filterType || searchQuery) && (
               <button
                 onClick={() => {
                   setFilterProvince('')
                   setFilterType('')
+                  setSearchQuery('')
                 }}
                 className="text-xxs text-zinc-500 hover:text-negative font-terminal transition-colors px-2 py-1"
                 title="Limpiar filtros"
@@ -773,9 +813,15 @@ export default function RematesPage() {
         </div>
 
         {/* -- Active filter pills ------------------------------------ */}
-        {(filterProvince || filterType) && (
+        {(filterProvince || filterType || searchQuery) && (
           <div className="border-b border-terminal-border px-panel py-1.5 flex items-center gap-2 flex-wrap">
             <span className="text-xxs text-zinc-500 font-terminal">Filtros:</span>
+            {searchQuery && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xxs bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded-terminal">
+                <span>&quot;{searchQuery}&quot;</span>
+                <button onClick={() => setSearchQuery('')} className="hover:text-sky-300 transition-colors" aria-label="Quitar búsqueda">&times;</button>
+              </span>
+            )}
             {filterProvince && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xxs bg-accent/10 text-accent border border-accent/20 rounded-terminal">
                 <span>{filterProvince}</span>
