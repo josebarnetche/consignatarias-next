@@ -102,6 +102,22 @@ export default function PlanesPage() {
           Elegi el plan que mejor se adapte a tu consignataria o frigorifico.
           Destaca tu perfil, accede a analytics y llega a mas productores.
         </p>
+        
+        {/* Social Proof (Insight #61) */}
+        <div className="mt-4 flex flex-wrap gap-4 text-data">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900/50 border border-terminal-border rounded">
+            <span className="text-positive font-terminal tabular-nums">70+</span>
+            <span className="text-zinc-500">consignatarias en el directorio</span>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900/50 border border-terminal-border rounded">
+            <span className="text-sky-400 font-terminal tabular-nums">345+</span>
+            <span className="text-zinc-500">remates trackeados</span>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900/50 border border-terminal-border rounded">
+            <span className="text-amber-400 font-terminal tabular-nums">364</span>
+            <span className="text-zinc-500">frigorificos registrados</span>
+          </div>
+        </div>
       </div>
 
       {/* Pricing Cards */}
@@ -179,6 +195,12 @@ export default function PlanesPage() {
             <p className="text-zinc-400 text-data mb-4">
               Cada remate que publiques lo enviamos por email a todos nuestros suscriptores. Todo el año.
             </p>
+            {/* Early adopter badge (Insight #61b) */}
+            <div className="mb-4 px-2 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded text-center">
+              <span className="text-emerald-400 text-xxs font-terminal uppercase tracking-wider">
+                🎁 Early adopter: precio congelado de por vida
+              </span>
+            </div>
             <ul className="space-y-2 mb-6 flex-1">
               {PRO_FEATURES.map((f) => (
                 <li
