@@ -82,11 +82,7 @@ export default function ReporteSemanalPage() {
         name="Reporte Semanal del Mercado Ganadero"
         description="Generador de reportes semanales con precios INMAG, próximos remates y tendencias del mercado ganadero argentino. Descarga en PDF."
         url="https://www.consignatarias.com.ar/reporte-semanal"
-        category="FinanceApplication"
-        offers={{
-          price: 0,
-          priceCurrency: 'ARS',
-        }}
+        applicationCategory="FinanceApplication"
         features={[
           'Precios INMAG en tiempo real',
           'Próximos remates de la semana',

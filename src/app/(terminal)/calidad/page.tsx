@@ -21,10 +21,9 @@ export default function CalidadPage() {
     <>
       <SectionBreadcrumbSchema section="calidad" sectionName="Calidad de Datos" />
       <TechArticleSchema
-        headline="Calidad de Datos y Metodología — Consignatarias.com.ar"
+        name="Calidad de Datos y Metodología — Consignatarias.com.ar"
         description="Fuentes de datos, metodología de recolección, validación y frescura de la información ganadera en Consignatarias.com.ar. 9 fuentes oficiales, actualización diaria."
         url="https://www.consignatarias.com.ar/calidad"
-        keywords={['datos ganaderos', 'metodología', 'fuentes de datos', 'API ganadera', 'scraping']}
       />
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         {/* Title */}

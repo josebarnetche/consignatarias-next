@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { Suspense } from 'react'
 import RematesClient from './RematesClient'
 import rematesData from '@/lib/data/remates.json'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
@@ -118,7 +119,9 @@ export default function RematesPage() {
           />
         </div>
       </section>
-      <RematesClient />
+      <Suspense fallback={<div className="p-4 text-zinc-500">Cargando remates...</div>}>
+        <RematesClient />
+      </Suspense>
     </>
   )
 }
