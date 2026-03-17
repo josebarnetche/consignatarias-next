@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { PriceSparkline, InlineSparkline } from '@/components/PriceSparkline'
 
 const inmag = marketData.inmag
 const series = inmag.series as Array<{ date: string; value: number }>
@@ -140,6 +141,18 @@ export default function InmagPage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Visual Price Chart */}
+        <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-medium text-zinc-400">Tendencia de Precios</h2>
+            <div className="flex items-center gap-2 text-xs text-zinc-500">
+              <InlineSparkline data={recentSeries} width={48} height={16} />
+              <span>Últimos 30 días</span>
+            </div>
+          </div>
+          <PriceSparkline data={recentSeries} height={120} />
         </div>
 
         {/* Historical data */}
