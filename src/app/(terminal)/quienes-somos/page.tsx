@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, OrganizationSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Quienes Somos | Consignatarias.com.ar',
@@ -19,6 +19,7 @@ export default function QuienesSomosPage() {
   return (
     <>
       <SectionBreadcrumbSchema section="quienes-somos" sectionName="Quienes Somos" />
+      <OrganizationSchema />
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         {/* Title */}
         <h1 className="text-zinc-100 text-2xl font-medium mb-6">Quienes Somos</h1>

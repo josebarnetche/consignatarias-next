@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import OverviewClient from './OverviewClient'
+import { SectionBreadcrumbSchema, WebApplicationSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Terminal de Mercado Ganadero Argentino',
@@ -22,5 +23,24 @@ export const metadata: Metadata = {
 }
 
 export default function OverviewPage() {
-  return <OverviewClient />
+  return (
+    <>
+      <SectionBreadcrumbSchema section="overview" sectionName="Terminal" />
+      <WebApplicationSchema
+        name="Terminal de Mercado Ganadero Argentino"
+        description="Dashboard unificado con remates próximos, precios INMAG, frigoríficos y referencias macro del mercado ganadero argentino."
+        url="https://www.consignatarias.com.ar/overview"
+        applicationCategory="FinanceApplication"
+        features={[
+          'Remates programados',
+          'Precios INMAG en tiempo real',
+          'Índice de frigoríficos',
+          'Cotización dólar',
+          'Precio maíz FOB',
+          'Estadísticas de mercado',
+        ]}
+      />
+      <OverviewClient />
+    </>
+  )
 }
