@@ -89,8 +89,8 @@ export function trackProfileView(slug: string, displayName: string, auctionCount
   })
 }
 
-/** User clicked an external link (catalog, youtube, source) */
-export function trackOutboundClick(url: string, linkType: 'catalog' | 'youtube' | 'source' | 'whatsapp' | 'website') {
+/** User clicked an external link (catalog, youtube, source, whatsapp) */
+export function trackOutboundClick(url: string, linkType: 'catalog' | 'youtube' | 'source' | 'whatsapp' | 'whatsapp_fab' | 'website') {
   trackEvent('outbound_click', {
     url,
     link_type: linkType,

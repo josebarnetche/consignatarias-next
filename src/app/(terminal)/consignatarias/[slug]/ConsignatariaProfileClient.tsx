@@ -27,6 +27,7 @@ import {
 import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge, { VerifiedBadge } from '@/components/badges/ProBadge'
 import VideoGallery, { type ConsignatariaVideo } from '@/components/video/VideoGallery'
+import WhatsAppFAB from '@/components/WhatsAppFAB'
 import type { RelatedConsignataria } from '@/lib/dal/consignatarias'
 
 /* ------------------------------------------------------------------ */
@@ -995,6 +996,16 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           Reportar error
         </a>
       </div>
+
+      {/* ============================================================ */}
+      {/*  WHATSAPP FAB (Insight #59)                                   */}
+      {/* ============================================================ */}
+      {profile.whatsapp && (
+        <WhatsAppFAB
+          whatsapp={profile.whatsapp}
+          consignatariaName={profile.displayName}
+        />
+      )}
     </div>
   )
 }
