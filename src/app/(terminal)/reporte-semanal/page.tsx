@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import ReporteSemanalClient from './ReporteSemanalClient'
-import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, WebApplicationSchema } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
@@ -78,6 +78,22 @@ export default function ReporteSemanalPage() {
   return (
     <>
       <SectionBreadcrumbSchema section="reporte-semanal" sectionName="Reporte Semanal" />
+      <WebApplicationSchema
+        name="Reporte Semanal del Mercado Ganadero"
+        description="Generador de reportes semanales con precios INMAG, próximos remates y tendencias del mercado ganadero argentino. Descarga en PDF."
+        url="https://www.consignatarias.com.ar/reporte-semanal"
+        category="FinanceApplication"
+        offers={{
+          price: 0,
+          priceCurrency: 'ARS',
+        }}
+        features={[
+          'Precios INMAG en tiempo real',
+          'Próximos remates de la semana',
+          'Tendencias del mercado',
+          'Descarga en PDF',
+        ]}
+      />
       <ReporteSemanalClient data={reportData} />
     </>
   )

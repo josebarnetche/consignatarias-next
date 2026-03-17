@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Calidad de Datos — Consignatarias.com.ar',
@@ -20,6 +20,12 @@ export default function CalidadPage() {
   return (
     <>
       <SectionBreadcrumbSchema section="calidad" sectionName="Calidad de Datos" />
+      <TechArticleSchema
+        headline="Calidad de Datos y Metodología — Consignatarias.com.ar"
+        description="Fuentes de datos, metodología de recolección, validación y frescura de la información ganadera en Consignatarias.com.ar. 9 fuentes oficiales, actualización diaria."
+        url="https://www.consignatarias.com.ar/calidad"
+        keywords={['datos ganaderos', 'metodología', 'fuentes de datos', 'API ganadera', 'scraping']}
+      />
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         {/* Title */}
         <h1 className="text-zinc-100 text-2xl font-medium mb-6">Calidad de Datos &amp; Metodologia</h1>
