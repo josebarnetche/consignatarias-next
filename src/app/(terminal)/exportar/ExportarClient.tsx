@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 
 const PROVINCIAS = [
   'BUENOS AIRES', 'SANTA FE', 'CORDOBA', 'CHACO', 'SAN LUIS',
@@ -248,6 +249,13 @@ export default function ExportarClient() {
             ))}
           </div>
         </div>
+        
+        {/* PRO Upgrade Prompt */}
+        <ProUpgradePrompt
+          benefit="Accedé a datos históricos y formatos API con PRO"
+          context="exportar"
+          variant="card"
+        />
       </div>
     </div>
   )

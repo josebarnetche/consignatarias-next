@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
+import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 
 interface MarketPrices {
   inmag: { current: number; prev: number; change: number }
@@ -280,6 +281,13 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
               </p>
             </div>
           </div>
+          
+          {/* PRO Upgrade Prompt */}
+          <ProUpgradePrompt
+            benefit="Guardá tus cálculos y accedé al historial"
+            context="calculadora"
+            variant="card"
+          />
         </div>
       )}
 
