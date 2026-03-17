@@ -4,6 +4,7 @@ import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
 import { SectionBreadcrumbSchema, EventSchema } from '@/components/seo/JsonLd'
+import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import { 
   Calendar, 
   Clock, 
@@ -444,6 +445,15 @@ export default async function RemateDetailPage({ params }: Props) {
                     </Link>
                   )
                 })}
+              </div>
+              
+              {/* PRO Alert Prompt */}
+              <div className="mt-4">
+                <ProUpgradePrompt
+                  benefit="Recibí alertas para remates de este tipo"
+                  context="remate-detail"
+                  variant="inline"
+                />
               </div>
             </div>
           )}
