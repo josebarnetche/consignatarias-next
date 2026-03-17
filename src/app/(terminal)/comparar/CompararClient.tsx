@@ -2,6 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import ProUpgradePrompt from '@/components/ProUpgradePrompt'
+
+const FREE_LIMIT = 3
+const PRO_LIMIT = 5
 
 interface ConsignatariaStats {
   slug: string
@@ -42,10 +46,12 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
   function toggleSelect(slug: string) {
     if (selected.includes(slug)) {
       setSelected(selected.filter(s => s !== slug))
-    } else if (selected.length < 4) {
+    } else if (selected.length < FREE_LIMIT) {
       setSelected([...selected, slug])
     }
   }
+
+  const atFreeLimit = selected.length >= FREE_LIMIT
 
   async function saveEmail() {
     if (!email.trim() || emailSaved) return
@@ -77,9 +83,18 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
           Comparar Consignatarias
         </h1>
         <p className="text-zinc-400 text-sm leading-relaxed">
-          Seleccioná hasta 4 consignatarias para comparar lado a lado. 
+          Seleccioná hasta {FREE_LIMIT} consignatarias para comparar lado a lado. 
           Analizá remates programados, cobertura geográfica y tipos de operación.
         </p>
+        {atFreeLimit && (
+          <div className="mt-4">
+            <ProUpgradePrompt 
+              benefit={`Compará hasta ${PRO_LIMIT} consignatarias con PRO`}
+              context="comparar"
+              variant="card"
+            />
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -87,7 +102,7 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
         <div className="lg:col-span-1">
           <div className="terminal-panel sticky top-4">
             <div className="terminal-panel-header">
-              Seleccionar ({selected.length}/4)
+              Seleccionar ({selected.length}/{FREE_LIMIT})
             </div>
             
             {/* Search */}
@@ -107,12 +122,12 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                 <button
                   key={c.slug}
                   onClick={() => toggleSelect(c.slug)}
-                  disabled={!selected.includes(c.slug) && selected.length >= 4}
+                  disabled={!selected.includes(c.slug) && atFreeLimit}
                   className={`w-full px-panel py-3 text-left border-b border-terminal-border transition-colors
                     ${selected.includes(c.slug) 
                       ? 'bg-accent/10 border-l-2 border-l-accent' 
                       : 'hover:bg-zinc-800/50'}
-                    ${!selected.includes(c.slug) && selected.length >= 4 
+                    ${!selected.includes(c.slug) && atFreeLimit 
                       ? 'opacity-50 cursor-not-allowed' 
                       : 'cursor-pointer'}
                   `}
