@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import SubscribeButton from './SubscribeButton'
+import PlanesTracker from './PlanesTracker'
 import { SaaSPricingSchema, FAQPageSchema, SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 // Pricing data for schema
@@ -83,6 +84,9 @@ const ENTERPRISE_FEATURES = [
 export default function PlanesPage() {
   return (
     <>
+      {/* Analytics: Track page view with conversion source */}
+      <PlanesTracker />
+      
       {/* SEO Schema Markup */}
       <SaaSPricingSchema plans={PRICING_PLANS} />
       <FAQPageSchema items={FAQ_ITEMS} />

@@ -137,3 +137,47 @@ export function trackClaimSuccess(slug: string, displayName: string) {
     consignataria_name: displayName,
   })
 }
+
+/* ------------------------------------------------------------------ */
+/*  PRO CONVERSION FUNNEL                                              */
+/* ------------------------------------------------------------------ */
+
+/** PRO upgrade prompt was shown to user */
+export function trackProPromptView(context: string, variant: 'inline' | 'card') {
+  trackEvent('pro_prompt_view', {
+    prompt_context: context,
+    prompt_variant: variant,
+  })
+}
+
+/** User clicked PRO upgrade prompt CTA */
+export function trackProPromptClick(context: string, variant: 'inline' | 'card') {
+  trackEvent('pro_prompt_click', {
+    prompt_context: context,
+    prompt_variant: variant,
+  })
+}
+
+/** User landed on /planes page */
+export function trackPlanesView(source: string | null) {
+  trackEvent('planes_view', {
+    source: source || 'direct',
+  })
+}
+
+/** User started checkout process */
+export function trackCheckoutStart(plan: string, price: number) {
+  trackEvent('checkout_start', {
+    plan_name: plan,
+    plan_price: price,
+  })
+}
+
+/** User completed PRO upgrade */
+export function trackProUpgrade(plan: string, price: number, source: string | null) {
+  trackEvent('pro_upgrade', {
+    plan_name: plan,
+    plan_price: price,
+    conversion_source: source || 'direct',
+  })
+}

@@ -1,6 +1,8 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect, useRef } from 'react'
+import { trackProPromptView, trackProPromptClick } from '@/lib/analytics'
 
 interface ProUpgradePromptProps {
   /** Main benefit text (e.g. "Compará hasta 5 consignatarias") */
@@ -17,6 +19,7 @@ interface ProUpgradePromptProps {
  * Contextual PRO upgrade prompt - non-blocking, value-focused.
  * 
  * Shows at moments of engagement to convert free users.
+ * Tracks impressions and clicks for conversion funnel analysis.
  * 
  * Usage:
  *   <ProUpgradePrompt 
@@ -26,11 +29,24 @@ interface ProUpgradePromptProps {
  */
 export default function ProUpgradePrompt({
   benefit,
-  context,
+  context = 'unknown',
   ctaText = 'Ver planes PRO',
   variant = 'inline',
 }: ProUpgradePromptProps) {
-  const href = context ? `/planes?from=${context}` : '/planes'
+  const href = `/planes?from=${context}`
+  const hasTrackedImpression = useRef(false)
+
+  // Track impression once when component mounts
+  useEffect(() => {
+    if (!hasTrackedImpression.current) {
+      trackProPromptView(context, variant)
+      hasTrackedImpression.current = true
+    }
+  }, [context, variant])
+
+  const handleClick = () => {
+    trackProPromptClick(context, variant)
+  }
 
   if (variant === 'card') {
     return (
@@ -49,6 +65,7 @@ export default function ProUpgradePrompt({
           </div>
           <Link
             href={href}
+            onClick={handleClick}
             className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-500/20 hover:border-amber-500/50 transition-colors"
           >
             {ctaText}
@@ -66,6 +83,7 @@ export default function ProUpgradePrompt({
         {benefit} ·{' '}
         <Link
           href={href}
+          onClick={handleClick}
           className="text-amber-400 hover:text-amber-300 underline underline-offset-2"
         >
           {ctaText}
