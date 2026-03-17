@@ -642,3 +642,50 @@ export function HowToSchema({
     />
   );
 }
+
+// WebApplication Schema for interactive tools (calculators, comparators)
+interface WebApplicationSchemaProps {
+  name: string;
+  description: string;
+  url: string;
+  applicationCategory?: string;
+  features?: string[];
+}
+
+export function WebApplicationSchema({
+  name,
+  description,
+  url,
+  applicationCategory = 'UtilityApplication',
+  features = [],
+}: WebApplicationSchemaProps) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name,
+    description,
+    url,
+    applicationCategory,
+    operatingSystem: 'Web browser',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'ARS',
+    },
+    ...(features.length > 0 && {
+      featureList: features.join(', '),
+    }),
+    provider: {
+      '@type': 'Organization',
+      name: 'Consignatarias.com.ar',
+      url: 'https://www.consignatarias.com.ar',
+    },
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}

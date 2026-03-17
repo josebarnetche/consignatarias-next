@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import CalculadoraClient from './CalculadoraClient'
-import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, WebApplicationSchema } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
 
 export const metadata: Metadata = {
@@ -21,6 +21,20 @@ export default function CalculadoraPage() {
   return (
     <>
       <SectionBreadcrumbSchema section="calculadora" sectionName="Calculadora" />
+      <WebApplicationSchema
+        name="Calculadora de Precios de Hacienda"
+        description="Herramienta gratuita para calcular el valor estimado de tu hacienda con precios INMAG actualizados."
+        url="https://www.consignatarias.com.ar/calculadora"
+        applicationCategory="FinanceApplication"
+        features={[
+          'Cálculo de valor de novillos',
+          'Cálculo de valor de terneros',
+          'Cálculo de valor de vaquillonas',
+          'Cálculo de valor de vacas',
+          'Cálculo de valor de toros',
+          'Precios INMAG actualizados',
+        ]}
+      />
       <CalculadoraClient prices={marketPrices} />
     </>
   )

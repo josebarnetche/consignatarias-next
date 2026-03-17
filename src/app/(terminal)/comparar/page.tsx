@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import CompararClient from './CompararClient'
-import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, WebApplicationSchema } from '@/components/seo/JsonLd'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
@@ -65,6 +65,19 @@ export default async function CompararPage() {
   return (
     <>
       <SectionBreadcrumbSchema section="comparar" sectionName="Comparar" />
+      <WebApplicationSchema
+        name="Comparar Consignatarias"
+        description="Herramienta para comparar consignatarias de hacienda lado a lado: remates, provincias, tipos y más."
+        url="https://www.consignatarias.com.ar/comparar"
+        applicationCategory="UtilityApplication"
+        features={[
+          'Comparación lado a lado',
+          'Hasta 3 consignatarias',
+          'Total de remates',
+          'Provincias de operación',
+          'Tipos de remate',
+        ]}
+      />
       <CompararClient consignatarias={consignatariaStats} />
     </>
   )
