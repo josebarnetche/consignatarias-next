@@ -201,6 +201,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }))
 
+  // Individual remate detail pages (scheduled/completed only)
+  // Slug format: {consignatariaSlug}-{type}-{province}-{date}
+  const remateDetailPages: MetadataRoute.Sitemap = (rematesData as {
+    consignatariaSlug: string
+    type: string
+    province: string
+    date: string
+    status: string
+  }[])
+    .filter((r) => r.status === 'scheduled' || r.status === 'completed')
+    .map((r) => {
+      const slug = [
+        r.consignatariaSlug || 'remate',
+        r.type || 'general',
+        r.province?.toLowerCase().replace(/\s+/g, '-') || 'argentina',
+        r.date,
+      ].join('-')
+      return {
+        url: `${baseUrl}/remates/${slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.5,
+      }
+    })
+
   // NOTE: /verificar pages intentionally excluded — thin form pages
   // that dilute crawl budget. They have robots noindex set.
 
@@ -211,5 +236,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...provinceTypePages,
     ...consignatariaPages,
     ...frigorificoPages,
+    ...remateDetailPages,
   ]
 }
