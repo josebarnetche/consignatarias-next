@@ -106,3 +106,84 @@ export function downloadICSFile(event: ICSEventParams, filename: string): void {
   document.body.removeChild(link)
   URL.revokeObjectURL(url)
 }
+
+/**
+ * Generate ICS content for multiple events (bulk export)
+ */
+export function generateBulkICSContent(events: ICSEventParams[]): string {
+  const now = new Date()
+  const timestamp = formatDateForICS(
+    now.toISOString().slice(0, 10),
+    now.toISOString().slice(11, 16)
+  )
+
+  const vevents = events.map(event => {
+    const startDateTime = formatDateForICS(event.startDate, event.startTime)
+    const durationMs = (event.durationHours || 4) * 60 * 60 * 1000
+    
+    const startDate = new Date(event.startDate + 'T' + (event.startTime || '10:00'))
+    const endDate = new Date(startDate.getTime() + durationMs)
+    const endDateTime = formatDateForICS(
+      endDate.toISOString().slice(0, 10),
+      endDate.toISOString().slice(11, 16)
+    )
+
+    const description = escapeICSText(
+      event.description + 
+      (event.url ? `\\n\\nMás información: ${event.url}` : '') +
+      (event.organizer ? `\\n\\nOrganiza: ${event.organizer}` : '')
+    )
+
+    return [
+      'BEGIN:VEVENT',
+      `UID:${generateUID()}`,
+      `DTSTAMP:${timestamp}`,
+      `DTSTART:${startDateTime}`,
+      `DTEND:${endDateTime}`,
+      `SUMMARY:${escapeICSText(event.title)}`,
+      `DESCRIPTION:${description}`,
+      `LOCATION:${escapeICSText(event.location)}`,
+      event.url ? `URL:${event.url}` : '',
+      'STATUS:CONFIRMED',
+      'BEGIN:VALARM',
+      'TRIGGER:-P1D',
+      'ACTION:DISPLAY',
+      'DESCRIPTION:Remate mañana',
+      'END:VALARM',
+      'BEGIN:VALARM',
+      'TRIGGER:-PT2H',
+      'ACTION:DISPLAY',
+      'DESCRIPTION:Remate en 2 horas',
+      'END:VALARM',
+      'END:VEVENT',
+    ].filter(Boolean).join('\r\n')
+  })
+
+  return [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//consignatarias.com.ar//NONSGML Remates//ES',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'X-WR-CALNAME:Remates Ganaderos',
+    ...vevents,
+    'END:VCALENDAR',
+  ].join('\r\n')
+}
+
+/**
+ * Download bulk ICS file with multiple events
+ */
+export function downloadBulkICSFile(events: ICSEventParams[], filename: string): void {
+  const content = generateBulkICSContent(events)
+  const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}

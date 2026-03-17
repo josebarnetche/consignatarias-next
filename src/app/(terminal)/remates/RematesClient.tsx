@@ -20,7 +20,8 @@ import {
 } from '@/lib/ui/tokens'
 import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge from '@/components/badges/ProBadge'
-import { trackAuctionClick, trackFilterApply, trackOutboundClick } from '@/lib/analytics'
+import { trackAuctionClick, trackFilterApply, trackOutboundClick, trackEvent } from '@/lib/analytics'
+import { downloadBulkICSFile } from '@/lib/utils/ics'
 
 /* ------------------------------------------------------------------ */
 /*  CONSTANTS                                                          */
@@ -680,6 +681,43 @@ export default function RematesPage() {
   const totalHeads = auctions.reduce((s, a) => s + (a.estimatedHeads ?? 0), 0)
   const uniqueProvinces = new Set(auctions.map((a) => a.province)).size
 
+  /* ---- Bulk ICS Export handler ---- */
+  const handleBulkExport = () => {
+    if (filteredAuctions.length === 0) return
+    
+    const events = filteredAuctions.map(auction => ({
+      title: `🐄 ${auction.title} — ${auction.consignatariaName}`,
+      description: [
+        auction.description,
+        auction.estimatedHeads ? `Cabezas estimadas: ~${auction.estimatedHeads.toLocaleString('es-AR')}` : null,
+        `Tipo: ${TYPE_LABELS[auction.type] || auction.type}`,
+        `Categoría: ${CAT_LABELS[auction.mainCategory]}`,
+      ].filter(Boolean).join('\n'),
+      location: auction.location || auction.province,
+      startDate: auction.date,
+      startTime: auction.time || undefined,
+      durationHours: 4,
+      url: `https://consignatarias.com.ar/remates/${auction.id}`,
+      organizer: auction.consignatariaName,
+    }))
+    
+    // Generate filename with filters
+    const filterParts = [
+      'remates',
+      filterProvince ? filterProvince.toLowerCase().replace(/\s+/g, '-') : null,
+      filterType || null,
+      period,
+    ].filter(Boolean)
+    const filename = `${filterParts.join('-')}.ics`
+    
+    downloadBulkICSFile(events, filename)
+    trackEvent('bulk_ics_export', { 
+      count: events.length, 
+      period, 
+      hasFilters: !!(filterProvince || filterType || searchQuery) 
+    })
+  }
+
   /* ---- Render ---- */
   return (
     <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 space-y-0">
@@ -807,6 +845,20 @@ export default function RematesPage() {
                 title="Limpiar filtros"
               >
                 LIMPIAR
+              </button>
+            )}
+            {/* Bulk ICS Export */}
+            {filteredAuctions.length > 0 && period === 'proximos' && (
+              <button
+                onClick={handleBulkExport}
+                className="terminal-btn text-xxs px-2 py-1 flex items-center gap-1.5 hover:border-accent hover:text-accent"
+                title={`Exportar ${filteredAuctions.length} remates al calendario`}
+              >
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span className="hidden sm:inline">EXPORTAR</span>
+                <span className="tabular-nums text-zinc-500">{filteredAuctions.length}</span>
               </button>
             )}
           </div>
