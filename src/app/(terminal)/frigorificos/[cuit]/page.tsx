@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import { getFrigorificoProfile } from '@/lib/dal/frigorificos'
+import { BreadcrumbSchema } from '@/components/seo/JsonLd'
 
 interface BasicFrigorifico {
   cuit: string
@@ -168,6 +169,11 @@ export default async function FrigorificoDetailPage({
         direccion={direccion}
         stage={basicF.stage}
       />
+      <BreadcrumbSchema items={[
+        { name: 'Inicio', url: 'https://www.consignatarias.com.ar' },
+        { name: 'Frigoríficos', url: 'https://www.consignatarias.com.ar/frigorificos' },
+        { name: `Mat. ${basicF.matricula}`, url: `https://www.consignatarias.com.ar/frigorificos/${cuit}` },
+      ]} />
     <div className="max-w-2xl mx-auto px-2 sm:px-4 py-4 space-y-4">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-xxs font-terminal text-zinc-500">

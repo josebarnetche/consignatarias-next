@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { getCanonicalSlug, getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
+import { BreadcrumbSchema, WebApplicationSchema } from '@/components/seo/JsonLd'
 
 const auctions = rematesData as Auction[]
 
@@ -52,6 +53,21 @@ export default async function CalendarioPage({ params }: Props) {
   
   return (
     <div className="min-h-screen bg-zinc-950">
+      {/* SEO Schema */}
+      <BreadcrumbSchema items={[
+        { name: 'Inicio', url: 'https://www.consignatarias.com.ar' },
+        { name: 'Consignatarias', url: 'https://www.consignatarias.com.ar/consignatarias' },
+        { name: profile.displayName, url: `https://www.consignatarias.com.ar/consignatarias/${canonical}` },
+        { name: 'Calendario', url: `https://www.consignatarias.com.ar/calendario/${canonical}` },
+      ]} />
+      <WebApplicationSchema
+        name={`Calendario de ${profile.displayName}`}
+        description={`Suscribite al calendario de remates de ${profile.displayName}. Recibí notificaciones automáticas.`}
+        url={`https://www.consignatarias.com.ar/calendario/${canonical}`}
+        applicationCategory="UtilityApplication"
+        features={['Sincronización Google Calendar', 'Apple Calendar', 'Outlook', 'Notificaciones automáticas']}
+      />
+
       <div className="max-w-xl mx-auto px-4 py-12">
         
         {/* Header */}
