@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import ExportarClient from './ExportarClient'
-import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, WebApplicationSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Exportar Datos de Remates | Consignatarias.com.ar',
@@ -20,6 +20,20 @@ export default function ExportarPage() {
   return (
     <>
       <SectionBreadcrumbSchema section="exportar" sectionName="Exportar" />
+      <WebApplicationSchema
+        name="Exportar Datos de Remates"
+        description="Herramienta para descargar datos de remates ganaderos en formato CSV o JSON con filtros avanzados."
+        url="https://www.consignatarias.com.ar/exportar"
+        applicationCategory="DeveloperApplication"
+        features={[
+          'Exportación CSV',
+          'Exportación JSON',
+          'Filtro por provincia',
+          'Filtro por tipo de remate',
+          'Filtro por fecha',
+          'Descarga ilimitada para PRO',
+        ]}
+      />
       <ExportarClient />
     </>
   )
