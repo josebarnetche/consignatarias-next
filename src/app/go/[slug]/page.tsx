@@ -7,6 +7,7 @@ import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
 import { getEntityTier } from '@/lib/features'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
+import { ConsignatariaProfileSchema, BreadcrumbSchema, EventSchema } from '@/components/seo/JsonLd'
 
 const auctions = rematesData as Auction[]
 
@@ -106,6 +107,33 @@ export default async function GoLandingPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-900 to-black">
+      {/* SEO Schema */}
+      <ConsignatariaProfileSchema
+        name={profile.displayName}
+        slug={canonical}
+        provincia={profileAuctions[0]?.province || 'Argentina'}
+        localidad={profileAuctions[0]?.location}
+        totalRemates={profileAuctions.length}
+        isPro={isPro}
+        description={`${profile.displayName} - Consignataria de hacienda. ${upcoming.length} remates programados.`}
+      />
+      <BreadcrumbSchema items={[
+        { name: 'Inicio', url: 'https://www.consignatarias.com.ar' },
+        { name: 'Consignatarias', url: 'https://www.consignatarias.com.ar/consignatarias' },
+        { name: profile.displayName, url: `https://www.consignatarias.com.ar/go/${canonical}` },
+      ]} />
+      {nextRemate && (
+        <EventSchema
+          name={`Remate ${nextRemate.type} - ${profile.displayName}`}
+          description={nextRemate.title}
+          startDate={nextRemate.time ? `${nextRemate.date}T${nextRemate.time}:00` : `${nextRemate.date}T10:00:00`}
+          location={{ name: nextRemate.location || 'Argentina', address: nextRemate.province || 'Argentina' }}
+          organizer={profile.displayName}
+          url={`https://www.consignatarias.com.ar/go/${canonical}`}
+          eventAttendanceMode={nextRemate.youtubeUrl ? 'mixed' : 'offline'}
+        />
+      )}
+
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         {/* Background pattern */}
