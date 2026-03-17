@@ -5,6 +5,7 @@ interface OrganizationSchemaProps {
   url?: string;
   logo?: string;
   description?: string;
+  email?: string;
 }
 
 export function OrganizationSchema({
@@ -12,6 +13,7 @@ export function OrganizationSchema({
   url = 'https://www.consignatarias.com.ar',
   logo = 'https://www.consignatarias.com.ar/logo.png',
   description = 'Plataforma de inteligencia del mercado ganadero argentino. Calendario unificado de remates, directorio de frigoríficos y precios INMAG.',
+  email = 'agro@memola.com.ar',
 }: OrganizationSchemaProps) {
   const schema = {
     '@context': 'https://schema.org',
@@ -25,6 +27,21 @@ export function OrganizationSchema({
       height: 512,
     },
     description,
+    email,
+    foundingDate: '2024',
+    founder: {
+      '@type': 'Person',
+      name: 'José Barnetche',
+    },
+    parentOrganization: {
+      '@type': 'Organization',
+      name: 'Memola Medios S.A.S.',
+      url: 'https://memola.com.ar',
+    },
+    areaServed: {
+      '@type': 'Country',
+      name: 'Argentina',
+    },
     sameAs: [
       'https://twitter.com/consignatarias',
       'https://www.linkedin.com/company/memola-medios',
@@ -32,6 +49,7 @@ export function OrganizationSchema({
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',
+      email,
       availableLanguage: ['Spanish'],
     },
   };
@@ -633,6 +651,60 @@ export function HowToSchema({
       ...(step.url && { url: step.url }),
       ...(step.image && { image: step.image }),
     })),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+// TechArticle Schema for technical documentation (API docs, developer guides)
+interface TechArticleSchemaProps {
+  name: string;
+  description: string;
+  url: string;
+  datePublished?: string;
+  dateModified?: string;
+  proficiencyLevel?: 'Beginner' | 'Expert';
+}
+
+export function TechArticleSchema({
+  name,
+  description,
+  url,
+  datePublished = '2024-01-01',
+  dateModified = new Date().toISOString().split('T')[0],
+  proficiencyLevel = 'Beginner',
+}: TechArticleSchemaProps) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: name,
+    description,
+    url,
+    datePublished,
+    dateModified,
+    proficiencyLevel,
+    author: {
+      '@type': 'Organization',
+      name: 'Consignatarias.com.ar',
+      url: 'https://www.consignatarias.com.ar',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Memola Medios S.A.S.',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.consignatarias.com.ar/logo.png',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': url,
+    },
   };
 
   return (

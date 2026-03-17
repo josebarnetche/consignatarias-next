@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
   title: 'API Documentation — Consignatarias.com.ar',
@@ -95,6 +95,12 @@ export default function ApiDocsPage() {
   return (
     <>
       <SectionBreadcrumbSchema section="api-docs" sectionName="API Docs" />
+      <TechArticleSchema
+        name="API Documentation — Consignatarias.com.ar"
+        description="Documentación de la API pública del mercado ganadero argentino. Endpoints para remates, precios INMAG, consignatarias y frigoríficos."
+        url="https://www.consignatarias.com.ar/api-docs"
+        proficiencyLevel="Beginner"
+      />
       
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
