@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import SubscribeButton from './SubscribeButton'
 import PlanesTracker from './PlanesTracker'
+import MobileStickyCTA from './MobileStickyCTA'
 import { SaaSPricingSchema, FAQPageSchema, SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 // Pricing data for schema
@@ -349,7 +350,13 @@ export default function PlanesPage() {
           </div>
         </div>
       </div>
+      
+      {/* Bottom spacer for mobile sticky CTA */}
+      <div className="h-20 md:hidden" />
     </div>
+    
+    {/* Mobile Sticky CTA (Insight #64) */}
+    <MobileStickyCTA />
     </>
   )
 }
