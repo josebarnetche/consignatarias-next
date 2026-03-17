@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { getProfile, getAllCanonicalSlugs } from '@/lib/data/consignataria-slugs'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
+import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Comparar Consignatarias | Consignatarias.com.ar',
@@ -10,7 +11,49 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Comparar Consignatarias',
     description: 'Herramienta de comparación de consignatarias de hacienda',
+    url: 'https://www.consignatarias.com.ar/comparar',
+    type: 'website',
   },
+  alternates: {
+    canonical: 'https://www.consignatarias.com.ar/comparar',
+  },
+}
+
+// WebApplication schema for the comparison tool
+function ComparisonToolSchema() {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'Comparador de Consignatarias',
+    description: 'Herramienta gratuita para comparar consignatarias de hacienda argentinas lado a lado',
+    url: 'https://www.consignatarias.com.ar/comparar',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'ARS',
+    },
+    featureList: [
+      'Comparación de hasta 3 consignatarias',
+      'Estadísticas de remates totales y 2026',
+      'Cobertura geográfica por provincias',
+      'Tipos de remate especializados',
+      'Promedio de cabezas por remate',
+    ],
+    provider: {
+      '@type': 'Organization',
+      name: 'Consignatarias.com.ar',
+      url: 'https://www.consignatarias.com.ar',
+    },
+  }
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  )
 }
 
 interface ConsignatariaStats {
@@ -103,15 +146,18 @@ export default async function CompararPage({
   const topConsignatarias = getTopConsignatarias()
 
   return (
-    <main className="min-h-screen bg-[#0a0a0f] text-zinc-200">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <nav className="text-sm text-zinc-500 mb-4">
-            <Link href="/" className="hover:text-zinc-300">Inicio</Link>
-            <span className="mx-2">/</span>
-            <span className="text-zinc-300">Comparar</span>
-          </nav>
+    <>
+      <SectionBreadcrumbSchema section="comparar" sectionName="Comparar Consignatarias" />
+      <ComparisonToolSchema />
+      <main className="min-h-screen bg-[#0a0a0f] text-zinc-200">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          {/* Header */}
+          <div className="mb-8">
+            <nav className="text-sm text-zinc-500 mb-4">
+              <Link href="/" className="hover:text-zinc-300">Inicio</Link>
+              <span className="mx-2">/</span>
+              <span className="text-zinc-300">Comparar</span>
+            </nav>
           <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
             Comparar Consignatarias
           </h1>
@@ -252,16 +298,17 @@ export default async function CompararPage({
           </div>
         </div>
 
-        {/* Link to full directory */}
-        <div className="text-center">
-          <Link
-            href="/consignatarias"
-            className="text-emerald-400 hover:text-emerald-300 text-sm"
-          >
-            Ver todas las consignatarias →
-          </Link>
+          {/* Link to full directory */}
+          <div className="text-center">
+            <Link
+              href="/consignatarias"
+              className="text-emerald-400 hover:text-emerald-300 text-sm"
+            >
+              Ver todas las consignatarias →
+            </Link>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   )
 }
