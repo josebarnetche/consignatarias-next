@@ -6,7 +6,7 @@ import { getAllProfiles } from '@/lib/data/consignataria-slugs'
 import { SectionBreadcrumbSchema, EventSchema } from '@/components/seo/JsonLd'
 import { AddToCalendarButton } from '@/components/ui/AddToCalendarButton'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
-import DteCTA from '@/components/DteCTA'
+// DteCTA inline implementation for remate pages (lock-in strategy)
 import { 
   Calendar, 
   Clock, 
