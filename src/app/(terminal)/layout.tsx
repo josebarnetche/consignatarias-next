@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import AuthButton from "@/components/auth/AuthButton";
+import OnboardingPrompt from "@/components/onboarding/OnboardingPrompt";
 
 /* ------------------------------------------------------------------ */
 /*  NAV ITEMS                                                          */
@@ -144,10 +145,11 @@ export default function TerminalLayout({
             </nav>
           </div>
 
-          {/* -- RIGHT: Clock + Auth -- */}
-          <div className="flex items-center gap-4">
+          {/* -- RIGHT: Clock + Onboarding + Auth -- */}
+          <div className="flex items-center gap-3">
             <TerminalClock />
             <span className="text-terminal-border hidden sm:inline">|</span>
+            <OnboardingPrompt />
             <AuthButton />
           </div>
         </div>
