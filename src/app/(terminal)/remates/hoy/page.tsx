@@ -3,6 +3,7 @@ import Link from 'next/link'
 import remates from '@/lib/data/remates.json'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { Calendar, Clock, MapPin, Users, ExternalLink, Play, FileText, Upload } from 'lucide-react'
+import { createClient } from '@/lib/supabase-server'
 
 // Get today's date in Argentina timezone
 function getTodayStr(): string {
@@ -178,7 +179,12 @@ function RemateCard({ remate }: { remate: Remate }) {
   )
 }
 
-export default function RematesHoyPage() {
+export default async function RematesHoyPage() {
+  // Check if user is logged in for DT-e CTA
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const isLoggedIn = !!user
+
   const todayStr = getTodayStr()
   const formattedDate = formatDate(todayStr)
 
@@ -308,8 +314,8 @@ export default function RematesHoyPage() {
           </>
         )}
 
-        {/* DT-e CTA for participants */}
-        {count > 0 && (
+        {/* DT-e CTA for logged-in participants */}
+        {count > 0 && isLoggedIn && (
           <section className="mt-8 bg-gradient-to-r from-amber-500/10 to-emerald-500/10 border border-amber-500/20 rounded-lg p-5">
             <div className="flex items-start gap-4">
               <div className="p-2.5 bg-amber-500/20 rounded-lg shrink-0">
