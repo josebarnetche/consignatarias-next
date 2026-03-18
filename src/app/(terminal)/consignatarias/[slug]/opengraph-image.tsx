@@ -10,6 +10,9 @@ export const alt = 'Perfil de Consignataria'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
+// Cache OG images for 24 hours to reduce CPU usage
+export const revalidate = 86400
+
 export default async function OGImage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const profile = getProfile(slug)
