@@ -181,7 +181,7 @@ src/app/mercado/
 - [x] Refactor `/mercado` como landing
 - [ ] Crear `/mercado/historico`
 - [x] Componente `LongTermChart` (Recharts o lightweight)
-- [ ] Componente `CategoryComparison`
+- [x] Componente `CategoryComparison` — 2026-03-18 (ARCHITECT)
 - [x] Componente `SeasonalPattern` — 2026-03-18 (ARCHITECT)
 
 ### Fase 4: SEO (0.5 día)

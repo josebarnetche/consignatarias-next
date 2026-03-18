@@ -3,6 +3,7 @@ import MercadoClient from './MercadoClient'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { LongTermChart } from '@/components/market/LongTermChart'
 import { SeasonalPattern } from '@/components/market/SeasonalPattern'
+import { CategoryComparison } from '@/components/market/CategoryComparison'
 
 export const metadata: Metadata = {
   title: 'Precios Ganado Argentina | INMAG y Categorías',
@@ -54,6 +55,7 @@ export default function MercadoPage() {
       {/* Long-term historical data */}
       <div className="px-4 py-4 max-w-6xl mx-auto space-y-6">
         <LongTermChart />
+        <CategoryComparison />
         <SeasonalPattern />
       </div>
     </>
