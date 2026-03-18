@@ -220,6 +220,24 @@ export default function InmagPage() {
           </Link>
         </div>
 
+        {/* API Access */}
+        <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-lg p-4 mt-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-zinc-400 text-sm font-medium">API de Precios Históricos</div>
+              <div className="text-zinc-600 text-xs mt-1">
+                GET /api/market/history?days=90 — Series de precios + estadísticas
+              </div>
+            </div>
+            <Link 
+              href="/api-docs"
+              className="text-xs text-amber-500/80 hover:text-amber-400 transition-colors"
+            >
+              Ver documentación →
+            </Link>
+          </div>
+        </div>
+
         {/* Source */}
         <p className="text-xs text-zinc-600 mt-6">
           Fuente: Mercado Agroganadero de Buenos Aires (mercadoagroganadero.com.ar). 

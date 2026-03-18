@@ -55,6 +55,12 @@ const ENDPOINTS = [
   },
   {
     method: 'GET',
+    path: '/api/market/history',
+    description: 'Histórico INMAG con series de precios. Params: ?days=30|90|365 o ?from=YYYY-MM-DD&to=YYYY-MM-DD. Devuelve series + estadísticas (min, max, avg).',
+    auth: false,
+  },
+  {
+    method: 'GET',
     path: '/api/consignataria/{slug}',
     description: 'Perfil de una consignataria específica.',
     auth: false,
