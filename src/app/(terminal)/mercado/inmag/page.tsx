@@ -231,6 +231,24 @@ export default function InmagPage() {
           </div>
         </div>
 
+        {/* Methodology Link */}
+        <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-lg p-4 mt-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-zinc-400 text-sm font-medium">Metodología del Índice</div>
+              <div className="text-zinc-600 text-xs mt-1">
+                Fuentes, cálculo, ponderaciones y cobertura geográfica
+              </div>
+            </div>
+            <Link 
+              href="/metodologia"
+              className="text-xs text-amber-500/80 hover:text-amber-400 transition-colors"
+            >
+              Ver metodología →
+            </Link>
+          </div>
+        </div>
+
         {/* Source */}
         <p className="text-xs text-zinc-600 mt-6">
           Fuente: Mercado Agroganadero de Buenos Aires (mercadoagroganadero.com.ar). 
