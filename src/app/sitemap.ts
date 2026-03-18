@@ -209,6 +209,44 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
+  // Frigorificos by province landing pages
+  const FRIGORIFICO_PROVINCE_SLUGS: Record<string, string> = {
+    'BUENOS AIRES': 'buenos-aires',
+    'SANTA FE': 'santa-fe',
+    'CORDOBA': 'cordoba',
+    'ENTRE RIOS': 'entre-rios',
+    'LA PAMPA': 'la-pampa',
+    'CHACO': 'chaco',
+    'CORRIENTES': 'corrientes',
+    'SANTIAGO DEL ESTERO': 'santiago-del-estero',
+    'FORMOSA': 'formosa',
+    'MISIONES': 'misiones',
+    'TUCUMAN': 'tucuman',
+    'SALTA': 'salta',
+    'JUJUY': 'jujuy',
+    'CATAMARCA': 'catamarca',
+    'MENDOZA': 'mendoza',
+    'SAN JUAN': 'san-juan',
+    'SAN LUIS': 'san-luis',
+    'NEUQUEN': 'neuquen',
+    'RIO NEGRO': 'rio-negro',
+    'CHUBUT': 'chubut',
+    'SANTA CRUZ': 'santa-cruz',
+    'TIERRA DEL FUEGO': 'tierra-del-fuego',
+  }
+
+  const provincesWithFrigorificos = new Set(
+    (frigorificosData as { province: string }[]).map(f => f.province)
+  )
+  const frigorificosByProvincePages: MetadataRoute.Sitemap = Object.entries(FRIGORIFICO_PROVINCE_SLUGS)
+    .filter(([name]) => provincesWithFrigorificos.has(name))
+    .map(([, slug]) => ({
+      url: `${baseUrl}/frigorificos/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    }))
+
   // Frigorifico detail pages
   const frigorificoPages: MetadataRoute.Sitemap = (frigorificosData as { cuit: string }[]).map((f) => ({
     url: `${baseUrl}/frigorificos/${f.cuit}`,
@@ -252,6 +290,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...typePages,
     ...provinceTypePages,
     ...consignatariaPages,
+    ...frigorificosByProvincePages,
     ...frigorificoPages,
     ...remateDetailPages,
   ]
