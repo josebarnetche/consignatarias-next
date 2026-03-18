@@ -163,6 +163,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }))
 
+  // Consignatarias by province landing pages
+  const consignatariasByProvincePages: MetadataRoute.Sitemap = Object.entries(PROVINCE_SLUGS)
+    .filter(([name]) => provincesWithAuctions.has(name))
+    .map(([, slug]) => ({
+      url: `${baseUrl}/consignatarias/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }))
+
   // Type landing pages (/remates/tipo/invernada, etc.)
   const typePages: MetadataRoute.Sitemap = TYPE_SLUGS.map((slug) => ({
     url: `${baseUrl}/remates/tipo/${slug}`,
@@ -238,6 +248,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticPages,
     ...provincePages,
+    ...consignatariasByProvincePages,
     ...typePages,
     ...provinceTypePages,
     ...consignatariaPages,
