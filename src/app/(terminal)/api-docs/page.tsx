@@ -56,7 +56,13 @@ const ENDPOINTS = [
   {
     method: 'GET',
     path: '/api/market/history',
-    description: 'Histórico INMAG con series de precios. Params: ?days=30|90|365 o ?from=YYYY-MM-DD&to=YYYY-MM-DD. Devuelve series + estadísticas (min, max, avg).',
+    description: 'Histórico INMAG con series de precios. Params: ?days=30|90|365 o ?from=YYYY-MM-DD&to=YYYY-MM-DD. Devuelve series + estadísticas (min, max, avg, VWAP).',
+    auth: false,
+  },
+  {
+    method: 'GET',
+    path: '/api/market/categories',
+    description: 'Histórico de precios por categoría de hacienda (novillos, novillitos, vacas, vaquillonas, toros). Params: ?category=X&from=YYYY-MM&to=YYYY-MM. 36 meses de datos (2022-2024).',
     auth: false,
   },
   {
