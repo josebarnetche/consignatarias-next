@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { FileText, History, TrendingUp, RefreshCw, Camera, Zap, Shield, CheckCircle2 } from 'lucide-react';
-import { DTEUploader, DTEHistory } from '@/components/dte';
+import { DTEUploader, DTEHistory, SocialProofStats, MilestoneBadges } from '@/components/dte';
 import { createClient } from '@/lib/supabase-browser';
 import { DTEData } from '@/hooks/useOCR';
 import { trackDtePageView, trackDteSave, trackDteMilestone } from '@/lib/analytics';
@@ -126,9 +126,11 @@ export default function MisGuiasPage() {
           <h1 className="text-3xl font-bold text-white mb-2">
             Mis Guías DT-e
           </h1>
-          <p className="text-gray-400">
+          <p className="text-gray-400 mb-4">
             Subí tus documentos de tránsito y construí tu historial de movimientos.
           </p>
+          {/* Social proof */}
+          <SocialProofStats />
         </div>
       </div>
 
@@ -201,7 +203,7 @@ export default function MisGuiasPage() {
 
         {/* History */}
         <div>
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-white">
               Mi historial
             </h2>
@@ -213,6 +215,14 @@ export default function MisGuiasPage() {
               Actualizar
             </button>
           </div>
+          
+          {/* Milestone badges - gamification */}
+          {dteCount !== null && dteCount > 0 && (
+            <div className="mb-6">
+              <MilestoneBadges dteCount={dteCount} />
+            </div>
+          )}
+          
           <DTEHistory key={refreshKey} />
         </div>
       </div>

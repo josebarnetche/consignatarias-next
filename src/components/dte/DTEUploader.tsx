@@ -2,14 +2,36 @@
 
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, FileImage, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Upload, FileImage, Loader2, CheckCircle2, AlertCircle, Sparkles, Info } from 'lucide-react';
 import { useOCR, type DTEData } from '@/hooks/useOCR';
 import { DTEForm } from './DTEForm';
-import { trackDteUploadStart, trackDteOcrComplete } from '@/lib/analytics';
+import { trackDteUploadStart, trackDteOcrComplete, trackEvent } from '@/lib/analytics';
 
 interface DTEUploaderProps {
   onSave?: (data: DTEData & { imagen_url?: string; ocr_raw_text?: string; ocr_confidence?: number }) => void;
 }
+
+// Sample DT-e data for demo mode
+const DEMO_DTE_DATA: DTEData = {
+  numero_dte: 'DTE-DEMO-001',
+  fecha_emision: new Date().toISOString().split('T')[0],
+  fecha_movimiento: new Date().toISOString().split('T')[0],
+  renspa_origen: '07.123.0.12345/01',
+  titular_origen: 'ESTABLECIMIENTO DEMO S.A.',
+  establecimiento_origen: 'La Esperanza',
+  renspa_destino: '07.456.0.67890/02',
+  titular_destino: 'FRIGORIFICO EJEMPLO',
+  establecimiento_destino: 'Planta Mercedes',
+  especie: 'bovino',
+  cantidad_cabezas: 45,
+  categorias: {
+    novillos: 20,
+    novillitos: 15,
+    vaquillonas: 10,
+  },
+  peso_total_kg: 18500,
+  motivo: 'Faena',
+};
 
 export function DTEUploader({ onSave }: DTEUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
@@ -18,6 +40,7 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
   const [ocrText, setOcrText] = useState<string>('');
   const [ocrConfidence, setOcrConfidence] = useState<number>(0);
   const [step, setStep] = useState<'upload' | 'processing' | 'review' | 'success'>('upload');
+  const [isDemo, setIsDemo] = useState(false);
   
   const { processImage, isProcessing, progress, error } = useOCR();
 
@@ -73,12 +96,23 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
     setOcrText('');
     setOcrConfidence(0);
     setStep('upload');
+    setIsDemo(false);
+  };
+
+  // Demo mode handler - skip OCR, show sample data
+  const handleDemoMode = () => {
+    trackEvent('dte_demo_start', { source: 'upload_page' });
+    setIsDemo(true);
+    setExtractedData(DEMO_DTE_DATA);
+    setOcrText('DEMO MODE - Sample DT-e data for demonstration purposes');
+    setOcrConfidence(95);
+    setStep('review');
   };
 
   // Upload step
   if (step === 'upload') {
     return (
-      <div className="w-full max-w-2xl mx-auto">
+      <div className="w-full max-w-2xl mx-auto space-y-4">
         <div
           {...getRootProps()}
           className={`
@@ -97,6 +131,25 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
           </p>
           <p className="text-sm text-gray-400">
             Formatos: JPG, PNG, WEBP, PDF
+          </p>
+        </div>
+
+        {/* Demo mode CTA */}
+        <div className="text-center">
+          <p className="text-sm text-gray-500 mb-2">
+            ¿No tenés una guía a mano?
+          </p>
+          <button
+            onClick={handleDemoMode}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-amber-400 
+                       bg-amber-500/10 border border-amber-500/30 rounded-lg
+                       hover:bg-amber-500/20 hover:border-amber-500/50 transition-all"
+          >
+            <Sparkles className="w-4 h-4" />
+            Probar con ejemplo
+          </button>
+          <p className="text-xs text-gray-600 mt-1">
+            Mirá cómo funciona con datos de muestra
           </p>
         </div>
         
@@ -147,34 +200,55 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
   if (step === 'review' && extractedData) {
     return (
       <div className="w-full max-w-4xl mx-auto">
+        {/* Demo mode indicator */}
+        {isDemo && (
+          <div className="mb-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg flex items-center gap-3">
+            <Info className="w-5 h-5 text-amber-400" />
+            <p className="text-sm text-amber-400">
+              <strong>Modo demo:</strong> Estos son datos de ejemplo. Subí tu propia guía para guardarla en tu historial.
+            </p>
+          </div>
+        )}
+        
         <div className="grid lg:grid-cols-2 gap-6">
-          {/* Image preview */}
+          {/* Image preview or demo placeholder */}
           <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <FileImage className="w-5 h-5 text-gray-400" />
-                <span className="text-sm text-gray-400">{file?.name}</span>
+                <span className="text-sm text-gray-400">
+                  {isDemo ? 'Datos de ejemplo' : file?.name}
+                </span>
               </div>
               <span className={`
                 text-xs px-2 py-1 rounded-full
-                ${ocrConfidence > 80 
-                  ? 'bg-green-500/20 text-green-400' 
-                  : ocrConfidence > 60 
-                    ? 'bg-yellow-500/20 text-yellow-400'
-                    : 'bg-red-500/20 text-red-400'
+                ${isDemo
+                  ? 'bg-amber-500/20 text-amber-400'
+                  : ocrConfidence > 80 
+                    ? 'bg-green-500/20 text-green-400' 
+                    : ocrConfidence > 60 
+                      ? 'bg-yellow-500/20 text-yellow-400'
+                      : 'bg-red-500/20 text-red-400'
                 }
               `}>
-                {Math.round(ocrConfidence)}% confianza
+                {isDemo ? 'DEMO' : `${Math.round(ocrConfidence)}% confianza`}
               </span>
             </div>
-            {preview && (
+            {preview ? (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img 
                 src={preview} 
                 alt="DT-e" 
                 className="w-full rounded-lg"
               />
-            )}
+            ) : isDemo ? (
+              <div className="flex items-center justify-center h-48 bg-gray-800/50 rounded-lg border border-dashed border-gray-700">
+                <div className="text-center text-gray-500">
+                  <Sparkles className="w-12 h-12 mx-auto mb-2 text-amber-500/50" />
+                  <p className="text-sm">Vista previa no disponible en demo</p>
+                </div>
+              </div>
+            ) : null}
           </div>
 
           {/* Form */}
