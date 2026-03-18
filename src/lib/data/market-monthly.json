@@ -1,0 +1,158 @@
+{
+  "index": "igmag",
+  "name": "Indice General Mercado Agroganadero",
+  "unit": "$/kg vivo",
+  "source": "magyp.gob.ar (Mercado Agroganadero S.A.)",
+  "note": "Promedios mensuales. IGMAG reemplaza al anterior IGML.",
+  "count": 36,
+  "range": {
+    "from": "2022-01",
+    "to": "2024-12"
+  },
+  "series": [
+    {
+      "period": "2022-01",
+      "value": 205.9
+    },
+    {
+      "period": "2022-02",
+      "value": 225.02
+    },
+    {
+      "period": "2022-03",
+      "value": 235.25
+    },
+    {
+      "period": "2022-04",
+      "value": 239.88
+    },
+    {
+      "period": "2022-05",
+      "value": 233.65
+    },
+    {
+      "period": "2022-06",
+      "value": 231.2
+    },
+    {
+      "period": "2022-07",
+      "value": 237.47
+    },
+    {
+      "period": "2022-08",
+      "value": 272.45
+    },
+    {
+      "period": "2022-09",
+      "value": 270.33
+    },
+    {
+      "period": "2022-10",
+      "value": 251.56
+    },
+    {
+      "period": "2022-11",
+      "value": 255.45
+    },
+    {
+      "period": "2022-12",
+      "value": 265.83
+    },
+    {
+      "period": "2023-01",
+      "value": 298.56
+    },
+    {
+      "period": "2023-02",
+      "value": 380.45
+    },
+    {
+      "period": "2023-03",
+      "value": 352.73
+    },
+    {
+      "period": "2023-04",
+      "value": 335.0
+    },
+    {
+      "period": "2023-05",
+      "value": 335.51
+    },
+    {
+      "period": "2023-06",
+      "value": 342.1
+    },
+    {
+      "period": "2023-07",
+      "value": 399.63
+    },
+    {
+      "period": "2023-08",
+      "value": 613.14
+    },
+    {
+      "period": "2023-09",
+      "value": 637.07
+    },
+    {
+      "period": "2023-10",
+      "value": 779.71
+    },
+    {
+      "period": "2023-11",
+      "value": 870.73
+    },
+    {
+      "period": "2023-12",
+      "value": 1243.84
+    },
+    {
+      "period": "2024-01",
+      "value": 1307.19
+    },
+    {
+      "period": "2024-02",
+      "value": 1440.58
+    },
+    {
+      "period": "2024-03",
+      "value": 1433.34
+    },
+    {
+      "period": "2024-04",
+      "value": 1413.17
+    },
+    {
+      "period": "2024-05",
+      "value": 1332.77
+    },
+    {
+      "period": "2024-06",
+      "value": 1412.05
+    },
+    {
+      "period": "2024-07",
+      "value": 1583.87
+    },
+    {
+      "period": "2024-08",
+      "value": 1744.4
+    },
+    {
+      "period": "2024-09",
+      "value": 1740.93
+    },
+    {
+      "period": "2024-10",
+      "value": 1740.96
+    },
+    {
+      "period": "2024-11",
+      "value": 1872.78
+    },
+    {
+      "period": "2024-12",
+      "value": 2024.76
+    }
+  ]
+}

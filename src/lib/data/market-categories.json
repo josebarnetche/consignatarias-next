@@ -1,0 +1,381 @@
+{
+  "source": "magyp.gob.ar (Mercado Agroganadero S.A.)",
+  "unit": "$/kg vivo",
+  "note": "Precios promedios mensuales por categoria. MEJ = Mestizo/Especial/Joven.",
+  "categories": [
+    "igmag",
+    "novillos",
+    "novillitos",
+    "vacas",
+    "vaquillonas",
+    "toros",
+    "mej"
+  ],
+  "count": 36,
+  "range": {
+    "from": "2022-01",
+    "to": "2024-12"
+  },
+  "series": [
+    {
+      "period": "2022-01",
+      "igmag": 205.9,
+      "novillos": 219.76,
+      "novillitos": 235.02,
+      "vacas": 170.75,
+      "vaquillonas": 229.11,
+      "toros": 187.55,
+      "mej": 218.56
+    },
+    {
+      "period": "2022-02",
+      "igmag": 225.02,
+      "novillos": 251.66,
+      "novillitos": 266.95,
+      "vacas": 182.53,
+      "vaquillonas": 256.82,
+      "toros": 221.09,
+      "mej": 254.76
+    },
+    {
+      "period": "2022-03",
+      "igmag": 235.25,
+      "novillos": 270.44,
+      "novillitos": 283.57,
+      "vacas": 188.47,
+      "vaquillonas": 275.12,
+      "toros": 229.03,
+      "mej": 247.25
+    },
+    {
+      "period": "2022-04",
+      "igmag": 239.88,
+      "novillos": 283.26,
+      "novillitos": 305.83,
+      "vacas": 194.19,
+      "vaquillonas": 297.61,
+      "toros": 229.08,
+      "mej": 274.87
+    },
+    {
+      "period": "2022-05",
+      "igmag": 233.65,
+      "novillos": 284.54,
+      "novillitos": 315.25,
+      "vacas": 182.49,
+      "vaquillonas": 305.04,
+      "toros": 214.62,
+      "mej": 266.99
+    },
+    {
+      "period": "2022-06",
+      "igmag": 231.2,
+      "novillos": 275.65,
+      "novillitos": 310.55,
+      "vacas": 176.17,
+      "vaquillonas": 301.39,
+      "toros": 202.42,
+      "mej": 272.86
+    },
+    {
+      "period": "2022-07",
+      "igmag": 237.47,
+      "novillos": 274.78,
+      "novillitos": 305.24,
+      "vacas": 189.7,
+      "vaquillonas": 290.21,
+      "toros": 215.04,
+      "mej": 275.59
+    },
+    {
+      "period": "2022-08",
+      "igmag": 272.45,
+      "novillos": 292.45,
+      "novillitos": 317.37,
+      "vacas": 235.74,
+      "vaquillonas": 301.43,
+      "toros": 273.45,
+      "mej": 303.39
+    },
+    {
+      "period": "2022-09",
+      "igmag": 270.33,
+      "novillos": 287.82,
+      "novillitos": 311.92,
+      "vacas": 232.63,
+      "vaquillonas": 295.55,
+      "toros": 258.42,
+      "mej": 295.52
+    },
+    {
+      "period": "2022-10",
+      "igmag": 251.56,
+      "novillos": 277.19,
+      "novillitos": 295.18,
+      "vacas": 198.85,
+      "vaquillonas": 282.13,
+      "toros": 210.67,
+      "mej": 281.89
+    },
+    {
+      "period": "2022-11",
+      "igmag": 255.45,
+      "novillos": 275.7,
+      "novillitos": 299.0,
+      "vacas": 203.22,
+      "vaquillonas": 284.15,
+      "toros": 232.21,
+      "mej": 278.27
+    },
+    {
+      "period": "2022-12",
+      "igmag": 265.83,
+      "novillos": 288.69,
+      "novillitos": 306.22,
+      "vacas": 210.65,
+      "vaquillonas": 292.11,
+      "toros": 236.39,
+      "mej": 274.11
+    },
+    {
+      "period": "2023-01",
+      "igmag": 298.56,
+      "novillos": 331.13,
+      "novillitos": 346.98,
+      "vacas": 238.68,
+      "vaquillonas": 333.87,
+      "toros": 265.29,
+      "mej": 317.81
+    },
+    {
+      "period": "2023-02",
+      "igmag": 380.45,
+      "novillos": 436.89,
+      "novillitos": 462.08,
+      "vacas": 291.28,
+      "vaquillonas": 446.48,
+      "toros": 339.59,
+      "mej": 427.96
+    },
+    {
+      "period": "2023-03",
+      "igmag": 352.73,
+      "novillos": 437.57,
+      "novillitos": 474.25,
+      "vacas": 234.53,
+      "vaquillonas": 453.89,
+      "toros": 285.83,
+      "mej": 397.45
+    },
+    {
+      "period": "2023-04",
+      "igmag": 335.0,
+      "novillos": 454.81,
+      "novillitos": 488.17,
+      "vacas": 232.67,
+      "vaquillonas": 466.56,
+      "toros": 296.99,
+      "mej": 409.59
+    },
+    {
+      "period": "2023-05",
+      "igmag": 335.51,
+      "novillos": 450.95,
+      "novillitos": 489.88,
+      "vacas": 221.19,
+      "vaquillonas": 464.05,
+      "toros": 277.64,
+      "mej": 448.2
+    },
+    {
+      "period": "2023-06",
+      "igmag": 342.1,
+      "novillos": 467.11,
+      "novillitos": 484.32,
+      "vacas": 234.39,
+      "vaquillonas": 461.52,
+      "toros": 276.79,
+      "mej": 423.0
+    },
+    {
+      "period": "2023-07",
+      "igmag": 399.63,
+      "novillos": 490.01,
+      "novillitos": 506.85,
+      "vacas": 309.53,
+      "vaquillonas": 482.6,
+      "toros": 323.61,
+      "mej": 461.33
+    },
+    {
+      "period": "2023-08",
+      "igmag": 613.14,
+      "novillos": 710.39,
+      "novillitos": 743.65,
+      "vacas": 494.63,
+      "vaquillonas": 715.6,
+      "toros": 541.37,
+      "mej": 644.39
+    },
+    {
+      "period": "2023-09",
+      "igmag": 637.07,
+      "novillos": 704.83,
+      "novillitos": 732.58,
+      "vacas": 546.16,
+      "vaquillonas": 695.2,
+      "toros": 610.97,
+      "mej": 673.44
+    },
+    {
+      "period": "2023-10",
+      "igmag": 779.71,
+      "novillos": 849.5,
+      "novillitos": 877.39,
+      "vacas": 650.47,
+      "vaquillonas": 846.59,
+      "toros": 690.89,
+      "mej": 828.18
+    },
+    {
+      "period": "2023-11",
+      "igmag": 870.73,
+      "novillos": 945.98,
+      "novillitos": 981.17,
+      "vacas": 747.97,
+      "vaquillonas": 942.69,
+      "toros": 818.3,
+      "mej": 902.87
+    },
+    {
+      "period": "2023-12",
+      "igmag": 1243.84,
+      "novillos": 1405.3,
+      "novillitos": 1426.23,
+      "vacas": 982.87,
+      "vaquillonas": 1367.52,
+      "toros": 1044.68,
+      "mej": 1288.77
+    },
+    {
+      "period": "2024-01",
+      "igmag": 1307.19,
+      "novillos": 1424.2,
+      "novillitos": 1479.3,
+      "vacas": 1090.78,
+      "vaquillonas": 1419.3,
+      "toros": 1208.81,
+      "mej": 1353.75
+    },
+    {
+      "period": "2024-02",
+      "igmag": 1440.58,
+      "novillos": 1689.31,
+      "novillitos": 1738.24,
+      "vacas": 1094.74,
+      "vaquillonas": 1658.98,
+      "toros": 1247.8,
+      "mej": 1536.1
+    },
+    {
+      "period": "2024-03",
+      "igmag": 1433.34,
+      "novillos": 1704.03,
+      "novillitos": 1835.26,
+      "vacas": 993.88,
+      "vaquillonas": 1778.23,
+      "toros": 1151.29,
+      "mej": 1544.32
+    },
+    {
+      "period": "2024-04",
+      "igmag": 1413.17,
+      "novillos": 1763.05,
+      "novillitos": 1955.37,
+      "vacas": 958.87,
+      "vaquillonas": 1865.6,
+      "toros": 1062.56,
+      "mej": 1730.83
+    },
+    {
+      "period": "2024-05",
+      "igmag": 1332.77,
+      "novillos": 1777.35,
+      "novillitos": 1983.42,
+      "vacas": 938.59,
+      "vaquillonas": 1857.77,
+      "toros": 1042.61,
+      "mej": 1626.93
+    },
+    {
+      "period": "2024-06",
+      "igmag": 1412.05,
+      "novillos": 1826.8,
+      "novillitos": 2007.7,
+      "vacas": 969.92,
+      "vaquillonas": 1910.87,
+      "toros": 1041.89,
+      "mej": 1559.19
+    },
+    {
+      "period": "2024-07",
+      "igmag": 1583.87,
+      "novillos": 1937.64,
+      "novillitos": 2067.81,
+      "vacas": 1166.26,
+      "vaquillonas": 1921.29,
+      "toros": 1203.34,
+      "mej": 1726.6
+    },
+    {
+      "period": "2024-08",
+      "igmag": 1744.4,
+      "novillos": 1953.11,
+      "novillitos": 2053.43,
+      "vacas": 1428.57,
+      "vaquillonas": 1942.05,
+      "toros": 1563.15,
+      "mej": 1895.67
+    },
+    {
+      "period": "2024-09",
+      "igmag": 1740.93,
+      "novillos": 1871.69,
+      "novillitos": 1995.08,
+      "vacas": 1474.65,
+      "vaquillonas": 1896.72,
+      "toros": 1576.79,
+      "mej": 1879.17
+    },
+    {
+      "period": "2024-10",
+      "igmag": 1740.96,
+      "novillos": 1900.88,
+      "novillitos": 1956.04,
+      "vacas": 1471.94,
+      "vaquillonas": 1867.19,
+      "toros": 1551.76,
+      "mej": 1875.54
+    },
+    {
+      "period": "2024-11",
+      "igmag": 1872.78,
+      "novillos": 2012.51,
+      "novillitos": 2130.93,
+      "vacas": 1564.69,
+      "vaquillonas": 2020.97,
+      "toros": 1679.76,
+      "mej": 2034.29
+    },
+    {
+      "period": "2024-12",
+      "igmag": 2024.76,
+      "novillos": 2264.2,
+      "novillitos": 2362.19,
+      "vacas": 1537.97,
+      "vaquillonas": 2270.74,
+      "toros": 1640.41,
+      "mej": 2179.8
+    }
+  ]
+}
