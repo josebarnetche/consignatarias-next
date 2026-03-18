@@ -39,9 +39,10 @@ export default function MercadoPage() {
           Agroganadero (mercadoagroganadero.com.ar).
         </p>
         <p className="mb-2">
-          Los precios por categoria (novillos, novillitos, vaquillonas, vacas, toros, terneros) se
-          derivan del INMAG usando ratios de mercado. El maiz FOB (USD/tn) se obtiene del Ministerio
-          de Agricultura (MAGYP) y las cotizaciones del dolar blue y oficial de dolarapi.com.
+          Los precios por categoria (novillos, novillitos, vaquillonas, vacas, toros) son{' '}
+          <strong>precios observados</strong> del Mercado Agroganadero, no ratios sinteticos.
+          El maiz FOB (USD/tn) se obtiene del Ministerio de Agricultura (MAGYP) y las
+          cotizaciones del dolar blue y oficial de dolarapi.com.
         </p>
         <p>
           Todos los datos se actualizan automaticamente cada dia habil.
