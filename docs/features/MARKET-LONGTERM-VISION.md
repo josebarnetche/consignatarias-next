@@ -178,11 +178,11 @@ src/app/mercado/
 - [ ] `/api/market/summary`
 
 ### Fase 3: UI (2 días)
-- [ ] Refactor `/mercado` como landing
+- [x] Refactor `/mercado` como landing
 - [ ] Crear `/mercado/historico`
-- [ ] Componente `LongTermChart` (Recharts o lightweight)
+- [x] Componente `LongTermChart` (Recharts o lightweight)
 - [ ] Componente `CategoryComparison`
-- [ ] Componente `SeasonalPattern`
+- [x] Componente `SeasonalPattern` — 2026-03-18 (ARCHITECT)
 
 ### Fase 4: SEO (0.5 día)
 - [ ] Schema markup (Dataset, FinancialProduct)
