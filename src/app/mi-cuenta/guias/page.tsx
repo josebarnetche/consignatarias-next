@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { FileText, History, TrendingUp, RefreshCw } from 'lucide-react';
+import { FileText, History, TrendingUp, RefreshCw, Camera, Zap, Shield, CheckCircle2 } from 'lucide-react';
 import { DTEUploader, DTEHistory } from '@/components/dte';
 import { createClient } from '@/lib/supabase-browser';
 import { DTEData } from '@/hooks/useOCR';
 import { trackDtePageView, trackDteSave, trackDteMilestone } from '@/lib/analytics';
+import { HowToSchema } from '@/components/seo/JsonLd';
 
 export default function MisGuiasPage() {
   const [refreshKey, setRefreshKey] = useState(0);
@@ -89,8 +90,36 @@ export default function MisGuiasPage() {
     }
   }, [supabase, dteCount]);
 
+  // HowTo structured data for SEO
+  const howToSteps = [
+    {
+      name: 'Fotografiá tu guía DT-e',
+      text: 'Usá tu celular para sacar una foto clara de tu documento de tránsito electrónico (DT-e). Asegurate de que todo el texto sea legible.',
+    },
+    {
+      name: 'Subí la imagen',
+      text: 'Arrastrá la foto al área de carga o hacé clic para seleccionarla. Aceptamos JPG, PNG, WEBP y PDF.',
+    },
+    {
+      name: 'Revisá los datos extraídos',
+      text: 'Nuestro OCR extrae automáticamente los datos: número de guía, RENSPA, cantidad de cabezas, fechas y más. Revisá y corregí si es necesario.',
+    },
+    {
+      name: 'Guardá en tu historial',
+      text: 'Confirmá los datos y guardá la guía en tu historial personal. Podrás buscarla, exportarla y ver estadísticas de tu operación.',
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-950">
+      {/* HowTo Schema for SEO */}
+      <HowToSchema
+        name="Cómo subir y guardar guías DT-e en Consignatarias.com.ar"
+        description="Guía paso a paso para digitalizar tus documentos de tránsito electrónico (DT-e) usando reconocimiento óptico de caracteres (OCR) y construir tu historial de movimientos ganaderos."
+        steps={howToSteps}
+        totalTime="PT2M"
+      />
+      
       {/* Header */}
       <div className="bg-gradient-to-b from-gray-900 to-gray-950 border-b border-gray-800">
         <div className="max-w-6xl mx-auto px-4 py-12">
@@ -105,6 +134,38 @@ export default function MisGuiasPage() {
 
       {/* Main content */}
       <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* How it works - Step by step visual guide */}
+        <div className="mb-12 bg-gradient-to-r from-amber-900/20 to-gray-900/50 border border-amber-800/30 rounded-xl p-6">
+          <h2 className="text-lg font-semibold text-amber-400 mb-4 flex items-center gap-2">
+            <Zap className="w-5 h-5" />
+            ¿Cómo funciona?
+          </h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {howToSteps.map((step, index) => (
+              <div key={index} className="relative">
+                {/* Step number */}
+                <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-amber-600 flex items-center justify-center text-xs font-bold text-white">
+                  {index + 1}
+                </div>
+                <div className="bg-gray-900/60 border border-gray-800 rounded-lg p-4 h-full">
+                  <div className="flex items-start gap-2 mb-2">
+                    {index === 0 && <Camera className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />}
+                    {index === 1 && <FileText className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />}
+                    {index === 2 && <Zap className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />}
+                    {index === 3 && <CheckCircle2 className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />}
+                    <h3 className="text-sm font-medium text-white">{step.name}</h3>
+                  </div>
+                  <p className="text-xs text-gray-400 leading-relaxed">{step.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 text-xs text-gray-500 flex items-center gap-1">
+            <Shield className="w-3 h-3" />
+            Tus datos se guardan de forma privada y segura. Solo vos podés verlos.
+          </p>
+        </div>
+
         {/* Benefits */}
         <div className="grid md:grid-cols-3 gap-4 mb-12">
           <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
