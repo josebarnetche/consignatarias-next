@@ -187,7 +187,10 @@ export default function PlanesPage() {
             {/* Early adopter badge (Insight #61b) - with urgency */}
             <div className="mb-4 px-2 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded text-center">
               <span className="text-emerald-400 text-xxs font-terminal uppercase tracking-wider">
-                🎁 Primeras 50 consignatarias: precio congelado de por vida
+                🔒 Precio fundador: $45.000 congelado de por vida
+              </span>
+              <span className="block text-emerald-500/70 text-[10px] font-terminal mt-0.5">
+                Solo primeras 50 consignatarias — luego sube a $65.000
               </span>
             </div>
             <ul className="space-y-2 mb-6 flex-1">
@@ -275,10 +278,10 @@ export default function PlanesPage() {
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <span className="text-amber-400 text-lg">📧</span>
-              <span className="text-zinc-200 text-sm font-medium">+500 productores por remate</span>
+              <span className="text-zinc-200 text-sm font-medium">+500 productores ven cada remate</span>
             </div>
             <p className="text-zinc-500 text-data">
-              Cada remate que publiques lo enviamos por email a nuestra base de suscriptores activos. Un solo comprador nuevo paga la suscripcion anual.
+              Cada remate que publiques llega por email a nuestra base activa. <span className="text-zinc-400">Un solo comprador nuevo te devuelve la inversión del año.</span>
             </p>
           </div>
           <div className="flex flex-col gap-2">
