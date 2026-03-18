@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import MercadoClient from './MercadoClient'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { LongTermChart } from '@/components/market/LongTermChart'
 
 export const metadata: Metadata = {
   title: 'Precios Ganado Argentina | INMAG y Categorías',
@@ -47,6 +48,11 @@ export default function MercadoPage() {
         </p>
       </section>
       <MercadoClient />
+      
+      {/* Long-term historical data */}
+      <div className="px-4 py-4 max-w-6xl mx-auto">
+        <LongTermChart />
+      </div>
     </>
   )
 }
