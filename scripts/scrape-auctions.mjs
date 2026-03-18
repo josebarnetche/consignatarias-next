@@ -713,6 +713,98 @@ async function scrapeCornPrice() {
 }
 
 // ---------------------------------------------------------------------------
+// Source 9: Per-category prices from MAG (Insight #87)
+// Real observed prices instead of synthetic INMAG ratios
+// ---------------------------------------------------------------------------
+
+async function scrapeCategoryPrices() {
+  console.log("[9/9] Scraping category prices from mercadoagroganadero.com.ar...");
+
+  // Fetch yesterday's data (today might not be available yet if market hasn't closed)
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  const dateStr = `${d.getDate().toString().padStart(2, "0")}/${(d.getMonth() + 1).toString().padStart(2, "0")}/${d.getFullYear()}`;
+  
+  const url = `https://www.mercadoagroganadero.com.ar/dll/hacienda1.dll/haciinfo000002?txtFECHAINI=${dateStr}&txtFECHAFIN=${dateStr}&CP=&LISTADO=SI`;
+  const html = await fetchHTML(url);
+  if (!html) return null;
+
+  // Parse HTML table to extract category subtotals
+  // Categories we care about: NOVILLOS, NOVILLITOS, VAQUILLONAS, VACAS, TOROS
+  // Each has subcategories, we want the subtotal row (weighted average)
+  const categories = {};
+  
+  // Extract table rows
+  const tableMatch = html.match(/<Table[^>]*class="table[^"]*"[^>]*>([\s\S]*?)<\/Table>/i);
+  if (!tableMatch) {
+    console.warn("  [WARN] No category price table found");
+    return null;
+  }
+
+  const rows = tableMatch[0].match(/<TR[^>]*>([\s\S]*?)<\/TR>/gi) || [];
+  
+  // Track current main category to associate subtotals
+  let currentMainCategory = null;
+  const mainCategories = ['NOVILLOS', 'NOVILLITOS', 'VAQUILLONAS', 'VACAS', 'TOROS'];
+  
+  for (const row of rows) {
+    const cells = [...row.matchAll(/<T[DH][^>]*>([\s\S]*?)<\/T[DH]>/gi)].map((m) =>
+      m[1].replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").trim()
+    );
+    
+    if (cells.length < 4) continue;
+    
+    const firstCell = cells[0].toUpperCase();
+    
+    // Check if this is a main category header row
+    for (const cat of mainCategories) {
+      if (firstCell.includes(cat) && !firstCell.includes('-------')) {
+        currentMainCategory = cat;
+        break;
+      }
+    }
+    
+    // Subtotal rows have empty first cell and the average price in position 3
+    // They appear right after the dashed separator
+    if (cells[0] === '' && cells[2] === '' && cells[3] && cells[3].match(/^\d/)) {
+      // This is a subtotal row
+      const avgPrice = parseFloat(cells[3].replace(/\./g, '').replace(',', '.')) || 0;
+      const cabezas = parseInt(cells[5]?.replace(/\./g, '').replace(/[^\d]/g, '') || '0', 10);
+      
+      if (currentMainCategory && avgPrice > 100 && avgPrice < 20000) {
+        // Map to our category keys
+        const keyMap = {
+          'NOVILLOS': 'novillos',
+          'NOVILLITOS': 'novillitos',
+          'VAQUILLONAS': 'vaquillonas',
+          'VACAS': 'vacas',
+          'TOROS': 'toros',
+        };
+        const key = keyMap[currentMainCategory];
+        if (key) {
+          categories[key] = {
+            current: Math.round(avgPrice * 100) / 100,
+            cabezas: cabezas,
+          };
+          console.log(`  ${currentMainCategory}: $${avgPrice.toFixed(2)}/kg (${cabezas} cabezas)`);
+        }
+        // Reset to avoid double-counting
+        currentMainCategory = null;
+      }
+    }
+  }
+
+  const found = Object.keys(categories).length;
+  if (found === 0) {
+    console.warn("  [WARN] No category subtotals parsed");
+    return null;
+  }
+
+  console.log(`  Found ${found} category prices from MAG`);
+  return { categories, date: dateStr };
+}
+
+// ---------------------------------------------------------------------------
 // Source 6: Dollar rates
 // ---------------------------------------------------------------------------
 
@@ -900,7 +992,7 @@ async function main() {
   console.log(`\n=== Ganado Terminal Scraper — ${todayISO()} ===\n`);
 
   // Scrape all sources in parallel
-  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, dollar, cattlePrices, cornPrice] = await Promise.all([
+  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, dollar, cattlePrices, cornPrice, categoryPrices] = await Promise.all([
     scrapeCACG(),
     scrapeColombo(),
     scrapeOFarrell(),
@@ -910,6 +1002,7 @@ async function main() {
     scrapeDollar(),
     scrapeCattlePrices(),
     scrapeCornPrice(),
+    scrapeCategoryPrices(), // Insight #87: real per-category prices
   ]);
 
   // Combine all scraped auctions
@@ -1025,12 +1118,11 @@ async function main() {
       market.inmag.series = market.inmag.series.slice(-365);
     }
 
-    // Update category prices proportionally from INMAG
-    // INMAG is the composite novillo price — derive categories as ratios of INMAG
-    // Typical market ratios (relative to novillos/INMAG):
+    // Update category prices — prefer REAL observed data (Insight #87) over synthetic ratios
+    // Fallback ratios only used when real data unavailable:
     // novillos: 1.0x, novillitos: 0.95x, vaquillonas: 0.90x,
     // vacas: 0.72x, toros: 0.65x, terneros: 1.10x
-    const ratios = {
+    const fallbackRatios = {
       novillos: 1.0,
       novillitos: 0.95,
       vaquillonas: 0.90,
@@ -1038,15 +1130,42 @@ async function main() {
       toros: 0.65,
       terneros: 1.10,
     };
-    for (const [key, ratio] of Object.entries(ratios)) {
-      const newVal = Math.round(inmagValue * ratio);
-      const prevVal = Math.round(inmagPrev * ratio);
+    
+    // Use real category prices when available (Insight #87)
+    const realCategories = categoryPrices?.categories || {};
+    const useReal = Object.keys(realCategories).length >= 3; // At least 3 categories to trust
+    
+    if (useReal) {
+      console.log("  Using REAL category prices from MAG (Insight #87)");
+    } else {
+      console.log("  Using synthetic ratios (real category data unavailable)");
+    }
+    
+    for (const [key, fallbackRatio] of Object.entries(fallbackRatios)) {
+      let newVal, source;
+      
+      if (useReal && realCategories[key]) {
+        // Use real observed price
+        newVal = realCategories[key].current;
+        source = "mercadoagroganadero.com.ar (observed)";
+        
+        // Store volume if available
+        if (realCategories[key].cabezas) {
+          market.categories[key].latestVolume = realCategories[key].cabezas;
+        }
+      } else {
+        // Fallback to synthetic ratio
+        newVal = Math.round(inmagValue * fallbackRatio);
+        source = "MAG (derived from INMAG)";
+      }
+      
+      const prevVal = market.categories[key].current || Math.round(inmagPrev * fallbackRatio);
       market.categories[key].prev = prevVal;
       market.categories[key].current = newVal;
       market.categories[key].change = prevVal
         ? parseFloat((((newVal - prevVal) / prevVal) * 100).toFixed(1))
         : 0;
-      market.categories[key].source = "MAG (derived from INMAG)";
+      market.categories[key].source = source;
     }
 
     // Calculate total volume traded in the period

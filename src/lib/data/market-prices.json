@@ -36,164 +36,195 @@
       },
       {
         "date": "2026-01-20",
-        "value": 4178.5
+        "value": 4178.5,
+        "volume": 8162
       },
       {
         "date": "2026-01-21",
-        "value": 4050.82
+        "value": 4050.82,
+        "volume": 5951
       },
       {
         "date": "2026-01-23",
-        "value": 3991.22
+        "value": 3991.22,
+        "volume": 6005
       },
       {
         "date": "2026-01-27",
-        "value": 4202.48
+        "value": 4202.48,
+        "volume": 6567
       },
       {
         "date": "2026-01-28",
-        "value": 4062.48
+        "value": 4062.48,
+        "volume": 4655
       },
       {
         "date": "2026-01-30",
-        "value": 4527.26
+        "value": 4527.26,
+        "volume": 4596
       },
       {
         "date": "2026-02-03",
-        "value": 4373.27
+        "value": 4373.27,
+        "volume": 8726
       },
       {
         "date": "2026-02-04",
-        "value": 4081
+        "value": 4081,
+        "volume": 6302
       },
       {
         "date": "2026-02-06",
-        "value": 4410.6
+        "value": 4410.6,
+        "volume": 5051
       },
       {
         "date": "2026-02-10",
-        "value": 4328.29
+        "value": 4328.29,
+        "volume": 8099
       },
       {
         "date": "2026-02-11",
-        "value": 4361.25
+        "value": 4361.25,
+        "volume": 6539
       },
       {
         "date": "2026-02-13",
-        "value": 4483.6
+        "value": 4483.6,
+        "volume": 4651
       },
       {
         "date": "2026-02-18",
-        "value": 4559.04
+        "value": 4559.04,
+        "volume": 7159
       },
       {
         "date": "2026-02-20",
-        "value": 4684.54
+        "value": 4684.54,
+        "volume": 5722
       },
       {
         "date": "2026-02-24",
-        "value": 4618.77
+        "value": 4618.77,
+        "volume": 8681
       },
       {
         "date": "2026-02-25",
-        "value": 4644.05
+        "value": 4644.05,
+        "volume": 6227
       },
       {
         "date": "2026-02-27",
-        "value": 4497.16
+        "value": 4497.16,
+        "volume": 6894
       },
       {
         "date": "2026-03-03",
-        "value": 4503.68
+        "value": 4503.68,
+        "volume": 9497
       },
       {
         "date": "2026-03-04",
-        "value": 4720.94
+        "value": 4720.94,
+        "volume": 4007
       },
       {
         "date": "2026-03-06",
-        "value": 4392.35
+        "value": 4392.35,
+        "volume": 7238
       },
       {
         "date": "2026-03-10",
-        "value": 4528.43
+        "value": 4528.43,
+        "volume": 8443
       },
       {
         "date": "2026-03-11",
-        "value": 4377.21
+        "value": 4377.21,
+        "volume": 6541
       },
       {
         "date": "2026-03-13",
-        "value": 4422.94
+        "value": 4422.94,
+        "volume": 6324
       },
       {
         "date": "2026-03-17",
-        "value": 4559.55
+        "value": 4559.55,
+        "volume": 7595
       }
-    ]
+    ],
+    "latestVolume": 7595,
+    "periodVolume": 159632
   },
   "categories": {
     "novillos": {
-      "current": 4560,
-      "prev": 4423,
-      "change": 3.1,
-      "source": "MAG (derived from INMAG)",
-      "sioWeek": "Sem 9"
+      "current": 4559.55,
+      "prev": 4560,
+      "change": 0,
+      "source": "mercadoagroganadero.com.ar (observed)",
+      "sioWeek": "Sem 9",
+      "latestVolume": 663
     },
     "novillitos": {
-      "current": 4332,
-      "prev": 4202,
-      "change": 3.1,
-      "source": "MAG (derived from INMAG)",
-      "sioWeek": "Sem 9"
+      "current": 4884.32,
+      "prev": 4332,
+      "change": 12.7,
+      "source": "mercadoagroganadero.com.ar (observed)",
+      "sioWeek": "Sem 9",
+      "latestVolume": 1372
     },
     "vaquillonas": {
-      "current": 4104,
-      "prev": 3981,
-      "change": 3.1,
-      "source": "MAG (derived from INMAG)",
-      "sioWeek": "Sem 9"
+      "current": 4548.92,
+      "prev": 4104,
+      "change": 10.8,
+      "source": "mercadoagroganadero.com.ar (observed)",
+      "sioWeek": "Sem 9",
+      "latestVolume": 2186
     },
     "vacas": {
-      "current": 3283,
-      "prev": 3185,
-      "change": 3.1,
-      "source": "MAG (derived from INMAG)"
+      "current": 2616.85,
+      "prev": 3283,
+      "change": -20.3,
+      "source": "mercadoagroganadero.com.ar (observed)",
+      "latestVolume": 3056
     },
     "toros": {
-      "current": 2964,
-      "prev": 2875,
-      "change": 3.1,
-      "source": "MAG (derived from INMAG)",
-      "sioWeek": "Sem 9"
+      "current": 2748.08,
+      "prev": 2964,
+      "change": -7.3,
+      "source": "mercadoagroganadero.com.ar (observed)",
+      "sioWeek": "Sem 9",
+      "latestVolume": 171
     },
     "terneros": {
       "current": 5016,
-      "prev": 4865,
-      "change": 3.1,
+      "prev": 5016,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
-    "current": 225.83,
-    "prev": 229.83,
-    "change": -1.7,
+    "current": 225.36,
+    "prev": 225.83,
+    "change": -0.2,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1430,
-    "prev": 1425,
-    "change": 0.4,
+    "current": 1435,
+    "prev": 1430,
+    "change": 0.3,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
-    "current": 1420,
-    "prev": 1415,
-    "change": 0.4,
+    "current": 1415,
+    "prev": 1420,
+    "change": -0.4,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-03-17"
+  "lastUpdate": "2026-03-18"
 }
