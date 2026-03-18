@@ -23,7 +23,7 @@ export async function GET() {
       .select('user_id')
       .limit(10000);
 
-    const uniqueUsers = new Set(activeUsers?.map(u => u.user_id) || []).size;
+    const uniqueUsers = new Set(activeUsers?.map((u: { user_id: string }) => u.user_id) || []).size;
 
     // Get DTEs from last 7 days (recent activity)
     const sevenDaysAgo = new Date();
@@ -39,7 +39,7 @@ export async function GET() {
       .from('user_dtes')
       .select('cantidad_cabezas');
     
-    const totalCabezas = cabezasData?.reduce((sum, d) => sum + (d.cantidad_cabezas || 0), 0) || 0;
+    const totalCabezas = cabezasData?.reduce((sum: number, d: { cantidad_cabezas: number | null }) => sum + (d.cantidad_cabezas || 0), 0) || 0;
 
     return NextResponse.json({
       totalDtes: totalDtes || 0,
