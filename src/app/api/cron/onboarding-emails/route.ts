@@ -221,11 +221,15 @@ export async function POST(request: NextRequest) {
         })
 
         if (result.success) {
-          await supabase.from('outreach_log').insert({
-            type: 'first_dte_success',
-            user_id: user.id,
-            email_sent_to: user.email,
-          }).catch(() => {})
+          try {
+            await supabase.from('outreach_log').insert({
+              type: 'first_dte_success',
+              user_id: user.id,
+              email_sent_to: user.email,
+            })
+          } catch {
+            // Don't fail if logging fails
+          }
 
           successResults.push({
             userId: user.id,
