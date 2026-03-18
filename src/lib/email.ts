@@ -760,6 +760,99 @@ export async function sendFirstDteSuccess({ to, userName, dteCount }: FirstDteSu
   }
 }
 
+interface DteRetentionReminderParams {
+  to: string
+  userName?: string
+  daysSinceLastUpload: number
+  totalDtes: number
+  totalCabezas: number
+}
+
+/**
+ * Sent to users who uploaded DTEs but stopped (7+ days inactive).
+ * Re-engages churned users with their stats.
+ */
+export async function sendDteRetentionReminder({
+  to,
+  userName,
+  daysSinceLastUpload,
+  totalDtes,
+  totalCabezas,
+}: DteRetentionReminderParams) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+
+  const greeting = userName ? `Hola ${escapeHtml(userName)}` : 'Hola'
+  const formatNumber = (n: number) => n.toLocaleString('es-AR')
+
+  const timeMessage = daysSinceLastUpload >= 30
+    ? 'Hace más de un mes'
+    : daysSinceLastUpload >= 14
+    ? 'Hace dos semanas'
+    : 'Hace una semana'
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to,
+      subject: `📋 Tu historial te espera — ${formatNumber(totalCabezas)} cabezas registradas`,
+      html: `
+        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
+          <h2 style="color:#fff;font-size:16px;margin:0 0 16px">${greeting},</h2>
+          
+          <p style="color:#a1a1aa;font-size:13px;line-height:1.6;margin:0 0 16px">
+            ${timeMessage} que no subís guías DT-e. Tu historial sigue esperándote.
+          </p>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+            <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;text-align:center">
+              <p style="color:#22c55e;font-size:24px;font-weight:bold;margin:0">${totalDtes}</p>
+              <p style="color:#71717a;font-size:10px;margin:4px 0 0;text-transform:uppercase">guías guardadas</p>
+            </div>
+            <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;text-align:center">
+              <p style="color:#22c55e;font-size:24px;font-weight:bold;margin:0">${formatNumber(totalCabezas)}</p>
+              <p style="color:#71717a;font-size:10px;margin:4px 0 0;text-transform:uppercase">cabezas</p>
+            </div>
+          </div>
+
+          <p style="color:#a1a1aa;font-size:12px;line-height:1.6;margin:0 0 16px">
+            ¿Participaste en algún remate esta semana? Sumá tu próxima guía y mantené tu historial actualizado.
+          </p>
+
+          <div style="text-align:center;margin:24px 0">
+            <a href="${APP_URL}/mi-cuenta/guias" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
+              SUBIR NUEVA GUÍA
+            </a>
+          </div>
+
+          <div style="background:#16161d;border:1px solid #fbbf24;border-radius:4px;padding:16px;margin-bottom:20px">
+            <p style="color:#fbbf24;font-size:11px;margin:0 0 8px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
+              ★ CONSEJO PRO
+            </p>
+            <p style="color:#a1a1aa;font-size:12px;margin:0;line-height:1.6">
+              Los productores PRO pueden exportar todas sus guías y ver estadísticas avanzadas por categoría y consignataria.
+            </p>
+            <p style="margin:8px 0 0">
+              <a href="${APP_URL}/planes" style="color:#fbbf24;font-size:11px;text-decoration:none">
+                Ver planes →
+              </a>
+            </p>
+          </div>
+
+          <p style="color:#3f3f46;font-size:10px;margin:24px 0 0">
+            Consignatarias.com.ar — Directorio ganadero
+            <br>
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#3f3f46">Desuscribirme</a>
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
 export async function sendNewRemateAlert({
   to,
   remateTitle,

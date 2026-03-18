@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
-import { sendDteUploadReminder, sendFirstDteSuccess } from '@/lib/email'
+import { sendDteUploadReminder, sendFirstDteSuccess, sendDteRetentionReminder } from '@/lib/email'
 
 /**
  * POST /api/cron/onboarding-emails
@@ -253,6 +253,141 @@ export async function POST(request: NextRequest) {
   const successSkipped = successResults.filter(r => r.status === 'skipped').length
   const successErrors = successResults.filter(r => r.status === 'error').length
 
+  // ============================================================
+  // PART 3: DT-e Retention Emails (Insight #101)
+  // Re-engage users who uploaded DTEs but stopped (7+ days inactive).
+  // Sent weekly (every 7 days per user) to avoid spam.
+  // ============================================================
+
+  const retentionResults: Array<{
+    userId: string
+    email: string
+    status: 'sent' | 'skipped' | 'error'
+    reason?: string
+    daysSinceLastUpload?: number
+    totalDtes?: number
+  }> = []
+
+  // Find users who have uploaded DTEs and last upload was 7+ days ago
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+
+  // Get users with DTEs, ordered by most recent upload
+  const { data: inactiveUsers } = await supabase
+    .from('user_dtes')
+    .select('user_id, created_at')
+    .lte('created_at', sevenDaysAgo.toISOString())
+    .order('created_at', { ascending: false })
+
+  if (inactiveUsers && inactiveUsers.length > 0) {
+    // Group by user_id to find last upload date
+    const userLastUpload: Record<string, Date> = {}
+    const userDteCounts: Record<string, number> = {}
+    
+    for (const dte of inactiveUsers) {
+      const userId = dte.user_id
+      const uploadDate = new Date(dte.created_at)
+      
+      if (!userLastUpload[userId] || uploadDate > userLastUpload[userId]) {
+        userLastUpload[userId] = uploadDate
+      }
+      userDteCounts[userId] = (userDteCounts[userId] || 0) + 1
+    }
+
+    // Filter to users whose MOST RECENT upload was 7+ days ago
+    const eligibleUserIds = Object.entries(userLastUpload)
+      .filter(([, lastDate]) => lastDate <= sevenDaysAgo)
+      .map(([userId]) => userId)
+
+    if (eligibleUserIds.length > 0) {
+      // Check who already received a retention email in the last 7 days
+      const sevenDaysAgoStr = sevenDaysAgo.toISOString()
+      const { data: recentRetention } = await supabase
+        .from('outreach_log')
+        .select('user_id')
+        .eq('type', 'dte_retention_reminder')
+        .gte('created_at', sevenDaysAgoStr)
+        .in('user_id', eligibleUserIds)
+
+      const recentRetentionSet = new Set(recentRetention?.map(r => r.user_id) || [])
+
+      // Get user details
+      const { data: usersForRetention } = await supabase
+        .from('users')
+        .select('id, email, display_name')
+        .in('id', eligibleUserIds.filter(id => !recentRetentionSet.has(id)))
+        .limit(20) // Limit to 20 per day to avoid overwhelming
+
+      // Get total cabezas for each user
+      const userCabezas: Record<string, number> = {}
+      if (usersForRetention && usersForRetention.length > 0) {
+        const { data: dteStats } = await supabase
+          .from('user_dtes')
+          .select('user_id, cabezas')
+          .in('user_id', usersForRetention.map(u => u.id))
+
+        for (const dte of dteStats || []) {
+          userCabezas[dte.user_id] = (userCabezas[dte.user_id] || 0) + (dte.cabezas || 0)
+        }
+      }
+
+      for (const user of usersForRetention || []) {
+        if (!user.email) {
+          retentionResults.push({
+            userId: user.id,
+            email: '',
+            status: 'skipped',
+            reason: 'No email'
+          })
+          continue
+        }
+
+        const lastUpload = userLastUpload[user.id]
+        const daysSince = Math.floor((now.getTime() - lastUpload.getTime()) / (24 * 60 * 60 * 1000))
+        const totalDtes = userDteCounts[user.id] || 0
+        const totalCabezas = userCabezas[user.id] || 0
+
+        const result = await sendDteRetentionReminder({
+          to: user.email,
+          userName: user.display_name || undefined,
+          daysSinceLastUpload: daysSince,
+          totalDtes,
+          totalCabezas
+        })
+
+        if (result.success) {
+          try {
+            await supabase.from('outreach_log').insert({
+              type: 'dte_retention_reminder',
+              user_id: user.id,
+              email_sent_to: user.email,
+            })
+          } catch {
+            // Don't fail if logging fails
+          }
+
+          retentionResults.push({
+            userId: user.id,
+            email: user.email,
+            status: 'sent',
+            daysSinceLastUpload: daysSince,
+            totalDtes
+          })
+        } else {
+          retentionResults.push({
+            userId: user.id,
+            email: user.email,
+            status: 'error',
+            reason: result.error
+          })
+        }
+      }
+    }
+  }
+
+  const retentionSent = retentionResults.filter(r => r.status === 'sent').length
+  const retentionSkipped = retentionResults.filter(r => r.status === 'skipped').length
+  const retentionErrors = retentionResults.filter(r => r.status === 'error').length
+
   return NextResponse.json({
     reminders: {
       window: { from: threeDaysAgo.toISOString(), to: oneDayAgo.toISOString() },
@@ -268,7 +403,13 @@ export async function POST(request: NextRequest) {
       errors: successErrors,
       results: successResults
     },
-    totalSent: reminderSent + successSent
+    retentionEmails: {
+      sent: retentionSent,
+      skipped: retentionSkipped,
+      errors: retentionErrors,
+      results: retentionResults
+    },
+    totalSent: reminderSent + successSent + retentionSent
   })
 }
 
