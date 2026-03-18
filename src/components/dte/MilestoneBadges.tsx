@@ -1,11 +1,13 @@
 'use client';
 
-import { Star, Zap, Crown, Trophy, CheckCircle } from 'lucide-react';
+import { Star, Zap, Crown, Trophy, CheckCircle, Share2 } from 'lucide-react';
+import { trackEvent } from '@/lib/analytics';
 
 interface MilestoneBadgesProps {
   dteCount: number;
   totalCabezas?: number;
   showAll?: boolean;
+  showShare?: boolean;
 }
 
 const MILESTONES = [
@@ -61,10 +63,11 @@ const MILESTONES = [
   },
 ];
 
-export function MilestoneBadges({ dteCount, showAll = false }: MilestoneBadgesProps) {
+export function MilestoneBadges({ dteCount, showAll = false, showShare = true }: MilestoneBadgesProps) {
   // Get earned badges
   const earnedBadges = MILESTONES.filter(m => dteCount >= m.threshold);
   const nextBadge = MILESTONES.find(m => dteCount < m.threshold);
+  const highestBadge = earnedBadges.length > 0 ? earnedBadges[earnedBadges.length - 1] : null;
   
   // Show nothing if no badges earned and showAll is false
   if (earnedBadges.length === 0 && !showAll) {
@@ -72,6 +75,22 @@ export function MilestoneBadges({ dteCount, showAll = false }: MilestoneBadgesPr
   }
 
   const displayBadges = showAll ? MILESTONES : earnedBadges;
+  
+  // WhatsApp share functionality
+  const handleShare = () => {
+    if (!highestBadge) return;
+    
+    const message = `🏆 Alcancé el logro "${highestBadge.name}" en consignatarias.com.ar — ya tengo ${dteCount} guías de hacienda registradas!\n\nRegistrá tus DT-e y llevá el control de tu producción:\nhttps://www.consignatarias.com.ar/mi-cuenta/guias`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    
+    trackEvent('milestone_share', {
+      badge_id: highestBadge.id,
+      badge_name: highestBadge.name,
+      dte_count: dteCount,
+    });
+    
+    window.open(whatsappUrl, '_blank');
+  };
 
   return (
     <div className="space-y-3">
@@ -124,6 +143,18 @@ export function MilestoneBadges({ dteCount, showAll = false }: MilestoneBadgesPr
             />
           </div>
         </div>
+      )}
+      
+      {/* WhatsApp share button for earned badges */}
+      {showShare && highestBadge && earnedBadges.length > 0 && (
+        <button
+          onClick={handleShare}
+          className="flex items-center gap-2 px-3 py-2 text-sm bg-green-600/20 hover:bg-green-600/30 
+                     text-green-400 border border-green-500/30 rounded-lg transition-colors w-full justify-center"
+        >
+          <Share2 className="w-4 h-4" />
+          <span>Compartir logro en WhatsApp</span>
+        </button>
       )}
     </div>
   );
