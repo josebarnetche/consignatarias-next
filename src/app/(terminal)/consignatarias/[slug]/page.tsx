@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { notFound, permanentRedirect } from 'next/navigation'
 import rematesData from '@/lib/data/remates.json'
+import marketData from '@/lib/data/market-prices.json'
 import type { Auction } from '@/lib/db/schema'
 import {
   getAllCanonicalSlugs,
@@ -18,6 +19,22 @@ import { getProfileSEO } from '@/lib/data/profile-seo'
 import ConsignatariaProfileClient from './ConsignatariaProfileClient'
 import type { YouTubeChannelData } from './ConsignatariaProfileClient'
 import type { ConsignatariaVideo } from '@/components/video/VideoGallery'
+
+/* ------------------------------------------------------------------ */
+/*  MAG ENTRY DATA from market-prices.json                             */
+/* ------------------------------------------------------------------ */
+
+export interface MagEntryData {
+  magId: string
+  totalCabezas: number
+  entries: Array<{
+    remitente: string
+    localidad: string
+    provincia: string
+    cabezas: number
+  }>
+  period: string
+}
 
 // ISR: revalidate every 5 minutes so Supabase data (verified, contact info) refreshes
 export const revalidate = 300
@@ -283,6 +300,7 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
         videos={videos}
         relatedConsignatarias={relatedConsignatarias}
         externalResources={(consignatariaResources as Record<string, { displayName: string; resources: Array<{ type: string; label: string; url: string; description?: string }> }>)[canonical]?.resources}
+        magEntry={(marketData as { auctionDayEntries?: { consignatarias: Record<string, MagEntryData> } }).auctionDayEntries?.consignatarias?.[canonical]}
       />
     </>
   )

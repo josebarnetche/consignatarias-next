@@ -30,6 +30,7 @@ import VideoGallery, { type ConsignatariaVideo } from '@/components/video/VideoG
 import WhatsAppFAB from '@/components/WhatsAppFAB'
 import DteCTA from '@/components/DteCTA'
 import type { RelatedConsignataria } from '@/lib/dal/consignatarias'
+import type { MagEntryData } from './page'
 
 /* ------------------------------------------------------------------ */
 /*  COMPLETENESS CALCULATOR                                            */
@@ -362,9 +363,10 @@ interface ConsignatariaProfileClientProps {
   videos?: ConsignatariaVideo[]
   relatedConsignatarias?: RelatedConsignataria[]
   externalResources?: ExternalResource[]
+  magEntry?: MagEntryData
 }
 
-export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [], relatedConsignatarias = [], externalResources = [] }: ConsignatariaProfileClientProps) {
+export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [], relatedConsignatarias = [], externalResources = [], magEntry }: ConsignatariaProfileClientProps) {
   const today = getEffectiveToday()
 
   useEffect(() => {
@@ -607,6 +609,56 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           </div>
         )
       })()}
+
+      {/* ============================================================ */}
+      {/*  MAG ENTRY DATA (when available for today's auctions)         */}
+      {/* ============================================================ */}
+      {magEntry && magEntry.totalCabezas > 0 && (
+        <div className="terminal-panel mt-px">
+          <div className="terminal-panel-header flex items-center justify-between">
+            <span className="text-zinc-400 text-xxs tracking-widest">ACTIVIDAD EN MAG</span>
+            <span className="text-xxs text-zinc-500 font-terminal">{magEntry.period}</span>
+          </div>
+          <div className="px-panel py-3">
+            <div className="flex items-baseline gap-3 mb-3">
+              <span className="text-2xl font-terminal text-positive tabular-nums">
+                {magEntry.totalCabezas.toLocaleString('es-AR')}
+              </span>
+              <span className="text-xxs text-zinc-500 uppercase">cabezas ingresadas</span>
+              <span className="text-xxs text-zinc-600">|</span>
+              <span className="text-xxs text-zinc-500">
+                {magEntry.entries.length} remitente{magEntry.entries.length !== 1 ? 's' : ''}
+              </span>
+            </div>
+            {magEntry.entries.length > 0 && (
+              <div className="space-y-1">
+                <div className="text-xxs text-zinc-500 uppercase mb-2">Últimos remitentes:</div>
+                <div className="grid gap-1">
+                  {magEntry.entries.slice(0, 5).map((entry, idx) => (
+                    <div key={idx} className="flex items-center justify-between text-xxs font-terminal py-1 px-2 bg-zinc-900/30 rounded">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-zinc-300 truncate">{entry.remitente}</span>
+                        <span className="text-zinc-600">|</span>
+                        <span className="text-zinc-500 truncate">{entry.localidad}</span>
+                        <span className="text-zinc-600 text-xxs">{entry.provincia}</span>
+                      </div>
+                      <span className="text-positive tabular-nums flex-shrink-0 ml-2">{entry.cabezas} cab</span>
+                    </div>
+                  ))}
+                  {magEntry.entries.length > 5 && (
+                    <div className="text-xxs text-zinc-500 text-center py-1">
+                      +{magEntry.entries.length - 5} remitentes más
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            <div className="mt-3 pt-2 border-t border-zinc-800/50 text-xxs text-zinc-600 font-terminal">
+              Fuente: Mercado Agroganadero S.A.
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ============================================================ */}
       {/*  CALENDAR HEATMAP + TYPE DISTRIBUTION                         */}
