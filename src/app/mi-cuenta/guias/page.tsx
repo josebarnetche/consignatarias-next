@@ -9,7 +9,6 @@ import { trackDtePageView, trackDteSave, trackDteMilestone } from '@/lib/analyti
 
 export default function MisGuiasPage() {
   const [refreshKey, setRefreshKey] = useState(0);
-  const [saving, setSaving] = useState(false);
   const [dteCount, setDteCount] = useState<number | null>(null);
   const supabase = createClient();
 
@@ -34,7 +33,6 @@ export default function MisGuiasPage() {
   const handleSave = useCallback(async (
     data: DTEData & { ocr_raw_text?: string; ocr_confidence?: number }
   ) => {
-    setSaving(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -88,10 +86,8 @@ export default function MisGuiasPage() {
     } catch (err) {
       console.error('Error saving DTE:', err);
       alert('Error al guardar la guía');
-    } finally {
-      setSaving(false);
     }
-  }, [supabase]);
+  }, [supabase, dteCount]);
 
   return (
     <div className="min-h-screen bg-gray-950">
