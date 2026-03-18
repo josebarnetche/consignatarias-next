@@ -1,3 +1,274 @@
+## [1.9.0] — 2026-03-18
+
+### Price Oracle Foundation + MAG Integration + Onboarding Stack
+
+> feat: v1.9.0 — Mercado Agroganadero integration, real-time auction data, institutional credibility layer, complete activation funnel
+
+**Milestone:** 132 commits in 4 days. Platform transformed from directory to market intelligence infrastructure. Foundation for Price Reporting Agency (PRA) model laid. First PRO prospect (SVB) in pipeline.
+
+---
+
+### 🏛️ 1. PRICE ORACLE — MAG Integration
+
+The biggest architectural shift since launch. Direct integration with Mercado Agroganadero S.A. (Argentina's official livestock market).
+
+**New Data Sources:**
+
+| Endpoint | Data | Use Case |
+|----------|------|----------|
+| `haciinfo000002` | Real category prices | Novillos, novillitos, vaquillonas, vacas, toros |
+| `haciinfo000003` | Entry by province | Market share: BA 79%, SF 9%, ER 6%... |
+| `haciinfo000006` | Entry by consignatario | Per-auction activity data |
+| `haciinfo000502` | Detailed subcategories | 19 price points (Esp.Joven, Regular, etc.) |
+| `haciinfo000011` | INMAG + volume | Daily index with cabezas traded |
+
+**Auto-Query for Auctions:**
+
+When a consignataria has an auction today AND has a MAG ID mapped:
+1. Scraper queries `haciinfo000006` with their MAG ID
+2. Returns last 30 days of cattle entries
+3. Shows remitente, localidad, provincia, cabezas
+4. Displayed on profile: "431 cabezas | 14 remitentes"
+
+**MAG ID Mapping:** 15 consignatarias linked (of 44 MAG registered):
+- colombo-y-colombo, colombo-y-magliano
+- saenz-valiente-bullrich, campos-y-ganados
+- jauregui-lorda, madelan, monasterio-tattersall
+- daniel-blanco, gananor-pujol, hourcade-albelo
+- martin-g-lalor, s-l-ledesma, umc-haciendas-villaguay
+- wallace-hnos, alzaga-unzue
+
+**Commits:** `f472a38`, `3ea3b5c`, `c1eb02b`, `a1e3cfc`, `a0edb62`
+
+---
+
+### 📊 2. Price Index Methodology
+
+Institutional credibility layer for the price oracle.
+
+**`/metodologia` Page:**
+- Data sources documented (MAG, MAGYP, DolarAPI)
+- Calculation methodology
+- Category breakdown with volume weights
+- Update frequency (14:00 ART daily)
+- Data governance (corrections, historical)
+- Contact for institutional inquiries
+
+**Real vs Synthetic Prices:**
+- Before: Synthetic ratios (novillitos = 0.95 × INMAG)
+- After: Real observed prices from MAG (novillitos = $4,884 actual)
+- Variance: +12.7% for novillitos (real > synthetic)
+
+**Commits:** `b8eb5d9`, `4163008` (security audit)
+
+---
+
+### 🎯 3. Onboarding & Activation Stack
+
+Complete user activation funnel from signup to first value.
+
+**Email Sequence:**
+
+| Email | Trigger | CTA |
+|-------|---------|-----|
+| Welcome | user.created webhook | Go to dashboard |
+| DTE Reminder | 24-48h, no DTE upload | Upload first DTE |
+| DTE Success | First DTE uploaded | View stats |
+| Weekly Digest | 7 days active | Check new remates |
+
+**Activation Components:**
+
+| Component | Purpose | Commit |
+|-----------|---------|--------|
+| `ActivationChecklist` | Gamified progress (0→100%) | `2ca2d03` |
+| `DTEStats` | Personal stats dashboard | `#92-98` |
+| `MilestoneShare` | WhatsApp viral loop | `843c731` |
+| Demo mode | Try before signup | `#96` |
+
+**Auth Webhook:**
+- Supabase → `/api/webhooks/auth`
+- Signature verification (HMAC-SHA256)
+- Idempotent (checks outreach_log)
+- Triggers welcome email instantly
+
+**Bug Fixed:** `/mi-cuenta/guias` didn't exist → now links to `/dashboard`
+
+**Commits:** `31f4c8f`, `2ca2d03`, `843c731`, `c5813d3`
+
+---
+
+### 📈 4. Market Intelligence Features
+
+**Seasonal Patterns:**
+- `SeasonalPattern` component on /mercado
+- Shows best months to buy/sell (historical)
+- 3 years of IGMAG data by month
+
+**Spread Index:**
+- Invernada/Maíz ratio (14.1:1 current)
+- Profitability threshold: 12:1
+- Link from /mercado to /mercado/spread
+
+**365-Day History:**
+- Extended from 56 days
+- Enables trend analysis
+- Foundation for financial products
+
+**Volume Data:**
+- Cabezas traded per day
+- Period volume totals
+- VWAP calculations possible
+
+**Commits:** `047bde8`, `dc31532`
+
+---
+
+### 🔍 5. SEO Expansion
+
+**Province × Type Combo Pages:**
+- 34 new landing pages
+- `/consignatarias/buenos-aires/invernada`
+- Dynamic metadata, schema
+- Internal linking mesh
+
+**Individual Remate Pages:**
+- 345+ `/remates/[slug]` pages
+- EventSchema per auction
+- PRO conversion prompts
+
+**Schema Coverage:** 100%
+- All pages have structured data
+- LocalBusiness for frigoríficos (364)
+- VideoObject for live auctions
+- FAQ schema on key pages
+
+**AI Crawler Access:**
+- GPTBot, ClaudeBot, PerplexityBot allowed
+- robots.txt optimized
+
+**Commits:** `52e59aa`, `c639956`, `14db357`
+
+---
+
+### 🎨 6. Profile Enhancements
+
+**MAG Entry Display:**
+```
+┌─ ACTIVIDAD EN MAG ──────────────────────────┐
+│ 431 cabezas ingresadas | 14 remitentes      │
+│ BLASFER S.A. | GRAL. BELGRANO BUE    63 cab │
+│ LA GLORIA AGROPECUARIA | LAPRIDA     60 cab │
+│ Fuente: Mercado Agroganadero S.A.           │
+└──────────────────────────────────────────────┘
+```
+
+**Related Consignatarias:**
+- Cross-links on profiles
+- Same province + type matching
+- Internal linking for SEO
+
+**External Resources:**
+- Curated links per profile
+- News, videos, social
+
+**Dynamic OG Images:**
+- GitHub-style cards
+- Real logos for 9 profiles
+- Social sharing optimized
+
+**Commits:** `a1e3cfc`, `07b4b05`, `9daebc1`, `8d84639`
+
+---
+
+### 🛡️ 7. Security & Infrastructure
+
+**Webhook Signature Verification:**
+- HMAC-SHA256 for Supabase webhooks
+- Timing-safe comparison
+- Prevents replay attacks
+
+**Code Cleanup:**
+- Bloat removal (analytics-test, test-*)
+- ESLint v9 flat config
+- 0 lint warnings, 0 type errors
+
+**Commits:** `4163008`, `a2c3ece`
+
+---
+
+### 📧 8. Email Infrastructure
+
+**Resend Integration:**
+- 5 email templates
+- HTML emails with terminal aesthetic
+- From: consignatarias.com.ar domain
+
+**Post-Remate Outreach:**
+- 83% email coverage
+- Automated follow-up system
+- Results collection funnel
+
+**Commits:** `a6bb165`, `c5813d3`
+
+---
+
+### 📱 9. Conversion & Growth
+
+**PRO Conversion Stack:**
+- `/planes` with trust badges
+- Early adopter pricing ($10K → $15K)
+- ROI anchoring ("Un comprador = inversión del año")
+- Mobile sticky CTA
+- Loss aversion ("Solo primeras 50")
+
+**WhatsApp Integration:**
+- Share buttons on all cards
+- Milestone sharing for viral loop
+- FAB on profiles with WhatsApp
+
+**Commits:** `b26e809`, `8387307`
+
+---
+
+### 📊 Stats Update
+
+| Metric | v1.7.3 | v1.9.0 | Change |
+|--------|--------|--------|--------|
+| Remates | 270 | 290+ | +7% |
+| Consignatarias | 80 | 86 | +7.5% |
+| API Endpoints | 21 | 24 | +14% |
+| Data Sources | 9 | 13 | +44% |
+| MAG Integration | ❌ | ✅ | NEW |
+| Email Templates | 2 | 5 | +150% |
+| Schema Coverage | 95% | 100% | +5% |
+| Static Pages | 170 | 400+ | +135% |
+
+---
+
+### Breaking Changes
+
+None. All changes are additive.
+
+---
+
+### Migration Notes
+
+**For Supabase webhook:**
+1. Dashboard → Settings → Auth → Webhooks
+2. URL: `https://www.consignatarias.com.ar/api/webhooks/auth`
+3. Events: `user.created`
+4. Set `SUPABASE_AUTH_WEBHOOK_SECRET` env var
+
+---
+
+### Contributors
+
+- **JARVIS** (CEO, MEMOLA DAO) — 132 commits, system design
+- **José Barnetche** — Direction, PRO sales
+
+---
+
+*"From directory to price oracle. 132 commits. 4 days. Almost 2.0."*
 # Changelog
 
 Registro completo de **consignatarias.com.ar** — desde el primer `npx create-next-app` hasta una plataforma SaaS de remates ganaderos con 21 API endpoints, 290+ remates en 13 provincias argentinas, auth, pagos, perfiles verificados, AI SEO, lead magnets, PRO tier con features premium, email marketing automatizado y documentación completa.
