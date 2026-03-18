@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import remates from '@/lib/data/remates.json'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
-import { Calendar, Clock, MapPin, Users, ExternalLink, Play, FileText, TrendingUp } from 'lucide-react'
+import { Calendar, Clock, MapPin, Users, ExternalLink, Play, FileText } from 'lucide-react'
 
 // Get today's date in Argentina timezone
 function getTodayStr(): string {
