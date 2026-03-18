@@ -24,6 +24,7 @@ const DATA_DIR = resolve(__dirname, "../src/lib/data");
 const REMATES_PATH = resolve(DATA_DIR, "remates.json");
 const MARKET_PATH = resolve(DATA_DIR, "market-prices.json");
 const YOUTUBE_PATH = resolve(DATA_DIR, "youtube-channels.json");
+const MAG_CONSIG_PATH = resolve(DATA_DIR, "mag-consignatarios.json");
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -1008,6 +1009,115 @@ async function scrapeDetailedCategoryPrices() {
 }
 
 // ---------------------------------------------------------------------------
+// Source 13: MAG Entry for Consignatarias with Auctions Today
+// Queries haciinfo000006 for each consignataria that has an auction today
+// ---------------------------------------------------------------------------
+
+async function scrapeAuctionDayEntries(auctions) {
+  console.log("[13/13] Querying MAG entry for consignatarias with auctions today...");
+
+  // Load MAG consignatario mapping
+  let magMapping;
+  try {
+    magMapping = JSON.parse(readFileSync(MAG_CONSIG_PATH, "utf-8"));
+  } catch {
+    console.warn("  [WARN] Could not load mag-consignatarios.json");
+    return null;
+  }
+
+  // Create slug → magId lookup
+  const slugToMagId = new Map();
+  for (const entry of magMapping.mapping) {
+    if (entry.slug) {
+      slugToMagId.set(entry.slug, entry.magId);
+    }
+  }
+
+  // Find consignatarias with auctions today
+  const today = todayISO();
+  const todayAuctions = auctions.filter((a) => a.date === today);
+  const uniqueSlugs = [...new Set(todayAuctions.map((a) => a.consignatariaSlug))];
+
+  // Filter to only those with MAG IDs
+  const slugsWithMagId = uniqueSlugs.filter((slug) => slugToMagId.has(slug));
+
+  if (slugsWithMagId.length === 0) {
+    console.log("  No consignatarias with MAG IDs have auctions today");
+    return null;
+  }
+
+  console.log(`  ${slugsWithMagId.length} consignatarias with MAG IDs have auctions today`);
+
+  // Date range: last 30 days
+  const endDate = new Date();
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - 30);
+
+  const formatDate = (d) =>
+    `${d.getDate().toString().padStart(2, "0")}/${(d.getMonth() + 1).toString().padStart(2, "0")}/${d.getFullYear()}`;
+
+  const results = {};
+
+  // Query each consignataria
+  for (const slug of slugsWithMagId) {
+    const magId = slugToMagId.get(slug);
+    const url = `https://www.mercadoagroganadero.com.ar/dll/hacienda1.dll/haciinfo000006?txtFECHAINI=${formatDate(startDate)}&txtFECHAFIN=${formatDate(endDate)}&LisConsignatario=${magId}&CP=&LISTADO=SI`;
+
+    const html = await fetchHTML(url);
+    if (!html) continue;
+
+    const tableMatch = html.match(/<Table[^>]*class="table[^"]*"[^>]*>([\s\S]*?)<\/Table>/i);
+    if (!tableMatch) continue;
+
+    const rows = tableMatch[0].match(/<TR[^>]*>([\s\S]*?)<\/TR>/gi) || [];
+    const entries = [];
+    let totalCabezas = 0;
+
+    for (const row of rows) {
+      const cells = [...row.matchAll(/<T[DH][^>]*>([\s\S]*?)<\/T[DH]>/gi)].map((m) =>
+        m[1].replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").trim()
+      );
+
+      if (cells.length < 7) continue;
+      if (cells[0].toLowerCase() === "remitente") continue;
+
+      // Totals row
+      if (cells[0].toLowerCase().includes("totales")) {
+        totalCabezas = parseInt(cells[6]?.replace(/\./g, "").replace(/[^\d]/g, "") || "0", 10);
+        continue;
+      }
+
+      const total = parseInt(cells[6]?.replace(/\./g, "").replace(/[^\d]/g, "") || "0", 10);
+      if (total > 0 && cells[0]) {
+        entries.push({
+          remitente: cells[0].trim(),
+          localidad: cells[1]?.trim() || "",
+          provincia: cells[2]?.trim() || "",
+          cabezas: total,
+        });
+      }
+    }
+
+    if (totalCabezas > 0 || entries.length > 0) {
+      results[slug] = {
+        magId,
+        totalCabezas,
+        entries,
+        period: `${formatDate(startDate)} - ${formatDate(endDate)}`,
+      };
+      console.log(`    ${slug}: ${totalCabezas} cabezas from ${entries.length} remitentes`);
+    }
+  }
+
+  if (Object.keys(results).length === 0) {
+    console.log("  No entry data found for today's auction consignatarias");
+    return null;
+  }
+
+  return { date: today, consignatarias: results };
+}
+
+// ---------------------------------------------------------------------------
 // Source 6: Dollar rates
 // ---------------------------------------------------------------------------
 
@@ -1279,6 +1389,9 @@ async function main() {
   writeFileSync(REMATES_PATH, JSON.stringify(merged, null, 2) + "\n");
   console.log(`\nWritten: ${merged.length} auctions to remates.json`);
 
+  // Query MAG entry data for consignatarias with auctions today
+  const auctionDayEntries = await scrapeAuctionDayEntries(merged);
+
   // Update market-prices.json with all available data
   const market = JSON.parse(readFileSync(MARKET_PATH, "utf-8"));
 
@@ -1445,6 +1558,13 @@ async function main() {
       categories: detailedCategories.categories,
     };
     console.log(`Updated detailed categories: ${detailedCategories.categories.length} subcategories`);
+  }
+
+  // Update auction day entry data (MAG entry for consignatarias with auctions today)
+  if (auctionDayEntries) {
+    market.auctionDayEntries = auctionDayEntries;
+    const count = Object.keys(auctionDayEntries.consignatarias).length;
+    console.log(`Updated auction day entries: ${count} consignatarias with MAG data`);
   }
 
   market.lastUpdate = todayISO();

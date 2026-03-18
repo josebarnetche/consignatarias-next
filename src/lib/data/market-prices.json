@@ -205,15 +205,15 @@
     },
     "terneros": {
       "current": 4907,
-      "prev": 5016,
-      "change": -2.2,
+      "prev": 4907,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
     "current": 225.36,
-    "prev": 225.83,
-    "change": -0.2,
+    "prev": 225.36,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
@@ -226,8 +226,8 @@
   },
   "usdOficial": {
     "current": 1420,
-    "prev": 1415,
-    "change": 0.4,
+    "prev": 1420,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
@@ -405,5 +405,187 @@
         "cabezas": 2528
       }
     ]
+  },
+  "auctionDayEntries": {
+    "date": "2026-03-18",
+    "consignatarias": {
+      "saenz-valiente-bullrich-y-cia-s-a": {
+        "magId": "538",
+        "totalCabezas": 431,
+        "entries": [
+          {
+            "remitente": "BLASFER S.A.",
+            "localidad": "GRAL. BELGRANO",
+            "provincia": "BUE",
+            "cabezas": 63
+          },
+          {
+            "remitente": "CALDENES S.A.",
+            "localidad": "PIEDRITAS",
+            "provincia": "BUE",
+            "cabezas": 38
+          },
+          {
+            "remitente": "DON QUILES S.A.",
+            "localidad": "RAUCH",
+            "provincia": "BUE",
+            "cabezas": 2
+          },
+          {
+            "remitente": "GRASSETTI JUAN CARLOS",
+            "localidad": "RAMALLO",
+            "provincia": "BUE",
+            "cabezas": 35
+          },
+          {
+            "remitente": "IRISARRI MARIANO VICTOR",
+            "localidad": "MERCEDES",
+            "provincia": "BUE",
+            "cabezas": 10
+          },
+          {
+            "remitente": "LA GLORIA AGROPECUARIA S.C.A.",
+            "localidad": "LAPRIDA",
+            "provincia": "BUE",
+            "cabezas": 60
+          },
+          {
+            "remitente": "LOMANAR S.R.L.",
+            "localidad": "DOLORES",
+            "provincia": "BUE",
+            "cabezas": 4
+          },
+          {
+            "remitente": "MONVALE CARLOS ALBERTO",
+            "localidad": "MARCOS PAZ",
+            "provincia": "BUE",
+            "cabezas": 37
+          },
+          {
+            "remitente": "MONVALE CARLOS ALBERTO",
+            "localidad": "MARCOS PAZ",
+            "provincia": "BUE",
+            "cabezas": 34
+          },
+          {
+            "remitente": "OLARRA LINCH MANUEL",
+            "localidad": "DOLORES",
+            "provincia": "BUE",
+            "cabezas": 31
+          },
+          {
+            "remitente": "PEREYRA IRAOLA ELENA",
+            "localidad": "AYACUCHO           B",
+            "provincia": "BUE",
+            "cabezas": 42
+          },
+          {
+            "remitente": "VALKER S.A.",
+            "localidad": "GUALEGUAYCHU",
+            "provincia": "ERI",
+            "cabezas": 23
+          },
+          {
+            "remitente": "VALKER S.A.",
+            "localidad": "GUALEGUAYCHU",
+            "provincia": "ERI",
+            "cabezas": 23
+          },
+          {
+            "remitente": "VIA SEVILLA S.A",
+            "localidad": "RAUCH",
+            "provincia": "BUE",
+            "cabezas": 29
+          }
+        ],
+        "period": "16/02/2026 - 18/03/2026"
+      },
+      "jauregui-lorda": {
+        "magId": "92",
+        "totalCabezas": 57,
+        "entries": [
+          {
+            "remitente": "CARRANZA GUSTAVO GERMAN",
+            "localidad": "ITALO",
+            "provincia": "CBA",
+            "cabezas": 57
+          }
+        ],
+        "period": "16/02/2026 - 18/03/2026"
+      },
+      "monasterio-tattersall-s-a": {
+        "magId": "465",
+        "totalCabezas": 204,
+        "entries": [
+          {
+            "remitente": "DI LASCIO HNOS S.H.",
+            "localidad": "GRAL. BELGRANO",
+            "provincia": "BUE",
+            "cabezas": 23
+          },
+          {
+            "remitente": "DIEZ SERGIO MAURICIO",
+            "localidad": "DAIREAUX",
+            "provincia": "BUE",
+            "cabezas": 34
+          },
+          {
+            "remitente": "ESTB.GANADERO SAN ANTONIO S.A.",
+            "localidad": "CNEL. SUAREZ",
+            "provincia": "BUE",
+            "cabezas": 42
+          },
+          {
+            "remitente": "FORNARA NESTOR FRANCISCO",
+            "localidad": "REALICO",
+            "provincia": "LPA",
+            "cabezas": 1
+          },
+          {
+            "remitente": "GUILLEN E HIJOS S.C.A.",
+            "localidad": "AYACUCHO           B",
+            "provincia": "BUE",
+            "cabezas": 12
+          },
+          {
+            "remitente": "GUILLEN FRANCISCO CIPRIANO",
+            "localidad": "AYACUCHO           B",
+            "provincia": "BUE",
+            "cabezas": 3
+          },
+          {
+            "remitente": "GUILLEN FRANCISCO CIPRIANO",
+            "localidad": "AYACUCHO           B",
+            "provincia": "BUE",
+            "cabezas": 7
+          },
+          {
+            "remitente": "GUILLEN PASCUAL ANGEL",
+            "localidad": "AYACUCHO           B",
+            "provincia": "BUE",
+            "cabezas": 3
+          },
+          {
+            "remitente": "GUILLEN PASCUAL ANGEL",
+            "localidad": "AYACUCHO           B",
+            "provincia": "BUE",
+            "cabezas": 8
+          },
+          {
+            "remitente": "JUSTO RICARDO Y OLGIATI MARIO",
+            "localidad": "ROQUE PEREZ",
+            "provincia": "BUE",
+            "cabezas": 36
+          },
+          {
+            "remitente": "MUGNAGA MAURO RUBEN",
+            "localidad": "TRES ARROYOS",
+            "provincia": "BUE",
+            "cabezas": 35
+          }
+        ],
+        "period": "16/02/2026 - 18/03/2026"
+      }
+    }
   }
 }
