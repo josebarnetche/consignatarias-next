@@ -45,7 +45,32 @@ export default function LoginClient() {
   }
 
   return (
-    <div className="max-w-sm mx-auto px-4 py-12">
+    <div className="max-w-md mx-auto px-4 py-12">
+      {/* Benefits section */}
+      <div className="mb-6 p-4 bg-terminal-panel/50 border border-terminal-border rounded-lg">
+        <h2 className="text-zinc-200 text-sm font-terminal mb-3">
+          Creá tu cuenta gratis y accedé a:
+        </h2>
+        <ul className="space-y-2 text-xxs font-terminal">
+          <li className="flex items-center gap-2 text-zinc-400">
+            <span className="text-amber-500">📋</span>
+            <span>Historial de guías DT-e con OCR automático</span>
+          </li>
+          <li className="flex items-center gap-2 text-zinc-400">
+            <span className="text-amber-500">🔔</span>
+            <span>Alertas de nuevos remates por provincia o tipo</span>
+          </li>
+          <li className="flex items-center gap-2 text-zinc-400">
+            <span className="text-amber-500">📊</span>
+            <span>Comparador de consignatarias y analytics</span>
+          </li>
+          <li className="flex items-center gap-2 text-zinc-400">
+            <span className="text-amber-500">📅</span>
+            <span>Calendario de remates exportable a Google/Apple</span>
+          </li>
+        </ul>
+      </div>
+
       <div className="terminal-panel">
         <div className="terminal-panel-header">
           <span className="text-zinc-200 text-label tracking-widest">INGRESAR</span>
