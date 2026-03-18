@@ -335,17 +335,20 @@ export default function DashboardClient({
                   </div>
                 )}
 
-                {/* Upgrade CTA for free users */}
+                {/* Upgrade CTA for free users - stronger value prop */}
                 {tierLabel === 'FREE' && (
                   <div className="mt-4 p-3 bg-amber-500/5 border border-amber-500/20 rounded-terminal">
-                    <p className="text-xxs font-terminal text-zinc-400 mb-2">
-                      🔒 Con PRO verás: visitas diarias, comparación con el rubro, clicks en WhatsApp, y más.
+                    <p className="text-xxs font-terminal text-zinc-300 mb-1">
+                      🔒 Tu perfil es visible pero no destaca
+                    </p>
+                    <p className="text-xxs font-terminal text-zinc-500 mb-3">
+                      Con PRO: cada remate llega a +500 productores por email, analytics de vistas, badge dorado, landing con QR.
                     </p>
                     <Link 
                       href="/planes" 
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-500/20 transition-colors rounded-terminal"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 border border-amber-500/40 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-500/30 transition-colors rounded-terminal"
                     >
-                      ★ Ver planes PRO
+                      ★ Activar PRO — $45.000/mes
                     </Link>
                   </div>
                 )}

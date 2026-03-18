@@ -184,10 +184,10 @@ export default function PlanesPage() {
             <p className="text-zinc-400 text-data mb-4">
               Cada remate que publiques lo enviamos por email a todos nuestros suscriptores. Todo el año.
             </p>
-            {/* Early adopter badge (Insight #61b) */}
+            {/* Early adopter badge (Insight #61b) - with urgency */}
             <div className="mb-4 px-2 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded text-center">
               <span className="text-emerald-400 text-xxs font-terminal uppercase tracking-wider">
-                🎁 Early adopter: precio congelado de por vida
+                🎁 Primeras 50 consignatarias: precio congelado de por vida
               </span>
             </div>
             <ul className="space-y-2 mb-6 flex-1">
@@ -268,35 +268,35 @@ export default function PlanesPage() {
         </div>
       </div>
 
-      {/* Why PRO? Benefits (Insight #63) */}
+      {/* Why PRO? Benefits (Insight #63) - with specific numbers */}
       <div className="mt-8 terminal-panel">
         <div className="terminal-panel-header">Por que elegir PRO?</div>
         <div className="px-panel py-4 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <span className="text-amber-400 text-lg">📧</span>
-              <span className="text-zinc-200 text-sm font-medium">Llegá a más productores</span>
+              <span className="text-zinc-200 text-sm font-medium">+500 productores por remate</span>
             </div>
             <p className="text-zinc-500 text-data">
-              Cada remate que publiques lo enviamos por email a toda nuestra base de suscriptores. Sin costo extra.
+              Cada remate que publiques lo enviamos por email a nuestra base de suscriptores activos. Un solo comprador nuevo paga la suscripcion anual.
             </p>
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <span className="text-amber-400 text-lg">📊</span>
-              <span className="text-zinc-200 text-sm font-medium">Medí tu impacto</span>
+              <span className="text-zinc-200 text-sm font-medium">Medí lo que importa</span>
             </div>
             <p className="text-zinc-500 text-data">
-              Analytics de perfil: vistas, clicks, consultas. Sabé cuántos productores te encuentran cada semana.
+              Vistas de perfil, ranking provincial, comparacion con el rubro. Sabe si tu inversion en marketing esta funcionando.
             </p>
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <span className="text-amber-400 text-lg">🏆</span>
-              <span className="text-zinc-200 text-sm font-medium">Destacate de la competencia</span>
+              <span className="text-zinc-200 text-sm font-medium">Primera impresion profesional</span>
             </div>
             <p className="text-zinc-500 text-data">
-              Badge PRO dorado, perfil verificado, landing personalizada. Tu consignataria se ve profesional.
+              Badge dorado, landing con QR para catalogos, calendario sincronizable. Los productores ven una consignataria seria.
             </p>
           </div>
         </div>
