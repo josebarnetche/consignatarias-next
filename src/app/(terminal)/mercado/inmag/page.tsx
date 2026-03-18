@@ -3,6 +3,7 @@ import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { TimeRangePriceChart } from '@/components/TimeRangePriceChart'
+import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 
 const inmag = marketData.inmag
 const series = inmag.series as Array<{ date: string; value: number }>
@@ -146,6 +147,16 @@ export default function InmagPage() {
         {/* Interactive Price Chart with Time Range Selector */}
         <div className="mb-6">
           <TimeRangePriceChart initialData={recentSeries} height={120} />
+        </div>
+
+        {/* PRO CTA for consignatarios (Insight #99) */}
+        <div className="mb-6">
+          <ProUpgradePrompt 
+            benefit="¿Sos consignatario? Mostrá tus remates a +5000 usuarios mensuales"
+            context="inmag"
+            ctaText="Ver planes PRO"
+            variant="card"
+          />
         </div>
 
         {/* Historical data */}
