@@ -1,6 +1,114 @@
 # Changelog
 
-Registro completo de **consignatarias.com.ar** — desde el primer `npx create-next-app` hasta una plataforma SaaS de remates ganaderos con 21 API endpoints, 230+ remates en 10 provincias argentinas, auth, pagos, perfiles verificados, AI SEO, lead magnets, PRO tier con features premium, email marketing automatizado y documentación completa.
+Registro completo de **consignatarias.com.ar** — desde el primer `npx create-next-app` hasta una plataforma SaaS de remates ganaderos con 21 API endpoints, 290+ remates en 13 provincias argentinas, auth, pagos, perfiles verificados, AI SEO, lead magnets, PRO tier con features premium, email marketing automatizado y documentación completa.
+
+---
+
+## [1.7.3] — 2026-03-17
+
+### Revenue Conversion Stack + Individual Remate Pages + Calendar Export
+
+> feat: v1.7.3 — PRO conversion funnel completo, 345 páginas individuales de remates, descarga de calendarios ICS
+
+**Milestone:** El stack de conversión a PRO está 100% operativo. Full funnel tracking desde prompt hasta checkout. 981 páginas estáticas totales.
+
+**1. PRO Conversion Funnel (Insights #55-57, #59, #61-64)**
+
+Stack completo de conversión para el tier PRO:
+
+| Componente | Ubicación | Commit |
+|------------|-----------|--------|
+| PRO prompts | /comparar, /calculadora, /exportar | `71206ff`, `a039e57` |
+| Remate detail prompts | 345 páginas /remates/[slug] | `c868c39` |
+| Conversion tracking | prompt_view → click → planes → checkout | `8ba690d` |
+| WhatsApp FAB | Todos los perfiles con WhatsApp | `06293e9` |
+| Social proof | "70+ consignatarias confían..." | `0072c54` |
+| Trust badges | Rebill secured, SSL, Cancel anytime | `c9654b9` |
+| Why PRO benefits | Grid de 3 columnas en /planes | `c9654b9` |
+| Mobile sticky CTA | Botón fijo en mobile para /planes | `b239916` |
+| Dynamic social proof | API real-time stats | `d000112` |
+
+**Funnel tracking events:**
+```
+prompt_view → prompt_click → planes_view → checkout_start → pro_upgrade
+```
+
+**2. Individual Remate Detail Pages (Insight #48)**
+
+345 páginas únicas para cada remate programado:
+
+- **URL pattern:** `/remates/[slug]` (ej: `/remates/rosgan-invernada-corrientes-2026-03-20`)
+- **SEO optimizado:** Title, description, EventSchema únicos por remate
+- **Contenido:** Fecha, hora, ubicación, consignataria, link a YouTube/WhatsApp
+- **PRO prompt:** Incluido en cada página para conversión
+
+**Commit:** `115972f`
+
+**3. ICS Calendar Export (Insights #67-68)**
+
+Descarga de calendarios para agregar remates a Google Calendar / Outlook:
+
+| Feature | Ubicación | Commit |
+|---------|-----------|--------|
+| Single event download | /go/[slug], /remates/[slug] | `b6578c0` |
+| Bulk export | /remates (todos los remates) | `0a845e1` |
+
+**ICS incluye:**
+- Título con nombre de consignataria y tipo
+- Fecha/hora exacta del remate
+- Ubicación (provincia, localidad)
+- Descripción con link al perfil
+- Reminder 1 hora antes
+
+**4. Schema Expansion (Insights #46, #49, #56)**
+
+100% de páginas públicas con structured data:
+
+| Página | Schema | Commit |
+|--------|--------|--------|
+| /comparar | WebApplication + Breadcrumb | `2b06430` |
+| /api-docs | TechArticle + Organization | `cdeb90a` |
+| /calidad | TechArticle | `e323294` |
+| /reporte-semanal | WebApplication | `e323294` |
+| /exportar | WebApplication | `9e5f40f` |
+| /overview, /quienes-somos | Organization | `5294c6a` |
+| /go/[slug] | JSON-LD complete | `dd183a6` |
+| Frigoríficos + Calendario | Breadcrumb | `e7ad411` |
+
+**5. Price Sparkline Chart (Insight #45)**
+
+Gráfico visual de tendencia de precios en /mercado/inmag:
+
+- SVG-based (zero external deps)
+- Muestra últimas 8 semanas
+- Hover para ver valores exactos
+- Responsive
+
+**Commit:** `78e183a`
+
+**6. URL Search Params (Insight #52)**
+
+Soporte para `?q=` en /remates para deep linking:
+
+```
+/remates?q=rosgan → Filtra remates de Rosgan
+/remates?q=cordoba → Filtra remates en Córdoba
+```
+
+**Commit:** `16fcaed`
+
+**7. Asset Cleanup**
+
+Removed unused `og-image-old.png` (339KB savings).
+
+**Commit:** `f41a1c4`
+
+**Stats del día:**
+- 24 commits
+- 78 actions ejecutadas
+- 71 insights shipped (total acumulado)
+- 981 páginas estáticas
+- 0 lint errors, 0 warnings
 
 ---
 
