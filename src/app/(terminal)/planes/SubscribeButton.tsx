@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-browser'
+import { trackCheckoutStart } from '@/lib/analytics'
 
 const PRO_PLAN_ID = 'pln_f644261ffe68462497eeb78d4363f377'
 
@@ -37,6 +38,8 @@ export default function SubscribeButton() {
     }
 
     setLoading(true)
+    trackCheckoutStart('PRO', 45000)
+    
     try {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
@@ -90,7 +93,7 @@ export default function SubscribeButton() {
         borderRadius: '2px',
       }}
     >
-      {loading ? 'Redirigiendo a pago seguro...' : '★ Asegurar precio fundador →'}
+      {loading ? '🔒 Abriendo Rebill (pago seguro)...' : '★ Asegurar precio fundador →'}
     </button>
   )
 }
