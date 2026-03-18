@@ -1,12 +1,7 @@
-import { Metadata } from 'next';
+'use client';
+
 import { FileText, History, TrendingUp } from 'lucide-react';
 import { DTEUploader } from '@/components/dte';
-
-export const metadata: Metadata = {
-  title: 'Mis Guías DT-e | Consignatarias',
-  description: 'Subí tus documentos de tránsito electrónico y llevá un historial de todos tus movimientos de hacienda.',
-  robots: 'noindex', // Private page
-};
 
 export default function MisGuiasPage() {
   return (
