@@ -1,15 +1,35 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { FileText, History, TrendingUp, RefreshCw } from 'lucide-react';
 import { DTEUploader, DTEHistory } from '@/components/dte';
 import { createClient } from '@/lib/supabase-browser';
 import { DTEData } from '@/hooks/useOCR';
+import { trackDtePageView, trackDteSave, trackDteMilestone } from '@/lib/analytics';
 
 export default function MisGuiasPage() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [dteCount, setDteCount] = useState<number | null>(null);
   const supabase = createClient();
+
+  // Track page view on mount
+  useEffect(() => {
+    trackDtePageView();
+    
+    // Get current DT-e count for first-upload detection
+    const fetchCount = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { count } = await supabase
+          .from('user_dtes')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id);
+        setDteCount(count || 0);
+      }
+    };
+    fetchCount();
+  }, [supabase]);
 
   const handleSave = useCallback(async (
     data: DTEData & { ocr_raw_text?: string; ocr_confidence?: number }
@@ -53,6 +73,15 @@ export default function MisGuiasPage() {
         alert('Error al guardar la guía. Intentá de nuevo.');
         return;
       }
+
+      // Track the save
+      const isFirst = dteCount === 0;
+      trackDteSave(isFirst, data.cantidad_cabezas || null);
+      
+      // Update count and check for milestones
+      const newCount = (dteCount || 0) + 1;
+      setDteCount(newCount);
+      trackDteMilestone(newCount);
 
       // Refresh history
       setRefreshKey(k => k + 1);

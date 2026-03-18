@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase-browser';
 import { FileText, Trash2, Edit2, AlertCircle, TrendingUp, Loader2 } from 'lucide-react';
-import { DTEData } from '@/hooks/useOCR';
+import { trackDteDelete } from '@/lib/analytics';
 
 interface UserDTE {
   id: string;
@@ -104,6 +104,7 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
 
       if (deleteError) throw deleteError;
 
+      trackDteDelete();
       setDtes(prev => prev.filter(d => d.id !== id));
     } catch (err) {
       console.error('Error deleting DTE:', err);

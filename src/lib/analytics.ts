@@ -181,3 +181,59 @@ export function trackProUpgrade(plan: string, price: number, source: string | nu
     conversion_source: source || 'direct',
   })
 }
+
+/* ------------------------------------------------------------------ */
+/*  ACTIVATION FUNNEL (signup → DT-e → PRO)                           */
+/* ------------------------------------------------------------------ */
+
+/** User signed up (new account created) */
+export function trackSignup(method: 'email' | 'google' | 'github') {
+  trackEvent('signup', {
+    signup_method: method,
+  })
+}
+
+/** User visited the DT-e upload page */
+export function trackDtePageView() {
+  trackEvent('dte_page_view', {})
+}
+
+/** User started DT-e upload (dropped/selected file) */
+export function trackDteUploadStart() {
+  trackEvent('dte_upload_start', {})
+}
+
+/** OCR completed successfully */
+export function trackDteOcrComplete(confidence: number) {
+  trackEvent('dte_ocr_complete', {
+    ocr_confidence: Math.round(confidence),
+    confidence_bucket: confidence > 80 ? 'high' : confidence > 60 ? 'medium' : 'low',
+  })
+}
+
+/** User saved DT-e to their history (first or subsequent) */
+export function trackDteSave(isFirst: boolean, cabezas: number | null) {
+  trackEvent('dte_save', {
+    is_first_dte: isFirst ? 'true' : 'false',
+    cabezas: cabezas || 0,
+  })
+  
+  // Special milestone event for first DT-e (key activation moment)
+  if (isFirst) {
+    trackEvent('activation_first_dte', {})
+  }
+}
+
+/** User reached N DTEs milestone */
+export function trackDteMilestone(count: number) {
+  if (count === 5 || count === 10 || count === 25 || count === 50) {
+    trackEvent('dte_milestone', {
+      dte_count: count,
+    })
+  }
+}
+
+/** User deleted a DT-e */
+export function trackDteDelete() {
+  trackEvent('dte_delete', {})
+}

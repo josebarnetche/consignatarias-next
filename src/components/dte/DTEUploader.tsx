@@ -5,6 +5,7 @@ import { useDropzone } from 'react-dropzone';
 import { Upload, FileImage, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useOCR, type DTEData } from '@/hooks/useOCR';
 import { DTEForm } from './DTEForm';
+import { trackDteUploadStart, trackDteOcrComplete } from '@/lib/analytics';
 
 interface DTEUploaderProps {
   onSave?: (data: DTEData & { imagen_url?: string; ocr_raw_text?: string; ocr_confidence?: number }) => void;
@@ -24,6 +25,9 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
     const selectedFile = acceptedFiles[0];
     if (!selectedFile) return;
 
+    // Track upload start
+    trackDteUploadStart();
+
     setFile(selectedFile);
     setPreview(URL.createObjectURL(selectedFile));
     setStep('processing');
@@ -35,6 +39,9 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
       setOcrText(result.ocr.text);
       setOcrConfidence(result.ocr.confidence);
       setStep('review');
+      
+      // Track OCR completion
+      trackDteOcrComplete(result.ocr.confidence);
     } else {
       setStep('upload');
     }
