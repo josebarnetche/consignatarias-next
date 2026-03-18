@@ -998,12 +998,24 @@ async function main() {
       : 0;
     market.inmag.source = "mercadoagroganadero.com.ar";
 
-    // Update INMAG historical series from scraped records
+    // Update INMAG historical series from scraped records (including volume for VWAP)
     if (!market.inmag.series) market.inmag.series = [];
     const existingDates = new Set(market.inmag.series.map((pt) => pt.date));
     for (const rec of cattlePrices.records) {
       if (!existingDates.has(rec.fecha)) {
-        market.inmag.series.push({ date: rec.fecha, value: Math.round(rec.inmag * 100) / 100 });
+        market.inmag.series.push({
+          date: rec.fecha,
+          value: Math.round(rec.inmag * 100) / 100,
+          volume: rec.cabezas || null, // Insight #86: store cabezas for VWAP
+        });
+      }
+    }
+    
+    // Backfill volume into existing entries if missing
+    const volumeMap = new Map(cattlePrices.records.map(r => [r.fecha, r.cabezas]));
+    for (const pt of market.inmag.series) {
+      if (!pt.volume && volumeMap.has(pt.date)) {
+        pt.volume = volumeMap.get(pt.date);
       }
     }
     // Sort by date and keep last 56 entries (8 weeks of daily data)
@@ -1036,7 +1048,12 @@ async function main() {
       market.categories[key].source = "MAG (derived from INMAG)";
     }
 
-    console.log(`Updated INMAG=${inmagValue} (${cattlePrices.date}), ${cattlePrices.records.length} series points`);
+    // Calculate total volume traded in the period
+    const totalVolume = cattlePrices.records.reduce((sum, r) => sum + (r.cabezas || 0), 0);
+    market.inmag.latestVolume = sortedRecs[0]?.cabezas || null; // Volume on latest day
+    market.inmag.periodVolume = totalVolume; // Total volume in scrape period
+    
+    console.log(`Updated INMAG=${inmagValue} (${cattlePrices.date}), ${cattlePrices.records.length} series points, latest volume=${sortedRecs[0]?.cabezas || 0} cabezas`);
   }
 
   // Update corn price if available

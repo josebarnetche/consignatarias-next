@@ -18,11 +18,13 @@ import marketData from '@/lib/data/market-prices.json'
  *   source: "mercadoagroganadero.com.ar",
  *   current: number,
  *   change: number,
- *   series: Array<{ date: string, value: number }>,
+ *   series: Array<{ date: string, value: number, volume?: number }>,
  *   meta: {
  *     min: number,
  *     max: number,
  *     avg: number,
+ *     vwap: number | null, // Volume-Weighted Average Price (Insight #86)
+ *     totalVolume: number,
  *     count: number,
  *     from: string,
  *     to: string
@@ -37,8 +39,14 @@ export async function GET(request: NextRequest) {
   const fromParam = searchParams.get('from')
   const toParam = searchParams.get('to')
   
-  const inmag = marketData.inmag
-  const allSeries = inmag.series as Array<{ date: string; value: number }>
+  const inmag = marketData.inmag as {
+    current: number
+    change: number
+    unit: string
+    source: string
+    series: Array<{ date: string; value: number; volume?: number }>
+  }
+  const allSeries = inmag.series
   
   // Sort series by date (oldest first)
   const sortedSeries = [...allSeries].sort((a, b) => 
@@ -76,6 +84,17 @@ export async function GET(request: NextRequest) {
   const max = Math.max(...values)
   const avg = values.reduce((a, b) => a + b, 0) / values.length
   
+  // Calculate VWAP (Volume-Weighted Average Price) — Insight #86
+  let vwap: number | null = null
+  let totalVolume = 0
+  const entriesWithVolume = filteredSeries.filter(s => s.volume && s.volume > 0)
+  
+  if (entriesWithVolume.length > 0) {
+    const sumPriceVolume = entriesWithVolume.reduce((sum, s) => sum + (s.value * (s.volume || 0)), 0)
+    totalVolume = entriesWithVolume.reduce((sum, s) => sum + (s.volume || 0), 0)
+    vwap = totalVolume > 0 ? Math.round((sumPriceVolume / totalVolume) * 100) / 100 : null
+  }
+  
   const response = {
     index: 'inmag',
     name: 'Índice Novillo Mercado Agroganadero',
@@ -88,6 +107,8 @@ export async function GET(request: NextRequest) {
       min: Math.round(min * 100) / 100,
       max: Math.round(max * 100) / 100,
       avg: Math.round(avg * 100) / 100,
+      vwap, // Volume-Weighted Average Price
+      totalVolume,
       count: filteredSeries.length,
       from: filteredSeries[0]?.date,
       to: filteredSeries[filteredSeries.length - 1]?.date,
