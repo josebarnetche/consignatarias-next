@@ -30,7 +30,7 @@ interface ProUpgradePromptProps {
 export default function ProUpgradePrompt({
   benefit,
   context = 'unknown',
-  ctaText = 'Ver planes PRO',
+  ctaText = 'Activar PRO',
   variant = 'inline',
 }: ProUpgradePromptProps) {
   const href = `/planes?from=${context}`

@@ -90,7 +90,7 @@ export default function SubscribeButton() {
         borderRadius: '2px',
       }}
     >
-      {loading ? 'Redirigiendo...' : '★ Empezar a destacar'}
+      {loading ? 'Redirigiendo a pago seguro...' : '★ Activar PRO — Quedan lugares'}
     </button>
   )
 }

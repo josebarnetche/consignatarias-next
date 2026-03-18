@@ -86,7 +86,7 @@ export default function MobileStickyCTA() {
           fontWeight: 600,
         }}
       >
-        {loading ? 'Redirigiendo...' : '★ Activar PRO ahora — $45.000/mes'}
+        {loading ? 'Redirigiendo a pago seguro...' : '★ Activar PRO — $45.000/mes · Quedan lugares'}
       </button>
     </div>
   )

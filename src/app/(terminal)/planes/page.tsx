@@ -308,32 +308,42 @@ export default function PlanesPage() {
         <div className="px-panel py-4 space-y-4 text-data">
           <div>
             <p className="text-zinc-300 mb-1">
-              Como funciona el pago?
+              ¿Cómo funciona el pago?
             </p>
             <p className="text-zinc-500">
-              Procesamos pagos con tarjeta de credito y debito a traves de
+              Procesamos pagos con tarjeta de crédito y débito a través de
               Rebill, plataforma certificada para pagos en Argentina y
-              Latinoamerica. La suscripcion se renueva automaticamente cada mes.
+              Latinoamérica. La suscripción se renueva automáticamente cada mes.
             </p>
           </div>
           <div className="border-t border-terminal-border pt-4">
             <p className="text-zinc-300 mb-1">
-              Puedo cancelar en cualquier momento?
+              ¿Puedo cancelar en cualquier momento?
             </p>
             <p className="text-zinc-500">
-              Si, podes cancelar tu suscripcion en cualquier momento desde tu
-              dashboard. El acceso PRO continua hasta el final del periodo
+              Sí, podés cancelar tu suscripción en cualquier momento desde tu
+              dashboard. El acceso PRO continúa hasta el final del período
               facturado.
             </p>
           </div>
           <div className="border-t border-terminal-border pt-4">
             <p className="text-zinc-300 mb-1">
-              Que incluye el perfil verificado?
+              ¿Qué incluye el perfil verificado?
             </p>
             <p className="text-zinc-500">
               Tu perfil aparece con el badge PRO destacado en dorado, tus
-              remates se muestran con tratamiento visual especial, y accedes a
-              estadisticas de visitas a tu perfil.
+              remates se muestran con tratamiento visual especial, y accedés a
+              estadísticas de visitas a tu perfil.
+            </p>
+          </div>
+          <div className="border-t border-terminal-border pt-4">
+            <p className="text-zinc-300 mb-1">
+              ¿Cuánto tarda en activarse?
+            </p>
+            <p className="text-zinc-500">
+              Inmediato. Una vez confirmado el pago, tu perfil PRO se activa
+              automáticamente y tus remates empiezan a promocionarse en el
+              próximo envío de newsletter.
             </p>
           </div>
         </div>
