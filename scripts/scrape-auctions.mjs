@@ -1018,10 +1018,11 @@ async function main() {
         pt.volume = volumeMap.get(pt.date);
       }
     }
-    // Sort by date and keep last 56 entries (8 weeks of daily data)
+    // Sort by date and keep last 365 entries (1 year of daily data — Insight #88)
+    // Extended from 56 to enable trend analysis and financial products
     market.inmag.series.sort((a, b) => a.date.localeCompare(b.date));
-    if (market.inmag.series.length > 56) {
-      market.inmag.series = market.inmag.series.slice(-56);
+    if (market.inmag.series.length > 365) {
+      market.inmag.series = market.inmag.series.slice(-365);
     }
 
     // Update category prices proportionally from INMAG
