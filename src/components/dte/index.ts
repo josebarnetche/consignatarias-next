@@ -1,2 +1,3 @@
 export { DTEUploader } from './DTEUploader';
 export { DTEForm } from './DTEForm';
+export { DTEHistory } from './DTEHistory';
