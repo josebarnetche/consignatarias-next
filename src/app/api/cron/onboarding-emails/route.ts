@@ -168,5 +168,7 @@ export async function GET(request: NextRequest) {
   return POST(request)
 }
 
-// Export email functions for use in other handlers (e.g., auth webhook, DT-e upload)
-export { sendWelcomeEmail, sendFirstDteSuccess }
+// Note: sendWelcomeEmail and sendFirstDteSuccess are used via:
+// - Auth webhook for welcome emails
+// - DT-e upload handler for success emails
+// Import directly from @/lib/email in those handlers.
