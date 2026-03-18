@@ -6,6 +6,7 @@ import { getAllProfiles } from '@/lib/data/consignataria-slugs'
 import { SectionBreadcrumbSchema, EventSchema } from '@/components/seo/JsonLd'
 import { AddToCalendarButton } from '@/components/ui/AddToCalendarButton'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
+import DteCTA from '@/components/DteCTA'
 import { 
   Calendar, 
   Clock, 
@@ -469,6 +470,36 @@ export default async function RemateDetailPage({ params }: Props) {
             </div>
           )}
           
+          {/* DT-e Upload CTA (Lock-in: user-provided data) - show on past/today remates */}
+          {(isPast || isToday) && (
+            <div className="mt-8 bg-slate-900 rounded-xl border border-cyan-800/50 p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg className="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span className="text-white font-semibold">
+                      ¿Participaste en este remate?
+                    </span>
+                  </div>
+                  <p className="text-slate-400 text-sm">
+                    Subí tus DT-e (Documentos de Tránsito Electrónico) y llevá un registro completo de tus operaciones ganaderas.
+                  </p>
+                </div>
+                <Link
+                  href="/mi-cuenta/guias"
+                  className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium rounded-lg transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                  Subir DT-e
+                </Link>
+              </div>
+            </div>
+          )}
+
           {/* CTA */}
           <div className="mt-8 bg-gradient-to-r from-blue-900/50 to-purple-900/50 rounded-xl border border-blue-800/50 p-6 text-center">
             <p className="text-lg font-semibold text-white mb-2">

@@ -28,6 +28,7 @@ import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge, { VerifiedBadge } from '@/components/badges/ProBadge'
 import VideoGallery, { type ConsignatariaVideo } from '@/components/video/VideoGallery'
 import WhatsAppFAB from '@/components/WhatsAppFAB'
+import DteCTA from '@/components/DteCTA'
 import type { RelatedConsignataria } from '@/lib/dal/consignatarias'
 
 /* ------------------------------------------------------------------ */
@@ -931,6 +932,14 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           </div>
         </div>
       )}
+
+      {/* ============================================================ */}
+      {/*  DT-e UPLOAD CTA (Lock-in: user-provided data)               */}
+      {/* ============================================================ */}
+      <DteCTA
+        consignatariaName={profile.displayName}
+        consignatariaSlug={profile.canonicalSlug}
+      />
 
       {/* ============================================================ */}
       {/*  AUCTION LIST GROUPED BY MONTH                                */}
