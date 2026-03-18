@@ -590,8 +590,8 @@ export async function sendWelcomeEmail({ to, userName }: WelcomeEmailParams) {
           </div>
 
           <div style="text-align:center;margin:24px 0">
-            <a href="${APP_URL}/mi-cuenta/guias" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
-              SUBIR MI PRIMERA GUÍA
+            <a href="${APP_URL}/dashboard" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
+              IR A MI PANEL
             </a>
           </div>
 
@@ -667,8 +667,8 @@ export async function sendDteUploadReminder({ to, userName, daysSinceSignup }: D
           </p>
 
           <div style="text-align:center;margin:24px 0">
-            <a href="${APP_URL}/mi-cuenta/guias" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
-              SUBIR MI PRIMERA GUÍA
+            <a href="${APP_URL}/dashboard" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
+              IR A MI PANEL
             </a>
           </div>
 
@@ -743,7 +743,7 @@ export async function sendFirstDteSuccess({ to, userName, dteCount }: FirstDteSu
           </div>
 
           <div style="text-align:center;margin:24px 0">
-            <a href="${APP_URL}/mi-cuenta/guias" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
+            <a href="${APP_URL}/dashboard" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
               VER MIS GUÍAS
             </a>
           </div>
@@ -820,8 +820,8 @@ export async function sendDteRetentionReminder({
           </p>
 
           <div style="text-align:center;margin:24px 0">
-            <a href="${APP_URL}/mi-cuenta/guias" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
-              SUBIR NUEVA GUÍA
+            <a href="${APP_URL}/dashboard" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
+              IR A MI PANEL
             </a>
           </div>
 
