@@ -22,7 +22,7 @@ interface Remate {
   featured?: boolean
 }
 
-const remates = rematesData as Remate[]
+const remates = rematesData as unknown as Remate[]
 
 /**
  * RSS 2.0 Feed for Remates Ganaderos
