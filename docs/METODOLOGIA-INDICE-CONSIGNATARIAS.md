@@ -145,7 +145,7 @@ Valores de referencia:
 ### 6.1 Responsable
 
 **Memola Medios S.A.S.**  
-CUIT: 30-71892445-1  
+CUIT: 30-71863222-2  
 Email: agro@memola.com.ar
 
 ### 6.2 Revisión Metodológica

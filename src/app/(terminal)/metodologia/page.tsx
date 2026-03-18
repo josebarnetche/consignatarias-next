@@ -217,7 +217,7 @@ export default function MetodologiaPage() {
         <div className="border-t border-zinc-800 pt-6 mt-8">
           <h2 className="text-zinc-200 text-lg font-medium mb-4">Gobernanza</h2>
           <div className="text-zinc-400 text-xs space-y-2">
-            <p><span className="text-zinc-300">Responsable:</span> Memola Medios S.A.S. (CUIT: 30-71892445-1)</p>
+            <p><span className="text-zinc-300">Responsable:</span> Memola Medios S.A.S. (CUIT: 30-71863222-2)</p>
             <p><span className="text-zinc-300">Revisión:</span> Trimestral (ponderaciones) / Anual (metodología completa)</p>
             <p><span className="text-zinc-300">Contacto:</span> agro@memola.com.ar</p>
           </div>
