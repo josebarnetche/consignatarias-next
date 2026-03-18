@@ -1,0 +1,234 @@
+'use client';
+
+import { useMemo } from 'react';
+import { Trophy, Target, TrendingUp, Calendar, Award } from 'lucide-react';
+
+interface UserDTE {
+  id: string;
+  fecha_movimiento: string | null;
+  cantidad_cabezas: number | null;
+  categorias: Record<string, number>;
+  motivo: string | null;
+}
+
+interface DTEStatsProps {
+  dtes: UserDTE[];
+}
+
+// Milestone thresholds
+const DTE_MILESTONES = [5, 10, 25, 50, 100];
+const CABEZAS_MILESTONES = [500, 1000, 2500, 5000, 10000, 25000];
+
+export function DTEStats({ dtes }: DTEStatsProps) {
+  const stats = useMemo(() => {
+    const totalDtes = dtes.length;
+    const totalCabezas = dtes.reduce((sum, d) => sum + (d.cantidad_cabezas || 0), 0);
+
+    // Calculate this month's activity
+    const now = new Date();
+    const thisMonth = dtes.filter(d => {
+      if (!d.fecha_movimiento) return false;
+      const date = new Date(d.fecha_movimiento);
+      return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+    });
+    const thisMonthCabezas = thisMonth.reduce((sum, d) => sum + (d.cantidad_cabezas || 0), 0);
+
+    // Find next milestones
+    const nextDteMilestone = DTE_MILESTONES.find(m => m > totalDtes) || null;
+    const nextCabezasMilestone = CABEZAS_MILESTONES.find(m => m > totalCabezas) || null;
+
+    // Calculate milestone progress
+    const prevDteMilestone = DTE_MILESTONES.filter(m => m <= totalDtes).pop() || 0;
+    const dteProgress = nextDteMilestone 
+      ? ((totalDtes - prevDteMilestone) / (nextDteMilestone - prevDteMilestone)) * 100 
+      : 100;
+
+    const prevCabezasMilestone = CABEZAS_MILESTONES.filter(m => m <= totalCabezas).pop() || 0;
+    const cabezasProgress = nextCabezasMilestone 
+      ? ((totalCabezas - prevCabezasMilestone) / (nextCabezasMilestone - prevCabezasMilestone)) * 100 
+      : 100;
+
+    // Aggregate categories across all DTEs
+    const categoryTotals: Record<string, number> = {};
+    dtes.forEach(dte => {
+      if (dte.categorias) {
+        Object.entries(dte.categorias).forEach(([cat, count]) => {
+          const normalizedCat = cat.toLowerCase().replace(/s$/, ''); // normalize plural
+          categoryTotals[normalizedCat] = (categoryTotals[normalizedCat] || 0) + count;
+        });
+      }
+    });
+
+    // Calculate achieved milestones for badges
+    const achievedDteMilestones = DTE_MILESTONES.filter(m => m <= totalDtes);
+    const achievedCabezasMilestones = CABEZAS_MILESTONES.filter(m => m <= totalCabezas);
+
+    return {
+      totalDtes,
+      totalCabezas,
+      thisMonthDtes: thisMonth.length,
+      thisMonthCabezas,
+      nextDteMilestone,
+      nextCabezasMilestone,
+      dtesToNextMilestone: nextDteMilestone ? nextDteMilestone - totalDtes : null,
+      cabezasToNextMilestone: nextCabezasMilestone ? nextCabezasMilestone - totalCabezas : null,
+      dteProgress,
+      cabezasProgress,
+      categoryTotals,
+      achievedDteMilestones,
+      achievedCabezasMilestones,
+    };
+  }, [dtes]);
+
+  if (dtes.length === 0) return null;
+
+  const categoryColors: Record<string, string> = {
+    novillo: 'bg-amber-500',
+    novillito: 'bg-yellow-500',
+    vaquillona: 'bg-orange-500',
+    vaca: 'bg-red-500',
+    toro: 'bg-purple-500',
+    ternero: 'bg-green-500',
+    ternera: 'bg-emerald-500',
+  };
+
+  const sortedCategories = Object.entries(stats.categoryTotals)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 6);
+
+  const maxCategoryCount = Math.max(...sortedCategories.map(([, count]) => count), 1);
+
+  return (
+    <div className="space-y-6">
+      {/* Progress Section */}
+      <div className="grid md:grid-cols-2 gap-4">
+        {/* DTE Milestone Progress */}
+        {stats.nextDteMilestone && (
+          <div className="bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/20 rounded-xl p-5">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-amber-500/20 rounded-lg">
+                <Target className="w-5 h-5 text-amber-500" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-400">Próximo logro</p>
+                <p className="text-lg font-bold text-white">{stats.nextDteMilestone} guías</p>
+              </div>
+            </div>
+            
+            {/* Progress bar */}
+            <div className="relative h-3 bg-gray-800 rounded-full overflow-hidden mb-2">
+              <div 
+                className="absolute inset-y-0 left-0 bg-gradient-to-r from-amber-500 to-amber-400 rounded-full transition-all duration-500"
+                style={{ width: `${Math.min(stats.dteProgress, 100)}%` }}
+              />
+            </div>
+            <p className="text-sm text-amber-400/80">
+              {stats.dtesToNextMilestone === 1 
+                ? '¡Solo 1 guía más!' 
+                : `${stats.dtesToNextMilestone} guías más para desbloquear`}
+            </p>
+          </div>
+        )}
+
+        {/* Cabezas Milestone Progress */}
+        {stats.nextCabezasMilestone && (
+          <div className="bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20 rounded-xl p-5">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-green-500/20 rounded-lg">
+                <TrendingUp className="w-5 h-5 text-green-500" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-400">Próximo hito</p>
+                <p className="text-lg font-bold text-white">{stats.nextCabezasMilestone.toLocaleString('es-AR')} cabezas</p>
+              </div>
+            </div>
+            
+            {/* Progress bar */}
+            <div className="relative h-3 bg-gray-800 rounded-full overflow-hidden mb-2">
+              <div 
+                className="absolute inset-y-0 left-0 bg-gradient-to-r from-green-500 to-green-400 rounded-full transition-all duration-500"
+                style={{ width: `${Math.min(stats.cabezasProgress, 100)}%` }}
+              />
+            </div>
+            <p className="text-sm text-green-400/80">
+              {stats.cabezasToNextMilestone?.toLocaleString('es-AR')} cabezas más
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Monthly Activity */}
+      {stats.thisMonthDtes > 0 && (
+        <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <Calendar className="w-5 h-5 text-blue-400" />
+            <h3 className="font-semibold text-white">Este mes</h3>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-2xl font-bold text-white">{stats.thisMonthDtes}</p>
+              <p className="text-sm text-gray-400">guías subidas</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-blue-400">{stats.thisMonthCabezas.toLocaleString('es-AR')}</p>
+              <p className="text-sm text-gray-400">cabezas movidas</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Category Breakdown (visual lock-in - shows value of data) */}
+      {sortedCategories.length > 0 && (
+        <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+          <h3 className="font-semibold text-white mb-4">Tu composición de hacienda</h3>
+          <div className="space-y-3">
+            {sortedCategories.map(([category, count]) => (
+              <div key={category}>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-gray-300 capitalize">{category}s</span>
+                  <span className="text-gray-400">{count.toLocaleString('es-AR')}</span>
+                </div>
+                <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full rounded-full ${categoryColors[category] || 'bg-gray-500'} transition-all duration-500`}
+                    style={{ width: `${(count / maxCategoryCount) * 100}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Achieved Badges */}
+      {(stats.achievedDteMilestones.length > 0 || stats.achievedCabezasMilestones.length > 0) && (
+        <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+          <div className="flex items-center gap-3 mb-4">
+            <Trophy className="w-5 h-5 text-amber-500" />
+            <h3 className="font-semibold text-white">Tus logros</h3>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {stats.achievedDteMilestones.map(milestone => (
+              <div 
+                key={`dte-${milestone}`}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 border border-amber-500/30 rounded-full"
+              >
+                <Award className="w-3.5 h-3.5 text-amber-500" />
+                <span className="text-sm text-amber-300">{milestone} guías</span>
+              </div>
+            ))}
+            {stats.achievedCabezasMilestones.map(milestone => (
+              <div 
+                key={`cabezas-${milestone}`}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500/20 border border-green-500/30 rounded-full"
+              >
+                <Award className="w-3.5 h-3.5 text-green-500" />
+                <span className="text-sm text-green-300">{milestone.toLocaleString('es-AR')} cab</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

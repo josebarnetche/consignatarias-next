@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase-browser';
 import { FileText, Trash2, Edit2, AlertCircle, TrendingUp, Loader2 } from 'lucide-react';
 import { trackDteDelete } from '@/lib/analytics';
+import { DTEStats } from './DTEStats';
 
 interface UserDTE {
   id: string;
@@ -155,7 +156,7 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
 
   return (
     <div className="space-y-6">
-      {/* Stats */}
+      {/* Quick Stats */}
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
           <p className="text-2xl font-bold text-white">{stats.totalDtes}</p>
@@ -170,6 +171,9 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
           <p className="text-sm text-gray-400">Este mes</p>
         </div>
       </div>
+
+      {/* Gamification & Analytics - Lock-in enhancer */}
+      <DTEStats dtes={dtes} />
 
       {/* History list */}
       <div className="bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden">
