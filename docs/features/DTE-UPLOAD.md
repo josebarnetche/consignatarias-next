@@ -66,8 +66,9 @@ Supabase — Store in user's account
 
 ### Phase 2: History & Analytics
 
-- [ ] `/mi-cuenta/historial` page
-- [ ] Charts: cabezas por mes, categorías
+- [x] `/mi-cuenta/historial` page (integrated in /mi-cuenta/guias)
+- [x] Charts: cabezas por mes, categorías (DTEStats component - CSS-based)
+- [x] Milestone gamification (DTEStats - 2026-03-18)
 - [ ] Export to CSV/Excel
 - [ ] Compare periods
 
