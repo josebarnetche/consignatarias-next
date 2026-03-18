@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { FileText, History, TrendingUp, RefreshCw, Camera, Zap, Shield, CheckCircle2 } from 'lucide-react';
-import { DTEUploader, DTEHistory, SocialProofStats, MilestoneBadges } from '@/components/dte';
+import { DTEUploader, DTEHistory, SocialProofStats, MilestoneBadges, ActivationChecklist } from '@/components/dte';
 import { createClient } from '@/lib/supabase-browser';
 import { DTEData } from '@/hooks/useOCR';
 import { trackDtePageView, trackDteSave, trackDteMilestone } from '@/lib/analytics';
@@ -136,6 +136,11 @@ export default function MisGuiasPage() {
 
       {/* Main content */}
       <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* Activation checklist for new users */}
+        {dteCount !== null && (
+          <ActivationChecklist dteCount={dteCount} />
+        )}
+
         {/* How it works - Step by step visual guide */}
         <div className="mb-12 bg-gradient-to-r from-amber-900/20 to-gray-900/50 border border-amber-800/30 rounded-xl p-6">
           <h2 className="text-lg font-semibold text-amber-400 mb-4 flex items-center gap-2">
