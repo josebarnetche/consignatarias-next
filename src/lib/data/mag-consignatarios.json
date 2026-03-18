@@ -19,7 +19,7 @@
     { "magId": "176", "magName": "CONSIGNATARIA MELICURA S.A.", "slug": null },
     { "magId": "62", "magName": "CONSIGNATARIA NIEVA Y CIA. S.A", "slug": null },
     { "magId": "200", "magName": "CRESPO Y RODRIGUEZ S.A.", "slug": null },
-    { "magId": "24", "magName": "DANIEL BLANCO Y CIA. S.A.", "slug": "daniel-blanco-y-cia-s-a" },
+    { "magId": "24", "magName": "DANIEL BLANCO Y CIA. S.A.", "slug": "daniel-blanco" },
     { "magId": "218", "magName": "DOTRAS - GANLY S.R.L.", "slug": null },
     { "magId": "381", "magName": "ENRIQUE IRIARTE VILLANUEVA SA", "slug": null },
     { "magId": "257", "magName": "FERIAS AGROAZUL S.A.", "slug": null },
@@ -43,7 +43,7 @@
     { "magId": "465", "magName": "MONASTERIO TATTERSALL S.A.", "slug": "monasterio-tattersall-s-a" },
     { "magId": "310", "magName": "PEDRO GENTA Y CIA. S.A.", "slug": null },
     { "magId": "414", "magName": "S.L. LEDESMA Y CIA. S.A.", "slug": "s-l-ledesma-y-cia-s-a" },
-    { "magId": "538", "magName": "SAENZ VALIENTE, BULLRICH Y CIA", "slug": "saenz-valiente-bullrich-y-cia-s-a" },
+    { "magId": "538", "magName": "SAENZ VALIENTE, BULLRICH Y CIA", "slug": "saenz-valiente-bullrich" },
     { "magId": "545", "magName": "SANTAMARINA E HIJOS S.A.", "slug": null },
     { "magId": "48", "magName": "UMC S.A.", "slug": "umc-haciendas-villaguay" },
     { "magId": "596", "magName": "WALLACE HERMANOS S.A.", "slug": "wallace-hnos-s-a" }
