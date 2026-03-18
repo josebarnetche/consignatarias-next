@@ -58,10 +58,11 @@ export async function GET(request: NextRequest) {
   
   // Get current real-time prices from market-prices.json
   const currentPrices = marketData.categories as Record<string, {
-    price: number
+    current: number
+    prev: number
     change: number
-    volume?: number
     source: string
+    latestVolume?: number
   }>
   
   // Build response based on category filter
