@@ -805,6 +805,209 @@ async function scrapeCategoryPrices() {
 }
 
 // ---------------------------------------------------------------------------
+// Source 10: Province Entry from MAG (haciinfo000003)
+// Shows daily cattle entry by province for market share analysis
+// ---------------------------------------------------------------------------
+
+async function scrapeProvinceEntry() {
+  console.log("[10/12] Scraping province entry from MAG (haciinfo000003)...");
+
+  const url = "https://www.mercadoagroganadero.com.ar/dll/hacienda1.dll/haciinfo000003";
+  const html = await fetchHTML(url);
+  if (!html) return null;
+
+  const tableMatch = html.match(/<Table[^>]*class="table[^"]*"[^>]*>([\s\S]*?)<\/Table>/i);
+  if (!tableMatch) {
+    console.warn("  [WARN] No province entry table found");
+    return null;
+  }
+
+  const rows = tableMatch[0].match(/<TR[^>]*>([\s\S]*?)<\/TR>/gi) || [];
+  const provinces = [];
+  let totalCabezas = 0;
+
+  for (const row of rows) {
+    const cells = [...row.matchAll(/<T[DH][^>]*>([\s\S]*?)<\/T[DH]>/gi)].map((m) =>
+      m[1].replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").trim()
+    );
+
+    if (cells.length < 5) continue;
+    
+    // Skip header row
+    if (cells[0].toLowerCase() === "provincia") continue;
+    // Skip totals row
+    if (cells[0].toLowerCase() === "totales") {
+      totalCabezas = parseInt(cells[4]?.replace(/\./g, "").replace(/[^\d]/g, "") || "0", 10);
+      continue;
+    }
+
+    const enPie = parseInt(cells[1]?.replace(/\./g, "").replace(/[^\d]/g, "") || "0", 10);
+    const total = parseInt(cells[4]?.replace(/\./g, "").replace(/[^\d]/g, "") || "0", 10);
+    const percentage = parseFloat(cells[5]?.replace(",", ".").replace("%", "") || "0");
+
+    if (total > 0) {
+      provinces.push({
+        province: cells[0].trim(),
+        enPie,
+        total,
+        percentage,
+      });
+    }
+  }
+
+  if (provinces.length === 0) {
+    console.warn("  [WARN] No province data parsed");
+    return null;
+  }
+
+  // Sort by percentage (market share)
+  provinces.sort((a, b) => b.percentage - a.percentage);
+
+  console.log(`  Found ${provinces.length} provinces, total: ${totalCabezas} cabezas`);
+  provinces.slice(0, 5).forEach((p) => {
+    console.log(`    ${p.province}: ${p.total} cabezas (${p.percentage}%)`);
+  });
+
+  return { provinces, totalCabezas, date: todayISO() };
+}
+
+// ---------------------------------------------------------------------------
+// Source 11: Consignatario Entry from MAG (haciinfo000006)
+// Shows daily cattle entry by consignatario - useful when they have auctions
+// ---------------------------------------------------------------------------
+
+async function scrapeConsignatarioEntry() {
+  console.log("[11/12] Scraping consignatario entry from MAG (haciinfo000006)...");
+
+  // Fetch today's data
+  const d = new Date();
+  const dateStr = `${d.getDate().toString().padStart(2, "0")}/${(d.getMonth() + 1).toString().padStart(2, "0")}/${d.getFullYear()}`;
+  
+  const url = `https://www.mercadoagroganadero.com.ar/dll/hacienda1.dll/haciinfo000006?txtFECHAINI=${dateStr}&txtFECHAFIN=${dateStr}&CP=&LISTADO=SI`;
+  const html = await fetchHTML(url);
+  if (!html) return null;
+
+  const tableMatch = html.match(/<Table[^>]*class="table[^"]*"[^>]*>([\s\S]*?)<\/Table>/i);
+  if (!tableMatch) {
+    console.warn("  [WARN] No consignatario entry table found");
+    return null;
+  }
+
+  const rows = tableMatch[0].match(/<TR[^>]*>([\s\S]*?)<\/TR>/gi) || [];
+  const entries = [];
+
+  for (const row of rows) {
+    const cells = [...row.matchAll(/<T[DH][^>]*>([\s\S]*?)<\/T[DH]>/gi)].map((m) =>
+      m[1].replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").trim()
+    );
+
+    if (cells.length < 7) continue;
+    
+    // Skip header row
+    if (cells[0].toLowerCase() === "remitente") continue;
+    // Skip totals row
+    if (cells[0].toLowerCase() === "totales") continue;
+
+    const total = parseInt(cells[6]?.replace(/\./g, "").replace(/[^\d]/g, "") || "0", 10);
+
+    if (total > 0 && cells[0]) {
+      entries.push({
+        remitente: cells[0].trim(),
+        localidad: cells[1]?.trim() || "",
+        provincia: cells[2]?.trim() || "",
+        enPie: parseInt(cells[3]?.replace(/\./g, "").replace(/[^\d]/g, "") || "0", 10),
+        muertos: parseInt(cells[4]?.replace(/\./g, "").replace(/[^\d]/g, "") || "0", 10),
+        caidos: parseInt(cells[5]?.replace(/\./g, "").replace(/[^\d]/g, "") || "0", 10),
+        total,
+      });
+    }
+  }
+
+  if (entries.length === 0) {
+    console.log("  No consignatario entry data for today (market may be closed)");
+    return null;
+  }
+
+  // Sort by total cabezas
+  entries.sort((a, b) => b.total - a.total);
+
+  console.log(`  Found ${entries.length} consignatario entries`);
+  entries.slice(0, 5).forEach((e) => {
+    console.log(`    ${e.remitente} (${e.provincia}): ${e.total} cabezas`);
+  });
+
+  return { entries, date: dateStr };
+}
+
+// ---------------------------------------------------------------------------
+// Source 12: Detailed Category Prices from MAG (haciinfo000502)
+// More granular than haciinfo000002 - includes subcategories (Esp.Joven, Regular, etc.)
+// ---------------------------------------------------------------------------
+
+async function scrapeDetailedCategoryPrices() {
+  console.log("[12/12] Scraping detailed category prices from MAG (haciinfo000502)...");
+
+  const url = "https://www.mercadoagroganadero.com.ar/dll/hacienda1.dll/haciinfo000502";
+  const html = await fetchHTML(url);
+  if (!html) return null;
+
+  const tableMatch = html.match(/<Table[^>]*class="table[^"]*"[^>]*>([\s\S]*?)<\/Table>/i);
+  if (!tableMatch) {
+    console.warn("  [WARN] No detailed category table found");
+    return null;
+  }
+
+  const rows = tableMatch[0].match(/<TR[^>]*>([\s\S]*?)<\/TR>/gi) || [];
+  const categories = [];
+
+  for (const row of rows) {
+    const cells = [...row.matchAll(/<T[DH][^>]*>([\s\S]*?)<\/T[DH]>/gi)].map((m) =>
+      m[1]
+        .replace(/<[^>]+>/g, "")
+        .replace(/&nbsp;/g, " ")
+        .replace(/&iacute;/g, "í")
+        .replace(/&aacute;/g, "á")
+        .trim()
+    );
+
+    if (cells.length < 8) continue;
+    
+    // Skip header and separator rows
+    const catName = cells[0];
+    if (!catName || catName === "Categoría" || catName.includes("---")) continue;
+    
+    // Parse prices
+    const minPrice = parseFloat(cells[1]?.replace(/\./g, "").replace(",", ".") || "0");
+    const maxPrice = parseFloat(cells[2]?.replace(/\./g, "").replace(",", ".") || "0");
+    const avgPrice = parseFloat(cells[3]?.replace(/\./g, "").replace(",", ".") || "0");
+    const cabezas = parseInt(cells[5]?.replace(/\./g, "").replace(/[^\d]/g, "") || "0", 10);
+
+    // Only include rows with valid data
+    if (avgPrice > 100 && avgPrice < 20000 && cabezas > 0) {
+      categories.push({
+        category: catName,
+        minPrice: Math.round(minPrice * 100) / 100,
+        maxPrice: Math.round(maxPrice * 100) / 100,
+        avgPrice: Math.round(avgPrice * 100) / 100,
+        cabezas,
+      });
+    }
+  }
+
+  if (categories.length === 0) {
+    console.warn("  [WARN] No detailed category data parsed");
+    return null;
+  }
+
+  console.log(`  Found ${categories.length} detailed categories`);
+  categories.slice(0, 5).forEach((c) => {
+    console.log(`    ${c.category}: $${c.avgPrice}/kg (${c.cabezas} cab)`);
+  });
+
+  return { categories, date: todayISO() };
+}
+
+// ---------------------------------------------------------------------------
 // Source 6: Dollar rates
 // ---------------------------------------------------------------------------
 
@@ -992,7 +1195,7 @@ async function main() {
   console.log(`\n=== Ganado Terminal Scraper — ${todayISO()} ===\n`);
 
   // Scrape all sources in parallel
-  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, dollar, cattlePrices, cornPrice, categoryPrices] = await Promise.all([
+  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, dollar, cattlePrices, cornPrice, categoryPrices, provinceEntry, consignatarioEntry, detailedCategories] = await Promise.all([
     scrapeCACG(),
     scrapeColombo(),
     scrapeOFarrell(),
@@ -1003,6 +1206,9 @@ async function main() {
     scrapeCattlePrices(),
     scrapeCornPrice(),
     scrapeCategoryPrices(), // Insight #87: real per-category prices
+    scrapeProvinceEntry(), // haciinfo000003: cattle entry by province
+    scrapeConsignatarioEntry(), // haciinfo000006: cattle entry by consignatario
+    scrapeDetailedCategoryPrices(), // haciinfo000502: detailed subcategory prices
   ]);
 
   // Combine all scraped auctions
@@ -1211,6 +1417,34 @@ async function main() {
     console.log(
       `Updated USD: blue=$${dollar.blue?.venta || "?"}, oficial=$${dollar.oficial?.venta || "?"}`
     );
+  }
+
+  // Update province market share data (haciinfo000003)
+  if (provinceEntry) {
+    market.provinceEntry = {
+      date: provinceEntry.date,
+      totalCabezas: provinceEntry.totalCabezas,
+      provinces: provinceEntry.provinces,
+    };
+    console.log(`Updated province entry: ${provinceEntry.totalCabezas} cabezas across ${provinceEntry.provinces.length} provinces`);
+  }
+
+  // Update consignatario entry data (haciinfo000006)
+  if (consignatarioEntry) {
+    market.consignatarioEntry = {
+      date: consignatarioEntry.date,
+      entries: consignatarioEntry.entries,
+    };
+    console.log(`Updated consignatario entry: ${consignatarioEntry.entries.length} entries`);
+  }
+
+  // Update detailed subcategory prices (haciinfo000502)
+  if (detailedCategories) {
+    market.detailedCategories = {
+      date: detailedCategories.date,
+      categories: detailedCategories.categories,
+    };
+    console.log(`Updated detailed categories: ${detailedCategories.categories.length} subcategories`);
   }
 
   market.lastUpdate = todayISO();
