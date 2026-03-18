@@ -545,6 +545,221 @@ export async function sendFaenaNewsletter({
   }
 }
 
+/* ------------------------------------------------------------------ */
+/*  USER ONBOARDING EMAILS                                             */
+/* ------------------------------------------------------------------ */
+
+interface WelcomeEmailParams {
+  to: string
+  userName?: string
+}
+
+/**
+ * Sent immediately after user signup.
+ * CTA: Upload your first DT-e guide.
+ */
+export async function sendWelcomeEmail({ to, userName }: WelcomeEmailParams) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+
+  const greeting = userName ? `¡Hola ${escapeHtml(userName)}!` : '¡Bienvenido!'
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to,
+      subject: '🐄 Bienvenido a Consignatarias.com.ar',
+      html: `
+        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
+          <h2 style="color:#fff;font-size:18px;margin:0 0 16px">${greeting}</h2>
+          
+          <p style="color:#a1a1aa;font-size:13px;line-height:1.6;margin:0 0 16px">
+            Ya tenés acceso a la plataforma más completa de remates ganaderos de Argentina.
+          </p>
+
+          <div style="background:#16161d;border:1px solid #22c55e;border-left:3px solid #22c55e;border-radius:4px;padding:16px;margin-bottom:20px">
+            <p style="color:#22c55e;font-size:12px;margin:0 0 8px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
+              📋 Tu próximo paso
+            </p>
+            <p style="color:#e4e4e7;font-size:14px;margin:0 0 8px">
+              <strong>Subí tu primera guía DT-e</strong>
+            </p>
+            <p style="color:#a1a1aa;font-size:12px;margin:0">
+              Guardamos tus guías de manera segura y te damos acceso a estadísticas sobre tus operaciones.
+            </p>
+          </div>
+
+          <div style="text-align:center;margin:24px 0">
+            <a href="${APP_URL}/mi-cuenta/guias" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
+              SUBIR MI PRIMERA GUÍA
+            </a>
+          </div>
+
+          <div style="border-top:1px solid #27272a;padding-top:16px;margin-top:24px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">
+              También podés:
+            </p>
+            <p style="color:#a1a1aa;font-size:12px;margin:0;line-height:1.8">
+              → <a href="${APP_URL}/remates" style="color:#22c55e;text-decoration:none">Ver próximos remates</a><br>
+              → <a href="${APP_URL}/mercado/inmag" style="color:#22c55e;text-decoration:none">Consultar precios INMAG</a><br>
+              → <a href="${APP_URL}/consignatarias" style="color:#22c55e;text-decoration:none">Explorar consignatarias</a>
+            </p>
+          </div>
+
+          <p style="color:#3f3f46;font-size:10px;margin:24px 0 0">
+            Consignatarias.com.ar — Directorio ganadero
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
+interface DteReminderParams {
+  to: string
+  userName?: string
+  daysSinceSignup: number
+}
+
+/**
+ * Sent 24-48h after signup if user hasn't uploaded a DT-e.
+ * Gentle nudge to complete activation.
+ */
+export async function sendDteUploadReminder({ to, userName, daysSinceSignup }: DteReminderParams) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+
+  const greeting = userName ? `Hola ${escapeHtml(userName)}` : 'Hola'
+  const timeContext = daysSinceSignup === 1 
+    ? 'Ayer te registraste' 
+    : `Hace ${daysSinceSignup} días te registraste`
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to,
+      subject: '📋 Subí tu primera guía DT-e y llevá el control',
+      html: `
+        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
+          <h2 style="color:#fff;font-size:16px;margin:0 0 16px">${greeting},</h2>
+          
+          <p style="color:#a1a1aa;font-size:13px;line-height:1.6;margin:0 0 16px">
+            ${timeContext} en consignatarias.com.ar pero todavía no subiste tu primera guía DT-e.
+          </p>
+
+          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;margin-bottom:16px">
+            <p style="color:#fbbf24;font-size:12px;margin:0 0 12px;font-weight:bold">
+              ¿Por qué subir tus guías?
+            </p>
+            <p style="color:#a1a1aa;font-size:12px;margin:0;line-height:1.8">
+              ✓ Tus datos, guardados de forma segura<br>
+              ✓ Historial de todas tus operaciones<br>
+              ✓ Estadísticas: categorías, pesos, consignatarias<br>
+              ✓ Exportá tus datos cuando quieras
+            </p>
+          </div>
+
+          <p style="color:#a1a1aa;font-size:12px;margin:0 0 20px">
+            Solo tenés que sacarle una foto a tu guía — nosotros extraemos los datos automáticamente.
+          </p>
+
+          <div style="text-align:center;margin:24px 0">
+            <a href="${APP_URL}/mi-cuenta/guias" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
+              SUBIR MI PRIMERA GUÍA
+            </a>
+          </div>
+
+          <p style="color:#3f3f46;font-size:10px;margin:24px 0 0">
+            Consignatarias.com.ar — Directorio ganadero
+            <br>
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#3f3f46">Desuscribirme</a>
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
+interface FirstDteSuccessParams {
+  to: string
+  userName?: string
+  dteCount: number
+}
+
+/**
+ * Sent after user uploads their first DT-e.
+ * Celebrates milestone and hints at PRO features.
+ */
+export async function sendFirstDteSuccess({ to, userName, dteCount }: FirstDteSuccessParams) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+
+  const greeting = userName ? `¡Felicitaciones ${escapeHtml(userName)}!` : '¡Felicitaciones!'
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to,
+      subject: '🎉 ¡Subiste tu primera guía DT-e!',
+      html: `
+        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
+          <div style="text-align:center;margin-bottom:20px">
+            <span style="font-size:48px">🎉</span>
+          </div>
+
+          <h2 style="color:#fff;font-size:18px;margin:0 0 16px;text-align:center">${greeting}</h2>
+          
+          <p style="color:#a1a1aa;font-size:13px;line-height:1.6;margin:0 0 16px;text-align:center">
+            Ya ${dteCount > 1 ? `tenés ${dteCount} guías` : 'tenés tu primera guía'} guardada en tu cuenta.
+          </p>
+
+          <div style="background:#16161d;border:1px solid #22c55e;border-radius:4px;padding:20px;margin-bottom:20px;text-align:center">
+            <p style="color:#22c55e;font-size:32px;font-weight:bold;margin:0">${dteCount}</p>
+            <p style="color:#71717a;font-size:11px;margin:4px 0 0;text-transform:uppercase">guía${dteCount > 1 ? 's' : ''} guardada${dteCount > 1 ? 's' : ''}</p>
+          </div>
+
+          <p style="color:#a1a1aa;font-size:12px;line-height:1.6;margin:0 0 16px">
+            Seguí subiendo tus guías para construir tu historial completo de operaciones.
+          </p>
+
+          <div style="background:#16161d;border:1px solid #fbbf24;border-radius:4px;padding:16px;margin-bottom:20px">
+            <p style="color:#fbbf24;font-size:11px;margin:0 0 8px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
+              ★ CON PRO
+            </p>
+            <p style="color:#a1a1aa;font-size:12px;margin:0;line-height:1.6">
+              Exportá tus datos, alertas ilimitadas, y estadísticas avanzadas de tus operaciones.
+            </p>
+            <p style="margin:12px 0 0">
+              <a href="${APP_URL}/planes" style="color:#fbbf24;font-size:12px;text-decoration:none">
+                Ver planes PRO →
+              </a>
+            </p>
+          </div>
+
+          <div style="text-align:center;margin:24px 0">
+            <a href="${APP_URL}/mi-cuenta/guias" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
+              VER MIS GUÍAS
+            </a>
+          </div>
+
+          <p style="color:#3f3f46;font-size:10px;margin:24px 0 0;text-align:center">
+            Consignatarias.com.ar — Directorio ganadero
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
 export async function sendNewRemateAlert({
   to,
   remateTitle,
