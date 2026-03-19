@@ -29,6 +29,12 @@ const PROVINCE_SLUGS: Record<string, string> = {
 
 const TYPE_SLUGS = ['invernada', 'cria', 'general', 'especial', 'reproductores']
 
+/* ------------------------------------------------------------------ */
+/*  MARKET CATEGORY SLUGS (/mercado/[categoria])                       */
+/* ------------------------------------------------------------------ */
+
+const MARKET_CATEGORY_SLUGS = ['terneros', 'novillos', 'novillitos', 'vaquillonas', 'vacas', 'toros']
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.consignatarias.com.ar'
 
@@ -307,6 +313,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // NOTE: /verificar pages intentionally excluded — thin form pages
   // that dilute crawl budget. They have robots noindex set.
 
+  // Market category price pages (/mercado/terneros, etc.)
+  const marketCategoryPages: MetadataRoute.Sitemap = MARKET_CATEGORY_SLUGS.map((slug) => ({
+    url: `${baseUrl}/mercado/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'daily' as const,
+    priority: 0.8,
+  }))
+
   return [
     ...staticPages,
     ...provincePages,
@@ -317,5 +331,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...frigorificosByProvincePages,
     ...frigorificoPages,
     ...remateDetailPages,
+    ...marketCategoryPages,
   ]
 }
