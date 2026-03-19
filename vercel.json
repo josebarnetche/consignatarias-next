@@ -11,6 +11,11 @@
   ],
   "redirects": [
     {
+      "source": "/alertas",
+      "destination": "/planes",
+      "permanent": false
+    },
+    {
       "source": "/:path((?!_next|api|favicon|robots|sitemap|manifest|icon|og).*)*",
       "has": [
         {
