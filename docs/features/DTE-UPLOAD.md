@@ -69,7 +69,7 @@ Supabase — Store in user's account
 - [x] `/mi-cuenta/historial` page (integrated in /mi-cuenta/guias)
 - [x] Charts: cabezas por mes, categorías (DTEStats component - CSS-based)
 - [x] Milestone gamification (DTEStats - 2026-03-18)
-- [ ] Export to CSV/Excel
+- [x] Export to CSV — ARCHITECT 2026-03-19 (FREE tier, trust-building lock-in)
 - [ ] Compare periods
 
 ### Phase 3: Insights (PRO)
