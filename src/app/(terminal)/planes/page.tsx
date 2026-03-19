@@ -5,6 +5,8 @@ import PlatformStats from './PlatformStats'
 import FreePlanStatus from './FreePlanStatus'
 import ProPlanStatus from './ProPlanStatus'
 import FounderSpotsRemaining from './FounderSpotsRemaining'
+import SocialProofToast from './SocialProofToast'
+import NewsletterPreview from '@/components/marketing/NewsletterPreview'
 import { SaaSPricingSchema, FAQPageSchema, SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 // Pricing data for schema
@@ -297,6 +299,17 @@ export default function PlanesPage() {
         </div>
       </div>
 
+      {/* Newsletter Preview - BATTLE recommendation */}
+      <div className="mt-8 terminal-panel">
+        <div className="terminal-panel-header">Así se ve tu remate en el email</div>
+        <div className="px-panel py-6">
+          <NewsletterPreview />
+          <p className="text-center text-zinc-500 text-xs mt-4">
+            Este email llega a +500 productores cada vez que publicás un remate
+          </p>
+        </div>
+      </div>
+
       {/* FAQ / Details */}
       <div className="mt-8 terminal-panel">
         <div className="terminal-panel-header">Preguntas frecuentes</div>
@@ -350,6 +363,9 @@ export default function PlanesPage() {
     
     {/* Mobile Sticky CTA (Insight #64) */}
     <MobileStickyCTA />
+    
+    {/* Social Proof Toast - BATTLE recommendation */}
+    <SocialProofToast />
     </>
   )
 }
