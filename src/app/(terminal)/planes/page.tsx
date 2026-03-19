@@ -1,8 +1,9 @@
 import { Metadata } from 'next'
-import SubscribeButton from './SubscribeButton'
 import PlanesTracker from './PlanesTracker'
 import MobileStickyCTA from './MobileStickyCTA'
 import PlatformStats from './PlatformStats'
+import FreePlanStatus from './FreePlanStatus'
+import ProPlanStatus from './ProPlanStatus'
 import { SaaSPricingSchema, FAQPageSchema, SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 // Pricing data for schema
@@ -135,10 +136,7 @@ export default function PlanesPage() {
                 </li>
               ))}
             </ul>
-            <div className="text-data text-zinc-500 text-center py-2 border border-terminal-border"
-              style={{ borderRadius: '2px' }}>
-              Plan actual
-            </div>
+            <FreePlanStatus />
           </div>
         </div>
 
@@ -206,7 +204,7 @@ export default function PlanesPage() {
                 </li>
               ))}
             </ul>
-            <SubscribeButton />
+            <ProPlanStatus />
           </div>
         </div>
 
