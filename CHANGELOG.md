@@ -1,3 +1,69 @@
+## [1.9.1] — 2026-03-19
+
+### Internal Linking + Analytics + Performance
+
+> feat: v1.9.1 — Enhanced internal navigation, WhatsApp analytics, cron optimization
+
+**Focus:** SEO internal linking depth, conversion tracking, operational efficiency.
+
+---
+
+### 🔗 Internal Linking Expansion
+
+**Quick Filters on /remates:**
+
+| Type | Links Added | Commit |
+|------|-------------|--------|
+| Time-based | Hoy, Mañana, Semana | `177d029` |
+| Province | BA, Córdoba, SF, ER, Corrientes | `177d029` |
+| Type | Invernada, Cría, General, Reproductores, Especial | `18a90ee` |
+
+**New Landing Pages:**
+
+| Page | Purpose | Commit |
+|------|---------|--------|
+| `/remates/semana` | Weekly auction calendar | `f47cdcf` |
+| `/remates/categoria/[cat]` | Category price landings | `67a62d3` |
+
+---
+
+### 📊 Analytics & Tracking
+
+| Feature | Description | Commit |
+|---------|-------------|--------|
+| WhatsApp CTA tracking | Track /go page → WhatsApp clicks | `ee10653` |
+| Dynamic pricing cards | Status-aware CTA (logged in vs guest) | `e3d65b5` |
+| YoY price comparison | CategoryComparison component | `10a5170` |
+
+---
+
+### ⚡ Performance & Operations
+
+| Change | Before | After | Commit |
+|--------|--------|-------|--------|
+| Post-remate cron | 5:00 AM ART | 18:00 ART | `b211e10` |
+| Lint cleanup | 3 warnings | 0 | `3718250` |
+
+---
+
+### Commits (v1.9.1)
+
+```
+18a90ee feat(seo): type quick links on /remates (#131)
+d497ef1 feat(seo): province quick links on /remates (#130)
+177d029 feat(seo): internal links to /remates/hoy, /manana, /semana (#129)
+b211e10 chore: optimize cron timing - post-remate at 18:00 ART (#124)
+3718250 fix: lint errors - use Link component and prefix unused vars
+ee10653 feat(analytics): WhatsApp CTA tracking on /go pages (#123)
+67a62d3 feat(seo): add category price landing pages
+e3d65b5 feat(conversion): dynamic pricing card status based on user state
+b05a564 fix: remove unused TrendingUp import from semana page
+10a5170 feat(market): add CategoryComparison component for YoY price analysis
+f47cdcf feat(seo): add /remates/semana landing page for weekly auctions
+```
+
+---
+
 ## [1.9.0] — 2026-03-18
 
 ### Price Oracle Foundation + MAG Integration + Onboarding Stack
