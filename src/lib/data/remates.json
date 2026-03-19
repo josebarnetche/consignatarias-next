@@ -205,7 +205,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "https://www.saenz-valiente.com.ar",
+    "sourceUrl": "https://saenz-valiente.com",
     "status": "completed"
   },
   {
@@ -338,7 +338,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "https://www.bressanycompania.com.ar",
+    "sourceUrl": "https://bressanycompania.com.ar",
     "status": "completed"
   },
   {
@@ -642,7 +642,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "https://www.nestorhugofuentes.com/",
+    "sourceUrl": "https://nestorhugofuentes.com",
     "status": "completed"
   },
   {
@@ -794,7 +794,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "https://www.bressanycompania.com.ar",
+    "sourceUrl": "https://bressanycompania.com.ar",
     "status": "completed"
   },
   {
@@ -851,7 +851,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "https://www.saenz-valiente.com.ar",
+    "sourceUrl": "https://saenz-valiente.com",
     "status": "completed"
   },
   {
@@ -1040,7 +1040,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
+    "sourceUrl": "https://saenz-valiente.com",
     "id": 55,
     "status": "completed"
   },
@@ -1116,7 +1116,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
+    "sourceUrl": "https://saenz-valiente.com",
     "id": 59,
     "status": "completed"
   },
@@ -1192,7 +1192,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
+    "sourceUrl": "https://saenz-valiente.com",
     "id": 63,
     "status": "completed"
   },
@@ -1250,7 +1250,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "https://www.bressanycompania.com.ar",
+    "sourceUrl": "https://bressanycompania.com.ar",
     "status": "completed"
   },
   {
@@ -1288,7 +1288,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "https://www.nestorhugofuentes.com/",
+    "sourceUrl": "https://nestorhugofuentes.com",
     "status": "scheduled"
   },
   {
@@ -1439,7 +1439,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
+    "sourceUrl": "https://saenz-valiente.com",
     "id": 79,
     "status": "scheduled"
   },
@@ -1458,7 +1458,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "www.colomboymagliano.com.ar",
+    "sourceUrl": "https://colomboymagliano.com.ar",
     "id": 80,
     "status": "live"
   },
@@ -1724,7 +1724,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
+    "sourceUrl": "https://saenz-valiente.com",
     "id": 95,
     "status": "scheduled"
   },
@@ -1763,7 +1763,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "https://www.saenz-valiente.com.ar",
+    "sourceUrl": "https://saenz-valiente.com",
     "status": "scheduled"
   },
   {
@@ -1781,7 +1781,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
+    "sourceUrl": "https://saenz-valiente.com",
     "id": 98,
     "status": "scheduled"
   },
@@ -1819,7 +1819,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
+    "sourceUrl": "https://saenz-valiente.com",
     "id": 100,
     "status": "scheduled"
   },
@@ -1858,7 +1858,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "https://www.bressanycompania.com.ar",
+    "sourceUrl": "https://bressanycompania.com.ar",
     "status": "scheduled"
   },
   {
@@ -2029,7 +2029,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "https://www.nestorhugofuentes.com/",
+    "sourceUrl": "https://nestorhugofuentes.com",
     "status": "scheduled"
   },
   {
@@ -2256,7 +2256,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
+    "sourceUrl": "https://saenz-valiente.com",
     "id": 125,
     "status": "scheduled"
   },
@@ -2332,7 +2332,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "www.colomboymagliano.com.ar",
+    "sourceUrl": "https://colomboymagliano.com.ar",
     "id": 133,
     "status": "scheduled"
   },
@@ -2769,7 +2769,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
+    "sourceUrl": "https://saenz-valiente.com",
     "id": 156,
     "status": "scheduled"
   },
@@ -3073,7 +3073,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "www.colomboymagliano.com.ar",
+    "sourceUrl": "https://colomboymagliano.com.ar",
     "id": 175,
     "status": "scheduled"
   },
@@ -3225,7 +3225,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
+    "sourceUrl": "https://saenz-valiente.com",
     "id": 185,
     "status": "scheduled"
   },
@@ -3681,7 +3681,7 @@
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
+    "sourceUrl": "https://saenz-valiente.com",
     "id": 211,
     "status": "scheduled"
   },
