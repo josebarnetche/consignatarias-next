@@ -1,3 +1,38 @@
+## [1.9.2] — 2026-03-19
+
+### DTE Period Comparison — Lock-in Analytics
+
+> feat: v1.9.2 — Compare DTE activity across periods (month/quarter/year)
+
+**Focus:** User data lock-in through analytics that show accumulated value.
+
+---
+
+### 📊 Period Comparison (`90447bf`)
+
+**DTEPeriodCompare Component:**
+
+| Feature | Description |
+|---------|-------------|
+| Time periods | Monthly, quarterly, yearly comparisons |
+| Metrics | Guías, cabezas, avg per DTE |
+| Change indicators | Visual +/-% with color coding |
+| Category breakdown | Side-by-side by livestock type |
+| Insight messages | Natural language summaries |
+
+**Lock-in mechanism:**
+- Users see unique value in accumulated data
+- "Your February was +45% vs January" creates emotional investment
+- Encourages continued uploads to track progress
+- Collapsible UI reduces noise for new users
+
+**Phase 2 Complete:**
+- [x] Personal Insights card
+- [x] Period Comparison
+- [ ] Phase 3: PRO insights (price tracking, market comparison)
+
+---
+
 ## [1.9.1] — 2026-03-19
 
 ### Internal Linking + Analytics + Conversion + Lock-in
