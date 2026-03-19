@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createBrowserClient } from '@/lib/supabase'
 
 interface RecentSignup {
   displayName: string
@@ -16,27 +15,12 @@ export default function SocialProofToast() {
   useEffect(() => {
     async function fetchRecentSignup() {
       try {
-        const supabase = createBrowserClient()
+        const res = await fetch('/api/stats/recent-signups')
+        if (!res.ok) return
         
-        // Get consignatarias that were claimed/verified in last 14 days
-        const { data } = await supabase
-          .from('consignatarias')
-          .select('display_name, province, updated_at')
-          .eq('verified', true)
-          .gte('updated_at', new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString())
-          .order('updated_at', { ascending: false })
-          .limit(5)
-
-        if (data && data.length > 0) {
-          // Pick a random one from recent signups
-          const random = data[Math.floor(Math.random() * data.length)]
-          const daysAgo = Math.floor((Date.now() - new Date(random.updated_at).getTime()) / (1000 * 60 * 60 * 24))
-          
-          setSignup({
-            displayName: random.display_name,
-            province: random.province || 'Argentina',
-            daysAgo: daysAgo
-          })
+        const data = await res.json()
+        if (data.signup) {
+          setSignup(data.signup)
         }
       } catch {
         // Silent fail - social proof is enhancement, not critical

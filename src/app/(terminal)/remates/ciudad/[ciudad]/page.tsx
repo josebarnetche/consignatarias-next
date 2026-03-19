@@ -5,7 +5,7 @@ import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { MapPin, Calendar, Building2 } from 'lucide-react'
-import RemateCard from '@/components/RemateCard'
+import AuctionCard from '@/components/remates/auction-card'
 
 const auctions = rematesData as Auction[]
 
@@ -113,7 +113,7 @@ export default async function CityRematesPage({ params }: { params: Promise<{ ci
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, 10)
 
-  const consignatarias = [...new Set(cityAuctions.map(a => a.consignataria))]
+  const consignatarias = [...new Set(cityAuctions.map(a => a.consignatariaName))]
   const types = [...new Set(cityAuctions.map(a => a.type).filter(Boolean))]
 
   const faqItems = [
@@ -192,8 +192,8 @@ export default async function CityRematesPage({ params }: { params: Promise<{ ci
               Próximos remates en {cityOnly}
             </h2>
             <div className="space-y-3">
-              {upcomingAuctions.map((auction, i) => (
-                <RemateCard key={`${auction.slug}-${i}`} auction={auction} />
+              {upcomingAuctions.map((auction) => (
+                <AuctionCard key={auction.id} auction={auction} />
               ))}
             </div>
           </section>
@@ -206,8 +206,8 @@ export default async function CityRematesPage({ params }: { params: Promise<{ ci
               Remates anteriores
             </h2>
             <div className="space-y-3 opacity-60">
-              {pastAuctions.map((auction, i) => (
-                <RemateCard key={`past-${auction.slug}-${i}`} auction={auction} />
+              {pastAuctions.map((auction) => (
+                <AuctionCard key={`past-${auction.id}`} auction={auction} />
               ))}
             </div>
           </section>
