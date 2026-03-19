@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase-browser';
 import { FileText, Trash2, Edit2, AlertCircle, TrendingUp, Loader2, Download } from 'lucide-react';
 import { trackDteDelete } from '@/lib/analytics';
 import { DTEStats } from './DTEStats';
+import { DTEPeriodCompare } from './DTEPeriodCompare';
 
 interface UserDTE {
   id: string;
@@ -286,6 +287,9 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
 
       {/* Gamification & Analytics - Lock-in enhancer */}
       <DTEStats dtes={dtes} />
+
+      {/* Period Comparison - HIGH LOCK-IN: Shows value of accumulated data over time */}
+      <DTEPeriodCompare dtes={dtes} />
 
       {/* History list */}
       <div className="bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden">

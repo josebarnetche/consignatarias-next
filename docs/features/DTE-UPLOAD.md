@@ -71,7 +71,7 @@ Supabase — Store in user's account
 - [x] Milestone gamification (DTEStats - 2026-03-18)
 - [x] Export to CSV — ARCHITECT 2026-03-19 (FREE tier, trust-building lock-in)
 - [x] Personal Insights card — ARCHITECT 2026-03-19 (avg volume, peak month, top category, trend)
-- [ ] Compare periods
+- [x] Compare periods — ARCHITECT 2026-03-19 (month/quarter/year comparisons with category breakdown)
 
 ### Phase 3: Insights (PRO)
 
