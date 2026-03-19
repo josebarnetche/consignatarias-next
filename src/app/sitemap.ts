@@ -35,6 +35,29 @@ const TYPE_SLUGS = ['invernada', 'cria', 'general', 'especial', 'reproductores']
 
 const MARKET_CATEGORY_SLUGS = ['terneros', 'novillos', 'novillitos', 'vaquillonas', 'vacas', 'toros']
 
+/* ------------------------------------------------------------------ */
+/*  CITY SLUG HELPER (for /remates/ciudad/[ciudad])                    */
+/* ------------------------------------------------------------------ */
+
+function normalizeCity(city: string): string {
+  return city
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+function getUniqueCitySlugs(auctions: typeof rematesData): string[] {
+  const seen = new Set<string>()
+  for (const auction of auctions) {
+    if (auction.location) {
+      seen.add(normalizeCity(auction.location))
+    }
+  }
+  return Array.from(seen)
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.consignatarias.com.ar'
 
@@ -327,6 +350,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
+  // City landing pages (/remates/ciudad/[ciudad]) - HUNTER BATTLE recommendation
+  const citySlugs = getUniqueCitySlugs(rematesData as typeof rematesData)
+  const cityPages: MetadataRoute.Sitemap = citySlugs.map((slug) => ({
+    url: `${baseUrl}/remates/ciudad/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.6,
+  }))
+
   return [
     ...staticPages,
     ...provincePages,
@@ -338,5 +370,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...frigorificoPages,
     ...remateDetailPages,
     ...marketCategoryPages,
+    ...cityPages,
   ]
 }
