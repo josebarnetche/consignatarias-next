@@ -163,6 +163,41 @@ export default function RematesPage() {
             Corrientes
           </Link>
         </div>
+        
+        {/* Type quick links */}
+        <div className="flex flex-wrap gap-2 mt-2">
+          <span className="text-zinc-500 text-xs self-center mr-1">Por tipo:</span>
+          <Link
+            href="/remates/tipo/invernada"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          >
+            Invernada
+          </Link>
+          <Link
+            href="/remates/tipo/cria"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          >
+            Cría
+          </Link>
+          <Link
+            href="/remates/tipo/general"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          >
+            General
+          </Link>
+          <Link
+            href="/remates/tipo/reproductores"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          >
+            Reproductores
+          </Link>
+          <Link
+            href="/remates/tipo/especial"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          >
+            Especial
+          </Link>
+        </div>
       </section>
       
       {/* Email capture for remates */}
