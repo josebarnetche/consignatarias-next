@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, TechArticleSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { TrendingUp, TrendingDown, Building2, MapPin, ExternalLink, BarChart3 } from 'lucide-react'
 import marketData from '@/lib/data/market-prices.json'
 
@@ -35,6 +35,28 @@ export default function MercadoLiniersPage() {
         description="Cotización actualizada del Mercado de Liniers, referencia del mercado ganadero argentino. Precios de novillos, vacas, terneros, vaquillonas y toros."
         url="https://www.consignatarias.com.ar/mercado/liniers"
       />
+      <FAQPageSchema items={[
+        {
+          question: '¿Qué es el Mercado de Liniers?',
+          answer: 'Es el principal mercado de hacienda de Argentina, ubicado en Buenos Aires. Opera desde 1901 y sirve como referencia para los precios de ganado en todo el país.'
+        },
+        {
+          question: '¿Cada cuánto se actualizan los precios?',
+          answer: 'Los precios se actualizan diariamente a las 14:00 hora argentina, reflejando las operaciones del día anterior.'
+        },
+        {
+          question: '¿Qué categorías de hacienda se cotizan?',
+          answer: 'Las principales categorías son: novillos, novillitos, vaquillonas, vacas, toros y terneros. Cada una tiene su precio por kilogramo vivo.'
+        },
+        {
+          question: '¿Qué es el índice INMAG?',
+          answer: 'El INMAG (Índice del Mercado Agroganadero) integra datos de múltiples fuentes incluyendo operaciones del Mercado de Liniers y remates en todo el país, ofreciendo una referencia nacional del precio de la hacienda.'
+        },
+        {
+          question: '¿Cómo se relaciona Liniers con los remates en origen?',
+          answer: 'Aunque el volumen del Mercado de Liniers ha disminuido con la aparición de remates en origen y ferias locales, sigue siendo un indicador clave. Los precios de Liniers sirven como referencia para los remates regionales.'
+        }
+      ]} />
       
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}

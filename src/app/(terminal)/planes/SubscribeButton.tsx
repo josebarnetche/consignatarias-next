@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase-browser'
 import { trackCheckoutStart } from '@/lib/analytics'
 
@@ -77,6 +78,36 @@ export default function SubscribeButton() {
         }}
       >
         ...
+      </div>
+    )
+  }
+
+  // Logged in but no claimed consignataria - show claim prompt first
+  if (userEmail && !entitySlug) {
+    return (
+      <div className="space-y-3">
+        <div 
+          className="text-center p-3 text-data"
+          style={{
+            border: '1px solid rgba(245, 158, 11, 0.3)',
+            background: 'rgba(245, 158, 11, 0.04)',
+            borderRadius: '2px',
+          }}
+        >
+          <p className="text-zinc-400 mb-2">
+            Para suscribirte, primero reclamá tu perfil gratuito
+          </p>
+          <Link 
+            href="/consignatarias"
+            className="inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors font-medium"
+          >
+            <span>🔍</span>
+            <span>Buscar mi consignataria →</span>
+          </Link>
+        </div>
+        <p className="text-xxs text-zinc-600 text-center">
+          ¿No encontrás tu consignataria? <a href="mailto:agro@memola.com.ar" className="text-zinc-500 hover:text-zinc-400">Contactanos</a>
+        </p>
       </div>
     )
   }
