@@ -198,6 +198,41 @@ export default function RematesPage() {
             Especial
           </Link>
         </div>
+        
+        {/* City quick links */}
+        <div className="flex flex-wrap gap-2 mt-2">
+          <span className="text-zinc-500 text-xs self-center mr-1">Por ciudad:</span>
+          <Link
+            href="/remates/ciudad/rio-cuarto-cordoba"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          >
+            Río Cuarto
+          </Link>
+          <Link
+            href="/remates/ciudad/san-nicolas-de-los-arroyos-buenos-aires"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          >
+            San Nicolás
+          </Link>
+          <Link
+            href="/remates/ciudad/san-luis-san-luis"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          >
+            San Luis
+          </Link>
+          <Link
+            href="/remates/ciudad/rauch-buenos-aires"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          >
+            Rauch
+          </Link>
+          <Link
+            href="/remates/ciudad/villaguay-entre-rios"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          >
+            Villaguay
+          </Link>
+        </div>
       </section>
       
       {/* Email capture for remates */}
