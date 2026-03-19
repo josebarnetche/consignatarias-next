@@ -247,8 +247,22 @@ export default async function CityRematesPage({ params }: { params: Promise<{ ci
         {province && (
           <section className="border-t border-zinc-800 pt-8 mt-8">
             <h2 className="text-lg font-semibold text-zinc-200 mb-4">
-              Otras ciudades en {province}
+              Más remates en {province}
             </h2>
+            
+            {/* Province link */}
+            <Link
+              href={`/remates/${normalizeCity(province)}`}
+              className="flex items-center justify-between w-full p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg hover:bg-amber-500/20 transition-colors mb-4"
+            >
+              <div className="flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-amber-500" />
+                <span className="text-amber-400 font-medium">Ver todos los remates en {province}</span>
+              </div>
+              <span className="text-amber-500">→</span>
+            </Link>
+            
+            {/* Other cities in province */}
             <div className="flex flex-wrap gap-2">
               {cities
                 .filter(c => c.includes(province) && normalizeCity(c) !== ciudad)
