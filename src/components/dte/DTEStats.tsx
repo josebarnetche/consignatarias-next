@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Trophy, Target, TrendingUp, Calendar, Award } from 'lucide-react';
+import { Trophy, Target, TrendingUp, Calendar, Award, BarChart3, Sparkles } from 'lucide-react';
 
 interface UserDTE {
   id: string;
@@ -18,6 +18,9 @@ interface DTEStatsProps {
 // Milestone thresholds
 const DTE_MILESTONES = [5, 10, 25, 50, 100];
 const CABEZAS_MILESTONES = [500, 1000, 2500, 5000, 10000, 25000];
+
+const MONTH_NAMES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
 export function DTEStats({ dtes }: DTEStatsProps) {
   const stats = useMemo(() => {
@@ -63,6 +66,67 @@ export function DTEStats({ dtes }: DTEStatsProps) {
     const achievedDteMilestones = DTE_MILESTONES.filter(m => m <= totalDtes);
     const achievedCabezasMilestones = CABEZAS_MILESTONES.filter(m => m <= totalCabezas);
 
+    // === PERSONAL INSIGHTS (lock-in: shows value of accumulated data) ===
+    
+    // Group by month for monthly analysis
+    const monthlyData: Record<string, { dtes: number; cabezas: number }> = {};
+    dtes.forEach(dte => {
+      if (!dte.fecha_movimiento) return;
+      const date = new Date(dte.fecha_movimiento);
+      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      if (!monthlyData[key]) monthlyData[key] = { dtes: 0, cabezas: 0 };
+      monthlyData[key].dtes += 1;
+      monthlyData[key].cabezas += dte.cantidad_cabezas || 0;
+    });
+
+    const monthKeys = Object.keys(monthlyData).sort();
+    const activeMonths = monthKeys.length;
+    
+    // Average monthly volume (only count months with activity)
+    const avgMonthlyCabezas = activeMonths > 0 
+      ? Math.round(totalCabezas / activeMonths) 
+      : 0;
+    
+    // Peak month
+    let peakMonth: { name: string; cabezas: number } | null = null;
+    if (activeMonths > 0) {
+      const peak = Object.entries(monthlyData).reduce((max, [key, data]) => 
+        data.cabezas > max.cabezas ? { key, cabezas: data.cabezas } : max
+      , { key: '', cabezas: 0 });
+      
+      const [year, month] = peak.key.split('-');
+      peakMonth = {
+        name: `${MONTH_NAMES[parseInt(month) - 1]} ${year}`,
+        cabezas: peak.cabezas,
+      };
+    }
+
+    // Top category with percentage
+    let topCategory: { name: string; count: number; percentage: number } | null = null;
+    const categoryEntries = Object.entries(categoryTotals);
+    if (categoryEntries.length > 0) {
+      const totalInCategories = categoryEntries.reduce((sum, [, count]) => sum + count, 0);
+      const top = categoryEntries.reduce((max, [cat, count]) => 
+        count > max.count ? { name: cat, count } : max
+      , { name: '', count: 0 });
+      
+      topCategory = {
+        name: top.name,
+        count: top.count,
+        percentage: totalInCategories > 0 ? Math.round((top.count / totalInCategories) * 100) : 0,
+      };
+    }
+
+    // Trend: compare last 2 months (if data available)
+    let trend: 'up' | 'down' | 'stable' | null = null;
+    if (monthKeys.length >= 2) {
+      const lastMonth = monthlyData[monthKeys[monthKeys.length - 1]];
+      const prevMonth = monthlyData[monthKeys[monthKeys.length - 2]];
+      if (lastMonth.cabezas > prevMonth.cabezas * 1.1) trend = 'up';
+      else if (lastMonth.cabezas < prevMonth.cabezas * 0.9) trend = 'down';
+      else trend = 'stable';
+    }
+
     return {
       totalDtes,
       totalCabezas,
@@ -77,6 +141,12 @@ export function DTEStats({ dtes }: DTEStatsProps) {
       categoryTotals,
       achievedDteMilestones,
       achievedCabezasMilestones,
+      // Personal insights
+      avgMonthlyCabezas,
+      peakMonth,
+      topCategory,
+      trend,
+      activeMonths,
     };
   }, [dtes]);
 
@@ -173,6 +243,88 @@ export function DTEStats({ dtes }: DTEStatsProps) {
               <p className="text-2xl font-bold text-blue-400">{stats.thisMonthCabezas.toLocaleString('es-AR')}</p>
               <p className="text-sm text-gray-400">cabezas movidas</p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Personal Insights — HIGH LOCK-IN: Shows unique value of accumulated data */}
+      {stats.activeMonths >= 2 && (
+        <div className="bg-gradient-to-br from-purple-500/10 to-indigo-500/5 border border-purple-500/20 rounded-xl p-5">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-purple-500/20 rounded-lg">
+              <Sparkles className="w-5 h-5 text-purple-400" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-white">Tu perfil ganadero</h3>
+              <p className="text-xs text-gray-400">Basado en {stats.activeMonths} meses de datos</p>
+            </div>
+          </div>
+          
+          <div className="grid gap-4 sm:grid-cols-2">
+            {/* Average Monthly Volume */}
+            <div className="flex items-start gap-3">
+              <div className="p-1.5 bg-gray-800 rounded-lg">
+                <BarChart3 className="w-4 h-4 text-purple-400" />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-white">
+                  {stats.avgMonthlyCabezas.toLocaleString('es-AR')}
+                </p>
+                <p className="text-xs text-gray-400">cabezas promedio/mes</p>
+              </div>
+            </div>
+
+            {/* Peak Month */}
+            {stats.peakMonth && (
+              <div className="flex items-start gap-3">
+                <div className="p-1.5 bg-gray-800 rounded-lg">
+                  <Trophy className="w-4 h-4 text-amber-400" />
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-white">{stats.peakMonth.name}</p>
+                  <p className="text-xs text-gray-400">
+                    mes récord ({stats.peakMonth.cabezas.toLocaleString('es-AR')} cab)
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Top Category */}
+            {stats.topCategory && (
+              <div className="flex items-start gap-3">
+                <div className="p-1.5 bg-gray-800 rounded-lg">
+                  <Target className="w-4 h-4 text-green-400" />
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-white capitalize">{stats.topCategory.name}s</p>
+                  <p className="text-xs text-gray-400">
+                    categoría principal ({stats.topCategory.percentage}% del total)
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Trend */}
+            {stats.trend && (
+              <div className="flex items-start gap-3">
+                <div className="p-1.5 bg-gray-800 rounded-lg">
+                  <TrendingUp className={`w-4 h-4 ${
+                    stats.trend === 'up' ? 'text-green-400' : 
+                    stats.trend === 'down' ? 'text-red-400' : 'text-gray-400'
+                  }`} />
+                </div>
+                <div>
+                  <p className={`text-lg font-bold ${
+                    stats.trend === 'up' ? 'text-green-400' : 
+                    stats.trend === 'down' ? 'text-red-400' : 'text-white'
+                  }`}>
+                    {stats.trend === 'up' ? 'En alza' : 
+                     stats.trend === 'down' ? 'En baja' : 'Estable'}
+                  </p>
+                  <p className="text-xs text-gray-400">tendencia vs mes anterior</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
