@@ -4,6 +4,7 @@ import MobileStickyCTA from './MobileStickyCTA'
 import PlatformStats from './PlatformStats'
 import FreePlanStatus from './FreePlanStatus'
 import ProPlanStatus from './ProPlanStatus'
+import FounderSpotsRemaining from './FounderSpotsRemaining'
 import { SaaSPricingSchema, FAQPageSchema, SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 // Pricing data for schema
@@ -182,15 +183,8 @@ export default function PlanesPage() {
             <p className="text-zinc-400 text-data mb-4">
               Cada remate que publiques lo enviamos por email a todos nuestros suscriptores. Todo el año.
             </p>
-            {/* Early adopter badge (Insight #61b) - with urgency */}
-            <div className="mb-4 px-2 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded text-center">
-              <span className="text-emerald-400 text-xxs font-terminal uppercase tracking-wider">
-                🔒 Precio fundador: $45.000 congelado de por vida
-              </span>
-              <span className="block text-emerald-500/70 text-[10px] font-terminal mt-0.5">
-                Solo primeras 50 consignatarias — luego sube a $65.000
-              </span>
-            </div>
+            {/* Dynamic founder spots remaining (Insight #61b → CLOSER Audit 2026-03-19) */}
+            <FounderSpotsRemaining />
             <ul className="space-y-2 mb-6 flex-1">
               {PRO_FEATURES.map((f) => (
                 <li

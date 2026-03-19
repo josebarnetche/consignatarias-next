@@ -13,6 +13,7 @@ export default function MobileStickyCTA() {
   const [userEmail, setUserEmail] = useState<string | null>(null)
   const [entitySlug, setEntitySlug] = useState<string | null>(null)
   const [visible, setVisible] = useState(false)
+  const [spotsRemaining, setSpotsRemaining] = useState<number | null>(null)
 
   useEffect(() => {
     const supabase = createClient()
@@ -27,6 +28,16 @@ export default function MobileStickyCTA() {
         if (consig) setEntitySlug(consig.canonical_slug)
       }
     })
+
+    // Fetch founder spots for urgency messaging
+    fetch('/api/stats/pro-spots')
+      .then(r => r.json())
+      .then(d => {
+        if (d.success && d.data) {
+          setSpotsRemaining(d.data.remaining)
+        }
+      })
+      .catch(() => {})
 
     // Show sticky CTA after scrolling 400px (past pricing cards)
     const handleScroll = () => {
@@ -86,7 +97,12 @@ export default function MobileStickyCTA() {
           fontWeight: 600,
         }}
       >
-        {loading ? 'Redirigiendo a pago seguro...' : '★ Asegurar PRO $45.000/mes — Precio fundador'}
+        {loading 
+          ? 'Redirigiendo a pago seguro...' 
+          : spotsRemaining !== null && spotsRemaining <= 15
+            ? `★ Asegurar PRO — Solo ${spotsRemaining} lugares a $45.000`
+            : '★ Asegurar PRO $45.000/mes — Precio fundador'
+        }
       </button>
     </div>
   )
