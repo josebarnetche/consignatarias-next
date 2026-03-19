@@ -32,7 +32,7 @@ export default function MetodologiaPage() {
           Metodología del Índice de Precios
         </h1>
         <p className="text-zinc-500 text-xs mb-6">
-          Versión 1.0 — Marzo 2026 — Memola Medios S.A.S.
+          Versión 1.1 — Marzo 2026 — Memola Medios S.A.S.
         </p>
 
         <p className="text-zinc-400 mb-8">
@@ -61,7 +61,7 @@ export default function MetodologiaPage() {
           </div>
           <div className="border border-zinc-800 rounded p-3 text-center">
             <Users className="w-4 h-4 text-amber-500 mx-auto mb-1" />
-            <p className="text-zinc-200 text-lg font-medium">68+</p>
+            <p className="text-zinc-200 text-lg font-medium">86+</p>
             <p className="text-zinc-500 text-xs">Consignatarias</p>
           </div>
         </div>
@@ -72,16 +72,33 @@ export default function MetodologiaPage() {
           1. Fuentes de Datos
         </h2>
         
-        <h3 className="text-zinc-300 font-medium mb-2">Fuente Primaria: INMAG</h3>
+        <h3 className="text-zinc-300 font-medium mb-2">Fuente Primaria: MAG (Mercado Agroganadero S.A.)</h3>
         <p className="text-zinc-400 mb-3">
-          Los precios base provienen del Mercado de Invernada de Mercado Agroganadero (INMAG), 
-          fuente oficial del sector ganadero argentino.
+          Integración directa con Mercado Agroganadero S.A., la fuente oficial del sector ganadero argentino.
+          Precios observados reales, no sintéticos.
         </p>
+        <div className="border border-zinc-800 rounded overflow-hidden mb-4">
+          <table className="w-full text-xs">
+            <thead className="bg-zinc-900">
+              <tr>
+                <th className="text-left text-zinc-400 p-2">Endpoint MAG</th>
+                <th className="text-left text-zinc-400 p-2">Datos</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-800">
+              <tr><td className="text-zinc-300 p-2 font-mono">haciinfo000011</td><td className="text-zinc-400 p-2">INMAG diario + volumen</td></tr>
+              <tr><td className="text-zinc-300 p-2 font-mono">haciinfo000002</td><td className="text-zinc-400 p-2">Precios por categoría</td></tr>
+              <tr><td className="text-zinc-300 p-2 font-mono">haciinfo000003</td><td className="text-zinc-400 p-2">Entrada por provincia</td></tr>
+              <tr><td className="text-zinc-300 p-2 font-mono">haciinfo000006</td><td className="text-zinc-400 p-2">Entrada por consignatario</td></tr>
+            </tbody>
+          </table>
+        </div>
         <ul className="text-zinc-400 space-y-1 mb-4 list-disc list-inside">
-          <li><span className="text-zinc-300">Categorías:</span> Novillo, Ternero, Vaquillona, Vaca, Toro</li>
+          <li><span className="text-zinc-300">Categorías:</span> Novillo, Novillito, Vaquillona, Vaca, Toro, Ternero</li>
           <li><span className="text-zinc-300">Unidad:</span> Pesos argentinos por kilogramo vivo (ARS/kg)</li>
-          <li><span className="text-zinc-300">Frecuencia:</span> Diaria (días hábiles)</li>
-          <li><span className="text-zinc-300">Método:</span> Scraping automatizado + validación manual</li>
+          <li><span className="text-zinc-300">Frecuencia:</span> Diaria (actualización 14:00 ART)</li>
+          <li><span className="text-zinc-300">Método:</span> API scraping automatizado + validación cruzada</li>
+          <li><span className="text-zinc-300">Volumen:</span> Cabezas por operación (para cálculo VWAP)</li>
         </ul>
 
         <h3 className="text-zinc-300 font-medium mb-2">Validación de Datos</h3>
