@@ -1349,25 +1349,6 @@
     "status": "live"
   },
   {
-    "title": "Gordos y Conserva",
-    "consignatariaName": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
-    "consignatariaSlug": "agricultores-federados-argentinos-soc-coop-lt",
-    "date": "2026-03-19",
-    "time": "10:00",
-    "location": "MARCOS JUAREZ, CORDOBA",
-    "province": "CORDOBA",
-    "type": "general",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "Gordos y Conserva",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.afascl.com",
-    "id": 72,
-    "status": "live"
-  },
-  {
     "id": 73,
     "title": "Hacienda Gorda - Sampacho",
     "consignatariaName": "Eduardo A. Travaglia y Cia. SA",
@@ -1403,44 +1384,6 @@
     "source": "web",
     "sourceUrl": "www.danielblancosa.com.ar",
     "id": 74,
-    "status": "live"
-  },
-  {
-    "title": "Gordo, invernada y cría",
-    "consignatariaName": "DANIEL BLANCO Y CÍA. S.A.",
-    "consignatariaSlug": "daniel-blanco-y-cia-s-a",
-    "date": "2026-03-19",
-    "time": "11:00",
-    "location": "LONQUIMAY, LA PAMPA",
-    "province": "LA PAMPA",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "Gordo, invernada y cría",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.danielblancosa.com.ar",
-    "id": 75,
-    "status": "live"
-  },
-  {
-    "title": "Gordo, Invernada y Cría",
-    "consignatariaName": "SÁENZ VALIENTE, BULLRICH Y CIA. S.A.",
-    "consignatariaSlug": "saenz-valiente-bullrich-y-cia-s-a",
-    "date": "2026-03-19",
-    "time": "11:00",
-    "location": "CASTELLI, BUENOS AIRES",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": 500,
-    "description": "Gordo, Invernada y Cría",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 76,
     "status": "live"
   },
   {
@@ -1485,7 +1428,7 @@
     "title": "Gordo, Invernada y Cría",
     "consignatariaName": "SÁENZ VALIENTE, BULLRICH Y CIA. S.A.",
     "consignatariaSlug": "saenz-valiente-bullrich",
-    "date": "2026-03-19",
+    "date": "2026-03-20",
     "time": "14:00",
     "location": "CASTELLI, BUENOS AIRES",
     "province": "BUENOS AIRES",
@@ -1498,7 +1441,7 @@
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
     "id": 79,
-    "status": "live"
+    "status": "scheduled"
   },
   {
     "title": "35° Aniversario de la Sucursal\r\nRemate General\r\nInvernada, Cría y Faena",
