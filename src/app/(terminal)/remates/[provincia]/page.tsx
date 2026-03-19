@@ -475,6 +475,49 @@ export default async function ProvinciaRematesPage({ params }: Props) {
           </div>
         </div>
 
+        {/* Cross-links: By Type */}
+        {(() => {
+          // Get types with 2+ auctions in this province
+          const typeCounts = upcomingAuctions.reduce((acc, a) => {
+            acc[a.type] = (acc[a.type] || 0) + 1
+            return acc
+          }, {} as Record<string, number>)
+          
+          const topTypes = Object.entries(typeCounts)
+            .filter(([, count]) => count >= 2)
+            .sort((a, b) => b[1] - a[1])
+          
+          if (topTypes.length === 0) return null
+          
+          return (
+            <div className="mt-4">
+              <div className="terminal-panel">
+                <div className="terminal-panel-header">
+                  <span className="section-heading text-zinc-400 text-xs tracking-widest">
+                    POR TIPO EN {config.displayName.toUpperCase()}
+                  </span>
+                </div>
+                <div className="p-3 grid gap-2 sm:grid-cols-2 md:grid-cols-3">
+                  {topTypes.map(([type, count]) => (
+                    <Link
+                      key={type}
+                      href={`/remates/${provincia}/${type}`}
+                      className="flex items-center justify-between px-3 py-2 bg-terminal-panel border border-terminal-border rounded hover:border-accent/50 transition-colors"
+                    >
+                      <span className="text-xxs text-zinc-300 font-terminal">
+                        {TYPE_LABELS[type] || type.toUpperCase()}
+                      </span>
+                      <span className="text-xxs text-zinc-500 bg-zinc-800 px-1.5 py-0.5 rounded-full font-terminal">
+                        {count}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )
+        })()}
+
         {/* Back link bottom */}
         <div className="mt-3">
           <Link href="/remates" className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors">

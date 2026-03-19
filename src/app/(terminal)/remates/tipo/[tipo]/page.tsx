@@ -292,6 +292,47 @@ export default async function TipoRematesPage({ params }: Props) {
           </div>
         </section>
 
+        {/* Cross-links: By Province */}
+        {(() => {
+          // Get provinces with 3+ auctions of this type
+          const provinceCounts = upcoming.reduce((acc, a) => {
+            acc[a.province] = (acc[a.province] || 0) + 1
+            return acc
+          }, {} as Record<string, number>)
+          
+          const topProvinces = Object.entries(provinceCounts)
+            .filter(([, count]) => count >= 2)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 8)
+          
+          if (topProvinces.length === 0) return null
+          
+          return (
+            <section className="mb-12">
+              <h2 className="text-xl font-semibold text-white mb-4">
+                Remates de {config.name} por provincia
+              </h2>
+              <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-4">
+                {topProvinces.map(([province, count]) => {
+                  const provinceSlug = province.toLowerCase().replace(/\s+/g, '-')
+                  return (
+                    <Link
+                      key={province}
+                      href={`/remates/${provinceSlug}/${config.slug}`}
+                      className="flex items-center justify-between px-4 py-3 bg-zinc-900/50 border border-zinc-800 rounded-lg hover:border-zinc-700 transition-colors"
+                    >
+                      <span className="text-zinc-300">{province}</span>
+                      <span className="text-xs text-zinc-500 bg-zinc-800 px-2 py-0.5 rounded-full">
+                        {count} remates
+                      </span>
+                    </Link>
+                  )
+                })}
+              </div>
+            </section>
+          )
+        })()}
+
         {/* Other Types */}
         <section>
           <h2 className="text-xl font-semibold text-white mb-4">
