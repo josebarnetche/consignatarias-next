@@ -1274,22 +1274,22 @@
   },
   {
     "id": 68,
-    "title": "Remate Feria Algarrobo del Águila",
+    "title": "Remate Feria General Acha",
     "consignatariaName": "Nestor Hugo Fuentes",
     "consignatariaSlug": "nestor-fuentes",
-    "date": "2026-03-19",
-    "time": null,
-    "location": "Algarrobo del Águila, La Pampa",
+    "date": "2026-03-27",
+    "time": "10:00",
+    "location": "General Acha, La Pampa",
     "province": "LA PAMPA",
     "type": "general",
     "mainCategory": "mixto",
     "estimatedHeads": null,
-    "description": "Remate feria regional en Algarrobo del Águila, oeste pampeano.",
+    "description": "Remate feria en Predio NHF S.A., General Acha.",
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.nestorhugofuentes.com/",
-    "status": "live"
+    "status": "scheduled"
   },
   {
     "title": "Remate de Haciendas Generales",
