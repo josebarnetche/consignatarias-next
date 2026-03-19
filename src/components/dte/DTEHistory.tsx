@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase-browser';
-import { FileText, Trash2, Edit2, AlertCircle, TrendingUp, Loader2 } from 'lucide-react';
+import { FileText, Trash2, Edit2, AlertCircle, TrendingUp, Loader2, Download } from 'lucide-react';
 import { trackDteDelete } from '@/lib/analytics';
 import { DTEStats } from './DTEStats';
 
@@ -124,6 +124,74 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
     });
   };
 
+  const exportToCSV = () => {
+    if (dtes.length === 0) return;
+
+    // CSV headers
+    const headers = [
+      'Fecha Movimiento',
+      'N° DT-e',
+      'Origen - Establecimiento',
+      'Origen - Titular',
+      'Origen - RENSPA',
+      'Destino - Establecimiento',
+      'Destino - Titular',
+      'Destino - RENSPA',
+      'Especie',
+      'Cantidad Cabezas',
+      'Peso Total (kg)',
+      'Motivo',
+      'Categorías',
+      'Notas',
+    ];
+
+    // Convert DTEs to CSV rows
+    const rows = dtes.map(dte => [
+      dte.fecha_movimiento || '',
+      dte.numero_dte || '',
+      dte.establecimiento_origen || '',
+      dte.titular_origen || '',
+      dte.renspa_origen || '',
+      dte.establecimiento_destino || '',
+      dte.titular_destino || '',
+      dte.renspa_destino || '',
+      dte.especie || 'bovino',
+      dte.cantidad_cabezas?.toString() || '',
+      dte.peso_total_kg?.toString() || '',
+      dte.motivo || '',
+      dte.categorias ? Object.entries(dte.categorias).map(([k, v]) => `${k}: ${v}`).join('; ') : '',
+      dte.notas || '',
+    ]);
+
+    // Escape CSV values
+    const escapeCSV = (val: string) => {
+      if (val.includes(',') || val.includes('"') || val.includes('\n')) {
+        return `"${val.replace(/"/g, '""')}"`;
+      }
+      return val;
+    };
+
+    // Build CSV content
+    const csvContent = [
+      headers.map(escapeCSV).join(','),
+      ...rows.map(row => row.map(escapeCSV).join(',')),
+    ].join('\n');
+
+    // Add BOM for Excel compatibility with special characters
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
+    // Download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `mis-guias-dte-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   if (isLoading) {
     return (
       <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-12 text-center">
@@ -221,6 +289,19 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
 
       {/* History list */}
       <div className="bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden">
+        {/* Header with export */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-gray-800/30">
+          <h3 className="text-sm font-medium text-gray-300">Historial de guías</h3>
+          <button
+            onClick={exportToCSV}
+            className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium
+                       text-gray-300 bg-gray-700/50 border border-gray-600 rounded-lg
+                       hover:bg-gray-700 hover:text-white transition-all"
+          >
+            <Download className="w-3.5 h-3.5" />
+            Exportar CSV
+          </button>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-800/50">
@@ -297,12 +378,12 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
         </div>
       </div>
 
-      {/* Export hint */}
+      {/* PRO upsell - advanced features */}
       <div className="flex items-center justify-between p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl">
         <div className="flex items-center gap-3">
           <TrendingUp className="w-5 h-5 text-amber-500" />
           <p className="text-sm text-amber-200">
-            <strong>PRO:</strong> Exportá tu historial completo a Excel con analytics detallado.
+            <strong>PRO:</strong> Comparativas de precios, alertas de mercado y reportes mensuales automáticos.
           </p>
         </div>
         <a 
