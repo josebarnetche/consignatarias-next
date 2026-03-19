@@ -1180,15 +1180,19 @@ function SubscriptionPanel({ tier, subscription }: { tier: string; subscription:
           </>
         ) : (
           <div className="space-y-3">
-            <p className="text-xxs font-terminal text-zinc-500">Tu plan actual es gratuito. Upgrade a PRO para:</p>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-amber-400 text-base">📧</span>
+              <p className="text-xs font-terminal text-zinc-200 font-medium">Cada remate tuyo → +500 productores</p>
+            </div>
+            <p className="text-xxs font-terminal text-zinc-500">Tu plan actual es gratuito. Con PRO:</p>
             <ul className="text-xxs font-terminal text-zinc-400 space-y-1 list-none">
+              <li>→ Tus remates enviados por email a toda nuestra base</li>
               <li>→ Perfil destacado con badge dorado</li>
-              <li>→ Analytics avanzados</li>
-              <li>→ Resultados de remates en tu pagina</li>
-              <li>→ Soporte prioritario</li>
+              <li>→ Analytics: vistas, ranking provincial</li>
+              <li>→ Landing personalizada con QR para catálogos</li>
             </ul>
-            <Link href="/planes" className="inline-block px-4 py-1.5 bg-amber-400/10 border border-amber-500/30 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-400/20 transition-colors">
-              Ver planes y precios →
+            <Link href="/planes?from=dashboard-subscription" className="inline-flex items-center gap-2 px-4 py-2 bg-amber-400/15 border border-amber-500/40 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-400/25 transition-colors">
+              <span>★</span> Activar PRO — $45.000/mes
             </Link>
           </div>
         )}

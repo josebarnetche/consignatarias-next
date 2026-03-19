@@ -753,23 +753,37 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       )}
 
       {/* ============================================================ */}
-      {/*  UPGRADE PROMPT (verified + free tier)                         */}
+      {/*  UPGRADE PROMPT (verified + free tier) — CLOSER v2 2026-03-19  */}
       {/* ============================================================ */}
       {profile.verified && tier === 'free' && (
         <FeatureGate
           tier={tier}
           requiredTier="pro"
           fallback={
-            <div className="terminal-panel mt-px">
+            <div className="terminal-panel mt-px bg-amber-500/[0.03]">
               <div className="px-panel py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <p className="text-xxs text-zinc-500 font-terminal">
-                  Upgrade a PRO para destacar tu perfil con badge dorado, resultados de remates y mas visibilidad.
-                </p>
+                <div className="flex items-start gap-3">
+                  <span className="text-amber-400 text-lg mt-0.5">📧</span>
+                  <div>
+                    <p className="text-xs text-zinc-300 font-terminal font-medium mb-1">
+                      Cada remate tuyo, enviado a +500 productores
+                    </p>
+                    <p className="text-xxs text-zinc-500 font-terminal">
+                      Con PRO, tus remates llegan por email a toda nuestra base activa. Badge dorado, analytics de perfil, y landing personalizada.
+                    </p>
+                  </div>
+                </div>
                 <Link
-                  href="/planes"
-                  className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-500/20 transition-colors"
+                  href={`/planes?from=profile-${profile.canonicalSlug}`}
+                  className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 border text-xxs font-terminal uppercase tracking-wider transition-all hover:shadow-lg hover:shadow-amber-500/20"
+                  style={{
+                    background: 'linear-gradient(to right, rgba(245, 158, 11, 0.15), rgba(251, 191, 36, 0.1))',
+                    borderColor: 'rgba(245, 158, 11, 0.4)',
+                    color: '#fbbf24',
+                  }}
                 >
-                  Upgrade a PRO
+                  <span className="text-amber-400">★</span>
+                  Activar PRO — $45.000/mes
                 </Link>
               </div>
             </div>
