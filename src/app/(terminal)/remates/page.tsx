@@ -128,6 +128,41 @@ export default function RematesPage() {
             🗓️ Esta semana
           </Link>
         </div>
+        
+        {/* Province quick links */}
+        <div className="flex flex-wrap gap-2 mt-2">
+          <span className="text-zinc-500 text-xs self-center mr-1">Por provincia:</span>
+          <Link
+            href="/remates/buenos-aires"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          >
+            Buenos Aires
+          </Link>
+          <Link
+            href="/remates/cordoba"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          >
+            Córdoba
+          </Link>
+          <Link
+            href="/remates/santa-fe"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          >
+            Santa Fe
+          </Link>
+          <Link
+            href="/remates/entre-rios"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          >
+            Entre Ríos
+          </Link>
+          <Link
+            href="/remates/corrientes"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+          >
+            Corrientes
+          </Link>
+        </div>
       </section>
       
       {/* Email capture for remates */}
