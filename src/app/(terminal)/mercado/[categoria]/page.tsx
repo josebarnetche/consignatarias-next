@@ -231,7 +231,7 @@ export async function generateMetadata({
 /*  SCHEMA                                                             */
 /* ================================================================== */
 
-function CategoryPriceSchema({ config, price, change }: { config: CategoryConfig; price: number; change: number }) {
+function CategoryPriceSchema({ config, price, change: _change }: { config: CategoryConfig; price: number; change: number }) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Dataset',

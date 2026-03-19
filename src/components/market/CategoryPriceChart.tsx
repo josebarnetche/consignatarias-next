@@ -7,7 +7,7 @@ interface CategoryPriceChartProps {
   category: string
 }
 
-export function CategoryPriceChart({ category }: CategoryPriceChartProps) {
+export function CategoryPriceChart({ category: _category }: CategoryPriceChartProps) {
   // For now, use INMAG series as proxy (category-specific series can be added later)
   const series = marketData.inmag.series as Array<{ date: string; value: number }>
   

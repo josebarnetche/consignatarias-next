@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
 
 /* ------------------------------------------------------------------ */
@@ -174,9 +175,9 @@ export default function MercadoPage() {
             </div>
             {/* Link to detailed INMAG page */}
             <div className="mt-3 pt-3 border-t border-zinc-800">
-              <a href="/mercado/inmag" className="text-amber-400 hover:text-amber-300 text-sm flex items-center gap-1">
+              <Link href="/mercado/inmag" className="text-amber-400 hover:text-amber-300 text-sm flex items-center gap-1">
                 Ver análisis detallado INMAG →
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -228,9 +229,9 @@ export default function MercadoPage() {
                 <span className="text-xxs text-zinc-500">kg/tn</span>
               </div>
               <span className="text-xxs text-zinc-500 mt-0.5">(INMAG / MAIZ)</span>
-              <a href="/mercado/spread" className="text-amber-400 hover:text-amber-300 text-xxs mt-1 block">
+              <Link href="/mercado/spread" className="text-amber-400 hover:text-amber-300 text-xxs mt-1 block">
                 Ver análisis spread →
-              </a>
+              </Link>
             </div>
 
           </div>
