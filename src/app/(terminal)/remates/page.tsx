@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { Suspense } from 'react'
+import Link from 'next/link'
 import RematesClient from './RematesClient'
 import rematesData from '@/lib/data/remates.json'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
@@ -105,6 +106,28 @@ export default function RematesPage() {
           hacienda o periodo. Cada remate incluye fecha, hora, ubicacion, consignataria responsable, cabezas
           estimadas y links a catalogos y transmisiones en vivo.
         </p>
+        
+        {/* Quick time filters */}
+        <div className="flex flex-wrap gap-2 mt-3">
+          <Link
+            href="/remates/hoy"
+            className="px-3 py-1.5 bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700 rounded text-sm text-zinc-300 transition-colors"
+          >
+            📅 Hoy
+          </Link>
+          <Link
+            href="/remates/manana"
+            className="px-3 py-1.5 bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700 rounded text-sm text-zinc-300 transition-colors"
+          >
+            📆 Mañana
+          </Link>
+          <Link
+            href="/remates/semana"
+            className="px-3 py-1.5 bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700 rounded text-sm text-zinc-300 transition-colors"
+          >
+            🗓️ Esta semana
+          </Link>
+        </div>
       </section>
       
       {/* Email capture for remates */}
