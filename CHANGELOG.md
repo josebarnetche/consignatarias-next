@@ -1,10 +1,45 @@
 ## [1.9.1] — 2026-03-19
 
-### Internal Linking + Analytics + Performance
+### Internal Linking + Analytics + Conversion + Lock-in
 
-> feat: v1.9.1 — Enhanced internal navigation, WhatsApp analytics, cron optimization
+> feat: v1.9.1 — Enhanced internal navigation, dynamic scarcity, DTE export, WhatsApp analytics
 
-**Focus:** SEO internal linking depth, conversion tracking, operational efficiency.
+**Focus:** SEO internal linking, conversion psychology, user trust, operational efficiency.
+
+---
+
+### 🎯 Conversion Psychology
+
+**Dynamic Founder Spots (`5ad38a6`):**
+
+| Component | Purpose |
+|-----------|---------|
+| `/api/stats/pro-spots` | Real PRO subscriber count from Supabase |
+| `FounderSpotsRemaining` | Visual progress bar + urgency messaging |
+| `MobileStickyCTA` | Shows remaining spots when < 15 |
+
+**Urgency levels:**
+- Critical (<5): "¡Quedan 5 lugares!"
+- High (<15): Mobile sticky shows spots
+- Low (>30): "48 lugares disponibles"
+
+**Psychology:** Real scarcity > claimed scarcity. Expected +15-25% conversion lift.
+
+---
+
+### 🔐 Trust & Lock-in
+
+**DTE CSV Export (`48e5770`, `b438913`):**
+
+Paradox: Easy export → more trust → more usage → deeper lock-in.
+
+| Feature | Details |
+|---------|---------|
+| Export button | Added to DTE History table |
+| Format | CSV with BOM (Excel-compatible Spanish chars) |
+| Fields | fecha, DT-e, origen/destino, RENSPA, cabezas, peso, motivo, categorías, notas |
+
+Users who can export their data trust more → recommend → upload more guías.
 
 ---
 
@@ -49,6 +84,10 @@
 ### Commits (v1.9.1)
 
 ```
+b438913 docs: update DTE-UPLOAD.md - mark CSV export complete
+48e5770 feat(dte): add CSV export for history - trust-building lock-in
+5ad38a6 feat(conversion): Dynamic founder spots remaining indicator
+ef231ee docs: v1.9.1 changelog + update README stats
 18a90ee feat(seo): type quick links on /remates (#131)
 d497ef1 feat(seo): province quick links on /remates (#130)
 177d029 feat(seo): internal links to /remates/hoy, /manana, /semana (#129)
