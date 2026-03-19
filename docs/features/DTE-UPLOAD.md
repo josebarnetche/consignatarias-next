@@ -70,6 +70,7 @@ Supabase — Store in user's account
 - [x] Charts: cabezas por mes, categorías (DTEStats component - CSS-based)
 - [x] Milestone gamification (DTEStats - 2026-03-18)
 - [x] Export to CSV — ARCHITECT 2026-03-19 (FREE tier, trust-building lock-in)
+- [x] Personal Insights card — ARCHITECT 2026-03-19 (avg volume, peak month, top category, trend)
 - [ ] Compare periods
 
 ### Phase 3: Insights (PRO)
