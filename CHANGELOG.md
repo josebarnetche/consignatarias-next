@@ -6,6 +6,22 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.9.4] — 2026-03-20
+
+### Navigation Unification (BATTLE #3 Day 5)
+
+Improved navigation flow between dashboard and DT-e management.
+
+#### Changes
+- **Main Nav**: Added "MIS GUÍAS" link to terminal layout navigation bar
+- **Dashboard Quick Actions**: Added "📄 Mis Guías DT-e" button in ACCIONES RÁPIDAS section
+- **Breadcrumb**: /mi-cuenta/guias now shows "← Volver a Mi Panel" breadcrumb navigation
+- **Bidirectional Flow**: Users can now navigate seamlessly between dashboard and guias
+
+This completes BATTLE #3 (Onboarding & Dashboard UX) at the frontend level. Only pending: database schema for points redemption.
+
+---
+
 ## [1.9.3] — 2026-03-20
 
 ### Onboarding & Dashboard UX Overhaul
