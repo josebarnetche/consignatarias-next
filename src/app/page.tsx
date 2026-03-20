@@ -1022,6 +1022,48 @@ export default function LandingPage() {
                 </p>
                 <span className="text-xs text-amber-400/70">Descarga instantánea</span>
               </div>
+
+              {/* Video Catalogs */}
+              <div className="bg-zinc-900/80 border border-zinc-800 rounded-lg p-5 relative overflow-hidden">
+                <div className="absolute top-0 right-0 px-2 py-0.5 bg-violet-500 text-white text-[10px] font-medium rounded-bl">
+                  NUEVO
+                </div>
+                <div className="w-9 h-9 rounded border border-violet-500/30 bg-violet-500/10 flex items-center justify-center text-violet-400 mb-3">
+                  🎬
+                </div>
+                <h3 className="text-sm font-medium text-zinc-100 mb-1.5">Video Catálogos</h3>
+                <p className="text-xs text-zinc-500 mb-3">
+                  Tus videos de YouTube integrados en tu perfil. Los compradores ven la hacienda antes del remate.
+                </p>
+                <span className="text-xs text-violet-400/70">Galería automática desde YouTube</span>
+              </div>
+
+              {/* Sistema de Puntos */}
+              <div className="bg-zinc-900/80 border border-zinc-800 rounded-lg p-5 relative overflow-hidden">
+                <div className="absolute top-0 right-0 px-2 py-0.5 bg-emerald-500 text-black text-[10px] font-medium rounded-bl">
+                  GRATIS
+                </div>
+                <div className="w-9 h-9 rounded border border-emerald-500/30 bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-3">
+                  ⭐
+                </div>
+                <h3 className="text-sm font-medium text-zinc-100 mb-1.5">Sistema de Puntos</h3>
+                <p className="text-xs text-zinc-500 mb-3">
+                  Completá tu perfil, subí DT-e, publicá remates y ganás puntos. 4,500 pts = 1 mes PRO gratis.
+                </p>
+                <span className="text-xs text-emerald-400/70">Ganá PRO sin pagar</span>
+              </div>
+
+              {/* Analytics */}
+              <div className="bg-zinc-900/80 border border-zinc-800 rounded-lg p-5">
+                <div className="w-9 h-9 rounded border border-amber-500/30 bg-amber-500/10 flex items-center justify-center text-amber-400 mb-3">
+                  📊
+                </div>
+                <h3 className="text-sm font-medium text-zinc-100 mb-1.5">Analytics de Perfil</h3>
+                <p className="text-xs text-zinc-500 mb-3">
+                  Vistas, clics, engagement. Sabé cuántos productores ven tu perfil cada semana.
+                </p>
+                <span className="text-xs text-amber-400/70">Dashboard en tiempo real</span>
+              </div>
             </div>
 
             {/* Stats row */}
@@ -1042,14 +1084,22 @@ export default function LandingPage() {
 
             {/* CTA */}
             <div className="text-center">
-              <Link
-                href="/planes"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black font-medium rounded-lg transition-colors"
-              >
-                Ver planes PRO
-                <IconArrowRight className="w-4 h-4" />
-              </Link>
-              <p className="mt-3 text-xs text-zinc-500">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
+                <Link
+                  href="/consignatarias"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-medium rounded-lg transition-colors border border-zinc-700"
+                >
+                  Reclamar perfil gratis
+                </Link>
+                <Link
+                  href="/planes"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black font-medium rounded-lg transition-colors"
+                >
+                  Ver planes PRO
+                  <IconArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+              <p className="text-xs text-zinc-500">
                 Ya tenés cuenta? <Link href="/dashboard" className="text-amber-400 hover:underline">Ir al dashboard →</Link>
               </p>
             </div>
