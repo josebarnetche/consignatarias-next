@@ -247,11 +247,11 @@ CREATE TABLE point_transactions (
 - [x] WelcomeChecklist scroll fix (CLOSER) ✅ 24bbaab
 
 ### Día 3-4 — Sistema de Puntos (4-6h)
-- [ ] DB schema (VIGIL)
-- [ ] ProfileProgressTracker component (VIGIL)
-- [ ] Point calculation API (VIGIL)
-- [ ] Integration en dashboard (VIGIL)
-- [ ] Redemption flow (VIGIL)
+- [ ] DB schema (VIGIL) — TODO: onboarding_points column, point_transactions table
+- [x] ProfileProgressTracker component (VIGIL) ✅ 8fedab7
+- [x] Point calculation API (VIGIL) ✅ src/lib/points.ts
+- [x] Integration en dashboard (VIGIL) ✅ resumen tab, FREE tier
+- [ ] Redemption flow (VIGIL) — Pending: Supabase webhook for PRO activation
 
 ### Día 5 — Navegación (2-3h)
 - [ ] Unificar /mi-cuenta con /dashboard (ARCHITECT)

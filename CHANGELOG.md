@@ -12,6 +12,13 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 Complete redesign of the new user experience and empty states across the platform.
 
+#### Points System (Gamification)
+- **Point Values**: 10 pts = 1 peso, 4500 pts = 1 month PRO free
+- **ProfileProgressTracker**: Visual progress bar with percentage toward free PRO month
+- **Action Suggestions**: Clickable next steps that route to relevant dashboard tabs
+- **Point Breakdown**: Expandable view showing all earning opportunities
+- **Redemption Flow**: Early adopter badge + PRO activation (pending: DB + webhook)
+
 #### Claim Flow Improvements
 - **CUIT Validation**: Real-time validation using Argentina's modulo 11 algorithm with visual ✓/✗ feedback
 - **Success State**: Clear post-submission guidance with email instructions and spam folder reminder
