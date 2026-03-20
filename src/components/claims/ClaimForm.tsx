@@ -1,12 +1,32 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { trackClaimCTA } from '@/lib/analytics'
 
 interface ClaimFormProps {
   slug: string
   displayName: string
+}
+
+/**
+ * Validates Argentine CUIT/CUIL using the official modulo 11 algorithm
+ * Format: XX-XXXXXXXX-X (11 digits total)
+ */
+function validateCUIT(value: string): boolean {
+  const clean = value.replace(/\D/g, '')
+  if (clean.length !== 11) return false
+  
+  // Valid type prefixes: 20, 23, 24, 27 (individuals), 30, 33, 34 (companies)
+  const prefix = parseInt(clean.substring(0, 2))
+  if (![20, 23, 24, 27, 30, 33, 34].includes(prefix)) return false
+  
+  // Modulo 11 verification
+  const mult = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]
+  const sum = mult.reduce((acc, m, i) => acc + parseInt(clean[i]) * m, 0)
+  const mod = sum % 11
+  const verifier = mod === 0 ? 0 : mod === 1 ? 9 : 11 - mod
+  return verifier === parseInt(clean[10])
 }
 
 export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
@@ -20,7 +40,20 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
     cuit: '',
   })
 
+  // Real-time CUIT validation
+  const cuitValidation = useMemo(() => {
+    const clean = form.cuit.replace(/\D/g, '')
+    if (clean.length === 0) return null // Empty - no validation
+    if (clean.length < 11) return 'partial' // Still typing
+    return validateCUIT(form.cuit) ? 'valid' : 'invalid'
+  }, [form.cuit])
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+    // Clear error state when user starts typing
+    if (state === 'error') {
+      setErrorMsg('')
+      setState('idle')
+    }
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
@@ -58,27 +91,41 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
   if (state === 'success') {
     return (
       <div className="terminal-panel border-positive/30">
-        <div className="px-panel py-6 text-center space-y-3">
-          <div className="text-positive text-lg font-terminal">PERFIL VERIFICADO</div>
-          <p className="text-zinc-400 text-data font-terminal">
-            <span className="text-zinc-200">{displayName}</span> ahora es tuyo.
+        <div className="px-panel py-6 text-center space-y-4">
+          {/* Changed from "PERFIL VERIFICADO" to "SOLICITUD ENVIADA" - more accurate */}
+          <div className="text-positive text-lg font-terminal">📧 SOLICITUD ENVIADA</div>
+          
+          <p className="text-zinc-300 text-data font-terminal">
+            Estamos verificando tu solicitud para <span className="text-zinc-100 font-semibold">{displayName}</span>
           </p>
+          
+          {/* Clear email instructions */}
+          <div className="terminal-panel bg-zinc-900/50 px-4 py-3 space-y-2">
+            <p className="text-zinc-200 text-data font-terminal">
+              📬 Revisá tu bandeja de entrada en:
+            </p>
+            <p className="text-accent font-terminal text-sm">{form.claimant_email}</p>
+            <p className="text-zinc-500 text-xxs font-terminal">
+              ⚠️ También revisá <span className="text-zinc-400">spam/promociones</span>. El enlace expira en 1 hora.
+            </p>
+          </div>
+          
           <p className="text-zinc-500 text-xxs font-terminal">
-            Te enviamos un enlace de acceso a <span className="text-zinc-300">{form.claimant_email}</span>.
-            Revisa tu email y hace click en el enlace para acceder a tu panel.
+            Puede tardar 1-2 minutos en llegar.
           </p>
-          <div className="pt-2 flex items-center justify-center gap-4">
+          
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/login"
               className="inline-flex items-center gap-2 px-4 py-2 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors"
             >
-              Ingresar con email →
+              Ya tengo cuenta →
             </Link>
             <Link
               href={`/consignatarias/${slug}`}
               className="text-accent hover:text-accent-bright text-xxs font-terminal uppercase tracking-wider transition-colors"
             >
-              Ver perfil
+              Ver perfil público
             </Link>
           </div>
         </div>
@@ -106,8 +153,17 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
         </p>
 
         {state === 'error' && (
-          <div className="terminal-panel border-negative/30 px-3 py-2">
+          <div className="terminal-panel border-negative/30 px-3 py-2 space-y-2">
             <span className="text-negative text-data font-terminal">{errorMsg}</span>
+            {/* Show login link for 409 conflict (already claimed) */}
+            {errorMsg.includes('ya') && (
+              <p className="text-zinc-400 text-xxs font-terminal">
+                ¿Es tu perfil?{' '}
+                <Link href="/login" className="text-accent hover:text-accent-bright underline">
+                  Ingresá acá
+                </Link>
+              </p>
+            )}
           </div>
         )}
 
@@ -144,20 +200,38 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
           />
         </div>
 
-        {/* CUIT */}
+        {/* CUIT with real-time validation */}
         <div className="space-y-1">
           <label htmlFor="cuit" className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider">
             CUIT
           </label>
-          <input
-            id="cuit"
-            name="cuit"
-            type="text"
-            value={form.cuit}
-            onChange={handleChange}
-            placeholder="20-12345678-9"
-            className="terminal-input w-full"
-          />
+          <div className="relative">
+            <input
+              id="cuit"
+              name="cuit"
+              type="text"
+              value={form.cuit}
+              onChange={handleChange}
+              placeholder="20-12345678-9"
+              className={`terminal-input w-full pr-10 ${
+                cuitValidation === 'valid' ? 'border-positive/50' :
+                cuitValidation === 'invalid' ? 'border-negative/50' : ''
+              }`}
+            />
+            {/* Validation indicator */}
+            {cuitValidation === 'valid' && (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-positive text-sm">✓</span>
+            )}
+            {cuitValidation === 'invalid' && (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-negative text-sm">✗</span>
+            )}
+          </div>
+          {/* Inline error for invalid CUIT */}
+          {cuitValidation === 'invalid' && (
+            <p className="text-negative text-xxs font-terminal mt-1">
+              CUIT inválido — verificá el número
+            </p>
+          )}
         </div>
 
         {/* Phone */}
