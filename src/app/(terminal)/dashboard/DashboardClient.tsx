@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useSearchParams, useRouter } from 'next/navigation'
 import WelcomeChecklist from '@/components/onboarding/WelcomeChecklist'
+import ProfileProgressTracker from '@/components/onboarding/ProfileProgressTracker'
 import { WhatsAppIconButton } from '@/components/share/WhatsAppShare'
 import QRCode from '@/components/QRCode'
 
@@ -274,6 +275,25 @@ export default function DashboardClient({
         <>
           {showChecklist && completedFields && consignataria && (
             <WelcomeChecklist profileSlug={consignataria.canonical_slug} displayName={consignataria.display_name} completedFields={completedFields} />
+          )}
+
+          {/* Points Progress Tracker */}
+          {consignataria?.verified && tierLabel === 'FREE' && (
+            <ProfileProgressTracker
+              profile={{
+                cuit: consignataria.cuit,
+                phone: consignataria.phone,
+                email: consignataria.email,
+                whatsapp: consignataria.whatsapp,
+                website: consignataria.website,
+                description: consignataria.description,
+                logo: consignataria.logo_url,
+                dteCount: 0, // TODO: Pass actual DTE count
+                remateCount: ownerAuctions.length,
+                hasResults: auctionResults.length > 0,
+              }}
+              alreadyRedeemed={false} // TODO: Track in DB
+            />
           )}
 
           {consignataria?.verified && (
