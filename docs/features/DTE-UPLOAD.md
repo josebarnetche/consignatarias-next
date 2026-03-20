@@ -1,5 +1,15 @@
 # Feature: DT-e Upload & OCR (Documento de Tránsito Electrónico)
 
+## Status (2026-03-20)
+
+| Phase | Status | Notes |
+|-------|--------|-------|
+| Phase 1: Core Upload | ✅ DONE | DTEUploader, DTEForm, OCR extraction working |
+| Phase 2: History & Analytics | ✅ DONE | DTEHistory, DTEStats, MilestoneBadges, CSV export, insights |
+| Phase 3: PRO Insights | 🔄 PENDING | Price tracking, performance comparisons |
+
+**Lock-in Score:** HIGH — User-invested data, irreplaceable history, painful to leave.
+
 ## Overview
 
 Allow consignatarias to upload their DT-e documents (livestock transit documents from SENASA).
@@ -57,12 +67,12 @@ Supabase — Store in user's account
 
 ### Phase 1: Core Upload (This Sprint)
 
-- [ ] Install Tesseract.js
-- [ ] Create `/mi-cuenta/guias` page
-- [ ] Build `DTEUploader` component
-- [ ] Implement OCR extraction patterns
-- [ ] Create Supabase table `user_dtes`
-- [ ] Add confirmation form
+- [x] Install Tesseract.js — DONE
+- [x] Create `/mi-cuenta/guias` page — DONE
+- [x] Build `DTEUploader` component — DONE
+- [x] Implement OCR extraction patterns — DONE (useOCR hook)
+- [x] Create Supabase table `user_dtes` — DONE
+- [x] Add confirmation form — DONE (DTEForm)
 
 ### Phase 2: History & Analytics
 
