@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase-browser'
+import FounderUrgency from './FounderUrgency'
 
 export default function LoginClient() {
   const searchParams = useSearchParams()
@@ -46,6 +47,9 @@ export default function LoginClient() {
 
   return (
     <div className="max-w-md mx-auto px-4 py-12">
+      {/* Founder urgency - shows when coming from /planes or high urgency */}
+      <FounderUrgency />
+      
       {/* Benefits section */}
       <div className="mb-6 p-4 bg-terminal-panel/50 border border-terminal-border rounded-lg">
         <h2 className="text-zinc-200 text-sm font-terminal mb-3">
