@@ -231,27 +231,95 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Live stats strip */}
+          {/* Live stats strip — clickable cards */}
           <div className="relative z-10 mt-20 grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-zinc-900/60 border border-zinc-800 rounded p-5">
-              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2">INMAG $/kg vivo</div>
+            <Link href="/mercado/inmag" className="bg-zinc-900/60 border border-zinc-800 hover:border-emerald-500/30 rounded p-5 transition-all group">
+              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2 group-hover:text-emerald-400/70 transition-colors">INMAG $/kg vivo</div>
               <div className="text-2xl font-medium text-zinc-100 tracking-tight">${fmt(marketPrices.inmag.current)}</div>
               <div className="text-xs text-emerald-400 mt-1">+{fmt(marketPrices.inmag.change, 1)}% vs. semana anterior</div>
-            </div>
-            <div className="bg-zinc-900/60 border border-zinc-800 rounded p-5">
-              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2">Próximos remates</div>
+            </Link>
+            <Link href="/remates" className="bg-zinc-900/60 border border-zinc-800 hover:border-sky-500/30 rounded p-5 transition-all group">
+              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2 group-hover:text-sky-400/70 transition-colors">Próximos remates</div>
               <div className="text-2xl font-medium text-zinc-100 tracking-tight">{rematesProximos.length}</div>
               <div className="text-xs text-zinc-500 mt-1">~{fmt(totalHeads)} cabezas</div>
-            </div>
-            <div className="bg-zinc-900/60 border border-zinc-800 rounded p-5">
-              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2">Plantas habilitadas</div>
+            </Link>
+            <Link href="/frigorificos" className="bg-zinc-900/60 border border-zinc-800 hover:border-amber-500/30 rounded p-5 transition-all group">
+              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2 group-hover:text-amber-400/70 transition-colors">Plantas habilitadas</div>
               <div className="text-2xl font-medium text-zinc-100 tracking-tight">{fmt(frigorificosSummary.total)}</div>
               <div className="text-xs text-zinc-500 mt-1">{provinciasConFrigo} provincias</div>
-            </div>
-            <div className="bg-zinc-900/60 border border-zinc-800 rounded p-5">
-              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2">Dolar Blue</div>
+            </Link>
+            <Link href="/mercado" className="bg-zinc-900/60 border border-zinc-800 hover:border-violet-500/30 rounded p-5 transition-all group">
+              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2 group-hover:text-violet-400/70 transition-colors">Dolar Blue</div>
               <div className="text-2xl font-medium text-zinc-100 tracking-tight">${fmt(marketPrices.usdBlue.current)}</div>
               <div className="text-xs text-zinc-500 mt-1">+{fmt(marketPrices.usdBlue.change, 1)}% vs. semana anterior</div>
+            </Link>
+          </div>
+        </section>
+
+        {/* ============================================================ */}
+        {/*  QUICK NAVIGATION — REMATES                                   */}
+        {/* ============================================================ */}
+        <section className="max-w-7xl mx-auto px-6 py-8">
+          <div className="flex flex-col gap-4">
+            {/* Por tiempo */}
+            <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3">
+              <span className="text-xs text-zinc-600 uppercase tracking-widest mr-2 hidden sm:inline">Remates</span>
+              <Link href="/remates/hoy" className="px-3 py-1.5 text-xs font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:border-emerald-500/50 hover:text-emerald-400 rounded transition-all">
+                Hoy
+              </Link>
+              <Link href="/remates/manana" className="px-3 py-1.5 text-xs font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:border-emerald-500/50 hover:text-emerald-400 rounded transition-all">
+                Mañana
+              </Link>
+              <Link href="/remates/semana" className="px-3 py-1.5 text-xs font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:border-emerald-500/50 hover:text-emerald-400 rounded transition-all">
+                Esta semana
+              </Link>
+              <Link href="/remates/anteriores" className="px-3 py-1.5 text-xs font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:border-zinc-600 hover:text-zinc-100 rounded transition-all">
+                Histórico
+              </Link>
+              <span className="text-zinc-800 hidden md:inline">|</span>
+              <Link href="/remates/mes/marzo" className="px-3 py-1.5 text-xs font-medium text-zinc-400 bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700 hover:text-zinc-200 rounded transition-all">
+                Marzo
+              </Link>
+              <Link href="/remates/mes/abril" className="px-3 py-1.5 text-xs font-medium text-zinc-400 bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700 hover:text-zinc-200 rounded transition-all">
+                Abril
+              </Link>
+            </div>
+            
+            {/* Por tipo */}
+            <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3">
+              <span className="text-xs text-zinc-600 uppercase tracking-widest mr-2 hidden sm:inline">Por tipo</span>
+              <Link href="/remates/tipo/invernada" className="px-3 py-1.5 text-xs font-medium text-amber-400/80 bg-amber-500/5 border border-amber-500/20 hover:border-amber-500/40 hover:text-amber-400 rounded transition-all">
+                Invernada
+              </Link>
+              <Link href="/remates/tipo/cria" className="px-3 py-1.5 text-xs font-medium text-sky-400/80 bg-sky-500/5 border border-sky-500/20 hover:border-sky-500/40 hover:text-sky-400 rounded transition-all">
+                Cría
+              </Link>
+              <Link href="/remates/tipo/general" className="px-3 py-1.5 text-xs font-medium text-zinc-400 bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700 hover:text-zinc-200 rounded transition-all">
+                General
+              </Link>
+              <Link href="/remates/tipo/especial" className="px-3 py-1.5 text-xs font-medium text-violet-400/80 bg-violet-500/5 border border-violet-500/20 hover:border-violet-500/40 hover:text-violet-400 rounded transition-all">
+                Especiales
+              </Link>
+              <Link href="/remates/tipo/reproductores" className="px-3 py-1.5 text-xs font-medium text-rose-400/80 bg-rose-500/5 border border-rose-500/20 hover:border-rose-500/40 hover:text-rose-400 rounded transition-all">
+                Reproductores
+              </Link>
+            </div>
+
+            {/* Mercado quick links */}
+            <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 pt-2">
+              <span className="text-xs text-zinc-600 uppercase tracking-widest mr-2 hidden sm:inline">Mercado</span>
+              <Link href="/mercado/inmag" className="px-3 py-1.5 text-xs font-medium text-emerald-400/80 bg-emerald-500/5 border border-emerald-500/20 hover:border-emerald-500/40 hover:text-emerald-400 rounded transition-all">
+                INMAG
+              </Link>
+              <Link href="/mercado" className="px-3 py-1.5 text-xs font-medium text-zinc-400 bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700 hover:text-zinc-200 rounded transition-all">
+                Precios por categoría
+              </Link>
+              <Link href="/frigorificos" className="px-3 py-1.5 text-xs font-medium text-zinc-400 bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700 hover:text-zinc-200 rounded transition-all">
+                Frigoríficos
+              </Link>
+              <Link href="/consignatarias" className="px-3 py-1.5 text-xs font-medium text-zinc-400 bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700 hover:text-zinc-200 rounded transition-all">
+                Directorio
+              </Link>
             </div>
           </div>
         </section>
@@ -565,6 +633,71 @@ export default function LandingPage() {
                 <div>
                   <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-1">USD Blue</div>
                   <div className="text-sm text-zinc-200 font-mono">${fmt(marketPrices.usdBlue.current)}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
+
+        {/* ============================================================ */}
+        {/*  WATCHLIST TEASER                                             */}
+        {/* ============================================================ */}
+        <section className="max-w-7xl mx-auto px-6 pt-24 pb-24">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-gradient-to-br from-sky-500/5 via-zinc-900 to-zinc-900 border border-sky-500/20 rounded-2xl p-8 md:p-10 relative overflow-hidden">
+              {/* Background decoration */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-sky-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+              
+              <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                <div className="flex-1 text-center md:text-left">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-sky-500/10 border border-sky-500/30 rounded-full text-sky-400 text-xs font-medium mb-4">
+                    <span>★</span> Nuevo
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-medium text-zinc-100 tracking-tight mb-3">
+                    Seguí tus consignatarias favoritas
+                  </h2>
+                  <p className="text-sm md:text-base text-zinc-400 mb-6 max-w-lg">
+                    Guardá las consignatarias que te interesan, armá tu calendario personalizado y no te pierdas ningún remate. Recibí alertas cuando publiquen nuevos eventos.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+                    <Link
+                      href="/mi-cuenta/favoritos"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-black font-medium rounded-lg text-sm transition-colors"
+                    >
+                      Crear mi watchlist
+                      <IconArrowRight className="w-4 h-4" />
+                    </Link>
+                    <Link
+                      href="/consignatarias"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-zinc-900 border border-zinc-700 hover:border-zinc-600 text-zinc-300 font-medium rounded-lg text-sm transition-colors"
+                    >
+                      Explorar consignatarias
+                    </Link>
+                  </div>
+                </div>
+                
+                {/* Visual preview */}
+                <div className="w-full md:w-72 shrink-0">
+                  <div className="bg-zinc-900/80 border border-zinc-800 rounded-lg p-4 shadow-xl">
+                    <div className="text-xs text-zinc-500 uppercase tracking-widest mb-3">Mis favoritos</div>
+                    <div className="space-y-2">
+                      {[
+                        { name: 'Rosgan', next: 'Mañana 10:00' },
+                        { name: 'Colombo y Colombo', next: 'Viernes 14:00' },
+                        { name: "O'Farrell", next: 'Próx. semana' },
+                      ].map((item) => (
+                        <div key={item.name} className="flex items-center justify-between py-2 border-b border-zinc-800/50 last:border-0">
+                          <span className="text-sm text-zinc-300">{item.name}</span>
+                          <span className="text-xs text-sky-400">{item.next}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-3 pt-3 border-t border-zinc-800/50 text-center">
+                      <span className="text-xs text-zinc-600">🔔 Alertas activadas</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
