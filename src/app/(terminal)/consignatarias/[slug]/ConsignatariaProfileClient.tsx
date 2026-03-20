@@ -606,6 +606,32 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                 </Link>
               )}
             </div>
+            {/* Value Preview Panel - shows benefits for unclaimed profiles */}
+            {!profile.claimedAt && (
+              <div className="px-panel py-3 border-t border-amber-500/20 bg-amber-500/5">
+                <div className="text-xxs text-amber-400 font-terminal uppercase tracking-wider mb-2">
+                  Al verificar tu perfil obtenés:
+                </div>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xxs text-zinc-300 font-terminal">
+                  <li className="flex items-center gap-2">
+                    <span className="text-amber-500">📧</span>
+                    Promoción automática a suscriptores
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-amber-500">📱</span>
+                    QR para catálogos y tarjetas
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-amber-500">📅</span>
+                    Calendario sincronizable
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-amber-500">📄</span>
+                    Reportes PDF descargables
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
         )
       })()}
