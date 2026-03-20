@@ -642,23 +642,32 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       {magEntry && magEntry.totalCabezas > 0 && (
         <div className="terminal-panel mt-px">
           <div className="terminal-panel-header flex items-center justify-between">
-            <span className="text-zinc-400 text-xxs tracking-widest">ACTIVIDAD EN MAG</span>
+            <div className="flex items-center gap-2">
+              <span className="text-zinc-400 text-xxs tracking-widest">RED DE REMITENTES</span>
+              <span className="inline-flex items-center px-1.5 py-0.5 bg-emerald-500/10 border border-emerald-500/30 rounded-sm">
+                <span className="text-emerald-400 font-terminal text-[10px] font-bold">MAG</span>
+              </span>
+            </div>
             <span className="text-xxs text-zinc-500 font-terminal">{magEntry.period}</span>
           </div>
           <div className="px-panel py-3">
-            <div className="flex items-baseline gap-3 mb-3">
+            <div className="flex flex-wrap items-baseline gap-3 mb-3">
               <span className="text-2xl font-terminal text-positive tabular-nums">
                 {magEntry.totalCabezas.toLocaleString('es-AR')}
               </span>
-              <span className="text-xxs text-zinc-500 uppercase">cabezas ingresadas</span>
+              <span className="text-xxs text-zinc-500 uppercase">cabezas</span>
               <span className="text-xxs text-zinc-600">|</span>
               <span className="text-xxs text-zinc-500">
                 {magEntry.entries.length} remitente{magEntry.entries.length !== 1 ? 's' : ''}
               </span>
+              <span className="text-xxs text-zinc-600">|</span>
+              <span className="text-xxs text-zinc-500">
+                {[...new Set(magEntry.entries.map(e => e.localidad))].length} localidades
+              </span>
             </div>
             {magEntry.entries.length > 0 && (
               <div className="space-y-1">
-                <div className="text-xxs text-zinc-500 uppercase mb-2">Últimos remitentes:</div>
+                <div className="text-xxs text-zinc-500 uppercase mb-2">Top productores:</div>
                 <div className="grid gap-1">
                   {magEntry.entries.slice(0, 5).map((entry, idx) => (
                     <div key={idx} className="flex items-center justify-between text-xxs font-terminal py-1 px-2 bg-zinc-900/30 rounded">
@@ -671,16 +680,20 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                       <span className="text-positive tabular-nums flex-shrink-0 ml-2">{entry.cabezas} cab</span>
                     </div>
                   ))}
-                  {magEntry.entries.length > 5 && (
-                    <div className="text-xxs text-zinc-500 text-center py-1">
-                      +{magEntry.entries.length - 5} remitentes más
-                    </div>
-                  )}
                 </div>
+                {magEntry.entries.length > 5 && (
+                  <Link
+                    href={`/consignatarias/${profile.canonicalSlug}/remitentes`}
+                    className="flex items-center justify-center gap-2 mt-2 py-2 text-xxs font-terminal text-accent hover:text-accent-bright hover:bg-accent/5 border border-transparent hover:border-accent/20 rounded transition-colors"
+                  >
+                    Ver todos los {magEntry.entries.length} remitentes →
+                  </Link>
+                )}
               </div>
             )}
-            <div className="mt-3 pt-2 border-t border-zinc-800/50 text-xxs text-zinc-600 font-terminal">
-              Fuente: Mercado Agroganadero S.A.
+            <div className="mt-3 pt-2 border-t border-zinc-800/50 text-xxs text-zinc-600 font-terminal flex items-center justify-between">
+              <span>Fuente: Mercado Agroganadero S.A.</span>
+              <span className="text-zinc-700">Datos públicos de guías de tránsito</span>
             </div>
           </div>
         </div>
