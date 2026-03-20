@@ -7,6 +7,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import WelcomeChecklist from '@/components/onboarding/WelcomeChecklist'
 import ProfileProgressTracker from '@/components/onboarding/ProfileProgressTracker'
 import { WhatsAppIconButton } from '@/components/share/WhatsAppShare'
+import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2 } from 'lucide-react'
 import QRCode from '@/components/QRCode'
 
 interface Consignataria {
@@ -160,18 +161,18 @@ export default function DashboardClient({
     return () => clearTimeout(timer)
   }, [justUpgraded, subscription, upgradeConfirmed, upgradePollCount])
 
-  // Build tab list
-  const tabs: { key: TabKey; label: string }[] = [
-    { key: 'resumen', label: 'Resumen' },
+  // Build tab list with icons
+  const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
+    { key: 'resumen', label: 'Resumen', icon: <LayoutDashboard className="w-3.5 h-3.5" /> },
   ]
   if (consignataria?.verified) {
-    tabs.push({ key: 'remates', label: `Remates (${scrapedAuctions.length + ownerAuctions.length})` })
-    tabs.push({ key: 'editar', label: 'Editar perfil' })
-    tabs.push({ key: 'resultados', label: 'Resultados' })
+    tabs.push({ key: 'remates', label: `Remates (${scrapedAuctions.length + ownerAuctions.length})`, icon: <CalendarDays className="w-3.5 h-3.5" /> })
+    tabs.push({ key: 'editar', label: 'Editar', icon: <Pencil className="w-3.5 h-3.5" /> })
+    tabs.push({ key: 'resultados', label: 'Resultados', icon: <BarChart3 className="w-3.5 h-3.5" /> })
   }
-  tabs.push({ key: 'plan', label: 'Mi plan' })
+  tabs.push({ key: 'plan', label: 'Mi plan', icon: <CreditCard className="w-3.5 h-3.5" /> })
   if (frigorifico) {
-    tabs.push({ key: 'frigorifico', label: 'Frigorifico' })
+    tabs.push({ key: 'frigorifico', label: 'Frigorífico', icon: <Building2 className="w-3.5 h-3.5" /> })
   }
 
   const hasPendingClaim = claims.some(c => c.status === 'pending') || frigoClaims.some(c => c.status === 'pending')
@@ -257,13 +258,15 @@ export default function DashboardClient({
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`px-4 py-2.5 text-xxs font-terminal uppercase tracking-wider transition-colors border-b-2 flex-shrink-0 ${
+                className={`px-4 py-2.5 text-xxs font-terminal uppercase tracking-wider transition-colors border-b-2 flex-shrink-0 flex items-center gap-1.5 ${
                   activeTab === tab.key
                     ? 'text-accent border-accent bg-accent/5'
                     : 'text-zinc-500 border-transparent hover:text-zinc-300 hover:border-zinc-700'
                 }`}
               >
-                {tab.label}
+                {tab.icon}
+                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="sm:hidden">{tab.key === 'remates' ? `(${scrapedAuctions.length + ownerAuctions.length})` : ''}</span>
               </button>
             ))}
           </div>
