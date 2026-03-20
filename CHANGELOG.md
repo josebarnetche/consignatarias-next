@@ -1,3 +1,100 @@
+## [1.9.3] — 2026-03-20
+
+### BATTLE #3 — Onboarding & Dashboard UX Overhaul
+
+> feat: v1.9.3 — Complete UX audit implementation (6 generals, 25+ improvements)
+
+**Focus:** Reduce user confusion, improve empty states, streamline onboarding flow.
+
+**Trigger:** José reported dashboard "feels confusing" — spawned 6-agent battle audit.
+
+---
+
+### 🎯 Day 1 — Quick Wins
+
+**CUIT Validation (`6a899ad`):**
+
+| Feature | Implementation |
+|---------|----------------|
+| Real-time validation | Modulo 11 algorithm in `ClaimForm.tsx` |
+| Visual feedback | ✓/✗ indicator in input field |
+| Inline errors | "CUIT inválido" message |
+
+**Success State Improvement (`6a899ad`):**
+
+| Before | After |
+|--------|-------|
+| "PERFIL VERIFICADO" | "SOLICITUD ENVIADA" |
+| No email guidance | "Revisá tu bandeja (y spam). Expira en 1 hora." |
+| Dead-end | "Ya tengo cuenta →" button |
+
+**Admin Dashboard (`09c69d1`):**
+
+- Added animated loading spinner (Loader2)
+- Added "Reintentar" button on error state
+
+---
+
+### 🎯 Day 2 — Empty States & Onboarding
+
+**Empty Dashboard Wizard (`ecd16d6`):**
+
+| Component | `DashboardClient.tsx` lines 561-615 |
+|-----------|-------------------------------------|
+| Problem | New users saw "No tenes perfil verificado" with no guidance |
+| Solution | 3-step "PRIMEROS PASOS" wizard |
+| Step 1 | Verificar perfil (active, with CTAs) |
+| Step 2 | Completar información (greyed) |
+| Step 3 | Publicar remates (greyed) |
+| Footer | Value prop explaining verified benefits |
+
+**Remates Empty State (`eb19204`):**
+
+| Before | After |
+|--------|-------|
+| Plain text | Calendar icon + improved copy |
+| Single CTA | "Limpiar filtros" + "Recibir alertas" CTAs |
+
+**Consignatarias Directory (`6247093`):**
+
+| Feature | Search icon, dynamic message showing query, clear search button |
+|---------|----------------------------------------------------------------|
+
+**Frigorificos Table (`6247093`):**
+
+| Feature | Building icon, "Limpiar filtros" clears all 3 filters |
+|---------|-------------------------------------------------------|
+
+**Comparar (`23b796a`):**
+
+| Before | After |
+|--------|-------|
+| "Seleccioná al menos una" | Chart icon + "Comparador listo" + arrow pointing left |
+
+**Dashboard Resultados (`23b796a`):**
+
+| Feature | Analytics icon + 3-column benefits grid (precios, tendencias, comparativas) |
+|---------|-----------------------------------------------------------------------------|
+
+---
+
+### 📋 BATTLE #3 Audit Source
+
+Full findings documented in `docs/BATTLE-3-ONBOARDING-UX.md`:
+- PULSO: WhatsApp verification patterns
+- HUNTER: Claim flow code improvements
+- ARCHITECT: Navigation fragmentation
+- CLOSER: Onboarding friction points
+- NEXO: Empty/loading states audit
+- VIGIL: Points system design (4500 pts = 1 month PRO)
+
+**Remaining (Day 3-5):**
+- [ ] Points system implementation
+- [ ] Unify /mi-cuenta with /dashboard
+- [ ] WelcomeChecklist scroll fix
+
+---
+
 ## [1.9.2] — 2026-03-19
 
 ### DTE Period Comparison — Lock-in Analytics
