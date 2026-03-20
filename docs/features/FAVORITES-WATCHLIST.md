@@ -5,7 +5,7 @@
 | Phase | Status | Notes |
 |-------|--------|-------|
 | Phase 1: Core Follow | ✅ DONE | FollowButton, useFavorites hook, /mi-cuenta/favoritos |
-| Phase 2: Dashboard | ⏳ IN PROGRESS | Basic list + unified calendar done |
+| Phase 2: Dashboard | ✅ DONE | Unified calendar, next remate preview, empty state |
 | Phase 3: Notifications | 🔜 PENDING | Email/push alerts |
 | Phase 4: Social Proof | 🔜 PENDING | Follower counts for consignatarias |
 
@@ -330,10 +330,12 @@ export function FollowButton({ slug, displayName }: FollowButtonProps) {
 - [x] Add `FollowButton` to `/go/[slug]` — ARCHITECT 2026-03-20
 - [x] Create `/mi-cuenta/favoritos` page (basic list) — ARCHITECT 2026-03-20
 
-### Phase 2: Dashboard (1 day)
-- [ ] Unified calendar view of all followed consignatarias
-- [ ] "Next remate" preview for each
-- [ ] Empty state with CTA
+### Phase 2: Dashboard (1 day) ✅ COMPLETE
+- [x] Unified calendar view of all followed consignatarias ✅
+- [x] "Next remate" preview for each ✅
+- [x] Empty state with CTA ✅
+
+**Shipped in:** 7fba601 (Watchlist Phase 1-2) — 2026-03-20
 
 ### Phase 3: Notifications (Future - PRO)
 - [ ] Email notifications for new remates
