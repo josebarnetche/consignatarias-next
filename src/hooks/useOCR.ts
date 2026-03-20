@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
-import Tesseract from 'tesseract.js';
+// Tesseract.js is dynamically imported to avoid 3-8MB in initial bundle
+// Only users who actually upload DTE images will download the OCR library
 
 interface OCRResult {
   text: string;
@@ -122,6 +123,9 @@ export function useOCR() {
     setError(null);
 
     try {
+      // Dynamic import - only loads when user actually uploads an image
+      const Tesseract = (await import('tesseract.js')).default;
+      
       const result = await Tesseract.recognize(file, 'spa', {
         logger: (m) => {
           if (m.status === 'recognizing text') {
