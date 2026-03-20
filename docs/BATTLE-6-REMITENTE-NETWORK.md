@@ -51,22 +51,18 @@ Ya lo scrapeamos. Campos:
 
 ## IMPLEMENTACIÓN
 
-### Sprint 1: Panel "Remitentes del día" en perfiles (~3h)
+### Sprint 1: Panel "Remitentes del día" en perfiles (~3h) ✅ SHIPPED
 
-**Archivo:** `src/app/(terminal)/consignatarias/[slug]/page.tsx`
+**Commit:** 7f71ca6 (2026-03-20)
 
-```tsx
-// Nuevo componente
-<RemitentesPanel consignatariaSlug={slug} />
-
-// Muestra:
-// - Top 5 remitentes recientes
-// - Localidades de origen
-// - Cabezas por establecimiento
-// - Link a historial completo
-```
-
-**API:** `GET /api/consignatarias/[slug]/remitentes`
+**Implementado:**
+- New `/consignatarias/[slug]/remitentes` page with full remitente list
+- Enhanced MAG panel renamed to "RED DE REMITENTES" with MAG badge
+- Groups by localidad with total cabezas
+- Province breakdown badges
+- "Ver todos" link when >5 remitentes
+- Mobile responsive table view
+- SEO: canonical URLs, descriptive metadata
 
 ### Sprint 2: Top remitentes en cards de remates (~2h)
 
