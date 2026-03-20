@@ -2,7 +2,7 @@
 
 A cattle auction directory, market intelligence platform, and public API for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
 
-**24 API endpoints** • **344 remates** • **86 consignatarias** • **364 frigoríficos** • **13 provincias** • **15 YouTube channels** • **MAG price integration** • **885 sitemap URLs** • **100% schema coverage** • **Price oracle foundation** • **132 insights shipped**
+**24 API endpoints** • **308 remates** • **86 consignatarias** • **364 frigoríficos** • **13 provincias** • **15 YouTube channels** • **MAG price integration** • **885 sitemap URLs** • **100% schema coverage** • **Price oracle foundation** • **DTE analytics** • **Gamified onboarding**
 
 **Live:** [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
 
@@ -273,6 +273,30 @@ Sistema de promoción por email para consignatarias PRO:
 - `POST /api/cron/weekly-newsletter` — trigger manual de newsletter
 - `GET /api/cron/remate-reminders` — trigger manual de recordatorios
 - `POST /api/newsletter` — suscripción a newsletter
+
+### Onboarding & Dashboard UX (v1.9.3)
+
+**BATTLE #3 audit** identified and fixed 25+ UX friction points:
+
+**Claim Flow:**
+- Real-time CUIT validation (modulo 11 algorithm with ✓/✗ visual feedback)
+- Improved success state: "SOLICITUD ENVIADA" with email guidance + spam folder reminder
+- 409 conflict handling with login recovery path
+
+**Empty Dashboard Wizard:**
+- New users see "PRIMEROS PASOS" 3-step visual guide instead of blank screen
+- Step 1 (active): Verificar perfil with CTAs
+- Steps 2-3 (greyed): Completar información, Publicar remates
+- Value prop footer explaining verified benefits
+
+**Empty States Pattern:**
+- All empty states now follow DTEHistory gold standard
+- Icon + headline + actionable guidance + CTAs
+- Applied to: Remates, Consignatarias, Frigoríficos, Comparar, Resultados
+
+**Components:**
+- `src/components/onboarding/WelcomeChecklist.tsx` — Post-claim checklist with scroll-to-edit
+- `src/app/(terminal)/dashboard/DashboardClient.tsx` — Empty dashboard wizard (lines 561-615)
 
 ### Profile Verification (Trust-First)
 
@@ -605,8 +629,12 @@ Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misione
 | 1.7.0 | Mar 15 | Video catalogs — 15 YouTube channels, automated matching, VideoGallery component |
 | 1.7.1 | Mar 15 | SEO expansion — 35 province+type combo pages, dynamic OG images, external resources |
 | **1.7.2** | **Mar 16** | **Post-remate outreach — automated emails, 83% email coverage (71/86 consignatarias)** |
+| 1.9.0 | Mar 18 | Price Oracle — MAG integration, category prices, onboarding stack |
+| 1.9.1 | Mar 19 | Internal linking, dynamic scarcity, DTE export, WhatsApp analytics |
+| 1.9.2 | Mar 19 | DTE Period Comparison — lock-in analytics (month/quarter/year) |
+| **1.9.3** | **Mar 20** | **BATTLE #3 — Onboarding UX overhaul (25+ improvements, empty states, CUIT validation)** |
 
-Built in 18 days. One human, one AI. $0 hosting cost. 10 Supabase tables. 20 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
+Built in 22 days. One human, one AI. $0 hosting cost. 10 Supabase tables. 20 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
 
 ---
 
