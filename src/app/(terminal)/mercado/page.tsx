@@ -1,9 +1,29 @@
 import { Metadata } from 'next'
 import MercadoClient from './MercadoClient'
-import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { LongTermChart } from '@/components/market/LongTermChart'
 import { SeasonalPattern } from '@/components/market/SeasonalPattern'
 import { CategoryComparison } from '@/components/market/CategoryComparison'
+
+// FAQ items for rich snippets
+const MERCADO_FAQ = [
+  {
+    question: '¿Qué es el índice INMAG?',
+    answer: 'El Índice Novillo del Mercado Agroganadero (INMAG) es el precio promedio del novillo en el Mercado Agroganadero de Buenos Aires, expresado en pesos por kilo vivo. Es la referencia principal para compradores y vendedores de hacienda en Argentina.',
+  },
+  {
+    question: '¿Cada cuánto se actualiza el precio del ganado?',
+    answer: 'Los precios se actualizan automáticamente cada día hábil. El INMAG se publica diariamente por el Mercado Agroganadero y los precios por categoría reflejan las operaciones del día anterior.',
+  },
+  {
+    question: '¿Cuál es la diferencia entre precio de novillo y novillito?',
+    answer: 'El novillo es un macho castrado de más de 300kg, mientras que el novillito pesa entre 250-300kg. Generalmente el novillito tiene un precio por kilo ligeramente superior debido a su carne más tierna y mayor demanda para cortes premium.',
+  },
+  {
+    question: '¿Por qué el precio del maíz afecta al ganado?',
+    answer: 'El maíz es el principal insumo para el engorde de ganado en feedlots. Cuando sube el precio del maíz, aumentan los costos de producción, lo que eventualmente se traslada al precio del ganado terminado.',
+  },
+]
 
 export const metadata: Metadata = {
   title: 'Precios Ganado Argentina | INMAG y Categorías',
@@ -32,6 +52,7 @@ export default function MercadoPage() {
   return (
     <>
       <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
+      <FAQPageSchema items={MERCADO_FAQ} />
       <section className="px-4 pt-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-3xl">
         <h2 className="text-zinc-200 text-lg font-medium mb-2">Precios del mercado ganadero argentino</h2>
         <p className="mb-2">
