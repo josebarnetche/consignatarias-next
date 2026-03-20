@@ -134,9 +134,9 @@
 
 ## NEXO — Empty/Loading States
 
-### Críticos (🔴):
-- [ ] `admin/dashboard/page.tsx`: Agregar spinner de loading
-- [ ] `admin/dashboard/page.tsx`: Agregar botón "Reintentar" en error
+### Críticos (🔴): ✅ SHIPPED
+- [x] `admin/dashboard/page.tsx`: Agregar spinner de loading ✅ 09c69d1
+- [x] `admin/dashboard/page.tsx`: Agregar botón "Reintentar" en error ✅ 09c69d1
 
 ### Moderados (🟡):
 - [ ] `remates/RematesClient.tsx`: Mejorar empty state con icono + newsletter signup
@@ -236,10 +236,10 @@ CREATE TABLE point_transactions (
 
 ## CHECKLIST DE IMPLEMENTACIÓN
 
-### Día 1 — Quick Wins (2-3h)
+### Día 1 — Quick Wins (2-3h) ✅ COMPLETE
 - [x] CUIT validation inline (HUNTER) ✅ 6a899ad
 - [x] Success state mejorado (HUNTER/CLOSER) ✅ 6a899ad
-- [ ] Admin dashboard spinner + retry (NEXO)
+- [x] Admin dashboard spinner + retry (NEXO) ✅ 09c69d1
 
 ### Día 2 — Onboarding Flow (3-4h)
 - [ ] Empty dashboard wizard "Primeros pasos" (CLOSER)
