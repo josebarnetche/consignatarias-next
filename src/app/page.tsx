@@ -217,18 +217,18 @@ export default function LandingPage() {
 
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
               <Link
-                href="/remates"
+                href="/remates/semana"
                 className="flex items-center justify-center gap-2 text-sm font-medium text-zinc-900 bg-zinc-100 hover:bg-white transition-all rounded py-3 px-6 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
               >
-                Ver próximos remates
+                Ver {rematesProximos.length} remates esta semana
                 <IconArrowRight />
               </Link>
-              <a
-                href="#como-funciona"
+              <Link
+                href="/consignatarias"
                 className="flex items-center justify-center text-sm font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 transition-all rounded py-3 px-6"
               >
-                Cómo funciona
-              </a>
+                Buscar mi consignataria
+              </Link>
             </div>
           </div>
 
@@ -471,6 +471,22 @@ export default function LandingPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+              
+              {/* Province quick links */}
+              <div className="mt-4 pt-4 border-t border-zinc-800/50">
+                <div className="text-[0.65rem] text-zinc-600 mb-2">Por provincia:</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {['buenos-aires', 'santa-fe', 'cordoba', 'entre-rios', 'corrientes', 'la-pampa'].map(prov => (
+                    <Link
+                      key={prov}
+                      href={`/remates/${prov}`}
+                      className="text-[0.65rem] text-zinc-500 hover:text-zinc-300 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded px-2 py-1 transition-all"
+                    >
+                      {prov.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
