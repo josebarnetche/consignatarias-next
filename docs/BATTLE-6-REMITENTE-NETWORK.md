@@ -76,11 +76,28 @@ Ya lo scrapeamos. Campos:
 - Works for PRO (featured) and regular auctions
 - Only renders for consignatarias with MAG mapping
 
-### Sprint 3: Patrones de origen para consignatarias (~3h)
+### Sprint 3: Patrones de origen para consignatarias (~3h) ⏳ BLOCKED
+
+**Status:** BLOCKED — Requires historical data infrastructure
+
+**Blocker:** Current MAG data is point-in-time (JSON). Sprint 3 needs historical accumulation.
+
+**Migration created:** `20260320_remitente_history.sql`
+- `remitente_entries` table for historical storage
+- `get_top_localidades()` function for heatmap data
+- `get_top_remitentes()` function for top establishments
+- `get_volume_trends()` function for trend charts
+- RLS policies configured
+
+**To unblock:**
+1. José runs migration in Supabase
+2. Scraper modified to INSERT to DB (not just replace JSON)
+3. Wait 2-4 weeks for data accumulation
+4. Then implement patterns page
 
 **Archivo:** `src/app/(terminal)/consignatarias/[slug]/remitentes/page.tsx`
 
-Nueva página:
+Nueva página (post-unblock):
 - Mapa de calor por localidad
 - Top 10 establecimientos históricos
 - Tendencias de volumen
