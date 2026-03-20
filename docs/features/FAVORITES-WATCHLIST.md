@@ -347,6 +347,15 @@ export function FollowButton({ slug, displayName }: FollowButtonProps) {
 
 **Lock-in impact:** Urgency creates habit of daily return visits. Users treat these as "their" remates.
 
+### Phase 2.6: Ownership Psychology ✅ COMPLETE
+- [x] "Following since..." duration display on each favorite
+- [x] Human-readable format: días, semanas, meses, años
+- [x] Creates psychological investment (longer = more switching cost)
+
+**Shipped in:** 9722972 (Following since) — 2026-03-20
+
+**Lock-in impact:** Users see their relationship investment. "Hace 3 meses" feels like commitment.
+
 ### Phase 3: Notifications (Future - PRO)
 - [ ] Email notifications for new remates
 - [ ] Push notifications (PWA)
