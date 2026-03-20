@@ -28,8 +28,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ url: checkout.url })
   } catch (err) {
     console.error('Subscribe error:', err)
+    const errorMessage = err instanceof Error ? err.message : 'Error desconocido'
     return NextResponse.json(
-      { error: 'Error al crear el link de pago' },
+      { error: errorMessage },
       { status: 500 }
     )
   }
