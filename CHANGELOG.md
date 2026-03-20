@@ -88,10 +88,16 @@ Full findings documented in `docs/BATTLE-3-ONBOARDING-UX.md`:
 - NEXO: Empty/loading states audit
 - VIGIL: Points system design (4500 pts = 1 month PRO)
 
+**WelcomeChecklist Fix (`24bbaab`):**
+
+| Before | After |
+|--------|-------|
+| Link that didn't scroll | Button with router.push + scroll to top |
+| "Editar perfil →" | "Completar perfil →" (action-oriented) |
+
 **Remaining (Day 3-5):**
-- [ ] Points system implementation
+- [ ] Points system implementation (4-6h)
 - [ ] Unify /mi-cuenta with /dashboard
-- [ ] WelcomeChecklist scroll fix
 
 ---
 
