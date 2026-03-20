@@ -36,6 +36,15 @@ const TYPE_SLUGS = ['invernada', 'cria', 'general', 'especial', 'reproductores']
 const MARKET_CATEGORY_SLUGS = ['terneros', 'novillos', 'novillitos', 'vaquillonas', 'vacas', 'toros']
 
 /* ------------------------------------------------------------------ */
+/*  MONTH SLUGS (/remates/mes/[mes])                                   */
+/* ------------------------------------------------------------------ */
+
+const MONTH_SLUGS = [
+  'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+  'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+]
+
+/* ------------------------------------------------------------------ */
 /*  CITY SLUG HELPER (for /remates/ciudad/[ciudad])                    */
 /* ------------------------------------------------------------------ */
 
@@ -365,6 +374,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }))
 
+  // Monthly landing pages (/remates/mes/[mes]) - SEO for "remates marzo", "remates abril" etc.
+  const monthPages: MetadataRoute.Sitemap = MONTH_SLUGS.map((slug) => ({
+    url: `${baseUrl}/remates/mes/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }))
+
   return [
     ...staticPages,
     ...provincePages,
@@ -377,5 +394,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...remateDetailPages,
     ...marketCategoryPages,
     ...cityPages,
+    ...monthPages,
   ]
 }
