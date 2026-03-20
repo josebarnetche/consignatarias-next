@@ -231,8 +231,12 @@ export async function generateMetadata({
 /*  SCHEMA                                                             */
 /* ================================================================== */
 
-function CategoryPriceSchema({ config, price, change: _change }: { config: CategoryConfig; price: number; change: number }) {
-  const schema = {
+function CategoryPriceSchema({ config, price, change }: { config: CategoryConfig; price: number; change: number }) {
+  const today = new Date().toISOString().split('T')[0]
+  const validUntil = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+
+  // Dataset schema for data attribution
+  const datasetSchema = {
     '@context': 'https://schema.org',
     '@type': 'Dataset',
     name: `Precio ${config.name} Argentina`,
@@ -251,11 +255,69 @@ function CategoryPriceSchema({ config, price, change: _change }: { config: Categ
     },
   }
 
+  // Product + Offer schema for price rich snippets
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: `${config.name} - Precio por Kilo Vivo Argentina`,
+    description: config.definition,
+    url: `https://www.consignatarias.com.ar/mercado/${config.slug}`,
+    category: 'Livestock/Cattle',
+    brand: {
+      '@type': 'Organization',
+      name: 'Mercado Agroganadero de Buenos Aires',
+    },
+    offers: {
+      '@type': 'Offer',
+      url: `https://www.consignatarias.com.ar/mercado/${config.slug}`,
+      priceCurrency: 'ARS',
+      price: price,
+      priceValidUntil: validUntil,
+      availability: 'https://schema.org/InStock',
+      itemCondition: 'https://schema.org/NewCondition',
+      priceSpecification: {
+        '@type': 'UnitPriceSpecification',
+        price: price,
+        priceCurrency: 'ARS',
+        unitCode: 'KGM',
+        unitText: 'kg vivo',
+        referenceQuantity: {
+          '@type': 'QuantitativeValue',
+          value: 1,
+          unitCode: 'KGM',
+        },
+      },
+      seller: {
+        '@type': 'Organization',
+        name: 'Mercado Agroganadero de Buenos Aires',
+        url: 'https://www.mercadoagroganadero.com.ar',
+      },
+    },
+    additionalProperty: [
+      {
+        '@type': 'PropertyValue',
+        name: 'Variación Diaria',
+        value: `${change >= 0 ? '+' : ''}${change.toFixed(1)}%`,
+      },
+      {
+        '@type': 'PropertyValue',
+        name: 'Fecha de Cotización',
+        value: today,
+      },
+    ],
+  }
+
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+    </>
   )
 }
 
