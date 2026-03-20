@@ -1,4 +1,11 @@
 {
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "dev": false
+    }
+  },
+  "ignoreCommand": "bash scripts/ignore-build.sh",
   "crons": [
     {
       "path": "/api/cron/post-remate-outreach",
