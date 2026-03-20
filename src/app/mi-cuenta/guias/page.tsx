@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { FileText, History, TrendingUp, RefreshCw, Camera, Zap, Shield, CheckCircle2 } from 'lucide-react';
+import Link from 'next/link';
+import { FileText, History, TrendingUp, RefreshCw, Camera, Zap, Shield, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { DTEUploader, DTEHistory, SocialProofStats, MilestoneBadges, ActivationChecklist } from '@/components/dte';
 import { createClient } from '@/lib/supabase-browser';
 import { DTEData } from '@/hooks/useOCR';
@@ -112,6 +113,21 @@ export default function MisGuiasPage() {
 
   return (
     <div className="min-h-screen bg-gray-950">
+      {/* Navigation breadcrumb */}
+      <div className="bg-gray-900/80 border-b border-gray-800 px-4 py-3">
+        <div className="max-w-6xl mx-auto flex items-center gap-4">
+          <Link 
+            href="/dashboard"
+            className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Volver a Mi Panel</span>
+          </Link>
+          <span className="text-gray-700">/</span>
+          <span className="text-white font-medium">Mis Guías DT-e</span>
+        </div>
+      </div>
+      
       {/* HowTo Schema for SEO */}
       <HowToSchema
         name="Cómo subir y guardar guías DT-e en Consignatarias.com.ar"

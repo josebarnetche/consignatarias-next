@@ -393,6 +393,9 @@ export default function DashboardClient({
                 <button onClick={() => setActiveTab('resultados')} className="px-3 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors">
                   Cargar resultados
                 </button>
+                <Link href="/mi-cuenta/guias" className="px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-500/20 transition-colors">
+                  📄 Mis Guías DT-e
+                </Link>
                 {tierLabel !== 'FREE' && (
                   <a 
                     href={`/api/consignatarias/${consignataria.canonical_slug}/report`}

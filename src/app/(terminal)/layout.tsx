@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { label: "CONSIGNATARIAS", href: "/consignatarias" },
   { label: "FRIGORIFICOS", href: "/frigorificos" },
   { label: "MERCADO", href: "/mercado" },
+  { label: "MIS GUÍAS", href: "/mi-cuenta/guias" },
   { label: "PLANES", href: "/planes" },
 ] as const;
 
