@@ -6,6 +6,119 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.9.5] — 2026-03-20
+
+### Homepage Conversion Optimization & Supply Chain Intelligence
+
+Major platform update introducing instant value delivery, user lock-in mechanisms, and differentiated supply chain data.
+
+#### Valuation Widget (Instant Aha Moment)
+- **Real-time livestock calculator** on homepage using live INMAG prices
+- 6 cattle categories with province-specific weight averages
+- Instant value display: $/kg × avg weight × head count
+- Price change indicator (% vs previous week)
+- Email capture integration for price alerts
+- Conversion funnel: anonymous visitor → qualified lead in <10 seconds
+
+#### Homepage Quick Navigation
+- **17 new internal links** from homepage to deep content
+- Time-based filtering: Today / Tomorrow / This Week / Historical
+- Type-based filtering: Invernada / Cría / General / Especial / Reproductores
+- Market shortcuts: INMAG / Prices by Category / Frigoríficos / Directory
+- Province quick links on auction preview cards
+
+#### Clickable Stats Strip
+- All 4 KPI cards now route to relevant sections
+- INMAG → /mercado/inmag (price history)
+- Auctions → /remates (calendar)
+- Plants → /frigorificos (database)
+- USD Blue → /mercado (macro context)
+
+#### Watchlist Teaser (Lock-in Mechanism)
+- Visual preview of favorites functionality
+- Dual CTA: Create Watchlist + Explore Consignatarias
+- Pre-registration value demonstration
+- Mobile-responsive card layout
+
+#### PRO Section Enhancement
+- **3 new feature cards**: Video Catalogs, Points System, Profile Analytics
+- Dual conversion path: "Claim free profile" + "View PRO plans"
+- 8 total feature cards (was 5)
+- Clear value differentiation between free and PRO tiers
+
+#### Hero CTA Optimization
+- Dynamic auction count in primary CTA ("Ver X remates esta semana")
+- Secondary CTA targets consignataria funnel ("Buscar mi consignataria")
+- Reduced cognitive load with specific vs generic copy
+
+### Remitente Network Display (Supply Chain Intelligence)
+
+First-to-market feature exposing producer-level livestock movement data.
+
+#### Remitentes Page (`/consignatarias/[slug]/remitentes`)
+- Full remitente list grouped by locality (partido/departamento)
+- Province badge indicators
+- Head count aggregation per establishment
+- Responsive table with search/filter
+- Historical data visualization
+
+#### Enhanced MAG Panel
+- Renamed to "RED DE REMITENTES" for clarity
+- Locality count indicator
+- "View all" navigation to full remitentes page
+- Integrated with existing profile layout
+
+#### Competitive Differentiation
+- **Only platform in Argentina** surfacing producer-level supply chain data
+- Data sourced from MAG haciinfo000006 (public records)
+- Enables buyer intelligence: which ranches supply which consignatarias
+- Enables producer intelligence: which consignatarias serve my region
+
+### SEO Infrastructure
+
+#### New Landing Pages
+- `/remates/anteriores` — Historical auctions archive
+- `/remates/mes/[mes]` — 12 monthly landing pages for seasonal queries
+- FAQ schema on `/mercado` page (4 market-related FAQs)
+
+#### Performance Optimizations
+- Dynamic import for jsPDF: 134KB → 6KB client bundle (95% reduction)
+- Tesseract.js lazy loading: -3-8MB initial bundle
+- Offer + PriceSpecification schema on market pages
+
+### Database Migrations (Queued)
+
+#### Points System Schema
+```sql
+ALTER TABLE consignatarias ADD COLUMN onboarding_points INTEGER DEFAULT 0;
+-- Point transactions table with RLS policies
+-- award_points() function with duplicate prevention
+-- redeem_points_for_pro() function for 4500pts → 1 month PRO
+```
+
+#### Watchlist/Favorites Schema
+```sql
+CREATE TABLE user_favorites (
+  user_id UUID REFERENCES auth.users(id),
+  consignataria_slug TEXT NOT NULL,
+  notify_new_remate BOOLEAN DEFAULT false,
+  UNIQUE(user_id, consignataria_slug)
+);
+-- RLS policies for user-owned data
+```
+
+### Technical Metrics
+
+| Metric | Before | After |
+|--------|--------|-------|
+| Homepage internal links | ~10 | 40+ |
+| Homepage feature cards | 5 | 8 |
+| Homepage CTAs | 2 | 6 |
+| Sitemap URLs | 1,103 | 1,116+ |
+| Client bundle (PDF) | 134KB | 6KB |
+
+---
+
 ## [1.9.4] — 2026-03-20
 
 ### Navigation Unification (BATTLE #3 Day 5)
