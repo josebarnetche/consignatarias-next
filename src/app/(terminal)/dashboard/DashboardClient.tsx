@@ -1229,6 +1229,21 @@ function SubscriptionPanel({ tier, subscription }: { tier: string; subscription:
   const [cancelling, setCancelling] = useState(false)
   const [cancelFeedback, setCancelFeedback] = useState<string | null>(null)
   const [cancelled, setCancelled] = useState(false)
+  const [spotsRemaining, setSpotsRemaining] = useState<number | null>(null)
+
+  // Fetch founder spots for scarcity messaging
+  useEffect(() => {
+    if (tier === 'FREE') {
+      fetch('/api/stats/pro-spots')
+        .then(r => r.json())
+        .then(d => {
+          if (d.success && d.data) {
+            setSpotsRemaining(d.data.remaining)
+          }
+        })
+        .catch(() => {})
+    }
+  }, [tier])
 
   async function handleCancel() {
     if (!confirm('Cancelar suscripcion? Tu plan sigue activo hasta el fin del periodo.')) return
@@ -1274,6 +1289,21 @@ function SubscriptionPanel({ tier, subscription }: { tier: string; subscription:
           </>
         ) : (
           <div className="space-y-3">
+            {/* Founder spots scarcity indicator */}
+            {spotsRemaining !== null && spotsRemaining > 0 && spotsRemaining <= 25 && (
+              <div className={`px-2 py-1.5 rounded text-center ${
+                spotsRemaining <= 10 
+                  ? 'bg-red-500/15 border border-red-500/50' 
+                  : 'bg-amber-500/15 border border-amber-500/40'
+              }`}>
+                <span className={`text-xxs font-terminal uppercase tracking-wider ${
+                  spotsRemaining <= 10 ? 'text-red-400' : 'text-amber-400'
+                }`}>
+                  {spotsRemaining <= 10 ? '🔥' : '⚡'} {spotsRemaining} lugares a precio fundador — luego $65.000
+                </span>
+              </div>
+            )}
+            
             <div className="flex items-center gap-2 mb-2">
               <span className="text-amber-400 text-base">📧</span>
               <p className="text-xs font-terminal text-zinc-200 font-medium">Cada remate tuyo → +500 productores</p>
