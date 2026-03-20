@@ -16,6 +16,22 @@ function formatDate(dateStr: string): string {
   return `${parseInt(d)} ${months[parseInt(m) - 1]}`;
 }
 
+function getDaysUntil(dateStr: string): number {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const target = new Date(dateStr + 'T00:00:00');
+  const diff = target.getTime() - today.getTime();
+  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+}
+
+function formatDaysUntil(days: number): { text: string; urgent: boolean } {
+  if (days === 0) return { text: 'HOY', urgent: true };
+  if (days === 1) return { text: 'MAÑANA', urgent: true };
+  if (days <= 3) return { text: `En ${days} días`, urgent: true };
+  if (days <= 7) return { text: `En ${days} días`, urgent: false };
+  return { text: `En ${days} días`, urgent: false };
+}
+
 function getUpcomingRemates(slug: string): Auction[] {
   const today = new Date().toISOString().slice(0, 10);
   const slugLower = slug.toLowerCase();
@@ -139,6 +155,37 @@ export default function FavoritosPage() {
         {/* Favorites List */}
         {!isLoading && isLoggedIn && favorites.length > 0 && (
           <div className="space-y-6">
+            {/* Urgent Alert - Next 3 days */}
+            {(() => {
+              const urgent = allUpcoming.filter(r => getDaysUntil(r.date) <= 3);
+              if (urgent.length === 0) return null;
+              
+              const next = urgent[0];
+              const daysUntil = getDaysUntil(next.date);
+              const countdown = formatDaysUntil(daysUntil);
+              
+              return (
+                <Link
+                  href={`/go/${next.consignataria_slug}`}
+                  className="block bg-gradient-to-r from-emerald-900/40 to-emerald-800/20 border border-emerald-700/40 rounded-xl p-4 hover:border-emerald-600/50 transition-colors"
+                >
+                  <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold mb-2">
+                    <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                    {countdown.text.toUpperCase()}
+                  </div>
+                  <div className="text-white font-medium">{next.title}</div>
+                  <div className="text-sm text-zinc-400 mt-1">
+                    {next.displayName} · {formatDate(next.date)} {next.time && `· ${next.time}`}
+                  </div>
+                  {urgent.length > 1 && (
+                    <div className="text-xs text-emerald-500 mt-2">
+                      +{urgent.length - 1} más en los próximos 3 días
+                    </div>
+                  )}
+                </Link>
+              );
+            })()}
+
             {/* Unified Calendar */}
             {allUpcoming.length > 0 && (
               <div className="bg-zinc-800/50 border border-zinc-700 rounded-xl overflow-hidden">
@@ -147,22 +194,29 @@ export default function FavoritosPage() {
                   <span className="text-sm font-medium text-white">Próximos Remates</span>
                 </div>
                 <div className="divide-y divide-zinc-700/50">
-                  {allUpcoming.slice(0, 8).map((r, i) => (
-                    <Link
-                      key={`${r.consignataria_slug}-${i}`}
-                      href={`/go/${r.consignataria_slug}`}
-                      className="flex items-center justify-between px-4 py-3 hover:bg-zinc-700/30 transition-colors"
-                    >
-                      <div>
-                        <div className="text-sm text-white">{r.title}</div>
-                        <div className="text-xs text-zinc-500">{r.displayName}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm text-amber-400 font-medium">{formatDate(r.date)}</div>
-                        {r.time && <div className="text-xs text-zinc-500">{r.time}</div>}
-                      </div>
-                    </Link>
-                  ))}
+                  {allUpcoming.slice(0, 8).map((r, i) => {
+                    const daysUntil = getDaysUntil(r.date);
+                    const countdown = formatDaysUntil(daysUntil);
+                    
+                    return (
+                      <Link
+                        key={`${r.consignataria_slug}-${i}`}
+                        href={`/go/${r.consignataria_slug}`}
+                        className="flex items-center justify-between px-4 py-3 hover:bg-zinc-700/30 transition-colors"
+                      >
+                        <div className="flex-1 min-w-0 mr-3">
+                          <div className="text-sm text-white truncate">{r.title}</div>
+                          <div className="text-xs text-zinc-500">{r.displayName}</div>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <div className="text-sm text-amber-400 font-medium">{formatDate(r.date)}</div>
+                          <div className={`text-xs font-medium ${countdown.urgent ? 'text-emerald-400' : 'text-zinc-500'}`}>
+                            {countdown.text}
+                          </div>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -210,16 +264,28 @@ export default function FavoritosPage() {
                       </div>
                     </div>
                     
-                    {nextRemate && (
-                      <div className="bg-zinc-900/50 rounded-lg px-3 py-2 flex items-center justify-between">
-                        <div className="text-sm text-zinc-300 truncate flex-1 mr-4">
-                          {nextRemate.title}
+                    {nextRemate && (() => {
+                      const daysUntil = getDaysUntil(nextRemate.date);
+                      const countdown = formatDaysUntil(daysUntil);
+                      
+                      return (
+                        <div className={`rounded-lg px-3 py-2 flex items-center justify-between ${countdown.urgent ? 'bg-emerald-900/30 border border-emerald-700/30' : 'bg-zinc-900/50'}`}>
+                          <div className="text-sm text-zinc-300 truncate flex-1 mr-4">
+                            {nextRemate.title}
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <div className={`text-sm font-medium whitespace-nowrap ${countdown.urgent ? 'text-emerald-400' : 'text-zinc-400'}`}>
+                              {formatDate(nextRemate.date)}
+                            </div>
+                            {countdown.urgent && (
+                              <div className="text-xs text-emerald-500 font-medium">
+                                {countdown.text}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <div className="text-sm text-emerald-400 font-medium whitespace-nowrap">
-                          {formatDate(nextRemate.date)}
-                        </div>
-                      </div>
-                    )}
+                      );
+                    })()}
                   </div>
                 );
               })}
