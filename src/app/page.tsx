@@ -7,6 +7,7 @@ import rematesData from "@/lib/data/remates.json";
 import { getAllProfiles } from "@/lib/data/consignataria-slugs";
 import { FAQPageSchema, OrganizationSchema, WebSiteSchema } from "@/components/seo/JsonLd";
 import NewsletterSignup from "@/components/NewsletterSignup";
+import ValuationWidget from "@/components/landing/ValuationWidget";
 
 /* ================================================================== */
 /*  SVG ICONS                                                          */
@@ -322,6 +323,13 @@ export default function LandingPage() {
               </Link>
             </div>
           </div>
+        </section>
+
+        {/* ============================================================ */}
+        {/*  VALUATION WIDGET — Aha Moment                                */}
+        {/* ============================================================ */}
+        <section className="max-w-4xl mx-auto px-6 py-12">
+          <ValuationWidget />
         </section>
 
         <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
