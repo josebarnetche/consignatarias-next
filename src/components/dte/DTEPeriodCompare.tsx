@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { ArrowUpRight, ArrowDownRight, Minus, GitCompare, ChevronDown, TrendingUp, Calendar } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, GitCompare, ChevronDown, TrendingUp, Calendar } from 'lucide-react';
 
 interface UserDTE {
   id: string;
@@ -24,7 +24,7 @@ type PeriodOption = {
 const MONTH_NAMES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
                      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-const MONTH_NAMES_SHORT = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 
+const _MONTH_NAMES_SHORT = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 
                            'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
 function getPeriodOptions(): PeriodOption[] {
