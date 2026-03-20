@@ -10,6 +10,7 @@ import type { Auction } from '@/lib/db/schema'
 import { ConsignatariaProfileSchema, BreadcrumbSchema, EventSchema } from '@/components/seo/JsonLd'
 import { AddToCalendarButton } from '@/components/ui/AddToCalendarButton'
 import WhatsAppButton from '@/components/ui/WhatsAppButton'
+import { FollowButton } from '@/components/ui/FollowButton'
 
 const auctions = rematesData as Auction[]
 
@@ -171,6 +172,11 @@ export default async function GoLandingPage({ params }: Props) {
                 <span className="text-emerald-400 text-sm font-medium">✓ Verificada</span>
               </div>
             )}
+
+            {/* Follow Button - Core Lock-in */}
+            <div className="mt-4">
+              <FollowButton slug={canonical} displayName={profile.displayName} size="md" />
+            </div>
           </div>
 
           {/* Next Remate - Featured */}

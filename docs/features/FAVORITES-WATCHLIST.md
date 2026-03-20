@@ -1,5 +1,16 @@
 # Feature: Favoritos / Watchlist de Consignatarias
 
+## Status (2026-03-20)
+
+| Phase | Status | Notes |
+|-------|--------|-------|
+| Phase 1: Core Follow | ✅ DONE | FollowButton, useFavorites hook, /mi-cuenta/favoritos |
+| Phase 2: Dashboard | ⏳ IN PROGRESS | Basic list + unified calendar done |
+| Phase 3: Notifications | 🔜 PENDING | Email/push alerts |
+| Phase 4: Social Proof | 🔜 PENDING | Follower counts for consignatarias |
+
+**Lock-in Score:** HIGH — Foundation shipped, core habit loop enabled.
+
 ## Overview
 
 Allow users to "follow" or "save" consignatarias they care about. Creates a personalized dashboard with their preferred consignatarias' upcoming remates.
@@ -314,10 +325,10 @@ export function FollowButton({ slug, displayName }: FollowButtonProps) {
 ## Implementation Phases
 
 ### Phase 1: Core Follow (2 days)
-- [ ] Create Supabase table `user_favorites`
-- [ ] Implement `useFavorites` hook
-- [ ] Add `FollowButton` to `/go/[slug]`
-- [ ] Create `/mi-cuenta/favoritos` page (basic list)
+- [x] Create Supabase table `user_favorites` — ARCHITECT 2026-03-20
+- [x] Implement `useFavorites` hook — ARCHITECT 2026-03-20
+- [x] Add `FollowButton` to `/go/[slug]` — ARCHITECT 2026-03-20
+- [x] Create `/mi-cuenta/favoritos` page (basic list) — ARCHITECT 2026-03-20
 
 ### Phase 2: Dashboard (1 day)
 - [ ] Unified calendar view of all followed consignatarias
