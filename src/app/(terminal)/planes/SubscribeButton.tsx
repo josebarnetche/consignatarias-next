@@ -94,8 +94,11 @@ export default function SubscribeButton() {
             borderRadius: '2px',
           }}
         >
-          <p className="text-zinc-400 mb-2">
-            Para suscribirte, primero reclamá tu perfil gratuito
+          <p className="text-zinc-300 mb-1 font-medium">
+            ¡Ya casi! Solo falta un paso
+          </p>
+          <p className="text-zinc-500 text-xxs mb-3">
+            Reclamá tu perfil gratis para activar PRO y empezar a promocionar tus remates
           </p>
           <Link 
             href="/consignatarias"
@@ -106,7 +109,7 @@ export default function SubscribeButton() {
           </Link>
         </div>
         <p className="text-xxs text-zinc-600 text-center">
-          ¿No encontrás tu consignataria? <a href="mailto:agro@memola.com.ar" className="text-zinc-500 hover:text-zinc-400">Contactanos</a>
+          Toma 2 minutos · ¿No la encontrás? <a href="mailto:agro@memola.com.ar" className="text-zinc-500 hover:text-zinc-400">Contactanos</a>
         </p>
       </div>
     )

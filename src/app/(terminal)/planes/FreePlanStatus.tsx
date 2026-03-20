@@ -67,7 +67,7 @@ export default function FreePlanStatus() {
         className="w-full text-data text-zinc-400 text-center py-2 border border-terminal-border hover:border-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer"
         style={{ borderRadius: '2px' }}
       >
-        Empezar gratis →
+        Crear cuenta gratis →
       </button>
     )
   }
