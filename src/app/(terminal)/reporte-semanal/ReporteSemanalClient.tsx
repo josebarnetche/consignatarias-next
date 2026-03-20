@@ -60,8 +60,8 @@ export default function ReporteSemanalClient({ data }: { data: ReportData }) {
     setStatus('ready')
   }
 
-  function handleDownloadPDF() {
-    const doc = generateReportePDF(data)
+  async function handleDownloadPDF() {
+    const doc = await generateReportePDF(data)
     const filename = `reporte-ganadero-${new Date().toISOString().slice(0, 10)}.pdf`
     doc.save(filename)
   }

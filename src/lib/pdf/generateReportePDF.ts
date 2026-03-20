@@ -1,4 +1,5 @@
-import { jsPDF } from 'jspdf'
+// Dynamic import for bundle optimization (jsPDF ~200KB)
+import type { jsPDF } from 'jspdf'
 
 interface RemateItem {
   fecha: string
@@ -40,7 +41,8 @@ function fmt(n: number, decimals = 0): string {
   })
 }
 
-export function generateReportePDF(data: ReportData): jsPDF {
+export async function generateReportePDF(data: ReportData): Promise<jsPDF> {
+  const { jsPDF } = await import('jspdf')
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
