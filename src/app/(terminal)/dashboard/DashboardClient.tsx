@@ -560,15 +560,60 @@ export default function DashboardClient({
 
           {!consignataria && !frigorifico && claims.length === 0 && frigoClaims.length === 0 && (
             <div className="terminal-panel">
-              <div className="px-panel py-6 text-center space-y-3">
-                <p className="text-zinc-500 text-data font-terminal">No tenes un perfil verificado.</p>
-                <div className="flex items-center justify-center gap-4">
-                  <Link href="/consignatarias" className="px-4 py-2 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors">
-                    Verificar consignataria →
-                  </Link>
-                  <Link href="/frigorificos" className="px-4 py-2 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors">
-                    Verificar frigorifico →
-                  </Link>
+              <div className="terminal-panel-header">
+                <span className="text-zinc-200 text-label tracking-widest">PRIMEROS PASOS</span>
+              </div>
+              <div className="px-panel py-6 space-y-6">
+                <p className="text-data font-terminal text-zinc-400">
+                  Bienvenido a Consignatarias.com.ar. Para acceder a todas las funciones, completá estos pasos:
+                </p>
+                
+                {/* Step 1 - Active */}
+                <div className="flex items-start gap-4 p-3 bg-positive/5 border border-positive/20 rounded-lg">
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-positive/20 text-positive flex items-center justify-center font-terminal text-sm font-bold">1</span>
+                  <div className="flex-1">
+                    <p className="text-data font-terminal text-zinc-200 font-medium">Verificá tu perfil</p>
+                    <p className="text-xxs font-terminal text-zinc-500 mt-1">
+                      Buscá tu consignataria o frigorífico y reclamá el perfil para poder editarlo y publicar remates.
+                    </p>
+                    <div className="flex items-center gap-3 mt-3">
+                      <Link href="/consignatarias" className="px-3 py-1.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors rounded">
+                        Buscar consignataria →
+                      </Link>
+                      <Link href="/frigorificos" className="px-3 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors rounded">
+                        Buscar frigorífico →
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step 2 - Pending */}
+                <div className="flex items-start gap-4 p-3 opacity-50">
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-zinc-800 text-zinc-500 flex items-center justify-center font-terminal text-sm">2</span>
+                  <div>
+                    <p className="text-data font-terminal text-zinc-400">Completá tu información</p>
+                    <p className="text-xxs font-terminal text-zinc-600 mt-1">
+                      Teléfono, email, descripción, logo — cada campo mejora tu visibilidad.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Step 3 - Pending */}
+                <div className="flex items-start gap-4 p-3 opacity-50">
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-zinc-800 text-zinc-500 flex items-center justify-center font-terminal text-sm">3</span>
+                  <div>
+                    <p className="text-data font-terminal text-zinc-400">Publicá tus remates</p>
+                    <p className="text-xxs font-terminal text-zinc-600 mt-1">
+                      Aparecen en el calendario y se envían a +500 productores activos.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Value prop */}
+                <div className="pt-4 border-t border-zinc-800/50">
+                  <p className="text-xxs font-terminal text-zinc-500 text-center">
+                    💡 Con el perfil verificado accedés a: editar información, publicar remates, cargar DTe, ver analytics y más.
+                  </p>
                 </div>
               </div>
             </div>
