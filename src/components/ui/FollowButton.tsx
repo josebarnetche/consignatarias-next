@@ -14,7 +14,7 @@ interface FollowButtonProps {
  * Follow/unfollow button for consignatarias
  * Lock-in: Creates user-invested data and habit formation
  */
-export function FollowButton({ slug, displayName, className = '', size = 'md' }: FollowButtonProps) {
+export function FollowButton({ slug, displayName: _displayName, className = '', size = 'md' }: FollowButtonProps) {
   const { isFavorite, addFavorite, removeFavorite, isLoading, isLoggedIn, getFavorite, toggleNotifications } = useFavorites();
   const [showDropdown, setShowDropdown] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);

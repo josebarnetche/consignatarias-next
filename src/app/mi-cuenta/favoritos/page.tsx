@@ -22,7 +22,7 @@ function getUpcomingRemates(slug: string): Auction[] {
   
   return auctions
     .filter(a => {
-      const auctionSlug = a.consignataria?.toLowerCase().replace(/\s+/g, '-') || '';
+      const auctionSlug = a.consignatariaName?.toLowerCase().replace(/\s+/g, '-') || '';
       return auctionSlug.includes(slugLower) || slugLower.includes(auctionSlug.split('-')[0]);
     })
     .filter(a => a.date >= today)
