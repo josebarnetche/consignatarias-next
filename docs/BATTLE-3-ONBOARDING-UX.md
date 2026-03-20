@@ -255,7 +255,7 @@ CREATE TABLE point_transactions (
 
 ### Día 5 — Navegación (2-3h)
 - [ ] Unificar /mi-cuenta con /dashboard (ARCHITECT)
-- [ ] Tab icons + descriptions (ARCHITECT)
+- [x] Tab icons + descriptions (ARCHITECT) ✅ 5780b6e
 
 ### Futuro
 - [ ] WhatsApp verification (PULSO)
