@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
+import marketData from '@/lib/data/market-prices.json'
 import type { Auction } from '@/lib/db/schema'
 import { normalizeUrl } from '@/lib/utils/url'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
@@ -50,6 +51,35 @@ function getWhatsAppShareUrl(auction: Auction): string {
 const rawAuctions = rematesData as Auction[]
 
 type Period = 'hoy' | 'proximos' | 'pasados'
+
+/* ------------------------------------------------------------------ */
+/*  MAG REMITENTE DATA — Supply Chain Intelligence                     */
+/* ------------------------------------------------------------------ */
+
+type MagEntry = { remitente: string; localidad: string; provincia: string; cabezas: number }
+type MagConsigData = { magId: string; totalCabezas: number; entries: MagEntry[]; period?: string }
+type MarketDataType = { auctionDayEntries?: { consignatarias: Record<string, MagConsigData> } }
+
+const magConsignatarias = (marketData as MarketDataType).auctionDayEntries?.consignatarias || {}
+
+/** Get top 3 unique localities by volume for a consignataria */
+function getTopLocalidades(slug: string): string[] {
+  const canonical = getCanonicalSlug(slug) || slug
+  const data = magConsignatarias[canonical]
+  if (!data?.entries?.length) return []
+  
+  // Aggregate by localidad
+  const byLocalidad = data.entries.reduce((acc, e) => {
+    acc[e.localidad] = (acc[e.localidad] || 0) + e.cabezas
+    return acc
+  }, {} as Record<string, number>)
+  
+  // Sort by volume descending, take top 3
+  return Object.entries(byLocalidad)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([loc]) => loc)
+}
 
 /* ------------------------------------------------------------------ */
 /*  HELPERS                                                            */
@@ -151,6 +181,8 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
   const freshness = period === 'pasados' ? getFreshnessLabel(auction.date, today) : null
   // "HOY" freshness for pasados tab (same-day completed)
   const isTodayPast = period === 'pasados' && auction.date === today
+  // MAG supply chain intel - top remitente localities
+  const topLocalidades = getTopLocalidades(auction.consignatariaSlug)
 
   function handleRowClick() {
     const dest = href.includes('/consignatarias/') ? 'profile' as const : 'source' as const
@@ -225,6 +257,13 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
             {isTodayPast && <span className="text-[9px] font-terminal text-positive">HOY</span>}
             {freshness && <span className={`text-[9px] font-terminal ${freshness.className}`}>{freshness.text}</span>}
           </div>
+          {/* Supply chain intel - top remitente localities */}
+          {topLocalidades.length > 0 && (
+            <div className="flex items-center gap-1 text-[10px] text-amber-400/40 font-terminal">
+              <span>🏠</span>
+              <span>{topLocalidades.join(', ')}</span>
+            </div>
+          )}
           {/* Links */}
           <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
             {auction.catalogUrl && (
@@ -290,6 +329,13 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
             <span className="text-[9px] font-terminal text-amber-500/50 px-1 py-0.5 border border-amber-500/20 rounded-sm mr-1.5">{sourceBadge}</span>
             {isTodayPast && <span className="text-[9px] font-terminal text-positive mr-1.5">HOY</span>}
             {freshness && <span className={`text-[9px] font-terminal ${freshness.className} mr-1.5`}>{freshness.text}</span>}
+            {/* Supply chain intel */}
+            {topLocalidades.length > 0 && (
+              <span className="text-[9px] font-terminal text-amber-400/40 mr-1.5 flex items-center gap-0.5">
+                <span>🏠</span>
+                <span>{topLocalidades.join(', ')}</span>
+              </span>
+            )}
             <span className="w-[60px] flex-shrink-0 text-data font-terminal tabular-nums text-amber-300 text-right font-medium">
               {auction.estimatedHeads != null ? `~${auction.estimatedHeads.toLocaleString('es-AR')}` : '—'}
             </span>
@@ -378,6 +424,13 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
           {isTodayPast && <span className="text-[9px] font-terminal text-positive">HOY</span>}
           {freshness && <span className={`text-[9px] font-terminal ${freshness.className}`}>{freshness.text}</span>}
         </div>
+        {/* Supply chain intel - top remitente localities */}
+        {topLocalidades.length > 0 && (
+          <div className="flex items-center gap-1 text-[10px] text-zinc-500 font-terminal">
+            <span>🏠</span>
+            <span>{topLocalidades.join(', ')}</span>
+          </div>
+        )}
         {/* Links */}
         <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
           {auction.catalogUrl && (
@@ -445,6 +498,13 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
           <span className="text-[9px] font-terminal text-zinc-500 px-1 py-0.5 border border-zinc-800 rounded-sm mr-1.5">{sourceBadge}</span>
           {isTodayPast && <span className="text-[9px] font-terminal text-positive mr-1.5">HOY</span>}
           {freshness && <span className={`text-[9px] font-terminal ${freshness.className} mr-1.5`}>{freshness.text}</span>}
+          {/* Supply chain intel */}
+          {topLocalidades.length > 0 && (
+            <span className="text-[9px] font-terminal text-zinc-500 mr-1.5 flex items-center gap-0.5">
+              <span>🏠</span>
+              <span>{topLocalidades.join(', ')}</span>
+            </span>
+          )}
           <span className="w-[60px] flex-shrink-0 text-data font-terminal tabular-nums text-zinc-400 text-right">
             {auction.estimatedHeads != null ? `~${auction.estimatedHeads.toLocaleString('es-AR')}` : '—'}
           </span>
