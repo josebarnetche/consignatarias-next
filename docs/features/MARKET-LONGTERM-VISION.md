@@ -2,6 +2,17 @@
 
 > **Insight #77** — Panel de mercado con perspectiva histórica (2022-presente)
 
+## Status (2026-03-20)
+
+| Phase | Status | Notes |
+|-------|--------|-------|
+| Data Backfill | ✅ DONE | 36 months (Jan 2022 - Dec 2024). **Needs update to 2025-2026** |
+| APIs | ⏸️ SKIPPED | Static JSON sufficient for now |
+| UI Components | ✅ DONE | LongTermChart, CategoryComparison, SeasonalPattern integrated in /mercado |
+| SEO | 🔄 PARTIAL | Basic meta done, schema markup pending |
+
+**Lock-in Score:** MEDIUM — Public data, but unique presentation. Value is in aggregation + analysis.
+
 ## Contexto
 
 Actualmente `/mercado/inmag` muestra ~2.5 meses de datos diarios. Los usuarios necesitan contexto histórico para:
@@ -168,26 +179,27 @@ src/app/mercado/
 ## Implementación
 
 ### Fase 1: Data Backfill (1 día)
-- [ ] Extraer datos mensuales de MAGYP PDFs (2022-2026)
-- [ ] Crear `market-monthly.json`
-- [ ] Crear `market-categories.json`
+- [x] Extraer datos mensuales de MAGYP PDFs (2022-2024) — DONE
+- [x] Crear `market-monthly.json` — 36 months (2022-01 to 2024-12)
+- [x] Crear `market-categories.json` — Category breakdown by month
+- [ ] **UPDATE NEEDED:** Extend data to 2025-2026 (currently ends Dec 2024)
 
 ### Fase 2: APIs (1 día)
-- [ ] `/api/market/monthly`
-- [ ] `/api/market/categories`
-- [ ] `/api/market/summary`
+- [ ] `/api/market/monthly` — NOT NEEDED (static JSON works)
+- [ ] `/api/market/categories` — NOT NEEDED (static JSON works)
+- [ ] `/api/market/summary` — Could be useful for embed/widget
 
 ### Fase 3: UI (2 días)
-- [x] Refactor `/mercado` como landing
-- [ ] Crear `/mercado/historico`
-- [x] Componente `LongTermChart` (Recharts o lightweight)
+- [x] Refactor `/mercado` como landing — DONE
+- [x] Componente `LongTermChart` — DONE (CSS-only bars, time range selector)
 - [x] Componente `CategoryComparison` — 2026-03-18 (ARCHITECT)
 - [x] Componente `SeasonalPattern` — 2026-03-18 (ARCHITECT)
+- [ ] `/mercado/historico` standalone page — NOT DONE (content already in /mercado)
 
 ### Fase 4: SEO (0.5 día)
 - [ ] Schema markup (Dataset, FinancialProduct)
-- [ ] Meta tags dinámicos
-- [ ] Sitemap update
+- [x] Meta tags — Basic metadata done
+- [ ] Sitemap update for historical data
 
 ## Métricas de Éxito
 
