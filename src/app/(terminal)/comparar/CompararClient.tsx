@@ -158,10 +158,24 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
         <div className="lg:col-span-2">
           {selectedConsignatarias.length === 0 ? (
             <div className="terminal-panel">
-              <div className="px-panel py-12 text-center">
-                <p className="text-zinc-500 text-sm">
-                  Seleccioná al menos una consignataria para comparar
-                </p>
+              <div className="px-panel py-12 text-center space-y-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-accent/5 border border-accent/20 mb-2">
+                  <svg className="w-8 h-8 text-accent/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-zinc-300 font-terminal font-medium mb-1">
+                    Comparador listo
+                  </p>
+                  <p className="text-xxs text-zinc-500 font-terminal">
+                    Seleccioná consignatarias del panel izquierdo para ver la comparación
+                  </p>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-xxs text-zinc-600 font-terminal pt-2">
+                  <span>←</span>
+                  <span>Buscá y hacé click para agregar</span>
+                </div>
               </div>
             </div>
           ) : (
