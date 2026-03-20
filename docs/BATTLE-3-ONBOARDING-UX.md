@@ -253,8 +253,8 @@ CREATE TABLE point_transactions (
 - [x] Integration en dashboard (VIGIL) ✅ resumen tab, FREE tier
 - [ ] Redemption flow (VIGIL) — Pending: Supabase webhook for PRO activation
 
-### Día 5 — Navegación (2-3h)
-- [ ] Unificar /mi-cuenta con /dashboard (ARCHITECT)
+### Día 5 — Navegación (2-3h) ✅ COMPLETE
+- [x] Unificar /mi-cuenta con /dashboard (ARCHITECT) ✅ da1fb71
 - [x] Tab icons + descriptions (ARCHITECT) ✅ 5780b6e
 
 ### Futuro
