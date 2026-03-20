@@ -32,6 +32,31 @@ function formatDaysUntil(days: number): { text: string; urgent: boolean } {
   return { text: `En ${days} días`, urgent: false };
 }
 
+/**
+ * Format "following since" duration - psychological ownership/lock-in
+ * Longer = more invested = higher switching cost
+ */
+function formatFollowingSince(createdAt: string): string {
+  const created = new Date(createdAt);
+  const now = new Date();
+  const diffMs = now.getTime() - created.getTime();
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  
+  if (days === 0) return 'Desde hoy';
+  if (days === 1) return 'Desde ayer';
+  if (days < 7) return `Hace ${days} días`;
+  if (days < 30) {
+    const weeks = Math.floor(days / 7);
+    return `Hace ${weeks} semana${weeks > 1 ? 's' : ''}`;
+  }
+  if (days < 365) {
+    const months = Math.floor(days / 30);
+    return `Hace ${months} mes${months > 1 ? 'es' : ''}`;
+  }
+  const years = Math.floor(days / 365);
+  return `Hace ${years} año${years > 1 ? 's' : ''}`;
+}
+
 function getUpcomingRemates(slug: string): Auction[] {
   const today = new Date().toISOString().slice(0, 10);
   const slugLower = slug.toLowerCase();
@@ -246,8 +271,10 @@ export default function FavoritosPage() {
                           {profile?.displayName || fav.consignataria_slug}
                           <ExternalLink className="w-3.5 h-3.5 opacity-50" />
                         </Link>
-                        <div className="text-xs text-zinc-500 mt-0.5">
-                          {upcoming.length} remate{upcoming.length !== 1 ? 's' : ''} próximo{upcoming.length !== 1 ? 's' : ''}
+                        <div className="text-xs text-zinc-500 mt-0.5 flex items-center gap-2">
+                          <span>{upcoming.length} remate{upcoming.length !== 1 ? 's' : ''} próximo{upcoming.length !== 1 ? 's' : ''}</span>
+                          <span className="text-zinc-600">·</span>
+                          <span className="text-zinc-600">{formatFollowingSince(fav.created_at)}</span>
                         </div>
                       </div>
                       
