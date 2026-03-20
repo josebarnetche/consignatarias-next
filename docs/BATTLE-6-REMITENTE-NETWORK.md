@@ -64,18 +64,17 @@ Ya lo scrapeamos. Campos:
 - Mobile responsive table view
 - SEO: canonical URLs, descriptive metadata
 
-### Sprint 2: Top remitentes en cards de remates (~2h)
+### Sprint 2: Top remitentes en cards de remates (~2h) ✅ SHIPPED
 
-**Archivo:** `src/components/remates/RemateCard.tsx`
+**Commit:** 0161b2d (2026-03-20)
 
-```tsx
-// Agregar debajo de la info básica:
-{remate.topRemitentes && (
-  <div className="text-xs text-zinc-500">
-    🏠 {remate.topRemitentes.slice(0,3).map(r => r.localidad).join(', ')}
-  </div>
-)}
-```
+**Implementado:**
+- Added MAG data import to RematesClient.tsx
+- `getTopLocalidades(slug)` aggregates entries by localidad, returns top 3 by volume
+- Shows 🏠 prefix + comma-separated localities on auction rows
+- Displays in both mobile card and desktop row formats
+- Works for PRO (featured) and regular auctions
+- Only renders for consignatarias with MAG mapping
 
 ### Sprint 3: Patrones de origen para consignatarias (~3h)
 
