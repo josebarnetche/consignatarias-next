@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 interface WelcomeChecklistProps {
   profileSlug: string
@@ -23,8 +23,17 @@ const CHECKLIST_ITEMS: { key: keyof WelcomeChecklistProps['completedFields']; la
 ]
 
 export default function WelcomeChecklist({ profileSlug: _profileSlug, displayName, completedFields }: WelcomeChecklistProps) {
+  const router = useRouter()
   const completed = Object.values(completedFields).filter(Boolean).length
   const total = CHECKLIST_ITEMS.length
+
+  const handleEditClick = () => {
+    router.push('/dashboard?tab=editar')
+    // Scroll to top after navigation
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, 100)
+  }
 
   if (completed >= total) return null
 
@@ -65,20 +74,20 @@ export default function WelcomeChecklist({ profileSlug: _profileSlug, displayNam
           />
         </div>
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-          <Link
-            href="/dashboard?tab=editar"
-            className="text-xxs font-terminal text-accent hover:underline"
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 pt-1">
+          <button
+            onClick={handleEditClick}
+            className="px-3 py-1.5 text-xxs font-terminal text-accent border border-accent/30 rounded hover:bg-accent/10 transition-colors"
           >
-            Editar perfil →
-          </Link>
+            Completar perfil →
+          </button>
           <a
             href={`https://wa.me/5493773418130?text=${encodeURIComponent(`Hola, necesito ayuda con mi perfil de ${displayName} en consignatarias.com.ar`)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xxs font-terminal text-positive hover:underline"
+            className="text-xxs font-terminal text-positive/70 hover:text-positive transition-colors"
           >
-            Soporte por WhatsApp →
+            ¿Necesitás ayuda? →
           </a>
         </div>
       </div>
