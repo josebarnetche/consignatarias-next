@@ -45,33 +45,23 @@
 
 ### Fixes específicos:
 
-#### 1. CUIT Validation en tiempo real
+#### 1. CUIT Validation en tiempo real ✅ SHIPPED
 ```tsx
-// Agregar después del form state
-const [cuitValid, setCuitValid] = useState<boolean | null>(null)
-
-function validateCUIT(value: string): boolean {
-  const clean = value.replace(/\D/g, '')
-  if (clean.length !== 11) return false
-  const mult = [5,4,3,2,7,6,5,4,3,2]
-  const sum = mult.reduce((acc, m, i) => acc + parseInt(clean[i]) * m, 0)
-  const mod = sum % 11
-  const verifier = mod === 0 ? 0 : mod === 1 ? 9 : 11 - mod
-  return verifier === parseInt(clean[10])
-}
+// Implementado en ClaimForm.tsx - 6a899ad
+// Usa modulo 11 con validación de prefijos (20,23,24,27,30,33,34)
 ```
-- [ ] Implementar validateCUIT()
-- [ ] Agregar indicador visual ✓/✗ en input
-- [ ] Mostrar error inline "CUIT inválido"
+- [x] Implementar validateCUIT() ✅
+- [x] Agregar indicador visual ✓/✗ en input ✅
+- [x] Mostrar error inline "CUIT inválido" ✅
 
-#### 2. Success State mejorado
-- [ ] Cambiar "PERFIL VERIFICADO" → "SOLICITUD ENVIADA"
-- [ ] Agregar guía de email: "Revisá tu bandeja (y spam). El enlace expira en 1 hora."
-- [ ] Agregar botón "Ya tengo cuenta →" 
+#### 2. Success State mejorado ✅ SHIPPED
+- [x] Cambiar "PERFIL VERIFICADO" → "SOLICITUD ENVIADA" ✅
+- [x] Agregar guía de email: "Revisá tu bandeja (y spam). El enlace expira en 1 hora." ✅
+- [x] Agregar botón "Ya tengo cuenta →" ✅
 
-#### 3. Error state que se limpia
-- [ ] Limpiar error al cambiar cualquier input
-- [ ] 409 conflict: mostrar link a login ("Este perfil ya tiene dueño. Si sos vos, ingresá.")
+#### 3. Error state que se limpia ✅ SHIPPED
+- [x] Limpiar error al cambiar cualquier input ✅
+- [x] 409 conflict: mostrar link a login ✅
 
 ---
 
@@ -247,8 +237,8 @@ CREATE TABLE point_transactions (
 ## CHECKLIST DE IMPLEMENTACIÓN
 
 ### Día 1 — Quick Wins (2-3h)
-- [ ] CUIT validation inline (HUNTER)
-- [ ] Success state mejorado (HUNTER/CLOSER)
+- [x] CUIT validation inline (HUNTER) ✅ 6a899ad
+- [x] Success state mejorado (HUNTER/CLOSER) ✅ 6a899ad
 - [ ] Admin dashboard spinner + retry (NEXO)
 
 ### Día 2 — Onboarding Flow (3-4h)

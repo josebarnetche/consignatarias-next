@@ -135,24 +135,37 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  async function fetchDashboard() {
+    setLoading(true)
+    setError('')
+    try {
+      const r = await fetch('/api/admin/dashboard')
+      if (r.status === 401 || r.status === 403) {
+        window.location.href = '/login'
+        return
+      }
+      const d = await r.json()
+      setData(d)
+    } catch {
+      setError('Error cargando datos')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
-    fetch('/api/admin/dashboard')
-      .then(r => {
-        if (r.status === 401 || r.status === 403) {
-          window.location.href = '/login'
-          return null
-        }
-        return r.json()
-      })
-      .then(d => { if (d) setData(d) })
-      .catch(() => setError('Error cargando datos'))
-      .finally(() => setLoading(false))
+    fetchDashboard()
   }, [])
 
   if (loading) {
     return (
       <div className="terminal-panel">
-        <div className="px-panel py-12 text-center">
+        <div className="px-panel py-16 flex flex-col items-center justify-center gap-4">
+          {/* Animated spinner */}
+          <div className="relative">
+            <div className="w-10 h-10 border-2 border-terminal-border rounded-full" />
+            <div className="absolute inset-0 w-10 h-10 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+          </div>
           <span className="text-zinc-500 text-data font-terminal">Cargando dashboard...</span>
         </div>
       </div>
@@ -162,8 +175,21 @@ export default function AdminDashboardPage() {
   if (error || !data) {
     return (
       <div className="terminal-panel">
-        <div className="px-panel py-8 text-center">
-          <span className="text-negative text-data font-terminal">{error || 'Error'}</span>
+        <div className="px-panel py-12 flex flex-col items-center justify-center gap-4">
+          {/* Error icon */}
+          <div className="w-12 h-12 rounded-full border-2 border-negative/30 flex items-center justify-center">
+            <span className="text-negative text-xl">⚠</span>
+          </div>
+          <span className="text-negative text-data font-terminal">{error || 'Error al cargar datos'}</span>
+          <p className="text-xxs text-zinc-500 font-terminal text-center max-w-xs">
+            Verificá tu conexión o intentá de nuevo
+          </p>
+          <button
+            onClick={fetchDashboard}
+            className="px-4 py-2 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors"
+          >
+            Reintentar
+          </button>
         </div>
       </div>
     )
