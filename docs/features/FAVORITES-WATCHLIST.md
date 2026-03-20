@@ -337,6 +337,16 @@ export function FollowButton({ slug, displayName }: FollowButtonProps) {
 
 **Shipped in:** 7fba601 (Watchlist Phase 1-2) — 2026-03-20
 
+### Phase 2.5: Urgency Indicators ✅ COMPLETE
+- [x] "Days until" countdown for upcoming remates
+- [x] Urgent highlighting for ≤3 day remates (pulsing green badge)
+- [x] Prominent alert banner for imminent remates
+- [x] Visual differentiation: urgent vs regular events
+
+**Shipped in:** bb76eb8 (Urgency countdown) — 2026-03-20
+
+**Lock-in impact:** Urgency creates habit of daily return visits. Users treat these as "their" remates.
+
 ### Phase 3: Notifications (Future - PRO)
 - [ ] Email notifications for new remates
 - [ ] Push notifications (PWA)
