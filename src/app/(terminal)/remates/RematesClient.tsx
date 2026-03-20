@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { normalizeUrl } from '@/lib/utils/url'
@@ -911,19 +912,37 @@ export default function RematesPage() {
         {/* -- Auction rows ----------------------------------------- */}
         <div className="divide-y-0">
           {filteredAuctions.length === 0 ? (
-            <div className="px-panel py-8 text-center">
-              <p className="text-data text-zinc-500 font-terminal">
-                No hay remates para este periodo con los filtros seleccionados.
-              </p>
-              <button
-                onClick={() => {
-                  setFilterProvince('')
-                  setFilterType('')
-                }}
-                className="mt-3 text-xxs text-accent hover:text-accent-bright font-terminal transition-colors"
-              >
-                LIMPIAR FILTROS
-              </button>
+            <div className="px-panel py-10 text-center space-y-4">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-zinc-800/50 border border-zinc-700/50 mb-2">
+                <svg className="w-7 h-7 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-data text-zinc-400 font-terminal font-medium">
+                  No hay remates para este período
+                </p>
+                <p className="text-xxs text-zinc-600 font-terminal mt-1">
+                  Probá ajustando los filtros o el rango de fechas
+                </p>
+              </div>
+              <div className="flex items-center justify-center gap-3 pt-2">
+                <button
+                  onClick={() => {
+                    setFilterProvince('')
+                    setFilterType('')
+                  }}
+                  className="px-3 py-1.5 text-xxs text-accent hover:text-accent-bright font-terminal transition-colors border border-accent/30 rounded hover:bg-accent/10"
+                >
+                  LIMPIAR FILTROS
+                </button>
+                <Link
+                  href="/newsletter"
+                  className="px-3 py-1.5 text-xxs text-zinc-400 hover:text-zinc-300 font-terminal transition-colors border border-zinc-700 rounded hover:bg-zinc-800/50"
+                >
+                  📧 RECIBIR ALERTAS
+                </Link>
+              </div>
             </div>
           ) : (
             filteredAuctions.map((auction, index) => (
