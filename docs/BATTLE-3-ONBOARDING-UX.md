@@ -241,10 +241,10 @@ CREATE TABLE point_transactions (
 - [x] Success state mejorado (HUNTER/CLOSER) ✅ 6a899ad
 - [x] Admin dashboard spinner + retry (NEXO) ✅ 09c69d1
 
-### Día 2 — Onboarding Flow (3-4h)
-- [ ] Empty dashboard wizard "Primeros pasos" (CLOSER)
-- [ ] Empty states pattern (copiar DTEHistory) (NEXO)
-- [ ] WelcomeChecklist scroll fix (CLOSER)
+### Día 2 — Onboarding Flow (3-4h) ✅ COMPLETE
+- [x] Empty dashboard wizard "Primeros pasos" (CLOSER) ✅ ecd16d6
+- [x] Empty states pattern (copiar DTEHistory) (NEXO) ✅ eb19204, 6247093, 23b796a
+- [x] WelcomeChecklist scroll fix (CLOSER) ✅ 24bbaab
 
 ### Día 3-4 — Sistema de Puntos (4-6h)
 - [ ] DB schema (VIGIL)
