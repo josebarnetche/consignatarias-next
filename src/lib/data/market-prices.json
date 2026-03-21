@@ -170,73 +170,73 @@
   },
   "categories": {
     "novillos": {
-      "current": 4453,
-      "prev": 4476.31,
-      "change": -0.5,
-      "source": "MAG (derived from INMAG)",
+      "current": 4453.13,
+      "prev": 4453,
+      "change": 0,
+      "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 405
+      "latestVolume": 813
     },
     "novillitos": {
-      "current": 4230,
-      "prev": 4775.21,
-      "change": -11.4,
-      "source": "MAG (derived from INMAG)",
+      "current": 4783.98,
+      "prev": 4230,
+      "change": 13.1,
+      "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 754
+      "latestVolume": 1750
     },
     "vaquillonas": {
-      "current": 4008,
-      "prev": 4860,
-      "change": -17.5,
-      "source": "MAG (derived from INMAG)",
+      "current": 4599.53,
+      "prev": 4008,
+      "change": 14.8,
+      "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 594
+      "latestVolume": 2741
     },
     "vacas": {
-      "current": 3206,
-      "prev": 2700.19,
-      "change": 18.7,
-      "source": "MAG (derived from INMAG)",
-      "latestVolume": 704
+      "current": 2554.1,
+      "prev": 3206,
+      "change": -20.3,
+      "source": "mercadoagroganadero.com.ar (observed)",
+      "latestVolume": 2802
     },
     "toros": {
-      "current": 2895,
-      "prev": 2872.36,
-      "change": 0.8,
-      "source": "MAG (derived from INMAG)",
+      "current": 2661.94,
+      "prev": 2895,
+      "change": -8.1,
+      "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 46
+      "latestVolume": 228
     },
     "terneros": {
       "current": 4898,
-      "prev": 4907,
-      "change": -0.2,
+      "prev": 4898,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
-    "current": 230.5,
-    "prev": 229,
-    "change": 0.7,
+    "current": 229.5,
+    "prev": 230.5,
+    "change": -0.4,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1420,
-    "prev": 1430,
-    "change": -0.7,
+    "current": 1425,
+    "prev": 1420,
+    "change": 0.4,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
-    "current": 1415,
+    "current": 1410,
     "prev": 1415,
-    "change": 0,
+    "change": -0.4,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-03-20",
+  "lastUpdate": "2026-03-21",
   "provinceEntry": {
     "date": "2026-03-20",
     "totalCabezas": 8577,
