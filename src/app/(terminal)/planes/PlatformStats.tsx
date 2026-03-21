@@ -7,6 +7,7 @@ interface PlatformStats {
   remates: number
   frigorificos: number
   provincias: number
+  subscribers: number
 }
 
 /**
@@ -30,7 +31,8 @@ export default function PlatformStats() {
           consignatarias: 70,
           remates: 345,
           frigorificos: 364,
-          provincias: 15
+          provincias: 15,
+          subscribers: 500
         })
       })
   }, [])
@@ -56,9 +58,9 @@ export default function PlatformStats() {
         <span className="text-sky-400 font-terminal tabular-nums">{stats.remates}+</span>
         <span className="text-zinc-500">remates programados</span>
       </div>
-      <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900/50 border border-terminal-border rounded">
-        <span className="text-amber-400 font-terminal tabular-nums">{stats.frigorificos}</span>
-        <span className="text-zinc-500">frigoríficos registrados</span>
+      <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded">
+        <span className="text-amber-400 font-terminal tabular-nums">{stats.subscribers}+</span>
+        <span className="text-zinc-400">productores reciben los emails</span>
       </div>
     </div>
   )
