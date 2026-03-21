@@ -3,8 +3,8 @@ import Link from 'next/link'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
-  title: 'Glosario Ganadero — 38 Términos del Mercado | Consignatarias.com.ar',
-  description: 'Glosario completo con 38 definiciones del mercado ganadero argentino: remate, consignataria, INMAG, invernada, feedlot, Liniers, categorías de hacienda, razas y más.',
+  title: 'Glosario Ganadero — 39 Términos del Mercado | Consignatarias.com.ar',
+  description: 'Glosario completo con 39 definiciones del mercado ganadero argentino: remate, consignataria, INMAG, DT-e, invernada, feedlot, Liniers, categorías de hacienda, razas y más.',
   openGraph: {
     title: 'Glosario Ganadero — Consignatarias.com.ar',
     description: 'Glosario con definiciones de terminos del mercado ganadero argentino: remate, consignataria, INMAG, invernada, cria, frigorifico y mas.',
@@ -128,6 +128,11 @@ const GLOSSARY_TERMS: GlossaryTerm[] = [
   {
     term: 'DEP',
     definition: 'Diferencia Esperada en la Progenie. Indicador genético que predice cómo se comportarán los hijos de un reproductor respecto al promedio de la raza. Se usa para selección de toros en cabañas.',
+  },
+  {
+    term: 'DT-e',
+    definition: 'Documento de Tránsito Electrónico. Documento digital obligatorio emitido por SENASA que autoriza el traslado de ganado entre establecimientos en Argentina. Reemplazó a la guía de traslado en papel y tiene validez de 72 horas desde su emisión.',
+    link: { href: '/dte', text: 'Ver guía completa sobre DT-e →' },
   },
   {
     term: 'Faena',
