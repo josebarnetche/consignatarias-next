@@ -7,7 +7,7 @@
 | Phase 1: Core Follow | ✅ DONE | FollowButton, useFavorites hook, /mi-cuenta/favoritos |
 | Phase 2: Dashboard | ✅ DONE | Unified calendar, next remate preview, empty state |
 | Phase 3: Notifications | 🔜 PENDING | Email/push alerts |
-| Phase 4: Social Proof | 🔜 PENDING | Follower counts for consignatarias |
+| Phase 4: Social Proof | ✅ PARTIAL | Follower count on /go/[slug] live |
 
 **Lock-in Score:** HIGH — Foundation shipped, core habit loop enabled.
 
@@ -366,7 +366,7 @@ export function FollowButton({ slug, displayName }: FollowButtonProps) {
 - [ ] Show follower count to consignatarias in PRO dashboard
 - [ ] Top followed consignatarias section
 
-**Shipped in:** TBD (Follower count display) — 2026-03-21
+**Shipped in:** c05dfa9 (Follower count display) — 2026-03-21
 
 **Lock-in impact:** Social proof creates bandwagon effect. Users see validation from peers.
 
