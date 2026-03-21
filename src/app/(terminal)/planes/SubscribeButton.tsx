@@ -116,18 +116,24 @@ export default function SubscribeButton() {
   }
 
   return (
-    <button
-      onClick={handleSubscribe}
-      disabled={loading}
-      className="block w-full text-center py-2 text-data font-terminal uppercase tracking-wider transition-colors cursor-pointer disabled:opacity-50"
-      style={{
-        border: '1px solid rgba(245, 158, 11, 0.5)',
-        color: '#fbbf24',
-        background: 'rgba(245, 158, 11, 0.08)',
-        borderRadius: '2px',
-      }}
-    >
-      {loading ? '🔒 Abriendo Rebill (pago seguro)...' : '★ Asegurar precio fundador →'}
-    </button>
+    <div className="space-y-2">
+      <button
+        onClick={handleSubscribe}
+        disabled={loading}
+        className="block w-full text-center py-2 text-data font-terminal uppercase tracking-wider transition-colors cursor-pointer disabled:opacity-50"
+        style={{
+          border: '1px solid rgba(245, 158, 11, 0.5)',
+          color: '#fbbf24',
+          background: 'rgba(245, 158, 11, 0.08)',
+          borderRadius: '2px',
+        }}
+      >
+        {loading ? '🔒 Abriendo Rebill (pago seguro)...' : '★ Asegurar precio fundador →'}
+      </button>
+      {/* Risk reversal micro-copy — reduces friction at conversion point */}
+      <p className="text-center text-[10px] text-zinc-500 font-terminal">
+        Cancelás cuando quieras · Sin permanencia
+      </p>
+    </div>
   )
 }

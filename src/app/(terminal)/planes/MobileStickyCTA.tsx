@@ -104,6 +104,10 @@ export default function MobileStickyCTA() {
             : '★ Asegurar PRO $45.000/mes — Precio fundador'
         }
       </button>
+      {/* Risk reversal micro-copy */}
+      <p className="text-center text-[10px] text-zinc-500 font-terminal mt-1.5">
+        Cancelás cuando quieras · Sin permanencia
+      </p>
     </div>
   )
 }
