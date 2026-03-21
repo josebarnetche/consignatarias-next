@@ -44,6 +44,10 @@ const FAQ_ITEMS = [
     question: '¿Qué incluye el perfil verificado?',
     answer: 'Tu perfil aparece con el badge PRO destacado en dorado, tus remates se muestran con tratamiento visual especial, y accedés a estadísticas de visitas a tu perfil.',
   },
+  {
+    question: '¿Vale la pena la inversión?',
+    answer: 'Un solo comprador nuevo de tus remates te devuelve la inversión del año. Cada email llega a +500 productores activos buscando hacienda. El costo por contacto es menos de $90.',
+  },
 ]
 
 export const metadata: Metadata = {
@@ -352,6 +356,16 @@ export default function PlanesPage() {
               Inmediato. Una vez confirmado el pago, tu perfil PRO se activa
               automáticamente y tus remates empiezan a promocionarse en el
               próximo envío de newsletter.
+            </p>
+          </div>
+          <div className="border-t border-terminal-border pt-4">
+            <p className="text-zinc-300 mb-1">
+              ¿Vale la pena la inversión?
+            </p>
+            <p className="text-zinc-500">
+              Un solo comprador nuevo de tus remates te devuelve la inversión
+              del año. Cada email llega a +500 productores activos buscando
+              hacienda. El costo por contacto es menos de $90.
             </p>
           </div>
         </div>
