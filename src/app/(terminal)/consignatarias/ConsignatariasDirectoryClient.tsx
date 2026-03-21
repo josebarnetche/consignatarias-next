@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { TYPE_COLORS, TYPE_LABELS_SHORT } from '@/lib/ui/tokens'
+import { TopFollowed } from '@/components/ui/TopFollowed'
 
 interface DirectoryEntry {
   slug: string
@@ -40,7 +41,10 @@ export default function ConsignatariasDirectoryClient({ entries }: { entries: Di
   const totalUpcoming = entries.reduce((s, e) => s + e.upcoming, 0)
 
   return (
-    <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 space-y-0">
+    <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3">
+      <div className="flex gap-4">
+        {/* Main content */}
+        <div className="flex-1 min-w-0 space-y-0">
       {/* HEADER */}
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between flex-wrap gap-2">
@@ -213,6 +217,15 @@ export default function ConsignatariasDirectoryClient({ entries }: { entries: Di
             VER REMATES
           </Link>
         </div>
+      </div>
+        </div>
+        
+        {/* Sidebar — Social Proof */}
+        <aside className="hidden lg:block w-64 flex-shrink-0">
+          <div className="sticky top-4">
+            <TopFollowed />
+          </div>
+        </aside>
       </div>
     </div>
   )

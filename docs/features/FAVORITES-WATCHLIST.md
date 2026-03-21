@@ -361,14 +361,22 @@ export function FollowButton({ slug, displayName }: FollowButtonProps) {
 - [ ] Push notifications (PWA)
 - [ ] WhatsApp integration
 
-### Phase 4: Social Proof ✅ PARTIAL
+### Phase 4: Social Proof ✅ COMPLETE
 - [x] "X productores siguen esta consignataria" on /go/[slug] page ✅
 - [ ] Show follower count to consignatarias in PRO dashboard
-- [ ] Top followed consignatarias section
+- [x] Top followed consignatarias section ✅
 
-**Shipped in:** c05dfa9 (Follower count display) — 2026-03-21
+**Shipped in:** 
+- c05dfa9 (Follower count display) — 2026-03-21
+- PENDING_COMMIT (Top Followed sidebar) — 2026-03-21
 
 **Lock-in impact:** Social proof creates bandwagon effect. Users see validation from peers.
+
+**Top Followed Implementation:**
+- New `TopFollowed` component displays most-followed consignatarias
+- API endpoint `/api/top-followed` serves aggregated data
+- Integrated as sticky sidebar on /consignatarias directory page (desktop only)
+- Graceful degradation: hides if no data available
 
 ## Success Metrics
 
