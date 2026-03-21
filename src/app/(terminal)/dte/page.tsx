@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema, HowToSchema } from '@/components/seo/JsonLd'
-import { FileText, Shield, Clock, CheckCircle2, ArrowRight, Upload, TrendingUp, AlertTriangle } from 'lucide-react'
+import { FileText, Shield, Clock, CheckCircle2, ArrowRight, Upload, AlertTriangle } from 'lucide-react'
 
 // SEO-optimized metadata targeting "DT-e", "documento de tránsito electrónico", "guía de traslado ganado"
 export const metadata: Metadata = {
