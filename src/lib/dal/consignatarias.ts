@@ -1,5 +1,6 @@
 import { getProfile as getStaticProfile } from '@/lib/data/consignataria-slugs'
 import { createServiceClient } from '@/lib/supabase'
+import { unstable_cache } from 'next/cache'
 
 export interface EnrichedProfile {
   canonicalSlug: string
@@ -89,5 +90,55 @@ export async function getConsignatariaProfile(slug: string): Promise<EnrichedPro
       verified: false,
       featured: false,
     }
+  }
+}
+
+/**
+ * Get follower count for a consignataria
+ * Social proof: "X productores siguen esta consignataria"
+ * Lock-in: Creates social validation and FOMO
+ */
+async function _getFollowerCount(slug: string): Promise<number> {
+  try {
+    const service = createServiceClient()
+    const { data, error } = await service
+      .from('consignataria_followers')
+      .select('follower_count')
+      .eq('consignataria_slug', slug)
+      .single()
+
+    if (error || !data) return 0
+    return data.follower_count || 0
+  } catch {
+    return 0
+  }
+}
+
+// Cached version - revalidates every 60 seconds
+export const getFollowerCount = unstable_cache(
+  _getFollowerCount,
+  ['consignataria-followers'],
+  { revalidate: 60 }
+)
+
+/**
+ * Get top followed consignatarias
+ * Used for "trending" or "popular" sections
+ */
+export async function getTopFollowedConsignatarias(limit = 10): Promise<{ slug: string; count: number }[]> {
+  try {
+    const service = createServiceClient()
+    const { data } = await service
+      .from('consignataria_followers')
+      .select('consignataria_slug, follower_count')
+      .order('follower_count', { ascending: false })
+      .limit(limit)
+
+    return (data || []).map(d => ({
+      slug: d.consignataria_slug,
+      count: d.follower_count,
+    }))
+  } catch {
+    return []
   }
 }

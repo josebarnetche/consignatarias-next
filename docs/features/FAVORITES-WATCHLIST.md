@@ -361,9 +361,14 @@ export function FollowButton({ slug, displayName }: FollowButtonProps) {
 - [ ] Push notifications (PWA)
 - [ ] WhatsApp integration
 
-### Phase 4: Social Proof (Future)
-- [ ] Show follower count to consignatarias (PRO dashboard)
-- [ ] "123 productores siguen a esta consignataria"
+### Phase 4: Social Proof ✅ PARTIAL
+- [x] "X productores siguen esta consignataria" on /go/[slug] page ✅
+- [ ] Show follower count to consignatarias in PRO dashboard
+- [ ] Top followed consignatarias section
+
+**Shipped in:** TBD (Follower count display) — 2026-03-21
+
+**Lock-in impact:** Social proof creates bandwagon effect. Users see validation from peers.
 
 ## Success Metrics
 

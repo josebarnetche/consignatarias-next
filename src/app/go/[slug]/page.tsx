@@ -3,7 +3,7 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getCanonicalSlug, getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
-import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
+import { getConsignatariaProfile, getFollowerCount } from '@/lib/dal/consignatarias'
 import { getEntityTier } from '@/lib/features'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
@@ -11,6 +11,7 @@ import { ConsignatariaProfileSchema, BreadcrumbSchema, EventSchema } from '@/com
 import { AddToCalendarButton } from '@/components/ui/AddToCalendarButton'
 import WhatsAppButton from '@/components/ui/WhatsAppButton'
 import { FollowButton } from '@/components/ui/FollowButton'
+import { FollowerCount } from '@/components/ui/FollowerCount'
 
 const auctions = rematesData as Auction[]
 
@@ -93,7 +94,10 @@ export default async function GoLandingPage({ params }: Props) {
     redirect(`/go/${canonical}`)
   }
 
-  const profile = await getConsignatariaProfile(canonical)
+  const [profile, followerCount] = await Promise.all([
+    getConsignatariaProfile(canonical),
+    getFollowerCount(canonical),
+  ])
   if (!profile) notFound()
 
   const tier = await getEntityTier('consignataria', canonical)
@@ -173,9 +177,10 @@ export default async function GoLandingPage({ params }: Props) {
               </div>
             )}
 
-            {/* Follow Button - Core Lock-in */}
-            <div className="mt-4">
+            {/* Follow Button + Social Proof - Core Lock-in */}
+            <div className="mt-4 flex flex-col items-center gap-2">
               <FollowButton slug={canonical} displayName={profile.displayName} size="md" />
+              <FollowerCount count={followerCount} />
             </div>
           </div>
 
