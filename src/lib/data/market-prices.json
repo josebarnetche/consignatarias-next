@@ -166,12 +166,12 @@
       }
     ],
     "latestVolume": 8577,
-    "periodVolume": 162574
+    "periodVolume": 156623
   },
   "categories": {
     "novillos": {
       "current": 4453,
-      "prev": 4453.13,
+      "prev": 4453,
       "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
@@ -179,31 +179,31 @@
     },
     "novillitos": {
       "current": 4230,
-      "prev": 4783.98,
-      "change": -11.6,
+      "prev": 4230,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1750
     },
     "vaquillonas": {
       "current": 4008,
-      "prev": 4599.53,
-      "change": -12.9,
+      "prev": 4008,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 2741
     },
     "vacas": {
       "current": 3206,
-      "prev": 2554.1,
-      "change": 25.5,
+      "prev": 3206,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 2802
     },
     "toros": {
       "current": 2895,
-      "prev": 2661.94,
-      "change": 8.8,
+      "prev": 2895,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 228
@@ -236,7 +236,7 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-03-22",
+  "lastUpdate": "2026-03-23",
   "provinceEntry": {
     "date": "2026-03-20",
     "totalCabezas": 8577,
