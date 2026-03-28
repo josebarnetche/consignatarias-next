@@ -114,11 +114,11 @@ async function _getFollowerCount(slug: string): Promise<number> {
   }
 }
 
-// Cached version - revalidates every 60 seconds
+// Cached version - revalidates hourly (follower counts don't change fast)
 export const getFollowerCount = unstable_cache(
   _getFollowerCount,
   ['consignataria-followers'],
-  { revalidate: 60 }
+  { revalidate: 3600 }
 )
 
 /**

@@ -36,8 +36,8 @@ export interface MagEntryData {
   period: string
 }
 
-// ISR: revalidate every 5 minutes so Supabase data (verified, contact info) refreshes
-export const revalidate = 300
+// ISR: revalidate daily - data rarely changes, saves Vercel costs
+export const revalidate = 86400
 
 const auctions = rematesData as Auction[]
 
