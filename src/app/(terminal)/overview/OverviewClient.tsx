@@ -497,8 +497,11 @@ export default function HomePage() {
                   return (
                     <div
                       key={idx}
-                      className="flex-1 rounded-t-sm gradient-bar-fill-positive transition-all duration-300"
-                      style={{ height: `${heightPct}%` }}
+                      className="flex-1 min-w-0 rounded-t-sm transition-all duration-300 hover:opacity-80"
+                      style={{ 
+                        height: `${heightPct}%`,
+                        background: 'linear-gradient(to top, #059669, #34d399)',
+                      }}
                       title={`${marketPrices.inmag.series[idx].date}: ${fmt(val)}`}
                     />
                   );
