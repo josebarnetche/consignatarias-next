@@ -135,12 +135,12 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
           {CATEGORIAS.map(cat => {
             const price = prices.categories[cat.value]
             return (
-              <div key={cat.value} className="text-center">
-                <div className="text-xxs text-zinc-500 uppercase">{cat.label}</div>
-                <div className="text-sm text-zinc-200 font-mono">
+              <Link key={cat.value} href={`/mercado/${cat.value}`} className="text-center group">
+                <div className="text-xxs text-zinc-500 uppercase group-hover:text-amber-400 transition-colors">{cat.label}</div>
+                <div className="text-sm text-zinc-200 font-mono group-hover:text-amber-400 transition-colors">
                   {price ? fmtCurrency(price.current) : '—'}
                 </div>
-              </div>
+              </Link>
             )
           })}
         </div>

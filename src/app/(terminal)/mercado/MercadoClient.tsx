@@ -256,9 +256,14 @@ export default function MercadoPage() {
               {categoryRows.map((cat) => {
                 const barPct = Math.round((cat.current / maxCategoryPrice) * 100)
                 const isPositive = cat.change >= 0
+                const slug = cat.name.toLowerCase()
                 return (
-                  <tr key={cat.name} className={isPositive ? 'bg-positive/[0.03]' : 'bg-negative/[0.03]'}>
-                    <td className="font-semibold text-zinc-200">{cat.name}</td>
+                  <tr key={cat.name} className={`${isPositive ? 'bg-positive/[0.03]' : 'bg-negative/[0.03]'} hover:bg-zinc-800/50 cursor-pointer transition-colors`}>
+                    <td className="font-semibold text-zinc-200">
+                      <Link href={`/mercado/${slug}`} className="hover:text-amber-400 transition-colors">
+                        {cat.name}
+                      </Link>
+                    </td>
                     <td className="num tabular-nums text-zinc-100">{fmt(cat.current)}</td>
                     <td className="num tabular-nums text-zinc-500">{fmt(cat.prev)}</td>
                     <td className={`num tabular-nums ${isPositive ? 'val-positive' : 'val-negative'}`}>
@@ -282,6 +287,24 @@ export default function MercadoPage() {
               })}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* ── Calculator CTA ──────────────────────────────────────── */}
+      <div className="terminal-panel bg-gradient-to-r from-amber-950/20 to-transparent border-amber-800/30">
+        <div className="px-panel py-4 flex items-center justify-between gap-4">
+          <div>
+            <span className="text-zinc-200 font-medium">¿Cuánto vale tu tropa?</span>
+            <p className="text-xxs text-zinc-500 mt-0.5">
+              Calculá el valor estimado usando los precios INMAG actualizados
+            </p>
+          </div>
+          <Link 
+            href="/calculadora" 
+            className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-zinc-900 font-medium text-sm rounded transition-colors whitespace-nowrap"
+          >
+            Calcular valor →
+          </Link>
         </div>
       </div>
 
