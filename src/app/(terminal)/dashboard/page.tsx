@@ -195,6 +195,31 @@ export default async function DashboardPage() {
       }
     : null
 
+  // Get DTE count for this user
+  let dteCount = 0
+  const { count: userDteCount } = await service
+    .from('user_dtes')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+
+  dteCount = userDteCount ?? 0
+
+  // Check if user has already redeemed referral bonus
+  // Note: referral_redemptions table may not exist yet - gracefully handle
+  let alreadyRedeemed = false
+  try {
+    const { data: referralRedemption } = await service
+      .from('referral_redemptions')
+      .select('id')
+      .eq('user_id', user.id)
+      .single()
+
+    alreadyRedeemed = !!referralRedemption
+  } catch {
+    // Table may not exist yet - default to false
+    alreadyRedeemed = false
+  }
+
   return (
     <DashboardClient
       email={user.email!}
@@ -210,6 +235,8 @@ export default async function DashboardPage() {
       subscription={subscription}
       frigorifico={frigorifico}
       frigoClaims={frigoClaims || []}
+      dteCount={dteCount}
+      alreadyRedeemed={alreadyRedeemed}
     />
   )
 }

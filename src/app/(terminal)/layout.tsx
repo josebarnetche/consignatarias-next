@@ -5,19 +5,26 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import AuthButton from "@/components/auth/AuthButton";
 import OnboardingPrompt from "@/components/onboarding/OnboardingPrompt";
+import { createClient } from "@/lib/supabase-browser";
 
 /* ------------------------------------------------------------------ */
 /*  NAV ITEMS                                                          */
 /* ------------------------------------------------------------------ */
-const NAV_ITEMS = [
+interface NavItem {
+  label: string;
+  href: string;
+  authRequired?: boolean;
+}
+
+const NAV_ITEMS: NavItem[] = [
   { label: "INICIO", href: "/overview" },
   { label: "REMATES", href: "/remates" },
   { label: "CONSIGNATARIAS", href: "/consignatarias" },
   { label: "FRIGORIFICOS", href: "/frigorificos" },
   { label: "MERCADO", href: "/mercado" },
-  { label: "MIS GUÍAS", href: "/mi-cuenta/guias" },
+  { label: "MIS GUÍAS", href: "/mi-cuenta/guias", authRequired: true },
   { label: "PLANES", href: "/planes" },
-] as const;
+];
 
 /* ------------------------------------------------------------------ */
 /*  CLOCK                                                              */
@@ -74,6 +81,39 @@ export default function TerminalLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [stats, setStats] = useState({ remates: 0, consignatarias: 0, provincias: 0 });
+
+  // Check auth state
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      setIsAuthenticated(!!data.user);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session?.user);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Fetch platform stats for activity bar
+  useEffect(() => {
+    fetch('/api/stats/platform')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setStats({
+            remates: data.data.remates || 0,
+            consignatarias: data.data.consignatarias || 0,
+            provincias: data.data.provincias || 0,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Filter nav items based on auth
+  const visibleNavItems = NAV_ITEMS.filter(item => !item.authRequired || isAuthenticated);
 
   return (
     <div className="bg-terminal-bg text-zinc-100 min-h-screen flex flex-col font-terminal text-sm">
@@ -81,15 +121,15 @@ export default function TerminalLayout({
       <div className="activity-bar hidden md:flex justify-between">
         <div className="flex items-center gap-3">
           <span className="text-zinc-500 tracking-widest uppercase">
-            366 REMATES
+            {stats.remates || '—'} REMATES
           </span>
           <span className="text-terminal-border">&middot;</span>
           <span className="text-zinc-500 tracking-widest uppercase">
-            77 CONSIGNATARIAS
+            {stats.consignatarias || '—'} CONSIGNATARIAS
           </span>
           <span className="text-terminal-border">&middot;</span>
           <span className="text-zinc-500 tracking-widest uppercase">
-            12 PROVINCIAS
+            {stats.provincias || '—'} PROVINCIAS
           </span>
         </div>
         <div className="flex items-center">
@@ -114,7 +154,7 @@ export default function TerminalLayout({
             {/* -- NAV (desktop) -- */}
             <nav className="hidden md:flex items-center">
               <span className="text-terminal-border mr-3">|</span>
-              {NAV_ITEMS.map((item, i) => {
+              {visibleNavItems.map((item, i) => {
                 const active = isNavActive(pathname, item.href);
                 return (
                   <span key={item.href} className="flex items-center">
@@ -179,7 +219,7 @@ export default function TerminalLayout({
             }}
           />
 
-          {NAV_ITEMS.map((item, i) => {
+          {visibleNavItems.map((item, i) => {
             const active = isNavActive(pathname, item.href);
             return (
               <span key={item.href} className="flex items-center flex-shrink-0">

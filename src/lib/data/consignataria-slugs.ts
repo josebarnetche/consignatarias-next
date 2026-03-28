@@ -11,7 +11,7 @@ export interface ConsignatariaProfile {
 }
 
 /* ------------------------------------------------------------------ */
-/*  PROFILE REGISTRY  (~60 unique entities)                            */
+/*  PROFILE REGISTRY  (83 unique entities)                             */
 /* ------------------------------------------------------------------ */
 
 const PROFILES: ConsignatariaProfile[] = [

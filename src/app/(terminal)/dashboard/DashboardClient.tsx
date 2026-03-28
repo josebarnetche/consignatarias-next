@@ -109,6 +109,8 @@ interface Props {
   subscription: Subscription | null
   frigorifico?: Frigorifico | null
   frigoClaims?: FrigoClaim[]
+  dteCount?: number
+  alreadyRedeemed?: boolean
 }
 
 function formatDate(d: string) {
@@ -122,6 +124,7 @@ type TabKey = 'resumen' | 'remates' | 'editar' | 'resultados' | 'plan' | 'frigor
 export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
   auctionResults, viewCount, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
+  dteCount = 0, alreadyRedeemed = false,
 }: Props) {
   const showChecklist = consignataria && completedFields && Object.values(completedFields).filter(Boolean).length < 5
   const searchParams = useSearchParams()
@@ -291,11 +294,11 @@ export default function DashboardClient({
                 website: consignataria.website,
                 description: consignataria.description,
                 logo: consignataria.logo_url,
-                dteCount: 0, // TODO: Pass actual DTE count
+                dteCount,
                 remateCount: ownerAuctions.length,
                 hasResults: auctionResults.length > 0,
               }}
-              alreadyRedeemed={false} // TODO: Track in DB
+              alreadyRedeemed={alreadyRedeemed}
             />
           )}
 
