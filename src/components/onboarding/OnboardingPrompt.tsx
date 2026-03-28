@@ -10,8 +10,13 @@ import type { User } from '@supabase/supabase-js';
  * Disappears after first upload or on /mi-cuenta/guias page.
  * 
  * Shipped via Insight #92 — 2026-03-18
+ * 
+ * HIDDEN: 2026-03-28 — Feature poco desarrollado, ocupa espacio en header.
+ * Reactivar cuando DTE esté más maduro.
  */
 export default function OnboardingPrompt() {
+  // Temporarily hidden — DTE feature not mature enough
+  return null;
   const [user, setUser] = useState<User | null>(null);
   const [dteCount, setDteCount] = useState<number | null>(null);
   const [dismissed, setDismissed] = useState(false);
