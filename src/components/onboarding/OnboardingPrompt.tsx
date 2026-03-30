@@ -72,7 +72,7 @@ export default function OnboardingPrompt() {
   const handleDismiss = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    sessionStorage.setItem(`dte_prompt_dismissed_${user.id}`, 'true');
+    if (user) sessionStorage.setItem(`dte_prompt_dismissed_${user.id}`, 'true');
     setDismissed(true);
   };
 
