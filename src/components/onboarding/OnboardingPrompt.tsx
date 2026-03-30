@@ -65,7 +65,7 @@ export default function OnboardingPrompt() {
   // - Still loading DTE count
   // - User has DTEs
   // - Dismissed this session
-  if (!user || dteCount === null || dteCount > 0 || dismissed) {
+  if (!user || dteCount === null || (dteCount ?? 0) > 0 || dismissed) {
     return null;
   }
 
