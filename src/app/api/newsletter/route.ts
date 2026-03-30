@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
+import { sendNewsletterWelcome } from '@/lib/email'
 
 export async function POST(request: NextRequest) {
   try {
@@ -50,10 +51,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert new subscriber
+    const normalizedEmail = email.toLowerCase().trim()
     const { error } = await supabase
       .from('newsletter_subscribers')
       .insert({
-        email: email.toLowerCase().trim(),
+        email: normalizedEmail,
         source,
         status: 'active',
         subscribed_at: new Date().toISOString(),
@@ -66,6 +68,11 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
+
+    // Send welcome email (fire and forget - don't block response)
+    sendNewsletterWelcome({ to: normalizedEmail, source }).catch((err) => {
+      console.error('Welcome email error:', err)
+    })
 
     return NextResponse.json({ 
       success: true, 

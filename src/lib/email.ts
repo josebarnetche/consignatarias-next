@@ -916,3 +916,96 @@ export async function sendNewRemateAlert({
     `,
   }).catch(() => {})
 }
+
+/* ------------------------------------------------------------------ */
+/*  NEWSLETTER SUBSCRIBER WELCOME                                      */
+/* ------------------------------------------------------------------ */
+
+interface NewsletterWelcomeParams {
+  to: string
+  source?: string
+}
+
+/**
+ * Sent to new newsletter subscribers.
+ * Different from user welcome - these are anonymous subscribers interested in remates.
+ */
+export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomeParams) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+
+  const sourceContext = source === 'remates' 
+    ? 'Te suscribiste desde nuestra página de remates.'
+    : source === 'frigorificos'
+    ? 'Te suscribiste desde nuestra sección de frigoríficos.'
+    : 'Te suscribiste a nuestro newsletter.'
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to,
+      subject: '🐄 Bienvenido al newsletter de Consignatarias.com.ar',
+      html: `
+        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
+          <h2 style="color:#fff;font-size:18px;margin:0 0 16px">¡Gracias por suscribirte!</h2>
+          
+          <p style="color:#a1a1aa;font-size:13px;line-height:1.6;margin:0 0 16px">
+            ${sourceContext}
+          </p>
+
+          <p style="color:#a1a1aa;font-size:13px;line-height:1.6;margin:0 0 20px">
+            A partir de ahora vas a recibir:
+          </p>
+
+          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;margin-bottom:20px">
+            <p style="color:#e4e4e7;font-size:12px;margin:0;line-height:1.8">
+              📅 <strong>Resumen semanal</strong> de los remates más importantes<br>
+              📊 <strong>Precios INMAG</strong> y novedades del mercado<br>
+              🐄 <strong>Alertas</strong> de remates en las provincias que te interesan
+            </p>
+          </div>
+
+          <div style="background:#16161d;border:1px solid #22c55e;border-left:3px solid #22c55e;border-radius:4px;padding:16px;margin-bottom:20px">
+            <p style="color:#22c55e;font-size:12px;margin:0 0 8px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
+              💡 ¿Sabías que podés crear una cuenta gratis?
+            </p>
+            <p style="color:#a1a1aa;font-size:12px;margin:0;line-height:1.6">
+              Con una cuenta podés guardar tus guías DT-e, configurar alertas personalizadas y acceder a estadísticas de tus operaciones.
+            </p>
+            <p style="margin:12px 0 0">
+              <a href="${APP_URL}/registro" style="color:#22c55e;font-size:12px;text-decoration:none;font-weight:bold">
+                Crear cuenta gratis →
+              </a>
+            </p>
+          </div>
+
+          <div style="text-align:center;margin:24px 0">
+            <a href="${APP_URL}/remates" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
+              VER PRÓXIMOS REMATES
+            </a>
+          </div>
+
+          <div style="border-top:1px solid #27272a;padding-top:16px;margin-top:24px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 8px">
+              También podés explorar:
+            </p>
+            <p style="color:#a1a1aa;font-size:12px;margin:0;line-height:1.8">
+              → <a href="${APP_URL}/mercado/inmag" style="color:#22c55e;text-decoration:none">Precios INMAG actualizados</a><br>
+              → <a href="${APP_URL}/consignatarias" style="color:#22c55e;text-decoration:none">Directorio de consignatarias</a><br>
+              → <a href="${APP_URL}/frigorificos" style="color:#22c55e;text-decoration:none">Frigoríficos habilitados</a>
+            </p>
+          </div>
+
+          <p style="color:#3f3f46;font-size:10px;margin:24px 0 0">
+            Consignatarias.com.ar — Directorio ganadero
+            <br>
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#3f3f46">Desuscribirme</a>
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
