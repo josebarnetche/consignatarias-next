@@ -2,6 +2,9 @@ import { Metadata } from 'next'
 import OverviewClient from './OverviewClient'
 import { SectionBreadcrumbSchema, WebApplicationSchema } from '@/components/seo/JsonLd'
 
+// Regenerate every hour so TODAY stays fresh
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: 'Terminal de Mercado Ganadero Argentino',
   description: 'Dashboard unificado del mercado ganadero argentino. Remates próximos, precios INMAG, frigoríficos y referencias macro en tiempo real.',
