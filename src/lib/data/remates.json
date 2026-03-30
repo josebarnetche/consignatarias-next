@@ -2106,7 +2106,7 @@
     "catalogUrl": null,
     "source": "tv",
     "sourceUrl": "https://www.pedronoelireysrl.com.ar",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Haciendas Generales",
@@ -2125,7 +2125,7 @@
     "source": "web",
     "sourceUrl": "www.pedronoelireysrl.com.ar",
     "id": 112,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Remate General O'Farrell",
@@ -2144,26 +2144,7 @@
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
     "id": 113,
-    "status": "scheduled"
-  },
-  {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-03-30",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 114,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "UMC HV — Remate Feria",
@@ -2181,11 +2162,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/18f09d9f-d2e5-40b3-9deb-2ab219fc076d",
-    "id": 115,
-    "status": "scheduled"
+    "id": 114,
+    "status": "live"
   },
   {
-    "id": 116,
+    "id": 115,
     "title": "Haciendas Generales",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -2201,7 +2182,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.cooperativalehmann.coop/hacienda/remates",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Remate de Haciendas Generales",
@@ -2219,11 +2200,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "laganadera.com.ar",
-    "id": 117,
-    "status": "scheduled"
+    "id": 116,
+    "status": "live"
   },
   {
-    "id": 118,
+    "id": 117,
     "title": "Gordos, Conserva e Invernada - Totoras",
     "consignatariaName": "Agricultores Federados Argentinos SCL",
     "consignatariaSlug": "afa",
@@ -2257,11 +2238,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 119,
+    "id": 118,
     "status": "scheduled"
   },
   {
-    "id": 120,
+    "id": 119,
     "title": "Hacienda Gorda - San Basilio",
     "consignatariaName": "Eduardo A. Travaglia y Cia. SA",
     "consignatariaSlug": "eduardo-a-travaglia-y-cia-sa",
@@ -2280,7 +2261,7 @@
     "status": "scheduled"
   },
   {
-    "id": 121,
+    "id": 120,
     "title": "Gordo y Conserva",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -2314,7 +2295,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.jaureguilorda.com.ar",
-    "id": 122,
+    "id": 121,
     "status": "scheduled"
   },
   {
@@ -2333,7 +2314,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://saenz-valiente.com",
-    "id": 123,
+    "id": 122,
     "status": "scheduled"
   },
   {
@@ -2352,7 +2333,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "pkf.com.ar/",
-    "id": 124,
+    "id": 123,
     "status": "scheduled"
   },
   {
@@ -2371,7 +2352,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 125,
+    "id": 124,
     "status": "scheduled"
   },
   {
@@ -2390,7 +2371,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/cc9c4e59-3f88-4ea8-8993-406d3f893ea9",
-    "id": 126,
+    "id": 125,
     "status": "scheduled"
   },
   {
@@ -2409,7 +2390,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "facebook.com/siveroycia/?loc",
-    "id": 127,
+    "id": 126,
     "status": "scheduled"
   },
   {
@@ -2428,7 +2409,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.chsrl.com.ar",
-    "id": 128,
+    "id": 127,
     "status": "scheduled"
   },
   {
@@ -2447,7 +2428,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "laganadera.com.ar",
-    "id": 129,
+    "id": 128,
     "status": "scheduled"
   },
   {
@@ -2466,11 +2447,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.martinlalor.com.ar",
-    "id": 130,
+    "id": 129,
     "status": "scheduled"
   },
   {
-    "id": 131,
+    "id": 130,
     "title": "IderCor - Remate Pequeños Productores Capital",
     "consignatariaName": "IderCor (Instituto de Desarrollo Rural de Corrientes)",
     "consignatariaSlug": "idercor",
@@ -2489,7 +2470,7 @@
     "status": "scheduled"
   },
   {
-    "id": 132,
+    "id": 131,
     "title": "Gordo y Conserva",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -2508,7 +2489,7 @@
     "status": "scheduled"
   },
   {
-    "id": 133,
+    "id": 132,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -2542,11 +2523,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/Carlosjlansersa",
-    "id": 134,
+    "id": 133,
     "status": "scheduled"
   },
   {
-    "id": 135,
+    "id": 134,
     "title": "Remate Feria Villa Ángela",
     "consignatariaName": "Tradición Ganadera SA / Porro SRL",
     "consignatariaSlug": "tradicion-ganadera-sa-porro-srl",
@@ -2565,7 +2546,7 @@
     "status": "scheduled"
   },
   {
-    "id": 136,
+    "id": 135,
     "title": "Remate TV con fuerza Expoagro",
     "consignatariaName": "Colombo y Magliano SA",
     "consignatariaSlug": "colombo-y-magliano",
@@ -2584,7 +2565,7 @@
     "status": "scheduled"
   },
   {
-    "id": 137,
+    "id": 136,
     "title": "Haciendas Generales",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -2603,7 +2584,7 @@
     "status": "scheduled"
   },
   {
-    "id": 138,
+    "id": 137,
     "title": "Hacienda Gorda, Invernada y Cria",
     "consignatariaName": "Eduardo A. Travaglia y Cia. SA",
     "consignatariaSlug": "eduardo-a-travaglia-y-cia-sa",
@@ -2637,7 +2618,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.ivanofarrell.com.ar",
-    "id": 139,
+    "id": 138,
     "status": "scheduled"
   },
   {
@@ -2656,7 +2637,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 140,
+    "id": 139,
     "status": "scheduled"
   },
   {
@@ -2675,30 +2656,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.ivanofarrell.com.ar",
+    "id": 140,
+    "status": "scheduled"
+  },
+  {
     "id": 141,
-    "status": "scheduled"
-  },
-  {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-04-07",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 142,
-    "status": "scheduled"
-  },
-  {
-    "id": 143,
     "title": "Haciendas Generales",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -2732,11 +2694,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://colomboymagliano.com.ar",
-    "id": 144,
+    "id": 142,
     "status": "scheduled"
   },
   {
-    "id": 145,
+    "id": 143,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -2755,7 +2717,7 @@
     "status": "scheduled"
   },
   {
-    "id": 146,
+    "id": 144,
     "title": "Gordo y Conserva",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -2789,7 +2751,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "consignatariaserrano.com",
-    "id": 147,
+    "id": 145,
     "status": "scheduled"
   },
   {
@@ -2808,11 +2770,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
-    "id": 148,
+    "id": 146,
     "status": "scheduled"
   },
   {
-    "id": 149,
+    "id": 147,
     "title": "Hacienda Gorda",
     "consignatariaName": "Eduardo A. Travaglia y Cia. SA",
     "consignatariaSlug": "eduardo-a-travaglia-y-cia-sa",
@@ -2846,7 +2808,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.ivanofarrell.com.ar",
-    "id": 150,
+    "id": 148,
     "status": "scheduled"
   },
   {
@@ -2865,7 +2827,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 151,
+    "id": 149,
     "status": "scheduled"
   },
   {
@@ -2884,26 +2846,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.ivanofarrell.com.ar",
-    "id": 152,
-    "status": "scheduled"
-  },
-  {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-04-09",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 153,
+    "id": 150,
     "status": "scheduled"
   },
   {
@@ -2922,7 +2865,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/f7274986-72a5-43e5-9b30-78e2718db47b",
-    "id": 154,
+    "id": 151,
     "status": "scheduled"
   },
   {
@@ -2941,7 +2884,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.instagram.com/consignatariabh",
-    "id": 155,
+    "id": 152,
     "status": "scheduled"
   },
   {
@@ -2960,7 +2903,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.colomboymagliano.com.ar",
-    "id": 156,
+    "id": 153,
     "status": "scheduled"
   },
   {
@@ -2979,7 +2922,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://saenz-valiente.com",
-    "id": 157,
+    "id": 154,
     "status": "scheduled"
   },
   {
@@ -2998,11 +2941,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 158,
+    "id": 155,
     "status": "scheduled"
   },
   {
-    "id": 159,
+    "id": 156,
     "title": "Rosgan Habitual - SR Santa Fe",
     "consignatariaName": "Rosgan",
     "consignatariaSlug": "rosgan",
@@ -3036,7 +2979,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.hre.com.ar",
-    "id": 160,
+    "id": 157,
     "status": "scheduled"
   },
   {
@@ -3055,11 +2998,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "facebook.com/siveroycia/?loc",
-    "id": 161,
+    "id": 158,
     "status": "scheduled"
   },
   {
-    "id": 162,
+    "id": 159,
     "title": "Invernada y Cria",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -3078,7 +3021,7 @@
     "status": "scheduled"
   },
   {
-    "id": 163,
+    "id": 160,
     "title": "Remate Feria — General",
     "consignatariaName": "Javier Ulises Avalos",
     "consignatariaSlug": "javier-ulises-avalos",
@@ -3097,7 +3040,7 @@
     "status": "scheduled"
   },
   {
-    "id": 164,
+    "id": 161,
     "title": "Expo Agro Industrial Oberá",
     "consignatariaName": "CRIPCO Oberá",
     "consignatariaSlug": "cripco-obera",
@@ -3131,7 +3074,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.ivanofarrell.com.ar",
-    "id": 165,
+    "id": 162,
     "status": "scheduled"
   },
   {
@@ -3150,7 +3093,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 166,
+    "id": 163,
     "status": "scheduled"
   },
   {
@@ -3169,30 +3112,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.ivanofarrell.com.ar",
-    "id": 167,
+    "id": 164,
     "status": "scheduled"
   },
   {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-04-13",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 168,
-    "status": "scheduled"
-  },
-  {
-    "id": 169,
+    "id": 165,
     "title": "Haciendas Generales",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -3226,11 +3150,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "alfredosmondino.com",
-    "id": 170,
+    "id": 166,
     "status": "scheduled"
   },
   {
-    "id": 171,
+    "id": 167,
     "title": "Hacienda Gorda, Invernada y Cria",
     "consignatariaName": "Eduardo A. Travaglia y Cia. SA",
     "consignatariaSlug": "eduardo-a-travaglia-y-cia-sa",
@@ -3249,7 +3173,7 @@
     "status": "scheduled"
   },
   {
-    "id": 172,
+    "id": 168,
     "title": "Gordo, Invernada y Cria",
     "consignatariaName": "Ferias Rauch SA",
     "consignatariaSlug": "ferias-rauch",
@@ -3268,7 +3192,7 @@
     "status": "scheduled"
   },
   {
-    "id": 173,
+    "id": 169,
     "title": "5ª Expo Feria del Ternero - Goya",
     "consignatariaName": "Gananor Pujol SA",
     "consignatariaSlug": "gananor-pujol",
@@ -3302,11 +3226,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 174,
+    "id": 170,
     "status": "scheduled"
   },
   {
-    "id": 175,
+    "id": 171,
     "title": "Rosgan Remate Habitual",
     "consignatariaName": "Rosgan",
     "consignatariaSlug": "rosgan",
@@ -3325,7 +3249,7 @@
     "status": "scheduled"
   },
   {
-    "id": 176,
+    "id": 172,
     "title": "Gordo y Conserva",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -3344,7 +3268,7 @@
     "status": "scheduled"
   },
   {
-    "id": 177,
+    "id": 173,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -3363,7 +3287,7 @@
     "status": "scheduled"
   },
   {
-    "id": 178,
+    "id": 174,
     "title": "Haciendas Generales",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -3398,7 +3322,7 @@
     "source": "manual",
     "sourceUrl": "https://colomboymagliano.com.ar/",
     "status": "scheduled",
-    "id": 179
+    "id": 175
   },
   {
     "title": "Remates de Haciendas Generales",
@@ -3416,30 +3340,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.consignatariagalarraga.com",
-    "id": 180,
+    "id": 176,
     "status": "scheduled"
   },
   {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-04-16",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 181,
-    "status": "scheduled"
-  },
-  {
-    "id": 182,
+    "id": 177,
     "title": "Genetica Lechera",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -3458,7 +3363,7 @@
     "status": "scheduled"
   },
   {
-    "id": 183,
+    "id": 178,
     "title": "Hacienda Gorda, Invernada y Cria",
     "consignatariaName": "Eduardo A. Travaglia y Cia. SA",
     "consignatariaSlug": "eduardo-a-travaglia-y-cia-sa",
@@ -3477,7 +3382,7 @@
     "status": "scheduled"
   },
   {
-    "id": 184,
+    "id": 179,
     "title": "Gordo, Invernada y Cria",
     "consignatariaName": "Saenz Valiente, Bullrich y Cia. SA",
     "consignatariaSlug": "saenz-valiente-bullrich",
@@ -3511,11 +3416,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 185,
+    "id": 180,
     "status": "scheduled"
   },
   {
-    "id": 186,
+    "id": 181,
     "title": "Haciendas Generales",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -3534,7 +3439,7 @@
     "status": "scheduled"
   },
   {
-    "id": 187,
+    "id": 182,
     "title": "56° Remate Aniversario Etchevehere",
     "consignatariaName": "Etchevehere Rural SRL",
     "consignatariaSlug": "etchevehere-rural",
@@ -3553,7 +3458,7 @@
     "status": "scheduled"
   },
   {
-    "id": 188,
+    "id": 183,
     "title": "Haciendas Generales",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -3572,7 +3477,7 @@
     "status": "scheduled"
   },
   {
-    "id": 189,
+    "id": 184,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -3591,7 +3496,7 @@
     "status": "scheduled"
   },
   {
-    "id": 190,
+    "id": 185,
     "title": "Gordo y Conserva",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -3610,7 +3515,7 @@
     "status": "scheduled"
   },
   {
-    "id": 191,
+    "id": 186,
     "title": "Hacienda Gorda",
     "consignatariaName": "Eduardo A. Travaglia y Cia. SA",
     "consignatariaSlug": "eduardo-a-travaglia-y-cia-sa",
@@ -3629,7 +3534,7 @@
     "status": "scheduled"
   },
   {
-    "id": 192,
+    "id": 187,
     "title": "Haciendas Generales",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -3648,7 +3553,7 @@
     "status": "scheduled"
   },
   {
-    "id": 193,
+    "id": 188,
     "title": "44o Remate Especial Angus",
     "consignatariaName": "Ganaderos de General Acha SA",
     "consignatariaSlug": "ganaderos-de-general-acha-sa",
@@ -3682,11 +3587,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 194,
+    "id": 189,
     "status": "scheduled"
   },
   {
-    "id": 195,
+    "id": 190,
     "title": "Haciendas Generales",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -3705,7 +3610,7 @@
     "status": "scheduled"
   },
   {
-    "id": 196,
+    "id": 191,
     "title": "Haciendas Generales",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -3724,7 +3629,7 @@
     "status": "scheduled"
   },
   {
-    "id": 197,
+    "id": 192,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -3743,7 +3648,7 @@
     "status": "scheduled"
   },
   {
-    "id": 198,
+    "id": 193,
     "title": "Gordo y Conserva",
     "consignatariaName": "Cooperativa Guillermo Lehmann",
     "consignatariaSlug": "cooperativa-guillermo-lehmann",
@@ -3777,30 +3682,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 199,
+    "id": 194,
     "status": "scheduled"
   },
   {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-04-29",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 200,
-    "status": "scheduled"
-  },
-  {
-    "id": 201,
+    "id": 195,
     "title": "Hacienda Gorda",
     "consignatariaName": "Eduardo A. Travaglia y Cia. SA",
     "consignatariaSlug": "eduardo-a-travaglia-y-cia-sa",
@@ -3819,7 +3705,7 @@
     "status": "scheduled"
   },
   {
-    "id": 202,
+    "id": 196,
     "title": "Remate Feria Villa Ángela",
     "consignatariaName": "Tradición Ganadera SA / Porro SRL",
     "consignatariaSlug": "tradicion-ganadera-sa-porro-srl",
@@ -3838,7 +3724,7 @@
     "status": "scheduled"
   },
   {
-    "id": 203,
+    "id": 197,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -3872,7 +3758,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
-    "id": 204,
+    "id": 198,
     "status": "scheduled"
   },
   {
@@ -3891,30 +3777,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 205,
+    "id": 199,
     "status": "scheduled"
   },
   {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-05-12",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 206,
-    "status": "scheduled"
-  },
-  {
-    "id": 207,
+    "id": 200,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -3933,7 +3800,7 @@
     "status": "scheduled"
   },
   {
-    "id": 208,
+    "id": 201,
     "title": "Gordo, Invernada y Cria",
     "consignatariaName": "Ferias Rauch SA",
     "consignatariaSlug": "ferias-rauch",
@@ -3967,30 +3834,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 209,
+    "id": 202,
     "status": "scheduled"
   },
   {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-05-14",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 210,
-    "status": "scheduled"
-  },
-  {
-    "id": 211,
+    "id": 203,
     "title": "Invernada y Cria",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -4024,26 +3872,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 212,
-    "status": "scheduled"
-  },
-  {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-05-16",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 213,
+    "id": 204,
     "status": "scheduled"
   },
   {
@@ -4062,11 +3891,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 214,
+    "id": 205,
     "status": "scheduled"
   },
   {
-    "id": 215,
+    "id": 206,
     "title": "Semana Angus Otono - Remates Palermo",
     "consignatariaName": "Rosgan",
     "consignatariaSlug": "rosgan",
@@ -4100,30 +3929,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 216,
+    "id": 207,
     "status": "scheduled"
   },
   {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-05-19",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 217,
-    "status": "scheduled"
-  },
-  {
-    "id": 218,
+    "id": 208,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -4157,30 +3967,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 219,
+    "id": 209,
     "status": "scheduled"
   },
   {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-05-22",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 220,
-    "status": "scheduled"
-  },
-  {
-    "id": 221,
+    "id": 210,
     "title": "33a Remate Anual de los Destetes",
     "consignatariaName": "Ganaderos de General Acha SA",
     "consignatariaSlug": "ganaderos-de-general-acha-sa",
@@ -4199,7 +3990,7 @@
     "status": "scheduled"
   },
   {
-    "id": 222,
+    "id": 211,
     "title": "Las Nacionales - Reggi y Cia",
     "consignatariaName": "Reggi y Cia. SRL",
     "consignatariaSlug": "reggi",
@@ -4233,11 +4024,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 223,
+    "id": 212,
     "status": "scheduled"
   },
   {
-    "id": 224,
+    "id": 213,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -4256,7 +4047,7 @@
     "status": "scheduled"
   },
   {
-    "id": 225,
+    "id": 214,
     "title": "Las Nacionales - Rosgan Invernada",
     "consignatariaName": "Rosgan",
     "consignatariaSlug": "rosgan",
@@ -4275,7 +4066,7 @@
     "status": "scheduled"
   },
   {
-    "id": 226,
+    "id": 215,
     "title": "Las Nacionales - Colombo y Magliano",
     "consignatariaName": "Colombo y Magliano SA",
     "consignatariaSlug": "colombo-y-magliano",
@@ -4309,26 +4100,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 227,
-    "status": "scheduled"
-  },
-  {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-05-29",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 228,
+    "id": 216,
     "status": "scheduled"
   },
   {
@@ -4347,11 +4119,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
-    "id": 229,
+    "id": 217,
     "status": "scheduled"
   },
   {
-    "id": 230,
+    "id": 218,
     "title": "Agroactiva 2026 - Remate",
     "consignatariaName": "Agroactiva",
     "consignatariaSlug": "agroactiva",
@@ -4370,7 +4142,7 @@
     "status": "scheduled"
   },
   {
-    "id": 231,
+    "id": 219,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -4389,7 +4161,7 @@
     "status": "scheduled"
   },
   {
-    "id": 232,
+    "id": 220,
     "title": "Remate Feria Villa Ángela",
     "consignatariaName": "Tradición Ganadera SA / Porro SRL",
     "consignatariaSlug": "tradicion-ganadera-sa-porro-srl",
@@ -4423,11 +4195,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 233,
+    "id": 221,
     "status": "scheduled"
   },
   {
-    "id": 234,
+    "id": 222,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -4446,7 +4218,7 @@
     "status": "scheduled"
   },
   {
-    "id": 235,
+    "id": 223,
     "title": "Rosgan Remate Habitual",
     "consignatariaName": "Rosgan",
     "consignatariaSlug": "rosgan",
@@ -4480,11 +4252,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
-    "id": 236,
+    "id": 224,
     "status": "scheduled"
   },
   {
-    "id": 237,
+    "id": 225,
     "title": "Gordo, Invernada y Cria",
     "consignatariaName": "Ferias Rauch SA",
     "consignatariaSlug": "ferias-rauch",
@@ -4518,30 +4290,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 238,
+    "id": 226,
     "status": "scheduled"
   },
   {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-06-11",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 239,
-    "status": "scheduled"
-  },
-  {
-    "id": 240,
+    "id": 227,
     "title": "Invernada y Cria",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -4575,30 +4328,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 241,
+    "id": 228,
     "status": "scheduled"
   },
   {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-06-17",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 242,
-    "status": "scheduled"
-  },
-  {
-    "id": 243,
+    "id": 229,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -4617,7 +4351,7 @@
     "status": "scheduled"
   },
   {
-    "id": 244,
+    "id": 230,
     "title": "76a Remate Aniversario",
     "consignatariaName": "Ganaderos de General Acha SA",
     "consignatariaSlug": "ganaderos-de-general-acha-sa",
@@ -4651,30 +4385,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 245,
+    "id": 231,
     "status": "scheduled"
   },
   {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-06-23",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 246,
-    "status": "scheduled"
-  },
-  {
-    "id": 247,
+    "id": 232,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -4708,30 +4423,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 248,
+    "id": 233,
     "status": "scheduled"
   },
   {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-06-26",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 249,
-    "status": "scheduled"
-  },
-  {
-    "id": 250,
+    "id": 234,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -4750,7 +4446,7 @@
     "status": "scheduled"
   },
   {
-    "id": 251,
+    "id": 235,
     "title": "Cabaña Coembota - Genética",
     "consignatariaName": "Etchevehere Rural SRL",
     "consignatariaSlug": "etchevehere-rural",
@@ -4784,26 +4480,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 252,
-    "status": "scheduled"
-  },
-  {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-07-03",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 253,
+    "id": 236,
     "status": "scheduled"
   },
   {
@@ -4822,7 +4499,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 254,
+    "id": 237,
     "status": "scheduled"
   },
   {
@@ -4841,30 +4518,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 255,
+    "id": 238,
     "status": "scheduled"
   },
   {
-    "title": "Remate General O'Farrell",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-07-04",
-    "time": "14:00",
-    "location": "Chaco",
-    "province": "CHACO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate general presencial y streaming",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 256,
-    "status": "scheduled"
-  },
-  {
-    "id": 257,
+    "id": 239,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -4883,7 +4541,7 @@
     "status": "scheduled"
   },
   {
-    "id": 258,
+    "id": 240,
     "title": "Invernada y Cria",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -4902,7 +4560,7 @@
     "status": "scheduled"
   },
   {
-    "id": 259,
+    "id": 241,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -4921,7 +4579,7 @@
     "status": "scheduled"
   },
   {
-    "id": 260,
+    "id": 242,
     "title": "Gordo, Invernada y Cria",
     "consignatariaName": "Ferias Rauch SA",
     "consignatariaSlug": "ferias-rauch",
@@ -4940,7 +4598,7 @@
     "status": "scheduled"
   },
   {
-    "id": 261,
+    "id": 243,
     "title": "34° Remate Anual Cabaña El Tigre — Reproductores Braford, Brangus y P. Hereford",
     "consignatariaName": "Reggi y Cia. SRL",
     "consignatariaSlug": "reggi",
@@ -4960,7 +4618,7 @@
     "featured": true
   },
   {
-    "id": 262,
+    "id": 244,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -4994,11 +4652,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 263,
+    "id": 245,
     "status": "scheduled"
   },
   {
-    "id": 264,
+    "id": 246,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5017,7 +4675,7 @@
     "status": "scheduled"
   },
   {
-    "id": 265,
+    "id": 247,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5036,7 +4694,7 @@
     "status": "scheduled"
   },
   {
-    "id": 266,
+    "id": 248,
     "title": "Expo Rural de Misiones",
     "consignatariaName": "Sociedad Rural de Misiones",
     "consignatariaSlug": "rural-misiones",
@@ -5055,7 +4713,7 @@
     "status": "scheduled"
   },
   {
-    "id": 267,
+    "id": 249,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5074,7 +4732,7 @@
     "status": "scheduled"
   },
   {
-    "id": 268,
+    "id": 250,
     "title": "Expo Rural de Corrientes",
     "consignatariaName": "Sociedad Rural de Corrientes",
     "consignatariaSlug": "rural-corrientes",
@@ -5108,11 +4766,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 269,
+    "id": 251,
     "status": "scheduled"
   },
   {
-    "id": 270,
+    "id": 252,
     "title": "Gordo, Invernada y Cria",
     "consignatariaName": "Ferias Rauch SA",
     "consignatariaSlug": "ferias-rauch",
@@ -5146,11 +4804,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 271,
+    "id": 253,
     "status": "scheduled"
   },
   {
-    "id": 272,
+    "id": 254,
     "title": "Rosgan Remate Habitual",
     "consignatariaName": "Rosgan",
     "consignatariaSlug": "rosgan",
@@ -5169,7 +4827,7 @@
     "status": "scheduled"
   },
   {
-    "id": 273,
+    "id": 255,
     "title": "Invernada y Cria",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5188,7 +4846,7 @@
     "status": "scheduled"
   },
   {
-    "id": 274,
+    "id": 256,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5207,7 +4865,7 @@
     "status": "scheduled"
   },
   {
-    "id": 275,
+    "id": 257,
     "title": "95ª Expo Rural del Chaco",
     "consignatariaName": "Sociedad Rural del Chaco",
     "consignatariaSlug": "rural-chaco",
@@ -5226,7 +4884,7 @@
     "status": "scheduled"
   },
   {
-    "id": 276,
+    "id": 258,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5245,7 +4903,7 @@
     "status": "scheduled"
   },
   {
-    "id": 277,
+    "id": 259,
     "title": "Expo Rural Rafaela",
     "consignatariaName": "Sociedad Rural de Rafaela",
     "consignatariaSlug": "rural-rafaela",
@@ -5264,7 +4922,7 @@
     "status": "scheduled"
   },
   {
-    "id": 278,
+    "id": 260,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5298,11 +4956,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 279,
+    "id": 261,
     "status": "scheduled"
   },
   {
-    "id": 280,
+    "id": 262,
     "title": "Cabaña Malaika - Genética",
     "consignatariaName": "Etchevehere Rural SRL",
     "consignatariaSlug": "etchevehere-rural",
@@ -5336,11 +4994,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 281,
+    "id": 263,
     "status": "scheduled"
   },
   {
-    "id": 282,
+    "id": 264,
     "title": "Reproductores",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5359,7 +5017,7 @@
     "status": "scheduled"
   },
   {
-    "id": 283,
+    "id": 265,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5378,7 +5036,7 @@
     "status": "scheduled"
   },
   {
-    "id": 284,
+    "id": 266,
     "title": "Gordo, Invernada y Cria",
     "consignatariaName": "Ferias Rauch SA",
     "consignatariaSlug": "ferias-rauch",
@@ -5397,7 +5055,7 @@
     "status": "scheduled"
   },
   {
-    "id": 285,
+    "id": 267,
     "title": "133ª Expo Rural Gualeguaychú",
     "consignatariaName": "Sociedad Rural de Gualeguaychú",
     "consignatariaSlug": "rural-gualeguaychu",
@@ -5416,7 +5074,7 @@
     "status": "scheduled"
   },
   {
-    "id": 286,
+    "id": 268,
     "title": "Invernada y Cria",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5435,7 +5093,7 @@
     "status": "scheduled"
   },
   {
-    "id": 287,
+    "id": 269,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5454,7 +5112,7 @@
     "status": "scheduled"
   },
   {
-    "id": 288,
+    "id": 270,
     "title": "Reproductores",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5473,7 +5131,7 @@
     "status": "scheduled"
   },
   {
-    "id": 289,
+    "id": 271,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5507,11 +5165,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 290,
+    "id": 272,
     "status": "scheduled"
   },
   {
-    "id": 291,
+    "id": 273,
     "title": "Expo Reproductores Dia 1",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5530,7 +5188,7 @@
     "status": "scheduled"
   },
   {
-    "id": 292,
+    "id": 274,
     "title": "Rosgan Remate Habitual",
     "consignatariaName": "Rosgan",
     "consignatariaSlug": "rosgan",
@@ -5549,7 +5207,7 @@
     "status": "scheduled"
   },
   {
-    "id": 293,
+    "id": 275,
     "title": "Expo Reproductores Dia 2",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5568,7 +5226,7 @@
     "status": "scheduled"
   },
   {
-    "id": 294,
+    "id": 276,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5602,11 +5260,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 295,
+    "id": 277,
     "status": "scheduled"
   },
   {
-    "id": 296,
+    "id": 278,
     "title": "Gordo, Invernada y Cria",
     "consignatariaName": "Ferias Rauch SA",
     "consignatariaSlug": "ferias-rauch",
@@ -5625,7 +5283,7 @@
     "status": "scheduled"
   },
   {
-    "id": 297,
+    "id": 279,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5644,7 +5302,7 @@
     "status": "scheduled"
   },
   {
-    "id": 298,
+    "id": 280,
     "title": "Invernada y Cria",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5663,7 +5321,7 @@
     "status": "scheduled"
   },
   {
-    "id": 299,
+    "id": 281,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5682,7 +5340,7 @@
     "status": "scheduled"
   },
   {
-    "id": 300,
+    "id": 282,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5716,11 +5374,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 301,
+    "id": 283,
     "status": "scheduled"
   },
   {
-    "id": 302,
+    "id": 284,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5739,7 +5397,7 @@
     "status": "scheduled"
   },
   {
-    "id": 303,
+    "id": 285,
     "title": "Rosgan Remate Habitual",
     "consignatariaName": "Rosgan",
     "consignatariaSlug": "rosgan",
@@ -5773,11 +5431,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 304,
+    "id": 286,
     "status": "scheduled"
   },
   {
-    "id": 305,
+    "id": 287,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5796,7 +5454,7 @@
     "status": "scheduled"
   },
   {
-    "id": 306,
+    "id": 288,
     "title": "Gordo, Invernada y Cria",
     "consignatariaName": "Ferias Rauch SA",
     "consignatariaSlug": "ferias-rauch",
@@ -5815,7 +5473,7 @@
     "status": "scheduled"
   },
   {
-    "id": 307,
+    "id": 289,
     "title": "9° Remate Aniversario Federal",
     "consignatariaName": "Etchevehere Rural SRL",
     "consignatariaSlug": "etchevehere-rural",
@@ -5834,7 +5492,7 @@
     "status": "scheduled"
   },
   {
-    "id": 308,
+    "id": 290,
     "title": "Invernada y Cria",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5853,7 +5511,7 @@
     "status": "scheduled"
   },
   {
-    "id": 309,
+    "id": 291,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5872,7 +5530,7 @@
     "status": "scheduled"
   },
   {
-    "id": 310,
+    "id": 292,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -5906,11 +5564,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 311,
+    "id": 293,
     "status": "scheduled"
   },
   {
-    "id": 312,
+    "id": 294,
     "title": "Gordo, Invernada y Cria",
     "consignatariaName": "Ferias Rauch SA",
     "consignatariaSlug": "ferias-rauch",
