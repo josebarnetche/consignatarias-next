@@ -9,6 +9,9 @@ import { createServiceClient } from '@/lib/supabase'
 // Force dynamic rendering - needs Supabase at runtime
 export const dynamic = 'force-dynamic'
 
+// Regenerate hourly for fresh TODAY
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: 'Comparar Consignatarias | Consignatarias.com.ar',
   description: 'Compará consignatarias de hacienda lado a lado. Remates programados, provincias de operación, tipos de remate y más.',

@@ -4,6 +4,9 @@ import remates from '@/lib/data/remates.json'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { Calendar, Clock, MapPin, Users, ExternalLink, Play, FileText } from 'lucide-react'
 
+// Regenerate hourly for fresh TODAY
+export const revalidate = 3600
+
 // Get today's date in Argentina timezone
 function getTodayStr(): string {
   const now = new Date()

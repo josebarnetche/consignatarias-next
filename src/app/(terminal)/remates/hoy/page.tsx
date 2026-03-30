@@ -5,6 +5,9 @@ import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/Jso
 import { Calendar, Clock, MapPin, Users, ExternalLink, Play, FileText, Upload } from 'lucide-react'
 import { createClient } from '@/lib/supabase-server'
 
+// Regenerate hourly for fresh TODAY
+export const revalidate = 3600
+
 // Get today's date in Argentina timezone
 function getTodayStr(): string {
   const now = new Date()

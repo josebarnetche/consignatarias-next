@@ -40,6 +40,9 @@ const CONSIGNATARIAS_FAQ = [
   },
 ]
 
+// Regenerate hourly for fresh TODAY
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: `Consignatarias de Hacienda Argentina 2026 | Directorio Completo (${totalConsignatarias})`,
   description: `Directorio de ${totalConsignatarias} consignatarias de hacienda en Argentina. Calendario de remates ganaderos, provincias de operación, tipos de remate. Datos actualizados 2026.`,
