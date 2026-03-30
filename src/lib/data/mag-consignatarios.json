@@ -1,7 +1,7 @@
 {
   "description": "MAG consignatario IDs mapped to our consignataria slugs",
   "source": "https://www.mercadoagroganadero.com.ar/dll/hacienda1.dll/haciinfo000006",
-  "lastUpdated": "2026-03-18",
+  "lastUpdated": "2026-03-30",
   "mapping": [
     { "magId": "445", "magName": "A. J. MENDIZABAL Y CIA. S.A.", "slug": null },
     { "magId": "32", "magName": "AGUIRRE URRETA JORGE S.A.", "slug": null },
@@ -38,7 +38,7 @@
     { "magId": "52", "magName": "LANUSSE-SANTILLAN Y CIA. S.A.", "slug": null },
     { "magId": "68", "magName": "LARTIRIGOYEN & OROMI S.A.", "slug": null },
     { "magId": "425", "magName": "LLORENTE - DURAÑONA S.A.", "slug": null },
-    { "magId": "430", "magName": "MADELAN S.A.", "slug": "madelan" },
+    { "magId": "430", "magName": "MADELAN S.A.", "slug": null },
     { "magId": "389", "magName": "MARTIN G. LALOR S.A.", "slug": "martin-g-lalor-s-a" },
     { "magId": "465", "magName": "MONASTERIO TATTERSALL S.A.", "slug": "monasterio-tattersall-s-a" },
     { "magId": "310", "magName": "PEDRO GENTA Y CIA. S.A.", "slug": null },

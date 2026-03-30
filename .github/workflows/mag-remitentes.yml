@@ -1,0 +1,38 @@
+name: MAG Remitentes Daily
+
+on:
+  schedule:
+    # 18:00 Argentina (21:00 UTC) - after MAG closes for the day
+    # Only weekdays (Mon-Fri)
+    - cron: '0 21 * * 1-5'
+  workflow_dispatch: # manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Fetch MAG remitentes
+        run: node scripts/fetch-mag-daily.mjs
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --quiet src/lib/data/mag-remitentes-history.json && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/lib/data/mag-remitentes-history.json
+          git commit -m "data: MAG remitentes — $(date -u +%Y-%m-%d)"
+          git push
