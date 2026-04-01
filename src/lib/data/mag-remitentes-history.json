@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-31T21:41:02.219Z",
+  "lastUpdated": "2026-04-01T21:42:57.513Z",
   "consignatarias": {
     "alzaga-unzue-y-cia-s-a": {
       "magId": "15",
@@ -21,6 +21,29 @@
             }
           ],
           "totalCabezas": 88
+        },
+        "2026-04-01": {
+          "entries": [
+            {
+              "remitente": "SANTA ELENA DE INCHAUSPE S.C.A",
+              "localidad": "9 DE JULIO",
+              "provincia": "BUE",
+              "cabezas": 22
+            },
+            {
+              "remitente": "SANTA ELENA DE INCHAUSPE S.C.A",
+              "localidad": "9 DE JULIO",
+              "provincia": "BUE",
+              "cabezas": 5
+            },
+            {
+              "remitente": "SANTA ELENA DE INCHAUSPE S.C.A",
+              "localidad": "9 DE JULIO",
+              "provincia": "BUE",
+              "cabezas": 24
+            }
+          ],
+          "totalCabezas": 51
         }
       }
     },
@@ -121,6 +144,47 @@
             }
           ],
           "totalCabezas": 189
+        },
+        "2026-04-01": {
+          "entries": [
+            {
+              "remitente": "DANIEL ENRIQUE SALGUEIRO",
+              "localidad": "TRENQUE LAUQUEN",
+              "provincia": "BUE",
+              "cabezas": 3
+            },
+            {
+              "remitente": "FRANI S.A.A.Y G.",
+              "localidad": "AMEGHINO",
+              "provincia": "BUE",
+              "cabezas": 38
+            },
+            {
+              "remitente": "JALA LA JUANITA S.A.",
+              "localidad": "CARLOS CASARES",
+              "provincia": "BUE",
+              "cabezas": 22
+            },
+            {
+              "remitente": "MARTINEZ RICARDO RAFAEL",
+              "localidad": "TRENQUE LAUQUEN",
+              "provincia": "BUE",
+              "cabezas": 8
+            },
+            {
+              "remitente": "ROBERAR AGRIC. GANADERA S.R.L.",
+              "localidad": "TRENQUE LAUQUEN",
+              "provincia": "BUE",
+              "cabezas": 11
+            },
+            {
+              "remitente": "SYD LAFUENTE SA",
+              "localidad": "LOBOS",
+              "provincia": "BUE",
+              "cabezas": 5
+            }
+          ],
+          "totalCabezas": 87
         }
       }
     },
@@ -324,6 +388,71 @@
             }
           ],
           "totalCabezas": 1046
+        },
+        "2026-04-01": {
+          "entries": [
+            {
+              "remitente": "EL RECADO S.A.",
+              "localidad": "RIVADAVIA         B",
+              "provincia": "BUE",
+              "cabezas": 70
+            },
+            {
+              "remitente": "HUFFMANN BERNARDO JORGE A.",
+              "localidad": "MONTE",
+              "provincia": "BUE",
+              "cabezas": 3
+            },
+            {
+              "remitente": "IUILLERA TOMAS",
+              "localidad": "MONTE",
+              "provincia": "BUE",
+              "cabezas": 14
+            },
+            {
+              "remitente": "MA3 S.A.",
+              "localidad": "HUINCA RENANCO",
+              "provincia": "CBA",
+              "cabezas": 3
+            },
+            {
+              "remitente": "MAC GOEY SANTIAGO JOSE",
+              "localidad": "MONTE",
+              "provincia": "BUE",
+              "cabezas": 3
+            },
+            {
+              "remitente": "OLIVERO HECTOR MARCELO",
+              "localidad": "MONTE",
+              "provincia": "BUE",
+              "cabezas": 5
+            },
+            {
+              "remitente": "SAN ELOY AGROPECUARIA S.C.A.",
+              "localidad": "CAPITAN SARMIENTO",
+              "provincia": "BUE",
+              "cabezas": 5
+            },
+            {
+              "remitente": "SCALA ALEJANDRO LUIS",
+              "localidad": "GRAL. PINTO",
+              "provincia": "BUE",
+              "cabezas": 7
+            },
+            {
+              "remitente": "YUYO VERDE S.A.",
+              "localidad": "LINCOLN",
+              "provincia": "BUE",
+              "cabezas": 4
+            },
+            {
+              "remitente": "YUYO VERDE S.A.",
+              "localidad": "LINCOLN",
+              "provincia": "BUE",
+              "cabezas": 5
+            }
+          ],
+          "totalCabezas": 119
         }
       }
     },
@@ -562,6 +691,17 @@
             }
           ],
           "totalCabezas": 141
+        },
+        "2026-04-01": {
+          "entries": [
+            {
+              "remitente": "RONDINELLIA ORLANDO",
+              "localidad": "BRAGADO",
+              "provincia": "BUE",
+              "cabezas": 6
+            }
+          ],
+          "totalCabezas": 6
         }
       }
     },
@@ -787,6 +927,35 @@
             }
           ],
           "totalCabezas": 337
+        },
+        "2026-04-01": {
+          "entries": [
+            {
+              "remitente": "LLAVALLOL ESTEBAN E HIJOS",
+              "localidad": "CASTELLI",
+              "provincia": "BUE",
+              "cabezas": 35
+            },
+            {
+              "remitente": "MERCADO AGROGANADERO S.A.",
+              "localidad": "CA�UELAS",
+              "provincia": "BUE",
+              "cabezas": 1
+            },
+            {
+              "remitente": "NELSON HERMANOS S.A.",
+              "localidad": "AMEGHINO",
+              "provincia": "BUE",
+              "cabezas": 38
+            },
+            {
+              "remitente": "NELSON HERMANOS S.A.",
+              "localidad": "AMEGHINO",
+              "provincia": "BUE",
+              "cabezas": 44
+            }
+          ],
+          "totalCabezas": 118
         }
       }
     },
@@ -996,6 +1165,17 @@
             }
           ],
           "totalCabezas": 982
+        },
+        "2026-04-01": {
+          "entries": [
+            {
+              "remitente": "LAS 3 M AGROGANADERA SRL",
+              "localidad": "COLON     (ENTRE RIO",
+              "provincia": "ERI",
+              "cabezas": 25
+            }
+          ],
+          "totalCabezas": 25
         }
       }
     },
@@ -1125,6 +1305,17 @@
             }
           ],
           "totalCabezas": 64
+        },
+        "2026-04-01": {
+          "entries": [
+            {
+              "remitente": "GANADERA AGRO LAVALLEN",
+              "localidad": "SAN A. DE ARECO",
+              "provincia": "BUE",
+              "cabezas": 22
+            }
+          ],
+          "totalCabezas": 22
         }
       }
     },
@@ -1190,6 +1381,23 @@
             }
           ],
           "totalCabezas": 194
+        }
+      }
+    },
+    "ganadera-salliquelo-sa": {
+      "magId": "290",
+      "magName": "GANADERA SALLIQUELO S.A.",
+      "dailyEntries": {
+        "2026-04-01": {
+          "entries": [
+            {
+              "remitente": "SIFRE JOSE AGUSTIN",
+              "localidad": "TRENQUE LAUQUEN",
+              "provincia": "BUE",
+              "cabezas": 6
+            }
+          ],
+          "totalCabezas": 6
         }
       }
     }
