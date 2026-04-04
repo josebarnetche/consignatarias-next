@@ -2429,7 +2429,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "http://www.tradicionganadera.com.ar/",
-    "status": "live"
+    "status": "completed"
   },
   {
     "id": 129,
@@ -2444,11 +2444,11 @@
     "mainCategory": "mixto",
     "estimatedHeads": null,
     "description": "Remate televisado con la fuerza de Expoagro",
-    "youtubeUrl": null,
+    "youtubeUrl": "https://www.youtube.com/watch?v=VVXsB_yp2Jw",
     "catalogUrl": null,
     "source": "tv",
     "sourceUrl": "https://www.expoagro.com.ar",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "id": 130,
