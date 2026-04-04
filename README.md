@@ -89,7 +89,7 @@ There is no single place to see all upcoming auctions, compare prices, or browse
                                                         └── market_price_snapshots
 ```
 
-**Hybrid static + dynamic:** The read-heavy public data (auctions, frigorificos, market prices) lives in JSON files and is statically generated at build time — TTFB < 50ms, zero compute cost. Profile pages use ISR (`revalidate = 300`) so owner edits reflect within 5 minutes. The interactive parts (claims, authentication, auction CRUD, subscriptions, admin) use Supabase PostgreSQL and API routes.
+**Hybrid static + dynamic:** The read-heavy public data (auctions, frigorificos, market prices) lives in JSON files and is statically generated at build time — TTFB < 50ms, zero compute cost. Profile pages use ISR (`revalidate = 300`) so owner edits reflect within 5 minutes. The interactive parts (claims, authentication, auction CRUD, subscriptions, admin) use Supabase PostgreSQL and API routes. Middleware is scoped to auth/API routes only — public pages bypass it entirely and serve from CDN edge with zero function invocations.
 
 ### Data Pipeline
 
@@ -437,7 +437,7 @@ src/
 ├── app/
 │   ├── page.tsx                            # Landing page
 │   ├── layout.tsx                          # Root layout + GA4 + next/font
-│   ├── middleware.ts                       # Supabase Auth session refresh
+│   ├── middleware.ts                       # Supabase Auth + API rate limiting (scoped to /api, /admin, /dashboard, /login, /mi-cuenta, /auth only)
 │   ├── sitemap.ts                          # Dynamic sitemap (~100 URLs)
 │   ├── robots.ts                           # robots.txt
 │   ├── globals.css                         # Terminal + landing styles

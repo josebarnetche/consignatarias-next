@@ -84,11 +84,22 @@ function isPublicApiRoute(pathname: string): boolean {
 export const config = {
   matcher: [
     /*
-     * Match all paths except:
-     * - _next/static, _next/image
-     * - favicon.ico, sitemap.xml, robots.txt
-     * - Static assets (svg, png, jpg, etc.)
+     * Only run middleware on routes that need auth or rate limiting:
+     * - /api/* (rate limiting + auth)
+     * - /admin/* (auth)
+     * - /dashboard/* (auth)
+     * - /login/* (auth session)
+     * - /mi-cuenta/* (auth)
+     * - /auth/* (auth callbacks)
+     *
+     * All other routes (remates, consignatarias, frigorificos, etc.)
+     * are public/static and served directly from CDN — no function needed.
      */
-    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
+    '/api/:path*',
+    '/admin/:path*',
+    '/dashboard/:path*',
+    '/login/:path*',
+    '/mi-cuenta/:path*',
+    '/auth/:path*',
   ],
 }

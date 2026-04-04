@@ -6,6 +6,26 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.9.6] — 2026-04-04
+
+### Middleware Scope Fix — Eliminate Unnecessary Function Invocations
+
+> fix: scope middleware matcher to auth/API routes only — public pages served from CDN with zero compute
+
+**Problem:** Middleware was running on *every* page request (broad negative-lookahead matcher), creating a Supabase `auth.getUser()` call even for anonymous visitors on fully static pages like `/remates/buenos-aires`. This caused 100% Fluid Compute usage across all routes and unnecessary costs.
+
+**Fix:** Restricted middleware matcher to only the 6 route prefixes that actually need auth or rate limiting:
+- `/api/*` — rate limiting + auth
+- `/admin/*` — auth
+- `/dashboard/*` — auth
+- `/login/*` — auth session
+- `/mi-cuenta/*` — auth
+- `/auth/*` — auth callbacks
+
+**Impact:** All public/static routes (`/remates/*`, `/consignatarias/*`, `/frigorificos`, `/`, `/overview`, `/mercado`, etc.) now serve directly from CDN edge cache with zero function invocations. ~200+ invocations/day eliminated.
+
+---
+
 ## [1.9.5] — 2026-03-20
 
 ### Homepage Conversion Optimization & Supply Chain Intelligence
