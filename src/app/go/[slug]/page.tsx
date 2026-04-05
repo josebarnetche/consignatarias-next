@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { getCanonicalSlug, getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
+import { getAllCanonicalSlugs, getCanonicalSlug, getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import { getConsignatariaProfile, getFollowerCount } from '@/lib/dal/consignatarias'
 import { getEntityTier } from '@/lib/features'
 import rematesData from '@/lib/data/remates.json'
@@ -15,7 +15,18 @@ import { FollowerCount } from '@/components/ui/FollowerCount'
 
 const auctions = rematesData as Auction[]
 
+// ISR: revalidate every 5 minutes (same as main profile pages)
+export const revalidate = 300
+
 type Props = { params: Promise<{ slug: string }> }
+
+/* ------------------------------------------------------------------ */
+/*  STATIC PARAMS                                                      */
+/* ------------------------------------------------------------------ */
+
+export function generateStaticParams() {
+  return getAllCanonicalSlugs().map(slug => ({ slug }))
+}
 
 /* ------------------------------------------------------------------ */
 /*  METADATA — Optimized for sharing                                   */

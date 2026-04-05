@@ -5,10 +5,12 @@ import type { Auction } from '@/lib/db/schema'
 
 const auctions = rematesData as Auction[]
 
-export const runtime = 'edge'
 export const alt = 'Perfil de Consignataria'
 export const size = { width: 1200, height: 600 }
 export const contentType = 'image/png'
+
+// Cache Twitter images for 7 days — content only changes on rebuild
+export const revalidate = 604800
 
 export default async function TwitterImage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params

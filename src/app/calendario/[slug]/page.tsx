@@ -1,12 +1,20 @@
 import { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
-import { getCanonicalSlug, getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
+import { getAllCanonicalSlugs, getCanonicalSlug, getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { BreadcrumbSchema, WebApplicationSchema } from '@/components/seo/JsonLd'
 
 const auctions = rematesData as Auction[]
+
+/* ------------------------------------------------------------------ */
+/*  STATIC PARAMS                                                      */
+/* ------------------------------------------------------------------ */
+
+export function generateStaticParams() {
+  return getAllCanonicalSlugs().map(slug => ({ slug }))
+}
 
 type Props = { params: Promise<{ slug: string }> }
 
