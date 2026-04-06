@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { getAllCanonicalSlugs, getCanonicalSlug, getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
+import { getCanonicalSlug, getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import { getConsignatariaProfile, getFollowerCount } from '@/lib/dal/consignatarias'
 import { getEntityTier } from '@/lib/features'
 import rematesData from '@/lib/data/remates.json'
@@ -19,14 +19,6 @@ const auctions = rematesData as Auction[]
 export const revalidate = 300
 
 type Props = { params: Promise<{ slug: string }> }
-
-/* ------------------------------------------------------------------ */
-/*  STATIC PARAMS                                                      */
-/* ------------------------------------------------------------------ */
-
-export function generateStaticParams() {
-  return getAllCanonicalSlugs().map(slug => ({ slug }))
-}
 
 /* ------------------------------------------------------------------ */
 /*  METADATA — Optimized for sharing                                   */
