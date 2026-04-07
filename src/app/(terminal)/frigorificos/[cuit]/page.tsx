@@ -319,21 +319,95 @@ export default async function FrigorificoDetailPage({
         </div>
       </div>
 
+      {/* PRO upsell for verified frigoríficos */}
+      {verified && (
+        <div className="terminal-panel border-positive/30">
+          <div className="terminal-panel-header" style={{ borderBottomColor: 'rgba(34, 197, 94, 0.3)' }}>
+            <span className="text-positive text-label tracking-widest">✓ PERFIL VERIFICADO</span>
+          </div>
+          <div className="px-panel py-4 space-y-3">
+            <p className="text-data font-terminal text-zinc-300">
+              Este frigorífico verificó su información. ¿Querés destacar tu perfil?
+            </p>
+            <div className="p-3 bg-amber-500/5 border border-amber-500/20 rounded">
+              <p className="text-xxs font-terminal text-amber-400 mb-2">FRIGORIFICO DESTACADO — $30.000/mes</p>
+              <ul className="space-y-1 text-xxs font-terminal text-zinc-400">
+                <li>• Aparecé primero en búsquedas de tu provincia</li>
+                <li>• Badge dorado destacado en el directorio</li>
+                <li>• Promoción en newsletter semanal</li>
+              </ul>
+            </div>
+            <a
+              href="mailto:agro@memola.com.ar?subject=Consulta%20Frigorifico%20Destacado%20-%20${encodeURIComponent(name)}"
+              className="inline-block px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-data font-terminal rounded-terminal hover:bg-amber-500/20 transition-colors"
+            >
+              Consultar →
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* Claim CTA - prominent for unclaimed profiles */}
+      {!verified && (
+        <div className="terminal-panel border-amber-500/30 bg-amber-500/5">
+          <div className="terminal-panel-header" style={{ borderBottomColor: 'rgba(245, 158, 11, 0.3)' }}>
+            <span className="text-amber-400 text-label tracking-widest">¿ES TU FRIGORIFICO?</span>
+          </div>
+          <div className="px-panel py-4 space-y-3">
+            <p className="text-data font-terminal text-zinc-300">
+              Reclamá este perfil gratis y actualizá tu información de contacto para que compradores te encuentren.
+            </p>
+            <ul className="space-y-1.5 text-xxs font-terminal text-zinc-400">
+              <li className="flex items-center gap-2">
+                <span className="text-positive">✓</span>
+                Badge de verificado en el directorio
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-positive">✓</span>
+                Información de contacto visible
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-positive">✓</span>
+                Recibí consultas de compradores directamente
+              </li>
+            </ul>
+            <Link
+              href={`/frigorificos/verificar?cuit=${basicF.cuit}`}
+              className="inline-block px-4 py-2.5 bg-amber-500/20 border border-amber-500/40 text-amber-400 text-data font-terminal rounded-terminal hover:bg-amber-500/30 transition-colors"
+            >
+              Reclamar perfil gratis →
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Contact/Inquiry form for lead gen */}
+      {!hasContact && !verified && (
+        <div className="terminal-panel">
+          <div className="terminal-panel-header">
+            <span className="text-zinc-200 text-label tracking-widest">CONSULTAR ESTE FRIGORIFICO</span>
+          </div>
+          <div className="px-panel py-4">
+            <p className="text-data font-terminal text-zinc-500 mb-3">
+              ¿Necesitás contactar a este frigorífico? Dejá tu consulta y te conectamos.
+            </p>
+            <a
+              href={`mailto:agro@memola.com.ar?subject=Consulta%20Frigorifico%20${encodeURIComponent(name)}%20(Mat.%20${basicF.matricula})&body=Hola,%20necesito%20contactar%20al%20frigorifico%20${encodeURIComponent(name)}.%0A%0AMi%20consulta:%20`}
+              className="inline-block px-4 py-2 bg-accent/10 border border-accent/30 text-accent text-data font-terminal rounded-terminal hover:bg-accent/20 transition-colors"
+            >
+              Enviar consulta
+            </a>
+          </div>
+        </div>
+      )}
+
       {/* Actions */}
       <div className="flex items-center gap-3">
-        {!verified && (
-          <Link
-            href={`/frigorificos/verificar?cuit=${basicF.cuit}`}
-            className="px-4 py-2 bg-positive/10 border border-positive/30 text-positive text-data font-terminal rounded-terminal hover:bg-positive/20 transition-colors"
-          >
-            Reclamar este perfil
-          </Link>
-        )}
         <Link
           href="/frigorificos"
           className="px-4 py-2 border border-terminal-border text-zinc-400 text-data font-terminal rounded-terminal hover:border-zinc-500 transition-colors"
         >
-          Volver al directorio
+          ← Volver al directorio
         </Link>
       </div>
     </div>

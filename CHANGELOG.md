@@ -6,6 +6,33 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.9.10] — 2026-04-07
+
+### Frigorífico Monetization (Movement 4)
+
+The `/frigorificos` directory is the #1 traffic page (241 views Q1) but generated $0. This release adds monetization hooks.
+
+#### Claim CTA Enhancement
+- **Prominent claim box** on unclaimed frigorífico pages with amber styling
+- Clear value proposition: "Reclamá gratis y actualizá tu información"
+- Benefit list: verified badge, contact info visible, receive buyer inquiries
+
+#### Lead Generation
+- **"Consultar este frigorífico"** email form for unclaimed profiles without contact info
+- Routes inquiries to agro@memola.com.ar for manual forwarding
+- Creates lead pipeline for outreach
+
+#### PRO Upsell for Verified
+- **"Frigorífico Destacado"** tier at $30.000/mes shown to verified frigoríficos
+- Benefits: Priority in province search, gold badge, newsletter promotion
+- Contact CTA for enterprise sales
+
+**Revenue model:**
+- Free: Claim profile, add contact info
+- Destacado ($30K/mes): Priority placement, newsletter, badge
+
+---
+
 ## [1.9.9] — 2026-04-07
 
 ### Pricing Page Reframe (Movement 6)
