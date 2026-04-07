@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { Suspense } from 'react'
 import FrigorificoVerificarClient from './FrigorificoVerificarClient'
 import frigorificosData from '@/lib/data/frigorificos.json'
 
@@ -29,7 +30,9 @@ const frigorificos = (frigorificosData as { cuit: string; name: string; province
 export default function FrigorificoVerificarPage() {
   return (
     <div className="max-w-lg mx-auto px-2 sm:px-4 py-6">
-      <FrigorificoVerificarClient frigorificos={frigorificos} />
+      <Suspense fallback={<div className="animate-pulse h-96 bg-zinc-900/50 rounded-lg" />}>
+        <FrigorificoVerificarClient frigorificos={frigorificos} />
+      </Suspense>
     </div>
   )
 }
