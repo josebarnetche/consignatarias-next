@@ -204,17 +204,16 @@ export default async function DashboardPage() {
 
   dteCount = userDteCount ?? 0
 
-  // Check if user has already redeemed referral bonus
-  // Note: referral_redemptions table may not exist yet - gracefully handle
+  // Check if user has already redeemed points for PRO
   let alreadyRedeemed = false
   try {
-    const { data: referralRedemption } = await service
-      .from('referral_redemptions')
+    const { data: pointRedemption } = await service
+      .from('point_redemptions')
       .select('id')
       .eq('user_id', user.id)
       .single()
 
-    alreadyRedeemed = !!referralRedemption
+    alreadyRedeemed = !!pointRedemption
   } catch {
     // Table may not exist yet - default to false
     alreadyRedeemed = false

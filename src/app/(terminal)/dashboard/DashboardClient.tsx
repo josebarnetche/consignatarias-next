@@ -136,11 +136,39 @@ export default function DashboardClient({
   const [activeTab, setActiveTab] = useState<TabKey>(tabParam || 'resumen')
   const [ownerAuctions, setOwnerAuctions] = useState(initialOwnerAuctions)
 
-  const tierLabel = (upgradeConfirmed || subscription)
+  // Points redemption state
+  const [isRedeeming, setIsRedeeming] = useState(false)
+  const [hasRedeemed, setHasRedeemed] = useState(alreadyRedeemed)
+  const [redeemError, setRedeemError] = useState<string | null>(null)
+
+  const tierLabel = (upgradeConfirmed || subscription || hasRedeemed)
     ? (subscription?.plan_name || '').toLowerCase().includes('enterprise')
       ? 'ENTERPRISE'
       : 'PRO'
     : 'FREE'
+
+  // Handle points redemption
+  const handleRedeemPoints = async () => {
+    setIsRedeeming(true)
+    setRedeemError(null)
+    
+    try {
+      const res = await fetch('/api/redeem-points', { method: 'POST' })
+      const data = await res.json()
+      
+      if (res.ok) {
+        setHasRedeemed(true)
+        // Show success and refresh to get updated subscription
+        window.location.reload()
+      } else {
+        setRedeemError(data.error || 'Error al canjear puntos')
+      }
+    } catch {
+      setRedeemError('Error de conexión')
+    } finally {
+      setIsRedeeming(false)
+    }
+  }
 
   // Poll subscription status after upgrade redirect
   useEffect(() => {
@@ -285,21 +313,34 @@ export default function DashboardClient({
 
           {/* Points Progress Tracker */}
           {consignataria?.verified && tierLabel === 'FREE' && (
-            <ProfileProgressTracker
-              profile={{
-                cuit: consignataria.cuit,
-                phone: consignataria.phone,
-                email: consignataria.email,
-                whatsapp: consignataria.whatsapp,
-                website: consignataria.website,
-                description: consignataria.description,
-                logo: consignataria.logo_url,
-                dteCount,
-                remateCount: ownerAuctions.length,
-                hasResults: auctionResults.length > 0,
-              }}
-              alreadyRedeemed={alreadyRedeemed}
-            />
+            <>
+              <ProfileProgressTracker
+                profile={{
+                  cuit: consignataria.cuit,
+                  phone: consignataria.phone,
+                  email: consignataria.email,
+                  whatsapp: consignataria.whatsapp,
+                  website: consignataria.website,
+                  description: consignataria.description,
+                  logo: consignataria.logo_url,
+                  dteCount,
+                  remateCount: ownerAuctions.length,
+                  hasResults: auctionResults.length > 0,
+                }}
+                alreadyRedeemed={hasRedeemed}
+                onRedeem={handleRedeemPoints}
+              />
+              {redeemError && (
+                <div className="mt-2 px-3 py-2 bg-negative/10 border border-negative/30 rounded">
+                  <p className="text-negative text-xxs font-terminal">{redeemError}</p>
+                </div>
+              )}
+              {isRedeeming && (
+                <div className="mt-2 px-3 py-2 bg-amber-500/10 border border-amber-500/30 rounded">
+                  <p className="text-amber-400 text-xxs font-terminal">Canjeando puntos...</p>
+                </div>
+              )}
+            </>
           )}
 
           {consignataria?.verified && (

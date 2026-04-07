@@ -6,6 +6,49 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.9.8] — 2026-04-07
+
+### Points System Completion (Movement 2)
+
+The gamification system is now fully operational. Users can earn points by completing profile actions and redeem 4,500 points for 1 month of PRO free.
+
+#### Database Schema
+- `point_redemptions` table — tracks user redemptions (one per user)
+- `point_transactions` table — audit trail of point changes
+- RLS policies for user-owned data access
+
+#### API Endpoint
+- `POST /api/redeem-points` — validates points, checks eligibility, activates PRO
+- Creates subscription record with 1-month expiration
+- Logs transaction for audit trail
+
+#### Dashboard Integration
+- `ProfileProgressTracker` now has functional "Canjear mes PRO gratis" button
+- Error handling for insufficient points or already-redeemed state
+- Loading state during redemption process
+- Automatic page refresh on successful redemption
+
+#### Point Values (unchanged)
+| Action | Points |
+|--------|--------|
+| CUIT verificado | 300 |
+| Teléfono | 200 |
+| Email | 200 |
+| WhatsApp | 200 |
+| Sitio web | 200 |
+| Descripción | 300 |
+| Logo | 400 |
+| DT-e subida (×3 max) | 500 each |
+| Primer remate | 800 |
+| Resultado de remate | 500 |
+| Bonus: perfil completo | 300 |
+| **Total possible** | **5,500** |
+| **PRO threshold** | **4,500** |
+
+**SQL Migration:** `migrations/005_points_redemption.sql`
+
+---
+
 ## [1.9.7] — 2026-04-07
 
 ### Conversion Optimization Sprint — Form Recovery & PRO Copy Rewrite
