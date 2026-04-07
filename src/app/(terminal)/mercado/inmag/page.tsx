@@ -152,9 +152,8 @@ export default function InmagPage() {
         {/* PRO CTA for consignatarios (Insight #99) */}
         <div className="mb-6">
           <ProUpgradePrompt 
-            benefit="¿Sos consignatario? Mostrá tus remates a +5000 usuarios mensuales"
+            benefit="Productores revisan precios acá antes de vender. Que vean tus remates."
             context="inmag"
-            ctaText="Ver planes PRO"
             variant="card"
           />
         </div>

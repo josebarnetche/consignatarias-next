@@ -462,7 +462,7 @@ export default async function RemateDetailPage({ params }: Props) {
               {/* PRO Alert Prompt */}
               <div className="mt-4">
                 <ProUpgradePrompt
-                  benefit="Recibí alertas para remates de este tipo"
+                  benefit="No te pierdas remates como este. Alertas en tu email."
                   context="remate-detail"
                   variant="inline"
                 />

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 
 const FREE_LIMIT = 3
-const PRO_LIMIT = 5
+const _PRO_LIMIT = 5 // Reserved for future use
 
 interface ConsignatariaStats {
   slug: string
@@ -89,7 +89,7 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
         {atFreeLimit && (
           <div className="mt-4">
             <ProUpgradePrompt 
-              benefit={`Compará hasta ${PRO_LIMIT} consignatarias con PRO`}
+              benefit="Tu remate llega a +500 productores cada semana. Destacalo."
               context="comparar"
               variant="card"
             />

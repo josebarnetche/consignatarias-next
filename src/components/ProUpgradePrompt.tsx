@@ -30,7 +30,7 @@ interface ProUpgradePromptProps {
 export default function ProUpgradePrompt({
   benefit,
   context = 'unknown',
-  ctaText = 'Activar PRO',
+  ctaText = 'Ver cómo funciona →',
   variant = 'inline',
 }: ProUpgradePromptProps) {
   const href = `/planes?from=${context}`
@@ -59,7 +59,7 @@ export default function ProUpgradePrompt({
                 {benefit}
               </p>
               <p className="text-xxs text-zinc-500 mt-0.5">
-                Plan PRO · $45.000/mes
+                Sin permanencia · Cancelá cuando quieras
               </p>
             </div>
           </div>

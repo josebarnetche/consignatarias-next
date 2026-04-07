@@ -284,7 +284,7 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
           
           {/* PRO Upgrade Prompt */}
           <ProUpgradePrompt
-            benefit="Guardá tus cálculos y accedé al historial"
+            benefit="Productores calculan precios acá. Tu remate al lado de su resultado."
             context="calculadora"
             variant="card"
           />

@@ -252,7 +252,7 @@ export default function ExportarClient() {
         
         {/* PRO Upgrade Prompt */}
         <ProUpgradePrompt
-          benefit="Accedé a datos históricos y formatos API con PRO"
+          benefit="Datos completos para decidir mejor. Sin límites de exportación."
           context="exportar"
           variant="card"
         />
