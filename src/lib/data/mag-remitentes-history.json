@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-06T21:39:20.287Z",
+  "lastUpdated": "2026-04-07T21:46:10.265Z",
   "consignatarias": {
     "alzaga-unzue-y-cia-s-a": {
       "magId": "15",
@@ -44,6 +44,59 @@
             }
           ],
           "totalCabezas": 51
+        },
+        "2026-04-07": {
+          "entries": [
+            {
+              "remitente": "GANAD. AVRIL DE PEPE NATALIA Y",
+              "localidad": "PUNTA INDIO",
+              "provincia": "BUE",
+              "cabezas": 7
+            },
+            {
+              "remitente": "LOS CUATRO TALAS SRL",
+              "localidad": "VERONICA (PDO. PUNTA",
+              "provincia": "BUE",
+              "cabezas": 11
+            },
+            {
+              "remitente": "ROSSI GERARDO RODOLFO",
+              "localidad": "GRAL. GUIDO",
+              "provincia": "BUE",
+              "cabezas": 1
+            },
+            {
+              "remitente": "TORREJON DE LA CALZADA S.A",
+              "localidad": "VERONICA (PDO. PUNTA",
+              "provincia": "BUE",
+              "cabezas": 7
+            },
+            {
+              "remitente": "VELA MARTA GOMEZ ALZAGA DE",
+              "localidad": "25 DE MAYO",
+              "provincia": "BUE",
+              "cabezas": 35
+            },
+            {
+              "remitente": "VELA MARTA GOMEZ ALZAGA DE",
+              "localidad": "25 DE MAYO",
+              "provincia": "BUE",
+              "cabezas": 35
+            },
+            {
+              "remitente": "WILLIS GERALDINE",
+              "localidad": "GRAL. GUIDO",
+              "provincia": "BUE",
+              "cabezas": 12
+            },
+            {
+              "remitente": "WILLIS GERALDINE",
+              "localidad": "GRAL. GUIDO",
+              "provincia": "BUE",
+              "cabezas": 23
+            }
+          ],
+          "totalCabezas": 131
         }
       }
     },
@@ -73,6 +126,35 @@
             }
           ],
           "totalCabezas": 61
+        },
+        "2026-04-07": {
+          "entries": [
+            {
+              "remitente": "GONZALEZ LISANDRO Y LEONARDO H",
+              "localidad": "NECOCHEA",
+              "provincia": "BUE",
+              "cabezas": 50
+            },
+            {
+              "remitente": "MARIA ALEJANDRA MONACO",
+              "localidad": "BOLIVAR",
+              "provincia": "BUE",
+              "cabezas": 35
+            },
+            {
+              "remitente": "MASSACCESI ADALBERTO OSCAR",
+              "localidad": "9 DE JULIO",
+              "provincia": "BUE",
+              "cabezas": 5
+            },
+            {
+              "remitente": "MASSACCESI ADALBERTO OSCAR",
+              "localidad": "9 DE JULIO",
+              "provincia": "BUE",
+              "cabezas": 14
+            }
+          ],
+          "totalCabezas": 104
         }
       }
     },
@@ -185,6 +267,53 @@
             }
           ],
           "totalCabezas": 87
+        },
+        "2026-04-07": {
+          "entries": [
+            {
+              "remitente": "AGROPECUARIA CATTALANO S.A",
+              "localidad": "MATTALDI",
+              "provincia": "CBA",
+              "cabezas": 36
+            },
+            {
+              "remitente": "EL BOYERO S.S.",
+              "localidad": "BOLIVAR",
+              "provincia": "BUE",
+              "cabezas": 27
+            },
+            {
+              "remitente": "ESTAB. 21 DE FEBRERO S.A.",
+              "localidad": "DOLORES",
+              "provincia": "BUE",
+              "cabezas": 34
+            },
+            {
+              "remitente": "GALLARDO JOSE MARIA",
+              "localidad": "25 DE MAYO",
+              "provincia": "BUE",
+              "cabezas": 12
+            },
+            {
+              "remitente": "LOS MUMIS S.R.L.",
+              "localidad": "RAUCH",
+              "provincia": "BUE",
+              "cabezas": 3
+            },
+            {
+              "remitente": "RINCON DE LA LAGUNA S.A.",
+              "localidad": "AYACUCHO           B",
+              "provincia": "BUE",
+              "cabezas": 36
+            },
+            {
+              "remitente": "UBUNTU S.R.L",
+              "localidad": "25 DE MAYO",
+              "provincia": "BUE",
+              "cabezas": 3
+            }
+          ],
+          "totalCabezas": 151
         }
       }
     },
@@ -453,6 +582,41 @@
             }
           ],
           "totalCabezas": 119
+        },
+        "2026-04-07": {
+          "entries": [
+            {
+              "remitente": "ALVARO RAUL",
+              "localidad": "AZUL",
+              "provincia": "BUE",
+              "cabezas": 49
+            },
+            {
+              "remitente": "CIAVIRELLA MARIA HAYDEE",
+              "localidad": "DAIREAUX",
+              "provincia": "BUE",
+              "cabezas": 12
+            },
+            {
+              "remitente": "ESTB.GANADERO SAN ANTONIO S.A.",
+              "localidad": "CNEL. SUAREZ",
+              "provincia": "BUE",
+              "cabezas": 42
+            },
+            {
+              "remitente": "KECHU LAMNGEN S.A.",
+              "localidad": "BALCARCE",
+              "provincia": "BUE",
+              "cabezas": 53
+            },
+            {
+              "remitente": "LOVIZIO S.A.",
+              "localidad": "AYACUCHO           B",
+              "provincia": "BUE",
+              "cabezas": 42
+            }
+          ],
+          "totalCabezas": 198
         }
       }
     },
@@ -650,6 +814,95 @@
             }
           ],
           "totalCabezas": 849
+        },
+        "2026-04-07": {
+          "entries": [
+            {
+              "remitente": "AMERA S.R.L.",
+              "localidad": "WINIFREDA",
+              "provincia": "LPA",
+              "cabezas": 24
+            },
+            {
+              "remitente": "DANIEL RUBEN OOSTDIJK",
+              "localidad": "SAN CAYETANO",
+              "provincia": "BUE",
+              "cabezas": 21
+            },
+            {
+              "remitente": "EL RASTRO S.A.",
+              "localidad": "ATALIVA ROCA",
+              "provincia": "LPA",
+              "cabezas": 42
+            },
+            {
+              "remitente": "GARCIA ALFONSO SANTIAGO",
+              "localidad": "WINIFREDA",
+              "provincia": "LPA",
+              "cabezas": 2
+            },
+            {
+              "remitente": "ITURRALDE CARLOS Y ETCHEPARE J",
+              "localidad": "AYACUCHO           B",
+              "provincia": "BUE",
+              "cabezas": 70
+            },
+            {
+              "remitente": "JORGE LUIS FANTASIA",
+              "localidad": "SAN CAYETANO",
+              "provincia": "BUE",
+              "cabezas": 10
+            },
+            {
+              "remitente": "MAISONNAVE JUAN MATIAS",
+              "localidad": "UTRACAN",
+              "provincia": "LPA",
+              "cabezas": 39
+            },
+            {
+              "remitente": "MINUJIN LUIS ROBERTO",
+              "localidad": "TORNQUIST",
+              "provincia": "BUE",
+              "cabezas": 34
+            },
+            {
+              "remitente": "ROLANDO BARATCABAL S.R.L.",
+              "localidad": "MAR CHIQUITA",
+              "provincia": "BUE",
+              "cabezas": 36
+            },
+            {
+              "remitente": "SUCESION DE BADIE ALBERTO NICO",
+              "localidad": "AYACUCHO           B",
+              "provincia": "BUE",
+              "cabezas": 26
+            },
+            {
+              "remitente": "TIBUS S.A.",
+              "localidad": "BALCARCE",
+              "provincia": "BUE",
+              "cabezas": 3
+            },
+            {
+              "remitente": "TIBUS S.A.",
+              "localidad": "BALCARCE",
+              "provincia": "BUE",
+              "cabezas": 35
+            },
+            {
+              "remitente": "TUS WALTER E.",
+              "localidad": "AZUL",
+              "provincia": "BUE",
+              "cabezas": 25
+            },
+            {
+              "remitente": "WISKY ANA MARIA",
+              "localidad": "AYACUCHO           B",
+              "provincia": "BUE",
+              "cabezas": 30
+            }
+          ],
+          "totalCabezas": 397
         }
       }
     },
@@ -702,6 +955,23 @@
             }
           ],
           "totalCabezas": 6
+        },
+        "2026-04-07": {
+          "entries": [
+            {
+              "remitente": "DECOTTO JOSE A.",
+              "localidad": "TAPALQUE",
+              "provincia": "BUE",
+              "cabezas": 15
+            },
+            {
+              "remitente": "ZC PROYECTOS S.A.S.",
+              "localidad": "CNEL. SUAREZ",
+              "provincia": "BUE",
+              "cabezas": 48
+            }
+          ],
+          "totalCabezas": 63
         }
       }
     },
@@ -731,6 +1001,17 @@
             }
           ],
           "totalCabezas": 80
+        },
+        "2026-04-07": {
+          "entries": [
+            {
+              "remitente": "SILVA HNOS. DE H",
+              "localidad": "RAUCH",
+              "provincia": "BUE",
+              "cabezas": 45
+            }
+          ],
+          "totalCabezas": 45
         }
       }
     },
@@ -790,6 +1071,53 @@
             }
           ],
           "totalCabezas": 186
+        },
+        "2026-04-07": {
+          "entries": [
+            {
+              "remitente": "BOUCINHA S.H.- R.,M., e I.SOSA",
+              "localidad": "CA�UELAS",
+              "provincia": "BUE",
+              "cabezas": 32
+            },
+            {
+              "remitente": "CABA�A EL RESPIRO S.A.",
+              "localidad": "GRAL. BELGRANO",
+              "provincia": "BUE",
+              "cabezas": 36
+            },
+            {
+              "remitente": "DEL CARRE ANGEL MARCELO",
+              "localidad": "GRAL. RODRIGUEZ",
+              "provincia": "BUE",
+              "cabezas": 2
+            },
+            {
+              "remitente": "JOSE BUCK S.A.",
+              "localidad": "LAPRIDA",
+              "provincia": "BUE",
+              "cabezas": 36
+            },
+            {
+              "remitente": "KIRO S.R.L.",
+              "localidad": "GRAL. BELGRANO",
+              "provincia": "BUE",
+              "cabezas": 2
+            },
+            {
+              "remitente": "LOS TOLDOS S.A.I.C.A.",
+              "localidad": "GRAL. RODRIGUEZ",
+              "provincia": "BUE",
+              "cabezas": 11
+            },
+            {
+              "remitente": "M. KISS S.A.",
+              "localidad": "GRAL. BELGRANO",
+              "provincia": "BUE",
+              "cabezas": 3
+            }
+          ],
+          "totalCabezas": 122
         }
       }
     },
@@ -956,6 +1284,35 @@
             }
           ],
           "totalCabezas": 118
+        },
+        "2026-04-07": {
+          "entries": [
+            {
+              "remitente": "DA NES SRL",
+              "localidad": "OLAVARRIA",
+              "provincia": "BUE",
+              "cabezas": 60
+            },
+            {
+              "remitente": "DA NES SRL",
+              "localidad": "OLAVARRIA",
+              "provincia": "BUE",
+              "cabezas": 62
+            },
+            {
+              "remitente": "EL COMBATE S.A.",
+              "localidad": "TAPALQUE",
+              "provincia": "BUE",
+              "cabezas": 36
+            },
+            {
+              "remitente": "EL COMBATE S.A.",
+              "localidad": "TAPALQUE",
+              "provincia": "BUE",
+              "cabezas": 36
+            }
+          ],
+          "totalCabezas": 194
         }
       }
     },
@@ -1176,6 +1533,143 @@
             }
           ],
           "totalCabezas": 25
+        },
+        "2026-04-07": {
+          "entries": [
+            {
+              "remitente": "ALGARRA HNOS. S.H.",
+              "localidad": "DAIREAUX",
+              "provincia": "BUE",
+              "cabezas": 70
+            },
+            {
+              "remitente": "ALGARRA HNOS. S.H.",
+              "localidad": "DAIREAUX",
+              "provincia": "BUE",
+              "cabezas": 57
+            },
+            {
+              "remitente": "CAMAESFE S.A.",
+              "localidad": "LOBERIA",
+              "provincia": "BUE",
+              "cabezas": 30
+            },
+            {
+              "remitente": "CAMAESFE S.A.",
+              "localidad": "LOBERIA",
+              "provincia": "BUE",
+              "cabezas": 29
+            },
+            {
+              "remitente": "CAMPOAMOR GERMAN",
+              "localidad": "BENITO JUAREZ",
+              "provincia": "BUE",
+              "cabezas": 13
+            },
+            {
+              "remitente": "CAMPOMAX S.A.",
+              "localidad": "BOLIVAR",
+              "provincia": "BUE",
+              "cabezas": 4
+            },
+            {
+              "remitente": "CAMPOMAX S.A.",
+              "localidad": "BOLIVAR",
+              "provincia": "BUE",
+              "cabezas": 33
+            },
+            {
+              "remitente": "CARRETERO FERNANDO",
+              "localidad": "BOLIVAR",
+              "provincia": "BUE",
+              "cabezas": 15
+            },
+            {
+              "remitente": "CARRETERO HORACIO ROBERTO",
+              "localidad": "BOLIVAR",
+              "provincia": "BUE",
+              "cabezas": 25
+            },
+            {
+              "remitente": "EST. AGROP. LA RESERVA",
+              "localidad": "BOLIVAR",
+              "provincia": "BUE",
+              "cabezas": 35
+            },
+            {
+              "remitente": "EXPORTLAN S.A.",
+              "localidad": "TRENQUE LAUQUEN",
+              "provincia": "BUE",
+              "cabezas": 38
+            },
+            {
+              "remitente": "LARRALDE DIEGO",
+              "localidad": "BENITO JUAREZ",
+              "provincia": "BUE",
+              "cabezas": 6
+            },
+            {
+              "remitente": "LOS MIOS S.A.",
+              "localidad": "LOBERIA",
+              "provincia": "BUE",
+              "cabezas": 40
+            },
+            {
+              "remitente": "MARTIN EZEQUIEL M",
+              "localidad": "DAIREAUX",
+              "provincia": "BUE",
+              "cabezas": 37
+            },
+            {
+              "remitente": "MARVIC S.H.",
+              "localidad": "GRAL. LA MADRID",
+              "provincia": "BUE",
+              "cabezas": 36
+            },
+            {
+              "remitente": "MUGNAGA MAURO RUBEN",
+              "localidad": "TRES ARROYOS",
+              "provincia": "BUE",
+              "cabezas": 20
+            },
+            {
+              "remitente": "ORTIZ CECILIA NOEMI",
+              "localidad": "BENITO JUAREZ",
+              "provincia": "BUE",
+              "cabezas": 17
+            },
+            {
+              "remitente": "SILLERO SERAFIN",
+              "localidad": "CNEL. DORREGO",
+              "provincia": "BUE",
+              "cabezas": 47
+            },
+            {
+              "remitente": "SILLERO SERAFIN",
+              "localidad": "CNEL. DORREGO",
+              "provincia": "BUE",
+              "cabezas": 47
+            },
+            {
+              "remitente": "URCOLA FABIAN EDGARDO",
+              "localidad": "VILLARINO",
+              "provincia": "BUE",
+              "cabezas": 51
+            },
+            {
+              "remitente": "URCOLA FABIAN EDGARDO",
+              "localidad": "VILLARINO",
+              "provincia": "BUE",
+              "cabezas": 37
+            },
+            {
+              "remitente": "WALTER LUIS S. ECKERT",
+              "localidad": "GRAL. LA MADRID",
+              "provincia": "BUE",
+              "cabezas": 39
+            }
+          ],
+          "totalCabezas": 726
         }
       }
     },
@@ -1211,6 +1705,95 @@
             }
           ],
           "totalCabezas": 51
+        },
+        "2026-04-07": {
+          "entries": [
+            {
+              "remitente": "CORRALES VIEJOS",
+              "localidad": "LEZAMA",
+              "provincia": "BUE",
+              "cabezas": 2
+            },
+            {
+              "remitente": "ERREGUE MARIA DE LUJAN",
+              "localidad": "CHASCOMUS",
+              "provincia": "BUE",
+              "cabezas": 9
+            },
+            {
+              "remitente": "FAVA CARLOS",
+              "localidad": "CHASCOMUS",
+              "provincia": "BUE",
+              "cabezas": 13
+            },
+            {
+              "remitente": "GRIAL AGROPECUARIA S.A.",
+              "localidad": "AYACUCHO           B",
+              "provincia": "BUE",
+              "cabezas": 43
+            },
+            {
+              "remitente": "I�URRIETA LUCAS GABRIEL",
+              "localidad": "CHASCOMUS",
+              "provincia": "BUE",
+              "cabezas": 4
+            },
+            {
+              "remitente": "IRULEGUI ELMA PATRICIA",
+              "localidad": "CHASCOMUS",
+              "provincia": "BUE",
+              "cabezas": 26
+            },
+            {
+              "remitente": "MANAZZONI HECTOR MAURO",
+              "localidad": "LOBERIA",
+              "provincia": "BUE",
+              "cabezas": 44
+            },
+            {
+              "remitente": "MARCELO R RIVAS",
+              "localidad": "CHASCOMUS",
+              "provincia": "BUE",
+              "cabezas": 3
+            },
+            {
+              "remitente": "MIGUELTORENA ARIEL MAURICIO",
+              "localidad": "AYACUCHO           B",
+              "provincia": "BUE",
+              "cabezas": 7
+            },
+            {
+              "remitente": "MIGUELTORENA BERNARDO NICOLAS",
+              "localidad": "TANDIL",
+              "provincia": "BUE",
+              "cabezas": 18
+            },
+            {
+              "remitente": "MIGUELTORENA MARCELA LILIANA",
+              "localidad": "AYACUCHO           B",
+              "provincia": "BUE",
+              "cabezas": 7
+            },
+            {
+              "remitente": "MIGUELTORENA MARIA CLAUDIA",
+              "localidad": "AYACUCHO           B",
+              "provincia": "BUE",
+              "cabezas": 6
+            },
+            {
+              "remitente": "MILLAN RICARDO MARTIN",
+              "localidad": "CHASCOMUS",
+              "provincia": "BUE",
+              "cabezas": 11
+            },
+            {
+              "remitente": "VANZATO MARIA BEATRIZ",
+              "localidad": "VERONICA (PDO. PUNTA",
+              "provincia": "BUE",
+              "cabezas": 15
+            }
+          ],
+          "totalCabezas": 208
         }
       }
     },
@@ -1258,6 +1841,143 @@
             }
           ],
           "totalCabezas": 133
+        },
+        "2026-04-07": {
+          "entries": [
+            {
+              "remitente": "AGROGANAD. RINCON DEL SUR S.A.",
+              "localidad": "LAS FLORES",
+              "provincia": "BUE",
+              "cabezas": 15
+            },
+            {
+              "remitente": "CORDOBA JUAN JESUS",
+              "localidad": "GRAL. MADARIAGA",
+              "provincia": "BUE",
+              "cabezas": 7
+            },
+            {
+              "remitente": "CORDOBA JUAN JESUS",
+              "localidad": "GRAL. MADARIAGA",
+              "provincia": "BUE",
+              "cabezas": 23
+            },
+            {
+              "remitente": "CORDOBA MARCOS J.",
+              "localidad": "GRAL. MADARIAGA",
+              "provincia": "BUE",
+              "cabezas": 7
+            },
+            {
+              "remitente": "DELFINAGRO S.A.",
+              "localidad": "AZUL",
+              "provincia": "BUE",
+              "cabezas": 11
+            },
+            {
+              "remitente": "DELFINAGRO S.A.",
+              "localidad": "AZUL",
+              "provincia": "BUE",
+              "cabezas": 23
+            },
+            {
+              "remitente": "GARCIA ROBERTO Y DANIEL",
+              "localidad": "SAN CAYETANO",
+              "provincia": "BUE",
+              "cabezas": 40
+            },
+            {
+              "remitente": "GRASSETTI JUAN CARLOS",
+              "localidad": "RAMALLO",
+              "provincia": "BUE",
+              "cabezas": 37
+            },
+            {
+              "remitente": "IRUANYAK S.R.L.",
+              "localidad": "MERCEDES",
+              "provincia": "BUE",
+              "cabezas": 64
+            },
+            {
+              "remitente": "IRUANYAK S.R.L.",
+              "localidad": "MERCEDES",
+              "provincia": "BUE",
+              "cabezas": 64
+            },
+            {
+              "remitente": "JOSIMAX S.A.",
+              "localidad": "BENITO JUAREZ",
+              "provincia": "BUE",
+              "cabezas": 37
+            },
+            {
+              "remitente": "LA QUERENCIA DE ARATA HNOS.S.A",
+              "localidad": "LAS FLORES",
+              "provincia": "BUE",
+              "cabezas": 43
+            },
+            {
+              "remitente": "MONVALE CARLOS ALBERTO",
+              "localidad": "MARCOS PAZ",
+              "provincia": "BUE",
+              "cabezas": 38
+            },
+            {
+              "remitente": "MONVALE CARLOS ALBERTO",
+              "localidad": "MARCOS PAZ",
+              "provincia": "BUE",
+              "cabezas": 38
+            },
+            {
+              "remitente": "MONVALE CARLOS ALBERTO",
+              "localidad": "MARCOS PAZ",
+              "provincia": "BUE",
+              "cabezas": 34
+            },
+            {
+              "remitente": "SANCHEZ NEGRETE FACUNDO JORGE",
+              "localidad": "SAN PEDRO",
+              "provincia": "BUE",
+              "cabezas": 23
+            },
+            {
+              "remitente": "SURANGUS S.A.",
+              "localidad": "ROQUE PEREZ",
+              "provincia": "BUE",
+              "cabezas": 34
+            },
+            {
+              "remitente": "SURANGUS S.A.",
+              "localidad": "ROQUE PEREZ",
+              "provincia": "BUE",
+              "cabezas": 33
+            },
+            {
+              "remitente": "TAPALGRO S.A.",
+              "localidad": "AZUL",
+              "provincia": "BUE",
+              "cabezas": 37
+            },
+            {
+              "remitente": "URCOLA FABIAN EDGARDO",
+              "localidad": "VILLARINO",
+              "provincia": "BUE",
+              "cabezas": 51
+            },
+            {
+              "remitente": "VIA SEVILLA S.A",
+              "localidad": "LAS FLORES",
+              "provincia": "BUE",
+              "cabezas": 35
+            },
+            {
+              "remitente": "VIA SEVILLA S.A",
+              "localidad": "LAS FLORES",
+              "provincia": "BUE",
+              "cabezas": 34
+            }
+          ],
+          "totalCabezas": 728
         }
       }
     },
@@ -1316,6 +2036,29 @@
             }
           ],
           "totalCabezas": 22
+        },
+        "2026-04-07": {
+          "entries": [
+            {
+              "remitente": "ARRAMBIDE MIRIAN BELEN",
+              "localidad": "LAS FLORES",
+              "provincia": "BUE",
+              "cabezas": 7
+            },
+            {
+              "remitente": "BARTALOMEY MARIO CESAR",
+              "localidad": "LAS FLORES",
+              "provincia": "BUE",
+              "cabezas": 19
+            },
+            {
+              "remitente": "URODA KARINA BEATRIZ",
+              "localidad": "LAS FLORES",
+              "provincia": "BUE",
+              "cabezas": 7
+            }
+          ],
+          "totalCabezas": 33
         }
       }
     },
@@ -1381,6 +2124,77 @@
             }
           ],
           "totalCabezas": 194
+        },
+        "2026-04-07": {
+          "entries": [
+            {
+              "remitente": "CABA�A INAMBU S.A.",
+              "localidad": "AYACUCHO           B",
+              "provincia": "BUE",
+              "cabezas": 16
+            },
+            {
+              "remitente": "CABA�A INAMBU S.A.",
+              "localidad": "AYACUCHO           B",
+              "provincia": "BUE",
+              "cabezas": 32
+            },
+            {
+              "remitente": "CABA�A INAMBU S.A.",
+              "localidad": "BALCARCE",
+              "provincia": "BUE",
+              "cabezas": 16
+            },
+            {
+              "remitente": "CYR EN TAPALQUE S.A.",
+              "localidad": "TAPALQUE",
+              "provincia": "BUE",
+              "cabezas": 46
+            },
+            {
+              "remitente": "DOLCE JUAN ANTONIO",
+              "localidad": "GRAL. ALVEAR",
+              "provincia": "BUE",
+              "cabezas": 32
+            },
+            {
+              "remitente": "GARAVENTO S.R.L.",
+              "localidad": "GRAL. ALVEAR",
+              "provincia": "BUE",
+              "cabezas": 51
+            },
+            {
+              "remitente": "JURAJ S.R.L.",
+              "localidad": "LOBERIA",
+              "provincia": "BUE",
+              "cabezas": 29
+            },
+            {
+              "remitente": "MESSLER GUSTAVO Y MARCELO",
+              "localidad": "AZUL",
+              "provincia": "BUE",
+              "cabezas": 38
+            },
+            {
+              "remitente": "RUQUET GONZALO OSACAR",
+              "localidad": "25 DE MAYO",
+              "provincia": "BUE",
+              "cabezas": 10
+            },
+            {
+              "remitente": "RUQUET GONZALO OSACAR",
+              "localidad": "25 DE MAYO",
+              "provincia": "BUE",
+              "cabezas": 24
+            },
+            {
+              "remitente": "SUC.DE MARTIN JOSE PECORENA",
+              "localidad": "AZUL",
+              "provincia": "BUE",
+              "cabezas": 41
+            }
+          ],
+          "totalCabezas": 335
         }
       }
     },
@@ -1398,6 +2212,29 @@
             }
           ],
           "totalCabezas": 6
+        },
+        "2026-04-07": {
+          "entries": [
+            {
+              "remitente": "GANADERA SALLIQUELO S.A.",
+              "localidad": "SALLIQUELO",
+              "provincia": "BUE",
+              "cabezas": 18
+            },
+            {
+              "remitente": "TAVERNA JUAN JOSE",
+              "localidad": "ATREUCO",
+              "provincia": "LPA",
+              "cabezas": 20
+            },
+            {
+              "remitente": "TAVERNA JUAN JOSE",
+              "localidad": "MACACHIN",
+              "provincia": "LPA",
+              "cabezas": 35
+            }
+          ],
+          "totalCabezas": 73
         }
       }
     }
