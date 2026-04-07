@@ -3,12 +3,6 @@ import FrigorificoVerificarClient from './FrigorificoVerificarClient'
 import frigorificosData from '@/lib/data/frigorificos.json'
 
 /* ------------------------------------------------------------------ */
-/*  CONFIG — Skip static generation (dynamic searchParams)            */
-/* ------------------------------------------------------------------ */
-
-export const dynamic = 'force-dynamic'
-
-/* ------------------------------------------------------------------ */
 /*  METADATA                                                           */
 /* ------------------------------------------------------------------ */
 

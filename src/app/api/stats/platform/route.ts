@@ -1,14 +1,32 @@
 import { NextResponse } from 'next/server'
+import { unstable_cache } from 'next/cache'
 import { createServiceClient } from '@/lib/supabase'
 import remates from '@/lib/data/remates.json'
 import consignatarias from '@/lib/data/consignatarias.json'
 import frigorificos from '@/lib/data/frigorificos.json'
 
+// Cache subscriber count for 1 hour
+const getSubscriberCount = unstable_cache(
+  async () => {
+    try {
+      const supabase = createServiceClient()
+      const { count } = await supabase
+        .from('newsletter_subscribers')
+        .select('*', { count: 'exact', head: true })
+      return count && count > 0 ? count : 500
+    } catch {
+      return 500
+    }
+  },
+  ['subscriber-count'],
+  { revalidate: 3600 }
+)
+
 /**
  * GET /api/stats/platform
  * 
  * Returns platform-wide statistics for social proof on marketing pages.
- * Lightweight endpoint for dynamic display of platform scale.
+ * Uses Next.js cache for Supabase calls.
  */
 export async function GET() {
   try {
@@ -31,19 +49,8 @@ export async function GET() {
         .map(r => r.province)
     )
     
-    // Count newsletter subscribers (real social proof)
-    let subscriberCount = 500 // fallback
-    try {
-      const supabase = createServiceClient()
-      const { count } = await supabase
-        .from('newsletter_subscribers')
-        .select('*', { count: 'exact', head: true })
-      if (count && count > 0) {
-        subscriberCount = count
-      }
-    } catch {
-      // Use fallback if Supabase query fails
-    }
+    // Get cached subscriber count
+    const subscriberCount = await getSubscriberCount()
 
     const response = NextResponse.json({
       success: true,
