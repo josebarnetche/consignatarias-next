@@ -6,6 +6,31 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.9.9] — 2026-04-07
+
+### Pricing Page Reframe (Movement 6)
+
+Psychological pricing optimization to reduce sticker shock and improve conversion.
+
+#### Price Reframe
+- **Primary display:** "$1.500/día" instead of "$45.000/mes" (feels 30x cheaper)
+- **Secondary:** Monthly price shown in smaller text with "Sin permanencia"
+
+#### Price Anchoring
+- Added comparison box: "Aviso diario: $200.000 · Cartel ruta: $150.000/mes"
+- Reframe: "Tu remate llega a +500 productores por menos que un café por día"
+
+#### ROI Enhancement
+- Stronger FAQ answer: "Un solo comprador nuevo te devuelve la inversión del año entero"
+- Added: "Un novillo vendido a mejor precio paga 10 años de PRO"
+
+**Psychology applied:**
+- Daily pricing reduces perceived commitment
+- Anchoring against expensive alternatives makes PRO feel like a bargain
+- Concrete ROI examples make value tangible
+
+---
+
 ## [1.9.8] — 2026-04-07
 
 ### Points System Completion (Movement 2)

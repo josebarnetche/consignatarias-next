@@ -177,18 +177,27 @@ export default function PlanesPage() {
             PRO
           </div>
           <div className="px-panel py-4 flex-1 flex flex-col">
-            <div className="mb-4">
+            <div className="mb-2">
               <span
                 className="text-2xl font-terminal tabular-nums"
                 style={{ color: '#fbbf24' }}
               >
-                $45.000
+                $1.500
               </span>
-              <span className="text-zinc-500 text-data ml-1">/mes</span>
+              <span className="text-zinc-500 text-data ml-1">/día</span>
             </div>
-            <p className="text-zinc-400 text-data mb-4">
-              Cada remate que publiques lo enviamos por email a todos nuestros suscriptores. Todo el año.
+            <p className="text-zinc-600 text-xxs mb-3">
+              $45.000/mes · Sin permanencia
             </p>
+            {/* Price anchoring - comparison to traditional advertising */}
+            <div className="mb-4 p-2 bg-zinc-900/50 border border-zinc-800 rounded text-xxs">
+              <p className="text-zinc-500">
+                <span className="line-through">Aviso diario: $200.000</span> · <span className="line-through">Cartel ruta: $150.000/mes</span>
+              </p>
+              <p className="text-zinc-400 mt-1">
+                Tu remate llega a <span className="text-amber-400">+500 productores</span> por menos que un café por día.
+              </p>
+            </div>
             {/* Dynamic founder spots remaining (Insight #61b → CLOSER Audit 2026-03-19) */}
             <FounderSpotsRemaining />
             <ul className="space-y-2 mb-6 flex-1">
@@ -363,9 +372,10 @@ export default function PlanesPage() {
               ¿Vale la pena la inversión?
             </p>
             <p className="text-zinc-500">
-              Un solo comprador nuevo de tus remates te devuelve la inversión
-              del año. Cada email llega a +500 productores activos buscando
-              hacienda. El costo por contacto es menos de $90.
+              <strong className="text-zinc-300">Un solo comprador nuevo te devuelve la inversión del año entero.</strong>{' '}
+              Cada email llega a +500 productores activos buscando hacienda. 
+              El costo por contacto es menos de $90 — menos que un café.
+              Un novillo vendido a mejor precio paga 10 años de PRO.
             </p>
           </div>
         </div>
