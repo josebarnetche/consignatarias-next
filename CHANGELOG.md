@@ -6,6 +6,45 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.9.7] — 2026-04-07
+
+### Conversion Optimization Sprint — Form Recovery & PRO Copy Rewrite
+
+Based on Q1 analytics diagnostic showing 91% form abandonment and 1.1% PRO prompt CTR, this release implements the first two high-impact movements from the conversion optimization plan.
+
+#### Form Abandonment Recovery System
+- **Email capture on blur** — captures email before form submit for recovery campaigns
+- New `/api/form-abandonment` endpoint (fire-and-forget, non-blocking)
+- DB schema: `form_abandonment` table with email, slug, form_type, timestamps
+- Applied to both `ClaimForm.tsx` and `FrigorificoClaimForm.tsx`
+- **Impact:** Previously lost 11 of 12 form starters. Now recoverable via email campaigns.
+
+#### Form UX Clarity
+- All optional fields now labeled "(opcional)" — reduces perceived effort
+- Helper text under email: "Te enviaremos un enlace para acceder"
+- Clearer value proposition in form copy
+
+#### PRO Prompt Copy Rewrite (Movement 1)
+- **CTA change:** "Activar PRO" → "Ver cómo funciona →" (lower commitment)
+- **Price removed from prompt** — moved to /planes page (reduces sticker shock)
+- **New reassurance:** "Sin permanencia · Cancelá cuando quieras"
+- **Benefit-first copy** across all 5 contexts:
+
+| Context | Before | After |
+|---------|--------|-------|
+| comparar | "Compará hasta 5 consignatarias" | "Tu remate llega a +500 productores cada semana. Destacalo." |
+| calculadora | "Guardá tus cálculos y accedé al historial" | "Productores calculan precios acá. Tu remate al lado de su resultado." |
+| exportar | "Accedé a datos históricos y formatos API" | "Datos completos para decidir mejor. Sin límites de exportación." |
+| inmag | "Mostrá tus remates a +5000 usuarios" | "Productores revisan precios acá antes de vender. Que vean tus remates." |
+| remate-detail | "Recibí alertas para remates de este tipo" | "No te pierdas remates como este. Alertas en tu email." |
+
+- **Expected impact:** CTR from 1.1% → 5-8% (benchmark for contextual B2B prompts)
+
+#### Build Fix
+- `/frigorificos/verificar` marked as `force-dynamic` to fix Next.js 15 static generation error with `useSearchParams()`
+
+---
+
 ## [1.9.6] — 2026-04-04
 
 ### Middleware Scope Fix — Eliminate Unnecessary Function Invocations
