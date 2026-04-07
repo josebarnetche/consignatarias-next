@@ -1,12 +1,22 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { trackClaimCTA } from '@/lib/analytics'
 
 interface FrigorificoClaimFormProps {
   frigorificoName: string
   frigorificoCuit: string
+}
+
+/** Save email for abandonment recovery (fire-and-forget) */
+function captureEmailForRecovery(email: string, cuit: string) {
+  if (!email || !email.includes('@')) return
+  fetch('/api/form-abandonment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, slug: cuit, form_type: 'frigorifico' }),
+  }).catch(() => {})
 }
 
 export default function FrigorificoClaimForm({ frigorificoName, frigorificoCuit }: FrigorificoClaimFormProps) {
@@ -18,6 +28,14 @@ export default function FrigorificoClaimForm({ frigorificoName, frigorificoCuit 
     claimant_phone: '',
     claimant_role: '',
   })
+  const [emailCaptured, setEmailCaptured] = useState(false)
+
+  const handleEmailBlur = useCallback(() => {
+    if (!emailCaptured && form.claimant_email) {
+      captureEmailForRecovery(form.claimant_email, frigorificoCuit)
+      setEmailCaptured(true)
+    }
+  }, [emailCaptured, form.claimant_email, frigorificoCuit])
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
@@ -101,7 +119,7 @@ export default function FrigorificoClaimForm({ frigorificoName, frigorificoCuit 
           </div>
         )}
 
-        {/* Email (required) */}
+        {/* Email (required) — captured on blur for recovery */}
         <div className="space-y-1">
           <label htmlFor="claimant_email" className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider">
             Email *
@@ -113,15 +131,17 @@ export default function FrigorificoClaimForm({ frigorificoName, frigorificoCuit 
             required
             value={form.claimant_email}
             onChange={handleChange}
+            onBlur={handleEmailBlur}
             placeholder="tu@email.com"
             className="terminal-input w-full"
           />
+          <p className="text-zinc-600 text-xxs font-terminal">Te contactaremos por este medio</p>
         </div>
 
-        {/* Name */}
+        {/* Name (optional) */}
         <div className="space-y-1">
           <label htmlFor="claimant_name" className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider">
-            Nombre completo
+            Nombre completo <span className="text-zinc-600">(opcional)</span>
           </label>
           <input
             id="claimant_name"
@@ -134,10 +154,10 @@ export default function FrigorificoClaimForm({ frigorificoName, frigorificoCuit 
           />
         </div>
 
-        {/* Phone */}
+        {/* Phone (optional) */}
         <div className="space-y-1">
           <label htmlFor="claimant_phone" className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider">
-            Teléfono
+            Teléfono <span className="text-zinc-600">(opcional)</span>
           </label>
           <input
             id="claimant_phone"
@@ -150,10 +170,10 @@ export default function FrigorificoClaimForm({ frigorificoName, frigorificoCuit 
           />
         </div>
 
-        {/* Role */}
+        {/* Role (optional) */}
         <div className="space-y-1">
           <label htmlFor="claimant_role" className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider">
-            Rol en la empresa
+            Rol en la empresa <span className="text-zinc-600">(opcional)</span>
           </label>
           <select
             id="claimant_role"
