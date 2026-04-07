@@ -119,10 +119,8 @@ export async function POST() {
       .upsert({
         entity_type: 'consignataria',
         entity_slug: consignataria.canonical_slug,
-        user_id: user.id,
         plan_name: 'PRO (Puntos)',
         status: 'active',
-        current_period_start: new Date().toISOString(),
         current_period_end: proExpiresAt.toISOString(),
         rebill_subscription_id: `points_${user.id}_${Date.now()}`,
       }, {
