@@ -5,6 +5,7 @@ import { trackOutboundClick } from '@/lib/analytics'
 interface WhatsAppFABProps {
   whatsapp: string
   consignatariaName: string
+  slug?: string
   className?: string
 }
 
@@ -14,7 +15,7 @@ interface WhatsAppFABProps {
  * Mobile-optimized FAB for consignataria profiles with WhatsApp numbers.
  * Pre-fills inquiry message and tracks clicks for conversion analysis.
  */
-export default function WhatsAppFAB({ whatsapp, consignatariaName, className = '' }: WhatsAppFABProps) {
+export default function WhatsAppFAB({ whatsapp, consignatariaName, slug, className = '' }: WhatsAppFABProps) {
   // Clean phone number (remove all non-digits)
   const cleanPhone = whatsapp.replace(/\D/g, '')
   
@@ -25,6 +26,14 @@ export default function WhatsAppFAB({ whatsapp, consignatariaName, className = '
 
   const handleClick = () => {
     trackOutboundClick(whatsapp, 'whatsapp_fab')
+    // Track in database for dashboard analytics
+    if (slug) {
+      fetch('/api/track/whatsapp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug, source: 'fab' }),
+      }).catch(() => {}) // Fire and forget
+    }
   }
 
   return (

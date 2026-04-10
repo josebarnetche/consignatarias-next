@@ -33,6 +33,12 @@ export default function WhatsAppButton({
         phone: cleanPhone,
       })
     }
+    // Track in database for dashboard analytics
+    fetch('/api/track/whatsapp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug }),
+    }).catch(() => {}) // Fire and forget
   }
 
   return (

@@ -103,6 +103,7 @@ interface Props {
   ownerAuctions: OwnerAuction[]
   auctionResults: AuctionResult[]
   viewCount: number
+  whatsappClicks: number
   viewPercentile: number
   provincialRank: { position: number; total: number; province: string }
   completedFields: CompletedFields | null
@@ -123,7 +124,7 @@ type TabKey = 'resumen' | 'remates' | 'editar' | 'resultados' | 'plan' | 'frigor
 
 export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
-  auctionResults, viewCount, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
+  auctionResults, viewCount, whatsappClicks, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
   dteCount = 0, alreadyRedeemed = false,
 }: Props) {
   const showChecklist = consignataria && completedFields && Object.values(completedFields).filter(Boolean).length < 5
@@ -346,35 +347,87 @@ export default function DashboardClient({
           {consignataria?.verified && (
             <div className={`terminal-panel ${tierLabel !== 'FREE' ? 'border-amber-500/20' : ''}`}>
               <div className="terminal-panel-header flex items-center justify-between">
-                <span className="text-zinc-200 text-label tracking-widest">📊 TU IMPACTO</span>
+                <span className="text-zinc-200 text-label tracking-widest">📊 TU IMPACTO — ÚLTIMOS 30 DÍAS</span>
                 {tierLabel !== 'FREE' && (
                   <span className="text-xxs text-amber-400 font-terminal">PRO Analytics</span>
                 )}
               </div>
               <div className="px-panel py-4">
-                {/* Main stat - view count */}
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <div className="text-3xl font-terminal tabular-nums text-zinc-100 font-bold">
+                {/* Stats grid - always show all 4 metrics */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                  {/* Views */}
+                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
+                    <div className="text-2xl font-terminal tabular-nums text-zinc-100 font-bold">
                       {viewCount.toLocaleString('es-AR')}
                     </div>
-                    <div className="text-xxs text-zinc-500 uppercase font-terminal mt-1">
-                      personas vieron tu perfil
+                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
+                      vistas perfil
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-xs text-zinc-400 font-terminal">últimos 30 días</div>
-                    {viewCount > 0 && (
-                      <div className="text-xs text-positive font-terminal mt-1">
-                        ↑ activo
-                      </div>
+                  
+                  {/* WhatsApp Clicks */}
+                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
+                    <div className="text-2xl font-terminal tabular-nums text-emerald-400 font-bold">
+                      {whatsappClicks.toLocaleString('es-AR')}
+                    </div>
+                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
+                      clics WhatsApp
+                    </div>
+                  </div>
+                  
+                  {/* Leads - THE GAP */}
+                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center relative">
+                    <div className="text-2xl font-terminal tabular-nums text-negative font-bold">
+                      0
+                    </div>
+                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
+                      leads capturados
+                    </div>
+                    {whatsappClicks > 0 && (
+                      <div className="absolute -top-1 -right-1 w-2 h-2 bg-negative rounded-full animate-pulse" />
                     )}
+                  </div>
+                  
+                  {/* Provincial Rank */}
+                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
+                    <div className="text-2xl font-terminal tabular-nums text-amber-400 font-bold">
+                      {provincialRank.position > 0 ? `#${provincialRank.position}` : '—'}
+                    </div>
+                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1 truncate">
+                      en {provincialRank.province || 'provincia'}
+                    </div>
                   </div>
                 </div>
 
-                {/* Stats grid for PRO users */}
+                {/* Gap Alert - THE WOW MOMENT */}
+                {whatsappClicks > 0 && (
+                  <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-terminal mb-4">
+                    <div className="flex items-start gap-2">
+                      <span className="text-amber-400 text-lg">⚠️</span>
+                      <div>
+                        <p className="text-sm font-terminal text-amber-300 font-medium">
+                          {whatsappClicks} personas hicieron clic en tu WhatsApp
+                        </p>
+                        <p className="text-xxs font-terminal text-zinc-400 mt-1">
+                          Pero no tenés forma de saber quiénes son. Con PRO podés capturar sus datos antes de que te contacten.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* PRO extras */}
+                {tierLabel !== 'FREE' && viewPercentile > 0 && (
+                  <div className="text-center pt-3 border-t border-terminal-border">
+                    <span className="text-xs text-zinc-500 font-terminal">
+                      Estás en el <span className="text-amber-400 font-bold">Top {100 - viewPercentile}%</span> de consignatarias más vistas del país
+                    </span>
+                  </div>
+                )}
+
+                {/* Stats grid for PRO users - additional metrics */}
                 {tierLabel !== 'FREE' && (
-                  <div className="grid grid-cols-3 gap-3 pt-3 border-t border-terminal-border">
+                  <div className="grid grid-cols-3 gap-3 pt-3 border-t border-terminal-border mt-3">
                     <div className="bg-zinc-800/50 rounded-terminal p-2.5">
                       <div className="text-lg font-terminal tabular-nums text-zinc-200">
                         {Math.round(viewCount / 30)}

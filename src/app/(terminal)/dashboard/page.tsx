@@ -93,22 +93,37 @@ export default async function DashboardPage() {
 
   // Get profile views count (last 30 days)
   let viewCount = 0
+  let whatsappClicks = 0
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+  
   if (consignataria) {
     const { count } = await service
       .from('profile_views')
       .select('*', { count: 'exact', head: true })
       .eq('entity_slug', consignataria.canonical_slug)
-      .gte('viewed_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+      .gte('viewed_at', thirtyDaysAgo)
 
     viewCount = count ?? 0
+
+    // Get WhatsApp clicks (last 30 days)
+    try {
+      const { count: waCount } = await service
+        .from('whatsapp_clicks')
+        .select('*', { count: 'exact', head: true })
+        .eq('consignataria_slug', consignataria.canonical_slug)
+        .gte('clicked_at', thirtyDaysAgo)
+
+      whatsappClicks = waCount ?? 0
+    } catch {
+      // Table may not exist yet
+      whatsappClicks = 0
+    }
   }
 
   // Calculate percentile vs other consignatarias (for PRO dashboard)
   let viewPercentile = 0
   if (consignataria && viewCount > 0) {
     // Get view counts for all claimed consignatarias in last 30 days
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
-    
     const { data: allViews } = await service
       .from('profile_views')
       .select('entity_slug')
@@ -229,6 +244,7 @@ export default async function DashboardPage() {
       ownerAuctions={ownerAuctions}
       auctionResults={auctionResults || []}
       viewCount={viewCount}
+      whatsappClicks={whatsappClicks}
       viewPercentile={viewPercentile}
       provincialRank={provincialRank}
       completedFields={completedFields}
