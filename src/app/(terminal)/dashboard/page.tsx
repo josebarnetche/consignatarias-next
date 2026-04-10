@@ -120,6 +120,39 @@ export default async function DashboardPage() {
     }
   }
 
+  // Get leads count (last 30 days)
+  let leadsCount = 0
+  if (consignataria) {
+    try {
+      const { count: leadCount } = await service
+        .from('consignataria_leads')
+        .select('*', { count: 'exact', head: true })
+        .eq('consignataria_slug', consignataria.canonical_slug)
+        .gte('created_at', thirtyDaysAgo)
+
+      leadsCount = leadCount ?? 0
+    } catch {
+      // Table may not exist yet
+      leadsCount = 0
+    }
+  }
+
+  // Get total remate watchers (demand signal)
+  let totalWatchers = 0
+  if (consignataria) {
+    try {
+      const { count: watcherCount } = await service
+        .from('remate_favorites')
+        .select('*', { count: 'exact', head: true })
+        .eq('consignataria_slug', consignataria.canonical_slug)
+
+      totalWatchers = watcherCount ?? 0
+    } catch {
+      // Table may not exist yet
+      totalWatchers = 0
+    }
+  }
+
   // Calculate percentile vs other consignatarias (for PRO dashboard)
   let viewPercentile = 0
   if (consignataria && viewCount > 0) {
@@ -245,6 +278,8 @@ export default async function DashboardPage() {
       auctionResults={auctionResults || []}
       viewCount={viewCount}
       whatsappClicks={whatsappClicks}
+      leadsCount={leadsCount}
+      totalWatchers={totalWatchers}
       viewPercentile={viewPercentile}
       provincialRank={provincialRank}
       completedFields={completedFields}

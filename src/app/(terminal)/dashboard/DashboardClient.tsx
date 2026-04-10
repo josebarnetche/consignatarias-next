@@ -104,6 +104,8 @@ interface Props {
   auctionResults: AuctionResult[]
   viewCount: number
   whatsappClicks: number
+  leadsCount: number
+  totalWatchers: number
   viewPercentile: number
   provincialRank: { position: number; total: number; province: string }
   completedFields: CompletedFields | null
@@ -124,7 +126,7 @@ type TabKey = 'resumen' | 'remates' | 'editar' | 'resultados' | 'plan' | 'frigor
 
 export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
-  auctionResults, viewCount, whatsappClicks, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
+  auctionResults, viewCount, whatsappClicks, leadsCount, totalWatchers, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
   dteCount = 0, alreadyRedeemed = false,
 }: Props) {
   const showChecklist = consignataria && completedFields && Object.values(completedFields).filter(Boolean).length < 5
@@ -375,15 +377,16 @@ export default function DashboardClient({
                     </div>
                   </div>
                   
-                  {/* Leads - THE GAP */}
+                  {/* Leads */}
                   <div className="bg-zinc-800/50 rounded-terminal p-3 text-center relative">
-                    <div className="text-2xl font-terminal tabular-nums text-negative font-bold">
-                      0
+                    <div className={`text-2xl font-terminal tabular-nums font-bold ${leadsCount > 0 ? 'text-positive' : 'text-negative'}`}>
+                      {leadsCount}
                     </div>
                     <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
                       leads capturados
                     </div>
-                    {whatsappClicks > 0 && (
+                    {/* Show alert dot if WA clicks but no leads */}
+                    {whatsappClicks > 0 && leadsCount === 0 && (
                       <div className="absolute -top-1 -right-1 w-2 h-2 bg-negative rounded-full animate-pulse" />
                     )}
                   </div>
@@ -399,8 +402,8 @@ export default function DashboardClient({
                   </div>
                 </div>
 
-                {/* Gap Alert - THE WOW MOMENT */}
-                {whatsappClicks > 0 && (
+                {/* Gap Alert - THE WOW MOMENT (only if clicks but no leads) */}
+                {whatsappClicks > 0 && leadsCount === 0 && (
                   <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-terminal mb-4">
                     <div className="flex items-start gap-2">
                       <span className="text-amber-400 text-lg">⚠️</span>
@@ -409,7 +412,24 @@ export default function DashboardClient({
                           {whatsappClicks} personas hicieron clic en tu WhatsApp
                         </p>
                         <p className="text-xxs font-terminal text-zinc-400 mt-1">
-                          Pero no tenés forma de saber quiénes son. Con PRO podés capturar sus datos antes de que te contacten.
+                          Pero no tenés forma de saber quiénes son. Activá la captura de leads para contactarlos después.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Demand Signal - Watchers */}
+                {totalWatchers > 0 && (
+                  <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-terminal mb-4">
+                    <div className="flex items-start gap-2">
+                      <span className="text-emerald-400 text-lg">👁️</span>
+                      <div>
+                        <p className="text-sm font-terminal text-emerald-300 font-medium">
+                          {totalWatchers} {totalWatchers === 1 ? 'productor está' : 'productores están'} siguiendo tus remates
+                        </p>
+                        <p className="text-xxs font-terminal text-zinc-400 mt-1">
+                          Reciben alertas cuando publicás nuevos remates. Esta es tu audiencia cautiva.
                         </p>
                       </div>
                     </div>
