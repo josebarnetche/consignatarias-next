@@ -229,22 +229,26 @@ export default async function RemateDetailPage({ params }: Props) {
             Volver al calendario
           </Link>
           
-          {/* Status badge */}
-          {isToday && (
-            <div className="mb-4">
+          {/* Status badges */}
+          <div className="mb-4 flex flex-wrap gap-2">
+            {isToday && (
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-sm font-medium">
                 <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
                 Hoy
               </span>
-            </div>
-          )}
-          {isPast && (
-            <div className="mb-4">
+            )}
+            {isPast && (
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-700 text-slate-400 text-sm font-medium">
                 Finalizado
               </span>
-            </div>
-          )}
+            )}
+            {remate.youtubeUrl && !isPast && (
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/20 text-red-400 text-sm font-medium border border-red-500/30">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                🔴 Transmisión en vivo
+              </span>
+            )}
+          </div>
           
           {/* Main card */}
           <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
@@ -361,6 +365,56 @@ export default async function RemateDetailPage({ params }: Props) {
               </div>
             )}
             
+            {/* YouTube Live Section - Prominent when available */}
+            {remate.youtubeUrl && (
+              <div className="mx-6 mb-6 rounded-xl overflow-hidden border border-red-500/30 bg-gradient-to-br from-red-950/20 to-slate-900">
+                {/* YouTube embed */}
+                <div className="aspect-video bg-black">
+                  {(() => {
+                    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
+                    const match = remate.youtubeUrl?.match(regExp)
+                    const videoId = (match && match[7]?.length === 11) ? match[7] : null
+                    
+                    if (videoId) {
+                      return (
+                        <iframe
+                          src={`https://www.youtube.com/embed/${videoId}?rel=0`}
+                          title={`Transmisión ${remate.title}`}
+                          className="w-full h-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      )
+                    }
+                    return null
+                  })()}
+                </div>
+                {/* Live banner */}
+                <div className="p-4 flex items-center justify-between bg-red-950/30">
+                  <div className="flex items-center gap-3">
+                    <span className="flex items-center gap-2 px-3 py-1.5 bg-red-600 rounded-md">
+                      <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                      <span className="text-white font-bold text-sm">TRANSMISIÓN EN VIVO</span>
+                    </span>
+                    <span className="text-slate-400 text-sm hidden sm:inline">
+                      Mirá el remate desde cualquier lugar
+                    </span>
+                  </div>
+                  <a
+                    href={remate.youtubeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-medium transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                    Abrir en YouTube
+                  </a>
+                </div>
+              </div>
+            )}
+            
             {/* Action buttons */}
             <div className="px-6 pb-6 flex flex-wrap gap-3">
               {remate.catalogUrl && (
@@ -372,17 +426,6 @@ export default async function RemateDetailPage({ params }: Props) {
                 >
                   <ExternalLink className="w-4 h-4" />
                   Ver catálogo
-                </a>
-              )}
-              {remate.youtubeUrl && (
-                <a
-                  href={remate.youtubeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-medium transition-colors"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  Ver transmisión
                 </a>
               )}
               {!isPast && (

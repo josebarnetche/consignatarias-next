@@ -71,6 +71,13 @@ const provinciasConFrigo = Object.keys(frigorificosSummary.byProvince).length;
 const topProvinces = frigorificosSummary.topProvinces.slice(0, 6);
 const totalConsignatarias = getAllProfiles().length;
 
+// En Vivo: remates with YouTube streaming
+const rematesEnVivo = rematesProximos.filter(
+  (r) => r.youtubeUrl && r.youtubeUrl.length > 0
+);
+const enVivoCount = rematesEnVivo.length;
+const todayEnVivo = rematesEnVivo.filter((r) => r.date === TODAY).length;
+
 const cats = marketPrices.categories;
 const catEntries = Object.entries(cats) as [
   string,
@@ -170,6 +177,11 @@ export default function LandingPage() {
 
           <div className="hidden md:flex items-center gap-8 text-sm font-normal text-zinc-400">
             <a href="#remates" className="hover:text-zinc-100 transition-colors">Remates</a>
+            <Link href="/remates/en-vivo" className="flex items-center gap-1.5 text-red-400 hover:text-red-300 transition-colors">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              En Vivo
+              {enVivoCount > 0 && <span className="text-xs text-red-500">({enVivoCount})</span>}
+            </Link>
             <a href="#frigorificos" className="hover:text-zinc-100 transition-colors">Frigoríficos</a>
             <a href="#mercado" className="hover:text-zinc-100 transition-colors">Mercado</a>
             <Link href="/planes" className="hover:text-zinc-100 transition-colors">Planes</Link>
@@ -226,6 +238,15 @@ export default function LandingPage() {
                 Ver {rematesProximos.length} remates esta semana
                 <IconArrowRight />
               </Link>
+              {enVivoCount > 0 && (
+                <Link
+                  href="/remates/en-vivo"
+                  className="flex items-center justify-center gap-2 text-sm font-medium text-white bg-red-600 hover:bg-red-500 transition-all rounded py-3 px-6 shadow-lg shadow-red-900/50"
+                >
+                  <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                  🔴 {enVivoCount} en vivo
+                </Link>
+              )}
               <Link
                 href="/consignatarias"
                 className="flex items-center justify-center text-sm font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 transition-all rounded py-3 px-6"
@@ -236,7 +257,16 @@ export default function LandingPage() {
           </div>
 
           {/* Live stats strip — clickable cards */}
-          <div className="relative z-10 mt-20 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="relative z-10 mt-20 grid grid-cols-2 md:grid-cols-5 gap-4">
+            {/* EN VIVO - Most prominent */}
+            <Link href="/remates/en-vivo" className="bg-gradient-to-br from-red-950/60 to-zinc-900/60 border border-red-800/50 hover:border-red-500/50 rounded p-5 transition-all group relative overflow-hidden">
+              <div className="absolute top-2 right-2 flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              </div>
+              <div className="text-[0.65rem] text-red-400/80 uppercase tracking-widest mb-2 group-hover:text-red-300 transition-colors">🔴 En Vivo</div>
+              <div className="text-2xl font-medium text-zinc-100 tracking-tight">{enVivoCount}</div>
+              <div className="text-xs text-red-400/70 mt-1">{todayEnVivo > 0 ? `${todayEnVivo} hoy` : "Con streaming"}</div>
+            </Link>
             <Link href="/mercado/inmag" className="bg-zinc-900/60 border border-zinc-800 hover:border-emerald-500/30 rounded p-5 transition-all group">
               <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2 group-hover:text-emerald-400/70 transition-colors">INMAG $/kg vivo</div>
               <div className="text-2xl font-medium text-zinc-100 tracking-tight">${fmt(marketPrices.inmag.current)}</div>
@@ -268,6 +298,12 @@ export default function LandingPage() {
             {/* Por tiempo */}
             <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3">
               <span className="text-xs text-zinc-600 uppercase tracking-widest mr-2 hidden sm:inline">Remates</span>
+              {/* EN VIVO - Prominent first position */}
+              <Link href="/remates/en-vivo" className="px-4 py-1.5 text-xs font-bold text-white bg-red-600 hover:bg-red-500 border border-red-500 rounded transition-all flex items-center gap-1.5 shadow-lg shadow-red-900/30">
+                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                En Vivo
+                {enVivoCount > 0 && <span className="bg-red-700/50 px-1.5 py-0.5 rounded text-[10px]">{enVivoCount}</span>}
+              </Link>
               <Link href="/remates/hoy" className="px-3 py-1.5 text-xs font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:border-emerald-500/50 hover:text-emerald-400 rounded transition-all">
                 Hoy
               </Link>

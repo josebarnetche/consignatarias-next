@@ -73,7 +73,7 @@ export function trackAuctionClick(auction: {
 }
 
 /** User applied a filter on the remates page */
-export function trackFilterApply(filterType: 'province' | 'type' | 'period', value: string) {
+export function trackFilterApply(filterType: 'province' | 'type' | 'period' | 'en_vivo', value: string) {
   trackEvent('filter_apply', {
     filter_type: filterType,
     filter_value: value,

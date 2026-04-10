@@ -649,6 +649,7 @@ export default function RematesPage() {
   const [period, setPeriod] = useState<Period>('proximos')
   const [filterProvince, setFilterProvince] = useState('')
   const [filterType, setFilterType] = useState('')
+  const [filterEnVivo, setFilterEnVivo] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [showAddModal, setShowAddModal] = useState(false)
   const [featuredSlugs, setFeaturedSlugs] = useState<Set<string>>(new Set())
@@ -721,6 +722,8 @@ export default function RematesPage() {
     let result = baseAuctions
     if (filterProvince) result = result.filter((a) => a.province === filterProvince)
     if (filterType) result = result.filter((a) => a.type === filterType)
+    // En Vivo filter: only auctions with YouTube streaming
+    if (filterEnVivo) result = result.filter((a) => a.youtubeUrl && a.youtubeUrl.length > 0)
     // Text search: matches consignataria name, location, or type
     if (searchQuery) {
       const q = searchQuery.toLowerCase()
@@ -732,7 +735,19 @@ export default function RematesPage() {
       )
     }
     return result
-  }, [baseAuctions, filterProvince, filterType, searchQuery])
+  }, [baseAuctions, filterProvince, filterType, filterEnVivo, searchQuery])
+  
+  // Count of auctions with streaming in current base set
+  const enVivoCount = useMemo(() => 
+    baseAuctions.filter(a => a.youtubeUrl && a.youtubeUrl.length > 0).length, 
+    [baseAuctions]
+  )
+  
+  // Live streams happening TODAY - for prominent banner
+  const todayLiveStreams = useMemo(() => 
+    todayAuctions.filter(a => a.youtubeUrl && a.youtubeUrl.length > 0),
+    [todayAuctions]
+  )
 
   /* ---- Dropdown options ---- */
   const provinces = useMemo(() => [...new Set(auctions.map((a) => a.province))].sort(), [auctions])
@@ -831,11 +846,25 @@ export default function RematesPage() {
               {todayAuctions.length}
             </span>
           </div>
+          {/* En Vivo count - prominent */}
+          {enVivoCount > 0 && (
+            <>
+              <div className="text-terminal-border text-xxs select-none">|</div>
+              <button 
+                onClick={() => setFilterEnVivo(!filterEnVivo)}
+                className="flex items-center gap-1.5 hover:opacity-80 transition-opacity cursor-pointer"
+              >
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                <span className="text-xxs text-red-400 uppercase font-medium">En Vivo:</span>
+                <span className="text-data tabular-nums font-terminal text-red-400">{enVivoCount}</span>
+              </button>
+            </>
+          )}
         </div>
 
         {/* -- Tabs + Filters bar ----------------------------------- */}
         <div className="border-b border-terminal-border px-panel py-1.5 flex items-center justify-between flex-wrap gap-2">
-          {/* Period tabs */}
+          {/* Period tabs + En Vivo toggle */}
           <div className="flex items-center gap-1">
             {([
               { key: 'hoy' as Period, label: 'HOY' },
@@ -859,6 +888,24 @@ export default function RematesPage() {
                 </span>
               </button>
             ))}
+            {/* En Vivo toggle - prominent red styling */}
+            {enVivoCount > 0 && (
+              <button
+                onClick={() => { setFilterEnVivo(!filterEnVivo); trackFilterApply('en_vivo', filterEnVivo ? 'off' : 'on') }}
+                className={`terminal-btn text-xxs px-3 py-1 flex items-center gap-1.5 ml-2 ${
+                  filterEnVivo
+                    ? 'border-red-500 text-white bg-red-600 hover:bg-red-500'
+                    : 'border-red-800/50 text-red-400 bg-red-900/20 hover:bg-red-900/40 hover:border-red-600/50'
+                }`}
+                title={filterEnVivo ? 'Mostrando solo remates con streaming' : 'Filtrar remates con transmisión en vivo'}
+              >
+                <span className={`w-2 h-2 rounded-full ${filterEnVivo ? 'bg-white' : 'bg-red-500'} animate-pulse`} />
+                EN VIVO
+                <span className={`tabular-nums ${filterEnVivo ? 'text-red-200' : 'text-red-500'}`}>
+                  {enVivoCount}
+                </span>
+              </button>
+            )}
           </div>
 
           {/* Filters */}
@@ -895,11 +942,12 @@ export default function RematesPage() {
               options={types}
               placeholder="Tipo"
             />
-            {(filterProvince || filterType || searchQuery) && (
+            {(filterProvince || filterType || filterEnVivo || searchQuery) && (
               <button
                 onClick={() => {
                   setFilterProvince('')
                   setFilterType('')
+                  setFilterEnVivo(false)
                   setSearchQuery('')
                 }}
                 className="text-xxs text-zinc-500 hover:text-negative font-terminal transition-colors px-2 py-1"
@@ -926,9 +974,16 @@ export default function RematesPage() {
         </div>
 
         {/* -- Active filter pills ------------------------------------ */}
-        {(filterProvince || filterType || searchQuery) && (
+        {(filterProvince || filterType || filterEnVivo || searchQuery) && (
           <div className="border-b border-terminal-border px-panel py-1.5 flex items-center gap-2 flex-wrap">
             <span className="text-xxs text-zinc-500 font-terminal">Filtros:</span>
+            {filterEnVivo && (
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 text-xxs bg-red-500/20 text-red-400 border border-red-500/30 rounded-terminal">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                <span>En Vivo</span>
+                <button onClick={() => setFilterEnVivo(false)} className="hover:text-red-300 transition-colors" aria-label="Quitar filtro en vivo">&times;</button>
+              </span>
+            )}
             {searchQuery && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xxs bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded-terminal">
                 <span>&quot;{searchQuery}&quot;</span>
@@ -947,6 +1002,46 @@ export default function RematesPage() {
                 <button onClick={() => setFilterType('')} className="hover:text-accent-bright transition-colors" aria-label="Quitar filtro tipo">&times;</button>
               </span>
             )}
+          </div>
+        )}
+
+        {/* -- LIVE NOW Banner (when streams today) --------------- */}
+        {todayLiveStreams.length > 0 && !filterEnVivo && (
+          <div className="border-b border-red-800/50 bg-gradient-to-r from-red-950/80 via-red-900/60 to-red-950/80 px-panel py-3">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                  </span>
+                  <span className="text-sm font-bold text-white uppercase tracking-wide">
+                    🔴 {todayLiveStreams.length} {todayLiveStreams.length === 1 ? 'Remate' : 'Remates'} en Vivo Hoy
+                  </span>
+                </div>
+                <div className="hidden sm:flex items-center gap-2 text-xs text-red-300/80">
+                  {todayLiveStreams.slice(0, 2).map((r, i) => (
+                    <span key={r.id} className="flex items-center gap-1">
+                      {i > 0 && <span className="text-red-700">•</span>}
+                      <span>{r.consignatariaName}</span>
+                      {r.time && <span className="text-red-400/60">({r.time}hs)</span>}
+                    </span>
+                  ))}
+                  {todayLiveStreams.length > 2 && (
+                    <span className="text-red-400/60">+{todayLiveStreams.length - 2} más</span>
+                  )}
+                </div>
+              </div>
+              <Link
+                href="/remates/en-vivo"
+                className="flex items-center gap-2 px-4 py-1.5 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded transition-colors shadow-lg shadow-red-900/50"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+                Ver transmisiones
+              </Link>
+            </div>
           </div>
         )}
 

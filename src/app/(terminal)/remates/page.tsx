@@ -130,6 +130,13 @@ export default function RematesPage() {
           >
             🗓️ Esta semana
           </Link>
+          <Link
+            href="/remates/en-vivo"
+            className="px-3 py-1.5 bg-red-900/30 hover:bg-red-800/40 border border-red-700/50 rounded text-sm text-red-400 hover:text-red-300 transition-colors flex items-center gap-1.5"
+          >
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+            En Vivo
+          </Link>
         </div>
         
         {/* Province quick links */}
