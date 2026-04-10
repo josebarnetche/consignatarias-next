@@ -1116,6 +1116,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
         <WhatsAppFAB
           whatsapp={profile.whatsapp}
           consignatariaName={profile.displayName}
+          slug={profile.canonicalSlug}
         />
       )}
     </div>

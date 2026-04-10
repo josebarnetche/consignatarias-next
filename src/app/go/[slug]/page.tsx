@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
-import Link from 'next/link'
 import Image from 'next/image'
 import { getCanonicalSlug, getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import { getConsignatariaProfile, getFollowerCount } from '@/lib/dal/consignatarias'
@@ -9,7 +8,7 @@ import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { ConsignatariaProfileSchema, BreadcrumbSchema, EventSchema } from '@/components/seo/JsonLd'
 import { AddToCalendarButton } from '@/components/ui/AddToCalendarButton'
-import WhatsAppButton from '@/components/ui/WhatsAppButton'
+import GoContactSection from '@/components/GoContactSection'
 import { FollowButton } from '@/components/ui/FollowButton'
 import { FollowerCount } from '@/components/ui/FollowerCount'
 
@@ -279,51 +278,14 @@ export default async function GoLandingPage({ params }: Props) {
             </div>
           )}
 
-          {/* Contact CTAs */}
-          <div className="space-y-3 mb-8">
-            {profile.whatsapp && (
-              <WhatsAppButton
-                phone={profile.whatsapp}
-                message="Hola, vi su perfil en consignatarias.com.ar y me gustaría consultar sobre sus remates."
-                slug={canonical}
-                className="flex items-center justify-center gap-2 w-full px-6 py-3.5 bg-[#25D366] hover:bg-[#20BD5A] text-white font-semibold rounded-xl transition-colors"
-              />
-            )}
-
-            {profile.phone && (
-              <a
-                href={`tel:${profile.phone}`}
-                className="flex items-center justify-center gap-2 w-full px-6 py-3.5 bg-zinc-700 hover:bg-zinc-600 text-white font-semibold rounded-xl transition-colors"
-              >
-                📞 Llamar: {profile.phone}
-              </a>
-            )}
-
-            <Link
-              href={`/consignatarias/${canonical}?utm_source=go&utm_medium=landing`}
-              className="flex items-center justify-center gap-2 w-full px-6 py-3.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 text-white font-semibold rounded-xl transition-colors"
-            >
-              📅 Ver Calendario Completo
-            </Link>
-          </div>
-
-          {/* Footer */}
-          <div className="text-center text-xs text-zinc-500 space-y-2">
-            <p>
-              <Link href="/" className="hover:text-zinc-300 transition-colors">
-                consignatarias.com.ar
-              </Link>
-              {' — '}
-              El directorio de remates ganaderos de Argentina
-            </p>
-            {!isPro && (
-              <p>
-                <Link href="/planes" className="text-amber-400 hover:text-amber-300 transition-colors">
-                  ¿Sos consignatario? Destacá tu perfil →
-                </Link>
-              </p>
-            )}
-          </div>
+          {/* Contact Section with Lead Capture */}
+          <GoContactSection
+            slug={canonical}
+            displayName={profile.displayName}
+            whatsapp={profile.whatsapp ?? null}
+            phone={profile.phone ?? null}
+            isPro={isPro}
+          />
         </div>
       </div>
     </div>
