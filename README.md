@@ -2,7 +2,7 @@
 
 A cattle auction directory, market intelligence platform, and public API for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
 
-**25 API endpoints** • **330+ remates** • **80+ consignatarias** • **364 frigoríficos** • **13 provincias** • **15 YouTube channels** • **MAG price integration** • **1200+ sitemap URLs** • **100% schema coverage** • **Price oracle foundation** • **DTE analytics** • **Gamified onboarding** • **Form abandonment recovery**
+**25 API endpoints** • **330+ remates** • **80+ consignatarias** • **364 frigoríficos** • **13 provincias** • **15 YouTube channels** • **MAG price integration** • **1200+ sitemap URLs** • **100% schema coverage** • **Price oracle foundation** • **DTE analytics** • **Gamified onboarding** • **Form abandonment recovery** • **🔴 En Vivo streaming focus**
 
 **Live:** [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
 
@@ -633,8 +633,138 @@ Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misione
 | 1.9.1 | Mar 19 | Internal linking, dynamic scarcity, DTE export, WhatsApp analytics |
 | 1.9.2 | Mar 19 | DTE Period Comparison — lock-in analytics (month/quarter/year) |
 | **1.9.3** | **Mar 20** | **BATTLE #3 — Onboarding UX overhaul (25+ improvements, empty states, CUIT validation)** |
+| 1.9.10 | Apr 7 | Frigorífico monetization — claim CTAs, lead gen, PRO upsell |
+| **1.9.11** | **Apr 10** | **En Vivo focus — streaming prominence, /remates/en-vivo, /mercado/arrendamiento, Market Decision Infrastructure strategy** |
 
-Built in 22 days. One human, one AI. $0 hosting cost. 10 Supabase tables. 20 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
+Built in 45 days. One human, one AI. $0 hosting cost. 10 Supabase tables. 25 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
+
+---
+
+## Roadmap: Market Decision Infrastructure
+
+The platform is evolving from a data directory into the **decision infrastructure** where Argentina's cattle market operates. The goal: users don't just access information — they make decisions inside the platform.
+
+### Strategic Vision
+
+```
+CURRENT:  Usuario → Busca información → Se va → Decide afuera
+FUTURE:   Usuario → Entra al sistema → Toma decisiones adentro → No puede irse
+```
+
+### Phase 1: Statefulness (Q2 2026) 🔄
+
+**Making the platform remember users**
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| Follow system | 🔜 Next | Follow consignatarias, provinces, remate types |
+| Personalized feed | 🔜 Next | Homepage adapts to what you follow |
+| Activity history | 🔜 Next | Remates vistos, catálogos descargados |
+| Watchlist | 🔜 Next | Save remates for later, export to calendar |
+
+**Switching cost:** Once you configure 15+ follows, rebuilding that elsewhere is work.
+
+### Phase 2: Intelligent Alerts (Q2-Q3 2026) 🔔
+
+**The system works for you**
+
+| Alert Type | Trigger | Channels |
+|------------|---------|----------|
+| Nuevo remate | Consignataria seguida publica | Email, Push, WhatsApp |
+| Precio objetivo | INMAG cruza umbral definido | Push, SMS |
+| Oportunidad | Remate match con criterios | Email digest |
+| Mercado | Cambio significativo volumen/precios | Weekly report |
+
+**Switching cost:** 10+ configured alerts with specific criteria = migration pain.
+
+### Phase 3: Dynamic Rankings (Q3 2026) 🏆
+
+**Visible competition drives behavior**
+
+| Metric | Weight | Effect |
+|--------|--------|--------|
+| Volume (cabezas) | 30% | Consignatarias compete for position |
+| Frequency | 25% | More remates → better ranking |
+| Engagement | 20% | Users discover top performers |
+| Completeness | 15% | Verified profiles rank higher |
+| Streaming | 10% | En vivo presence matters |
+
+**Feedback loop:** Rankings create behavior → consignatarias publish more → more data → better rankings.
+
+### Phase 4: Comparatives (Q3-Q4 2026) ⚖️
+
+**Decision-making tools**
+
+- **Comparador de Consignatarias** — Side-by-side: remates/año, provincias, cabezas, streaming, verificación
+- **Comparador de Remates** — Multiple auctions same day: hora, ubicación, cabezas, distancia
+- **Historical analysis** — Performance trends over time
+
+**Data gravity:** Only we have the data to make these comparisons.
+
+### Phase 5: Direct Actions (Q4 2026) 📞
+
+**Transaction happens inside the platform**
+
+- **Structured contact forms** — Motivo, remate de interés, canal preferido
+- **Lead tracking for PRO** — Consignatarias see their inquiry pipeline
+- **WhatsApp integration** — Pre-filled messages with remate context
+- **Request callbacks** — Schedule calls through the platform
+
+**Lock-in:** Contact history and lead analytics live in the platform.
+
+### Phase 6: Portfolios & State (2027) 📊
+
+**Persistent user value**
+
+- **Purchase portfolio** — Register compras, track spending patterns
+- **Price benchmarking** — Your avg price vs market
+- **Seller portfolio** — Remitentes track their consignment history
+- **Recommendations** — ML-powered auction suggestions
+
+**Switching cost:** 12+ months of purchase history = impossible to leave.
+
+### Phase 7: Network Effects (2027) 🌐
+
+**More users = more value**
+
+| Actor A Action | → | Benefit for Actor B |
+|----------------|---|---------------------|
+| Buyer follows consignataria | → | Consignataria sees follower count |
+| Consignataria publishes catalog | → | Buyer has more info |
+| User compares | → | System learns what to compare |
+| PRO pays | → | Platform improves for all |
+
+**Data network effects:** Every search teaches the system what users want.
+
+### Phase 8: Operational Standard (2027+) 🔒
+
+**The platform becomes infrastructure**
+
+- **API & Embeds** — Other systems depend on us
+- **Workflow integration** — Daily operations run through the platform
+- **Industry standard** — "Check consignatarias.com.ar" becomes the norm
+
+**Lock-in metrics:**
+| Metric | Target | Indicates |
+|--------|--------|-----------|
+| DAU/MAU ratio | > 40% | Habitual use |
+| Alerts per user | > 5 | Dependency |
+| Session time | > 5 min | Engagement |
+| Follows per user | > 10 | Personalization |
+| % decisions in platform | > 50% | Operational standard |
+
+### Implementation Priority
+
+```
+Q2 2026: Follows + Alerts + Watchlist
+Q3 2026: Feed + Rankings + Comparator
+Q4 2026: Smart Alerts + Contact + API
+2027:    Portfolio + Predictions + Marketplace
+```
+
+**North Star:** When a user has 15 follows + 10 alerts + 6 months of history → switching cost is prohibitive.
+
+See [`docs/MARKET-DECISION-INFRASTRUCTURE.md`](docs/MARKET-DECISION-INFRASTRUCTURE.md) for the complete strategic design.
 
 ---
 

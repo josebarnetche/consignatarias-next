@@ -6,6 +6,60 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.9.11] — 2026-04-10
+
+### En Vivo Focus + Market Decision Infrastructure
+
+Strong focus on live streaming auctions across the entire platform, plus strategic architecture for evolving into a market decision infrastructure.
+
+#### Homepage En Vivo Integration
+- **En Vivo in navbar** — Red pulsing indicator with live count, always visible
+- **En Vivo stat card** — First position in stats strip with gradient red styling
+- **En Vivo CTA button** — Hero section shows "🔴 X en vivo" when streams available
+- **En Vivo quick nav** — Prominent red button with count badge in navigation
+
+#### Remates Page Enhancement
+- **EN VIVO toggle filter** — Red button next to period tabs (HOY/PROXIMOS/PASADOS)
+- **LIVE NOW banner** — Appears when streams happening today, shows consignataria names and times
+- **En Vivo in stats strip** — Clickable count that toggles the filter
+- **Filter pill display** — Shows active "En Vivo" filter with pulsing indicator
+
+#### New Pages
+- **`/remates/en-vivo`** — Dedicated page for auctions with YouTube streaming
+  - YouTube thumbnails with play button overlay
+  - Live badges (🔴 EN VIVO) for today's remates
+  - Grouped by date with prominent visual hierarchy
+  - Stats bar showing stream count
+  - Mobile responsive card layout
+  - SEO optimized for "remates ganaderos en vivo", "remates online"
+
+- **`/mercado/arrendamiento`** — Land lease index page
+  - Current INMAG value prominently displayed ($4,329.89/kg)
+  - Live calculation example (500 ha × 8 kg/ha = ~$17.3M/month)
+  - 90-day interactive price chart
+  - 12-month averages table
+  - FAQ with FAQPage schema
+  - SEO optimized for "índice novillo arrendamiento"
+
+#### Strategic Documentation
+- **`docs/MARKET-DECISION-INFRASTRUCTURE.md`** — Complete architecture for evolving from data platform to decision infrastructure:
+  - Phase 1: Statefulness (follows, personalized feed, history)
+  - Phase 2: Intelligent alerts (multi-channel, granular triggers)
+  - Phase 3: Dynamic rankings (leaderboards, competition metrics)
+  - Phase 4: Comparatives (consignatarias, remates side-by-side)
+  - Phase 5: Direct actions (structured contact, lead tracking)
+  - Phase 6: Watchlists & portfolios (persistent user state)
+  - Phase 7: Network effects (data gravity, feedback loops)
+  - Phase 8: Operational standard (API, embeds, ecosystem lock-in)
+
+#### Technical
+- Analytics tracking for `en_vivo` filter usage
+- Build optimized: 0 lint errors, 0 type errors
+
+**Thesis:** The platform is transitioning from information provider to decision infrastructure — users don't just access information, they make decisions inside the platform.
+
+---
+
 ## [1.9.10] — 2026-04-07
 
 ### Frigorífico Monetization (Movement 4)
