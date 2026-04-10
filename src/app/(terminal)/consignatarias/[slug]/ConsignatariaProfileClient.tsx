@@ -599,35 +599,39 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                 <Link
                   href={`/consignatarias/${profile.canonicalSlug}/verificar`}
                   onClick={() => trackClaimCTA(profile.canonicalSlug, profile.displayName)}
-                  className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors shadow-live-glow"
+                  className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-positive text-zinc-900 text-xs font-bold uppercase tracking-wider hover:bg-positive/90 transition-colors rounded shadow-lg"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-positive animate-pulse-live" />
-                  Verificar este perfil
+                  Reclamar gratis
                 </Link>
               )}
             </div>
             {/* Value Preview Panel - shows benefits for unclaimed profiles */}
             {!profile.claimedAt && (
               <div className="px-panel py-3 border-t border-amber-500/20 bg-amber-500/5">
-                <div className="text-xxs text-amber-400 font-terminal uppercase tracking-wider mb-2">
-                  Al verificar tu perfil obtenés:
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xxs text-amber-400 font-terminal uppercase tracking-wider">
+                    ¿Es tu consignataria?
+                  </span>
+                  <span className="text-xxs text-zinc-500 font-terminal">
+                    47 ya lo hicieron
+                  </span>
                 </div>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xxs text-zinc-300 font-terminal">
                   <li className="flex items-center gap-2">
-                    <span className="text-amber-500">📧</span>
-                    Promoción automática a suscriptores
+                    <span className="text-positive">✓</span>
+                    Editá tu información de contacto
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="text-amber-500">📱</span>
-                    QR para catálogos y tarjetas
+                    <span className="text-positive">✓</span>
+                    Publicá tus propios remates
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="text-amber-500">📅</span>
-                    Calendario sincronizable
+                    <span className="text-positive">✓</span>
+                    Recibí consultas de compradores
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="text-amber-500">📄</span>
-                    Reportes PDF descargables
+                    <span className="text-positive">✓</span>
+                    Badge de perfil verificado
                   </li>
                 </ul>
               </div>

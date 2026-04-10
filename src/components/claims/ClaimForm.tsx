@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { trackClaimCTA } from '@/lib/analytics'
 
@@ -19,35 +19,12 @@ function captureEmailForRecovery(email: string, slug: string) {
   }).catch(() => {}) // Silent fail
 }
 
-/**
- * Validates Argentine CUIT/CUIL using the official modulo 11 algorithm
- * Format: XX-XXXXXXXX-X (11 digits total)
- */
-function validateCUIT(value: string): boolean {
-  const clean = value.replace(/\D/g, '')
-  if (clean.length !== 11) return false
-  
-  // Valid type prefixes: 20, 23, 24, 27 (individuals), 30, 33, 34 (companies)
-  const prefix = parseInt(clean.substring(0, 2))
-  if (![20, 23, 24, 27, 30, 33, 34].includes(prefix)) return false
-  
-  // Modulo 11 verification
-  const mult = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]
-  const sum = mult.reduce((acc, m, i) => acc + parseInt(clean[i]) * m, 0)
-  const mod = sum % 11
-  const verifier = mod === 0 ? 0 : mod === 1 ? 9 : 11 - mod
-  return verifier === parseInt(clean[10])
-}
-
 export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
   const [state, setState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [form, setForm] = useState({
     claimant_name: '',
     claimant_email: '',
-    claimant_phone: '',
-    claimant_role: '',
-    cuit: '',
   })
   const [emailCaptured, setEmailCaptured] = useState(false)
 
@@ -59,16 +36,7 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
     }
   }, [emailCaptured, form.claimant_email, slug])
 
-  // Real-time CUIT validation
-  const cuitValidation = useMemo(() => {
-    const clean = form.cuit.replace(/\D/g, '')
-    if (clean.length === 0) return null // Empty - no validation
-    if (clean.length < 11) return 'partial' // Still typing
-    return validateCUIT(form.cuit) ? 'valid' : 'invalid'
-  }, [form.cuit])
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
-    // Clear error state when user starts typing
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (state === 'error') {
       setErrorMsg('')
       setState('idle')
@@ -89,7 +57,12 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           consignataria_slug: slug,
-          ...form,
+          claimant_name: form.claimant_name,
+          claimant_email: form.claimant_email,
+          // These will be collected later in onboarding
+          claimant_phone: null,
+          claimant_role: null,
+          cuit: null,
         }),
       })
 
@@ -111,40 +84,28 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
     return (
       <div className="terminal-panel border-positive/30">
         <div className="px-panel py-6 text-center space-y-4">
-          {/* Changed from "PERFIL VERIFICADO" to "SOLICITUD ENVIADA" - more accurate */}
-          <div className="text-positive text-lg font-terminal">📧 SOLICITUD ENVIADA</div>
+          <div className="text-positive text-lg font-terminal">🎉 ¡LISTO!</div>
           
           <p className="text-zinc-300 text-data font-terminal">
-            Estamos verificando tu solicitud para <span className="text-zinc-100 font-semibold">{displayName}</span>
+            Tu perfil de <span className="text-zinc-100 font-semibold">{displayName}</span> está siendo activado.
           </p>
           
-          {/* Clear email instructions */}
           <div className="terminal-panel bg-zinc-900/50 px-4 py-3 space-y-2">
             <p className="text-zinc-200 text-data font-terminal">
-              📬 Revisá tu bandeja de entrada en:
+              📬 Revisá tu email:
             </p>
             <p className="text-accent font-terminal text-sm">{form.claimant_email}</p>
             <p className="text-zinc-500 text-xxs font-terminal">
-              ⚠️ También revisá <span className="text-zinc-400">spam/promociones</span>. El enlace expira en 1 hora.
+              El enlace de acceso llega en menos de 2 minutos.
             </p>
           </div>
           
-          <p className="text-zinc-500 text-xxs font-terminal">
-            Puede tardar 1-2 minutos en llegar.
-          </p>
-          
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors"
-            >
-              Ya tengo cuenta →
-            </Link>
             <Link
               href={`/consignatarias/${slug}`}
               className="text-accent hover:text-accent-bright text-xxs font-terminal uppercase tracking-wider transition-colors"
             >
-              Ver perfil público
+              ← Ver mi perfil público
             </Link>
           </div>
         </div>
@@ -155,26 +116,31 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
   return (
     <form onSubmit={handleSubmit} className="terminal-panel">
       <div className="terminal-panel-header flex items-center justify-between">
-        <span className="text-zinc-200 text-label tracking-widest">VERIFICAR PERFIL</span>
+        <span className="text-zinc-200 text-label tracking-widest">RECLAMAR PERFIL</span>
         <Link
           href={`/consignatarias/${slug}`}
           className="text-zinc-500 hover:text-accent text-xxs font-terminal transition-colors"
         >
-          &larr; VOLVER
+          ← VOLVER
         </Link>
       </div>
 
       <div className="px-panel py-4 space-y-4">
+        {/* Social proof */}
+        <div className="flex items-center gap-2 px-3 py-2 bg-amber-500/5 border border-amber-500/20 rounded">
+          <span className="text-amber-400">🏆</span>
+          <span className="text-amber-300/90 text-xs font-terminal">
+            47 consignatarias ya administran su perfil gratis
+          </span>
+        </div>
+
         <p className="text-data text-zinc-400 font-terminal">
-          Completa el formulario para tomar control del perfil de{' '}
-          <span className="text-zinc-200">{displayName}</span>.
-          Te enviaremos un enlace de acceso a tu email.
+          Reclamá el perfil de <span className="text-zinc-200 font-semibold">{displayName}</span> en 30 segundos.
         </p>
 
         {state === 'error' && (
           <div className="terminal-panel border-negative/30 px-3 py-2 space-y-2">
             <span className="text-negative text-data font-terminal">{errorMsg}</span>
-            {/* Show login link for 409 conflict (already claimed) */}
             {errorMsg.includes('ya') && (
               <p className="text-zinc-400 text-xxs font-terminal">
                 ¿Es tu perfil?{' '}
@@ -186,10 +152,28 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
           </div>
         )}
 
-        {/* Email (required) — captured on blur for recovery */}
+        {/* Name (required) */}
+        <div className="space-y-1">
+          <label htmlFor="claimant_name" className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider">
+            Tu nombre
+          </label>
+          <input
+            id="claimant_name"
+            name="claimant_name"
+            type="text"
+            required
+            value={form.claimant_name}
+            onChange={handleChange}
+            placeholder="Juan Pérez"
+            className="terminal-input w-full"
+            autoComplete="name"
+          />
+        </div>
+
+        {/* Email (required) */}
         <div className="space-y-1">
           <label htmlFor="claimant_email" className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider">
-            Email *
+            Email de la consignataria
           </label>
           <input
             id="claimant_email"
@@ -199,107 +183,49 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
             value={form.claimant_email}
             onChange={handleChange}
             onBlur={handleEmailBlur}
-            placeholder="tu@email.com"
+            placeholder="info@tuconsignataria.com"
             className="terminal-input w-full"
+            autoComplete="email"
           />
-          <p className="text-zinc-600 text-xxs font-terminal">Te enviaremos un enlace para acceder</p>
-        </div>
-
-        {/* Name (optional) */}
-        <div className="space-y-1">
-          <label htmlFor="claimant_name" className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider">
-            Nombre completo <span className="text-zinc-600">(opcional)</span>
-          </label>
-          <input
-            id="claimant_name"
-            name="claimant_name"
-            type="text"
-            value={form.claimant_name}
-            onChange={handleChange}
-            placeholder="Juan Pérez"
-            className="terminal-input w-full"
-          />
-        </div>
-
-        {/* CUIT with real-time validation (optional) */}
-        <div className="space-y-1">
-          <label htmlFor="cuit" className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider">
-            CUIT <span className="text-zinc-600">(opcional)</span>
-          </label>
-          <div className="relative">
-            <input
-              id="cuit"
-              name="cuit"
-              type="text"
-              value={form.cuit}
-              onChange={handleChange}
-              placeholder="20-12345678-9"
-              className={`terminal-input w-full pr-10 ${
-                cuitValidation === 'valid' ? 'border-positive/50' :
-                cuitValidation === 'invalid' ? 'border-negative/50' : ''
-              }`}
-            />
-            {/* Validation indicator */}
-            {cuitValidation === 'valid' && (
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-positive text-sm">✓</span>
-            )}
-            {cuitValidation === 'invalid' && (
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-negative text-sm">✗</span>
-            )}
-          </div>
-          {/* Inline error for invalid CUIT */}
-          {cuitValidation === 'invalid' && (
-            <p className="text-negative text-xxs font-terminal mt-1">
-              CUIT inválido — verificá el número
-            </p>
-          )}
-        </div>
-
-        {/* Phone (optional) */}
-        <div className="space-y-1">
-          <label htmlFor="claimant_phone" className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider">
-            Teléfono <span className="text-zinc-600">(opcional)</span>
-          </label>
-          <input
-            id="claimant_phone"
-            name="claimant_phone"
-            type="tel"
-            value={form.claimant_phone}
-            onChange={handleChange}
-            placeholder="+54 9 11 1234-5678"
-            className="terminal-input w-full"
-          />
-        </div>
-
-        {/* Role (optional) */}
-        <div className="space-y-1">
-          <label htmlFor="claimant_role" className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider">
-            Rol en la empresa <span className="text-zinc-600">(opcional)</span>
-          </label>
-          <select
-            id="claimant_role"
-            name="claimant_role"
-            value={form.claimant_role}
-            onChange={handleChange}
-            className="terminal-input w-full"
-          >
-            <option value="">Seleccionar...</option>
-            <option value="titular">Titular / Dueño</option>
-            <option value="socio">Socio</option>
-            <option value="gerente">Gerente</option>
-            <option value="administrativo">Administrativo</option>
-            <option value="representante">Representante</option>
-            <option value="otro">Otro</option>
-          </select>
+          <p className="text-zinc-600 text-xxs font-terminal">Te enviaremos el acceso a este email</p>
         </div>
 
         <button
           type="submit"
           disabled={state === 'submitting'}
-          className="w-full px-4 py-2.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-4 py-3 bg-positive text-zinc-900 text-sm font-bold uppercase tracking-wider hover:bg-positive/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded"
         >
-          {state === 'submitting' ? 'Verificando...' : 'Verificar y acceder'}
+          {state === 'submitting' ? 'Enviando...' : 'Reclamar gratis →'}
         </button>
+
+        {/* What you get */}
+        <div className="pt-3 border-t border-zinc-800">
+          <p className="text-xxs text-zinc-500 uppercase tracking-wider mb-2 font-terminal">
+            Al reclamar tu perfil:
+          </p>
+          <ul className="space-y-1.5 text-xs text-zinc-400 font-terminal">
+            <li className="flex items-center gap-2">
+              <span className="text-positive">✓</span>
+              Editás tu información de contacto
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-positive">✓</span>
+              Publicás tus propios remates
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-positive">✓</span>
+              Recibís consultas de compradores
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-positive">✓</span>
+              Badge de perfil verificado
+            </li>
+          </ul>
+        </div>
+
+        <p className="text-center text-zinc-600 text-xxs font-terminal">
+          100% gratis · Sin tarjeta · 30 segundos
+        </p>
       </div>
     </form>
   )
