@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { sendPostRemateResultsRequest } from '@/lib/email'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Get consignataria emails from Supabase
-  const supabase = createServiceClient()
+  const supabase = requireServiceClient()
   const { data: consignatarias } = await supabase
     .from('consignatarias')
     .select('canonical_slug, email, display_name')

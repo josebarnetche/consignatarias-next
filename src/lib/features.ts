@@ -5,6 +5,8 @@ export type EntityTier = 'free' | 'pro' | 'enterprise'
 export async function getEntityTier(entityType: string, entitySlug: string): Promise<EntityTier> {
   try {
     const service = createServiceClient()
+    if (!service) return 'free'
+    
     const { data } = await service
       .from('subscriptions')
       .select('plan_name, status')

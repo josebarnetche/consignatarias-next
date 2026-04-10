@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import { getEntityTier } from '@/lib/features'
 import { sendNewRemateAlert } from '@/lib/email'
@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const service = createServiceClient()
+    const service = requireServiceClient()
 
     // Get last run timestamp from KV or default to 30 min ago
     const { data: lastRunData } = await service
@@ -238,7 +238,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
-async function updateLastRun(service: ReturnType<typeof createServiceClient>, timestamp: Date) {
+async function updateLastRun(service: ReturnType<typeof requireServiceClient>, timestamp: Date) {
   await service
     .from('cron_state')
     .upsert({

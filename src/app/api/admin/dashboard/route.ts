@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/admin-auth'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
 
@@ -8,7 +8,7 @@ export async function GET() {
   const auth = await requireAdmin()
   if (!auth.authorized) return auth.response!
 
-  const service = createServiceClient()
+  const service = requireServiceClient()
 
   // Run all queries in parallel
   const [

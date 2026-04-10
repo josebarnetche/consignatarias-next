@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 
 /**
  * Captures email when user starts filling a form (before submit).
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
     }
 
-    const supabase = createServiceClient()
+    const supabase = requireServiceClient()
 
     // Upsert to avoid duplicates (same email + slug combo)
     const { error } = await supabase

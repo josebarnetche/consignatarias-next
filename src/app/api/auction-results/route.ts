@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { auctionResultSchema } from '@/lib/validators/auction-result'
 
 export async function POST(req: NextRequest) {
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const service = createServiceClient()
+    const service = requireServiceClient()
 
     // Verify the user owns this consignataria
     const { data: consignataria } = await service
@@ -79,7 +79,7 @@ export async function GET() {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     }
 
-    const service = createServiceClient()
+    const service = requireServiceClient()
 
     const { data: results, error } = await service
       .from('auction_results')

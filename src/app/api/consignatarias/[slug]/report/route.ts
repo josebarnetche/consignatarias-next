@@ -56,16 +56,17 @@ export async function GET(req: NextRequest, { params }: Props) {
   let isPro = false
   try {
     const service = createServiceClient()
-    
-    // Check subscription status
-    const { data: sub } = await service
-      .from('subscriptions')
-      .select('status, plan_name')
-      .eq('consignataria_slug', canonical)
-      .eq('status', 'active')
-      .single()
-    
-    isPro = !!sub
+    if (service) {
+      // Check subscription status
+      const { data: sub } = await service
+        .from('subscriptions')
+        .select('status, plan_name')
+        .eq('consignataria_slug', canonical)
+        .eq('status', 'active')
+        .single()
+      
+      isPro = !!sub
+    }
   } catch {
     // Continue without PRO status
   }

@@ -28,15 +28,19 @@ export default async function CompararPage() {
   const auctions = rematesData as Auction[]
   const today = new Date().toISOString().slice(0, 10)
 
-  // Fetch verified status from Supabase
+  // Fetch verified status from Supabase (may be null during static generation)
   const supabase = createServiceClient()
-  const { data: verifiedData } = await supabase
-    .from('consignatarias')
-    .select('canonical_slug, verified')
+  let verifiedMap = new Map<string, boolean>()
   
-  const verifiedMap = new Map(
-    (verifiedData || []).map(c => [c.canonical_slug, c.verified === true])
-  )
+  if (supabase) {
+    const { data: verifiedData } = await supabase
+      .from('consignatarias')
+      .select('canonical_slug, verified')
+    
+    verifiedMap = new Map(
+      (verifiedData || []).map(c => [c.canonical_slug, c.verified === true])
+    )
+  }
 
   // Build consignataria stats
   const consignatariaStats = profiles.map(profile => {

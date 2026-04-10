@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { requireAdmin } from '@/lib/admin-auth'
 
 export async function GET(req: NextRequest) {
@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get('q')?.trim() || ''
   const verified = req.nextUrl.searchParams.get('verified')
 
-  const supabase = createServiceClient()
+  const supabase = requireServiceClient()
 
   let query = supabase
     .from('consignatarias')

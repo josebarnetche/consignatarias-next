@@ -18,6 +18,7 @@ export default async function DashboardPage() {
   if (!user) redirect('/login')
 
   const service = createServiceClient()
+  if (!service) redirect('/login') // Supabase unavailable
 
   // Get user's claims
   const { data: claims } = await service

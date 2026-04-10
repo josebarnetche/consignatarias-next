@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { sendWelcomeEmail } from '@/lib/email'
 import crypto from 'crypto'
 
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    const supabase = createServiceClient()
+    const supabase = requireServiceClient()
 
     // Check if welcome email already sent (idempotency)
     const { data: existingLog } = await supabase

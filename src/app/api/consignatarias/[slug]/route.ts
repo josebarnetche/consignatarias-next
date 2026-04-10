@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { requireAuth } from '@/lib/admin-auth'
 import { profileUpdateSchema } from '@/lib/validators/consignataria-profile'
 
@@ -10,7 +10,7 @@ export async function PATCH(req: NextRequest, { params }: Props) {
   if (!auth.authorized) return auth.response!
 
   const { slug } = await params
-  const supabase = createServiceClient()
+  const supabase = requireServiceClient()
 
   // Verify ownership: user's email must match claimed_by_email
   const { data: consignataria } = await supabase

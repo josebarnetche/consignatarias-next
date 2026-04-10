@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 
 export async function GET() {
   try {
-    const supabase = createServiceClient()
+    const supabase = requireServiceClient()
     
     // Get consignatarias that were claimed/verified in last 14 days
     const { data } = await supabase

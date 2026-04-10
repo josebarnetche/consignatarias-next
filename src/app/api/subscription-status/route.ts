@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,7 +12,7 @@ export async function GET() {
     return NextResponse.json({ status: 'unauthenticated' }, { status: 401 })
   }
 
-  const service = createServiceClient()
+  const service = requireServiceClient()
 
   const { data: consignataria } = await service
     .from('consignatarias')

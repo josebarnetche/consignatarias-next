@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { claimSchema } from '@/lib/validators/claim'
 import { sendClaimNotificationToAdmin } from '@/lib/email'
 
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { consignataria_slug, claimant_email, claimant_name, claimant_phone, claimant_role, cuit } = parsed.data
-    const supabase = createServiceClient()
+    const supabase = requireServiceClient()
 
     // Verify consignataria exists
     const { data: consignataria, error: lookupError } = await supabase

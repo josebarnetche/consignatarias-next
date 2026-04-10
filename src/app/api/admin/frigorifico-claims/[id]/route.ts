@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { requireAdmin } from '@/lib/admin-auth'
 import { claimReviewSchema } from '@/lib/validators/claim'
 import { sendClaimApproved, sendClaimRejected } from '@/lib/email'
@@ -29,7 +29,7 @@ export async function PATCH(req: NextRequest, { params }: Props) {
   }
 
   const { status, admin_notes } = parsed.data
-  const supabase = createServiceClient()
+  const supabase = requireServiceClient()
 
   // Fetch the claim
   const { data: claim, error: fetchError } = await supabase

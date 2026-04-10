@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getCanonicalSlug, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 
@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Get view counts for all consignatarias this month
-    const service = createServiceClient()
+    const service = requireServiceClient()
     const { data: views } = await service
       .from('profile_views')
       .select('entity_slug')

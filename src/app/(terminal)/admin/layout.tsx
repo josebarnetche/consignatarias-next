@@ -12,6 +12,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   const service = createServiceClient()
+  if (!service) {
+    redirect('/overview')
+  }
+  
   const { data: role } = await service
     .from('user_roles')
     .select('role')

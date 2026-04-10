@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { alertaCreateSchema, ALERTA_EVENTS, ALERTA_FREQUENCIES } from '@/lib/validators/alerta'
 
 interface AlertaData {
@@ -55,7 +55,7 @@ async function validateApiKey(request: NextRequest) {
 
   // For MVP: simple api_key lookup
   // In production: would validate against users table or API keys table
-  const supabase = createServiceClient()
+  const supabase = requireServiceClient()
   
   const { data: user } = await supabase
     .from('users')
@@ -126,7 +126,7 @@ export async function POST(
     }
 
     const { name, webhook_url, filters, events, frequency } = parsed.data
-    const supabase = createServiceClient()
+    const supabase = requireServiceClient()
 
     // Check alert limit for user
     const { count } = await supabase
@@ -236,7 +236,7 @@ export async function GET(
       })
     }
 
-    const supabase = createServiceClient()
+    const supabase = requireServiceClient()
 
     // Get user's alertas
     const { data: alertas, error } = await supabase

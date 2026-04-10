@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { unstable_cache } from 'next/cache'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import remates from '@/lib/data/remates.json'
 import consignatarias from '@/lib/data/consignatarias.json'
 import frigorificos from '@/lib/data/frigorificos.json'
@@ -9,7 +9,7 @@ import frigorificos from '@/lib/data/frigorificos.json'
 const getSubscriberCount = unstable_cache(
   async () => {
     try {
-      const supabase = createServiceClient()
+      const supabase = requireServiceClient()
       const { count } = await supabase
         .from('newsletter_subscribers')
         .select('*', { count: 'exact', head: true })

@@ -52,6 +52,8 @@ export async function getFrigorificoProfile(cuit: string): Promise<EnrichedFrigo
 
   try {
     const service = createServiceClient()
+    if (!service) throw new Error('Supabase unavailable')
+    
     const { data } = await service
       .from('frigorifico_profiles')
       .select('*')

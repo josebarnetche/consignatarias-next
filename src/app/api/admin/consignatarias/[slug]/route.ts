@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { requireAdmin } from '@/lib/admin-auth'
 import { consignatariaUpdateSchema } from '@/lib/validators/consignataria'
 
@@ -10,7 +10,7 @@ export async function GET(req: NextRequest, { params }: Props) {
   if (!auth.authorized) return auth.response!
 
   const { slug } = await params
-  const supabase = createServiceClient()
+  const supabase = requireServiceClient()
 
   const { data, error } = await supabase
     .from('consignatarias')
@@ -46,7 +46,7 @@ export async function PATCH(req: NextRequest, { params }: Props) {
     )
   }
 
-  const supabase = createServiceClient()
+  const supabase = requireServiceClient()
 
   const { data, error } = await supabase
     .from('consignatarias')

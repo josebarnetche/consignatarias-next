@@ -38,6 +38,8 @@ export async function getRelatedConsignatarias(
 
   try {
     const service = createServiceClient()
+    if (!service) return []
+    
     const { data } = await service
       .from('consignatarias')
       .select('canonical_slug, display_name, logo_url')
@@ -61,6 +63,15 @@ export async function getConsignatariaProfile(slug: string): Promise<EnrichedPro
 
   try {
     const service = createServiceClient()
+    if (!service) {
+      // Fallback to static-only profile if Supabase unavailable
+      return {
+        ...staticProfile,
+        verified: false,
+        featured: false,
+      }
+    }
+    
     const { data } = await service
       .from('consignatarias')
       .select('*')
@@ -101,6 +112,8 @@ export async function getConsignatariaProfile(slug: string): Promise<EnrichedPro
 async function _getFollowerCount(slug: string): Promise<number> {
   try {
     const service = createServiceClient()
+    if (!service) return 0
+    
     const { data, error } = await service
       .from('consignataria_followers')
       .select('follower_count')
@@ -128,6 +141,8 @@ export const getFollowerCount = unstable_cache(
 export async function getTopFollowedConsignatarias(limit = 10): Promise<{ slug: string; count: number }[]> {
   try {
     const service = createServiceClient()
+    if (!service) return []
+    
     const { data } = await service
       .from('consignataria_followers')
       .select('consignataria_slug, follower_count')

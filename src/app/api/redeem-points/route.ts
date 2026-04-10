@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { calculateProfilePoints, PRO_MONTH_THRESHOLD } from '@/lib/points'
 
 /**
@@ -18,7 +18,7 @@ export async function POST() {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
 
-    const service = createServiceClient()
+    const service = requireServiceClient()
 
     // Get user's consignataria
     const { data: consignataria } = await service

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { webhookRegisterSchema, WEBHOOK_EVENTS } from '@/lib/validators/webhook'
 
 interface SuccessResponse {
@@ -76,7 +76,7 @@ export async function POST(
 
     const { url, events, secret, filters, description, owner_email } = parsed.data
     
-    const supabase = createServiceClient()
+    const supabase = requireServiceClient()
 
     // Check for duplicate URL (same URL + events combo)
     const { data: existing } = await supabase

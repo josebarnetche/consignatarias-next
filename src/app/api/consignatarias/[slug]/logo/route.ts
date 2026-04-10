@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { requireAuth } from '@/lib/admin-auth'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -12,7 +12,7 @@ export async function POST(req: NextRequest, { params }: Props) {
   if (!auth.authorized) return auth.response!
 
   const { slug } = await params
-  const supabase = createServiceClient()
+  const supabase = requireServiceClient()
 
   // Verify ownership
   const { data: consig } = await supabase

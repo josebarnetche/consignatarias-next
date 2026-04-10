@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { frigorificoClaimSchema } from '@/lib/validators/claim'
 import { sendFrigorificoClaimConfirmation, sendFrigorificoClaimNotificationToAdmin } from '@/lib/email'
 
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { frigorifico_cuit, frigorifico_name, claimant_email, claimant_name, claimant_phone, claimant_role } = parsed.data
-    const supabase = createServiceClient()
+    const supabase = requireServiceClient()
 
     // Check for duplicate pending claim
     const { data: existing } = await supabase

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 
 const BOT_PATTERNS = [
   'bot', 'crawl', 'spider', 'slurp', 'mediapartners',
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     }
 
     const referrer = req.headers.get('referer') || null
-    const service = createServiceClient()
+    const service = requireServiceClient()
 
     await service.from('profile_views').insert({
       entity_type: entityType,

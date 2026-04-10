@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/admin-auth'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { cancelSubscription } from '@/lib/rebill'
 
 export async function POST() {
   const auth = await requireAuth()
   if (!auth.authorized) return auth.response!
 
-  const service = createServiceClient()
+  const service = requireServiceClient()
 
   // Find the user's consignataria
   const { data: consignataria } = await service

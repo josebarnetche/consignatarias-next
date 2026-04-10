@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { sendFaenaNewsletter } from '@/lib/email'
 import { getFaenaStats, formatFaenaDate } from '@/lib/faena-api'
 
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     }, { status: 502 })
   }
 
-  const supabase = createServiceClient()
+  const supabase = requireServiceClient()
 
   // Get newsletter subscribers with faena topic preference
   // Falls back to all active subscribers if no topic preference system exists

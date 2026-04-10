@@ -15,6 +15,7 @@ export default async function NuevoResultadoPage() {
   if (!user) redirect('/login')
 
   const service = createServiceClient()
+  if (!service) redirect('/login')
 
   const { data: consignataria } = await service
     .from('consignatarias')

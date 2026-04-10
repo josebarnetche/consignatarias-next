@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import crypto from 'crypto'
 
 // Verify Rebill webhook signature (HMAC-SHA256)
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     const payload = JSON.parse(rawBody)
     const { event, data } = payload
 
-    const service = createServiceClient()
+    const service = requireServiceClient()
 
     switch (event) {
       case 'subscription.created':

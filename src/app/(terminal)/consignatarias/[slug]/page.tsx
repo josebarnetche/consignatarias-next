@@ -58,6 +58,8 @@ export interface AuctionResult {
 async function fetchAuctionResults(slug: string): Promise<AuctionResult[]> {
   try {
     const service = createServiceClient()
+    if (!service) return [] // Env vars not available during static generation
+    
     const { data } = await service
       .from('auction_results')
       .select('id, auction_date, auction_title, total_heads_sold, average_price, max_price, location')
@@ -78,6 +80,7 @@ async function fetchAuctionResults(slug: string): Promise<AuctionResult[]> {
 async function fetchConsignatariaVideos(slug: string): Promise<ConsignatariaVideo[]> {
   try {
     const service = createServiceClient()
+    if (!service) return [] // Env vars not available during static generation
     
     // First get consignataria ID
     const { data: consignataria } = await service
@@ -187,6 +190,8 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
   let ownerAuctions: Auction[] = []
   try {
     const service2 = createServiceClient()
+    if (!service2) throw new Error('Supabase not available')
+    
     const { data: dbAuctions } = await service2
       .from('consignataria_auctions')
       .select('*')

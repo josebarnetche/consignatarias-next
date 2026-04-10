@@ -12,6 +12,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   // Check if user has any role
   const service = createServiceClient()
+  if (!service) {
+    // Supabase not available - let them through, page will handle
+    return <>{children}</>
+  }
+  
   const { data: role } = await service
     .from('user_roles')
     .select('role')

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import { getEntityTier } from '@/lib/features'
 import { sendRemateReminder } from '@/lib/email'
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const service = createServiceClient()
+    const service = requireServiceClient()
 
     // Get all active alerts (table may not exist yet)
     const { data: alerts, error: alertsError } = await service

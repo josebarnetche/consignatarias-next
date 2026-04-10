@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { requireAuth } from '@/lib/admin-auth'
 
 type Props = { params: Promise<{ slug: string; id: string }> }
@@ -9,7 +9,7 @@ export async function PATCH(req: NextRequest, { params }: Props) {
   if (!auth.authorized) return auth.response!
 
   const { slug, id } = await params
-  const supabase = createServiceClient()
+  const supabase = requireServiceClient()
 
   const { data: consig } = await supabase
     .from('consignatarias')
@@ -62,7 +62,7 @@ export async function DELETE(_req: NextRequest, { params }: Props) {
   if (!auth.authorized) return auth.response!
 
   const { slug, id } = await params
-  const supabase = createServiceClient()
+  const supabase = requireServiceClient()
 
   const { data: consig } = await supabase
     .from('consignatarias')

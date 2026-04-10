@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 
 export async function GET() {
-  const supabase = createServiceClient()
+  const supabase = requireServiceClient()
 
   // Unified PRO: admin-featured OR active subscription
   const [featuredRes, subsRes] = await Promise.all([
