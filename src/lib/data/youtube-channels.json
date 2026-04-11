@@ -1,4 +1,18 @@
 {
+  "canal-rural": {
+    "channelId": "UCPumJ2ayrr-JDsA9JDCUDDQ",
+    "channelUrl": "https://www.youtube.com/@canalrural",
+    "channelTitle": "Canal Rural",
+    "subscribers": 150000,
+    "isAggregator": true,
+    "latestVideo": {
+      "videoId": "fCHEXO2W-zs",
+      "title": "Canal Rural Noticias | Edición Central | 10 ABR | BLOQUE 5",
+      "publishedAt": "2026-04-11T04:30:32+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/fCHEXO2W-zs/hqdefault.jpg"
+    },
+    "lastChecked": "2026-04-11"
+  },
   "bressan-y-cia-srl": {
     "channelId": "UCVCtVthepYltxxUbuf14fLw",
     "channelUrl": "https://www.youtube.com/@bressanycia",
@@ -10,7 +24,7 @@
       "publishedAt": "2026-02-26T20:34:50+00:00",
       "thumbnail": "https://i.ytimg.com/vi/jzgs-Yds5eM/hqdefault.jpg"
     },
-    "lastChecked": "2026-04-10"
+    "lastChecked": "2026-04-11"
   },
   "cooperativa-guillermo-lehmann": {
     "channelId": "UCIHhaaYzJSCAfqnUEAW4ZpQ",
@@ -23,7 +37,7 @@
       "publishedAt": "2026-04-08T11:13:47+00:00",
       "thumbnail": "https://i.ytimg.com/vi/Uohm2log8VY/hqdefault.jpg"
     },
-    "lastChecked": "2026-04-10"
+    "lastChecked": "2026-04-11"
   },
   "rosgan": {
     "channelId": "UCvO_FXYeiyj5QYqL9cWOUeQ",
@@ -31,12 +45,12 @@
     "channelTitle": "Rosgan BCR",
     "subscribers": 3000,
     "latestVideo": {
-      "videoId": "nP9eVp2IMHo",
-      "title": "Feria Arrecifes (Bs As) | Arrecifes",
-      "publishedAt": "2026-04-10T17:33:23+00:00",
-      "thumbnail": "https://i.ytimg.com/vi/nP9eVp2IMHo/hqdefault.jpg"
+      "videoId": "3GLDpzYcNa8",
+      "title": "Remate Especial Guillermo Lehmann",
+      "publishedAt": "2026-04-11T01:34:27+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/3GLDpzYcNa8/hqdefault.jpg"
     },
-    "lastChecked": "2026-04-10"
+    "lastChecked": "2026-04-11"
   },
   "saenz-valiente-bullrich-y-cia-sa": {
     "channelId": "UCaarhFa2peyJOG-tMqbsByw",
@@ -49,7 +63,7 @@
       "publishedAt": "2026-03-26T03:38:12+00:00",
       "thumbnail": "https://i.ytimg.com/vi/VZ26Mfkga1s/hqdefault.jpg"
     },
-    "lastChecked": "2026-04-10"
+    "lastChecked": "2026-04-11"
   },
   "agricultores-federados-argentinos-scl": {
     "channelId": "UC1XGF4vhAKosCWHR-74C-Ng",
@@ -62,7 +76,7 @@
       "publishedAt": "2026-04-10T13:56:50+00:00",
       "thumbnail": "https://i.ytimg.com/vi/5e84o3b5lqo/hqdefault.jpg"
     },
-    "lastChecked": "2026-04-10"
+    "lastChecked": "2026-04-11"
   },
   "eduardo-a-travaglia-y-cia-sa": {
     "channelId": "UCfPvgVUfTzGOuups_EN6J3Q",
@@ -75,7 +89,7 @@
       "publishedAt": "2023-04-18T12:17:59+00:00",
       "thumbnail": "https://i.ytimg.com/vi/fpTF9PkLtqk/hqdefault.jpg"
     },
-    "lastChecked": "2026-04-10"
+    "lastChecked": "2026-04-11"
   },
   "colombo-y-magliano-sa": {
     "channelId": "UCre8ZZIykhnEFbK0R8nFdEg",
@@ -88,7 +102,7 @@
       "publishedAt": "2026-04-10T17:35:48+00:00",
       "thumbnail": "https://i.ytimg.com/vi/MM1phKmmfnI/hqdefault.jpg"
     },
-    "lastChecked": "2026-04-10"
+    "lastChecked": "2026-04-11"
   },
   "vicar-ganadera-sa": {
     "channelId": "UCE1_4Ki_lzvLhxFcYu4ZGpA",
@@ -101,7 +115,7 @@
       "publishedAt": "2026-03-23T22:38:58+00:00",
       "thumbnail": "https://i.ytimg.com/vi/Af0LTsEYMc0/hqdefault.jpg"
     },
-    "lastChecked": "2026-04-10"
+    "lastChecked": "2026-04-11"
   },
   "umc-sa-haciendas-villaguay-srl": {
     "channelId": "UCPzo8IxRDGZcI5rH9IS9fhA",
@@ -114,7 +128,7 @@
       "publishedAt": "2026-03-31T22:07:56+00:00",
       "thumbnail": "https://i.ytimg.com/vi/_lheerxQ5Uc/hqdefault.jpg"
     },
-    "lastChecked": "2026-04-10"
+    "lastChecked": "2026-04-11"
   },
   "ferias-rauch-sa": {
     "channelId": "UCggQXhO2mIzIoKfVGCxIkpg",
@@ -127,7 +141,7 @@
       "publishedAt": "2022-09-02T01:12:02+00:00",
       "thumbnail": "https://i.ytimg.com/vi/H6c1SHseRwM/hqdefault.jpg"
     },
-    "lastChecked": "2026-04-10"
+    "lastChecked": "2026-04-11"
   },
   "coop-la-ganadera-gral-ramirez-ltda": {
     "channelId": "UCrAG-793MFmRqqlVzEHQJwg",
@@ -135,12 +149,12 @@
     "channelTitle": "La Ganadera Ramirez",
     "subscribers": 4100,
     "latestVideo": {
-      "videoId": "e0OjzOo8woY",
-      "title": "Remate de Hacienda Coop. LA GANADERA -  Gral. Ramírez -  Jueves 09 de Abril de 2026.",
-      "publishedAt": "2026-04-10T08:46:02+00:00",
-      "thumbnail": "https://i.ytimg.com/vi/e0OjzOo8woY/hqdefault.jpg"
+      "videoId": "QarLwPaOK9g",
+      "title": "Remate de Hacienda Coop. LA GANADERA -  Gral. Ramírez -  Viernes 10 de Abril de 2026.",
+      "publishedAt": "2026-04-10T19:51:14+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/QarLwPaOK9g/hqdefault.jpg"
     },
-    "lastChecked": "2026-04-10"
+    "lastChecked": "2026-04-11"
   },
   "tradicion-ganadera-sa-porro-srl": {
     "channelId": "UCUrUHr8QbQizYer2kI20mhA",
@@ -153,7 +167,7 @@
       "publishedAt": "2026-02-25T05:19:10+00:00",
       "thumbnail": "https://i.ytimg.com/vi/D1nwZfv5F4w/hqdefault.jpg"
     },
-    "lastChecked": "2026-04-10"
+    "lastChecked": "2026-04-11"
   },
   "ivan-l-ofarrell-srl": {
     "channelId": "UCR4g7aa2EyXDafHQnqvA8vw",
@@ -166,7 +180,7 @@
       "publishedAt": "2026-01-06T17:52:00+00:00",
       "thumbnail": "https://i.ytimg.com/vi/zeM3DJWolH4/hqdefault.jpg"
     },
-    "lastChecked": "2026-04-10"
+    "lastChecked": "2026-04-11"
   },
   "colombo-y-colombo-sa": {
     "channelId": "UCW3SRpohecSX8TXOwZ17cZw",
@@ -179,7 +193,7 @@
       "publishedAt": "2025-10-22T14:38:22+00:00",
       "thumbnail": "https://i.ytimg.com/vi/UGhUl_h8C1s/hqdefault.jpg"
     },
-    "lastChecked": "2026-04-10"
+    "lastChecked": "2026-04-11"
   },
   "reggi": {
     "channelId": "UCDp9jvg607ey7p6sHowOjYw",
@@ -192,6 +206,110 @@
       "publishedAt": "2026-04-07T02:44:25+00:00",
       "thumbnail": "https://i.ytimg.com/vi/9kLVkKcsx9k/hqdefault.jpg"
     },
-    "lastChecked": "2026-04-10"
+    "lastChecked": "2026-04-11"
+  },
+  "ganadera-salliquelo-sa": {
+    "channelId": "UCImGhQZdjU7TOxs6KbKIaeQ",
+    "channelUrl": "https://www.youtube.com/channel/UCImGhQZdjU7TOxs6KbKIaeQ",
+    "channelTitle": "Ganadera Salliquelo SA",
+    "subscribers": null,
+    "latestVideo": {
+      "videoId": "iFP6ST6kQ08",
+      "title": "Remate de fin de año ( síntesis)",
+      "publishedAt": "2025-12-16T21:00:22+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/iFP6ST6kQ08/hqdefault.jpg"
+    },
+    "lastChecked": "2026-04-11"
+  },
+  "casa-usandizaga-sa": {
+    "channelId": "UCgnnl_b5Rmw2PN3YXD8RCvg",
+    "channelUrl": "https://www.youtube.com/channel/UCgnnl_b5Rmw2PN3YXD8RCvg",
+    "channelTitle": "Casa Usandizaga S.A",
+    "subscribers": null,
+    "latestVideo": {
+      "videoId": "RqzOxSXvZ0c",
+      "title": "Remate Casa Usandizaga - Feria El Empalme 26 de Marzo",
+      "publishedAt": "2026-03-26T23:16:55+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/RqzOxSXvZ0c/hqdefault.jpg"
+    },
+    "lastChecked": "2026-04-11"
+  },
+  "hk-agro-srl": {
+    "channelId": "UCMk6kpELmWjxyImRaqM__kw",
+    "channelUrl": "https://www.youtube.com/channel/UCMk6kpELmWjxyImRaqM__kw",
+    "channelTitle": "HK AGRO SRL",
+    "subscribers": null,
+    "latestVideo": {
+      "videoId": "IVvkddmgOvw",
+      "title": "1er REMATE 2026",
+      "publishedAt": "2026-02-27T06:51:29+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/IVvkddmgOvw/hqdefault.jpg"
+    },
+    "lastChecked": "2026-04-11"
+  },
+  "idercor": {
+    "channelId": "UC1oc70kGKItShLaPlFMZEeA",
+    "channelUrl": "https://www.youtube.com/channel/UC1oc70kGKItShLaPlFMZEeA",
+    "channelTitle": "Idercor Remates",
+    "subscribers": null,
+    "latestVideo": {
+      "videoId": "Zv4zph0usyc",
+      "title": "Remate de Pequeños Productores. Curuzú Cuatiá, Corrientes",
+      "publishedAt": "2021-05-11T06:17:12+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/Zv4zph0usyc/hqdefault.jpg"
+    },
+    "lastChecked": "2026-04-11"
+  },
+  "ildarraz-hnos-sa": {
+    "channelId": "UCpFj_KKvcyMuscbcgDhSnvg",
+    "channelUrl": "https://www.youtube.com/channel/UCpFj_KKvcyMuscbcgDhSnvg",
+    "channelTitle": "Ildarraz Hnos. S.A.",
+    "subscribers": null,
+    "latestVideo": {
+      "videoId": "c_j5LD6kfvY",
+      "title": "Establecimiento Ganaderos Perazzo",
+      "publishedAt": "2018-08-03T15:54:05+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/c_j5LD6kfvY/hqdefault.jpg"
+    },
+    "lastChecked": "2026-04-11"
+  },
+  "carlos-j-lanser-sa": {
+    "channelId": "UCmiq2KdO9o1MJbDGRXnx8SQ",
+    "channelUrl": "https://www.youtube.com/channel/UCmiq2KdO9o1MJbDGRXnx8SQ",
+    "channelTitle": "Carlos J. Lanser S.A.",
+    "subscribers": null,
+    "latestVideo": {
+      "videoId": "65jt28uzwuc",
+      "title": "¡Se viene la SIP 136! 3500 vacunos anotados.",
+      "publishedAt": "2026-04-10T23:41:02+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/65jt28uzwuc/hqdefault.jpg"
+    },
+    "lastChecked": "2026-04-11"
+  },
+  "nestor-hugo-fuentes-sa": {
+    "channelId": "UCJRdd9PKH4VYpvWPP5dly7A",
+    "channelUrl": "https://www.youtube.com/channel/UCJRdd9PKH4VYpvWPP5dly7A",
+    "channelTitle": "Néstor Hugo Fuentes S.A.",
+    "subscribers": null,
+    "latestVideo": {
+      "videoId": "-0gTFVXZ14k",
+      "title": "Documental Alemán &quot;A lo largo de Argentina&quot;",
+      "publishedAt": "2026-02-07T16:32:42+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/-0gTFVXZ14k/hqdefault.jpg"
+    },
+    "lastChecked": "2026-04-11"
+  },
+  "hre-consignaciones-srl": {
+    "channelId": "UCzxS2u0UeiqTdB5ku8Ww7sA",
+    "channelUrl": "https://www.youtube.com/channel/UCzxS2u0UeiqTdB5ku8Ww7sA",
+    "channelTitle": "HRE Consignaciones S.R.L",
+    "subscribers": null,
+    "latestVideo": {
+      "videoId": "8B1m65xLwPo",
+      "title": "60° Remate por Pantalla e Internet - Especial Aniversario",
+      "publishedAt": "2026-04-10T22:30:27+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/8B1m65xLwPo/hqdefault.jpg"
+    },
+    "lastChecked": "2026-04-11"
   }
 }

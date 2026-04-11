@@ -50,9 +50,34 @@ function getToday(): string {
   return now.toISOString().split('T')[0];
 }
 
+// Manual slug aliases for common mismatches
+const SLUG_ALIASES: Record<string, string> = {
+  'agricultores-federados-argentinos-soc-coop-lt': 'agricultores-federados-argentinos-scl',
+  'umc-haciendas-villaguay': 'umc-sa-haciendas-villaguay-srl',
+  'ferias-rauch-s-a': 'ferias-rauch-sa',
+  'vicar-ganadera-s-a': 'vicar-ganadera-sa',
+  'colombo-y-magliano-s-a': 'colombo-y-magliano-sa',
+  'colombo-y-colombo-s-a': 'colombo-y-colombo-sa',
+  'saenz-valiente-bullrich-y-cia-s-a': 'saenz-valiente-bullrich-y-cia-sa',
+  'bressan-y-cia-s-r-l': 'bressan-y-cia-srl',
+  'ivan-l-ofarrell-s-r-l': 'ivan-l-ofarrell-srl',
+  'tradicion-ganadera-porro': 'tradicion-ganadera-sa-porro-srl',
+  'la-ganadera-ramirez': 'coop-la-ganadera-gral-ramirez-ltda',
+  'cooperativa-la-ganadera': 'coop-la-ganadera-gral-ramirez-ltda',
+};
+
 function normalizeSlug(slug: string): string {
   // Handle variations: "bressan-y-cia" vs "bressan" etc.
-  return slug.toLowerCase().replace(/-s-?r-?l$/, '').replace(/-s-?a$/, '').replace(/-y-cia$/, '');
+  return slug
+    .toLowerCase()
+    .replace(/-s-?r-?l$/, '')
+    .replace(/-s-?a$/, '')
+    .replace(/-y-cia$/, '')
+    .replace(/-ltda$/, '')
+    .replace(/-scl$/, '')
+    .replace(/-soc-coop-lt$/, '')
+    .replace(/-gral-/, '-')
+    .replace(/-coop-/, '-');
 }
 
 function findChannelForSlug(slug: string): { channelId: string; channelTitle: string } | null {
@@ -61,10 +86,25 @@ function findChannelForSlug(slug: string): { channelId: string; channelTitle: st
     return { channelId: channelMap[slug].channelId, channelTitle: channelMap[slug].channelTitle };
   }
   
+  // Check aliases
+  const aliasedSlug = SLUG_ALIASES[slug];
+  if (aliasedSlug && channelMap[aliasedSlug]) {
+    return { channelId: channelMap[aliasedSlug].channelId, channelTitle: channelMap[aliasedSlug].channelTitle };
+  }
+  
   // Normalized match
   const normalizedInput = normalizeSlug(slug);
   for (const [key, value] of Object.entries(channelMap)) {
     if (normalizeSlug(key) === normalizedInput) {
+      return { channelId: value.channelId, channelTitle: value.channelTitle };
+    }
+  }
+  
+  // Fuzzy match: check if slug contains key or vice versa
+  for (const [key, value] of Object.entries(channelMap)) {
+    const keyCore = key.replace(/-sa$|-srl$|-scl$|-ltda$/g, '');
+    const slugCore = slug.replace(/-sa$|-srl$|-scl$|-ltda$|-s-a$|-s-r-l$/g, '');
+    if (keyCore.includes(slugCore) || slugCore.includes(keyCore)) {
       return { channelId: value.channelId, channelTitle: value.channelTitle };
     }
   }
