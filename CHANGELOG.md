@@ -6,6 +6,38 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.9.12] — 2026-04-11
+
+### YouTube Channel Expansion + Improved Video Matching
+
+Major expansion of live streaming coverage with 9 new YouTube channels mapped and improved slug matching algorithm.
+
+#### New YouTube Channels (24 total, was 15)
+- **Canal Rural** — Aggregator channel (150K subs) that streams many consignatarias
+- **Ganadera Salliquelo SA** — Direct channel
+- **Casa Usandizaga S.A** — Direct channel
+- **HK AGRO SRL** — Direct channel
+- **Idercor Remates** — Corrientes region
+- **Ildarraz Hnos. S.A.** — Direct channel
+- **Carlos J. Lanser S.A.** — Direct channel
+- **Néstor Hugo Fuentes S.A.** — La Pampa region
+- **HRE Consignaciones S.R.L** — Direct channel
+
+#### Improved Video Matching (`match-youtube-videos.ts`)
+- **Slug aliases** — Manual mappings for common mismatches (AFA, UMC, Ferias Rauch)
+- **Enhanced normalization** — Handles `-srl`, `-sa`, `-scl`, `-ltda`, `-soc-coop-lt` suffixes
+- **Fuzzy matching** — Partial slug matches for edge cases
+- **Result:** 3x more channels matched on daily scrape runs
+
+#### Data Update
+- **386 remates** across 14 provinces
+- **81 consignatarias** in directory
+- **INMAG:** $4,247.31/kg (April 10 data)
+
+**Impact:** More live auctions will be automatically linked when consignatarias schedule YouTube streams. The `/remates/en-vivo` page now has broader coverage.
+
+---
+
 ## [1.9.11] — 2026-04-10
 
 ### En Vivo Focus + Market Decision Infrastructure

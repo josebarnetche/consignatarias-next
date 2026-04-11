@@ -2,7 +2,7 @@
 
 A cattle auction directory, market intelligence platform, and public API for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
 
-**25 API endpoints** • **330+ remates** • **80+ consignatarias** • **364 frigoríficos** • **13 provincias** • **15 YouTube channels** • **MAG price integration** • **1200+ sitemap URLs** • **100% schema coverage** • **Price oracle foundation** • **DTE analytics** • **Gamified onboarding** • **Form abandonment recovery** • **🔴 En Vivo streaming focus**
+**25 API endpoints** • **386 remates** • **81 consignatarias** • **364 frigoríficos** • **14 provincias** • **24 YouTube channels** • **MAG price integration** • **1300+ sitemap URLs** • **100% schema coverage** • **Price oracle foundation** • **DTE analytics** • **Gamified onboarding** • **Lead capture system** • **🔴 En Vivo streaming focus**
 
 **Live:** [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
 
@@ -23,14 +23,15 @@ There is no single place to see all upcoming auctions, compare prices, or browse
 
 **consignatarias.com.ar** aggregates data from 77+ consignatarias (cattle auction houses) across 10 provinces into a unified, real-time interface. A rancher can see every upcoming auction in the country, filter by province or type, check market prices, and find frigorificos — all in one screen.
 
-### Current UX (v1.7.0)
+### Current UX (v1.9.12)
 
 **For cattle ranchers (buyers):**
 - Open the site → see all upcoming auctions nationwide in a terminal-style feed
 - Filter by province (Buenos Aires, Chaco, Cordoba...), type (invernada, cria, general), or time period
+- Browse `/remates/en-vivo` for live streaming auctions with YouTube integration
 - Browse `/remates/tipo/invernada` (and cria, general, especial, reproductores) for type-specific landing pages
 - Click any consignataria name → see their full annual calendar with heatmap, type distribution, and chronological auction list
-- View YouTube videos and livestreams directly on consignataria profiles (auto-matched from 15 channels)
+- View YouTube videos and livestreams directly on consignataria profiles (auto-matched from 24 channels)
 - Discover related consignatarias on each profile (same province + type)
 - Share any auction via WhatsApp with one click
 - Check `/mercado` for live INMAG index ($/kg vivo), category prices, corn FOB, USD rates
@@ -184,7 +185,7 @@ YouTube Video Matcher
 Vercel Deploy (auto-triggered)
 ```
 
-**15 YouTube Channels Mapped:**
+**24 YouTube Channels Mapped:**
 
 | Consignataria | Channel ID | Subscribers |
 |---------------|------------|-------------|
@@ -626,7 +627,7 @@ Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misione
 | **1.1.0** | **Mar 12** | **Subasto API — 11 public endpoints, webhooks, alertas, documentation** |
 | 1.2.0 | Mar 13 | Lead magnets — 5 tools, newsletter signup, glosario 38 terms, API docs page |
 | **1.3.0** | **Mar 14** | **API complete — 20 endpoints, ranking, PDF reports, B2B SEO schemas** |
-| 1.7.0 | Mar 15 | Video catalogs — 15 YouTube channels, automated matching, VideoGallery component |
+| 1.7.0 | Mar 15 | Video catalogs — 24 YouTube Channels, automated matching, VideoGallery component |
 | 1.7.1 | Mar 15 | SEO expansion — 35 province+type combo pages, dynamic OG images, external resources |
 | **1.7.2** | **Mar 16** | **Post-remate outreach — automated emails, 83% email coverage (71/86 consignatarias)** |
 | 1.9.0 | Mar 18 | Price Oracle — MAG integration, category prices, onboarding stack |
