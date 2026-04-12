@@ -2733,26 +2733,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://oberaonline.com.ar/2025/11/obera-se-prepara-para-la-expo-agro-industrial-2026/",
-    "status": "live"
-  },
-  {
-    "title": "GORDOS y CONSERVA",
-    "consignatariaName": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
-    "consignatariaSlug": "agricultores-federados-argentinos-soc-coop-lt",
-    "date": "2026-04-11",
-    "time": "10:00",
-    "location": "JUNIN, CORRIENTES",
-    "province": "CORRIENTES",
-    "type": "general",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "GORDOS y CONSERVA",
-    "youtubeUrl": "https://www.youtube.com/watch?v=5e84o3b5lqo",
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.afascl.com",
-    "id": 145,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "11:00 - FAENA\r\n12:30 - INVERNADA y CRÏA",
@@ -2785,7 +2766,7 @@
     "mainCategory": "mixto",
     "estimatedHeads": null,
     "description": "Remate feria UMC Haciendas Villaguay",
-    "youtubeUrl": "https://www.youtube.com/watch?v=yrjH7DAnRJk",
+    "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/f7274986-72a5-43e5-9b30-78e2718db47b",
