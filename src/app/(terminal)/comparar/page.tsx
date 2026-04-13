@@ -7,7 +7,7 @@ import type { Auction } from '@/lib/db/schema'
 import { createServiceClient } from '@/lib/supabase'
 
 // ISR: regenerate hourly, cache between requests
-export const revalidate = 3600
+export const revalidate = false // Cost optimization: static at build time
 
 export const metadata: Metadata = {
   title: 'Comparar Consignatarias | Consignatarias.com.ar',

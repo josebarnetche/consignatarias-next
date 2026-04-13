@@ -41,7 +41,7 @@ const CONSIGNATARIAS_FAQ = [
 ]
 
 // Regenerate hourly for fresh TODAY
-export const revalidate = 3600
+export const revalidate = false // Cost optimization: static at build time
 
 export const metadata: Metadata = {
   title: `Consignatarias de Hacienda Argentina 2026 | Directorio Completo (${totalConsignatarias})`,

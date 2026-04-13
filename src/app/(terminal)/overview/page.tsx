@@ -3,7 +3,7 @@ import OverviewClient from './OverviewClient'
 import { SectionBreadcrumbSchema, WebApplicationSchema } from '@/components/seo/JsonLd'
 
 // Regenerate every hour so TODAY stays fresh
-export const revalidate = 3600
+export const revalidate = false // Cost optimization: static at build time
 
 export const metadata: Metadata = {
   title: 'Terminal de Mercado Ganadero Argentino',

@@ -36,8 +36,8 @@ export interface MagEntryData {
   period: string
 }
 
-// ISR: revalidate daily - data rarely changes, saves Vercel costs
-export const revalidate = 86400
+// Cost optimization: static at build time (no ISR, rebuild on deploy)
+export const revalidate = false
 
 const auctions = rematesData as Auction[]
 

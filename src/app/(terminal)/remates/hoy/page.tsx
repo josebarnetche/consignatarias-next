@@ -6,7 +6,7 @@ import { Calendar, Clock, MapPin, Users, ExternalLink, Play, FileText } from 'lu
 import DteCtaClient from './DteCtaClient'
 
 // Regenerate hourly for fresh TODAY
-export const revalidate = 3600
+export const revalidate = false // Cost optimization: static at build time
 
 // Get today's date in Argentina timezone
 function getTodayStr(): string {

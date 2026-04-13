@@ -2,7 +2,7 @@ import { createAdminClient } from '@/lib/supabase-server';
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
-export const revalidate = 86400; // Cache for 24 hours
+export const revalidate = false // Cost optimization: static at build time
 
 /**
  * GET /api/stats/dte

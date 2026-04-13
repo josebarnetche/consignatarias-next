@@ -6,16 +6,7 @@
     }
   },
   "ignoreCommand": "bash scripts/ignore-build.sh",
-  "crons": [
-    {
-      "path": "/api/cron/post-remate-outreach",
-      "schedule": "0 21 * * *"
-    },
-    {
-      "path": "/api/cron/onboarding-emails",
-      "schedule": "0 13 * * *"
-    }
-  ],
+  "crons": [],
   "redirects": [
     {
       "source": "/alertas",

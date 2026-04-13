@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-static';
-export const revalidate = 86400; // 24 hours
+export const revalidate = false // Cost optimization: static at build time
 
 const PLANS = {
   gratuito: {

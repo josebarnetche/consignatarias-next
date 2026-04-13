@@ -9,8 +9,8 @@ export const alt = 'Perfil de Consignataria'
 export const size = { width: 1200, height: 600 }
 export const contentType = 'image/png'
 
-// Cache Twitter images for 7 days — content only changes on rebuild
-export const revalidate = 604800
+// Cost optimization: static at build time (no ISR)
+export const revalidate = false
 
 export default async function TwitterImage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params

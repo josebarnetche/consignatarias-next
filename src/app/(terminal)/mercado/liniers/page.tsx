@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
 }
 
-export const revalidate = 86400 // 24 hours - market data updates daily
+export const revalidate = false // Cost optimization: static at build time
 
 export default function MercadoLiniersPage() {
   const inmag = marketData.inmag as { current: number; change: number; unit: string }

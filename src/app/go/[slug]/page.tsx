@@ -14,8 +14,8 @@ import { FollowerCount } from '@/components/ui/FollowerCount'
 
 const auctions = rematesData as Auction[]
 
-// ISR: revalidate every 5 minutes (same as main profile pages)
-export const revalidate = 300
+// Cost optimization: static at build time (no ISR, rebuild on deploy)
+export const revalidate = false
 
 type Props = { params: Promise<{ slug: string }> }
 

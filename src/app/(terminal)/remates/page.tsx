@@ -8,7 +8,7 @@ import { SectionBreadcrumbSchema, FAQPageSchema, RematesListSchema } from '@/com
 import NewsletterSignup from '@/components/NewsletterSignup'
 
 // Regenerate hourly for fresh TODAY
-export const revalidate = 3600
+export const revalidate = false // Cost optimization: static at build time
 
 // Month names in Spanish
 const MONTHS_ES = [

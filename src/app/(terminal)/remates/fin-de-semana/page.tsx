@@ -5,7 +5,7 @@ import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/Jso
 import { Calendar, Clock, MapPin, Users, ExternalLink, Play, FileText } from 'lucide-react'
 
 // Regenerate hourly for fresh TODAY
-export const revalidate = 3600
+export const revalidate = false // Cost optimization: static at build time
 
 // Get Argentina timezone date
 function getArgentinaDate(): Date {

@@ -147,7 +147,7 @@ const FAQ_ITEMS = [
 /*  METADATA                                                           */
 /* ================================================================== */
 // Regenerate every hour so TODAY stays fresh
-export const revalidate = 3600
+export const revalidate = false // Cost optimization: static at build time
 
 export const metadata: Metadata = {
   title: "Remates Ganaderos Argentina 2026 | Calendario de Remates | Consignatarias.com.ar",
