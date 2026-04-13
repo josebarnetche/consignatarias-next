@@ -17,24 +17,24 @@ interface PlatformStats {
 export default function PlatformStats() {
   const [stats, setStats] = useState<PlatformStats | null>(null)
   
+  // DISABLED: Cost optimization — use static values directly
   useEffect(() => {
-    fetch('/api/stats/platform')
-      .then(r => r.json())
-      .then(d => {
-        if (d.success && d.data) {
-          setStats(d.data)
-        }
-      })
-      .catch(() => {
-        // Fallback: use static values if API fails
-        setStats({
-          consignatarias: 70,
-          remates: 345,
-          frigorificos: 364,
-          provincias: 15,
-          subscribers: 500
-        })
-      })
+    // Skip API call, use static values
+    setStats({
+      consignatarias: 82,
+      remates: 392,
+      frigorificos: 364,
+      provincias: 14,
+      subscribers: 500
+    })
+    // fetch('/api/stats/platform')
+    //   .then(r => r.json())
+    //   .then(d => {
+    //     if (d.success && d.data) {
+    //       setStats(d.data)
+    //     }
+    //   })
+    //   .catch(() => {})
   }, [])
 
   // Show loading skeleton while fetching

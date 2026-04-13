@@ -82,7 +82,8 @@ export default function TerminalLayout({
 }) {
   const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [stats, setStats] = useState({ remates: 0, consignatarias: 0, provincias: 0 });
+  // Static values (updated on deploy) — no API call needed
+  const [stats] = useState({ remates: 392, consignatarias: 82, provincias: 14 });
 
   // Check auth state
   useEffect(() => {
@@ -96,21 +97,22 @@ export default function TerminalLayout({
     return () => subscription.unsubscribe();
   }, []);
 
-  // Fetch platform stats for activity bar
-  useEffect(() => {
-    fetch('/api/stats/platform')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          setStats({
-            remates: data.data.remates || 0,
-            consignatarias: data.data.consignatarias || 0,
-            provincias: data.data.provincias || 0,
-          });
-        }
-      })
-      .catch(() => {});
-  }, []);
+  // DISABLED: Cost optimization — use static values from build
+  // Was: fetch('/api/stats/platform') on every page load
+  // useEffect(() => {
+  //   fetch('/api/stats/platform')
+  //     .then(res => res.json())
+  //     .then(data => {
+  //       if (data.success) {
+  //         setStats({
+  //           remates: data.data.remates || 0,
+  //           consignatarias: data.data.consignatarias || 0,
+  //           provincias: data.data.provincias || 0,
+  //         });
+  //       }
+  //     })
+  //     .catch(() => {});
+  // }, []);
 
   // Filter nav items based on auth
   const visibleNavItems = NAV_ITEMS.filter(item => !item.authRequired || isAuthenticated);

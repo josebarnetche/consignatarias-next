@@ -25,25 +25,26 @@ export default function SocialProofToast() {
   // Max 3 cycles to avoid annoyance
   const MAX_CYCLES = 3
 
+  // DISABLED: Cost optimization — social proof not critical pre-revenue
   useEffect(() => {
-    async function fetchRecentSignups() {
-      try {
-        const res = await fetch('/api/stats/recent-signups?limit=5')
-        if (!res.ok) return
-        
-        const data = await res.json()
-        // Support both single signup and array response
-        if (data.signups && Array.isArray(data.signups)) {
-          setSignups(data.signups)
-        } else if (data.signup) {
-          setSignups([data.signup])
-        }
-      } catch {
-        // Silent fail - social proof is enhancement, not critical
-      }
-    }
+    // async function fetchRecentSignups() {
+    //   try {
+    //     const res = await fetch('/api/stats/recent-signups?limit=5')
+    //     if (!res.ok) return
+    //     
+    //     const data = await res.json()
+    //     // Support both single signup and array response
+    //     if (data.signups && Array.isArray(data.signups)) {
+    //       setSignups(data.signups)
+    //     } else if (data.signup) {
+    //       setSignups([data.signup])
+    //     }
+    //   } catch {
+    //     // Silent fail - social proof is enhancement, not critical
+    //   }
+    // }
 
-    fetchRecentSignups()
+    // fetchRecentSignups()
   }, [])
 
   const showNextToast = useCallback(() => {

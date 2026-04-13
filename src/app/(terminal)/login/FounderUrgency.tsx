@@ -22,22 +22,23 @@ export default function FounderUrgency() {
   const [data, setData] = useState<SpotsData | null>(null)
   const [visible, setVisible] = useState(false)
 
+  // DISABLED: Cost optimization — skip API call pre-revenue
   useEffect(() => {
-    const redirect = searchParams.get('redirect')
-    const fromPlanes = redirect?.includes('planes')
-
-    fetch('/api/stats/pro-spots')
-      .then(r => r.json())
-      .then(d => {
-        if (d.success && d.data) {
-          setData(d.data)
-          // Show if coming from planes OR if urgency is critical/high
-          if (fromPlanes || d.data.urgency === 'critical' || d.data.urgency === 'high') {
-            setVisible(true)
-          }
-        }
-      })
-      .catch(() => {})
+    // const redirect = searchParams.get('redirect')
+    // const fromPlanes = redirect?.includes('planes')
+    // 
+    // fetch('/api/stats/pro-spots')
+    //   .then(r => r.json())
+    //   .then(d => {
+    //     if (d.success && d.data) {
+    //       setData(d.data)
+    //       // Show if coming from planes OR if urgency is critical/high
+    //       if (fromPlanes || d.data.urgency === 'critical' || d.data.urgency === 'high') {
+    //         setVisible(true)
+    //       }
+    //     }
+    //   })
+    //   .catch(() => {})
   }, [searchParams])
 
   if (!visible || !data || data.remaining <= 0) return null

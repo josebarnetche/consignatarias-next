@@ -372,15 +372,16 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
   useEffect(() => {
     trackProfileView(profile.canonicalSlug, profile.displayName, auctions.length)
 
+    // DISABLED: Cost optimization — no API call for view tracking
     // Server-side view tracking
-    fetch('/api/profile-views', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        entityType: 'consignataria',
-        entitySlug: profile.canonicalSlug,
-      }),
-    }).catch(() => {}) // fire-and-forget
+    // fetch('/api/profile-views', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({
+    //     entityType: 'consignataria',
+    //     entitySlug: profile.canonicalSlug,
+    //   }),
+    // }).catch(() => {}) // fire-and-forget
   }, [profile.canonicalSlug, profile.displayName, auctions.length])
 
   const sorted = useMemo(

@@ -21,24 +21,24 @@ interface SpotsData {
 export default function FounderSpotsRemaining() {
   const [data, setData] = useState<SpotsData | null>(null)
 
+  // DISABLED: Cost optimization — use static values
   useEffect(() => {
-    fetch('/api/stats/pro-spots')
-      .then(r => r.json())
-      .then(d => {
-        if (d.success && d.data) {
-          setData(d.data)
-        }
-      })
-      .catch(() => {
-        // Fallback: assume spots available
-        setData({
-          total: 50,
-          taken: 0,
-          remaining: 50,
-          percentageTaken: 0,
-          urgency: 'low'
-        })
-      })
+    // Skip API call, use static values
+    setData({
+      total: 50,
+      taken: 0,
+      remaining: 50,
+      percentageTaken: 0,
+      urgency: 'low'
+    })
+    // fetch('/api/stats/pro-spots')
+    //   .then(r => r.json())
+    //   .then(d => {
+    //     if (d.success && d.data) {
+    //       setData(d.data)
+    //     }
+    //   })
+    //   .catch(() => {})
   }, [])
 
   // Don't render if no data yet
