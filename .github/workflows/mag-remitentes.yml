@@ -1,11 +1,10 @@
 name: MAG Remitentes Daily
 
+# DISABLED: Cost optimization — triggers daily Vercel rebuilds
 on:
-  schedule:
-    # 18:00 Argentina (21:00 UTC) - after MAG closes for the day
-    # Only weekdays (Mon-Fri)
-    - cron: '0 21 * * 1-5'
-  workflow_dispatch: # manual trigger
+  # schedule:
+  #   - cron: '0 21 * * 1-5'
+  workflow_dispatch: # Manual trigger only
 
 permissions:
   contents: write

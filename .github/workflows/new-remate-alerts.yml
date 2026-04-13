@@ -1,9 +1,10 @@
 name: New Remate Alerts
 
+# DISABLED: Cost optimization — no revenue yet
+# Was: every 30 minutes = 48 Vercel API calls/day
 on:
-  schedule:
-    # Every 30 minutes
-    - cron: '*/30 * * * *'
+  # schedule:
+  #   - cron: '*/30 * * * *'
   workflow_dispatch:
 
 jobs:
