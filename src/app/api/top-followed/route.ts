@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase-server';
 import { getAllProfiles } from '@/lib/data/consignataria-slugs';
 
+export const revalidate = 3600;
+
 /**
  * GET /api/top-followed
  * 
@@ -47,7 +49,11 @@ export async function GET(request: Request) {
         followerCount: f.follower_count,
       }));
 
-    return NextResponse.json({ consignatarias });
+    return NextResponse.json({ consignatarias }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+      },
+    });
   } catch (err) {
     console.error('Top followed API error:', err);
     return NextResponse.json({ consignatarias: [] });

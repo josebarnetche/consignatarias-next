@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import Image from 'next/image'
-import { getCanonicalSlug, getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
+import { getCanonicalSlug, getProfile, getAuctionsForProfile, getAllCanonicalSlugs } from '@/lib/data/consignataria-slugs'
 import { getConsignatariaProfile, getFollowerCount } from '@/lib/dal/consignatarias'
 import { getEntityTier } from '@/lib/features'
 import rematesData from '@/lib/data/remates.json'
@@ -16,6 +16,11 @@ const auctions = rematesData as Auction[]
 
 // Cost optimization: static at build time (no ISR, rebuild on deploy)
 export const revalidate = false
+export const dynamicParams = false
+
+export function generateStaticParams() {
+  return getAllCanonicalSlugs().map(slug => ({ slug }))
+}
 
 type Props = { params: Promise<{ slug: string }> }
 

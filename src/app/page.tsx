@@ -213,27 +213,41 @@ export default function LandingPage() {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#09090b]/80 to-[#09090b]" />
           </div>
 
-          <div className="relative z-10 max-w-3xl">
+          <div className="relative z-10 max-w-5xl">
             <div className="inline-flex items-center gap-2 rounded border border-zinc-800 bg-zinc-900/50 py-1 px-3 mb-8 shadow-sm backdrop-blur-sm">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-soft" />
               <span className="text-xs font-medium text-zinc-300 uppercase tracking-widest">
-                {rematesProximos.length} remates programados en 10 provincias
+                {totalConsignatarias}+ consignatarias · {rematesProximos.length} remates · 13 provincias
               </span>
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-normal text-zinc-100 tracking-tight leading-[1.1] mb-6">
-              El calendario de remates ganaderos{" "}
-              <span className="text-zinc-500">de Argentina</span>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-normal text-zinc-100 tracking-tight leading-[1.02] mb-8">
+              El directorio de remates{" "}
+              <span className="text-amber-400">más importante</span>{" "}
+              <span className="text-zinc-500">de Argentina.</span>
             </h1>
 
-            <p className="text-lg md:text-xl font-normal text-zinc-400 mb-10 max-w-2xl leading-relaxed">
-              Todos los remates de {totalConsignatarias}+ consignatarias en una sola pantalla. Filtros por provincia, tipo y fecha. Actualizado cada día con datos de múltiples fuentes.
+            <p className="text-xl md:text-2xl lg:text-3xl font-normal text-zinc-300 mb-12 max-w-3xl leading-snug">
+              Si querés estar acá, reservá una reunión.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mb-6">
+              <a
+                href="https://calendar.app.google/gr2BXY1ooDMki8TK7"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex items-center justify-center gap-3 text-base md:text-lg font-medium text-black bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 hover:from-amber-200 hover:via-amber-300 hover:to-amber-400 transition-all rounded-md py-5 px-10 shadow-[0_0_40px_rgba(251,191,36,0.35)] hover:shadow-[0_0_60px_rgba(251,191,36,0.55)]"
+              >
+                <span className="w-2 h-2 rounded-full bg-black/70 animate-pulse" />
+                Reservar reunión
+                <IconArrowRight />
+              </a>
+            </div>
+
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 w-full sm:w-auto">
               <Link
                 href="/remates/semana"
-                className="flex items-center justify-center gap-2 text-sm font-medium text-zinc-900 bg-zinc-100 hover:bg-white transition-all rounded py-3 px-6 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+                className="flex items-center justify-center gap-2 text-sm font-medium text-zinc-900 bg-zinc-100 hover:bg-white transition-all rounded py-3 px-6"
               >
                 Ver {rematesProximos.length} remates esta semana
                 <IconArrowRight />

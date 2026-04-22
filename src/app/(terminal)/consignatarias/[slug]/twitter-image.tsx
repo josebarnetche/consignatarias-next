@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og'
-import { getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
+import { getProfile, getAuctionsForProfile, getAllCanonicalSlugs } from '@/lib/data/consignataria-slugs'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 
@@ -11,6 +11,11 @@ export const contentType = 'image/png'
 
 // Cost optimization: static at build time (no ISR)
 export const revalidate = false
+export const dynamicParams = false
+
+export function generateStaticParams() {
+  return getAllCanonicalSlugs().map(slug => ({ slug }))
+}
 
 export default async function TwitterImage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params

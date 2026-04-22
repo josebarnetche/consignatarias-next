@@ -38,6 +38,7 @@ export interface MagEntryData {
 
 // Cost optimization: static at build time (no ISR, rebuild on deploy)
 export const revalidate = false
+export const dynamicParams = false
 
 const auctions = rematesData as Auction[]
 
