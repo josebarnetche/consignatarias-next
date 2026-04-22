@@ -1,0 +1,19 @@
+name: Post-Remate Outreach (Pedido de Promedios)
+
+# Every hour 14:00-22:00 UTC (11:00-19:00 ART) every day
+# Endpoint skips when no auctions finished ~3h ago, so cost is minimal.
+on:
+  schedule:
+    - cron: '0 14-22 * * *'
+  workflow_dispatch: # Manual trigger anytime
+
+jobs:
+  trigger-outreach:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request auction results from consignatarias
+        run: |
+          curl -sL -X POST \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            "https://www.consignatarias.com.ar/api/cron/post-remate-outreach"

@@ -1,11 +1,10 @@
 name: Scrape Auctions & Match Videos
 
-# DISABLED: Cost optimization — triggers daily Vercel rebuild
-# Re-enable when revenue justifies costs
+# Weekly: Mondays 14:00 UTC (11:00 ART) — keeps data fresh with one rebuild per week
 on:
-  # schedule:
-  #   - cron: '0 17 * * *'
-  workflow_dispatch: # Manual trigger only
+  schedule:
+    - cron: '0 14 * * 1'
+  workflow_dispatch: # Manual trigger anytime
 
 permissions:
   contents: write
