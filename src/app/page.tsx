@@ -227,27 +227,14 @@ export default function LandingPage() {
               <span className="text-zinc-500">de Argentina.</span>
             </h1>
 
-            <p className="text-xl md:text-2xl lg:text-3xl font-normal text-zinc-300 mb-12 max-w-3xl leading-snug">
-              Si querés estar acá, reservá una reunión.
+            <p className="text-base md:text-lg font-normal text-zinc-400 mb-10 max-w-2xl leading-relaxed">
+              Todos los remates de {totalConsignatarias}+ consignatarias en una sola pantalla. Filtros por provincia, tipo y fecha. Actualizado cada día.
             </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mb-6">
-              <a
-                href="https://calendar.app.google/gr2BXY1ooDMki8TK7"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative flex items-center justify-center gap-3 text-base md:text-lg font-medium text-black bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 hover:from-amber-200 hover:via-amber-300 hover:to-amber-400 transition-all rounded-md py-5 px-10 shadow-[0_0_40px_rgba(251,191,36,0.35)] hover:shadow-[0_0_60px_rgba(251,191,36,0.55)]"
-              >
-                <span className="w-2 h-2 rounded-full bg-black/70 animate-pulse" />
-                Reservar reunión
-                <IconArrowRight />
-              </a>
-            </div>
 
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 w-full sm:w-auto">
               <Link
                 href="/remates/semana"
-                className="flex items-center justify-center gap-2 text-sm font-medium text-zinc-900 bg-zinc-100 hover:bg-white transition-all rounded py-3 px-6"
+                className="flex items-center justify-center gap-2 text-sm font-medium text-zinc-900 bg-zinc-100 hover:bg-white transition-all rounded py-3 px-6 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
               >
                 Ver {rematesProximos.length} remates esta semana
                 <IconArrowRight />
@@ -270,7 +257,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Live stats strip — clickable cards */}
+          {/* Live stats strip — clickable cards (proof of value) */}
           <div className="relative z-10 mt-20 grid grid-cols-2 md:grid-cols-5 gap-4">
             {/* EN VIVO - Most prominent */}
             <Link href="/remates/en-vivo" className="bg-gradient-to-br from-red-950/60 to-zinc-900/60 border border-red-800/50 hover:border-red-500/50 rounded p-5 transition-all group relative overflow-hidden">
@@ -301,6 +288,34 @@ export default function LandingPage() {
               <div className="text-2xl font-medium text-zinc-100 tracking-tight">${fmt(marketPrices.usdBlue.current)}</div>
               <div className="text-xs text-zinc-500 mt-1">+{fmt(marketPrices.usdBlue.change, 1)}% vs. semana anterior</div>
             </Link>
+          </div>
+
+          {/* Conversion block — shown after value proofs */}
+          <div className="relative z-10 mt-20 rounded-lg border border-amber-500/20 bg-gradient-to-br from-amber-950/30 via-zinc-900/60 to-zinc-900/60 p-8 md:p-10 backdrop-blur-sm">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div className="max-w-2xl">
+                <div className="inline-flex items-center gap-2 text-[0.65rem] text-amber-400/80 uppercase tracking-widest mb-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  Para consignatarias y martilleros
+                </div>
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-normal text-zinc-100 tracking-tight leading-tight mb-3">
+                  ¿Querés estar acá?
+                </h2>
+                <p className="text-base md:text-lg text-zinc-400 leading-relaxed">
+                  Sumá tu consignataria al directorio más visitado del mercado ganadero argentino. Reservá una reunión y te mostramos cómo.
+                </p>
+              </div>
+              <a
+                href="https://calendar.app.google/gr2BXY1ooDMki8TK7"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex items-center justify-center gap-3 text-base md:text-lg font-medium text-black bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 hover:from-amber-200 hover:via-amber-300 hover:to-amber-400 transition-all rounded-md py-5 px-10 shadow-[0_0_40px_rgba(251,191,36,0.35)] hover:shadow-[0_0_60px_rgba(251,191,36,0.55)] whitespace-nowrap shrink-0"
+              >
+                <span className="w-2 h-2 rounded-full bg-black/70 animate-pulse" />
+                Reservar reunión
+                <IconArrowRight />
+              </a>
+            </div>
           </div>
         </section>
 
