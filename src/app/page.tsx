@@ -222,9 +222,9 @@ export default function LandingPage() {
             </div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-normal text-zinc-100 tracking-tight leading-[1.02] mb-8">
-              El directorio de remates{" "}
-              <span className="text-amber-400">más importante</span>{" "}
-              <span className="text-zinc-500">de Argentina.</span>
+              El calendario{" "}
+              <span className="text-amber-400">unificado</span>{" "}
+              <span className="text-zinc-500">de remates ganaderos.</span>
             </h1>
 
             <p className="text-base md:text-lg font-normal text-zinc-400 mb-10 max-w-2xl leading-relaxed">
