@@ -1,8 +1,8 @@
 {
   "inmag": {
-    "current": 4247.31,
-    "prev": 4329.89,
-    "change": -1.9,
+    "current": 4418.81,
+    "prev": 4271.87,
+    "change": 3.4,
     "unit": "$/kg vivo",
     "source": "mercadoagroganadero.com.ar",
     "series": [
@@ -1640,55 +1640,80 @@
         "date": "2026-04-10",
         "value": 4247.31,
         "volume": 10004
+      },
+      {
+        "date": "2026-04-14",
+        "value": 4180,
+        "volume": 11711
+      },
+      {
+        "date": "2026-04-15",
+        "value": 4067.12,
+        "volume": 6884
+      },
+      {
+        "date": "2026-04-17",
+        "value": 4254.08,
+        "volume": 5653
+      },
+      {
+        "date": "2026-04-21",
+        "value": 4271.87,
+        "volume": 4390
+      },
+      {
+        "date": "2026-04-24",
+        "value": 4418.81,
+        "volume": 6839
       }
     ],
-    "latestVolume": 10004,
-    "periodVolume": 146083
+    "latestVolume": 6839,
+    "periodVolume": 149120
   },
   "categories": {
     "novillos": {
-      "current": 4247,
+      "current": 4419,
       "prev": 4247,
-      "change": 0,
+      "change": 4,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1645
     },
     "novillitos": {
-      "current": 4035,
+      "current": 4198,
       "prev": 4035,
-      "change": 0,
+      "change": 4,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1840
     },
     "vaquillonas": {
-      "current": 3823,
+      "current": 3977,
       "prev": 3823,
-      "change": 0,
+      "change": 4,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 2588
     },
     "vacas": {
-      "current": 3058,
+      "current": 3182,
       "prev": 3058,
-      "change": 0,
+      "change": 4.1,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 3608
     },
     "toros": {
-      "current": 2761,
+      "current": 2872,
       "prev": 2761,
-      "change": 0,
+      "change": 4,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 198
     },
     "terneros": {
-      "current": 4672,
+      "current": 4861,
       "prev": 4672,
-      "change": 0,
+      "change": 4,
       "source": "MAG (derived from INMAG)"
     }
   },
@@ -1700,59 +1725,29 @@
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1400,
-    "prev": 1390,
-    "change": 0.7,
+    "current": 1420,
+    "prev": 1400,
+    "change": 1.4,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
-    "current": 1390,
-    "prev": 1395,
-    "change": -0.4,
+    "current": 1430,
+    "prev": 1390,
+    "change": 2.9,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-04-13",
+  "lastUpdate": "2026-04-27",
   "provinceEntry": {
-    "date": "2026-04-10",
-    "totalCabezas": 9984,
+    "date": "2026-04-27",
+    "totalCabezas": 21,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 8579,
-        "total": 8600,
-        "percentage": 86.14
-      },
-      {
-        "province": "SANTA FE",
-        "enPie": 509,
-        "total": 509,
-        "percentage": 5.1
-      },
-      {
-        "province": "LA PAMPA",
-        "enPie": 363,
-        "total": 364,
-        "percentage": 3.65
-      },
-      {
-        "province": "SAN LUIS",
-        "enPie": 245,
-        "total": 245,
-        "percentage": 2.45
-      },
-      {
-        "province": "CORDOBA",
-        "enPie": 200,
-        "total": 200,
-        "percentage": 2
-      },
-      {
-        "province": "CORRIENTES",
-        "enPie": 66,
-        "total": 66,
-        "percentage": 0.66
+        "enPie": 21,
+        "total": 21,
+        "percentage": 100
       }
     ]
   },
