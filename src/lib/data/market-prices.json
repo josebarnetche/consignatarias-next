@@ -1,8 +1,8 @@
 {
   "inmag": {
-    "current": 4418.81,
-    "prev": 4271.87,
-    "change": 3.4,
+    "current": 4275.46,
+    "prev": 4374.01,
+    "change": -2.3,
     "unit": "$/kg vivo",
     "source": "mercadoagroganadero.com.ar",
     "series": [
@@ -1665,55 +1665,65 @@
         "date": "2026-04-24",
         "value": 4418.81,
         "volume": 6839
+      },
+      {
+        "date": "2026-04-28",
+        "value": 4374.01,
+        "volume": 9968
+      },
+      {
+        "date": "2026-04-29",
+        "value": 4275.46,
+        "volume": 9102
       }
     ],
-    "latestVolume": 6839,
-    "periodVolume": 149120
+    "latestVolume": 9102,
+    "periodVolume": 147792
   },
   "categories": {
     "novillos": {
-      "current": 4419,
-      "prev": 4247,
-      "change": 4,
+      "current": 4275,
+      "prev": 4419,
+      "change": -3.3,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1645
     },
     "novillitos": {
-      "current": 4198,
-      "prev": 4035,
-      "change": 4,
+      "current": 4062,
+      "prev": 4198,
+      "change": -3.2,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1840
     },
     "vaquillonas": {
-      "current": 3977,
-      "prev": 3823,
-      "change": 4,
+      "current": 3848,
+      "prev": 3977,
+      "change": -3.2,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 2588
     },
     "vacas": {
-      "current": 3182,
-      "prev": 3058,
-      "change": 4.1,
+      "current": 3078,
+      "prev": 3182,
+      "change": -3.3,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 3608
     },
     "toros": {
-      "current": 2872,
-      "prev": 2761,
-      "change": 4,
+      "current": 2779,
+      "prev": 2872,
+      "change": -3.2,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 198
     },
     "terneros": {
-      "current": 4861,
-      "prev": 4672,
-      "change": 4,
+      "current": 4703,
+      "prev": 4861,
+      "change": -3.3,
       "source": "MAG (derived from INMAG)"
     }
   },
@@ -1725,20 +1735,20 @@
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1420,
-    "prev": 1400,
-    "change": 1.4,
+    "current": 1405,
+    "prev": 1420,
+    "change": -1.1,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
-    "current": 1430,
-    "prev": 1390,
-    "change": 2.9,
+    "current": 1420,
+    "prev": 1430,
+    "change": -0.7,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-04-27",
+  "lastUpdate": "2026-05-04",
   "provinceEntry": {
     "date": "2026-04-27",
     "totalCabezas": 21,
