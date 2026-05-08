@@ -1,9 +1,11 @@
 name: Scrape Auctions & Match Videos
 
-# Daily weekdays 17:00 UTC (14:00 ART) — matches MAG closing time, skips weekends (no trading)
+# Daily 17:00 UTC (14:00 ART) — matches MAG closing time. Weekends run too:
+# the build-trigger file forces a rebuild so date-sensitive static pages
+# (/remates/manana, /remates/hoy, profile "upcoming" filters) stay fresh.
 on:
   schedule:
-    - cron: '0 17 * * 1-5'
+    - cron: '0 17 * * *'
   workflow_dispatch: # Manual trigger anytime
 
 permissions:
@@ -36,6 +38,21 @@ jobs:
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
 
+      # Always touch a tiny trigger file so a rebuild fires even when the
+      # scraper found no new data (e.g., weekend, MAG hasn't published yet).
+      # Without this, ~13 pages that snapshot `new Date()` at SSG time freeze
+      # — which is exactly how /remates/manana ended up showing 26-Apr.
+      - name: Update build trigger
+        run: |
+          mkdir -p src/lib/data
+          cat > src/lib/data/last-build-trigger.json <<EOF
+          {
+            "updatedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "trigger": "${{ github.event_name }}",
+            "runId": "${{ github.run_id }}"
+          }
+          EOF
+
       - name: Check for changes
         id: changes
         run: |
@@ -48,5 +65,12 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/lib/data/
           AUCTION_COUNT=$(node -e "console.log(require('./src/lib/data/remates.json').length)")
-          git commit -m "data: update auctions ($AUCTION_COUNT) + match videos — $(date -u +%Y-%m-%d)"
+          # If anything besides the trigger file changed, this is a real data update.
+          # Otherwise it's a freshness rebuild — keep the message specific so the log is honest.
+          if git diff --cached --name-only | grep -qv 'last-build-trigger.json'; then
+            MSG="data: update auctions ($AUCTION_COUNT) + match videos — $(date -u +%Y-%m-%d)"
+          else
+            MSG="ci: daily rebuild trigger — $(date -u +%Y-%m-%d)"
+          fi
+          git commit -m "$MSG"
           git push

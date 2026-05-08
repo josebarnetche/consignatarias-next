@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
-export const runtime = 'edge'
+// Runtime defaults to Node.js (Fluid Compute). Edge runtime is being deprecated
+// on Vercel — Fluid runs in the same regions, same price, full Node.js APIs.
 
 /**
  * @openapi
