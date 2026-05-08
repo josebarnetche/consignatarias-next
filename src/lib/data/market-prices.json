@@ -1693,61 +1693,61 @@
   "categories": {
     "novillos": {
       "current": 4242,
-      "prev": 4275,
-      "change": -0.8,
+      "prev": 4242,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1645
     },
     "novillitos": {
       "current": 4030,
-      "prev": 4062,
-      "change": -0.8,
+      "prev": 4030,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1840
     },
     "vaquillonas": {
       "current": 3818,
-      "prev": 3848,
-      "change": -0.8,
+      "prev": 3818,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 2588
     },
     "vacas": {
       "current": 3054,
-      "prev": 3078,
-      "change": -0.8,
+      "prev": 3054,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 3608
     },
     "toros": {
       "current": 2757,
-      "prev": 2779,
-      "change": -0.8,
+      "prev": 2757,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 198
     },
     "terneros": {
       "current": 4666,
-      "prev": 4703,
-      "change": -0.8,
+      "prev": 4666,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
     "current": 232.67,
-    "prev": 224.75,
-    "change": 3.5,
+    "prev": 232.67,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
     "current": 1400,
-    "prev": 1405,
-    "change": -0.4,
+    "prev": 1400,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
