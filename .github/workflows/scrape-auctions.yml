@@ -15,7 +15,10 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v5
+      # TODO: bump to setup-node@v5 once pnpm-lock.yaml is removed or corepack
+      # is wired up — v5 autodetects pnpm-lock.yaml and fails (no pnpm in runner).
+      # Node 20 deprecation: required action by 2026-06-02.
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
 
