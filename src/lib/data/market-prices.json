@@ -1,8 +1,8 @@
 {
   "inmag": {
-    "current": 4242.23,
-    "prev": 4211.45,
-    "change": 0.7,
+    "current": 4427.78,
+    "prev": 4242.23,
+    "change": 4.4,
     "unit": "$/kg vivo",
     "source": "mercadoagroganadero.com.ar",
     "series": [
@@ -1685,55 +1685,60 @@
         "date": "2026-05-06",
         "value": 4242.23,
         "volume": 9649
+      },
+      {
+        "date": "2026-05-08",
+        "value": 4427.78,
+        "volume": 3839
       }
     ],
-    "latestVolume": 9649,
-    "periodVolume": 162043
+    "latestVolume": 3839,
+    "periodVolume": 165882
   },
   "categories": {
     "novillos": {
-      "current": 4242,
+      "current": 4428,
       "prev": 4242,
-      "change": 0,
+      "change": 4.4,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1645
     },
     "novillitos": {
-      "current": 4030,
+      "current": 4206,
       "prev": 4030,
-      "change": 0,
+      "change": 4.4,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1840
     },
     "vaquillonas": {
-      "current": 3818,
+      "current": 3985,
       "prev": 3818,
-      "change": 0,
+      "change": 4.4,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 2588
     },
     "vacas": {
-      "current": 3054,
+      "current": 3188,
       "prev": 3054,
-      "change": 0,
+      "change": 4.4,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 3608
     },
     "toros": {
-      "current": 2757,
+      "current": 2878,
       "prev": 2757,
-      "change": 0,
+      "change": 4.4,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 198
     },
     "terneros": {
-      "current": 4666,
+      "current": 4871,
       "prev": 4666,
-      "change": 0,
+      "change": 4.4,
       "source": "MAG (derived from INMAG)"
     }
   },
@@ -1761,31 +1766,31 @@
   "lastUpdate": "2026-05-08",
   "provinceEntry": {
     "date": "2026-05-08",
-    "totalCabezas": 3835,
+    "totalCabezas": 3839,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 2781,
-        "total": 2787,
-        "percentage": 72.67
+        "enPie": 2785,
+        "total": 2791,
+        "percentage": 72.7
       },
       {
         "province": "LA PAMPA",
         "enPie": 442,
         "total": 443,
-        "percentage": 11.55
+        "percentage": 11.54
       },
       {
         "province": "ENTRE RIOS",
         "enPie": 233,
         "total": 233,
-        "percentage": 6.08
+        "percentage": 6.07
       },
       {
         "province": "SANTA FE",
         "enPie": 225,
         "total": 225,
-        "percentage": 5.87
+        "percentage": 5.86
       },
       {
         "province": "CORDOBA",
@@ -1802,140 +1807,133 @@
     ]
   },
   "detailedCategories": {
-    "date": "2026-04-10",
+    "date": "2026-05-08",
     "categories": [
       {
         "category": "NOVILLOS Esp.Joven + 430",
-        "minPrice": 3400,
+        "minPrice": 3800,
         "maxPrice": 4800,
-        "avgPrice": 4364.29,
-        "cabezas": 1246
+        "avgPrice": 4445.26,
+        "cabezas": 418
       },
       {
         "category": "NOVILLOS Regular h 430",
         "minPrice": 3500,
         "maxPrice": 4200,
-        "avgPrice": 3986.07,
-        "cabezas": 132
+        "avgPrice": 4035.38,
+        "cabezas": 47
       },
       {
         "category": "NOVILLOS Regular + 430",
-        "minPrice": 3000,
-        "maxPrice": 4100,
-        "avgPrice": 3840.5,
-        "cabezas": 267
+        "minPrice": 4650,
+        "maxPrice": 4700,
+        "avgPrice": 4621.43,
+        "cabezas": 57
       },
       {
         "category": "NOVILLITOS Esp. h 390",
-        "minPrice": 3700,
+        "minPrice": 3500,
         "maxPrice": 5600,
-        "avgPrice": 4836.79,
-        "cabezas": 730
+        "avgPrice": 5103.16,
+        "cabezas": 484
       },
       {
         "category": "NOVILLITOS Esp. + 390",
-        "minPrice": 3400,
+        "minPrice": 3500,
         "maxPrice": 5000,
-        "avgPrice": 4488.68,
-        "cabezas": 926
+        "avgPrice": 4561.77,
+        "cabezas": 386
       },
       {
         "category": "NOVILLITOS Regular",
-        "minPrice": 3500,
-        "maxPrice": 4300,
-        "avgPrice": 3878.16,
-        "cabezas": 184
+        "minPrice": 2100,
+        "maxPrice": 4750,
+        "avgPrice": 4087.1,
+        "cabezas": 89
       },
       {
         "category": "VAQUILLONAS Esp. h 390",
-        "minPrice": 3400,
-        "maxPrice": 5500,
-        "avgPrice": 4778.57,
-        "cabezas": 1873
+        "minPrice": 3600,
+        "maxPrice": 5640,
+        "avgPrice": 5059.68,
+        "cabezas": 847
       },
       {
         "category": "VAQUILLONAS Esp. + 390",
-        "minPrice": 3250,
-        "maxPrice": 4700,
-        "avgPrice": 4085.26,
-        "cabezas": 420
+        "minPrice": 3500,
+        "maxPrice": 4800,
+        "avgPrice": 4049.28,
+        "cabezas": 249
       },
       {
         "category": "VAQUILLONAS Regular",
-        "minPrice": 2200,
-        "maxPrice": 4800,
-        "avgPrice": 3398.71,
-        "cabezas": 295
+        "minPrice": 2000,
+        "maxPrice": 4700,
+        "avgPrice": 3886.37,
+        "cabezas": 140
       },
       {
         "category": "VACAS Esp.Joven h 430",
-        "minPrice": 2000,
-        "maxPrice": 3800,
-        "avgPrice": 2382.47,
-        "cabezas": 214
+        "minPrice": 2150,
+        "maxPrice": 3000,
+        "avgPrice": 2276.26,
+        "cabezas": 14
       },
       {
         "category": "VACAS Esp.Joven + 430",
-        "minPrice": 2200,
-        "maxPrice": 3880,
-        "avgPrice": 3163.76,
-        "cabezas": 681
+        "minPrice": 1800,
+        "maxPrice": 3600,
+        "avgPrice": 2758.1,
+        "cabezas": 357
       },
       {
         "category": "VACAS Regular",
-        "minPrice": 1700,
+        "minPrice": 1900,
         "maxPrice": 3700,
-        "avgPrice": 2655.32,
-        "cabezas": 1895
+        "avgPrice": 2503.31,
+        "cabezas": 371
       },
       {
         "category": "VACAS Conserva Buena",
         "minPrice": 1800,
-        "maxPrice": 2700,
-        "avgPrice": 2209.3,
-        "cabezas": 436
+        "maxPrice": 2600,
+        "avgPrice": 2080.34,
+        "cabezas": 125
       },
       {
         "category": "VACAS Conserva Inferior",
-        "minPrice": 1700,
-        "maxPrice": 2500,
-        "avgPrice": 1969.45,
-        "cabezas": 383
+        "minPrice": 1500,
+        "maxPrice": 2450,
+        "avgPrice": 1814.61,
+        "cabezas": 144
       },
       {
         "category": "TOROS Esp.",
-        "minPrice": 2760,
-        "maxPrice": 4500,
-        "avgPrice": 2843.41,
-        "cabezas": 103
+        "minPrice": 2700,
+        "maxPrice": 4600,
+        "avgPrice": 2958.66,
+        "cabezas": 50
       },
       {
         "category": "TOROS Regular",
-        "minPrice": 2100,
-        "maxPrice": 3250,
-        "avgPrice": 2464.06,
-        "cabezas": 95
+        "minPrice": 3200,
+        "maxPrice": 3200,
+        "avgPrice": 2470.94,
+        "cabezas": 51
       },
       {
         "category": "MEJ Esp. h 430",
-        "minPrice": 4100,
-        "maxPrice": 4900,
-        "avgPrice": 4209.66,
-        "cabezas": 68
-      },
-      {
-        "category": "MEJ Regular",
-        "minPrice": 2200,
-        "maxPrice": 2200,
-        "avgPrice": 2119.1,
-        "cabezas": 6
+        "minPrice": 3870,
+        "maxPrice": 5150,
+        "avgPrice": 4329.62,
+        "cabezas": 45
       },
       {
         "category": "Totales",
         "minPrice": 0,
         "maxPrice": 0,
-        "avgPrice": 3672.19,
-        "cabezas": 9954
+        "avgPrice": 3888.75,
+        "cabezas": 3874
       }
     ]
   },
@@ -2035,31 +2033,6 @@
             "localidad": "RIVADAVIA         B",
             "provincia": "BUE",
             "cabezas": 60
-          }
-        ],
-        "period": "08/04/2026 - 08/05/2026"
-      },
-      "s-l-ledesma-y-cia-s-a": {
-        "magId": "414",
-        "totalCabezas": 37,
-        "entries": [
-          {
-            "remitente": "EL VIEJO CEIBO S.A.",
-            "localidad": "TANDIL",
-            "provincia": "BUE",
-            "cabezas": 12
-          },
-          {
-            "remitente": "HORNERO CHICO S.A.",
-            "localidad": "TANDIL",
-            "provincia": "BUE",
-            "cabezas": 7
-          },
-          {
-            "remitente": "HORNERO CHICO S.A.",
-            "localidad": "TANDIL",
-            "provincia": "BUE",
-            "cabezas": 18
           }
         ],
         "period": "08/04/2026 - 08/05/2026"
