@@ -1,8 +1,8 @@
 {
   "inmag": {
-    "current": 4275.46,
-    "prev": 4374.01,
-    "change": -2.3,
+    "current": 4242.23,
+    "prev": 4211.45,
+    "change": 0.7,
     "unit": "$/kg vivo",
     "source": "mercadoagroganadero.com.ar",
     "series": [
@@ -1675,89 +1675,129 @@
         "date": "2026-04-29",
         "value": 4275.46,
         "volume": 9102
+      },
+      {
+        "date": "2026-05-05",
+        "value": 4211.45,
+        "volume": 11840
+      },
+      {
+        "date": "2026-05-06",
+        "value": 4242.23,
+        "volume": 9649
       }
     ],
-    "latestVolume": 9102,
-    "periodVolume": 147792
+    "latestVolume": 9649,
+    "periodVolume": 162043
   },
   "categories": {
     "novillos": {
-      "current": 4275,
-      "prev": 4419,
-      "change": -3.3,
+      "current": 4242,
+      "prev": 4275,
+      "change": -0.8,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1645
     },
     "novillitos": {
-      "current": 4062,
-      "prev": 4198,
-      "change": -3.2,
+      "current": 4030,
+      "prev": 4062,
+      "change": -0.8,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1840
     },
     "vaquillonas": {
-      "current": 3848,
-      "prev": 3977,
-      "change": -3.2,
+      "current": 3818,
+      "prev": 3848,
+      "change": -0.8,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 2588
     },
     "vacas": {
-      "current": 3078,
-      "prev": 3182,
-      "change": -3.3,
+      "current": 3054,
+      "prev": 3078,
+      "change": -0.8,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 3608
     },
     "toros": {
-      "current": 2779,
-      "prev": 2872,
-      "change": -3.2,
+      "current": 2757,
+      "prev": 2779,
+      "change": -0.8,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 198
     },
     "terneros": {
-      "current": 4703,
-      "prev": 4861,
-      "change": -3.3,
+      "current": 4666,
+      "prev": 4703,
+      "change": -0.8,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
-    "current": 224.75,
+    "current": 232.67,
     "prev": 224.75,
-    "change": 0,
+    "change": 3.5,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1405,
-    "prev": 1420,
-    "change": -1.1,
+    "current": 1400,
+    "prev": 1405,
+    "change": -0.4,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
     "current": 1420,
-    "prev": 1430,
-    "change": -0.7,
+    "prev": 1420,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-05-04",
+  "lastUpdate": "2026-05-08",
   "provinceEntry": {
-    "date": "2026-04-27",
-    "totalCabezas": 21,
+    "date": "2026-05-08",
+    "totalCabezas": 3835,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 21,
-        "total": 21,
-        "percentage": 100
+        "enPie": 2781,
+        "total": 2787,
+        "percentage": 72.67
+      },
+      {
+        "province": "LA PAMPA",
+        "enPie": 442,
+        "total": 443,
+        "percentage": 11.55
+      },
+      {
+        "province": "ENTRE RIOS",
+        "enPie": 233,
+        "total": 233,
+        "percentage": 6.08
+      },
+      {
+        "province": "SANTA FE",
+        "enPie": 225,
+        "total": 225,
+        "percentage": 5.87
+      },
+      {
+        "province": "CORDOBA",
+        "enPie": 115,
+        "total": 115,
+        "percentage": 3
+      },
+      {
+        "province": "SAN LUIS",
+        "enPie": 32,
+        "total": 32,
+        "percentage": 0.83
       }
     ]
   },
@@ -1900,279 +1940,129 @@
     ]
   },
   "auctionDayEntries": {
-    "date": "2026-04-10",
+    "date": "2026-05-08",
     "consignatarias": {
-      "s-l-ledesma-y-cia-s-a": {
-        "magId": "414",
-        "totalCabezas": 58,
+      "monasterio-tattersall-s-a": {
+        "magId": "465",
+        "totalCabezas": 576,
         "entries": [
           {
-            "remitente": "ERACARRET ALINA Y MAURICIO",
-            "localidad": "TANDIL",
-            "provincia": "BUE",
-            "cabezas": 33
-          },
-          {
-            "remitente": "EST. ALELUYA S.A.",
-            "localidad": "TANDIL",
-            "provincia": "BUE",
-            "cabezas": 25
-          }
-        ],
-        "period": "11/03/2026 - 10/04/2026"
-      },
-      "saenz-valiente-bullrich": {
-        "magId": "538",
-        "totalCabezas": 1208,
-        "entries": [
-          {
-            "remitente": "ARISTIZABAL FERMIN",
-            "localidad": "CASTELLI",
-            "provincia": "BUE",
-            "cabezas": 2
-          },
-          {
-            "remitente": "ARISTIZABAL GUILLERMO",
-            "localidad": "LEZAMA",
-            "provincia": "BUE",
-            "cabezas": 35
-          },
-          {
-            "remitente": "BENEDETTI JORGE ,CERBINO DARIO",
-            "localidad": "VILLARINO",
-            "provincia": "BUE",
-            "cabezas": 44
-          },
-          {
-            "remitente": "CASTANETTO LUCIANO CESAR",
-            "localidad": "CASILDA      S.FE",
-            "provincia": "SFE",
-            "cabezas": 20
-          },
-          {
-            "remitente": "CASTANETTO MATIAS EMILIANO",
-            "localidad": "CASILDA      S.FE",
-            "provincia": "SFE",
-            "cabezas": 20
-          },
-          {
-            "remitente": "CHIESINO MARIA E. MAQUEIRA DE",
-            "localidad": "MONTE",
-            "provincia": "BUE",
-            "cabezas": 44
-          },
-          {
-            "remitente": "CRIA GT S.A.",
-            "localidad": "GUAMINI",
-            "provincia": "BUE",
-            "cabezas": 35
-          },
-          {
-            "remitente": "DA-NES S.R.L.",
-            "localidad": "CNEL. SUAREZ",
-            "provincia": "BUE",
-            "cabezas": 78
-          },
-          {
-            "remitente": "DELFINA ALONSO E HIJOS SA",
-            "localidad": "TANDIL",
-            "provincia": "BUE",
-            "cabezas": 36
-          },
-          {
-            "remitente": "DELPUPO HECTOR HUMBERTO",
-            "localidad": "PERGAMINO",
-            "provincia": "BUE",
-            "cabezas": 20
-          },
-          {
-            "remitente": "DELPUPO HECTOR HUMBERTO",
-            "localidad": "PERGAMINO",
-            "provincia": "BUE",
-            "cabezas": 35
-          },
-          {
-            "remitente": "DON QUILES S.A.",
-            "localidad": "RAUCH",
-            "provincia": "BUE",
-            "cabezas": 26
-          },
-          {
-            "remitente": "ESTABLECIMIENTO MARAJU S.A.",
-            "localidad": "SALTO",
-            "provincia": "BUE",
-            "cabezas": 35
-          },
-          {
-            "remitente": "GOMEZ MARCELO JOSE",
-            "localidad": "SALADILLO",
-            "provincia": "BUE",
-            "cabezas": 5
-          },
-          {
-            "remitente": "IRUANYAK S.R.L.",
-            "localidad": "MERCEDES",
+            "remitente": "AGROP. SAN DIEGO S. S.",
+            "localidad": "GRAL. LA MADRID",
             "provincia": "BUE",
             "cabezas": 40
           },
           {
-            "remitente": "JOMARCA S.A.",
-            "localidad": "CAPITAN SARMIENTO",
+            "remitente": "ALVARO RAUL",
+            "localidad": "AZUL",
             "provincia": "BUE",
-            "cabezas": 45
+            "cabezas": 50
           },
           {
-            "remitente": "KUATRO S.CAP ISECC IV",
-            "localidad": "SALADILLO",
+            "remitente": "ARRECHEA GUILLERMO",
+            "localidad": "CNEL. SUAREZ",
+            "provincia": "BUE",
+            "cabezas": 4
+          },
+          {
+            "remitente": "BERCA S.A.",
+            "localidad": "HUINCA RENANCO",
+            "provincia": "CBA",
+            "cabezas": 65
+          },
+          {
+            "remitente": "CAMPOMAX S.A.",
+            "localidad": "BOLIVAR",
+            "provincia": "BUE",
+            "cabezas": 39
+          },
+          {
+            "remitente": "CAMPOMAX S.A.",
+            "localidad": "BOLIVAR",
+            "provincia": "BUE",
+            "cabezas": 43
+          },
+          {
+            "remitente": "DO;A SUSANA DE ROQUE PEREZ SRL",
+            "localidad": "ROQUE PEREZ",
+            "provincia": "BUE",
+            "cabezas": 13
+          },
+          {
+            "remitente": "GARCIA HUGO A.",
+            "localidad": "DAIREAUX",
+            "provincia": "BUE",
+            "cabezas": 32
+          },
+          {
+            "remitente": "INVAGRO S.R.L.",
+            "localidad": "PEHUAJO",
+            "provincia": "BUE",
+            "cabezas": 37
+          },
+          {
+            "remitente": "INVAGRO S.R.L.",
+            "localidad": "PEHUAJO",
+            "provincia": "BUE",
+            "cabezas": 37
+          },
+          {
+            "remitente": "LEDESMA SAAI",
+            "localidad": "CONCEPCION DEL URUGU",
+            "provincia": "ERI",
+            "cabezas": 65
+          },
+          {
+            "remitente": "MARIA DEL CARMEN",
+            "localidad": "LINCOLN",
+            "provincia": "BUE",
+            "cabezas": 40
+          },
+          {
+            "remitente": "SAN JOSE DE GALLI S.C.A.",
+            "localidad": "DAIREAUX",
+            "provincia": "BUE",
+            "cabezas": 1
+          },
+          {
+            "remitente": "SAN JOSE DE GALLI S.C.A.",
+            "localidad": "DAIREAUX",
+            "provincia": "BUE",
+            "cabezas": 50
+          },
+          {
+            "remitente": "TATTERSALL ARGENTINO S.A.",
+            "localidad": "RIVADAVIA         B",
+            "provincia": "BUE",
+            "cabezas": 60
+          }
+        ],
+        "period": "08/04/2026 - 08/05/2026"
+      },
+      "s-l-ledesma-y-cia-s-a": {
+        "magId": "414",
+        "totalCabezas": 37,
+        "entries": [
+          {
+            "remitente": "EL VIEJO CEIBO S.A.",
+            "localidad": "TANDIL",
             "provincia": "BUE",
             "cabezas": 12
           },
           {
-            "remitente": "LA CHIQUITA SRL",
-            "localidad": "OLIVA CDAD",
-            "provincia": "CBA",
-            "cabezas": 41
-          },
-          {
-            "remitente": "LA CUBANA S.A.",
-            "localidad": "LAS FLORES",
+            "remitente": "HORNERO CHICO S.A.",
+            "localidad": "TANDIL",
             "provincia": "BUE",
-            "cabezas": 33
+            "cabezas": 7
           },
           {
-            "remitente": "LA CUBANA S.A.",
-            "localidad": "LAS FLORES",
-            "provincia": "BUE",
-            "cabezas": 34
-          },
-          {
-            "remitente": "LA CUBANA S.A.",
-            "localidad": "LAS FLORES",
-            "provincia": "BUE",
-            "cabezas": 34
-          },
-          {
-            "remitente": "LA CUBANA S.A.",
-            "localidad": "LAS FLORES",
-            "provincia": "BUE",
-            "cabezas": 34
-          },
-          {
-            "remitente": "LA CUBANA S.A.",
-            "localidad": "LAS FLORES",
-            "provincia": "BUE",
-            "cabezas": 34
-          },
-          {
-            "remitente": "LA PINTORESCA S.A.",
-            "localidad": "SAN A. GILES",
-            "provincia": "BUE",
-            "cabezas": 10
-          },
-          {
-            "remitente": "LA PIPA S.H.",
-            "localidad": "BOLIVAR",
-            "provincia": "BUE",
-            "cabezas": 30
-          },
-          {
-            "remitente": "LA PIPA S.H.",
-            "localidad": "BOLIVAR",
-            "provincia": "BUE",
-            "cabezas": 9
-          },
-          {
-            "remitente": "LUCRECIA M ESCOBAR DE CAMPOMAR",
-            "localidad": "GRAL. ALVEAR",
-            "provincia": "BUE",
-            "cabezas": 40
-          },
-          {
-            "remitente": "MARIA TERESA GAZTAMBIDE SC.",
-            "localidad": "GONZALES CHAVES",
-            "provincia": "BUE",
-            "cabezas": 42
-          },
-          {
-            "remitente": "MICHELINI GUSTAVO ENRIQUE",
-            "localidad": "SALADILLO",
-            "provincia": "BUE",
-            "cabezas": 3
-          },
-          {
-            "remitente": "MICHELINI MARCELO FABIAN",
-            "localidad": "SALADILLO",
-            "provincia": "BUE",
-            "cabezas": 3
-          },
-          {
-            "remitente": "PEMAG SA",
-            "localidad": "TAPALQUE",
-            "provincia": "BUE",
-            "cabezas": 6
-          },
-          {
-            "remitente": "PEMAG SA",
-            "localidad": "TAPALQUE",
-            "provincia": "BUE",
-            "cabezas": 42
-          },
-          {
-            "remitente": "POSAVINA S.A.F.",
-            "localidad": "RAUCH",
-            "provincia": "BUE",
-            "cabezas": 32
-          },
-          {
-            "remitente": "POSAVINA S.A.F.",
-            "localidad": "RAUCH",
-            "provincia": "BUE",
-            "cabezas": 32
-          },
-          {
-            "remitente": "POSAVINA S.A.F.",
-            "localidad": "RAUCH",
-            "provincia": "BUE",
-            "cabezas": 14
-          },
-          {
-            "remitente": "POSAVINA S.A.F.",
-            "localidad": "RAUCH",
+            "remitente": "HORNERO CHICO S.A.",
+            "localidad": "TANDIL",
             "provincia": "BUE",
             "cabezas": 18
-          },
-          {
-            "remitente": "PUNTANA S.A.A.G.I.C. Y F.",
-            "localidad": "GDOR. DUPUY",
-            "provincia": "SLU",
-            "cabezas": 67
-          },
-          {
-            "remitente": "SAN MARIANO S.A.",
-            "localidad": "PILA",
-            "provincia": "BUE",
-            "cabezas": 46
-          },
-          {
-            "remitente": "TAPALGRO S.A.",
-            "localidad": "AZUL",
-            "provincia": "BUE",
-            "cabezas": 41
-          },
-          {
-            "remitente": "VIA SEVILLA S.A.",
-            "localidad": "RAUCH",
-            "provincia": "BUE",
-            "cabezas": 2
-          },
-          {
-            "remitente": "ZINGIRA S.A.",
-            "localidad": "TRENQUE LAUQUEN",
-            "provincia": "BUE",
-            "cabezas": 29
           }
         ],
-        "period": "11/03/2026 - 10/04/2026"
+        "period": "08/04/2026 - 08/05/2026"
       }
     }
   }
