@@ -2,7 +2,7 @@
 
 A cattle auction directory, market intelligence platform, and public API for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
 
-**25 API endpoints** • **386 remates** • **81 consignatarias** • **364 frigoríficos** • **14 provincias** • **24 YouTube channels** • **MAG price integration** • **1300+ sitemap URLs** • **100% schema coverage** • **Price oracle foundation** • **DTE analytics** • **Gamified onboarding** • **Lead capture system** • **🔴 En Vivo streaming focus**
+**25 API endpoints** • **359 remates** • **84 consignatarias** • **364 frigoríficos** • **14 provincias** • **24 YouTube channels** • **MAG price integration** • **1300+ sitemap URLs** • **100% schema coverage** • **Price oracle foundation** • **DTE analytics** • **Gamified onboarding** • **Lead capture system** • **🔴 En Vivo streaming focus**
 
 **Live:** [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
 
@@ -23,7 +23,7 @@ There is no single place to see all upcoming auctions, compare prices, or browse
 
 **consignatarias.com.ar** aggregates data from 77+ consignatarias (cattle auction houses) across 10 provinces into a unified, real-time interface. A rancher can see every upcoming auction in the country, filter by province or type, check market prices, and find frigorificos — all in one screen.
 
-### Current UX (v1.9.12)
+### Current UX (v1.9.13)
 
 **For cattle ranchers (buyers):**
 - Open the site → see all upcoming auctions nationwide in a terminal-style feed
@@ -67,7 +67,7 @@ There is no single place to see all upcoming auctions, compare prices, or browse
 ### Architecture
 
 ```
-[GitHub Actions] ─ 14:00 ART daily ─→ scrape 9 sources ─→ remates.json + market-prices.json
+[GitHub Actions] ─ 14:00 ART, 7 days ─→ scrape 9 sources + write build-trigger ─→ JSON files
                                                                     │
                                                               [git push]
                                                                     │
@@ -94,14 +94,17 @@ There is no single place to see all upcoming auctions, compare prices, or browse
 
 ### Data Pipeline
 
-Every day at 14:00 ART, the scraper:
+Every day at 14:00 ART (17:00 UTC), 7 days a week, the scraper:
 
 1. Fetches from 9 sources in parallel (CACG API, Colombo y Colombo, O'Farrell, Lehmann, Madelan, UMC Haciendas, dolarapi, mercadoagroganadero, MAGYP)
 2. Normalizes and deduplicates auctions
 3. Corrects province misassignments using `CITY_PROVINCE_MAP` (~70 cities)
 4. Merges with curated entries from non-scrapable sources
 5. Writes `remates.json` and `market-prices.json`
-6. Git commits and pushes → triggers Vercel rebuild → site updated
+6. **Always writes** `last-build-trigger.json` (timestamp + run id) so quiet days (no MAG publish, weekends, holidays) still produce a diff
+7. Git commits and pushes → triggers Vercel rebuild → site updated
+
+**Why the build trigger exists.** ~13 pages snapshot `new Date()` at SSG time (`/remates/manana`, `/remates/hoy`, all `>= today` filters in directories, profile "upcoming" counts). If a day passes without a Vercel rebuild, those filters freeze. The trigger file guarantees a daily commit-and-rebuild even when no auction data changed, keeping every "today/tomorrow" page current. See [CHANGELOG v1.9.13](./CHANGELOG.md) for the incident this prevents.
 
 ### Data Sources
 
@@ -636,8 +639,10 @@ Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misione
 | **1.9.3** | **Mar 20** | **BATTLE #3 — Onboarding UX overhaul (25+ improvements, empty states, CUIT validation)** |
 | 1.9.10 | Apr 7 | Frigorífico monetization — claim CTAs, lead gen, PRO upsell |
 | **1.9.11** | **Apr 10** | **En Vivo focus — streaming prominence, /remates/en-vivo, /mercado/arrendamiento, Market Decision Infrastructure strategy** |
+| 1.9.12 | Apr 11 | YouTube channel expansion — 24 channels, improved slug matching, 3x video coverage |
+| **1.9.13** | **May 8** | **Daily rebuild guarantee — build-trigger file, 7-day cron, INMAG backfill (Apr 11→May 6), drop deprecated edge runtime on /api/health** |
 
-Built in 45 days. One human, one AI. $0 hosting cost. 10 Supabase tables. 25 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
+Built in 71 days. One human, one AI. $0 hosting cost. 10 Supabase tables. 25 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
 
 ---
 

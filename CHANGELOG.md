@@ -6,6 +6,35 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.9.13] — 2026-05-08
+
+### Fix: Daily Rebuild Guarantee + Scraper Hardening
+
+The auction calendar and INMAG page silently went stale for ~28 days. Two root causes compounded: (1) `scrape-auctions.yml` had been switched to **weekly** + the `Check for changes` step skipped the commit when the scraper produced no diff, so quiet days (no MAG publish, weekends, holidays) yielded no rebuild; (2) ~13 pages snapshot `new Date()` at SSG build time, so without rebuilds every "today/tomorrow" filter froze. `/remates/manana` was showing **26-Apr** instead of today+1.
+
+#### Scraper workflow (`.github/workflows/scrape-auctions.yml`)
+- **Cron:** weekly Monday → daily 7-days at 17:00 UTC (14:00 ART, MAG closing time)
+- **Build trigger file:** every run writes `src/lib/data/last-build-trigger.json` with timestamp + GitHub run id. Guarantees a commit even on quiet days, which guarantees a daily Vercel rebuild
+- **Honest commit messages:** `data: update auctions (N) + match videos` for real data updates, `ci: daily rebuild trigger` when only the trigger file changed — keeps the git log readable
+- `actions/checkout@v4` → `@v5`; `setup-node` pinned to `@v4` (TODO: bump after closing pnpm-lock vs npm; Node 20 deprecation deadline 2026-06-02)
+
+#### INMAG backfill (11/04 → 06/05)
+9 trading days missing from `market-prices.json` (last point was 10/04 = $4,247.31). Series now extends through 06/05 = $4,242.23 (336 points total).
+- **Period average:** $4,255/kg vivo
+- **Range:** $4,067 (15/04) → $4,419 (24/04)
+- **Net change:** ~flat (-0.12%)
+- **Volume:** 76,036 cabezas across 9 trading days (~8.4k/day)
+
+#### API
+- `/api/health`: removed `runtime = 'edge'`. Vercel is deprecating Edge Functions in favor of Fluid Compute (same regions, same price, full Node.js APIs, fewer compatibility issues)
+
+#### Cleanup (no functional change)
+- Deleted `scripts/fetch-inmag-{daily,complete}.mjs`. Both pointed at `haciinfo000013` with deprecated form params (`txtFechaDesde/Hasta` — MAG renamed to `txtFechaIni/Fin`) and the endpoint actually returns "Índice Arrendamiento", not the canonical INMAG. The production scraper (`scripts/scrape-auctions.mjs`) uses `haciinfo000011` correctly and was never affected
+
+**Impact:** date-sensitive static pages (`/remates/manana`, `/remates/hoy`, every `>= today` filter in directories, profile "upcoming" counts) refresh daily. The 26-Apr-style staleness cannot recur as long as the daily cron runs successfully.
+
+---
+
 ## [1.9.12] — 2026-04-11
 
 ### YouTube Channel Expansion + Improved Video Matching
