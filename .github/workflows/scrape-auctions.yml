@@ -1,9 +1,9 @@
 name: Scrape Auctions & Match Videos
 
-# Weekly: Mondays 14:00 UTC (11:00 ART) — keeps data fresh with one rebuild per week
+# Daily weekdays 17:00 UTC (14:00 ART) — matches MAG closing time, skips weekends (no trading)
 on:
   schedule:
-    - cron: '0 14 * * 1'
+    - cron: '0 17 * * 1-5'
   workflow_dispatch: # Manual trigger anytime
 
 permissions:
@@ -13,9 +13,9 @@ jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '22'
 
