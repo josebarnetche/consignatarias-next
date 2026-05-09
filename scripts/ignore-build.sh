@@ -18,8 +18,10 @@ fi
 CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || echo "")
 
 if [ -n "$CHANGED_FILES" ]; then
-  NON_DOC_FILES=$(echo "$CHANGED_FILES" | grep -v -E '\.(md|txt|json)$|^docs/|^README|^CHANGELOG|^LICENSE' || true)
-  
+  # JSON files in src/lib/data/ ARE the data layer — every change must rebuild.
+  # Only skip when the diff is pure docs (markdown, README, LICENSE, /docs/**).
+  NON_DOC_FILES=$(echo "$CHANGED_FILES" | grep -v -E '\.(md|txt)$|^docs/|^README|^CHANGELOG|^LICENSE' || true)
+
   if [ -z "$NON_DOC_FILES" ]; then
     echo "🚫 Skipping build: only documentation files changed"
     exit 0
