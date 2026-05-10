@@ -1310,7 +1310,8 @@ def main() -> None:
         for chrome in candidates:
             if Path(chrome).exists() or os.system(f"command -v {chrome} >/dev/null 2>&1") == 0:
                 cmd = (
-                    f'"{chrome}" --headless=new --disable-gpu --no-pdf-header-footer '
+                    f'"{chrome}" --headless=new --disable-gpu --no-sandbox --disable-dev-shm-usage '
+                    f'--no-pdf-header-footer '
                     f'--print-to-pdf="{out_pdf}" "file://{out_html.absolute()}"'
                 )
                 rc = os.system(cmd)

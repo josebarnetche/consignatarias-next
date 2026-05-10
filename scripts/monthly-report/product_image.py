@@ -310,6 +310,8 @@ def render_image(html_content: str, w: int, h: int, out_path: Path, scale: float
         CHROME,
         "--headless=new",
         "--disable-gpu",
+        "--no-sandbox",  # required when running as root in CI/Docker
+        "--disable-dev-shm-usage",
         "--hide-scrollbars",
         f"--window-size={w},{h}",
         f"--screenshot={out_path}",
