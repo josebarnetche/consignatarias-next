@@ -1009,3 +1009,61 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
     return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
   }
 }
+
+// ----------------------------------------------------------------
+// El Corredor — entrega del PDF al suscribirse al lead magnet
+// ----------------------------------------------------------------
+
+export async function sendElCorredorDelivery(email: string, edition: string, pdfUrl: string) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'RESEND_API_KEY no configurado' }
+
+  const safeEdition = escapeHtml(edition)
+  const safeUrl = escapeHtml(pdfUrl)
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: email,
+      subject: `El Corredor · ${edition} — tu copia adentro`,
+      html: `
+        <div style="font-family: 'SF Mono', 'Cascadia Code', ui-monospace, Menlo, Consolas, monospace; max-width: 560px; background: #09090b; color: #fafafa; padding: 32px;">
+          <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; margin-bottom: 28px;">
+            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#38bdf8; margin-right:10px;"></span>
+            <strong style="color:#fafafa">consignatarias.com</strong>
+            <span style="color:#38bdf8; margin: 0 8px;">·</span>
+            Mercado Decision Infrastructure
+          </div>
+
+          <h1 style="font-size: 36px; font-weight: 700; letter-spacing: -0.02em; color: #fafafa; margin: 0 0 4px 0;">El Corredor</h1>
+          <div style="font-size: 14px; color: #38bdf8; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 24px;">${safeEdition}</div>
+
+          <p style="font-size: 14px; line-height: 1.6; color: #d4d4d8; margin: 0 0 20px 0;">
+            Acá va tu copia del cierre mensual del mercado bovino argentino.
+            12 páginas con INMAG en USD reales, comparable interanual, 18 buckets del MAG,
+            lectura del ciclo y tesis del mes próximo.
+          </p>
+
+          <p style="margin: 28px 0;">
+            <a href="${safeUrl}" style="display: inline-block; background: #38bdf8; color: #09090b; padding: 14px 24px; text-decoration: none; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; font-size: 13px; border-radius: 2px;">
+              Descargar PDF →
+            </a>
+          </p>
+
+          <hr style="border: none; border-top: 1px solid #27272a; margin: 32px 0;">
+
+          <p style="font-size: 12px; line-height: 1.6; color: #a1a1aa; margin: 0 0 12px 0;">
+            La próxima edición sale el primer día hábil del mes que viene. Si no la querés recibir,
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color: #71717a;">desuscribite acá</a>.
+          </p>
+          <p style="font-size: 11px; color: #71717a; margin: 16px 0 0 0;">
+            Mesa de mercado · consignatarias.com
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}

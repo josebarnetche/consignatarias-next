@@ -1,0 +1,1119 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>$title_long</title>
+<style>
+  /* === Brand tokens (mirrors landing) === */
+  :root {
+    --bg:        #09090b;        /* zinc-950 */
+    --bg-elev:  #0c0a0a;
+    --panel:    #18181b;         /* zinc-900 */
+    --panel-2:  #27272a;         /* zinc-800 */
+    --line:     #27272a;
+    --line-d:   #18181b;
+    --text:     #fafafa;         /* zinc-50 */
+    --muted:    #a1a1aa;         /* zinc-400 */
+    --muted-2:  #71717a;         /* zinc-500 */
+    --accent:   #38bdf8;         /* sky-400 */
+    --accent-d: #0ea5e9;         /* sky-500 */
+    --pos:      #10b981;         /* emerald-500 */
+    --neg:      #f87171;         /* red-400 */
+    --warn:     #fbbf24;         /* amber-400 */
+    --mono:     'SF Mono','Cascadia Code','JetBrains Mono','Fira Code',ui-monospace,Menlo,Consolas,monospace;
+  }
+
+  @page { size: A4; margin: 0; }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #18181b; }
+  body {
+    font-family: var(--mono);
+    color: var(--text);
+    font-size: 11px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    padding: 12mm 14mm 14mm 14mm;
+    background: var(--bg);
+    margin: 0 auto;
+    page-break-after: always;
+    page-break-inside: avoid;
+    break-after: page;
+    break-inside: avoid;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  .page:last-child { page-break-after: auto; }
+  .chrome { padding-bottom: 4mm; margin-bottom: 5mm; }
+
+  /* === Page chrome === */
+  .chrome {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 6mm;
+    margin-bottom: 8mm;
+    font-size: 9px;
+    color: var(--muted-2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .chrome .brand { color: var(--text); font-weight: 600; }
+  .chrome .dot { color: var(--accent); margin: 0 6px; }
+
+  .footer {
+    position: absolute;
+    bottom: 8mm;
+    left: 14mm;
+    right: 14mm;
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    color: var(--muted-2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding-top: 3mm;
+    border-top: 1px solid var(--line-d);
+  }
+  .footer .right { color: var(--accent); }
+
+  /* === Cover === */
+  .cover {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 261mm;  /* 297 - 18*2 */
+  }
+  .cover-mark {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--muted-2);
+    text-transform: uppercase;
+  }
+  .cover-mark strong { color: var(--text); }
+  .cover-mark .pulse {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+    box-shadow: 0 0 0 3px rgba(56,189,248,.18);
+  }
+
+  .cover-title {
+    margin-top: auto;
+  }
+  .cover-eyebrow {
+    color: var(--accent);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 6mm;
+    font-weight: 600;
+  }
+  .cover-brand {
+    font-size: 84px;
+    line-height: 0.92;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    text-transform: uppercase;
+    margin-bottom: 4mm;
+  }
+  .cover-issue {
+    font-size: 28px;
+    line-height: 1;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  /* legacy month container kept for backwards compat (unused after v5 rebrand) */
+  .cover-month {
+    font-size: 96px;
+    line-height: 0.95;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--text);
+  }
+  .cover-month .year {
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .cover-month .sep { color: var(--accent); }
+
+  .cover-sub {
+    margin-top: 6mm;
+    color: var(--muted);
+    max-width: 130mm;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .cover-kpis {
+    margin-top: 18mm;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4mm;
+  }
+
+  .cover-meta {
+    margin-top: 14mm;
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--muted-2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-top: 1px solid var(--line);
+    padding-top: 4mm;
+  }
+  .cover-meta strong { color: var(--text); font-weight: 600; }
+
+  /* === KPI === */
+  .kpi {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 4mm;
+    border-radius: 2px;
+  }
+  .kpi-label {
+    font-size: 9px;
+    color: var(--muted-2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 2mm;
+  }
+  .kpi-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+  .kpi-sub {
+    margin-top: 1.5mm;
+    font-size: 9px;
+    color: var(--muted);
+  }
+
+  /* === Section === */
+  .section {
+    margin-bottom: 5mm;
+  }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 5mm;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 3mm;
+  }
+  .section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+  .section-title .num {
+    color: var(--accent);
+    margin-right: 8px;
+    font-weight: 500;
+  }
+  .section-meta {
+    font-size: 9px;
+    color: var(--muted-2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  h2 { font-size: 16px; margin: 0; color: var(--text); font-weight: 600; }
+
+  /* === Bullets / lead === */
+  .bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .bullets li {
+    position: relative;
+    padding: 3mm 0 3mm 8mm;
+    border-bottom: 1px solid var(--line-d);
+    font-size: 11.5px;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .bullets li:last-child { border-bottom: none; }
+  .bullets li::before {
+    content: "→";
+    color: var(--accent);
+    position: absolute;
+    left: 0;
+    top: 3mm;
+    font-weight: 600;
+  }
+  .bullets strong { color: var(--accent); font-weight: 600; }
+
+  /* === Table === */
+  table.data {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10.5px;
+  }
+  table.data th, table.data td {
+    padding: 2.4mm 2mm;
+    text-align: left;
+    border-bottom: 1px solid var(--line-d);
+  }
+  table.data th {
+    color: var(--muted-2);
+    font-weight: 500;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--line);
+  }
+  table.data td.num, table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  table.data tbody tr:hover { background: rgba(56,189,248,.04); }
+
+  .pos { color: var(--pos); }
+  .neg { color: var(--neg); }
+  .muted { color: var(--muted); font-size: 10px; }
+
+  /* === Categories === */
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3mm;
+  }
+  .cat-card {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 3mm;
+    border-radius: 2px;
+  }
+  .cat-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 3mm;
+  }
+  .cat-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .cat-sub {
+    font-size: 9px;
+    color: var(--muted-2);
+  }
+  .cat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .cat-value .unit {
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-left: 2px;
+  }
+  .cat-change {
+    margin-top: 1.5mm;
+    font-size: 10px;
+  }
+
+  /* === Province bars === */
+  .bars { padding: 0; }
+  .bar-row {
+    display: grid;
+    grid-template-columns: 35mm 1fr 12mm;
+    gap: 3mm;
+    align-items: center;
+    padding: 2mm 0;
+    font-size: 10px;
+    border-bottom: 1px solid var(--line-d);
+  }
+  .bar-row:last-child { border-bottom: none; }
+  .bar-label { color: var(--text); text-transform: uppercase; letter-spacing: 0.04em; font-size: 10px; }
+  .bar-track { background: var(--panel-2); height: 2.5mm; border-radius: 1px; overflow: hidden; }
+  .bar-fill { background: var(--accent); height: 100%; border-radius: 1px; }
+  .bar-val { color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* === Macro row (3 col) === */
+  .macro-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3mm;
+  }
+
+  /* === Chart container === */
+  .chart-box {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 4mm;
+    border-radius: 2px;
+  }
+
+  /* === Notes & methodology === */
+  .note {
+    margin-top: 4mm;
+    padding: 3mm;
+    background: var(--panel);
+    border-left: 2px solid var(--accent);
+    font-size: 9.5px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .methodology p { margin: 2mm 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
+  .methodology ul { padding-left: 4mm; color: var(--muted); font-size: 10px; }
+  .methodology li { margin: 1mm 0; }
+
+  .disclaimer {
+    margin-top: 8mm;
+    padding: 4mm;
+    border: 1px dashed var(--line);
+    color: var(--muted-2);
+    font-size: 9px;
+    line-height: 1.55;
+  }
+
+  /* === Two-col layout (used in macro page) === */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 6mm;
+  }
+
+  /* === Bucket-specific table === */
+  table.data.buckets th,
+  table.data.buckets td {
+    font-size: 8px;
+    padding: 1.1mm 0.8mm;
+    line-height: 1.25;
+  }
+  table.data.buckets td.bucket-name {
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: 0.01em;
+    font-size: 8.5px;
+    max-width: 40mm;
+  }
+  table.data.buckets th:first-child,
+  table.data.buckets td:first-child {
+    width: 40mm;
+  }
+  table.data .unit-sm {
+    font-size: 8px;
+    color: var(--muted-2);
+    margin-left: 1px;
+  }
+
+  /* === Editorial copy === */
+  .editorial p {
+    font-size: 11.5px;
+    line-height: 1.65;
+    color: var(--text);
+    margin: 0 0 4mm 0;
+  }
+  .editorial p strong { color: var(--accent); font-weight: 600; }
+  .editorial p em { color: var(--muted); font-style: italic; font-size: 10px; }
+  .editorial.compact p { font-size: 10.5px; line-height: 1.55; margin: 0 0 3mm 0; }
+  .vol-line {
+    font-size: 9.5px;
+    color: var(--muted);
+    margin-top: 3mm;
+    line-height: 1.55;
+    border-top: 1px dashed var(--line);
+    padding-top: 3mm;
+  }
+
+  /* === Disclosure callout (FAUBA citation) === */
+  .disclosure {
+    border-left: 3px solid var(--warn);
+    background: rgba(251, 191, 36, 0.04);
+    padding: 4mm;
+    margin: 4mm 0;
+    font-size: 10px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .disclosure strong { color: var(--text); }
+  .disclosure cite {
+    color: var(--muted-2);
+    font-style: normal;
+    font-size: 9px;
+    display: block;
+    margin-top: 2mm;
+  }
+
+  /* === Cite inline === */
+  cite.inline {
+    color: var(--muted-2);
+    font-style: normal;
+    font-size: 9px;
+  }
+
+  /* === Bibliography === */
+  .biblio {
+    font-size: 10px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .biblio dt {
+    color: var(--text);
+    font-weight: 600;
+    margin-top: 3mm;
+  }
+  .biblio dd {
+    margin-left: 0;
+    color: var(--muted);
+    margin-bottom: 1mm;
+  }
+
+  /* === Comisiones table === */
+  table.commission { font-size: 10px; }
+  table.commission .channel { font-weight: 600; color: var(--text); }
+
+  /* === Outlier flag === */
+  .outlier-mark {
+    color: var(--warn);
+    font-weight: 700;
+    margin-left: 2px;
+  }
+
+  /* === Subhead === */
+  .subhead {
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 4mm 0 2mm 0;
+    font-weight: 600;
+  }
+
+  /* === Perfil list (recommendations by buyer profile) === */
+  dl.perfil-list {
+    margin: 0;
+    padding: 0;
+  }
+  dl.perfil-list dt {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 10.5px;
+    margin-top: 3mm;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  dl.perfil-list dd {
+    margin-left: 0;
+    color: var(--text);
+    font-size: 10px;
+    line-height: 1.55;
+    margin-top: 1mm;
+    margin-bottom: 0;
+  }
+
+  /* === Sign-off (firma humana) === */
+  .signoff {
+    margin-top: 4mm;
+    padding-top: 3mm;
+    border-top: 1px solid var(--accent);
+    font-size: 10px;
+    color: var(--text);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  /* === Net-back box === */
+  .netback-box {
+    border: 1px solid var(--accent);
+    background: rgba(56, 189, 248, 0.04);
+    border-radius: 2px;
+    padding: 4mm;
+    margin: 3mm 0;
+  }
+  .netback-head {
+    font-size: 10px;
+    color: var(--text);
+    margin-bottom: 2mm;
+  }
+  .netback-head strong { color: var(--accent); }
+
+  /* === Composition chart container === */
+  .composition-box {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: 4mm;
+    border-radius: 2px;
+  }
+
+  /* === Margen de invernada strip === */
+  .invernada-strip {
+    margin-top: 3mm;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    border-radius: 2px;
+    padding: 3mm;
+  }
+  .invernada-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3mm;
+    align-items: end;
+  }
+  .invernada-label {
+    font-size: 9px;
+    color: var(--muted-2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .invernada-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-top: 1mm;
+  }
+  .invernada-sub {
+    font-size: 9px;
+    color: var(--muted);
+    margin-top: 1mm;
+  }
+
+  /* === Two-column explainer (compact) === */
+  .two-col-explain {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6mm;
+  }
+  .glosario dt {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 10px;
+    margin-top: 2mm;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .glosario dd {
+    margin-left: 0;
+    color: var(--text);
+    font-size: 9.5px;
+    line-height: 1.5;
+    margin-bottom: 0;
+  }
+
+  .panel {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    border-radius: 2px;
+    padding: 4mm;
+  }
+  .panel-head {
+    font-size: 9px;
+    color: var(--muted-2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 3mm;
+    padding-bottom: 2mm;
+    border-bottom: 1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+
+<!-- ========================= PAGE 1 — COVER ========================= -->
+<section class="page cover">
+  <div class="cover-mark">
+    <span class="pulse"></span>
+    <strong>consignatarias.com</strong>
+    <span style="margin: 0 8px; color: var(--accent);">·</span>
+    Mercado Decision Infrastructure
+  </div>
+
+  <div class="cover-title">
+    <div class="cover-eyebrow">Mesa de hacienda argentina · cierre mensual</div>
+    <div class="cover-brand">EL CORREDOR</div>
+    <div class="cover-issue">$month_name_upper · $year</div>
+    <p class="cover-sub">
+      El cierre mensual del mercado bovino argentino. INMAG diario y comparable interanual en USD reales,
+      18 buckets reales del MAG, plaza y faena nacional, lectura del ciclo, tesis del mes próximo.
+      Mesa de research de consignatarias.com · fuentes oficiales (MAG, MAGYP, Sec. Agricultura).
+    </p>
+
+    <div class="cover-kpis">
+      $kpi_row
+    </div>
+
+    <div class="cover-meta">
+      <div><strong>$edition</strong></div>
+      <div>Mesa de mercado · cierre $today</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= PAGE 2 — RESUMEN EJECUTIVO + LECTURA ========================= -->
+<section class="page">
+  <div class="chrome">
+    <div><span class="brand">consignatarias.com</span><span class="dot">·</span>El Corredor<span class="dot" style="margin: 0 6px">·</span><span style="color: var(--muted)">Resumen ejecutivo</span></div>
+    <div>$edition</div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">01</span>Resumen ejecutivo</div>
+      <div class="section-meta">$open_date — $close_date</div>
+    </div>
+    <div class="editorial compact">
+      $lectura_editor
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">02</span>Datos del mes</div>
+      <div class="section-meta">cierre</div>
+    </div>
+    $summary_bullets
+    <p class="vol-line">$vol_line</p>
+  </div>
+
+  <div class="disclosure">
+    <strong>Composición del mercado argentino de hacienda en pie.</strong>
+    El MAG (ex-Liniers, hoy Cañuelas) representa el <strong>~12%</strong> del volumen comercial
+    bovino argentino. <strong>71%</strong> opera por venta directa sin price discovery público;
+    remates-feria ~9%; al gancho ~2%. Las cifras de este informe son referencia del segmento
+    concentrado, no medida total del mercado.
+    <cite>FAUBA, "Comercialización de Hacienda y Carnes" — Gil/Demarco/Fornieles, 2018.</cite>
+  </div>
+
+  <div class="footer">
+    <div>El Corredor · consignatarias.com</div>
+    <div class="right">$month_name_upper $year · 02</div>
+  </div>
+</section>
+
+<!-- ========================= PAGE 4 — INMAG ========================= -->
+<section class="page">
+  <div class="chrome">
+    <div><span class="brand">consignatarias.com</span><span class="dot">·</span>El Corredor<span class="dot" style="margin: 0 6px">·</span><span style="color: var(--muted)">Índice Novillo MAG</span></div>
+    <div>$edition</div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">03</span>INMAG · evolución diaria</div>
+      <div class="section-meta">$/kg vivo · cierre diario MAG</div>
+    </div>
+    <div class="chart-box">
+      $inmag_chart
+    </div>
+    <div class="note">
+      El INMAG (Índice Novillo del Mercado Agroganadero) es el promedio ponderado del precio del novillo
+      tipo exportación operado en el predio de Cañuelas, en cada jornada hábil. Es la referencia primaria
+      para arrendamientos rurales y contratos forward del mercado argentino.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">04</span>Detalle diario</div>
+      <div class="section-meta">$open_date — $close_date</div>
+    </div>
+    $inmag_table
+  </div>
+
+  <div class="footer">
+    <div>Fuente: mercadoagroganadero.com.ar (haciinfo000011)</div>
+    <div class="right">$month_name_upper $year · 04</div>
+  </div>
+</section>
+
+<!-- ========================= PAGE 5 — INMAG EN USD REALES + INTERANUAL ========================= -->
+<section class="page">
+  <div class="chrome">
+    <div><span class="brand">consignatarias.com</span><span class="dot">·</span>El Corredor<span class="dot" style="margin: 0 6px">·</span><span style="color: var(--muted)">Comparable interanual / USD reales</span></div>
+    <div>$edition</div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">05</span>INMAG en USD reales</div>
+      <div class="section-meta">cierre del mes en moneda extranjera</div>
+    </div>
+    $usd_kpi_strip
+
+    <h3 class="subhead" style="margin-top: 5mm;">Trailing 12 meses · INMAG en USD oficial</h3>
+    <div class="chart-box">
+      $inmag_usd_chart
+    </div>
+
+    <div class="note">
+      Conversión calculada con el promedio mensual del USD oficial (fuente: argentinadatos.com,
+      serie completa desde 2011). El gráfico muestra cómo evolucionó el precio del kilo vivo
+      en moneda dura — es la métrica más limpia para evaluar el poder real del kilo, despejada
+      de la inflación argentina y del deslizamiento del oficial.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">06</span>Comparable interanual</div>
+      <div class="section-meta">$month_name_upper vs. mismo mes año previo</div>
+    </div>
+    $interanual_table
+    <div class="note">
+      <strong style="color:var(--text)">Cómo leer.</strong> La variación nominal en pesos
+      contiene la inflación argentina y el deslizamiento del tipo de cambio. Para una
+      lectura limpia del precio real del kilo de novillo, el INMAG en USD oficial es la
+      mejor referencia disponible públicamente. Una variación de USD reales superior
+      a la nominal en pesos implicaría una mejora en términos de poder adquisitivo;
+      inferior, lo opuesto.
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Fuentes: MAG, argentinadatos.com</div>
+    <div class="right">$month_name_upper $year · 04</div>
+  </div>
+</section>
+
+<!-- ========================= PAGE 6.5 — LO QUE EL INMAG NO VE ========================= -->
+<section class="page">
+  <div class="chrome">
+    <div><span class="brand">consignatarias.com</span><span class="dot">·</span>El Corredor<span class="dot" style="margin: 0 6px">·</span><span style="color: var(--muted)">El 71% opaco</span></div>
+    <div>$edition</div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">07</span>Lo que el INMAG no ve · marco institucional</div>
+      <div class="section-meta">composición real del mercado bovino argentino</div>
+    </div>
+
+    <div class="composition-box">
+      $market_comp_chart
+    </div>
+
+    <div class="editorial compact" style="margin-top: 3mm;">
+      <p>
+        El INMAG opera sobre apenas el <strong>12%</strong> del volumen comercial bovino. El
+        <strong>71%</strong> opera por venta directa productor↔matarife o
+        productor↔frigorífico, sin price discovery público.
+      </p>
+      <p>
+        Iriarte (CACG, 2008) documenta que la venta directa cierra típicamente con un
+        <strong>premium de 3 a 5%</strong> sobre el precio MAG equivalente — premium que
+        captura el productor a cambio de plazo de cobro extendido (30-90 días vs. 7-12 en MAG)
+        y ausencia de garantía pública. Diez (UNS, 2017) describe los circuitos regionales
+        como espejos retrasados del MAG: precio de Cañuelas con lag de 7-14 días y descuento
+        por flete de <strong>4 a 9%</strong> según distancia al mercado central.
+      </p>
+      <p>
+        Las cifras de este informe sintetizan el segmento concentrado pero <strong>no son el
+        promedio del mercado total</strong>. Para el productor de venta directa, la
+        referencia operativa es INMAG ajustado por circuito regional y plazo. Para el comprador
+        con presencia nacional, el spread MAG↔directa es la oportunidad de arbitraje.
+      </p>
+    </div>
+
+    <div class="disclosure" style="border-color: var(--accent); background: rgba(56,189,248,0.04); margin-top: 3mm;">
+      <strong>Próxima edición</strong> — Comenzamos a acumular la serie de remitencia por
+      consignataria desde mayo (uno de los tres datasets que <em>valen plata</em> según
+      el marco conceptual). En 90 días podremos reportar top remitentes, concentración
+      geográfica de oferta y señales anticipatorias por circuito regional.
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Marco conceptual: FAUBA 2018 · CACG (Iriarte) 2008 · UNS (Diez) 2017</div>
+    <div class="right">$month_name_upper $year · 05</div>
+  </div>
+</section>
+
+<!-- ========================= PAGE 7 — BUCKETS REALES (18 SUBCATEGORÍAS) ========================= -->
+<section class="page">
+  <div class="chrome">
+    <div><span class="brand">consignatarias.com</span><span class="dot">·</span>El Corredor<span class="dot" style="margin: 0 6px">·</span><span style="color: var(--muted)">Buckets reales del MAG</span></div>
+    <div>$edition</div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">08</span>Categorías reales — 18 subcategorías</div>
+      <div class="section-meta">precios MIN / MAX / Prom. / Mediana del mes</div>
+    </div>
+
+    $buckets_kpis
+
+    <div class="note" style="margin-top: 4mm;">
+      El INMAG es UN índice — un agregado del novillo "tipo exportación". El mercado
+      real opera <strong style="color:var(--text)">18 subcategorías</strong> con
+      precios y dinámicas propias, segmentadas por sexo, edad, peso y destino comercial.
+      La tabla siguiente muestra los buckets que efectivamente operaron en el mes,
+      con el precio mínimo, máximo, promedio y mediana de cada uno.
+    </div>
+
+    $buckets_table
+
+    <div class="note">
+      <strong style="color:var(--text)">Spread.</strong> El ancho entre mínimo y máximo
+      como porcentaje del promedio. Un spread elevado indica heterogeneidad real dentro
+      del bucket (animales con muy distinta calidad/condición). Un spread bajo,
+      mayor uniformidad. Decisivo para vendedores: si su animal está cerca del máximo,
+      el "promedio del bucket" subestima su valor.
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Fuente: MAG haciinfo000502 (precios definitivos por categoría, RESOL-2018-32-APN-SGA#MPYT)</div>
+    <div class="right">$month_name_upper $year · 05</div>
+  </div>
+</section>
+
+<!-- ========================= PAGE 7 — MACRO + FAENA + MARGEN INVERNADA ========================= -->
+<section class="page">
+  <div class="chrome">
+    <div><span class="brand">consignatarias.com</span><span class="dot">·</span>El Corredor<span class="dot" style="margin: 0 6px">·</span><span style="color: var(--muted)">Macro & faena</span></div>
+    <div>$edition</div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">09</span>Divisas y commodities · margen de invernada</div>
+      <div class="section-meta">USD · maíz · ratio novillo/maíz</div>
+    </div>
+    <div class="macro-row">
+      $macro_cards
+    </div>
+    $invernada_html
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">10</span>Faena nacional bovina mensual</div>
+      <div class="section-meta">datos.gob.ar · serie mensual</div>
+    </div>
+    <div class="macro-row">
+      $faena_html
+    </div>
+    <div class="note">$faena_note</div>
+  </div>
+
+  <div class="footer">
+    <div>Fuentes: dolarapi.com, MAGYP FOB, Sec. Agricultura</div>
+    <div class="right">$month_name_upper $year · 07</div>
+  </div>
+</section>
+
+<!-- ========================= PAGE 7 — PLAZA + CALENDARIO ========================= -->
+<section class="page">
+  <div class="chrome">
+    <div><span class="brand">consignatarias.com</span><span class="dot">·</span>El Corredor<span class="dot" style="margin: 0 6px">·</span><span style="color: var(--muted)">Plaza & calendario</span></div>
+    <div>$edition</div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">11</span>Distribución por provincia</div>
+      <div class="section-meta">$remates_total remates · $provinces_count provincias</div>
+    </div>
+    $province_bars
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">12</span>Top remates del mes (con volumen reportado)</div>
+      <div class="section-meta">cabezas declaradas en convocatoria</div>
+    </div>
+    $top_remates_table
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">13</span>Calendario · $next_month_name</div>
+      <div class="section-meta">próximos remates relevantes</div>
+    </div>
+    $upcoming_remates_table
+  </div>
+
+  <div class="footer">
+    <div>Fuentes: CACG, consignatarias, MAG</div>
+    <div class="right">$month_name_upper $year · 07</div>
+  </div>
+</section>
+
+<!-- ========================= PAGE 9 — EXPLICADOR + GLOSARIO ========================= -->
+<section class="page">
+  <div class="chrome">
+    <div><span class="brand">consignatarias.com</span><span class="dot">·</span>El Corredor<span class="dot" style="margin: 0 6px">·</span><span style="color: var(--muted)">Explicador del mes & glosario</span></div>
+    <div>$edition</div>
+  </div>
+
+  <div class="two-col-explain">
+    <div class="section" style="margin: 0;">
+      <div class="section-head">
+        <div class="section-title"><span class="num">14</span>Cómo se calcula el INMAG</div>
+      </div>
+      <div class="editorial compact">
+        <p>
+          El <strong>INMAG</strong> es el precio promedio ponderado del novillo tipo exportación
+          operado en el predio del Mercado Agroganadero S.A. (Cañuelas), en cada jornada hábil.
+          Reemplazó al "Liniers" tras el cierre del predio en 2018.
+        </p>
+        <p>
+          <strong>Fórmula:</strong> Σ(precio_kg × cabezas) / Σ(cabezas), solo operaciones de
+          novillo exportación cerradas en rueda. Se publica en mercadoagroganadero.com.ar
+          (haciinfo000011) y oficialmente en el Boletín del MAG.
+        </p>
+        <p>
+          <strong>Limitaciones.</strong> Es la referencia primaria para arrendamientos
+          (RESOL-2018-32) y contratos forward. Pero solo refleja UNA categoría (novillo
+          exportador) sobre el 12% del mercado <cite class="inline">(FAUBA 2018)</cite>.
+          Para decisión operativa: complementar con buckets (pág. 06) y referencias regionales.
+        </p>
+        <p style="font-size: 9.5px; color: var(--muted-2);">
+          <em>Próxima edición — Peso vivo vs. al gancho: fórmulas y rendimientos por categoría.</em>
+        </p>
+      </div>
+    </div>
+
+    <div class="section" style="margin: 0;">
+      <div class="section-head">
+        <div class="section-title"><span class="num">15</span>Glosario operativo</div>
+      </div>
+      <dl class="glosario">
+        <dt>Spread</dt>
+        <dd>Ancho entre el precio mínimo y máximo de un bucket, expresado como % del promedio. Mide la heterogeneidad real dentro de la categoría.</dd>
+        <dt>Esp. Joven (+430 / h 430)</dt>
+        <dd>Tipificación oficial MAG: animal de exportación joven, peso vivo &gt; 430 kg ("+430") o ≤ 430 kg ("h 430"). Es el bucket que define el INMAG.</dd>
+        <dt>Al rinde</dt>
+        <dd>Modalidad mixta: hacienda enviada a remate físico con liquidación post-faena ajustada por rendimiento real al gancho.</dd>
+        <dt>Al gancho</dt>
+        <dd>Venta directa al frigorífico con precio cerrado en kg de res (post-faena), no en kg vivo. Comisión típicamente incluida en el precio.</dd>
+        <dt>Net-back</dt>
+        <dd>Precio neto que efectivamente le queda al productor después de comisiones, fletes, tasas y gastos. Comparable real entre canales.</dd>
+        <dt>Brecha cambiaria</dt>
+        <dd>Diferencia % entre USD blue (informal) y USD oficial. Refleja expectativa de devaluación + costo de capital de quien opera en USD.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Mini-explainer rotativo · edición 1 de 12 · glosario operativo</div>
+    <div class="right">$month_name_upper $year · 08</div>
+  </div>
+</section>
+
+<!-- ========================= PAGE 9 — COMISIONES POR CANAL ========================= -->
+<section class="page">
+  <div class="chrome">
+    <div><span class="brand">consignatarias.com</span><span class="dot">·</span>El Corredor<span class="dot" style="margin: 0 6px">·</span><span style="color: var(--muted)">Tabla de referencia · Comisiones</span></div>
+    <div>$edition</div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">16</span>Net-back por canal · ejemplo numérico</div>
+      <div class="section-meta">simulación con cierre INMAG del mes</div>
+    </div>
+
+    $netback_html
+
+    <div class="note">
+      <strong style="color:var(--text)">Cómo leer el cuadro.</strong> Las comisiones son
+      promedios del mercado argentino — operadores grandes y recurrentes negocian habitualmente
+      la banda baja. La tabla muestra el <strong>net-back nominal sin descontar costo
+      financiero del plazo</strong>: en venta directa el productor cobra a 30-90 días, lo que
+      a tasa de descuento de 4% mensual equivale a perder 4 a 12 puntos sobre el net-back
+      bruto. La elección del canal no es trivial — depende del volumen, calidad del lote,
+      necesidad de caja y tolerancia al riesgo de incobrabilidad.
+    </div>
+
+    <div class="note">
+      <strong style="color:var(--text)">Modalidades especiales.</strong> "Al rinde" combina
+      MAG físico con liquidación post-faena (ajuste por rendimiento real). "Al gancho" es
+      venta directa al frigorífico con precio cerrado en kg de res — comisión típicamente
+      incluida en el precio. Cita: Iriarte (CACG) 2008, capítulo 4.
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Fuente: relevamiento del mercado argentino · referencia general no vinculante</div>
+    <div class="right">$month_name_upper $year · 09</div>
+  </div>
+</section>
+
+<!-- ========================= PAGE 11 — TESIS DEL MES PRÓXIMO ========================= -->
+<section class="page">
+  <div class="chrome">
+    <div><span class="brand">consignatarias.com</span><span class="dot">·</span>El Corredor<span class="dot" style="margin: 0 6px">·</span><span style="color: var(--muted)">$next_month_label · qué mirar</span></div>
+    <div>$edition</div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">17</span>Tesis del mes · $next_month_label</div>
+      <div class="section-meta">forward-looking · escenarios y catalizadores</div>
+    </div>
+
+    $tesis_block
+  </div>
+
+  <div class="footer">
+    <div>Equipo de consignatarias.com · research mesa de mercado</div>
+    <div class="right">$month_name_upper $year · 11</div>
+  </div>
+</section>
+
+<!-- ========================= PAGE 12 — METODOLOGÍA ========================= -->
+<section class="page">
+  <div class="chrome">
+    <div><span class="brand">consignatarias.com</span><span class="dot">·</span>El Corredor<span class="dot" style="margin: 0 6px">·</span><span style="color: var(--muted)">Metodología & contacto</span></div>
+    <div>$edition</div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="num">18</span>Metodología & fuentes de datos</div>
+      <div class="section-meta">composición del informe</div>
+    </div>
+    <div class="methodology">
+      <ul>
+        <li><strong>INMAG diario</strong> — mercadoagroganadero.com.ar (haciinfo000011), cierre por jornada hábil del MAG (Cañuelas).</li>
+        <li><strong>Buckets reales (18 subcategorías)</strong> — mercadoagroganadero.com.ar (haciinfo000502), RESOL-2018-32-APN-SGA#MPYT.</li>
+        <li><strong>USD oficial / blue</strong> — api.argentinadatos.com (serie histórica completa desde 2011, promedio mensual del venta).</li>
+        <li><strong>Faena nacional</strong> — apis.datos.gob.ar, serie 40.3_VC_0_M_15.</li>
+        <li><strong>Calendario de remates</strong> — CACG API + sitios de consignatarias + MAG.</li>
+        <li><strong>Maíz FOB</strong> — MAGYP.</li>
+      </ul>
+    </div>
+
+    <div class="disclaimer">
+      <strong style="color:var(--muted)">Disclaimer.</strong> El presente informe tiene fines informativos y no constituye
+      recomendación comercial, financiera, ni de inversión. Las cifras provienen de fuentes oficiales y públicas
+      a la fecha de cierre indicada; pueden estar sujetas a revisiones posteriores por parte de los emisores.
+      Los rangos de comisiones son referencia general no vinculante. El uso del informe es bajo responsabilidad
+      del lector.
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Equipo de consignatarias.com · contacto@consignatarias.com.ar</div>
+    <div class="right">$month_name_upper $year · 10</div>
+  </div>
+</section>
+
+</body>
+</html>
