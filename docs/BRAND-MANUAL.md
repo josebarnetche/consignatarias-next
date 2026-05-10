@@ -137,7 +137,7 @@ El Soberano da orden a un dominio. Su poder es la organización. Su debilidad es
 Si la marca fuera una persona:
 
 > **Mesa de mercado.** Un equipo pequeño de research que opera detrás del producto.
-> Lee a Iriarte 2008 y a Diez 2017 con el mismo gusto que mira el cierre del INMAG.
+> Lee a Iriarte 2008 y a Diez 2020 con el mismo gusto que mira el cierre del INMAG.
 > Cuando responde, lo hace con dato + fuente + interpretación, en ese orden.
 > No tiene predilecciones políticas visibles ni opina de coyuntura macro fuera del mercado bovino.
 > No hace épica del founder ni vende milagros.
@@ -154,7 +154,7 @@ Cuando dudes en el copy: ¿lo escribiría la mesa?
 1. **Datos primero, interpretación después.** Nunca al revés.
 2. **Frases cortas con números.** El número es la unidad mínima.
 3. **Sin épica.** Ni fundadora ni del usuario.
-4. **Cita la fuente.** Aunque sea inline (`FAUBA 2018`).
+4. **Cita la fuente.** Aunque sea inline (`FCV-UBA 2018`).
 5. **Honestidad metodológica.** Las limitaciones se nombran.
 6. **Argentina sin folklore.** Decimos "INMAG", no "el indio". Decimos "novillo", no "tacuara".
 
@@ -164,7 +164,7 @@ Cuando dudes en el copy: ¿lo escribiría la mesa?
 |---|---|
 | "El INMAG cerró $4.275, +1,8%" | "El precio del ganado se mantuvo firme" |
 | "Faena -10,7% interanual" | "La faena viene en caída pronunciada" |
-| "según FAUBA 2018" | "los expertos dicen" |
+| "según FCV-UBA 2018" | "los expertos dicen" |
 | "premium del 12,9% sobre el novillo terminado" | "el novillito está caro" |
 | "no son predicciones puntuales" | "esperamos que el INMAG..." |
 | "consignatarias.com.ar" en minúsculas | "Consignatarias.com.ar" en mayúscula |

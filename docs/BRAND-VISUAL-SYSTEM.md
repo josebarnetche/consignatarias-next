@@ -58,13 +58,13 @@ PROHIBIDO          Sans-serif, gradientes vistosos, emojis, fotos de campo, gauc
 | `--accent-bright` | `#0ea5e9` | `14, 165, 233` | Active state en CTAs (al hacer click) |
 | `--positive` | `#10b981` | `16, 185, 129` | "Sube" / "en vivo" / "OK" / variaciones positivas |
 | `--negative` | `#f87171` | `248, 113, 113` | "Baja" / "error" / variaciones negativas |
-| `--warn` | `#fbbf24` | `251, 191, 36` | Callouts FAUBA, advertencias institucionales |
+| `--warn` | `#fbbf24` | `251, 191, 36` | Callouts FCV-UBA, advertencias institucionales |
 
 ### Reglas duras de color
 
 1. **Sky-400 es el único color de marca.** No agregar púrpura, naranja, magenta, cyan, azul oscuro.
 2. **Emerald solo para "positivo / en vivo".** Nunca como fondo de un panel.
-3. **Amarillo (warn) solo en callouts académicos.** Una caja amarilla sutil = "esto es contexto crítico" (típicamente cita FAUBA o disclosure metodológico).
+3. **Amarillo (warn) solo en callouts académicos.** Una caja amarilla sutil = "esto es contexto crítico" (típicamente cita FCV-UBA o disclosure metodológico).
 4. **El fondo SIEMPRE es zinc-950.** Light theme NO existe en la marca. Si una pieza necesita fondo claro, replanteá si está alineada con la marca.
 5. **Sin gradientes vistosos.** Solo gradientes muy sutiles:
    - Áreas bajo curva en gráficos: `linear-gradient(180deg, sky-400 18% → 0%)`
@@ -311,7 +311,7 @@ Spec:
   Padding: 8-10px vertical, 8px horizontal
 ```
 
-### Callout institucional (FAUBA-style)
+### Callout institucional (FCV-UBA-style)
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -321,7 +321,7 @@ Spec:
 │ comercial bovino argentino. 71% opera por venta     │
 │ directa sin price discovery público.                │
 │                                                     │
-│ Fuente: FAUBA, Gil/Demarco/Fornieles, 2018.         │
+│ Fuente: FCV-UBA, Gil/Fornieles/Demarco, 2018.         │
 └─────────────────────────────────────────────────────┘
 
 Spec:

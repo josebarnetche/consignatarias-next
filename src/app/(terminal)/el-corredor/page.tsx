@@ -38,7 +38,7 @@ const inmag = marketData.inmag
 const closeFmt = `$${Math.round(inmag.current).toLocaleString('es-AR')}`
 
 const INCLUYE = [
-  { num: '01', title: 'Resumen ejecutivo', body: 'Lectura del editor con datos duros + disclosure FAUBA del 71% opaco' },
+  { num: '01', title: 'Resumen ejecutivo', body: 'Lectura del editor con datos duros + disclosure FCV-UBA del 71% opaco' },
   { num: '02', title: 'INMAG diario', body: 'Chart del mes + tabla con cierre por jornada hábil + volumen' },
   { num: '03', title: 'INMAG en USD reales', body: 'Comparable interanual ARS vs. USD oficial vs. blue + chart trailing 12m' },
   { num: '04', title: 'Lo que el INMAG no ve', body: 'Composición real del mercado · 71% opaco · cita Iriarte/Diez' },
@@ -63,7 +63,7 @@ const FAQ = [
   },
   {
     q: '¿Quién lo escribe?',
-    a: 'La mesa de mercado de consignatarias.com — equipo de research detrás del observatorio del mercado bovino argentino. Las cifras son de fuentes oficiales (MAG, MAGYP, Sec. Agricultura) y la interpretación está respaldada por bibliografía citada (FAUBA 2018, Iriarte/CACG 2008, Diez/UNS 2017).',
+    a: 'La mesa de mercado de consignatarias.com — equipo de research detrás del observatorio del mercado bovino argentino. Las cifras son de fuentes oficiales (MAG, MAGYP, Sec. Agricultura) y la interpretación está respaldada por bibliografía citada (FCV-UBA 2018, Iriarte/CACG 2008, Diez/UNS 2020).',
   },
   {
     q: '¿Es un boletín o un reporte único?',
@@ -196,9 +196,9 @@ export default function ElCorredorLanding() {
                 cita fuente y método.
               </p>
               <p className="text-zinc-400 font-mono text-sm leading-relaxed">
-                Bibliografía base: FAUBA — Comercialización de Hacienda y Carnes (Gil/Demarco/Fornieles, 2018).
-                CACG — Comercialización de Ganados y Carnes (Iriarte, 2008). UNS — Circuitos de comercialización
-                de hacienda en Argentina (Diez, 2017). Resoluciones MAGYP / RESOL-2018-32 / serie 40.3_VC_0_M_15.
+                Bibliografía base: FCV-UBA — Comercialización de Hacienda Vacuna (Gil/Fornieles/Demarco, 2018).
+                CACG — Comercialización de Ganados y Carnes (Iriarte, 2008). UNS — Costos de transacción en la
+                comercialización del SOB (Diez, 2020). Resoluciones MAGYP / RESOL-2018-32 / serie 40.3_VC_0_M_15.
               </p>
             </div>
 

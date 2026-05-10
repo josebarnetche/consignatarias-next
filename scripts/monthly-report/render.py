@@ -998,7 +998,7 @@ def tesis_html(t: dict) -> str:
 <div class="signoff">
   Mesa de mercado · consignatarias.com · cierre {date.today().strftime('%d/%m/%Y')}<br/>
   <span style="color: var(--muted-2); font-size: 9px;">Este reporte no constituye recomendación de inversión. Las reglas operativas son lecturas del equipo
-  basadas en bibliografía citada (FAUBA 2018, Iriarte/CACG 2008, Diez/UNS 2017) y datos públicos del MAG/Sec. Agricultura.</span>
+  basadas en bibliografía citada (FCV-UBA 2018, Iriarte/CACG 2008, Diez/UNS 2020) y datos públicos del MAG/Sec. Agricultura.</span>
 </div>
 '''
 

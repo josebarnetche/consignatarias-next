@@ -47,7 +47,7 @@ Drafts listos para postear en redes el día del lanzamiento.
 
 > 3/ La pieza central: el INMAG **+54% interanual en pesos** vs **+24,9% en USD oficial reales**. Los 29 pp de diferencia son apreciación del dólar oficial. Lectura limpia, sin inflación contaminando.
 
-> 4/ Datos oficiales (MAG, MAGYP, Sec. Agricultura). Bibliografía citada (FAUBA 2018, Iriarte/CACG 2008, Diez/UNS 2017). Próxima edición: cierre de mayo, primer hábil de junio.
+> 4/ Datos oficiales (MAG, MAGYP, Sec. Agricultura). Bibliografía citada (FCV-UBA 2018, Iriarte/CACG 2008, Diez/UNS 2020). Próxima edición: cierre de mayo, primer hábil de junio.
 
 ---
 
@@ -65,7 +65,7 @@ Drafts listos para postear en redes el día del lanzamiento.
 >
 > Es 12 páginas. Es PDF. Es gratis. Mesa de hacienda argentina detrás del observatorio de consignatarias.com.ar.
 >
-> Datos oficiales del MAG, MAGYP y Sec. Agricultura. Bibliografía citada (FAUBA 2018, Iriarte/CACG 2008, Diez/UNS 2017). Metodología abierta.
+> Datos oficiales del MAG, MAGYP y Sec. Agricultura. Bibliografía citada (FCV-UBA 2018, Iriarte/CACG 2008, Diez/UNS 2020). Metodología abierta.
 >
 > Si querés recibirlo cada mes, te suscribís en un click:
 > https://www.consignatarias.com.ar/el-corredor
