@@ -39,7 +39,8 @@ def fmt_pct(x: float, plus: bool = True) -> str:
     return f"{sign}{x:.1f}%".replace(".", ",")
 
 
-CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+_MAC_CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+CHROME = os.environ.get("CHROME_BIN") or (_MAC_CHROME if Path(_MAC_CHROME).exists() else "google-chrome")
 
 # Common stylesheet for product images
 COMMON_STYLE = """

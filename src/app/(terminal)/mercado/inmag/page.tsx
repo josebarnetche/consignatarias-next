@@ -5,6 +5,7 @@ import marketData from '@/lib/data/market-prices.json'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
+import { ElCorredorCTA } from '@/components/ElCorredorCTA'
 import { AnimatedPrice } from '@/components/AnimatedPrice'
 
 const inmag = marketData.inmag
@@ -183,9 +184,14 @@ export default function InmagPage() {
           </Suspense>
         </section>
 
+        {/* El Corredor — lead magnet del cierre mensual */}
+        <section className="max-w-6xl mx-auto px-4 pb-12">
+          <ElCorredorCTA variant="card" context="inmag" />
+        </section>
+
         {/* PRO CTA */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
-          <ProUpgradePrompt 
+          <ProUpgradePrompt
             benefit="Productores revisan precios acá antes de vender. Que vean tus remates."
             context="inmag"
             variant="card"

@@ -734,6 +734,86 @@ export default function LandingPage() {
         <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
 
         {/* ============================================================ */}
+        {/*  EL CORREDOR — LEAD MAGNET                                    */}
+        {/* ============================================================ */}
+        <section id="el-corredor" className="max-w-7xl mx-auto px-6 pt-24 pb-24">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-12 items-center">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inset-0 rounded-full bg-sky-400/40 animate-ping" />
+                  <span className="relative rounded-full h-2 w-2 bg-sky-400" />
+                </span>
+                <span className="text-xs font-mono uppercase tracking-[0.18em] text-sky-400 font-semibold">
+                  Mesa de hacienda · cierre mensual
+                </span>
+              </div>
+
+              <h2 className="font-mono font-bold uppercase tracking-tight text-white text-4xl md:text-5xl leading-[0.95] mb-5">
+                El Corredor
+              </h2>
+
+              <p className="text-base md:text-lg text-zinc-300 leading-relaxed mb-6 font-mono max-w-2xl">
+                El cierre mensual del mercado bovino argentino. <span className="text-white">12 páginas</span> con
+                INMAG en USD reales, comparable interanual, 18 buckets del MAG, lectura del ciclo y tesis del
+                mes próximo. <span className="text-sky-400">PDF gratuito con email.</span>
+              </p>
+
+              <ul className="space-y-2.5 text-sm font-mono text-zinc-400 mb-8">
+                <li className="flex items-start gap-3">
+                  <span className="text-sky-400 font-mono">→</span>
+                  INMAG diario + comparable interanual real en USD oficial y blue
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-sky-400 font-mono">→</span>
+                  Las 18 subcategorías del MAG con min / máx / promedio / mediana
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-sky-400 font-mono">→</span>
+                  Tesis del mes próximo con escenarios y reglas operativas por perfil
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-sky-400 font-mono">→</span>
+                  Bibliografía citada (FAUBA, CACG, UNS) y metodología abierta
+                </li>
+              </ul>
+
+              <div className="flex flex-wrap items-center gap-4">
+                <a
+                  href="/el-corredor?ref=homepage"
+                  className="inline-flex items-center gap-2 bg-sky-400 hover:bg-sky-300 active:bg-sky-500 text-zinc-950 font-mono font-bold uppercase tracking-widest text-sm px-6 py-3 rounded transition-colors"
+                >
+                  Recibir Edición 04/26 →
+                </a>
+                <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
+                  Sin tarjeta · próxima edición en mayo
+                </span>
+              </div>
+            </div>
+
+            <div className="relative justify-self-center lg:justify-self-end">
+              <div className="absolute -inset-8 bg-sky-500/10 blur-3xl rounded-full pointer-events-none" />
+              <a href="/el-corredor?ref=homepage" className="relative block">
+                <Image
+                  src="/el-corredor/cover-abril-2026.png"
+                  alt="El Corredor — Abril 2026"
+                  width={320}
+                  height={427}
+                  className="w-full max-w-[320px] h-auto rounded shadow-2xl shadow-black/50 border border-zinc-800 hover:border-sky-500/40 transition-colors"
+                />
+                <div className="absolute -bottom-3 left-4 right-4 text-center pointer-events-none">
+                  <span className="inline-block bg-sky-400 text-zinc-950 text-xs font-mono uppercase tracking-widest px-3 py-1.5 font-bold rounded">
+                    Edición 04/26 · Disponible
+                  </span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
+
+        {/* ============================================================ */}
         {/*  WATCHLIST TEASER                                             */}
         {/* ============================================================ */}
         <section className="max-w-7xl mx-auto px-6 pt-24 pb-24">

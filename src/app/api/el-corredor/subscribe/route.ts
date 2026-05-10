@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendElCorredorDelivery } from '@/lib/email'
 import { z } from 'zod'
+import manifest from '../../../../../public/el-corredor/manifest.json'
 
 export const dynamic = 'force-dynamic'
 
@@ -11,11 +12,6 @@ const subscribeSchema = z.object({
 })
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
-
-// Currently the lead magnet is the abril 2026 edition. Update this when a new
-// edition becomes the public copy.
-const CURRENT_EDITION_LABEL = 'Abril · 2026'
-const CURRENT_EDITION_PATH = '/el-corredor/abril-2026.pdf'
 
 /**
  * POST /api/el-corredor/subscribe
@@ -60,8 +56,12 @@ export async function POST(req: NextRequest) {
       // Continue: even if storage fails, try to deliver the PDF — value-first.
     }
 
-    const pdfUrl = `${APP_URL}${CURRENT_EDITION_PATH}`
-    const delivery = await sendElCorredorDelivery(normalizedEmail, CURRENT_EDITION_LABEL, pdfUrl)
+    const pdfUrl = `${APP_URL}${manifest.current.pdf_path}`
+    const delivery = await sendElCorredorDelivery(
+      normalizedEmail,
+      manifest.current.edition_label,
+      pdfUrl
+    )
 
     if (!delivery.success) {
       console.warn('[el-corredor/subscribe] email delivery failed:', delivery.error)
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       ok: true,
       email: normalizedEmail,
-      edition: CURRENT_EDITION_LABEL,
+      edition: manifest.current.edition_label,
       delivered: delivery.success,
     })
   } catch (err) {

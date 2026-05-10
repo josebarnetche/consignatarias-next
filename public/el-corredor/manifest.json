@@ -1,0 +1,20 @@
+{
+  "current": {
+    "ym": "2026-04",
+    "edition_label": "Abril · 2026",
+    "edition_short": "04/26",
+    "month_slug": "abril-2026",
+    "pdf_path": "/el-corredor/abril-2026.pdf",
+    "cover_path": "/el-corredor/cover-abril-2026.png",
+    "og_path": "/el-corredor/og-abril-2026.png",
+    "published_at": "2026-05-09T00:00:00Z"
+  },
+  "history": [
+    {
+      "ym": "2026-04",
+      "edition_label": "Abril · 2026",
+      "pdf_path": "/el-corredor/abril-2026.pdf",
+      "published_at": "2026-05-09T00:00:00Z"
+    }
+  ]
+}

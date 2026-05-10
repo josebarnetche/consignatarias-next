@@ -1298,12 +1298,16 @@ def main() -> None:
 
     if args.pdf:
         out_pdf = OUT / f"informe-{args.month}.pdf"
-        # Try common Chrome paths
-        for chrome in [
+        # CHROME_BIN env var wins (CI), then common paths.
+        candidates = []
+        if os.environ.get("CHROME_BIN"):
+            candidates.append(os.environ["CHROME_BIN"])
+        candidates.extend([
             "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
             "/Applications/Chromium.app/Contents/MacOS/Chromium",
             "google-chrome", "chromium",
-        ]:
+        ])
+        for chrome in candidates:
             if Path(chrome).exists() or os.system(f"command -v {chrome} >/dev/null 2>&1") == 0:
                 cmd = (
                     f'"{chrome}" --headless=new --disable-gpu --no-pdf-header-footer '

@@ -1,0 +1,86 @@
+name: El Corredor — Publish Monthly Edition
+
+# Runs the 1st calendar day of each month at 17:00 UTC (14:00 ART).
+# The publish.py script defaults to --month=auto, which targets the previous month.
+on:
+  schedule:
+    - cron: '0 17 1 * *'
+  workflow_dispatch:
+    inputs:
+      month:
+        description: "Mes a publicar (YYYY-MM o 'auto')"
+        required: false
+        default: 'auto'
+      skip_blast:
+        description: 'Skip email blast (true/false)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Setup Chrome (for headless render)
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      - name: Run publish pipeline
+        env:
+          CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
+        run: |
+          MONTH_INPUT="${{ github.event.inputs.month || 'auto' }}"
+          echo "Chrome: $CHROME_BIN"
+          python3 scripts/monthly-report/publish.py --month "$MONTH_INPUT"
+
+      - name: Commit & push new edition
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/el-corredor/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            echo "changed=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          # Read manifest to get edition label for commit message
+          EDITION=$(python3 -c "import json; print(json.load(open('public/el-corredor/manifest.json'))['current']['edition_label'])")
+          git commit -m "data: El Corredor — $EDITION publicado"
+          git push
+          echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Wait for Vercel deploy
+        if: steps.commit.outputs.changed == 'true'
+        run: |
+          # Pre-Vercel CDN propagation buffer
+          sleep 90
+          # Verify the manifest is live
+          PUBLISHED_YM=$(curl -s https://www.consignatarias.com.ar/el-corredor/manifest.json | python3 -c "import json,sys; print(json.load(sys.stdin)['current']['ym'])" 2>/dev/null || echo "unknown")
+          echo "Live manifest current ym: $PUBLISHED_YM"
+
+      - name: Blast email to subscribers
+        if: steps.commit.outputs.changed == 'true' && github.event.inputs.skip_blast != 'true'
+        env:
+          BLAST_TOKEN: ${{ secrets.EL_CORREDOR_BLAST_TOKEN }}
+        run: |
+          if [ -z "$BLAST_TOKEN" ]; then
+            echo "::warning::EL_CORREDOR_BLAST_TOKEN not set — skipping blast"
+            exit 0
+          fi
+          RESULT=$(curl -s -X POST \
+            -H "Authorization: Bearer $BLAST_TOKEN" \
+            -H "Content-Type: application/json" \
+            https://www.consignatarias.com.ar/api/el-corredor/blast)
+          echo "Blast result: $RESULT"
