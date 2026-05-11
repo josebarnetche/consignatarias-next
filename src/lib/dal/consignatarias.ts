@@ -2,6 +2,12 @@ import { getProfile as getStaticProfile } from '@/lib/data/consignataria-slugs'
 import { createServiceClient } from '@/lib/supabase'
 import { unstable_cache } from 'next/cache'
 
+export interface MedioPago {
+  metodo: string                // 'transferencia' | 'cheque' | 'efectivo' | 'al-rinde' | 'usd-billete' | etc.
+  plazo_dias?: number | null    // plazo típico de cobro
+  comentario?: string | null    // condiciones, restricciones, observaciones
+}
+
 export interface EnrichedProfile {
   canonicalSlug: string
   displayName: string
@@ -20,6 +26,7 @@ export interface EnrichedProfile {
   verified: boolean
   featured: boolean
   claimedAt?: string | null
+  mediosPago?: MedioPago[]      // PRO-gated content
 }
 
 export interface RelatedConsignataria {
@@ -78,6 +85,10 @@ export async function getConsignatariaProfile(slug: string): Promise<EnrichedPro
       .eq('canonical_slug', slug)
       .single()
 
+    // medios_pago is JSONB[] in Supabase. Default to empty array if null.
+    const rawMedios = data?.medios_pago
+    const mediosPago: MedioPago[] = Array.isArray(rawMedios) ? rawMedios : []
+
     return {
       ...staticProfile,
       phone: data?.phone || null,
@@ -93,6 +104,7 @@ export async function getConsignatariaProfile(slug: string): Promise<EnrichedPro
       verified: data?.verified || false,
       featured: data?.featured || false,
       claimedAt: data?.claimed_at || null,
+      mediosPago,
     }
   } catch {
     // Fallback to static-only profile if Supabase unavailable

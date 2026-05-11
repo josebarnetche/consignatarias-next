@@ -17,6 +17,7 @@ import youtubeChannelsData from '@/lib/data/youtube-channels.json'
 import consignatariaResources from '@/lib/data/consignataria-resources.json'
 import { getProfileSEO } from '@/lib/data/profile-seo'
 import ConsignatariaProfileClient from './ConsignatariaProfileClient'
+import { MediosPagoSection } from '@/components/consignataria/MediosPagoSection'
 import type { YouTubeChannelData } from './ConsignatariaProfileClient'
 import type { ConsignatariaVideo } from '@/components/video/VideoGallery'
 
@@ -307,6 +308,15 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
         relatedConsignatarias={relatedConsignatarias}
         externalResources={(consignatariaResources as Record<string, { displayName: string; resources: Array<{ type: string; label: string; url: string; description?: string }> }>)[canonical]?.resources}
         magEntry={(marketData as { auctionDayEntries?: { consignatarias: Record<string, MagEntryData> } }).auctionDayEntries?.consignatarias?.[canonical]}
+        mediosPagoSlot={
+          <div className="max-w-6xl mx-auto px-4">
+            <MediosPagoSection
+              mediosPago={enrichedProfile.mediosPago || []}
+              consignatariaName={enrichedProfile.displayName}
+              redirectTo={`/consignatarias/${canonical}`}
+            />
+          </div>
+        }
       />
     </>
   )

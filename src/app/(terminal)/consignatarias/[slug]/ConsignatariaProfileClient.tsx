@@ -364,9 +364,10 @@ interface ConsignatariaProfileClientProps {
   relatedConsignatarias?: RelatedConsignataria[]
   externalResources?: ExternalResource[]
   magEntry?: MagEntryData
+  mediosPagoSlot?: React.ReactNode
 }
 
-export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [], relatedConsignatarias = [], externalResources = [], magEntry }: ConsignatariaProfileClientProps) {
+export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [], relatedConsignatarias = [], externalResources = [], magEntry, mediosPagoSlot }: ConsignatariaProfileClientProps) {
   const today = getEffectiveToday()
 
   useEffect(() => {
@@ -571,6 +572,11 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           </div>
         </div>
       )}
+
+      {/* ============================================================ */}
+      {/*  MEDIOS DE PAGO (PRO-gated, rendered server-side)             */}
+      {/* ============================================================ */}
+      {mediosPagoSlot}
 
       {/* ============================================================ */}
       {/*  CLAIM CTA + COMPLETENESS                                     */}
