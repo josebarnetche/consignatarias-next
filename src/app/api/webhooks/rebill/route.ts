@@ -46,12 +46,42 @@ export async function POST(request: NextRequest) {
       case 'subscription.created':
       case 'payment.success': {
         const { subscription_id, customer_id, plan_id, metadata } = data
+        const kind = metadata?.kind
+
+        // Branch 1 — user PRO subscription (productor / contador / broker)
+        if (kind === 'user_pro_subscription') {
+          const userId = metadata?.userId
+          const customerEmail = metadata?.customerEmail
+          if (!userId) break
+
+          const periodEnd = new Date()
+          periodEnd.setDate(periodEnd.getDate() + 30)
+
+          await service
+            .from('user_subscriptions')
+            .upsert(
+              {
+                user_id: userId,
+                email: customerEmail || '',
+                tier: 'pro',
+                rebill_subscription_id: subscription_id,
+                rebill_customer_id: customer_id,
+                status: 'active',
+                current_period_end: periodEnd.toISOString(),
+                upgraded_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              },
+              { onConflict: 'user_id' }
+            )
+
+          break
+        }
+
+        // Branch 2 — entity subscription (consignataria / frigorifico) — legacy
         const entitySlug = metadata?.entitySlug
         const entityType = metadata?.entityType
-
         if (!entitySlug || !entityType) break
 
-        // Determine plan name from plan_id
         const planName =
           plan_id === process.env.REBILL_PRO_PLAN_ID
             ? 'pro'
@@ -59,7 +89,6 @@ export async function POST(request: NextRequest) {
               ? 'frigo_pro'
               : 'pro'
 
-        // Calculate period end (30 days from now)
         const periodEnd = new Date()
         periodEnd.setDate(periodEnd.getDate() + 30)
 
@@ -79,7 +108,6 @@ export async function POST(request: NextRequest) {
             { onConflict: 'entity_type,entity_slug' }
           )
 
-        // Mark consignataria as featured when subscription is active
         if (entityType === 'consignataria') {
           await service
             .from('consignatarias')
@@ -92,46 +120,64 @@ export async function POST(request: NextRequest) {
 
       case 'payment.failure': {
         const { subscription_id } = data
-
         if (!subscription_id) break
 
-        await service
+        // Try entity table first
+        const { data: entSub } = await service
           .from('subscriptions')
-          .update({
-            status: 'past_due',
-            updated_at: new Date().toISOString(),
-          })
+          .select('id')
           .eq('rebill_subscription_id', subscription_id)
+          .maybeSingle()
+
+        if (entSub) {
+          await service
+            .from('subscriptions')
+            .update({ status: 'past_due', updated_at: new Date().toISOString() })
+            .eq('rebill_subscription_id', subscription_id)
+        } else {
+          await service
+            .from('user_subscriptions')
+            .update({ status: 'past_due', updated_at: new Date().toISOString() })
+            .eq('rebill_subscription_id', subscription_id)
+        }
 
         break
       }
 
       case 'subscription.cancelled': {
         const { subscription_id } = data
-
         if (!subscription_id) break
 
-        // Get entity info before updating
-        const { data: sub } = await service
+        // Try entity table first
+        const { data: entSub } = await service
           .from('subscriptions')
           .select('entity_type, entity_slug')
           .eq('rebill_subscription_id', subscription_id)
-          .single()
+          .maybeSingle()
 
-        await service
-          .from('subscriptions')
-          .update({
-            status: 'cancelled',
-            updated_at: new Date().toISOString(),
-          })
-          .eq('rebill_subscription_id', subscription_id)
-
-        // Remove featured flag on cancellation
-        if (sub?.entity_type === 'consignataria') {
+        if (entSub) {
           await service
-            .from('consignatarias')
-            .update({ featured: false })
-            .eq('canonical_slug', sub.entity_slug)
+            .from('subscriptions')
+            .update({ status: 'cancelled', updated_at: new Date().toISOString() })
+            .eq('rebill_subscription_id', subscription_id)
+
+          if (entSub.entity_type === 'consignataria') {
+            await service
+              .from('consignatarias')
+              .update({ featured: false })
+              .eq('canonical_slug', entSub.entity_slug)
+          }
+        } else {
+          // User subscription cancelled — drop back to free
+          await service
+            .from('user_subscriptions')
+            .update({
+              status: 'cancelled',
+              tier: 'free',
+              cancelled_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            })
+            .eq('rebill_subscription_id', subscription_id)
         }
 
         break

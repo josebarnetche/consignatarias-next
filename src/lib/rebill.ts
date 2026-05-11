@@ -63,3 +63,53 @@ export async function cancelSubscription(rebillSubscriptionId: string) {
 
   return res.json()
 }
+
+/**
+ * createUserSubscriptionLink — payment link para usuario individual (productor PRO).
+ * Distinto de createPaymentLink que está scoped a entidades (consignataria/frigorifico).
+ *
+ * Precio anchor: ARS $7.900/mes (override con REBILL_USER_PRO_AMOUNT env var).
+ */
+export async function createUserSubscriptionLink(
+  userId: string,
+  customerEmail: string
+) {
+  const secretKey = process.env.REBILL_SECRET_KEY
+  if (!secretKey) {
+    throw new Error('REBILL_SECRET_KEY is not configured')
+  }
+
+  const amount = parseInt(process.env.REBILL_USER_PRO_AMOUNT || '7900', 10)
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
+
+  const payload = {
+    title: [{ language: 'es', text: 'PRO — consignatarias.com.ar' }],
+    paymentMethods: [{ methods: ['card'], currency: 'ARS' }],
+    prices: [{ amount, currency: 'ARS' }],
+    metadata: {
+      userId,
+      customerEmail,
+      kind: 'user_pro_subscription',
+    },
+    redirectUrls: {
+      approved: `${appUrl}/cuenta?upgraded=true`,
+    },
+    isSingleUse: false, // recurring subscription
+  }
+
+  const res = await fetch(`${REBILL_API}/payment-links`, {
+    method: 'POST',
+    headers: {
+      'x-api-key': secretKey,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  const responseText = await res.text()
+  if (!res.ok) {
+    console.error('Rebill user subscription error:', res.status, responseText)
+    throw new Error(`Rebill error: ${res.status} ${responseText}`)
+  }
+  return JSON.parse(responseText)
+}
