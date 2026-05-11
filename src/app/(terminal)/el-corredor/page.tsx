@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
+import { getCurrentSession } from '@/lib/user-tier'
 import { SubscribeForm } from './SubscribeForm'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
@@ -79,7 +80,9 @@ const FAQ = [
   },
 ]
 
-export default function ElCorredorLanding() {
+export default async function ElCorredorLanding() {
+  const { user } = await getCurrentSession()
+  const userEmail = user?.email ?? null
   return (
     <div className="min-h-screen bg-zinc-950">
       {/* HERO */}
@@ -123,7 +126,7 @@ export default function ElCorredorLanding() {
                 <span className="text-sm font-mono text-emerald-400">+24,9% USD interanual real</span>
               </div>
 
-              <SubscribeForm source="hero" />
+              <SubscribeForm source="hero" userEmail={userEmail} />
 
               <p className="text-xs font-mono text-zinc-600 mt-4">
                 Sin tarjeta. Sin trial. Próxima edición en mayo. Te podés desuscribir en cualquier momento.
@@ -273,7 +276,7 @@ export default function ElCorredorLanding() {
             datos oficiales, metodología abierta. Gratis, en tu inbox.
           </p>
           <div className="max-w-md mx-auto">
-            <SubscribeForm source="footer-cta" />
+            <SubscribeForm source="footer-cta" userEmail={userEmail} />
           </div>
           <p className="text-xs font-mono text-zinc-600 mt-4">
             Próxima edición: cierre de mayo 2026 · primer día hábil de junio
