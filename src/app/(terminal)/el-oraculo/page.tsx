@@ -1,18 +1,20 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import marketData from '@/lib/data/market-prices.json'
+import { promises as fs } from 'fs'
+import path from 'path'
+import React from 'react'
+import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/JsonLd'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
 
 export const metadata: Metadata = {
-  title: 'El Oráculo — el precio que el mercado bovino argentino sigue todos los días',
+  title: 'El Oráculo — manifiesto fundacional · consignatarias.com.ar',
   description:
-    'Manifiesto fundacional de consignatarias.com.ar. INMAG como oracle del 88% del mercado, marco institucional, bibliografía citada (FCV-UBA, Iriarte/CACG, Diez/UNS, Scoponi). PDF abierto, sin email gate.',
+    'Manifiesto fundacional del observatorio del mercado bovino argentino. INMAG como quasi-oracle del 88% del mercado, marco institucional, bibliografía citada (FCV-UBA, Iriarte/CACG, Diez/UNS, Scoponi).',
   alternates: { canonical: `${APP_URL}/el-oraculo` },
   openGraph: {
     title: 'El Oráculo — consignatarias.com.ar',
     description:
-      'El precio que el mercado bovino argentino sigue todos los días. Manifiesto fundacional.',
+      'El precio que el mercado bovino argentino sigue todos los días — verificable, citable, sin épica.',
     url: `${APP_URL}/el-oraculo`,
     type: 'article',
     images: [
@@ -32,247 +34,317 @@ export const metadata: Metadata = {
   },
 }
 
-const inmag = marketData.inmag
-const closeFmt = `$${Math.round(inmag.current).toLocaleString('es-AR')}`
+// ---------------------------------------------------------------------------
+// Minimal markdown → HTML converter. Scoped to features that appear in
+// EL-ORACULO-MANIFIESTO.md: headings (##/###), paragraphs, bold/italic,
+// blockquotes, bullet/numbered lists, tables, horizontal rules, inline <cite>.
+// ---------------------------------------------------------------------------
 
-const SECTIONS = [
-  { num: 'I', title: 'Qué era Liniers', body: '1607-2018. 800km de radio. Las 5 razones de formación de precio (Iriarte cap. 6).' },
-  { num: 'II', title: 'Por qué fijó el precio del 88%', body: 'La paradoja: <15% del volumen, >80% del peso en precio. Cómo y por qué (FCV-UBA p.3).' },
-  { num: 'III', title: 'El cierre de 2018 y lo que vino', body: 'Mudanza a MAG-Cañuelas. INMAG como nuevo benchmark. Vacío académico post-cierre reconocido.' },
-  { num: 'IV', title: 'El 88% que no tiene huella de precio', body: 'Las 4 vías sin price discovery formal. Triangulación FCV-UBA vs Iriarte ONCCA 2007.' },
-  { num: 'V', title: 'La consignataria como ALyC del agro', body: 'Broker + dealer + clearing + custodia + garantía. El reframe que ningún paper nombró.' },
-  { num: 'VI', title: 'INMAG hoy — el Merval del agro', body: 'Cierre diario, serie histórica, INMAG en USD reales, comparable interanual.' },
-  { num: 'VII', title: 'Los indicadores que componen el oracle', body: 'INMAG cierre, variación intermensual + interanual USD, faena nacional, ratio T/N, 18 buckets reales.' },
-  { num: 'VIII', title: 'Lo que está faltando — agenda 2026-2030', body: 'Continuidad académica post-2018. Captura del 78% privado. Marco regulatorio ALyC ganadera.' },
-]
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
 
-export default function ElOraculoLanding() {
+function inline(raw: string): string {
+  // Preserve inline HTML tags we use (<cite class="inline">). Strategy:
+  // 1) split on existing HTML tags, only inline-convert the text segments
+  const parts = raw.split(/(<[^>]+>)/g)
+  return parts
+    .map((p) => {
+      if (p.startsWith('<') && p.endsWith('>')) return p // pass-through HTML
+      let t = escapeHtml(p)
+      // bold first to avoid greedy * eat
+      t = t.replace(/\*\*([^*]+)\*\*/g, '<strong class="text-zinc-200 font-medium">$1</strong>')
+      t = t.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em class="text-zinc-500 italic">$2</em>')
+      t = t.replace(/`([^`]+)`/g, '<code class="font-mono text-sky-400 bg-zinc-900 px-1 py-0.5 rounded">$1</code>')
+      t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-sky-400 hover:text-sky-300 transition-colors underline-offset-2 hover:underline">$1</a>')
+      return t
+    })
+    .join('')
+}
+
+interface Block {
+  type: 'h2' | 'h3' | 'p' | 'blockquote' | 'ul' | 'ol' | 'table' | 'hr'
+  content?: string
+  items?: string[]
+  rows?: string[][]
+}
+
+function parseBlocks(md: string): Block[] {
+  // Drop initial H1 and the H2 subtitle (already in page header) plus the
+  // very first blockquote (Manifiesto fundacional · consignatarias.com.ar ...
+  // edición 01/2026 etc) which is also rendered in the header.
+  const lines = md.split('\n')
+  const blocks: Block[] = []
+  let i = 0
+  let droppedH1 = false
+  let droppedH2 = false
+  let droppedHeaderQuote = false
+
+  while (i < lines.length) {
+    const line = lines[i]
+
+    // skip blank lines
+    if (line.trim() === '') { i++; continue }
+
+    // first H1 is the title — drop
+    if (!droppedH1 && /^#\s+/.test(line)) {
+      droppedH1 = true
+      i++
+      continue
+    }
+
+    // first H2 is the tagline — drop only the first one
+    if (!droppedH2 && /^##\s+/.test(line)) {
+      droppedH2 = true
+      i++
+      continue
+    }
+
+    // horizontal rule
+    if (/^---+\s*$/.test(line)) {
+      blocks.push({ type: 'hr' })
+      i++
+      continue
+    }
+
+    // h2
+    if (/^##\s+/.test(line)) {
+      blocks.push({ type: 'h2', content: line.replace(/^##\s+/, '').trim() })
+      i++
+      continue
+    }
+
+    // h3
+    if (/^###\s+/.test(line)) {
+      blocks.push({ type: 'h3', content: line.replace(/^###\s+/, '').trim() })
+      i++
+      continue
+    }
+
+    // blockquote (consume contiguous > lines)
+    if (/^>\s?/.test(line)) {
+      const buf: string[] = []
+      while (i < lines.length && /^>\s?/.test(lines[i])) {
+        buf.push(lines[i].replace(/^>\s?/, ''))
+        i++
+      }
+      // drop the very first header quote (manifiesto fundacional metadata)
+      if (!droppedHeaderQuote) {
+        droppedHeaderQuote = true
+        continue
+      }
+      blocks.push({ type: 'blockquote', content: buf.join(' ').trim() })
+      continue
+    }
+
+    // bullet list
+    if (/^-\s+/.test(line) || /^\*\s+/.test(line)) {
+      const items: string[] = []
+      while (i < lines.length && (/^[-*]\s+/.test(lines[i]))) {
+        items.push(lines[i].replace(/^[-*]\s+/, '').trim())
+        i++
+      }
+      blocks.push({ type: 'ul', items })
+      continue
+    }
+
+    // numbered list
+    if (/^\d+\.\s+/.test(line)) {
+      const items: string[] = []
+      while (i < lines.length && /^\d+\.\s+/.test(lines[i])) {
+        items.push(lines[i].replace(/^\d+\.\s+/, '').trim())
+        i++
+      }
+      blocks.push({ type: 'ol', items })
+      continue
+    }
+
+    // table (line starts with |, next line is separator |---|---|)
+    if (/^\|/.test(line) && i + 1 < lines.length && /^\|\s*:?-+/.test(lines[i + 1])) {
+      const rows: string[][] = []
+      // header
+      rows.push(line.split('|').slice(1, -1).map((c) => c.trim()))
+      i += 2 // skip header + separator
+      while (i < lines.length && /^\|/.test(lines[i])) {
+        rows.push(lines[i].split('|').slice(1, -1).map((c) => c.trim()))
+        i++
+      }
+      blocks.push({ type: 'table', rows })
+      continue
+    }
+
+    // paragraph — consume until blank line or block boundary
+    const buf: string[] = [line]
+    i++
+    while (i < lines.length && lines[i].trim() !== '' && !/^(#|>|-|\*|\d+\.|\|)/.test(lines[i])) {
+      buf.push(lines[i])
+      i++
+    }
+    blocks.push({ type: 'p', content: buf.join(' ').trim() })
+  }
+
+  return blocks
+}
+
+function Manifiesto({ blocks }: { blocks: Block[] }) {
   return (
-    <div className="min-h-screen bg-zinc-950">
-      {/* HERO */}
-      <section className="relative overflow-hidden border-b border-zinc-800">
-        <div className="absolute inset-0 bg-gradient-to-b from-sky-950/20 via-transparent to-transparent" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-sky-500/5 blur-[150px] rounded-full" />
-
-        <div className="relative max-w-6xl mx-auto px-4 pt-16 pb-20 lg:pt-24 lg:pb-32">
-          <div className="flex items-center gap-3 mb-8">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="absolute inset-0 rounded-full bg-sky-400/40 animate-ping" />
-              <span className="relative rounded-full h-2.5 w-2.5 bg-sky-400" />
-            </span>
-            <span className="text-xs font-mono uppercase tracking-[0.22em] text-sky-400 font-semibold">
-              Manifiesto fundacional · consignatarias.com
-            </span>
-          </div>
-
-          <h1 className="font-mono font-bold uppercase tracking-tight text-white text-6xl md:text-8xl lg:text-9xl leading-[0.9] mb-8">
-            El Oráculo
-          </h1>
-
-          <p className="text-xl md:text-2xl text-zinc-300 leading-relaxed mb-10 max-w-3xl font-mono">
-            El precio que el mercado bovino argentino sigue todos los días — verificable, citable, sin épica.
-          </p>
-
-          <div className="flex flex-wrap items-baseline gap-x-8 gap-y-3 mb-10 pb-8 border-b border-zinc-800">
-            <span className="text-xs font-mono uppercase tracking-widest text-zinc-500">Snapshot</span>
-            <span className="text-sm font-mono text-zinc-300">
-              INMAG cierre <span className="text-white font-semibold">{closeFmt}</span>
-            </span>
-            <span className="text-zinc-700">·</span>
-            <span className="text-sm font-mono text-zinc-300">
-              Mercado no-MAG <span className="text-white font-semibold">88%</span>
-            </span>
-            <span className="text-zinc-700">·</span>
-            <span className="text-sm font-mono text-emerald-400">
-              5 fuentes canónicas citadas
-            </span>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-4">
-            <a
-              href="/el-oraculo/manifiesto.pdf"
-              className="inline-flex items-center gap-2 bg-sky-400 hover:bg-sky-300 active:bg-sky-500 text-zinc-950 font-mono font-bold uppercase tracking-widest text-sm px-6 py-3 rounded transition-colors"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Descargar manifiesto (PDF) →
-            </a>
-            <Link
-              href="/mercado/inmag"
-              className="inline-flex items-center gap-2 border border-zinc-700 hover:border-sky-400 text-zinc-300 hover:text-sky-400 font-mono uppercase tracking-widest text-sm px-6 py-3 rounded transition-colors"
-            >
-              Ver INMAG en vivo
-            </Link>
-          </div>
-
-          <p className="text-xs font-mono text-zinc-500 mt-6 max-w-2xl">
-            Documento abierto, sin email. La actualización mensual con datos del mes (
-            <Link href="/el-corredor" className="text-sky-400 hover:text-sky-300 transition-colors">
-              El Corredor
-            </Link>
-            ) sí requiere suscripción.
-          </p>
-        </div>
-      </section>
-
-      {/* SECCIONES */}
-      <section className="border-b border-zinc-800">
-        <div className="max-w-6xl mx-auto px-4 py-16 lg:py-24">
-          <div className="mb-12">
-            <div className="text-xs font-mono uppercase tracking-[0.22em] text-sky-400 font-semibold mb-4">
-              · 8 secciones del manifiesto
-            </div>
-            <h2 className="text-3xl lg:text-4xl font-mono font-bold text-white tracking-tight max-w-3xl">
-              Lo que vas a leer en el documento
-            </h2>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-px bg-zinc-800 border border-zinc-800 rounded">
-            {SECTIONS.map((s) => (
-              <div key={s.num} className="bg-zinc-950 p-6 hover:bg-zinc-900/50 transition-colors">
-                <div className="flex items-baseline gap-3 mb-2">
-                  <span className="text-sky-400 font-mono text-base font-semibold">§ {s.num}</span>
-                  <h3 className="text-white font-mono font-semibold text-sm">{s.title}</h3>
-                </div>
-                <p className="text-zinc-400 text-sm font-mono leading-relaxed">{s.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* TESIS CENTRAL */}
-      <section className="border-b border-zinc-800 bg-zinc-900/30">
-        <div className="max-w-4xl mx-auto px-4 py-16 lg:py-24">
-          <div className="text-xs font-mono uppercase tracking-[0.22em] text-sky-400 font-semibold mb-4 text-center">
-            · Reframe estratégico
-          </div>
-          <h2 className="text-3xl lg:text-4xl font-mono font-bold text-white tracking-tight mb-8 text-center max-w-3xl mx-auto">
-            La consignataria es funcionalmente una ALyC
-          </h2>
-
-          <div className="bg-zinc-950 border border-sky-500/30 rounded p-6 lg:p-8 font-mono text-sm leading-relaxed">
-            <p className="text-zinc-300 mb-4">
-              Cuatro fuentes canónicas coinciden sin nombrarlo así: el corredor de hacienda argentino integra cinco
-              funciones que en el mercado financiero formal están reguladas y separadas — <span className="text-sky-400">broker</span>,
-              <span className="text-sky-400"> dealer</span>, <span className="text-sky-400">custodia</span>,
-              <span className="text-sky-400"> clearing</span> y <span className="text-sky-400">garantía de cobro</span>.
-            </p>
-            <p className="text-zinc-300 mb-4">
-              Pero <strong className="text-white">no existe categoría regulatoria ALyC ganadera</strong> en Argentina.
-              El gremio opera con marco SENASA + AFIP fragmentado, sin capital mínimo CNV, sin reporting estandarizado.
-              MAG-Cañuelas hereda el rol formador de precio de Liniers (que cerró en 2018), y el INMAG es la única
-              referencia auditable del 88% del mercado que no pasa por rueda pública.
-            </p>
-            <p className="text-zinc-400 text-xs mt-6 pt-4 border-t border-zinc-800 italic">
-              Bibliografía base: FCV-UBA (Gil/Fornieles/Demarco, 2018) · CACG (Iriarte, 2008) · UNS (Diez, 2020) ·
-              UNS-CEA (Santi &amp; Scoponi, 2018) · Decreto 640/2024 · RESOL-2018-32-APN-SGA.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* QUIÉNES Y QUÉ MÁS */}
-      <section className="border-b border-zinc-800">
-        <div className="max-w-6xl mx-auto px-4 py-16 lg:py-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-start">
-            <div>
-              <div className="text-xs font-mono uppercase tracking-[0.22em] text-sky-400 font-semibold mb-4">
-                · Quiénes
-              </div>
-              <h2 className="text-2xl lg:text-3xl font-mono font-bold text-white tracking-tight mb-6">
-                Mesa de mercado · consignatarias.com
-              </h2>
-              <p className="text-zinc-300 font-mono leading-relaxed mb-4">
-                Equipo de research del observatorio del mercado bovino argentino. Datos oficiales,
-                metodología abierta, bibliografía citada.
-              </p>
-              <p className="text-zinc-400 font-mono text-sm leading-relaxed mb-6">
-                Operamos consignatarias.com.ar como infraestructura informacional del sector y publicamos
-                research mensual (El Corredor) + manifiestos fundacionales (este documento) + investigación
-                bibliográfica continua.
-              </p>
-              <Link
-                href="/quienes-somos"
-                className="text-sky-400 hover:text-sky-300 font-mono text-sm transition-colors"
-              >
-                Más sobre la mesa →
-              </Link>
-            </div>
-
-            <div>
-              <div className="text-xs font-mono uppercase tracking-[0.22em] text-sky-400 font-semibold mb-4">
-                · Productos relacionados
-              </div>
-              <h2 className="text-2xl lg:text-3xl font-mono font-bold text-white tracking-tight mb-6">
-                Cómo continúa la lectura
-              </h2>
-              <ul className="space-y-4">
-                <li>
-                  <Link href="/el-corredor" className="block group bg-zinc-900/40 border border-zinc-800 hover:border-sky-500/40 rounded p-4 transition-colors">
-                    <div className="text-sky-400 font-mono text-xs uppercase tracking-widest mb-1">Mensual</div>
-                    <div className="text-white font-mono font-semibold mb-1">El Corredor</div>
-                    <div className="text-zinc-400 font-mono text-xs">
-                      Cierre mensual del mercado bovino argentino · 12 páginas · PDF gratis con email
-                    </div>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/mercado/inmag" className="block group bg-zinc-900/40 border border-zinc-800 hover:border-sky-500/40 rounded p-4 transition-colors">
-                    <div className="text-emerald-400 font-mono text-xs uppercase tracking-widest mb-1">En vivo</div>
-                    <div className="text-white font-mono font-semibold mb-1">INMAG diario</div>
-                    <div className="text-zinc-400 font-mono text-xs">
-                      Cierre del día + serie histórica + comparable interanual USD reales
-                    </div>
-                  </Link>
-                </li>
+    <>
+      {blocks.map((b, idx) => {
+        switch (b.type) {
+          case 'hr':
+            return <hr key={idx} className="my-10 border-zinc-800" />
+          case 'h2':
+            return (
+              <h2
+                key={idx}
+                className="text-zinc-200 text-lg font-medium mt-12 mb-4 scroll-mt-20"
+                id={slugify(b.content || '')}
+                dangerouslySetInnerHTML={{ __html: inline(b.content || '') }}
+              />
+            )
+          case 'h3':
+            return (
+              <h3
+                key={idx}
+                className="text-zinc-300 text-sm font-medium mt-7 mb-3"
+                dangerouslySetInnerHTML={{ __html: inline(b.content || '') }}
+              />
+            )
+          case 'p':
+            return (
+              <p
+                key={idx}
+                className="text-zinc-400 mb-4 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: inline(b.content || '') }}
+              />
+            )
+          case 'blockquote':
+            return (
+              <blockquote
+                key={idx}
+                className="border-l-2 border-sky-500/60 pl-4 my-5 text-zinc-300 italic"
+                dangerouslySetInnerHTML={{ __html: inline(b.content || '') }}
+              />
+            )
+          case 'ul':
+            return (
+              <ul key={idx} className="list-none mb-5 space-y-2">
+                {(b.items || []).map((item, i) => (
+                  <li key={i} className="text-zinc-400 pl-5 relative leading-relaxed">
+                    <span className="absolute left-0 text-sky-400">→</span>
+                    <span dangerouslySetInnerHTML={{ __html: inline(item) }} />
+                  </li>
+                ))}
               </ul>
-            </div>
-          </div>
-        </div>
-      </section>
+            )
+          case 'ol':
+            return (
+              <ol key={idx} className="list-none mb-5 space-y-2 counter-reset-ol">
+                {(b.items || []).map((item, i) => (
+                  <li key={i} className="text-zinc-400 pl-7 relative leading-relaxed">
+                    <span className="absolute left-0 text-sky-400 font-mono text-xs">
+                      {String(i + 1).padStart(2, '0')}.
+                    </span>
+                    <span dangerouslySetInnerHTML={{ __html: inline(item) }} />
+                  </li>
+                ))}
+              </ol>
+            )
+          case 'table': {
+            const [header, ...body] = b.rows || []
+            return (
+              <div key={idx} className="my-5 border border-zinc-800 rounded overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="bg-zinc-900/60">
+                      {header?.map((cell, ci) => (
+                        <th
+                          key={ci}
+                          className="px-3 py-2 text-left text-zinc-400 font-medium border-b border-zinc-800"
+                          dangerouslySetInnerHTML={{ __html: inline(cell) }}
+                        />
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {body.map((row, ri) => (
+                      <tr key={ri} className="border-b border-zinc-800/50 last:border-0">
+                        {row.map((cell, ci) => (
+                          <td
+                            key={ci}
+                            className="px-3 py-2 text-zinc-400"
+                            dangerouslySetInnerHTML={{ __html: inline(cell) }}
+                          />
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )
+          }
+          default:
+            return null
+        }
+      })}
+    </>
+  )
+}
 
-      {/* CTA FINAL */}
-      <section className="border-b border-zinc-800">
-        <div className="max-w-3xl mx-auto px-4 py-20 text-center">
-          <h2 className="text-3xl lg:text-5xl font-mono font-bold text-white tracking-tight mb-6 leading-tight">
-            <span className="text-sky-400">El Oráculo</span> — abierto, citable,<br />sin épica.
-          </h2>
-          <p className="text-zinc-400 font-mono mb-10 max-w-2xl mx-auto">
-            Manifiesto fundacional del observatorio del mercado bovino argentino. Bibliografía citada,
-            metodología abierta. Documento vivo, próxima revisión en sesión ordinaria de la mesa.
-          </p>
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[áàä]/g, 'a').replace(/[éèë]/g, 'e').replace(/[íìï]/g, 'i')
+    .replace(/[óòö]/g, 'o').replace(/[úùü]/g, 'u').replace(/[ñ]/g, 'n')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 60)
+}
+
+async function loadManifiesto(): Promise<string> {
+  const filepath = path.join(process.cwd(), 'docs', 'EL-ORACULO-MANIFIESTO.md')
+  return fs.readFile(filepath, 'utf-8')
+}
+
+export default async function ElOraculoPage() {
+  const md = await loadManifiesto()
+  const blocks = parseBlocks(md)
+
+  return (
+    <>
+      <SectionBreadcrumbSchema section="el-oraculo" sectionName="El Oráculo" />
+      <TechArticleSchema
+        name="El Oráculo — manifiesto fundacional"
+        description="Manifiesto fundacional del observatorio del mercado bovino argentino. Tesis: el INMAG es el quasi-oracle del 88% del mercado. Bibliografía citada (FCV-UBA, CACG, UNS)."
+        url={`${APP_URL}/el-oraculo`}
+      />
+
+      <article className="max-w-3xl mx-auto px-4 py-12 text-sm leading-relaxed">
+        <h1 className="text-zinc-100 text-2xl font-medium mb-2">El Oráculo</h1>
+        <p className="text-zinc-500 text-xs mb-6">
+          v1.0 — 11 de mayo de 2026 — Mesa de mercado · consignatarias.com
+        </p>
+        <p className="text-zinc-300 mb-10 italic leading-relaxed">
+          El precio que el mercado bovino argentino sigue todos los días — verificable, citable, sin épica.
+        </p>
+
+        <Manifiesto blocks={blocks} />
+
+        <hr className="my-12 border-zinc-800" />
+        <p className="text-zinc-600 text-xs">
+          Snapshot citable en PDF (versión 1.0 · 2026-05-11):{' '}
           <a
             href="/el-oraculo/manifiesto.pdf"
-            className="inline-flex items-center gap-2 bg-sky-400 hover:bg-sky-300 active:bg-sky-500 text-zinc-950 font-mono font-bold uppercase tracking-widest text-sm px-8 py-3.5 rounded transition-colors"
-            target="_blank"
-            rel="noopener noreferrer"
+            className="text-zinc-500 hover:text-zinc-300 transition-colors underline-offset-2 hover:underline"
           >
-            Descargar PDF →
+            manifiesto.pdf
           </a>
-          <p className="text-xs font-mono text-zinc-600 mt-4">
-            Documento abierto · sin email · sin tarjeta
-          </p>
-        </div>
-      </section>
-
-      <footer className="py-10">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-zinc-600 uppercase tracking-widest">
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-sky-400/60" />
-              <span className="text-zinc-400">consignatarias.com</span>
-              <span className="text-zinc-700 mx-1">·</span>
-              <span>Mercado Decision Infrastructure</span>
-            </div>
-            <div className="flex gap-4">
-              <Link href="/" className="hover:text-zinc-300 transition-colors">Sitio</Link>
-              <Link href="/el-corredor" className="hover:text-zinc-300 transition-colors">El Corredor</Link>
-              <Link href="/mercado/inmag" className="hover:text-zinc-300 transition-colors">INMAG en vivo</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+          .
+        </p>
+        <p className="text-zinc-700 text-xs mt-2">
+          Este documento se revisa en sesión ordinaria de la mesa, aproximadamente cada 6 meses.
+        </p>
+      </article>
+    </>
   )
 }

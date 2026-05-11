@@ -320,6 +320,10 @@ export default function TerminalLayout({
               Glosario
             </Link>
             <span className="text-terminal-border">|</span>
+            <Link href="/el-oraculo" className="hover:text-zinc-300 transition-colors">
+              Manifiesto
+            </Link>
+            <span className="text-terminal-border">|</span>
             <Link href="/quienes-somos" className="hover:text-zinc-300 transition-colors">
               Quiénes Somos
             </Link>

@@ -734,44 +734,9 @@ export default function LandingPage() {
         <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
 
         {/* ============================================================ */}
-        {/*  EL ORÁCULO — MANIFIESTO FUNDACIONAL                          */}
-        {/* ============================================================ */}
-        <section id="el-oraculo" className="max-w-7xl mx-auto px-6 pt-24 pb-12">
-          <div className="bg-zinc-900/40 border border-sky-500/30 rounded-2xl p-8 lg:p-12 relative overflow-hidden">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-sky-500/5 blur-[100px] rounded-full pointer-events-none" />
-            <div className="relative grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6 items-center">
-              <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inset-0 rounded-full bg-sky-400/40 animate-ping" />
-                    <span className="relative rounded-full h-2 w-2 bg-sky-400" />
-                  </span>
-                  <span className="text-xs font-mono uppercase tracking-[0.22em] text-sky-400 font-semibold">
-                    Manifiesto fundacional · consignatarias.com
-                  </span>
-                </div>
-                <h2 className="font-mono font-bold uppercase tracking-tight text-white text-3xl md:text-4xl leading-tight mb-3">
-                  El Oráculo
-                </h2>
-                <p className="text-zinc-300 font-mono leading-relaxed max-w-2xl">
-                  El precio que el mercado bovino argentino sigue todos los días — verificable, citable, sin épica.
-                  Bibliografía citada (FCV-UBA, Iriarte/CACG, Diez/UNS, Scoponi). Documento abierto.
-                </p>
-              </div>
-              <a
-                href="/el-oraculo"
-                className="inline-flex items-center gap-2 bg-sky-400 hover:bg-sky-300 active:bg-sky-500 text-zinc-950 font-mono font-bold uppercase tracking-widest text-xs px-5 py-3 rounded transition-colors whitespace-nowrap"
-              >
-                Leer manifiesto →
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* ============================================================ */}
         {/*  EL CORREDOR — LEAD MAGNET                                    */}
         {/* ============================================================ */}
-        <section id="el-corredor" className="max-w-7xl mx-auto px-6 pt-12 pb-24">
+        <section id="el-corredor" className="max-w-7xl mx-auto px-6 pt-24 pb-24">
           <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-12 items-center">
             <div>
               <div className="flex items-center gap-2 mb-4">
