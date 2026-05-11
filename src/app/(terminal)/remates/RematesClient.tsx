@@ -24,6 +24,8 @@ import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge from '@/components/badges/ProBadge'
 import { trackAuctionClick, trackFilterApply, trackOutboundClick, trackEvent } from '@/lib/analytics'
 import { downloadBulkICSFile } from '@/lib/utils/ics'
+import { useSessionTier } from '@/lib/use-session-tier'
+import { useRouter } from 'next/navigation'
 
 /* ------------------------------------------------------------------ */
 /*  CONSTANTS                                                          */
@@ -646,6 +648,8 @@ function AddRemateModal({ onClose }: { onClose: () => void }) {
 
 export default function RematesPage() {
   const searchParams = useSearchParams()
+  const router = useRouter()
+  const session = useSessionTier()
   const [period, setPeriod] = useState<Period>('proximos')
   const [filterProvince, setFilterProvince] = useState('')
   const [filterType, setFilterType] = useState('')
@@ -653,6 +657,11 @@ export default function RematesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [showAddModal, setShowAddModal] = useState(false)
   const [featuredSlugs, setFeaturedSlugs] = useState<Set<string>>(new Set())
+  // Filtros avanzados (PRO-only)
+  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [filterDateFrom, setFilterDateFrom] = useState('')
+  const [filterDateTo, setFilterDateTo] = useState('')
+  const [filterMinHeads, setFilterMinHeads] = useState('')
 
   // Initialize search from URL `q` param (for Google Sitelinks Searchbox)
   useEffect(() => {
@@ -719,6 +728,7 @@ export default function RematesPage() {
   }, [period, todayAuctions, upcomingAuctions, pastAuctions])
 
   /* ---- Apply filters ---- */
+  const advancedActive = session.tier === 'pro' && (filterDateFrom || filterDateTo || filterMinHeads)
   const filteredAuctions = useMemo(() => {
     let result = baseAuctions
     if (filterProvince) result = result.filter((a) => a.province === filterProvince)
@@ -735,8 +745,17 @@ export default function RematesPage() {
         a.province.toLowerCase().includes(q)
       )
     }
+    // Advanced filters (PRO-only)
+    if (session.tier === 'pro') {
+      if (filterDateFrom) result = result.filter((a) => a.date >= filterDateFrom)
+      if (filterDateTo) result = result.filter((a) => a.date <= filterDateTo)
+      const minHeads = parseInt(filterMinHeads, 10)
+      if (!Number.isNaN(minHeads) && minHeads > 0) {
+        result = result.filter((a) => (a.estimatedHeads ?? 0) >= minHeads)
+      }
+    }
     return result
-  }, [baseAuctions, filterProvince, filterType, filterEnVivo, searchQuery])
+  }, [baseAuctions, filterProvince, filterType, filterEnVivo, searchQuery, session.tier, filterDateFrom, filterDateTo, filterMinHeads])
   
   // Count of auctions with streaming in current base set
   const enVivoCount = useMemo(() => 
@@ -761,6 +780,11 @@ export default function RematesPage() {
   /* ---- Bulk ICS Export handler ---- */
   const handleBulkExport = () => {
     if (filteredAuctions.length === 0) return
+    if (session.tier !== 'pro') {
+      const next = encodeURIComponent('/remates')
+      router.push(session.loggedIn ? `/upgrade?next=${next}` : `/login?next=${next}`)
+      return
+    }
     
     const events = filteredAuctions.map(auction => ({
       title: `🐄 ${auction.title} — ${auction.consignatariaName}`,
@@ -943,13 +967,16 @@ export default function RematesPage() {
               options={types}
               placeholder="Tipo"
             />
-            {(filterProvince || filterType || filterEnVivo || searchQuery) && (
+            {(filterProvince || filterType || filterEnVivo || searchQuery || advancedActive) && (
               <button
                 onClick={() => {
                   setFilterProvince('')
                   setFilterType('')
                   setFilterEnVivo(false)
                   setSearchQuery('')
+                  setFilterDateFrom('')
+                  setFilterDateTo('')
+                  setFilterMinHeads('')
                 }}
                 className="text-xxs text-zinc-500 hover:text-negative font-terminal transition-colors px-2 py-1"
                 title="Limpiar filtros"
@@ -957,22 +984,93 @@ export default function RematesPage() {
                 LIMPIAR
               </button>
             )}
-            {/* Bulk ICS Export */}
+            {/* Filtros avanzados — PRO */}
+            <button
+              onClick={() => {
+                if (session.tier !== 'pro' && !session.loading) {
+                  const next = encodeURIComponent('/remates')
+                  router.push(session.loggedIn ? `/upgrade?next=${next}` : `/login?next=${next}`)
+                  return
+                }
+                setShowAdvanced((v) => !v)
+              }}
+              className="terminal-btn text-xxs px-2 py-1 flex items-center gap-1.5 hover:border-accent hover:text-accent"
+              title={
+                session.tier === 'pro'
+                  ? 'Filtros avanzados: rango de fechas, cabezas mínimas'
+                  : 'Filtros avanzados (PRO): rango de fechas, cabezas mínimas'
+              }
+            >
+              <span className="hidden sm:inline">FILTROS+</span>
+              <span className="sm:hidden">+</span>
+              {!session.loading && session.tier !== 'pro' && (
+                <span className="ml-0.5 text-[9px] font-mono uppercase tracking-wider text-amber-400 border border-amber-400/40 rounded px-1 leading-none py-0.5">
+                  PRO
+                </span>
+              )}
+            </button>
+            {/* Bulk ICS Export — PRO */}
             {filteredAuctions.length > 0 && period === 'proximos' && (
               <button
                 onClick={handleBulkExport}
                 className="terminal-btn text-xxs px-2 py-1 flex items-center gap-1.5 hover:border-accent hover:text-accent"
-                title={`Exportar ${filteredAuctions.length} remates al calendario`}
+                title={
+                  session.tier === 'pro'
+                    ? `Exportar ${filteredAuctions.length} remates al calendario`
+                    : 'Exportar el calendario es PRO. Click para suscribirte.'
+                }
               >
                 <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <span className="hidden sm:inline">EXPORTAR</span>
                 <span className="tabular-nums text-zinc-500">{filteredAuctions.length}</span>
+                {!session.loading && session.tier !== 'pro' && (
+                  <span className="ml-1 text-[9px] font-mono uppercase tracking-wider text-amber-400 border border-amber-400/40 rounded px-1 leading-none py-0.5">
+                    PRO
+                  </span>
+                )}
               </button>
             )}
           </div>
         </div>
+
+        {/* -- Advanced filters panel (PRO) -------------------------- */}
+        {showAdvanced && session.tier === 'pro' && (
+          <div className="border-b border-terminal-border px-panel py-2 flex items-end flex-wrap gap-3 bg-zinc-900/40">
+            <span className="text-xxs text-zinc-500 font-terminal uppercase tracking-widest">Avanzado:</span>
+            <label className="flex flex-col text-xxs text-zinc-400 font-terminal">
+              <span className="mb-0.5">Desde</span>
+              <input
+                type="date"
+                value={filterDateFrom}
+                onChange={(e) => setFilterDateFrom(e.target.value)}
+                className="bg-zinc-900 border border-terminal-border rounded-terminal px-2 py-1 text-xxs text-zinc-200 focus:border-accent focus:outline-none"
+              />
+            </label>
+            <label className="flex flex-col text-xxs text-zinc-400 font-terminal">
+              <span className="mb-0.5">Hasta</span>
+              <input
+                type="date"
+                value={filterDateTo}
+                onChange={(e) => setFilterDateTo(e.target.value)}
+                className="bg-zinc-900 border border-terminal-border rounded-terminal px-2 py-1 text-xxs text-zinc-200 focus:border-accent focus:outline-none"
+              />
+            </label>
+            <label className="flex flex-col text-xxs text-zinc-400 font-terminal">
+              <span className="mb-0.5">Cabezas mín.</span>
+              <input
+                type="number"
+                min={0}
+                step={50}
+                value={filterMinHeads}
+                onChange={(e) => setFilterMinHeads(e.target.value)}
+                placeholder="ej. 500"
+                className="bg-zinc-900 border border-terminal-border rounded-terminal px-2 py-1 text-xxs text-zinc-200 w-24 focus:border-accent focus:outline-none placeholder:text-zinc-600"
+              />
+            </label>
+          </div>
+        )}
 
         {/* -- Active filter pills ------------------------------------ */}
         {(filterProvince || filterType || filterEnVivo || searchQuery) && (

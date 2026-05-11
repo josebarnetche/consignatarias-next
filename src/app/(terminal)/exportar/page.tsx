@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import ExportarClient from './ExportarClient'
 import { SectionBreadcrumbSchema, WebApplicationSchema } from '@/components/seo/JsonLd'
+import { RequirePro } from '@/components/RequirePro'
 
 export const metadata: Metadata = {
   title: 'Exportar Datos de Remates | Consignatarias.com.ar',
@@ -34,7 +35,14 @@ export default function ExportarPage() {
           'Descarga ilimitada para PRO',
         ]}
       />
-      <ExportarClient />
+      <div className="px-4 py-6">
+        <RequirePro
+          feature="Exportar el calendario completo en CSV o JSON"
+          redirectTo="/exportar"
+        >
+          <ExportarClient />
+        </RequirePro>
+      </div>
     </>
   )
 }

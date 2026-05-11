@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import ReporteSemanalClient from './ReporteSemanalClient'
 import { SectionBreadcrumbSchema, WebApplicationSchema } from '@/components/seo/JsonLd'
+import { RequirePro } from '@/components/RequirePro'
 import marketPrices from '@/lib/data/market-prices.json'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
@@ -90,7 +91,14 @@ export default function ReporteSemanalPage() {
           'Descarga en PDF',
         ]}
       />
-      <ReporteSemanalClient data={reportData} />
+      <div className="px-4 py-6">
+        <RequirePro
+          feature="Descargar el reporte semanal del mercado en PDF"
+          redirectTo="/reporte-semanal"
+        >
+          <ReporteSemanalClient data={reportData} />
+        </RequirePro>
+      </div>
     </>
   )
 }

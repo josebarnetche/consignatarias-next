@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import CalendarExportClient from './CalendarExportClient'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { RequirePro } from '@/components/RequirePro'
 
 export const metadata: Metadata = {
   title: 'Exportar Calendario de Remates | Consignatarias.com.ar',
@@ -20,7 +21,14 @@ export default function CalendarioExportarPage() {
   return (
     <>
       <SectionBreadcrumbSchema section="calendario-exportar" sectionName="Exportar Calendario" />
-      <CalendarExportClient />
+      <div className="px-4 py-6">
+        <RequirePro
+          feature="Sincronizar todos los remates con tu calendario (iCal)"
+          redirectTo="/calendario-exportar"
+        >
+          <CalendarExportClient />
+        </RequirePro>
+      </div>
     </>
   )
 }
