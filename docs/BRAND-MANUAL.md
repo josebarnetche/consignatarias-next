@@ -467,18 +467,25 @@ Si se imprimen versiones físicas (annual report, prospecto):
 ```
 Memola Medios SAS
     │
-    ├── consignatarias.com.ar     ← marca-producto principal
+    ├── consignatarias.com.ar     ← marca-producto principal (infomercado)
     │       │
-    │       ├── INMAG en vivo
-    │       ├── El Calendario
-    │       ├── Cierre de Mes (lead magnet)
-    │       ├── API consignatarias
+    │       ├── El Oráculo (manifiesto fundacional, abierto)        ← FLAGSHIP
+    │       ├── El Corredor (cierre mensual, lead magnet)
+    │       ├── INMAG en vivo (página /mercado/inmag)
+    │       ├── El Calendario (próximamente)
+    │       ├── La Comisión (calculadora, próximamente)
+    │       ├── El Ciclo (dashboard suscripción, próximamente)
+    │       ├── API consignatarias (próximamente)
     │       └── Reportes ad-hoc (B2B service)
     │
-    └── miganado.com.ar            ← producto hermano (CD+W tokenizado)
+    └── miganado.com.ar            ← producto hermano (CD+W tokenizado, Decreto 640/2024)
 ```
 
+**El Oráculo** es la posición estratégica de la marca — el manifiesto fundacional que define qué es consignatarias.com.ar y guía todas las decisiones futuras. Funciona también como **filtro de decisión operativo** (ver `docs/EL-ORACULO-FRAMEWORK.md`): cada feature, producto, partnership o gasto pasa por el test de 6 preguntas antes de proceder.
+
 **Memola Medios** es el holding. **consignatarias.com.ar** es la marca operativa pública. **miganado.com.ar** es vertical hermana — comparten estética dark+mono pero distinto wordmark.
+
+**Reframe estratégico (mayo 2026)**: la consignataria es funcionalmente una **ALyC del mercado bovino** (broker + dealer + clearing + custodia + garantía). Liniers/MAG = la "bolsa" donde operan. INMAG = el Merval del agro. No existe categoría ALyC ganadera formal regulada todavía — es la vacante histórica que consignatarias.com.ar + miganado.com.ar están posicionados para ocupar.
 
 Decisión: **NO se firma** "powered by Memola Medios" en el público. Memola es el dueño, consignatarias.com.ar es la marca.
 

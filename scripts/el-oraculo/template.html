@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>El Oráculo · consignatarias.com.ar</title>
+<style>
+  :root {
+    --bg:       #09090b;
+    --bg-elev:  #0c0a0a;
+    --panel:    #18181b;
+    --panel-2:  #27272a;
+    --line:     #27272a;
+    --line-d:   #18181b;
+    --text:     #fafafa;
+    --muted:    #a1a1aa;
+    --muted-2:  #71717a;
+    --accent:   #38bdf8;
+    --accent-d: #0ea5e9;
+    --pos:      #10b981;
+    --neg:      #f87171;
+    --warn:     #fbbf24;
+    --mono:     'SF Mono','Cascadia Code','JetBrains Mono','Fira Code',ui-monospace,Menlo,Consolas,monospace;
+  }
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #18181b; }
+  body {
+    font-family: var(--mono);
+    color: var(--text);
+    font-size: 11px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    padding: 14mm 16mm 16mm;
+    background: var(--bg);
+    margin: 0 auto;
+    page-break-after: always;
+    page-break-inside: avoid;
+    break-after: page;
+    break-inside: avoid;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  .chrome {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 5mm;
+    margin-bottom: 7mm;
+    font-size: 9px;
+    color: var(--muted-2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .chrome .brand { color: var(--text); font-weight: 600; }
+  .chrome .dot { color: var(--accent); margin: 0 6px; }
+  .chrome .pulse {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+    box-shadow: 0 0 0 3px rgba(56,189,248,.18);
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 8mm;
+    left: 16mm;
+    right: 16mm;
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    color: var(--muted-2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding-top: 3mm;
+    border-top: 1px solid var(--line-d);
+  }
+  .footer .right { color: var(--accent); }
+
+  /* === COVER === */
+  .cover {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24mm 18mm 18mm;
+  }
+  .cover-mark {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--muted-2);
+    text-transform: uppercase;
+  }
+  .cover-mark strong { color: var(--text); }
+
+  .cover-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .cover-eyebrow {
+    color: var(--accent);
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 12mm;
+  }
+  .cover-title {
+    font-size: 112px;
+    line-height: 0.9;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    text-transform: uppercase;
+    margin: 0 0 8mm 0;
+  }
+  .cover-subtitle {
+    font-size: 22px;
+    line-height: 1.25;
+    color: var(--muted);
+    max-width: 150mm;
+    margin-bottom: 12mm;
+    letter-spacing: -0.005em;
+  }
+
+  .cover-snapshot {
+    margin-top: 10mm;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4mm;
+    width: 100%;
+  }
+
+  .cover-meta {
+    margin-top: 14mm;
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--muted-2);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    border-top: 1px solid var(--line);
+    padding-top: 4mm;
+  }
+  .cover-meta strong { color: var(--text); font-weight: 600; }
+
+  /* === KPI === */
+  .kpi {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 4mm;
+    border-radius: 2px;
+  }
+  .kpi-label {
+    font-size: 9px;
+    color: var(--muted-2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 2mm;
+  }
+  .kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+  }
+  .kpi-sub {
+    margin-top: 2mm;
+    font-size: 9px;
+    color: var(--muted);
+  }
+  .kpi-value.pos { color: var(--pos); }
+  .kpi-value.neg { color: var(--neg); }
+
+  /* === SECTION / EDITORIAL === */
+  .section-roman {
+    display: flex;
+    align-items: baseline;
+    gap: 8mm;
+    margin-bottom: 6mm;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 4mm;
+  }
+  .roman-num {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-variant: normal;
+  }
+  .section-heading {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .section-heading + .section-sub {
+    font-size: 10px;
+    color: var(--muted-2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2mm;
+  }
+
+  .editorial p {
+    font-size: 11.5px;
+    line-height: 1.65;
+    color: var(--text);
+    margin: 0 0 3.5mm 0;
+  }
+  .editorial p strong { color: var(--accent); font-weight: 600; }
+  .editorial p em { color: var(--muted); font-style: italic; font-size: 11px; }
+  .editorial blockquote {
+    border-left: 3px solid var(--accent);
+    background: rgba(56,189,248,.04);
+    padding: 3mm 4mm;
+    margin: 4mm 0;
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .editorial blockquote cite {
+    display: block;
+    font-style: normal;
+    color: var(--muted-2);
+    font-size: 9px;
+    margin-top: 2mm;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .editorial ul, .editorial ol {
+    padding-left: 0;
+    list-style: none;
+    margin: 3mm 0;
+  }
+  .editorial ul li {
+    position: relative;
+    padding: 1.5mm 0 1.5mm 8mm;
+    font-size: 11px;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .editorial ul li::before {
+    content: "→";
+    color: var(--accent);
+    position: absolute;
+    left: 0;
+    top: 1.5mm;
+    font-weight: 600;
+  }
+  .editorial ol { counter-reset: ol; }
+  .editorial ol li {
+    counter-increment: ol;
+    position: relative;
+    padding: 1.5mm 0 1.5mm 8mm;
+    font-size: 11px;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .editorial ol li::before {
+    content: counter(ol, decimal-leading-zero) ".";
+    color: var(--accent);
+    position: absolute;
+    left: 0;
+    top: 1.5mm;
+    font-weight: 600;
+    font-size: 10px;
+  }
+
+  table.data {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+    margin: 4mm 0;
+  }
+  table.data th, table.data td {
+    padding: 2.2mm 2mm;
+    text-align: left;
+    border-bottom: 1px solid var(--line-d);
+  }
+  table.data th {
+    color: var(--muted-2);
+    font-weight: 500;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--line);
+  }
+  table.data td.num, table.data th.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  cite.inline {
+    color: var(--muted-2);
+    font-style: normal;
+    font-size: 9px;
+  }
+
+  .pull {
+    margin: 6mm 0;
+    padding: 4mm;
+    background: var(--panel);
+    border-left: 3px solid var(--accent);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .pull strong { color: var(--accent); font-weight: 600; }
+
+  .note {
+    margin-top: 3mm;
+    padding: 3mm;
+    background: var(--panel);
+    border-left: 2px solid var(--muted-2);
+    font-size: 9.5px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .note strong { color: var(--text); }
+
+  h2, h3 { color: var(--text); margin: 4mm 0 2mm 0; }
+  h2 { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+  h3 { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* Bibliography */
+  .biblio dt {
+    color: var(--text);
+    font-weight: 600;
+    margin-top: 3mm;
+    font-size: 10.5px;
+  }
+  .biblio dd {
+    margin-left: 0;
+    color: var(--muted);
+    margin-bottom: 1mm;
+    font-size: 10px;
+    line-height: 1.55;
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<section class="page cover">
+  <div class="cover-mark">
+    <span class="pulse"></span>
+    <strong>consignatarias.com</strong>
+    <span style="margin: 0 8px; color: var(--accent);">·</span>
+    Mercado Decision Infrastructure
+  </div>
+
+  <div class="cover-center">
+    <div class="cover-eyebrow">Manifiesto fundacional · {{ today }}</div>
+    <h1 class="cover-title">El Oráculo</h1>
+    <p class="cover-subtitle">
+      El precio que el mercado bovino argentino sigue todos los días — verificable, citable, sin épica.
+    </p>
+
+    <div class="cover-snapshot">
+      {{ cover_kpis }}
+    </div>
+  </div>
+
+  <div class="cover-meta">
+    <div><strong>Edición fundacional</strong> · v{{ version }}</div>
+    <div>Mesa de mercado · consignatarias.com</div>
+  </div>
+</section>
+
+{{ body }}
+
+<!-- BIBLIOGRAPHY PAGE -->
+<section class="page">
+  <div class="chrome">
+    <div><span class="brand">consignatarias.com</span><span class="dot">·</span>El Oráculo<span class="dot" style="margin: 0 6px">·</span><span style="color: var(--muted)">Bibliografía citada</span></div>
+    <div>v{{ version }}</div>
+  </div>
+
+  <div class="section-roman">
+    <div class="roman-num">∞</div>
+    <div>
+      <div class="section-heading">Bibliografía citada</div>
+      <div class="section-sub">marco teórico · verificable · auditable</div>
+    </div>
+  </div>
+
+  <dl class="biblio">
+    <dt>FCV-UBA · Gil, Fornieles &amp; Demarco (2018).</dt>
+    <dd>"Comercialización de Hacienda Vacuna — Ciclo Ganadero. Texto de Estudio." Cátedra Producción de Bovinos para Carne, Facultad de Ciencias Veterinarias, Universidad de Buenos Aires. 28 pp.</dd>
+
+    <dt>CACG · Iriarte, I. (2008).</dt>
+    <dd>"Comercialización de Ganados y Carnes". Cámara Argentina de Consignatarios de Ganado. 242 pp.</dd>
+
+    <dt>UNS · Diez, M. Á. (2020).</dt>
+    <dd>"Costos de transacción en la comercialización del Sudoeste Bonaerense". Universidad Nacional del Sur, tesina de grado, tutora: Cecilia Saldungaray. 51 pp.</dd>
+
+    <dt>UNS-CEA · Santi &amp; Scoponi (2018).</dt>
+    <dd>"MEGANAR — análisis del mercado electrónico ganadero de Bahía Blanca 2011-2017". Revista CEA, Universidad Nacional del Sur. 18 pp.</dd>
+
+    <dt>RESOL-2018-32-APN-SGA#MPYT.</dt>
+    <dd>Ministerio de Producción y Trabajo de la Nación. Establece el INMAG como índice de referencia para arrendamientos rurales y tipificación oficial.</dd>
+
+    <dt>Decreto 640/2024.</dt>
+    <dd>Reglamentación de warrants tokenizados (Certificados de Depósito + Warrant tokenizados, "CD+W"). Marco jurídico habilitante para tokenización RWA de subyacentes agropecuarios.</dd>
+  </dl>
+
+  <div class="note" style="margin-top: 8mm;">
+    <strong>Lecturas adicionales</strong> citadas en el manifiesto: Scoponi/Dias/Piñeiro 2021 (UNLP), Iglesias &amp; Ghezan 2010 (INTA Cadena Carne), Ponti 2011 (MAGyP), Otaño 2005 (SAGPyA), CNDC 2017. Disponibles en el archivo de consignatarias.com bajo solicitud.
+  </div>
+
+  <div class="footer">
+    <div>El Oráculo · consignatarias.com</div>
+    <div class="right">Manifiesto fundacional · v{{ version }}</div>
+  </div>
+</section>
+
+</body>
+</html>

@@ -184,6 +184,36 @@ export default function InmagPage() {
           </Suspense>
         </section>
 
+        {/* El Oráculo — manifiesto fundacional */}
+        <section className="max-w-6xl mx-auto px-4 pb-6">
+          <Link
+            href="/el-oraculo"
+            className="block group bg-zinc-900/40 border border-sky-500/30 hover:border-sky-400/60 rounded-xl px-5 py-4 transition-colors"
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span className="absolute inset-0 rounded-full bg-sky-400/40 animate-ping" />
+                  <span className="relative rounded-full h-2 w-2 bg-sky-400" />
+                </span>
+                <div className="min-w-0">
+                  <div className="text-xs font-mono uppercase tracking-widest text-sky-400 mb-0.5">
+                    Manifiesto fundacional
+                  </div>
+                  <div className="text-sm font-mono text-white truncate">
+                    <strong>El Oráculo</strong>
+                    <span className="text-zinc-500 mx-1.5">·</span>
+                    <span className="text-zinc-300">por qué el INMAG fija el precio del 88%</span>
+                  </div>
+                </div>
+              </div>
+              <span className="text-xs font-mono uppercase tracking-widest text-sky-400 group-hover:text-sky-300 whitespace-nowrap shrink-0">
+                Leer →
+              </span>
+            </div>
+          </Link>
+        </section>
+
         {/* El Corredor — lead magnet del cierre mensual */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
           <ElCorredorCTA variant="card" context="inmag" />
