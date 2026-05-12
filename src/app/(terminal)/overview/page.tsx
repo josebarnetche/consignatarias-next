@@ -1,22 +1,34 @@
 import { Metadata } from 'next'
 import OverviewClient from './OverviewClient'
 import { SectionBreadcrumbSchema, WebApplicationSchema } from '@/components/seo/JsonLd'
+import marketPrices from '@/lib/data/market-prices.json'
 
 // Regenerate every hour so TODAY stays fresh
 export const revalidate = false // Cost optimization: static at build time
 
+const inmag = Math.round(marketPrices.inmag.current)
+const change = marketPrices.inmag.change
+const changeStr = `${change >= 0 ? '+' : ''}${change}%`
+const usdBlue = marketPrices.usdBlue.current
+const corn = marketPrices.corn.current
+const fmt = (n: number) => n.toLocaleString('es-AR')
+
 export const metadata: Metadata = {
-  title: 'Terminal de Mercado Ganadero Argentino',
-  description: 'Dashboard unificado del mercado ganadero argentino. Remates próximos, precios INMAG, frigoríficos y referencias macro en tiempo real.',
+  title: `Mercado Ganadero Argentina Hoy: INMAG $${fmt(inmag)} | Consignatarias.com.ar`,
+  description: `INMAG $${fmt(inmag)}/kg vivo (${changeStr}), dólar blue $${fmt(usdBlue)}, maíz USD ${corn}/tn. Terminal del mercado ganadero argentino actualizada diariamente con remates, precios y frigoríficos.`,
   keywords: [
     'mercado ganadero argentina',
+    'kilo de novillo',
+    'kg novillo',
+    'hacienda en pie',
+    'INMAG hoy',
     'terminal ganadero',
     'dashboard hacienda',
     'inteligencia ganadera',
   ],
   openGraph: {
-    title: 'Terminal de Inteligencia Ganadera | Consignatarias.com.ar',
-    description: 'Remates, precios y frigoríficos en una sola interfaz.',
+    title: `Mercado Ganadero Hoy — INMAG $${fmt(inmag)} (${changeStr})`,
+    description: `Terminal unificada del mercado bovino argentino. Remates, INMAG diario, frigoríficos y referencias macro.`,
     url: 'https://www.consignatarias.com.ar/overview',
     type: 'website',
   },

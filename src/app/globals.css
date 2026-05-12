@@ -79,6 +79,11 @@
   }
 }
 
+/* --- iOS safe-area --------------------------------------- */
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 /* ============================================================
    TERMINAL STYLES — used inside (terminal) route group
    ============================================================ */

@@ -822,7 +822,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                   </div>
                 </div>
                 <Link
-                  href={`/planes?from=profile-${profile.canonicalSlug}`}
+                  href={`/planes?audience=consignataria&from=profile-${profile.canonicalSlug}`}
                   className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 border text-xxs font-terminal uppercase tracking-wider transition-all hover:shadow-lg hover:shadow-amber-500/20"
                   style={{
                     background: 'linear-gradient(to right, rgba(245, 158, 11, 0.15), rgba(251, 191, 36, 0.1))',

@@ -1256,10 +1256,10 @@ export default function LandingPage() {
                   Reclamar perfil gratis
                 </Link>
                 <Link
-                  href="/planes"
+                  href="/planes?audience=consignataria"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black font-medium rounded-lg transition-colors"
                 >
-                  Ver planes PRO
+                  Ver PRO Consignataria
                   <IconArrowRight className="w-4 h-4" />
                 </Link>
               </div>

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import marketPrices from '@/lib/data/market-prices.json'
+import { authenticate, hasAuthHeader, setQuotaHeaders } from '@/lib/api-auth'
 
 // Valid categories
 const VALID_CATEGORIES = ['novillos', 'novillitos', 'vaquillonas', 'vacas', 'toros', 'terneros'] as const
@@ -54,6 +55,15 @@ interface ErrorResponse {
  */
 export async function GET(request: NextRequest): Promise<NextResponse<SuccessResponse | ErrorResponse>> {
   try {
+    // Enterprise auth: opt-in. Header present → must be valid + quota OK.
+    // No header → public access (legacy behavior, IP-rate-limited elsewhere).
+    let auth = null
+    if (hasAuthHeader(request)) {
+      const result = await authenticate(request)
+      if (!result.ok) return result.response as NextResponse<ErrorResponse>
+      auth = result
+    }
+
     const { searchParams } = new URL(request.url)
     const categoriaParam = searchParams.get('categoria')?.toLowerCase() || null
 
@@ -129,6 +139,8 @@ export async function GET(request: NextRequest): Promise<NextResponse<SuccessRes
 
     // Cache for 1 hour (prices update daily)
     response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=600')
+
+    if (auth) setQuotaHeaders(response, auth)
 
     return response
 

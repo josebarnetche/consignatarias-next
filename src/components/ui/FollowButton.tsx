@@ -39,7 +39,7 @@ export function FollowButton({ slug, displayName: _displayName, className = '', 
 
     if (!isLoggedIn) {
       // Redirect to login with return URL
-      window.location.href = `/auth/login?redirect=/go/${slug}&action=follow`;
+      window.location.href = `/login?next=${encodeURIComponent(`/go/${slug}?action=follow`)}`;
       return;
     }
 

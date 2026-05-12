@@ -1067,3 +1067,97 @@ export async function sendElCorredorDelivery(email: string, edition: string, pdf
     return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
   }
 }
+
+/* ============================================================
+   Enterprise API quota alert (80% threshold)
+   ============================================================ */
+interface QuotaAlertParams {
+  to: string
+  keyName: string
+  prefix: string
+  plan: 'starter' | 'growth' | 'scale'
+  used: number
+  limit: number
+}
+
+export async function sendQuotaAlert(p: QuotaAlertParams) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'RESEND_API_KEY not set' }
+
+  const safeName = escapeHtml(p.keyName)
+  const safePrefix = escapeHtml(p.prefix)
+  const pct = Math.round((p.used / p.limit) * 100)
+  const usedFmt = p.used.toLocaleString('en-US')
+  const limitFmt = p.limit.toLocaleString('en-US')
+  const remainingFmt = (p.limit - p.used).toLocaleString('en-US')
+  const planLabel = p.plan.charAt(0).toUpperCase() + p.plan.slice(1)
+  const dashboardUrl = `${APP_URL}/cuenta/api-keys`
+  const enterpriseUrl = `${APP_URL}/enterprise`
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: p.to,
+      replyTo: ADMIN_EMAIL,
+      subject: `Tu API key "${p.keyName}" llegó al ${pct}% del cupo mensual`,
+      html: `
+        <div style="font-family: 'SF Mono', 'Cascadia Code', ui-monospace, Menlo, Consolas, monospace; max-width: 560px; background: #09090b; color: #fafafa; padding: 32px;">
+          <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; margin-bottom: 28px;">
+            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#fbbf24; margin-right:10px;"></span>
+            <strong style="color:#fafafa">consignatarias.com</strong>
+            <span style="color:#fbbf24; margin: 0 8px;">·</span>
+            Enterprise API · ${planLabel}
+          </div>
+
+          <h1 style="font-size: 28px; font-weight: 700; letter-spacing: -0.02em; color: #fafafa; margin: 0 0 16px 0;">
+            Tu cupo mensual está al ${pct}%
+          </h1>
+
+          <p style="font-size: 14px; line-height: 1.6; color: #d4d4d8; margin: 0 0 20px 0;">
+            La key <strong style="color:#fafafa">${safeName}</strong>
+            (<code style="color:#fbbf24">${safePrefix}…</code>) ya consumió
+            <strong style="color:#fbbf24">${usedFmt}</strong> requests de las
+            <strong>${limitFmt}</strong> incluidas en tu plan
+            <strong style="color:#38bdf8">${planLabel}</strong>.
+          </p>
+
+          <div style="background: #18181b; border: 1px solid #27272a; padding: 16px; margin: 24px 0;">
+            <table style="width: 100%; font-size: 13px; color: #d4d4d8;">
+              <tr><td style="padding: 4px 0; color: #71717a;">Usado este mes</td><td style="padding: 4px 0; text-align: right; color: #fbbf24;">${usedFmt}</td></tr>
+              <tr><td style="padding: 4px 0; color: #71717a;">Restante</td><td style="padding: 4px 0; text-align: right;">${remainingFmt}</td></tr>
+              <tr><td style="padding: 4px 0; color: #71717a;">Cupo plan ${planLabel}</td><td style="padding: 4px 0; text-align: right;">${limitFmt}</td></tr>
+            </table>
+          </div>
+
+          <p style="font-size: 14px; line-height: 1.6; color: #d4d4d8; margin: 0 0 20px 0;">
+            Si superás el cupo, las requests siguientes devolverán
+            <code style="color:#f87171">429 quota_exceeded</code> hasta el 1ero del próximo mes.
+            No cortamos sin avisar — este es ese aviso.
+          </p>
+
+          <p style="margin: 28px 0;">
+            <a href="${enterpriseUrl}" style="display: inline-block; background: #38bdf8; color: #09090b; padding: 14px 24px; text-decoration: none; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; font-size: 13px; border-radius: 2px;">
+              Pasar al plan siguiente →
+            </a>
+            <a href="${dashboardUrl}" style="display: inline-block; color: #a1a1aa; padding: 14px 12px; text-decoration: none; font-size: 13px;">
+              Ver mi uso
+            </a>
+          </p>
+
+          <hr style="border: none; border-top: 1px solid #27272a; margin: 32px 0;">
+
+          <p style="font-size: 12px; line-height: 1.6; color: #a1a1aa; margin: 0;">
+            Te enviamos este aviso una sola vez por mes. Si necesitás un upgrade prorrateado
+            o tenés dudas, respondé este mail.
+          </p>
+          <p style="font-size: 11px; color: #71717a; margin: 16px 0 0 0;">
+            Mesa de mercado · consignatarias.com
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}

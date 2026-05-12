@@ -6,6 +6,99 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.10.0] — 2026-05-12
+
+### Three-Product Pricing + Enterprise API + SEO Pivot to Answer-First Snippets
+
+Major release. Three concurrent shifts: (1) disambiguates the two consumer PRO tiers and adds a third Enterprise API product line, (2) rebuilds `/planes` with an audience toggle so productores and consignatarias see only their own pitch, (3) attacks the #1-rank-but-0-CTR SEO problem by making page titles and meta descriptions answer the user's query in the SERP itself — with seven new daily-rebuilt landing pages anchored on live INMAG prices.
+
+#### New product: Enterprise API
+
+Three tiers, billed in USD, gated by a new `user_subscriptions.api_tier` column (independent from `tier` so a user can be both PRO Usuario and Enterprise):
+
+- **Starter** — USD 99/mes — 1.000 req/mes, 1 webhook, full endpoints, SLA 99.5%
+- **Growth** — USD 500/mes — 50.000 req/mes, webhooks ilimitados, exports CSV/JSON, reportes semanales PDF+JSON, dashboards, analyst access, SLA 99.8%
+- **Scale** — USD 700–7.500/mes via volume slider — 100K → 5M req/mes, multi-seat, ERP/BI integration, white-label opcional, CSM desde 500K req/mes, SLA 99.9%
+
+Pricing anchored on real infra cost (~USD 50/mes at 1M req/mes, mostly Vercel Pro + Supabase Pro), not on speculative competitive value. Calculator at `/enterprise` interpolates price from anchor points with decreasing $/1K req as volume grows.
+
+#### Authentication infrastructure for the API
+
+- `api_keys` table — HMAC-SHA256 hash with server pepper, prefix-only display (`cnsg_live_a1b2…`), per-key environment (`live`/`test`), optional IP whitelist
+- `api_usage_daily` table — atomic increment via `increment_api_usage` RPC, monthly quota enforced in `authenticate()` middleware
+- `/cuenta/api-keys` dashboard — generate (one-time secret modal with copy + Escape close + focus management + `role="dialog"`), list with usage per key, revoke. Gated to `api_tier !== 'none'`
+- `/api/internal/keys` — POST/GET/DELETE, session-authed, max 5 active keys per user
+- `/api/precios` — opt-in auth: header present → must be valid + quota OK + tracked; no header → public legacy access. Sets `X-RateLimit-{Plan,Limit,Remaining}` headers
+- Weekly cron `/api/cron/quota-alerts` (Mondays 10:00 ART) — sends 80% threshold email once per month per key, tracked via `api_keys.quota_alert_month`. Branded HTML in `sendQuotaAlert()`
+
+#### Audience toggle on `/planes`
+
+Single source of truth replaces the previous consignataria-only pitch. Toggle state lives in URL (`?audience=productor|consignataria`) so links from across the site can deep-link the right audience and `MobileStickyCTA` can read the same state.
+
+- **Productor view (default)** — Free + PRO Usuario ARS $7.900/mes + Enterprise card. CTA → `/upgrade` (Rebill). Pitch focused on observatorio access.
+- **Consignataria view** — Free directorio + PRO Consignataria ARS $45.000/mes + Enterprise card. Existing flow with `pln_f644261ffe68462497eeb78d4363f377`. Newsletter preview + "Why PRO" benefits only shown in this view.
+- `MobileStickyCTA` is audience-aware — productor (sky #38bdf8, $7.900, `/api/subscribe/checkout`) vs consignataria (amber #fbbf24, $45.000, `/api/subscribe`). Hides automatically if the user already has the corresponding tier.
+
+#### SEO: answer-first titles + 7 new landing pages
+
+Audit found multiple high-volume queries ranking #1 with **0 CTR** because titles/descriptions didn't carry the answer. Examples: `kilo de novillo`, `precio kilo vivo novillo`, `cuanto esta el kilo vivo de novillo`, `hacienda en pie`, `carnes pampeanas cuit`.
+
+- `/mercado` title and description now interpolate live INMAG + category prices at build time: `Precio Kilo Vivo Novillo Hoy: $4.428 (INMAG 2026-05-10) | Consignatarias.com.ar`. FAQ uses verbatim Google Search Console query strings.
+- `/overview` title carries INMAG + change percentage
+- `/frigorificos/[cuit]` title and description lead with CUIT and SENASA matrícula so brand+CUIT queries become self-answering snippets
+- **New** `/precios/[categoria]` — six daily-rebuilt SSG pages (novillos, novillitos, vaquillonas, vacas, toros, terneros) with Product schema (`Offer.price` in ARS), Article schema (`datePublished`/`dateModified` for "Updated DD/MM" SERP badge), FAQ schema with verbatim GSC queries, big-number panels and per-cabeza calculations
+- **New** `/precios/hacienda-en-pie` — hub page with all categories in one table, INMAG anchor, FAQ targeting `hacienda en pie` / `kg novillo` / `kilo de novillo` queries
+- Sitemap: 7 new URLs with `priority: 0.9–0.95`, `changeFrequency: daily`
+
+#### New product: Reports for PRO Usuario (and Enterprise)
+
+PRO Usuario was promising "descargas premium" but had no actual reports page. Built it.
+
+- `user_report_downloads` table — granular tracking, RLS owner-read, RPCs `get_user_report_stats` and `record_report_download`
+- `/cuenta/reportes` — catalog from `src/lib/data/reports.json`, per-user stats (download count, last downloaded), CTA flips to "Descargar de nuevo" once consumed
+- `/api/reportes/[slug]/download` — auth + tier gate (PRO Usuario OR any Enterprise tier), atomic count increment, 302 to file
+- 4 placeholder reports shipped in `public/reports/` (El Corredor abr+mar, Oráculo Q1, archivo INMAG zip) — replace with real PDFs without code changes
+
+#### Coherence fixes across the site
+
+Audit found 23 incoherencies after the product split. Critical fixes:
+
+- All consignataria-facing CTAs append `?audience=consignataria` (ConsignatariaProfileClient, DashboardClient ×2, homepage PRO section)
+- Login redirects normalized to `?next=` everywhere (was a mix of `?redirect=` and `?next=`) and URL-encoded (was breaking when target contained `?`)
+- `/auth/login` broken refs in FollowButton + mi-cuenta/favoritos rewritten to `/login`
+- `/newsletter` href in RematesClient → `/alertas`
+- FeatureGate default fallback rewritten to be audience-agnostic (was consignataria-only copy)
+- Founder-pricing theatre stripped — `$65.000 luego` references removed from FounderSpotsRemaining + DashboardClient (the escalation was never going to ship)
+- `analytics.trackCheckoutStart` differentiates `PRO_USER` (7900) from `PRO_CONSIGNATARIA` (45000)
+- `/cuenta` now shows a Consignataria card when user has claimed an entity, with its current subscription_tier
+
+#### Tech + UX polish
+
+- `src/lib/platform-stats.ts` — single source of truth for headline counts (remates / consignatarias / frigoríficos / provincias) derived from JSON at import time. Eliminates the prior 82/74/392/366/12/14 drift across `/layout`, `/enterprise`, `PlatformStats`, FAQ strings.
+- `PlanesToggle` mobile labels shortened (`Productor` / `Consignataria` instead of full phrases) below sm breakpoint, with `flex-wrap` so they don't overflow on <375px screens
+- `.safe-area-inset-bottom` CSS utility added to `globals.css` (was referenced but undefined)
+- Modal a11y in `ApiKeysClient`: `role="dialog"`, `aria-modal`, `aria-labelledby`, `<label htmlFor>`, Escape closes
+- New legal stubs `/terminos` + `/privacidad` (login screen was 404-ing on these)
+- `text-zinc-600 text-xxs` → `text-zinc-500 text-xxs` in new files for WCAG AA contrast
+
+#### Database migrations
+
+Applied to remote in this release:
+
+- `20260511_user_subscriptions.sql` — was in repo but never applied; required by the entire PRO Usuario flow. Triggers backfill all existing `auth.users`
+- `20260512_api_keys.sql` — keys + usage table + `increment_api_usage` RPC + RLS
+- `20260512_api_tier_entitlement.sql` — adds `api_tier` column with CHECK constraint
+- `20260512_user_report_downloads.sql` — tracking table + 2 RPCs
+- `20260512_api_keys_quota_alert.sql` — adds `quota_alert_month` for cron dedup
+
+#### Env
+
+- `API_KEY_PEPPER` — required for HMAC-SHA256 of API key secrets. Provisioned in Vercel Production + Development. Preview env had to be set via dashboard (CLI 50.39.0 bug with non-interactive `vercel env add NAME preview`)
+
+**Impact:** the pricing page no longer presents a single confusing PRO to all visitors; SEO surfaces should start converting #1 rankings into clicks once Google recrawls (typically 1–2 weeks); Enterprise can be sold with a real product page, real API, real onboarding, and real billing — not just a contact form.
+
+---
+
 ## [1.9.13] — 2026-05-08
 
 ### Fix: Daily Rebuild Guarantee + Scraper Hardening

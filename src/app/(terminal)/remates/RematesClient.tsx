@@ -1191,7 +1191,7 @@ export default function RematesPage() {
                   LIMPIAR FILTROS
                 </button>
                 <Link
-                  href="/newsletter"
+                  href="/alertas"
                   className="px-3 py-1.5 text-xxs text-zinc-400 hover:text-zinc-300 font-terminal transition-colors border border-zinc-700 rounded hover:bg-zinc-800/50"
                 >
                   📧 RECIBIR ALERTAS

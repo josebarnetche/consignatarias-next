@@ -2,7 +2,7 @@
 
 A cattle auction directory, market intelligence platform, and public API for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
 
-**25 API endpoints** • **359 remates** • **84 consignatarias** • **364 frigoríficos** • **14 provincias** • **24 YouTube channels** • **MAG price integration** • **1300+ sitemap URLs** • **100% schema coverage** • **Price oracle foundation** • **DTE analytics** • **Gamified onboarding** • **Lead capture system** • **🔴 En Vivo streaming focus**
+**Three product lines** (PRO Usuario · PRO Consignataria · Enterprise API) • **25+ API endpoints with auth + quotas** • **366 remates** • **74 consignatarias canonical** • **364 frigoríficos** • **12 provincias** • **24 YouTube channels** • **MAG price integration** • **1550+ sitemap URLs** • **100% schema coverage** • **7 daily-rebuilt price landings** • **Reports system** • **🔴 En Vivo streaming focus**
 
 **Live:** [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
 
@@ -589,10 +589,12 @@ node scripts/merge-enrichment.mjs
 
 ## Business Model
 
-1. **Remates PRO** — featured auction listings with amber/gold visual treatment (paid placement)
-2. **FrigoConnect** — connecting frigorificos with consignatarias (registration + enriched profiles)
-3. **Data subscriptions** — premium API access for market intelligence
-4. **Directory listings** — enhanced consignataria/frigorifico profiles
+Three distinct product lines, three audiences, three price points:
+
+1. **PRO Usuario** — ARS $7.900/mes — for productores, asesores, contadores, brokers. Acceso ilimitado al observatorio (filtros, medios de pago, detalle, descargas premium, archivo histórico INMAG). Flow: `/upgrade` via Rebill. Entitlement: `user_subscriptions.tier = 'pro'`.
+2. **PRO Consignataria** — ARS $45.000/mes — for consignatarias and frigoríficos that want to be featured. Promoción de remates por email a +500 productores, badge dorado, perfil verificado, analytics, landing personalizada, QR para catálogos. Flow: `/api/subscribe` via Rebill (`pln_f644261ffe68462497eeb78d4363f377`). Entitlement: `consignatarias.subscription_tier`.
+3. **Enterprise API** — USD 99 / 500 / 700–7.500 — for apps, frigoríficos, bancos, traders. Starter (1K req/mes), Growth (50K req/mes + reports + dashboards), Scale (volume slider 100K–5M req/mes + white-label + CSM). Calculator at `/enterprise`. Entitlement: `user_subscriptions.api_tier`. Independent from PRO Usuario — a single user can hold both.
+4. **FrigoConnect** — frigorífico-side directory listing (registration + enriched profiles)
 
 ---
 
@@ -641,8 +643,9 @@ Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misione
 | **1.9.11** | **Apr 10** | **En Vivo focus — streaming prominence, /remates/en-vivo, /mercado/arrendamiento, Market Decision Infrastructure strategy** |
 | 1.9.12 | Apr 11 | YouTube channel expansion — 24 channels, improved slug matching, 3x video coverage |
 | **1.9.13** | **May 8** | **Daily rebuild guarantee — build-trigger file, 7-day cron, INMAG backfill (Apr 11→May 6), drop deprecated edge runtime on /api/health** |
+| **1.10.0** | **May 12** | **Three-product pricing — `/planes` audience toggle (Productor vs Consignataria), Enterprise API (Starter/Growth/Scale) with HMAC-SHA256 keys + quota tracking + weekly 80% alert, 7 new daily-rebuilt `/precios/*` landings answer-first against GSC queries, Reports system at `/cuenta/reportes` with per-user download tracking, 5 new Supabase migrations** |
 
-Built in 71 days. One human, one AI. $0 hosting cost. 10 Supabase tables. 25 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
+Built in 75 days. One human, one AI. $0 hosting cost. 15+ Supabase tables. 27 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
 
 ---
 

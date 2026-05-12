@@ -484,11 +484,11 @@ export default function DashboardClient({
                     <p className="text-xxs font-terminal text-zinc-500 mb-3">
                       Con PRO: cada remate llega a +500 productores por email, analytics de vistas, badge dorado, landing con QR.
                     </p>
-                    <Link 
-                      href="/planes" 
+                    <Link
+                      href="/planes?audience=consignataria&from=dashboard"
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 border border-amber-500/40 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-500/30 transition-colors rounded-terminal"
                     >
-                      ★ Activar PRO — $45.000/mes
+                      ★ Activar PRO Consignataria — $45.000/mes
                     </Link>
                   </div>
                 )}
@@ -1419,7 +1419,7 @@ function SubscriptionPanel({ tier, subscription }: { tier: string; subscription:
                 <span className={`text-xxs font-terminal uppercase tracking-wider ${
                   spotsRemaining <= 10 ? 'text-red-400' : 'text-amber-400'
                 }`}>
-                  {spotsRemaining <= 10 ? '🔥' : '⚡'} {spotsRemaining} lugares a precio fundador — luego $65.000
+                  {spotsRemaining <= 10 ? '🔥' : '⚡'} {spotsRemaining} lugares disponibles a $45.000/mes
                 </span>
               </div>
             )}
@@ -1435,8 +1435,8 @@ function SubscriptionPanel({ tier, subscription }: { tier: string; subscription:
               <li>→ Analytics: vistas, ranking provincial</li>
               <li>→ Landing personalizada con QR para catálogos</li>
             </ul>
-            <Link href="/planes?from=dashboard-subscription" className="inline-flex items-center gap-2 px-4 py-2 bg-amber-400/15 border border-amber-500/40 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-400/25 transition-colors">
-              <span>★</span> Activar PRO — $45.000/mes
+            <Link href="/planes?audience=consignataria&from=dashboard-subscription" className="inline-flex items-center gap-2 px-4 py-2 bg-amber-400/15 border border-amber-500/40 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-400/25 transition-colors">
+              <span>★</span> Activar PRO Consignataria — $45.000/mes
             </Link>
           </div>
         )}

@@ -59,8 +59,9 @@ export async function generateMetadata({
   const f = frigorificos.find((x) => x.cuit === cuit)
   if (!f) return { title: 'Frigorifico no encontrado' }
 
-  const title = `${f.name} — Frigorifico Mat. ${f.matricula} | Consignatarias.com.ar`
-  const description = `Ficha de ${f.name}: CUIT ${formatCuit(f.cuit)}, matricula ${f.matricula}, ${f.province}. ${stageName(f.stage)}. Registro SENASA/MAGYP.`
+  const localidadStr = (f as { localidad?: string }).localidad || f.province
+  const title = `${f.name} (CUIT ${formatCuit(f.cuit)}) — Frigorífico ${f.province} | Mat. SENASA ${f.matricula}`
+  const description = `${f.name}: CUIT ${formatCuit(f.cuit)}, matrícula SENASA ${f.matricula}, ${stageName(f.stage)} en ${localidadStr}. Datos oficiales MAGYP/SENASA actualizados 2026.`
 
   return {
     title,

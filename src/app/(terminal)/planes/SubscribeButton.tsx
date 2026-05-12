@@ -34,12 +34,12 @@ export default function SubscribeButton() {
 
   async function handleSubscribe() {
     if (!userEmail) {
-      router.push('/login?redirect=/planes')
+      router.push(`/login?next=${encodeURIComponent('/planes?audience=consignataria')}`)
       return
     }
 
     setLoading(true)
-    trackCheckoutStart('PRO', 45000)
+    trackCheckoutStart('PRO_CONSIGNATARIA', 45000)
     
     try {
       const res = await fetch('/api/subscribe', {

@@ -1,0 +1,31 @@
+name: API Quota Alerts (80%)
+
+# Weekly check: email Enterprise API users when their key crosses 80% of monthly quota.
+# Enabled now; safe to run with 0 keys (no-op).
+on:
+  schedule:
+    - cron: '0 13 * * 1'  # Mondays 10:00 ART
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  send-quota-alerts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger quota alerts cron
+        run: |
+          response=$(curl -sL -w "\n%{http_code}" -X POST \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            "https://www.consignatarias.com.ar/api/cron/quota-alerts")
+
+          http_code=$(echo "$response" | tail -1)
+          body=$(echo "$response" | head -n -1)
+
+          echo "Response: $body"
+          echo "HTTP Code: $http_code"
+
+          if [ "$http_code" -ne 200 ]; then
+            echo "Error: Quota alerts cron failed with HTTP $http_code"
+            exit 1
+          fi
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}

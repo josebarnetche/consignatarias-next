@@ -28,9 +28,23 @@ export default async function CuentaPage({ searchParams }: PageProps) {
   const service = requireServiceClient()
   const { data: sub } = await service
     .from('user_subscriptions')
-    .select('tier, status, current_period_end, upgraded_at, rebill_subscription_id')
+    .select('tier, status, current_period_end, upgraded_at, rebill_subscription_id, api_tier')
     .eq('user_id', user.id)
     .maybeSingle()
+
+  // Claimed consignataria + its subscription tier
+  const { data: consig } = await service
+    .from('consignatarias')
+    .select('canonical_slug, display_name, subscription_tier')
+    .eq('claimed_by_email', user.email)
+    .maybeSingle()
+  const consigTier = (consig?.subscription_tier as string | undefined)?.toLowerCase()
+  const hasConsignataria = !!consig
+  const isConsigPro = consigTier === 'pro' || consigTier === 'enterprise'
+
+  const apiTier = (sub?.api_tier as string | undefined) ?? 'none'
+  const hasEnterprise = apiTier !== 'none'
+  const isProUser = tier === 'pro'
 
   const periodEnd = sub?.current_period_end ? new Date(sub.current_period_end) : null
   const periodEndStr = periodEnd
@@ -107,6 +121,66 @@ export default async function CuentaPage({ searchParams }: PageProps) {
           </>
         )}
       </div>
+
+      {hasConsignataria && (
+        <Link
+          href={`/consignatarias/${consig!.canonical_slug}`}
+          className="block border border-zinc-800 hover:border-amber-500/40 bg-zinc-900/40 hover:bg-amber-500/5 rounded-lg p-5 mb-4 transition-colors"
+        >
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xxs font-mono uppercase tracking-widest text-zinc-500">
+              Consignataria · {isConsigPro ? (consigTier?.toUpperCase()) : 'FREE'}
+            </span>
+            <span className="text-zinc-500 text-xs font-mono">→</span>
+          </div>
+          <p className="text-zinc-200 font-mono text-sm mb-1">
+            {(consig as { display_name?: string }).display_name ?? consig!.canonical_slug}
+          </p>
+          <p className="text-zinc-500 font-mono text-xs">
+            {isConsigPro
+              ? 'Suscripción activa. Gestioná tu perfil destacado, remates y badge PRO.'
+              : 'Activá PRO Consignataria para promo por email a +500 productores, badge dorado y analytics.'}
+          </p>
+        </Link>
+      )}
+
+      {(isProUser || hasEnterprise) && (
+        <Link
+          href="/cuenta/reportes"
+          className="block border border-zinc-800 hover:border-sky-500/40 bg-zinc-900/40 hover:bg-sky-500/5 rounded-lg p-5 mb-4 transition-colors"
+        >
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xxs font-mono uppercase tracking-widest text-zinc-500">
+              Reportes
+            </span>
+            <span className="text-zinc-500 text-xs font-mono">→</span>
+          </div>
+          <p className="text-zinc-200 font-mono text-sm mb-1">Mis reportes</p>
+          <p className="text-zinc-500 font-mono text-xs">
+            El Corredor mensual, snapshot del Oráculo, archivo histórico INMAG.
+            Descargás cuantas veces necesites.
+          </p>
+        </Link>
+      )}
+
+      {hasEnterprise && (
+        <Link
+          href="/cuenta/api-keys"
+          className="block border border-zinc-800 hover:border-sky-500/40 bg-zinc-900/40 hover:bg-sky-500/5 rounded-lg p-5 mb-4 transition-colors"
+        >
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xxs font-mono uppercase tracking-widest text-zinc-500">
+              API · Enterprise {apiTier}
+            </span>
+            <span className="text-zinc-500 text-xs font-mono">→</span>
+          </div>
+          <p className="text-zinc-200 font-mono text-sm mb-1">API keys</p>
+          <p className="text-zinc-500 font-mono text-xs">
+            Generá y administrá tus keys para autenticar integraciones. Ver uso
+            mensual y rotar/revocar acceso.
+          </p>
+        </Link>
+      )}
 
       <div className="border-t border-zinc-800 pt-6">
         <SignOutButton />

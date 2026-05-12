@@ -138,7 +138,7 @@ export default function FavoritosPage() {
               Seguí consignatarias para ver todos sus remates en un solo lugar.
             </p>
             <Link
-              href="/auth/login?redirect=/mi-cuenta/favoritos"
+              href={`/login?next=${encodeURIComponent('/mi-cuenta/favoritos')}`}
               className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded-lg transition-colors"
             >
               Iniciar sesión
