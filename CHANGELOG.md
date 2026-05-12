@@ -6,6 +6,59 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.10.1] — 2026-05-12
+
+### MAG Data Deepening — 16 sub-categories + 11 years of INMAG history
+
+The headline INMAG number our existing scraper has been pulling is the tip of what MAG Cañuelas actually publishes. This release ingests the full detail: 16 official sub-categories with weight thresholds (Esp.Joven +430, Regular h430, Conserva Buena/Inferior, MEJ, etc.) and the complete daily INMAG series going back to 2015.
+
+#### New persistent tables (RLS public-read, service-role write)
+
+- `mag_inmag_history` — daily INMAG index series. **2.236 days backfilled** (2015-01-02 → 2026-05-12), **1.690 days with calculated INMAG** (the rest are days where novillo count <300, marked `inmag_calculated=false` per MAG methodology). Average INMAG by year: $18 (2015) → $642 (2023, hyperinflation) → $4.324 (2026 YTD).
+- `mag_prices_detailed` — primary key `(date, subcategory)`. Carries `category_group`, `weight_threshold`, `price_{min,max,avg,median}`, `head_count`, `total_amount`, `total_kgs`, `kg_avg` per sub-category per day.
+
+#### Scraping pipeline (additive, not replacing the existing daily scraper)
+
+- `/api/cron/scrape-mag-detailed` — fetches both `haciinfo000502` (16 sub-cat) and `haciinfo000011` (headline INMAG) for today's date, upserts both tables in one invocation. Closes the gap where the JSON-driven scraper kept `market-prices.json` current but never wrote to DB.
+- `/api/cron/backfill-inmag` — one-shot endpoint with `from`/`to`/`months` params. Fetches MAG in 6-month windows, throttles 2.5s between windows, upserts. `maxDuration=300s` covers ~12 years.
+- GH Actions: `mag-detailed-prices.yml` runs Lun-Vie 15:30 ART (after MAG closes ~14:30 ART). No-op on non-trading days. `backfill-inmag.yml` is `workflow_dispatch`-only — manually triggered when expanding history range.
+
+#### API surfaces
+
+- `GET /api/precios?detallado=true` — returns the 16 sub-categories of the latest scraped date with full breakdown + source attribution to MAG haciinfo000502.
+- `GET /api/precios?historico=N` — returns N days of INMAG history (7–3650) + aggregate stats (min/max/avg/count). Source: MAG haciinfo000011.
+- Both endpoints honor the existing Enterprise auth + quota tracking when an `Authorization: Bearer` header is present.
+
+#### /api-docs page rewrite
+
+- Authentication section: removed stale `x-api-key` header doc, replaced with `Authorization: Bearer cnsg_live_...` matching the actual Enterprise key format. Links updated to `/cuenta/api-keys` for self-serve.
+- Rate limits table replaced: was generic "100 req/min público / 1000 PRO" → now shows actual 4-tier matrix (Público / Starter 30/min / Growth 300/min / Scale 5000/min) with SLA per tier.
+- New sections: "Precios detallados (16 sub-categorías)" and "Histórico INMAG (desde 2015)" with literal `curl` examples and sample JSON responses.
+
+#### /enterprise page
+
+- Coverage strip swaps `Fuentes scrapeadas: 8` and `Histórico INMAG: 2022→hoy` for `Sub-categorías MAG: 16` and `Histórico INMAG: 2015→hoy` — more honest about what's actually queryable.
+- Starter tier feature list now leads with "INMAG diario + serie histórica completa (desde 2015)" and "16 sub-categorías oficiales MAG con corte por peso".
+- Growth tier adds "Lote-level transactional data (próximamente)" — flags the next ingestion target (haciinfo000007).
+
+#### Cron audit map
+
+Six active workflows, no overlap with the new MAG layer:
+
+| ART | Workflow | Scope |
+|---|---|---|
+| 10:00 Lun | `weekly-newsletter`, `quota-alerts` | Email, alerts |
+| 11-19 hourly | `post-remate-outreach` | Auto-email post-remate |
+| 14:00 daily | `scrape-auctions` | 8 fuentes → JSON → SSG rebuild |
+| 15:30 Lun-Vie | `mag-detailed-prices` (new) | DB persistence MAG |
+| 14:00 1º del mes | `el-corredor-publish` | PDF mensual |
+
+The old `scrape-auctions.yml` keeps writing `market-prices.json` (which drives SSG pages like `/mercado`, `/precios/*`). The new `mag-detailed-prices.yml` writes to DB only (which drives the API endpoints). Two distinct write paths, zero duplication.
+
+**Impact:** the API can now answer questions our old "6 generic ratios" couldn't: *"¿Cuánto vale el novillo Esp.Joven +430 hoy vs hace un año?"*, *"¿Qué peso promedio se está faenando este mes?"*, *"Dame el INMAG mes a mes desde 2018"*. Real differentiator vs any competitor that just republishes the headline number.
+
+---
+
 ## [1.10.0] — 2026-05-12
 
 ### Three-Product Pricing + Enterprise API + SEO Pivot to Answer-First Snippets

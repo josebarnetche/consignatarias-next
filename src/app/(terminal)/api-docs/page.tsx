@@ -133,9 +133,13 @@ export default function ApiDocsPage() {
             API Documentation
           </h1>
           <p className="text-zinc-400 text-sm leading-relaxed">
-            API pública del mercado ganadero argentino. Acceso libre a datos de remates, 
-            precios INMAG, perfiles de consignatarias y frigoríficos. Los endpoints con 
-            autenticación requieren suscripción PRO.
+            API pública del mercado ganadero argentino. Acceso libre con rate limit por IP.{' '}
+            <Link href="/enterprise" className="text-accent hover:text-accent-bright">
+              Plan Enterprise
+            </Link>{' '}
+            (desde USD 99/mes) agrega API key dedicada, mayor cupo, webhooks y
+            soporte. Fuente principal de precios: Mercado Agroganadero (MAG)
+            Cañuelas, cacheado y citado.
           </p>
         </div>
 
@@ -201,23 +205,123 @@ export default function ApiDocsPage() {
 
         {/* Authentication */}
         <div className="terminal-panel mt-6">
-          <div className="terminal-panel-header">Autenticación</div>
+          <div className="terminal-panel-header">Autenticación (Enterprise)</div>
           <div className="px-panel py-4 space-y-3">
             <p className="text-zinc-400 text-sm">
-              Los endpoints públicos no requieren autenticación. Para endpoints PRO, 
-              incluí tu API key en el header:
+              Los endpoints son públicos por default (rate-limited por IP). Si
+              contratás un plan{' '}
+              <Link href="/enterprise" className="text-accent hover:text-accent-bright">
+                Enterprise
+              </Link>{' '}
+              recibís una API key con cupo mensual, tracking y soporte:
             </p>
             <pre className="bg-zinc-900 border border-terminal-border p-3 text-sm font-mono text-zinc-300 overflow-x-auto">
-{`curl -H "x-api-key: tu_api_key" \\
-  https://www.consignatarias.com.ar/api/alertas`}
+{`curl https://www.consignatarias.com.ar/api/precios \\
+  -H "Authorization: Bearer cnsg_live_xxxxxxxxxxxxxxxx"`}
             </pre>
             <p className="text-zinc-500 text-sm">
-              Obtené tu API key en{' '}
-              <Link href="/dashboard" className="text-accent hover:text-accent-bright">
-                tu dashboard
-              </Link>{' '}
-              después de suscribirte al plan PRO.
+              Generá y administrá tus keys en{' '}
+              <Link href="/cuenta/api-keys" className="text-accent hover:text-accent-bright">
+                /cuenta/api-keys
+              </Link>
+              . Cada respuesta autenticada devuelve headers{' '}
+              <code className="text-zinc-400 bg-zinc-900 px-1">X-RateLimit-Limit</code>{' '}
+              y{' '}
+              <code className="text-zinc-400 bg-zinc-900 px-1">X-RateLimit-Remaining</code>.
+              Al llegar al 80% del cupo mensual te llega un email — no cortamos sin avisar.
             </p>
+          </div>
+        </div>
+
+        {/* Detailed prices feature highlight */}
+        <div className="terminal-panel mt-6">
+          <div className="terminal-panel-header">Precios detallados (16 sub-categorías)</div>
+          <div className="px-panel py-4 space-y-3 text-sm">
+            <p className="text-zinc-400">
+              Además de las 6 categorías genéricas, exponemos la apertura
+              oficial completa de MAG con corte por peso para invernada/gordo:
+              novillos Esp.Joven +430 · Regular h430 · Regular +430,
+              novillitos Esp. h390/+390/Regular, vaquillonas Esp. h390/+390/Regular,
+              vacas Esp.Joven h430/+430/Regular/Conserva Buena/Conserva Inferior,
+              toros Esp./Regular, MEJ Esp. h430/Regular.
+            </p>
+            <p className="text-zinc-400">
+              Cada sub-categoría devuelve: precio mínimo, máximo, promedio,
+              mediana, cabezas operadas, importe total, kgs totales, kg promedio.
+              Actualizado por día de remate (martes/miércoles/viernes ~15:30 ART).
+              Fuente:{' '}
+              <a
+                href="https://www.mercadoagroganadero.com.ar/dll/hacienda1.dll/haciinfo000502"
+                target="_blank"
+                rel="noopener"
+                className="text-accent hover:text-accent-bright"
+              >
+                MAG haciinfo000502
+              </a>
+              .
+            </p>
+            <pre className="bg-zinc-900 border border-terminal-border p-3 text-xs font-mono text-zinc-300 overflow-x-auto">
+{`curl https://www.consignatarias.com.ar/api/precios?detallado=true
+
+{
+  "success": true,
+  "data": {
+    "fecha": "2026-05-12",
+    "subcategorias": [
+      {
+        "subcategory": "NOVILLOS Esp.Joven + 430",
+        "category_group": "novillos",
+        "weight_threshold": "esp_joven_plus_430",
+        "price_min": 3500.000,
+        "price_max": 4600.000,
+        "price_avg": 4328.522,
+        "price_median": 4500.000,
+        "head_count": 1269,
+        "total_amount": 2602740000.00,
+        "total_kgs": 601300.00,
+        "kg_avg": 474
+      }
+      // ... 15 más
+    ],
+    "fuente": "Mercado Agroganadero — haciinfo000502 (Resolución MPyT)",
+    "fuente_url": "https://www.mercadoagroganadero.com.ar/..."
+  }
+}`}
+            </pre>
+          </div>
+        </div>
+
+        {/* Historical INMAG */}
+        <div className="terminal-panel mt-6">
+          <div className="terminal-panel-header">Histórico INMAG (desde 2015)</div>
+          <div className="px-panel py-4 space-y-3 text-sm">
+            <p className="text-zinc-400">
+              Serie diaria del INMAG completa, 11 años de historia (2.236+
+              días con datos verificados). Param{' '}
+              <code className="text-zinc-300 bg-zinc-900 px-1">?historico=N</code>{' '}
+              donde N son los días hacia atrás (7–3650).
+            </p>
+            <pre className="bg-zinc-900 border border-terminal-border p-3 text-xs font-mono text-zinc-300 overflow-x-auto">
+{`curl https://www.consignatarias.com.ar/api/precios?historico=365
+
+{
+  "success": true,
+  "data": {
+    "dias": 365,
+    "desde": "2025-05-12",
+    "hasta": "2026-05-12",
+    "serie": [
+      { "date": "2025-05-13", "head_count": 8240, "total_amount": 24531870000,
+        "inmag_value": 2978.451, "inmag_calculated": true, "variation": 1.2 },
+      // ...
+    ],
+    "estadisticas": {
+      "count": 295, "min": 2123.039, "max": 4720.935, "avg": 3658.21
+    },
+    "fuente": "Mercado Agroganadero — INMAG diario (haciinfo000011)"
+  }
+}`}
+            </pre>
           </div>
         </div>
 
@@ -249,21 +353,41 @@ export default function ApiDocsPage() {
 
         {/* Rate Limits */}
         <div className="terminal-panel mt-6">
-          <div className="terminal-panel-header">Límites</div>
+          <div className="terminal-panel-header">Límites por plan</div>
           <div className="px-panel py-4">
             <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-terminal-border">
+                  <th className="py-2 text-left text-xxs font-terminal uppercase tracking-wider text-zinc-500">Plan</th>
+                  <th className="py-2 text-right text-xxs font-terminal uppercase tracking-wider text-zinc-500">Req/mes</th>
+                  <th className="py-2 text-right text-xxs font-terminal uppercase tracking-wider text-zinc-500">Rate limit</th>
+                  <th className="py-2 text-right text-xxs font-terminal uppercase tracking-wider text-zinc-500">SLA</th>
+                </tr>
+              </thead>
               <tbody>
                 <tr className="border-b border-terminal-border">
-                  <td className="py-2 text-zinc-400">Endpoints públicos</td>
-                  <td className="py-2 text-zinc-200 text-right">100 requests/min</td>
+                  <td className="py-2 text-zinc-400">Público (sin auth)</td>
+                  <td className="py-2 text-zinc-300 text-right tabular-nums">—</td>
+                  <td className="py-2 text-zinc-300 text-right tabular-nums">por IP, fair use</td>
+                  <td className="py-2 text-zinc-500 text-right">best effort</td>
                 </tr>
                 <tr className="border-b border-terminal-border">
-                  <td className="py-2 text-zinc-400">Endpoints PRO</td>
-                  <td className="py-2 text-zinc-200 text-right">1000 requests/min</td>
+                  <td className="py-2 text-zinc-400">Enterprise Starter (USD 99)</td>
+                  <td className="py-2 text-zinc-300 text-right tabular-nums">1.000</td>
+                  <td className="py-2 text-zinc-300 text-right tabular-nums">30/min</td>
+                  <td className="py-2 text-zinc-300 text-right">99,5%</td>
+                </tr>
+                <tr className="border-b border-terminal-border">
+                  <td className="py-2 text-zinc-400">Enterprise Growth (USD 500)</td>
+                  <td className="py-2 text-zinc-300 text-right tabular-nums">50.000</td>
+                  <td className="py-2 text-zinc-300 text-right tabular-nums">300/min</td>
+                  <td className="py-2 text-zinc-300 text-right">99,8%</td>
                 </tr>
                 <tr>
-                  <td className="py-2 text-zinc-400">Alertas (tier gratuito)</td>
-                  <td className="py-2 text-zinc-200 text-right">3 alertas activas</td>
+                  <td className="py-2 text-zinc-400">Enterprise Scale (USD 700+)</td>
+                  <td className="py-2 text-zinc-300 text-right tabular-nums">100K–5M</td>
+                  <td className="py-2 text-zinc-300 text-right tabular-nums">5.000/min</td>
+                  <td className="py-2 text-zinc-300 text-right">99,9%</td>
                 </tr>
               </tbody>
             </table>

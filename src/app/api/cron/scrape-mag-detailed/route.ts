@@ -6,17 +6,20 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 /**
- * Daily fetch of MAG's detailed 16-sub-category board (haciinfo000502).
- * Upserts one row per (date, subcategory) into mag_prices_detailed.
+ * Daily fetch of MAG's data: (1) headline INMAG (haciinfo000011) into
+ * mag_inmag_history; (2) detailed 16-sub-category board (haciinfo000502)
+ * into mag_prices_detailed.
+ *
+ * Two fetches, one cron. Keeps both tables current going forward
+ * after the one-shot backfill.
  *
  * Auth: x-cron-secret header or ?secret= query param.
- *
- * Optional ?date=DD/MM/YYYY to backfill a specific date.
- * Default: today.
+ * Optional ?date=YYYY-MM-DD to backfill a specific date (default: today).
  */
 
 const USER_AGENT = 'consignatarias.com.ar scraper (contact: agro@memola.com.ar)'
-const URL_BASE = 'https://www.mercadoagroganadero.com.ar/dll/hacienda1.dll/haciinfo000502'
+const URL_BASE_DETAILED = 'https://www.mercadoagroganadero.com.ar/dll/hacienda1.dll/haciinfo000502'
+const URL_BASE_INMAG = 'https://www.mercadoagroganadero.com.ar/dll/hacienda2.dll/haciinfo000011'
 
 /**
  * Subcategory → { group, threshold } mapping. group is the canonical
@@ -78,6 +81,49 @@ interface ParsedRow {
   total_amount: number | null
   total_kgs: number | null
   kg_avg: number | null
+}
+
+interface InmagRow {
+  date: string
+  head_count: number | null
+  total_amount: number | null
+  inmag_value: number | null
+  inmag_calculated: boolean
+  variation: number | null
+}
+
+function parseInmag(html: string): InmagRow[] {
+  const rowRegex =
+    /<TR[^>]*>\s*<TD[^>]*>(?:[A-Za-zñÑáéíóú&;]+\s*)?(\d{2})\/(\d{2})\/(\d{4})<\/TD>\s*<TD[^>]*>([^<]+)<\/TD>\s*<TD[^>]*>([^<]+)<\/TD>\s*<TD[^>]*>([^<]+)<\/TD>(?:\s*<TD[^>]*>([^<]*)<\/TD>)?/gi
+
+  const rows: InmagRow[] = []
+  let match: RegExpExecArray | null
+  while ((match = rowRegex.exec(html)) !== null) {
+    const [, dd, mm, yyyy, headStr, importeStr, inmagStr, varStr] = match
+    const date = `${yyyy}-${mm}-${dd}`
+    const head_count = parseInteger(headStr)
+    const total_amount = parseNumber(importeStr)
+
+    const rawInmag = inmagStr.trim()
+    let inmag_value: number | null = null
+    let inmag_calculated = true
+    if (rawInmag.includes('*') || rawInmag.startsWith('-')) {
+      inmag_calculated = false
+    } else {
+      const v = parseNumber(rawInmag)
+      inmag_value = v
+      if (v === null) inmag_calculated = false
+    }
+
+    let variation: number | null = null
+    if (varStr && varStr.trim() && !varStr.includes('*')) {
+      const v = parseNumber(varStr)
+      if (v !== null) variation = v
+    }
+
+    rows.push({ date, head_count, total_amount, inmag_value, inmag_calculated, variation })
+  }
+  return rows
 }
 
 function parsePage(html: string, isoDate: string): ParsedRow[] {
@@ -149,46 +195,67 @@ export async function POST(req: NextRequest) {
     targetDateMag = ddmmyyyy(now)
   }
 
-  const url =
-    `${URL_BASE}?txtFECHAINI=${encodeURIComponent(targetDateMag)}` +
-    `&txtFECHAFIN=${encodeURIComponent(targetDateMag)}&LISTADO=SI`
-
-  const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } })
-  if (!res.ok) {
-    return NextResponse.json(
-      { error: 'mag_fetch_failed', status: res.status, url },
-      { status: 502 },
-    )
-  }
-  const html = await res.text()
-  const rows = parsePage(html, targetDateIso)
-
-  if (rows.length === 0) {
-    return NextResponse.json({
-      ok: true,
-      date: targetDateIso,
-      rows_parsed: 0,
-      note: 'No data rows — likely a non-trading day (MAG operates martes/miércoles/viernes).',
-    })
-  }
-
   const supabase = requireServiceClient()
-  const { error } = await supabase
-    .from('mag_prices_detailed')
-    .upsert(rows, { onConflict: 'date,subcategory' })
+  const result = {
+    date: targetDateIso,
+    detailed_upserted: 0,
+    inmag_upserted: 0,
+    errors: [] as string[],
+  }
 
-  if (error) {
-    return NextResponse.json(
-      { error: 'upsert_failed', message: error.message, parsed: rows.length },
-      { status: 500 },
+  // 1. Detailed 16 sub-categories (haciinfo000502)
+  try {
+    const urlDetailed =
+      `${URL_BASE_DETAILED}?txtFECHAINI=${encodeURIComponent(targetDateMag)}` +
+      `&txtFECHAFIN=${encodeURIComponent(targetDateMag)}&LISTADO=SI`
+    const res = await fetch(urlDetailed, { headers: { 'User-Agent': USER_AGENT } })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const html = await res.text()
+    const rows = parsePage(html, targetDateIso)
+
+    if (rows.length > 0) {
+      const { error } = await supabase
+        .from('mag_prices_detailed')
+        .upsert(rows, { onConflict: 'date,subcategory' })
+      if (error) result.errors.push(`detailed upsert: ${error.message}`)
+      else result.detailed_upserted = rows.length
+    }
+  } catch (err) {
+    result.errors.push(
+      `detailed fetch: ${err instanceof Error ? err.message : 'unknown'}`,
     )
   }
 
+  // 2. Headline INMAG row (haciinfo000011) for the same date — keeps
+  //    mag_inmag_history current going forward after the one-shot backfill.
+  try {
+    const urlInmag =
+      `${URL_BASE_INMAG}?txtFECHAINI=${encodeURIComponent(targetDateMag)}` +
+      `&txtFECHAFIN=${encodeURIComponent(targetDateMag)}&CP=&LISTADO=SI`
+    const res = await fetch(urlInmag, { headers: { 'User-Agent': USER_AGENT } })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const html = await res.text()
+    const inmagRows = parseInmag(html)
+    if (inmagRows.length > 0) {
+      const { error } = await supabase
+        .from('mag_inmag_history')
+        .upsert(inmagRows, { onConflict: 'date' })
+      if (error) result.errors.push(`inmag upsert: ${error.message}`)
+      else result.inmag_upserted = inmagRows.length
+    }
+  } catch (err) {
+    result.errors.push(
+      `inmag fetch: ${err instanceof Error ? err.message : 'unknown'}`,
+    )
+  }
+
+  const allEmpty = result.detailed_upserted === 0 && result.inmag_upserted === 0
   return NextResponse.json({
-    ok: true,
-    date: targetDateIso,
-    rows_upserted: rows.length,
-    subcategories: rows.map((r) => r.subcategory),
+    ok: result.errors.length === 0,
+    ...result,
+    ...(allEmpty
+      ? { note: 'No data — likely a non-trading day (MAG operates martes/miércoles/viernes).' }
+      : {}),
   })
 }
 

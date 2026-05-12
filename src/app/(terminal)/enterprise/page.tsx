@@ -70,8 +70,9 @@ const TIERS = [
     requests: '1.000 req/mes',
     features: [
       'API key dedicada',
-      'Endpoints: INMAG, categorías, USD, remates, directorios',
-      'Histórico completo',
+      'INMAG diario + serie histórica completa (desde 2015)',
+      '16 sub-categorías oficiales MAG con corte por peso',
+      'Calendario remates, directorios consignatarias + frigoríficos, USD',
       '1 webhook configurable',
       'Soporte por email (48h hábiles)',
       'Documentación + ejemplos Python/JS',
@@ -97,8 +98,9 @@ const TIERS = [
       'Exports CSV/JSON bajo demanda',
       'Reporte semanal PDF + JSON',
       'Dashboards web personalizados',
-      'Alertas configurables (INMAG, USD, remates)',
+      'Alertas configurables (INMAG, sub-categoría, USD, remates)',
       'Acceso al analista por email/Slack',
+      'Lote-level transactional data (próximamente)',
       'SLA 99,8% — soporte en 4h hábiles',
     ],
     cta: 'Contratar Growth',
@@ -171,8 +173,8 @@ const COVERAGE = [
   { label: 'Consignatarias', value: String(PLATFORM_STATS.consignatariasCanonical) },
   { label: 'Frigoríficos', value: String(PLATFORM_STATS.frigorificos) },
   { label: 'Provincias', value: String(PLATFORM_STATS.provincias) },
-  { label: 'Fuentes scrapeadas', value: '8' },
-  { label: 'Histórico INMAG', value: '2022→hoy' },
+  { label: 'Sub-categorías MAG', value: '16' },
+  { label: 'Histórico INMAG', value: '2015→hoy' },
 ]
 
 export default function EnterprisePage() {

@@ -2,7 +2,7 @@
 
 A cattle auction directory, market intelligence platform, and public API for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
 
-**Three product lines** (PRO Usuario · PRO Consignataria · Enterprise API) • **25+ API endpoints with auth + quotas** • **366 remates** • **74 consignatarias canonical** • **364 frigoríficos** • **12 provincias** • **24 YouTube channels** • **MAG price integration** • **1550+ sitemap URLs** • **100% schema coverage** • **7 daily-rebuilt price landings** • **Reports system** • **🔴 En Vivo streaming focus**
+**Three product lines** (PRO Usuario · PRO Consignataria · Enterprise API) • **25+ API endpoints with auth + quotas** • **366 remates** • **74 consignatarias canonical** • **364 frigoríficos** • **12 provincias** • **24 YouTube channels** • **MAG deep integration (16 sub-categorías + 11 años de INMAG)** • **1550+ sitemap URLs** • **100% schema coverage** • **7 daily-rebuilt price landings** • **Reports system** • **🔴 En Vivo streaming focus**
 
 **Live:** [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
 
@@ -644,8 +644,9 @@ Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misione
 | 1.9.12 | Apr 11 | YouTube channel expansion — 24 channels, improved slug matching, 3x video coverage |
 | **1.9.13** | **May 8** | **Daily rebuild guarantee — build-trigger file, 7-day cron, INMAG backfill (Apr 11→May 6), drop deprecated edge runtime on /api/health** |
 | **1.10.0** | **May 12** | **Three-product pricing — `/planes` audience toggle (Productor vs Consignataria), Enterprise API (Starter/Growth/Scale) with HMAC-SHA256 keys + quota tracking + weekly 80% alert, 7 new daily-rebuilt `/precios/*` landings answer-first against GSC queries, Reports system at `/cuenta/reportes` with per-user download tracking, 5 new Supabase migrations** |
+| **1.10.1** | **May 12** | **MAG data deepening — backfill 11 años de INMAG diario (2.236 días, 2015→hoy), 16 sub-categorías oficiales con corte por peso (haciinfo000502), nuevos endpoints `/api/precios?detallado=true` y `?historico=N`, cron daily Lun-Vie 15:30 ART, `/api-docs` reescrito con auth Bearer correcto y matriz real de rate limits por plan** |
 
-Built in 75 days. One human, one AI. $0 hosting cost. 15+ Supabase tables. 27 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
+Built in 75 days. One human, one AI. $0 hosting cost. 17+ Supabase tables. 27 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
 
 ---
 
