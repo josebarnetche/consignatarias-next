@@ -1,0 +1,41 @@
+name: MAG Detailed Prices (16 sub-categories)
+
+# Daily fetch of MAG haciinfo000502. MAG operates Mar/Mié/Vie (2/3/5).
+# Cron runs every weekday at 18:30 UTC (15:30 ART) — after MAG closes (~14:30 ART).
+# The route is a no-op on non-trading days (returns rows_parsed: 0).
+on:
+  schedule:
+    - cron: '30 18 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Optional date YYYY-MM-DD (default: today)'
+        required: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger detailed prices scrape
+        run: |
+          DATE_PARAM=""
+          if [ -n "${{ github.event.inputs.date }}" ]; then
+            DATE_PARAM="?date=${{ github.event.inputs.date }}"
+          fi
+
+          response=$(curl -sL -w "\n%{http_code}" -X POST \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            "https://www.consignatarias.com.ar/api/cron/scrape-mag-detailed${DATE_PARAM}")
+
+          http_code=$(echo "$response" | tail -1)
+          body=$(echo "$response" | head -n -1)
+
+          echo "HTTP $http_code"
+          echo "$body"
+
+          if [ "$http_code" -ne 200 ]; then
+            echo "::error::MAG detailed prices cron failed (HTTP $http_code)"
+            exit 1
+          fi
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}

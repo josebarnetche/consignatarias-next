@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import marketPrices from '@/lib/data/market-prices.json'
 import { authenticate, hasAuthHeader, setQuotaHeaders } from '@/lib/api-auth'
+import { createAdminClient } from '@/lib/supabase-server'
 
 // Valid categories
 const VALID_CATEGORIES = ['novillos', 'novillitos', 'vaquillonas', 'vacas', 'toros', 'terneros'] as const
@@ -53,7 +54,7 @@ interface ErrorResponse {
  * - GET /api/precios?categoria=novillos → Single category
  * - GET /api/precios?categoria=novillo → Also works (normalized to plural)
  */
-export async function GET(request: NextRequest): Promise<NextResponse<SuccessResponse | ErrorResponse>> {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     // Enterprise auth: opt-in. Header present → must be valid + quota OK.
     // No header → public access (legacy behavior, IP-rate-limited elsewhere).
@@ -66,6 +67,98 @@ export async function GET(request: NextRequest): Promise<NextResponse<SuccessRes
 
     const { searchParams } = new URL(request.url)
     const categoriaParam = searchParams.get('categoria')?.toLowerCase() || null
+    const detallado = searchParams.get('detallado') === 'true'
+    const historicoParam = searchParams.get('historico')
+    const historicoDays = historicoParam
+      ? Math.max(7, Math.min(3650, parseInt(historicoParam, 10) || 90))
+      : null
+
+    // Detailed mode — return 16 sub-categories from mag_prices_detailed
+    if (detallado) {
+      const admin = createAdminClient()
+      const { data, error } = await admin
+        .from('mag_prices_detailed')
+        .select('date, subcategory, category_group, weight_threshold, price_min, price_max, price_avg, price_median, head_count, total_amount, total_kgs, kg_avg')
+        .order('date', { ascending: false })
+        .limit(50)
+
+      if (error || !data || data.length === 0) {
+        return NextResponse.json({
+          success: false,
+          error: {
+            code: 'NO_DETAILED_DATA',
+            message: 'No detailed price data available yet. The daily scrape runs after MAG closes (martes/miércoles/viernes ~15:30 ART).',
+          },
+        }, { status: 503 })
+      }
+
+      const latestDate = data[0].date
+      const rows = data.filter((r) => r.date === latestDate)
+
+      const response = NextResponse.json({
+        success: true,
+        data: {
+          fecha: latestDate,
+          subcategorias: rows,
+          fuente: 'Mercado Agroganadero — haciinfo000502 (Resolución MPyT)',
+          fuente_url: 'https://www.mercadoagroganadero.com.ar/dll/hacienda1.dll/haciinfo000502',
+        },
+        timestamp: new Date().toISOString(),
+      })
+      response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=600')
+      if (auth) setQuotaHeaders(response, auth)
+      return response
+    }
+
+    // Historical mode — return INMAG series from mag_inmag_history
+    if (historicoDays !== null) {
+      const admin = createAdminClient()
+      const cutoff = new Date()
+      cutoff.setUTCDate(cutoff.getUTCDate() - historicoDays)
+      const { data, error } = await admin
+        .from('mag_inmag_history')
+        .select('date, head_count, total_amount, inmag_value, inmag_calculated, variation')
+        .gte('date', cutoff.toISOString().slice(0, 10))
+        .order('date', { ascending: true })
+
+      if (error || !data) {
+        return NextResponse.json({
+          success: false,
+          error: {
+            code: 'HISTORY_FETCH_FAILED',
+            message: error?.message ?? 'Failed to load INMAG history.',
+          },
+        }, { status: 500 })
+      }
+
+      const calculated = data.filter((r) => r.inmag_calculated && r.inmag_value !== null)
+      const values = calculated.map((r) => Number(r.inmag_value))
+      const stats = values.length
+        ? {
+            count: values.length,
+            min: Math.min(...values),
+            max: Math.max(...values),
+            avg: values.reduce((s, v) => s + v, 0) / values.length,
+          }
+        : null
+
+      const response = NextResponse.json({
+        success: true,
+        data: {
+          dias: historicoDays,
+          desde: cutoff.toISOString().slice(0, 10),
+          hasta: data.length ? data[data.length - 1].date : null,
+          serie: data,
+          estadisticas: stats,
+          fuente: 'Mercado Agroganadero — INMAG diario (haciinfo000011)',
+          fuente_url: 'https://www.mercadoagroganadero.com.ar/dll/hacienda2.dll/haciinfo000011',
+        },
+        timestamp: new Date().toISOString(),
+      })
+      response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=600')
+      if (auth) setQuotaHeaders(response, auth)
+      return response
+    }
 
     // Normalize singular to plural forms
     const normalizeCategory = (cat: string): string => {
