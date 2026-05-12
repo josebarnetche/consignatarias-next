@@ -67,6 +67,12 @@ const ENDPOINTS = [
   },
   {
     method: 'GET',
+    path: '/api/account',
+    description: 'Tu cuenta — plan, cupo mensual, uso, remaining y fecha de reset. Bearer auth devuelve metadata de la key usada. Sin Bearer y con cookie de sesión devuelve estado del user logueado. Útil para monitorear desde scripts.',
+    auth: true,
+  },
+  {
+    method: 'GET',
     path: '/api/market/history',
     description: 'Histórico INMAG con series de precios. Params: ?days=30|90|365 o ?from=YYYY-MM-DD&to=YYYY-MM-DD. Devuelve series + estadísticas (min, max, avg, VWAP).',
     auth: false,
@@ -288,6 +294,50 @@ export default function ApiDocsPage() {
   }
 }`}
             </pre>
+          </div>
+        </div>
+
+        {/* Account introspection */}
+        <div className="terminal-panel mt-6">
+          <div className="terminal-panel-header">Self-service: tu plan y uso</div>
+          <div className="px-panel py-4 space-y-3 text-sm">
+            <p className="text-zinc-400">
+              Endpoint dedicado para que vos (o tu app) sepan en qué plan
+              estás, cuánto del cupo mensual consumiste, cuánto te queda y
+              cuándo se reinicia. Pensado para healthchecks y dashboards
+              internos.
+            </p>
+            <pre className="bg-zinc-900 border border-terminal-border p-3 text-xs font-mono text-zinc-300 overflow-x-auto">
+{`curl https://www.consignatarias.com.ar/api/account \\
+  -H "Authorization: Bearer cnsg_live_xxxxxxxxxxxxxxxx"
+
+{
+  "success": true,
+  "authenticated_via": "api_key",
+  "key": {
+    "prefix": "cnsg_live_a1b2",
+    "environment": "live"
+  },
+  "plan": "growth",
+  "limits": {
+    "monthly_quota": 50000,
+    "rate_limit_per_minute": 300
+  },
+  "usage": {
+    "monthly_used": 12847,
+    "monthly_remaining": 37153,
+    "percent_consumed": 26,
+    "resets_on": "2026-06-01"
+  },
+  "sla": "99.8%",
+  "docs": "https://www.consignatarias.com.ar/api-docs"
+}`}
+            </pre>
+            <p className="text-zinc-500 text-xs">
+              También aceptamos cookie de sesión: si llamás desde un browser
+              logueado el response incluye todas tus keys activas, el tier de
+              PRO Usuario y el tier Enterprise por separado.
+            </p>
           </div>
         </div>
 
