@@ -1,0 +1,55 @@
+name: Backfill INMAG History
+
+# Manual trigger only — disparalo desde la pestaña Actions cuando quieras.
+# Llama al cron route /api/cron/backfill-inmag en Vercel, que es quien
+# habla con Supabase + MAG. CRON_SECRET nunca sale de GitHub/Vercel.
+on:
+  workflow_dispatch:
+    inputs:
+      from:
+        description: 'Fecha desde (YYYY-MM-DD)'
+        required: true
+        default: '2015-01-01'
+      to:
+        description: 'Fecha hasta (YYYY-MM-DD), default hoy'
+        required: false
+        default: ''
+      months:
+        description: 'Tamaño de chunk en meses (1-12)'
+        required: false
+        default: '6'
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Trigger INMAG backfill
+        run: |
+          FROM="${{ github.event.inputs.from }}"
+          TO="${{ github.event.inputs.to }}"
+          MONTHS="${{ github.event.inputs.months }}"
+
+          QS="from=${FROM}&months=${MONTHS}"
+          if [ -n "${TO}" ]; then
+            QS="${QS}&to=${TO}"
+          fi
+
+          echo "Trigger: https://www.consignatarias.com.ar/api/cron/backfill-inmag?${QS}"
+
+          response=$(curl -sL -w "\n%{http_code}" --max-time 600 -X POST \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            "https://www.consignatarias.com.ar/api/cron/backfill-inmag?${QS}")
+
+          http_code=$(echo "$response" | tail -1)
+          body=$(echo "$response" | head -n -1)
+
+          echo "HTTP $http_code"
+          echo "$body"
+
+          if [ "$http_code" -ne 200 ]; then
+            echo "::error::Backfill failed with HTTP $http_code"
+            exit 1
+          fi
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
