@@ -1,10 +1,15 @@
 import { Metadata } from 'next'
+import Link from 'next/link'
 import MercadoClient from './MercadoClient'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { LongTermChart } from '@/components/market/LongTermChart'
 import { SeasonalPattern } from '@/components/market/SeasonalPattern'
 import { CategoryComparison } from '@/components/market/CategoryComparison'
+import { YearOverYearBlock } from '@/components/market/YearOverYearBlock'
+import { SeasonalityHeatmap } from '@/components/market/SeasonalityHeatmap'
 import marketPrices from '@/lib/data/market-prices.json'
+
+export const revalidate = 86400 // daily rebuild via Vercel
 
 // Build-time interpolated current prices for SERP snippet
 const novillo = Math.round(marketPrices.categories.novillos.current)
@@ -98,7 +103,54 @@ export default function MercadoPage() {
         </p>
       </section>
       <MercadoClient />
-      
+
+      {/* Year-over-year + USD landing teaser */}
+      <div className="px-4 pt-2 pb-4 max-w-6xl mx-auto">
+        <YearOverYearBlock />
+        <div className="mt-3 text-center">
+          <Link
+            href="/mercado/inmag-dolares"
+            className="inline-block px-4 py-2 text-xxs font-terminal uppercase tracking-wider border transition-colors"
+            style={{
+              borderColor: 'rgba(56, 189, 248, 0.4)',
+              color: '#38bdf8',
+            }}
+          >
+            Ver INMAG en dólares blue (10 años) →
+          </Link>
+        </div>
+      </div>
+
+      {/* PRO Usuario features: seasonality + calculator CTA */}
+      <div className="px-4 py-4 max-w-6xl mx-auto space-y-4">
+        <SeasonalityHeatmap />
+        <div
+          className="terminal-panel"
+          style={{
+            borderColor: 'rgba(56, 189, 248, 0.3)',
+            background: 'linear-gradient(180deg, rgba(56,189,248,0.04), transparent)',
+          }}
+        >
+          <div className="terminal-panel-header" style={{ color: '#38bdf8' }}>
+            Calculadora ¿Vendo ahora? (PRO Usuario)
+          </div>
+          <div className="px-panel py-5 flex flex-col md:flex-row md:items-center gap-4">
+            <p className="text-zinc-300 text-data flex-1">
+              Ingresá tu categoría y peso vivo. Te devolvemos valor por cabeza
+              en ARS + USD, percentil últimos 30 y 365 días, y lectura
+              estadística del momento de venta.
+            </p>
+            <Link
+              href="/mercado/vender-ahora"
+              className="terminal-btn whitespace-nowrap"
+              style={{ borderColor: 'rgba(56, 189, 248, 0.6)', color: '#38bdf8' }}
+            >
+              Abrir calculadora →
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* Long-term historical data */}
       <div className="px-4 py-4 max-w-6xl mx-auto space-y-6">
         <LongTermChart />

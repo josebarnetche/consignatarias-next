@@ -20,6 +20,7 @@ export const maxDuration = 60
 const USER_AGENT = 'consignatarias.com.ar scraper (contact: agro@memola.com.ar)'
 const URL_BASE_DETAILED = 'https://www.mercadoagroganadero.com.ar/dll/hacienda1.dll/haciinfo000502'
 const URL_BASE_INMAG = 'https://www.mercadoagroganadero.com.ar/dll/hacienda2.dll/haciinfo000011'
+const URL_DOLAR_BLUE = 'https://dolarapi.com/v1/dolares/blue'
 
 /**
  * Subcategory → { group, threshold } mapping. group is the canonical
@@ -200,6 +201,7 @@ export async function POST(req: NextRequest) {
     date: targetDateIso,
     detailed_upserted: 0,
     inmag_upserted: 0,
+    usd_upserted: 0,
     errors: [] as string[],
   }
 
@@ -249,7 +251,36 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const allEmpty = result.detailed_upserted === 0 && result.inmag_upserted === 0
+  // 3. USD blue today (dolarapi live endpoint) → usd_blue_history.
+  //    Today's date only; the historical backfill runs separately.
+  try {
+    const res = await fetch(URL_DOLAR_BLUE, { headers: { 'User-Agent': USER_AGENT } })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const json = (await res.json()) as { compra?: number; venta?: number }
+    if (typeof json.venta === 'number' || typeof json.compra === 'number') {
+      const { error } = await supabase.from('usd_blue_history').upsert(
+        [
+          {
+            date: targetDateIso,
+            compra: typeof json.compra === 'number' ? json.compra : null,
+            venta: typeof json.venta === 'number' ? json.venta : null,
+          },
+        ],
+        { onConflict: 'date' },
+      )
+      if (error) result.errors.push(`usd upsert: ${error.message}`)
+      else result.usd_upserted = 1
+    }
+  } catch (err) {
+    result.errors.push(
+      `usd fetch: ${err instanceof Error ? err.message : 'unknown'}`,
+    )
+  }
+
+  const allEmpty =
+    result.detailed_upserted === 0 &&
+    result.inmag_upserted === 0 &&
+    result.usd_upserted === 0
   return NextResponse.json({
     ok: result.errors.length === 0,
     ...result,

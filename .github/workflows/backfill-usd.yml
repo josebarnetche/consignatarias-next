@@ -1,0 +1,38 @@
+name: Backfill USD Blue History
+
+on:
+  workflow_dispatch:
+    inputs:
+      from:
+        description: 'Fecha desde (YYYY-MM-DD, vacío = todo el histórico desde 2011)'
+        required: false
+        default: ''
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Trigger USD backfill
+        run: |
+          QS=""
+          if [ -n "${{ github.event.inputs.from }}" ]; then
+            QS="?from=${{ github.event.inputs.from }}"
+          fi
+
+          response=$(curl -sL -w "\n%{http_code}" --max-time 180 -X POST \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            "https://www.consignatarias.com.ar/api/cron/backfill-usd${QS}")
+
+          http_code=$(echo "$response" | tail -1)
+          body=$(echo "$response" | head -n -1)
+
+          echo "HTTP $http_code"
+          echo "$body"
+
+          if [ "$http_code" -ne 200 ]; then
+            echo "::error::USD backfill failed (HTTP $http_code)"
+            exit 1
+          fi
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}

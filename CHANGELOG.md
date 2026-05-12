@@ -6,6 +6,58 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.11.0] — 2026-05-12
+
+### Sprint 1+2+3: USD-deflactado, year-over-year, heatmap, calculator, MEMOLA Index
+
+Three sprints in one push. The thesis: MAG publishes the day, we publish the series and the derivatives. This release turns 11 years of raw INMAG into visual + decision tools that MAG itself never builds.
+
+#### Sprint 1 — Marketing pieces (public, SEO bait)
+
+- `/mercado/inmag-dolares` — full-screen landing showing INMAG deflactado por dólar blue. Server-rendered SVG line chart (last 5 years + full history since 2015), big-number panel (hoy, promedio 10y, mínimo, máximo). Title interpolates today's USD value: *"Precio Kilo Vivo Novillo en Dólares Hoy: USD 3.03 | INMAG Histórico"*. FAQ verbatim long-tail: `cuanto vale el novillo en dolares`, `precio kilo vivo en dolares`, `carne en dolares argentina`. SSG with daily revalidate.
+- `YearOverYearBlock` — embedded on `/mercado`, overlays last 6 years on the same Jan-Dec axis. Reveals seasonal patterns the daily INMAG hides.
+- New table `usd_blue_history` (5.608 días desde 2011, source argentinadatos.com) backfilled via `/api/cron/backfill-usd` (workflow_dispatch `backfill-usd.yml`).
+- `/api/cron/scrape-mag-detailed` extended to also fetch today's USD blue from dolarapi → keeps `usd_blue_history` current going forward.
+
+#### Sprint 2 — PRO Usuario decision tools (gated)
+
+- `SeasonalityHeatmap` on `/mercado` — mes × año grid colored by z-score per year (azul = sobre promedio anual, rosa = bajo). Strips inflation noise, reveals the real cycle. PRO-gated via client-side `ProOverlay` (reads `/api/me` to show/hide blur+CTA). Data is still in HTML for SEO.
+- `/mercado/vender-ahora` — full calculator page. Server-redirect to `/upgrade` if non-PRO. Client form with 6 categorías + peso vivo input → `/api/vender-ahora` returns: valor cabeza ARS, valor cabeza USD blue, percentil últimos 30 días, percentil último año, mín/máx/promedio 5 años, statistically-reasoned recommendation in plain Spanish.
+- The recommendation engine isn't ML — it's rule-based on the joint distribution of `pct30` and `pct365`. Honest tool: "percentil 80+ últimos 30 días con 60+ anual = momento de salida". Disclaimer obligatorio.
+
+#### Sprint 3 — Enterprise differentiation (API)
+
+- `GET /api/index/memola` — composite ponderado por kgs operados sobre las 16 sub-categorías MAG. Fórmula: `Σ(price_avg_i × total_kgs_i) / Σ(total_kgs_i)`. Pondera por mix real de faena, no novillos solos como el INMAG oficial. Params `?days=N` o `?from=&to=`. Devuelve serie + stats (latest/min/max/avg). Hoy responde vacío hasta que `mag_prices_detailed` acumule data (cron Mar/Mié/Vie comenzando esta semana).
+- Honors Enterprise auth + quota tracking when called with `Authorization: Bearer`.
+
+#### Infra: chart rendering
+
+- `src/lib/charts/svg.ts` — server-rendered SVG primitives: `lineChartSvg`, `sparklineSvg`, `heatmapSvg`. Zero client JS. Inline content indexable por Google. Estética terminal (zinc-500/sky-400, monospaced labels).
+- `src/lib/charts/data.ts` — data helpers (`fetchInmagSeries`, `fetchUsdSeries`, `fetchInmagUsdJoined` con forward-fill, `aggregateMonthly`, `withYearZScores`, `percentileOf`). Usa anon client (RLS public-read), funciona en SSG sin service key.
+
+#### Schema additions
+
+- `usd_blue_history` (date PK, compra, venta, source_url) — public read RLS
+
+#### Migration / data ops applied to remote
+
+- Migration `usd_blue_history` applied via MCP
+- Backfill workflow `backfill-usd.yml` ready (workflow_dispatch) — disparalo una vez desde GH Actions UI para sembrar 5.608 días
+
+#### New routes summary
+
+| URL | Tipo | Acceso |
+|---|---|---|
+| `/mercado/inmag-dolares` | SSG | Público (SEO) |
+| `/mercado/vender-ahora` | Dynamic | PRO Usuario only (redirect) |
+| `/api/vender-ahora` | API | PRO Usuario (session) |
+| `/api/index/memola` | API | Public + Enterprise tracked |
+| `/api/cron/backfill-usd` | Cron | CRON_SECRET |
+
+**Impact:** the platform now ships derivatives, not just the wrapper. INMAG en dólares es bait orgánico para Google. Heatmap + calculator son las dos features que justifican PRO Usuario $7.900 (antes el pitch era "medios de pago + descargas", débil). MEMOLA Index es la primera marca propia del data product Enterprise.
+
+---
+
 ## [1.10.1] — 2026-05-12
 
 ### MAG Data Deepening — 16 sub-categories + 11 years of INMAG history
