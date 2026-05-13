@@ -6,24 +6,7 @@ import {
   ProvinceView,
 } from '../_views/ProvinceView'
 
-// 13 argentine provinces with consignataria activity. Hardcoded here (not
-// imported) so Next's static analyzer guarantees they're included in the
-// merged generateStaticParams below.
-const PROVINCE_SLUGS = [
-  'buenos-aires',
-  'chaco',
-  'cordoba',
-  'corrientes',
-  'entre-rios',
-  'formosa',
-  'la-pampa',
-  'misiones',
-  'neuquen',
-  'san-luis',
-  'santa-fe',
-  'santiago-del-estero',
-  'tucuman',
-] as const
+import { mergedSlugStaticParams } from '../_views/sluglist'
 import rematesData from '@/lib/data/remates.json'
 import marketData from '@/lib/data/market-prices.json'
 import type { Auction } from '@/lib/db/schema'
@@ -158,11 +141,7 @@ async function fetchConsignatariaVideos(slug: string): Promise<ConsignatariaVide
 /* ------------------------------------------------------------------ */
 
 export function generateStaticParams() {
-  // Merged route: province slugs + canonical consignataria slugs.
-  // Province slugs win at runtime via isProvinceSlug check in the page handler.
-  const profileSlugs = getAllCanonicalSlugs()
-  const all = Array.from(new Set([...PROVINCE_SLUGS, ...profileSlugs]))
-  return all.map((slug) => ({ slug }))
+  return mergedSlugStaticParams()
 }
 
 /* ------------------------------------------------------------------ */
@@ -237,14 +216,22 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
     permanentRedirect(`/consignatarias/${canonical}`)
   }
 
-  // Time-bound the enriched profile fetch so a hung Supabase connection
-  // can't take down the page.
-  const enrichedProfile = await withTimeout(
+  // Always render: fall back to the static (in-repo) profile when Supabase
+  // is unavailable or slow. Avoids triggering notFound() at build time and
+  // losing the prerendered HTML for the slug.
+  const staticFallback = getProfile(canonical)
+  if (!staticFallback) notFound()
+  const enriched = await withTimeout(
     getConsignatariaProfile(canonical),
     4500,
     null,
   )
-  if (!enrichedProfile) notFound()
+  const enrichedProfile =
+    enriched ?? {
+      ...staticFallback,
+      verified: false,
+      featured: false,
+    }
 
   const [tier, auctionResults, videos, relatedConsignatarias] = await Promise.all([
     withTimeout(getEntityTier('consignataria', canonical), 3500, 'free' as const),

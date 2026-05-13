@@ -1,18 +1,18 @@
 import { Metadata } from 'next'
 import { notFound, permanentRedirect } from 'next/navigation'
 import {
-  getAllCanonicalSlugs,
   getCanonicalSlug,
   getProfile,
 } from '@/lib/data/consignataria-slugs'
 import ClaimForm from '@/components/claims/ClaimForm'
+import { mergedSlugStaticParams } from '../../_views/sluglist'
 
 /* ------------------------------------------------------------------ */
 /*  STATIC PARAMS                                                      */
 /* ------------------------------------------------------------------ */
 
 export function generateStaticParams() {
-  return getAllCanonicalSlugs().map(slug => ({ slug }))
+  return mergedSlugStaticParams()
 }
 
 /* ------------------------------------------------------------------ */
