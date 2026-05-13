@@ -332,36 +332,6 @@ export default function EnterprisePage() {
           </p>
         </div>
 
-        {/* Real use case — Martin Apesteguia pattern */}
-        <div
-          className="terminal-panel mb-8"
-          style={{ borderColor: 'rgba(113, 113, 122, 0.5)' }}
-        >
-          <div className="terminal-panel-header">Caso de uso</div>
-          <div className="px-panel py-5">
-            <p className="text-zinc-300 text-data mb-3 italic">
-              &ldquo;Estoy desarrollando una app de gestión agronómica y
-              necesito los precios de faena e invernada para valorizar rodeos.
-              Una lectura diaria nos alcanza.&rdquo;
-            </p>
-            <div className="text-zinc-500 text-xxs mb-4">
-              — Desarrollador agtech (consulta real, abril 2026)
-            </div>
-            <div className="border-t border-terminal-border pt-3 text-data text-zinc-400 leading-relaxed">
-              <span className="text-zinc-200">Recomendación:</span> plan{' '}
-              <span style={{ color: '#71717a' }} className="font-medium">
-                Starter (USD 99/mes)
-              </span>
-              . Endpoints relevantes: <code className="text-zinc-300 bg-zinc-900 px-1">/api/precios</code>{' '}
-              (INMAG + 6 categorías) y{' '}
-              <code className="text-zinc-300 bg-zinc-900 px-1">/api/market/categories</code>{' '}
-              (histórico mensual). Con 1 request/día por usuario, hasta ~30
-              usuarios activos entran en el cupo de 1.000 req/mes. Cuando la
-              app escala, se pasa a Growth.
-            </div>
-          </div>
-        </div>
-
         {/* Verticals */}
         <div className="terminal-panel mb-8">
           <div className="terminal-panel-header">Por vertical</div>
