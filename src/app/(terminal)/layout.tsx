@@ -23,6 +23,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "FRIGORIFICOS", href: "/frigorificos" },
   { label: "MERCADO", href: "/mercado" },
   { label: "MIS GUÍAS", href: "/mi-cuenta/guias", authRequired: true },
+  { label: "DASHBOARD", href: "/dashboard", authRequired: true },
   { label: "PLANES", href: "/planes" },
 ];
 

@@ -66,7 +66,26 @@ export default async function CuentaPage({ searchParams }: PageProps) {
       )}
 
       <h1 className="text-zinc-100 text-2xl font-medium mb-2">Tu cuenta</h1>
-      <p className="text-zinc-500 text-xs font-mono mb-8">{user.email}</p>
+      <p className="text-zinc-500 text-xs font-mono mb-6">{user.email}</p>
+
+      <Link
+        href="/dashboard"
+        className="block mb-8 border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 rounded-lg p-4 transition-colors group"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-emerald-400 font-mono text-sm font-medium">
+              Ir al dashboard →
+            </div>
+            <div className="text-zinc-500 text-xs font-mono mt-0.5">
+              Tu workspace de datos, reportes y precios
+            </div>
+          </div>
+          <span className="text-emerald-400/40 group-hover:text-emerald-400 text-xl font-mono transition-colors">
+            ↗
+          </span>
+        </div>
+      </Link>
 
       <div className="border border-zinc-800 bg-zinc-900/40 rounded-lg p-5 mb-6">
         <div className="flex items-baseline justify-between mb-4">
