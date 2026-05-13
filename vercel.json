@@ -7,6 +7,28 @@
   },
   "ignoreCommand": "bash scripts/ignore-build.sh",
   "crons": [],
+  "functions": {
+    "src/app/api/**/route.ts": {
+      "memory": 256,
+      "maxDuration": 30
+    },
+    "src/app/api/cron/**/route.ts": {
+      "memory": 512,
+      "maxDuration": 60
+    },
+    "src/app/api/webhooks/**/route.ts": {
+      "memory": 256,
+      "maxDuration": 15
+    },
+    "src/app/**/opengraph-image.tsx": {
+      "memory": 1024,
+      "maxDuration": 30
+    },
+    "src/app/**/twitter-image.tsx": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  },
   "redirects": [
     {
       "source": "/alertas",

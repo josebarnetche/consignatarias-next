@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import marketPrices from '@/lib/data/market-prices.json'
-import { authenticate, hasAuthHeader, setQuotaHeaders } from '@/lib/api-auth'
+import { authenticate, setQuotaHeaders } from '@/lib/api-auth'
 import { createAdminClient } from '@/lib/supabase-server'
 
 // Valid categories
@@ -56,14 +56,9 @@ interface ErrorResponse {
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
-    // Enterprise auth: opt-in. Header present → must be valid + quota OK.
-    // No header → public access (legacy behavior, IP-rate-limited elsewhere).
-    let auth = null
-    if (hasAuthHeader(request)) {
-      const result = await authenticate(request)
-      if (!result.ok) return result.response as NextResponse<ErrorResponse>
-      auth = result
-    }
+    const result = await authenticate(request)
+    if (!result.ok) return result.response as NextResponse<ErrorResponse>
+    const auth = result
 
     const { searchParams } = new URL(request.url)
     const categoriaParam = searchParams.get('categoria')?.toLowerCase() || null

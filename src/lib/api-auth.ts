@@ -44,6 +44,17 @@ export type AuthResult = AuthOk | AuthFail
 export async function authenticate(req: NextRequest): Promise<AuthResult> {
   const header = req.headers.get('authorization')
 
+  if (!header) {
+    return {
+      ok: false,
+      response: errorResponse(
+        'auth_required',
+        'API key required. Get one at https://www.consignatarias.com.ar/cuenta/api-keys (requires an Enterprise plan).',
+        401,
+      ),
+    }
+  }
+
   const key = await verifyApiKey(header)
   if (!key) {
     return {

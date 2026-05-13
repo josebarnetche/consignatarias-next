@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-server'
-import { authenticate, hasAuthHeader, setQuotaHeaders } from '@/lib/api-auth'
+import { authenticate, setQuotaHeaders } from '@/lib/api-auth'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -20,12 +20,9 @@ export const dynamic = 'force-dynamic'
  *   ?from=YYYY-MM-DD&to=YYYY-MM-DD (overrides days)
  */
 export async function GET(req: NextRequest) {
-  let auth = null
-  if (hasAuthHeader(req)) {
-    const result = await authenticate(req)
-    if (!result.ok) return result.response
-    auth = result
-  }
+  const result = await authenticate(req)
+  if (!result.ok) return result.response
+  const auth = result
 
   const { searchParams } = new URL(req.url)
   const daysParam = searchParams.get('days')
