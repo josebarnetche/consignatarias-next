@@ -24,9 +24,10 @@ export function UpgradeNudge({ plan, usagePct, daysLeft }: Props) {
 
   async function startUpgrade() {
     if (!isStarter) {
-      // Growth → Scale = mailto (sales-led)
-      window.location.href =
-        'mailto:agro@memola.com.ar?subject=Upgrade%20a%20Enterprise%20Scale&body=Hola,%20queremos%20upgradear%20de%20Growth%20a%20Scale.%0A%0AVolumen%20estimado%20(req/mes):%0ATimeline:'
+      // Growth → Scale = navigate to enterprise page with anchor + context.
+      // /enterprise renders the Scale tier card with shimmer + the volume
+      // slider where they can pick their req/mes and see the price.
+      window.location.href = '/enterprise?upgrade=scale&from=growth#calculadora'
       return
     }
     setLoading(true)
