@@ -84,18 +84,29 @@ export interface AuctionResult {
   location: string | null
 }
 
+// Promise.race timeout helper — supabase calls in this page were hanging
+// production renders 30+s. 4s cap forces a fast static-only fallback when
+// the network leg misbehaves.
+function withTimeout<T>(p: Promise<T>, ms: number, fallback: T): Promise<T> {
+  return Promise.race<T>([
+    p,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms)),
+  ])
+}
+
 async function fetchAuctionResults(slug: string): Promise<AuctionResult[]> {
   try {
     const service = createServiceClient()
-    if (!service) return [] // Env vars not available during static generation
-    
-    const { data } = await service
+    if (!service) return []
+
+    const query = service
       .from('auction_results')
       .select('id, auction_date, auction_title, total_heads_sold, average_price, max_price, location')
       .eq('consignataria_slug', slug)
       .order('auction_date', { ascending: false })
       .limit(20)
 
+    const { data } = await withTimeout(query as unknown as Promise<{ data: AuctionResult[] | null }>, 4000, { data: null })
     return (data as AuctionResult[]) || []
   } catch {
     return []
@@ -109,19 +120,21 @@ async function fetchAuctionResults(slug: string): Promise<AuctionResult[]> {
 async function fetchConsignatariaVideos(slug: string): Promise<ConsignatariaVideo[]> {
   try {
     const service = createServiceClient()
-    if (!service) return [] // Env vars not available during static generation
-    
-    // First get consignataria ID
-    const { data: consignataria } = await service
+    if (!service) return []
+
+    const consigQuery = service
       .from('consignatarias')
       .select('id')
       .eq('slug', slug)
       .single()
-
+    const { data: consignataria } = await withTimeout(
+      consigQuery as unknown as Promise<{ data: { id: number } | null }>,
+      4000,
+      { data: null },
+    )
     if (!consignataria) return []
 
-    // Fetch videos
-    const { data: videos } = await service
+    const videosQuery = service
       .from('consignataria_videos')
       .select('id, youtube_video_id, title, description, video_type, published_at, thumbnail_url, duration_seconds, view_count, is_featured')
       .eq('consignataria_id', consignataria.id)
@@ -129,6 +142,11 @@ async function fetchConsignatariaVideos(slug: string): Promise<ConsignatariaVide
       .order('published_at', { ascending: false })
       .limit(12)
 
+    const { data: videos } = await withTimeout(
+      videosQuery as unknown as Promise<{ data: ConsignatariaVideo[] | null }>,
+      4000,
+      { data: null },
+    )
     return (videos as ConsignatariaVideo[]) || []
   } catch {
     return []
