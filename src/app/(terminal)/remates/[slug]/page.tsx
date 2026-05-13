@@ -1,5 +1,11 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import {
+  isRemateProvinceSlug,
+  rematesProvinceSlugsWithAuctions,
+  rematesProvinceMetadata,
+  RematesProvinceView,
+} from '../_views/RematesProvinceView'
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
@@ -116,19 +122,30 @@ type Props = {
   params: Promise<{ slug: string }>
 }
 
+export const dynamicParams = true
+
 export async function generateStaticParams() {
-  // Generate slugs for all scheduled/completed remates
-  return rematesData
+  // Merged route: individual remate slugs + province slugs (province match
+  // discriminated at runtime via isRemateProvinceSlug).
+  const remateSlugs = rematesData
     .filter(r => r.status === 'scheduled' || r.status === 'completed')
-    .map(remate => ({
-      slug: generateRemateSlug(remate),
-    }))
+    .map(remate => generateRemateSlug(remate))
+  const provinceSlugs = rematesProvinceSlugsWithAuctions()
+  const all = Array.from(new Set([...remateSlugs, ...provinceSlugs]))
+  return all.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
+
+  // Province branch
+  if (isRemateProvinceSlug(slug)) {
+    const meta = await rematesProvinceMetadata(slug)
+    return meta ?? {}
+  }
+
   const remate = findRemateBySlug(slug)
-  
+
   if (!remate) {
     return {
       title: 'Remate no encontrado — Consignatarias.com.ar',
@@ -166,8 +183,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function RemateDetailPage({ params }: Props) {
   const { slug } = await params
+
+  // Province branch — render the merged-from-[provincia] view
+  if (isRemateProvinceSlug(slug)) {
+    return <RematesProvinceView provincia={slug} />
+  }
+
   const remate = findRemateBySlug(slug)
-  
+
   if (!remate) {
     notFound()
   }

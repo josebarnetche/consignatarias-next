@@ -59,11 +59,11 @@ const TYPES: TypeConfig[] = [
 /* ------------------------------------------------------------------ */
 
 interface PageParams {
-  params: Promise<{ provincia: string; tipo: string }>
+  params: Promise<{ slug: string; tipo: string }>
 }
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
-  const { provincia, tipo } = await params
+  const { slug: provincia, tipo } = await params
   const provinceConfig = PROVINCES.find((p) => p.slug === provincia)
   const typeConfig = TYPES.find((t) => t.slug === tipo)
 
@@ -98,7 +98,7 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 /* ------------------------------------------------------------------ */
 
 export async function generateStaticParams() {
-  const params: { provincia: string; tipo: string }[] = []
+  const params: { slug: string; tipo: string }[] = []
   const remates = rematesData as Auction[]
 
   for (const province of PROVINCES) {
@@ -110,7 +110,7 @@ export async function generateStaticParams() {
           r.type?.toLowerCase() === type.name
       ).length
       if (count > 0) {
-        params.push({ provincia: province.slug, tipo: type.slug })
+        params.push({ slug: province.slug, tipo: type.slug })
       }
     }
   }
@@ -123,7 +123,7 @@ export async function generateStaticParams() {
 /* ------------------------------------------------------------------ */
 
 export default async function ProvinceTypePage({ params }: PageParams) {
-  const { provincia, tipo } = await params
+  const { slug: provincia, tipo } = await params
   const provinceConfig = PROVINCES.find((p) => p.slug === provincia)
   const typeConfig = TYPES.find((t) => t.slug === tipo)
 

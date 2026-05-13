@@ -4,6 +4,12 @@ import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import { getFrigorificoProfile } from '@/lib/dal/frigorificos'
 import { BreadcrumbSchema } from '@/components/seo/JsonLd'
+import {
+  isFrigorificoProvinceSlug,
+  frigorificoProvinceSlugs,
+  frigorificoProvinceMetadata,
+  FrigorificoProvinceView,
+} from '../_views/FrigorificoProvinceView'
 
 interface BasicFrigorifico {
   cuit: string
@@ -46,16 +52,32 @@ function stageBorderColor(stage: number): string {
   return 'border-negative/30'
 }
 
+export const dynamicParams = true
+
 export function generateStaticParams() {
-  return frigorificos.map((f) => ({ cuit: f.cuit }))
+  // Merged route: CUIT slugs + province slugs.
+  // Discrimination happens at runtime via isFrigorificoProvinceSlug.
+  const cuitSlugs = frigorificos.map((f) => f.cuit)
+  const provinceSlugs = frigorificoProvinceSlugs()
+  const all = Array.from(new Set([...cuitSlugs, ...provinceSlugs]))
+  return all.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ cuit: string }>
+  params: Promise<{ slug: string }>
 }): Promise<Metadata> {
-  const { cuit } = await params
+  const { slug } = await params
+
+  // Province branch
+  if (isFrigorificoProvinceSlug(slug)) {
+    const meta = await frigorificoProvinceMetadata(slug)
+    return meta ?? {}
+  }
+
+  // CUIT branch (original behavior)
+  const cuit = slug
   const f = frigorificos.find((x) => x.cuit === cuit)
   if (!f) return { title: 'Frigorifico no encontrado' }
 
@@ -133,9 +155,17 @@ function LocalBusinessSchema({
 export default async function FrigorificoDetailPage({
   params,
 }: {
-  params: Promise<{ cuit: string }>
+  params: Promise<{ slug: string }>
 }) {
-  const { cuit } = await params
+  const { slug } = await params
+
+  // Province branch — render province directory view
+  if (isFrigorificoProvinceSlug(slug)) {
+    return <FrigorificoProvinceView provincia={slug} />
+  }
+
+  // CUIT branch (original behavior). Validate format then lookup.
+  const cuit = slug
   const basicF = frigorificos.find((x) => x.cuit === cuit)
   if (!basicF) notFound()
 

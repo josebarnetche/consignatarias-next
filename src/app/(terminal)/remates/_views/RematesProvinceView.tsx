@@ -1,5 +1,4 @@
-import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
@@ -117,24 +116,24 @@ function slugToProvince(slug: string): ProvinceConfig | undefined {
 
 const auctions = rematesData as Auction[]
 
-export function generateStaticParams() {
-  // Generate pages only for provinces that have auctions
+export function isRemateProvinceSlug(slug: string): boolean {
+  return PROVINCES.some(p => p.slug === slug)
+}
+
+export function rematesProvinceSlugsWithAuctions(): string[] {
   const provincesWithAuctions = new Set(auctions.map(a => a.province))
   return PROVINCES
     .filter(p => provincesWithAuctions.has(p.name))
-    .map(p => ({ provincia: p.slug }))
+    .map(p => p.slug)
 }
 
 /* ------------------------------------------------------------------ */
 /*  METADATA                                                           */
 /* ------------------------------------------------------------------ */
 
-type Props = { params: Promise<{ provincia: string }> }
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { provincia } = await params
+export async function rematesProvinceMetadata(provincia: string): Promise<Metadata | null> {
   const config = slugToProvince(provincia)
-  if (!config) return {}
+  if (!config) return null
 
   const provinceAuctions = auctions.filter(a => a.province === config.name)
   const consignatarias = new Set(provinceAuctions.map(a => a.consignatariaName))
@@ -259,10 +258,9 @@ function AuctionRowStatic({ auction }: { auction: Auction }) {
 /*  PAGE                                                               */
 /* ------------------------------------------------------------------ */
 
-export default async function ProvinciaRematesPage({ params }: Props) {
-  const { provincia } = await params
+export async function RematesProvinceView({ provincia }: { provincia: string }) {
   const config = slugToProvince(provincia)
-  if (!config) notFound()
+  if (!config) return null
 
   const provinceAuctions = auctions
     .filter(a => a.province === config.name)
