@@ -2,10 +2,28 @@ import { Metadata } from 'next'
 import { notFound, permanentRedirect } from 'next/navigation'
 import {
   isProvinceSlug,
-  provinceSlugsWithAuctions,
   provinceMetadata,
   ProvinceView,
 } from '../_views/ProvinceView'
+
+// 13 argentine provinces with consignataria activity. Hardcoded here (not
+// imported) so Next's static analyzer guarantees they're included in the
+// merged generateStaticParams below.
+const PROVINCE_SLUGS = [
+  'buenos-aires',
+  'chaco',
+  'cordoba',
+  'corrientes',
+  'entre-rios',
+  'formosa',
+  'la-pampa',
+  'misiones',
+  'neuquen',
+  'san-luis',
+  'santa-fe',
+  'santiago-del-estero',
+  'tucuman',
+] as const
 import rematesData from '@/lib/data/remates.json'
 import marketData from '@/lib/data/market-prices.json'
 import type { Auction } from '@/lib/db/schema'
@@ -45,7 +63,10 @@ export interface MagEntryData {
 
 // Cost optimization: static at build time (no ISR, rebuild on deploy)
 export const revalidate = false
-export const dynamicParams = false
+// Allow dynamic rendering for slugs not in generateStaticParams output.
+// Profile slugs are merged in but Next 15 has a quirk with sibling
+// generateStaticParams overlap — falling back to dynamic for safety.
+export const dynamicParams = true
 
 const auctions = rematesData as Auction[]
 
@@ -121,9 +142,8 @@ async function fetchConsignatariaVideos(slug: string): Promise<ConsignatariaVide
 export function generateStaticParams() {
   // Merged route: province slugs + canonical consignataria slugs.
   // Province slugs win at runtime via isProvinceSlug check in the page handler.
-  const provinceSlugs = provinceSlugsWithAuctions()
   const profileSlugs = getAllCanonicalSlugs()
-  const all = Array.from(new Set([...provinceSlugs, ...profileSlugs]))
+  const all = Array.from(new Set([...PROVINCE_SLUGS, ...profileSlugs]))
   return all.map((slug) => ({ slug }))
 }
 
