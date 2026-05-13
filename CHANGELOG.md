@@ -6,6 +6,64 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.13.0] — 2026-05-13
+
+### Billing-aligned quotas + self-serve upgrades + dev invite system + bugfixes
+
+Multiple cycles of correctness work on the Enterprise stack. Quotas now align with Rebill billing periods (28-day cliff, not calendar month), aggregate per-user across all keys (closes a real revenue-leak bug), expose a self-serve Starter→Growth upgrade flow, and a pre-invite mechanism lets us elevate beta dev users on signup.
+
+#### Quota system rework
+
+- New `getUserCurrentPeriodUsage(userId)` aggregates `request_count` across ALL of a user's active keys within the current 28-day window anchored to `api_tier_activated_at`. Replaces per-key calendar-month counters. Closes a real bug: a user with 5 keys had 5×50K capacity, not 50K.
+- `currentPeriod(activatedAt)` computes the active period deterministically without needing Rebill renewal webhooks: `[anchor + N×28d, anchor + (N+1)×28d)`.
+- `authenticate()` uses the user-level count; 429 quota_exceeded response now includes `period_start`, `period_end`, `days_until_reset`, and `upgrade_url`.
+- Response headers extended: `X-RateLimit-Period-End`, `X-RateLimit-Days-Until-Reset`.
+- `/api/account` exposes period info instead of calendar-month resets_on. Includes `upgrade_url` when usage ≥ 80%.
+- Cron `/api/cron/quota-alerts` switched to per-USER iteration (one alert per user per period, not per key). Dedup key is the period start ISO date.
+
+#### Self-serve upgrade flow
+
+- `createEnterpriseGrowthLink()` in `lib/rebill.ts` — generic factory for Enterprise plan payment links. Default Growth = ARS 700.000 (~USD 500 al blue), override via `REBILL_ENTERPRISE_GROWTH_AMOUNT`.
+- New endpoint `POST /api/enterprise/upgrade?target=growth` — session-gated, returns Rebill checkout URL for Starter→Growth upgrade. Scale stays sales-led (mailto).
+- New `UpgradeNudge` component on `/cuenta/api-keys`, visible when usage ≥ 80%. Shimmering gradient CTA (matches Enterprise tier card upgrade buttons), urgency indicator (medio/alto/crítico), days remaining. Self-serve checkout button for Growth; mailto for Scale.
+- `EnterpriseTierCTA` component on `/enterprise` renders 5 states per tier: loading, current plan (glowy + pulse animation + "Tu plan actual · Dashboard"), upgrade target (shimmer + "Upgradearme a {Tier}"), downgrade (muted "Plan menor — ya tenés X"), default (existing CTA). One detection per page load, all three tier cards aware.
+
+#### Dev invite system
+
+- New `pending_api_invites` table — pre-approves `api_tier` by email before signup.
+- Trigger `zz_redeem_api_invite_on_signup` fires AFTER `handle_new_user_subscription` on `auth.users` insert. Looks up unredeemed invite by email, applies `api_tier`, marks invite redeemed.
+- Pre-loaded Martin Apesteguia (`mapesteguia@gmail.com`) as Starter for the first external dev validation.
+
+#### Bug fixes + ops cleanups
+
+- **Project clone bypass.** The local repo was linked to the wrong Vercel project (`consignatarias` clone) when env vars were initially set. Production serves from `consignatarias-next`. Re-linked + added `API_KEY_PEPPER` to the correct project. Clone is being archived (git disconnected) since it was duplicating builds.
+- **`increment_api_usage` RPC** was missing from remote DB despite the original migration declaring it (cause unclear — possibly an MCP apply_migration race condition that dropped the function definition). Re-applied via `api_keys_increment_rpc_fix` migration.
+- **Quota math inflation.** `authenticate()` was double-counting today's RPC return value plus the monthly aggregate. Fixed to `usedAfter = used + 1`.
+- **Middleware Bearer detection.** Rate-limit middleware was looking for `sk_live_` prefix in `api_key`/`x-api-key` headers, but our Enterprise keys are `cnsg_live_` in the `Authorization: Bearer` header. Result: Enterprise calls were being throttled as anonymous (1 req/min) instead of getting their per-plan quota. Now: if `Authorization: Bearer cnsg_*` is present, middleware bypasses IP rate-limit and the route handler's `authenticate()` takes over with real quota enforcement.
+- **Rate-limit message** updated from stale "Actualiza a PRO para 100 req/min" to reflect actual Enterprise tier matrix.
+- **API keys client** now surfaces real server errors (HTTP code + body preview) instead of swallowing them as "Error de red".
+- **Confidential testimonial removed** from `/enterprise` page (had used anonymized content from a private email, even with anonymization that was inappropriate).
+- **Upgrade nudge button** Growth→Scale switched from mailto (didn't always open mail client) to deep-link `/enterprise?upgrade=scale&from=growth#calculadora`.
+
+#### Sitemap additions
+
+- `/el-corredor`, `/el-oraculo` (public landings, monthly priority)
+- `/mercado/inmag-dolares` (priority 0.95, daily — the new INMAG-in-USD landing was missing from sitemap)
+- `/mercado/arrendamiento`
+- `/terminos`, `/privacidad` (priority 0.2, yearly)
+
+#### Schema additions
+
+- `pending_api_invites` (email PK, api_tier, note, redeemed_at, redeemed_user_id)
+- `api_tier_activated_at` already existed, now used as the period anchor
+- New RPC `redeem_api_invite_on_signup()` + trigger `zz_redeem_api_invite` on auth.users INSERT
+
+#### Known issues
+
+- `/consignatarias/[slug]` profile pages currently hang at runtime in production (timeout, no response). Directory + province routes work fine. Bug under investigation — appears to involve either route collision between `[provincia]` and `[slug]` sibling dynamic segments, or a fetch hang specific to the profile page handler. Production is otherwise healthy. Will land a fix as soon as root cause is confirmed.
+
+---
+
 ## [1.12.0] — 2026-05-12
 
 ### Lote-level transactional pipeline + Self-serve Enterprise Starter via Rebill

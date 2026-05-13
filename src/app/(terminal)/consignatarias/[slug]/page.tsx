@@ -1,5 +1,11 @@
 import { Metadata } from 'next'
 import { notFound, permanentRedirect } from 'next/navigation'
+import {
+  isProvinceSlug,
+  provinceSlugsWithAuctions,
+  provinceMetadata,
+  ProvinceView,
+} from '../_views/ProvinceView'
 import rematesData from '@/lib/data/remates.json'
 import marketData from '@/lib/data/market-prices.json'
 import type { Auction } from '@/lib/db/schema'
@@ -113,7 +119,12 @@ async function fetchConsignatariaVideos(slug: string): Promise<ConsignatariaVide
 /* ------------------------------------------------------------------ */
 
 export function generateStaticParams() {
-  return getAllCanonicalSlugs().map(slug => ({ slug }))
+  // Merged route: province slugs + canonical consignataria slugs.
+  // Province slugs win at runtime via isProvinceSlug check in the page handler.
+  const provinceSlugs = provinceSlugsWithAuctions()
+  const profileSlugs = getAllCanonicalSlugs()
+  const all = Array.from(new Set([...provinceSlugs, ...profileSlugs]))
+  return all.map((slug) => ({ slug }))
 }
 
 /* ------------------------------------------------------------------ */
@@ -124,6 +135,13 @@ type Props = { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
+
+  // Province branch — slug is a known argentine province
+  if (isProvinceSlug(slug)) {
+    const meta = await provinceMetadata(slug)
+    return meta ?? {}
+  }
+
   const canonical = getCanonicalSlug(slug)
   if (!canonical) return {}
 
@@ -166,6 +184,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ConsignatariaProfilePage({ params }: Props) {
   const { slug } = await params
+
+  // Province branch — render province directory view
+  if (isProvinceSlug(slug)) {
+    return <ProvinceView provincia={slug} />
+  }
 
   // Unknown slug → 404
   const canonical = getCanonicalSlug(slug)
