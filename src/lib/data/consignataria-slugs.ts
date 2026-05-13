@@ -149,3 +149,19 @@ export function getAllCanonicalSlugs(): string[] {
 export function getAllProfiles(): ConsignatariaProfile[] {
   return PROFILES
 }
+
+/**
+ * Returns variant-slug → canonical-slug entries only (excludes canonical→canonical
+ * self-mappings). Intended for edge middleware redirects.
+ */
+export function getVariantSlugRedirects(): Array<[string, string]> {
+  const out: Array<[string, string]> = []
+  for (const profile of PROFILES) {
+    for (const slug of profile.allSlugs) {
+      if (slug !== profile.canonicalSlug) {
+        out.push([slug, profile.canonicalSlug])
+      }
+    }
+  }
+  return out
+}

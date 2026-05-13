@@ -122,7 +122,10 @@ type Props = {
   params: Promise<{ slug: string }>
 }
 
-export const dynamicParams = true
+// Past-auction slugs and stale URLs bots hit shouldn't trigger SSR invocations.
+// All known slugs (remates + provinces) are emitted in generateStaticParams;
+// anything else returns 404 at the edge without function cost.
+export const dynamicParams = false
 
 export async function generateStaticParams() {
   // Merged route: individual remate slugs + province slugs (province match

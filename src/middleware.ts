@@ -1,8 +1,28 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { checkRateLimit, getClientId, addRateLimitHeaders } from '@/lib/rate-limit'
+import { getVariantSlugRedirects } from '@/lib/data/consignataria-slugs'
+
+// Build variant→canonical map once at module load (edge cold start)
+const VARIANT_TO_CANONICAL = new Map<string, string>(getVariantSlugRedirects())
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // /consignatarias/<slug> — redirect variant slugs to canonical at the edge
+  // so bots hitting old URLs don't trigger an SSR invocation.
+  if (pathname.startsWith('/consignatarias/')) {
+    const slug = pathname.slice('/consignatarias/'.length).split('/')[0]
+    const canonical = VARIANT_TO_CANONICAL.get(slug)
+    if (canonical) {
+      const url = request.nextUrl.clone()
+      url.pathname = `/consignatarias/${canonical}`
+      return NextResponse.redirect(url, 308)
+    }
+    // Canonical or unknown — let Next handle (static page or 404)
+    return NextResponse.next()
+  }
+
   // Rate limit public API endpoints (IP-based for anonymous)
   if (request.nextUrl.pathname.startsWith('/api/') && isPublicApiRoute(request.nextUrl.pathname)) {
     // If request carries a Bearer API key, skip IP rate-limiting.
@@ -105,5 +125,7 @@ export const config = {
     '/login/:path*',
     '/mi-cuenta/:path*',
     '/auth/:path*',
+    // Variant-slug redirect for consignataria profile URLs (no Supabase work)
+    '/consignatarias/:slug',
   ],
 }
