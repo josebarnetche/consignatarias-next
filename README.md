@@ -647,8 +647,9 @@ Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misione
 | **1.10.1** | **May 12** | **MAG data deepening — backfill 11 años de INMAG diario (2.236 días, 2015→hoy), 16 sub-categorías oficiales con corte por peso (haciinfo000502), nuevos endpoints `/api/precios?detallado=true` y `?historico=N`, cron daily Lun-Vie 15:30 ART, `/api-docs` reescrito con auth Bearer correcto y matriz real de rate limits por plan** |
 | **1.11.0** | **May 12** | **Derivatives layer — `/mercado/inmag-dolares` (INMAG deflactado por USD blue, SEO público), `YearOverYearBlock` en /mercado, Seasonality Heatmap PRO-gated, `/mercado/vender-ahora` calculator (percentiles 30+365d), `/api/index/memola` composite ponderado, USD blue history table backfilleable (5.608 días desde 2011), server-rendered SVG charts sin client JS** |
 | **1.12.0** | **May 12** | **Lote-level pipeline (haciinfo000007) — scraper 44 consignatarios × FAENA/INVERNADA, queue-driven workflow, `/api/lots` endpoint. Self-serve Enterprise Starter via Rebill — checkout ARS 139.900 (~USD 99), webhook activa `api_tier='starter'` automático, welcome email, coexistencia con PRO Usuario** |
+| **1.13.0** | **May 13** | **Quota 28-day billing period (no calendar month) + per-user aggregation across all keys + self-serve Starter→Growth upgrade flow (Rebill + UpgradeNudge ≥80% usage) + dev invite system (`pending_api_invites` table + signup trigger) + 6 sitemap additions (`/el-corredor`, `/el-oraculo`, `/mercado/inmag-dolares`, `/mercado/arrendamiento`, `/terminos`, `/privacidad`) + middleware Bearer detection bugfix + project-clone env-var cleanup. ⚠ Known issue: `/consignatarias/[slug]` profile pages still hang in production — partial mitigations shipped, root cause TBD.** |
 
-Built in 75 days. One human, one AI. $0 hosting cost. 21+ Supabase tables. 31 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
+Built in 76 days. One human, one AI. $0 hosting cost. 22+ Supabase tables. 33 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
 
 ---
 

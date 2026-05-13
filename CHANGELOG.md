@@ -58,9 +58,27 @@ Multiple cycles of correctness work on the Enterprise stack. Quotas now align wi
 - `api_tier_activated_at` already existed, now used as the period anchor
 - New RPC `redeem_api_invite_on_signup()` + trigger `zz_redeem_api_invite` on auth.users INSERT
 
-#### Known issues
+#### Known issues — `/consignatarias/[slug]` profile pages hang (still open)
 
-- `/consignatarias/[slug]` profile pages currently hang at runtime in production (timeout, no response). Directory + province routes work fine. Bug under investigation — appears to involve either route collision between `[provincia]` and `[slug]` sibling dynamic segments, or a fetch hang specific to the profile page handler. Production is otherwise healthy. Will land a fix as soon as root cause is confirmed.
+Profile slug pages (`/consignatarias/bressan-y-cia` etc.) hang 25+ seconds in production with no response. Province slugs (`/consignatarias/buenos-aires`), directory page, and all other routes work fine. **Discovered + partially mitigated this release; root cause not fully identified.**
+
+What we tried:
+- Merged `[provincia]` + `[slug]` sibling dynamic routes into a single `[slug]` (Next.js doesn't support two dynamic param names at the same path level, evidence in routes-manifest.json showing identical regex). Move correct architecturally but did NOT solve the hang.
+- Aligned generateStaticParams across sibling files (page.tsx, opengraph-image.tsx, twitter-image.tsx, verificar/page.tsx) via shared `mergedSlugStaticParams` helper. Next was silently deduping mismatched lists.
+- Added `dynamicParams = true` for safety fallback.
+- Wrapped every Supabase fetch in the page handler with `Promise.race` timeout (3.5–4.5s each).
+- Static-profile fallback when `getConsignatariaProfile` returns null so notFound() can't drop slugs from manifest.
+
+What we did NOT identify yet:
+- Why the build only materializes 13 prerendered HTML files for `/consignatarias/[slug]` despite generateStaticParams returning 93 entries (13 provinces + 80 profiles). Province slugs are the 13 that make it through.
+- Why the function hangs at request time even after timeouts on every Supabase call. Possible: Supabase client connection deadlock, function maxDuration not enforcing, or Next.js render-pipeline issue with the page's heavy component tree (ConsignatariaProfileClient + MediosPagoSection + VideoGallery client components).
+
+Production impact: 80 consignataria profile URLs return no response. SEO at risk if Google retries multiple times and marks pages dead. **High priority for next session.**
+
+Next debug steps:
+1. Reproduce locally with `next start` (production build, not dev) and curl against localhost. If it hangs locally → bug is in our code. If it works locally but breaks on Vercel → infra/edge issue.
+2. Strip the page to bare minimum (just `getProfile + display name`) and verify it serves fast. Then re-add features one by one to isolate.
+3. If supabase is the culprit, inspect the actual network call (Supabase logs, Vercel function logs with NODE_INSPECTOR).
 
 ---
 
