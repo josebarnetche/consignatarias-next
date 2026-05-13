@@ -237,14 +237,20 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
     permanentRedirect(`/consignatarias/${canonical}`)
   }
 
-  const enrichedProfile = await getConsignatariaProfile(canonical)
+  // Time-bound the enriched profile fetch so a hung Supabase connection
+  // can't take down the page.
+  const enrichedProfile = await withTimeout(
+    getConsignatariaProfile(canonical),
+    4500,
+    null,
+  )
   if (!enrichedProfile) notFound()
 
   const [tier, auctionResults, videos, relatedConsignatarias] = await Promise.all([
-    getEntityTier('consignataria', canonical),
+    withTimeout(getEntityTier('consignataria', canonical), 3500, 'free' as const),
     fetchAuctionResults(canonical),
     fetchConsignatariaVideos(canonical),
-    getRelatedConsignatarias(canonical, enrichedProfile.province, 4),
+    withTimeout(getRelatedConsignatarias(canonical, enrichedProfile.province, 4), 3500, []),
   ])
 
   // Merge scraped auctions + owner-created auctions from Supabase
@@ -254,12 +260,17 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
   try {
     const service2 = createServiceClient()
     if (!service2) throw new Error('Supabase not available')
-    
-    const { data: dbAuctions } = await service2
+
+    const ownerQuery = service2
       .from('consignataria_auctions')
       .select('*')
       .eq('consignataria_slug', canonical)
       .order('date', { ascending: true })
+    const { data: dbAuctions } = await withTimeout(
+      ownerQuery as unknown as Promise<{ data: Record<string, unknown>[] | null }>,
+      3500,
+      { data: null },
+    )
 
     if (dbAuctions) {
       ownerAuctions = dbAuctions.map((a: Record<string, unknown>, idx: number) => ({
