@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import EnterpriseCalculator from './EnterpriseCalculator'
+import EnterpriseStarterButton from './EnterpriseStarterButton'
 import { PLATFORM_STATS } from '@/lib/platform-stats'
 
 export const metadata: Metadata = {
@@ -311,16 +312,20 @@ export default function EnterprisePage() {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href={tier.ctaHref}
-                  className="terminal-btn w-full text-center"
-                  style={{
-                    borderColor: `${tier.accent}99`,
-                    color: tier.accent,
-                  }}
-                >
-                  {tier.cta}
-                </a>
+                {tier.name === 'Starter' ? (
+                  <EnterpriseStarterButton />
+                ) : (
+                  <a
+                    href={tier.ctaHref}
+                    className="terminal-btn w-full text-center"
+                    style={{
+                      borderColor: `${tier.accent}99`,
+                      color: tier.accent,
+                    }}
+                  >
+                    {tier.cta}
+                  </a>
+                )}
               </div>
             </div>
           ))}

@@ -113,3 +113,55 @@ export async function createUserSubscriptionLink(
   }
   return JSON.parse(responseText)
 }
+
+/**
+ * createEnterpriseStarterLink — payment link para plan Enterprise Starter (API).
+ * USD 99/mes facturado en ARS al equivalente del momento del cobro.
+ * Default ARS 139.900 (override con REBILL_ENTERPRISE_STARTER_AMOUNT).
+ * Setea metadata.kind='enterprise_starter_subscription' para que el webhook
+ * lo rutee a la rama que actualiza user_subscriptions.api_tier='starter'.
+ */
+export async function createEnterpriseStarterLink(
+  userId: string,
+  customerEmail: string,
+) {
+  const secretKey = process.env.REBILL_SECRET_KEY
+  if (!secretKey) {
+    throw new Error('REBILL_SECRET_KEY is not configured')
+  }
+
+  const amount = parseInt(process.env.REBILL_ENTERPRISE_STARTER_AMOUNT || '139900', 10)
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
+
+  const payload = {
+    title: [{ language: 'es', text: 'Enterprise Starter — API consignatarias.com.ar' }],
+    paymentMethods: [{ methods: ['card'], currency: 'ARS' }],
+    prices: [{ amount, currency: 'ARS' }],
+    metadata: {
+      userId,
+      customerEmail,
+      kind: 'enterprise_starter_subscription',
+      api_tier: 'starter',
+    },
+    redirectUrls: {
+      approved: `${appUrl}/cuenta/api-keys?enterprise_activated=true`,
+    },
+    isSingleUse: false,
+  }
+
+  const res = await fetch(`${REBILL_API}/payment-links`, {
+    method: 'POST',
+    headers: {
+      'x-api-key': secretKey,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  const responseText = await res.text()
+  if (!res.ok) {
+    console.error('Rebill enterprise starter error:', res.status, responseText)
+    throw new Error(`Rebill error: ${res.status} ${responseText}`)
+  }
+  return JSON.parse(responseText)
+}

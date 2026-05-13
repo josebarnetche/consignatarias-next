@@ -1069,6 +1069,97 @@ export async function sendElCorredorDelivery(email: string, edition: string, pdf
 }
 
 /* ============================================================
+   Enterprise welcome — sent on api_tier activation
+   ============================================================ */
+interface EnterpriseWelcomeParams {
+  to: string
+  plan: 'starter' | 'growth' | 'scale'
+}
+
+const ENTERPRISE_PLAN_LABEL: Record<'starter' | 'growth' | 'scale', string> = {
+  starter: 'Starter',
+  growth: 'Growth',
+  scale: 'Scale',
+}
+
+const ENTERPRISE_PLAN_QUOTA: Record<'starter' | 'growth' | 'scale', string> = {
+  starter: '1.000 req/mes',
+  growth: '50.000 req/mes',
+  scale: '100.000+ req/mes',
+}
+
+export async function sendEnterpriseWelcome(p: EnterpriseWelcomeParams) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'RESEND_API_KEY not set' }
+
+  const planLabel = ENTERPRISE_PLAN_LABEL[p.plan]
+  const quota = ENTERPRISE_PLAN_QUOTA[p.plan]
+  const dashboardUrl = `${APP_URL}/cuenta/api-keys`
+  const docsUrl = `${APP_URL}/api-docs`
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: p.to,
+      replyTo: ADMIN_EMAIL,
+      subject: `Bienvenido a Enterprise ${planLabel} — consignatarias.com.ar`,
+      html: `
+        <div style="font-family: 'SF Mono', 'Cascadia Code', ui-monospace, Menlo, Consolas, monospace; max-width: 560px; background: #09090b; color: #fafafa; padding: 32px;">
+          <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; margin-bottom: 28px;">
+            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#38bdf8; margin-right:10px;"></span>
+            <strong style="color:#fafafa">consignatarias.com</strong>
+            <span style="color:#38bdf8; margin: 0 8px;">·</span>
+            Enterprise · ${planLabel}
+          </div>
+
+          <h1 style="font-size: 28px; font-weight: 700; letter-spacing: -0.02em; color: #fafafa; margin: 0 0 16px 0;">
+            Tu plan Enterprise ${planLabel} está activo
+          </h1>
+
+          <p style="font-size: 14px; line-height: 1.6; color: #d4d4d8; margin: 0 0 16px 0;">
+            Bienvenido. Tenés acceso a <strong style="color:#38bdf8">${quota}</strong>
+            sobre toda nuestra API (INMAG histórico, 16 sub-categorías, calendario
+            de remates, directorios, lote-level).
+          </p>
+
+          <div style="background: #18181b; border: 1px solid #27272a; padding: 16px; margin: 24px 0;">
+            <p style="margin:0 0 8px 0; color:#fafafa; font-weight:600; font-size:13px;">Próximos 3 pasos:</p>
+            <ol style="margin:0; padding-left:20px; color:#d4d4d8; font-size:13px; line-height:1.7;">
+              <li>Andá a <a href="${dashboardUrl}" style="color:#38bdf8">/cuenta/api-keys</a> y generá tu primera key</li>
+              <li>Guardala en tu .env como <code style="color:#fbbf24">CONSIGNATARIAS_API_KEY</code></li>
+              <li>Probá un endpoint: <code style="color:#fbbf24">curl /api/precios?detallado=true -H "Authorization: Bearer …"</code></li>
+            </ol>
+          </div>
+
+          <p style="margin: 28px 0;">
+            <a href="${dashboardUrl}" style="display: inline-block; background: #38bdf8; color: #09090b; padding: 14px 24px; text-decoration: none; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; font-size: 13px; border-radius: 2px;">
+              Generar API key →
+            </a>
+            <a href="${docsUrl}" style="display: inline-block; color: #a1a1aa; padding: 14px 12px; text-decoration: none; font-size: 13px;">
+              Ver docs
+            </a>
+          </p>
+
+          <hr style="border: none; border-top: 1px solid #27272a; margin: 32px 0;">
+
+          <p style="font-size: 12px; line-height: 1.6; color: #a1a1aa; margin: 0;">
+            Te avisamos por email cuando tu cuota mensual llegue al 80%.
+            La suscripción se renueva automáticamente cada mes; cancelás
+            desde tu dashboard cuando quieras.
+          </p>
+          <p style="font-size: 11px; color: #71717a; margin: 16px 0 0 0;">
+            Mesa de mercado · consignatarias.com
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
+/* ============================================================
    Enterprise API quota alert (80% threshold)
    ============================================================ */
 interface QuotaAlertParams {
