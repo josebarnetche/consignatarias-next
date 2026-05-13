@@ -1,9 +1,14 @@
 /**
- * Simple rate limiter using in-memory store with sliding window.
- * For production at scale, use Vercel KV or Upstash Redis.
- * 
- * Free tier: 1 req/min (99% reduction from previous 100 req/min)
- * PRO tier: 100 req/min
+ * IP-based rate limiter for anonymous API access (sliding window, in-memory).
+ *
+ * Only applies to requests WITHOUT an `Authorization: Bearer cnsg_...` header.
+ * Authenticated Enterprise calls bypass this entirely and are gated by the
+ * authenticate() helper in lib/api-auth.ts:
+ *   - Starter:  30 req/min, 1.000 req/mes
+ *   - Growth:  300 req/min, 50.000 req/mes
+ *   - Scale: 5.000 req/min, up to 5M req/mes
+ *
+ * Anonymous: 1 req/min (this file's FREE_TIER).
  */
 
 interface RateLimitEntry {

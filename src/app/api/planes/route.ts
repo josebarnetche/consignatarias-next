@@ -45,8 +45,8 @@ const PLANS = {
       remates_per_month: 50,
       logo: true,
       analytics: true,
-      api_access: true,
-      api_rate_limit: '100 req/min',
+      api_access: false,
+      api_rate_limit: null,
       priority_support: true,
     },
     cta: {

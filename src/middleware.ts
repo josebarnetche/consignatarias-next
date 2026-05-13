@@ -3,34 +3,38 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { checkRateLimit, getClientId, addRateLimitHeaders } from '@/lib/rate-limit'
 
 export async function middleware(request: NextRequest) {
-  // Rate limit public API endpoints
+  // Rate limit public API endpoints (IP-based for anonymous)
   if (request.nextUrl.pathname.startsWith('/api/') && isPublicApiRoute(request.nextUrl.pathname)) {
-    const clientId = getClientId(request)
-    // Check for PRO API key (sk_live_ prefix = PRO user)
-    const apiKey = request.headers.get('api_key') || request.headers.get('x-api-key')
-    const tier = (apiKey && apiKey.startsWith('sk_live_')) ? 'pro' as const : 'free' as const
-    const result = checkRateLimit(clientId, tier)
-    
-    if (!result.success) {
-      const response = NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: 'RATE_LIMIT_EXCEEDED',
-            message: `Límite de ${result.limit} solicitud(es) por minuto excedido. Actualiza a PRO para 100 req/min.`,
-            retryAfter: Math.ceil((result.resetAt - Date.now()) / 1000),
+    // If request carries a Bearer API key, skip IP rate-limiting.
+    // The route handler's authenticate() enforces the real per-plan quota
+    // (Starter 30/min, Growth 300/min, Scale 5000/min) and monthly cap.
+    const auth = request.headers.get('authorization') ?? ''
+    const hasBearer = auth.toLowerCase().startsWith('bearer cnsg_')
+
+    if (!hasBearer) {
+      const clientId = getClientId(request)
+      const result = checkRateLimit(clientId, 'free')
+
+      if (!result.success) {
+        const response = NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: 'RATE_LIMIT_EXCEEDED',
+              message: `Límite de ${result.limit} req/min para acceso anónimo. Activá Enterprise en /enterprise (desde 30 req/min con Starter, hasta 5000 req/min con Scale).`,
+              retryAfter: Math.ceil((result.resetAt - Date.now()) / 1000),
+            },
           },
-        },
-        { status: 429 }
-      )
+          { status: 429 }
+        )
+        addRateLimitHeaders(response.headers, result)
+        return response
+      }
+
+      const response = NextResponse.next({ request })
       addRateLimitHeaders(response.headers, result)
       return response
     }
-    
-    // Continue with rate limit headers
-    const response = NextResponse.next({ request })
-    addRateLimitHeaders(response.headers, result)
-    return response
   }
 
   let supabaseResponse = NextResponse.next({ request })
