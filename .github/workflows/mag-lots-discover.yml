@@ -1,0 +1,66 @@
+name: MAG Lots — Discover Consignatarias
+
+# Scans IDs 1..max in MAG haciinfo000007 to populate mag_consignatarias master.
+# Runs in windows of 20 IDs per Vercel function call (stays under maxDuration),
+# loops in the GH runner with sleep between windows.
+on:
+  workflow_dispatch:
+    inputs:
+      max:
+        description: 'Max ID to scan (default 200)'
+        required: false
+        default: '200'
+      window:
+        description: 'IDs per window call (default 20, max 30)'
+        required: false
+        default: '20'
+      sleep:
+        description: 'Sleep between windows in seconds (default 5)'
+        required: false
+        default: '5'
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Loop discovery windows
+        run: |
+          MAX="${{ github.event.inputs.max }}"
+          WINDOW="${{ github.event.inputs.window }}"
+          SLEEP_SEC="${{ github.event.inputs.sleep }}"
+          if [ -z "$MAX" ]; then MAX=200; fi
+          if [ -z "$WINDOW" ]; then WINDOW=20; fi
+          if [ -z "$SLEEP_SEC" ]; then SLEEP_SEC=5; fi
+
+          TOTAL_FOUND=0
+          TOTAL_UPSERTED=0
+          START=1
+
+          while [ "$START" -le "$MAX" ]; do
+            echo ""
+            echo "=== Window: $START..$((START + WINDOW - 1)) ==="
+
+            response=$(curl -sL --max-time 120 -X POST \
+              -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+              "https://www.consignatarias.com.ar/api/cron/mag-lots-worker?action=discover&start=$START&count=$WINDOW")
+
+            echo "$response"
+
+            FOUND=$(echo "$response" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('active_found', 0))" 2>/dev/null || echo 0)
+            UPSERTED=$(echo "$response" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('upserted', 0))" 2>/dev/null || echo 0)
+
+            TOTAL_FOUND=$((TOTAL_FOUND + FOUND))
+            TOTAL_UPSERTED=$((TOTAL_UPSERTED + UPSERTED))
+
+            START=$((START + WINDOW))
+
+            if [ "$START" -le "$MAX" ]; then
+              sleep "$SLEEP_SEC"
+            fi
+          done
+
+          echo ""
+          echo "Done. active_found=$TOTAL_FOUND upserted=$TOTAL_UPSERTED"
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}

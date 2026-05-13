@@ -1,0 +1,86 @@
+name: MAG Lots Pipeline (haciinfo000007)
+
+# Lote-level scraper: enqueues jobs for today, then loops through them at
+# ~1 req/min (MAG agreement). 44 consigs × 2 tipos = 88 jobs per remate day.
+# ~90 minutes total. Idempotent — re-running is safe (dedup keys handle it).
+on:
+  schedule:
+    - cron: '0 19 * * 2,3,5'  # Mar/Mié/Vie 16:00 ART (1h después de scrape detallado)
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Override date YYYY-MM-DD (default: today)'
+        required: false
+        default: ''
+      sleep:
+        description: 'Sleep entre jobs en segundos (default 65)'
+        required: false
+        default: '65'
+
+jobs:
+  enqueue-and-process:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Enqueue jobs for date
+        id: enqueue
+        run: |
+          DATE_PARAM=""
+          if [ -n "${{ github.event.inputs.date }}" ]; then
+            DATE_PARAM="&date=${{ github.event.inputs.date }}"
+          fi
+
+          response=$(curl -sL -w "\n%{http_code}" --max-time 60 -X POST \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            "https://www.consignatarias.com.ar/api/cron/mag-lots-worker?action=enqueue${DATE_PARAM}")
+
+          http_code=$(echo "$response" | tail -1)
+          body=$(echo "$response" | head -n -1)
+          echo "Enqueue HTTP $http_code"
+          echo "$body"
+
+          if [ "$http_code" -ne 200 ]; then
+            echo "::error::Enqueue failed (HTTP $http_code)"
+            exit 1
+          fi
+
+      - name: Process queue (loop with sleep)
+        run: |
+          SLEEP_SEC="${{ github.event.inputs.sleep }}"
+          if [ -z "$SLEEP_SEC" ]; then SLEEP_SEC=65; fi
+
+          REMAINING=999
+          MAX_ITERATIONS=200
+          ITER=0
+          PROCESSED=0
+          FAILED=0
+
+          while [ "$REMAINING" -gt 0 ] && [ "$ITER" -lt "$MAX_ITERATIONS" ]; do
+            ITER=$((ITER + 1))
+            response=$(curl -sL --max-time 60 -X POST \
+              -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+              "https://www.consignatarias.com.ar/api/cron/mag-lots-worker?action=process")
+
+            REMAINING=$(echo "$response" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('remaining', 0))" 2>/dev/null || echo 0)
+            PROCESSED_THIS=$(echo "$response" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('processed', 0))" 2>/dev/null || echo 0)
+            FAILED_THIS=$(echo "$response" | python3 -c "import json,sys; d=json.load(sys.stdin); print(1 if d.get('failed_job') else 0)" 2>/dev/null || echo 0)
+
+            PROCESSED=$((PROCESSED + PROCESSED_THIS))
+            FAILED=$((FAILED + FAILED_THIS))
+
+            echo "[iter $ITER] processed=$PROCESSED_THIS remaining=$REMAINING failed=$FAILED_THIS"
+
+            if [ "$REMAINING" -eq 0 ] && [ "$PROCESSED_THIS" -eq 0 ]; then
+              echo "Queue empty. Done."
+              break
+            fi
+
+            if [ "$REMAINING" -gt 0 ]; then
+              sleep "$SLEEP_SEC"
+            fi
+          done
+
+          echo ""
+          echo "Summary: processed=$PROCESSED failed=$FAILED iterations=$ITER"
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
