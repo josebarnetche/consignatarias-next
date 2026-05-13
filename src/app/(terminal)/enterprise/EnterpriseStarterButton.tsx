@@ -57,15 +57,33 @@ export default function EnterpriseStarterButton() {
     setError(null)
     try {
       const res = await fetch('/api/enterprise/checkout', { method: 'POST' })
-      const json = await res.json()
+      let json: { checkoutUrl?: string; error?: string; message?: string } | null = null
+      const bodyText = await res.text()
+      try {
+        json = JSON.parse(bodyText)
+      } catch {
+        // Body wasn't JSON — surface the raw status
+        setError(
+          `Respuesta inválida del servidor (HTTP ${res.status}). ${bodyText.slice(0, 120)}`,
+        )
+        setState('free')
+        return
+      }
       if (!res.ok || !json?.checkoutUrl) {
-        setError(json?.message ?? 'No se pudo crear el link de pago.')
+        if (res.status === 401) {
+          // Probably session expired — push to login flow
+          window.location.href = `/login?next=${encodeURIComponent('/enterprise')}`
+          return
+        }
+        const msg = json?.message ?? json?.error ?? `Falla HTTP ${res.status}`
+        setError(msg)
         setState('free')
         return
       }
       window.location.href = json.checkoutUrl
-    } catch {
-      setError('Error de red. Probá de nuevo.')
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'fetch_failed'
+      setError(`Error de red: ${msg}`)
       setState('free')
     }
   }
