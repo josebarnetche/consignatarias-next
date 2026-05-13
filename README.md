@@ -2,7 +2,7 @@
 
 A cattle auction directory, market intelligence platform, and public API for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
 
-**Three product lines** (PRO Usuario · PRO Consignataria · Enterprise API) • **25+ API endpoints with auth + quotas** • **366 remates** • **74 consignatarias canonical** • **364 frigoríficos** • **12 provincias** • **24 YouTube channels** • **MAG deep integration (16 sub-categorías + 11 años de INMAG)** • **1550+ sitemap URLs** • **100% schema coverage** • **7 daily-rebuilt price landings** • **Reports system** • **🔴 En Vivo streaming focus**
+**Three product lines** (PRO Usuario · PRO Consignataria · Enterprise API · Self-serve) • **30+ API endpoints with auth + quotas** • **Lote-level transactional data** (haciinfo000007) • **MAG deep integration (16 sub-categorías + 11 años de INMAG)** • **USD blue desde 2011** • **366 remates** • **74 consignatarias canonical** • **44 MAG consignatarios** • **364 frigoríficos** • **12 provincias** • **24 YouTube channels** • **1550+ sitemap URLs** • **100% schema coverage** • **7 daily-rebuilt price landings** • **Reports system** • **🔴 En Vivo streaming focus**
 
 **Live:** [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
 
@@ -646,8 +646,9 @@ Buenos Aires, Chaco, Cordoba, Corrientes, Entre Rios, Formosa, La Pampa, Misione
 | **1.10.0** | **May 12** | **Three-product pricing — `/planes` audience toggle (Productor vs Consignataria), Enterprise API (Starter/Growth/Scale) with HMAC-SHA256 keys + quota tracking + weekly 80% alert, 7 new daily-rebuilt `/precios/*` landings answer-first against GSC queries, Reports system at `/cuenta/reportes` with per-user download tracking, 5 new Supabase migrations** |
 | **1.10.1** | **May 12** | **MAG data deepening — backfill 11 años de INMAG diario (2.236 días, 2015→hoy), 16 sub-categorías oficiales con corte por peso (haciinfo000502), nuevos endpoints `/api/precios?detallado=true` y `?historico=N`, cron daily Lun-Vie 15:30 ART, `/api-docs` reescrito con auth Bearer correcto y matriz real de rate limits por plan** |
 | **1.11.0** | **May 12** | **Derivatives layer — `/mercado/inmag-dolares` (INMAG deflactado por USD blue, SEO público), `YearOverYearBlock` en /mercado, Seasonality Heatmap PRO-gated, `/mercado/vender-ahora` calculator (percentiles 30+365d), `/api/index/memola` composite ponderado, USD blue history table backfilleable (5.608 días desde 2011), server-rendered SVG charts sin client JS** |
+| **1.12.0** | **May 12** | **Lote-level pipeline (haciinfo000007) — scraper 44 consignatarios × FAENA/INVERNADA, queue-driven workflow, `/api/lots` endpoint. Self-serve Enterprise Starter via Rebill — checkout ARS 139.900 (~USD 99), webhook activa `api_tier='starter'` automático, welcome email, coexistencia con PRO Usuario** |
 
-Built in 75 days. One human, one AI. $0 hosting cost. 18+ Supabase tables. 29 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
+Built in 75 days. One human, one AI. $0 hosting cost. 21+ Supabase tables. 31 API endpoints. See [CHANGELOG.md](CHANGELOG.md) for full details.
 
 ---
 

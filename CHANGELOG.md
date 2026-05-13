@@ -6,6 +6,58 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.12.0] — 2026-05-12
+
+### Lote-level transactional pipeline + Self-serve Enterprise Starter via Rebill
+
+Two features that together close the loop on Enterprise: (1) we now ingest the deepest publicly-available MAG data (per-pesada lote-level transactions across 44 consignatarias × FAENA/INVERNADA), and (2) a brand-new user can self-serve their way to an active Enterprise plan in under 5 minutes — no email back-and-forth.
+
+#### Lote-level scraper pipeline (haciinfo000007)
+
+Each pesada × remitente × categoría within a consignataria's day at MAG. ~88 jobs per remate day (44 consignatarias × 2 tipos), processed at MAG's agreed 1-req/min rate from the GH Actions runner. ~90 minutes per day, idempotent.
+
+- **Schema** (applied to remote):
+  - `mag_consignatarias` — master list (mag_id PK, name, slug, active, first/last_seen)
+  - `mag_consignataria_sales_lots` — granular rows (pesada, remitente, localidad, provincia, head_count, category, total_kgs, kg_avg, price). Unique key `(date, consig, tipo, pesada, remitente, category)` for idempotent re-runs.
+  - `mag_scrape_queue` — job queue with `(date, consig_id, tipo)` unique, status `pending|running|done|failed`, attempts counter, last_error
+
+- **Worker route** `/api/cron/mag-lots-worker` with three actions:
+  - `?action=discover&start=N&count=M` — scans an ID window (≤30 at a time to stay under Vercel's maxDuration), extracts name from "CONSIGNATARIO: ID NAME" header, upserts master.
+  - `?action=enqueue&date=YYYY-MM-DD` — creates pending jobs for the date × all active consignatarias × {FAENA, INVERNADA}.
+  - `?action=process` — pulls ONE pending job, fetches haciinfo000007 with the right params, parses the row table (skipping headers + totals), batch-upserts into `mag_consignataria_sales_lots`, marks the job done.
+
+- **Orchestration via GH Actions** (the runner does the 1-req/min throttling):
+  - `mag-lots-discover.yml` — workflow_dispatch, loops 20-ID windows with 5s sleep. ~3 min for IDs 1-200.
+  - `mag-lots-pipeline.yml` — Mar/Mié/Vie 16:00 ART, calls enqueue then loops process with 65s sleep until queue empty. Hard cap 200 iterations safety.
+
+- **Public API** `GET /api/lots` — date/range/consignataria/category/tipo/provincia filters, pagination up to 1000 rows/page, max 90-day window. Returns aggregates over the page (cabezas, kgs, weighted avg price). Enterprise-tracked when called with Bearer key.
+
+#### Self-serve Enterprise Starter via Rebill
+
+Cierra el gap de autonomía. Cualquier logged-in user clickea "Contratar Starter ahora" en `/enterprise` → Rebill checkout en ARS (default 139.900, equivalente USD 99 al blue) → webhook flips `api_tier='starter'` automáticamente → welcome email branded → user va a `/cuenta/api-keys` y empieza a operar. Cero intervención humana.
+
+- **`createEnterpriseStarterLink()`** en `lib/rebill.ts` — sigue el patrón de `createUserSubscriptionLink`, metadata.kind=`enterprise_starter_subscription` + api_tier para que el webhook lo rutee correctamente.
+- **Webhook handler extendido** (`/api/webhooks/rebill`): branch nueva detecta `kind === 'enterprise_starter_subscription'`, upsertea `api_tier` + `rebill_enterprise_subscription_id`, dispara welcome email. **Preserva el tier de PRO Usuario** si ya existía — un user puede tener PRO Usuario + Enterprise simultáneamente. Branches de cancellation/failure también separadas: cancelar Enterprise solo toca api_tier, no rompe PRO Usuario coexistente.
+- **Schema** (applied to remote):
+  - `user_subscriptions.rebill_enterprise_subscription_id TEXT` — separado del `rebill_subscription_id` (PRO Usuario), porque un user puede tener ambos
+  - `user_subscriptions.api_tier_activated_at / api_tier_cancelled_at` — auditoría
+- **POST `/api/enterprise/checkout`** — session-gated, devuelve Rebill payment URL. 401 si no logged-in. 502 si Rebill no responde URL.
+- **`EnterpriseStarterButton` component** — auth-aware: anon → "Iniciar sesión para contratar", logged-in sin Enterprise → "Contratar Starter ahora", logged-in con Enterprise → "Ya sos Enterprise · Ir al dashboard". Reads `/api/me` y `/api/account` para discriminar.
+- **`/enterprise` page Starter card** — reemplaza mailto por el self-serve button. Growth (USD 500) y Scale (USD 700+) **siguen sales-led** vía mailto, porque cada contrato grande requiere NDA + plan custom.
+- **`sendEnterpriseWelcome(to, plan)`** en `lib/email.ts` — HTML brandeado con 3 next-steps: generar key en `/cuenta/api-keys`, guardar en `.env`, primer curl con Bearer. Link directo a docs.
+
+#### Env vars
+
+Opcional override del precio: `REBILL_ENTERPRISE_STARTER_AMOUNT` (default 139900 ARS). Rebill secret key + webhook secret ya estaban configurados desde el flujo PRO Usuario.
+
+#### Pricing alignment
+
+ARS 139.900 ≈ USD 99 al blue $1.413 (mediados may 2026). Si el blue se mueve mucho, ajustás la env. Para Growth y Scale, los pagos cross-border siguen vía transferencia/USDT/Stripe (sales-led, cero cambio en el flow).
+
+**Impact:** la primera línea Enterprise (Starter USD 99) es ahora completamente self-serve. Desde que un Martin Apesteguia hipotético entra al sitio hasta que tiene su primera API key generada y un curl funcionando, son 4-5 clicks y 3-5 minutos. Antes era 24-48h de email + setup manual. Acompañado por el pipeline lote-level que arranca a llenar la tabla con la data más granular publicada por MAG, este release nos pone al frente del mercado en transparencia + speed-to-value.
+
+---
+
 ## [1.11.0] — 2026-05-12
 
 ### Sprint 1+2+3: USD-deflactado, year-over-year, heatmap, calculator, MEMOLA Index
