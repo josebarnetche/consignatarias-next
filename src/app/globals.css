@@ -429,6 +429,33 @@
   animation: pro-glow 2s ease-in-out infinite;
 }
 
+/* --- Enterprise tier CTAs --------------------------------- */
+@keyframes shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.15; transform: scale(0.95); }
+  50% { opacity: 0.35; transform: scale(1.05); }
+}
+
+.enterprise-current-plan-cta {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.enterprise-current-plan-cta:hover {
+  transform: translateY(-1px);
+}
+
+.enterprise-upgrade-cta {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  will-change: background-position;
+}
+.enterprise-upgrade-cta:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
 /* --- Utility layer ---------------------------------------- */
 @layer utilities {
   .tabular-nums {
