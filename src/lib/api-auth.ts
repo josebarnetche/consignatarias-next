@@ -68,9 +68,11 @@ export async function authenticate(req: NextRequest): Promise<AuthResult> {
     }
   }
 
-  // Best-effort increment — non-blocking failure shouldn't deny access
-  const newCount = await incrementUsage(key.id)
-  const usedAfter = newCount > 0 ? newCount + (used - (used % 1)) : used + 1
+  // Best-effort increment — non-blocking failure shouldn't deny access.
+  // The RPC's return value is today-only; we keep the monthly aggregate by
+  // adding 1 to the pre-call monthly count.
+  await incrementUsage(key.id)
+  const usedAfter = used + 1
 
   return {
     ok: true,
