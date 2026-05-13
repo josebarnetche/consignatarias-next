@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient, createAdminClient } from '@/lib/supabase-server'
-import { getMonthlyUsage, getUserPlan, hasApiAccess, PLAN_LIMITS } from '@/lib/api-keys'
+import { getMonthlyUsage, getUserCurrentPeriodUsage, getUserPlan, hasApiAccess, PLAN_LIMITS } from '@/lib/api-keys'
 import ApiKeysClient from './ApiKeysClient'
+import { UpgradeNudge } from './UpgradeNudge'
 
 export const metadata: Metadata = {
   title: 'API keys — consignatarias.com.ar',
@@ -75,14 +76,16 @@ export default async function ApiKeysPage() {
 
   const keys = rawKeys ?? []
 
+  // Per-key calendar-month count for the per-row display (informational)
   const usage = await Promise.all(
     keys.map(async (k) => ({ id: k.id, used: await getMonthlyUsage(k.id) })),
   )
   const usageById = Object.fromEntries(usage.map((u) => [u.id, u.used]))
-  const totalUsed = usage.reduce((sum, u) => sum + u.used, 0)
 
+  // User-level 28-day billing period (the one the plan actually enforces)
   const plan = (await getUserPlan(user.id))!
   const limits = PLAN_LIMITS[plan]
+  const { used: totalUsed, period } = await getUserCurrentPeriodUsage(user.id)
   const usagePct = Math.min(100, Math.round((totalUsed / limits.monthlyQuota) * 100))
 
   const initialKeys = keys.map((k) => ({
@@ -119,7 +122,7 @@ export default async function ApiKeysPage() {
         <div className="terminal-panel-header flex items-center justify-between">
           <span>Plan + uso</span>
           <span className="text-zinc-500 text-xxs font-terminal normal-case tracking-normal">
-            Mes en curso
+            Período {period.start} → {period.end} · {period.daysRemaining}d restantes
           </span>
         </div>
         <div className="px-panel py-5">
@@ -164,6 +167,11 @@ export default async function ApiKeysPage() {
           </div>
         </div>
       </div>
+
+      {/* Upgrade nudge when usage > 80% */}
+      {usagePct >= 80 && plan !== 'scale' && (
+        <UpgradeNudge plan={plan} usagePct={usagePct} daysLeft={period.daysRemaining} />
+      )}
 
       {/* Keys list + create */}
       <ApiKeysClient initialKeys={initialKeys} />

@@ -101,6 +101,10 @@ export async function verifyApiKey(authHeader: string | null): Promise<VerifiedK
   }
 }
 
+/**
+ * @deprecated use getUserCurrentPeriodUsage. Kept for legacy callers
+ * (e.g. /cuenta/api-keys per-key display).
+ */
 export async function getMonthlyUsage(apiKeyId: string): Promise<number> {
   const admin = createAdminClient()
   const monthStart = new Date()
@@ -116,6 +120,91 @@ export async function getMonthlyUsage(apiKeyId: string): Promise<number> {
 
   if (error || !data) return 0
   return data.reduce((sum, r) => sum + (r.request_count ?? 0), 0)
+}
+
+const BILLING_PERIOD_DAYS = 28
+
+/**
+ * Compute the current billing period for an Enterprise tier, anchored to
+ * api_tier_activated_at. Returns ISO date strings (date-only, no time).
+ *
+ * Periods are 28 days each: [activated_at + N×28d, activated_at + (N+1)×28d).
+ * If activated_at is null, defaults to a 28-day window ending today.
+ */
+export function currentPeriod(
+  activatedAtIso: string | null,
+): { start: string; end: string; daysIntoPeriod: number; daysRemaining: number } {
+  const now = new Date()
+  const todayIso = now.toISOString().slice(0, 10)
+
+  if (!activatedAtIso) {
+    const start = new Date(now.getTime() - BILLING_PERIOD_DAYS * 86400_000)
+    return {
+      start: start.toISOString().slice(0, 10),
+      end: todayIso,
+      daysIntoPeriod: BILLING_PERIOD_DAYS,
+      daysRemaining: 0,
+    }
+  }
+
+  const anchor = new Date(activatedAtIso)
+  const diffMs = now.getTime() - anchor.getTime()
+  const periodMs = BILLING_PERIOD_DAYS * 86400_000
+  const cycleN = Math.max(0, Math.floor(diffMs / periodMs))
+  const periodStart = new Date(anchor.getTime() + cycleN * periodMs)
+  const periodEnd = new Date(periodStart.getTime() + periodMs)
+  const daysIntoPeriod = Math.floor((now.getTime() - periodStart.getTime()) / 86400_000)
+  const daysRemaining = Math.max(0, BILLING_PERIOD_DAYS - daysIntoPeriod)
+
+  return {
+    start: periodStart.toISOString().slice(0, 10),
+    end: periodEnd.toISOString().slice(0, 10),
+    daysIntoPeriod,
+    daysRemaining,
+  }
+}
+
+/**
+ * Sum request_count across ALL active keys owned by userId within the
+ * current 28-day billing period. Uses the user's api_tier_activated_at
+ * as the period anchor (read in the same call so callers don't need to).
+ */
+export async function getUserCurrentPeriodUsage(userId: string): Promise<{
+  used: number
+  period: ReturnType<typeof currentPeriod>
+}> {
+  const admin = createAdminClient()
+
+  const { data: sub } = await admin
+    .from('user_subscriptions')
+    .select('api_tier_activated_at')
+    .eq('user_id', userId)
+    .maybeSingle()
+
+  const period = currentPeriod(
+    (sub?.api_tier_activated_at as string | null | undefined) ?? null,
+  )
+
+  const { data: keys } = await admin
+    .from('api_keys')
+    .select('id')
+    .eq('user_id', userId)
+    .is('revoked_at', null)
+
+  if (!keys || keys.length === 0) return { used: 0, period }
+
+  const keyIds = keys.map((k) => k.id as string)
+
+  const { data, error } = await admin
+    .from('api_usage_daily')
+    .select('request_count')
+    .in('api_key_id', keyIds)
+    .gte('date', period.start)
+    .lt('date', period.end)
+
+  if (error || !data) return { used: 0, period }
+  const used = data.reduce((sum, r) => sum + (r.request_count ?? 0), 0)
+  return { used, period }
 }
 
 export async function incrementUsage(apiKeyId: string): Promise<number> {

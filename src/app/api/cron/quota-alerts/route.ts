@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
-import { getMonthlyUsage, getUserPlan, PLAN_LIMITS } from '@/lib/api-keys'
+import { getUserCurrentPeriodUsage, getUserPlan, PLAN_LIMITS } from '@/lib/api-keys'
 import { sendQuotaAlert } from '@/lib/email'
 
 export const runtime = 'nodejs'
@@ -23,9 +23,9 @@ export async function POST(req: NextRequest) {
   }
 
   const supabase = requireServiceClient()
-  const currentMonth = new Date().toISOString().slice(0, 7) // "YYYY-MM"
 
-  // Pull active keys that have NOT been alerted this month yet
+  // Pull active keys grouped by user — one alert per user per period,
+  // not per key (a user with 5 keys gets one alert).
   const { data: keys, error } = await supabase
     .from('api_keys')
     .select('id, user_id, name, prefix, quota_alert_month')
@@ -36,45 +36,52 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'db_error' }, { status: 500 })
   }
 
+  // Pick one representative key per user (the most-recent one, by id ordering)
+  const oneKeyPerUser = new Map<string, typeof keys[number]>()
+  for (const k of keys ?? []) {
+    if (!oneKeyPerUser.has(k.user_id)) oneKeyPerUser.set(k.user_id, k)
+  }
+
   const results = {
     scanned: 0,
     skipped_already_alerted: 0,
     skipped_under_threshold: 0,
     skipped_no_plan: 0,
     sent: 0,
-    errors: [] as Array<{ keyId: string; error: string }>,
+    errors: [] as Array<{ userId: string; error: string }>,
   }
 
-  for (const k of keys ?? []) {
+  for (const [userId, k] of oneKeyPerUser) {
     results.scanned++
 
-    if (k.quota_alert_month === currentMonth) {
-      results.skipped_already_alerted++
-      continue
-    }
-
-    const plan = await getUserPlan(k.user_id)
+    const plan = await getUserPlan(userId)
     if (!plan) {
       results.skipped_no_plan++
       continue
     }
 
     const limit = PLAN_LIMITS[plan].monthlyQuota
-    const used = await getMonthlyUsage(k.id)
+    const { used, period } = await getUserCurrentPeriodUsage(userId)
+
+    // Dedup: have we already alerted in this billing period?
+    if (k.quota_alert_month === period.start) {
+      results.skipped_already_alerted++
+      continue
+    }
+
     if (used < THRESHOLD * limit) {
       results.skipped_under_threshold++
       continue
     }
 
-    // Resolve user email
     const { data: sub } = await supabase
       .from('user_subscriptions')
       .select('email')
-      .eq('user_id', k.user_id)
+      .eq('user_id', userId)
       .maybeSingle()
 
     if (!sub?.email) {
-      results.errors.push({ keyId: k.id, error: 'no_email' })
+      results.errors.push({ userId, error: 'no_email' })
       continue
     }
 
@@ -88,22 +95,25 @@ export async function POST(req: NextRequest) {
     })
 
     if (!sendResult.success) {
-      results.errors.push({ keyId: k.id, error: sendResult.error ?? 'send_failed' })
+      results.errors.push({ userId, error: sendResult.error ?? 'send_failed' })
       continue
     }
 
+    // Mark this period's alert on ALL of this user's active keys so the
+    // dedup works regardless of which key we pick next time.
     await supabase
       .from('api_keys')
-      .update({ quota_alert_month: currentMonth })
-      .eq('id', k.id)
+      .update({ quota_alert_month: period.start })
+      .eq('user_id', userId)
+      .is('revoked_at', null)
 
     results.sent++
   }
 
   return NextResponse.json({
     ok: true,
-    currentMonth,
     threshold: THRESHOLD,
+    period_anchored: '28-day billing period from api_tier_activated_at',
     ...results,
   })
 }

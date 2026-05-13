@@ -115,6 +115,74 @@ export async function createUserSubscriptionLink(
 }
 
 /**
+ * Generic factory for an Enterprise API plan payment link.
+ *
+ * `apiTier` controls metadata routing (the webhook reads this to set
+ * user_subscriptions.api_tier). Default amounts:
+ *   - starter: ARS 139.900 (USD 99 al blue ~1400)
+ *   - growth:  ARS 700.000 (USD 500 al blue ~1400)
+ * Override via REBILL_ENTERPRISE_{STARTER,GROWTH}_AMOUNT envs.
+ * Scale stays sales-led (mailto), no self-serve link.
+ */
+async function createEnterprisePlanLink(
+  userId: string,
+  customerEmail: string,
+  apiTier: 'starter' | 'growth',
+) {
+  const secretKey = process.env.REBILL_SECRET_KEY
+  if (!secretKey) {
+    throw new Error('REBILL_SECRET_KEY is not configured')
+  }
+
+  const defaultAmounts = { starter: 139900, growth: 700000 }
+  const envKey = apiTier === 'growth' ? 'REBILL_ENTERPRISE_GROWTH_AMOUNT' : 'REBILL_ENTERPRISE_STARTER_AMOUNT'
+  const amount = parseInt(process.env[envKey] || String(defaultAmounts[apiTier]), 10)
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
+  const planLabel = apiTier === 'growth' ? 'Growth' : 'Starter'
+
+  const payload = {
+    title: [
+      { language: 'es', text: `Enterprise ${planLabel} — API consignatarias.com.ar` },
+    ],
+    paymentMethods: [{ methods: ['card'], currency: 'ARS' }],
+    prices: [{ amount, currency: 'ARS' }],
+    metadata: {
+      userId,
+      customerEmail,
+      kind: 'enterprise_subscription',
+      api_tier: apiTier,
+    },
+    redirectUrls: {
+      approved: `${appUrl}/cuenta/api-keys?enterprise_activated=${apiTier}`,
+    },
+    isSingleUse: false,
+  }
+
+  const res = await fetch(`${REBILL_API}/payment-links`, {
+    method: 'POST',
+    headers: {
+      'x-api-key': secretKey,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  const responseText = await res.text()
+  if (!res.ok) {
+    console.error(`Rebill enterprise ${apiTier} error:`, res.status, responseText)
+    throw new Error(`Rebill error: ${res.status} ${responseText}`)
+  }
+  return JSON.parse(responseText)
+}
+
+export async function createEnterpriseGrowthLink(
+  userId: string,
+  customerEmail: string,
+) {
+  return createEnterprisePlanLink(userId, customerEmail, 'growth')
+}
+
+/**
  * createEnterpriseStarterLink — payment link para plan Enterprise Starter (API).
  * USD 99/mes facturado en ARS al equivalente del momento del cobro.
  * Default ARS 139.900 (override con REBILL_ENTERPRISE_STARTER_AMOUNT).

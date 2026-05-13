@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticate, hasAuthHeader } from '@/lib/api-auth'
-import { getMonthlyUsage, PLAN_LIMITS } from '@/lib/api-keys'
+import { getUserCurrentPeriodUsage, PLAN_LIMITS } from '@/lib/api-keys'
 import { createClient } from '@/lib/supabase-server'
 
 export const runtime = 'nodejs'
@@ -23,12 +23,10 @@ const SLA_BY_PLAN: Record<'starter' | 'growth' | 'scale', string> = {
   scale: '99.9%',
 }
 
-function startOfNextMonthIso(): string {
-  const d = new Date()
-  const y = d.getUTCFullYear()
-  const m = d.getUTCMonth()
-  const next = new Date(Date.UTC(m === 11 ? y + 1 : y, m === 11 ? 0 : m + 1, 1))
-  return next.toISOString().slice(0, 10)
+const UPGRADE_PATH: Record<'starter' | 'growth' | 'scale', string> = {
+  starter: '/enterprise?upgrade=growth&from=starter',
+  growth: '/enterprise?upgrade=scale&from=growth',
+  scale: '/enterprise',
 }
 
 export async function GET(req: NextRequest) {
@@ -57,12 +55,15 @@ export async function GET(req: NextRequest) {
         rate_limit_per_minute: limits.rateLimitPerMin,
       },
       usage: {
-        monthly_used: used,
-        monthly_remaining: remaining,
+        period_used: used,
+        period_remaining: remaining,
         percent_consumed: percent,
-        resets_on: startOfNextMonthIso(),
+        period_start: auth.periodStart,
+        period_end: auth.periodEnd,
+        days_until_reset: auth.daysRemaining,
       },
       sla: SLA_BY_PLAN[auth.plan],
+      upgrade_url: percent >= 80 ? `https://www.consignatarias.com.ar${UPGRADE_PATH[auth.plan]}` : null,
       docs: 'https://www.consignatarias.com.ar/api-docs',
       timestamp: new Date().toISOString(),
     })
@@ -97,20 +98,19 @@ export async function GET(req: NextRequest) {
 
   let apiBlock: Record<string, unknown> = { plan: 'none' }
   if (hasApi) {
-    // Sum usage across user's active keys for the current month
+    const plan = apiTier as 'starter' | 'growth' | 'scale'
+    const limits = PLAN_LIMITS[plan]
+    // 28-day billing period aggregation across all of this user's keys
+    const { used: totalUsed, period } = await getUserCurrentPeriodUsage(user.id)
+    const remaining = Math.max(0, limits.monthlyQuota - totalUsed)
+    const percent = Math.round((totalUsed / limits.monthlyQuota) * 100)
+
+    // Count active keys for display
     const { data: keys } = await supabase
       .from('api_keys')
       .select('id')
       .eq('user_id', user.id)
       .is('revoked_at', null)
-
-    const usagePerKey = await Promise.all(
-      (keys ?? []).map(async (k) => getMonthlyUsage(k.id)),
-    )
-    const totalUsed = usagePerKey.reduce((s, v) => s + v, 0)
-    const plan = apiTier as 'starter' | 'growth' | 'scale'
-    const limits = PLAN_LIMITS[plan]
-    const remaining = Math.max(0, limits.monthlyQuota - totalUsed)
     apiBlock = {
       plan,
       limits: {
@@ -118,13 +118,17 @@ export async function GET(req: NextRequest) {
         rate_limit_per_minute: limits.rateLimitPerMin,
       },
       usage: {
-        monthly_used: totalUsed,
-        monthly_remaining: remaining,
-        percent_consumed: Math.round((totalUsed / limits.monthlyQuota) * 100),
-        resets_on: startOfNextMonthIso(),
+        period_used: totalUsed,
+        period_remaining: remaining,
+        percent_consumed: percent,
+        period_start: period.start,
+        period_end: period.end,
+        days_until_reset: period.daysRemaining,
       },
       active_keys: keys?.length ?? 0,
       sla: SLA_BY_PLAN[plan],
+      upgrade_url:
+        percent >= 80 ? `https://www.consignatarias.com.ar${UPGRADE_PATH[plan]}` : null,
     }
   }
 

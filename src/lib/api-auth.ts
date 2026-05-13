@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import {
-  getMonthlyUsage,
+  getUserCurrentPeriodUsage,
   getUserPlan,
   incrementUsage,
   PLAN_LIMITS,
@@ -9,12 +9,21 @@ import {
   type Plan,
 } from './api-keys'
 
+const UPGRADE_PATH: Record<Plan, string> = {
+  starter: '/enterprise?upgrade=growth&from=starter',
+  growth: '/enterprise?upgrade=scale&from=growth',
+  scale: '/enterprise', // already top
+}
+
 export interface AuthOk {
   ok: true
   key: VerifiedKey
   plan: Plan
   usedThisMonth: number
   remaining: number
+  periodStart: string
+  periodEnd: string
+  daysRemaining: number
 }
 
 export interface AuthFail {
@@ -55,22 +64,35 @@ export async function authenticate(req: NextRequest): Promise<AuthResult> {
     }
   }
   const limits = PLAN_LIMITS[plan]
-  const used = await getMonthlyUsage(key.id)
+  // User-level aggregation (across all of this user's keys) within the
+  // current 28-day billing period anchored to api_tier_activated_at.
+  const { used, period } = await getUserCurrentPeriodUsage(key.userId)
 
   if (used >= limits.monthlyQuota) {
+    const upgradePath = UPGRADE_PATH[plan]
     return {
       ok: false,
-      response: errorResponse(
-        'quota_exceeded',
-        `Monthly quota of ${limits.monthlyQuota} requests reached. Upgrade your plan at /enterprise.`,
-        429,
+      response: NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'quota_exceeded',
+            message: `Cupo de ${limits.monthlyQuota.toLocaleString('en-US')} req del período ${period.start}…${period.end} agotado. Renueva el ${period.end} o upgradeá tu plan.`,
+            current_plan: plan,
+            quota: limits.monthlyQuota,
+            used,
+            period_start: period.start,
+            period_end: period.end,
+            days_until_reset: period.daysRemaining,
+            upgrade_url: `https://www.consignatarias.com.ar${upgradePath}`,
+          },
+        },
+        { status: 429 },
       ),
     }
   }
 
   // Best-effort increment — non-blocking failure shouldn't deny access.
-  // The RPC's return value is today-only; we keep the monthly aggregate by
-  // adding 1 to the pre-call monthly count.
   await incrementUsage(key.id)
   const usedAfter = used + 1
 
@@ -80,6 +102,9 @@ export async function authenticate(req: NextRequest): Promise<AuthResult> {
     plan,
     usedThisMonth: usedAfter,
     remaining: Math.max(0, limits.monthlyQuota - usedAfter),
+    periodStart: period.start,
+    periodEnd: period.end,
+    daysRemaining: period.daysRemaining,
   }
 }
 
@@ -88,6 +113,8 @@ export function setQuotaHeaders(res: NextResponse, auth: AuthOk) {
   res.headers.set('X-RateLimit-Plan', auth.plan)
   res.headers.set('X-RateLimit-Limit', limits.monthlyQuota.toString())
   res.headers.set('X-RateLimit-Remaining', auth.remaining.toString())
+  res.headers.set('X-RateLimit-Period-End', auth.periodEnd)
+  res.headers.set('X-RateLimit-Days-Until-Reset', auth.daysRemaining.toString())
 }
 
 export function hasAuthHeader(req: NextRequest): boolean {
