@@ -36,13 +36,22 @@ export default function EnterpriseStarterButton() {
         }
         // Logged in — check if they already have an active Enterprise tier
         const accRes = await fetch('/api/account', { cache: 'no-store' })
+        if (!accRes.ok) {
+          console.warn('/api/account returned', accRes.status, '— falling back to free state')
+          if (!cancelled) setState('free')
+          return
+        }
         const acc: AccountResponse = await accRes.json()
-        if (acc?.enterprise?.plan && acc.enterprise.plan !== 'none') {
+        // The response is { success, enterprise: { plan, ... }, ... } OR { plan: 'none' }
+        const plan = acc?.enterprise?.plan
+        console.log('[EnterpriseStarterButton] plan detected:', plan)
+        if (plan && plan !== 'none') {
           if (!cancelled) setState('active_enterprise')
           return
         }
         if (!cancelled) setState('free')
-      } catch {
+      } catch (err) {
+        console.error('[EnterpriseStarterButton] check failed:', err)
         if (!cancelled) setState('free') // fail open to the CTA
       }
     }
@@ -139,6 +148,15 @@ export default function EnterpriseStarterButton() {
       )}
       <p className="mt-2 text-xxs text-zinc-500 text-center">
         Pago en ARS al equivalente USD via Rebill. Cancelás cuando quieras.
+      </p>
+      <p className="mt-3 text-xxs text-zinc-500 text-center">
+        ¿Ya sos Enterprise?{' '}
+        <a
+          href="/cuenta/api-keys"
+          className="text-sky-400 hover:underline underline-offset-2"
+        >
+          Ir al dashboard
+        </a>
       </p>
     </>
   )
