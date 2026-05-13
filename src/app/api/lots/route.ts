@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { authenticate, setQuotaHeaders } from '@/lib/api-auth'
+import { logEvent } from '@/lib/ops'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -23,9 +24,29 @@ export const dynamic = 'force-dynamic'
  *   ?offset=N
  */
 export async function GET(req: NextRequest) {
+  const requestId = crypto.randomUUID()
+  const t0 = Date.now()
+  const ROUTE = '/api/lots'
+  let auth: Exclude<Awaited<ReturnType<typeof authenticate>>, { ok: false }> | null = null
+
+  const finalize = (resp: NextResponse): NextResponse => {
+    resp.headers.set('X-Request-Id', requestId)
+    void logEvent({
+      eventType: 'api_call',
+      status: resp.status >= 400 ? 'error' : 'ok',
+      requestId,
+      route: ROUTE,
+      latencyMs: Date.now() - t0,
+      statusCode: resp.status,
+      userId: auth?.key.userId ?? null,
+      apiKeyId: auth?.key.id ?? null,
+    })
+    return resp
+  }
+
   const result = await authenticate(req)
-  if (!result.ok) return result.response
-  const auth = result
+  if (!result.ok) return finalize(result.response)
+  auth = result
 
   const { searchParams } = new URL(req.url)
   const dateParam = searchParams.get('date')
@@ -55,20 +76,20 @@ export async function GET(req: NextRequest) {
   // Date filter
   if (fromParam && toParam) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(fromParam) || !/^\d{4}-\d{2}-\d{2}$/.test(toParam)) {
-      return NextResponse.json(
+      return finalize(NextResponse.json(
         { success: false, error: { code: 'invalid_date', message: 'from/to must be YYYY-MM-DD' } },
         { status: 400 },
-      )
+      ))
     }
     // Cap window at 90 days to prevent huge queries
     const fromDate = new Date(fromParam)
     const toDate = new Date(toParam)
     const dayMs = 86400_000
     if ((toDate.getTime() - fromDate.getTime()) / dayMs > 90) {
-      return NextResponse.json(
+      return finalize(NextResponse.json(
         { success: false, error: { code: 'range_too_large', message: 'Max 90 days. Use pagination via offset.' } },
         { status: 400 },
-      )
+      ))
     }
     query = query.gte('date', fromParam).lte('date', toParam)
   } else if (dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
@@ -97,10 +118,10 @@ export async function GET(req: NextRequest) {
 
   const { data, count, error } = await query
   if (error) {
-    return NextResponse.json(
+    return finalize(NextResponse.json(
       { success: false, error: { code: 'db_error', message: error.message } },
       { status: 500 },
-    )
+    ))
   }
 
   // Aggregates over the result set (the page, not the full filter)
@@ -140,5 +161,5 @@ export async function GET(req: NextRequest) {
 
   response.headers.set('Cache-Control', 'public, max-age=600, s-maxage=600, stale-while-revalidate=300')
   if (auth) setQuotaHeaders(response, auth)
-  return response
+  return finalize(response)
 }

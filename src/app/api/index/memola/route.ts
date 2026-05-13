@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-server'
 import { authenticate, setQuotaHeaders } from '@/lib/api-auth'
+import { logEvent } from '@/lib/ops'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -20,9 +21,29 @@ export const dynamic = 'force-dynamic'
  *   ?from=YYYY-MM-DD&to=YYYY-MM-DD (overrides days)
  */
 export async function GET(req: NextRequest) {
+  const requestId = crypto.randomUUID()
+  const t0 = Date.now()
+  const ROUTE = '/api/index/memola'
+  let auth: Exclude<Awaited<ReturnType<typeof authenticate>>, { ok: false }> | null = null
+
+  const finalize = (resp: NextResponse): NextResponse => {
+    resp.headers.set('X-Request-Id', requestId)
+    void logEvent({
+      eventType: 'api_call',
+      status: resp.status >= 400 ? 'error' : 'ok',
+      requestId,
+      route: ROUTE,
+      latencyMs: Date.now() - t0,
+      statusCode: resp.status,
+      userId: auth?.key.userId ?? null,
+      apiKeyId: auth?.key.id ?? null,
+    })
+    return resp
+  }
+
   const result = await authenticate(req)
-  if (!result.ok) return result.response
-  const auth = result
+  if (!result.ok) return finalize(result.response)
+  auth = result
 
   const { searchParams } = new URL(req.url)
   const daysParam = searchParams.get('days')
@@ -51,14 +72,14 @@ export async function GET(req: NextRequest) {
     .order('date', { ascending: true })
 
   if (error) {
-    return NextResponse.json(
+    return finalize(NextResponse.json(
       { success: false, error: { code: 'db_error', message: error.message } },
       { status: 500 },
-    )
+    ))
   }
 
   if (!data || data.length === 0) {
-    return NextResponse.json({
+    return finalize(NextResponse.json({
       success: true,
       data: {
         range: { from: fromIso, to: toIso },
@@ -66,7 +87,7 @@ export async function GET(req: NextRequest) {
         note: 'No data yet — mag_prices_detailed cron runs Lun-Vie 15:30 ART. Once seeded, the index populates daily.',
       },
       timestamp: new Date().toISOString(),
-    })
+    }))
   }
 
   // Group by date
@@ -132,5 +153,5 @@ export async function GET(req: NextRequest) {
   })
   response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=600')
   if (auth) setQuotaHeaders(response, auth)
-  return response
+  return finalize(response)
 }

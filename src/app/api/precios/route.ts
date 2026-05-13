@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import marketPrices from '@/lib/data/market-prices.json'
 import { authenticate, setQuotaHeaders } from '@/lib/api-auth'
 import { createAdminClient } from '@/lib/supabase-server'
+import { logEvent } from '@/lib/ops'
 
 // Valid categories
 const VALID_CATEGORIES = ['novillos', 'novillitos', 'vaquillonas', 'vacas', 'toros', 'terneros'] as const
@@ -55,10 +56,30 @@ interface ErrorResponse {
  * - GET /api/precios?categoria=novillo → Also works (normalized to plural)
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
+  const requestId = crypto.randomUUID()
+  const t0 = Date.now()
+  const ROUTE = '/api/precios'
+  let auth: Exclude<Awaited<ReturnType<typeof authenticate>>, { ok: false }> | null = null
+
+  const finalize = (resp: NextResponse): NextResponse => {
+    resp.headers.set('X-Request-Id', requestId)
+    void logEvent({
+      eventType: 'api_call',
+      status: resp.status >= 400 ? 'error' : 'ok',
+      requestId,
+      route: ROUTE,
+      latencyMs: Date.now() - t0,
+      statusCode: resp.status,
+      userId: auth?.key.userId ?? null,
+      apiKeyId: auth?.key.id ?? null,
+    })
+    return resp
+  }
+
   try {
     const result = await authenticate(request)
-    if (!result.ok) return result.response as NextResponse<ErrorResponse>
-    const auth = result
+    if (!result.ok) return finalize(result.response as NextResponse<ErrorResponse>)
+    auth = result
 
     const { searchParams } = new URL(request.url)
     const categoriaParam = searchParams.get('categoria')?.toLowerCase() || null
@@ -78,13 +99,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         .limit(50)
 
       if (error || !data || data.length === 0) {
-        return NextResponse.json({
+        return finalize(NextResponse.json({
           success: false,
           error: {
             code: 'NO_DETAILED_DATA',
             message: 'No detailed price data available yet. The daily scrape runs after MAG closes (martes/miércoles/viernes ~15:30 ART).',
           },
-        }, { status: 503 })
+        }, { status: 503 }))
       }
 
       const latestDate = data[0].date
@@ -102,7 +123,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       })
       response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=600')
       if (auth) setQuotaHeaders(response, auth)
-      return response
+      return finalize(response)
     }
 
     // Historical mode — return INMAG series from mag_inmag_history
@@ -117,13 +138,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         .order('date', { ascending: true })
 
       if (error || !data) {
-        return NextResponse.json({
+        return finalize(NextResponse.json({
           success: false,
           error: {
             code: 'HISTORY_FETCH_FAILED',
             message: error?.message ?? 'Failed to load INMAG history.',
           },
-        }, { status: 500 })
+        }, { status: 500 }))
       }
 
       const calculated = data.filter((r) => r.inmag_calculated && r.inmag_value !== null)
@@ -152,7 +173,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       })
       response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=600')
       if (auth) setQuotaHeaders(response, auth)
-      return response
+      return finalize(response)
     }
 
     // Normalize singular to plural forms
@@ -173,13 +194,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     if (categoriaParam) {
       const normalizedCategory = normalizeCategory(categoriaParam) as Category
       if (!VALID_CATEGORIES.includes(normalizedCategory)) {
-        return NextResponse.json({
+        return finalize(NextResponse.json({
           success: false,
           error: {
             code: 'INVALID_CATEGORY',
             message: `Invalid category "${categoriaParam}". Valid categories: ${VALID_CATEGORIES.join(', ')}`
           }
-        }, { status: 400 })
+        }, { status: 400 }))
       }
       requestedCategories = [normalizedCategory]
     } else {
@@ -230,16 +251,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     if (auth) setQuotaHeaders(response, auth)
 
-    return response
+    return finalize(response)
 
   } catch (error) {
     console.error('Error fetching precios:', error)
-    return NextResponse.json({
+    return finalize(NextResponse.json({
       success: false,
       error: {
         code: 'INTERNAL_ERROR',
         message: 'An unexpected error occurred'
       }
-    }, { status: 500 })
+    }, { status: 500 }))
   }
 }

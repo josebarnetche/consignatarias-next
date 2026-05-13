@@ -8,6 +8,7 @@ const ADMIN_TABS = [
   { href: '/admin/claims', label: 'VERIFICACIONES' },
   { href: '/admin/consignatarias', label: 'CONSIGNATARIAS' },
   { href: '/admin/suscriptores', label: 'SUSCRIPTORES' },
+  { href: '/admin/ops', label: 'OPS' },
 ]
 
 export default function AdminNav() {
