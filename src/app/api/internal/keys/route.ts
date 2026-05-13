@@ -51,68 +51,95 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const user = await requireUser()
-  if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
-
-  if (!(await hasApiAccess(user.id))) {
-    return NextResponse.json(
-      { error: 'no_api_access', message: 'Tu cuenta no tiene un plan Enterprise activo.' },
-      { status: 403 },
-    )
-  }
-
-  let body: { name?: string; environment?: 'live' | 'test' }
   try {
-    body = await req.json()
-  } catch {
-    return NextResponse.json({ error: 'invalid_body' }, { status: 400 })
-  }
+    const user = await requireUser()
+    if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
-  const name = (body.name ?? '').trim()
-  const environment = body.environment === 'test' ? 'test' : 'live'
-  if (name.length < 2 || name.length > 60) {
-    return NextResponse.json({ error: 'invalid_name' }, { status: 400 })
-  }
+    if (!(await hasApiAccess(user.id))) {
+      return NextResponse.json(
+        { error: 'no_api_access', message: 'Tu cuenta no tiene un plan Enterprise activo.' },
+        { status: 403 },
+      )
+    }
 
-  const admin = createAdminClient()
+    let body: { name?: string; environment?: 'live' | 'test' }
+    try {
+      body = await req.json()
+    } catch {
+      return NextResponse.json({ error: 'invalid_body' }, { status: 400 })
+    }
 
-  // Enforce max active keys per user
-  const { count } = await admin
-    .from('api_keys')
-    .select('id', { count: 'exact', head: true })
-    .eq('user_id', user.id)
-    .is('revoked_at', null)
+    const name = (body.name ?? '').trim()
+    const environment = body.environment === 'test' ? 'test' : 'live'
+    if (name.length < 2 || name.length > 60) {
+      return NextResponse.json({ error: 'invalid_name' }, { status: 400 })
+    }
 
-  if ((count ?? 0) >= MAX_KEYS_PER_USER) {
+    const admin = createAdminClient()
+
+    // Enforce max active keys per user
+    const { count } = await admin
+      .from('api_keys')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .is('revoked_at', null)
+
+    if ((count ?? 0) >= MAX_KEYS_PER_USER) {
+      return NextResponse.json(
+        { error: 'max_keys_reached', limit: MAX_KEYS_PER_USER },
+        { status: 409 },
+      )
+    }
+
+    let generated
+    try {
+      generated = generateApiKey(environment)
+    } catch (err) {
+      console.error('generateApiKey failed:', err)
+      return NextResponse.json(
+        {
+          error: 'pepper_missing',
+          message:
+            err instanceof Error ? err.message : 'API_KEY_PEPPER env var no configurado.',
+        },
+        { status: 500 },
+      )
+    }
+
+    const { data: inserted, error } = await admin
+      .from('api_keys')
+      .insert({
+        user_id: user.id,
+        name,
+        prefix: generated.prefix,
+        hash: generated.hash,
+        environment: generated.environment,
+      })
+      .select('id, name, prefix, environment, created_at')
+      .single()
+
+    if (error || !inserted) {
+      console.error('api_keys insert failed:', error)
+      return NextResponse.json(
+        { error: 'insert_failed', message: error?.message ?? 'No se pudo insertar la key en DB.' },
+        { status: 500 },
+      )
+    }
+
+    return NextResponse.json({
+      key: inserted,
+      secret: generated.full,
+    })
+  } catch (err) {
+    console.error('[POST /api/internal/keys] unhandled:', err)
     return NextResponse.json(
-      { error: 'max_keys_reached', limit: MAX_KEYS_PER_USER },
-      { status: 409 },
+      {
+        error: 'unhandled_error',
+        message: err instanceof Error ? err.message : 'unknown',
+      },
+      { status: 500 },
     )
   }
-
-  const generated = generateApiKey(environment)
-
-  const { data: inserted, error } = await admin
-    .from('api_keys')
-    .insert({
-      user_id: user.id,
-      name,
-      prefix: generated.prefix,
-      hash: generated.hash,
-      environment: generated.environment,
-    })
-    .select('id, name, prefix, environment, created_at')
-    .single()
-
-  if (error || !inserted) {
-    console.error('api_keys insert failed', error)
-    return NextResponse.json({ error: 'create_failed' }, { status: 500 })
-  }
-
-  return NextResponse.json({
-    key: inserted,
-    secret: generated.full, // SHOWN ONLY ONCE
-  })
 }
 
 export async function DELETE(req: NextRequest) {

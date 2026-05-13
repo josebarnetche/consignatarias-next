@@ -76,25 +76,48 @@ export default function ApiKeysClient({ initialKeys }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newKeyName.trim(), environment: newKeyEnv }),
       })
-      const json = await res.json()
+      const bodyText = await res.text()
+      let json: {
+        error?: string
+        message?: string
+        limit?: number
+        key?: KeyRow
+        secret?: string
+      } | null = null
+      try {
+        json = JSON.parse(bodyText)
+      } catch {
+        // Server didn't return JSON — surface what we got
+        console.error('[create key] non-JSON response', res.status, bodyText)
+        setError(`Respuesta inválida del servidor (HTTP ${res.status}). ${bodyText.slice(0, 160)}`)
+        setCreating(false)
+        return
+      }
       if (!res.ok) {
-        setError(
-          json.error === 'max_keys_reached'
+        const msg =
+          json?.error === 'max_keys_reached'
             ? `Llegaste al límite de ${json.limit} keys activas. Revocá una primero.`
-            : json.error === 'invalid_name'
+            : json?.error === 'invalid_name'
               ? 'El nombre debe tener entre 2 y 60 caracteres.'
-              : 'No se pudo crear la key.',
-        )
+              : json?.error === 'no_api_access'
+                ? 'Tu cuenta no tiene un plan Enterprise activo.'
+                : json?.message ?? json?.error ?? `No se pudo crear la key (HTTP ${res.status}).`
+        setError(msg)
+        setCreating(false)
+        return
+      }
+      if (!json?.key || !json?.secret) {
+        setError('Respuesta sin key/secret. Avisanos.')
         setCreating(false)
         return
       }
       setKeys((prev) => [
         {
-          id: json.key.id,
-          name: json.key.name,
-          prefix: json.key.prefix,
-          environment: json.key.environment,
-          created_at: json.key.created_at,
+          id: json!.key!.id,
+          name: json!.key!.name,
+          prefix: json!.key!.prefix,
+          environment: json!.key!.environment,
+          created_at: json!.key!.created_at,
           last_used_at: null,
           usedThisMonth: 0,
         },
@@ -104,8 +127,10 @@ export default function ApiKeysClient({ initialKeys }: Props) {
       setShowCreateModal(false)
       setNewKeyName('')
       setNewKeyEnv('live')
-    } catch {
-      setError('Error de red. Probá de nuevo.')
+    } catch (err) {
+      console.error('[create key] fetch failed', err)
+      const msg = err instanceof Error ? err.message : 'fetch_failed'
+      setError(`Error de red: ${msg}`)
     } finally {
       setCreating(false)
     }
