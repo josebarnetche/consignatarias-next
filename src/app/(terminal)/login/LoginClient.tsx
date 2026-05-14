@@ -14,9 +14,14 @@ export default function LoginClient() {
   const [next, setNext] = useState('/cuenta')
 
   useEffect(() => {
-    // Accept both ?next= and legacy ?redirect= params
+    // Accept both ?next= and legacy ?redirect= params, but only if same-origin
+    // relative paths. Anything else (protocol-relative, absolute URLs, backslash
+    // tricks) is dropped silently and we fall back to /cuenta.
     const n = searchParams.get('next') || searchParams.get('redirect')
-    if (n) setNext(n)
+    if (!n || typeof n !== 'string' || n.length > 512) return
+    if (!n.startsWith('/')) return
+    if (n.startsWith('//') || n.startsWith('/\\')) return
+    setNext(n)
   }, [searchParams])
 
   async function handleGoogle() {
