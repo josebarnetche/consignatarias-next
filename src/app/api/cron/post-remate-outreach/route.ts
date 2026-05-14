@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     reason?: string
   }> = []
 
-  // Track which consignatarias we've already emailed today to avoid duplicates
+  // Same-day dedup by slug (don't email the same consignataria twice in one day)
   const { data: sentToday } = await supabase
     .from('outreach_log')
     .select('consignataria_slug')
@@ -76,6 +76,23 @@ export async function POST(request: NextRequest) {
     .gte('sent_at', `${today}T00:00:00`)
 
   const alreadySent = new Set(sentToday?.map(r => r.consignataria_slug) || [])
+
+  // 30-day rate-limit per recipient address. Hitting the same info@ inbox
+  // every week with identical copy converts at 0%. Cap to once per 30 days
+  // per email so we either reach a different contact or pause and switch
+  // channel (WhatsApp) for the stale ones.
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 86400_000).toISOString()
+  const { data: sentRecently } = await supabase
+    .from('outreach_log')
+    .select('email_sent_to')
+    .eq('type', 'post_remate_results')
+    .gte('sent_at', thirtyDaysAgo)
+
+  const recentEmails = new Set(
+    (sentRecently || [])
+      .map(r => r.email_sent_to?.toLowerCase())
+      .filter((e): e is string => !!e),
+  )
 
   for (const auction of todayAuctions) {
     const slug = auction.consignatariaSlug
@@ -129,6 +146,17 @@ export async function POST(request: NextRequest) {
       continue
     }
 
+    // 30-day rate-limit per recipient address
+    if (recentEmails.has(contactInfo.email.toLowerCase())) {
+      results.push({
+        consignataria: slug,
+        email: contactInfo.email,
+        status: 'skipped',
+        reason: 'Rate-limited (already emailed in last 30 days)'
+      })
+      continue
+    }
+
     // Send the email
     const result = await sendPostRemateResultsRequest({
       to: contactInfo.email,
@@ -154,6 +182,7 @@ export async function POST(request: NextRequest) {
       }
 
       alreadySent.add(slug) // Prevent duplicates within this run
+      recentEmails.add(contactInfo.email.toLowerCase()) // Same for rate-limit set
 
       results.push({
         consignataria: slug,

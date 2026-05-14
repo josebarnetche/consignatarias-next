@@ -20,6 +20,9 @@ function escapeHtml(str: string): string {
 }
 
 const FROM = process.env.RESEND_FROM_EMAIL || 'Consignatarias <noreply@consignatarias.com>'
+// Personal sender for cold outreach. Visible name = human, address = verified domain.
+// "noreply@" kills reply intent; never use it for asks-for-response emails.
+const FROM_PERSONAL = process.env.RESEND_FROM_PERSONAL || 'José Barnetche <agro@memola.com.ar>'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'agro@memola.com.ar'
 
@@ -352,83 +355,47 @@ interface PostRemateRequestParams {
 export async function sendPostRemateResultsRequest({
   to,
   consignatariaName,
-  slug,
+  slug: _slug,
   location,
   remateDate: _remateDate,
-  remateTitle,
+  remateTitle: _remateTitle,
 }: PostRemateRequestParams) {
   const resend = await getResend()
   if (!resend) return { success: false, error: 'Resend not configured' }
 
-  // Reserved for future use: format date for email body
+  void _slug
   void _remateDate
+  void _remateTitle
 
-  const safeName = escapeHtml(consignatariaName)
-  const safeLocation = escapeHtml(location)
-  // Reserved for future use: remate title in email
-  void remateTitle
-  const profileUrl = `${APP_URL}/consignatarias/${slug}`
+  // Strip HTML tags from name/location so the plain-text body never includes
+  // raw markup if upstream data has any. Plain text only — feels like a person
+  // typed it from Gmail, not a template blast.
+  const cleanName = consignatariaName.replace(/<[^>]+>/g, '').trim()
+  const cleanLocation = location.replace(/<[^>]+>/g, '').trim()
 
   try {
     await resend.emails.send({
-      from: FROM,
+      from: FROM_PERSONAL,
       to,
       replyTo: 'agro@memola.com.ar',
-      subject: `Resultados de su remate de hoy — consignatarias.com.ar`,
-      html: `
-        <div style="font-family:-apple-system,system-ui,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#ffffff;color:#1a1a1a">
-          <p style="margin:0 0 20px;font-size:15px;line-height:1.6">
-            Estimados <strong>${safeName}</strong>,
-          </p>
-          
-          <p style="margin:0 0 16px;font-size:15px;line-height:1.6">
-            Mi nombre es José Barnetche, Director de <strong>Memola Medios SAS</strong>, la empresa detrás de 
-            <a href="${APP_URL}" style="color:#16a34a;text-decoration:none;font-weight:500">consignatarias.com.ar</a> 
-            — un directorio gratuito de consignatarias y remates ganaderos de Argentina.
-          </p>
-          
-          <p style="margin:0 0 16px;font-size:15px;line-height:1.6">
-            Notamos que hoy tuvieron un remate en <strong>${safeLocation}</strong>. 
-            Estamos construyendo una base de datos pública de resultados de remates para darle más visibilidad al sector.
-          </p>
-          
-          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:20px;margin:24px 0">
-            <p style="margin:0 0 8px;font-size:15px;font-weight:600;color:#166534">
-              ¿Nos podrían compartir los promedios de su remate?
-            </p>
-            <p style="margin:0;font-size:14px;color:#166534">
-              Pueden responder a este email con una imagen o los números directamente.
-            </p>
-          </div>
-          
-          <p style="margin:0 0 16px;font-size:15px;line-height:1.6">
-            Su consignataria ya tiene un perfil en nuestra plataforma:
-          </p>
-          
-          <p style="margin:0 0 24px">
-            <a href="${profileUrl}" style="display:inline-block;background:#16a34a;color:#ffffff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:500;font-size:14px">
-              👉 Ver perfil de ${safeName}
-            </a>
-          </p>
-          
-          <p style="margin:0 0 24px;font-size:15px;line-height:1.6">
-            Publicamos los resultados con su nombre y un link a su perfil, dándoles exposición a compradores de todo el país.
-          </p>
-          
-          <p style="margin:0 0 8px;font-size:15px;line-height:1.6">
-            ¡Desde ya muchas gracias!
-          </p>
-          
-          <div style="margin-top:32px;padding-top:20px;border-top:1px solid #e5e7eb">
-            <p style="margin:0 0 4px;font-size:14px;font-weight:600">José Barnetche</p>
-            <p style="margin:0 0 4px;font-size:13px;color:#6b7280">Director — Memola Medios SAS</p>
-            <p style="margin:0 0 4px;font-size:13px">
-              <a href="${APP_URL}" style="color:#16a34a;text-decoration:none">consignatarias.com.ar</a>
-            </p>
-            <p style="margin:0;font-size:13px;color:#6b7280">+54 3773 418130</p>
-          </div>
-        </div>
-      `,
+      subject: `¿Me pasan los promedios del remate de hoy en ${cleanLocation}?`,
+      text: [
+        `Buenas, soy José de consignatarias.com.ar.`,
+        ``,
+        `Vi que tuvieron remate hoy en ${cleanLocation}. ¿Me podés`,
+        `pasar los promedios? Con 3 datos me sobra:`,
+        ``,
+        `  1. Categoría más operada (ej. terneros)`,
+        `  2. Precio promedio $/kg`,
+        `  3. Cabezas vendidas`,
+        ``,
+        `Respondé este mail con los números o una foto de la`,
+        `planilla. Lo publico en el perfil de ${cleanName} y te`,
+        `paso el link.`,
+        ``,
+        `Gracias,`,
+        `José — +54 3773 418130`,
+      ].join('\n'),
     })
     return { success: true }
   } catch (err) {
