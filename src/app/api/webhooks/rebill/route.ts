@@ -43,6 +43,50 @@ export async function POST(request: NextRequest) {
 
     const service = requireServiceClient()
 
+    // Idempotency: dedup events. Rebill may retry on transient failures,
+    // and we never want to double-process. Prefer a stable id from the
+    // payload; fall back to a tuple hash if none is present.
+    const eventId: string =
+      payload?.id
+      || payload?.event_id
+      || payload?.event?.id
+      || data?.id
+      || `${event}|${data?.subscription_id ?? ''}|${payload?.timestamp ?? ''}`
+
+    const { error: dedupError } = await service
+      .from('processed_webhook_events')
+      .insert({
+        event_id: eventId,
+        source: 'rebill',
+        event_type: event ?? 'unknown',
+      })
+
+    if (dedupError) {
+      // 23505 = unique_violation → already processed; ack and stop.
+      // Postgrest surfaces the code at top-level for insert conflicts.
+      const code = (dedupError as { code?: string }).code
+      if (code === '23505') {
+        return NextResponse.json({ received: true, ignored: 'duplicate' })
+      }
+      // Any other dedup-table error: bubble up so Rebill retries.
+      console.error('Webhook dedup insert error:', dedupError)
+      return NextResponse.json(
+        { error: 'internal_error', message: 'dedup_failed' },
+        { status: 500 },
+      )
+    }
+
+    // Server-side plan_id → api_tier map. Trust the plan_id reference
+    // from Rebill, never the metadata.api_tier claim (attacker-controlled
+    // if their account is compromised at signup).
+    const PLAN_ID_TO_API_TIER: Record<string, 'starter' | 'growth' | 'scale'> = {}
+    if (process.env.REBILL_STARTER_PLAN_ID)
+      PLAN_ID_TO_API_TIER[process.env.REBILL_STARTER_PLAN_ID] = 'starter'
+    if (process.env.REBILL_GROWTH_PLAN_ID)
+      PLAN_ID_TO_API_TIER[process.env.REBILL_GROWTH_PLAN_ID] = 'growth'
+    if (process.env.REBILL_SCALE_PLAN_ID)
+      PLAN_ID_TO_API_TIER[process.env.REBILL_SCALE_PLAN_ID] = 'scale'
+
     switch (event) {
       case 'subscription.created':
       case 'payment.success': {
@@ -53,7 +97,16 @@ export async function POST(request: NextRequest) {
         if (kind === 'enterprise_starter_subscription' || kind === 'enterprise_subscription') {
           const userId = metadata?.userId
           const customerEmail = metadata?.customerEmail
-          const apiTier = metadata?.api_tier ?? 'starter'
+          const claimedTier = metadata?.api_tier as 'starter' | 'growth' | 'scale' | undefined
+          const planDerivedTier = plan_id ? PLAN_ID_TO_API_TIER[plan_id] : undefined
+          // plan_id is the source of truth; metadata is informational only.
+          if (planDerivedTier && claimedTier && planDerivedTier !== claimedTier) {
+            console.warn(
+              `Rebill webhook: metadata.api_tier (${claimedTier}) disagrees with plan_id-derived tier (${planDerivedTier}) for plan ${plan_id}. Using plan_id.`,
+            )
+          }
+          const apiTier: 'starter' | 'growth' | 'scale' =
+            planDerivedTier ?? claimedTier ?? 'starter'
           if (!userId) break
 
           // Read existing email/tier so we don't overwrite PRO Usuario state
@@ -255,7 +308,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ received: true })
   } catch (err) {
+    // Return 500 so Rebill retries — silent 200s mask real failures and
+    // we end up with partially-applied subscription state.
     console.error('Webhook error:', err)
-    return NextResponse.json({ received: true }, { status: 200 })
+    const message = err instanceof Error ? err.message : 'unknown'
+    return NextResponse.json(
+      { error: 'internal_error', message },
+      { status: 500 },
+    )
   }
 }

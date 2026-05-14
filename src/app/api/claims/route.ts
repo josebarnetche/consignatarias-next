@@ -40,7 +40,16 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Insert claim as auto-approved
+    // SECURITY: insert as PENDING (not approved). The magic-link send below
+    // is harmless — it lands in the real owner's inbox if the email is correct,
+    // or in the attacker's if not. Approval (status='approved' + consignataria
+    // verified flag + role assignment) is gated by the admin claims UI.
+    //
+    // TODO v1.15 — add /api/claims/[id]/confirm endpoint that flips
+    // status='approved' + verified=true when the magic-link recipient
+    // completes their first session for this email. Today, admin reviews
+    // pending claims in /admin/claims and uses the existing approval flow
+    // (see src/app/api/admin/claims/[id]/route.ts).
     const { error: insertError } = await supabase
       .from('consignataria_claims')
       .insert({
@@ -50,7 +59,7 @@ export async function POST(req: NextRequest) {
         claimant_phone: claimant_phone || null,
         claimant_role: claimant_role || null,
         cuit: cuit || null,
-        status: 'approved',
+        status: 'pending',
       })
 
     if (insertError) {
@@ -61,45 +70,9 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Auto-approve: mark consignataria as claimed + verified
-    await supabase
-      .from('consignatarias')
-      .update({
-        verified: true,
-        claimed_at: new Date().toISOString(),
-        claimed_by_email: claimant_email,
-      })
-      .eq('canonical_slug', consignataria_slug)
-
-    // Create Supabase Auth user (or get existing) + assign owner role
-    try {
-      const { data: authUser, error: createError } = await supabase.auth.admin.createUser({
-        email: claimant_email,
-        email_confirm: true,
-      })
-
-      if (!createError && authUser?.user) {
-        await supabase.from('user_roles').upsert({
-          user_id: authUser.user.id,
-          email: claimant_email,
-          role: 'owner',
-        }, { onConflict: 'user_id' })
-      } else if (createError?.message?.includes('already been registered')) {
-        const { data: existingUsers } = await supabase.auth.admin.listUsers()
-        const found = existingUsers?.users?.find(u => u.email === claimant_email)
-        if (found) {
-          await supabase.from('user_roles').upsert({
-            user_id: found.id,
-            email: claimant_email,
-            role: 'owner',
-          }, { onConflict: 'user_id' })
-        }
-      }
-    } catch (e) {
-      console.error('Auto-invite error:', e)
-    }
-
-    // Send magic link so user can log in immediately
+    // Send magic link so the (presumed) owner can prove possession of the
+    // inbox. We do NOT create the auth user or assign 'owner' role here —
+    // that happens on admin approval.
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
     try {
       await supabase.auth.admin.generateLink({
@@ -142,7 +115,10 @@ export async function POST(req: NextRequest) {
     )
 
     return NextResponse.json(
-      { message: 'Perfil verificado. Revisa tu email para acceder a tu panel.' },
+      {
+        message:
+          'Solicitud recibida. Revisaremos el reclamo y, una vez aprobado, podrás acceder a tu panel desde el link que enviamos por email.',
+      },
       { status: 201 },
     )
   } catch {

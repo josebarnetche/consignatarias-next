@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     req.headers.get('x-cron-secret') || req.nextUrl.searchParams.get('secret')
   const envSecret = process.env.CRON_SECRET?.replace(/\\r\\n$/, '').trim()
 
-  if (cronSecret !== envSecret && process.env.NODE_ENV === 'production') {
+  if (!envSecret || cronSecret !== envSecret) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
