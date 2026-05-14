@@ -24,7 +24,7 @@ const FROM = process.env.RESEND_FROM_EMAIL || 'Consignatarias <noreply@consignat
 // "noreply@" kills reply intent; never use it for asks-for-response emails.
 // IMPORTANT: only consignatarias.com is verified in Resend. memola.com.ar is NOT.
 // Any from: address must end in @consignatarias.com or Resend rejects the send.
-const FROM_PERSONAL = process.env.RESEND_FROM_PERSONAL || 'José Barnetche <jose@consignatarias.com>'
+const FROM_PERSONAL = process.env.RESEND_FROM_PERSONAL || 'José Barnetche <hola@consignatarias.com>'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'agro@memola.com.ar'
 
