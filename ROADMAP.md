@@ -1,6 +1,6 @@
 # Roadmap to v1.20.0
 
-**Current:** v1.13.0 (May 13, 2026)
+**Current:** v1.14.5 (May 14, 2026)
 **Target:** v1.20.0 — First Revenue Milestone (Enterprise API + B2B)
 **Timeline:** 8-12 weeks
 
@@ -22,9 +22,17 @@ v1.10.1 (May 12)           MAG deepening (16 sub-cat + 11 años INMAG)
 v1.11.0 (May 12)           Derivatives — INMAG en dólares, YoY, heatmap, calculator, MEMOLA Index
 v1.12.0 (May 12)           Lote-level pipeline + Self-serve Enterprise Starter via Rebill
 v1.13.0 (May 13)           28-day billing + per-user quota + self-serve upgrade + dev invites
+v1.13.1 (May 13)           Slug page hang RESOLVED — Next.js 15 sibling-route collision fix
+v1.13.2 (May 13)           Public API gated behind auth + Fluid Compute memory floors
+v1.13.3 (May 13)           Slug variants → 308 redirects + past-auction 404s at the edge
+v1.14.0 (May 13)           Observability foundation (ops_events + cron_runs + /admin/ops)
+v1.14.1-1.14.2 (May 13)    Email outreach v2 (plain text, hola@consignatarias.com)
+v1.14.3 (May 13)           Closed 2 P0 security findings (webhook auth + open redirect)
+v1.14.4 (May 13)           Closed 5 P1 security findings (Rebill idempotency, claims, crons)
+v1.14.5 (May 14)           logEvent waitUntil fix — observability writes survive teardown
 ```
 
-**76 days. 1554 static pages. 33 API endpoints. 22 Supabase tables. $0 revenue still — but the platform is no longer the bottleneck.**
+**77 days. 1554 static pages. 33 API endpoints. 24 Supabase tables. $0 revenue still — but the platform is no longer the bottleneck, and posture is shipped-clean (0 P0/P1 open).**
 
 ---
 
@@ -63,22 +71,27 @@ Until then, every release optimizes for moving the funnel.
 
 ## v1.13 → v1.20 Milestones
 
-### v1.13.1 — Slug page hang (BLOCKER) ⚠
-**Effort:** 1-3 hours | **Impact:** Critical
+### ✅ v1.13.1 — Slug page hang (DONE 2026-05-13)
+Resolved via Next.js 15 sibling-route collision fix across `/consignatarias`, `/frigorificos`, `/remates`. See CHANGELOG.
 
-`/consignatarias/[slug]` profile pages hang 25s+ in production. Province + directory work. 80 SEO pages currently broken.
+### ✅ v1.13.2 — Public API auth gate + Fluid Compute floors (DONE 2026-05-13)
+`/api/precios`, `/api/lots`, `/api/index/memola` now require Bearer. Memory floor 256 MB / 30 s.
 
-- [ ] Reproduce with `next start` local + curl
-- [ ] If local hang → strip page to bare minimum, re-add piece by piece
-- [ ] If local works → compare Vercel runtime config (region, maxDuration, Supabase pool)
-- [ ] Ship fix; verify 80 profile URLs return 200 in <2s
+### ✅ v1.13.3 — Slug-variant 308 redirects + past-auction 404s at the edge (DONE 2026-05-13)
+Killed the 80+ serverless invocations/16 min of crawler burn.
+
+### ✅ v1.14.0–1.14.5 — Observability + email v2 + security hardening (DONE 2026-05-13/14)
+- `ops_events` + `cron_runs` tables + `/admin/ops` dashboard
+- Email outreach v2 (plain text, `hola@consignatarias.com`, 30-day rate-limit per recipient)
+- 2 P0 + 5 P1 security findings closed (webhook auth, open redirect, Rebill idempotency + tier validation, claims hardening, cron auth bypass, profile-views/form-abandonment rate-limits)
+- `logEvent` `waitUntil` fix so observability writes survive Vercel function teardown
 
 ---
 
-### v1.14.0 — Lote-level data activation
+### v1.15.0 — Lote-level data activation + named-contact outreach
 **Effort:** 4-6 hours | **Impact:** High (B2B differentiator)
 
-The pipeline is built (v1.12.0) but `mag_consignatarias` master is empty and `mag_consignataria_sales_lots` has 0 rows.
+Originally targeted as v1.14.0 — repurposed v1.14 for observability + security after the audit. Now the lote-level work returns to head of queue.
 
 - [ ] Trigger `mag-lots-discover.yml` (workflow_dispatch) — populates 44 consignatarias
 - [ ] Run `mag-lots-pipeline.yml` for current week (88 jobs × 65s = ~95 min)
@@ -86,6 +99,8 @@ The pipeline is built (v1.12.0) but `mag_consignatarias` master is empty and `ma
 - [ ] `/api/lots` endpoint already exists — surface in `/api-docs` as Enterprise differentiator
 - [ ] Bonus: vientres preñadas scraper from remates calendar with catálogo público
 - [ ] New SEO landing `/mercado/vientres` if vientres data lands
+- [ ] **Email outreach v3:** per-consignataria named contacts (martillero, not `info@`) + WhatsApp follow-up for the 3 burned inboxes (Lehmann, O'Farrell, Colombo)
+- [ ] **Wire GH Actions to `/api/internal/cron-hook`** with `INTERNAL_API_SECRET` so `cron_runs` populates and `/admin/ops` is no longer dashes
 
 ---
 

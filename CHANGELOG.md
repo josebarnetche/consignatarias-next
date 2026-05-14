@@ -6,6 +6,151 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.14.5] — 2026-05-14
+
+### `logEvent` survives function teardown (waitUntil fix)
+
+Followup to v1.14.0. The observability instrumentation was technically deployed but **`ops_events` table remained empty** despite real authenticated traffic (Martin's 13 API calls + Jose's testing). Diagnosed: `void logEvent(...)` returned a Promise that the void operator discarded, and on Vercel serverless the runtime can tear down the function once it sends its HTTP response — killing the in-flight Supabase insert mid-flight.
+
+- Added `@vercel/functions` as a dependency.
+- `logEvent()` now wraps its inner promise with `waitUntil()` so the runtime keeps the function alive until the insert completes — without blocking the response.
+- Return type changed from `Promise<void>` to `void` to make the new contract explicit. Existing `void logEvent(...)` call sites at /api/precios, /api/lots, /api/index/memola still typecheck cleanly.
+- In non-Vercel runtimes (local dev, scripts) `waitUntil` throws on registration; swallowed safely.
+
+After this fix, every authenticated request to the 3 instrumented routes writes an `ops_events` row with `request_id`, `route`, `latency_ms`, `status_code`, `user_id`, `api_key_id` — fueling `/admin/ops`.
+
+Granted `jose.barnetche19@gmail.com` the `admin` role (was `owner`) so the dashboard is accessible from the founder's main account, not only from `agro@memola.com.ar`.
+
+---
+
+## [1.14.4] — 2026-05-13
+
+### Closed 5 P1 security findings
+
+Followup to v1.14.3 P0 fixes. The integral security audit (10 areas, 2 P0 / 5 P1 / 7 P2 / 4 P3) found 5 high-severity issues that required code changes. All 5 closed in this release.
+
+**P1-1 — `/api/profile-views` + `/api/form-abandonment` hardening.** Both routes were anonymous, used `requireServiceClient()` (RLS bypass), and had no rate-limit. Added per-IP rate-limit (`'pro'` tier = 100/min/IP), `entityType` allow-list (`consignataria | frigorifico | remate`), canonical-slug validation for consignataria, RFC-lite email regex + length cap + `form_type` allow-list. Closes analytics-poisoning + re-engagement-queue spam vectors.
+
+**P1-2 — Cron auth bypass in non-production.** Four cron routes (`backfill-inmag`, `backfill-usd`, `remate-reminders`, `quota-alerts`) had `if (cronSecret !== envSecret && NODE_ENV === 'production')` — preview/dev deploys were wide-open. Now reject in every environment unless secret matches, with explicit `!envSecret` guard so an unset env var doesn't accidentally permit access.
+
+**P1-3 — Rebill webhook idempotency + server-side tier validation.** New `processed_webhook_events` table (event_id PK, source, type, timestamps) — RLS enabled, service_role only. Webhook now inserts `(event_id, source='rebill')` before processing; unique-violation (PostgreSQL 23505) returns `200 'duplicate'` and stops. Added `PLAN_ID_TO_API_TIER` map sourced from `REBILL_STARTER/GROWTH/SCALE_PLAN_ID` env vars — Rebill's plan_id reference is now the source of truth for tier assignment; the attacker-mutable `metadata.api_tier` claim is never trusted.
+
+**P1-4 — Rebill webhook returns 500 on internal errors.** Outer catch used to silently `200` every error → Rebill never retried legitimate transient failures (Supabase 5xx mid-upsert), leaving subscription state desynced. Now returns 500 with `{ error, message }`; validated `ignored/duplicate/unhandled` branches keep 200.
+
+**P1-5 — `/api/claims` no longer auto-approves before magic-link consumed.** Previous behavior: POST inserted `status='approved' + verified=true + claimed_at=now()` immediately and sent a magic link. Attacker with any `(slug, attacker_email)` pair could permanently lock out the real owner from self-serve claim. Now inserts `status='pending'`, `verified=false`, no `claimed_at`. Magic link still sent (harmless — lands in real inbox if email is correct). Admin reviews via existing `/admin/claims` UI. TODO v1.15: `/api/claims/[id]/confirm` endpoint to flip on first sign-in.
+
+---
+
+## [1.14.3] — 2026-05-13
+
+### Closed 2 P0 security findings — webhook auth + open redirect
+
+**P0-1 — `/api/webhooks/register` was fully unauthenticated.** Anyone on the internet could POST and insert arbitrary rows into the webhooks table (url, secret, filters, owner_email). Vectors: DoS the dispatcher with thousands of bogus subs; SSRF via `url=http://169.254.169.254/` (AWS metadata); internal-net probing via 10.x/192.168.x; data exfil of event metadata before public publish; social-engineering spam to arbitrary owner_email.
+
+Fix: requires `authenticate(req)` at the top of POST (Bearer cnsg_live_… pattern). Added `isPublicHttpsUrl()` validator — must be https://, rejects localhost, 127.0.0.0/8, 10.0.0.0/8, 192.168.0.0/16, 172.16-31.x.x, 169.254.x.x (link-local incl. AWS metadata), 0.0.0.0, ::1, fc::/7 (IPv6 ULA). Returns 400 INVALID_URL before any DB write.
+
+**P0-2 — Open redirect in `/auth/callback`.** `?next=//evil.tld/x` produced an open redirect *after* minting a real Supabase session in our cookie jar — working phishing primitive. Combined with `LoginClient.tsx` echoing user-supplied `?next=` into the OTP `emailRedirectTo`, attacker could craft a magic-link, completing auth and bouncing the victim to a credential-harvest site.
+
+Fix: `safeNext()` validator in `/auth/callback/route.ts` drops anything that isn't a same-origin relative path. Accepts only: starts with `/`, not `//`, not `/\\`, length ≤ 512, string type. Anything else falls back to `/dashboard`. Same validator gate in `LoginClient.tsx` before propagating to OAuth/OTP `redirectTo`.
+
+---
+
+## [1.14.2] — 2026-05-13
+
+### Email-sender domain audit + FROM_PERSONAL hotfix
+
+Critical operational discovery during email v2 follow-up: **only `consignatarias.com` is verified in Resend**, not `consignatarias.com.ar` (the website domain) and not `memola.com.ar` (Jose's institutional inbox). v1.14.1's email v2 had defaulted the personal sender to `José Barnetche <agro@memola.com.ar>` — which would silently fail every Resend send (unverified domain).
+
+- `FROM_PERSONAL` default changed to `'José Barnetche <hola@consignatarias.com>'` (verified domain, human-named).
+- `replyTo: 'agro@memola.com.ar'` unchanged — replyTo doesn't require Resend verification, just a real inbox to receive replies.
+- Audited all 25+ `mailto:` links across the codebase — they pre-fill outbound emails from the user's client to `agro@memola.com.ar`, which is a real monitored inbox; no change required.
+- New `RESEND_FROM_PERSONAL` env var; legacy `RESEND_FROM_EMAIL` (transactional `noreply@consignatarias.com`) unchanged.
+
+---
+
+## [1.14.1] — 2026-05-13
+
+### Email outreach v2 — kill noreply, plain text, 30-day rate-limit
+
+Diagnose triggered by 52 emails sent / 33 opened (63% — great open rate) / **0 replies tracked**. Cron going to the same `info@` inboxes weekly (Lehmann 5×, O'Farrell 4×, Colombo 4×) with HTML template + `noreply@consignatarias.com` from-address + green CTA button leading to a static profile page. Recipients perceive automated marketing → no reply reflex.
+
+- **From-address:** `noreply@consignatarias.com` → `José Barnetche <hola@consignatarias.com>` (v1.14.2 corrected the local-part to the verified domain).
+- **Subject:** "Resultados de su remate de hoy" → "¿Me pasan los promedios del remate de hoy en {{location}}?" Question-shaped with literal city/auction name to prove a human wrote it.
+- **Body:** HTML template with green button → plain text only via Resend `text:` field. 3-line bullet ask (categoría / precio $/kg / cabezas). Reply is the only available action.
+- **30-day rate-limit per recipient address** in `/api/cron/post-remate-outreach`. Same-day-same-slug dedup remained; new cap prevents hitting the same `info@` inbox weekly with identical copy.
+
+Caveat: this only fixes the cron loop. Repeatedly-burned inboxes (Lehmann, O'Farrell, Colombo) still need a channel switch — recommendation queued: WhatsApp to martillero directly, not `info@`.
+
+---
+
+## [1.14.0] — 2026-05-13
+
+### Observability foundation — `ops_events` + `cron_runs` + `/admin/ops`
+
+Stops operating blind. Single pane of glass for cron health, API activity, and recent errors. Built after the previous session's audit showed 95% of Vercel traffic was crawler-bot but the human signal (3 profile views/day, 25/week, 13 API calls today from Martin) was invisible to us in real-time.
+
+**Migrations (Supabase `nyqkgorazkwcufkzxmhd`)**
+- `ops_events` — id bigserial pk, event_type, status, user_id, api_key_id, request_id, route, latency_ms, status_code, metadata jsonb, created_at. Indexes on `(created_at DESC)` + `(event_type, created_at DESC)`. RLS enabled, service_role only.
+- `cron_runs` — id bigserial pk, workflow_name, started_at, finished_at, status, message, metadata jsonb. Index `(workflow_name, started_at DESC)`. RLS enabled.
+
+**Code**
+- `src/lib/ops.ts` — `logEvent` (fire-and-forget; see v1.14.5 for the waitUntil fix), `startCronRun`, `finishCronRun`, `getCronHealth`, `EXPECTED_CRONS` map for all 14 workflows.
+- `src/app/api/internal/cron-hook/route.ts` — POST endpoint workflows POST to with `{ workflow_name, status, message }`. Bearer-auth via `INTERNAL_API_SECRET`. Returns 503 `not_configured` if env missing (safe-by-default; wiring deferred to v1.15).
+- `src/app/(terminal)/admin/ops/page.tsx` — server-rendered dashboard. Three flat tables (Crons with age color-coding red>25h / yellow>12h / green; Recent events last 50; Recent errors last 20). Inherits admin gate from `(terminal)/admin/layout.tsx` (role=`admin` only).
+
+**Instrumented routes** — `/api/precios`, `/api/lots`, `/api/index/memola` each generate a `crypto.randomUUID()` request_id at entry, attach it as `X-Request-Id` response header, and emit a `logEvent` on every return path with `eventType: 'api_call'`, status, latency, status_code, user_id, api_key_id.
+
+---
+
+## [1.13.3] — 2026-05-13
+
+### Killed SSR burn on slug variants + past-auction 404s
+
+Vercel logs analysis (2000 events in 16 min) revealed ~80 serverless invocations per page-sweep going to:
+- `/consignatarias/<slug-variant>` URLs (e.g. `campos-y-ganados-s-a`, `pepa-knubel-y-ferrero-s-r-l`) where the slug exists in the canonical map but not the SSG list → falls to SSR every hit.
+- `/remates/<past-auction-slug-with-date>` URLs from crawlers probing old dated slugs → SSR runs to completion before `notFound()` returns 404.
+
+**Two fixes:**
+
+1. **Consignataria slug variants → 308 redirect at the edge.** New `getVariantSlugRedirects()` helper in `src/lib/data/consignataria-slugs.ts` returns variant→canonical pairs. `src/middleware.ts` checks `/consignatarias/<slug>` early; if slug is a known variant, returns `NextResponse.redirect(canonical, 308)` without invoking Supabase or the page handler.
+
+2. **`/remates/[slug]` `dynamicParams=false`.** All 380 known remate slugs + 13 province slugs are in `generateStaticParams`. Unknown slugs (past-auction strings bots keep probing) now 404 at the edge with no SSR.
+
+Local smoke tests confirmed: `/consignatarias/campos-y-ganados-s-a` → 308 → canonical (was 200 SSR), `/remates/vicar-…-2026-03-26` → 404 (was 404-after-SSR). Expected impact: -50–80% serverless invocations from crawler sweeps without changing canonical SEO surface.
+
+---
+
+## [1.13.2] — 2026-05-13
+
+### Public API behind auth + Fluid Compute memory floor
+
+Cost defense and abuse mitigation. The previous "opt-in auth" pattern on `/api/precios`, `/api/lots`, `/api/index/memola` allowed unauthenticated public hits with IP-rate-limit fallback. With ~7,500 req/h of crawler traffic, that was free compute spend with no business return.
+
+- All three public API routes now **require** `Authorization: Bearer cnsg_live_…`. Unauthenticated calls return 401 `auth_required` with link to `/cuenta/api-keys`. `authenticate()` no longer falls through on missing header.
+- `vercel.json` `functions` block sets Fluid Compute memory + maxDuration floors per route family: API routes 256 MB / 30s (was 1024 MB / 300s default), cron handlers 512 MB / 60s, webhooks 256 MB / 15s, opengraph/twitter-image 1024 MB / 30s. Conservative defaults — most routes' p99 memory usage was well under 256 MB but Vercel's default reserved 4× that.
+
+---
+
+## [1.13.1] — 2026-05-13
+
+### Resolved ALL `[provincia]` vs `[slug]` sibling route collisions (slug page hang fix)
+
+**Root cause** found via `next start` locally: Next.js 15 throws `unhandledRejection` at server startup when sibling dynamic segments share a path with different param names ("You cannot use different slug names for the same dynamic path"). This crashed the production server runtime, which manifested as 30+ second hangs on every `/consignatarias/[profile-slug]` URL last session.
+
+Three route collision sites existed:
+1. `/consignatarias/[provincia]` + `/consignatarias/[slug]` — fixed in the prior session by merging into `[slug]` with internal `isProvinceSlug()` discrimination. The fix was correct but had no visible effect because the *other two* collisions still crashed the server.
+2. `/frigorificos/[cuit]` + `/frigorificos/[provincia]` — fixed in this release. Renamed `[cuit]` → `[slug]`, extracted province UI to `_views/FrigorificoProvinceView.tsx`, page handler branches on `isFrigorificoProvinceSlug()` first then falls through to CUIT lookup.
+3. `/remates/[provincia]` + `/remates/[slug]` — fixed in this release. Province view extracted to `_views/RematesProvinceView.tsx`, page handler branches at top. Nested route `[provincia]/[tipo]` moved to `[slug]/[tipo]/` with renamed param.
+
+Verified locally on `next start`:
+- `/consignatarias/bressan-y-cia` → 200 in 58 ms (was 30 s+ timeout in prod)
+- `/frigorificos/buenos-aires` → 200 in 8 ms
+- No more startup `unhandledRejection`
+
+URLs unchanged, SEO preserved, sitemap unchanged.
+
+---
+
 ## [1.13.0] — 2026-05-13
 
 ### Billing-aligned quotas + self-serve upgrades + dev invite system + bugfixes

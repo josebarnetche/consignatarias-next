@@ -2,7 +2,9 @@
 
 A cattle auction directory, market intelligence platform, and public API for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
 
-**Three product lines** (PRO Usuario · PRO Consignataria · Enterprise API · Self-serve) • **30+ API endpoints with auth + quotas** • **Lote-level transactional data** (haciinfo000007) • **MAG deep integration (16 sub-categorías + 11 años de INMAG)** • **USD blue desde 2011** • **366 remates** • **74 consignatarias canonical** • **44 MAG consignatarios** • **364 frigoríficos** • **12 provincias** • **24 YouTube channels** • **1550+ sitemap URLs** • **100% schema coverage** • **7 daily-rebuilt price landings** • **Reports system** • **🔴 En Vivo streaming focus**
+**Three product lines** (PRO Usuario · PRO Consignataria · Enterprise API · Self-serve) • **30+ API endpoints with auth + quotas** • **Lote-level transactional data** (haciinfo000007) • **MAG deep integration (16 sub-categorías + 11 años de INMAG)** • **USD blue desde 2011** • **366 remates** • **74 consignatarias canonical** • **44 MAG consignatarios** • **364 frigoríficos** • **12 provincias** • **24 YouTube channels** • **1550+ sitemap URLs** • **100% schema coverage** • **7 daily-rebuilt price landings** • **Reports system** • **🔴 En Vivo streaming focus** • **Observability (`/admin/ops`)** • **P0/P1 security closed**
+
+**Current:** v1.14.5 (2026-05-14) — see [CHANGELOG.md](./CHANGELOG.md) for the v1.13.1 → v1.14.5 release train (slug-hang fix, public API auth gate, slug-variant 308 redirects, observability foundation, email outreach v2, 2 P0 + 5 P1 security findings closed).
 
 **Live:** [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
 
