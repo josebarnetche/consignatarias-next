@@ -23,7 +23,7 @@ There is no single place to see all upcoming auctions, compare prices, or browse
 
 ## What We Built
 
-**consignatarias.com.ar** aggregates data from 77+ consignatarias (cattle auction houses) across 10 provinces into a unified, real-time interface. A rancher can see every upcoming auction in the country, filter by province or type, check market prices, and find frigorificos — all in one screen.
+**consignatarias.com.ar** aggregates data from 74 consignatarias (cattle auction houses) across 12 provinces into a unified, real-time interface. A rancher can see every upcoming auction in the country, filter by province or type, check market prices, and find frigorificos — all in one screen.
 
 ### Current UX (v1.9.13)
 
@@ -779,7 +779,7 @@ Q4 2026: Smart Alerts + Contact + API
 
 **North Star:** When a user has 15 follows + 10 alerts + 6 months of history → switching cost is prohibitive.
 
-See [`docs/MARKET-DECISION-INFRASTRUCTURE.md`](docs/MARKET-DECISION-INFRASTRUCTURE.md) for the complete strategic design.
+See [`docs/EL-ORACULO-FRAMEWORK.md`](docs/EL-ORACULO-FRAMEWORK.md) + [`ROADMAP.md`](./ROADMAP.md) for the current strategic anchor. (An earlier `MARKET-DECISION-INFRASTRUCTURE.md` exists in the repo for archival reasons; it predates the April 2026 data-layer pivot and should not be treated as current.)
 
 ---
 

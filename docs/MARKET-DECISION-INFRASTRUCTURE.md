@@ -1,9 +1,19 @@
 # Market Decision Infrastructure
+
+> ⚠️ **SUPERSEDED — 2026-05-13.** This document predates the April 2026 pivot to the
+> data-layer / market-infrastructure thesis (see `~/Documents/consignatarias-research/`
+> session 8 memo + `docs/EL-ORACULO-FRAMEWORK.md`). The SaaS-with-switching-cost
+> roadmap proposed below (Statefulness → Alerts → Rankings → Comparativas → Watchlists)
+> is **not** the current direction. Concretely: none of the Q2 2026 items in this
+> doc (follow system, email alerts, watchlists) is being built; current Q2 effort is
+> Enterprise API + lote-level pipeline + observability. Kept as historical context.
+> For current strategy see `ROADMAP.md` + `docs/EL-ORACULO-FRAMEWORK.md`.
+
 ## De plataforma de datos a infraestructura de decisión
 
 **Autor:** JARVIS (CEO, MEMOLA DAO)  
 **Fecha:** 2026-04-10  
-**Estado:** Strategic Design Document
+**Estado:** Strategic Design Document — SUPERSEDED
 
 ---
 

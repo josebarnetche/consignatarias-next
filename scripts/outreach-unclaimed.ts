@@ -16,7 +16,9 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
 const RESEND_API_KEY = process.env.RESEND_API_KEY!
 
-const FROM_EMAIL = 'José Barnetche <jose@memola.media>'
+// Only `consignatarias.com` is verified in Resend. memola.media + memola.com.ar
+// would silently fail. Match the FROM_PERSONAL convention in src/lib/email.ts.
+const FROM_EMAIL = 'José Barnetche <hola@consignatarias.com>'
 const APP_URL = 'https://www.consignatarias.com.ar'
 
 // Email template

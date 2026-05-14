@@ -1,7 +1,13 @@
 # Insight: Remitente Data Pipeline
 
+> ✅ **SHIPPED — see CHANGELOG v1.11.0/v1.12.0.** The MAG lote-level pipeline is live:
+> `mag-lots-discover.yml` + `mag-lots-pipeline.yml` GH workflows populate
+> `mag_consignataria_sales_lots` (lote-level pesada × remitente × categoría per
+> consignataria per day). Endpoint `/api/lots` exposes it under Enterprise auth.
+> This document is the original spec — kept as historical context.
+
 **Generated:** 2026-03-20
-**Priority:** HIGH (unblocks Battle #6 Sprint 3)
+**Priority:** HIGH (unblocks Battle #6 Sprint 3) — status now SHIPPED
 **Effort:** ~2h scraper mod + ongoing data collection
 
 ---
