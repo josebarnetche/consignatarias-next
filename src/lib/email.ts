@@ -22,7 +22,9 @@ function escapeHtml(str: string): string {
 const FROM = process.env.RESEND_FROM_EMAIL || 'Consignatarias <noreply@consignatarias.com>'
 // Personal sender for cold outreach. Visible name = human, address = verified domain.
 // "noreply@" kills reply intent; never use it for asks-for-response emails.
-const FROM_PERSONAL = process.env.RESEND_FROM_PERSONAL || 'José Barnetche <agro@memola.com.ar>'
+// IMPORTANT: only consignatarias.com is verified in Resend. memola.com.ar is NOT.
+// Any from: address must end in @consignatarias.com or Resend rejects the send.
+const FROM_PERSONAL = process.env.RESEND_FROM_PERSONAL || 'José Barnetche <jose@consignatarias.com>'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'agro@memola.com.ar'
 
