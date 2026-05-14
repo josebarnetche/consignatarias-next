@@ -1707,106 +1707,82 @@
   },
   "categories": {
     "novillos": {
-      "current": 4241.32,
-      "prev": 4241,
-      "change": 0,
+      "current": 4322.92,
+      "prev": 4241.32,
+      "change": 1.9,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1531
+      "latestVolume": 810
     },
     "novillitos": {
-      "current": 4586.17,
-      "prev": 4029,
-      "change": 13.8,
+      "current": 4581.08,
+      "prev": 4586.17,
+      "change": -0.1,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 2111
+      "latestVolume": 853
     },
     "vaquillonas": {
-      "current": 4405.4,
-      "prev": 3817,
-      "change": 15.4,
+      "current": 4305.24,
+      "prev": 4405.4,
+      "change": -2.3,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 2373
+      "latestVolume": 976
     },
     "vacas": {
-      "current": 2498.51,
-      "prev": 3054,
-      "change": -18.2,
+      "current": 2520.35,
+      "prev": 2498.51,
+      "change": 0.9,
       "source": "mercadoagroganadero.com.ar (observed)",
-      "latestVolume": 3492
+      "latestVolume": 3045
     },
     "toros": {
-      "current": 2619.46,
-      "prev": 2757,
-      "change": -5,
+      "current": 2774.33,
+      "prev": 2619.46,
+      "change": 5.9,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 230
+      "latestVolume": 177
     },
     "terneros": {
       "current": 4755,
-      "prev": 4665,
-      "change": 1.9,
+      "prev": 4755,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
-    "current": 236.67,
-    "prev": 234.36,
-    "change": 1,
+    "current": 235.63,
+    "prev": 236.67,
+    "change": -0.4,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1415,
+    "current": 1420,
     "prev": 1415,
-    "change": 0,
+    "change": 0.4,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
-    "current": 1405,
-    "prev": 1410,
-    "change": -0.4,
+    "current": 1415,
+    "prev": 1405,
+    "change": 0.7,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-05-13",
+  "lastUpdate": "2026-05-14",
   "provinceEntry": {
-    "date": "2026-05-13",
-    "totalCabezas": 5988,
+    "date": "2026-05-14",
+    "totalCabezas": 46,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 5396,
-        "total": 5409,
-        "percentage": 90.33
-      },
-      {
-        "province": "LA PAMPA",
-        "enPie": 373,
-        "total": 375,
-        "percentage": 6.26
-      },
-      {
-        "province": "SANTA FE",
-        "enPie": 89,
-        "total": 89,
-        "percentage": 1.49
-      },
-      {
-        "province": "ENTRE RIOS",
-        "enPie": 70,
-        "total": 70,
-        "percentage": 1.17
-      },
-      {
-        "province": "CORDOBA",
-        "enPie": 45,
-        "total": 45,
-        "percentage": 0.75
+        "enPie": 46,
+        "total": 46,
+        "percentage": 100
       }
     ]
   },
