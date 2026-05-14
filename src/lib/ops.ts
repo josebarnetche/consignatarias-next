@@ -9,6 +9,7 @@
  */
 
 import { createAdminClient } from '@/lib/supabase-server'
+import { waitUntil } from '@vercel/functions'
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
@@ -77,13 +78,19 @@ export const EXPECTED_CRONS: Record<string, number> = {
 /* ------------------------------------------------------------------ */
 
 /**
- * Fire-and-forget event insert. Never throws. Safe to wrap in `void`.
+ * Fire-and-forget event insert. Never throws.
+ *
+ * On Vercel, the function may return its HTTP response before a void-discarded
+ * Promise completes, and the runtime kills any in-flight Supabase request mid-
+ * flight. `waitUntil()` registers the work to be awaited *after* the response
+ * is sent, so the insert always completes. In dev / non-Vercel runtimes
+ * waitUntil falls back to a normal promise pump.
  *
  * Pattern:
  *   void logEvent({ eventType: 'api_call', status: 'ok', requestId, ... })
  */
-export function logEvent(input: LogEventInput): Promise<void> {
-  return (async () => {
+export function logEvent(input: LogEventInput): void {
+  const promise = (async () => {
     try {
       const admin = createAdminClient()
       const { error } = await admin.from('ops_events').insert({
@@ -98,13 +105,19 @@ export function logEvent(input: LogEventInput): Promise<void> {
         metadata: input.metadata ?? {},
       })
       if (error) {
-        // Best-effort console log; never throw to caller.
         console.error('[ops.logEvent] insert error:', error.message)
       }
     } catch (err) {
       console.error('[ops.logEvent] unexpected error:', err)
     }
   })()
+
+  try {
+    waitUntil(promise)
+  } catch {
+    // Outside Vercel (local dev, scripts) waitUntil throws; the promise
+    // still resolves in-process so this branch is safe to swallow.
+  }
 }
 
 /* ------------------------------------------------------------------ */
