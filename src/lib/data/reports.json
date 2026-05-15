@@ -8,41 +8,8 @@
       "publishedAt": "2026-05-01",
       "format": "PDF",
       "pages": 18,
-      "filePath": "/reports/el-corredor-2026-04.pdf",
+      "filePath": "/el-corredor/abril-2026.pdf",
       "tag": "Último número"
-    },
-    {
-      "slug": "el-corredor-2026-03",
-      "title": "El Corredor — Mensual Marzo 2026",
-      "category": "mensual",
-      "description": "Lectura mensual del mercado bovino argentino. INMAG, USD, oferta por región.",
-      "publishedAt": "2026-04-01",
-      "format": "PDF",
-      "pages": 16,
-      "filePath": "/reports/el-corredor-2026-03.pdf",
-      "tag": null
-    },
-    {
-      "slug": "oraculo-snapshot-q1-2026",
-      "title": "El Oráculo — Snapshot Q1 2026",
-      "category": "trimestral",
-      "description": "Snapshot trimestral del Oráculo: comparables interanuales, mapa de calor de actividad, proyección de oferta.",
-      "publishedAt": "2026-04-10",
-      "format": "PDF",
-      "pages": 24,
-      "filePath": "/reports/oraculo-snapshot-q1-2026.pdf",
-      "tag": "Trimestral"
-    },
-    {
-      "slug": "inmag-archivo-historico-2022-2026",
-      "title": "Archivo histórico INMAG — 2022 a hoy",
-      "category": "archivo",
-      "description": "Serie diaria completa del INMAG y categorías, desde inicio del registro. CSV + visualización resumen.",
-      "publishedAt": "2026-05-12",
-      "format": "CSV + PDF",
-      "pages": null,
-      "filePath": "/reports/inmag-archivo-historico-2022-2026.zip",
-      "tag": "Actualizado"
     }
   ]
 }
