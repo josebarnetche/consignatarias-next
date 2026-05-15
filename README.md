@@ -519,9 +519,12 @@ src/
     └── utils/url.ts                       # URL normalization
 
 scripts/
-├── scrape-auctions.mjs                    # Daily scraper (9 sources)
-├── enrich-frigorificos.mjs                # CSV + JSON merge for enrichment
-└── merge-enrichment.mjs                   # Agent results merger
+├── scrape-auctions.mjs                    # Daily scraper (live in workflow)
+├── match-youtube-videos.ts                # Live in workflow
+├── ignore-build.sh                        # Vercel ignoreCommand
+├── el-oraculo/                            # Oráculo report skill
+├── monthly-report/                        # El Corredor monthly publish
+└── archive/                               # 26 one-shot scripts from earlier eras (RLS bootstrap, GSC auth, enrichment one-offs, results dumps, og generator, etc.)
 
 supabase/migrations/
 ├── 20260309_consignatarias_claims.sql     # consignatarias + claims tables
@@ -577,15 +580,13 @@ Runs daily via GitHub Actions at 14:00 ART (17:00 UTC). Flow: scrape → normali
 
 The scraper includes a `CITY_PROVINCE_MAP` (~70 cities) that corrects province misassignments from the CACG API and curated entries.
 
-### Enrichment Scripts
+### Enrichment Scripts (archived)
 
-```bash
-# Merge CSV target with JSON base (produces frigorificos-enriched.json)
-node scripts/enrich-frigorificos.mjs
-
-# Merge agent research results into enriched file
-node scripts/merge-enrichment.mjs
-```
+The frigorificos enrichment pipeline shipped in v0.9.x and froze; the static
+JSON files (`src/lib/data/frigorificos*.json`) are still served. The original
+scripts live in `scripts/archive/enrich-frigorificos.mjs` +
+`scripts/archive/merge-enrichment.mjs` for reference, but no longer run as
+part of any workflow.
 
 ---
 
