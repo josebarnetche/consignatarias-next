@@ -153,7 +153,7 @@ Turn the API into a real product, not just a feature.
 
 Today: Starter self-serve via Rebill, Growth self-serve via /api/enterprise/upgrade, Scale sales-led. International users have no path.
 
-- [ ] **"Lite" tier USD 29/mes** between free and Starter (captures Martin-segment: 200 req/mes, no SLA, ideal for early-stage devs)
+- [ ] **"Lite" tier USD 29/mes** between free and Starter (captures early-stage developer segment: 200 req/mes, no SLA, ideal for early-stage devs)
 - [ ] Self-serve Growth (already wired, polish UI flows in `/enterprise`)
 - [ ] Stripe integration para tarjetas internacionales USD (Argentina-only Rebill no alcanza para global)
 - [ ] Volume calculator transparente en `/enterprise` (ya existe, agregar comparativa "vs build your own scraper")
@@ -183,7 +183,7 @@ The product is built. Now drive demand.
 **Trigger:** USD 2.000+ MRR sostenido 30 días across tiers
 
 **Most likely paths to first dollars:**
-1. **Martin Apesteguia** convertido de Starter trial → Growth pago (USD 500/mes) si su app crece
+1. **external developer** convertido de Starter trial → Growth pago (USD 500/mes) si su app crece
 2. **Frigorífico o banco** vía Enterprise Sales (cold outreach con MEMOLA Index pitch)
 3. **Agtech startup** descubre `/api-docs` vía Google → checkout Starter
 4. **Roxom TV / NINI clients** indirect: vienen del network Jose
@@ -261,7 +261,7 @@ EFFORT ─────────────────────┼──�
 1. **v1.13.1** — unblock slug pages (production hygiene, can't ship anything else credibly until this)
 2. **v1.14.0** — lote-level activation (cheap, immediate B2B differentiator)
 3. **v1.16.0** — indicators (marketing fuel + data product moat)
-4. **v1.18.0** — pricing completeness (closes Martin-segment + international)
+4. **v1.18.0** — pricing completeness (closes early-stage developer segment + international)
 5. **v1.17.0** — API ecosystem (scales developer adoption)
 6. **v1.15.0** — real reports (PRO Usuario value retention)
 7. **v1.19.0** — marketing (continuous, runs in parallel from v1.14)
@@ -307,11 +307,11 @@ Marketing (1.19) is the only one that runs *concurrently* with everything else, 
 **Code is not the bottleneck. Developer adoption is.**
 
 The platform is built. What's missing now:
-- **First 5 Enterprise customers** — Martin's app gets traction + 4 más por outreach
+- **First 5 Enterprise customers** — the existing developer's app gets traction + 4 más por outreach
 - **First piece of organic traffic** que convierta `/precios/*` o `/mercado/inmag-dolares` en signups
 - **First public case study** que destranque outreach a frigoríficos, bancos, traders
 
-Every feature from here optimizes funnel, but **someone has to write to Martin tomorrow, contestar el email pendiente, agendar 5 calls con frigoríficos exportadores**.
+Every feature from here optimizes funnel, but **someone has to write the active developer follow-up, contestar el email pendiente, agendar 5 calls con frigoríficos exportadores**.
 
 ---
 
