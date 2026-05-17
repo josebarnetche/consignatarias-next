@@ -152,6 +152,9 @@ export const revalidate = false // Cost optimization: static at build time
 export const metadata: Metadata = {
   title: "Remates Ganaderos Argentina 2026 | Calendario de Remates | Consignatarias.com.ar",
   description: `Calendario de remates ganaderos de ${totalConsignatarias}+ consignatarias en 10 provincias. ${frigorificosSummary.total} frigoríficos habilitados, precios INMAG y dólar blue actualizados cada día. Acceso libre.`,
+  alternates: {
+    canonical: 'https://www.consignatarias.com.ar',
+  },
 };
 
 /* ================================================================== */

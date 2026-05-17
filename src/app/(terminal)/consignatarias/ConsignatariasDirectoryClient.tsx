@@ -48,7 +48,7 @@ export default function ConsignatariasDirectoryClient({ entries }: { entries: Di
       {/* HEADER */}
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between flex-wrap gap-2">
-          <h1 className="section-heading text-label tracking-widest">DIRECTORIO DE CONSIGNATARIAS</h1>
+          <h2 className="section-heading text-label tracking-widest">DIRECTORIO DE CONSIGNATARIAS</h2>
           <span className="text-xxs tabular-nums text-zinc-500 font-terminal">
             {entries.length} consignatarias
           </span>

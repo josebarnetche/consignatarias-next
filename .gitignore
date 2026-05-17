@@ -74,3 +74,4 @@ NEA-REMATES-CALENDAR-2026.md
 scripts/send-*.js
 .env*.local
 mag-*.html
+scripts/el-oraculo/output/

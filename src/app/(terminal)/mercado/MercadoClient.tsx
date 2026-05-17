@@ -99,9 +99,9 @@ export default function MercadoPage() {
       {/* ── Page header ─────────────────────────────────────────── */}
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between">
-          <span className="section-heading">
+          <h1 className="section-heading">
             MERCADO <span className="text-zinc-500 mx-1">&mdash;</span> INDICES Y PRECIOS DE REFERENCIA
-          </span>
+          </h1>
           <span className="text-zinc-500 tabular-nums normal-case tracking-normal">
             Ult: {fmtUpdate(lastUpdate)}
           </span>

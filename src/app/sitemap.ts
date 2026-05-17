@@ -121,6 +121,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
+      url: `${baseUrl}/remates/en-vivo`,
+      lastModified: new Date(),
+      changeFrequency: 'hourly',
+      priority: 0.9,
+    },
+    // NOTE: /mercado/vender-ahora intentionally excluded — it is noindex
+    // (PRO-only calculator behind paywall).
+    {
       url: `${baseUrl}/frigorificos`,
       lastModified: new Date(),
       changeFrequency: 'daily',

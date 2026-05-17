@@ -305,6 +305,40 @@ export default function TerminalLayout({
           </a>
         </div>
         
+        {/* Hubs row (SEO internal linking) */}
+        <div className="flex items-center justify-center gap-x-3 gap-y-1 mb-3 pb-3 border-b border-terminal-border flex-wrap">
+          <span className="text-xxs text-zinc-600 uppercase tracking-wider">Explorar:</span>
+          <Link href="/remates" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">Calendario</Link>
+          <span className="text-terminal-border">·</span>
+          <Link href="/remates/hoy" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">Hoy</Link>
+          <span className="text-terminal-border">·</span>
+          <Link href="/remates/semana" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">Esta semana</Link>
+          <span className="text-terminal-border">·</span>
+          <Link href="/remates/en-vivo" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">En vivo</Link>
+          <span className="text-terminal-border">|</span>
+          <Link href="/consignatarias" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">Consignatarias</Link>
+          <span className="text-terminal-border">·</span>
+          <Link href="/frigorificos" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">Frigoríficos</Link>
+          <span className="text-terminal-border">|</span>
+          <Link href="/mercado" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">Mercado</Link>
+          <span className="text-terminal-border">·</span>
+          <Link href="/mercado/inmag" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">INMAG</Link>
+          <span className="text-terminal-border">·</span>
+          <Link href="/mercado/spread" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">Maíz/Novillo</Link>
+          <span className="text-terminal-border">·</span>
+          <Link href="/precios/hacienda-en-pie" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">Precios hoy</Link>
+          <span className="text-terminal-border">|</span>
+          <Link href="/el-corredor" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">El Corredor</Link>
+          <span className="text-terminal-border">·</span>
+          <Link href="/reporte-semanal" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">Reporte semanal</Link>
+          <span className="text-terminal-border">·</span>
+          <Link href="/dte" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">DT-e</Link>
+          <span className="text-terminal-border">·</span>
+          <Link href="/preguntas-frecuentes" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">FAQ</Link>
+          <span className="text-terminal-border">·</span>
+          <Link href="/metodologia" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">Metodología</Link>
+        </div>
+
         {/* Main footer row */}
         <div className="flex items-center justify-between text-xxs text-zinc-500 flex-wrap gap-2">
           <span>consignatarias.com.ar &copy; 2026</span>
