@@ -57,7 +57,7 @@ export async function generateMetadata(): Promise<Metadata> {
       'livestream remates ganado',
     ],
     openGraph: {
-      title: `🔴 Remates Ganaderos en Vivo — ${count} Transmisiones | Consignatarias.com.ar`,
+      title: `🔴 Remates Ganaderos en Vivo — ${count} Transmisiones`,
       description: `${count} remates de ganado con transmisión en vivo. Participá de las subastas desde cualquier lugar.`,
       url: 'https://www.consignatarias.com.ar/remates/en-vivo',
       type: 'website',

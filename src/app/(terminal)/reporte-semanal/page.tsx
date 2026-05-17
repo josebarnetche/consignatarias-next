@@ -7,10 +7,10 @@ import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 
 export const metadata: Metadata = {
-  title: 'Reporte Semanal del Mercado Ganadero | Consignatarias.com.ar',
+  title: 'Reporte Semanal del Mercado Ganadero',
   description: 'Descargá el reporte semanal con precios INMAG, próximos remates y tendencias del mercado ganadero argentino.',
   openGraph: {
-    title: 'Reporte Semanal del Mercado Ganadero | Consignatarias.com.ar',
+    title: 'Reporte Semanal del Mercado Ganadero',
     description: 'Precios INMAG, próximos remates y tendencias. Descargá gratis.',
     url: 'https://www.consignatarias.com.ar/reporte-semanal',
     type: 'website',

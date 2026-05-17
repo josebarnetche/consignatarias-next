@@ -3,10 +3,10 @@ import Link from 'next/link'
 import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
-  title: 'Calidad de Datos — Consignatarias.com.ar',
+  title: 'Calidad de Datos',
   description: 'Fuentes de datos, metodologia de recoleccion, validacion y frescura de la informacion en Consignatarias.com.ar. 9 fuentes, actualizacion diaria a las 14:00 ART.',
   openGraph: {
-    title: 'Calidad de Datos — Consignatarias.com.ar',
+    title: 'Calidad de Datos',
     description: 'Fuentes de datos, metodologia y frescura de la informacion ganadera en Consignatarias.com.ar.',
     url: 'https://www.consignatarias.com.ar/calidad',
     type: 'website',
@@ -21,7 +21,7 @@ export default function CalidadPage() {
     <>
       <SectionBreadcrumbSchema section="calidad" sectionName="Calidad de Datos" />
       <TechArticleSchema
-        name="Calidad de Datos y Metodología — Consignatarias.com.ar"
+        name="Calidad de Datos y Metodología"
         description="Fuentes de datos, metodología de recolección, validación y frescura de la información ganadera en Consignatarias.com.ar. 9 fuentes oficiales, actualización diaria."
         url="https://www.consignatarias.com.ar/calidad"
       />

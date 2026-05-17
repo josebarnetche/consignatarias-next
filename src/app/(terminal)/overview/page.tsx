@@ -14,7 +14,7 @@ const corn = marketPrices.corn.current
 const fmt = (n: number) => n.toLocaleString('es-AR')
 
 export const metadata: Metadata = {
-  title: `Mercado Ganadero Argentina Hoy: INMAG $${fmt(inmag)} | Consignatarias.com.ar`,
+  title: `Mercado Ganadero Argentina Hoy: INMAG $${fmt(inmag)}`,
   description: `INMAG $${fmt(inmag)}/kg vivo (${changeStr}), dólar blue $${fmt(usdBlue)}, maíz USD ${corn}/tn. Terminal del mercado ganadero argentino actualizada diariamente con remates, precios y frigoríficos.`,
   keywords: [
     'mercado ganadero argentina',

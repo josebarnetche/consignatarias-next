@@ -4,10 +4,10 @@ import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/Jso
 import { FileText, Database, BarChart3, Shield, Calendar, Users, ExternalLink } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Metodología del Índice de Precios — Consignatarias.com.ar',
+  title: 'Metodología del Índice de Precios',
   description: 'Metodología completa del Índice de Precios Consignatarias (IPC): fuentes de datos, cálculo, ponderaciones, cobertura geográfica y gobernanza. Transparencia total.',
   openGraph: {
-    title: 'Metodología del Índice de Precios — Consignatarias.com.ar',
+    title: 'Metodología del Índice de Precios',
     description: 'Metodología del Índice de Precios Consignatarias: fuentes, cálculo, cobertura y gobernanza.',
     url: 'https://www.consignatarias.com.ar/metodologia',
     type: 'website',

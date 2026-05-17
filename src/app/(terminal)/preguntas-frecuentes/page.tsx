@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { FAQPageSchema, SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
-  title: 'Preguntas Frecuentes — Remates Ganaderos | Consignatarias.com.ar',
+  title: 'Preguntas Frecuentes — Remates Ganaderos',
   description: 'Respuestas a las preguntas más frecuentes sobre remates de ganado en Argentina: cómo participar, qué es una consignataria, dónde ver remates en vivo, y más.',
   openGraph: {
     title: 'Preguntas Frecuentes — Remates Ganaderos',

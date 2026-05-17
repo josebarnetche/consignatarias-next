@@ -7,7 +7,7 @@ import ApiKeysClient from './ApiKeysClient'
 import { UpgradeNudge } from './UpgradeNudge'
 
 export const metadata: Metadata = {
-  title: 'API keys — consignatarias.com.ar',
+  title: 'API keys',
   robots: { index: false, follow: false },
 }
 

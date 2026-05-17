@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     'conversion maiz carne',
   ],
   openGraph: {
-    title: 'Relación Maíz/Novillo — Rentabilidad Feedlot | Consignatarias.com.ar',
+    title: 'Relación Maíz/Novillo — Rentabilidad Feedlot',
     description: 'Indicador clave para feedlots: cuántos kilos de maíz se necesitan para un kilo de novillo. Actualizado diariamente.',
     url: 'https://www.consignatarias.com.ar/mercado/spread',
     type: 'website',

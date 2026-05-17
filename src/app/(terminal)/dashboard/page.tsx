@@ -7,7 +7,7 @@ import rematesData from '@/lib/data/remates.json'
 export const dynamic = 'force-dynamic'
 
 export const metadata = {
-  title: 'Mi Panel — Consignatarias.com.ar',
+  title: 'Mi Panel',
   robots: { index: false },
 }
 

@@ -3,10 +3,10 @@ import Link from 'next/link'
 import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
-  title: 'API Documentation — Consignatarias.com.ar',
+  title: 'API Documentation',
   description: 'Documentación de la API pública de consignatarias.com.ar. Accede a datos de remates ganaderos, precios INMAG, consignatarias y frigoríficos.',
   openGraph: {
-    title: 'API Documentation — Consignatarias.com.ar',
+    title: 'API Documentation',
     description: 'API pública del mercado ganadero argentino. Remates, precios, consignatarias.',
     url: 'https://www.consignatarias.com.ar/api-docs',
     type: 'website',
@@ -126,7 +126,7 @@ export default function ApiDocsPage() {
     <>
       <SectionBreadcrumbSchema section="api-docs" sectionName="API Docs" />
       <TechArticleSchema
-        name="API Documentation — Consignatarias.com.ar"
+        name="API Documentation"
         description="Documentación de la API pública del mercado ganadero argentino. Endpoints para remates, precios INMAG, consignatarias y frigoríficos."
         url="https://www.consignatarias.com.ar/api-docs"
         proficiencyLevel="Beginner"

@@ -3,10 +3,10 @@ import Link from 'next/link'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
-  title: 'Glosario Ganadero — 39 Términos del Mercado | Consignatarias.com.ar',
+  title: 'Glosario Ganadero — 39 Términos del Mercado',
   description: 'Glosario completo con 39 definiciones del mercado ganadero argentino: remate, consignataria, INMAG, DT-e, invernada, feedlot, Liniers, categorías de hacienda, razas y más.',
   openGraph: {
-    title: 'Glosario Ganadero — Consignatarias.com.ar',
+    title: 'Glosario Ganadero',
     description: 'Glosario con definiciones de terminos del mercado ganadero argentino: remate, consignataria, INMAG, invernada, cria, frigorifico y mas.',
     url: 'https://www.consignatarias.com.ar/glosario',
     type: 'website',

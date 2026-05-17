@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Términos y Condiciones | Consignatarias.com.ar',
+  title: 'Términos y Condiciones',
   description: 'Términos y condiciones de uso de consignatarias.com.ar. Información sobre el uso del directorio, datos publicados y suscripciones.',
   alternates: {
     canonical: 'https://www.consignatarias.com.ar/terminos',

@@ -151,7 +151,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!remate) {
     return {
-      title: 'Remate no encontrado — Consignatarias.com.ar',
+      title: 'Remate no encontrado',
     }
   }
   

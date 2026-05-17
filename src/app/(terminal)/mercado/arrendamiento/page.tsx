@@ -41,7 +41,7 @@ function getMonthlyAverages(data: typeof series) {
 const monthlyAverages = getMonthlyAverages(series)
 
 export const metadata: Metadata = {
-  title: 'Índice Novillo Arrendamiento Hoy - Precio Actualizado | Consignatarias.com.ar',
+  title: 'Índice Novillo Arrendamiento Hoy - Precio Actualizado',
   description: `Índice Novillo Arrendamiento actual: $${inmag.current.toLocaleString('es-AR')}/kg. Precio actualizado del índice para contratos de arrendamiento rural en Argentina. Cotización diaria Liniers y Cañuelas.`,
   keywords: [
     'índice novillo arrendamiento',

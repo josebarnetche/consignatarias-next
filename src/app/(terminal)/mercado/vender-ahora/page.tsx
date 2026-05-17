@@ -8,7 +8,7 @@ import VenderAhoraClient from './VenderAhoraClient'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: '¿Vendo ahora? — Calculadora PRO | Consignatarias.com.ar',
+  title: '¿Vendo ahora? — Calculadora PRO',
   description:
     'Ingresá tu categoría y peso vivo. Te decimos cuánto vale tu cabeza hoy en ARS + USD, percentil 30 y 365 días, y si estadísticamente es momento de vender o aguantar.',
   robots: { index: false, follow: false },

@@ -7,7 +7,7 @@ import { CancelButton } from './CancelButton'
 import { SignOutButton } from './SignOutButton'
 
 export const metadata: Metadata = {
-  title: 'Tu cuenta — consignatarias.com.ar',
+  title: 'Tu cuenta',
   robots: { index: false, follow: false },
 }
 

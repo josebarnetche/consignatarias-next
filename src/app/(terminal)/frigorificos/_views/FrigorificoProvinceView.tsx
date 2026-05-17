@@ -79,7 +79,7 @@ export async function frigorificoProvinceMetadata(provincia: string) {
       'plantas de faena',
     ],
     openGraph: {
-      title: `Frigoríficos en ${config.displayName} | Consignatarias.com.ar`,
+      title: `Frigoríficos en ${config.displayName}`,
       description: `${provinceFrigorificos.length} frigoríficos habilitados por MAGYP en ${config.displayName}. Directorio oficial con matrícula y datos de contacto.`,
       url: `https://www.consignatarias.com.ar/frigorificos/${provincia}`,
       type: 'website' as const,

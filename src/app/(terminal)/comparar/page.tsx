@@ -10,10 +10,10 @@ import { createServiceClient } from '@/lib/supabase'
 export const revalidate = false // Cost optimization: static at build time
 
 export const metadata: Metadata = {
-  title: 'Comparar Consignatarias | Consignatarias.com.ar',
+  title: 'Comparar Consignatarias',
   description: 'Compará consignatarias de hacienda lado a lado. Remates programados, provincias de operación, tipos de remate y más.',
   openGraph: {
-    title: 'Comparar Consignatarias | Consignatarias.com.ar',
+    title: 'Comparar Consignatarias',
     description: 'Herramienta de comparación de consignatarias ganaderas.',
     url: 'https://www.consignatarias.com.ar/comparar',
     type: 'website',

@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 import LoginClient from './LoginClient'
 
 export const metadata: Metadata = {
-  title: 'Ingresar | Consignatarias.com.ar',
+  title: 'Ingresar',
   robots: { index: false, follow: false },
 }
 

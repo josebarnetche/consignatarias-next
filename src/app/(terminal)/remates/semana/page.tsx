@@ -62,7 +62,7 @@ export async function generateMetadata(): Promise<Metadata> {
       'venta ganado esta semana',
     ],
     openGraph: {
-      title: `Remates Esta Semana — ${count} Subastas | Consignatarias.com.ar`,
+      title: `Remates Esta Semana — ${count} Subastas`,
       description: `${count} remates de ganado programados para los próximos 7 días. Ver calendario con horarios, ubicaciones y transmisiones.`,
       url: 'https://www.consignatarias.com.ar/remates/semana',
       type: 'website',

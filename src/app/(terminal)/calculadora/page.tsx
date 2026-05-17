@@ -4,10 +4,10 @@ import { SectionBreadcrumbSchema, WebApplicationSchema } from '@/components/seo/
 import marketPrices from '@/lib/data/market-prices.json'
 
 export const metadata: Metadata = {
-  title: 'Calculadora de Precios de Hacienda | Consignatarias.com.ar',
+  title: 'Calculadora de Precios de Hacienda',
   description: 'Calculá el valor estimado de tu hacienda con precios INMAG actualizados. Novillos, terneros, vaquillonas, vacas y toros.',
   openGraph: {
-    title: 'Calculadora de Precios de Hacienda | Consignatarias.com.ar',
+    title: 'Calculadora de Precios de Hacienda',
     description: 'Estimá el valor de tu tropa con precios INMAG del día.',
     url: 'https://www.consignatarias.com.ar/calculadora',
     type: 'website',

@@ -216,7 +216,7 @@ export async function generateMetadata({
     description: `Precio ${config.namePlural.toLowerCase()} hoy: $${priceFormatted}/kg vivo. ${config.description} Cotización actualizada del Mercado Agroganadero.`,
     keywords: config.keywords,
     openGraph: {
-      title: `Precio ${config.name} Hoy: $${priceFormatted}/kg | Consignatarias.com.ar`,
+      title: `Precio ${config.name} Hoy: $${priceFormatted}/kg`,
       description: `Cotización actualizada de ${config.namePlural.toLowerCase()} en Argentina. Precio por kilo vivo, histórico y análisis del mercado ganadero.`,
       url: `https://www.consignatarias.com.ar/mercado/${categoria}`,
       type: 'website',

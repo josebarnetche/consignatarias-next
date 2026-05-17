@@ -139,7 +139,7 @@ export async function rematesProvinceMetadata(provincia: string): Promise<Metada
   const consignatarias = new Set(provinceAuctions.map(a => a.consignatariaName))
 
   return {
-    title: `Remates Ganaderos en ${config.displayName} 2026 | Consignatarias.com.ar`,
+    title: `Remates Ganaderos en ${config.displayName} 2026`,
     description: `Calendario de ${provinceAuctions.length} remates ganaderos en ${config.displayName}. ${consignatarias.size} consignatarias activas. Filtrá por tipo de remate y fecha. Actualizado diariamente.`,
     keywords: [
       `remates ganaderos ${config.displayName.toLowerCase()}`,
@@ -149,7 +149,7 @@ export async function rematesProvinceMetadata(provincia: string): Promise<Metada
       'calendario remates',
     ],
     openGraph: {
-      title: `Remates Ganaderos en ${config.displayName} | Consignatarias.com.ar`,
+      title: `Remates Ganaderos en ${config.displayName}`,
       description: `Calendario de ${provinceAuctions.length} remates ganaderos en ${config.displayName}. ${consignatarias.size} consignatarias activas.`,
       url: `https://www.consignatarias.com.ar/remates/${provincia}`,
       type: 'website',

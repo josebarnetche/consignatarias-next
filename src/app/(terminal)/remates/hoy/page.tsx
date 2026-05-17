@@ -48,7 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
       'venta ganado hoy',
     ],
     openGraph: {
-      title: `Remates Ganaderos Hoy — ${count} Subastas | Consignatarias.com.ar`,
+      title: `Remates Ganaderos Hoy — ${count} Subastas`,
       description: `${count} remates de ganado programados para hoy. Ver calendario completo con horarios, ubicaciones y links de transmisión.`,
       url: 'https://www.consignatarias.com.ar/remates/hoy',
       type: 'website',

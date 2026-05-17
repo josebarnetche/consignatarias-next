@@ -7,12 +7,12 @@ import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/Jso
 const APP_URL = 'https://www.consignatarias.com.ar'
 
 export const metadata: Metadata = {
-  title: 'El Oráculo — manifiesto fundacional · consignatarias.com.ar',
+  title: 'El Oráculo — manifiesto fundacional',
   description:
     'Manifiesto fundacional del observatorio del mercado bovino argentino. INMAG como quasi-oracle del 88% del mercado, marco institucional, bibliografía citada (FCV-UBA, Iriarte/CACG, Diez/UNS, Scoponi).',
   alternates: { canonical: `${APP_URL}/el-oraculo` },
   openGraph: {
-    title: 'El Oráculo — consignatarias.com.ar',
+    title: 'El Oráculo',
     description:
       'El precio que el mercado bovino argentino sigue todos los días — verificable, citable, sin épica.',
     url: `${APP_URL}/el-oraculo`,
@@ -22,13 +22,13 @@ export const metadata: Metadata = {
         url: `${APP_URL}/el-oraculo/og.png`,
         width: 1200,
         height: 630,
-        alt: 'El Oráculo — consignatarias.com.ar',
+        alt: 'El Oráculo',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'El Oráculo — consignatarias.com.ar',
+    title: 'El Oráculo',
     description: 'El precio que el mercado bovino argentino sigue todos los días.',
     images: [`${APP_URL}/el-oraculo/og.png`],
   },

@@ -6,11 +6,11 @@ import { EnterpriseTierCTA } from './EnterpriseTierCTA'
 import { PLATFORM_STATS } from '@/lib/platform-stats'
 
 export const metadata: Metadata = {
-  title: 'Enterprise — API y datos del mercado ganadero argentino | Consignatarias.com.ar',
+  title: 'Enterprise — API y datos del mercado ganadero argentino',
   description:
     'API completa, webhooks, reportes y dashboards sobre el mercado ganadero argentino. 3 planes: Starter USD 99, Growth USD 500, Scale por volumen. Para apps agtech, frigoríficos, bancos y traders.',
   openGraph: {
-    title: 'Enterprise — Consignatarias.com.ar',
+    title: 'Enterprise',
     description:
       'API del mercado ganadero argentino. Starter USD 99, Growth USD 500, Scale request-based.',
     url: 'https://www.consignatarias.com.ar/enterprise',

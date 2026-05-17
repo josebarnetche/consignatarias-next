@@ -184,7 +184,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     keywords: customSEO?.keywords,
     openGraph: {
-      title: `${profile.displayName} | Consignatarias.com.ar`,
+      title: `${profile.displayName}`,
       description,
       url: `https://www.consignatarias.com.ar/consignatarias/${canonical}`,
       type: 'website',

@@ -77,7 +77,7 @@ export async function generateMetadata({ params }: { params: Promise<{ ciudad: s
   const upcomingCount = cityAuctions.filter(a => a.date >= new Date().toISOString().slice(0, 10)).length
 
   return {
-    title: `Remates de Hacienda en ${cityOnly} — ${upcomingCount} Próximos | Consignatarias.com.ar`,
+    title: `Remates de Hacienda en ${cityOnly} — ${upcomingCount} Próximos`,
     description: `Calendario de remates de hacienda en ${displayName}. ${upcomingCount} remates próximos. Invernada, cría, reproductores y más.`,
     keywords: [`remates ${cityOnly.toLowerCase()}`, `remates hacienda ${cityOnly.toLowerCase()}`, `ganado ${cityOnly.toLowerCase()}`, 'remates ganaderos'],
     openGraph: {

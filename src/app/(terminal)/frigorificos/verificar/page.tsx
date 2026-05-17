@@ -8,7 +8,7 @@ import frigorificosData from '@/lib/data/frigorificos.json'
 /* ------------------------------------------------------------------ */
 
 export const metadata: Metadata = {
-  title: 'Registrar Frigorífico — Consignatarias.com.ar',
+  title: 'Registrar Frigorífico',
   description: 'Registrá tu frigorífico en Consignatarias.com.ar para reclamar y completar tu perfil.',
   robots: {
     index: false,

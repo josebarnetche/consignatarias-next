@@ -121,7 +121,7 @@ export async function generateMetadata({
   const changeStr = `${c.change >= 0 ? '+' : ''}${c.change}%`
   const lastUpdate = marketPrices.lastUpdate
 
-  const title = `Precio Kilo Vivo ${c.title} Hoy: $${fmt(price)} (INMAG ${lastUpdate}) | Consignatarias.com.ar`
+  const title = `Precio Kilo Vivo ${c.title} Hoy: $${fmt(price)} (INMAG ${lastUpdate})`
   const description = `Precio del kilo vivo de ${c.singular} hoy: $${fmt(price)} (${changeStr} semanal). Un ${c.singular} promedio de ${c.promedioKg} kg ronda los $${fmt(price * c.promedioKg)}. Actualizado ${lastUpdate} desde Mercado Agroganadero.`
 
   return {

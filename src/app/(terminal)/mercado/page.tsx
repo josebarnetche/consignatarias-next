@@ -50,7 +50,7 @@ const MERCADO_FAQ = [
 ]
 
 export const metadata: Metadata = {
-  title: `Precio Kilo Vivo Novillo Hoy: $${fmt(novillo)} (INMAG ${lastUpdate}) | Consignatarias.com.ar`,
+  title: `Precio Kilo Vivo Novillo Hoy: $${fmt(novillo)} (INMAG ${lastUpdate})`,
   description: `Precio del kilo vivo de novillo hoy: $${fmt(novillo)} (INMAG ${inmagChangeStr}). Ternero $${fmt(ternero)}, vaquillona $${fmt(vaquillona)}, vaca $${fmt(vaca)}. Actualizado ${lastUpdate} desde Mercado Agroganadero.`,
   keywords: [
     'precio kilo vivo novillo',

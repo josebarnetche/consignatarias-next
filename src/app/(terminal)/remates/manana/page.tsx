@@ -46,7 +46,7 @@ export async function generateMetadata(): Promise<Metadata> {
       'próximos remates ganado',
     ],
     openGraph: {
-      title: `Remates Ganaderos Mañana — ${count} Subastas | Consignatarias.com.ar`,
+      title: `Remates Ganaderos Mañana — ${count} Subastas`,
       description: `${count} remates de ganado programados para mañana. Ver calendario completo con horarios, ubicaciones y links.`,
       url: 'https://www.consignatarias.com.ar/remates/manana',
       type: 'website',

@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Página no encontrada — Consignatarias.com.ar',
+  title: 'Página no encontrada',
   description: 'La página que buscás no existe o fue movida. Navegá nuestro calendario de remates, directorio de consignatarias o frigoríficos.',
   robots: {
     index: false,

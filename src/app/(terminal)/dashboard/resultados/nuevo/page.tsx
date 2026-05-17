@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import ResultadoForm from './ResultadoForm'
 
 export const metadata = {
-  title: 'Cargar Resultado — Consignatarias.com.ar',
+  title: 'Cargar Resultado',
   robots: { index: false },
 }
 

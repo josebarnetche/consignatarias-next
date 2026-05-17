@@ -76,11 +76,11 @@ const FAQ_ITEMS = [
 ]
 
 export const metadata: Metadata = {
-  title: 'Planes y Precios | Consignatarias.com.ar',
+  title: 'Planes y Precios',
   description:
     'Planes para productores, consignatarias y empresas. PRO Usuario ARS $7.900/mes, PRO Consignataria ARS $45.000/mes, Enterprise desde USD 99/mes.',
   openGraph: {
-    title: 'Planes y Precios | Consignatarias.com.ar',
+    title: 'Planes y Precios',
     description:
       'Tres audiencias, tres planes. Productores, consignatarias y empresas con API.',
     url: 'https://www.consignatarias.com.ar/planes',

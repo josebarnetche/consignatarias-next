@@ -5,7 +5,7 @@ import { getCurrentSession } from '@/lib/user-tier'
 import { UpgradeButton } from './UpgradeButton'
 
 export const metadata: Metadata = {
-  title: 'PRO — consignatarias.com.ar',
+  title: 'PRO',
   robots: { index: false, follow: false },
 }
 

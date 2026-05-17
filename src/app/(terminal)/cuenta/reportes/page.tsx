@@ -6,7 +6,7 @@ import { hasApiAccess } from '@/lib/api-keys'
 import { getAllReports, getReportStatsForUser } from '@/lib/reports'
 
 export const metadata: Metadata = {
-  title: 'Mis reportes — consignatarias.com.ar',
+  title: 'Mis reportes',
   robots: { index: false, follow: false },
 }
 

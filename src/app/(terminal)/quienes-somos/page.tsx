@@ -2,10 +2,10 @@ import { Metadata } from 'next'
 import { SectionBreadcrumbSchema, OrganizationSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
-  title: 'Quienes Somos | Consignatarias.com.ar',
+  title: 'Quienes Somos',
   description: 'Consignatarias.com.ar es una plataforma de inteligencia del mercado ganadero argentino. Conoce nuestras fuentes de datos, metodologia y equipo.',
   openGraph: {
-    title: 'Quienes Somos | Consignatarias.com.ar',
+    title: 'Quienes Somos',
     description: 'Plataforma de inteligencia del mercado ganadero argentino. Fuentes de datos, metodologia y contacto.',
     url: 'https://www.consignatarias.com.ar/quienes-somos',
     type: 'website',

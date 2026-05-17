@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Política de Privacidad | Consignatarias.com.ar',
+  title: 'Política de Privacidad',
   description: 'Cómo recolectamos, usamos y protegemos tus datos personales en consignatarias.com.ar.',
   alternates: {
     canonical: 'https://www.consignatarias.com.ar/privacidad',

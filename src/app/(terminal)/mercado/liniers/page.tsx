@@ -5,7 +5,7 @@ import { TrendingUp, TrendingDown, Building2, MapPin, ExternalLink, BarChart3 } 
 import marketData from '@/lib/data/market-prices.json'
 
 export const metadata: Metadata = {
-  title: 'Mercado de Liniers — Precios de Hacienda Hoy | Consignatarias.com.ar',
+  title: 'Mercado de Liniers — Precios de Hacienda Hoy',
   description: 'Precios del Mercado de Liniers actualizados. Cotización de novillos, vacas, terneros y más. Referencia oficial del mercado ganadero argentino.',
   keywords: ['mercado de liniers', 'precios liniers hoy', 'hacienda liniers', 'cotización ganado', 'precios ganado argentina'],
   openGraph: {

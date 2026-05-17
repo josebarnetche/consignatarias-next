@@ -4,10 +4,10 @@ import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { RequirePro } from '@/components/RequirePro'
 
 export const metadata: Metadata = {
-  title: 'Exportar Calendario de Remates | Consignatarias.com.ar',
+  title: 'Exportar Calendario de Remates',
   description: 'Descargá el calendario de remates ganaderos en formato iCal. Sincronizá automáticamente con Google Calendar, Apple Calendar o Outlook.',
   openGraph: {
-    title: 'Exportar Calendario de Remates | Consignatarias.com.ar',
+    title: 'Exportar Calendario de Remates',
     description: 'Sincronizá los remates ganaderos con tu calendario. Google Calendar, Apple Calendar, Outlook.',
     url: 'https://www.consignatarias.com.ar/calendario-exportar',
     type: 'website',
