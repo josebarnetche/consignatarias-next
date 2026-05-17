@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Glosario Ganadero — 39 Términos del Mercado',
@@ -239,6 +239,11 @@ export default function GlosarioPage() {
     <>
       <SectionBreadcrumbSchema section="glosario" sectionName="Glosario" />
       <DefinedTermSetSchema />
+      <SpeakableSchema
+        url="https://www.consignatarias.com.ar/glosario"
+        headline="Glosario Ganadero — 39 Términos del Mercado"
+        cssSelectors={['h1', '.glossary-term', '.glossary-definition']}
+      />
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         {/* Title */}
         <h1 className="text-zinc-100 text-2xl font-medium mb-6">Glosario Ganadero</h1>

@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { FAQPageSchema, SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { FAQPageSchema, SectionBreadcrumbSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Preguntas Frecuentes — Remates Ganaderos',
@@ -105,6 +105,11 @@ export default function FAQPage() {
     <>
       <SectionBreadcrumbSchema section="preguntas-frecuentes" sectionName="Preguntas Frecuentes" />
       <FAQPageSchema items={FAQS.map(f => ({ question: f.question, answer: f.answer }))} />
+      <SpeakableSchema
+        url="https://www.consignatarias.com.ar/preguntas-frecuentes"
+        headline="Preguntas Frecuentes — Remates Ganaderos Argentina"
+        cssSelectors={['h1', 'h2', '.faq-question', '.faq-answer']}
+      />
       
       <div className="min-h-screen bg-gradient-to-b from-gray-950 to-black">
         {/* Header */}

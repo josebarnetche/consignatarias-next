@@ -9,7 +9,7 @@ import {
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
-import { SectionBreadcrumbSchema, EventSchema } from '@/components/seo/JsonLd'
+import { BreadcrumbSchema, EventSchema } from '@/components/seo/JsonLd'
 import { AddToCalendarButton } from '@/components/ui/AddToCalendarButton'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 // DteCTA inline implementation for remate pages (lock-in strategy)
@@ -225,11 +225,15 @@ export default async function RemateDetailPage({ params }: Props) {
   
   return (
     <>
-      <SectionBreadcrumbSchema
-        section="remates"
-        sectionName="Remates"
+      <BreadcrumbSchema
+        items={[
+          { name: 'Inicio', url: 'https://www.consignatarias.com.ar' },
+          { name: 'Remates', url: 'https://www.consignatarias.com.ar/remates' },
+          { name: provinceName, url: `https://www.consignatarias.com.ar/remates/${remate.province?.toLowerCase().replace(/\s+/g, '-') || ''}` },
+          { name: remate.title, url: `https://www.consignatarias.com.ar/remates/${slug}` },
+        ]}
       />
-      
+
       <EventSchema
         name={remate.title}
         description={remate.description || `Remate ${typeName.toLowerCase()} organizado por ${remate.consignatariaName}`}
