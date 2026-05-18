@@ -75,3 +75,4 @@ scripts/send-*.js
 .env*.local
 mag-*.html
 scripts/el-oraculo/output/
+scripts/seo-report/
