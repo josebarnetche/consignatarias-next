@@ -1,11 +1,13 @@
 name: MAG Detailed Prices (16 sub-categories)
 
 # Daily fetch of MAG haciinfo000502. MAG operates Mar/Mié/Vie (2/3/5).
-# Cron runs every weekday at 18:30 UTC (15:30 ART) — after MAG closes (~14:30 ART).
+# Cron at 22:37 UTC (19:37 ART), post-MAG publish window. Minute 37 (not :00
+# or :30) avoids GH Actions schedule-throttling for round-time crons — empirical
+# 2026-05-18 miss observed at :30.
 # The route is a no-op on non-trading days (returns rows_parsed: 0).
 on:
   schedule:
-    - cron: '30 18 * * 1-5'
+    - cron: '37 22 * * 1-5'
   workflow_dispatch:
     inputs:
       date:

@@ -5,7 +5,8 @@ name: MAG Lots Pipeline (haciinfo000007)
 # ~90 minutes total. Idempotent — re-running is safe (dedup keys handle it).
 on:
   schedule:
-    - cron: '0 19 * * 2,3,5'  # Mar/Mié/Vie 16:00 ART (1h después de scrape detallado)
+    - cron: '42 22 * * 2,3,5'  # Mar/Mié/Vie 19:42 ART, 5min after mag-detailed-prices
+                               # Non-round minute avoids GH Actions schedule throttling.
   workflow_dispatch:
     inputs:
       date:
