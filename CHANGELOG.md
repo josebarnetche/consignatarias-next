@@ -6,6 +6,45 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.15.0] — 2026-05-17
+
+### SEO sprint — title fix + foundations + structured data + programmatic OG
+
+A full audit + 8-commit sprint focused on the biggest SERP/CTR levers and on
+closing gaps the prior sessions had not noticed.
+
+- **Title bug fixed across 45 files.** The root layout already appends
+  `| Consignatarias.com.ar` via `title.template`, but most pages also included
+  the brand suffix manually — so production was emitting it twice. The fix
+  strips the manual suffix from 63 title fields and lets the template do its
+  job once.
+- **Live transmissions now actually populate.** `/remates/en-vivo` had always
+  shown zero because the scraper only attaches a YouTube URL after the
+  auction airs. A new `youtube-live` helper resolves any upcoming auction to
+  the right channel `/streams` URL via canonical-slug matching against
+  `youtube-channels.json` — ~80 upcoming auctions surface as probable streams,
+  separately badged from the confirmed ones.
+- **llms.txt** for AI crawlers (`robots.ts` already opted them in; this gives
+  them structured context to cite from).
+- **Footer site map** with 16 internal hub links — distributes PageRank from
+  every page view to long-tail destinations.
+- **Hub `/precios`** consolidating the six livestock categories into one
+  navigable index with FAQ and breadcrumb schema.
+- **Programmatic OG** for every individual remate (date hero, consignataria,
+  type pill, estimated heads), plus a root-level OG image that any route can
+  inherit by default. Fixes the empty `og:image` that several core pages
+  were emitting.
+- **Schema depth** improved: `BreadcrumbSchema` on `/remates/[slug]` now goes
+  four levels deep instead of two; `SpeakableSchema` added to FAQ and
+  Glosario for voice search.
+- **H1 hygiene**: `/mercado` had none, `/consignatarias` had two. Both fixed.
+- **Sitemap completeness**: `/remates/en-vivo` and `/precios` added.
+- **Internal documentation**: full audit + roadmap at
+  `docs/SEO-AUDIT-2026-05-17.md`. Internal-only PDF report produced via
+  `scripts/seo-report/` (gitignored).
+
+---
+
 ## [1.14.8] — 2026-05-15
 
 ### Repository hygiene — Batch 3 of consistency audit

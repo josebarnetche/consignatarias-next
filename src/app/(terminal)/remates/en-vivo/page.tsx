@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import remates from '@/lib/data/remates.json'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
+import { resolveYoutubeUrl } from '@/lib/youtube-live'
 import { Calendar, Clock, MapPin, Users, Play, FileText, Video, Youtube, Radio } from 'lucide-react'
 
 // Regenerate hourly for fresh data
@@ -34,9 +35,10 @@ function formatDateShort(dateStr: string): string {
 
 export async function generateMetadata(): Promise<Metadata> {
   const todayStr = getTodayStr()
-  const liveRemates = (remates as Array<{ date: string; status: string; youtubeUrl: string | null }>).filter(
-    r => r.date >= todayStr && r.youtubeUrl
-  )
+  // Count any remate where we can resolve a YouTube target: either a direct
+  // youtubeUrl on the auction, or a known channel for the consignataria.
+  const liveRemates = (remates as Array<{ date: string; status: string; consignatariaSlug: string; youtubeUrl: string | null }>)
+    .filter(r => r.date >= todayStr && resolveYoutubeUrl(r) !== null)
   const count = liveRemates.length
   const now = new Date()
   const monthName = now.toLocaleDateString('es-AR', { month: 'long' })
@@ -93,7 +95,7 @@ function extractYouTubeId(url: string): string | null {
   return (match && match[7]?.length === 11) ? match[7] : null
 }
 
-function LiveRemateCard({ remate, isToday, isLive }: { remate: Remate; isToday: boolean; isLive: boolean }) {
+function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl }: { remate: Remate; isToday: boolean; isLive: boolean; confidence: 'confirmed' | 'probable'; watchUrl: string }) {
   const typeColors: Record<string, string> = {
     invernada: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
     cria: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
@@ -103,16 +105,17 @@ function LiveRemateCard({ remate, isToday, isLive }: { remate: Remate; isToday: 
   }
 
   const typeColor = typeColors[remate.type?.toLowerCase()] || typeColors.general
+  const isProbable = confidence === 'probable'
   const videoId = remate.youtubeUrl ? extractYouTubeId(remate.youtubeUrl) : null
 
   return (
     <article className={`bg-zinc-900/50 border rounded-lg overflow-hidden hover:border-zinc-600 transition-colors ${
-      isLive ? 'border-red-500/50 ring-1 ring-red-500/20' : isToday ? 'border-amber-500/30' : 'border-zinc-800'
+      isLive ? 'border-red-500/50 ring-1 ring-red-500/20' : isToday ? 'border-amber-500/30' : isProbable ? 'border-zinc-800/70' : 'border-zinc-800'
     }`}>
-      {/* YouTube Thumbnail */}
+      {/* YouTube Thumbnail — only when we have a confirmed video id */}
       {videoId && (
         <a
-          href={remate.youtubeUrl!}
+          href={watchUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="block relative aspect-video bg-zinc-800 group"
@@ -148,6 +151,23 @@ function LiveRemateCard({ remate, isToday, isLive }: { remate: Remate; isToday: 
             </div>
           )}
         </a>
+      )}
+      {/* Probable-transmission banner — when we don't have a direct video,
+          surface the channel match so the user can still find the stream. */}
+      {!videoId && isProbable && (
+        <div className="px-4 py-2.5 border-b border-zinc-800 bg-zinc-900/40 flex items-center gap-2">
+          <Radio className="w-3.5 h-3.5 text-zinc-500" />
+          <span className="text-xxs uppercase tracking-wider text-zinc-500">
+            Probable transmisión
+          </span>
+          <span className="text-xxs text-zinc-600">·</span>
+          <span className="text-xxs text-zinc-500">
+            canal habitual: <a href={watchUrl} target="_blank" rel="noopener noreferrer" className="text-zinc-300 hover:text-red-400 underline-offset-2 hover:underline">YouTube /streams</a>
+          </span>
+          {isToday && (
+            <span className="ml-auto px-1.5 py-0.5 bg-amber-500 rounded-sm text-black text-xxs font-bold">HOY</span>
+          )}
+        </div>
       )}
 
       <div className="p-4">
@@ -193,17 +213,19 @@ function LiveRemateCard({ remate, isToday, isLive }: { remate: Remate; isToday: 
         {/* Actions */}
         <div className="flex flex-wrap gap-2 pt-2 border-t border-zinc-800">
           <a
-            href={remate.youtubeUrl!}
+            href={watchUrl}
             target="_blank"
             rel="noopener noreferrer"
             className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded transition-colors ${
-              isLive 
-                ? 'bg-red-600 text-white hover:bg-red-500' 
-                : 'bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20'
+              isLive
+                ? 'bg-red-600 text-white hover:bg-red-500'
+                : isProbable
+                  ? 'bg-zinc-800 text-zinc-200 border border-zinc-700 hover:bg-zinc-700'
+                  : 'bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20'
             }`}
           >
             <Youtube className="w-4 h-4" />
-            {isLive ? 'Ver ahora' : 'Ver transmisión'}
+            {isLive ? 'Ver ahora' : isProbable ? 'Ir al canal' : 'Ver transmisión'}
           </a>
           {remate.catalogUrl && (
             <a
@@ -228,16 +250,32 @@ function LiveRemateCard({ remate, isToday, isLive }: { remate: Remate; isToday: 
   )
 }
 
+interface LiveRemateView extends Remate {
+  confidence: 'confirmed' | 'probable'
+  watchUrl: string
+}
+
 export default async function RematesEnVivoPage() {
   const todayStr = getTodayStr()
 
-  // Get all remates with YouTube URLs, upcoming or today
-  const liveRemates = (remates as Remate[])
-    .filter(r => r.date >= todayStr && r.youtubeUrl)
+  // Resolve every upcoming/today remate to a YouTube URL — direct video if
+  // we have one (confirmed), channel /streams if we only know the channel
+  // (probable). 0→80+ upcoming streams after this match.
+  const liveRemates: LiveRemateView[] = (remates as Remate[])
+    .filter(r => r.date >= todayStr)
+    .map(r => {
+      const resolved = resolveYoutubeUrl(r)
+      if (!resolved) return null
+      return { ...r, confidence: resolved.confidence, watchUrl: resolved.url }
+    })
+    .filter((r): r is LiveRemateView => r !== null)
     .sort((a, b) => {
-      // Today first, then by date, then by time
+      // Today first, then confirmed before probable, then by date, then by time
       if (a.date === todayStr && b.date !== todayStr) return -1
       if (b.date === todayStr && a.date !== todayStr) return 1
+      if (a.confidence !== b.confidence) {
+        return a.confidence === 'confirmed' ? -1 : 1
+      }
       const dateCompare = a.date.localeCompare(b.date)
       if (dateCompare !== 0) return dateCompare
       const timeA = a.time || '23:59'
@@ -246,6 +284,8 @@ export default async function RematesEnVivoPage() {
     })
 
   const count = liveRemates.length
+  const confirmedCount = liveRemates.filter(r => r.confidence === 'confirmed').length
+  const probableCount = liveRemates.filter(r => r.confidence === 'probable').length
   const todayCount = liveRemates.filter(r => r.date === todayStr).length
 
   // Group by date
@@ -253,21 +293,25 @@ export default async function RematesEnVivoPage() {
     if (!acc[r.date]) acc[r.date] = []
     acc[r.date].push(r)
     return acc
-  }, {} as Record<string, Remate[]>)
+  }, {} as Record<string, LiveRemateView[]>)
 
-  // Schema data
-  const schemaRemates = liveRemates.slice(0, 10).map(r => ({
-    id: r.id,
-    name: `🔴 ${r.consignatariaName} - ${r.type}`,
-    date: r.date,
-    time: r.time || undefined,
-    location: r.location,
-    province: r.province,
-    consignatariaName: r.consignatariaName,
-    type: r.type,
-    estimatedHeads: r.estimatedHeads || undefined,
-    url: r.youtubeUrl || `https://www.consignatarias.com.ar/consignatarias/${r.consignatariaSlug}`,
-  }))
+  // Schema data — only include confirmed streams (probable is editorial UX,
+  // not factual enough for ItemList markup)
+  const schemaRemates = liveRemates
+    .filter(r => r.confidence === 'confirmed')
+    .slice(0, 10)
+    .map(r => ({
+      id: r.id,
+      name: `🔴 ${r.consignatariaName} - ${r.type}`,
+      date: r.date,
+      time: r.time || undefined,
+      location: r.location,
+      province: r.province,
+      consignatariaName: r.consignatariaName,
+      type: r.type,
+      estimatedHeads: r.estimatedHeads || undefined,
+      url: r.watchUrl,
+    }))
 
   return (
     <>
@@ -298,7 +342,8 @@ export default async function RematesEnVivoPage() {
             )}
           </div>
           <p className="text-zinc-400">
-            Todos los remates con transmisión en vivo por YouTube. Participá de las subastas desde cualquier lugar.
+            Remates de hacienda con transmisión por YouTube. Confirmados con video directo o vía
+            el canal habitual de la consignataria. Participá de las subastas desde cualquier lugar.
           </p>
         </div>
 
@@ -307,7 +352,21 @@ export default async function RematesEnVivoPage() {
           <div className="flex items-center gap-2">
             <Radio className="w-4 h-4 text-red-400" />
             <span className="text-zinc-400 text-sm">
-              <strong className="text-zinc-200">{count}</strong> remates con streaming
+              <strong className="text-zinc-200">{count}</strong> transmisiones
+            </span>
+          </div>
+          <span className="text-zinc-700">|</span>
+          <div className="flex items-center gap-2">
+            <Youtube className="w-4 h-4 text-red-400" />
+            <span className="text-zinc-400 text-sm">
+              <strong className="text-zinc-200">{confirmedCount}</strong> confirmadas
+            </span>
+          </div>
+          <span className="text-zinc-700">|</span>
+          <div className="flex items-center gap-2">
+            <Radio className="w-4 h-4 text-zinc-500" />
+            <span className="text-zinc-400 text-sm">
+              <strong className="text-zinc-300">{probableCount}</strong> probables
             </span>
           </div>
           <span className="text-zinc-700">|</span>
@@ -316,11 +375,6 @@ export default async function RematesEnVivoPage() {
             <span className="text-zinc-400 text-sm">
               <strong className="text-zinc-200">{todayCount}</strong> hoy
             </span>
-          </div>
-          <span className="text-zinc-700">|</span>
-          <div className="flex items-center gap-2">
-            <Video className="w-4 h-4 text-zinc-500" />
-            <span className="text-zinc-500 text-sm">Próximas semanas</span>
           </div>
         </div>
 
@@ -367,7 +421,9 @@ export default async function RematesEnVivoPage() {
                         key={remate.id}
                         remate={remate}
                         isToday={isToday}
-                        isLive={isToday && remate.status === 'live'}
+                        isLive={isToday && remate.status === 'live' && remate.confidence === 'confirmed'}
+                        confidence={remate.confidence}
+                        watchUrl={remate.watchUrl}
                       />
                     ))}
                   </div>
