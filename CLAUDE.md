@@ -42,7 +42,7 @@ A cattle auction directory + market intelligence platform + public API for Argen
 
 | Thing | Count | Source of truth |
 |---|---|---|
-| Sitemap URLs | 1554 | `src/app/sitemap.ts` |
+| Sitemap URLs | 1062 | `src/app/sitemap.ts` (shrinks as scraper archives remates) |
 | API endpoints | 33 under `src/app/api/` | route handlers |
 | Public Enterprise endpoints (auth-gated) | 3 — `/api/precios`, `/api/lots`, `/api/index/memola` | |
 | Consignatarias (canonical) | 74 | `src/lib/data/consignataria-slugs.ts` |
@@ -139,7 +139,7 @@ docs/                                 Current strategic docs (Oráculo, Corredor
 ```bash
 pnpm install
 pnpm dev                     # http://localhost:3000
-pnpm build                   # SSG generation (~1554 routes)
+pnpm build                   # SSG generation (~1062 routes)
 pnpm start                   # production server
 
 # manual data refresh
