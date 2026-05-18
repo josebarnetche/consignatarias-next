@@ -76,3 +76,4 @@ scripts/send-*.js
 mag-*.html
 scripts/el-oraculo/output/
 scripts/seo-report/
+scripts/.cache/
