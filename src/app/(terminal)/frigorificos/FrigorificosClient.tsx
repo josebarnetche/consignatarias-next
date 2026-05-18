@@ -314,6 +314,7 @@ export default function FrigorificosPage() {
           <div className="px-panel py-3">
             <Link
               href="/frigorificos/verificar"
+              rel="nofollow"
               className="flex items-center gap-2 w-full px-3 py-2 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors shadow-live-glow"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-positive animate-pulse-live" />
@@ -531,6 +532,7 @@ export default function FrigorificosPage() {
                       <td className="text-right">
                         <Link
                           href={`/frigorificos/verificar?cuit=${f.cuit}`}
+                          rel="nofollow"
                           className="text-positive/60 hover:text-positive text-xxs font-terminal uppercase tracking-wider transition-colors"
                         >
                           Reclamar

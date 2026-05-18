@@ -404,6 +404,7 @@ export default async function FrigorificoDetailPage({
             </ul>
             <Link
               href={`/frigorificos/verificar?cuit=${basicF.cuit}`}
+              rel="nofollow"
               className="inline-block px-4 py-2.5 bg-amber-500/20 border border-amber-500/40 text-amber-400 text-data font-terminal rounded-terminal hover:bg-amber-500/30 transition-colors"
             >
               Reclamar perfil gratis →

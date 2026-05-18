@@ -102,7 +102,13 @@ function normalizeHref(href, baseUrl) {
 async function fetchSitemap() {
   const res = await fetch(`${BASE}/sitemap.xml`)
   const xml = await res.text()
-  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1])
+  // Sitemap emits production URLs; rewrite host to BASE so we crawl the
+  // same server we're inspecting (otherwise BASE=localhost would silently
+  // hit production and show stale data).
+  const baseHost = new URL(BASE).origin
+  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => {
+    try { return baseHost + new URL(m[1]).pathname } catch { return m[1] }
+  })
 }
 
 async function crawlOne(url) {

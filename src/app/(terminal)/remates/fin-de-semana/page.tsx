@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import remates from '@/lib/data/remates.json'
+import { consignatariaProfilePath, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { normalizeUrl } from '@/lib/utils/url'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { Calendar, Clock, MapPin, Users, ExternalLink, Play, FileText } from 'lucide-react'
 
@@ -123,7 +125,7 @@ function RemateCard({ remate }: { remate: Remate }) {
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
           <Link
-            href={`/consignatarias/${remate.consignatariaSlug}`}
+            href={consignatariaProfilePath(remate.consignatariaSlug)}
             className="text-lg font-medium text-zinc-100 hover:text-amber-400 transition-colors line-clamp-1"
           >
             {remate.consignatariaName}
@@ -169,7 +171,7 @@ function RemateCard({ remate }: { remate: Remate }) {
       <div className="flex flex-wrap gap-2 pt-2 border-t border-zinc-800">
         {remate.youtubeUrl && (
           <a
-            href={remate.youtubeUrl}
+            href={normalizeUrl(remate.youtubeUrl) || '#'}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/30 rounded hover:bg-red-500/20 transition-colors"
@@ -180,7 +182,7 @@ function RemateCard({ remate }: { remate: Remate }) {
         )}
         {remate.catalogUrl && (
           <a
-            href={remate.catalogUrl}
+            href={normalizeUrl(remate.catalogUrl) || '#'}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-zinc-800 text-zinc-300 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors"
@@ -191,7 +193,7 @@ function RemateCard({ remate }: { remate: Remate }) {
         )}
         {remate.sourceUrl && (
           <a
-            href={remate.sourceUrl}
+            href={normalizeUrl(remate.sourceUrl) || '#'}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-zinc-800 text-zinc-300 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors"
@@ -201,7 +203,7 @@ function RemateCard({ remate }: { remate: Remate }) {
           </a>
         )}
         <Link
-          href={`/consignatarias/${remate.consignatariaSlug}`}
+          href={consignatariaProfilePath(remate.consignatariaSlug)}
           className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-zinc-500 hover:text-zinc-300 transition-colors ml-auto"
         >
           Ver consignataria →
@@ -251,7 +253,7 @@ export default function RematesFinDeSemanaPage() {
     consignatariaName: r.consignatariaName,
     type: r.type,
     estimatedHeads: r.estimatedHeads || undefined,
-    url: `https://www.consignatarias.com.ar/consignatarias/${r.consignatariaSlug}`,
+    url: `https://www.consignatarias.com.ar/consignatarias/${getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug}`,
   }))
 
   return (

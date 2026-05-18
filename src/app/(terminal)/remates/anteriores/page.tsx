@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import remates from '@/lib/data/remates.json'
+import { consignatariaProfilePath, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { normalizeUrl } from '@/lib/utils/url'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { Calendar, Clock, MapPin, Users, CheckCircle, History } from 'lucide-react'
 
@@ -112,7 +114,7 @@ function RemateCard({ remate }: { remate: Remate }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <Link
-              href={`/consignatarias/${remate.consignatariaSlug}`}
+              href={consignatariaProfilePath(remate.consignatariaSlug)}
               className="text-lg font-medium text-zinc-200 hover:text-amber-400 transition-colors line-clamp-1"
             >
               {remate.consignatariaName}
@@ -162,7 +164,7 @@ function RemateCard({ remate }: { remate: Remate }) {
       {/* Link to consignataria */}
       <div className="pt-2 border-t border-zinc-800">
         <Link
-          href={`/consignatarias/${remate.consignatariaSlug}`}
+          href={consignatariaProfilePath(remate.consignatariaSlug)}
           className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
         >
           Ver más remates de {remate.consignatariaName} →
@@ -213,7 +215,7 @@ export default function RematesAnterioresPage() {
     consignatariaName: r.consignatariaName,
     type: r.type,
     estimatedHeads: r.estimatedHeads || undefined,
-    url: `https://www.consignatarias.com.ar/consignatarias/${r.consignatariaSlug}`,
+    url: `https://www.consignatarias.com.ar/consignatarias/${getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug}`,
   }))
 
   return (

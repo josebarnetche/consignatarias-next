@@ -104,6 +104,21 @@ export default function MercadoPage() {
       </section>
       <MercadoClient />
 
+      {/* Precios hub teaser — internal link target for /precios SEO */}
+      <div className="px-4 pt-2 pb-1 max-w-6xl mx-auto">
+        <Link
+          href="/precios"
+          className="block border border-terminal-border bg-terminal-panel/60 px-panel py-3 hover:border-accent transition-colors"
+        >
+          <span className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">
+            Ver precios por categoría →
+          </span>
+          <p className="text-zinc-300 text-data mt-1">
+            Novillo, novillito, vaquillona, vaca, toro y ternero — kilo vivo desde el MAG, actualizado a diario.
+          </p>
+        </Link>
+      </div>
+
       {/* Year-over-year + USD landing teaser */}
       <div className="px-4 pt-2 pb-4 max-w-6xl mx-auto">
         <YearOverYearBlock />

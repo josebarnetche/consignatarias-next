@@ -69,7 +69,12 @@ function categorize(pathname) {
 async function fetchSitemap() {
   const res = await fetch(`${BASE}/sitemap.xml`)
   const xml = await res.text()
-  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1])
+  // Sitemap emits production URLs; rewrite to BASE so we crawl the server
+  // we're inspecting (avoids silently hitting prod with stale data).
+  const baseHost = new URL(BASE).origin
+  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => {
+    try { return baseHost + new URL(m[1]).pathname } catch { return m[1] }
+  })
 }
 
 // ---------------------------------------------------------------------------

@@ -8,7 +8,8 @@ import {
 } from '../_views/RematesProvinceView'
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
-import { getAllProfiles } from '@/lib/data/consignataria-slugs'
+import { getAllProfiles, consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
+import { normalizeUrl } from '@/lib/utils/url'
 import { BreadcrumbSchema, EventSchema } from '@/components/seo/JsonLd'
 import { AddToCalendarButton } from '@/components/ui/AddToCalendarButton'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
@@ -347,7 +348,7 @@ export default async function RemateDetailPage({ params }: Props) {
                   <p className="text-sm text-slate-500 mb-1">Organiza</p>
                   {consigProfile ? (
                     <Link 
-                      href={`/consignatarias/${remate.consignatariaSlug}`}
+                      href={consignatariaProfilePath(remate.consignatariaSlug)}
                       className="text-white font-medium hover:text-blue-400 transition-colors"
                     >
                       {remate.consignatariaName}
@@ -431,7 +432,7 @@ export default async function RemateDetailPage({ params }: Props) {
                     </span>
                   </div>
                   <a
-                    href={remate.youtubeUrl}
+                    href={normalizeUrl(remate.youtubeUrl) || '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-medium transition-colors"
@@ -449,7 +450,7 @@ export default async function RemateDetailPage({ params }: Props) {
             <div className="px-6 pb-6 flex flex-wrap gap-3">
               {remate.catalogUrl && (
                 <a
-                  href={remate.catalogUrl}
+                  href={normalizeUrl(remate.catalogUrl) || '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-colors"
@@ -472,7 +473,7 @@ export default async function RemateDetailPage({ params }: Props) {
               )}
               {remate.sourceUrl && (
                 <a
-                  href={remate.sourceUrl}
+                  href={normalizeUrl(remate.sourceUrl) || '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors"
@@ -488,8 +489,8 @@ export default async function RemateDetailPage({ params }: Props) {
           {consigProfile && (
             <div className="mt-8">
               <h2 className="text-xl font-bold text-white mb-4">Sobre la consignataria</h2>
-              <Link 
-                href={`/consignatarias/${remate.consignatariaSlug}`}
+              <Link
+                href={consignatariaProfilePath(remate.consignatariaSlug)}
                 className="block bg-slate-900 rounded-xl border border-slate-800 p-6 hover:border-slate-700 transition-colors"
               >
                 <div className="flex items-center gap-4">

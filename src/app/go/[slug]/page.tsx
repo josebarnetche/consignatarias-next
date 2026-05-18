@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import Image from 'next/image'
 import { getCanonicalSlug, getProfile, getAuctionsForProfile, getAllCanonicalSlugs } from '@/lib/data/consignataria-slugs'
+import { normalizeUrl } from '@/lib/utils/url'
 import { getConsignatariaProfile, getFollowerCount } from '@/lib/dal/consignatarias'
 import { getEntityTier } from '@/lib/features'
 import rematesData from '@/lib/data/remates.json'
@@ -230,7 +231,7 @@ export default async function GoLandingPage({ params }: Props) {
               <div className="flex flex-wrap gap-3">
                 {nextRemate.catalogUrl && (
                   <a
-                    href={nextRemate.catalogUrl}
+                    href={normalizeUrl(nextRemate.catalogUrl) || '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1 min-w-[140px] text-center px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-lg transition-colors"
@@ -240,7 +241,7 @@ export default async function GoLandingPage({ params }: Props) {
                 )}
                 {nextRemate.youtubeUrl && (
                   <a
-                    href={nextRemate.youtubeUrl}
+                    href={normalizeUrl(nextRemate.youtubeUrl) || '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1 min-w-[140px] text-center px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-medium rounded-lg transition-colors"

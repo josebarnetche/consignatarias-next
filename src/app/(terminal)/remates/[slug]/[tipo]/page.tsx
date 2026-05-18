@@ -278,7 +278,7 @@ export default async function ProvinceTypePage({ params }: PageParams) {
                         <span className="text-green-600">{formatDateShort(remate.date)}</span>
                         <span className="text-green-800">|</span>
                         <Link
-                          href={`/consignatarias/${slug}`}
+                          href={slug ? `/consignatarias/${slug}` : '/consignatarias'}
                           className="text-green-400 hover:underline font-semibold"
                         >
                           {remate.consignatariaName}

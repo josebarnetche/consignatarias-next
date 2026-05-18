@@ -18,7 +18,7 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'afa', displayName: 'Agricultores Federados Argentinos SCL', allSlugs: ['afa', 'agricultores-federados-argentinos-soc-coop-lt'] },
   { canonicalSlug: 'aj-mendizabal', displayName: 'A.J. Mendizabal', allSlugs: ['aj-mendizabal'] },
   { canonicalSlug: 'agroactiva', displayName: 'Agroactiva', allSlugs: ['agroactiva'] },
-  { canonicalSlug: 'aguerre', displayName: 'Aguerre SRL', allSlugs: ['aguerre', 'aguerre-srl'] },
+  { canonicalSlug: 'aguerre', displayName: 'Aguerre SRL', allSlugs: ['aguerre', 'aguerre-srl', 'aguerre-s-r-l'] },
   { canonicalSlug: 'aguirre-vazquez', displayName: 'Aguirre Vazquez SA', allSlugs: ['aguirre-vazquez', 'aguirre-vazquez-s-a'] },
   
   { canonicalSlug: 'alianza-ganadera', displayName: 'Alianza Ganadera (Coop. Sunchales)', allSlugs: ['alianza-ganadera-coop-sunchale'] },
@@ -69,7 +69,7 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'mondino', displayName: 'Alfredo Sebastián Mondino', allSlugs: ['mondino', 'alfredo-sebastian-mondino', 'alfredo-smondino'] },
   { canonicalSlug: 'monasterio-tattersall', displayName: 'Monasterio Tattersall SA', allSlugs: ['monasterio-tattersall', 'monasterio-tattersall-s-a'] },
   { canonicalSlug: 'nangapiry', displayName: 'Nangapiry SA', allSlugs: ['nangapiry'] },
-  { canonicalSlug: 'nestor-fuentes', displayName: 'Nestor Hugo Fuentes', allSlugs: ['nestor-fuentes'] },
+  { canonicalSlug: 'nestor-fuentes', displayName: 'Nestor Hugo Fuentes', allSlugs: ['nestor-fuentes', 'nestor-hugo-fuentes-s-a', 'nestor-hugo-fuentes-sa'] },
   { canonicalSlug: 'ofarrell', displayName: "Ivan L. O'Farrell Consignataria", allSlugs: ['ofarrell', 'ivan-l-ofarrell-srl', 'ivan-l-o-farrell-s-r-l'] },
   { canonicalSlug: 'oregui', displayName: 'Oregui Cia SA', allSlugs: ['oregui-cia-sa'] },
   { canonicalSlug: 'orella', displayName: 'Orella SRL', allSlugs: ['orella'] },
@@ -80,7 +80,7 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'productores-rurales-sud', displayName: 'Productores Rurales del Sud Coop. Ltda.', allSlugs: ['productores-rurales-sud'] },
   { canonicalSlug: 'raul-mendizabal', displayName: 'Raul Mendizabal y Cia. SAC', allSlugs: ['raul-mendizabal-y-cia-sac'] },
   { canonicalSlug: 'reggi', displayName: 'Reggi y Cia. SRL', allSlugs: ['reggi', 'reggi-y-cia', 'reggi-y-cia-s-r-l'] },
-  { canonicalSlug: 'rodriguez-egana', displayName: 'Horacio Rodriguez Egaña', allSlugs: ['rodriguez-egana'] },
+  { canonicalSlug: 'rodriguez-egana', displayName: 'Horacio Rodriguez Egaña', allSlugs: ['rodriguez-egana', 'horacio-rodriguez-egana-consignaciones-s-r-l'] },
   { canonicalSlug: 'rosgan', displayName: 'Rosgan', allSlugs: ['rosgan'] },
   { canonicalSlug: 'rural-chaco', displayName: 'Sociedad Rural del Chaco', allSlugs: ['rural-chaco'] },
   { canonicalSlug: 'rural-corrientes', displayName: 'Sociedad Rural de Corrientes', allSlugs: ['rural-corrientes'] },
@@ -91,7 +91,7 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'saenz-valiente-bullrich', displayName: 'Saenz Valiente, Bullrich y Cia. SA', allSlugs: ['saenz-valiente-bullrich', 'saenz-valiente-bullrich-y-cia-', 'saenz-valiente-bullrich-y-cia-s-a'] },
   { canonicalSlug: 'sivero', displayName: 'Sivero y Cia. SA', allSlugs: ['sivero', 'sivero-y-cia-s-a'] },
   { canonicalSlug: 'trade-food', displayName: 'Trade Food SA', allSlugs: ['trade-food-s-a'] },
-  { canonicalSlug: 'tradicion-ganadera', displayName: 'Tradición Ganadera SA', allSlugs: ['tradicion-ganadera'] },
+  { canonicalSlug: 'tradicion-ganadera', displayName: 'Tradición Ganadera SA', allSlugs: ['tradicion-ganadera', 'tradicion-ganadera-sa-porro-srl'] },
   { canonicalSlug: 'travaglia', displayName: 'Eduardo A. Travaglia y Cia. SA', allSlugs: ['travaglia', 'eduardo-a-travaglia-y-cia-s-a', 'eduardo-a-travaglia-y-cia-sa'] },
   { canonicalSlug: 'umc-villaguay', displayName: 'UMC SA - Haciendas Villaguay SRL', allSlugs: ['umc-villaguay', 'umc-haciendas-villaguay'] },
   { canonicalSlug: 'vicar-ganadera', displayName: 'Vicar Ganadera SA', allSlugs: ['vicar-ganadera', 'vicar-ganadera-s-a'] },
@@ -148,6 +148,18 @@ export function getAllCanonicalSlugs(): string[] {
 /** Get all profiles. */
 export function getAllProfiles(): ConsignatariaProfile[] {
   return PROFILES
+}
+
+/**
+ * Build a path to the consignataria profile, resolving variant slugs to
+ * canonical and gracefully handling null/undefined. Use this everywhere
+ * an internal link is generated — avoids variant-slug 308 hops and the
+ * `/consignatarias/null` render artifact.
+ */
+export function consignatariaProfilePath(rawSlug: string | null | undefined): string {
+  if (!rawSlug || rawSlug === 'null' || rawSlug === 'undefined') return '/consignatarias'
+  const canonical = slugToCanonical.get(rawSlug) ?? rawSlug
+  return `/consignatarias/${canonical}`
 }
 
 /**

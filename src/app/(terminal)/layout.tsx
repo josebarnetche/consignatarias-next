@@ -326,7 +326,9 @@ export default function TerminalLayout({
           <span className="text-terminal-border">·</span>
           <Link href="/mercado/spread" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">Maíz/Novillo</Link>
           <span className="text-terminal-border">·</span>
-          <Link href="/precios/hacienda-en-pie" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">Precios hoy</Link>
+          <Link href="/precios" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">Precios hoy</Link>
+          <span className="text-terminal-border">·</span>
+          <Link href="/precios/hacienda-en-pie" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">Hacienda en pie</Link>
           <span className="text-terminal-border">|</span>
           <Link href="/el-corredor" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">El Corredor</Link>
           <span className="text-terminal-border">·</span>

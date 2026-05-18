@@ -1146,6 +1146,19 @@ const SLUG_DEDUP_MAP = {
   'bressan': 'bressan-y-cia',
   'bressan-y-cia-s-r-l': 'bressan-y-cia',
   'bressan-y-cia-srl': 'bressan-y-cia',
+  // O'Farrell: scraper sees both "ofarrell" (curated) and "ivan-l-ofarrell-srl"
+  // (from CACG). Without these aliases, the same auction shows up twice on the
+  // site as two different remates (caught by audit-data-integrity.mjs).
+  'ofarrell': 'ofarrell',
+  'ivan-l-ofarrell-srl': 'ofarrell',
+  'ivan-l-o-farrell-s-r-l': 'ofarrell',
+  // Other variant pairs that the existing strip-suffix logic doesn't collapse
+  'nestor-hugo-fuentes-s-a': 'nestor-fuentes',
+  'nestor-hugo-fuentes-sa': 'nestor-fuentes',
+  'horacio-rodriguez-egana-consignaciones-s-r-l': 'rodriguez-egana',
+  'tradicion-ganadera-sa-porro-srl': 'tradicion-ganadera',
+  'aguerre-s-r-l': 'aguerre',
+  'aguerre-srl': 'aguerre',
 };
 
 function deduplicateAuctions(auctions) {

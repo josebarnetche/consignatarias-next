@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import remates from '@/lib/data/remates.json'
+import { consignatariaProfilePath, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { normalizeUrl } from '@/lib/utils/url'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { resolveYoutubeUrl } from '@/lib/youtube-live'
 import { Calendar, Clock, MapPin, Users, Play, FileText, Video, Youtube, Radio } from 'lucide-react'
@@ -175,7 +177,7 @@ function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl }: { rem
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex-1 min-w-0">
             <Link
-              href={`/consignatarias/${remate.consignatariaSlug}`}
+              href={consignatariaProfilePath(remate.consignatariaSlug)}
               className="text-lg font-medium text-zinc-100 hover:text-amber-400 transition-colors line-clamp-1"
             >
               {remate.consignatariaName}
@@ -229,7 +231,7 @@ function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl }: { rem
           </a>
           {remate.catalogUrl && (
             <a
-              href={remate.catalogUrl}
+              href={normalizeUrl(remate.catalogUrl) || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium bg-zinc-800 text-zinc-300 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors"
@@ -239,7 +241,7 @@ function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl }: { rem
             </a>
           )}
           <Link
-            href={`/consignatarias/${remate.consignatariaSlug}`}
+            href={consignatariaProfilePath(remate.consignatariaSlug)}
             className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-zinc-500 hover:text-zinc-300 transition-colors ml-auto"
           >
             Ver perfil →
