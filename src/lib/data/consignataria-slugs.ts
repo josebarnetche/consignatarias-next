@@ -70,7 +70,7 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'monasterio-tattersall', displayName: 'Monasterio Tattersall SA', allSlugs: ['monasterio-tattersall', 'monasterio-tattersall-s-a'] },
   { canonicalSlug: 'nangapiry', displayName: 'Nangapiry SA', allSlugs: ['nangapiry'] },
   { canonicalSlug: 'nestor-fuentes', displayName: 'Nestor Hugo Fuentes', allSlugs: ['nestor-fuentes'] },
-  { canonicalSlug: 'ofarrell', displayName: "Ivan L. O'Farrell Consignataria", allSlugs: ['ofarrell'] },
+  { canonicalSlug: 'ofarrell', displayName: "Ivan L. O'Farrell Consignataria", allSlugs: ['ofarrell', 'ivan-l-ofarrell-srl', 'ivan-l-o-farrell-s-r-l'] },
   { canonicalSlug: 'oregui', displayName: 'Oregui Cia SA', allSlugs: ['oregui-cia-sa'] },
   { canonicalSlug: 'orella', displayName: 'Orella SRL', allSlugs: ['orella'] },
   { canonicalSlug: 'pastore', displayName: 'Edgar E. Pastore y Cia. SRL', allSlugs: ['pastore', 'edgar-e-pastore-y-cia-s-r-l'] },
