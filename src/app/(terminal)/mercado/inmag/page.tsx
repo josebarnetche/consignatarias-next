@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import marketData from '@/lib/data/market-prices.json'
-import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import { ElCorredorCTA } from '@/components/ElCorredorCTA'
@@ -12,20 +12,58 @@ const inmag = marketData.inmag
 const series = inmag.series as Array<{ date: string; value: number; volume?: number }>
 
 export const metadata: Metadata = {
-  title: 'INMAG - Índice Novillo Mercado Agroganadero Argentina 2026',
-  description: `INMAG actual: $${inmag.current.toLocaleString('es-AR')}/kg. Índice Novillo del Mercado Agroganadero de Buenos Aires. Cotización diaria, histórico de precios, y referencia del mercado ganadero argentino.`,
+  // SEO-tuned title: "INMAG" first, live price baked in, "Hoy" for query match.
+  // Price refreshes daily via the build-trigger cron, so this stays accurate.
+  title: `INMAG Hoy $${inmag.current.toLocaleString('es-AR')}/kg vivo · Índice Novillo Mercado Agroganadero`,
+  description: `INMAG ${inmag.current.toLocaleString('es-AR')} ARS/kg vivo (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(2)}% vs. anterior). Cotización del Índice Novillo del Mercado Agroganadero de Buenos Aires, actualizada cada día hábil. Histórico, metodología y referencia del mercado ganadero argentino.`,
   keywords: [
-    'INMAG', 'inmag precio', 'indice novillo', 'inmag hoy', 'mercado agroganadero',
-    'precio novillo argentina', 'inmag actual', 'cotizacion novillo', 'mercado ganadero argentina',
+    'INMAG', 'inmag precio', 'inmag hoy', 'inmag actual',
+    'índice novillo', 'indice novillo', 'indice mercado agroganadero',
+    'mercado agroganadero', 'cotización novillo', 'cotizacion novillo',
+    'precio novillo argentina', 'precio kilo vivo novillo',
+    'inmag mercado agroganadero', 'inmag canuelas', 'inmag cañuelas',
   ],
   openGraph: {
-    title: `INMAG Hoy: $${inmag.current.toLocaleString('es-AR')}/kg | Índice Novillo Argentina`,
-    description: `Índice Novillo del Mercado Agroganadero (INMAG) actualizado. Variación: ${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1)}%. Referencia principal del mercado de hacienda argentino.`,
+    title: `INMAG Hoy: $${inmag.current.toLocaleString('es-AR')}/kg vivo · Índice Novillo Argentina`,
+    description: `Índice Novillo del Mercado Agroganadero (INMAG): ${inmag.current.toLocaleString('es-AR')} ARS/kg, ${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1)}% vs. anterior. Referencia diaria del mercado de hacienda argentino.`,
     url: 'https://www.consignatarias.com.ar/mercado/inmag',
     type: 'website',
   },
   alternates: { canonical: 'https://www.consignatarias.com.ar/mercado/inmag' },
 }
+
+// FAQ items targeting the "people also ask" variants that surround the INMAG
+// query. Each Q is exactly how a productor / asesor would type it on Google.
+const INMAG_FAQS = [
+  {
+    question: '¿Qué es el INMAG?',
+    answer: 'El INMAG (Índice Novillo Mercado Agroganadero) es el indicador diario que refleja el precio promedio ponderado del novillo en el Mercado Agroganadero de Cañuelas (ex Liniers). Se publica cada día hábil al cierre de operaciones y se usa como referencia de precio para compras, ventas y contratos de arrendamiento rural en toda la cadena ganadera argentina.',
+  },
+  {
+    question: '¿Cuánto vale el INMAG hoy?',
+    answer: `Al último cierre, el INMAG es de $${inmag.current.toLocaleString('es-AR')} por kilo vivo, con una variación de ${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(2)}% respecto del día anterior. El valor actualiza diariamente con el cierre del Mercado Agroganadero.`,
+  },
+  {
+    question: '¿Cómo se calcula el INMAG?',
+    answer: 'El INMAG es un promedio ponderado por volumen del precio del novillo tipo exportación operado en el Mercado Agroganadero. Pondera todos los lotes negociados en el día por cantidad de cabezas y por kilos vivos vendidos. El cálculo lo publica directamente el Mercado Agroganadero al cierre de cada jornada de remates.',
+  },
+  {
+    question: '¿Dónde sale el INMAG?',
+    answer: 'El INMAG lo publica el Mercado Agroganadero de Cañuelas (mercadoagroganadero.com.ar) al cierre de cada día hábil. En esta página replicamos el valor del día, el histórico desde 2015, y la metodología, todo actualizado automáticamente cada tarde.',
+  },
+  {
+    question: '¿Cuándo se actualiza el INMAG?',
+    answer: 'Cada día hábil entre las 17 y las 19 horas (ART), después del cierre de operaciones del Mercado Agroganadero. Los fines de semana y feriados no hay valor nuevo: el INMAG opera con calendario hábil del mercado.',
+  },
+  {
+    question: '¿Para qué sirve el INMAG?',
+    answer: 'Productores, consignatarios, frigoríficos y traders usan el INMAG para fijar precios de compra-venta de hacienda, para revisar contratos de arrendamiento rural (que suelen indexarse al INMAG en kilos de novillo), y como anchor del valor de los rodeos. Es la referencia más usada del mercado bovino argentino.',
+  },
+  {
+    question: '¿Qué diferencia hay entre INMAG y Cañuelas / Liniers?',
+    answer: 'El Mercado Agroganadero (MAG) opera desde 2018 en Cañuelas, y reemplazó al histórico Mercado de Liniers que operó hasta 2018 en CABA. El INMAG es el mismo indicador metodológico — primero de Liniers, hoy de Cañuelas. Cuando alguien dice "precio Liniers" en el campo, suele referirse al INMAG actual.',
+  },
+]
 
 // JSON-LD Schema
 function InmagSchema() {
@@ -68,6 +106,7 @@ export default function InmagPage() {
     <>
       <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
       <InmagSchema />
+      <FAQPageSchema items={INMAG_FAQS} />
       
       <div className="min-h-screen">
         {/* Hero Section */}
@@ -96,12 +135,13 @@ export default function InmagPage() {
                   <span className="text-sm text-zinc-500">Actualizado hoy</span>
                 </div>
                 <h1 className="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-3">
-                  Índice Novillo
                   <span className="block text-emerald-400">INMAG</span>
+                  Índice Novillo Mercado Agroganadero
                 </h1>
                 <p className="text-zinc-400 max-w-xl text-lg">
-                  Referencia principal del mercado de hacienda argentino.
-                  Precio promedio del novillo en el Mercado Agroganadero de Buenos Aires.
+                  Referencia diaria del precio del novillo en el Mercado Agroganadero de Cañuelas
+                  (ex Liniers). Cotización al cierre de cada día hábil, histórico desde 2015 y
+                  metodología abierta.
                 </p>
               </div>
 
@@ -187,6 +227,55 @@ export default function InmagPage() {
           </Suspense>
         </section>
 
+        {/* Variantes y comparativas del INMAG — internal-link panel
+            Crucial: diversifies anchor text feeding the related pages so
+            "INMAG en dólares", "INMAG arrendamiento" and "INMAG vs maíz"
+            queries discover the right sibling.                              */}
+        <section className="max-w-6xl mx-auto px-4 pb-12">
+          <h2 className="text-xl font-semibold text-white mb-4">Variantes del INMAG</h2>
+          <div className="grid sm:grid-cols-3 gap-3">
+            <Link
+              href="/mercado/inmag-dolares"
+              className="block bg-zinc-900/40 border border-zinc-800 rounded-xl p-5 hover:border-emerald-500/30 transition-colors group"
+            >
+              <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">INMAG en dólares</div>
+              <div className="text-base font-medium text-white group-hover:text-emerald-400 transition-colors mb-1">
+                INMAG / USD blue
+              </div>
+              <p className="text-sm text-zinc-500 leading-relaxed">
+                El novillo deflactado por dólar paralelo. 10+ años de serie. Sirve para
+                comparar poder de compra real del kilo vivo a través del tiempo.
+              </p>
+            </Link>
+            <Link
+              href="/mercado/arrendamiento"
+              className="block bg-zinc-900/40 border border-zinc-800 rounded-xl p-5 hover:border-emerald-500/30 transition-colors group"
+            >
+              <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">INMAG para arrendamiento</div>
+              <div className="text-base font-medium text-white group-hover:text-emerald-400 transition-colors mb-1">
+                Índice novillo arrendamiento
+              </div>
+              <p className="text-sm text-zinc-500 leading-relaxed">
+                Cotización mensual del INMAG aplicada a contratos de arrendamiento rural,
+                que típicamente se pactan en kilos de novillo.
+              </p>
+            </Link>
+            <Link
+              href="/mercado/spread"
+              className="block bg-zinc-900/40 border border-zinc-800 rounded-xl p-5 hover:border-emerald-500/30 transition-colors group"
+            >
+              <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">INMAG vs maíz FOB</div>
+              <div className="text-base font-medium text-white group-hover:text-emerald-400 transition-colors mb-1">
+                Spread maíz–novillo
+              </div>
+              <p className="text-sm text-zinc-500 leading-relaxed">
+                Relación entre el precio del kilo vivo del novillo y el grano de maíz. Una
+                de las palancas centrales de la decisión de retención vs venta.
+              </p>
+            </Link>
+          </div>
+        </section>
+
         {/* El Corredor — lead magnet del cierre mensual */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
           <ElCorredorCTA variant="card" context="inmag" />
@@ -217,7 +306,7 @@ export default function InmagPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-800/30">
-                  {recentSeries.slice().reverse().slice(0, 15).map((point, i, arr) => {
+                  {recentSeries.slice().reverse().slice(0, 30).map((point, i, arr) => {
                     const prev = arr[i + 1]?.value
                     const change = prev ? ((point.value - prev) / prev * 100) : 0
                     const changeUp = change >= 0
@@ -260,7 +349,7 @@ export default function InmagPage() {
             
             {/* Table footer */}
             <div className="px-6 py-4 border-t border-zinc-800/50 bg-zinc-900/50 flex items-center justify-between">
-              <span className="text-xs text-zinc-600">Mostrando últimos 15 días</span>
+              <span className="text-xs text-zinc-600">Mostrando últimos 30 días hábiles</span>
               <Link 
                 href="/api/market/history?days=365&format=csv"
                 className="text-xs text-emerald-500 hover:text-emerald-400 transition-colors flex items-center gap-1"
@@ -271,6 +360,27 @@ export default function InmagPage() {
                 </svg>
               </Link>
             </div>
+          </div>
+        </section>
+
+        {/* FAQ — visible content that mirrors the FAQPageSchema in head.
+            Each Q&A is a featured-snippet candidate. Headings use <h3>
+            with the literal question text so Google can match query→answer. */}
+        <section className="max-w-6xl mx-auto px-4 pb-12">
+          <h2 className="text-xl font-semibold text-white mb-6">Preguntas frecuentes sobre el INMAG</h2>
+          <div className="space-y-4">
+            {INMAG_FAQS.map(faq => (
+              <details
+                key={faq.question}
+                className="group bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-5 hover:border-zinc-700/50 transition-colors"
+              >
+                <summary className="cursor-pointer list-none flex items-start justify-between gap-3">
+                  <h3 className="text-base font-medium text-white">{faq.question}</h3>
+                  <span className="text-zinc-500 text-xl leading-none mt-0.5 group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="text-sm text-zinc-400 leading-relaxed mt-3">{faq.answer}</p>
+              </details>
+            ))}
           </div>
         </section>
 
@@ -285,20 +395,22 @@ export default function InmagPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </span>
-                ¿Qué es el INMAG?
+                Sobre el INMAG
               </h3>
               <div className="space-y-3 text-sm text-zinc-400 leading-relaxed">
                 <p>
-                  El <strong className="text-zinc-200">INMAG (Índice Novillo Mercado Agroganadero)</strong> es el 
-                  indicador de referencia del mercado de hacienda en Argentina.
+                  El <strong className="text-zinc-200">INMAG (Índice Novillo Mercado Agroganadero)</strong> es la
+                  referencia de precio del mercado bovino argentino. Lo publica el Mercado Agroganadero de Cañuelas
+                  (que reemplazó al histórico Liniers en 2018) al cierre de cada día hábil.
                 </p>
                 <p>
-                  Se calcula diariamente basándose en las operaciones del Mercado Agroganadero de Buenos Aires, 
-                  representando el precio promedio ponderado del novillo tipo exportación en pesos por kilogramo vivo.
+                  Representa el precio promedio ponderado por volumen del novillo tipo exportación, expresado en
+                  pesos por kilogramo vivo. Lo usan productores, consignatarios, frigoríficos y operadores para
+                  fijar precios de compra-venta de hacienda y para indexar contratos de arrendamiento rural.
                 </p>
                 <p>
-                  Es utilizado por productores, consignatarias, frigoríficos y operadores del mercado ganadero 
-                  para establecer precios de compra-venta de hacienda en todo el territorio argentino.
+                  En esta página replicamos el valor diario, el histórico desde 2015 y la metodología, actualizados
+                  automáticamente cada tarde después del cierre del mercado.
                 </p>
               </div>
             </div>
