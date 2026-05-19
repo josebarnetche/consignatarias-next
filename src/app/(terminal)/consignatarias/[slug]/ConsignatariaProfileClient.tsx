@@ -393,6 +393,48 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
   const provinces = useMemo(() => [...new Set(auctions.map(a => a.province))], [auctions])
   const cities = useMemo(() => [...new Set(auctions.map(a => getCity(a.location)))].slice(0, 5), [auctions])
 
+  /* Sprint 2: "Historial verificable" — derived from auctions data we already have.
+   * Works for every consignataria (whereas MAG lots data requires a name-bridge
+   * which isn't populated yet). When lots data lands, this section gains a
+   * cabezas-verificadas / kg-promedio row. */
+  const historial = useMemo(() => {
+    const past = sorted.filter(a => a.date < today)
+    // Frecuencia: count remates in last 90 days
+    const ninety = new Date()
+    ninety.setDate(ninety.getDate() - 90)
+    const ninetyStr = ninety.toISOString().slice(0, 10)
+    const last90 = past.filter(a => a.date >= ninetyStr)
+    // Tipo dominante = mode
+    const typeCount = past.reduce<Record<string, number>>((acc, a) => {
+      const t = a.type || 'general'
+      acc[t] = (acc[t] || 0) + 1
+      return acc
+    }, {})
+    const tipoDominante = Object.entries(typeCount).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null
+    // Antigüedad: oldest remate date we know about
+    const oldestDate = past.length > 0 ? past[0].date : (sorted[0]?.date ?? null)
+    // Plazas habituales: top 5 cities by count
+    const cityCount = past.reduce<Record<string, number>>((acc, a) => {
+      const c = getCity(a.location)
+      if (!c) return acc
+      acc[c] = (acc[c] || 0) + 1
+      return acc
+    }, {})
+    const plazasTop = Object.entries(cityCount)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([c, n]) => ({ city: c, count: n }))
+    return {
+      pastCount: past.length,
+      upcomingCount: upcoming.length,
+      last90Count: last90.length,
+      monthlyAvg: last90.length / 3, // rough: 3 months
+      tipoDominante,
+      oldestDate,
+      plazasTop,
+    }
+  }, [sorted, upcoming.length, today])
+
   // Group by month
   const byMonth = useMemo(() => {
     const groups: { key: string; label: string; auctions: Auction[] }[] = []
@@ -488,6 +530,131 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
             </>
           )}
         </div>
+      </div>
+
+      {/* ============================================================ */}
+      {/*  PERSONA — Sprint 2 hero. "Quién opera detrás del nombre."     */}
+      {/*  Renders rich card when persona fields are populated, else a    */}
+      {/*  discreet "completá el perfil" prompt to convert claims.        */}
+      {/* ============================================================ */}
+      <div className="terminal-panel mt-px">
+        <div className="terminal-panel-header">
+          <span className="text-zinc-400 text-xxs tracking-widest">QUIÉN OPERA</span>
+        </div>
+        {(profile.referenteNombre || profile.bioReferente || profile.especialidad || profile.regionOperativa || profile.anosOficio) ? (
+          <div className="px-panel py-4 flex flex-col sm:flex-row gap-4">
+            {profile.fotoReferenteUrl && (
+              <div className="w-24 h-24 rounded-terminal border border-terminal-border bg-terminal-bg overflow-hidden relative shrink-0">
+                <Image
+                  src={profile.fotoReferenteUrl}
+                  alt={`Foto de ${profile.referenteNombre || profile.displayName}`}
+                  className="object-cover"
+                  fill
+                  unoptimized
+                />
+              </div>
+            )}
+            <div className="flex-1 min-w-0 space-y-2">
+              {profile.referenteNombre && (
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-data font-medium text-zinc-100">{profile.referenteNombre}</span>
+                  {profile.referenteCargo && (
+                    <span className="text-xxs text-zinc-500 font-terminal uppercase tracking-wider">· {profile.referenteCargo}</span>
+                  )}
+                </div>
+              )}
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xxs font-terminal">
+                {profile.especialidad && (
+                  <span className="text-zinc-400">
+                    <span className="text-zinc-500 uppercase tracking-wider">Especialidad: </span>
+                    <span className="text-zinc-200">{profile.especialidad}</span>
+                  </span>
+                )}
+                {profile.regionOperativa && (
+                  <span className="text-zinc-400">
+                    <span className="text-zinc-500 uppercase tracking-wider">Región: </span>
+                    <span className="text-zinc-200">{profile.regionOperativa}</span>
+                  </span>
+                )}
+                {profile.anosOficio && (
+                  <span className="text-zinc-400">
+                    <span className="text-zinc-500 uppercase tracking-wider">Años en oficio: </span>
+                    <span className="text-zinc-200 tabular-nums">{profile.anosOficio}</span>
+                  </span>
+                )}
+              </div>
+              {profile.bioReferente && (
+                <p className="text-data text-zinc-300 leading-relaxed pt-1">{profile.bioReferente}</p>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="px-panel py-3 flex items-center justify-between gap-3 flex-wrap">
+            <p className="text-xxs text-zinc-500 font-terminal leading-relaxed flex-1 min-w-0">
+              Aún no tenemos foto, especialidad o bio del referente que opera {profile.displayName}.
+              {!profile.claimedAt && ' Si sos parte del equipo, podés completarlo:'}
+            </p>
+            {!profile.claimedAt && (
+              <Link
+                href={`/consignatarias/${profile.canonicalSlug}/verificar`}
+                rel="nofollow"
+                className="text-xxs font-terminal uppercase tracking-wider text-accent hover:text-accent-bright border border-accent/30 rounded-terminal px-3 py-1.5 transition-colors hover:bg-accent/10 shrink-0"
+              >
+                Reclamar perfil →
+              </Link>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* ============================================================ */}
+      {/*  HISTORIAL VERIFICABLE — Sprint 2 operational performance.     */}
+      {/*  Computed from auctions data (which is 100%-covered in our      */}
+      {/*  scrape). Kg-promedio / cabezas-verificadas will be added when  */}
+      {/*  the mag_consignataria_sales_lots bridge is populated.          */}
+      {/* ============================================================ */}
+      <div className="terminal-panel mt-px">
+        <div className="terminal-panel-header">
+          <span className="text-zinc-400 text-xxs tracking-widest">HISTORIAL VERIFICABLE</span>
+        </div>
+        <div className="px-panel py-3 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-xxs text-zinc-500 uppercase tracking-wider">Remates 90 d</span>
+            <span className="text-data tabular-nums text-zinc-100 font-terminal">{historial.last90Count}</span>
+            <span className="text-xxs text-zinc-500 font-terminal">~{historial.monthlyAvg.toFixed(1)}/mes</span>
+          </div>
+          <div className="flex flex-col gap-0.5">
+            <span className="text-xxs text-zinc-500 uppercase tracking-wider">Próximos</span>
+            <span className={`text-data tabular-nums font-terminal ${historial.upcomingCount > 0 ? 'text-positive' : 'text-zinc-500'}`}>{historial.upcomingCount}</span>
+            <span className="text-xxs text-zinc-500 font-terminal">confirmados</span>
+          </div>
+          <div className="flex flex-col gap-0.5">
+            <span className="text-xxs text-zinc-500 uppercase tracking-wider">Tipo dominante</span>
+            <span className="text-data text-zinc-100 font-terminal">
+              {historial.tipoDominante ? (TYPE_LABELS_SHORT[historial.tipoDominante] || historial.tipoDominante) : '—'}
+            </span>
+            <span className="text-xxs text-zinc-500 font-terminal">últimos 90 d</span>
+          </div>
+          <div className="flex flex-col gap-0.5">
+            <span className="text-xxs text-zinc-500 uppercase tracking-wider">Plazas</span>
+            <span className="text-data tabular-nums text-zinc-100 font-terminal">{historial.plazasTop.length}</span>
+            <span className="text-xxs text-zinc-500 font-terminal truncate">
+              {historial.plazasTop.slice(0, 2).map(p => p.city).join(', ') || '—'}
+            </span>
+          </div>
+        </div>
+        {historial.plazasTop.length > 0 && (
+          <div className="px-panel pb-3 pt-1 border-t border-terminal-border">
+            <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-1.5">Plazas habituales</div>
+            <div className="flex flex-wrap gap-1.5">
+              {historial.plazasTop.map(p => (
+                <span key={p.city} className="text-xxs font-terminal text-zinc-300 px-1.5 py-0.5 border border-terminal-border rounded-terminal">
+                  {p.city} <span className="text-zinc-500 tabular-nums">· {p.count}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ============================================================ */}
