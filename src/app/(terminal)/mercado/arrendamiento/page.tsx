@@ -119,6 +119,9 @@ function ArrendamientoSchema() {
     keywords: ['índice novillo', 'arrendamiento rural', 'INMAG', 'precio ganado', 'mercado ganadero'],
     creator: { '@type': 'Organization', name: 'Mercado Agroganadero de Buenos Aires' },
     temporalCoverage: `${series[0]?.date}/${series[series.length - 1]?.date}`,
+    license: 'https://creativecommons.org/licenses/by/4.0/',
+    isAccessibleForFree: true,
+    spatialCoverage: { '@type': 'Place', name: 'Argentina' },
   }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }

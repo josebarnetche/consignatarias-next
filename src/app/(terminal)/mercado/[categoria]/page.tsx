@@ -253,6 +253,9 @@ function CategoryPriceSchema({ config, price, change }: { config: CategoryConfig
       value: price,
       unitText: 'ARS/kg vivo',
     },
+    license: 'https://creativecommons.org/licenses/by/4.0/',
+    isAccessibleForFree: true,
+    spatialCoverage: { '@type': 'Place', name: 'Argentina' },
   }
 
   // Product + Offer schema for price rich snippets
