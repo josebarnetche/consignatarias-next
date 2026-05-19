@@ -2,9 +2,9 @@
 
 A cattle auction directory, market intelligence platform, and public API for Argentina's livestock industry. Think Bloomberg Terminal meets MercadoLibre — but for the $15B+ cattle market that still runs on WhatsApp groups and PDF calendars.
 
-**Three product lines** (PRO Usuario · PRO Consignataria · Enterprise API · Self-serve) • **30+ API endpoints with auth + quotas** • **Lote-level transactional data** (haciinfo000007) • **MAG deep integration (16 sub-categorías + 11 años de INMAG)** • **USD blue desde 2011** • **350+ remates** • **74 consignatarias canonical** • **44 MAG consignatarios** • **364 frigoríficos** • **12 provincias** • **25 YouTube channels mapped** • **1550+ sitemap URLs** • **Schema.org Breadcrumb · Event · LocalBusiness · ItemList · Speakable · Dataset · FAQPage · VideoObject** • **llms.txt for AI crawlers** • **Programmatic OG per auction** • **7 daily-rebuilt price landings + `/precios` hub** • **Reports system** • **🔴 En Vivo with channel-based fallback** • **Observability (`/admin/ops`)** • **P0/P1 security closed**
+**Three product lines** (PRO Usuario · PRO Consignataria · Enterprise API · Self-serve) • **30+ API endpoints with auth + quotas** • **Lote-level transactional data** (haciinfo000007, pipeline recovered v1.16.0) • **MAG deep integration (16 sub-categorías + 11 años de INMAG)** • **USD blue desde 2011** • **347 remates** • **80 consignatarias canonical** • **64 MAG consignatarios** • **1092 frigoríficos (860 SENASA-verified + 232 sin verificación)** • **SENASA habilitados cross-reference (monthly snapshot · free badge + PRO detail)** • **12 provincias** • **30 YouTube channels mapped (85% upcoming-stream coverage)** • **1062 sitemap URLs** • **Consignatario as protagonist** (persona panel + historial verificable per profile) • **Schema.org Breadcrumb · Event · LocalBusiness · ItemList · Speakable · Dataset · FAQPage · VideoObject** • **llms.txt for AI crawlers** • **Programmatic OG per auction** • **7 daily-rebuilt price landings + `/precios` hub** • **Reports system** • **🔴 En Vivo with channel-based fallback** • **Observability (`/admin/ops`)** • **4 reusable internal audits** (data integrity · API health · link graph · content quality) • **P0/P1 security closed**
 
-**Current:** v1.15.0 (2026-05-17) — see [CHANGELOG.md](./CHANGELOG.md) for the SEO sprint (title-template bug fix across 45 files, llms.txt, footer site map, deeper breadcrumbs, programmatic OG, `/precios` hub, `/remates/en-vivo` channel-match) and the v1.13.1 → v1.14.8 release train (slug-hang fix, public API auth gate, slug-variant 308 redirects, observability foundation, email outreach v2, 2 P0 + 5 P1 security findings closed, repo consistency audit).
+**Current:** v1.16.0 (2026-05-19) — see [CHANGELOG.md](./CHANGELOG.md) for the consignatario-as-protagonist arc (persona schema + Quién Opera panel + Historial Verificable, MAG lots pipeline recovery, SENASA habilitados verification with PRO-gated detail, frigorificos directory 364 → 1092, audit triplet, 6 link-graph bug fixes, archived-remate 301 redirects, MAG cron schedule fix) and the v1.13.1 → v1.15.0 release train (SEO sprint with title-template fix, slug-hang fix, public API auth gate, observability foundation, 2 P0 + 5 P1 security findings closed, repo consistency audit). **No Enterprise API contract changes in v1.16.0** — `/api/precios`, `/api/lots`, `/api/index/memola` keep their shapes; `/api/lots` starts returning real lot-level data once the recovered pipeline first fires Tuesday 19:42 ART.
 
 **Live:** [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
 
@@ -23,7 +23,7 @@ There is no single place to see all upcoming auctions, compare prices, or browse
 
 ## What We Built
 
-**consignatarias.com.ar** aggregates data from 74 consignatarias (cattle auction houses) across 12 provinces into a unified, real-time interface. A rancher can see every upcoming auction in the country, filter by province or type, check market prices, and find frigorificos — all in one screen.
+**consignatarias.com.ar** aggregates data from 80 consignatarias (cattle auction houses) across 12 provinces into a unified, real-time interface. A rancher can see every upcoming auction in the country, filter by province or type, check market prices, and find frigorificos (1092 in directory, 860 SENASA-verified active) — all in one screen.
 
 ### Current UX (v1.9.13)
 
@@ -37,7 +37,7 @@ There is no single place to see all upcoming auctions, compare prices, or browse
 - Discover related consignatarias on each profile (same province + type)
 - Share any auction via WhatsApp with one click
 - Check `/mercado` for live INMAG index ($/kg vivo), category prices, corn FOB, USD rates
-- Browse `/frigorificos` for the 364 registered slaughterhouses with SENASA data
+- Browse `/frigorificos` for 1092 registered slaughterhouses (860 SENASA-verified active, 232 sin verificación, full Ciclo I/II/III cross-reference)
 
 **For consignatarias (auction houses) — trust-first onboarding:**
 - Find your profile at `/consignatarias/[your-name]` with your complete auction calendar
@@ -130,10 +130,11 @@ Every day at 14:00 ART (17:00 UTC), 7 days a week, the scraper:
 
 | Dataset | Records | Source |
 |---------|---------|--------|
-| Auctions | 385 | Scraper + curated |
-| Consignatarias | 77 profiles | Registry + research |
-| Frigorificos | 364 (126 enriched) | SENASA/MAGYP + web research |
-| Market prices | INMAG + 6 categories | Scraped daily |
+| Auctions | 347 | Scraper + curated, daily refresh |
+| Consignatarias | 80 canonical / 86 profiles | Registry + research + persona schema (Sprint 1 v1.16) |
+| Frigorificos | 1092 (860 SENASA-verified · 232 sin verificación · 126 enriched) | SENASA monthly snapshot + MAGYP + web research |
+| Market prices | INMAG + 6 categories + 16 sub-categorías | Scraped daily (15:30 ART) |
+| MAG consignatarios | 64 active in master | Pipeline recovered v1.16 |
 
 ---
 
@@ -161,7 +162,7 @@ Chronological feed of all upcoming auctions with filters:
 
 ### Frigorifico Directory (`/frigorificos`)
 
-364 SENASA-registered slaughterhouses with:
+1092 establishments (860 SENASA-verified active · 232 sin verificación) with:
 - Sortable table (matricula, name, province, stage)
 - Filters: search, province, stage (E1 faena+desposte, E2 desposte, E3 deposito)
 - Stage and province distribution charts
@@ -418,9 +419,9 @@ All tools include newsletter signup CTA.
 | `/remates` | Static | Auction feed with filters (province, type, period) |
 | `/remates/[provincia]` | SSG (10) | Province landing pages with SEO copy |
 | `/consignatarias` | Static | Directory of 77 consignatarias |
-| `/consignatarias/[slug]` | SSG (77) | Profile pages with calendar, heatmap, stats |
-| `/consignatarias/[slug]/verificar` | SSG (77) | Claim form (noindex) |
-| `/frigorificos` | Static | Directory of 364 frigorificos with search/filters |
+| `/consignatarias/[slug]` | SSG (80) | Profile pages — Quién Opera + Historial Verificable + calendar + heatmap + videos |
+| `/consignatarias/[slug]/verificar` | SSG (80) | Claim form (noindex) |
+| `/frigorificos` | Static | Directory of 1092 frigorificos (SENASA cross-referenced) with search/filters |
 | `/frigorificos/verificar` | Dynamic | Frigorifico registration form (noindex) |
 | `/mercado` | Static | Market prices — INMAG, categories, USD, corn |
 | `/quienes-somos` | Static | Institutional page (E-E-A-T) |
@@ -494,10 +495,12 @@ src/
 │   └── AnalyticsProvider.tsx              # GA4
 └── lib/
     ├── data/
-    │   ├── remates.json                   # 385 auctions
-    │   ├── consignataria-slugs.ts         # Canonical slug map (109 → 77)
-    │   ├── frigorificos.json              # 364 frigorificos (SENASA base)
-    │   ├── frigorificos-enriched.json     # 364 frigorificos (enriched)
+    │   ├── remates.json                   # 347 auctions
+    │   ├── consignataria-slugs.ts         # Canonical slug map (149 raw → 80 canonical)
+    │   ├── frigorificos.json              # 1092 frigorificos (SENASA + curated; senasaActive stamped)
+    │   ├── frigorificos-enriched.json     # 364 frigorificos (legacy enriched profile data)
+    │   ├── senasa-habilitados.json        # Current SENASA Ciclo I/II/III snapshot (~860 CUITs, monthly)
+    │   ├── consignataria-persona-seed.json # Persona-detrás seed (Sprint 1B)
     │   ├── consignatarias.json            # 56 consignatarias
     │   ├── market-prices.json             # INMAG, categories, USD, corn
     │   └── featured-links.json            # Curated resource links

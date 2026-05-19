@@ -6,6 +6,187 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.16.0] — 2026-05-19
+
+### Consignatario as protagonist + SENASA verification + audit triplet
+
+This release is one large arc with three threads. The strategic thread reorients
+the platform around the consignatario as the unit of value — not price tables,
+not generic SEO pages. The operational thread closes three significant data
+loops (GSC indexability triage, broken-link audit, SENASA cross-reference).
+The infrastructure thread adds three reusable internal audits, fixes scheduling
+bugs in two MAG crons, and recovers a daily pipeline that had silently no-oped
+for weeks. **No Enterprise API contract changes** — `/api/precios`, `/api/lots`,
+and `/api/index/memola` continue to return the same shapes; `/api/lots` will
+start returning real data Tuesday once the recovered pipeline first fires.
+
+#### Consignatario as protagonist — Sprint 1 + 2
+
+- **Schema extended.** `public.consignatarias` gains 7 optional persona fields:
+  `region_operativa`, `especialidad`, `anos_oficio`, `bio_referente`,
+  `referente_nombre`, `referente_cargo`, `foto_referente_url`. Migration
+  `20260518_consignataria_persona_fields.sql`. Partial indexes on
+  especialidad + region_operativa for the future "consignatarios por región"
+  home grid (Sprint 3).
+- **DAL pipe-through.** `EnrichedProfile` extended; `getConsignatariaProfile`
+  returns the new fields. Existing 86 profile rows stay valid until manually
+  populated.
+- **Seed scaffolding.** `consignataria-persona-seed.json` + idempotent
+  `scripts/seed-consignataria-persona.mjs`. Validates especialidad against a
+  fixed vocabulary (`cria | invernada | general | reproductores | lechera |
+  mixto`). Three placeholder entries (Avalos / Rosgan / AFA) seeded to prove
+  the pipe end-to-end; the remaining ~77 consignatarias need editorial
+  research per row before they ship.
+- **Profile page rewired.** Two new panels render *before* every other section
+  in the existing 1100-line client:
+  - `QUIÉN OPERA` — rich card when persona fields are populated (photo,
+    referente nombre/cargo, especialidad/región/años, bio). Otherwise a
+    discreet "Aún no tenemos foto, especialidad o bio del referente"
+    prompt with a `Reclamar perfil →` CTA — converts empty-state into a
+    claim signal instead of dead space.
+  - `HISTORIAL VERIFICABLE` — 4-column grid computed client-side from the
+    `auctions` prop: remates 90d (count + ~N/mes), próximos confirmados,
+    tipo dominante, plazas. Plus a chip row with the top-5 cities and
+    per-city counts. Works for every consignataria today; gains a
+    kg-promedio column when the MAG lots bridge is populated.
+- **Lots pipeline recovery (Sprint 1A).** `mag_consignataria_sales_lots`
+  was empty (0 rows) despite the cron showing "success". Root cause: the
+  upstream `mag-lots-discover` workflow was `workflow_dispatch` only and
+  had never been run, so the master table `mag_consignatarias` was empty
+  → every `enqueue` returned 0 jobs → every `process` exited on iteration
+  1 with "Queue empty. Done." silently. Fix: triggered discover manually
+  (max=200) → 64 active consignatarias upserted. Then wired discover as
+  the first step of `mag-lots-pipeline.yml` so master refreshes
+  idempotently every Mar/Mié/Vie 19:42 ART. End-to-end verified —
+  queue went from 0 → 128 pending in a single run.
+
+#### SENASA habilitados verification
+
+- **New scraper.** `scripts/scrape-senasa-habilitados.mjs` hits the public
+  JSF endpoint at `aps2.senasa.gov.ar/registros/.../tc_frigorificospublico.jsp`,
+  captures ViewState + JSESSIONID, POSTs `Exportar TODO` for each Ciclo
+  (I matarife/frigorífico, II elaborador, III dador de frío), parses the
+  XLS, normalizes CUIT to 11 digits, writes `senasa-habilitados.json`
+  (~600KB, ~860 distinct CUITs).
+- **Free badge on every frigorífico profile.** `HABILITACION SENASA`
+  panel renders `VIGENTE` (positive) or `NO ENCONTRADA` (dim) with the
+  snapshot date. Non-found rows carry a careful disclaimer.
+- **PRO Usuario detail.** When `tier === 'pro'`, the panel expands to
+  show propietario, partido, localidad, Nº oficial, ciclos habilitados,
+  and the full Actividades autorizadas list (extracted from the registry's
+  concatenated column). Free users see `<PaywallCard>`.
+- **Directory merge.** `scripts/merge-senasa-into-frigorificos.mjs`
+  stamps every existing row with `senasaActive: boolean` +
+  `senasaLastSeen: YYYY-MM-DD`, and appends 728 SENASA-only CUITs that
+  weren't in our static list. Frigorificos directory went from 364 → 1092
+  rows total: **860 SENASA-verified active** + **232 unverified**
+  (CUITs that appear in our list but not in current registry — probably
+  inactive, in a different category, or under a different CUIT).
+- **Listing UX.** `/frigorificos` banner now reads "860 habilitados
+  activos · 232 sin verificación" with snapshot date. Each row renders
+  a dim "sin SENASA" chip when `senasaActive === false`, tooltip
+  explains the disclaimer. New monthly cron
+  (`scrape-senasa-habilitados.yml`) refreshes the snapshot on the 1st
+  of each month at 04:23 ART; commit message includes the resulting
+  counts so the log reads "data: SENASA habilitados refresh — 860
+  activos · 232 sin verificación · 1092 total — 2026-06-01".
+- **Plans page aligned.** New PRO Usuario bullet: "Verificación SENASA
+  del frigorífico (propietario, actividades, ciclos)". Messaging
+  consistent across directory banner / profile / planes.
+
+#### Audit triplet (3 reusable internal scripts)
+
+Three standalone audits, each exits non-zero on P0 so they're CI-friendly:
+
+- **`scripts/audit-data-integrity.mjs`** — scraper drift / data sanity (no
+  DB). Catches the kind of bug we found manually this session: canonical
+  duplicates (the 9 O'Farrell rows), unresolvable slugs (would 404 on
+  profile redirect), duplicate frigorifico CUITs, youtube-channels.json
+  keys orphaned from canonical map, market-prices staleness, zombie
+  consignatarias (no remates in 60 days). Pure local file reads.
+- **`scripts/audit-api-health.mjs`** — Supabase rollup of `ops_events`
+  + `api_keys`. Per-route P50/P95 latency last 7d vs prior 7d (flags ≥2×
+  regressions), error rates (≥5% triggers alert), zombie routes, top
+  consumers vs plan quota (>80% with >7d left → quota-burn-risk).
+- **`scripts/audit-link-graph.mjs`** — crawls the dev/prod sitemap,
+  builds the directed graph from `<main>` content (skipping nav/footer
+  boilerplate), 25 iterations of PageRank, flags orphans / weak nodes /
+  broken targets / anchor-text monocultures / outbound spam. Caught 6
+  real bugs on first run.
+- **`scripts/audit-content-quality.mjs`** — "superpoderoso" content
+  audit: full sitemap crawl, per-route boilerplate detection via 3-gram
+  shingles, near-duplicate clustering via 5-shingle Jaccard ≥ 0.85.
+  Used to triage the 244-page "Discovered/Crawled, not indexed" bucket
+  in GSC.
+
+#### 6 link-graph bug fixes (from `audit-link-graph` findings)
+
+- Variant-slug links wasting 308 redirects (53× `bressan-y-cia-srl`,
+  21× `ivan-l-ofarrell-srl`, plus others). New helper
+  `consignatariaProfilePath()` resolves any slug to canonical and
+  handles null gracefully. Applied across 6 calendar pages + remate
+  detail + province/type aggregator. Added 4 missing aliases to PROFILES.
+- Raw external URLs without protocol (80 inbound across 12 hosts) —
+  `href={remate.sourceUrl}` rendered `"www.x.com"` as a relative path.
+  Fix: wrap every direct `.sourceUrl` / `.catalogUrl` / `.youtubeUrl`
+  href in `normalizeUrl()` (18 occurrences fixed).
+- `/consignatarias/null` × 11 — `getCanonicalSlug(x)` returned null when
+  the slug wasn't in the map; the template rendered the literal string.
+  Fix: helper guards null + fallback to `/consignatarias`.
+- `/precios` commercial orphan (P0 from audit) — zero inbound from any
+  sitemap page. Fix: footer link + content-area teaser in `/mercado`.
+- `/frigorificos/verificar` linked from 363 pages but noindex.
+  Fix: `rel="nofollow"` on the 3 CTA call-sites.
+- 9 duplicate auctions in remates.json (P0 from audit-data-integrity).
+  Two-part fix: added variant→ofarrell mapping to `SLUG_DEDUP_MAP` in
+  scrape-auctions.mjs + one-shot cleanup of the 9 existing dupes
+  (356 → 347 rows).
+
+Final delta vs pre-fix audit: total broken targets 363 → 128 (−65%).
+
+#### YouTube channel coverage (53% → 85% this week)
+
+- Rewrote `youtube-channels.json` to use canonical slugs (the previous
+  file mixed long descriptive keys that silently failed canonical
+  matching).
+- Added 5 channels: pedro-noel-irey, jauregui-lorda, hasenkamp,
+  mondino, monasterio-tattersall.
+- Added `ivan-l-ofarrell-srl` + `ivan-l-o-farrell-s-r-l` as aliases
+  of canonical `ofarrell` so the scraper's variant slugs route to the
+  official channel.
+- New `scripts/check-missing-channels.mjs` audit script.
+
+#### Archived-remate 301 redirects
+
+- `audit-404-candidates.mjs` script reproduces the audit from git
+  history: 703 distinct remate slugs ever shipped but no longer exist
+  (removed by the daily scraper when archived). With `dynamicParams =
+  false` on `/remates/[slug]`, all of those 404 today.
+- Fix: extend middleware to intercept `/remates/<slug-YYYY-MM-DD>` when
+  the slug matches the detail shape and isn't in the current set.
+  Parses the consignataria portion, resolves to canonical, 301s to
+  `/consignatarias/<canonical>`. Sibling routes (`/en-vivo`, `/hoy`,
+  `/ciudad/*`, `/mes/*`, `/tipo/*`) pass through unchanged.
+
+#### Cron schedule fixes
+
+- `mag-detailed-prices`: `'30 18 * * 1-5'` → `'37 22 * * 1-5'`
+  (15:30 → 19:37 ART). 19:37 captures the same day's data because
+  MAG publishes after the floor closes around 17-19h ART; 15:30 was
+  always too early. Minute :37 (non-round) avoids GH Actions
+  schedule-throttling we observed at :30.
+- `mag-lots-pipeline`: `'0 19 * * 2,3,5'` → `'42 22 * * 2,3,5'`
+  (16:00 → 19:42 ART, 5min offset from mag-detailed-prices).
+
+#### Misc
+
+- Sitemap doc fix: `CLAUDE.md` claimed 1554 URLs, live was 1062 — stale.
+  The shrink is by design (scraper archives old remates → sitemap
+  shrinks). Doc updated.
+- `xlsx@^0.18.5` added as devDependency (used by the SENASA scraper).
+
+---
+
 ## [1.15.0] — 2026-05-17
 
 ### SEO sprint — title fix + foundations + structured data + programmatic OG
