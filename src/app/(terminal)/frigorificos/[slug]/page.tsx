@@ -24,6 +24,9 @@ interface BasicFrigorifico {
   matricula: string
   province: string
   stage: number
+  senasaActive?: boolean
+  senasaLastSeen?: string | null
+  source?: string
 }
 
 const frigorificos = frigorificosData as BasicFrigorifico[]

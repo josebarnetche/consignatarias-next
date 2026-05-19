@@ -6,10 +6,11 @@ import frigorificosData from '@/lib/data/frigorificos.json'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { FaenaStats } from '@/components/FaenaStats'
-import senasaSnapshot from '@/lib/data/senasa-habilitados.json'
 import { getSenasaScrapedDate } from '@/lib/data/senasa-habilitados'
 
 const totalFrigorificos = frigorificosData.length
+const senasaActiveCount = frigorificosData.filter(f => (f as { senasaActive?: boolean }).senasaActive === true).length
+const senasaInactiveCount = frigorificosData.filter(f => (f as { senasaActive?: boolean }).senasaActive === false).length
 
 export const metadata: Metadata = {
   title: `Frigoríficos Habilitados Argentina 2026 | Directorio MAGYP Completo (${totalFrigorificos})`,
@@ -126,13 +127,12 @@ export default function FrigorificosPage() {
               <div className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-positive animate-pulse-live" />
                 <span className="text-xxs font-terminal uppercase tracking-wider text-positive">
-                  Verificación SENASA · vigente al {getSenasaScrapedDate()}
+                  Verificación SENASA · al {getSenasaScrapedDate()}
                 </span>
               </div>
               <p className="text-data font-terminal text-zinc-400 mt-1 leading-relaxed">
-                Cruzamos esta lista contra el registro oficial SENASA Ciclo I/II/III.{' '}
-                <span className="text-zinc-300 tabular-nums">{senasaSnapshot.distinctCuits.toLocaleString('es-AR')}</span>{' '}
-                habilitados activos.
+                <span className="text-positive tabular-nums">{senasaActiveCount.toLocaleString('es-AR')}</span> habilitados activos ·{' '}
+                <span className="text-zinc-500 tabular-nums">{senasaInactiveCount.toLocaleString('es-AR')}</span> sin verificación (CUIT no aparece hoy en el registro oficial Ciclo I/II/III).
               </p>
             </div>
             <Link

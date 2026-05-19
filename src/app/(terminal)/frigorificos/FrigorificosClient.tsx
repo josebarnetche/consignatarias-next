@@ -15,6 +15,12 @@ interface Frigorifico {
   matricula: string
   province: string
   stage: number
+  /** True if cuit appears in the current SENASA snapshot (Ciclo I/II/III). */
+  senasaActive?: boolean
+  /** YYYY-MM-DD of the SENASA snapshot stamp, or null if never verified. */
+  senasaLastSeen?: string | null
+  /** "senasa" for rows imported from the SENASA registry vs the original curated list. */
+  source?: string
 }
 
 interface ProvinceSummary {
@@ -522,6 +528,14 @@ export default function FrigorificosPage() {
                         <Link href={`/frigorificos/${f.cuit}`} className="text-zinc-200 hover:text-accent transition-colors">
                           {f.name}
                         </Link>
+                        {f.senasaActive === false && (
+                          <span
+                            className="ml-1.5 inline-flex items-center text-xxs font-terminal uppercase tracking-wider px-1 py-0.5 border border-zinc-700 text-zinc-500 rounded-terminal align-middle"
+                            title="Este CUIT no aparece en el último cruce con el registro SENASA Ciclo I/II/III. Posible inactividad — verificá antes de operar."
+                          >
+                            sin SENASA
+                          </span>
+                        )}
                       </td>
                       <td className="text-zinc-500 text-xxs tracking-wider">
                         {abbr(f.province)}
