@@ -173,7 +173,7 @@ API contract: [**/api-docs**](https://www.consignatarias.com.ar/api-docs).
 
 ## Quiénes operamos esto
 
-**Memola Medios SAS** — Mercedes, Buenos Aires. agro@memola.com.ar.
+**Memola Medios SAS** — Mercedes, Corrientes. agro@memola.com.ar.
 
 Operadores comerciales que construyen infraestructura propietaria — no agencia, no media buyer. consignatarias.com.ar es nuestro vehículo principal en agro.
 
