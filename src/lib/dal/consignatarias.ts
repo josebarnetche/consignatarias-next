@@ -27,6 +27,17 @@ export interface EnrichedProfile {
   featured: boolean
   claimedAt?: string | null
   mediosPago?: MedioPago[]      // PRO-gated content
+
+  // "Persona detrás" — Sprint 1B fields. Optional, fall back gracefully in UI.
+  // These exist to support the platform positioning that "el consignatario importa":
+  // every profile should read as a person, not a generic SEO page.
+  regionOperativa?: string | null
+  especialidad?: string | null      // cria | invernada | general | reproductores | lechera | mixto
+  anosOficio?: number | null
+  bioReferente?: string | null
+  referenteNombre?: string | null
+  referenteCargo?: string | null
+  fotoReferenteUrl?: string | null  // distinct from logoUrl — this is the human, not the brand
 }
 
 export interface RelatedConsignataria {
@@ -105,6 +116,13 @@ export async function getConsignatariaProfile(slug: string): Promise<EnrichedPro
       featured: data?.featured || false,
       claimedAt: data?.claimed_at || null,
       mediosPago,
+      regionOperativa: data?.region_operativa || null,
+      especialidad: data?.especialidad || null,
+      anosOficio: data?.anos_oficio || null,
+      bioReferente: data?.bio_referente || null,
+      referenteNombre: data?.referente_nombre || null,
+      referenteCargo: data?.referente_cargo || null,
+      fotoReferenteUrl: data?.foto_referente_url || null,
     }
   } catch {
     // Fallback to static-only profile if Supabase unavailable

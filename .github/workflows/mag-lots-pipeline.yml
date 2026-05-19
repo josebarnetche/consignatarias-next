@@ -23,6 +23,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
+      # Refresh master list of active consignatarias before enqueueing.
+      # Upserts only — never destructive. Without this step the pipeline
+      # silently no-ops if mag_consignatarias is empty (observed 2026-05-18:
+      # master never populated → queue always empty → 0 lots ever inserted).
+      - name: Discover active consignatarias (refresh master)
+        run: |
+          for start in 1 21 41 61 81 101 121 141 161 181; do
+            curl -sL --max-time 60 -X POST \
+              -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+              "https://www.consignatarias.com.ar/api/cron/mag-lots-worker?action=discover&start=$start&count=20" \
+              | python3 -c "import json,sys; d=json.load(sys.stdin); print(f\"window {d.get('range',{}).get('from','?')}..{d.get('range',{}).get('to','?')} found={d.get('active_found',0)} upserted={d.get('upserted',0)}\")" \
+              2>/dev/null || true
+            sleep 3
+          done
+
       - name: Enqueue jobs for date
         id: enqueue
         run: |

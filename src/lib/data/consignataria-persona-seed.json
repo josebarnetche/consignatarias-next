@@ -1,0 +1,31 @@
+{
+  "$schema_notes": "Seed file for the 'persona detrás del consignatario' Sprint 1B fields. Run scripts/seed-consignataria-persona.mjs to push to Supabase. Keys are canonical slugs. All fields are optional — omit what you don't have. Re-runs are idempotent (upsert by canonical_slug).",
+  "$field_vocabulary": {
+    "especialidad": ["cria", "invernada", "general", "reproductores", "lechera", "mixto"],
+    "region_operativa": ["NEA", "NOA", "Pampa Humeda", "Mesopotamia", "Patagonia", "Cuyo", "Centro"]
+  },
+  "$status": "Sprint 1B scaffold — content production pending. Each entry below is a placeholder until verified directly with the consignataria or with an authoritative public source.",
+
+  "javier-ulises-avalos": {
+    "referente_nombre": "Javier Ulises Avalos",
+    "referente_cargo": "Titular",
+    "especialidad": "general",
+    "region_operativa": "Mesopotamia"
+  },
+
+  "rosgan": {
+    "referente_nombre": "Rosgan (BCR)",
+    "referente_cargo": "Mercado",
+    "especialidad": "general",
+    "region_operativa": "Centro",
+    "bio_referente": "Mercado de hacienda por internet de la Bolsa de Comercio de Rosario. Centralización de demanda con remates abiertos al país."
+  },
+
+  "afa": {
+    "referente_nombre": "Agricultores Federados Argentinos",
+    "referente_cargo": "Cooperativa",
+    "especialidad": "general",
+    "region_operativa": "Centro",
+    "bio_referente": "Cooperativa con cobertura nacional, sección hacienda con remates regulares en Marcos Juárez y otras plazas."
+  }
+}
