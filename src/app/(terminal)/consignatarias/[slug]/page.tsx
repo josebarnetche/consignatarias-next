@@ -17,6 +17,7 @@ import {
   getAuctionsForProfile,
 } from '@/lib/data/consignataria-slugs'
 import { getConsignatariaProfile, getRelatedConsignatarias } from '@/lib/dal/consignatarias'
+import { getApprovedReviewsForSlug, getReviewStatsForSlug } from '@/lib/dal/reviews'
 import { getEntityTier } from '@/lib/features'
 import { createServiceClient } from '@/lib/supabase'
 import { BreadcrumbSchema, LocalBusinessSchema, EventSchema, VideoObjectSchema } from '@/components/seo/JsonLd'
@@ -233,11 +234,18 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
       featured: false,
     }
 
-  const [tier, auctionResults, videos, relatedConsignatarias] = await Promise.all([
+  const [tier, auctionResults, videos, relatedConsignatarias, reviewsAndStats] = await Promise.all([
     withTimeout(getEntityTier('consignataria', canonical), 3500, 'free' as const),
     fetchAuctionResults(canonical),
     fetchConsignatariaVideos(canonical),
     withTimeout(getRelatedConsignatarias(canonical, enrichedProfile.province, 4), 3500, []),
+    withTimeout(
+      Promise.all([getApprovedReviewsForSlug(canonical, 10), getReviewStatsForSlug(canonical)]).then(
+        ([reviews, stats]) => ({ reviews, stats }),
+      ),
+      3500,
+      { reviews: [], stats: { count: 0, avgRating: null } },
+    ),
   ])
 
   // Merge scraped auctions + owner-created auctions from Supabase
@@ -365,6 +373,8 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
         youtubeChannel={(youtubeChannelsData as Record<string, YouTubeChannelData>)[canonical]}
         videos={videos}
         relatedConsignatarias={relatedConsignatarias}
+        reviews={reviewsAndStats.reviews}
+        reviewStats={reviewsAndStats.stats}
         externalResources={(consignatariaResources as Record<string, { displayName: string; resources: Array<{ type: string; label: string; url: string; description?: string }> }>)[canonical]?.resources}
         magEntry={(marketData as { auctionDayEntries?: { consignatarias: Record<string, MagEntryData> } }).auctionDayEntries?.consignatarias?.[canonical]}
         mediosPagoSlot={

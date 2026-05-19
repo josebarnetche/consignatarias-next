@@ -71,6 +71,63 @@ const provinciasConFrigo = Object.keys(frigorificosSummary.byProvince).length;
 const topProvinces = frigorificosSummary.topProvinces.slice(0, 6);
 const totalConsignatarias = getAllProfiles().length;
 
+/* --- Regional grid: top consignatarios by upcoming-remate count, bucketed by region.
+   Region is inferred from the most-frequent province for that consignataria's
+   upcoming remates. Provinces map to broad regions per the cattle-industry
+   convention (NEA, NOA, Pampa Húmeda, Mesopotamia, Patagonia, Cuyo, Centro). */
+const PROVINCE_TO_REGION: Record<string, string> = {
+  'CHACO': 'NEA', 'FORMOSA': 'NEA', 'MISIONES': 'NEA', 'CORRIENTES': 'NEA',
+  'JUJUY': 'NOA', 'SALTA': 'NOA', 'TUCUMAN': 'NOA', 'CATAMARCA': 'NOA',
+  'SANTIAGO DEL ESTERO': 'NOA', 'LA RIOJA': 'NOA',
+  'BUENOS AIRES': 'Pampa Húmeda', 'LA PAMPA': 'Pampa Húmeda',
+  'ENTRE RIOS': 'Mesopotamia',
+  'CORDOBA': 'Centro', 'SANTA FE': 'Centro',
+  'SAN LUIS': 'Cuyo', 'MENDOZA': 'Cuyo', 'SAN JUAN': 'Cuyo',
+  'NEUQUEN': 'Patagonia', 'RIO NEGRO': 'Patagonia', 'CHUBUT': 'Patagonia',
+  'SANTA CRUZ': 'Patagonia', 'TIERRA DEL FUEGO': 'Patagonia',
+}
+const REGION_ORDER = ['Pampa Húmeda', 'Centro', 'Mesopotamia', 'NEA', 'NOA', 'Cuyo', 'Patagonia']
+
+type ConsigCard = { slug: string; name: string; province: string; region: string; upcoming: number; total: number }
+const consigsByCanonical = new Map<string, { name: string; upcoming: number; total: number; provinceCounts: Record<string, number> }>()
+for (const p of getAllProfiles()) {
+  consigsByCanonical.set(p.canonicalSlug, { name: p.displayName, upcoming: 0, total: 0, provinceCounts: {} })
+}
+for (const r of rematesData) {
+  // We need to resolve to canonical, but getAllProfiles + the existing canonical map cover that.
+  // The remate's consignatariaSlug may be a variant — resolve via PROFILES.allSlugs.
+  for (const p of getAllProfiles()) {
+    if (p.allSlugs.includes(r.consignatariaSlug)) {
+      const c = consigsByCanonical.get(p.canonicalSlug)
+      if (c) {
+        c.total++
+        if (r.date >= TODAY) c.upcoming++
+        const prov = r.province || ''
+        if (prov) c.provinceCounts[prov] = (c.provinceCounts[prov] || 0) + 1
+      }
+      break
+    }
+  }
+}
+const consigCards: ConsigCard[] = []
+for (const [slug, c] of consigsByCanonical) {
+  if (c.total === 0) continue
+  const topProvince = Object.entries(c.provinceCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? ''
+  const region = PROVINCE_TO_REGION[topProvince] ?? 'Otra'
+  consigCards.push({ slug, name: c.name, province: topProvince, region, upcoming: c.upcoming, total: c.total })
+}
+const consigsByRegion: Record<string, ConsigCard[]> = {}
+for (const card of consigCards) {
+  if (!consigsByRegion[card.region]) consigsByRegion[card.region] = []
+  consigsByRegion[card.region].push(card)
+}
+for (const region of Object.keys(consigsByRegion)) {
+  consigsByRegion[region].sort((a, b) => b.upcoming - a.upcoming || b.total - a.total)
+}
+const REGION_GRID = REGION_ORDER
+  .filter(r => (consigsByRegion[r]?.length ?? 0) > 0)
+  .map(r => ({ region: r, cards: consigsByRegion[r].slice(0, 3) }))
+
 // En Vivo: remates with YouTube streaming
 const rematesEnVivo = rematesProximos.filter(
   (r) => r.youtubeUrl && r.youtubeUrl.length > 0
@@ -225,21 +282,20 @@ export default function LandingPage() {
             </div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-normal text-zinc-100 tracking-tight leading-[1.02] mb-8">
-              El calendario{" "}
-              <span className="text-amber-400">unificado</span>{" "}
-              <span className="text-zinc-500">de remates ganaderos.</span>
+              Los <span className="text-amber-400">consignatarios</span>{" "}
+              <span className="text-zinc-500">que mueven el mercado argentino.</span>
             </h1>
 
             <p className="text-base md:text-lg font-normal text-zinc-400 mb-10 max-w-2xl leading-relaxed">
-              Todos los remates de {totalConsignatarias}+ consignatarias en una sola pantalla. Filtros por provincia, tipo y fecha. Actualizado cada día.
+              {totalConsignatarias} consignatarias canónicas en 12 provincias. Quién opera, qué especialidad, qué plazas cubre, qué dicen los productores. El precio es importante; el consignatario es la decisión.
             </p>
 
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 w-full sm:w-auto">
               <Link
-                href="/remates/semana"
+                href="/consignatarias"
                 className="flex items-center justify-center gap-2 text-sm font-medium text-zinc-900 bg-zinc-100 hover:bg-white transition-all rounded py-3 px-6 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
               >
-                Ver {rematesProximos.length} remates esta semana
+                Ver el directorio completo
                 <IconArrowRight />
               </Link>
               {enVivoCount > 0 && (
@@ -252,10 +308,10 @@ export default function LandingPage() {
                 </Link>
               )}
               <Link
-                href="/consignatarias"
+                href="/remates/semana"
                 className="flex items-center justify-center text-sm font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 transition-all rounded py-3 px-6"
               >
-                Buscar mi consignataria
+                Calendario · {rematesProximos.length} esta semana
               </Link>
             </div>
           </div>
@@ -292,6 +348,70 @@ export default function LandingPage() {
               <div className="text-xs text-zinc-500 mt-1">+{fmt(marketPrices.usdBlue.change, 1)}% vs. semana anterior</div>
             </Link>
           </div>
+
+          {/* Consignatarios destacados por región — Sprint 3 home pivot.
+             Centro de la home. La grilla de precios queda arriba como banda
+             secundaria; el protagonismo lo llevan los consignatarios. */}
+          {REGION_GRID.length > 0 && (
+            <div className="relative z-10 mt-20">
+              <div className="flex items-baseline justify-between mb-6 flex-wrap gap-2">
+                <div>
+                  <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-1">
+                    Consignatarios destacados por región
+                  </div>
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-normal text-zinc-100 tracking-tight leading-tight">
+                    Quién opera <span className="text-amber-400">en cada zona</span>.
+                  </h2>
+                </div>
+                <Link
+                  href="/consignatarias"
+                  className="text-sm font-medium text-zinc-400 hover:text-zinc-200 transition-colors"
+                >
+                  Directorio completo →
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {REGION_GRID.map(({ region, cards }) => (
+                  <div key={region} className="bg-zinc-900/40 border border-zinc-800 rounded-lg p-5">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="text-[0.65rem] text-amber-400/80 uppercase tracking-widest">
+                        {region}
+                      </div>
+                      <span className="text-xxs text-zinc-600 font-terminal tabular-nums">
+                        {cards.length} consignatario{cards.length === 1 ? '' : 's'}
+                      </span>
+                    </div>
+                    <ul className="space-y-2">
+                      {cards.map(c => (
+                        <li key={c.slug}>
+                          <Link
+                            href={`/consignatarias/${c.slug}`}
+                            className="block group hover:bg-zinc-800/40 -mx-2 px-2 py-1.5 rounded transition-colors"
+                          >
+                            <div className="flex items-baseline justify-between gap-2">
+                              <span className="text-sm font-medium text-zinc-200 group-hover:text-amber-300 transition-colors truncate">
+                                {c.name}
+                              </span>
+                              <span className="text-xxs text-zinc-500 font-terminal tabular-nums shrink-0">
+                                {c.upcoming > 0 ? (
+                                  <span className="text-positive">{c.upcoming} próximos</span>
+                                ) : (
+                                  <span>{c.total} remates</span>
+                                )}
+                              </span>
+                            </div>
+                            <div className="text-xxs text-zinc-500 mt-0.5">
+                              Base: {c.province || '—'}
+                            </div>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Conversion block — shown after value proofs */}
           <div className="relative z-10 mt-20 rounded-lg border border-amber-500/20 bg-gradient-to-br from-amber-950/30 via-zinc-900/60 to-zinc-900/60 p-8 md:p-10 backdrop-blur-sm">

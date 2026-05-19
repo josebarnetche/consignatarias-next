@@ -1,10 +1,12 @@
 'use client'
 
-import { useMemo, useEffect } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Auction } from '@/lib/db/schema'
 import type { EnrichedProfile } from '@/lib/dal/consignatarias'
+import type { PublicReview } from '@/lib/dal/reviews'
+import ReviewsPanel from './ReviewsPanel'
 import type { EntityTier } from '@/lib/features'
 import type { AuctionResult } from './page'
 import FeatureGate from '@/components/FeatureGate'
@@ -365,9 +367,11 @@ interface ConsignatariaProfileClientProps {
   externalResources?: ExternalResource[]
   magEntry?: MagEntryData
   mediosPagoSlot?: React.ReactNode
+  reviews?: PublicReview[]
+  reviewStats?: { count: number; avgRating: number | null }
 }
 
-export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [], relatedConsignatarias = [], externalResources = [], magEntry, mediosPagoSlot }: ConsignatariaProfileClientProps) {
+export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [], relatedConsignatarias = [], externalResources = [], magEntry, mediosPagoSlot, reviews = [], reviewStats = { count: 0, avgRating: null } }: ConsignatariaProfileClientProps) {
   const today = getEffectiveToday()
 
   useEffect(() => {
@@ -656,6 +660,18 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           </div>
         )}
       </div>
+
+      {/* ============================================================ */}
+      {/*  RESEÑAS DE PRODUCTORES — Sprint 3. "Quién avala" — boca a    */}
+      {/*  boca capturado. Stats + lista + form de envío anónimo         */}
+      {/*  (modera admin antes de aprobar).                              */}
+      {/* ============================================================ */}
+      <ReviewsPanel
+        consignatariaSlug={profile.canonicalSlug}
+        consignatariaName={profile.displayName}
+        reviews={reviews}
+        stats={reviewStats}
+      />
 
       {/* ============================================================ */}
       {/*  CONTACT INFO (only when data available)                       */}
