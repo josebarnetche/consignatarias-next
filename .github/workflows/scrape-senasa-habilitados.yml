@@ -1,0 +1,57 @@
+name: SENASA Habilitados (monthly)
+
+# Monthly snapshot of the official SENASA registry of habilitated establishments
+# (Ciclo I/II/III). Pulls the "Exportar TODO" XLS from aps2.senasa.gov.ar,
+# normalizes, merges into our frigorificos.json so:
+#   - existing rows get `senasaActive` stamped (true/false)
+#   - new SENASA-only CUITs are appended
+# Output is JSON committed back to main.
+#
+# Cadence: 1st of each month, 04:23 ART (07:23 UTC). Non-round minute to avoid
+# the GH Actions schedule-throttling we hit on the MAG crons (see
+# .github/workflows/mag-detailed-prices.yml).
+on:
+  schedule:
+    - cron: '23 7 1 * *'
+  workflow_dispatch: # manual trigger anytime
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Scrape SENASA habilitados (Ciclo I/II/III)
+        run: node scripts/scrape-senasa-habilitados.mjs
+
+      - name: Merge into frigorificos.json
+        run: node scripts/merge-senasa-into-frigorificos.mjs
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --quiet src/lib/data/senasa-habilitados.json src/lib/data/frigorificos.json && \
+            echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/lib/data/senasa-habilitados.json src/lib/data/frigorificos.json
+          ACTIVE=$(node -e "const f=require('./src/lib/data/frigorificos.json'); console.log(f.filter(x=>x.senasaActive===true).length)")
+          INACTIVE=$(node -e "const f=require('./src/lib/data/frigorificos.json'); console.log(f.filter(x=>x.senasaActive===false).length)")
+          TOTAL=$(node -e "console.log(require('./src/lib/data/frigorificos.json').length)")
+          git commit -m "data: SENASA habilitados refresh — ${ACTIVE} activos · ${INACTIVE} sin verificación · ${TOTAL} total — $(date -u +%Y-%m-%d)"
+          git push
