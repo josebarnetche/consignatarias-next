@@ -12,6 +12,10 @@
     "especialidad": "general",
     "region_operativa": "Centro",
     "bio_referente": "Operan desde 2003 con oficinas en Río Primero (Córdoba) y San Luis. Mario Bressan al frente. Remates físicos y televisados con presencia en Córdoba, San Luis y Entre Ríos. Uno de los mayores volúmenes anuales del rubro.",
+    "foto_referente_url": "https://bressanycompania.com.ar/wp-content/uploads/2021/04/mario-Bressan-portada.jpg",
+    "_foto_confidence": "high",
+    "_foto_source": "https://bressanycompania.com.ar/",
+    "_foto_notes": "Video still — on-screen caption 'Mario Bressan - Titular de Bressan y Compania Consignatarios'. Filename matches.",
     "_source_urls": [
       "https://bressanycompania.com.ar/",
       "https://bressanycompania.com.ar/bressan-y-compania-srl-trayectoria-y-compromiso/",
@@ -25,6 +29,10 @@
     "especialidad": "general",
     "region_operativa": "NEA",
     "bio_referente": "Operan desde 1977 desde Resistencia (Chaco), con oficina también en Buenos Aires. Pancho O'Farrell al frente. Fuerte presencia en el norte argentino, plaza en Salta y Formosa además de Chaco y Corrientes.",
+    "foto_referente_url": "https://cdn.ivanofarrell.com.ar/assets/img/team/team-01.jpg",
+    "_foto_confidence": "high",
+    "_foto_source": "https://www.ivanofarrell.com.ar/nosotros",
+    "_foto_notes": "Sección 'Nosotros' del sitio oficial. Caption 'Ivan L. O'Farrell, Socio - Gerente'.",
     "_source_urls": [
       "https://www.ivanofarrell.com.ar/",
       "https://www.instagram.com/ivanofarrellsrl/",
@@ -38,6 +46,10 @@
     "especialidad": "mixto",
     "region_operativa": "Pampa Humeda",
     "bio_referente": "Cooperativa agropecuaria con sede en Pilar (Santa Fe), más de 70 años de trayectoria, 2.500 asociados y 250 empleados. Emmanuel Pietrobón fue elegido presidente en octubre 2024 tras casi 30 años dentro de la cooperativa. Fuerte en zona lechera santafesina.",
+    "foto_referente_url": "https://desafiosproductivos.com.ar/wp-content/uploads/2024/11/lehmann.jpg",
+    "_foto_confidence": "high",
+    "_foto_source": "https://desafiosproductivos.com.ar/2024/11/05/la-cooperativa-guillermo-lehmann-eligio-a-emmanuel-pietrobon-como-nuevo-presidente/",
+    "_foto_notes": "Foto del podio de la 74° Asamblea. Artículo dedicado exclusivamente a la elección de Pietrobón.",
     "_source_urls": [
       "https://cooperativalehmann.coop/novedades/la-cooperativa-guillermo-lehmann-celebro-su-74-asamblea-general-ordinaria-y-eligio-a-emmanuel-pietrobon-como-nuevo-presidente",
       "https://desafiosproductivos.com.ar/2024/11/05/la-cooperativa-guillermo-lehmann-eligio-a-emmanuel-pietrobon-como-nuevo-presidente/"
@@ -62,6 +74,10 @@
     "region_operativa": "Pampa Humeda",
     "anos_oficio": 48,
     "bio_referente": "Fundada en 1978 por Ignacio y Guillermo (\"Billy\") Sáenz Valiente junto a Luis Federico Bullrich. Desde el origen son los consignatarios principales de la Exposición de Palermo. Hoy Gervasio y Fernando Sáenz Valiente al frente, con la sexta generación de la familia ya rematando.",
+    "foto_referente_url": "https://www.sra.ar/content/bucket/4/3154w850h567c.jpg.webp",
+    "_foto_confidence": "low",
+    "_foto_source": "https://www.sra.ar/42-sexta-generacion-de-consignatarios-remato-por-primera-vez-en-palermo",
+    "_foto_notes": "Hero image del artículo SRA sobre Gervasio rematando por primera vez en Palermo. Sin caption explícito pero el artículo es sobre él.",
     "_source_urls": [
       "https://www.instagram.com/saenzvalientebullrich/",
       "https://bichosdecampo.com/el-amor-por-lo-que-uno-hace-es-la-mejor-herencia-fernando-saenz-valiente-y-sus-hijos-unidos-por-la-pasion-ganadera-y-a-los-remates-de-hacienda/",
@@ -103,6 +119,10 @@
     "region_operativa": "Pampa Humeda",
     "anos_oficio": 86,
     "bio_referente": "Casa de tradición fundada en 1939 por Julio Colombo y Carlos Magliano (raíz en Colombo Hnos. 1934 de Eduardo Castex, La Pampa). Festejaron 85 años en 2024, tercera generación al frente. Sede en Av. de Mayo 580, 65 empleados entre CABA y el Mercado de Cañuelas. Operan hacienda, ovinos, porcinos, equinos, granos y campos.",
+    "foto_referente_url": "https://airedecampoargentina.com.ar/uploads/noticias/5/2024/08/20240819185738_whatsapp-image-2024-08-17-at-09-19-33.jpg",
+    "_foto_confidence": "high",
+    "_foto_source": "https://airedecampoargentina.com.ar/nota/1081/juan-pedro-colombo-consignatario-de-la-empresa-colombo-y-magliano/",
+    "_foto_notes": "Artículo Aire de Campo titulado 'Juan Pedro Colombo - Consignatario de la Empresa Colombo y Magliano'. Foto de 2 personas; Colombo a la izquierda con chaleco branded.",
     "_source_urls": [
       "https://campototalweb.com.ar/34642/",
       "https://ar.linkedin.com/company/colomboymagliano",
@@ -141,6 +161,10 @@
     "region_operativa": "Pampa Humeda",
     "anos_oficio": 94,
     "bio_referente": "Cooperativa agropecuaria de primer grado fundada en 1932, la más grande del país y novena de Sudamérica. Unos 15.000 chacareros asociados. Darío Marinozzi, productor de Villa Constitución (Santa Fe), preside la entidad con mandato hasta junio 2027. Invierte 35-40 millones de USD por año.",
+    "foto_referente_url": "https://bichosdecampo.com/wp-content/uploads/2026/03/Capturaafa.jpg",
+    "_foto_confidence": "high",
+    "_foto_source": "https://bichosdecampo.com/cuando-sacas-los-numeros-finitos-la-rentabilidad-es-muy-ajustada-advierte-el-presidente-de-la-cooperativa-afa-dario-marinozzi-preocupado-ademas-porque-la-guerra-impacte-en-el-precio-de/",
+    "_foto_notes": "og:image de artículo Bichos de Campo sobre Marinozzi. Confirmado contra otro artículo independiente de BdC sobre el mismo (misma persona).",
     "_source_urls": [
       "https://afa.afascl.coop/",
       "https://es.wikipedia.org/wiki/Agricultores_Federados_Argentinos",
@@ -155,6 +179,10 @@
     "region_operativa": "Pampa Humeda",
     "anos_oficio": 39,
     "bio_referente": "Consignataria con base en Rauch (Buenos Aires), más de 39 años en el rubro. Desde 2020 al frente la familia San Cristóbal, con Pablo San Cristóbal como presidente y martillero. Remates feria con gordo, cría e invernada.",
+    "foto_referente_url": "https://lanuevaverdadderauch.ar/wp-content/uploads/2024/08/ferias1.jpg",
+    "_foto_confidence": "high",
+    "_foto_source": "https://lanuevaverdadderauch.ar/resultados-del-remate-de-hacienda-de-la-consignataria-ferias-rauch-s-a/",
+    "_foto_notes": "Artículo dice 'Bajo el martillo de Pablo San Cristóbal'. Imagen muestra al martillero al micrófono en el palco de la Sociedad Rural de Rauch.",
     "_source_urls": [
       "https://feriasrauch.com.ar/",
       "https://campototalweb.com.ar/37189/",
@@ -233,6 +261,10 @@
     "especialidad": "general",
     "region_operativa": "Pampa Humeda",
     "bio_referente": "Casa consignataria con sede central en General Acha (La Pampa) y sucursales en Bernasconi y Victorica. Plaza fuerte en La Pampa, con presencia también en Realicó, Santa Rosa y Algarrobo del Águila. Remates físicos y online vía streaming.",
+    "foto_referente_url": "https://www.entresurcosycorralesya.com/contenido/noticias/original/1737152473.jpeg",
+    "_foto_confidence": "low",
+    "_foto_source": "https://www.entresurcosycorralesya.com/2025/01/17/nestor-fuentes---consignataria-nestor-hugo-fuentes-s.a.-",
+    "_foto_notes": "Entrevista de perfil sobre Néstor Fuentes. Sin caption explícito pero artículo solo trata sobre él.",
     "_source_urls": [
       "https://www.defrentealcampo.com.ar/agro-subastas/nestor-hugo-fuentes-s-a/",
       "https://zonacampo.com.ar/27-3-resultados-del-remate-de-nestor-hugo-fuentes-s-a-en-general-acha-la-pampa/"
@@ -246,6 +278,10 @@
     "region_operativa": "Pampa Humeda",
     "anos_oficio": 90,
     "bio_referente": "Fundada el 14 de noviembre de 1936 como Julianelli, Arex, Oroquieta y Cía., renombrada en 1956 a su nombre actual. Festejaron 90 años en 2026. Creadores del remate televisado en Argentina. Oscar Subarroca, también presidente del Mercado de Liniers, conduce la firma desde los años 80. Oficinas en Puerto Madero, operan en Cañuelas.",
+    "foto_referente_url": "https://bichosdecampo.com/wp-content/uploads/2026/02/subarroca-4.png",
+    "_foto_confidence": "high",
+    "_foto_source": "https://bichosdecampo.com/campos-y-ganados-vendio-3-500-vacunos-en-un-remate-televisado-alli-oscar-subarroca-expreso-sus-dudas-sobre-la-retencion-de-vientres-y-pidio-que-mejore-el-consumo-de-carne/",
+    "_foto_notes": "og:image de BdC titulada 'subarroca-4.png'. Subarroca en podio branded 'CAMPOS Y GANADOS'.",
     "_source_urls": [
       "https://camposyganados.com/",
       "https://www.noticiasdecampo.com/2026/03/14/un-remate-especial-para-la-historia-de-campos-y-ganados-mas-de-15-mil-cabezas-en-su-90-aniversario/",
