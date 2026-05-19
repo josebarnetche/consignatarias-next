@@ -20,7 +20,7 @@ const PRICING_PLANS = [
     description: 'Acceso ilimitado para productores, asesores, contadores y brokers. Filtros, detalle completo, descargas premium.',
     price: 7900,
     priceCurrency: 'ARS',
-    features: ['Medios de pago de cada consignataria', 'Filtros avanzados', 'Detalle completo de perfiles', 'Descargas premium (El Corredor, Oráculo)', 'Archivo histórico INMAG'],
+    features: ['Medios de pago de cada consignataria', 'Verificación SENASA del frigorífico (propietario, actividades, ciclos)', 'Filtros avanzados', 'Detalle completo de perfiles', 'Descargas premium (El Corredor, Oráculo)', 'Archivo histórico INMAG'],
   },
   {
     name: 'PRO Consignataria',

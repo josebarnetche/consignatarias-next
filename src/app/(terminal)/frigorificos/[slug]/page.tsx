@@ -5,6 +5,13 @@ import frigorificosData from '@/lib/data/frigorificos.json'
 import { getFrigorificoProfile } from '@/lib/dal/frigorificos'
 import { BreadcrumbSchema } from '@/components/seo/JsonLd'
 import {
+  getSenasaRecord,
+  isHabilitadoVigente,
+  getSenasaScrapedDate,
+} from '@/lib/data/senasa-habilitados'
+import { getCurrentSession } from '@/lib/user-tier'
+import { PaywallCard } from '@/components/Paywall'
+import {
   isFrigorificoProvinceSlug,
   frigorificoProvinceSlugs,
   frigorificoProvinceMetadata,
@@ -187,6 +194,15 @@ export default async function FrigorificoDetailPage({
 
   const hasContact = phone || email || website
 
+  // SENASA habilitación check: cross-reference with current registry snapshot.
+  // Free users see the verdict (vigente/no encontrada). PRO users get the
+  // full record (propietario + actividades + partido/localidad).
+  const senasaRecord = getSenasaRecord(cuit)
+  const senasaVigente = senasaRecord !== null
+  const senasaScrapedDate = getSenasaScrapedDate()
+  const session = await getCurrentSession()
+  const isPro = session.tier === 'pro'
+
   return (
     <>
       <LocalBusinessSchema
@@ -281,6 +297,106 @@ export default async function FrigorificoDetailPage({
               <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Direccion</span>
               <span className="text-data font-terminal text-zinc-200 text-right max-w-[60%]">{direccion}</span>
             </div>
+          )}
+        </div>
+      </div>
+
+      {/* SENASA habilitación verification */}
+      <div className="terminal-panel">
+        <div className="terminal-panel-header flex items-center justify-between">
+          <span className="text-zinc-200 text-label tracking-widest">HABILITACION SENASA</span>
+          <span
+            className={`text-xxs font-terminal px-1.5 py-0.5 border rounded-terminal ${
+              senasaVigente
+                ? 'border-positive/30 text-positive'
+                : 'border-zinc-700 text-zinc-500'
+            }`}
+          >
+            {senasaVigente ? 'VIGENTE' : 'NO ENCONTRADA'}
+          </span>
+        </div>
+        <div className="px-panel py-3">
+          {senasaVigente ? (
+            <>
+              <p className="text-data font-terminal text-zinc-300 leading-relaxed">
+                {basicF.name} figura en el registro oficial SENASA de
+                establecimientos habilitados al{' '}
+                <span className="text-positive tabular-nums">{senasaScrapedDate}</span>
+                {senasaRecord!.ciclos.length > 1
+                  ? ` (${senasaRecord!.ciclos.length} ciclos)`
+                  : ''}.
+              </p>
+              {isPro ? (
+                <div className="mt-3 pt-3 border-t border-terminal-border divide-y divide-terminal-border">
+                  {senasaRecord!.propietario && (
+                    <div className="py-2 flex items-start justify-between gap-3">
+                      <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Propietario</span>
+                      <span className="text-data font-terminal text-zinc-200 text-right">{senasaRecord!.propietario}</span>
+                    </div>
+                  )}
+                  {senasaRecord!.partido && (
+                    <div className="py-2 flex items-start justify-between gap-3">
+                      <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Partido</span>
+                      <span className="text-data font-terminal text-zinc-200 text-right">{senasaRecord!.partido}</span>
+                    </div>
+                  )}
+                  {senasaRecord!.localidad && (
+                    <div className="py-2 flex items-start justify-between gap-3">
+                      <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Localidad</span>
+                      <span className="text-data font-terminal text-zinc-200 text-right">{senasaRecord!.localidad}</span>
+                    </div>
+                  )}
+                  {senasaRecord!.nroOficial && (
+                    <div className="py-2 flex items-start justify-between gap-3">
+                      <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Nº Oficial</span>
+                      <span className="text-data font-terminal text-zinc-200 tabular-nums">{senasaRecord!.nroOficial}</span>
+                    </div>
+                  )}
+                  {senasaRecord!.ciclos.length > 0 && (
+                    <div className="py-2">
+                      <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider block mb-1.5">Ciclos habilitados</span>
+                      <div className="flex flex-wrap gap-1">
+                        {senasaRecord!.ciclos.map(c => (
+                          <span key={c} className="text-xxs font-terminal px-1.5 py-0.5 border border-positive/30 text-positive rounded-terminal">{c}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {senasaRecord!.actividades.length > 0 && (
+                    <div className="py-2">
+                      <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider block mb-1.5">Actividades autorizadas ({senasaRecord!.actividades.length})</span>
+                      <ul className="space-y-1">
+                        {senasaRecord!.actividades.map(a => (
+                          <li key={a} className="text-data font-terminal text-zinc-300 leading-relaxed">· {a}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="mt-3">
+                  <PaywallCard
+                    loggedIn={session.user !== null}
+                    feature="El detalle SENASA (propietario, actividades autorizadas, ciclos habilitados)"
+                    redirectTo={`/frigorificos/${cuit}`}
+                  />
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <p className="text-data font-terminal text-zinc-400 leading-relaxed">
+                {basicF.name} <span className="text-zinc-200">no aparece</span> en
+                el registro oficial SENASA Ciclo I/II/III al{' '}
+                <span className="text-zinc-300 tabular-nums">{senasaScrapedDate}</span>.
+              </p>
+              <p className="text-xxs font-terminal text-zinc-500 leading-relaxed mt-2">
+                Esto puede significar: habilitación dada de baja, registro bajo
+                un CUIT distinto, o establecimiento incorporado a otra
+                categoría (avícola/pesquero). Verificá directamente con SENASA
+                antes de operar.
+              </p>
+            </>
           )}
         </div>
       </div>

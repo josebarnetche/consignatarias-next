@@ -1,10 +1,13 @@
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 import FrigorificosClient from './FrigorificosClient'
+import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { FaenaStats } from '@/components/FaenaStats'
+import senasaSnapshot from '@/lib/data/senasa-habilitados.json'
+import { getSenasaScrapedDate } from '@/lib/data/senasa-habilitados'
 
 const totalFrigorificos = frigorificosData.length
 
@@ -114,7 +117,34 @@ export default function FrigorificosPage() {
           </Suspense>
         </div>
       </section>
-      
+
+      {/* SENASA verification transparency banner */}
+      <section className="px-4 mb-3 max-w-6xl mx-auto">
+        <div className="terminal-panel">
+          <div className="px-panel py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-positive animate-pulse-live" />
+                <span className="text-xxs font-terminal uppercase tracking-wider text-positive">
+                  Verificación SENASA · vigente al {getSenasaScrapedDate()}
+                </span>
+              </div>
+              <p className="text-data font-terminal text-zinc-400 mt-1 leading-relaxed">
+                Cruzamos esta lista contra el registro oficial SENASA Ciclo I/II/III.{' '}
+                <span className="text-zinc-300 tabular-nums">{senasaSnapshot.distinctCuits.toLocaleString('es-AR')}</span>{' '}
+                habilitados activos.
+              </p>
+            </div>
+            <Link
+              href="/planes"
+              className="text-xxs font-terminal uppercase tracking-wider text-accent hover:text-accent-bright border border-accent/30 rounded-terminal px-3 py-1.5 shrink-0 transition-colors hover:bg-accent/10"
+            >
+              Detalle SENASA con PRO →
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <FrigorificosClient />
     </>
   )
