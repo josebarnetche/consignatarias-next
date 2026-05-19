@@ -52,6 +52,9 @@ for (const [slug, payload] of Object.entries(seed)) {
   if (slug.startsWith('$')) continue // skip metadata keys
   const update = {}
   for (const [k, v] of Object.entries(payload)) {
+    // Underscore-prefixed keys are audit metadata (_source_urls, _researched_at,
+    // _notes, etc.) — kept in the JSON for traceability, silently ignored here.
+    if (k.startsWith('_')) continue
     if (!ALLOWED_KEYS.has(k)) {
       console.error(`[${slug}] unknown field "${k}" — skipped`)
       warnings++
