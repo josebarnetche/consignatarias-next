@@ -3,9 +3,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useGanado, type GanadoItem } from '@/hooks/useGanado'
+import { PriceSparkline } from '@/components/PriceSparkline'
+
+interface InmagSeed {
+  current: number
+  prev: number
+  change: number
+  series?: { date: string; value: number }[]
+}
 
 interface MarketPrices {
-  inmag: { current: number; prev: number; change: number }
+  inmag: InmagSeed
   categories: Record<string, { current: number; prev: number; change: number }>
   usdBlue: { current: number; prev: number; change: number }
 }
@@ -42,8 +50,39 @@ function valueOf(items: GanadoItem[], prices: MarketPrices) {
   return { cabezas, kilos, ars, usd: ars / prices.usdBlue.current }
 }
 
+/** Animate a number from 0 → target with easeOutCubic, once per target change. */
+function useCountUp(target: number, durationMs = 900): number {
+  const [val, setVal] = useState(0)
+  const fromRef = useRef(0)
+  const rafRef = useRef<number | undefined>(undefined)
+  useEffect(() => {
+    const from = fromRef.current
+    const to = target
+    if (from === to) return
+    const start = performance.now()
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / durationMs)
+      const eased = 1 - Math.pow(1 - t, 3)
+      setVal(from + (to - from) * eased)
+      if (t < 1) {
+        rafRef.current = requestAnimationFrame(tick)
+      } else {
+        fromRef.current = to
+        setVal(to)
+      }
+    }
+    rafRef.current = requestAnimationFrame(tick)
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
+  }, [target, durationMs])
+  return val
+}
+
 export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketPrices; lastUpdate: string }) {
-  const { items, lastSeenValue, lastSeenAt, isLoading, isLoggedIn, hasRow, saveGanado, markSeen } = useGanado()
+  const {
+    items, lastSeenValue, lastSeenAt, alertsOptIn, history,
+    isLoading, isLoggedIn, hasRow,
+    saveGanado, markSeen, snapshotValue, setAlerts,
+  } = useGanado()
 
   const [draft, setDraft] = useState<GanadoItem[]>([])
   const [dirty, setDirty] = useState(false)
@@ -57,6 +96,7 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
   }, [isLoading, items])
 
   const totals = useMemo(() => valueOf(draft, prices), [draft, prices])
+  const animatedArs = useCountUp(totals.ars)
 
   // Δ since last visit — computed against the SAVED value (not the draft), and
   // only meaningful when nothing is being edited.
@@ -64,14 +104,33 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
   const delta = lastSeenValue != null && !dirty ? savedTotals.ars - lastSeenValue : null
   const deltaPct = delta != null && lastSeenValue ? (delta / lastSeenValue) * 100 : null
 
+  // 30-day shape of what the herd would have been worth, tracking the INMAG.
+  // Honest illustration: today's herd composition valued at each day's index.
+  const herdSeries = useMemo(() => {
+    const series = prices.inmag.series ?? []
+    const cur = prices.inmag.current
+    const last = series.slice(-30)
+    if (!last.length || !cur || totals.ars <= 0) return []
+    return last.map(p => ({ date: p.date, value: totals.ars * (p.value / cur) }))
+  }, [prices.inmag.series, prices.inmag.current, totals.ars])
+
+  // Real evolution of THIS producer's herd value, from saved snapshots.
+  const realSeries = useMemo(
+    () => history.map(s => ({ date: s.snapshot_date, value: s.value_ars })),
+    [history],
+  )
+
   // Stamp the value the producer is seeing now, once per mount, so the next
-  // visit can show "Δ desde tu última visita".
+  // visit can show "Δ desde tu última visita" — and write today's snapshot so
+  // the evolution chart grows.
   useEffect(() => {
     if (!isLoading && isLoggedIn && hasRow && items.length > 0 && !stampedRef.current) {
       stampedRef.current = true
-      markSeen(valueOf(items, prices).ars)
+      const v = valueOf(items, prices)
+      markSeen(v.ars)
+      snapshotValue(v.ars, v.cabezas, v.kilos, prices.inmag.current)
     }
-  }, [isLoading, isLoggedIn, hasRow, items, prices, markSeen])
+  }, [isLoading, isLoggedIn, hasRow, items, prices, markSeen, snapshotValue])
 
   function addItem() {
     setDraft([...draft, { categoria: 'novillos', cabezas: 50, peso: 450 }])
@@ -100,7 +159,9 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
     if (!error) {
       setDirty(false); setSaved(true)
       stampedRef.current = true
-      markSeen(valueOf(draft, prices).ars) // reset the baseline to what was just saved
+      const v = valueOf(draft, prices)
+      markSeen(v.ars) // reset the baseline to what was just saved
+      snapshotValue(v.ars, v.cabezas, v.kilos, prices.inmag.current)
       setTimeout(() => setSaved(false), 4000)
     }
   }
@@ -129,7 +190,7 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
           <ul className="px-panel py-4 space-y-2 text-sm text-zinc-400">
             <li>· El valor total de tu hacienda en pesos y dólares, al precio del día.</li>
             <li>· Cuánto cambió <strong className="text-zinc-200">desde tu última visita</strong>.</li>
-            <li>· Por categoría: novillos, vacas, terneros y más.</li>
+            <li>· La evolución de tu rodeo y un aviso cada lunes con cuánto vale.</li>
           </ul>
         </div>
         <Link
@@ -149,7 +210,37 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
   const isUp = (prices.inmag.change ?? 0) >= 0
   const empty = draft.length === 0
 
-  /* ---- Logged in ---- */
+  /* ---- Logged in, empty & never loaded: the welcome / first-run flow ---- */
+  if (empty && !hasRow) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-12 text-center">
+        <h1 className="text-2xl font-terminal text-zinc-100 mb-2">Bienvenido a Mi Ganado</h1>
+        <p className="text-zinc-400 text-sm leading-relaxed mb-8 max-w-md mx-auto">
+          Cargá tu hacienda y mirá lo que vale <strong className="text-zinc-200">hoy</strong>, en
+          tiempo real, al precio del INMAG. Tres datos por categoría y listo.
+        </p>
+        <div className="terminal-panel mb-8 text-left">
+          <div className="terminal-panel-header text-accent">Empezá por una categoría</div>
+          <div className="px-panel py-5 grid grid-cols-3 gap-3">
+            {CATEGORIAS.map(cat => (
+              <button
+                key={cat.value}
+                onClick={() => { setDraft([{ categoria: cat.value, cabezas: 50, peso: cat.defaultPeso }]); setDirty(true) }}
+                className="py-3 px-2 bg-zinc-900 border border-zinc-700 hover:border-accent rounded text-sm text-zinc-200 hover:text-accent transition-colors"
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <p className="text-xxs text-zinc-500">
+          Apretá una categoría y vas a ver el número al instante. Después la ajustás.
+        </p>
+      </div>
+    )
+  }
+
+  /* ---- Logged in: dashboard ---- */
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="mb-6 flex items-end justify-between gap-4 flex-wrap">
@@ -159,21 +250,22 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
             Valuado al INMAG ${fmt(prices.inmag.current)}/kg · act. {fmtDate(lastUpdate)}
           </p>
         </div>
-        <span className={`text-xxs font-terminal px-2 py-1 rounded ${isUp ? 'text-positive bg-positive/10' : 'text-negative bg-negative/10'}`}>
+        <span className={`text-xxs font-terminal px-2 py-1 rounded inline-flex items-center gap-1.5 ${isUp ? 'text-positive bg-positive/10' : 'text-negative bg-negative/10'}`}>
+          <span className={`inline-block w-1.5 h-1.5 rounded-full ${isUp ? 'bg-positive' : 'bg-negative'} animate-pulse`} />
           INMAG {isUp ? '+' : ''}{(prices.inmag.change ?? 0).toFixed(1)}% hoy
         </span>
       </div>
 
-      {/* Hero valuation */}
+      {/* Hero valuation — the aha moment */}
       {!empty && (
         <div className="terminal-panel mb-6">
           <div className="terminal-panel-header text-accent">Valor de tu hacienda hoy</div>
           <div className="px-panel py-6">
-            <div className="text-4xl text-positive font-mono font-medium mb-1">
-              {fmtCurrency(totals.ars)}
+            <div className="text-4xl text-positive font-mono font-medium mb-1 tabular-nums">
+              {fmtCurrency(animatedArs)}
             </div>
             <div className="text-lg text-zinc-400 font-mono mb-4">
-              ≈ USD {fmt(totals.usd)} <span className="text-xxs text-zinc-500">(blue ${fmt(prices.usdBlue.current)})</span>
+              ≈ USD {fmt(animatedArs / prices.usdBlue.current)} <span className="text-xxs text-zinc-500">(blue ${fmt(prices.usdBlue.current)})</span>
             </div>
 
             {delta != null && (
@@ -182,6 +274,16 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
                 <span>{delta >= 0 ? '+' : '−'}{fmtCurrency(Math.abs(delta))}</span>
                 {deltaPct != null && <span className="opacity-80">({deltaPct >= 0 ? '+' : ''}{deltaPct.toFixed(1)}%)</span>}
                 <span className="text-zinc-500 text-xxs">desde tu última visita{lastSeenAt ? ` · ${fmtDate(lastSeenAt)}` : ''}</span>
+              </div>
+            )}
+
+            {/* 30-day shape, tracking the index */}
+            {herdSeries.length > 1 && (
+              <div className="mt-6">
+                <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-2">
+                  Tu hacienda los últimos 30 días (al índice)
+                </div>
+                <PriceSparkline data={herdSeries} height={90} lineColor="#4ade80" areaColor="rgba(74,222,128,0.12)" />
               </div>
             )}
 
@@ -269,6 +371,42 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
         </button>
       )}
 
+      {/* Registro de valor — evolution + weekly alert opt-in */}
+      {hasRow && !empty && (
+        <div className="terminal-panel mt-6">
+          <div className="terminal-panel-header">Registro de valor</div>
+          <div className="px-panel py-5">
+            {realSeries.length > 1 ? (
+              <>
+                <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-2">
+                  La evolución de tu hacienda
+                </div>
+                <PriceSparkline data={realSeries} height={90} />
+              </>
+            ) : (
+              <p className="text-sm text-zinc-400">
+                Tu primer registro quedó guardado hoy. Cada vez que vuelvas, sumamos un punto y
+                vas a ver crecer la curva de tu hacienda.
+              </p>
+            )}
+
+            <label className="flex items-center gap-3 mt-5 pt-5 border-t border-terminal-border cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={alertsOptIn}
+                onChange={(e) => setAlerts(e.target.checked)}
+                className="w-4 h-4 accent-accent"
+              />
+              <span className="text-sm text-zinc-300">
+                Avisame cada lunes cuánto vale mi hacienda
+                <span className="block text-xxs text-zinc-500">Un mail con el valor y cuánto cambió en la semana. Cancelás cuando quieras.</span>
+              </span>
+            </label>
+          </div>
+        </div>
+      )}
+
+      {/* Consignar — entry to the directory (permiso flow llega en la próxima fase) */}
       <div className="terminal-panel mt-6">
         <div className="px-panel py-4 flex items-center justify-between flex-wrap gap-3">
           <p className="text-sm text-zinc-400">¿Pensás vender? Encontrá consignatarias en tu zona.</p>
