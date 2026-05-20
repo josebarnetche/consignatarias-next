@@ -16,15 +16,17 @@ interface NavItem {
   authRequired?: boolean;
 }
 
+// Trimmed from 8 → 6: the core public surfaces + MI GANADO (the personal
+// herd-value tool, visible to all so anonymous users discover it and sign up).
+// Dropped: DASHBOARD (already reachable as "Mi Panel" in AuthButton), MIS GUÍAS
+// (niche DT-e archive, reached from /dte), PLANES (lives in the footer).
 const NAV_ITEMS: NavItem[] = [
   { label: "INICIO", href: "/overview" },
   { label: "REMATES", href: "/remates" },
   { label: "CONSIGNATARIAS", href: "/consignatarias" },
   { label: "FRIGORIFICOS", href: "/frigorificos" },
   { label: "MERCADO", href: "/mercado" },
-  { label: "MIS GUÍAS", href: "/mi-cuenta/guias", authRequired: true },
-  { label: "DASHBOARD", href: "/dashboard", authRequired: true },
-  { label: "PLANES", href: "/planes" },
+  { label: "MI GANADO", href: "/mi-ganado" },
 ];
 
 /* ------------------------------------------------------------------ */

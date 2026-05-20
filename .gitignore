@@ -21,6 +21,9 @@ next-env.d.ts
 scripts/oauth-credentials.json
 scripts/oauth-token.json
 scripts/client_secret_*
+scripts/**/oauth-credentials.json
+scripts/**/oauth-token.json
+scripts/**/client_secret_*
 
 # os
 .DS_Store
