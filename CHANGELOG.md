@@ -6,6 +6,67 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.18.0] — 2026-05-20
+
+### "Mi Ganado" — herd-value tracker + nav simplification + SEO rank-lift
+
+A regresabilidad (return-rate) release driven by a fresh read of the analytics. **No Enterprise API contract changes.** The new `user_ganado` table was applied to production via migration; everything else is metadata, content, and one new authenticated page.
+
+**The evidence that drove this release**
+
+Reconnected Google Search Console + GA4 (OAuth re-authorized, Search Console + Analytics Data/Admin APIs enabled) and pulled the real picture for the first time in months:
+
+- Search traffic is **not** coming from remates (the architectural bet) — it comes from market data (`/mercado/inmag`, the query "inmag" = 992 impr at pos 7.4) and the frigorífico directory (province pages + by-CUIT + "habilitados senasa"). Remates barely register in search.
+- Returning users are only ~10% of users but engage **2×** (346s vs 166s, 3.9 vs 2.3 pageviews). They are desktop professionals who **search** (88% of all on-site searches come from returning users) and monitor `/frigorificos` (418s, the #1 internal hub) + weekly prices.
+- The leak: returning users **re-Google** the term (Organic returning 225 vs Direct 55 in 90d) — there was no product-native reason to come back on their own.
+
+**"Mi Ganado" — the producer's herd, valued daily (free, login-gated)**
+
+A return loop built on intrinsic value, not notifications: the producer sets his herd once and comes back to see what it's worth as the INMAG moves — *his* number, changing on its own.
+
+- Migration `20260520_user_ganado.sql`: table `public.user_ganado`, one row per user (`UNIQUE(user_id)`), `items` JSONB (`[{categoria, cabezas, peso}]`), plus `last_seen_at` + `last_seen_value_ars` to compute "Δ desde tu última visita". RLS scoped to `auth.uid()` with the four own-row policies (select/insert/update/delete).
+- `src/hooks/useGanado.ts`: load/save via the browser Supabase client + RLS — **no API route** (mirrors `useFavorites`). `saveGanado` upserts on `user_id`; `markSeen` stamps the value being viewed so the next visit can show the delta.
+- `/mi-ganado` (`page.tsx` + `MiGanadoClient.tsx`): live valuation in ARS + USD (blue) at the per-category INMAG price, editable herd line-items (reuses the calculator's category model), and the **Δ-since-last-visit** badge color-coded green/red. Logged-out state is an invitation to sign in (free) with a fallback link to the public `/calculadora`; the page is `noindex` (personal/auth surface).
+- Data lock-in by design: the herd composition is persisted server-side per user — a switching cost and a first-party dataset, not an email blast.
+
+**Aha-moment flow + value history — "la libreta del campo"**
+
+A second layer turns Mi Ganado from a flat form into a return loop with a payoff on every visit, around the single concept of the field ledger:
+
+- **Reveal:** the herd value runs an animated count-up (`easeOutCubic`) on each visit, with an INMAG ticker and a pulsing live dot — the number *performs* the change instead of just printing it.
+- **Welcome flow:** a first-time user (no herd yet) gets large category buttons and reaches the first valuation in a single tap — no empty form to fill.
+- **30-day sparkline** derived from the real INMAG history (reuses `PriceSparkline`).
+- **Value register:** a per-producer daily snapshot (new table `ganado_value_snapshots`, own RLS) builds the evolution curve of *his* herd over time — with one data point it shows explanatory copy, with two or more it draws the curve.
+- **Weekly-alert opt-in:** new `alerts_opt_in` column on `user_ganado` (the Monday email send + the consignar/permission step are deferred to later phases).
+- Additive migration `20260520_user_ganado_value_history.sql` (`CREATE TABLE` + `ADD COLUMN IF NOT EXISTS` + RLS), applied to production; security advisor clean.
+
+**Navigation simplified — 8 → 6 items**
+
+The top nav had grown overloaded. Trimmed to the core surfaces a producer actually needs, and surfaced the new tool:
+
+- Removed: **DASHBOARD** (already reachable as "Mi Panel" in `AuthButton`), **MIS GUÍAS** (niche DT-e archive, reached from `/dte`), **PLANES** (lives in the footer).
+- Added: **MI GANADO**, visible to everyone (not auth-gated in the nav) so anonymous users discover it and convert to a free account.
+- Result: `INICIO · REMATES · CONSIGNATARIAS · FRIGORIFICOS · MERCADO · MI GANADO`.
+
+**SEO — own "habilitados senasa", capture the INMAG featured snippet, lift CTR**
+
+Grounded in the GSC pull; all on-page, all reversible:
+
+- **`/frigorificos`** — title + H1 rewritten to exact-match the money query "listado de frigoríficos habilitados por senasa" (was pos ~6 with high impressions): H1 is now "Listado de Frigoríficos Habilitados por SENASA en Argentina".
+- **`/mercado/inmag`** — added a `DefinedTerm` schema (entity-level definition, more precise than `Dataset` for "qué es el inmag") and moved a concise, self-contained definition lede high in the DOM, so the page can win the featured snippet (position 0) even while the organic listing sits at pos ~7.
+- **`/mercado/arrendamiento`** — baked the live INMAG price into the title (CTR was ~0.9% at pos 8.7: page-1 impressions, almost no clicks), matching the self-answering pattern already used on `/mercado`.
+- **Frigorífico province pages** — "Habilitados" + "SENASA" front-loaded in the title (e.g. "Frigoríficos Habilitados en Santa Fe · 124 Plantas SENASA/MAGYP") to lift CTR on province queries at pos 7-9.
+
+**Tooling / hygiene**
+
+- GSC + GA4 pull scripts run from the repo against the live OAuth token; the credential and token files under `scripts/archive/` are now covered by `.gitignore` (`scripts/**/oauth-*.json`, `client_secret_*`) so secrets can never be committed.
+
+**What's next on the regresabilidad loop ("El Rodeo")**
+
+Mi Ganado is move #1 of three. Still to ship: #2 an INMAG header that leads with the % delta vs ayer/7d/30d (color-coded, the dólar pattern), and #3 the watchlist (`FollowButton`) placed on the `/frigorificos/[slug]`, `/consignatarias/[slug]` and `/remates/[slug]` profiles where returning users actually live, with a "nuevo desde tu última visita" badge.
+
+---
+
 ## [1.17.0] — 2026-05-19
 
 ### Productor reviews + home repositioning + top-20 persona seed
