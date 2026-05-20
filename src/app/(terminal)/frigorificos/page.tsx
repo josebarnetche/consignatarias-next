@@ -13,8 +13,10 @@ const senasaActiveCount = frigorificosData.filter(f => (f as { senasaActive?: bo
 const senasaInactiveCount = frigorificosData.filter(f => (f as { senasaActive?: boolean }).senasaActive === false).length
 
 export const metadata: Metadata = {
-  title: `Frigoríficos Habilitados Argentina 2026 | Directorio MAGYP Completo (${totalFrigorificos})`,
-  description: `Directorio completo de ${totalFrigorificos} frigoríficos y mataderos habilitados por MAGYP/SENASA en Argentina. Buscar por provincia, matrícula, etapa de habilitación. Datos oficiales actualizados 2026.`,
+  // Exact-match the money query "listado de frigoríficos habilitados por senasa"
+  // (was pos ~6 with high impressions). "Listado" + "SENASA" front-loaded.
+  title: `Listado de Frigoríficos Habilitados por SENASA 2026 · Argentina (${totalFrigorificos})`,
+  description: `Listado completo de ${totalFrigorificos} frigoríficos y mataderos habilitados por SENASA/MAGYP en Argentina. Buscá por provincia, matrícula y etapa de habilitación (Ciclo I/II/III). Registro oficial actualizado 2026.`,
   keywords: [
     'frigorificos argentina',
     'frigorificos habilitados',
@@ -79,11 +81,11 @@ export default function FrigorificosPage() {
       {/* SEO-optimized intro section */}
       <section className="px-4 pt-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-4xl">
         <h1 className="text-zinc-100 text-xl font-semibold mb-3">
-          Directorio de Frigoríficos Habilitados en Argentina
+          Listado de Frigoríficos Habilitados por SENASA en Argentina
         </h1>
         <p className="mb-3">
-          Listado completo de <strong className="text-zinc-200">{totalFrigorificos} frigoríficos y mataderos</strong> con 
-          habilitación oficial MAGYP (SENASA) en Argentina. Incluye establecimientos de faena bovina, porcina, 
+          Listado completo de <strong className="text-zinc-200">{totalFrigorificos} frigoríficos y mataderos</strong> con
+          habilitación oficial SENASA/MAGYP en Argentina. Incluye establecimientos de faena bovina, porcina,
           ovina y aviar en las <strong className="text-zinc-200">24 provincias</strong>.
         </p>
         <p className="text-zinc-500 text-xs">

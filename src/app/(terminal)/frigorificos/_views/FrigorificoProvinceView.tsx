@@ -68,8 +68,11 @@ export async function frigorificoProvinceMetadata(provincia: string) {
   if (!config) return null
   const provinceFrigorificos = frigorificos.filter(f => f.province === config.name)
   return {
-    title: `Frigoríficos en ${config.displayName} | ${provinceFrigorificos.length} Plantas MAGYP`,
-    description: `Directorio de ${provinceFrigorificos.length} frigoríficos habilitados por MAGYP en ${config.displayName}. Plantas de faena con matrícula, CUIT y etapa de habilitación. Base de datos oficial actualizada.`,
+    // "Habilitados" + "SENASA" front-loaded to match the province queries
+    // ("frigorífico en santa fe", "frigoríficos habilitados <provincia>")
+    // that bring high impressions at pos 7-9 with weak CTR.
+    title: `Frigoríficos Habilitados en ${config.displayName} · ${provinceFrigorificos.length} Plantas SENASA/MAGYP`,
+    description: `Listado de ${provinceFrigorificos.length} frigoríficos y mataderos habilitados por SENASA/MAGYP en ${config.displayName}. Plantas de faena con matrícula, CUIT y etapa de habilitación. Base de datos oficial actualizada 2026.`,
     keywords: [
       `frigoríficos ${config.displayName.toLowerCase()}`,
       `plantas frigoríficas ${config.displayName.toLowerCase()}`,

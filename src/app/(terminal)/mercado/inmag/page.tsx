@@ -83,6 +83,23 @@ function InmagSchema() {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }
 
+// DefinedTerm — entity-level "¿qué es el INMAG?" definition. More precise than
+// Dataset for the head term "inmag" / "que es el inmag" and feeds the featured
+// snippet (position 0) even when the organic listing sits at pos ~7.
+function InmagDefinedTermSchema() {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTerm',
+    name: 'INMAG',
+    alternateName: 'Índice Novillo Mercado Agroganadero',
+    description:
+      'El INMAG (Índice Novillo Mercado Agroganadero) es el precio promedio ponderado por volumen del novillo en el Mercado Agroganadero de Cañuelas (ex Liniers), expresado en pesos por kilo vivo y publicado al cierre de cada día hábil. Es la referencia de precio más usada del mercado ganadero argentino.',
+    inDefinedTermSet: 'https://www.consignatarias.com.ar/glosario',
+    url: 'https://www.consignatarias.com.ar/mercado/inmag',
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+}
+
 function fmt(n: number): string {
   return n.toLocaleString('es-AR', { maximumFractionDigits: 0 })
 }
@@ -106,6 +123,7 @@ export default function InmagPage() {
     <>
       <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
       <InmagSchema />
+      <InmagDefinedTermSchema />
       <FAQPageSchema items={INMAG_FAQS} />
       
       <div className="min-h-screen">
@@ -138,10 +156,13 @@ export default function InmagPage() {
                   <span className="block text-emerald-400">INMAG</span>
                   Índice Novillo Mercado Agroganadero
                 </h1>
+                {/* Clean definition lede — first prose on the page, written as a
+                    self-contained snippet so Google can lift it for "qué es el inmag". */}
                 <p className="text-zinc-400 max-w-xl text-lg">
-                  Referencia diaria del precio del novillo en el Mercado Agroganadero de Cañuelas
-                  (ex Liniers). Cotización al cierre de cada día hábil, histórico desde 2015 y
-                  metodología abierta.
+                  El <strong className="text-zinc-200">INMAG (Índice Novillo Mercado Agroganadero)</strong> es
+                  el precio promedio ponderado del novillo en el Mercado Agroganadero de Cañuelas (ex Liniers),
+                  publicado al cierre de cada día hábil. Es la referencia de precio más usada del mercado
+                  ganadero argentino, con histórico desde 2015 y metodología abierta.
                 </p>
               </div>
 

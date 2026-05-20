@@ -41,7 +41,10 @@ function getMonthlyAverages(data: typeof series) {
 const monthlyAverages = getMonthlyAverages(series)
 
 export const metadata: Metadata = {
-  title: 'Índice Novillo Arrendamiento Hoy - Precio Actualizado',
+  // Live price baked into the title — same self-answering pattern as /mercado
+  // and /mercado/inmag. Lifts CTR for "precio novillo arrendamiento" (was pos
+  // ~9 with ~0.9% CTR: lots of page-1 impressions, almost no clicks).
+  title: `Índice Novillo Arrendamiento Hoy: $${inmag.current.toLocaleString('es-AR')}/kg · Cañuelas`,
   description: `Índice Novillo Arrendamiento actual: $${inmag.current.toLocaleString('es-AR')}/kg. Precio actualizado del índice para contratos de arrendamiento rural en Argentina. Cotización diaria Liniers y Cañuelas.`,
   keywords: [
     'índice novillo arrendamiento',
