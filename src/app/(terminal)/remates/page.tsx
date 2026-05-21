@@ -1,5 +1,4 @@
 import { Metadata } from 'next'
-import { Suspense } from 'react'
 import Link from 'next/link'
 import RematesClient from './RematesClient'
 import rematesData from '@/lib/data/remates.json'
@@ -257,9 +256,9 @@ export default function RematesPage() {
           />
         </div>
       </section>
-      <Suspense fallback={<div className="p-4 text-zinc-500">Cargando remates...</div>}>
-        <RematesClient />
-      </Suspense>
+      {/* RematesClient ya no usa useSearchParams → renderiza SSR (lista en el
+          HTML servido, visible para crawlers). Sin Suspense/fallback. */}
+      <RematesClient />
     </>
   )
 }

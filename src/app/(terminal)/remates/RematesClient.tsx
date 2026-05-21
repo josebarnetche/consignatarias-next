@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import marketData from '@/lib/data/market-prices.json'
@@ -647,7 +646,6 @@ function AddRemateModal({ onClose }: { onClose: () => void }) {
 /* ------------------------------------------------------------------ */
 
 export default function RematesPage() {
-  const searchParams = useSearchParams()
   const router = useRouter()
   const session = useSessionTier()
   const [period, setPeriod] = useState<Period>('proximos')
@@ -663,11 +661,15 @@ export default function RematesPage() {
   const [filterDateTo, setFilterDateTo] = useState('')
   const [filterMinHeads, setFilterMinHeads] = useState('')
 
-  // Initialize search from URL `q` param (for Google Sitelinks Searchbox)
+  // Initialize search from URL `q` param (for Google Sitelinks Searchbox).
+  // Leído client-side desde window a propósito: usar useSearchParams() acá
+  // fuerza un CSR bailout y deja el HTML servido en el fallback del Suspense
+  // ("Cargando remates…"), invisible para crawlers/bots. Sin él, la lista
+  // renderiza SSR y el pre-fill del buscador ocurre tras hidratar.
   useEffect(() => {
-    const q = searchParams.get('q')
+    const q = new URLSearchParams(window.location.search).get('q')
     if (q) setSearchQuery(q)
-  }, [searchParams])
+  }, [])
 
   // DISABLED: Cost optimization — no PRO subscribers yet
   // Fetch featured consignataria slugs from Supabase
