@@ -77,6 +77,138 @@ function useCountUp(target: number, durationMs = 900): number {
   return val
 }
 
+function lotValue(it: GanadoItem, prices: MarketPrices): number {
+  const price = prices.categories[it.categoria]?.current ?? prices.inmag.current
+  return (it.cabezas || 0) * (it.peso || 0) * price
+}
+
+/**
+ * Onboarding progresivo: una pregunta por pantalla.
+ * ¿Qué hacienda? → ¿Cuántas? → ¿Qué peso? → Calculando… → Valor + ¿agregar otra?
+ */
+function GanadoWizard({ prices, isFirst, onComplete, onCancel }: {
+  prices: MarketPrices
+  isFirst: boolean
+  onComplete: (lot: GanadoItem, addAnother: boolean) => void
+  onCancel: () => void
+}) {
+  const [step, setStep] = useState<'cat' | 'count' | 'weight' | 'calc' | 'result'>('cat')
+  const [categoria, setCategoria] = useState('')
+  const [label, setLabel] = useState('')
+  const [cabezas, setCabezas] = useState(50)
+  const [peso, setPeso] = useState(450)
+
+  useEffect(() => {
+    if (step !== 'calc') return
+    const t = setTimeout(() => setStep('result'), 1300)
+    return () => clearTimeout(t)
+  }, [step])
+
+  const value = lotValue({ categoria, cabezas, peso }, prices)
+  const stepNum = step === 'cat' ? 1 : step === 'count' ? 2 : step === 'weight' ? 3 : 3
+
+  const Dots = () => (
+    <div className="flex items-center justify-center gap-2 mb-8">
+      {[1, 2, 3].map(n => (
+        <span key={n} className={`h-1.5 rounded-full transition-all ${n === stepNum ? 'w-6 bg-accent' : n < stepNum ? 'w-1.5 bg-accent/50' : 'w-1.5 bg-zinc-700'}`} />
+      ))}
+    </div>
+  )
+
+  return (
+    <div className="max-w-md mx-auto px-4 py-12">
+      {step !== 'calc' && step !== 'result' && <Dots />}
+
+      {step === 'cat' && (
+        <div className="text-center">
+          <h1 className="text-2xl font-terminal text-zinc-100 mb-2">
+            {isFirst ? '¿Qué hacienda tenés?' : 'Agregá otra categoría'}
+          </h1>
+          <p className="text-zinc-500 text-sm mb-8">Elegí una categoría para empezar.</p>
+          <div className="grid grid-cols-2 gap-3">
+            {CATEGORIAS.map(cat => (
+              <button
+                key={cat.value}
+                onClick={() => { setCategoria(cat.value); setLabel(cat.label); setPeso(cat.defaultPeso); setStep('count') }}
+                className="py-4 bg-zinc-900 border border-zinc-700 hover:border-accent rounded-lg text-zinc-200 hover:text-accent transition-colors"
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+          {!isFirst && (
+            <button onClick={onCancel} className="text-xxs text-zinc-500 hover:text-zinc-300 mt-6">Cancelar</button>
+          )}
+        </div>
+      )}
+
+      {step === 'count' && (
+        <div className="text-center">
+          <h1 className="text-2xl font-terminal text-zinc-100 mb-2">¿Cuántas cabezas?</h1>
+          <p className="text-zinc-500 text-sm mb-8">{label}.</p>
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <button onClick={() => setCabezas(Math.max(1, cabezas - 10))} className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-700 text-zinc-300 text-xl hover:border-accent">−</button>
+            <input
+              type="number" min={1} value={cabezas}
+              onChange={e => setCabezas(Math.max(1, parseInt(e.target.value) || 0))}
+              className="w-32 text-center text-4xl font-mono bg-transparent text-zinc-100 border-b-2 border-terminal-border focus:border-accent outline-none py-1"
+            />
+            <button onClick={() => setCabezas(cabezas + 10)} className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-700 text-zinc-300 text-xl hover:border-accent">+</button>
+          </div>
+          <button onClick={() => setStep('weight')} className="w-full py-3 bg-accent hover:bg-accent-bright text-terminal-bg font-medium rounded-lg transition-colors">Seguir →</button>
+          <button onClick={() => setStep('cat')} className="text-xxs text-zinc-500 hover:text-zinc-300 mt-4">← Volver</button>
+        </div>
+      )}
+
+      {step === 'weight' && (
+        <div className="text-center">
+          <h1 className="text-2xl font-terminal text-zinc-100 mb-2">¿De qué peso aproximado?</h1>
+          <p className="text-zinc-500 text-sm mb-8">Promedio por cabeza, en kilos.</p>
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <input
+              type="number" min={50} max={1000} value={peso}
+              onChange={e => setPeso(Math.max(1, parseInt(e.target.value) || 0))}
+              className="w-32 text-center text-4xl font-mono bg-transparent text-zinc-100 border-b-2 border-terminal-border focus:border-accent outline-none py-1"
+            />
+            <span className="text-zinc-500 text-lg">kg</span>
+          </div>
+          <div className="flex justify-center gap-2 mb-8">
+            {[-40, -20, 20, 40].map(d => (
+              <button key={d} onClick={() => setPeso(Math.max(1, peso + d))} className="px-3 py-1 text-xs bg-zinc-900 border border-zinc-700 rounded text-zinc-400 hover:border-accent">{d > 0 ? `+${d}` : d}</button>
+            ))}
+          </div>
+          <button onClick={() => setStep('calc')} className="w-full py-3 bg-accent hover:bg-accent-bright text-terminal-bg font-medium rounded-lg transition-colors">Calcular valor</button>
+          <button onClick={() => setStep('count')} className="text-xxs text-zinc-500 hover:text-zinc-300 mt-4">← Volver</button>
+        </div>
+      )}
+
+      {step === 'calc' && (
+        <div className="text-center py-16">
+          <div className="inline-block w-10 h-10 border-2 border-accent border-t-transparent rounded-full animate-spin mb-6" />
+          <p className="text-zinc-300 font-terminal text-lg">Calculando…</p>
+          <p className="text-zinc-500 text-xs mt-2">{cabezas} {label.toLowerCase()} · {peso} kg · al INMAG ${fmt(prices.inmag.current)}/kg</p>
+        </div>
+      )}
+
+      {step === 'result' && (
+        <div className="text-center">
+          <p className="text-zinc-500 text-xs uppercase tracking-wider mb-2">{cabezas} {label.toLowerCase()} de ~{peso} kg valen</p>
+          <div className="text-4xl text-positive font-mono font-medium mb-1 tabular-nums">{fmtCurrency(value)}</div>
+          <div className="text-zinc-400 font-mono text-sm mb-6">≈ USD {fmt(value / prices.usdBlue.current)}</div>
+          <div className="terminal-panel mb-8">
+            <div className="px-panel py-4 text-sm text-zinc-400 flex items-start gap-2 text-left">
+              <span className="text-accent mt-0.5">✓</span>
+              <span>Guardamos este valor en tu cuenta automáticamente. Cuando vuelvas, va a estar actualizado al precio del día.</span>
+            </div>
+          </div>
+          <button onClick={() => onComplete({ categoria, cabezas, peso }, true)} className="w-full py-3 bg-zinc-900 border border-zinc-700 hover:border-accent text-zinc-200 rounded-lg mb-3 transition-colors">+ Agregar otra categoría</button>
+          <button onClick={() => onComplete({ categoria, cabezas, peso }, false)} className="w-full py-3 bg-accent hover:bg-accent-bright text-terminal-bg font-medium rounded-lg transition-colors">Listo, ver mi hacienda →</button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketPrices; lastUpdate: string }) {
   const {
     items, lastSeenValue, lastSeenAt, alertsOptIn, history,
@@ -85,6 +217,8 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
   } = useGanado()
 
   const [draft, setDraft] = useState<GanadoItem[]>([])
+  const [wizardOpen, setWizardOpen] = useState(false)
+  const [wizardKey, setWizardKey] = useState(0)
   const [dirty, setDirty] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -135,6 +269,21 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
   function addItem() {
     setDraft([...draft, { categoria: 'novillos', cabezas: 50, peso: 450 }])
     setDirty(true); setSaved(false)
+  }
+  function openWizard() { setWizardKey(k => k + 1); setWizardOpen(true) }
+  // Wizard agregó una tropa: la sumamos, guardamos auto, y stampeamos el valor.
+  async function handleWizardComplete(lot: GanadoItem, addAnother: boolean) {
+    const next = [...draft, lot]
+    setDraft(next); setDirty(false)
+    const { error } = await saveGanado(next)
+    if (!error) {
+      stampedRef.current = true
+      const v = valueOf(next, prices)
+      markSeen(v.ars)
+      snapshotValue(v.ars, v.cabezas, v.kilos, prices.inmag.current)
+    }
+    if (addAnother) setWizardKey(k => k + 1)
+    else setWizardOpen(false)
   }
   function removeItem(idx: number) {
     setDraft(draft.filter((_, i) => i !== idx))
@@ -210,33 +359,16 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
   const isUp = (prices.inmag.change ?? 0) >= 0
   const empty = draft.length === 0
 
-  /* ---- Logged in, empty & never loaded: the welcome / first-run flow ---- */
-  if (empty && !hasRow) {
+  /* ---- Onboarding progresivo (primera vez) o "agregar" guiado ---- */
+  if (wizardOpen || (empty && !hasRow)) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-12 text-center">
-        <h1 className="text-2xl font-terminal text-zinc-100 mb-2">Bienvenido a Mi Ganado</h1>
-        <p className="text-zinc-400 text-sm leading-relaxed mb-8 max-w-md mx-auto">
-          Cargá tu hacienda y mirá lo que vale <strong className="text-zinc-200">hoy</strong>, en
-          tiempo real, al precio del INMAG. Tres datos por categoría y listo.
-        </p>
-        <div className="terminal-panel mb-8 text-left">
-          <div className="terminal-panel-header text-accent">Empezá por una categoría</div>
-          <div className="px-panel py-5 grid grid-cols-3 gap-3">
-            {CATEGORIAS.map(cat => (
-              <button
-                key={cat.value}
-                onClick={() => { setDraft([{ categoria: cat.value, cabezas: 50, peso: cat.defaultPeso }]); setDirty(true) }}
-                className="py-3 px-2 bg-zinc-900 border border-zinc-700 hover:border-accent rounded text-sm text-zinc-200 hover:text-accent transition-colors"
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
-        </div>
-        <p className="text-xxs text-zinc-500">
-          Apretá una categoría y vas a ver el número al instante. Después la ajustás.
-        </p>
-      </div>
+      <GanadoWizard
+        key={wizardKey}
+        prices={prices}
+        isFirst={draft.length === 0}
+        onComplete={handleWizardComplete}
+        onCancel={() => setWizardOpen(false)}
+      />
     )
   }
 
@@ -311,7 +443,7 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
         {empty ? (
           <div className="px-panel py-8 text-center">
             <p className="text-zinc-400 text-sm mb-4">Todavía no cargaste tu hacienda.</p>
-            <button onClick={addItem} className="text-sm text-accent hover:text-accent-bright">+ Agregar tu primera categoría</button>
+            <button onClick={openWizard} className="text-sm text-accent hover:text-accent-bright">+ Agregar tu primera categoría</button>
           </div>
         ) : (
           <>
@@ -354,7 +486,8 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
               ))}
             </div>
             <div className="px-panel py-3 border-t border-terminal-border">
-              <button onClick={addItem} className="text-sm text-accent hover:text-accent-bright transition-colors">+ Agregar categoría</button>
+              <button onClick={openWizard} className="text-sm text-accent hover:text-accent-bright transition-colors">+ Agregar (guiado)</button>
+              <button onClick={addItem} className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors ml-4">+ manual</button>
             </div>
           </>
         )}
