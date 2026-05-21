@@ -61,6 +61,29 @@ Grounded in the GSC pull; all on-page, all reversible:
 
 - GSC + GA4 pull scripts run from the repo against the live OAuth token; the credential and token files under `scripts/archive/` are now covered by `.gitignore` (`scripts/**/oauth-*.json`, `client_secret_*`) so secrets can never be committed.
 
+**Mi Ganado — progressive onboarding (wizard)**
+
+The herd setup moved from "pick a category" (instant prefill) to a one-question-per-screen wizard, so a producer who has never used the page reaches a value with almost no friction:
+
+- ¿Qué hacienda tenés? (category) → ¿Cuántas cabezas? (stepper + input) → ¿De qué peso aproximado? (input + ±kg chips, prefilled per category) → "Calculando…" → the value of *that* lot + "guardamos este valor en tu cuenta automáticamente".
+- Each completed lot is appended and **auto-saved** (`saveGanado` + `markSeen` + snapshot) — the value shows instantly and persists. "Agregar otra categoría" loops the wizard; "Listo, ver mi hacienda" exits to the dashboard.
+- The dashboard keeps **"+ Agregar (guiado)"** (reopens the wizard) and **"+ manual"** (direct per-row edit). Frontend-only; no schema change.
+- The **sell flow** (partial lot → consignataria search/checklist → a request stored as a lead + emailed to the consignatarias.com.ar team) is deferred to a follow-up.
+
+**Remates — province by event locality (georef) + new source (Entre Surcos)**
+
+Fixes a real data-quality bug a power user surfaced: the `/remates/[provincia]` filter listed Buenos Aires auctions (Coronel Dorrego, Tres Lomas, Tornquist, Pehuajó…) under **"Corrientes"**, because province was derived from the feed/consignataria and `CITY_PROVINCE_MAP` only covered ~50 towns — every unmapped locality fell back to the wrong feed province.
+
+- **`enrichProvinces()`** resolves province by the *event locality*, not the feed: `VENUE_FIX` → `CITY_PROVINCE_MAP` (curated, handles ambiguous names like Mercedes→Corrientes) → local cache → **georef API** (`apis.datos.gob.ar`) → feed fallback. Replaces the per-city `correctProvince`. Committed cache `scripts/data/locality-province.json` (124 localities pre-resolved) so CI doesn't hammer the API.
+- **`VENUE_FIX` for La Rural:** CACG sends `building_name "PALERMO"` with `state_id=2` (Catamarca) → it was showing "PALERMO, CATAMARCA"; now "La Rural, Palermo / CAPITAL FEDERAL". Existing records corrected in `remates.json`.
+- **New source — Entre Surcos y Corrales (source 9):** static-HTML cartelera with per-event province/locality/heads/time/logo. 94 remates parsed, 88 with consignataria resolved from the logo (manual `ENTRESURCOS_LOGO` map + heuristic). Dedups against CACG by `date + slug + locality`, filling head/time gaps. The data correction lands on the next scrape run.
+
+**Remates — SSR of the listing (citability)**
+
+`/remates` was serving only "Cargando remates…" to crawlers/bots: `RematesClient` used `useSearchParams()` (to read `?q=`), forcing a CSR bailout so the served HTML was the `<Suspense>` fallback — the calendar was invisible to search and LLMs.
+
+- `?q=` is now read client-side from `window.location.search` in a `useEffect` (no `useSearchParams`), and the now-pointless `<Suspense>` wrapper + import are removed. The list renders SSR — verified: served HTML went from the fallback to **176 remates** with province/consignataria embedded. The page stays static (`revalidate = false`).
+
 **What's next on the regresabilidad loop ("El Rodeo")**
 
 Mi Ganado is move #1 of three. Still to ship: #2 an INMAG header that leads with the % delta vs ayer/7d/30d (color-coded, the dólar pattern), and #3 the watchlist (`FollowButton`) placed on the `/frigorificos/[slug]`, `/consignatarias/[slug]` and `/remates/[slug]` profiles where returning users actually live, with a "nuevo desde tu última visita" badge.
