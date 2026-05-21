@@ -189,6 +189,14 @@ const CITY_PROVINCE_MAP = {
   "FORMOSA": "FORMOSA",
 };
 
+// Venues whose scraped "city" is actually a fairgrounds/venue, not a locality.
+// CACG manda building_name "PALERMO" (La Rural, Predio Ferial de Palermo, CABA)
+// con un state_id equivocado (2 = Catamarca) → quedaba "PALERMO, CATAMARCA".
+const VENUE_FIX = {
+  "PALERMO": { location: "La Rural, Palermo", province: "CAPITAL FEDERAL" },
+  "LA RURAL": { location: "La Rural, Palermo", province: "CAPITAL FEDERAL" },
+};
+
 /**
  * Correct province based on city name.
  * Overrides bad API or curated province assignments.
@@ -196,6 +204,17 @@ const CITY_PROVINCE_MAP = {
 function correctProvince(auction) {
   const rawCity = (auction.location || "").split(",")[0].trim();
   const city = rawCity.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+  // Venue override (La Rural / Palermo): el nombre es una sede, no una localidad.
+  const venue = VENUE_FIX[city];
+  if (venue) {
+    if (auction.province !== venue.province || auction.location !== venue.location) {
+      console.log(`  [VENUE] ${rawCity}: ${auction.province} → ${venue.location} (${venue.province})`);
+      auction.province = venue.province;
+      auction.location = venue.location;
+    }
+    return;
+  }
 
   const correctProv = CITY_PROVINCE_MAP[city];
   if (correctProv && correctProv !== auction.province) {
