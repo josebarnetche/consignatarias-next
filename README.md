@@ -101,6 +101,7 @@ Si lo que querés es comprar o vender hacienda:
 - [`/remates/semana`](https://www.consignatarias.com.ar/remates/semana) · planificación semanal
 - [`/remates/en-vivo`](https://www.consignatarias.com.ar/remates/en-vivo) · streamings activos (canal-match con YouTube)
 - [`/precios`](https://www.consignatarias.com.ar/precios) · cotización diaria de las 6 categorías + INMAG
+- [`/mi-ganado`](https://www.consignatarias.com.ar/mi-ganado) · **la libreta del campo**: cargá tu hacienda una vez y mirá cuánto vale **hoy al INMAG** (ARS + USD), con la variación desde tu última visita y la curva de cómo evoluciona tu rodeo en el tiempo. Gratis con tu cuenta; queda guardado y el valor se mueve solo con el mercado
 - [`/mercado`](https://www.consignatarias.com.ar/mercado) · análisis de tendencia con USD blue / oficial
 - [`/consignatarias`](https://www.consignatarias.com.ar/consignatarias) · grilla por región (Pampa Húmeda · Centro · Mesopotamia · NEA · NOA · Cuyo · Patagonia)
 - [`/frigorificos`](https://www.consignatarias.com.ar/frigorificos) · 1.092 plantas con badge SENASA · vigente / sin verificación
@@ -179,4 +180,4 @@ Operadores comerciales que construyen infraestructura propietaria — no agencia
 
 ---
 
-v1.17.0 · 2026-05-19 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
+v1.18.0 · 2026-05-20 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
