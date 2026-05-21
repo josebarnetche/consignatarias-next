@@ -3,7 +3,7 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.14.5 (2026-05-14). See CHANGELOG for the v1.13.1 → v1.14.5 release train.
+**Current version:** v1.18.0 (2026-05-21). See CHANGELOG for the v1.15.0 → v1.18.0 release train (Mi Ganado herd-value tracker + progressive onboarding, scraper province-by-locality via georef + Entre Surcos source, La Rural/Palermo geo fix, /remates SSR).
 
 ---
 
