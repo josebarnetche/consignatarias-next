@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import marketData from '@/lib/data/market-prices.json'
+import ArrendamientoCalculator from './ArrendamientoCalculator'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
@@ -275,30 +276,7 @@ export default function ArrendamientoPage() {
                   referencia objetiva, transparente y actualizada para calcular el valor del alquiler de campos.
                 </p>
               </div>
-              <div className="bg-zinc-900/50 rounded-xl p-5 border border-zinc-800/50">
-                <h3 className="text-lg font-semibold text-amber-400 mb-3">Ejemplo de Cálculo</h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between text-zinc-400">
-                    <span>Superficie:</span>
-                    <span className="text-white font-mono">{exampleHectareas} ha</span>
-                  </div>
-                  <div className="flex justify-between text-zinc-400">
-                    <span>Kg novillo/ha/mes:</span>
-                    <span className="text-white font-mono">{exampleKgPerHa} kg</span>
-                  </div>
-                  <div className="flex justify-between text-zinc-400">
-                    <span>Índice actual:</span>
-                    <span className="text-white font-mono">${fmt(inmag.current)}/kg</span>
-                  </div>
-                  <div className="border-t border-zinc-700 pt-3 flex justify-between">
-                    <span className="text-zinc-300 font-medium">Canon mensual:</span>
-                    <span className="text-amber-400 font-bold font-mono text-lg">${fmt(exampleCanon)}</span>
-                  </div>
-                </div>
-                <p className="text-xs text-zinc-600 mt-3">
-                  Fórmula: Hectáreas × Kg/ha × Precio índice
-                </p>
-              </div>
+              <ArrendamientoCalculator priceToday={inmag.current} />
             </div>
           </div>
         </section>
