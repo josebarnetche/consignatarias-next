@@ -224,6 +224,161 @@ function correctProvince(auction) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Province resolver — provincia por LOCALIDAD del evento (no por la consignataria).
+// Orden: VENUE_FIX → CITY_PROVINCE_MAP (curado, maneja ambiguos: Mercedes→Corrientes)
+//        → cache local (georef) → georef live → fallback provincia del feed.
+// Corrige el geo-leak: ferias en pueblos no mapeados caían a la provincia del feed.
+// ---------------------------------------------------------------------------
+const LOCALITY_CACHE_PATH = resolve(__dirname, "data", "locality-province.json");
+let LOCALITY_CACHE = {};
+try { LOCALITY_CACHE = JSON.parse(readFileSync(LOCALITY_CACHE_PATH, "utf-8")); } catch { LOCALITY_CACHE = {}; }
+
+function normCity(location) {
+  return (location || "").split(",")[0].trim().toUpperCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\.$/, "").trim();
+}
+
+async function georefProvince(city) {
+  try {
+    const url = `https://apis.datos.gob.ar/georef/api/localidades?nombre=${encodeURIComponent(city)}&campos=provincia&max=1`;
+    const r = await fetch(url);
+    const d = await r.json();
+    const prov = d?.localidades?.[0]?.provincia?.nombre;
+    return prov ? normalizeProvince(prov) : null;
+  } catch { return null; }
+}
+
+/**
+ * Resuelve la provincia de cada subasta por la localidad del evento.
+ * Pre-resuelve las localidades nuevas con georef (cachea), después aplica sync.
+ */
+async function enrichProvinces(auctions) {
+  const unique = [...new Set(auctions.map((a) => normCity(a.location)).filter(Boolean))];
+  let resolved = 0;
+  for (const city of unique) {
+    if (VENUE_FIX[city] || CITY_PROVINCE_MAP[city] || LOCALITY_CACHE[city]) continue;
+    const prov = await georefProvince(city);
+    if (prov) { LOCALITY_CACHE[city] = prov; resolved++; }
+    await new Promise((z) => setTimeout(z, 60));
+  }
+  if (resolved > 0) {
+    try { writeFileSync(LOCALITY_CACHE_PATH, JSON.stringify(LOCALITY_CACHE, null, 2) + "\n"); } catch {}
+  }
+  for (const a of auctions) {
+    const city = normCity(a.location);
+    if (!city) continue;
+    const venue = VENUE_FIX[city];
+    if (venue) {
+      if (a.province !== venue.province) a.province = venue.province;
+      a.location = venue.location;
+      continue;
+    }
+    const prov = CITY_PROVINCE_MAP[city] || LOCALITY_CACHE[city];
+    if (prov && prov !== a.province) {
+      console.log(`  [GEO] ${a.location}: ${a.province} → ${prov}`);
+      a.province = prov;
+    }
+  }
+  console.log(`  Georef: ${resolved} localidades nuevas resueltas (cache: ${Object.keys(LOCALITY_CACHE).length})`);
+}
+
+// ---------------------------------------------------------------------------
+// Source 9: Entre Surcos y Corrales (cartelera HTML estática)
+// Trae provincia/localidad/cabezas/hora/logo por evento. La consignataria viene
+// solo como logo → se resuelve por filename a nombre canónico.
+// ---------------------------------------------------------------------------
+const ENTRESURCOS_LOGO = {
+  // filename del logo → nombre canónico de consignataria (para que dedupee con CACG)
+  "22_colombo_y_maliagno": "Colombo y Magliano S.A.",
+  "47_vitori": "Consignataria Vittori",
+  "550_gananor": "Gananor Pujol",
+  "20_irey": "Pedro Noel Irey S.R.L.",
+  "333_martin-g-lalor": "Martín G. Lalor",
+  "90_hourcade": "Hourcade Albelo y Cía.",
+  "94_sivero": "Sivero y Cía. S.A.",
+  "37_campos-y-ganados": "Campos y Ganados",
+  "110_casalago": "Casalago",
+  "logo_belisario_castillo": "Belisario Castillo",
+  "lartirigoyen": "Lartirigoyen",
+  "15_madelan": "Madelán y Cía.",
+  "93_sucesores-de-brivio": "Sucesores de Brivio",
+  "353_orella": "Orella",
+  "108_arribere": "Arribere",
+  "293_oregui": "Oregui",
+  "518_brivio_y_arzoz": "Brivio y Arzoz",
+  "81_a-mendizabal": "A. Mendizábal",
+  "gregorio_aberasturi_srl": "Gregorio Aberasturi S.R.L.",
+};
+// logos sin nombre usable → se omite la pieza (no inventamos consignataria)
+const ENTRESURCOS_SKIP = ["585_lote-21", "42_44", "118_sin-titulo-1", "mag"];
+
+function entresurcosName(logo) {
+  if (!logo) return null;
+  const base = logo.replace(/\.[a-z]+$/i, "").toLowerCase();
+  if (ENTRESURCOS_SKIP.some((s) => base.startsWith(s) || base === s)) return null;
+  // match por prefijo conocido
+  for (const [k, v] of Object.entries(ENTRESURCOS_LOGO)) {
+    if (base.startsWith(k) || base === k) return v;
+  }
+  // heurística: limpiar id_ y sufijos
+  const n = base.replace(/^logo[_-]?/, "").replace(/^\d+[_-]/, "")
+    .replace(/[_-]?(copia|sin[- ]?fondo|ok+|final|nuevo|20\d\d)\b.*$/g, "")
+    .replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+  if (!n || n.length < 4 || /^\d+$/.test(n)) return null;
+  return n.replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+const ENTRESURCOS_TYPE = {
+  invernada: "invernada", cria: "cria", "cría": "cria",
+  reproductores: "reproductores", general: "general",
+  televisado: "general", internet: "general", virtual: "general", faena: "general",
+};
+
+async function scrapeEntreSurcos() {
+  console.log("[9/9] Scraping Entre Surcos y Corrales...");
+  const html = await fetchHTML("https://www.entresurcosycorrales.com/iframe_cartelera.php");
+  if (!html) return [];
+  const lis = [...html.matchAll(/<li[^>]*>([\s\S]*?)<\/li>/gi)].map((m) => m[1]);
+  const out = [];
+  for (const li of lis) {
+    const dm = li.match(/class="fecha">\s*(\d{2})\/(\d{2})\/(\d{4})/);
+    if (!dm) continue;
+    const date = `${dm[3]}-${dm[2]}-${dm[1]}`;
+    const logo = (li.match(/consignatarios\/([^"]+)/) || [])[1] || null;
+    const name = entresurcosName(logo);
+    if (!name) continue; // sin consignataria identificable → no la inventamos
+    const lugarRaw = (li.match(/class="lugar">([\s\S]*?)<\/p>/) || [])[1] || "";
+    const localidad = ((lugarRaw.match(/<strong>([\s\S]*?)<\/strong>/) || [])[1] || "").replace(/<[^>]+>/g, "").replace(/\.$/, "").trim();
+    if (!localidad) continue;
+    const lugarText = lugarRaw.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    const hm = lugarText.match(/(\d{1,2})[.:](\d{2})\s*h/i);
+    const time = hm ? `${hm[1].padStart(2, "0")}:${hm[2]}` : null;
+    const iconTitle = ((li.match(/title=([A-Za-zÁÉÍÓÚáéíóú]+)/) || [])[1] || "").toLowerCase();
+    const cabezasRaw = ((li.match(/class="cabezas">([\s\S]*?)<\/p>/) || [])[1] || "").replace(/<[^>]+>/g, "").trim();
+    const estimatedHeads = /^[\d.]+$/.test(cabezasRaw) ? parseInt(cabezasRaw.replace(/\./g, ""), 10) || null : null;
+    out.push({
+      title: lugarText.replace(localidad, "").trim() || "Remate",
+      consignatariaName: name,
+      consignatariaSlug: slugify(name),
+      date,
+      time,
+      location: `${localidad}, ${(li.match(/class="provincia">([\s\S]*?)<\/p>/) || [])[1]?.replace(/<[^>]+>/g, "").replace(/\.$/, "").trim() || ""}`.replace(/, $/, ""),
+      province: normalizeProvince((li.match(/class="provincia">([\s\S]*?)<\/p>/) || [])[1]?.replace(/<[^>]+>/g, "") || ""),
+      type: ENTRESURCOS_TYPE[iconTitle] || mapAuctionType(iconTitle, lugarText),
+      mainCategory: mapMainCategory(lugarText),
+      estimatedHeads,
+      description: lugarText,
+      youtubeUrl: null,
+      catalogUrl: null,
+      source: "web",
+      sourceUrl: "https://www.entresurcosycorrales.com",
+      liveLink: null,
+    });
+  }
+  console.log(`  Entre Surcos: ${out.length} remates`);
+  return out;
+}
+
 // Map auction_mode to our type
 function mapAuctionType(mode, title) {
   const lower = (title || "").toLowerCase();
@@ -1337,13 +1492,14 @@ async function main() {
   console.log(`\n=== Ganado Terminal Scraper — ${todayISO()} ===\n`);
 
   // Scrape all sources in parallel
-  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, dollar, cattlePrices, cornPrice, categoryPrices, provinceEntry, consignatarioEntry, detailedCategories] = await Promise.all([
+  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, entresurcos, dollar, cattlePrices, cornPrice, categoryPrices, provinceEntry, consignatarioEntry, detailedCategories] = await Promise.all([
     scrapeCACG(),
     scrapeColombo(),
     scrapeOFarrell(),
     scrapeLehmann(),
     scrapeMadelan(),
     scrapeUMCHV(),
+    scrapeEntreSurcos(),
     scrapeDollar(),
     scrapeCattlePrices(),
     scrapeCornPrice(),
@@ -1354,7 +1510,7 @@ async function main() {
   ]);
 
   // Combine all scraped auctions
-  const allScraped = [...cacg, ...colombo, ...ofarrell, ...lehmann, ...madelan, ...umchv];
+  const allScraped = [...cacg, ...colombo, ...ofarrell, ...lehmann, ...madelan, ...umchv, ...entresurcos];
   console.log(`\nTotal scraped: ${allScraped.length} auctions`);
 
   // Load existing data
@@ -1387,10 +1543,10 @@ async function main() {
     a.province = normalizeProvince(a.province);
   }
 
-  // Correct province based on city name (overrides bad API/curated data)
-  for (const a of [...validCurated, ...validScraped]) {
-    correctProvince(a);
-  }
+  // Provincia por LOCALIDAD del evento (georef + cache + mapa curado + venues).
+  // Reemplaza el correctProvince por-ciudad: corrige el geo-leak donde ferias en
+  // pueblos no mapeados caían a la provincia de la consignataria (feed).
+  await enrichProvinces([...validCurated, ...validScraped]);
 
   // Merge curated + freshly scraped
   const merged = deduplicateAuctions([...validCurated, ...validScraped]);
