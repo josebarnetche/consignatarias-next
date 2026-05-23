@@ -23,6 +23,7 @@ export async function GET() {
     recentClaimsRes,
     recentFrigoClaimsRes,
     usersRes,
+    userSubsRes,
   ] = await Promise.all([
     // Consignataria claims by status
     service.from('consignataria_claims').select('status', { count: 'exact', head: false }),
@@ -52,8 +53,12 @@ export async function GET() {
       .select('id, frigorifico_name, claimant_email, claimant_name, status, created_at')
       .order('created_at', { ascending: false })
       .limit(5),
-    // Total users
-    service.from('user_roles').select('role', { count: 'exact', head: false }),
+    // Total users + roles (user_id needed to exclude internal accounts from revenue)
+    service.from('user_roles').select('user_id, role', { count: 'exact', head: false }),
+    // PRO Usuario + Enterprise API subscriptions (the real paid SaaS side).
+    // rebill_*_id distinguishes pago real (Rebill) de comp/invite (id NULL).
+    service.from('user_subscriptions')
+      .select('user_id, tier, api_tier, status, rebill_subscription_id, rebill_enterprise_subscription_id'),
   ])
 
   // Process claims data
@@ -100,10 +105,10 @@ export async function GET() {
     ...consignatarias.filter((c: { featured: boolean }) => c.featured).map((c: { canonical_slug: string }) => c.canonical_slug),
   ])
 
-  // MRR calculation — PRO = 45000 ARS/mes, Frigo = 35000 ARS/mes
+  // B2B MRR (tabla `subscriptions`) — PRO Consignataria 45000, Frigo 35000
   const PRO_PRICE = 45000
   const FRIGO_PRICE = 35000
-  const mrr = paidSubs.reduce((acc: number, s: { entity_type: string }) => {
+  const b2bMrr = paidSubs.reduce((acc: number, s: { entity_type: string }) => {
     return acc + (s.entity_type === 'frigorifico' ? FRIGO_PRICE : PRO_PRICE)
   }, 0)
 
@@ -120,6 +125,46 @@ export async function GET() {
   const admins = users.filter((u: { role: string }) => u.role === 'admin').length
   const owners = users.filter((u: { role: string }) => u.role === 'owner').length
 
+  // ── PRO Usuario + Enterprise API revenue (tabla user_subscriptions) ──
+  // Precios reales (ARS/mes): PRO Usuario 7900, API starter 139900, growth 700000.
+  // Scale es sales-led (sin self-serve) → no se computa. Se EXCLUYEN las cuentas
+  // internas (admin/owner) para no inflar MRR con la cuenta del founder.
+  const USER_PRO_PRICE = 7900
+  const API_PRICE: Record<string, number> = { starter: 139900, growth: 700000 }
+  const internalUserIds = new Set(
+    users
+      .filter((u: { role: string }) => u.role === 'admin' || u.role === 'owner')
+      .map((u: { user_id: string }) => u.user_id)
+  )
+  type UserSub = {
+    user_id: string; tier: string | null; api_tier: string | null; status: string | null
+    rebill_subscription_id: string | null; rebill_enterprise_subscription_id: string | null
+  }
+  const userSubs: UserSub[] = (userSubsRes.data as UserSub[]) || []
+  const externalActive = userSubs.filter(
+    (s) => s.status === 'active' && !internalUserIds.has(s.user_id)
+  )
+  // Revenue REAL = sólo con Rebill id. tier='pro'/api_tier sin id = comp/invite ($0).
+  const proUserCount = externalActive.filter(
+    (s) => s.tier === 'pro' && s.rebill_subscription_id
+  ).length
+  const apiByTier = externalActive.reduce((acc: Record<string, number>, s) => {
+    const t = s.api_tier && s.api_tier !== 'none' ? s.api_tier : null
+    if (t && s.rebill_enterprise_subscription_id) acc[t] = (acc[t] || 0) + 1
+    return acc
+  }, {})
+  const proUserMrr = proUserCount * USER_PRO_PRICE
+  const apiMrr = Object.entries(apiByTier).reduce(
+    (acc, [tier, n]) => acc + (API_PRICE[tier] || 0) * n, 0
+  )
+  // Cuentas internas excluidas (visibilidad: que no parezca que "faltan")
+  const internalSubs = userSubs.filter(
+    (s) => s.status === 'active' && internalUserIds.has(s.user_id)
+  ).length
+
+  // MRR TOTAL = B2B (consignataria/frigo) + PRO Usuario + API
+  const mrr = b2bMrr + proUserMrr + apiMrr
+
   return NextResponse.json({
     // Revenue
     revenue: {
@@ -132,6 +177,15 @@ export async function GET() {
       proRate: totalConsignatarias > 0
         ? Math.round((totalProSlugs.size / totalConsignatarias) * 100)
         : 0,
+      // Desglose del MRR por línea de producto (ARS/mes)
+      breakdown: {
+        b2bMrr,                 // PRO Consignataria + Frigo (tabla subscriptions)
+        proUserMrr,             // PRO Usuario 7900/mes (user_subscriptions)
+        apiMrr,                 // Enterprise API (starter/growth)
+      },
+      proUserCount,             // cuentas PRO Usuario pagas (externas)
+      apiByTier,                // { starter: n, growth: n }
+      internalSubs,             // cuentas internas excluidas (founder/owner)
     },
     // CRM / Claims
     claims: {

@@ -167,7 +167,6 @@ Three auth-gated endpoints. Bearer `cnsg_live_*` keys. Per-plan rate limits enfo
 |---|---|---|
 | `/api/precios` | `mag_prices_detailed` + `mag_inmag_history` | 6 categories base or 16 sub-cats with `?detallado=true`; `?historico=N` for history |
 | `/api/lots` | `mag_consignataria_sales_lots` | Lote-level data; 90-day max window per query |
-| `/api/index/memola` | `mag_prices_detailed` | Composite weighted index |
 
 Quota tiers (`PLANS` in `src/lib/api-keys.ts`):
 

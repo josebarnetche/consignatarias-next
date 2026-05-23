@@ -16,6 +16,14 @@ interface DashboardData {
     totalPro: number
     allSubscriptions: number
     proRate: number
+    breakdown: {
+      b2bMrr: number
+      proUserMrr: number
+      apiMrr: number
+    }
+    proUserCount: number
+    apiByTier: Record<string, number>
+    internalSubs: number
   }
   claims: {
     consignatarias: { pending: number; approved: number; rejected: number; total: number }
@@ -252,6 +260,24 @@ export default function AdminDashboardPage() {
             value={`${data.revenue.proRate}%`}
             sub={`de ${data.profiles.totalConsignatarias} perfiles`}
             color={data.revenue.proRate > 10 ? 'text-positive' : 'text-zinc-400'}
+          />
+          <KPICard
+            label="PRO Usuario"
+            value={data.revenue.proUserCount}
+            sub={`$${data.revenue.breakdown.proUserMrr.toLocaleString('es-AR')}/mes`}
+            color={data.revenue.proUserCount > 0 ? 'text-positive' : 'text-zinc-500'}
+          />
+          <KPICard
+            label="API Enterprise"
+            value={Object.values(data.revenue.apiByTier).reduce((a, b) => a + b, 0)}
+            sub={`$${data.revenue.breakdown.apiMrr.toLocaleString('es-AR')}/mes`}
+            color={data.revenue.breakdown.apiMrr > 0 ? 'text-positive' : 'text-zinc-500'}
+          />
+          <KPICard
+            label="Internas excl."
+            value={data.revenue.internalSubs}
+            sub="founder/owner (sin MRR)"
+            color="text-zinc-500"
           />
         </div>
       </div>
