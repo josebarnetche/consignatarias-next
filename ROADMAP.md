@@ -118,7 +118,7 @@ Reports system shipped (v1.10.0) but `public/reports/*.pdf` are placeholders. Re
 
 ---
 
-### v1.16.0 — Derivative indicators (MEMOLA Index family)
+### v1.16.0 — Derivative indicators
 **Effort:** 8-12 hours | **Impact:** High (marketing + data product moat)
 
 We have all 16 sub-cats × historical. Build the derivatives that MAG itself doesn't publish.
@@ -126,7 +126,6 @@ We have all 16 sub-cats × historical. Build the derivatives that MAG itself doe
 - [ ] `Liquidation Index` — % cabezas (VACAS Conserva Buena+Inferior) / total faenado. Endpoint + chart on `/mercado/indicadores`
 - [ ] `Heaviness Index` — Σ(kg_avg × head_count) / Σ(head_count). Termómetro de mercado.
 - [ ] `Quality Premium` — Esp.Joven vs Regular novillo spread
-- [ ] `MEMOLA Index` — composite ponderado (already exists, promote)
 - [ ] Each gets: API endpoint + landing page + FAQ schema + Speakable
 - [ ] Twitter bot post diario: "Hoy: Liquidation Index 67 — presión moderada"
 - [ ] Press kit: "Según el MEMOLA Liquidation Index..." citable en notas
@@ -184,7 +183,7 @@ The product is built. Now drive demand.
 
 **Most likely paths to first dollars:**
 1. **external developer** convertido de Starter trial → Growth pago (USD 500/mes) si su app crece
-2. **Frigorífico o banco** vía Enterprise Sales (cold outreach con MEMOLA Index pitch)
+2. **Frigorífico o banco** vía Enterprise Sales (cold outreach con el feed de precios + histórico)
 3. **Agtech startup** descubre `/api-docs` vía Google → checkout Starter
 4. **Roxom TV / NINI clients** indirect: vienen del network Jose
 5. **Consignataria** convertida desde el directorio (PRO Consignataria $45K)

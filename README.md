@@ -118,7 +118,6 @@ Tres endpoints con Bearer auth. Pricing público en [`/enterprise`](https://www.
 |---|---|
 | `GET /api/precios` | INMAG actual + 6 categorías (`?detallado=true` da 16 sub-categorías oficiales MAG, `?historico=N` da histórico) |
 | `GET /api/lots` | Lote-level transactional data (haciinfo000007) — 90 días máximo por query |
-| `GET /api/index/memola` | Índice compuesto ponderado |
 
 Planes:
 

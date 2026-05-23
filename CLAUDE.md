@@ -44,7 +44,7 @@ A cattle auction directory + market intelligence platform + public API for Argen
 |---|---|---|
 | Sitemap URLs | 1062 | `src/app/sitemap.ts` (shrinks as scraper archives remates) |
 | API endpoints | 33 under `src/app/api/` | route handlers |
-| Public Enterprise endpoints (auth-gated) | 3 — `/api/precios`, `/api/lots`, `/api/index/memola` | |
+| Public Enterprise endpoints (auth-gated) | 2 — `/api/precios`, `/api/lots` | |
 | Consignatarias (canonical) | 74 | `src/lib/data/consignataria-slugs.ts` |
 | Consignatarias (DB row count) | 86 | `consignatarias` table |
 | Frigorificos | 364 | SENASA/MAGYP data |
@@ -91,7 +91,6 @@ src/
     api/
       precios/route.ts                Auth-gated v1.13.2 — 6 cats base or 16 with ?detallado
       lots/route.ts                   Auth-gated — lote-level data
-      index/memola/route.ts           Auth-gated — composite index
       webhooks/                       rebill (HMAC + idempotency), auth, register (auth-gated v1.14.3)
       cron/                           14 internal cron route handlers
       admin/                          Admin-gated endpoints
@@ -129,7 +128,7 @@ docs/                                 Current strategic docs (Oráculo, Corredor
 - **API keys (`cnsg_live_*`)** require `API_KEY_PEPPER` env var set in Vercel. Never rotate the pepper without invalidating all keys.
 - **Webhook secrets** are env vars; HMAC verification uses `crypto.timingSafeEqual`.
 - **Admin gate** = `user_roles.role='admin'`. The owner email (`agro@memola.com.ar`) AND the founder personal (`jose.barnetche19@gmail.com`) both have admin.
-- **Observability**: every authenticated request to `/api/precios`, `/api/lots`, `/api/index/memola` writes a row to `ops_events`. Visible at `/admin/ops`.
+- **Observability**: every authenticated request to `/api/precios`, `/api/lots` writes a row to `ops_events`. Visible at `/admin/ops`.
 - **No secrets in mailto: links** — `mailto:agro@memola.com.ar` is correct; it's a real inbox. The Resend sender must use `@consignatarias.com` (only verified domain).
 
 ---
