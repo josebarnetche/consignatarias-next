@@ -51,19 +51,19 @@ const ENDPOINTS = [
     method: 'GET',
     path: '/api/precios',
     description: 'Índice INMAG actual, precios por categoría y variaciones semanales. Acepta ?categoria=novillos|terneros|etc.',
-    auth: false,
+    auth: true,
   },
   {
     method: 'GET',
     path: '/api/precios?detallado=true',
     description: 'Las 16 sub-categorías oficiales de MAG con corte por peso (h390/+390/h430/+430). Devuelve min, max, avg, mediana, cabezas, importe, kgs totales y kg promedio por sub-cat. Actualizado por día de remate (Mar/Mié/Vie). Fuente: haciinfo000502.',
-    auth: false,
+    auth: true,
   },
   {
     method: 'GET',
     path: '/api/precios?historico=90',
     description: 'Serie histórica INMAG diaria. Param ?historico=N días (7-3650). Devuelve serie + estadísticas (min/max/avg/count). Histórico completo desde 2015. Fuente: haciinfo000011.',
-    auth: false,
+    auth: true,
   },
   {
     method: 'GET',
