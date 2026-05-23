@@ -16,11 +16,14 @@ export async function GET() {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
 
-    // Count PRO subscribers
+    // Count active PRO subscribers. Paid tier lives in user_subscriptions
+    // (tier='pro'), NOT consignatarias.subscription_tier (that column does
+    // not exist — the old query silently fell through to the 50/50 fallback).
     const { count, error } = await supabase
-      .from('consignatarias')
+      .from('user_subscriptions')
       .select('*', { count: 'exact', head: true })
-      .eq('subscription_tier', 'PRO')
+      .eq('tier', 'pro')
+      .eq('status', 'active')
 
     if (error) {
       throw error
