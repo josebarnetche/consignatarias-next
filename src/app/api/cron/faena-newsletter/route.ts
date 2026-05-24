@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendFaenaNewsletter } from '@/lib/email'
 import { getFaenaStats, formatFaenaDate } from '@/lib/faena-api'
+import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
 
 /**
  * Faena Newsletter — sends monthly cattle slaughter stats to subscribers.
@@ -28,27 +29,15 @@ export async function POST(req: NextRequest) {
 
   const supabase = requireServiceClient()
 
-  // Get newsletter subscribers with faena topic preference
-  // Falls back to all active subscribers if no topic preference system exists
-  const { data: subscribers } = await supabase
+  // Faena report goes to who asked for it: subscribers from /frigorificos
+  // ("reporte semanal de faena"). Segmented by source (see newsletter-segments).
+  const { data: faenaSubscribers } = await supabase
     .from('newsletter_subscribers')
-    .select('email, preferences')
+    .select('email')
     .eq('status', 'active')
+    .in('source', [...SEGMENT_SOURCES.faena])
 
-  if (!subscribers || subscribers.length === 0) {
-    return NextResponse.json({ message: 'No hay suscriptores activos', sent: 0 })
-  }
-
-  // Filter to subscribers who want faena updates (or have no preference = all topics)
-  const faenaSubscribers = subscribers.filter(sub => {
-    if (!sub.preferences) return true // No preference = subscribed to all
-    const prefs = typeof sub.preferences === 'string' 
-      ? JSON.parse(sub.preferences) 
-      : sub.preferences
-    return prefs.faena !== false // Explicitly opted out
-  })
-
-  if (faenaSubscribers.length === 0) {
+  if (!faenaSubscribers || faenaSubscribers.length === 0) {
     return NextResponse.json({ message: 'No hay suscriptores de faena', sent: 0 })
   }
 
