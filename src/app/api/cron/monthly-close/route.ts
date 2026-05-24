@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
   // ── Recipients: all active subscribers ──────────────────────────
   const { data: subscribers } = await supabase
     .from('newsletter_subscribers')
-    .select('email')
+    .select('email, lease_kg_ha, lease_hectareas')
     .eq('status', 'active')
 
   if (!subscribers || subscribers.length === 0) {
@@ -104,7 +104,10 @@ export async function POST(req: NextRequest) {
   const errors: string[] = []
   for (const sub of subscribers) {
     try {
-      await sendMonthlyClose(sub.email, payload)
+      const lease = (sub.lease_kg_ha && sub.lease_hectareas)
+        ? { kgHa: Number(sub.lease_kg_ha), hectareas: Number(sub.lease_hectareas) }
+        : null
+      await sendMonthlyClose(sub.email, { ...payload, lease })
       sent++
       await new Promise((r) => setTimeout(r, 120)) // gentle rate-limit
     } catch (err) {

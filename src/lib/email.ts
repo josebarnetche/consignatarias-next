@@ -219,6 +219,7 @@ export async function sendMonthlyClose(
     ruedas: number              // días con rueda en el mes
     prevMonthLabel?: string | null
     prevAvg?: number | null
+    lease?: { kgHa: number; hectareas: number } | null  // arriendo guardado por el suscriptor
   },
 ) {
   const resend = await getResend()
@@ -228,8 +229,11 @@ export async function sendMonthlyClose(
     ? ((data.avg - data.prevAvg) / data.prevAvg) * 100
     : null
   const up = (changePct ?? 0) >= 0
-  // Ejemplo de canon mensual para 100 ha @ 8 kg/ha (referencia campo agrícola).
-  const ejemploCanon = data.avg * 8 * 100
+  // Canon personalizado SOLO si el suscriptor guardó su arriendo (kg/ha + ha).
+  // Si no, va el promedio sin ejemplo de arrendamiento.
+  const canon = data.lease && data.lease.kgHa > 0 && data.lease.hectareas > 0
+    ? data.avg * data.lease.kgHa * data.lease.hectareas
+    : null
 
   try {
     await resend.emails.send({
@@ -262,12 +266,13 @@ export async function sendMonthlyClose(
             </tr>
           </table>
 
+          ${canon !== null && data.lease ? `
           <div style="background:#16161d;border-left:3px solid #f59e0b;border-radius:4px;padding:14px 16px;margin-bottom:20px">
-            <p style="color:#a1a1aa;font-size:12px;margin:0;line-height:1.6">
-              Para liquidar tu arrendamiento usá el <strong style="color:#e4e4e7">promedio mensual</strong>.
-              Ej.: 100 ha × 8 kg/ha × ${money(data.avg)} = <strong style="color:#f59e0b">${money(ejemploCanon)}</strong>/mes.
+            <p style="color:#71717a;font-size:11px;margin:0 0 6px;text-transform:uppercase;letter-spacing:1px">Tu arrendamiento este mes</p>
+            <p style="color:#a1a1aa;font-size:13px;margin:0;line-height:1.6">
+              ${data.lease.hectareas} ha × ${data.lease.kgHa} kg/ha × ${money(data.avg)} = <strong style="color:#f59e0b;font-size:16px">${money(canon)}</strong>/mes
             </p>
-          </div>
+          </div>` : ''}
 
           <div style="text-align:center;margin:24px 0">
             <a href="${APP_URL}/mercado/arrendamiento" style="background:#f59e0b;color:#0a0a0f;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">CALCULAR MI ARRENDAMIENTO</a>

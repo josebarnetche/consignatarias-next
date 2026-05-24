@@ -308,7 +308,11 @@ export default function ArrendamientoPage() {
 
         {/* Cierre mensual — captura producer-facing (el que liquida arrendamiento) */}
         <section className="max-w-6xl mx-auto px-4 pb-8">
-          <CierreMensualSubscribe accent="amber" />
+          <CierreMensualSubscribe
+            accent="amber"
+            withLease
+            subtitle="El 1° de cada mes te llega el promedio del Índice Novillo del mes que cerró. Si guardaste tu cálculo arriba, recibís directamente tu canon actualizado. Gratis, un email por mes."
+          />
         </section>
 
         {/* Monthly Averages Table */}

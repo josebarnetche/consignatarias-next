@@ -4,7 +4,12 @@ import { sendNewsletterWelcome } from '@/lib/email'
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, source = 'homepage' } = await request.json()
+    const { email, source = 'homepage', kgHa, hectareas } = await request.json()
+
+    // Arriendo guardado (opcional, desde el calculador): personaliza el cierre mensual.
+    const leaseFields = (typeof kgHa === 'number' && kgHa > 0 && typeof hectareas === 'number' && hectareas > 0)
+      ? { lease_kg_ha: kgHa, lease_hectareas: hectareas }
+      : null
 
     if (!email || typeof email !== 'string') {
       return NextResponse.json(
@@ -33,6 +38,10 @@ export async function POST(request: NextRequest) {
 
     if (existing) {
       if (existing.status === 'active') {
+        // Already subscribed — refresh the saved lease if they sent a new one.
+        if (leaseFields) {
+          await supabase.from('newsletter_subscribers').update(leaseFields).eq('id', existing.id)
+        }
         return NextResponse.json(
           { message: 'Ya estás suscripto al newsletter' },
           { status: 200 }
@@ -41,12 +50,12 @@ export async function POST(request: NextRequest) {
       // Reactivate if unsubscribed
       await supabase
         .from('newsletter_subscribers')
-        .update({ status: 'active', resubscribed_at: new Date().toISOString() })
+        .update({ status: 'active', ...(leaseFields || {}) })
         .eq('id', existing.id)
 
-      return NextResponse.json({ 
-        success: true, 
-        message: 'Suscripción reactivada' 
+      return NextResponse.json({
+        success: true,
+        message: 'Suscripción reactivada'
       })
     }
 
@@ -59,6 +68,7 @@ export async function POST(request: NextRequest) {
         source,
         status: 'active',
         subscribed_at: new Date().toISOString(),
+        ...(leaseFields || {}),
       })
 
     if (error) {

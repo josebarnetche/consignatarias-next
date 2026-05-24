@@ -14,11 +14,14 @@ export default function CierreMensualSubscribe({
   title = 'Recibí el cierre mensual',
   subtitle = 'El 1° de cada mes te llega el promedio del Índice Novillo del mes que cerró — el número para liquidar tu arrendamiento. Gratis.',
   source = 'cierre-mensual',
+  withLease = false,
 }: {
   accent?: 'amber' | 'emerald'
   title?: string
   subtitle?: string
   source?: string
+  /** Si true, adjunta el arriendo guardado (localStorage del calculador) → el email trae TU canon. */
+  withLease?: boolean
 }) {
   const [email, setEmail] = useState('')
   const [state, setState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
@@ -39,16 +42,37 @@ export default function CierreMensualSubscribe({
       setState('error'); setMsg('Email inválido'); return
     }
     setState('loading'); setMsg('')
+
+    // Adjuntar el arriendo guardado (si el usuario lo guardó en el calculador).
+    const payload: Record<string, unknown> = { email: value, source }
+    let hasLease = false
+    if (withLease) {
+      try {
+        const saved = JSON.parse(localStorage.getItem('arrendamiento-calc-v1') || 'null')
+        if (saved && typeof saved.kgHa === 'number' && saved.kgHa > 0 && typeof saved.hectareas === 'number' && saved.hectareas > 0) {
+          payload.kgHa = saved.kgHa
+          payload.hectareas = saved.hectareas
+          hasLease = true
+        }
+      } catch { /* ignore */ }
+    }
+
     try {
       const res = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: value, source }),
+        body: JSON.stringify(payload),
       })
       const data = await res.json().catch(() => ({}))
       if (res.ok) {
         setState('ok')
-        setMsg(data.message?.includes('Ya estás') ? 'Ya estabas suscripto ✓' : `Listo — te llega el 1° de ${nextMonth}.`)
+        setMsg(
+          data.message?.includes('Ya estás')
+            ? 'Ya estabas suscripto ✓'
+            : hasLease
+            ? `Listo — el 1° de ${nextMonth} te llega tu canon actualizado.`
+            : `Listo — te llega el 1° de ${nextMonth}.`
+        )
       } else {
         setState('error'); setMsg(data.error || 'No se pudo suscribir. Probá de nuevo.')
       }
