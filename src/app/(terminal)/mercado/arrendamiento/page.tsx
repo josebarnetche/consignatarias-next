@@ -5,7 +5,7 @@ import marketData from '@/lib/data/market-prices.json'
 import ArrendamientoCalculator from './ArrendamientoCalculator'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
-import ProUpgradePrompt from '@/components/ProUpgradePrompt'
+import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
 import { AnimatedPrice } from '@/components/AnimatedPrice'
 
 const inmag = marketData.inmag
@@ -306,13 +306,9 @@ export default function ArrendamientoPage() {
           </Suspense>
         </section>
 
-        {/* PRO CTA */}
+        {/* Cierre mensual — captura producer-facing (el que liquida arrendamiento) */}
         <section className="max-w-6xl mx-auto px-4 pb-8">
-          <ProUpgradePrompt 
-            benefit="Productores revisan índices acá antes de firmar contratos. Que vean tu consignataria."
-            context="arrendamiento"
-            variant="card"
-          />
+          <CierreMensualSubscribe accent="amber" />
         </section>
 
         {/* Monthly Averages Table */}
