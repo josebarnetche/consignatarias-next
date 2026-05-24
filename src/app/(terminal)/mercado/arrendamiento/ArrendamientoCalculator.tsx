@@ -51,7 +51,7 @@ function Field({ label, value, onChange, suffix, step = 1, min = 0 }: {
 
 export default function ArrendamientoCalculator({ priceToday }: { priceToday: number }) {
   const [precio, setPrecio] = useState(priceToday)
-  const [kgHa, setKgHa] = useState(3)
+  const [kgHa, setKgHa] = useState(4)
   const [hectareas, setHectareas] = useState(100)
   const [anios, setAnios] = useState(3)
   const [sellos, setSellos] = useState(1.0)

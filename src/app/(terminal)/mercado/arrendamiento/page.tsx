@@ -76,7 +76,7 @@ function FAQSchema() {
     },
     {
       question: '¿Cómo se calcula el arrendamiento con el índice novillo?',
-      answer: 'El cálculo típico es: Canon mensual = Kilos de novillo pactados × Precio índice novillo × Hectáreas. Por ejemplo, si el contrato establece 10 kg de novillo por hectárea, y el campo tiene 500 ha, con un índice de $4.329/kg, el canon mensual sería aproximadamente $21.645.000. Los contratos suelen estipular un promedio mensual del índice.'
+      answer: 'El cálculo típico es: Canon mensual = Kilos de novillo pactados × Precio índice novillo × Hectáreas. Por ejemplo, si el contrato establece 4 kg de novillo por hectárea, y el campo tiene 500 ha, con un índice de $4.329/kg, el canon mensual sería aproximadamente $8.658.000. Los contratos suelen estipular un promedio mensual del índice.'
     },
     {
       question: '¿Por qué se usa el índice novillo para arrendamientos?',
@@ -151,9 +151,9 @@ export default function ArrendamientoPage() {
   // Calculate 30d change
   const change30d = ((last30[last30.length - 1]?.value - last30[0]?.value) / last30[0]?.value * 100)
 
-  // Example calculation for 500ha @ 8kg/ha
+  // Example calculation for 500ha @ 4kg/ha
   const exampleHectareas = 500
-  const exampleKgPerHa = 8
+  const exampleKgPerHa = 4
   const exampleCanon = exampleHectareas * exampleKgPerHa * inmag.current
 
   return (
@@ -400,7 +400,7 @@ export default function ArrendamientoPage() {
               },
               {
                 q: '¿Cómo se calcula el arrendamiento con el índice novillo?',
-                a: `El cálculo típico es: Canon mensual = Kilos de novillo pactados × Precio índice novillo × Hectáreas. Por ejemplo, si el contrato establece 8 kg de novillo por hectárea, y el campo tiene 500 ha, con el índice actual de $${fmt(inmag.current)}/kg, el canon mensual sería de $${fmt(exampleCanon)}.`
+                a: `El cálculo típico es: Canon mensual = Kilos de novillo pactados × Precio índice novillo × Hectáreas. Por ejemplo, si el contrato establece 4 kg de novillo por hectárea, y el campo tiene 500 ha, con el índice actual de $${fmt(inmag.current)}/kg, el canon mensual sería de $${fmt(exampleCanon)}.`
               },
               {
                 q: '¿Por qué se usa el índice novillo para arrendamientos?',
