@@ -6,6 +6,7 @@ import frigorificosData from '@/lib/data/frigorificos.json'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { FaenaStats } from '@/components/FaenaStats'
+import { MagActivity } from '@/components/MagActivity'
 import { getSenasaScrapedDate } from '@/lib/data/senasa-habilitados'
 
 const totalFrigorificos = frigorificosData.length
@@ -113,11 +114,16 @@ export default function FrigorificosPage() {
           </div>
         </div>
         
-        {/* Live faena stats from government API */}
+        {/* Faena nacional — fuente oficial (datos.gob.ar) */}
         <div className="mt-4">
           <Suspense fallback={<div className="h-32 animate-pulse bg-zinc-900/50 rounded-lg" />}>
             <FaenaStats />
           </Suspense>
+        </div>
+
+        {/* Actividad MAG — nuestro relevamiento diario (scrapeado) */}
+        <div className="mt-4">
+          <MagActivity />
         </div>
       </section>
 

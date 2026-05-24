@@ -1,0 +1,22 @@
+name: Faena Newsletter
+
+# 3rd of each month, 13:00 UTC (10:00 ART). Sends the national faena report
+# (datos.gob.ar, monthly) to subscribers from /frigorificos. The 3rd avoids the
+# 1st (monthly-close + El Corredor) and gives gov data time to refresh.
+on:
+  schedule:
+    - cron: '0 13 3 * *'
+  workflow_dispatch:
+
+jobs:
+  send-faena-newsletter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Faena Newsletter
+        run: |
+          curl -sL -X POST \
+            -H "Authorization: Bearer ${{ secrets.ADMIN_SECRET }}" \
+            -H "Content-Type: application/json" \
+            "https://www.consignatarias.com.ar/api/cron/faena-newsletter"
+        env:
+          ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
