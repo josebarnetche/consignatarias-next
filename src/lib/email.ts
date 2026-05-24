@@ -1006,6 +1006,20 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
     ? 'Te suscribiste al cierre mensual del Índice Novillo. El 1° de cada mes vas a recibir el promedio del mes que cerró.'
     : 'Te suscribiste a nuestro newsletter.'
 
+  // Qué recibe REALMENTE según a qué se suscribió (alineado con newsletter-segments).
+  const bullets =
+    ['remates', 'reporte-semanal', 'homepage'].includes(source ?? '')
+      ? '📅 <strong>Resumen semanal de remates</strong> — los más importantes, cada lunes'
+    : ['cierre-mensual', 'valuation_widget', 'calculadora'].includes(source ?? '')
+      ? '📊 <strong>Cierre mensual del Índice Novillo</strong> — el promedio del mes que cerró, el 1°'
+    : source === 'frigorificos'
+      ? '🥩 <strong>Reporte mensual de faena</strong> — cabezas faenadas, variación interanual y acumulado'
+    : source === 'el-corredor'
+      ? '📄 <strong>El Corredor</strong> — el cierre mensual del mercado bovino, en PDF'
+    : ['exportar-datos', 'calendar-export', 'comparar-consignatarias'].includes(source ?? '')
+      ? '🔔 Te avisamos cuando <strong>mejoremos la herramienta</strong> o agreguemos nuevos campos'
+      : '📅 Novedades del mercado ganadero argentino'
+
   try {
     await resend.emails.send({
       from: FROM,
@@ -1024,10 +1038,8 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
           </p>
 
           <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;margin-bottom:20px">
-            <p style="color:#e4e4e7;font-size:12px;margin:0;line-height:1.8">
-              📅 <strong>Resumen semanal</strong> de los remates más importantes<br>
-              📊 <strong>Precios INMAG</strong> y novedades del mercado<br>
-              🐄 <strong>Alertas</strong> de remates en las provincias que te interesan
+            <p style="color:#e4e4e7;font-size:13px;margin:0;line-height:1.8">
+              ${bullets}
             </p>
           </div>
 
