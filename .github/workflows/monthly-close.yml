@@ -1,0 +1,21 @@
+name: Monthly Close (Índice Novillo)
+
+# 1st of each month, 14:00 UTC (11:00 ART). Emails subscribers the previous
+# month's average INMAG. By the 1st the prior month's last rueda is scraped.
+on:
+  schedule:
+    - cron: '0 14 1 * *'
+  workflow_dispatch: # Manual trigger (closes the previous month). Use ?month= via curl for backfill.
+
+jobs:
+  send-monthly-close:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Monthly Close
+        run: |
+          curl -sL -X POST \
+            -H "Authorization: Bearer ${{ secrets.ADMIN_SECRET }}" \
+            -H "Content-Type: application/json" \
+            "https://www.consignatarias.com.ar/api/cron/monthly-close"
+        env:
+          ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}

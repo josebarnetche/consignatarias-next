@@ -6,6 +6,7 @@ import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import { ElCorredorCTA } from '@/components/ElCorredorCTA'
+import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
 import { AnimatedPrice } from '@/components/AnimatedPrice'
 
 const inmag = marketData.inmag
@@ -221,6 +222,14 @@ export default function InmagPage() {
               ))}
             </div>
           </div>
+        </section>
+
+        {/* Cierre mensual — captura producer-facing */}
+        <section className="max-w-6xl mx-auto px-4 pt-2 pb-6">
+          <CierreMensualSubscribe
+            accent="emerald"
+            subtitle="El 1° de cada mes te llega el promedio del INMAG del mes que cerró — el cierre que usás de referencia. Gratis, un email por mes."
+          />
         </section>
 
         {/* Chart Section */}

@@ -201,6 +201,101 @@ export async function sendMonthlyMetrics(
 }
 
 /* ------------------------------------------------------------------ */
+/*  CIERRE MENSUAL — Índice Novillo (arrendamiento)                    */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Sent on the 1st of each month to "cierre-mensual" subscribers: the closing
+ * average of the previous month's INMAG (the number producers use to settle
+ * rural-lease canon). Data computed in /api/cron/monthly-close.
+ */
+export async function sendMonthlyClose(
+  email: string,
+  data: {
+    monthLabel: string          // "Mayo 2026"
+    avg: number                 // promedio mensual $/kg
+    min: number
+    max: number
+    ruedas: number              // días con rueda en el mes
+    prevMonthLabel?: string | null
+    prevAvg?: number | null
+    lease?: { kgHa: number; hectareas: number } | null  // arriendo guardado por el suscriptor
+  },
+) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+  const money = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
+  const changePct = data.prevAvg && data.prevAvg > 0
+    ? ((data.avg - data.prevAvg) / data.prevAvg) * 100
+    : null
+  const up = (changePct ?? 0) >= 0
+  // Canon personalizado SOLO si el suscriptor guardó su arriendo (kg/ha + ha).
+  // Si no, va el promedio sin ejemplo de arrendamiento.
+  const canon = data.lease && data.lease.kgHa > 0 && data.lease.hectareas > 0
+    ? data.avg * data.lease.kgHa * data.lease.hectareas
+    : null
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: email,
+      subject: `Cierre ${data.monthLabel}: Índice Novillo promedio ${money(data.avg)}/kg`,
+      html: `
+        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
+          <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Cierre mensual · Índice Novillo Arrendamiento</p>
+          <h2 style="color:#fff;font-size:18px;margin:0 0 20px">${escapeHtml(data.monthLabel)}</h2>
+
+          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:20px;text-align:center;margin-bottom:16px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Promedio del mes</p>
+            <p style="color:#f59e0b;font-size:36px;font-weight:bold;margin:0;font-family:monospace">${money(data.avg)}<span style="color:#71717a;font-size:16px">/kg</span></p>
+            ${changePct !== null ? `<p style="color:${up ? '#22c55e' : '#ef4444'};font-size:13px;margin:6px 0 0">${up ? '▲' : '▼'} ${up ? '+' : ''}${changePct.toFixed(1)}% vs. ${escapeHtml(data.prevMonthLabel || 'mes anterior')}</p>` : ''}
+          </div>
+
+          <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
+            <tr>
+              <td style="padding:8px 0;color:#71717a;font-size:12px;border-bottom:1px solid #27272a">Mínimo del mes</td>
+              <td style="padding:8px 0;color:#e4e4e7;font-size:12px;text-align:right;border-bottom:1px solid #27272a;font-family:monospace">${money(data.min)}/kg</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 0;color:#71717a;font-size:12px;border-bottom:1px solid #27272a">Máximo del mes</td>
+              <td style="padding:8px 0;color:#e4e4e7;font-size:12px;text-align:right;border-bottom:1px solid #27272a;font-family:monospace">${money(data.max)}/kg</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 0;color:#71717a;font-size:12px">Ruedas computadas</td>
+              <td style="padding:8px 0;color:#e4e4e7;font-size:12px;text-align:right;font-family:monospace">${data.ruedas}</td>
+            </tr>
+          </table>
+
+          ${canon !== null && data.lease ? `
+          <div style="background:#16161d;border-left:3px solid #f59e0b;border-radius:4px;padding:14px 16px;margin-bottom:20px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 6px;text-transform:uppercase;letter-spacing:1px">Tu arrendamiento este mes</p>
+            <p style="color:#a1a1aa;font-size:13px;margin:0;line-height:1.6">
+              ${data.lease.hectareas} ha × ${data.lease.kgHa} kg/ha × ${money(data.avg)} = <strong style="color:#f59e0b;font-size:16px">${money(canon)}</strong>/mes
+            </p>
+          </div>` : ''}
+
+          <div style="text-align:center;margin:24px 0">
+            <a href="${APP_URL}/mercado/arrendamiento" style="background:#f59e0b;color:#0a0a0f;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">CALCULAR MI ARRENDAMIENTO</a>
+          </div>
+
+          <p style="color:#71717a;font-size:11px;margin:20px 0 0;line-height:1.6">
+            Fuente: Mercado Agroganadero de Buenos Aires (INMAG). Promedio simple de las ruedas del mes.
+          </p>
+          <p style="color:#3f3f46;font-size:10px;margin:12px 0 0">
+            Consignatarias.com.ar
+            &nbsp;&bull;&nbsp;
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#3f3f46">Desuscribirme</a>
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /*  WEEKLY NEWSLETTER                                                  */
 /* ------------------------------------------------------------------ */
 
@@ -903,10 +998,12 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
   const resend = await getResend()
   if (!resend) return { success: false, error: 'Resend not configured' }
 
-  const sourceContext = source === 'remates' 
+  const sourceContext = source === 'remates'
     ? 'Te suscribiste desde nuestra página de remates.'
     : source === 'frigorificos'
     ? 'Te suscribiste desde nuestra sección de frigoríficos.'
+    : source === 'cierre-mensual'
+    ? 'Te suscribiste al cierre mensual del Índice Novillo. El 1° de cada mes vas a recibir el promedio del mes que cerró.'
     : 'Te suscribiste a nuestro newsletter.'
 
   try {
