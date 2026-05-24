@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendElCorredorDelivery } from '@/lib/email'
+import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
 import manifest from '../../../../../public/el-corredor/manifest.json'
 
 export const dynamic = 'force-dynamic'
@@ -29,6 +30,7 @@ export async function POST(req: NextRequest) {
     .from('newsletter_subscribers')
     .select('email')
     .eq('status', 'active')
+    .in('source', [...SEGMENT_SOURCES.corredor])
 
   if (error) {
     return NextResponse.json({ error: 'subscribers query failed', details: error.message }, { status: 500 })

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendWeeklyNewsletter } from '@/lib/email'
+import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 
@@ -93,6 +94,7 @@ export async function POST(req: NextRequest) {
     .from('newsletter_subscribers')
     .select('email')
     .eq('status', 'active')
+    .in('source', [...SEGMENT_SOURCES.weekly])
 
   if (!subscribers || subscribers.length === 0) {
     return NextResponse.json({ message: 'No hay suscriptores activos', sent: 0 })

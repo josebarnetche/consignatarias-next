@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendMonthlyClose } from '@/lib/email'
+import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -94,6 +95,7 @@ export async function POST(req: NextRequest) {
     .from('newsletter_subscribers')
     .select('email, lease_kg_ha, lease_hectareas')
     .eq('status', 'active')
+    .in('source', [...SEGMENT_SOURCES.monthlyClose])
 
   if (!subscribers || subscribers.length === 0) {
     return NextResponse.json({ message: 'Sin suscriptores activos', sent: 0, monthLabel, avg: stats.avg })
