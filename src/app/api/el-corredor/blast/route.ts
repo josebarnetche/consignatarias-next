@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendElCorredorDelivery } from '@/lib/email'
 import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
+import { capForFreePlan } from '@/lib/email-limits'
 import manifest from '../../../../../public/el-corredor/manifest.json'
 
 export const dynamic = 'force-dynamic'
@@ -36,7 +37,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'subscribers query failed', details: error.message }, { status: 500 })
   }
 
-  const recipients = data?.map((r) => r.email) || []
+  const allRecipients = data?.map((r) => r.email) || []
+  const { toSend: recipients, skipped } = capForFreePlan(allRecipients)
   const pdfUrl = `${APP_URL}${manifest.current.pdf_path}`
 
   let sent = 0
@@ -60,7 +62,8 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     ok: true,
     edition: manifest.current.edition_label,
-    recipients_total: recipients.length,
+    recipients_total: allRecipients.length,
+    skipped, // diferidos por tope del plan free de Resend
     sent,
     failed,
     errors: errors.slice(0, 10),
