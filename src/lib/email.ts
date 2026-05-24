@@ -1088,6 +1088,52 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
   }
 }
 
+/* ------------------------------------------------------------------ */
+/*  INVITACIÓN A SUSCRIBIRSE — one-time, a contactos warm              */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Invitación ÚNICA y personal (de José) a contactos con relación previa para
+ * que SE SUSCRIBAN ellos al cierre mensual. No los agrega a la lista — los
+ * lleva a opt-in. From personal (reply-able), no "noreply". Una sola vez.
+ */
+export async function sendSubscriptionInvite(
+  to: string,
+  opts: { nombre?: string; inmagToday?: number } = {},
+) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+  const saludo = opts.nombre ? `Hola ${escapeHtml(opts.nombre)},` : 'Hola,'
+  const precio = opts.inmagToday
+    ? `$${Math.round(opts.inmagToday).toLocaleString('es-AR')}/kg`
+    : null
+  const subscribeUrl = `${APP_URL}/mercado/inmag?ref=invite`
+  try {
+    await resend.emails.send({
+      from: FROM_PERSONAL,
+      to,
+      replyTo: 'hola@consignatarias.com',
+      subject: precio ? `El Índice Novillo cerró en ${precio} — ¿te lo mando cada mes?` : 'El cierre mensual del Índice Novillo — ¿te interesa?',
+      html: `
+        <div style="font-family:system-ui,-apple-system,sans-serif;max-width:480px;margin:0 auto;color:#1a1a1a;font-size:15px;line-height:1.6">
+          <p>${saludo}</p>
+          <p>Soy José Barnetche. Armamos <strong>consignatarias.com.ar</strong> — el INMAG y los precios del Mercado Agroganadero, al día.</p>
+          <p>Todos los meses publicamos el <strong>cierre del Índice Novillo</strong>${precio ? ` (hoy <strong>${precio}</strong>)` : ''} — el número que se usa para liquidar arrendamientos y seguir el mercado.</p>
+          <p>Si te sirve, te lo puedo mandar <strong>el 1° de cada mes</strong>. Suscribite acá (30 segundos):</p>
+          <p style="margin:24px 0">
+            <a href="${subscribeUrl}" style="background:#16a34a;color:#fff;padding:11px 22px;text-decoration:none;border-radius:6px;font-weight:600">Recibir el cierre mensual →</a>
+          </p>
+          <p style="color:#666;font-size:13px">Si no te interesa, ignorá este mail — no te escribo de nuevo. Cualquier cosa, respondé a este correo.</p>
+          <p style="color:#999;font-size:13px">José · consignatarias.com.ar</p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
 // ----------------------------------------------------------------
 // El Corredor — entrega del PDF al suscribirse al lead magnet
 // ----------------------------------------------------------------
