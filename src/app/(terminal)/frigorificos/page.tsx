@@ -99,10 +99,10 @@ export default function FrigorificosPage() {
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="flex-1">
               <p className="text-zinc-300 text-sm font-medium">
-                📊 Recibí el reporte semanal de faena
+                📊 Recibí el reporte mensual de faena
               </p>
               <p className="text-zinc-500 text-xs mt-0.5">
-                Volúmenes por frigorífico, precios INMAG y tendencias del mercado.
+                Faena nacional, variación interanual y tendencias del mercado. Una vez por mes.
               </p>
             </div>
             <NewsletterSignup 

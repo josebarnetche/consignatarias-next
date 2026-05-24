@@ -3,6 +3,7 @@ import { requireServiceClient } from '@/lib/supabase'
 import { sendFaenaNewsletter } from '@/lib/email'
 import { getFaenaStats, formatFaenaDate } from '@/lib/faena-api'
 import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
+import { capForFreePlan } from '@/lib/email-limits'
 
 /**
  * Faena Newsletter — sends monthly cattle slaughter stats to subscribers.
@@ -45,10 +46,11 @@ export async function POST(req: NextRequest) {
   const currentMonth = formatFaenaDate(stats.current.date)
 
   // Send emails
+  const { toSend, skipped } = capForFreePlan(faenaSubscribers)
   let sent = 0
   const errors: string[] = []
 
-  for (const sub of faenaSubscribers) {
+  for (const sub of toSend) {
     try {
       const result = await sendFaenaNewsletter({
         to: sub.email,
@@ -76,6 +78,7 @@ export async function POST(req: NextRequest) {
     message: `Faena newsletter enviado: ${sent}/${faenaSubscribers.length}`,
     sent,
     total: faenaSubscribers.length,
+    skipped, // diferidos por tope del plan free de Resend
     month: currentMonth,
     stats: {
       cabezas: stats.current.cabezas,

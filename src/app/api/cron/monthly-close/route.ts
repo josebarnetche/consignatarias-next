@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendMonthlyClose } from '@/lib/email'
 import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
+import { capForFreePlan } from '@/lib/email-limits'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -102,9 +103,10 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Send ────────────────────────────────────────────────────────
+  const { toSend, skipped } = capForFreePlan(subscribers)
   let sent = 0
   const errors: string[] = []
-  for (const sub of subscribers) {
+  for (const sub of toSend) {
     try {
       const lease = (sub.lease_kg_ha && sub.lease_hectareas)
         ? { kgHa: Number(sub.lease_kg_ha), hectareas: Number(sub.lease_hectareas) }
@@ -126,6 +128,7 @@ export async function POST(req: NextRequest) {
     ruedas: stats.ruedas,
     sent,
     total: subscribers.length,
+    skipped, // diferidos por tope del plan free de Resend
     errors: errors.length ? errors : undefined,
   })
 }

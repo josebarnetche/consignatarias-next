@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendWeeklyNewsletter } from '@/lib/email'
 import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
+import { capForFreePlan } from '@/lib/email-limits'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 
@@ -101,10 +102,11 @@ export async function POST(req: NextRequest) {
   }
 
   // Send emails
+  const { toSend, skipped } = capForFreePlan(subscribers)
   let sent = 0
   const errors: string[] = []
 
-  for (const sub of subscribers) {
+  for (const sub of toSend) {
     try {
       await sendWeeklyNewsletter(
         sub.email,
@@ -124,6 +126,7 @@ export async function POST(req: NextRequest) {
     message: `Newsletter enviado: ${sent}/${subscribers.length}`,
     sent,
     total: subscribers.length,
+    skipped, // diferidos por tope del plan free de Resend
     weekRange,
     featuredCount: featuredRemates.length,
     proCount: proAuctions.length,
