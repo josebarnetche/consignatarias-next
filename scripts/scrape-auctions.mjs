@@ -122,6 +122,11 @@ const PROVINCE_MAP = {
 
 // City-to-province correction map — overrides bad API/curated province data
 const CITY_PROVINCE_MAP = {
+  // Province names used as a "city" (ambiguous in georef — e.g. "Buenos Aires"
+  // resolves to "Buenos Aires Chico" in Chubut). Pin them to the obvious province.
+  "BUENOS AIRES": "BUENOS AIRES",
+  "CAPITAL FEDERAL": "CAPITAL FEDERAL",
+  "CABA": "CAPITAL FEDERAL",
   // BUENOS AIRES
   "AYACUCHO": "BUENOS AIRES",
   "AZUL": "BUENOS AIRES",
