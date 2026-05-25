@@ -685,6 +685,49 @@ async function scrapeMadelan() {
 }
 
 // ---------------------------------------------------------------------------
+// Source: HK Agro SRL (hkagrosrl.com.ar) — Curuzú Cuatiá, Corrientes (NEA).
+// Remate dates show on the homepage slider as Spanish "Mmm DD, YYYY" text.
+// ---------------------------------------------------------------------------
+async function scrapeHKAgro() {
+  console.log("[+] Scraping HK Agro...");
+  const html = await fetchHTML("https://hkagrosrl.com.ar/");
+  if (!html) return [];
+
+  const MONTHS = { ene: 1, feb: 2, mar: 3, abr: 4, may: 5, jun: 6, jul: 7, ago: 8, sep: 9, oct: 10, nov: 11, dic: 12 };
+  const re = /\b(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)\s+(\d{1,2}),?\s+(\d{4})/gi;
+  const auctions = [];
+  const seen = new Set();
+  let m;
+  while ((m = re.exec(html)) !== null) {
+    const mo = MONTHS[m[1].toLowerCase()];
+    if (!mo) continue;
+    const date = `${m[3]}-${String(mo).padStart(2, "0")}-${m[2].padStart(2, "0")}`;
+    if (seen.has(date) || date < todayISO()) continue;
+    seen.add(date);
+    auctions.push({
+      title: "Remate HK Agro",
+      consignatariaName: "HK Agro SRL",
+      consignatariaSlug: "hk-agro",
+      date,
+      time: null,
+      location: "Corrientes",
+      province: "CORRIENTES",
+      type: "general",
+      mainCategory: "mixto",
+      estimatedHeads: null,
+      description: "Remate por pantalla e internet",
+      youtubeUrl: null,
+      catalogUrl: null,
+      source: "web",
+      sourceUrl: "https://hkagrosrl.com.ar/",
+    });
+  }
+
+  console.log(`  Found ${auctions.length} HK Agro auctions`);
+  return auctions;
+}
+
+// ---------------------------------------------------------------------------
 // Source 9: UMC Haciendas Villaguay (umchv.ar)
 // ---------------------------------------------------------------------------
 
@@ -1495,13 +1538,14 @@ async function main() {
   console.log(`\n=== Ganado Terminal Scraper — ${todayISO()} ===\n`);
 
   // Scrape all sources in parallel
-  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, entresurcos, dollar, cattlePrices, cornPrice, categoryPrices, provinceEntry, consignatarioEntry, detailedCategories] = await Promise.all([
+  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, hkagro, entresurcos, dollar, cattlePrices, cornPrice, categoryPrices, provinceEntry, consignatarioEntry, detailedCategories] = await Promise.all([
     scrapeCACG(),
     scrapeColombo(),
     scrapeOFarrell(),
     scrapeLehmann(),
     scrapeMadelan(),
     scrapeUMCHV(),
+    scrapeHKAgro(),
     scrapeEntreSurcos(),
     scrapeDollar(),
     scrapeCattlePrices(),
@@ -1513,7 +1557,7 @@ async function main() {
   ]);
 
   // Combine all scraped auctions
-  const allScraped = [...cacg, ...colombo, ...ofarrell, ...lehmann, ...madelan, ...umchv, ...entresurcos];
+  const allScraped = [...cacg, ...colombo, ...ofarrell, ...lehmann, ...madelan, ...umchv, ...hkagro, ...entresurcos];
   console.log(`\nTotal scraped: ${allScraped.length} auctions`);
 
   // Load existing data
@@ -1528,6 +1572,7 @@ async function main() {
     "coop-lehmann",
     "madelan",
     "umc-haciendas-villaguay",
+    "hk-agro",
   ]);
 
   // Keep curated entries that aren't from scrapable sources

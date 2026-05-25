@@ -36,6 +36,7 @@ export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string;
   'lanser': { logo: 'lanser.png', color: '#0030a8' },
   'reggi': { logo: 'reggi.png', color: '#001830' },
   'gananor-pujol': { logo: 'gananor-pujol.svg', color: '#8a1e41' },
+  'hk-agro': { logo: 'hk-agro.png', color: '#e8731c' },
   'talano-hermanos': { logo: 'talano-hermanos.png', color: '#a81818' },
   'casa-usandizaga': { logo: 'casa-usandizaga.png', color: '#d81818' },
   'darwash': { logo: 'darwash.svg', color: '#0d6c79' },
