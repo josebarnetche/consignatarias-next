@@ -312,19 +312,6 @@
     },
     "lastChecked": "2026-05-23"
   },
-  "hre-consignaciones-srl": {
-    "channelId": "UCzxS2u0UeiqTdB5ku8Ww7sA",
-    "channelUrl": "https://www.youtube.com/channel/UCzxS2u0UeiqTdB5ku8Ww7sA",
-    "channelTitle": "HRE Consignaciones S.R.L",
-    "subscribers": null,
-    "latestVideo": {
-      "videoId": "tGv7LcxXx9I",
-      "title": "61° Remate por Pantalla e Internet",
-      "publishedAt": "2026-05-07T21:37:40+00:00",
-      "thumbnail": "https://i.ytimg.com/vi/tGv7LcxXx9I/hqdefault.jpg"
-    },
-    "lastChecked": "2026-05-23"
-  },
   "pedro-noel-irey": {
     "channelId": "UCTNYDLjbPfmGnTn1QqOUX_Q",
     "channelUrl": "https://www.youtube.com/@ireytv",
@@ -389,5 +376,18 @@
       "publishedAt": "2019-06-06T13:43:20+00:00",
       "thumbnail": "https://i.ytimg.com/vi/duqvNAeq96A/hqdefault.jpg"
     }
+  },
+  "rodriguez-egana": {
+    "channelId": "UCzxS2u0UeiqTdB5ku8Ww7sA",
+    "channelUrl": "https://www.youtube.com/channel/UCzxS2u0UeiqTdB5ku8Ww7sA",
+    "channelTitle": "HRE Consignaciones S.R.L",
+    "subscribers": null,
+    "latestVideo": {
+      "videoId": "tGv7LcxXx9I",
+      "title": "61° Remate por Pantalla e Internet",
+      "publishedAt": "2026-05-07T21:37:40+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/tGv7LcxXx9I/hqdefault.jpg"
+    },
+    "lastChecked": "2026-05-23"
   }
 }

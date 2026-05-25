@@ -30,7 +30,7 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'campos-y-ganados', displayName: 'Campos y Ganados SA', allSlugs: ['campos-y-ganados', 'campos-y-ganados-s-a', 'campos-y-ganados-sa'] },
   { canonicalSlug: 'casa-usandizaga', displayName: 'Casa Usandizaga SA', allSlugs: ['casa-usandizaga', 'casa-usandizaga-s-a'] },
   { canonicalSlug: 'colombo-y-colombo', displayName: 'Colombo y Colombo SA', allSlugs: ['colombo-y-colombo', 'colombo-y-colombo-sa', 'colombo-y-colombo-s-a'] },
-  { canonicalSlug: 'colombo-y-magliano', displayName: 'Colombo y Magliano SA', allSlugs: ['colombo-y-magliano', 'colombo-y-magliano-s-a', 'colombo-y-magliano-sa'] },
+  { canonicalSlug: 'colombo-y-magliano', displayName: 'Colombo y Magliano SA', allSlugs: ['colombo-y-magliano', 'colombo-y-magliano-s-a', 'colombo-y-magliano-sa', 'colombo-y-maliagno2'] },
   { canonicalSlug: 'consignataria-serrano', displayName: 'Consignataria Serrano SA', allSlugs: ['consignataria-serrano', 'consignataria-serrano-s-a'] },
   { canonicalSlug: 'cooperativa-guillermo-lehmann', displayName: 'Cooperativa Guillermo Lehmann', allSlugs: ['cooperativa-guillermo-lehmann', 'coop-agric-ganad-ltda-guillermo-lehmann'] },
   { canonicalSlug: 'cooperativa-lehmann', displayName: 'Cooperativa Lehmann', allSlugs: ['cooperativa-lehmann'] },
@@ -96,6 +96,18 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'umc-villaguay', displayName: 'UMC SA - Haciendas Villaguay SRL', allSlugs: ['umc-villaguay', 'umc-haciendas-villaguay'] },
   { canonicalSlug: 'vicar-ganadera', displayName: 'Vicar Ganadera SA', allSlugs: ['vicar-ganadera', 'vicar-ganadera-s-a'] },
   { canonicalSlug: 'wallace-hnos', displayName: 'Wallace Hnos. SA', allSlugs: ['wallace-hnos-s-a'] },
+
+  // Added 2026-05-24 — these had remates but no profile entry, so the detail
+  // page 404'd on redirect (data-integrity audit P1 "unresolvable-slugs").
+  { canonicalSlug: 'hourcade-albelo', displayName: 'Hourcade, Albelo y Cía. SA', allSlugs: ['hourcade-albelo', 'hourcade-albelo-y-cia-s-a'] },
+  { canonicalSlug: 'consignataria-bh', displayName: 'Consignataria BH SRL', allSlugs: ['consignataria-bh', 'consignataria-bh-s-r-l'] },
+  { canonicalSlug: 'paz-hnos', displayName: 'Compañía Consignataria Paz Hnos. SRL', allSlugs: ['paz-hnos', 'compania-consignataria-paz-hnos-s-r-l'] },
+  { canonicalSlug: 'lanusse-santillan', displayName: 'Lanusse-Santillán y Cía. SA', allSlugs: ['lanusse-santillan', 'lanusse-santillan-y-cia-s-a'] },
+  { canonicalSlug: 'consignataria-galarraga', displayName: 'Consignataria Galarraga SA', allSlugs: ['consignataria-galarraga', 'consignataria-galarraga-s-a'] },
+  { canonicalSlug: 'esteban-abelenda', displayName: 'Esteban Abelenda SA', allSlugs: ['esteban-abelenda', 'esteban-abelenda-s-a'] },
+  { canonicalSlug: 'de-la-serna', displayName: 'Jorge y Martín de la Serna SRL', allSlugs: ['de-la-serna', 'jorge-y-martin-de-la-serna-s-r-l'] },
+  { canonicalSlug: 'duhalde', displayName: 'Duhalde y Cía. SRL', allSlugs: ['duhalde', 'duhalde-y-cia-s-r-l'] },
+  { canonicalSlug: 'talano-hermanos', displayName: 'Talano Hermanos SRL', allSlugs: ['talano-hermanos', 'talano-hermanos-s-r-l'] },
 ]
 
 /* ------------------------------------------------------------------ */
@@ -127,17 +139,33 @@ export function getCanonicalSlug(rawSlug: string): string | null {
   return slugToCanonical.get(rawSlug) ?? null
 }
 
-/** Get the profile for a canonical slug. Returns null if not found. */
+/** Get the profile for a canonical slug. Returns null if not curated. */
 export function getProfile(canonicalSlug: string): ConsignatariaProfile | null {
   return canonicalToProfile.get(canonicalSlug) ?? null
+}
+
+/**
+ * Synthesize a minimal profile for a consignataria that has remates but isn't
+ * in the curated PROFILES registry, so its profile page renders instead of
+ * 404'ing. Server-only callers pass the displayName from the remate data.
+ * Intentionally not part of the curated maps: these aren't pre-built or
+ * sitemapped — they render on-demand (dynamicParams). Curate to promote.
+ */
+export function synthesizeProfile(slug: string, displayName: string): ConsignatariaProfile {
+  return { canonicalSlug: slug, displayName: displayName.trim() || slug, allSlugs: [slug] }
 }
 
 /** Get all auctions that belong to a canonical slug (merges all variant slugs). */
 export function getAuctionsForProfile(auctions: Auction[], canonicalSlug: string): Auction[] {
   const profile = canonicalToProfile.get(canonicalSlug)
-  if (!profile) return []
-  const slugSet = new Set(profile.allSlugs)
-  return auctions.filter(a => slugSet.has(a.consignatariaSlug))
+  // Curated profile: merge across all its variant slugs.
+  if (profile) {
+    const slugSet = new Set(profile.allSlugs)
+    return auctions.filter(a => slugSet.has(a.consignatariaSlug))
+  }
+  // Uncurated consignataria (synthesized profile): match the slug directly so
+  // the on-demand page still shows its auctions.
+  return auctions.filter(a => a.consignatariaSlug === canonicalSlug)
 }
 
 /** Get all canonical slugs (for generateStaticParams). */

@@ -5,6 +5,8 @@ import marketPrices from "@/lib/data/market-prices.json";
 import frigorificosSummary from "@/lib/data/frigorificos-summary.json";
 import rematesData from "@/lib/data/remates.json";
 import { getAllProfiles } from "@/lib/data/consignataria-slugs";
+import { getLogoUrl, getBrandColor } from "@/lib/data/logo-map";
+import ConsignatariasShowcase from "@/components/landing/ConsignatariasShowcase";
 import { FAQPageSchema, OrganizationSchema, WebSiteSchema } from "@/components/seo/JsonLd";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import ValuationWidget from "@/components/landing/ValuationWidget";
@@ -128,6 +130,18 @@ const REGION_GRID = REGION_ORDER
   .filter(r => (consigsByRegion[r]?.length ?? 0) > 0)
   .map(r => ({ region: r, cards: consigsByRegion[r].slice(0, 3) }))
 
+// Active consignatarias for the landing showcase grid: those with a remate in
+// the last 60 days (past or upcoming), sorted by activity. Excludes zombies.
+const CUTOFF_60D = new Date(Date.now() - 60 * 864e5).toISOString().slice(0, 10)
+const activeConsignatarias = consigCards
+  .map(c => {
+    const slugs = new Set(getAllProfiles().find(p => p.canonicalSlug === c.slug)?.allSlugs ?? [])
+    const count = rematesData.filter(r => r.date >= CUTOFF_60D && slugs.has(r.consignatariaSlug)).length
+    return { slug: c.slug, name: c.name, count }
+  })
+  .filter(c => c.count > 0)
+  .sort((a, b) => b.count - a.count)
+
 // En Vivo: remates with YouTube streaming
 const rematesEnVivo = rematesProximos.filter(
   (r) => r.youtubeUrl && r.youtubeUrl.length > 0
@@ -218,6 +232,14 @@ export const metadata: Metadata = {
 /*  PAGE                                                               */
 /* ================================================================== */
 export default function LandingPage() {
+  // Hybrid logo/name tiles. Logos come from the local LOGO_MAP (favicons of the
+  // most active firms — not clients). Tiles with a logo are sorted first so the
+  // grid leads with recognizable brand marks.
+  // Only firms with a real logo make the brand wall (active in the last 60 days).
+  const showcaseItems = activeConsignatarias
+    .map(c => ({ slug: c.slug, name: c.name, logoUrl: getLogoUrl(c.slug), brandColor: getBrandColor(c.slug) }))
+    .filter(c => c.logoUrl && c.brandColor)
+
   return (
     <div className="font-sans text-zinc-300 selection:bg-zinc-800 selection:text-zinc-100">
       {/* SEO Structured Data */}
@@ -591,6 +613,11 @@ export default function LandingPage() {
         </section>
 
         <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
+
+        {/* ============================================================ */}
+        {/*  CONSIGNATARIAS SHOWCASE — wall of active consignatarias      */}
+        {/* ============================================================ */}
+        <ConsignatariasShowcase items={showcaseItems} />
 
         {/* ============================================================ */}
         {/*  FEATURE 1: REMATES                                          */}

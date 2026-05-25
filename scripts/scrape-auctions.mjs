@@ -86,7 +86,10 @@ function normalizeProvince(name) {
   return (name || "")
     .toUpperCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[.\s]+$/, "")   // strip trailing dots/space (e.g. "BUENOS AIRES.")
+    .replace(/\s+/g, " ")     // collapse internal whitespace
+    .trim();
 }
 
 // Map CACG province IDs to our province names

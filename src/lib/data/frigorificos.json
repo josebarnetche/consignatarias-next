@@ -2529,15 +2529,6 @@
     "senasaLastSeen": "2026-05-19"
   },
   {
-    "cuit": "30712415130",
-    "name": "COOPERATIVA DE TRABAJO AGUA VIVA LIMITADA",
-    "matricula": "4002",
-    "province": "SANTA FE",
-    "stage": 3,
-    "senasaActive": false,
-    "senasaLastSeen": null
-  },
-  {
     "cuit": "33500635989",
     "name": "FRIGORIFICO ANSELMO S.A.",
     "matricula": "3516",
@@ -3193,15 +3184,6 @@
     "stage": 3,
     "senasaActive": false,
     "senasaLastSeen": null
-  },
-  {
-    "cuit": "30708728035",
-    "name": "COOPERATIVA DE TRABAJO FRIGORIFICO J.J. GOMEZ LTDA",
-    "matricula": "9171",
-    "province": "RIO NEGRO",
-    "stage": 3,
-    "senasaActive": true,
-    "senasaLastSeen": "2026-05-19"
   },
   {
     "cuit": "30716930943",

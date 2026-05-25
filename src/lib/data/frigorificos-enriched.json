@@ -5058,24 +5058,6 @@
     "enrichmentSource": null
   },
   {
-    "cuit": "30712415130",
-    "name": "COOPERATIVA DE TRABAJO AGUA VIVA LIMITADA",
-    "matricula": "4002",
-    "province": "SANTA FE",
-    "stage": 3,
-    "grupoEmpresario": null,
-    "tipo": null,
-    "localidad": null,
-    "direccion": null,
-    "telefono": null,
-    "email": null,
-    "web": null,
-    "volumenFaena": null,
-    "notas": null,
-    "enrichedAt": null,
-    "enrichmentSource": null
-  },
-  {
     "cuit": "33500635989",
     "name": "FRIGORIFICO ANSELMO S.A.",
     "matricula": "3516",
@@ -6388,24 +6370,6 @@
     "notas": null,
     "enrichedAt": null,
     "enrichmentSource": null
-  },
-  {
-    "cuit": "30708728035",
-    "name": "COOPERATIVA DE TRABAJO FRIGORIFICO J.J. GOMEZ LTDA",
-    "matricula": "9171",
-    "province": "RIO NEGRO",
-    "stage": 3,
-    "grupoEmpresario": null,
-    "tipo": "ambos",
-    "localidad": "General Roca, Río Negro",
-    "direccion": "Avenida Roca 725, General Roca, Río Negro",
-    "telefono": null,
-    "email": null,
-    "web": "https://web.viaweb.net.ar/jjgomez/",
-    "volumenFaena": null,
-    "notas": "Empresa recuperada por sus trabajadores, fundada como cooperativa el 20/11/2001. Capacidad de procesamiento: 1000 animales/día (600 bovinos, 200 porcinos, 200 ovinos). Habilitación con tránsito federal de SENASA. Línea de exportación de carne ovina a países árabes. Concesión del frigorífico municipal de Jacobacci.",
-    "enrichedAt": "2026-03-10",
-    "enrichmentSource": "web"
   },
   {
     "cuit": "30716930943",
