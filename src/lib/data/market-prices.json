@@ -1727,41 +1727,41 @@
   },
   "categories": {
     "novillos": {
-      "current": 4328.08,
-      "prev": 4328,
+      "current": 4328,
+      "prev": 4328.08,
       "change": 0,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 761
     },
     "novillitos": {
-      "current": 4714.97,
-      "prev": 4112,
-      "change": 14.7,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "current": 4112,
+      "prev": 4714.97,
+      "change": -12.8,
+      "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 765
     },
     "vaquillonas": {
-      "current": 4333.51,
-      "prev": 3895,
-      "change": 11.3,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "current": 3895,
+      "prev": 4333.51,
+      "change": -10.1,
+      "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1327
     },
     "vacas": {
-      "current": 2478.52,
-      "prev": 3116,
-      "change": -20.5,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "current": 3116,
+      "prev": 2478.52,
+      "change": 25.7,
+      "source": "MAG (derived from INMAG)",
       "latestVolume": 3008
     },
     "toros": {
-      "current": 2627.08,
-      "prev": 2813,
-      "change": -6.6,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "current": 2813,
+      "prev": 2627.08,
+      "change": 7.1,
+      "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 242
     },
@@ -1788,12 +1788,12 @@
   },
   "usdOficial": {
     "current": 1425,
-    "prev": 1420,
-    "change": 0.4,
+    "prev": 1425,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-05-23",
+  "lastUpdate": "2026-05-24",
   "provinceEntry": {
     "date": "2026-05-22",
     "totalCabezas": 6133,
