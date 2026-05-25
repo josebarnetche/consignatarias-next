@@ -203,6 +203,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = customSEO?.description
     || `Calendario completo de remates ganaderos de ${profile.displayName}. ${profileAuctions.length} remates programados${upcoming > 0 ? `, ${upcoming} próximos` : ''}. ${provinces.join(', ')}.`
 
+  // Thin profiles (0–1 remates, no SEO enhancement) have too little unique
+  // content to index — keep them crawlable/followable but out of the index.
+  const thin = profileAuctions.length < 2 && !customSEO
+
   return {
     title,
     description,
@@ -216,6 +220,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: {
       canonical: `https://www.consignatarias.com.ar/consignatarias/${canonical}`,
     },
+    ...(thin && { robots: { index: false, follow: true } }),
   }
 }
 
