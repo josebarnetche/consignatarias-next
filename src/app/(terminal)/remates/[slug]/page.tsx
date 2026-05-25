@@ -28,6 +28,8 @@ import {
   Users
 } from 'lucide-react'
 
+type Remate = typeof rematesData[0]
+
 // Generate slug from remate data
 function generateRemateSlug(remate: typeof rematesData[0]): string {
   const parts = [
@@ -121,6 +123,65 @@ function formatArs(value: number): string {
 function formatShortDate(dateStr: string): string {
   const d = new Date(dateStr + 'T12:00:00')
   return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
+}
+
+// MAG per-category reference price. market-prices.json `categories` is keyed by
+// these slugs; vaca_gorda maps to "vacas"; mixto has no single key (use INMAG).
+const CATEGORY_PRICE_KEY: Record<string, string | null> = {
+  terneros: 'terneros', novillos: 'novillos', novillitos: 'novillitos',
+  vaca_gorda: 'vacas', vaquillonas: 'vaquillonas', toros: 'toros', mixto: null,
+}
+const MAG_CATEGORIES = (marketPrices as { categories?: Record<string, { current?: number; change?: number }> }).categories ?? {}
+const MAG_DATE = (marketPrices as { lastUpdate?: string }).lastUpdate ?? null
+
+// Province → region → dominant breed (semi-unique reference per page).
+const PROVINCE_REGION: Record<string, 'NEA' | 'NOA' | 'PAMPA' | 'PATAGONIA'> = {
+  'CORRIENTES': 'NEA', 'CHACO': 'NEA', 'FORMOSA': 'NEA', 'MISIONES': 'NEA',
+  'SALTA': 'NOA', 'JUJUY': 'NOA', 'SANTIAGO DEL ESTERO': 'NOA', 'TUCUMAN': 'NOA', 'LA RIOJA': 'NOA', 'CATAMARCA': 'NOA',
+  'BUENOS AIRES': 'PAMPA', 'CORDOBA': 'PAMPA', 'SANTA FE': 'PAMPA', 'LA PAMPA': 'PAMPA', 'SAN LUIS': 'PAMPA', 'ENTRE RIOS': 'PAMPA',
+  'NEUQUEN': 'PATAGONIA', 'RIO NEGRO': 'PATAGONIA', 'CHUBUT': 'PATAGONIA', 'SANTA CRUZ': 'PATAGONIA', 'TIERRA DEL FUEGO': 'PATAGONIA',
+}
+const REGION_BREED: Record<string, { breed: string; secondary: string; blurb: string }> = {
+  NEA: { breed: 'Braford', secondary: 'Brangus', blurb: 'En el NEA predomina el Braford —raza sintética británico-índica (Hereford × Brahman) que combina la calidad carnicera del Hereford con la rusticidad y la resistencia al calor y a los ectoparásitos del subtrópico húmedo.' },
+  NOA: { breed: 'Brangus', secondary: 'Brahman', blurb: 'En el NOA predomina el Brangus —cruza de Aberdeen Angus y Brahman que suma precocidad y calidad de res a la adaptación al ambiente subtropical seco.' },
+  PAMPA: { breed: 'Aberdeen Angus', secondary: 'Hereford', blurb: 'En la región pampeana domina el Aberdeen Angus —el recurso genético mayoritario del país (cerca del 50% de los animales puros), valorado por su precocidad, fertilidad y marmóreo.' },
+  PATAGONIA: { breed: 'Hereford', secondary: 'Angus', blurb: 'En la Patagonia predomina el Hereford —raza británica muy adaptada al frío y a los pastizales de la región, destacada por su mansedumbre y rusticidad.' },
+}
+function regionBreed(province: string) {
+  const region = PROVINCE_REGION[(province || '').toUpperCase()]
+  return region ? REGION_BREED[region] : null
+}
+
+// City = first segment of the location string before the comma.
+function cityOf(r: Remate): string {
+  return (r.location?.split(',')[0] || r.location || '').trim()
+}
+
+// Natural, data-derived one-liner built from the remate's own fields — unique
+// per page (consignataria + type + category + city + date + heads all vary).
+function remateSummary(r: Remate): string {
+  const t = (TYPE_LABELS[r.type] || r.type || '').toLowerCase()
+  const cat = r.mainCategory ? (CATEGORY_LABELS[r.mainCategory] || '').toLowerCase() : ''
+  const city = cityOf(r)
+  const prov = PROVINCE_NAMES[r.province] || r.province
+  const when = formatDate(r.date).replace(/ \d{4}$/, '')
+  const catClause = cat && r.mainCategory !== 'mixto' ? ` con foco en ${cat}` : ''
+  const headsClause = r.estimatedHeads ? `, con unas ${r.estimatedHeads.toLocaleString('es-AR')} cabezas` : ''
+  const place = city && city.toLowerCase() !== (prov || '').toLowerCase() ? `${city}, ${prov}` : prov
+  return `Remate de ${t}${catClause} organizado por ${r.consignatariaName} en ${place}, el ${when}${headsClause}.`
+}
+
+// Related-remate card: a varied anchor + the data-derived summary (unique text).
+function RelatedCard({ href, anchor, summary }: { href: string; anchor: string; summary: string }) {
+  return (
+    <Link href={href} className="flex items-center justify-between p-4 bg-slate-900 rounded-lg border border-slate-800 hover:border-slate-700 transition-colors">
+      <div>
+        <p className="font-medium text-white">{anchor}</p>
+        <p className="text-sm text-slate-400">{summary}</p>
+      </div>
+      <ArrowLeft className="w-4 h-4 text-slate-500 rotate-180 shrink-0" />
+    </Link>
+  )
 }
 
 // Province display names
@@ -270,15 +331,48 @@ export default async function RemateDetailPage({ params }: Props) {
     : null
   const categoryLabel = remate.mainCategory ? (CATEGORY_LABELS[remate.mainCategory] || null) : null
   
-  // Get similar remates (same province or same type, upcoming)
-  const similarRemates = rematesData
-    .filter(r => 
-      r.id !== remate.id &&
-      r.status === 'scheduled' &&
-      r.date >= today &&
-      (r.province === remate.province || r.type === remate.type)
-    )
-    .slice(0, 5)
+  // ---- Related remates: scoped modules (per-page-unique content + internal
+  // links that fix orphans). The slug in remates.json is a VARIANT — resolve
+  // to canonical via profiles for stable grouping.
+  const currentCanon = consigProfile?.canonicalSlug ?? remate.consignatariaSlug
+  const canonOf = (r: Remate): string => {
+    const p = profiles.find(pr => pr.canonicalSlug === r.consignatariaSlug || pr.allSlugs.includes(r.consignatariaSlug))
+    return p?.canonicalSlug ?? r.consignatariaSlug
+  }
+  const currentCity = cityOf(remate)
+  const provinceHub = `/remates/${remate.province?.toLowerCase().replace(/\s+/g, '-') || ''}`
+  const pool: Remate[] = rematesData
+    .filter(r => r.id !== remate.id && r.status === 'scheduled' && r.date >= today)
+    .sort((a, b) => a.date.localeCompare(b.date))
+  const shownIds = new Set<number>()
+  const take = (list: Remate[], n: number): Remate[] => {
+    const out: Remate[] = []
+    for (const r of list) {
+      if (shownIds.has(r.id)) continue
+      shownIds.add(r.id)
+      out.push(r)
+      if (out.length >= n) break
+    }
+    return out
+  }
+  const consigDisplay = consigProfile?.displayName ?? remate.consignatariaName
+  const sameConsignataria = take(pool.filter(r => canonOf(r) === currentCanon), 4)
+  const sameCity = pool.filter(r => cityOf(r) === currentCity && currentCity.length > 2)
+  const sameProvince = pool.filter(r => r.province === remate.province)
+  const nearbyGeo = take([...sameCity, ...sameProvince], 4)
+  const sameTypeAll = pool.filter(r => r.type === remate.type)
+  const typeRanked = remate.mainCategory
+    ? [...sameTypeAll.filter(r => r.mainCategory === remate.mainCategory), ...sameTypeAll.filter(r => r.mainCategory !== remate.mainCategory)]
+    : sameTypeAll
+  const sameTypeRemates = take(typeRanked, 3)
+
+  // Per-category MAG reference price (mixto → no single key, falls back to INMAG).
+  const priceKey = remate.mainCategory ? CATEGORY_PRICE_KEY[remate.mainCategory] : null
+  const catPrice = priceKey ? MAG_CATEGORIES[priceKey] : null
+  // Breed reference for the province's region.
+  const breed = regionBreed(remate.province)
+  // Data-derived summary for the current remate (unique paragraph on the page).
+  const summary = remateSummary(remate)
   
   // WhatsApp share URL
   const shareText = `📢 Remate ${typeName}: ${remate.title}\n📅 ${dateFormatted}\n📍 ${remate.location}\n🔗 https://www.consignatarias.com.ar/remates/${slug}`
@@ -595,6 +689,27 @@ export default async function RemateDetailPage({ params }: Props) {
             </div>
           )}
 
+          {/* Contexto del remate — data-derived summary + per-category price + breed */}
+          <div className="mt-8 bg-slate-900 rounded-xl border border-slate-800 p-6">
+            <h2 className="text-xl font-bold text-white mb-3">Contexto del remate</h2>
+            <p className="text-slate-300 leading-relaxed">{summary}</p>
+            {catPrice?.current ? (
+              <p className="text-slate-400 text-sm mt-3">
+                Referencia de precio para <span className="text-slate-200">{categoryLabel}</span>:{' '}
+                <span className="text-white tabular-nums">${formatArs(catPrice.current)}/kg</span>
+                {typeof catPrice.change === 'number' && (
+                  <span className={catPrice.change >= 0 ? 'text-green-400' : 'text-red-400'}> ({catPrice.change >= 0 ? '+' : ''}{catPrice.change.toFixed(1)}%)</span>
+                )}
+                {MAG_DATE && <span className="text-slate-600"> · MAG, {MAG_DATE}</span>}
+              </p>
+            ) : null}
+            {breed && (
+              <p className="text-slate-400 text-sm mt-3 leading-relaxed">
+                {breed.blurb} <span className="text-slate-500">También frecuente en la zona: {breed.secondary}.</span>
+              </p>
+            )}
+          </div>
+
           {/* Consignataria profile card */}
           {consigProfile && (
             <div className="mt-8">
@@ -640,41 +755,74 @@ export default async function RemateDetailPage({ params }: Props) {
             </div>
           )}
           
-          {/* Similar remates */}
-          {similarRemates.length > 0 && (
+          {/* Related: same consignataria */}
+          {sameConsignataria.length > 0 && (
             <div className="mt-8">
-              <h2 className="text-xl font-bold text-white mb-4">Remates similares próximos</h2>
+              <h2 className="text-xl font-bold text-white mb-4">Próximos remates de {consigDisplay}</h2>
               <div className="grid gap-3">
-                {similarRemates.map(r => {
-                  const rSlug = generateRemateSlug(r)
-                  const rProvince = PROVINCE_NAMES[r.province] || r.province
-                  const rType = TYPE_LABELS[r.type] || r.type
-                  return (
-                    <Link
-                      key={r.id}
-                      href={`/remates/${rSlug}`}
-                      className="flex items-center justify-between p-4 bg-slate-900 rounded-lg border border-slate-800 hover:border-slate-700 transition-colors"
-                    >
-                      <div>
-                        <p className="font-medium text-white">{r.title}</p>
-                        <p className="text-sm text-slate-400">
-                          {rType} • {rProvince} • {formatDate(r.date).split(' ').slice(0, 4).join(' ')}
-                        </p>
-                      </div>
-                      <ArrowLeft className="w-4 h-4 text-slate-500 rotate-180" />
-                    </Link>
-                  )
-                })}
+                {sameConsignataria.map(r => (
+                  <RelatedCard
+                    key={r.id}
+                    href={`/remates/${generateRemateSlug(r)}`}
+                    anchor={`${r.title} — ${cityOf(r)}, ${formatDate(r.date).split(' ').slice(1, 4).join(' ')}`}
+                    summary={remateSummary(r)}
+                  />
+                ))}
               </div>
-              
-              {/* PRO Alert Prompt */}
-              <div className="mt-4">
-                <ProUpgradePrompt
-                  benefit="No te pierdas remates como este. Alertas en tu email."
-                  context="remate-detail"
-                  variant="inline"
-                />
+              <Link href={consignatariaProfilePath(remate.consignatariaSlug)} className="inline-block mt-3 text-blue-400 text-sm hover:underline">
+                Ver todos los remates de {consigDisplay} →
+              </Link>
+            </div>
+          )}
+
+          {/* Related: same province (geographic) */}
+          {nearbyGeo.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-xl font-bold text-white mb-4">Próximos remates en {provinceName}</h2>
+              <div className="grid gap-3">
+                {nearbyGeo.map(r => (
+                  <RelatedCard
+                    key={r.id}
+                    href={`/remates/${generateRemateSlug(r)}`}
+                    anchor={`Remate en ${cityOf(r)} · ${TYPE_LABELS[r.type] || r.type}`}
+                    summary={remateSummary(r)}
+                  />
+                ))}
               </div>
+              <Link href={provinceHub} className="inline-block mt-3 text-blue-400 text-sm hover:underline">
+                Ver el calendario de remates en {provinceName} →
+              </Link>
+            </div>
+          )}
+
+          {/* Related: same type */}
+          {sameTypeRemates.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-xl font-bold text-white mb-4">Otros remates de {typeName.toLowerCase()}</h2>
+              <div className="grid gap-3">
+                {sameTypeRemates.map(r => (
+                  <RelatedCard
+                    key={r.id}
+                    href={`/remates/${generateRemateSlug(r)}`}
+                    anchor={`${TYPE_LABELS[r.type] || r.type} de ${r.consignatariaName}`}
+                    summary={remateSummary(r)}
+                  />
+                ))}
+              </div>
+              <Link href={`/remates/tipo/${remate.type}`} className="inline-block mt-3 text-blue-400 text-sm hover:underline">
+                Ver todos los remates de {typeName.toLowerCase()} →
+              </Link>
+            </div>
+          )}
+
+          {/* PRO Alert Prompt (once, after the related modules) */}
+          {(sameConsignataria.length > 0 || nearbyGeo.length > 0 || sameTypeRemates.length > 0) && (
+            <div className="mt-4">
+              <ProUpgradePrompt
+                benefit="No te pierdas remates como este. Alertas en tu email."
+                context="remate-detail"
+                variant="inline"
+              />
             </div>
           )}
           
