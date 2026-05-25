@@ -30,7 +30,7 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'campos-y-ganados', displayName: 'Campos y Ganados SA', allSlugs: ['campos-y-ganados', 'campos-y-ganados-s-a', 'campos-y-ganados-sa'] },
   { canonicalSlug: 'casa-usandizaga', displayName: 'Casa Usandizaga SA', allSlugs: ['casa-usandizaga', 'casa-usandizaga-s-a'] },
   { canonicalSlug: 'colombo-y-colombo', displayName: 'Colombo y Colombo SA', allSlugs: ['colombo-y-colombo', 'colombo-y-colombo-sa', 'colombo-y-colombo-s-a'] },
-  { canonicalSlug: 'colombo-y-magliano', displayName: 'Colombo y Magliano SA', allSlugs: ['colombo-y-magliano', 'colombo-y-magliano-s-a', 'colombo-y-magliano-sa'] },
+  { canonicalSlug: 'colombo-y-magliano', displayName: 'Colombo y Magliano SA', allSlugs: ['colombo-y-magliano', 'colombo-y-magliano-s-a', 'colombo-y-magliano-sa', 'colombo-y-maliagno2'] },
   { canonicalSlug: 'consignataria-serrano', displayName: 'Consignataria Serrano SA', allSlugs: ['consignataria-serrano', 'consignataria-serrano-s-a'] },
   { canonicalSlug: 'cooperativa-guillermo-lehmann', displayName: 'Cooperativa Guillermo Lehmann', allSlugs: ['cooperativa-guillermo-lehmann', 'coop-agric-ganad-ltda-guillermo-lehmann'] },
   { canonicalSlug: 'cooperativa-lehmann', displayName: 'Cooperativa Lehmann', allSlugs: ['cooperativa-lehmann'] },
@@ -44,7 +44,7 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'ferialvarez', displayName: 'Ferialvarez SRL', allSlugs: ['ferialvarez', 'ferialvarez-s-r-l'] },
   { canonicalSlug: 'ferias-rurales-25-de-mayo', displayName: 'Ferias Rurales de 25 de Mayo SA', allSlugs: ['ferias-rurales-de-25-de-mayo-s-a'] },
   { canonicalSlug: 'ganadera-salliquelo', displayName: 'Ganadera Salliqueló SA', allSlugs: ['ganadera-salliquelo', 'ganadera-salliquelo-s-a', 'ganadera-salliquelo-sa'] },
-  { canonicalSlug: 'ganaderos-de-elordi', displayName: 'Ganaderos de Elordi SA', allSlugs: ['ganaderos-de-elordi-s-a', 'ganaderos-elordi'] },
+  { canonicalSlug: 'ganaderos-de-elordi', displayName: 'Ganaderos de Elordi SA', allSlugs: ['ganaderos-de-elordi-s-a', 'ganaderos-elordi', 'elordi'] },
   { canonicalSlug: 'ganaderos-de-ceres', displayName: 'Ganaderos de Ceres Coop. Ltda.', allSlugs: ['ganaderos-de-ceres', 'ganaderos-de-ceres-cooperativa-ltda'] },
   { canonicalSlug: 'ganaderos-de-formosa', displayName: 'Ganaderos de Formosa SRL', allSlugs: ['ganaderos-de-formosa', 'ganaderos-formosa'] },
   { canonicalSlug: 'ganaderos-de-general-acha', displayName: 'Ganaderos de General Acha SA', allSlugs: ['ganaderos-de-general-acha-s-a', 'ganaderos-de-general-acha-sa', 'ganaderos-gral-acha'] },
@@ -63,11 +63,11 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'kofman-y-lissarrague', displayName: 'Kofman y Lissarrague SRL', allSlugs: ['kofman-y-lissarrague', 'kofman-y-lissarrague-srl'] },
   { canonicalSlug: 'javier-ulises-avalos', displayName: 'Javier Ulises Avalos', allSlugs: ['javier-ulises-avalos'] },
   { canonicalSlug: 'la-ganadera', displayName: 'Coop. La Ganadera', allSlugs: ['la-ganadera', 'coop-la-ganadera', 'coop-la-ganadera-gral-ramirez-ltda'] },
-  { canonicalSlug: 'lalor', displayName: 'Martin G. Lalor SA', allSlugs: ['lalor', 'martin-g-lalor-s-a'] },
+  { canonicalSlug: 'lalor', displayName: 'Martin G. Lalor SA', allSlugs: ['lalor', 'martin-g-lalor-s-a', 'martin-g-lalor'] },
   { canonicalSlug: 'lanser', displayName: 'Carlos J. Lanser SA', allSlugs: ['lanser', 'carlos-j-lanser-s-a'] },
   { canonicalSlug: 'marcos-matteucci', displayName: 'Marcos Matteucci', allSlugs: ['marcos-matteucci'] },
   { canonicalSlug: 'mondino', displayName: 'Alfredo Sebastián Mondino', allSlugs: ['mondino', 'alfredo-sebastian-mondino', 'alfredo-smondino'] },
-  { canonicalSlug: 'monasterio-tattersall', displayName: 'Monasterio Tattersall SA', allSlugs: ['monasterio-tattersall', 'monasterio-tattersall-s-a'] },
+  { canonicalSlug: 'monasterio-tattersall', displayName: 'Monasterio Tattersall SA', allSlugs: ['monasterio-tattersall', 'monasterio-tattersall-s-a', 'monasterio'] },
   { canonicalSlug: 'nangapiry', displayName: 'Nangapiry SA', allSlugs: ['nangapiry'] },
   { canonicalSlug: 'nestor-fuentes', displayName: 'Nestor Hugo Fuentes', allSlugs: ['nestor-fuentes', 'nestor-hugo-fuentes-s-a', 'nestor-hugo-fuentes-sa'] },
   { canonicalSlug: 'ofarrell', displayName: "Ivan L. O'Farrell Consignataria", allSlugs: ['ofarrell', 'ivan-l-ofarrell-srl', 'ivan-l-o-farrell-s-r-l'] },
@@ -95,7 +95,39 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'travaglia', displayName: 'Eduardo A. Travaglia y Cia. SA', allSlugs: ['travaglia', 'eduardo-a-travaglia-y-cia-s-a', 'eduardo-a-travaglia-y-cia-sa'] },
   { canonicalSlug: 'umc-villaguay', displayName: 'UMC SA - Haciendas Villaguay SRL', allSlugs: ['umc-villaguay', 'umc-haciendas-villaguay'] },
   { canonicalSlug: 'vicar-ganadera', displayName: 'Vicar Ganadera SA', allSlugs: ['vicar-ganadera', 'vicar-ganadera-s-a'] },
-  { canonicalSlug: 'wallace-hnos', displayName: 'Wallace Hnos. SA', allSlugs: ['wallace-hnos-s-a'] },
+  { canonicalSlug: 'wallace-hnos', displayName: 'Wallace Hnos. SA', allSlugs: ['wallace-hnos-s-a', 'wallace-sa'] },
+
+  // Added 2026-05-24 — these had remates but no profile entry, so the detail
+  // page 404'd on redirect (data-integrity audit P1 "unresolvable-slugs").
+  { canonicalSlug: 'hourcade-albelo', displayName: 'Hourcade, Albelo y Cía. SA', allSlugs: ['hourcade-albelo', 'hourcade-albelo-y-cia-s-a'] },
+  { canonicalSlug: 'consignataria-bh', displayName: 'Consignataria BH SRL', allSlugs: ['consignataria-bh', 'consignataria-bh-s-r-l'] },
+  { canonicalSlug: 'paz-hnos', displayName: 'Compañía Consignataria Paz Hnos. SRL', allSlugs: ['paz-hnos', 'compania-consignataria-paz-hnos-s-r-l'] },
+  { canonicalSlug: 'lanusse-santillan', displayName: 'Lanusse-Santillán y Cía. SA', allSlugs: ['lanusse-santillan', 'lanusse-santillan-y-cia-s-a'] },
+  { canonicalSlug: 'consignataria-galarraga', displayName: 'Consignataria Galarraga SA', allSlugs: ['consignataria-galarraga', 'consignataria-galarraga-s-a'] },
+  { canonicalSlug: 'esteban-abelenda', displayName: 'Esteban Abelenda SA', allSlugs: ['esteban-abelenda', 'esteban-abelenda-s-a'] },
+  { canonicalSlug: 'de-la-serna', displayName: 'Jorge y Martín de la Serna SRL', allSlugs: ['de-la-serna', 'jorge-y-martin-de-la-serna-s-r-l', 'jorge-y-martin-de-la-serna'] },
+  { canonicalSlug: 'duhalde', displayName: 'Duhalde y Cía. SRL', allSlugs: ['duhalde', 'duhalde-y-cia-s-r-l'] },
+  { canonicalSlug: 'talano-hermanos', displayName: 'Talano Hermanos SRL', allSlugs: ['talano-hermanos', 'talano-hermanos-s-r-l'] },
+
+  // Curated 2026-05-25 — real consignatarias that had remates but no profile
+  // (were rendering as synthesized/uncurated). Now indexable. The 2 junk
+  // scraper slugs (sociedad-agricola-ganadera-ltda2, cyg-n-hacienda2) are left
+  // uncurated on purpose.
+  { canonicalSlug: 'madelan', displayName: 'Madelán y Cía.', allSlugs: ['madelan', 'madelan-y-cia'] },
+  { canonicalSlug: 'a-mendizabal', displayName: 'A. Mendizábal', allSlugs: ['a-mendizabal'] },
+  { canonicalSlug: 'lartirigoyen', displayName: 'Lartirigoyen', allSlugs: ['lartirigoyen'] },
+  { canonicalSlug: 'arzuaga', displayName: 'Néstor A. Arzuaga y Cía. S.C.A.', allSlugs: ['arzuaga', 'nestor-a-arzuaga-y-cia-s-c-a'] },
+  { canonicalSlug: 'melicur-ganados', displayName: 'Melicur Ganados', allSlugs: ['melicur-ganados'] },
+  { canonicalSlug: 'melicura', displayName: 'Consignataria Melicura', allSlugs: ['melicura', 'consignataria-melicura'] },
+  { canonicalSlug: 'martin-y-alonso', displayName: 'Martín y Alonso', allSlugs: ['martin-y-alonso'] },
+  { canonicalSlug: 'sucesores-de-brivio', displayName: 'Sucesores de Brivio', allSlugs: ['sucesores-de-brivio'] },
+  { canonicalSlug: 'brivio-y-arzoz', displayName: 'Brivio y Arzoz', allSlugs: ['brivio-y-arzoz'] },
+  { canonicalSlug: 'arribere', displayName: 'Arribere', allSlugs: ['arribere'] },
+  { canonicalSlug: 'ferias-lito-araneta', displayName: 'Ferias Lito Araneta e Hijos SA', allSlugs: ['ferias-lito-araneta', 'ferias-lito-araneta-e-hijos-s-a'] },
+  { canonicalSlug: 'gregorio-aberasturi', displayName: 'Gregorio Aberasturi SRL', allSlugs: ['gregorio-aberasturi', 'gregorio-aberasturi-s-r-l'] },
+  { canonicalSlug: 'goenaga', displayName: 'Goenaga', allSlugs: ['goenaga'] },
+  { canonicalSlug: 'consignataria-vittori', displayName: 'Consignataria Vittori', allSlugs: ['consignataria-vittori', 'vittori'] },
+  { canonicalSlug: 'koerner', displayName: 'Koerner', allSlugs: ['koerner'] },
 ]
 
 /* ------------------------------------------------------------------ */
@@ -127,17 +159,33 @@ export function getCanonicalSlug(rawSlug: string): string | null {
   return slugToCanonical.get(rawSlug) ?? null
 }
 
-/** Get the profile for a canonical slug. Returns null if not found. */
+/** Get the profile for a canonical slug. Returns null if not curated. */
 export function getProfile(canonicalSlug: string): ConsignatariaProfile | null {
   return canonicalToProfile.get(canonicalSlug) ?? null
+}
+
+/**
+ * Synthesize a minimal profile for a consignataria that has remates but isn't
+ * in the curated PROFILES registry, so its profile page renders instead of
+ * 404'ing. Server-only callers pass the displayName from the remate data.
+ * Intentionally not part of the curated maps: these aren't pre-built or
+ * sitemapped — they render on-demand (dynamicParams). Curate to promote.
+ */
+export function synthesizeProfile(slug: string, displayName: string): ConsignatariaProfile {
+  return { canonicalSlug: slug, displayName: displayName.trim() || slug, allSlugs: [slug] }
 }
 
 /** Get all auctions that belong to a canonical slug (merges all variant slugs). */
 export function getAuctionsForProfile(auctions: Auction[], canonicalSlug: string): Auction[] {
   const profile = canonicalToProfile.get(canonicalSlug)
-  if (!profile) return []
-  const slugSet = new Set(profile.allSlugs)
-  return auctions.filter(a => slugSet.has(a.consignatariaSlug))
+  // Curated profile: merge across all its variant slugs.
+  if (profile) {
+    const slugSet = new Set(profile.allSlugs)
+    return auctions.filter(a => slugSet.has(a.consignatariaSlug))
+  }
+  // Uncurated consignataria (synthesized profile): match the slug directly so
+  // the on-demand page still shows its auctions.
+  return auctions.filter(a => a.consignatariaSlug === canonicalSlug)
 }
 
 /** Get all canonical slugs (for generateStaticParams). */

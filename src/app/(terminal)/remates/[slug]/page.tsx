@@ -8,7 +8,9 @@ import {
 } from '../_views/RematesProvinceView'
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
+import marketPrices from '@/lib/data/market-prices.json'
 import { getAllProfiles, consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
+import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
 import { normalizeUrl } from '@/lib/utils/url'
 import { BreadcrumbSchema, EventSchema } from '@/components/seo/JsonLd'
 import { AddToCalendarButton } from '@/components/ui/AddToCalendarButton'
@@ -73,6 +75,52 @@ const TYPE_LABELS: Record<string, string> = {
   general: 'General',
   especial: 'Especial',
   reproductores: 'Reproductores',
+}
+
+// mainCategory labels — the dominant hacienda category at the auction.
+const CATEGORY_LABELS: Record<string, string> = {
+  terneros: 'Terneros / terneras',
+  novillos: 'Novillos',
+  novillitos: 'Novillitos',
+  vaca_gorda: 'Vaca gorda',
+  vaquillonas: 'Vaquillonas',
+  toros: 'Toros',
+  mixto: 'Categorías mixtas',
+}
+
+// Especialidad labels (consignataria "persona" field).
+const ESPECIALIDAD_LABELS: Record<string, string> = {
+  cria: 'Cría',
+  invernada: 'Invernada',
+  general: 'General',
+  reproductores: 'Reproductores',
+  lechera: 'Lechera',
+  mixto: 'Mixto',
+}
+
+// INMAG reference series (Índice Novillo Mercado Agroganadero), $/kg vivo.
+interface InmagPoint { date: string; value: number; volume?: number }
+const INMAG_SERIES = ((marketPrices as { inmag?: { series?: InmagPoint[] } }).inmag?.series ?? []) as InmagPoint[]
+const INMAG_CURRENT = (marketPrices as { inmag?: { current?: number } }).inmag?.current ?? null
+const INMAG_UNIT = (marketPrices as { inmag?: { unit?: string } }).inmag?.unit ?? '$/kg vivo'
+
+// Latest INMAG close on or before a given date (the market reference a
+// buyer/seller would have had at the auction). Returns null if out of range.
+function inmagAtDate(date: string): InmagPoint | null {
+  let best: InmagPoint | null = null
+  for (const p of INMAG_SERIES) {
+    if (p.date <= date && (!best || p.date > best.date)) best = p
+  }
+  return best
+}
+
+function formatArs(value: number): string {
+  return value.toLocaleString('es-AR', { maximumFractionDigits: 0 })
+}
+
+function formatShortDate(dateStr: string): string {
+  const d = new Date(dateStr + 'T12:00:00')
+  return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
 }
 
 // Province display names
@@ -209,6 +257,18 @@ export default async function RemateDetailPage({ params }: Props) {
   // Get consignataria profile if exists
   const profiles = getAllProfiles()
   const consigProfile = profiles.find(p => p.canonicalSlug === remate.consignatariaSlug || p.allSlugs.includes(remate.consignatariaSlug))
+
+  // Enriched profile (Supabase): "persona detrás" + region/especialidad/años.
+  // Falls back gracefully to null if unavailable.
+  const consigEnriched = consigProfile ? await getConsignatariaProfile(consigProfile.canonicalSlug) : null
+
+  // INMAG market context at the auction date — the price reference a
+  // buyer/seller had on the day. Real observed series, not derived.
+  const inmagRef = inmagAtDate(remate.date)
+  const inmagDelta = inmagRef && INMAG_CURRENT
+    ? ((INMAG_CURRENT - inmagRef.value) / inmagRef.value) * 100
+    : null
+  const categoryLabel = remate.mainCategory ? (CATEGORY_LABELS[remate.mainCategory] || null) : null
   
   // Get similar remates (same province or same type, upcoming)
   const similarRemates = rematesData
@@ -375,6 +435,19 @@ export default async function RemateDetailPage({ params }: Props) {
                 </div>
               </div>
               
+              {/* Main category (dominant hacienda category) */}
+              {categoryLabel && (
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-lg bg-slate-800">
+                    <Tag className="w-6 h-6 text-teal-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-500 mb-1">Categoría principal</p>
+                    <p className="text-white font-medium">{categoryLabel}</p>
+                  </div>
+                </div>
+              )}
+
               {/* Estimated heads */}
               {remate.estimatedHeads && (
                 <div className="flex items-start gap-4">
@@ -485,6 +558,43 @@ export default async function RemateDetailPage({ params }: Props) {
             </div>
           </div>
           
+          {/* INMAG market context — real observed reference price */}
+          {inmagRef && (
+            <div className="mt-8 bg-slate-900 rounded-xl border border-slate-800 p-6">
+              <h2 className="text-xl font-bold text-white mb-1">Referencia de mercado</h2>
+              <p className="text-sm text-slate-500 mb-4">
+                INMAG — Índice Novillo Mercado Agroganadero ({INMAG_UNIT})
+              </p>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-lg bg-slate-800/50 p-4">
+                  <p className="text-sm text-slate-500 mb-1">
+                    {isPast ? 'Al cierre del remate' : 'Referencia más reciente'}
+                  </p>
+                  <p className="text-2xl font-bold text-white tabular-nums">
+                    ${formatArs(inmagRef.value)}
+                  </p>
+                  <p className="text-xs text-slate-500 mt-1">Cierre del {formatShortDate(inmagRef.date)}</p>
+                </div>
+                {isPast && INMAG_CURRENT && inmagDelta !== null && (
+                  <div className="rounded-lg bg-slate-800/50 p-4">
+                    <p className="text-sm text-slate-500 mb-1">Hoy</p>
+                    <p className="text-2xl font-bold text-white tabular-nums">
+                      ${formatArs(INMAG_CURRENT)}
+                    </p>
+                    <p className={`text-xs mt-1 tabular-nums ${inmagDelta >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {inmagDelta >= 0 ? '+' : ''}{inmagDelta.toFixed(1)}% desde el remate
+                    </p>
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-slate-600 mt-4">
+                Precio de referencia del novillo en pie. Los valores efectivos por categoría
+                ({categoryLabel ? categoryLabel.toLowerCase() : 'según lote'}) pueden diferir.{' '}
+                <Link href="/mercado/inmag" className="text-blue-400 hover:underline">Ver evolución del índice →</Link>
+              </p>
+            </div>
+          )}
+
           {/* Consignataria profile card */}
           {consigProfile && (
             <div className="mt-8">
@@ -494,14 +604,38 @@ export default async function RemateDetailPage({ params }: Props) {
                 className="block bg-slate-900 rounded-xl border border-slate-800 p-6 hover:border-slate-700 transition-colors"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-xl bg-slate-800 flex items-center justify-center text-2xl font-bold text-white">
+                  <div className="w-16 h-16 rounded-xl bg-slate-800 flex items-center justify-center text-2xl font-bold text-white shrink-0">
                     {consigProfile.displayName.charAt(0)}
                   </div>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <p className="text-lg font-semibold text-white">{consigProfile.displayName}</p>
-                    <p className="text-slate-400">Ver perfil completo →</p>
+                    {consigEnriched?.referenteNombre && (
+                      <p className="text-slate-400 text-sm">
+                        {consigEnriched.referenteNombre}
+                        {consigEnriched.referenteCargo ? ` · ${consigEnriched.referenteCargo}` : ''}
+                      </p>
+                    )}
+                    {(consigEnriched?.regionOperativa || consigEnriched?.especialidad || consigEnriched?.anosOficio) && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {consigEnriched.regionOperativa && (
+                          <span className="px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 text-xs">{consigEnriched.regionOperativa}</span>
+                        )}
+                        {consigEnriched.especialidad && (
+                          <span className="px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 text-xs">
+                            {ESPECIALIDAD_LABELS[consigEnriched.especialidad] || consigEnriched.especialidad}
+                          </span>
+                        )}
+                        {consigEnriched.anosOficio ? (
+                          <span className="px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 text-xs">{consigEnriched.anosOficio} años de oficio</span>
+                        ) : null}
+                      </div>
+                    )}
                   </div>
                 </div>
+                {consigEnriched?.bioReferente && (
+                  <p className="text-slate-400 text-sm leading-relaxed mt-4 line-clamp-3">{consigEnriched.bioReferente}</p>
+                )}
+                <p className="text-blue-400 text-sm mt-3">Ver perfil completo →</p>
               </Link>
             </div>
           )}

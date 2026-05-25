@@ -10,7 +10,6 @@ import {
   getSenasaScrapedDate,
 } from '@/lib/data/senasa-habilitados'
 import { getCurrentSession } from '@/lib/user-tier'
-import { PaywallCard } from '@/components/Paywall'
 import {
   isFrigorificoProvinceSlug,
   frigorificoProvinceSlugs,
@@ -48,6 +47,26 @@ function stageDescription(stage: number): string {
   if (stage === 1) return 'Planta habilitada para faena y desposte de reses. Autorizada para transito federal.'
   if (stage === 2) return 'Planta habilitada para desposte y procesamiento de medias reses. Sin faena propia.'
   return 'Deposito frigorifico habilitado para almacenamiento y conservacion de carnes.'
+}
+
+// SENASA cycle explainer — reference content keyed to the establishment's
+// actual stage. Helps a buyer/seller understand what this habilitación allows,
+// and feeds long-tail queries ("qué es ciclo I", "tránsito federal frigorífico").
+function cicloExplainer(stage: number): { ciclo: string; body: string } {
+  if (stage === 1)
+    return {
+      ciclo: 'Ciclo I — Matadero-frigorífico',
+      body: 'Establecimiento habilitado para faena: el animal llega en pie y se transforma en reses y medias reses. Es el eslabón donde la hacienda viva se convierte en carcasa, y suele integrar también el desposte en cortes.',
+    }
+  if (stage === 2)
+    return {
+      ciclo: 'Ciclo II — Desposte y procesamiento',
+      body: 'Sala de desposte que recibe medias reses y las elabora en cortes y productos cárnicos. No realiza faena propia: trabaja sobre carne que ya pasó por un matadero (Ciclo I).',
+    }
+  return {
+    ciclo: 'Ciclo III — Depósito y frío',
+    body: 'Depósito frigorífico y dador de frío: almacenamiento y conservación de carnes bajo cadena de frío. No faena ni desposta — es la etapa logística de la cadena.',
+  }
 }
 
 function stageColor(stage: number): string {
@@ -194,6 +213,7 @@ export default async function FrigorificoDetailPage({
   const grupoEmpresario = profile?.grupoEmpresario || null
   const tipo = profile?.tipo || null
   const direccion = profile?.direccion || null
+  const volumenFaena = profile?.volumenFaena || null
 
   const hasContact = phone || email || website
 
@@ -301,6 +321,12 @@ export default async function FrigorificoDetailPage({
               <span className="text-data font-terminal text-zinc-200 text-right max-w-[60%]">{direccion}</span>
             </div>
           )}
+          {volumenFaena && (
+            <div className="px-panel py-2.5 flex items-center justify-between">
+              <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Capacidad de faena</span>
+              <span className="text-data font-terminal text-zinc-200 text-right max-w-[60%]">{volumenFaena}</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -329,8 +355,10 @@ export default async function FrigorificoDetailPage({
                   ? ` (${senasaRecord!.ciclos.length} ciclos)`
                   : ''}.
               </p>
-              {isPro ? (
-                <div className="mt-3 pt-3 border-t border-terminal-border divide-y divide-terminal-border">
+              {/* Registry data is public SENASA info — shown to everyone so the
+                  page carries real, per-establishment unique content (indexable).
+                  PRO is reserved for the value-add layer (alerts, exports, comparador). */}
+              <div className="mt-3 pt-3 border-t border-terminal-border divide-y divide-terminal-border">
                   {senasaRecord!.propietario && (
                     <div className="py-2 flex items-start justify-between gap-3">
                       <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Propietario</span>
@@ -375,14 +403,14 @@ export default async function FrigorificoDetailPage({
                       </ul>
                     </div>
                   )}
-                </div>
-              ) : (
-                <div className="mt-3">
-                  <PaywallCard
-                    loggedIn={session.user !== null}
-                    feature="El detalle SENASA (propietario, actividades autorizadas, ciclos habilitados)"
-                    redirectTo={`/frigorificos/${cuit}`}
-                  />
+              </div>
+              {!isPro && (
+                <div className="mt-3 pt-3 border-t border-terminal-border">
+                  <p className="text-xxs font-terminal text-zinc-500 leading-relaxed">
+                    <span className="text-accent">PRO:</span> alertas de cambios de habilitación,
+                    comparador entre establecimientos, exportá el padrón y accedé vía API.{' '}
+                    <Link href="/planes" rel="nofollow" className="text-accent hover:underline">Ver planes →</Link>
+                  </p>
                 </div>
               )}
             </>
@@ -454,17 +482,30 @@ export default async function FrigorificoDetailPage({
         </div>
       )}
 
-      {/* Stage description */}
+      {/* Stage description + SENASA cycle glossary */}
       <div className="terminal-panel">
         <div className="terminal-panel-header">
-          <span className="text-zinc-200 text-label tracking-widest">HABILITACION</span>
+          <span className="text-zinc-200 text-label tracking-widest">QUE SIGNIFICA ESTA HABILITACION</span>
         </div>
-        <div className="px-panel py-3">
-          <p className="text-data font-terminal text-zinc-400 leading-relaxed">
-            {stageDescription(basicF.stage)}
-          </p>
-          <p className="text-xxs font-terminal text-zinc-500 mt-2">
-            Fuente: Registro Nacional SENASA / MAGyP
+        <div className="px-panel py-3 space-y-3">
+          <div>
+            <p className={`text-data font-terminal ${stageColor(basicF.stage)} mb-1`}>
+              {cicloExplainer(basicF.stage).ciclo}
+            </p>
+            <p className="text-data font-terminal text-zinc-400 leading-relaxed">
+              {cicloExplainer(basicF.stage).body}
+            </p>
+          </div>
+          <div className="pt-3 border-t border-terminal-border">
+            <p className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider mb-1">Tránsito federal vs. provincial</p>
+            <p className="text-data font-terminal text-zinc-400 leading-relaxed">
+              Un establecimiento con <span className="text-zinc-200">tránsito federal</span> (inspección SENASA) puede
+              comercializar en todo el país y acceder al circuito de exportación. La habilitación de{' '}
+              <span className="text-zinc-200">tránsito provincial</span> limita la venta al consumo dentro de {province}.
+            </p>
+          </div>
+          <p className="text-xxs font-terminal text-zinc-500">
+            Fuente: Registro Nacional SENASA / MAGyP. {stageDescription(basicF.stage)}
           </p>
         </div>
       </div>

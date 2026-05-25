@@ -34,7 +34,7 @@ const PROVINCE_WHITELIST = new Set([
   'FORMOSA', 'LA PAMPA', 'MISIONES', 'NEUQUEN', 'SALTA', 'SAN JUAN',
   'SAN LUIS', 'SANTA FE', 'SANTIAGO DEL ESTERO', 'TUCUMAN',
   'CATAMARCA', 'JUJUY', 'MENDOZA', 'RIO NEGRO', 'CHUBUT',
-  'SANTA CRUZ', 'TIERRA DEL FUEGO', 'LA RIOJA',
+  'SANTA CRUZ', 'TIERRA DEL FUEGO', 'LA RIOJA', 'CAPITAL FEDERAL',
 ])
 
 const issues = [] // { severity, code, message, urls?: [], context?: any }
@@ -126,14 +126,18 @@ async function checkRemates(slugToCanonical) {
     flag('P2', 'ancient-remates', `${ancient.length} remates older than 18 months still in current file (consider archiving)`, { sample: ancient.slice(0, 5).map(r => r.consignatariaSlug + ' ' + r.date) })
   }
 
-  // P1: consignataria slugs not resolvable to canonical (would 404 on detail page)
-  const unresolvable = new Set()
+  // P2: consignataria slugs not in the curated registry. These no longer 404 —
+  // the profile page synthesizes a minimal profile from the remate data
+  // (see synthesizeProfile in consignataria-slugs.ts). They render on-demand
+  // but aren't pre-built or sitemapped. Flagged so they can be CURATED
+  // (moved into PROFILES → indexable) rather than left as thin auto-pages.
+  const uncurated = new Set()
   for (const r of remates) {
     if (!r.consignatariaSlug) continue
-    if (!slugToCanonical.has(r.consignatariaSlug)) unresolvable.add(r.consignatariaSlug)
+    if (!slugToCanonical.has(r.consignatariaSlug)) uncurated.add(r.consignatariaSlug)
   }
-  if (unresolvable.size > 0) {
-    flag('P1', 'unresolvable-slugs', `${unresolvable.size} remate consignataria slugs don't resolve to any canonical (will 404 on profile redirect)`, { slugs: [...unresolvable] })
+  if (uncurated.size > 0) {
+    flag('P2', 'uncurated-consignatarias', `${uncurated.size} consignataria slugs render as synthesized (uncurated) profiles — curate the real ones into PROFILES to make them indexable`, { slugs: [...uncurated] })
   }
 
   return { remates, slugsInUse: new Set(remates.map(r => slugToCanonical.get(r.consignatariaSlug) ?? r.consignatariaSlug)) }

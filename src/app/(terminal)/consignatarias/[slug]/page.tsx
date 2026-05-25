@@ -15,6 +15,7 @@ import {
   getCanonicalSlug,
   getProfile,
   getAuctionsForProfile,
+  synthesizeProfile,
 } from '@/lib/data/consignataria-slugs'
 import { getConsignatariaProfile, getRelatedConsignatarias } from '@/lib/dal/consignatarias'
 import { getApprovedReviewsForSlug, getReviewStatsForSlug } from '@/lib/dal/reviews'
@@ -53,6 +54,27 @@ export const revalidate = false
 export const dynamicParams = true
 
 const auctions = rematesData as Auction[]
+
+/**
+ * Resolve a URL slug to render under. Curated slugs resolve to their canonical;
+ * an unregistered consignataria that still has remates resolves to its own slug
+ * (so it renders a synthesized profile instead of 404). Returns null only when
+ * the slug is unknown everywhere.
+ */
+function resolveConsignatariaSlug(slug: string): string | null {
+  const canonical = getCanonicalSlug(slug)
+  if (canonical) return canonical
+  if (auctions.some(a => a.consignatariaSlug === slug)) return slug
+  return null
+}
+
+/** Curated profile, or a minimal profile synthesized from the remate data. */
+function getOrSynthesizeProfile(canonical: string) {
+  const curated = getProfile(canonical)
+  if (curated) return curated
+  const match = auctions.find(a => a.consignatariaSlug === canonical)
+  return match ? synthesizeProfile(canonical, match.consignatariaName) : null
+}
 
 /* ------------------------------------------------------------------ */
 /*  AUCTION RESULTS from Supabase                                      */
@@ -160,10 +182,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return meta ?? {}
   }
 
-  const canonical = getCanonicalSlug(slug)
+  const canonical = resolveConsignatariaSlug(slug)
   if (!canonical) return {}
 
-  const profile = getProfile(canonical)
+  const profile = getOrSynthesizeProfile(canonical)
   if (!profile) return {}
 
   const profileAuctions = getAuctionsForProfile(auctions, canonical)
@@ -208,19 +230,21 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
     return <ProvinceView provincia={slug} />
   }
 
-  // Unknown slug → 404
-  const canonical = getCanonicalSlug(slug)
+  // Unknown slug (no curated mapping and no remates) → 404
+  const canonical = resolveConsignatariaSlug(slug)
   if (!canonical) notFound()
 
-  // Non-canonical slug → 301 redirect
+  // Non-canonical slug → 301 redirect (synthesized slugs resolve to themselves,
+  // so this only fires for curated variant slugs).
   if (slug !== canonical) {
     permanentRedirect(`/consignatarias/${canonical}`)
   }
 
   // Always render: fall back to the static (in-repo) profile when Supabase
   // is unavailable or slow. Avoids triggering notFound() at build time and
-  // losing the prerendered HTML for the slug.
-  const staticFallback = getProfile(canonical)
+  // losing the prerendered HTML for the slug. Uncurated consignatarias with
+  // remates get a minimal synthesized profile here.
+  const staticFallback = getOrSynthesizeProfile(canonical)
   if (!staticFallback) notFound()
   const enriched = await withTimeout(
     getConsignatariaProfile(canonical),

@@ -75,6 +75,29 @@ export async function getRelatedConsignatarias(
   }
 }
 
+/**
+ * Map of canonical_slug → logo_url for consignatarias that have a logo.
+ * One query, used by the landing showcase grid (hybrid logo/name tiles).
+ * Returns {} on any failure so the grid degrades to name-only tiles.
+ */
+export async function getConsignatariaLogoMap(): Promise<Record<string, string>> {
+  try {
+    const service = createServiceClient()
+    if (!service) return {}
+    const { data } = await service
+      .from('consignatarias')
+      .select('canonical_slug, logo_url')
+      .not('logo_url', 'is', null)
+    const map: Record<string, string> = {}
+    for (const r of (data || []) as Array<{ canonical_slug: string; logo_url: string | null }>) {
+      if (r.logo_url) map[r.canonical_slug] = r.logo_url
+    }
+    return map
+  } catch {
+    return {}
+  }
+}
+
 export async function getConsignatariaProfile(slug: string): Promise<EnrichedProfile | null> {
   const staticProfile = getStaticProfile(slug)
   if (!staticProfile) return null
