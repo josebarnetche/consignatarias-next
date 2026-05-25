@@ -93,14 +93,6 @@ function relatedFrigAnchor(r: EnrichedFrig, i: number): string {
     default: return `${r.name}, frigorífico en ${lugar}`
   }
 }
-// A page is "bare" (→ noindex) when it has no own unique content and too few
-// province neighbours to carry it.
-function frigoIsBare(cuit: string, province: string): boolean {
-  const e = frigorificosEnriched.find(f => f.cuit === cuit)
-  const hasOwn = !!(e?.notas || e?.grupoEmpresario || e?.tipo || getSenasaRecord(cuit))
-  return !hasOwn && relatedFrigorificos(cuit, province).length < 3
-}
-
 function formatCuit(cuit: string): string {
   if (cuit.length === 11) {
     return `${cuit.slice(0, 2)}-${cuit.slice(2, 10)}-${cuit.slice(10)}`
@@ -197,9 +189,6 @@ export async function generateMetadata({
     alternates: {
       canonical: `https://www.consignatarias.com.ar/frigorificos/${f.cuit}`,
     },
-    // Truly-bare establishments (no own data, few neighbours): keep crawlable
-    // for link equity but out of the index so they don't dilute it.
-    ...(frigoIsBare(f.cuit, f.province) && { robots: { index: false, follow: true } }),
   }
 }
 
