@@ -1,0 +1,101 @@
+{
+  "_meta": {
+    "source": "SENASA - Existencias de bovinos (datos.magyp.gob.ar dataset c19a5875), department-level CSV existencias-bovinas-provincia-departamento-2008-2019.csv, retrieved via Wayback Machine because datos.magyp.gob.ar is unreachable",
+    "sourceUrl": "https://web.archive.org/web/2id_/https://datos.magyp.gob.ar/dataset/c19a5875-fb39-48b6-b0b2-234382722afb/resource/1b920477-8112-4e12-bc2c-94b564f04183/download/existencias-bovinas-provincia-departamento-2008-2019.csv",
+    "year": 2019,
+    "aggregation": "sum of vacas+vaquillonas+novillos+novillitos+terneros+terneras+toros+toritos+bueyes across departments",
+    "fetchedAt": "2026-05-25T16:42:07Z"
+  },
+  "BUENOS AIRES": {
+    "total": 19128655,
+    "year": 2019
+  },
+  "CATAMARCA": {
+    "total": 264647,
+    "year": 2019
+  },
+  "CHACO": {
+    "total": 2550590,
+    "year": 2019
+  },
+  "CHUBUT": {
+    "total": 227895,
+    "year": 2019
+  },
+  "CORDOBA": {
+    "total": 4812662,
+    "year": 2019
+  },
+  "CORRIENTES": {
+    "total": 4461885,
+    "year": 2019
+  },
+  "ENTRE RIOS": {
+    "total": 4271715,
+    "year": 2019
+  },
+  "FORMOSA": {
+    "total": 1741660,
+    "year": 2019
+  },
+  "JUJUY": {
+    "total": 119921,
+    "year": 2019
+  },
+  "LA PAMPA": {
+    "total": 3298533,
+    "year": 2019
+  },
+  "LA RIOJA": {
+    "total": 183313,
+    "year": 2019
+  },
+  "MENDOZA": {
+    "total": 475084,
+    "year": 2019
+  },
+  "MISIONES": {
+    "total": 393221,
+    "year": 2019
+  },
+  "NEUQUEN": {
+    "total": 203337,
+    "year": 2019
+  },
+  "RIO NEGRO": {
+    "total": 668466,
+    "year": 2019
+  },
+  "SALTA": {
+    "total": 1395430,
+    "year": 2019
+  },
+  "SAN JUAN": {
+    "total": 49391,
+    "year": 2019
+  },
+  "SAN LUIS": {
+    "total": 1650750,
+    "year": 2019
+  },
+  "SANTA CRUZ": {
+    "total": 106670,
+    "year": 2019
+  },
+  "SANTA FE": {
+    "total": 6081842,
+    "year": 2019
+  },
+  "SANTIAGO DEL ESTERO": {
+    "total": 1641515,
+    "year": 2019
+  },
+  "TIERRA DEL FUEGO": {
+    "total": 49979,
+    "year": 2019
+  },
+  "TUCUMAN": {
+    "total": 168640,
+    "year": 2019
+  }
+}

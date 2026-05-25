@@ -9,6 +9,7 @@ import {
 import { mergedSlugStaticParams } from '../_views/sluglist'
 import rematesData from '@/lib/data/remates.json'
 import marketData from '@/lib/data/market-prices.json'
+import existenciasData from '@/lib/data/existencias-bovinas.json'
 import type { Auction } from '@/lib/db/schema'
 import {
   getAllCanonicalSlugs,
@@ -335,6 +336,23 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
     .sort((a, b) => a.date.localeCompare(b.date))
     .slice(0, 5)
 
+  // Server-rendered overview (the interactive calendar below is client-only, so
+  // this gives the crawled HTML real, per-consignataria-unique content).
+  const upcomingCount = profileAuctions.filter(a => a.date >= today).length
+  const tipos = [...new Set(profileAuctions.map(a => a.type).filter(Boolean))]
+  const provincesList = provinces.length ? provinces.join(', ') : primaryProvince
+  const consigSummary =
+    `${enrichedProfile.displayName} es una consignataria de hacienda con ${profileAuctions.length} ${profileAuctions.length === 1 ? 'remate registrado' : 'remates registrados'} en consignatarias.com.ar` +
+    (upcomingCount > 0 ? `, ${upcomingCount} ${upcomingCount === 1 ? 'próximo' : 'próximos'}` : '') +
+    `. Opera en ${provinces.length > 1 ? `${provinces.length} provincias (${provincesList})` : provincesList}` +
+    (tipos.length ? `, con remates de ${tipos.join(', ')}` : '') +
+    `${primaryCity ? `. Base de operaciones: ${primaryCity}` : ''}.`
+  const consigExistencias = (existenciasData as unknown as Record<string, { total: number; year: number }>)[(primaryProvince || '').toUpperCase()] ?? null
+  const serverUpcoming = profileAuctions
+    .filter(a => a.date >= today)
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(0, 10)
+
   return (
     <>
       {/* Structured Data */}
@@ -388,6 +406,34 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
             />
           )
         })}
+
+      {/* Server-rendered overview — per-consignataria-unique content in the
+          crawled HTML (the interactive calendar below is client-only). */}
+      <section className="max-w-6xl mx-auto px-4 pt-8">
+        <p className="text-slate-300 leading-relaxed">{consigSummary}</p>
+        {consigExistencias && (
+          <p className="text-sm text-slate-500 mt-2">
+            Existencias bovinas en {primaryProvince}:{' '}
+            <span className="text-slate-300 tabular-nums">{consigExistencias.total.toLocaleString('es-AR')}</span> cabezas
+            <span className="text-slate-600"> · SENASA {consigExistencias.year}</span>
+          </p>
+        )}
+        {serverUpcoming.length > 0 && (
+          <div className="mt-4">
+            <h2 className="text-lg font-semibold text-white mb-2">Próximos remates de {enrichedProfile.displayName}</h2>
+            <ul className="space-y-1 text-sm text-slate-400">
+              {serverUpcoming.map((a, i) => (
+                <li key={`${a.date}-${i}`}>
+                  <span className="text-slate-300 tabular-nums">{a.date}</span>
+                  {' — '}{a.title}
+                  {(a.location || '').split(',')[0].trim() ? ` · ${(a.location || '').split(',')[0].trim()}` : ''}
+                  {a.province ? `, ${a.province}` : ''}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </section>
 
       <ConsignatariaProfileClient
         profile={enrichedProfile}

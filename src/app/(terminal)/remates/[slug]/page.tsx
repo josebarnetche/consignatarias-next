@@ -9,6 +9,7 @@ import {
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import marketPrices from '@/lib/data/market-prices.json'
+import existenciasData from '@/lib/data/existencias-bovinas.json'
 import { getAllProfiles, consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
 import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
 import { normalizeUrl } from '@/lib/utils/url'
@@ -371,6 +372,8 @@ export default async function RemateDetailPage({ params }: Props) {
   const catPrice = priceKey ? MAG_CATEGORIES[priceKey] : null
   // Breed reference for the province's region.
   const breed = regionBreed(remate.province)
+  // Cattle stock for the province (SENASA).
+  const existencias = (existenciasData as unknown as Record<string, { total: number; year: number }>)[(remate.province || '').toUpperCase()] ?? null
   // Data-derived summary for the current remate (unique paragraph on the page).
   const summary = remateSummary(remate)
   
@@ -706,6 +709,13 @@ export default async function RemateDetailPage({ params }: Props) {
             {breed && (
               <p className="text-slate-400 text-sm mt-3 leading-relaxed">
                 {breed.blurb} <span className="text-slate-500">También frecuente en la zona: {breed.secondary}.</span>
+              </p>
+            )}
+            {existencias && (
+              <p className="text-slate-500 text-sm mt-3">
+                Existencias bovinas en {provinceName}:{' '}
+                <span className="text-slate-300 tabular-nums">{existencias.total.toLocaleString('es-AR')}</span> cabezas
+                <span className="text-slate-600"> · SENASA {existencias.year}</span>
               </p>
             )}
           </div>
