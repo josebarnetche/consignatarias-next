@@ -235,8 +235,15 @@ export default function LandingPage() {
   // Hybrid logo/name tiles. Logos come from the local LOGO_MAP (favicons of the
   // most active firms — not clients). Tiles with a logo are sorted first so the
   // grid leads with recognizable brand marks.
-  // Only firms with a real logo make the brand wall (active in the last 60 days).
-  const showcaseItems = activeConsignatarias
+  // Brand wall = firms active in the last 60 days + a few featured ones, all
+  // with a real logo. WALL_FEATURED forces a consignataria onto the wall even
+  // if it has no recent remates (e.g. just added, awaiting its next auction).
+  const WALL_FEATURED = ['hk-agro']
+  const activeSlugs = new Set(activeConsignatarias.map(c => c.slug))
+  const featured = WALL_FEATURED
+    .filter(s => !activeSlugs.has(s))
+    .map(s => ({ slug: s, name: getAllProfiles().find(p => p.canonicalSlug === s)?.displayName ?? s }))
+  const showcaseItems = [...activeConsignatarias, ...featured]
     .map(c => ({ slug: c.slug, name: c.name, logoUrl: getLogoUrl(c.slug), brandColor: getBrandColor(c.slug), keepColor: getBrandKeepColor(c.slug) }))
     .filter(c => c.logoUrl && c.brandColor)
 
