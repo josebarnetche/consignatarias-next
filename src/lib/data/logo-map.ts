@@ -24,7 +24,7 @@ export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string;
   'daniel-blanco': { logo: 'daniel-blanco.png', color: '#81a74b' },
   'campos-y-ganados': { logo: 'campos-y-ganados.png', color: '#003c55' },
   'jauregui-lorda': { logo: 'jauregui-lorda.png', color: '#f2b705' },
-  'umc-villaguay': { logo: 'umc-villaguay.png', color: '#d81223', keepColor: true },
+  // umc-villaguay omitted: multicolor mascot, doesn't read as a clean white logo.
   'etchevehere-rural': { logo: 'etchevehere-rural.png', color: '#0e2f60' },
   'rosgan': { logo: 'rosgan.png', color: '#002e5f' },
   'hasenkamp': { logo: 'hasenkamp.png', color: '#fa1100' },
