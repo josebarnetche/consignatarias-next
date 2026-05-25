@@ -5,7 +5,7 @@ import marketPrices from "@/lib/data/market-prices.json";
 import frigorificosSummary from "@/lib/data/frigorificos-summary.json";
 import rematesData from "@/lib/data/remates.json";
 import { getAllProfiles } from "@/lib/data/consignataria-slugs";
-import { getLogoUrl, getBrandColor } from "@/lib/data/logo-map";
+import { getLogoUrl, getBrandColor, getBrandKeepColor } from "@/lib/data/logo-map";
 import ConsignatariasShowcase from "@/components/landing/ConsignatariasShowcase";
 import { FAQPageSchema, OrganizationSchema, WebSiteSchema } from "@/components/seo/JsonLd";
 import NewsletterSignup from "@/components/NewsletterSignup";
@@ -237,7 +237,7 @@ export default function LandingPage() {
   // grid leads with recognizable brand marks.
   // Only firms with a real logo make the brand wall (active in the last 60 days).
   const showcaseItems = activeConsignatarias
-    .map(c => ({ slug: c.slug, name: c.name, logoUrl: getLogoUrl(c.slug), brandColor: getBrandColor(c.slug) }))
+    .map(c => ({ slug: c.slug, name: c.name, logoUrl: getLogoUrl(c.slug), brandColor: getBrandColor(c.slug), keepColor: getBrandKeepColor(c.slug) }))
     .filter(c => c.logoUrl && c.brandColor)
 
   return (

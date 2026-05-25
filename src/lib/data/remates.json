@@ -4598,25 +4598,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Faena, Invernada y Cria - 14.00hs.",
-    "consignatariaName": "Monasterio",
-    "consignatariaSlug": "monasterio",
-    "date": "2026-05-28",
-    "time": "14:00",
-    "location": "Daireaux, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Daireaux Faena, Invernada y Cria - 14.00hs.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 245,
-    "status": "scheduled"
-  },
-  {
     "title": "Faena, Invernada y Cria - 14.30hs.",
     "consignatariaName": "Colombo Y Maliagno2",
     "consignatariaSlug": "colombo-y-maliagno2",

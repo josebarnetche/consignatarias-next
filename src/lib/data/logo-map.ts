@@ -11,7 +11,9 @@
  * (they render as plain name tiles and are slated to be dropped from the wall).
  */
 
-export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string }> = {
+// keepColor: render the logo in its own colors instead of forcing it white
+// (for multicolor marks that read fine on the black tile, e.g. UMC's mascot).
+export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string; keepColor?: boolean }> = {
   'colombo-y-magliano': { logo: 'colombo-y-magliano.svg', color: '#215732' },
   'colombo-y-colombo': { logo: 'colombo-y-colombo.png', color: '#b30738' },
   'bressan-y-cia': { logo: 'bressan-y-cia.png', color: '#a99134' },
@@ -21,8 +23,8 @@ export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string 
   'pedro-noel-irey': { logo: 'pedro-noel-irey.svg', color: '#ff6600' },
   'daniel-blanco': { logo: 'daniel-blanco.png', color: '#81a74b' },
   'campos-y-ganados': { logo: 'campos-y-ganados.png', color: '#003c55' },
-  // umc-villaguay & jauregui-lorda omitted: their logos are large filled
-  // illustrations (mascot / cow) that become a white blob when forced white.
+  'jauregui-lorda': { logo: 'jauregui-lorda.png', color: '#f2b705' },
+  'umc-villaguay': { logo: 'umc-villaguay.png', color: '#d81223', keepColor: true },
   'etchevehere-rural': { logo: 'etchevehere-rural.png', color: '#0e2f60' },
   'rosgan': { logo: 'rosgan.png', color: '#002e5f' },
   'hasenkamp': { logo: 'hasenkamp.png', color: '#fa1100' },
@@ -45,9 +47,9 @@ export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string 
   'la-ganadera': { logo: 'la-ganadera.svg', color: '#059146' },
   'lalor': { logo: 'lalor.png', color: '#183060' },
   'monasterio-tattersall': { logo: 'monasterio-tattersall.png', color: '#186030' },
-  // wallace-hnos, paz-hnos, esteban-abelenda omitted: their downloaded logos
-  // have an opaque background that becomes a solid white box/shield when forced
-  // white. Re-fetch transparent versions later to add them back.
+  'wallace-hnos': { logo: 'wallace-hnos.png', color: '#e1251b' },
+  'paz-hnos': { logo: 'paz-hnos.png', color: '#24a4db' },
+  'esteban-abelenda': { logo: 'esteban-abelenda.png', color: '#b33a3a' },
   'consignataria-galarraga': { logo: 'consignataria-galarraga.svg', color: '#00253c' },
   'de-la-serna': { logo: 'de-la-serna.png', color: '#1f3d2e' },
   'pepa-knubel-ferrero': { logo: 'pepa-knubel-ferrero.png', color: '#0078c0' },
@@ -81,6 +83,11 @@ export function getLogoUrl(slug: string): string | null {
 /** Primary brand color (hex) for a consignataria, or null. */
 export function getBrandColor(slug: string): string | null {
   return CONSIGNATARIA_BRANDS[slug]?.color ?? null
+}
+
+/** Whether the logo should keep its own colors (not be forced white). */
+export function getBrandKeepColor(slug: string): boolean {
+  return CONSIGNATARIA_BRANDS[slug]?.keepColor ?? false
 }
 
 /** Check if a logo exists for the given slug. */

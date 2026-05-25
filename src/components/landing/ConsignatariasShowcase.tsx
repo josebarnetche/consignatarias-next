@@ -17,6 +17,7 @@ export type ShowcaseItem = {
   name: string;
   logoUrl: string | null;
   brandColor: string | null;
+  keepColor?: boolean;
 };
 
 // Shimmer palette for plain (no-logo) name tiles.
@@ -223,7 +224,10 @@ function Tile({ item, nameIndex }: { item: ShowcaseItem; nameIndex: number }) {
           src={item.logoUrl as string}
           alt={item.name}
           loading="lazy"
-          className="relative z-[1] max-h-14 max-w-[86%] w-auto object-contain [filter:brightness(0)_invert(1)] transition-transform duration-300 group-hover:scale-[1.07]"
+          className={
+            "relative z-[1] max-h-14 max-w-[86%] w-auto object-contain transition-transform duration-300 group-hover:scale-[1.07] " +
+            (item.keepColor ? "" : "[filter:brightness(0)_invert(1)]")
+          }
         />
       </Link>
     );
