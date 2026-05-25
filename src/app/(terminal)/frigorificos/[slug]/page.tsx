@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
+import frigorificosEnrichedData from '@/lib/data/frigorificos-enriched.json'
+import existenciasData from '@/lib/data/existencias-bovinas.json'
 import { getFrigorificoProfile } from '@/lib/dal/frigorificos'
 import { BreadcrumbSchema } from '@/components/seo/JsonLd'
 import {
@@ -29,6 +31,75 @@ interface BasicFrigorifico {
 }
 
 const frigorificos = frigorificosData as BasicFrigorifico[]
+
+interface EnrichedFrig {
+  cuit: string; name: string; matricula: string; province: string; stage: number
+  grupoEmpresario: string | null; tipo: string | null; localidad: string | null
+  direccion: string | null; volumenFaena: number | string | null; notas: string | null
+}
+const frigorificosEnriched = frigorificosEnrichedData as EnrichedFrig[]
+const EXISTENCIAS = existenciasData as unknown as Record<string, { total: number; year: number }>
+
+// Cattle stock for a province ("Existencias bovinas en X: N cabezas").
+function existenciasFor(province: string): { total: number; year: number } | null {
+  return EXISTENCIAS[(province || '').toUpperCase()] ?? null
+}
+
+// Data-derived summary built from the establishment's own fields — unique per
+// CUIT (name + matrícula + localidad vary), survives the boilerplate audit.
+const CICLO_NOUN: Record<number, string> = {
+  1: 'matadero-frigorífico de Ciclo I (faena y desposte)',
+  2: 'sala de desposte de Ciclo II',
+  3: 'depósito frigorífico de Ciclo III',
+}
+const TIPO_FRASE: Record<string, string> = {
+  exportador: 'con perfil exportador',
+  consumo_interno: 'orientado al consumo interno',
+  consumo_local: 'orientado al consumo local',
+  ambos: 'que abastece exportación y consumo interno',
+}
+function frigorificoSummary(f: {
+  name: string; matricula: string; stage: number; localidad: string | null
+  province: string; grupoEmpresario: string | null; tipo: string | null; volumenFaena: number | string | null
+}): string {
+  const lugar = f.localidad || f.province
+  const ciclo = CICLO_NOUN[f.stage] ?? `establecimiento de etapa ${f.stage}`
+  let s = `${f.name} es un ${ciclo} habilitado por SENASA/MAGYP bajo la matrícula ${f.matricula}, con sede en ${lugar} (${f.province}).`
+  if (f.grupoEmpresario) s += ` Integra el ${f.grupoEmpresario}.`
+  if (f.tipo) s += ` Es un establecimiento ${TIPO_FRASE[f.tipo] ?? `de tipo ${String(f.tipo).replace(/_/g, ' ')}`}.`
+  const vol = Number(f.volumenFaena)
+  if (Number.isFinite(vol) && vol > 0) s += ` Su capacidad declarada de faena es de ${vol.toLocaleString('es-AR')} cabezas por mes.`
+  return s
+}
+
+// Other frigoríficos in the same province (unique anchors + internal links).
+function relatedFrigorificos(cuit: string, province: string, cap = 6): EnrichedFrig[] {
+  const seen = new Set<string>([cuit])
+  const out: EnrichedFrig[] = []
+  for (const f of frigorificosEnriched) {
+    if (f.province !== province || seen.has(f.cuit)) continue
+    seen.add(f.cuit)
+    out.push(f)
+  }
+  out.sort((a, b) => (b.localidad ? 1 : 0) - (a.localidad ? 1 : 0) || a.name.localeCompare(b.name))
+  return out.slice(0, cap)
+}
+function relatedFrigAnchor(r: EnrichedFrig, i: number): string {
+  const lugar = r.localidad || r.province
+  switch (i % 4) {
+    case 0: return r.name
+    case 1: return `${r.name} — Mat. ${r.matricula}`
+    case 2: return `${r.name} (${lugar})`
+    default: return `${r.name}, frigorífico en ${lugar}`
+  }
+}
+// A page is "bare" (→ noindex) when it has no own unique content and too few
+// province neighbours to carry it.
+function frigoIsBare(cuit: string, province: string): boolean {
+  const e = frigorificosEnriched.find(f => f.cuit === cuit)
+  const hasOwn = !!(e?.notas || e?.grupoEmpresario || e?.tipo || getSenasaRecord(cuit))
+  return !hasOwn && relatedFrigorificos(cuit, province).length < 3
+}
 
 function formatCuit(cuit: string): string {
   if (cuit.length === 11) {
@@ -126,6 +197,9 @@ export async function generateMetadata({
     alternates: {
       canonical: `https://www.consignatarias.com.ar/frigorificos/${f.cuit}`,
     },
+    // Truly-bare establishments (no own data, few neighbours): keep crawlable
+    // for link equity but out of the index so they don't dilute it.
+    ...(frigoIsBare(f.cuit, f.province) && { robots: { index: false, follow: true } }),
   }
 }
 
@@ -225,6 +299,12 @@ export default async function FrigorificoDetailPage({
   const senasaScrapedDate = getSenasaScrapedDate()
   const session = await getCurrentSession()
   const isPro = session.tier === 'pro'
+
+  // Enrichment: data-derived summary, province neighbours, cattle stock.
+  const summary = frigorificoSummary({ name, matricula: basicF.matricula, stage: basicF.stage, localidad, province, grupoEmpresario, tipo, volumenFaena })
+  const relatedFrigs = relatedFrigorificos(cuit, province)
+  const provinceSlug = (province || '').toLowerCase().replace(/\s+/g, '-')
+  const existencias = existenciasFor(province)
 
   return (
     <>
@@ -326,6 +406,23 @@ export default async function FrigorificoDetailPage({
               <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Capacidad de faena</span>
               <span className="text-data font-terminal text-zinc-200 text-right max-w-[60%]">{volumenFaena}</span>
             </div>
+          )}
+        </div>
+      </div>
+
+      {/* Data-derived summary + cattle stock (unique per establishment / province) */}
+      <div className="terminal-panel">
+        <div className="terminal-panel-header">
+          <span className="text-zinc-200 text-label tracking-widest">RESUMEN</span>
+        </div>
+        <div className="px-panel py-3 space-y-2">
+          <p className="text-data font-terminal text-zinc-400 leading-relaxed">{summary}</p>
+          {existencias && (
+            <p className="text-xxs font-terminal text-zinc-500">
+              Existencias bovinas en {province}:{' '}
+              <span className="text-zinc-300 tabular-nums">{existencias.total.toLocaleString('es-AR')}</span> cabezas
+              <span className="text-zinc-600"> · SENASA {existencias.year}</span>
+            </p>
           )}
         </div>
       </div>
@@ -509,6 +606,31 @@ export default async function FrigorificoDetailPage({
           </p>
         </div>
       </div>
+
+      {/* Other frigoríficos in the same province (unique anchors + internal links) */}
+      {relatedFrigs.length > 0 && (
+        <div className="terminal-panel">
+          <div className="terminal-panel-header flex items-center justify-between">
+            <span className="text-zinc-200 text-label tracking-widest">OTROS FRIGORIFICOS EN {province}</span>
+            <span className="text-xxs font-terminal text-zinc-500 tabular-nums">{relatedFrigs.length}</span>
+          </div>
+          <div className="divide-y divide-terminal-border">
+            {relatedFrigs.map((r, i) => (
+              <Link key={r.cuit} href={`/frigorificos/${r.cuit}`} className="block px-panel py-2.5 hover:bg-zinc-800/40 transition-colors">
+                <span className="text-data font-terminal text-accent hover:underline">{relatedFrigAnchor(r, i)}</span>
+                <span className="block text-xxs font-terminal text-zinc-500 mt-0.5">
+                  Mat. SENASA {r.matricula}{r.localidad ? ` · ${r.localidad}` : ` · ${r.province}`}
+                </span>
+              </Link>
+            ))}
+          </div>
+          <div className="px-panel py-2 border-t border-terminal-border">
+            <Link href={`/frigorificos/${provinceSlug}`} className="text-xxs font-terminal text-accent hover:underline">
+              Ver todos los frigoríficos de {province} →
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* PRO upsell for verified frigoríficos */}
       {verified && (
