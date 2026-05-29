@@ -5,6 +5,7 @@ import marketPrices from "@/lib/data/market-prices.json";
 import frigorificosSummary from "@/lib/data/frigorificos-summary.json";
 import rematesData from "@/lib/data/remates.json";
 import { getAllProfiles } from "@/lib/data/consignataria-slugs";
+import { resolveYoutubeUrl } from "@/lib/youtube-live";
 import { getLogoUrl, getBrandColor, getBrandKeepColor } from "@/lib/data/logo-map";
 import ConsignatariasShowcase from "@/components/landing/ConsignatariasShowcase";
 import { FAQPageSchema, OrganizationSchema, WebSiteSchema } from "@/components/seo/JsonLd";
@@ -142,12 +143,18 @@ const activeConsignatarias = consigCards
   .filter(c => c.count > 0)
   .sort((a, b) => b.count - a.count)
 
-// En Vivo: remates with YouTube streaming
-const rematesEnVivo = rematesProximos.filter(
-  (r) => r.youtubeUrl && r.youtubeUrl.length > 0
-);
+// En Vivo: remates con transmisión resolvible — video directo (confirmada) o
+// canal habitual de la consignataria (estimada). Mismo criterio que /remates/en-vivo,
+// donde antes la home solo contaba youtubeUrl directo y daba casi siempre 0.
+const rematesEnVivo = rematesProximos
+  .map((r) => {
+    const resolved = resolveYoutubeUrl(r);
+    return resolved ? { remate: r, confidence: resolved.confidence } : null;
+  })
+  .filter((x): x is { remate: (typeof rematesProximos)[number]; confidence: "confirmed" | "probable" } => x !== null);
 const enVivoCount = rematesEnVivo.length;
-const todayEnVivo = rematesEnVivo.filter((r) => r.date === TODAY).length;
+const enVivoConfirmed = rematesEnVivo.filter((x) => x.confidence === "confirmed").length;
+const todayEnVivo = rematesEnVivo.filter((x) => x.remate.date === TODAY).length;
 
 const cats = marketPrices.categories;
 const catEntries = Object.entries(cats) as [
@@ -333,7 +340,7 @@ export default function LandingPage() {
                   className="flex items-center justify-center gap-2 text-sm font-medium text-white bg-red-600 hover:bg-red-500 transition-all rounded py-3 px-6 shadow-lg shadow-red-900/50"
                 >
                   <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                  🔴 {enVivoCount} en vivo
+                  🔴 {enVivoCount} posibles transmisiones
                 </Link>
               )}
               <Link
@@ -352,9 +359,9 @@ export default function LandingPage() {
               <div className="absolute top-2 right-2 flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
               </div>
-              <div className="text-[0.65rem] text-red-400/80 uppercase tracking-widest mb-2 group-hover:text-red-300 transition-colors">🔴 En Vivo</div>
+              <div className="text-[0.65rem] text-red-400/80 uppercase tracking-widest mb-2 group-hover:text-red-300 transition-colors">🔴 Posibles en vivo</div>
               <div className="text-2xl font-medium text-zinc-100 tracking-tight">{enVivoCount}</div>
-              <div className="text-xs text-red-400/70 mt-1">{todayEnVivo > 0 ? `${todayEnVivo} hoy` : "Con streaming"}</div>
+              <div className="text-xs text-red-400/70 mt-1">{enVivoConfirmed > 0 ? `${enVivoConfirmed} confirmadas · est.` : "estimado · por canal"}</div>
             </Link>
             <Link href="/mercado/inmag" className="bg-zinc-900/60 border border-zinc-800 hover:border-emerald-500/30 rounded p-5 transition-all group">
               <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2 group-hover:text-emerald-400/70 transition-colors">INMAG $/kg vivo</div>

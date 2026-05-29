@@ -1376,3 +1376,127 @@ export async function sendQuotaAlert(p: QuotaAlertParams) {
     return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
   }
 }
+
+/* ============================================================
+   Trial nudge — free-credits invite, 7 and 3 days before end
+   Subtle, usage-aware. Showcases the full API + Growth. No cutoff.
+   ============================================================ */
+interface TrialNudgeParams {
+  to: string
+  daysLeft: number // 7 or 3
+  used: number
+  limit: number
+  plan: 'starter' | 'growth' | 'scale'
+  trialEndsAtIso: string
+}
+
+export async function sendTrialNudge(p: TrialNudgeParams) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'RESEND_API_KEY not set' }
+
+  const usedFmt = p.used.toLocaleString('en-US')
+  const limitFmt = p.limit.toLocaleString('en-US')
+  const endsFmt = new Date(p.trialEndsAtIso).toLocaleDateString('es-AR', {
+    day: 'numeric',
+    month: 'long',
+  })
+  const enterpriseUrl = `${APP_URL}/enterprise`
+  const docsUrl = `${APP_URL}/api-docs`
+
+  const subject =
+    p.daysLeft <= 3
+      ? `Tu prueba de la API termina el ${endsFmt} — ¿seguimos?`
+      : `Llevás ${usedFmt} requests — ¿cómo venís usando la API?`
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: p.to,
+      replyTo: ADMIN_EMAIL,
+      subject,
+      html: `
+        <div style="font-family: 'SF Mono', 'Cascadia Code', ui-monospace, Menlo, Consolas, monospace; max-width: 560px; background: #09090b; color: #fafafa; padding: 32px;">
+          <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; margin-bottom: 28px;">
+            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#38bdf8; margin-right:10px;"></span>
+            <strong style="color:#fafafa">consignatarias.com</strong>
+            <span style="color:#38bdf8; margin: 0 8px;">·</span>
+            Enterprise API
+          </div>
+
+          <h1 style="font-size: 24px; font-weight: 700; letter-spacing: -0.02em; color: #fafafa; margin: 0 0 16px 0;">
+            Llevás <span style="color:#38bdf8">${usedFmt}</span> requests en tu prueba
+          </h1>
+
+          <p style="font-size: 14px; line-height: 1.6; color: #d4d4d8; margin: 0 0 16px 0;">
+            Queríamos saber, sin apuro, <strong style="color:#fafafa">cómo las venís usando</strong>.
+            ¿Estás valorizando rodeos, integrando el calendario, siguiendo el INMAG?
+            Contanos en qué la estás enchufando — respondé este mail y lo charlamos.
+          </p>
+
+          <p style="font-size: 14px; line-height: 1.6; color: #a1a1aa; margin: 0 0 24px 0;">
+            Tu acceso de prueba sigue activo${
+              p.daysLeft <= 3
+                ? ` hasta el <strong style="color:#fafafa">${endsFmt}</strong>`
+                : `; va hasta el <strong style="color:#fafafa">${endsFmt}</strong>`
+            }.
+            Usaste ${usedFmt} de ${limitFmt} requests del período.
+          </p>
+
+          <div style="background: #18181b; border: 1px solid #27272a; padding: 18px; margin: 24px 0;">
+            <p style="margin:0 0 12px 0; color:#fafafa; font-weight:600; font-size:13px;">Todo lo que ya tenés a mano en la API:</p>
+            <ul style="margin:0; padding-left:18px; color:#d4d4d8; font-size:13px; line-height:1.8;">
+              <li>INMAG diario + serie histórica completa (desde 2015)</li>
+              <li>16 sub-categorías oficiales del MAG con corte por peso (novillos, novillitos, vaquillonas, vacas, toros, terneros)</li>
+              <li>USD oficial y blue, serie histórica desde 2011</li>
+              <li>Calendario de remates: próximos, búsqueda, por consignataria y por provincia</li>
+              <li>Directorio de 74 consignatarias + 364 frigoríficos</li>
+              <li>Webhooks firmados (nuevo remate, cambio de INMAG, alertas de precio)</li>
+              <li>Exports CSV/JSON bajo demanda</li>
+              <li>Documentación + ejemplos en Python y JS</li>
+            </ul>
+          </div>
+
+          <div style="background: #0c1f2b; border: 1px solid #164e63; padding: 18px; margin: 24px 0;">
+            <p style="margin:0 0 8px 0; color:#38bdf8; font-weight:700; font-size:13px; letter-spacing:0.04em;">Si la prueba te cierra, el paso natural es Growth</p>
+            <p style="margin:0 0 12px 0; color:#d4d4d8; font-size:13px; line-height:1.7;">
+              <strong style="color:#fafafa">50.000 req/mes</strong> · 300 req/min — pensado para apps en producción.
+            </p>
+            <ul style="margin:0; padding-left:18px; color:#d4d4d8; font-size:13px; line-height:1.8;">
+              <li>Todo lo del Starter, ×50 de cupo</li>
+              <li>Webhooks ilimitados</li>
+              <li>Reporte semanal en PDF + JSON</li>
+              <li>Dashboards web personalizados</li>
+              <li>Alertas configurables (INMAG, sub-categoría, USD, remates)</li>
+              <li>Acceso directo al analista por email/Slack</li>
+              <li>Datos lote-level transaccionales (próximamente)</li>
+              <li>SLA 99,8% — soporte en 4 h hábiles</li>
+            </ul>
+            <p style="margin:12px 0 0 0; color:#71717a; font-size:12px;">USD 500/mes · mensual o anual (–15%)</p>
+          </div>
+
+          <p style="margin: 28px 0;">
+            <a href="${enterpriseUrl}" style="display: inline-block; background: #38bdf8; color: #09090b; padding: 14px 24px; text-decoration: none; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; font-size: 13px; border-radius: 2px;">
+              Ver planes y features →
+            </a>
+            <a href="${docsUrl}" style="display: inline-block; color: #a1a1aa; padding: 14px 12px; text-decoration: none; font-size: 13px;">
+              Ver docs
+            </a>
+          </p>
+
+          <hr style="border: none; border-top: 1px solid #27272a; margin: 32px 0;">
+
+          <p style="font-size: 12px; line-height: 1.6; color: #a1a1aa; margin: 0;">
+            Sin compromiso — si querés extender la prueba, cambiar de plan o solo
+            mostrarnos qué armaste, respondé este mail y te leemos.
+          </p>
+          <p style="font-size: 11px; color: #71717a; margin: 16px 0 0 0;">
+            Mesa de mercado · consignatarias.com
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}

@@ -1,0 +1,32 @@
+name: API Trial Nudges (7d + 3d)
+
+# Daily check: nudge free-credits trial users 7 and 3 days before their
+# 30-day trial ends. Subtle, usage-aware, showcases full API + Growth.
+# Does NOT pause access. Safe to run with 0 trials (no-op).
+on:
+  schedule:
+    - cron: '17 13 * * *'  # Daily 10:17 ART (non-round minute avoids GH schedule throttling)
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  send-trial-nudges:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger trial nudges cron
+        run: |
+          response=$(curl -sL -w "\n%{http_code}" -X POST \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            "https://www.consignatarias.com.ar/api/cron/trial-nudges")
+
+          http_code=$(echo "$response" | tail -1)
+          body=$(echo "$response" | head -n -1)
+
+          echo "Response: $body"
+          echo "HTTP Code: $http_code"
+
+          if [ "$http_code" -ne 200 ]; then
+            echo "Error: Trial nudges cron failed with HTTP $http_code"
+            exit 1
+          fi
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
