@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { fetchInmagUsdJoined, aggregateMonthly } from '@/lib/charts/data'
 import { lineChartSvg } from '@/lib/charts/svg'
+import ProChartGate from '@/components/market/ProChartGate'
 
 export const revalidate = 86400 // 1 day — rebuilt nightly by SSG cron
 
@@ -326,13 +327,18 @@ export default async function InmagDolaresPage() {
               />
             </div>
 
-            {/* Full history */}
+            {/* Full history — PRO (free users see the recent + 5y charts above) */}
             {fullSvg && (
               <div className="terminal-panel mb-6">
-                <div className="terminal-panel-header">Histórico completo — desde 2015</div>
-                <div
-                  className="px-panel py-4"
-                  dangerouslySetInnerHTML={{ __html: fullSvg }}
+                <div className="terminal-panel-header flex items-center gap-2">
+                  Histórico completo — desde 2015
+                  <span className="text-[10px] font-terminal font-bold tracking-wider border border-amber-500/50 bg-amber-500/10 text-amber-400 rounded-sm px-1 py-0.5">PRO</span>
+                </div>
+                <ProChartGate
+                  svg={fullSvg}
+                  context="inmag-dolares-decade"
+                  title="Función PRO Usuario"
+                  description="La serie completa del INMAG en dólares desde 2015 — la década entera del ciclo ganadero, más la descarga en CSV."
                 />
                 <div className="px-panel pb-3 text-zinc-500 text-xxs">
                   Cada punto = promedio del mes. Fuente: INMAG (MAG Cañuelas) ÷ dólar blue venta (ambitofinanciero / argentinadatos).

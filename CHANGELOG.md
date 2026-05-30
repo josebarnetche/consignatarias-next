@@ -6,6 +6,64 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.21.0] — 2026-05-30
+
+### PRO Usuario — value build-out + merchandising (conversion)
+
+Analytics showed traffic engaging the PRO surface (`pro_badge`) without converting: the
+problem was merchandising + thin demand-side value, not demand. This release builds four
+decision-grade PRO features and surfaces the value (with the price anchor) on `/planes`, the
+landing, and at each point of use. No Enterprise API contract changes; no migrations.
+
+**New / reworked PRO features**
+
+- **Calculadora «neto en mano»** (`/calculadora`) — below the gross INMAG value, a PRO panel
+  takes gross → take-home: editable commission %, marketing % and freight $/head, with the
+  result in ARS, USD and $/kg. IVA (10.5% on hacienda) is shown as info, **not** subtracted —
+  for a responsable inscripto it is collected and remitted, neutral to take-home. Free users get
+  a teaser with the price anchor.
+- **Full INMAG history + CSV** (`/mercado/inmag`) — the recent 30-day table stays free and
+  indexable; the complete daily series **2015→** is a PRO CSV export via the new PRO-gated
+  `/api/market/inmag-export` (pulls the full series from `mag_inmag_history`). Fixes a latent
+  gap: the old download link silently returned JSON and only one year.
+- **Comparador PRO** (`/comparar`) — adds *medios de pago* and *días de cobro* columns. To keep
+  the page static without leaking PRO data into the HTML, these are fetched on demand for PRO
+  users from the new PRO-gated `/api/consignatarias/medios-pago`; free users see a locked row + upsell.
+- **Estacionalidad «show, don't blur»** (`/mercado`) — the heatmap used to be fully blurred
+  (free users saw nothing → no desire). Now free users see the **last 3 years** in full and an
+  upsell to unlock the full decade; PRO users get 2015→.
+- **INMAG-en-dólares decade chart now PRO** (`/mercado/inmag-dolares`) — the "desde 2015" chart
+  was free, giving away the marquee "la década completa" pitch. Free users keep the recent
+  12-month and 5-year charts; the full decade is now a PRO gate (same recent-free/decade-PRO
+  pattern as the CSV and seasonality).
+
+**Audit corrections (truth-in-advertising + correctness)**
+
+- Removed two PRO-Usuario bullets that didn't hold up: **"Alertas de precio"** (the `/api/alertas`
+  quota keys off a `users.plan`/api-key model the PRO-Usuario subscription never sets, and there's
+  no alerts UI) and **"Verificación SENASA"** (the registry data — propietario/actividades/ciclos —
+  is public and shown free; only an unbuilt teaser was behind the gate). Selling either eroded
+  trust at the decision moment.
+- `ProUpgradePrompt` is now tier-aware: it renders nothing and fires **no** `pro_prompt_view` for
+  PRO users (or before tier resolves), so the conversion-funnel denominator is no longer inflated
+  or contaminated — critical since the whole point is measuring conversion.
+- Net-back calculator: guarded the USD divisor (a missing/zero blue rate produced `USD ∞`) and the
+  PRO/free panel no longer flashes the wrong state while the session loads.
+- Removed the dead "Sistema de Puntos / Ganá PRO sin pagar" card from the landing (the points
+  system was killed; the copy cannibalized paid conversion) and deleted unused `ProOverlay`.
+
+**Merchandising**
+
+- `/planes` — PRO Usuario card + "Por qué PRO Usuario" panel rewritten to lead with the
+  money-decision tools (neto en mano, ¿vendo ahora?, comparador con plata, la década completa).
+- **Landing** — added a dedicated **PRO Usuario** section ("Las herramientas del que vende
+  hacienda", ARS $7.900/mes). The landing previously merchandised only PRO Consignataria — the
+  demand-side plan had no home on the homepage, a likely cause of the non-conversion.
+- Contextual upsells with the price anchor at each feature (calculadora, INMAG CSV, comparador,
+  estacionalidad), all wired to the existing PRO-prompt analytics (`trackProPromptView/Click`).
+
+---
+
 ## [1.20.0] — 2026-05-30
 
 ### Market data fix (was silently 5 years stale) + "INMAG en dólares" recent view + build hygiene

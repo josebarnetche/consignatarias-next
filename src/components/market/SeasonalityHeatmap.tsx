@@ -1,11 +1,13 @@
 import { fetchInmagSeries, aggregateMonthly, withYearZScores } from '@/lib/charts/data'
 import { heatmapSvg } from '@/lib/charts/svg'
-import { ProOverlay } from './ProOverlay'
+import SeasonalityView from './SeasonalityView'
+
+const RECENT_YEARS = 3 // free window — enough to read the seasonal pattern
 
 /**
  * Seasonality heatmap: mes × año, color por z-score per year.
- * Server-rendered SVG, PRO gate is purely visual (data is public anyway).
- * SSG-friendly: zero per-request work.
+ * Server-rendered SVG, SSG-friendly. Free users see the recent years; PRO
+ * unlocks the full decade (gate handled client-side in SeasonalityView).
  */
 export async function SeasonalityHeatmap() {
   const today = new Date().toISOString().slice(0, 10)
@@ -23,24 +25,25 @@ export async function SeasonalityHeatmap() {
     zScore: m.zScore,
   }))
 
-  const svg = heatmapSvg(cells, {
-    cellSize: 40,
-    formatCell: () => '',
-  })
+  const allYears = Array.from(new Set(cells.map((c) => c.year))).sort((a, b) => a - b)
+  const recentYears = allYears.slice(-RECENT_YEARS)
+  const recentCells = cells.filter((c) => recentYears.includes(c.year))
+
+  const opts = { cellSize: 40, formatCell: () => '' }
+  const fullSvg = heatmapSvg(cells, opts)
+  const recentSvg = heatmapSvg(recentCells, opts)
 
   return (
     <div className="terminal-panel relative overflow-hidden">
       <div className="terminal-panel-header">
         Estacionalidad — INMAG mes × año (z-score)
       </div>
-      <div className="px-panel py-4 relative">
-        <div dangerouslySetInnerHTML={{ __html: svg }} />
-        <ProOverlay
-          title="Función PRO Usuario"
-          description="Mapa de calor mes × año con el INMAG normalizado por z-score anual. Quita el ruido inflacionario y muestra el ciclo real del mercado."
-          cta="Activar PRO — ARS $7.900/mes →"
-        />
-      </div>
+      <SeasonalityView
+        recentSvg={recentSvg}
+        fullSvg={fullSvg}
+        recentYears={RECENT_YEARS}
+        fullFromYear={allYears[0]}
+      />
       <div className="px-panel pb-3 text-zinc-500 text-xxs">
         Z-score por año (azul = sobre promedio anual, rosa = bajo). Sin el
         ruido de la inflación, el patrón estacional emerge.

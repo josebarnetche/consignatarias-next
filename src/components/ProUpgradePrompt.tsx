@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 import { trackProPromptView, trackProPromptClick } from '@/lib/analytics'
+import { useSessionTier } from '@/lib/use-session-tier'
 
 interface ProUpgradePromptProps {
   /** Main benefit text (e.g. "Compará hasta 5 consignatarias") */
@@ -35,18 +36,25 @@ export default function ProUpgradePrompt({
 }: ProUpgradePromptProps) {
   const href = `/planes?from=${context}`
   const hasTrackedImpression = useRef(false)
+  const { tier, loading } = useSessionTier()
 
-  // Track impression once when component mounts
+  // Track the impression once — only for users who can actually convert
+  // (free/anon). Firing for PRO users (or before tier is known) would inflate
+  // and contaminate the pro_prompt_view denominator of the conversion funnel.
   useEffect(() => {
+    if (loading || tier === 'pro') return
     if (!hasTrackedImpression.current) {
       trackProPromptView(context, variant)
       hasTrackedImpression.current = true
     }
-  }, [context, variant])
+  }, [context, variant, tier, loading])
 
   const handleClick = () => {
     trackProPromptClick(context, variant)
   }
+
+  // PRO users already have it; don't show the upsell or count them.
+  if (tier === 'pro') return null
 
   if (variant === 'card') {
     return (

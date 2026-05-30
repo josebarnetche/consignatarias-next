@@ -22,12 +22,13 @@ const PRODUCTOR_FREE_FEATURES = [
 ]
 
 const PRODUCTOR_PRO_FEATURES = [
-  'Medios de pago de cada consignataria',
-  'Filtros avanzados (provincia × categoría × fechas)',
-  'Detalle completo de perfiles y remates',
-  'Descargas premium (El Corredor, snapshot Oráculo)',
-  'Archivo histórico INMAG + comparables',
-  'Acceso ilimitado al observatorio',
+  'Calculadora neto en mano: comisión, gastos y flete descontados del bruto',
+  'Calculadora «¿Vendo ahora?» con percentiles de 30 y 365 días',
+  'Comparador con medios de pago y días de cobro de cada consignataria',
+  'Histórico INMAG completo 2015→ + descarga CSV',
+  'Estacionalidad: la década completa mes × año (z-score)',
+  'Filtros avanzados de remates (rango de fechas, cabezas mínimas)',
+  'Descargas El Corredor + El Oráculo',
 ]
 
 const CONSIGNATARIA_FREE_FEATURES = [
@@ -138,30 +139,32 @@ function ProductorWhy() {
       <div className="px-panel py-4 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="flex flex-col gap-2">
           <span className="text-zinc-200 text-sm font-medium">
-            Dato accionable
+            Cuánto te queda neto
           </span>
           <p className="text-zinc-500 text-data">
-            INMAG diario, comparables, medios de pago de cada consignataria. Lo
-            que necesitás para decidir cuándo y dónde vender o comprar.
+            La calculadora pasa del bruto INMAG al neto en mano: comisión,
+            gastos y flete descontados, en ARS, USD y $/kg. La plata real, no
+            la teórica.
           </p>
         </div>
         <div className="flex flex-col gap-2">
           <span className="text-zinc-200 text-sm font-medium">
-            Filtros que sí cruzan
+            Cuándo y a quién vender
           </span>
           <p className="text-zinc-500 text-data">
-            Provincia × categoría × fecha × tipo de remate, todo a la vez. En
-            free es búsqueda básica — en PRO es la query que necesita un
-            asesor.
+            «¿Vendo ahora?» con percentiles de 30 y 365 días, y el comparador
+            con medios de pago y días de cobro de cada consignataria. La
+            decisión completa.
           </p>
         </div>
         <div className="flex flex-col gap-2">
           <span className="text-zinc-200 text-sm font-medium">
-            Descargas premium
+            La década completa
           </span>
           <p className="text-zinc-500 text-data">
-            El Corredor mensual, snapshot del Oráculo, archivo histórico INMAG.
-            Material para llevar a una reunión, no para chusmear.
+            Histórico INMAG 2015→ con descarga CSV, estacionalidad mes × año y
+            las descargas El Corredor + El Oráculo. Material para una reunión,
+            no para chusmear.
           </p>
         </div>
       </div>

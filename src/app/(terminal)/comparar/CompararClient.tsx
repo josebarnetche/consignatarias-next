@@ -1,11 +1,36 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
+import { useSessionTier } from '@/lib/use-session-tier'
 
 const FREE_LIMIT = 3
 const _PRO_LIMIT = 5 // Reserved for future use
+
+const METODO_LABELS: Record<string, string> = {
+  'transferencia': 'Transferencia',
+  'cheque': 'Cheque',
+  'efectivo': 'Efectivo',
+  'al-rinde': 'Al rinde',
+  'al-gancho': 'Al gancho',
+  'usd-billete': 'USD billete',
+  'usdt': 'USDT',
+  'permuta': 'Permuta',
+  'mercado-pago': 'Mercado Pago',
+}
+
+interface MediosPagoSummary {
+  metodos: string[]
+  plazoMin: number | null
+}
+
+function fmtPlazo(dias: number | null): string {
+  if (dias === null) return '—'
+  if (dias === 0) return 'Contado'
+  if (dias === 1) return '1 día'
+  return `${dias} días`
+}
 
 interface ConsignatariaStats {
   slug: string
@@ -68,9 +93,25 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
     }
   }
 
-  const selectedConsignatarias = selected.map(slug => 
+  const selectedConsignatarias = selected.map(slug =>
     consignatarias.find(c => c.slug === slug)!
   ).filter(Boolean)
+
+  // Medios de pago + plazo de cobro — PRO. Fetched on demand (never baked into
+  // the static HTML) and only when the user is PRO.
+  const session = useSessionTier()
+  const [medios, setMedios] = useState<Record<string, MediosPagoSummary>>({})
+
+  useEffect(() => {
+    if (session.tier !== 'pro' || selected.length === 0) return
+    const slugs = selected.join(',')
+    fetch(`/api/consignatarias/medios-pago?slugs=${encodeURIComponent(slugs)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        if (j?.result) setMedios((prev) => ({ ...prev, ...j.result }))
+      })
+      .catch(() => {})
+  }, [session.tier, selected])
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -271,6 +312,52 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                       ))}
                     </tr>
 
+                    {/* Medios de pago — PRO */}
+                    <tr className="border-b border-terminal-border">
+                      <td className="px-panel py-3 text-sm text-zinc-400">
+                        <span className="inline-flex items-center gap-1.5">
+                          Medios de pago
+                          <span className="text-[10px] font-terminal font-bold tracking-wider border border-amber-500/50 bg-amber-500/10 text-amber-400 rounded-sm px-1 py-0.5">PRO</span>
+                        </span>
+                      </td>
+                      {selectedConsignatarias.map(c => (
+                        <td key={c.slug} className="px-4 py-3 text-sm text-zinc-200">
+                          {session.tier === 'pro' ? (
+                            medios[c.slug]?.metodos?.length ? (
+                              <div className="flex flex-wrap gap-1">
+                                {medios[c.slug].metodos.map(m => (
+                                  <span key={m} className="text-xxs bg-zinc-800 px-1.5 py-0.5 rounded">{METODO_LABELS[m] || m}</span>
+                                ))}
+                              </div>
+                            ) : (
+                              <span className="text-zinc-600 text-xxs">Sin publicar</span>
+                            )
+                          ) : (
+                            <Link href="/planes?from=comparar-medios" className="text-amber-400/80 hover:text-amber-300 text-xs inline-flex items-center gap-1">🔒 PRO</Link>
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+
+                    {/* Días de cobro — PRO */}
+                    <tr className="border-b border-terminal-border">
+                      <td className="px-panel py-3 text-sm text-zinc-400">
+                        <span className="inline-flex items-center gap-1.5">
+                          Días de cobro
+                          <span className="text-[10px] font-terminal font-bold tracking-wider border border-amber-500/50 bg-amber-500/10 text-amber-400 rounded-sm px-1 py-0.5">PRO</span>
+                        </span>
+                      </td>
+                      {selectedConsignatarias.map(c => (
+                        <td key={c.slug} className="px-4 py-3 text-sm text-zinc-200 font-mono">
+                          {session.tier === 'pro' ? (
+                            <span>{fmtPlazo(medios[c.slug]?.plazoMin ?? null)}</span>
+                          ) : (
+                            <Link href="/planes?from=comparar-plazo" className="text-amber-400/80 hover:text-amber-300 text-xs inline-flex items-center gap-1">🔒 PRO</Link>
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+
                     {/* Status */}
                     <tr>
                       <td className="px-panel py-3 text-sm text-zinc-400">
@@ -289,6 +376,15 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                   </tbody>
                 </table>
               </div>
+
+              {/* PRO upsell — medios de pago + días de cobro */}
+              {!session.loading && session.tier !== 'pro' && (
+                <ProUpgradePrompt
+                  benefit="Compará medios de pago y días de cobro de cada consignataria. PRO por ARS $7.900/mes."
+                  context="comparar-medios"
+                  variant="card"
+                />
+              )}
 
               {/* Actions */}
               <div className="terminal-panel">

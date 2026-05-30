@@ -17,10 +17,18 @@ const PRICING_PLANS = [
   },
   {
     name: 'PRO Usuario',
-    description: 'Acceso ilimitado para productores, asesores, contadores y brokers. Filtros, detalle completo, descargas premium.',
+    description: 'Las herramientas de decisión del que vende hacienda: cuánto te queda neto, cuándo conviene vender y a quién. Para productores, asesores, contadores y brokers.',
     price: 7900,
     priceCurrency: 'ARS',
-    features: ['Medios de pago de cada consignataria', 'Verificación SENASA del frigorífico (propietario, actividades, ciclos)', 'Filtros avanzados', 'Detalle completo de perfiles', 'Descargas premium (El Corredor, Oráculo)', 'Archivo histórico INMAG'],
+    features: [
+      'Calculadora neto en mano: comisión, gastos y flete descontados del bruto',
+      'Calculadora «¿Vendo ahora?» con percentiles de 30 y 365 días',
+      'Comparador con medios de pago y días de cobro de cada consignataria',
+      'Histórico INMAG completo 2015→ con descarga en CSV',
+      'Estacionalidad: la década completa mes × año (z-score)',
+      'Filtros avanzados de remates (rango de fechas, cabezas mínimas)',
+      'Descargas El Corredor + El Oráculo',
+    ],
   },
   {
     name: 'PRO Consignataria',

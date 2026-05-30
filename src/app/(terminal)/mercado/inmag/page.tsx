@@ -8,6 +8,7 @@ import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import { ElCorredorCTA } from '@/components/ElCorredorCTA'
 import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
 import { AnimatedPrice } from '@/components/AnimatedPrice'
+import HistoryDownloadPro from '@/components/market/HistoryDownloadPro'
 
 const inmag = marketData.inmag
 const series = inmag.series as Array<{ date: string; value: number; volume?: number }>
@@ -378,17 +379,9 @@ export default function InmagPage() {
             </div>
             
             {/* Table footer */}
-            <div className="px-6 py-4 border-t border-zinc-800/50 bg-zinc-900/50 flex items-center justify-between">
+            <div className="px-6 py-4 border-t border-zinc-800/50 bg-zinc-900/50 flex items-center justify-between gap-3">
               <span className="text-xs text-zinc-600">Mostrando últimos 30 días hábiles</span>
-              <Link 
-                href="/api/market/history?days=365&format=csv"
-                className="text-xs text-emerald-500 hover:text-emerald-400 transition-colors flex items-center gap-1"
-              >
-                Descargar histórico completo
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-              </Link>
+              <HistoryDownloadPro />
             </div>
           </div>
         </section>

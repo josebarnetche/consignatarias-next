@@ -1270,6 +1270,67 @@ export default function LandingPage() {
         </section>
 
         {/* ============================================================ */}
+        {/*  PRO USUARIO — demand-side upgrade                            */}
+        {/* ============================================================ */}
+        <section className="max-w-7xl mx-auto px-6 pb-32">
+          <div className="bg-gradient-to-br from-sky-500/5 via-zinc-900/50 to-zinc-900/50 border border-sky-500/20 rounded-2xl p-8 md:p-12">
+            <div className="text-center mb-10">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-500/10 border border-sky-500/30 rounded-full text-sky-400 text-sm font-medium mb-4">
+                ★ PRO Usuario
+              </span>
+              <h2 className="text-2xl md:text-3xl font-medium text-zinc-100 tracking-tight mb-3">
+                Las herramientas del que vende hacienda
+              </h2>
+              <p className="text-sm md:text-base text-zinc-400 max-w-2xl mx-auto">
+                Cuánto te queda neto, cuándo conviene vender y a quién. Para productores,
+                asesores, contadores y brokers — por <span className="text-zinc-200">ARS $7.900/mes</span>.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              {[
+                {
+                  title: 'Neto en mano',
+                  body: 'Del bruto INMAG al neto real: comisión, gastos y flete descontados, en ARS, USD y $/kg.',
+                },
+                {
+                  title: '¿Vendo ahora?',
+                  body: 'Percentiles de 30 y 365 días con lectura del momento de venta. La decisión, no el dato suelto.',
+                },
+                {
+                  title: 'Comparador con plata',
+                  body: 'Medios de pago y días de cobro de cada consignataria, lado a lado. A quién le conviene venderle.',
+                },
+                {
+                  title: 'La década completa',
+                  body: 'Histórico INMAG 2015→ en CSV + estacionalidad mes × año + El Corredor y El Oráculo.',
+                },
+              ].map((f) => (
+                <div key={f.title} className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="text-sm font-medium text-zinc-100">{f.title}</h3>
+                    <span className="text-[10px] font-terminal font-bold tracking-wider border border-sky-500/40 bg-sky-500/10 text-sky-400 rounded-sm px-1 py-0.5">PRO</span>
+                  </div>
+                  <p className="text-xs text-zinc-500">{f.body}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center">
+              <Link
+                href="/planes?audience=productor&from=landing-pro"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-sky-500 hover:bg-sky-400 text-zinc-950 text-sm font-medium rounded-lg transition-colors"
+              >
+                Ver PRO Usuario — ARS $7.900/mes
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ============================================================ */}
         {/*  PARA CONSIGNATARIAS - PRO FEATURES                           */}
         {/* ============================================================ */}
         <section className="max-w-7xl mx-auto px-6 pb-32">
@@ -1365,19 +1426,16 @@ export default function LandingPage() {
                 <span className="text-xs text-violet-400/70">Galería automática desde YouTube</span>
               </div>
 
-              {/* Sistema de Puntos */}
-              <div className="bg-zinc-900/80 border border-zinc-800 rounded-lg p-5 relative overflow-hidden">
-                <div className="absolute top-0 right-0 px-2 py-0.5 bg-emerald-500 text-black text-[10px] font-medium rounded-bl">
-                  GRATIS
+              {/* Landing + QR */}
+              <div className="bg-zinc-900/80 border border-zinc-800 rounded-lg p-5">
+                <div className="w-9 h-9 rounded border border-amber-500/30 bg-amber-500/10 flex items-center justify-center text-amber-400 mb-3">
+                  🔗
                 </div>
-                <div className="w-9 h-9 rounded border border-emerald-500/30 bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-3">
-                  ⭐
-                </div>
-                <h3 className="text-sm font-medium text-zinc-100 mb-1.5">Sistema de Puntos</h3>
+                <h3 className="text-sm font-medium text-zinc-100 mb-1.5">Landing + QR</h3>
                 <p className="text-xs text-zinc-500 mb-3">
-                  Completá tu perfil, subí DT-e, publicá remates y ganás puntos. 4,500 pts = 1 mes PRO gratis.
+                  Tu página propia /go/tu-nombre y un QR para catálogos y carteles. El productor llega directo a tus remates.
                 </p>
-                <span className="text-xs text-emerald-400/70">Ganá PRO sin pagar</span>
+                <span className="text-xs text-amber-400/70">Página y QR propios</span>
               </div>
 
               {/* Analytics */}

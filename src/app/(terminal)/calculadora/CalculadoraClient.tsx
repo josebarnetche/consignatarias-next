@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
+import { useSessionTier } from '@/lib/use-session-tier'
 
 interface MarketPrices {
   inmag: { current: number; prev: number; change: number }
@@ -41,6 +42,12 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
   const [showResult, setShowResult] = useState(false)
   const [email, setEmail] = useState('')
   const [emailSaved, setEmailSaved] = useState(false)
+
+  // Net-back ("neto en mano") — PRO. Real commercial deductions only.
+  const session = useSessionTier()
+  const [comision, setComision] = useState(3) // % comisión consignatario (típico 2–4%)
+  const [gastos, setGastos] = useState(2) // % gastos de comercialización (sellado, asociación, etc.)
+  const [fletePorCabeza, setFletePorCabeza] = useState(0) // $/cabeza transporte a plaza
 
   function addItem() {
     setItems([...items, {
@@ -85,10 +92,28 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
       totalValorARS += valor
     }
 
-    const totalValorUSD = totalValorARS / prices.usdBlue.current
+    const usd = prices.usdBlue.current > 0 ? prices.usdBlue.current : null
+    const totalValorUSD = usd ? totalValorARS / usd : 0
 
     return { totalCabezas, totalKilos, totalValorARS, totalValorUSD }
   }, [items, prices])
+
+  // Net-back: gross minus REAL commercial costs (commission, marketing, freight).
+  // IVA (10.5% on hacienda en pie) is NOT subtracted — for a responsable inscripto
+  // it is collected and remitted, neutral to take-home. Shown as info only.
+  const netback = useMemo(() => {
+    const bruto = totals.totalValorARS
+    const comisionMonto = bruto * (comision / 100)
+    const gastosMonto = bruto * (gastos / 100)
+    const fleteMonto = fletePorCabeza * totals.totalCabezas
+    const netoARS = Math.max(0, bruto - comisionMonto - gastosMonto - fleteMonto)
+    const usd = prices.usdBlue.current > 0 ? prices.usdBlue.current : null
+    const netoUSD = usd ? netoARS / usd : 0
+    const netoPorKg = totals.totalKilos > 0 ? netoARS / totals.totalKilos : 0
+    const ivaInfo = bruto * 0.105
+    const descuentoPct = bruto > 0 ? ((bruto - netoARS) / bruto) * 100 : 0
+    return { bruto, comisionMonto, gastosMonto, fleteMonto, netoARS, netoUSD, netoPorKg, ivaInfo, descuentoPct }
+  }, [totals, comision, gastos, fletePorCabeza, prices.usdBlue])
 
   async function handleCalculate(e: React.FormEvent) {
     e.preventDefault()
@@ -274,20 +299,83 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
               </div>
             </div>
 
+            {/* ── Neto en mano (PRO) ── */}
+            <div className="border-t border-zinc-800 mt-6 pt-6">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xxs text-zinc-500 uppercase">Neto en mano</span>
+                <span className="text-[10px] font-terminal font-bold tracking-wider border border-amber-500/50 bg-amber-500/10 text-amber-400 rounded-sm px-1.5 py-0.5">PRO</span>
+              </div>
+
+              {session.loading ? (
+                <p className="text-xxs text-zinc-600">Cargando…</p>
+              ) : session.tier === 'pro' ? (
+                <>
+                  <p className="text-xxs text-zinc-500 mb-4">
+                    Lo que te queda después de comisión, gastos y flete. Ajustá los valores a tu operación.
+                  </p>
+                  <div className="grid grid-cols-3 gap-4 mb-4">
+                    <div>
+                      <label className="block text-xxs text-zinc-500 uppercase tracking-wider mb-1">Comisión %</label>
+                      <input type="number" min="0" max="15" step="0.5" value={comision}
+                        onChange={(e) => setComision(parseFloat(e.target.value) || 0)}
+                        className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-sm text-zinc-200" />
+                    </div>
+                    <div>
+                      <label className="block text-xxs text-zinc-500 uppercase tracking-wider mb-1">Gastos %</label>
+                      <input type="number" min="0" max="15" step="0.5" value={gastos}
+                        onChange={(e) => setGastos(parseFloat(e.target.value) || 0)}
+                        className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-sm text-zinc-200" />
+                    </div>
+                    <div>
+                      <label className="block text-xxs text-zinc-500 uppercase tracking-wider mb-1">Flete $/cabeza</label>
+                      <input type="number" min="0" step="500" value={fletePorCabeza}
+                        onChange={(e) => setFletePorCabeza(parseInt(e.target.value) || 0)}
+                        className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-sm text-zinc-200" />
+                    </div>
+                  </div>
+                  <div className="space-y-1.5 text-sm font-mono mb-4">
+                    <div className="flex justify-between text-zinc-400"><span>Bruto</span><span>{fmtCurrency(netback.bruto)}</span></div>
+                    <div className="flex justify-between text-red-400/80"><span>− Comisión ({comision}%)</span><span>−{fmtCurrency(netback.comisionMonto)}</span></div>
+                    <div className="flex justify-between text-red-400/80"><span>− Gastos ({gastos}%)</span><span>−{fmtCurrency(netback.gastosMonto)}</span></div>
+                    <div className="flex justify-between text-red-400/80"><span>− Flete ({fmt(totals.totalCabezas)} cab.)</span><span>−{fmtCurrency(netback.fleteMonto)}</span></div>
+                  </div>
+                  <div className="border-t border-zinc-800 pt-3">
+                    <div className="text-xxs text-zinc-500 uppercase mb-1">Neto estimado en mano ({netback.descuentoPct.toFixed(1)}% menos)</div>
+                    <div className="text-3xl text-amber-400 font-mono font-medium mb-1">{fmtCurrency(netback.netoARS)}</div>
+                    <div className="text-sm text-zinc-400 font-mono">
+                      ≈ USD {fmt(netback.netoUSD)} · {fmtCurrency(netback.netoPorKg)}/kg neto
+                    </div>
+                  </div>
+                  <p className="text-xxs text-zinc-600 mt-3">
+                    IVA hacienda (10,5% ≈ {fmtCurrency(netback.ivaInfo)}) no se descuenta: para responsable
+                    inscripto se cobra y se reintegra, es neutro al neto. Valores editables y referenciales.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm text-zinc-300 mb-1">
+                    ¿Cuánto te queda <span className="text-amber-400">neto en mano</span>?
+                  </p>
+                  <p className="text-xxs text-zinc-500 mb-3">
+                    Descontá comisión, gastos de comercialización y flete del bruto y mirá la plata
+                    real — en ARS, USD y $/kg neto.
+                  </p>
+                  <ProUpgradePrompt
+                    benefit="Neto en mano: comisión, gastos y flete descontados del bruto. PRO por ARS $7.900/mes."
+                    context="calculadora-netback"
+                    variant="card"
+                  />
+                </>
+              )}
+            </div>
+
             <div className="border-t border-zinc-800 mt-6 pt-4">
               <p className="text-xxs text-zinc-500">
-                * Valores referenciales basados en precios INMAG. El precio final depende de calidad, 
+                * Valores referenciales basados en precios INMAG. El precio final depende de calidad,
                 ubicación, condiciones de pago y negociación. Consultá con tu consignataria de confianza.
               </p>
             </div>
           </div>
-          
-          {/* PRO Upgrade Prompt */}
-          <ProUpgradePrompt
-            benefit="Productores calculan precios acá. Tu remate al lado de su resultado."
-            context="calculadora"
-            variant="card"
-          />
         </div>
       )}
 
