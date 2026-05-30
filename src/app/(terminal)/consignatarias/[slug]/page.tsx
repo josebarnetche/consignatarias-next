@@ -12,7 +12,6 @@ import marketData from '@/lib/data/market-prices.json'
 import existenciasData from '@/lib/data/existencias-bovinas.json'
 import type { Auction } from '@/lib/db/schema'
 import {
-  getAllCanonicalSlugs,
   getCanonicalSlug,
   getProfile,
   getAuctionsForProfile,

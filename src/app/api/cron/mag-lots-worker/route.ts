@@ -48,10 +48,6 @@ function parseNumberEs(s: string | undefined | null): number | null {
   return Number.isFinite(v) ? v : null
 }
 
-function stripTags(s: string): string {
-  return s.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim()
-}
-
 function decodeMagText(s: string): string {
   return s
     .replace(/&nbsp;/g, ' ')

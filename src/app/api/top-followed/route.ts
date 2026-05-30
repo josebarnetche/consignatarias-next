@@ -2,7 +2,9 @@ import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase-server';
 import { getAllProfiles } from '@/lib/data/consignataria-slugs';
 
-export const revalidate = 3600;
+// Reads request.url (query params) → must render dynamically. CDN caching is
+// handled via the Cache-Control header on the response below.
+export const dynamic = 'force-dynamic';
 
 /**
  * GET /api/top-followed

@@ -246,7 +246,7 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
     const last = series.slice(-30)
     if (!last.length || !cur || totals.ars <= 0) return []
     return last.map(p => ({ date: p.date, value: totals.ars * (p.value / cur) }))
-  }, [prices.inmag.series, prices.inmag.current, totals.ars])
+  }, [prices.inmag, totals.ars])
 
   // Real evolution of THIS producer's herd value, from saved snapshots.
   const realSeries = useMemo(

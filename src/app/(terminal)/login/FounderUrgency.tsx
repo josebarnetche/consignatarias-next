@@ -19,8 +19,9 @@ interface SpotsData {
  */
 export default function FounderUrgency() {
   const searchParams = useSearchParams()
-  const [data, setData] = useState<SpotsData | null>(null)
-  const [visible, setVisible] = useState(false)
+  // Setters intentionally omitted: API call disabled for cost optimization (pre-revenue)
+  const [data] = useState<SpotsData | null>(null)
+  const [visible] = useState(false)
 
   // DISABLED: Cost optimization — skip API call pre-revenue
   useEffect(() => {

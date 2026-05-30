@@ -74,8 +74,11 @@ export function InteractivePriceChart({
     fetchData()
   }, [range, initialData])
 
-  // Chart dimensions
-  const padding = { top: 20, right: 16, bottom: showVolume ? 60 : 30, left: 70 }
+  // Chart dimensions — memoized so it's a stable dependency for the path useMemo below
+  const padding = useMemo(
+    () => ({ top: 20, right: 16, bottom: showVolume ? 60 : 30, left: 70 }),
+    [showVolume]
+  )
   const chartHeight = height - padding.top - padding.bottom
   const volumeHeight = showVolume ? 40 : 0
 

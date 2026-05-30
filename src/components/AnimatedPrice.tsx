@@ -16,23 +16,6 @@ function easeOutExpo(t: number): number {
   return t === 1 ? 1 : 1 - Math.pow(2, -10 * t)
 }
 
-// Alternative: easeOutQuart - smoother deceleration
-function easeOutQuart(t: number): number {
-  return 1 - Math.pow(1 - t, 4)
-}
-
-// Custom easing: very slow at the end
-function easeOutSuperSlow(t: number): number {
-  // Combines expo with extra slowdown at the end
-  const base = 1 - Math.pow(2, -12 * t)
-  // Extra slowdown in last 20%
-  if (t > 0.8) {
-    const lastPhase = (t - 0.8) / 0.2
-    return base * (1 - 0.02 * (1 - easeOutQuart(lastPhase)))
-  }
-  return base
-}
-
 export function AnimatedPrice({
   value,
   duration = 2500,

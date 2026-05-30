@@ -8,7 +8,6 @@ import { getFrigorificoProfile } from '@/lib/dal/frigorificos'
 import { BreadcrumbSchema } from '@/components/seo/JsonLd'
 import {
   getSenasaRecord,
-  isHabilitadoVigente,
   getSenasaScrapedDate,
 } from '@/lib/data/senasa-habilitados'
 import { getCurrentSession } from '@/lib/user-tier'

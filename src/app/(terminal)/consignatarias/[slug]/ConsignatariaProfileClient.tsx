@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useEffect, useState } from 'react'
+import { useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Auction } from '@/lib/db/schema'

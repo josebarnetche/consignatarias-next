@@ -2,7 +2,6 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import remates from '@/lib/data/remates.json'
 import { consignatariaProfilePath, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
-import { normalizeUrl } from '@/lib/utils/url'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { Calendar, Clock, MapPin, Users, CheckCircle, History } from 'lucide-react'
 

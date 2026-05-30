@@ -6,6 +6,62 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.20.0] — 2026-05-30
+
+### Market data fix (was silently 5 years stale) + "INMAG en dólares" recent view + build hygiene
+
+A correctness release. The headline bug: **every chart fed by the daily market series had been showing 2016–2020 data labelled as "hoy"**, because the Supabase fetchers hit PostgREST's default 1000-row cap. No API contract changes; no migrations.
+
+**Data layer — page through the 1000-row cap (the real bug)**
+
+- `fetchInmagSeries` / `fetchUsdSeries` (`src/lib/charts/data.ts`) had no `limit` and ordered ascending, so PostgREST returned only the **oldest 1000 rows**. A 10-year daily series is ~1.9k (INMAG) / ~3.6k (USD blue) rows, so the joined series silently ended at **2020-12-02** — the "hoy" value, the 5y/10y charts, and the percentiles were all frozen ~5 years in the past.
+- Fix: both fetchers now **paginate via `.range()`** in 1000-row pages until drained. Verified against the live anon client: 1927 INMAG rows through 2026-05-29 (was 1000 through 2020).
+- Corrects four consumers at once: `/mercado/inmag-dolares`, `/api/vender-ahora` (sell-timing percentiles), `YearOverYearBlock`, and `SeasonalityHeatmap`.
+
+**`/mercado/inmag-dolares` — recent, month-to-month view (primary)**
+
+The page was all long-term (10y stats + 5y monthly + since-2015), every chart zeroed on the Y axis, which flattens recent movement. Added a recent layer on top:
+
+- **"Últimos 12 meses" stats strip**: today's USD/kg, change vs 30 days and vs 12 months (green up / red down), and the 12-month range.
+- **"Últimos 12 meses — día por día" chart**: daily series scaled to the recent range (`yZero: false`) so month-to-month movement is actually visible.
+- The historical charts (10y stats, 5y monthly, full history) moved below under a "Contexto histórico" heading. The "hoy" figure (H1 + FAQ + stats) now reflects the true latest trading day instead of the last monthly average.
+
+**Build / deploy hygiene**
+
+- `/api/top-followed` declared `revalidate` while reading `request.url` → a `DYNAMIC_SERVER_USAGE` error on every build. Switched to `export const dynamic = 'force-dynamic'` (CDN caching still via the response `Cache-Control` header).
+- `vercel.json`: removed the per-function `memory` keys (ignored on Active CPU billing) and the `opengraph-image`/`twitter-image` function globs (only set the ignored memory + a `maxDuration` Vercel couldn't map to the hashed image routes). `maxDuration` for API/cron/webhook functions retained.
+- Cleared all 17 ESLint warnings (unused vars/imports across 13 files; `useMemo` dependency fixes in `MiGanadoClient` and `InteractivePriceChart`). Production build is now warning- and error-free.
+
+---
+
+## [1.19.0] — 2026-05-29
+
+### Detail-page enrichment + trial-end nudges + scraper accuracy
+
+A SEO-depth + retention release driven by the v1.18.0 GSC pull (search lives in the frigorífico/market surfaces, not remates). No Enterprise API contract changes.
+
+**Remate, consignataria & frigorífico detail enrichment**
+
+- **Remate detail** (`remates/[slug]`): related-remates modules (same consignataria / same province), per-category reference price, and a breed reference block — turning a thin auction page into a navigable hub.
+- **Consignataria & frigorífico detail**: added SENASA cattle-existence context **by province** (`existencias-bovinas.json`), plus richer profile copy on both surfaces.
+
+**SEO indexing corrections**
+
+- `noindex` applied to **thin consignataria profiles** (0–1 remates, no enhancement) so crawl budget concentrates on pages with real content.
+- Dropped the bare-establishment `noindex` on frigoríficos — **all frigoríficos are now indexed** (the directory is the proven search entry point).
+
+**Retention — trial-end nudges**
+
+- New cron `trial-nudges` (`route.ts` + `trial-nudges.yml` + migration `20260529_trial_nudges.sql`): emails at **7 days and 3 days before trial end** (two new templates in `email.ts`).
+- Home live counter fixed to show estimated streams instead of a misleading literal count.
+
+**Scraper accuracy + brand wall**
+
+- Added **HK Agro SRL** as a scraper source + logo (brand wall + auction coverage).
+- Fixed **Colombo y Colombo** remates mislabelled CHUBUT → Buenos Aires (locality-province map + scraper guard).
+
+---
+
 ## [1.18.0] — 2026-05-20
 
 ### "Mi Ganado" — herd-value tracker + nav simplification + SEO rank-lift

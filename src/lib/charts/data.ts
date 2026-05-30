@@ -31,16 +31,46 @@ export interface CombinedDay {
   head_count: number | null
 }
 
-export async function fetchInmagSeries(fromIso: string, toIso: string): Promise<DailyInmag[]> {
-  const admin = publicClient()
-  const { data } = await admin
-    .from('mag_inmag_history')
-    .select('date, inmag_value, inmag_calculated, head_count')
-    .gte('date', fromIso)
-    .lte('date', toIso)
-    .order('date', { ascending: true })
+/**
+ * PostgREST caps every response at `db-max-rows` (default 1000). A date-bounded
+ * daily series over several years exceeds that, so without paging we'd silently
+ * receive only the oldest 1000 rows. Page through with `.range()` until drained.
+ */
+const PAGE_SIZE = 1000
 
-  return (data ?? []).map((r) => ({
+async function fetchAllByDate(
+  table: string,
+  columns: string,
+  fromIso: string,
+  toIso: string,
+): Promise<Record<string, unknown>[]> {
+  const admin = publicClient()
+  const all: Record<string, unknown>[] = []
+  let from = 0
+  for (;;) {
+    const { data, error } = await admin
+      .from(table)
+      .select(columns)
+      .gte('date', fromIso)
+      .lte('date', toIso)
+      .order('date', { ascending: true })
+      .range(from, from + PAGE_SIZE - 1)
+    if (error || !data || data.length === 0) break
+    all.push(...(data as unknown as Record<string, unknown>[]))
+    if (data.length < PAGE_SIZE) break
+    from += PAGE_SIZE
+  }
+  return all
+}
+
+export async function fetchInmagSeries(fromIso: string, toIso: string): Promise<DailyInmag[]> {
+  const data = await fetchAllByDate(
+    'mag_inmag_history',
+    'date, inmag_value, inmag_calculated, head_count',
+    fromIso,
+    toIso,
+  )
+  return data.map((r) => ({
     date: r.date as string,
     inmag: (r.inmag_value as number | null) ?? null,
     inmag_calculated: r.inmag_calculated as boolean,
@@ -49,15 +79,8 @@ export async function fetchInmagSeries(fromIso: string, toIso: string): Promise<
 }
 
 export async function fetchUsdSeries(fromIso: string, toIso: string): Promise<DailyUsd[]> {
-  const admin = publicClient()
-  const { data } = await admin
-    .from('usd_blue_history')
-    .select('date, venta')
-    .gte('date', fromIso)
-    .lte('date', toIso)
-    .order('date', { ascending: true })
-
-  return (data ?? []).map((r) => ({
+  const data = await fetchAllByDate('usd_blue_history', 'date, venta', fromIso, toIso)
+  return data.map((r) => ({
     date: r.date as string,
     venta: (r.venta as number | null) ?? null,
   }))

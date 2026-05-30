@@ -154,7 +154,6 @@ const rematesEnVivo = rematesProximos
   .filter((x): x is { remate: (typeof rematesProximos)[number]; confidence: "confirmed" | "probable" } => x !== null);
 const enVivoCount = rematesEnVivo.length;
 const enVivoConfirmed = rematesEnVivo.filter((x) => x.confidence === "confirmed").length;
-const todayEnVivo = rematesEnVivo.filter((x) => x.remate.date === TODAY).length;
 
 const cats = marketPrices.categories;
 const catEntries = Object.entries(cats) as [

@@ -17,7 +17,8 @@ interface RecentSignup {
  * - Fetches up to 5 recent signups and rotates through them
  */
 export default function SocialProofToast() {
-  const [signups, setSignups] = useState<RecentSignup[]>([])
+  // Setter intentionally omitted: recent-signups fetch disabled for cost optimization
+  const [signups] = useState<RecentSignup[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [visible, setVisible] = useState(false)
   const [cycleCount, setCycleCount] = useState(0)

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createAdminClient } from '@/lib/supabase-server'
 import { getCurrentSession } from '@/lib/user-tier'
 import { fetchInmagSeries, percentileOf } from '@/lib/charts/data'
 import marketPrices from '@/lib/data/market-prices.json'

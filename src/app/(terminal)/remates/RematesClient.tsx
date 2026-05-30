@@ -654,7 +654,7 @@ export default function RematesPage() {
   const [filterEnVivo, setFilterEnVivo] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [showAddModal, setShowAddModal] = useState(false)
-  const [featuredSlugs, setFeaturedSlugs] = useState<Set<string>>(new Set())
+  const [featuredSlugs] = useState<Set<string>>(new Set())
   // Filtros avanzados (PRO-only)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [filterDateFrom, setFilterDateFrom] = useState('')
