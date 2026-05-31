@@ -3,6 +3,35 @@
 All notable changes to consignatarias.com.ar are documented in this file.
 
 Format: [Semantic Versioning](https://semver.org/) with feature descriptions focused on platform evolution.
+Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-tagged from v1.29.0.
+
+---
+
+## [1.29.0] — 2026-05-31
+
+### Maturity pass — docs, versioning and operations at the level of the product
+
+The product became market-intelligence infrastructure; this raises the wrapper to match.
+No app behavior / API contract change — hence a minor, **not** a 2.0 (the major is reserved for
+the first break of the API/data contract, per the new policy).
+
+**Operations**
+- `.env.example` documenting every secret/var, grouped, with the **CRON_SECRET-is-the-one** rule
+  and the `ADMIN_SECRET` deprecation (the silent-401 that took emails down).
+- `docs/RUNBOOK.md`: platform map, secrets golden rule, full cron inventory, email pipeline +
+  segmentation + fail-safe, `/admin/ops` observability, and incident playbooks.
+- `scrape-auctions` now reports to `/api/internal/cron-hook` → the flagship daily data cron shows
+  in `/admin/ops`; RUNBOOK has the paste-ready snippet for the rest.
+
+**Documentation**
+- README + CLAUDE.md repositioned from "directorio de remates" to "infraestructura de inteligencia
+  del mercado ganadero" — the directory/calendar are surfaces on the data+index spine.
+- `docs/README.md` index (Strategy / Engineering & Ops / Methodology / Brand / Archive); strategy
+  docs moved into `docs/strategy/`; dated/session/launch docs archived into `docs/archive/`.
+
+**Versioning**
+- `docs/VERSIONING.md`: SemVer policy with the **Enterprise API contract as the MAJOR boundary**.
+  Daily data updates and editorial content are not versioned. Git tagging starts at **v1.29.0**.
 
 ---
 
