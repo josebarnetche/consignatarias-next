@@ -1,8 +1,16 @@
 # consignatarias.com.ar
 
-**Donde aparecés cuando un productor argentino busca dónde rematar su hacienda.**
+**La infraestructura de inteligencia del mercado ganadero argentino.**
 
-Directorio + market intelligence + API pública para el mercado ganadero argentino. Cubrimos 80 consignatarias canónicas en 12 provincias, 1.092 frigoríficos cruzados contra el registro SENASA, INMAG diario desde 2015 y USD blue desde 2011. Live: **[www.consignatarias.com.ar](https://www.consignatarias.com.ar)**.
+El precio de referencia del ganado argentino, hecho dato: la **familia de índices** (INMAG diario
+desde 2015, en pesos y en dólares, panel de categorías, arrendamiento, spread), el **directorio**
+de 80 consignatarias en 12 provincias y 1.092 frigoríficos cruzados contra SENASA, el **calendario**
+de remates y una **API pública**. Datos abiertos y citables; capa PRO para productores/asesores/
+contadores y Enterprise para integradores. Live: **[www.consignatarias.com.ar](https://www.consignatarias.com.ar)**.
+
+> **De agregador de remates a infraestructura de inteligencia.** El directorio y el calendario son
+> una superficie; la columna vertebral es la capa de datos e índices del mercado bovino argentino.
+> Tesis y posicionamiento completos en [`docs/strategy/POSITIONING-THESIS.md`](docs/strategy/POSITIONING-THESIS.md).
 
 ---
 

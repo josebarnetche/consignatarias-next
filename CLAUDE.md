@@ -9,14 +9,22 @@
 
 ## What this product is
 
-A cattle auction directory + market intelligence platform + public API for Argentina's livestock industry. Three product lines coexist:
+**The market-intelligence infrastructure of the Argentine cattle market** — aiming to be *the
+reference price* (`el precio de referencia del ganado argentino`). The spine is the data + index
+layer (INMAG since 2015 in ARS and USD, category panel, derivatives, methodology); the directory
+of consignatarias/frigoríficos and the auction calendar are surfaces on top of it, not the product.
+Positioning thesis: [`docs/strategy/POSITIONING-THESIS.md`](docs/strategy/POSITIONING-THESIS.md).
 
-1. **PRO Usuario** (ARS 7.900/mes) — power-user dashboard, exports, alerts
+Three revenue lines coexist on top of the free, indexable, citable data layer:
+
+1. **PRO Usuario** (ARS 7.900/mes) — decision tools for producers/advisors: net-back calc,
+   "¿vendo ahora?", comparador with medios de pago, full INMAG history + CSV, seasonality
 2. **PRO Consignataria** (sales-led B2B) — featured listings, claimed profile, leads
-3. **Enterprise API** — `cnsg_live_*` keys, Bearer auth, 28-day billing periods, three tiers (Starter / Growth / Scale), self-serve checkout via Rebill
+3. **Enterprise API** — `cnsg_live_*` keys, Bearer auth, 28-day billing periods, three tiers (Starter / Growth / Scale), self-serve checkout via Rebill — the data-licensing engine
 
 **Live:** https://www.consignatarias.com.ar
 **Owner:** Memola Medios SAS (`agro@memola.com.ar`)
+**Operations:** [`docs/RUNBOOK.md`](docs/RUNBOOK.md) · **Versioning:** [`docs/VERSIONING.md`](docs/VERSIONING.md)
 
 ---
 
