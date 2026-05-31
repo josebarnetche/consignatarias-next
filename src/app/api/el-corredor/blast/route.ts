@@ -3,6 +3,7 @@ import { requireServiceClient } from '@/lib/supabase'
 import { sendElCorredorDelivery } from '@/lib/email'
 import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
 import { capForFreePlan } from '@/lib/email-limits'
+import { trackCron } from '@/lib/ops'
 import manifest from '../../../../../public/el-corredor/manifest.json'
 
 export const dynamic = 'force-dynamic'
@@ -26,46 +27,57 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 
-  const supabase = requireServiceClient()
-  const { data, error } = await supabase
-    .from('newsletter_subscribers')
-    .select('email')
-    .eq('status', 'active')
-    .in('source', [...SEGMENT_SOURCES.corredor])
+  const outcome = await trackCron('el-corredor-publish', async () => {
+    const supabase = requireServiceClient()
+    const { data, error } = await supabase
+      .from('newsletter_subscribers')
+      .select('email')
+      .eq('status', 'active')
+      .in('source', [...SEGMENT_SOURCES.corredor])
 
-  if (error) {
-    return NextResponse.json({ error: 'subscribers query failed', details: error.message }, { status: 500 })
-  }
-
-  const allRecipients = data?.map((r) => r.email) || []
-  const { toSend: recipients, skipped } = capForFreePlan(allRecipients)
-  const pdfUrl = `${APP_URL}${manifest.current.pdf_path}`
-
-  let sent = 0
-  let failed = 0
-  const errors: string[] = []
-
-  // Sequential with small delay to avoid Resend burst limits.
-  // For >1k recipients, swap to a batched async strategy.
-  for (const email of recipients) {
-    const result = await sendElCorredorDelivery(email, manifest.current.edition_label, pdfUrl)
-    if (result.success) {
-      sent++
-    } else {
-      failed++
-      if (errors.length < 10) errors.push(`${email}: ${result.error}`)
+    if (error) {
+      return {
+        status: 'error' as const,
+        message: `subscribers query failed: ${error.message}`,
+        metadata: { _status: 500, error: 'subscribers query failed', details: error.message },
+      }
     }
-    // Polite throttling
-    await new Promise((r) => setTimeout(r, 200))
-  }
 
-  return NextResponse.json({
-    ok: true,
-    edition: manifest.current.edition_label,
-    recipients_total: allRecipients.length,
-    skipped, // diferidos por tope del plan free de Resend
-    sent,
-    failed,
-    errors: errors.slice(0, 10),
+    const allRecipients = data?.map((r) => r.email) || []
+    const { toSend: recipients, skipped } = capForFreePlan(allRecipients)
+    const pdfUrl = `${APP_URL}${manifest.current.pdf_path}`
+
+    let sent = 0
+    let failed = 0
+    const errors: string[] = []
+
+    for (const email of recipients) {
+      const result = await sendElCorredorDelivery(email, manifest.current.edition_label, pdfUrl)
+      if (result.success) sent++
+      else {
+        failed++
+        if (errors.length < 10) errors.push(`${email}: ${result.error}`)
+      }
+      await new Promise((r) => setTimeout(r, 200))
+    }
+
+    return {
+      status: failed > 0 && sent === 0 ? ('error' as const) : ('ok' as const),
+      message: `El Corredor ${manifest.current.edition_label}: ${sent}/${allRecipients.length} enviados`,
+      metadata: {
+        ok: true,
+        edition: manifest.current.edition_label,
+        recipients_total: allRecipients.length,
+        skipped,
+        sent,
+        failed,
+        errors: errors.slice(0, 10),
+      },
+    }
   })
+
+  const meta = { ...(outcome.metadata ?? {}) } as Record<string, unknown>
+  const status = typeof meta._status === 'number' ? (meta._status as number) : 200
+  delete meta._status
+  return NextResponse.json(meta, { status })
 }

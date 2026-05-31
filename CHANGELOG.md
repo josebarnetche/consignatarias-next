@@ -6,6 +6,30 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.28.0] — 2026-05-31
+
+### Cron observability — email crons now self-log to /admin/ops
+
+`cron_runs` was empty because no workflow ever reported a run (the cron-hook bridge was
+"not wired yet"), leaving the ops panel blind to whether subscriber emails actually went out.
+
+- New `trackCron(workflowName, fn)` helper in `src/lib/ops.ts`: wraps a cron handler so each
+  run records a `cron_runs` row (running → ok/error) with run metadata, never breaking the cron.
+- Wired the four subscriber-email crons to self-log **with their sent counts**: `weekly-newsletter`,
+  `faena-newsletter`, `monthly-close`, and the El Corredor blast (`el-corredor-publish`). The
+  /admin/ops cron-health table + sent counts now populate on each run; API `ops_events` (api_call)
+  were already being captured.
+
+**Email-delivery audit (verified, no code change needed):** the newsletter segmentation
+(`newsletter-segments.ts`) is correct and every current subscriber source maps to an active cron —
+weekly digest (remates/reporte-semanal/homepage), monthly close (cierre-mensual/valuation_widget),
+faena (frigorificos), El Corredor (el-corredor); `exportar-datos` opted into product-updates only
+(no market email, by design). The `alertas` table is empty, so the disabled remate-alert crons leave
+no one unserved. Conclusion: no subscriber is structurally missing what they requested — the gap was
+visibility, now fixed.
+
+---
+
 ## [1.27.0] — 2026-05-31
 
 ### Botón de Arrepentimiento (Res. 424/2020) — functional

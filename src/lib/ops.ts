@@ -187,6 +187,41 @@ export async function finishCronRun(
 }
 
 /* ------------------------------------------------------------------ */
+/*  trackCron — wrap a cron handler so it self-logs to cron_runs        */
+/* ------------------------------------------------------------------ */
+
+export interface CronOutcome {
+  /** Final status; defaults to 'ok'. */
+  status?: Exclude<CronStatus, 'running'>
+  /** Human-readable note shown in /admin/ops. */
+  message?: string
+  /** Arbitrary run data — e.g. { sent, total, skipped }. */
+  metadata?: Record<string, unknown>
+}
+
+/**
+ * Runs `fn` while recording a cron_runs row (running → ok/error) so the run is
+ * visible in /admin/ops with its sent counts. Returns fn's outcome; the route
+ * builds its HTTP response from `outcome.metadata`. Never lets logging failures
+ * break the cron. Call AFTER the auth check so unauthorized hits aren't logged.
+ */
+export async function trackCron(
+  workflowName: string,
+  fn: () => Promise<CronOutcome>,
+): Promise<CronOutcome> {
+  const id = await startCronRun(workflowName)
+  try {
+    const outcome = await fn()
+    if (id) await finishCronRun(id, outcome.status ?? 'ok', outcome.message ?? null, outcome.metadata ?? {})
+    return outcome
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    if (id) await finishCronRun(id, 'error', msg)
+    throw err
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /*  getCronHealth — read-side summary                                  */
 /* ------------------------------------------------------------------ */
 
