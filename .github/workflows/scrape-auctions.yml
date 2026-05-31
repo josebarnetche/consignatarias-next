@@ -17,6 +17,15 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: cron-hook start
+        id: cronstart
+        run: |
+          RUN_ID=$(curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" \
+            -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"workflow_name":"scrape-auctions","phase":"start"}' | jq -r '.run_id // empty')
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
       # TODO: bump to setup-node@v5 once pnpm-lock.yaml is removed or corepack
       # is wired up — v5 autodetects pnpm-lock.yaml and fails (no pnpm in runner).
       # Node 20 deprecation: required action by 2026-06-02.
@@ -74,3 +83,12 @@ jobs:
           fi
           git commit -m "$MSG"
           git push
+
+      - name: cron-hook finish
+        if: always() && steps.cronstart.outputs.run_id != ''
+        run: |
+          ST="ok"; [ "${{ job.status }}" != "success" ] && ST="error"
+          curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" \
+            -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"workflow_name\":\"scrape-auctions\",\"phase\":\"finish\",\"run_id\":${{ steps.cronstart.outputs.run_id }},\"status\":\"$ST\"}" || true
