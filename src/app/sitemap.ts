@@ -475,6 +475,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   )
 
+  // INMAG historical year pages (/mercado/inmag/[anio]) — compounding long-tail
+  const inmagYearPages: MetadataRoute.Sitemap = Array.from(
+    { length: 2026 - 2015 + 1 },
+    (_, i) => 2015 + i,
+  ).map((y) => ({
+    url: `${baseUrl}/mercado/inmag/${y}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }))
+
   // City landing pages (/remates/ciudad/[ciudad]) - HUNTER BATTLE recommendation
   const citySlugs = getUniqueCitySlugs(rematesData as typeof rematesData)
   const cityPages: MetadataRoute.Sitemap = citySlugs.map((slug) => ({
@@ -504,6 +515,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...remateDetailPages,
     ...marketCategoryPages,
     ...preciosGeoPages,
+    ...inmagYearPages,
     ...cityPages,
     ...monthPages,
   ]

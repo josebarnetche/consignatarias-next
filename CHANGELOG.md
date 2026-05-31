@@ -6,6 +6,26 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.25.0] — 2026-05-31
+
+### INMAG historical-by-year pages — peso-vs-USD overlay (the compounding moat)
+
+**`/mercado/inmag/[anio]`** — one page per year (2015 → today, 12 pages) answering
+"¿cuánto valía el novillo en [año]?" with the annual INMAG **in pesos AND in dollars** —
+the peso-vs-USD overlay no competitor publishes and the platform's most defensible,
+compounding long-tail asset. Each page computes avg/min/max in ARS and USD plus the USD
+year-over-year change directly from the paginated `mag_inmag_history` + `usd_blue_history`
+series at build time, with an honest "lectura" (e.g. 2018: novillo up in pesos but −21% in
+USD — the devaluation the peso figure hides), year-to-year navigation, an all-years index,
+and `Dataset` + FAQ schema. Linked from the INMAG page ("el novillo año por año") and added
+to the sitemap.
+
+Closes this SEO/GEO build cycle: the citation audit's gaps + the top SEO opportunities
+(province mesh, geo×category, named index family, historical years) are all shipped. Site now
+generates **2.654 static pages** (was 2.552 at the start of the cycle).
+
+---
+
 ## [1.24.0] — 2026-05-31
 
 ### Geo × category long-tail (78 pages) + named index family (positioning Pillar 1)

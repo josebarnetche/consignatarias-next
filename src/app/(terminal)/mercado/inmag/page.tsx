@@ -322,10 +322,29 @@ export default function InmagPage() {
           />
         </section>
 
+        {/* El novillo año por año — internal links to the historical year pages */}
+        <section className="max-w-6xl mx-auto px-4 pb-12">
+          <h2 className="text-xl font-semibold text-white mb-4">El novillo año por año</h2>
+          <p className="text-sm text-zinc-500 mb-4">
+            ¿Cuánto valía el novillo cada año? Promedio del INMAG en pesos y en dólares, desde 2015.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {Array.from({ length: 2026 - 2015 + 1 }, (_, i) => 2015 + i).map((y) => (
+              <Link
+                key={y}
+                href={`/mercado/inmag/${y}`}
+                className="text-sm font-mono px-3 py-1.5 rounded-lg border border-zinc-800 text-zinc-400 hover:text-emerald-400 hover:border-emerald-500/30 transition-colors"
+              >
+                {y}
+              </Link>
+            ))}
+          </div>
+        </section>
+
         {/* Historical Data Table */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
           <h2 className="text-xl font-semibold text-white mb-6">Histórico de Precios</h2>
-          
+
           <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
