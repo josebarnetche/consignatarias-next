@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { SectionBreadcrumbSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, SpeakableSchema, DefinedTermSetSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Glosario Ganadero — 39 Términos del Mercado',
@@ -210,35 +210,22 @@ const GLOSSARY_TERMS: GlossaryTerm[] = [
   },
 ]
 
-function DefinedTermSetSchema() {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'DefinedTermSet',
-    name: 'Glosario Ganadero Argentino',
-    description: 'Definiciones de terminos clave del mercado ganadero argentino.',
-    url: 'https://www.consignatarias.com.ar/glosario',
-    inLanguage: 'es',
-    hasDefinedTerm: GLOSSARY_TERMS.map((entry) => ({
-      '@type': 'DefinedTerm',
-      name: entry.term,
-      description: entry.definition,
-      inDefinedTermSet: 'https://www.consignatarias.com.ar/glosario',
-    })),
-  }
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  )
-}
+const BASE_URL = 'https://www.consignatarias.com.ar'
 
 export default function GlosarioPage() {
   return (
     <>
       <SectionBreadcrumbSchema section="glosario" sectionName="Glosario" />
-      <DefinedTermSetSchema />
+      <DefinedTermSetSchema
+        name="Glosario Ganadero Argentino"
+        description="Definiciones de términos clave del mercado ganadero argentino."
+        url={`${BASE_URL}/glosario`}
+        terms={GLOSSARY_TERMS.map((entry) => ({
+          name: entry.term,
+          description: entry.definition,
+          url: entry.link?.href?.startsWith('/') ? `${BASE_URL}${entry.link.href}` : undefined,
+        }))}
+      />
       <SpeakableSchema
         url="https://www.consignatarias.com.ar/glosario"
         headline="Glosario Ganadero — 39 Términos del Mercado"

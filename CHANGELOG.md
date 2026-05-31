@@ -6,6 +6,45 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.22.0] — 2026-05-31
+
+### GEO (Generative Engine Optimization) — Phase 0 audit + Phase 1 strengthening
+
+Kicked off the project to make the site the **cited source** in AI answer engines
+(ChatGPT, Perplexity, Gemini/AI Overviews, Claude). A web-grounded citation audit
+mapped where the site owns the answer-space vs the gaps; this release ships the
+Phase-1 fixes the audit prioritized. No migrations; no Enterprise API changes. Audit
++ SEO-opportunity docs live in `geo-audit-2026-05-30/`.
+
+**Closed the "Cañuelas/Liniers" terminology gap (audit ❌ → page).** The site spoke
+"INMAG" while producers and AI engines search "precio Cañuelas/Liniers hoy" — the site
+didn't surface at all there. New answer-first page **`/mercado/canuelas`** (current
+market = Mercado Agroganadero, ex Liniers) with a self-contained lede bridging
+Cañuelas → MAG → INMAG, live prices, FAQ, freshness stamp and TechArticle + FAQ schema.
+Also corrected the existing `/mercado/liniers` page, which framed Liniers as the
+operating market (it closed in 2018 → moved to Cañuelas) and cross-linked the two.
+
+**New guide `/como-elegir-consignataria`** — the audit found "cómo elegir consignataria"
+had no owner and AI engines noted the gap explicitly. Answer-first guide (7 criteria,
+HowTo + FAQ schema) that also funnels to the PRO comparador (medios de pago + días de cobro).
+
+**Entity / citability markup (lock-in of the data moat):**
+- Glossary `DefinedTermSet` upgraded with stable per-term `@id` and canonical `url`
+  per term; the standalone INMAG `DefinedTerm` now shares `@id .../glosario#inmag` so the
+  glossary and the INMAG page reinforce one entity in the graph.
+- `TechArticleSchema` extended with named author (editorial byline) + `citation` (sources:
+  MAG, MAGYP, INDEC, SENASA, FCV-UBA…). Applied to **El Oráculo** (real datePublished +
+  bibliography) and **El Corredor** (which had no structured data at all → now TechArticle +
+  breadcrumb).
+- `Dataset` schema on the INMAG and INMAG-USD series — the peso-vs-USD historical overlay is
+  the site's defensible, citable edge (validated independently by the SEO-opportunities pass).
+
+**AI-ingestion + freshness:** added **`/llms-full.txt`** (extended, citable definitional dump:
+INMAG definition, market structure, categories, how-to, sources, citation format) linked from
+`llms.txt`; added visible "Actualizado [fecha]" stamps + `dateModified` on daily-refreshed pages.
+
+---
+
 ## [1.21.0] — 2026-05-30
 
 ### PRO Usuario — value build-out + merchandising (conversion)

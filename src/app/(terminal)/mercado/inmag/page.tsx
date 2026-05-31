@@ -92,11 +92,12 @@ function InmagDefinedTermSchema() {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'DefinedTerm',
+    '@id': 'https://www.consignatarias.com.ar/glosario#inmag',
     name: 'INMAG',
     alternateName: 'Índice Novillo Mercado Agroganadero',
     description:
       'El INMAG (Índice Novillo Mercado Agroganadero) es el precio promedio ponderado por volumen del novillo en el Mercado Agroganadero de Cañuelas (ex Liniers), expresado en pesos por kilo vivo y publicado al cierre de cada día hábil. Es la referencia de precio más usada del mercado ganadero argentino.',
-    inDefinedTermSet: 'https://www.consignatarias.com.ar/glosario',
+    inDefinedTermSet: 'https://www.consignatarias.com.ar/glosario#set',
     url: 'https://www.consignatarias.com.ar/mercado/inmag',
   }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />

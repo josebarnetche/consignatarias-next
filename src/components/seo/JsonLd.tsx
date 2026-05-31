@@ -303,6 +303,59 @@ export function FAQPageSchema({ items }: { items: FAQItem[] }) {
   );
 }
 
+// DefinedTermSet — the glossary as a machine-readable set of citable entities.
+// Each term becomes a schema.org DefinedTerm with a stable @id (URL#term) so AI
+// answer engines and search can resolve "qué es X" to a canonical definition here.
+export interface DefinedTermItem {
+  name: string;
+  description: string;
+  url?: string; // optional canonical page for the term (e.g. INMAG → /mercado/inmag)
+}
+
+export function DefinedTermSetSchema({
+  name,
+  description,
+  url,
+  terms,
+}: {
+  name: string;
+  description: string;
+  url: string;
+  terms: DefinedTermItem[];
+}) {
+  const slugify = (s: string) =>
+    s
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTermSet',
+    '@id': `${url}#set`,
+    name,
+    description,
+    url,
+    hasDefinedTerm: terms.map((t) => ({
+      '@type': 'DefinedTerm',
+      '@id': `${url}#${slugify(t.name)}`,
+      name: t.name,
+      description: t.description,
+      inDefinedTermSet: `${url}#set`,
+      ...(t.url ? { url: t.url } : {}),
+    })),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
 // Section Breadcrumb Schema — reusable for top-level section pages
 export function SectionBreadcrumbSchema({ section, sectionName }: { section: string; sectionName: string }) {
   const data = {
@@ -669,6 +722,10 @@ interface TechArticleSchemaProps {
   datePublished?: string;
   dateModified?: string;
   proficiencyLevel?: 'Beginner' | 'Expert';
+  /** Named author (editorial byline). Falls back to the org author. */
+  authorName?: string;
+  /** Sources the content is based on — signals provenance to AI answer engines. */
+  citations?: { name: string; url?: string }[];
 }
 
 export function TechArticleSchema({
@@ -678,6 +735,8 @@ export function TechArticleSchema({
   datePublished = '2024-01-01',
   dateModified = new Date().toISOString().split('T')[0],
   proficiencyLevel = 'Beginner',
+  authorName,
+  citations,
 }: TechArticleSchemaProps) {
   const schema = {
     '@context': 'https://schema.org',
@@ -688,11 +747,18 @@ export function TechArticleSchema({
     datePublished,
     dateModified,
     proficiencyLevel,
-    author: {
-      '@type': 'Organization',
-      name: 'Consignatarias.com.ar',
-      url: 'https://www.consignatarias.com.ar',
-    },
+    inLanguage: 'es-AR',
+    author: authorName
+      ? {
+          '@type': 'Person',
+          name: authorName,
+          worksFor: { '@type': 'Organization', name: 'Consignatarias.com.ar' },
+        }
+      : {
+          '@type': 'Organization',
+          name: 'Consignatarias.com.ar',
+          url: 'https://www.consignatarias.com.ar',
+        },
     publisher: {
       '@type': 'Organization',
       name: 'Memola Medios S.A.S.',
@@ -701,6 +767,15 @@ export function TechArticleSchema({
         url: 'https://www.consignatarias.com.ar/logo.png',
       },
     },
+    ...(citations && citations.length
+      ? {
+          citation: citations.map((c) => ({
+            '@type': 'CreativeWork',
+            name: c.name,
+            ...(c.url ? { url: c.url } : {}),
+          })),
+        }
+      : {}),
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': url,

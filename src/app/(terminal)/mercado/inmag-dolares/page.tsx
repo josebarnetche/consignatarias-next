@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema } from '@/components/seo/JsonLd'
 import { fetchInmagUsdJoined, aggregateMonthly } from '@/lib/charts/data'
 import { lineChartSvg } from '@/lib/charts/svg'
 import ProChartGate from '@/components/market/ProChartGate'
@@ -199,6 +199,18 @@ export default async function InmagDolaresPage() {
     <>
       <SectionBreadcrumbSchema section="mercado/inmag-dolares" sectionName="INMAG en dólares" />
       <FAQPageSchema items={faq} />
+      <DatasetSchema
+        name="INMAG en dólares — precio del novillo argentino en USD (serie histórica)"
+        description="Serie diaria del INMAG (precio del kilo vivo de novillo en el Mercado Agroganadero) deflactado por el dólar blue, desde 2015. Permite comparar el poder de compra real del kilo vivo a través del tiempo, sin el ruido de la inflación."
+        url="https://www.consignatarias.com.ar/mercado/inmag-dolares"
+        keywords={['INMAG en dólares', 'precio novillo dólares', 'hacienda en dólares Argentina', 'kilo vivo USD histórico']}
+      />
+      <DatasetSchema
+        name="INMAG — Índice Novillo Mercado Agroganadero (serie diaria 2015→)"
+        description="Serie histórica diaria del INMAG, el precio promedio ponderado por volumen del novillo en el Mercado Agroganadero de Cañuelas, en pesos por kilo vivo. Referencia del mercado ganadero argentino."
+        url="https://www.consignatarias.com.ar/mercado/inmag"
+        keywords={['INMAG', 'índice novillo', 'precio hacienda Argentina', 'mercado agroganadero']}
+      />
 
       <div className="px-4 py-6 max-w-5xl mx-auto">
         <div className="mb-2 text-xxs font-terminal uppercase tracking-wider text-zinc-500">

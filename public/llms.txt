@@ -47,6 +47,10 @@ The Argentine cattle market operates like a financial market without formal infr
 
 The site's editorial position: the INMAG is the price the market follows but not the full universe. Real price discovery requires acknowledging the dark 78%.
 
+## Full context
+
+- Extended, citable definitional dump: https://www.consignatarias.com.ar/llms-full.txt
+
 ## Sitemap
 
 - XML: https://www.consignatarias.com.ar/sitemap.xml

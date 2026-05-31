@@ -4,6 +4,7 @@ import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
 import { getCurrentSession } from '@/lib/user-tier'
 import { SubscribeForm } from './SubscribeForm'
+import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/JsonLd'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
 
@@ -85,6 +86,21 @@ export default async function ElCorredorLanding() {
   const userEmail = user?.email ?? null
   return (
     <div className="min-h-screen bg-zinc-950">
+      <SectionBreadcrumbSchema section="el-corredor" sectionName="El Corredor" />
+      <TechArticleSchema
+        name="El Corredor — cierre mensual del mercado bovino argentino"
+        description="Reporte mensual del cierre del mercado de hacienda argentino: INMAG diario, INMAG en dólares, 18 subcategorías del MAG, faena, maíz/novillo, plaza y tesis del mes próximo. Metodología abierta y bibliografía citada."
+        url={`${APP_URL}/el-corredor`}
+        datePublished="2026-05-10"
+        proficiencyLevel="Expert"
+        authorName="Mesa de mercado — consignatarias.com.ar"
+        citations={[
+          { name: 'Mercado Agroganadero de Buenos Aires (INMAG)', url: 'https://www.mercadoagroganadero.com.ar' },
+          { name: 'MAGYP — faena y existencias', url: 'https://www.magyp.gob.ar' },
+          { name: 'INDEC — índices de precios', url: 'https://www.indec.gob.ar' },
+          { name: 'BCRA / mercado paralelo — cotización del dólar' },
+        ]}
+      />
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-zinc-800">
         <div className="absolute inset-0 bg-gradient-to-b from-sky-950/20 via-transparent to-transparent" />

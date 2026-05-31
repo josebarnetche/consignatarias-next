@@ -317,6 +317,15 @@ export default async function ElOraculoPage() {
         name="El Oráculo — manifiesto fundacional"
         description="Manifiesto fundacional del observatorio del mercado bovino argentino. Tesis: el INMAG es el quasi-oracle del 88% del mercado. Bibliografía citada (FCV-UBA, CACG, UNS)."
         url={`${APP_URL}/el-oraculo`}
+        datePublished="2026-05-11"
+        proficiencyLevel="Expert"
+        authorName="Mesa de mercado — consignatarias.com.ar"
+        citations={[
+          { name: 'Mercado Agroganadero de Buenos Aires (INMAG)', url: 'https://www.mercadoagroganadero.com.ar' },
+          { name: 'Facultad de Ciencias Veterinarias, UBA' },
+          { name: 'Cámara Argentina de Consignatarios de Ganado (CACG)' },
+          { name: 'Universidad Nacional del Sur (UNS)' },
+        ]}
       />
 
       <article className="max-w-3xl mx-auto px-4 py-12 text-sm leading-relaxed">

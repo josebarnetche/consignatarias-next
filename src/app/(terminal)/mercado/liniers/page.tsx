@@ -38,7 +38,7 @@ export default function MercadoLiniersPage() {
       <FAQPageSchema items={[
         {
           question: '¿Qué es el Mercado de Liniers?',
-          answer: 'Es el principal mercado de hacienda de Argentina, ubicado en Buenos Aires. Opera desde 1901 y sirve como referencia para los precios de ganado en todo el país.'
+          answer: 'El Mercado de Liniers funcionó 117 años en el barrio de Mataderos (CABA) hasta su cierre en 2018, cuando su operatoria se mudó a Cañuelas como Mercado Agroganadero (MAG). Históricamente fue la referencia de precios de hacienda del país; hoy esa referencia es el Mercado de Cañuelas, medido por el índice INMAG.'
         },
         {
           question: '¿Cada cuánto se actualizan los precios?',
@@ -73,7 +73,11 @@ export default function MercadoLiniersPage() {
             Mercado de Liniers
           </h1>
           <p className="text-zinc-400 text-sm">
-            Precios de referencia del mercado ganadero argentino. Datos actualizados diariamente.
+            El Mercado de Liniers cerró en 2018 y su operatoria se mudó a Cañuelas.{' '}
+            <Link href="/mercado/canuelas" className="text-amber-500 hover:text-amber-400">
+              Ver el precio del Mercado de Cañuelas hoy →
+            </Link>{' '}
+            Los valores de esta página son la referencia INMAG, actualizada a diario.
           </p>
         </div>
 
@@ -135,13 +139,14 @@ export default function MercadoLiniersPage() {
           
           <div className="text-zinc-400 text-sm space-y-4">
             <p>
-              El <strong className="text-zinc-200">Mercado de Liniers</strong> (oficialmente Mercado de Hacienda de Liniers) 
-              es el principal mercado concentrador de ganado de Argentina, ubicado en el barrio de Mataderos, Buenos Aires.
+              El <strong className="text-zinc-200">Mercado de Liniers</strong> (oficialmente Mercado de Hacienda de Liniers)
+              fue el principal mercado concentrador de ganado de Argentina, ubicado en el barrio de Mataderos, Buenos Aires.
             </p>
             <p>
-              Fundado en 1901, ha sido históricamente la referencia para la formación de precios de hacienda en el país. 
-              Aunque su volumen ha disminuido con la aparición de remates en origen y ferias locales, sigue siendo 
-              un indicador clave del mercado.
+              Fundado en 1901, fue durante 117 años la referencia para la formación de precios de hacienda del país.
+              Cerró en abril de 2018 y su operatoria se trasladó a Cañuelas como{' '}
+              <Link href="/mercado/canuelas" className="text-zinc-200 underline underline-offset-2">Mercado Agroganadero (MAG)</Link>,
+              que hoy cumple ese rol de referencia.
             </p>
             <p>
               Los precios mostrados en esta página provienen del <strong className="text-zinc-200">INMAG</strong> (Índice 
@@ -196,8 +201,10 @@ export default function MercadoLiniersPage() {
                 ¿Qué es el Mercado de Liniers?
               </summary>
               <p className="text-zinc-400 mt-2 pl-4">
-                Es el principal mercado de hacienda de Argentina, ubicado en Buenos Aires. Opera desde 1901 
-                y sirve como referencia para los precios de ganado en todo el país.
+                Funcionó 117 años en Mataderos (CABA) hasta 2018, cuando se mudó a Cañuelas como Mercado
+                Agroganadero (MAG). Hoy la referencia de precios es el{' '}
+                <Link href="/mercado/canuelas" className="text-amber-500 hover:text-amber-400">Mercado de Cañuelas</Link>,
+                medido por el índice INMAG.
               </p>
             </details>
             
