@@ -4,6 +4,7 @@ import { sendMonthlyClose } from '@/lib/email'
 import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
 import { capForFreePlan } from '@/lib/email-limits'
 import { trackCron } from '@/lib/ops'
+import { authorizeCron } from '@/lib/cron-auth'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -18,9 +19,7 @@ export const dynamic = 'force-dynamic'
  * Optional ?month=YYYY-MM overrides which month to close (for backfill/testing).
  */
 export async function POST(req: NextRequest) {
-  const secret = req.headers.get('authorization')?.replace('Bearer ', '')
-    || req.nextUrl.searchParams.get('secret')
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
+  if (!authorizeCron(req)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
 

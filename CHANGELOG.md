@@ -6,6 +6,32 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.28.1] — 2026-05-31
+
+### Fix: email crons never sent — wrong auth secret (silent 401)
+
+Root cause of "subscribers aren't getting their newsletters": the email crons
+(weekly-newsletter, faena-newsletter, monthly-close) authenticated against
+`ADMIN_SECRET`, while every **working** data cron uses `CRON_SECRET`. With
+`ADMIN_SECRET` unset/mismatched, those routes returned **401 and sent nothing** — and
+because the workflow `curl -sL` ignored the HTTP status, the GitHub Action stayed green,
+so the failure was invisible. (Confirmed against the Resend export: no weekly/faena/cierre
+ever reached subscribers — only welcome + outreach + manual tests.)
+
+- New `authorizeCron(req)` helper (`src/lib/cron-auth.ts`): accepts the secret via
+  `Authorization: Bearer`, `x-cron-secret`, or `?secret=`, matched against `CRON_SECRET`
+  (the proven secret) **or** legacy `ADMIN_SECRET`. Applied to weekly-newsletter,
+  faena-newsletter and monthly-close.
+- The three workflows now send `secrets.CRON_SECRET` (same secret the working data crons use)
+  and **fail loudly**: the curl checks the HTTP status and the job goes red (with the
+  response body) on any non-2xx, so a future failure can't hide behind a green check.
+- Combined with the cron_runs self-logging added in 1.28.0, each run is now both visible in
+  /admin/ops and surfaced in GitHub Actions.
+
+After deploy, the email crons authenticate and send on schedule (or via workflow_dispatch).
+
+---
+
 ## [1.28.0] — 2026-05-31
 
 ### Cron observability — email crons now self-log to /admin/ops

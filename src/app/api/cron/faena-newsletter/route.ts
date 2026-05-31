@@ -5,6 +5,7 @@ import { getFaenaStats, formatFaenaDate } from '@/lib/faena-api'
 import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
 import { capForFreePlan } from '@/lib/email-limits'
 import { trackCron } from '@/lib/ops'
+import { authorizeCron } from '@/lib/cron-auth'
 
 /**
  * Faena Newsletter — sends monthly cattle slaughter stats to subscribers from
@@ -13,10 +14,7 @@ import { trackCron } from '@/lib/ops'
  * Self-logs each run to cron_runs (visible in /admin/ops) with the sent count.
  */
 export async function POST(req: NextRequest) {
-  const secret = req.headers.get('authorization')?.replace('Bearer ', '')
-    || req.nextUrl.searchParams.get('secret')
-
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
+  if (!authorizeCron(req)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
 
