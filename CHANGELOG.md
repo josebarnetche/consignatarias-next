@@ -6,6 +6,30 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.24.0] — 2026-05-31
+
+### Geo × category long-tail (78 pages) + named index family (positioning Pillar 1)
+
+**Geo × category programmatic pages — `/precios/[categoria]/[provincia]`** (6 categories ×
+13 provinces = 78 pages, the #2 SEO opportunity). Built HONESTLY: the reference price is
+**national** (INMAG, formed at Cañuelas — the page says so), and each page earns its keep with
+real province-specific context: provincial cattle stock (SENASA existencias), the province's
+supply share at the MAG, the relevant local remates (filtered by the sale-types that map to the
+category, so the 6 category pages of a province aren't duplicates), and the consignatarias that
+operate there — plus the province internal-link mesh. Answers "precio del novillo en [provincia]"
+without fabricating a per-province price competitors invent. Added to sitemap (priority 0.6).
+
+**Named index family — `/indices`** (positioning thesis Pillar 1: "el precio de referencia del
+ganado argentino"). A hub that packages the market-intelligence layer as a documented, citable
+family — **INMAG**, **INMAG en dólares**, **panel de categorías**, **índice de arrendamiento**,
+**spread maíz-novillo** — each with tagline, what-it-measures, methodology, cadence and its own
+`Dataset` schema, so the indices get referenced by name (the move that turns answer-first SEO into
+a price-reference moat). Linked from `llms-full.txt`; methodology + citation format published.
+
+The site now generates **2.642 static pages** (was 2.552).
+
+---
+
 ## [1.23.0] — 2026-05-31
 
 ### SEO province internal mesh + positioning thesis

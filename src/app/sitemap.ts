@@ -165,6 +165,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.85,
     },
     {
+      url: `${baseUrl}/indices`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.85,
+    },
+    {
       url: `${baseUrl}/consignatarias`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
@@ -459,6 +465,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
+  // Geo × category price pages (/precios/[categoria]/[provincia]) — long-tail
+  const preciosGeoPages: MetadataRoute.Sitemap = MARKET_CATEGORY_SLUGS.flatMap((cat) =>
+    Object.values(PROVINCE_SLUGS).map((provSlug) => ({
+      url: `${baseUrl}/precios/${cat}/${provSlug}`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.6,
+    })),
+  )
+
   // City landing pages (/remates/ciudad/[ciudad]) - HUNTER BATTLE recommendation
   const citySlugs = getUniqueCitySlugs(rematesData as typeof rematesData)
   const cityPages: MetadataRoute.Sitemap = citySlugs.map((slug) => ({
@@ -487,6 +503,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...frigorificoPages,
     ...remateDetailPages,
     ...marketCategoryPages,
+    ...preciosGeoPages,
     ...cityPages,
     ...monthPages,
   ]

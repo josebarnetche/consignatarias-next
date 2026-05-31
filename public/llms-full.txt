@@ -104,6 +104,7 @@ https://www.consignatarias.com.ar/frigorificos
 - Cómo elegir consignataria: https://www.consignatarias.com.ar/como-elegir-consignataria
 - Frigoríficos: https://www.consignatarias.com.ar/frigorificos
 - Mercado (INMAG + USD + spread): https://www.consignatarias.com.ar/mercado
+- Índices (familia de índices de referencia): https://www.consignatarias.com.ar/indices
 - INMAG: https://www.consignatarias.com.ar/mercado/inmag
 - INMAG en dólares: https://www.consignatarias.com.ar/mercado/inmag-dolares
 - Mercado de Cañuelas: https://www.consignatarias.com.ar/mercado/canuelas
