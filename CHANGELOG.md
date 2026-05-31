@@ -6,6 +6,24 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.27.0] — 2026-05-31
+
+### Botón de Arrepentimiento (Res. 424/2020) — functional
+
+Implemented the visible, functional right-of-withdrawal button required for e-commerce by
+Resolución 424/2020 SCI (art. 34 Ley 24.240, art. 1110 CCCN) — the operational piece the legal
+docs committed to.
+
+- New page **`/arrepentimiento`**: explains the right (10 días corridos, sin costo), three ways
+  to exercise it (cancel from account, the form, or email), and a working form.
+- New endpoint **`/api/arrepentimiento`**: validates and routes the request — notifies the team
+  (agro@ + legales@memola.com.ar) and emails the user an acknowledgement, via `sendArrepentimientoRequest`.
+  No account required, per the resolution.
+- Prominent **footer link** "Botón de Arrepentimiento" (amber) on the homepage, as the resolution
+  requires it visible; linked from the Términos subscription clause and in the sitemap.
+
+---
+
 ## [1.26.1] — 2026-05-31
 
 ### Legal compliance hardening (enforceability pass)

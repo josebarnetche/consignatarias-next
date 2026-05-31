@@ -153,7 +153,9 @@ export default function TerminosPage() {
             <strong className="text-zinc-200">derecho de revocación (arrepentimiento)</strong> dentro de los 10
             días corridos para contrataciones a distancia (art. 34 de la Ley 24.240 y art. 1110 del Código Civil
             y Comercial), sin costo ni responsabilidad. El arrepentimiento y la baja de la suscripción pueden
-            ejercerse de manera sencilla y gratuita desde la cuenta del usuario o escribiendo a{' '}
+            ejercerse de manera sencilla y gratuita desde el{' '}
+            <Link href="/arrepentimiento" className="text-sky-400 hover:underline">Botón de Arrepentimiento</Link>,
+            desde la cuenta del usuario o escribiendo a{' '}
             <a href="mailto:agro@memola.com.ar" className="text-sky-400 hover:underline">agro@memola.com.ar</a>,
             conforme a la Resolución 424/2020 de la Secretaría de Comercio Interior.
           </p>

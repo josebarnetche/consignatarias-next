@@ -73,6 +73,55 @@ export async function sendClaimNotificationToAdmin(
   }).catch(() => {})
 }
 
+/**
+ * Right-of-withdrawal (Botón de Arrepentimiento, Res. 424/2020) request.
+ * Notifies the team (agro@ + legales@) and confirms receipt to the user.
+ */
+export async function sendArrepentimientoRequest(data: {
+  nombre: string
+  email: string
+  identificador?: string
+  motivo?: string
+}) {
+  const resend = await getResend()
+  if (!resend) return
+  const nombre = escapeHtml(data.nombre)
+  const email = escapeHtml(data.email)
+  const ident = data.identificador ? escapeHtml(data.identificador) : '—'
+  const motivo = data.motivo ? escapeHtml(data.motivo) : '—'
+
+  // Notify the team (current inbox + legal inbox)
+  await resend.emails.send({
+    from: FROM,
+    to: [ADMIN_EMAIL, 'legales@memola.com.ar'],
+    replyTo: data.email,
+    subject: `Botón de Arrepentimiento — solicitud de ${data.nombre}`,
+    html: `
+      <h2>Solicitud de arrepentimiento / baja (Res. 424/2020 · art. 34 LDC)</h2>
+      <p><strong>Nombre:</strong> ${nombre}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Identificador / contrato:</strong> ${ident}</p>
+      <p><strong>Motivo (opcional):</strong> ${motivo}</p>
+      <p>Plazo legal de respuesta y reversión inmediata del cargo si corresponde.</p>
+    `,
+  }).catch(() => {})
+
+  // Acknowledge to the user
+  await resend.emails.send({
+    from: FROM,
+    to: data.email,
+    subject: 'Recibimos tu solicitud de arrepentimiento — Consignatarias.com.ar',
+    html: `
+      <h2>Recibimos tu solicitud</h2>
+      <p>Hola ${nombre}, registramos tu solicitud de arrepentimiento / baja conforme al
+      art. 34 de la Ley 24.240 y la Resolución 424/2020.</p>
+      <p>La procesaremos sin costo a la brevedad. Si tu suscripción está activa, podés además
+      darla de baja desde tu cuenta en <a href="${APP_URL}/cuenta">${APP_URL}/cuenta</a>.</p>
+      <p>Ante cualquier duda: <a href="mailto:${ADMIN_EMAIL}">${ADMIN_EMAIL}</a>.</p>
+    `,
+  }).catch(() => {})
+}
+
 export async function sendClaimApproved(email: string, displayName: string, slug: string) {
   const resend = await getResend()
   if (!resend) return

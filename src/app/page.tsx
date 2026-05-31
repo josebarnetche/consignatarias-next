@@ -1570,6 +1570,7 @@ export default function LandingPage() {
                 <Link href="/terminos" className="hover:text-zinc-300 transition-colors">Términos</Link>
                 <Link href="/privacidad" className="hover:text-zinc-300 transition-colors">Privacidad</Link>
                 <Link href="/aviso-legal" className="hover:text-zinc-300 transition-colors">Aviso legal</Link>
+                <Link href="/arrepentimiento" className="text-amber-500/90 hover:text-amber-400 transition-colors">Botón de Arrepentimiento</Link>
               </div>
               <span className="text-xs text-zinc-700">
                 © {new Date().getFullYear()} Memola Medios S.A.S. · agro@memola.com.ar
