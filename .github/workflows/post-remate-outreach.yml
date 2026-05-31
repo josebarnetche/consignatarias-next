@@ -11,9 +11,21 @@ jobs:
   trigger-outreach:
     runs-on: ubuntu-latest
     steps:
+      - name: cron-hook start
+        id: cronstart
+        run: |
+          RUN_ID=$(curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" -H "Content-Type: application/json" -d '{"workflow_name":"post-remate-outreach","phase":"start"}' | jq -r '.run_id // empty')
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
       - name: Request auction results from consignatarias
         run: |
           curl -sL -X POST \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             -H "Content-Type: application/json" \
             "https://www.consignatarias.com.ar/api/cron/post-remate-outreach"
+
+      - name: cron-hook finish
+        if: always() && steps.cronstart.outputs.run_id != ''
+        run: |
+          ST="ok"; [ "${{ job.status }}" != "success" ] && ST="error"
+          curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" -H "Content-Type: application/json" -d "{\"workflow_name\":\"post-remate-outreach\",\"phase\":\"finish\",\"run_id\":${{ steps.cronstart.outputs.run_id }},\"status\":\"$ST\"}" || true

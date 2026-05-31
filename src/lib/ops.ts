@@ -66,11 +66,15 @@ export const EXPECTED_CRONS: Record<string, number> = {
   'new-remate-alerts': 24,
   'quota-alerts': 24,
   'post-remate-outreach': 24,
+  'trial-nudges': 24,
   // Weekly (168h cadence)
   'weekly-newsletter': 168,
   'el-corredor-publish': 168,
   // Monthly (~720h cadence)
   'monthly-metrics': 720,
+  'monthly-close': 720,
+  'faena-newsletter': 720,
+  'scrape-senasa-habilitados': 720,
 }
 
 /* ------------------------------------------------------------------ */

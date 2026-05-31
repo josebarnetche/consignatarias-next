@@ -43,22 +43,23 @@
 
 | Workflow | Schedule (UTC) | Hace | Auth | Loguea a cron_runs |
 |---|---|---|---|---|
-| scrape-auctions | diario 14 ART | scrapea remates + precios → commit | (script, no route) | vía cron-hook* |
-| mag-detailed-prices | 15:30 ART L-V | 16 subcategorías MAG | CRON_SECRET | vía cron-hook* |
-| mag-lots-pipeline | Mar/Mié/Vie | datos lote-level | CRON_SECRET | vía cron-hook* |
-| backfill-inmag / backfill-usd | bajo demanda | rellena series | CRON_SECRET | vía cron-hook* |
-| scrape-senasa-habilitados | mensual | padrón SENASA | (script) | vía cron-hook* |
+| scrape-auctions | diario 14 ART | scrapea remates + precios → commit | (script, no route) | ✅ cron-hook |
+| mag-detailed-prices | 15:30 ART L-V | 16 subcategorías MAG | CRON_SECRET | ✅ cron-hook |
+| mag-lots-pipeline | Mar/Mié/Vie | datos lote-level | CRON_SECRET | ✅ cron-hook |
+| backfill-inmag / backfill-usd | bajo demanda | rellena series | CRON_SECRET | ✅ cron-hook |
+| scrape-senasa-habilitados | mensual | padrón SENASA | (script) | ✅ cron-hook |
 | **weekly-newsletter** | **Lun 13 UTC** | resumen semanal de remates | CRON_SECRET | ✅ sí (trackCron) |
 | **monthly-close** | **día 1, 14 UTC** | cierre INMAG mensual | CRON_SECRET | ✅ sí |
 | **faena-newsletter** | **día 3, 13 UTC** | reporte de faena | CRON_SECRET | ✅ sí |
 | **el-corredor-publish** | **día 1, 17 UTC** | publica + blast El Corredor | EL_CORREDOR_BLAST_TOKEN | ✅ sí |
-| quota-alerts | Lun 10 ART | aviso 80% de cupo API | CRON_SECRET | vía cron-hook* |
-| trial-nudges | diario | nudges fin de trial (7d/3d) | CRON_SECRET | vía cron-hook* |
-| post-remate-outreach | horario | outreach post-remate a consignatarias | CRON_SECRET | vía cron-hook* |
+| quota-alerts | Lun 10 ART | aviso 80% de cupo API | CRON_SECRET | ✅ cron-hook |
+| trial-nudges | diario | nudges fin de trial (7d/3d) | CRON_SECRET | ✅ cron-hook |
+| post-remate-outreach | horario | outreach post-remate a consignatarias | CRON_SECRET | ✅ cron-hook |
 | **(disabled)** new-remate-alerts, remate-reminders, mag-remitentes, monthly-metrics | — | en `.github/workflows/disabled/` | — | — |
 
-\* **Crons de datos → cron-hook:** para que aparezcan en `/admin/ops`, el workflow debe reportar
-inicio/fin a `/api/internal/cron-hook`. Patrón listo para pegar:
+\* **Crons de datos → cron-hook:** ya están cableados (start/finish a `/api/internal/cron-hook`)
+en todos los workflows de datos activos, así que aparecen en `/admin/ops`. Los de email se
+auto-loguean vía `trackCron`. Patrón usado (para futuros workflows):
 
 ```yaml
       - name: cron-hook start

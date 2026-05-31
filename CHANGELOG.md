@@ -7,6 +7,20 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.29.1] — 2026-05-31
+
+### Full cron observability — data crons now report to /admin/ops
+
+Wired the `cron-hook` (start/finish → `/api/internal/cron-hook`) into the 9 remaining active
+data/ops workflows: mag-detailed-prices, mag-lots-pipeline, mag-lots-discover, backfill-inmag,
+backfill-usd, scrape-senasa-habilitados, quota-alerts, trial-nudges, post-remate-outreach. Each
+opens a `cron_runs` row on start and closes it (ok/error from `job.status`) on `if: always()`.
+Combined with the 4 self-logging email crons + scrape-auctions (done in 1.29.0), **every active
+cron now shows in `/admin/ops`.** Added the missing cadences to `EXPECTED_CRONS` (trial-nudges,
+monthly-close, faena-newsletter, scrape-senasa-habilitados). Observability-only — no behavior/API change.
+
+---
+
 ## [1.29.0] — 2026-05-31
 
 ### Maturity pass — docs, versioning and operations at the level of the product

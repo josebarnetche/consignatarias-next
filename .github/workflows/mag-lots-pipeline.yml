@@ -23,6 +23,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
+      - name: cron-hook start
+        id: cronstart
+        run: |
+          RUN_ID=$(curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" -H "Content-Type: application/json" -d '{"workflow_name":"mag-lots-pipeline","phase":"start"}' | jq -r '.run_id // empty')
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
       # Refresh master list of active consignatarias before enqueueing.
       # Upserts only — never destructive. Without this step the pipeline
       # silently no-ops if mag_consignatarias is empty (observed 2026-05-18:
@@ -100,3 +106,9 @@ jobs:
           echo "Summary: processed=$PROCESSED failed=$FAILED iterations=$ITER"
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
+
+      - name: cron-hook finish
+        if: always() && steps.cronstart.outputs.run_id != ''
+        run: |
+          ST="ok"; [ "${{ job.status }}" != "success" ] && ST="error"
+          curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" -H "Content-Type: application/json" -d "{\"workflow_name\":\"mag-lots-pipeline\",\"phase\":\"finish\",\"run_id\":${{ steps.cronstart.outputs.run_id }},\"status\":\"$ST\"}" || true
