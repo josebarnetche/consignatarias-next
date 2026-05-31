@@ -3,6 +3,7 @@ import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { BreadcrumbSchema } from '@/components/seo/JsonLd'
+import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import {
   formatDateShort,
@@ -515,6 +516,8 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
             </div>
           )
         })()}
+
+        <ProvinceCluster province={config.name} exclude="remates" />
 
         {/* Back link bottom */}
         <div className="mt-3">

@@ -3,6 +3,7 @@ import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { getAllProfiles, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import { BreadcrumbSchema } from '@/components/seo/JsonLd'
+import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 
 /* ============================================================
    PROVINCE VIEW — used when /consignatarias/[slug] matches a
@@ -235,18 +236,7 @@ export async function ProvinceView({ provincia }: { provincia: string }) {
       </section>
 
       <section className="px-4 pb-8 max-w-4xl">
-        <div className="p-4 rounded-lg bg-zinc-900/30 border border-zinc-800">
-          <h3 className="text-zinc-200 font-medium mb-2">Ver remates en {provinceDisplay}</h3>
-          <p className="text-zinc-500 text-sm mb-3">
-            También podés ver el calendario completo de remates programados en esta provincia.
-          </p>
-          <Link
-            href={`/remates/${provincia}`}
-            className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 text-sm font-medium"
-          >
-            Ver remates en {provinceDisplay} →
-          </Link>
-        </div>
+        <ProvinceCluster province={provinceName} exclude="consignatarias" />
       </section>
     </>
   )

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import { BreadcrumbSchema } from '@/components/seo/JsonLd'
+import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 
 /* ============================================================
    FRIGORIFICO PROVINCE VIEW — used when /frigorificos/[slug]
@@ -261,6 +262,8 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
               ))}
           </div>
         </div>
+
+        <ProvinceCluster province={config.name} exclude="frigorificos" />
 
         <div className="mt-3">
           <Link href="/frigorificos" className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors">

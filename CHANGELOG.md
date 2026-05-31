@@ -6,6 +6,31 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.23.0] — 2026-05-31
+
+### SEO province internal mesh + positioning thesis
+
+Acts on the #1 SEO-opportunity finding (highest impact-per-hour, zero new pages):
+a **province internal-link mesh** that cross-links the four per-province silos into one
+authority cluster.
+
+- New `ProvinceCluster` component (`src/components/seo/ProvinceCluster.tsx`) rendered on
+  every province page — `/remates/[prov]`, `/consignatarias/[prov]`, `/frigorificos/[prov]` —
+  linking the sibling silos (remates ↔ consignatarias ↔ frigoríficos ↔ mercado) with
+  descriptive anchor text, excluding the page you're on. Null-guards provinces without a
+  full silo set, so no broken links.
+- Turns four isolated directory silos into a connected per-province cluster (×13 provinces) —
+  diversified internal anchors + crawl-depth reduction toward the long-tail.
+
+**Strategy docs** (in `geo-audit-2026-05-30/`): added `POSITIONING-THESIS.md` — a
+world-innovation-grounded positioning thesis (CEPEA/B3, USDA MPR/Cattlefax/DTN, MLA/AuctionsPlus,
+Bloomberg data-licensing). Core: own **"el precio de referencia del ganado argentino"** — the
+price-discovery layer for the ~71% opaque market — via a named proprietary index family,
+data-licensing, and an online-auction data flywheel. Ties the SEO/GEO work into the 3-horizon play.
+Joins the existing `CITATION-AUDIT.md` and `SEO-OPPORTUNITIES.md`.
+
+---
+
 ## [1.22.0] — 2026-05-31
 
 ### GEO (Generative Engine Optimization) — Phase 0 audit + Phase 1 strengthening
