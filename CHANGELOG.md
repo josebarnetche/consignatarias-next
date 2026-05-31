@@ -6,6 +6,28 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.26.1] — 2026-05-31
+
+### Legal compliance hardening (enforceability pass)
+
+Verified the legal documents against the Argentine adhesion/consumer-contract enforceability
+framework and tightened the clauses that, as drafted, risked being read as abusive/void:
+
+- **Limitation of liability** (Términos + Aviso Legal) now explicitly carves out **dolo y culpa
+  grave** (art. 1743 CCCN) — a liability cap that purports to cover those is void.
+- **Unilateral modification** of paid subscriptions now requires prior notice + the right to
+  rescind without penalty (arts. 985-989 CCCN, art. 37 LDC) — a bare "we can change anytime"
+  clause is abusive against consumers.
+- **Right of withdrawal** spelled out with article cites (art. 34 LDC, art. 1110 CCCN) + the
+  Botón de Arrepentimiento / baja mechanism (Res. 424/2020 SCI).
+- **Consumer jurisdiction** carve-out now cites the nullity of any prorogation against the
+  consumer (art. 36 LDC, art. 2654 CCCN).
+- **Privacy**: added the consent legal basis (arts. 5-6 Ley 25.326).
+
+Law set confirmed current (Ley 25.326, 24.240, 11.723, 27.275, CCCN, Res. 424/2020).
+
+---
+
 ## [1.26.0] — 2026-05-31
 
 ### Legal layer — Términos, Privacidad y Aviso Legal (liability shield)

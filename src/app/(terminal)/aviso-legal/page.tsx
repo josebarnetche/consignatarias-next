@@ -83,7 +83,9 @@ export default function AvisoLegalPage() {
             serán responsables por daños de ninguna naturaleza (directos, indirectos, incidentales, lucro
             cesante o pérdida de chance) derivados del uso o la imposibilidad de uso del Sitio, de la confianza
             en su información, de errores u omisiones, o de su indisponibilidad o discontinuación. Esta
-            limitación no afecta derechos irrenunciables reconocidos a los consumidores por la Ley 24.240.
+            limitación <strong className="text-zinc-200">no alcanza los supuestos de dolo o culpa grave</strong>{' '}
+            (art. 1743 del Código Civil y Comercial) ni los derechos irrenunciables reconocidos a los
+            consumidores por la Ley 24.240.
           </p>
         </section>
 

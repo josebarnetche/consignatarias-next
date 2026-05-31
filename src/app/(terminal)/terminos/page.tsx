@@ -118,7 +118,11 @@ export default function TerminosPage() {
             Memola puede modificar estos Términos y Condiciones, la Política de Privacidad y el Aviso Legal en
             cualquier momento. Las modificaciones rigen desde su publicación en el Sitio, con indicación de la
             fecha de última actualización. El uso del Sitio con posterioridad a la publicación implica la
-            aceptación de la versión vigente. Recomendamos revisar periódicamente estos documentos.
+            aceptación de la versión vigente. Recomendamos revisar periódicamente estos documentos.{' '}
+            Tratándose de <strong className="text-zinc-200">suscripciones pagas</strong>, las modificaciones que
+            afecten sustancialmente las condiciones contratadas serán comunicadas con antelación razonable,
+            pudiendo el suscriptor rescindir sin penalidad si no las acepta (arts. 985 a 989 del Código Civil y
+            Comercial y art. 37 de la Ley 24.240).
           </p>
         </section>
 
@@ -145,10 +149,13 @@ export default function TerminosPage() {
             no almacena datos completos de tarjetas. Las suscripciones se renuevan automáticamente por períodos
             sucesivos salvo cancelación. El usuario puede cancelar en cualquier momento desde su cuenta, sin
             penalidad; el acceso continúa hasta el final del período ya abonado. Se reconocen los derechos del
-            consumidor previstos en la Ley 24.240 de Defensa del Consumidor, incluido el derecho de revocación
-            (arrepentimiento) dentro de los 10 días corridos para contrataciones a distancia, en los términos de
-            dicha ley. La baja y el botón de arrepentimiento están disponibles desde la cuenta o escribiendo a{' '}
-            <a href="mailto:agro@memola.com.ar" className="text-sky-400 hover:underline">agro@memola.com.ar</a>.
+            consumidor previstos en la Ley 24.240 de Defensa del Consumidor, incluido el{' '}
+            <strong className="text-zinc-200">derecho de revocación (arrepentimiento)</strong> dentro de los 10
+            días corridos para contrataciones a distancia (art. 34 de la Ley 24.240 y art. 1110 del Código Civil
+            y Comercial), sin costo ni responsabilidad. El arrepentimiento y la baja de la suscripción pueden
+            ejercerse de manera sencilla y gratuita desde la cuenta del usuario o escribiendo a{' '}
+            <a href="mailto:agro@memola.com.ar" className="text-sky-400 hover:underline">agro@memola.com.ar</a>,
+            conforme a la Resolución 424/2020 de la Secretaría de Comercio Interior.
           </p>
         </section>
 
@@ -194,8 +201,10 @@ export default function TerminosPage() {
             colaboradores no serán responsables por daños directos, indirectos, incidentales, lucro cesante o
             pérdida de chance derivados del uso o imposibilidad de uso del Sitio, de la confianza depositada en
             su información, de errores u omisiones en los datos, de la indisponibilidad o discontinuación del
-            servicio, ni de decisiones tomadas en base a su contenido. Nada en estos términos limita derechos
-            que resulten irrenunciables conforme a la Ley 24.240 respecto de los usuarios consumidores.
+            servicio, ni de decisiones tomadas en base a su contenido. Esta limitación{' '}
+            <strong className="text-zinc-200">no alcanza los supuestos de dolo o culpa grave</strong> (art. 1743
+            del Código Civil y Comercial de la Nación), los daños que la ley no permita limitar, ni los derechos
+            irrenunciables que la Ley 24.240 reconoce a los usuarios consumidores.
           </p>
         </section>
 
@@ -213,7 +222,8 @@ export default function TerminosPage() {
             Estos términos se rigen por las leyes de la República Argentina. Para toda controversia serán
             competentes los tribunales ordinarios de la ciudad de Córdoba, Provincia de Córdoba, salvo que se
             trate de una relación de consumo, en cuyo caso será competente el tribunal del domicilio del
-            consumidor conforme a la Ley 24.240.
+            consumidor, siendo nula toda prórroga en su contra (art. 36 de la Ley 24.240 y art. 2654 del Código
+            Civil y Comercial).
           </p>
         </section>
 

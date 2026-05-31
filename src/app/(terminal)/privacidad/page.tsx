@@ -51,8 +51,10 @@ export default function PrivacidadPage() {
             Tratamos los datos para: operar el servicio y la cuenta del usuario; procesar y facturar
             suscripciones; enviar el newsletter al que el usuario se suscribió y comunicaciones relativas a su
             cuenta y a la prestación del servicio; gestionar el uso de la API; prevenir fraudes y abusos; y
-            elaborar métricas agregadas. <strong className="text-zinc-200">No vendemos ni cedemos datos
-            personales a terceros con fines publicitarios.</strong>
+            elaborar métricas agregadas. El tratamiento se realiza con el consentimiento libre, expreso e
+            informado del titular (arts. 5 y 6 de la Ley 25.326), prestado al crear una cuenta, suscribirse o
+            contratar un plan. <strong className="text-zinc-200">No vendemos ni cedemos datos personales a
+            terceros con fines publicitarios.</strong>
           </p>
         </section>
 
