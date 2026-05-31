@@ -1562,13 +1562,18 @@ export default function LandingPage() {
             </div>
 
             <div className="border-t border-zinc-800/50 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex items-center gap-6 text-xs text-zinc-500">
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-zinc-500">
                 <Link href="/planes" className="hover:text-zinc-300 transition-colors">Planes</Link>
                 <Link href="/glosario" className="hover:text-zinc-300 transition-colors">Glosario</Link>
                 <Link href="/calidad" className="hover:text-zinc-300 transition-colors">Calidad de datos</Link>
                 <Link href="/quienes-somos" className="hover:text-zinc-300 transition-colors">Quiénes somos</Link>
+                <Link href="/terminos" className="hover:text-zinc-300 transition-colors">Términos</Link>
+                <Link href="/privacidad" className="hover:text-zinc-300 transition-colors">Privacidad</Link>
+                <Link href="/aviso-legal" className="hover:text-zinc-300 transition-colors">Aviso legal</Link>
               </div>
-              <span className="text-xs text-zinc-700">agro@memola.com.ar</span>
+              <span className="text-xs text-zinc-700">
+                © {new Date().getFullYear()} Memola Medios S.A.S. · agro@memola.com.ar
+              </span>
             </div>
           </div>
         </div>

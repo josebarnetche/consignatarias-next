@@ -6,6 +6,35 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.26.0] — 2026-05-31
+
+### Legal layer — Términos, Privacidad y Aviso Legal (liability shield)
+
+Rebuilt the legal documents into a coherent, defensible set grounded in Memola's
+incorporation document and the Argentine statutes that protect public-data access and
+legitimate use. No code/runtime changes beyond the three pages + footer links.
+
+- **Términos y Condiciones** (`/terminos`) — full rewrite: company identity (Memola Medios
+  S.A.S., CUIT 30-71863222-2, sede Córdoba), nature of the service (a directory/observatory,
+  **not** a consignataria/broker/ALyC and not a party to operations), legal basis for accessing
+  public data (Ley 27.275 de acceso a la información pública + art. 28 Ley 11.723 — facts/data
+  not copyrightable), information "as is" without warranty, no guarantee of site permanence,
+  right to change the terms, IP/database protection (Ley 11.723), subscriptions with consumer
+  rights (Ley 24.240, derecho de arrepentimiento), takedown procedure, limitation of liability,
+  and governing law/jurisdiction.
+- **Política de Privacidad** (`/privacidad`) — Ley 25.326: responsable, datos recolectados,
+  finalidad, derechos de acceso/rectificación/supresión (con plazos legales), AAIP as control
+  authority, encargados y transferencias internacionales, conservación, seguridad.
+- **Aviso Legal y Descargo de Responsabilidad** (`/aviso-legal`, new) — the consolidated shield:
+  information "as is" from public/third-party sources without warranty, no guarantee of
+  permanence/continuity, limitation of liability, and a detailed **takedown/correction
+  procedure** routed to **legales@memola.com.ar**.
+- Footer now links Términos · Privacidad · Aviso legal + the © Memola Medios S.A.S. line; the
+  three pages cross-link and are in the sitemap. `legales@memola.com.ar` is the single contact
+  for removals and data-rights requests.
+
+---
+
 ## [1.25.0] — 2026-05-31
 
 ### INMAG historical-by-year pages — peso-vs-USD overlay (the compounding moat)
