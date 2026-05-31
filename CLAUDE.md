@@ -3,7 +3,7 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.18.0 (2026-05-21). See CHANGELOG for the v1.15.0 → v1.18.0 release train (Mi Ganado herd-value tracker + progressive onboarding, scraper province-by-locality via georef + Entre Surcos source, La Rural/Palermo geo fix, /remates SSR).
+**Current version:** v1.29.0 (2026-05-31). See [CHANGELOG.md](CHANGELOG.md) for the full history. Recent train (v1.20→v1.29): market data-layer fix + INMAG-USD recent view, PRO Usuario value build-out + merchandising, GEO Phase 1 (citation audit, DefinedTerm/entities, Cañuelas page, llms-full), SEO long-tail (province mesh, geo×category, historical INMAG years), named **index family** `/indices`, the legal layer (Términos/Privacidad/Aviso Legal/Botón de Arrepentimiento), the email-cron auth fix + observability, and the docs/versioning/ops maturity pass. Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
 
 ---
 

@@ -1,8 +1,13 @@
-# Roadmap to v1.20.0
+# Roadmap
 
-**Current:** v1.14.5 (May 14, 2026)
-**Target:** v1.20.0 — First Revenue Milestone (Enterprise API + B2B)
-**Timeline:** 8-12 weeks
+**Current:** v1.29.0 (May 31, 2026) — see [CHANGELOG.md](CHANGELOG.md) for the full history.
+**Next horizons** (per [docs/strategy/POSITIONING-THESIS.md](docs/strategy/POSITIONING-THESIS.md)):
+name + publish the index family as the citable reference, institutional data-licensing on the
+Enterprise API, and the online-auction data flywheel. Versioning: [docs/VERSIONING.md](docs/VERSIONING.md).
+
+> Note: the original "v1.20.0 — First Revenue Milestone" target below was met and surpassed; the
+> sections that follow are kept as historical record. The current direction is the intelligence-
+> infrastructure thesis, not a single revenue milestone.
 
 ---
 

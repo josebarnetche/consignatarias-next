@@ -187,4 +187,4 @@ Operadores comerciales que construyen infraestructura propietaria — no agencia
 
 ---
 
-v1.18.0 · 2026-05-20 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar)
+v1.29.0 · 2026-05-31 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0
