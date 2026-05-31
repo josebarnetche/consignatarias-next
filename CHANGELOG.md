@@ -6,6 +6,30 @@ Format: [Semantic Versioning](https://semver.org/) with feature descriptions foc
 
 ---
 
+## [1.28.2] — 2026-05-31
+
+### Fail-safe segmentation — no new subscriber gets silently dropped
+
+Audited every signup `source` against the segment map and found orphans: `rebill`
+(paying customers!), `fab`, `manual`, `web`, and the El Corredor subscribe default
+`el-corredor-landing` — none were mapped, so subscribers from those points received
+**nothing**.
+
+- `isWeeklyRecipient(source)` in `newsletter-segments.ts`: any UNMAPPED source now falls
+  into the weekly digest (the general newsletter), instead of being dropped. Excludes only
+  test sources, product-update-only sources, and subscribers who opted into a specific
+  segment (faena / cierre / corredor — they get their own content).
+- `weekly-newsletter` now fetches all active subscribers and filters with `isWeeklyRecipient`,
+  so future signup points are covered automatically without a code change.
+- Fixed the El Corredor subscribe endpoint to record `source: 'el-corredor'` (was
+  `el-corredor-landing`), so landing subscribers enter the monthly blast — not just the
+  immediate one-time delivery.
+
+Verified live: triggered weekly-newsletter → **HTTP 200, sent 4/4, 0 errors**, run logged to
+`cron_runs` (visible in /admin/ops). 4 test addresses cleaned to `unsubscribed` beforehand.
+
+---
+
 ## [1.28.1] — 2026-05-31
 
 ### Fix: email crons never sent — wrong auth secret (silent 401)

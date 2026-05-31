@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendWeeklyNewsletter } from '@/lib/email'
-import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
+import { isWeeklyRecipient } from '@/lib/newsletter-segments'
 import { capForFreePlan } from '@/lib/email-limits'
 import { trackCron } from '@/lib/ops'
 import { authorizeCron } from '@/lib/cron-auth'
@@ -71,11 +71,13 @@ export async function POST(req: NextRequest) {
       return { message: 'No hay remates para la próxima semana', metadata: { message: 'No hay remates para la próxima semana', sent: 0 } }
     }
 
-    const { data: subscribers } = await supabase
+    // Fail-safe: fetch all active subscribers and keep weekly + any UNMAPPED source
+    // (so new signup points — rebill, fab, web, etc. — are never silently dropped).
+    const { data: allActive } = await supabase
       .from('newsletter_subscribers')
-      .select('email')
+      .select('email, source')
       .eq('status', 'active')
-      .in('source', [...SEGMENT_SOURCES.weekly])
+    const subscribers = (allActive ?? []).filter((s) => isWeeklyRecipient(s.source))
 
     if (!subscribers || subscribers.length === 0) {
       return { message: 'No hay suscriptores activos', metadata: { message: 'No hay suscriptores activos', sent: 0 } }

@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const { email, source } = parsed.data
+    const { email } = parsed.data
     const normalizedEmail = email.trim().toLowerCase()
 
     const supabase = requireServiceClient()
@@ -42,7 +42,10 @@ export async function POST(req: NextRequest) {
       .upsert(
         {
           email: normalizedEmail,
-          source: source || 'el-corredor-landing',
+          // Must be 'el-corredor' (mapped to the corredor segment) so the
+          // subscriber receives the monthly El Corredor blast, not just the
+          // immediate delivery below.
+          source: 'el-corredor',
           status: 'active',
           // Reactivate if previously unsubscribed
           unsubscribed_at: null,
