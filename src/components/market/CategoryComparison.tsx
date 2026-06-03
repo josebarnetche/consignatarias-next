@@ -142,9 +142,9 @@ export function CategoryComparison() {
                 <th className="text-left py-2 pr-4">Categoría</th>
                 <th className="text-right py-2 px-3">Actual</th>
                 <th className="text-right py-2 px-3">vs {data.prevYearPeriod?.split('-')[0] || 'YoY'}</th>
-                <th className="text-right py-2 px-3">vs {data.prev2YearPeriod?.split('-')[0] || '2Y'}</th>
-                <th className="text-right py-2 px-3">Máx Hist.</th>
-                <th className="text-right py-2 pl-3">vs Máx</th>
+                <th className="hidden sm:table-cell text-right py-2 px-3">vs {data.prev2YearPeriod?.split('-')[0] || '2Y'}</th>
+                <th className="hidden sm:table-cell text-right py-2 px-3">Máx Hist.</th>
+                <th className="hidden sm:table-cell text-right py-2 pl-3">vs Máx</th>
               </tr>
             </thead>
             <tbody>
@@ -186,7 +186,7 @@ export function CategoryComparison() {
                       <span className="text-zinc-600">—</span>
                     )}
                   </td>
-                  <td className="text-right py-3 px-3">
+                  <td className="hidden sm:table-cell text-right py-3 px-3">
                     {cat.y2y !== null ? (
                       <span
                         className={`tabular-nums ${
@@ -199,10 +199,10 @@ export function CategoryComparison() {
                       <span className="text-zinc-600">—</span>
                     )}
                   </td>
-                  <td className="text-right py-3 px-3 tabular-nums text-zinc-400">
+                  <td className="hidden sm:table-cell text-right py-3 px-3 tabular-nums text-zinc-400">
                     ${fmt(cat.max, 2)}
                   </td>
-                  <td className="text-right py-3 pl-3">
+                  <td className="hidden sm:table-cell text-right py-3 pl-3">
                     <span
                       className={`tabular-nums text-sm ${
                         cat.vsMax >= -5 ? 'text-amber-400' : 'text-zinc-500'

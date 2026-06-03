@@ -7,6 +7,28 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.29.3] — 2026-06-03
+
+### Fix: mobile horizontal overflow on the market/index pages
+
+Reported "kg overflow + other errors" on the index pages. Diagnosed with real device emulation
+(Playwright, iPhone 12 @ 390px) measuring `document.documentElement.scrollWidth` per page — desktop
+was clean, the bug was mobile-only. `/mercado` overflowed the viewport by **+39px**; the rest were OK.
+Fixes for elements that didn't fit/wrap at 390px:
+- **`CategoryComparison`** 6-column table → hide the 3 non-essential columns (vs 2Y, Máx Hist., vs Máx)
+  on mobile with `hidden sm:table-cell`; keep Categoría / Actual / vs YoY.
+- **`LongTermChart`** + **`MercadoClient`** panel headers (`justify-between`) → `flex-wrap` so the
+  range selector / timestamp drop below the title instead of pushing the row past the edge.
+- **`MercadoClient`** category table → narrower CATEGORIA column on mobile + BARRA hidden below `sm`.
+- **`/mercado/inmag` + `/mercado/arrendamiento`** hero price cards → `min-w-[320px]` gated to `lg`
+  so they never force overflow on sub-352px phones.
+
+Verified: every market page (`/mercado`, `/mercado/inmag`, `/mercado/inmag-dolares`,
+`/mercado/arrendamiento`, `/mercado/spread`, category + year pages) now measures `scrollWidth == 390`
+on mobile — zero horizontal overflow. Typecheck clean. CSS-only, no API/behavior change.
+
+---
+
 ## [1.29.2] — 2026-06-03
 
 ### Conversion & retention surfaces on the top traffic pages

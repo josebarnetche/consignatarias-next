@@ -51,7 +51,7 @@ export function LongTermChart() {
 
   return (
     <div className="terminal-panel">
-      <div className="terminal-panel-header flex items-center justify-between">
+      <div className="terminal-panel-header flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-amber-500" />
           <span className="font-heading">HISTÓRICO IGMAG</span>

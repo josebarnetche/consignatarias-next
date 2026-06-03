@@ -98,7 +98,7 @@ export default function MercadoPage() {
 
       {/* ── Page header ─────────────────────────────────────────── */}
       <div className="terminal-panel">
-        <div className="terminal-panel-header flex items-center justify-between">
+        <div className="terminal-panel-header flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
           <h1 className="section-heading">
             MERCADO <span className="text-zinc-500 mx-1">&mdash;</span> INDICES Y PRECIOS DE REFERENCIA
           </h1>
@@ -245,11 +245,11 @@ export default function MercadoPage() {
           <table className="terminal-table">
             <thead>
               <tr>
-                <th className="w-[160px]">CATEGORIA</th>
+                <th className="w-[110px] sm:w-[160px]">CATEGORIA</th>
                 <th className="num">ACTUAL</th>
                 <th className="num">ANTERIOR</th>
                 <th className="num">VAR %</th>
-                <th className="w-[200px]">BARRA</th>
+                <th className="hidden sm:table-cell w-[200px]">BARRA</th>
               </tr>
             </thead>
             <tbody>
@@ -269,7 +269,7 @@ export default function MercadoPage() {
                     <td className={`num tabular-nums ${isPositive ? 'val-positive' : 'val-negative'}`}>
                       {isPositive ? '\u25B2' : '\u25BC'} {isPositive ? '+' : ''}{fmt(cat.change, 1)}%
                     </td>
-                    <td>
+                    <td className="hidden sm:table-cell">
                       <div className="flex items-center gap-1">
                         <div className="gradient-bar flex-1">
                           <div
