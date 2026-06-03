@@ -7,6 +7,7 @@ import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
 import { AnimatedPrice } from '@/components/AnimatedPrice'
+import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 
 const inmag = marketData.inmag
 const series = inmag.series as Array<{ date: string; value: number; volume?: number }>
@@ -507,9 +508,40 @@ export default function ArrendamientoPage() {
 
           {/* Source attribution */}
           <p className="text-xs text-zinc-600 mt-8 text-center">
-            Fuente: Mercado Agroganadero de Buenos Aires (mercadoagroganadero.com.ar). 
+            Fuente: Mercado Agroganadero de Buenos Aires (mercadoagroganadero.com.ar).
             Datos actualizados automáticamente cada día hábil.
           </p>
+        </section>
+
+        {/* Mi Ganado — surface the retention feature to the arrendamiento audience (P3) */}
+        <section className="max-w-6xl mx-auto px-4 pb-12">
+          <Link
+            href="/mi-ganado"
+            className="block bg-gradient-to-r from-emerald-500/10 to-zinc-900/30 border border-emerald-500/20 rounded-2xl p-6 hover:border-emerald-500/40 transition-all group"
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <div className="text-xs text-emerald-400 uppercase tracking-wider mb-1">Tu hacienda al INMAG</div>
+                <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-emerald-400 transition-colors">¿Cuánto vale tu rodeo hoy?</h3>
+                <p className="text-sm text-zinc-400 max-w-xl">
+                  Cargá tu hacienda una vez en <strong className="text-zinc-200">Mi Ganado</strong> y mirá su
+                  valor actualizado al INMAG cada día hábil — en pesos y en dólares. Gratis con tu cuenta.
+                </p>
+              </div>
+              <svg className="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </div>
+          </Link>
+        </section>
+
+        {/* PRO CTA — conversion surface on the #2 traffic page (P1) */}
+        <section className="max-w-6xl mx-auto px-4 pb-12">
+          <ProUpgradePrompt
+            benefit="Histórico completo del índice + descarga de la serie para tus contratos."
+            context="arrendamiento"
+            variant="card"
+          />
         </section>
       </div>
     </>

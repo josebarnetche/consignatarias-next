@@ -322,6 +322,28 @@ export default function InmagPage() {
           />
         </section>
 
+        {/* Mi Ganado — surface the retention feature to price-lookers (P3) */}
+        <section className="max-w-6xl mx-auto px-4 pb-12">
+          <Link
+            href="/mi-ganado"
+            className="block bg-gradient-to-r from-emerald-500/10 to-zinc-900/30 border border-emerald-500/20 rounded-2xl p-6 hover:border-emerald-500/40 transition-all group"
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <div className="text-xs text-emerald-400 uppercase tracking-wider mb-1">Tu hacienda al INMAG</div>
+                <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-emerald-400 transition-colors">¿Cuánto vale tu rodeo hoy?</h3>
+                <p className="text-sm text-zinc-400 max-w-xl">
+                  Cargá tu hacienda una vez en <strong className="text-zinc-200">Mi Ganado</strong> y mirá su
+                  valor actualizado a este mismo INMAG cada día — en pesos y en dólares. Gratis con tu cuenta.
+                </p>
+              </div>
+              <svg className="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </div>
+          </Link>
+        </section>
+
         {/* El novillo año por año — internal links to the historical year pages */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
           <h2 className="text-xl font-semibold text-white mb-4">El novillo año por año</h2>

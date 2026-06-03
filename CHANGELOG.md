@@ -7,6 +7,26 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.29.2] — 2026-06-03
+
+### Conversion & retention surfaces on the top traffic pages
+
+Acting on the weekly funnel data (data-layer pages pull the traffic, but the highest-traffic ones
+had no conversion surface):
+- **PRO upsell on `/mercado/arrendamiento`** — the #2 page by traffic had **no** `ProUpgradePrompt`
+  at all. Added the tracked card (`context="arrendamiento"`) so it enters the `pro_prompt_view/click`
+  funnel like the other data pages.
+- **"Mi Ganado" CTAs on `/mercado/inmag` and `/mercado/arrendamiento`** — surface the
+  libreta-del-campo retention feature (valuá tu rodeo al INMAG) to exactly the price-looking
+  audience. `/mi-ganado` is `noindex` (personal page), so it was invisible to organic visitors;
+  these CTAs are its discovery path. Feeds recurrence (record-high 16.6% this week).
+
+Note: `/mercado/inmag` on-page SEO audited and confirmed already at top standard (title with live
+price, FAQ + Dataset + DefinedTerm schema, definition lede) — the remaining lever for the "inmag"
+query (pos ~6.7) is off-page authority, not code. No fake edits made there.
+
+---
+
 ## [1.29.1] — 2026-05-31
 
 ### Full cron observability — data crons now report to /admin/ops
