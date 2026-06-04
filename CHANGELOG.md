@@ -7,6 +7,29 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.0] — 2026-06-04
+
+### Pillar 2 — Institutional data-licensing offering (the revenue engine)
+
+Per POSITIONING-THESIS Pillar 2: the moat/revenue is **licensing the series**, not per-request API.
+`/enterprise` only sold per-request dev tiers (Starter/Growth/Scale). Added a distinct **"Licencia de
+datos institucional"** section — the higher-ACV, sales-led offering (CEPEA/Bloomberg model):
+- **What you license:** full INMAG series (2015→, 11 yrs) + USD overlay, lote-level transactional data,
+  the proprietary index family, bulk/scheduled delivery, internal-use/valuation/redistribution rights.
+- **For whom:** banks (cattle-collateral valuation), export frigoríficos (pricing/hedging),
+  exchanges/MATBA-ROFEX (settlement reference), fintech/agtech, research/press.
+- **Gated by credibility:** links the now-published methodology (v1.2) + honest coverage declaration —
+  exactly the gate the thesis requires before institutional sales (resolves El Oráculo #14).
+- Bespoke annual pricing via a structured "Solicitar licencia de datos" contact. Emerald accent to
+  differentiate from the sky-accented per-request tiers.
+
+This is the surface where institutional demand lands — the first concrete build of the revenue engine
+that both the positioning thesis and the conversion swarm flag as the real money (vs. squeezing B2C).
+
+Typecheck clean; /enterprise serves 200 with the section.
+
+---
+
 ## [1.29.14] — 2026-06-04
 
 ### Citability hardening (thesis Pillar 1): generated llms.txt + methodology audit

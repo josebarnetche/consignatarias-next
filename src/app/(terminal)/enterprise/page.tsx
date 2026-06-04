@@ -323,6 +323,70 @@ export default function EnterprisePage() {
           ))}
         </div>
 
+        {/* ── Institutional DATA LICENSE — license the series, not just per-request API.
+            The higher-ACV, sales-led offering (CEPEA/Bloomberg model). Gated by the
+            published methodology (Pillar 1). Emerald accent to differentiate from the
+            sky-accented per-request tiers above. ─────────────────────────────────── */}
+        <div className="terminal-panel mb-10" style={{ borderColor: 'rgba(52,211,153,0.45)', boxShadow: '0 0 24px rgba(52,211,153,0.08)' }}>
+          <div
+            className="terminal-panel-header flex items-center justify-between"
+            style={{ color: '#34d399', borderBottomColor: 'rgba(52,211,153,0.4)' }}
+          >
+            <span>Licencia de datos institucional</span>
+            <span className="text-zinc-500 text-xxs font-terminal normal-case tracking-normal">
+              la serie, no la API por request
+            </span>
+          </div>
+          <div className="px-panel py-5">
+            <p className="text-zinc-200 text-sm mb-2">
+              Más allá del acceso por request: <span className="text-zinc-100 font-medium">licenciá la serie de referencia</span> del
+              mercado ganadero argentino — para tu valuación, settlement o uso interno.
+            </p>
+            <p className="text-zinc-500 text-data leading-relaxed mb-6 max-w-3xl">
+              El modelo de CEPEA (Brasil) y Bloomberg: el valor no es el endpoint, es la <span className="text-zinc-300">serie
+              propietaria</span> y ser la referencia citable. Para instituciones que usan el dato como insumo de decisión,
+              no como feature de una app. Pricing a medida (contrato anual) según alcance de uso y redistribución.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 mb-6">
+              <div>
+                <div className="text-zinc-200 text-xxs font-terminal uppercase tracking-wider mb-2">Qué licenciás</div>
+                <ul className="space-y-1.5 text-data text-zinc-400">
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Serie INMAG completa (2015→hoy, 11 años) + overlay USD oficial y blue</li>
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Datos lote-level transaccionales (haciinfo000007)</li>
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Familia de índices propia (INMAG-USD, spreads, derivados)</li>
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Entrega bulk / snapshots históricos / feed programado (sin rate-limit)</li>
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Derecho de uso interno, valuación o redistribución (según contrato)</li>
+                </ul>
+              </div>
+              <div>
+                <div className="text-zinc-200 text-xxs font-terminal uppercase tracking-wider mb-2">Para qué</div>
+                <ul className="space-y-1.5 text-data text-zinc-400">
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">›</span> <span><span className="text-zinc-300">Bancos</span> — valuación de hacienda como garantía (cattle-collateral lending)</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">›</span> <span><span className="text-zinc-300">Frigoríficos exportadores</span> — pricing y cobertura de compra</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">›</span> <span><span className="text-zinc-300">Exchanges / MATBA-ROFEX</span> — referencia de settlement para un contrato a futuro</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">›</span> <span><span className="text-zinc-300">Fintech / agtech</span> — el dato bajo el capó del producto</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">›</span> <span><span className="text-zinc-300">Research / prensa</span> — la serie citable con metodología</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-terminal-border pt-4">
+              <p className="text-zinc-500 text-data">
+                Metodología publicada (v1.2) + cobertura declarada con honestidad —{' '}
+                <a href="/metodologia" className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2">ver metodología →</a>
+              </p>
+              <a
+                href="mailto:agro@memola.com.ar?subject=Licencia%20de%20datos%20institucional%20—%20consignatarias.com.ar&body=Hola,%20queremos%20evaluar%20una%20licencia%20de%20datos.%0A%0AInstituci%C3%B3n:%0ATipo%20(banco%20/%20frigor%C3%ADfico%20/%20exchange%20/%20fintech%20/%20otro):%0AUso%20previsto%20(valuaci%C3%B3n%20/%20settlement%20/%20interno%20/%20redistribuci%C3%B3n):%0ASeries%20de%20inter%C3%A9s%20(INMAG-USD%20/%20lote-level%20/%20%C3%ADndices):"
+                className="terminal-btn whitespace-nowrap shrink-0"
+                style={{ borderColor: 'rgba(52,211,153,0.6)', color: '#34d399' }}
+              >
+                Solicitar licencia de datos →
+              </a>
+            </div>
+          </div>
+        </div>
+
         {/* Scale calculator */}
         <div id="calculadora" className="mb-10 scroll-mt-24">
           <EnterpriseCalculator />
