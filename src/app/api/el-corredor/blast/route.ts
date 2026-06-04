@@ -12,6 +12,19 @@ export const maxDuration = 300
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
 
+// El Corredor (monthly market close) goes to the corredor segment AND the other
+// market-interested segments — they subscribed for cattle-market content and the
+// monthly close is exactly that. Excludes product-only sources (exportar-datos).
+// As the corredor segment grows via the lead-magnet CTAs, it becomes the core.
+const EL_CORREDOR_AUDIENCE = [
+  ...SEGMENT_SOURCES.corredor, // 'el-corredor'
+  'cierre-mensual',
+  'reporte-semanal',
+  'remates',
+  'frigorificos',
+  'valuation_widget',
+]
+
 /**
  * POST /api/el-corredor/blast
  *
@@ -35,7 +48,7 @@ export async function POST(req: NextRequest) {
       .from('newsletter_subscribers')
       .select('email')
       .eq('status', 'active')
-      .in('source', [...SEGMENT_SOURCES.corredor])
+      .in('source', EL_CORREDOR_AUDIENCE)
 
     if (error) {
       return {

@@ -7,6 +7,19 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.29.6] — 2026-06-04
+
+### El Corredor blast — audience broadened to market segments
+
+The blast targeted only the `corredor` segment, which has 0 active subscribers (so it reached nobody
+even once fixed). Broadened the audience to all market-interested active subscribers — `el-corredor`,
+`cierre-mensual`, `reporte-semanal`, `remates`, `frigorificos`, `valuation_widget` (excludes
+product-only `exportar-datos`). The monthly market close is exactly the content these subscribers
+asked for. As the corredor segment grows via the lead-magnet CTAs it becomes the core; this is the
+bridge so the edition reaches its natural audience now.
+
+---
+
 ## [1.29.5] — 2026-06-04
 
 ### Fix: El Corredor pipeline was broken in 3 places (PDF 404 + blast never sent)
