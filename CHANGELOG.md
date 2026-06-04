@@ -7,6 +7,31 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.29.14] — 2026-06-04
+
+### Citability hardening (thesis Pillar 1): generated llms.txt + methodology audit
+
+**1) `/llms.txt` is now generated from live data** (route handler, replaces the static `public/llms.txt`
+that silently drifted — it said "74 consignatarias" while canonical was 104). It now interpolates the
+real counts (`getAllProfiles().length`, frigoríficos), the **current INMAG reading**, the **current El
+Corredor edition**, and a freshness stamp — and fixes the coverage narrative to be thesis-consistent
+(was three contradictory figures "88% formal / 71% off-screen / dark 78%"; now: INMAG observes the
+formal MAG channel ~12% of the national herd, ~71% trades off-screen). The number ChatGPT/Perplexity
+(#1 referrer) reads to cite the site can no longer go stale.
+
+**2) `/metodologia` audited** (the credibility gate for institutional data-licensing — Pillar 2):
+- Fixed fabricated/stale figures: "5 provincias" → 12, "86+ consignatarias" → 104, "365 días" → the
+  real **2015→ (11-year) archive** (that depth IS the moat), "5 categorías" → 6.
+- **Removed the fabricated per-province coverage table** (Corrientes 25 / Santa Fe 18 / … — invented,
+  contradicted reality) on a page whose whole pitch is "transparencia total".
+- **Added the honesty-as-moat section**: what the INMAG *does and does not* observe (~12% national
+  herd; FCV-UBA ~71% dark pool). This is the credibility differentiator for licensing the series.
+- Version bumped 1.1 → 1.2.
+
+Typecheck clean. Verified both routes serve 200 with the corrected, live content.
+
+---
+
 ## [1.29.13] — 2026-06-04
 
 ### Citability (positioning thesis, Pillar 1) — fresh + correct reference signals

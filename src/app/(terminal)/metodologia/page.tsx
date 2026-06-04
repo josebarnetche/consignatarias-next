@@ -32,7 +32,7 @@ export default function MetodologiaPage() {
           Metodología del Índice de Precios
         </h1>
         <p className="text-zinc-500 text-xs mb-6">
-          Versión 1.1 — Marzo 2026 — Memola Medios S.A.S.
+          Versión 1.2 — Junio 2026 — Memola Medios S.A.S.
         </p>
 
         <p className="text-zinc-400 mb-8">
@@ -46,22 +46,22 @@ export default function MetodologiaPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
           <div className="border border-zinc-800 rounded p-3 text-center">
             <Database className="w-4 h-4 text-amber-500 mx-auto mb-1" />
-            <p className="text-zinc-200 text-lg font-medium">5</p>
+            <p className="text-zinc-200 text-lg font-medium">12</p>
             <p className="text-zinc-500 text-xs">Provincias</p>
           </div>
           <div className="border border-zinc-800 rounded p-3 text-center">
             <BarChart3 className="w-4 h-4 text-amber-500 mx-auto mb-1" />
-            <p className="text-zinc-200 text-lg font-medium">5</p>
+            <p className="text-zinc-200 text-lg font-medium">6</p>
             <p className="text-zinc-500 text-xs">Categorías</p>
           </div>
           <div className="border border-zinc-800 rounded p-3 text-center">
             <Calendar className="w-4 h-4 text-amber-500 mx-auto mb-1" />
-            <p className="text-zinc-200 text-lg font-medium">365</p>
-            <p className="text-zinc-500 text-xs">Días histórico</p>
+            <p className="text-zinc-200 text-lg font-medium">2015→</p>
+            <p className="text-zinc-500 text-xs">Histórico (11 años)</p>
           </div>
           <div className="border border-zinc-800 rounded p-3 text-center">
             <Users className="w-4 h-4 text-amber-500 mx-auto mb-1" />
-            <p className="text-zinc-200 text-lg font-medium">86+</p>
+            <p className="text-zinc-200 text-lg font-medium">104</p>
             <p className="text-zinc-500 text-xs">Consignatarias</p>
           </div>
         </div>
@@ -152,30 +152,30 @@ export default function MetodologiaPage() {
           3. Cobertura Geográfica
         </h2>
 
-        <div className="border border-zinc-800 rounded overflow-hidden mb-4">
-          <table className="w-full text-xs">
-            <thead className="bg-zinc-900">
-              <tr>
-                <th className="text-left text-zinc-400 p-2">Provincia</th>
-                <th className="text-right text-zinc-400 p-2">Consignatarias</th>
-                <th className="text-right text-zinc-400 p-2">Estado</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-800">
-              <tr><td className="text-zinc-300 p-2">Corrientes</td><td className="text-zinc-400 text-right p-2">25</td><td className="text-green-500 text-right p-2">✓ Activo</td></tr>
-              <tr><td className="text-zinc-300 p-2">Santa Fe</td><td className="text-zinc-400 text-right p-2">18</td><td className="text-green-500 text-right p-2">✓ Activo</td></tr>
-              <tr><td className="text-zinc-300 p-2">Entre Ríos</td><td className="text-zinc-400 text-right p-2">12</td><td className="text-green-500 text-right p-2">✓ Activo</td></tr>
-              <tr><td className="text-zinc-300 p-2">Chaco</td><td className="text-zinc-400 text-right p-2">8</td><td className="text-green-500 text-right p-2">✓ Activo</td></tr>
-              <tr><td className="text-zinc-300 p-2">Buenos Aires</td><td className="text-zinc-400 text-right p-2">5</td><td className="text-amber-500 text-right p-2">⟳ Expandiendo</td></tr>
-            </tbody>
-          </table>
+        <p className="text-zinc-400 mb-4">
+          El directorio cubre <span className="text-zinc-200">104 consignatarias en 12 provincias</span>,
+          con mayor densidad en la Pampa Húmeda y el Litoral (Buenos Aires, Santa Fe, Córdoba,
+          Corrientes, Entre Ríos) y presencia en NEA, NOA, Cuyo y Patagonia.
+        </p>
+
+        <h3 className="text-zinc-300 font-medium mb-2">Cobertura del índice vs. el mercado real</h3>
+        <div className="border border-amber-800/40 bg-amber-900/10 rounded p-4 mb-4">
+          <p className="text-zinc-300 text-xs mb-2">
+            Principio de honestidad: <span className="text-amber-400">el índice no es el mercado entero, y lo decimos.</span>
+          </p>
+          <ul className="text-zinc-400 space-y-1.5 list-disc list-inside text-xs">
+            <li>El <span className="text-zinc-200">INMAG</span> observa el canal formal del Mercado Agroganadero de Cañuelas — aproximadamente el <span className="text-zinc-200">~12% del rodeo nacional</span>. Es la referencia que el mercado sigue, pero no el universo completo.</li>
+            <li>La FCV-UBA estima que <span className="text-zinc-200">~71% de la hacienda argentina se opera fuera de pantalla</span> (estancia a estancia, venta directa a frigorífico, "restos") — el segmento opaco que ningún índice observa hoy.</li>
+            <li>Nuestra posición editorial: la transparencia real exige reconocer ese 71%. Ser su referencia citable —no fingir cobertura total— es el objetivo del proyecto.</li>
+          </ul>
         </div>
 
         <h3 className="text-zinc-300 font-medium mb-2">Limitaciones Conocidas</h3>
         <ul className="text-zinc-400 space-y-1 mb-6 list-disc list-inside text-xs">
-          <li>Mayor cobertura en NEA/Litoral vs. Pampa Húmeda</li>
-          <li>Datos de volumen incompletos en ~70% de remates</li>
+          <li>Mayor cobertura en NEA/Litoral vs. Pampa Húmeda en el directorio de remates</li>
+          <li>Datos de volumen incompletos en ~70% de remates (el VWAP cae a promedio simple cuando falta volumen)</li>
           <li>Latencia T+1 (datos del día siguiente al remate)</li>
+          <li>El INMAG lo publica el MAG; nosotros lo replicamos, archivamos (desde 2015) y lo superponemos con USD — no lo calculamos</li>
         </ul>
 
         {/* Section 4: Acceso */}
