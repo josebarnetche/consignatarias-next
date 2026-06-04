@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.1] — 2026-06-04
+
+### Discovery for the institutional data-licensing offering
+
+The data-license offering (1.30.0) lived only on /enterprise where institutions wouldn't find it.
+Added a deep-linkable anchor (`/enterprise#licencia-datos`) and entry points from the high-intent
+institutional surfaces:
+- **`/metodologia`** — "Licencia institucional" in the access block (methodology readers are evaluating the data).
+- **`/mercado/inmag`** — a line under source attribution targeting banks/frigoríficos/exchanges/fintech (the reference-series page).
+- **Footer (site-wide)** — "Licencia de datos" in the explore row, present on every terminal page.
+
+Verified all four surfaces serve the link/anchor. Typecheck clean.
+
+---
+
 ## [1.30.0] — 2026-06-04
 
 ### Pillar 2 — Institutional data-licensing offering (the revenue engine)

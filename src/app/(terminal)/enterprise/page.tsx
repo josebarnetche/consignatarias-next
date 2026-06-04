@@ -327,7 +327,7 @@ export default function EnterprisePage() {
             The higher-ACV, sales-led offering (CEPEA/Bloomberg model). Gated by the
             published methodology (Pillar 1). Emerald accent to differentiate from the
             sky-accented per-request tiers above. ─────────────────────────────────── */}
-        <div className="terminal-panel mb-10" style={{ borderColor: 'rgba(52,211,153,0.45)', boxShadow: '0 0 24px rgba(52,211,153,0.08)' }}>
+        <div id="licencia-datos" className="terminal-panel mb-10 scroll-mt-24" style={{ borderColor: 'rgba(52,211,153,0.45)', boxShadow: '0 0 24px rgba(52,211,153,0.08)' }}>
           <div
             className="terminal-panel-header flex items-center justify-between"
             style={{ color: '#34d399', borderBottomColor: 'rgba(52,211,153,0.4)' }}

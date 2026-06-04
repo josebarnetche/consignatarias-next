@@ -221,11 +221,17 @@ export default function MetodologiaPage() {
             >
               Spread Maíz-Novillo <ExternalLink className="w-3 h-3" />
             </Link>
-            <Link 
-              href="/api-docs" 
+            <Link
+              href="/api-docs"
               className="inline-flex items-center gap-1 text-xs text-amber-500 hover:text-amber-400 border border-amber-800/50 rounded px-3 py-1.5"
             >
               Documentación API <ExternalLink className="w-3 h-3" />
+            </Link>
+            <Link
+              href="/enterprise#licencia-datos"
+              className="inline-flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 border border-emerald-700/50 rounded px-3 py-1.5"
+            >
+              Licencia institucional <ExternalLink className="w-3 h-3" />
             </Link>
           </div>
         </div>
