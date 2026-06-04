@@ -4,7 +4,7 @@
 
 El precio de referencia del ganado argentino, hecho dato: la **familia de índices** (INMAG diario
 desde 2015, en pesos y en dólares, panel de categorías, arrendamiento, spread), el **directorio**
-de 80 consignatarias en 12 provincias y 1.092 frigoríficos cruzados contra SENASA, el **calendario**
+de 104 consignatarias en 12 provincias y 1.092 frigoríficos cruzados contra SENASA, el **calendario**
 de remates y una **API pública**. Datos abiertos y citables; capa PRO para productores/asesores/
 contadores y Enterprise para integradores. Live: **[www.consignatarias.com.ar](https://www.consignatarias.com.ar)**.
 

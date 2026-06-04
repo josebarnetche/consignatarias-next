@@ -53,7 +53,7 @@ Three revenue lines coexist on top of the free, indexable, citable data layer:
 | Sitemap URLs | 1062 | `src/app/sitemap.ts` (shrinks as scraper archives remates) |
 | API endpoints | 33 under `src/app/api/` | route handlers |
 | Public Enterprise endpoints (auth-gated) | 2 — `/api/precios`, `/api/lots` | |
-| Consignatarias (canonical) | 74 | `src/lib/data/consignataria-slugs.ts` |
+| Consignatarias (canonical) | 104 | `src/lib/data/consignataria-slugs.ts` (`getAllProfiles().length` — the public count) |
 | Consignatarias (DB row count) | 86 | `consignatarias` table |
 | Frigorificos | 364 | SENASA/MAGYP data |
 | Remates indexed | ~380 active | `src/lib/data/remates.json` (daily scrape) |

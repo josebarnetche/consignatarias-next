@@ -11,7 +11,8 @@ export interface ConsignatariaProfile {
 }
 
 /* ------------------------------------------------------------------ */
-/*  PROFILE REGISTRY  (83 unique entities)                             */
+/*  PROFILE REGISTRY  (104 unique entities — THE canonical public count;
+    getAllProfiles().length feeds landing, /consignatarias, header & /stats)  */
 /* ------------------------------------------------------------------ */
 
 const PROFILES: ConsignatariaProfile[] = [

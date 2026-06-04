@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server'
 import { unstable_cache } from 'next/cache'
 import { requireServiceClient } from '@/lib/supabase'
 import remates from '@/lib/data/remates.json'
-import consignatarias from '@/lib/data/consignatarias.json'
 import frigorificos from '@/lib/data/frigorificos.json'
+import { getAllProfiles } from '@/lib/data/consignataria-slugs'
 
 // Cache subscriber count for 1 hour
 const getSubscriberCount = unstable_cache(
@@ -36,8 +36,8 @@ export async function GET() {
     const upcomingRemates = (remates as Array<{ date: string; status: string }>)
       .filter(r => r.status !== 'completed' && r.date >= today).length
     
-    // Count total consignatarias
-    const totalConsignatarias = (consignatarias as unknown[]).length
+    // Count total consignatarias — canonical registry (same source as the landing & directory)
+    const totalConsignatarias = getAllProfiles().length
     
     // Count total frigoríficos
     const totalFrigorificos = (frigorificos as unknown[]).length

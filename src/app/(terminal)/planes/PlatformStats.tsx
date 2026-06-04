@@ -19,9 +19,9 @@ export default function PlatformStats() {
   
   // DISABLED: Cost optimization — use static values directly
   useEffect(() => {
-    // Skip API call, use static values
+    // Skip API call, use static values (canonical count = getAllProfiles().length)
     setStats({
-      consignatarias: 82,
+      consignatarias: 104,
       remates: 392,
       frigorificos: 364,
       provincias: 14,

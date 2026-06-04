@@ -18,7 +18,7 @@ Engineering documentation. For the product-side overview see the [README](../REA
                                                           CDN edge (Vercel)
                                                                     │
                                                         Supabase (PostgreSQL)
-                                                        ├── consignatarias (86 profiles)
+                                                        ├── consignatarias (86 DB rows; 104 canonical profiles via registry)
                                                         ├── consignataria_claims
                                                         ├── consignataria_auctions (owner CRUD)
                                                         ├── consignataria_reviews (v1.17)
@@ -137,8 +137,8 @@ Every day at 14:00 ART (17:00 UTC), 7 days a week, the scraper:
 | `/remates/tipo/[tipo]` | SSG (5) | Invernada · Cría · General · Especial · Reproductores |
 | `/remates/mes/[mes]` | SSG (12) | Monthly views |
 | `/remates/ciudad/[ciudad]` | SSG (~120) | Cities with auctions |
-| `/consignatarias` | Static | Directory of 80 consignatarias |
-| `/consignatarias/[slug]` | SSG (80) | Profile — Quién Opera + Historial Verificable + Reseñas + calendar + heatmap + videos |
+| `/consignatarias` | Static | Directory of 104 consignatarias |
+| `/consignatarias/[slug]` | SSG (104) | Profile — Quién Opera + Historial Verificable + Reseñas + calendar + heatmap + videos |
 | `/consignatarias/[slug]/verificar` | SSG | Claim form (noindex) |
 | `/consignatarias/[provincia]` | SSG (13) | Consignatarias by province |
 | `/frigorificos` | Static | Directory of 1092 frigoríficos (SENASA cross-referenced) |

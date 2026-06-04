@@ -1498,7 +1498,7 @@ export async function sendTrialNudge(p: TrialNudgeParams) {
               <li>16 sub-categorías oficiales del MAG con corte por peso (novillos, novillitos, vaquillonas, vacas, toros, terneros)</li>
               <li>USD oficial y blue, serie histórica desde 2011</li>
               <li>Calendario de remates: próximos, búsqueda, por consignataria y por provincia</li>
-              <li>Directorio de 74 consignatarias + 364 frigoríficos</li>
+              <li>Directorio de 104 consignatarias + 364 frigoríficos</li>
               <li>Webhooks firmados (nuevo remate, cambio de INMAG, alertas de precio)</li>
               <li>Exports CSV/JSON bajo demanda</li>
               <li>Documentación + ejemplos en Python y JS</li>

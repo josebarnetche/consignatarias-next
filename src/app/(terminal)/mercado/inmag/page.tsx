@@ -170,10 +170,10 @@ export default function InmagPage() {
               </div>
 
               {/* Hero Price Card */}
-              <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-2xl p-6 lg:p-8 w-full lg:w-auto lg:min-w-[320px]">
+              <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-2xl p-6 lg:p-8 w-full lg:w-auto lg:min-w-[400px]">
                 <div className="text-sm text-zinc-500 mb-2 font-medium">Precio Actual</div>
                 <div className="flex items-baseline gap-2 sm:gap-3">
-                  <span className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white font-mono tracking-tight tabular-nums">
+                  <span className="text-4xl sm:text-5xl font-bold text-white font-mono tracking-tight tabular-nums">
                     <AnimatedPrice
                       value={inmag.current}
                       duration={2800}

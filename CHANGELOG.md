@@ -7,6 +7,28 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.29.7] — 2026-06-04
+
+### Fix: desktop "/kg" overflow + unify the consignatarias count to one source
+
+**Desktop "/kg" overflow** — on `/mercado/inmag` and `/mercado/arrendamiento` the hero price was
+`lg:text-6xl` (60px); after the count-up settled, `$4.079,69 /kg` pushed the `/kg` **78px past the
+card** at 1280–1440px (1.29.4 only fixed mobile). Capped the number at `text-5xl` and widened the
+card to `lg:min-w-[400px]`. Verified with desktop emulation after the animation: `/kg` margin now
+**+41px @1440/1280** (was −78px), mobile still +82px.
+
+**Consignatarias count unified → 104.** The number was inconsistent everywhere: header **82**,
+landing **104**, README **80**, email **74**, TECHNICAL **86/80**, `/api/stats/platform` **56** (five
+different sources). Canonical source of truth = `getAllProfiles().length` (the deduplicated registry
+that drives the profile pages — variants live in `allSlugs`, not as separate entries) = **104**.
+- `/api/stats/platform` now counts via `getAllProfiles()` (was `consignatarias.json`, 56).
+- Header (`layout.tsx`) and `PlatformStats` static values → 104.
+- README, `email.ts`, `docs/TECHNICAL.md`, `CLAUDE.md`, and the registry comment → 104.
+- The landing and `/consignatarias` already used `getAllProfiles().length`, so they were the right
+  number all along. (`consignatarias` DB table still has 86 rows — a separate store; noted in TECHNICAL.)
+
+---
+
 ## [1.29.6] — 2026-06-04
 
 ### El Corredor blast — audience broadened to market segments

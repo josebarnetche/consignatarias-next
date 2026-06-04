@@ -85,8 +85,9 @@ export default function TerminalLayout({
 }) {
   const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // Static values (updated on deploy) — no API call needed
-  const [stats] = useState({ remates: 392, consignatarias: 82, provincias: 14 });
+  // Static values (updated on deploy) — no API call needed.
+  // consignatarias = getAllProfiles().length (canonical registry, what the landing shows). Keep in sync.
+  const [stats] = useState({ remates: 392, consignatarias: 104, provincias: 14 });
 
   // Check auth state
   useEffect(() => {
