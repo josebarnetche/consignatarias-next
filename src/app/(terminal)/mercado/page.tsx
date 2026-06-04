@@ -7,6 +7,7 @@ import { SeasonalPattern } from '@/components/market/SeasonalPattern'
 import { CategoryComparison } from '@/components/market/CategoryComparison'
 import { YearOverYearBlock } from '@/components/market/YearOverYearBlock'
 import { SeasonalityHeatmap } from '@/components/market/SeasonalityHeatmap'
+import { ElCorredorCTA } from '@/components/ElCorredorCTA'
 import marketPrices from '@/lib/data/market-prices.json'
 
 export const revalidate = 86400 // daily rebuild via Vercel
@@ -117,6 +118,11 @@ export default function MercadoPage() {
             Novillo, novillito, vaquillona, vaca, toro y ternero — kilo vivo desde el MAG, actualizado a diario.
           </p>
         </Link>
+      </div>
+
+      {/* El Corredor — lead magnet with inline email capture (high-traffic hub) */}
+      <div className="px-4 pt-3 pb-2 max-w-6xl mx-auto">
+        <ElCorredorCTA variant="card" context="mercado" />
       </div>
 
       {/* Year-over-year + USD landing teaser */}

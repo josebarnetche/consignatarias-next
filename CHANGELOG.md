@@ -7,6 +7,28 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.29.8] — 2026-06-04
+
+### Lead-magnet audit — El Corredor CTA now converts inline (was link-only + stale)
+
+Audited why the El Corredor lead magnet captured **0 subscribers** despite CTAs across the site.
+Backend verified healthy (POST `/api/el-corredor/subscribe` → `ok: true, delivered: true`, end-to-end
+test inserted + delivered + cleaned up). The `/el-corredor` landing form is also fine. **The CTAs were
+the bottleneck:**
+- **Link-only, no inline capture** — every `ElCorredorCTA` just linked to `/el-corredor`, an extra
+  navigation step before any email field. Added `ElCorredorInlineForm` (email + button, POSTs to the
+  verified endpoint) embedded directly in the card variant → subscribe without leaving the page.
+- **Stale hardcoded edition** — the CTA advertised "Edición Abril 2026" + showed the *April* cover even
+  after Mayo shipped. Now reads `manifest.current` (edition label + cover) → always the live edition.
+  (Same hardcoded-drift class as the consignatarias count.)
+- **Placement** — added the CTA (inline capture) to `/mercado`, the high-traffic hub that lacked it.
+
+The rewrite upgrades every existing placement (homepage, `/mercado/inmag`, planes, etc.) to inline
+capture + the current edition at once. Verified: card renders the email field + "Recibir Mayo →" +
+the Mayo cover; `/mercado` mobile `scrollWidth == 390` (no overflow). Typecheck clean.
+
+---
+
 ## [1.29.7] — 2026-06-04
 
 ### Fix: desktop "/kg" overflow + unify the consignatarias count to one source
