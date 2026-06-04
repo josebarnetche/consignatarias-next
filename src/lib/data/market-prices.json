@@ -1752,73 +1752,73 @@
   },
   "categories": {
     "novillos": {
-      "current": 4011.82,
-      "prev": 4005,
-      "change": 0.2,
+      "current": 4080.41,
+      "prev": 4011.82,
+      "change": 1.7,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1327
+      "latestVolume": 1019
     },
     "novillitos": {
-      "current": 4535.11,
-      "prev": 3805,
-      "change": 19.2,
+      "current": 4200.02,
+      "prev": 4535.11,
+      "change": -7.4,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1878
+      "latestVolume": 944
     },
     "vaquillonas": {
-      "current": 4324.51,
-      "prev": 3604,
-      "change": 20,
+      "current": 4071.27,
+      "prev": 4324.51,
+      "change": -5.9,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 2391
+      "latestVolume": 1322
     },
     "vacas": {
-      "current": 2540.68,
-      "prev": 2884,
-      "change": -11.9,
+      "current": 2451.43,
+      "prev": 2540.68,
+      "change": -3.5,
       "source": "mercadoagroganadero.com.ar (observed)",
-      "latestVolume": 4230
+      "latestVolume": 4191
     },
     "toros": {
-      "current": 2722.71,
-      "prev": 2603,
-      "change": 4.6,
+      "current": 2596.48,
+      "prev": 2722.71,
+      "change": -4.6,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 226
+      "latestVolume": 437
     },
     "terneros": {
       "current": 4488,
-      "prev": 4405,
-      "change": 1.9,
+      "prev": 4488,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
-    "current": 220.25,
-    "prev": 220.5,
-    "change": -0.1,
+    "current": 216.9,
+    "prev": 220.25,
+    "change": -1.5,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1430,
-    "prev": 1435,
-    "change": -0.3,
+    "current": 1435,
+    "prev": 1430,
+    "change": 0.3,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
-    "current": 1460,
-    "prev": 1450,
-    "change": 0.7,
+    "current": 1455,
+    "prev": 1460,
+    "change": -0.3,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-06-03",
+  "lastUpdate": "2026-06-04",
   "provinceEntry": {
     "date": "2026-06-03",
     "totalCabezas": 8112,
