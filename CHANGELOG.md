@@ -7,6 +7,24 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.3] — 2026-06-04
+
+### HOTFIX: production build broken since 1.29.14 — nothing was deploying
+
+`next build` failed on an ESLint `react/no-unescaped-entities` error: a literal `"restos"` in the
+`/metodologia` honesty section (added in 1.29.14). Because the build failed, **every push since
+1.29.14 never deployed** — the institutional data-licensing section, the generated llms.txt, the
+methodology audit, the discovery links, and the email-first B2C + Enterprise checkout (incl. the
+"Cargando…" stall fix) were all stuck behind a red build. That is why the Enterprise button still
+showed loading: production was running 1.29.13 code.
+
+Fix: `"restos"` → `«restos»`. `pnpm build` now exits 0; the accumulated 1.29.14→1.30.2 work deploys.
+
+Process note: dev (`next dev`) does not run the production ESLint gate, so the error didn't surface in
+dev verification. Run `pnpm build` before pushing JSX changes.
+
+---
+
 ## [1.30.2] — 2026-06-04
 
 ### Hotfix: Enterprise checkout stalled on "Cargando…" + login wall (couldn't pay)

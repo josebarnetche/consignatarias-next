@@ -165,7 +165,7 @@ export default function MetodologiaPage() {
           </p>
           <ul className="text-zinc-400 space-y-1.5 list-disc list-inside text-xs">
             <li>El <span className="text-zinc-200">INMAG</span> observa el canal formal del Mercado Agroganadero de Cañuelas — aproximadamente el <span className="text-zinc-200">~12% del rodeo nacional</span>. Es la referencia que el mercado sigue, pero no el universo completo.</li>
-            <li>La FCV-UBA estima que <span className="text-zinc-200">~71% de la hacienda argentina se opera fuera de pantalla</span> (estancia a estancia, venta directa a frigorífico, "restos") — el segmento opaco que ningún índice observa hoy.</li>
+            <li>La FCV-UBA estima que <span className="text-zinc-200">~71% de la hacienda argentina se opera fuera de pantalla</span> (estancia a estancia, venta directa a frigorífico, «restos») — el segmento opaco que ningún índice observa hoy.</li>
             <li>Nuestra posición editorial: la transparencia real exige reconocer ese 71%. Ser su referencia citable —no fingir cobertura total— es el objetivo del proyecto.</li>
           </ul>
         </div>
