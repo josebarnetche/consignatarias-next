@@ -4,11 +4,11 @@ import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/Jso
 import { FileText, Database, BarChart3, Shield, Calendar, Users, ExternalLink } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Metodología del Índice de Precios',
-  description: 'Metodología completa del Índice de Precios Consignatarias (IPC): fuentes de datos, cálculo, ponderaciones, cobertura geográfica y gobernanza. Transparencia total.',
+  title: 'Metodología — precios e índices del mercado ganadero',
+  description: 'Cómo armamos los datos: precios observados por categoría (fuente MAG, no ratios sintéticos), el INMAG que publica el propio MAG, cobertura honesta (~12% del rodeo) y gobernanza. Transparencia total.',
   openGraph: {
-    title: 'Metodología del Índice de Precios',
-    description: 'Metodología del Índice de Precios Consignatarias: fuentes, cálculo, cobertura y gobernanza.',
+    title: 'Metodología — precios e índices del mercado ganadero',
+    description: 'Precios observados por categoría (no sintéticos), el INMAG del MAG, cobertura honesta y gobernanza.',
     url: 'https://www.consignatarias.com.ar/metodologia',
     type: 'website',
   },
@@ -22,23 +22,25 @@ export default function MetodologiaPage() {
     <>
       <SectionBreadcrumbSchema section="metodologia" sectionName="Metodología" />
       <TechArticleSchema
-        name="Metodología del Índice de Precios Consignatarias"
-        description="Metodología completa del Índice de Precios Consignatarias (IPC): fuentes de datos oficiales, cálculo VWAP, ponderaciones por categoría, cobertura de 5 provincias y gobernanza transparente."
+        name="Metodología de precios e índices — consignatarias.com.ar"
+        description="Precios observados por categoría del Mercado Agroganadero (no ratios sintéticos), el INMAG publicado por el MAG, VWAP intra-categoría cuando hay volumen, cobertura honesta (~12% del rodeo nacional / ~71% dark pool) y gobernanza."
         url="https://www.consignatarias.com.ar/metodologia"
       />
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         {/* Header */}
         <h1 className="text-zinc-100 text-2xl font-medium mb-2">
-          Metodología del Índice de Precios
+          Metodología de precios e índices
         </h1>
         <p className="text-zinc-500 text-xs mb-6">
-          Versión 1.2 — Junio 2026 — Memola Medios S.A.S.
+          Versión 1.3 — Junio 2026 — Memola Medios S.A.S.
         </p>
 
         <p className="text-zinc-400 mb-8">
-          El Índice de Precios Consignatarias (IPC) es un indicador de precios de hacienda en pie 
-          calculado a partir de datos observados en remates públicos. Este documento detalla la 
-          metodología completa para garantizar <span className="text-zinc-200">transparencia</span> y{' '}
+          Publicamos <span className="text-zinc-200">precios observados por categoría</span> del Mercado
+          Agroganadero (no un índice sintético con ponderaciones inventadas) y el{' '}
+          <span className="text-zinc-200">INMAG que publica el propio MAG</span>, archivado desde 2015 y
+          superpuesto con el dólar. Este documento detalla fuentes, cálculo, cobertura y gobernanza para
+          garantizar <span className="text-zinc-200">transparencia</span> y{' '}
           <span className="text-zinc-200">trazabilidad</span>.
         </p>
 
@@ -113,38 +115,39 @@ export default function MetodologiaPage() {
         {/* Section 2: Cálculo */}
         <h2 className="text-zinc-200 text-lg font-medium mt-8 mb-4 flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-amber-500" />
-          2. Cálculo del Índice
+          2. Cómo se arma cada precio
         </h2>
 
-        <h3 className="text-zinc-300 font-medium mb-2">Ponderaciones por Categoría</h3>
+        <h3 className="text-zinc-300 font-medium mb-2">Precio observado por categoría — no un índice sintético</h3>
         <p className="text-zinc-400 mb-3">
-          El índice general se calcula como promedio ponderado basado en la composición típica de faena:
+          No construimos un índice compuesto con ponderaciones arbitrarias entre categorías. Cada
+          categoría —novillo, novillito, vaquillona, vaca, toro, ternero— tiene su{' '}
+          <span className="text-zinc-200">precio observado directo</span> del Mercado Agroganadero, que
+          publica un precio por categoría. Mostramos ese número, no un promedio ponderado inventado.
         </p>
-        <div className="border border-zinc-800 rounded overflow-hidden mb-4">
-          <table className="w-full text-xs">
-            <thead className="bg-zinc-900">
-              <tr>
-                <th className="text-left text-zinc-400 p-2">Categoría</th>
-                <th className="text-right text-zinc-400 p-2">Ponderación</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-800">
-              <tr><td className="text-zinc-300 p-2">Novillo</td><td className="text-zinc-400 text-right p-2">35%</td></tr>
-              <tr><td className="text-zinc-300 p-2">Ternero</td><td className="text-zinc-400 text-right p-2">25%</td></tr>
-              <tr><td className="text-zinc-300 p-2">Vaquillona</td><td className="text-zinc-400 text-right p-2">20%</td></tr>
-              <tr><td className="text-zinc-300 p-2">Vaca</td><td className="text-zinc-400 text-right p-2">15%</td></tr>
-              <tr><td className="text-zinc-300 p-2">Toro</td><td className="text-zinc-400 text-right p-2">5%</td></tr>
-            </tbody>
-          </table>
+        <div className="border border-emerald-800/40 bg-emerald-900/10 rounded p-3 mb-4 text-xs text-zinc-400">
+          Antes evaluamos un índice ponderado por composición de faena; lo descartamos porque tenemos la
+          fuente real por categoría. <span className="text-zinc-300">Cada precio es un dato observado, no un ratio.</span>
         </div>
 
-        <h3 className="text-zinc-300 font-medium mb-2">VWAP (Precio Promedio Ponderado por Volumen)</h3>
+        <h3 className="text-zinc-300 font-medium mb-2">El INMAG lo publica el MAG</h3>
         <p className="text-zinc-400 mb-4">
-          Cuando datos de volumen (cabezas) están disponibles, calculamos VWAP para mayor precisión:
+          El <span className="text-zinc-200">INMAG</span> es el índice del novillo que calcula y publica
+          el propio Mercado Agroganadero (su promedio ponderado por volumen del novillo tipo exportación).
+          Nosotros lo <span className="text-zinc-200">replicamos, archivamos (desde 2015) y lo superponemos
+          con el dólar</span> — no lo recalculamos ni le aplicamos ponderaciones nuestras.
         </p>
-        <div className="bg-zinc-900 border border-zinc-800 rounded p-3 mb-4 font-mono text-xs text-zinc-300">
+
+        <h3 className="text-zinc-300 font-medium mb-2">VWAP — dentro de una categoría, cuando hay volumen</h3>
+        <p className="text-zinc-400 mb-4">
+          Cuando hay datos de volumen (cabezas) por operación, el precio de una categoría se pondera por
+          volumen para mayor precisión. Es una ponderación <span className="text-zinc-200">dentro</span> de
+          la categoría (entre operaciones del día), no entre categorías:
+        </p>
+        <div className="bg-zinc-900 border border-zinc-800 rounded p-3 mb-2 font-mono text-xs text-zinc-300">
           VWAP = Σ (Precio × Volumen) / Σ Volumen
         </div>
+        <p className="text-zinc-500 text-xs mb-4">Si falta el volumen, cae a promedio simple de las operaciones observadas.</p>
 
         {/* Section 3: Cobertura */}
         <h2 className="text-zinc-200 text-lg font-medium mt-8 mb-4 flex items-center gap-2">

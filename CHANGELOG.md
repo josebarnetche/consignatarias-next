@@ -7,6 +7,25 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.5] — 2026-06-04
+
+### Fix: /metodologia described an abandoned weighted index (it's observed prices per category)
+
+The methodology page (the data-licensing credibility gate) still described a **synthetic composite
+with category weightings** (Novillo 35% / Ternero 25% / …) and an "Índice de Precios Consignatarias
+(IPC)". That model was abandoned: we have a **direct source per category**, so each price is observed,
+not a ratio. The page contradicted the site's own stance ("precios observados, no ratios sintéticos").
+- Removed the ponderaciones table + the synthetic-composite framing. Section 2 now states: **observed
+  price per category** (fuente MAG), **INMAG is published by the MAG itself** (we replicate/archive/USD-
+  overlay it — we don't recompute or re-weight it), and **VWAP is intra-category** (between a day's
+  operations, when volume exists — not between categories).
+- Reframed the title/intro/metadata/TechArticle schema off the synthetic "IPC" onto "precios e índices
+  observados". Version 1.2 → 1.3.
+
+`pnpm build` clean.
+
+---
+
 ## [1.30.4] — 2026-06-04
 
 ### Docs: ROADMAP rewritten around the positioning thesis (3 pillars × 3 horizons)
