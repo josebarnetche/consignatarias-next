@@ -7,6 +7,26 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.29.9] — 2026-06-04
+
+### Post-payment success state on /cuenta?upgraded=true (close the conversion loop)
+
+After a successful Rebill payment the user lands on `/cuenta?upgraded=true` (see `rebill.ts`). The page
+already read the flag but only showed a small "Listo. Sos PRO." banner — the conversion moment was
+under-celebrated and gave no first-use guidance (a refund/abandonment risk and a missed activation).
+Upgraded it to a proper success panel:
+- Prominent confirmation ("¡Listo! Ya sos PRO.") + checkmark + "comprobante enviado a {email}".
+- **"Lo que acabás de desbloquear"** grid linking straight to the PRO features so the user uses one
+  immediately (calculadora ¿Vendo ahora?, histórico INMAG + descargas, medios de pago, SENASA expandida)
+  — first-use drives retention.
+- Primary CTA to the dashboard + renewal/cancel note. The redundant standalone dashboard link is hidden
+  when `justUpgraded`.
+
+Note: a second checkout flow redirects to `/dashboard?upgraded=true` (`rebill.ts:26`), already handled
+by `DashboardClient`. Typecheck clean.
+
+---
+
 ## [1.29.8] — 2026-06-04
 
 ### Lead-magnet audit — El Corredor CTA now converts inline (was link-only + stale)

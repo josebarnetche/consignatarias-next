@@ -54,38 +54,78 @@ export default async function CuentaPage({ searchParams }: PageProps) {
   return (
     <div className="max-w-xl mx-auto px-4 py-12 text-sm">
       {justUpgraded && (
-        <div className="mb-8 border border-emerald-500/30 bg-emerald-500/5 rounded p-4">
-          <p className="text-emerald-400 font-mono font-medium text-sm mb-1">
-            Listo. Sos PRO.
-          </p>
-          <p className="text-zinc-400 font-mono text-xs">
-            La suscripción se renueva automáticamente cada mes. Podés cancelarla acá abajo
-            cuando quieras.
-          </p>
+        <div className="mb-8 relative overflow-hidden rounded-2xl border border-emerald-500/40 bg-gradient-to-b from-emerald-500/10 to-zinc-900/40 p-6">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />
+          <div className="relative">
+            <div className="flex items-center gap-3 mb-1">
+              <span className="flex items-center justify-center w-10 h-10 rounded-full bg-emerald-500/15 border border-emerald-500/40 shrink-0">
+                <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+              </span>
+              <div>
+                <p className="text-emerald-400 font-mono font-bold text-lg leading-tight">¡Listo! Ya sos PRO.</p>
+                <p className="text-zinc-400 font-mono text-xs mt-0.5">
+                  Pago confirmado · acceso activo · comprobante enviado a {user.email}
+                </p>
+              </div>
+            </div>
+
+            <p className="text-zinc-300 font-mono text-sm mb-3 mt-5">Lo que acabás de desbloquear:</p>
+            <div className="grid sm:grid-cols-2 gap-2 mb-5">
+              {[
+                { href: '/mercado/vender-ahora', label: 'Calculadora ¿Vendo ahora?', sub: 'valor por cabeza + percentil de mercado' },
+                { href: '/mercado/inmag', label: 'Histórico INMAG + descargas', sub: 'serie completa desde 2015, export CSV' },
+                { href: '/consignatarias', label: 'Medios de pago', sub: 'plazos y condiciones por consignataria' },
+                { href: '/frigorificos', label: 'Verificación SENASA expandida', sub: 'detalle de habilitación Ciclo I/II/III' },
+              ].map((f) => (
+                <Link
+                  key={f.href}
+                  href={f.href}
+                  className="block rounded-lg border border-zinc-800 bg-zinc-900/50 hover:border-emerald-500/40 hover:bg-emerald-500/5 px-3 py-2.5 transition-colors group"
+                >
+                  <div className="text-zinc-200 font-mono text-xs font-medium group-hover:text-emerald-400 transition-colors">{f.label} →</div>
+                  <div className="text-zinc-500 font-mono text-xxs mt-0.5">{f.sub}</div>
+                </Link>
+              ))}
+            </div>
+
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 bg-emerald-400 hover:bg-emerald-300 active:bg-emerald-500 text-zinc-950 font-mono font-bold uppercase tracking-widest text-xs px-5 py-2.5 rounded transition-colors"
+            >
+              Ir a tu dashboard →
+            </Link>
+            <p className="text-zinc-600 font-mono text-xxs mt-3">
+              Se renueva automáticamente cada mes · cancelás cuando quieras (abajo).
+            </p>
+          </div>
         </div>
       )}
 
       <h1 className="text-zinc-100 text-2xl font-medium mb-2">Tu cuenta</h1>
       <p className="text-zinc-500 text-xs font-mono mb-6">{user.email}</p>
 
-      <Link
-        href="/dashboard"
-        className="block mb-8 border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 rounded-lg p-4 transition-colors group"
-      >
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-emerald-400 font-mono text-sm font-medium">
-              Ir al dashboard →
+      {!justUpgraded && (
+        <Link
+          href="/dashboard"
+          className="block mb-8 border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 rounded-lg p-4 transition-colors group"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-emerald-400 font-mono text-sm font-medium">
+                Ir al dashboard →
+              </div>
+              <div className="text-zinc-500 text-xs font-mono mt-0.5">
+                Tu workspace de datos, reportes y precios
+              </div>
             </div>
-            <div className="text-zinc-500 text-xs font-mono mt-0.5">
-              Tu workspace de datos, reportes y precios
-            </div>
+            <span className="text-emerald-400/40 group-hover:text-emerald-400 text-xl font-mono transition-colors">
+              ↗
+            </span>
           </div>
-          <span className="text-emerald-400/40 group-hover:text-emerald-400 text-xl font-mono transition-colors">
-            ↗
-          </span>
-        </div>
-      </Link>
+        </Link>
+      )}
 
       <div className="border border-zinc-800 bg-zinc-900/40 rounded-lg p-5 mb-6">
         <div className="flex items-baseline justify-between mb-4">
