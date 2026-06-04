@@ -7,6 +7,24 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.29.11] — 2026-06-04
+
+### Conversion swarm — quick wins (prompt copy + B2B unlock + kill fake social proof)
+
+First batch from the conversion diagnosis (traffic but $0 ever — verified: 0 real payments in DB).
+- **PRO prompt CTA reveals the price**: default ctaText "Ver cómo funciona →" → "Activar PRO · ARS
+  $7.900/mes →" (no more vague click-through).
+- **INMAG prompt copy fixed**: it sold *PRO Consignataria* ("Que vean tus remates") to *producers*.
+  Now producer-facing value: "...con PRO sabés cuánto te queda NETO a este precio y si está caro o
+  barato vs. los últimos 365 días."
+- **B2B $45k CTA un-deadcoded**: was gated `profile.verified && tier==='free'` — 0 profiles are
+  verified so it never rendered. Now also shows on **unclaimed** profiles (where claim_cta_click has
+  pulse — the consignataria looking at her own listing).
+- **Killed fake social proof**: "47 ya lo hicieron" on profile claim block (DB has 2 claims, both the
+  founder) → "Gratis · 5 minutos". Removes a Ley 24.240 false-claim risk.
+
+Next: the structural #1 — email-first checkout (remove the login wall from the payment path).
+
 ## [1.29.10] — 2026-06-04
 
 ### Hotfix: INMAG price frozen at $0 (SSR + hydration)

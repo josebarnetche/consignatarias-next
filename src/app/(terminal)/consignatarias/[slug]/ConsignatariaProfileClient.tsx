@@ -801,7 +801,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                     ¿Es tu consignataria?
                   </span>
                   <span className="text-xxs text-zinc-500 font-terminal">
-                    47 ya lo hicieron
+                    Gratis · 5 minutos
                   </span>
                 </div>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xxs text-zinc-300 font-terminal">
@@ -984,9 +984,11 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       )}
 
       {/* ============================================================ */}
-      {/*  UPGRADE PROMPT (verified + free tier) — CLOSER v2 2026-03-19  */}
+      {/*  UPGRADE PROMPT — verified OR unclaimed (free tier). Was `verified` only,
+          but 0 profiles are verified so it never rendered. Unclaimed profiles are
+          exactly where the consignataria looks at her own listing (claim_cta_click pulse). */}
       {/* ============================================================ */}
-      {profile.verified && tier === 'free' && (
+      {(profile.verified || !profile.claimedAt) && tier === 'free' && (
         <FeatureGate
           tier={tier}
           requiredTier="pro"

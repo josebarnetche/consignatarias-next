@@ -1,6 +1,6 @@
 {
   "name": "consignatarias-next",
-  "version": "1.29.10",
+  "version": "1.29.11",
   "private": true,
   "packageManager": "pnpm@10.30.2",
   "scripts": {

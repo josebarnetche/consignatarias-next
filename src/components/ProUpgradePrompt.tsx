@@ -31,7 +31,7 @@ interface ProUpgradePromptProps {
 export default function ProUpgradePrompt({
   benefit,
   context = 'unknown',
-  ctaText = 'Ver cómo funciona →',
+  ctaText = 'Activar PRO · ARS $7.900/mes →',
   variant = 'inline',
 }: ProUpgradePromptProps) {
   const href = `/planes?from=${context}`

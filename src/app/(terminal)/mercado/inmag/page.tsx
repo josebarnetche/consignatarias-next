@@ -316,7 +316,7 @@ export default function InmagPage() {
         {/* PRO CTA */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
           <ProUpgradePrompt
-            benefit="Productores revisan precios acá antes de vender. Que vean tus remates."
+            benefit="Estás mirando el INMAG de hoy. Con PRO sabés cuánto te queda NETO a este precio y si está caro o barato vs. los últimos 365 días."
             context="inmag"
             variant="card"
           />
