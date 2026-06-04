@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.4] — 2026-06-04
+
+### Docs: ROADMAP rewritten around the positioning thesis (3 pillars × 3 horizons)
+
+The ROADMAP was stale (header at v1.29.0, structured around the obsolete v1.13→v1.20 revenue-milestone
+plan). Rewrote it to current state: header at v1.30.3, a "Where we are now" snapshot of the
+v1.29→v1.30 train (conversion unblocked, Pillar 2 launched, citability hardened, reliability fixes),
+the thesis framing (Pillar 1 Index family / Pillar 2 Data-licensing / Pillar 3 Auction flywheel with
+done-vs-next per pillar), a prioritized post-v1.30 next list (test payment E, sales enablement,
+conversion measurement, indicators, API), a Pillar-mapped backlog (carrying the still-relevant v1.16/
+1.17/1.18/1.19 items), and the historical journey/pivot preserved as record. CHANGELOG confirmed
+complete (1.28.0→1.30.4, no gaps).
+
+---
+
 ## [1.30.3] — 2026-06-04
 
 ### HOTFIX: production build broken since 1.29.14 — nothing was deploying

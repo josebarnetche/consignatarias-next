@@ -1,339 +1,202 @@
 # Roadmap
 
-**Current:** v1.29.0 (May 31, 2026) — see [CHANGELOG.md](CHANGELOG.md) for the full history.
-**Next horizons** (per [docs/strategy/POSITIONING-THESIS.md](docs/strategy/POSITIONING-THESIS.md)):
-name + publish the index family as the citable reference, institutional data-licensing on the
-Enterprise API, and the online-auction data flywheel. Versioning: [docs/VERSIONING.md](docs/VERSIONING.md).
+**Current:** v1.30.3 (June 4, 2026) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
+**Strategic frame:** [docs/strategy/POSITIONING-THESIS.md](docs/strategy/POSITIONING-THESIS.md) — own the
+category **"el precio de referencia del ganado argentino"** via three pillars (Index family ·
+Data-licensing · Online-auction flywheel) across three horizons.
+**Versioning:** [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (v1.0.0) is the
+MAJOR boundary, so the product stays on 1.x.
 
-> Note: the original "v1.20.0 — First Revenue Milestone" target below was met and surpassed; the
-> sections that follow are kept as historical record. The current direction is the intelligence-
-> infrastructure thesis, not a single revenue milestone.
+> The original "v1.20 — First Revenue Milestone" target was met-and-surpassed as a *build* goal: the
+> platform is no longer the bottleneck. **$0 revenue is still real** — but as of v1.30 the path to the
+> first dollar is **unblocked** (email-first checkout live for both B2C and Enterprise, verified to
+> reach a real Rebill payment link). The remaining gate is a real test payment + the institutional
+> sales motion — not more code.
 
 ---
 
-## The Journey So Far
+## Where we are now — v1.30.3 (June 2026)
+
+The intelligence-infrastructure thesis is in execution. The train since v1.29:
+
+- **Conversion unblocked (the $0 fight).** A multi-agent swarm diagnosis confirmed $0-ever was a
+  *broken funnel*, not weak demand: payment sat behind a login wall (~10 accounts in 3 months despite
+  +60%/wk organic traffic). Shipped **email-first checkout** (B2C `/upgrade` + Enterprise Starter):
+  pay without creating an account first (user created server-side; post-payment access via magic-link).
+  Also fixed the PRO-prompt copy (it sold B2B to producers), un-deadcoded the B2B $45k CTA (was gated
+  on `verified` = 0 profiles), killed fabricated "47 ya lo hicieron" social proof, and added a real
+  post-payment success state on `/cuenta`.
+- **Pillar 2 launched.** Institutional **data-licensing offering** on `/enterprise` (license the
+  *series*, not per-request API — the CEPEA/Bloomberg model) + discovery from `/metodologia`,
+  `/mercado/inmag`, and the site-wide footer. Verified: returns a real `pay.rebill.com` link.
+- **Pillar 1 hardened (citability).** Generated `/llms.txt` (live data, no more drift), INMAG
+  `Dataset` schema freshness (`dateModified` + `variableMeasured` + distribution + publisher),
+  methodology audited to v1.2 (removed fabricated figures; added the honest **~12% INMAG / ~71%
+  dark-pool** coverage declaration — the credibility gate for data-licensing).
+- **Reliability.** El Corredor pipeline repaired end-to-end (PDF 404 + blast-never-sent → fixed; blast
+  broadened to market segments; Mayo edition sent 14/14). INMAG-$0 hydration hotfix (price now SSR'd,
+  never depends solely on client JS). Mobile + desktop overflow fixes. Full cron observability
+  (`/admin/ops`). Consignataria count unified to **104** everywhere. Build hotfix: an ESLint error had
+  silently blocked **all** Vercel deploys since v1.29.14.
+
+**State:** $0 revenue. Both checkout paths (B2C + Enterprise Starter) are **live and verified to reach
+Rebill.** Open: the real test payment (confirms Rebill → webhook → activation end-to-end) + the
+institutional sales motion.
+
+---
+
+## The thesis: 3 pillars × 3 horizons
+
+| Pillar | What | Defensibility | Status |
+|---|---|---|---|
+| **1 — Proprietary Index Family** | Be the reference, own the series | Very High | **Largely built + citable** |
+| **2 — Terminal & Data-Licensing** | Data gravity, not features (the revenue engine) | High | **Offering live; sales motion pending** |
+| **3 — Online-Auction Data Flywheel** | Own the data layer of price discovery (→ the 71% dark pool) | Highest (long) | **Wedge available; indicator pending** |
+
+### Pillar 1 — Proprietary Index Family
+**Done:** INMAG 2015→ (2,237 rows) + USD overlay, 16 MAG sub-cats, lote-level pipeline, named `/indices`
+family, methodology v1.2 (honest coverage), `Dataset`/`DefinedTerm` schema, generated `llms.txt`,
+citable in AI/Google.
+**Next:** derivative indicators (Liquidation / Heaviness / Quality), the daily-index X/Twitter bot,
+academic co-validation (Scoponi/UNS, FCV-UBA — outreach), `llms-full.txt` generated too.
+
+### Pillar 2 — Terminal & Data-Licensing  ← the revenue engine
+**Done:** Enterprise API (`cnsg_live_*`, Bearer, 28-day billing, self-serve Starter via Rebill),
+institutional **data-licensing offering** on `/enterprise` + discovery, email-first checkout (no login
+wall), checkout verified to reach Rebill.
+**Next:** the **sales motion** (outbound to banks / export frigoríficos / MATBA-ROFEX / fintech), a
+**data-license one-pager PDF** + a **sample dataset** download (lower evaluation friction), the first
+institutional dollar, `api.consignatarias.com.ar` + OpenAPI/SDKs + status page.
+
+### Pillar 3 — Online-Auction Data Flywheel
+**Available:** ~380 scraped remates as a cross-platform results layer.
+**Next:** the **Online/Pantalla Cattle Indicator** (the AuctionsPlus→OYCI move) over Rosgan + scraped
+remates; the **Acta-de-Cierre / self-load** feature (converts scraped → first-party auction data);
+structured measurement of the **71% dark pool** (long arc). RWA / CD+W / tokenized collateral = Horizon 3.
+
+---
+
+## What's next — prioritized (post-v1.30)
+
+1. **Verify revenue end-to-end (E)** — one real test payment (B2C *and* Enterprise Starter share the
+   Rebill+webhook mechanism) confirming Rebill → webhook → `user_subscriptions.tier='pro'` with a
+   `rebill_subscription_id`. The single gate between "can pay" and "converts." *(User action; I can't pay.)*
+2. **Pillar 2 sales enablement** — data-license one-pager PDF + sample dataset download, then outbound.
+3. **Conversion measurement** — `UpgradeConfirmTracker` (fire `pro_upgrade` only on DB confirmation,
+   never on `?upgraded=true`), and the calculadora **blurred-number reveal** to lift the 3.7% prompt CTR.
+4. **Pillar 1 deepening** — derivative indicators (Liquidation/Heaviness/Quality) + daily index bot;
+   academic co-sign; generated `llms-full.txt`.
+5. **Pillar 3 wedge** — the Online/Pantalla indicator on Rosgan + scraped remates.
+6. **API ecosystem** — `api.consignatarias.com.ar`, OpenAPI/SDKs, public status page.
+7. **Hygiene** — run `pnpm build` (not just `next dev` + `tsc`) before pushing JSX; a lint error blocked
+   all deploys for hours (v1.29.14 → v1.30.2 were stuck).
+
+---
+
+## v2.0.0 Definition (the revenue milestone — still the goal)
+
+**v2.0.0 = USD 2.000+ MRR across the product lines, sustained 30 days.**
+- [ ] 5+ Enterprise customers paying (Starter/Growth/Scale or a data-license)
+- [ ] 1+ PRO Consignataria paying
+- [ ] 10+ PRO Usuario paying
+- [ ] Total MRR ≥ USD 2.000 normalized at MEP
+- [ ] ≥1 public case study / institutional reference
+
+**The real bottleneck (updated):** not code, and no longer "the platform." The checkout paths are live.
+What's missing is the **first verified dollar** (the test payment) and the **sales motion** for the
+data-license (outbound to institutions — the highest-ACV path per both the thesis and the swarm).
+
+---
+
+## Backlog detail (Pillar-mapped — still-relevant future work)
+
+> Carried from the v1.13→v1.20 plan; most build items shipped, these remain.
+
+### Pillar 1 — Derivative indicators (was v1.16)
+- [ ] `Liquidation Index` — % cabezas (VACAS Conserva Buena+Inferior) / total faenado → endpoint + chart
+- [ ] `Heaviness Index` — Σ(kg_avg × head_count) / Σ(head_count)
+- [ ] `Quality Premium` — Esp.Joven vs Regular novillo spread
+- [ ] Each: API endpoint + landing + FAQ/Speakable schema; daily X bot ("MEMOLA Liquidation Index 67")
+
+### Pillar 2 — API ecosystem (was v1.17) + pricing completeness (was v1.18)
+- [ ] `api.consignatarias.com.ar` subdomain; OpenAPI 3.1 + Postman; Python + JS/TS SDKs (open-source the
+      client, never the server); webhooks (new remate, INMAG change, alerts); public status page
+- [ ] Optional "Lite" tier (USD 29) + Stripe for international cards (Argentina-only Rebill is a ceiling)
+- [ ] Embeddable widgets "powered by consignatarias.com.ar" for Sociedades Rurales (distribution)
+
+### Pillar 1/2 — Real reports + content moat (was v1.15)
+- [ ] El Corredor monthly (pipeline now works) + Oráculo quarterly + INMAG historical archive zip
+- [ ] PRO Usuario monthly digest by email; download-count A/B (free preview vs full lock)
+
+### Marketing / GEO (ongoing, was v1.19)
+- [ ] More `/precios/[X]` long-tail landings; press outreach (La Nación campo, Bichos de Campo, agritotal)
+- [ ] Monthly citation-audit re-run; expand to institutional queries
+
+---
+
+## Post-revenue Horizon (v2.x — the operator path, Camino B)
+
+Only **after** the reference is unassailable (thesis Horizon 3):
+- **Transaction/operator layer** — ganado.com.ar, ALyC-ganadera exploration, escrow. *Sacrifice today:
+  a referenced index cannot also be a counterparty (CEPEA is never a buyer).*
+- **RWA / financing rails** — miganado.com.ar / CD+W (Decreto 640/2024), tokenized cattle as collateral.
+  Real ($4–5T TAM by 2030) but capital/licence-heavy — the *reward* for owning the reference, not the route.
+- **Forecasting** (EWMA/seasonal-naive first), **multi-market** (Uruguay/Brasil), **white-label** for
+  Memola B2B clients, eventual **strategic exit** (Aleph / S&P Global / Reuters universe).
+
+---
+
+## The Journey So Far (historical record)
 
 ```
 v0.x  (Feb 26 – Mar 9)    Genesis → Data → SEO Foundation
 v1.0  (Mar 10)             Platform Launch — 385 auctions, 77 consignatarias
-v1.1-1.3 (Mar 12-14)       Public API — 20 endpoints, lead magnets
-v1.5-1.7 (Mar 14-16)       Content — Video catalogs, email automation
-v1.9.0-1.9.5 (Mar 18-20)   Market Intelligence — Price oracle, MAG, onboarding
-v1.9.6-1.9.7 (Apr 4-7)     Conversion Optimization — Form recovery, PRO copy
-v1.9.10-1.9.13 (Apr-May)   En Vivo focus, daily rebuild guarantee, MAG backfill
+v1.1-1.7 (Mar 12-16)       Public API + content (video catalogs, email automation)
+v1.9.x (Mar–May)           Market Intelligence — price oracle, MAG, conversion, En Vivo, daily rebuild
+v1.10-1.12 (May 12)        Three-product pricing + Enterprise API + derivatives + lote-level pipeline
+v1.13.x (May 13)           28-day billing + per-user quota; slug-hang fix; API auth gate; edge redirects
+v1.14.x (May 13-14)        Observability foundation + email v2 + 2 P0/5 P1 security findings closed
 ─────────────────────────────────────────────────────────────────────────────
-v1.10.0 (May 12)           Three-product pricing + Enterprise API + answer-first SEO
-v1.10.1 (May 12)           MAG deepening (16 sub-cat + 11 años INMAG)
-v1.11.0 (May 12)           Derivatives — INMAG en dólares, YoY, heatmap, calculator, MEMOLA Index
-v1.12.0 (May 12)           Lote-level pipeline + Self-serve Enterprise Starter via Rebill
-v1.13.0 (May 13)           28-day billing + per-user quota + self-serve upgrade + dev invites
-v1.13.1 (May 13)           Slug page hang RESOLVED — Next.js 15 sibling-route collision fix
-v1.13.2 (May 13)           Public API gated behind auth + Fluid Compute memory floors
-v1.13.3 (May 13)           Slug variants → 308 redirects + past-auction 404s at the edge
-v1.14.0 (May 13)           Observability foundation (ops_events + cron_runs + /admin/ops)
-v1.14.1-1.14.2 (May 13)    Email outreach v2 (plain text, hola@consignatarias.com)
-v1.14.3 (May 13)           Closed 2 P0 security findings (webhook auth + open redirect)
-v1.14.4 (May 13)           Closed 5 P1 security findings (Rebill idempotency, claims, crons)
-v1.14.5 (May 14)           logEvent waitUntil fix — observability writes survive teardown
+v1.20→v1.27 (May)          Market data-layer fix, PRO build-out + merchandising, GEO Phase 1,
+                           SEO long-tail, named index family, legal layer
+v1.28.x (May 31)           Cron observability + email-cron auth fix (silent-401) + fail-safe segmentation
+v1.29.0-1 (May 31)         Docs/versioning/ops maturity pass + full cron-hook coverage
+v1.29.2-7 (Jun 3-4)        Conversion surfaces, mobile/desktop overflow fixes, INMAG-$0 hotfix,
+                           consignataria count unified (104)
+v1.29.8-14 (Jun 4)         El Corredor lead-magnet + pipeline repair, post-payment success state,
+                           conversion swarm quick wins, email-first B2C checkout, citability hardening
+v1.30.0-3 (Jun 4)          Pillar 2 data-licensing offering + discovery, Enterprise email-first checkout
+                           + stall fix, build hotfix (unblocked deploys)
 ```
 
-**77 days. 1554 static pages. 33 API endpoints. 24 Supabase tables. $0 revenue still — but the platform is no longer the bottleneck, and posture is shipped-clean (0 P0/P1 open).**
+**Posture:** shipped-clean (0 P0/P1 open), data pipeline runs unattended (GitHub Actions crons), all
+checkout paths live. The bottleneck is commercial, not technical.
 
 ---
 
-## What We Pivoted On
-
-The original v2.0 roadmap targeted *"first PRO Consignataria payment"*. We changed direction in mid-May 2026 once the answer to "what's the highest-margin product line for this codebase?" became clear:
-
-| Original v2.0 plan | What we shipped instead | Why |
-|---|---|---|
-| PRO Consignataria $45K/mes activation as primary goal | PRO Consignataria stays (sales-led), but now coexists with PRO Usuario ARS 7.900 and Enterprise API USD 99-700+ | PRO Consig is high-touch B2B with long sales cycle. Enterprise API is self-serve with global TAM. Both products coexist. |
-| "Points system" gamification (v1.9.8) | Killed. Replaced with answer-first SEO + Enterprise self-serve. | Points adds complexity for marginal conversion lift. Enterprise pays USD, not in-game tokens. |
-| Watchlist / Favorites (v1.9.11) | Partial — `/mi-cuenta/favoritos` exists, no notifications yet | Lower priority once the Enterprise pitch became dominant |
-| Recovery email campaigns (v1.9.12) | Postponed | Form recovery infra exists; we'll wire when SEO traffic justifies retargeting |
-| Auction Results Database (v2.3) | Already shipping via daily MAG lote-level scraper (v1.12.0+) | The cattle market told us this WAS the data product |
-| API monetization (v2.4) | **Shipped as v1.10.0+** — Bearer auth, quotas, 28-day billing, self-serve Rebill checkout, /api/account introspection | The actual revenue lever |
-| Transaction layer / ganado.com.ar (v2.5) | Still planned but pushed to v2.x | Not the first dollar — we'll earn via data + API first |
-
-**Net:** v2.0.0 (first revenue) is still the goal. The path now goes through the Enterprise API funnel, not the PRO Consignataria-only funnel.
-
----
-
-## v2.0.0 Definition (Updated)
-
-**v2.0.0 = USD 2.000+ MRR across the three product lines, sustained 30 days.**
-
-Concretely:
-- [ ] 5+ Enterprise customers paying (Starter or above)
-- [ ] 1+ PRO Consignataria paying
-- [ ] 10+ PRO Usuario paying
-- [ ] Total MRR ≥ USD 2.000 normalized at MEP
-- [ ] Public case study from at least 1 customer
-
-Until then, every release optimizes for moving the funnel.
-
----
-
-## v1.13 → v1.20 Milestones
-
-### ✅ v1.13.1 — Slug page hang (DONE 2026-05-13)
-Resolved via Next.js 15 sibling-route collision fix across `/consignatarias`, `/frigorificos`, `/remates`. See CHANGELOG.
-
-### ✅ v1.13.2 — Public API auth gate + Fluid Compute floors (DONE 2026-05-13)
-`/api/precios`, `/api/lots`, `/api/index/memola` now require Bearer. Memory floor 256 MB / 30 s.
-
-### ✅ v1.13.3 — Slug-variant 308 redirects + past-auction 404s at the edge (DONE 2026-05-13)
-Killed the 80+ serverless invocations/16 min of crawler burn.
-
-### ✅ v1.14.0–1.14.5 — Observability + email v2 + security hardening (DONE 2026-05-13/14)
-- `ops_events` + `cron_runs` tables + `/admin/ops` dashboard
-- Email outreach v2 (plain text, `hola@consignatarias.com`, 30-day rate-limit per recipient)
-- 2 P0 + 5 P1 security findings closed (webhook auth, open redirect, Rebill idempotency + tier validation, claims hardening, cron auth bypass, profile-views/form-abandonment rate-limits)
-- `logEvent` `waitUntil` fix so observability writes survive Vercel function teardown
-
----
-
-### v1.15.0 — Lote-level data activation + named-contact outreach
-**Effort:** 4-6 hours | **Impact:** High (B2B differentiator)
-
-Originally targeted as v1.14.0 — repurposed v1.14 for observability + security after the audit. Now the lote-level work returns to head of queue.
-
-- [ ] Trigger `mag-lots-discover.yml` (workflow_dispatch) — populates 44 consignatarias
-- [ ] Run `mag-lots-pipeline.yml` for current week (88 jobs × 65s = ~95 min)
-- [ ] Accumulate 2-4 weeks of lote-level data
-- [ ] `/api/lots` endpoint already exists — surface in `/api-docs` as Enterprise differentiator
-- [ ] Bonus: vientres preñadas scraper from remates calendar with catálogo público
-- [ ] New SEO landing `/mercado/vientres` if vientres data lands
-- [ ] **Email outreach v3:** per-consignataria named contacts (martillero, not `info@`) + WhatsApp follow-up for the 3 burned inboxes (Lehmann, O'Farrell, Colombo)
-- [ ] **Wire GH Actions to `/api/internal/cron-hook`** with `INTERNAL_API_SECRET` so `cron_runs` populates and `/admin/ops` is no longer dashes
-
----
-
-### v1.15.0 — Real reports + content moat
-**Effort:** 6-10 hours | **Impact:** Medium-High (PRO Usuario conversion)
-
-Reports system shipped (v1.10.0) but `public/reports/*.pdf` are placeholders. Real content drives PRO Usuario value.
-
-- [ ] El Corredor Mayo 2026 — real PDF, monthly cadence going forward
-- [ ] Oráculo Q2 2026 snapshot — quarterly
-- [ ] INMAG historical archive — auto-generated zip from `mag_inmag_history` (2015→hoy)
-- [ ] Newsletter integration: PRO Usuario receives monthly digest by email (Resend)
-- [ ] Track download counts in dashboard (already wired in DB)
-- [ ] A/B test: free preview vs full lock — see what converts
-
----
-
-### v1.16.0 — Derivative indicators
-**Effort:** 8-12 hours | **Impact:** High (marketing + data product moat)
-
-We have all 16 sub-cats × historical. Build the derivatives that MAG itself doesn't publish.
-
-- [ ] `Liquidation Index` — % cabezas (VACAS Conserva Buena+Inferior) / total faenado. Endpoint + chart on `/mercado/indicadores`
-- [ ] `Heaviness Index` — Σ(kg_avg × head_count) / Σ(head_count). Termómetro de mercado.
-- [ ] `Quality Premium` — Esp.Joven vs Regular novillo spread
-- [ ] Each gets: API endpoint + landing page + FAQ schema + Speakable
-- [ ] Twitter bot post diario: "Hoy: Liquidation Index 67 — presión moderada"
-- [ ] Press kit: "Según el MEMOLA Liquidation Index..." citable en notas
-
----
-
-### v1.17.0 — API ecosystem maturation
-**Effort:** 10-15 hours | **Impact:** Medium-High (developer adoption)
-
-Turn the API into a real product, not just a feature.
-
-- [ ] Subdomain `api.consignatarias.com.ar` (clean separation prod/docs)
-- [ ] OpenAPI 3.1 spec at `/openapi.json` — auto-generated, downloadable as Postman collection
-- [ ] Python SDK (`pip install consignatarias`) + JS/TS SDK (`@memola/consignatarias`) — open source on GitHub
-- [ ] Webhook system fully wired: new remate, INMAG change, alert thresholds
-- [ ] Status page (UptimeRobot or similar) — public, transparent
-- [ ] Migration: `/api-docs` becomes interactive playground (try requests with your key)
-- [ ] Discord o GitHub Discussions para devs
-
----
-
-### v1.18.0 — Pricing + checkout self-serve completeness
-**Effort:** 4-6 hours | **Impact:** Medium-High (conversion)
-
-Today: Starter self-serve via Rebill, Growth self-serve via /api/enterprise/upgrade, Scale sales-led. International users have no path.
-
-- [ ] **"Lite" tier USD 29/mes** between free and Starter (captures early-stage developer segment: 200 req/mes, no SLA, ideal for early-stage devs)
-- [ ] Self-serve Growth (already wired, polish UI flows in `/enterprise`)
-- [ ] Stripe integration para tarjetas internacionales USD (Argentina-only Rebill no alcanza para global)
-- [ ] Volume calculator transparente en `/enterprise` (ya existe, agregar comparativa "vs build your own scraper")
-- [ ] Annual prepay con 15% descuento real (no solo en docs)
-- [ ] Refund policy explícita
-
----
-
-### v1.19.0 — Marketing + traffic capture
-**Effort:** Ongoing | **Impact:** High (organic growth)
-
-The product is built. Now drive demand.
-
-- [ ] Content series: "INMAG en dólares — análisis 2026" en LinkedIn + Twitter, basado en /mercado/inmag-dolares
-- [ ] 6 más `/precios/[X]` landings: `precio-de-la-carne`, `cuanto-cuesta-un-novillo`, `valorizar-rodeo`, etc.
-- [ ] Embed widget público para Sociedades Rurales: iframe con últimos precios + branding "powered by consignatarias.com.ar"
-- [ ] AI search optimization: `llms.txt`, `robots.txt` para GPTBot, ClaudeBot, PerplexityBot, GoogleAI
-- [ ] Founder profiles editorial (`/nini-editorial` template adaptado)
-- [ ] Press outreach: La Nación campo, Clarín rural, Bichos de Campo, agritotal
-- [ ] Twitter bot diario: precios + INMAG + 1 indicador derivado
-- [ ] Newsletter dev: pitch a /r/agtech, /r/Argentina, IndieHackers
-
----
-
-### v1.20.0 — First Revenue Milestone
-
-**Trigger:** USD 2.000+ MRR sostenido 30 días across tiers
-
-**Most likely paths to first dollars:**
-1. **external developer** convertido de Starter trial → Growth pago (USD 500/mes) si su app crece
-2. **Frigorífico o banco** vía Enterprise Sales (cold outreach con el feed de precios + histórico)
-3. **Agtech startup** descubre `/api-docs` vía Google → checkout Starter
-4. **Roxom TV / NINI clients** indirect: vienen del network Jose
-5. **Consignataria** convertida desde el directorio (PRO Consignataria $45K)
-
-**Celebración:**
-- Tag `v1.20.0` con full changelog
-- Case study público + testimonial
-- Update README hero stats
-- Foto del primer pago en Rebill dashboard
-
----
-
-## Post-v1.20 Horizon (v2.x and beyond)
-
-### v2.0 — Transaction Layer Foundation
-- Inicial: ganado.com.ar subdomain
-- P2P marketplace consignataria ↔ comprador
-- Transaction fees 1-2%
-- Escrow integrado
-
-### v2.1 — PWA + Mobile-first
-- Service worker para offline
-- Push notifications: new remates, INMAG changes, quota alerts
-- "Add to home screen" prompt
-- App store equivalent via TWA (Trusted Web Activity)
-
-### v2.2 — Forecasting + ML
-- Predicción INMAG (statistical, not ML al principio: EWMA + seasonal naive)
-- Forecast volume per consignataria
-- Anomaly detection: "esta semana es atípica porque..."
-
-### v2.3 — Multi-market expansion
-- Uruguay (similar mercado, datos públicos)
-- Paraguay (entrada market intelligence)
-- Brasil (Mato Grosso do Sul para Mercosur)
-
-### v2.4 — Vertical integration con Memola Medios
-- Suizo Argentina, Lossada, Urunday casos: data behind their content
-- White-label dashboards for Memola B2B clients
-
-### v2.5 — Acquisition / strategic exit
-- Aleph, S&P Global, IHS Markit, Reuters — el universo de data infra ag
-- Valuation: 5-10x ARR si llegamos a USD 50K MRR
-
----
-
-## Priority Matrix (v1.13 → v1.20)
-
-```
-                       HIGH IMPACT
-                            │
-   ┌────────────────────────┼─────────────────────────┐
-   │                        │                         │
-   │ 1.13.1 Slug fix        │ 1.16 Indicators         │
-   │ (1-3h, blocker)        │ (8-12h)                 │
-   │                        │                         │
-   │ 1.18 Pricing/checkout  │ 1.17 API ecosystem      │
-   │ completeness (4-6h)    │ (10-15h)                │
-   │                        │                         │
-LOW│                        │                         │HIGH
-EFFORT ─────────────────────┼─────────────────────────EFFORT
-   │                        │                         │
-   │ 1.15 Real reports      │ 1.14 Lote-level         │
-   │ (6-10h)                │ activation (4-6h)       │
-   │                        │                         │
-   │                        │ 1.19 Marketing          │
-   │                        │ (ongoing)               │
-   └────────────────────────┼─────────────────────────┘
-                            │
-                       LOW IMPACT
-```
-
-**Recommended sequence:**
-1. **v1.13.1** — unblock slug pages (production hygiene, can't ship anything else credibly until this)
-2. **v1.14.0** — lote-level activation (cheap, immediate B2B differentiator)
-3. **v1.16.0** — indicators (marketing fuel + data product moat)
-4. **v1.18.0** — pricing completeness (closes early-stage developer segment + international)
-5. **v1.17.0** — API ecosystem (scales developer adoption)
-6. **v1.15.0** — real reports (PRO Usuario value retention)
-7. **v1.19.0** — marketing (continuous, runs in parallel from v1.14)
-8. **v1.20.0** — revenue milestone
-
-Marketing (1.19) is the only one that runs *concurrently* with everything else, not sequentially.
-
----
-
-## Success Metrics for v1.20.0
-
-| Metric | v1.13.0 (now) | v1.20.0 (target) |
-|---|---|---|
-| MRR (USD) | $0 | $2.000+ |
-| Enterprise customers | 1 (Jose, comp) | 5+ paying |
-| PRO Usuario customers | 0 paying | 10+ paying |
-| PRO Consignataria customers | 0 paying | 1+ paying |
-| API requests/mes (auth'd) | ~50 (testing) | 100K+ |
-| Lote-level rows persisted | 0 | 50K+ |
-| /mercado/inmag-dolares CTR (Google) | TBD | 5%+ from #1 rankings |
-| Public GitHub stars (SDK) | 0 | 50+ |
-| Twitter followers (bot) | 0 | 500+ |
-| Self-serve checkout conversion rate | unmeasured | 8%+ |
-| Days to first dollar | 0 | <60 from v1.13.1 ship |
-
----
-
-## Timeline Estimate
-
-| Week | Milestone | Focus |
-|---|---|---|
-| 1 | v1.13.1 + v1.14.0 | Unblock slugs, activate lote-level |
-| 2 | v1.16.0 | Indicators MEMOLA family |
-| 3 | v1.18.0 + v1.15.0 | Pricing completeness + first real reports |
-| 4-5 | v1.17.0 | API ecosystem (SDKs, OpenAPI, webhooks) |
-| 6-7 | v1.19.0 | Marketing push begins |
-| 8-12 | **v1.20.0** | First USD 2K MRR |
-
----
-
-## The Real Bottleneck (Updated)
-
-**Code is not the bottleneck. Developer adoption is.**
-
-The platform is built. What's missing now:
-- **First 5 Enterprise customers** — the existing developer's app gets traction + 4 más por outreach
-- **First piece of organic traffic** que convierta `/precios/*` o `/mercado/inmag-dolares` en signups
-- **First public case study** que destranque outreach a frigoríficos, bancos, traders
-
-Every feature from here optimizes funnel, but **someone has to write the active developer follow-up, contestar el email pendiente, agendar 5 calls con frigoríficos exportadores**.
+## What We Pivoted On (historical)
+
+The original v2.0 roadmap targeted *"first PRO Consignataria payment."* Direction changed mid-May 2026:
+points-gamification killed → answer-first SEO + Enterprise self-serve; API monetization shipped early as
+the real revenue lever; the transaction layer (ganado.com.ar) pushed to v2.x. The current frame
+(positioning thesis, May 31) sharpens this: **own "the reference price," monetize via data-licensing,
+sacrifice the transaction** until the reference is unassailable.
 
 ---
 
 ## Open Strategic Questions
 
-1. **¿Lite tier USD 29 sí o no?** Captura "developer chico" segment (mochileros, agtech 1-person, consultora chica) pero diluye Starter. Pros: lowers friction para primer paying user, baja CAC. Cons: 80% margen vs 95% margen, requiere otra columna en `/enterprise`, riesgo de canibalización si vienen Starters reales que se conformarían con Lite.
-
-2. **¿Stripe vs solo Rebill?** Argentina-only es limitante para developer audience global. Pero Stripe add: integración nueva, webhooks duplicados, cumplimiento USD billing arg. Punto medio: lanzar SOLO Rebill hasta v1.18, ahí evaluar.
-
-3. **¿Open source los SDKs?** Pros: GitHub stars, dev mindshare, "trustability" del data product. Cons: ningún competidor puede correr el server pero sí copiar el cliente, no es moat real. Yo opinaría sí, agresivamente — los SDKs son distribución pura.
-
-4. **¿Comprar `consignataria.com.ar`** (sin S) para evitar typo-poaching? Mid-priority, USD 200-500 si está libre, ROI claro a partir de 1K visitas/mes.
-
-5. **¿Newsletter dedicado al data product** (tipo Substack "Argentina Cattle Weekly") con el INMAG en USD + indicators + comparativa internacional? 500-1000 subs target a 6 meses. Vehículo de marketing + lead gen para Enterprise. Decisión sobre si lo arma Jose o se contrata escritor externo.
+1. **Test payment first** — before any more conversion code, confirm the Rebill→webhook→PRO path with a
+   real ARS 7.900 payment (deferred by owner; gates the whole revenue story).
+2. **Data-license go-to-market** — bespoke/sales-led (current) vs a published institutional price.
+   Outbound targets: banks (cattle-collateral), export frigoríficos, MATBA-ROFEX, fintech.
+3. **Lite tier (USD 29) & Stripe** — capture global devs / international cards, or stay Argentina-Rebill
+   and focus on institutions? (Thesis leans institutional > self-serve dev.)
+4. **Open-source the SDKs** — yes, aggressively (distribution; the server is the moat, not the client).
+5. **Newsletter** ("Argentina Cattle Weekly": INMAG-USD + indicators) as lead-gen for data-licensing.
 
 ---
 
-*Roadmap reescrito: 13 de mayo 2026.*
-*Anterior versión: v1.9.7 → v2.0 (now obsolete).*
-*Estimated effort total: 40-60 horas de desarrollo a lo largo de 8-12 semanas.*
-*Bloqueador real: outreach a primeros 5 customers (Jose domain).*
+*Roadmap rewritten: 4 June 2026 (v1.30.3), reframed around the positioning thesis.*
+*Prior: 13 May 2026 (v1.13→v1.20 milestone plan, now historical).*
+*Real bottleneck: the first verified dollar + institutional sales motion (owner-led).*
