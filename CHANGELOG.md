@@ -7,6 +7,25 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.29.4] — 2026-06-04
+
+### Fix: "/kg" overflow in the INMAG/arrendamiento hero price card (post-animation)
+
+Pinpointed by the user: "after it loads, the word kg overflows" on `/mercado/inmag`. The hero price
+animates (`AnimatedPrice`, 2800ms) — earlier measurements at 1.5s caught it mid-count (narrower
+number) and missed it. At the **final** value, `$4.079,69` rendered at `text-5xl` (48px) left the
+`/kg` jammed against the card edge: it fit on a 390px iPhone by ~15px but **overflowed on narrower
+phones (360px Android) and would break with 5-digit prices** (Argentine inflation).
+
+- Hero price number → responsive `text-4xl sm:text-5xl lg:text-6xl` (smaller on mobile), `tabular-nums`,
+  `gap-2 sm:gap-3`, and `/kg` made `shrink-0`. Applied to `/mercado/inmag` and `/mercado/arrendamiento`.
+
+Verified with device emulation **after the animation settles** (3.5s): `/kg` margin to the card edge
+is now **+52px @360px, +82px @390px** (was overflowing), and still fits at 320px. Typecheck clean,
+CSS-only.
+
+---
+
 ## [1.29.3] — 2026-06-03
 
 ### Fix: mobile horizontal overflow on the market/index pages
