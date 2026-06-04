@@ -71,6 +71,9 @@ src/lib/data/auction-results/
 # research artifacts (not part of the app)
 research/
 *.pdf
+# ...except El Corredor editions, which MUST deploy (manifest references them).
+# Without this, `git add public/el-corredor/` silently dropped each month's PDF → 404.
+!public/el-corredor/*.pdf
 rosgan_auctions_2026.json
 NEA-REMATES-CALENDAR-2026.json
 NEA-REMATES-CALENDAR-2026.md

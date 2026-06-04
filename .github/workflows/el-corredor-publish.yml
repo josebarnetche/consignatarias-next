@@ -15,6 +15,10 @@ on:
         description: 'Skip email blast (true/false)'
         required: false
         default: 'false'
+      force_blast:
+        description: 'Blast even without a new edition (re-send current) (true/false)'
+        required: false
+        default: 'false'
 
 permissions:
   contents: write
@@ -71,16 +75,20 @@ jobs:
           echo "Live manifest current ym: $PUBLISHED_YM"
 
       - name: Blast email to subscribers
-        if: steps.commit.outputs.changed == 'true' && github.event.inputs.skip_blast != 'true'
+        if: (steps.commit.outputs.changed == 'true' || github.event.inputs.force_blast == 'true') && github.event.inputs.skip_blast != 'true'
         env:
-          BLAST_TOKEN: ${{ secrets.EL_CORREDOR_BLAST_TOKEN }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
-          if [ -z "$BLAST_TOKEN" ]; then
-            echo "::warning::EL_CORREDOR_BLAST_TOKEN not set — skipping blast"
-            exit 0
+          # Uses CRON_SECRET (the one secret set in GitHub + Vercel). Fails LOUD on any
+          # non-2xx so a broken blast can't hide behind a green check (cf. 1.28.1).
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::error::CRON_SECRET not set — cannot blast"; exit 1
           fi
-          RESULT=$(curl -s -X POST \
-            -H "Authorization: Bearer $BLAST_TOKEN" \
+          HTTP=$(curl -s -o /tmp/blast.json -w "%{http_code}" -X POST \
+            -H "Authorization: Bearer $CRON_SECRET" \
             -H "Content-Type: application/json" \
             https://www.consignatarias.com.ar/api/el-corredor/blast)
-          echo "Blast result: $RESULT"
+          echo "HTTP $HTTP"; cat /tmp/blast.json || true
+          if [ "$HTTP" -lt 200 ] || [ "$HTTP" -ge 300 ]; then
+            echo "::error::Blast failed with HTTP $HTTP"; exit 1
+          fi

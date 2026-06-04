@@ -7,6 +7,28 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.29.5] — 2026-06-04
+
+### Fix: El Corredor pipeline was broken in 3 places (PDF 404 + blast never sent)
+
+The Mayo 2026 edition published on schedule (1/6) but the report was unreachable and no email
+ever went out. Three independent failures:
+1. **PDF 404** — `.gitignore` has `*.pdf`, so `git add public/el-corredor/` silently dropped each
+   edition's PDF; only the cover/og PNGs + manifest committed → the manifest pointed at a missing
+   file. Fixed with a `!public/el-corredor/*.pdf` exception so editions deploy. (Abril survived only
+   because it was force-added manually.)
+2. **Blast never sent** — the route + workflow required `EL_CORREDOR_BLAST_TOKEN`, which was never
+   set in GitHub or Vercel → the blast step skipped with a `::warning::` and a green check, every
+   month. Switched the route to `authorizeCron()` (CRON_SECRET, the one secret set everywhere) and
+   the workflow to send CRON_SECRET and **fail loud** on any non-2xx (same fix as 1.28.1).
+3. Workflow gained a `force_blast` input to re-send the current edition without a new commit.
+
+**Known follow-up (not code):** the `corredor` subscriber segment has **0 active subscribers**, so a
+blast currently reaches nobody — the lead-magnet CTAs aren't converting. Audience + CTA work tracked
+separately.
+
+---
+
 ## [1.29.4] — 2026-06-04
 
 ### Fix: "/kg" overflow in the INMAG/arrendamiento hero price card (post-animation)

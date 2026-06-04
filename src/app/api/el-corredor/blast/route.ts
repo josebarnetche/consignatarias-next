@@ -4,6 +4,7 @@ import { sendElCorredorDelivery } from '@/lib/email'
 import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
 import { capForFreePlan } from '@/lib/email-limits'
 import { trackCron } from '@/lib/ops'
+import { authorizeCron } from '@/lib/cron-auth'
 import manifest from '../../../../../public/el-corredor/manifest.json'
 
 export const dynamic = 'force-dynamic'
@@ -21,9 +22,10 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.c
  * and Vercel has rebuilt.
  */
 export async function POST(req: NextRequest) {
-  const auth = req.headers.get('authorization') || ''
-  const expected = `Bearer ${process.env.EL_CORREDOR_BLAST_TOKEN}`
-  if (!process.env.EL_CORREDOR_BLAST_TOKEN || auth !== expected) {
+  // Auth via authorizeCron → CRON_SECRET (the one secret that IS set in GitHub + Vercel).
+  // Was EL_CORREDOR_BLAST_TOKEN, which was never set anywhere → the monthly blast 401'd /
+  // skipped silently for every edition. Same fix as the email crons (1.28.1).
+  if (!authorizeCron(req)) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 
