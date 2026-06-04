@@ -7,6 +7,7 @@ import FreePlanStatus from './FreePlanStatus'
 import ProPlanStatus from './ProPlanStatus'
 import FounderSpotsRemaining from './FounderSpotsRemaining'
 import NewsletterPreview from '@/components/marketing/NewsletterPreview'
+import { trackProPromptClick } from '@/lib/analytics'
 
 type Audience = 'productor' | 'consignataria'
 
@@ -321,6 +322,7 @@ function ProductorCards() {
           </ul>
           <Link
             href="/upgrade"
+            onClick={() => trackProPromptClick('planes_pro_user_card', 'card')}
             className="terminal-btn w-full text-center"
             style={{
               borderColor: 'rgba(56, 189, 248, 0.6)',
