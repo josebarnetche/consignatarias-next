@@ -7,6 +7,25 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.29.13] — 2026-06-04
+
+### Citability (positioning thesis, Pillar 1) — fresh + correct reference signals
+
+Acting on POSITIONING-THESIS Horizon 1 ("become the citable reference"). Most of the GEO foundation
+was already shipped; closed two freshness/accuracy gaps that directly affect how AI engines (ChatGPT
+is the #1 referrer) and Google cite the site:
+- **`llms.txt` said "74 consignatarias"** (×2) — the number LLMs read to cite us — while the canonical
+  count is 104. Updated to 104 (matches the unified count from 1.29.7).
+- **INMAG `Dataset` schema gained freshness + structured value**: `dateModified` (latest data date),
+  `variableMeasured` (current INMAG value + unit), `measurementTechnique` (→ /metodologia),
+  `distribution` (→ /api/market/history), and `publisher` (consignatarias as the reference layer).
+  A daily reference price must signal it's *today's* and expose the value structurally so AI/Google
+  cite it as a live source — the core of "el precio de referencia del ganado argentino".
+
+Typecheck clean. Note: llms.txt is static and will drift again — a generated llms.txt is the durable fix.
+
+---
+
 ## [1.29.12] — 2026-06-04
 
 ### Conversion #1 — email-first checkout (remove the login wall from the payment path)

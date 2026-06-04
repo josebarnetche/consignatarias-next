@@ -77,7 +77,22 @@ function InmagSchema() {
     url: 'https://www.consignatarias.com.ar/mercado/inmag',
     keywords: ['INMAG', 'índice novillo', 'precio ganado', 'mercado ganadero'],
     creator: { '@type': 'Organization', name: 'Mercado Agroganadero de Buenos Aires' },
+    publisher: { '@type': 'Organization', name: 'consignatarias.com.ar', url: 'https://www.consignatarias.com.ar' },
     temporalCoverage: `${series[0]?.date}/${series[series.length - 1]?.date}`,
+    // Freshness + structured current value → AI/Google cite it as a live reference price.
+    dateModified: series[series.length - 1]?.date,
+    measurementTechnique: 'https://www.consignatarias.com.ar/metodologia',
+    variableMeasured: {
+      '@type': 'PropertyValue',
+      name: 'INMAG — precio del novillo',
+      value: inmag.current,
+      unitText: 'ARS/kg vivo',
+    },
+    distribution: {
+      '@type': 'DataDownload',
+      encodingFormat: 'application/json',
+      contentUrl: 'https://www.consignatarias.com.ar/api/market/history',
+    },
     license: 'https://creativecommons.org/licenses/by/4.0/',
     isAccessibleForFree: true,
     spatialCoverage: { '@type': 'Place', name: 'Argentina' },
