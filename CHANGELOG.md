@@ -7,6 +7,27 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.2] — 2026-06-04
+
+### Hotfix: Enterprise checkout stalled on "Cargando…" + login wall (couldn't pay)
+
+Reported: "/enterprise se stallea cargando y nunca te deja pagar." Two failures:
+- **The stall:** `EnterpriseTierCTA` gated the whole button behind a disabled "Cargando…" until an
+  async auth-check (`/api/me` + `/api/account`) resolved. A slow network, a **stale JS bundle** (after
+  the day's many deploys), or a failed hydration left it frozen there forever — same class as the
+  INMAG-$0 bug (critical UX depending entirely on client JS). Fixed: the button now renders an
+  **actionable CTA from first paint** (treats unknown auth as 'none'); the auth-check only *enhances*
+  it into current-plan / upgrade / downgrade states once it resolves. Verified actionable at 300ms.
+- **The login wall:** even past the spinner, an anonymous Starter buyer was sent to `/login` — they
+  couldn't pay (same bottleneck the B2C fix removed). Added **email-first Enterprise Starter checkout**:
+  new `POST /api/enterprise/checkout-public` (creates/recovers the user server-side first, then the
+  Rebill link), and the anon Starter CTA now collects an email inline instead of bouncing to login.
+
+Verified on dev: no "Cargando…" at first paint, 1 email field, "Contratar Starter · USD 99/mes →",
+0 pageerrors. Typecheck clean. (Higher tiers stay sales-led via mailto.)
+
+---
+
 ## [1.30.1] — 2026-06-04
 
 ### Discovery for the institutional data-licensing offering

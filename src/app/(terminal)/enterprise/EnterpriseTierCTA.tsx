@@ -36,6 +36,7 @@ export function EnterpriseTierCTA({ tier, accent, defaultCtaText, defaultCtaHref
   const [redirecting, setRedirecting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [authChecked, setAuthChecked] = useState<'unknown' | 'anon' | 'authed'>('unknown')
+  const [email, setEmail] = useState('')
 
   useEffect(() => {
     let cancelled = false
@@ -95,16 +96,36 @@ export function EnterpriseTierCTA({ tier, accent, defaultCtaText, defaultCtaHref
     }
   }
 
-  // 1. Loading
-  if (current === 'unknown') {
-    return (
-      <button disabled className="terminal-btn w-full text-center opacity-50 cursor-wait">
-        Cargando…
-      </button>
-    )
+  // Email-first checkout for anonymous Starter — no login wall. Creates the user
+  // server-side, then returns the Rebill link (mirrors the B2C public checkout).
+  async function emailFirstCheckout(em: string) {
+    setRedirecting(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/enterprise/checkout-public', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: em }),
+      })
+      const json = await res.json().catch(() => null)
+      if (!res.ok || !json?.checkoutUrl) {
+        setError(json?.message ?? `Falla HTTP ${res.status}`)
+        setRedirecting(false)
+        return
+      }
+      window.location.href = json.checkoutUrl
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error de red')
+      setRedirecting(false)
+    }
   }
 
-  const currentRank = TIER_RANK[current]
+  // No "loading" gate: render an actionable CTA from the first paint. The auth-check is an
+  // *enhancement* (upgrades the button to current-plan / upgrade / downgrade once it resolves);
+  // it must NEVER freeze the button on "Cargando…". A slow network, a stale JS bundle, or a failed
+  // hydration previously left it stuck there forever ("se stallea cargando y nunca te deja pagar").
+  // While `current` is unknown we treat it as 'none' → the default actionable CTA renders now.
+  const currentRank = current === 'unknown' ? 0 : TIER_RANK[current]
   const thisRank = TIER_RANK[tier]
   const isCurrent = currentRank === thisRank && currentRank > 0
   const isUpgrade = currentRank > 0 && thisRank > currentRank
@@ -193,26 +214,57 @@ export function EnterpriseTierCTA({ tier, accent, defaultCtaText, defaultCtaHref
      5. DEFAULT — anon or non-Enterprise: regular CTA
      =================================================== */
   if (tier === 'starter') {
+    // Authed → session checkout. Anon/unknown → email-first (no login wall).
+    if (authChecked === 'authed') {
+      return (
+        <>
+          <button
+            type="button"
+            onClick={startCheckout}
+            disabled={redirecting}
+            className="terminal-btn w-full text-center disabled:opacity-50"
+            style={{ borderColor: `${accent}99`, color: accent }}
+          >
+            {redirecting ? 'Redirigiendo a pago…' : 'Contratar Starter ahora →'}
+          </button>
+          {error && <p className="mt-2 text-xxs text-red-400 text-center">{error}</p>}
+          <p className="mt-2 text-xxs text-zinc-500 text-center">
+            ARS al equivalente USD via Rebill. Cancelás cuando quieras.
+          </p>
+        </>
+      )
+    }
     return (
       <>
-        <button
-          type="button"
-          onClick={startCheckout}
-          disabled={redirecting}
-          className="terminal-btn w-full text-center disabled:opacity-50"
-          style={{ borderColor: `${accent}99`, color: accent }}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            if (email.trim()) emailFirstCheckout(email.trim())
+          }}
         >
-          {redirecting
-            ? 'Redirigiendo a pago…'
-            : authChecked === 'anon'
-              ? 'Iniciar sesión para contratar →'
-              : 'Contratar Starter ahora →'}
-        </button>
-        {error && (
-          <p className="mt-2 text-xxs text-red-400 text-center">{error}</p>
-        )}
+          <input
+            type="email"
+            required
+            autoComplete="email"
+            placeholder="tu.email@empresa.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={redirecting}
+            className="w-full bg-zinc-900 border rounded px-3 py-2 text-zinc-100 text-data placeholder:text-zinc-600 focus:outline-none mb-2 disabled:opacity-60"
+            style={{ borderColor: `${accent}55` }}
+          />
+          <button
+            type="submit"
+            disabled={redirecting || !email.trim()}
+            className="terminal-btn w-full text-center disabled:opacity-50"
+            style={{ borderColor: `${accent}99`, color: accent }}
+          >
+            {redirecting ? 'Redirigiendo a pago…' : 'Contratar Starter · USD 99/mes →'}
+          </button>
+        </form>
+        {error && <p className="mt-2 text-xxs text-red-400 text-center">{error}</p>}
         <p className="mt-2 text-xxs text-zinc-500 text-center">
-          ARS al equivalente USD via Rebill. Cancelás cuando quieras.
+          Pagás con ese email; el acceso llega por link mágico. ARS al equivalente USD via Rebill.
         </p>
       </>
     )
