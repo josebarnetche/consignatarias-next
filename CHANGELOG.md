@@ -7,6 +7,29 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.29.12] — 2026-06-04
+
+### Conversion #1 — email-first checkout (remove the login wall from the payment path)
+
+The confirmed root cause of $0-ever: paying required creating an account (magic-link), a wall only ~10
+people crossed in 3 months — so the money was physically unreachable for cold organic traffic.
+- **New `POST /api/subscribe/checkout-public`** — takes an email, creates OR recovers the auth user
+  **server-side first** (the Rebill webhook activates PRO by `userId`, so the link must be bound to a
+  real user — never charge without one), then returns the Rebill checkout URL. Rate-limited. Fail-safe
+  ordering: if user creation fails, no link is created and no card is charged.
+- **`/upgrade` no longer redirects anonymous users to `/login`** — it renders an email-first form.
+  `UpgradeButton` gains a `loggedIn` prop: logged-in → `/api/subscribe/checkout` (current session);
+  anonymous → email input → the public endpoint.
+- Post-payment access uses the existing magic-link login (same email → same user → PRO already active
+  by userId), so no webhook change was needed.
+
+Verified: `/upgrade` anonymous returns 200 with the email form (was a 307 to /login). Typecheck clean.
+
+**⚠️ Requires a real test payment to confirm end-to-end** (the only valid verification — see plan item E):
+confirm Rebill env (`REBILL_SECRET_KEY`, `REBILL_USER_PRO_AMOUNT`) + webhook signing secret in Vercel,
+then pay ARS 7.900 with a real card from a logged-out browser and verify a `user_subscriptions` row with
+`tier='pro'` AND `rebill_subscription_id` appears; refund after.
+
 ## [1.29.11] — 2026-06-04
 
 ### Conversion swarm — quick wins (prompt copy + B2B unlock + kill fake social proof)

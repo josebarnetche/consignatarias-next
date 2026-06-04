@@ -24,10 +24,9 @@ export default async function UpgradePage({ searchParams }: PageProps) {
     redirect(next)
   }
 
-  // Si no está logueado, redirigir a /login y volver acá después
-  if (!user) {
-    redirect(`/login?next=${encodeURIComponent(`/upgrade${next ? `?next=${encodeURIComponent(next)}` : ''}`)}`)
-  }
+  // NO login wall: anónimos ven la página y pagan email-first (la cuenta se crea
+  // server-side). El muro de login acá era el cuello de conversión confirmado ($0 histórico).
+  const loggedIn = !!user
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-16 text-sm">
@@ -94,7 +93,7 @@ export default async function UpgradePage({ searchParams }: PageProps) {
         </ul>
       </div>
 
-      <UpgradeButton />
+      <UpgradeButton loggedIn={loggedIn} />
 
       <p className="text-zinc-600 font-mono text-xxs text-center mt-6 leading-relaxed">
         Pago procesado por Rebill (Visa, Mastercard, débito). Cancelación inmediata desde
