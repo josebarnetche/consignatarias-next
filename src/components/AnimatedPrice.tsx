@@ -24,7 +24,10 @@ export function AnimatedPrice({
   decimals = 0,
   className = '',
 }: AnimatedPriceProps) {
-  const [displayValue, setDisplayValue] = useState(0)
+  // Initialize to the REAL value so SSR (and any no-JS / failed-hydration / stale-bundle
+  // state) renders the true price — never a frozen "$0". The effect below resets to 0 and
+  // animates up only when client JS actually runs.
+  const [displayValue, setDisplayValue] = useState(value)
   const [isComplete, setIsComplete] = useState(false)
   const startTimeRef = useRef<number | null>(null)
   const rafRef = useRef<number | null>(null)
@@ -78,10 +81,11 @@ export function AnimatedPrice({
   })
 
   return (
-    <span 
+    <span
+      suppressHydrationWarning
       className={`
         tabular-nums transition-all duration-500
-        ${className} 
+        ${className}
         ${isComplete ? 'opacity-100' : 'opacity-90'}
       `}
       style={{

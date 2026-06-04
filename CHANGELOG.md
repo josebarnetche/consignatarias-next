@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.29.10] — 2026-06-04
+
+### Hotfix: INMAG price frozen at $0 (SSR + hydration)
+
+`/mercado/inmag` (and `/mercado/arrendamiento`) showed the hero price **frozen at $0**. Root cause:
+`AnimatedPrice` initialized `useState(0)` and only reached the real value via a client-side count-up —
+so SSR/no-JS/failed-hydration/stale-bundle rendered "$0". It also threw a **React #418 hydration
+mismatch** (Node vs browser `toLocaleString('es-AR')`), which could halt the animation, leaving $0.
+- `useState(value)` → SSR and the no-JS fallback now render the **real price**; the effect resets to 0
+  and animates up only when client JS runs. The price is never $0 again, even if JS breaks.
+- `suppressHydrationWarning` on the value span → clears the #418 number-format mismatch.
+
+Verified: SSR HTML contains `$4.079,69` (was `$0`); with JS the value animates to the real number with
+**0 pageerrors** (was 1). Typecheck clean.
+
 ## [1.29.9] — 2026-06-04
 
 ### Post-payment success state on /cuenta?upgraded=true (close the conversion loop)
