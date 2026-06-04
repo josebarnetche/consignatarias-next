@@ -7,6 +7,24 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.6] — 2026-06-04
+
+### AI-referral detection — first-class `ai_referral` GA4 event
+
+Verified via the GA4 API that AI traffic IS arriving (ChatGPT ~166 sessions/30d, the #1 AI referrer;
+Copilot/Gemini/Claude trailing) but was **neither unified nor queryable**: chatgpt.com splits across
+Referral/Unassigned, no custom AI event existed, and GA4 custom channel groups aren't exposed by the
+Data API. Added an `AiReferralTracker` in `AnalyticsProvider` that fires a first-class `ai_referral`
+event (with `ai_engine` + `landing_page`) when `document.referrer` matches an AI engine
+(chatgpt/perplexity/copilot/gemini/claude/you.com), once per session. Makes "traffic from AI"
+measurable + attributable — the thesis metric (are we the source AI cites?).
+
+Note: the `ai_referral` event count is queryable immediately; to break it down by `ai_engine` in GA4,
+register `ai_engine` as a custom dimension. Referrer-stripping engines land as Direct (undetectable
+client-side) — an inherent limit. pnpm build clean.
+
+---
+
 ## [1.30.5] — 2026-06-04
 
 ### Fix: /metodologia described an abandoned weighted index (it's observed prices per category)
