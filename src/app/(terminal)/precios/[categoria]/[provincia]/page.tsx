@@ -135,7 +135,7 @@ export default async function PrecioCategoriaProvinciaPage({
   const faqItems = [
     {
       question: `¿Cuánto vale el kilo vivo de ${cat.singular} en ${prov.display}?`,
-      answer: `El precio de referencia del kilo vivo de ${cat.singular} es $${fmt(price)} (INMAG, ${lastUpdate}). Este valor es nacional: se forma en el Mercado Agroganadero de Cañuelas. En ${prov.display}, la hacienda se opera principalmente en remates en origen, cuyo precio toma al INMAG como referencia.`,
+      answer: `El precio de referencia del kilo vivo de ${cat.singular} es $${fmt(price)} (INMAG, ${lastUpdate}). Es un valor nacional: se forma en el Mercado Agroganadero de Cañuelas. En ${prov.display} el precio realizado puede diferir de esa referencia por flete, costos de comercialización y distancia a los centros de consumo y exportación; en provincias alejadas suele ubicarse por debajo. El precio local se forma en los remates en origen.`,
     },
     {
       question: `¿Dónde se forma el precio del ${cat.singular} en Argentina?`,
@@ -214,9 +214,12 @@ export default async function PrecioCategoriaProvinciaPage({
               </p>
             )}
             <p>
-              El precio del {cat.singular} no se fija por provincia: la referencia es el INMAG nacional. Lo que
-              cambia en {prov.display} es la <strong className="text-zinc-200">plaza</strong> — qué consignatarias
-              operan, con qué frecuencia rematan y a qué compradores llegan.
+              El INMAG es la <strong className="text-zinc-200">referencia nacional</strong>, formada en Cañuelas
+              (donde se concentra la hacienda de las provincias cercanas). El precio que efectivamente se paga en{' '}
+              {prov.display} <strong className="text-zinc-200">no es idéntico a esa referencia</strong>: difiere por
+              flete, costos de comercialización y distancia a los centros de consumo y exportación — en provincias
+              alejadas suele ubicarse por debajo. El precio local real se forma en los{' '}
+              <strong className="text-zinc-200">remates en origen</strong>.
             </p>
           </div>
         </div>

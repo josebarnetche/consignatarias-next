@@ -7,6 +7,24 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.9] — 2026-06-05
+
+### Honesty fix: geo×category pages no longer claim the price is provincial-flat
+
+`/precios/[categoria]/[provincia]` stated *"el precio del ternero no se fija por provincia… lo que
+cambia es la plaza"* and presented the national INMAG number as the province's price. That contradicts
+our own bibliography: **Iriarte 2008 (p.103-104)** — *Precio interior = Precio Liniers − flete − costos
+de comercialización* — and **Diez 2020** (+8,63% Liniers vs Sudoeste Bonaerense @ 660 km). Confirmed in
+data: Formosa's MAG-entry share ≈ 0 — far cría provinces don't sell at Cañuelas; their price forms at the
+**remates en origen** and trades below the national reference (freight + distance to consumption/export hubs).
+
+Minimal copy patch (no fabricated local number): the misleading sentence + the FAQ #1 answer (the one the
+AI Overview cites) now say the INMAG is the **national reference**, that the price realized in the province
+**differs** (freight, costs, distance — typically below in far provinces), and that the **local price forms
+at the remates en origen**. Makes the AI-cited answer accurate. `pnpm build` clean.
+
+---
+
 ## [1.30.8] — 2026-06-05
 
 ### Pillar 2 pivot: no data license — institutional access to the *service*
