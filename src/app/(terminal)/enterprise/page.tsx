@@ -339,24 +339,26 @@ export default function EnterprisePage() {
           </div>
           <div className="px-panel py-5">
             <p className="text-zinc-200 text-sm mb-2">
-              Más allá del acceso por request: <span className="text-zinc-100 font-medium">licenciá la serie de referencia</span> del
-              mercado ganadero argentino — para tu valuación, settlement o uso interno.
+              Más allá del acceso por request: <span className="text-zinc-100 font-medium">acceso licenciado a nuestra serie de datos</span> del
+              mercado ganadero argentino — archivada, normalizada y en USD — para tu valuación o uso interno.
             </p>
             <p className="text-zinc-500 text-data leading-relaxed mb-6 max-w-3xl">
-              El modelo de CEPEA (Brasil) y Bloomberg: el valor no es el endpoint, es la <span className="text-zinc-300">serie
-              propietaria</span> y ser la referencia citable. Para instituciones que usan el dato como insumo de decisión,
-              no como feature de una app. Pricing a medida (contrato anual) según alcance de uso y redistribución.
+              El INMAG es un índice <span className="text-zinc-300">público</span> que publica el Mercado Agroganadero;
+              lo que licenciás es <span className="text-zinc-300">nuestro trabajo de datos</span> sobre él — la serie
+              archivada desde 2015, normalizada, con overlay en dólares, más nuestros índices derivados y el servicio de
+              acceso (bulk, sin rate-limit). El valor es la serie estructurada y el servicio, no el dato crudo de un
+              tercero. Pricing a medida (contrato anual) según alcance de uso.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 mb-6">
               <div>
                 <div className="text-zinc-200 text-xxs font-terminal uppercase tracking-wider mb-2">Qué licenciás</div>
                 <ul className="space-y-1.5 text-data text-zinc-400">
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Serie INMAG completa (2015→hoy, 11 años) + overlay USD oficial y blue</li>
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Datos lote-level transaccionales (haciinfo000007)</li>
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Familia de índices propia (INMAG-USD, spreads, derivados)</li>
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Entrega bulk / snapshots históricos / feed programado (sin rate-limit)</li>
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Derecho de uso interno, valuación o redistribución (según contrato)</li>
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Nuestra serie INMAG archivada (2015→hoy, 11 años), normalizada + overlay USD oficial y blue</li>
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Datos lote-level estructurados por nosotros</li>
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Índices derivados propios (INMAG-USD, spreads, derivados — cálculos nuestros)</li>
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Servicio de acceso: entrega bulk / snapshots históricos / feed programado (sin rate-limit)</li>
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Derecho de uso interno y valuación (según contrato)</li>
                 </ul>
               </div>
               <div>
@@ -373,11 +375,11 @@ export default function EnterprisePage() {
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-terminal-border pt-4">
               <p className="text-zinc-500 text-data">
-                Metodología publicada (v1.2) + cobertura declarada con honestidad —{' '}
+                Metodología publicada (v1.3) + cobertura declarada con honestidad —{' '}
                 <a href="/metodologia" className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2">ver metodología →</a>
               </p>
               <a
-                href="mailto:agro@memola.com.ar?subject=Licencia%20de%20datos%20institucional%20—%20consignatarias.com.ar&body=Hola,%20queremos%20evaluar%20una%20licencia%20de%20datos.%0A%0AInstituci%C3%B3n:%0ATipo%20(banco%20/%20frigor%C3%ADfico%20/%20exchange%20/%20fintech%20/%20otro):%0AUso%20previsto%20(valuaci%C3%B3n%20/%20settlement%20/%20interno%20/%20redistribuci%C3%B3n):%0ASeries%20de%20inter%C3%A9s%20(INMAG-USD%20/%20lote-level%20/%20%C3%ADndices):"
+                href="mailto:agro@memola.com.ar?subject=Licencia%20de%20datos%20institucional%20—%20consignatarias.com.ar&body=Hola,%20queremos%20evaluar%20una%20licencia%20de%20datos.%0A%0AInstituci%C3%B3n:%0ATipo%20(banco%20/%20frigor%C3%ADfico%20/%20exchange%20/%20fintech%20/%20otro):%0AUso%20previsto%20(valuaci%C3%B3n%20/%20uso%20interno%20/%20an%C3%A1lisis):%0ASeries%20de%20inter%C3%A9s%20(INMAG-USD%20/%20lote-level%20/%20%C3%ADndices):"
                 className="terminal-btn whitespace-nowrap shrink-0"
                 style={{ borderColor: 'rgba(52,211,153,0.6)', color: '#34d399' }}
               >

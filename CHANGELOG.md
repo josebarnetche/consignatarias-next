@@ -7,6 +7,27 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.7] — 2026-06-05
+
+### Legal de-risk: data-licensing copy reframed to value-add + service (drop "redistribución")
+
+The institutional data-licensing offering (1.30.0) over-claimed: it framed the deal as licensing "la
+serie de referencia" / "serie propietaria" with a **"redistribución (según contrato)"** right — but we
+do NOT own MAG's INMAG (we scrape/mirror it) and have no confirmed authorization to resell/redistribute
+it. Reframed to what is actually defensible:
+- We license **our value-add + the access service** — our archived (2015→), normalized, USD-overlaid
+  series, our derived indices (our calculations), structured lote-level, and the bulk-access service —
+  explicitly stating the INMAG is a **public** index published by the MAG (the raw third-party datum is
+  not ours to sell).
+- **Removed "redistribución"** from the offering, the rights line ("uso interno y valuación"), and the
+  contact mailto. Pricing "según alcance de uso" (was "...y redistribución").
+- Methodology ref bumped to v1.3.
+
+Lowers legal exposure immediately. Still pending (owner/legal): confirm MAG's terms of use + whether a
+data agreement is warranted before any redistribution claim. pnpm build clean.
+
+---
+
 ## [1.30.6] — 2026-06-04
 
 ### AI-referral detection — first-class `ai_referral` GA4 event
