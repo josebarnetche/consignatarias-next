@@ -568,8 +568,8 @@ export default function InmagPage() {
             Datos actualizados automáticamente cada día hábil.
           </p>
           <p className="text-xs text-zinc-600 mt-2 text-center">
-            ¿Bancos, frigoríficos, exchanges o fintech? Licenciá la serie INMAG completa (2015→) con USD y metodología —{' '}
-            <Link href="/enterprise#licencia-datos" className="text-emerald-500/80 hover:text-emerald-400 underline underline-offset-2">licencia de datos institucional →</Link>
+            ¿Bancos, frigoríficos, exchanges o fintech? Acceso institucional al feed completo INMAG (2015→) con USD y metodología —{' '}
+            <Link href="/enterprise#acceso-institucional" className="text-emerald-500/80 hover:text-emerald-400 underline underline-offset-2">acceso institucional →</Link>
           </p>
         </section>
       </div>

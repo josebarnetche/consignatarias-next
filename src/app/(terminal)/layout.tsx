@@ -343,7 +343,7 @@ export default function TerminalLayout({
           <span className="text-terminal-border">·</span>
           <Link href="/metodologia" className="text-xxs text-zinc-400 hover:text-zinc-200 transition-colors">Metodología</Link>
           <span className="text-terminal-border">·</span>
-          <Link href="/enterprise#licencia-datos" className="text-xxs text-emerald-500/80 hover:text-emerald-400 transition-colors">Licencia de datos</Link>
+          <Link href="/enterprise#acceso-institucional" className="text-xxs text-emerald-500/80 hover:text-emerald-400 transition-colors">Acceso institucional</Link>
         </div>
 
         {/* Main footer row */}

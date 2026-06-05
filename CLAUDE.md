@@ -3,7 +3,7 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.30.0 (2026-06-04). See [CHANGELOG.md](CHANGELOG.md) for the full history. Recent train (v1.29.x→v1.30): El Corredor pipeline repair + broadened blast, mobile/desktop overflow fixes, INMAG-$0 hydration hotfix, the **conversion swarm** push (email-first checkout removing the login wall, PRO prompt/copy + B2B CTA fixes, post-payment success state), citability hardening (generated `/llms.txt`, INMAG Dataset freshness, methodology audit), and **Pillar 2: the institutional data-licensing offering** on `/enterprise`. Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+**Current version:** v1.30.8 (2026-06-05). See [CHANGELOG.md](CHANGELOG.md) for the full history. Recent train (v1.29.x→v1.30): El Corredor pipeline repair + broadened blast, mobile/desktop overflow fixes, INMAG-$0 hydration hotfix, the **conversion swarm** push (email-first checkout removing the login wall, PRO prompt/copy + B2B CTA fixes, post-payment success state), citability hardening (generated `/llms.txt`, INMAG Dataset freshness, methodology audit), and **Pillar 2: the institutional access offering** on `/enterprise` (we sell *access + service*, not a data license — legally de-risked, since MAG's INMAG is public and Ley 11.723 protects its compilation). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
 
 ---
 
@@ -20,7 +20,7 @@ Three revenue lines coexist on top of the free, indexable, citable data layer:
 1. **PRO Usuario** (ARS 7.900/mes) — decision tools for producers/advisors: net-back calc,
    "¿vendo ahora?", comparador with medios de pago, full INMAG history + CSV, seasonality
 2. **PRO Consignataria** (sales-led B2B) — featured listings, claimed profile, leads
-3. **Enterprise API** — `cnsg_live_*` keys, Bearer auth, 28-day billing periods, three tiers (Starter / Growth / Scale), self-serve checkout via Rebill — the data-licensing engine
+3. **Enterprise API + institutional access** — `cnsg_live_*` keys, Bearer auth, 28-day billing periods, three tiers (Starter / Growth / Scale), self-serve checkout via Rebill. Institutions pay for **access + service** (maintained USD-normalized feed, bulk delivery, support, our derived indices) — *not* a license/redistribution of MAG's public series
 
 **Live:** https://www.consignatarias.com.ar
 **Owner:** Memola Medios SAS (`agro@memola.com.ar`)

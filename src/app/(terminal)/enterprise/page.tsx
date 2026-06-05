@@ -323,42 +323,44 @@ export default function EnterprisePage() {
           ))}
         </div>
 
-        {/* ── Institutional DATA LICENSE — license the series, not just per-request API.
-            The higher-ACV, sales-led offering (CEPEA/Bloomberg model). Gated by the
-            published methodology (Pillar 1). Emerald accent to differentiate from the
-            sky-accented per-request tiers above. ─────────────────────────────────── */}
-        <div id="licencia-datos" className="terminal-panel mb-10 scroll-mt-24" style={{ borderColor: 'rgba(52,211,153,0.45)', boxShadow: '0 0 24px rgba(52,211,153,0.08)' }}>
+        {/* ── Institutional ACCESS — you pay for the access + service + tooling, NOT a data
+            license. The underlying prices are public (MAG); what's paid for is the maintained,
+            structured, USD-normalized feed + bulk delivery + support, plus our derived analysis.
+            We deliberately do NOT license/redistribute a third party's raw series (Ley 11.723
+            protects compilations; redistribution would need MAG's authorization). Higher-ACV,
+            sales-led, emerald accent vs the sky per-request tiers above. ──────────────────── */}
+        <div id="acceso-institucional" className="terminal-panel mb-10 scroll-mt-24" style={{ borderColor: 'rgba(52,211,153,0.45)', boxShadow: '0 0 24px rgba(52,211,153,0.08)' }}>
           <div
             className="terminal-panel-header flex items-center justify-between"
             style={{ color: '#34d399', borderBottomColor: 'rgba(52,211,153,0.4)' }}
           >
-            <span>Licencia de datos institucional</span>
+            <span>Acceso institucional</span>
             <span className="text-zinc-500 text-xxs font-terminal normal-case tracking-normal">
-              la serie, no la API por request
+              el feed completo + soporte, no por request
             </span>
           </div>
           <div className="px-panel py-5">
             <p className="text-zinc-200 text-sm mb-2">
-              Más allá del acceso por request: <span className="text-zinc-100 font-medium">acceso licenciado a nuestra serie de datos</span> del
-              mercado ganadero argentino — archivada, normalizada y en USD — para tu valuación o uso interno.
+              Más allá del acceso por request: <span className="text-zinc-100 font-medium">acceso institucional al servicio</span> —
+              el feed mantenido del mercado ganadero argentino, archivado, normalizado y en USD, listo para tu valuación o uso interno.
             </p>
             <p className="text-zinc-500 text-data leading-relaxed mb-6 max-w-3xl">
-              El INMAG es un índice <span className="text-zinc-300">público</span> que publica el Mercado Agroganadero;
-              lo que licenciás es <span className="text-zinc-300">nuestro trabajo de datos</span> sobre él — la serie
-              archivada desde 2015, normalizada, con overlay en dólares, más nuestros índices derivados y el servicio de
-              acceso (bulk, sin rate-limit). El valor es la serie estructurada y el servicio, no el dato crudo de un
-              tercero. Pricing a medida (contrato anual) según alcance de uso.
+              El INMAG es un índice <span className="text-zinc-300">público</span> que publica el Mercado Agroganadero —
+              no lo vendemos ni lo redistribuimos. Lo que pagás es <span className="text-zinc-300">el acceso, el mantenimiento
+              y las herramientas</span>: nuestra serie archivada desde 2015, normalizada y con overlay en dólares, nuestros
+              índices derivados, y la entrega bulk con soporte y SLA. <span className="text-zinc-300">Pagás por el servicio,
+              no por una licencia del dato.</span> Pricing a medida (suscripción anual) según alcance de uso.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 mb-6">
               <div>
-                <div className="text-zinc-200 text-xxs font-terminal uppercase tracking-wider mb-2">Qué licenciás</div>
+                <div className="text-zinc-200 text-xxs font-terminal uppercase tracking-wider mb-2">Qué incluye el acceso</div>
                 <ul className="space-y-1.5 text-data text-zinc-400">
                   <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Nuestra serie INMAG archivada (2015→hoy, 11 años), normalizada + overlay USD oficial y blue</li>
                   <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Datos lote-level estructurados por nosotros</li>
                   <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Índices derivados propios (INMAG-USD, spreads, derivados — cálculos nuestros)</li>
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Servicio de acceso: entrega bulk / snapshots históricos / feed programado (sin rate-limit)</li>
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Derecho de uso interno y valuación (según contrato)</li>
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Entrega bulk / snapshots históricos / feed programado (sin rate-limit)</li>
+                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Soporte dedicado + SLA + actualización mantenida</li>
                 </ul>
               </div>
               <div>
@@ -379,11 +381,11 @@ export default function EnterprisePage() {
                 <a href="/metodologia" className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2">ver metodología →</a>
               </p>
               <a
-                href="mailto:agro@memola.com.ar?subject=Licencia%20de%20datos%20institucional%20—%20consignatarias.com.ar&body=Hola,%20queremos%20evaluar%20una%20licencia%20de%20datos.%0A%0AInstituci%C3%B3n:%0ATipo%20(banco%20/%20frigor%C3%ADfico%20/%20exchange%20/%20fintech%20/%20otro):%0AUso%20previsto%20(valuaci%C3%B3n%20/%20uso%20interno%20/%20an%C3%A1lisis):%0ASeries%20de%20inter%C3%A9s%20(INMAG-USD%20/%20lote-level%20/%20%C3%ADndices):"
+                href="mailto:agro@memola.com.ar?subject=Acceso%20institucional%20—%20consignatarias.com.ar&body=Hola,%20queremos%20evaluar%20un%20acceso%20institucional%20al%20servicio.%0A%0AInstituci%C3%B3n:%0ATipo%20(banco%20/%20frigor%C3%ADfico%20/%20exchange%20/%20fintech%20/%20otro):%0AUso%20previsto%20(valuaci%C3%B3n%20/%20uso%20interno%20/%20an%C3%A1lisis):%0ASeries%20de%20inter%C3%A9s%20(INMAG-USD%20/%20lote-level%20/%20%C3%ADndices):"
                 className="terminal-btn whitespace-nowrap shrink-0"
                 style={{ borderColor: 'rgba(52,211,153,0.6)', color: '#34d399' }}
               >
-                Solicitar licencia de datos →
+                Solicitar acceso institucional →
               </a>
             </div>
           </div>

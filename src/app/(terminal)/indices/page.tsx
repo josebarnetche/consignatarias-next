@@ -172,7 +172,7 @@ export default function IndicesPage() {
             </p>
             <p className="text-zinc-500 text-xxs">
               Cita sugerida: «INMAG (Mercado Agroganadero Argentino), vía consignatarias.com.ar, [fecha]». Datos
-              abiertos para uso con atribución; licenciamiento institucional vía{' '}
+              abiertos para uso con atribución; acceso institucional al servicio vía{' '}
               <Link href="/enterprise" className="text-amber-500 hover:text-amber-400">API Enterprise</Link>.
             </p>
           </div>

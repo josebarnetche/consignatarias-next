@@ -3,7 +3,7 @@
 **Current:** v1.30.3 (June 4, 2026) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
 **Strategic frame:** [docs/strategy/POSITIONING-THESIS.md](docs/strategy/POSITIONING-THESIS.md) — own the
 category **"el precio de referencia del ganado argentino"** via three pillars (Index family ·
-Data-licensing · Online-auction flywheel) across three horizons.
+Institutional access · Online-auction flywheel) across three horizons.
 **Versioning:** [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (v1.0.0) is the
 MAJOR boundary, so the product stays on 1.x.
 
@@ -26,13 +26,16 @@ The intelligence-infrastructure thesis is in execution. The train since v1.29:
   Also fixed the PRO-prompt copy (it sold B2B to producers), un-deadcoded the B2B $45k CTA (was gated
   on `verified` = 0 profiles), killed fabricated "47 ya lo hicieron" social proof, and added a real
   post-payment success state on `/cuenta`.
-- **Pillar 2 launched.** Institutional **data-licensing offering** on `/enterprise` (license the
-  *series*, not per-request API — the CEPEA/Bloomberg model) + discovery from `/metodologia`,
+- **Pillar 2 launched + de-risked.** Institutional **access offering** on `/enterprise` — pay for the
+  *access + service* (maintained, USD-normalized feed + bulk + support + our derived indices), NOT a
+  license/redistribution of MAG's public series (Ley 11.723 protects compilations; redistribution
+  would need MAG's authorization). The series-not-per-request model, minus the licensing claim.
+  Discovery from `/metodologia`,
   `/mercado/inmag`, and the site-wide footer. Verified: returns a real `pay.rebill.com` link.
 - **Pillar 1 hardened (citability).** Generated `/llms.txt` (live data, no more drift), INMAG
   `Dataset` schema freshness (`dateModified` + `variableMeasured` + distribution + publisher),
   methodology audited to v1.2 (removed fabricated figures; added the honest **~12% INMAG / ~71%
-  dark-pool** coverage declaration — the credibility gate for data-licensing).
+  dark-pool** coverage declaration — the credibility gate for institutional-access).
 - **Reliability.** El Corredor pipeline repaired end-to-end (PDF 404 + blast-never-sent → fixed; blast
   broadened to market segments; Mayo edition sent 14/14). INMAG-$0 hydration hotfix (price now SSR'd,
   never depends solely on client JS). Mobile + desktop overflow fixes. Full cron observability
@@ -50,7 +53,7 @@ institutional sales motion.
 | Pillar | What | Defensibility | Status |
 |---|---|---|---|
 | **1 — Proprietary Index Family** | Be the reference, own the series | Very High | **Largely built + citable** |
-| **2 — Terminal & Data-Licensing** | Data gravity, not features (the revenue engine) | High | **Offering live; sales motion pending** |
+| **2 — Terminal & Institutional Access** | Data gravity, not features (the revenue engine) | High | **Offering live; sales motion pending** |
 | **3 — Online-Auction Data Flywheel** | Own the data layer of price discovery (→ the 71% dark pool) | Highest (long) | **Wedge available; indicator pending** |
 
 ### Pillar 1 — Proprietary Index Family
@@ -60,12 +63,12 @@ citable in AI/Google.
 **Next:** derivative indicators (Liquidation / Heaviness / Quality), the daily-index X/Twitter bot,
 academic co-validation (Scoponi/UNS, FCV-UBA — outreach), `llms-full.txt` generated too.
 
-### Pillar 2 — Terminal & Data-Licensing  ← the revenue engine
+### Pillar 2 — Terminal & Institutional Access  ← the revenue engine
 **Done:** Enterprise API (`cnsg_live_*`, Bearer, 28-day billing, self-serve Starter via Rebill),
-institutional **data-licensing offering** on `/enterprise` + discovery, email-first checkout (no login
+institutional **institutional-access offering** on `/enterprise` + discovery, email-first checkout (no login
 wall), checkout verified to reach Rebill.
 **Next:** the **sales motion** (outbound to banks / export frigoríficos / MATBA-ROFEX / fintech), a
-**data-license one-pager PDF** + a **sample dataset** download (lower evaluation friction), the first
+**institutional-access one-pager PDF** + a **sample dataset** download (lower evaluation friction), the first
 institutional dollar, `api.consignatarias.com.ar` + OpenAPI/SDKs + status page.
 
 ### Pillar 3 — Online-Auction Data Flywheel
@@ -81,7 +84,7 @@ structured measurement of the **71% dark pool** (long arc). RWA / CD+W / tokeniz
 1. **Verify revenue end-to-end (E)** — one real test payment (B2C *and* Enterprise Starter share the
    Rebill+webhook mechanism) confirming Rebill → webhook → `user_subscriptions.tier='pro'` with a
    `rebill_subscription_id`. The single gate between "can pay" and "converts." *(User action; I can't pay.)*
-2. **Pillar 2 sales enablement** — data-license one-pager PDF + sample dataset download, then outbound.
+2. **Pillar 2 sales enablement** — institutional-access one-pager PDF + sample dataset download, then outbound.
 3. **Conversion measurement** — `UpgradeConfirmTracker` (fire `pro_upgrade` only on DB confirmation,
    never on `?upgraded=true`), and the calculadora **blurred-number reveal** to lift the 3.7% prompt CTR.
 4. **Pillar 1 deepening** — derivative indicators (Liquidation/Heaviness/Quality) + daily index bot;
@@ -96,7 +99,7 @@ structured measurement of the **71% dark pool** (long arc). RWA / CD+W / tokeniz
 ## v2.0.0 Definition (the revenue milestone — still the goal)
 
 **v2.0.0 = USD 2.000+ MRR across the product lines, sustained 30 days.**
-- [ ] 5+ Enterprise customers paying (Starter/Growth/Scale or a data-license)
+- [ ] 5+ Enterprise customers paying (Starter/Growth/Scale or a institutional-access)
 - [ ] 1+ PRO Consignataria paying
 - [ ] 10+ PRO Usuario paying
 - [ ] Total MRR ≥ USD 2.000 normalized at MEP
@@ -104,7 +107,7 @@ structured measurement of the **71% dark pool** (long arc). RWA / CD+W / tokeniz
 
 **The real bottleneck (updated):** not code, and no longer "the platform." The checkout paths are live.
 What's missing is the **first verified dollar** (the test payment) and the **sales motion** for the
-data-license (outbound to institutions — the highest-ACV path per both the thesis and the swarm).
+institutional-access (outbound to institutions — the highest-ACV path per both the thesis and the swarm).
 
 ---
 
@@ -165,7 +168,7 @@ v1.29.2-7 (Jun 3-4)        Conversion surfaces, mobile/desktop overflow fixes, I
                            consignataria count unified (104)
 v1.29.8-14 (Jun 4)         El Corredor lead-magnet + pipeline repair, post-payment success state,
                            conversion swarm quick wins, email-first B2C checkout, citability hardening
-v1.30.0-3 (Jun 4)          Pillar 2 data-licensing offering + discovery, Enterprise email-first checkout
+v1.30.0-3 (Jun 4)          Pillar 2 institutional-access offering + discovery, Enterprise email-first checkout
                            + stall fix, build hotfix (unblocked deploys)
 ```
 
@@ -179,7 +182,7 @@ checkout paths live. The bottleneck is commercial, not technical.
 The original v2.0 roadmap targeted *"first PRO Consignataria payment."* Direction changed mid-May 2026:
 points-gamification killed → answer-first SEO + Enterprise self-serve; API monetization shipped early as
 the real revenue lever; the transaction layer (ganado.com.ar) pushed to v2.x. The current frame
-(positioning thesis, May 31) sharpens this: **own "the reference price," monetize via data-licensing,
+(positioning thesis, May 31) sharpens this: **own "the reference price," monetize via institutional-access,
 sacrifice the transaction** until the reference is unassailable.
 
 ---
@@ -188,12 +191,12 @@ sacrifice the transaction** until the reference is unassailable.
 
 1. **Test payment first** — before any more conversion code, confirm the Rebill→webhook→PRO path with a
    real ARS 7.900 payment (deferred by owner; gates the whole revenue story).
-2. **Data-license go-to-market** — bespoke/sales-led (current) vs a published institutional price.
+2. **Institutional-access go-to-market** — bespoke/sales-led (current) vs a published institutional price.
    Outbound targets: banks (cattle-collateral), export frigoríficos, MATBA-ROFEX, fintech.
 3. **Lite tier (USD 29) & Stripe** — capture global devs / international cards, or stay Argentina-Rebill
    and focus on institutions? (Thesis leans institutional > self-serve dev.)
 4. **Open-source the SDKs** — yes, aggressively (distribution; the server is the moat, not the client).
-5. **Newsletter** ("Argentina Cattle Weekly": INMAG-USD + indicators) as lead-gen for data-licensing.
+5. **Newsletter** ("Argentina Cattle Weekly": INMAG-USD + indicators) as lead-gen for institutional-access.
 
 ---
 

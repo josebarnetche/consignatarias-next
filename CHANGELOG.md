@@ -7,6 +7,35 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.8] — 2026-06-05
+
+### Pillar 2 pivot: no data license — institutional access to the *service*
+
+Decision (owner): we will **not license/sell data at all**. The institutional offering is reframed one
+notch down — the buyer **pays for access + service + tooling, not for a license of the datum**. Grounded
+in a legal review (Ley 11.723 art. 1, reformed by Ley 25.036, protects *compilations*; reproducing/
+redistributing a third party's compiled series can infringe copyright — even criminally, art. 72 — and
+the unfair-competition regime, Decreto 274/2019; CSJN *Directv* 2022). The MAG publishes no terms we
+could find, so we default to the conservative position.
+
+- `/enterprise`: section **"Licencia de datos institucional" → "Acceso institucional"** (`id`
+  `licencia-datos` → `acceso-institucional`). All "licencia/licenciar" copy removed. New framing: *"El
+  INMAG es público (lo publica el MAG) — no lo vendemos ni lo redistribuimos. Pagás el acceso, el
+  mantenimiento y las herramientas. Pagás por el servicio, no por una licencia del dato."* "Qué
+  licenciás" → "Qué incluye el acceso"; rights line "uso interno y valuación" → "soporte + SLA +
+  actualización mantenida"; CTA "Solicitar licencia de datos" → "Solicitar acceso institucional".
+- Discovery updated everywhere: footer (`layout.tsx`), `/metodologia` chip, `/mercado/inmag` line,
+  `/indices` citation note — all now say **"acceso institucional al servicio"** and point to the new anchor.
+- `/terminos` unchanged (it already *restricts the API user* from reselling/redistributing — that protects us).
+- Legal memo saved to research (`~/Downloads/cnsg-vision/DATA-LICENSING-LEGAL-MEMO.md`): facts/prices are
+  free to publish with attribution; our value-add/service is defensible; redistributing MAG's raw series
+  needs a MAG agreement + lawyer review.
+- ROADMAP: Pillar 2 renamed "Data-Licensing" → "Institutional Access" throughout.
+
+No data sold or licensed anywhere on the site. `pnpm build` clean.
+
+---
+
 ## [1.30.7] — 2026-06-05
 
 ### Legal de-risk: data-licensing copy reframed to value-add + service (drop "redistribución")

@@ -231,10 +231,10 @@ export default function MetodologiaPage() {
               Documentación API <ExternalLink className="w-3 h-3" />
             </Link>
             <Link
-              href="/enterprise#licencia-datos"
+              href="/enterprise#acceso-institucional"
               className="inline-flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 border border-emerald-700/50 rounded px-3 py-1.5"
             >
-              Licencia institucional <ExternalLink className="w-3 h-3" />
+              Acceso institucional <ExternalLink className="w-3 h-3" />
             </Link>
           </div>
         </div>
