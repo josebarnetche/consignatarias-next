@@ -7,6 +7,27 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.10] — 2026-06-05
+
+### Estimated regional basis on geo×category price pages
+
+Builds on 1.30.9: `/precios/[categoria]/[provincia]` now shows a **"Diferencial regional estimado"** —
+an estimated in-origin price per province, clearly labeled as an estimate (not observed). The producer
+in Formosa now sees ~$3.840/kg for the ternero (−14,4%) instead of the misleading national $4.488.
+
+- Model: linear discount by road-distance to Cañuelas, calibrated to **Diez 2020** (Liniers +8,63% over
+  Sudoeste Bonaerense @ 660 km) and **Iriarte 2008** (*precio interior = Liniers − flete − costos*).
+  `BASIS_DISCOUNT_PER_KM ≈ 0,012 pts%/km`, defensive cap 25%. Per-province `km` added to the PROVINCES map.
+- UI: estimate line under the H1, a dedicated amber panel (referencia nacional · estimado en origen ·
+  diferencial % · km) with the **method + sources visible** and an honest "estimación, no precio
+  observado" caveat, linking the local remates as where the real price forms.
+- A 4th FAQ ("¿Cuánto se paga el {cat} en origen en {prov}?") carries the labeled estimate into the
+  FAQ schema, so the AI-cited answer is both useful and honest.
+
+Honors brand values #1 (no claim without source) + #5 (declare the method). `pnpm build` clean.
+
+---
+
 ## [1.30.9] — 2026-06-05
 
 ### Honesty fix: geo×category pages no longer claim the price is provincial-flat

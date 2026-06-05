@@ -27,25 +27,50 @@ const CATEGORIES: Record<CategorySlug, { singular: string; title: string; promed
   terneros: { singular: 'ternero', title: 'Ternero', promedioKg: 180, remateTypes: ['invernada', 'cria'] },
 }
 
-const PROVINCES: Record<string, { name: string; display: string }> = {
-  'buenos-aires': { name: 'BUENOS AIRES', display: 'Buenos Aires' },
-  cordoba: { name: 'CORDOBA', display: 'Córdoba' },
-  'santa-fe': { name: 'SANTA FE', display: 'Santa Fe' },
-  'entre-rios': { name: 'ENTRE RIOS', display: 'Entre Ríos' },
-  corrientes: { name: 'CORRIENTES', display: 'Corrientes' },
-  'la-pampa': { name: 'LA PAMPA', display: 'La Pampa' },
-  chaco: { name: 'CHACO', display: 'Chaco' },
-  'san-luis': { name: 'SAN LUIS', display: 'San Luis' },
-  'santiago-del-estero': { name: 'SANTIAGO DEL ESTERO', display: 'Santiago del Estero' },
-  formosa: { name: 'FORMOSA', display: 'Formosa' },
-  misiones: { name: 'MISIONES', display: 'Misiones' },
-  neuquen: { name: 'NEUQUEN', display: 'Neuquén' },
-  tucuman: { name: 'TUCUMAN', display: 'Tucumán' },
+/* `km` = distancia carretera aproximada de una zona ganadera representativa de la
+   provincia al Mercado Agroganadero (Cañuelas). Alimenta el diferencial regional
+   estimado (ver `regionalBasis`). Buenos Aires es el mercado de referencia → km bajo. */
+const PROVINCES: Record<string, { name: string; display: string; km: number }> = {
+  'buenos-aires': { name: 'BUENOS AIRES', display: 'Buenos Aires', km: 150 },
+  cordoba: { name: 'CORDOBA', display: 'Córdoba', km: 700 },
+  'santa-fe': { name: 'SANTA FE', display: 'Santa Fe', km: 480 },
+  'entre-rios': { name: 'ENTRE RIOS', display: 'Entre Ríos', km: 475 },
+  corrientes: { name: 'CORRIENTES', display: 'Corrientes', km: 1000 },
+  'la-pampa': { name: 'LA PAMPA', display: 'La Pampa', km: 610 },
+  chaco: { name: 'CHACO', display: 'Chaco', km: 1050 },
+  'san-luis': { name: 'SAN LUIS', display: 'San Luis', km: 790 },
+  'santiago-del-estero': { name: 'SANTIAGO DEL ESTERO', display: 'Santiago del Estero', km: 1000 },
+  formosa: { name: 'FORMOSA', display: 'Formosa', km: 1200 },
+  misiones: { name: 'MISIONES', display: 'Misiones', km: 1100 },
+  neuquen: { name: 'NEUQUEN', display: 'Neuquén', km: 1170 },
+  tucuman: { name: 'TUCUMAN', display: 'Tucumán', km: 1080 },
 }
 
 const ALL_CATEGORIES = Object.keys(CATEGORIES) as CategorySlug[]
 const ALL_PROVINCES = Object.keys(PROVINCES)
 const fmt = (n: number) => n.toLocaleString('es-AR')
+
+/* ────────────────────────────────────────────────────────────────────────
+   Diferencial regional ESTIMADO (base / basis). NO es un precio observado.
+
+   Ancla empírica: Diez 2020 (p.29) midió Liniers ~8,63% por encima del precio
+   en el Sudoeste Bonaerense a 660 km (27/05/2020) — equivalente a ~7,9% de
+   descuento en origen. Iriarte 2008 (p.103-104): "precio interior = precio
+   Liniers − flete − gastos de comercialización".
+
+   Modelo: descuento lineal por distancia, calibrado para reproducir el dato de
+   Diez a 660 km. Es UN punto, un día, una región → extrapolación gruesa. El
+   precio real se forma en los remates en origen. Por eso se publica etiquetado
+   como estimación, con método y fuente a la vista (valor #1 + #5 del proyecto).
+   ──────────────────────────────────────────────────────────────────────── */
+const BASIS_DISCOUNT_PER_KM = 7.944 / 660 // ≈0,0120 puntos % de descuento por km
+function regionalBasis(referencePrice: number, km: number) {
+  const discountPct = Math.min(BASIS_DISCOUNT_PER_KM * km, 25) // cap defensivo
+  return {
+    discountPct: Math.round(discountPct * 10) / 10,
+    localEstimate: Math.round(referencePrice * (1 - discountPct / 100)),
+  }
+}
 
 export function generateStaticParams() {
   return ALL_CATEGORIES.flatMap((categoria) =>
@@ -79,7 +104,10 @@ function getContext(categoria: CategorySlug, provincia: string) {
   const upcoming = relevant.filter((a) => a.date >= today).sort((x, y) => x.date.localeCompare(y.date))
   const consignatarias = [...new Set(provAuctions.map((a) => a.consignatariaName).filter(Boolean))] as string[]
 
-  return { cat, prov, price, change: priceData.change, supply, existencia, upcoming, consignatarias }
+  // Diferencial regional estimado (descuento vs referencia nacional por distancia)
+  const basis = regionalBasis(price, prov.km)
+
+  return { cat, prov, price, change: priceData.change, supply, existencia, upcoming, consignatarias, basis }
 }
 
 export async function generateMetadata({
@@ -123,7 +151,7 @@ export default async function PrecioCategoriaProvinciaPage({
   const { categoria, provincia } = await params
   if (!isValid(categoria, provincia)) notFound()
 
-  const { cat, prov, price, change, supply, existencia, upcoming, consignatarias } = getContext(
+  const { cat, prov, price, change, supply, existencia, upcoming, consignatarias, basis } = getContext(
     categoria as CategorySlug,
     provincia,
   )
@@ -144,6 +172,10 @@ export default async function PrecioCategoriaProvinciaPage({
     {
       question: `¿Cuánto sale un ${cat.singular} en ${prov.display}?`,
       answer: `Un ${cat.singular} promedio de ${cat.promedioKg} kg ronda los $${fmt(promedioPeso)} a precio de referencia ($${fmt(price)}/kg × ${cat.promedioKg} kg). El valor final depende de peso, terminación y de la plaza/remate donde se venda.`,
+    },
+    {
+      question: `¿Cuánto se paga el ${cat.singular} en origen en ${prov.display}?`,
+      answer: `Estimación (modelo por distancia, no precio observado): el ${cat.singular} en origen en ${prov.display} rondaría ~$${fmt(basis.localEstimate)}/kg, aproximadamente ${basis.discountPct}% por debajo de la referencia nacional ($${fmt(price)}/kg, INMAG). El diferencial se explica por flete, costos de comercialización y distancia a los centros de consumo y exportación: Cañuelas cotiza por encima del interior (Iriarte 2008; Diez 2020 midió 8,63% a 660 km). El precio real se fija en los remates en origen y varía según kilaje, terminación y demanda.`,
     },
   ]
 
@@ -174,6 +206,14 @@ export default async function PrecioCategoriaProvinciaPage({
           INMAG como referencia. Actualizado {lastUpdate} ·{' '}
           <span style={{ color: changeColor }}>{changeStr} semanal</span>.
         </p>
+        <p className="text-sm mb-6 -mt-3 max-w-2xl">
+          <span className="text-zinc-500">Estimado en origen ({prov.display}): </span>
+          <strong className="text-zinc-200">~${fmt(basis.localEstimate)}/kg</strong>{' '}
+          <span style={{ color: '#f87171' }}>(≈ −{basis.discountPct}%)</span>{' '}
+          <span className="text-zinc-600 text-xxs">· estimación por distancia, no precio observado ·{' '}
+            <a href="#diferencial-regional" className="underline underline-offset-2 hover:text-zinc-400">ver método</a>
+          </span>
+        </p>
 
         {/* Reference price */}
         <div className="terminal-panel mb-6">
@@ -194,6 +234,49 @@ export default async function PrecioCategoriaProvinciaPage({
               <div className="text-zinc-100 text-2xl font-terminal tabular-nums">${fmt(promedioPeso)}</div>
               <div className="text-zinc-600 text-xxs">por cabeza</div>
             </div>
+          </div>
+        </div>
+
+        {/* Estimated regional basis — clearly labeled ESTIMATE (not observed) */}
+        <div id="diferencial-regional" className="terminal-panel mb-6 scroll-mt-24" style={{ borderColor: 'rgba(251,191,36,0.35)' }}>
+          <div className="terminal-panel-header flex items-center justify-between" style={{ color: '#fbbf24', borderBottomColor: 'rgba(251,191,36,0.35)' }}>
+            <span>Diferencial regional estimado</span>
+            <span className="text-zinc-500 text-xxs font-terminal normal-case tracking-normal">estimación · no precio observado</span>
+          </div>
+          <div className="grid grid-cols-3 gap-px bg-terminal-border">
+            <div className="bg-terminal-panel px-4 py-4">
+              <div className="text-zinc-500 text-xxs font-terminal uppercase tracking-wider mb-1">Referencia nacional</div>
+              <div className="text-zinc-100 text-2xl font-terminal tabular-nums">${fmt(price)}</div>
+              <div className="text-zinc-600 text-xxs">INMAG · Cañuelas</div>
+            </div>
+            <div className="bg-terminal-panel px-4 py-4">
+              <div className="text-zinc-500 text-xxs font-terminal uppercase tracking-wider mb-1">Estimado en origen</div>
+              <div className="text-2xl font-terminal tabular-nums" style={{ color: '#fbbf24' }}>${fmt(basis.localEstimate)}</div>
+              <div className="text-zinc-600 text-xxs">$/kg vivo · {prov.display}</div>
+            </div>
+            <div className="bg-terminal-panel px-4 py-4">
+              <div className="text-zinc-500 text-xxs font-terminal uppercase tracking-wider mb-1">Diferencial</div>
+              <div className="text-2xl font-terminal tabular-nums" style={{ color: '#f87171' }}>−{basis.discountPct}%</div>
+              <div className="text-zinc-600 text-xxs">a ~{fmt(prov.km)} km del MAG</div>
+            </div>
+          </div>
+          <div className="px-panel py-4 text-sm text-zinc-400 leading-relaxed space-y-2">
+            <p>
+              Cañuelas cotiza por encima del interior: el precio en origen ≈{' '}
+              <span className="text-zinc-200">referencia − flete − costos de comercialización − distancia</span> a
+              los centros de consumo y exportación. Estimamos {prov.display} en{' '}
+              <strong className="text-zinc-200">~${fmt(basis.localEstimate)}/kg</strong> ({basis.discountPct}% por
+              debajo de la referencia nacional).
+            </p>
+            <p className="text-xxs text-zinc-600 leading-relaxed">
+              Modelo lineal por distancia, anclado en <strong className="text-zinc-500">Diez 2020</strong> (Liniers
+              +8,63% sobre el Sudoeste Bonaerense a 660 km) y en la fórmula de{' '}
+              <strong className="text-zinc-500">Iriarte 2008</strong> (precio interior = precio Liniers − flete −
+              gastos de comercialización). Es una <strong className="text-zinc-500">estimación propia</strong>, no un
+              precio transado: surge de un dato puntual extrapolado por distancia. El precio real se forma en los{' '}
+              <Link href={`/remates/${provincia}`} className="text-amber-500/80 hover:text-amber-400 underline underline-offset-2">remates en origen</Link>{' '}
+              y depende de kilaje, terminación y demanda del día.
+            </p>
           </div>
         </div>
 
