@@ -11,7 +11,7 @@ const APP_URL = 'https://www.consignatarias.com.ar'
 export const metadata: Metadata = {
   title: 'El Corredor — cierre mensual del mercado bovino argentino',
   description:
-    'Mesa de hacienda argentina · cierre mensual. INMAG en USD reales, comparable interanual, 18 buckets del MAG, lectura del ciclo, tesis del mes próximo. PDF gratuito con email.',
+    'Mesa de hacienda argentina · cierre mensual. INMAG en USD reales, comparable interanual, 18 categorías de hacienda del MAG, lectura del ciclo, tesis del mes próximo. PDF gratuito con email.',
   alternates: { canonical: `${APP_URL}/el-corredor` },
   openGraph: {
     title: 'El Corredor — cierre mensual del mercado bovino argentino',
@@ -21,10 +21,10 @@ export const metadata: Metadata = {
     type: 'article',
     images: [
       {
-        url: `${APP_URL}/el-corredor/og-abril-2026.png`,
+        url: `${APP_URL}/el-corredor/og-mayo-2026.png`,
         width: 1200,
         height: 630,
-        alt: 'El Corredor — Abril 2026',
+        alt: 'El Corredor — Mayo 2026',
       },
     ],
   },
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'El Corredor — cierre mensual del mercado bovino argentino',
     description: 'Mesa de hacienda argentina. PDF gratuito.',
-    images: [`${APP_URL}/el-corredor/og-abril-2026.png`],
+    images: [`${APP_URL}/el-corredor/og-mayo-2026.png`],
   },
 }
 
@@ -44,7 +44,7 @@ const INCLUYE = [
   { num: '02', title: 'INMAG diario', body: 'Chart del mes + tabla con cierre por jornada hábil + volumen' },
   { num: '03', title: 'INMAG en USD reales', body: 'Comparable interanual ARS vs. USD oficial vs. blue + chart trailing 12m' },
   { num: '04', title: 'Lo que el INMAG no ve', body: 'Composición real del mercado · 71% opaco · cita Iriarte/Diez' },
-  { num: '05', title: '18 buckets reales del MAG', body: 'Min / max / promedio / mediana de cada subcategoría con outliers flag' },
+  { num: '05', title: '18 categorías reales del MAG', body: 'Mín / máx / promedio / mediana de cada categoría de hacienda, con marca de valores atípicos' },
   { num: '06', title: 'Macro + faena + margen invernada', body: 'USD oficial/blue, maíz FOB, faena nacional, ratio novillo/maíz' },
   { num: '07', title: 'Plaza & calendario', body: 'Distribución por provincia, top remates del mes, calendario del próximo' },
   { num: '08', title: 'Mini-explicador rotativo', body: '12 ediciones · Edición 1: Cómo se calcula el INMAG' },
@@ -126,26 +126,26 @@ export default async function ElCorredorLanding() {
 
               <p className="text-lg lg:text-xl text-zinc-300 leading-relaxed mb-8 max-w-2xl font-mono">
                 El cierre mensual del mercado bovino argentino. <span className="text-white">12 páginas</span> con
-                INMAG en USD reales, comparable interanual, 18 buckets del MAG, lectura del ciclo y tesis del
+                INMAG en USD reales, comparable interanual, 18 categorías de hacienda del MAG, lectura del ciclo y tesis del
                 mes próximo. <span className="text-sky-400">PDF gratuito con email.</span>
               </p>
 
               {/* Live KPI strip */}
               <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 mb-10 pb-6 border-b border-zinc-800">
                 <span className="text-xs font-mono uppercase tracking-widest text-zinc-500">Última edición ·</span>
-                <span className="text-sm font-mono text-zinc-300">Abril 2026</span>
+                <span className="text-sm font-mono text-zinc-300">Mayo 2026</span>
                 <span className="text-zinc-700">·</span>
                 <span className="text-sm font-mono text-zinc-300">
                   INMAG cerró <span className="text-white font-semibold">{closeFmt}</span>
                 </span>
                 <span className="text-zinc-700">·</span>
-                <span className="text-sm font-mono text-emerald-400">+24,9% USD interanual real</span>
+                <span className="text-sm font-mono text-emerald-400">+24,4% USD interanual real</span>
               </div>
 
               <SubscribeForm source="hero" userEmail={userEmail} />
 
               <p className="text-xs font-mono text-zinc-600 mt-4">
-                Sin tarjeta. Sin trial. Próxima edición en mayo. Te podés desuscribir en cualquier momento.
+                Sin tarjeta. Sin trial. Próxima edición en julio. Te podés desuscribir en cualquier momento.
               </p>
             </div>
 
@@ -154,8 +154,8 @@ export default async function ElCorredorLanding() {
               <div className="absolute -inset-8 bg-sky-500/10 blur-3xl rounded-full" />
               <div className="relative">
                 <Image
-                  src="/el-corredor/cover-abril-2026.png"
-                  alt="El Corredor — Abril 2026"
+                  src="/el-corredor/cover-mayo-2026.png"
+                  alt="El Corredor — Mayo 2026"
                   width={384}
                   height={512}
                   className="w-full max-w-[384px] h-auto rounded shadow-2xl shadow-black/50 border border-zinc-800"
@@ -163,7 +163,7 @@ export default async function ElCorredorLanding() {
                 />
                 <div className="absolute -bottom-3 left-4 right-4 text-center">
                   <span className="inline-block bg-sky-400 text-zinc-950 text-xs font-mono uppercase tracking-widest px-3 py-1.5 font-bold">
-                    Edición 04/26 · Disponible
+                    Edición 05/26 · Disponible
                   </span>
                 </div>
               </div>
@@ -295,7 +295,7 @@ export default async function ElCorredorLanding() {
             <SubscribeForm source="footer-cta" userEmail={userEmail} />
           </div>
           <p className="text-xs font-mono text-zinc-600 mt-4">
-            Próxima edición: cierre de mayo 2026 · primer día hábil de junio
+            Próxima edición: cierre de junio 2026 · primer día hábil de julio
           </p>
         </div>
       </section>

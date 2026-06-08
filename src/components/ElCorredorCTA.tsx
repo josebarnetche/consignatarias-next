@@ -92,7 +92,7 @@ export function ElCorredorCTA({ variant = 'card', context = 'unknown' }: Props) 
 
           <p className="text-sm font-mono text-zinc-400 leading-relaxed mb-5 max-w-xl">
             El cierre mensual del mercado bovino argentino. INMAG en USD reales, comparable interanual,
-            18 buckets del MAG, lectura del ciclo y tesis del mes próximo.
+            18 categorías de hacienda del MAG, lectura del ciclo y tesis del mes próximo.
             <span className="text-zinc-300 ml-1">12 páginas · PDF gratis con email.</span>
           </p>
 

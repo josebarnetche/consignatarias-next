@@ -918,7 +918,7 @@ export default function LandingPage() {
 
               <p className="text-base md:text-lg text-zinc-300 leading-relaxed mb-6 font-mono max-w-2xl">
                 El cierre mensual del mercado bovino argentino. <span className="text-white">12 páginas</span> con
-                INMAG en USD reales, comparable interanual, 18 buckets del MAG, lectura del ciclo y tesis del
+                INMAG en USD reales, comparable interanual, 18 categorías de hacienda del MAG, lectura del ciclo y tesis del
                 mes próximo. <span className="text-sky-400">PDF gratuito con email.</span>
               </p>
 
@@ -946,10 +946,10 @@ export default function LandingPage() {
                   href="/el-corredor?ref=homepage"
                   className="inline-flex items-center gap-2 bg-sky-400 hover:bg-sky-300 active:bg-sky-500 text-zinc-950 font-mono font-bold uppercase tracking-widest text-sm px-6 py-3 rounded transition-colors"
                 >
-                  Recibir Edición 04/26 →
+                  Recibir Edición 05/26 →
                 </a>
                 <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
-                  Sin tarjeta · próxima edición en mayo
+                  Sin tarjeta · próxima edición en julio
                 </span>
               </div>
             </div>
@@ -958,15 +958,15 @@ export default function LandingPage() {
               <div className="absolute -inset-8 bg-sky-500/10 blur-3xl rounded-full pointer-events-none" />
               <a href="/el-corredor?ref=homepage" className="relative block">
                 <Image
-                  src="/el-corredor/cover-abril-2026.png"
-                  alt="El Corredor — Abril 2026"
+                  src="/el-corredor/cover-mayo-2026.png"
+                  alt="El Corredor — Mayo 2026"
                   width={320}
                   height={427}
                   className="w-full max-w-[320px] h-auto rounded shadow-2xl shadow-black/50 border border-zinc-800 hover:border-sky-500/40 transition-colors"
                 />
                 <div className="absolute -bottom-3 left-4 right-4 text-center pointer-events-none">
                   <span className="inline-block bg-sky-400 text-zinc-950 text-xs font-mono uppercase tracking-widest px-3 py-1.5 font-bold rounded">
-                    Edición 04/26 · Disponible
+                    Edición 05/26 · Disponible
                   </span>
                 </div>
               </a>

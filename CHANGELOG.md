@@ -7,6 +7,24 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.11] — 2026-06-08
+
+### El Corredor: landing al día con la edición de Mayo + copy sin jerga
+
+- **Landing + `/el-corredor` apuntan a la edición Mayo 2026 (05/26)**: CTA ("Recibir Edición 05/26"),
+  cover y OG (`cover-mayo-2026.png` / `og-mayo-2026.png`), etiqueta "Última edición · Mayo 2026" y
+  fecha de próxima edición ("en julio" / "cierre de junio · primer día hábil de julio"). Estaban
+  hardcodeadas en Abril (04/26) aunque la edición de mayo ya estaba publicada (`manifest.json`).
+- **KPI interanual actualizado a `+24,4% USD interanual real`** (cifra de la edición de mayo, tomada
+  del PDF `mayo-2026.pdf`, p.1 resumen ejecutivo) — antes `+24,9%` (abril). Sin inventar el dato.
+- **Se eliminó la jerga "buckets del MAG" → "categorías de hacienda del MAG"** en landing,
+  `/el-corredor` y el card `ElCorredorCTA` (nadie fuera de la mesa entiende "bucket").
+- `package.json` realineado (estaba en 1.30.7 por drift; el tag real era 1.30.10).
+
+Typecheck OK (`npx tsc --noEmit` → 0).
+
+---
+
 ## [1.30.10] — 2026-06-05
 
 ### Estimated regional basis on geo×category price pages
