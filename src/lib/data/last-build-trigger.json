@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-08T19:21:39Z",
-  "trigger": "schedule",
-  "runId": "27161296536"
+  "updatedAt": "2026-06-09T17:54:10Z",
+  "trigger": "workflow_dispatch",
+  "runId": "27225185016"
 }
