@@ -7,6 +7,24 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.14] — 2026-06-09
+
+### Fuentes de remate NEA/Corrientes — el scraper deja de estar sesgado al Pampa/Litoral
+
+Diagnóstico: el scraper corría bien pero **todas sus fuentes eran consignatarias de BA/Santa Fe/Entre Ríos** → Corrientes tenía solo 4 remates a futuro (vs BA 151). Se sumó un **módulo aislado** [`scripts/scrapers/nea.mjs`](scripts/scrapers/nea.mjs) (export `scrapeNEA()`), wireado al runner con 1 import + 1 call + dedup consistente; cada fuente con `try/catch → []` para que una caída nunca rompa el pipeline.
+
+Fuentes nuevas (self-test: **84 remates NEA, 13 de Corrientes** vs 4 previos):
+- **Reggi & Cía** (Corrientes — Santo Tomé, Paso de los Libres, Curuzú, Bella Vista) · HTML server-rendered.
+- **Aguerre SRL** (Mercedes, Corrientes) · Tribe Events REST API (carga tarde; endpoint OK).
+- **HRE** (Entre Ríos) · Django REST.
+- **Rosgan / RosganNet** (pantalla NEA) · JSON — fuente neutral atribuida (no se republica su índice).
+- **ClicRural cartelera** (multi-provincia NEA) · HTML.
+- Arzuaga: descartada por ahora (Wix JS-rendered, requiere headless).
+
+Gap "en vivo": sólo 1 stream capturado — las fuentes no exponen YouTube por-evento de forma confiable; queda como problema aparte. La data de `remates.json` se puebla en la próxima corrida del cron `scrape-auctions.yml` (o `gh workflow run`). `node --check` 0, self-test verde, sin mutar data en este commit. Reporte: [`docs/REPORTE-fuentes-nea-2026-06-09.md`](docs/REPORTE-fuentes-nea-2026-06-09.md).
+
+---
+
 ## [1.30.13] — 2026-06-09
 
 ### Suite PRO Usuario — gating unificado + vistoso + útil

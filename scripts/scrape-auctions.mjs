@@ -18,6 +18,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { scrapeNEA } from "./scrapers/nea.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = resolve(__dirname, "../src/lib/data");
@@ -1543,7 +1544,7 @@ async function main() {
   console.log(`\n=== Ganado Terminal Scraper — ${todayISO()} ===\n`);
 
   // Scrape all sources in parallel
-  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, hkagro, entresurcos, dollar, cattlePrices, cornPrice, categoryPrices, provinceEntry, consignatarioEntry, detailedCategories] = await Promise.all([
+  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, hkagro, entresurcos, nea, dollar, cattlePrices, cornPrice, categoryPrices, provinceEntry, consignatarioEntry, detailedCategories] = await Promise.all([
     scrapeCACG(),
     scrapeColombo(),
     scrapeOFarrell(),
@@ -1552,6 +1553,7 @@ async function main() {
     scrapeUMCHV(),
     scrapeHKAgro(),
     scrapeEntreSurcos(),
+    scrapeNEA(), // NEA module: Reggi, Aguerre, HRE, Rosgan, ClicRural (isolated)
     scrapeDollar(),
     scrapeCattlePrices(),
     scrapeCornPrice(),
@@ -1562,7 +1564,7 @@ async function main() {
   ]);
 
   // Combine all scraped auctions
-  const allScraped = [...cacg, ...colombo, ...ofarrell, ...lehmann, ...madelan, ...umchv, ...hkagro, ...entresurcos];
+  const allScraped = [...cacg, ...colombo, ...ofarrell, ...lehmann, ...madelan, ...umchv, ...hkagro, ...entresurcos, ...nea];
   console.log(`\nTotal scraped: ${allScraped.length} auctions`);
 
   // Load existing data
@@ -1578,6 +1580,10 @@ async function main() {
     "madelan",
     "umc-haciendas-villaguay",
     "hk-agro",
+    // NEA module single-firm sources (now fully scraped → drop stale curated copies)
+    "reggi-y-cia",
+    "aguerre-srl",
+    "hre",
   ]);
 
   // Keep curated entries that aren't from scrapable sources
