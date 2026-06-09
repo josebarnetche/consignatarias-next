@@ -11,6 +11,7 @@ import ConsignatariasShowcase from "@/components/landing/ConsignatariasShowcase"
 import { FAQPageSchema, OrganizationSchema, WebSiteSchema } from "@/components/seo/JsonLd";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import ValuationWidget from "@/components/landing/ValuationWidget";
+import ProHighlights, { type ProHighlightsData } from "@/components/showcase/ProHighlights";
 
 /* ================================================================== */
 /*  SVG ICONS                                                          */
@@ -176,6 +177,22 @@ function fmt(n: number, d = 0) {
     maximumFractionDigits: d,
   });
 }
+
+/* ----- PRO Usuario highlights (real data only — brand rule #1) -------- */
+// Spread is computed identically to /api/market/spread: novillo USD/kg ÷ maíz USD/kg.
+const novilloUsdPerKg = marketPrices.inmag.current / marketPrices.usdBlue.current;
+const cornUsdPerKg = marketPrices.corn.current / 1000;
+const spreadRatioNum = novilloUsdPerKg / cornUsdPerKg;
+const SPREAD_THRESHOLD = 12;
+
+const proHighlightsData: ProHighlightsData = {
+  inmagToday: `$${fmt(marketPrices.inmag.current)}`,
+  inmagChange: `${marketPrices.inmag.change >= 0 ? "+" : ""}${fmt(marketPrices.inmag.change, 1)}%`,
+  inmagUp: marketPrices.inmag.change >= 0,
+  spreadRatio: fmt(spreadRatioNum, 1),
+  spreadProfitable: spreadRatioNum > SPREAD_THRESHOLD,
+  consignatariasCount: totalConsignatarias,
+};
 
 const FAQ_ITEMS = [
   {
@@ -1270,65 +1287,9 @@ export default function LandingPage() {
         </section>
 
         {/* ============================================================ */}
-        {/*  PRO USUARIO — demand-side upgrade                            */}
+        {/*  PRO USUARIO — showcase highlights (5 tools as protagonists)  */}
         {/* ============================================================ */}
-        <section className="max-w-7xl mx-auto px-6 pb-32">
-          <div className="bg-gradient-to-br from-sky-500/5 via-zinc-900/50 to-zinc-900/50 border border-sky-500/20 rounded-2xl p-8 md:p-12">
-            <div className="text-center mb-10">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-500/10 border border-sky-500/30 rounded-full text-sky-400 text-sm font-medium mb-4">
-                ★ PRO Usuario
-              </span>
-              <h2 className="text-2xl md:text-3xl font-medium text-zinc-100 tracking-tight mb-3">
-                Las herramientas del que vende hacienda
-              </h2>
-              <p className="text-sm md:text-base text-zinc-400 max-w-2xl mx-auto">
-                Cuánto te queda neto, cuándo conviene vender y a quién. Para productores,
-                asesores, contadores y brokers — por <span className="text-zinc-200">ARS $7.900/mes</span>.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              {[
-                {
-                  title: 'Neto en mano',
-                  body: 'Del bruto INMAG al neto real: comisión, gastos y flete descontados, en ARS, USD y $/kg.',
-                },
-                {
-                  title: '¿Vendo ahora?',
-                  body: 'Percentiles de 30 y 365 días con lectura del momento de venta. La decisión, no el dato suelto.',
-                },
-                {
-                  title: 'Comparador con plata',
-                  body: 'Medios de pago y días de cobro de cada consignataria, lado a lado. A quién le conviene venderle.',
-                },
-                {
-                  title: 'La década completa',
-                  body: 'Histórico INMAG 2015→ en CSV + estacionalidad mes × año + El Corredor y El Oráculo.',
-                },
-              ].map((f) => (
-                <div key={f.title} className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-6">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="text-sm font-medium text-zinc-100">{f.title}</h3>
-                    <span className="text-[10px] font-terminal font-bold tracking-wider border border-sky-500/40 bg-sky-500/10 text-sky-400 rounded-sm px-1 py-0.5">PRO</span>
-                  </div>
-                  <p className="text-xs text-zinc-500">{f.body}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="text-center">
-              <Link
-                href="/planes?audience=productor&from=landing-pro"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-sky-500 hover:bg-sky-400 text-zinc-950 text-sm font-medium rounded-lg transition-colors"
-              >
-                Ver PRO Usuario — ARS $7.900/mes
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </section>
+        <ProHighlights {...proHighlightsData} />
 
         {/* ============================================================ */}
         {/*  PARA CONSIGNATARIAS - PRO FEATURES                           */}

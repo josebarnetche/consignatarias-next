@@ -21,6 +21,7 @@ import {
 } from '@/lib/ui/tokens'
 import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge from '@/components/badges/ProBadge'
+import RematesFilterBar from '@/components/remates/RematesFilterBar'
 import { trackAuctionClick, trackFilterApply, trackOutboundClick, trackEvent } from '@/lib/analytics'
 import { downloadBulkICSFile } from '@/lib/utils/ics'
 import { useSessionTier } from '@/lib/use-session-tier'
@@ -539,43 +540,6 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
 }
 
 /* ------------------------------------------------------------------ */
-/*  FILTER DROPDOWN                                                    */
-/* ------------------------------------------------------------------ */
-
-function TerminalSelect({
-  value,
-  onChange,
-  options,
-  placeholder,
-}: {
-  value: string
-  onChange: (v: string) => void
-  options: string[]
-  placeholder: string
-}) {
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="terminal-input text-xxs py-1.5 px-3 pr-6 appearance-none cursor-pointer bg-terminal-panel"
-      style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%2371717a' d='M0 2l4 4 4-4z'/%3E%3C/svg%3E")`,
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'right 8px center',
-        backgroundSize: '8px',
-      }}
-    >
-      <option value="">{placeholder}</option>
-      {options.map((opt) => (
-        <option key={opt} value={opt}>
-          {opt}
-        </option>
-      ))}
-    </select>
-  )
-}
-
-/* ------------------------------------------------------------------ */
 /*  ADD REMATE MODAL                                                   */
 /* ------------------------------------------------------------------ */
 
@@ -821,6 +785,45 @@ export default function RematesPage() {
     })
   }
 
+  /* ---- Filter handlers (all faceting tracked, none navigates) ---- */
+  const hasActiveFilters = !!(
+    filterProvince || filterType || filterEnVivo || searchQuery || advancedActive
+  )
+
+  const handlePeriodChange = (p: Period) => {
+    setPeriod(p)
+    trackFilterApply('period', p)
+  }
+  const handleToggleEnVivo = () => {
+    trackFilterApply('en_vivo', filterEnVivo ? 'off' : 'on')
+    setFilterEnVivo((v) => !v)
+  }
+  const handleProvinceChange = (v: string) => {
+    setFilterProvince(v)
+    if (v) trackFilterApply('province', v)
+  }
+  const handleTypeChange = (v: string) => {
+    setFilterType(v)
+    if (v) trackFilterApply('type', v)
+  }
+  const handleClearAll = () => {
+    setFilterProvince('')
+    setFilterType('')
+    setFilterEnVivo(false)
+    setSearchQuery('')
+    setFilterDateFrom('')
+    setFilterDateTo('')
+    setFilterMinHeads('')
+  }
+  const handleToggleAdvanced = () => {
+    if (session.tier !== 'pro' && !session.loading) {
+      const next = encodeURIComponent('/remates')
+      router.push(session.loggedIn ? `/upgrade?next=${next}` : `/login?next=${next}`)
+      return
+    }
+    setShowAdvanced((v) => !v)
+  }
+
   /* ---- Render ---- */
   return (
     <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 space-y-0">
@@ -889,153 +892,34 @@ export default function RematesPage() {
           )}
         </div>
 
-        {/* -- Tabs + Filters bar ----------------------------------- */}
-        <div className="border-b border-terminal-border px-panel py-1.5 flex items-center justify-between flex-wrap gap-2">
-          {/* Period tabs + En Vivo toggle */}
-          <div className="flex items-center gap-1">
-            {([
-              { key: 'hoy' as Period, label: 'HOY' },
-              { key: 'proximos' as Period, label: 'PROXIMOS' },
-              { key: 'pasados' as Period, label: 'PASADOS' },
-            ]).map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => { setPeriod(tab.key); trackFilterApply('period', tab.key) }}
-                className={`terminal-btn text-xxs px-3 py-1 ${
-                  period === tab.key
-                    ? 'border-accent text-accent bg-accent/5'
-                    : ''
-                }`}
-              >
-                {tab.label}
-                <span className={`ml-1.5 tabular-nums ${
-                  period === tab.key ? 'text-accent' : 'text-zinc-500'
-                }`}>
-                  {counts[tab.key]}
-                </span>
-              </button>
-            ))}
-            {/* En Vivo toggle - prominent red styling */}
-            {enVivoCount > 0 && (
-              <button
-                onClick={() => { setFilterEnVivo(!filterEnVivo); trackFilterApply('en_vivo', filterEnVivo ? 'off' : 'on') }}
-                className={`terminal-btn text-xxs px-3 py-1 flex items-center gap-1.5 ml-2 ${
-                  filterEnVivo
-                    ? 'border-red-500 text-white bg-red-600 hover:bg-red-500'
-                    : 'border-red-800/50 text-red-400 bg-red-900/20 hover:bg-red-900/40 hover:border-red-600/50'
-                }`}
-                title={filterEnVivo ? 'Mostrando solo remates con streaming' : 'Filtrar remates con transmisión en vivo'}
-              >
-                <span className={`w-2 h-2 rounded-full ${filterEnVivo ? 'bg-white' : 'bg-red-500'} animate-pulse`} />
-                EN VIVO
-                <span className={`tabular-nums ${filterEnVivo ? 'text-red-200' : 'text-red-500'}`}>
-                  {enVivoCount}
-                </span>
-              </button>
-            )}
-          </div>
-
-          {/* Filters */}
-          <div className="flex items-center gap-2">
-            {/* Search input */}
-            <div className="relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar..."
-                className="terminal-input text-xxs w-24 sm:w-32 pl-2 pr-6 py-1 bg-zinc-900 border border-terminal-border rounded-terminal focus:border-accent focus:outline-none placeholder:text-zinc-600"
-                aria-label="Buscar remates"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-negative text-xs"
-                  aria-label="Limpiar búsqueda"
-                >
-                  ×
-                </button>
-              )}
-            </div>
-            <TerminalSelect
-              value={filterProvince}
-              onChange={(v: string) => { setFilterProvince(v); if (v) trackFilterApply('province', v) }}
-              options={provinces}
-              placeholder="Provincia"
-            />
-            <TerminalSelect
-              value={filterType}
-              onChange={(v: string) => { setFilterType(v); if (v) trackFilterApply('type', v) }}
-              options={types}
-              placeholder="Tipo"
-            />
-            {(filterProvince || filterType || filterEnVivo || searchQuery || advancedActive) && (
-              <button
-                onClick={() => {
-                  setFilterProvince('')
-                  setFilterType('')
-                  setFilterEnVivo(false)
-                  setSearchQuery('')
-                  setFilterDateFrom('')
-                  setFilterDateTo('')
-                  setFilterMinHeads('')
-                }}
-                className="text-xxs text-zinc-500 hover:text-negative font-terminal transition-colors px-2 py-1"
-                title="Limpiar filtros"
-              >
-                LIMPIAR
-              </button>
-            )}
-            {/* Filtros avanzados — PRO */}
-            <button
-              onClick={() => {
-                if (session.tier !== 'pro' && !session.loading) {
-                  const next = encodeURIComponent('/remates')
-                  router.push(session.loggedIn ? `/upgrade?next=${next}` : `/login?next=${next}`)
-                  return
-                }
-                setShowAdvanced((v) => !v)
-              }}
-              className="terminal-btn text-xxs px-2 py-1 flex items-center gap-1.5 hover:border-accent hover:text-accent"
-              title={
-                session.tier === 'pro'
-                  ? 'Filtros avanzados: rango de fechas, cabezas mínimas'
-                  : 'Filtros avanzados (PRO): rango de fechas, cabezas mínimas'
-              }
-            >
-              <span className="hidden sm:inline">FILTROS+</span>
-              <span className="sm:hidden">+</span>
-              {!session.loading && session.tier !== 'pro' && (
-                <span className="ml-0.5 text-[9px] font-mono uppercase tracking-wider text-amber-400 border border-amber-400/40 rounded px-1 leading-none py-0.5">
-                  PRO
-                </span>
-              )}
-            </button>
-            {/* Bulk ICS Export — PRO */}
-            {filteredAuctions.length > 0 && period === 'proximos' && (
-              <button
-                onClick={handleBulkExport}
-                className="terminal-btn text-xxs px-2 py-1 flex items-center gap-1.5 hover:border-accent hover:text-accent"
-                title={
-                  session.tier === 'pro'
-                    ? `Exportar ${filteredAuctions.length} remates al calendario`
-                    : 'Exportar el calendario es PRO. Click para suscribirte.'
-                }
-              >
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span className="hidden sm:inline">EXPORTAR</span>
-                <span className="tabular-nums text-zinc-500">{filteredAuctions.length}</span>
-                {!session.loading && session.tier !== 'pro' && (
-                  <span className="ml-1 text-[9px] font-mono uppercase tracking-wider text-amber-400 border border-amber-400/40 rounded px-1 leading-none py-0.5">
-                    PRO
-                  </span>
-                )}
-              </button>
-            )}
-          </div>
-        </div>
+        {/* -- Unified filter bar + applied chips ------------------- */}
+        <RematesFilterBar
+          period={period}
+          counts={counts}
+          onPeriodChange={handlePeriodChange}
+          enVivoCount={enVivoCount}
+          filterEnVivo={filterEnVivo}
+          onToggleEnVivo={handleToggleEnVivo}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          filterProvince={filterProvince}
+          onProvinceChange={handleProvinceChange}
+          provinces={provinces}
+          filterType={filterType}
+          onTypeChange={handleTypeChange}
+          types={types}
+          hasActiveFilters={hasActiveFilters}
+          onClearAll={handleClearAll}
+          showAdvanced={showAdvanced}
+          advancedActive={!!advancedActive}
+          onToggleAdvanced={handleToggleAdvanced}
+          isPro={session.tier === 'pro'}
+          sessionLoading={session.loading}
+          canExport={filteredAuctions.length > 0 && period === 'proximos'}
+          exportCount={filteredAuctions.length}
+          onExport={handleBulkExport}
+          resultCount={filteredAuctions.length}
+        />
 
         {/* -- Advanced filters panel (PRO) -------------------------- */}
         {showAdvanced && session.tier === 'pro' && (
@@ -1071,38 +955,6 @@ export default function RematesPage() {
                 className="bg-zinc-900 border border-terminal-border rounded-terminal px-2 py-1 text-xxs text-zinc-200 w-24 focus:border-accent focus:outline-none placeholder:text-zinc-600"
               />
             </label>
-          </div>
-        )}
-
-        {/* -- Active filter pills ------------------------------------ */}
-        {(filterProvince || filterType || filterEnVivo || searchQuery) && (
-          <div className="border-b border-terminal-border px-panel py-1.5 flex items-center gap-2 flex-wrap">
-            <span className="text-xxs text-zinc-500 font-terminal">Filtros:</span>
-            {filterEnVivo && (
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 text-xxs bg-red-500/20 text-red-400 border border-red-500/30 rounded-terminal">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                <span>En Vivo</span>
-                <button onClick={() => setFilterEnVivo(false)} className="hover:text-red-300 transition-colors" aria-label="Quitar filtro en vivo">&times;</button>
-              </span>
-            )}
-            {searchQuery && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xxs bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded-terminal">
-                <span>&quot;{searchQuery}&quot;</span>
-                <button onClick={() => setSearchQuery('')} className="hover:text-sky-300 transition-colors" aria-label="Quitar búsqueda">&times;</button>
-              </span>
-            )}
-            {filterProvince && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xxs bg-accent/10 text-accent border border-accent/20 rounded-terminal">
-                <span>{filterProvince}</span>
-                <button onClick={() => setFilterProvince('')} className="hover:text-accent-bright transition-colors" aria-label="Quitar filtro provincia">&times;</button>
-              </span>
-            )}
-            {filterType && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xxs bg-accent/10 text-accent border border-accent/20 rounded-terminal">
-                <span>{TYPE_LABELS[filterType] || filterType.toUpperCase()}</span>
-                <button onClick={() => setFilterType('')} className="hover:text-accent-bright transition-colors" aria-label="Quitar filtro tipo">&times;</button>
-              </span>
-            )}
           </div>
         )}
 

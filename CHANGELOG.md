@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.15] — 2026-06-09
+
+### UX integral — showcase PRO, filtros de remates, calendario multi-localidad, bienvenida
+
+Cuatro frentes bajo un brief de diseño común (terminal oscuro, accent sky = PRO, una acción primaria por vista, datos reales):
+
+- **Showcase PRO** — los 5 tools PRO dejan de estar en cards tibias: sección de highlights en la home + nueva página **`/pro`** (tour con gancho real de cada tool + CTA), reutilizando `<ProReveal>`/`<HeroNumber>`. Componentes en `src/components/showcase/`.
+- **Reorg de /remates** — barra de filtros **unificada** (período + En Vivo + buscar + Provincia + Tipo + FILTROS PRO) con **chips de filtros aplicados** removibles, en `src/components/remates/RematesFilterBar.tsx`. **Las rutas SEO siguen intactas** (filtra client-side el dataset ya cargado, no navega) — `/remates/[slug]`, `/ciudad`, `/tipo`, `/mes`, hoy/semana/en-vivo, etc.
+- **Calendario multi-localidad** — `MultiSelectList` con **checkboxes por localidad agrupados por provincia + "seleccionar todas / toda la provincia"** (estado indeterminado), barra de selección con contador, y export `.ics` sobre **todas** las localidades tildadas. Antes: una sola.
+- **Bienvenida ultra-PRO** — saludo/estado premium en el dashboard con datos reales de sesión, módulo de bienvenida al activar PRO ("esto desbloqueaste" + próximos pasos), y `WelcomeChecklist`/`ProfileProgressTracker` pulidos para guiar.
+
+`/pro` agregada al sitemap. Sin datos inventados (regla #1). `pnpm build` limpio, `tsc` 0. Reporte: [`docs/REPORTE-ux-suite-2026-06-09.md`](docs/REPORTE-ux-suite-2026-06-09.md).
+
+---
+
 ## [1.30.14] — 2026-06-09
 
 ### Fuentes de remate NEA/Corrientes — el scraper deja de estar sesgado al Pampa/Litoral

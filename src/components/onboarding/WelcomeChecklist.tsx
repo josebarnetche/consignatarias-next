@@ -40,28 +40,39 @@ export default function WelcomeChecklist({ profileSlug: _profileSlug, displayNam
   return (
     <div className="terminal-panel">
       <div className="terminal-panel-header flex items-center justify-between">
-        <span className="text-zinc-200 text-label tracking-widest">BIENVENIDO</span>
+        <span className="text-zinc-200 text-label tracking-widest">COMPLETÁ TU PERFIL</span>
         <span className="text-xxs font-terminal tabular-nums text-zinc-500">
           {completed}/{total} completados
         </span>
       </div>
       <div className="px-panel py-3 space-y-3">
         <p className="text-data font-terminal text-zinc-400">
-          Completa tu perfil de <span className="text-zinc-200">{displayName}</span> para que los productores te encuentren.
+          Cada campo de <span className="text-zinc-200">{displayName}</span> que completás te hace más fácil de encontrar para los productores.
         </p>
 
-        <div className="space-y-1.5">
+        <div className="space-y-0.5">
           {CHECKLIST_ITEMS.map(item => {
             const done = completedFields[item.key]
-            return (
-              <div key={item.key} className="flex items-center gap-2">
+            const row = (
+              <span className="flex items-center gap-2 w-full">
                 <span className={`text-data font-terminal ${done ? 'text-positive' : 'text-zinc-500'}`}>
                   {done ? '\u2713' : '\u25CB'}
                 </span>
                 <span className={`text-xxs font-terminal ${done ? 'text-zinc-500 line-through' : 'text-zinc-300'}`}>
                   {item.label}
                 </span>
-              </div>
+              </span>
+            )
+            return done ? (
+              <div key={item.key} className="flex items-center w-full px-1.5 py-2">{row}</div>
+            ) : (
+              <button
+                key={item.key}
+                onClick={handleEditClick}
+                className="flex items-center w-full text-left px-1.5 py-2 rounded-terminal hover:bg-zinc-800/40 transition-colors"
+              >
+                {row}
+              </button>
             )
           })}
         </div>

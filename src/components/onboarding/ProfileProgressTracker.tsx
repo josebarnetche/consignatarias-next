@@ -94,7 +94,7 @@ export default function ProfileProgressTracker({
                 <button
                   key={i}
                   onClick={() => handleActionClick(item.action)}
-                  className="w-full flex items-center justify-between gap-2 group"
+                  className="w-full flex items-center justify-between gap-2 group px-1.5 py-2 rounded-terminal hover:bg-zinc-800/40 transition-colors"
                 >
                   <div className="flex items-center gap-2">
                     <Circle className="w-3 h-3 text-zinc-600" />

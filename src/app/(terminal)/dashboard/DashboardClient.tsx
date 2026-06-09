@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { useSearchParams, useRouter } from 'next/navigation'
 import WelcomeChecklist from '@/components/onboarding/WelcomeChecklist'
 import ProfileProgressTracker from '@/components/onboarding/ProfileProgressTracker'
+import { WelcomeHero, ProActivatedModule, type NextStep } from '@/components/welcome'
 import { WhatsAppIconButton } from '@/components/share/WhatsAppShare'
 import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2 } from 'lucide-react'
 import QRCode from '@/components/QRCode'
@@ -150,6 +151,34 @@ export default function DashboardClient({
       : 'PRO'
     : 'FREE'
 
+  // PRO ya activo (suscripción confirmada) vs todavía procesando el pago.
+  const proActivated = !!subscription || upgradeConfirmed
+  const proConfirming = justUpgraded && !proActivated
+
+  // Próximos pasos de activación PRO — destinos reales del dashboard.
+  const profileComplete = completedFields
+    ? Object.values(completedFields).every(Boolean)
+    : false
+  const proNextSteps: NextStep[] = (tierLabel === 'PRO' || tierLabel === 'ENTERPRISE') && consignataria
+    ? [
+        {
+          label: 'Completá los datos de tu perfil',
+          done: profileComplete,
+          onClick: () => { setActiveTab('editar'); setShowUpgradeToast(false) },
+        },
+        {
+          label: 'Cargá tu primer remate destacado',
+          done: ownerAuctions.length > 0,
+          onClick: () => { setActiveTab('remates'); setShowUpgradeToast(false) },
+        },
+        {
+          label: 'Exportá tu calendario de remates',
+          done: false,
+          href: '/calendario-exportar',
+        },
+      ]
+    : []
+
   // Handle points redemption
   const handleRedeemPoints = async () => {
     setIsRedeeming(true)
@@ -214,48 +243,15 @@ export default function DashboardClient({
 
   return (
     <div className="max-w-3xl mx-auto px-2 sm:px-4 py-4 space-y-4">
-      {/* Post-upgrade celebration */}
-      {showUpgradeToast && (
-        <div className="terminal-panel border-amber-500/40" style={{ boxShadow: '0 0 20px rgba(251, 191, 36, 0.1)' }}>
-          <div className="px-panel py-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="text-amber-400 font-terminal text-lg">&#9733;</span>
-                <div>
-                  <div className="text-amber-300 font-terminal text-data font-semibold">
-                    {(subscription || upgradeConfirmed) ? 'PRO activado!' : 'Pago recibido — activando PRO...'}
-                  </div>
-                  <div className="text-zinc-400 text-xxs font-terminal mt-0.5">
-                    {(subscription || upgradeConfirmed)
-                      ? 'Tu perfil esta destacado y tus remates aparecen con badge dorado.'
-                      : 'Procesando tu suscripcion. Esto puede tomar unos segundos.'}
-                  </div>
-                </div>
-              </div>
-              <button onClick={() => setShowUpgradeToast(false)} className="text-zinc-500 text-xxs font-terminal hover:text-zinc-400 flex-shrink-0">Cerrar</button>
-            </div>
-            {(subscription || upgradeConfirmed) ? (
-              <div className="flex flex-wrap gap-2">
-                <button onClick={() => { setActiveTab('remates'); setShowUpgradeToast(false) }} className="px-3 py-1.5 bg-amber-400/10 border border-amber-500/30 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-400/20 transition-colors">
-                  Crear remate destacado
-                </button>
-                <button onClick={() => { setActiveTab('editar'); setShowUpgradeToast(false) }} className="px-3 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors">
-                  Completar perfil
-                </button>
-                {consignataria && (
-                  <Link href={`/consignatarias/${consignataria.canonical_slug}`} className="px-3 py-1.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors">
-                    Ver perfil publico
-                  </Link>
-                )}
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
-                <span className="text-xxs font-terminal text-zinc-500">Verificando suscripcion...</span>
-              </div>
-            )}
-          </div>
-        </div>
+      {/* Bienvenida post-upgrade — "ya sos PRO, esto desbloqueaste" + proximos pasos */}
+      {showUpgradeToast && (tierLabel === 'PRO' || tierLabel === 'ENTERPRISE' || proConfirming) && (
+        <ProActivatedModule
+          tier={tierLabel === 'ENTERPRISE' ? 'ENTERPRISE' : 'PRO'}
+          periodEnd={subscription?.current_period_end}
+          confirming={proConfirming}
+          steps={proNextSteps}
+          onClose={() => setShowUpgradeToast(false)}
+        />
       )}
 
       {/* Header */}
@@ -267,7 +263,7 @@ export default function DashboardClient({
               <span className="text-xxs font-terminal px-1.5 py-0.5 border border-positive/30 text-positive rounded-terminal">VERIFICADA</span>
             )}
             {(tierLabel === 'PRO' || tierLabel === 'ENTERPRISE') && (
-              <span className="text-xxs font-terminal px-1.5 py-0.5 border border-amber-500/30 text-amber-400 rounded-terminal">{tierLabel}</span>
+              <span className="text-xxs font-terminal px-1.5 py-0.5 border border-accent/40 text-accent rounded-terminal">{tierLabel}</span>
             )}
           </div>
         </div>
@@ -310,6 +306,17 @@ export default function DashboardClient({
       {/* ============ TAB: RESUMEN ============ */}
       {activeTab === 'resumen' && (
         <>
+          {/* Saludo + estado de cuenta (dato real de valor) */}
+          <WelcomeHero
+            email={email}
+            displayName={consignataria?.display_name ?? frigorifico?.display_name}
+            tier={tierLabel as 'FREE' | 'PRO' | 'ENTERPRISE'}
+            periodEnd={subscription?.current_period_end}
+            viewCount={consignataria?.verified ? viewCount : null}
+            viewPercentile={consignataria?.verified ? viewPercentile : 0}
+            provincialRank={provincialRank}
+          />
+
           {showChecklist && completedFields && consignataria && (
             <WelcomeChecklist profileSlug={consignataria.canonical_slug} displayName={consignataria.display_name} completedFields={completedFields} />
           )}
@@ -347,11 +354,11 @@ export default function DashboardClient({
           )}
 
           {consignataria?.verified && (
-            <div className={`terminal-panel ${tierLabel !== 'FREE' ? 'border-amber-500/20' : ''}`}>
+            <div className="terminal-panel">
               <div className="terminal-panel-header flex items-center justify-between">
                 <span className="text-zinc-200 text-label tracking-widest">📊 TU IMPACTO — ÚLTIMOS 30 DÍAS</span>
                 {tierLabel !== 'FREE' && (
-                  <span className="text-xxs text-amber-400 font-terminal">PRO Analytics</span>
+                  <span className="text-xxs text-accent font-terminal">PRO Analytics</span>
                 )}
               </div>
               <div className="px-panel py-4">
@@ -1382,7 +1389,7 @@ function SubscriptionPanel({ tier, subscription }: { tier: string; subscription:
       <div className="terminal-panel-header flex items-center justify-between">
         <span className="text-zinc-200 text-label tracking-widest">MI PLAN</span>
         <span className={`text-xxs font-terminal px-1.5 py-0.5 border rounded-terminal ${
-          tier === 'PRO' ? 'border-amber-500/30 text-amber-400' : tier === 'ENTERPRISE' ? 'border-purple-500/30 text-purple-400' : 'border-zinc-600/30 text-zinc-500'
+          tier === 'PRO' ? 'border-accent/40 text-accent' : tier === 'ENTERPRISE' ? 'border-purple-500/30 text-purple-400' : 'border-zinc-600/30 text-zinc-500'
         }`}>{tier}</span>
       </div>
       <div className="px-panel py-3 space-y-3">
