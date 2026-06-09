@@ -111,10 +111,12 @@ Si lo que querés es comprar o vender hacienda:
 - [`/precios`](https://www.consignatarias.com.ar/precios) · cotización diaria de las 6 categorías + INMAG
 - [`/mi-ganado`](https://www.consignatarias.com.ar/mi-ganado) · **la libreta del campo**: cargá tu hacienda una vez y mirá cuánto vale **hoy al INMAG** (ARS + USD), con la variación desde tu última visita y la curva de cómo evoluciona tu rodeo en el tiempo. Gratis con tu cuenta; queda guardado y el valor se mueve solo con el mercado
 - [`/mercado`](https://www.consignatarias.com.ar/mercado) · análisis de tendencia con USD blue / oficial
+- [`/pro`](https://www.consignatarias.com.ar/pro) · **el tour de PRO Usuario** — ¿Vendo ahora?, Neto en mano, Comparador, Spread y estacionalidad, con preview gratis y la decisión detrás de PRO
+- [`/calendario-exportar`](https://www.consignatarias.com.ar/calendario-exportar) · exportá a tu calendario (`.ics`) los remates de **varias localidades a la vez** (checkboxes por provincia)
 - [`/consignatarias`](https://www.consignatarias.com.ar/consignatarias) · grilla por región (Pampa Húmeda · Centro · Mesopotamia · NEA · NOA · Cuyo · Patagonia)
 - [`/frigorificos`](https://www.consignatarias.com.ar/frigorificos) · 1.092 plantas con badge SENASA · vigente / sin verificación
 
-**PRO Usuario · ARS 7.900/mes.** Acceso a medios de pago de cada consignataria, verificación SENASA expandida, filtros avanzados, archivo histórico INMAG, descargas premium (El Corredor, El Oráculo). Activación en [`/planes`](https://www.consignatarias.com.ar/planes).
+**PRO Usuario · ARS 7.900/mes.** Las herramientas del que vende hacienda: **¿Vendo ahora?** (percentil de 30 y 365 días en dólares reales + lectura del momento de venta), **Neto en mano** (del bruto al neto), **Comparador** con medios de pago y días de cobro, **Spread** y **estacionalidad** mes×año. El valor de tu hacienda lo ves gratis; la decisión se desbloquea con PRO (mismo patrón en todas: gancho gratis → decisión PRO). Suma archivo histórico INMAG + descargas El Corredor / El Oráculo. Tour en [`/pro`](https://www.consignatarias.com.ar/pro) · activación en [`/planes`](https://www.consignatarias.com.ar/planes).
 
 ---
 
@@ -187,4 +189,4 @@ Operadores comerciales que construyen infraestructura propietaria — no agencia
 
 ---
 
-v1.30.0 · 2026-06-04 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0
+v1.30.15 · 2026-06-09 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0

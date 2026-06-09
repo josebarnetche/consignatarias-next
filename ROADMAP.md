@@ -1,6 +1,6 @@
 # Roadmap
 
-**Current:** v1.30.3 (June 4, 2026) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
+**Current:** v1.30.15 (June 9, 2026) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
 **Strategic frame:** [docs/strategy/POSITIONING-THESIS.md](docs/strategy/POSITIONING-THESIS.md) — own the
 category **"el precio de referencia del ganado argentino"** via three pillars (Index family ·
 Institutional access · Online-auction flywheel) across three horizons.
@@ -15,7 +15,7 @@ MAJOR boundary, so the product stays on 1.x.
 
 ---
 
-## Where we are now — v1.30.3 (June 2026)
+## Where we are now — v1.30.15 (June 2026)
 
 The intelligence-infrastructure thesis is in execution. The train since v1.29:
 
@@ -45,6 +45,30 @@ The intelligence-infrastructure thesis is in execution. The train since v1.29:
 **State:** $0 revenue. Both checkout paths (B2C + Enterprise Starter) are **live and verified to reach
 Rebill.** Open: the real test payment (confirms Rebill → webhook → activation end-to-end) + the
 institutional sales motion.
+
+### Since v1.30.3 — the product-depth + coverage train (v1.30.4 → v1.30.15, June 9)
+
+With conversion unblocked, the train turned to **making PRO worth paying for** and **widening coverage**:
+
+- **PRO Usuario suite rebuilt under one gating standard (v1.30.13).** New `<ProReveal>` soft-gate
+  (free public-data hook → the *decision* behind a blurred CTA, never a hard wall/redirect) +
+  `<HeroNumber>`/`<StatPill>`. All five tools reworked: **¿Vendo ahora?** (verdict + percentiles in
+  **real USD** to kill the peso-inflation skew, honest per-category caveat), **Comparador**, **Neto en
+  mano**, **Spread** (now gated), **Histórico/Estacionalidad**. Standard: `docs/PRO-PRODUCT-STANDARD.md`.
+  → This closes the backlog item "free preview vs full lock."
+- **PRO showcased, not buried (v1.30.15).** Home highlights + new **`/pro`** tour; unified `/remates`
+  filter bar with removable chips (**SEO routes preserved** — filters client-side, no nav); calendar
+  **multi-locality** checkbox `.ics` export; ultra-PRO welcome (premium dashboard greeting +
+  post-upgrade module + polished onboarding).
+- **Coverage — NEA/Corrientes (v1.30.14).** The scraper was Pampa/Litoral-biased; added isolated
+  `scripts/scrapers/nea.mjs` (Reggi, Aguerre, HRE, Rosgan, ClicRural). **Corrientes future remates 4→9,
+  Entre Ríos 18→71, total 554→619.** Rosgan indexed as an *attributed source*, not a republished index.
+- **Organic (v1.30.12) + El Corredor current (v1.30.11).** Geo CTR sprint (title/meta + FAQ schema on
+  province pages; killed "bucket" jargon) — the bottleneck is **CTR, not ranking** (organic +93% MoM at
+  pos 6.4); landing pointed to the Mayo edition.
+- **First active API consumer.** A real Enterprise prospect (cattle-software dev) polls `/api/precios`
+  daily for herd valuation — validates the institutional-access thesis and surfaced demand for
+  invernada/vientres data the INMAG faena feed doesn't carry.
 
 ---
 
@@ -86,20 +110,28 @@ structured measurement of the **71% dark pool** (long arc). RWA / CD+W / tokeniz
    `rebill_subscription_id`. The single gate between "can pay" and "converts." *(User action; I can't pay.)*
 2. **Pillar 2 sales enablement** — institutional-access one-pager PDF + sample dataset download, then outbound.
 3. **Conversion measurement** — `UpgradeConfirmTracker` (fire `pro_upgrade` only on DB confirmation,
-   never on `?upgraded=true`), and the calculadora **blurred-number reveal** to lift the 3.7% prompt CTR.
+   never on `?upgraded=true`). *(The blurred-number reveal shipped as `<ProReveal>` across the whole PRO
+   suite in v1.30.13.)*
 4. **Pillar 1 deepening** — derivative indicators (Liquidation/Heaviness/Quality) + daily index bot;
    academic co-sign; generated `llms-full.txt`.
-5. **Pillar 3 wedge** — the Online/Pantalla indicator on Rosgan + scraped remates.
-6. **API ecosystem** — `api.consignatarias.com.ar`, OpenAPI/SDKs, public status page.
-7. **Hygiene** — run `pnpm build` (not just `next dev` + `tsc`) before pushing JSX; a lint error blocked
-   all deploys for hours (v1.29.14 → v1.30.2 were stuck).
+5. **Pillar 3 wedge** — *NEA/Rosgan + multi-source scraping shipped (v1.30.14).* Next: turn the captured
+   pantalla volume into a published **Online/Pantalla indicator**.
+6. **"En vivo" streaming** — `/remates/en-vivo` is structurally empty (0 future remates carry a stream
+   URL). Capture per-event YouTube: headless render for Wix sources (Arzuaga), Canal Rural channel
+   resolution, consignataria streams — so the live surface actually populates.
+7. **Pillar 3 core — dark-pool capture.** `auction_results` is empty; post-remate outreach gets ~0
+   usable replies and there's no ingestion pipeline. Drafted: an **AI multimodal parser** (email / PDF /
+   photo of the planilla → structured rows). See `docs/DRAFT-captura-resultados-remate-AI.md`.
+8. **API ecosystem** — `api.consignatarias.com.ar`, OpenAPI/SDKs, public status page.
+9. **Hygiene** — run `pnpm build` before pushing JSX (a lint error once blocked all deploys); and
+   **tag releases** (tagging fell behind: v1.30.8 → v1.30.15 are untagged while the CHANGELOG advanced).
 
 ---
 
 ## v2.0.0 Definition (the revenue milestone — still the goal)
 
 **v2.0.0 = USD 2.000+ MRR across the product lines, sustained 30 days.**
-- [ ] 5+ Enterprise customers paying (Starter/Growth/Scale or a institutional-access)
+- [ ] 5+ Enterprise customers paying (Starter/Growth/Scale or a institutional-access) — *1 active prospect already consuming `/api/precios` daily (cattle-software dev); not yet paying*
 - [ ] 1+ PRO Consignataria paying
 - [ ] 10+ PRO Usuario paying
 - [ ] Total MRR ≥ USD 2.000 normalized at MEP
