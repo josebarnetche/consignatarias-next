@@ -1,12 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
-import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import { useSessionTier } from '@/lib/use-session-tier'
+import { ProReveal, HeroNumber, StatPill } from '@/components/pro'
 
 const FREE_LIMIT = 3
-const _PRO_LIMIT = 5 // Reserved for future use
 
 const METODO_LABELS: Record<string, string> = {
   'transferencia': 'Transferencia',
@@ -55,6 +54,46 @@ function fmt(n: number): string {
   return n.toLocaleString('es-AR')
 }
 
+/**
+ * "Mejor encaje" score — a decision aid built ONLY from real public signals
+ * already present per consignataria (no invented data). It answers the
+ * producer's real question: "¿a cuál de estas le mando mi hacienda?".
+ *
+ * Three real signals, normalized 0–100 *within the currently selected set*
+ * (a relative comparison, not an absolute claim):
+ *   - actividad próxima  (upcomingRemates) — quién está moviendo hacienda AHORA
+ *   - volumen            (totalCabezas)    — escala de la plaza
+ *   - trayectoria        (totalRemates)    — histórico de remates indexados
+ * Verified profiles get a small, transparent confidence nudge.
+ */
+interface ScoredConsignataria extends ConsignatariaStats {
+  actividadPct: number
+  volumenPct: number
+  trayectoriaPct: number
+  score: number
+}
+
+function relPct(value: number, max: number): number {
+  if (max <= 0) return 0
+  return Math.round((value / max) * 100)
+}
+
+function scoreSelection(list: ConsignatariaStats[]): ScoredConsignataria[] {
+  const maxUpcoming = Math.max(1, ...list.map((c) => c.upcomingRemates))
+  const maxCabezas = Math.max(1, ...list.map((c) => c.totalCabezas))
+  const maxRemates = Math.max(1, ...list.map((c) => c.totalRemates))
+
+  return list.map((c) => {
+    const actividadPct = relPct(c.upcomingRemates, maxUpcoming)
+    const volumenPct = relPct(c.totalCabezas, maxCabezas)
+    const trayectoriaPct = relPct(c.totalRemates, maxRemates)
+    // Decision weighting: lo que MUEVE hoy pesa más que el histórico.
+    const base = actividadPct * 0.5 + volumenPct * 0.3 + trayectoriaPct * 0.2
+    const score = Math.round(Math.min(100, base + (c.verified ? 4 : 0)))
+    return { ...c, actividadPct, volumenPct, trayectoriaPct, score }
+  })
+}
+
 export default function CompararClient({ consignatarias }: { consignatarias: ConsignatariaStats[] }) {
   const [selected, setSelected] = useState<string[]>([])
   const [search, setSearch] = useState('')
@@ -62,7 +101,7 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
   const [emailSaved, setEmailSaved] = useState(false)
 
   const filtered = search.trim()
-    ? consignatarias.filter(c => 
+    ? consignatarias.filter(c =>
         c.name.toLowerCase().includes(search.toLowerCase()) ||
         c.provincias.some(p => p.toLowerCase().includes(search.toLowerCase()))
       )
@@ -80,7 +119,7 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
 
   async function saveEmail() {
     if (!email.trim() || emailSaved) return
-    
+
     try {
       await fetch('/api/newsletter', {
         method: 'POST',
@@ -96,6 +135,12 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
   const selectedConsignatarias = selected.map(slug =>
     consignatarias.find(c => c.slug === slug)!
   ).filter(Boolean)
+
+  // Decision layer: score + rank the current selection on REAL public signals.
+  const scored = useMemo(() => scoreSelection(selectedConsignatarias), [selectedConsignatarias])
+  const ranked = useMemo(() => [...scored].sort((a, b) => b.score - a.score), [scored])
+  const winner = ranked[0]
+  const runnerUp = ranked[1]
 
   // Medios de pago + plazo de cobro — PRO. Fetched on demand (never baked into
   // the static HTML) and only when the user is PRO.
@@ -113,6 +158,16 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
       .catch(() => {})
   }, [session.tier, selected])
 
+  // PRO commercial-terms decision: shortest collection term among the selection.
+  const fastestPayer = useMemo(() => {
+    if (session.tier !== 'pro') return null
+    const withPlazo = selectedConsignatarias
+      .map((c) => ({ c, plazo: medios[c.slug]?.plazoMin }))
+      .filter((x): x is { c: ConsignatariaStats; plazo: number } => typeof x.plazo === 'number')
+    if (withPlazo.length === 0) return null
+    return withPlazo.reduce((best, x) => (x.plazo < best.plazo ? x : best))
+  }, [session.tier, selectedConsignatarias, medios])
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Header */}
@@ -124,18 +179,9 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
           Comparar Consignatarias
         </h1>
         <p className="text-zinc-400 text-sm leading-relaxed">
-          Seleccioná hasta {FREE_LIMIT} consignatarias para comparar lado a lado. 
-          Analizá remates programados, cobertura geográfica y tipos de operación.
+          Seleccioná hasta {FREE_LIMIT} consignatarias y decidí <span className="text-zinc-200">a cuál mandarle tu hacienda</span>.
+          Ordenamos por encaje real: actividad, volumen y trayectoria.
         </p>
-        {atFreeLimit && (
-          <div className="mt-4">
-            <ProUpgradePrompt 
-              benefit="Tu remate llega a +500 productores cada semana. Destacalo."
-              context="comparar"
-              variant="card"
-            />
-          </div>
-        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -145,7 +191,7 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
             <div className="terminal-panel-header">
               Seleccionar ({selected.length}/{FREE_LIMIT})
             </div>
-            
+
             {/* Search */}
             <div className="px-panel py-3 border-b border-terminal-border">
               <input
@@ -159,32 +205,41 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
 
             {/* List */}
             <div className="max-h-[400px] overflow-y-auto">
-              {filtered.slice(0, 50).map(c => (
-                <button
-                  key={c.slug}
-                  onClick={() => toggleSelect(c.slug)}
-                  disabled={!selected.includes(c.slug) && atFreeLimit}
-                  className={`w-full px-panel py-3 text-left border-b border-terminal-border transition-colors
-                    ${selected.includes(c.slug) 
-                      ? 'bg-accent/10 border-l-2 border-l-accent' 
-                      : 'hover:bg-zinc-800/50'}
-                    ${!selected.includes(c.slug) && atFreeLimit 
-                      ? 'opacity-50 cursor-not-allowed' 
-                      : 'cursor-pointer'}
-                  `}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-zinc-200">{c.name}</span>
-                    {c.verified && (
-                      <span className="text-xxs text-emerald-400">✓</span>
-                    )}
-                  </div>
-                  <div className="text-xxs text-zinc-500 mt-1">
-                    {c.totalRemates} remates · {c.provincias.slice(0, 2).join(', ')}
-                    {c.provincias.length > 2 && ` +${c.provincias.length - 2}`}
-                  </div>
-                </button>
-              ))}
+              {filtered.slice(0, 50).map(c => {
+                const isSel = selected.includes(c.slug)
+                const blocked = !isSel && atFreeLimit
+                return (
+                  <button
+                    key={c.slug}
+                    onClick={() => toggleSelect(c.slug)}
+                    disabled={blocked}
+                    aria-pressed={isSel}
+                    className={`w-full px-panel py-3 text-left border-b border-terminal-border transition-colors min-h-[44px]
+                      ${isSel
+                        ? 'bg-accent/10 border-l-2 border-l-accent'
+                        : 'hover:bg-zinc-800/50'}
+                      ${blocked
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'cursor-pointer'}
+                    `}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-zinc-200">{c.name}</span>
+                      {c.verified && (
+                        <span className="text-xxs text-emerald-400" title="Perfil verificado">✓</span>
+                      )}
+                    </div>
+                    <div className="text-xxs text-zinc-500 mt-1">
+                      {c.upcomingRemates > 0
+                        ? <span className="text-emerald-400">{c.upcomingRemates} próximo{c.upcomingRemates === 1 ? '' : 's'}</span>
+                        : <span>{c.totalRemates} remates</span>}
+                      {' · '}
+                      {c.provincias.slice(0, 2).join(', ')}
+                      {c.provincias.length > 2 && ` +${c.provincias.length - 2}`}
+                    </div>
+                  </button>
+                )
+              })}
             </div>
 
             {filtered.length > 50 && (
@@ -210,7 +265,7 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                     Comparador listo
                   </p>
                   <p className="text-xxs text-zinc-500 font-terminal">
-                    Seleccioná consignatarias del panel izquierdo para ver la comparación
+                    Seleccioná consignatarias del panel izquierdo para ver a cuál te conviene mandarle la hacienda
                   </p>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-xxs text-zinc-600 font-terminal pt-2">
@@ -221,7 +276,61 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
             </div>
           ) : (
             <div className="space-y-6">
-              {/* Comparison Table */}
+              {/* DECISION — best fit verdict (free hook, public data) */}
+              {winner && (
+                <div className="terminal-panel" style={{ borderColor: 'rgba(56,189,248,0.4)' }}>
+                  <div className="terminal-panel-header" style={{ color: '#38bdf8' }}>
+                    Mejor encaje
+                  </div>
+                  <div className="px-panel py-5">
+                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+                      <HeroNumber
+                        label="Recomendada por actividad y volumen"
+                        value={winner.name}
+                        tone="accent"
+                        size="text-xl"
+                        sub={
+                          selectedConsignatarias.length > 1 && runnerUp
+                            ? <>encaje {winner.score} · supera a {runnerUp.name} ({runnerUp.score})</>
+                            : <>encaje {winner.score} / 100</>
+                        }
+                      />
+                      <Link
+                        href={`/consignatarias/${winner.slug}`}
+                        className="shrink-0 inline-flex items-center justify-center min-h-[44px] px-4 text-xxs font-terminal uppercase tracking-wider"
+                        style={{ background: 'rgba(56,189,248,0.9)', color: '#000', borderRadius: '2px' }}
+                      >
+                        Ver perfil →
+                      </Link>
+                    </div>
+                    {/* Per-consignataria score breakdown — relative bars (real signals) */}
+                    <div className="mt-5 space-y-4">
+                      {ranked.map((c) => (
+                        <div key={c.slug} className="space-y-1.5">
+                          <div className="flex items-center gap-2">
+                            <span className="text-data text-zinc-200 font-terminal">{c.name}</span>
+                            {c.verified && <span className="text-xxs text-emerald-400" title="Verificado">✓</span>}
+                            {c === winner && (
+                              <span className="text-[10px] font-terminal uppercase tracking-wider px-1.5 py-0.5 rounded-sm" style={{ background: 'rgba(56,189,248,0.15)', color: '#38bdf8' }}>
+                                Top
+                              </span>
+                            )}
+                            <span className="ml-auto text-zinc-500 text-xxs font-terminal tabular-nums">encaje {c.score}</span>
+                          </div>
+                          <StatPill label="Actividad (próximos remates)" value={c.actividadPct} />
+                          <StatPill label="Volumen (cabezas)" value={c.volumenPct} />
+                          <StatPill label="Trayectoria (remates)" value={c.trayectoriaPct} />
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-zinc-500 text-xxs mt-4 leading-relaxed">
+                      Encaje relativo entre las seleccionadas, sobre datos públicos: próximos remates, cabezas estimadas y remates indexados. No es recomendación de inversión.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Comparison Table — free, public data (the hook) */}
               <div className="terminal-panel overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -240,6 +349,20 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                     </tr>
                   </thead>
                   <tbody>
+                    {/* Próximos remates — the decision-relevant number, shown first + hero color */}
+                    <tr className="border-b border-terminal-border">
+                      <td className="px-panel py-3 text-sm text-zinc-400">
+                        Próximos remates
+                      </td>
+                      {selectedConsignatarias.map(c => (
+                        <td key={c.slug} className="px-4 py-3 text-sm font-mono">
+                          <span className={c.upcomingRemates > 0 ? 'text-emerald-400' : 'text-zinc-600'}>
+                            {c.upcomingRemates}
+                          </span>
+                        </td>
+                      ))}
+                    </tr>
+
                     {/* Total Remates */}
                     <tr className="border-b border-terminal-border">
                       <td className="px-panel py-3 text-sm text-zinc-400">
@@ -252,18 +375,6 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                       ))}
                     </tr>
 
-                    {/* Upcoming */}
-                    <tr className="border-b border-terminal-border">
-                      <td className="px-panel py-3 text-sm text-zinc-400">
-                        Próximos remates
-                      </td>
-                      {selectedConsignatarias.map(c => (
-                        <td key={c.slug} className="px-4 py-3 text-sm text-emerald-400 font-mono">
-                          {c.upcomingRemates}
-                        </td>
-                      ))}
-                    </tr>
-
                     {/* Cabezas */}
                     <tr className="border-b border-terminal-border">
                       <td className="px-panel py-3 text-sm text-zinc-400">
@@ -271,7 +382,7 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                       </td>
                       {selectedConsignatarias.map(c => (
                         <td key={c.slug} className="px-4 py-3 text-sm text-zinc-200 font-mono">
-                          ~{fmt(c.totalCabezas)}
+                          {c.totalCabezas > 0 ? `~${fmt(c.totalCabezas)}` : <span className="text-zinc-600">s/d</span>}
                         </td>
                       ))}
                     </tr>
@@ -312,52 +423,6 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                       ))}
                     </tr>
 
-                    {/* Medios de pago — PRO */}
-                    <tr className="border-b border-terminal-border">
-                      <td className="px-panel py-3 text-sm text-zinc-400">
-                        <span className="inline-flex items-center gap-1.5">
-                          Medios de pago
-                          <span className="text-[10px] font-terminal font-bold tracking-wider border border-amber-500/50 bg-amber-500/10 text-amber-400 rounded-sm px-1 py-0.5">PRO</span>
-                        </span>
-                      </td>
-                      {selectedConsignatarias.map(c => (
-                        <td key={c.slug} className="px-4 py-3 text-sm text-zinc-200">
-                          {session.tier === 'pro' ? (
-                            medios[c.slug]?.metodos?.length ? (
-                              <div className="flex flex-wrap gap-1">
-                                {medios[c.slug].metodos.map(m => (
-                                  <span key={m} className="text-xxs bg-zinc-800 px-1.5 py-0.5 rounded">{METODO_LABELS[m] || m}</span>
-                                ))}
-                              </div>
-                            ) : (
-                              <span className="text-zinc-600 text-xxs">Sin publicar</span>
-                            )
-                          ) : (
-                            <Link href="/planes?from=comparar-medios" className="text-amber-400/80 hover:text-amber-300 text-xs inline-flex items-center gap-1">🔒 PRO</Link>
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-
-                    {/* Días de cobro — PRO */}
-                    <tr className="border-b border-terminal-border">
-                      <td className="px-panel py-3 text-sm text-zinc-400">
-                        <span className="inline-flex items-center gap-1.5">
-                          Días de cobro
-                          <span className="text-[10px] font-terminal font-bold tracking-wider border border-amber-500/50 bg-amber-500/10 text-amber-400 rounded-sm px-1 py-0.5">PRO</span>
-                        </span>
-                      </td>
-                      {selectedConsignatarias.map(c => (
-                        <td key={c.slug} className="px-4 py-3 text-sm text-zinc-200 font-mono">
-                          {session.tier === 'pro' ? (
-                            <span>{fmtPlazo(medios[c.slug]?.plazoMin ?? null)}</span>
-                          ) : (
-                            <Link href="/planes?from=comparar-plazo" className="text-amber-400/80 hover:text-amber-300 text-xs inline-flex items-center gap-1">🔒 PRO</Link>
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-
                     {/* Status */}
                     <tr>
                       <td className="px-panel py-3 text-sm text-zinc-400">
@@ -377,14 +442,64 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                 </table>
               </div>
 
-              {/* PRO upsell — medios de pago + días de cobro */}
-              {!session.loading && session.tier !== 'pro' && (
-                <ProUpgradePrompt
-                  benefit="Compará medios de pago y días de cobro de cada consignataria. PRO por ARS $7.900/mes."
-                  context="comparar-medios"
-                  variant="card"
-                />
-              )}
+              {/* PRO — commercial terms decision (gated). Free user sees the FORM, blurred. */}
+              <ProReveal
+                from="/comparar"
+                title="Condiciones comerciales — PRO"
+                benefit="Compará medios de pago y días de cobro de cada una, y mirá quién te paga más rápido."
+                placeholder={<TermsSkeleton names={selectedConsignatarias.map((c) => c.name)} />}
+              >
+                <div>
+                  {/* Decision line: who pays fastest */}
+                  {fastestPayer && selectedConsignatarias.length > 1 && (
+                    <div className="mb-4">
+                      <HeroNumber
+                        label="Cobrás más rápido en"
+                        value={fastestPayer.c.name}
+                        tone="positive"
+                        size="text-lg"
+                        sub={`${fmtPlazo(fastestPayer.plazo)} de plazo`}
+                      />
+                    </div>
+                  )}
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <tbody>
+                        <tr className="border-b border-terminal-border">
+                          <td className="py-3 pr-4 text-sm text-zinc-400 align-top">Medios de pago</td>
+                          {selectedConsignatarias.map((c) => (
+                            <td key={c.slug} className="px-3 py-3 text-sm text-zinc-200 align-top">
+                              {medios[c.slug]?.metodos?.length ? (
+                                <div className="flex flex-wrap gap-1">
+                                  {medios[c.slug].metodos.map((m) => (
+                                    <span key={m} className="text-xxs bg-zinc-800 px-1.5 py-0.5 rounded">{METODO_LABELS[m] || m}</span>
+                                  ))}
+                                </div>
+                              ) : (
+                                <span className="text-zinc-600 text-xxs">Sin publicar</span>
+                              )}
+                            </td>
+                          ))}
+                        </tr>
+                        <tr>
+                          <td className="py-3 pr-4 text-sm text-zinc-400">Días de cobro</td>
+                          {selectedConsignatarias.map((c) => {
+                            const plazo = medios[c.slug]?.plazoMin ?? null
+                            const isFastest = fastestPayer?.c.slug === c.slug && selectedConsignatarias.length > 1
+                            return (
+                              <td key={c.slug} className="px-3 py-3 text-sm font-mono">
+                                <span style={isFastest ? { color: '#34d399' } : undefined} className={isFastest ? '' : 'text-zinc-200'}>
+                                  {fmtPlazo(plazo)}
+                                </span>
+                              </td>
+                            )
+                          })}
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </ProReveal>
 
               {/* Actions */}
               <div className="terminal-panel">
@@ -410,7 +525,7 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                     <p className="text-sm text-zinc-400 mb-3">
                       Recibí actualizaciones cuando estas consignatarias publiquen nuevos remates.
                     </p>
-                    <div className="flex gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3">
                       <input
                         type="email"
                         value={email}
@@ -420,7 +535,7 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                       />
                       <button
                         onClick={saveEmail}
-                        className="px-6 py-2 bg-zinc-100 hover:bg-white text-zinc-900 text-sm font-medium rounded transition-colors"
+                        className="px-6 py-2 min-h-[44px] bg-zinc-100 hover:bg-white text-zinc-900 text-sm font-medium rounded transition-colors"
                       >
                         Guardar
                       </button>
@@ -440,6 +555,29 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
           )}
         </div>
       </div>
+    </div>
+  )
+}
+
+/**
+ * Non-real placeholder for the blurred PRO teaser — obviously-fake skeleton
+ * rows keyed to the selected names, so a free user sees the SHAPE of the
+ * commercial-terms table without any real or fabricated numbers leaking.
+ */
+function TermsSkeleton({ names }: { names: string[] }) {
+  return (
+    <div className="space-y-4">
+      <div className="h-2.5 bg-zinc-800 rounded-sm" style={{ width: '40%' }} />
+      {['Medios de pago', 'Días de cobro'].map((row) => (
+        <div key={row} className="flex items-center gap-3">
+          <span className="text-data text-zinc-500 w-28 shrink-0">{row}</span>
+          <div className="flex gap-2 flex-1">
+            {names.map((n, i) => (
+              <div key={n} className="flex-1 h-5 bg-zinc-800 rounded-sm" style={{ opacity: 0.5 + (i % 2) * 0.2 }} />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

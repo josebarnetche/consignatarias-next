@@ -8,7 +8,7 @@ import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import { ElCorredorCTA } from '@/components/ElCorredorCTA'
 import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
 import { AnimatedPrice } from '@/components/AnimatedPrice'
-import HistoryDownloadPro from '@/components/market/HistoryDownloadPro'
+import { InmagDecadaCompleta } from '@/components/market/InmagDecadaCompleta'
 
 const inmag = marketData.inmag
 const series = inmag.series as Array<{ date: string; value: number; volume?: number }>
@@ -378,6 +378,21 @@ export default function InmagPage() {
           </div>
         </section>
 
+        {/* La década completa — histórico + estacionalidad (z-score mes×año) + CSV.
+            Gancho gratis (heatmap reciente + mejor/peor mes histórico + lectura
+            del mes en curso) visible para todos; la década completa, el ranking
+            mes a mes y la descarga CSV viven gated en <ProReveal>. */}
+        <section id="decada-completa" className="max-w-6xl mx-auto px-4 pb-12">
+          <h2 className="text-xl font-semibold text-white mb-2">La década completa</h2>
+          <p className="text-sm text-zinc-500 mb-6 max-w-2xl">
+            ¿Qué mes históricamente conviene vender el novillo? El INMAG desde 2015,
+            mes contra mes, sin el ruido de la inflación — más la serie completa en CSV.
+          </p>
+          <Suspense fallback={<div className="h-[420px] bg-zinc-900/30 rounded-2xl animate-pulse" />}>
+            <InmagDecadaCompleta />
+          </Suspense>
+        </section>
+
         {/* Historical Data Table */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
           <h2 className="text-xl font-semibold text-white mb-6">Histórico de Precios</h2>
@@ -438,7 +453,15 @@ export default function InmagPage() {
             {/* Table footer */}
             <div className="px-6 py-4 border-t border-zinc-800/50 bg-zinc-900/50 flex items-center justify-between gap-3">
               <span className="text-xs text-zinc-600">Mostrando últimos 30 días hábiles</span>
-              <HistoryDownloadPro />
+              <Link
+                href="#decada-completa"
+                className="text-xs text-emerald-500 hover:text-emerald-400 transition-colors flex items-center gap-1"
+              >
+                Histórico completo 2015→ y estacionalidad
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </Link>
             </div>
           </div>
         </section>

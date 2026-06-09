@@ -1,7 +1,5 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
-import { getCurrentSession } from '@/lib/user-tier'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import VenderAhoraClient from './VenderAhoraClient'
 
@@ -14,15 +12,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
+// Sin gate de redirect: cualquiera (incl. anónimo) puede calcular el VALOR de su
+// hacienda (precios públicos) como gancho; el análisis estadístico de momento de
+// venta queda bloqueado con CTA a PRO dentro del cliente (preview, no muro duro).
 export default async function VenderAhoraPage() {
-  const { user, tier } = await getCurrentSession()
-  if (!user) {
-    redirect('/login?next=/mercado/vender-ahora')
-  }
-  if (tier !== 'pro') {
-    redirect('/upgrade?next=/mercado/vender-ahora')
-  }
-
   return (
     <>
       <SectionBreadcrumbSchema

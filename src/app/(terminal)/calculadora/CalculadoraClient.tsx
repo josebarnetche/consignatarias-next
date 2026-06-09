@@ -2,8 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import ProUpgradePrompt from '@/components/ProUpgradePrompt'
-import { useSessionTier } from '@/lib/use-session-tier'
+import { ProReveal, HeroNumber, StatPill } from '@/components/pro'
 
 interface MarketPrices {
   inmag: { current: number; prev: number; change: number }
@@ -44,7 +43,6 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
   const [emailSaved, setEmailSaved] = useState(false)
 
   // Net-back ("neto en mano") — PRO. Real commercial deductions only.
-  const session = useSessionTier()
   const [comision, setComision] = useState(3) // % comisión consignatario (típico 2–4%)
   const [gastos, setGastos] = useState(2) // % gastos de comercialización (sellado, asociación, etc.)
   const [fletePorCabeza, setFletePorCabeza] = useState(0) // $/cabeza transporte a plaza
@@ -110,9 +108,14 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
     const usd = prices.usdBlue.current > 0 ? prices.usdBlue.current : null
     const netoUSD = usd ? netoARS / usd : 0
     const netoPorKg = totals.totalKilos > 0 ? netoARS / totals.totalKilos : 0
+    const brutoPorKg = totals.totalKilos > 0 ? bruto / totals.totalKilos : 0
     const ivaInfo = bruto * 0.105
     const descuentoPct = bruto > 0 ? ((bruto - netoARS) / bruto) * 100 : 0
-    return { bruto, comisionMonto, gastosMonto, fleteMonto, netoARS, netoUSD, netoPorKg, ivaInfo, descuentoPct }
+    const retenidoPct = 100 - descuentoPct // % del bruto que te queda en mano
+    return {
+      bruto, comisionMonto, gastosMonto, fleteMonto, netoARS, netoUSD,
+      netoPorKg, brutoPorKg, ivaInfo, descuentoPct, retenidoPct,
+    }
   }, [totals, comision, gastos, fletePorCabeza, prices.usdBlue])
 
   async function handleCalculate(e: React.FormEvent) {
@@ -275,101 +278,137 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
 
       {/* Result */}
       {showResult && (
-        <div className="terminal-panel mt-6">
-          <div className="terminal-panel-header text-emerald-400">Valor estimado</div>
-          <div className="px-panel py-6">
-            <div className="grid grid-cols-2 gap-6 mb-6">
-              <div>
-                <div className="text-xxs text-zinc-500 uppercase mb-1">Total cabezas</div>
-                <div className="text-2xl text-zinc-100 font-mono">{fmt(totals.totalCabezas)}</div>
-              </div>
-              <div>
-                <div className="text-xxs text-zinc-500 uppercase mb-1">Total kilos</div>
-                <div className="text-2xl text-zinc-100 font-mono">{fmt(totals.totalKilos)} kg</div>
-              </div>
-            </div>
-            
-            <div className="border-t border-zinc-800 pt-6">
-              <div className="text-xxs text-zinc-500 uppercase mb-2">Valor estimado</div>
-              <div className="text-3xl text-emerald-400 font-mono font-medium mb-1">
-                {fmtCurrency(totals.totalValorARS)}
-              </div>
-              <div className="text-lg text-zinc-400 font-mono">
-                ≈ USD {fmt(totals.totalValorUSD)} <span className="text-xxs text-zinc-500">(blue ${fmt(prices.usdBlue.current)})</span>
-              </div>
-            </div>
-
-            {/* ── Neto en mano (PRO) ── */}
-            <div className="border-t border-zinc-800 mt-6 pt-6">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-xxs text-zinc-500 uppercase">Neto en mano</span>
-                <span className="text-[10px] font-terminal font-bold tracking-wider border border-amber-500/50 bg-amber-500/10 text-amber-400 rounded-sm px-1.5 py-0.5">PRO</span>
+        <div className="space-y-6 mt-6">
+          {/* ── GANCHO GRATIS: valor estimado (data pública INMAG) ── */}
+          <div className="terminal-panel">
+            <div className="terminal-panel-header text-emerald-400">Valor bruto estimado</div>
+            <div className="px-panel py-6">
+              <div className="grid grid-cols-2 gap-6 mb-6">
+                <HeroNumber label="Total cabezas" value={fmt(totals.totalCabezas)} />
+                <HeroNumber label="Total kilos" value={`${fmt(totals.totalKilos)} kg`} />
               </div>
 
-              {session.loading ? (
-                <p className="text-xxs text-zinc-600">Cargando…</p>
-              ) : session.tier === 'pro' ? (
-                <>
-                  <p className="text-xxs text-zinc-500 mb-4">
-                    Lo que te queda después de comisión, gastos y flete. Ajustá los valores a tu operación.
-                  </p>
-                  <div className="grid grid-cols-3 gap-4 mb-4">
-                    <div>
-                      <label className="block text-xxs text-zinc-500 uppercase tracking-wider mb-1">Comisión %</label>
-                      <input type="number" min="0" max="15" step="0.5" value={comision}
-                        onChange={(e) => setComision(parseFloat(e.target.value) || 0)}
-                        className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-sm text-zinc-200" />
-                    </div>
-                    <div>
-                      <label className="block text-xxs text-zinc-500 uppercase tracking-wider mb-1">Gastos %</label>
-                      <input type="number" min="0" max="15" step="0.5" value={gastos}
-                        onChange={(e) => setGastos(parseFloat(e.target.value) || 0)}
-                        className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-sm text-zinc-200" />
-                    </div>
-                    <div>
-                      <label className="block text-xxs text-zinc-500 uppercase tracking-wider mb-1">Flete $/cabeza</label>
-                      <input type="number" min="0" step="500" value={fletePorCabeza}
-                        onChange={(e) => setFletePorCabeza(parseInt(e.target.value) || 0)}
-                        className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-sm text-zinc-200" />
-                    </div>
+              <div className="border-t border-zinc-800 pt-6">
+                <HeroNumber
+                  label="Valor bruto estimado"
+                  value={fmtCurrency(totals.totalValorARS)}
+                  tone="positive"
+                  size="text-3xl sm:text-4xl"
+                  sub={
+                    <>
+                      ≈ USD {fmt(totals.totalValorUSD)}
+                      {' · '}{fmtCurrency(netback.brutoPorKg)}/kg vivo
+                      <span className="text-zinc-600"> · blue ${fmt(prices.usdBlue.current)}</span>
+                    </>
+                  }
+                />
+              </div>
+
+              <p className="text-xxs text-zinc-600 mt-5">
+                Bruto = kilos × precio INMAG por categoría. Es lo que vale tu tropa en plaza,
+                antes de descuentos. Lo que <span className="text-zinc-400">te queda en mano</span> es
+                otra historia — abajo.
+              </p>
+            </div>
+          </div>
+
+          {/* ── DECISIÓN (PRO): neto en mano ── */}
+          <ProReveal
+            from="/calculadora"
+            title="Neto en mano"
+            benefit="Descontá comisión, gastos y flete del bruto y mirá la plata real — en ARS, USD y $/kg neto, con la lectura de si el descuento es sano."
+            placeholder={<NetbackPlaceholder />}
+          >
+            <div className="terminal-panel" style={{ borderColor: 'rgba(56, 189, 248, 0.4)' }}>
+              <div className="terminal-panel-header" style={{ color: '#38bdf8' }}>
+                Neto en mano
+              </div>
+              <div className="px-panel py-6">
+                <p className="text-xxs text-zinc-500 mb-4">
+                  Lo que te queda después de comisión, gastos y flete. Ajustá los valores a tu operación —
+                  son tuyos, no inventamos porcentajes.
+                </p>
+                <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-5">
+                  <div>
+                    <label className="block text-xxs text-zinc-500 uppercase tracking-wider mb-1">Comisión %</label>
+                    <input type="number" min="0" max="15" step="0.5" value={comision}
+                      onChange={(e) => setComision(parseFloat(e.target.value) || 0)}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-sm text-zinc-200 tabular-nums" />
                   </div>
-                  <div className="space-y-1.5 text-sm font-mono mb-4">
-                    <div className="flex justify-between text-zinc-400"><span>Bruto</span><span>{fmtCurrency(netback.bruto)}</span></div>
-                    <div className="flex justify-between text-red-400/80"><span>− Comisión ({comision}%)</span><span>−{fmtCurrency(netback.comisionMonto)}</span></div>
-                    <div className="flex justify-between text-red-400/80"><span>− Gastos ({gastos}%)</span><span>−{fmtCurrency(netback.gastosMonto)}</span></div>
-                    <div className="flex justify-between text-red-400/80"><span>− Flete ({fmt(totals.totalCabezas)} cab.)</span><span>−{fmtCurrency(netback.fleteMonto)}</span></div>
+                  <div>
+                    <label className="block text-xxs text-zinc-500 uppercase tracking-wider mb-1">Gastos %</label>
+                    <input type="number" min="0" max="15" step="0.5" value={gastos}
+                      onChange={(e) => setGastos(parseFloat(e.target.value) || 0)}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-sm text-zinc-200 tabular-nums" />
                   </div>
-                  <div className="border-t border-zinc-800 pt-3">
-                    <div className="text-xxs text-zinc-500 uppercase mb-1">Neto estimado en mano ({netback.descuentoPct.toFixed(1)}% menos)</div>
-                    <div className="text-3xl text-amber-400 font-mono font-medium mb-1">{fmtCurrency(netback.netoARS)}</div>
-                    <div className="text-sm text-zinc-400 font-mono">
-                      ≈ USD {fmt(netback.netoUSD)} · {fmtCurrency(netback.netoPorKg)}/kg neto
-                    </div>
+                  <div>
+                    <label className="block text-xxs text-zinc-500 uppercase tracking-wider mb-1">Flete $/cab.</label>
+                    <input type="number" min="0" step="500" value={fletePorCabeza}
+                      onChange={(e) => setFletePorCabeza(parseInt(e.target.value) || 0)}
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-sm text-zinc-200 tabular-nums" />
                   </div>
+                </div>
+
+                {/* Waterfall bruto → neto */}
+                <div className="space-y-1.5 text-sm font-terminal tabular-nums mb-5">
+                  <div className="flex justify-between text-zinc-300"><span>Bruto</span><span>{fmtCurrency(netback.bruto)}</span></div>
+                  <div className="flex justify-between" style={{ color: '#f87171' }}><span>− Comisión ({comision}%)</span><span>−{fmtCurrency(netback.comisionMonto)}</span></div>
+                  <div className="flex justify-between" style={{ color: '#f87171' }}><span>− Gastos ({gastos}%)</span><span>−{fmtCurrency(netback.gastosMonto)}</span></div>
+                  <div className="flex justify-between" style={{ color: '#f87171' }}><span>− Flete ({fmt(totals.totalCabezas)} cab.)</span><span>−{fmtCurrency(netback.fleteMonto)}</span></div>
+                </div>
+
+                {/* Neto hero */}
+                <div className="border-t border-zinc-800 pt-5">
+                  <HeroNumber
+                    label={`Neto estimado en mano · te queda el ${netback.retenidoPct.toFixed(1)}% del bruto`}
+                    value={fmtCurrency(netback.netoARS)}
+                    tone="accent"
+                    size="text-3xl sm:text-4xl"
+                    sub={
+                      <>
+                        ≈ USD {fmt(netback.netoUSD)}
+                        {' · '}{fmtCurrency(netback.netoPorKg)}/kg neto
+                      </>
+                    }
+                  />
+                </div>
+
+                {/* Reparto del bruto — barras */}
+                <div className="space-y-2.5 mt-5">
+                  <StatPill label="Te queda (neto)" value={Math.round(netback.retenidoPct)} tone="percentile" />
+                  <StatPill label="Se va en costos" value={Math.round(netback.descuentoPct)} tone="negative" />
+                </div>
+
+                {/* ── DECISIÓN, no dato ── */}
+                <div className="border-t border-zinc-800 mt-5 pt-4">
+                  {(() => {
+                    const d = netback.descuentoPct
+                    // Banda de referencia honesta: comisión+gastos típicos rondan 4–8% del bruto;
+                    // sumado al flete, > ~10% empieza a comerse el resultado.
+                    const tone = d <= 8 ? '#34d399' : d <= 12 ? '#fbbf24' : '#f87171'
+                    const verdict =
+                      d <= 8
+                        ? 'Descuento dentro de lo razonable: comisión + gastos + flete no se comen tu resultado. El neto/kg es tu piso real de negociación.'
+                        : d <= 12
+                        ? 'Descuento en el límite. Vale comparar comisión entre consignatarias y revisar el flete: cada punto del bruto es plata tuya.'
+                        : 'Descuento alto: más del 12% del bruto se va antes de cobrar. Negociá comisión/flete o evaluá vender más cerca de plaza antes de cerrar.'
+                    return (
+                      <p className="text-data leading-relaxed" style={{ color: tone }}>
+                        {verdict}
+                      </p>
+                    )
+                  })()}
                   <p className="text-xxs text-zinc-600 mt-3">
                     IVA hacienda (10,5% ≈ {fmtCurrency(netback.ivaInfo)}) no se descuenta: para responsable
                     inscripto se cobra y se reintegra, es neutro al neto. Valores editables y referenciales.
                   </p>
-                </>
-              ) : (
-                <>
-                  <p className="text-sm text-zinc-300 mb-1">
-                    ¿Cuánto te queda <span className="text-amber-400">neto en mano</span>?
-                  </p>
-                  <p className="text-xxs text-zinc-500 mb-3">
-                    Descontá comisión, gastos de comercialización y flete del bruto y mirá la plata
-                    real — en ARS, USD y $/kg neto.
-                  </p>
-                  <ProUpgradePrompt
-                    benefit="Neto en mano: comisión, gastos y flete descontados del bruto. PRO por ARS $7.900/mes."
-                    context="calculadora-netback"
-                    variant="card"
-                  />
-                </>
-              )}
+                </div>
+              </div>
             </div>
+          </ProReveal>
 
-            <div className="border-t border-zinc-800 mt-6 pt-4">
+          <div className="terminal-panel">
+            <div className="px-panel py-4">
               <p className="text-xxs text-zinc-500">
                 * Valores referenciales basados en precios INMAG. El precio final depende de calidad,
                 ubicación, condiciones de pago y negociación. Consultá con tu consignataria de confianza.
@@ -407,6 +446,47 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
           </svg>
           Compartir en WhatsApp
         </a>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Non-real placeholder shown BLURRED behind the PRO gate to free/anon users.
+ * Mirrors the SHAPE of the net-back panel (inputs → waterfall → hero → bars)
+ * so the gancho reads as "the decision lives here" — but carries NO real
+ * numbers (would leak PRO data) and NO fabricated numbers (brand rule #1).
+ * Just skeleton bars / em-dashes.
+ */
+function NetbackPlaceholder() {
+  return (
+    <div aria-hidden="true">
+      <div className="grid grid-cols-3 gap-3 mb-5">
+        {['Comisión %', 'Gastos %', 'Flete $/cab.'].map((l) => (
+          <div key={l}>
+            <div className="text-xxs text-zinc-600 uppercase tracking-wider mb-1">{l}</div>
+            <div className="h-9 bg-zinc-900 border border-zinc-800 rounded" />
+          </div>
+        ))}
+      </div>
+      <div className="space-y-1.5 mb-5">
+        {['Bruto', '− Comisión', '− Gastos', '− Flete'].map((l) => (
+          <div key={l} className="flex justify-between items-center">
+            <span className="text-data text-zinc-500">{l}</span>
+            <div className="h-2.5 w-24 bg-zinc-800 rounded-sm" />
+          </div>
+        ))}
+      </div>
+      <div className="border-t border-zinc-800 pt-5">
+        <div className="text-zinc-600 text-xxs font-terminal uppercase tracking-wider mb-2">
+          Neto estimado en mano
+        </div>
+        <div className="text-3xl font-terminal text-zinc-700 leading-none">$ — — —</div>
+        <div className="text-xxs text-zinc-700 mt-1">≈ USD — · $—/kg neto</div>
+      </div>
+      <div className="space-y-2.5 mt-5">
+        <div className="h-1.5 bg-zinc-900 border border-terminal-border" />
+        <div className="h-1.5 bg-zinc-900 border border-terminal-border" />
       </div>
     </div>
   )

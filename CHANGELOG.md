@@ -7,6 +7,33 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.13] — 2026-06-09
+
+### Suite PRO Usuario — gating unificado + vistoso + útil
+
+Trabajo integral sobre los 5 productos PRO Usuario bajo un estándar único
+([`docs/PRO-PRODUCT-STANDARD.md`](docs/PRO-PRODUCT-STANDARD.md)): **gancho gratis de
+data pública → la decisión (premium) detrás de un soft-gate**, nunca muro duro ni
+redirect. Componentes compartidos nuevos en `src/components/pro/`:
+
+- **`<ProReveal>`** — gate reusable: muestra el contenido PRO verbatim al suscriptor;
+  al free/anónimo lo muestra borroso + inerte con overlay (beneficio + CTA
+  "Desbloquear con PRO — ARS $7.900/mes"). Honra la regla #1: el blur es render real
+  tapado o skeleton no-real, jamás cifras fabricadas. Analytics `pro_prompt` variante `reveal`.
+- **`<HeroNumber>`** / **`<StatPill>`** — número-hero pre-formateado + barra/percentil con color semántico (verde ≥70 / ámbar ≥40 / rojo).
+
+Por producto:
+- **¿Vendo ahora?** — gating migrado a `<ProReveal>`; bloque-**veredicto** ("Vender hoy / Aguantar / Zona neutra") sobre los números; percentiles en **USD real** (de v1.30.12); **fix honesto del proxy de categoría**: `precision: preciso|indicativo` — para novillo es directo, para el resto banner ámbar aclara que el percentil es **direccional** (no hay serie propia por categoría; no se fabricó ninguna).
+- **Comparador** — candados 🔒 unificados a `<ProReveal>`; ranking que ayuda a decidir "a quién venderle" + pagador más rápido; tabla más vistosa.
+- **Neto en mano** — desglose bruto→neto vistoso; comisión/gastos/flete **editables** (defaults honestos 3%/2%/0, no inventados).
+- **Spread** — **ahora gateado** (estaba abierto): gancho gratis + detalle premium en `<ProReveal>`.
+- **Histórico / Estacionalidad** — CSV y detalle de la década gateados consistente; estacionalidad como decisión (heatmap mes×año).
+
+Reporte: [`docs/REPORTE-suite-pro-2026-06-09.md`](docs/REPORTE-suite-pro-2026-06-09.md).
+`pnpm build` limpio, `tsc` 0.
+
+---
+
 ## [1.30.12] — 2026-06-08
 
 ### Geo CTR sprint — titles/meta + FAQ schema en páginas-provincia

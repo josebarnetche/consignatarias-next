@@ -142,8 +142,11 @@ export function trackClaimSuccess(slug: string, displayName: string) {
 /*  PRO CONVERSION FUNNEL                                              */
 /* ------------------------------------------------------------------ */
 
+/** Variant of a PRO upgrade surface, for funnel segmentation. */
+export type ProPromptVariant = 'inline' | 'card' | 'reveal'
+
 /** PRO upgrade prompt was shown to user */
-export function trackProPromptView(context: string, variant: 'inline' | 'card') {
+export function trackProPromptView(context: string, variant: ProPromptVariant) {
   trackEvent('pro_prompt_view', {
     prompt_context: context,
     prompt_variant: variant,
@@ -151,7 +154,7 @@ export function trackProPromptView(context: string, variant: 'inline' | 'card') 
 }
 
 /** User clicked PRO upgrade prompt CTA */
-export function trackProPromptClick(context: string, variant: 'inline' | 'card') {
+export function trackProPromptClick(context: string, variant: ProPromptVariant) {
   trackEvent('pro_prompt_click', {
     prompt_context: context,
     prompt_variant: variant,

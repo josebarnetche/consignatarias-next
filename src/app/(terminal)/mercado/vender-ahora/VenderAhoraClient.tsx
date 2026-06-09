@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { ProReveal, HeroNumber, StatPill } from '@/components/pro'
 
 const CATS = [
   { value: 'novillos', label: 'Novillo', defaultKg: 430 },
@@ -16,6 +16,8 @@ type CatValue = typeof CATS[number]['value']
 
 interface ApiResponse {
   success: boolean
+  locked?: boolean
+  teaser?: string
   input?: { categoria: string; kgs: number }
   actual?: {
     precio_kg_ars: number
@@ -26,18 +28,32 @@ interface ApiResponse {
     usd_blue: number
   }
   contexto?: {
+    base?: string
+    precision?: 'preciso' | 'indicativo'
     percentil_30_dias: number
     percentil_365_dias: number
-    promedio_5_anos: number | null
-    minimo_5_anos: number | null
-    maximo_5_anos: number | null
+    inmag_usd_hoy: number | null
+    inmag_usd_min_5a: number | null
+    inmag_usd_prom_5a: number | null
+    inmag_usd_max_5a: number | null
   }
+  veredicto?: 'vender' | 'aguantar' | 'neutro'
   recomendacion?: string
   disclaimer?: string
   error?: { code: string; message: string }
 }
 
 const fmt = (n: number) => n.toLocaleString('es-AR', { maximumFractionDigits: 0 })
+const fmt2 = (n: number | null) =>
+  n !== null ? n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—'
+
+const FROM = '/mercado/vender-ahora'
+
+const VERDICT: Record<NonNullable<ApiResponse['veredicto']>, { label: string; color: string }> = {
+  vender: { label: 'Vender hoy', color: '#34d399' },
+  aguantar: { label: 'Aguantar', color: '#fbbf24' },
+  neutro: { label: 'Zona neutra', color: '#a1a1aa' },
+}
 
 export default function VenderAhoraClient() {
   const [cat, setCat] = useState<CatValue>('novillos')
@@ -67,32 +83,10 @@ export default function VenderAhoraClient() {
     if (c) setKgs(String(c.defaultKg))
   }
 
-  if (result?.error?.code === 'pro_required') {
-    return (
-      <div className="terminal-panel">
-        <div className="terminal-panel-header" style={{ color: '#38bdf8' }}>
-          Función PRO Usuario
-        </div>
-        <div className="px-panel py-6 text-center">
-          <p className="text-zinc-300 text-data mb-4">
-            El calculador &ldquo;¿Vendo ahora?&rdquo; está disponible para
-            suscriptores PRO Usuario.
-          </p>
-          <Link
-            href="/upgrade?next=/mercado/vender-ahora"
-            className="inline-block px-4 py-2 text-xxs font-terminal uppercase tracking-wider"
-            style={{
-              background: 'rgba(56, 189, 248, 0.9)',
-              color: '#000',
-              borderRadius: '2px',
-            }}
-          >
-            Activar PRO — ARS $7.900/mes →
-          </Link>
-        </div>
-      </div>
-    )
-  }
+  const catLabel = CATS.find((c) => c.value === cat)?.label ?? cat
+  const weekly = result?.actual?.variacion_semanal_pct ?? 0
+  const weeklyTone = weekly > 0.5 ? 'positive' : weekly < -0.5 ? 'negative' : 'neutral'
+  const weeklySign = weekly > 0 ? '+' : ''
 
   return (
     <div className="space-y-4">
@@ -112,7 +106,7 @@ export default function VenderAhoraClient() {
                     key={c.value}
                     type="button"
                     onClick={() => selectCat(c.value)}
-                    className="px-2 py-2 text-xxs font-terminal uppercase tracking-wider transition-colors border"
+                    className="px-2 py-2 text-xxs font-terminal uppercase tracking-wider transition-colors border min-h-[40px]"
                     style={
                       active
                         ? {
@@ -149,15 +143,14 @@ export default function VenderAhoraClient() {
               className="w-full px-3 py-2 bg-zinc-950 border border-terminal-border text-zinc-100 text-data font-terminal focus:outline-none focus:border-sky-500"
             />
             <p className="text-zinc-500 text-xxs mt-1">
-              Promedio típico para {CATS.find((c) => c.value === cat)?.label}:{' '}
-              {CATS.find((c) => c.value === cat)?.defaultKg} kg
+              Promedio típico para {catLabel}: {CATS.find((c) => c.value === cat)?.defaultKg} kg
             </p>
           </div>
 
           <button
             type="submit"
             disabled={loading || !kgs}
-            className="terminal-btn w-full disabled:opacity-50"
+            className="terminal-btn w-full disabled:opacity-50 min-h-[40px]"
             style={{ borderColor: 'rgba(56, 189, 248, 0.6)', color: '#38bdf8' }}
           >
             {loading ? 'Calculando…' : 'Calcular →'}
@@ -165,92 +158,83 @@ export default function VenderAhoraClient() {
         </form>
       </div>
 
-      {/* Result */}
-      {result?.success && result.actual && result.contexto && (
-        <>
-          <div className="terminal-panel">
-            <div className="terminal-panel-header">Valor actual</div>
-            <div className="grid grid-cols-2 gap-px bg-terminal-border">
-              <div className="bg-terminal-panel px-4 py-4">
-                <div className="text-zinc-500 text-xxs font-terminal uppercase tracking-wider mb-1">
-                  Por cabeza (ARS)
-                </div>
-                <div className="text-2xl font-terminal tabular-nums text-zinc-100">
-                  ${fmt(result.actual.valor_cabeza_ars)}
-                </div>
-                <div className="text-zinc-500 text-xxs mt-1">
-                  ${fmt(result.actual.precio_kg_ars)}/kg × {result.input?.kgs} kg
-                </div>
-              </div>
-              <div className="bg-terminal-panel px-4 py-4">
-                <div className="text-zinc-500 text-xxs font-terminal uppercase tracking-wider mb-1">
-                  Por cabeza (USD blue)
-                </div>
-                <div className="text-2xl font-terminal tabular-nums" style={{ color: '#38bdf8' }}>
-                  USD {result.actual.valor_cabeza_usd !== null ? fmt(result.actual.valor_cabeza_usd) : '—'}
-                </div>
-                <div className="text-zinc-500 text-xxs mt-1">
-                  USD {result.actual.precio_kg_usd ?? '—'}/kg al blue $
-                  {fmt(result.actual.usd_blue)}
-                </div>
-              </div>
+      {/* Valor actual — gratis para todos (precios públicos). Gancho fuera del gate. */}
+      {result?.success && result.actual && (
+        <div className="terminal-panel">
+          <div className="terminal-panel-header">
+            Valor actual · {catLabel} {result.input?.kgs} kg
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-terminal-border">
+            <div className="bg-terminal-panel px-4 py-5">
+              <HeroNumber
+                label="Por cabeza (ARS)"
+                value={`$${fmt(result.actual.valor_cabeza_ars)}`}
+                sub={`$${fmt(result.actual.precio_kg_ars)}/kg × ${result.input?.kgs} kg`}
+                size="text-3xl"
+              />
+            </div>
+            <div className="bg-terminal-panel px-4 py-5">
+              <HeroNumber
+                label="Por cabeza (USD blue)"
+                tone="accent"
+                value={
+                  result.actual.valor_cabeza_usd !== null
+                    ? `USD ${fmt(result.actual.valor_cabeza_usd)}`
+                    : '—'
+                }
+                sub={`USD ${result.actual.precio_kg_usd ?? '—'}/kg al blue $${fmt(
+                  result.actual.usd_blue,
+                )}`}
+                size="text-3xl"
+              />
             </div>
           </div>
-
-          <div className="terminal-panel">
-            <div className="terminal-panel-header">Contexto estadístico</div>
-            <div className="px-panel py-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-data text-zinc-400">Percentil últimos 30 días</span>
-                <PercentileBar value={result.contexto.percentil_30_dias} />
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-data text-zinc-400">Percentil último año</span>
-                <PercentileBar value={result.contexto.percentil_365_dias} />
-              </div>
-              <div className="border-t border-terminal-border pt-3 grid grid-cols-3 gap-3 text-xxs">
-                <div>
-                  <div className="text-zinc-500 font-terminal uppercase tracking-wider mb-1">Mínimo 5y</div>
-                  <div className="text-zinc-300 font-terminal tabular-nums">
-                    ${fmt(result.contexto.minimo_5_anos ?? 0)}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-zinc-500 font-terminal uppercase tracking-wider mb-1">Promedio 5y</div>
-                  <div className="text-zinc-300 font-terminal tabular-nums">
-                    ${fmt(result.contexto.promedio_5_anos ?? 0)}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-zinc-500 font-terminal uppercase tracking-wider mb-1">Máximo 5y</div>
-                  <div className="text-zinc-300 font-terminal tabular-nums">
-                    ${fmt(result.contexto.maximo_5_anos ?? 0)}
-                  </div>
-                </div>
-              </div>
-            </div>
+          {/* Variación semanal real (market-prices.json) — micro-señal pública. */}
+          <div className="px-4 py-2.5 border-t border-terminal-border flex items-center justify-between">
+            <span className="text-zinc-500 text-xxs font-terminal uppercase tracking-wider">
+              Variación semanal
+            </span>
+            <span
+              className="text-data font-terminal tabular-nums"
+              style={{
+                color:
+                  weeklyTone === 'positive'
+                    ? '#34d399'
+                    : weeklyTone === 'negative'
+                      ? '#f87171'
+                      : '#a1a1aa',
+              }}
+            >
+              {weeklySign}
+              {weekly.toLocaleString('es-AR', { maximumFractionDigits: 1 })}%
+            </span>
           </div>
-
-          <div
-            className="terminal-panel"
-            style={{
-              borderColor: 'rgba(56, 189, 248, 0.4)',
-            }}
-          >
-            <div className="terminal-panel-header" style={{ color: '#38bdf8' }}>
-              Lectura
-            </div>
-            <div className="px-panel py-4">
-              <p className="text-zinc-200 text-sm leading-relaxed mb-3">
-                {result.recomendacion}
-              </p>
-              <p className="text-zinc-500 text-xxs">{result.disclaimer}</p>
-            </div>
-          </div>
-        </>
+        </div>
       )}
 
-      {result?.error && result.error.code !== 'pro_required' && (
+      {/* ¿Conviene vender? — capa PRO (la DECISIÓN). Gating unificado a <ProReveal>. */}
+      {result?.success && (result.contexto || result.locked) && (
+        <ProReveal
+          from={FROM}
+          title="¿Conviene vender hoy?"
+          benefit={
+            result.teaser ??
+            'El valor ya lo tenés arriba. El análisis de si conviene vender o aguantar —percentil en dólares reales + lectura del mercado— es PRO Usuario.'
+          }
+        >
+          {result.contexto && result.veredicto && (
+            <VenderAnalysis
+              contexto={result.contexto}
+              veredicto={result.veredicto}
+              recomendacion={result.recomendacion ?? ''}
+              disclaimer={result.disclaimer ?? ''}
+              catLabel={catLabel}
+            />
+          )}
+        </ProReveal>
+      )}
+
+      {result?.error && (
         <div className="border border-red-500/30 bg-red-500/5 px-4 py-3 text-data text-red-300">
           {result.error.message}
         </div>
@@ -259,16 +243,84 @@ export default function VenderAhoraClient() {
   )
 }
 
-function PercentileBar({ value }: { value: number }) {
-  const color = value >= 70 ? '#34d399' : value >= 40 ? '#fbbf24' : '#f87171'
+/** El bloque PRO: percentiles reales + veredicto accionable + honestidad de precisión. */
+function VenderAnalysis({
+  contexto,
+  veredicto,
+  recomendacion,
+  disclaimer,
+  catLabel,
+}: {
+  contexto: NonNullable<ApiResponse['contexto']>
+  veredicto: NonNullable<ApiResponse['veredicto']>
+  recomendacion: string
+  disclaimer: string
+  catLabel: string
+}) {
+  const v = VERDICT[veredicto]
+  const indicativo = contexto.precision === 'indicativo'
+
   return (
-    <div className="flex items-center gap-3 flex-1 max-w-xs ml-4">
-      <div className="flex-1 h-1.5 bg-zinc-900 border border-terminal-border overflow-hidden">
-        <div className="h-full transition-all" style={{ width: `${value}%`, background: color }} />
+    <div className="space-y-4">
+      {/* Veredicto — la decisión, no el dato. */}
+      <div
+        className="flex items-center justify-between gap-3 border px-4 py-3"
+        style={{ borderColor: `${v.color}66`, background: `${v.color}14` }}
+      >
+        <span className="text-zinc-400 text-xxs font-terminal uppercase tracking-wider">
+          Veredicto estadístico
+        </span>
+        <span
+          className="text-lg font-terminal uppercase tracking-wide tabular-nums"
+          style={{ color: v.color }}
+        >
+          {v.label}
+        </span>
       </div>
-      <span className="text-zinc-200 font-terminal tabular-nums text-data w-10 text-right">
-        {value}%
-      </span>
+
+      {/* Honestidad por categoría (regla #1: no inventar precisión que no hay). */}
+      <p className="text-xxs leading-relaxed" style={{ color: indicativo ? '#fbbf24' : '#34d399' }}>
+        {indicativo
+          ? `Percentil indicativo para ${catLabel}: refleja la DIRECCIÓN del mercado vía INMAG (novillo). No existe serie histórica propia de ${catLabel}, así que el nivel exacto puede diferir; la señal de tendencia es válida.`
+          : `Percentil preciso: ${catLabel} ES la categoría base del INMAG. La medición aplica directamente.`}
+      </p>
+
+      <div className="space-y-3">
+        <StatPill label="Percentil últimos 30 días" value={contexto.percentil_30_dias} />
+        <StatPill label="Percentil último año" value={contexto.percentil_365_dias} />
+      </div>
+
+      <div className="border-t border-terminal-border pt-3 grid grid-cols-3 gap-3">
+        <HeroNumber
+          label="Mín 5y"
+          value={`USD ${fmt2(contexto.inmag_usd_min_5a)}`}
+          sub="/kg real"
+          size="text-sm"
+        />
+        <HeroNumber
+          label="Prom 5y"
+          value={`USD ${fmt2(contexto.inmag_usd_prom_5a)}`}
+          sub="/kg real"
+          size="text-sm"
+        />
+        <HeroNumber
+          label="Máx 5y"
+          value={`USD ${fmt2(contexto.inmag_usd_max_5a)}`}
+          sub="/kg real"
+          size="text-sm"
+        />
+      </div>
+
+      <p className="text-zinc-600 text-xxs">
+        Hoy: INMAG USD {fmt2(contexto.inmag_usd_hoy)}/kg · medido sobre INMAG ÷ dólar blue para
+        neutralizar la inflación en pesos.
+      </p>
+
+      {/* Lectura — cierra con la decisión. */}
+      <div className="border-t border-terminal-border pt-3">
+        <p className="text-zinc-200 text-sm leading-relaxed mb-2">{recomendacion}</p>
+        <p className="text-zinc-500 text-xxs">{disclaimer}</p>
+      </div>
     </div>
   )
 }
