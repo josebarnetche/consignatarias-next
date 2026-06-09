@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# ──────────────────────────────────────────────────────────────────────────
+# pre-commit · escáner de secretos (sin dependencias)
+# Bloquea el commit si una línea AGREGADA tiene un secreto hardcodeado.
+# Activar:  git config core.hooksPath .githooks
+# Saltear (falso positivo):  git commit --no-verify
+# Origen: leak del service_role de Supabase (jun-2026) — el .gitignore no
+# frena un secreto hardcodeado en código; esto sí.
+# ──────────────────────────────────────────────────────────────────────────
+set -u
+
+# Patrones de VALORES de secreto (no nombres de env var). sb_publishable_ es público → permitido.
+RE='eyJhbGciOiJ|sb_secret_[A-Za-z0-9_]{8,}|-----BEGIN [A-Z ]*PRIVATE KEY-----|ghp_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}'
+
+found=0
+while IFS= read -r f; do
+  [ -z "$f" ] && continue
+  case "$f" in
+    .githooks/*|*.lock|pnpm-lock.yaml|package-lock.json|yarn.lock) continue ;;
+  esac
+  # solo líneas agregadas (+), excluyendo el header de diff (+++)
+  match=$(git diff --cached -U0 -- "$f" | grep -E '^\+' | grep -vE '^\+\+\+' | grep -Ein "$RE")
+  if [ -n "$match" ]; then
+    [ "$found" -eq 0 ] && echo "🚫 pre-commit: posible SECRETO hardcodeado — commit BLOQUEADO" && echo
+    found=1
+    echo "  ▸ $f"
+    printf '%s\n' "$match" | sed 's/^/      /'
+  fi
+done < <(git diff --cached --name-only --diff-filter=ACM)
+
+if [ "$found" -ne 0 ]; then
+  echo
+  echo "  Sacá el secreto del código y usá process.env.LA_VARIABLE."
+  echo "  Si es un falso positivo real:  git commit --no-verify"
+  exit 1
+fi
+exit 0
