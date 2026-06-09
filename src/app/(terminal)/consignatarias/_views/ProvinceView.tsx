@@ -2,7 +2,7 @@ import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { getAllProfiles, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
-import { BreadcrumbSchema } from '@/components/seo/JsonLd'
+import { BreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 
 /* ============================================================
@@ -70,8 +70,8 @@ export async function provinceMetadata(provincia: string) {
   const count = consignatariasInProvince.length
 
   return {
-    title: `Consignatarias en ${provinceDisplay} | ${count} Consignatarias de Hacienda`,
-    description: `Directorio de ${count} consignatarias de hacienda operando en ${provinceDisplay}. Calendario de remates ganaderos, perfiles completos y próximos remates en la provincia.`,
+    title: `Consignatarias en ${provinceDisplay}: ${count} Activas con Remates 2026`,
+    description: `${count} consignatarias de hacienda con remates en ${provinceDisplay}. Perfiles, datos de contacto y próximos remates por consignataria. Directorio actualizado a diario.`,
     keywords: [
       `consignatarias ${provinceDisplay.toLowerCase()}`,
       `consignatarias de hacienda ${provinceDisplay.toLowerCase()}`,
@@ -152,6 +152,20 @@ export async function ProvinceView({ provincia }: { provincia: string }) {
   const totalRemates = entries.reduce((sum, e) => sum + e.auctionCount, 0)
   const totalUpcoming = entries.reduce((sum, e) => sum + e.upcoming, 0)
 
+  const topConsignatarias = entries.slice(0, 6).map((e) => e.displayName)
+  const faqItems = [
+    {
+      question: `¿Cuántas consignatarias operan en ${provinceDisplay}?`,
+      answer: `Hay ${entries.length} ${entries.length === 1 ? 'consignataria de hacienda con remates' : 'consignatarias de hacienda con remates'} en ${provinceDisplay}, que suman ${totalRemates} ${totalRemates === 1 ? 'remate registrado' : 'remates registrados'}${totalUpcoming > 0 ? `, ${totalUpcoming} ${totalUpcoming === 1 ? 'próximo' : 'próximos'}` : ''}.`,
+    },
+    {
+      question: `¿Qué consignatarias rematan en ${provinceDisplay}?`,
+      answer: topConsignatarias.length
+        ? `Entre las consignatarias con más remates en ${provinceDisplay} figuran ${topConsignatarias.join(', ')}${entries.length > topConsignatarias.length ? ' y otras' : ''}.`
+        : `Por el momento no hay consignatarias con remates registrados en ${provinceDisplay}.`,
+    },
+  ]
+
   const otherProvinces = Object.entries(PROVINCE_DISPLAY)
     .filter(([slug]) => slug !== provincia)
     .sort((a, b) => a[1].localeCompare(b[1]))
@@ -166,6 +180,7 @@ export async function ProvinceView({ provincia }: { provincia: string }) {
         ]}
       />
       <ProvinceConsignatariasSchema entries={entries} provinceDisplay={provinceDisplay} />
+      <FAQPageSchema items={faqItems} />
 
       <section className="px-4 pt-4 pb-2 max-w-4xl">
         <nav className="text-sm text-zinc-500 mb-4">

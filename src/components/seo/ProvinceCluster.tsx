@@ -33,6 +33,10 @@ function titleCase(s: string): string {
 
 type Silo = 'remates' | 'consignatarias' | 'frigorificos'
 
+// The 13 provinces where /precios/[cat]/[prov] is statically generated.
+// Keep in sync with the /precios PROVINCES list — same set as PROVINCE_SLUGS.
+const PRECIOS_SLUGS = new Set(Object.values(PROVINCE_SLUGS))
+
 export function ProvinceCluster({
   province,
   exclude,
@@ -45,10 +49,14 @@ export function ProvinceCluster({
   if (!slug) return null
   const name = titleCase(province)
 
-  const allLinks: { key: Silo | 'mercado'; href: string; label: string }[] = [
+  const allLinks: { key: Silo | 'mercado' | 'precio'; href: string; label: string }[] = [
     { key: 'remates', href: `/remates/${slug}`, label: `Remates en ${name}` },
     { key: 'consignatarias', href: `/consignatarias/${slug}`, label: `Consignatarias en ${name}` },
     { key: 'frigorificos', href: `/frigorificos/${slug}`, label: `Frigoríficos en ${name}` },
+    // Geo precio link only where /precios is statically generated (no 404).
+    ...(PRECIOS_SLUGS.has(slug)
+      ? [{ key: 'precio' as const, href: `/precios/novillos/${slug}`, label: `Precio del novillo en ${name}` }]
+      : []),
     { key: 'mercado', href: '/mercado', label: 'Precios del mercado (INMAG)' },
   ]
   const links = allLinks.filter((l) => l.key !== exclude)

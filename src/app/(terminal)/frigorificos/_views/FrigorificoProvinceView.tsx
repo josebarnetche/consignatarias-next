@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
-import { BreadcrumbSchema } from '@/components/seo/JsonLd'
+import { BreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 
 /* ============================================================
@@ -72,8 +72,8 @@ export async function frigorificoProvinceMetadata(provincia: string) {
     // "Habilitados" + "SENASA" front-loaded to match the province queries
     // ("frigorífico en santa fe", "frigoríficos habilitados <provincia>")
     // that bring high impressions at pos 7-9 with weak CTR.
-    title: `Frigoríficos Habilitados en ${config.displayName} · ${provinceFrigorificos.length} Plantas SENASA/MAGYP`,
-    description: `Listado de ${provinceFrigorificos.length} frigoríficos y mataderos habilitados por SENASA/MAGYP en ${config.displayName}. Plantas de faena con matrícula, CUIT y etapa de habilitación. Base de datos oficial actualizada 2026.`,
+    title: `Frigoríficos en ${config.displayName}: ${provinceFrigorificos.length} Plantas Habilitadas SENASA/MAGYP (2026)`,
+    description: `¿Dónde faenar en ${config.displayName}? ${provinceFrigorificos.length} frigoríficos y mataderos habilitados por SENASA/MAGYP, con matrícula, CUIT y ciclo de habilitación (I/II/III). Directorio oficial actualizado en 2026.`,
     keywords: [
       `frigoríficos ${config.displayName.toLowerCase()}`,
       `plantas frigoríficas ${config.displayName.toLowerCase()}`,
@@ -154,6 +154,25 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
     return acc
   }, {} as Record<number, number>)
 
+  const stageList = Object.keys(stageCount)
+    .map(Number)
+    .sort((a, b) => a - b)
+    .map(s => STAGE_LABELS[s] || `Etapa ${s}`)
+  const faqItems = [
+    {
+      question: `¿Cuántos frigoríficos hay habilitados en ${config.displayName}?`,
+      answer: `Según el registro de SENASA/MAGYP hay ${provinceFrigorificos.length} ${provinceFrigorificos.length === 1 ? 'planta frigorífica habilitada' : 'plantas frigoríficas habilitadas'} en ${config.displayName}, listadas con su matrícula, CUIT y ciclo de habilitación.`,
+    },
+    {
+      question: '¿Qué significa el ciclo I, II o III de un frigorífico?',
+      answer: 'El ciclo indica la etapa de habilitación del establecimiento ante SENASA/MAGYP. Ciclo I corresponde a faena, Ciclo II a despostado/procesamiento y Ciclo III a ciclo completo. En este directorio cada planta muestra su ciclo asignado en el registro oficial.',
+    },
+    {
+      question: `¿Dónde faenar hacienda en ${config.displayName}?`,
+      answer: `${config.displayName} cuenta con ${provinceFrigorificos.length} ${provinceFrigorificos.length === 1 ? 'frigorífico habilitado' : 'frigoríficos habilitados'} por SENASA/MAGYP${stageList.length ? ` (${stageList.join(', ')})` : ''}. El listado completo, con matrícula y CUIT de cada planta, está disponible en esta página.`,
+    },
+  ]
+
   const itemListSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -183,6 +202,7 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
         ]}
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
+      <FAQPageSchema items={faqItems} />
 
       <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 space-y-0">
         <div className="mb-2">
@@ -219,7 +239,7 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
           </div>
 
           <div className="border-b border-terminal-border px-panel py-4">
-            <h1 className="text-lg font-terminal text-zinc-200 mb-3">Frigoríficos en {config.displayName}</h1>
+            <h1 className="text-lg font-terminal text-zinc-200 mb-3">Frigoríficos habilitados en {config.displayName}: {provinceFrigorificos.length} plantas</h1>
             <p className="text-sm text-zinc-400 leading-relaxed">{config.intro}</p>
           </div>
 

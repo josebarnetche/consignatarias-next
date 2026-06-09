@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
+import marketPrices from '@/lib/data/market-prices.json'
 import type { Auction } from '@/lib/db/schema'
-import { BreadcrumbSchema } from '@/components/seo/JsonLd'
+import { BreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import {
@@ -139,9 +140,14 @@ export async function rematesProvinceMetadata(provincia: string): Promise<Metada
   const provinceAuctions = auctions.filter(a => a.province === config.name)
   const consignatarias = new Set(provinceAuctions.map(a => a.consignatariaName))
 
+  const novillo = Math.round(
+    (marketPrices.categories as Record<string, { current: number }>).novillos.current,
+  )
+  const fecha = marketPrices.lastUpdate
+
   return {
-    title: `Remates Ganaderos en ${config.displayName} 2026`,
-    description: `Calendario de ${provinceAuctions.length} remates ganaderos en ${config.displayName}. ${consignatarias.size} consignatarias activas. Filtrá por tipo de remate y fecha. Actualizado diariamente.`,
+    title: `Remates en ${config.displayName}: ${provinceAuctions.length} en calendario · Novillo $${novillo.toLocaleString('es-AR')}/kg (INMAG)`,
+    description: `${provinceAuctions.length} remates ganaderos y ${consignatarias.size} consignatarias activas en ${config.displayName}. Precio de referencia novillo $${novillo.toLocaleString('es-AR')}/kg (INMAG, ${fecha}). Próximos remates por tipo y fecha, actualizado a diario.`,
     keywords: [
       `remates ganaderos ${config.displayName.toLowerCase()}`,
       `subastas hacienda ${config.displayName.toLowerCase()}`,
@@ -277,6 +283,27 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
   const types = new Set(provinceAuctions.map(a => a.type))
   const totalHeads = provinceAuctions.reduce((s, a) => s + (a.estimatedHeads ?? 0), 0)
 
+  const topConsignatarias = [...consignatarias].slice(0, 6)
+  const typeLabels = [...types].map(t => TYPE_LABELS[t] || t.toUpperCase())
+  const faqItems = [
+    {
+      question: `¿Cuántos remates hay en ${config.displayName}?`,
+      answer: `Hay ${provinceAuctions.length} ${provinceAuctions.length === 1 ? 'remate registrado' : 'remates registrados'} en ${config.displayName}${upcomingAuctions.length > 0 ? `, ${upcomingAuctions.length} ${upcomingAuctions.length === 1 ? 'próximo' : 'próximos'}` : ''}, de ${consignatarias.size} ${consignatarias.size === 1 ? 'consignataria activa' : 'consignatarias activas'} en la provincia.`,
+    },
+    {
+      question: `¿Qué consignatarias rematan en ${config.displayName}?`,
+      answer: topConsignatarias.length
+        ? `Entre las consignatarias con remates en ${config.displayName} figuran ${topConsignatarias.join(', ')}${consignatarias.size > topConsignatarias.length ? ' y otras' : ''}.`
+        : `Por el momento no hay consignatarias con remates registrados en ${config.displayName}.`,
+    },
+    {
+      question: `¿Qué tipos de remate hay en ${config.displayName}?`,
+      answer: typeLabels.length
+        ? `En ${config.displayName} se registran remates de ${typeLabels.join(', ')}.`
+        : `Aún no hay tipos de remate registrados en ${config.displayName}.`,
+    },
+  ]
+
   // JSON-LD ItemList
   const itemListSchema = {
     '@context': 'https://schema.org',
@@ -326,6 +353,9 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
       />
+
+      {/* JSON-LD: FAQ */}
+      <FAQPageSchema items={faqItems} />
 
       <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 space-y-0">
         {/* Back link */}

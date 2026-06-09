@@ -7,6 +7,22 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.12] — 2026-06-08
+
+### Geo CTR sprint — titles/meta + FAQ schema en páginas-provincia
+
+Diagnóstico GSC (28d): orgánico +93% clicks / +91% impresiones, pero **CTR clavado en 2,3% con pos media 6,4** → el cuello de botella es el CTR, no el ranking. Las páginas-provincia de frigoríficos concentran volumen con CTR pobre (buenos-aires 2.397 impr @1,1%); las de remates convierten 7-10% pero con pocas impresiones. Se aplicó la fórmula probada (geo + número real + actualidad + intención al frente) donde estaba el volumen desperdiciado, todo con datos reales en scope (sin inventar):
+
+- **`/frigorificos/[provincia]`** — title `Frigoríficos en X: N Plantas Habilitadas SENASA/MAGYP (2026)`, description con intención al frente, H1 con conteo, + `FAQPageSchema` (conteo, ciclo I/II/III vía STAGE_LABELS, dónde faenar).
+- **`/remates/[provincia]`** — title con `N en calendario · Novillo $X/kg (INMAG)` (precio vivo de market-prices.json + fecha), description con remates+consignatarias+precio, + `FAQPageSchema`.
+- **`/consignatarias/[provincia]`** — title `Consignatarias en X: N Activas con Remates 2026`, + `FAQPageSchema`.
+- **`/consignatarias/[slug]`** — fallback de title con geo (`… Consignataria de Hacienda en {Provincia}`) solo en la rama sin customSEO (perfiles curados intactos).
+- **`ProvinceCluster`** — link geo de precio (`/precios/novillos/{prov}`) solo en las 13 provincias donde `/precios` es estático (guard anti-404); cierra el loop precio↔remate↔frigorífico↔consignataria.
+
+Reporte completo + metas de KPI: [`docs/REPORTE-geo-organic-sprint-2026-06-08.md`](docs/REPORTE-geo-organic-sprint-2026-06-08.md). Roadmap geo (backlog): expandir `/precios` 13→22 provincias (requiere verificar existencias-bovinas + km), hubs geo. `pnpm build` limpio (2.717 páginas), `tsc` 0.
+
+---
+
 ## [1.30.11] — 2026-06-08
 
 ### El Corredor: landing al día con la edición de Mayo + copy sin jerga

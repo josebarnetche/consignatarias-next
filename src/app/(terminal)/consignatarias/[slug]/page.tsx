@@ -195,9 +195,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Check for profile-specific SEO enhancements (top traffic profiles)
   const customSEO = getProfileSEO(canonical)
 
+  // Provinces come uppercase from the data; title-case for display.
+  const titleCaseProv = (s: string) =>
+    s
+      .toLowerCase()
+      .split(' ')
+      .map((w) => (w ? w.charAt(0).toUpperCase() + w.slice(1) : w))
+      .join(' ')
+  const primaryProvince = provinces.filter(Boolean)[0]
+  const geo = primaryProvince ? ` en ${titleCaseProv(primaryProvince)}` : ''
+
   const title = customSEO
     ? `${profile.displayName} — ${customSEO.titleSuffix}`
-    : `${profile.displayName} — Calendario de Remates`
+    : `${profile.displayName} — Consignataria de Hacienda${geo}`
 
   const description = customSEO?.description
     || `Calendario completo de remates ganaderos de ${profile.displayName}. ${profileAuctions.length} remates programados${upcoming > 0 ? `, ${upcoming} próximos` : ''}. ${provinces.join(', ')}.`
