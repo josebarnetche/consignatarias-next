@@ -12,6 +12,9 @@ import { FAQPageSchema, OrganizationSchema, WebSiteSchema } from "@/components/s
 import NewsletterSignup from "@/components/NewsletterSignup";
 import ValuationWidget from "@/components/landing/ValuationWidget";
 import ProHighlights, { type ProHighlightsData } from "@/components/showcase/ProHighlights";
+import MarketTape, { type TapeItem } from "@/components/landing/MarketTape";
+import LiveHero from "@/components/landing/LiveHero";
+import ScrollReveal from "@/components/landing/ScrollReveal";
 
 /* ================================================================== */
 /*  SVG ICONS                                                          */
@@ -270,6 +273,22 @@ export default function LandingPage() {
     .map(c => ({ slug: c.slug, name: c.name, logoUrl: getLogoUrl(c.slug), brandColor: getBrandColor(c.slug), keepColor: getBrandKeepColor(c.slug) }))
     .filter(c => c.logoUrl && c.brandColor)
 
+  // Cinta de mercado en vivo (data real). Categorías + INMAG + USD + actividad.
+  const catLabel: Record<string, string> = { novillos: 'Novillo', novillitos: 'Novillito', vaquillonas: 'Vaquillona', vacas: 'Vaca', terneros: 'Ternero', toros: 'Toro' }
+  const catMap = marketPrices.categories as Record<string, { current: number; change: number }>
+  const catItems: TapeItem[] = (['novillos', 'vacas', 'vaquillonas', 'terneros'] as const)
+    .filter((k) => catMap[k])
+    .map((k) => ({ label: catLabel[k], value: `$${fmt(catMap[k].current)}`, change: catMap[k].change, href: '/precios' }))
+  const tapeItems: TapeItem[] = [
+    { label: 'INMAG', value: `$${fmt(marketPrices.inmag.current)}/kg`, change: marketPrices.inmag.change, href: '/mercado/inmag' },
+    ...catItems,
+    { label: 'USD blue', value: `$${fmt(marketPrices.usdBlue.current)}`, change: marketPrices.usdBlue.change, href: '/mercado' },
+    { label: 'Remates', value: `${rematesProximos.length}`, change: null, href: '/remates' },
+    ...(enVivoCount > 0 ? [{ label: 'En vivo', value: `${enVivoCount}`, change: null, live: true, href: '/remates/en-vivo' } as TapeItem] : []),
+    { label: 'Plantas SENASA', value: `${fmt(frigorificosSummary.total)}`, change: null, href: '/frigorificos' },
+  ]
+  const dateLabel = new Date().toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })
+
   return (
     <div className="font-sans text-zinc-300 selection:bg-zinc-800 selection:text-zinc-100">
       {/* SEO Structured Data */}
@@ -308,7 +327,12 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      <main className="pt-24 pb-24 overflow-hidden">
+      <main className="pt-16 pb-24 overflow-hidden">
+        {/* Cinta de mercado en vivo — latido de la página */}
+        <MarketTape items={tapeItems} />
+        {/* Reveal-on-scroll a todas las secciones (sin tocar su markup) */}
+        <ScrollReveal />
+
         {/* ============================================================ */}
         {/*  HERO                                                        */}
         {/* ============================================================ */}
@@ -325,81 +349,19 @@ export default function LandingPage() {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#09090b]/80 to-[#09090b]" />
           </div>
 
-          <div className="relative z-10 max-w-5xl">
-            <div className="inline-flex items-center gap-2 rounded border border-zinc-800 bg-zinc-900/50 py-1 px-3 mb-8 shadow-sm backdrop-blur-sm">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-soft" />
-              <span className="text-xs font-medium text-zinc-300 uppercase tracking-widest">
-                {totalConsignatarias}+ consignatarias · {rematesProximos.length} remates · 13 provincias
-              </span>
-            </div>
-
-            <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-normal text-zinc-100 tracking-tight leading-[1.02] mb-8">
-              Los <span className="text-amber-400">consignatarios</span>{" "}
-              <span className="text-zinc-500">que mueven el mercado argentino.</span>
-            </h1>
-
-            <p className="text-base md:text-lg font-normal text-zinc-400 mb-10 max-w-2xl leading-relaxed">
-              {totalConsignatarias} consignatarias canónicas en 12 provincias. Quién opera, qué especialidad, qué plazas cubre, qué dicen los productores. El precio es importante; el consignatario es la decisión.
-            </p>
-
-            <div className="flex flex-col sm:flex-row flex-wrap gap-3 w-full sm:w-auto">
-              <Link
-                href="/consignatarias"
-                className="flex items-center justify-center gap-2 text-sm font-medium text-zinc-900 bg-zinc-100 hover:bg-white transition-all rounded py-3 px-6 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
-              >
-                Ver el directorio completo
-                <IconArrowRight />
-              </Link>
-              {enVivoCount > 0 && (
-                <Link
-                  href="/remates/en-vivo"
-                  className="flex items-center justify-center gap-2 text-sm font-medium text-white bg-red-600 hover:bg-red-500 transition-all rounded py-3 px-6 shadow-lg shadow-red-900/50"
-                >
-                  <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                  🔴 {enVivoCount} posibles transmisiones
-                </Link>
-              )}
-              <Link
-                href="/remates/semana"
-                className="flex items-center justify-center text-sm font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 transition-all rounded py-3 px-6"
-              >
-                Calendario · {rematesProximos.length} esta semana
-              </Link>
-            </div>
-          </div>
-
-          {/* Live stats strip — clickable cards (proof of value) */}
-          <div className="relative z-10 mt-20 grid grid-cols-2 md:grid-cols-5 gap-4">
-            {/* EN VIVO - Most prominent */}
-            <Link href="/remates/en-vivo" className="bg-gradient-to-br from-red-950/60 to-zinc-900/60 border border-red-800/50 hover:border-red-500/50 rounded p-5 transition-all group relative overflow-hidden">
-              <div className="absolute top-2 right-2 flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              </div>
-              <div className="text-[0.65rem] text-red-400/80 uppercase tracking-widest mb-2 group-hover:text-red-300 transition-colors">🔴 Posibles en vivo</div>
-              <div className="text-2xl font-medium text-zinc-100 tracking-tight">{enVivoCount}</div>
-              <div className="text-xs text-red-400/70 mt-1">{enVivoConfirmed > 0 ? `${enVivoConfirmed} confirmadas · est.` : "estimado · por canal"}</div>
-            </Link>
-            <Link href="/mercado/inmag" className="bg-zinc-900/60 border border-zinc-800 hover:border-emerald-500/30 rounded p-5 transition-all group">
-              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2 group-hover:text-emerald-400/70 transition-colors">INMAG $/kg vivo</div>
-              <div className="text-2xl font-medium text-zinc-100 tracking-tight">${fmt(marketPrices.inmag.current)}</div>
-              <div className="text-xs text-emerald-400 mt-1">+{fmt(marketPrices.inmag.change, 1)}% vs. semana anterior</div>
-            </Link>
-            <Link href="/remates" className="bg-zinc-900/60 border border-zinc-800 hover:border-sky-500/30 rounded p-5 transition-all group">
-              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2 group-hover:text-sky-400/70 transition-colors">Próximos remates</div>
-              <div className="text-2xl font-medium text-zinc-100 tracking-tight">{rematesProximos.length}</div>
-              <div className="text-xs text-zinc-500 mt-1">~{fmt(totalHeads)} cabezas</div>
-            </Link>
-            <Link href="/frigorificos" className="bg-zinc-900/60 border border-zinc-800 hover:border-amber-500/30 rounded p-5 transition-all group">
-              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2 group-hover:text-amber-400/70 transition-colors">Plantas habilitadas</div>
-              <div className="text-2xl font-medium text-zinc-100 tracking-tight">{fmt(frigorificosSummary.total)}</div>
-              <div className="text-xs text-zinc-500 mt-1">{provinciasConFrigo} provincias</div>
-            </Link>
-            <Link href="/mercado" className="bg-zinc-900/60 border border-zinc-800 hover:border-violet-500/30 rounded p-5 transition-all group">
-              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2 group-hover:text-violet-400/70 transition-colors">Dolar Blue</div>
-              <div className="text-2xl font-medium text-zinc-100 tracking-tight">${fmt(marketPrices.usdBlue.current)}</div>
-              <div className="text-xs text-zinc-500 mt-1">+{fmt(marketPrices.usdBlue.change, 1)}% vs. semana anterior</div>
-            </Link>
-          </div>
+          <LiveHero
+            consignatarias={totalConsignatarias}
+            remates={rematesProximos.length}
+            enVivo={enVivoCount}
+            enVivoConfirmed={enVivoConfirmed}
+            heads={totalHeads}
+            inmag={marketPrices.inmag.current}
+            inmagChange={marketPrices.inmag.change}
+            usdBlue={marketPrices.usdBlue.current}
+            frigorificos={frigorificosSummary.total}
+            provincias={13}
+            dateLabel={dateLabel}
+          />
 
           {/* Consignatarios destacados por región — Sprint 3 home pivot.
              Centro de la home. La grilla de precios queda arriba como banda

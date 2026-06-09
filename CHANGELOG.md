@@ -7,6 +7,20 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.30.16] — 2026-06-09
+
+### Rediseño de la landing — "cinta viva en broadsheet"
+
+La home dejó el reflejo de categoría (fondo oscuro + grilla + tira de 5 cards iguales + botones blancos) por una identidad propia: **terminal de mercado vivo con rigor editorial**, donde el movimiento ES la data real, no fades decorativos.
+
+- **`MarketTape`** — cinta de mercado en vivo (INMAG, categorías, USD blue, remates, en vivo, plantas) como latido de la página. Transform CSS (GPU), pausa en hover.
+- **`LiveHero`** — hero "apertura de mercado": dateline con pulso, titular broadsheet, **readout del INMAG que cuenta al cargar** (reemplaza la grilla de cards), fila mono compacta del resto del mercado, CTAs jerarquizados.
+- **`ScrollReveal`** — reveal-on-scroll en todas las `<section>` sin tocar su markup (IntersectionObserver, una sola vez). **SSR-safe** (sin JS, todo visible), saltea el hero y lo above-the-fold (sin flash).
+- **`Reveal` / `CountUp`** — primitivas reutilizables (fade-up in-view, conteo in-view) para el resto del sistema.
+- Movimiento **liviano**: sin libs nuevas (RAF propio + CSS), **respeta `prefers-reduced-motion`**, no anima layout. SSR/SEO intactos (componentes cliente render server-side; `<h1>` y data en el HTML). `pnpm build` limpio, `tsc` 0.
+
+---
+
 ## [1.30.15] — 2026-06-09
 
 ### UX integral — showcase PRO, filtros de remates, calendario multi-localidad, bienvenida
