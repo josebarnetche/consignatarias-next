@@ -7,6 +7,41 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.31.0] — 2026-06-13
+
+### Precios de remate observados (fuente nombrada) + recuperación de answer-eligibility en /precios
+
+Dos frentes nacidos de la auditoría de tráfico: una capa de datos nueva (precios
+**observados**, no estimados) y la recuperación de las queries conversacionales que
+`/precios` había perdido tras el honesty fix de 1.30.9.
+
+- **Capa de precios observados por consignataria** — nueva fuente `src/lib/data/remate-promedios.json`
+  (esquema genérico: fuente → remates[] → categorías min/max + plaza/provincia/fecha/cabezas) y
+  componente server-rendered [`ObservedPricesSection`](src/components/consignataria/ObservedPricesSection.tsx)
+  en el perfil de la consignataria. **No es un índice propio:** cada entrada es el rango $/kg vivo
+  declarado por la firma para ese remate, con **fuente nombrada y atribuida**; el punto medio se muestra
+  como referencia del rango (no como promedio ponderado). Primer dato real: **Etchevehere Rural SRL**,
+  Feria María Dolores (General Ramírez, Entre Ríos), remate 09/06/2026 — 12 categorías, 483 cabezas.
+  Citabilidad: `DatasetSchema` (creator = la firma) + `FAQPageSchema` con las preguntas que matchean
+  queries reales ("¿A cuánto se vendió el ternero en General Ramírez?"). Cada planilla que entra del
+  outreach se agrega como un objeto y aparece sola en el perfil de esa firma.
+- **`/precios/[categoria]` — recuperación de answer-eligibility** — el FAQ usaba un template genérico
+  que no matcheaba las frases reales de Search Console y tenía un **bug de género** (para `vacas`
+  renderizaba "¿Cuánto sale *un vaca vivo*?"). Se agregaron las **frases exactas** que la gente busca,
+  con respuesta **número-primero y honesta** (lidera el INMAG), y se corrigió el género por categoría
+  (`articulo`/`vivoAdj`): "¿Cuánto sale una vaca viva en Argentina 2026?", "¿Cuánto cuesta una vaca
+  adulta?", "¿Cuánto está el kilo de novillo en pie?", etc.
+- **`/precios/hacienda-en-pie`** — sumada la frase exacta "¿Cuánto está el kilo de novillo en pie?"
+  (era query perdida; la página decía "vivo", no "en pie").
+- **Diseño honesto sostenido:** ninguna afirmación sin fuente (valor #1). El observado lleva fuente y
+  fecha; el geo×categoría conserva su estimado etiquetado de 1.30.9–1.30.10 intacto (la arquitectura
+  queda: query nacional → página nacional, query provincial → geo page honesto). El rewrite "observado
+  lidera, estimado fallback" en `/precios/[cat]/[prov]` queda pendiente para cuando haya cobertura.
+
+`tsc` 0, render verificado en dev (sección + Dataset/FAQ schema presentes en el HTML servido).
+
+---
+
 ## [1.30.16] — 2026-06-09
 
 ### Rediseño de la landing — "cinta viva en broadsheet"

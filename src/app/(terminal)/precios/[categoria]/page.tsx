@@ -27,6 +27,10 @@ const CATEGORIES: Record<
     singular: string
     title: string
     promedioKg: number
+    /** Spanish article + adjective so generated copy stays grammatical
+        ("un novillo vivo" vs "una vaca viva"). */
+    articulo: 'un' | 'una'
+    vivoAdj: 'vivo' | 'viva'
     descripcion: string
     extraFaq: { question: string; answer: string }[]
   }
@@ -35,6 +39,8 @@ const CATEGORIES: Record<
     singular: 'novillo',
     title: 'Novillo',
     promedioKg: 430,
+    articulo: 'un',
+    vivoAdj: 'vivo',
     descripcion: 'Macho castrado de más de 300 kg, destino faena de exportación o consumo interno.',
     extraFaq: [
       {
@@ -47,6 +53,8 @@ const CATEGORIES: Record<
     singular: 'novillito',
     title: 'Novillito',
     promedioKg: 280,
+    articulo: 'un',
+    vivoAdj: 'vivo',
     descripcion: 'Macho castrado de 250–300 kg, alta demanda para cortes premium.',
     extraFaq: [],
   },
@@ -54,6 +62,8 @@ const CATEGORIES: Record<
     singular: 'vaquillona',
     title: 'Vaquillona',
     promedioKg: 320,
+    articulo: 'una',
+    vivoAdj: 'viva',
     descripcion: 'Hembra joven antes de su primera parición, 280–350 kg.',
     extraFaq: [],
   },
@@ -61,6 +71,8 @@ const CATEGORIES: Record<
     singular: 'vaca',
     title: 'Vaca',
     promedioKg: 380,
+    articulo: 'una',
+    vivoAdj: 'viva',
     descripcion: 'Hembra adulta de descarte, destino faena conserva.',
     extraFaq: [],
   },
@@ -68,6 +80,8 @@ const CATEGORIES: Record<
     singular: 'toro',
     title: 'Toro',
     promedioKg: 600,
+    articulo: 'un',
+    vivoAdj: 'vivo',
     descripcion: 'Macho entero adulto, faena manufactura.',
     extraFaq: [],
   },
@@ -75,14 +89,24 @@ const CATEGORIES: Record<
     singular: 'ternero',
     title: 'Ternero',
     promedioKg: 180,
+    articulo: 'un',
+    vivoAdj: 'vivo',
     descripcion: 'Cría macho de invernada, 160–220 kg, destino feedlot o pastoreo.',
-    extraFaq: [
-      {
-        question: '¿Cuánto sale un ternero vivo en Argentina 2026?',
-        answer: '',
-      },
-    ],
+    extraFaq: [],
   },
+}
+
+/* Exact conversational phrasings people actually search per category (Search
+   Console). Each maps to a direct, number-first, honest answer built at runtime
+   with the live INMAG price. Recovers answer-eligibility for queries like
+   "cuánto sale una vaca viva en argentina 2026" / "kilo de novillo en pie". */
+const CONVERSATIONAL_QUESTIONS: Record<CategorySlug, string[]> = {
+  novillos: ['¿Cuánto está el kilo de novillo en pie?', '¿A cuánto está el novillo gordo hoy?'],
+  novillitos: ['¿Cuánto está el kilo de novillito en pie?'],
+  vaquillonas: ['¿Cuánto sale una vaquillona en Argentina 2026?'],
+  vacas: ['¿Cuánto sale una vaca viva en Argentina 2026?', '¿Cuánto cuesta una vaca adulta en Argentina?'],
+  toros: ['¿Cuánto sale un toro en pie en Argentina?'],
+  terneros: ['¿Cuánto sale un ternero vivo en Argentina 2026?', '¿A cuánto está el kilo de ternero hoy?'],
 }
 
 const ALL_CATEGORIES = Object.keys(CATEGORIES) as CategorySlug[]
@@ -241,27 +265,30 @@ export default async function PreciosCategoriaPage({
     ),
   }))
 
+  // Direct, number-first answer for each conversational phrasing, built with the
+  // live price. Honest: leads with the INMAG reference, then the per-head figure.
+  const convoAnswer = (q: string): string => {
+    const head = `El kilo vivo de ${c.singular} está a $${fmt(price)} (INMAG, ${lastUpdate}; ${changeStr} semanal). ${c.articulo[0].toUpperCase()}${c.articulo.slice(1)} ${c.singular} ${c.vivoAdj} de ${c.promedioKg} kg ronda los $${fmt(promedioPeso)} a precio de referencia.`
+    if (q.includes('en pie')) {
+      return `El kilo de ${c.singular} en pie (peso vivo) cotiza a $${fmt(price)} según el INMAG del ${lastUpdate} (${changeStr} semanal). Es la referencia del Mercado Agroganadero; el precio realizado varía según peso, terminación y plaza.`
+    }
+    if (q.includes('adulta')) {
+      return `Una vaca adulta de descarte se referencia en $${fmt(price)}/kg vivo (INMAG, ${lastUpdate}). Una vaca de ${c.promedioKg} kg ronda los $${fmt(promedioPeso)}. El valor final depende de estado, terminación y plaza de venta.`
+    }
+    return head
+  }
+
   const faqItems = [
     {
       question: `¿Cuánto está el kilo vivo de ${c.singular} hoy?`,
       answer: `El kilo vivo de ${c.singular} cotiza a $${fmt(price)} hoy según el INMAG del ${lastUpdate}, con variación semanal de ${changeStr}. Referencia del Mercado Agroganadero de Buenos Aires.`,
     },
     {
-      question: `¿Cuánto sale un ${c.singular} vivo en Argentina 2026?`,
-      answer: `Un ${c.singular} promedio de ${c.promedioKg} kg vale aproximadamente $${fmt(promedioPeso)} a precio de mercado ($${fmt(price)}/kg × ${c.promedioKg} kg). El precio varía según peso, terminación y plaza.`,
-    },
-    {
       question: `¿Cuál es el precio del kilo vivo de ${c.singular} en Argentina?`,
       answer: `$${fmt(price)} por kilo vivo de ${c.singular}, actualizado el ${lastUpdate}. Es la referencia diaria del Mercado Agroganadero.`,
     },
-    ...c.extraFaq.map((f) =>
-      f.answer
-        ? f
-        : {
-            ...f,
-            answer: `El kilo vivo de ${c.singular} está a $${fmt(price)} (${lastUpdate}). Un ${c.singular} promedio de ${c.promedioKg} kg sale $${fmt(promedioPeso)} a precio de mercado.`,
-          },
-    ),
+    ...CONVERSATIONAL_QUESTIONS[categoria].map((question) => ({ question, answer: convoAnswer(question) })),
+    ...c.extraFaq,
   ]
 
   return (
