@@ -21,7 +21,8 @@ import { getConsignatariaProfile, getRelatedConsignatarias } from '@/lib/dal/con
 import { getApprovedReviewsForSlug, getReviewStatsForSlug } from '@/lib/dal/reviews'
 import { getEntityTier } from '@/lib/features'
 import { createServiceClient } from '@/lib/supabase'
-import { BreadcrumbSchema, LocalBusinessSchema, EventSchema, VideoObjectSchema } from '@/components/seo/JsonLd'
+import { BreadcrumbSchema, LocalBusinessSchema, EventSchema, VideoObjectSchema, DatasetSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { ObservedPricesSection, getLatestRemate } from '@/components/consignataria/ObservedPricesSection'
 import youtubeChannelsData from '@/lib/data/youtube-channels.json'
 import consignatariaResources from '@/lib/data/consignataria-resources.json'
 import { getProfileSEO } from '@/lib/data/profile-seo'
@@ -367,6 +368,34 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
     .sort((a, b) => a.date.localeCompare(b.date))
     .slice(0, 10)
 
+  // Observed prices reported by the firm for its latest auction (named source).
+  const latestRemate = getLatestRemate(canonical)
+  const observedFaq = latestRemate
+    ? (() => {
+        const { fuente, remate } = latestRemate
+        const fmt = (n: number) => `$${n.toLocaleString('es-AR')}`
+        const items: { question: string; answer: string }[] = []
+        const ternero = remate.categorias.find((c) => c.label.toLowerCase().startsWith('terneros'))
+        if (ternero) {
+          const mid = Math.round((ternero.min + ternero.max) / 2)
+          items.push({
+            question: `¿A cuánto se vendió el ternero en ${remate.plaza}, ${remate.provincia}?`,
+            answer: `En el remate del ${remate.fecha} de ${fuente} (${remate.feria || remate.plaza}, ${remate.provincia}), el ternero de invernada hasta 200 kg se operó entre ${fmt(ternero.min)} y ${fmt(ternero.max)} por kilo vivo (punto medio ${fmt(mid)}/kg).`,
+          })
+        }
+        items.push({
+          question: `¿Qué precios tuvo el remate de ${fuente}?`,
+          answer:
+            `Precios $/kg vivo observados en el remate del ${remate.fecha} (${remate.plaza}, ${remate.provincia}): ` +
+            remate.categorias
+              .map((c) => `${c.label} ${fmt(c.min)}–${fmt(c.max)}`)
+              .join('; ') +
+            `. Fuente: ${fuente}.`,
+        })
+        return items
+      })()
+    : []
+
   return (
     <>
       {/* Structured Data */}
@@ -448,6 +477,22 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
           </div>
         )}
       </section>
+
+      {/* Observed prices reported by the firm (named source, citable). */}
+      {latestRemate && (
+        <>
+          <DatasetSchema
+            name={`Precios de hacienda — ${latestRemate.fuente}, remate ${latestRemate.remate.fecha}`}
+            description={`Precios $/kg vivo por categoría observados en el remate de ${latestRemate.fuente} en ${latestRemate.remate.plaza}, ${latestRemate.remate.provincia} (${latestRemate.remate.fecha}). Fuente: ${latestRemate.fuente}.`}
+            url={`https://www.consignatarias.com.ar/consignatarias/${canonical}#precios-observados`}
+            keywords={['precio hacienda', latestRemate.remate.provincia, latestRemate.remate.plaza, 'precio ternero', 'precio novillo', 'remate ganadero']}
+            dateModified={latestRemate.remate.fecha}
+            creator={latestRemate.fuente}
+          />
+          {observedFaq.length > 0 && <FAQPageSchema items={observedFaq} />}
+          <ObservedPricesSection slug={canonical} />
+        </>
+      )}
 
       <ConsignatariaProfileClient
         profile={enrichedProfile}

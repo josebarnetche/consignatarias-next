@@ -38,6 +38,7 @@ Cada consignataria ya tiene una página armada con datos públicos:
 - **Quién Opera** — nombre del referente, especialidad (cría / invernada / general / reproductores / lechera / mixto), región operativa, años en oficio, bio del referente, foto pública si la conseguimos
 - **Historial Verificable** — remates de los últimos 90 días + frecuencia mensual, próximos confirmados, tipo dominante, plazas habituales (con el conteo por plaza)
 - **Calendario anual** — mapa de calor de actividad mes por mes
+- **Precios del remate** — si nos pasás los promedios de tu remate, los publicamos en tu perfil con **tu firma como fuente** (rango $/kg vivo por categoría + punto medio observado, fecha y cabezas). Indexable y citable: queda como el precio de referencia de tu plaza
 - **Reseñas de productores** — lo que dicen quienes ya operaron con vos (moderadas por nuestro equipo antes de publicarse)
 - **Distribución por tipo** — barra con cuántos remates de cada tipo hiciste en el año
 - **YouTube embebido** — si transmitís por canal propio, las últimas transmisiones aparecen

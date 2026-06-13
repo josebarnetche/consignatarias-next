@@ -43,6 +43,10 @@ const FAQ = [
     answer: `Hoy el kilo vivo de novillo está a $${fmt(novillo.price)} (INMAG ${inmagChangeStr} semanal). Actualizado ${lastUpdate} desde Mercado Agroganadero.`,
   },
   {
+    question: '¿Cuánto está el kilo de novillo en pie?',
+    answer: `El kilo de novillo en pie (peso vivo) cotiza a $${fmt(novillo.price)} hoy (INMAG, ${lastUpdate}; ${inmagChangeStr} semanal). "En pie" significa el animal vivo, antes de la faena; es la referencia del Mercado Agroganadero de Buenos Aires.`,
+  },
+  {
     question: '¿Cuál es el precio de la hacienda en pie hoy?',
     answer: `Precios hacienda en pie ${lastUpdate}: novillo $${fmt(novillo.price)}/kg, vaquillona $${fmt(rows.find((r) => r.slug === 'vaquillonas')!.price)}/kg, vaca $${fmt(rows.find((r) => r.slug === 'vacas')!.price)}/kg, ternero $${fmt(ternero.price)}/kg, novillito $${fmt(rows.find((r) => r.slug === 'novillitos')!.price)}/kg, toro $${fmt(rows.find((r) => r.slug === 'toros')!.price)}/kg.`,
   },

@@ -1,0 +1,32 @@
+{
+  "_doc": "Precios observados reportados por consignatarias en sus remates (fuente nombrada, atribuida). NO es un índice propio: cada entrada es el rango min/max $/kg vivo declarado por la firma para ese remate. El punto medio (midpoint) se muestra como referencia del rango, no como promedio ponderado. Para sumar un remate: agregar un objeto al array `remates` de la consignataria (o crear la clave del slug). Campos por categoría: label, segmento (faena|invernada|cria), min, max.",
+  "etchevehere-rural": {
+    "fuente": "Etchevehere Rural SRL",
+    "remates": [
+      {
+        "fecha": "2026-06-09",
+        "feria": "Feria María Dolores",
+        "plaza": "General Ramírez",
+        "provincia": "Entre Ríos",
+        "totalCabezas": 483,
+        "ingresoGordo": 357,
+        "ingresoInvernada": 126,
+        "proximoRemate": "2026-06-17",
+        "categorias": [
+          { "label": "Terneros hasta 200 kg", "segmento": "invernada", "min": 4500, "max": 5500 },
+          { "label": "Terneras hasta 200 kg", "segmento": "invernada", "min": 4800, "max": 5320 },
+          { "label": "Novillitos más 200 kg", "segmento": "invernada", "min": 4050, "max": 4350 },
+          { "label": "Vaquillas más 200 kg", "segmento": "invernada", "min": 4900, "max": 5000 },
+          { "label": "Macho y hembra Holando", "segmento": "invernada", "min": 2900, "max": 3400 },
+          { "label": "Vacas invernada", "segmento": "invernada", "min": 2480, "max": 2640 },
+          { "label": "Novillitos hasta 400 kg", "segmento": "faena", "min": 4200, "max": 4520 },
+          { "label": "Novillos más 400 kg", "segmento": "faena", "min": 3700, "max": 4200 },
+          { "label": "Vaquillas gordas", "segmento": "faena", "min": 3800, "max": 4620 },
+          { "label": "Vacas gordas", "segmento": "faena", "min": 3000, "max": 3460 },
+          { "label": "Vacas conserva / manufactura", "segmento": "faena", "min": 1800, "max": 2600 },
+          { "label": "Toros", "segmento": "faena", "min": 2800, "max": 3260 }
+        ]
+      }
+    ]
+  }
+}
