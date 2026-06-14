@@ -36,6 +36,14 @@ interface ProRevealProps {
   placeholder?: ReactNode
   /** Optional header label for the gated panel. */
   title?: string
+  /**
+   * When true, a non-PRO user is seeing their free weekly "taste": render the
+   * real `children` (no blur) wrapped in a taste banner + footer CTA, instead of
+   * the gated teaser. The server decides this (one full verdict per week).
+   */
+  tasteUnlocked?: boolean
+  /** Days until the next free taste — shown in the taste footer. */
+  tasteResetDays?: number
 }
 
 const UPGRADE_CTA = 'Desbloquear con PRO — ARS $7.900/mes →'
@@ -64,22 +72,54 @@ export default function ProReveal({
   from,
   placeholder,
   title,
+  tasteUnlocked = false,
+  tasteResetDays,
 }: ProRevealProps) {
   const { tier, loading } = useSessionTier()
   const href = `/upgrade?next=${encodeURIComponent(from)}`
   const hasTrackedImpression = useRef(false)
 
-  // Count the gate impression once, only for users who can convert.
+  // Count the gate impression once, only for users who can convert (not on a taste).
   useEffect(() => {
-    if (loading || tier === 'pro') return
+    if (loading || tier === 'pro' || tasteUnlocked) return
     if (!hasTrackedImpression.current) {
       trackProPromptView(from, 'reveal')
       hasTrackedImpression.current = true
     }
-  }, [from, tier, loading])
+  }, [from, tier, loading, tasteUnlocked])
 
   // PRO users get the real thing.
   if (tier === 'pro') return <>{children}</>
+
+  // Free user spending their weekly taste: real content + taste banner/footer.
+  if (tasteUnlocked) {
+    return (
+      <div className="terminal-panel" style={{ borderColor: 'rgba(52, 211, 153, 0.4)' }}>
+        <div
+          className="terminal-panel-header flex items-center justify-between"
+          style={{ color: '#34d399' }}
+        >
+          <span>🎁 {title ?? 'Probada PRO'} · gratis esta semana</span>
+        </div>
+        <div className="px-panel py-5">{children}</div>
+        <div className="border-t border-terminal-border px-panel py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <span className="text-zinc-500 text-xxs">
+            {typeof tasteResetDays === 'number'
+              ? `Tu probada de esta semana. Próxima en ${tasteResetDays} día${tasteResetDays === 1 ? '' : 's'}.`
+              : 'Tu probada gratis de esta semana.'}
+          </span>
+          <Link
+            href={href}
+            onClick={() => trackProPromptClick(from, 'reveal')}
+            className="inline-block px-4 py-2 text-xxs font-terminal uppercase tracking-wider self-start sm:self-auto"
+            style={{ background: 'rgba(56, 189, 248, 0.9)', color: '#000', borderRadius: '2px' }}
+          >
+            Desbloquear todo con PRO →
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
   const blurred = placeholder ?? <RevealSkeleton />
 

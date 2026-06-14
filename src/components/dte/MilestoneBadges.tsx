@@ -1,7 +1,7 @@
 'use client';
 
 import { Star, Zap, Crown, Trophy, CheckCircle, Share2 } from 'lucide-react';
-import { trackEvent } from '@/lib/analytics';
+import { trackMilestoneShare } from '@/lib/analytics';
 
 interface MilestoneBadgesProps {
   dteCount: number;
@@ -83,11 +83,7 @@ export function MilestoneBadges({ dteCount, showAll = false, showShare = true }:
     const message = `🏆 Alcancé el logro "${highestBadge.name}" en consignatarias.com.ar — ya tengo ${dteCount} guías de hacienda registradas!\n\nRegistrá tus DT-e y llevá el control de tu producción:\nhttps://www.consignatarias.com.ar/mi-cuenta/guias`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     
-    trackEvent('milestone_share', {
-      badge_id: highestBadge.id,
-      badge_name: highestBadge.name,
-      dte_count: dteCount,
-    });
+    trackMilestoneShare(highestBadge.id, highestBadge.name, dteCount);
     
     window.open(whatsappUrl, '_blank');
   };

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-browser'
-import { trackCheckoutStart } from '@/lib/analytics'
+import { trackCheckoutStart, trackCheckoutRedirect } from '@/lib/analytics'
 
 const PRO_PLAN_ID = 'pln_f644261ffe68462497eeb78d4363f377'
 
@@ -55,6 +55,7 @@ export default function SubscribeButton() {
       const data = await res.json()
 
       if (data.url) {
+        trackCheckoutRedirect('PRO_CONSIGNATARIA', 45000)
         window.location.href = data.url
       } else {
         alert(data.error || 'Error al crear el link de pago')

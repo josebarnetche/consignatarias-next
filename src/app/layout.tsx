@@ -14,6 +14,11 @@ const inter = Inter({
 
 const GA_ID = 'G-6CZMZH9S6Y';
 
+// Only load GA on the production deploy — keeps localhost + Vercel preview
+// traffic out of the production property. (analytics.ts also hostname-guards
+// every event as defense-in-depth.)
+const ANALYTICS_ENABLED = process.env.VERCEL_ENV === 'production';
+
 const rematesCount = rematesData.length;
 
 export const metadata: Metadata = {
@@ -111,13 +116,19 @@ export default function RootLayout({
   return (
     <html lang="es-AR" className={`dark ${inter.variable}`}>
       <head>
-        {/* Google tag (gtag.js) — standard async placement per Google docs */}
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`,
-          }}
-        />
+        {/* Google tag (gtag.js) — async per Google docs. `send_page_view:false`
+            so the SPA-aware AnalyticsProvider is the SOLE source of page_view
+            (the inline config used to emit a duplicate pageview on first load). */}
+        {ANALYTICS_ENABLED && (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}',{send_page_view:false});`,
+              }}
+            />
+          </>
+        )}
         {/* Schema.org Structured Data */}
         <OrganizationSchema />
         <WebSiteSchema />

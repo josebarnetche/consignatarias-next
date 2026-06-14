@@ -5,7 +5,7 @@ import { useDropzone } from 'react-dropzone';
 import { Upload, FileImage, Loader2, CheckCircle2, AlertCircle, Sparkles, Info } from 'lucide-react';
 import { useOCR, type DTEData } from '@/hooks/useOCR';
 import { DTEForm } from './DTEForm';
-import { trackDteUploadStart, trackDteOcrComplete, trackEvent } from '@/lib/analytics';
+import { trackDteUploadStart, trackDteOcrComplete, trackDteDemoStart } from '@/lib/analytics';
 
 interface DTEUploaderProps {
   onSave?: (data: DTEData & { imagen_url?: string; ocr_raw_text?: string; ocr_confidence?: number }) => void;
@@ -101,7 +101,7 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
 
   // Demo mode handler - skip OCR, show sample data
   const handleDemoMode = () => {
-    trackEvent('dte_demo_start', { source: 'upload_page' });
+    trackDteDemoStart('upload_page');
     setIsDemo(true);
     setExtractedData(DEMO_DTE_DATA);
     setOcrText('DEMO MODE - Sample DT-e data for demonstration purposes');

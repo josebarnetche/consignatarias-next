@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { trackCheckoutStart, trackEvent } from '@/lib/analytics'
+import { trackCheckoutStart, trackCheckoutRedirect } from '@/lib/analytics'
 
 /**
  * PRO checkout button.
@@ -31,7 +31,7 @@ export function UpgradeButton({ loggedIn = true }: { loggedIn?: boolean }) {
         setLoading(false)
         return
       }
-      trackEvent('checkout_redirect', { plan_name: 'PRO_USER', plan_price: 7900 })
+      trackCheckoutRedirect('PRO_USER', 7900)
       window.location.href = data.checkoutUrl
     } catch {
       setError('Error de red. Intentá de nuevo.')

@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
-import { trackClaimCTA } from '@/lib/analytics'
+import { trackClaimSubmit, trackClaimSuccess } from '@/lib/analytics'
 
 interface ClaimFormProps {
   slug: string
@@ -49,7 +49,7 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
     setState('submitting')
     setErrorMsg('')
 
-    trackClaimCTA(slug, displayName)
+    trackClaimSubmit(slug, displayName)
 
     try {
       const res = await fetch('/api/claims', {
@@ -67,6 +67,7 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
       })
 
       if (res.ok) {
+        trackClaimSuccess(slug, displayName)
         setState('success')
         return
       }
