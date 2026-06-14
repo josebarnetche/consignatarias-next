@@ -22,7 +22,7 @@ import {
 import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge from '@/components/badges/ProBadge'
 import RematesFilterBar from '@/components/remates/RematesFilterBar'
-import { trackAuctionClick, trackFilterApply, trackOutboundClick, trackEvent } from '@/lib/analytics'
+import { trackAuctionClick, trackFilterApply, trackOutboundClick, trackBulkIcsExport } from '@/lib/analytics'
 import { downloadBulkICSFile } from '@/lib/utils/ics'
 import { useSessionTier } from '@/lib/use-session-tier'
 import { useRouter } from 'next/navigation'
@@ -778,11 +778,11 @@ export default function RematesPage() {
     const filename = `${filterParts.join('-')}.ics`
     
     downloadBulkICSFile(events, filename)
-    trackEvent('bulk_ics_export', { 
-      count: events.length, 
-      period, 
-      hasFilters: !!(filterProvince || filterType || searchQuery) 
-    })
+    trackBulkIcsExport(
+      events.length,
+      period,
+      !!(filterProvince || filterType || searchQuery)
+    )
   }
 
   /* ---- Filter handlers (all faceting tracked, none navigates) ---- */

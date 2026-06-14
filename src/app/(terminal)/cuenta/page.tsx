@@ -5,6 +5,7 @@ import { getCurrentSession } from '@/lib/user-tier'
 import { requireServiceClient } from '@/lib/supabase'
 import { CancelButton } from './CancelButton'
 import { SignOutButton } from './SignOutButton'
+import { UpgradeConfirmTracker } from '@/components/UpgradeConfirmTracker'
 
 export const metadata: Metadata = {
   title: 'Tu cuenta',
@@ -53,6 +54,14 @@ export default async function CuentaPage({ searchParams }: PageProps) {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-12 text-sm">
+      {/* Fire the GA4 pro_upgrade conversion only when the DB confirms PRO (tier),
+          never on the bare ?upgraded=true redirect param. */}
+      <UpgradeConfirmTracker
+        confirmed={tier === 'pro'}
+        plan="PRO_USER"
+        price={7900}
+        dedupeId={sub?.rebill_subscription_id ?? null}
+      />
       {justUpgraded && (
         <div className="mb-8 relative overflow-hidden rounded-2xl border border-emerald-500/40 bg-gradient-to-b from-emerald-500/10 to-zinc-900/40 p-6">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />

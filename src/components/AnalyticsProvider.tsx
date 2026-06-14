@@ -1,8 +1,8 @@
 'use client'
 
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, Suspense } from 'react'
-import { trackPageView, trackEvent } from '@/lib/analytics'
+import { trackPageView, trackEvent, trackSignup } from '@/lib/analytics'
 
 /**
  * Tracks GA4 pageviews on every Next.js App Router navigation.
@@ -62,11 +62,51 @@ function AiReferralTracker() {
   return null
 }
 
+/**
+ * Fires the GA4 `sign_up` event once when the auth callback flags a brand-new
+ * account with `?signup=1` (magic-link = email method), then strips the param so
+ * a refresh can't re-count it. This is the first step of the activation funnel
+ * (signup → DT-e → PRO) that was previously uninstrumented.
+ */
+function SignupTracker() {
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (searchParams.get('signup') !== '1') return
+
+    const key = 'signup_fired'
+    let already = false
+    try {
+      already = sessionStorage.getItem(key) === '1'
+    } catch {
+      /* storage unavailable */
+    }
+    if (!already) {
+      trackSignup('email')
+      try {
+        sessionStorage.setItem(key, '1')
+      } catch {
+        /* ignore */
+      }
+    }
+
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('signup')
+    const qs = params.toString()
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false })
+  }, [searchParams, pathname, router])
+
+  return null
+}
+
 export default function AnalyticsProvider() {
   return (
     <Suspense fallback={null}>
       <PageViewTracker />
       <AiReferralTracker />
+      <SignupTracker />
     </Suspense>
   )
 }

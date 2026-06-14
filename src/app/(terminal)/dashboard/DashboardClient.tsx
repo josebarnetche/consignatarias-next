@@ -10,6 +10,7 @@ import { WelcomeHero, ProActivatedModule, type NextStep } from '@/components/wel
 import { WhatsAppIconButton } from '@/components/share/WhatsAppShare'
 import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2 } from 'lucide-react'
 import QRCode from '@/components/QRCode'
+import { UpgradeConfirmTracker } from '@/components/UpgradeConfirmTracker'
 
 interface Consignataria {
   display_name: string
@@ -243,6 +244,15 @@ export default function DashboardClient({
 
   return (
     <div className="max-w-3xl mx-auto px-2 sm:px-4 py-4 space-y-4">
+      {/* Fire the GA4 pro_upgrade conversion only once PRO is DB-confirmed
+          (subscription prop or polled /api/subscription-status), never on the
+          bare ?upgraded=true redirect param. */}
+      <UpgradeConfirmTracker
+        confirmed={proActivated}
+        plan={subscription?.plan_name || (tierLabel === 'ENTERPRISE' ? 'ENTERPRISE' : 'PRO_CONSIGNATARIA')}
+        price={tierLabel === 'ENTERPRISE' ? 0 : 45000}
+        dedupeId={subscription?.rebill_subscription_id ?? null}
+      />
       {/* Bienvenida post-upgrade — "ya sos PRO, esto desbloqueaste" + proximos pasos */}
       {showUpgradeToast && (tierLabel === 'PRO' || tierLabel === 'ENTERPRISE' || proConfirming) && (
         <ProActivatedModule

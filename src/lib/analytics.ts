@@ -14,14 +14,21 @@ declare global {
   }
 }
 
-const GA_ID = 'G-6CZMZH9S6Y'
+/** Hostnames where analytics is allowed to fire. Anything else (localhost,
+ *  *.vercel.app preview deploys, staging) is silently dropped so the production
+ *  GA4 property only ever sees production traffic. */
+const PROD_HOSTS = new Set(['www.consignatarias.com.ar', 'consignatarias.com.ar'])
+
+function analyticsEnabled(): boolean {
+  return typeof window !== 'undefined' && PROD_HOSTS.has(window.location.hostname)
+}
 
 /* ------------------------------------------------------------------ */
 /*  LOW-LEVEL                                                          */
 /* ------------------------------------------------------------------ */
 
 function gtag(...args: unknown[]) {
-  if (typeof window !== 'undefined' && window.gtag) {
+  if (analyticsEnabled() && window.gtag) {
     window.gtag(...args)
   }
 }
@@ -31,8 +38,10 @@ function gtag(...args: unknown[]) {
  * Called by the AnalyticsProvider on every route change.
  */
 export function trackPageView(url: string) {
-  gtag('config', GA_ID, {
+  gtag('event', 'page_view', {
     page_path: url,
+    page_location:
+      typeof window !== 'undefined' ? window.location.origin + url : url,
   })
 }
 
@@ -41,7 +50,7 @@ export function trackPageView(url: string) {
  */
 export function trackEvent(
   eventName: string,
-  params?: Record<string, string | number | boolean | undefined>
+  params?: Record<string, unknown>
 ) {
   gtag('event', eventName, params)
 }
@@ -168,20 +177,46 @@ export function trackPlanesView(source: string | null) {
   })
 }
 
-/** User started checkout process */
+/** User started checkout process (clicked pay, before the Rebill link is created) */
 export function trackCheckoutStart(plan: string, price: number) {
   trackEvent('checkout_start', {
     plan_name: plan,
     plan_price: price,
+    // GA4-reserved monetization params so the value flows into reports.
+    value: price,
+    currency: 'ARS',
   })
 }
 
-/** User completed PRO upgrade */
-export function trackProUpgrade(plan: string, price: number, source: string | null) {
-  trackEvent('pro_upgrade', {
+/** Rebill link created — user is being redirected to pay (last on-site step). */
+export function trackCheckoutRedirect(plan: string, price: number) {
+  trackEvent('checkout_redirect', {
     plan_name: plan,
     plan_price: price,
+    value: price,
+    currency: 'ARS',
+  })
+}
+
+/**
+ * DB-confirmed PRO upgrade — fires the GA4-recommended `purchase` event so the
+ * full monetization suite (revenue, ARPU, conversion value) lights up. Only call
+ * this once the subscription is confirmed in the DB (see UpgradeConfirmTracker),
+ * never on the bare `?upgraded=true` redirect param.
+ */
+export function trackProUpgrade(
+  plan: string,
+  price: number,
+  source: string | null,
+  transactionId?: string | null
+) {
+  trackEvent('purchase', {
+    transaction_id: transactionId || undefined,
+    value: price,
+    currency: 'ARS',
+    plan_name: plan,
     conversion_source: source || 'direct',
+    items: [{ item_id: plan, item_name: plan, price, quantity: 1 }],
   })
 }
 
@@ -240,3 +275,32 @@ export function trackDteMilestone(count: number) {
 export function trackDteDelete() {
   trackEvent('dte_delete', {})
 }
+
+/** User started the DT-e demo (skips OCR, loads sample data) */
+export function trackDteDemoStart(source: string) {
+  trackEvent('dte_demo_start', { source })
+}
+
+/** User shared a DT-e milestone badge */
+export function trackMilestoneShare(badgeId: string, badgeName: string, dteCount: number) {
+  trackEvent('milestone_share', {
+    badge_id: badgeId,
+    badge_name: badgeName,
+    dte_count: dteCount,
+  })
+}
+
+/** User exported the remates calendar as a bulk .ics file */
+export function trackBulkIcsExport(count: number, period: string, hasFilters: boolean) {
+  trackEvent('bulk_ics_export', {
+    count,
+    period,
+    has_filters: hasFilters,
+  })
+}
+
+/* ------------------------------------------------------------------ */
+/*  AUTH                                                               */
+/* ------------------------------------------------------------------ */
+// trackSignup lives in the ACTIVATION FUNNEL section above; it is fired by the
+// global SignupTracker (AnalyticsProvider) on the `?signup=1` post-auth redirect.

@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
-import { trackClaimCTA } from '@/lib/analytics'
+import { trackClaimSubmit, trackClaimSuccess } from '@/lib/analytics'
 
 interface FrigorificoClaimFormProps {
   frigorificoName: string
@@ -46,7 +46,7 @@ export default function FrigorificoClaimForm({ frigorificoName, frigorificoCuit 
     setState('submitting')
     setErrorMsg('')
 
-    trackClaimCTA(frigorificoCuit, frigorificoName)
+    trackClaimSubmit(frigorificoCuit, frigorificoName)
 
     try {
       const res = await fetch('/api/frigorifico-claims', {
@@ -60,6 +60,7 @@ export default function FrigorificoClaimForm({ frigorificoName, frigorificoCuit 
       })
 
       if (res.ok) {
+        trackClaimSuccess(frigorificoCuit, frigorificoName)
         setState('success')
         return
       }

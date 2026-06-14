@@ -40,9 +40,20 @@ export async function GET(request: Request) {
       },
     )
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`)
+      // Flag brand-new accounts so the client can fire the GA4 `sign_up` event.
+      // Heuristic: created within the last 5 min ⇒ this magic-link was a signup,
+      // not a returning login. A returning user whose account is <5 min old is
+      // effectively still a new signup, so the rare false-positive is benign.
+      const createdAt = data.user?.created_at
+        ? new Date(data.user.created_at).getTime()
+        : 0
+      const isNewUser = createdAt > 0 && Date.now() - createdAt < 5 * 60 * 1000
+
+      const dest = new URL(next, origin)
+      if (isNewUser) dest.searchParams.set('signup', '1')
+      return NextResponse.redirect(dest)
     }
   }
 
