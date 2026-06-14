@@ -34,6 +34,12 @@ export default function ProTourPage() {
   const usdBlue = `$${fmt(marketPrices.usdBlue.current)}`
   const consignatariasCount = getAllProfiles().length
 
+  // Ancla de ROI en vivo: un camión jaula ≈ 30 novillos × 430 kg al INMAG de hoy.
+  const cats = marketPrices.categories as Record<string, { current: number }>
+  const novilloKg = cats.novillos?.current ?? marketPrices.inmag.current
+  const valorCamion = `$${fmt(novilloKg * 430 * 30)}`
+  const proPctCabeza = ((7900 / (novilloKg * 430)) * 100).toFixed(1)
+
   // Spread computed identically to /api/market/spread.
   const novilloUsdPerKg = marketPrices.inmag.current / marketPrices.usdBlue.current
   const cornUsdPerKg = marketPrices.corn.current / 1000
@@ -67,6 +73,12 @@ export default function ProTourPage() {
             si conviene vender o aguantar, cuánto te queda neto, a quién venderle. Para productores,
             asesores, contadores y brokers.
           </p>
+          <p className="text-zinc-300 text-sm max-w-2xl mx-auto leading-relaxed">
+            Un camión de novillos hoy mueve <span className="text-zinc-100">≈ {valorCamion}</span>.
+            PRO cuesta <span className="text-sky-400">$7.900/mes</span> ={' '}
+            <span className="text-zinc-100">{proPctCabeza}% de una cabeza</span>. Mejorás tu venta
+            un 0,01% y ya se pagó.
+          </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <Link
               href={upgradeHref('/mercado/vender-ahora')}
@@ -86,6 +98,12 @@ export default function ProTourPage() {
           </div>
           <p className="text-zinc-600 text-xxs">
             Sin permanencia · Cancelás cuando quieras · Pago por Rebill
+          </p>
+          <p className="text-emerald-400/90 text-xxs">
+            🎁 ¿No querés pagar a ciegas?{' '}
+            <Link href="/mercado/vender-ahora" className="underline underline-offset-2 hover:text-emerald-300">
+              Probá un veredicto completo gratis esta semana
+            </Link>
           </p>
         </header>
 

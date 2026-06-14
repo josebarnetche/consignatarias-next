@@ -170,6 +170,14 @@ export function trackProPromptClick(context: string, variant: ProPromptVariant) 
   })
 }
 
+/** Free user consumed their weekly "taste" (one full PRO verdict). */
+export function trackFreeTasteUnlock(context: string, categoria: string) {
+  trackEvent('free_taste_unlock', {
+    taste_context: context,
+    categoria,
+  })
+}
+
 /** User landed on /planes page */
 export function trackPlanesView(source: string | null) {
   trackEvent('planes_view', {
