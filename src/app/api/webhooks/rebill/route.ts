@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
-import { sendEnterpriseWelcome } from '@/lib/email'
+import { sendEnterpriseWelcome, sendConsignatariaProWelcome } from '@/lib/email'
+import { getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import crypto from 'crypto'
 
 // Verify Rebill webhook signature (HMAC-SHA256)
@@ -212,6 +213,22 @@ export async function POST(request: NextRequest) {
             .from('consignatarias')
             .update({ featured: true })
             .eq('canonical_slug', entitySlug)
+
+          // Welcome email (best-effort, non-blocking). Tier=pro is already granted
+          // by the subscriptions upsert above; this just confirms it to the firm.
+          const welcomeTo = metadata?.customerEmail
+          if (welcomeTo) {
+            try {
+              const profile = getProfile(getCanonicalSlug(entitySlug) || entitySlug)
+              await sendConsignatariaProWelcome(
+                welcomeTo,
+                profile?.displayName || entitySlug,
+                entitySlug,
+              )
+            } catch (err) {
+              console.error('Consignataria welcome email failed:', err)
+            }
+          }
         }
 
         break

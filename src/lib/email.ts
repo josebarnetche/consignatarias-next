@@ -47,6 +47,24 @@ export async function sendClaimConfirmation(email: string, displayName: string, 
   }).catch(() => {})
 }
 
+export async function sendConsignatariaProWelcome(email: string, displayName: string, slug: string) {
+  const resend = await getResend()
+  if (!resend) return
+  const safeName = escapeHtml(displayName)
+  resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: `Tu perfil PRO está activo — ${displayName}`,
+    html: `
+      <h2>Bienvenida a PRO</h2>
+      <p>El perfil de <strong>${safeName}</strong> en consignatarias.com.ar quedó <strong>activo como PRO</strong>: aparecés con prioridad (destacado) ante los productores que buscan consignataria, con tu historial de remates, tu calendario y la analítica de tu perfil.</p>
+      <p><a href="${APP_URL}/consignatarias/${slug}">Ver tu perfil</a> · <a href="${APP_URL}/dashboard">Ir a tu panel</a></p>
+      <hr>
+      <p style="color:#888;font-size:12px">Consignatarias.com.ar — la referencia del mercado ganadero</p>
+    `,
+  }).catch(() => {})
+}
+
 export async function sendClaimNotificationToAdmin(
   displayName: string,
   slug: string,
