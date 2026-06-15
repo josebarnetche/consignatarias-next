@@ -92,3 +92,4 @@ docs/strategy/ANSWER-BLOCK-DEV-PLAN.md
 docs/traffic-loop/
 scripts/archive/oauth-credentials.json
 scripts/archive/oauth-token.json
+docs/strategy/*.txt
