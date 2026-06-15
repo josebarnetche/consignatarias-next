@@ -13,7 +13,7 @@ import existenciasData from '@/lib/data/existencias-bovinas.json'
 import { getAllProfiles, consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
 import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
 import { normalizeUrl } from '@/lib/utils/url'
-import { BreadcrumbSchema, EventSchema } from '@/components/seo/JsonLd'
+import { BreadcrumbSchema, EventSchema, VideoObjectSchema } from '@/components/seo/JsonLd'
 import { AddToCalendarButton } from '@/components/ui/AddToCalendarButton'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 // DteCTA inline implementation for remate pages (lock-in strategy)
@@ -405,7 +405,26 @@ export default async function RemateDetailPage({ params }: Props) {
         url={`https://www.consignatarias.com.ar/remates/${slug}`}
         eventAttendanceMode="offline"
       />
-      
+
+      {/* Video/live schema for remates with a YouTube stream. isLive is gated to
+          non-past dates so we never claim a BroadcastEvent for a finished auction. */}
+      {remate.youtubeUrl && (() => {
+        const m = remate.youtubeUrl.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/)
+        const videoId = m && m[7]?.length === 11 ? m[7] : null
+        return (
+          <VideoObjectSchema
+            name={`Remate ${typeName}: ${remate.title}`}
+            description={remate.description || `Transmisión del remate ${typeName.toLowerCase()} organizado por ${remate.consignatariaName} en ${provinceName}.`}
+            thumbnailUrl={videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : 'https://www.consignatarias.com.ar/og-image.png'}
+            uploadDate={`${remate.date}T${remate.time || '10:00'}:00-03:00`}
+            contentUrl={normalizeUrl(remate.youtubeUrl) || remate.youtubeUrl}
+            embedUrl={videoId ? `https://www.youtube.com/embed/${videoId}` : undefined}
+            publisher={remate.consignatariaName}
+            isLive={!isPast}
+          />
+        )
+      })()}
+
       <main className="min-h-screen bg-slate-950">
         <div className="max-w-4xl mx-auto px-4 py-8">
           {/* Back link */}

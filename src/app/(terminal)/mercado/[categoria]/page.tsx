@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import marketData from '@/lib/data/market-prices.json'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { CategoryPriceChart } from '@/components/market/CategoryPriceChart'
+import { PriceRangeTable } from '@/components/market/PriceRangeTable'
 
 /* ================================================================== */
 /*  CATEGORY CONFIG                                                    */
@@ -410,6 +411,9 @@ export default async function CategoriaPage({
         <div className="mb-8">
           <CategoryPriceChart category={categoria} />
         </div>
+
+        {/* Observed sub-category price ranges (real MAG rueda data) */}
+        <PriceRangeTable categoria={categoria} namePlural={config.namePlural} />
 
         {/* Definition */}
         <section className="mb-8">

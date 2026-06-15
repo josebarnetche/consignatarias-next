@@ -7,6 +7,36 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.33.0] — 2026-06-15
+
+### Familia GEO/AEO "answer-block": respuestas extractables, feed machine-readable y superficie de precios observados
+
+Tren de mejoras de citabilidad/AEO en el espíritu del `AnswerBlock` (1.32): primitivas reutilizables que
+convierten datos reales en unidades extractables por motores de respuesta (AI Overviews, snippets, agentes),
+con dato honesto siempre (observado o estimado etiquetado). Sin libs nuevas; build verificado.
+
+- **Primitivas nuevas:** [`DataStamp`](src/components/seo/DataStamp.tsx) (`<time>` machine-readable de frescura,
+  `.speakable-content`), [`CitaBlock`](src/components/seo/CitaBlock.tsx) (`<cite>` + "Copiar cita"),
+  [`MethodologyMicroBlock`](src/components/seo/MethodologyMicroBlock.tsx) (`<details>` de procedencia crawleable),
+  [`PriceWhatsAppShare`](src/components/share/PriceWhatsAppShare.tsx) (card de precio honesta para WhatsApp),
+  [`PriceRangeTable`](src/components/market/PriceRangeTable.tsx) (subcategorías observadas del MAG).
+- **`/precios/[categoria]` y `/precios/[categoria]/[provincia]` (~84 páginas):** segundo AnswerBlock + FAQ con el
+  **promedio observado por subcategoría** (min/máx/prom/cabezas reales, fechado); DataStamp; CitaBlock; share de
+  precio. La metodología del diferencial regional (Diez 2020 / Iriarte 2008) se colapsó en un `<details>` crawleable.
+- **`/mercado/[categoria]`:** tabla de subcategorías observadas (`PriceRangeTable`) + schema ItemList/AggregateOffer.
+- **`/precios.json`:** nuevo snapshot diario machine-readable (CC-BY), superficie de citación para agentes; linkeado
+  desde `llms.txt` + `<link rel=alternate type=application/json>`. Aislado del feed Enterprise (sin serie histórica
+  ni 16 subcategorías).
+- **`/llms.txt`:** header `Last-Data-Date` + delta INMAG arriba de todo, para crawlers/LLMs.
+- **`/glosario`:** los anchors de `DefinedTerm` y los selectores Speakable ahora resuelven a nodos reales del DOM.
+- **Remates con YouTube:** schema `VideoObject` (con `BroadcastEvent` cuando es en vivo, gated a no-pasado).
+- **`sitemap.ts`:** `lastModified` honesto por familia de URL (precio/remate/build/por-fila) en vez del "cambió hoy"
+  uniforme; fechas futuras clampeadas a hoy (Google ignora lastmod futuro).
+
+`tsc` 0, `pnpm build` limpio.
+
+---
+
 ## [1.32.0] — 2026-06-15
 
 ### CTR + performance + accesibilidad + instrumentación de funnel + GEO answer-blocks

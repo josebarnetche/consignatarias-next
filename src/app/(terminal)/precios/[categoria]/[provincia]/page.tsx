@@ -8,6 +8,10 @@ import type { Auction } from '@/lib/db/schema'
 import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 import { AnswerBlock } from '@/components/seo/AnswerBlock'
+import { DataStamp } from '@/components/seo/DataStamp'
+import { CitaBlock } from '@/components/seo/CitaBlock'
+import PriceWhatsAppShare from '@/components/share/PriceWhatsAppShare'
+import { MethodologyMicroBlock } from '@/components/seo/MethodologyMicroBlock'
 
 /* ============================================================
    /precios/[categoria]/[provincia] — geo × category long-tail.
@@ -160,6 +164,8 @@ export default async function PrecioCategoriaProvinciaPage({
   const changeStr = `${change >= 0 ? '+' : ''}${change}%`
   const changeColor = change >= 0 ? '#34d399' : '#f87171'
   const promedioPeso = price * cat.promedioKg
+  // Geo citation — the estimate label travels WITH the origin number (brand rule #1).
+  const citation = `INMAG (Mercado Agroganadero Argentino), vía consignatarias.com.ar, ${lastUpdate} — referencia nacional $${fmt(price)}/kg; estimado en origen ${prov.display} ~$${fmt(basis.localEstimate)}/kg vivo de ${cat.singular} (estimación por distancia, no precio observado)`
 
   const faqItems = [
     {
@@ -205,6 +211,9 @@ export default async function PrecioCategoriaProvinciaPage({
           Precio del {cat.singular} en {prov.display} hoy:{' '}
           <span style={{ color: '#fbbf24' }}>${fmt(price)}/kg</span>
         </h1>
+        <p className="text-zinc-400 text-sm mb-3">
+          <DataStamp isoDate={lastUpdate} /> · INMAG, Mercado Agroganadero
+        </p>
         <AnswerBlock
           question={`Precio del ${cat.singular} en ${prov.display} hoy`}
           answer={
@@ -221,6 +230,18 @@ export default async function PrecioCategoriaProvinciaPage({
           Estimación por distancia, no precio observado ·{' '}
           <a href="#diferencial-regional" className="underline underline-offset-2 hover:text-zinc-400">ver método</a>
         </p>
+        <CitaBlock citation={citation} sourceUrl={`https://www.consignatarias.com.ar/precios/${categoria}/${provincia}`} />
+        <PriceWhatsAppShare
+          singular={cat.singular}
+          provinciaDisplay={prov.display}
+          price={price}
+          change={change}
+          localEstimate={basis.localEstimate}
+          discountPct={basis.discountPct}
+          lastUpdate={lastUpdate}
+          url={`https://www.consignatarias.com.ar/precios/${categoria}/${provincia}`}
+          className="mb-6"
+        />
 
         {/* Reference price */}
         <div className="terminal-panel mb-6">
@@ -275,7 +296,7 @@ export default async function PrecioCategoriaProvinciaPage({
               <strong className="text-zinc-200">~${fmt(basis.localEstimate)}/kg</strong> ({basis.discountPct}% por
               debajo de la referencia nacional).
             </p>
-            <p className="text-xxs text-zinc-600 leading-relaxed">
+            <MethodologyMicroBlock summary="Método y fuentes del diferencial">
               Modelo lineal por distancia, anclado en <strong className="text-zinc-500">Diez 2020</strong> (Liniers
               +8,63% sobre el Sudoeste Bonaerense a 660 km) y en la fórmula de{' '}
               <strong className="text-zinc-500">Iriarte 2008</strong> (precio interior = precio Liniers − flete −
@@ -283,7 +304,7 @@ export default async function PrecioCategoriaProvinciaPage({
               precio transado: surge de un dato puntual extrapolado por distancia. El precio real se forma en los{' '}
               <Link href={`/remates/${provincia}`} className="text-amber-500/80 hover:text-amber-400 underline underline-offset-2">remates en origen</Link>{' '}
               y depende de kilaje, terminación y demanda del día.
-            </p>
+            </MethodologyMicroBlock>
           </div>
         </div>
 

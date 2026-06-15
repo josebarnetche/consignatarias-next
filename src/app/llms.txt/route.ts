@@ -17,14 +17,26 @@ export const revalidate = 86400
 export function GET() {
   const consignatarias = getAllProfiles().length
   const frig = (frigorificos as unknown[]).length
-  const inmag = marketData.inmag as { current: number; series?: Array<{ date: string }> }
+  const inmag = marketData.inmag as { current: number; prev: number; change: number; series?: Array<{ date: string }> }
   const lastDate = inmag.series?.[inmag.series.length - 1]?.date ?? marketData.lastUpdate
   const inmagRows = inmag.series?.length ?? 0
   const rematesIdx = (remates as unknown[]).length
   const edition = manifest.current.edition_label
   const inmagStr = inmag.current.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
-  const body = `# Consignatarias.com.ar
+  // Machine-readable freshness header for LLM crawlers. Delta computed from current/prev
+  // (not the ambiguous committed `change`); collapse anything rounding to 0.0 into a clean
+  // ±0.0 so a flat day never reads as stale or a confusing negative-zero.
+  const pctRaw = inmag.prev ? ((inmag.current - inmag.prev) / inmag.prev) * 100 : 0
+  const pct = Math.abs(pctRaw) < 0.05 ? 0 : pctRaw
+  const sign = pct > 0 ? '+' : pct < 0 ? '-' : '±'
+  const pctStr = `${sign}${Math.abs(pct).toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`
+  const prevStr = inmag.prev.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+  const body = `Last-Data-Date: ${lastDate}
+INMAG: ${inmagStr} ARS/kg vivo (Δ ${pctStr} vs jornada previa: ${prevStr})
+
+# Consignatarias.com.ar
 
 > El precio de referencia del ganado argentino, hecho dato: calendario unificado de remates + directorio de consignatarias y frigoríficos + inteligencia del mercado bovino argentino (INMAG diario, USD blue, familia de índices). Cobertura: ~${rematesIdx} remates indexados, ${consignatarias} consignatarias canónicas, ${frig} frigoríficos habilitados MAGYP, 12 provincias. Última actualización de datos: ${lastDate}.
 
@@ -81,6 +93,7 @@ The site's editorial position: the INMAG is the price the market follows, but it
 ## Full context
 
 - Extended, citable definitional dump: https://www.consignatarias.com.ar/llms-full.txt
+- Machine-readable daily price snapshot (CC-BY): https://www.consignatarias.com.ar/precios.json
 
 ## Sitemap
 

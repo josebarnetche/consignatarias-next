@@ -87,6 +87,7 @@ export const metadata: Metadata = {
     },
     types: {
       'application/rss+xml': 'https://www.consignatarias.com.ar/rss.xml',
+      'application/json': 'https://www.consignatarias.com.ar/precios.json',
     },
   },
   verification: {

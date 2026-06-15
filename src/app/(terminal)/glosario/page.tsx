@@ -212,6 +212,12 @@ const GLOSSARY_TERMS: GlossaryTerm[] = [
 
 const BASE_URL = 'https://www.consignatarias.com.ar'
 
+// Mirrors the (un-exported) slugify in DefinedTermSetSchema so each <dt> id matches the
+// schema's DefinedTerm @id (`${url}#${slug}`) — this makes the Speakable selectors and
+// the deep-link anchors actually resolve to real DOM nodes.
+const slugify = (s: string) =>
+  s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+
 export default function GlosarioPage() {
   return (
     <>
@@ -244,8 +250,8 @@ export default function GlosarioPage() {
         <dl className="space-y-6">
           {GLOSSARY_TERMS.map((entry) => (
             <div key={entry.term} className="border-l-2 border-zinc-700 pl-4">
-              <dt className="text-accent font-medium text-base mb-1">{entry.term}</dt>
-              <dd className="text-zinc-400">
+              <dt id={slugify(entry.term)} className="glossary-term scroll-mt-20 text-accent font-medium text-base mb-1">{entry.term}</dt>
+              <dd className="glossary-definition text-zinc-400">
                 {entry.definition}
                 {entry.link && (
                   <Link 

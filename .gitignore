@@ -84,3 +84,11 @@ mag-*.html
 scripts/el-oraculo/output/
 scripts/seo-report/
 scripts/.cache/
+
+# Internal strategy/ops docs — keep OUT of the public repo
+docs/strategy/GROWTH-2026-SWARM.md
+docs/strategy/ANSWER-BLOCK-IDEAS.md
+docs/strategy/ANSWER-BLOCK-DEV-PLAN.md
+docs/traffic-loop/
+scripts/archive/oauth-credentials.json
+scripts/archive/oauth-token.json

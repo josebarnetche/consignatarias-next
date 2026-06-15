@@ -8,6 +8,10 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import { AnswerBlock } from '@/components/seo/AnswerBlock'
+import { DataStamp } from '@/components/seo/DataStamp'
+import { CitaBlock } from '@/components/seo/CitaBlock'
+import PriceWhatsAppShare from '@/components/share/PriceWhatsAppShare'
+import { getDetailedRowsForCategory, CATEGORY_PREFIX } from '@/components/market/PriceRangeTable'
 
 /* ============================================================
    /precios/[categoria] — captures high-intent "precio del kilo
@@ -258,6 +262,16 @@ export default async function PreciosCategoriaPage({
   const lastUpdate = marketPrices.lastUpdate
   const promedioPeso = price * c.promedioKg
 
+  // Observed MAG sub-category figures (P1 shared filter) — distinct from the modeled INMAG headline.
+  const observed = getDetailedRowsForCategory(categoria)
+  const headline = observed.length ? observed.reduce((a, b) => (b.cabezas > a.cabezas ? b : a)) : null
+  const magDetailDate = (marketPrices.detailedCategories as { date?: string })?.date ?? lastUpdate
+  const subcatPrefix = CATEGORY_PREFIX[categoria]?.[0] ?? ''
+  const cleanName = (cat: string) => (subcatPrefix ? cat.replace(new RegExp('^' + subcatPrefix, 'i'), '').trim() : cat)
+
+  // Server-built citation string (CitaBlock copies it; observed/national = "precio de referencia", no estimate tag).
+  const citation = `INMAG (Mercado Agroganadero Argentino), vía consignatarias.com.ar, ${lastUpdate} — $${fmt(price)}/kg vivo de ${c.singular} (precio de referencia)`
+
   // Sibling categories for navigation
   const others = ALL_CATEGORIES.filter((x) => x !== categoria).map((slug) => ({
     slug,
@@ -290,6 +304,12 @@ export default async function PreciosCategoriaPage({
       answer: `$${fmt(price)} por kilo vivo de ${c.singular}, actualizado el ${lastUpdate}. Es la referencia diaria del Mercado Agroganadero.`,
     },
     ...CONVERSATIONAL_QUESTIONS[categoria].map((question) => ({ question, answer: convoAnswer(question) })),
+    ...(headline
+      ? [{
+          question: `¿Cuánto vale el ${c.singular} ${cleanName(headline.category).toLowerCase()}?`,
+          answer: `El ${c.singular} ${cleanName(headline.category).toLowerCase()} promedió $${fmt(Math.round(headline.avgPrice))}/kg (rango $${fmt(headline.minPrice)}–$${fmt(headline.maxPrice)}, ${fmt(headline.cabezas)} cabezas) en el Mercado Agroganadero del ${magDetailDate}, según precios observados por categoría.`,
+        }]
+      : []),
     ...c.extraFaq,
   ]
 
@@ -325,7 +345,7 @@ export default async function PreciosCategoriaPage({
           <span style={{ color: '#fbbf24' }}>${fmt(price)}</span>
         </h1>
         <p className="text-zinc-400 text-sm mb-4">
-          Actualizado {lastUpdate} desde el Mercado Agroganadero (INMAG) ·{' '}
+          <DataStamp isoDate={lastUpdate} /> desde el Mercado Agroganadero (INMAG) ·{' '}
           <span style={{ color: changeColor }}>{changeStr} semanal</span>
         </p>
         <AnswerBlock
@@ -340,6 +360,21 @@ export default async function PreciosCategoriaPage({
             </>
           }
         />
+        {headline && (
+          <AnswerBlock
+            question={`Precio observado del ${c.singular} ${cleanName(headline.category).toLowerCase()} (MAG ${magDetailDate})`}
+            answer={
+              <>
+                El {c.singular} {cleanName(headline.category).toLowerCase()} promedió{' '}
+                <strong className="text-white">${fmt(Math.round(headline.avgPrice))}/kg</strong> (rango ${fmt(headline.minPrice)}–${fmt(headline.maxPrice)},{' '}
+                {fmt(headline.cabezas)} cabezas) en el remate observado del Mercado Agroganadero del {magDetailDate}. Es el
+                promedio realizado por categoría, distinto del INMAG de referencia (${fmt(price)}/kg).
+              </>
+            }
+          />
+        )}
+        <CitaBlock citation={citation} sourceUrl={`https://www.consignatarias.com.ar/precios/${categoria}`} />
+        <PriceWhatsAppShare singular={c.singular} price={price} change={c.change} lastUpdate={lastUpdate} url={`https://www.consignatarias.com.ar/precios/${categoria}`} className="mb-6" />
 
         {/* Big number panel */}
         <div className="terminal-panel mb-6">

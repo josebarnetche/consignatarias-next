@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next'
 import { getAllCanonicalSlugs } from '@/lib/data/consignataria-slugs'
 import rematesData from '@/lib/data/remates.json'
 import frigorificosData from '@/lib/data/frigorificos.json'
+import marketPrices from '@/lib/data/market-prices.json'
 
 /* ------------------------------------------------------------------ */
 /*  PROVINCE SLUG MAP (must match [provincia]/page.tsx)                 */
@@ -52,7 +53,7 @@ function normalizeCity(city: string): string {
   return city
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[̀-ͯ]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
 }
@@ -70,59 +71,79 @@ function getUniqueCitySlugs(auctions: typeof rematesData): string[] {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.consignatarias.com.ar'
 
+  /* ----------------------------------------------------------------
+     Honest <lastmod>: per-URL-family data dates, not a blanket
+     "changed today" (which told crawlers EVERY url updates daily — a
+     freshness lie that wastes crawl budget). Three sources:
+       - priceDate      → INMAG/price-backed pages (market-prices.json freshness)
+       - latestRemateDate → remate listing/hub pages (freshest auction in the set)
+       - buildDate      → genuinely static/legal/directory pages (change on rebuild)
+     Per-remate detail pages and closed INMAG year pages get their own true date.
+     ---------------------------------------------------------------- */
+  const buildDate = new Date()
+  const priceDate = new Date(marketPrices.lastUpdate)
+  // <lastmod> must never be in the future (Google ignores future lastmod). Remate
+  // listing/detail pages can reference scheduled auctions months ahead, so clamp any
+  // data-derived date to today — these pages are rebuilt daily anyway.
+  const todayStr = new Date().toISOString().slice(0, 10)
+  const clampToday = (d: string) => new Date(d > todayStr ? todayStr : d)
+  const maxRemate = (rematesData as { date: string }[]).reduce((max, r) => (r.date > max ? r.date : max), '0000-00-00')
+  const latestRemateDate = clampToday(maxRemate)
+  const currentYear = priceDate.getFullYear()
+
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: new Date(),
+      lastModified: latestRemateDate,
       changeFrequency: 'daily',
       priority: 1,
     },
     {
       url: `${baseUrl}/overview`,
-      lastModified: new Date(),
+      lastModified: priceDate,
       changeFrequency: 'hourly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/remates`,
-      lastModified: new Date(),
+      lastModified: latestRemateDate,
       changeFrequency: 'hourly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/remates/hoy`,
-      lastModified: new Date(),
+      lastModified: latestRemateDate,
       changeFrequency: 'hourly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/remates/manana`,
-      lastModified: new Date(),
+      lastModified: latestRemateDate,
       changeFrequency: 'hourly',
       priority: 0.85,
     },
     {
       url: `${baseUrl}/remates/semana`,
-      lastModified: new Date(),
+      lastModified: latestRemateDate,
       changeFrequency: 'daily',
       priority: 0.85,
     },
     {
       url: `${baseUrl}/remates/fin-de-semana`,
-      lastModified: new Date(),
+      lastModified: latestRemateDate,
       changeFrequency: 'daily',
       priority: 0.85,
     },
     {
       url: `${baseUrl}/remates/anteriores`,
-      lastModified: new Date(),
+      lastModified: latestRemateDate,
       changeFrequency: 'daily',
       priority: 0.7,
     },
     {
       url: `${baseUrl}/remates/en-vivo`,
-      lastModified: new Date(),
+      lastModified: latestRemateDate,
       changeFrequency: 'hourly',
       priority: 0.9,
     },
@@ -130,213 +151,219 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // (PRO-only calculator behind paywall).
     {
       url: `${baseUrl}/frigorificos`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'daily',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/mercado`,
-      lastModified: new Date(),
+      lastModified: priceDate,
       changeFrequency: 'daily',
       priority: 0.8,
     },
     {
       url: `${baseUrl}/mercado/inmag`,
-      lastModified: new Date(),
+      lastModified: priceDate,
       changeFrequency: 'daily',
       priority: 0.8,
     },
     {
       url: `${baseUrl}/mercado/spread`,
-      lastModified: new Date(),
+      lastModified: priceDate,
       changeFrequency: 'daily',
       priority: 0.8,
     },
     {
       url: `${baseUrl}/mercado/liniers`,
-      lastModified: new Date(),
+      lastModified: priceDate,
       changeFrequency: 'daily',
       priority: 0.85,
     },
     {
       url: `${baseUrl}/mercado/canuelas`,
-      lastModified: new Date(),
+      lastModified: priceDate,
       changeFrequency: 'daily',
       priority: 0.85,
     },
     {
       url: `${baseUrl}/indices`,
-      lastModified: new Date(),
+      lastModified: priceDate,
       changeFrequency: 'daily',
       priority: 0.85,
     },
     {
       url: `${baseUrl}/consignatarias`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
       url: `${baseUrl}/como-elegir-consignataria`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
       url: `${baseUrl}/quienes-somos`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'monthly',
       priority: 0.6,
     },
     {
       url: `${baseUrl}/planes`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     },
     {
       url: `${baseUrl}/enterprise`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     },
     {
       url: `${baseUrl}/calidad`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'monthly' as const,
       priority: 0.3,
     },
     {
       url: `${baseUrl}/metodologia`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     },
     {
       url: `${baseUrl}/glosario`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'monthly' as const,
       priority: 0.3,
     },
     {
       url: `${baseUrl}/preguntas-frecuentes`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     },
     {
       url: `${baseUrl}/el-corredor`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     },
     {
       url: `${baseUrl}/el-oraculo`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     },
     {
       url: `${baseUrl}/mercado/inmag-dolares`,
-      lastModified: new Date(),
+      lastModified: priceDate,
       changeFrequency: 'daily' as const,
       priority: 0.95,
     },
     {
       url: `${baseUrl}/mercado/arrendamiento`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     },
     {
       url: `${baseUrl}/terminos`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'yearly' as const,
       priority: 0.2,
     },
     {
       url: `${baseUrl}/privacidad`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'yearly' as const,
       priority: 0.2,
     },
     {
       url: `${baseUrl}/aviso-legal`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'yearly' as const,
       priority: 0.2,
     },
     {
       url: `${baseUrl}/arrepentimiento`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'yearly' as const,
       priority: 0.3,
     },
     {
       url: `${baseUrl}/dte`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     },
     {
       url: `${baseUrl}/comparar`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     },
     {
       url: `${baseUrl}/pro`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     },
     {
       url: `${baseUrl}/api-docs`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     },
     {
       url: `${baseUrl}/precios`,
-      lastModified: new Date(),
+      lastModified: priceDate,
       changeFrequency: 'daily' as const,
       priority: 0.9,
     },
     {
       url: `${baseUrl}/precios/hacienda-en-pie`,
-      lastModified: new Date(),
+      lastModified: priceDate,
       changeFrequency: 'daily' as const,
       priority: 0.95,
     },
     ...(['novillos', 'novillitos', 'vaquillonas', 'vacas', 'toros', 'terneros'].map(
       (c) => ({
         url: `${baseUrl}/precios/${c}`,
-        lastModified: new Date(),
+        lastModified: priceDate,
         changeFrequency: 'daily' as const,
         priority: 0.9,
       }),
     )),
     {
+      url: `${baseUrl}/precios.json`,
+      lastModified: priceDate,
+      changeFrequency: 'daily' as const,
+      priority: 0.7,
+    },
+    {
       url: `${baseUrl}/calculadora`,
-      lastModified: new Date(),
+      lastModified: priceDate,
       changeFrequency: 'daily' as const,
       priority: 0.8,
     },
     {
       url: `${baseUrl}/calendario-exportar`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     },
     {
       url: `${baseUrl}/reporte-semanal`,
-      lastModified: new Date(),
+      lastModified: priceDate,
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     },
     {
       url: `${baseUrl}/exportar`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'weekly' as const,
       priority: 0.6,
     },
@@ -350,7 +377,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .filter(([name]) => provincesWithAuctions.has(name))
     .map(([, slug]) => ({
       url: `${baseUrl}/remates/${slug}`,
-      lastModified: new Date(),
+      lastModified: latestRemateDate,
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     }))
@@ -360,7 +387,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .filter(([name]) => provincesWithAuctions.has(name))
     .map(([, slug]) => ({
       url: `${baseUrl}/consignatarias/${slug}`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     }))
@@ -368,7 +395,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Type landing pages (/remates/tipo/invernada, etc.)
   const typePages: MetadataRoute.Sitemap = TYPE_SLUGS.map((slug) => ({
     url: `${baseUrl}/remates/tipo/${slug}`,
-    lastModified: new Date(),
+    lastModified: latestRemateDate,
     changeFrequency: 'weekly' as const,
     priority: 0.7,
   }))
@@ -385,7 +412,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       if (hasAuctions) {
         provinceTypePages.push({
           url: `${baseUrl}/remates/${provinceSlug}/${typeSlug}`,
-          lastModified: new Date(),
+          lastModified: latestRemateDate,
           changeFrequency: 'weekly' as const,
           priority: 0.6,
         })
@@ -396,7 +423,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Consignataria profile pages
   const consignatariaPages: MetadataRoute.Sitemap = getAllCanonicalSlugs().map((slug) => ({
     url: `${baseUrl}/consignatarias/${slug}`,
-    lastModified: new Date(),
+    lastModified: buildDate,
     changeFrequency: 'weekly' as const,
     priority: 0.7,
   }))
@@ -434,7 +461,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .filter(([name]) => provincesWithFrigorificos.has(name))
     .map(([, slug]) => ({
       url: `${baseUrl}/frigorificos/${slug}`,
-      lastModified: new Date(),
+      lastModified: buildDate,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     }))
@@ -442,7 +469,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Frigorifico detail pages
   const frigorificoPages: MetadataRoute.Sitemap = (frigorificosData as { cuit: string }[]).map((f) => ({
     url: `${baseUrl}/frigorificos/${f.cuit}`,
-    lastModified: new Date(),
+    lastModified: buildDate,
     changeFrequency: 'monthly' as const,
     priority: 0.5,
   }))
@@ -466,7 +493,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ].join('-')
       return {
         url: `${baseUrl}/remates/${slug}`,
-        lastModified: new Date(),
+        lastModified: clampToday(r.date),
         changeFrequency: 'weekly' as const,
         priority: 0.5,
       }
@@ -478,7 +505,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Market category price pages (/mercado/terneros, etc.)
   const marketCategoryPages: MetadataRoute.Sitemap = MARKET_CATEGORY_SLUGS.map((slug) => ({
     url: `${baseUrl}/mercado/${slug}`,
-    lastModified: new Date(),
+    lastModified: priceDate,
     changeFrequency: 'daily' as const,
     priority: 0.8,
   }))
@@ -487,19 +514,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const preciosGeoPages: MetadataRoute.Sitemap = MARKET_CATEGORY_SLUGS.flatMap((cat) =>
     Object.values(PROVINCE_SLUGS).map((provSlug) => ({
       url: `${baseUrl}/precios/${cat}/${provSlug}`,
-      lastModified: new Date(),
+      lastModified: priceDate,
       changeFrequency: 'daily' as const,
       priority: 0.6,
     })),
   )
 
-  // INMAG historical year pages (/mercado/inmag/[anio]) — compounding long-tail
+  // INMAG historical year pages (/mercado/inmag/[anio]) — compounding long-tail.
+  // Closed years carry their true upper bound (Dec 31); the current year tracks priceDate.
   const inmagYearPages: MetadataRoute.Sitemap = Array.from(
     { length: 2026 - 2015 + 1 },
     (_, i) => 2015 + i,
   ).map((y) => ({
     url: `${baseUrl}/mercado/inmag/${y}`,
-    lastModified: new Date(),
+    lastModified: y < currentYear ? new Date(`${y}-12-31`) : priceDate,
     changeFrequency: 'monthly' as const,
     priority: 0.6,
   }))
@@ -508,7 +536,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const citySlugs = getUniqueCitySlugs(rematesData as typeof rematesData)
   const cityPages: MetadataRoute.Sitemap = citySlugs.map((slug) => ({
     url: `${baseUrl}/remates/ciudad/${slug}`,
-    lastModified: new Date(),
+    lastModified: latestRemateDate,
     changeFrequency: 'weekly' as const,
     priority: 0.6,
   }))
@@ -516,7 +544,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Monthly landing pages (/remates/mes/[mes]) - SEO for "remates marzo", "remates abril" etc.
   const monthPages: MetadataRoute.Sitemap = MONTH_SLUGS.map((slug) => ({
     url: `${baseUrl}/remates/mes/${slug}`,
-    lastModified: new Date(),
+    lastModified: latestRemateDate,
     changeFrequency: 'weekly' as const,
     priority: 0.7,
   }))
