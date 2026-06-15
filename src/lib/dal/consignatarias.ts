@@ -1,6 +1,14 @@
-import { getProfile as getStaticProfile } from '@/lib/data/consignataria-slugs'
+import { getProfile as getStaticProfile, getAllProfiles, type ConsignatariaProfile } from '@/lib/data/consignataria-slugs'
 import { createServiceClient } from '@/lib/supabase'
 import { unstable_cache } from 'next/cache'
+
+/** Stable, build-deterministic offset from a slug (no Math.random / Date). */
+function slugOffset(slug: string, mod: number): number {
+  if (mod <= 0) return 0
+  let h = 0
+  for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) >>> 0
+  return h % mod
+}
 
 export interface MedioPago {
   metodo: string                // 'transferencia' | 'cheque' | 'efectivo' | 'al-rinde' | 'usd-billete' | etc.
@@ -52,27 +60,58 @@ export async function getRelatedConsignatarias(
   province: string | null | undefined,
   limit = 4
 ): Promise<RelatedConsignataria[]> {
-  if (!province) return []
+  // Candidate pool = ALL canonical profiles (static source of truth, ~104),
+  // not just the ~86 rows in the DB. This is the key fix: profiles without a DB
+  // row (orphans) were previously never returnable as "related" to anyone, and
+  // province-less profiles got an empty list (the old `if (!province) return []`).
+  const all = getAllProfiles().filter((p) => p.canonicalSlug !== currentSlug)
+  if (all.length === 0) return []
 
+  // Best-effort DB enrichment: province (for geographic relevance) + logos.
+  // Never throws — degrades to a static-only related list.
+  const provinceBySlug: Record<string, string | null> = {}
+  const logoBySlug: Record<string, string | null> = {}
   try {
     const service = createServiceClient()
-    if (!service) return []
-    
-    const { data } = await service
-      .from('consignatarias')
-      .select('canonical_slug, display_name, logo_url')
-      .eq('province', province)
-      .neq('canonical_slug', currentSlug)
-      .limit(limit)
-
-    return (data || []).map((c: { canonical_slug: string; display_name: string; logo_url: string | null }) => ({
-      slug: c.canonical_slug,
-      name: c.display_name,
-      logoUrl: c.logo_url,
-    }))
+    if (service) {
+      const { data } = await service
+        .from('consignatarias')
+        .select('canonical_slug, province, logo_url')
+      for (const r of (data || []) as Array<{ canonical_slug: string; province: string | null; logo_url: string | null }>) {
+        provinceBySlug[r.canonical_slug] = r.province
+        logoBySlug[r.canonical_slug] = r.logo_url
+      }
+    }
   } catch {
-    return []
+    /* static-only fallback */
   }
+
+  // 1) Same-province peers first (when we know the province).
+  const provinceMatches = province
+    ? all.filter((p) => provinceBySlug[p.canonicalSlug] === province)
+    : []
+
+  // 2) Fill from the full roster, rotated by a deterministic hash of the current
+  //    slug, so different profiles surface different peers — spreading internal-link
+  //    equity across the long tail (incl. the orphan profiles) instead of always
+  //    pointing at the same few. Deterministic => stable SSG output.
+  const offset = slugOffset(currentSlug, all.length)
+  const rotated = [...all.slice(offset), ...all.slice(0, offset)]
+
+  const picked: ConsignatariaProfile[] = []
+  const seen = new Set<string>([currentSlug])
+  for (const p of [...provinceMatches, ...rotated]) {
+    if (picked.length >= limit) break
+    if (seen.has(p.canonicalSlug)) continue
+    seen.add(p.canonicalSlug)
+    picked.push(p)
+  }
+
+  return picked.map((p) => ({
+    slug: p.canonicalSlug,
+    name: p.displayName,
+    logoUrl: logoBySlug[p.canonicalSlug] ?? null,
+  }))
 }
 
 /**

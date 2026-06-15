@@ -5,8 +5,9 @@ import marketPrices from '@/lib/data/market-prices.json'
 import rematesData from '@/lib/data/remates.json'
 import existencias from '@/lib/data/existencias-bovinas.json'
 import type { Auction } from '@/lib/db/schema'
-import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
+import { AnswerBlock } from '@/components/seo/AnswerBlock'
 
 /* ============================================================
    /precios/[categoria]/[provincia] — geo × category long-tail.
@@ -186,6 +187,10 @@ export default async function PrecioCategoriaProvinciaPage({
         sectionName={`Precio ${cat.title} en ${prov.display}`}
       />
       <FAQPageSchema items={faqItems} />
+      <SpeakableSchema
+        url={`https://www.consignatarias.com.ar/precios/${categoria}/${provincia}`}
+        headline={`Precio del ${cat.singular} en ${prov.display} hoy`}
+      />
 
       <div className="px-4 py-6 max-w-4xl mx-auto">
         <div className="mb-2 text-xxs font-terminal uppercase tracking-wider text-zinc-500">
@@ -200,19 +205,21 @@ export default async function PrecioCategoriaProvinciaPage({
           Precio del {cat.singular} en {prov.display} hoy:{' '}
           <span style={{ color: '#fbbf24' }}>${fmt(price)}/kg</span>
         </h1>
-        <p className="text-zinc-400 text-sm mb-6 max-w-2xl">
-          El precio de referencia es <strong className="text-zinc-200">nacional</strong> (INMAG, formado en el
-          Mercado Agroganadero). En {prov.display} la hacienda se comercializa en remates en origen que toman al
-          INMAG como referencia. Actualizado {lastUpdate} ·{' '}
-          <span style={{ color: changeColor }}>{changeStr} semanal</span>.
-        </p>
-        <p className="text-sm mb-6 -mt-3 max-w-2xl">
-          <span className="text-zinc-500">Estimado en origen ({prov.display}): </span>
-          <strong className="text-zinc-200">~${fmt(basis.localEstimate)}/kg</strong>{' '}
-          <span style={{ color: '#f87171' }}>(≈ −{basis.discountPct}%)</span>{' '}
-          <span className="text-zinc-600 text-xxs">· estimación por distancia, no precio observado ·{' '}
-            <a href="#diferencial-regional" className="underline underline-offset-2 hover:text-zinc-400">ver método</a>
-          </span>
+        <AnswerBlock
+          question={`Precio del ${cat.singular} en ${prov.display} hoy`}
+          answer={
+            <>
+              El kilo vivo de {cat.singular} cotiza <strong className="text-white">${fmt(price)}/kg</strong> de
+              referencia nacional (INMAG, formado en el Mercado Agroganadero de Cañuelas; {lastUpdate}, {changeStr}{' '}
+              semanal). En {prov.display}, a ~{fmt(prov.km)} km del mercado, el valor estimado en origen es{' '}
+              <strong className="text-white">~${fmt(basis.localEstimate)}/kg</strong> (≈ −{basis.discountPct}%), por
+              flete y costos de comercialización. El precio real se forma en los remates en origen.
+            </>
+          }
+        />
+        <p className="text-xxs text-zinc-600 mb-6 -mt-3 max-w-2xl">
+          Estimación por distancia, no precio observado ·{' '}
+          <a href="#diferencial-regional" className="underline underline-offset-2 hover:text-zinc-400">ver método</a>
         </p>
 
         {/* Reference price */}

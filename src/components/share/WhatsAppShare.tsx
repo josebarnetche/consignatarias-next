@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback } from 'react'
+import { trackOutboundClick } from '@/lib/analytics'
 
 /**
  * WhatsApp share button with pre-formatted message.
@@ -65,6 +66,7 @@ export default function WhatsAppShare({
   const handleShare = () => {
     const message = generateMessage()
     const whatsappUrl = `https://wa.me/?text=${message}`
+    trackOutboundClick(url, 'whatsapp')
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
   }
 
@@ -116,6 +118,7 @@ export function WhatsAppIconButton({
   const handleShare = () => {
     const encoded = encodeURIComponent(message)
     const url = `https://wa.me/?text=${encoded}`
+    trackOutboundClick(typeof window !== 'undefined' ? window.location.href : '', 'whatsapp')
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 

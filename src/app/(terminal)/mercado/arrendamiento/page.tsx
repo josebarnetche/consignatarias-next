@@ -44,9 +44,10 @@ const monthlyAverages = getMonthlyAverages(series)
 
 export const metadata: Metadata = {
   // Live price baked into the title — same self-answering pattern as /mercado
-  // and /mercado/inmag. Lifts CTR for "precio novillo arrendamiento" (was pos
-  // ~9 with ~0.9% CTR: lots of page-1 impressions, almost no clicks).
-  title: `Índice Novillo Arrendamiento Hoy: $${inmag.current.toLocaleString('es-AR')}/kg · Cañuelas`,
+  // and /mercado/inmag. Lead with "Precio" (not "Índice") to match the actual
+  // queries: "precio novillo arrendamiento (hoy/mensual)" carry 3.3k imp at
+  // pos 6-8.5 but only ~1.3% CTR. "índice INMAG" tail keeps the index queries.
+  title: `Precio Novillo Arrendamiento Hoy: $${inmag.current.toLocaleString('es-AR')}/kg (índice INMAG)`,
   description: `Índice Novillo Arrendamiento actual: $${inmag.current.toLocaleString('es-AR')}/kg. Precio actualizado del índice para contratos de arrendamiento rural en Argentina. Cotización diaria Liniers y Cañuelas.`,
   keywords: [
     'índice novillo arrendamiento',

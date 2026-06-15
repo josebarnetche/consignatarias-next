@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import Script from 'next/script';
 import AnalyticsProvider from '@/components/AnalyticsProvider';
 import rematesData from '@/lib/data/remates.json';
 
@@ -121,7 +122,15 @@ export default function RootLayout({
             (the inline config used to emit a duplicate pageview on first load). */}
         {ANALYTICS_ENABLED && (
           <>
-            <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
+            {/* Preconnect: open the GTM/GA connection early so the deferred
+                gtag.js download is fast when it fires (esp. slow mobile nets). */}
+            <link rel="preconnect" href="https://www.googletagmanager.com" />
+            <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="" />
+            {/* Inline stub runs IMMEDIATELY (plain head script, before hydration) so
+                window.gtag + dataLayer exist before any React effect fires — e.g. the
+                pro_upgrade `purchase` event in UpgradeConfirmTracker. Events queue into
+                dataLayer; the deferred gtag.js loader (in <body>, lazyOnload) flushes the
+                queue on load. Conversions are delayed by a beat, never dropped. */}
             <script
               dangerouslySetInnerHTML={{
                 __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}',{send_page_view:false});`,
@@ -150,6 +159,16 @@ export default function RootLayout({
         {children}
         <Analytics />
         <SpeedInsights />
+        {/* gtag.js download deferred to browser idle (lazyOnload) — keeps ~157 KiB of
+            third-party JS off the mobile critical path (TBT/INP). The inline stub in
+            <head> already defines gtag() and queues events; this only processes the
+            dataLayer queue once loaded, so the pro_upgrade conversion still registers. */}
+        {ANALYTICS_ENABLED && (
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+            strategy="lazyOnload"
+          />
+        )}
       </body>
     </html>
   );

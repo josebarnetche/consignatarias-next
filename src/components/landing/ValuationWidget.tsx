@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import marketPrices from '@/lib/data/market-prices.json';
+import { trackEvent } from '@/lib/analytics';
 
 const CATEGORIES = [
   { key: 'terneros', label: 'Terneros', avgKg: 180 },
@@ -42,6 +43,15 @@ export default function ValuationWidget() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Fire one engagement event the first time the user touches the calculator,
+  // so the funnel has a denominator (calc-used → lead) instead of being blind.
+  const interactedRef = useRef(false);
+  const markCalcInteraction = () => {
+    if (interactedRef.current) return;
+    interactedRef.current = true;
+    trackEvent('valuation_calc_used', { category, province });
+  };
+
   const calculation = useMemo(() => {
     const cat = CATEGORIES.find(c => c.key === category);
     const pricePerKg = prices.categories[category]?.current || 0;
@@ -74,6 +84,13 @@ export default function ValuationWidget() {
       
       if (res.ok) {
         setSubmitted(true);
+        trackEvent('valuation_lead', {
+          category,
+          heads,
+          province,
+          estimated_value: calculation.totalValue,
+          source: 'valuation_widget',
+        });
       }
     } catch {
       // Silent fail, show success anyway for UX
@@ -98,21 +115,23 @@ export default function ValuationWidget() {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div>
-            <label className="text-xs text-zinc-500 mb-1.5 block">Cantidad de cabezas</label>
+            <label htmlFor="vw-heads" className="text-xs text-zinc-500 mb-1.5 block">Cantidad de cabezas</label>
             <input
+              id="vw-heads"
               type="number"
               value={heads}
-              onChange={(e) => setHeads(Math.max(1, parseInt(e.target.value) || 1))}
+              onChange={(e) => { markCalcInteraction(); setHeads(Math.max(1, parseInt(e.target.value) || 1)); }}
               min={1}
               max={10000}
               className="w-full bg-zinc-900 border border-zinc-700 focus:border-emerald-500/50 rounded-lg px-4 py-2.5 text-zinc-100 text-lg font-mono outline-none transition-colors"
             />
           </div>
           <div>
-            <label className="text-xs text-zinc-500 mb-1.5 block">Categoría</label>
+            <label htmlFor="vw-category" className="text-xs text-zinc-500 mb-1.5 block">Categoría</label>
             <select
+              id="vw-category"
               value={category}
-              onChange={(e) => setCategory(e.target.value as CategoryKey)}
+              onChange={(e) => { markCalcInteraction(); setCategory(e.target.value as CategoryKey); }}
               className="w-full bg-zinc-900 border border-zinc-700 focus:border-emerald-500/50 rounded-lg px-4 py-2.5 text-zinc-100 outline-none transition-colors cursor-pointer"
             >
               {CATEGORIES.map(c => (
@@ -121,10 +140,11 @@ export default function ValuationWidget() {
             </select>
           </div>
           <div>
-            <label className="text-xs text-zinc-500 mb-1.5 block">Provincia</label>
+            <label htmlFor="vw-province" className="text-xs text-zinc-500 mb-1.5 block">Provincia</label>
             <select
+              id="vw-province"
               value={province}
-              onChange={(e) => setProvince(e.target.value)}
+              onChange={(e) => { markCalcInteraction(); setProvince(e.target.value); }}
               className="w-full bg-zinc-900 border border-zinc-700 focus:border-emerald-500/50 rounded-lg px-4 py-2.5 text-zinc-100 outline-none transition-colors cursor-pointer"
             >
               {PROVINCES.map(p => (
@@ -168,6 +188,7 @@ export default function ValuationWidget() {
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
             <input
               type="email"
+              aria-label="Correo electrónico para recibir el detalle"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="tu@email.com"

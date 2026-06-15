@@ -7,6 +7,39 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.32.0] — 2026-06-15
+
+### CTR + performance + accesibilidad + instrumentación de funnel + GEO answer-blocks
+
+Tren nacido de la auditoría de tráfico (GSC: posiciones sanas 4-8, el cuello es **CTR, no ranking**)
+y de un audit de performance/accesibilidad móvil (Lighthouse). Mejoras quirúrgicas, sin libs nuevas.
+
+- **CTR sprint (títulos en páginas con muchas impresiones y bajo CTR):** el template de provincia de
+  frigoríficos pasó a < ~60 chars para que Google no trunque el "(2026)" en la SERP; `/mercado/arrendamiento`
+  lidera con "**Precio** Novillo Arrendamiento Hoy" para matchear la query real (antes "Índice").
+- **Performance móvil:** el logo se sirve a 32px (`icon-32.png`, 1,4 KB) en vez del PNG 512px/106 KB
+  (~105 KB menos por página); **gtag.js diferido a `lazyOnload`** (fuera del critical path, ~157 KB) con el
+  stub inline temprano para que los eventos sigan encolando — **conversiones intactas** (verificado); `preconnect`
+  a GTM/GA.
+- **Accesibilidad:** labels asociados en los inputs de la calculadora (`ValuationWidget`); fix de
+  `aria-hidden` con descendientes focuseables en `MarketTape` (la cinta duplicada va con `tabIndex=-1`);
+  contraste subido (zinc-500 → zinc-400).
+- **Instrumentación de analytics:** se cablearon superficies de funnel que no disparaban ningún evento —
+  `ValuationWidget` (cálculo + lead), `/calculadora` (cálculo + lead + share), componentes de WhatsApp share,
+  y los botones de referral/copiar/widget del dashboard.
+- **Internal linking:** `getRelatedConsignatarias` ya no devuelve vacío para perfiles sin provincia y arma
+  los relacionados desde el roster estático completo (rotado por hash del slug) → los perfiles huérfanos
+  reciben links entrantes y entran al grafo de crawl.
+- **GEO answer-blocks:** nuevo componente reutilizable [`AnswerBlock`](src/components/seo/AnswerBlock.tsx)
+  con `SpeakableSchema` en `/precios/[categoria]` y `/precios/[categoria]/[provincia]` (~84 páginas): una
+  respuesta concisa y extractable bajo el H1 para AI Overviews / featured snippets / answer engines.
+- **OG dinámico de precio:** nueva `opengraph-image` en `/mercado/inmag` — el INMAG vivo horneado en cada
+  preview de WhatsApp/social/prensa (se refresca con el commit diario de datos).
+
+`tsc` 0, `pnpm build` limpio.
+
+---
+
 ## [1.31.0] — 2026-06-13
 
 ### Precios de remate observados (fuente nombrada) + recuperación de answer-eligibility en /precios

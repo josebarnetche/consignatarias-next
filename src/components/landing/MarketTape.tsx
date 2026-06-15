@@ -10,14 +10,14 @@ export interface TapeItem {
   live?: boolean // punto rojo (en vivo)
 }
 
-function Cell({ it }: { it: TapeItem }) {
+function Cell({ it, decorative = false }: { it: TapeItem; decorative?: boolean }) {
   const tone =
-    it.change == null ? 'text-zinc-500' : it.change >= 0 ? 'text-[#34d399]' : 'text-[#f87171]'
+    it.change == null ? 'text-zinc-400' : it.change >= 0 ? 'text-[#34d399]' : 'text-[#f87171]'
   const arrow = it.change == null ? '' : it.change >= 0 ? '▲' : '▼'
   const body = (
     <span className="inline-flex items-baseline gap-2 whitespace-nowrap px-5">
       {it.live && <span className="w-1.5 h-1.5 rounded-full bg-[#f87171] animate-pulse self-center" />}
-      <span className="text-[10px] uppercase tracking-[0.18em] text-zinc-500">{it.label}</span>
+      <span className="text-[10px] uppercase tracking-[0.18em] text-zinc-400">{it.label}</span>
       <span className="font-terminal tabular-nums text-zinc-100 text-[13px]">{it.value}</span>
       {it.change != null && (
         <span className={`font-terminal tabular-nums text-[11px] ${tone}`}>
@@ -28,7 +28,13 @@ function Cell({ it }: { it: TapeItem }) {
   )
   const sep = <span className="text-zinc-700 select-none">·</span>
   return it.href ? (
-    <Link href={it.href} className="hover:bg-white/[0.03] transition-colors flex items-center">
+    <Link
+      href={it.href}
+      // the duplicated track copy is aria-hidden; keep its links out of tab order
+      // so screen readers / keyboard don't land on focusable hidden descendants
+      tabIndex={decorative ? -1 : undefined}
+      className="hover:bg-white/[0.03] transition-colors flex items-center"
+    >
       {body}{sep}
     </Link>
   ) : (
@@ -50,7 +56,7 @@ export default function MarketTape({ items }: { items: TapeItem[] }) {
         {[0, 1].map((dup) => (
           <div key={dup} className="flex items-center" aria-hidden={dup === 1}>
             {items.map((it, i) => (
-              <Cell key={`${dup}-${i}`} it={it} />
+              <Cell key={`${dup}-${i}`} it={it} decorative={dup === 1} />
             ))}
           </div>
         ))}

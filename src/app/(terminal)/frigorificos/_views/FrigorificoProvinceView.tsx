@@ -69,10 +69,12 @@ export async function frigorificoProvinceMetadata(provincia: string) {
   if (!config) return null
   const provinceFrigorificos = frigorificos.filter(f => f.province === config.name)
   return {
-    // "Habilitados" + "SENASA" front-loaded to match the province queries
-    // ("frigorífico en santa fe", "frigoríficos habilitados <provincia>")
-    // that bring high impressions at pos 7-9 with weak CTR.
-    title: `Frigoríficos en ${config.displayName}: ${provinceFrigorificos.length} Plantas Habilitadas SENASA/MAGYP (2026)`,
+    // Kept under ~60 chars so Google doesn't truncate the "(2026)" freshness
+    // tail in the SERP — the old title (~72 chars) lost "SENASA/MAGYP (2026)".
+    // Front-loads the exact query "frigoríficos en <provincia>" + count +
+    // "Habilitados SENASA". This class (e.g. /buenos-aires: 2.8k imp, ~1.0%
+    // CTR at pos ~7) is the site's worst CTR offender. MAGYP stays in the desc.
+    title: `Frigoríficos en ${config.displayName}: ${provinceFrigorificos.length} Habilitados SENASA (2026)`,
     description: `¿Dónde faenar en ${config.displayName}? ${provinceFrigorificos.length} frigoríficos y mataderos habilitados por SENASA/MAGYP, con matrícula, CUIT y ciclo de habilitación (I/II/III). Directorio oficial actualizado en 2026.`,
     keywords: [
       `frigoríficos ${config.displayName.toLowerCase()}`,

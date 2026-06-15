@@ -5,7 +5,9 @@ import marketPrices from '@/lib/data/market-prices.json'
 import {
   SectionBreadcrumbSchema,
   FAQPageSchema,
+  SpeakableSchema,
 } from '@/components/seo/JsonLd'
+import { AnswerBlock } from '@/components/seo/AnswerBlock'
 
 /* ============================================================
    /precios/[categoria] — captures high-intent "precio del kilo
@@ -300,6 +302,10 @@ export default async function PreciosCategoriaPage({
         headline={`Precio del kilo vivo de ${c.singular} hoy: $${fmt(price)}`}
         description={`Cotización diaria del kilo vivo de ${c.singular} en Argentina, INMAG ${lastUpdate}.`}
       />
+      <SpeakableSchema
+        url={`https://www.consignatarias.com.ar/precios/${categoria}`}
+        headline={`Precio del kilo vivo de ${c.singular} hoy`}
+      />
 
       <div className="px-4 py-6 max-w-4xl mx-auto">
         <div className="mb-2 text-xxs font-terminal uppercase tracking-wider text-zinc-500">
@@ -318,10 +324,22 @@ export default async function PreciosCategoriaPage({
           Precio del kilo vivo de {c.singular} hoy:{' '}
           <span style={{ color: '#fbbf24' }}>${fmt(price)}</span>
         </h1>
-        <p className="text-zinc-400 text-sm mb-6">
+        <p className="text-zinc-400 text-sm mb-4">
           Actualizado {lastUpdate} desde el Mercado Agroganadero (INMAG) ·{' '}
           <span style={{ color: changeColor }}>{changeStr} semanal</span>
         </p>
+        <AnswerBlock
+          question={`Precio del kilo vivo de ${c.singular} hoy`}
+          answer={
+            <>
+              El kilo vivo de {c.singular} cotiza <strong className="text-white">${fmt(price)}/kg</strong> de
+              referencia (INMAG, Mercado Agroganadero de Cañuelas; {lastUpdate}, {changeStr} semanal).{' '}
+              {`${c.articulo.charAt(0).toUpperCase()}${c.articulo.slice(1)}`} {c.singular} promedio de {c.promedioKg} kg
+              ronda los <strong className="text-white">${fmt(promedioPeso)}</strong>. El precio realizado varía según
+              peso, terminación y la plaza o remate donde se venda.
+            </>
+          }
+        />
 
         {/* Big number panel */}
         <div className="terminal-panel mb-6">

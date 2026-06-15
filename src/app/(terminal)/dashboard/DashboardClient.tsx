@@ -11,6 +11,7 @@ import { WhatsAppIconButton } from '@/components/share/WhatsAppShare'
 import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2 } from 'lucide-react'
 import QRCode from '@/components/QRCode'
 import { UpgradeConfirmTracker } from '@/components/UpgradeConfirmTracker'
+import { trackEvent } from '@/lib/analytics'
 
 interface Consignataria {
   display_name: string
@@ -578,6 +579,7 @@ export default function DashboardClient({
                       <button
                         onClick={() => {
                           navigator.clipboard.writeText(`https://consignatarias.com.ar/go/${consignataria.canonical_slug}`)
+                          trackEvent('referral_link_copy', { consignataria_slug: consignataria.canonical_slug, surface: 'dashboard_qr' })
                           alert('Link copiado!')
                         }}
                         className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
@@ -588,6 +590,7 @@ export default function DashboardClient({
                         href={`https://wa.me/?text=${encodeURIComponent(`Mirá mis próximos remates: https://consignatarias.com.ar/go/${consignataria.canonical_slug}`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => trackEvent('referral_whatsapp_share', { consignataria_slug: consignataria.canonical_slug, surface: 'dashboard_qr' })}
                         className="px-3 py-1.5 bg-[#25D366] hover:bg-[#20BD5A] text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors text-center"
                       >
                         📤 WhatsApp
@@ -638,6 +641,7 @@ export default function DashboardClient({
                     onClick={() => {
                       const code = `<iframe src="https://consignatarias.com.ar/api/widget/${consignataria.canonical_slug}" width="400" height="300" frameborder="0"></iframe>`
                       navigator.clipboard.writeText(code)
+                      trackEvent('widget_code_copy', { consignataria_slug: consignataria.canonical_slug })
                       alert('Código copiado!')
                     }}
                     className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"

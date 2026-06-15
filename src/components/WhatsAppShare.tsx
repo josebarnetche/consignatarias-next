@@ -1,5 +1,7 @@
 'use client'
 
+import { trackOutboundClick } from '@/lib/analytics'
+
 interface WhatsAppShareProps {
   text: string
   url?: string
@@ -28,6 +30,7 @@ export default function WhatsAppShare({
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackOutboundClick(url, 'whatsapp')}
         className={`inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white transition-colors ${className}`}
         title="Compartir en WhatsApp"
       >
@@ -42,6 +45,7 @@ export default function WhatsAppShare({
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackOutboundClick(url, 'whatsapp')}
         className={`inline-flex items-center gap-2 text-emerald-500 hover:text-emerald-400 transition-colors ${className}`}
       >
         <Icon />
@@ -55,6 +59,7 @@ export default function WhatsAppShare({
       href={whatsappUrl}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => trackOutboundClick(url, 'whatsapp')}
       className={`inline-flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-medium rounded transition-colors ${className}`}
     >
       <Icon />

@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { ProReveal, HeroNumber, StatPill } from '@/components/pro'
+import { trackEvent, trackOutboundClick } from '@/lib/analytics'
 
 interface MarketPrices {
   inmag: { current: number; prev: number; change: number }
@@ -120,7 +121,16 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
 
   async function handleCalculate(e: React.FormEvent) {
     e.preventDefault()
-    
+
+    // The calc itself — the engagement event (was completely untracked).
+    trackEvent('calculadora_calculate', {
+      categorias: items.map((i) => i.categoria).join(','),
+      lineas: items.length,
+      total_cabezas: totals.totalCabezas,
+      total_kilos: totals.totalKilos,
+      valor_bruto: totals.totalValorARS,
+    })
+
     if (email && !emailSaved) {
       try {
         await fetch('/api/newsletter', {
@@ -129,11 +139,17 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
           body: JSON.stringify({ email, source: 'calculadora' }),
         })
         setEmailSaved(true)
+        // The conversion: a captured lead off the calculator.
+        trackEvent('calculadora_lead', {
+          source: 'calculadora',
+          valor_bruto: totals.totalValorARS,
+          total_cabezas: totals.totalCabezas,
+        })
       } catch {
         // Continue anyway
       }
     }
-    
+
     setShowResult(true)
   }
 
@@ -439,6 +455,7 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
           href="https://wa.me/?text=Mirá%20esta%20calculadora%20de%20precios%20de%20hacienda%3A%20https%3A%2F%2Fwww.consignatarias.com.ar%2Fcalculadora"
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackOutboundClick('https://www.consignatarias.com.ar/calculadora', 'whatsapp')}
           className="inline-flex items-center gap-2 text-sm text-emerald-500 hover:text-emerald-400 transition-colors"
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
