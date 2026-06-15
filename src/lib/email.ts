@@ -65,6 +65,39 @@ export async function sendConsignatariaProWelcome(email: string, displayName: st
   }).catch(() => {})
 }
 
+/**
+ * sendConsignatariaViewsOutreach — the 1:1 conversion email: "tu perfil fue visto
+ * N veces → activá PRO". Uses the personal sender (outreach asks for action; noreply
+ * kills reply intent). Returns success so the caller logs to outreach_log only on send.
+ */
+export async function sendConsignatariaViewsOutreach(opts: {
+  to: string
+  displayName: string
+  slug: string
+  views: number
+}): Promise<{ success: boolean }> {
+  const resend = await getResend()
+  if (!resend) return { success: false }
+  const safeName = escapeHtml(opts.displayName)
+  try {
+    await resend.emails.send({
+      from: FROM_PERSONAL,
+      to: opts.to,
+      subject: `Tu perfil en consignatarias.com.ar fue visto ${opts.views} veces este mes`,
+      html: `
+        <p>Hola, equipo de <strong>${safeName}</strong>:</p>
+        <p>Tu perfil en consignatarias.com.ar fue visto <strong>${opts.views} veces</strong> en los últimos 30 días por productores que buscan dónde y con quién operar.</p>
+        <p>Con <strong>PRO</strong> aparecés con prioridad (destacado), con tu badge verificado, tu calendario y la analítica de tu perfil — para que esas visitas se vuelvan consultas.</p>
+        <p><a href="${APP_URL}/consignatarias/${opts.slug}/activar">Activá PRO acá</a> — ARS 45.000/mes, cancelás cuando quieras.</p>
+        <p>Saludos,<br>José — consignatarias.com.ar</p>
+      `,
+    })
+    return { success: true }
+  } catch {
+    return { success: false }
+  }
+}
+
 export async function sendClaimNotificationToAdmin(
   displayName: string,
   slug: string,
