@@ -29,6 +29,10 @@ const CURRENT_REMATE_SLUGS: Set<string> = (() => {
 // Matches the remate detail slug shape: {anything}-YYYY-MM-DD
 const REMATE_SLUG_PATTERN = /^(.+)-\d{4}-\d{2}-\d{2}$/
 
+// Canonical category order for /precios/comparar/[par] — must match the route's
+// COMPARE_ORDER and the sitemap. Non-canonical ordering 308s to the canonical pair.
+const COMPARE_ORDER = ['novillos', 'novillitos', 'vaquillonas', 'vacas', 'toros', 'terneros']
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
@@ -72,6 +76,23 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url, 308)
     }
     // Canonical or unknown — let Next handle (static page or 404)
+    return NextResponse.next()
+  }
+
+  // /precios/comparar/<a>-vs-<b> — 308 non-canonical ordering to the canonical
+  // pair so a-vs-b is the single indexable URL (the route is canonical-only).
+  if (pathname.startsWith('/precios/comparar/')) {
+    const par = pathname.slice('/precios/comparar/'.length).split('/')[0]
+    const parts = par.split('-vs-')
+    if (parts.length === 2) {
+      const ia = COMPARE_ORDER.indexOf(parts[0])
+      const ib = COMPARE_ORDER.indexOf(parts[1])
+      if (ia >= 0 && ib >= 0 && ia > ib) {
+        const url = request.nextUrl.clone()
+        url.pathname = `/precios/comparar/${parts[1]}-vs-${parts[0]}`
+        return NextResponse.redirect(url, 308)
+      }
+    }
     return NextResponse.next()
   }
 
@@ -183,5 +204,7 @@ export const config = {
     // to the consignataria profile instead of 404. Siblings (en-vivo, hoy,
     // ciudad/*, mes/*, tipo/*) fall through fast.
     '/remates/:slug',
+    // Canonical-ordering 308 for category comparison pairs (no Supabase work)
+    '/precios/comparar/:par',
   ],
 }

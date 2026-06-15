@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
 import { SectionBreadcrumbSchema, DatasetSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { ShareBadge } from '@/components/share/ShareBadge'
 
 /* ============================================================
    /indices — the named INDEX FAMILY hub (Positioning Pillar 1).
@@ -13,6 +14,17 @@ import { SectionBreadcrumbSchema, DatasetSchema, FAQPageSchema } from '@/compone
 const APP_URL = 'https://www.consignatarias.com.ar'
 const inmag = marketData.inmag as { current: number }
 const lastUpdate = (marketData as { lastUpdate?: string }).lastUpdate
+
+const BADGE_CATS = marketData.categories as Record<string, { current: number }>
+const BADGES = [
+  { slug: 'inmag', label: 'INMAG', value: marketData.inmag.current, href: '/mercado/inmag' },
+  { slug: 'novillos', label: 'Novillo', value: BADGE_CATS.novillos.current, href: '/mercado/novillos' },
+  { slug: 'novillitos', label: 'Novillito', value: BADGE_CATS.novillitos.current, href: '/mercado/novillitos' },
+  { slug: 'vaquillonas', label: 'Vaquillona', value: BADGE_CATS.vaquillonas.current, href: '/mercado/vaquillonas' },
+  { slug: 'vacas', label: 'Vaca', value: BADGE_CATS.vacas.current, href: '/mercado/vacas' },
+  { slug: 'toros', label: 'Toro', value: BADGE_CATS.toros.current, href: '/mercado/toros' },
+  { slug: 'terneros', label: 'Ternero', value: BADGE_CATS.terneros.current, href: '/mercado/terneros' },
+]
 
 export const metadata: Metadata = {
   title: 'Índices del Mercado Ganadero Argentino — INMAG, USD, Arrendamiento, Spread',
@@ -158,6 +170,28 @@ export default function IndicesPage() {
               </p>
             </Link>
           ))}
+        </div>
+
+        {/* Embeddable badges */}
+        <div className="terminal-panel mt-8">
+          <div className="terminal-panel-header">Insertá el INMAG en tu sitio</div>
+          <div className="px-panel py-4 space-y-3">
+            <p className="text-sm text-zinc-400">
+              Badges en vivo con el último valor y su fecha. Copiá el código y pegalo en tu web — se
+              actualiza solo y enlaza a la fuente. Uso libre con atribución (CC-BY).
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {BADGES.map((b) => (
+                <ShareBadge
+                  key={b.slug}
+                  slug={b.slug}
+                  label={b.label}
+                  valueFormatted={b.value.toLocaleString('es-AR', { maximumFractionDigits: 2 })}
+                  href={b.href}
+                />
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Methodology + citation */}

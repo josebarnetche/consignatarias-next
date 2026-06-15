@@ -3,6 +3,7 @@ import { getAllCanonicalSlugs } from '@/lib/data/consignataria-slugs'
 import rematesData from '@/lib/data/remates.json'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import marketPrices from '@/lib/data/market-prices.json'
+import { getQualitySegments, CABEZAS_INDEX_THRESHOLD } from '@/lib/data/quality-segments'
 
 /* ------------------------------------------------------------------ */
 /*  PROVINCE SLUG MAP (must match [provincia]/page.tsx)                 */
@@ -520,6 +521,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   )
 
+  // Pairwise category comparison pages (/precios/comparar/[a]-vs-[b]) — 15 canonical
+  // pairs. COMPARE_ORDER must match the route's order + the middleware 308 target.
+  const COMPARE_ORDER = ['novillos', 'novillitos', 'vaquillonas', 'vacas', 'toros', 'terneros']
+  const preciosComparePages: MetadataRoute.Sitemap = []
+  for (let i = 0; i < COMPARE_ORDER.length; i++) {
+    for (let j = i + 1; j < COMPARE_ORDER.length; j++) {
+      preciosComparePages.push({
+        url: `${baseUrl}/precios/comparar/${COMPARE_ORDER[i]}-vs-${COMPARE_ORDER[j]}`,
+        lastModified: priceDate,
+        changeFrequency: 'daily' as const,
+        priority: 0.6,
+      })
+    }
+  }
+
+  // Quality-segment pages (/precios/[categoria]/calidad/[segmento]) — only the
+  // substantive (non-thin) ones; thin segments are noindex and stay out of the sitemap.
+  const qualitySegmentPages: MetadataRoute.Sitemap = getQualitySegments()
+    .filter((s) => s.cabezas >= CABEZAS_INDEX_THRESHOLD)
+    .map((s) => ({
+      url: `${baseUrl}/precios/${s.categoria}/calidad/${s.segmento}`,
+      lastModified: priceDate,
+      changeFrequency: 'daily' as const,
+      priority: 0.5,
+    }))
+
   // INMAG historical year pages (/mercado/inmag/[anio]) — compounding long-tail.
   // Closed years carry their true upper bound (Dec 31); the current year tracks priceDate.
   const inmagYearPages: MetadataRoute.Sitemap = Array.from(
@@ -549,6 +576,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
+  // Origin (procedencia) pages (/mercado/origen/[provincia]) — gated to provinces in
+  // PROVINCE_SLUGS (drops Chubut/Mendoza, which lack a ProvinceCluster entry).
+  const origenPages: MetadataRoute.Sitemap = (marketPrices.provinceEntry.provinces as { province: string }[])
+    .map((p) => PROVINCE_SLUGS[p.province])
+    .filter(Boolean)
+    .map((slug) => ({
+      url: `${baseUrl}/mercado/origen/${slug}`,
+      lastModified: priceDate,
+      changeFrequency: 'daily' as const,
+      priority: 0.6,
+    }))
+
   return [
     ...staticPages,
     ...provincePages,
@@ -561,8 +600,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...remateDetailPages,
     ...marketCategoryPages,
     ...preciosGeoPages,
+    ...preciosComparePages,
+    ...qualitySegmentPages,
     ...inmagYearPages,
     ...cityPages,
     ...monthPages,
+    ...origenPages,
   ]
 }

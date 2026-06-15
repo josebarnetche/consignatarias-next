@@ -7,6 +7,31 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.34.0] — 2026-06-15
+
+### Nuevas familias de páginas programáticas: comparador, segmentos de calidad, origen + badge embebible
+
+Cuarta tanda de la familia "answer-block": cuatro superficies de URL nuevas que convierten datos que ya
+teníamos en páginas long-tail extractables, más un badge embebible para backlinks. Todo con dato honesto
+(observado o aritmética sobre INMAG; nunca inventado).
+
+- **`/precios/comparar/[par]` — comparador de categorías:** 15 páginas pareadas ("novillo vs vaquillona hoy")
+  con veredicto extractable (spread aritmético sobre INMAG), tabla y FAQ. 308 de orden no-canónico vía middleware.
+- **`/precios/[categoria]/calidad/[segmento]` — segmentos de calidad observados:** una página por subcategoría
+  real del MAG (min/máx/promedio + cabezas, 100% observado). Segmentos de muestra reducida quedan noindex y fuera
+  del sitemap.
+- **`/mercado/origen/[provincia]` — procedencia de la hacienda:** de qué provincia/localidad provino la hacienda
+  operada en el Mercado Agroganadero (agregado, sin remitente por privacidad), con `Dataset` schema.
+- **Badge INMAG embebible (`/api/badge/[slug]`) + sección en `/indices`:** SVG en vivo con valor y fecha
+  horneados, `X-Frame-Options ALLOWALL`; el snippet de embed enlaza de vuelta (backlink dofollow). Uso CC-BY.
+- **Primitiva nueva:** [`quality-segments`](src/lib/data/quality-segments.ts) (slugs determinísticos compartidos
+  por la ruta y el sitemap).
+- **`sitemap.ts`:** suma los 15 comparadores + segmentos de calidad indexables + 6 páginas de origen.
+
+`tsc` 0, `pnpm build` limpio.
+
+---
+
 ## [1.33.0] — 2026-06-15
 
 ### Familia GEO/AEO "answer-block": respuestas extractables, feed machine-readable y superficie de precios observados
