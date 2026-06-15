@@ -1768,12 +1768,12 @@
       }
     ],
     "latestVolume": 6784,
-    "periodVolume": 170113
+    "periodVolume": 163229
   },
   "categories": {
     "novillos": {
       "current": 4292,
-      "prev": 4292.23,
+      "prev": 4292,
       "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
@@ -1781,31 +1781,31 @@
     },
     "novillitos": {
       "current": 4078,
-      "prev": 4666.14,
-      "change": -12.6,
+      "prev": 4078,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1464
     },
     "vaquillonas": {
       "current": 3863,
-      "prev": 4517.47,
-      "change": -14.5,
+      "prev": 3863,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1624
     },
     "vacas": {
       "current": 3090,
-      "prev": 2549.53,
-      "change": 21.2,
+      "prev": 3090,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 2043
     },
     "toros": {
       "current": 2790,
-      "prev": 2604.62,
-      "change": 7.1,
+      "prev": 2790,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 185
@@ -1838,58 +1838,16 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-06-14",
+  "lastUpdate": "2026-06-15",
   "provinceEntry": {
-    "date": "2026-06-12",
-    "totalCabezas": 6784,
+    "date": "2026-06-15",
+    "totalCabezas": 46,
     "provinces": [
       {
-        "province": "BUENOS AIRES",
-        "enPie": 5200,
-        "total": 5216,
-        "percentage": 76.89
-      },
-      {
-        "province": "SANTA FE",
-        "enPie": 573,
-        "total": 574,
-        "percentage": 8.46
-      },
-      {
-        "province": "LA PAMPA",
-        "enPie": 437,
-        "total": 437,
-        "percentage": 6.44
-      },
-      {
-        "province": "CORDOBA",
-        "enPie": 265,
-        "total": 265,
-        "percentage": 3.91
-      },
-      {
-        "province": "SAN LUIS",
-        "enPie": 210,
-        "total": 210,
-        "percentage": 3.1
-      },
-      {
-        "province": "ENTRE RIOS",
-        "enPie": 38,
-        "total": 38,
-        "percentage": 0.56
-      },
-      {
-        "province": "CHUBUT",
-        "enPie": 25,
-        "total": 25,
-        "percentage": 0.37
-      },
-      {
-        "province": "MENDOZA",
-        "enPie": 19,
-        "total": 19,
-        "percentage": 0.28
+        "province": "SANTA CRUZ",
+        "enPie": 46,
+        "total": 46,
+        "percentage": 100
       }
     ]
   },
