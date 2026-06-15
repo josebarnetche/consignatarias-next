@@ -7,6 +7,25 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.35.0] — 2026-06-15
+
+### "Owneá el INMAG": entidad + citabilidad sobre el término de mayor impresión
+
+El término "inmag" es la consulta de mayor impresión del sitio (1.230 imp/28d) y rankea ~pos 7.
+Esta release refuerza a consignatarias.com.ar como la ENTIDAD del INMAG, para ganar el snippet/
+respuesta de IA aún sin estar #1 orgánico, y hace el valor diario citable con un click.
+
+- **Entidad INMAG (`/mercado/inmag`):** el `Dataset` schema suma `@id` estable, `alternateName: "INMAG"`,
+  nombre completo "Índice Novillo del Mercado Agroganadero" y una segunda `distribution` pública al
+  snapshot `/precios.json` (CC-BY). Complementa el `DefinedTerm` "¿qué es el INMAG?" ya existente.
+- **GEO/citabilidad:** `SpeakableSchema` + el lede de definición marcado `.speakable-content` (unidad
+  citable por voz/IA) + `CitaBlock` (el valor del día se copia como cita con atribución).
+- **Anclas internas:** refuerzo del ancla "INMAG" en links internos (p. ej. "Ver evolución del INMAG").
+
+`tsc` 0, `pnpm build` limpio.
+
+---
+
 ## [1.34.0] — 2026-06-15
 
 ### Nuevas familias de páginas programáticas: comparador, segmentos de calidad, origen + badge embebible

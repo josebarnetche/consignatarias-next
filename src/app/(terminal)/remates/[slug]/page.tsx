@@ -706,7 +706,7 @@ export default async function RemateDetailPage({ params }: Props) {
               <p className="text-xs text-slate-600 mt-4">
                 Precio de referencia del novillo en pie. Los valores efectivos por categoría
                 ({categoryLabel ? categoryLabel.toLowerCase() : 'según lote'}) pueden diferir.{' '}
-                <Link href="/mercado/inmag" className="text-blue-400 hover:underline">Ver evolución del índice →</Link>
+                <Link href="/mercado/inmag" className="text-blue-400 hover:underline">Ver evolución del INMAG →</Link>
               </p>
             </div>
           )}

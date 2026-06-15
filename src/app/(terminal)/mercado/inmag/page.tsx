@@ -2,7 +2,8 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import marketData from '@/lib/data/market-prices.json'
-import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { CitaBlock } from '@/components/seo/CitaBlock'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import { ElCorredorCTA } from '@/components/ElCorredorCTA'
@@ -72,7 +73,9 @@ function InmagSchema() {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Dataset',
-    name: 'INMAG - Índice Novillo Mercado Agroganadero',
+    '@id': 'https://www.consignatarias.com.ar/mercado/inmag#inmag-dataset',
+    name: 'INMAG — Índice Novillo del Mercado Agroganadero',
+    alternateName: 'INMAG',
     description: 'Índice de precios del novillo en el Mercado Agroganadero de Buenos Aires, Argentina.',
     url: 'https://www.consignatarias.com.ar/mercado/inmag',
     keywords: ['INMAG', 'índice novillo', 'precio ganado', 'mercado ganadero'],
@@ -88,11 +91,19 @@ function InmagSchema() {
       value: inmag.current,
       unitText: 'ARS/kg vivo',
     },
-    distribution: {
-      '@type': 'DataDownload',
-      encodingFormat: 'application/json',
-      contentUrl: 'https://www.consignatarias.com.ar/api/market/history',
-    },
+    distribution: [
+      {
+        '@type': 'DataDownload',
+        encodingFormat: 'application/json',
+        contentUrl: 'https://www.consignatarias.com.ar/api/market/history',
+      },
+      {
+        '@type': 'DataDownload',
+        name: 'Snapshot diario público (CC-BY)',
+        encodingFormat: 'application/json',
+        contentUrl: 'https://www.consignatarias.com.ar/precios.json',
+      },
+    ],
     license: 'https://creativecommons.org/licenses/by/4.0/',
     isAccessibleForFree: true,
     spatialCoverage: { '@type': 'Place', name: 'Argentina' },
@@ -143,6 +154,10 @@ export default function InmagPage() {
       <InmagSchema />
       <InmagDefinedTermSchema />
       <FAQPageSchema items={INMAG_FAQS} />
+      <SpeakableSchema
+        url="https://www.consignatarias.com.ar/mercado/inmag"
+        headline="INMAG hoy — Índice Novillo del Mercado Agroganadero"
+      />
       
       <div className="min-h-screen">
         {/* Hero Section */}
@@ -176,12 +191,16 @@ export default function InmagPage() {
                 </h1>
                 {/* Clean definition lede — first prose on the page, written as a
                     self-contained snippet so Google can lift it for "qué es el inmag". */}
-                <p className="text-zinc-400 max-w-xl text-lg">
+                <p className="speakable-content text-zinc-400 max-w-xl text-lg">
                   El <strong className="text-zinc-200">INMAG (Índice Novillo Mercado Agroganadero)</strong> es
                   el precio promedio ponderado del novillo en el Mercado Agroganadero de Cañuelas (ex Liniers),
                   publicado al cierre de cada día hábil. Es la referencia de precio más usada del mercado
                   ganadero argentino, con histórico desde 2015 y metodología abierta.
                 </p>
+                <CitaBlock
+                  citation={`INMAG (Índice Novillo del Mercado Agroganadero), vía consignatarias.com.ar, ${marketData.lastUpdate} — $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 2 })}/kg vivo`}
+                  sourceUrl="https://www.consignatarias.com.ar/mercado/inmag"
+                />
               </div>
 
               {/* Hero Price Card */}
