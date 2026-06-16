@@ -5,7 +5,13 @@ name: Scrape Auctions & Match Videos
 # (/remates/manana, /remates/hoy, profile "upcoming" filters) stay fresh.
 on:
   schedule:
-    - cron: '0 17 * * *'
+    # 14:00 ART primary + afternoon/evening backups. GitHub cron is best-effort
+    # (often 1-3h late, occasionally dropped entirely — that's how 2026-06-16's
+    # update went missing), so multiple windows give the daily run several
+    # chances to land. The job is idempotent (commits only when data changed).
+    - cron: '0 17 * * *'   # 14:00 ART (primary)
+    - cron: '0 19 * * *'   # 16:00 ART (backup)
+    - cron: '0 21 * * *'   # 18:00 ART (backup)
   workflow_dispatch: # Manual trigger anytime
 
 permissions:
