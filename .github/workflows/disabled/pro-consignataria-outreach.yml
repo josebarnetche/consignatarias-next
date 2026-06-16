@@ -1,0 +1,47 @@
+name: PRO Consignataria Outreach (monthly)
+
+# DISABLED by default — lives in disabled/. To turn it on, move this file up to
+# .github/workflows/. It calls the cron route /api/cron/pro-consignataria-outreach
+# on Vercel (which holds the Supabase + Resend secrets — they never reach CI).
+#
+# Monthly conversion outreach: "tu perfil fue visto N veces → activá PRO". The route
+# applies a 30-day per-recipient cooldown (outreach_log) and skips firms already PRO.
+# Preview first with the manual dispatch + dry=1, or curl ?dry=1.
+on:
+  schedule:
+    - cron: '0 13 1 * *' # 1st of each month, 10:00 ART
+  workflow_dispatch:
+    inputs:
+      min:
+        description: 'Umbral de vistas (30d)'
+        required: false
+        default: '20'
+      dry:
+        description: 'Dry run (1 = preview, no envía)'
+        required: false
+        default: '1'
+
+jobs:
+  outreach:
+    runs-on: ubuntu-latest
+    steps:
+      - name: cron-hook start
+        id: cronstart
+        run: |
+          RUN_ID=$(curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" -H "Content-Type: application/json" -d '{"workflow_name":"pro-consignataria-outreach","phase":"start"}' | jq -r '.run_id // empty')
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger PRO Consignataria outreach
+        run: |
+          MIN="${{ github.event.inputs.min || '20' }}"
+          DRY="${{ github.event.inputs.dry || '0' }}"
+          echo "Trigger: /api/cron/pro-consignataria-outreach?min=${MIN}&dry=${DRY}"
+          curl -sL -w "\nHTTP %{http_code}\n" -X POST \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://www.consignatarias.com.ar/api/cron/pro-consignataria-outreach?min=${MIN}&dry=${DRY}"
+
+      - name: cron-hook finish
+        if: always() && steps.cronstart.outputs.run_id != ''
+        run: |
+          ST="ok"; [ "${{ job.status }}" != "success" ] && ST="error"
+          curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" -H "Content-Type: application/json" -d "{\"workflow_name\":\"pro-consignataria-outreach\",\"phase\":\"finish\",\"run_id\":${{ steps.cronstart.outputs.run_id }},\"status\":\"$ST\"}" || true

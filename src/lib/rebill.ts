@@ -47,6 +47,57 @@ export async function createPaymentLink(
   return JSON.parse(responseText)
 }
 
+/**
+ * createConsignatariaSubscriptionLink — recurring PRO link for a consignataria firm.
+ * Entity-scoped: metadata.entitySlug/entityType route the Rebill webhook to Branch 2,
+ * which upserts subscriptions(status='active') → getEntityTier() returns 'pro' → the
+ * public profile shows the PRO badge. ARS 45.000/mes (override REBILL_CONSIGNATARIA_PRO_AMOUNT).
+ * Unlike the legacy createPaymentLink (isSingleUse:true), this is a recurring subscription.
+ */
+export async function createConsignatariaSubscriptionLink(
+  entitySlug: string,
+  customerEmail: string,
+) {
+  const secretKey = process.env.REBILL_SECRET_KEY
+  if (!secretKey) {
+    throw new Error('REBILL_SECRET_KEY is not configured')
+  }
+
+  const amount = parseInt(process.env.REBILL_CONSIGNATARIA_PRO_AMOUNT || '45000', 10)
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
+
+  const payload = {
+    title: [{ language: 'es', text: 'PRO Consignataria — consignatarias.com.ar' }],
+    paymentMethods: [{ methods: ['card'], currency: 'ARS' }],
+    prices: [{ amount, currency: 'ARS' }],
+    metadata: {
+      entitySlug,
+      entityType: 'consignataria',
+      customerEmail,
+    },
+    redirectUrls: {
+      approved: `${appUrl}/consignatarias/${entitySlug}?upgraded=true`,
+    },
+    isSingleUse: false, // recurring subscription
+  }
+
+  const res = await fetch(`${REBILL_API}/payment-links`, {
+    method: 'POST',
+    headers: {
+      'x-api-key': secretKey,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  const responseText = await res.text()
+  if (!res.ok) {
+    console.error('Rebill consignataria subscription error:', res.status, responseText)
+    throw new Error(`Rebill error: ${res.status} ${responseText}`)
+  }
+  return JSON.parse(responseText)
+}
+
 export async function cancelSubscription(rebillSubscriptionId: string) {
   const res = await fetch(`${REBILL_API}/subscriptions/${rebillSubscriptionId}/cancel`, {
     method: 'POST',
