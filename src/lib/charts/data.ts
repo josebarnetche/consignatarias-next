@@ -5,11 +5,15 @@ import { createClient } from '@supabase/supabase-js'
  * runtime without service role. Targets RLS-public tables only.
  */
 function publicClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  // Missing public env (e.g. a Preview build without NEXT_PUBLIC_SUPABASE_ANON_KEY)
+  // → return null so the build degrades to an empty series instead of throwing
+  // "supabaseKey is required". Production has the key, so behavior is identical there.
+  if (!url || !key) return null
+  return createClient(url, key, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  })
 }
 
 export interface DailyInmag {
@@ -45,6 +49,7 @@ async function fetchAllByDate(
   toIso: string,
 ): Promise<Record<string, unknown>[]> {
   const admin = publicClient()
+  if (!admin) return [] // no public env at build → empty series, page renders without data
   const all: Record<string, unknown>[] = []
   let from = 0
   for (;;) {
