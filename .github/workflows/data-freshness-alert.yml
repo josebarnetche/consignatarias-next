@@ -1,0 +1,31 @@
+name: Data Freshness Alert
+
+# Late-evening sanity check: did the daily pipeline actually run today? The
+# scraper touches src/lib/data/last-build-trigger.json on EVERY run (even when
+# MAG published nothing), so its commit date is a faithful "the scraper ran
+# today" signal. If a day passes without it (e.g. GitHub dropped/over-delayed
+# the cron — exactly what happened 2026-06-16), this job FAILS so GitHub emails
+# the repo owner. Zero infra; the fix is `gh workflow run scrape-auctions.yml`.
+on:
+  schedule:
+    - cron: '0 1 * * *' # 22:00 ART — after the 14:00/16:00/18:00 scrape windows + GitHub delay
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      TZ: America/Argentina/Buenos_Aires
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check the pipeline ran today
+        run: |
+          TODAY=$(date +%F)
+          LAST=$(git log -1 --format=%cd --date=format-local:%F -- src/lib/data/last-build-trigger.json || echo "")
+          echo "Hoy (ART): $TODAY · último run del scraper (commit de last-build-trigger.json, ART): ${LAST:-nunca}"
+          if [ "$LAST" != "$TODAY" ]; then
+            echo "::error::El scraper NO corrió hoy ($TODAY). Último run: ${LAST:-nunca}. El cron de GitHub probablemente se atrasó/saltó. Disparalo: gh workflow run scrape-auctions.yml"
+            exit 1
+          fi
+          echo "✓ El pipeline corrió hoy — data fresca."
