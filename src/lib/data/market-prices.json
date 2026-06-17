@@ -1829,8 +1829,8 @@
   },
   "corn": {
     "current": 219.3,
-    "prev": 217.5,
-    "change": 0.8,
+    "prev": 219.3,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
