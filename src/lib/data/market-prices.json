@@ -1853,8 +1853,8 @@
   },
   "usdOficial": {
     "current": 1481.94,
-    "prev": 1480.34,
-    "change": 0.1,
+    "prev": 1481.94,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
