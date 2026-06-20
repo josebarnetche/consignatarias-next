@@ -28,9 +28,9 @@ const COVERED: Node[] = [
   { slug: 'corrientes', name: 'Corrientes', x: 152, y: 95 },
   { slug: 'santa-fe', name: 'Santa Fe', x: 122, y: 120 },
   { slug: 'cordoba', name: 'Córdoba', x: 90, y: 140 },
-  { slug: 'entre-rios', name: 'Entre Ríos', x: 148, y: 150 },
+  { slug: 'entre-rios', name: 'Entre Ríos', x: 144, y: 144 },
   { slug: 'san-luis', name: 'San Luis', x: 72, y: 165 },
-  { slug: 'buenos-aires', name: 'Buenos Aires', x: 128, y: 188 },
+  { slug: 'buenos-aires', name: 'Buenos Aires', x: 130, y: 176 },
   { slug: 'la-pampa', name: 'La Pampa', x: 88, y: 202 },
 ]
 
