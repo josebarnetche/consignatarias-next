@@ -39,7 +39,7 @@ export default function MisGuiasPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         alert('Iniciá sesión para guardar guías');
-        return;
+        return false;
       }
 
       // Map DTEData to database columns
@@ -71,25 +71,30 @@ export default function MisGuiasPage() {
       if (error) {
         console.error('Error saving DTE:', error);
         alert('Error al guardar la guía. Intentá de nuevo.');
-        return;
+        return false;
       }
 
-      // Track the save
-      const isFirst = dteCount === 0;
+      // Authoritative count AFTER the insert (includes the new row) — fixes the
+      // first-DTE off-by-one that mis-fired when dteCount was still null / client-stale.
+      const { count: total } = await supabase
+        .from('user_dtes')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+      const dteTotal = total ?? 1;
+      const isFirst = dteTotal === 1;
       trackDteSave(isFirst, data.cantidad_cabezas || null);
-      
-      // Update count and check for milestones
-      const newCount = (dteCount || 0) + 1;
-      setDteCount(newCount);
-      trackDteMilestone(newCount);
+      setDteCount(dteTotal);
+      trackDteMilestone(dteTotal);
 
       // Refresh history
       setRefreshKey(k => k + 1);
+      return true;
     } catch (err) {
       console.error('Error saving DTE:', err);
       alert('Error al guardar la guía');
+      return false;
     }
-  }, [supabase, dteCount]);
+  }, [supabase]);
 
   // HowTo structured data for SEO
   const howToSteps = [

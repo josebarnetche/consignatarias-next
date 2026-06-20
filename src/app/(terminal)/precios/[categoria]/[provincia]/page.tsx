@@ -12,6 +12,7 @@ import { DataStamp } from '@/components/seo/DataStamp'
 import { CitaBlock } from '@/components/seo/CitaBlock'
 import PriceWhatsAppShare from '@/components/share/PriceWhatsAppShare'
 import { MethodologyMicroBlock } from '@/components/seo/MethodologyMicroBlock'
+import { PriceCTA } from '@/components/PriceCTA'
 
 /* ============================================================
    /precios/[categoria]/[provincia] — geo × category long-tail.
@@ -389,6 +390,8 @@ export default async function PrecioCategoriaProvinciaPage({
             ))}
           </div>
         </div>
+
+        <PriceCTA />
 
         <ProvinceCluster province={prov.name} />
 

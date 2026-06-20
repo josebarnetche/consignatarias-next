@@ -24,8 +24,16 @@ export async function POST(request: NextRequest) {
   }
 
   const now = new Date()
-  const today = now.toISOString().slice(0, 10)
-  const currentHour = now.getHours()
+  // Server runs in UTC; auction times are ART (UTC-3). Derive today's date + the
+  // current hour in America/Argentina/Buenos_Aires so "after the auction" timing is
+  // correct (getHours() returned the UTC hour → outreach fired ~3h off).
+  const artParts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+    year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hour12: false,
+  }).formatToParts(now)
+  const artPart = (t: string) => artParts.find((p) => p.type === t)?.value ?? ''
+  const today = `${artPart('year')}-${artPart('month')}-${artPart('day')}`
+  const currentHour = parseInt(artPart('hour'), 10)
 
   // Get all auctions for today
   const todayAuctions = (rematesData as Auction[]).filter(a => a.date === today)

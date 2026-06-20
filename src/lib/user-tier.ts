@@ -37,9 +37,11 @@ export async function getCurrentSession(): Promise<CurrentSession> {
     .maybeSingle()
 
   let tier: Tier = 'free'
-  if (sub?.tier === 'pro' && sub.status === 'active') {
-    // Validate period if known
-    if (!sub.current_period_end || new Date(sub.current_period_end) > new Date()) {
+  if (sub?.tier === 'pro') {
+    const periodValid = !sub.current_period_end || new Date(sub.current_period_end) > new Date()
+    // Honor the paid period: active/past_due is PRO, and a CANCELLED sub stays PRO until
+    // current_period_end (the user paid the month) instead of losing access instantly.
+    if (periodValid && ['active', 'past_due', 'cancelled'].includes(sub.status)) {
       tier = 'pro'
     }
   }

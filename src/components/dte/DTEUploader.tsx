@@ -8,7 +8,7 @@ import { DTEForm } from './DTEForm';
 import { trackDteUploadStart, trackDteOcrComplete, trackDteDemoStart } from '@/lib/analytics';
 
 interface DTEUploaderProps {
-  onSave?: (data: DTEData & { imagen_url?: string; ocr_raw_text?: string; ocr_confidence?: number }) => void;
+  onSave?: (data: DTEData & { imagen_url?: string; ocr_raw_text?: string; ocr_confidence?: number }) => void | Promise<boolean | void>;
 }
 
 // Sample DT-e data for demo mode
@@ -80,13 +80,15 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
     disabled: isProcessing,
   });
 
-  const handleSave = (data: DTEData) => {
-    onSave?.({
+  const handleSave = async (data: DTEData) => {
+    const ok = await onSave?.({
       ...data,
       ocr_raw_text: ocrText,
       ocr_confidence: ocrConfidence,
     });
-    setStep('success');
+    // Only show the success screen if the save actually persisted (the parent
+    // returns false on failure). Avoids "¡Guía guardada!" while the insert errored.
+    if (ok !== false) setStep('success');
   };
 
   const handleReset = () => {

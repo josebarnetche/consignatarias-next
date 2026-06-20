@@ -12,6 +12,7 @@ import { DataStamp } from '@/components/seo/DataStamp'
 import { CitaBlock } from '@/components/seo/CitaBlock'
 import PriceWhatsAppShare from '@/components/share/PriceWhatsAppShare'
 import { getDetailedRowsForCategory, CATEGORY_PREFIX } from '@/components/market/PriceRangeTable'
+import { PriceCTA } from '@/components/PriceCTA'
 
 /* ============================================================
    /precios/[categoria] — captures high-intent "precio del kilo
@@ -448,6 +449,29 @@ export default async function PreciosCategoriaPage({
             ))}
           </div>
         </div>
+
+        {/* Comparar precios — de-orphans /precios/comparar + drill-down */}
+        <div className="terminal-panel mb-6">
+          <div className="terminal-panel-header">Comparar precio del {c.singular}</div>
+          <div className="px-panel py-4 flex flex-wrap gap-2">
+            {others.map((o) => {
+              const ia = ALL_CATEGORIES.indexOf(categoria as CategorySlug)
+              const io = ALL_CATEGORIES.indexOf(o.slug as CategorySlug)
+              const par = ia < io ? `${categoria}-vs-${o.slug}` : `${o.slug}-vs-${categoria}`
+              return (
+                <Link
+                  key={o.slug}
+                  href={`/precios/comparar/${par}`}
+                  className="text-xxs font-terminal px-3 py-1.5 rounded border border-terminal-border bg-terminal-panel text-zinc-300 hover:border-amber-500/40 hover:text-amber-400 transition-colors"
+                >
+                  {c.title} vs {o.label}
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+
+        <PriceCTA />
 
         {/* FAQ visible */}
         <div className="terminal-panel mb-6">

@@ -297,8 +297,10 @@ export async function POST(request: NextRequest) {
           const { data: proRows } = await service
             .from('user_subscriptions')
             .update({
+              // Keep tier='pro' on cancel — access is honored until current_period_end
+              // (getCurrentSession gates on the period). Setting tier='free' here dropped
+              // access the instant the user cancelled, even though they paid the month.
               status: 'cancelled',
-              tier: 'free',
               cancelled_at: new Date().toISOString(),
               updated_at: new Date().toISOString(),
             })

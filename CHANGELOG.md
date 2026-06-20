@@ -7,6 +7,36 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.38.0] — 2026-06-20
+
+### Correcciones de integridad del journey (P1s del debug): activación, billing y conversión
+
+Tercera tanda del debug del customer journey — los P1 de integridad de datos y conversión.
+
+- **DT-e: éxito honesto.** El uploader mostraba "¡Guía guardada!" aunque el insert fallara
+  (era fire-and-forget). Ahora espera el resultado y solo muestra éxito si persistió.
+- **DT-e: milestone correcto.** El "primer DT-e" se calculaba con un conteo de cliente que podía
+  estar en `null`/desfasado (off-by-one). Ahora se re-lee el conteo autoritativo de la DB tras el
+  insert, así `activation_first_dte`/milestones no se mis-disparan.
+- **Billing: cancelar respeta el período pagado.** Al cancelar, el webhook ponía `tier='free'` al
+  instante y `getCurrentSession` exigía `status='active'` → se perdía PRO en el acto pese a haber
+  pagado el mes. Ahora se mantiene `tier='pro'` al cancelar y el acceso se honra hasta
+  `current_period_end`.
+- **Outreach post-remate en hora ART.** El cron usaba `getHours()` (UTC) contra horarios ART
+  (UTC-3) → salía ~3 h corrido. Ahora deriva fecha y hora en `America/Argentina/Buenos_Aires`.
+- **CTA de conversión en páginas SEO.** Las páginas de precio (`/precios/[categoria]`,
+  `/precios/[categoria]/[provincia]`, `/mercado/[categoria]`) eran solo-datos y rebotaban al
+  visitante; nuevo `PriceCTA` ("¿Vas a vender? → Calcular neto / Ver consignatarias").
+- **`/precios/comparar` des-huérfano.** Bloque de comparaciones en `/precios/[categoria]` que enlaza
+  a los pares de comparación (inbound links + drill-down).
+- **Guard en comparador.** `/precios/comparar/[par]` ya no crashea si el scraper renombra/borra una
+  categoría (notFound en vez de excepción en build).
+
+`tsc` 0, `pnpm build` limpio. NOTA: el webhook de Rebill (P0-2) sigue siendo el desbloqueo de
+ingresos pendiente — acción de ops.
+
+---
+
 ## [1.37.0] — 2026-06-20
 
 ### Fix de activación + B2B: destrabar el wedge DT-e y el reclamo de perfil (Wave B del debug del journey)

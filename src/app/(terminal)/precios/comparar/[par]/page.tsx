@@ -86,6 +86,8 @@ export async function generateMetadata({ params }: { params: Promise<{ par: stri
   const parsed = parsePar(par)
   if (!parsed) return { title: 'Comparación no encontrada' }
   const { a, b } = parsed
+  const cats = marketPrices.categories as Record<string, unknown>
+  if (!cats[a] || !cats[b]) return { title: 'Comparación no disponible' }
   const lastUpdate = marketPrices.lastUpdate
   const { priceA, priceB } = getPrices(a, b)
   const title = `${CATEGORIES[a].title} vs ${CATEGORIES[b].title}: precio del kilo vivo hoy (INMAG ${lastUpdate})`
@@ -111,6 +113,8 @@ export default async function CompararPage({ params }: { params: Promise<{ par: 
   const parsed = parsePar(par)
   if (!parsed) notFound()
   const { a, b } = parsed
+  const cats = marketPrices.categories as Record<string, unknown>
+  if (!cats[a] || !cats[b]) notFound()
   const lastUpdate = marketPrices.lastUpdate
   const { priceA, priceB, changeA, changeB, pct, higherSlug, lowerSlug, higherPrice, lowerPrice } = getPrices(a, b)
   const v = verdict(a, b, lastUpdate)
