@@ -232,9 +232,10 @@ export function trackProUpgrade(
 /*  ACTIVATION FUNNEL (signup → DT-e → PRO)                           */
 /* ------------------------------------------------------------------ */
 
-/** User signed up (new account created) */
+/** User signed up (new account created). Event name is the GA4-recommended
+ *  `sign_up` (matches the configured key event — emitting `signup` left it blind). */
 export function trackSignup(method: 'email' | 'google' | 'github') {
-  trackEvent('signup', {
+  trackEvent('sign_up', {
     signup_method: method,
   })
 }

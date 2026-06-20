@@ -7,6 +7,31 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.37.0] — 2026-06-20
+
+### Fix de activación + B2B: destrabar el wedge DT-e y el reclamo de perfil (Wave B del debug del journey)
+
+Segunda tanda del debug del customer journey: los caminos por donde un usuario nuevo se activa
+y una consignataria reclama su perfil tenían dead-ends duros.
+
+- **CTA de DT-e arreglado:** el botón "Subir mis DT-e" en `/dte` (landing SEO de activación) iba a
+  `/auth` (404). Ahora va a `/login?next=/mi-cuenta/guias`.
+- **Guard de auth en `/mi-cuenta/guias`:** esa ruta vivía fuera del grupo `(terminal)` y no tenía
+  protección — un anónimo hacía todo el OCR y recién al guardar chocaba con un alert. Ahora se
+  redirige a login antes de empezar.
+- **Reclamo de perfiles huérfanos:** ~18 perfiles canónicos no tienen fila en DB; el form de reclamo
+  devolvía 404 "Consignataria no encontrada" para ellos. Ahora se siembra una fila mínima desde el
+  registro estático (canonical_slug + display_name; el resto tiene defaults) y el reclamo procede.
+- **Links de remate en páginas de precio provincial:** usaban el `id` numérico (`/remates/1`) contra
+  una ruta con `dynamicParams=false` → 404 duro. Ahora usan el slug compuesto correcto.
+- **Evento de signup:** `trackSignup` emite `sign_up` (el key event de GA4) en vez de `signup`, que
+  dejaba ciego el primer paso del embudo de activación.
+
+`tsc` 0, `pnpm build` limpio. NOTA: el webhook de Rebill (P0-2) sigue siendo acción de ops — ningún
+pago activa PRO hasta verificar el secret/firma en prod.
+
+---
+
 ## [1.36.0] — 2026-06-19
 
 ### Fix del money-path: el comprador PRO ahora ve la confirmación (Wave A del debug del journey)

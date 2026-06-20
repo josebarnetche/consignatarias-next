@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { claimSchema } from '@/lib/validators/claim'
 import { sendClaimNotificationToAdmin } from '@/lib/email'
+import { getProfile } from '@/lib/data/consignataria-slugs'
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,18 +19,41 @@ export async function POST(req: NextRequest) {
     const { consignataria_slug, claimant_email, claimant_name, claimant_phone, claimant_role, cuit } = parsed.data
     const supabase = requireServiceClient()
 
-    // Verify consignataria exists
-    const { data: consignataria, error: lookupError } = await supabase
+    // Look up the consignataria. ~18 canonical profiles have no DB row yet (orphans);
+    // for those, seed a minimal row from the static registry so the real owner can claim
+    // instead of hitting a 404. Only canonical_slug + display_name are required — the
+    // rest of the columns carry DB defaults (verified=false, featured=false, etc.).
+    let consignataria: { canonical_slug: string; display_name: string; claimed_at: string | null } | null = null
+    const { data: existing } = await supabase
       .from('consignatarias')
       .select('canonical_slug, display_name, claimed_at')
       .eq('canonical_slug', consignataria_slug)
-      .single()
+      .maybeSingle()
+    consignataria = existing
 
-    if (lookupError || !consignataria) {
-      return NextResponse.json(
-        { error: 'Consignataria no encontrada' },
-        { status: 404 },
-      )
+    if (!consignataria) {
+      const staticProfile = getProfile(consignataria_slug)
+      if (!staticProfile) {
+        return NextResponse.json(
+          { error: 'Consignataria no encontrada' },
+          { status: 404 },
+        )
+      }
+      const { data: seeded, error: seedError } = await supabase
+        .from('consignatarias')
+        .upsert(
+          { canonical_slug: staticProfile.canonicalSlug, display_name: staticProfile.displayName },
+          { onConflict: 'canonical_slug' },
+        )
+        .select('canonical_slug, display_name, claimed_at')
+        .single()
+      if (seedError || !seeded) {
+        return NextResponse.json(
+          { error: 'No se pudo iniciar el reclamo. Intentá de nuevo.' },
+          { status: 500 },
+        )
+      }
+      consignataria = seeded
     }
 
     // Check if already claimed

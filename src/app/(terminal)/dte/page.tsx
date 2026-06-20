@@ -304,7 +304,7 @@ export default function DTEPage() {
               </p>
               <div className="flex flex-wrap gap-3">
                 <Link
-                  href="/auth?redirect=/mi-cuenta/guias"
+                  href="/login?next=/mi-cuenta/guias"
                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-zinc-900 font-medium rounded-lg transition-colors"
                 >
                   <Upload className="w-4 h-4" />

@@ -345,7 +345,7 @@ export default async function PrecioCategoriaProvinciaPage({
               {upcoming.slice(0, 8).map((a) => (
                 <Link
                   key={a.id}
-                  href={`/remates/${a.id}`}
+                  href={`/remates/${[a.consignatariaSlug || 'remate', a.type || 'general', a.province?.toLowerCase().replace(/\s+/g, '-') || 'argentina', a.date].join('-')}`}
                   className="px-panel py-3 flex items-center justify-between hover:bg-zinc-900/50 transition-colors"
                 >
                   <span className="text-zinc-300 text-data truncate">
