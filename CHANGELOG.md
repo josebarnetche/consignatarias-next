@@ -7,6 +7,30 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.39.0] — 2026-06-20
+
+### Landing minimalista + mapa de cobertura interactivo
+
+Rediseño de la home a pedido (feedback de usuarios: sobredosis de información). La landing pasó de
+~18 secciones a ~8, y el filtro por provincias + la cobertura se unificaron en un solo visual.
+
+- **Mapa de cobertura interactivo ([`CoverageMap`](src/components/landing/CoverageMap.tsx)):** Argentina
+  estilizada/esquemática; las 11 provincias con remates (las que tienen página `/remates/[provincia]`)
+  brillan en ámbar, dimensionadas por actividad, y al click llevan a los remates de esa provincia — es
+  el nuevo filtro por provincia. El resto del país queda como contexto tenue. Reemplaza la grilla de
+  texto "consignatarios por región".
+- **Recorte fuerte de la landing (~18 → ~8 secciones; 1507 → 591 líneas):** se mantuvo lo de mayor valor
+  (hero+mapa, valuation widget, cómo funciona, showcase de consignatarias, El Corredor lead-magnet, FAQ,
+  CTA, newsletter) y se quitaron las secciones redundantes/pesadas (quick-nav, "el problema", 3 features
+  duplicados, watchlist, comparación, destacadas, herramientas, wall de PRO) + todo su dead code.
+- **Bundled (cierre del debug del journey):** `PriceCTA` ahora en las 6 plantillas de precio (se sumaron
+  comparar/calidad/origen); y guard en el scraper — un INMAG inválido/0 ya no sobreescribe el último
+  valor bueno (evita commitear "$0" en una corrida fallida).
+
+`tsc` 0, `pnpm build` limpio.
+
+---
+
 ## [1.38.0] — 2026-06-20
 
 ### Correcciones de integridad del journey (P1s del debug): activación, billing y conversión

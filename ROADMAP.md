@@ -1,6 +1,6 @@
 # Roadmap
 
-**Current:** v1.30.15 (June 9, 2026) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
+**Current:** v1.39.0 (June 20, 2026) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
 **Strategic frame:** [docs/strategy/POSITIONING-THESIS.md](docs/strategy/POSITIONING-THESIS.md) — own the
 category **"el precio de referencia del ganado argentino"** via three pillars (Index family ·
 Institutional access · Online-auction flywheel) across three horizons.
@@ -12,6 +12,32 @@ MAJOR boundary, so the product stays on 1.x.
 > first dollar is **unblocked** (email-first checkout live for both B2C and Enterprise, verified to
 > reach a real Rebill payment link). The remaining gate is a real test payment + the institutional
 > sales motion — not more code.
+
+---
+
+## Where we are now — v1.39.0 (June 2026)
+
+The train since v1.30: a growth/SEO/GEO push, then a full customer-journey debug, then a landing redesign.
+
+- **Growth / SEO / GEO (v1.31 → v1.35).** CTR sprint (price-in-title), mobile perf + a11y, end-to-end
+  funnel **instrumentation**, and the **"answer-block" family**: reusable extractable primitives
+  (`AnswerBlock`, `DataStamp`, `CitaBlock`, `MethodologyMicroBlock`, `PriceRangeTable`) across ~84 price
+  pages; new programmatic surfaces (`/precios/comparar`, quality-segments, `/mercado/origen`); the
+  **INMAG entity** (Dataset `@id` + Speakable + CitaBlock on the top-impression term); machine-readable
+  citation surfaces (`/precios.json` CC-BY, `llms.txt` freshness header); and an embeddable INMAG badge.
+- **Customer-journey debug (v1.36 → v1.38).** A 5-agent audit traced the whole funnel. **Headline
+  finding:** the money path could not confirm a sale — and the live data showed the Rebill webhook had
+  **never fired** (`processed_webhook_events = 0`). Fixed (around the webhook): PRO-buyer confirmation
+  (`subscription-status` read the wrong table; added an "Activando…" poller), a dead `subscription_tier`
+  column, the DT-e activation dead-ends (`/dte`→`/auth` 404, `/mi-cuenta/guias` had no auth guard),
+  orphan-profile claim 404s, billing-on-cancel (now honors the paid period), conversion CTAs on the
+  data-only SEO pages, honest claim copy, and several P1 integrity bugs.
+- **Landing redesign (v1.39).** Home cut ~18 → ~8 sections (overload feedback); the province filter +
+  coverage became one interactive stylized `CoverageMap`.
+
+**The revenue gate moved from code to ops.** The funnel is now correct end-to-end, but **P0-2 — verify
+`REBILL_WEBHOOK_SECRET` + Rebill's signature encoding in prod, then run a real test payment** — is the
+only thing between this funnel and its first peso. That is the single highest-leverage next action.
 
 ---
 

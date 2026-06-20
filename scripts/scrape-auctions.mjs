@@ -1650,12 +1650,19 @@ async function main() {
     const inmagPrev = sortedRecs.length >= 2
       ? Math.round(sortedRecs[1].inmag * 100) / 100
       : market.inmag.current;
-    market.inmag.prev = inmagPrev;
-    market.inmag.current = inmagValue;
-    market.inmag.change = inmagPrev
-      ? parseFloat((((inmagValue - inmagPrev) / inmagPrev) * 100).toFixed(1))
-      : 0;
-    market.inmag.source = "mercadoagroganadero.com.ar";
+    // GUARD: never overwrite the live INMAG with a missing/zero/garbage value — a bad
+    // scrape would otherwise commit $0 and every price surface would render "$0 hoy".
+    // Keep the last good value and log loudly so the run is visible.
+    if (Number.isFinite(inmagValue) && inmagValue > 0) {
+      market.inmag.prev = inmagPrev;
+      market.inmag.current = inmagValue;
+      market.inmag.change = inmagPrev
+        ? parseFloat((((inmagValue - inmagPrev) / inmagPrev) * 100).toFixed(1))
+        : 0;
+      market.inmag.source = "mercadoagroganadero.com.ar";
+    } else {
+      console.error(`  ✗ INMAG scrape invalid (${inmagValue}) — keeping last good value $${market.inmag.current}. Not overwriting.`);
+    }
 
     // Update INMAG historical series from scraped records (including volume for VWAP)
     if (!market.inmag.series) market.inmag.series = [];

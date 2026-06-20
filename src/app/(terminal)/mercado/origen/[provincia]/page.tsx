@@ -5,6 +5,7 @@ import marketPrices from '@/lib/data/market-prices.json'
 import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema, DatasetSchema } from '@/components/seo/JsonLd'
 import { AnswerBlock } from '@/components/seo/AnswerBlock'
 import { DataStamp } from '@/components/seo/DataStamp'
+import { PriceCTA } from '@/components/PriceCTA'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 
 /* ============================================================
@@ -214,6 +215,8 @@ export default async function OrigenProvinciaPage({ params }: { params: Promise<
             ))}
           </div>
         </div>
+
+        <PriceCTA />
 
         <ProvinceCluster province={config.name} />
 

@@ -5,6 +5,7 @@ import marketPrices from '@/lib/data/market-prices.json'
 import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { AnswerBlock } from '@/components/seo/AnswerBlock'
 import { DataStamp } from '@/components/seo/DataStamp'
+import { PriceCTA } from '@/components/PriceCTA'
 import { getQualitySegments, getQualitySegmentByParams, CABEZAS_INDEX_THRESHOLD } from '@/lib/data/quality-segments'
 
 /* ============================================================
@@ -156,6 +157,8 @@ export default async function QualitySegmentPage({
             ))}
           </div>
         </div>
+
+        <PriceCTA />
 
         <p className="text-sm text-zinc-400">
           <Link href={`/precios/${categoria}`} className="text-amber-500 hover:text-amber-400">

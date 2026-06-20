@@ -5,6 +5,7 @@ import marketPrices from '@/lib/data/market-prices.json'
 import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { AnswerBlock } from '@/components/seo/AnswerBlock'
 import { DataStamp } from '@/components/seo/DataStamp'
+import { PriceCTA } from '@/components/PriceCTA'
 
 /* ============================================================
    /precios/comparar/[par] — pairwise category comparison.
@@ -206,6 +207,8 @@ export default async function CompararPage({ params }: { params: Promise<{ par: 
             ))}
           </div>
         </div>
+
+        <PriceCTA />
 
         <p className="text-zinc-600 text-xxs text-center mt-6">
           Fuente: INMAG (Mercado Agroganadero) · Actualizado {lastUpdate}.
