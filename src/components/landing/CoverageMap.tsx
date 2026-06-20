@@ -94,11 +94,11 @@ export function CoverageMap({ counts }: { counts: Record<string, number> }) {
           <span className="text-sm text-zinc-500">provincias · {totalRemates} remates</span>
         </div>
         <div className="mt-4 rounded-lg border border-amber-500/25 bg-amber-500/[0.04] px-4 py-3">
-          <div className="text-sm font-medium text-zinc-100">{active.name}</div>
-          <div className="text-xs text-zinc-500">{active.count} remates indexados</div>
+          <div className="text-lg font-semibold text-zinc-100">{active.name}</div>
+          <div className="text-sm text-zinc-500">{active.count} remates indexados</div>
           <Link
             href={`/remates/${active.slug}`}
-            className="mt-1 inline-block text-xs font-medium text-amber-400 hover:text-amber-300"
+            className="mt-1.5 inline-block text-sm font-medium text-amber-400 hover:text-amber-300"
           >
             Ver remates en {active.name} →
           </Link>
