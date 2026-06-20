@@ -85,19 +85,20 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
     return (
       <div className="terminal-panel border-positive/30">
         <div className="px-panel py-6 text-center space-y-4">
-          <div className="text-positive text-lg font-terminal">🎉 ¡LISTO!</div>
-          
+          <div className="text-positive text-lg font-terminal">✓ SOLICITUD RECIBIDA</div>
+
           <p className="text-zinc-300 text-data font-terminal">
-            Tu perfil de <span className="text-zinc-100 font-semibold">{displayName}</span> está siendo activado.
+            Recibimos tu solicitud para <span className="text-zinc-100 font-semibold">{displayName}</span>.
           </p>
-          
+
           <div className="terminal-panel bg-zinc-900/50 px-4 py-3 space-y-2">
             <p className="text-zinc-200 text-data font-terminal">
-              📬 Revisá tu email:
+              📬 Te escribimos a:
             </p>
             <p className="text-accent font-terminal text-sm">{form.claimant_email}</p>
             <p className="text-zinc-500 text-xxs font-terminal">
-              El enlace de acceso llega en menos de 2 minutos.
+              Revisamos cada solicitud a mano para confirmar que sos de la consignataria.
+              Te avisamos por email cuando esté aprobado (normalmente dentro de las 24 hs hábiles).
             </p>
           </div>
           
@@ -131,7 +132,7 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
         <div className="flex items-center gap-2 px-3 py-2 bg-amber-500/5 border border-amber-500/20 rounded">
           <span className="text-amber-400">🏆</span>
           <span className="text-amber-300/90 text-xs font-terminal">
-            47 consignatarias ya administran su perfil gratis
+            Administrá tu perfil gratis: remates, datos y contacto al día
           </span>
         </div>
 

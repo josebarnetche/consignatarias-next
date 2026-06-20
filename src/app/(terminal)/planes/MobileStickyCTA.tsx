@@ -50,16 +50,16 @@ export default function MobileStickyCTA() {
       // Claimed consignataria + PRO check
       const { data: consig } = await supabase
         .from('consignatarias')
-        .select('canonical_slug, subscription_tier')
+        .select('canonical_slug')
         .eq('claimed_by_email', data.user.email)
         .maybeSingle()
 
-      const consigTier = (consig?.subscription_tier as string | undefined)?.toLowerCase()
       setUserState({
         email: data.user.email,
         isProUser,
         consignatariaSlug: consig?.canonical_slug ?? null,
-        isConsignatariaPro: consigTier === 'pro' || consigTier === 'enterprise',
+        // Entity-PRO is derived server-side; consignatarias.subscription_tier doesn't exist.
+        isConsignatariaPro: false,
       })
     })
 

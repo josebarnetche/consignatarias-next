@@ -24,18 +24,10 @@ export default function ProPlanStatus() {
         return
       }
       
-      // Check if user has a PRO consignataria
-      const { data: consig } = await supabase
-        .from('consignatarias')
-        .select('subscription_tier')
-        .eq('claimed_by_email', data.user.email)
-        .single()
-      
-      if (consig?.subscription_tier === 'PRO') {
-        setStatus('pro')
-      } else {
-        setStatus('not-pro')
-      }
+      // Entity-PRO is determined server-side (subscriptions table); the
+      // consignatarias.subscription_tier column does not exist, so this client
+      // widget defaults to not-pro (entity PRO is rare and gated server-side).
+      setStatus('not-pro')
     })
   }, [])
 

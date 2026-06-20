@@ -7,6 +7,35 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.36.0] — 2026-06-19
+
+### Fix del money-path: el comprador PRO ahora ve la confirmación (Wave A del debug del journey)
+
+Una auditoría del customer journey encontró que el embudo de pago no podía confirmar una venta:
+distintas superficies leían tablas/columnas equivocadas. Esta release arregla la mitad
+"después del webhook" (cuando el pago llega, el usuario lo ve bien). La verificación de la
+firma/secret de Rebill (para que el webhook llegue) es ops, aparte.
+
+- **PRO Usuario confirmable:** `/api/subscription-status` ahora consulta primero
+  `user_subscriptions` (tier=pro, activo, período vigente) — antes solo miraba la tabla de
+  entidad `subscriptions` y devolvía `no_entity` para un productor, así que la conversión
+  nunca se confirmaba.
+- **Estado "Activando tu PRO…":** nuevo componente que pollea la confirmación en `/cuenta`
+  cuando el webhook se demora respecto del redirect, y refresca al confirmar. El cartel
+  "Ya sos PRO / pago confirmado" ahora solo aparece cuando el tier es realmente PRO (antes
+  aparecía optimista). Saca el momento "pagué pero dice FREE".
+- **Columna muerta `consignatarias.subscription_tier`:** se eliminó de todas las queries
+  (no existía → erroreaba y nulificaba la card de consignataria en `/cuenta` y el estado de
+  `/planes`). El PRO de entidad ahora se deriva de la tabla `subscriptions` (server-side).
+- **Reclamo de perfil honesto:** el éxito ya no promete "acceso en 2 minutos" (la aprobación
+  es manual) — dice que revisamos a mano y avisamos por email; se quitó el número vanidad
+  "47 consignatarias"; la notificación al admin ahora se espera y loguea fallas (la revisión
+  manual no sirve si nadie se entera del reclamo).
+
+`tsc` 0, `pnpm build` limpio.
+
+---
+
 ## [1.35.0] — 2026-06-15
 
 ### "Owneá el INMAG": entidad + citabilidad sobre el término de mayor impresión

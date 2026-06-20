@@ -105,14 +105,20 @@ export async function POST(req: NextRequest) {
       console.error('Magic link send error:', e)
     }
 
-    // Notify admin (non-blocking) — admin can review and revoke if needed
-    sendClaimNotificationToAdmin(
-      consignataria.display_name,
-      consignataria_slug,
-      claimant_email,
-      claimant_name || undefined,
-      cuit || undefined,
-    )
+    // Notify admin so the MANUAL review actually happens. Awaited + logged so a
+    // missing RESEND key / send failure is VISIBLE in logs instead of silently
+    // dropping the claim into a black hole. Never fail the request — claim is saved.
+    try {
+      await sendClaimNotificationToAdmin(
+        consignataria.display_name,
+        consignataria_slug,
+        claimant_email,
+        claimant_name || undefined,
+        cuit || undefined,
+      )
+    } catch (e) {
+      console.error('[claims] admin notification FAILED — review pending claim manually:', consignataria_slug, e)
+    }
 
     return NextResponse.json(
       {

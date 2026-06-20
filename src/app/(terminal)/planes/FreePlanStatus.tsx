@@ -30,20 +30,17 @@ export default function FreePlanStatus() {
       // Check if user has a claimed consignataria
       const { data: consig } = await supabase
         .from('consignatarias')
-        .select('canonical_slug, subscription_tier')
+        .select('canonical_slug')
         .eq('claimed_by_email', data.user.email)
-        .single()
-      
+        .maybeSingle()
+
       if (!consig) {
         setStatus('no-consig')
         return
       }
-      
-      if (consig.subscription_tier === 'PRO') {
-        setStatus('pro')
-      } else {
-        setStatus('free')
-      }
+      // Entity-PRO is determined server-side (subscriptions table); the
+      // consignatarias.subscription_tier column does not exist. Default to free.
+      setStatus('free')
     })
   }, [])
 

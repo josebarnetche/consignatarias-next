@@ -6,6 +6,7 @@ import { requireServiceClient } from '@/lib/supabase'
 import { CancelButton } from './CancelButton'
 import { SignOutButton } from './SignOutButton'
 import { UpgradeConfirmTracker } from '@/components/UpgradeConfirmTracker'
+import { UpgradeActivating } from '@/components/UpgradeActivating'
 
 export const metadata: Metadata = {
   title: 'Tu cuenta',
@@ -33,15 +34,26 @@ export default async function CuentaPage({ searchParams }: PageProps) {
     .eq('user_id', user.id)
     .maybeSingle()
 
-  // Claimed consignataria + its subscription tier
+  // Claimed consignataria. Entity-PRO lives in the `subscriptions` table — NOT a
+  // `consignatarias.subscription_tier` column (that column does not exist; selecting
+  // it errored and silently nulled the whole consignataria card).
   const { data: consig } = await service
     .from('consignatarias')
-    .select('canonical_slug, display_name, subscription_tier')
+    .select('canonical_slug, display_name')
     .eq('claimed_by_email', user.email)
     .maybeSingle()
-  const consigTier = (consig?.subscription_tier as string | undefined)?.toLowerCase()
   const hasConsignataria = !!consig
-  const isConsigPro = consigTier === 'pro' || consigTier === 'enterprise'
+  let isConsigPro = false
+  if (consig) {
+    const { data: entitySub } = await service
+      .from('subscriptions')
+      .select('status')
+      .eq('entity_type', 'consignataria')
+      .eq('entity_slug', consig.canonical_slug)
+      .in('status', ['active', 'past_due'])
+      .maybeSingle()
+    isConsigPro = !!entitySub
+  }
 
   const apiTier = (sub?.api_tier as string | undefined) ?? 'none'
   const hasEnterprise = apiTier !== 'none'
@@ -62,7 +74,10 @@ export default async function CuentaPage({ searchParams }: PageProps) {
         price={7900}
         dedupeId={sub?.rebill_subscription_id ?? null}
       />
-      {justUpgraded && (
+      {/* Webhook may lag the redirect: show "activando" + poll until the DB confirms PRO,
+          and only show the "Ya sos PRO / pago confirmado" banner once tier is really pro. */}
+      {justUpgraded && !isProUser && <UpgradeActivating />}
+      {justUpgraded && isProUser && (
         <div className="mb-8 relative overflow-hidden rounded-2xl border border-emerald-500/40 bg-gradient-to-b from-emerald-500/10 to-zinc-900/40 p-6">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />
           <div className="relative">
@@ -197,7 +212,7 @@ export default async function CuentaPage({ searchParams }: PageProps) {
         >
           <div className="flex items-center justify-between mb-1">
             <span className="text-xxs font-mono uppercase tracking-widest text-zinc-500">
-              Consignataria · {isConsigPro ? (consigTier?.toUpperCase()) : 'FREE'}
+              Consignataria · {isConsigPro ? 'PRO' : 'FREE'}
             </span>
             <span className="text-zinc-500 text-xs font-mono">→</span>
           </div>

@@ -14,6 +14,24 @@ export async function GET() {
 
   const service = requireServiceClient()
 
+  // PRO Usuario (productor/contador/broker) — paid tier lives in user_subscriptions.
+  // Check this FIRST: a normal buyer has no consignataria, so the entity check below
+  // would (wrongly) return no_entity and the dashboard/cuenta poll would never confirm.
+  const { data: userSub } = await service
+    .from('user_subscriptions')
+    .select('tier, status, current_period_end')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  const userSubActive =
+    userSub?.tier === 'pro' &&
+    ['active', 'past_due'].includes(userSub.status) &&
+    (!userSub.current_period_end || new Date(userSub.current_period_end) > new Date())
+
+  if (userSubActive) {
+    return NextResponse.json({ status: 'active', plan: 'PRO_USER', periodEnd: userSub!.current_period_end })
+  }
+
   const { data: consignataria } = await service
     .from('consignatarias')
     .select('canonical_slug')
