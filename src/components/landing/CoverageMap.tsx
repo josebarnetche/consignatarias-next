@@ -34,13 +34,13 @@ const COVERED: Node[] = [
   { slug: 'la-pampa', name: 'La Pampa', x: 88, y: 202 },
 ]
 
-// Faint, non-interactive context so the cluster reads as Argentina.
-const CONTEXT: { x: number; y: number; r: number }[] = [
-  { x: 62, y: 22, r: 5 }, { x: 78, y: 48, r: 7 }, { x: 80, y: 75, r: 5 },
-  { x: 60, y: 96, r: 5 }, { x: 55, y: 120, r: 6 }, { x: 45, y: 142, r: 5 },
-  { x: 42, y: 176, r: 7 }, { x: 50, y: 216, r: 7 }, { x: 78, y: 246, r: 8 },
-  { x: 66, y: 286, r: 8 }, { x: 60, y: 330, r: 8 }, { x: 78, y: 366, r: 5 },
-]
+// Stylized (low-poly) Argentina silhouette, same 200×384 coordinate space as the
+// province nodes. The covered provinces sit on it; the dark, dot-less south reads as
+// "país sí, cobertura no" — and the landmass makes the dots read as a map, not a scatter.
+const SILHOUETTE =
+  'M58,18 L90,22 L115,28 L135,32 L160,48 L180,58 L168,72 L162,95 L165,130 L160,165 ' +
+  'L150,200 L135,225 L110,235 L95,255 L90,285 L82,315 L78,345 L72,372 L60,350 ' +
+  'L52,315 L50,285 L45,250 L38,210 L40,180 L45,150 L50,110 L52,70 Z'
 
 export function CoverageMap({ counts }: { counts: Record<string, number> }) {
   const withCounts = COVERED.map((n) => ({ ...n, count: counts[n.slug] ?? 0 }))
@@ -52,15 +52,13 @@ export function CoverageMap({ counts }: { counts: Record<string, number> }) {
   return (
     <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-center sm:gap-8">
       <svg
-        viewBox="0 0 200 384"
+        viewBox="34 10 152 370"
         className="h-[300px] w-auto shrink-0 sm:h-[360px]"
         role="img"
         aria-label={`Mapa de cobertura: ${withCounts.length} provincias con remates`}
       >
-        {/* Context provinces — faint */}
-        {CONTEXT.map((c, i) => (
-          <circle key={`ctx-${i}`} cx={c.x} cy={c.y} r={c.r} fill="#27272a" />
-        ))}
+        {/* Argentina silhouette — faint landmass behind the province nodes */}
+        <path d={SILHOUETTE} fill="#17171a" stroke="#2a2a30" strokeWidth={1} />
         {/* Covered provinces — amber, sized by activity, clickable */}
         {withCounts.map((n) => {
           const r = radius(n.count)
