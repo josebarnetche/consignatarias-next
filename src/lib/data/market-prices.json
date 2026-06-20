@@ -1792,43 +1792,43 @@
   },
   "categories": {
     "novillos": {
-      "current": 4393.32,
+      "current": 4282.95,
       "prev": 4393.32,
-      "change": 0,
+      "change": -2.5,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 465
+      "latestVolume": 804
     },
     "novillitos": {
-      "current": 4991.33,
+      "current": 4627.13,
       "prev": 4991.33,
-      "change": 0,
+      "change": -7.3,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 66
+      "latestVolume": 673
     },
     "vaquillonas": {
-      "current": 4380.01,
+      "current": 4205.39,
       "prev": 4380.01,
-      "change": 0,
+      "change": -4,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 497
+      "latestVolume": 784
     },
     "vacas": {
-      "current": 2965.77,
+      "current": 2572.24,
       "prev": 2965.77,
-      "change": 0,
+      "change": -13.3,
       "source": "mercadoagroganadero.com.ar (observed)",
-      "latestVolume": 427
+      "latestVolume": 2375
     },
     "toros": {
-      "current": 3135.26,
+      "current": 2713.6,
       "prev": 3135.26,
-      "change": 0,
+      "change": -13.4,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 51
+      "latestVolume": 223
     },
     "terneros": {
       "current": 4712,
@@ -1858,7 +1858,7 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-06-19",
+  "lastUpdate": "2026-06-20",
   "provinceEntry": {
     "date": "2026-06-19",
     "totalCabezas": 4947,
