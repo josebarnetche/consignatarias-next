@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { TrendingUp, Calendar } from 'lucide-react';
 import monthlyData from '@/lib/data/market-monthly.json';
+import { PriceLineChart, type PricePoint } from '@/components/charts/PriceLineChart';
 
 interface SeriesPoint {
   period: string;
@@ -21,18 +22,6 @@ function fmt(n: number, decimals = 0): string {
   });
 }
 
-function formatPeriod(period: string): string {
-  const [year, month] = period.split('-');
-  const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-  return `${months[parseInt(month) - 1]} ${year.slice(2)}`;
-}
-
-function barHeight(value: number, min: number, max: number): number {
-  if (max === min) return 100;
-  const ratio = (value - min) / (max - min);
-  return Math.round(10 + ratio * 90); // 10% min, 100% max
-}
-
 type TimeRange = '1y' | '2y' | '3y';
 
 export function LongTermChart() {
@@ -40,7 +29,12 @@ export function LongTermChart() {
   
   const rangeMonths = range === '1y' ? 12 : range === '2y' ? 24 : 36;
   const displaySeries = series.slice(-rangeMonths);
-  
+
+  const chartData: PricePoint[] = displaySeries.map((s) => ({
+    date: `${s.period}-01`,
+    value: s.value,
+  }));
+
   const displayMax = Math.max(...displaySeries.map(s => s.value));
   const displayMin = Math.min(...displaySeries.map(s => s.value));
   
@@ -108,48 +102,14 @@ export function LongTermChart() {
           </div>
         </div>
 
-        {/* Bar chart */}
-        <div className="font-terminal text-data leading-tight">
-          <div className="flex items-end gap-px mb-2" style={{ height: '140px' }}>
-            {displaySeries.map((pt, i) => {
-              const h = barHeight(pt.value, displayMin, displayMax);
-              const isLast = i === displaySeries.length - 1;
-              return (
-                <div
-                  key={pt.period}
-                  className="group relative flex-1 min-w-0 rounded-t-sm transition-all hover:opacity-80"
-                  style={{
-                    height: `${h}%`,
-                    background: isLast 
-                      ? 'linear-gradient(to top, #d97706, #fbbf24)' 
-                      : 'linear-gradient(to top, #3f3f46, #52525b)',
-                  }}
-                >
-                  {/* Tooltip on hover */}
-                  <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-zinc-900 border border-zinc-700 text-zinc-200 text-xxs tabular-nums px-2 py-1 rounded whitespace-nowrap z-10">
-                    <span className="text-amber-400">{formatPeriod(pt.period)}</span>: ${fmt(pt.value, 2)}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-          
-          {/* Year labels */}
-          <div className="flex gap-px text-xxs text-zinc-500 border-t border-zinc-800 pt-2">
-            {displaySeries.map((pt, i) => {
-              // Show label only at year boundaries or first/last
-              const showLabel = i === 0 || 
-                i === displaySeries.length - 1 || 
-                pt.period.endsWith('-01') ||
-                pt.period.endsWith('-07');
-              return (
-                <div key={pt.period} className="flex-1 min-w-0 text-center truncate">
-                  {showLabel ? formatPeriod(pt.period) : ''}
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        {/* Gráfico de línea interactivo: escala completa + tooltip precio/fecha */}
+        <PriceLineChart
+          data={chartData}
+          height={160}
+          accentColor="#fbbf24"
+          decimals={2}
+          prefix="$"
+        />
 
         {/* Context */}
         <div className="mt-4 pt-4 border-t border-zinc-800">

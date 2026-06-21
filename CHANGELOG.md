@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.41.1] — 2026-06-21
+
+### /overview reorganizado + gráficos de mercado interactivos
+
+- **Gráfico INMAG arreglado** (no mostraba nada): el "Tendencia 8 Semanas" renderizaba **356 puntos diarios como 356 barras `flex` sub-pixel** → una mancha verde sin forma (y el título "8 semanas" era falso). Reemplazado por un gráfico de línea interactivo con la serie completa.
+- **/overview reorganizado**: del grid denso de 2-3 columnas a **4 secciones verticales con jerarquía clara** (snapshot de mercado · tendencia INMAG · remates · accesos). Mismo dato, sin caos, sin emojis.
+- **Gráficos de mercado interactivos**: nuevo `PriceLineChart` reusable (SVG, sin dependencias de red) con **escala Y completa** y **tooltip al hover (precio + fecha)**. Aplicado a overview, `/mercado`, `/mercado/[categoria]` y el LongTermChart; `/mercado/inmag` y `/mercado/arrendamiento` ya eran interactivos.
+
 ## [1.41.0] — 2026-06-21
 
 ### Sistema interno de conteo de eventos de valor

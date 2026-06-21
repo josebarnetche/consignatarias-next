@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState, useCallback } from 'react'
 import marketData from '@/lib/data/market-prices.json'
 
 /* ==================================================================
@@ -46,6 +46,14 @@ function fmtDate(iso: string): string {
   return `${months[parseInt(m, 10) - 1]} ${y.slice(2)}`
 }
 
+/** Fecha completa para el tooltip: "2026-06-19" -> "19 Jun 26". */
+function fmtDateFull(iso: string): string {
+  const [y, m, d] = iso.split('-')
+  const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+  if (!y || !m || !d) return iso
+  return `${d} ${months[parseInt(m, 10) - 1]} ${y.slice(2)}`
+}
+
 interface CategoryPriceHistoryProps {
   category: string
   /** Precio actual observado de la categoría ($/kg vivo). */
@@ -54,6 +62,8 @@ interface CategoryPriceHistoryProps {
 
 export function CategoryPriceHistory({ category, currentPrice }: CategoryPriceHistoryProps) {
   const [range, setRange] = useState<RangeKey>('12m')
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null)
+  const svgRef = useRef<SVGSVGElement>(null)
 
   const inmagSeries = marketData.inmag.series as SeriesPoint[]
   const inmagCurrent = marketData.inmag.current
@@ -109,6 +119,27 @@ export function CategoryPriceHistory({ category, currentPrice }: CategoryPriceHi
     return { pts, line, area, lo, hi }
   }, [series, stats])
 
+  const handleMove = useCallback(
+    (e: React.MouseEvent<SVGSVGElement>) => {
+      if (!svgRef.current || !geo || geo.pts.length === 0) return
+      const rect = svgRef.current.getBoundingClientRect()
+      const ratio = (e.clientX - rect.left) / rect.width
+      const x = ratio * 100
+      let closest = 0
+      let dist = Infinity
+      geo.pts.forEach((p, i) => {
+        const dd = Math.abs(p.x - x)
+        if (dd < dist) {
+          dist = dd
+          closest = i
+        }
+      })
+      setHoverIdx(closest)
+    },
+    [geo]
+  )
+  const handleLeave = useCallback(() => setHoverIdx(null), [])
+
   if (!stats || !geo) {
     return (
       <div className="terminal-panel p-4">
@@ -120,6 +151,9 @@ export function CategoryPriceHistory({ category, currentPrice }: CategoryPriceHi
   const isUp = stats.change >= 0
   const rangeLabel = RANGES.find((r) => r.key === range)?.label ?? ''
   const lastPoint = geo.pts[geo.pts.length - 1]
+  const hovered =
+    hoverIdx !== null && hoverIdx < geo.pts.length ? geo.pts[hoverIdx] : null
+  const tipLeftPct = hovered ? hovered.x : 0
 
   return (
     <div className="terminal-panel">
@@ -172,7 +206,29 @@ export function CategoryPriceHistory({ category, currentPrice }: CategoryPriceHi
             ${fmt(stats.min)}
           </div>
 
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
+          {/* Tooltip al hover: precio + fecha */}
+          {hovered && (
+            <div
+              className="absolute top-0 z-20 -translate-x-1/2 pointer-events-none"
+              style={{ left: `clamp(54px, ${tipLeftPct}%, calc(100% - 54px))` }}
+            >
+              <div className="bg-zinc-900/95 border border-zinc-700 rounded-terminal px-2 py-1 shadow-lg whitespace-nowrap">
+                <div className="text-xxs text-zinc-400 font-terminal">{fmtDateFull(hovered.date)}</div>
+                <div className="text-data font-terminal tabular-nums text-zinc-100 font-semibold">
+                  ${fmt(hovered.value)}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <svg
+            ref={svgRef}
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            className="w-full h-full cursor-crosshair"
+            onMouseMove={handleMove}
+            onMouseLeave={handleLeave}
+          >
             <defs>
               <linearGradient id={`catArea-${category}`} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#34d399" stopOpacity="0.28" />
@@ -199,8 +255,26 @@ export function CategoryPriceHistory({ category, currentPrice }: CategoryPriceHi
               vectorEffect="non-scaling-stroke"
             />
 
-            {/* Punto final */}
-            <circle cx={lastPoint.x} cy={lastPoint.y} r="2.2" fill="#34d399" vectorEffect="non-scaling-stroke" />
+            {/* Línea vertical de hover */}
+            {hovered && (
+              <line
+                x1={hovered.x}
+                y1={0}
+                x2={hovered.x}
+                y2={100}
+                stroke="rgba(255,255,255,0.18)"
+                strokeWidth="1"
+                strokeDasharray="2,3"
+                vectorEffect="non-scaling-stroke"
+              />
+            )}
+
+            {/* Punto: hover o final */}
+            {hovered ? (
+              <circle cx={hovered.x} cy={hovered.y} r="2.6" fill="#34d399" stroke="#0a0a0f" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+            ) : (
+              <circle cx={lastPoint.x} cy={lastPoint.y} r="2.2" fill="#34d399" vectorEffect="non-scaling-stroke" />
+            )}
           </svg>
         </div>
 

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
+import { PriceLineChart, type PricePoint } from '@/components/charts/PriceLineChart'
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -25,33 +26,6 @@ function fmt(n: number, decimals = 0): string {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   })
-}
-
-/** Short date label from ISO string: "2026-01-05" -> "E05" */
-function shortDate(iso: string): string {
-  const monthMap: Record<string, string> = {
-    '01': 'E',
-    '02': 'F',
-    '03': 'M',
-    '04': 'A',
-    '05': 'M',
-    '06': 'J',
-    '07': 'J',
-    '08': 'A',
-    '09': 'S',
-    '10': 'O',
-    '11': 'N',
-    '12': 'D',
-  }
-  const parts = iso.split('-')
-  return (monthMap[parts[1]] ?? '?') + parts[2]
-}
-
-/** Compute CSS bar height (4–120 px) proportional to value within [min, max] */
-function barHeight(value: number, min: number, max: number): number {
-  if (max === min) return 120
-  const ratio = (value - min) / (max - min)
-  return Math.round(4 + ratio * 116) // 4px min, 120px max
 }
 
 /** Format the lastUpdate timestamp: "2026-02-26T14:00:00-03:00" -> "26 FEB 14h" */
@@ -85,9 +59,8 @@ const categoryRows = Object.entries(categories)
 
 const maxCategoryPrice = Math.max(...categoryRows.map((c) => c.current))
 
-// Series min/max for the spark chart
-const seriesMin = Math.min(...series.map((s) => s.value))
-const seriesMax = Math.max(...series.map((s) => s.value))
+// Datos para el gráfico de línea interactivo (precio + fecha en hover)
+const inmagChartData: PricePoint[] = series.map((s) => ({ date: s.date, value: s.value }))
 
 /* ------------------------------------------------------------------ */
 /*  Page component (Server Component)                                  */
@@ -133,46 +106,14 @@ export default function MercadoPage() {
               <span className="text-xxs text-zinc-500">vs ant.</span>
             </div>
 
-            {/* CSS bar chart */}
-            <div className="font-terminal text-data leading-tight">
-              {/* Bar columns */}
-              <div className="flex items-end gap-px mb-1" style={{ height: '120px' }}>
-                {series.map((pt) => {
-                  const h = barHeight(pt.value, seriesMin, seriesMax)
-                  return (
-                    <div
-                      key={pt.date}
-                      className="group relative flex-1 min-w-0 rounded-t-sm transition-opacity hover:opacity-80"
-                      style={{
-                        height: `${h}px`,
-                        background: 'linear-gradient(to top, #059669, #34d399)',
-                      }}
-                    >
-                      {/* Tooltip on hover */}
-                      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-zinc-900 border border-zinc-700 text-zinc-200 text-xxs tabular-nums px-1.5 py-0.5 rounded whitespace-nowrap z-10">
-                        {fmt(pt.value, 0)}
-                      </span>
-                    </div>
-                  )
-                })}
-              </div>
-              {/* Date labels */}
-              <div className="flex gap-px text-xxs text-zinc-500">
-                {series.map((pt) => (
-                  <div key={pt.date} className="flex-1 min-w-0 text-center truncate">
-                    {shortDate(pt.date)}
-                  </div>
-                ))}
-              </div>
-              {/* Value labels */}
-              <div className="flex gap-px text-xxs text-zinc-700 mt-px">
-                {series.map((pt) => (
-                  <div key={pt.date} className="flex-1 min-w-0 text-center tabular-nums truncate">
-                    {Math.round(pt.value / 100)}
-                  </div>
-                ))}
-              </div>
-            </div>
+            {/* Gráfico de línea interactivo: escala completa + tooltip precio/fecha */}
+            <PriceLineChart
+              data={inmagChartData}
+              height={140}
+              accentColor="#34d399"
+              decimals={0}
+              prefix="$"
+            />
             {/* Link to detailed INMAG page */}
             <div className="mt-3 pt-3 border-t border-zinc-800">
               <Link href="/mercado/inmag" className="text-amber-400 hover:text-amber-300 text-sm flex items-center gap-1">

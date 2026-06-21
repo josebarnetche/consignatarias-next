@@ -3,6 +3,7 @@ import marketPrices from "@/lib/data/market-prices.json";
 import rematesData from "@/lib/data/remates.json";
 import consignatariasData from "@/lib/data/consignatarias.json";
 import { normalizeUrl } from "@/lib/utils/url";
+import { PriceLineChart, type PricePoint } from "@/components/charts/PriceLineChart";
 
 /* ================================================================== */
 /*  HELPER: format number with locale                                  */
@@ -18,9 +19,9 @@ function fmt(n: number, decimals = 0): string {
 /*  HELPER: change arrow + class                                       */
 /* ================================================================== */
 function changeArrow(change: number): { arrow: string; cls: string } {
-  if (change > 0) return { arrow: "\u25B2", cls: "val-positive glow-positive" };
-  if (change < 0) return { arrow: "\u25BC", cls: "val-negative glow-negative" };
-  return { arrow: "\u25CF", cls: "val-neutral" };
+  if (change > 0) return { arrow: "▲", cls: "val-positive glow-positive" };
+  if (change < 0) return { arrow: "▼", cls: "val-negative glow-negative" };
+  return { arrow: "●", cls: "val-neutral" };
 }
 
 /* ================================================================== */
@@ -55,13 +56,23 @@ const categoryLabels: Record<string, string> = {
   terneros: "Terneros",
 };
 
-// INMAG sparkline data
-const inmagSeries = marketPrices.inmag.series.map(
-  (pt: { date: string; value: number }) => pt.value
-);
-const inmagSeriesMin = Math.min(...inmagSeries);
-const inmagSeriesMax = Math.max(...inmagSeries);
-const inmagSeriesRange = inmagSeriesMax - inmagSeriesMin || 1;
+// INMAG trend: full daily series for the interactive chart + derived stats.
+const inmagRawSeries = marketPrices.inmag.series as { date: string; value: number }[];
+const inmagChartData: PricePoint[] = inmagRawSeries.map((pt) => ({
+  date: pt.date,
+  value: pt.value,
+}));
+const inmagValues = inmagRawSeries.map((pt) => pt.value);
+const inmagFirstVal = inmagValues[0];
+const inmagLastVal = inmagValues[inmagValues.length - 1];
+const inmagTrendChangePct =
+  inmagFirstVal > 0 ? ((inmagLastVal - inmagFirstVal) / inmagFirstVal) * 100 : 0;
+const inmagTrendAbs = inmagLastVal - inmagFirstVal;
+const inmagTrendMean =
+  inmagValues.reduce((a, b) => a + b, 0) / inmagValues.length;
+const inmagTrendUp = inmagTrendChangePct >= 0;
+const inmagFromDate = inmagRawSeries[0]?.date ?? "";
+const inmagToDate = inmagRawSeries[inmagRawSeries.length - 1]?.date ?? "";
 
 // Consignatarias summary
 const consigByProvince = consignatariasData.reduce<Record<string, number>>(
@@ -169,21 +180,21 @@ export default function HomePage() {
             REMATES HOY
           </span>
           <span className="text-warning font-semibold">{rematesToday.length}</span>
-
         </div>
       </div>
 
       {/* ============================================================ */}
-      {/*  MAIN 3-COLUMN GRID                                           */}
+      {/*  PAGE BODY -- vertical sections, clear hierarchy              */}
       {/* ============================================================ */}
-      <div className="terminal-grid grid-cols-1 md:grid-cols-2 flex-1 min-h-0">
-        {/* ----------------------------------------------------------
-            COLUMN 1: MERCADO
-        ---------------------------------------------------------- */}
-        <div className="terminal-panel flex flex-col">
+      <div className="flex flex-col gap-px flex-1 min-h-0">
+
+        {/* ========================================================== */}
+        {/*  SECTION 1 — SNAPSHOT DE MERCADO                            */}
+        {/* ========================================================== */}
+        <section className="terminal-panel">
           <div className="terminal-panel-header flex items-center justify-between">
             <span className="font-heading section-heading flex items-center gap-2">
-              Mercado
+              Snapshot de mercado
               {rematesToday.length > 0 && <span className="live-indicator" />}
             </span>
             {rematesToday.length > 0 ? (
@@ -197,31 +208,69 @@ export default function HomePage() {
               </span>
             )}
           </div>
-          <div className="terminal-panel-body flex-1 flex flex-col gap-3">
-            {/* INMAG hero stat */}
-            <div className="flex items-baseline gap-3">
-              <div className="terminal-stat">
+
+          <div className="terminal-panel-body">
+            {/* Hero row: INMAG + maíz + USD, side by side, breathing room */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+              {/* INMAG hero */}
+              <div className="sm:col-span-1">
                 <span className="terminal-stat-label">INMAG $/kg vivo</span>
-                <span className="terminal-stat-value text-3xl text-zinc-50 stat-countup">
-                  {fmt(inmag.current)}
-                </span>
-              </div>
-              <div className="flex flex-col items-end">
-                <span
-                  className={
-                    changeArrow(inmag.change).cls +
-                    " text-sm font-terminal tabular-nums font-semibold"
-                  }
-                >
-                  {changeArrow(inmag.change).arrow} {fmt(inmag.change, 1)}%
-                </span>
+                <div className="flex items-baseline gap-2">
+                  <span className="terminal-stat-value text-3xl text-zinc-50 stat-countup tabular-nums">
+                    {fmt(inmag.current)}
+                  </span>
+                  <span
+                    className={
+                      changeArrow(inmag.change).cls +
+                      " text-sm font-terminal tabular-nums font-semibold"
+                    }
+                  >
+                    {changeArrow(inmag.change).arrow} {fmt(inmag.change, 1)}%
+                  </span>
+                </div>
                 <span className="text-xxs text-zinc-500 tabular-nums">
                   ant. {fmt(inmag.prev)}
                 </span>
               </div>
+
+              {/* Maíz */}
+              <div className="sm:border-l sm:border-terminal-border sm:pl-6">
+                <span className="terminal-stat-label">Maíz USD/tn</span>
+                <div className="flex items-baseline gap-2">
+                  <span className="terminal-stat-value text-xl tabular-nums">
+                    {fmt(corn.current, 1)}
+                  </span>
+                  <span
+                    className={
+                      changeArrow(corn.change).cls + " text-xxs tabular-nums"
+                    }
+                  >
+                    {changeArrow(corn.change).arrow}
+                    {fmt(corn.change, 1)}%
+                  </span>
+                </div>
+              </div>
+
+              {/* USD Blue */}
+              <div className="sm:border-l sm:border-terminal-border sm:pl-6">
+                <span className="terminal-stat-label">USD Blue</span>
+                <div className="flex items-baseline gap-2">
+                  <span className="terminal-stat-value text-xl tabular-nums">
+                    {fmt(usd.current)}
+                  </span>
+                  <span
+                    className={
+                      changeArrow(usd.change).cls + " text-xxs tabular-nums"
+                    }
+                  >
+                    {changeArrow(usd.change).arrow}
+                    {fmt(usd.change, 1)}%
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div className="terminal-divider" />
+            <div className="terminal-divider my-4" />
 
             {/* Categories table */}
             <table className="terminal-table">
@@ -273,72 +322,82 @@ export default function HomePage() {
                 })}
               </tbody>
             </table>
+          </div>
+        </section>
 
-            <div className="terminal-divider-dashed" />
+        {/* ========================================================== */}
+        {/*  SECTION 2 — TENDENCIA INMAG (gráfico interactivo)          */}
+        {/* ========================================================== */}
+        <section className="terminal-panel">
+          <div className="terminal-panel-header flex items-center justify-between">
+            <span className="font-heading section-heading">
+              Tendencia INMAG
+            </span>
+            <span className="text-xxs text-zinc-500 tabular-nums">
+              {inmagFromDate} &mdash; {inmagToDate}
+            </span>
+          </div>
+          <div className="terminal-panel-body">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-6">
+              {/* Interactive line chart with full scale + hover tooltip */}
+              <div className="flex-1 min-w-0">
+                <PriceLineChart
+                  data={inmagChartData}
+                  height={200}
+                  accentColor="#34d399"
+                  decimals={0}
+                  prefix="$"
+                />
+              </div>
 
-            {/* Corn + USD */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="terminal-stat">
-                <span className="terminal-stat-label">Maiz USD/tn</span>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="terminal-stat-value text-base">
-                    {fmt(corn.current, 1)}
-                  </span>
+              {/* Summary column */}
+              <div className="flex-shrink-0 flex md:flex-col items-start md:items-end gap-4 md:gap-3 md:pl-6 pt-3 md:pt-0 border-t md:border-t-0 md:border-l border-terminal-border">
+                <div className="terminal-stat md:items-end">
+                  <span className="terminal-stat-label md:text-right">Var. periodo</span>
                   <span
                     className={
-                      changeArrow(corn.change).cls + " text-xxs tabular-nums"
+                      "terminal-stat-value text-lg tabular-nums " +
+                      (inmagTrendUp
+                        ? "val-positive glow-positive"
+                        : "val-negative glow-negative")
                     }
                   >
-                    {changeArrow(corn.change).arrow}
-                    {fmt(corn.change, 1)}%
+                    {inmagTrendUp ? "+" : ""}
+                    {fmt(inmagTrendChangePct, 1)}%
                   </span>
                 </div>
-              </div>
-              <div className="terminal-stat">
-                <span className="terminal-stat-label">USD Blue</span>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="terminal-stat-value text-base">
-                    {fmt(usd.current)}
+                <div className="terminal-stat md:items-end">
+                  <span className="terminal-stat-label md:text-right">Abs.</span>
+                  <span className="text-data text-zinc-300 tabular-nums">
+                    {inmagTrendAbs >= 0 ? "+" : ""}
+                    {fmt(inmagTrendAbs)} $/kg
                   </span>
-                  <span
-                    className={
-                      changeArrow(usd.change).cls + " text-xxs tabular-nums"
-                    }
-                  >
-                    {changeArrow(usd.change).arrow}
-                    {fmt(usd.change, 1)}%
+                </div>
+                <div className="terminal-stat md:items-end">
+                  <span className="terminal-stat-label md:text-right">Media</span>
+                  <span className="text-data text-zinc-300 tabular-nums">
+                    {fmt(inmagTrendMean)}
                   </span>
                 </div>
               </div>
             </div>
-
-            {/* Consignatarias quick stat */}
-            <div className="terminal-divider-dashed" />
-            <div className="flex items-center justify-between text-xxs">
-              <span className="text-zinc-500 uppercase tracking-wider">
-                Consignatarias registradas
-              </span>
-              <span className="text-zinc-300 tabular-nums font-semibold">
-                {consignatariasData.length}
-              </span>
-            </div>
-            <div className="flex items-center justify-between text-xxs">
-              <span className="text-zinc-500 uppercase tracking-wider">
-                Provincias c/ consignatarias
-              </span>
-              <span className="text-zinc-300 tabular-nums font-semibold">
-                {consigProvinceCount}
-              </span>
+            <div className="mt-3 pt-3 border-t border-terminal-border">
+              <Link
+                href="/mercado/inmag"
+                className="text-xxs text-accent uppercase tracking-wider hover:text-accent-bright transition-colors"
+              >
+                Análisis detallado INMAG &rarr;
+              </Link>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* ----------------------------------------------------------
-            COLUMN 2: REMATES PROXIMOS
-        ---------------------------------------------------------- */}
-        <div className="terminal-panel flex flex-col">
+        {/* ========================================================== */}
+        {/*  SECTION 3 — REMATES PROXIMOS                               */}
+        {/* ========================================================== */}
+        <section className="terminal-panel">
           <div className="terminal-panel-header flex items-center justify-between">
-            <span className="font-heading section-heading">Remates Proximos</span>
+            <span className="font-heading section-heading">Remates proximos</span>
             <div className="flex items-center gap-2">
               {rematesToday.length > 0 && (
                 <span className="terminal-tag-live text-xxs">
@@ -351,9 +410,9 @@ export default function HomePage() {
               </span>
             </div>
           </div>
-          <div className="terminal-panel-body flex-1 flex flex-col">
+          <div className="terminal-panel-body">
             {/* Summary strip */}
-            <div className="flex items-center gap-4 mb-2">
+            <div className="flex items-center gap-6 mb-3">
               <div className="terminal-stat">
                 <span className="terminal-stat-label">Cab. programadas</span>
                 <span className="terminal-stat-value text-base text-warning tabular-nums">
@@ -368,7 +427,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="terminal-divider" />
+            <div className="terminal-divider mb-1" />
 
             {/* Next 5 auctions -- compact list with row-enter animation */}
             <div className="space-y-0">
@@ -401,7 +460,7 @@ export default function HomePage() {
                       )}
                     </span>
                     <span className="w-[38px] flex-shrink-0 text-data font-terminal text-zinc-500 tabular-nums">
-                      {r.time ?? '\u2014'}
+                      {r.time ?? '—'}
                     </span>
                     <span className="flex-1 min-w-0 text-data font-terminal text-zinc-200 truncate group-hover:text-accent transition-colors" title={r.consignatariaName}>
                       {r.consignatariaName}
@@ -420,7 +479,7 @@ export default function HomePage() {
             {/* Today's detail */}
             {rematesToday.length > 0 && (
               <>
-                <div className="terminal-divider-dashed mt-2" />
+                <div className="terminal-divider-dashed mt-3" />
                 <div className="mt-2">
                   <span className="text-xxs text-zinc-500 uppercase tracking-wider">
                     Detalle remates hoy ({TODAY.split('-').reverse().join('/')})
@@ -434,10 +493,10 @@ export default function HomePage() {
                         {r.title}
                       </div>
                       <div className="text-xxs text-zinc-400">
-                        {r.time ? `${r.time} \u2014 ` : ''}{r.location}
+                        {r.time ? `${r.time} — ` : ''}{r.location}
                         {r.estimatedHeads != null && (
                           <>
-                            {' \u2014 '}
+                            {' — '}
                             <span className="text-warning tabular-nums">
                               {fmt(r.estimatedHeads)} cab.
                             </span>
@@ -451,124 +510,73 @@ export default function HomePage() {
             )}
 
             {/* Link to full list */}
-            <div className="mt-auto pt-3">
+            <div className="mt-3 pt-3 border-t border-terminal-border">
               <Link
                 href="/remates"
                 className="text-xxs text-accent uppercase tracking-wider hover:text-accent-bright transition-colors"
               >
-                VER TODOS LOS REMATES &rarr;
+                Ver todos los remates &rarr;
               </Link>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* ============================================================ */}
-      {/*  BOTTOM: INMAG TENDENCIA -- CSS gradient bar chart             */}
-      {/* ============================================================ */}
-      <div className="terminal-panel border-t border-terminal-border">
-        <div className="terminal-panel-header flex items-center justify-between">
-          <span className="font-heading section-heading">INMAG Tendencia 8 Semanas</span>
-          <span className="text-xxs text-zinc-500 tabular-nums">
-            {marketPrices.inmag.series[0].date} &mdash;{" "}
-            {
-              marketPrices.inmag.series[marketPrices.inmag.series.length - 1]
-                .date
-            }
-          </span>
-        </div>
-        <div className="terminal-panel-body">
-          <div className="flex flex-col md:flex-row md:items-end gap-4">
-            {/* CSS gradient bar sparkline */}
-            <div className="flex-1 min-w-0 overflow-x-auto">
-              <div className="flex items-end justify-between mb-1">
-                <span className="text-xxs text-zinc-500 tabular-nums">
-                  Min: {fmt(inmagSeriesMin)}
+        {/* ========================================================== */}
+        {/*  SECTION 4 — ACCESOS                                        */}
+        {/* ========================================================== */}
+        <section className="terminal-panel">
+          <div className="terminal-panel-header">
+            <span className="font-heading section-heading">Accesos</span>
+          </div>
+          <div className="terminal-panel-body">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+              <Link
+                href="/consignatarias"
+                className="group flex flex-col gap-1 border border-terminal-border rounded-terminal px-3 py-3 hover:border-accent/40 hover:bg-zinc-800/30 transition-colors"
+              >
+                <span className="terminal-stat-value text-2xl text-zinc-100 tabular-nums">
+                  {consignatariasData.length}
                 </span>
-                <span className="text-xxs text-zinc-500 tabular-nums">
-                  Max: {fmt(inmagSeriesMax)}
+                <span className="text-xxs text-zinc-500 uppercase tracking-wider">
+                  Consignatarias en {consigProvinceCount} provincias
                 </span>
-              </div>
-              {/* Bar chart -- each data point is a div with proportional height */}
-              <div className="flex items-end gap-1 h-16 md:h-20">
-                {inmagSeries.map((val: number, idx: number) => {
-                  const heightPct =
-                    ((val - inmagSeriesMin) / inmagSeriesRange) * 80 + 20;
-                  return (
-                    <div
-                      key={idx}
-                      className="flex-1 min-w-0 rounded-t-sm transition-all duration-300 hover:opacity-80"
-                      style={{ 
-                        height: `${heightPct}%`,
-                        background: 'linear-gradient(to top, #059669, #34d399)',
-                      }}
-                      title={`${marketPrices.inmag.series[idx].date}: ${fmt(val)}`}
-                    />
-                  );
-                })}
-              </div>
-              {/* Date axis -- hidden on mobile to prevent overflow */}
-              <div className="hidden md:flex justify-between mt-1">
-                {marketPrices.inmag.series.map(
-                  (pt: { date: string; value: number }) => (
-                    <span
-                      key={pt.date}
-                      className="text-xxs text-zinc-500 tabular-nums"
-                    >
-                      {pt.date.slice(5)}
-                    </span>
-                  )
-                )}
-              </div>
-              {/* Value axis -- hidden on mobile */}
-              <div className="hidden md:flex justify-between mt-0.5">
-                {marketPrices.inmag.series.map(
-                  (pt: { date: string; value: number }) => (
-                    <span
-                      key={pt.date + "-val"}
-                      className="text-xxs text-zinc-500 tabular-nums"
-                    >
-                      {fmt(pt.value)}
-                    </span>
-                  )
-                )}
-              </div>
-            </div>
+                <span className="text-xxs text-accent group-hover:text-accent-bright transition-colors mt-1">
+                  Ver directorio &rarr;
+                </span>
+              </Link>
 
-            {/* Summary column */}
-            <div className="flex-shrink-0 flex md:flex-col items-center md:items-end gap-3 md:gap-1 md:pl-4 pt-2 md:pt-0 border-t md:border-t-0 md:border-l border-terminal-border">
-              <div className="terminal-stat md:items-end">
-                <span className="terminal-stat-label md:text-right">8W Change</span>
-                <span className="terminal-stat-value text-sm md:text-lg text-positive glow-positive tabular-nums">
-                  +
-                  {fmt(
-                    ((inmagSeries[inmagSeries.length - 1] - inmagSeries[0]) /
-                      inmagSeries[0]) *
-                      100,
-                    1
-                  )}
-                  %
+              <Link
+                href="/mercado"
+                className="group flex flex-col gap-1 border border-terminal-border rounded-terminal px-3 py-3 hover:border-accent/40 hover:bg-zinc-800/30 transition-colors"
+              >
+                <span className="terminal-stat-value text-base text-zinc-100">
+                  Indices y precios
                 </span>
-              </div>
-              <div className="terminal-stat md:items-end">
-                <span className="terminal-stat-label md:text-right">8W Abs</span>
-                <span className="text-data text-zinc-300 tabular-nums">
-                  +{fmt(inmagSeries[inmagSeries.length - 1] - inmagSeries[0])} $/kg
+                <span className="text-xxs text-zinc-500 uppercase tracking-wider">
+                  INMAG, categorías y macro
                 </span>
-              </div>
-              <div className="terminal-stat md:items-end">
-                <span className="terminal-stat-label md:text-right">Media 8W</span>
-                <span className="text-data text-zinc-300 tabular-nums">
-                  {fmt(
-                    inmagSeries.reduce((a: number, b: number) => a + b, 0) /
-                      inmagSeries.length,
-                    0
-                  )}
+                <span className="text-xxs text-accent group-hover:text-accent-bright transition-colors mt-1">
+                  Ir a mercado &rarr;
                 </span>
-              </div>
+              </Link>
+
+              <Link
+                href="/frigorificos"
+                className="group flex flex-col gap-1 border border-terminal-border rounded-terminal px-3 py-3 hover:border-accent/40 hover:bg-zinc-800/30 transition-colors"
+              >
+                <span className="terminal-stat-value text-base text-zinc-100">
+                  Frigoríficos
+                </span>
+                <span className="text-xxs text-zinc-500 uppercase tracking-wider">
+                  Indice de plantas
+                </span>
+                <span className="text-xxs text-accent group-hover:text-accent-bright transition-colors mt-1">
+                  Ver índice &rarr;
+                </span>
+              </Link>
             </div>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );
