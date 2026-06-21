@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useEffect } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Auction } from '@/lib/db/schema'
@@ -29,7 +29,9 @@ import {
 import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge, { VerifiedBadge } from '@/components/badges/ProBadge'
 import VideoGallery, { type ConsignatariaVideo } from '@/components/video/VideoGallery'
-import WhatsAppFAB from '@/components/WhatsAppFAB'
+import { Accordion } from './_wave2/Accordion'
+import { StickyBar } from './_wave2/StickyBar'
+import { getLogoUrl, getBrandColor } from '@/lib/data/logo-map'
 // DteCTA removed - not relevant for consignatarias viewing their profile
 import type { RelatedConsignataria } from '@/lib/dal/consignatarias'
 import type { MagEntryData } from './page'
@@ -93,6 +95,44 @@ function StatusBadge({ date, time, today }: { date: string; time: string | null;
     return <CountdownBadge auctionDate={date} auctionTime={time} fallback={scheduledBadge} />
   }
   return scheduledBadge
+}
+
+/* ------------------------------------------------------------------ */
+/*  REMATE COUNTDOWN — cuenta regresiva al próximo remate (días/h/min) */
+/* ------------------------------------------------------------------ */
+function RemateCountdown({ date, time }: { date: string; time: string | null }) {
+  const target = useMemo(() => {
+    const [y, mo, d] = date.split('-').map(Number)
+    const [h, mi] = (time || '11:00').split(':').map(Number)
+    const ART_OFFSET_MS = -3 * 60 * 60 * 1000 // ART = UTC-3, sin DST
+    return Date.UTC(y, (mo || 1) - 1, d || 1, h || 11, mi || 0, 0, 0) - ART_OFFSET_MS
+  }, [date, time])
+  const [now, setNow] = useState<number>(() => target - 1) // SSR-safe: arranca "futuro"
+  useEffect(() => {
+    setNow(Date.now())
+    const id = setInterval(() => setNow(Date.now()), 1000)
+    return () => clearInterval(id)
+  }, [])
+  const diff = Math.floor((target - now) / 1000)
+  if (diff <= 0) return null
+  let label: string
+  if (diff < 3600) {
+    label = `en ${Math.floor(diff / 60).toString().padStart(2, '0')}:${(diff % 60).toString().padStart(2, '0')}`
+  } else if (diff < 86400) {
+    const h = Math.floor(diff / 3600)
+    const m = Math.floor((diff % 3600) / 60)
+    label = `en ${h} h ${m} min`
+  } else {
+    const d = Math.floor(diff / 86400)
+    const h = Math.floor((diff % 86400) / 3600)
+    label = `en ${d} ${d === 1 ? 'día' : 'días'}${h > 0 ? ` ${h} h` : ''}`
+  }
+  return (
+    <span className="inline-flex items-center gap-1.5 text-xxs font-terminal tabular-nums text-accent" role="timer">
+      <span className="status-dot bg-accent animate-pulse-live" />
+      {label}
+    </span>
+  )
 }
 
 /* ------------------------------------------------------------------ */
@@ -369,9 +409,11 @@ interface ConsignatariaProfileClientProps {
   mediosPagoSlot?: React.ReactNode
   reviews?: PublicReview[]
   reviewStats?: { count: number; avgRating: number | null }
+  /** Resumen liviano del último remate reportado, para la tarjeta de precios del hero. */
+  latestRemateSummary?: { fuente: string; fecha: string; top: Array<{ label: string; mid: number }> } | null
 }
 
-export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [], relatedConsignatarias = [], externalResources = [], magEntry, mediosPagoSlot, reviews = [], reviewStats = { count: 0, avgRating: null } }: ConsignatariaProfileClientProps) {
+export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [], relatedConsignatarias = [], externalResources = [], magEntry, mediosPagoSlot, reviews = [], reviewStats = { count: 0, avgRating: null }, latestRemateSummary = null }: ConsignatariaProfileClientProps) {
   const today = getEffectiveToday()
 
   useEffect(() => {
@@ -393,9 +435,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
   )
 
   const upcoming = useMemo(() => sorted.filter(a => a.date >= today), [sorted, today])
-  const totalHeads = useMemo(() => auctions.reduce((s, a) => s + (a.estimatedHeads ?? 0), 0), [auctions])
   const provinces = useMemo(() => [...new Set(auctions.map(a => a.province))], [auctions])
-  const cities = useMemo(() => [...new Set(auctions.map(a => getCity(a.location)))].slice(0, 5), [auctions])
 
   /* Sprint 2: "Historial verificable" — derived from auctions data we already have.
    * Works for every consignataria (whereas MAG lots data requires a name-bridge
@@ -455,10 +495,23 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
     return groups
   }, [sorted])
 
+  // Fecha corta "12 jun" para las tarjetas del hero (MONTH_FULL es module-level).
+  const fmtDate = (dstr: string) => {
+    const d = new Date(dstr + 'T12:00:00')
+    return `${d.getDate()} ${(MONTH_FULL[d.getMonth()] || '').slice(0, 3).toLowerCase()}`
+  }
+
+  // Logo: usa el subido por la firma, o el del logo-map (firmas más importantes).
+  // Los del logo-map están pensados para fondo de color de marca → mejor legibilidad.
+  const logoSrc = profile.logoUrl ?? getLogoUrl(profile.canonicalSlug)
+  const brandColor = !profile.logoUrl ? getBrandColor(profile.canonicalSlug) : null
+
   return (
-    <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 space-y-0">
+    <div className="max-w-6xl mx-auto px-2 sm:px-4 pt-3 pb-20 md:pb-3 space-y-0">
       {/* ============================================================ */}
-      {/*  HEADER                                                       */}
+      {/*  HERO — above-the-fold. Responde las 3 preguntas del productor: */}
+      {/*  ¿cuándo el próximo remate? ¿qué precios? ¿cómo lo sigo?        */}
+      {/*  Reemplaza el header + stats-bar de 5 métricas (carga cognitiva).*/}
       {/* ============================================================ */}
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between flex-wrap gap-2">
@@ -467,13 +520,16 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               &larr; DIRECTORIO
             </Link>
             <span className="text-terminal-border">&mdash;</span>
-            {profile.logoUrl && (
-              <div className={`rounded-terminal border overflow-hidden flex-shrink-0 relative ${
-                tier === 'pro' || tier === 'enterprise' 
-                  ? 'w-16 h-16 border-amber-500/30 bg-amber-500/5 shadow-lg shadow-amber-500/10' 
-                  : 'w-8 h-8 border-terminal-border bg-terminal-bg'
-              }`}>
-                <Image src={profile.logoUrl} alt={`Logo ${profile.displayName}`} className="object-contain" fill unoptimized />
+            {logoSrc && (
+              <div
+                className={`rounded-terminal border overflow-hidden flex-shrink-0 relative flex items-center justify-center w-12 h-12 ${
+                  tier === 'pro' || tier === 'enterprise'
+                    ? 'border-amber-500/40 shadow-lg shadow-amber-500/10'
+                    : 'border-terminal-border'
+                }`}
+                style={{ backgroundColor: brandColor || (profile.logoUrl ? '#ffffff' : 'var(--terminal-bg, #0b0b0e)') }}
+              >
+                <Image src={logoSrc} alt={`Logo ${profile.displayName}`} className="object-contain p-1.5" width={48} height={48} unoptimized />
               </div>
             )}
             <div className="flex items-center gap-2 flex-wrap">
@@ -490,61 +546,127 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               ))}
             </div>
           </div>
-          <span className="text-xxs tabular-nums text-zinc-500 font-terminal">
-            {auctions.length} remates
-          </span>
+          {!profile.claimedAt && (
+            <Link href={`/consignatarias/${profile.canonicalSlug}/verificar`} rel="nofollow" className="text-xxs font-terminal text-zinc-500 hover:text-accent transition-colors">
+              ¿Es tu firma? Reclamala &rarr;
+            </Link>
+          )}
         </div>
 
-        {/* Stats bar */}
-        <div className="border-b border-terminal-border px-panel py-1.5 flex items-center gap-4 md:gap-6 flex-wrap">
-          <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-500 uppercase">Total:</span>
-            <span className="text-data tabular-nums text-zinc-300 font-terminal">{auctions.length}</span>
-          </div>
-          <div className="text-terminal-border text-xxs select-none hidden sm:block">|</div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-500 uppercase">Cabezas:</span>
-            <span className="text-data tabular-nums text-zinc-300 font-terminal">
-              ~{totalHeads.toLocaleString('es-AR')}
-            </span>
-          </div>
-          <div className="text-terminal-border text-xxs select-none hidden sm:block">|</div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-500 uppercase">Proximos:</span>
-            <span className={`text-data tabular-nums font-terminal ${upcoming.length > 0 ? 'text-positive' : 'text-zinc-500'}`}>
-              {upcoming.length}
-            </span>
-          </div>
-          <div className="text-terminal-border text-xxs select-none hidden sm:block">|</div>
-          <div className="flex items-center gap-1.5 hidden sm:flex">
-            <span className="text-xxs text-zinc-500 uppercase">Provincias:</span>
-            <span className="text-data text-zinc-400 font-terminal text-xxs">
-              {provinces.join(', ')}
-            </span>
-          </div>
-          {cities.length > 0 && (
-            <>
-              <div className="text-terminal-border text-xxs select-none hidden md:block">|</div>
-              <div className="flex items-center gap-1.5 hidden md:flex">
-                <span className="text-xxs text-zinc-500 uppercase">Plazas:</span>
-                <span className="text-data text-zinc-400 font-terminal text-xxs truncate max-w-[200px]">
-                  {cities.join(', ')}
-                </span>
+        <div className="px-panel py-3 grid gap-3 grid-cols-1 lg:grid-cols-3">
+          {/* CARD A — PRÓXIMO REMATE (Job 1) */}
+          <div className="rounded-terminal border border-terminal-border bg-terminal-bg/40 p-3 flex flex-col">
+            <div className="text-xxs uppercase tracking-widest text-zinc-500 mb-2">Próximo remate</div>
+            {upcoming.length > 0 ? (
+              <>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <StatusBadge date={upcoming[0].date} time={upcoming[0].time} today={today} />
+                  <RemateCountdown date={upcoming[0].date} time={upcoming[0].time} />
+                </div>
+                <div className="text-data text-zinc-100 font-medium mt-1.5">
+                  {fmtDate(upcoming[0].date)}{upcoming[0].time ? ` · ${upcoming[0].time}` : ''}
+                </div>
+                <div className="text-xxs text-zinc-300 mt-0.5 leading-snug">{upcoming[0].title}</div>
+                {(getCity(upcoming[0].location) || upcoming[0].province) && (
+                  <div className="text-xxs text-zinc-500 mt-0.5">
+                    {getCity(upcoming[0].location)}{upcoming[0].province ? `, ${upcoming[0].province}` : ''}
+                  </div>
+                )}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {upcoming[0].youtubeUrl && (
+                    <a href={normalizeUrl(upcoming[0].youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer" onClick={() => trackOutboundClick(upcoming[0].youtubeUrl || '', 'youtube')} className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xxs font-terminal uppercase tracking-wider text-positive border border-positive/30 rounded-terminal hover:bg-positive/10 transition-colors">
+                      &#9654; En vivo
+                    </a>
+                  )}
+                  {upcoming[0].catalogUrl && (
+                    <a href={normalizeUrl(upcoming[0].catalogUrl) || '#'} target="_blank" rel="noopener noreferrer" onClick={() => trackOutboundClick(upcoming[0].catalogUrl || '', 'catalog')} className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xxs font-terminal uppercase tracking-wider text-accent border border-accent/30 rounded-terminal hover:bg-accent/10 transition-colors">
+                      Catálogo
+                    </a>
+                  )}
+                  {youtubeChannel?.channelUrl && (
+                    <a href={youtubeChannel.channelUrl} target="_blank" rel="noopener noreferrer" onClick={() => trackOutboundClick(youtubeChannel.channelUrl, 'youtube')} className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xxs font-terminal uppercase tracking-wider text-zinc-300 border border-terminal-border rounded-terminal hover:border-zinc-500 transition-colors">
+                      &#9654; Canal YT
+                    </a>
+                  )}
+                </div>
+                {upcoming.length > 1 && (
+                  <div className="mt-2 pt-2 border-t border-terminal-border/60 space-y-1">
+                    {upcoming.slice(1, 4).map((a, i) => (
+                      <div key={`${a.date}-${i}`} className="flex items-baseline gap-2 text-xxs">
+                        <span className="text-zinc-400 tabular-nums shrink-0">{fmtDate(a.date)}</span>
+                        <span className="text-zinc-500 truncate">{a.title}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-xxs text-zinc-500">
+                Sin remates programados. <a href="#remates" className="text-accent hover:text-accent-bright">Ver historial &rarr;</a>
               </div>
-            </>
-          )}
+            )}
+          </div>
+
+          {/* CARD B — ÚLTIMOS PRECIOS (Job 2) */}
+          <div className="rounded-terminal border border-terminal-border bg-terminal-bg/40 p-3 flex flex-col">
+            <div className="text-xxs uppercase tracking-widest text-zinc-500 mb-2">Últimos precios</div>
+            {latestRemateSummary ? (
+              <>
+                <div className="text-xxs text-zinc-500">{latestRemateSummary.fuente} · <span className="tabular-nums">{latestRemateSummary.fecha}</span></div>
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {latestRemateSummary.top.map((c, i) => (
+                    <span key={i} className="text-xxs font-terminal text-zinc-200 px-1.5 py-0.5 border border-terminal-border rounded-terminal">
+                      {c.label} <span className="text-positive tabular-nums">${c.mid.toLocaleString('es-AR')}/kg</span>
+                    </span>
+                  ))}
+                </div>
+                <a href="#precios-observados" className="text-xxs text-accent hover:text-accent-bright mt-2 inline-block">Ver tabla completa &rarr;</a>
+              </>
+            ) : (
+              <div className="text-xxs text-zinc-600 leading-relaxed">Los precios $/kg por categoría aparecen acá cuando la firma reporta su próximo remate.</div>
+            )}
+          </div>
+
+          {/* CARD C — SEGUIR / CONTACTAR (Job 3) */}
+          <div className="rounded-terminal border border-terminal-border bg-terminal-bg/40 p-3 flex flex-col">
+            <div className="text-xxs uppercase tracking-widest text-zinc-500 mb-2">Seguir / contactar</div>
+            {(profile.whatsapp || profile.phone || profile.email || profile.website) ? (
+              <div className="flex flex-col gap-1.5">
+                {profile.whatsapp && (
+                  <a href={`https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" onClick={() => trackOutboundClick(profile.whatsapp || '', 'whatsapp')} className="text-xxs text-positive hover:text-emerald-300 font-terminal transition-colors">
+                    WhatsApp · {profile.whatsapp}
+                  </a>
+                )}
+                {profile.phone && (
+                  <span className="text-xxs font-terminal text-zinc-300"><span className="text-zinc-500 uppercase">Tel:</span> {profile.phone}</span>
+                )}
+                {profile.email && (
+                  <a href={`mailto:${profile.email}`} className="text-xxs text-accent hover:text-accent-bright font-terminal transition-colors truncate">{profile.email}</a>
+                )}
+                {profile.website && (
+                  <a href={normalizeUrl(profile.website) || '#'} target="_blank" rel="noopener noreferrer" onClick={() => trackOutboundClick(profile.website || '', 'website')} className="text-xxs text-accent hover:text-accent-bright font-terminal transition-colors truncate">
+                    {profile.website.replace(/^https?:\/\//, '')}
+                  </a>
+                )}
+              </div>
+            ) : (
+              <div className="text-xxs text-zinc-600">Sin datos de contacto públicos todavía.</div>
+            )}
+            <div className="flex flex-wrap gap-2 mt-2 pt-2 border-t border-terminal-border/60">
+              <Link href={`/calendario/${profile.canonicalSlug}`} className="text-xxs font-terminal uppercase tracking-wider text-sky-400 hover:text-sky-300 transition-colors">
+                Suscribir calendario
+              </Link>
+              <Link href={`/go/${profile.canonicalSlug}`} className="text-xxs font-terminal uppercase tracking-wider text-amber-400 hover:text-amber-300 transition-colors">
+                Compartir
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* ============================================================ */}
-      {/*  PERSONA — Sprint 2 hero. "Quién opera detrás del nombre."     */}
-      {/*  Renders rich card when persona fields are populated, else a    */}
-      {/*  discreet "completá el perfil" prompt to convert claims.        */}
-      {/* ============================================================ */}
-      <div className="terminal-panel mt-px">
-        <div className="terminal-panel-header">
-          <span className="text-zinc-400 text-xxs tracking-widest">QUIÉN OPERA</span>
-        </div>
+      {/* QUIÉN OPERA — colapsado (confianza, secundario). Solo si hay datos de persona. */}
+      {(profile.referenteNombre || profile.bioReferente || profile.especialidad || profile.regionOperativa || profile.anosOficio) && (
+      <Accordion title="Quién opera">
         {(profile.referenteNombre || profile.bioReferente || profile.especialidad || profile.regionOperativa || profile.anosOficio) ? (
           <div className="px-panel py-4 flex flex-col sm:flex-row gap-4">
             {profile.fotoReferenteUrl && (
@@ -609,28 +731,16 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
             )}
           </div>
         )}
-      </div>
+      </Accordion>
+      )}
 
-      {/* ============================================================ */}
-      {/*  HISTORIAL VERIFICABLE — Sprint 2 operational performance.     */}
-      {/*  Computed from auctions data (which is 100%-covered in our      */}
-      {/*  scrape). Kg-promedio / cabezas-verificadas will be added when  */}
-      {/*  the mag_consignataria_sales_lots bridge is populated.          */}
-      {/* ============================================================ */}
-      <div className="terminal-panel mt-px">
-        <div className="terminal-panel-header">
-          <span className="text-zinc-400 text-xxs tracking-widest">HISTORIAL VERIFICABLE</span>
-        </div>
-        <div className="px-panel py-3 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2">
+      {/* HISTORIAL VERIFICABLE — colapsado (derivado de los remates). */}
+      <Accordion title="Historial verificable">
+        <div className="px-panel py-3 grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2">
           <div className="flex flex-col gap-0.5">
             <span className="text-xxs text-zinc-500 uppercase tracking-wider">Remates 90 d</span>
             <span className="text-data tabular-nums text-zinc-100 font-terminal">{historial.last90Count}</span>
             <span className="text-xxs text-zinc-500 font-terminal">~{historial.monthlyAvg.toFixed(1)}/mes</span>
-          </div>
-          <div className="flex flex-col gap-0.5">
-            <span className="text-xxs text-zinc-500 uppercase tracking-wider">Próximos</span>
-            <span className={`text-data tabular-nums font-terminal ${historial.upcomingCount > 0 ? 'text-positive' : 'text-zinc-500'}`}>{historial.upcomingCount}</span>
-            <span className="text-xxs text-zinc-500 font-terminal">confirmados</span>
           </div>
           <div className="flex flex-col gap-0.5">
             <span className="text-xxs text-zinc-500 uppercase tracking-wider">Tipo dominante</span>
@@ -659,7 +769,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
             </div>
           </div>
         )}
-      </div>
+      </Accordion>
 
       {/* ============================================================ */}
       {/*  RESEÑAS DE PRODUCTORES — Sprint 3. "Quién avala" — boca a    */}
@@ -673,88 +783,8 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
         stats={reviewStats}
       />
 
-      {/* ============================================================ */}
-      {/*  CONTACT INFO (only when data available)                       */}
-      {/* ============================================================ */}
-      {(profile.phone || profile.email || profile.website || profile.whatsapp || profile.description) && (
-        <div className="terminal-panel mt-px">
-          <div className="terminal-panel-header">
-            <span className="text-zinc-400 text-xxs tracking-widest">CONTACTO</span>
-          </div>
-          <div className="px-panel py-3 space-y-2">
-            {profile.description && (
-              <p className="text-xxs text-zinc-400 font-terminal">{profile.description}</p>
-            )}
-            <div className="flex flex-wrap gap-x-6 gap-y-1.5">
-              {profile.phone && (
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xxs text-zinc-500 uppercase font-terminal">Tel:</span>
-                  <span className="text-xxs text-zinc-300 font-terminal">{profile.phone}</span>
-                </div>
-              )}
-              {profile.email && (
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xxs text-zinc-500 uppercase font-terminal">Email:</span>
-                  <a href={`mailto:${profile.email}`} className="text-xxs text-accent hover:text-accent-bright font-terminal transition-colors">
-                    {profile.email}
-                  </a>
-                </div>
-              )}
-              {profile.website && (
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xxs text-zinc-500 uppercase font-terminal">Web:</span>
-                  <a
-                    href={normalizeUrl(profile.website) || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => trackOutboundClick(profile.website || '', 'website')}
-                    className="text-xxs text-accent hover:text-accent-bright font-terminal transition-colors"
-                  >
-                    {profile.website.replace(/^https?:\/\//, '')}
-                  </a>
-                </div>
-              )}
-              {profile.whatsapp && (
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xxs text-zinc-500 uppercase font-terminal">WhatsApp:</span>
-                  <a
-                    href={`https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => trackOutboundClick(profile.whatsapp || '', 'whatsapp')}
-                    className="text-xxs text-positive hover:text-emerald-300 font-terminal transition-colors"
-                  >
-                    {profile.whatsapp}
-                  </a>
-                </div>
-              )}
-            </div>
-            {/* Share & Subscribe row */}
-            <div className="flex flex-wrap gap-3 mt-3 pt-3 border-t border-zinc-800/50">
-              <Link
-                href={`/go/${profile.canonicalSlug}`}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-500/20 transition-colors rounded"
-              >
-                🎯 Link para compartir
-              </Link>
-              <Link
-                href={`/calendario/${profile.canonicalSlug}`}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xxs font-terminal uppercase tracking-wider hover:bg-sky-500/20 transition-colors rounded"
-              >
-                📅 Suscribir calendario
-              </Link>
-              <a
-                href={`https://wa.me/?text=${encodeURIComponent(`Mirá los remates de ${profile.displayName}: https://consignatarias.com.ar/go/${profile.canonicalSlug}`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xxs font-terminal uppercase tracking-wider hover:bg-emerald-500/20 transition-colors rounded"
-              >
-                📤 Compartir WhatsApp
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* CONTACTO + share/subscribe se movieron al hero (tarjeta C). La descripción
+          larga de la firma vive en el bloque server (resumen) por SEO. */}
 
       {/* ============================================================ */}
       {/*  MEDIOS DE PAGO (PRO-gated, rendered server-side)             */}
@@ -786,6 +816,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               {!profile.claimedAt && (
                 <Link
                   href={`/consignatarias/${profile.canonicalSlug}/verificar`}
+                  rel="nofollow"
                   onClick={() => trackClaimCTA(profile.canonicalSlug, profile.displayName)}
                   className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-positive text-zinc-900 text-xs font-bold uppercase tracking-wider hover:bg-positive/90 transition-colors rounded shadow-lg"
                 >
@@ -832,16 +863,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       {/*  MAG ENTRY DATA (when available for today's auctions)         */}
       {/* ============================================================ */}
       {magEntry && magEntry.totalCabezas > 0 && (
-        <div className="terminal-panel mt-px">
-          <div className="terminal-panel-header flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-zinc-400 text-xxs tracking-widest">RED DE REMITENTES</span>
-              <span className="inline-flex items-center px-1.5 py-0.5 bg-emerald-500/10 border border-emerald-500/30 rounded-sm">
-                <span className="text-emerald-400 font-terminal text-[10px] font-bold">MAG</span>
-              </span>
-            </div>
-            <span className="text-xxs text-zinc-500 font-terminal">{magEntry.period}</span>
-          </div>
+        <Accordion title="Red de remitentes · MAG" badge={<span className="text-xxs text-zinc-500 font-terminal">{magEntry.period}</span>}>
           <div className="px-panel py-3">
             <div className="flex flex-wrap items-baseline gap-3 mb-3">
               <span className="text-2xl font-terminal text-positive tabular-nums">
@@ -888,43 +910,20 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               <span className="text-zinc-700">Datos públicos de guías de tránsito</span>
             </div>
           </div>
-        </div>
+        </Accordion>
       )}
 
-      {/* ============================================================ */}
-      {/*  CALENDAR HEATMAP + TYPE DISTRIBUTION                         */}
-      {/* ============================================================ */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-        <div className="terminal-panel mt-px">
-          <div className="terminal-panel-header">
-            <span className="text-zinc-400 text-xxs tracking-widest">CALENDARIO ANUAL</span>
-          </div>
-          <div className="px-panel py-3">
-            <CalendarHeatmap auctions={auctions} />
-          </div>
+      {/* CALENDARIO + TIPOS — colapsado (vistas secundarias del cronograma). */}
+      <Accordion title="Calendario anual y tipos de remate">
+        <div className="px-panel py-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CalendarHeatmap auctions={auctions} />
+          <TypeDistribution auctions={auctions} />
         </div>
+      </Accordion>
 
-        <div className="terminal-panel mt-px md:ml-px">
-          <div className="terminal-panel-header">
-            <span className="text-zinc-400 text-xxs tracking-widest">TIPO DE REMATE</span>
-          </div>
-          <div className="px-panel py-3">
-            <TypeDistribution auctions={auctions} />
-          </div>
-        </div>
-      </div>
-
-      {/* ============================================================ */}
-      {/*  AUCTION RESULTS                                               */}
-      {/* ============================================================ */}
+      {/* RESULTADOS DE REMATES — colapsado (histórico de precios). */}
       {auctionResults.length > 0 && (
-        <div className="terminal-panel mt-px">
-          <div className="terminal-panel-header flex items-center justify-between">
-            <span className="text-zinc-400 text-xxs tracking-widest">RESULTADOS DE REMATES</span>
-            <span className="text-xxs text-zinc-500 font-terminal">
-              {auctionResults.length} resultado{auctionResults.length !== 1 ? 's' : ''}
-            </span>
-          </div>
+        <Accordion title="Resultados de remates" badge={<span className="text-xxs text-zinc-500 font-terminal">{auctionResults.length}</span>}>
           <div className="border-b border-terminal-border px-cell py-px2 hidden md:flex items-center gap-0 bg-terminal-panel">
             <span className="w-[56px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Fecha</span>
             <span className="flex-1 min-w-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Remate</span>
@@ -980,7 +979,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               </div>
             </div>
           ))}
-        </div>
+        </Accordion>
       )}
 
       {/* ============================================================ */}
@@ -1008,6 +1007,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                 </div>
                 <Link
                   href={`/planes?audience=consignataria&from=profile-${profile.canonicalSlug}`}
+                  rel="nofollow"
                   className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 border text-xxs font-terminal uppercase tracking-wider transition-all hover:shadow-lg hover:shadow-amber-500/20"
                   style={{
                     background: 'linear-gradient(to right, rgba(245, 158, 11, 0.15), rgba(251, 191, 36, 0.1))',
@@ -1030,23 +1030,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       {/*  YOUTUBE CHANNEL                                                */}
       {/* ============================================================ */}
       {youtubeChannel && (
-        <div className="terminal-panel mt-px">
-          <div className="terminal-panel-header flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="section-heading text-xxs">ULTIMO VIDEO</span>
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-red-600/20 border border-red-500/30 rounded-sm">
-                <span className="text-red-400 font-terminal text-[10px] font-bold">YT</span>
-              </span>
-            </div>
-            <a
-              href={youtubeChannel.channelUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors"
-            >
-              VER CANAL &rarr;
-            </a>
-          </div>
+        <Accordion title="Último video · YouTube" badge={<a href={youtubeChannel.channelUrl} target="_blank" rel="noopener noreferrer" className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors">Ver canal &rarr;</a>}>
           <div className="px-panel py-3">
             {youtubeChannel.latestVideo ? (
               <div className="flex items-start gap-3">
@@ -1098,39 +1082,23 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               </a>
             )}
           </div>
-        </div>
+        </Accordion>
       )}
 
-      {/* ============================================================ */}
-      {/*  VIDEO GALLERY                                                 */}
-      {/* ============================================================ */}
+      {/* GALERÍA DE VIDEOS — colapsado. */}
       {videos.length > 0 && (
-        <div className="terminal-panel mt-px">
-          <div className="terminal-panel-header flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="section-heading text-xxs">GALERÍA DE VIDEOS</span>
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-red-600/20 border border-red-500/30 rounded-sm">
-                <span className="text-red-400 font-terminal text-[10px] font-bold">YT</span>
-              </span>
-            </div>
-            <span className="text-xxs text-zinc-500 font-terminal">
-              {videos.length} video{videos.length !== 1 ? 's' : ''}
-            </span>
-          </div>
+        <Accordion title="Galería de videos" badge={<span className="text-xxs text-zinc-500 font-terminal">{videos.length}</span>}>
           <div className="px-panel py-3">
             <VideoGallery videos={videos} consignatariaName={profile.displayName} />
           </div>
-        </div>
+        </Accordion>
       )}
 
       {/* ============================================================ */}
       {/*  EXTERNAL RESOURCES (catalog, app, etc.)                      */}
       {/* ============================================================ */}
       {externalResources.length > 0 && (
-        <div className="terminal-panel mt-px">
-          <div className="terminal-panel-header">
-            <span className="section-heading text-xxs">RECURSOS Y ENLACES</span>
-          </div>
+        <Accordion title="Recursos y enlaces">
           <div className="px-panel py-3">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
               {externalResources.map((resource, idx) => (
@@ -1181,7 +1149,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               ))}
             </div>
           </div>
-        </div>
+        </Accordion>
       )}
 
       {/* ============================================================ */}
@@ -1237,7 +1205,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       {/* ============================================================ */}
       {/*  AUCTION LIST GROUPED BY MONTH                                */}
       {/* ============================================================ */}
-      <div className="terminal-panel mt-px">
+      <div className="terminal-panel mt-px" id="remates">
         <div className="terminal-panel-header flex items-center justify-between">
           <span className="text-zinc-200 text-label tracking-widest">CRONOGRAMA</span>
           <span className="text-xxs text-zinc-500 font-terminal hidden sm:inline">
@@ -1299,16 +1267,14 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
         </a>
       </div>
 
-      {/* ============================================================ */}
-      {/*  WHATSAPP FAB (Insight #59)                                   */}
-      {/* ============================================================ */}
-      {profile.whatsapp && (
-        <WhatsAppFAB
-          whatsapp={profile.whatsapp}
-          consignatariaName={profile.displayName}
-          slug={profile.canonicalSlug}
-        />
-      )}
+      {/* BARRA STICKY MOBILE — próximo remate + WhatsApp; absorbe el FAB flotante
+          (que tapaba el cronograma). Solo <md. */}
+      <StickyBar
+        nextDateLabel={upcoming.length > 0 ? `${fmtDate(upcoming[0].date)}${upcoming[0].time ? ` · ${upcoming[0].time}` : ''} — ${upcoming[0].title}` : null}
+        isLive={upcoming.length > 0 && getEffectiveStatus(upcoming[0].date, upcoming[0].time, today) === 'live'}
+        whatsapp={profile.whatsapp || null}
+        onSeeRemates={() => {}}
+      />
     </div>
   )
 }

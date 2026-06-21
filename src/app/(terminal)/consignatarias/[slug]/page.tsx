@@ -206,12 +206,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const primaryProvince = provinces.filter(Boolean)[0]
   const geo = primaryProvince ? ` en ${titleCaseProv(primaryProvince)}` : ''
 
+  // Non-custom branch targets both query intents for a consignataria: "<marca> remates" and
+  // "precio hacienda <marca>". Dropped geo from the title to avoid truncation on long names
+  // (geo stays in the description for local intent). customSEO branch (top profiles) intact.
   const title = customSEO
     ? `${profile.displayName} — ${customSEO.titleSuffix}`
-    : `${profile.displayName} — Consignataria de Hacienda${geo}`
+    : `${profile.displayName}: Precios y Remates de Hacienda`
 
   const description = customSEO?.description
-    || `Calendario completo de remates ganaderos de ${profile.displayName}. ${profileAuctions.length} remates programados${upcoming > 0 ? `, ${upcoming} próximos` : ''}. ${provinces.join(', ')}.`
+    || `Remates y precios de hacienda de ${profile.displayName}${geo}. ${profileAuctions.length} remates registrados${upcoming > 0 ? `, ${upcoming} próximos` : ''}. Cotizaciones por categoría actualizadas tras cada remate.`
 
   // Thin profiles (0–1 remates, no SEO enhancement) have too little unique
   // content to index — keep them crawlable/followable but out of the index.
@@ -396,6 +399,18 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
       })()
     : []
 
+  // Resumen liviano de precios del último remate → tarjeta "Últimos precios" del hero.
+  const latestRemateSummary = latestRemate
+    ? {
+        fuente: latestRemate.fuente,
+        fecha: latestRemate.remate.fecha,
+        top: latestRemate.remate.categorias.slice(0, 3).map((c) => ({
+          label: c.label,
+          mid: Math.round((c.min + c.max) / 2),
+        })),
+      }
+    : null
+
   return (
     <>
       {/* Structured Data */}
@@ -506,6 +521,7 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
         reviewStats={reviewsAndStats.stats}
         externalResources={(consignatariaResources as Record<string, { displayName: string; resources: Array<{ type: string; label: string; url: string; description?: string }> }>)[canonical]?.resources}
         magEntry={(marketData as { auctionDayEntries?: { consignatarias: Record<string, MagEntryData> } }).auctionDayEntries?.consignatarias?.[canonical]}
+        latestRemateSummary={latestRemateSummary}
         mediosPagoSlot={
           <div className="max-w-6xl mx-auto px-4">
             <MediosPagoSection

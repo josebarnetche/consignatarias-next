@@ -86,10 +86,19 @@ scripts/seo-report/
 scripts/.cache/
 
 # Internal strategy/ops docs — keep OUT of the public repo
-docs/strategy/GROWTH-2026-SWARM.md
-docs/strategy/ANSWER-BLOCK-IDEAS.md
-docs/strategy/ANSWER-BLOCK-DEV-PLAN.md
+docs/strategy/
 docs/traffic-loop/
 scripts/archive/oauth-credentials.json
 scripts/archive/oauth-token.json
-docs/strategy/*.txt
+# Session analysis/ops scripts (embed real metrics / GA4-GSC refs) — public repo
+scripts/archive/ai-attribution.js
+scripts/archive/behavior-analysis.js
+scripts/archive/behavior-simulator.mjs
+scripts/archive/ctr-diff.js
+scripts/archive/ctr-snapshot.js
+scripts/archive/ga4-behavior-sim.mjs
+scripts/archive/ga4-gsc-paths.js
+scripts/archive/ga4-reauth.mjs
+scripts/archive/ga4-auth.html
+scripts/archive/traffic-compare.mjs
+scripts/archive/traffic-report.js

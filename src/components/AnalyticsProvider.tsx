@@ -22,40 +22,89 @@ function PageViewTracker() {
 }
 
 /**
- * AI-referral detection. Fires a first-class GA4 event `ai_referral` when a visitor
- * arrives FROM an AI engine (per document.referrer), with `ai_engine` + `landing_page`.
+ * AI-referral detection. Fires a first-class GA4 event `ai_referral` AND beacons to our
+ * own table (/api/track/ai-referral) when a visitor arrives FROM an AI engine, detected
+ * by document.referrer OR by a tagged utm_source (modern LLMs append ?utm_source=chatgpt.com).
  *
- * Why: GA4 splits AI traffic across Referral/Unassigned (chatgpt.com shows up in both),
- * and custom channel groups aren't visible via the Data API — so AI traffic is neither
- * unified nor queryable. This event makes "traffic from AI" measurable + attributable,
- * feeding the thesis metric (are we the source AI cites?). Fires once per tab/session.
+ * Why both: GA4 splits AI traffic across Referral/Unassigned/AI-Assistant (chatgpt.com
+ * shows up in all three) and does NOT expose the event params by engine via the Data API
+ * (ai_engine isn't a registered custom dimension). The Supabase beacon gives us an owned,
+ * unified, queryable record — the thesis metric (are we the source AI cites?). Fires once
+ * per tab/session.
  *
- * Limitation: only catches engines that pass a referrer (ChatGPT does). Engines that
- * strip the referrer land as Direct and are undetectable client-side.
+ * Limitation: catches engines that pass a referrer (ChatGPT does) or a utm_source. Engines
+ * that strip both land as Direct and stay undetectable client-side.
  */
 const AI_ENGINES: Array<[RegExp, string]> = [
   [/(^|\.)chatgpt\.com$|(^|\.)chat\.openai\.com$|(^|\.)openai\.com$/i, 'chatgpt'],
   [/(^|\.)perplexity\.ai$/i, 'perplexity'],
-  [/(^|\.)copilot\.microsoft\.com$|(^|\.)copilot\.com$/i, 'copilot'],
+  [/(^|\.)copilot\.microsoft\.com$|(^|\.)copilot\.com$|(^|\.)bing\.com$/i, 'copilot'],
   [/(^|\.)gemini\.google\.com$|(^|\.)bard\.google\.com$/i, 'gemini'],
   [/(^|\.)claude\.ai$/i, 'claude'],
+  [/(^|\.)grok\.com$|(^|\.)x\.ai$/i, 'grok'],
+  [/(^|\.)deepseek\.com$/i, 'deepseek'],
+  [/(^|\.)mistral\.ai$|(^|\.)chat\.mistral\.ai$/i, 'mistral'],
+  [/(^|\.)poe\.com$/i, 'poe'],
+  [/(^|\.)phind\.com$/i, 'phind'],
   [/(^|\.)you\.com$/i, 'you'],
+  [/(^|\.)kagi\.com$/i, 'kagi'],
+  [/(^|\.)andisearch\.com$/i, 'andi'],
 ]
+
+// Match an engine from a utm_source value (host-like or short name).
+function engineFromUtm(utm: string): string | null {
+  const v = utm.toLowerCase()
+  for (const [re, name] of AI_ENGINES) if (re.test(v) || v === name) return name
+  if (/openai/.test(v)) return 'chatgpt'
+  return null
+}
 
 function AiReferralTracker() {
   useEffect(() => {
     try {
-      const ref = document.referrer
-      if (!ref) return
-      const host = new URL(ref).hostname
-      const match = AI_ENGINES.find(([re]) => re.test(host))
-      if (!match) return
       const key = 'ai_referral_fired'
       if (sessionStorage.getItem(key)) return
+
+      // 1) Por referrer (host) — la señal más fuerte cuando el engine la pasa.
+      let engine: string | null = null
+      let detectedVia: 'referrer' | 'utm' = 'referrer'
+      const ref = document.referrer
+      if (ref) {
+        try {
+          const host = new URL(ref).hostname
+          engine = AI_ENGINES.find(([re]) => re.test(host))?.[1] ?? null
+        } catch { /* ref no parseable */ }
+      }
+
+      // 2) Por utm_source — los LLM modernos taggean (?utm_source=chatgpt.com).
+      const utmSource = new URLSearchParams(window.location.search).get('utm_source')
+      if (!engine && utmSource) {
+        engine = engineFromUtm(utmSource)
+        if (engine) detectedVia = 'utm'
+      }
+
+      if (!engine) return
       sessionStorage.setItem(key, '1')
-      trackEvent('ai_referral', { ai_engine: match[1], landing_page: window.location.pathname })
+      // Recordá el engine para toda la sesión (subsiguientes pageviews ya saben el origen).
+      try { sessionStorage.setItem('ai_engine', engine) } catch { /* ignore */ }
+
+      const landing = window.location.pathname
+      trackEvent('ai_referral', { ai_engine: engine, landing_page: landing, detected_via: detectedVia })
+
+      // Beacon a nuestra tabla (no bloquea la navegación; sobrevive al unload).
+      const payload = JSON.stringify({
+        engine, landing, referrer: ref ? new URL(ref).hostname : null,
+        utmSource: utmSource || null, detectedVia, path: window.location.pathname + window.location.search,
+      })
+      try {
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/track/ai-referral', new Blob([payload], { type: 'application/json' }))
+        } else {
+          fetch('/api/track/ai-referral', { method: 'POST', body: payload, headers: { 'Content-Type': 'application/json' }, keepalive: true })
+        }
+      } catch { /* beacon best-effort */ }
     } catch {
-      /* referrer parse / storage unavailable — no-op */
+      /* parse / storage unavailable — no-op */
     }
   }, [])
 

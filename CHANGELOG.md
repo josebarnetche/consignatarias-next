@@ -7,6 +7,27 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.40.0] — 2026-06-21
+
+### Rediseño de la página de consignataria (UX: "mucha info, no sé dónde mirar")
+
+Feedback de un productor real: la ficha apilaba 22 secciones sin jerarquía. Rediseño guiado por un swarm UX + design-engineering, en dos olas.
+
+- **Hero "above the fold" (Wave 1):** 3 tarjetas que responden las preguntas del productor en segundos — **Próximo remate** (con **cuenta regresiva en vivo** días/horas/min, badge EN VIVO, botones Catálogo / En vivo / **Canal YouTube**), **Últimos precios** ($/kg por categoría del último remate), y **Seguir / contactar** (WhatsApp/tel/email/web + suscribir + compartir). Reemplaza el header + la stats-bar de 5 métricas.
+- **Cuerpo colapsado (Wave 2):** las 22 secciones se reducen a hero + reseñas + **acordeones colapsables** (Quién opera, Historial, Calendario+tipos, Resultados, Red MAG, Último video, Galería, Recursos). Las 4 vistas dispersas de remates y las 2 de precios dejan de competir por la atención.
+- **Logos de marca:** las consignatarias más importantes muestran su logo (vía `logo-map`) sobre su color de marca en el hero.
+- **Barra sticky mobile:** próximo remate + WhatsApp siempre a mano; absorbe el FAB flotante que tapaba el cronograma.
+- **Look minimal:** jerarquía por espacio y tipografía, monocromo + color solo para estado, sin emojis ni divisores redundantes.
+- **SEO intacto:** el bloque server (resumen, próximos remates, precios observados, 6 schemas) y el único `<h1>` no se tocaron; acordeones nativos `<details>` mantienen el markup crawleable; `rel=nofollow` en los CTA de claim/PRO.
+
+### Pasada de CTR sobre las plantillas de mayor tráfico
+
+El tráfico crece por impresiones, no por CTR (CTR ponderado bajó 2,37%→1,84% con impresiones +186%). Optimización de títulos/meta anclada en el query-mix real de Search Console, en 8 familias de páginas: `/mercado/arrendamiento`, `/mercado/inmag`, `/mercado/[categoria]` (formato pregunta), `/mercado`, `/frigorificos`, `/frigorificos/[cuit]`, `/consignatarias/[slug]` y el home. Sistema de medición commit-por-commit (`ctr-snapshot.js` + `ctr-diff.js` + registro de cambios) para verificar qué copy funcionó.
+
+### Instrumentación de atribución de tráfico AI
+
+El tráfico desde motores de IA (ChatGPT #1, 6,7 pág/sesión) era ciego: GA4 lo fragmenta y no lo expone por engine. Nuevo beacon propio (`/api/track/ai-referral` → tabla `ai_referrals`), tracker ampliado de 6 a 13 engines + detección por `utm_source` + persistencia por sesión.
+
 ## [1.39.0] — 2026-06-20
 
 ### Landing minimalista + mapa de cobertura interactivo

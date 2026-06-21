@@ -14,10 +14,12 @@ const senasaActiveCount = frigorificosData.filter(f => (f as { senasaActive?: bo
 const senasaInactiveCount = frigorificosData.filter(f => (f as { senasaActive?: boolean }).senasaActive === false).length
 
 export const metadata: Metadata = {
-  // Exact-match the money query "listado de frigoríficos habilitados por senasa"
-  // (was pos ~6 with high impressions). "Listado" + "SENASA" front-loaded.
-  title: `Listado de Frigoríficos Habilitados por SENASA 2026 · Argentina (${totalFrigorificos})`,
-  description: `Listado completo de ${totalFrigorificos} frigoríficos y mataderos habilitados por SENASA/MAGYP en Argentina. Buscá por provincia, matrícula y etapa de habilitación (Ciclo I/II/III). Registro oficial actualizado 2026.`,
+  // Exact-match the money query "listado de frigoríficos habilitados por senasa" (already
+  // ~9.6% CTR at pos 5.5). Moved the count INTO the lead (it was truncating off the end as
+  // "(364)") and dropped the redundant "· Argentina". Description adds the live
+  // "X verificados activos hoy" freshness hook. v1.40 CTR pass.
+  title: `Listado de ${totalFrigorificos} Frigoríficos Habilitados por SENASA 2026`,
+  description: `Listado oficial de ${totalFrigorificos} frigoríficos habilitados por SENASA/MAGYP en Argentina. ${senasaActiveCount} verificados activos hoy. Buscá por provincia, matrícula y Ciclo I/II/III.`,
   keywords: [
     'frigorificos argentina',
     'frigorificos habilitados',

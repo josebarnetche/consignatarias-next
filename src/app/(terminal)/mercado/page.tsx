@@ -51,7 +51,10 @@ const MERCADO_FAQ = [
 ]
 
 export const metadata: Metadata = {
-  title: `Precio Kilo Vivo Novillo Hoy: $${fmt(novillo)} (INMAG ${lastUpdate})`,
+  // Owns the "precio kilo vivo (de) novillo hoy" cluster — deliberately distinct from
+  // /mercado/inmag (which owns "inmag hoy") to avoid cannibalization. Dropped the raw
+  // date from the title (looked like noise in the SERP), added the live variation arrow.
+  title: `Precio Kilo Vivo Novillo Hoy: $${fmt(novillo)}/kg (${inmagChangeStr})`,
   description: `Precio del kilo vivo de novillo hoy: $${fmt(novillo)} (INMAG ${inmagChangeStr}). Ternero $${fmt(ternero)}, vaquillona $${fmt(vaquillona)}, vaca $${fmt(vaca)}. Actualizado ${lastUpdate} desde Mercado Agroganadero.`,
   keywords: [
     'precio kilo vivo novillo',

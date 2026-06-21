@@ -15,10 +15,12 @@ const inmag = marketData.inmag
 const series = inmag.series as Array<{ date: string; value: number; volume?: number }>
 
 export const metadata: Metadata = {
-  // SEO-tuned title: "INMAG" first, live price baked in, "Hoy" for query match.
-  // Price refreshes daily via the build-trigger cron, so this stays accurate.
-  title: `INMAG Hoy $${inmag.current.toLocaleString('es-AR')}/kg vivo · Índice Novillo Mercado Agroganadero`,
-  description: `INMAG ${inmag.current.toLocaleString('es-AR')} ARS/kg vivo (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(2)}% vs. anterior). Cotización del Índice Novillo del Mercado Agroganadero de Buenos Aires, actualizada cada día hábil. Histórico, metodología y referencia del mercado ganadero argentino.`,
+  // Self-answering title for the insignia query "inmag (hoy)": exact match + live price
+  // + variation arrow up front. Shorter than the old descriptor-heavy title that truncated
+  // at ~95 chars. The "Índice Novillo Mercado Agroganadero" descriptor moves to the
+  // description (still cited) so the title is a clean answer. v1.40 CTR pass.
+  title: `INMAG hoy: $${inmag.current.toLocaleString('es-AR')}/kg vivo (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1)}%)`,
+  description: `INMAG hoy: $${inmag.current.toLocaleString('es-AR')} ARS/kg vivo (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(2)}% vs. anterior). Índice Novillo del Mercado Agroganadero de Cañuelas. Histórico desde 2015, en pesos y dólares.`,
   keywords: [
     'INMAG', 'inmag precio', 'inmag hoy', 'inmag actual',
     'índice novillo', 'indice novillo', 'indice mercado agroganadero',

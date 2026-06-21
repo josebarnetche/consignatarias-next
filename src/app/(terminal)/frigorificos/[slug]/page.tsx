@@ -173,8 +173,11 @@ export async function generateMetadata({
   if (!f) return { title: 'Frigorifico no encontrado' }
 
   const localidadStr = (f as { localidad?: string }).localidad || f.province
-  const title = `${f.name} (CUIT ${formatCuit(f.cuit)}) — Frigorífico ${f.province} | Mat. SENASA ${f.matricula}`
-  const description = `${f.name}: CUIT ${formatCuit(f.cuit)}, matrícula SENASA ${f.matricula}, ${stageName(f.stage)} en ${localidadStr}. Datos oficiales MAGYP/SENASA actualizados 2026.`
+  // Brand queries (the establishment name) dominate this family, so lead with the name and
+  // keep the title short (the old title packed CUIT + province + matrícula and truncated in
+  // the SERP). CUIT/matrícula move to the description, which still answers the data queries.
+  const title = `${f.name} — Frigorífico SENASA en ${localidadStr}`
+  const description = `${f.name} en ${localidadStr}: frigorífico habilitado SENASA, ${stageName(f.stage)}, Mat. ${f.matricula}, CUIT ${formatCuit(f.cuit)}. Datos oficiales MAGYP/SENASA, actualizado 2026.`
 
   return {
     title,

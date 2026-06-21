@@ -178,8 +178,11 @@ const FAQ_ITEMS = [
 export const revalidate = false // Cost optimization: static at build time
 
 export const metadata: Metadata = {
-  title: "Remates Ganaderos Argentina 2026 | Calendario de Remates | Consignatarias.com.ar",
-  description: `Calendario de remates ganaderos de ${totalConsignatarias}+ consignatarias en 10 provincias. ${frigorificosSummary.total} frigoríficos habilitados, precios INMAG y dólar blue actualizados cada día. Acceso libre.`,
+  // Lead with the site's strongest branded query "consignatarias" (12-17% CTR at pos 3.3,
+  // previously buried as the domain at the title's end), then remates + precios. Description
+  // injects the live INMAG price as a freshness hook. v1.40 CTR pass.
+  title: "Consignatarias de Hacienda Argentina | Remates y Precios",
+  description: `Directorio de ${totalConsignatarias}+ consignatarias de hacienda y calendario de ${rematesProximos.length} remates ganaderos. Precios INMAG ($${fmt(marketPrices.inmag.current)}/kg) actualizados hoy. Acceso libre.`,
   alternates: {
     canonical: 'https://www.consignatarias.com.ar',
   },

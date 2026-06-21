@@ -43,12 +43,13 @@ function getMonthlyAverages(data: typeof series) {
 const monthlyAverages = getMonthlyAverages(series)
 
 export const metadata: Metadata = {
-  // Live price baked into the title — same self-answering pattern as /mercado
-  // and /mercado/inmag. Lead with "Precio" (not "Índice") to match the actual
-  // queries: "precio novillo arrendamiento (hoy/mensual)" carry 3.3k imp at
-  // pos 6-8.5 but only ~1.3% CTR. "índice INMAG" tail keeps the index queries.
-  title: `Precio Novillo Arrendamiento Hoy: $${inmag.current.toLocaleString('es-AR')}/kg (índice INMAG)`,
-  description: `Índice Novillo Arrendamiento actual: $${inmag.current.toLocaleString('es-AR')}/kg. Precio actualizado del índice para contratos de arrendamiento rural en Argentina. Cotización diaria Liniers y Cañuelas.`,
+  // Live price baked into the title — self-answering pattern matching the dominant
+  // query "precio novillo (para) arrendamiento hoy". maximumFractionDigits:0 drops the
+  // centavos ($4.283,84→$4.284) that were truncating the title at 60 chars and adding
+  // SERP noise; dropping "(índice INMAG)" frees room. Description leads with the literal
+  // query + live variation + an action hook ("calculá el canon"). v1.40 CTR pass.
+  title: `Precio Novillo Arrendamiento Hoy: $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg`,
+  description: `Precio del novillo para arrendamiento hoy: $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1)}%). Calculá el canon de tu campo en kg/ha al índice INMAG. Promedio mensual y serie histórica.`,
   keywords: [
     'índice novillo arrendamiento',
     'indice novillo arrendamiento hoy',

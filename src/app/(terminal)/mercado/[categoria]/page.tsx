@@ -212,10 +212,14 @@ export async function generateMetadata({
   const cat = marketData.categories[categoria as keyof typeof marketData.categories]
   const price = cat?.current ?? 0
   const priceFormatted = price.toLocaleString('es-AR', { maximumFractionDigits: 0 })
+  // Question-format title matches the dominant PAA/voice query "¿cuánto vale un/una <cat>?"
+  // — these carry impressions at ~0% CTR because the old declarative title didn't mirror
+  // the question. Article agrees in gender (vaca/vaquillona = "una"). v1.40 CTR pass.
+  const article = categoria === 'vacas' || categoria === 'vaquillonas' ? 'una' : 'un'
 
   return {
-    title: `Precio ${config.name} Argentina Hoy — $${priceFormatted}/kg | 2026`,
-    description: `Precio ${config.namePlural.toLowerCase()} hoy: $${priceFormatted}/kg vivo. ${config.description} Cotización actualizada del Mercado Agroganadero.`,
+    title: `¿Cuánto vale ${article} ${config.name.toLowerCase()}? $${priceFormatted}/kg hoy`,
+    description: `¿Cuánto vale ${article} ${config.name.toLowerCase()} en Argentina hoy? Cotiza $${priceFormatted}/kg vivo en el Mercado Agroganadero, actualizado a diario. Histórico y rango por categoría.`,
     keywords: config.keywords,
     openGraph: {
       title: `Precio ${config.name} Hoy: $${priceFormatted}/kg`,
