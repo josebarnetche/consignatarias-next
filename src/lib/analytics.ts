@@ -8,6 +8,8 @@
  * for custom events and dimensions.
  */
 
+import type { ValueEvent, ValueEntityType, ValueSource } from './value-events'
+
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void
@@ -313,3 +315,72 @@ export function trackBulkIcsExport(count: number, period: string, hasFilters: bo
 /* ------------------------------------------------------------------ */
 // trackSignup lives in the ACTIVATION FUNNEL section above; it is fired by the
 // global SignupTracker (AnalyticsProvider) on the `?signup=1` post-auth redirect.
+
+/* ------------------------------------------------------------------ */
+/*  VALUE EVENTS — sistema interno de conteo (beacon a /api/track/event) */
+/* ------------------------------------------------------------------ */
+
+/** Id de sesión liviano (solo para deduplicar/segmentar; no es PII). */
+function getSessionId(): string {
+  try {
+    let id = sessionStorage.getItem('cnsg_sid')
+    if (!id) {
+      id = Math.random().toString(36).slice(2) + Date.now().toString(36)
+      sessionStorage.setItem('cnsg_sid', id)
+    }
+    return id
+  } catch {
+    return ''
+  }
+}
+
+/** Deriva la fuente de tráfico para atribución. El engine AI lo deja el AiReferralTracker
+ *  en sessionStorage('ai_engine'); el resto sale del referrer. */
+function getTrafficSource(): { source: ValueSource; aiEngine: string | null } {
+  try {
+    const aiEngine = sessionStorage.getItem('ai_engine')
+    if (aiEngine) return { source: 'ai', aiEngine }
+    const ref = document.referrer
+    if (!ref) return { source: 'direct', aiEngine: null }
+    const host = new URL(ref).hostname
+    if (host === window.location.hostname) return { source: 'direct', aiEngine: null }
+    if (/(^|\.)(google|bing|duckduckgo|yahoo|ecosia|brave)\./i.test(host)) return { source: 'organic', aiEngine: null }
+    if (/(facebook|instagram|twitter|x\.com|t\.co|linkedin|whatsapp)/i.test(host)) return { source: 'social', aiEngine: null }
+    return { source: 'referral', aiEngine: null }
+  } catch {
+    return { source: 'unknown', aiEngine: null }
+  }
+}
+
+/**
+ * Registra un EVENTO DE VALOR: lo manda a GA4 (espejo) y al sistema interno de conteo
+ * (/api/track/event → tabla value_events) con atribución de fuente/engine/entidad. El
+ * peso lo asigna el server desde el registro src/lib/value-events.ts. Solo en producción.
+ */
+export function trackValueEvent(
+  event: ValueEvent,
+  opts: { entityType?: ValueEntityType; entitySlug?: string; meta?: Record<string, unknown> } = {},
+) {
+  trackEvent(event, { entity_type: opts.entityType, entity_slug: opts.entitySlug, ...opts.meta })
+  if (!analyticsEnabled()) return
+  try {
+    const { source, aiEngine } = getTrafficSource()
+    const payload = JSON.stringify({
+      event,
+      entityType: opts.entityType ?? 'global',
+      entitySlug: opts.entitySlug ?? null,
+      source,
+      aiEngine,
+      path: window.location.pathname,
+      sessionId: getSessionId(),
+      meta: opts.meta ?? null,
+    })
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/api/track/event', new Blob([payload], { type: 'application/json' }))
+    } else {
+      fetch('/api/track/event', { method: 'POST', body: payload, headers: { 'Content-Type': 'application/json' }, keepalive: true })
+    }
+  } catch {
+    /* best-effort: nunca romper la navegación por instrumentar */
+  }
+}

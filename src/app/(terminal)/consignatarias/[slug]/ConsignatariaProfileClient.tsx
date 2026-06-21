@@ -11,7 +11,7 @@ import type { EntityTier } from '@/lib/features'
 import type { AuctionResult } from './page'
 import FeatureGate from '@/components/FeatureGate'
 import { normalizeUrl } from '@/lib/utils/url'
-import { trackProfileView, trackOutboundClick, trackClaimCTA } from '@/lib/analytics'
+import { trackProfileView, trackOutboundClick, trackClaimCTA, trackValueEvent } from '@/lib/analytics'
 import {
   TYPE_COLORS,
   TYPE_LABELS,
@@ -570,12 +570,12 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                 )}
                 <div className="flex flex-wrap gap-2 mt-2">
                   {upcoming[0].youtubeUrl && (
-                    <a href={normalizeUrl(upcoming[0].youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer" onClick={() => trackOutboundClick(upcoming[0].youtubeUrl || '', 'youtube')} className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xxs font-terminal uppercase tracking-wider text-positive border border-positive/30 rounded-terminal hover:bg-positive/10 transition-colors">
+                    <a href={normalizeUrl(upcoming[0].youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer" onClick={() => { trackOutboundClick(upcoming[0].youtubeUrl || '', 'youtube'); trackValueEvent('live_click', { entityType: 'consignataria', entitySlug: profile.canonicalSlug }) }} className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xxs font-terminal uppercase tracking-wider text-positive border border-positive/30 rounded-terminal hover:bg-positive/10 transition-colors">
                       &#9654; En vivo
                     </a>
                   )}
                   {upcoming[0].catalogUrl && (
-                    <a href={normalizeUrl(upcoming[0].catalogUrl) || '#'} target="_blank" rel="noopener noreferrer" onClick={() => trackOutboundClick(upcoming[0].catalogUrl || '', 'catalog')} className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xxs font-terminal uppercase tracking-wider text-accent border border-accent/30 rounded-terminal hover:bg-accent/10 transition-colors">
+                    <a href={normalizeUrl(upcoming[0].catalogUrl) || '#'} target="_blank" rel="noopener noreferrer" onClick={() => { trackOutboundClick(upcoming[0].catalogUrl || '', 'catalog'); trackValueEvent('catalog_click', { entityType: 'consignataria', entitySlug: profile.canonicalSlug }) }} className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xxs font-terminal uppercase tracking-wider text-accent border border-accent/30 rounded-terminal hover:bg-accent/10 transition-colors">
                       Catálogo
                     </a>
                   )}
@@ -629,7 +629,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
             {(profile.whatsapp || profile.phone || profile.email || profile.website) ? (
               <div className="flex flex-col gap-1.5">
                 {profile.whatsapp && (
-                  <a href={`https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" onClick={() => trackOutboundClick(profile.whatsapp || '', 'whatsapp')} className="text-xxs text-positive hover:text-emerald-300 font-terminal transition-colors">
+                  <a href={`https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" onClick={() => { trackOutboundClick(profile.whatsapp || '', 'whatsapp'); trackValueEvent('contact_whatsapp', { entityType: 'consignataria', entitySlug: profile.canonicalSlug }) }} className="text-xxs text-positive hover:text-emerald-300 font-terminal transition-colors">
                     WhatsApp · {profile.whatsapp}
                   </a>
                 )}
@@ -800,7 +800,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
             <Link
               href={`/consignatarias/${profile.canonicalSlug}/verificar`}
               rel="nofollow"
-              onClick={() => trackClaimCTA(profile.canonicalSlug, profile.displayName)}
+              onClick={() => { trackClaimCTA(profile.canonicalSlug, profile.displayName); trackValueEvent('claim_cta_click', { entityType: 'consignataria', entitySlug: profile.canonicalSlug }) }}
               className="text-accent hover:text-accent-bright"
             >
               Reclamá el perfil gratis &rarr;

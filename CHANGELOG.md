@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.41.0] — 2026-06-21
+
+### Sistema interno de conteo de eventos de valor
+
+Atribución propia, unificada y queryable de las acciones con **valor atribuible** del journey — lo que GA4 fragmenta y no expone por engine/entidad. Convierte la medición en un sistema.
+
+- **Taxonomía con pesos** (`src/lib/value-events.ts`, fuente de verdad): 17 eventos en 7 grupos (recurrencia, lead, engagement, funnel, conversión, descubrimiento AI, B2B), cada uno con un peso = proximidad a la plata (ej. `subscription_paid` 100, `checkout_start` 30, `calendar_subscribe` 12, `contact_whatsapp` 10, `pro_prompt_view` 1).
+- **Tabla `value_events`** + beacon `/api/track/event` (valida contra el registro y **deriva el peso server-side**, no confía en el cliente) + vistas de agregación ponderada (`value_events_daily`, `value_events_by_entity`).
+- **`trackValueEvent`** (cliente): espeja a GA4 y manda el beacon con **atribución de fuente/engine/entidad** (deriva ai/organic/direct/referral del referrer + el engine que dejó el AiReferralTracker).
+- **Instrumentado** en los eventos clave: `calendar_subscribe` (recurrencia), `contact_whatsapp`/`catalog_click`/`live_click` (lead+engagement), `claim_cta_click` (B2B).
+- **Índice de valor** = Σ (eventos × peso), desglosable por grupo, evento, fuente, engine AI y entidad → mide qué canal y qué consignataria generan valor real, no solo pageviews.
+
 ## [1.40.3] — 2026-06-21
 
 ### Suscripción al calendario arreglada (era el bloqueante de la recurrencia)
