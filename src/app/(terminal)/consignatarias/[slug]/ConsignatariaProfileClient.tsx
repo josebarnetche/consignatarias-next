@@ -495,6 +495,21 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
     return groups
   }, [sorted])
 
+  // Cronograma: meses con remates próximos visibles; meses pasados a un desplegable
+  // (lo más reciente primero). Un mismo mes puede tener ambos → se parten sus remates.
+  const { upcomingMonths, pastMonths } = useMemo(() => {
+    const up: typeof byMonth = []
+    const pa: typeof byMonth = []
+    for (const g of byMonth) {
+      const upA = g.auctions.filter(a => a.date >= today)
+      const paA = g.auctions.filter(a => a.date < today)
+      if (upA.length) up.push({ ...g, auctions: upA })
+      if (paA.length) pa.push({ ...g, auctions: paA })
+    }
+    return { upcomingMonths: up, pastMonths: pa.reverse() }
+  }, [byMonth, today])
+  const pastRematesTotal = pastMonths.reduce((s, g) => s + g.auctions.length, 0)
+
   // Fecha corta "12 jun" para las tarjetas del hero (MONTH_FULL es module-level).
   const fmtDate = (dstr: string) => {
     const d = new Date(dstr + 'T12:00:00')
@@ -1174,22 +1189,22 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                   href={`/consignatarias/${related.slug}`}
                   className="group flex flex-col items-center gap-2 p-3 bg-zinc-900/50 border border-terminal-border rounded-terminal hover:border-accent/30 hover:bg-zinc-800/50 transition-colors"
                 >
-                  {related.logoUrl ? (
-                    <Image
-                      src={related.logoUrl}
-                      alt={`Logo ${related.name}`}
-                      width={48}
-                      height={48}
-                      className="rounded-terminal object-contain bg-white"
-                      unoptimized
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-terminal bg-zinc-800 flex items-center justify-center">
-                      <span className="text-lg font-terminal text-zinc-500">
-                        {related.name.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                  )}
+                  {(() => {
+                    // Logo: el subido, o el del logo-map (firmas importantes) sobre su color de marca.
+                    const relLogo = related.logoUrl ?? getLogoUrl(related.slug)
+                    const relColor = !related.logoUrl ? getBrandColor(related.slug) : null
+                    return relLogo ? (
+                      <div className="w-12 h-12 rounded-terminal overflow-hidden flex items-center justify-center" style={{ backgroundColor: relColor || '#ffffff' }}>
+                        <Image src={relLogo} alt={`Logo ${related.name}`} width={48} height={48} className="object-contain p-1" unoptimized />
+                      </div>
+                    ) : (
+                      <div className="w-12 h-12 rounded-terminal bg-zinc-800 flex items-center justify-center">
+                        <span className="text-lg font-terminal text-zinc-500">
+                          {related.name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    )
+                  })()}
                   <span className="text-xxs font-terminal text-zinc-300 group-hover:text-accent text-center line-clamp-2 transition-colors">
                     {related.name}
                   </span>
@@ -1222,7 +1237,8 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           <span className="w-[36px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">Prv</span>
         </div>
 
-        {byMonth.map(group => (
+        {/* Próximos: visibles */}
+        {upcomingMonths.map(group => (
           <div key={group.key}>
             <div className="border-b border-terminal-border bg-zinc-900/50 px-cell py-1.5 flex items-center justify-between">
               <span className="text-xxs font-terminal text-accent font-medium tracking-wider">
@@ -1238,10 +1254,37 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           </div>
         ))}
 
-        {auctions.length === 0 && (
-          <div className="px-panel py-8 text-center">
-            <p className="text-data text-zinc-500 font-terminal">No hay remates registrados.</p>
+        {upcomingMonths.length === 0 && (
+          <div className="px-panel py-6 text-center">
+            <p className="text-data text-zinc-500 font-terminal">
+              {auctions.length === 0 ? 'No hay remates registrados.' : 'Sin remates próximos programados.'}
+            </p>
           </div>
+        )}
+
+        {/* Anteriores: desplegable, colapsado por defecto */}
+        {pastMonths.length > 0 && (
+          <details className="group/past">
+            <summary className="border-t border-terminal-border px-cell py-2 cursor-pointer list-none flex items-center gap-2 text-xxs font-terminal text-zinc-500 hover:text-zinc-300">
+              <span className="text-zinc-600 transition-transform group-open/past:rotate-90">&#9656;</span>
+              Ver {pastRematesTotal} remate{pastRematesTotal !== 1 ? 's' : ''} anterior{pastRematesTotal !== 1 ? 'es' : ''}
+            </summary>
+            {pastMonths.map(group => (
+              <div key={group.key}>
+                <div className="border-b border-terminal-border bg-zinc-900/50 px-cell py-1.5 flex items-center justify-between">
+                  <span className="text-xxs font-terminal text-zinc-400 font-medium tracking-wider">
+                    {group.label.toUpperCase()}
+                  </span>
+                  <span className="text-xxs font-terminal tabular-nums text-zinc-600">
+                    {group.auctions.length}
+                  </span>
+                </div>
+                {group.auctions.map(auction => (
+                  <ProfileAuctionRow key={auction.id} auction={auction} today={today} />
+                ))}
+              </div>
+            ))}
+          </details>
         )}
 
         {/* Footer */}

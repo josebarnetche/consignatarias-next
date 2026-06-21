@@ -369,7 +369,7 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
   const serverUpcoming = profileAuctions
     .filter(a => a.date >= today)
     .sort((a, b) => a.date.localeCompare(b.date))
-    .slice(0, 10)
+    .slice(0, 3)
 
   // Observed prices reported by the firm for its latest auction (named source).
   const latestRemate = getLatestRemate(canonical)
@@ -489,6 +489,11 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
                 </li>
               ))}
             </ul>
+            {upcomingCount > 3 && (
+              <p className="text-xs text-slate-500 mt-1">
+                +{upcomingCount - 3} {upcomingCount - 3 === 1 ? 'remate más' : 'remates más'} en el calendario completo, más abajo.
+              </p>
+            )}
           </div>
         )}
       </section>

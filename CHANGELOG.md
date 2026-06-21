@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.40.1] — 2026-06-21
+
+### Ajustes UX en la ficha de consignataria (iteración sobre feedback)
+
+- **Lista server de "Próximos remates" recortada de 10 a 3** (+ "N remates más en el calendario"): el bloque de arriba dejaba de competir con el hero por la atención.
+- **Cronograma: los remates anteriores se colapsan** en un desplegable "Ver N remates anteriores"; por defecto solo se ven los próximos.
+- **"También en la zona" muestra logos de marca** (vía `logo-map`) cuando la firma relacionada no subió el suyo, sobre su color.
+
 ## [1.40.0] — 2026-06-21
 
 ### Rediseño de la página de consignataria (UX: "mucha info, no sé dónde mirar")
