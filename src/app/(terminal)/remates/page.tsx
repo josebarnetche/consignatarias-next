@@ -98,48 +98,15 @@ export default function RematesPage() {
       <FAQPageSchema items={FAQ_ITEMS} />
       <RematesListSchema remates={upcomingRemates} />
       <section className="px-4 pt-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-3xl">
-        <h2 className="text-zinc-200 text-lg font-medium mb-2">Calendario de remates ganaderos de Argentina</h2>
+        <h2 className="text-zinc-200 text-lg font-medium mb-1">Calendario de remates ganaderos de Argentina</h2>
         <p>
-          Calendario unificado con {totalAuctions} remates de hacienda de {totalProfiles} consignatarias
-          en {totalProvinces} provincias argentinas. Los datos se actualizan automaticamente cada dia a las
-          14:00 (hora argentina) desde fuentes como la Camara Argentina de Consignatarios (CACG), Colombo
-          y Colombo, Ivan L. O&apos;Farrell, Cooperativa Lehmann, UMC Haciendas Villaguay y otras. Filtra
-          por provincia, tipo de remate (invernada, cria, general, reproductores, especial), categoria de
-          hacienda o periodo. Cada remate incluye fecha, hora, ubicacion, consignataria responsable, cabezas
-          estimadas y links a catalogos y transmisiones en vivo.
+          {totalAuctions} remates de hacienda de {totalProfiles} consignatarias en {totalProvinces} provincias,
+          actualizado todos los días a las 14:00. Filtrá abajo por provincia, tipo, fecha o consignataria.
         </p>
-        
-        {/* Quick time filters */}
+
+        {/* Explorar (links SEO a páginas dedicadas). El filtrado interactivo vive en
+            la barra de abajo — acá solo navegación a las páginas indexables. */}
         <div className="flex flex-wrap gap-2 mt-3">
-          <Link
-            href="/remates/hoy"
-            className="px-3 py-1.5 bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700 rounded text-sm text-zinc-300 transition-colors"
-          >
-            📅 Hoy
-          </Link>
-          <Link
-            href="/remates/manana"
-            className="px-3 py-1.5 bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700 rounded text-sm text-zinc-300 transition-colors"
-          >
-            📆 Mañana
-          </Link>
-          <Link
-            href="/remates/semana"
-            className="px-3 py-1.5 bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700 rounded text-sm text-zinc-300 transition-colors"
-          >
-            🗓️ Esta semana
-          </Link>
-          <Link
-            href="/remates/en-vivo"
-            className="px-3 py-1.5 bg-red-900/30 hover:bg-red-800/40 border border-red-700/50 rounded text-sm text-red-400 hover:text-red-300 transition-colors flex items-center gap-1.5"
-          >
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            En Vivo
-          </Link>
-        </div>
-        
-        {/* Province quick links */}
-        <div className="flex flex-wrap gap-2 mt-2">
           <span className="text-zinc-500 text-xs self-center mr-1">Por provincia:</span>
           <Link
             href="/remates/buenos-aires"
@@ -207,47 +174,12 @@ export default function RematesPage() {
             Especial
           </Link>
         </div>
-        
-        {/* City quick links */}
-        <div className="flex flex-wrap gap-2 mt-2">
-          <span className="text-zinc-500 text-xs self-center mr-1">Por ciudad:</span>
-          <Link
-            href="/remates/ciudad/rio-cuarto-cordoba"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
-          >
-            Río Cuarto
-          </Link>
-          <Link
-            href="/remates/ciudad/san-nicolas-de-los-arroyos-buenos-aires"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
-          >
-            San Nicolás
-          </Link>
-          <Link
-            href="/remates/ciudad/san-luis-san-luis"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
-          >
-            San Luis
-          </Link>
-          <Link
-            href="/remates/ciudad/rauch-buenos-aires"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
-          >
-            Rauch
-          </Link>
-          <Link
-            href="/remates/ciudad/villaguay-entre-rios"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
-          >
-            Villaguay
-          </Link>
-        </div>
       </section>
       
       {/* Email capture for remates */}
       <section className="px-4 py-3 border-b border-zinc-800">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-          <span className="text-zinc-400 text-sm whitespace-nowrap">📅 Recibí el resumen semanal de remates:</span>
+          <span className="text-zinc-400 text-sm whitespace-nowrap">Recibí el resumen semanal de remates:</span>
           <NewsletterSignup 
             source="remates" 
             buttonText="Suscribirme"

@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.40.2] — 2026-06-21
+
+### Página de remates reorganizada (feedback: "demasiados filtros, intro larga, por ciudad un caos")
+
+El tope de `/remates` tenía una intro larga + **4 filas de chips** (tiempo, provincia, tipo, ciudad) que duplicaban la barra de filtros interactiva de abajo.
+
+- **Intro recortada a una línea**: N remates de N consignatarias en N provincias, actualizado a diario.
+- **Eliminada la fila "Por ciudad"** (5 ciudades arbitrarias = ruido) y la **fila de filtros de tiempo** (Hoy/Mañana/Esta semana), que duplicaba las pestañas de período de la barra.
+- Quedan los links de exploración por **provincia** y **tipo** (páginas SEO dedicadas); el filtrado interactivo (período, provincia, tipo, en vivo, búsqueda) vive en la barra unificada, una sola.
+- Sin emojis.
+
 ## [1.40.1] — 2026-06-21
 
 ### Ajustes UX en la ficha de consignataria (iteración sobre feedback)
