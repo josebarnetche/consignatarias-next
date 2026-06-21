@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.41.3] — 2026-06-21
+
+### Mapa de cobertura: SVG completo de las 24 provincias
+
+Corrige el recorte de v1.41.2 (se había perdido Jujuy y simplificado contornos). Se integró el SVG **autoritativo y completo** (24 jurisdicciones, contornos a precisión total). Las 13 nombradas + 11 de contexto se renderizan, ninguna se descarta: Jujuy y todo el país vuelven a verse. Heat por conteo real en las 10 cubiertas; hover (nombre + remates) y click → `/remates/[slug]` intactos.
+
 ## [1.41.2] — 2026-06-21
 
 ### Mapa de cobertura de la landing con trazados precisos de provincias
