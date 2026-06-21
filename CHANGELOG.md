@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.41.2] — 2026-06-21
+
+### Mapa de cobertura de la landing con trazados precisos de provincias
+
+- Reemplazado el mapa esquemático (círculos sobre una silueta low-poly) por uno con **contornos reales de provincias** (SVG depurado del auto-trazado provisto: se descartaron los micro-paths de puntos repetidos que no dibujaban nada).
+- **Heat data-driven**: cada provincia cubierta se pinta con intensidad ámbar **escalada por su conteo real de remates** (`sqrt(count)`), de Buenos Aires (242) a Santiago del Estero (1). Las no cubiertas quedan tenues como contexto.
+- **Hover** muestra nombre + N remates; **click** en una cubierta navega a `/remates/[slug]`. Interfaz del componente intacta (la landing no cambió).
+- Limitación conocida: San Luis (25 remates) no viene como path nombrado en el SVG de origen, así que por ahora no se pinta — su geometría no está individualizada.
+
 ## [1.41.1] — 2026-06-21
 
 ### /overview reorganizado + gráficos de mercado interactivos
