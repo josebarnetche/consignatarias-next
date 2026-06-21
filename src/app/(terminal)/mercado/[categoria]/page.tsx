@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import marketData from '@/lib/data/market-prices.json'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
-import { CategoryPriceChart } from '@/components/market/CategoryPriceChart'
+import { CategoryPriceHistory } from '@/components/market/CategoryPriceHistory'
 import { PriceRangeTable } from '@/components/market/PriceRangeTable'
 import { PriceCTA } from '@/components/PriceCTA'
 
@@ -412,9 +412,9 @@ export default async function CategoriaPage({
           </div>
         </div>
 
-        {/* Chart */}
+        {/* Chart — evolución histórica del precio $/kg vivo de la categoría */}
         <div className="mb-8">
-          <CategoryPriceChart category={categoria} />
+          <CategoryPriceHistory category={config.namePlural} currentPrice={price} />
         </div>
 
         {/* Observed sub-category price ranges (real MAG rueda data) */}

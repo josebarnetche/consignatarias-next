@@ -7,6 +7,20 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.40.3] — 2026-06-21
+
+### Suscripción al calendario arreglada (era el bloqueante de la recurrencia)
+
+El "agregar a Google" fallaba y el ICS pedía "Activá Enterprise" — para un usuario anónimo era imposible suscribirse, y sin eso no hay recurrencia (la palanca de monetización #1 según los datos).
+
+- **Los feeds ICS (`/api/calendario/*`) salen del rate-limiter**: estaban capados a 1 req/min anónimo y devolvían el mensaje de Enterprise; un feed que las apps de calendario poletean no puede tener ese límite. Son públicos, livianos y cacheados 1h.
+- **Los botones ahora suscriben con `webcal://` (host www canónico)**, no descargan un `.ics` estático. `webcal://` sincroniza y se actualiza solo = recurrencia real; el https no-www pegaba contra un 307 que rompía a Google.
+
+### Ficha de consignataria: claim más chico + gráfico de precios por categoría
+
+- **"Reclamá tu perfil" reducido a una línea** al pie (solo ~0,1% de los visitantes son la propia firma; la barra de completitud + el panel de beneficios se movieron al flujo de `/verificar`).
+- **Módulo visual de historial de precio por categoría** en `/mercado/[categoria]`: línea $/kg vivo con selector de rango (3M/6M/12M/todo), último valor + variación. Ancla el último punto al precio real observado de la categoría (antes el gráfico dibujaba valores crudos de INMAG en todas) y declara la fuente con honestidad.
+
 ## [1.40.2] — 2026-06-21
 
 ### Página de remates reorganizada (feedback: "demasiados filtros, intro larga, por ciudad un caos")

@@ -172,9 +172,11 @@ function isPublicApiRoute(pathname: string): boolean {
     '/api/alertas',
     '/api/status',
     '/api/health',
-    '/api/calendario',
     '/api/planes',
   ]
+  // NOTA: /api/calendario (feeds ICS de suscripción) NO se rate-limita: las apps de
+  // calendario y Google los poletean repetidamente; el límite anónimo de 1 req/min los
+  // rompía con un mensaje de "Activá Enterprise". Son públicos, livianos y cacheados 1h.
   return publicRoutes.some(route => pathname.startsWith(route))
 }
 

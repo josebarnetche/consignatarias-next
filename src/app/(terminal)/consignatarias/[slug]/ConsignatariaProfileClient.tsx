@@ -37,28 +37,9 @@ import type { RelatedConsignataria } from '@/lib/dal/consignatarias'
 import type { MagEntryData } from './page'
 
 /* ------------------------------------------------------------------ */
-/*  COMPLETENESS CALCULATOR                                            */
+/*  (El cálculo de completitud del perfil se movió al flujo de /verificar —          */
+/*  la barra ya no se muestra en la ficha pública: era ruido para el productor.)     */
 /* ------------------------------------------------------------------ */
-
-const COMPLETENESS_FIELDS: { key: keyof EnrichedProfile; label: string }[] = [
-  { key: 'phone', label: 'telefono' },
-  { key: 'email', label: 'email' },
-  { key: 'website', label: 'sitio web' },
-  { key: 'description', label: 'descripcion' },
-  { key: 'logoUrl', label: 'logo' },
-  { key: 'whatsapp', label: 'whatsapp' },
-  { key: 'cuit', label: 'CUIT' },
-  { key: 'category', label: 'categoria' },
-]
-
-function calculateCompleteness(profile: EnrichedProfile): { percent: number; missing: string[] } {
-  const missing: string[] = []
-  for (const f of COMPLETENESS_FIELDS) {
-    if (!profile[f.key]) missing.push(f.label)
-  }
-  const filled = COMPLETENESS_FIELDS.length - missing.length
-  return { percent: Math.round((filled / COMPLETENESS_FIELDS.length) * 100), missing }
-}
 
 /* ------------------------------------------------------------------ */
 /*  STATUS BADGE                                                       */
@@ -809,70 +790,24 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       {/* ============================================================ */}
       {/*  CLAIM CTA + COMPLETENESS                                     */}
       {/* ============================================================ */}
-      {(() => {
-        const { percent, missing } = calculateCompleteness(profile)
-        return (
-          <div className="glass-panel mt-px">
-            <div className="px-panel py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider">Perfil completo:</span>
-                  <span className={`text-xxs tabular-nums font-terminal ${percent >= 75 ? 'text-positive' : 'text-warning'}`}>{percent}%</span>
-                </div>
-                <div className="gradient-bar w-full max-w-[200px]">
-                  <div className={percent >= 75 ? 'gradient-bar-fill-positive' : 'gradient-bar-fill-amber'} style={{ width: `${percent}%` }} />
-                </div>
-                {missing.length > 0 && (
-                  <p className="text-xxs text-zinc-500 font-terminal mt-1.5">
-                    Faltan: {missing.join(', ')}
-                  </p>
-                )}
-              </div>
-              {!profile.claimedAt && (
-                <Link
-                  href={`/consignatarias/${profile.canonicalSlug}/verificar`}
-                  rel="nofollow"
-                  onClick={() => trackClaimCTA(profile.canonicalSlug, profile.displayName)}
-                  className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-positive text-zinc-900 text-xs font-bold uppercase tracking-wider hover:bg-positive/90 transition-colors rounded shadow-lg"
-                >
-                  Reclamar gratis
-                </Link>
-              )}
-            </div>
-            {/* Value Preview Panel - shows benefits for unclaimed profiles */}
-            {!profile.claimedAt && (
-              <div className="px-panel py-3 border-t border-amber-500/20 bg-amber-500/5">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xxs text-amber-400 font-terminal uppercase tracking-wider">
-                    ¿Es tu consignataria?
-                  </span>
-                  <span className="text-xxs text-zinc-500 font-terminal">
-                    Gratis · 5 minutos
-                  </span>
-                </div>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xxs text-zinc-300 font-terminal">
-                  <li className="flex items-center gap-2">
-                    <span className="text-positive">✓</span>
-                    Editá tu información de contacto
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-positive">✓</span>
-                    Publicá tus propios remates
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-positive">✓</span>
-                    Recibí consultas de compradores
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-positive">✓</span>
-                    Badge de perfil verificado
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
-        )
-      })()}
+      {/* Claim — una sola línea discreta al pie. Solo ~0.1% de los visitantes son la
+          propia firma; no debe competir con la experiencia del productor. La barra de
+          completitud + el panel de beneficios viven ahora en el flujo de /verificar. */}
+      {!profile.claimedAt && (
+        <div className="mt-px px-panel py-2.5 text-center">
+          <span className="text-xxs text-zinc-500 font-terminal">
+            ¿Operás en {profile.displayName}?{' '}
+            <Link
+              href={`/consignatarias/${profile.canonicalSlug}/verificar`}
+              rel="nofollow"
+              onClick={() => trackClaimCTA(profile.canonicalSlug, profile.displayName)}
+              className="text-accent hover:text-accent-bright"
+            >
+              Reclamá el perfil gratis &rarr;
+            </Link>
+          </span>
+        </div>
+      )}
 
       {/* ============================================================ */}
       {/*  MAG ENTRY DATA (when available for today's auctions)         */}
