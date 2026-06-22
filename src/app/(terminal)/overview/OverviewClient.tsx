@@ -78,9 +78,7 @@ export default function OverviewClient() {
               <span className={ia.cls + " text-sm font-terminal tabular-nums font-semibold"}>{ia.arrow} {fmt(inmag.change, 1)}%</span>
             </div>
           </div>
-          <Stat label="Novillo" value={fmt(cats.novillos.current)} change={cats.novillos.change} />
-          <Stat label="Ternero" value={fmt(cats.terneros.current)} change={cats.terneros.change} />
-          <Stat label="Vaca" value={fmt(cats.vacas.current)} change={cats.vacas.change} />
+          {/* Solo macro acá (INMAG/maíz/USD). Las categorías viven UNA sola vez, en su tabla. */}
           <Stat label="Maíz USD/tn" value={fmt(corn.current, 1)} change={corn.change} />
           <Stat label="USD blue" value={fmt(usd.current)} change={usd.change} />
           <div>

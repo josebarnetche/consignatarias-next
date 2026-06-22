@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.42.3] — 2026-06-21
+
+### /overview: cero duplicación de categorías
+
+La fila "Mercado hoy" mostraba Novillo/Ternero/Vaca y la tabla de categorías también (2×). Ahora la fila es solo macro (INMAG + maíz + USD + remates hoy) y las categorías viven una sola vez, en su tabla.
+
 ## [1.42.2] — 2026-06-21
 
 ### /overview rehecho de verdad + fix del gráfico
