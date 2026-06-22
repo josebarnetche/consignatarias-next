@@ -3,6 +3,7 @@ import marketPrices from "@/lib/data/market-prices.json";
 import rematesData from "@/lib/data/remates.json";
 import { normalizeUrl } from "@/lib/utils/url";
 import { PriceLineChart, type PricePoint } from "@/components/charts/PriceLineChart";
+import { Delta } from "@/components/ui";
 
 /* ---------- helpers ---------- */
 function fmt(n: number, decimals = 0): string {
@@ -40,14 +41,15 @@ const inmagFromDate = inmagRawSeries[0]?.date ?? "";
 const inmagToDate = inmagRawSeries[inmagRawSeries.length - 1]?.date ?? "";
 
 /* ---------- compact stat (market strip) ---------- */
+// Validación Fase 0: la variación usa la primitiva <Delta> (token semántico +
+// tabular-nums + glyph por signo), reemplazando el changeArrow ASCII local.
 function Stat({ label, value, change }: { label: string; value: string; change?: number }) {
-  const a = change != null ? changeArrow(change) : null;
   return (
     <div>
       <div className="text-xxs text-zinc-500 uppercase tracking-wider whitespace-nowrap">{label}</div>
       <div className="flex items-baseline gap-1.5">
         <span className="text-lg font-terminal tabular-nums text-zinc-200">{value}</span>
-        {a && change != null && <span className={a.cls + " text-xxs tabular-nums"}>{a.arrow}{fmt(Math.abs(change), 1)}%</span>}
+        {change != null && <Delta change={change} className="text-xxs" />}
       </div>
     </div>
   );
@@ -163,13 +165,12 @@ export default function OverviewClient() {
               <tbody>
                 {Object.entries(cats).map(([key, val]) => {
                   const c = val as { current: number; prev: number; change: number };
-                  const { arrow, cls } = changeArrow(c.change);
                   return (
                     <tr key={key}>
                       <td className="text-zinc-400 uppercase text-xxs tracking-wider">{categoryLabels[key] || key}</td>
                       <td className="num text-zinc-100 font-semibold">{fmt(c.current)}</td>
                       <td className="num text-zinc-500">{fmt(c.prev)}</td>
-                      <td className={"num " + cls}>{arrow}{fmt(Math.abs(c.change), 1)}%</td>
+                      <td className="num"><Delta change={c.change} className="justify-end" /></td>
                     </tr>
                   );
                 })}

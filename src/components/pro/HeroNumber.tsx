@@ -1,14 +1,9 @@
 import type { ReactNode } from 'react'
+import { SEMANTIC_HEX, type SemanticTone } from '@/lib/ui/tokens'
 
-export type SemanticTone = 'neutral' | 'positive' | 'warning' | 'negative' | 'accent'
-
-const TONE_COLOR: Record<SemanticTone, string> = {
-  neutral: '#f4f4f5', // zinc-100
-  positive: '#34d399',
-  warning: '#fbbf24',
-  negative: '#f87171',
-  accent: '#38bdf8',
-}
+// Re-exported for back-compat: existing call sites import `SemanticTone`
+// from '@/components/pro'. The canonical definition lives in '@/lib/ui/tokens'.
+export type { SemanticTone }
 
 interface HeroNumberProps {
   /** Small uppercase label above the number, e.g. "Por cabeza (ARS)". */
@@ -17,7 +12,7 @@ interface HeroNumberProps {
   value: ReactNode
   /** Optional sub-line under the number, e.g. "$2.870/kg × 430 kg". */
   sub?: ReactNode
-  /** Semantic color of the number. Default neutral (zinc-100). */
+  /** Semantic color of the number. Default `emphasis` (zinc-100, número-hero fuerte). */
   tone?: SemanticTone
   /** Tailwind size class for the number. Default text-2xl. */
   size?: string
@@ -39,7 +34,7 @@ export default function HeroNumber({
   label,
   value,
   sub,
-  tone = 'neutral',
+  tone = 'emphasis',
   size = 'text-2xl',
   center = false,
 }: HeroNumberProps) {
@@ -50,7 +45,7 @@ export default function HeroNumber({
       </div>
       <div
         className={`${size} font-terminal tabular-nums leading-none`}
-        style={{ color: TONE_COLOR[tone] }}
+        style={{ color: SEMANTIC_HEX[tone] }}
       >
         {value}
       </div>

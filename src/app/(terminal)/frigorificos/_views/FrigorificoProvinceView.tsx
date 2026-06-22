@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
-import { BreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { FAQPageSchema } from '@/components/seo/JsonLd'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
+import Breadcrumb from '@/components/ui/Breadcrumb'
 
 /* ============================================================
    FRIGORIFICO PROVINCE VIEW — used when /frigorificos/[slug]
@@ -196,22 +197,17 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
 
   return (
     <>
-      <BreadcrumbSchema
-        items={[
-          { name: 'Inicio', url: 'https://www.consignatarias.com.ar' },
-          { name: 'Frigoríficos', url: 'https://www.consignatarias.com.ar/frigorificos' },
-          { name: config.displayName, url: `https://www.consignatarias.com.ar/frigorificos/${provincia}` },
-        ]}
-      />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
       <FAQPageSchema items={faqItems} />
 
       <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 space-y-0">
-        <div className="mb-2">
-          <Link href="/frigorificos" className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors">
-            &larr; Ver todos los frigoríficos
-          </Link>
-        </div>
+        <Breadcrumb
+          className="mb-2"
+          items={[
+            { name: 'Frigoríficos', href: '/frigorificos' },
+            { name: config.displayName },
+          ]}
+        />
 
         <div className="terminal-panel">
           <div className="terminal-panel-header flex items-center justify-between flex-wrap gap-2">

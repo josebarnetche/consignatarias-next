@@ -7,6 +7,24 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.43.0] — 2026-06-22
+
+### Sistema de diseño integrado — Fase 0 (fundación) + Fase 1 (discoverability)
+
+Un swarm de 10 agentes analizó tráfico + discoverability y auditó el design system. Hallazgo central: **el sistema existía pero no se obedecía** (636 colores crudos, dos `tone-maps` en conflicto, sin tokens de motion, primitivas solo-CSS) y **la navegación no exponía el valor** — `/mercado/inmag`, el activo #1 por tráfico y tiempo, ni estaba en el nav. Spec completo en `docs/strategy/DESIGN-SYSTEM.md`.
+
+**Fase 0 — Fundación:**
+- **Color semántico con una sola fuente de verdad** (`src/lib/ui/tokens.ts`): resuelto el conflicto donde "neutral" valía `#f4f4f5` en un componente y `#a1a1aa` en otro para el mismo tono. `HeroNumber` y `StatPill` ahora importan el mapa canónico.
+- **Tokens de motion** (duraciones fast/base/slow + easings) en `tailwind.config` + utilidades en `globals.css`.
+- **Primitivas React tipadas** en `src/components/ui/`: `Delta` (variación de precio, color por token, nunca "0% verde"), `Stat`, `PageHeader`, `Badge`.
+
+**Fase 1 — Discoverability / navegación:**
+- **Nav reorganizado por modelo mental** (grupos desplegables accesibles, teclado + Escape + click-outside): MERCADO sube **INMAG hoy** y rescata **Arrendamiento**; HERRAMIENTAS saca la **Calculadora** del footer; DIRECTORIO une consignatarias + frigoríficos; REMATES con sus vistas temporales. El activo #1 deja de ser un callejón SEO.
+- **Breadcrumb unificado** (visual + JSON-LD desde un solo array) en `/mercado/inmag`, `/frigorificos/[provincia]` y `/mercado/[categoria]`.
+- **Footer** de ~28 links planos → sitemap de 4 columnas con jerarquía (Datos · Producto · Empresa · Legal), despriorizando las páginas trust frente a INMAG/Calculadora.
+
+Las fases 2-3 (primitivas de dato, fluidez) y los rediseños por página (overview/consignatarias/remates) se construyen sobre esta base.
+
 ## [1.42.3] — 2026-06-21
 
 ### /overview: cero duplicación de categorías

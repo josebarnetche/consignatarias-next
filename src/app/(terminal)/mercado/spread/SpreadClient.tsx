@@ -138,7 +138,7 @@ export default function SpreadClient() {
                     label="Novillo (INMAG)"
                     value={`$${data.novilloArs.toLocaleString('es-AR')}`}
                     sub={`ARS/kg vivo · ≈ USD ${data.novilloUsd.toFixed(2)}/kg`}
-                    tone="neutral"
+                    tone="emphasis"
                     size="text-xl"
                   />
                 </div>
@@ -148,7 +148,7 @@ export default function SpreadClient() {
                     label="Maíz FOB"
                     value={`USD ${data.cornUsd.toFixed(0)}`}
                     sub={`USD/tonelada · ≈ USD ${(data.cornUsd / 1000).toFixed(4)}/kg`}
-                    tone="neutral"
+                    tone="emphasis"
                     size="text-xl"
                   />
                 </div>
@@ -158,7 +158,7 @@ export default function SpreadClient() {
                     label="Dólar Blue"
                     value={`$${data.usdBlue.toLocaleString('es-AR')}`}
                     sub="ARS/USD · dolarapi.com"
-                    tone="neutral"
+                    tone="emphasis"
                     size="text-xl"
                   />
                 </div>

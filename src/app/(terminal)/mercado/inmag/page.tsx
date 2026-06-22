@@ -2,7 +2,8 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import marketData from '@/lib/data/market-prices.json'
-import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import Breadcrumb from '@/components/ui/Breadcrumb'
 import { CitaBlock } from '@/components/seo/CitaBlock'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
@@ -152,7 +153,6 @@ export default function InmagPage() {
 
   return (
     <>
-      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
       <InmagSchema />
       <InmagDefinedTermSchema />
       <FAQPageSchema items={INMAG_FAQS} />
@@ -169,14 +169,14 @@ export default function InmagPage() {
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-500/5 blur-[120px] rounded-full" />
           
           <div className="relative max-w-6xl mx-auto px-4 pt-8 pb-12">
-            {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 text-sm text-zinc-500 mb-8">
-              <Link href="/" className="hover:text-zinc-300 transition-colors">Inicio</Link>
-              <span className="text-zinc-700">/</span>
-              <Link href="/mercado" className="hover:text-zinc-300 transition-colors">Mercado</Link>
-              <span className="text-zinc-700">/</span>
-              <span className="text-emerald-400">INMAG</span>
-            </nav>
+            {/* Breadcrumb (unified — visual + JSON-LD desde un solo array) */}
+            <Breadcrumb
+              className="mb-8"
+              items={[
+                { name: 'Mercado', href: '/mercado' },
+                { name: 'INMAG' },
+              ]}
+            />
 
             {/* Main heading */}
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">

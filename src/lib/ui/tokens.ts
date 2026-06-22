@@ -1,5 +1,51 @@
 import type { Auction } from '@/lib/db/schema'
 
+/* ================================================================== */
+/*  SEMANTIC COLOR — UNA fuente de verdad                             */
+/*  (DESIGN-SYSTEM.md §2.1 — keep in sync con tailwind.config.js)     */
+/* ================================================================== */
+
+/**
+ * Canonical hex per semantic tone. This is the SINGLE source of truth for
+ * data/value color across the product. Components (HeroNumber, StatPill,
+ * Delta, charts, …) import from here — they MUST NOT hardcode a local map.
+ *
+ * Hard rules (DESIGN-SYSTEM.md §2.1):
+ *  - `neutral` (#a1a1aa) y `emphasis` (#f4f4f5) son tokens DISTINTOS. Resuelve
+ *    la colisión histórica: HeroNumber usaba #f4f4f5 y StatPill #a1a1aa para
+ *    el mismo 'neutral'. Ahora `neutral` = dato sin tendencia (zinc-400) y
+ *    `emphasis` = texto fuerte / número-hero (zinc-100).
+ *  - Estado ≠ marca: `accent` = interactivo/enlace/foco; `positive/negative/
+ *    warning` = valor/dato; `live` = tiempo real. Un número que sube usa
+ *    `positive`, jamás `accent`.
+ *  - Los charts reciben `SEMANTIC_HEX.positive`, nunca el literal '#34d399'.
+ */
+export const SEMANTIC_HEX = {
+  neutral:  '#a1a1aa', // zinc-400 — dato sin tendencia
+  emphasis: '#f4f4f5', // zinc-100 — texto fuerte / número-hero (NO es 'neutral')
+  positive: '#34d399', // emerald-400 — sube / ganancia
+  negative: '#f87171', // red-400 — baja / pérdida
+  warning:  '#fbbf24', // amber-400 — alerta
+  accent:   '#38bdf8', // sky-400 — interactivo / enlace / foco
+  live:     '#10b981', // emerald-500 — tiempo real
+} as const
+
+export type SemanticTone = keyof typeof SEMANTIC_HEX
+
+/** Resolve a tone to its canonical hex. */
+export const toneHex = (tone: SemanticTone): string => SEMANTIC_HEX[tone]
+
+/**
+ * Map a signed change to a tone. Values within ±`thr` are `neutral` (flat);
+ * positive → `positive`, negative → `negative`. Use for deltas/variations so
+ * "subió/bajó/igual" always colors the same way across the 135 files.
+ */
+export const signedTone = (
+  n: number,
+  thr = 0
+): 'neutral' | 'positive' | 'negative' =>
+  Math.abs(n) <= thr ? 'neutral' : n > 0 ? 'positive' : 'negative'
+
 /* ------------------------------------------------------------------ */
 /*  TYPE BADGE TOKENS                                                  */
 /* ------------------------------------------------------------------ */

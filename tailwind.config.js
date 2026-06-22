@@ -110,6 +110,21 @@ module.exports = {
           '100%': { transform: 'translateX(100%)' },
         },
       },
+      // Motion tokens (DESIGN-SYSTEM.md §2.3) — UNA escala de duración + easings.
+      // Convención: hover/estado = `fast`·`standard` · superficie/aparición = `base`
+      // · barras/datos (gradient-bar, stroke de chart) = `slow`. El reveal de
+      // scroll mantiene su 0.8s deliberado; `prefers-reduced-motion` NO se toca.
+      transitionDuration: {
+        fast: '100ms',
+        base: '200ms',
+        slow: '400ms',
+      },
+      transitionTimingFunction: {
+        // el easing del reveal-init de la landing — para superficies/aparición
+        standard: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        // easing de los loops "vivos" (pulse-live/ring-pulse)
+        live: 'cubic-bezier(0.4, 0, 0.6, 1)',
+      },
       borderWidth: {
         'thin': '0.5px',
       },

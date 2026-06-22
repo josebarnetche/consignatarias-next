@@ -1,12 +1,4 @@
-import type { SemanticTone } from './HeroNumber'
-
-const TONE_COLOR: Record<SemanticTone, string> = {
-  neutral: '#a1a1aa', // zinc-400
-  positive: '#34d399',
-  warning: '#fbbf24',
-  negative: '#f87171',
-  accent: '#38bdf8',
-}
+import { SEMANTIC_HEX, type SemanticTone } from '@/lib/ui/tokens'
 
 interface StatPillProps {
   /** Label to the left of the bar, e.g. "Percentil últimos 30 días". */
@@ -29,9 +21,13 @@ interface StatPillProps {
 
 function resolveColor(value: number, tone: SemanticTone | 'percentile'): string {
   if (tone === 'percentile') {
-    return value >= 70 ? '#34d399' : value >= 40 ? '#fbbf24' : '#f87171'
+    return value >= 70
+      ? SEMANTIC_HEX.positive
+      : value >= 40
+        ? SEMANTIC_HEX.warning
+        : SEMANTIC_HEX.negative
   }
-  return TONE_COLOR[tone]
+  return SEMANTIC_HEX[tone]
 }
 
 /**

@@ -516,6 +516,33 @@
   .animate-pulse-soft {
     animation: pulse-soft 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
+
+  /* ---------------------------------------------------------------- */
+  /*  Motion tokens (DESIGN-SYSTEM.md §2.3)                            */
+  /*  Atajos sobre la escala fast/base/slow + easing `standard`.       */
+  /*  Equivalen a `transition-[…] duration-* ease-standard` de Tailwind.*/
+  /*  Convención:                                                      */
+  /*   · motion-hover  → hover/estado (color · fast · standard)        */
+  /*   · motion-base   → superficie/aparición (200ms · standard)       */
+  /*   · motion-slow   → barras/datos: gradient-bar, stroke de chart   */
+  /*  `prefers-reduced-motion` ya está cubierto globalmente — no se toca.*/
+  .motion-hover {
+    transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+    transition-duration: 100ms;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .motion-base {
+    transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .motion-slow {
+    transition-property: width, height, opacity, transform, box-shadow, stroke-dashoffset;
+    transition-duration: 400ms;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
 }
 
 /* --- Landing: cinta de mercado (tape) --- */

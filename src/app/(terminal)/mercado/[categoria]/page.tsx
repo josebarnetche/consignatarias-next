@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import marketData from '@/lib/data/market-prices.json'
-import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import Breadcrumb from '@/components/ui/Breadcrumb'
 import { CategoryPriceHistory } from '@/components/market/CategoryPriceHistory'
 import { PriceRangeTable } from '@/components/market/PriceRangeTable'
 import { PriceCTA } from '@/components/PriceCTA'
@@ -358,18 +358,19 @@ export default async function CategoriaPage({
 
   return (
     <>
-      <SectionBreadcrumbSchema section={`mercado/${categoria}`} sectionName={`Precio ${config.name}`} />
       <CategoryPriceSchema config={config} price={price} change={change} />
-      
+
       <article className="px-4 pt-4 pb-8">
         {/* Header */}
         <header className="mb-6">
-          <nav className="text-sm text-zinc-500 mb-2">
-            <Link href="/mercado" className="hover:text-emerald-400">Mercado</Link>
-            <span className="mx-2">›</span>
-            <span className="text-zinc-300">{config.namePlural}</span>
-          </nav>
-          
+          <Breadcrumb
+            className="mb-2"
+            items={[
+              { name: 'Mercado', href: '/mercado' },
+              { name: config.namePlural },
+            ]}
+          />
+
           <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-2">
             Precio {config.name} Argentina
           </h1>
