@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.44.3] — 2026-06-22
+
+### Ficha de consignataria: "Próximos remates" ahora se lee como título
+
+En la ficha, el resumen, la línea de existencias bovinas y la lista de próximos remates fluían como un único bloque de prosa, así que "Próximos remates de …" no se distinguía como encabezado. Agregado un separador (línea superior + aire) y un guion de acento delante del título para marcarlo claramente como sección, antes del cronograma y el directorio.
+
 ## [1.44.2] — 2026-06-22
 
 ### INMAG en dólares: gráficos interactivos + carga como el resto de los mercados

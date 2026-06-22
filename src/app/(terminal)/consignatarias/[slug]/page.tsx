@@ -484,8 +484,11 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
           </p>
         )}
         {serverUpcoming.length > 0 && (
-          <div className="mt-4">
-            <h2 className="text-lg font-semibold text-white mb-2">Próximos remates de {enrichedProfile.displayName}</h2>
+          <div className="mt-6 pt-5 border-t border-terminal-border">
+            <h2 className="text-base font-semibold text-white mb-3 flex items-baseline gap-2">
+              <span className="text-accent font-terminal" aria-hidden>—</span>
+              Próximos remates de {enrichedProfile.displayName}
+            </h2>
             <ul className="space-y-1 text-sm text-slate-400">
               {serverUpcoming.map((a, i) => (
                 <li key={`${a.date}-${i}`}>
