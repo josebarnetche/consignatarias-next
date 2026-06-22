@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.42.2] — 2026-06-21
+
+### /overview rehecho de verdad + fix del gráfico
+
+El rediseño anterior seguía siendo caótico. Reescrito desde cero:
+- **Sin ticker**: duplicaba el snapshot (INMAG/novillo/maíz aparecían 2×). Ahora una sola fila "Mercado hoy" como fuente única.
+- **Remates arriba y a la izquierda** (lo accionable), no enterrados; layout denso de 2 columnas centrado (`max-w`) en vez de paneles full-width desparramados.
+- **Sección "Accesos" eliminada** (duplicaba el navbar → menos footers/links confusos).
+- **Gráfico arreglado**: el punto de precio era un óvalo estirado (un `<circle>` SVG deformado por `preserveAspectRatio="none"`) → ahora es un punto HTML redondo; las labels del eje Y dejaron de pisar la línea y las fechas. Aplica a todos los gráficos (`PriceLineChart`).
+
 ## [1.42.1] — 2026-06-21
 
 ### Logo de Farming Salentein en el remate especial

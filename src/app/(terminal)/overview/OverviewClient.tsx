@@ -1,582 +1,184 @@
 import Link from "next/link";
 import marketPrices from "@/lib/data/market-prices.json";
 import rematesData from "@/lib/data/remates.json";
-import consignatariasData from "@/lib/data/consignatarias.json";
 import { normalizeUrl } from "@/lib/utils/url";
 import { PriceLineChart, type PricePoint } from "@/components/charts/PriceLineChart";
 
-/* ================================================================== */
-/*  HELPER: format number with locale                                  */
-/* ================================================================== */
+/* ---------- helpers ---------- */
 function fmt(n: number, decimals = 0): string {
-  return n.toLocaleString("es-AR", {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
+  return n.toLocaleString("es-AR", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 }
-
-/* ================================================================== */
-/*  HELPER: change arrow + class                                       */
-/* ================================================================== */
 function changeArrow(change: number): { arrow: string; cls: string } {
-  if (change > 0) return { arrow: "▲", cls: "val-positive glow-positive" };
-  if (change < 0) return { arrow: "▼", cls: "val-negative glow-negative" };
+  if (change > 0) return { arrow: "▲", cls: "val-positive" };
+  if (change < 0) return { arrow: "▼", cls: "val-negative" };
   return { arrow: "●", cls: "val-neutral" };
 }
 
-/* ================================================================== */
-/*  DATA PREP                                                          */
-/* ================================================================== */
-
+/* ---------- data prep ---------- */
 const TODAY = new Date().toISOString().split("T")[0];
-
-// Remates: today, upcoming (future, sorted by date), past
 const rematesToday = rematesData.filter((r) => r.date === TODAY);
 const rematesUpcoming = rematesData
   .filter((r) => r.date > TODAY && r.status === "scheduled")
-  .sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? ''));
+  .sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? "").localeCompare(b.time ?? ""));
 const rematesPast = rematesData.filter((r) => r.date < TODAY);
+const nextAuctions = [...rematesToday, ...rematesUpcoming].slice(0, 8);
+const totalHeadsUpcoming = [...rematesToday, ...rematesUpcoming].reduce((s, r) => s + (r.estimatedHeads ?? 0), 0);
 
-// Next 5 auctions (today first, then future)
-const nextAuctions = [...rematesToday, ...rematesUpcoming].slice(0, 5);
-
-// Total heads upcoming (including today)
-const totalHeadsUpcoming = [...rematesToday, ...rematesUpcoming].reduce(
-  (s, r) => s + (r.estimatedHeads ?? 0),
-  0
-);
-
-// Category labels
 const categoryLabels: Record<string, string> = {
-  novillos: "Novillos",
-  novillitos: "Novillitos",
-  vaquillonas: "Vaquillonas",
-  vacas: "Vacas",
-  toros: "Toros",
-  terneros: "Terneros",
+  novillos: "Novillos", novillitos: "Novillitos", vaquillonas: "Vaquillonas",
+  vacas: "Vacas", toros: "Toros", terneros: "Terneros",
 };
 
-// INMAG trend: full daily series for the interactive chart + derived stats.
 const inmagRawSeries = marketPrices.inmag.series as { date: string; value: number }[];
-const inmagChartData: PricePoint[] = inmagRawSeries.map((pt) => ({
-  date: pt.date,
-  value: pt.value,
-}));
+const inmagChartData: PricePoint[] = inmagRawSeries.map((pt) => ({ date: pt.date, value: pt.value }));
 const inmagValues = inmagRawSeries.map((pt) => pt.value);
 const inmagFirstVal = inmagValues[0];
 const inmagLastVal = inmagValues[inmagValues.length - 1];
-const inmagTrendChangePct =
-  inmagFirstVal > 0 ? ((inmagLastVal - inmagFirstVal) / inmagFirstVal) * 100 : 0;
-const inmagTrendAbs = inmagLastVal - inmagFirstVal;
-const inmagTrendMean =
-  inmagValues.reduce((a, b) => a + b, 0) / inmagValues.length;
+const inmagTrendChangePct = inmagFirstVal > 0 ? ((inmagLastVal - inmagFirstVal) / inmagFirstVal) * 100 : 0;
 const inmagTrendUp = inmagTrendChangePct >= 0;
 const inmagFromDate = inmagRawSeries[0]?.date ?? "";
 const inmagToDate = inmagRawSeries[inmagRawSeries.length - 1]?.date ?? "";
 
-// Consignatarias summary
-const consigByProvince = consignatariasData.reduce<Record<string, number>>(
-  (acc, c) => {
-    acc[c.province] = (acc[c.province] || 0) + 1;
-    return acc;
-  },
-  {}
-);
-const consigProvinceCount = Object.keys(consigByProvince).length;
+/* ---------- compact stat (market strip) ---------- */
+function Stat({ label, value, change }: { label: string; value: string; change?: number }) {
+  const a = change != null ? changeArrow(change) : null;
+  return (
+    <div>
+      <div className="text-xxs text-zinc-500 uppercase tracking-wider whitespace-nowrap">{label}</div>
+      <div className="flex items-baseline gap-1.5">
+        <span className="text-lg font-terminal tabular-nums text-zinc-200">{value}</span>
+        {a && change != null && <span className={a.cls + " text-xxs tabular-nums"}>{a.arrow}{fmt(Math.abs(change), 1)}%</span>}
+      </div>
+    </div>
+  );
+}
 
 /* ================================================================== */
-/*  PAGE COMPONENT                                                     */
-/* ================================================================== */
-export default function HomePage() {
+export default function OverviewClient() {
   const inmag = marketPrices.inmag;
   const cats = marketPrices.categories;
   const corn = marketPrices.corn;
   const usd = marketPrices.usdBlue;
+  const ia = changeArrow(inmag.change);
 
   return (
-    <div className="flex flex-col min-h-0">
-      {/* ============================================================ */}
-      {/*  TICKER BAR (hidden on mobile -- too dense)                   */}
-      {/* ============================================================ */}
-      <div
-        className="border-b border-terminal-border flex-shrink-0 hidden md:block"
-        style={{
-          background:
-            "linear-gradient(90deg, #16161d 0%, #0a0a0f 50%, #16161d 100%)",
-        }}
-      >
-        <div className="flex items-center gap-0 px-4 h-8 overflow-x-auto text-data font-terminal tabular-nums whitespace-nowrap">
-          {/* INMAG */}
-          <span className="text-zinc-500 text-xxs uppercase tracking-wider mr-1.5">
-            INMAG
-          </span>
-          <span className="text-zinc-100 font-semibold mr-1">
-            {fmt(inmag.current)}
-          </span>
-          <span className={changeArrow(inmag.change).cls + " text-xxs mr-3"}>
-            {changeArrow(inmag.change).arrow}
-            {fmt(inmag.change, 1)}%
-          </span>
+    <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 space-y-px">
 
-          <span className="text-terminal-border mx-1 select-none">|</span>
-
-          {/* NOV */}
-          <span className="text-zinc-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
-            NOV
-          </span>
-          <span className="text-zinc-300 mr-1">{fmt(cats.novillos.current)}</span>
-          <span
-            className={changeArrow(cats.novillos.change).cls + " text-xxs mr-3"}
-          >
-            {changeArrow(cats.novillos.change).arrow}
-            {fmt(cats.novillos.change, 1)}%
-          </span>
-
-          <span className="text-terminal-border mx-1 select-none">|</span>
-
-          {/* TERN */}
-          <span className="text-zinc-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
-            TERN
-          </span>
-          <span className="text-zinc-300 mr-1">{fmt(cats.terneros.current)}</span>
-          <span
-            className={changeArrow(cats.terneros.change).cls + " text-xxs mr-3"}
-          >
-            {changeArrow(cats.terneros.change).arrow}
-            {fmt(cats.terneros.change, 1)}%
-          </span>
-
-          <span className="text-terminal-border mx-1 select-none">|</span>
-
-          {/* CORN */}
-          <span className="text-zinc-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
-            CORN
-          </span>
-          <span className="text-zinc-300 mr-1">
-            {fmt(corn.current, 1)}
-          </span>
-          <span className="text-zinc-500 text-xxs mr-1">USD/tn</span>
-          <span className={changeArrow(corn.change).cls + " text-xxs mr-3"}>
-            {changeArrow(corn.change).arrow}
-            {fmt(corn.change, 1)}%
-          </span>
-
-          <span className="text-terminal-border mx-1 select-none">|</span>
-
-          {/* USD BLUE */}
-          <span className="text-zinc-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
-            USD/BLUE
-          </span>
-          <span className="text-zinc-300 mr-1">{fmt(usd.current)}</span>
-          <span className={changeArrow(usd.change).cls + " text-xxs mr-3"}>
-            {changeArrow(usd.change).arrow}
-            {fmt(usd.change, 1)}%
-          </span>
-
-          <span className="text-terminal-border mx-1 select-none">|</span>
-
-          {/* REMATES HOY */}
-          <span className="text-zinc-500 text-xxs uppercase tracking-wider mr-1.5 ml-1">
-            REMATES HOY
-          </span>
-          <span className="text-warning font-semibold">{rematesToday.length}</span>
+      {/* MERCADO HOY — una sola fila, fuente única (sin ticker duplicado) */}
+      <section className="terminal-panel">
+        <div className="terminal-panel-header flex items-center justify-between">
+          <span className="font-heading section-heading">Mercado hoy</span>
+          <span className="text-xxs text-zinc-500 tabular-nums">{marketPrices.lastUpdate}</span>
         </div>
-      </div>
+        <div className="px-panel py-3 flex flex-wrap items-end gap-x-6 gap-y-3">
+          <div>
+            <div className="text-xxs text-zinc-500 uppercase tracking-wider">INMAG $/kg vivo</div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-light text-zinc-50 tabular-nums">{fmt(inmag.current)}</span>
+              <span className={ia.cls + " text-sm font-terminal tabular-nums font-semibold"}>{ia.arrow} {fmt(inmag.change, 1)}%</span>
+            </div>
+          </div>
+          <Stat label="Novillo" value={fmt(cats.novillos.current)} change={cats.novillos.change} />
+          <Stat label="Ternero" value={fmt(cats.terneros.current)} change={cats.terneros.change} />
+          <Stat label="Vaca" value={fmt(cats.vacas.current)} change={cats.vacas.change} />
+          <Stat label="Maíz USD/tn" value={fmt(corn.current, 1)} change={corn.change} />
+          <Stat label="USD blue" value={fmt(usd.current)} change={usd.change} />
+          <div>
+            <div className="text-xxs text-zinc-500 uppercase tracking-wider">Remates hoy</div>
+            <span className={"text-lg font-terminal tabular-nums " + (rematesToday.length ? "text-positive" : "text-zinc-500")}>{rematesToday.length}</span>
+          </div>
+        </div>
+      </section>
 
-      {/* ============================================================ */}
-      {/*  PAGE BODY -- vertical sections, clear hierarchy              */}
-      {/* ============================================================ */}
-      <div className="flex flex-col gap-px flex-1 min-h-0">
+      {/* 2 columnas en desktop: remates (lo accionable, izquierda) · tendencia + categorías */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-px items-start">
 
-        {/* ========================================================== */}
-        {/*  SECTION 1 — SNAPSHOT DE MERCADO                            */}
-        {/* ========================================================== */}
+        {/* REMATES PRÓXIMOS */}
         <section className="terminal-panel">
           <div className="terminal-panel-header flex items-center justify-between">
             <span className="font-heading section-heading flex items-center gap-2">
-              Snapshot de mercado
-              {rematesToday.length > 0 && <span className="live-indicator" />}
-            </span>
-            {rematesToday.length > 0 ? (
-              <span className="terminal-tag-live text-xxs">
-                <span className="inline-block w-1 h-1 bg-live mr-1 animate-pulse-live" />
-                LIVE
-              </span>
-            ) : (
-              <span className="text-xxs text-zinc-500 tabular-nums">
-                {marketPrices.lastUpdate}
-              </span>
-            )}
-          </div>
-
-          <div className="terminal-panel-body">
-            {/* Hero row: INMAG + maíz + USD, side by side, breathing room */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-              {/* INMAG hero */}
-              <div className="sm:col-span-1">
-                <span className="terminal-stat-label">INMAG $/kg vivo</span>
-                <div className="flex items-baseline gap-2">
-                  <span className="terminal-stat-value text-3xl text-zinc-50 stat-countup tabular-nums">
-                    {fmt(inmag.current)}
-                  </span>
-                  <span
-                    className={
-                      changeArrow(inmag.change).cls +
-                      " text-sm font-terminal tabular-nums font-semibold"
-                    }
-                  >
-                    {changeArrow(inmag.change).arrow} {fmt(inmag.change, 1)}%
-                  </span>
-                </div>
-                <span className="text-xxs text-zinc-500 tabular-nums">
-                  ant. {fmt(inmag.prev)}
+              Remates próximos
+              {rematesToday.length > 0 && (
+                <span className="terminal-tag-live text-xxs">
+                  <span className="inline-block w-1 h-1 bg-positive mr-1 animate-pulse-live" />{rematesToday.length} HOY
                 </span>
-              </div>
+              )}
+            </span>
+            <span className="text-xxs text-zinc-500 tabular-nums">{rematesUpcoming.length + rematesToday.length} prog.</span>
+          </div>
+          <div className="px-panel py-2">
+            {nextAuctions.map((r) => {
+              const isToday = r.date === TODAY;
+              const dateDisplay = isToday ? "HOY" : (() => { const [, m, d] = r.date.split("-"); return `${d}/${m}`; })();
+              const href = normalizeUrl(r.sourceUrl) || normalizeUrl(r.catalogUrl) || `/consignatarias/${r.consignatariaSlug || "unknown"}`;
+              const isExternal = href.startsWith("http");
+              const Wrapper = isExternal ? "a" : Link;
+              const wrapperProps = isExternal ? { href, target: "_blank" as const, rel: "noopener noreferrer" } : { href };
+              return (
+                <Wrapper
+                  key={r.id}
+                  {...wrapperProps}
+                  className={"flex items-center gap-2 px-cell py-px2 border-b border-terminal-border hover:bg-zinc-800/50 transition-colors group" + (isToday ? " border-l-2 border-l-amber-400" : "")}
+                >
+                  <span className="w-[46px] flex-shrink-0 tabular-nums text-data font-terminal">
+                    {isToday ? <span className="text-positive font-semibold">HOY</span> : <span className="text-zinc-400">{dateDisplay}</span>}
+                  </span>
+                  <span className="w-[36px] flex-shrink-0 text-data font-terminal text-zinc-500 tabular-nums">{r.time ?? "—"}</span>
+                  <span className="flex-1 min-w-0 text-data font-terminal text-zinc-200 truncate group-hover:text-accent transition-colors">{r.consignatariaName}</span>
+                  <span className="hidden sm:inline text-xxs text-zinc-500 truncate max-w-[110px]">{r.location.split(",")[0]}</span>
+                  <span className="text-data font-terminal tabular-nums text-zinc-400 flex-shrink-0">{r.estimatedHeads != null ? `~${fmt(r.estimatedHeads)}` : ""}</span>
+                </Wrapper>
+              );
+            })}
+            {nextAuctions.length === 0 && <p className="py-4 text-center text-data text-zinc-500 font-terminal">Sin remates próximos.</p>}
+            <div className="flex items-center justify-between mt-2 pt-1">
+              <span className="text-xxs text-zinc-500">{fmt(totalHeadsUpcoming)} cab. · {rematesPast.length} completados</span>
+              <Link href="/remates" className="text-xxs text-accent uppercase tracking-wider hover:text-accent-bright transition-colors">Ver todos →</Link>
+            </div>
+          </div>
+        </section>
 
-              {/* Maíz */}
-              <div className="sm:border-l sm:border-terminal-border sm:pl-6">
-                <span className="terminal-stat-label">Maíz USD/tn</span>
-                <div className="flex items-baseline gap-2">
-                  <span className="terminal-stat-value text-xl tabular-nums">
-                    {fmt(corn.current, 1)}
-                  </span>
-                  <span
-                    className={
-                      changeArrow(corn.change).cls + " text-xxs tabular-nums"
-                    }
-                  >
-                    {changeArrow(corn.change).arrow}
-                    {fmt(corn.change, 1)}%
-                  </span>
-                </div>
-              </div>
-
-              {/* USD Blue */}
-              <div className="sm:border-l sm:border-terminal-border sm:pl-6">
-                <span className="terminal-stat-label">USD Blue</span>
-                <div className="flex items-baseline gap-2">
-                  <span className="terminal-stat-value text-xl tabular-nums">
-                    {fmt(usd.current)}
-                  </span>
-                  <span
-                    className={
-                      changeArrow(usd.change).cls + " text-xxs tabular-nums"
-                    }
-                  >
-                    {changeArrow(usd.change).arrow}
-                    {fmt(usd.change, 1)}%
-                  </span>
-                </div>
+        {/* DERECHA: tendencia INMAG + categorías */}
+        <div className="flex flex-col gap-px">
+          <section className="terminal-panel">
+            <div className="terminal-panel-header flex items-center justify-between">
+              <span className="font-heading section-heading">Tendencia INMAG</span>
+              <span className={(inmagTrendUp ? "val-positive" : "val-negative") + " text-xxs font-terminal tabular-nums"}>{inmagTrendUp ? "+" : ""}{fmt(inmagTrendChangePct, 1)}%</span>
+            </div>
+            <div className="px-panel py-3">
+              <PriceLineChart data={inmagChartData} height={150} accentColor="#34d399" decimals={0} prefix="$" />
+              <div className="flex items-center justify-between mt-2 pt-2 border-t border-terminal-border text-xxs text-zinc-500">
+                <span className="tabular-nums">{inmagFromDate} — {inmagToDate}</span>
+                <Link href="/mercado/inmag" className="text-accent uppercase tracking-wider hover:text-accent-bright transition-colors">Análisis →</Link>
               </div>
             </div>
+          </section>
 
-            <div className="terminal-divider my-4" />
-
-            {/* Categories table */}
+          <section className="terminal-panel">
+            <div className="terminal-panel-header">
+              <span className="font-heading section-heading">Categorías $/kg vivo</span>
+            </div>
             <table className="terminal-table">
               <thead>
-                <tr>
-                  <th>Categoria</th>
-                  <th className="num">$/kg</th>
-                  <th className="num">Ant.</th>
-                  <th className="num">Var%</th>
-                </tr>
+                <tr><th>Categoría</th><th className="num">$/kg</th><th className="num">Ant.</th><th className="num">Var%</th></tr>
               </thead>
               <tbody>
                 {Object.entries(cats).map(([key, val]) => {
                   const c = val as { current: number; prev: number; change: number };
-                  const { cls } = changeArrow(c.change);
-                  const rowTint =
-                    c.change > 0
-                      ? "bg-positive/[0.03]"
-                      : c.change < 0
-                      ? "bg-negative/[0.03]"
-                      : "";
+                  const { arrow, cls } = changeArrow(c.change);
                   return (
-                    <tr key={key} className={rowTint}>
-                      <td className="text-zinc-400 uppercase text-xxs tracking-wider">
-                        {categoryLabels[key] || key}
-                      </td>
-                      <td className="num text-zinc-100 font-semibold">
-                        {fmt(c.current)}
-                      </td>
+                    <tr key={key}>
+                      <td className="text-zinc-400 uppercase text-xxs tracking-wider">{categoryLabels[key] || key}</td>
+                      <td className="num text-zinc-100 font-semibold">{fmt(c.current)}</td>
                       <td className="num text-zinc-500">{fmt(c.prev)}</td>
-                      <td className="num relative">
-                        <span
-                          className="absolute inset-0 rounded-sm opacity-20"
-                          style={{
-                            background:
-                              c.change > 0
-                                ? "linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.15) 100%)"
-                                : c.change < 0
-                                ? "linear-gradient(90deg, transparent 0%, rgba(239,68,68,0.15) 100%)"
-                                : "none",
-                          }}
-                        />
-                        <span className={cls + " relative z-10"}>
-                          {fmt(Math.abs(c.change), 1)}%
-                        </span>
-                      </td>
+                      <td className={"num " + cls}>{arrow}{fmt(Math.abs(c.change), 1)}%</td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
-          </div>
-        </section>
-
-        {/* ========================================================== */}
-        {/*  SECTION 2 — TENDENCIA INMAG (gráfico interactivo)          */}
-        {/* ========================================================== */}
-        <section className="terminal-panel">
-          <div className="terminal-panel-header flex items-center justify-between">
-            <span className="font-heading section-heading">
-              Tendencia INMAG
-            </span>
-            <span className="text-xxs text-zinc-500 tabular-nums">
-              {inmagFromDate} &mdash; {inmagToDate}
-            </span>
-          </div>
-          <div className="terminal-panel-body">
-            <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-              {/* Interactive line chart with full scale + hover tooltip */}
-              <div className="flex-1 min-w-0">
-                <PriceLineChart
-                  data={inmagChartData}
-                  height={200}
-                  accentColor="#34d399"
-                  decimals={0}
-                  prefix="$"
-                />
-              </div>
-
-              {/* Summary column */}
-              <div className="flex-shrink-0 flex md:flex-col items-start md:items-end gap-4 md:gap-3 md:pl-6 pt-3 md:pt-0 border-t md:border-t-0 md:border-l border-terminal-border">
-                <div className="terminal-stat md:items-end">
-                  <span className="terminal-stat-label md:text-right">Var. periodo</span>
-                  <span
-                    className={
-                      "terminal-stat-value text-lg tabular-nums " +
-                      (inmagTrendUp
-                        ? "val-positive glow-positive"
-                        : "val-negative glow-negative")
-                    }
-                  >
-                    {inmagTrendUp ? "+" : ""}
-                    {fmt(inmagTrendChangePct, 1)}%
-                  </span>
-                </div>
-                <div className="terminal-stat md:items-end">
-                  <span className="terminal-stat-label md:text-right">Abs.</span>
-                  <span className="text-data text-zinc-300 tabular-nums">
-                    {inmagTrendAbs >= 0 ? "+" : ""}
-                    {fmt(inmagTrendAbs)} $/kg
-                  </span>
-                </div>
-                <div className="terminal-stat md:items-end">
-                  <span className="terminal-stat-label md:text-right">Media</span>
-                  <span className="text-data text-zinc-300 tabular-nums">
-                    {fmt(inmagTrendMean)}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="mt-3 pt-3 border-t border-terminal-border">
-              <Link
-                href="/mercado/inmag"
-                className="text-xxs text-accent uppercase tracking-wider hover:text-accent-bright transition-colors"
-              >
-                Análisis detallado INMAG &rarr;
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* ========================================================== */}
-        {/*  SECTION 3 — REMATES PROXIMOS                               */}
-        {/* ========================================================== */}
-        <section className="terminal-panel">
-          <div className="terminal-panel-header flex items-center justify-between">
-            <span className="font-heading section-heading">Remates proximos</span>
-            <div className="flex items-center gap-2">
-              {rematesToday.length > 0 && (
-                <span className="terminal-tag-live text-xxs">
-                  <span className="inline-block w-1 h-1 bg-positive mr-1 animate-pulse-live" />
-                  {rematesToday.length} HOY
-                </span>
-              )}
-              <span className="text-xxs text-zinc-500 tabular-nums">
-                {rematesUpcoming.length + rematesToday.length} prog.
-              </span>
-            </div>
-          </div>
-          <div className="terminal-panel-body">
-            {/* Summary strip */}
-            <div className="flex items-center gap-6 mb-3">
-              <div className="terminal-stat">
-                <span className="terminal-stat-label">Cab. programadas</span>
-                <span className="terminal-stat-value text-base text-warning tabular-nums">
-                  {fmt(totalHeadsUpcoming)}
-                </span>
-              </div>
-              <div className="terminal-stat">
-                <span className="terminal-stat-label">Completados</span>
-                <span className="terminal-stat-value text-base text-zinc-400 tabular-nums">
-                  {rematesPast.length}
-                </span>
-              </div>
-            </div>
-
-            <div className="terminal-divider mb-1" />
-
-            {/* Next 5 auctions -- compact list with row-enter animation */}
-            <div className="space-y-0">
-              {nextAuctions.map((r, idx) => {
-                const isToday = r.date === TODAY;
-                const dateDisplay = isToday
-                  ? "HOY"
-                  : (() => { const [,m,d] = r.date.split('-'); return `${d}/${m}`; })();
-                const href = normalizeUrl(r.sourceUrl) || normalizeUrl(r.catalogUrl) || `/consignatarias/${r.consignatariaSlug || 'unknown'}`;
-                const isExternal = href.startsWith('http');
-                const Wrapper = isExternal ? 'a' : Link;
-                const wrapperProps = isExternal
-                  ? { href, target: "_blank" as const, rel: "noopener noreferrer" }
-                  : { href };
-                return (
-                  <Wrapper
-                    key={r.id}
-                    {...wrapperProps}
-                    className={
-                      "row-enter flex items-center gap-2 px-cell py-px2 border-b border-terminal-border hover:bg-zinc-800/50 transition-colors cursor-pointer group" +
-                      (isToday ? " border-l-2 border-l-amber-400" : "")
-                    }
-                    style={{ animationDelay: `${idx * 60}ms` }}
-                  >
-                    <span className="w-[52px] flex-shrink-0 tabular-nums text-data font-terminal">
-                      {isToday ? (
-                        <span className="text-positive font-semibold">{dateDisplay}</span>
-                      ) : (
-                        <span className="text-zinc-400">{dateDisplay}</span>
-                      )}
-                    </span>
-                    <span className="w-[38px] flex-shrink-0 text-data font-terminal text-zinc-500 tabular-nums">
-                      {r.time ?? '—'}
-                    </span>
-                    <span className="flex-1 min-w-0 text-data font-terminal text-zinc-200 truncate group-hover:text-accent transition-colors" title={r.consignatariaName}>
-                      {r.consignatariaName}
-                    </span>
-                    <span className="hidden sm:inline text-xxs text-zinc-500 truncate max-w-[100px]">
-                      {r.location.split(',')[0]}
-                    </span>
-                    <span className="text-data font-terminal tabular-nums text-zinc-400 flex-shrink-0">
-                      {r.estimatedHeads != null ? `~${fmt(r.estimatedHeads)}` : ''}
-                    </span>
-                  </Wrapper>
-                );
-              })}
-            </div>
-
-            {/* Today's detail */}
-            {rematesToday.length > 0 && (
-              <>
-                <div className="terminal-divider-dashed mt-3" />
-                <div className="mt-2">
-                  <span className="text-xxs text-zinc-500 uppercase tracking-wider">
-                    Detalle remates hoy ({TODAY.split('-').reverse().join('/')})
-                  </span>
-                  {rematesToday.map((r) => (
-                    <div
-                      key={r.id}
-                      className="mt-1.5 border-l-2 border-amber-400 pl-2"
-                    >
-                      <div className="text-data text-zinc-200 font-semibold">
-                        {r.title}
-                      </div>
-                      <div className="text-xxs text-zinc-400">
-                        {r.time ? `${r.time} — ` : ''}{r.location}
-                        {r.estimatedHeads != null && (
-                          <>
-                            {' — '}
-                            <span className="text-warning tabular-nums">
-                              {fmt(r.estimatedHeads)} cab.
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {/* Link to full list */}
-            <div className="mt-3 pt-3 border-t border-terminal-border">
-              <Link
-                href="/remates"
-                className="text-xxs text-accent uppercase tracking-wider hover:text-accent-bright transition-colors"
-              >
-                Ver todos los remates &rarr;
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* ========================================================== */}
-        {/*  SECTION 4 — ACCESOS                                        */}
-        {/* ========================================================== */}
-        <section className="terminal-panel">
-          <div className="terminal-panel-header">
-            <span className="font-heading section-heading">Accesos</span>
-          </div>
-          <div className="terminal-panel-body">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-              <Link
-                href="/consignatarias"
-                className="group flex flex-col gap-1 border border-terminal-border rounded-terminal px-3 py-3 hover:border-accent/40 hover:bg-zinc-800/30 transition-colors"
-              >
-                <span className="terminal-stat-value text-2xl text-zinc-100 tabular-nums">
-                  {consignatariasData.length}
-                </span>
-                <span className="text-xxs text-zinc-500 uppercase tracking-wider">
-                  Consignatarias en {consigProvinceCount} provincias
-                </span>
-                <span className="text-xxs text-accent group-hover:text-accent-bright transition-colors mt-1">
-                  Ver directorio &rarr;
-                </span>
-              </Link>
-
-              <Link
-                href="/mercado"
-                className="group flex flex-col gap-1 border border-terminal-border rounded-terminal px-3 py-3 hover:border-accent/40 hover:bg-zinc-800/30 transition-colors"
-              >
-                <span className="terminal-stat-value text-base text-zinc-100">
-                  Indices y precios
-                </span>
-                <span className="text-xxs text-zinc-500 uppercase tracking-wider">
-                  INMAG, categorías y macro
-                </span>
-                <span className="text-xxs text-accent group-hover:text-accent-bright transition-colors mt-1">
-                  Ir a mercado &rarr;
-                </span>
-              </Link>
-
-              <Link
-                href="/frigorificos"
-                className="group flex flex-col gap-1 border border-terminal-border rounded-terminal px-3 py-3 hover:border-accent/40 hover:bg-zinc-800/30 transition-colors"
-              >
-                <span className="terminal-stat-value text-base text-zinc-100">
-                  Frigoríficos
-                </span>
-                <span className="text-xxs text-zinc-500 uppercase tracking-wider">
-                  Indice de plantas
-                </span>
-                <span className="text-xxs text-accent group-hover:text-accent-bright transition-colors mt-1">
-                  Ver índice &rarr;
-                </span>
-              </Link>
-            </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
     </div>
   );

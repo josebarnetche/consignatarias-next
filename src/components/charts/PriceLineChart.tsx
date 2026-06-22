@@ -136,16 +136,13 @@ export function PriceLineChart({
 
   return (
     <div className={`relative ${className}`}>
-      {/* Eje Y: max arriba, min abajo */}
-      <div className="absolute left-1 top-0 text-xxs font-terminal tabular-nums text-zinc-600 z-10 pointer-events-none">
-        {prefix}
-        {fmtNum(geo.max, decimals)}
-        {suffix}
+      {/* Eje Y: máx arriba / mín al borde inferior del área del gráfico (no encima
+          de las fechas del eje X), con fondo sutil para no pisar la línea. */}
+      <div className="absolute left-1 top-0 z-10 pointer-events-none text-xxs font-terminal tabular-nums text-zinc-500 bg-terminal-bg/70 px-0.5 rounded">
+        {prefix}{fmtNum(geo.max, decimals)}{suffix}
       </div>
-      <div className="absolute left-1 bottom-0 text-xxs font-terminal tabular-nums text-zinc-600 z-10 pointer-events-none">
-        {prefix}
-        {fmtNum(geo.min, decimals)}
-        {suffix}
+      <div className="absolute left-1 z-10 pointer-events-none text-xxs font-terminal tabular-nums text-zinc-500 bg-terminal-bg/70 px-0.5 rounded" style={{ top: height - 16 }}>
+        {prefix}{fmtNum(geo.min, decimals)}{suffix}
       </div>
 
       {/* Tooltip */}
@@ -225,13 +222,23 @@ export function PriceLineChart({
           />
         )}
 
-        {/* Punto hover o punto final */}
-        {hovered ? (
-          <circle cx={hovered.x} cy={hovered.y} r="4" fill={accentColor} stroke="#0a0a0f" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-        ) : (
-          <circle cx={lastPoint.x} cy={lastPoint.y} r="3.5" fill={accentColor} vectorEffect="non-scaling-stroke" />
-        )}
       </svg>
+
+      {/* Punto (HTML, no SVG): con preserveAspectRatio="none" un <circle> se deforma
+          en óvalo. En HTML queda redondo siempre. left = x%, top = y px (la altura del
+          svg coincide con el viewBox, así que y va directo en px). */}
+      <div
+        className="absolute pointer-events-none rounded-full"
+        style={{
+          left: `${((hovered ?? lastPoint).x / VW) * 100}%`,
+          top: `${(hovered ?? lastPoint).y}px`,
+          width: hovered ? 9 : 7,
+          height: hovered ? 9 : 7,
+          background: accentColor,
+          transform: 'translate(-50%, -50%)',
+          boxShadow: hovered ? '0 0 0 2px #0a0a0f' : 'none',
+        }}
+      />
 
       {/* Eje X: primera / última fecha */}
       <div className="flex justify-between mt-1 text-xxs font-terminal text-zinc-600 tabular-nums">
