@@ -6,6 +6,7 @@ import Breadcrumb from '@/components/ui/Breadcrumb'
 import { CategoryPriceHistory } from '@/components/market/CategoryPriceHistory'
 import { PriceRangeTable } from '@/components/market/PriceRangeTable'
 import { PriceCTA } from '@/components/PriceCTA'
+import { Stat, Delta } from '@/components/ui'
 
 /* ================================================================== */
 /*  CATEGORY CONFIG                                                    */
@@ -382,19 +383,16 @@ export default async function CategoriaPage({
 
         {/* Price Card */}
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6 mb-6">
-          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
-            <div className="text-4xl md:text-5xl font-bold text-emerald-400">
-              ${priceFormatted}
-            </div>
-            <div className="text-zinc-400 text-lg">/kg vivo</div>
-            {change !== 0 && (
-              <div className={`text-lg font-medium ${change >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
-                {change >= 0 ? '+' : ''}{change.toFixed(1)}%
-              </div>
-            )}
-          </div>
-          
-          <div className="mt-4 flex flex-wrap gap-4 text-sm text-zinc-500">
+          <Stat
+            label={`${config.name} — kg vivo`}
+            value={`$${priceFormatted}`}
+            sub="/kg vivo"
+            delta={change !== 0 ? change : null}
+            tone="positive"
+            size="text-4xl md:text-5xl font-bold"
+          />
+
+          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-zinc-500">
             <div>
               Fuente: <span className="text-zinc-400">Mercado Agroganadero</span>
             </div>
@@ -404,10 +402,8 @@ export default async function CategoriaPage({
               </div>
             )}
             {vsInmag && (
-              <div>
-                vs INMAG: <span className={Number(vsInmag) >= 0 ? 'text-emerald-400' : 'text-amber-400'}>
-                  {Number(vsInmag) >= 0 ? '+' : ''}{vsInmag}%
-                </span>
+              <div className="flex items-center gap-1">
+                vs INMAG: <Delta change={Number(vsInmag)} format={(abs) => abs.toFixed(1)} />
               </div>
             )}
           </div>

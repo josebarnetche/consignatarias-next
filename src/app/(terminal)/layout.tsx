@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import AuthButton from "@/components/auth/AuthButton";
 import OnboardingPrompt from "@/components/onboarding/OnboardingPrompt";
+import PageTransition from "@/components/ui/PageTransition";
 import { createClient } from "@/lib/supabase-browser";
 
 /* ------------------------------------------------------------------ */
@@ -467,7 +468,13 @@ export default function TerminalLayout({
       </header>
 
       {/* -- MAIN CONTENT ----------------------------------------- */}
-      <main className="flex-1 min-h-0">{children}</main>
+      {/* PageTransition (DESIGN-SYSTEM.md §5): cross-fade sutil del          */}
+      {/* contenido en cambios de ruta — shell (header/footer) persistente.  */}
+      {/* SSR-safe: el primer paint no anima; degrada a no-op con            */}
+      {/* prefers-reduced-motion.                                            */}
+      <main className="flex-1 min-h-0">
+        <PageTransition>{children}</PageTransition>
+      </main>
 
       {/* -- FOOTER — sitemap en 4 columnas (DESIGN-SYSTEM.md §3.4) ---- */}
       <SystemFooter />

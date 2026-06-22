@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useFavorites } from '@/hooks/useFavorites';
+import Skeleton from '@/components/ui/Skeleton';
 
 interface FollowButtonProps {
   slug: string;
@@ -78,17 +79,19 @@ export function FollowButton({ slug, displayName: _displayName, className = '', 
     lg: 'w-5 h-5',
   };
 
+  // Favoritos cargando desde Supabase: Skeleton del MISMO tamaño que el
+  // botón → cero salto de layout cuando resuelve (DESIGN-SYSTEM.md §5).
   if (isLoading) {
+    const skelH = size === 'sm' ? '1.75rem' : size === 'lg' ? '2.5rem' : '2.25rem';
+    const skelW = size === 'sm' ? 'w-24' : size === 'lg' ? 'w-32' : 'w-28';
     return (
-      <button 
-        disabled 
-        className={`inline-flex items-center ${sizeClasses[size]} bg-zinc-800 text-zinc-500 rounded-lg ${className}`}
+      <span
+        className={`inline-flex items-center ${className}`}
+        role="status"
+        aria-label="Cargando estado de seguimiento"
       >
-        <svg className={`${iconSizes[size]} animate-spin`} viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-        </svg>
-      </button>
+        <Skeleton width={skelW} height={skelH} className="!rounded-lg" />
+      </span>
     );
   }
 

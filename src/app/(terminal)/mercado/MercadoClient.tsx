@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
-import { PriceLineChart, type PricePoint } from '@/components/charts/PriceLineChart'
+import { signedTone } from '@/lib/ui/tokens'
+import { Series, type PricePoint } from '@/components/ui/ChartCard'
+import { Stat, Delta, DataTable, PriceCell, type DataColumn } from '@/components/ui'
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -16,11 +18,13 @@ interface CategoryData {
   change: number
 }
 
+type CategoryRow = { name: string } & CategoryData
+
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
 
-/** Format a number with locale thousands separator: 2872 -> "2,872" */
+/** Format a number with locale thousands separator: 2872 -> "2.872" */
 function fmt(n: number, decimals = 0): string {
   return n.toLocaleString('es-AR', {
     minimumFractionDigits: decimals,
@@ -53,7 +57,7 @@ const lastUpdate = marketData.lastUpdate
 const ratio = inmag.current / corn.current
 
 // Category table sorted by current price descending
-const categoryRows = Object.entries(categories)
+const categoryRows: CategoryRow[] = Object.entries(categories)
   .map(([key, data]) => ({ name: key.toUpperCase(), ...data }))
   .sort((a, b) => b.current - a.current)
 
@@ -61,6 +65,61 @@ const maxCategoryPrice = Math.max(...categoryRows.map((c) => c.current))
 
 // Datos para el gráfico de línea interactivo (precio + fecha en hover)
 const inmagChartData: PricePoint[] = series.map((s) => ({ date: s.date, value: s.value }))
+
+/* ------------------------------------------------------------------ */
+/*  Category table columns (DataTable canónica)                        */
+/* ------------------------------------------------------------------ */
+const categoryColumns: DataColumn<CategoryRow>[] = [
+  {
+    key: 'name',
+    header: 'CATEGORIA',
+    width: 'w-[110px] sm:w-[160px]',
+    cell: (cat) => (
+      <Link href={`/mercado/${cat.name.toLowerCase()}`} className="font-semibold text-zinc-200 motion-hover hover:text-accent">
+        {cat.name}
+      </Link>
+    ),
+  },
+  {
+    key: 'current',
+    header: 'ACTUAL',
+    numeric: true,
+    cell: (cat) => <PriceCell value={cat.current} />,
+  },
+  {
+    key: 'prev',
+    header: 'ANTERIOR',
+    numeric: true,
+    cell: (cat) => <PriceCell value={cat.prev} tone="neutral" />,
+  },
+  {
+    key: 'change',
+    header: 'VAR %',
+    numeric: true,
+    cell: (cat) => <Delta change={cat.change} />,
+  },
+  {
+    key: 'bar',
+    header: 'BARRA',
+    hideBelowSm: true,
+    width: 'w-[200px]',
+    cell: (cat) => {
+      const barPct = Math.round((cat.current / maxCategoryPrice) * 100)
+      const isPositive = cat.change >= 0
+      return (
+        <div className="flex items-center gap-1">
+          <div className="gradient-bar flex-1">
+            <div
+              className={`gradient-bar-fill${isPositive ? '-positive' : '-negative'}`}
+              style={{ width: `${barPct}%` }}
+            />
+          </div>
+          <span className="text-xxs text-zinc-500 tabular-nums w-[3ch] text-right">{barPct}</span>
+        </div>
+      )
+    },
+  },
+]
 
 /* ------------------------------------------------------------------ */
 /*  Page component (Server Component)                                  */
@@ -90,33 +149,22 @@ export default function MercadoPage() {
             INMAG <span className="text-zinc-500 mx-1">&mdash;</span> INDICE NOVILLO MAG
           </div>
           <div className="px-panel py-3">
-            {/* Hero number */}
-            <div className="flex items-baseline gap-3 mb-1">
-              <span className="text-4xl font-terminal tabular-nums text-positive glow-positive font-semibold leading-none stat-countup">
-                {fmt(inmag.current, 2)}
-              </span>
-              <span className="text-xxs text-zinc-500 uppercase tracking-wider">
-                {inmag.unit}
-              </span>
-            </div>
-            <div className="flex items-center gap-2 mb-4">
-              <span className={`text-data font-terminal tabular-nums ${inmag.change >= 0 ? 'val-positive' : 'val-negative'}`}>
-                {inmag.change >= 0 ? '\u25B2' : '\u25BC'} {inmag.change >= 0 ? '+' : ''}{fmt(inmag.change, 1)}%
-              </span>
-              <span className="text-xxs text-zinc-500">vs ant.</span>
-            </div>
-
-            {/* Gráfico de línea interactivo: escala completa + tooltip precio/fecha */}
-            <PriceLineChart
-              data={inmagChartData}
-              height={140}
-              accentColor="#34d399"
-              decimals={0}
-              prefix="$"
+            {/* Hero number (Stat canónico, tono positive + delta embebido) */}
+            <Stat
+              label={inmag.unit}
+              value={fmt(inmag.current, 2)}
+              delta={inmag.change}
+              tone="positive"
+              size="text-4xl font-semibold glow-positive stat-countup"
+              className="mb-4"
             />
+
+            {/* Gráfico de línea: escala completa + tooltip precio/fecha, color por token */}
+            <Series data={inmagChartData} tone="positive" height={140} decimals={0} prefix="$" />
+
             {/* Link to detailed INMAG page */}
             <div className="mt-3 pt-3 border-t border-zinc-800">
-              <Link href="/mercado/inmag" className="text-amber-400 hover:text-amber-300 text-sm flex items-center gap-1">
+              <Link href="/mercado/inmag" className="text-accent motion-hover hover:text-accent/80 text-sm flex items-center gap-1">
                 Ver análisis detallado INMAG →
               </Link>
             </div>
@@ -129,51 +177,33 @@ export default function MercadoPage() {
           <div className="px-panel py-3 space-y-4">
 
             {/* Corn */}
-            <div className="terminal-stat">
-              <span className="terminal-stat-label">MAIZ</span>
-              <div className="flex items-baseline gap-2">
-                <span className="terminal-stat-value tabular-nums">
-                  {fmt(corn.current, 2)}
-                </span>
-                <span className="text-xxs text-zinc-500">{corn.unit}</span>
-                <span className={`text-data tabular-nums ml-auto ${corn.change >= 0 ? 'val-positive' : 'val-negative'}`}>
-                  {corn.change >= 0 ? '\u25B2' : '\u25BC'}{corn.change >= 0 ? '+' : ''}{fmt(corn.change, 1)}%
-                </span>
-              </div>
-            </div>
+            <Stat
+              label="MAIZ"
+              value={`${fmt(corn.current, 2)} ${corn.unit}`}
+              delta={corn.change}
+              size="text-lg"
+            />
 
             {/* USD Blue */}
-            <div className="terminal-stat">
-              <span className="terminal-stat-label">USD BLUE</span>
-              <div className="flex items-baseline gap-2">
-                <span className="terminal-stat-value tabular-nums">
-                  {fmt(usdBlue.current)}
-                </span>
-                <span className="text-xxs text-zinc-500">{usdBlue.unit}</span>
-                <span className={`text-data tabular-nums ml-auto ${usdBlue.change >= 0 ? 'val-positive' : 'val-negative'}`}>
-                  {usdBlue.change >= 0 ? '\u25B2' : '\u25BC'}{usdBlue.change >= 0 ? '+' : ''}{fmt(usdBlue.change, 1)}%
-                </span>
-              </div>
-            </div>
+            <Stat
+              label="USD BLUE"
+              value={`${fmt(usdBlue.current)} ${usdBlue.unit}`}
+              delta={usdBlue.change}
+              size="text-lg"
+            />
 
             <div className="terminal-divider" />
 
             {/* Invernada / Maiz ratio */}
-            <div className="terminal-stat">
-              <span className="terminal-stat-label">
-                RELACION INVERNADA/MAIZ
-              </span>
-              <div className="flex items-baseline gap-2 mt-0.5">
-                <span className="terminal-stat-value tabular-nums">
-                  {fmt(ratio, 2)}
-                </span>
-                <span className="text-xxs text-zinc-500">kg/tn</span>
-              </div>
-              <span className="text-xxs text-zinc-500 mt-0.5">(INMAG / MAIZ)</span>
-              <Link href="/mercado/spread" className="text-amber-400 hover:text-amber-300 text-xxs mt-1 block">
-                Ver análisis spread →
-              </Link>
-            </div>
+            <Stat
+              label="RELACION INVERNADA/MAIZ"
+              value={`${fmt(ratio, 2)} kg/tn`}
+              sub="(INMAG / MAIZ)"
+              size="text-lg"
+            />
+            <Link href="/mercado/spread" className="text-accent motion-hover hover:text-accent/80 text-xxs block">
+              Ver análisis spread →
+            </Link>
 
           </div>
         </div>
@@ -182,53 +212,12 @@ export default function MercadoPage() {
       {/* ── Categories table ────────────────────────────────────── */}
       <div className="terminal-panel">
         <div className="terminal-panel-header font-heading">PRECIOS POR CATEGORIA</div>
-        <div className="overflow-x-auto">
-          <table className="terminal-table">
-            <thead>
-              <tr>
-                <th className="w-[110px] sm:w-[160px]">CATEGORIA</th>
-                <th className="num">ACTUAL</th>
-                <th className="num">ANTERIOR</th>
-                <th className="num">VAR %</th>
-                <th className="hidden sm:table-cell w-[200px]">BARRA</th>
-              </tr>
-            </thead>
-            <tbody>
-              {categoryRows.map((cat) => {
-                const barPct = Math.round((cat.current / maxCategoryPrice) * 100)
-                const isPositive = cat.change >= 0
-                const slug = cat.name.toLowerCase()
-                return (
-                  <tr key={cat.name} className={`${isPositive ? 'bg-positive/[0.03]' : 'bg-negative/[0.03]'} hover:bg-zinc-800/50 cursor-pointer transition-colors`}>
-                    <td className="font-semibold text-zinc-200">
-                      <Link href={`/mercado/${slug}`} className="hover:text-amber-400 transition-colors">
-                        {cat.name}
-                      </Link>
-                    </td>
-                    <td className="num tabular-nums text-zinc-100">{fmt(cat.current)}</td>
-                    <td className="num tabular-nums text-zinc-500">{fmt(cat.prev)}</td>
-                    <td className={`num tabular-nums ${isPositive ? 'val-positive' : 'val-negative'}`}>
-                      {isPositive ? '\u25B2' : '\u25BC'} {isPositive ? '+' : ''}{fmt(cat.change, 1)}%
-                    </td>
-                    <td className="hidden sm:table-cell">
-                      <div className="flex items-center gap-1">
-                        <div className="gradient-bar flex-1">
-                          <div
-                            className={`gradient-bar-fill${isPositive ? '-positive' : '-negative'}`}
-                            style={{ width: `${barPct}%` }}
-                          />
-                        </div>
-                        <span className="text-xxs text-zinc-500 tabular-nums w-[3ch] text-right">
-                          {barPct}
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          columns={categoryColumns}
+          rows={categoryRows}
+          rowKey={(c) => c.name}
+          rowTone={(c) => signedTone(c.change)}
+        />
       </div>
 
       {/* ── Calculator CTA ──────────────────────────────────────── */}
@@ -240,8 +229,8 @@ export default function MercadoPage() {
               Calculá el valor estimado usando los precios INMAG actualizados
             </p>
           </div>
-          <Link 
-            href="/calculadora" 
+          <Link
+            href="/calculadora"
             className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-zinc-900 font-medium text-sm rounded transition-colors whitespace-nowrap"
           >
             Calcular valor →

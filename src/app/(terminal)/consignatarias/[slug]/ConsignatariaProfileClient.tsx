@@ -28,6 +28,8 @@ import {
 } from '@/lib/ui/tokens'
 import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge, { VerifiedBadge } from '@/components/badges/ProBadge'
+import { Badge, Stat, DataTable, type DataColumn } from '@/components/ui'
+import { SEMANTIC_HEX } from '@/lib/ui/tokens'
 import VideoGallery, { type ConsignatariaVideo } from '@/components/video/VideoGallery'
 import { Accordion } from './_wave2/Accordion'
 import { StickyBar } from './_wave2/StickyBar'
@@ -52,24 +54,22 @@ function StatusBadge({ date, time, today }: { date: string; time: string | null;
   const isToday = date === today
   if (effectiveStatus === 'live') {
     return (
-      <span className="inline-flex items-center gap-1.5" role="img" aria-label="En vivo">
-        <span className="status-dot-live" />
-        <span className="text-positive font-terminal text-xxs">EN VIVO</span>
-      </span>
+      <Badge tone="live" dot className="border-transparent !px-0" title="En vivo">
+        EN VIVO
+      </Badge>
     )
   }
   if (effectiveStatus === 'completed') {
     return (
-      <span className="inline-flex items-center gap-1.5" role="img" aria-label="Finalizado">
-        <span className="status-dot-offline" />
-        <span className="text-zinc-500 font-terminal text-xxs">FINALIZADO</span>
-      </span>
+      <Badge tone="neutral" dot className="border-transparent !px-0 text-zinc-500" title="Finalizado">
+        FINALIZADO
+      </Badge>
     )
   }
   const scheduledBadge = (
     <span className="inline-flex items-center gap-1.5" role="img" aria-label={isToday ? 'Hoy' : 'Programado'}>
-      <span className={`status-dot ${isToday ? 'bg-positive animate-pulse-live' : 'bg-sky-400'}`} />
-      <span className={`font-terminal text-xxs ${isToday ? 'text-positive' : 'text-sky-400'}`}>
+      <span className={`status-dot ${isToday ? 'bg-positive animate-pulse-live' : 'bg-accent'}`} />
+      <span className={`font-terminal text-xxs ${isToday ? 'text-positive' : 'text-accent'}`}>
         {isToday ? 'HOY' : 'PROGRAMADO'}
       </span>
     </span>
@@ -132,12 +132,9 @@ function ExpositorBadge({ especial }: { especial: RemateEspecial }) {
     )
   }
   return (
-    <span
-      className="inline-flex items-center text-[10px] font-terminal uppercase tracking-wider text-amber-300/80 px-1 py-px border border-amber-500/25 bg-amber-500/[0.05] rounded-terminal align-middle"
-      title={`Expositor: ${especial.brand}`}
-    >
+    <Badge tone="warning" className="text-[10px] align-middle" title={`Expositor: ${especial.brand}`}>
       {especial.brand}
-    </span>
+    </Badge>
   )
 }
 
@@ -207,7 +204,7 @@ function ProfileAuctionRow({ auction, today, especial }: { auction: Auction; tod
           {auction.youtubeUrl && (
             <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
               onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
-              className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmision">YouTube</a>
+              className="text-xxs font-terminal text-negative hover:text-negative/80 motion-hover" aria-label="Ver transmision">YouTube</a>
           )}
         </div>
       </div>
@@ -263,7 +260,7 @@ function ProfileAuctionRow({ auction, today, especial }: { auction: Auction; tod
             {auction.youtubeUrl && (
               <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
                 onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
-                className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmision" title="YouTube">YT</a>
+                className="text-xxs font-terminal text-negative hover:text-negative/80 motion-hover" aria-label="Ver transmision" title="YouTube">YT</a>
             )}
             {auction.sourceUrl && (
               <a href={normalizeUrl(auction.sourceUrl) || '#'} target="_blank" rel="noopener noreferrer"
@@ -306,13 +303,13 @@ function CalendarHeatmap({ auctions }: { auctions: Auction[] }) {
             )}
             <div className="w-full relative" style={{ height: '48px' }}>
               <div
-                className="absolute bottom-0 w-full transition-all rounded-terminal"
+                className="absolute bottom-0 w-full motion-slow rounded-terminal"
                 style={{
                   height: count > 0 ? `${Math.max(pct, 8)}%` : '2px',
                   background: count > 0
                     ? isCurrent
-                      ? 'linear-gradient(to top, var(--accent, #06b6d4), var(--accent-bright, #67e8f9))'
-                      : 'linear-gradient(to top, #059669, #34d399)'
+                      ? `linear-gradient(to top, ${SEMANTIC_HEX.accent}, var(--accent-bright, #67e8f9))`
+                      : `linear-gradient(to top, ${SEMANTIC_HEX.live}, ${SEMANTIC_HEX.positive})`
                     : '#27272a',
                 }}
               />
@@ -331,13 +328,14 @@ function CalendarHeatmap({ auctions }: { auctions: Auction[] }) {
 /*  TYPE DISTRIBUTION                                                  */
 /* ------------------------------------------------------------------ */
 
-/** Map auction type keys to gradient CSS for bars */
+/** Map auction type keys to gradient CSS for bars. Color desde el token
+ *  canónico (SEMANTIC_HEX) alineado al mismo tono que TYPE_COLORS. */
 const TYPE_GRADIENT_MAP: Record<string, string> = {
-  invernada:     'linear-gradient(to right, #059669, #34d399)',
-  cria:          'linear-gradient(to right, #0284c7, #38bdf8)',
-  reproductores: 'linear-gradient(to right, #7c3aed, #a78bfa)',
-  general:       'linear-gradient(to right, #ca8a04, #facc15)',
-  especial:      'linear-gradient(to right, #dc2626, #f87171)',
+  invernada:     `linear-gradient(to right, ${SEMANTIC_HEX.live}, ${SEMANTIC_HEX.positive})`,
+  cria:          `linear-gradient(to right, ${SEMANTIC_HEX.accent}, var(--accent-bright, #67e8f9))`,
+  reproductores: `linear-gradient(to right, ${SEMANTIC_HEX.warning}, #fde68a)`,
+  general:       `linear-gradient(to right, #71717a, ${SEMANTIC_HEX.neutral})`,
+  especial:      `linear-gradient(to right, ${SEMANTIC_HEX.negative}, #fca5a5)`,
 }
 
 function TypeDistribution({ auctions }: { auctions: Auction[] }) {
@@ -362,10 +360,10 @@ function TypeDistribution({ auctions }: { auctions: Auction[] }) {
             </span>
             <div className="flex-1 h-2.5 bg-zinc-900 relative rounded-terminal overflow-hidden">
               <div
-                className="h-full rounded-terminal"
+                className="h-full rounded-terminal motion-slow"
                 style={{
                   width: `${barWidth}%`,
-                  background: TYPE_GRADIENT_MAP[type] || 'linear-gradient(to right, #71717a, #a1a1aa)',
+                  background: TYPE_GRADIENT_MAP[type] || `linear-gradient(to right, #71717a, ${SEMANTIC_HEX.neutral})`,
                 }}
               />
             </div>
@@ -378,6 +376,51 @@ function TypeDistribution({ auctions }: { auctions: Auction[] }) {
     </div>
   )
 }
+
+/* ------------------------------------------------------------------ */
+/*  RESULTADOS DE REMATES — columnas para <DataTable> (DESIGN-SYSTEM §4)*/
+/* ------------------------------------------------------------------ */
+
+const fmtArs = (n: number) => `$${n.toLocaleString('es-AR')}`
+
+const resultColumns: DataColumn<AuctionResult>[] = [
+  {
+    key: 'date',
+    header: 'Fecha',
+    numeric: true,
+    width: 'w-[64px]',
+    cell: (r) => formatDateShort(r.auction_date),
+  },
+  {
+    key: 'title',
+    header: 'Remate',
+    cell: (r) => <span className="truncate block max-w-[40ch]">{r.auction_title}</span>,
+  },
+  {
+    key: 'heads',
+    header: 'Cab.',
+    numeric: true,
+    hideBelowSm: true,
+    cell: (r) => (r.total_heads_sold != null ? r.total_heads_sold.toLocaleString('es-AR') : '—'),
+  },
+  {
+    key: 'avg',
+    header: '$/kg prom.',
+    numeric: true,
+    cell: (r) => (r.average_price != null ? fmtArs(r.average_price) : '—'),
+  },
+  {
+    key: 'max',
+    header: '$/kg max.',
+    numeric: true,
+    cell: (r) =>
+      r.max_price != null ? (
+        <span style={{ color: SEMANTIC_HEX.positive }}>{fmtArs(r.max_price)}</span>
+      ) : (
+        '—'
+      ),
+  },
+]
 
 /* ------------------------------------------------------------------ */
 /*  MAIN COMPONENT                                                     */
@@ -549,7 +592,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               <div
                 className={`rounded-terminal border overflow-hidden flex-shrink-0 relative flex items-center justify-center w-12 h-12 ${
                   tier === 'pro' || tier === 'enterprise'
-                    ? 'border-amber-500/40 shadow-lg shadow-amber-500/10'
+                    ? 'border-warning/40 shadow-lg shadow-warning/10'
                     : 'border-terminal-border'
                 }`}
                 style={{ backgroundColor: brandColor || (profile.logoUrl ? '#ffffff' : 'var(--terminal-bg, #0b0b0e)') }}
@@ -565,9 +608,9 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                 <VerifiedBadge size="md" />
               ) : null}
               {provinces.map(prov => (
-                <span key={prov} className="inline-flex px-1.5 py-0.5 text-xxs border border-terminal-border text-zinc-500 rounded-terminal">
+                <Badge key={prov} tone="neutral" className="text-zinc-500 normal-case tracking-normal">
                   {prov}
-                </span>
+                </Badge>
               ))}
             </div>
           </div>
@@ -658,7 +701,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
             {(profile.whatsapp || profile.phone || profile.email || profile.website) ? (
               <div className="flex flex-col gap-1.5">
                 {profile.whatsapp && (
-                  <a href={`https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" onClick={() => { trackOutboundClick(profile.whatsapp || '', 'whatsapp'); trackValueEvent('contact_whatsapp', { entityType: 'consignataria', entitySlug: profile.canonicalSlug }) }} className="text-xxs text-positive hover:text-emerald-300 font-terminal transition-colors">
+                  <a href={`https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" onClick={() => { trackOutboundClick(profile.whatsapp || '', 'whatsapp'); trackValueEvent('contact_whatsapp', { entityType: 'consignataria', entitySlug: profile.canonicalSlug }) }} className="text-xxs text-positive hover:text-positive/80 font-terminal motion-hover">
                     WhatsApp · {profile.whatsapp}
                   </a>
                 )}
@@ -678,10 +721,10 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               <div className="text-xxs text-zinc-600">Sin datos de contacto públicos todavía.</div>
             )}
             <div className="flex flex-wrap gap-2 mt-2 pt-2 border-t border-terminal-border/60">
-              <Link href={`/calendario/${profile.canonicalSlug}`} className="text-xxs font-terminal uppercase tracking-wider text-sky-400 hover:text-sky-300 transition-colors">
+              <Link href={`/calendario/${profile.canonicalSlug}`} className="text-xxs font-terminal uppercase tracking-wider text-accent hover:text-accent-bright motion-hover">
                 Suscribir calendario
               </Link>
-              <Link href={`/go/${profile.canonicalSlug}`} className="text-xxs font-terminal uppercase tracking-wider text-amber-400 hover:text-amber-300 transition-colors">
+              <Link href={`/go/${profile.canonicalSlug}`} className="text-xxs font-terminal uppercase tracking-wider text-accent hover:text-accent-bright motion-hover">
                 Compartir
               </Link>
             </div>
@@ -772,34 +815,33 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       {/* HISTORIAL VERIFICABLE — colapsado (derivado de los remates). */}
       <Accordion title="Historial verificable">
         <div className="px-panel py-3 grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2">
-          <div className="flex flex-col gap-0.5">
-            <span className="text-xxs text-zinc-500 uppercase tracking-wider">Remates 90 d</span>
-            <span className="text-data tabular-nums text-zinc-100 font-terminal">{historial.last90Count}</span>
-            <span className="text-xxs text-zinc-500 font-terminal">~{historial.monthlyAvg.toFixed(1)}/mes</span>
-          </div>
-          <div className="flex flex-col gap-0.5">
-            <span className="text-xxs text-zinc-500 uppercase tracking-wider">Tipo dominante</span>
-            <span className="text-data text-zinc-100 font-terminal">
-              {historial.tipoDominante ? (TYPE_LABELS_SHORT[historial.tipoDominante] || historial.tipoDominante) : '—'}
-            </span>
-            <span className="text-xxs text-zinc-500 font-terminal">últimos 90 d</span>
-          </div>
-          <div className="flex flex-col gap-0.5">
-            <span className="text-xxs text-zinc-500 uppercase tracking-wider">Plazas</span>
-            <span className="text-data tabular-nums text-zinc-100 font-terminal">{historial.plazasTop.length}</span>
-            <span className="text-xxs text-zinc-500 font-terminal truncate">
-              {historial.plazasTop.slice(0, 2).map(p => p.city).join(', ') || '—'}
-            </span>
-          </div>
+          <Stat
+            label="Remates 90 d"
+            size="text-data"
+            value={historial.last90Count}
+            sub={`~${historial.monthlyAvg.toFixed(1)}/mes`}
+          />
+          <Stat
+            label="Tipo dominante"
+            size="text-data"
+            value={historial.tipoDominante ? (TYPE_LABELS_SHORT[historial.tipoDominante] || historial.tipoDominante) : null}
+            sub="últimos 90 d"
+          />
+          <Stat
+            label="Plazas"
+            size="text-data"
+            value={historial.plazasTop.length}
+            sub={historial.plazasTop.slice(0, 2).map(p => p.city).join(', ') || '—'}
+          />
         </div>
         {historial.plazasTop.length > 0 && (
           <div className="px-panel pb-3 pt-1 border-t border-terminal-border">
             <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-1.5">Plazas habituales</div>
             <div className="flex flex-wrap gap-1.5">
               {historial.plazasTop.map(p => (
-                <span key={p.city} className="text-xxs font-terminal text-zinc-300 px-1.5 py-0.5 border border-terminal-border rounded-terminal">
+                <Badge key={p.city} tone="neutral" className="text-zinc-300 normal-case tracking-normal">
                   {p.city} <span className="text-zinc-500 tabular-nums">· {p.count}</span>
-                </span>
+                </Badge>
               ))}
             </div>
           </div>
@@ -855,7 +897,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
         <Accordion title="Red de remitentes · MAG" badge={<span className="text-xxs text-zinc-500 font-terminal">{magEntry.period}</span>}>
           <div className="px-panel py-3">
             <div className="flex flex-wrap items-baseline gap-3 mb-3">
-              <span className="text-2xl font-terminal text-positive tabular-nums">
+              <span className="text-2xl font-terminal tabular-nums" style={{ color: SEMANTIC_HEX.positive }}>
                 {magEntry.totalCabezas.toLocaleString('es-AR')}
               </span>
               <span className="text-xxs text-zinc-500 uppercase">cabezas</span>
@@ -913,61 +955,12 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       {/* RESULTADOS DE REMATES — colapsado (histórico de precios). */}
       {auctionResults.length > 0 && (
         <Accordion title="Resultados de remates" badge={<span className="text-xxs text-zinc-500 font-terminal">{auctionResults.length}</span>}>
-          <div className="border-b border-terminal-border px-cell py-px2 hidden md:flex items-center gap-0 bg-terminal-panel">
-            <span className="w-[56px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Fecha</span>
-            <span className="flex-1 min-w-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Remate</span>
-            <span className="w-[80px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">Cab.</span>
-            <span className="w-[100px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">$/kg prom.</span>
-            <span className="w-[100px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">$/kg max.</span>
-          </div>
-          {auctionResults.map(result => (
-            <div key={result.id} className="border-b border-terminal-border">
-              {/* Mobile */}
-              <div className="md:hidden p-3 space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-data tabular-nums font-terminal text-zinc-300">
-                    {formatDateShort(result.auction_date)}
-                  </span>
-                  {result.total_heads_sold != null && (
-                    <span className="text-data tabular-nums font-terminal text-zinc-400">
-                      {result.total_heads_sold.toLocaleString('es-AR')} cab.
-                    </span>
-                  )}
-                </div>
-                <div className="text-data font-terminal text-zinc-200 truncate">{result.auction_title}</div>
-                <div className="flex items-center gap-3">
-                  {result.average_price != null && (
-                    <span className="text-xxs text-zinc-500 font-terminal">
-                      Prom: <span className="text-zinc-300 tabular-nums">${result.average_price.toLocaleString('es-AR')}</span>
-                    </span>
-                  )}
-                  {result.max_price != null && (
-                    <span className="text-xxs text-zinc-500 font-terminal">
-                      Max: <span className="text-positive tabular-nums">${result.max_price.toLocaleString('es-AR')}</span>
-                    </span>
-                  )}
-                </div>
-              </div>
-              {/* Desktop */}
-              <div className="hidden md:flex items-center gap-0 px-cell py-px2">
-                <span className="w-[56px] flex-shrink-0 text-data tabular-nums font-terminal text-zinc-300">
-                  {formatDateShort(result.auction_date)}
-                </span>
-                <span className="flex-1 min-w-0 text-data font-terminal text-zinc-200 truncate">
-                  {result.auction_title}
-                </span>
-                <span className="w-[80px] flex-shrink-0 text-data tabular-nums font-terminal text-zinc-400 text-right">
-                  {result.total_heads_sold != null ? result.total_heads_sold.toLocaleString('es-AR') : '\u2014'}
-                </span>
-                <span className="w-[100px] flex-shrink-0 text-data tabular-nums font-terminal text-zinc-300 text-right">
-                  {result.average_price != null ? `$${result.average_price.toLocaleString('es-AR')}` : '\u2014'}
-                </span>
-                <span className="w-[100px] flex-shrink-0 text-data tabular-nums font-terminal text-positive text-right">
-                  {result.max_price != null ? `$${result.max_price.toLocaleString('es-AR')}` : '\u2014'}
-                </span>
-              </div>
-            </div>
-          ))}
+          <DataTable<AuctionResult>
+            rows={auctionResults}
+            rowKey={(r) => String(r.id)}
+            columns={resultColumns}
+            scroll={false}
+          />
         </Accordion>
       )}
 
@@ -981,11 +974,14 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           tier={tier}
           requiredTier="pro"
           fallback={
-            <div className="terminal-panel mt-px bg-amber-500/[0.03]">
+            <div className="terminal-panel mt-px bg-warning/[0.03]">
               <div className="px-panel py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div className="flex items-start gap-3">
-                  <span className="text-amber-400 text-lg mt-0.5">📧</span>
+                  <span className="text-warning text-lg mt-0.5">📧</span>
                   <div>
+                    <div className="mb-1.5">
+                      <Badge tone="pro">PRO</Badge>
+                    </div>
                     <p className="text-xs text-zinc-300 font-terminal font-medium mb-1">
                       Cada remate tuyo, enviado a +500 productores
                     </p>
@@ -997,14 +993,9 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                 <Link
                   href={`/planes?audience=consignataria&from=profile-${profile.canonicalSlug}`}
                   rel="nofollow"
-                  className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 border text-xxs font-terminal uppercase tracking-wider transition-all hover:shadow-lg hover:shadow-amber-500/20"
-                  style={{
-                    background: 'linear-gradient(to right, rgba(245, 158, 11, 0.15), rgba(251, 191, 36, 0.1))',
-                    borderColor: 'rgba(245, 158, 11, 0.4)',
-                    color: '#fbbf24',
-                  }}
+                  className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 text-xxs font-terminal uppercase tracking-wider rounded-[2px] border border-amber-400/60 text-amber-300 bg-gradient-to-r from-amber-500/15 to-yellow-500/10 motion-hover hover:shadow-lg hover:shadow-warning/20"
                 >
-                  <span className="text-amber-400">★</span>
+                  <span aria-hidden>★</span>
                   Activar PRO — $45.000/mes
                 </Link>
               </div>

@@ -5,6 +5,7 @@ import rematesData from '@/lib/data/remates.json'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
 import { SectionBreadcrumbSchema, FAQPageSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import NewsletterSignup from '@/components/NewsletterSignup'
+import { Breadcrumb } from '@/components/ui'
 
 // Regenerate hourly for fresh TODAY
 export const revalidate = false // Cost optimization: static at build time
@@ -97,7 +98,12 @@ export default function RematesPage() {
       <SectionBreadcrumbSchema section="remates" sectionName="Remates" />
       <FAQPageSchema items={FAQ_ITEMS} />
       <RematesListSchema remates={upcomingRemates} />
-      <section className="px-4 pt-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-3xl">
+      {/* Breadcrumb visual (§3.2). El JSON-LD ya lo emite SectionBreadcrumbSchema
+          arriba, así que acá schema={false} para no duplicar structured data. */}
+      <div className="px-4 pt-3">
+        <Breadcrumb items={[{ name: 'Remates' }]} schema={false} />
+      </div>
+      <section className="px-4 pt-3 pb-2 text-zinc-400 text-sm leading-relaxed max-w-3xl">
         <h2 className="text-zinc-200 text-lg font-medium mb-1">Calendario de remates ganaderos de Argentina</h2>
         <p>
           {totalAuctions} remates de hacienda de {totalProfiles} consignatarias en {totalProvinces} provincias,
@@ -110,31 +116,31 @@ export default function RematesPage() {
           <span className="text-zinc-500 text-xs self-center mr-1">Por provincia:</span>
           <Link
             href="/remates/buenos-aires"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
           >
             Buenos Aires
           </Link>
           <Link
             href="/remates/cordoba"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
           >
             Córdoba
           </Link>
           <Link
             href="/remates/santa-fe"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
           >
             Santa Fe
           </Link>
           <Link
             href="/remates/entre-rios"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
           >
             Entre Ríos
           </Link>
           <Link
             href="/remates/corrientes"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
           >
             Corrientes
           </Link>
@@ -145,31 +151,31 @@ export default function RematesPage() {
           <span className="text-zinc-500 text-xs self-center mr-1">Por tipo:</span>
           <Link
             href="/remates/tipo/invernada"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
           >
             Invernada
           </Link>
           <Link
             href="/remates/tipo/cria"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
           >
             Cría
           </Link>
           <Link
             href="/remates/tipo/general"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
           >
             General
           </Link>
           <Link
             href="/remates/tipo/reproductores"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
           >
             Reproductores
           </Link>
           <Link
             href="/remates/tipo/especial"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
           >
             Especial
           </Link>

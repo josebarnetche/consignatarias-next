@@ -22,6 +22,7 @@ import {
 import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge from '@/components/badges/ProBadge'
 import RematesFilterBar from '@/components/remates/RematesFilterBar'
+import { Badge } from '@/components/ui'
 import { trackAuctionClick, trackFilterApply, trackOutboundClick, trackBulkIcsExport } from '@/lib/analytics'
 import { downloadBulkICSFile } from '@/lib/utils/ics'
 import { useSessionTier } from '@/lib/use-session-tier'
@@ -126,15 +127,21 @@ function isExternalLink(href: string): boolean {
 /*  STATUS INDICATOR                                                   */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Status indicator — alineado con el StatusBadge de la ficha de consignataria
+ * (cronograma) para que el mismo estado se lea igual en las dos superficies:
+ * `live` = status-dot-live + text-positive · HOY = dot positive pulsante ·
+ * PROGRAMADO = accent · FINALIZADO = offline. Colores siempre desde token.
+ */
 function StatusBadge({ date, time, today }: { date: string; time: string | null; today: string }) {
   const effectiveStatus = getEffectiveStatus(date, time, today)
   const isToday = date === today
 
   if (effectiveStatus === 'live') {
     return (
-      <span className="live-badge" role="img" aria-label="En vivo">
-        <span className="live-indicator" style={{width:'6px',height:'6px'}} />
-        <span>EN VIVO</span>
+      <span className="inline-flex items-center gap-1.5" role="img" aria-label="En vivo">
+        <span className="status-dot-live" />
+        <span className="text-positive font-terminal text-xxs">EN VIVO</span>
       </span>
     )
   }
@@ -149,24 +156,18 @@ function StatusBadge({ date, time, today }: { date: string; time: string | null;
   }
 
   // scheduled
-  if (isToday) {
-    const hoyBadge = (
-      <span className="live-badge-amber" role="img" aria-label="Hoy">
-        <span>HOY</span>
+  const scheduledBadge = (
+    <span className="inline-flex items-center gap-1.5" role="img" aria-label={isToday ? 'Hoy' : 'Programado'}>
+      <span className={`status-dot ${isToday ? 'bg-positive animate-pulse-live' : 'bg-accent'}`} />
+      <span className={`font-terminal text-xxs ${isToday ? 'text-positive' : 'text-accent'}`}>
+        {isToday ? 'HOY' : 'PROGRAMADO'}
       </span>
-    )
-    if (time) {
-      return <CountdownBadge auctionDate={date} auctionTime={time} fallback={hoyBadge} />
-    }
-    return hoyBadge
-  }
-
-  return (
-    <span className="inline-flex items-center gap-1.5" role="img" aria-label="Programado">
-      <span className="status-dot bg-sky-400" />
-      <span className="font-terminal text-xxs text-sky-400">PROGRAMADO</span>
     </span>
   )
+  if (isToday && time) {
+    return <CountdownBadge auctionDate={date} auctionTime={time} fallback={scheduledBadge} />
+  }
+  return scheduledBadge
 }
 
 /* ------------------------------------------------------------------ */
@@ -225,9 +226,9 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
             <div className="flex items-center gap-1.5">
               <StatusBadge date={auction.date} time={auction.time} today={today} />
               {auction.youtubeUrl && (
-                <span className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-red-600/20 border border-red-500/30 rounded-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                  <span className="text-red-400 font-terminal text-[9px] font-bold">LIVE</span>
+                <span className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-negative/15 border border-negative/30 rounded-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-negative animate-pulse" />
+                  <span className="text-negative font-terminal text-[9px] font-bold">LIVE</span>
                 </span>
               )}
             </div>
@@ -279,7 +280,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
                 className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión">YouTube</a>
             )}
             <a href={getWhatsAppShareUrl(auction)} target="_blank" rel="noopener noreferrer"
-              className="text-xxs font-terminal text-emerald-500 hover:text-emerald-400 transition-colors" aria-label="Compartir en WhatsApp">WhatsApp</a>
+              className="text-xxs font-terminal text-live hover:text-positive motion-hover" aria-label="Compartir en WhatsApp">WhatsApp</a>
           </div>
         </div>
 
@@ -359,7 +360,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
                   className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión en YouTube" title="YouTube">YT</a>
               )}
               <a href={getWhatsAppShareUrl(auction)} target="_blank" rel="noopener noreferrer"
-                className="text-xxs font-terminal text-emerald-500 hover:text-emerald-400 transition-colors" aria-label="Compartir en WhatsApp" title="Compartir">WA</a>
+                className="text-xxs font-terminal text-live hover:text-positive motion-hover" aria-label="Compartir en WhatsApp" title="Compartir">WA</a>
             </span>
           </div>
         </div>
@@ -393,9 +394,9 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
           <div className="flex items-center gap-1.5">
             <StatusBadge date={auction.date} time={auction.time} today={today} />
             {auction.youtubeUrl && (
-              <span className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-red-600/20 border border-red-500/30 rounded-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                <span className="text-red-400 font-terminal text-[9px] font-bold">LIVE</span>
+              <span className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-negative/15 border border-negative/30 rounded-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-negative animate-pulse" />
+                <span className="text-negative font-terminal text-[9px] font-bold">LIVE</span>
               </span>
             )}
           </div>
@@ -446,7 +447,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
               className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión">YouTube</a>
           )}
           <a href={getWhatsAppShareUrl(auction)} target="_blank" rel="noopener noreferrer"
-            className="text-xxs font-terminal text-emerald-500 hover:text-emerald-400 transition-colors" aria-label="Compartir en WhatsApp">WhatsApp</a>
+            className="text-xxs font-terminal text-live hover:text-positive motion-hover" aria-label="Compartir en WhatsApp">WhatsApp</a>
         </div>
       </div>
 
@@ -531,7 +532,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
                 className="text-xxs font-terminal text-zinc-500 hover:text-zinc-400 transition-colors" aria-label="Ver fuente" title="Fuente">SRC</a>
             )}
             <a href={getWhatsAppShareUrl(auction)} target="_blank" rel="noopener noreferrer"
-              className="text-xxs font-terminal text-emerald-500 hover:text-emerald-400 transition-colors" aria-label="Compartir en WhatsApp" title="Compartir">WA</a>
+              className="text-xxs font-terminal text-live hover:text-positive motion-hover" aria-label="Compartir en WhatsApp" title="Compartir">WA</a>
           </span>
         </div>
       </div>
@@ -831,7 +832,7 @@ export default function RematesPage() {
         {/* -- Panel header ----------------------------------------- */}
         <div className="terminal-panel-header flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-3">
-            <span className="section-heading text-zinc-200 text-sm tracking-widest">REMATES</span>
+            <span className="section-heading text-zinc-200 text-label tracking-widest">REMATES</span>
             <span className="text-terminal-border hidden sm:inline">&mdash;</span>
             <span className="text-xxs text-zinc-500 uppercase tracking-wider hidden sm:inline">
               Cronograma de Remates Ganaderos
@@ -884,9 +885,9 @@ export default function RematesPage() {
                 onClick={() => setFilterEnVivo(!filterEnVivo)}
                 className="flex items-center gap-1.5 hover:opacity-80 transition-opacity cursor-pointer"
               >
-                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                <span className="text-xxs text-red-400 uppercase font-medium">En Vivo:</span>
-                <span className="text-data tabular-nums font-terminal text-red-400">{enVivoCount}</span>
+                <span className="w-2 h-2 rounded-full bg-negative animate-pulse" />
+                <span className="text-xxs text-negative uppercase font-medium">En Vivo:</span>
+                <span className="text-data tabular-nums font-terminal text-negative">{enVivoCount}</span>
               </button>
             </>
           )}
@@ -1078,10 +1079,10 @@ export default function RematesPage() {
       {/* ============================================================ */}
       <div className="terminal-panel mt-px">
         <div className="px-panel py-1.5 flex items-center flex-wrap gap-x-4 gap-y-1">
-          <span className="inline-flex items-center gap-1 mr-3 px-1.5 py-0.5 border border-amber-500/50 bg-amber-500/10">
-            <span className="text-amber-400 text-[10px]">★</span>
-            <span className="text-amber-400 font-terminal text-[10px] font-bold tracking-wider">PRO</span>
-          </span>
+          <Badge tone="pro" className="mr-3">
+            <span aria-hidden>★</span>
+            PRO
+          </Badge>
           <span className="text-xxs text-zinc-500 font-terminal mr-1">TIPOS:</span>
           {(Object.entries(TYPE_COLORS)).map(([type, cls]) => (
             <span key={type} className="flex items-center gap-1">
@@ -1093,7 +1094,7 @@ export default function RematesPage() {
 
           <span className="text-xxs text-zinc-500 font-terminal mr-1 hidden sm:inline">STATUS:</span>
           <span className="flex items-center gap-1.5 hidden sm:flex">
-            <span className="status-dot bg-sky-400" />
+            <span className="status-dot bg-accent" />
             <span className="text-xxs text-zinc-500 font-terminal">Programado</span>
           </span>
           <span className="flex items-center gap-1.5 hidden sm:flex">

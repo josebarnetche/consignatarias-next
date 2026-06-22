@@ -11,6 +11,8 @@ import { ElCorredorCTA } from '@/components/ElCorredorCTA'
 import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
 import { AnimatedPrice } from '@/components/AnimatedPrice'
 import { InmagDecadaCompleta } from '@/components/market/InmagDecadaCompleta'
+import { Stat, Delta, DataTable, PriceCell, DeltaFlash, type DataColumn } from '@/components/ui'
+import { signedTone, SEMANTIC_HEX } from '@/lib/ui/tokens'
 
 const inmag = marketData.inmag
 const series = inmag.series as Array<{ date: string; value: number; volume?: number }>
@@ -151,6 +153,54 @@ export default function InmagPage() {
   // Calculate 30d change
   const change30d = ((recentSeries[recentSeries.length - 1]?.value - recentSeries[0]?.value) / recentSeries[0]?.value * 100)
 
+  // Histórico (últimos 30 días hábiles, más reciente primero) con variación día a día.
+  const historyRows: Array<{ date: string; value: number; volume?: number; change: number | null }> =
+    recentSeries
+      .slice()
+      .reverse()
+      .slice(0, 30)
+      .map((point, i, arr) => {
+        const prev = arr[i + 1]?.value
+        return {
+          date: point.date,
+          value: point.value,
+          volume: point.volume,
+          change: prev ? ((point.value - prev) / prev) * 100 : null,
+        }
+      })
+
+  const historyColumns: DataColumn<(typeof historyRows)[number]>[] = [
+    {
+      key: 'date',
+      header: 'Fecha',
+      cell: (r) => <span className="text-zinc-300">{formatDate(r.date)}</span>,
+    },
+    {
+      key: 'value',
+      header: 'Precio',
+      numeric: true,
+      cell: (r) => <PriceCell value={r.value} prefix="$" suffix="/kg" />,
+    },
+    {
+      key: 'change',
+      header: 'Variación',
+      numeric: true,
+      cell: (r) => <Delta change={r.change} format={(abs) => abs.toFixed(2)} />,
+    },
+    {
+      key: 'volume',
+      header: 'Volumen',
+      numeric: true,
+      hideBelowSm: true,
+      cell: (r) =>
+        r.volume ? (
+          <span className="text-zinc-500 tabular-nums">{fmt(r.volume)} cab.</span>
+        ) : (
+          <span className="text-zinc-600">-</span>
+        ),
+    },
+  ]
+
   return (
     <>
       <InmagSchema />
@@ -205,7 +255,10 @@ export default function InmagPage() {
                 />
               </div>
 
-              {/* Hero Price Card */}
+              {/* Hero Price Card — el dato vivo. DeltaFlash da un wash sutil   */}
+              {/* sobre el FONDO al cargar/cambiar el precio (DESIGN-SYSTEM §5); */}
+              {/* el número tabular-nums queda fijo, no salta el layout.        */}
+              <DeltaFlash value={inmag.current} tone="live" className="w-full lg:w-auto block">
               <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-2xl p-6 lg:p-8 w-full lg:w-auto lg:min-w-[400px]">
                 <div className="text-sm text-zinc-500 mb-2 font-medium">Precio Actual</div>
                 <div className="flex items-baseline gap-2 sm:gap-3">
@@ -220,42 +273,46 @@ export default function InmagPage() {
                   <span className="text-zinc-500 text-lg shrink-0">/kg</span>
                 </div>
                 <div className="flex items-center gap-4 mt-4 pt-4 border-t border-zinc-800">
-                  <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium ${
-                    isUp 
-                      ? 'bg-emerald-500/10 text-emerald-400' 
-                      : 'bg-red-500/10 text-red-400'
+                  <div className={`flex items-center px-3 py-1.5 rounded-lg text-sm font-medium ${
+                    isUp ? 'bg-positive/10' : 'bg-negative/10'
                   }`}>
-                    <span className="text-lg">{isUp ? '↑' : '↓'}</span>
-                    <span>{isUp ? '+' : ''}{inmag.change.toFixed(2)}%</span>
+                    <Delta
+                      change={inmag.change}
+                      format={(abs) => abs.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    />
                   </div>
                   <div className="text-sm text-zinc-500">
                     vs. anterior: <span className="text-zinc-300">${fmt(inmag.prev)}</span>
                   </div>
                 </div>
               </div>
+              </DeltaFlash>
             </div>
 
             {/* Quick Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: 'Mínimo 30d', value: `$${fmt(minVal)}`, sublabel: 'Por kg vivo' },
-                { label: 'Máximo 30d', value: `$${fmt(maxVal)}`, sublabel: 'Por kg vivo' },
-                { label: 'Promedio 30d', value: `$${fmt(avgVal)}`, sublabel: 'Por kg vivo' },
-                { label: 'Variación 30d', value: `${change30d >= 0 ? '+' : ''}${change30d.toFixed(1)}%`, sublabel: 'vs. hace 30 días', highlight: true },
+                { label: 'Mínimo 30d', value: `$${fmt(minVal)}`, sub: 'Por kg vivo' },
+                { label: 'Máximo 30d', value: `$${fmt(maxVal)}`, sub: 'Por kg vivo' },
+                { label: 'Promedio 30d', value: `$${fmt(avgVal)}`, sub: 'Por kg vivo' },
+                {
+                  label: 'Variación 30d',
+                  value: `${change30d >= 0 ? '+' : ''}${change30d.toFixed(1)}%`,
+                  sub: 'vs. hace 30 días',
+                  tone: signedTone(change30d),
+                },
               ].map((stat) => (
-                <div 
-                  key={stat.label} 
-                  className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-4 hover:border-zinc-700/50 transition-colors"
+                <div
+                  key={stat.label}
+                  className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-4 motion-hover hover:border-zinc-700/50"
                 >
-                  <div className="text-xs text-zinc-500 font-medium mb-1">{stat.label}</div>
-                  <div className={`text-2xl font-bold font-mono ${
-                    stat.highlight 
-                      ? change30d >= 0 ? 'text-emerald-400' : 'text-red-400'
-                      : 'text-white'
-                  }`}>
-                    {stat.value}
-                  </div>
-                  <div className="text-xs text-zinc-600 mt-1">{stat.sublabel}</div>
+                  <Stat
+                    label={stat.label}
+                    value={stat.value}
+                    sub={stat.sub}
+                    tone={stat.tone ?? 'emphasis'}
+                    size="text-2xl font-bold"
+                  />
                 </div>
               ))}
             </div>
@@ -286,10 +343,10 @@ export default function InmagPage() {
           </div>
           
           <Suspense fallback={<div className="h-[380px] bg-zinc-900/30 rounded-2xl animate-pulse" />}>
-            <InteractivePriceChart 
-              data={recentSeries} 
+            <InteractivePriceChart
+              data={recentSeries}
               height={380}
-              accentColor="#10b981"
+              accentColor={SEMANTIC_HEX.live}
               showVolume={true}
             />
           </Suspense>
@@ -419,58 +476,12 @@ export default function InmagPage() {
           <h2 className="text-xl font-semibold text-white mb-6">Histórico de Precios</h2>
 
           <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-zinc-800/50">
-                    <th className="text-left px-6 py-4 text-sm font-medium text-zinc-500">Fecha</th>
-                    <th className="text-right px-6 py-4 text-sm font-medium text-zinc-500">Precio</th>
-                    <th className="text-right px-6 py-4 text-sm font-medium text-zinc-500">Variación</th>
-                    <th className="text-right px-6 py-4 text-sm font-medium text-zinc-500 hidden sm:table-cell">Volumen</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-800/30">
-                  {recentSeries.slice().reverse().slice(0, 30).map((point, i, arr) => {
-                    const prev = arr[i + 1]?.value
-                    const change = prev ? ((point.value - prev) / prev * 100) : 0
-                    const changeUp = change >= 0
-                    
-                    return (
-                      <tr 
-                        key={point.date} 
-                        className="hover:bg-zinc-800/20 transition-colors group"
-                      >
-                        <td className="px-6 py-4">
-                          <span className="text-zinc-300 text-sm">{formatDate(point.date)}</span>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <span className="text-white font-mono font-medium">${fmt(point.value)}</span>
-                          <span className="text-zinc-600 text-sm ml-1">/kg</span>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          {prev ? (
-                            <span className={`inline-flex items-center gap-1 font-mono text-sm font-medium ${
-                              changeUp ? 'text-emerald-400' : 'text-red-400'
-                            }`}>
-                              <span className="text-xs">{changeUp ? '↑' : '↓'}</span>
-                              {changeUp ? '+' : ''}{change.toFixed(2)}%
-                            </span>
-                          ) : (
-                            <span className="text-zinc-600">-</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 text-right hidden sm:table-cell">
-                          <span className="text-zinc-500 font-mono text-sm">
-                            {point.volume ? `${fmt(point.volume)} cab.` : '-'}
-                          </span>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-            
+            <DataTable
+              columns={historyColumns}
+              rows={historyRows}
+              rowKey={(r) => r.date}
+            />
+
             {/* Table footer */}
             <div className="px-6 py-4 border-t border-zinc-800/50 bg-zinc-900/50 flex items-center justify-between gap-3">
               <span className="text-xs text-zinc-600">Mostrando últimos 30 días hábiles</span>

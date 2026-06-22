@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.44.0] — 2026-06-22
+
+### Sistema de diseño — Fase 2 (datos) + Fase 3 (fluidez) + rediseño por página
+
+Segunda ola sobre la fundación de v1.43.0. Tres fases en secuencia (spec `docs/strategy/DESIGN-SYSTEM.md`).
+
+**Fase 2 — Lenguaje de datos:** nuevas primitivas en `src/components/ui/` — `DataTable` (tabla terminal con número consistente, tint por signo, fila navegable SEO-safe, skeleton de carga), `PriceCell` (valor + `Delta`, "—" para null) y `ChartCard`/`Series` (wrapper de `PriceLineChart` que recibe `tone` semántico y resuelve el color por token, rompiendo el acoplamiento al hex). Migradas las superficies de **mercado** (`/mercado`, `/mercado/inmag`, `/mercado/[categoria]`): tablas, stats y variaciones ad-hoc → primitivas + tokens.
+
+**Fase 3 — Fluidez:** `PageTransition` (cross-fade en navegación client, SSR-safe, en el layout), `Skeleton` + variantes (texto/stat/tabla/card, CLS cero), y `DeltaFlash` (wash de color sutil cuando el dato vivo cambia, sin que el número salte). Todo con tokens de motion y `prefers-reduced-motion` respetado.
+
+**Rediseño por página:** `/overview`, ficha de consignataria y `/remates` migrados a las primitivas (DataTable/PriceCell/Stat/Delta/Badge/ChartCard) — pasada de consistencia, manteniendo estructura y funcionalidad. Menos color crudo, un solo lenguaje de dato.
+
 ## [1.43.0] — 2026-06-22
 
 ### Sistema de diseño integrado — Fase 0 (fundación) + Fase 1 (discoverability)

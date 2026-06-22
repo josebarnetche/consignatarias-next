@@ -4,6 +4,7 @@ import Image from 'next/image'
 import type { RemateEspecial } from '@/lib/data/remates-especiales'
 import { normalizeUrl } from '@/lib/utils/url'
 import { trackOutboundClick } from '@/lib/analytics'
+import { Badge } from '@/components/ui'
 
 /* ------------------------------------------------------------------ */
 /*  REMATE ESPECIAL — DESTAQUE                                         */
@@ -31,9 +32,9 @@ function BrandBadge({ brand, brandLogo }: { brand: string; brandLogo: string | n
     )
   }
   return (
-    <span className="inline-flex items-center h-7 px-2.5 rounded-terminal border border-amber-500/30 bg-amber-500/[0.06] text-xxs font-terminal uppercase tracking-wider text-amber-300/90">
+    <Badge tone="warning" className="h-7 px-2.5">
       {brand}
-    </span>
+    </Badge>
   )
 }
 
@@ -55,9 +56,9 @@ export default function RemateEspecialDestaque({ remate }: { remate: RemateEspec
       {/* Header — tag + expositor badge */}
       <div className="flex items-center justify-between gap-3 flex-wrap mb-2.5">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="terminal-tag border-amber-500/40 text-amber-300/90 text-[10px] tracking-widest">
+          <Badge tone="warning" className="text-[10px] tracking-widest">
             REMATE ESPECIAL
-          </span>
+          </Badge>
           <span className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">
             Expositor
           </span>
@@ -74,12 +75,9 @@ export default function RemateEspecialDestaque({ remate }: { remate: RemateEspec
       {remate.breeds.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mt-2">
           {remate.breeds.map((b) => (
-            <span
-              key={b}
-              className="text-xxs font-terminal text-zinc-300 px-1.5 py-0.5 border border-terminal-border rounded-terminal"
-            >
+            <Badge key={b} tone="neutral" className="text-zinc-300 normal-case tracking-normal">
               {b}
-            </span>
+            </Badge>
           ))}
         </div>
       )}
@@ -121,7 +119,7 @@ export default function RemateEspecialDestaque({ remate }: { remate: RemateEspec
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackOutboundClick(catalogUrl, 'catalog')}
-              className="text-xxs font-terminal uppercase tracking-wider text-accent hover:text-accent-bright transition-colors"
+              className="text-xxs font-terminal uppercase tracking-wider text-accent hover:text-accent-bright motion-hover"
             >
               Ver catálogo &rarr;
             </a>
@@ -132,7 +130,7 @@ export default function RemateEspecialDestaque({ remate }: { remate: RemateEspec
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackOutboundClick(youtubeUrl, 'youtube')}
-              className="text-xxs font-terminal uppercase tracking-wider text-negative hover:text-red-300 transition-colors"
+              className="text-xxs font-terminal uppercase tracking-wider text-negative hover:text-negative/80 motion-hover"
             >
               Ver streaming &rarr;
             </a>

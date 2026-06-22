@@ -2,6 +2,7 @@
 
 import { type ReactNode } from 'react'
 import { TYPE_LABELS } from '@/lib/ui/tokens'
+import { Badge } from '@/components/ui'
 
 /* ------------------------------------------------------------------ */
 /*  UNIFIED REMATES FILTER BAR                                          */
@@ -79,16 +80,16 @@ function FilterChip({
     <span
       className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-xxs rounded-terminal border font-terminal ${
         live
-          ? 'bg-red-500/15 text-red-400 border-red-500/30'
+          ? 'bg-negative/15 text-negative border-negative/30'
           : 'bg-accent/10 text-accent border-accent/25'
       }`}
     >
-      {live && <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />}
+      {live && <span className="w-1.5 h-1.5 rounded-full bg-negative animate-pulse" />}
       <span>{children}</span>
       <button
         onClick={onRemove}
-        className={`min-h-[20px] min-w-[20px] -mr-1 flex items-center justify-center text-sm leading-none transition-colors ${
-          live ? 'hover:text-red-200' : 'hover:text-accent-bright'
+        className={`min-h-[20px] min-w-[20px] -mr-1 flex items-center justify-center text-sm leading-none transition-colors motion-hover ${
+          live ? 'hover:text-red-300' : 'hover:text-accent-bright'
         }`}
         aria-label={ariaLabel}
       >
@@ -185,7 +186,7 @@ export default function RematesFilterBar({
                   role="tab"
                   aria-selected={on}
                   onClick={() => onPeriodChange(tab.key)}
-                  className={`terminal-btn text-xxs px-3 py-1.5 min-h-[40px] sm:min-h-0 sm:py-1 ${
+                  className={`terminal-btn text-xxs px-3 py-1.5 min-h-[40px] sm:min-h-0 sm:py-1 motion-hover ${
                     on ? 'border-accent text-accent bg-accent/5' : ''
                   }`}
                 >
@@ -203,16 +204,16 @@ export default function RematesFilterBar({
             <button
               onClick={onToggleEnVivo}
               aria-pressed={filterEnVivo}
-              className={`terminal-btn text-xxs px-3 py-1.5 min-h-[40px] sm:min-h-0 sm:py-1 flex items-center gap-1.5 ml-1 ${
+              className={`terminal-btn text-xxs px-3 py-1.5 min-h-[40px] sm:min-h-0 sm:py-1 flex items-center gap-1.5 ml-1 motion-hover ${
                 filterEnVivo
-                  ? 'border-red-500 text-white bg-red-600 hover:bg-red-500'
-                  : 'border-red-800/50 text-red-400 bg-red-900/20 hover:bg-red-900/40 hover:border-red-600/50'
+                  ? 'border-negative text-white bg-red-600 hover:bg-red-500'
+                  : 'border-negative/40 text-negative bg-negative/10 hover:bg-negative/20 hover:border-negative/60'
               }`}
               title={filterEnVivo ? 'Mostrando solo remates con transmisión en vivo' : 'Filtrar remates con transmisión en vivo'}
             >
-              <span className={`w-2 h-2 rounded-full ${filterEnVivo ? 'bg-white' : 'bg-red-500'} animate-pulse`} />
+              <span className={`w-2 h-2 rounded-full ${filterEnVivo ? 'bg-white' : 'bg-negative'} animate-pulse`} />
               EN VIVO
-              <span className={`tabular-nums ${filterEnVivo ? 'text-red-200' : 'text-red-500'}`}>{enVivoCount}</span>
+              <span className={`tabular-nums ${filterEnVivo ? 'text-red-200' : 'text-negative'}`}>{enVivoCount}</span>
             </button>
           )}
         </div>
@@ -269,7 +270,7 @@ export default function RematesFilterBar({
           <button
             onClick={onToggleAdvanced}
             aria-pressed={showAdvanced && isPro}
-            className={`terminal-btn text-xxs px-2.5 py-1.5 min-h-[40px] sm:min-h-0 sm:py-1 flex items-center gap-1.5 hover:border-accent hover:text-accent ${
+            className={`terminal-btn text-xxs px-2.5 py-1.5 min-h-[40px] sm:min-h-0 sm:py-1 flex items-center gap-1.5 motion-hover hover:border-accent hover:text-accent ${
               advancedActive ? 'border-accent text-accent bg-accent/5' : ''
             }`}
             title={
@@ -280,18 +281,14 @@ export default function RematesFilterBar({
           >
             <span className="hidden sm:inline">FILTROS+</span>
             <span className="sm:hidden">+</span>
-            {showProBadge && (
-              <span className="ml-0.5 text-[9px] font-mono uppercase tracking-wider text-amber-400 border border-amber-400/40 rounded px-1 leading-none py-0.5">
-                PRO
-              </span>
-            )}
+            {showProBadge && <Badge tone="pro" className="ml-0.5">PRO</Badge>}
           </button>
 
           {/* EXPORTAR — bulk .ics behind PRO */}
           {canExport && (
             <button
               onClick={onExport}
-              className="terminal-btn text-xxs px-2.5 py-1.5 min-h-[40px] sm:min-h-0 sm:py-1 flex items-center gap-1.5 hover:border-accent hover:text-accent"
+              className="terminal-btn text-xxs px-2.5 py-1.5 min-h-[40px] sm:min-h-0 sm:py-1 flex items-center gap-1.5 motion-hover hover:border-accent hover:text-accent"
               title={
                 isPro
                   ? `Exportar ${exportCount} remates al calendario`
@@ -303,11 +300,7 @@ export default function RematesFilterBar({
               </svg>
               <span className="hidden sm:inline">EXPORTAR</span>
               <span className="tabular-nums text-zinc-500">{exportCount}</span>
-              {showProBadge && (
-                <span className="ml-1 text-[9px] font-mono uppercase tracking-wider text-amber-400 border border-amber-400/40 rounded px-1 leading-none py-0.5">
-                  PRO
-                </span>
-              )}
+              {showProBadge && <Badge tone="pro" className="ml-1">PRO</Badge>}
             </button>
           )}
         </div>
