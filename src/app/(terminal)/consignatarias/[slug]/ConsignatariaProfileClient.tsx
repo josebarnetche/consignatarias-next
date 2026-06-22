@@ -126,8 +126,8 @@ function RemateCountdown({ date, time }: { date: string; time: string | null }) 
 function ExpositorBadge({ especial }: { especial: RemateEspecial }) {
   if (especial.brandLogo) {
     return (
-      <span className="inline-flex items-center h-4 px-1 rounded-terminal border border-terminal-border bg-terminal-bg/60 align-middle" title={`Expositor: ${especial.brand}`}>
-        <Image src={especial.brandLogo} alt={especial.brand} width={56} height={12} className="h-3 w-auto object-contain" unoptimized />
+      <span className="inline-flex items-center h-5 px-1.5 rounded-terminal border border-terminal-border bg-white align-middle" title={`Expositor: ${especial.brand}`}>
+        <Image src={especial.brandLogo} alt={especial.brand} width={76} height={16} className="h-4 w-auto object-contain" unoptimized />
       </span>
     )
   }

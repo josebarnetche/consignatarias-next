@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.42.1] — 2026-06-21
+
+### Logo de Farming Salentein en el remate especial
+
+Se cableó el logo real del expositor (`/logos/salentein-farms.svg`) en el destaque y en el badge de la card. Como el logo es de texto oscuro, los chips pasaron a fondo claro para que se lea sobre el tema oscuro.
+
 ## [1.42.0] — 2026-06-21
 
 ### Remates especiales (sistema reusable, sembrado con Farming Salentein)

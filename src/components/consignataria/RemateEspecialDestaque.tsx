@@ -18,13 +18,13 @@ import { trackOutboundClick } from '@/lib/analytics'
 function BrandBadge({ brand, brandLogo }: { brand: string; brandLogo: string | null }) {
   if (brandLogo) {
     return (
-      <span className="inline-flex items-center h-7 px-2 rounded-terminal border border-terminal-border bg-terminal-bg/60">
+      <span className="inline-flex items-center h-9 px-2.5 rounded-terminal border border-terminal-border bg-white">
         <Image
           src={brandLogo}
           alt={brand}
-          width={96}
-          height={20}
-          className="h-5 w-auto object-contain"
+          width={132}
+          height={28}
+          className="h-7 w-auto object-contain"
           unoptimized
         />
       </span>
