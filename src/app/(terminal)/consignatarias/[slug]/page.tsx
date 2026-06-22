@@ -472,58 +472,8 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
           )
         })}
 
-      {/* Server-rendered overview — per-consignataria-unique content in the
-          crawled HTML (the interactive calendar below is client-only). */}
-      <section className="max-w-6xl mx-auto px-4 pt-8">
-        <p className="text-slate-300 leading-relaxed">{consigSummary}</p>
-        {consigExistencias && (
-          <p className="text-sm text-slate-500 mt-2">
-            Existencias bovinas en {primaryProvince}:{' '}
-            <span className="text-slate-300 tabular-nums">{consigExistencias.total.toLocaleString('es-AR')}</span> cabezas
-            <span className="text-slate-600"> · SENASA {consigExistencias.year}</span>
-          </p>
-        )}
-        {serverUpcoming.length > 0 && (
-          <div className="mt-6 pt-5 border-t border-terminal-border">
-            <h2 className="text-base font-semibold text-white mb-3 flex items-baseline gap-2">
-              <span className="text-accent font-terminal" aria-hidden>—</span>
-              Próximos remates de {enrichedProfile.displayName}
-            </h2>
-            <ul className="space-y-1 text-sm text-slate-400">
-              {serverUpcoming.map((a, i) => (
-                <li key={`${a.date}-${i}`}>
-                  <span className="text-slate-300 tabular-nums">{a.date}</span>
-                  {' — '}{a.title}
-                  {(a.location || '').split(',')[0].trim() ? ` · ${(a.location || '').split(',')[0].trim()}` : ''}
-                  {a.province ? `, ${a.province}` : ''}
-                </li>
-              ))}
-            </ul>
-            {upcomingCount > 3 && (
-              <p className="text-xs text-slate-500 mt-1">
-                +{upcomingCount - 3} {upcomingCount - 3 === 1 ? 'remate más' : 'remates más'} en el calendario completo, más abajo.
-              </p>
-            )}
-          </div>
-        )}
-      </section>
-
-      {/* Observed prices reported by the firm (named source, citable). */}
-      {latestRemate && (
-        <>
-          <DatasetSchema
-            name={`Precios de hacienda — ${latestRemate.fuente}, remate ${latestRemate.remate.fecha}`}
-            description={`Precios $/kg vivo por categoría observados en el remate de ${latestRemate.fuente} en ${latestRemate.remate.plaza}, ${latestRemate.remate.provincia} (${latestRemate.remate.fecha}). Fuente: ${latestRemate.fuente}.`}
-            url={`https://www.consignatarias.com.ar/consignatarias/${canonical}#precios-observados`}
-            keywords={['precio hacienda', latestRemate.remate.provincia, latestRemate.remate.plaza, 'precio ternero', 'precio novillo', 'remate ganadero']}
-            dateModified={latestRemate.remate.fecha}
-            creator={latestRemate.fuente}
-          />
-          {observedFaq.length > 0 && <FAQPageSchema items={observedFaq} />}
-          <ObservedPricesSection slug={canonical} />
-        </>
-      )}
-
+      {/* Ficha interactiva — encabeza la página: lo primero que ve el productor
+          es la identidad (logo + nombre grande) y los 3 jobs, no un bloque de texto. */}
       <ConsignatariaProfileClient
         profile={enrichedProfile}
         auctions={profileAuctions}
@@ -548,6 +498,65 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
           </div>
         }
       />
+
+      {/* Observed prices reported by the firm (named source, citable). */}
+      {latestRemate && (
+        <>
+          <DatasetSchema
+            name={`Precios de hacienda — ${latestRemate.fuente}, remate ${latestRemate.remate.fecha}`}
+            description={`Precios $/kg vivo por categoría observados en el remate de ${latestRemate.fuente} en ${latestRemate.remate.plaza}, ${latestRemate.remate.provincia} (${latestRemate.remate.fecha}). Fuente: ${latestRemate.fuente}.`}
+            url={`https://www.consignatarias.com.ar/consignatarias/${canonical}#precios-observados`}
+            keywords={['precio hacienda', latestRemate.remate.provincia, latestRemate.remate.plaza, 'precio ternero', 'precio novillo', 'remate ganadero']}
+            dateModified={latestRemate.remate.fecha}
+            creator={latestRemate.fuente}
+          />
+          {observedFaq.length > 0 && <FAQPageSchema items={observedFaq} />}
+          <ObservedPricesSection slug={canonical} />
+        </>
+      )}
+
+      {/* Perfil — resumen citable + contexto. Server-rendered (SEO); va debajo de la
+          ficha interactiva, que ya encabeza con identidad y próximos remates. */}
+      <section className="max-w-6xl mx-auto px-2 sm:px-4 pb-3">
+        <div className="terminal-panel mt-px">
+          <div className="terminal-panel-header text-zinc-200 text-label tracking-widest">PERFIL</div>
+          <div className="px-panel py-3 space-y-3">
+            <p className="text-data text-zinc-300 leading-relaxed">{consigSummary}</p>
+            {consigExistencias && (
+              <p className="text-xxs font-terminal text-zinc-500">
+                Existencias bovinas en {primaryProvince}:{' '}
+                <span className="text-zinc-300 tabular-nums">{consigExistencias.total.toLocaleString('es-AR')}</span> cabezas
+                <span className="text-zinc-600"> · SENASA {consigExistencias.year}</span>
+              </p>
+            )}
+            {serverUpcoming.length > 0 && (
+              <div className="pt-3 border-t border-terminal-border">
+                <h2 className="text-xxs font-terminal text-zinc-500 uppercase tracking-widest mb-2">
+                  Próximos remates de {enrichedProfile.displayName}
+                </h2>
+                <ul className="space-y-1 text-data text-zinc-400 font-terminal">
+                  {serverUpcoming.map((a, i) => (
+                    <li key={`${a.date}-${i}`} className="flex items-baseline gap-2">
+                      <span className="text-accent" aria-hidden>—</span>
+                      <span>
+                        <span className="text-zinc-300 tabular-nums">{a.date}</span>
+                        {' · '}{a.title}
+                        {(a.location || '').split(',')[0].trim() ? ` · ${(a.location || '').split(',')[0].trim()}` : ''}
+                        {a.province ? `, ${a.province}` : ''}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                {upcomingCount > 3 && (
+                  <p className="text-xxs text-zinc-500 mt-2">
+                    +{upcomingCount - 3} {upcomingCount - 3 === 1 ? 'remate más' : 'remates más'} en el cronograma completo, más arriba.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
     </>
   )
 }

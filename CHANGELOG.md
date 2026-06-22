@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.45.0] — 2026-06-22
+
+### Ficha de consignataria: identidad primero (estilo ALYC / gestora)
+
+Al entrar a una ficha (ej. Bressan) lo primero que aparecía era un bloque de prosa SEO — la identidad de la firma quedaba relegada más abajo. Reordenado: ahora **encabeza la ficha interactiva**, con una cabecera de identidad rediseñada —logo grande (80px) + nombre en grande (no en mayúsculas comprimidas) + epígrafe "Consignataria de hacienda" + provincias, total de remates y próximos— como un perfil de ALYC o de gestora de fondos. Debajo siguen las 3 tarjetas (próximo remate / precios / contacto) y el resto.
+
+El resumen citable, las existencias bovinas (SENASA) y la lista de próximos remates se reagruparon en un panel **PERFIL** al pie, server-rendered para SEO, con el mismo lenguaje visual del resto (terminal-panel, tokens) en vez de prosa suelta en gris.
+
 ## [1.44.3] — 2026-06-22
 
 ### Ficha de consignataria: "Próximos remates" ahora se lee como título

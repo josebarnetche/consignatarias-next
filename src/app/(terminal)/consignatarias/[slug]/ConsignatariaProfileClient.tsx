@@ -582,43 +582,71 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       {/*  Reemplaza el header + stats-bar de 5 métricas (carga cognitiva).*/}
       {/* ============================================================ */}
       <div className="terminal-panel">
-        <div className="terminal-panel-header flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center gap-3">
-            <Link href="/consignatarias" className="text-zinc-500 hover:text-accent transition-colors text-xxs font-terminal">
-              &larr; DIRECTORIO
-            </Link>
-            <span className="text-terminal-border">&mdash;</span>
-            {logoSrc && (
-              <div
-                className={`rounded-terminal border overflow-hidden flex-shrink-0 relative flex items-center justify-center w-12 h-12 ${
-                  tier === 'pro' || tier === 'enterprise'
-                    ? 'border-warning/40 shadow-lg shadow-warning/10'
-                    : 'border-terminal-border'
-                }`}
-                style={{ backgroundColor: brandColor || (profile.logoUrl ? '#ffffff' : 'var(--terminal-bg, #0b0b0e)') }}
-              >
-                <Image src={logoSrc} alt={`Logo ${profile.displayName}`} className="object-contain p-1.5" width={48} height={48} unoptimized />
-              </div>
-            )}
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="section-heading text-label tracking-widest">{profile.displayName.toUpperCase()}</h1>
-              {(tier === 'pro' || tier === 'enterprise') ? (
-                <ProBadge verified={profile.verified} size="md" />
-              ) : profile.verified ? (
-                <VerifiedBadge size="md" />
-              ) : null}
-              {provinces.map(prov => (
-                <Badge key={prov} tone="neutral" className="text-zinc-500 normal-case tracking-normal">
-                  {prov}
-                </Badge>
-              ))}
-            </div>
-          </div>
+        {/* Barra de utilidad: volver al directorio + reclamar */}
+        <div className="terminal-panel-header flex items-center justify-between gap-2">
+          <Link href="/consignatarias" className="text-zinc-500 hover:text-accent transition-colors text-xxs font-terminal">
+            &larr; DIRECTORIO
+          </Link>
           {!profile.claimedAt && (
             <Link href={`/consignatarias/${profile.canonicalSlug}/verificar`} rel="nofollow" className="text-xxs font-terminal text-zinc-500 hover:text-accent transition-colors">
               ¿Es tu firma? Reclamala &rarr;
             </Link>
           )}
+        </div>
+
+        {/* IDENTIDAD — logo + nombre grande, estilo ficha de ALYC / gestora. Lo
+            primero que ve el productor al entrar: quién es la firma de un vistazo. */}
+        <div className="px-panel pt-4 pb-4 border-b border-terminal-border flex items-start gap-3 sm:gap-4">
+          {logoSrc && (
+            <div
+              className={`rounded-terminal border overflow-hidden flex-shrink-0 relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 ${
+                tier === 'pro' || tier === 'enterprise'
+                  ? 'border-warning/40 shadow-lg shadow-warning/10'
+                  : 'border-terminal-border'
+              }`}
+              style={{ backgroundColor: brandColor || (profile.logoUrl ? '#ffffff' : 'var(--terminal-bg, #0b0b0e)') }}
+            >
+              <Image src={logoSrc} alt={`Logo ${profile.displayName}`} className="object-contain p-2" width={80} height={80} unoptimized />
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-xl sm:text-2xl font-bold text-zinc-50 tracking-tight leading-tight">
+                {profile.displayName}
+              </h1>
+              {(tier === 'pro' || tier === 'enterprise') ? (
+                <ProBadge verified={profile.verified} size="md" />
+              ) : profile.verified ? (
+                <VerifiedBadge size="md" />
+              ) : null}
+            </div>
+            <p className="text-xxs font-terminal text-zinc-500 uppercase tracking-widest mt-1">
+              Consignataria de hacienda
+            </p>
+            <div className="flex items-center gap-x-2 gap-y-1 flex-wrap mt-2.5">
+              {provinces.map(prov => (
+                <Badge key={prov} tone="neutral" className="text-zinc-400 normal-case tracking-normal">
+                  {prov}
+                </Badge>
+              ))}
+              {auctions.length > 0 && (
+                <>
+                  <span className="text-terminal-border text-xxs">·</span>
+                  <span className="text-xxs font-terminal text-zinc-400 tabular-nums">
+                    {auctions.length} {auctions.length === 1 ? 'remate' : 'remates'}
+                  </span>
+                </>
+              )}
+              {upcoming.length > 0 && (
+                <>
+                  <span className="text-terminal-border text-xxs">·</span>
+                  <span className="text-xxs font-terminal text-accent tabular-nums">
+                    {upcoming.length} próximo{upcoming.length !== 1 ? 's' : ''}
+                  </span>
+                </>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="px-panel py-3 grid gap-3 grid-cols-1 lg:grid-cols-3">
