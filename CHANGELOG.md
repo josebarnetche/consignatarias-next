@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.45.1] — 2026-06-22
+
+### Ficha de frigorífico: misma cabecera de identidad
+
+Replicada la identidad-primero de las consignatarias en las fichas de frigorífico. La cabecera chiquita ("FICHA DEL ESTABLECIMIENTO" + nombre en `text-lg`) pasa a una cabecera de identidad: marca (monograma con el color de la etapa, ya que los frigoríficos no tienen logo) + **nombre en grande** + epígrafe ("Frigorífico · tipo") + fila de metadata con localidad/provincia, matrícula SENASA y estado de habilitación (vigente / sin registro). El resto de la ficha (datos registrales, habilitación SENASA, ciclo, relacionados) ya era panel-based y queda igual.
+
 ## [1.45.0] — 2026-06-22
 
 ### Ficha de consignataria: identidad primero (estilo ALYC / gestora)

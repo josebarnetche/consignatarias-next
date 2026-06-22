@@ -325,28 +325,55 @@ export default async function FrigorificoDetailPage({
         <span className="text-zinc-400">MAT. {basicF.matricula}</span>
       </div>
 
-      {/* Header */}
+      {/* IDENTIDAD — marca (monograma con el color de la etapa) + nombre grande,
+          estilo ficha de establecimiento habilitado. Lo primero que ve el usuario:
+          quién es y su habilitación de un vistazo. */}
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-zinc-200 text-label tracking-widest">FICHA DEL ESTABLECIMIENTO</span>
-            {verified && (
-              <span className="text-xxs font-terminal px-1.5 py-0.5 border border-positive/30 text-positive rounded-terminal">
-                VERIFICADO
-              </span>
-            )}
-          </div>
+          <span className="text-zinc-200 text-label tracking-widest">FICHA DEL ESTABLECIMIENTO</span>
           <span className={`text-xxs font-terminal px-1.5 py-0.5 border rounded-terminal ${stageBorderColor(basicF.stage)} ${stageColor(basicF.stage)}`}>
             ETAPA {basicF.stage}
           </span>
         </div>
-        <div className="px-panel py-4">
-          <h1 className="text-lg font-medium text-zinc-100 leading-tight">
-            {name}
-          </h1>
-          <p className="text-xxs font-terminal text-zinc-500 mt-1">
-            {localidad || province}
-          </p>
+        <div className="px-panel pt-4 pb-4 flex items-start gap-3 sm:gap-4">
+          <div
+            className={`rounded-terminal border ${stageBorderColor(basicF.stage)} bg-terminal-bg/60 flex-shrink-0 flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20`}
+            aria-hidden
+          >
+            <span className={`text-2xl sm:text-3xl font-bold ${stageColor(basicF.stage)}`}>
+              {name.charAt(0).toUpperCase()}
+            </span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-xl sm:text-2xl font-bold text-zinc-50 tracking-tight leading-tight">
+                {name}
+              </h1>
+              {verified && (
+                <span className="text-xxs font-terminal px-1.5 py-0.5 border border-positive/30 text-positive rounded-terminal">
+                  VERIFICADO
+                </span>
+              )}
+            </div>
+            <p className="text-xxs font-terminal text-zinc-500 uppercase tracking-widest mt-1">
+              Frigorífico{tipo ? ` · ${tipo.replace(/_/g, ' ')}` : ''}
+            </p>
+            <div className="flex items-center gap-x-2 gap-y-1 flex-wrap mt-2.5 text-xxs font-terminal">
+              <span className="px-1.5 py-0.5 border border-terminal-border text-zinc-400 rounded-terminal">
+                {localidad ? `${localidad}, ${province}` : province}
+              </span>
+              <span className="px-1.5 py-0.5 border border-terminal-border text-zinc-400 rounded-terminal tabular-nums">
+                Mat. {basicF.matricula}
+              </span>
+              <span
+                className={`px-1.5 py-0.5 border rounded-terminal ${
+                  senasaVigente ? 'border-positive/30 text-positive' : 'border-zinc-700 text-zinc-500'
+                }`}
+              >
+                {senasaVigente ? 'SENASA vigente' : 'SENASA s/registro'}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
