@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.42.0] — 2026-06-21
+
+### Remates especiales (sistema reusable, sembrado con Farming Salentein)
+
+Algunas consignatarias operan remates especiales de cabañas/expositores premium (reproductores, razas destacadas, streaming, pre-oferta). Nuevo sistema config-driven para destacarlos de forma sutil.
+
+- **Data + helpers** (`remates-especiales.json` / `.ts`): una entrada por remate especial (consignataria operadora, expositor, razas, fecha, lugar, lotes, modalidad, pre-oferta, `brandLogo` opcional). Lookup por `consignatariaSlug + date`.
+- **Componente `RemateEspecialDestaque`**: card premium y sutil (tag "REMATE ESPECIAL", badge del expositor, razas como chips, fecha/lugar/lotes, badge de streaming, pre-oferta como gancho).
+- **Integración**: destaque debajo del hero en el perfil de la consignataria operadora + badge del expositor en la fila del remate en el cronograma.
+- **Sembrado**: Farming Salentein → Etchevehere Rural · Braford & Angus Colorado · 20-ago-2026 · S. Rural Curuzú Cuatiá · ~60 toros + ~300 vientres · streaming · 5% OFF en pre-oferta. El remate ya existía en los datos (id 543); el sistema lo enriquece sin tocar el scraper.
+- Reusable: sumar otro (ej. Reggi + Cabaña El Tigre) es una línea en el JSON. El logo del expositor se cablea solo al dejar el archivo en `/public/logos/` y setear `brandLogo`.
+
 ## [1.41.3] — 2026-06-21
 
 ### Mapa de cobertura: SVG completo de las 24 provincias

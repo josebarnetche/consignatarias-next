@@ -26,6 +26,7 @@ import { ObservedPricesSection, getLatestRemate } from '@/components/consignatar
 import youtubeChannelsData from '@/lib/data/youtube-channels.json'
 import consignatariaResources from '@/lib/data/consignataria-resources.json'
 import { getProfileSEO } from '@/lib/data/profile-seo'
+import { getRematesEspecialesForSlug } from '@/lib/data/remates-especiales'
 import ConsignatariaProfileClient from './ConsignatariaProfileClient'
 import { MediosPagoSection } from '@/components/consignataria/MediosPagoSection'
 import type { YouTubeChannelData } from './ConsignatariaProfileClient'
@@ -399,6 +400,12 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
       })()
     : []
 
+  // Remates especiales (cabañas/expositores premium) operados por esta firma.
+  // Config-driven y reusable: se siembra en remates-especiales.json. El remate
+  // normal ya vive en el cronograma (matcheado por slug + fecha); acá sólo se
+  // pasa el destaque premium.
+  const rematesEspeciales = getRematesEspecialesForSlug(canonical)
+
   // Resumen liviano de precios del último remate → tarjeta "Últimos precios" del hero.
   const latestRemateSummary = latestRemate
     ? {
@@ -527,6 +534,7 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
         externalResources={(consignatariaResources as Record<string, { displayName: string; resources: Array<{ type: string; label: string; url: string; description?: string }> }>)[canonical]?.resources}
         magEntry={(marketData as { auctionDayEntries?: { consignatarias: Record<string, MagEntryData> } }).auctionDayEntries?.consignatarias?.[canonical]}
         latestRemateSummary={latestRemateSummary}
+        rematesEspeciales={rematesEspeciales}
         mediosPagoSlot={
           <div className="max-w-6xl mx-auto px-4">
             <MediosPagoSection

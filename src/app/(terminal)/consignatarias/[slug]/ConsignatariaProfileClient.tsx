@@ -32,6 +32,8 @@ import VideoGallery, { type ConsignatariaVideo } from '@/components/video/VideoG
 import { Accordion } from './_wave2/Accordion'
 import { StickyBar } from './_wave2/StickyBar'
 import { getLogoUrl, getBrandColor } from '@/lib/data/logo-map'
+import RemateEspecialDestaque from '@/components/consignataria/RemateEspecialDestaque'
+import { type RemateEspecial, findRemateEspecial } from '@/lib/data/remates-especiales'
 // DteCTA removed - not relevant for consignatarias viewing their profile
 import type { RelatedConsignataria } from '@/lib/dal/consignatarias'
 import type { MagEntryData } from './page'
@@ -120,7 +122,26 @@ function RemateCountdown({ date, time }: { date: string; time: string | null }) 
 /*  AUCTION ROW — responsive                                           */
 /* ------------------------------------------------------------------ */
 
-function ProfileAuctionRow({ auction, today }: { auction: Auction; today: string }) {
+/** Subtle expositor badge (logo or name) for remates especiales in listings. */
+function ExpositorBadge({ especial }: { especial: RemateEspecial }) {
+  if (especial.brandLogo) {
+    return (
+      <span className="inline-flex items-center h-4 px-1 rounded-terminal border border-terminal-border bg-terminal-bg/60 align-middle" title={`Expositor: ${especial.brand}`}>
+        <Image src={especial.brandLogo} alt={especial.brand} width={56} height={12} className="h-3 w-auto object-contain" unoptimized />
+      </span>
+    )
+  }
+  return (
+    <span
+      className="inline-flex items-center text-[10px] font-terminal uppercase tracking-wider text-amber-300/80 px-1 py-px border border-amber-500/25 bg-amber-500/[0.05] rounded-terminal align-middle"
+      title={`Expositor: ${especial.brand}`}
+    >
+      {especial.brand}
+    </span>
+  )
+}
+
+function ProfileAuctionRow({ auction, today, especial }: { auction: Auction; today: string; especial?: RemateEspecial | null }) {
   const isToday = auction.date === today
   const isPast = auction.date < today
   const city = getCity(auction.location)
@@ -158,8 +179,11 @@ function ProfileAuctionRow({ auction, today }: { auction: Auction; today: string
           </div>
           <StatusBadge date={auction.date} time={auction.time} today={today} />
         </div>
-        <div className="text-data font-terminal text-zinc-200 group-hover:text-accent transition-colors truncate">
-          {auction.title}
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className="text-data font-terminal text-zinc-200 group-hover:text-accent transition-colors truncate">
+            {auction.title}
+          </span>
+          {especial && <ExpositorBadge especial={especial} />}
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-xxs text-zinc-500">{city}</span>
@@ -203,8 +227,11 @@ function ProfileAuctionRow({ auction, today }: { auction: Auction; today: string
               <span className="text-zinc-500">&mdash;</span>
             )}
           </span>
-          <span className="flex-1 min-w-0 text-data font-terminal text-zinc-200 truncate group-hover:text-accent transition-colors" title={auction.title}>
-            {auction.title}
+          <span className="flex-1 min-w-0 flex items-center gap-1.5">
+            <span className="text-data font-terminal text-zinc-200 truncate group-hover:text-accent transition-colors" title={auction.title}>
+              {auction.title}
+            </span>
+            {especial && <ExpositorBadge especial={especial} />}
           </span>
           <span className="w-[140px] flex-shrink-0 text-data font-terminal text-zinc-500 truncate text-right pr-2">
             {city}
@@ -392,9 +419,11 @@ interface ConsignatariaProfileClientProps {
   reviewStats?: { count: number; avgRating: number | null }
   /** Resumen liviano del último remate reportado, para la tarjeta de precios del hero. */
   latestRemateSummary?: { fuente: string; fecha: string; top: Array<{ label: string; mid: number }> } | null
+  /** Remates especiales (cabañas/expositores premium) operados por esta firma. */
+  rematesEspeciales?: RemateEspecial[]
 }
 
-export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [], relatedConsignatarias = [], externalResources = [], magEntry, mediosPagoSlot, reviews = [], reviewStats = { count: 0, avgRating: null }, latestRemateSummary = null }: ConsignatariaProfileClientProps) {
+export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [], relatedConsignatarias = [], externalResources = [], magEntry, mediosPagoSlot, reviews = [], reviewStats = { count: 0, avgRating: null }, latestRemateSummary = null, rematesEspeciales = [] }: ConsignatariaProfileClientProps) {
   const today = getEffectiveToday()
 
   useEffect(() => {
@@ -659,6 +688,16 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           </div>
         </div>
       </div>
+
+      {/* REMATES ESPECIALES — destaque sutil debajo del hero, antes del cronograma.
+          Config-driven (remates-especiales.json), reusable para cualquier firma. */}
+      {rematesEspeciales.length > 0 && (
+        <div className="mt-3 space-y-3">
+          {rematesEspeciales.map((re) => (
+            <RemateEspecialDestaque key={`${re.consignatariaSlug}-${re.date}-${re.brand}`} remate={re} />
+          ))}
+        </div>
+      )}
 
       {/* QUIÉN OPERA — colapsado (confianza, secundario). Solo si hay datos de persona. */}
       {(profile.referenteNombre || profile.bioReferente || profile.especialidad || profile.regionOperativa || profile.anosOficio) && (
@@ -1184,7 +1223,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               </span>
             </div>
             {group.auctions.map(auction => (
-              <ProfileAuctionRow key={auction.id} auction={auction} today={today} />
+              <ProfileAuctionRow key={auction.id} auction={auction} today={today} especial={findRemateEspecial(auction.consignatariaSlug, auction.date)} />
             ))}
           </div>
         ))}
@@ -1215,7 +1254,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                   </span>
                 </div>
                 {group.auctions.map(auction => (
-                  <ProfileAuctionRow key={auction.id} auction={auction} today={today} />
+                  <ProfileAuctionRow key={auction.id} auction={auction} today={today} especial={findRemateEspecial(auction.consignatariaSlug, auction.date)} />
                 ))}
               </div>
             ))}
