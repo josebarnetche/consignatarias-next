@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.44.1] — 2026-06-22
+
+### Nav: fuera el tag "SEO" de Arrendamiento
+
+"SEO" era jerga interna (la razón por la que rescatamos esa página, no algo que le importe a un ganadero) filtrada a la UI. Eliminado el tag de Arrendamiento (desktop + mobile) y quitado del sistema de tags del nav. Quedan solo tags con sentido para el usuario: LIVE (dato en vivo) y PRO (función de pago).
+
 ## [1.44.0] — 2026-06-22
 
 ### Sistema de diseño — Fase 2 (datos) + Fase 3 (fluidez) + rediseño por página

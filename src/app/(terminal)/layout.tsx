@@ -19,7 +19,7 @@ interface NavLeaf {
   /** Optional descriptive sub-line shown in the dropdown panel. */
   hint?: string;
   /** Visual emphasis tag. */
-  tag?: "live" | "seo" | "pro" | "core";
+  tag?: "live" | "pro" | "core";
 }
 
 interface NavGroup {
@@ -51,7 +51,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Maíz / Novillo", href: "/mercado/spread", hint: "Relación de canje" },
       { label: "Precios hoy", href: "/precios", hint: "Hacienda en pie" },
       { label: "Categorías", href: "/mercado", hint: "Terneros, novillos, vacas" },
-      { label: "Arrendamiento", href: "/mercado/arrendamiento", hint: "Valor del campo", tag: "seo" },
+      { label: "Arrendamiento", href: "/mercado/arrendamiento", hint: "Valor del campo" },
     ],
   },
   {
@@ -98,7 +98,7 @@ const MOBILE_NAV: MobileNavLink[] = [
   { label: "CONSIGNAT.", href: "/consignatarias" },
   { label: "FRIGORIF.", href: "/frigorificos" },
   { label: "CALCULAR", href: "/calculadora", tag: "pro" },
-  { label: "ARRIENDO", href: "/mercado/arrendamiento", tag: "seo" },
+  { label: "ARRIENDO", href: "/mercado/arrendamiento" },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -153,14 +153,12 @@ function isGroupActive(pathname: string, group: NavGroup): boolean {
 
 const TAG_STYLE: Record<NonNullable<NavLeaf["tag"]>, string> = {
   live: "border-positive text-positive",
-  seo: "border-accent text-accent",
   pro: "border-amber-400/60 text-amber-300",
   core: "border-zinc-500 text-zinc-300",
 };
 
 const TAG_LABEL: Record<NonNullable<NavLeaf["tag"]>, string> = {
   live: "LIVE",
-  seo: "SEO",
   pro: "PRO",
   core: "NÚCLEO",
 };
