@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.44.2] — 2026-06-22
+
+### INMAG en dólares: gráficos interactivos + carga como el resto de los mercados
+
+La página `/mercado/inmag-dolares` usaba SVGs estáticos (sin interacción). Migrada a `PriceLineChart` —el mismo primitivo del sistema de diseño que el resto de los mercados— en sus tres vistas (reciente, 5 años, década completa PRO): al pasar el mouse sobre la curva ahora muestra **precio + fecha** en tooltip, con eje Y a escala completa. `ProChartGate` aprende a recibir un chart interactivo (`children`) además del SVG legacy, así el histórico PRO también es navegable.
+
+**Frescura del dato:** verificado contra Supabase —serie INMAG y dólar blue al 2026-06-19 (último día de remate MAG; el INMAG se publica por jornada de remate, no a diario). La página es SSG con rebuild diario.
+
 ## [1.44.1] — 2026-06-22
 
 ### Nav: fuera el tag "SEO" de Arrendamiento

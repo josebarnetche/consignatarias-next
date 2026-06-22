@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema } from '@/components/seo/JsonLd'
 import { fetchInmagUsdJoined, aggregateMonthly } from '@/lib/charts/data'
-import { lineChartSvg } from '@/lib/charts/svg'
+import { PriceLineChart } from '@/components/charts/PriceLineChart'
 import ProChartGate from '@/components/market/ProChartGate'
 
 export const revalidate = 86400 // 1 day — rebuilt nightly by SSG cron
@@ -106,16 +106,6 @@ export default async function InmagDolaresPage() {
   const chg30pct = usdToday !== null && usd30 ? ((usdToday - usd30) / usd30) * 100 : null
   const chg12pct = usdToday !== null && usd12m ? ((usdToday - usd12m) / usd12m) * 100 : null
 
-  const recentSvg = lineChartSvg({
-    series: [
-      { label: 'INMAG en USD/kg vivo (diario)', color: '#38bdf8', points: recentDaily },
-    ],
-    height: 320,
-    yLabel: 'USD / kg vivo',
-    yZero: false, // recent range, not from zero — reveals month-to-month movement
-    formatY: (v) => `$${v.toFixed(2)}`,
-  })
-
   // Long-term stats (10 years, monthly)
   const usdValues = monthlyUsd.map((m) => m.value)
   const usdMin = usdValues.length ? Math.min(...usdValues) : null
@@ -124,45 +114,14 @@ export default async function InmagDolaresPage() {
     ? usdValues.reduce((s, v) => s + v, 0) / usdValues.length
     : null
 
-  // Últimos 5 años — promedio mensual (contexto)
-  const last60 = monthlyUsd.slice(-60)
-  const chartSvg = lineChartSvg({
-    series: [
-      {
-        label: 'INMAG en USD/kg vivo (mensual)',
-        color: '#38bdf8',
-        points: last60.map((m) => ({
-          date: `${m.year}-${String(m.month).padStart(2, '0')}-15`,
-          value: m.value,
-        })),
-      },
-    ],
-    height: 320,
-    yLabel: 'USD / kg vivo',
-    yZero: true,
-    formatY: (v) => `$${v.toFixed(1)}`,
+  // Series para los gráficos interactivos (PriceLineChart — tooltip precio+fecha al hover).
+  const toPoint = (m: { year: number; month: number; value: number }) => ({
+    date: `${m.year}-${String(m.month).padStart(2, '0')}-15`,
+    value: m.value,
   })
-
-  // Full-history chart (always shown if there's >24 months)
-  const fullSvg =
-    monthlyUsd.length > 24
-      ? lineChartSvg({
-          series: [
-            {
-              label: 'INMAG en USD/kg — desde 2015',
-              color: '#a78bfa',
-              points: monthlyUsd.map((m) => ({
-                date: `${m.year}-${String(m.month).padStart(2, '0')}-15`,
-                value: m.value,
-              })),
-            },
-          ],
-          height: 240,
-          yLabel: 'USD / kg vivo',
-          yZero: true,
-          formatY: (v) => `$${v.toFixed(1)}`,
-        })
-      : null
+  const monthly5y = monthlyUsd.slice(-60).map(toPoint)
+  const monthlyAll = monthlyUsd.map(toPoint)
+  const hasFullHistory = monthlyUsd.length > 24
 
   // FAQ with verbatim long-tail queries
   const faq = [
@@ -284,10 +243,9 @@ export default async function InmagDolaresPage() {
             {/* Recent daily chart — scaled to recent range so movement is visible */}
             <div className="terminal-panel mb-8">
               <div className="terminal-panel-header">Últimos 12 meses — día por día</div>
-              <div
-                className="px-panel py-4"
-                dangerouslySetInnerHTML={{ __html: recentSvg }}
-              />
+              <div className="px-panel py-4">
+                <PriceLineChart data={recentDaily} height={300} accentColor="#38bdf8" decimals={2} prefix="US$ " />
+              </div>
               <div className="px-panel pb-3 text-zinc-500 text-xxs">
                 Cada punto = un día de operación. Escala ajustada al rango reciente para ver el
                 movimiento mes a mes (no arranca en cero). Fuente: INMAG (MAG Cañuelas) ÷ dólar blue venta.
@@ -333,25 +291,25 @@ export default async function InmagDolaresPage() {
             {/* Last 5 years chart */}
             <div className="terminal-panel mb-6">
               <div className="terminal-panel-header">Últimos 5 años — promedio mensual</div>
-              <div
-                className="px-panel py-4"
-                dangerouslySetInnerHTML={{ __html: chartSvg }}
-              />
+              <div className="px-panel py-4">
+                <PriceLineChart data={monthly5y} height={300} accentColor="#38bdf8" decimals={2} prefix="US$ " />
+              </div>
             </div>
 
             {/* Full history — PRO (free users see the recent + 5y charts above) */}
-            {fullSvg && (
+            {hasFullHistory && (
               <div className="terminal-panel mb-6">
                 <div className="terminal-panel-header flex items-center gap-2">
                   Histórico completo — desde 2015
                   <span className="text-[10px] font-terminal font-bold tracking-wider border border-amber-500/50 bg-amber-500/10 text-amber-400 rounded-sm px-1 py-0.5">PRO</span>
                 </div>
                 <ProChartGate
-                  svg={fullSvg}
                   context="inmag-dolares-decade"
                   title="Función PRO Usuario"
                   description="La serie completa del INMAG en dólares desde 2015 — la década entera del ciclo ganadero, más la descarga en CSV."
-                />
+                >
+                  <PriceLineChart data={monthlyAll} height={240} accentColor="#a78bfa" decimals={2} prefix="US$ " />
+                </ProChartGate>
                 <div className="px-panel pb-3 text-zinc-500 text-xxs">
                   Cada punto = promedio del mes. Fuente: INMAG (MAG Cañuelas) ÷ dólar blue venta (ambitofinanciero / argentinadatos).
                 </div>

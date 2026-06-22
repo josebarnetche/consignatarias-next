@@ -6,7 +6,8 @@ import { useSessionTier } from '@/lib/use-session-tier'
 import { trackProPromptClick, trackProPromptView } from '@/lib/analytics'
 
 interface Props {
-  svg: string // server-rendered chart, shown to PRO
+  svg?: string // server-rendered chart string (legacy), shown to PRO
+  children?: React.ReactNode // interactive chart node (preferred), shown to PRO
   context: string // analytics context
   title: string
   description: string
@@ -18,7 +19,7 @@ interface Props {
  * static (tier resolved client-side via /api/me). The SVG still ships in the
  * HTML (data is public by design); this is a merchandising gate, not DRM.
  */
-export default function ProChartGate({ svg, context, title, description }: Props) {
+export default function ProChartGate({ svg, children, context, title, description }: Props) {
   const { tier, loading } = useSessionTier()
   const tracked = useRef(false)
 
@@ -30,7 +31,8 @@ export default function ProChartGate({ svg, context, title, description }: Props
   }, [loading, tier, context])
 
   if (tier === 'pro') {
-    return <div className="px-panel py-4" dangerouslySetInnerHTML={{ __html: svg }} />
+    if (children) return <div className="px-panel py-4">{children}</div>
+    return <div className="px-panel py-4" dangerouslySetInnerHTML={{ __html: svg ?? '' }} />
   }
 
   if (loading) {
