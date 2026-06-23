@@ -1843,9 +1843,9 @@
     }
   },
   "corn": {
-    "current": 216.1,
+    "current": 213,
     "prev": 216.1,
-    "change": 0,
+    "change": -1.4,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
@@ -1984,7 +1984,7 @@
         "category": "VACAS Regular",
         "minPrice": 1700,
         "maxPrice": 3400,
-        "avgPrice": 2565.91,
+        "avgPrice": 2565.14,
         "cabezas": 1779
       },
       {
@@ -2033,7 +2033,7 @@
         "category": "Totales",
         "minPrice": 0,
         "maxPrice": 0,
-        "avgPrice": 3577.56,
+        "avgPrice": 3577.07,
         "cabezas": 7712
       }
     ]
