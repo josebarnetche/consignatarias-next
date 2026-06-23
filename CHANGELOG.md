@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.47.0] — 2026-06-22
+
+### Comparable interanual en USD + subpágina de referencia internacional
+
+**"Comparable mes a mes — últimos años" ahora en USD.** Graficaba INMAG en ARS/kg, donde la inflación hace que cada año "explote" hacia arriba y no se compara nada. Pasado a **USD/kg (INMAG ÷ dólar blue)**: medido en dólares la inflación se neutraliza, los años se superponen y recién ahí se lee la estacionalidad y el cambio real interanual.
+
+**Nueva subpágina `/mercado/internacional`.** La referencia de Chicago (CME) ahora tiene su propia página: el panel en vivo (Live Cattle + Feeder Cattle en USD/kg), un bloque **"Novillo argentino vs. Chicago"** que muestra a qué % del valor del novillo de Chicago cotiza el gordo local (INMAG USD vs Live Cattle), y contenido explicativo de qué mide cada contrato + metodología/alcance. Enlazada desde el panel de `/mercado` y sumada al sitemap.
+
 ## [1.46.0] — 2026-06-22
 
 ### /mercado: referencia internacional — futuros de Chicago (CME)

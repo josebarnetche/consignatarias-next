@@ -114,6 +114,14 @@ export default function MercadoPage() {
       {/* Referencia internacional — futuros de hacienda de Chicago (CME) en USD/kg */}
       <div className="px-4 pt-3 pb-1 max-w-6xl mx-auto">
         <ChicagoReference />
+        <div className="mt-2 text-right">
+          <Link
+            href="/mercado/internacional"
+            className="text-xxs font-terminal uppercase tracking-wider text-accent hover:text-accent-bright transition-colors"
+          >
+            Ver referencia internacional + comparación con el novillo local →
+          </Link>
+        </div>
       </div>
 
       {/* Precios hub teaser — internal link target for /precios SEO */}
