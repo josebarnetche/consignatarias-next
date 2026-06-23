@@ -8037,25 +8037,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Remate General",
-    "consignatariaName": "COLOMBO Y MAGLIANO S.A.",
-    "consignatariaSlug": "colombo-y-magliano-s-a",
-    "date": "2026-07-01",
-    "time": "14:30",
-    "location": "OLAVARRIA, BUENOS AIRES",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": 1000,
-    "description": "Remate General",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.colomboymagliano.com.ar",
-    "id": 424,
-    "status": "scheduled"
-  },
-  {
     "title": "Remate",
     "consignatariaName": "RICARDO MENDIZABAL CONSIGNACIONES S.R.L.",
     "consignatariaSlug": "ricardo-mendizabal-consignaciones-s-r-l",
@@ -8072,7 +8053,26 @@
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/31123",
     "status": "scheduled",
-    "id": 425
+    "id": 424
+  },
+  {
+    "title": "Remate General",
+    "consignatariaName": "COLOMBO Y MAGLIANO S.A.",
+    "consignatariaSlug": "colombo-y-magliano-s-a",
+    "date": "2026-07-01",
+    "time": "14:30",
+    "location": "OLAVARRIA, BUENOS AIRES",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": 1000,
+    "description": "Remate General",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.colomboymagliano.com.ar",
+    "id": 425,
+    "status": "scheduled"
   },
   {
     "title": "REMATE FERIA 5 BOCAS - PASO DE LA LAGUNA",

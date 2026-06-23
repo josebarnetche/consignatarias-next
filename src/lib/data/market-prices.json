@@ -1798,47 +1798,47 @@
   "categories": {
     "novillos": {
       "current": 4217,
-      "prev": 4284,
-      "change": -1.6,
+      "prev": 4217,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 804
     },
     "novillitos": {
       "current": 4006,
-      "prev": 4070,
-      "change": -1.6,
+      "prev": 4006,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 673
     },
     "vaquillonas": {
       "current": 3795,
-      "prev": 3855,
-      "change": -1.6,
+      "prev": 3795,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 784
     },
     "vacas": {
       "current": 3036,
-      "prev": 3084,
-      "change": -1.6,
+      "prev": 3036,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 2375
     },
     "toros": {
       "current": 2741,
-      "prev": 2784,
-      "change": -1.5,
+      "prev": 2741,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 223
     },
     "terneros": {
       "current": 4638,
-      "prev": 4712,
-      "change": -1.6,
+      "prev": 4638,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
@@ -1851,15 +1851,15 @@
   },
   "usdBlue": {
     "current": 1505,
-    "prev": 1495,
-    "change": 0.7,
+    "prev": 1505,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
     "current": 1490,
-    "prev": 1481.79,
-    "change": 0.6,
+    "prev": 1490,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
@@ -2103,5 +2103,55 @@
         "period": "20/05/2026 - 19/06/2026"
       }
     }
+  },
+  "consignatarioEntry": {
+    "date": "23/06/2026",
+    "entries": [
+      {
+        "remitente": "MARIA TERESA GAZTAMBIDE SC.",
+        "localidad": "GONZALES CHAVES",
+        "provincia": "BUE",
+        "enPie": 53,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 53
+      },
+      {
+        "remitente": "AGUAPE S.A.C.A.",
+        "localidad": "RAUCH",
+        "provincia": "BUE",
+        "enPie": 22,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 22
+      },
+      {
+        "remitente": "TAMOR S.A.",
+        "localidad": "BENITO JUAREZ",
+        "provincia": "BUE",
+        "enPie": 22,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 22
+      },
+      {
+        "remitente": "AGROP.FIORITO S.A.",
+        "localidad": "MARCOS PAZ",
+        "provincia": "BUE",
+        "enPie": 19,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 19
+      },
+      {
+        "remitente": "TRAPALANDA S.A.",
+        "localidad": "RAUCH",
+        "provincia": "BUE",
+        "enPie": 12,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 12
+      }
+    ]
   }
 }
