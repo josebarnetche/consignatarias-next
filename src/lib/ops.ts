@@ -69,6 +69,7 @@ export const EXPECTED_CRONS: Record<string, number> = {
   'trial-nudges': 24,
   // Weekly (168h cadence)
   'weekly-newsletter': 168,
+  'weekly-digest': 168,
   'el-corredor-publish': 168,
   // Monthly (~720h cadence)
   'monthly-metrics': 720,

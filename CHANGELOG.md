@@ -7,6 +7,30 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.51.0] — 2026-06-23
+
+### Digest sendable (3 endpoints) + arreglo de datos + página de baja que faltaba
+
+Cierre de la infra del digest "qué cambió" para que pueda enviarse de forma responsable, fix del dato sucio detectado en el preview, y un bug de compliance pre-existente que apareció en el camino. Detalle por archivo y por qué.
+
+**Envío del digest — como pipeline SEPARADO (no pisa el newsletter PRO)**
+- `src/app/api/cron/weekly-digest/route.ts` (**nuevo**): `POST` gateado por `authorizeCron`. Construye el digest por destinatario (`buildDigestModel` + `buildDigestEmail`) y envía con `sendDigestEmail`. Reusa **exactamente** la lógica de destinatarios del cron PRO (`newsletter_subscribers status='active'` → `isWeeklyRecipient` → `capForFreePlan`). Modo TEST seguro: `?test=<email>` envía solo a ese email. **Por qué separado:** el cron del lunes (`/api/cron/weekly-newsletter`) envía los **remates destacados de consignatarias PRO** (monetización) — reemplazarlo lo habría borrado. El digest es retención, va por su cuenta; la programación del envío queda como decisión humana (no se agregó ningún `.yml` nuevo).
+- `src/lib/email.ts`: nuevo `sendDigestEmail(email, {subject, html, headers})` — mismo FROM verificado y `getResend()` que el resto, reenvía los headers `List-Unsubscribe`/`List-Unsubscribe-Post` (RFC 8058). No se tocó `sendWeeklyNewsletter`.
+- `src/lib/ops.ts`: `'weekly-digest': 168` en `EXPECTED_CRONS` para visibilidad en `/admin/ops`.
+
+**Pixel de apertura + baja one-click**
+- `src/app/api/newsletter/digest/open/route.ts` (**nuevo**): `GET` que devuelve un PNG 1×1 (`no-store`) y registra `digest_open` con `logEvent` fire-and-forget. **Por qué:** el `<img>` del template lo necesitaba; nunca debe fallar la imagen aunque falle el log.
+- `src/app/api/newsletter/unsubscribe/route.ts` (**nuevo**): `POST` (one-click RFC 8058, lo dispara el cliente de correo) y `GET` (fallback). Marca `newsletter_subscribers.status='unsubscribed'` + `unsubscribed_at`. Idempotente, sin auth (es one-click), valida formato de email. **Por qué:** el header `List-Unsubscribe-Post` lo anunciaba pero el endpoint no existía → algunos clientes mostraban el botón nativo y fallaba el POST, ensuciando reputación del remitente.
+
+**Página de baja `/unsubscribe` — bug de compliance pre-existente**
+- `src/app/unsubscribe/page.tsx` + `UnsubscribeConfirm.tsx` (**nuevos**): la página a la que apuntan **todos** los emails (footer "Desuscribirme", líneas 387/481/732/873 de `email.ts`) y el redirect del one-click **no existía** → daba **404 en todos los envíos vivos**, no solo el digest. Creada y hecha **prefetch-safe**: NO da de baja en el GET (los escáneres de Gmail/Outlook prefetchean y desuscribirían a quien no clickeó); muestra un botón de confirmación que hace el POST. `noindex`. **Por qué:** un link de baja roto es un problema de CAN-SPAM/deliverability que afectaba a toda la base, no solo a esta feature.
+
+**Arreglo de dato sucio (detectado en el preview del digest)**
+- `scripts/scrape-auctions.mjs`: agregadas `"BAHIA BLANCA"` y `"BAHÍA BLANCA"` → `"BUENOS AIRES"` al *city-to-province correction map* para que el scraper no vuelva a etiquetar mal.
+- `src/lib/data/remates.json`: corregido el patrón completo — **13 valores de `location`** que terminaban en `, CORRIENTES` siendo su `province` real `BUENOS AIRES` (Bahía Blanca, Ranchos, Bolívar ×2, Carmen de Areco, Tres Arroyos, Ituzaingó, General Lavalle, Junín ×2, Lobos, Navarro). **Por qué:** en un mail real "Bahía Blanca, Corrientes" quedaba pésimo; la corrección es auto-consistente (se alineó el token de `location` al `province` que la propia fila ya traía bien). Las 6 filas legítimas de Corrientes (Mercedes, Goya, etc.) no se tocaron.
+
+**Pendiente (decisión humana):** elegir cuándo/cómo se difunde el digest (día, y si coexiste con el newsletter PRO o se alterna) — el envío está listo y testeable, pero no se programó un cron automático.
+
 ## [1.50.0] — 2026-06-23
 
 ### Wave 2 (desmuro del watchlist) + Wave 3 (vida en landings + digest "qué cambió" en preview)

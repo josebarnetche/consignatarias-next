@@ -486,6 +486,37 @@ export async function sendWeeklyNewsletter(
 }
 
 /* ------------------------------------------------------------------ */
+/*  WEEKLY DIGEST — "qué cambió esta semana" (envío separado del PRO)   */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Envía el digest semanal "qué cambió" ya renderizado por buildDigestEmail().
+ *
+ * Recibe { subject, html, headers } tal cual (los headers traen List-Unsubscribe /
+ * List-Unsubscribe-Post RFC 8058). Mismo FROM verificado y mismo getResend() que el
+ * resto del archivo. Devuelve { success } para que el cron cuente enviados/errores.
+ */
+export async function sendDigestEmail(
+  email: string,
+  built: { subject: string; html: string; headers?: Record<string, string> },
+): Promise<{ success: boolean; error?: string }> {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: email,
+      subject: built.subject,
+      html: built.html,
+      headers: built.headers,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /*  CLAIM REJECTION                                                    */
 /* ------------------------------------------------------------------ */
 
