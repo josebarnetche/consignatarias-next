@@ -82,12 +82,12 @@ export default function MobileStickyCTA() {
       return
     }
     setLoading(true)
-    trackCheckoutStart('PRO_USER', 7900)
+    trackCheckoutStart('PRO_USER', 7900, { context: 'mobile-sticky', variant: 'productor' })
     try {
       const res = await fetch('/api/subscribe/checkout', { method: 'POST' })
       const data = await res.json()
       if (data?.checkoutUrl) {
-        trackCheckoutRedirect('PRO_USER', 7900)
+        trackCheckoutRedirect('PRO_USER', 7900, { context: 'mobile-sticky', variant: 'productor' })
         window.location.href = data.checkoutUrl
       } else {
         alert(data?.error || 'No se pudo generar el link de pago.')
@@ -106,7 +106,7 @@ export default function MobileStickyCTA() {
       return
     }
     setLoading(true)
-    trackCheckoutStart('PRO_CONSIGNATARIA', 45000)
+    trackCheckoutStart('PRO_CONSIGNATARIA', 45000, { context: 'mobile-sticky', variant: 'consignataria' })
     try {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
@@ -119,7 +119,7 @@ export default function MobileStickyCTA() {
       })
       const data = await res.json()
       if (data?.url) {
-        trackCheckoutRedirect('PRO_CONSIGNATARIA', 45000)
+        trackCheckoutRedirect('PRO_CONSIGNATARIA', 45000, { context: 'mobile-sticky', variant: 'consignataria' })
         window.location.href = data.url
       } else {
         alert(data?.error || 'Error al crear el link de pago')

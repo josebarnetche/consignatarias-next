@@ -113,7 +113,7 @@ export default async function UpgradePage({ searchParams }: PageProps) {
         <span className="text-zinc-500 font-mono text-sm"> / mes</span>
       </div>
 
-      <UpgradeButton loggedIn={loggedIn} />
+      <UpgradeButton loggedIn={loggedIn} context={`upgrade-page:${next}`} />
 
       <p className="text-zinc-600 font-mono text-xxs text-center mt-6 leading-relaxed">
         Pago procesado por Rebill (Visa, Mastercard, débito). Cancelación inmediata desde

@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { TYPE_COLORS, TYPE_LABELS_SHORT } from '@/lib/ui/tokens'
 import { TopFollowed } from '@/components/ui/TopFollowed'
+import { ProvinceLinkGrid, type ProvinceLinkItem } from '@/components/seo/ProvinceLinkGrid'
 
 interface DirectoryEntry {
   slug: string
@@ -16,7 +17,13 @@ interface DirectoryEntry {
 
 type SortKey = 'auctions' | 'name' | 'upcoming'
 
-export default function ConsignatariasDirectoryClient({ entries }: { entries: DirectoryEntry[] }) {
+export default function ConsignatariasDirectoryClient({
+  entries,
+  provinceLinks = [],
+}: {
+  entries: DirectoryEntry[]
+  provinceLinks?: ProvinceLinkItem[]
+}) {
   const [search, setSearch] = useState('')
   const [sortBy, setSortBy] = useState<SortKey>('auctions')
 
@@ -95,6 +102,20 @@ export default function ConsignatariasDirectoryClient({ entries }: { entries: Di
           </div>
         </div>
       </div>
+
+      {/* PROVINCE LINK GRID (SSG-crawleable) */}
+      {provinceLinks.length > 0 && (
+        <div className="mt-px">
+          <ProvinceLinkGrid
+            items={provinceLinks}
+            hub="/consignatarias"
+            silo="consignatarias"
+            basePath="/consignatarias"
+            unit={{ singular: 'consignataria', plural: 'consignatarias' }}
+            heading="VER CONSIGNATARIAS POR PROVINCIA"
+          />
+        </div>
+      )}
 
       {/* LIST */}
       <div className="terminal-panel mt-px">

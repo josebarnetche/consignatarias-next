@@ -117,11 +117,18 @@ export function trackSearch(query: string, resultCount: number, page: string) {
   })
 }
 
-/** User clicked CTA on landing page */
-export function trackCTA(ctaName: string, location: string) {
+/** User clicked CTA on landing page. `context`/`variant` are optional funnel-segmentation
+ *  params (e.g. the surface that rendered the CTA and its A/B variant). */
+export function trackCTA(
+  ctaName: string,
+  location: string,
+  opts: { context?: string; variant?: string } = {}
+) {
   trackEvent('cta_click', {
     cta_name: ctaName,
     location,
+    context: opts.context,
+    variant: opts.variant,
   })
 }
 
@@ -156,19 +163,25 @@ export function trackClaimSuccess(slug: string, displayName: string) {
 /** Variant of a PRO upgrade surface, for funnel segmentation. */
 export type ProPromptVariant = 'inline' | 'card' | 'reveal'
 
-/** PRO upgrade prompt was shown to user */
+/** PRO upgrade prompt was shown to user. Emits both the legacy `prompt_context`/
+ *  `prompt_variant` params and the canonical `context`/`variant` funnel params. */
 export function trackProPromptView(context: string, variant: ProPromptVariant) {
   trackEvent('pro_prompt_view', {
     prompt_context: context,
     prompt_variant: variant,
+    context,
+    variant,
   })
 }
 
-/** User clicked PRO upgrade prompt CTA */
+/** User clicked PRO upgrade prompt CTA. Emits both the legacy `prompt_context`/
+ *  `prompt_variant` params and the canonical `context`/`variant` funnel params. */
 export function trackProPromptClick(context: string, variant: ProPromptVariant) {
   trackEvent('pro_prompt_click', {
     prompt_context: context,
     prompt_variant: variant,
+    context,
+    variant,
   })
 }
 
@@ -187,24 +200,38 @@ export function trackPlanesView(source: string | null) {
   })
 }
 
-/** User started checkout process (clicked pay, before the Rebill link is created) */
-export function trackCheckoutStart(plan: string, price: number) {
+/** User started checkout process (clicked pay, before the Rebill link is created).
+ *  `context`/`variant` are optional funnel-segmentation params. */
+export function trackCheckoutStart(
+  plan: string,
+  price: number,
+  opts: { context?: string; variant?: string } = {}
+) {
   trackEvent('checkout_start', {
     plan_name: plan,
     plan_price: price,
     // GA4-reserved monetization params so the value flows into reports.
     value: price,
     currency: 'ARS',
+    context: opts.context,
+    variant: opts.variant,
   })
 }
 
-/** Rebill link created — user is being redirected to pay (last on-site step). */
-export function trackCheckoutRedirect(plan: string, price: number) {
+/** Rebill link created — user is being redirected to pay (last on-site step).
+ *  `context`/`variant` are optional funnel-segmentation params. */
+export function trackCheckoutRedirect(
+  plan: string,
+  price: number,
+  opts: { context?: string; variant?: string } = {}
+) {
   trackEvent('checkout_redirect', {
     plan_name: plan,
     plan_price: price,
     value: price,
     currency: 'ARS',
+    context: opts.context,
+    variant: opts.variant,
   })
 }
 
@@ -307,6 +334,52 @@ export function trackBulkIcsExport(count: number, period: string, hasFilters: bo
     count,
     period,
     has_filters: hasFilters,
+  })
+}
+
+/* ------------------------------------------------------------------ */
+/*  RETENTION / RETURN INSTRUMENTATION                                */
+/* ------------------------------------------------------------------ */
+// New measurement foundation: SinceLastVisit, alerts and internal hub
+// navigation were previously blind (no GA events). These wrappers light
+// them up so the return/conversion funnel can finally be measured.
+
+/** "Desde tu última visita" block was rendered. `has_delta` = whether it
+ *  actually surfaced changes (vs an empty/first-visit state). */
+export function trackSinceLastVisitShown(opts: { has_delta: boolean; page: string }) {
+  trackEvent('since_last_visit_shown', {
+    has_delta: opts.has_delta,
+    page: opts.page,
+  })
+}
+
+/** User clicked into the "Desde tu última visita" block. */
+export function trackSinceLastVisitClick(opts: { page: string }) {
+  trackEvent('since_last_visit_click', {
+    page: opts.page,
+  })
+}
+
+/** User subscribed to an alert (price/category/auction watch). `source` is the
+ *  UI surface that triggered the subscription. */
+export function trackAlertSubscribe(opts: { source: string; page: string }) {
+  trackEvent('alert_subscribe', {
+    source: opts.source,
+    page: opts.page,
+  })
+}
+
+/** User clicked an internal cross-silo navigation link from a hub page
+ *  (e.g. from a province hub to a specific province within a silo). */
+export function trackInternalNavClick(opts: {
+  from_hub: string
+  to_province: string
+  silo: string
+}) {
+  trackEvent('internal_nav_click', {
+    from_hub: opts.from_hub,
+    to_province: opts.to_province,
+    silo: opts.silo,
   })
 }
 

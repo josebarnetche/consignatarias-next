@@ -6,6 +6,7 @@ import ArrendamientoCalculator from './ArrendamientoCalculator'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
+import PriceAlertSignup from '@/components/PriceAlertSignup'
 import { AnimatedPrice } from '@/components/AnimatedPrice'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 
@@ -307,6 +308,19 @@ export default function ArrendamientoPage() {
               showVolume={true}
             />
           </Suspense>
+        </section>
+
+        {/* Alerta de precio — FASE 0, validación de demanda (sin motor de umbral).
+            Intención real de gsc-detail.json: "precio novillo arrendamiento hoy",
+            "indice novillo arrendamiento mensual" → quieren saber cuándo se mueve. */}
+        <section className="max-w-6xl mx-auto px-4 pb-4">
+          <PriceAlertSignup
+            source="alerta-arrendamiento"
+            page="/mercado/arrendamiento"
+            accent="amber"
+            title="Avisame cuando se mueva el novillo"
+            subtitle="Te avisamos cuando se mueva el novillo para arrendamiento — sin cuenta, un mail. El promedio mensual cuando cierra, no spam por cada tick."
+          />
         </section>
 
         {/* Cierre mensual — captura producer-facing (el que liquida arrendamiento) */}

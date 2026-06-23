@@ -7,6 +7,19 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.49.0] — 2026-06-23
+
+### Gate de medición + Wave 1 de retención (validado contra GA4 + GSC)
+
+Tras testear las conclusiones del audit contra datos reales, el cuello resultó ser **conversión + retorno**, no surfacing ni freshness. Esta tanda construye el gate de medición y la primera ola accionable (plan en `docs/strategy/`, gitignored).
+
+**Gate de medición** — `src/lib/analytics.ts` suma 4 eventos tipados (`since_last_visit_shown/click`, `alert_subscribe`, `internal_nav_click`) y el embudo PRO (`checkout_start`/`checkout_redirect`/`cta_click`) ahora acepta `context`+`variant`. Nada se itera sin baseline.
+
+- **Embudo PRO instrumentado:** cada paso (paywall → CTA → checkout) ahora es segmentable por superficie y variante (logged-in vs email-first) en `/upgrade`, `/planes` y el sticky mobile. Es el cuello de los $0 (1.678 → 18 → 1) y por fin se puede ver dónde se pierde.
+- **Alerta de precio email-first (Fase 0)** en `/mercado/inmag` y `/mercado/arrendamiento`: un input de email sin login (reusa Resend), con copy según la intención real de búsqueda (GSC: "precio novillo arrendamiento hoy/mensual", "inmag hoy"). Valida demanda antes de construir el motor de umbral.
+- **`SinceLastVisit` instrumentado** (disparaba cero eventos) + ahora clickeable a `/overview`.
+- **Surfacing provincial:** los hubs `/frigorificos` y `/consignatarias` ahora emiten una grilla de **`<a href>` SSG reales** a las páginas provinciales (antes solo filtro client, cero link crawleable), priorizadas por demanda GSC, con `internal_nav_click`.
+
 ## [1.48.0] — 2026-06-23
 
 ### Audit de retención (GA4 desde marzo) + primera ola de "vida" dinámica

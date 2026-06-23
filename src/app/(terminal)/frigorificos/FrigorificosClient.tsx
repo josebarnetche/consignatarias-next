@@ -5,6 +5,7 @@ import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import summaryData from '@/lib/data/frigorificos-summary.json'
 import { trackSearch, trackFilterApply } from '@/lib/analytics'
+import { ProvinceLinkGrid } from '@/components/seo/ProvinceLinkGrid'
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
@@ -71,6 +72,43 @@ const PROVINCE_ABBR: Record<string, string> = {
 
 function abbr(province: string): string {
   return PROVINCE_ABBR[province] || province.slice(0, 4).toUpperCase()
+}
+
+/* ------------------------------------------------------------------ */
+/*  PROVINCE → SSG SLUG (keep in sync with _views/FrigorificoProvinceView) */
+/* ------------------------------------------------------------------ */
+const PROVINCE_SLUG: Record<string, { slug: string; display: string }> = {
+  'BUENOS AIRES': { slug: 'buenos-aires', display: 'Buenos Aires' },
+  'CATAMARCA': { slug: 'catamarca', display: 'Catamarca' },
+  'CHACO': { slug: 'chaco', display: 'Chaco' },
+  'CHUBUT': { slug: 'chubut', display: 'Chubut' },
+  'CORDOBA': { slug: 'cordoba', display: 'Córdoba' },
+  'CORRIENTES': { slug: 'corrientes', display: 'Corrientes' },
+  'ENTRE RIOS': { slug: 'entre-rios', display: 'Entre Ríos' },
+  'FORMOSA': { slug: 'formosa', display: 'Formosa' },
+  'JUJUY': { slug: 'jujuy', display: 'Jujuy' },
+  'LA PAMPA': { slug: 'la-pampa', display: 'La Pampa' },
+  'MENDOZA': { slug: 'mendoza', display: 'Mendoza' },
+  'MISIONES': { slug: 'misiones', display: 'Misiones' },
+  'NEUQUEN': { slug: 'neuquen', display: 'Neuquén' },
+  'RIO NEGRO': { slug: 'rio-negro', display: 'Río Negro' },
+  'SALTA': { slug: 'salta', display: 'Salta' },
+  'SAN JUAN': { slug: 'san-juan', display: 'San Juan' },
+  'SAN LUIS': { slug: 'san-luis', display: 'San Luis' },
+  'SANTA CRUZ': { slug: 'santa-cruz', display: 'Santa Cruz' },
+  'SANTA FE': { slug: 'santa-fe', display: 'Santa Fe' },
+  'SANTIAGO DEL ESTERO': { slug: 'santiago-del-estero', display: 'Santiago del Estero' },
+  'TIERRA DEL FUEGO': { slug: 'tierra-del-fuego', display: 'Tierra del Fuego' },
+  'TUCUMAN': { slug: 'tucuman', display: 'Tucumán' },
+}
+
+/* GSC-driven priority (provincialPages with frigoríficos-en-X demand). These
+   provinces surface first in the crawleable grid regardless of raw count. */
+const FRIG_GSC_PRIORITY: Record<string, number> = {
+  'santa-fe': 4,
+  'entre-rios': 3,
+  'buenos-aires': 2,
+  'tucuman': 1,
 }
 
 /* ------------------------------------------------------------------ */
@@ -183,6 +221,23 @@ export default function FrigorificosPage() {
   /* -- Unique province list for dropdown (sorted alpha) ------------ */
   const provinceOptions = useMemo(
     () => Object.keys(summary.byProvince).sort((a, b) => a.localeCompare(b, 'es')),
+    [],
+  )
+
+  /* -- SSG-crawleable province links (GSC demand first, then count) - */
+  const provinceLinks = useMemo(
+    () =>
+      Object.entries(summary.byProvince)
+        .map(([province, count]) => {
+          const ref = PROVINCE_SLUG[province]
+          return ref ? { slug: ref.slug, name: ref.display, count } : null
+        })
+        .filter((x): x is { slug: string; name: string; count: number } => x !== null)
+        .sort(
+          (a, b) =>
+            (FRIG_GSC_PRIORITY[b.slug] ?? 0) - (FRIG_GSC_PRIORITY[a.slug] ?? 0) ||
+            b.count - a.count,
+        ),
     [],
   )
 
@@ -360,6 +415,18 @@ export default function FrigorificosPage() {
 
         {/* ── RIGHT CONTENT ───────────────────────────────────────── */}
         <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+          {/* ── PROVINCE LINK GRID (SSG-crawleable) ─────────────────── */}
+          <div className="border-b border-terminal-border flex-shrink-0">
+            <ProvinceLinkGrid
+              items={provinceLinks}
+              hub="/frigorificos"
+              silo="frigorificos"
+              basePath="/frigorificos"
+              unit={{ singular: 'planta', plural: 'plantas' }}
+              heading="VER FRIGORÍFICOS POR PROVINCIA"
+            />
+          </div>
+
           {/* ── TOP CHARTS ROW ──────────────────────────────────────── */}
           <div className="grid grid-cols-1 md:grid-cols-2 border-b border-terminal-border flex-shrink-0">
             {/* -- STAGE DISTRIBUTION -------------------------------- */}

@@ -39,8 +39,8 @@ export default function SubscribeButton() {
     }
 
     setLoading(true)
-    trackCheckoutStart('PRO_CONSIGNATARIA', 45000)
-    
+    trackCheckoutStart('PRO_CONSIGNATARIA', 45000, { context: 'planes-page', variant: 'consignataria' })
+
     try {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
@@ -55,7 +55,7 @@ export default function SubscribeButton() {
       const data = await res.json()
 
       if (data.url) {
-        trackCheckoutRedirect('PRO_CONSIGNATARIA', 45000)
+        trackCheckoutRedirect('PRO_CONSIGNATARIA', 45000, { context: 'planes-page', variant: 'consignataria' })
         window.location.href = data.url
       } else {
         alert(data.error || 'Error al crear el link de pago')

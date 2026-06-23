@@ -4,6 +4,10 @@ import type { Auction } from '@/lib/db/schema'
 import { getAllProfiles, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import ConsignatariasDirectoryClient from './ConsignatariasDirectoryClient'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import {
+  PROVINCE_MAP as CONSIG_PROVINCE_MAP,
+  PROVINCE_DISPLAY as CONSIG_PROVINCE_DISPLAY,
+} from './_views/ProvinceView'
 
 const profiles = getAllProfiles()
 const totalConsignatarias = profiles.length
@@ -122,6 +126,24 @@ export default function ConsignatariasDirectoryPage() {
   const totalRemates = entries.reduce((sum, e) => sum + e.auctionCount, 0)
   const totalUpcoming = entries.reduce((sum, e) => sum + e.upcoming, 0)
 
+  // SSG-crawleable province links: count consignatarias per province (only the
+  // 13 provinces with real /consignatarias/[provincia] pages). A count > 0
+  // implies the province page is statically generated. GSC demand
+  // (provincialPages) puts entre-rios first; the rest fall back to count.
+  const CONSIG_GSC_PRIORITY: Record<string, number> = { 'entre-rios': 1 }
+  const provinceLinks = Object.entries(CONSIG_PROVINCE_MAP)
+    .map(([slug, provinceName]) => ({
+      slug,
+      name: CONSIG_PROVINCE_DISPLAY[slug] ?? provinceName,
+      count: entries.filter((e) => e.provinces.includes(provinceName)).length,
+    }))
+    .filter((p) => p.count > 0)
+    .sort(
+      (a, b) =>
+        (CONSIG_GSC_PRIORITY[b.slug] ?? 0) - (CONSIG_GSC_PRIORITY[a.slug] ?? 0) ||
+        b.count - a.count,
+    )
+
   return (
     <>
       <SectionBreadcrumbSchema section="consignatarias" sectionName="Consignatarias" />
@@ -145,7 +167,7 @@ export default function ConsignatariasDirectoryPage() {
         </p>
       </section>
       
-      <ConsignatariasDirectoryClient entries={entries} />
+      <ConsignatariasDirectoryClient entries={entries} provinceLinks={provinceLinks} />
     </>
   )
 }

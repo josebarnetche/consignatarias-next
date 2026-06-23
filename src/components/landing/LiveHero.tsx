@@ -131,7 +131,7 @@ export default function LiveHero(p: LiveHeroProps) {
       <div className={`flex flex-col sm:flex-row flex-wrap gap-3 ${reveal(240)}`}>
         <Link
           href="/overview"
-          onClick={() => trackCTA('acceder_terminal', 'hero')}
+          onClick={() => trackCTA('acceder_terminal', 'hero', { context: 'landing-hero', variant: 'default' })}
           className="inline-flex items-center justify-center gap-2 text-sm font-medium text-[#0b0b0e] bg-zinc-100 hover:bg-white transition-colors rounded py-3 px-6"
         >
           Acceder al Terminal
@@ -139,7 +139,7 @@ export default function LiveHero(p: LiveHeroProps) {
         </Link>
         <Link
           href="/consignatarias"
-          onClick={() => trackCTA('ver_directorio', 'hero')}
+          onClick={() => trackCTA('ver_directorio', 'hero', { context: 'landing-hero', variant: 'default' })}
           className="inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-200 border border-zinc-700 hover:border-zinc-500 hover:text-white transition-colors rounded py-3 px-6"
         >
           Ver el directorio
@@ -147,7 +147,7 @@ export default function LiveHero(p: LiveHeroProps) {
         {p.enVivo > 0 && (
           <Link
             href="/remates/en-vivo"
-            onClick={() => trackCTA('en_vivo', 'hero')}
+            onClick={() => trackCTA('en_vivo', 'hero', { context: 'landing-hero', variant: 'default' })}
             className="inline-flex items-center justify-center gap-2 text-sm font-medium text-white bg-[#dc2626] hover:bg-[#ef4444] transition-colors rounded py-3 px-6"
           >
             <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
@@ -156,7 +156,7 @@ export default function LiveHero(p: LiveHeroProps) {
         )}
         <Link
           href="/remates/semana"
-          onClick={() => trackCTA('calendario_semana', 'hero')}
+          onClick={() => trackCTA('calendario_semana', 'hero', { context: 'landing-hero', variant: 'default' })}
           className="inline-flex items-center justify-center text-sm font-medium text-zinc-400 hover:text-zinc-200 transition-colors py-3 px-3"
         >
           Calendario de la semana →

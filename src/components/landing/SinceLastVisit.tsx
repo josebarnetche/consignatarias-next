@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { trackSinceLastVisitShown, trackSinceLastVisitClick } from '@/lib/analytics'
 
 const LS_KEY = 'cnsg_last_visit'
 
@@ -53,7 +55,14 @@ export default function SinceLastVisit({ snapshot }: { snapshot: SinceLastVisitS
         segments.push(`${nuevos} ${nuevos === 1 ? 'remate nuevo' : 'remates nuevos'}`)
       }
 
-      if (segments.length > 0) setParts(segments)
+      if (segments.length > 0) {
+        setParts(segments)
+        // La barra efectivamente se muestra → instrumentar (gate de medición).
+        trackSinceLastVisitShown({
+          has_delta: true,
+          page: window.location.pathname,
+        })
+      }
     }
 
     // Registrar la visita actual para la próxima.
@@ -67,11 +76,15 @@ export default function SinceLastVisit({ snapshot }: { snapshot: SinceLastVisitS
   if (!parts) return null
 
   return (
-    <div className="flex items-center gap-2 border-b border-terminal-border bg-terminal-panel px-4 py-1.5 text-xxs font-terminal tabular-nums text-zinc-400">
+    <Link
+      href="/overview"
+      onClick={() => trackSinceLastVisitClick({ page: window.location.pathname })}
+      className="flex items-center gap-2 border-b border-terminal-border bg-terminal-panel px-4 py-1.5 text-xxs font-terminal tabular-nums text-zinc-400 transition-colors hover:bg-terminal-border/30"
+    >
       <span className="status-dot-live flex-shrink-0" />
       <span className="uppercase tracking-widest text-zinc-500">Desde tu última visita</span>
       <span className="text-terminal-border">·</span>
       <span className="text-zinc-300">{parts.join(' · ')}</span>
-    </div>
+    </Link>
   )
 }

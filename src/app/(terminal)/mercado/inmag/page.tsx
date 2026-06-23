@@ -9,6 +9,7 @@ import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import { ElCorredorCTA } from '@/components/ElCorredorCTA'
 import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
+import PriceAlertSignup from '@/components/PriceAlertSignup'
 import { AnimatedPrice } from '@/components/AnimatedPrice'
 import { InmagDecadaCompleta } from '@/components/market/InmagDecadaCompleta'
 import { Stat, Delta, DataTable, PriceCell, DeltaFlash, type DataColumn } from '@/components/ui'
@@ -317,6 +318,18 @@ export default function InmagPage() {
               ))}
             </div>
           </div>
+        </section>
+
+        {/* Alerta de precio — FASE 0, validación de demanda (sin motor de umbral).
+            Intención real de gsc-detail.json: "inmag hoy" → quieren saber cuándo cambia. */}
+        <section className="max-w-6xl mx-auto px-4 pt-2 pb-2">
+          <PriceAlertSignup
+            source="alerta-inmag"
+            page="/mercado/inmag"
+            accent="emerald"
+            title="Avisame cuando se mueva el INMAG"
+            subtitle="Te avisamos cuando se mueva el INMAG — sin cuenta, un mail. Un resumen cuando hay movimiento, no spam por cada tick."
+          />
         </section>
 
         {/* Cierre mensual — captura producer-facing */}

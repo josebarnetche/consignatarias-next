@@ -10,15 +10,24 @@ import { trackCheckoutStart, trackCheckoutRedirect } from '@/lib/analytics'
  *   that creates the user server-side, so cold organic traffic can pay WITHOUT
  *   hitting a login wall (the confirmed conversion bottleneck).
  */
-export function UpgradeButton({ loggedIn = true }: { loggedIn?: boolean }) {
+export function UpgradeButton({
+  loggedIn = true,
+  context = 'upgrade-page',
+}: {
+  loggedIn?: boolean
+  /** Funnel surface that led here (e.g. the `?next=` origin). Segments checkout events. */
+  context?: string
+}) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [email, setEmail] = useState('')
+  // Logged-in vs email-first are materially different conversion paths — segment them.
+  const variant = loggedIn ? 'logged-in' : 'email-first'
 
   async function go(endpoint: string, payload?: Record<string, unknown>) {
     setError('')
     setLoading(true)
-    trackCheckoutStart('PRO_USER', 7900)
+    trackCheckoutStart('PRO_USER', 7900, { context, variant })
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
@@ -31,7 +40,7 @@ export function UpgradeButton({ loggedIn = true }: { loggedIn?: boolean }) {
         setLoading(false)
         return
       }
-      trackCheckoutRedirect('PRO_USER', 7900)
+      trackCheckoutRedirect('PRO_USER', 7900, { context, variant })
       window.location.href = data.checkoutUrl
     } catch {
       setError('Error de red. Intentá de nuevo.')
