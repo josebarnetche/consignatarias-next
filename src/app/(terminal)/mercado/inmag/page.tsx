@@ -14,9 +14,19 @@ import { AnimatedPrice } from '@/components/AnimatedPrice'
 import { InmagDecadaCompleta } from '@/components/market/InmagDecadaCompleta'
 import { Stat, Delta, DataTable, PriceCell, DeltaFlash, type DataColumn } from '@/components/ui'
 import { signedTone, SEMANTIC_HEX } from '@/lib/ui/tokens'
+import SinceLastVisit from '@/components/landing/SinceLastVisit'
+import FreshnessStamp from '@/components/landing/FreshnessStamp'
+import rematesData from '@/lib/data/remates.json'
 
 const inmag = marketData.inmag
 const series = inmag.series as Array<{ date: string; value: number; volume?: number }>
+
+// Snapshot server para "Desde tu última visita" (mismo patrón que /overview).
+const TODAY = new Date().toISOString().slice(0, 10)
+const inmagSnapshotDate = series[series.length - 1]?.date ?? marketData.lastUpdate
+const rematesUpcomingSnapshot = rematesData
+  .filter((r) => r.date >= TODAY && r.status === 'scheduled')
+  .map((r) => ({ date: r.date }))
 
 export const metadata: Metadata = {
   // Self-answering title for the insignia query "inmag (hoy)": exact match + live price
@@ -211,7 +221,17 @@ export default function InmagPage() {
         url="https://www.consignatarias.com.ar/mercado/inmag"
         headline="INMAG hoy — Índice Novillo del Mercado Agroganadero"
       />
-      
+
+      <SinceLastVisit
+        snapshot={{
+          inmagDate: inmagSnapshotDate,
+          inmagValue: inmag.current,
+          inmagChange: inmag.change,
+          rematesUpcoming: rematesUpcomingSnapshot,
+          lastUpdate: marketData.lastUpdate,
+        }}
+      />
+
       <div className="min-h-screen">
         {/* Hero Section */}
         <section className="relative overflow-hidden">
@@ -236,7 +256,7 @@ export default function InmagPage() {
                   <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded-full border border-emerald-500/20">
                     EN VIVO
                   </span>
-                  <span className="text-sm text-zinc-500">Actualizado hoy</span>
+                  <FreshnessStamp updatedAt={marketData.lastUpdate} />
                 </div>
                 <h1 className="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-3">
                   <span className="block text-emerald-400">INMAG</span>

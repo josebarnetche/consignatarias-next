@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useFavorites } from '@/hooks/useFavorites';
 import Skeleton from '@/components/ui/Skeleton';
+import WatchlistNotifyOptin from '@/components/ui/WatchlistNotifyOptin';
+import { trackWatchlistSave } from '@/lib/analytics';
 
 interface FollowButtonProps {
   slug: string;
@@ -15,7 +17,7 @@ interface FollowButtonProps {
  * Follow/unfollow button for consignatarias
  * Lock-in: Creates user-invested data and habit formation
  */
-export function FollowButton({ slug, displayName: _displayName, className = '', size = 'md' }: FollowButtonProps) {
+export function FollowButton({ slug, displayName, className = '', size = 'md' }: FollowButtonProps) {
   const { isFavorite, addFavorite, removeFavorite, isLoading, isLoggedIn, getFavorite, toggleNotifications } = useFavorites();
   const [showDropdown, setShowDropdown] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -38,18 +40,19 @@ export function FollowButton({ slug, displayName: _displayName, className = '', 
   const handleClick = async () => {
     if (isProcessing) return;
 
-    if (!isLoggedIn) {
-      // Redirect to login with return URL
-      window.location.href = `/login?next=${encodeURIComponent(`/go/${slug}?action=follow`)}`;
-      return;
-    }
-
     if (isFollowing) {
+      // Ya guardado → abrir el panel (notificaciones logueado / opt-in anónimo).
       setShowDropdown(prev => !prev);
     } else {
+      // DESMURADO: guardar es instantáneo. Anónimo → localStorage; logueado →
+      // Supabase. No hay redirect a /login. El email es un SEGUNDO paso (opt-in
+      // de notificaciones), no se pide en el primer save.
       setIsProcessing(true);
       await addFavorite(slug);
       setIsProcessing(false);
+      trackWatchlistSave({ item_type: 'consignataria', auth_state: isLoggedIn ? 'logged' : 'anon' });
+      // Abrir el panel para ofrecer el opt-in de aviso (no perder lo guardado).
+      setShowDropdown(true);
     }
   };
 
@@ -126,14 +129,35 @@ export function FollowButton({ slug, displayName: _displayName, className = '', 
         )}
       </button>
 
+      {/* Dropdown — anónimo: opt-in de email (segundo paso). Logueado: toggles. */}
+      {showDropdown && !isLoggedIn && (
+        <div className="absolute right-0 mt-2 w-72 bg-zinc-800 border border-zinc-700 rounded-xl shadow-xl z-50 overflow-hidden">
+          <div className="px-4 pt-3 pb-2">
+            <div className="flex items-center gap-2 text-sm text-amber-400 font-medium">
+              <span>✓</span> Guardado
+            </div>
+          </div>
+          <div className="px-3 pb-3">
+            <WatchlistNotifyOptin itemType="consignataria" displayName={displayName} />
+          </div>
+          <div className="border-t border-zinc-700" />
+          <button
+            onClick={handleUnfollow}
+            className="w-full px-4 py-3 text-left text-sm text-red-400 hover:bg-zinc-700/50"
+          >
+            Dejar de seguir
+          </button>
+        </div>
+      )}
+
       {/* Dropdown */}
-      {showDropdown && (
+      {showDropdown && isLoggedIn && (
         <div className="absolute right-0 mt-2 w-56 bg-zinc-800 border border-zinc-700 rounded-xl shadow-xl z-50 overflow-hidden">
           <div className="px-4 py-3 border-b border-zinc-700">
             <div className="text-xs text-zinc-500 uppercase tracking-wider">Notificaciones</div>
           </div>
-          
-          <button 
+
+          <button
             onClick={() => handleToggleNotify('remate')}
             className="w-full px-4 py-3 text-left text-sm text-zinc-300 hover:bg-zinc-700/50 flex items-center justify-between"
           >

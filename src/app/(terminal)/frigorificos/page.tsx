@@ -3,13 +3,25 @@ import { Suspense } from 'react'
 import FrigorificosClient from './FrigorificosClient'
 import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
+import marketPrices from '@/lib/data/market-prices.json'
+import rematesData from '@/lib/data/remates.json'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { FaenaStats } from '@/components/FaenaStats'
 import { MagActivity } from '@/components/MagActivity'
 import { getSenasaScrapedDate } from '@/lib/data/senasa-habilitados'
+import SinceLastVisit from '@/components/landing/SinceLastVisit'
+import FreshnessStamp from '@/components/landing/FreshnessStamp'
 
 const totalFrigorificos = frigorificosData.length
+
+// Snapshot server para "Desde tu última visita" (mismo patrón que /overview).
+const TODAY = new Date().toISOString().slice(0, 10)
+const inmagSeries = marketPrices.inmag.series
+const inmagSnapshotDate = inmagSeries[inmagSeries.length - 1]?.date ?? marketPrices.lastUpdate
+const rematesUpcomingSnapshot = rematesData
+  .filter((r) => r.date >= TODAY && r.status === 'scheduled')
+  .map((r) => ({ date: r.date }))
 const senasaActiveCount = frigorificosData.filter(f => (f as { senasaActive?: boolean }).senasaActive === true).length
 const senasaInactiveCount = frigorificosData.filter(f => (f as { senasaActive?: boolean }).senasaActive === false).length
 
@@ -78,6 +90,15 @@ function FrigorificosItemListSchema() {
 export default function FrigorificosPage() {
   return (
     <>
+      <SinceLastVisit
+        snapshot={{
+          inmagDate: inmagSnapshotDate,
+          inmagValue: marketPrices.inmag.current,
+          inmagChange: marketPrices.inmag.change,
+          rematesUpcoming: rematesUpcomingSnapshot,
+          lastUpdate: marketPrices.lastUpdate,
+        }}
+      />
       <SectionBreadcrumbSchema section="frigorificos" sectionName="Frigoríficos" />
       <FrigorificosItemListSchema />
       
@@ -144,6 +165,9 @@ export default function FrigorificosPage() {
                 <span className="text-positive tabular-nums">{senasaActiveCount.toLocaleString('es-AR')}</span> habilitados activos ·{' '}
                 <span className="text-zinc-500 tabular-nums">{senasaInactiveCount.toLocaleString('es-AR')}</span> sin verificación (CUIT no aparece hoy en el registro oficial Ciclo I/II/III).
               </p>
+              <div className="mt-1.5">
+                <FreshnessStamp updatedAt={marketPrices.lastUpdate} />
+              </div>
             </div>
             <Link
               href="/planes"

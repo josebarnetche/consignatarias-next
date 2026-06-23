@@ -384,6 +384,62 @@ export function trackInternalNavClick(opts: {
 }
 
 /* ------------------------------------------------------------------ */
+/*  WATCHLIST + DIGEST (return-trigger funnel)                        */
+/* ------------------------------------------------------------------ */
+// Watchlist = local "seguir" of items (remate/categoría/consignataria) that
+// powers the email digest return-trigger. These wrappers light up the save →
+// return → notify → merge loop and the digest open/click leg so the
+// trigger-by-email lever (no más freshness) can finally be measured.
+
+/** User saved an item to their watchlist. `auth_state` distinguishes anon
+ *  (local-only) saves from logged ones, for the merge funnel. */
+export function trackWatchlistSave(opts: {
+  item_type: string
+  auth_state: 'anon' | 'logged'
+}) {
+  trackEvent('watchlist_save', {
+    item_type: opts.item_type,
+    auth_state: opts.auth_state,
+  })
+}
+
+/** A returning user surfaced their existing watchlist. `count` = items held. */
+export function trackWatchlistReturn(opts: { count: number }) {
+  trackEvent('watchlist_return', {
+    count: opts.count,
+  })
+}
+
+/** User opted in to email notifications for a watchlist item. */
+export function trackWatchlistNotifyOptin(opts: { item_type: string }) {
+  trackEvent('watchlist_notify_optin', {
+    item_type: opts.item_type,
+  })
+}
+
+/** Anon watchlist merged into a logged account on auth. `merged` = items moved. */
+export function trackWatchlistMerge(opts: { merged: number }) {
+  trackEvent('watchlist_merge', {
+    merged: opts.merged,
+  })
+}
+
+/** Email digest opened (return-trigger leg). `campaign` = digest campaign id. */
+export function trackDigestOpen(opts: { campaign: string }) {
+  trackEvent('digest_open', {
+    campaign: opts.campaign,
+  })
+}
+
+/** User clicked a link inside the email digest. `target` = destination surface. */
+export function trackDigestClick(opts: { campaign: string; target: string }) {
+  trackEvent('digest_click', {
+    campaign: opts.campaign,
+    target: opts.target,
+  })
+}
+
+/* ------------------------------------------------------------------ */
 /*  AUTH                                                               */
 /* ------------------------------------------------------------------ */
 // trackSignup lives in the ACTIVATION FUNNEL section above; it is fired by the

@@ -9,9 +9,18 @@ import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
 import PriceAlertSignup from '@/components/PriceAlertSignup'
 import { AnimatedPrice } from '@/components/AnimatedPrice'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
+import SinceLastVisit from '@/components/landing/SinceLastVisit'
+import rematesData from '@/lib/data/remates.json'
 
 const inmag = marketData.inmag
 const series = inmag.series as Array<{ date: string; value: number; volume?: number }>
+
+// Snapshot server para "Desde tu última visita" (mismo patrón que /overview).
+const TODAY = new Date().toISOString().slice(0, 10)
+const inmagSnapshotDate = series[series.length - 1]?.date ?? marketData.lastUpdate
+const rematesUpcomingSnapshot = rematesData
+  .filter((r) => r.date >= TODAY && r.status === 'scheduled')
+  .map((r) => ({ date: r.date }))
 
 // Calculate monthly averages
 function getMonthlyAverages(data: typeof series) {
@@ -165,7 +174,17 @@ export default function ArrendamientoPage() {
       <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
       <ArrendamientoSchema />
       <FAQSchema />
-      
+
+      <SinceLastVisit
+        snapshot={{
+          inmagDate: inmagSnapshotDate,
+          inmagValue: inmag.current,
+          inmagChange: inmag.change,
+          rematesUpcoming: rematesUpcomingSnapshot,
+          lastUpdate: marketData.lastUpdate,
+        }}
+      />
+
       <div className="min-h-screen">
         {/* Hero Section */}
         <section className="relative overflow-hidden">

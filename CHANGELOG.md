@@ -7,6 +7,32 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.50.0] — 2026-06-23
+
+### Wave 2 (desmuro del watchlist) + Wave 3 (vida en landings + digest "qué cambió" en preview)
+
+Segunda y tercera ola del plan de retención validado. Detalle por archivo y el porqué de cada cambio.
+
+**Gate de medición — `src/lib/analytics.ts`**
+- Agregados 6 wrappers tipados (mismo patrón objeto-único + guard `PROD_HOSTS`): `trackWatchlistSave({item_type, auth_state})`, `trackWatchlistReturn({count})`, `trackWatchlistNotifyOptin({item_type})`, `trackWatchlistMerge({merged})`, `trackDigestOpen({campaign})`, `trackDigestClick({campaign, target})`. **Por qué:** cerrar el loop save→return→notify→merge y open/click del digest con eventos propios — el plan prohíbe iterar sin baseline, y no se puede confiar en `newVsReturning` de GA4 (Safari/ITP borra la cookie).
+
+**Wave 2 — desmuro del watchlist/favoritos** *(W2 del plan, GO/med)*
+- `src/hooks/useFavorites.ts`: nueva capa **localStorage** para anónimos (clave `cnsg_favorites`, helpers `readLocalFavorites`/`writeLocalFavorites` con soft-fail). `add/remove/isFavorite` operan contra localStorage si anónimo, contra Supabase si logueado. **Por qué:** el 99,5% del tráfico es anónimo y no podía guardar nada — el muro de login mataba el único hook de recurrencia ya construido.
+- `useFavorites.ts` — **merge al loguear (client-side):** en `fetchFavorites`, si hay `user` + favoritos en localStorage, se insertan en `user_favorites` (dedup por el `23505` unique ya manejado), se limpia localStorage y se dispara `trackWatchlistMerge`. **Por qué:** que el productor no pierda lo guardado anónimo al crear cuenta; se hace sobre el listener `onAuthStateChange` existente para **no tocar** `auth/callback`.
+- `useFavorites.ts` — `trackWatchlistReturn({count})` una vez por mount si hay favoritos y es visita recurrente (detectada por la clave `cnsg_last_visit` que ya escribe `SinceLastVisit`). **Por qué:** medir si guardar sube el retorno (la hipótesis del win).
+- `src/components/ui/FollowButton.tsx`: **eliminado el redirect a `/login`** (antes L42-43). Guardar es instantáneo; dispara `trackWatchlistSave({item_type, auth_state})`. El dropdown ahora bifurca: anónimo ve el opt-in de email; logueado mantiene los toggles Supabase por favorito. **Por qué:** value-first — primero el valor (guardar), después el pedido de email.
+- `src/components/ui/WatchlistNotifyOptin.tsx` (**nuevo**): opt-in de email compacto, **segundo paso** (no en el primer save). Postea a `/api/newsletter` con `source='watchlist-notify'` (misma infra que `PriceAlertSignup`), dispara `trackWatchlistNotifyOptin`. Copy ataca el pitfall ITP: el email es a la vez el canal de aviso y la forma de no perder lo guardado ("Así no perdés lo guardado", porque Safari borra localStorage a los 7 días de inactividad). **Por qué:** el kill-list prohíbe pedir email al primer save (reintroduce el muro) y prohíbe prometer "guardado permanente" sin email.
+
+**Wave 3 (on-site) — vida en las landings de mayor tráfico**
+- `SinceLastVisit` (ya instrumentado en v1.49.0) montado en **`/frigorificos`, `/mercado/inmag` y `/mercado/arrendamiento`** (antes solo en `/overview`). Cada server page arma su snapshot (`inmagDate`/`value`/`change` de market-prices, `rematesUpcoming` de remates.json), copiando el patrón de `/overview`. **Por qué:** el tráfico aterriza en esas landings, no en `/overview`; ahí es donde el recurrente debe ver "qué cambió desde tu última visita".
+- `src/components/landing/FreshnessStamp.tsx` (**nuevo**): "Actualizado recién / hace X h / hace X días" (client, computa contra `Date.now()`, soft-hide si la fecha falta/es inválida/futura). Montado discreto en `/frigorificos` (banner SENASA) y `/mercado/inmag` (reemplaza el texto estático "Actualizado hoy" por la fecha real del dato). **Por qué:** señal de **confianza** (recency), explícitamente **no** vendida como palanca de retención — la evidencia (NN/g) dice que el lever de retorno es el email-digest, no el badge on-site.
+
+**Wave 3 (digest) — "qué cambió esta semana", en modo PREVIEW, sin envío automático** *(W4 del plan, MAYBE/med)*
+- `src/lib/newsletter/digest-content.ts` (**nuevo**): generador de deltas semanales — INMAG Δ%, categoría que más se movió, remates de los próximos 7 días — con **soft-fail por sección** (si una sección no tiene dato, se omite). **Por qué:** el contenido del digest tiene que ser real y degradar con gracia, no romper el mail.
+- `src/lib/newsletter/digest-template.ts` (**nuevo**): plantilla HTML on-brand terminal, con links **UTM** (`utm_source=digest&utm_campaign=que-cambio`) para medir `digest_click`, pixel de apertura y headers **RFC 8058** (`List-Unsubscribe` one-click). **Por qué:** deliverability y medición desde el diseño (el kill-list exige one-click unsubscribe + UTM o el mail cae en spam y daña la reputación del dominio que manda los transaccionales de pago).
+- `src/app/api/cron/weekly-newsletter/preview/route.ts` (**nuevo**): route **GET de preview/dry-run** protegido por `authorizeCron`. Renderiza el HTML del digest sin enviar (`?secret=…` → HTML; `&format=json` → modelo + headers; `&email=…` → destinatario de prueba). **Por qué:** el envío es **outward-facing** (mails reales a suscriptores) — se construye listo y revisable, pero **no** se repunta el cron del lunes ni se modifica el envío vivo (`../route.ts`) ni el `.yml`. Activarlo es una decisión humana tras revisar el preview.
+- **Pendiente deliberado para activar el envío** (NO hecho, por seguridad): (a) handler de envío que consuma `buildDigestEmail`; (b) `GET /api/newsletter/digest/open` (pixel `digest_open`); (c) `POST /api/newsletter/unsubscribe` (one-click RFC 8058). Hasta crearlos, pixel y botón nativo de baja caen en soft-fail; el link `GET /unsubscribe` ya funciona como fallback.
+
 ## [1.49.0] — 2026-06-23
 
 ### Gate de medición + Wave 1 de retención (validado contra GA4 + GSC)
