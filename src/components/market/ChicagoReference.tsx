@@ -1,6 +1,9 @@
 import { fetchChicagoCattle, type ChicagoQuote } from '@/lib/markets/chicago'
 import { Delta } from '@/components/ui'
 
+const fmtUsd = (n: number) =>
+  n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
 function Row({ q }: { q: ChicagoQuote }) {
   return (
     <div className="px-panel py-3 flex items-center justify-between gap-3">
@@ -13,7 +16,7 @@ function Row({ q }: { q: ChicagoQuote }) {
       </div>
       <div className="shrink-0 text-right">
         <div className="font-terminal tabular-nums text-zinc-100">
-          <span className="text-base">US$ {q.usdPerKg.toFixed(2)}</span>
+          <span className="text-base">US$ {fmtUsd(q.usdPerKg)}</span>
           <span className="text-xxs text-zinc-500">/kg</span>
         </div>
         <div className="flex justify-end mt-0.5">

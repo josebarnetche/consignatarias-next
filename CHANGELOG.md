@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.47.1] — 2026-06-22
+
+### Panel Chicago: decimales en formato es-AR
+
+El panel de Chicago formateaba con punto (`5.46`) mientras el resto del sitio y la comparación local usan coma es-AR (`5,46`) — el mismo número aparecía en dos formatos en la misma página. Unificado a coma.
+
 ## [1.47.0] — 2026-06-22
 
 ### Comparable interanual en USD + subpágina de referencia internacional
