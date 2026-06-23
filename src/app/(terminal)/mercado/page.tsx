@@ -8,6 +8,7 @@ import { CategoryComparison } from '@/components/market/CategoryComparison'
 import { YearOverYearBlock } from '@/components/market/YearOverYearBlock'
 import { SeasonalityHeatmap } from '@/components/market/SeasonalityHeatmap'
 import { ElCorredorCTA } from '@/components/ElCorredorCTA'
+import { ChicagoReference } from '@/components/market/ChicagoReference'
 import marketPrices from '@/lib/data/market-prices.json'
 
 export const revalidate = 86400 // daily rebuild via Vercel
@@ -100,13 +101,20 @@ export default function MercadoPage() {
           Los precios por categoria (novillos, novillitos, vaquillonas, vacas, toros) son{' '}
           <strong>precios observados</strong> del Mercado Agroganadero, no ratios sinteticos.
           El maiz FOB (USD/tn) se obtiene del Ministerio de Agricultura (MAGYP) y las
-          cotizaciones del dolar blue y oficial de dolarapi.com.
+          cotizaciones del dolar blue y oficial de dolarapi.com. Como referencia
+          internacional sumamos los futuros de hacienda de Chicago (CME) — novillo
+          gordo (Live Cattle) e invernada (Feeder Cattle) — convertidos a USD/kg vivo.
         </p>
         <p>
           Todos los datos se actualizan automaticamente cada dia habil.
         </p>
       </section>
       <MercadoClient />
+
+      {/* Referencia internacional — futuros de hacienda de Chicago (CME) en USD/kg */}
+      <div className="px-4 pt-3 pb-1 max-w-6xl mx-auto">
+        <ChicagoReference />
+      </div>
 
       {/* Precios hub teaser — internal link target for /precios SEO */}
       <div className="px-4 pt-2 pb-1 max-w-6xl mx-auto">

@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.46.0] — 2026-06-22
+
+### /mercado: referencia internacional — futuros de Chicago (CME)
+
+Nuevo factor de mercado financiero en `/mercado`: panel **"Referencia internacional · Chicago (CME)"** con el **novillo gordo (Live Cattle, LE=F)** y la **invernada (Feeder Cattle, GF=F)**, convertidos de ¢/lb a **USD/kg vivo** — el benchmark global del mismo producto que cotiza el sitio, para leer el precio local contra el mundo.
+
+Fuente: endpoint público de Yahoo Finance (sin API key), fetch server-side cacheado (`revalidate` 6 h), conversión `¢/lb ÷ 100 × 2,2046`. Falla suave: si el feed no responde, el panel no renderiza y `/mercado` no se rompe. Etiquetado como cotización diferida y referencia internacional (no precio local). Lib en `src/lib/markets/chicago.ts`, componente `ChicagoReference`.
+
 ## [1.45.1] — 2026-06-22
 
 ### Ficha de frigorífico: misma cabecera de identidad
