@@ -12,6 +12,7 @@ import { FAQPageSchema, OrganizationSchema, WebSiteSchema } from "@/components/s
 import NewsletterSignup from "@/components/NewsletterSignup";
 import ValuationWidget from "@/components/landing/ValuationWidget";
 import MarketTape, { type TapeItem } from "@/components/landing/MarketTape";
+import { fetchUsdBlue } from "@/lib/markets/usd";
 import LiveHero from "@/components/landing/LiveHero";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import { CoverageMap } from "@/components/landing/CoverageMap";
@@ -175,7 +176,7 @@ const FAQ_ITEMS = [
 /*  METADATA                                                           */
 /* ================================================================== */
 // Regenerate every hour so TODAY stays fresh
-export const revalidate = false // Cost optimization: static at build time
+export const revalidate = 900 // ISR 15 min — la cinta (USD blue en vivo) se refresca entre rebuilds
 
 export const metadata: Metadata = {
   // Lead with the site's strongest branded query "consignatarias" (12-17% CTR at pos 3.3,
@@ -191,7 +192,10 @@ export const metadata: Metadata = {
 /* ================================================================== */
 /*  PAGE                                                               */
 /* ================================================================== */
-export default function LandingPage() {
+export default async function LandingPage() {
+  // USD blue en vivo — descongela la cinta y activa el DeltaFlash real. Falla
+  // suave: si el fetch devuelve null, usamos el cierre del build (soft-fail).
+  const usd = await fetchUsdBlue(marketPrices.usdBlue.current);
   // Hybrid logo/name tiles. Logos come from the local LOGO_MAP (favicons of the
   // most active firms — not clients). Tiles with a logo are sorted first so the
   // grid leads with recognizable brand marks.
@@ -216,7 +220,9 @@ export default function LandingPage() {
   const tapeItems: TapeItem[] = [
     { label: 'INMAG', value: `$${fmt(marketPrices.inmag.current)}/kg`, change: marketPrices.inmag.change, href: '/mercado/inmag' },
     ...catItems,
-    { label: 'USD blue', value: `$${fmt(marketPrices.usdBlue.current)}`, change: marketPrices.usdBlue.change, href: '/mercado' },
+    usd
+      ? { label: 'USD blue', value: `$${fmt(usd.venta)}`, change: usd.change, href: '/mercado' }
+      : { label: 'USD blue', value: `$${fmt(marketPrices.usdBlue.current)}`, change: marketPrices.usdBlue.change, href: '/mercado' },
     { label: 'Remates', value: `${rematesProximos.length}`, change: null, href: '/remates' },
     ...(enVivoCount > 0 ? [{ label: 'En vivo', value: `${enVivoCount}`, change: null, live: true, href: '/remates/en-vivo' } as TapeItem] : []),
     { label: 'Plantas SENASA', value: `${fmt(frigorificosSummary.total)}`, change: null, href: '/frigorificos' },

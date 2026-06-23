@@ -47,11 +47,12 @@ const NAV_GROUPS: NavGroup[] = [
     match: "/mercado",
     items: [
       { label: "INMAG hoy", href: "/mercado/inmag", hint: "Precio de referencia", tag: "live" },
+      { label: "Arrendamiento", href: "/mercado/arrendamiento", hint: "Valor del campo" },
       { label: "INMAG en USD", href: "/mercado/inmag-dolares", hint: "Serie dolarizada" },
       { label: "Maíz / Novillo", href: "/mercado/spread", hint: "Relación de canje" },
       { label: "Precios hoy", href: "/precios", hint: "Hacienda en pie" },
       { label: "Categorías", href: "/mercado", hint: "Terneros, novillos, vacas" },
-      { label: "Arrendamiento", href: "/mercado/arrendamiento", hint: "Valor del campo" },
+      { label: "Internacional", href: "/mercado/internacional", hint: "Chicago (CME) USD/kg" },
     ],
   },
   {
@@ -68,8 +69,8 @@ const NAV_GROUPS: NavGroup[] = [
     label: "DIRECTORIO",
     match: "/consignatarias",
     items: [
-      { label: "Consignatarias", href: "/consignatarias", hint: "104 firmas" },
       { label: "Frigoríficos", href: "/frigorificos", hint: "364 plantas SENASA" },
+      { label: "Consignatarias", href: "/consignatarias", hint: "104 firmas" },
     ],
   },
   {
@@ -93,12 +94,12 @@ interface MobileNavLink extends NavLink {
 const MOBILE_NAV: MobileNavLink[] = [
   { label: "TERMINAL", href: "/overview" },
   { label: "INMAG", href: "/mercado/inmag", tag: "live" },
+  { label: "ARRIENDO", href: "/mercado/arrendamiento" },
   { label: "PRECIOS", href: "/precios" },
   { label: "REMATES", href: "/remates" },
-  { label: "CONSIGNAT.", href: "/consignatarias" },
   { label: "FRIGORIF.", href: "/frigorificos" },
+  { label: "CONSIGNAT.", href: "/consignatarias" },
   { label: "CALCULAR", href: "/calculadora", tag: "pro" },
-  { label: "ARRIENDO", href: "/mercado/arrendamiento" },
 ];
 
 /* ------------------------------------------------------------------ */

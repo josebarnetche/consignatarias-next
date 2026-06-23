@@ -1,14 +1,15 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import RematesClient from './RematesClient'
+import NextRemateCountdown from '@/components/remates/NextRemateCountdown'
 import rematesData from '@/lib/data/remates.json'
-import { getAllProfiles } from '@/lib/data/consignataria-slugs'
+import { getAllProfiles, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import { SectionBreadcrumbSchema, FAQPageSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { Breadcrumb } from '@/components/ui'
 
 // Regenerate hourly for fresh TODAY
-export const revalidate = false // Cost optimization: static at build time
+export const revalidate = 3600
 
 // Month names in Spanish
 const MONTHS_ES = [
@@ -93,6 +94,22 @@ export default function RematesPage() {
       estimatedHeads: r.estimatedHeads ?? undefined,
     }))
 
+  // Próximo remate: el primero con date>=hoy, ordenado por date+time. El cómputo
+  // del countdown vive en el cliente (Date.now()), así que acá solo elegimos el
+  // remate; la hora exacta la resuelve el componente.
+  const next = rematesData
+    .filter((r) => r.date >= today && r.status === 'scheduled')
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? ''))[0]
+  const nextRemate = next
+    ? {
+        consignatariaName: next.consignatariaName,
+        date: next.date,
+        time: next.time ?? undefined,
+        province: next.province || undefined,
+        slug: getCanonicalSlug(next.consignatariaSlug) ?? next.consignatariaSlug,
+      }
+    : null
+
   return (
     <>
       <SectionBreadcrumbSchema section="remates" sectionName="Remates" />
@@ -103,6 +120,11 @@ export default function RematesPage() {
       <div className="px-4 pt-3">
         <Breadcrumb items={[{ name: 'Remates' }]} schema={false} />
       </div>
+      {nextRemate && (
+        <div className="px-4 pt-2">
+          <NextRemateCountdown nextRemate={nextRemate} />
+        </div>
+      )}
       <section className="px-4 pt-3 pb-2 text-zinc-400 text-sm leading-relaxed max-w-3xl">
         <h2 className="text-zinc-200 text-lg font-medium mb-1">Calendario de remates ganaderos de Argentina</h2>
         <p>

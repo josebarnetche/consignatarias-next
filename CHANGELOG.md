@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.48.0] — 2026-06-23
+
+### Audit de retención (GA4 desde marzo) + primera ola de "vida" dinámica
+
+Audit integral con tráfico real de GA4 (5.492 sesiones desde el 1-mar). Diagnóstico central: **retención casi nula — 87% del tráfico es 100% nuevo (4.046 nuevos vs 525 recurrentes), pero los recurrentes rinden 2× (367s vs 171s/sesión, 3,5 vs 2,2 páginas)**. La causa: dato congelado en build, contenido top mal surfaceado y cero "razón para volver". Primera ola de fixes:
+
+- **USD blue en vivo** (`src/lib/markets/usd.ts`, dolarapi.com, server-side soft-fail) descongela la cinta del home, que pasa a **ISR (15 min)** para refrescar entre rebuilds. El delta del DeltaFlash ahora es real, no `change:0`.
+- **"Desde tu última visita"** (`SinceLastVisit`, localStorage sin backend) en `/overview`: le muestra al recurrente qué cambió (INMAG + remates nuevos) desde que entró por última vez — el segmento que rinde 2×.
+- **Countdown "Próximo remate en Xh Ym"** (`NextRemateCountdown`, client + `Date.now()`) en `/remates` (la página más pegajosa, bounce 5,8%).
+- **Descongelado de páginas temporales**: `/remates` y derivados (`hoy`, `mañana`, `semana`, `en-vivo`, `fin-de-semana`) + `/overview` pasan de `revalidate=false` a ISR `3600` — su nombre prometía tiempo real y servían la fecha del build.
+- **Surfacing del contenido top**: en el nav, **Frigoríficos** (página #1 con 1.447 pv) sube al primer lugar de DIRECTORIO; **Arrendamiento** (mayor tiempo/pv y demanda mal capturada) sube en MERCADO; se suma **Internacional** (Chicago) al dropdown.
+
 ## [1.47.1] — 2026-06-22
 
 ### Panel Chicago: decimales en formato es-AR

@@ -9,7 +9,7 @@ import { resolveYoutubeUrl } from '@/lib/youtube-live'
 import { Calendar, Clock, MapPin, Users, Play, FileText, Video, Youtube, Radio } from 'lucide-react'
 
 // Regenerate hourly for fresh data
-export const revalidate = false // Cost optimization: static at build time
+export const revalidate = 3600
 
 // Get today's date in Argentina timezone
 function getTodayStr(): string {

@@ -6,6 +6,9 @@ import { normalizeUrl } from '@/lib/utils/url'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { Calendar, Clock, MapPin, Users, ExternalLink, Play, FileText, Bell } from 'lucide-react'
 
+// Regenerate hourly so "mañana" stays fresh (no se sirve la fecha del build)
+export const revalidate = 3600
+
 // Get tomorrow's date in Argentina timezone
 function getTomorrowStr(): string {
   const now = new Date()
