@@ -11,7 +11,7 @@ import { useState } from 'react'
  */
 export default function CierreMensualSubscribe({
   accent = 'amber',
-  title = 'Recibí el cierre mensual',
+  title = 'Precio del novillo para arrendamiento — cada mes a tu mail',
   subtitle = 'El 1° de cada mes te llega el promedio del Índice Novillo del mes que cerró — el número para liquidar tu arrendamiento. Gratis.',
   source = 'cierre-mensual',
   withLease = false,

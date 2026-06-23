@@ -347,8 +347,7 @@ export default function InmagPage() {
             source="alerta-inmag"
             page="/mercado/inmag"
             accent="emerald"
-            title="Avisame cuando se mueva el INMAG"
-            subtitle="Te avisamos cuando se mueva el INMAG — sin cuenta, un mail. Un resumen cuando hay movimiento, no spam por cada tick."
+            title="Recibí el cierre mensual del INMAG"
           />
         </section>
 

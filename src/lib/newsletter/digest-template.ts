@@ -89,13 +89,13 @@ export function buildDigestEmail(model: DigestModel, recipient: string): DigestE
     const sign = up ? '+' : ''
     const ref = prevDate ? `vs. ${formatDayMonth(prevDate)}` : 'vs. semana anterior'
     sections.push(`
-      <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:18px;margin-bottom:12px">
-        <p style="color:#71717a;font-size:11px;margin:0 0 6px;text-transform:uppercase;letter-spacing:1px">Índice INMAG (novillo $/kg vivo)</p>
-        <p style="margin:0">
-          <span style="color:#f59e0b;font-size:28px;font-weight:bold;font-family:monospace">${money(current)}</span>
-          <span style="color:${color};font-size:14px;margin-left:10px">${arrow} ${sign}${changePct.toFixed(1)}%</span>
+      <div style="background:#16161d;border:1px solid #27272a;border-radius:6px;padding:24px;margin-bottom:16px">
+        <p style="color:#8a8a93;font-size:13px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1.5px">Índice INMAG (novillo $/kg vivo)</p>
+        <p style="margin:0;line-height:1.2">
+          <span style="color:#f59e0b;font-size:42px;font-weight:bold;font-family:monospace">${money(current)}</span>
+          <span style="color:${color};font-size:20px;margin-left:12px;font-weight:bold">${arrow} ${sign}${changePct.toFixed(1)}%</span>
         </p>
-        <p style="color:#71717a;font-size:11px;margin:6px 0 0">${ref} ·
+        <p style="color:#8a8a93;font-size:13px;margin:10px 0 0">${ref} ·
           <a href="${withDigestUtm('/mercado/inmag', 'inmag')}" style="color:#f59e0b;text-decoration:none">ver la serie →</a>
         </p>
       </div>
@@ -109,14 +109,14 @@ export function buildDigestEmail(model: DigestModel, recipient: string): DigestE
     const color = up ? '#22c55e' : '#ef4444'
     const sign = up ? '+' : ''
     sections.push(`
-      <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:18px;margin-bottom:12px">
-        <p style="color:#71717a;font-size:11px;margin:0 0 6px;text-transform:uppercase;letter-spacing:1px">Categoría que más se movió</p>
-        <p style="margin:0">
-          <span style="color:#e4e4e7;font-size:16px;font-weight:bold">${escapeHtml(label)}</span>
-          <span style="color:${color};font-size:14px;margin-left:10px">${sign}${changePct.toFixed(1)}%</span>
-          ${current > 0 ? `<span style="color:#71717a;font-size:12px;margin-left:8px">${money(current)}</span>` : ''}
+      <div style="background:#16161d;border:1px solid #27272a;border-radius:6px;padding:24px;margin-bottom:16px">
+        <p style="color:#8a8a93;font-size:13px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1.5px">Categoría que más se movió</p>
+        <p style="margin:0;line-height:1.3">
+          <span style="color:#e4e4e7;font-size:22px;font-weight:bold">${escapeHtml(label)}</span>
+          <span style="color:${color};font-size:18px;margin-left:12px;font-weight:bold">${sign}${changePct.toFixed(1)}%</span>
+          ${current > 0 ? `<span style="color:#8a8a93;font-size:15px;margin-left:10px">${money(current)}</span>` : ''}
         </p>
-        <p style="color:#71717a;font-size:11px;margin:6px 0 0">
+        <p style="color:#8a8a93;font-size:13px;margin:10px 0 0">
           <a href="${withDigestUtm('/mercado', 'categoria')}" style="color:#f59e0b;text-decoration:none">ver el panel de categorías →</a>
         </p>
       </div>
@@ -129,24 +129,24 @@ export function buildDigestEmail(model: DigestModel, recipient: string): DigestE
     const rows = top.map((r) => {
       const url = withDigestUtm(`/consignatarias/${r.slug}`, 'remate')
       return `
-      <div style="border-top:1px solid #27272a;padding:10px 0">
+      <div style="border-top:1px solid #27272a;padding:14px 0">
         <div style="display:flex;justify-content:space-between;align-items:baseline">
-          <a href="${url}" style="color:#e4e4e7;font-size:13px;font-weight:bold;text-decoration:none">${escapeHtml(r.consignataria)}</a>
-          <span style="color:#71717a;font-size:11px">${formatDayMonth(r.date)}</span>
+          <a href="${url}" style="color:#e4e4e7;font-size:17px;font-weight:bold;text-decoration:none">${escapeHtml(r.consignataria)}</a>
+          <span style="color:#8a8a93;font-size:13px">${formatDayMonth(r.date)}</span>
         </div>
-        <p style="color:#a1a1aa;font-size:12px;margin:3px 0 0">${escapeHtml(r.title)}</p>
-        <p style="color:#52525b;font-size:11px;margin:2px 0 0">
+        <p style="color:#a1a1aa;font-size:14px;margin:5px 0 0;line-height:1.4">${escapeHtml(r.title)}</p>
+        <p style="color:#6b6b73;font-size:13px;margin:4px 0 0">
           ${escapeHtml(r.location)}${r.heads ? ` · ${r.heads.toLocaleString('es-AR')} cab` : ''}
         </p>
       </div>`
     }).join('')
     sections.push(`
-      <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:18px;margin-bottom:12px">
-        <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Remates de la semana</p>
-        <p style="color:#a1a1aa;font-size:12px;margin:0 0 6px">${upcomingCount} programados en los próximos 7 días</p>
+      <div style="background:#16161d;border:1px solid #27272a;border-radius:6px;padding:24px;margin-bottom:16px">
+        <p style="color:#8a8a93;font-size:13px;margin:0 0 6px;text-transform:uppercase;letter-spacing:1.5px">Remates de la semana</p>
+        <p style="color:#a1a1aa;font-size:14px;margin:0 0 8px">${upcomingCount} programados en los próximos 7 días</p>
         ${rows}
-        <p style="margin:12px 0 0">
-          <a href="${withDigestUtm('/remates', 'remates-todos')}" style="color:#22c55e;text-decoration:none;font-size:12px;font-weight:bold">VER TODOS LOS REMATES →</a>
+        <p style="margin:16px 0 0">
+          <a href="${withDigestUtm('/remates', 'remates-todos')}" style="color:#22c55e;text-decoration:none;font-size:14px;font-weight:bold">VER TODOS LOS REMATES →</a>
         </p>
       </div>
     `)
@@ -154,7 +154,7 @@ export function buildDigestEmail(model: DigestModel, recipient: string): DigestE
 
   const bodyHtml = sections.length > 0
     ? sections.join('')
-    : `<p style="color:#a1a1aa;font-size:13px">Esta semana no hubo cambios destacados. Volvé a
+    : `<p style="color:#a1a1aa;font-size:16px;line-height:1.5">Esta semana no hubo cambios destacados. Volvé a
        <a href="${withDigestUtm('/mercado', 'fallback')}" style="color:#22c55e">ver el mercado</a>.</p>`
 
   // --- Subject: lead con el dato más fuerte (INMAG si está) -----------------
@@ -167,31 +167,31 @@ export function buildDigestEmail(model: DigestModel, recipient: string): DigestE
   }
 
   const html = `
-    <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-      <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Digest semanal · consignatarias.com.ar</p>
-      <h2 style="color:#fff;font-size:18px;margin:0 0 4px">QUÉ CAMBIÓ ESTA SEMANA</h2>
-      <p style="color:#71717a;font-size:12px;margin:0 0 20px">${escapeHtml(model.weekRange)}</p>
+    <div style="font-family:monospace;max-width:600px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:32px;border-radius:6px">
+      <p style="color:#8a8a93;font-size:13px;margin:0 0 6px;text-transform:uppercase;letter-spacing:1.5px">Digest semanal · consignatarias.com.ar</p>
+      <h2 style="color:#fff;font-size:26px;margin:0 0 6px;letter-spacing:0.5px">QUÉ CAMBIÓ ESTA SEMANA</h2>
+      <p style="color:#8a8a93;font-size:15px;margin:0 0 24px">${escapeHtml(model.weekRange)}</p>
 
       ${bodyHtml}
 
-      <div style="text-align:center;margin:24px 0 8px">
-        <a href="${withDigestUtm('/mercado', 'cta-mercado')}" style="background:#22c55e;color:#0a0a0f;padding:11px 26px;text-decoration:none;border-radius:4px;display:inline-block;font-size:12px;font-weight:bold;letter-spacing:1px">VER EL MERCADO</a>
+      <div style="text-align:center;margin:32px 0 8px">
+        <a href="${withDigestUtm('/mercado', 'cta-mercado')}" style="background:#22c55e;color:#0a0a0f;padding:15px 38px;text-decoration:none;border-radius:6px;display:inline-block;font-size:16px;font-weight:bold;letter-spacing:1px">VER EL MERCADO</a>
       </div>
 
-      <div style="border-top:1px solid #27272a;padding-top:12px;margin-top:20px">
-        <p style="color:#52525b;font-size:11px;margin:0">
-          <a href="${withDigestUtm('/remates', 'footer-remates')}" style="color:#52525b">Remates</a>
+      <div style="border-top:1px solid #27272a;padding-top:16px;margin-top:24px">
+        <p style="color:#71717a;font-size:14px;margin:0">
+          <a href="${withDigestUtm('/remates', 'footer-remates')}" style="color:#71717a">Remates</a>
           &nbsp;&bull;&nbsp;
-          <a href="${withDigestUtm('/mercado', 'footer-mercado')}" style="color:#52525b">Precios</a>
+          <a href="${withDigestUtm('/mercado', 'footer-mercado')}" style="color:#71717a">Precios</a>
           &nbsp;&bull;&nbsp;
-          <a href="${withDigestUtm('/consignatarias', 'footer-directorio')}" style="color:#52525b">Directorio</a>
+          <a href="${withDigestUtm('/consignatarias', 'footer-directorio')}" style="color:#71717a">Directorio</a>
         </p>
       </div>
 
-      <p style="color:#3f3f46;font-size:10px;margin:16px 0 0">
+      <p style="color:#52525b;font-size:12px;margin:18px 0 0;line-height:1.5">
         Recibís este email porque te suscribiste a consignatarias.com.ar
         <br>
-        <a href="${unsubscribeLink}" style="color:#3f3f46">Desuscribirme</a>
+        <a href="${unsubscribeLink}" style="color:#52525b">Desuscribirme</a>
       </p>
       <img src="${openPixelUrl}" alt="" width="1" height="1" style="display:block;width:1px;height:1px;border:0;opacity:0" />
     </div>

@@ -51,7 +51,7 @@ export default function WatchlistNotifyOptin({
         setMsg(
           data.message?.includes('Ya estás')
             ? 'Ya estabas anotado ✓'
-            : 'Listo — te avisamos cuando se mueva.'
+            : 'Listo — vas en el resumen semanal y guardamos lo que seguís.'
         );
         trackWatchlistNotifyOptin({ item_type: itemType });
       } else {
@@ -63,12 +63,12 @@ export default function WatchlistNotifyOptin({
   }
 
   const subtitle = displayName
-    ? `Te avisamos cuando ${displayName} tenga un remate nuevo — sin cuenta, un mail. Así no perdés lo guardado.`
-    : 'Te avisamos cuando haya un remate nuevo — sin cuenta, un mail. Así no perdés lo guardado.';
+    ? `Te incluimos en el resumen semanal de remates — y guardamos que seguís a ${displayName}. Así no perdés lo guardado si cambiás de teléfono.`
+    : 'Te incluimos en el resumen semanal de remates — y guardamos lo que seguís. Así no perdés lo guardado si cambiás de teléfono.';
 
   return (
     <div className={`bg-zinc-900 border border-amber-500/20 rounded-xl p-4 ${className}`}>
-      <h4 className="text-sm font-bold text-white mb-1">Avisame cuando se mueva</h4>
+      <h4 className="text-sm font-bold text-white mb-1">Sumate al resumen semanal</h4>
       <p className="text-zinc-400 text-xs mb-3 leading-relaxed">{subtitle}</p>
 
       {state === 'ok' ? (
@@ -99,7 +99,7 @@ export default function WatchlistNotifyOptin({
       )}
       {state === 'error' && <p className="text-red-400 text-xs mt-2">{msg}</p>}
       {state !== 'ok' && (
-        <p className="text-xs text-zinc-600 mt-2">Sin cuenta. Un mail cuando hay movimiento — y para no perder lo guardado.</p>
+        <p className="text-xs text-zinc-600 mt-2">Sin cuenta. Un resumen por semana — y para no perder lo guardado.</p>
       )}
     </div>
   );

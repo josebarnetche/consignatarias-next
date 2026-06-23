@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useRef } from 'react';
+import Link from 'next/link';
 import marketPrices from '@/lib/data/market-prices.json';
 import { trackEvent } from '@/lib/analytics';
 
@@ -200,13 +201,21 @@ export default function ValuationWidget() {
               disabled={isSubmitting}
               className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 disabled:bg-emerald-500/50 text-black font-medium rounded-lg text-sm transition-colors whitespace-nowrap"
             >
-              {isSubmitting ? 'Enviando...' : '🔔 Alertas de precio'}
+              {isSubmitting ? 'Enviando...' : 'Recibí el cierre mensual'}
             </button>
           </form>
         ) : (
-          <div className="flex items-center gap-2 text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-4 py-3">
-            <span>✓</span>
-            <span>Te avisamos cuando cambien los precios de {CATEGORIES.find(c => c.key === category)?.label.toLowerCase()}</span>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-4 py-3">
+              <span>✓</span>
+              <span>Listo. El 1° de cada mes te mandamos el cierre del INMAG con el valor de {CATEGORIES.find(c => c.key === category)?.label.toLowerCase()}. Un mail por mes, sin spam.</span>
+            </div>
+            <Link
+              href="/mercado/arrendamiento"
+              className="inline-flex items-center gap-1.5 text-sm text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
+            >
+              Ver cuánto rinde para tu arrendamiento →
+            </Link>
           </div>
         )}
 

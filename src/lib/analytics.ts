@@ -440,6 +440,27 @@ export function trackDigestClick(opts: { campaign: string; target: string }) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  AUCTION EMAIL FUNNEL (mails 0-3 de subasta + confirm a firma)      */
+/* ------------------------------------------------------------------ */
+// Instrumenta los clicks de retorno desde los mails de subasta (nueva
+// publicación / recordatorio / en-vivo / resultados) hacia el sitio. El `mail`
+// identifica cuál de la secuencia disparó la visita; el `destination` distingue
+// catálogo vs transmisión en vivo vs perfil/promedios.
+
+/** User clicked into the site from an auction lifecycle email (mail 0-3). */
+export function trackAuctionEmailClick(opts: {
+  mail: 'new_publication' | 'reminder' | 'live' | 'results'
+  consignataria_slug: string
+  destination: 'catalog' | 'youtube' | 'profile'
+}) {
+  trackEvent('auction_email_click', {
+    mail: opts.mail,
+    consignataria_slug: opts.consignataria_slug,
+    destination: opts.destination,
+  })
+}
+
+/* ------------------------------------------------------------------ */
 /*  AUTH                                                               */
 /* ------------------------------------------------------------------ */
 // trackSignup lives in the ACTIVATION FUNNEL section above; it is fired by the

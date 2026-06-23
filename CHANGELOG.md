@@ -7,6 +7,38 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.52.0] — 2026-06-23
+
+### Estrategia de email: fix de segmentos, CTAs de captura, deliverability + digest más grande
+
+Auditoría y mejora del sistema de email (captura, segmentos, templates, secuencias). Se commitea el **subset seguro**; los envíos nuevos quedaron diseñados pero **frenados** (ver "Frenado a propósito"). Detalle y porqué.
+
+**Fix de segmentación — `src/lib/newsletter-segments.ts`**
+- `alerta-inmag` y `alerta-arrendamiento` → mapeados a `monthlyClose`. **Por qué:** caían al weekly de remates por el fail-safe (peor destino: remates casi no tiene demanda GSC), cuando lo que prometen es el precio del novillo/INMAG — exactamente el contenido del cierre mensual. Arrendamiento es la demanda GSC #1 (4.718 impresiones).
+- `watchlist-notify` → mapeado **explícito** a `weekly` (no por fail-safe silencioso). **Por qué:** los crons de aviso-por-firma siguen desactivados; hasta prenderlos, el weekly es lo único que cumple. Se re-mapeará a un segmento de subasta-por-firma cuando se activen.
+
+**Mejoras de captura (CTAs/copy con intención GSC real)**
+- `ValuationWidget.tsx`: el botón "🔔 Alertas de precio" prometía algo sin motor → ahora "Recibí el cierre mensual" + confirmación alineada a lo que realmente llega, y link de resultado a `/mercado/arrendamiento` (la landing que rankea para la demanda #1). *(Se corrigió además un `<a>` interno → `<Link>` que rompía el build.)*
+- `NewsletterSignup.tsx`: default source `homepage`→`cierre-mensual` (homepage caía al weekly remates), copy declara la promesa ("El número del novillo para tu arrendamiento, cada mes"), y se arregló un `mt-14 absolute` que se solapaba en mobile.
+- `CierreMensualSubscribe.tsx`: H3 ahora captura la query literal top de GSC ("Precio del novillo para arrendamiento — cada mes a tu mail").
+- `PriceAlertSignup.tsx`: copy bajado a la promesa cumplible hoy (cierre mensual), con "arrendamiento/canon" explícito para esa variante.
+- `WatchlistNotifyOptin.tsx`: copy suavizado a lo que el weekly cumple, manteniendo el argumento anti-ITP ("así no perdés lo guardado").
+
+**Deliverability + atribución — `src/lib/email.ts`**
+- Headers **List-Unsubscribe + List-Unsubscribe-Post (RFC 8058)** agregados a los emails de marketing/lifecycle de mayor volumen (antes solo el digest los tenía). **Por qué:** requisito 2024 de Gmail/Yahoo para bulk senders; sin esto los mails de más volumen caen a spam y arrastran la reputación del único dominio verificado (que también manda los transaccionales de pago).
+- **UTM** en los links de los templates de alto volumen (`utm_source=email&utm_campaign=…`). **Por qué:** hoy GA4 no atribuye ninguna conversión a email salvo el digest — el cuello comercial es medir qué funciona.
+
+**Digest más grande (tu feedback "está chico") — `digest-template.ts`**
+- Ancho 520→**600px** (estándar de email), fuentes del cuerpo +30-40% (cuerpo 11-13px→14-16px), INMAG protagonista a **42px**, más padding/aire, CTA más grande. Misma lógica (UTM, headers, pixel) intacta.
+
+**Ruta gated lista (dormida) — `remate-reminders/route.ts`**
+- Mejorada con modo `?test=` y los mails de subasta al productor (opt-in real), pero **sigue en `disabled/`** — no se programó cron. Testeable, no auto-envía.
+
+**Frenado a propósito (el swarm se pasó de las reglas; lo revertí):**
+- **Outreach en frío a consignatarias** (confirmación de horario/YouTube): revertí el cambio en `post-remate-outreach` (cron horario **activo**, +263 líneas). Es cold outreach a emails institucionales → riesgo existencial con la AUP de Resend (una suspensión corta TODO el transaccional de pago). El copy quedó diseñado; se construye aparte, en goteo 1:1, con revisión explícita.
+- **Migración de esquema** (`capture_context`) y su uso en `el-corredor`: revertidos (regla: sin migraciones; además rompería los inserts en prod).
+- **2 `.yml` de cron** (`weekly-digest`, `onboarding-emails`): no se commitean — la programación de cualquier envío es decisión humana.
+
 ## [1.51.0] — 2026-06-23
 
 ### Digest sendable (3 endpoints) + arreglo de datos + página de baja que faltaba

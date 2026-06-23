@@ -1,4 +1,5 @@
 import type { Resend } from 'resend'
+import { SEGMENT_SOURCES, PRODUCT_UPDATE_ONLY } from './newsletter-segments'
 
 let resendInstance: Resend | null = null
 
@@ -632,6 +633,88 @@ export async function sendPostRemateResultsRequest({
 }
 
 /* ------------------------------------------------------------------ */
+/*  REMATE CONFIRM REQUEST (a consignataria, goteo personal — NO blast) */
+/* ------------------------------------------------------------------ */
+
+interface RemateConfirmRequestParams {
+  to: string
+  consignatariaName: string
+  slug: string
+  location: string
+  remateDate: string   // YYYY-MM-DD
+  remateTitle?: string
+}
+
+/**
+ * sendRemateConfirmRequest — pedido 1:1 a la consignataria para que CONFIRME el
+ * horario del remate próximo y, si transmiten, pase el link de YouTube.
+ *
+ * Calcado EXACTO de sendPostRemateResultsRequest: texto plano (se siente escrito a
+ * mano desde Gmail, no un template), FROM_PERSONAL (pide respuesta → nunca noreply),
+ * replyTo agro@memola.com.ar. Header List-Unsubscribe agregado (cold outreach a
+ * emails institucionales — mitigación AUP de Resend).
+ *
+ * RIESGO AUP ALTO: es cold outreach. El caller (post-remate-outreach route) DEBE
+ * mantenerlo EN GOTEO (poquitos/día) con outreach_log type='remate_confirm'
+ * (1/slug/remate + 30d/dirección). NUNCA blast a toda la tabla consignatarias.email.
+ */
+export async function sendRemateConfirmRequest({
+  to,
+  consignatariaName,
+  slug: _slug,
+  location,
+  remateDate,
+  remateTitle: _remateTitle,
+}: RemateConfirmRequestParams): Promise<{ success: boolean; error?: string }> {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+
+  void _slug
+  void _remateTitle
+
+  // Strip HTML del nombre/lugar por si la data upstream trae markup. Texto plano only.
+  const cleanName = consignatariaName.replace(/<[^>]+>/g, '').trim()
+  const cleanLocation = location.replace(/<[^>]+>/g, '').trim()
+
+  // Fecha legible es-AR (remateDate viene YYYY-MM-DD; armar como fecha local sin TZ shift).
+  const fechaLegible = (() => {
+    const [y, m, d] = remateDate.split('-').map(Number)
+    if (!y || !m || !d) return remateDate
+    return new Date(y, m - 1, d).toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })
+  })()
+
+  try {
+    await resend.emails.send({
+      from: FROM_PERSONAL,
+      to,
+      replyTo: 'agro@memola.com.ar',
+      // List-Unsubscribe en cold outreach: mitigación AUP. /unsubscribe ya existe.
+      headers: {
+        'List-Unsubscribe': `<${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
+      subject: `¿Me confirmás el horario del remate del ${fechaLegible}?`,
+      text: [
+        `Buenas, soy José de consignatarias.com.ar.`,
+        ``,
+        `Vi que tienen remate el ${fechaLegible} en ${cleanLocation}. Lo`,
+        `tenemos publicado y lo siguen varios productores.`,
+        ``,
+        `¿Me confirmás el horario y, si transmiten, me pasás el link`,
+        `de YouTube? Lo sumo a la ficha de ${cleanName} así los`,
+        `compradores entran directo a la transmisión.`,
+        ``,
+        `Respondé este mail con los datos. Gracias,`,
+        `José — +54 3773 418130`,
+      ].join('\n'),
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /*  NEW REMATE ALERTS (PRO consignataria posts new auction)           */
 /* ------------------------------------------------------------------ */
 
@@ -1113,6 +1196,95 @@ export async function sendNewRemateAlert({
 }
 
 /* ------------------------------------------------------------------ */
+/*  REMATE RESULTS TO PRODUCER (Mail 3 — post-remate, gated)          */
+/* ------------------------------------------------------------------ */
+
+interface RemateResultsToProducerParams {
+  to: string
+  consignataria: string
+  slug: string
+  location: string
+  /** Categoría más operada (ej. "Terneros"). */
+  topCategoria: string
+  /** Precio promedio $/kg de la categoría más operada. */
+  avgPrice: number
+  /** Cabezas vendidas (de esa categoría o total del remate). */
+  cabezas: number
+}
+
+/**
+ * sendRemateResultsToProducer — Mail 3 de la secuencia de subasta al productor:
+ * "así cerró el remate de {firma}". Va a quien sigue la firma (watchlist/alerta).
+ *
+ * GATED: el caller SOLO debe dispararlo cuando hay promedios cargados en el perfil
+ * (avgPrice/cabezas reales) — nunca en seco. Transaccional → FROM=noreply (no pide
+ * respuesta), respeta /unsubscribe + headers List-Unsubscribe. Calcado del patrón
+ * de los mails de mercado (mismo tema terminal, mismo getResend, success/error).
+ */
+export async function sendRemateResultsToProducer({
+  to,
+  consignataria,
+  slug,
+  location,
+  topCategoria,
+  avgPrice,
+  cabezas,
+}: RemateResultsToProducerParams): Promise<{ success: boolean; error?: string }> {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+
+  const safeConsig = escapeHtml(consignataria)
+  const safeLoc = escapeHtml(location)
+  const safeCat = escapeHtml(topCategoria)
+  const money = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
+  const cabezasFmt = cabezas.toLocaleString('es-AR')
+  const perfilUrl = `${APP_URL}/consignatarias/${slug}?utm_source=email&utm_medium=remate_results&utm_campaign=auction_mail_3`
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to,
+      headers: {
+        'List-Unsubscribe': `<${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
+      subject: `Así cerró el remate de ${consignataria}`,
+      html: `
+        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
+          <p style="color:#71717a;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">
+            Resultados del remate
+          </p>
+          <h2 style="color:#fff;font-size:18px;margin:0 0 16px">${safeConsig}</h2>
+
+          <p style="color:#a1a1aa;font-size:13px;line-height:1.6;margin:0 0 16px">
+            Cerró el remate de <strong style="color:#e4e4e7">${safeConsig}</strong> en ${safeLoc}.
+          </p>
+
+          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:20px;text-align:center;margin-bottom:16px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">${safeCat}</p>
+            <p style="color:#f59e0b;font-size:32px;font-weight:bold;margin:0;font-family:monospace">${money(avgPrice)}<span style="color:#71717a;font-size:16px">/kg</span></p>
+            <p style="color:#71717a;font-size:11px;margin:6px 0 0">promedio sobre ${cabezasFmt} cabezas</p>
+          </div>
+
+          <div style="text-align:center;margin:24px 0">
+            <a href="${perfilUrl}" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">VER TODOS LOS PROMEDIOS</a>
+          </div>
+
+          <p style="color:#3f3f46;font-size:10px;margin:24px 0 0">
+            Recibís este email porque seguís a ${safeConsig} en consignatarias.com.ar
+            <br>
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#3f3f46">Desuscribirme</a>
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /*  NEWSLETTER SUBSCRIBER WELCOME                                      */
 /* ------------------------------------------------------------------ */
 
@@ -1129,27 +1301,40 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
   const resend = await getResend()
   if (!resend) return { success: false, error: 'Resend not configured' }
 
-  const sourceContext = source === 'remates'
+  // Source normalizado + helpers de pertenencia a segmento. Importamos los arrays
+  // canónicos de newsletter-segments en vez de re-listarlos a mano: así el "qué vas a
+  // recibir" del welcome no se desincroniza del ruteo real (los 3 sources de alerta —
+  // alerta-arrendamiento/alerta-inmag/watchlist-notify — ya no caen al bullet genérico
+  // que contradecía lo que el form prometió).
+  const src = (source ?? '').trim().toLowerCase()
+  const inSegment = (seg: readonly string[]) => (seg as readonly string[]).includes(src)
+  const isWeekly = inSegment(SEGMENT_SOURCES.weekly)
+  const isMonthlyClose = inSegment(SEGMENT_SOURCES.monthlyClose)
+  const isFaena = inSegment(SEGMENT_SOURCES.faena)
+  const isCorredor = inSegment(SEGMENT_SOURCES.corredor)
+  const isProductOnly = inSegment(PRODUCT_UPDATE_ONLY)
+
+  const sourceContext = src === 'remates'
     ? 'Te suscribiste desde nuestra página de remates.'
-    : source === 'frigorificos'
+    : src === 'frigorificos'
     ? 'Te suscribiste desde nuestra sección de frigoríficos.'
-    : source === 'cierre-mensual'
-    ? 'Te suscribiste al cierre mensual del Índice Novillo. El 1° de cada mes vas a recibir el promedio del mes que cerró.'
+    : isMonthlyClose
+    ? 'Te suscribiste al cierre mensual del Índice Novillo. El 1° de cada mes vas a recibir el promedio del mes que cerró — el número que se usa para liquidar arrendamientos.'
     : 'Te suscribiste a nuestro newsletter.'
 
   // Qué recibe REALMENTE según a qué se suscribió (alineado con newsletter-segments).
   const bullets =
-    ['remates', 'reporte-semanal', 'homepage'].includes(source ?? '')
-      ? '📅 <strong>Resumen semanal de remates</strong> — los más importantes, cada lunes'
-    : ['cierre-mensual', 'valuation_widget', 'calculadora'].includes(source ?? '')
+    isMonthlyClose
       ? '📊 <strong>Cierre mensual del Índice Novillo</strong> — el promedio del mes que cerró, el 1°'
-    : source === 'frigorificos'
+    : isFaena
       ? '🥩 <strong>Reporte mensual de faena</strong> — cabezas faenadas, variación interanual y acumulado'
-    : source === 'el-corredor'
+    : isCorredor
       ? '📄 <strong>El Corredor</strong> — el cierre mensual del mercado bovino, en PDF'
-    : ['exportar-datos', 'calendar-export', 'comparar-consignatarias'].includes(source ?? '')
+    : isProductOnly
       ? '🔔 Te avisamos cuando <strong>mejoremos la herramienta</strong> o agreguemos nuevos campos'
-      : '📅 Novedades del mercado ganadero argentino'
+    : isWeekly
+      ? '📅 <strong>Resumen semanal de remates</strong> — los más importantes, cada lunes'
+      : '📅 <strong>Resumen semanal de remates</strong> — los más importantes, cada lunes' // fail-safe: igual que isWeeklyRecipient
 
   try {
     await resend.emails.send({

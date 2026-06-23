@@ -4,22 +4,31 @@ import { useState } from 'react'
 import { trackAlertSubscribe } from '@/lib/analytics'
 
 /**
- * FASE 0 — validación de demanda de alertas de precio (sin motor de umbral).
+ * FASE 0 — captura de demanda de precio (motor actual = cierre mensual).
  * Email-first, sin login: un input + botón que postea a /api/newsletter con un
  * `source` tag ('alerta-inmag' | 'alerta-arrendamiento') y dispara
  * trackAlertSubscribe({source, page}) para medir intención real.
  *
  * Reusa la misma infra que CierreMensualSubscribe (Resend, single opt-in,
- * source-tagging). Default = digest, no spam por tick — el copy lo deja claro.
+ * source-tagging). La promesa por default es lo CUMPLIBLE hoy: el cierre
+ * mensual (no hay motor de umbral por tick). El default del subtitle se deriva
+ * del `source` para que arrendamiento hable de 'canon/arrendamiento' (demanda #1).
  *
  * accent: 'amber' (arrendamiento) | 'emerald' (inmag).
  */
+const DEFAULT_SUBTITLES: Record<string, string> = {
+  'alerta-arrendamiento':
+    'Te mandamos el cierre mensual del novillo — el número para liquidar tu arrendamiento. Un mail por mes.',
+  'alerta-inmag':
+    'Te mandamos el cierre mensual del INMAG. Un mail por mes, sin spam por tick.',
+}
+
 export default function PriceAlertSignup({
   source,
   page,
   accent = 'emerald',
-  title = 'Avisame cuando se mueva',
-  subtitle = 'Te avisamos cuando se mueva el INMAG — sin cuenta, un mail. Sin spam por cada tick.',
+  title = 'Recibí el cierre mensual',
+  subtitle,
 }: {
   /** tag de origen para medir demanda: 'alerta-inmag' | 'alerta-arrendamiento' */
   source: string
@@ -29,6 +38,8 @@ export default function PriceAlertSignup({
   title?: string
   subtitle?: string
 }) {
+  const resolvedSubtitle =
+    subtitle ?? DEFAULT_SUBTITLES[source] ?? DEFAULT_SUBTITLES['alerta-inmag']
   const [email, setEmail] = useState('')
   const [state, setState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   const [msg, setMsg] = useState('')
@@ -58,7 +69,7 @@ export default function PriceAlertSignup({
         setMsg(
           data.message?.includes('Ya estás')
             ? 'Ya estabas anotado ✓'
-            : 'Listo — te avisamos cuando se mueva.'
+            : 'Listo — te llega el cierre mensual a tu mail.'
         )
         trackAlertSubscribe({ source, page })
       } else {
@@ -73,7 +84,7 @@ export default function PriceAlertSignup({
     <div className={`bg-gradient-to-br ${c.glow} to-transparent border ${c.border} rounded-2xl p-6 lg:p-8`}>
       <div className="max-w-2xl">
         <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-        <p className="text-zinc-400 text-sm mb-5 leading-relaxed">{subtitle}</p>
+        <p className="text-zinc-400 text-sm mb-5 leading-relaxed">{resolvedSubtitle}</p>
 
         {state === 'ok' ? (
           <div className={`flex items-center gap-2 ${c.text} font-medium`}>
@@ -103,7 +114,7 @@ export default function PriceAlertSignup({
         )}
         {state === 'error' && <p className="text-red-400 text-xs mt-2">{msg}</p>}
         {state !== 'ok' && (
-          <p className="text-xs text-zinc-600 mt-3">Sin cuenta. Sin spam por tick — un aviso cuando hay movimiento. Te podés desuscribir cuando quieras.</p>
+          <p className="text-xs text-zinc-600 mt-3">Sin cuenta. Un mail por mes, sin spam. Te podés desuscribir cuando quieras.</p>
         )}
       </div>
     </div>

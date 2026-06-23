@@ -1,24 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendDteUploadReminder, sendFirstDteSuccess, sendDteRetentionReminder } from '@/lib/email'
+import { authorizeCron } from '@/lib/cron-auth'
 
 /**
  * POST /api/cron/onboarding-emails
- * 
+ *
  * Sends onboarding emails based on user activation status:
  * 1. Welcome email - immediately after signup (via auth webhook)
  * 2. DT-e reminder - 24-72h after signup if no DT-e uploaded (this cron)
  * 3. First DT-e success - after first upload (this cron)
- * 
+ *
  * Run daily via Vercel Cron at 10:00 AM (good time for farmers).
+ *
+ * Auth: authorizeCron — acepta CRON_SECRET/ADMIN_SECRET vía x-cron-secret /
+ * Authorization: Bearer / ?secret= (alineado con el patrón de trial-nudges.yml,
+ * que manda x-cron-secret).
  */
-
-const CRON_SECRET = process.env.CRON_SECRET
 
 export async function POST(request: NextRequest) {
   // Auth check
-  const authHeader = request.headers.get('authorization')
-  if (CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`) {
+  if (!authorizeCron(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

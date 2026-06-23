@@ -15,12 +15,25 @@
  *   exportar-datos, calendar-export, comparar-consignatarias → SOLO avisos de
  *     producto (pidieron "te avisamos de mejoras") → NO reciben emails de mercado
  *   heartbeat-test / test*               → test, excluido de todo
+ *
+ * segmentFixes 2026-06 (cerrar el gap de sources que caían mal al weekly por el fail-safe):
+ *   alerta-arrendamiento → monthlyClose  (mismo contenido que cierre-mensual: el promedio
+ *                                          del novillo para liquidar el canon)
+ *   alerta-inmag         → monthlyClose  (mínimo viable: recibe el cierre mensual del INMAG;
+ *                                          la promesa "cuando se mueva" queda aspiracional
+ *                                          hasta que exista un cron de alerta real)
+ *   watchlist-notify     → weekly (EXPLÍCITO, no por fail-safe): mientras los crons de
+ *                                          subasta (remate-reminders/new-remate-alerts) estén
+ *                                          en disabled/, el weekly es lo único que el sitio cumple.
+ *                                          Re-mapear a un segmento de subasta-por-firma cuando se prendan.
  */
 export const SEGMENT_SOURCES = {
-  // Weekly remates digest (Mondays)
-  weekly: ['remates', 'reporte-semanal', 'homepage'],
-  // Monthly Índice Novillo close (1st) — price / INMAG / arrendamiento intent
-  monthlyClose: ['cierre-mensual', 'valuation_widget', 'calculadora'],
+  // Weekly remates digest (Mondays). watchlist-notify va EXPLÍCITO acá (no por fail-safe)
+  // hasta que existan crons de subasta-por-firma; cuando se prendan, re-mapear a su segmento.
+  weekly: ['remates', 'reporte-semanal', 'homepage', 'watchlist-notify'],
+  // Monthly Índice Novillo close (1st) — price / INMAG / arrendamiento intent.
+  // alerta-arrendamiento + alerta-inmag reciben el cierre mensual (mismo número del INMAG).
+  monthlyClose: ['cierre-mensual', 'valuation_widget', 'calculadora', 'alerta-arrendamiento', 'alerta-inmag'],
   // El Corredor PDF (1st) — lead magnet
   corredor: ['el-corredor'],
   // Monthly faena report

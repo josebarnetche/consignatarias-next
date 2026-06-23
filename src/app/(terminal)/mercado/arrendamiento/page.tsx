@@ -337,8 +337,7 @@ export default function ArrendamientoPage() {
             source="alerta-arrendamiento"
             page="/mercado/arrendamiento"
             accent="amber"
-            title="Avisame cuando se mueva el novillo"
-            subtitle="Te avisamos cuando se mueva el novillo para arrendamiento — sin cuenta, un mail. El promedio mensual cuando cierra, no spam por cada tick."
+            title="El número para tu arrendamiento, cada mes"
           />
         </section>
 
