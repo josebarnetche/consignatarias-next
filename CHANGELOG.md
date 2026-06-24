@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+### Motores de email LISTOS Y ARMABLES: warm de conversión PRO + recordatorios (con dedup)
+
+Los dos motores quedaron construidos, testeados (test-send al inbox del owner), dry-run'd y con dedup — **pero NO auto-armados**: el sistema de seguridad (correctamente) requiere que el humano dé el push final que activa envío saliente automático a consignatarias externas que no optaron-in. La config buena vive en `disabled/`, lista para mover y prender.
+
+**Dedup en recordatorios — `remate-reminders/route.ts` (prerrequisito real)**
+- El loop de envío **no tenía dedup**: con cron horario, un remate vive ~2h en la ventana T-24h → habría mandado **mails duplicados** al productor. Agregado dedup persistente sobre `outreach_log`: clave `remate_reminder:<id>:<timing>` + email, ventana 7 días (`loadSentReminderKeys` + `sendDeduped`). Ahora es seguro correr cada hora.
+
+**Config armable (en `disabled/`, lista):**
+- **`pro-consignataria-outreach.yml`** (warm): schedule **Lun-Vie 10:00 ART**, `min=10`, `dry=0`; el route capea a **1 envío/corrida**. Dry-run: 15 consignatarias elegibles (≥10 vistas/30d, no-PRO, no-baja); arrancaría por la de más tracción (Coop. Lehmann, 34 vistas). 1:1 `FROM_PERSONAL`, List-Unsubscribe + footer legal Memola Medios SAS, suppress, `outreach_log` (1/slug + cooldown 30d).
+- **`remate-reminders.yml`** (productor opt-in): schedule **cada hora** (ventana T-1h; el dedup evita repetir). T-24h / T-1h ("en vivo" sólo con YouTube) a watchers + segmento subasta-por-firma.
+
+**Para armar (lo hace el owner):** mover cada `.yml` de `.github/workflows/disabled/` a `.github/workflows/` y pushear — o agregar una regla de permiso. Para frenar: moverlo de vuelta a `disabled/`.
+
+**Pendiente:** limpieza del flag `featured` (3 eventos) — write a prod bloqueado por el clasificador; el owner corre el SQL.
+
 ## [1.54.0] — 2026-06-24
 
 ### Overview mobile impecable + motores de email (warm PRO + recordatorios) listos y gated

@@ -1,21 +1,19 @@
-name: PRO Consignataria Outreach (monthly)
+name: PRO Consignataria Outreach (warm, goteo 1/día)
 
-# DISABLED by default — lives in disabled/. To turn it on, move this file up to
-# .github/workflows/. It calls the cron route /api/cron/pro-consignataria-outreach
-# on Vercel (which holds the Supabase + Resend secrets — they never reach CI).
-#
-# Monthly conversion outreach: "tu perfil fue visto N veces → activá PRO". The route
-# applies a 30-day per-recipient cooldown (outreach_log) and skips firms already PRO.
-# Preview first with the manual dispatch + dry=1, or curl ?dry=1.
+# WARM conversion outreach: "tu perfil fue visto N veces → activá PRO". 1:1, FROM_PERSONAL.
+# El route /api/cron/pro-consignataria-outreach aplica TODAS las salvaguardas: cap duro
+# 1/día, ≥10 vistas/30d, no-ya-PRO, suppress de bajas, outreach_log (1/slug + cooldown 30d),
+# List-Unsubscribe RFC 8058 + identificación legal Memola Medios SAS. Secrets viven en Vercel.
+# Preview: workflow_dispatch con dry=1, o curl ?dry=1. Para frenar: volver a mover a disabled/.
 on:
   schedule:
-    - cron: '0 13 1 * *' # 1st of each month, 10:00 ART
+    - cron: '0 13 * * 1-5' # Lun-Vie 10:00 ART (goteo; el route capea a 1 envío/corrida)
   workflow_dispatch:
     inputs:
       min:
         description: 'Umbral de vistas (30d)'
         required: false
-        default: '20'
+        default: '10'
       dry:
         description: 'Dry run (1 = preview, no envía)'
         required: false
@@ -33,7 +31,7 @@ jobs:
 
       - name: Trigger PRO Consignataria outreach
         run: |
-          MIN="${{ github.event.inputs.min || '20' }}"
+          MIN="${{ github.event.inputs.min || '10' }}"
           DRY="${{ github.event.inputs.dry || '0' }}"
           echo "Trigger: /api/cron/pro-consignataria-outreach?min=${MIN}&dry=${DRY}"
           curl -sL -w "\nHTTP %{http_code}\n" -X POST \

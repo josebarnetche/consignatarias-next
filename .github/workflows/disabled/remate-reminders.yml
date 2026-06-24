@@ -1,10 +1,14 @@
 name: Remate Reminders
 
-# DISABLED: Cost optimization — no revenue yet
+# Recordatorios de remate al PRODUCTOR opt-in (watchlist de la firma + segmento
+# subasta-por-firma). El route /api/cron/remate-reminders manda T-24h y T-1h (este
+# último "en vivo" sólo si hay youtubeUrl), con dedup persistente (outreach_log,
+# 1 por remate+timing+email, ventana 7d) — por eso es seguro correr cada hora.
+# Cada mail: 1 CTA + UTM + List-Unsubscribe. Para frenar: mover a disabled/.
 on:
-  # schedule:
-  #   - cron: '0 11 * * *'
-  workflow_dispatch: # Manual trigger only
+  schedule:
+    - cron: '0 * * * *' # cada hora (necesario para capturar la ventana T-1h; el dedup evita repetir)
+  workflow_dispatch: # trigger manual
 
 jobs:
   send-reminders:
@@ -15,16 +19,11 @@ jobs:
           response=$(curl -sL -w "\n%{http_code}" -X GET \
             -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
             "https://www.consignatarias.com.ar/api/cron/remate-reminders")
-          
           http_code=$(echo "$response" | tail -1)
           body=$(echo "$response" | head -n -1)
-          
           echo "Response: $body"
           echo "HTTP Code: $http_code"
-          
           if [ "$http_code" -ne 200 ]; then
             echo "Error: Reminder cron failed with HTTP $http_code"
             exit 1
           fi
-        env:
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}

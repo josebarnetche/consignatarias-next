@@ -123,13 +123,29 @@ export async function GET(req: NextRequest) {
     // Pre-cargar suscriptos opt-in del segmento subasta-por-firma (compartido entre remates).
     const segmentSubscribers = await getSubastaSegmentEmails(service)
 
+    // DEDUP persistente: un remate vive ~2h en la ventana T-24h, así que un cron horario
+    // re-mandaría. Precargamos lo ya enviado (outreach_log, últimos 7 días) y NO repetimos
+    // por (remate, timing, email). sendDeduped registra el envío.
+    const sentKeys = await loadSentReminderKeys(service)
+    const sendDeduped = async (remate: Auction, email: string, timing: '24h' | '1h'): Promise<boolean> => {
+      const key = reminderKey(remate, timing)
+      if (sentKeys.has(`${key}|${email}`)) return false
+      await sendOneReminder(remate, email, timing)
+      sentKeys.add(`${key}|${email}`)
+      await service.from('outreach_log').insert({
+        type: key,
+        consignataria_slug: getCanonicalSlug(remate.consignatariaSlug || '') || remate.consignatariaSlug,
+        email_sent_to: email,
+      })
+      return true
+    }
+
     // T-24h
     for (const remate of rematesNext24h) {
       const recipients = await getRecipientsForRemate(service, remate, segmentSubscribers)
       for (const email of recipients) {
         try {
-          await sendOneReminder(remate, email, '24h')
-          results.remindersSent24h++
+          if (await sendDeduped(remate, email, '24h')) results.remindersSent24h++
         } catch (e) {
           results.errors.push(`24h: ${remate.id || remate.title} → ${email} - ${(e as Error).message}`)
         }
@@ -141,8 +157,7 @@ export async function GET(req: NextRequest) {
       const recipients = await getRecipientsForRemate(service, remate, segmentSubscribers)
       for (const email of recipients) {
         try {
-          await sendOneReminder(remate, email, '1h')
-          results.remindersSent1h++
+          if (await sendDeduped(remate, email, '1h')) results.remindersSent1h++
         } catch (e) {
           results.errors.push(`1h: ${remate.id || remate.title} → ${email} - ${(e as Error).message}`)
         }
@@ -173,6 +188,27 @@ type ServiceClient = ReturnType<typeof requireServiceClient>
  * puntual vía user_favorites: pidieron la agenda de remates por firma vía newsletter,
  * así que reciben todos los recordatorios del alcance. Devuelve un Set de emails.
  */
+/** Clave de dedup persistente por (remate, timing). Se concatena el email al chequear. */
+function reminderKey(remate: Auction, timing: '24h' | '1h'): string {
+  return `remate_reminder:${remate.id || remate.title}:${timing}`
+}
+
+/** Precarga las claves de recordatorios ya enviados (outreach_log type 'remate_reminder:%',
+ *  últimos 7 días) como Set de '<type>|<email>', para no duplicar en corridas horarias. */
+async function loadSentReminderKeys(service: ServiceClient): Promise<Set<string>> {
+  const weekAgo = new Date(Date.now() - 7 * 864e5).toISOString()
+  const { data } = await service
+    .from('outreach_log')
+    .select('type, email_sent_to')
+    .like('type', 'remate_reminder:%')
+    .gte('sent_at', weekAgo)
+  const set = new Set<string>()
+  for (const r of (data || []) as { type: string; email_sent_to: string }[]) {
+    if (r.type && r.email_sent_to) set.add(`${r.type}|${r.email_sent_to.trim().toLowerCase()}`)
+  }
+  return set
+}
+
 async function getSubastaSegmentEmails(service: ServiceClient): Promise<Set<string>> {
   const { data, error } = await service
     .from('newsletter_subscribers')
