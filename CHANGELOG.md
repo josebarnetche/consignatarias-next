@@ -7,6 +7,19 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.56.0] — 2026-06-24
+
+### Panel admin `/admin/overview`: overview de todo + comportamiento EN VIVO
+
+Panel admin nuevo (gateado, read-only) con un overview del producto y, sobre todo, el **comportamiento en vivo de los usuarios** — sobre datos first-party, porque GA4 no es accesible desde el server (no hay credenciales en el env de prod).
+
+- **Feed EN VIVO** (`LiveActivityFeed`, client): pollea `/api/admin/live` cada 10s sobre `profile_views` (cada fila = un usuario viendo un perfil ahora). Muestra las últimas ~30 vistas con "hace Xs/min", tipo, nombre/slug linkeado a la ficha, **host del referrer** (de dónde vino) y **dispositivo** (Mobile/Desktop del user-agent). Header con dot pulsante + "N activos · últimos 5 min"; filas nuevas flashean; soft-fail mantiene lo último. **Por qué:** es lo más cercano a "quién está navegando ahora" con dato propio y confiable.
+- **KPIs** (`Stat`/`Delta`): vistas 5min/1h/24h, suscriptores newsletter (total + nuevos 7d + desglose por source), firmas PRO (`getFeaturedSlugs`), remates próximos, frigoríficos, errores ops 24h, última corrida de cada cron.
+- **Comportamiento 24h:** top perfiles más vistos (linkeados), split consignataria vs frigorífico, y sparkline de vistas por hora.
+- Endpoint `/api/admin/live` admin-gated (mismo patrón que `/api/admin/dashboard`), `no-store`, `force-dynamic`. Lógica compartida en `src/lib/admin/live.ts`. Tab "EN VIVO" primero en `AdminNav`.
+
+## [1.55.0] — 2026-06-24
+
 ### Motores de email LISTOS Y ARMABLES: warm de conversión PRO + recordatorios (con dedup)
 
 Los dos motores quedaron construidos, testeados (test-send al inbox del owner), dry-run'd y con dedup — **pero NO auto-armados**: el sistema de seguridad (correctamente) requiere que el humano dé el push final que activa envío saliente automático a consignatarias externas que no optaron-in. La config buena vive en `disabled/`, lista para mover y prender.
