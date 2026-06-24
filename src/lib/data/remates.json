@@ -7809,25 +7809,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Especial Faena\r\nEXPORTACIÓN y Cuota Hilton",
-    "consignatariaName": "COLOMBO Y MAGLIANO S.A.",
-    "consignatariaSlug": "colombo-y-magliano-s-a",
-    "date": "2026-07-01",
-    "time": "10:00",
-    "location": "CAÑUELAS, BUENOS AIRES",
-    "province": "BUENOS AIRES",
-    "type": "especial",
-    "mainCategory": "mixto",
-    "estimatedHeads": 1500,
-    "description": "Especial Faena\r\nEXPORTACIÓN y Cuota Hilton",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.colomboymagliano.com.ar",
-    "id": 412,
-    "status": "scheduled"
-  },
-  {
     "title": "Remate",
     "consignatariaName": "FRACCAROLLI Y RONCONI S.R.L.",
     "consignatariaSlug": "fraccarolli-y-ronconi-s-r-l",
@@ -7844,7 +7825,26 @@
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/31137",
     "status": "scheduled",
-    "id": 413
+    "id": 412
+  },
+  {
+    "title": "Especial Faena\r\nEXPORTACIÓN y Cuota Hilton",
+    "consignatariaName": "COLOMBO Y MAGLIANO S.A.",
+    "consignatariaSlug": "colombo-y-magliano-s-a",
+    "date": "2026-07-01",
+    "time": "10:00",
+    "location": "CAÑUELAS, BUENOS AIRES",
+    "province": "BUENOS AIRES",
+    "type": "especial",
+    "mainCategory": "mixto",
+    "estimatedHeads": 1500,
+    "description": "Especial Faena\r\nEXPORTACIÓN y Cuota Hilton",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.colomboymagliano.com.ar",
+    "id": 413,
+    "status": "scheduled"
   },
   {
     "title": "Faena - 10.30hs.",
