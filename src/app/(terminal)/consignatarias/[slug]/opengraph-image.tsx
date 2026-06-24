@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og'
 import { getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
+import { getFeaturedSlugs } from '@/lib/featured'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { mergedSlugStaticParams } from '../_views/sluglist'
@@ -49,6 +50,9 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
   const profileAuctions = getAuctionsForProfile(auctions, slug)
   const provinces = [...new Set(profileAuctions.map(a => a.province).filter(Boolean))]
   const upcomingCount = profileAuctions.filter(a => a.date >= new Date().toISOString().slice(0, 10)).length
+
+  const featured = await getFeaturedSlugs()
+  const isPro = featured.has(profile.canonicalSlug)
 
   return new ImageResponse(
     (
@@ -127,6 +131,27 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
             <span style={{ color: '#a1a1aa', fontSize: 24, fontWeight: 500 }}>
               consignatarias.com.ar
             </span>
+            {isPro && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  marginLeft: '8px',
+                  background: 'linear-gradient(135deg, rgba(245,158,11,0.18) 0%, rgba(217,119,6,0.10) 100%)',
+                  border: '1px solid rgba(245,158,11,0.5)',
+                  borderRadius: '9999px',
+                  padding: '8px 20px',
+                }}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01L12 2z" fill="#f59e0b" />
+                </svg>
+                <span style={{ color: '#f59e0b', fontSize: 22, fontWeight: 700, letterSpacing: '0.08em' }}>
+                  PRO
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Center: Main content */}

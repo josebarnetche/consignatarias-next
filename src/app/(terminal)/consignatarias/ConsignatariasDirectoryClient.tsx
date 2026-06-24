@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { TYPE_COLORS, TYPE_LABELS_SHORT } from '@/lib/ui/tokens'
 import { TopFollowed } from '@/components/ui/TopFollowed'
 import { ProvinceLinkGrid, type ProvinceLinkItem } from '@/components/seo/ProvinceLinkGrid'
+import ProBadge from '@/components/badges/ProBadge'
 
 interface DirectoryEntry {
   slug: string
@@ -13,6 +14,7 @@ interface DirectoryEntry {
   upcoming: number
   provinces: string[]
   types: string[]
+  isPro?: boolean
 }
 
 type SortKey = 'auctions' | 'name' | 'upcoming'
@@ -38,6 +40,9 @@ export default function ConsignatariasDirectoryClient({
       )
     }
     return [...list].sort((a, b) => {
+      // PRO firms keep priority across every sort mode.
+      const pro = Number(b.isPro) - Number(a.isPro)
+      if (pro !== 0) return pro
       if (sortBy === 'name') return a.displayName.localeCompare(b.displayName)
       if (sortBy === 'upcoming') return b.upcoming - a.upcoming || b.auctionCount - a.auctionCount
       return b.auctionCount - a.auctionCount
@@ -139,8 +144,11 @@ export default function ConsignatariasDirectoryClient({
             {/* MOBILE */}
             <div className="md:hidden p-3 space-y-1">
               <div className="flex items-center justify-between">
-                <span className="text-data font-terminal text-zinc-200 group-hover:text-accent transition-colors truncate">
-                  {entry.displayName}
+                <span className="min-w-0 flex items-center gap-1.5">
+                  <span className="text-data font-terminal text-zinc-200 group-hover:text-accent transition-colors truncate">
+                    {entry.displayName}
+                  </span>
+                  {entry.isPro && <ProBadge size="sm" className="flex-shrink-0" />}
                 </span>
                 <span className="text-data tabular-nums font-terminal text-zinc-300 flex-shrink-0 ml-2">
                   {entry.auctionCount}
@@ -167,8 +175,11 @@ export default function ConsignatariasDirectoryClient({
               <span className="w-[40px] flex-shrink-0 text-data tabular-nums font-terminal text-zinc-500 text-right pr-2">
                 {i + 1}
               </span>
-              <span className="flex-1 min-w-0 text-data font-terminal text-zinc-200 truncate group-hover:text-accent transition-colors">
-                {entry.displayName}
+              <span className="flex-1 min-w-0 flex items-center gap-1.5">
+                <span className="text-data font-terminal text-zinc-200 truncate group-hover:text-accent transition-colors">
+                  {entry.displayName}
+                </span>
+                {entry.isPro && <ProBadge size="sm" className="flex-shrink-0" />}
               </span>
               <span className="w-[120px] flex-shrink-0 flex items-center gap-1 overflow-hidden">
                 {entry.types.slice(0, 3).map(t => (

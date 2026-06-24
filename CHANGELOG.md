@@ -7,6 +7,23 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.53.0] — 2026-06-24
+
+### Flujo "Consignataria PRO": ahora una firma que paga aparece destacada donde el productor busca
+
+El email de bienvenida PRO promete *"aparecés con prioridad (destacado)"*, pero las 3 superficies de descubrimiento de mayor tráfico **ignoraban o tenían desactivada** la señal PRO — una firma de $45.000/mes no aparecía destacada en ningún lado salvo su propia ficha. Cerrar este gap es prerrequisito de cualquier venta. Cero email, cero cron, cero riesgo (estrategia completa en `docs/strategy/RESEND-STRATEGY-2026-06-24.md`, gitignored).
+
+**Fuente unificada — `src/lib/featured.ts` (nuevo)**
+- `getFeaturedSlugs(): Promise<Set<string>>` — devuelve los slugs PRO (`consignatarias.featured=true` **O** subscription activa), soft-fail a `Set` vacío. `/api/featured-slugs/route.ts` refactorizado para usarlo (mismo contrato `{slugs:[]}`). **Por qué:** una sola fuente de verdad para todas las superficies, en vez de reimplementar la lógica en cada una.
+
+**Superficies reconectadas a la señal PRO:**
+- **`/remates`** (`RematesClient.tsx`): el render dorado de fila PRO (ProBadge + barra ámbar + glow) ya existía pero estaba **muerto** — `useState(new Set())` sin setter y el fetch comentado *"DISABLED: no PRO subscribers yet"*. Re-habilitado el fetch + setter → la fila dorada se dispara para firmas PRO. **Por qué:** `/remates` es la página de mayor intención y la fila premium estaba apagada por una optimización de costo que ya no aplica.
+- **`/consignatarias`** (`page.tsx` + `ConsignatariasDirectoryClient.tsx`): el directorio ahora ordena **PRO primero** (server + en todos los modos de sort del client) y renderiza `ProBadge` junto al nombre; el `ItemList` JSON-LD lista las PRO primero. **Por qué:** es la página que el welcome menciona literalmente ("buscar consignataria") — incumplir ahí era el mayor riesgo de churn/credibilidad. *(Se omitió `VerifiedBadge` en el directorio: las entries no traen el campo `verified`, solo la ficha — no afirmamos un dato que no tenemos.)*
+- **Home wall** (`page.tsx` + `ConsignatariasShowcase.tsx`): reemplazado el hardcode `WALL_FEATURED=['hk-agro']` por `getFeaturedSlugs()` — las PRO se fuerzan al wall, se ordenan primero y muestran `ProBadge` en el tile. **Por qué:** una PRO nueva sin remates recientes no entraba al muro.
+- **OG image** (`opengraph-image.tsx`): píldora dorada **PRO** en la preview que se ve al compartir el perfil por WhatsApp (canal natal del rubro). **Por qué:** superficie de prestigio desperdiciada — la preview no comunicaba el upgrade pagado.
+
+**Nota:** esto es solo el carril *ship-now-safe* de la estrategia. El motor de conversión warm (N-vistas → PRO), los recordatorios de remate y el cold legal quedan **gated** para decisión del owner (ver doc). Cero envíos nuevos en esta tanda.
+
 ## [1.52.0] — 2026-06-23
 
 ### Estrategia de email: fix de segmentos, CTAs de captura, deliverability + digest más grande

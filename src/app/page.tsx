@@ -7,6 +7,7 @@ import rematesData from "@/lib/data/remates.json";
 import { getAllProfiles } from "@/lib/data/consignataria-slugs";
 import { resolveYoutubeUrl } from "@/lib/youtube-live";
 import { getLogoUrl, getBrandColor, getBrandKeepColor } from "@/lib/data/logo-map";
+import { getFeaturedSlugs } from "@/lib/featured";
 import ConsignatariasShowcase from "@/components/landing/ConsignatariasShowcase";
 import { FAQPageSchema, OrganizationSchema, WebSiteSchema } from "@/components/seo/JsonLd";
 import NewsletterSignup from "@/components/NewsletterSignup";
@@ -199,17 +200,20 @@ export default async function LandingPage() {
   // Hybrid logo/name tiles. Logos come from the local LOGO_MAP (favicons of the
   // most active firms — not clients). Tiles with a logo are sorted first so the
   // grid leads with recognizable brand marks.
-  // Brand wall = firms active in the last 60 days + a few featured ones, all
-  // with a real logo. WALL_FEATURED forces a consignataria onto the wall even
-  // if it has no recent remates (e.g. just added, awaiting its next auction).
-  const WALL_FEATURED = ['hk-agro']
+  // Brand wall = firms active in the last 60 days + the PRO firms (the unified
+  // source of truth: featured=true OR active subscription). PRO firms are forced
+  // onto the wall even with no recent remates, shown with a PRO badge, and sorted
+  // first so a paying firm always appears with priority where producers look.
+  const proSlugs = await getFeaturedSlugs()
   const activeSlugs = new Set(activeConsignatarias.map(c => c.slug))
-  const featured = WALL_FEATURED
+  const featured = [...proSlugs]
     .filter(s => !activeSlugs.has(s))
     .map(s => ({ slug: s, name: getAllProfiles().find(p => p.canonicalSlug === s)?.displayName ?? s }))
   const showcaseItems = [...activeConsignatarias, ...featured]
-    .map(c => ({ slug: c.slug, name: c.name, logoUrl: getLogoUrl(c.slug), brandColor: getBrandColor(c.slug), keepColor: getBrandKeepColor(c.slug) }))
+    .map(c => ({ slug: c.slug, name: c.name, logoUrl: getLogoUrl(c.slug), brandColor: getBrandColor(c.slug), keepColor: getBrandKeepColor(c.slug), isPro: proSlugs.has(c.slug) }))
     .filter(c => c.logoUrl && c.brandColor)
+    // PRO firms first — paying firms appear with priority on the wall.
+    .sort((a, b) => Number(b.isPro) - Number(a.isPro))
 
   // Cinta de mercado en vivo (data real). Categorías + INMAG + USD + actividad.
   const catLabel: Record<string, string> = { novillos: 'Novillo', novillitos: 'Novillito', vaquillonas: 'Vaquillona', vacas: 'Vaca', terneros: 'Ternero', toros: 'Toro' }
@@ -462,7 +466,7 @@ export default async function LandingPage() {
 
             <div className="relative justify-self-center lg:justify-self-end">
               <div className="absolute -inset-8 bg-sky-500/10 blur-3xl rounded-full pointer-events-none" />
-              <a href="/el-corredor?ref=homepage" className="relative block">
+              <Link href="/el-corredor?ref=homepage" className="relative block">
                 <Image
                   src="/el-corredor/cover-mayo-2026.png"
                   alt="El Corredor — Mayo 2026"
@@ -475,7 +479,7 @@ export default async function LandingPage() {
                     Edición 05/26 · Disponible
                   </span>
                 </div>
-              </a>
+              </Link>
             </div>
           </div>
         </section>

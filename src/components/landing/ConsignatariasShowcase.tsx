@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef } from "react";
+import ProBadge from "@/components/badges/ProBadge";
 
 /* -----------------------------------------------------------------------------
  * Consignatarias showcase
@@ -18,6 +19,7 @@ export type ShowcaseItem = {
   logoUrl: string | null;
   brandColor: string | null;
   keepColor?: boolean;
+  isPro?: boolean;
 };
 
 // Shimmer palette for plain (no-logo) name tiles.
@@ -219,6 +221,7 @@ function Tile({ item, nameIndex }: { item: ShowcaseItem; nameIndex: number }) {
         style={{ ["--brand" as string]: color }}
       >
         <PixelCanvas colors={brandShimmer(color)} />
+        {item.isPro && <ProBadge size="sm" className="absolute top-2 right-2 z-[2]" />}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={item.logoUrl as string}
@@ -240,6 +243,7 @@ function Tile({ item, nameIndex }: { item: ShowcaseItem; nameIndex: number }) {
       className="group relative grid place-items-center overflow-hidden bg-[#0c0c0e] px-4 py-6 min-h-[104px] isolate transition-shadow duration-300 hover:z-[2] hover:shadow-[0_8px_24px_-8px_rgba(0,112,240,0.25)]"
     >
       <PixelCanvas colors={NAME_PALETTES[nameIndex % NAME_PALETTES.length]} />
+      {item.isPro && <ProBadge size="sm" className="absolute top-2 right-2 z-[2]" />}
       <span className="relative z-[1] text-center text-xs font-medium leading-tight text-zinc-500 transition-colors duration-300 group-hover:text-zinc-100">
         {item.name}
       </span>

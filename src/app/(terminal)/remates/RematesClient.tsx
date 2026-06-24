@@ -619,7 +619,7 @@ export default function RematesPage() {
   const [filterEnVivo, setFilterEnVivo] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [showAddModal, setShowAddModal] = useState(false)
-  const [featuredSlugs] = useState<Set<string>>(new Set())
+  const [featuredSlugs, setFeaturedSlugs] = useState<Set<string>>(new Set())
   // Filtros avanzados (PRO-only)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [filterDateFrom, setFilterDateFrom] = useState('')
@@ -636,14 +636,14 @@ export default function RematesPage() {
     if (q) setSearchQuery(q)
   }, [])
 
-  // DISABLED: Cost optimization — no PRO subscribers yet
-  // Fetch featured consignataria slugs from Supabase
-  // useEffect(() => {
-  //   fetch('/api/featured-slugs')
-  //     .then(r => r.json())
-  //     .then(d => setFeaturedSlugs(new Set(d.slugs || [])))
-  //     .catch(() => {})
-  // }, [])
+  // Fetch featured consignataria slugs from Supabase (unifica featured=true
+  // OR subscription activa vía /api/featured-slugs). Dispara el render dorado.
+  useEffect(() => {
+    fetch('/api/featured-slugs')
+      .then(r => r.json())
+      .then(d => setFeaturedSlugs(new Set(d.slugs || [])))
+      .catch(() => {})
+  }, [])
 
   // Merge featured flag from DB into auctions
   const auctions = useMemo(() =>

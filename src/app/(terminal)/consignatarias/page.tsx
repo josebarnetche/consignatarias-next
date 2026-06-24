@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { getAllProfiles, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
+import { getFeaturedSlugs } from '@/lib/featured'
 import ConsignatariasDirectoryClient from './ConsignatariasDirectoryClient'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import {
@@ -103,9 +104,12 @@ function ConsignatariasItemListSchema({ entries }: { entries: Array<{ slug: stri
   )
 }
 
-export default function ConsignatariasDirectoryPage() {
+export default async function ConsignatariasDirectoryPage() {
   const auctions = rematesData as Auction[]
   const today = new Date().toISOString().slice(0, 10)
+
+  // PRO firms (featured=true OR active subscription) — single source of truth.
+  const featured = await getFeaturedSlugs()
 
   const entries = profiles.map(p => {
     const pAuctions = getAuctionsForProfile(auctions, p.canonicalSlug)
@@ -119,8 +123,12 @@ export default function ConsignatariasDirectoryPage() {
       upcoming,
       provinces,
       types,
+      isPro: featured.has(p.canonicalSlug),
     }
-  }).sort((a, b) => b.auctionCount - a.auctionCount)
+  }).sort((a, b) =>
+    // PRO firms first; preserve the existing secondary order (auctionCount desc).
+    (Number(b.isPro) - Number(a.isPro)) || (b.auctionCount - a.auctionCount)
+  )
 
   // Calculate stats for intro
   const totalRemates = entries.reduce((sum, e) => sum + e.auctionCount, 0)
