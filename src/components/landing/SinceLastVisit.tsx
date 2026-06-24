@@ -79,12 +79,13 @@ export default function SinceLastVisit({ snapshot }: { snapshot: SinceLastVisitS
     <Link
       href="/overview"
       onClick={() => trackSinceLastVisitClick({ page: window.location.pathname })}
-      className="flex items-center gap-2 border-b border-terminal-border bg-terminal-panel px-4 py-1.5 text-xxs font-terminal tabular-nums text-zinc-400 transition-colors hover:bg-terminal-border/30"
+      className="flex items-center gap-2 overflow-hidden border-b border-terminal-border bg-terminal-panel px-3 sm:px-4 py-2 sm:py-1.5 text-xxs font-terminal tabular-nums text-zinc-400 transition-colors hover:bg-terminal-border/30"
     >
       <span className="status-dot-live flex-shrink-0" />
-      <span className="uppercase tracking-widest text-zinc-500">Desde tu última visita</span>
-      <span className="text-terminal-border">·</span>
-      <span className="text-zinc-300">{parts.join(' · ')}</span>
+      <span className="hidden sm:inline uppercase tracking-widest text-zinc-500 flex-shrink-0">Desde tu última visita</span>
+      <span className="sm:hidden uppercase tracking-widest text-zinc-500 flex-shrink-0">Última visita</span>
+      <span className="text-terminal-border flex-shrink-0">·</span>
+      <span className="text-zinc-300 truncate">{parts.join(' · ')}</span>
     </Link>
   )
 }

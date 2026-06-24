@@ -3,27 +3,43 @@ import { requireServiceClient } from '@/lib/supabase'
 import { getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import { getEntityTier } from '@/lib/features'
 import { sendRemateReminder, sendRemateResultsToProducer } from '@/lib/email'
+import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
 import { authorizeCron } from '@/lib/cron-auth'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 
 const auctions = rematesData as Auction[]
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
+
 /**
- * Cron job to send remate reminders to interested buyers.
- * Runs every hour, sends reminders for:
- * - 24h before: "Mañana: [REMATE] de [CONSIGNATARIA]"
- * - 1h before: "Arranca en 1 hora: [REMATE]"
+ * Alcance del recordatorio (configurable, default abierto a opt-in).
+ * - REQUIRE_PRO_TIER=true → vuelve al comportamiento histórico (sólo firmas PRO/enterprise),
+ *   útil cuando se quiera usar el recordatorio como gancho de upsell de la firma.
+ * - false (default) → abrimos a TODO suscripto opt-in del segmento subasta-por-firma y a
+ *   los watchers de user_favorites, sin importar el tier de la firma. Hoy lo que vende es
+ *   cumplir la promesa ("te aviso del remate que seguís"), no gatear por plan.
+ */
+const REQUIRE_PRO_TIER = process.env.REMATE_REMINDER_REQUIRE_PRO === 'true'
+
+/**
+ * Cron job: secuencia de recordatorios de remate AL PRODUCTOR (opt-in, gated).
+ * Tres mails, cada uno con 1 CTA, UTM y List-Unsubscribe (header lo agrega sendRemateReminder):
+ *   - T-24h: recordatorio "mañana arranca", CTA → catálogo o perfil.
+ *   - T-1h: "en vivo" SÓLO si auction.youtubeUrl existe; si no, degrada a "ver catálogo".
+ *   - resultados (?results=1): sólo si hay promedios reales cargados.
  *
- * Only sends for PRO consignatarias (incentive to upgrade).
- * Matches against alertas table (user subscriptions).
+ * Destinatarios (live path): unión de
+ *   (a) watchers de la firma en user_favorites (notify_new_remate != false), y
+ *   (b) suscriptos opt-in activos del segmento subasta-por-firma (newsletter_subscribers).
+ * Dedup por email dentro de cada (remate, timing).
  *
- * Mail 3 (resultados al productor): ?results=1 dispara sendRemateResultsToProducer
- * SOLO para remates con promedios reales cargados (auction_results.average_price).
- * Nunca en seco. authorizeCron + ?test=. NO agrega ningún .yml.
+ * NINGÚN envío automático: authorizeCron + ?test=<email>. NO agrega ningún .yml.
  *
  * GET /api/cron/remate-reminders
  * Auth: authorizeCron (CRON_SECRET / ADMIN_SECRET vía x-cron-secret / Bearer / ?secret=)
+ *   ?test=<email>           → manda 1 T-24h + 1 T-1h demo a ese email (sin DB writes)
+ *   ?results=1[&test=]      → Mail 3 (resultados al productor)
  */
 
 export async function GET(req: NextRequest) {
@@ -41,6 +57,29 @@ export async function GET(req: NextRequest) {
     return handleResultsToProducers(testEmail)
   }
 
+  // ============================================================
+  // TEST mode (recordatorios T-24h / T-1h): 1 mail demo de cada uno, sin DB.
+  // ============================================================
+  if (testEmail) {
+    const demo = auctions.find((a) => a.youtubeUrl) || auctions[0]
+    if (!demo) {
+      return NextResponse.json({ mode: 'remate_reminder', test: true, message: 'No hay remates en el dataset para el demo', sent: 0 })
+    }
+    try {
+      await sendOneReminder(demo, testEmail, '24h')
+      await sendOneReminder(demo, testEmail, '1h')
+      return NextResponse.json({
+        mode: 'remate_reminder',
+        test: true,
+        recipient: testEmail,
+        demoRemate: demo.title,
+        sent: 2, // T-24h + T-1h
+      })
+    } catch (e) {
+      return NextResponse.json({ mode: 'remate_reminder', test: true, recipient: testEmail, sent: 0, error: (e as Error).message }, { status: 500 })
+    }
+  }
+
   const now = new Date()
   const results = {
     checked: 0,
@@ -52,41 +91,21 @@ export async function GET(req: NextRequest) {
   try {
     const service = requireServiceClient()
 
-    // Get all active alerts (table may not exist yet)
-    const { data: alerts, error: alertsError } = await service
-      .from('alertas')
-      .select('*')
-      .eq('status', 'active')
-
-    // If table doesn't exist, return success (no alerts to send)
-    if (alertsError?.message?.includes('does not exist') || alertsError?.message?.includes('schema cache')) {
-      return NextResponse.json({ 
-        message: 'Alertas table not configured yet - skipping',
-        ...results 
-      })
-    }
-
-    if (alertsError) {
-      return NextResponse.json({ error: alertsError.message }, { status: 500 })
-    }
-
-    if (!alerts || alerts.length === 0) {
-      return NextResponse.json({ message: 'No active alerts', ...results })
-    }
-
     // Find remates happening in 24h or 1h
     const rematesNext24h: Auction[] = []
     const rematesNext1h: Auction[] = []
 
     for (const auction of auctions) {
       if (auction.status !== 'scheduled') continue
-      
-      // Check if PRO consignataria
+
       const canonical = getCanonicalSlug(auction.consignatariaSlug || '')
       if (!canonical) continue
-      
-      const tier = await getEntityTier('consignataria', canonical)
-      if (tier !== 'pro' && tier !== 'enterprise') continue
+
+      // Gate de tier configurable. Por default NO se exige PRO (se abre a opt-in).
+      if (REQUIRE_PRO_TIER) {
+        const tier = await getEntityTier('consignataria', canonical)
+        if (tier !== 'pro' && tier !== 'enterprise') continue
+      }
 
       // Calculate time until remate
       const remateDate = new Date(`${auction.date}T${auction.time || '10:00'}:00`)
@@ -101,29 +120,31 @@ export async function GET(req: NextRequest) {
 
     results.checked = rematesNext24h.length + rematesNext1h.length
 
-    // Match alerts with remates and send emails
-    for (const alert of alerts) {
-      // Check 24h reminders
-      for (const remate of rematesNext24h) {
-        if (matchesAlert(remate, alert)) {
-          try {
-            await sendReminderEmail(remate, alert, '24h')
-            results.remindersSent24h++
-          } catch (e) {
-            results.errors.push(`24h: ${remate.id || remate.title} - ${(e as Error).message}`)
-          }
+    // Pre-cargar suscriptos opt-in del segmento subasta-por-firma (compartido entre remates).
+    const segmentSubscribers = await getSubastaSegmentEmails(service)
+
+    // T-24h
+    for (const remate of rematesNext24h) {
+      const recipients = await getRecipientsForRemate(service, remate, segmentSubscribers)
+      for (const email of recipients) {
+        try {
+          await sendOneReminder(remate, email, '24h')
+          results.remindersSent24h++
+        } catch (e) {
+          results.errors.push(`24h: ${remate.id || remate.title} → ${email} - ${(e as Error).message}`)
         }
       }
+    }
 
-      // Check 1h reminders
-      for (const remate of rematesNext1h) {
-        if (matchesAlert(remate, alert)) {
-          try {
-            await sendReminderEmail(remate, alert, '1h')
-            results.remindersSent1h++
-          } catch (e) {
-            results.errors.push(`1h: ${remate.id || remate.title} - ${(e as Error).message}`)
-          }
+    // T-1h (degradación a catálogo si no hay youtubeUrl la maneja sendOneReminder)
+    for (const remate of rematesNext1h) {
+      const recipients = await getRecipientsForRemate(service, remate, segmentSubscribers)
+      for (const email of recipients) {
+        try {
+          await sendOneReminder(remate, email, '1h')
+          results.remindersSent1h++
+        } catch (e) {
+          results.errors.push(`1h: ${remate.id || remate.title} → ${email} - ${(e as Error).message}`)
         }
       }
     }
@@ -131,77 +152,129 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       success: true,
       ...results,
+      requireProTier: REQUIRE_PRO_TIER,
       rematesNext24h: rematesNext24h.length,
       rematesNext1h: rematesNext1h.length,
-      alertsChecked: alerts.length,
+      segmentSubscribers: segmentSubscribers.size,
     })
 
   } catch (error) {
-    return NextResponse.json({ 
+    return NextResponse.json({
       error: (error as Error).message,
-      ...results 
+      ...results
     }, { status: 500 })
   }
 }
 
-interface Alert {
-  email: string
-  provincia?: string
-  tipo?: string
-  categoria?: string
-  consignataria_slug?: string
+type ServiceClient = ReturnType<typeof requireServiceClient>
+
+/**
+ * Suscriptos opt-in activos del segmento subasta-por-firma. Estos NO siguen una firma
+ * puntual vía user_favorites: pidieron la agenda de remates por firma vía newsletter,
+ * así que reciben todos los recordatorios del alcance. Devuelve un Set de emails.
+ */
+async function getSubastaSegmentEmails(service: ServiceClient): Promise<Set<string>> {
+  const { data, error } = await service
+    .from('newsletter_subscribers')
+    .select('email')
+    .eq('status', 'active')
+    .in('source', [...SEGMENT_SOURCES.subastaPorFirma])
+
+  if (error || !data) return new Set()
+  return new Set(data.map((r) => (r.email || '').trim().toLowerCase()).filter(Boolean))
 }
 
-function matchesAlert(remate: Auction, alert: Alert): boolean {
-  // If alert is for specific consignataria, check that
-  if (alert.consignataria_slug) {
-    const canonical = getCanonicalSlug(remate.consignatariaSlug || '')
-    if (canonical !== alert.consignataria_slug) return false
+/**
+ * Emails que deben recibir el recordatorio de ESTE remate:
+ *   (a) watchers de la firma en user_favorites (notify_new_remate distinto de false), y
+ *   (b) todos los suscriptos opt-in del segmento subasta-por-firma.
+ * Dedup por email.
+ */
+async function getRecipientsForRemate(
+  service: ServiceClient,
+  remate: Auction,
+  segmentEmails: Set<string>,
+): Promise<string[]> {
+  const out = new Set<string>(segmentEmails)
+  const canonical = getCanonicalSlug(remate.consignatariaSlug || '') || remate.consignatariaSlug
+
+  // (a) watchers de la firma. user_favorites guarda user_id → resolvemos email vía users.
+  const { data: favs } = await service
+    .from('user_favorites')
+    .select('notify_new_remate, users!inner(email)')
+    .eq('consignataria_slug', canonical)
+
+  type FavRow = { notify_new_remate: boolean | null; users: { email: string } | { email: string }[] | null }
+  for (const fav of (favs || []) as FavRow[]) {
+    // null/undefined = default ON (el watcher no apagó la notificación de remate).
+    if (fav.notify_new_remate === false) continue
+    const email = Array.isArray(fav.users) ? fav.users[0]?.email : fav.users?.email
+    if (email) out.add(email.trim().toLowerCase())
   }
 
-  // Check provincia filter
-  if (alert.provincia && remate.province !== alert.provincia) {
-    return false
-  }
-
-  // Check tipo filter
-  if (alert.tipo && remate.type !== alert.tipo) {
-    return false
-  }
-
-  // Check categoria filter (uses type field for category matching)
-  if (alert.categoria && remate.type !== alert.categoria) {
-    return false
-  }
-
-  return true
+  return [...out]
 }
 
-async function sendReminderEmail(remate: Auction, alert: Alert, timing: '24h' | '1h') {
+/**
+ * Construye y manda un recordatorio. Cada mail: 1 CTA, UTM y List-Unsubscribe (el header
+ * lo agrega sendRemateReminder). T-1h muestra el "en vivo" sólo si hay youtubeUrl; si no,
+ * degrada a "ver catálogo".
+ */
+async function sendOneReminder(remate: Auction, email: string, timing: '24h' | '1h') {
   const canonical = getCanonicalSlug(remate.consignatariaSlug || '')
   const profile = canonical ? getProfile(canonical) : null
   const consignatariaName = profile?.displayName || remate.consignatariaSlug || 'Consignataria'
 
+  const isLive = timing === '1h' && Boolean(remate.youtubeUrl)
   const subject = timing === '24h'
-    ? `🐄 Mañana: ${remate.title}`
-    : `⏰ Arranca en 1 hora: ${remate.title}`
+    ? `Mañana: ${remate.title}`
+    : isLive
+      ? `En vivo en 1 hora: ${remate.title}`
+      : `Arranca en 1 hora: ${remate.title}`
+
+  // Un único CTA por mail. T-1h en vivo → YouTube; en cualquier otro caso → catálogo o perfil.
+  const utm = `utm_source=email&utm_medium=remate_reminder&utm_campaign=auction_${timing}`
+  const profileUrl = canonical ? `${APP_URL}/consignatarias/${canonical}?${utm}` : `${APP_URL}/remates?${utm}`
+  let ctaLabel: string
+  let ctaUrl: string
+  if (isLive && remate.youtubeUrl) {
+    ctaLabel = 'Ver transmisión en vivo'
+    ctaUrl = remate.youtubeUrl
+  } else if (remate.catalogUrl) {
+    ctaLabel = 'Ver catálogo'
+    ctaUrl = remate.catalogUrl
+  } else {
+    ctaLabel = 'Ver el remate'
+    ctaUrl = profileUrl
+  }
+
+  const heading = timing === '24h'
+    ? 'Recordatorio: el remate es mañana'
+    : isLive
+      ? 'Arranca en 1 hora — transmisión en vivo'
+      : 'Arranca en 1 hora'
 
   const body = `
-    <h2>${timing === '24h' ? 'Recordatorio: Remate mañana' : '¡Arranca en 1 hora!'}</h2>
-    <p><strong>${remate.title}</strong></p>
-    <p>Consignataria: ${consignatariaName}</p>
-    <p>Fecha: ${formatDate(remate.date)} ${remate.time ? `a las ${remate.time}` : ''}</p>
-    ${remate.location ? `<p>Lugar: ${remate.location}</p>` : ''}
-    ${remate.estimatedHeads ? `<p>Cabezas: ${remate.estimatedHeads.toLocaleString('es-AR')}</p>` : ''}
-    ${remate.catalogUrl ? `<p><a href="${remate.catalogUrl}">Ver catálogo</a></p>` : ''}
-    ${remate.youtubeUrl ? `<p><a href="${remate.youtubeUrl}">Ver transmisión en vivo</a></p>` : ''}
-    <hr>
-    <p style="font-size: 12px; color: #666;">
-      Recibiste este email porque tenés una alerta activa en consignatarias.com.ar
-    </p>
+    <h2 style="margin:0 0 12px;color:#18181b;font-size:18px">${heading}</h2>
+    <p style="margin:0 0 4px;color:#18181b"><strong>${escapeHtml(remate.title)}</strong></p>
+    <p style="margin:0 0 4px;color:#3f3f46">Consignataria: ${escapeHtml(consignatariaName)}</p>
+    <p style="margin:0 0 4px;color:#3f3f46">Fecha: ${formatDate(remate.date)}${remate.time ? ` a las ${remate.time}` : ''}</p>
+    ${remate.location ? `<p style="margin:0 0 4px;color:#3f3f46">Lugar: ${escapeHtml(remate.location)}</p>` : ''}
+    ${remate.estimatedHeads ? `<p style="margin:0 0 4px;color:#3f3f46">Cabezas: ${remate.estimatedHeads.toLocaleString('es-AR')}</p>` : ''}
+    <div style="text-align:center;margin:24px 0">
+      <a href="${ctaUrl}" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">${ctaLabel.toUpperCase()}</a>
+    </div>
   `
 
-  await sendRemateReminder(alert.email, subject, body)
+  await sendRemateReminder(email, subject, body)
+}
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
 }
 
 function formatDate(dateStr: string): string {

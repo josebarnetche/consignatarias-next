@@ -54,7 +54,7 @@ const catColumns: DataColumn<CatRow>[] = [
   {
     key: "cat",
     header: "Categoría",
-    cell: (r) => <span className="text-zinc-400 uppercase text-xxs tracking-wider">{r.name}</span>,
+    cell: (r) => <span className="text-zinc-300 uppercase text-data sm:text-xxs tracking-wider">{r.name}</span>,
   },
   {
     key: "current",
@@ -83,7 +83,7 @@ export default function OverviewClient() {
   const usd = marketPrices.usdBlue;
 
   return (
-    <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 space-y-px">
+    <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 space-y-2 sm:space-y-px">
 
       {/* MERCADO HOY — una sola fila, fuente única (sin ticker duplicado) */}
       <section className="terminal-panel">
@@ -91,28 +91,30 @@ export default function OverviewClient() {
           <span className="font-heading section-heading">Mercado hoy</span>
           <span className="text-xxs text-zinc-500 tabular-nums">{marketPrices.lastUpdate}</span>
         </div>
-        <div className="terminal-panel-body flex flex-wrap items-end gap-x-6 gap-y-3">
+        {/* Mobile: INMAG hero a todo el ancho, luego macro en 2 col. Desktop: fila fluida. */}
+        <div className="terminal-panel-body grid grid-cols-2 gap-x-4 gap-y-5 sm:flex sm:flex-wrap sm:items-end sm:gap-x-6 sm:gap-y-3">
           {/* INMAG es el dato ancla: número-hero (rampa num-) con su Delta. */}
           <Stat
             label="INMAG $/kg vivo"
             value={fmt(inmag.current)}
             delta={inmag.change}
-            size="text-3xl"
+            size="text-4xl sm:text-3xl"
+            className="col-span-2"
           />
           {/* Solo macro acá (INMAG/maíz/USD). Las categorías viven UNA sola vez, en su tabla. */}
-          <Stat label="Maíz USD/tn" value={fmt(corn.current, 1)} delta={corn.change} size="text-lg" />
-          <Stat label="USD blue" value={fmt(usd.current)} delta={usd.change} size="text-lg" />
+          <Stat label="Maíz USD/tn" value={fmt(corn.current, 1)} delta={corn.change} size="text-xl sm:text-lg" />
+          <Stat label="USD blue" value={fmt(usd.current)} delta={usd.change} size="text-xl sm:text-lg" />
           <Stat
             label="Remates hoy"
             value={rematesToday.length}
             tone={rematesToday.length ? "positive" : "neutral"}
-            size="text-lg"
+            size="text-xl sm:text-lg"
           />
         </div>
       </section>
 
       {/* 2 columnas en desktop: remates (lo accionable, izquierda) · tendencia + categorías */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-px items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-px items-start">
 
         {/* REMATES PRÓXIMOS */}
         <section className="terminal-panel">
@@ -137,9 +139,9 @@ export default function OverviewClient() {
                 <Wrapper
                   key={r.id}
                   {...wrapperProps}
-                  className={"flex items-center gap-2 px-cell py-px2 border-b border-terminal-border motion-hover hover:bg-accent/[0.03] group" + (isToday ? " border-l-2 border-l-warning" : "")}
+                  className={"flex items-center gap-2.5 sm:gap-2 px-cell min-h-[44px] sm:min-h-0 py-2.5 sm:py-px2 border-b border-terminal-border motion-hover hover:bg-accent/[0.03] active:bg-accent/[0.06] group" + (isToday ? " border-l-2 border-l-warning" : "")}
                 >
-                  <span className="w-[46px] flex-shrink-0 tabular-nums text-data font-terminal">
+                  <span className="w-[44px] flex-shrink-0 tabular-nums text-data font-terminal">
                     {isToday ? <span className="text-positive font-semibold">HOY</span> : <span className="text-zinc-400">{dateDisplay}</span>}
                   </span>
                   <span className="w-[36px] flex-shrink-0 text-data font-terminal text-zinc-500 tabular-nums">{r.time ?? "—"}</span>
@@ -152,13 +154,13 @@ export default function OverviewClient() {
             {nextAuctions.length === 0 && <p className="py-4 text-center text-data text-zinc-500 font-terminal">Sin remates próximos.</p>}
             <div className="flex items-center justify-between mt-2 pt-1">
               <span className="text-xxs text-zinc-500">{fmt(totalHeadsUpcoming)} cab. · {rematesPast.length} completados</span>
-              <Link href="/remates" className="text-xxs text-accent uppercase tracking-wider hover:text-accent-bright motion-hover">Ver todos →</Link>
+              <Link href="/remates" className="text-xxs text-accent uppercase tracking-wider hover:text-accent-bright motion-hover -my-2 py-2 pl-3">Ver todos →</Link>
             </div>
           </div>
         </section>
 
         {/* DERECHA: tendencia INMAG + categorías */}
-        <div className="flex flex-col gap-px">
+        <div className="flex flex-col gap-2 sm:gap-px">
           <ChartCard
             title={<span className="font-heading section-heading">Tendencia INMAG</span>}
             actions={<Delta change={inmagTrendChangePct} className="text-xxs" />}
@@ -170,7 +172,7 @@ export default function OverviewClient() {
             footer={
               <div className="flex items-center justify-between pt-2 border-t border-terminal-border text-xxs text-zinc-500">
                 <span className="tabular-nums">{inmagFromDate} — {inmagToDate}</span>
-                <Link href="/mercado/inmag" className="text-accent uppercase tracking-wider hover:text-accent-bright motion-hover">Análisis →</Link>
+                <Link href="/mercado/inmag" className="text-accent uppercase tracking-wider hover:text-accent-bright motion-hover -my-2 py-2 pl-3">Análisis →</Link>
               </div>
             }
           />

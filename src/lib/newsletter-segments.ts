@@ -22,15 +22,18 @@
  *   alerta-inmag         → monthlyClose  (mínimo viable: recibe el cierre mensual del INMAG;
  *                                          la promesa "cuando se mueva" queda aspiracional
  *                                          hasta que exista un cron de alerta real)
- *   watchlist-notify     → weekly (EXPLÍCITO, no por fail-safe): mientras los crons de
- *                                          subasta (remate-reminders/new-remate-alerts) estén
- *                                          en disabled/, el weekly es lo único que el sitio cumple.
- *                                          Re-mapear a un segmento de subasta-por-firma cuando se prendan.
+ *   watchlist-notify     → subastaPorFirma (RE-MAPEADO 2026-06-24): ya existe el motor de
+ *                                          recordatorios de remate por firma (remate-reminders
+ *                                          route con T-24h / T-1h / resultados). Quien pidió
+ *                                          "avisame de la subasta de esta firma" ahora recibe
+ *                                          ESE contenido, no el digest semanal genérico.
  */
 export const SEGMENT_SOURCES = {
-  // Weekly remates digest (Mondays). watchlist-notify va EXPLÍCITO acá (no por fail-safe)
-  // hasta que existan crons de subasta-por-firma; cuando se prendan, re-mapear a su segmento.
-  weekly: ['remates', 'reporte-semanal', 'homepage', 'watchlist-notify'],
+  // Weekly remates digest (Mondays).
+  weekly: ['remates', 'reporte-semanal', 'homepage'],
+  // Subasta-por-firma — recordatorios de remate (T-24h / T-1h en vivo / resultados) al
+  // productor que pidió seguir la agenda de una firma. Consumido por el cron remate-reminders.
+  subastaPorFirma: ['watchlist-notify'],
   // Monthly Índice Novillo close (1st) — price / INMAG / arrendamiento intent.
   // alerta-arrendamiento + alerta-inmag reciben el cierre mensual (mismo número del INMAG).
   monthlyClose: ['cierre-mensual', 'valuation_widget', 'calculadora', 'alerta-arrendamiento', 'alerta-inmag'],
@@ -52,12 +55,13 @@ function norm(source: string | null | undefined): string {
   return (source ?? '').trim().toLowerCase()
 }
 
-/** A source explicitly claimed by faena / monthlyClose / corredor (their own content). */
+/** A source explicitly claimed by faena / monthlyClose / corredor / subastaPorFirma (their own content). */
 function inSpecificSegment(s: string): boolean {
   return (
     (SEGMENT_SOURCES.faena as readonly string[]).includes(s) ||
     (SEGMENT_SOURCES.monthlyClose as readonly string[]).includes(s) ||
-    (SEGMENT_SOURCES.corredor as readonly string[]).includes(s)
+    (SEGMENT_SOURCES.corredor as readonly string[]).includes(s) ||
+    (SEGMENT_SOURCES.subastaPorFirma as readonly string[]).includes(s)
   )
 }
 

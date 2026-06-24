@@ -7,6 +7,30 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.54.0] — 2026-06-24
+
+### Overview mobile impecable + motores de email (warm PRO + recordatorios) listos y gated
+
+Mobile del `/overview` rehecho + los dos motores de envío construidos con todas las salvaguardas, **sin prender ningún cron** (test-send + activación = decisión humana).
+
+**`/overview` mobile (390px) — `OverviewClient.tsx` + `SinceLastVisit.tsx`** (desktop intacto vía `sm:`/`lg:`)
+- "Mercado hoy" pasaba a `flex-wrap` apretado → en mobile ahora `grid grid-cols-2` con INMAG full-width como héroe (`text-4xl`) y Maíz/USD/Remates en 2 columnas. Jerarquía clara: el INMAG es lo primero.
+- Padding exterior `px-2`→`px-3`. Filas de remates con touch target real (`min-h-[44px]`, antes ~22px) + feedback `active:`. Links de footer con hit-area extendida.
+- Nombre de categoría era `text-xxs` (dato clave) → `text-data`; la tabla de categorías scrollea dentro de su `overflow-x-auto` en vez de romper los 390px.
+- Spacing entre paneles `gap-px` (hairline) → `gap-2` en mobile. La barra `SinceLastVisit` ya no desborda: label corto ("Última visita") + `truncate` + `flex-shrink-0`.
+
+**Fundación email — `src/lib/email.ts`**
+- Helpers reusables: `listUnsubHeaders()` (RFC 8058 de dos URLs: one-click + fallback) y `legalIdentificationHtml()` (razón social **Memola Medios SAS**, "obtuvimos su email del registro público del MAG", opt-out destacado) — el requisito legal para outreach sin infringir.
+- `sendConsignatariaViewsOutreach` (warm) ahora trae `List-Unsubscribe` + el bloque legal. `sendRemateReminder` ahora trae `List-Unsubscribe`. `sendRemateResultsToProducer` ya lo tenía.
+
+**Motor WARM de conversión PRO — `pro-consignataria-outreach/route.ts`** (gated, cron en `disabled/`)
+- Reescrito al patrón seguro: `authorizeCron` + `?test=<email>` + `?dry=1`. Selección: consignatarias con **≥10 vistas/30d** (`profile_views`), email no-null, que **NO** sean ya PRO (`getFeaturedSlugs`), que **NO** se hayan dado de baja (suppress vía `newsletter_subscribers status='unsubscribed'`), respetando `outreach_log` (1 vez por slug + cooldown 30d). **Goteo: cap duro 1/día.** Sin migraciones.
+
+**Recordatorios de remate al productor — `remate-reminders/route.ts`** (gated, cron en `disabled/`)
+- Secuencia T-24h / T-1h ("en vivo" SOLO si hay `youtubeUrl`, si no degrada a catálogo) / resultados (solo con promedios). 1 CTA + UTM + List-Unsubscribe por mail. `watchlist-notify` re-mapeado en `newsletter-segments.ts` a un segmento de subasta-por-firma (ahora que hay motor).
+
+**Nota:** ningún cron prendido. El test-send (a tu inbox) y la activación los hacés vos. El flag `featured` (limpiar eventos) quedó pendiente de tu autorización del write a prod (el clasificador lo bloqueó).
+
 ## [1.53.0] — 2026-06-24
 
 ### Flujo "Consignataria PRO": ahora una firma que paga aparece destacada donde el productor busca

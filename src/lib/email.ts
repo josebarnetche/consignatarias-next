@@ -29,6 +29,49 @@ const FROM_PERSONAL = process.env.RESEND_FROM_PERSONAL || 'José Barnetche <hola
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'agro@memola.com.ar'
 
+/**
+ * listUnsubHeaders — headers RFC 8058 (List-Unsubscribe + List-Unsubscribe-Post)
+ * para emails warm/recordatorios. Calcado del bloque canónico del digest
+ * (buildDigestEmail en src/lib/newsletter/digest-template.ts):
+ *   List-Unsubscribe = <POST one-click /api/newsletter/unsubscribe>, <GET /unsubscribe>
+ *   List-Unsubscribe-Post = List-Unsubscribe=One-Click
+ *
+ * El POST one-click lo dispara el botón nativo de Gmail/Apple Mail; el GET es el
+ * fallback humano (ambos endpoints ya existen). `campaign` es opcional: la route
+ * lo acepta null y lo usa sólo para ops logging (distinguir de qué mail vino la baja).
+ * Es prerrequisito de deliverability del motor warm.
+ */
+function listUnsubHeaders(email: string, campaign?: string): Record<string, string> {
+  const safeEmail = encodeURIComponent(email)
+  const camp = campaign ? `&campaign=${encodeURIComponent(campaign)}` : ''
+  const oneClickUrl = `${APP_URL}/api/newsletter/unsubscribe?email=${safeEmail}${camp}`
+  const unsubscribeLink = `${APP_URL}/unsubscribe?email=${safeEmail}`
+  return {
+    'List-Unsubscribe': `<${oneClickUrl}>, <${unsubscribeLink}>`,
+    'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+  }
+}
+
+/**
+ * legalIdentificationHtml — bloque reusable de identificación legal para emails
+ * warm/recordatorios a contactos institucionales obtenidos del registro público
+ * del MAG. Razón social (Memola Medios SAS) + origen del dato + opt-out destacado.
+ * Texto institucional mínimo, alineado a buenas prácticas de la AAIP / Ley 25.326.
+ * NO usar en transaccional de pago (esos no son cold/warm). Devuelve HTML listo
+ * para concatenar en el footer del cuerpo.
+ */
+function legalIdentificationHtml(email: string): string {
+  const unsubscribeLink = `${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}`
+  return `
+    <p style="color:#3f3f46;font-size:10px;line-height:1.6;margin:16px 0 0">
+      Memola Medios SAS — consignatarias.com.ar. Obtuvimos su email del registro
+      público del Mercado Agroganadero (MAG). Si no desea recibir más estos avisos,
+      puede darse de baja en cualquier momento:
+      <a href="${unsubscribeLink}" style="color:#52525b;text-decoration:underline">cancelar suscripción</a>.
+    </p>
+  `
+}
+
 export async function sendClaimConfirmation(email: string, displayName: string, slug: string) {
   const resend = await getResend()
   if (!resend) return
@@ -84,6 +127,9 @@ export async function sendConsignatariaViewsOutreach(opts: {
     await resend.emails.send({
       from: FROM_PERSONAL,
       to: opts.to,
+      // List-Unsubscribe RFC 8058 (warm outreach): prerrequisito de deliverability.
+      // Mismo bloque de headers que el digest / sendRemateResultsToProducer.
+      headers: listUnsubHeaders(opts.to, 'views_outreach'),
       subject: `Tu perfil en consignatarias.com.ar fue visto ${opts.views} veces este mes`,
       html: `
         <p>Hola, equipo de <strong>${safeName}</strong>:</p>
@@ -91,6 +137,7 @@ export async function sendConsignatariaViewsOutreach(opts: {
         <p>Con <strong>PRO</strong> aparecés con prioridad (destacado), con tu badge verificado, tu calendario y la analítica de tu perfil — para que esas visitas se vuelvan consultas.</p>
         <p><a href="${APP_URL}/consignatarias/${opts.slug}/activar">Activá PRO acá</a> — ARS 45.000/mes, cancelás cuando quieras.</p>
         <p>Saludos,<br>José — consignatarias.com.ar</p>
+        ${legalIdentificationHtml(opts.to)}
       `,
     })
     return { success: true }
@@ -551,6 +598,8 @@ export async function sendRemateReminder(email: string, subject: string, htmlBod
   resend.emails.send({
     from: FROM,
     to: email,
+    // List-Unsubscribe RFC 8058: faltaba en el recordatorio (sólo tenía link en footer).
+    headers: listUnsubHeaders(email, 'remate_reminder'),
     subject,
     html: `
       <div style="font-family:-apple-system,system-ui,sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#fafafa">
@@ -1312,6 +1361,7 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
   const isMonthlyClose = inSegment(SEGMENT_SOURCES.monthlyClose)
   const isFaena = inSegment(SEGMENT_SOURCES.faena)
   const isCorredor = inSegment(SEGMENT_SOURCES.corredor)
+  const isSubastaPorFirma = inSegment(SEGMENT_SOURCES.subastaPorFirma)
   const isProductOnly = inSegment(PRODUCT_UPDATE_ONLY)
 
   const sourceContext = src === 'remates'
@@ -1320,6 +1370,8 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
     ? 'Te suscribiste desde nuestra sección de frigoríficos.'
     : isMonthlyClose
     ? 'Te suscribiste al cierre mensual del Índice Novillo. El 1° de cada mes vas a recibir el promedio del mes que cerró — el número que se usa para liquidar arrendamientos.'
+    : isSubastaPorFirma
+    ? 'Te suscribiste a los recordatorios de remate de las firmas que seguís.'
     : 'Te suscribiste a nuestro newsletter.'
 
   // Qué recibe REALMENTE según a qué se suscribió (alineado con newsletter-segments).
@@ -1330,6 +1382,8 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
       ? '🥩 <strong>Reporte mensual de faena</strong> — cabezas faenadas, variación interanual y acumulado'
     : isCorredor
       ? '📄 <strong>El Corredor</strong> — el cierre mensual del mercado bovino, en PDF'
+    : isSubastaPorFirma
+      ? '🔔 <strong>Recordatorios de remate</strong> — te avisamos antes de cada subasta de las firmas que seguís (el día previo y al arrancar) y cómo cerró'
     : isProductOnly
       ? '🔔 Te avisamos cuando <strong>mejoremos la herramienta</strong> o agreguemos nuevos campos'
     : isWeekly
