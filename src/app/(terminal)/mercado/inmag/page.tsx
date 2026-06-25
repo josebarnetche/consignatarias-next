@@ -10,9 +10,9 @@ import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import { ElCorredorCTA } from '@/components/ElCorredorCTA'
 import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
 import PriceAlertSignup from '@/components/PriceAlertSignup'
-import { AnimatedPrice } from '@/components/AnimatedPrice'
 import { InmagDecadaCompleta } from '@/components/market/InmagDecadaCompleta'
-import { Stat, Delta, DataTable, PriceCell, DeltaFlash, type DataColumn } from '@/components/ui'
+import { MarketHero, type MarketHeroStat } from '@/components/market'
+import { Delta, DataTable, PriceCell, type DataColumn } from '@/components/ui'
 import { signedTone, SEMANTIC_HEX } from '@/lib/ui/tokens'
 import SinceLastVisit from '@/components/landing/SinceLastVisit'
 import FreshnessStamp from '@/components/landing/FreshnessStamp'
@@ -92,10 +92,10 @@ function InmagSchema() {
     '@id': 'https://www.consignatarias.com.ar/mercado/inmag#inmag-dataset',
     name: 'INMAG — Índice Novillo del Mercado Agroganadero',
     alternateName: 'INMAG',
-    description: 'Índice de precios del novillo en el Mercado Agroganadero de Buenos Aires, Argentina.',
+    description: 'Índice de precios del novillo en el Mercado Agroganadero de Cañuelas, Argentina.',
     url: 'https://www.consignatarias.com.ar/mercado/inmag',
     keywords: ['INMAG', 'índice novillo', 'precio ganado', 'mercado ganadero'],
-    creator: { '@type': 'Organization', name: 'Mercado Agroganadero de Buenos Aires' },
+    creator: { '@type': 'Organization', name: 'Mercado Agroganadero de Cañuelas', sameAs: 'https://www.mercadoagroganadero.com.ar' },
     publisher: { '@type': 'Organization', name: 'consignatarias.com.ar', url: 'https://www.consignatarias.com.ar' },
     temporalCoverage: `${series[0]?.date}/${series[series.length - 1]?.date}`,
     // Freshness + structured current value → AI/Google cite it as a live reference price.
@@ -155,7 +155,6 @@ function formatDate(iso: string): string {
 }
 
 export default function InmagPage() {
-  const isUp = inmag.change >= 0
   const recentSeries = series.slice(-30)
   const minVal = Math.min(...recentSeries.map(s => s.value))
   const maxVal = Math.max(...recentSeries.map(s => s.value))
@@ -179,6 +178,18 @@ export default function InmagPage() {
           change: prev ? ((point.value - prev) / prev) * 100 : null,
         }
       })
+
+  const heroStats: MarketHeroStat[] = [
+    { label: 'Mínimo 30d', value: `$${fmt(minVal)}`, sub: 'Por kg vivo' },
+    { label: 'Máximo 30d', value: `$${fmt(maxVal)}`, sub: 'Por kg vivo' },
+    { label: 'Promedio 30d', value: `$${fmt(avgVal)}`, sub: 'Por kg vivo' },
+    {
+      label: 'Variación 30d',
+      value: `${change30d >= 0 ? '+' : ''}${change30d.toFixed(1)}%`,
+      sub: 'vs. hace 30 días',
+      tone: signedTone(change30d),
+    },
+  ]
 
   const historyColumns: DataColumn<(typeof historyRows)[number]>[] = [
     {
@@ -233,13 +244,16 @@ export default function InmagPage() {
       />
 
       <div className="min-h-screen">
-        {/* Hero Section */}
-        <section className="relative overflow-hidden">
-          {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/20 via-zinc-950 to-zinc-950" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-500/5 blur-[120px] rounded-full" />
-          
-          <div className="relative max-w-6xl mx-auto px-4 pt-8 pb-12">
+        {/* Hero Section — número-hero compartido con /mercado/arrendamiento (MarketHero) */}
+        <MarketHero
+          accent="emerald"
+          priceLabel="Precio Actual"
+          priceValue={inmag.current}
+          priceChange={inmag.change}
+          prevValue={fmt(inmag.prev)}
+          stats={heroStats}
+        >
+          <div>
             {/* Breadcrumb (unified — visual + JSON-LD desde un solo array) */}
             <Breadcrumb
               className="mb-8"
@@ -248,97 +262,30 @@ export default function InmagPage() {
                 { name: 'INMAG' },
               ]}
             />
-
-            {/* Main heading */}
-            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
-              <div>
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded-full border border-emerald-500/20">
-                    EN VIVO
-                  </span>
-                  <FreshnessStamp updatedAt={marketData.lastUpdate} />
-                </div>
-                <h1 className="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-3">
-                  <span className="block text-emerald-400">INMAG</span>
-                  Índice Novillo Mercado Agroganadero
-                </h1>
-                {/* Clean definition lede — first prose on the page, written as a
-                    self-contained snippet so Google can lift it for "qué es el inmag". */}
-                <p className="speakable-content text-zinc-400 max-w-xl text-lg">
-                  El <strong className="text-zinc-200">INMAG (Índice Novillo Mercado Agroganadero)</strong> es
-                  el precio promedio ponderado del novillo en el Mercado Agroganadero de Cañuelas (ex Liniers),
-                  publicado al cierre de cada día hábil. Es la referencia de precio más usada del mercado
-                  ganadero argentino, con histórico desde 2015 y metodología abierta.
-                </p>
-                <CitaBlock
-                  citation={`INMAG (Índice Novillo del Mercado Agroganadero), vía consignatarias.com.ar, ${marketData.lastUpdate} — $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 2 })}/kg vivo`}
-                  sourceUrl="https://www.consignatarias.com.ar/mercado/inmag"
-                />
-              </div>
-
-              {/* Hero Price Card — el dato vivo. DeltaFlash da un wash sutil   */}
-              {/* sobre el FONDO al cargar/cambiar el precio (DESIGN-SYSTEM §5); */}
-              {/* el número tabular-nums queda fijo, no salta el layout.        */}
-              <DeltaFlash value={inmag.current} tone="live" className="w-full lg:w-auto block">
-              <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-2xl p-6 lg:p-8 w-full lg:w-auto lg:min-w-[400px]">
-                <div className="text-sm text-zinc-500 mb-2 font-medium">Precio Actual</div>
-                <div className="flex items-baseline gap-2 sm:gap-3">
-                  <span className="text-4xl sm:text-5xl font-bold text-white font-mono tracking-tight tabular-nums">
-                    <AnimatedPrice
-                      value={inmag.current}
-                      duration={2800}
-                      prefix="$"
-                      decimals={2}
-                    />
-                  </span>
-                  <span className="text-zinc-500 text-lg shrink-0">/kg</span>
-                </div>
-                <div className="flex items-center gap-4 mt-4 pt-4 border-t border-zinc-800">
-                  <div className={`flex items-center px-3 py-1.5 rounded-lg text-sm font-medium ${
-                    isUp ? 'bg-positive/10' : 'bg-negative/10'
-                  }`}>
-                    <Delta
-                      change={inmag.change}
-                      format={(abs) => abs.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    />
-                  </div>
-                  <div className="text-sm text-zinc-500">
-                    vs. anterior: <span className="text-zinc-300">${fmt(inmag.prev)}</span>
-                  </div>
-                </div>
-              </div>
-              </DeltaFlash>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded-full border border-emerald-500/20">
+                EN VIVO
+              </span>
+              <FreshnessStamp updatedAt={marketData.lastUpdate} />
             </div>
-
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { label: 'Mínimo 30d', value: `$${fmt(minVal)}`, sub: 'Por kg vivo' },
-                { label: 'Máximo 30d', value: `$${fmt(maxVal)}`, sub: 'Por kg vivo' },
-                { label: 'Promedio 30d', value: `$${fmt(avgVal)}`, sub: 'Por kg vivo' },
-                {
-                  label: 'Variación 30d',
-                  value: `${change30d >= 0 ? '+' : ''}${change30d.toFixed(1)}%`,
-                  sub: 'vs. hace 30 días',
-                  tone: signedTone(change30d),
-                },
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-4 motion-hover hover:border-zinc-700/50"
-                >
-                  <Stat
-                    label={stat.label}
-                    value={stat.value}
-                    sub={stat.sub}
-                    tone={stat.tone ?? 'emphasis'}
-                    size="text-2xl font-bold"
-                  />
-                </div>
-              ))}
-            </div>
+            <h1 className="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-3">
+              <span className="block text-emerald-400">INMAG</span>
+              Índice Novillo Mercado Agroganadero
+            </h1>
+            {/* Clean definition lede — first prose on the page, written as a
+                self-contained snippet so Google can lift it for "qué es el inmag". */}
+            <p className="speakable-content text-zinc-400 max-w-xl text-lg">
+              El <strong className="text-zinc-200">INMAG (Índice Novillo Mercado Agroganadero)</strong> es
+              el precio promedio ponderado del novillo en el Mercado Agroganadero de Cañuelas (ex Liniers),
+              publicado al cierre de cada día hábil. Es la referencia de precio más usada del mercado
+              ganadero argentino, con histórico desde 2015 y metodología abierta.
+            </p>
+            <CitaBlock
+              citation={`INMAG (Índice Novillo del Mercado Agroganadero), vía consignatarias.com.ar, ${marketData.lastUpdate} — $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 2 })}/kg vivo`}
+              sourceUrl="https://www.consignatarias.com.ar/mercado/inmag"
+            />
           </div>
-        </section>
+        </MarketHero>
 
         {/* Alerta de precio — FASE 0, validación de demanda (sin motor de umbral).
             Intención real de gsc-detail.json: "inmag hoy" → quieren saber cuándo cambia. */}

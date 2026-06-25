@@ -266,6 +266,46 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
           </div>
         </div>
 
+        <div className="mt-4 terminal-panel border-amber-500/30 bg-amber-500/5">
+          <div className="terminal-panel-header" style={{ borderBottomColor: 'rgba(245, 158, 11, 0.3)' }}>
+            <span className="text-amber-400 text-label tracking-widest">¿OPERÁS UN FRIGORÍFICO EN {config.displayName.toUpperCase()}?</span>
+          </div>
+          <div className="px-panel py-4 space-y-3">
+            <p className="text-data font-terminal text-zinc-300">
+              Reclamá el perfil de tu planta gratis y actualizá tus datos de contacto para que productores y compradores te encuentren en el directorio.
+            </p>
+            <ul className="space-y-1.5 text-xxs font-terminal text-zinc-400">
+              <li className="flex items-center gap-2">
+                <span className="text-positive">✓</span>
+                Badge de verificado en el directorio
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-positive">✓</span>
+                Información de contacto visible
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-positive">✓</span>
+                Recibí consultas de compradores directamente
+              </li>
+            </ul>
+            <div className="flex items-center gap-3 flex-wrap">
+              <Link
+                href="/frigorificos/verificar"
+                rel="nofollow"
+                className="inline-block px-4 py-2.5 bg-amber-500/20 border border-amber-500/40 text-amber-400 text-data font-terminal rounded-terminal hover:bg-amber-500/30 transition-colors"
+              >
+                Reclamar perfil gratis →
+              </Link>
+              <Link
+                href="/enterprise"
+                className="inline-block px-4 py-2.5 bg-accent/10 border border-accent/30 text-accent text-data font-terminal rounded-terminal hover:bg-accent/20 transition-colors"
+              >
+                Datos para empresas →
+              </Link>
+            </div>
+          </div>
+        </div>
+
         <div className="mt-4 terminal-panel">
           <div className="terminal-panel-header">
             <span className="text-xxs text-zinc-500 uppercase tracking-wider">Otras provincias</span>

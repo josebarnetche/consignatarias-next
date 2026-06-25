@@ -49,7 +49,7 @@ export async function MediosPagoSection({ mediosPago, consignatariaName, redirec
           <h2 className="text-zinc-200 text-base font-medium mb-1 flex items-center gap-2">
             Medios de pago
             <span className="text-xxs font-mono text-sky-400 uppercase tracking-widest border border-sky-500/30 bg-sky-500/5 rounded px-1.5 py-0.5">
-              PRO
+              PRO USUARIO
             </span>
           </h2>
           <p className="text-zinc-500 text-xs font-mono">

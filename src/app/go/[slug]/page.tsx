@@ -54,21 +54,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       url: `https://www.consignatarias.com.ar/go/${canonical}`,
       type: 'website',
-      images: [
-        {
-          url: 'https://www.consignatarias.com.ar/og-consignataria.png',
-          width: 1200,
-          height: 630,
-          alt: profile.displayName,
-        },
-      ],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
     },
-    robots: { index: true, follow: true },
+    robots: { index: false, follow: true },
+    // C6: la URL canónica SEO es la ficha /consignatarias/[slug] (self-canonical correcto
+    // + en sitemap). /go es superficie de share/distribución → noindex + canonical cruzado,
+    // corrigiendo el canonical-al-home heredado del layout.
+    alternates: { canonical: `https://www.consignatarias.com.ar/consignatarias/${canonical}` },
   }
 }
 

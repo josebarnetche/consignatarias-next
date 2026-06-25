@@ -1008,10 +1008,10 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                   <span className="text-warning text-lg mt-0.5">📧</span>
                   <div>
                     <div className="mb-1.5">
-                      <Badge tone="pro">PRO</Badge>
+                      <Badge tone="pro">PRO CONSIGNATARIA</Badge>
                     </div>
                     <p className="text-xs text-zinc-300 font-terminal font-medium mb-1">
-                      Cada remate tuyo, enviado a +500 productores
+                      Para tu firma · cada remate tuyo, enviado a +500 productores
                     </p>
                     <p className="text-xxs text-zinc-500 font-terminal">
                       Con PRO, tus remates llegan por email a toda nuestra base activa. Badge dorado, analytics de perfil, y landing personalizada.

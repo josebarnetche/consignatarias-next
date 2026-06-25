@@ -70,6 +70,12 @@ function slugify(str) {
     .replace(/^-|-$/g, "");
 }
 
+// Colapsa \r\n crudos y espacios m\u00faltiples en t\u00edtulos de remate (ej. CACG manda
+// "EXPOAGRO\r\nRemate de Mercado Rosgan"). Mantiene un solo espacio.
+function cleanTitle(str) {
+  return (str || "").replace(/\s+/g, " ").trim();
+}
+
 function todayISO() {
   return new Date().toISOString().split("T")[0];
 }
@@ -443,7 +449,7 @@ async function scrapeCACG() {
       const location = city ? `${city}, ${province}` : province;
 
       return {
-        title: r.auction_title || "Remate",
+        title: cleanTitle(r.auction_title) || "Remate",
         consignatariaName: r.company_name || "Sin consignataria",
         consignatariaSlug: slugify(r.company_name || "sin-consignataria"),
         date: r.auction_date,
@@ -1623,6 +1629,8 @@ async function main() {
   // mergeen con la firma real (ej. "Colombo Y Maliagno2" es Colombo y Magliano SA).
   const CONSIG_SLUG_FIX = {
     "colombo-y-maliagno2": { slug: "colombo-y-magliano", name: "Colombo y Magliano SA" },
+    // Typo del feed: "Alopnso" → "Alonso".
+    "pedro-y-raul-alopnso": { slug: "pedro-y-raul-alonso", name: "Pedro y Raul Alonso" },
   };
   for (const a of merged) {
     const fix = CONSIG_SLUG_FIX[a.consignatariaSlug];

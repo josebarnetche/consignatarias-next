@@ -7,6 +7,30 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.60.0] — 2026-06-25
+
+### Wave 2 + 3 del plan de auditoría — SEO, conversión, datos y design system
+
+Segunda y tercera ola del plan verificado (`docs/strategy/MODIFICATION-PLAN-2026-06-25.md`).
+
+**SEO / distribución**
+- **C6 — `/go/[slug]` a `noindex,follow`**: es superficie de share (QR/WhatsApp/.ics), no SEO; duplicaba indexablemente a `/consignatarias/[slug]`. **Objetivo:** cortar la canibalización (su gemelo SEO ya tiene self-canonical).
+- **C7 — OG dinámica para `/go/[slug]`**: la metadata apuntaba a `/og-consignataria.png` (404) → previews sin imagen al compartir. Nuevo `opengraph-image.tsx` (ImageResponse, espeja el de la ficha, con badge PRO). **Objetivo:** subir el CTR del canal de distribución.
+- **C11 — Entidad INMAG unificada a "Mercado Agroganadero de Cañuelas"** en el JSON-LD (Dataset de `/mercado/inmag` + `/mercado/[categoria]` + arrendamiento) + `sameAs`. Borrado el `aggregateRating` muerto de `SaaSPricingSchema`. **Objetivo:** una sola asociación marca↔INMAG para los motores de IA.
+
+**Conversión**
+- **C9 — Desambiguados los dos "PRO" en la ficha**: el gate de Medios de Pago ahora dice **"PRO USUARIO"** (productor, $7.900) y el bloque de activación **"PRO CONSIGNATARIA"** (firma, $45.000), con a-quién-sirve cada uno. **Objetivo:** que el usuario entienda qué compra en la pantalla de decisión.
+- **C10 — CTA B2B en la vista provincial de frigoríficos** (`FrigorificoProvinceView`): la landing orgánica de mayor profundidad (hasta 10 min) no tenía ningún CTA. Sumado "Reclamar perfil" + "Datos para empresas". **Objetivo:** activar la línea B2B en el flujo de mayor profundidad.
+
+**Datos**
+- **C8 — `/remates/ciudad` usa el campo `province` real** en vez de parsear `location` (que tenía la provincia mal en 76 casos: Vicuña Mackenna→Neuquén, etc.). **Objetivo:** geografía correcta en un producto que vende precisión.
+- **C12 — Higiene de datos**: 50 títulos con `\r\n` saneados (+ `cleanTitle` en el scraper para que no recurra), typo `alopnso→alonso`, fusión de la entidad duplicada Lehmann (104→103 perfiles), y borrado de `public/robots.txt` obsoleto (precede `robots.ts`).
+
+**Design system (Wave 3)**
+- **C13 — `/mercado/arrendamiento` migrado al tema terminal** + nuevo `MarketHero` compartido (número-hero con DeltaFlash + AnimatedPrice + quick-stats). Antes era 100% SaaS crudo. **Objetivo:** una sola estética en arrendamiento→inmag→ficha.
+
+_Nota: C8 y C9 los disparó un rate-limit del servidor a mitad del swarm; C8 ya estaba aplicado y C9 + la consistencia de C11 en `/mercado/[categoria]` se completaron a mano._
+
 ## [1.59.0] — 2026-06-25
 
 ### Wave 1 del plan de auditoría verificada — 5 quick-wins (conversión + SEO + a11y)

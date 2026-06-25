@@ -247,12 +247,12 @@ function CategoryPriceSchema({ config, price, change }: { config: CategoryConfig
     '@context': 'https://schema.org',
     '@type': 'Dataset',
     name: `Precio ${config.name} Argentina`,
-    description: `Cotización diaria de ${config.namePlural.toLowerCase()} en el Mercado Agroganadero de Buenos Aires. ${config.definition}`,
+    description: `Cotización diaria de ${config.namePlural.toLowerCase()} en el Mercado Agroganadero de Cañuelas. ${config.definition}`,
     url: `https://www.consignatarias.com.ar/mercado/${config.slug}`,
     keywords: config.keywords.join(', '),
     creator: {
       '@type': 'Organization',
-      name: 'Mercado Agroganadero de Buenos Aires',
+      name: 'Mercado Agroganadero de Cañuelas',
     },
     variableMeasured: {
       '@type': 'PropertyValue',
@@ -275,7 +275,7 @@ function CategoryPriceSchema({ config, price, change }: { config: CategoryConfig
     category: 'Livestock/Cattle',
     brand: {
       '@type': 'Organization',
-      name: 'Mercado Agroganadero de Buenos Aires',
+      name: 'Mercado Agroganadero de Cañuelas',
     },
     offers: {
       '@type': 'Offer',
@@ -299,7 +299,7 @@ function CategoryPriceSchema({ config, price, change }: { config: CategoryConfig
       },
       seller: {
         '@type': 'Organization',
-        name: 'Mercado Agroganadero de Buenos Aires',
+        name: 'Mercado Agroganadero de Cañuelas',
         url: 'https://www.mercadoagroganadero.com.ar',
       },
     },

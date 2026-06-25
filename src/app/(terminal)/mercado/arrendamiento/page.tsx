@@ -7,9 +7,12 @@ import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
 import PriceAlertSignup from '@/components/PriceAlertSignup'
-import { AnimatedPrice } from '@/components/AnimatedPrice'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import SinceLastVisit from '@/components/landing/SinceLastVisit'
+import Breadcrumb from '@/components/ui/Breadcrumb'
+import { Delta, DataTable, PriceCell, type DataColumn } from '@/components/ui'
+import { signedTone, SEMANTIC_HEX } from '@/lib/ui/tokens'
+import { MarketHero, type MarketHeroStat } from '@/components/market'
 import rematesData from '@/lib/data/remates.json'
 
 const inmag = marketData.inmag
@@ -134,7 +137,8 @@ function ArrendamientoSchema() {
     description: 'Índice de precios del novillo utilizado como referencia para contratos de arrendamiento rural en Argentina.',
     url: 'https://www.consignatarias.com.ar/mercado/arrendamiento',
     keywords: ['índice novillo', 'arrendamiento rural', 'INMAG', 'precio ganado', 'mercado ganadero'],
-    creator: { '@type': 'Organization', name: 'Mercado Agroganadero de Buenos Aires' },
+    // C11: entidad única MAG Cañuelas (coherente con /mercado/inmag y mercado/canuelas).
+    creator: { '@type': 'Organization', name: 'Mercado Agroganadero de Cañuelas', sameAs: 'https://www.mercadoagroganadero.com.ar' },
     temporalCoverage: `${series[0]?.date}/${series[series.length - 1]?.date}`,
     license: 'https://creativecommons.org/licenses/by/4.0/',
     isAccessibleForFree: true,
@@ -154,7 +158,6 @@ function formatMonth(monthKey: string): string {
 }
 
 export default function ArrendamientoPage() {
-  const isUp = inmag.change >= 0
   const recentSeries = series.slice(-90) // 90 days for better trend visibility
   const last30 = series.slice(-30)
   const minVal = Math.min(...last30.map(s => s.value))
@@ -168,6 +171,68 @@ export default function ArrendamientoPage() {
   const exampleHectareas = 500
   const exampleKgPerHa = 4
   const exampleCanon = exampleHectareas * exampleKgPerHa * inmag.current
+
+  // Quick-stats del hero compartido (mismo lenguaje que /mercado/inmag).
+  const heroStats: MarketHeroStat[] = [
+    { label: 'Mínimo 30d', value: `$${fmt(minVal)}`, sub: 'Por kg vivo' },
+    { label: 'Máximo 30d', value: `$${fmt(maxVal)}`, sub: 'Por kg vivo' },
+    { label: 'Promedio 30d', value: `$${fmt(avgVal)}`, sub: 'Por kg vivo' },
+    {
+      label: 'Variación 30d',
+      value: `${change30d >= 0 ? '+' : ''}${change30d.toFixed(1)}%`,
+      sub: 'vs. hace 30 días',
+      tone: signedTone(change30d),
+    },
+  ]
+
+  // Promedios mensuales con variación mes a mes (más reciente primero).
+  const monthlyRows = monthlyAverages.map((month, i) => {
+    const prevMonth = monthlyAverages[i + 1]
+    return {
+      ...month,
+      change: prevMonth ? ((month.avg - prevMonth.avg) / prevMonth.avg) * 100 : null,
+    }
+  })
+
+  const monthlyColumns: DataColumn<(typeof monthlyRows)[number]>[] = [
+    {
+      key: 'month',
+      header: 'Mes',
+      cell: (r) => <span className="text-zinc-300 capitalize">{formatMonth(r.month)}</span>,
+    },
+    {
+      key: 'avg',
+      header: 'Promedio',
+      numeric: true,
+      cell: (r) => (
+        <span className="inline-flex items-baseline gap-2">
+          <PriceCell value={r.avg} prefix="$" suffix="/kg" />
+          <Delta change={r.change} format={(abs) => abs.toFixed(1)} className="text-xxs" />
+        </span>
+      ),
+    },
+    {
+      key: 'min',
+      header: 'Mínimo',
+      numeric: true,
+      hideBelowSm: true,
+      cell: (r) => <PriceCell value={r.min} prefix="$" tone="neutral" />,
+    },
+    {
+      key: 'max',
+      header: 'Máximo',
+      numeric: true,
+      hideBelowSm: true,
+      cell: (r) => <PriceCell value={r.max} prefix="$" tone="neutral" />,
+    },
+    {
+      key: 'count',
+      header: 'Ruedas',
+      numeric: true,
+      hideBelowSm: true,
+      cell: (r) => <span className="text-zinc-500 tabular-nums">{r.count}</span>,
+    },
+  ]
 
   return (
     <>
@@ -186,97 +251,39 @@ export default function ArrendamientoPage() {
       />
 
       <div className="min-h-screen">
-        {/* Hero Section */}
-        <section className="relative overflow-hidden">
-          {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-amber-950/20 via-zinc-950 to-zinc-950" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-amber-500/5 blur-[120px] rounded-full" />
-          
-          <div className="relative max-w-6xl mx-auto px-4 pt-8 pb-12">
-            {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 text-sm text-zinc-500 mb-8">
-              <Link href="/" className="hover:text-zinc-300 transition-colors">Inicio</Link>
-              <span className="text-zinc-700">/</span>
-              <Link href="/mercado" className="hover:text-zinc-300 transition-colors">Mercado</Link>
-              <span className="text-zinc-700">/</span>
-              <span className="text-amber-400">Arrendamiento</span>
-            </nav>
-
-            {/* Main heading */}
-            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
-              <div>
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="px-2.5 py-1 bg-amber-500/10 text-amber-400 text-xs font-medium rounded-full border border-amber-500/20">
-                    ACTUALIZADO HOY
-                  </span>
-                  <span className="text-sm text-zinc-500">Mercado Agroganadero</span>
-                </div>
-                <h1 className="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-3">
-                  Índice Novillo
-                  <span className="block text-amber-400">Arrendamiento</span>
-                </h1>
-                <p className="text-zinc-400 max-w-xl text-lg">
-                  Precio de referencia para contratos de arrendamiento rural en Argentina.
-                  Basado en el <Link href="/mercado/inmag" className="text-amber-400 hover:underline">INMAG</Link> del Mercado Agroganadero.
-                </p>
-              </div>
-
-              {/* Hero Price Card */}
-              <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-2xl p-6 lg:p-8 w-full lg:w-auto lg:min-w-[400px]">
-                <div className="text-sm text-zinc-500 mb-2 font-medium">Índice Hoy</div>
-                <div className="flex items-baseline gap-2 sm:gap-3">
-                  <span className="text-4xl sm:text-5xl font-bold text-white font-mono tracking-tight tabular-nums">
-                    <AnimatedPrice
-                      value={inmag.current}
-                      duration={2800}
-                      prefix="$"
-                      decimals={2}
-                    />
-                  </span>
-                  <span className="text-zinc-500 text-lg shrink-0">/kg</span>
-                </div>
-                <div className="flex items-center gap-4 mt-4 pt-4 border-t border-zinc-800">
-                  <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium ${
-                    isUp 
-                      ? 'bg-emerald-500/10 text-emerald-400' 
-                      : 'bg-red-500/10 text-red-400'
-                  }`}>
-                    <span className="text-lg">{isUp ? '↑' : '↓'}</span>
-                    <span>{isUp ? '+' : ''}{inmag.change.toFixed(2)}%</span>
-                  </div>
-                  <div className="text-sm text-zinc-500">
-                    vs. anterior: <span className="text-zinc-300">${fmt(inmag.prev)}</span>
-                  </div>
-                </div>
-              </div>
+        {/* Hero Section — número-hero compartido con /mercado/inmag (MarketHero) */}
+        <MarketHero
+          accent="amber"
+          priceLabel="Índice Hoy"
+          priceValue={inmag.current}
+          priceChange={inmag.change}
+          prevValue={fmt(inmag.prev)}
+          stats={heroStats}
+        >
+          <div>
+            <Breadcrumb
+              className="mb-8"
+              items={[
+                { name: 'Mercado', href: '/mercado' },
+                { name: 'Arrendamiento' },
+              ]}
+            />
+            <div className="flex items-center gap-3 mb-3">
+              <span className="px-2.5 py-1 bg-amber-500/10 text-amber-400 text-xs font-medium rounded-full border border-amber-500/20">
+                ACTUALIZADO HOY
+              </span>
+              <span className="text-sm text-zinc-500">Mercado Agroganadero</span>
             </div>
-
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { label: 'Mínimo 30d', value: `$${fmt(minVal)}`, sublabel: 'Por kg vivo' },
-                { label: 'Máximo 30d', value: `$${fmt(maxVal)}`, sublabel: 'Por kg vivo' },
-                { label: 'Promedio 30d', value: `$${fmt(avgVal)}`, sublabel: 'Por kg vivo' },
-                { label: 'Variación 30d', value: `${change30d >= 0 ? '+' : ''}${change30d.toFixed(1)}%`, sublabel: 'vs. hace 30 días', highlight: true },
-              ].map((stat) => (
-                <div 
-                  key={stat.label} 
-                  className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-4 hover:border-zinc-700/50 transition-colors"
-                >
-                  <div className="text-xs text-zinc-500 font-medium mb-1">{stat.label}</div>
-                  <div className={`text-2xl font-bold font-mono ${
-                    stat.highlight 
-                      ? change30d >= 0 ? 'text-emerald-400' : 'text-red-400'
-                      : 'text-white'
-                  }`}>
-                    {stat.value}
-                  </div>
-                  <div className="text-xs text-zinc-600 mt-1">{stat.sublabel}</div>
-                </div>
-              ))}
-            </div>
+            <h1 className="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-3">
+              Índice Novillo
+              <span className="block text-amber-400">Arrendamiento</span>
+            </h1>
+            <p className="text-zinc-400 max-w-xl text-lg">
+              Precio de referencia para contratos de arrendamiento rural en Argentina.
+              Basado en el <Link href="/mercado/inmag" className="text-amber-400 hover:underline">INMAG</Link> del Mercado Agroganadero.
+            </p>
           </div>
-        </section>
+        </MarketHero>
 
         {/* What is the Index */}
         <section className="max-w-6xl mx-auto px-4 py-12">
@@ -323,7 +330,7 @@ export default function ArrendamientoPage() {
             <InteractivePriceChart 
               data={recentSeries} 
               height={380}
-              accentColor="#f59e0b"
+              accentColor={SEMANTIC_HEX.warning}
               showVolume={true}
             />
           </Suspense>
@@ -358,56 +365,13 @@ export default function ArrendamientoPage() {
           </p>
           
           <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-zinc-800/50">
-                    <th className="text-left px-6 py-4 text-sm font-medium text-zinc-500">Mes</th>
-                    <th className="text-right px-6 py-4 text-sm font-medium text-zinc-500">Promedio</th>
-                    <th className="text-right px-6 py-4 text-sm font-medium text-zinc-500 hidden sm:table-cell">Mínimo</th>
-                    <th className="text-right px-6 py-4 text-sm font-medium text-zinc-500 hidden sm:table-cell">Máximo</th>
-                    <th className="text-right px-6 py-4 text-sm font-medium text-zinc-500 hidden md:table-cell">Ruedas</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-800/30">
-                  {monthlyAverages.map((month, i) => {
-                    const prevMonth = monthlyAverages[i + 1]
-                    const change = prevMonth ? ((month.avg - prevMonth.avg) / prevMonth.avg * 100) : 0
-                    const changeUp = change >= 0
-                    
-                    return (
-                      <tr 
-                        key={month.month} 
-                        className="hover:bg-zinc-800/20 transition-colors"
-                      >
-                        <td className="px-6 py-4">
-                          <span className="text-zinc-300 text-sm capitalize">{formatMonth(month.month)}</span>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <span className="text-white font-mono font-medium">${fmt(month.avg)}</span>
-                          <span className="text-zinc-600 text-sm ml-1">/kg</span>
-                          {prevMonth && (
-                            <span className={`ml-2 text-xs font-mono ${changeUp ? 'text-emerald-400' : 'text-red-400'}`}>
-                              {changeUp ? '+' : ''}{change.toFixed(1)}%
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 text-right hidden sm:table-cell">
-                          <span className="text-zinc-500 font-mono text-sm">${fmt(month.min)}</span>
-                        </td>
-                        <td className="px-6 py-4 text-right hidden sm:table-cell">
-                          <span className="text-zinc-500 font-mono text-sm">${fmt(month.max)}</span>
-                        </td>
-                        <td className="px-6 py-4 text-right hidden md:table-cell">
-                          <span className="text-zinc-600 text-sm">{month.count}</span>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-            
+            <DataTable
+              columns={monthlyColumns}
+              rows={monthlyRows}
+              rowKey={(r) => r.month}
+              rowTone={(r) => (r.change == null ? null : signedTone(r.change))}
+            />
+
             <div className="px-6 py-4 border-t border-zinc-800/50 bg-zinc-900/50 flex items-center justify-between">
               <span className="text-xs text-zinc-600">Últimos 12 meses</span>
               <Link 

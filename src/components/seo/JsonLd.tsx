@@ -613,11 +613,6 @@ export function SaaSPricingSchema({ plans }: { plans: PricingPlan[] }) {
             availability: 'https://schema.org/InStock',
             url: 'https://www.consignatarias.com.ar/planes',
           },
-          aggregateRating: plan.name === 'PRO' ? {
-            '@type': 'AggregateRating',
-            ratingValue: '4.8',
-            reviewCount: '12',
-          } : undefined,
         },
       })),
     },
