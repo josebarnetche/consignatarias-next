@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.60.1] — 2026-06-25
+
+### Hotfix: `remates.json` con marcadores de conflicto
+
+El commit de v1.60.0 incluyó `remates.json` con marcadores de conflicto de git (un `git stash pop` chocó entre la higiene C12 y un scrape remoto durante el rebase) → JSON inválido. Producción no se rompió (el build de Vercel falla y mantiene el deploy anterior). Resuelto tomando el lado upstream (scrape más reciente, 622 remates) + re-aplicando la higiene C12. JSON válido, build verde.
+
 ## [1.60.0] — 2026-06-25
 
 ### Wave 2 + 3 del plan de auditoría — SEO, conversión, datos y design system
