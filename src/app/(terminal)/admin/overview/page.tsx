@@ -2,6 +2,13 @@ import Link from 'next/link'
 import Stat from '@/components/ui/Stat'
 import Badge from '@/components/ui/Badge'
 import LiveActivityFeed from '@/components/admin/LiveActivityFeed'
+import AutoRefresh from '@/components/admin/AutoRefresh'
+import WeeklyTrafficCard from '@/components/admin/WeeklyTrafficCard'
+import ConversionRevenueCard from '@/components/admin/ConversionRevenueCard'
+import DataHealthCard from '@/components/admin/DataHealthCard'
+import ModerationQueueCard from '@/components/admin/ModerationQueueCard'
+import OutreachActivityCard from '@/components/admin/OutreachActivityCard'
+import SystemHealthCard from '@/components/admin/SystemHealthCard'
 import { getLivePayload, getViewsByHour } from '@/lib/admin/live'
 import { getFeaturedSlugs } from '@/lib/featured'
 import { getCronHealth } from '@/lib/ops'
@@ -160,6 +167,7 @@ export default async function AdminOverviewPage() {
 
   return (
     <div className="space-y-0">
+      <AutoRefresh />
       {/* HEADER --------------------------------------------------- */}
       <div className="terminal-panel mb-px">
         <div className="terminal-panel-header flex items-center justify-between">
@@ -170,9 +178,18 @@ export default async function AdminOverviewPage() {
               todo, en vivo
             </span>
           </div>
-          <span className="text-xxs text-zinc-500 font-terminal tabular-nums">
-            {new Date().toLocaleString('es-AR')}
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1.5 text-xxs text-zinc-500 font-terminal uppercase tracking-wider">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-positive opacity-75 animate-ping" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-positive" />
+              </span>
+              Actualiza solo cada 45s
+            </span>
+            <span className="text-xxs text-zinc-500 font-terminal tabular-nums">
+              {new Date().toLocaleString('es-AR')}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -304,6 +321,16 @@ export default async function AdminOverviewPage() {
             </div>
           ))
         )}
+      </div>
+
+      {/* 5 ── GOD GRID (cards self-contained) --------------------- */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-px mt-px">
+        <WeeklyTrafficCard />
+        <ConversionRevenueCard />
+        <DataHealthCard />
+        <ModerationQueueCard />
+        <OutreachActivityCard />
+        <SystemHealthCard />
       </div>
     </div>
   )

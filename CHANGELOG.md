@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.57.0] — 2026-06-24
+
+### `/admin/overview` modo dios: 6 cards en vivo para administrar todo el sitio + widget de tráfico semanal
+
+Ampliado el panel admin a un dashboard maestro: el feed en vivo arriba, y debajo un grid de 6 cards que cubren todo el sitio. Auto-refresh cada 45s (`AutoRefresh`, `router.refresh()`). Todo first-party/Supabase (en vivo sin depender de nadie), soft-fail por sección, read-only, mobile-friendly.
+
+- **Tráfico semanal** (`WeeklyTrafficCard` + `src/lib/admin/ga4.ts`): el widget pedido. Listo para **GA4 real** vía service-account server-side (`getGa4Weekly()` lee `GA4_SA_KEY` + `GA4_PROPERTY_ID`; soft-fail a null sin credenciales, sin hardcodear nada). Mientras GA4 no esté conectado, muestra un aviso honesto + un **proxy first-party en vivo**: vistas de perfil 7d vs 7d previos + por día.
+- **Conversión/Revenue** (`ConversionRevenueCard`): suscriptores activos (total + nuevos 7d + por source), firmas PRO (manual vs subscription), pitches de conversión (`outreach_log` 7d/30d + último), señal de pagos (`processed_webhook_events`).
+- **Salud del dato** (`DataHealthCard`): frescura de `market-prices.json` (rojo si >36h), INMAG, remates (próximos/hoy/en-vivo/total), frigoríficos, última corrida del scraper.
+- **Cola de moderación** (`ModerationQueueCard`): claims de consignataria/frigorífico pendientes, reviews por aprobar, arrepentimiento — con count + link directo ("al día ✓" en gris si 0).
+- **Actividad de email** (`OutreachActivityCard`): últimos envíos (`outreach_log`), resumen por tipo 7d, bajas, y **estado on/off de los motores** warm/recordatorios (leyendo si su `.yml` está activo o en `disabled/`).
+- **Salud del sistema** (`SystemHealthCard`): errores ops 24h, latencia media, estado de todos los crons (rojo si fallaron/atrasados), link a `/admin/ops`.
+
+**Para encender el tráfico GA4 real:** setear en Vercel `GA4_SA_KEY` (JSON del service account con permiso Viewer en la propiedad + Analytics Data API habilitada) y `GA4_PROPERTY_ID` (el numeric, no el `G-…`). Sin eso, el card usa el proxy first-party.
+
 ## [1.56.0] — 2026-06-24
 
 ### Panel admin `/admin/overview`: overview de todo + comportamiento EN VIVO
