@@ -1,0 +1,32 @@
+name: Sell-Zone Alerts
+
+# Motor de la alerta personalizada de "zona de venta" al PRODUCTOR opt-in
+# (tabla sell_zone_alerts, alta consentida desde el sitio). El route
+# /api/cron/sell-zone-alerts calcula la señal del INMAG en USD reales 1×/día y
+# avisa SOLO cuando el mercado entra en zona de venta, con dedup en la propia fila
+# (last_sent_zone + last_sent_at, re-afirma cada 14 días). Por eso es seguro
+# correr diario: la mayoría de los días no manda nada.
+# Cada mail: 1 CTA + List-Unsubscribe (RFC 8058). Para armar: mover a
+# .github/workflows/. Para frenar: mover de vuelta a disabled/.
+on:
+  schedule:
+    - cron: '30 21 * * 1-5' # 18:30 ART (~UTC-3) lun-vie, después del cierre del MAG
+  workflow_dispatch: # trigger manual
+
+jobs:
+  send-sell-zone-alerts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Sell-Zone Alerts
+        run: |
+          response=$(curl -sL -w "\n%{http_code}" -X GET \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            "https://www.consignatarias.com.ar/api/cron/sell-zone-alerts")
+          http_code=$(echo "$response" | tail -1)
+          body=$(echo "$response" | head -n -1)
+          echo "Response: $body"
+          echo "HTTP Code: $http_code"
+          if [ "$http_code" -ne 200 ]; then
+            echo "Error: Sell-zone cron failed with HTTP $http_code"
+            exit 1
+          fi

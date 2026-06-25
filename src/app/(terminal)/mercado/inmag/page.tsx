@@ -9,7 +9,7 @@ import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import { ElCorredorCTA } from '@/components/ElCorredorCTA'
 import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
-import PriceAlertSignup from '@/components/PriceAlertSignup'
+import SellZoneAlertSignup from '@/components/SellZoneAlertSignup'
 import { InmagDecadaCompleta } from '@/components/market/InmagDecadaCompleta'
 import { MarketHero, type MarketHeroStat } from '@/components/market'
 import { Delta, DataTable, PriceCell, type DataColumn } from '@/components/ui'
@@ -287,14 +287,15 @@ export default function InmagPage() {
           </div>
         </MarketHero>
 
-        {/* Alerta de precio — FASE 0, validación de demanda (sin motor de umbral).
-            Intención real de gsc-detail.json: "inmag hoy" → quieren saber cuándo cambia. */}
+        {/* Alerta de ZONA DE VENTA — FASE 1, con motor real (cron sell-zone-alerts).
+            Intención de "inmag hoy": quieren saber cuándo conviene vender. Esta es la
+            página de mayor intención (dwell ~545s); le damos la captura sticky con
+            promesa cumplible (un mail cuando el novillo entra en zona de venta). */}
         <section className="max-w-6xl mx-auto px-4 pt-2 pb-2">
-          <PriceAlertSignup
-            source="alerta-inmag"
+          <SellZoneAlertSignup
+            categoria="novillos"
+            categoriaLabel="novillo"
             page="/mercado/inmag"
-            accent="emerald"
-            title="Recibí el cierre mensual del INMAG"
           />
         </section>
 

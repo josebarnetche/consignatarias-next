@@ -444,6 +444,126 @@ export async function sendMonthlyClose(
 }
 
 /* ------------------------------------------------------------------ */
+/*  SELL-ZONE ALERTS (motor de alertas personalizadas — FASE 1)        */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Confirmación de alta a la alerta de zona de venta. Single opt-in: el usuario la
+ * pidió en el sitio, este mail confirma la promesa concreta (qué, cuándo, sin spam).
+ */
+export async function sendSellZoneAlertConfirm(
+  email: string,
+  data: { categoriaLabel: string; pct365: number | null },
+) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+  const cat = escapeHtml(data.categoriaLabel)
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: email,
+      subject: `Listo — te aviso cuando el ${data.categoriaLabel} entre en zona de venta`,
+      headers: listUnsubHeaders(email, 'sell-zone-confirm'),
+      html: `
+        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
+          <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Alerta activada · ${cat}</p>
+          <h2 style="color:#fff;font-size:18px;margin:0 0 16px">Te aviso cuando convenga vender</h2>
+          <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">
+            Vas a recibir <strong style="color:#e4e4e7">un solo mail</strong> cuando el ${cat} entre en
+            <strong style="color:#34d399">zona de venta</strong>: cuando su precio en dólares reales se ubique
+            en la franja alta del último año. Nada de spam por cada movimiento — solo cuando el percentil cruza
+            la zona de salida.
+          </p>
+          ${data.pct365 !== null ? `
+          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;text-align:center;margin-bottom:16px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Hoy el mercado está en</p>
+            <p style="color:#38bdf8;font-size:32px;font-weight:bold;margin:0;font-family:monospace">percentil ${data.pct365}<span style="color:#71717a;font-size:14px"> / año</span></p>
+          </div>` : ''}
+          <div style="text-align:center;margin:24px 0">
+            <a href="${APP_URL}/mercado/vender-ahora" style="background:#38bdf8;color:#0a0a0f;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">VER EL ANÁLISIS COMPLETO</a>
+          </div>
+          <p style="color:#71717a;font-size:11px;margin:16px 0 0;line-height:1.6">
+            Medimos el INMAG en dólares reales (INMAG ÷ dólar blue) para neutralizar la inflación.
+            Para el novillo el percentil es preciso; para el resto refleja la dirección del mercado.
+            Es información, no asesoramiento.
+          </p>
+          <p style="color:#3f3f46;font-size:10px;margin:12px 0 0">
+            Consignatarias.com.ar &nbsp;&bull;&nbsp;
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#3f3f46">Desuscribirme</a>
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
+/**
+ * El disparo real: el mercado entró en zona de venta. El gancho es la decisión
+ * sobre SU categoría, con el percentil concreto, y un CTA al análisis completo.
+ */
+export async function sendSellZoneAlert(
+  email: string,
+  data: { categoriaLabel: string; pct30: number; pct365: number; inmagUsdHoy: number | null },
+) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+  const cat = escapeHtml(data.categoriaLabel)
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: email,
+      subject: `🟢 El ${data.categoriaLabel} entró en zona de venta (percentil ${data.pct365} del año)`,
+      headers: listUnsubHeaders(email, 'sell-zone-alert'),
+      html: `
+        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
+          <p style="color:#34d399;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Zona de venta · ${cat}</p>
+          <h2 style="color:#fff;font-size:19px;margin:0 0 16px">Históricamente, momento de salida</h2>
+          <div style="background:#16161d;border:1px solid #34d39966;border-left:3px solid #34d399;border-radius:4px;padding:18px;margin-bottom:16px">
+            <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0">
+              En dólares reales, el ${cat} está en el <strong style="color:#34d399">percentil ${data.pct365} del último año</strong>
+              y en el <strong style="color:#34d399">percentil ${data.pct30} del último mes</strong>. Cuando el precio real
+              llega a esta franja, la estadística marca zona de salida: si tu lote está listo, vender hoy capta el pico.
+            </p>
+          </div>
+          <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
+            <tr>
+              <td style="padding:8px 0;color:#71717a;font-size:12px;border-bottom:1px solid #27272a">Percentil últimos 30 días</td>
+              <td style="padding:8px 0;color:#e4e4e7;font-size:12px;text-align:right;border-bottom:1px solid #27272a;font-family:monospace">${data.pct30}</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 0;color:#71717a;font-size:12px;border-bottom:1px solid #27272a">Percentil último año</td>
+              <td style="padding:8px 0;color:#e4e4e7;font-size:12px;text-align:right;border-bottom:1px solid #27272a;font-family:monospace">${data.pct365}</td>
+            </tr>
+            ${data.inmagUsdHoy !== null ? `<tr>
+              <td style="padding:8px 0;color:#71717a;font-size:12px">INMAG en USD reales (hoy)</td>
+              <td style="padding:8px 0;color:#e4e4e7;font-size:12px;text-align:right;font-family:monospace">USD ${data.inmagUsdHoy.toFixed(2)}/kg</td>
+            </tr>` : ''}
+          </table>
+          <div style="text-align:center;margin:24px 0">
+            <a href="${APP_URL}/mercado/vender-ahora" style="background:#34d399;color:#0a0a0f;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">CALCULAR MI LOTE A ESTE PRECIO</a>
+          </div>
+          <p style="color:#71717a;font-size:11px;margin:16px 0 0;line-height:1.6">
+            Medido sobre el INMAG en dólares reales (INMAG ÷ dólar blue). Para el novillo el percentil es preciso;
+            para el resto refleja la dirección del mercado. No considera condición del lote, costos de retención ni
+            plaza zonal. Es información, no asesoramiento.
+          </p>
+          <p style="color:#3f3f46;font-size:10px;margin:12px 0 0">
+            Consignatarias.com.ar &nbsp;&bull;&nbsp;
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#3f3f46">Desuscribirme</a>
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /*  WEEKLY NEWSLETTER                                                  */
 /* ------------------------------------------------------------------ */
 

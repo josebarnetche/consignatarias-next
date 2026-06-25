@@ -7,6 +7,28 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.61.0] — 2026-06-25
+
+### Motor de alertas de "zona de venta" (FASE 1) — la primera pata del plan de conversión
+
+Contexto: el sitio tiene tráfico fuerte (~150k vistas/mes, mayormente SEO de precio) pero conversión ≈0%. La research (3 streams: auditoría del producto PRO, datos GA4 del embudo, y playbooks de productos de datos/agro) cruzó en un diagnóstico: el problema no es el precio (USD ~6 contra una decisión de USD 16-20k/jaula), es **mecanismo + canal + un muro que pide pagar antes de dar valor**. El embudo medido: 814 usuarios ven el muro PRO → 16 clickean (~2%) → 3 envían el form → 0 pagan. La palanca #1 validada es capturar el contacto en el momento de máxima intención (los registrados convierten 10x) con un beneficio **sticky real**, no un paywall.
+
+Esta release entrega ese beneficio: la alerta personalizada de zona de venta — el patrón Bushel/DTN ("avisar sobre TU posición, no publicar un feed genérico"), inexistente en el mercado argentino (Agrofy/Rosgan/Infocampo publican precios a todos; nadie te avisa a vos).
+
+**Qué hace**
+- El productor deja su email + categoría en `/mercado/vender-ahora` (después de ver el veredicto) o en `/mercado/inmag`, y recibe **un solo mail cuando su categoría entra en zona de venta** (percentil alto del INMAG en dólares reales), no por cada tick. Sin login, sin tarjeta, single opt-in.
+
+**Piezas**
+- **`sell_zone_alerts`** (migración `20260625_sell_zone_alerts.sql`): tabla con dedup en la propia fila (`last_sent_zone` + `last_sent_at`), RLS service-role. *(Pendiente: aplicar a prod — el classifier bloqueó la migración automática; SQL en el archivo.)*
+- **`src/lib/market/sell-zone.ts`**: `computeSellZone()` — extrae la lógica de percentiles de `/api/vender-ahora` a un helper compartido para que el mail y el sitio nunca discrepen (mismo INMAG-USD, mismos umbrales). **Por qué:** evitar drift entre lo que el sitio dice y lo que el mail dice.
+- **`POST /api/alertas/venta`**: alta idempotente (upsert email+categoria) + espejo del contacto en `newsletter_subscribers` sin pisar suscripciones previas + mail de confirmación con el percentil de hoy.
+- **`GET /api/cron/sell-zone-alerts`**: el motor. 1×/día calcula la señal; si está en zona de venta avisa a los no-avisados de este episodio; si no, re-arma el latch. `authorizeCron` + `?test=email` para preview. Dedup re-afirma cada 14 días. **Por qué diario es seguro:** la mayoría de los días no manda nada.
+- **`sendSellZoneAlert` + `sendSellZoneAlertConfirm`** (email.ts): plantillas terminal-dark con List-Unsubscribe (RFC 8058).
+- **`SellZoneAlertSignup`**: captura category-aware; reemplaza en `/mercado/inmag` al `PriceAlertSignup` de cierre mensual (promesa vaga, sin motor) por esta (promesa cumplible, con motor). Dispara `alert_subscribe` para medir el embudo.
+- **`.github/workflows/disabled/sell-zone-alerts.yml`**: cron armable (18:30 ART lun-vie). **NO activado** — se arma moviéndolo a `.github/workflows/`.
+
+**Por qué es a la vez el "aha" y el sticky:** el productor ve el veredicto sobre su lote (aha), y se lleva el aviso para la próxima sin tener que volver a entrar (hábito/retención) — capturando el email que faltaba en el embudo. Es el riel para WhatsApp después (decisión: email primero).
+
 ## [1.60.1] — 2026-06-25
 
 ### Hotfix: `remates.json` con marcadores de conflicto

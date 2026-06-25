@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ProReveal, HeroNumber, StatPill } from '@/components/pro'
 import { trackFreeTasteUnlock } from '@/lib/analytics'
+import SellZoneAlertSignup from '@/components/SellZoneAlertSignup'
 
 // defaultCab ≈ un camión jaula típico de cada categoría (referencia editable).
 const CATS = [
@@ -307,6 +308,19 @@ export default function VenderAhoraClient() {
             />
           )}
         </ProReveal>
+      )}
+
+      {/* Captura sticky: el "aha" se lo lleva en el bolsillo. Aparece después de
+          calcular — el productor ya vio su lote y el veredicto, ahora deja el aviso
+          para la próxima vez sin tener que volver a entrar. Motor real detrás
+          (cron sell-zone-alerts), a diferencia de la captura de cierre mensual. */}
+      {result?.success && result.actual && (
+        <SellZoneAlertSignup
+          categoria={cat}
+          categoriaLabel={catLabel.toLowerCase()}
+          page={FROM}
+          enZonaDeVenta={result.veredicto === 'vender'}
+        />
       )}
 
       {result?.error && (
