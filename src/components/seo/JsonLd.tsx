@@ -439,14 +439,6 @@ export function ConsignatariaProfileSchema({
         },
       },
     },
-    // Aggregate data from our platform
-    aggregateRating: totalRemates > 10 ? {
-      '@type': 'AggregateRating',
-      ratingValue: isPro ? '4.8' : '4.5',
-      reviewCount: Math.min(totalRemates, 50),
-      bestRating: '5',
-      worstRating: '1',
-    } : undefined,
     // Industry classification
     additionalType: 'https://www.wikidata.org/wiki/Q728937', // Livestock auction
   };

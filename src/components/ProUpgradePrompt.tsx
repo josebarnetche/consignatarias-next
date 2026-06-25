@@ -34,7 +34,7 @@ export default function ProUpgradePrompt({
   ctaText = 'Activar PRO · ARS $7.900/mes →',
   variant = 'inline',
 }: ProUpgradePromptProps) {
-  const href = `/planes?from=${context}`
+  const href = `/upgrade?from=${encodeURIComponent(context)}`
   const hasTrackedImpression = useRef(false)
   const { tier, loading } = useSessionTier()
 

@@ -95,19 +95,6 @@ export default async function UpgradePage({ searchParams }: PageProps) {
         </p>
       </div>
 
-      {/* Gancho de probada — dejá que pruebe el valor antes del muro. */}
-      <Link
-        href="/mercado/vender-ahora"
-        className="block bg-emerald-500/[0.05] border border-emerald-500/30 rounded-lg p-4 mb-8 text-center hover:bg-emerald-500/[0.08] transition-colors"
-      >
-        <span className="text-emerald-400 font-mono text-sm font-medium">
-          🎁 Probá un veredicto completo gratis esta semana →
-        </span>
-        <span className="block text-zinc-500 font-mono text-xxs mt-1">
-          Una categoría, sin tarjeta. Sentí lo que hace PRO antes de pagar.
-        </span>
-      </Link>
-
       <div className="text-center mb-6">
         <span className="text-zinc-100 text-2xl font-medium">ARS $7.900</span>
         <span className="text-zinc-500 font-mono text-sm"> / mes</span>

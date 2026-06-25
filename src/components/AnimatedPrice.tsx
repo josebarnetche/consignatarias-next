@@ -33,6 +33,13 @@ export function AnimatedPrice({
   const rafRef = useRef<number | null>(null)
 
   useEffect(() => {
+    // Respect prefers-reduced-motion: skip the count-up entirely.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setDisplayValue(value)
+      setIsComplete(true)
+      return
+    }
+
     // Reset on value change
     setDisplayValue(0)
     setIsComplete(false)
@@ -111,6 +118,12 @@ export function AnimatedPriceWithDecimals({
   const rafRef = useRef<number | null>(null)
 
   useEffect(() => {
+    // Respect prefers-reduced-motion: skip the count-up entirely.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setDisplayValue(value)
+      return
+    }
+
     setDisplayValue(0)
     startTimeRef.current = null
 

@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.59.0] — 2026-06-25
+
+### Wave 1 del plan de auditoría verificada — 5 quick-wins (conversión + SEO + a11y)
+
+Primera ola del plan (`docs/strategy/MODIFICATION-PLAN-2026-06-25.md`), cada cambio verificado con evidencia dura antes de ejecutar. Falsos positivos del audit (overflow mobile, "INMAG $0", 108-vs-104) descartados, no tocados.
+
+- **C1 (crítico, SEO) — Borrado el `AggregateRating` FABRICADO** (`JsonLd.tsx`, `ConsignatariaProfileSchema`): inyectaba `ratingValue` literal + `reviewCount` = nº de remates (no reseñas) en las 104 landings `/go/[slug]`. **Objetivo:** eliminar el riesgo de penalización manual de Google sobre el dominio — el activo de citabilidad que todo el sitio protege. Cero structured-data de reseñas sin reseñas reales.
+- **C2 (crítico, conversión) — PRO-prompt → `/upgrade`** (era `/planes`, `ProUpgradePrompt.tsx`): el prompt de máxima intención (sobre inmag #2 y arrendamiento #3) mandaba al catálogo de 3 audiencias (3 clics) en vez del checkout email-first de 1 paso. **Objetivo:** destrabar la fuga medida `pro_prompt_view 420 → click 16` (CTR 0,5% → meta >2%).
+- **C3 (alto, conversión) — Sacado el muro de login del CTA sticky mobile** (`MobileStickyCTA.tsx`, rama productor → `/upgrade` en vez de `/login`): mobile es ~48% del tráfico. El login wall ya había costado $0; el sticky lo reintroducía. **Objetivo:** menos fricción en el CTA primario mobile (el POST autenticado se mantiene solo con sesión; el login B2B $45.000 se dejó intacto, es necesario).
+- **C4 (alto, conversión) — Quitado el gancho verde "probá gratis"** de `/upgrade` (`upgrade/page.tsx`): el elemento más llamativo de la página que cobra era un link de SALIDA a la versión gratis, antes del precio. **Objetivo:** una sola acción primaria → subir form_start→submit.
+- **C5 (medio, a11y) — `AnimatedPrice` respeta `prefers-reduced-motion`**: usuarios con reduced-motion ven el valor final directo, sin el count-up. (El valor SSR ya era correcto — el "$0" del audit era un frame de animación, refutado.)
+
 ## [1.58.0] — 2026-06-25
 
 ### God commands en `/admin/overview` + fix del nombre "Colombo Y Maliagno2"

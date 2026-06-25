@@ -78,7 +78,7 @@ export default function MobileStickyCTA() {
   // Productor flow: redirect to /upgrade (Rebill via /api/subscribe/checkout)
   async function handleProductor() {
     if (!userState.email) {
-      router.push(`/login?next=${encodeURIComponent('/upgrade')}`)
+      router.push('/upgrade')
       return
     }
     setLoading(true)
