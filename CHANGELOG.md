@@ -7,6 +7,22 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.58.0] — 2026-06-25
+
+### God commands en `/admin/overview` + fix del nombre "Colombo Y Maliagno2"
+
+El god-panel pasa de read-only a **accionable**, y se corrige el dato sucio que lo motivó.
+
+**God commands (panel accionable):**
+- **Deep-link al editor** — `/admin/consignatarias` (que YA tenía formulario + PATCH) ahora abre el editor de una firma directo con `?slug=<canonical>` (auto-selecciona + scroll, soft-aviso si no existe; `useSearchParams` envuelto en `<Suspense>`).
+- **Feed accionable** — en `LiveActivityFeed`, cada fila de consignataria suma un mini-link **"✎ editar"** → `/admin/consignatarias?slug=…`. Desde el panel: ves quién está activo → click → editás el nombre.
+- **Launchpad `GodCommandsCard`** — card nuevo en el overview con accesos directos a todas las herramientas de gestión (editar consignatarias, claims, frigorífico-claims, reseñas, suscriptores, ops).
+
+**Fix de dato "Colombo Y Maliagno2" (era el ejemplo del owner):**
+- Era un **alias mal scrapeado** en `remates.json` (no un registro de la DB — la tabla ya tenía "Colombo y Magliano SA" bien, y el registro de slugs ya mapeaba la variante). Solo el `consignatariaName` crudo de los remates mostraba el typo.
+- **Corregido el dato actual:** 13 remates en `remates.json` (`consignatariaName` + `consignatariaSlug`) → canónico "Colombo y Magliano SA" / `colombo-y-magliano` (mergean con la firma real).
+- **Fix durable:** `scrape-auctions.mjs` suma un `CONSIG_SLUG_FIX` que normaliza ese alias al canónico antes de escribir, así no reaparece en el próximo scrape.
+
 ## [1.57.0] — 2026-06-24
 
 ### `/admin/overview` modo dios: 6 cards en vivo para administrar todo el sitio + widget de tráfico semanal

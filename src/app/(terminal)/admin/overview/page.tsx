@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Stat from '@/components/ui/Stat'
 import Badge from '@/components/ui/Badge'
 import LiveActivityFeed from '@/components/admin/LiveActivityFeed'
+import GodCommandsCard from '@/components/admin/GodCommandsCard'
 import AutoRefresh from '@/components/admin/AutoRefresh'
 import WeeklyTrafficCard from '@/components/admin/WeeklyTrafficCard'
 import ConversionRevenueCard from '@/components/admin/ConversionRevenueCard'
@@ -195,6 +196,11 @@ export default async function AdminOverviewPage() {
 
       {/* 1 ── LIVE FEED (lo más importante) ----------------------- */}
       <LiveActivityFeed initial={live} />
+
+      {/* 1.5 ── GOD COMMANDS (launchpad de gestión) --------------- */}
+      <div className="mt-px">
+        <GodCommandsCard />
+      </div>
 
       {/* 2 ── KPIs ------------------------------------------------ */}
       <div className="terminal-panel mt-px">

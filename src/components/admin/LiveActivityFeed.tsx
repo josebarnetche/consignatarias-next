@@ -147,14 +147,23 @@ export default function LiveActivityFeed({ initial }: { initial: LivePayload }) 
                   {v.type === 'frigorifico' ? 'FRIGORÍFICO' : 'CONSIGNAT.'}
                 </Badge>
               </span>
-              <span className="flex-1 min-w-0 basis-full sm:basis-auto">
+              <span className="flex-1 min-w-0 basis-full sm:basis-auto flex items-center gap-2">
                 <Link
                   href={v.href}
-                  className="text-data font-terminal text-zinc-200 hover:text-accent transition-colors truncate block"
+                  className="text-data font-terminal text-zinc-200 hover:text-accent transition-colors truncate"
                   title={v.name}
                 >
                   {v.name}
                 </Link>
+                {v.type === 'consignataria' && (
+                  <Link
+                    href={`/admin/consignatarias?slug=${encodeURIComponent(v.slug)}`}
+                    className="flex-shrink-0 text-xxs font-terminal text-zinc-600 hover:text-accent transition-colors"
+                    title="Editar consignataria"
+                  >
+                    ✎ editar
+                  </Link>
+                )}
               </span>
               <span className="w-[140px] flex-shrink-0 text-xxs font-terminal text-zinc-500 truncate" title={v.referrerHost ?? 'directo'}>
                 {v.referrerHost ?? 'directo'}

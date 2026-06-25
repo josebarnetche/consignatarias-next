@@ -1619,6 +1619,19 @@ async function main() {
       (a.time || "").localeCompare(b.time || "")
   );
 
+  // Corrección de aliases de consignataria mal scrapeados → canónico, para que
+  // mergeen con la firma real (ej. "Colombo Y Maliagno2" es Colombo y Magliano SA).
+  const CONSIG_SLUG_FIX = {
+    "colombo-y-maliagno2": { slug: "colombo-y-magliano", name: "Colombo y Magliano SA" },
+  };
+  for (const a of merged) {
+    const fix = CONSIG_SLUG_FIX[a.consignatariaSlug];
+    if (fix) {
+      a.consignatariaSlug = fix.slug;
+      a.consignatariaName = fix.name;
+    }
+  }
+
   // Assign sequential IDs
   merged.forEach((a, i) => {
     a.id = i + 1;

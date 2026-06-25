@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 interface Consignataria {
   id: string
@@ -44,7 +45,9 @@ const EDITABLE_FIELDS: { key: keyof Consignataria; label: string; type?: string 
   { key: 'website', label: 'Sitio web', type: 'url' },
 ]
 
-export default function AdminConsignatariasPage() {
+function AdminConsignatariasInner() {
+  const searchParams = useSearchParams()
+  const deepLinkSlug = searchParams.get('slug')
   const [consignatarias, setConsignatarias] = useState<Consignataria[]>([])
   const [loading, setLoading] = useState(false)
   const [search, setSearch] = useState('')
@@ -54,7 +57,9 @@ export default function AdminConsignatariasPage() {
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
   const [saveSuccess, setSaveSuccess] = useState(false)
+  const [deepLinkMiss, setDeepLinkMiss] = useState<string | null>(null)
   const editRef = useRef<HTMLDivElement>(null)
+  const handledDeepLink = useRef<string | null>(null)
 
   const fetchConsignatarias = useCallback(async () => {
     setLoading(true)
@@ -79,6 +84,23 @@ export default function AdminConsignatariasPage() {
   useEffect(() => {
     fetchConsignatarias()
   }, [fetchConsignatarias])
+
+  // Deep-link: ?slug=<canonical_slug> → auto-selecciona y abre el editor.
+  // Se ejecuta una vez por slug, recién cuando la lista ya cargó.
+  useEffect(() => {
+    if (!deepLinkSlug) return
+    if (consignatarias.length === 0) return
+    if (handledDeepLink.current === deepLinkSlug) return
+    handledDeepLink.current = deepLinkSlug
+    const match = consignatarias.find(c => c.canonical_slug === deepLinkSlug)
+    if (match) {
+      setDeepLinkMiss(null)
+      if (selected !== deepLinkSlug) handleSelect(deepLinkSlug)
+    } else {
+      setDeepLinkMiss(deepLinkSlug)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deepLinkSlug, consignatarias])
 
   // Client-side filter for featured tab + search
   const filtered = consignatarias.filter(c => {
@@ -153,6 +175,17 @@ export default function AdminConsignatariasPage() {
 
   return (
     <div className="space-y-0">
+      {deepLinkMiss && (
+        <div className="terminal-panel mb-px">
+          <div className="border-b border-terminal-border px-panel py-2 flex items-center gap-2">
+            <span className="text-warning text-xxs font-terminal">⚠</span>
+            <span className="text-xxs font-terminal text-zinc-400">
+              No se encontró la consignataria{' '}
+              <span className="text-zinc-200">{deepLinkMiss}</span> en la lista.
+            </span>
+          </div>
+        </div>
+      )}
       <div className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between">
           <span className="text-zinc-200 text-label tracking-widest">CONSIGNATARIAS</span>
@@ -344,5 +377,13 @@ export default function AdminConsignatariasPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function AdminConsignatariasPage() {
+  return (
+    <Suspense fallback={null}>
+      <AdminConsignatariasInner />
+    </Suspense>
   )
 }
