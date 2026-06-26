@@ -7790,25 +7790,6 @@
     "id": 410
   },
   {
-    "title": "GORDO, INVERNADA y CRÍA",
-    "consignatariaName": "CONSIGNATARIA HASENKAMP S.R.L.",
-    "consignatariaSlug": "consignataria-hasenkamp-s-r-l",
-    "date": "2026-07-01",
-    "time": "15:00",
-    "location": "HASENKAMP, ENTRE RÍOS",
-    "province": "ENTRE RIOS",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "GORDO, INVERNADA y CRÍA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.chsrl.com.ar",
-    "id": 411,
-    "status": "scheduled"
-  },
-  {
     "title": "Feria en Santa Rosa",
     "consignatariaName": "Alfredo Cavanagh",
     "consignatariaSlug": "alfredo-cavanagh",
@@ -7825,7 +7806,26 @@
     "source": "web",
     "sourceUrl": "https://clicrural.com.ar/remate/31105",
     "status": "scheduled",
-    "id": 412
+    "id": 411
+  },
+  {
+    "title": "GORDO, INVERNADA y CRÍA",
+    "consignatariaName": "CONSIGNATARIA HASENKAMP S.R.L.",
+    "consignatariaSlug": "consignataria-hasenkamp-s-r-l",
+    "date": "2026-07-01",
+    "time": "15:00",
+    "location": "HASENKAMP, ENTRE RÍOS",
+    "province": "ENTRE RIOS",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "GORDO, INVERNADA y CRÍA",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.chsrl.com.ar",
+    "id": 412,
+    "status": "scheduled"
   },
   {
     "title": "Faena, Invernada y Cria",

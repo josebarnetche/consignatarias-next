@@ -1808,47 +1808,47 @@
   "categories": {
     "novillos": {
       "current": 3980,
-      "prev": 4056.42,
-      "change": -1.9,
+      "prev": 3980,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 678
     },
     "novillitos": {
       "current": 3781,
-      "prev": 4446.56,
-      "change": -15,
+      "prev": 3781,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 611
     },
     "vaquillonas": {
       "current": 3582,
-      "prev": 4114.92,
-      "change": -13,
+      "prev": 3582,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1085
     },
     "vacas": {
       "current": 2866,
-      "prev": 2568.4,
-      "change": 11.6,
+      "prev": 2866,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 2456
     },
     "toros": {
       "current": 2587,
-      "prev": 2700.03,
-      "change": -4.2,
+      "prev": 2587,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 203
     },
     "terneros": {
       "current": 4378,
-      "prev": 4462,
-      "change": -1.9,
+      "prev": 4378,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
@@ -1860,9 +1860,9 @@
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1520,
-    "prev": 1530,
-    "change": -0.7,
+    "current": 1515,
+    "prev": 1520,
+    "change": -0.3,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
@@ -2006,8 +2006,8 @@
         "category": "VACAS Regular",
         "minPrice": 2000,
         "maxPrice": 3700,
-        "avgPrice": 2537.05,
-        "cabezas": 1129
+        "avgPrice": 2536.1,
+        "cabezas": 1122
       },
       {
         "category": "VACAS Conserva Buena",
@@ -2055,8 +2055,8 @@
         "category": "Totales",
         "minPrice": 0,
         "maxPrice": 0,
-        "avgPrice": 3475.92,
-        "cabezas": 5905
+        "avgPrice": 3476.31,
+        "cabezas": 5898
       }
     ]
   },
