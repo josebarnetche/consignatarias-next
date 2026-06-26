@@ -10,6 +10,7 @@ import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import { ElCorredorCTA } from '@/components/ElCorredorCTA'
 import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
 import SellZoneAlertSignup from '@/components/SellZoneAlertSignup'
+import SellZoneBadge from '@/components/SellZoneBadge'
 import { InmagDecadaCompleta } from '@/components/market/InmagDecadaCompleta'
 import { MarketHero, type MarketHeroStat } from '@/components/market'
 import { Delta, DataTable, PriceCell, type DataColumn } from '@/components/ui'
@@ -291,6 +292,9 @@ export default function InmagPage() {
             Intención de "inmag hoy": quieren saber cuándo conviene vender. Esta es la
             página de mayor intención (dwell ~545s); le damos la captura sticky con
             promesa cumplible (un mail cuando el novillo entra en zona de venta). */}
+        <section className="max-w-6xl mx-auto px-4 pt-4 pb-2">
+          <SellZoneBadge categoriaLabel="novillo" className="inline-block" />
+        </section>
         <section className="max-w-6xl mx-auto px-4 pt-2 pb-2">
           <SellZoneAlertSignup
             categoria="novillos"

@@ -8,6 +8,7 @@ import { PriceRangeTable } from '@/components/market/PriceRangeTable'
 import { PriceCTA } from '@/components/PriceCTA'
 import { Stat, Delta } from '@/components/ui'
 import SellZoneAlertSignup from '@/components/SellZoneAlertSignup'
+import SellZoneBadge from '@/components/SellZoneBadge'
 
 /* ================================================================== */
 /*  CATEGORY CONFIG                                                    */
@@ -410,8 +411,11 @@ export default async function CategoriaPage({
           </div>
         </div>
 
-        {/* Captura sticky en el pico de intención: ya vio el precio de SU categoría,
-            le ofrecemos el aviso cuando entre en zona de venta (categoria pre-seteada). */}
+        {/* Semáforo de venta (estado de hoy) + captura de la alerta (avisame cuando
+            cambie): el par señal-gratis + retorno. Pico de intención, debajo del precio. */}
+        <div className="mb-4">
+          <SellZoneBadge categoriaLabel={config.name.toLowerCase()} className="w-full sm:w-auto sm:inline-block" />
+        </div>
         <div className="mb-6">
           <SellZoneAlertSignup
             categoria={categoria}

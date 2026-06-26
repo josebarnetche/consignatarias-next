@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import VenderAhoraClient from './VenderAhoraClient'
+import SellZoneBadge from '@/components/SellZoneBadge'
 
 export const dynamic = 'force-dynamic'
 
@@ -38,6 +39,11 @@ export default async function VenderAhoraPage() {
           vale tu cabeza hoy, dónde está el precio en el rango del último mes y
           del último año, y la lectura del mercado.
         </p>
+
+        {/* Semáforo del mercado hoy — el estado antes de calcular tu lote. */}
+        <div className="mb-6">
+          <SellZoneBadge categoriaLabel="novillo" className="inline-block" />
+        </div>
 
         <VenderAhoraClient />
 

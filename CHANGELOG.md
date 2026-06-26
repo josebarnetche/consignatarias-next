@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.62.0] — 2026-06-26
+
+### Semáforo de venta on-site — la señal "¿conviene vender hoy?" gratis y diaria
+
+La mecánica de retención #1 en productos de precio agro (Bushel/DTN) es la señal "is now a good time to sell". v1.61 la entrega por mail (cuando entra en zona de venta); esta release entrega la versión **on-site, gratis y para todos**: un semáforo que muestra de un vistazo si el mercado está en **zona de venta / aguante / neutra** (INMAG en USD reales, percentil del año y del mes).
+
+**Por qué importa para la conversión:** (1) da un motivo de volver TODOS los días, no solo cuando hay remate — ataca la baja stickiness (DAU/MAU ~5%); (2) hace la alerta más deseable — el usuario ve el estado y quiere que le avisen cuando cambie, así que el semáforo y la captura de alerta van apareados; (3) es valor-primero: damos la señal gratis y la decisión completa (lectura + brecha estacional + neto) queda en PRO.
+
+- **`GET /api/sell-zone`**: señal pública (computeSellZone), cacheada 1h en el edge (`s-maxage=3600`). Cambia solo con el cierre diario.
+- **`SellZoneBadge`**: el semáforo. Colores por veredicto (verde/ámbar/zinc), percentil 365 + 30, honestidad de precisión (preciso para novillo, dirección del mercado para el resto). Skeleton sin números falsos mientras carga.
+- Montado en `/mercado/vender-ahora` (antes de calcular), `/mercado/inmag`, y las 6 páginas de categoría (apareado con la captura de alerta de esa categoría). Render client + endpoint cacheado → no afecta el SSG/SEO de esas páginas.
+
 ## [1.61.1] — 2026-06-26
 
 ### Captura de zona de venta en las 6 páginas de categoría
