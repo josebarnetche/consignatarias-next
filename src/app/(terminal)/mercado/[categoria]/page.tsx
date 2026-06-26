@@ -7,6 +7,7 @@ import { CategoryPriceHistory } from '@/components/market/CategoryPriceHistory'
 import { PriceRangeTable } from '@/components/market/PriceRangeTable'
 import { PriceCTA } from '@/components/PriceCTA'
 import { Stat, Delta } from '@/components/ui'
+import SellZoneAlertSignup from '@/components/SellZoneAlertSignup'
 
 /* ================================================================== */
 /*  CATEGORY CONFIG                                                    */
@@ -407,6 +408,16 @@ export default async function CategoriaPage({
               </div>
             )}
           </div>
+        </div>
+
+        {/* Captura sticky en el pico de intención: ya vio el precio de SU categoría,
+            le ofrecemos el aviso cuando entre en zona de venta (categoria pre-seteada). */}
+        <div className="mb-6">
+          <SellZoneAlertSignup
+            categoria={categoria}
+            categoriaLabel={config.name.toLowerCase()}
+            page={`/mercado/${categoria}`}
+          />
         </div>
 
         {/* Chart — evolución histórica del precio $/kg vivo de la categoría */}
