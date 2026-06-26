@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.61.1] — 2026-06-26
+
+### Captura de zona de venta en las 6 páginas de categoría
+
+Extiende la captura de la alerta (v1.61.0) a `/mercado/[categoria]` — las 6 páginas de precio por categoría (novillo, ternero, vaca, etc.), justo debajo del precio (pico de intención). Cada página captura la alerta de SU categoría con el slug pre-seteado: quien mira "precio de la vaca" se anota a "avisame cuando la vaca entre en zona de venta". **Por qué:** multiplica las superficies de funnel-top con contexto exacto y cero infra nueva — estas páginas viven de SEO de precio ("cuánto vale un novillo"), la misma intención que la alerta resuelve. Render estático (sin tocar la DB en SSG).
+
 ## [1.61.0] — 2026-06-25
 
 ### Motor de alertas de "zona de venta" (FASE 1) — la primera pata del plan de conversión
