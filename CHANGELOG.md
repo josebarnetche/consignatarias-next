@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.62.1] — 2026-06-26
+
+### El valor PRO Usuario llega a la puerta de entrada (home)
+
+Hasta ahora el home solo tenía conversión B2B ("¿querés estar acá?" para consignatarias) + el ValuationWidget. El productor — el grueso del tráfico SEO de precio (~5000 vistas/día) — no encontraba ningún hook de su valor (PRO Usuario) en la portada. Esta release pone el **par decisión** junto al ValuationWidget: el semáforo de venta (¿conviene vender hoy?) + CTA directo a `/mercado/vender-ahora`. **Por qué:** "sabés cuánto vale → ¿conviene venderla?" es la secuencia natural, y la mueve desde el front door donde entra la mayoría, no solo en las páginas de mercado internas. Home sigue ISR; el badge se hidrata client-side (sin impacto en SSG/SEO).
+
 ## [1.62.0] — 2026-06-26
 
 ### Semáforo de venta on-site — la señal "¿conviene vender hoy?" gratis y diaria

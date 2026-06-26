@@ -17,6 +17,7 @@ import { fetchUsdBlue } from "@/lib/markets/usd";
 import LiveHero from "@/components/landing/LiveHero";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import { CoverageMap } from "@/components/landing/CoverageMap";
+import SellZoneBadge from "@/components/SellZoneBadge";
 
 /* ================================================================== */
 /*  SVG ICONS                                                          */
@@ -354,6 +355,28 @@ export default async function LandingPage() {
         {/* ============================================================ */}
         <section className="max-w-4xl mx-auto px-6 py-12">
           <ValuationWidget />
+
+          {/* Par productor: ya sabe cuánto vale su hacienda (widget) → ahora, ¿conviene
+              venderla hoy? El semáforo gratis + el camino a la decisión completa. Primera
+              vez que el valor PRO Usuario aparece en la puerta de entrada. */}
+          <div className="mt-6 rounded-lg border border-emerald-500/20 bg-emerald-950/10 p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="shrink-0">
+              <SellZoneBadge categoriaLabel="novillo" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm text-zinc-300 leading-relaxed">
+                Sabés cuánto vale. <span className="text-zinc-100 font-medium">¿Conviene venderla hoy?</span>{" "}
+                Calculá tu lote y mirá si el precio está caro o barato vs. los últimos 365 días.
+              </p>
+            </div>
+            <Link
+              href="/mercado/vender-ahora"
+              className="shrink-0 inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-950 bg-emerald-400 hover:bg-emerald-300 transition-colors rounded py-2.5 px-5 whitespace-nowrap"
+            >
+              ¿Vendo ahora?
+              <IconArrowRight />
+            </Link>
+          </div>
         </section>
 
         <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
