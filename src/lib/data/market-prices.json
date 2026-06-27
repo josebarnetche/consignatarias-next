@@ -1807,43 +1807,43 @@
   },
   "categories": {
     "novillos": {
-      "current": 3980,
+      "current": 3980.33,
       "prev": 3980,
       "change": 0,
-      "source": "MAG (derived from INMAG)",
+      "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 678
+      "latestVolume": 1164
     },
     "novillitos": {
-      "current": 3781,
+      "current": 4596.5,
       "prev": 3781,
-      "change": 0,
-      "source": "MAG (derived from INMAG)",
+      "change": 21.6,
+      "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 611
+      "latestVolume": 1236
     },
     "vaquillonas": {
-      "current": 3582,
+      "current": 4238.05,
       "prev": 3582,
-      "change": 0,
-      "source": "MAG (derived from INMAG)",
+      "change": 18.3,
+      "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1085
+      "latestVolume": 745
     },
     "vacas": {
-      "current": 2866,
+      "current": 2637.06,
       "prev": 2866,
-      "change": 0,
-      "source": "MAG (derived from INMAG)",
-      "latestVolume": 2456
+      "change": -8,
+      "source": "mercadoagroganadero.com.ar (observed)",
+      "latestVolume": 2453
     },
     "toros": {
-      "current": 2587,
+      "current": 2797.28,
       "prev": 2587,
-      "change": 0,
-      "source": "MAG (derived from INMAG)",
+      "change": 8.1,
+      "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 203
+      "latestVolume": 239
     },
     "terneros": {
       "current": 4378,
@@ -1854,8 +1854,8 @@
   },
   "corn": {
     "current": 221.83,
-    "prev": 219.9,
-    "change": 0.9,
+    "prev": 221.83,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
@@ -1873,7 +1873,7 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-06-26",
+  "lastUpdate": "2026-06-27",
   "provinceEntry": {
     "date": "2026-06-26",
     "totalCabezas": 5918,
