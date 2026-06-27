@@ -469,10 +469,11 @@ export async function sendSellZoneAlertConfirm(
           <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Alerta activada · ${cat}</p>
           <h2 style="color:#fff;font-size:18px;margin:0 0 16px">Te aviso cuando convenga vender</h2>
           <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">
-            Vas a recibir <strong style="color:#e4e4e7">un solo mail</strong> cuando el ${cat} entre en
-            <strong style="color:#34d399">zona de venta</strong>: cuando su precio en dólares reales se ubique
-            en la franja alta del último año. Nada de spam por cada movimiento — solo cuando el percentil cruza
-            la zona de salida.
+            Vas a recibir <strong style="color:#e4e4e7">un solo mail</strong> cuando el ${cat} esté
+            <strong style="color:#34d399">caro vs el último año Y empiece a girar</strong> (precio real en la
+            franja alta del año pero ya sin hacer nuevos máximos). Esa combinación —no el percentil solo— es la
+            que históricamente marcó zona de salida. Nada de spam por cada movimiento, ni avisos de "vendé"
+            mientras el mercado todavía sube.
           </p>
           ${data.pct365 !== null ? `
           <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;text-align:center;margin-bottom:16px">
@@ -506,26 +507,28 @@ export async function sendSellZoneAlertConfirm(
  */
 export async function sendSellZoneAlert(
   email: string,
-  data: { categoriaLabel: string; pct30: number; pct365: number; inmagUsdHoy: number | null },
+  data: { categoriaLabel: string; pct30: number; pct365: number; trend?: string; inmagUsdHoy: number | null },
 ) {
   const resend = await getResend()
   if (!resend) return { success: false, error: 'Resend not configured' }
   const cat = escapeHtml(data.categoriaLabel)
+  const trendTxt = data.trend === 'bajando' ? 'y empezó a girar a la baja' : 'y dejó de hacer máximos'
   try {
     await resend.emails.send({
       from: FROM,
       to: email,
-      subject: `🟢 El ${data.categoriaLabel} entró en zona de venta (percentil ${data.pct365} del año)`,
+      subject: `El ${data.categoriaLabel} está caro vs el año (percentil ${data.pct365}) ${trendTxt}`,
       headers: listUnsubHeaders(email, 'sell-zone-alert'),
       html: `
         <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-          <p style="color:#34d399;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Zona de venta · ${cat}</p>
-          <h2 style="color:#fff;font-size:19px;margin:0 0 16px">Históricamente, momento de salida</h2>
+          <p style="color:#34d399;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Zona alta del año · ${cat}</p>
+          <h2 style="color:#fff;font-size:19px;margin:0 0 16px">Precio alto y girando — históricamente, zona de salida</h2>
           <div style="background:#16161d;border:1px solid #34d39966;border-left:3px solid #34d399;border-radius:4px;padding:18px;margin-bottom:16px">
             <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0">
               En dólares reales, el ${cat} está en el <strong style="color:#34d399">percentil ${data.pct365} del último año</strong>
-              y en el <strong style="color:#34d399">percentil ${data.pct30} del último mes</strong>. Cuando el precio real
-              llega a esta franja, la estadística marca zona de salida: si tu lote está listo, vender hoy capta el pico.
+              y en el <strong style="color:#34d399">percentil ${data.pct30} del último mes</strong> — y ${trendTxt}.
+              En esa combinación (precio alto del año que empieza a girar), la estadística histórica marca zona de salida.
+              La decisión es tuya: esto describe dónde está el precio, no te dice qué hacer.
             </p>
           </div>
           <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
