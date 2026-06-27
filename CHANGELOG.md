@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.63.0] — 2026-06-26
+
+### Modelo de venta TRUST-FIRST — describe, no ordena; alerta validada con backtest
+
+Backtest del modelo de "¿cuándo vender?" sobre el INMAG en USD reales 2015-2026 (percentiles trailing, sin lookahead). Hallazgos: el orden `aguantar > neutro > vender` en retorno forward se sostiene en ambas mitades del período (la señal lleva información direccional real, no es humo). **PERO** en un bull estructural (2021-26) el percentil solo gatilla "vendé" casi todos los días (446 días) mientras el precio igual sube (+1,5% a 60d) — exactamente lo que erosiona la confianza: el productor vende y ve el mercado seguir subiendo.
+
+Fix validado con backtest: la alerta ya **no** dispara por percentil solo, sino por la **conjunción "zona alta del año Y girando"** (precio en franja alta pero ≤ su media móvil de 90d, i.e. sin hacer nuevos máximos). Eso recorta ~84% de los falsos avisos del bull (446→72) y los 72 restantes precedieron **caídas** (-3,1% a 60d). No es un oráculo universal (en el régimen lateral 2015-20 el filtro se invierte), por eso el cambio de fondo es de **framing**: dejamos de dar la orden y pasamos a describir.
+
+- **`computeSellZone`** ahora devuelve `zone` (alta/media/baja, descriptivo, ex-"verdict") + `trend` (subiendo/estable/bajando vs MM90) + `ma90` + `alertWorthy` (el gatillo trust-safe de la conjunción).
+- **`SellZoneBadge`** muestra zona + tendencia + nota honesta ("en zona alta pero todavía subiendo — no necesariamente el techo") y un explícito "No es una recomendación".
+- **Alerta (cron + emails)** dispara solo en `alertWorthy`; copy reescrito de imperativo ("Vendé hoy") a descriptivo ("está caro vs el año y empezó a girar — la decisión es tuya"). El mail de confirmación promete exactamente eso, sin sobre-prometer.
+- **`/api/sell-zone`** expone la nueva forma (zone/trend/ma90/alertWorthy).
+
+**Por qué:** "todo lo que erosione la confianza no nos gusta". Un modelo que ordena se puede falsar; uno que describe el percentil + la tendencia es siempre cierto y deja la decisión —y el riesgo— del lado del productor.
+
 ## [1.62.1] — 2026-06-26
 
 ### El valor PRO Usuario llega a la puerta de entrada (home)

@@ -75,8 +75,8 @@ export default function SellZoneAlertSignup({
         </h3>
       </div>
       <p className="text-zinc-400 text-xs leading-relaxed mb-4 pl-6">
-        Un solo mail cuando el precio en dólares reales llegue a la franja de salida —
-        no por cada movimiento. Gratis, sin tarjeta, sin cuenta.
+        Un solo mail cuando esté caro vs el año <strong className="text-zinc-300">y empiece a girar</strong> —
+        no por cada movimiento, ni un &quot;vendé&quot; mientras el mercado todavía sube. Gratis, sin tarjeta.
       </p>
 
       {state === 'ok' ? (
