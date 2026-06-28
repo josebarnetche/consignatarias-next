@@ -5,8 +5,7 @@ import marketData from '@/lib/data/market-prices.json'
 import ArrendamientoCalculator from './ArrendamientoCalculator'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
-import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
-import PriceAlertSignup from '@/components/PriceAlertSignup'
+import ArrendamientoLiquidacionSignup from '@/components/ArrendamientoLiquidacionSignup'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import SinceLastVisit from '@/components/landing/SinceLastVisit'
 import Breadcrumb from '@/components/ui/Breadcrumb'
@@ -336,25 +335,13 @@ export default function ArrendamientoPage() {
           </Suspense>
         </section>
 
-        {/* Alerta de precio — FASE 0, validación de demanda (sin motor de umbral).
-            Intención real de gsc-detail.json: "precio novillo arrendamiento hoy",
-            "indice novillo arrendamiento mensual" → quieren saber cuándo se mueve. */}
-        <section className="max-w-6xl mx-auto px-4 pb-4">
-          <PriceAlertSignup
-            source="alerta-arrendamiento"
-            page="/mercado/arrendamiento"
-            accent="amber"
-            title="El número para tu arrendamiento, cada mes"
-          />
-        </section>
-
-        {/* Cierre mensual — captura producer-facing (el que liquida arrendamiento) */}
-        <section className="max-w-6xl mx-auto px-4 pb-8">
-          <CierreMensualSubscribe
-            accent="amber"
-            withLease
-            subtitle="El 1° de cada mes te llega el promedio del Índice Novillo del mes que cerró. Si guardaste tu cálculo arriba, recibís directamente tu canon actualizado. Gratis, un email por mes."
-          />
+        {/* Captura liderada por la LIQUIDACIÓN — el job real del cluster que explota
+            (+110% WoW): el que liquida un canon cada mes, no el que vende hacienda.
+            Self-contained (inputs del contrato inline) + canon en vivo + promesa
+            cumplible (cierre mensual con TU canon). Reemplaza las dos capturas
+            genéricas que convertían ~0 contra el tráfico #2 del sitio. */}
+        <section className="max-w-6xl mx-auto px-4 pt-4 pb-8">
+          <ArrendamientoLiquidacionSignup priceToday={inmag.current} page="/mercado/arrendamiento" />
         </section>
 
         {/* Monthly Averages Table */}

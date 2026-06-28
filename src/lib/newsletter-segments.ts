@@ -36,7 +36,9 @@ export const SEGMENT_SOURCES = {
   subastaPorFirma: ['watchlist-notify'],
   // Monthly Índice Novillo close (1st) — price / INMAG / arrendamiento intent.
   // alerta-arrendamiento + alerta-inmag reciben el cierre mensual (mismo número del INMAG).
-  monthlyClose: ['cierre-mensual', 'valuation_widget', 'calculadora', 'alerta-arrendamiento', 'alerta-inmag'],
+  // arrendamiento-liquidacion = captura liderada por la liquidación (guarda el contrato
+  // kg/ha + ha) → recibe el cierre mensual con SU canon ya calculado (vía lease_*).
+  monthlyClose: ['cierre-mensual', 'valuation_widget', 'calculadora', 'alerta-arrendamiento', 'alerta-inmag', 'arrendamiento-liquidacion'],
   // El Corredor PDF (1st) — lead magnet
   corredor: ['el-corredor'],
   // Monthly faena report
