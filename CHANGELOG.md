@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.64.0] — 2026-06-28
+
+### Pivote al cluster que explota: captura de arrendamiento liderada por la liquidación
+
+Profiling con datos (GA4 + GSC + newsletter_subscribers): TODO el crecimiento del sitio es UN cluster — "índice novillo arrendamiento" (`/mercado/arrendamiento` **+110% impresiones WoW**, superficie de queries ensanchándose ~1.100 impr nuevas/semana: "…semanal", "…cañuelas", "…el rural"). Pero NO es el que vende hacienda: es el **arrendador/arrendatario/contador que liquida un canon cada mes** (~85% nuevos, one-shot, no tocan /remates ni /consignatarias). Y estaba **casi sin convertir**: 2 emails en toda la historia del sitio contra el tráfico #2. Causa: le dábamos "un mail por mes / novedades" cuando el job es **liquidar** y la cadencia pedida es semanal/hoy.
+
+Fix (quick win, código puro):
+- **`ArrendamientoLiquidacionSignup`** reemplaza las dos capturas genéricas (`PriceAlertSignup` + `CierreMensualSubscribe`) en `/mercado/arrendamiento`. Lidera con la liquidación, no con novedades: inputs del contrato (kg/ha + ha) **inline** (no depende de haber usado el calculador antes), **canon en vivo** como ancla de valor, y promesa **cumplible** — el cierre mensual con TU canon ya calculado. Sin sobre-prometer "semanal" ni "constancia PDF" que aún no existen (regla de confianza). Sincroniza el contrato con el calculador (mismo localStorage).
+- **Segmentación:** `arrendamiento-liquidacion` agregado a `SEGMENT_SOURCES.monthlyClose` → el cron `monthly-close` (activo) le manda su canon vía `lease_kg_ha`/`lease_hectareas`. Cerrado el gap que habría dejado al suscriptor sin recibir nada.
+
+**Por qué:** alinea con la bibliografía verificada ([[posicionamiento_pro_consignatarias]]): se paga por la DECISIÓN/operación (liquidar), no por el número suelto. Es el test H1 directo sobre el tráfico que ya está explotando. Lo que sigue (diseño completo): constancia PDF citable + cadencia semanal + producto de liquidación PRO.
+
 ## [1.63.0] — 2026-06-26
 
 ### Modelo de venta TRUST-FIRST — describe, no ordena; alerta validada con backtest
