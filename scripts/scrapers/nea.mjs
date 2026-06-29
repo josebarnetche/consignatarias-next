@@ -505,6 +505,85 @@ export async function scrapeRosgan() {
 }
 
 // ---------------------------------------------------------------------------
+// Source: Canal Rural / El Rural (elrural.com/remates/) — agenda de remates
+// televisados. Bloqueada para IPs de datacenter (403); se fetchea desde IP
+// residencial AR vía scripts/local-nea-fetch.mjs. Lista server-rendered:
+// cada ítem tiene h3.titulo + h4.casa + h4.fecha ("DD de Mes") + h4.hora + botón ver-remate.
+// ---------------------------------------------------------------------------
+const PROVINCE_NAMES = [
+  [/c[oó]rdoba/i, "CORDOBA"], [/corrientes/i, "CORRIENTES"], [/santa\s*fe/i, "SANTA FE"],
+  [/entre\s*r[ií]os/i, "ENTRE RIOS"], [/buenos\s*aires/i, "BUENOS AIRES"], [/la\s*pampa/i, "LA PAMPA"],
+  [/chaco/i, "CHACO"], [/formosa/i, "FORMOSA"], [/misiones/i, "MISIONES"], [/salta/i, "SALTA"],
+  [/santiago\s*del\s*estero/i, "SANTIAGO DEL ESTERO"], [/tucum[aá]n/i, "TUCUMAN"], [/jujuy/i, "JUJUY"],
+  [/san\s*luis/i, "SAN LUIS"], [/la\s*rioja/i, "LA RIOJA"], [/catamarca/i, "CATAMARCA"],
+  [/r[ií]o\s*negro/i, "RIO NEGRO"], [/neuqu[eé]n/i, "NEUQUEN"], [/mendoza/i, "MENDOZA"],
+];
+function provinceFromTitle(t) {
+  for (const [re, p] of PROVINCE_NAMES) if (re.test(t || "")) return p;
+  return null;
+}
+
+export async function scrapeCanalRural() {
+  const SRC = "Canal Rural";
+  try {
+    const html = await fetchText("https://elrural.com/remates/", 25000);
+    const today = todayISO();
+    const year0 = Number(today.slice(0, 4));
+    const out = [];
+    // Anclar en cada botón ver-remate; el ítem es el texto entre el botón previo y este.
+    const btns = [...html.matchAll(/<button[^>]*class="[^"]*ver-remate[^"]*"[^>]*href="([^"]*)"/g)];
+    let prevEnd = 0;
+    for (const b of btns) {
+      const ctx = html.slice(prevEnd, b.index);
+      prevEnd = b.index;
+      const casa = unescapeHtml(stripTags((ctx.match(/<h4 class="casa[^"]*">([\s\S]*?)<\/h4>/) || [])[1] || "")).trim();
+      const titulo = unescapeHtml(stripTags((ctx.match(/<h3 class="[^"]*titulo[^"]*">([\s\S]*?)<\/h3>/) || [])[1] || "")).trim();
+      const name = casa || titulo;
+      if (!name) continue;
+
+      const fm = ctx.match(/(\d{1,2})\s+de\s+([A-Za-zÁÉÍÓÚáéíóú]+)/);
+      if (!fm) continue;
+      const day = parseInt(fm[1], 10);
+      const mon = MONTHS_ES[fm[2].toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "")];
+      if (!mon) continue;
+      let year = year0;
+      const mk = (y) => `${y}-${String(mon).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+      let date = mk(year);
+      if (date < today) date = mk(++year); // fecha pasada en este año → próxima
+      if (!isValidDate(date)) continue;
+
+      const hm = ctx.match(/(\d{1,2}):(\d{2})\s*hs/i);
+      const time = hm ? `${hm[1].padStart(2, "0")}:${hm[2]}` : null;
+      const province = provinceFromVenue(titulo) || provinceFromTitle(titulo);
+
+      out.push({
+        title: titulo || name,
+        consignatariaName: name,
+        consignatariaSlug: slugify(name),
+        date,
+        time,
+        location: "",
+        province: province ? normalizeProvince(province) : null,
+        type: inferType(titulo),
+        mainCategory: inferMainCategory(titulo),
+        estimatedHeads: null,
+        description: titulo,
+        youtubeUrl: null,
+        catalogUrl: b[1] || null,
+        source: "tv", // Canal Rural = televisado
+        sourceUrl: "https://elrural.com/remates/",
+        status: statusForDate(date),
+      });
+    }
+    console.log(`  [Canal Rural] ${out.length} remates`);
+    return out;
+  } catch (err) {
+    console.warn(`  [WARN] ${SRC}: ${err.message}`);
+    return [];
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Source: ClicRural cartelera (national aggregator). Filter to NEA provinces.
 // Server-rendered <li> cards with semantic data-* attributes.
 // ---------------------------------------------------------------------------

@@ -24,7 +24,7 @@ import { writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
-import { scrapeRosgan } from "./scrapers/nea.mjs";
+import { scrapeRosgan, scrapeCanalRural } from "./scrapers/nea.mjs";
 import { scrapeEntreSurcos } from "./scrape-auctions.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -39,13 +39,14 @@ function git(cmd) {
 
 (async () => {
   console.log("=== local-nea-fetch (IP residencial AR) ===");
-  // Entre Surcos primero (prioridad: transmite con stream); Rosgan de yapa.
-  const [es, ros] = await Promise.all([
+  // Entre Surcos (prioridad: transmite con stream) + Rosgan + Canal Rural (elrural.com).
+  const [es, ros, cr] = await Promise.all([
     scrapeEntreSurcos().catch((e) => { console.error("Entre Surcos:", e.message); return []; }),
     scrapeRosgan().catch((e) => { console.error("Rosgan:", e.message); return []; }),
+    scrapeCanalRural().catch((e) => { console.error("Canal Rural:", e.message); return []; }),
   ]);
-  const all = [...es, ...ros];
-  console.log(`Entre Surcos: ${es.length} · Rosgan: ${ros.length} · total: ${all.length}`);
+  const all = [...es, ...ros, ...cr];
+  console.log(`Entre Surcos: ${es.length} · Rosgan: ${ros.length} · Canal Rural: ${cr.length} · total: ${all.length}`);
 
   if (all.length === 0) {
     // No pisar el último archivo bueno con vacío (red caída / sitios abajo).

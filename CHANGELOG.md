@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.67.1] — 2026-06-29
+
+### Canal Rural sumado al fetch local (elrural.com/remates) — 3er agregador
+
+`scrapeCanalRural()` (en `scrapers/nea.mjs`) parsea la agenda de remates televisados de `elrural.com/remates/` — server-rendered, bloqueada para datacenter (403) pero 200 desde IP residencial AR, así que entra por el fetch local (`local-nea-fetch.mjs`) junto a Entre Surcos + Rosgan. 1ra corrida: **20 remates** (total local 113). Source `tv`, con deep-link a `remates.elrural.com` por remate.
+
+El dedup es seguro: keepea el primer ocurrencia (los existentes con provincia van antes que el localNEA) y a los duplicados solo les **suma** campos faltantes (catalogUrl/time) sin pisar — así que Canal Rural no degrada nada y enriquece remates ya conocidos con el link de elrural. Limitación honesta: ~18/20 entran sin provincia (los títulos no la traen); afecta solo a los Canal-Rural-exclusivos, que igual aparecen en perfil/listados aunque no en páginas por provincia.
+
 ## [1.67.0] — 2026-06-29
 
 ### Instrumentación del canal email — webhook de Resend (dejamos de volar a ciegas)
