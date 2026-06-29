@@ -10,6 +10,7 @@ import DataHealthCard from '@/components/admin/DataHealthCard'
 import ModerationQueueCard from '@/components/admin/ModerationQueueCard'
 import OutreachActivityCard from '@/components/admin/OutreachActivityCard'
 import SystemHealthCard from '@/components/admin/SystemHealthCard'
+import EmailHealthCard from '@/components/admin/EmailHealthCard'
 import { getLivePayload, getViewsByHour } from '@/lib/admin/live'
 import { getFeaturedSlugs } from '@/lib/featured'
 import { getCronHealth } from '@/lib/ops'
@@ -336,6 +337,7 @@ export default async function AdminOverviewPage() {
         <DataHealthCard />
         <ModerationQueueCard />
         <OutreachActivityCard />
+        <EmailHealthCard />
         <SystemHealthCard />
       </div>
     </div>

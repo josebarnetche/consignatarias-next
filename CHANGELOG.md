@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.67.0] — 2026-06-29
+
+### Instrumentación del canal email — webhook de Resend (dejamos de volar a ciegas)
+
+Evaluación del canal email reveló que **no medíamos nada**: 0 webhooks de Resend → sin tasa de apertura, click, bounce ni quejas. En 3 meses salieron ~115 mails (51 newsletters/cierre/digest a ~38 suscriptores + 64 de outreach a consignatarias), y la única señal medible que teníamos (los 64 pedidos de cargar resultados → `auction_results`) dio **0**. No se puede optimizar lo que no se mide, y el email es EL canal de la estrategia (alertas, liquidación, cierre).
+
+- **Tabla `email_events`** (migración `20260629_email_events.sql`, **aplicada en prod**): recibe sent/delivered/opened/clicked/bounced/complained.
+- **`POST /api/webhooks/resend`**: verificación de firma Svix (HMAC-SHA256 sobre `id.ts.body` con `RESEND_WEBHOOK_SECRET`, sin dependencia externa), dedupe de reintentos vía `processed_webhook_events` (source='resend'), insert normalizado (email_id, type, recipient, subject, campaign de tags, link, bounce_type).
+- **`EmailHealthCard`** en `/admin/overview`: tasa de apertura / click / bounce / quejas sobre 30d (únicos por email_id), con estado vacío que explica el setup pendiente.
+
+**Setup del dueño (una vez):** (1) Vercel env `RESEND_WEBHOOK_SECRET` = el Signing Secret del webhook; (2) Resend → Webhooks → Add Endpoint `https://www.consignatarias.com.ar/api/webhooks/resend` + seleccionar los eventos; (3) Resend → Domain → activar Open + Click tracking. Recién con eso el card se puebla.
+
 ## [1.66.3] — 2026-06-29
 
 ### Fetch local de Entre Surcos/Rosgan desde IP residencial AR (sin proxy)
