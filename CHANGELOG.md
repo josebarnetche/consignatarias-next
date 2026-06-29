@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.66.1] — 2026-06-29
+
+### Scrapers más robustos: UA de navegador + retry (fix Rosgan 403 / Entre Surcos fetch-failed)
+
+El log del scraper mostraba **Rosgan HTTP 403** y la cartelera de **Entre Surcos "fetch failed"** desde el runner de GitHub Actions (ambos endpoints responden 200 desde una IP normal → el fallo es IP/UA-específico del datacenter). Fix de robustez en los helpers de fetch (`scrape-auctions.mjs` + `scrapers/nea.mjs`):
+- **UA de navegador real** en vez de sin-UA (scrape-auctions, que no mandaba ninguno) y del UA de bot "ConsignatariasBot" (nea) — varias APIs rechazan ambos.
+- **Retry con backoff (3 intentos)** ante fallos transitorios (fetch failed, timeouts, 403/5xx intermitentes).
+- **Referer/Origin** en la llamada a la API de Rosgan (filtra por origen).
+
+Verificado local: con UA navegador + Referer, Rosgan devuelve 200 (5 rows) y Entre Surcos 200 (101k chars). Honesto: si el 403 de Rosgan fuera puro bloqueo de IP de datacenter, esto no lo resuelve — la prueba es la próxima corrida en el runner.
+
 ## [1.66.0] — 2026-06-29
 
 ### Matcher de streams de agregadores — surfacea remates de consignatarias sin canal propio

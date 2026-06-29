@@ -37,33 +37,38 @@
 // exported). Kept tiny and dependency-free.
 // ---------------------------------------------------------------------------
 
-const UA = "Mozilla/5.0 (compatible; ConsignatariasBot/1.0; +https://www.consignatarias.com.ar)";
+// UA de navegador real (el de bot "ConsignatariasBot" lo rechazan varias APIs, ej. Rosgan).
+const UA =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36";
 
-async function fetchText(url, timeoutMs = 20000) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, { signal: controller.signal, headers: { "User-Agent": UA } });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.text();
-  } finally {
-    clearTimeout(timer);
+// fetch con UA + retry-con-backoff ante fallos transitorios desde el runner.
+async function fetchWithRetry(url, { timeoutMs = 20000, headers = {}, attempts = 3 } = {}) {
+  let lastErr;
+  for (let i = 1; i <= attempts; i++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, { signal: controller.signal, headers: { "User-Agent": UA, ...headers } });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res;
+    } catch (err) {
+      lastErr = err;
+      if (i < attempts) await new Promise((r) => setTimeout(r, 700 * i));
+    } finally {
+      clearTimeout(timer);
+    }
   }
+  throw lastErr;
 }
 
-async function fetchJSON(url, timeoutMs = 20000) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, {
-      signal: controller.signal,
-      headers: { "User-Agent": UA, Accept: "application/json" },
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } finally {
-    clearTimeout(timer);
-  }
+async function fetchText(url, timeoutMs = 20000, headers = {}) {
+  const res = await fetchWithRetry(url, { timeoutMs, headers });
+  return await res.text();
+}
+
+async function fetchJSON(url, timeoutMs = 20000, headers = {}) {
+  const res = await fetchWithRetry(url, { timeoutMs, headers: { Accept: "application/json", ...headers } });
+  return await res.json();
 }
 
 function slugify(str) {
@@ -438,7 +443,9 @@ async function scrapeRosgan() {
   const SRC = "Rosgan";
   try {
     const data = await fetchJSON(
-      "https://api.rosgannet.com.ar/api/db/rosgan/app/public/remates_api_qry.xml?_limit=5000"
+      "https://api.rosgannet.com.ar/api/db/rosgan/app/public/remates_api_qry.xml?_limit=5000",
+      20000,
+      { Referer: "https://app.rosgannet.com.ar/", Origin: "https://app.rosgannet.com.ar" }
     );
     const rows = data?.data || [];
     const today = todayISO();
