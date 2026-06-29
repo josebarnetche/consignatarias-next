@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.65.0] — 2026-06-29
+
+### Remate en vivo: transcripción automática del cantaleo → ticker de precios preliminar
+
+Nueva herramienta que lee el audio de un remate en vivo (YouTube) y publica un ticker de precios por categoría en `/remates/en-vivo` (~30-60s de latencia). Valida que el cantaleo es máquina-extraíble: contra el promedio oficial publicado por **JUA (Mercedes, Ctes — 22/05/25)**, el precio reconstruido del video da **~3% de error en las categorías limpias** (terneras −1,4%, vacas gordas −2,2%, invernadas +0,6%, toros −5%; novillos sigue flojo por la ambigüedad gordo/invernada). El número se muestra SIEMPRE como **"lectura automática · preliminar"**, nunca como precio oficial — el promedio real lo publica la consignataria al cierre (regla de confianza + posicionamiento neutral).
+
+Arquitectura en dos piezas (el worker **NO** corre en Vercel — serverless no sostiene captura de audio en tiempo real):
+- **Worker off-Vercel** (`scripts/live-remate-worker.py`): yt-dlp (stream) → ffmpeg chunks 30s → faster-whisper local → parser de la gramática del cantaleo (encuadre + chant base/incrementos + cierre "va una/va dos/vendí", precio = máximo del chant) → escribe a Supabase vía service_role. Corre a ~0,58x tiempo real (mantiene el vivo). **Bandas de plausibilidad dinámicas** ancladas al INMAG del día (`--inmag`) → generaliza a cualquier firma/fecha/inflación. Dedup de cierres que spannean segmentos; clasificación gordo/invernada por peso.
+- **Sitio** (Vercel): migración `live_remate_session` + `live_remate_lot` (RLS lectura pública, escritura service_role), `lib/live-remate.ts` (sesión activa + promedios corrientes, soft-fail, descarta worker caído >3min), `/api/live-remate` (polling no-store), `<LiveRemateTicker>` en `/remates/en-vivo` (se auto-oculta sin sesión activa). Runbook: `docs/LIVE-REMATE.md`.
+
+**Por qué:** abre el camino de datos por captura del stream público (alternativa a la ingesta consentida por IMAP) y materializa el viewer de mercado en vivo — no un marketplace de pre-oferta, sino dato read-only que no desintermedia a la consignataria. Pendiente: correr el worker contra un stream real; detección de segmentos de venta (el muestreo ciego cae en silencio/música); fine-tune del ASR sobre el corpus etiquetado que el pipeline genera.
+
 ## [1.64.0] — 2026-06-28
 
 ### Pivote al cluster que explota: captura de arrendamiento liderada por la liquidación

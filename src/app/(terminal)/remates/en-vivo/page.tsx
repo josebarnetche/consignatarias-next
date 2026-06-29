@@ -7,6 +7,7 @@ import { normalizeUrl } from '@/lib/utils/url'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { resolveYoutubeUrl } from '@/lib/youtube-live'
 import { Calendar, Clock, MapPin, Users, Play, FileText, Video, Youtube, Radio } from 'lucide-react'
+import LiveRemateTicker from '@/components/LiveRemateTicker'
 
 // Regenerate hourly for fresh data
 export const revalidate = 3600
@@ -329,6 +330,10 @@ export default async function RematesEnVivoPage() {
           <span className="mx-2">›</span>
           <span className="text-zinc-400">En Vivo</span>
         </nav>
+
+        {/* Ticker de transcripción del remate en vivo (lo llena el worker off-Vercel).
+            Se auto-oculta si no hay sesión activa, así que es seguro montarlo siempre. */}
+        <LiveRemateTicker />
 
         {/* Header */}
         <div className="mb-6">
