@@ -3,7 +3,14 @@
     "channelId": "UCU6ytSZx7evWeXMtZvhGraA",
     "channelUrl": "https://www.youtube.com/channel/UCU6ytSZx7evWeXMtZvhGraA",
     "channelTitle": "Entre Surcos y Corrales",
-    "isAggregator": true
+    "isAggregator": true,
+    "latestVideo": {
+      "videoId": "5H2lyM8xQig",
+      "title": "17-12-21 - Remate Televisado de Talano Hnos. - Río Cuarto, Córdoba",
+      "publishedAt": "2021-12-18T22:10:49+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/5H2lyM8xQig/hqdefault.jpg"
+    },
+    "lastChecked": "2026-06-29"
   },
   "javier-ulises-avalos": {
     "channelId": "UCfXPmur1rH5_2Vd-t-YoKTA",
@@ -16,7 +23,7 @@
       "publishedAt": "2026-06-04T20:06:13+00:00",
       "thumbnail": "https://i.ytimg.com/vi/Btq5T_x7jew/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "canal-rural": {
     "channelId": "UCPumJ2ayrr-JDsA9JDCUDDQ",
@@ -25,12 +32,12 @@
     "subscribers": 150000,
     "isAggregator": true,
     "latestVideo": {
-      "videoId": "sTe7XIgPrTo",
-      "title": "Canal Rural Noticias | Edición Sábado | 27 JUN | BLOQUE 2",
-      "publishedAt": "2026-06-28T01:30:35+00:00",
-      "thumbnail": "https://i.ytimg.com/vi/sTe7XIgPrTo/hqdefault.jpg"
+      "videoId": "B0SwZ5cTn-k",
+      "title": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
+      "publishedAt": "2026-06-29T10:40:59+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/B0SwZ5cTn-k/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "bressan-y-cia": {
     "channelId": "UCVCtVthepYltxxUbuf14fLw",
@@ -43,7 +50,7 @@
       "publishedAt": "2026-02-26T20:34:50+00:00",
       "thumbnail": "https://i.ytimg.com/vi/jzgs-Yds5eM/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "cooperativa-guillermo-lehmann": {
     "channelId": "UCIHhaaYzJSCAfqnUEAW4ZpQ",
@@ -52,11 +59,11 @@
     "subscribers": 737,
     "latestVideo": {
       "videoId": "WLR8CvSaCzc",
-      "title": "Remates Raza Carne 2026",
+      "title": "Inició el calendario Remate Raza Carne de La Lehmann",
       "publishedAt": "2026-06-26T22:56:16+00:00",
       "thumbnail": "https://i.ytimg.com/vi/WLR8CvSaCzc/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "rosgan": {
     "channelId": "UCvO_FXYeiyj5QYqL9cWOUeQ",
@@ -65,12 +72,12 @@
     "isAggregator": true,
     "subscribers": 3000,
     "latestVideo": {
-      "videoId": "ouFDuvJr-H4",
-      "title": "Feria Ceres",
-      "publishedAt": "2026-06-27T03:30:00+00:00",
-      "thumbnail": "https://i.ytimg.com/vi/ouFDuvJr-H4/hqdefault.jpg"
+      "videoId": "MI27CFpYpPk",
+      "title": "Feria Malbran",
+      "publishedAt": "2026-06-29T11:03:58+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/MI27CFpYpPk/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "saenz-valiente-bullrich": {
     "channelId": "UCaarhFa2peyJOG-tMqbsByw",
@@ -83,7 +90,7 @@
       "publishedAt": "2026-06-28T06:52:39+00:00",
       "thumbnail": "https://i.ytimg.com/vi/0aAiE7BYIPY/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "afa": {
     "channelId": "UC1XGF4vhAKosCWHR-74C-Ng",
@@ -96,7 +103,7 @@
       "publishedAt": "2026-06-26T02:46:18+00:00",
       "thumbnail": "https://i.ytimg.com/vi/kGfQeQTGDnI/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "travaglia": {
     "channelId": "UCfPvgVUfTzGOuups_EN6J3Q",
@@ -109,7 +116,7 @@
       "publishedAt": "2023-04-18T12:17:59+00:00",
       "thumbnail": "https://i.ytimg.com/vi/fpTF9PkLtqk/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "colombo-y-magliano": {
     "channelId": "UCre8ZZIykhnEFbK0R8nFdEg",
@@ -117,12 +124,12 @@
     "channelTitle": "Colombo y Magliano",
     "subscribers": null,
     "latestVideo": {
-      "videoId": "FR2IUkhCfFQ",
-      "title": "2026.07.18 - ADN + Tres Cruces",
-      "publishedAt": "2026-06-28T17:47:23+00:00",
-      "thumbnail": "https://i.ytimg.com/vi/FR2IUkhCfFQ/hqdefault.jpg"
+      "videoId": "Dns5eZHOSBE",
+      "title": "2026.07.29 - Tv Corrientes",
+      "publishedAt": "2026-06-29T14:00:51+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/Dns5eZHOSBE/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "vicar-ganadera": {
     "channelId": "UCE1_4Ki_lzvLhxFcYu4ZGpA",
@@ -135,7 +142,7 @@
       "publishedAt": "2026-06-07T13:38:33+00:00",
       "thumbnail": "https://i.ytimg.com/vi/BczB614RSE0/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "umc-villaguay": {
     "channelId": "UCPzo8IxRDGZcI5rH9IS9fhA",
@@ -148,7 +155,7 @@
       "publishedAt": "2026-06-12T21:32:14+00:00",
       "thumbnail": "https://i.ytimg.com/vi/dOgJ1z4Myg8/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "ferias-rauch": {
     "channelId": "UCggQXhO2mIzIoKfVGCxIkpg",
@@ -161,7 +168,7 @@
       "publishedAt": "2022-09-02T01:12:02+00:00",
       "thumbnail": "https://i.ytimg.com/vi/H6c1SHseRwM/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "la-ganadera": {
     "channelId": "UCrAG-793MFmRqqlVzEHQJwg",
@@ -174,7 +181,7 @@
       "publishedAt": "2026-06-26T14:10:10+00:00",
       "thumbnail": "https://i.ytimg.com/vi/luJGcJ6_ssU/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "tradicion-ganadera": {
     "channelId": "UCUrUHr8QbQizYer2kI20mhA",
@@ -187,7 +194,7 @@
       "publishedAt": "2026-02-25T05:19:10+00:00",
       "thumbnail": "https://i.ytimg.com/vi/D1nwZfv5F4w/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "ofarrell": {
     "channelId": "UCR4g7aa2EyXDafHQnqvA8vw",
@@ -200,7 +207,7 @@
       "publishedAt": "2026-01-06T17:52:00+00:00",
       "thumbnail": "https://i.ytimg.com/vi/zeM3DJWolH4/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "colombo-y-colombo": {
     "channelId": "UCW3SRpohecSX8TXOwZ17cZw",
@@ -213,7 +220,7 @@
       "publishedAt": "2025-10-22T14:38:22+00:00",
       "thumbnail": "https://i.ytimg.com/vi/UGhUl_h8C1s/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "reggi": {
     "channelId": "UCDp9jvg607ey7p6sHowOjYw",
@@ -226,7 +233,7 @@
       "publishedAt": "2026-06-18T19:53:10+00:00",
       "thumbnail": "https://i.ytimg.com/vi/dbomfl4dhLg/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "ganadera-salliquelo": {
     "channelId": "UCImGhQZdjU7TOxs6KbKIaeQ",
@@ -239,7 +246,7 @@
       "publishedAt": "2026-05-15T22:49:50+00:00",
       "thumbnail": "https://i.ytimg.com/vi/tnNddcXN3AQ/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "casa-usandizaga": {
     "channelId": "UCgnnl_b5Rmw2PN3YXD8RCvg",
@@ -252,7 +259,7 @@
       "publishedAt": "2026-06-24T10:53:31+00:00",
       "thumbnail": "https://i.ytimg.com/vi/kwbCo3_ARdA/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "hk-agro": {
     "channelId": "UCMk6kpELmWjxyImRaqM__kw",
@@ -265,7 +272,7 @@
       "publishedAt": "2026-05-28T09:09:26+00:00",
       "thumbnail": "https://i.ytimg.com/vi/h9tssRx1JQk/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "idercor": {
     "channelId": "UC1oc70kGKItShLaPlFMZEeA",
@@ -278,7 +285,7 @@
       "publishedAt": "2021-05-11T06:17:12+00:00",
       "thumbnail": "https://i.ytimg.com/vi/Zv4zph0usyc/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "ildarraz-hnos": {
     "channelId": "UCpFj_KKvcyMuscbcgDhSnvg",
@@ -291,7 +298,7 @@
       "publishedAt": "2018-08-03T15:54:05+00:00",
       "thumbnail": "https://i.ytimg.com/vi/c_j5LD6kfvY/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "lanser": {
     "channelId": "UCmiq2KdO9o1MJbDGRXnx8SQ",
@@ -304,7 +311,7 @@
       "publishedAt": "2026-06-26T15:04:02+00:00",
       "thumbnail": "https://i.ytimg.com/vi/Nwt_bCZLchc/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "nestor-fuentes": {
     "channelId": "UCJRdd9PKH4VYpvWPP5dly7A",
@@ -317,14 +324,14 @@
       "publishedAt": "2026-02-07T16:32:42+00:00",
       "thumbnail": "https://i.ytimg.com/vi/-0gTFVXZ14k/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   },
   "pedro-noel-irey": {
     "channelId": "UCTNYDLjbPfmGnTn1QqOUX_Q",
     "channelUrl": "https://www.youtube.com/@ireytv",
     "channelTitle": "Pedro Noel Irey S.R.L.",
     "subscribers": null,
-    "lastChecked": "2026-06-28",
+    "lastChecked": "2026-06-29",
     "latestVideo": {
       "videoId": "wMlDSB-Vctk",
       "title": "090320260000J920",
@@ -337,7 +344,7 @@
     "channelUrl": "https://www.youtube.com/@JaureguiLordaHacienda",
     "channelTitle": "Jauregui Lorda Haciendas",
     "subscribers": null,
-    "lastChecked": "2026-06-28",
+    "lastChecked": "2026-06-29",
     "latestVideo": {
       "videoId": "aT6VnnqJngk",
       "title": "Remate de Cabaña tres Molinos en la Sociedad Rural de Gualeguaychú, gracias a todos por venir.",
@@ -350,7 +357,7 @@
     "channelUrl": "https://www.youtube.com/@consignatariahasenkamp",
     "channelTitle": "Consignataria Hasenkamp",
     "subscribers": null,
-    "lastChecked": "2026-06-28",
+    "lastChecked": "2026-06-29",
     "latestVideo": {
       "videoId": "OlWgN7i_JzQ",
       "title": "REMATE CONSIGANTARIA HASENKAMP S.R.L.",
@@ -363,12 +370,12 @@
     "channelUrl": "https://www.youtube.com/@alfredos.mondino9815",
     "channelTitle": "Alfredo S. Mondino",
     "subscribers": null,
-    "lastChecked": "2026-06-28",
+    "lastChecked": "2026-06-29",
     "latestVideo": {
-      "videoId": "StGTBLb4Cr0",
-      "title": "LOTE 28",
-      "publishedAt": "2026-06-28T15:31:28+00:00",
-      "thumbnail": "https://i.ytimg.com/vi/StGTBLb4Cr0/hqdefault.jpg"
+      "videoId": "7Y9KdHK6_A0",
+      "title": "LOTE 40",
+      "publishedAt": "2026-06-29T15:58:53+00:00",
+      "thumbnail": "https://i.ytimg.com/vi/7Y9KdHK6_A0/hqdefault.jpg"
     }
   },
   "monasterio-tattersall": {
@@ -376,7 +383,7 @@
     "channelUrl": "https://www.youtube.com/@monasteriotattersall2162",
     "channelTitle": "Monasterio Tattersall",
     "subscribers": null,
-    "lastChecked": "2026-06-28",
+    "lastChecked": "2026-06-29",
     "latestVideo": {
       "videoId": "duqvNAeq96A",
       "title": "LOTE 50 VAQUILLAS 230 KG MONASTERIO",
@@ -395,6 +402,6 @@
       "publishedAt": "2026-06-05T20:27:03+00:00",
       "thumbnail": "https://i.ytimg.com/vi/63QMMH8QmJQ/hqdefault.jpg"
     },
-    "lastChecked": "2026-06-28"
+    "lastChecked": "2026-06-29"
   }
 }
