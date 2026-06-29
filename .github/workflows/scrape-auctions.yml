@@ -53,6 +53,13 @@ jobs:
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
 
+      # 2da pasada: remates de hoy SIN canal propio → matchear streams en vivo de
+      # los canales agregadores (Canal Rural, Rosgan, Entre Surcos) por título.
+      - name: Match aggregator streams
+        run: npx tsx scripts/match-aggregator-streams.ts
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+
       # Always touch a tiny trigger file so a rebuild fires even when the
       # scraper found no new data (e.g., weekend, MAG hasn't published yet).
       # Without this, ~13 pages that snapshot `new Date()` at SSG time freeze

@@ -1,4 +1,10 @@
 {
+  "entre-surcos-y-corrales": {
+    "channelId": "UCU6ytSZx7evWeXMtZvhGraA",
+    "channelUrl": "https://www.youtube.com/channel/UCU6ytSZx7evWeXMtZvhGraA",
+    "channelTitle": "Entre Surcos y Corrales",
+    "isAggregator": true
+  },
   "javier-ulises-avalos": {
     "channelId": "UCfXPmur1rH5_2Vd-t-YoKTA",
     "channelUrl": "https://www.youtube.com/@juaconsignatario8281",
@@ -56,6 +62,7 @@
     "channelId": "UCvO_FXYeiyj5QYqL9cWOUeQ",
     "channelUrl": "https://www.youtube.com/@RosganBCR",
     "channelTitle": "Rosgan BCR",
+    "isAggregator": true,
     "subscribers": 3000,
     "latestVideo": {
       "videoId": "ouFDuvJr-H4",

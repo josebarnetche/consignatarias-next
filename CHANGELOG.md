@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.66.0] — 2026-06-29
+
+### Matcher de streams de agregadores — surfacea remates de consignatarias sin canal propio
+
+~47 consignatarias con remates próximos no tienen canal de YouTube propio: las transmiten **AGREGADORES** (Canal Rural, Rosgan, Entre Surcos y Corrales). El matcher de canal propio no las cubría → no figuraban en vivo. Nuevo `scripts/match-aggregator-streams.ts` (2da pasada en `scrape-auctions.yml`, tras el matcher de canal propio): para cada remate de hoy SIN `youtubeUrl`, busca en los canales con flag `isAggregator` un stream EN VIVO/UPCOMING cuyo título matchee la consignataria, y se lo attachea → aparece en su página vía el render de `youtubeUrl` existente.
+
+Precisión validada sobre streams reales de Canal Rural + Entre Surcos:
+- Exige keyword **"remate|feria|subasta" + needle estricta** (multi-palabra, sin sufijos societarios/genéricos) → elimina falsos positivos de topónimos (ej. "Hasenkamp" el pueblo) y palabras genéricas. Mapear a ciegas el top-de-búsqueda metía links errados; esto no.
+- En la prueba encontró en vivo a consignatarias sin canal propio (Esteban Abelenda, Gananor Pujol) transmitidas por Canal Rural.
+
+**Por qué:** el modelo consignataria→canal-propio deja afuera a las que se transmiten por broadcaster; el matching en tiempo de stream (no mapeo estático) las cubre confiable. Honesto: **precisión > cobertura** — solo attachea con match fuerte, no infla el número con mapeos dudosos.
+
 ## [1.65.1] — 2026-06-29
 
 ### "EN VIVO" en la página de cada consignataria (no solo con URL directa)
