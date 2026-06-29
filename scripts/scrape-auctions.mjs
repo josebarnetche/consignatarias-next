@@ -1396,6 +1396,10 @@ const SLUG_DEDUP_MAP = {
   'tradicion-ganadera-sa-porro-srl': 'tradicion-ganadera',
   'aguerre-s-r-l': 'aguerre',
   'aguerre-srl': 'aguerre',
+  // Canal Rural (elrural.com) slugifica algunos nombres distinto al canónico
+  // (apóstrofo, abreviaturas) → sin estos alias, la firma aparece 2 veces.
+  'o-farrell': 'ofarrell',
+  'alfredo-s-mondino': 'alfredo-sebastian-mondino',
 };
 
 export function deduplicateAuctions(auctions) {

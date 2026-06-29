@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.67.3] — 2026-06-29
+
+### Fix: Canal Rural ya no duplica O'Farrell/Mondino (alias de slug)
+
+Verificando en vivo aparecieron 2 duplicados: Canal Rural slugifica algunos nombres distinto al canónico ("O'Farrell"→`o-farrell` vs `ofarrell`; "Alfredo S. Mondino"→`alfredo-s-mondino` vs `alfredo-sebastian-mondino`), dejando la firma 2 veces (su entrada propia + la de Canal Rural). Agregados los alias a `SLUG_DEDUP_MAP` → ahora colapsan en la entrada propia (con location) y la **enriquecen** con el deep-link de elrural. Verificado: O'Farrell y Mondino 30/06 quedan en 1 entrada cada uno, con el link de Canal Rural. Nota: futuras firmas de Canal Rural con slug divergente pueden requerir un alias nuevo (lo detecta `audit-data-integrity.mjs`).
+
 ## [1.67.2] — 2026-06-29
 
 ### Fix dedup: remates sin location (Canal Rural) ya no duplican
