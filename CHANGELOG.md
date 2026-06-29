@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.65.1] — 2026-06-29
+
+### "EN VIVO" en la página de cada consignataria (no solo con URL directa)
+
+Bug: el perfil de la consignataria mostraba el botón "En vivo" / link de transmisión **solo** cuando el remate tenía un `youtubeUrl` directo (que el scraper adjunta recién DESPUÉS de transmitir). Las consignatarias con **canal de YouTube mapeado** (~53%, en `youtube-channels.json`) no figuraban en vivo el día del remate — ej. Pedro Noel Irey (canal mapeado, remate hoy) no mostraba nada.
+
+Fix — reusa `resolveYoutubeUrl` (que ya cae al `/streams` del canal), sin data nueva:
+- **Hero "próximo remate":** muestra "▶ En vivo ahora" cuando el próximo remate está en vivo (`getEffectiveStatus === 'live'`) y la consignataria tiene canal, linkeando al `/streams`. Con URL directa sigue igual.
+- **Filas del cronograma:** mismo indicador "● EN VIVO" para remates en vivo ahora sin URL directa (cubre el caso de varios remates el mismo día — ej. 11hs y 14hs).
+
+**Por qué:** el dato (calendario + mapeo de canal) ya existía; solo el perfil lo ignoraba. Honesto: el indicador sale solo durante la ventana en vivo (no antes), y solo para remates que figuran en el calendario — los que el scraper no captura (ej. broadcasts de Canal Rural a consignatarias sin canal mapeado) siguen sin aparecer: ese es un gap de DATOS, no de UI.
+
 ## [1.65.0] — 2026-06-29
 
 ### Remate en vivo: transcripción automática del cantaleo → ticker de precios preliminar

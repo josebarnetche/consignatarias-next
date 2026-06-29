@@ -11,6 +11,7 @@ import type { EntityTier } from '@/lib/features'
 import type { AuctionResult } from './page'
 import FeatureGate from '@/components/FeatureGate'
 import { normalizeUrl } from '@/lib/utils/url'
+import { resolveYoutubeUrl } from '@/lib/youtube-live'
 import { trackProfileView, trackOutboundClick, trackClaimCTA, trackValueEvent } from '@/lib/analytics'
 import {
   TYPE_COLORS,
@@ -140,6 +141,11 @@ function ExpositorBadge({ especial }: { especial: RemateEspecial }) {
 
 function ProfileAuctionRow({ auction, today, especial }: { auction: Auction; today: string; especial?: RemateEspecial | null }) {
   const isToday = auction.date === today
+  // Link "EN VIVO" via canal mapeado para remates en vivo AHORA sin youtubeUrl directo
+  // (el link directo se renderiza aparte abajo). Cubre el caso de varios remates el mismo día.
+  const rowLiveChannel = !auction.youtubeUrl && getEffectiveStatus(auction.date, auction.time, today) === 'live'
+    ? resolveYoutubeUrl(auction)
+    : null
   const isPast = auction.date < today
   const city = getCity(auction.location)
   const sourceUrl = normalizeUrl(auction.sourceUrl)
@@ -206,6 +212,11 @@ function ProfileAuctionRow({ auction, today, especial }: { auction: Auction; tod
               onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
               className="text-xxs font-terminal text-negative hover:text-negative/80 motion-hover" aria-label="Ver transmision">YouTube</a>
           )}
+          {rowLiveChannel && (
+            <a href={rowLiveChannel.url} target="_blank" rel="noopener noreferrer"
+              onClick={() => trackOutboundClick(rowLiveChannel.url, 'youtube')}
+              className="text-xxs font-terminal text-negative hover:text-negative/80 motion-hover" aria-label="En vivo ahora">&#9679; EN VIVO</a>
+          )}
         </div>
       </div>
 
@@ -261,6 +272,11 @@ function ProfileAuctionRow({ auction, today, especial }: { auction: Auction; tod
               <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
                 onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
                 className="text-xxs font-terminal text-negative hover:text-negative/80 motion-hover" aria-label="Ver transmision" title="YouTube">YT</a>
+            )}
+            {rowLiveChannel && (
+              <a href={rowLiveChannel.url} target="_blank" rel="noopener noreferrer"
+                onClick={() => trackOutboundClick(rowLiveChannel.url, 'youtube')}
+                className="text-xxs font-terminal text-negative hover:text-negative/80 motion-hover" aria-label="En vivo ahora" title="En vivo ahora">&#9679; EN VIVO</a>
             )}
             {auction.sourceUrl && (
               <a href={normalizeUrl(auction.sourceUrl) || '#'} target="_blank" rel="noopener noreferrer"
@@ -669,11 +685,20 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                   </div>
                 )}
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {upcoming[0].youtubeUrl && (
-                    <a href={normalizeUrl(upcoming[0].youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer" onClick={() => { trackOutboundClick(upcoming[0].youtubeUrl || '', 'youtube'); trackValueEvent('live_click', { entityType: 'consignataria', entitySlug: profile.canonicalSlug }) }} className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xxs font-terminal uppercase tracking-wider text-positive border border-positive/30 rounded-terminal hover:bg-positive/10 transition-colors">
-                      &#9654; En vivo
-                    </a>
-                  )}
+                  {(() => {
+                    // URL directa (confirmada) o, si la consignataria tiene canal mapeado y el
+                    // próximo remate está EN VIVO ahora, el /streams del canal (probable). Antes
+                    // solo mostraba con youtubeUrl directo -> consignatarias con canal no figuraban en vivo.
+                    const live = resolveYoutubeUrl(upcoming[0])
+                    if (!live) return null
+                    const liveNow = getEffectiveStatus(upcoming[0].date, upcoming[0].time, today) === 'live'
+                    if (live.confidence === 'probable' && !liveNow) return null
+                    return (
+                      <a href={live.url} target="_blank" rel="noopener noreferrer" onClick={() => { trackOutboundClick(live.url, 'youtube'); trackValueEvent('live_click', { entityType: 'consignataria', entitySlug: profile.canonicalSlug }) }} className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xxs font-terminal uppercase tracking-wider text-positive border border-positive/30 rounded-terminal hover:bg-positive/10 transition-colors">
+                        &#9654; {liveNow ? 'En vivo ahora' : 'En vivo'}
+                      </a>
+                    )
+                  })()}
                   {upcoming[0].catalogUrl && (
                     <a href={normalizeUrl(upcoming[0].catalogUrl) || '#'} target="_blank" rel="noopener noreferrer" onClick={() => { trackOutboundClick(upcoming[0].catalogUrl || '', 'catalog'); trackValueEvent('catalog_click', { entityType: 'consignataria', entitySlug: profile.canonicalSlug }) }} className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xxs font-terminal uppercase tracking-wider text-accent border border-accent/30 rounded-terminal hover:bg-accent/10 transition-colors">
                       Catálogo
