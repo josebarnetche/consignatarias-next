@@ -434,7 +434,7 @@ async function scrapeHRE() {
 // Source: Rosgan / RosganNet (public JSON API). Pull all, filter to future +
 // provinces we can resolve from the location suffix. NEA-relevant rows kept.
 // ---------------------------------------------------------------------------
-async function scrapeRosgan() {
+export async function scrapeRosgan() {
   const SRC = "Rosgan";
   try {
     const data = await fetchJSON(

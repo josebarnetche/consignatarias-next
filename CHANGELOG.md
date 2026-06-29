@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.66.3] — 2026-06-29
+
+### Fetch local de Entre Surcos/Rosgan desde IP residencial AR (sin proxy)
+
+Las 2 fuentes bloqueadas para la IP del runner (Entre Surcos fetch-failed, Rosgan 403) ahora se fetchean **desde la máquina del owner en Corrientes** (IP residencial AR → 200), sin pagar proxy. Nuevo `scripts/local-nea-fetch.mjs`: reusa las funciones canónicas `scrapeEntreSurcos()` + `scrapeRosgan()` (ahora exportadas; `main()` de scrape-auctions quedó guardado tras `import.meta.url === entrypoint` para permitir el import sin ejecutar todo), escribe `src/lib/data/remates-local-nea.json` y commitea solo ese archivo (rebase autostash). El scraper de la nube lo lee y mergea (dedup) — esas fuentes tienen slug fuera de `scrapableSlugs`, así que sobreviven como curated.
+
+**Rinde:** primera corrida trajo **92 remates** (Entre Surcos 82 + Rosgan 10) que la nube perdía por completo. Agendable con `scripts/local-nea-fetch.bat` + Task Scheduler (2×/día). Best-effort por diseño: si la PC está apagada, la nube conserva el último archivo bueno como curated. Cero dependencia de terceros.
+
 ## [1.66.2] — 2026-06-29
 
 ### Revert del "fix" de scrapers v1.66.1 — el problema es la IP del runner, no los headers

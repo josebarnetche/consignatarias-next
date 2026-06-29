@@ -17,12 +17,15 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { scrapeNEA } from "./scrapers/nea.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = resolve(__dirname, "../src/lib/data");
 const REMATES_PATH = resolve(DATA_DIR, "remates.json");
+// Fuentes bloqueadas-en-la-nube (Rosgan, Entre Surcos) fetcheadas localmente desde
+// una IP residencial AR (scripts/local-nea-fetch.mjs). Opcional; se mergea si existe.
+const LOCAL_NEA_PATH = resolve(DATA_DIR, "remates-local-nea.json");
 const MARKET_PATH = resolve(DATA_DIR, "market-prices.json");
 const YOUTUBE_PATH = resolve(DATA_DIR, "youtube-channels.json");
 const MAG_CONSIG_PATH = resolve(DATA_DIR, "mag-consignatarios.json");
@@ -351,7 +354,7 @@ const ENTRESURCOS_TYPE = {
   televisado: "general", internet: "general", virtual: "general", faena: "general",
 };
 
-async function scrapeEntreSurcos() {
+export async function scrapeEntreSurcos() {
   console.log("[9/9] Scraping Entre Surcos y Corrales...");
   const html = await fetchHTML("https://www.entresurcosycorrales.com/iframe_cartelera.php");
   if (!html) return [];
@@ -1605,18 +1608,26 @@ async function main() {
   const validCurated = curated.filter((a) => isValidDate(a.date));
   console.log(`Valid scraped: ${validScraped.length} (filtered ${allScraped.length - validScraped.length} invalid)`);
 
+  // Fuentes bloqueadas para la IP del runner (Rosgan/Entre Surcos), fetcheadas localmente
+  // desde una IP residencial AR y commiteadas a remates-local-nea.json. Opcional.
+  let localNEA = [];
+  try {
+    localNEA = JSON.parse(readFileSync(LOCAL_NEA_PATH, "utf-8")).filter((a) => isValidDate(a.date));
+    if (localNEA.length) console.log(`Local NEA (Rosgan/Entre Surcos): ${localNEA.length}`);
+  } catch { /* archivo opcional, no siempre presente */ }
+
   // Normalize province names (remove accents)
-  for (const a of [...validCurated, ...validScraped]) {
+  for (const a of [...validCurated, ...validScraped, ...localNEA]) {
     a.province = normalizeProvince(a.province);
   }
 
   // Provincia por LOCALIDAD del evento (georef + cache + mapa curado + venues).
   // Reemplaza el correctProvince por-ciudad: corrige el geo-leak donde ferias en
   // pueblos no mapeados caían a la provincia de la consignataria (feed).
-  await enrichProvinces([...validCurated, ...validScraped]);
+  await enrichProvinces([...validCurated, ...validScraped, ...localNEA]);
 
   // Merge curated + freshly scraped
-  const merged = deduplicateAuctions([...validCurated, ...validScraped]);
+  const merged = deduplicateAuctions([...validCurated, ...validScraped, ...localNEA]);
 
   // Sort by date, then time
   merged.sort(
@@ -1865,7 +1876,11 @@ async function main() {
   console.log(`Done.\n`);
 }
 
-main().catch((err) => {
-  console.error("Scraper failed:", err);
-  process.exit(1);
-});
+// Correr el scraper solo si este archivo es el entry-point. Así scripts/local-nea-fetch.mjs
+// puede importar scrapeEntreSurcos sin disparar todo el scraper.
+if (import.meta.url === pathToFileURL(process.argv[1] || "").href) {
+  main().catch((err) => {
+    console.error("Scraper failed:", err);
+    process.exit(1);
+  });
+}
