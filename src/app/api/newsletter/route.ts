@@ -1,9 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendNewsletterWelcome } from '@/lib/email'
+import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limit-db'
 
 export async function POST(request: NextRequest) {
   try {
+    // Durable per-IP rate limit — sends a welcome email to the submitted
+    // address, so cap it to stop mailbox flooding / Resend quota burn.
+    const rl = await enforceRateLimit({
+      action: 'newsletter',
+      identity: `ip:${clientIp(request)}`,
+      limit: 20,
+      windowSeconds: 3600,
+    })
+    if (!rl.ok) return rateLimitedResponse(rl.retryAfter)
+
     const { email, source = 'homepage', kgHa, hectareas } = await request.json()
 
     // Arriendo guardado (opcional, desde el calculador): personaliza el cierre mensual.

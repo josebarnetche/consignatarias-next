@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { frigorificoClaimSchema } from '@/lib/validators/claim'
 import { sendFrigorificoClaimConfirmation, sendFrigorificoClaimNotificationToAdmin } from '@/lib/email'
+import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limit-db'
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,6 +17,15 @@ export async function POST(req: NextRequest) {
     }
 
     const { frigorifico_cuit, frigorifico_name, claimant_email, claimant_name, claimant_phone, claimant_role } = parsed.data
+
+    // Durable rate limit — sends a confirmation email to the submitted address.
+    for (const [id, limit] of [
+      [`ip:${clientIp(req)}`, 10],
+      [`email:${claimant_email.toLowerCase()}`, 3],
+    ] as const) {
+      const rl = await enforceRateLimit({ action: 'frigo_claims', identity: id, limit, windowSeconds: 3600 })
+      if (!rl.ok) return rateLimitedResponse(rl.retryAfter)
+    }
     const supabase = requireServiceClient()
 
     // Check for duplicate pending claim

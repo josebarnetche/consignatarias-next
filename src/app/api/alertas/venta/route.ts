@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendSellZoneAlertConfirm } from '@/lib/email'
 import { computeSellZone, ALERT_CATS, CAT_LABEL, type AlertCat } from '@/lib/market/sell-zone'
+import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limit-db'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -38,6 +39,15 @@ export async function POST(req: NextRequest) {
   }
   if (!ALERT_CATS.includes(categoria as AlertCat)) {
     return NextResponse.json({ success: false, error: 'Categoría inválida' }, { status: 400 })
+  }
+
+  // Durable rate limit — sends a confirmation email to the submitted address.
+  for (const [id, limit] of [
+    [`ip:${clientIp(req)}`, 15],
+    [`email:${email}`, 5],
+  ] as const) {
+    const rl = await enforceRateLimit({ action: 'alertas_venta', identity: id, limit, windowSeconds: 3600 })
+    if (!rl.ok) return rateLimitedResponse(rl.retryAfter)
   }
 
   const supabase = requireServiceClient()

@@ -1,25 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
+import { authorizeCron } from '@/lib/cron-auth'
 import { sendPostRemateResultsRequest } from '@/lib/email'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 
 /**
  * POST /api/cron/post-remate-outreach
- * 
+ *
  * Sends outreach emails to consignatarias ~3 hours after their remate ends,
  * asking them to share their results/averages.
- * 
+ *
  * Run this hourly via Vercel Cron or GitHub Actions.
  */
 
-// Verify cron secret to prevent unauthorized access
-const CRON_SECRET = process.env.CRON_SECRET
-
 export async function POST(request: NextRequest) {
-  // Auth check
-  const authHeader = request.headers.get('authorization')
-  if (CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`) {
+  // Auth — fail CLOSED. Previously gated on `CRON_SECRET &&`, so an unset
+  // secret skipped auth entirely; combined with GET→POST delegation that meant
+  // a plain browser GET could blast outreach email to every consignataria.
+  if (!authorizeCron(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

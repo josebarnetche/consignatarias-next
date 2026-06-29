@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendElCorredorDelivery } from '@/lib/email'
+import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limit-db'
 import { z } from 'zod'
 import manifest from '../../../../../public/el-corredor/manifest.json'
 
@@ -33,6 +34,15 @@ export async function POST(req: NextRequest) {
 
     const { email } = parsed.data
     const normalizedEmail = email.trim().toLowerCase()
+
+    // Durable rate limit — sends the lead-magnet PDF to the submitted address.
+    for (const [id, limit] of [
+      [`ip:${clientIp(req)}`, 15],
+      [`email:${normalizedEmail}`, 4],
+    ] as const) {
+      const rl = await enforceRateLimit({ action: 'el_corredor', identity: id, limit, windowSeconds: 3600 })
+      if (!rl.ok) return rateLimitedResponse(rl.retryAfter)
+    }
 
     const supabase = requireServiceClient()
 

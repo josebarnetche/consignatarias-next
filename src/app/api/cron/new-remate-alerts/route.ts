@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
+import { authorizeCron } from '@/lib/cron-auth'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import { getEntityTier } from '@/lib/features'
 import { sendNewRemateAlert } from '@/lib/email'
@@ -35,10 +36,8 @@ interface AlertMatch {
 }
 
 export async function GET(req: NextRequest) {
-  // Verify cron secret (strip literal \r\n that Windows CLI may add to env vars)
-  const cronSecret = req.headers.get('x-cron-secret') || req.nextUrl.searchParams.get('secret')
-  const envSecret = process.env.CRON_SECRET?.replace(/\\r\\n$/, '').trim()
-  if (cronSecret !== envSecret && process.env.NODE_ENV === 'production') {
+  // Fail CLOSED in every environment (was only enforced when NODE_ENV==='production').
+  if (!authorizeCron(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
