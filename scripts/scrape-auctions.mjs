@@ -1398,35 +1398,45 @@ const SLUG_DEDUP_MAP = {
   'aguerre-srl': 'aguerre',
 };
 
-function deduplicateAuctions(auctions) {
-  const seen = new Map();
+export function deduplicateAuctions(auctions) {
+  // normSlug: alias map, luego strip de sufijos societarios
+  const normSlugOf = (a) => SLUG_DEDUP_MAP[a.consignatariaSlug] ||
+    (a.consignatariaSlug || "")
+      .replace(/-s-a$/, "").replace(/-sa$/, "").replace(/-s-r-l$/, "").replace(/-srl$/, "");
+  const firmDateOf = (a) => `${a.date}|${normSlugOf(a)}`;
+  const locKeyOf = (a) => (a.location || "").split(",")[0].trim().toLowerCase();
+  const mergeInto = (existing, a) => {
+    // Prefiere la entrada con más datos: solo completa lo que falta.
+    if (a.estimatedHeads && !existing.estimatedHeads) existing.estimatedHeads = a.estimatedHeads;
+    if (a.time && !existing.time) existing.time = a.time;
+    if (a.catalogUrl && !existing.catalogUrl) existing.catalogUrl = a.catalogUrl;
+    if (a.youtubeUrl && !existing.youtubeUrl) existing.youtubeUrl = a.youtubeUrl;
+    if (a.liveLink && !existing.liveLink) existing.liveLink = a.liveLink;
+  };
 
+  // Pass 1: ancla "con location" por firma+fecha. Permite colapsar las entradas
+  // sin location (ej. Canal Rural, que no la trae) sin importar el orden de llegada.
+  const located = new Map();
   for (const a of auctions) {
-    // Normalize slug for dedup: check alias map, then strip legal suffixes
-    let normSlug = SLUG_DEDUP_MAP[a.consignatariaSlug] ||
-      (a.consignatariaSlug || "")
-        .replace(/-s-a$/, "")
-        .replace(/-sa$/, "")
-        .replace(/-s-r-l$/, "")
-        .replace(/-srl$/, "");
-    // Key: date + normalized slug + location (first word)
-    const locKey = (a.location || "").split(",")[0].trim().toLowerCase();
-    const key = `${a.date}|${normSlug}|${locKey}`;
+    const fd = firmDateOf(a);
+    if (locKeyOf(a) && !located.has(fd)) located.set(fd, a);
+  }
 
-    if (!seen.has(key)) {
-      seen.set(key, a);
-    } else {
-      // Merge: prefer the one with more data
-      const existing = seen.get(key);
-      if (a.estimatedHeads && !existing.estimatedHeads)
-        existing.estimatedHeads = a.estimatedHeads;
-      if (a.time && !existing.time) existing.time = a.time;
-      if (a.catalogUrl && !existing.catalogUrl)
-        existing.catalogUrl = a.catalogUrl;
-      if (a.youtubeUrl && !existing.youtubeUrl)
-        existing.youtubeUrl = a.youtubeUrl;
-      if (a.liveLink && !existing.liveLink) existing.liveLink = a.liveLink;
+  // Pass 2: dedup por date|slug|location; las sin-location se mergean en su ancla.
+  const seen = new Map();
+  for (const a of auctions) {
+    const fd = firmDateOf(a);
+    const locKey = locKeyOf(a);
+    if (!locKey && located.has(fd)) {
+      mergeInto(located.get(fd), a);
+      continue;
     }
+    const key = `${fd}|${locKey}`;
+    if (seen.has(key)) {
+      mergeInto(seen.get(key), a);
+      continue;
+    }
+    seen.set(key, a);
   }
 
   return [...seen.values()];

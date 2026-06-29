@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.67.2] — 2026-06-29
+
+### Fix dedup: remates sin location (Canal Rural) ya no duplican
+
+Los remates de Canal Rural no traen localidad (`location=""`), lo que rompía la clave del dedup (`date|slug|location`) y generaba **duplicados** (la firma aparecía 2 veces: una con provincia, otra sin). `deduplicateAuctions` ahora es de **dos pasadas, order-independent**: indexa primero las entradas "con location" por firma+fecha, y colapsa las sin-location en esa ancla (enriqueciéndola con el deep-link de elrural en vez de duplicar). Verificado: los 3 duplicados de Canal Rural se colapsan; el único residual es un caso pre-existente de ClicRural-vs-sitio-propio con strings de ubicación distintos (matching difuso, fuera de alcance).
+
 ## [1.67.1] — 2026-06-29
 
 ### Canal Rural sumado al fetch local (elrural.com/remates) — 3er agregador
