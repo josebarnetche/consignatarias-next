@@ -31,49 +31,33 @@ const MAG_CONSIG_PATH = resolve(DATA_DIR, "mag-consignatarios.json");
 // Helpers
 // ---------------------------------------------------------------------------
 
-// UA de navegador real: muchos sitios (y la API de Rosgan) rechazan requests sin UA
-// o con UA de bot, sobre todo desde IPs de datacenter como el runner de GitHub Actions.
-const BROWSER_UA =
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36";
-
-// fetch con UA + retry-con-backoff. Reintenta ante fallos transitorios (fetch failed,
-// timeouts, 5xx, 403 intermitentes) que son comunes desde el runner hacia sitios .ar.
-async function fetchWithRetry(url, { timeoutMs = 15000, headers = {}, attempts = 3 } = {}) {
-  let lastErr;
-  for (let i = 1; i <= attempts; i++) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
-    try {
-      const res = await fetch(url, { signal: controller.signal, headers: { "User-Agent": BROWSER_UA, ...headers } });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res;
-    } catch (err) {
-      lastErr = err;
-      if (i < attempts) await new Promise((r) => setTimeout(r, 700 * i));
-    } finally {
-      clearTimeout(timer);
-    }
-  }
-  throw lastErr;
-}
-
-async function fetchJSON(url, timeoutMs = 15000, headers = {}) {
+async function fetchJSON(url, timeoutMs = 15000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetchWithRetry(url, { timeoutMs, headers });
+    const res = await fetch(url, { signal: controller.signal });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
   } catch (err) {
     console.warn(`  [WARN] ${url}: ${err.message}`);
     return null;
+  } finally {
+    clearTimeout(timer);
   }
 }
 
-async function fetchHTML(url, timeoutMs = 15000, headers = {}) {
+async function fetchHTML(url, timeoutMs = 15000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetchWithRetry(url, { timeoutMs, headers });
+    const res = await fetch(url, { signal: controller.signal });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.text();
   } catch (err) {
     console.warn(`  [WARN] ${url}: ${err.message}`);
     return null;
+  } finally {
+    clearTimeout(timer);
   }
 }
 

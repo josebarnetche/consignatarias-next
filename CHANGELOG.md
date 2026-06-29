@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.66.2] — 2026-06-29
+
+### Revert del "fix" de scrapers v1.66.1 — el problema es la IP del runner, no los headers
+
+La corrida de verificación mostró que v1.66.1 fue **net-negativo**: el UA de navegador NO resolvió Rosgan (sigue 403) ni Entre Surcos (sigue fetch-failed) — son **bloqueo a nivel IP del runner de GitHub Actions** (datacenter), no de headers (ambos endpoints responden 200 desde una IP residencial, con o sin UA) — y encima **regresó CACG y O'Farrell** (HTTP 415 desde el runner; con el código original daban 200), bajando el scrape de 255→119. Restaurados los helpers de fetch a su estado original conocido-bueno (verificado: diff exacto vs pre-fix).
+
+**Conclusión honesta:** Rosgan y Entre Surcos no se arreglan por código — el runner de GitHub (IP de datacenter) está bloqueado por esos sitios. Resolverlo requiere infraestructura (proxy / IP residencial / runner self-hosted en AR), fuera de alcance de un cambio de scraper. Los demás scrapers vuelven a andar normal.
+
 ## [1.66.1] — 2026-06-29
 
 ### Scrapers más robustos: UA de navegador + retry (fix Rosgan 403 / Entre Surcos fetch-failed)
