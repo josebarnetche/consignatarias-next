@@ -1867,282 +1867,300 @@
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
-    "current": 1495,
+    "current": 1500,
     "prev": 1495,
-    "change": 0,
+    "change": 0.3,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-06-29",
+  "lastUpdate": "2026-06-30",
   "provinceEntry": {
-    "date": "2026-06-26",
-    "totalCabezas": 5918,
+    "date": "2026-06-30",
+    "totalCabezas": 7420,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 4729,
-        "total": 4733,
-        "percentage": 79.98
-      },
-      {
-        "province": "ENTRE RIOS",
-        "enPie": 291,
-        "total": 292,
-        "percentage": 4.93
-      },
-      {
-        "province": "CORDOBA",
-        "enPie": 280,
-        "total": 280,
-        "percentage": 4.73
-      },
-      {
-        "province": "LA PAMPA",
-        "enPie": 262,
-        "total": 262,
-        "percentage": 4.43
-      },
-      {
-        "province": "SAN LUIS",
-        "enPie": 209,
-        "total": 210,
-        "percentage": 3.55
+        "enPie": 6029,
+        "total": 6044,
+        "percentage": 81.46
       },
       {
         "province": "SANTA FE",
-        "enPie": 101,
-        "total": 102,
-        "percentage": 1.72
+        "enPie": 682,
+        "total": 682,
+        "percentage": 9.19
       },
       {
-        "province": "CORRIENTES",
-        "enPie": 39,
-        "total": 39,
-        "percentage": 0.66
+        "province": "CORDOBA",
+        "enPie": 327,
+        "total": 330,
+        "percentage": 4.45
+      },
+      {
+        "province": "ENTRE RIOS",
+        "enPie": 213,
+        "total": 213,
+        "percentage": 2.87
+      },
+      {
+        "province": "LA PAMPA",
+        "enPie": 151,
+        "total": 151,
+        "percentage": 2.04
       }
     ]
   },
   "detailedCategories": {
-    "date": "2026-06-26",
+    "date": "2026-06-30",
     "categories": [
       {
         "category": "NOVILLOS Esp.Joven + 430",
-        "minPrice": 3100,
-        "maxPrice": 4600,
-        "avgPrice": 4157.06,
-        "cabezas": 905
+        "minPrice": 3600,
+        "maxPrice": 4650,
+        "avgPrice": 4328.71,
+        "cabezas": 708
       },
       {
         "category": "NOVILLOS Regular h 430",
-        "minPrice": 3700,
-        "maxPrice": 4000,
-        "avgPrice": 3870.39,
-        "cabezas": 26
+        "minPrice": 3800,
+        "maxPrice": 4350,
+        "avgPrice": 4083.65,
+        "cabezas": 44
       },
       {
         "category": "NOVILLOS Regular + 430",
-        "minPrice": 2200,
-        "maxPrice": 4300,
-        "avgPrice": 3369.31,
-        "cabezas": 233
-      },
-      {
-        "category": "NOVILLITOS Esp. h 390",
-        "minPrice": 3500,
-        "maxPrice": 5620,
-        "avgPrice": 4887.5,
-        "cabezas": 411
-      },
-      {
-        "category": "NOVILLITOS Esp. + 390",
-        "minPrice": 3500,
-        "maxPrice": 5000,
-        "avgPrice": 4581.74,
-        "cabezas": 703
-      },
-      {
-        "category": "NOVILLITOS Regular",
-        "minPrice": 3200,
-        "maxPrice": 4500,
-        "avgPrice": 3788.35,
+        "minPrice": 2300,
+        "maxPrice": 4000,
+        "avgPrice": 3323.14,
         "cabezas": 122
       },
       {
+        "category": "NOVILLITOS Esp. h 390",
+        "minPrice": 4050,
+        "maxPrice": 5300,
+        "avgPrice": 4911.25,
+        "cabezas": 386
+      },
+      {
+        "category": "NOVILLITOS Esp. + 390",
+        "minPrice": 3000,
+        "maxPrice": 4920,
+        "avgPrice": 4515.72,
+        "cabezas": 536
+      },
+      {
+        "category": "NOVILLITOS Regular",
+        "minPrice": 3500,
+        "maxPrice": 4650,
+        "avgPrice": 3933.37,
+        "cabezas": 89
+      },
+      {
         "category": "VAQUILLONAS Esp. h 390",
-        "minPrice": 3600,
-        "maxPrice": 5700,
-        "avgPrice": 4907.7,
-        "cabezas": 343
+        "minPrice": 3900,
+        "maxPrice": 5340,
+        "avgPrice": 4734.1,
+        "cabezas": 397
       },
       {
         "category": "VAQUILLONAS Esp. + 390",
-        "minPrice": 3600,
-        "maxPrice": 4550,
-        "avgPrice": 3880.14,
-        "cabezas": 268
+        "minPrice": 2600,
+        "maxPrice": 4400,
+        "avgPrice": 3768.35,
+        "cabezas": 256
       },
       {
         "category": "VAQUILLONAS Regular",
-        "minPrice": 2700,
-        "maxPrice": 4400,
-        "avgPrice": 3579.45,
-        "cabezas": 134
+        "minPrice": 2000,
+        "maxPrice": 4900,
+        "avgPrice": 3649.39,
+        "cabezas": 108
       },
       {
         "category": "VACAS Esp.Joven h 430",
-        "minPrice": 2100,
-        "maxPrice": 3400,
-        "avgPrice": 2726.26,
-        "cabezas": 187
+        "minPrice": 2270,
+        "maxPrice": 3300,
+        "avgPrice": 2713.76,
+        "cabezas": 160
       },
       {
         "category": "VACAS Esp.Joven + 430",
-        "minPrice": 1700,
+        "minPrice": 2200,
         "maxPrice": 3700,
-        "avgPrice": 3053.78,
-        "cabezas": 690
+        "avgPrice": 3073.82,
+        "cabezas": 897
       },
       {
         "category": "VACAS Regular",
-        "minPrice": 2000,
-        "maxPrice": 3700,
-        "avgPrice": 2537.54,
-        "cabezas": 1130
+        "minPrice": 1800,
+        "maxPrice": 3400,
+        "avgPrice": 2535.28,
+        "cabezas": 1444
       },
       {
         "category": "VACAS Conserva Buena",
-        "minPrice": 1700,
-        "maxPrice": 2520,
-        "avgPrice": 2163.36,
-        "cabezas": 314
+        "minPrice": 1800,
+        "maxPrice": 2550,
+        "avgPrice": 2093.15,
+        "cabezas": 434
       },
       {
         "category": "VACAS Conserva Inferior",
-        "minPrice": 1500,
-        "maxPrice": 2400,
-        "avgPrice": 1867.98,
-        "cabezas": 132
+        "minPrice": 1700,
+        "maxPrice": 2300,
+        "avgPrice": 1946.71,
+        "cabezas": 68
       },
       {
         "category": "TOROS Esp.",
-        "minPrice": 2570,
-        "maxPrice": 3560,
-        "avgPrice": 2893.03,
-        "cabezas": 164
+        "minPrice": 2500,
+        "maxPrice": 3700,
+        "avgPrice": 2924.3,
+        "cabezas": 182
       },
       {
         "category": "TOROS Regular",
-        "minPrice": 3000,
-        "maxPrice": 3000,
-        "avgPrice": 2565.75,
-        "cabezas": 75
+        "minPrice": 2400,
+        "maxPrice": 3300,
+        "avgPrice": 2557.87,
+        "cabezas": 103
       },
       {
         "category": "MEJ Esp. h 430",
-        "minPrice": 3300,
-        "maxPrice": 4620,
-        "avgPrice": 3920.96,
-        "cabezas": 66
+        "minPrice": 3900,
+        "maxPrice": 5200,
+        "avgPrice": 4209.74,
+        "cabezas": 86
       },
       {
         "category": "MEJ Regular",
-        "minPrice": 3800,
-        "maxPrice": 3800,
-        "avgPrice": 2856,
-        "cabezas": 3
+        "minPrice": 3000,
+        "maxPrice": 3600,
+        "avgPrice": 3384.62,
+        "cabezas": 23
       },
       {
         "category": "Totales",
         "minPrice": 0,
         "maxPrice": 0,
-        "avgPrice": 3475.35,
-        "cabezas": 5906
+        "avgPrice": 3365.77,
+        "cabezas": 6043
       }
     ]
   },
   "auctionDayEntries": {
-    "date": "2026-06-26",
+    "date": "2026-06-30",
     "consignatarias": {
       "umc-haciendas-villaguay": {
         "magId": "48",
-        "totalCabezas": 42,
+        "totalCabezas": 39,
         "entries": [
           {
-            "remitente": "LOZA RICARDO RUBEN",
-            "localidad": "FIRMAT",
-            "provincia": "SFE",
-            "cabezas": 7
+            "remitente": "FLORES FEDERICO MIGUEL",
+            "localidad": "GRAL. LAVALLE   B",
+            "provincia": "BUE",
+            "cabezas": 9
           },
           {
-            "remitente": "LOZA ROBERTO RAUL",
-            "localidad": "FIRMAT",
-            "provincia": "SFE",
+            "remitente": "FLORES FEDERICO MIGUEL",
+            "localidad": "GRAL. LAVALLE   B",
+            "provincia": "BUE",
             "cabezas": 3
           },
           {
-            "remitente": "LOZA RODOLFO RAUL",
-            "localidad": "FIRMAT",
-            "provincia": "SFE",
-            "cabezas": 7
+            "remitente": "JOSE MARIA",
+            "localidad": "GRAL. LAVALLE   B",
+            "provincia": "BUE",
+            "cabezas": 4
           },
           {
-            "remitente": "RIPOLL SALVADOR Y JULIAN S.H.",
-            "localidad": "FIRMAT",
-            "provincia": "SFE",
-            "cabezas": 25
+            "remitente": "LAFFRENTZ JUAN CARLOS",
+            "localidad": "MAIPU",
+            "provincia": "BUE",
+            "cabezas": 12
+          },
+          {
+            "remitente": "PEREZ Y padilla santiago",
+            "localidad": "MAIPU",
+            "provincia": "BUE",
+            "cabezas": 3
+          },
+          {
+            "remitente": "SARRATEA RICARDO",
+            "localidad": "E. CRUZ",
+            "provincia": "BUE",
+            "cabezas": 8
           }
         ],
-        "period": "27/05/2026 - 26/06/2026"
+        "period": "31/05/2026 - 30/06/2026"
       }
     }
   },
   "consignatarioEntry": {
-    "date": "23/06/2026",
+    "date": "30/06/2026",
     "entries": [
       {
-        "remitente": "MARIA TERESA GAZTAMBIDE SC.",
-        "localidad": "GONZALES CHAVES",
+        "remitente": "OPARGEN S.A.",
+        "localidad": "RIVADAVIA         B",
         "provincia": "BUE",
-        "enPie": 53,
+        "enPie": 57,
         "muertos": 0,
         "caidos": 0,
-        "total": 53
+        "total": 57
       },
       {
-        "remitente": "AGUAPE S.A.C.A.",
-        "localidad": "RAUCH",
-        "provincia": "BUE",
-        "enPie": 22,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 22
-      },
-      {
-        "remitente": "TAMOR S.A.",
+        "remitente": "EL BAQUEANO S.A.",
         "localidad": "BENITO JUAREZ",
         "provincia": "BUE",
-        "enPie": 22,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 22
+        "enPie": 31,
+        "muertos": 2,
+        "caidos": 2,
+        "total": 35
       },
       {
-        "remitente": "AGROP.FIORITO S.A.",
-        "localidad": "MARCOS PAZ",
+        "remitente": "TIERRA FRANCA S.A.",
+        "localidad": "BALCARCE",
         "provincia": "BUE",
-        "enPie": 19,
+        "enPie": 35,
         "muertos": 0,
         "caidos": 0,
-        "total": 19
+        "total": 35
       },
       {
-        "remitente": "TRAPALANDA S.A.",
-        "localidad": "RAUCH",
+        "remitente": "TIERRA FRANCA S.A.",
+        "localidad": "BALCARCE",
         "provincia": "BUE",
-        "enPie": 12,
+        "enPie": 35,
         "muertos": 0,
         "caidos": 0,
-        "total": 12
+        "total": 35
+      },
+      {
+        "remitente": "CIRIO HNOS.",
+        "localidad": "GRAL. ALVEAR",
+        "provincia": "BUE",
+        "enPie": 31,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 31
+      },
+      {
+        "remitente": "JOSE Y CONO TREZZA",
+        "localidad": "SALADILLO",
+        "provincia": "BUE",
+        "enPie": 30,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 30
+      },
+      {
+        "remitente": "MAZZANTINI OSCAR",
+        "localidad": "NAVARRO",
+        "provincia": "BUE",
+        "enPie": 28,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 28
       }
     ]
   }
