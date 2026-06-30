@@ -1859,15 +1859,15 @@
   },
   "corn": {
     "current": 221.5,
-    "prev": 216.1,
-    "change": 2.5,
+    "prev": 221.5,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
     "current": 1515,
-    "prev": 1510,
-    "change": 0.3,
+    "prev": 1515,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
