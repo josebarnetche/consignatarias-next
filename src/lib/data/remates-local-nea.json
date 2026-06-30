@@ -1,23 +1,5 @@
 [
   {
-    "title": "Faena, Invernada y Cria - 15.00hs.",
-    "consignatariaName": "Martín G. Lalor",
-    "consignatariaSlug": "martin-g-lalor",
-    "date": "2026-06-30",
-    "time": "15:00",
-    "location": "25 de Mayo, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "25 de Mayo Faena, Invernada y Cria - 15.00hs.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "liveLink": null
-  },
-  {
     "title": "Faena, Invernada y Cria",
     "consignatariaName": "Raul Mendizabal Y Cia. Sac.",
     "consignatariaSlug": "raul-mendizabal-y-cia-sac",
@@ -117,7 +99,7 @@
     "province": "BUENOS AIRES",
     "type": "general",
     "mainCategory": "mixto",
-    "estimatedHeads": 600,
+    "estimatedHeads": 750,
     "description": "Coronel Suarez Faena - 10.30hs.",
     "youtubeUrl": null,
     "catalogUrl": null,
@@ -189,7 +171,7 @@
     "province": "BUENOS AIRES",
     "type": "general",
     "mainCategory": "mixto",
-    "estimatedHeads": null,
+    "estimatedHeads": 2500,
     "description": "Vedia Especial Vacas",
     "youtubeUrl": null,
     "catalogUrl": null,
@@ -387,7 +369,7 @@
     "province": "BUENOS AIRES",
     "type": "invernada",
     "mainCategory": "mixto",
-    "estimatedHeads": 1000,
+    "estimatedHeads": 1200,
     "description": "Tapalqué Faena, Invernada y Cria - 14.00HS.",
     "youtubeUrl": null,
     "catalogUrl": null,
@@ -621,7 +603,7 @@
     "province": "SANTA FE",
     "type": "invernada",
     "mainCategory": "mixto",
-    "estimatedHeads": null,
+    "estimatedHeads": 800,
     "description": "Venado Tuerto Faena, Invernada y Cria - 15.00hs.",
     "youtubeUrl": null,
     "catalogUrl": null,
@@ -1505,9 +1487,9 @@
     "mainCategory": "mixto",
     "estimatedHeads": null,
     "description": "Cabañas — 42° Remate Anual Estancia Buena Esperanza",
-    "youtubeUrl": null,
+    "youtubeUrl": "https://youtube.com/live/NB8cqVU45Hs",
     "catalogUrl": null,
-    "source": "web",
+    "source": "tv",
     "sourceUrl": "https://app.rosgannet.com.ar/results-remates",
     "status": "scheduled"
   },
@@ -1674,42 +1656,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
-    "consignatariaName": "Sociedad Rural de Jesús Maria",
-    "consignatariaSlug": "sociedad-rural-de-jesus-maria",
-    "date": "2026-06-29",
-    "time": "10:30",
-    "location": "",
-    "province": "CORDOBA",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6286-sociedad-rural-de-jesus-maria-consignaciones-cordoba",
-    "source": "tv",
-    "sourceUrl": "https://elrural.com/remates/",
-    "status": "live"
-  },
-  {
-    "title": "Pedro Noel Irey | Invernada y cría",
-    "consignatariaName": "Pedro Noel Irey S.R.L.",
-    "consignatariaSlug": "pedro-noel-irey-s-r-l",
-    "date": "2026-06-29",
-    "time": "14:00",
-    "location": "",
-    "province": null,
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Pedro Noel Irey | Invernada y cría",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6259-pedro-noel-irey-invernada-y-cria",
-    "source": "tv",
-    "sourceUrl": "https://elrural.com/remates/",
-    "status": "live"
-  },
-  {
     "title": "Alfredo S. Mondino | La paz de Werthein",
     "consignatariaName": "Alfredo S. Mondino",
     "consignatariaSlug": "alfredo-s-mondino",
@@ -1725,7 +1671,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6327-alfredo-s-mondino-la-paz-de-werthein",
     "source": "tv",
     "sourceUrl": "https://elrural.com/remates/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "O'Farrell | Invernada | Frías Sgto. del Estero",
@@ -1743,7 +1689,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6280-ofarrell-invernada-frias-sgto-del-estero",
     "source": "tv",
     "sourceUrl": "https://elrural.com/remates/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "UMC y Haciendas Villaguay | Invernada y cría",
@@ -1761,7 +1707,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6261-umc-y-haciendas-villaguay-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://elrural.com/remates/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Esteban Abelenda | Remate Feria La Guampita",
@@ -1779,7 +1725,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6322-esteban-abelenda-remate-feria-la-guampita",
     "source": "tv",
     "sourceUrl": "https://elrural.com/remates/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Alfredo S. Mondino | Especial Vacas",
@@ -1795,24 +1741,6 @@
     "description": "Alfredo S. Mondino | Especial Vacas",
     "youtubeUrl": null,
     "catalogUrl": "https://remates.elrural.com/remate/6328-alfredo-s-mondino-especial-vacas",
-    "source": "tv",
-    "sourceUrl": "https://elrural.com/remates/",
-    "status": "scheduled"
-  },
-  {
-    "title": "Jauregui Lorda | Especial La Pastoriza",
-    "consignatariaName": "Jauregui Lorda Haciendas",
-    "consignatariaSlug": "jauregui-lorda-haciendas",
-    "date": "2026-07-01",
-    "time": "14:00",
-    "location": "",
-    "province": null,
-    "type": "especial",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Jauregui Lorda | Especial La Pastoriza",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6329-jauregui-lorda-especial-la-pastoriza",
     "source": "tv",
     "sourceUrl": "https://elrural.com/remates/",
     "status": "scheduled"
@@ -1836,6 +1764,24 @@
     "status": "scheduled"
   },
   {
+    "title": "Jauregui Lorda | Especial La Pastoriza",
+    "consignatariaName": "Jauregui Lorda Haciendas",
+    "consignatariaSlug": "jauregui-lorda-haciendas",
+    "date": "2026-07-01",
+    "time": "14:00",
+    "location": "",
+    "province": null,
+    "type": "especial",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Jauregui Lorda | Especial La Pastoriza",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6329-jauregui-lorda-especial-la-pastoriza",
+    "source": "tv",
+    "sourceUrl": "https://elrural.com/remates/",
+    "status": "scheduled"
+  },
+  {
     "title": "AFA | Marcos Juárez | Especial de invernada y cría",
     "consignatariaName": "AFA",
     "consignatariaSlug": "afa",
@@ -1854,40 +1800,40 @@
     "status": "scheduled"
   },
   {
-    "title": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
-    "consignatariaName": "Sociedad Rural de Jesús Maria",
-    "consignatariaSlug": "sociedad-rural-de-jesus-maria",
-    "date": "2026-06-29",
-    "time": "10:30",
+    "title": "AFA | Junín | Gordos, conserva e invernada",
+    "consignatariaName": "AFA",
+    "consignatariaSlug": "afa",
+    "date": "2026-07-03",
+    "time": "10:00",
     "location": "",
-    "province": "CORDOBA",
-    "type": "general",
-    "mainCategory": "mixto",
+    "province": null,
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
     "estimatedHeads": null,
-    "description": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
+    "description": "AFA | Junín | Gordos, conserva e invernada",
     "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6286-sociedad-rural-de-jesus-maria-consignaciones-cordoba",
+    "catalogUrl": "https://remates.elrural.com/remate/6306-afa-junin-gordos-conserva-e-invernada",
     "source": "tv",
     "sourceUrl": "https://elrural.com/remates/",
-    "status": "live"
+    "status": "scheduled"
   },
   {
-    "title": "Pedro Noel Irey | Invernada y cría",
-    "consignatariaName": "Pedro Noel Irey S.R.L.",
-    "consignatariaSlug": "pedro-noel-irey-s-r-l",
-    "date": "2026-06-29",
-    "time": "14:00",
+    "title": "Esteban Abelenda | Invernada y Cría",
+    "consignatariaName": "Esteban I. Abelenda S.A.",
+    "consignatariaSlug": "esteban-i-abelenda-s-a",
+    "date": "2026-07-03",
+    "time": "10:00",
     "location": "",
     "province": null,
     "type": "invernada",
     "mainCategory": "mixto",
     "estimatedHeads": null,
-    "description": "Pedro Noel Irey | Invernada y cría",
+    "description": "Esteban Abelenda | Invernada y Cría",
     "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6259-pedro-noel-irey-invernada-y-cria",
+    "catalogUrl": "https://remates.elrural.com/remate/6331-esteban-abelenda-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://elrural.com/remates/",
-    "status": "live"
+    "status": "scheduled"
   },
   {
     "title": "Alfredo S. Mondino | La paz de Werthein",
@@ -1905,7 +1851,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6327-alfredo-s-mondino-la-paz-de-werthein",
     "source": "tv",
     "sourceUrl": "https://elrural.com/remates/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "O'Farrell | Invernada | Frías Sgto. del Estero",
@@ -1923,7 +1869,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6280-ofarrell-invernada-frias-sgto-del-estero",
     "source": "tv",
     "sourceUrl": "https://elrural.com/remates/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "UMC y Haciendas Villaguay | Invernada y cría",
@@ -1941,7 +1887,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6261-umc-y-haciendas-villaguay-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://elrural.com/remates/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Esteban Abelenda | Remate Feria La Guampita",
@@ -1959,7 +1905,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6322-esteban-abelenda-remate-feria-la-guampita",
     "source": "tv",
     "sourceUrl": "https://elrural.com/remates/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Alfredo S. Mondino | Especial Vacas",
@@ -1975,24 +1921,6 @@
     "description": "Alfredo S. Mondino | Especial Vacas",
     "youtubeUrl": null,
     "catalogUrl": "https://remates.elrural.com/remate/6328-alfredo-s-mondino-especial-vacas",
-    "source": "tv",
-    "sourceUrl": "https://elrural.com/remates/",
-    "status": "scheduled"
-  },
-  {
-    "title": "Jauregui Lorda | Especial La Pastoriza",
-    "consignatariaName": "Jauregui Lorda Haciendas",
-    "consignatariaSlug": "jauregui-lorda-haciendas",
-    "date": "2026-07-01",
-    "time": "14:00",
-    "location": "",
-    "province": null,
-    "type": "especial",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Jauregui Lorda | Especial La Pastoriza",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6329-jauregui-lorda-especial-la-pastoriza",
     "source": "tv",
     "sourceUrl": "https://elrural.com/remates/",
     "status": "scheduled"
@@ -2016,6 +1944,24 @@
     "status": "scheduled"
   },
   {
+    "title": "Jauregui Lorda | Especial La Pastoriza",
+    "consignatariaName": "Jauregui Lorda Haciendas",
+    "consignatariaSlug": "jauregui-lorda-haciendas",
+    "date": "2026-07-01",
+    "time": "14:00",
+    "location": "",
+    "province": null,
+    "type": "especial",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Jauregui Lorda | Especial La Pastoriza",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6329-jauregui-lorda-especial-la-pastoriza",
+    "source": "tv",
+    "sourceUrl": "https://elrural.com/remates/",
+    "status": "scheduled"
+  },
+  {
     "title": "AFA | Marcos Juárez | Especial de invernada y cría",
     "consignatariaName": "AFA",
     "consignatariaSlug": "afa",
@@ -2029,6 +1975,42 @@
     "description": "AFA | Marcos Juárez | Especial de invernada y cría",
     "youtubeUrl": null,
     "catalogUrl": "https://remates.elrural.com/remate/6307-afa-marcos-juarez-especial-de-invernada-y-cria",
+    "source": "tv",
+    "sourceUrl": "https://elrural.com/remates/",
+    "status": "scheduled"
+  },
+  {
+    "title": "AFA | Junín | Gordos, conserva e invernada",
+    "consignatariaName": "AFA",
+    "consignatariaSlug": "afa",
+    "date": "2026-07-03",
+    "time": "10:00",
+    "location": "",
+    "province": null,
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "AFA | Junín | Gordos, conserva e invernada",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6306-afa-junin-gordos-conserva-e-invernada",
+    "source": "tv",
+    "sourceUrl": "https://elrural.com/remates/",
+    "status": "scheduled"
+  },
+  {
+    "title": "Esteban Abelenda | Invernada y Cría",
+    "consignatariaName": "Esteban I. Abelenda S.A.",
+    "consignatariaSlug": "esteban-i-abelenda-s-a",
+    "date": "2026-07-03",
+    "time": "10:00",
+    "location": "",
+    "province": null,
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Esteban Abelenda | Invernada y Cría",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6331-esteban-abelenda-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://elrural.com/remates/",
     "status": "scheduled"
