@@ -1818,39 +1818,39 @@
   "categories": {
     "novillos": {
       "current": 4114.94,
-      "prev": 4181.11,
-      "change": -1.6,
+      "prev": 4114.94,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 615
     },
     "novillitos": {
       "current": 4555.09,
-      "prev": 4621.31,
-      "change": -1.4,
+      "prev": 4555.09,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 618
     },
     "vaquillonas": {
       "current": 4067.24,
-      "prev": 4289.23,
-      "change": -5.2,
+      "prev": 4067.24,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 1268
     },
     "vacas": {
       "current": 2643.79,
-      "prev": 2640.16,
-      "change": 0.1,
+      "prev": 2643.79,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "latestVolume": 2735
     },
     "toros": {
       "current": 2748.74,
-      "prev": 2832.39,
-      "change": -3,
+      "prev": 2748.74,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 326
@@ -1927,8 +1927,8 @@
         "category": "NOVILLOS Esp.Joven + 430",
         "minPrice": 4300,
         "maxPrice": 4670,
-        "avgPrice": 4496.68,
-        "cabezas": 193
+        "avgPrice": 4518.19,
+        "cabezas": 379
       },
       {
         "category": "NOVILLOS Regular + 430",
@@ -1939,31 +1939,31 @@
       },
       {
         "category": "NOVILLITOS Esp. h 390",
-        "minPrice": 4700,
+        "minPrice": 4050,
         "maxPrice": 5450,
-        "avgPrice": 5148.41,
-        "cabezas": 463
+        "avgPrice": 5031.16,
+        "cabezas": 620
       },
       {
         "category": "NOVILLITOS Esp. + 390",
-        "minPrice": 4600,
-        "maxPrice": 4600,
-        "avgPrice": 4600,
-        "cabezas": 14
+        "minPrice": 4270,
+        "maxPrice": 4900,
+        "avgPrice": 4675.15,
+        "cabezas": 189
       },
       {
         "category": "VAQUILLONAS Esp. h 390",
         "minPrice": 4200,
-        "maxPrice": 5370,
-        "avgPrice": 4844.3,
-        "cabezas": 161
+        "maxPrice": 5420,
+        "avgPrice": 4974.4,
+        "cabezas": 319
       },
       {
         "category": "VAQUILLONAS Esp. + 390",
-        "minPrice": 4300,
-        "maxPrice": 4450,
-        "avgPrice": 4338.8,
-        "cabezas": 100
+        "minPrice": 4200,
+        "maxPrice": 4470,
+        "avgPrice": 4368.36,
+        "cabezas": 189
       },
       {
         "category": "VAQUILLONAS Regular",
@@ -1976,15 +1976,15 @@
         "category": "VACAS Esp.Joven h 430",
         "minPrice": 2200,
         "maxPrice": 4450,
-        "avgPrice": 2891.66,
-        "cabezas": 172
+        "avgPrice": 2992.13,
+        "cabezas": 208
       },
       {
         "category": "VACAS Esp.Joven + 430",
         "minPrice": 2120,
-        "maxPrice": 3620,
-        "avgPrice": 3016.47,
-        "cabezas": 382
+        "maxPrice": 4220,
+        "avgPrice": 3050.16,
+        "cabezas": 426
       },
       {
         "category": "VACAS Regular",
@@ -2002,17 +2002,24 @@
       },
       {
         "category": "TOROS Esp.",
-        "minPrice": 2650,
-        "maxPrice": 3200,
-        "avgPrice": 2819.07,
-        "cabezas": 34
+        "minPrice": 2600,
+        "maxPrice": 3500,
+        "avgPrice": 2858.71,
+        "cabezas": 58
+      },
+      {
+        "category": "MEJ Esp. h 430",
+        "minPrice": 4000,
+        "maxPrice": 5000,
+        "avgPrice": 4523.26,
+        "cabezas": 31
       },
       {
         "category": "Totales",
         "minPrice": 0,
         "maxPrice": 0,
-        "avgPrice": 3956.48,
-        "cabezas": 1596
+        "avgPrice": 4135.68,
+        "cabezas": 2496
       }
     ]
   },
