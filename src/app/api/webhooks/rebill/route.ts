@@ -102,6 +102,31 @@ export async function POST(request: NextRequest) {
         const { subscription_id, customer_id, plan_id, metadata } = data
         const kind = metadata?.kind
 
+        // Conversión (la plata): registrar subscription_paid en el ledger de
+        // value_events. El webhook ya está firmado (fail-closed) y deduplicado,
+        // así que cada success acá es un pago real y único. Best-effort: nunca
+        // frenar el otorgamiento de entitlement por instrumentar.
+        {
+          const entitySlug: string | null =
+            metadata?.entitySlug ?? metadata?.userId ?? null
+          const entityType: string =
+            metadata?.entityType ?? (kind && String(kind).startsWith('enterprise') ? 'global' : 'consignataria')
+          await service
+            .from('value_events')
+            .insert({
+              event: 'subscription_paid',
+              weight: 100,
+              entity_type: entityType,
+              entity_slug: entitySlug ? String(entitySlug).slice(0, 200) : null,
+              source: 'direct',
+              path: null,
+              meta: { kind: kind ?? null, subscription_id: subscription_id ?? null, plan_id: plan_id ?? null },
+            })
+            .then(({ error }) => {
+              if (error) console.error('value_event subscription_paid insert error:', error.message)
+            })
+        }
+
         // Branch 1b — Enterprise API subscription (Starter for now)
         if (kind === 'enterprise_starter_subscription' || kind === 'enterprise_subscription') {
           const userId = metadata?.userId

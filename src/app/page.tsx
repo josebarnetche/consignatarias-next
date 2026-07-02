@@ -9,6 +9,7 @@ import { resolveYoutubeUrl } from "@/lib/youtube-live";
 import { getLogoUrl, getBrandColor, getBrandKeepColor } from "@/lib/data/logo-map";
 import { getFeaturedSlugs } from "@/lib/featured";
 import ConsignatariasShowcase from "@/components/landing/ConsignatariasShowcase";
+import ConsignatariaSearch from "@/components/landing/ConsignatariaSearch";
 import { FAQPageSchema, OrganizationSchema, WebSiteSchema } from "@/components/seo/JsonLd";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import ValuationWidget from "@/components/landing/ValuationWidget";
@@ -252,14 +253,14 @@ export default async function LandingPage() {
           </div>
 
           <div className="hidden md:flex items-center gap-8 text-sm font-normal text-zinc-400">
-            <a href="#remates" className="hover:text-zinc-100 transition-colors">Remates</a>
+            <Link href="/remates" className="hover:text-zinc-100 transition-colors">Remates</Link>
             <Link href="/remates/en-vivo" className="flex items-center gap-1.5 text-red-400 hover:text-red-300 transition-colors">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
               En Vivo
               {enVivoCount > 0 && <span className="text-xs text-red-500">({enVivoCount})</span>}
             </Link>
-            <a href="#frigorificos" className="hover:text-zinc-100 transition-colors">Frigoríficos</a>
-            <a href="#mercado" className="hover:text-zinc-100 transition-colors">Mercado</a>
+            <Link href="/frigorificos" className="hover:text-zinc-100 transition-colors">Frigoríficos</Link>
+            <Link href="/mercado" className="hover:text-zinc-100 transition-colors">Mercado</Link>
             <Link href="/planes" className="hover:text-zinc-100 transition-colors">Planes</Link>
           </div>
 
@@ -306,6 +307,12 @@ export default async function LandingPage() {
             frigorificos={frigorificosSummary.total}
             provincias={13}
             dateLabel={dateLabel}
+          />
+
+          {/* Buscador por nombre — el usuario de IA suele llegar sabiendo el
+              nombre de una firma y no tenía dónde tipearlo. */}
+          <ConsignatariaSearch
+            items={getAllProfiles().map((p) => ({ slug: p.canonicalSlug, name: p.displayName }))}
           />
 
           {/* Cobertura — mapa estilizado por provincia (reemplaza la grilla de texto). */}

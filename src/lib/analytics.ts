@@ -198,6 +198,7 @@ export function trackPlanesView(source: string | null) {
   trackEvent('planes_view', {
     source: source || 'direct',
   })
+  emitValueBeacon('planes_view', { meta: { from: source || 'direct' } })
 }
 
 /** User started checkout process (clicked pay, before the Rebill link is created).
@@ -216,6 +217,7 @@ export function trackCheckoutStart(
     context: opts.context,
     variant: opts.variant,
   })
+  emitValueBeacon('checkout_start', { meta: { plan, price, context: opts.context, variant: opts.variant } })
 }
 
 /** Rebill link created — user is being redirected to pay (last on-site step).
@@ -512,6 +514,19 @@ export function trackValueEvent(
   opts: { entityType?: ValueEntityType; entitySlug?: string; meta?: Record<string, unknown> } = {},
 ) {
   trackEvent(event, { entity_type: opts.entityType, entity_slug: opts.entitySlug, ...opts.meta })
+  emitValueBeacon(event, opts)
+}
+
+/**
+ * Solo el beacon al ledger interno (value_events), SIN el trackEvent de GA4.
+ * Lo usan los helpers del funnel (trackPlanesView, trackCheckoutStart, …) que ya
+ * emiten su propio evento GA4 — así el ledger interno también recibe el escalón
+ * del funnel sin disparar un GA4 duplicado.
+ */
+export function emitValueBeacon(
+  event: ValueEvent,
+  opts: { entityType?: ValueEntityType; entitySlug?: string; meta?: Record<string, unknown> } = {},
+) {
   if (!analyticsEnabled()) return
   try {
     const { source, aiEngine } = getTrafficSource()
