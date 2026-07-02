@@ -58,9 +58,12 @@ module.exports = {
         ],
       },
       fontSize: {
-        'xxs': ['0.6875rem', { lineHeight: '1rem' }],      // 11px - smallest allowed
-        'data': ['0.8125rem', { lineHeight: '1.25rem' }],   // 13px - data cells
-        'label': ['0.875rem', { lineHeight: '1.25rem' }],   // 14px - labels, headers
+        // Legibilidad (audiencia mayor, mobile): se subieron los mínimos.
+        // xxs 11→12px y data 13→14px — el texto crítico (contacto, precios,
+        // CTAs) usaba estos tokens y quedaba ilegible en el celular.
+        'xxs': ['0.75rem', { lineHeight: '1.1rem' }],       // 12px (antes 11)
+        'data': ['0.875rem', { lineHeight: '1.3rem' }],     // 14px (antes 13)
+        'label': ['0.9375rem', { lineHeight: '1.3rem' }],   // 15px (antes 14)
       },
       spacing: {
         'px2': '4px',

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import AuthButton from "@/components/auth/AuthButton";
 import OnboardingPrompt from "@/components/onboarding/OnboardingPrompt";
 import PageTransition from "@/components/ui/PageTransition";
+import WhatsAppLeadFAB from "@/components/WhatsAppLeadFAB";
 import { createClient } from "@/lib/supabase-browser";
 
 /* ------------------------------------------------------------------ */
@@ -477,6 +478,10 @@ export default function TerminalLayout({
 
       {/* -- FOOTER — sitemap en 4 columnas (DESIGN-SYSTEM.md §3.4) ---- */}
       <SystemFooter />
+
+      {/* Burbuja global: lead B2B "sumá tu consignataria" → nuestro WhatsApp,
+          medido como whatsapp_lead. Se oculta en el detalle de una firma. */}
+      <WhatsAppLeadFAB />
     </div>
   );
 }

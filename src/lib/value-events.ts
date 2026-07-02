@@ -63,6 +63,10 @@ export const VALUE_EVENTS = {
 
   // --- B2B (la consignataria sobre su propio perfil) ---
   claim_cta_click: { weight: 4, group: 'b2b', label: 'Clic en reclamar perfil' },
+  // Clic en la burbuja global de WhatsApp que nos escribe a NOSOTROS
+  // (intención de sumarse como consignataria a la plataforma). Peso alto:
+  // es un lead B2B directo hacia nuestro número.
+  whatsapp_lead: { weight: 12, group: 'b2b', label: 'Clic WhatsApp — quiere ser consignataria' },
 } as const satisfies Record<string, ValueEventDef>
 
 export type ValueEvent = keyof typeof VALUE_EVENTS
