@@ -42,6 +42,9 @@ export const VALUE_EVENTS = {
   contact_phone: { weight: 6, group: 'lead', label: 'Clic teléfono' },
   contact_email: { weight: 6, group: 'lead', label: 'Clic email' },
   contact_web: { weight: 4, group: 'lead', label: 'Clic sitio web' },
+  // Form "pedí que te contacten" enviado (firmas sin contacto público). Lead
+  // capturado de verdad — pesa como un WhatsApp.
+  lead_form: { weight: 10, group: 'lead', label: 'Form de contacto enviado' },
 
   // --- Engagement con un remate ---
   catalog_click: { weight: 5, group: 'engagement', label: 'Abrir catálogo' },
