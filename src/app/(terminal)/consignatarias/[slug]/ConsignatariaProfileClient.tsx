@@ -10,6 +10,7 @@ import ReviewsPanel from './ReviewsPanel'
 import type { EntityTier } from '@/lib/features'
 import type { AuctionResult } from './page'
 import FeatureGate from '@/components/FeatureGate'
+import ContactlessLeadForm from '@/components/ContactlessLeadForm'
 import { normalizeUrl } from '@/lib/utils/url'
 import { resolveYoutubeUrl } from '@/lib/youtube-live'
 import { trackProfileView, trackOutboundClick, trackClaimCTA, trackValueEvent } from '@/lib/analytics'
@@ -773,7 +774,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                 )}
               </div>
             ) : (
-              <div className="text-xxs text-zinc-600">Sin datos de contacto públicos todavía.</div>
+              <ContactlessLeadForm slug={profile.canonicalSlug} consignatariaName={profile.displayName} />
             )}
             <div className="flex flex-wrap gap-2 mt-2 pt-2 border-t border-terminal-border/60">
               <Link href={`/calendario/${profile.canonicalSlug}`} className="text-xxs font-terminal uppercase tracking-wider text-accent hover:text-accent-bright motion-hover">
