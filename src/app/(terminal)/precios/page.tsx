@@ -143,6 +143,22 @@ export default function PreciosHubPage() {
           </Link>
         </section>
 
+        {/* CTA de conversión: precios → directorio de consignatarias.
+            /precios es un top-landing de IA y hasta ahora era un dead-end:
+            mostraba el precio pero no ofrecía el siguiente paso (a quién venderle). */}
+        <section className="mb-8 rounded-terminal border border-accent/40 bg-accent/[0.06] p-5 sm:flex sm:items-center sm:justify-between sm:gap-4">
+          <div className="mb-3 sm:mb-0">
+            <div className="text-base font-heading text-zinc-100">¿Querés vender a estos precios?</div>
+            <div className="text-sm text-zinc-400">Encontrá la consignataria que remata tu zona y contactala directo.</div>
+          </div>
+          <Link
+            href="/consignatarias"
+            className="inline-flex items-center gap-2 rounded-terminal bg-accent px-4 py-2.5 text-sm font-semibold text-terminal-bg hover:bg-accent-bright transition-colors whitespace-nowrap"
+          >
+            Ver consignatarias &rarr;
+          </Link>
+        </section>
+
         {/* FAQ */}
         <section className="border-t border-terminal-border pt-6">
           <h2 className="text-lg font-heading text-zinc-100 mb-4">Preguntas frecuentes</h2>
