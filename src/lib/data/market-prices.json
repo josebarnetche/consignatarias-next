@@ -1,8 +1,8 @@
 {
   "inmag": {
-    "current": 4127.51,
-    "prev": 4183.9,
-    "change": -1.3,
+    "current": 4469.37,
+    "prev": 4127.51,
+    "change": 8.3,
     "unit": "$/kg vivo",
     "source": "mercadoagroganadero.com.ar",
     "series": [
@@ -1810,10 +1810,15 @@
         "date": "2026-07-01",
         "value": 4127.51,
         "volume": 5676
+      },
+      {
+        "date": "2026-07-02",
+        "value": 4469.37,
+        "volume": 2599
       }
     ],
-    "latestVolume": 5676,
-    "periodVolume": 178921
+    "latestVolume": 2599,
+    "periodVolume": 181520
   },
   "categories": {
     "novillos": {
@@ -1856,16 +1861,16 @@
       "latestVolume": 326
     },
     "terneros": {
-      "current": 4540,
+      "current": 4916,
       "prev": 4540,
-      "change": 0,
+      "change": 8.3,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
-    "current": 222.9,
+    "current": 221.5,
     "prev": 222.9,
-    "change": 0,
+    "change": -0.6,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
@@ -1941,15 +1946,15 @@
         "category": "NOVILLITOS Esp. h 390",
         "minPrice": 4050,
         "maxPrice": 5450,
-        "avgPrice": 5031.16,
-        "cabezas": 620
+        "avgPrice": 5030.6,
+        "cabezas": 606
       },
       {
         "category": "NOVILLITOS Esp. + 390",
-        "minPrice": 4270,
+        "minPrice": 4100,
         "maxPrice": 4900,
-        "avgPrice": 4675.15,
-        "cabezas": 189
+        "avgPrice": 4657.58,
+        "cabezas": 289
       },
       {
         "category": "VAQUILLONAS Esp. h 390",
@@ -1962,8 +1967,8 @@
         "category": "VAQUILLONAS Esp. + 390",
         "minPrice": 4200,
         "maxPrice": 4470,
-        "avgPrice": 4368.36,
-        "cabezas": 189
+        "avgPrice": 4368.42,
+        "cabezas": 196
       },
       {
         "category": "VAQUILLONAS Regular",
@@ -1982,9 +1987,9 @@
       {
         "category": "VACAS Esp.Joven + 430",
         "minPrice": 2120,
-        "maxPrice": 4220,
-        "avgPrice": 3050.16,
-        "cabezas": 426
+        "maxPrice": 3620,
+        "avgPrice": 3036.61,
+        "cabezas": 416
       },
       {
         "category": "VACAS Regular",
@@ -2004,22 +2009,22 @@
         "category": "TOROS Esp.",
         "minPrice": 2600,
         "maxPrice": 3500,
-        "avgPrice": 2858.71,
-        "cabezas": 58
+        "avgPrice": 2859.19,
+        "cabezas": 61
       },
       {
         "category": "MEJ Esp. h 430",
         "minPrice": 4000,
         "maxPrice": 5000,
-        "avgPrice": 4523.26,
-        "cabezas": 31
+        "avgPrice": 4462.24,
+        "cabezas": 37
       },
       {
         "category": "Totales",
         "minPrice": 0,
         "maxPrice": 0,
-        "avgPrice": 4135.68,
-        "cabezas": 2496
+        "avgPrice": 4151.59,
+        "cabezas": 2588
       }
     ]
   },
