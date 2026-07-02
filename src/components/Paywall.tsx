@@ -4,6 +4,8 @@
  */
 
 import Link from 'next/link'
+import TrackOnMount from './TrackOnMount'
+import ValueLink from './ValueLink'
 
 interface PaywallProps {
   /** True = usuario logged-in pero free. False = anonymous (mostrar login en vez de upgrade) */
@@ -33,6 +35,8 @@ export function PaywallCard({ loggedIn, feature, redirectTo }: PaywallProps) {
 
   return (
     <div className="relative overflow-hidden border border-sky-500/30 bg-zinc-900/40 rounded-lg p-6 my-4">
+      {/* Funnel: el usuario VIO el muro PRO (pro_prompt_view, peso 1). */}
+      <TrackOnMount event="pro_prompt_view" />
       <div className="absolute top-0 right-0 w-64 h-32 bg-sky-500/5 blur-3xl rounded-full pointer-events-none" />
 
       <div className="relative flex items-start gap-4">
@@ -57,20 +61,22 @@ export function PaywallCard({ loggedIn, feature, redirectTo }: PaywallProps) {
             cancelás cuando quieras.
           </p>
           {loggedIn ? (
-            <Link
+            <ValueLink
               href={upgradeHref}
+              event="pro_prompt_click"
               className="inline-flex items-center gap-2 bg-sky-400 hover:bg-sky-300 active:bg-sky-500 text-zinc-950 font-mono font-bold uppercase tracking-widest text-xs px-4 py-2 rounded transition-colors"
             >
               Activar PRO →
-            </Link>
+            </ValueLink>
           ) : (
-            <Link
+            <ValueLink
               href={loginHref}
+              event="pro_prompt_click"
               className="inline-flex items-center gap-2 bg-zinc-100 hover:bg-white text-zinc-950 font-mono font-medium text-xs px-4 py-2 rounded transition-colors"
             >
               <GoogleIcon />
               Continuá con Google
-            </Link>
+            </ValueLink>
           )}
         </div>
       </div>

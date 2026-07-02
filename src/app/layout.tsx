@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Script from 'next/script';
 import AnalyticsProvider from '@/components/AnalyticsProvider';
+import WhatsAppLeadFAB from '@/components/WhatsAppLeadFAB';
 import rematesData from '@/lib/data/remates.json';
 
 const inter = Inter({
@@ -158,6 +159,10 @@ export default function RootLayout({
       <body className="antialiased">
         <AnalyticsProvider />
         {children}
+        {/* Burbuja global de WhatsApp (lead "sumá tu consignataria" → whatsapp_lead).
+            Montada en el ROOT layout para que aparezca en TODAS las páginas,
+            incluida la home de la raíz (que no usa el layout terminal). */}
+        <WhatsAppLeadFAB />
         <Analytics />
         <SpeedInsights />
         {/* gtag.js download deferred to browser idle (lazyOnload) — keeps ~157 KiB of
