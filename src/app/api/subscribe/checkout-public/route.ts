@@ -40,9 +40,13 @@ export async function POST(req: NextRequest) {
 
     // 1) Create or recover the user. No userId → no link → no charge.
     let userId: string | null = null
+    // email_confirm:false — do NOT pre-confirm. This endpoint is
+    // unauthenticated and takes an arbitrary email; confirming it here let an
+    // attacker squat any victim's address. The user confirms naturally via the
+    // post-payment magic-link login (same email → same user → PRO already active).
     const { data: created, error: createErr } = await admin.auth.admin.createUser({
       email,
-      email_confirm: true,
+      email_confirm: false,
     })
     if (created?.user?.id) {
       userId = created.user.id

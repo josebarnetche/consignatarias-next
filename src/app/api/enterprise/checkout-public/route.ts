@@ -34,10 +34,13 @@ export async function POST(req: NextRequest) {
     const admin = createAdminClient()
 
     // Create or recover the user first. No userId → no link → no charge.
+    // email_confirm:false — unauthenticated endpoint with an arbitrary email;
+    // pre-confirming let an attacker squat any victim's address. The user
+    // confirms via the post-payment magic-link login.
     let userId: string | null = null
     const { data: created, error: createErr } = await admin.auth.admin.createUser({
       email,
-      email_confirm: true,
+      email_confirm: false,
     })
     if (created?.user?.id) {
       userId = created.user.id

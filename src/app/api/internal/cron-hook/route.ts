@@ -1,3 +1,4 @@
+import { timingSafeEqual } from 'node:crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { startCronRun, finishCronRun, logEvent } from '@/lib/ops'
 
@@ -65,7 +66,16 @@ export async function POST(req: NextRequest) {
 
   const header = req.headers.get('authorization')
   const token = header?.startsWith('Bearer ') ? header.slice(7).trim() : null
-  if (!token || token !== SECRET) return unauthorized()
+  if (!token) return unauthorized()
+  // Constant-time compare to avoid leaking the secret via response timing.
+  const tokenBuf = Buffer.from(token)
+  const secretBuf = Buffer.from(SECRET)
+  if (
+    tokenBuf.length !== secretBuf.length ||
+    !timingSafeEqual(tokenBuf, secretBuf)
+  ) {
+    return unauthorized()
+  }
 
   let body: {
     workflow_name?: string

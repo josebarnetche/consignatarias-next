@@ -53,7 +53,14 @@ export async function GET(req: NextRequest) {
   const fromParam = searchParams.get('from')
   const toParam = searchParams.get('to')
   const consigParam = searchParams.get('consignataria_id')
-  const categoryParam = searchParams.get('category')?.toUpperCase()
+  // Strip PostgREST reserved chars ( , ( ) * " ) before it's interpolated into
+  // an ilike pattern below — categories are plain words, so allow only letters,
+  // numbers, spaces and hyphen. Prevents filter-grammar injection.
+  const categoryParam = searchParams
+    .get('category')
+    ?.toUpperCase()
+    .replace(/[^\p{L}\p{N}\s-]/gu, '')
+    .trim()
   const tipoParam = searchParams.get('tipo')?.toUpperCase()
   const provinciaParam = searchParams.get('provincia')?.toUpperCase()
   const limit = Math.max(1, Math.min(1000, parseInt(searchParams.get('limit') ?? '200', 10) || 200))

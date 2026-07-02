@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { submitReview } from '@/lib/dal/reviews'
 import { getClientId } from '@/lib/rate-limit'
+import { enforceRateLimit, rateLimitedResponse } from '@/lib/rate-limit-db'
 import { logEvent } from '@/lib/ops'
 
 export const runtime = 'nodejs'
@@ -9,13 +10,24 @@ export const runtime = 'nodejs'
  * POST /api/reviews/submit
  *
  * Public anonymous endpoint. Inserts a review with status='pending'. Admin
- * must approve before it shows publicly. Existing rate-limit middleware
- * (50/min per IP for anon) is the first guard; second guard is the unique
- * (slug, email) constraint so one email = one review per consignataria.
+ * must approve before it shows publicly. Guards: (1) the durable per-IP rate
+ * limit below — this route is NOT in the middleware allowlist and the
+ * in-memory limiter is per-instance, so neither bounded abuse across the
+ * fleet; (2) the unique (slug, email) constraint so one email = one review
+ * per consignataria.
  */
 export async function POST(req: NextRequest) {
   const t0 = Date.now()
   const requestId = crypto.randomUUID()
+
+  const ipForLimit = getClientId(req)
+  const rl = await enforceRateLimit({
+    action: 'reviews_submit',
+    identity: `ip:${ipForLimit}`,
+    limit: 10,
+    windowSeconds: 600,
+  })
+  if (!rl.ok) return rateLimitedResponse(rl.retryAfter)
 
   let body: unknown
   try {

@@ -8,9 +8,15 @@ export async function GET(_req: NextRequest, { params }: Props) {
   const { slug } = await params
   const supabase = requireServiceClient()
 
+  // Explicit public column list — never `select('*')` here. The table has a
+  // `created_by` column holding the claiming owner's email (written on POST);
+  // `*` leaked it through this UNAUTHENTICATED GET, exposing owner emails for
+  // every claimed consignataria. Add new public columns deliberately.
   const { data, error } = await supabase
     .from('consignataria_auctions')
-    .select('*')
+    .select(
+      'id, consignataria_slug, title, date, time, location, province, type, main_category, estimated_heads, description, catalog_url, youtube_url, status, created_at, updated_at',
+    )
     .eq('consignataria_slug', slug)
     .order('date', { ascending: true })
 

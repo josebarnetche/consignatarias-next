@@ -29,12 +29,20 @@ export async function POST(request: NextRequest) {
     // Get raw body for signature verification
     const rawBody = await request.text()
     
-    // Verify webhook signature
-    const signature = request.headers.get('x-rebill-signature') 
+    // Verify webhook signature — FAIL CLOSED. The secret must be configured and
+    // every payload must carry a valid signature. Previously this was gated on
+    // `webhookSecret &&`, so an unset secret (new env / preview deploy / rotation)
+    // silently disabled verification and let anyone forge subscription/payment
+    // events and self-grant paid tiers via the service-role writes below.
+    const signature = request.headers.get('x-rebill-signature')
       || request.headers.get('x-webhook-signature')
     const webhookSecret = process.env.REBILL_WEBHOOK_SECRET
-    
-    if (webhookSecret && !verifySignature(rawBody, signature, webhookSecret)) {
+
+    if (!webhookSecret) {
+      console.error('REBILL_WEBHOOK_SECRET is not configured — rejecting webhook')
+      return NextResponse.json({ error: 'not_configured' }, { status: 503 })
+    }
+    if (!verifySignature(rawBody, signature, webhookSecret)) {
       console.error('Webhook signature verification failed')
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
@@ -106,8 +114,19 @@ export async function POST(request: NextRequest) {
               `Rebill webhook: metadata.api_tier (${claimedTier}) disagrees with plan_id-derived tier (${planDerivedTier}) for plan ${plan_id}. Using plan_id.`,
             )
           }
-          const apiTier: 'starter' | 'growth' | 'scale' =
-            planDerivedTier ?? claimedTier ?? 'starter'
+          // plan_id is the ONLY source of truth. Never fall back to the
+          // client-supplied metadata.api_tier — doing so let a caller request
+          // `scale` whenever the REBILL_*_PLAN_ID env map was unset or the
+          // plan_id didn't match. If we can't derive the tier from a known
+          // plan_id, refuse to grant API access.
+          if (!planDerivedTier) {
+            console.error(
+              `Rebill webhook: could not derive api_tier from plan_id (${plan_id}). ` +
+                `Refusing to grant API access from client-claimed tier (${claimedTier}).`,
+            )
+            break
+          }
+          const apiTier: 'starter' | 'growth' | 'scale' = planDerivedTier
           if (!userId) break
 
           // Read existing email/tier so we don't overwrite PRO Usuario state

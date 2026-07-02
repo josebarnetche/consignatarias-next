@@ -66,6 +66,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'invalid_signature' }, { status: 401 })
   }
 
+  // Replay window: reject signed events older/newer than 5 min (Svix spec).
+  // Dedup on svix-id stops honest retries; this bounds captured-event replay.
+  const tsSeconds = Number(svixTs)
+  if (!Number.isFinite(tsSeconds) || Math.abs(Date.now() / 1000 - tsSeconds) > 300) {
+    return NextResponse.json({ error: 'stale_timestamp' }, { status: 401 })
+  }
+
   let payload: { type?: string; created_at?: string; data?: Record<string, unknown> }
   try {
     payload = JSON.parse(rawBody)

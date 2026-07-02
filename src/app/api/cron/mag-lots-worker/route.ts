@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
+import { authorizeCron } from '@/lib/cron-auth'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -302,10 +303,10 @@ async function actionProcessOne() {
 }
 
 export async function POST(req: NextRequest) {
-  const cronSecret =
-    req.headers.get('x-cron-secret') || req.nextUrl.searchParams.get('secret')
-  const envSecret = process.env.CRON_SECRET?.replace(/\\r\\n$/, '').trim()
-  if (cronSecret !== envSecret && process.env.NODE_ENV === 'production') {
+  // Fail CLOSED in every environment. The previous check only enforced the
+  // secret when NODE_ENV === 'production', leaving DB writes + outbound
+  // scraping unauthenticated in any non-prod/preview runtime.
+  if (!authorizeCron(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

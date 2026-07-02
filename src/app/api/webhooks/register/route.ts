@@ -1,3 +1,4 @@
+import { lookup } from 'node:dns/promises'
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { authenticate } from '@/lib/api-auth'
@@ -22,6 +23,36 @@ function isPublicHttpsUrl(raw: string): boolean {
   if (host === '::1' || host.startsWith('fc') || host.startsWith('fd')) return false
   if (host === '0.0.0.0') return false
   return true
+}
+
+// True if an IP literal is private/loopback/link-local/CGNAT (incl. IPv4-mapped IPv6).
+function isPrivateIp(ip: string): boolean {
+  const v = ip.toLowerCase()
+  if (v === '::1' || v.startsWith('fc') || v.startsWith('fd') || v.startsWith('fe80')) return true
+  const m = v.startsWith('::ffff:') ? v.slice(7) : v
+  if (/^127\./.test(m)) return true
+  if (/^10\./.test(m)) return true
+  if (/^192\.168\./.test(m)) return true
+  if (/^172\.(1[6-9]|2[0-9]|3[01])\./.test(m)) return true
+  if (/^169\.254\./.test(m)) return true
+  if (/^100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\./.test(m)) return true // CGNAT 100.64/10
+  if (m === '0.0.0.0') return true
+  return false
+}
+
+// The string check above only inspects the literal hostname. A public hostname
+// (e.g. evil.example.com) can still resolve to 169.254.169.254 / 127.0.0.1 /
+// 10.x — a classic SSRF / DNS-rebinding bypass. Resolve the host and reject if
+// ANY answer is a private address.
+// NOTE: this is registration-time only; the dispatcher should re-resolve and
+// pin/validate the IP at send time to fully defeat DNS rebinding.
+async function resolvesToPublicHost(host: string): Promise<boolean> {
+  try {
+    const addrs = await lookup(host, { all: true })
+    return addrs.length > 0 && addrs.every((a) => !isPrivateIp(a.address))
+  } catch {
+    return false
+  }
 }
 
 interface SuccessResponse {
@@ -114,7 +145,18 @@ export async function POST(
         },
       }, { status: 400 })
     }
-    
+
+    // DNS-resolution check — defeats hostnames that point at private IPs.
+    if (!(await resolvesToPublicHost(new URL(url).hostname))) {
+      return NextResponse.json({
+        success: false,
+        error: {
+          code: 'INVALID_URL',
+          message: 'webhook host does not resolve to a public IP address.',
+        },
+      }, { status: 400 })
+    }
+
     const supabase = requireServiceClient()
 
     // Check for duplicate URL (same URL + events combo)

@@ -57,9 +57,15 @@ export async function POST(request: NextRequest) {
   try {
     const rawBody = await request.text()
     
-    // Verify signature if secret is configured
+    // Verify signature — FAIL CLOSED. An unset secret previously skipped
+    // verification entirely, letting anyone forge `user.created` events to
+    // blast welcome emails (Resend domain abuse) and write outreach_log rows.
     const signature = request.headers.get('x-supabase-webhook-signature')
-    if (WEBHOOK_SECRET && !verifySignature(rawBody, signature, WEBHOOK_SECRET)) {
+    if (!WEBHOOK_SECRET) {
+      console.error('[Auth Webhook] SUPABASE_AUTH_WEBHOOK_SECRET not configured — rejecting')
+      return NextResponse.json({ error: 'not_configured' }, { status: 503 })
+    }
+    if (!verifySignature(rawBody, signature, WEBHOOK_SECRET)) {
       console.error('[Auth Webhook] Signature verification failed')
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }

@@ -3,6 +3,7 @@ import { requireServiceClient } from '@/lib/supabase'
 import { claimSchema } from '@/lib/validators/claim'
 import { sendClaimNotificationToAdmin } from '@/lib/email'
 import { getProfile } from '@/lib/data/consignataria-slugs'
+import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limit-db'
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,6 +18,17 @@ export async function POST(req: NextRequest) {
     }
 
     const { consignataria_slug, claimant_email, claimant_name, claimant_phone, claimant_role, cuit } = parsed.data
+
+    // Durable rate limit — this endpoint sends a real OTP/magic-link to the
+    // submitted address. Bound per-IP and per-email so it can't be looped into
+    // a mailbox-flooding / Supabase-auth-quota-exhaustion tool.
+    for (const [id, limit] of [
+      [`ip:${clientIp(req)}`, 10],
+      [`email:${claimant_email.toLowerCase()}`, 3],
+    ] as const) {
+      const rl = await enforceRateLimit({ action: 'claims', identity: id, limit, windowSeconds: 3600 })
+      if (!rl.ok) return rateLimitedResponse(rl.retryAfter)
+    }
     const supabase = requireServiceClient()
 
     // Look up the consignataria. ~18 canonical profiles have no DB row yet (orphans);

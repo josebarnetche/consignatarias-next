@@ -63,6 +63,23 @@ export async function authenticate(req: NextRequest): Promise<AuthResult> {
     }
   }
 
+  // Enforce the per-key IP allowlist. It was stored on the key but never
+  // checked, so the advertised allowlist was a no-op and keys worked from any
+  // IP. Empty allowlist = no restriction (backwards compatible).
+  if (key.allowedIps.length > 0) {
+    const requestIp = getRequestIp(req)
+    if (!requestIp || !key.allowedIps.includes(requestIp)) {
+      return {
+        ok: false,
+        response: errorResponse(
+          'ip_not_allowed',
+          'This API key is restricted to an IP allowlist that does not include your address.',
+          403,
+        ),
+      }
+    }
+  }
+
   const plan = await getUserPlan(key.userId)
   if (!plan) {
     return {
@@ -137,4 +154,11 @@ function errorResponse(code: string, message: string, status: number) {
     { success: false, error: { code, message } },
     { status },
   )
+}
+
+/** Client IP from proxy headers (Vercel prepends the real client IP). */
+function getRequestIp(req: NextRequest): string | null {
+  const fwd = req.headers.get('x-forwarded-for')
+  if (fwd) return fwd.split(',')[0].trim()
+  return req.headers.get('x-real-ip')?.trim() || null
 }
