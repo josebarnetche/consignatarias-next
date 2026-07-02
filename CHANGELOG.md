@@ -7,6 +7,50 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.71.0] — 2026-07-02
+
+### Captura de lead para consignatarias sin contacto público
+
+Las firmas sin whatsapp/tel/email/web eran un **dead-end** ("Sin datos de contacto públicos todavía") — el lander frío (mayormente de IA) no tenía ningún camino. Nuevo `ContactlessLeadForm` en la Card C del perfil: botón "Pedí que te contacten" → form (nombre + tel/email) → `POST /api/leads`.
+
+- **Tabla `consignataria_leads`** (migración `20260702_consignataria_leads.sql`, **aplicada en prod**): no existía, así que el endpoint tiraba 500 en cada envío. RLS on, sin acceso anon (contiene PII: name/phone/email/message), inserts vía `service_role`. El endpoint ya trae validación (zod) + rate-limit propio (3/IP/firma/día por `ip_hash`).
+- **Value-event `lead_form`** (peso 10, grupo lead) para medir el lead capturado en `value_events`.
+- Verificado en vivo: `/api/leads` → 200 + fila insertada (y borrada la de prueba); el form renderiza en `j-s-russo` reemplazando el dead-end.
+
+## [1.70.0] — 2026-07-02
+
+### Fix del nav de la home + instrumentación del funnel + buscador por nombre
+
+- **Fix nav (reporte del dueño):** en la home, los links "Remates / Frigoríficos / Mercado" del top nav eran **anclas muertas** (`#remates`/`#frigorificos`/`#mercado` apuntaban a secciones inexistentes → no llevaban a ningún lado). Ahora van a las páginas reales `/remates`, `/frigorificos`, `/mercado`.
+- **Funnel al ledger `value_events`** (antes solo emitía a GA4 → el ledger interno estaba vacío para el embudo): nuevo `emitValueBeacon()` (beacon sin duplicar el evento de GA4); `planes_view` + `checkout_start` desde sus helpers de analytics; `pro_prompt_view` (`TrackOnMount`) + `pro_prompt_click` (`ValueLink`) en el muro PRO; `subscription_paid` **server-side** desde el webhook de Rebill (peso 100 = la conversión).
+- **Buscador** por nombre de consignataria en la home (typeahead client-side sobre las ~100 firmas → link directo al perfil): el caso típico de la IA es que el usuario ya sabe el nombre y no tenía dónde tipearlo.
+- **Burbuja WhatsApp** movida del layout terminal al **root layout** para que aparezca también en la home de la raíz (que no usa el layout terminal).
+
+## [1.69.0] — 2026-07-02
+
+### Legibilidad + burbuja WhatsApp "sumá tu consignataria" (lead B2B medido)
+
+Del reporte de tráfico/UX: la IA (Copilot + ChatGPT) es el canal de descubrimiento dominante y el sitio perdía esa demanda por legibilidad y falta de captura.
+
+- **Legibilidad:** subidos los tokens mínimos que usan contacto/precios/CTAs — `text-xxs` 11→12px, `text-data` 13→14px, `label` 14→15px. Audiencia mayor, mobile-first.
+- **Burbuja global de WhatsApp** → `wa.me/5493773418130` con mensaje "quiero sumar mi consignataria"; el clic se mide como value-event **`whatsapp_lead`** (peso 12, b2b). Se oculta en el detalle de una firma y en `/admin`.
+- **Tabla `whatsapp_clicks`** (migración `20260702_whatsapp_clicks.sql`, **aplicada en prod**): el código (`/api/track/whatsapp`, CTAs) ya insertaba ahí vía `service_role` pero la tabla no existía → cada clic-lead se perdía en silencio. RLS on, sin anon.
+- **CTA de conversión** en `/precios` → `/consignatarias` ("¿Querés vender a estos precios? Encontrá tu consignataria"): era un dead-end y es un top-landing de IA.
+- **Perfil:** el contacto WhatsApp pasa de link `text-xxs` a **botón primario** verde legible.
+
+## [1.68.0] — 2026-07-02
+
+### Auditoría de seguridad + remediación (código + DB) — "building in the open"
+
+Auditoría 0-day del repo público. Remediación desplegada en código y aplicada en la DB de producción.
+
+- **Webhooks fail-closed:** `rebill` + `auth` ahora exigen el secreto y verifican la firma **incondicionalmente** — antes estaban gateados con `if (secret && !verify)`, así que un secreto sin setear (env nuevo, preview, rotación) saltaba la verificación entera → cualquiera podía forjar una suscripción y auto-otorgarse un tier pago. `rebill` deja de caer al `metadata.api_tier` del cliente; `resend` suma ventana anti-replay (svix timestamp).
+- **Cron auth:** `post-remate-outreach` + 3 crons env-gated → `authorizeCron()` (fail-closed en todo entorno; antes bypassables off-prod o con el secreto sin setear, y `post-remate-outreach` era GET-triggerable → blast de email). `authorizeCron` deja de aceptar el secreto por query-string y compara en tiempo constante; `internal/cron-hook` idem.
+- **DB (Supabase, aplicado en prod — migraciones `20260629_security_hardening*.sql`):** se sacaron las políticas `USING(true)` de `alertas`/`alerta_logs` (leakeaban a anon el `api_key` en texto plano) y `subscriptions`; `get_user_report_stats` (IDOR) e `increment_api_usage` (DoS de cupo) revocadas de anon/authenticated → `service_role`; `email_tracking` anon `FOR ALL` (leakeaba email + IP de cada destinatario) → INSERT-only; vistas `value_events_*` SECURITY DEFINER → invoker; funciones-trigger sacadas del RPC público.
+- **App:** se enforcea el allowlist `allowed_ips` de las API keys (estaba guardado pero nunca chequeado); rate-limiter **durable en Postgres** para endpoints de email/escritura anónimos (el in-memory era per-instancia, inútil en serverless); SSRF en `webhooks/register` (resuelve DNS y rechaza IPs privadas); fuga del email del dueño en `auctions` GET (`select *` → lista explícita de columnas); validación en `track/whatsapp`; sanitización del `ilike` en `lots`; el checkout público deja de pre-confirmar cuentas (account squatting); **HSTS + CSP** (frame-ancestors/base-uri/object-src).
+
+Verificado en vivo: headers presentes, `POST /api/webhooks/rebill` sin firma → 401, y políticas/grants confirmados en la DB. Diferido (decisión de producto): `fpt_approvals` anon ALL, `increment_aperturas` anon, listado del bucket, leaked-password protection de Auth.
+
 ## [1.67.3] — 2026-06-29
 
 ### Fix: Canal Rural ya no duplica O'Farrell/Mondino (alias de slug)
