@@ -57,11 +57,21 @@ export default function SinceLastVisit({ snapshot }: { snapshot: SinceLastVisitS
 
       if (segments.length > 0) {
         setParts(segments)
-        // La barra efectivamente se muestra → instrumentar (gate de medición).
-        trackSinceLastVisitShown({
-          has_delta: true,
-          page: window.location.pathname,
-        })
+        // La barra se muestra → instrumentar UNA VEZ POR SESIÓN. El componente
+        // está montado en 4 páginas (frigoríficos, inmag, arrendamiento,
+        // overview) y `snapshot` es un objeto nuevo por render, así que sin este
+        // guard el evento salía ~3× por usuario (476 ev / 156 usuarios en GA4).
+        let alreadyShown = false
+        try {
+          alreadyShown = window.sessionStorage.getItem('slv_shown') === '1'
+        } catch { /* storage no disponible */ }
+        if (!alreadyShown) {
+          try { window.sessionStorage.setItem('slv_shown', '1') } catch { /* noop */ }
+          trackSinceLastVisitShown({
+            has_delta: true,
+            page: window.location.pathname,
+          })
+        }
       }
     }
 

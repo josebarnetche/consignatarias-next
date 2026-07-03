@@ -269,6 +269,8 @@ export function trackSignup(method: 'email' | 'google' | 'github') {
   trackEvent('sign_up', {
     signup_method: method,
   })
+  // Ledger: el evento GA es `sign_up` pero la taxonomía usa `signup` (funnel w15).
+  emitValueBeacon('signup', { meta: { method } })
 }
 
 /** User visited the DT-e upload page */
@@ -369,6 +371,9 @@ export function trackAlertSubscribe(opts: { source: string; page: string }) {
     source: opts.source,
     page: opts.page,
   })
+  // Ledger: GA usa `alert_subscribe` pero la taxonomía usa `alert_create`
+  // (recurrencia w8). Antes este evento nunca entraba al value-index.
+  emitValueBeacon('alert_create', { meta: { source: opts.source, page: opts.page } })
 }
 
 /** User clicked an internal cross-silo navigation link from a hub page
