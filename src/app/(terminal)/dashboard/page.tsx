@@ -122,6 +122,7 @@ export default async function DashboardPage() {
 
   // Get leads count (last 30 days)
   let leadsCount = 0
+  let leads: Array<{ id: number; name: string; phone: string | null; email: string | null; message: string | null; source: string | null; status: string | null; created_at: string }> = []
   if (consignataria) {
     try {
       const { count: leadCount } = await service
@@ -131,6 +132,15 @@ export default async function DashboardPage() {
         .gte('created_at', thirtyDaysAgo)
 
       leadsCount = leadCount ?? 0
+
+      // Bandeja de leads (últimos 50) — la captura ya existía, faltaba la gestión.
+      const { data: leadRows } = await service
+        .from('consignataria_leads')
+        .select('id, name, phone, email, message, source, status, created_at')
+        .eq('consignataria_slug', consignataria.canonical_slug)
+        .order('created_at', { ascending: false })
+        .limit(50)
+      leads = leadRows ?? []
     } catch {
       // Table may not exist yet
       leadsCount = 0
@@ -279,6 +289,7 @@ export default async function DashboardPage() {
       viewCount={viewCount}
       whatsappClicks={whatsappClicks}
       leadsCount={leadsCount}
+      leads={leads}
       totalWatchers={totalWatchers}
       viewPercentile={viewPercentile}
       provincialRank={provincialRank}

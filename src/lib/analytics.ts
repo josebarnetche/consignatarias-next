@@ -163,19 +163,29 @@ export function trackClaimSuccess(slug: string, displayName: string) {
 /** Variant of a PRO upgrade surface, for funnel segmentation. */
 export type ProPromptVariant = 'inline' | 'card' | 'reveal'
 
-/** PRO upgrade prompt was shown to user. Emits both the legacy `prompt_context`/
- *  `prompt_variant` params and the canonical `context`/`variant` funnel params. */
+// Dedup de impresiones del muro PRO: UNA por página (pathname) por sesión. El
+// muro se emite desde 6 componentes distintos; sin esto, un solo pageview genera
+// N `pro_prompt_view` → infla el denominador del funnel (el CTR real del muro no
+// se podía calcular). El Set vive a nivel módulo (persiste entre navegaciones SPA).
+const proPromptFiredPaths = new Set<string>()
+
+/** PRO upgrade prompt shown. Dedupe UNA impresión por página + pega a GA y al
+ *  ledger de value_events (antes GA y ledger contaban universos distintos). */
 export function trackProPromptView(context: string, variant: ProPromptVariant) {
+  const path = typeof window !== 'undefined' ? window.location.pathname : ''
+  if (proPromptFiredPaths.has(path)) return
+  proPromptFiredPaths.add(path)
   trackEvent('pro_prompt_view', {
     prompt_context: context,
     prompt_variant: variant,
     context,
     variant,
   })
+  emitValueBeacon('pro_prompt_view', { meta: { context, variant } })
 }
 
-/** User clicked PRO upgrade prompt CTA. Emits both the legacy `prompt_context`/
- *  `prompt_variant` params and the canonical `context`/`variant` funnel params. */
+/** User clicked PRO upgrade prompt CTA. GA + ledger (el click es intencional →
+ *  se cuenta siempre, sin dedup). */
 export function trackProPromptClick(context: string, variant: ProPromptVariant) {
   trackEvent('pro_prompt_click', {
     prompt_context: context,
@@ -183,6 +193,35 @@ export function trackProPromptClick(context: string, variant: ProPromptVariant) 
     context,
     variant,
   })
+  emitValueBeacon('pro_prompt_click', { meta: { context, variant } })
+}
+
+/** Handler ÚNICO de clic de WhatsApp — antes 3 superficies medían distinto
+ *  (perfil: contact_whatsapp; SmartCTA/FAB: solo /api/track/whatsapp). Ahora
+ *  todas emiten las 3 señales consistentes: outbound (GA), contact_whatsapp
+ *  (ledger, lead w10) y el beacon a whatsapp_clicks. */
+export function trackWhatsAppClick(opts: {
+  url: string
+  slug?: string
+  source: string
+  linkType?: 'whatsapp' | 'whatsapp_fab'
+}) {
+  trackOutboundClick(opts.url, opts.linkType ?? 'whatsapp')
+  trackValueEvent('contact_whatsapp', {
+    entityType: 'consignataria',
+    entitySlug: opts.slug,
+    meta: { source: opts.source },
+  })
+  if (opts.slug) {
+    try {
+      const body = JSON.stringify({ slug: opts.slug, source: opts.source })
+      if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
+        navigator.sendBeacon('/api/track/whatsapp', new Blob([body], { type: 'application/json' }))
+      } else {
+        fetch('/api/track/whatsapp', { method: 'POST', body, headers: { 'Content-Type': 'application/json' }, keepalive: true })
+      }
+    } catch { /* best-effort */ }
+  }
 }
 
 /** Free user consumed their weekly "taste" (one full PRO verdict). */

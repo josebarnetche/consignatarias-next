@@ -103,28 +103,40 @@ export async function POST(request: NextRequest) {
         const kind = metadata?.kind
 
         // Conversión (la plata): registrar subscription_paid en el ledger de
-        // value_events. El webhook ya está firmado (fail-closed) y deduplicado,
-        // así que cada success acá es un pago real y único. Best-effort: nunca
-        // frenar el otorgamiento de entitlement por instrumentar.
+        // value_events — SOLO en el PRIMER cobro de cada suscripción. Rebill
+        // dispara payment.success también en las renovaciones mensuales; sin este
+        // dedup, cada mes sumaba 100 al value-index por el mismo cliente
+        // (conversiones infladas en renovaciones). Best-effort: nunca frena el
+        // otorgamiento de entitlement.
         {
           const entitySlug: string | null =
             metadata?.entitySlug ?? metadata?.userId ?? null
           const entityType: string =
             metadata?.entityType ?? (kind && String(kind).startsWith('enterprise') ? 'global' : 'consignataria')
-          await service
-            .from('value_events')
-            .insert({
-              event: 'subscription_paid',
-              weight: 100,
-              entity_type: entityType,
-              entity_slug: entitySlug ? String(entitySlug).slice(0, 200) : null,
-              source: 'direct',
-              path: null,
-              meta: { kind: kind ?? null, subscription_id: subscription_id ?? null, plan_id: plan_id ?? null },
-            })
-            .then(({ error }) => {
-              if (error) console.error('value_event subscription_paid insert error:', error.message)
-            })
+          // ¿Ya registramos la conversión de ESTA suscripción? (renovación → skip)
+          let alreadyCounted = false
+          if (subscription_id) {
+            const { count } = await service
+              .from('value_events')
+              .select('id', { count: 'exact', head: true })
+              .eq('event', 'subscription_paid')
+              .filter('meta->>subscription_id', 'eq', String(subscription_id))
+            alreadyCounted = (count ?? 0) > 0
+          }
+          if (!alreadyCounted) {
+            const { error } = await service
+              .from('value_events')
+              .insert({
+                event: 'subscription_paid',
+                weight: 100,
+                entity_type: entityType,
+                entity_slug: entitySlug ? String(entitySlug).slice(0, 200) : null,
+                source: 'direct',
+                path: null,
+                meta: { kind: kind ?? null, subscription_id: subscription_id ?? null, plan_id: plan_id ?? null },
+              })
+            if (error) console.error('value_event subscription_paid insert error:', error.message)
+          }
         }
 
         // Branch 1b — Enterprise API subscription (Starter for now)

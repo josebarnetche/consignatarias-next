@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import LeadCaptureModal from './LeadCaptureModal'
-import { trackOutboundClick } from '@/lib/analytics'
+import { trackWhatsAppClick } from '@/lib/analytics'
 
 interface SmartWhatsAppCTAProps {
   slug: string
@@ -42,13 +42,8 @@ export default function SmartWhatsAppCTA({
   const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`
 
   const handleClick = () => {
-    // Track the click
-    trackOutboundClick(whatsappUrl, 'whatsapp')
-    fetch('/api/track/whatsapp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slug, source }),
-    }).catch(() => {})
+    // Handler único: outbound (GA) + contact_whatsapp (ledger, lead) + beacon.
+    trackWhatsAppClick({ url: whatsappUrl, slug, source })
 
     if (skipCapture) {
       // Direct to WhatsApp

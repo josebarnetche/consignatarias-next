@@ -6,6 +6,7 @@ import ArrendamientoCalculator from './ArrendamientoCalculator'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import ArrendamientoLiquidacionSignup from '@/components/ArrendamientoLiquidacionSignup'
+import HerramientasCTA from '@/components/HerramientasCTA'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import SinceLastVisit from '@/components/landing/SinceLastVisit'
 import Breadcrumb from '@/components/ui/Breadcrumb'
@@ -342,6 +343,8 @@ export default function ArrendamientoPage() {
             genéricas que convertían ~0 contra el tráfico #2 del sitio. */}
         <section className="max-w-6xl mx-auto px-4 pt-4 pb-8">
           <ArrendamientoLiquidacionSignup priceToday={inmag.current} page="/mercado/arrendamiento" />
+          {/* Cosas para hacer — la entrada #1 (57% bounce) necesita un próximo paso. */}
+          <HerramientasCTA />
         </section>
 
         {/* Monthly Averages Table */}

@@ -4,7 +4,7 @@
  */
 
 import Link from 'next/link'
-import TrackOnMount from './TrackOnMount'
+import ProPromptView from './ProPromptView'
 import ValueLink from './ValueLink'
 
 interface PaywallProps {
@@ -35,8 +35,8 @@ export function PaywallCard({ loggedIn, feature, redirectTo }: PaywallProps) {
 
   return (
     <div className="relative overflow-hidden border border-sky-500/30 bg-zinc-900/40 rounded-lg p-6 my-4">
-      {/* Funnel: el usuario VIO el muro PRO (pro_prompt_view, peso 1). */}
-      <TrackOnMount event="pro_prompt_view" />
+      {/* Funnel: impresión del muro PRO, deduplicada a 1 por página (GA + ledger). */}
+      <ProPromptView context="paywall" variant="card" />
       <div className="absolute top-0 right-0 w-64 h-32 bg-sky-500/5 blur-3xl rounded-full pointer-events-none" />
 
       <div className="relative flex items-start gap-4">

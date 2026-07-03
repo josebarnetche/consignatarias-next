@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { BreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import HerramientasCTA from '@/components/HerramientasCTA'
 import marketPrices from '@/lib/data/market-prices.json'
 
 const fmt = (n: number) => n.toLocaleString('es-AR', { maximumFractionDigits: 0 })
@@ -158,6 +159,9 @@ export default function PreciosHubPage() {
             Ver consignatarias &rarr;
           </Link>
         </section>
+
+        {/* Cosas para hacer — surfacea las herramientas pegajosas. */}
+        <HerramientasCTA exclude="/precios" />
 
         {/* FAQ */}
         <section className="border-t border-terminal-border pt-6">

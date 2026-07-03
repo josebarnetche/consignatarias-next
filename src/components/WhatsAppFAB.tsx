@@ -1,6 +1,6 @@
 'use client'
 
-import { trackOutboundClick } from '@/lib/analytics'
+import { trackWhatsAppClick } from '@/lib/analytics'
 
 interface WhatsAppFABProps {
   whatsapp: string
@@ -25,15 +25,8 @@ export default function WhatsAppFAB({ whatsapp, consignatariaName, slug, classNa
   const href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`
 
   const handleClick = () => {
-    trackOutboundClick(whatsapp, 'whatsapp_fab')
-    // Track in database for dashboard analytics
-    if (slug) {
-      fetch('/api/track/whatsapp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug, source: 'fab' }),
-      }).catch(() => {}) // Fire and forget
-    }
+    // Handler único: outbound (GA) + contact_whatsapp (ledger) + beacon.
+    trackWhatsAppClick({ url: href, slug, source: 'fab', linkType: 'whatsapp_fab' })
   }
 
   return (
