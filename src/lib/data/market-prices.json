@@ -1828,47 +1828,47 @@
   "categories": {
     "novillos": {
       "current": 4468.09,
-      "prev": 4114.94,
-      "change": 8.6,
+      "prev": 4468.09,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 412
     },
     "novillitos": {
       "current": 4889.79,
-      "prev": 4555.09,
-      "change": 7.3,
+      "prev": 4889.79,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 896
     },
     "vaquillonas": {
       "current": 4683.83,
-      "prev": 4067.24,
-      "change": 15.2,
+      "prev": 4683.83,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 524
     },
     "vacas": {
       "current": 3003.68,
-      "prev": 2643.79,
-      "change": 13.6,
+      "prev": 3003.68,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "latestVolume": 666
     },
     "toros": {
       "current": 2859.19,
-      "prev": 2748.74,
-      "change": 4,
+      "prev": 2859.19,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 61
     },
     "terneros": {
       "current": 4569,
-      "prev": 4916,
-      "change": -7.1,
+      "prev": 4569,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
@@ -1880,9 +1880,9 @@
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1515,
-    "prev": 1525,
-    "change": -0.7,
+    "current": 1510,
+    "prev": 1515,
+    "change": -0.3,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
@@ -2006,15 +2006,15 @@
         "category": "VACAS Esp.Joven h 430",
         "minPrice": 2200,
         "maxPrice": 4100,
-        "avgPrice": 2776.61,
-        "cabezas": 96
+        "avgPrice": 2806.06,
+        "cabezas": 99
       },
       {
         "category": "VACAS Esp.Joven + 430",
         "minPrice": 2200,
         "maxPrice": 3800,
-        "avgPrice": 2991.77,
-        "cabezas": 657
+        "avgPrice": 2987.58,
+        "cabezas": 654
       },
       {
         "category": "VACAS Regular",
@@ -2069,7 +2069,7 @@
         "category": "Totales",
         "minPrice": 0,
         "maxPrice": 0,
-        "avgPrice": 3504.72,
+        "avgPrice": 3504.67,
         "cabezas": 6273
       }
     ]
