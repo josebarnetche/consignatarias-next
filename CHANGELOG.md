@@ -7,6 +7,38 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## Review general de la base de código — 2026-07-03
+
+Auditoría estructural en 3 ejes (backend / frontend / datos) + review de los cambios de la sesión. Documento completo: [`docs/REVIEW-GENERAL-2026-07-03.md`](docs/REVIEW-GENERAL-2026-07-03.md).
+
+**Veredicto:** islas de excelencia (webhook Rebill, api-auth, cron-auth, contrato `value-events`, `security_hardening.sql`) rodeadas de código que las reimplementa peor. El riesgo dominante no es un bug puntual sino **entropía de patrón** + **falta de fuentes de verdad únicas**. Mayor ROI = convergencia, no features.
+
+**Hallazgo crítico — no hay fuente de verdad del esquema:** sin tipos generados; 16 tablas usadas en código sin migración en el repo (viven solo en prod, incl. `market_price_snapshots`); el hardening de seguridad vive en una migración tardía (si no se aplica a un entorno nuevo, vuelven las vulnerabilidades). **Bug real detectado:** `dte/ActivationChecklist.tsx` consulta `.from('alerts')`/`.from('saved_remates')` — tablas inexistentes (son `alertas`/`remate_favorites`) → falla en silencio.
+
+**Concerns por eje (resumen):**
+- **Backend:** esquema de API-key paralelo con keys en texto plano (`alertas/*`); 5 crons reintroducen el canal `?secret=` (no usan `authorizeCron`); DAL usado por 4/110 rutas (73 hacen `.from()` ad-hoc); dos service clients; zod inconsistente; sin error handler central.
+- **Frontend:** god-components (`DashboardClient` 1535 líneas, `ConsignatariaProfileClient` 1344); trackers huérfanos (`TrackOnMount` dead code); sprawl de WhatsApp (6 componentes, `wa.me` en 16 archivos); faltan primitivos `<Button>`/`<Input>`. **La consolidación de analytics de la sesión SÍ cumplió su objetivo.**
+- **Datos:** migraciones no idempotentes; `whatsapp_clicks` duplicada e incompatible; `remates.json` (450 KB) en el bundle del cliente; scraper sin validación de esquema.
+
+**Roadmap (convergencia > features):** (1) fuente de verdad del esquema (baseline desde prod + tipos generados + CI `db diff`); (2) fix `ActivationChecklist`; (3) 5 crons → `authorizeCron`; (4) deprecar API-key en texto plano; (5) un service client + DAL como choke point; (6) partir god-components; (7) primitivos UI + borrar huérfanos; (8) sacar JSON del bundle cliente.
+
+## [1.73.0] — 2026-07-03
+
+### Analytics F2 (dedup/unificación) + retención F1 + bandeja de leads
+
+- **Integridad de analytics — Fase 2:** `pro_prompt_view` deduplicado a UNA impresión por página (lo emitían 6 componentes → denominador del funnel inflado) y unificado a GA + ledger (`ProPromptView` reemplaza el `TrackOnMount` del Paywall); helper único `trackWhatsAppClick()` — las 3 superficies (perfil/SmartCTA/FAB) ahora emiten señales coherentes; `subscription_paid` deduplicado por `subscription_id` (no cuenta renovaciones).
+- **Retención — Fase 1:** `HerramientasCTA` ("cosas para hacer": calculadora, mi-ganado, ¿vendo ahora?) surfaceada en `/precios` y `/mercado/arrendamiento` (entrada #1, 57% bounce).
+- **Hook de pago — bandeja de leads:** tab "Leads (N)" en el dashboard del dueño verificado con la lista real (nombre, tel/email, mensaje, fecha, fuente) + botones WhatsApp/Email. La captura ya existía (`consignataria_leads`); faltaba la gestión.
+
+## [1.72.0] — 2026-07-03
+
+### Integridad de analytics — Fase 1 (fix pageview + higiene de eventos) + proyectos A/B
+
+- **Fix de inflación de pageviews:** `PageViewTracker` dispara por cambio de `pathname`, no de `searchParams` (cada filtro/paginación era un `page_view` → inflaba pág/sesión, bounce, engagement en `/frigorificos/*`, `/mercado/arrendamiento`). Detectado cruzando GA4 (208 sesiones / 993 pv el 29-jun) con la data first-party.
+- **Higiene de eventos:** guard de sesión en `SinceLastVisit` (disparaba ~3× por usuario en 4 páginas); wire al ledger de eventos que nunca llegaban (`alert_create`, `newsletter_subscribe`, `signup`) → los grupos recurrencia/lead del value-index dejan de estar vacíos.
+- **Nav fix:** los links "Remates/Frigoríficos/Mercado" de la home eran anclas muertas (`#remates`…) → ahora van a las páginas reales. **Buscador** por nombre en la home. **Burbuja WhatsApp** movida al root layout (aparece también en la home de la raíz).
+- **Docs:** `docs/PROYECTO-A-integridad-analytics.md` (root cause + auditoría + roadmap) y `docs/PROYECTO-B-motivos-para-quedarse.md` (retención por audiencia: productor vs consignataria, JTBD, cosas para hacer).
+
 ## [1.71.0] — 2026-07-02
 
 ### Captura de lead para consignatarias sin contacto público
