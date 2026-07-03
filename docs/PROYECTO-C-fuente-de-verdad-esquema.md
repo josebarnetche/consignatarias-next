@@ -54,7 +54,13 @@ El código habla con Postgres vía `.from('tabla')` / `.rpc('fn')` con **strings
 
 `ActivationChecklist` ahora consume un endpoint server-side nuevo, **`GET /api/me/activation`** (`requireAuth` + `service_role`), que lee la tabla que **sí existe** (`user_favorites`): `hasSavedRemates` = siguió alguna consignataria; `hasAlerts` = con `notify_new_remate`. Se eliminaron los `.from('alerts')`/`.from('saved_remates')` del client anon. Test de regresión: `check-db-refs` (que ahora pasa) + el propio typecheck.
 
-## 5. Plan de reconciliación (DECISIÓN PENDIENTE del dueño)
+## 5. Plan de reconciliación
+
+> **Actualización (v1.74.1, 2026-07-03): el paso 2 ya se ejecutó.** Se aplicaron a prod las 6 migraciones
+> faltantes (`user_dtes`, `sell_zone_alerts`, `webhooks`, `remate_favorites` HARDENED, `consignataria_followers`,
+> + fix de las 0 políticas de `user_favorites`), una por una, verificando RLS tras cada una y con el security
+> advisor limpio al final. **Drift 6 → 0.** Versionadas en `supabase/migrations/20260703_reconcile_*.sql`.
+> Quedan pendientes los pasos 1, 3 y 4.
 
 El fix de fondo del drift "prod le falta migraciones" es **reconciliar prod contra el repo**. Es una decisión con impacto productivo, por eso se documenta en vez de aplicarse a ciegas:
 
@@ -71,7 +77,9 @@ El fix de fondo del drift "prod le falta migraciones" es **reconciliar prod cont
 
 ## 7. Pendiente
 
-- [ ] Reconciliación de prod (§5) — decisión del dueño.
+- [x] **Aplicar las 6 migraciones faltantes a prod (§5.2)** — hecho en v1.74.1 (drift 6 → 0, advisor limpio).
+- [ ] Verificar los 5 flujos end-to-end en prod (subir DT-e, alerta de zona, watch, follow, webhook).
+- [ ] Baseline del esquema desde prod (`supabase db pull`) para versionar las ~16 tablas prod-only (§5.1).
 - [ ] Tipar los clients Supabase con `<Database>` (migración incremental).
 - [ ] Agregar `pnpm check` a CI (hoy solo pre-commit local).
 - [ ] Vaciar la ALLOWLIST resolviendo `users` (API-key de alertas) y `cron_state`.

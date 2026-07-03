@@ -1707,6 +1707,33 @@ export type Database = {
         }
         Relationships: []
       }
+      remate_favorites: {
+        Row: {
+          consignataria_slug: string
+          created_at: string
+          id: number
+          remate_id: number
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          consignataria_slug: string
+          created_at?: string
+          id?: number
+          remate_id: number
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          consignataria_slug?: string
+          created_at?: string
+          id?: number
+          remate_id?: number
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       remates: {
         Row: {
           auction_type: Database["public"]["Enums"]["auction_type"] | null
@@ -1873,6 +1900,42 @@ export type Database = {
         }
         Relationships: []
       }
+      sell_zone_alerts: {
+        Row: {
+          categoria: string
+          created_at: string
+          email: string
+          id: string
+          last_sent_at: string | null
+          last_sent_zone: string | null
+          source: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          categoria: string
+          created_at?: string
+          email: string
+          id?: string
+          last_sent_at?: string | null
+          last_sent_zone?: string | null
+          source?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          email?: string
+          id?: string
+          last_sent_at?: string | null
+          last_sent_zone?: string | null
+          source?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           created_at: string | null
@@ -1935,6 +1998,95 @@ export type Database = {
           venta?: number | null
         }
         Relationships: []
+      }
+      user_dtes: {
+        Row: {
+          cantidad_cabezas: number | null
+          categorias: Json | null
+          consignataria_id: string | null
+          created_at: string | null
+          especie: string | null
+          establecimiento_destino: string | null
+          establecimiento_origen: string | null
+          fecha_emision: string | null
+          fecha_movimiento: string | null
+          id: string
+          imagen_url: string | null
+          motivo: string | null
+          notas: string | null
+          numero_dte: string | null
+          ocr_confidence: number | null
+          ocr_raw_text: string | null
+          peso_total_kg: number | null
+          renspa_destino: string | null
+          renspa_origen: string | null
+          titular_destino: string | null
+          titular_origen: string | null
+          updated_at: string | null
+          user_edited: boolean | null
+          user_id: string
+        }
+        Insert: {
+          cantidad_cabezas?: number | null
+          categorias?: Json | null
+          consignataria_id?: string | null
+          created_at?: string | null
+          especie?: string | null
+          establecimiento_destino?: string | null
+          establecimiento_origen?: string | null
+          fecha_emision?: string | null
+          fecha_movimiento?: string | null
+          id?: string
+          imagen_url?: string | null
+          motivo?: string | null
+          notas?: string | null
+          numero_dte?: string | null
+          ocr_confidence?: number | null
+          ocr_raw_text?: string | null
+          peso_total_kg?: number | null
+          renspa_destino?: string | null
+          renspa_origen?: string | null
+          titular_destino?: string | null
+          titular_origen?: string | null
+          updated_at?: string | null
+          user_edited?: boolean | null
+          user_id: string
+        }
+        Update: {
+          cantidad_cabezas?: number | null
+          categorias?: Json | null
+          consignataria_id?: string | null
+          created_at?: string | null
+          especie?: string | null
+          establecimiento_destino?: string | null
+          establecimiento_origen?: string | null
+          fecha_emision?: string | null
+          fecha_movimiento?: string | null
+          id?: string
+          imagen_url?: string | null
+          motivo?: string | null
+          notas?: string | null
+          numero_dte?: string | null
+          ocr_confidence?: number | null
+          ocr_raw_text?: string | null
+          peso_total_kg?: number | null
+          renspa_destino?: string | null
+          renspa_origen?: string | null
+          titular_destino?: string | null
+          titular_origen?: string | null
+          updated_at?: string | null
+          user_edited?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_dtes_consignataria_id_fkey"
+            columns: ["consignataria_id"]
+            isOneToOne: false
+            referencedRelation: "consignatarias"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_favorites: {
         Row: {
@@ -2152,6 +2304,51 @@ export type Database = {
         }
         Relationships: []
       }
+      webhooks: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          description: string | null
+          events: string[]
+          failed_deliveries: number | null
+          filters: Json | null
+          id: string
+          last_triggered_at: string | null
+          owner_email: string | null
+          secret: string
+          total_deliveries: number | null
+          url: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          events?: string[]
+          failed_deliveries?: number | null
+          filters?: Json | null
+          id?: string
+          last_triggered_at?: string | null
+          owner_email?: string | null
+          secret: string
+          total_deliveries?: number | null
+          url: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          events?: string[]
+          failed_deliveries?: number | null
+          filters?: Json | null
+          id?: string
+          last_triggered_at?: string | null
+          owner_email?: string | null
+          secret?: string
+          total_deliveries?: number | null
+          url?: string
+        }
+        Relationships: []
+      }
       whatsapp_clicks: {
         Row: {
           clicked_at: string
@@ -2219,6 +2416,13 @@ export type Database = {
       }
     }
     Views: {
+      consignataria_followers: {
+        Row: {
+          consignataria_slug: string | null
+          follower_count: number | null
+        }
+        Relationships: []
+      }
       value_events_by_entity: {
         Row: {
           entity_slug: string | null
@@ -2246,6 +2450,7 @@ export type Database = {
         Returns: number
       }
       get_dashboard_counts: { Args: never; Returns: Json }
+      get_remate_watchers: { Args: { p_remate_id: number }; Returns: number }
       get_top_localidades: {
         Args: { p_consig_slug: string; p_days?: number; p_limit?: number }
         Returns: {

@@ -7,6 +7,26 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.74.1] — 2026-07-03
+
+### Reconciliación del estado de Supabase — se destraban 5 features rotas en silencio
+
+Continuación directa de v1.74.0: el `check-db-refs` había detectado **6 objetos que las migraciones del repo crean pero prod nunca aplicó** — features enteras que consultaban tablas inexistentes y **fallaban en silencio** en producción (por los `catch {}` vacíos). Este release **aplica esas migraciones faltantes a prod**, con el RLS correcto (no se reintrodujo ningún `USING(true)`).
+
+**Aplicado a prod (migraciones ahora versionadas en `supabase/migrations/20260703_reconcile_*.sql`):**
+- **`user_dtes`** (17 refs — todo el feature DT-e: upload con OCR, historial, stats, onboarding). RLS own-row para SELECT/INSERT/UPDATE/DELETE.
+- **`sell_zone_alerts`** (alertas de zona de venta + su cron). RLS service-role-only.
+- **`webhooks`** (registro de webhooks de la API). RLS on, service-role-only.
+- **`remate_favorites`** (watch/guardar remates). Aplicada **HARDENED**: en vez del `USING(true)` de la migración original (que filtraba los `user_id` de todos), SELECT scopeado (`auth.uid() = user_id OR user_id IS NULL`) + insert/delete own-row. Incluye `get_remate_watchers`.
+- **`consignataria_followers`** (view de conteo) con `security_invoker = on`.
+- **Fix de `user_favorites`:** existía en prod pero con **RLS habilitada y 0 políticas** → nadie podía leer/escribir sus favoritos (la feature de "seguir consignataria" estaba rota). Se agregaron las 4 políticas own-row.
+
+**Por qué ahora y no en v1.74.0:** en v1.74.0 se dejó como decisión pendiente por el riesgo de aplicar migraciones viejas a ciegas. Se aplicó controladamente: una por una, verificando existencia + RLS tras cada una, y corriendo el **security advisor** de Supabase al final (**limpio**: las tablas nuevas no aparecen en "RLS sin política"; `remate_favorites` no aparece en la lista de `USING(true)`; la view no es SECURITY DEFINER).
+
+**Resultado:** drift del checker **6 → 0**; se regeneró `src/lib/database.types.ts` (57 → 62 tablas/vistas). Deuda documentada (ALLOWLIST): `users` (API-key legacy en texto plano) y `cron_state`.
+
+**Pendiente (ver ROADMAP):** verificar los 5 flujos end-to-end en prod; baseline del esquema desde prod para versionar las ~16 tablas prod-only; tipar los clients con `<Database>`; `pnpm check` en CI.
+
 ## [1.74.0] — 2026-07-03
 
 ### Canon Agent — Fuente de verdad del esquema + fix de bug silencioso en prod

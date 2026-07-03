@@ -15,6 +15,51 @@ MAJOR boundary, so the product stays on 1.x.
 
 ---
 
+## Estado técnico — desde v1.74.0 (2026-07-03)
+
+Tras la auditoría de seguridad + el review general + el paso de Canon Agent (fuente de verdad del esquema + reconciliación del estado de Supabase). Detalle: `CHANGELOG.md`, `docs/PROYECTO-{A,B,C}-*.md`, `docs/REVIEW-GENERAL-2026-07-03.md`.
+
+### ✅ Resuelto (v1.68.0 → v1.74.0)
+
+- **Seguridad (v1.68.0):** webhooks rebill/auth **fail-closed**; cron-auth constant-time (se quitó el canal `?secret=`); RLS cerrada en `alertas`/`alerta_logs`/`subscriptions` (anon leía `api_key` en texto plano + billing); IDOR en `get_user_report_stats`; DoS de cupo en `increment_api_usage`; `email_tracking` anon PII → INSERT-only; SSRF en `webhooks/register`; `allowed_ips` enforced; rate-limiter durable; **HSTS + CSP**; checkout deja de pre-confirmar cuentas.
+- **UX / retención (v1.69 → v1.73):** legibilidad; burbuja WhatsApp lead (`whatsapp_lead`); **fix del nav de la home** (anclas muertas → páginas reales); buscador por nombre; `HerramientasCTA`; form de captura de lead para firmas sin contacto; **bandeja de leads** en el dashboard.
+- **Instrumentación (v1.72 → v1.73):** fix de inflación de pageviews; guard de `SinceLastVisit` (3×→1×); dedup de `pro_prompt_view` (6 componentes → 1/página) + unificado GA+ledger; **WhatsApp unificado**; `subscription_paid` sin duplicar renovaciones; eventos de recurrencia (`alert_create`/`newsletter_subscribe`/`signup`) al ledger.
+- **Fuente de verdad del esquema (v1.74.0):** `src/lib/database.types.ts` (desde prod) + `check-db-refs` con enforcement en `.githooks/pre-commit`; **fix del bug** `.from('alerts')`/`.from('saved_remates')` vía `GET /api/me/activation`.
+- **Reconciliación del estado de Supabase (v1.74.0):** se **aplicaron a prod las migraciones faltantes** → destrabadas **5 features que fallaban en silencio**: **DT-e** (`user_dtes`), **alertas de zona de venta** (`sell_zone_alerts`), **watch de remates** (`remate_favorites`), **followers** (`consignataria_followers`), **webhooks**. Además se arreglaron las **0 políticas de `user_favorites`** (favoritos estaba roto). Todo con RLS own-row / service-role correcto (advisor limpio, sin `USING(true)` peligroso). **Drift de esquema: 6 → 0.**
+
+### 🔜 Next problems to solve (desde v1.74.0)
+
+**P0 — Deuda de esquema / estado de Supabase (lo más urgente tras el drift):**
+1. **Baseline del esquema desde prod** — `supabase db pull` → `supabase/migrations/00000000_baseline_from_prod.sql`. Prod tiene ~16 tablas que el repo **no versiona** (`mag_*`, `market_price_snapshots`, `cron_runs`, `ops_events`, `scraper_runs`, `pending_api_invites`, `email_tracking`, `fpt_approvals`, `remitente_entries`, `usd_blue_history`, …). Sin esto no se puede recrear prod (staging / DR / branch de Supabase).
+2. **Tipar los clients Supabase** con `<Database>` → cada `.from()` inválido pasa a ser **error de compilación** (hoy solo lo caza `check-db-refs` en pre-commit). Migración incremental (surface errores en las ~73 rutas con `.from()` ad-hoc).
+3. **`pnpm check` (tsc + eslint + db-refs) en CI** — hoy el checker solo corre en el pre-commit local.
+4. **Vaciar la ALLOWLIST del checker:** `users` (API-key legacy de `alertas/*` en texto plano contra tabla inexistente → migrar a `api_keys` hasheadas) y `cron_state` (`cron/new-remate-alerts`, ¿= `cron_runs`?).
+5. **Verificar end-to-end en prod las 5 features reconciliadas** (subir un DT-e, crear alerta de zona, watchear un remate, seguir una firma, registrar un webhook) — se crearon las tablas; falta confirmar los flujos completos.
+
+**P0 — Seguridad diferida (del hardening):**
+6. `fpt_approvals` (anon `ALL USING(true)`); `increment_aperturas` (anon SECURITY DEFINER); listado público del bucket `consignataria-assets`; leaked-password protection en Auth; `SET search_path` en ~10 funciones.
+
+**P1 — Convergencia (entropía de patrón, del review general):**
+7. **Un solo service client** (`supabase.ts` vs `supabase-server.ts`).
+8. **DAL como choke point** de mutaciones (hoy 4/110 rutas; 73 hacen `.from()` ad-hoc) + zod en todo POST.
+9. **Contrato único de instrumentación** `track()` (converger GA + ledger).
+10. **Error handler + logging central** (`withApiHandler`) — hoy 66 rutas con try/catch artesanal.
+
+**P1 — Frontend (del review general):**
+11. Partir los god-components (`DashboardClient` 1535, `ConsignatariaProfileClient` 1344) en subcomponentes.
+12. Primitivos `<Button>`/`<Input>`/`<WhatsAppIcon>` + `waUrl()`; borrar huérfanos (`TrackOnMount`, `WhatsAppShare` top-level).
+13. Sacar `remates.json` (450 KB) del bundle del **cliente** (props desde el server).
+
+**P2 — Producto / retención (Proyecto B fases 2-3):**
+14. "Mi Panel" del productor (unificar mi-ganado + alertas + seguidos + DT-e).
+15. Alerta por **precio objetivo** ("avisame cuando el novillo pase $X").
+16. Leads v2 (estado nuevo/contactado + notificación por email a la consignataria).
+17. Validar el CTR real del muro PRO ahora que el denominador del funnel está limpio.
+
+**P0 histórico (sigue vigente):** verificar `REBILL_WEBHOOK_SECRET` + correr un **pago de prueba real** — el gate de revenue está en ops, no en código.
+
+---
+
 ## Where we are now — v1.39.0 (June 2026)
 
 The train since v1.30: a growth/SEO/GEO push, then a full customer-journey debug, then a landing redesign.

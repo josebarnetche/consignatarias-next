@@ -32,6 +32,7 @@ const MIGRATIONS_DIR = join(ROOT, 'supabase/migrations')
 const ALLOWLIST = new Map([
   ['users', 'El esquema de API-key legacy de alertas/* + onboarding asume public.users, que NO existe en prod ni en migraciones. Deuda: migrar a api_keys hasheadas (Proyecto C §reconciliación).'],
   ['cron_state', 'cron/new-remate-alerts lee/escribe cron_state, que no existe en prod ni en migraciones (¿debería ser cron_runs?). El cron falla en silencio. Deuda a reconciliar (Proyecto C).'],
+  ['increment_api_usage', 'FALSO POSITIVO: la función SÍ existe en prod (la usa api-keys.ts) pero el generador de tipos de Supabase no la lista en Functions. No es un bug.'],
 ])
 
 // ── 1. Esquema real de prod (desde los tipos generados) ──────────────────────
@@ -115,8 +116,8 @@ for (const r of refs) {
   const inProd = r.kind === 'from' ? prod.tables.has(r.name) : prod.fns.has(r.name)
   const inMig = r.kind === 'from' ? mig.tables.has(r.name) : mig.fns.has(r.name)
   if (inProd) continue
-  if (inMig) { drift.set(r.name, (drift.get(r.name) || 0) + 1); continue }
   if (ALLOWLIST.has(r.name)) continue
+  if (inMig) { drift.set(r.name, (drift.get(r.name) || 0) + 1); continue }
   errors.push(r)
 }
 
