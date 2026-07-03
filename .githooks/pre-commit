@@ -34,4 +34,19 @@ if [ "$found" -ne 0 ]; then
   echo "  Si es un falso positivo real:  git commit --no-verify"
   exit 1
 fi
+
+# ──────────────────────────────────────────────────────────────────────────
+# check-db-refs · valida que todo .from('tabla') / .rpc('fn') apunte a un objeto
+# que existe (esquema de prod + migraciones del repo). Cierra la clase de bug de
+# `.from('alerts')` (tabla inexistente) que falla en silencio en runtime.
+# Saltear (falso positivo real):  git commit --no-verify
+# ──────────────────────────────────────────────────────────────────────────
+if command -v node >/dev/null 2>&1 && [ -f scripts/check-db-refs.mjs ]; then
+  if ! node scripts/check-db-refs.mjs; then
+    echo
+    echo "  Referencia a una tabla/función inexistente. Corregí el nombre o actualizá"
+    echo "  src/lib/database.types.ts / la ALLOWLIST del checker. (--no-verify para saltear)"
+    exit 1
+  fi
+fi
 exit 0
