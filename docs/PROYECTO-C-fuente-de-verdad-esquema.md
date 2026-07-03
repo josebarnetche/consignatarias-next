@@ -77,9 +77,17 @@ El fix de fondo del drift "prod le falta migraciones" es **reconciliar prod cont
 
 ## 7. Pendiente
 
-- [x] **Aplicar las 6 migraciones faltantes a prod (§5.2)** — hecho en v1.74.1 (drift 6 → 0, advisor limpio).
-- [ ] Verificar los 5 flujos end-to-end en prod (subir DT-e, alerta de zona, watch, follow, webhook).
-- [ ] Baseline del esquema desde prod (`supabase db pull`) para versionar las ~16 tablas prod-only (§5.1).
-- [ ] Tipar los clients Supabase con `<Database>` (migración incremental).
-- [ ] Agregar `pnpm check` a CI (hoy solo pre-commit local).
-- [ ] Vaciar la ALLOWLIST resolviendo `users` (API-key de alertas) y `cron_state`.
+Hecho en v1.74.1 → v1.75.0:
+- [x] **Aplicar las 6 migraciones faltantes a prod** — v1.74.1 (drift 6 → 0, advisor limpio).
+- [x] **Tipar los clients Supabase con `<Database>`** — v1.75.0 (los 3 clients; destapó 38 bugs de tipo, incl. reales, todos resueltos).
+- [x] **`pnpm check` en CI** — v1.75.0 (`.github/workflows/ci-check.yml`: tsc + eslint + db-refs + tests).
+- [x] **Baseline del esquema** — v1.75.0 (`00000000_baseline_from_prod.sql`, column-level de 55 tablas; falta completar con `supabase db pull` para enums/índices/RLS).
+- [x] **Endpoint sin silencio nuevo + DAL** — v1.75.0 (`dal/activation.ts` inspecciona `error` y lanza; route → 500; componente no muestra estado falso).
+- [x] **Tests** — v1.75.0 (vitest, 17: parser + DAL + contrato del endpoint).
+- [x] **ALLOWLIST con gobernanza** — v1.75.0 (dueño/fecha/severidad/vencimiento).
+
+Sigue pendiente:
+- [ ] Verificar en prod con sesión logueada los 2 flujos auth-gated: subir un DT-e (`user_dtes`) y seguir una consignataria (`user_favorites`). (Los otros 3 —zona, watch, webhook— verificados a nivel data-layer.)
+- [ ] Completar el baseline con `supabase db pull` (enums, secuencias, índices, RLS/policies) — requiere credenciales de DB.
+- [ ] Burndown de los `TODO(canon)` quarantined (5 features rotas: `medios_pago`, embeds `users(...)`, `outreach_log.user_id`).
+- [ ] Vaciar la ALLOWLIST resolviendo `users` (API-key de alertas → `api_keys` hasheadas) y `cron_state` (¿= `cron_runs`?).

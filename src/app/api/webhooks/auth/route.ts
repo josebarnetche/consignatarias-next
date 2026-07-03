@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireServiceClient } from '@/lib/supabase'
+import { requireServiceClient, fromUnsafe } from '@/lib/supabase'
 import { sendWelcomeEmail } from '@/lib/email'
 import crypto from 'crypto'
 
@@ -126,7 +126,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Log the send
-    await supabase.from('outreach_log').insert({
+    // TODO(canon): outreach_log no tiene user_id y exige consignataria_slug — feature rota, reconciliar (Proyecto C)
+    await fromUnsafe(supabase, 'outreach_log').insert({
       type: 'welcome_email',
       user_id: userId,
       email_sent_to: email,

@@ -1,0 +1,35 @@
+name: CI check
+
+# Enforcement REAL de la fuente de verdad del esquema + tipos + lint.
+# Corre `pnpm check` = tsc --noEmit && eslint . && node scripts/check-db-refs.mjs
+# en cada push a main y en cada PR. A diferencia del pre-commit (que se saltea con
+# --no-verify y depende de que el hook esté instalado), esto sí bloquea lo que
+# entra por GitHub. Ver docs/PROYECTO-C-fuente-de-verdad-esquema.md.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Enable pnpm (corepack)
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck + lint + db-refs
+        run: pnpm check

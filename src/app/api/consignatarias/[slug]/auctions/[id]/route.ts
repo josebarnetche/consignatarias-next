@@ -24,7 +24,7 @@ export async function PATCH(req: NextRequest, { params }: Props) {
   const { data: auction } = await supabase
     .from('consignataria_auctions')
     .select('id')
-    .eq('id', id)
+    .eq('id', Number(id))
     .eq('consignataria_slug', slug)
     .single()
 
@@ -46,7 +46,7 @@ export async function PATCH(req: NextRequest, { params }: Props) {
   const { data, error } = await supabase
     .from('consignataria_auctions')
     .update(updates)
-    .eq('id', id)
+    .eq('id', Number(id))
     .select()
     .single()
 
@@ -77,7 +77,7 @@ export async function DELETE(_req: NextRequest, { params }: Props) {
   const { error } = await supabase
     .from('consignataria_auctions')
     .delete()
-    .eq('id', id)
+    .eq('id', Number(id))
     .eq('consignataria_slug', slug)
 
   if (error) {

@@ -8,7 +8,7 @@ export interface KeyRow {
   name: string
   prefix: string
   environment: 'live' | 'test'
-  created_at: string
+  created_at: string | null
   last_used_at: string | null
   usedThisMonth: number
 }

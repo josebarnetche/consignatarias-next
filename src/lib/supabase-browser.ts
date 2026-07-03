@@ -1,7 +1,10 @@
 import { createBrowserClient } from '@supabase/ssr'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from './database.types'
 
-let cached: SupabaseClient | null = null
+type BrowserClient = SupabaseClient<Database>
+
+let cached: BrowserClient | null = null
 
 /**
  * Browser-side Supabase client (memoized singleton).
@@ -15,14 +18,14 @@ let cached: SupabaseClient | null = null
  * properly-configured previews), unchanged behavior; a throw-on-use stub only
  * when the vars are missing (where the feature couldn't work anyway).
  */
-export function createClient(): SupabaseClient {
+export function createClient(): BrowserClient {
   if (cached) return cached
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (url && key) {
-    cached = createBrowserClient(url, key)
+    cached = createBrowserClient<Database>(url, key)
     return cached
   }
 
@@ -31,5 +34,5 @@ export function createClient(): SupabaseClient {
       'Supabase browser client unavailable: NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY are not set.',
     )
   }
-  return new Proxy({} as SupabaseClient, { get: unavailable, apply: unavailable })
+  return new Proxy({} as BrowserClient, { get: unavailable, apply: unavailable })
 }

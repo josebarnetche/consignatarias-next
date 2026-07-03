@@ -39,7 +39,8 @@ export async function GET(_request: NextRequest) {
     const total = subscribers?.length || 0
     const active = subscribers?.filter(s => s.status === 'active').length || 0
     const sources = subscribers?.reduce((acc, s) => {
-      acc[s.source] = (acc[s.source] || 0) + 1
+      const src = s.source ?? 'unknown'
+      acc[src] = (acc[src] || 0) + 1
       return acc
     }, {} as Record<string, number>) || {}
 

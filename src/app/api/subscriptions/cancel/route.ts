@@ -35,7 +35,9 @@ export async function POST() {
 
   // Cancel in Rebill
   try {
-    await cancelSubscription(subscription.rebill_subscription_id)
+    if (subscription.rebill_subscription_id) {
+      await cancelSubscription(subscription.rebill_subscription_id)
+    }
   } catch (err) {
     console.error('Rebill cancel error:', err)
     // Continue to update local status even if Rebill fails

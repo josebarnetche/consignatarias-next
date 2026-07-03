@@ -76,8 +76,8 @@ interface CompletedFields {
 interface Subscription {
   plan_name: string
   status: string
-  current_period_end: string
-  rebill_subscription_id: string
+  current_period_end: string | null
+  rebill_subscription_id: string | null
 }
 
 interface Frigorifico {
@@ -1486,7 +1486,7 @@ function SubscriptionPanel({ tier, subscription }: { tier: string; subscription:
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xxs text-zinc-500 uppercase font-terminal">Vencimiento:</span>
-                <span className="text-xxs font-terminal text-zinc-300 tabular-nums">{formatDate(subscription.current_period_end.slice(0, 10))}</span>
+                <span className="text-xxs font-terminal text-zinc-300 tabular-nums">{subscription.current_period_end ? formatDate(subscription.current_period_end.slice(0, 10)) : '—'}</span>
               </div>
             </div>
             {!cancelled && (

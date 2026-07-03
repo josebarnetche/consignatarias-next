@@ -209,8 +209,8 @@ export async function POST(
         webhook_id: webhook.id,
         url: webhook.url,
         events: webhook.events,
-        active: webhook.active,
-        created_at: webhook.created_at,
+        active: webhook.active ?? true,
+        created_at: webhook.created_at ?? new Date().toISOString(),
       },
       message: 'Webhook registrado correctamente',
     }, { status: 201 })

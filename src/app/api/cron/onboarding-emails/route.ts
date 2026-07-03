@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireServiceClient } from '@/lib/supabase'
+import { requireServiceClientLegacy } from '@/lib/supabase'
 import { sendDteUploadReminder, sendFirstDteSuccess, sendDteRetentionReminder } from '@/lib/email'
 import { authorizeCron } from '@/lib/cron-auth'
 
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const supabase = requireServiceClient()
+  const supabase = requireServiceClientLegacy()
   const now = new Date()
   
   // Find users who:
@@ -36,8 +36,7 @@ export async function POST(request: NextRequest) {
   const threeDaysAgo = new Date(now.getTime() - 72 * 60 * 60 * 1000)
 
   // Get users who signed up in the reminder window
-  const { data: recentUsers, error: userError } = await supabase
-    .from('users')
+  const { data: recentUsers, error: userError } = await supabase.from('users')
     .select('id, email, display_name, created_at')
     .gte('created_at', threeDaysAgo.toISOString())
     .lte('created_at', oneDayAgo.toISOString())
@@ -192,8 +191,7 @@ export async function POST(request: NextRequest) {
     const needSuccessEmail = uniqueUserIds.filter(id => !successSentSet.has(id))
 
     if (needSuccessEmail.length > 0) {
-      const { data: usersNeedingSuccess } = await supabase
-        .from('users')
+      const { data: usersNeedingSuccess } = await supabase.from('users')
         .select('id, email, display_name')
         .in('id', needSuccessEmail)
 
@@ -313,8 +311,7 @@ export async function POST(request: NextRequest) {
       const recentRetentionSet = new Set(recentRetention?.map(r => r.user_id) || [])
 
       // Get user details
-      const { data: usersForRetention } = await supabase
-        .from('users')
+      const { data: usersForRetention } = await supabase.from('users')
         .select('id, email, display_name')
         .in('id', eligibleUserIds.filter(id => !recentRetentionSet.has(id)))
         .limit(20) // Limit to 20 per day to avoid overwhelming

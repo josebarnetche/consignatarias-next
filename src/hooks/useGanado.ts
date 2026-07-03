@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase-browser';
+import type { Json } from '@/lib/database.types';
 
 export interface GanadoItem {
   categoria: string;
@@ -82,7 +83,7 @@ export function useGanado() {
     const { error } = await supabase
       .from('user_ganado')
       .upsert(
-        { user_id: user.id, items: newItems, updated_at: new Date().toISOString() },
+        { user_id: user.id, items: newItems as unknown as Json, updated_at: new Date().toISOString() },
         { onConflict: 'user_id' },
       );
 

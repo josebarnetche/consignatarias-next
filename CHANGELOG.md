@@ -7,6 +7,32 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.75.0] — 2026-07-03
+
+### Canon Fase 2 — cerrar de verdad la clase de bug (no solo contenerla)
+
+La Fase 1 (v1.74.0-1.74.1) fue contención: snapshot de esquema, scanner, pre-commit, fix puntual. Un review interno marcó, con razón, que eso NO alcanza para afirmar que la clase de bug "quedó cerrada": faltaba conectar los tipos, mover el enforcement a CI, no reintroducir silencios, y tener tests. Esta versión ataca cada punto.
+
+**1. Tipos CONECTADOS al type system (antes: solo un regex checker).** Los tres clients Supabase ahora se instancian con `<Database>` (`createClient<Database>()` en `supabase.ts`, `supabase-server.ts`, `supabase-browser.ts`). Un `.from('alerts')` ahora es **error de compilación**, no solo un warning del scanner. Eso destapó **38 errores de tipo reales** — varios eran **bugs latentes de prod** que el scanner no podía ver: `videos/route.ts` comparaba `claimed_by` (columna inexistente) como si fuera un user id → **bug de autorización**, corregido a `claimed_by_email` vs `user.email`; `user_dtes.cabezas`→`cantidad_cabezas`; `alertas.alerta_id`→`id`; selects de `consignatarias` a `nombre`/`medios_pago` inexistentes. Los 38 se resolvieron: renombres verificados contra prod, coerción honesta de nullables en el borde (no defaults que cambien semántica), y quarantine explícito (`fromUnsafe` + `TODO(canon)`) para 5 features genuinamente rotas en prod (medios_pago, embeds `users(...)` sin relación, `outreach_log.user_id`).
+
+**2. NO se reintrodujo un silencio (la crítica más dura).** El endpoint nuevo ya no puede convertir un fallo de datos en un `false` que parezca válido. La lógica se movió a un **DAL canónico** (`src/lib/dal/activation.ts`, no ad-hoc en la route): `getActivationStatus` **inspecciona `error` y LANZA** si la query falla; la route traduce eso a un **500 explícito**; y el componente `ActivationChecklist`, ante un 500, **no marca pasos como incompletos** (oculta el checklist en vez de mostrar estado falso). Además se alineó producto↔dato (otra observación): "Guardá un remate" ahora se mide contra `remate_favorites` (guardar un remate), no contra `user_favorites` (seguir una consignataria).
+
+**3. Un solo service client.** `createAdminClient` (que era una 2da implementación divergente con `!` que tiraba en preview) ahora **delega** en `requireServiceClient` — hay UN service client canónico, tipado.
+
+**4. Enforcement REAL en CI (el pre-commit no alcanza).** Nuevo workflow `.github/workflows/ci-check.yml` corre `pnpm check` (tsc + eslint + db-refs + tests) en cada push a main y cada PR. El pre-commit se saltea con `--no-verify` y depende de tener el hook instalado; la CI no. Ahora lo que entra por GitHub también se valida.
+
+**5. El scanner deja de venderse de más.** `check-db-refs` documenta EXPLÍCITAMENTE su alcance: valida `.from('literal')`/`.rpc('literal')` en `.ts/.tsx/.js/.mjs` bajo `src/` y `scripts/` (antes solo `.ts/.tsx` de `src/`), ignora comentarios y `scripts/archive/`. Lo que NO puede validar (refs dinámicas `.from(variable)`) lo dice claro y lo delega al **tipado de los clients** (que ahora sí existe) — no finge cubrir "todos". Nuevo **modo estricto** (`--strict`) que hace que el DRIFT bloquee, para política por entorno.
+
+**6. Tests (antes: cero).** Se agregó **vitest** + 17 tests: el parser del scanner (`parseTypes`/`parseSql`/`extractRefs` — incl. que ignora comentarios y buckets con guion), el DAL de activación (sin datos → false; con datos → true; **error de Supabase → LANZA**, no false), y el **contrato del endpoint** (no autenticado → 401; ok → 200; **DAL lanza → 500**, nunca un false silencioso).
+
+**7. ALLOWLIST con gobernanza.** Cada entrada de deuda (`users`, `cron_state`, `increment_api_usage`) ahora lleva **dueño, fecha, severidad y criterio de vencimiento** — deja de ser un cementerio anónimo.
+
+**8. Baseline del esquema.** `supabase/migrations/00000000_baseline_from_prod.sql` — snapshot column-level de las 55 tablas base de prod (autogenerado). Es de referencia/`db diff`; el baseline 100% fiel (enums, secuencias, índices, RLS) requiere `supabase db pull` con credenciales de DB (documentado, ROADMAP §P0.1).
+
+**Verificación:** `pnpm check` en verde (tsc 0 errores — arrancó en 103 al tipar; eslint 0; db-refs 329 refs validadas; 17/17 tests). E2E data-layer de las tablas reconciliadas (`sell_zone_alerts`, `webhooks`, `remate_favorites` + RPC `get_remate_watchers`): insert→read→cleanup OK. Los 2 flujos auth-gated (`user_dtes`, `user_favorites`) quedan para verificación con sesión logueada (ROADMAP).
+
+**Honestidad de alcance:** esto sí cierra la clase de bug para código nuevo (tipos + CI + tests + no-silencio). Lo que queda es burndown de la deuda ya visible (los `TODO(canon)`, la ALLOWLIST, los 2 flujos UI) — rastreado, no oculto.
+
 ## [1.74.1] — 2026-07-03
 
 ### Reconciliación del estado de Supabase — se destraban 5 features rotas en silencio

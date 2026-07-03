@@ -80,7 +80,21 @@ export default async function DashboardPage() {
       .eq('consignataria_slug', consignataria.canonical_slug)
       .order('date', { ascending: true })
 
-    ownerAuctions = data || []
+    ownerAuctions = (data || []).map((a) => ({
+      id: a.id,
+      title: a.title,
+      date: a.date,
+      time: a.time,
+      location: a.location,
+      province: a.province,
+      type: a.type ?? 'general',
+      main_category: a.main_category ?? 'mixto',
+      estimated_heads: a.estimated_heads,
+      description: a.description,
+      catalog_url: a.catalog_url,
+      youtube_url: a.youtube_url,
+      status: a.status ?? 'scheduled',
+    }))
   }
 
   // Get submitted auction results

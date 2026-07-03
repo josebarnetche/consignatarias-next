@@ -75,7 +75,7 @@ export async function POST(
     // Get consignataria and check ownership
     const { data: consignataria, error: consigError } = await supabase
       .from('consignatarias')
-      .select('id, claimed_by, nombre')
+      .select('id, claimed_by_email, name')
       .eq('slug', slug)
       .single()
 
@@ -86,7 +86,7 @@ export async function POST(
       )
     }
 
-    if (consignataria.claimed_by !== user.id) {
+    if (consignataria.claimed_by_email !== user.email) {
       return NextResponse.json(
         { error: 'Not authorized to manage this consignataria' },
         { status: 403 }
@@ -128,7 +128,7 @@ export async function POST(
     }
     
     // Fallback to provided title or placeholder
-    videoTitle = videoTitle || `Video de ${consignataria.nombre}`
+    videoTitle = videoTitle || `Video de ${consignataria.name}`
 
     // Insert video
     const { data: video, error: insertError } = await supabase

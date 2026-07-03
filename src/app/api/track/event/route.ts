@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { isValueEvent, VALUE_EVENTS } from '@/lib/value-events'
+import type { Json } from '@/lib/database.types'
 
 /**
  * POST /api/track/event — beacon del sistema interno de conteo de eventos de valor.
@@ -26,10 +27,10 @@ export async function POST(req: NextRequest) {
     const entityType = ALLOWED_ENTITY.has(body.entityType) ? body.entityType : null
     const source = ALLOWED_SOURCES.has(body.source) ? body.source : 'unknown'
     // meta: objeto chico y serializable; cap defensivo de tamaño.
-    let meta: unknown = null
+    let meta: Json = null
     if (body.meta && typeof body.meta === 'object') {
       const s = JSON.stringify(body.meta)
-      if (s.length <= 1000) meta = body.meta
+      if (s.length <= 1000) meta = body.meta as Json
     }
 
     const supabase = requireServiceClient()

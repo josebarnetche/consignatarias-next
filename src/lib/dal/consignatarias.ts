@@ -158,9 +158,8 @@ export async function getConsignatariaProfile(slug: string): Promise<EnrichedPro
       .eq('canonical_slug', slug)
       .single()
 
-    // medios_pago is JSONB[] in Supabase. Default to empty array if null.
-    const rawMedios = data?.medios_pago
-    const mediosPago: MedioPago[] = Array.isArray(rawMedios) ? rawMedios : []
+    // TODO(canon): columna medios_pago no existe en prod — feature rota, reconciliar (Proyecto C)
+    const mediosPago: MedioPago[] = []
 
     return {
       ...staticProfile,
@@ -242,8 +241,8 @@ export async function getTopFollowedConsignatarias(limit = 10): Promise<{ slug: 
       .limit(limit)
 
     return (data || []).map(d => ({
-      slug: d.consignataria_slug,
-      count: d.follower_count,
+      slug: d.consignataria_slug ?? '',
+      count: d.follower_count ?? 0,
     }))
   } catch {
     return []

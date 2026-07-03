@@ -29,12 +29,12 @@ Tras la auditoría de seguridad + el review general + el paso de Canon Agent (fu
 
 ### 🔜 Next problems to solve (desde v1.74.0)
 
-**P0 — Deuda de esquema / estado de Supabase (lo más urgente tras el drift):**
-1. **Baseline del esquema desde prod** — `supabase db pull` → `supabase/migrations/00000000_baseline_from_prod.sql`. Prod tiene ~16 tablas que el repo **no versiona** (`mag_*`, `market_price_snapshots`, `cron_runs`, `ops_events`, `scraper_runs`, `pending_api_invites`, `email_tracking`, `fpt_approvals`, `remitente_entries`, `usd_blue_history`, …). Sin esto no se puede recrear prod (staging / DR / branch de Supabase).
-2. **Tipar los clients Supabase** con `<Database>` → cada `.from()` inválido pasa a ser **error de compilación** (hoy solo lo caza `check-db-refs` en pre-commit). Migración incremental (surface errores en las ~73 rutas con `.from()` ad-hoc).
-3. **`pnpm check` (tsc + eslint + db-refs) en CI** — hoy el checker solo corre en el pre-commit local.
-4. **Vaciar la ALLOWLIST del checker:** `users` (API-key legacy de `alertas/*` en texto plano contra tabla inexistente → migrar a `api_keys` hasheadas) y `cron_state` (`cron/new-remate-alerts`, ¿= `cron_runs`?).
-5. **Verificar end-to-end en prod las 5 features reconciliadas** (subir un DT-e, crear alerta de zona, watchear un remate, seguir una firma, registrar un webhook) — se crearon las tablas; falta confirmar los flujos completos.
+**P0 — Deuda de esquema / estado de Supabase** — *el grueso resuelto en v1.75.0:*
+1. ✅/🟡 **Baseline del esquema** — `00000000_baseline_from_prod.sql` (column-level de 55 tablas, v1.75.0). **Falta** completarlo con `supabase db pull` (enums, secuencias, índices, RLS/policies) — requiere credenciales de DB.
+2. ✅ **Tipar los clients con `<Database>`** — hecho (v1.75.0, los 3 clients). Destapó 38 bugs de tipo (incl. un bug de autorización real en `videos/route.ts`), todos resueltos. `.from()`/columna inválida ahora es error de compilación.
+3. ✅ **`pnpm check` en CI** — `.github/workflows/ci-check.yml` (tsc + eslint + db-refs + tests) en push/PR.
+4. 🔜 **Vaciar la ALLOWLIST:** `users` (API-key legacy → `api_keys` hasheadas) y `cron_state` (¿= `cron_runs`?) + burndown de los 5 `TODO(canon)` quarantined (features rotas: `medios_pago`, embeds `users(...)`, `outreach_log.user_id`).
+5. ✅/🟡 **Verificar las features reconciliadas** — data-layer OK (`sell_zone_alerts`, `webhooks`, `remate_favorites` + RPC). **Falta** con sesión logueada: `user_dtes` (subir DT-e) y `user_favorites` (seguir firma).
 
 **P0 — Seguridad diferida (del hardening):**
 6. `fpt_approvals` (anon `ALL USING(true)`); `increment_aperturas` (anon SECURITY DEFINER); listado público del bucket `consignataria-assets`; leaked-password protection en Auth; `SET search_path` en ~10 funciones.

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireServiceClient } from '@/lib/supabase'
+import { requireServiceClientLegacy } from '@/lib/supabase'
 import { authorizeCron } from '@/lib/cron-auth'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import { getEntityTier } from '@/lib/features'
@@ -55,11 +55,10 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const service = requireServiceClient()
+    const service = requireServiceClientLegacy()
 
     // Get last run timestamp from KV or default to 30 min ago
-    const { data: lastRunData } = await service
-      .from('cron_state')
+    const { data: lastRunData } = await service.from('cron_state')
       .select('last_run')
       .eq('job_name', 'new-remate-alerts')
       .single()
@@ -237,9 +236,8 @@ export async function GET(req: NextRequest) {
   }
 }
 
-async function updateLastRun(service: ReturnType<typeof requireServiceClient>, timestamp: Date) {
-  await service
-    .from('cron_state')
+async function updateLastRun(service: ReturnType<typeof requireServiceClientLegacy>, timestamp: Date) {
+  await service.from('cron_state')
     .upsert({
       job_name: 'new-remate-alerts',
       last_run: timestamp.toISOString(),
