@@ -1465,6 +1465,30 @@ export type Database = {
         }
         Relationships: []
       }
+      onboarding_email_log: {
+        Row: {
+          created_at: string
+          email_sent_to: string | null
+          email_type: string
+          id: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email_sent_to?: string | null
+          email_type: string
+          id?: never
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email_sent_to?: string | null
+          email_type?: string
+          id?: never
+          user_id?: string
+        }
+        Relationships: []
+      }
       ops_events: {
         Row: {
           api_key_id: string | null
@@ -2453,6 +2477,15 @@ export type Database = {
         Returns: number
       }
       get_dashboard_counts: { Args: never; Returns: Json }
+      get_recent_user_infos: {
+        Args: { p_from: string; p_to: string }
+        Returns: {
+          created_at: string
+          display_name: string
+          email: string
+          id: string
+        }[]
+      }
       get_remate_watchers: { Args: { p_remate_id: number }; Returns: number }
       get_top_localidades: {
         Args: { p_consig_slug: string; p_days?: number; p_limit?: number }
@@ -2484,6 +2517,15 @@ export type Database = {
       get_user_emails: {
         Args: { p_ids: string[] }
         Returns: {
+          email: string
+          id: string
+        }[]
+      }
+      get_user_infos: {
+        Args: { p_ids: string[] }
+        Returns: {
+          created_at: string
+          display_name: string
           email: string
           id: string
         }[]

@@ -50,9 +50,9 @@ const STRICT = process.argv.includes('--strict') || process.env.CHECK_DB_REFS_ST
  */
 const ALLOWLIST = new Map([
   ['users', {
-    reason: 'API-key legacy de alertas/* + onboarding asume public.users (texto plano), que NO existe en prod ni en migraciones.',
+    reason: 'API-key legacy de alertas/* asume public.users con api_key en texto plano, tabla que NO existe en prod ni en migraciones. (onboarding-emails ya migró a auth.users vía RPC en v1.75.2.)',
     owner: 'backend', since: '2026-07-03', severity: 'alta',
-    exit: 'Migrar a api_keys hasheadas (Proyecto C §reconciliación). Vence: al reescribir alertas/*.',
+    exit: 'Migrar el auth de alertas/* a api_keys hasheadas (lib/api-auth.ts). Único uso restante de `users`.',
   }],
   ['increment_api_usage', {
     reason: 'FALSO POSITIVO: la función SÍ existe en prod (la usa api-keys.ts) pero el generador de tipos no la lista en Functions.',

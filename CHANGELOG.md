@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.75.2] — 2026-07-03
+
+### `onboarding-emails` migrado a `auth.users` — drip de activación reactivado
+
+El cron de emails de onboarding (recordatorio DT-e, éxito primer DT-e, retención) consultaba `public.users` (inexistente) para la lista/emails de usuarios, y trackeaba sus envíos en `outreach_log` (tabla de outreach a consignatarias, exige `consignataria_slug NOT NULL`, sin `user_id`) → **fallaba de punta a punta**. Ahora:
+
+- **Usuarios desde `auth.users`** vía 2 RPCs nuevos (`SECURITY DEFINER`, `service_role`): `get_recent_user_infos(from, to)` (ventana de alta) y `get_user_infos(uuid[])` (por ids). `display_name` = `name`/`full_name` de la metadata (usuarios OAuth Google).
+- **Dedup en tabla propia** `onboarding_email_log(user_id, email_type)` en vez de `outreach_log`.
+- **Bug de columna** corregido: `user_dtes.cabezas` → `cantidad_cabezas` (el conteo de retención estaba roto).
+- Pasa al **client tipado** (`requireServiceClient`), saliendo del client legacy.
+
+Con esto, de los 2 consumidores del `users` inexistente queda **solo `alertas/*`** (el API-key legacy en texto plano) — próximo y último ítem de la ALLOWLIST, a migrar a `api_keys` hasheadas.
+
+**Verificación:** `pnpm check` verde (tsc 0, eslint 0, db-refs 333, 17/17 tests). Migraciones versionadas (`20260703_get_user_infos_rpcs.sql`, `20260703_onboarding_email_log.sql`).
+
 ## [1.75.1] — 2026-07-03
 
 ### Burndown de deuda visible — 2 crons rotos reactivados + medios de pago + limpieza

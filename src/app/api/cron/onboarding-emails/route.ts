@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireServiceClientLegacy } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { sendDteUploadReminder, sendFirstDteSuccess, sendDteRetentionReminder } from '@/lib/email'
 import { authorizeCron } from '@/lib/cron-auth'
 
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const supabase = requireServiceClientLegacy()
+  const supabase = requireServiceClient()
   const now = new Date()
   
   // Find users who:
@@ -35,11 +35,12 @@ export async function POST(request: NextRequest) {
   const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000)
   const threeDaysAgo = new Date(now.getTime() - 72 * 60 * 60 * 1000)
 
-  // Get users who signed up in the reminder window
-  const { data: recentUsers, error: userError } = await supabase.from('users')
-    .select('id, email, display_name, created_at')
-    .gte('created_at', threeDaysAgo.toISOString())
-    .lte('created_at', oneDayAgo.toISOString())
+  // Get users who signed up in the reminder window. Los usuarios viven en
+  // auth.users (no public.users), resueltos vía el RPC get_recent_user_infos.
+  const { data: recentUsers, error: userError } = await supabase.rpc('get_recent_user_infos', {
+    p_from: threeDaysAgo.toISOString(),
+    p_to: oneDayAgo.toISOString(),
+  })
 
   if (userError) {
     return NextResponse.json({ error: 'Failed to fetch users', details: userError }, { status: 500 })
@@ -62,9 +63,9 @@ export async function POST(request: NextRequest) {
 
   // Check which users have already been sent a reminder
   const { data: alreadyReminded } = await supabase
-    .from('outreach_log')
+    .from('onboarding_email_log')
     .select('user_id')
-    .eq('type', 'dte_upload_reminder')
+    .eq('email_type', 'dte_upload_reminder')
     .in('user_id', recentUsers.map(u => u.id))
 
   const remindedSet = new Set(alreadyReminded?.map(r => r.user_id) || [])
@@ -125,8 +126,8 @@ export async function POST(request: NextRequest) {
     if (result.success) {
       // Log the send
       try {
-        await supabase.from('outreach_log').insert({
-          type: 'dte_upload_reminder',
+        await supabase.from('onboarding_email_log').insert({
+          email_type: 'dte_upload_reminder',
           user_id: user.id,
           email_sent_to: user.email,
         })
@@ -180,9 +181,9 @@ export async function POST(request: NextRequest) {
     
     // Check who already received success email
     const { data: alreadySentSuccess } = await supabase
-      .from('outreach_log')
+      .from('onboarding_email_log')
       .select('user_id')
-      .eq('type', 'first_dte_success')
+      .eq('email_type', 'first_dte_success')
       .in('user_id', uniqueUserIds)
 
     const successSentSet = new Set(alreadySentSuccess?.map(r => r.user_id) || [])
@@ -191,9 +192,9 @@ export async function POST(request: NextRequest) {
     const needSuccessEmail = uniqueUserIds.filter(id => !successSentSet.has(id))
 
     if (needSuccessEmail.length > 0) {
-      const { data: usersNeedingSuccess } = await supabase.from('users')
-        .select('id, email, display_name')
-        .in('id', needSuccessEmail)
+      const { data: usersNeedingSuccess } = await supabase.rpc('get_user_infos', {
+        p_ids: needSuccessEmail,
+      })
 
       for (const user of usersNeedingSuccess || []) {
         if (!user.email) {
@@ -222,8 +223,8 @@ export async function POST(request: NextRequest) {
 
         if (result.success) {
           try {
-            await supabase.from('outreach_log').insert({
-              type: 'first_dte_success',
+            await supabase.from('onboarding_email_log').insert({
+              email_type: 'first_dte_success',
               user_id: user.id,
               email_sent_to: user.email,
             })
@@ -284,9 +285,10 @@ export async function POST(request: NextRequest) {
     const userDteCounts: Record<string, number> = {}
     
     for (const dte of inactiveUsers) {
+      if (!dte.created_at) continue
       const userId = dte.user_id
       const uploadDate = new Date(dte.created_at)
-      
+
       if (!userLastUpload[userId] || uploadDate > userLastUpload[userId]) {
         userLastUpload[userId] = uploadDate
       }
@@ -302,30 +304,31 @@ export async function POST(request: NextRequest) {
       // Check who already received a retention email in the last 7 days
       const sevenDaysAgoStr = sevenDaysAgo.toISOString()
       const { data: recentRetention } = await supabase
-        .from('outreach_log')
+        .from('onboarding_email_log')
         .select('user_id')
-        .eq('type', 'dte_retention_reminder')
+        .eq('email_type', 'dte_retention_reminder')
         .gte('created_at', sevenDaysAgoStr)
         .in('user_id', eligibleUserIds)
 
       const recentRetentionSet = new Set(recentRetention?.map(r => r.user_id) || [])
 
-      // Get user details
-      const { data: usersForRetention } = await supabase.from('users')
-        .select('id, email, display_name')
-        .in('id', eligibleUserIds.filter(id => !recentRetentionSet.has(id)))
-        .limit(20) // Limit to 20 per day to avoid overwhelming
+      // Get user details (auth.users vía RPC). Limit 20/día para no saturar.
+      const retentionIds = eligibleUserIds.filter(id => !recentRetentionSet.has(id))
+      const { data: usersForRetentionAll } = await supabase.rpc('get_user_infos', {
+        p_ids: retentionIds,
+      })
+      const usersForRetention = (usersForRetentionAll || []).slice(0, 20)
 
       // Get total cabezas for each user
       const userCabezas: Record<string, number> = {}
       if (usersForRetention && usersForRetention.length > 0) {
         const { data: dteStats } = await supabase
           .from('user_dtes')
-          .select('user_id, cabezas')
+          .select('user_id, cantidad_cabezas')
           .in('user_id', usersForRetention.map(u => u.id))
 
         for (const dte of dteStats || []) {
-          userCabezas[dte.user_id] = (userCabezas[dte.user_id] || 0) + (dte.cabezas || 0)
+          userCabezas[dte.user_id] = (userCabezas[dte.user_id] || 0) + (dte.cantidad_cabezas || 0)
         }
       }
 
@@ -355,8 +358,8 @@ export async function POST(request: NextRequest) {
 
         if (result.success) {
           try {
-            await supabase.from('outreach_log').insert({
-              type: 'dte_retention_reminder',
+            await supabase.from('onboarding_email_log').insert({
+              email_type: 'dte_retention_reminder',
               user_id: user.id,
               email_sent_to: user.email,
             })
