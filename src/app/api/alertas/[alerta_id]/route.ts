@@ -1,59 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireServiceClientLegacy } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
+import { authenticate } from '@/lib/api-auth'
 import { alertaUpdateSchema, alertaIdSchema } from '@/lib/validators/alerta'
 
-interface AlertaData {
-  alerta_id: string
-  name: string
-  webhook_url: string
-  filters: Record<string, unknown>
-  events: string[]
-  frequency: string
-  status: string
-  triggers_count: number
-  last_triggered_at: string | null
-  created_at: string
-  updated_at: string
-}
-
-interface SuccessResponse<T> {
-  success: true
-  data: T
-  message?: string
-}
-
-interface ErrorResponse {
-  success: false
-  error: {
-    code: string
-    message: string
-    details?: Record<string, string[]>
-  }
-}
-
-/**
- * Validate API key from header
- */
-async function validateApiKey(request: NextRequest) {
-  const apiKey = request.headers.get('api_key') || request.headers.get('x-api-key')
-  
-  if (!apiKey) {
-    return { valid: false, error: 'API key requerida', code: 'MISSING_API_KEY' }
-  }
-
-  const supabase = requireServiceClientLegacy()
-  
-  const { data: user } = await supabase.from('users')
-    .select('id, email, plan')
-    .eq('api_key', apiKey)
-    .single()
-
-  if (!user) {
-    return { valid: false, error: 'API key inválida', code: 'INVALID_API_KEY' }
-  }
-
-  return { valid: true, user, apiKey }
-}
+// Auth vía el sistema canónico `authenticate()` (api_keys hasheadas). El ownership
+// de cada alerta se verifica por `user_id` (antes por la key en texto plano).
 
 interface RouteParams {
   params: Promise<{ alerta_id: string }>
@@ -67,7 +18,7 @@ interface RouteParams {
 export async function GET(
   request: NextRequest,
   { params }: RouteParams
-): Promise<NextResponse<SuccessResponse<AlertaData> | ErrorResponse>> {
+): Promise<NextResponse> {
   try {
     const { alerta_id } = await params
 
@@ -86,26 +37,19 @@ export async function GET(
       })
     }
 
-    // Validate API key
-    const auth = await validateApiKey(request)
-    if (!auth.valid) {
-      return NextResponse.json({
-        success: false,
-        error: { code: auth.code!, message: auth.error! },
-      }, { 
-        status: 401,
-        headers: { 'Cache-Control': 'no-store' },
-      })
-    }
+    // Auth (api_keys hasheadas, Authorization: Bearer sk_...)
+    const auth = await authenticate(request)
+    if (!auth.ok) return auth.response
+    const userId = auth.key.userId
 
-    const supabase = requireServiceClientLegacy()
+    const supabase = requireServiceClient()
 
     // Get alert (verify ownership via api_key)
     const { data: alerta, error } = await supabase
       .from('alertas')
       .select('*')
       .eq('id', alerta_id)
-      .eq('api_key', auth.apiKey)
+      .eq('user_id', userId)
       .single()
 
     if (error || !alerta) {
@@ -171,7 +115,7 @@ export async function GET(
 export async function PATCH(
   request: NextRequest,
   { params }: RouteParams
-): Promise<NextResponse<SuccessResponse<AlertaData> | ErrorResponse>> {
+): Promise<NextResponse> {
   try {
     const { alerta_id } = await params
 
@@ -190,17 +134,10 @@ export async function PATCH(
       })
     }
 
-    // Validate API key
-    const auth = await validateApiKey(request)
-    if (!auth.valid) {
-      return NextResponse.json({
-        success: false,
-        error: { code: auth.code!, message: auth.error! },
-      }, { 
-        status: 401,
-        headers: { 'Cache-Control': 'no-store' },
-      })
-    }
+    // Auth (api_keys hasheadas, Authorization: Bearer sk_...)
+    const auth = await authenticate(request)
+    if (!auth.ok) return auth.response
+    const userId = auth.key.userId
 
     const body = await request.json()
     
@@ -221,14 +158,14 @@ export async function PATCH(
       })
     }
 
-    const supabase = requireServiceClientLegacy()
+    const supabase = requireServiceClient()
 
     // Verify ownership first
     const { data: existing } = await supabase
       .from('alertas')
       .select('id')
       .eq('id', alerta_id)
-      .eq('api_key', auth.apiKey)
+      .eq('user_id', userId)
       .single()
 
     if (!existing) {
@@ -322,7 +259,7 @@ export async function PATCH(
 export async function DELETE(
   request: NextRequest,
   { params }: RouteParams
-): Promise<NextResponse<SuccessResponse<{ deleted: boolean }> | ErrorResponse>> {
+): Promise<NextResponse> {
   try {
     const { alerta_id } = await params
 
@@ -341,26 +278,19 @@ export async function DELETE(
       })
     }
 
-    // Validate API key
-    const auth = await validateApiKey(request)
-    if (!auth.valid) {
-      return NextResponse.json({
-        success: false,
-        error: { code: auth.code!, message: auth.error! },
-      }, { 
-        status: 401,
-        headers: { 'Cache-Control': 'no-store' },
-      })
-    }
+    // Auth (api_keys hasheadas, Authorization: Bearer sk_...)
+    const auth = await authenticate(request)
+    if (!auth.ok) return auth.response
+    const userId = auth.key.userId
 
-    const supabase = requireServiceClientLegacy()
+    const supabase = requireServiceClient()
 
     // Delete alert (verify ownership via api_key)
     const { error } = await supabase
       .from('alertas')
       .delete()
       .eq('id', alerta_id)
-      .eq('api_key', auth.apiKey)
+      .eq('user_id', userId)
 
     if (error) {
       console.error('Alerta delete error:', error)

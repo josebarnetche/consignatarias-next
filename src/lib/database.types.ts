@@ -95,7 +95,6 @@ export type Database = {
       }
       alertas: {
         Row: {
-          api_key: string
           created_at: string | null
           events: string[] | null
           filters: Json | null
@@ -110,7 +109,6 @@ export type Database = {
           webhook_url: string
         }
         Insert: {
-          api_key: string
           created_at?: string | null
           events?: string[] | null
           filters?: Json | null
@@ -125,7 +123,6 @@ export type Database = {
           webhook_url: string
         }
         Update: {
-          api_key?: string
           created_at?: string | null
           events?: string[] | null
           filters?: Json | null

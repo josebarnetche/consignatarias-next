@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.75.3] — 2026-07-03
+
+### `alertas/*` a `api_keys` hasheadas — deuda `users` cerrada, ALLOWLIST vaciada
+
+Último y más sensible ítem del burndown: el API de `alertas/*` (crear/listar/editar/borrar alertas de remates) autenticaba con un helper local que buscaba `users.api_key` en **texto plano** contra una tabla `public.users` **inexistente en prod** — roto **e** inseguro. Ahora:
+
+- **Auth canónico `authenticate()`** (`lib/api-auth.ts`): API keys **hasheadas**, con cupo mensual, IP allowlist y verificación de plan Enterprise. Header `Authorization: Bearer sk_...` (antes `api_key:` en texto plano).
+- **Ownership por `user_id`**, no por la key: si el usuario regenera su key, conserva sus alertas. Consistente con los crons de entrega (que ya leen `alertas` por `user_id`).
+- **Se eliminó la columna `alertas.api_key`** — guardaba la key en texto plano (liability). Tabla vacía → drop seguro; ningún cron la lee.
+- Se borró el `validateApiKey` local duplicado de ambas rutas (`route.ts` + `[alerta_id]/route.ts`).
+
+**Resultado — deuda de esquema cerrada.** Con esto hay **cero `.from('users')`** en todo el codebase. Se eliminaron los escape-hatches transitorios `fromUnsafe` y `requireServiceClientLegacy` (ya sin uso) y salió **`users` de la ALLOWLIST**. La ALLOWLIST del checker queda solo con `increment_api_usage` (falso positivo: la función existe en prod pero el generador de tipos no la lista). **Cero deuda real de acceso sin tipar.**
+
+**Verificación:** `pnpm check` verde (tsc 0, eslint 0, db-refs 331, 17/17 tests). Migración versionada (`20260703_alertas_drop_plaintext_api_key.sql`).
+
 ## [1.75.2] — 2026-07-03
 
 ### `onboarding-emails` migrado a `auth.users` — drip de activación reactivado

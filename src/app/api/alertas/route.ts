@@ -1,31 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireServiceClientLegacy } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
+import { authenticate } from '@/lib/api-auth'
 import { alertaCreateSchema, ALERTA_EVENTS, ALERTA_FREQUENCIES } from '@/lib/validators/alerta'
-
-interface AlertaData {
-  alerta_id: string
-  name: string
-  status: string
-  created_at: string
-  next_check?: string
-  triggers_today?: number
-  last_triggered?: string | null
-}
-
-interface SuccessResponse<T> {
-  success: true
-  data: T
-  message?: string
-}
-
-interface ErrorResponse {
-  success: false
-  error: {
-    code: string
-    message: string
-    details?: Record<string, string[]>
-  }
-}
 
 // Alert limits by plan
 const PLAN_LIMITS = {
@@ -43,31 +19,11 @@ function getAlertLimit(plan?: string): number {
   return PLAN_LIMITS.free
 }
 
-/**
- * Validate API key from header and get user info
- */
-async function validateApiKey(request: NextRequest) {
-  const apiKey = request.headers.get('api_key') || request.headers.get('x-api-key')
-  
-  if (!apiKey) {
-    return { valid: false, error: 'API key requerida', code: 'MISSING_API_KEY' }
-  }
-
-  // For MVP: simple api_key lookup
-  // In production: would validate against users table or API keys table
-  const supabase = requireServiceClientLegacy()
-  
-  const { data: user } = await supabase.from('users')
-    .select('id, email, plan')
-    .eq('api_key', apiKey)
-    .single()
-
-  if (!user) {
-    return { valid: false, error: 'API key inválida', code: 'INVALID_API_KEY' }
-  }
-
-  return { valid: true, user, apiKey }
-}
+// El auth de este endpoint usa el sistema canónico `authenticate()` (api_keys
+// hasheadas, con cupo + IP allowlist + plan Enterprise). Antes había un
+// validateApiKey local que buscaba `users.api_key` en TEXTO PLANO contra una tabla
+// `users` inexistente en prod (roto + inseguro). Ownership de las alertas: por
+// `user_id` (no por la key), consistente con los crons de entrega.
 
 /**
  * POST /api/alertas
@@ -89,21 +45,12 @@ async function validateApiKey(request: NextRequest) {
  *   "frequency": "immediate"
  * }
  */
-export async function POST(
-  request: NextRequest
-): Promise<NextResponse<SuccessResponse<AlertaData> | ErrorResponse>> {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    // Validate API key
-    const auth = await validateApiKey(request)
-    if (!auth.valid) {
-      return NextResponse.json({
-        success: false,
-        error: { code: auth.code!, message: auth.error! },
-      }, { 
-        status: 401,
-        headers: { 'Cache-Control': 'no-store' },
-      })
-    }
+    // Auth: api_keys hasheadas (Authorization: Bearer sk_...), con cupo + plan.
+    const auth = await authenticate(request)
+    if (!auth.ok) return auth.response
+    const userId = auth.key.userId
 
     const body = await request.json()
     
@@ -125,16 +72,16 @@ export async function POST(
     }
 
     const { name, webhook_url, filters, events, frequency } = parsed.data
-    const supabase = requireServiceClientLegacy()
+    const supabase = requireServiceClient()
 
     // Check alert limit for user
     const { count } = await supabase
       .from('alertas')
       .select('*', { count: 'exact', head: true })
-      .eq('api_key', auth.apiKey)
+      .eq('user_id', userId)
       .eq('status', 'active')
 
-    const limit = getAlertLimit(auth.user?.plan)
+    const limit = getAlertLimit(auth.plan)
     if (count !== null && count >= limit) {
       return NextResponse.json({
         success: false,
@@ -152,8 +99,7 @@ export async function POST(
     const { data: alerta, error: insertError } = await supabase
       .from('alertas')
       .insert({
-        user_id: auth.user!.id,
-        api_key: auth.apiKey,
+        user_id: userId,
         name,
         webhook_url,
         filters: filters || {},
@@ -219,29 +165,20 @@ export async function POST(
  * Headers:
  *   api_key: sk_live_xxxxx
  */
-export async function GET(
-  request: NextRequest
-): Promise<NextResponse<SuccessResponse<{ alertas: AlertaData[]; total: number; limit: number }> | ErrorResponse>> {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
-    // Validate API key
-    const auth = await validateApiKey(request)
-    if (!auth.valid) {
-      return NextResponse.json({
-        success: false,
-        error: { code: auth.code!, message: auth.error! },
-      }, { 
-        status: 401,
-        headers: { 'Cache-Control': 'no-store' },
-      })
-    }
+    // Auth: api_keys hasheadas (Authorization: Bearer sk_...).
+    const auth = await authenticate(request)
+    if (!auth.ok) return auth.response
+    const userId = auth.key.userId
 
-    const supabase = requireServiceClientLegacy()
+    const supabase = requireServiceClient()
 
     // Get user's alertas
     const { data: alertas, error } = await supabase
       .from('alertas')
       .select('id, name, status, triggers_count, last_triggered_at, created_at')
-      .eq('api_key', auth.apiKey)
+      .eq('user_id', userId)
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -258,7 +195,7 @@ export async function GET(
       })
     }
 
-    const limit = getAlertLimit(auth.user?.plan)
+    const limit = getAlertLimit(auth.plan)
 
     return NextResponse.json({
       success: true,

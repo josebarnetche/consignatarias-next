@@ -90,7 +90,8 @@ Hecho en v1.75.1:
 - [x] **Burndown de los 5 `TODO(canon)`** — RPC `get_user_emails` reactivó `remate-reminders` + `new-remate-alerts`; `medios_pago` reconciliado (columna agregada); insert muerto de `webhooks/auth` eliminado. **0 TODO(canon).**
 - [x] **`cron_state` fuera de la ALLOWLIST** — `new-remate-alerts` reescrito (era triple-roto: `cron_state` + `alerta_id`/`activa` + embed `users`).
 
+- [x] **`onboarding-emails` → `auth.users`** (v1.75.2) + **`alertas/*` → `api_keys` hasheadas** (v1.75.3). **Cero `.from('users')`; ALLOWLIST vaciada** (solo queda el falso positivo `increment_api_usage`); escape-hatches `fromUnsafe`/`requireServiceClientLegacy` eliminados.
+
 Sigue pendiente:
 - [ ] Verificar en prod con sesión logueada los 2 flujos auth-gated: subir un DT-e (`user_dtes`) y seguir una consignataria (`user_favorites`). (Los otros 3 —zona, watch, webhook— verificados a nivel data-layer.)
 - [ ] Completar el baseline con `supabase db pull` (enums, secuencias, índices, RLS/policies) — requiere credenciales de DB.
-- [ ] Vaciar el último ítem de la ALLOWLIST: `users` (API-key legacy de `alertas/*` + `onboarding-emails` → migrar a `api_keys` hasheadas; hoy en el client legacy sin tipar).

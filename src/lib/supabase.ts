@@ -44,29 +44,7 @@ export function requireServiceClient(): ServiceClient {
   return client
 }
 
-/**
- * ESCAPE HATCH tipado para tablas que NO están en el esquema (deuda documentada:
- * `users`, `cron_state` — ver la ALLOWLIST de scripts/check-db-refs.mjs y el
- * Proyecto C). Deja la query sin tipar A PROPÓSITO y de forma VISIBLE, para que
- * el resto del código sí gane el chequeo de compilación. NO usar para tablas
- * reales: para esas, `client.from('tabla')` tipado convierte un typo en error de
- * build. Cada uso acá es un TODO de reconciliación.
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function fromUnsafe(client: ServiceClient, table: string): any {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (client as any).from(table)
-}
-
-/**
- * @deprecated Client service_role SIN tipar, SOLO para rutas-deuda que ya están
- * rotas en prod (el API-key legacy de `alertas/*` que consulta `public.users`
- * inexistente; los crons que usan columnas viejas / `cron_state`). Devuelve el
- * mismo singleton pero como `SupabaseClient` sin `<Database>`, para que esas rutas
- * compilen mientras se reconcilian. NO usar en código nuevo — usá el client tipado
- * (`requireServiceClient`) para que un typo de tabla/columna sea error de build.
- * Cada llamada es un TODO de reconciliación (ver Proyecto C + ROADMAP).
- */
-export function requireServiceClientLegacy(): SupabaseClient {
-  return requireServiceClient() as unknown as SupabaseClient
-}
+// (Se eliminaron `fromUnsafe` y `requireServiceClientLegacy` en v1.75.3: eran
+// escape-hatches transitorios para la deuda de `users`/`cron_state`. Toda esa deuda
+// se reconcilió —0 refs sin tipar— así que ya no hacen falta. Si aparece deuda
+// nueva, arreglala de raíz en vez de reintroducir un escape sin tipar.)
