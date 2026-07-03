@@ -8,7 +8,7 @@ import WelcomeChecklist from '@/components/onboarding/WelcomeChecklist'
 import ProfileProgressTracker from '@/components/onboarding/ProfileProgressTracker'
 import { WelcomeHero, ProActivatedModule, type NextStep } from '@/components/welcome'
 import { WhatsAppIconButton } from '@/components/share/WhatsAppShare'
-import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2 } from 'lucide-react'
+import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2, Inbox } from 'lucide-react'
 import QRCode from '@/components/QRCode'
 import { UpgradeConfirmTracker } from '@/components/UpgradeConfirmTracker'
 import { trackEvent } from '@/lib/analytics'
@@ -98,6 +98,17 @@ interface FrigoClaim {
   created_at: string
 }
 
+interface Lead {
+  id: number
+  name: string
+  phone: string | null
+  email: string | null
+  message: string | null
+  source: string | null
+  status: string | null
+  created_at: string
+}
+
 interface Props {
   email: string
   consignataria: Consignataria | null
@@ -108,6 +119,7 @@ interface Props {
   viewCount: number
   whatsappClicks: number
   leadsCount: number
+  leads?: Lead[]
   totalWatchers: number
   viewPercentile: number
   provincialRank: { position: number; total: number; province: string }
@@ -125,11 +137,11 @@ function formatDate(d: string) {
   return `${parts[2]}/${parts[1]}`
 }
 
-type TabKey = 'resumen' | 'remates' | 'editar' | 'resultados' | 'plan' | 'frigorifico'
+type TabKey = 'resumen' | 'leads' | 'remates' | 'editar' | 'resultados' | 'plan' | 'frigorifico'
 
 export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
-  auctionResults, viewCount, whatsappClicks, leadsCount, totalWatchers, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
+  auctionResults, viewCount, whatsappClicks, leadsCount, leads = [], totalWatchers, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
   dteCount = 0, alreadyRedeemed = false,
 }: Props) {
   const showChecklist = consignataria && completedFields && Object.values(completedFields).filter(Boolean).length < 5
@@ -231,6 +243,7 @@ export default function DashboardClient({
     { key: 'resumen', label: 'Resumen', icon: <LayoutDashboard className="w-3.5 h-3.5" /> },
   ]
   if (consignataria?.verified) {
+    tabs.push({ key: 'leads', label: `Leads (${leadsCount})`, icon: <Inbox className="w-3.5 h-3.5" /> })
     tabs.push({ key: 'remates', label: `Remates (${scrapedAuctions.length + ownerAuctions.length})`, icon: <CalendarDays className="w-3.5 h-3.5" /> })
     tabs.push({ key: 'editar', label: 'Editar', icon: <Pencil className="w-3.5 h-3.5" /> })
     tabs.push({ key: 'resultados', label: 'Resultados', icon: <BarChart3 className="w-3.5 h-3.5" /> })
@@ -783,6 +796,61 @@ export default function DashboardClient({
             </div>
           )}
         </>
+      )}
+
+      {/* ============ TAB: LEADS ============ */}
+      {activeTab === 'leads' && consignataria?.verified && (
+        <div className="space-y-3">
+          <div>
+            <h2 className="text-lg font-semibold text-zinc-100">Leads · quién te buscó</h2>
+            <p className="text-sm text-zinc-400">
+              Productores que dejaron sus datos o te contactaron desde tu perfil. Escribiles vos.
+            </p>
+          </div>
+          {leads.length === 0 ? (
+            <div className="rounded-terminal border border-terminal-border bg-terminal-panel p-6 text-center">
+              <div className="text-sm text-zinc-300 mb-1">Todavía no hay leads.</div>
+              <div className="text-xs text-zinc-500">
+                Cuando un productor deje sus datos o toque tu WhatsApp desde el perfil, aparece acá con nombre y contacto.
+              </div>
+            </div>
+          ) : (
+            <div className="divide-y divide-terminal-border rounded-terminal border border-terminal-border bg-terminal-panel">
+              {leads.map((l) => {
+                const wa = l.phone ? `https://wa.me/${l.phone.replace(/\D/g, '')}` : null
+                const fecha = new Date(l.created_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: '2-digit' })
+                return (
+                  <div key={l.id} className="p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="text-sm font-semibold text-zinc-100">
+                        {l.name}
+                        <span className="ml-2 text-xxs uppercase tracking-wider text-zinc-500">{fecha}</span>
+                      </div>
+                      <div className="text-xs text-zinc-400">
+                        {l.phone && <span className="mr-2">{l.phone}</span>}
+                        {l.email && <span className="mr-2">{l.email}</span>}
+                        {l.source && <span className="text-zinc-600">· {l.source}</span>}
+                      </div>
+                      {l.message && <div className="text-xs text-zinc-500 mt-1 truncate">{l.message}</div>}
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {wa && (
+                        <a href={wa} target="_blank" rel="noopener noreferrer" className="rounded-terminal bg-emerald-500 hover:bg-emerald-400 px-3 py-1.5 text-xs font-semibold text-white transition-colors">
+                          WhatsApp
+                        </a>
+                      )}
+                      {l.email && (
+                        <a href={`mailto:${l.email}`} className="rounded-terminal border border-terminal-border px-3 py-1.5 text-xs text-zinc-200 hover:border-accent transition-colors">
+                          Email
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
       )}
 
       {/* ============ TAB: REMATES ============ */}
