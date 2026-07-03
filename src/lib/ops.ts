@@ -9,6 +9,7 @@
  */
 
 import { createAdminClient } from '@/lib/supabase-server'
+import type { Json } from '@/lib/database.types'
 import { waitUntil } from '@vercel/functions'
 
 /* ------------------------------------------------------------------ */
@@ -107,7 +108,7 @@ export function logEvent(input: LogEventInput): void {
         route: input.route ?? null,
         latency_ms: input.latencyMs ?? null,
         status_code: input.statusCode ?? null,
-        metadata: input.metadata ?? {},
+        metadata: (input.metadata ?? {}) as Json,
       })
       if (error) {
         console.error('[ops.logEvent] insert error:', error.message)
@@ -144,7 +145,7 @@ export async function startCronRun(
       .insert({
         workflow_name: workflowName,
         status: 'running',
-        metadata,
+        metadata: metadata as Json,
       })
       .select('id')
       .single()
@@ -177,7 +178,7 @@ export async function finishCronRun(
         finished_at: new Date().toISOString(),
         status,
         message: message ?? null,
-        metadata,
+        metadata: metadata as Json,
       })
       .eq('id', id)
     if (error) {

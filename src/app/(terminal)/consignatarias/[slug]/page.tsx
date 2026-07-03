@@ -145,7 +145,7 @@ async function fetchConsignatariaVideos(slug: string): Promise<ConsignatariaVide
     const videosQuery = service
       .from('consignataria_videos')
       .select('id, youtube_video_id, title, description, video_type, published_at, thumbnail_url, duration_seconds, view_count, is_featured')
-      .eq('consignataria_id', consignataria.id)
+      .eq('consignataria_id', String(consignataria.id))
       .order('is_featured', { ascending: false })
       .order('published_at', { ascending: false })
       .limit(12)

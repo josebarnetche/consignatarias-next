@@ -78,7 +78,7 @@ export async function getApprovedReviewsForSlug(slug: string, limit = 10): Promi
   return data.map((r) => ({
     id: r.id,
     submitterName: r.submitter_name,
-    submitterRole: r.submitter_role,
+    submitterRole: r.submitter_role as SubmitterRole | null,
     submitterProvincia: r.submitter_provincia,
     rating: r.rating,
     body: r.body,

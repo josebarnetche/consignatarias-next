@@ -15,7 +15,7 @@ interface QueueItem {
  */
 async function countPending(
   client: ReturnType<typeof createServiceClient>,
-  table: string,
+  table: 'consignataria_claims' | 'frigorifico_claims' | 'consignataria_reviews',
 ): Promise<number | null> {
   if (!client) return null
   const { count, error } = await client

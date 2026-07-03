@@ -24,31 +24,39 @@ export function ActivationChecklist({ dteCount }: ActivationChecklistProps) {
   const [hasAlerts, setHasAlerts] = useState(false);
   const [hasSavedRemates, setHasSavedRemates] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [hadError, setHadError] = useState(false);
 
   useEffect(() => {
     // Consumimos el endpoint server-side en vez de consultar tablas directo con el
     // client anon: antes hacía `.from('alerts')`/`.from('saved_remates')` — tablas
-    // INEXISTENTES (los nombres reales son `alertas`/`remate_favorites`) y, aunque
-    // existieran, RLS las bloquea al browser. El endpoint usa la tabla real
-    // (`user_favorites`) con service_role. Ver /api/me/activation.
+    // INEXISTENTES (nombres reales `remate_favorites`/`user_favorites`) y, aunque
+    // existieran, RLS las bloquea al browser. El endpoint usa las tablas reales con
+    // service_role. Ver /api/me/activation + lib/dal/activation.
+    //
+    // Importante: si el endpoint falla (500) NO marcamos los pasos como
+    // incompletos (sería un dato falso). Marcamos error y ocultamos el checklist,
+    // en vez de mostrar un estado engañoso.
     let cancelled = false;
     fetch('/api/me/activation')
-      .then((r) => (r.ok ? r.json() : null))
+      .then(async (r) => {
+        if (!r.ok) throw new Error(`activation ${r.status}`);
+        return r.json();
+      })
       .then((data) => {
-        if (cancelled || !data) return;
+        if (cancelled) return;
         setHasAlerts(Boolean(data.hasAlerts));
         setHasSavedRemates(Boolean(data.hasSavedRemates));
       })
-      .catch(() => { /* best-effort */ })
+      .catch(() => { if (!cancelled) setHadError(true); })
       .finally(() => { if (!cancelled) setIsLoading(false); });
     return () => { cancelled = true; };
   }, []);
 
   // Hide once user is fully activated (3+ DTEs)
   if (dteCount >= 3) return null;
-  
-  // Hide while loading
-  if (isLoading) return null;
+
+  // Hide while loading, or if the activation lookup failed (no mostramos estado falso)
+  if (isLoading || hadError) return null;
 
   const items: ChecklistItem[] = [
     {

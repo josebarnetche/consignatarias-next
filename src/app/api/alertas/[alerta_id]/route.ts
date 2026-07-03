@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireServiceClient } from '@/lib/supabase'
+import { requireServiceClientLegacy } from '@/lib/supabase'
 import { alertaUpdateSchema, alertaIdSchema } from '@/lib/validators/alerta'
 
 interface AlertaData {
@@ -41,10 +41,9 @@ async function validateApiKey(request: NextRequest) {
     return { valid: false, error: 'API key requerida', code: 'MISSING_API_KEY' }
   }
 
-  const supabase = requireServiceClient()
+  const supabase = requireServiceClientLegacy()
   
-  const { data: user } = await supabase
-    .from('users')
+  const { data: user } = await supabase.from('users')
     .select('id, email, plan')
     .eq('api_key', apiKey)
     .single()
@@ -99,7 +98,7 @@ export async function GET(
       })
     }
 
-    const supabase = requireServiceClient()
+    const supabase = requireServiceClientLegacy()
 
     // Get alert (verify ownership via api_key)
     const { data: alerta, error } = await supabase
@@ -222,7 +221,7 @@ export async function PATCH(
       })
     }
 
-    const supabase = requireServiceClient()
+    const supabase = requireServiceClientLegacy()
 
     // Verify ownership first
     const { data: existing } = await supabase
@@ -354,7 +353,7 @@ export async function DELETE(
       })
     }
 
-    const supabase = requireServiceClient()
+    const supabase = requireServiceClientLegacy()
 
     // Delete alert (verify ownership via api_key)
     const { error } = await supabase

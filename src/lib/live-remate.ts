@@ -71,7 +71,7 @@ export async function getLiveRemate(): Promise<LiveRematePayload> {
     const lots = lotsRaw ?? []
 
     const recent: LiveLot[] = lots.slice(0, 12).map((l) => ({
-      categoria: l.categoria, precio: l.precio, cabezas: l.cabezas, at: l.created_at,
+      categoria: l.categoria ?? '', precio: l.precio ?? 0, cabezas: l.cabezas, at: l.created_at,
     }))
     const byCat = new Map<string, number[]>()
     for (const l of lots) {

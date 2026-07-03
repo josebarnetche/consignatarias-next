@@ -1,13 +1,19 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from './database.types'
 
-let serviceClient: SupabaseClient | null = null
+/** Service client TIPADO contra el esquema real de prod (database.types.ts).
+ *  Con esto, `.from('tabla_inexistente')` es error de COMPILACIÓN — el checker
+ *  regex deja de ser la única barrera. Fuente canónica del service client. */
+export type ServiceClient = SupabaseClient<Database>
+
+let serviceClient: ServiceClient | null = null
 
 /**
  * Server-side Supabase client using service_role key (bypasses RLS).
  * Only use in API routes — never expose to the browser.
  * Returns null if env vars are missing (e.g., during static generation).
  */
-export function createServiceClient(): SupabaseClient | null {
+export function createServiceClient(): ServiceClient | null {
   if (serviceClient) return serviceClient
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -19,7 +25,7 @@ export function createServiceClient(): SupabaseClient | null {
     return null
   }
 
-  serviceClient = createClient(url, key, {
+  serviceClient = createClient<Database>(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
   })
 
@@ -30,10 +36,37 @@ export function createServiceClient(): SupabaseClient | null {
  * Same as createServiceClient but throws if unavailable.
  * Use in API routes where Supabase is required.
  */
-export function requireServiceClient(): SupabaseClient {
+export function requireServiceClient(): ServiceClient {
   const client = createServiceClient()
   if (!client) {
     throw new Error('Supabase service client unavailable - missing env vars')
   }
   return client
+}
+
+/**
+ * ESCAPE HATCH tipado para tablas que NO están en el esquema (deuda documentada:
+ * `users`, `cron_state` — ver la ALLOWLIST de scripts/check-db-refs.mjs y el
+ * Proyecto C). Deja la query sin tipar A PROPÓSITO y de forma VISIBLE, para que
+ * el resto del código sí gane el chequeo de compilación. NO usar para tablas
+ * reales: para esas, `client.from('tabla')` tipado convierte un typo en error de
+ * build. Cada uso acá es un TODO de reconciliación.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function fromUnsafe(client: ServiceClient, table: string): any {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (client as any).from(table)
+}
+
+/**
+ * @deprecated Client service_role SIN tipar, SOLO para rutas-deuda que ya están
+ * rotas en prod (el API-key legacy de `alertas/*` que consulta `public.users`
+ * inexistente; los crons que usan columnas viejas / `cron_state`). Devuelve el
+ * mismo singleton pero como `SupabaseClient` sin `<Database>`, para que esas rutas
+ * compilen mientras se reconcilian. NO usar en código nuevo — usá el client tipado
+ * (`requireServiceClient`) para que un typo de tabla/columna sea error de build.
+ * Cada llamada es un TODO de reconciliación (ver Proyecto C + ROADMAP).
+ */
+export function requireServiceClientLegacy(): SupabaseClient {
+  return requireServiceClient() as unknown as SupabaseClient
 }

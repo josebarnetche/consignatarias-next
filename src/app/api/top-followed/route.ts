@@ -44,10 +44,10 @@ export async function GET(request: Request) {
 
     // Merge data
     const consignatarias = (followers || [])
-      .filter(f => profileMap.has(f.consignataria_slug))
+      .filter(f => profileMap.has(f.consignataria_slug ?? ''))
       .map(f => ({
-        slug: f.consignataria_slug,
-        displayName: profileMap.get(f.consignataria_slug) || f.consignataria_slug,
+        slug: f.consignataria_slug ?? '',
+        displayName: profileMap.get(f.consignataria_slug ?? '') || f.consignataria_slug,
         followerCount: f.follower_count,
       }));
 

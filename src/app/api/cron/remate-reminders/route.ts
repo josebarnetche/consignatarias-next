@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireServiceClient } from '@/lib/supabase'
+import { requireServiceClient, fromUnsafe } from '@/lib/supabase'
 import { getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import { getEntityTier } from '@/lib/features'
 import { sendRemateReminder, sendRemateResultsToProducer } from '@/lib/email'
@@ -235,8 +235,8 @@ async function getRecipientsForRemate(
   const canonical = getCanonicalSlug(remate.consignatariaSlug || '') || remate.consignatariaSlug
 
   // (a) watchers de la firma. user_favorites guarda user_id → resolvemos email vía users.
-  const { data: favs } = await service
-    .from('user_favorites')
+  // TODO(canon): relación embebida users(email) no existe en prod (user_favorites → auth.users, no public.users) — feature rota, reconciliar (Proyecto C)
+  const { data: favs } = await fromUnsafe(service, 'user_favorites')
     .select('notify_new_remate, users!inner(email)')
     .eq('consignataria_slug', canonical)
 
@@ -429,8 +429,8 @@ async function handleResultsToProducers(testEmail: string): Promise<NextResponse
   }
 
   // Alertas activas (productores que siguen una firma).
-  const { data: alerts, error: alertsError } = await service
-    .from('alertas')
+  // TODO(canon): relación embebida users(email) no existe en prod (alertas → auth.users, no public.users) — feature rota, reconciliar (Proyecto C)
+  const { data: alerts, error: alertsError } = await fromUnsafe(service, 'alertas')
     .select('filters, status, users!inner(email)')
     .eq('status', 'active')
 

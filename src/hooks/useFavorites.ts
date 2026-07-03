@@ -115,7 +115,13 @@ export function useFavorites() {
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
-    const rows = data || [];
+    const rows: Favorite[] = (data || []).map((r) => ({
+      id: r.id,
+      consignataria_slug: r.consignataria_slug,
+      notify_new_remate: r.notify_new_remate ?? true,
+      notify_catalog: r.notify_catalog ?? true,
+      created_at: r.created_at ?? '',
+    }));
     setFavorites(rows);
     maybeTrackReturn(rows);
     setIsLoading(false);

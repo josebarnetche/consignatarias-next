@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
+import type { Json } from '@/lib/database.types'
 import crypto from 'crypto'
 
 export const runtime = 'nodejs'
@@ -111,7 +112,7 @@ export async function POST(req: NextRequest) {
     link: (click.link as string) ?? null,
     bounce_type: (bounce.type as string) ?? null,
     occurred_at: (d.created_at as string) ?? payload.created_at ?? null,
-    raw: payload as unknown as Record<string, unknown>,
+    raw: payload as unknown as Json,
   }
 
   const { error: insErr } = await service.from('email_events').insert(row)

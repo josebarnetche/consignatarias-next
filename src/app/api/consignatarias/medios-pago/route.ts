@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getCurrentSession } from '@/lib/user-tier'
-import { createServiceClient } from '@/lib/supabase'
+import { createServiceClient, fromUnsafe } from '@/lib/supabase'
 
 // Reads the session cookie → must render dynamically.
 export const dynamic = 'force-dynamic'
@@ -43,8 +43,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ result: {} })
   }
 
-  const { data } = await supabase
-    .from('consignatarias')
+  // TODO(canon): columna medios_pago no existe en prod — feature rota, reconciliar (Proyecto C)
+  const { data } = await fromUnsafe(supabase, 'consignatarias')
     .select('canonical_slug, medios_pago')
     .in('canonical_slug', slugs)
 

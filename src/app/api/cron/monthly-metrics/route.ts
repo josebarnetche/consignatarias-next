@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
   const errors: string[] = []
 
   for (const consig of claimed) {
+    if (!consig.claimed_by_email) continue
     const views = viewCounts[consig.canonical_slug] || 0
     try {
       await sendMonthlyMetrics(

@@ -66,7 +66,12 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
         throw fetchError;
       }
 
-      setDtes(data || []);
+      setDtes((data || []).map((d) => ({
+        ...d,
+        especie: d.especie ?? '',
+        categorias: (d.categorias ?? {}) as Record<string, number>,
+        created_at: d.created_at ?? '',
+      })));
 
       // Calculate stats
       const now = new Date();

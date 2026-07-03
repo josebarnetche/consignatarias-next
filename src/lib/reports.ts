@@ -61,7 +61,7 @@ export async function recordDownload(
     p_user_id: userId,
     p_report_slug: reportSlug,
     p_ip: ip,
-    p_user_agent: userAgent,
+    p_user_agent: userAgent ?? undefined,
   })
   if (error) {
     console.error('record_report_download failed', error)
