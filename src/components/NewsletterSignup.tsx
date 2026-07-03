@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { trackValueEvent } from '@/lib/analytics'
 
 interface NewsletterSignupProps {
   source?: string
@@ -42,6 +43,8 @@ export default function NewsletterSignup({
         setStatus('success')
         setMessage(data.message || 'Suscripción exitosa')
         setEmail('')
+        // Ledger (recurrencia w8): antes newsletter_subscribe no lo emitía nadie.
+        trackValueEvent('newsletter_subscribe', { meta: { source } })
       } else {
         setStatus('error')
         setMessage(data.error || 'Error al suscribirse')

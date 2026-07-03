@@ -11,12 +11,17 @@ import { trackPageView, trackEvent, trackSignup } from '@/lib/analytics'
  */
 function PageViewTracker() {
   const pathname = usePathname()
-  const searchParams = useSearchParams()
 
   useEffect(() => {
-    const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '')
-    trackPageView(url)
-  }, [pathname, searchParams])
+    // Un pageview por CAMBIO DE RUTA, no por cambio de query-string. Antes las
+    // deps incluían `searchParams`, así que cada filtro / orden / paginación que
+    // escribe en la URL (frigoríficos, arrendamiento, listados) disparaba un
+    // `page_view` nuevo → inflaba pageviews (11,7 pág/sesión en /frigorificos) y
+    // ensuciaba pág/sesión, bounce y engagement. Leemos el search actual para el
+    // URL del pageview, pero SOLO re-disparamos cuando cambia el pathname.
+    const search = typeof window !== 'undefined' ? window.location.search : ''
+    trackPageView(pathname + search)
+  }, [pathname])
 
   return null
 }
