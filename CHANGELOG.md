@@ -7,6 +7,42 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.74.0] — 2026-07-03
+
+### Canon Agent — Fuente de verdad del esquema + fix de bug silencioso en prod
+
+Este release ataca el hallazgo **crítico** del review general (2026-07-03): *no había fuente de verdad del esquema de base de datos*, y eso ya estaba produciendo bugs reales que fallaban en silencio. No es un cambio cosmético — es infraestructura de gobierno para que una clase entera de bug deje de ser posible. Documento completo: [`docs/PROYECTO-C-fuente-de-verdad-esquema.md`](docs/PROYECTO-C-fuente-de-verdad-esquema.md).
+
+#### El problema, y por qué importa
+
+El código habla con Postgres con strings sin tipar (`.from('tabla')`, `.rpc('fn')`). Como los clients Supabase se instancian **sin tipos** (`createClient()` en vez de `createClient<Database>()`), un `.from('alerts')` hacia una tabla que **no existe** compila igual y falla recién en runtime — y como casi todas esas queries están envueltas en `try {} catch {}` vacíos, **falla en silencio**. Nadie se entera. Verificando el esquema **real de producción** (proyecto `nyqkgorazkwcufkzxmhd`) contra el código, apareció un drift bidireccional serio:
+
+- **Bug raíz (`src/components/dte/ActivationChecklist.tsx`):** consultaba `.from('alerts')` y `.from('saved_remates')`. **Ninguna de las dos tablas existe** — son typos de `alertas`/`remate_favorites`. Peor: usaba el client **anon del browser**, y aunque los nombres fueran correctos, RLS bloquea la lectura (`alertas` quedó `service_role`-only tras el hardening de seguridad; `user_favorites` tiene RLS on sin policy). O sea **dos bugs superpuestos**: nombre inexistente + arquitectura equivocada. Consecuencia: los pasos "Creá una alerta" y "Guardá un remate" del checklist de activación **nunca se marcaban**, sin importar lo que hiciera el usuario.
+- **Drift "prod le falta lo que el repo tiene":** el nuevo escáner encontró **6 objetos** que las migraciones del repo crean pero **prod no tiene**, con el código usándolos igual — es decir, **features enteras rotas en silencio en producción**: `user_dtes` (17 referencias — todo el feature DT-e), `remate_favorites` (watch/guardar remates), `sell_zone_alerts` (alertas de zona de venta + su cron), `consignataria_followers` (top-followed), `webhooks` (registro de webhooks). Sus migraciones (`20260318_user_dtes.sql`, `20260625_sell_zone_alerts.sql`, etc.) **nunca se aplicaron a prod**.
+- **Deuda sin migración en ningún lado:** `users` (el API-key legacy de `alertas/*` asume `public.users` con la key en texto plano — no existe) y `cron_state` (`cron/new-remate-alerts`).
+
+#### Qué cambié y por qué
+
+**Added — `src/lib/database.types.ts` (fuente de verdad del esquema).** Tipos autogenerados desde el esquema **real de producción**. Antes, "qué tablas existen" era conocimiento tácito en la cabeza de quien escribía cada `.from()`; ahora es un artefacto versionado y regenerable. Es la base para, más adelante, tipar los clients y que `.from('alerts')` sea error de compilación.
+
+**Added — `scripts/check-db-refs.mjs` + `pnpm check:db-refs` (enforcement).** Un escáner que valida **todos** los `.from()`/`.rpc()` del código contra el esquema intendido = (prod, desde los tipos) ∪ (objetos que crean las migraciones del repo). Clasifica cada referencia en OK / **DRIFT** (la crea una migración pero prod no la tiene → warning, no bloquea) / **ERROR** (no existe en ningún lado → bloquea) / **ALLOWLIST** (deuda documentada con motivo). Por qué así: distinguir un **typo real** (`alerts`) de un **drift de migración** (`user_dtes`, que sí tiene migración pero prod no la aplicó) — tratar todo como error haría el checker inservible; ignorarlo escondería features rotas. Ignora referencias dentro de comentarios (enmascara `//` y `/* */` preservando líneas) para no auto-marcarse. Habría cazado el bug de `ActivationChecklist` en el commit que lo introdujo.
+
+**Enforcement — `.githooks/pre-commit`.** El checker corre en cada commit (mismo mecanismo que ya se usa para el escáner de secretos). Bloquea el commit ante una referencia a una tabla/función inexistente. `--no-verify` para saltear un falso positivo real. Motivo: convertir la regla en algo que el sistema aplica solo, no que alguien tiene que recordar.
+
+**Fixed — el bug de `ActivationChecklist`.** Se creó el endpoint **`GET /api/me/activation`** (`requireAuth` + `service_role`, `dynamic = 'force-dynamic'`) que computa `hasSavedRemates`/`hasAlerts` desde la tabla que **sí existe** (`user_favorites`), server-side y con el acceso correcto (bypassa RLS legítimamente). El componente ahora consume ese endpoint en vez de consultar tablas rotas con el client anon. Por qué endpoint y no solo renombrar: renombrar no alcanzaba — el client del browser no puede leer ninguna de esas tablas por RLS; el fix correcto es mover el cómputo al server.
+
+**Deprecado.** `.from()`/`.rpc()` sin validar contra `database.types.ts`, y consultar tablas con RLS desde el client anon esperando leer filas de otro scope. Reemplazo: referencias validadas por `check-db-refs` + endpoints `service_role` para datos con RLS (patrón `/api/me/activation`).
+
+#### Lo que NO hice (a propósito) — decisión pendiente del dueño
+
+**No apliqué a ciegas las 6 migraciones faltantes a producción.** Crear esas tablas activaría features hoy rotas (DT-e, alertas de zona, etc.), pero son migraciones viejas nunca aplicadas y pueden tener conflictos (ej. la doble definición incompatible de `whatsapp_clicks` ya detectada). El plan de reconciliación seguro (baseline desde prod + aplicar una por una y verificando + resolver la deuda `users`/`cron_state` + tipar los clients + CI) está en el Proyecto C como **decisión pendiente**, no como algo a ejecutar sin aval.
+
+#### Impacto
+
+- El checklist de activación de DT-e vuelve a funcionar (para la señal que hoy es medible con `user_favorites`).
+- Cualquier `.from('tabla_inexistente')` futuro se bloquea en el commit.
+- Queda documentado, con evidencia, que **5 features están rotas en prod** por migraciones sin aplicar — algo que estaba oculto por los `catch {}` vacíos.
+
 ## Review general de la base de código — 2026-07-03
 
 Auditoría estructural en 3 ejes (backend / frontend / datos) + review de los cambios de la sesión. Documento completo: [`docs/REVIEW-GENERAL-2026-07-03.md`](docs/REVIEW-GENERAL-2026-07-03.md).

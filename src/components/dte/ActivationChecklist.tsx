@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle2, Circle, ChevronRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase-browser';
 
 interface ChecklistItem {
   id: string;
@@ -25,41 +24,25 @@ export function ActivationChecklist({ dteCount }: ActivationChecklistProps) {
   const [hasAlerts, setHasAlerts] = useState(false);
   const [hasSavedRemates, setHasSavedRemates] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const supabase = createClient();
 
   useEffect(() => {
-    const checkStatus = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-          setIsLoading(false);
-          return;
-        }
-
-        // Check if user has any alerts
-        const { count: alertCount } = await supabase
-          .from('alerts')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', user.id);
-        
-        setHasAlerts((alertCount || 0) > 0);
-
-        // Check if user has saved any remates (favorites)
-        const { count: savedCount } = await supabase
-          .from('saved_remates')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', user.id);
-        
-        setHasSavedRemates((savedCount || 0) > 0);
-      } catch {
-        // Silent fail
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkStatus();
-  }, [supabase]);
+    // Consumimos el endpoint server-side en vez de consultar tablas directo con el
+    // client anon: antes hacía `.from('alerts')`/`.from('saved_remates')` — tablas
+    // INEXISTENTES (los nombres reales son `alertas`/`remate_favorites`) y, aunque
+    // existieran, RLS las bloquea al browser. El endpoint usa la tabla real
+    // (`user_favorites`) con service_role. Ver /api/me/activation.
+    let cancelled = false;
+    fetch('/api/me/activation')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled || !data) return;
+        setHasAlerts(Boolean(data.hasAlerts));
+        setHasSavedRemates(Boolean(data.hasSavedRemates));
+      })
+      .catch(() => { /* best-effort */ })
+      .finally(() => { if (!cancelled) setIsLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
 
   // Hide once user is fully activated (3+ DTEs)
   if (dteCount >= 3) return null;
