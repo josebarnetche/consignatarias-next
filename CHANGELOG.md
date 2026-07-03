@@ -7,6 +7,24 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.75.1] — 2026-07-03
+
+### Burndown de deuda visible — 2 crons rotos reactivados + medios de pago + limpieza
+
+Continuación de v1.75.0: se resolvieron **los 5 `TODO(canon)`** que habían quedado quarantined (features que el tipado destapó como rotas en prod). Ahora quedan **cero**.
+
+**RPC canónico `get_user_emails(uuid[])` (SECURITY DEFINER, solo `service_role`).** La causa de fondo de varios cron rotos: `user_favorites` y `alertas` tienen FK a `auth.users`, no a `public.users`, así que el embed PostgREST `users(email)` no existe y los `.select('... users(email)')` fallaban. El RPC resuelve emails desde `auth.users` para un set de ids. Reusable por los dos crons.
+
+**`cron/remate-reminders` — reactivado.** Los dos caminos (recordatorios a watchers de una firma; Mail-3 de resultados a productores con alerta) resolvían el email con el embed roto → **0 mails**. Ahora leen `user_id` y resuelven vía el RPC. `cron_state` no participaba (se `void`eaba).
+
+**`cron/new-remate-alerts` — reescrito.** Estaba **triple-roto**: leía `cron_state` (tabla inexistente, y su resultado se descartaba con `void`), consultaba `alertas` por columnas inexistentes (`alerta_id`→`id`, `.eq('activa')`→`status`) y usaba el embed `users(email)`. Se eliminó `cron_state` por completo, se corrigieron las columnas y se resuelven emails con el RPC. **`cron_state` salió de la ALLOWLIST del checker.**
+
+**`consignatarias.medios_pago` — reconciliado.** El feature "medios de pago" (endpoint + DAL + UI `MediosPagoSummary`) estaba construido pero la columna nunca se agregó a prod → el endpoint fallaba. Se agregó `medios_pago jsonb` (default `[]`) y el código volvió al client tipado.
+
+**`webhooks/auth` — insert muerto eliminado.** Logueaba el welcome-email en `outreach_log`, que es la tabla de outreach a consignatarias (exige `consignataria_slug NOT NULL`, no tiene `user_id`) → el insert **siempre fallaba**. Se quitó; la entrega ya se rastrea vía Resend en `email_events`.
+
+**Verificación:** `pnpm check` verde (tsc 0, eslint 0, db-refs 332, 17/17 tests). RPC probado contra prod. Migraciones versionadas (`20260703_get_user_emails_rpc.sql`, `20260703_consignatarias_medios_pago.sql`). Deuda restante en la ALLOWLIST: solo `users` (el API-key legacy de `alertas/*` + onboarding, que sigue en el client legacy sin tipar) — próximo chunk: migrar a `api_keys` hasheadas.
+
 ## [1.75.0] — 2026-07-03
 
 ### Canon Fase 2 — cerrar de verdad la clase de bug (no solo contenerla)

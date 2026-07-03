@@ -54,11 +54,6 @@ const ALLOWLIST = new Map([
     owner: 'backend', since: '2026-07-03', severity: 'alta',
     exit: 'Migrar a api_keys hasheadas (Proyecto C §reconciliación). Vence: al reescribir alertas/*.',
   }],
-  ['cron_state', {
-    reason: 'cron/new-remate-alerts usa cron_state, inexistente en prod y migraciones (¿= cron_runs?).',
-    owner: 'backend', since: '2026-07-03', severity: 'media',
-    exit: 'Reapuntar a cron_runs o crear la tabla (Proyecto C). Vence: próxima pasada por ese cron.',
-  }],
   ['increment_api_usage', {
     reason: 'FALSO POSITIVO: la función SÍ existe en prod (la usa api-keys.ts) pero el generador de tipos no la lista en Functions.',
     owner: 'infra', since: '2026-07-03', severity: 'baja',

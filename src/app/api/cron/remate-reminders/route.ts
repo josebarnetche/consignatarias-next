@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireServiceClient, fromUnsafe } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import { getEntityTier } from '@/lib/features'
 import { sendRemateReminder, sendRemateResultsToProducer } from '@/lib/email'
@@ -234,18 +234,24 @@ async function getRecipientsForRemate(
   const out = new Set<string>(segmentEmails)
   const canonical = getCanonicalSlug(remate.consignatariaSlug || '') || remate.consignatariaSlug
 
-  // (a) watchers de la firma. user_favorites guarda user_id → resolvemos email vía users.
-  // TODO(canon): relación embebida users(email) no existe en prod (user_favorites → auth.users, no public.users) — feature rota, reconciliar (Proyecto C)
-  const { data: favs } = await fromUnsafe(service, 'user_favorites')
-    .select('notify_new_remate, users!inner(email)')
+  // (a) watchers de la firma. user_favorites.user_id → FK a auth.users (NO public.users),
+  // así que resolvemos el email con el RPC get_user_emails (SECURITY DEFINER) en vez del
+  // embed PostgREST `users(email)` que no existe.
+  const { data: favs } = await service
+    .from('user_favorites')
+    .select('user_id, notify_new_remate')
     .eq('consignataria_slug', canonical)
 
-  type FavRow = { notify_new_remate: boolean | null; users: { email: string } | { email: string }[] | null }
-  for (const fav of (favs || []) as FavRow[]) {
-    // null/undefined = default ON (el watcher no apagó la notificación de remate).
-    if (fav.notify_new_remate === false) continue
-    const email = Array.isArray(fav.users) ? fav.users[0]?.email : fav.users?.email
-    if (email) out.add(email.trim().toLowerCase())
+  // null/undefined = default ON (el watcher no apagó la notificación de remate).
+  const watcherIds = (favs || [])
+    .filter((f) => f.notify_new_remate !== false && f.user_id)
+    .map((f) => f.user_id as string)
+
+  if (watcherIds.length > 0) {
+    const { data: emails } = await service.rpc('get_user_emails', { p_ids: watcherIds })
+    for (const row of emails || []) {
+      if (row.email) out.add(row.email.trim().toLowerCase())
+    }
   }
 
   return [...out]
@@ -428,21 +434,32 @@ async function handleResultsToProducers(testEmail: string): Promise<NextResponse
     return NextResponse.json({ mode: 'remate_results_producer', message: 'No results with real averages', sent: 0 })
   }
 
-  // Alertas activas (productores que siguen una firma).
-  // TODO(canon): relación embebida users(email) no existe en prod (alertas → auth.users, no public.users) — feature rota, reconciliar (Proyecto C)
-  const { data: alerts, error: alertsError } = await fromUnsafe(service, 'alertas')
-    .select('filters, status, users!inner(email)')
+  // Alertas activas (productores que siguen una firma). alertas.user_id → FK a
+  // auth.users, así que el email se resuelve con el RPC get_user_emails (no con un
+  // embed `users(email)` que no existe).
+  const { data: alerts, error: alertsError } = await service
+    .from('alertas')
+    .select('user_id, filters, status')
     .eq('status', 'active')
 
-  if (alertsError?.message?.includes('does not exist') || alertsError?.message?.includes('schema cache')) {
-    return NextResponse.json({ mode: 'remate_results_producer', message: 'alertas table not available', sent: 0 })
-  }
   if (alertsError) {
     return NextResponse.json({ error: alertsError.message }, { status: 500 })
   }
 
-  type AlertRow = { filters: Record<string, string> | null; users: { email: string } | { email: string }[] | null }
-  const alertList = (alerts || []) as AlertRow[]
+  const alertUserIds = [...new Set((alerts || []).map((a) => a.user_id).filter(Boolean))] as string[]
+  const emailByUserId = new Map<string, string>()
+  if (alertUserIds.length > 0) {
+    const { data: emails } = await service.rpc('get_user_emails', { p_ids: alertUserIds })
+    for (const row of emails || []) {
+      if (row.email) emailByUserId.set(row.id, row.email)
+    }
+  }
+
+  type AlertRow = { filters: Record<string, string> | null; email: string | undefined }
+  const alertList: AlertRow[] = (alerts || []).map((a) => ({
+    filters: (a.filters ?? null) as Record<string, string> | null,
+    email: a.user_id ? emailByUserId.get(a.user_id) : undefined,
+  }))
 
   // Dedup: ya se mandó Mail 3 para (slug+fecha+email).
   const { data: alreadySentRows } = await service
@@ -473,7 +490,7 @@ async function handleResultsToProducers(testEmail: string): Promise<NextResponse
     })
 
     for (const alert of matched) {
-      const email = Array.isArray(alert.users) ? alert.users[0]?.email : alert.users?.email
+      const email = alert.email
       if (!email) continue
 
       const key = dedupKey(canonical, row.auction_date as unknown as string, email)

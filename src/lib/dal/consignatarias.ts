@@ -158,8 +158,8 @@ export async function getConsignatariaProfile(slug: string): Promise<EnrichedPro
       .eq('canonical_slug', slug)
       .single()
 
-    // TODO(canon): columna medios_pago no existe en prod — feature rota, reconciliar (Proyecto C)
-    const mediosPago: MedioPago[] = []
+    const rawMedios = data?.medios_pago
+    const mediosPago: MedioPago[] = Array.isArray(rawMedios) ? (rawMedios as unknown as MedioPago[]) : []
 
     return {
       ...staticProfile,
