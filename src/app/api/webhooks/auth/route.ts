@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireServiceClient, fromUnsafe } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { sendWelcomeEmail } from '@/lib/email'
 import crypto from 'crypto'
 
@@ -125,13 +125,10 @@ export async function POST(request: NextRequest) {
       }, { status: 500 })
     }
 
-    // Log the send
-    // TODO(canon): outreach_log no tiene user_id y exige consignataria_slug — feature rota, reconciliar (Proyecto C)
-    await fromUnsafe(supabase, 'outreach_log').insert({
-      type: 'welcome_email',
-      user_id: userId,
-      email_sent_to: email,
-    })
+    // (Antes se logueaba el welcome-email en `outreach_log`, pero esa tabla es de
+    // outreach a consignatarias —exige consignataria_slug NOT NULL y no tiene user_id—
+    // así que el insert SIEMPRE fallaba. La entrega ya se rastrea vía Resend en
+    // `email_events`; no hace falta un log paralelo acá.)
 
     // Track activation funnel event
     // Note: This could also be tracked client-side, but server-side is more reliable

@@ -33,7 +33,7 @@ Tras la auditoría de seguridad + el review general + el paso de Canon Agent (fu
 1. ✅/🟡 **Baseline del esquema** — `00000000_baseline_from_prod.sql` (column-level de 55 tablas, v1.75.0). **Falta** completarlo con `supabase db pull` (enums, secuencias, índices, RLS/policies) — requiere credenciales de DB.
 2. ✅ **Tipar los clients con `<Database>`** — hecho (v1.75.0, los 3 clients). Destapó 38 bugs de tipo (incl. un bug de autorización real en `videos/route.ts`), todos resueltos. `.from()`/columna inválida ahora es error de compilación.
 3. ✅ **`pnpm check` en CI** — `.github/workflows/ci-check.yml` (tsc + eslint + db-refs + tests) en push/PR.
-4. 🔜 **Vaciar la ALLOWLIST:** `users` (API-key legacy → `api_keys` hasheadas) y `cron_state` (¿= `cron_runs`?) + burndown de los 5 `TODO(canon)` quarantined (features rotas: `medios_pago`, embeds `users(...)`, `outreach_log.user_id`).
+4. 🟡 **ALLOWLIST / TODO(canon)** — casi vaciado en v1.75.1: resueltos `cron_state` (cron reescrito) + los 5 `TODO(canon)` (RPC `get_user_emails` reactivó reminders/alerts; `medios_pago` reconciliado; insert muerto de `webhooks/auth` eliminado). **Queda solo `users`**: el API-key legacy de `alertas/*` + `onboarding-emails` (client legacy sin tipar) → migrar a `api_keys` hasheadas.
 5. ✅/🟡 **Verificar las features reconciliadas** — data-layer OK (`sell_zone_alerts`, `webhooks`, `remate_favorites` + RPC). **Falta** con sesión logueada: `user_dtes` (subir DT-e) y `user_favorites` (seguir firma).
 
 **P0 — Seguridad diferida (del hardening):**

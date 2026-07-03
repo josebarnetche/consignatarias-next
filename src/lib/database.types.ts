@@ -606,6 +606,7 @@ export type Database = {
           location: string | null
           logo_url: string | null
           matricula: string | null
+          medios_pago: Json
           name: string | null
           onboarding_points: number | null
           phone: string | null
@@ -638,6 +639,7 @@ export type Database = {
           location?: string | null
           logo_url?: string | null
           matricula?: string | null
+          medios_pago?: Json
           name?: string | null
           onboarding_points?: number | null
           phone?: string | null
@@ -670,6 +672,7 @@ export type Database = {
           location?: string | null
           logo_url?: string | null
           matricula?: string | null
+          medios_pago?: Json
           name?: string | null
           onboarding_points?: number | null
           phone?: string | null
@@ -2476,6 +2479,13 @@ export type Database = {
         Returns: {
           entity_slug: string
           view_count: number
+        }[]
+      }
+      get_user_emails: {
+        Args: { p_ids: string[] }
+        Returns: {
+          email: string
+          id: string
         }[]
       }
       get_user_report_stats: {

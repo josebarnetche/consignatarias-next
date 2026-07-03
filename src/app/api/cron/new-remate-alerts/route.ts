@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireServiceClientLegacy } from '@/lib/supabase'
+import { requireServiceClient } from '@/lib/supabase'
 import { authorizeCron } from '@/lib/cron-auth'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import { getEntityTier } from '@/lib/features'
@@ -55,28 +55,14 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const service = requireServiceClientLegacy()
+    const service = requireServiceClient()
 
-    // Get last run timestamp from KV or default to 30 min ago
-    const { data: lastRunData } = await service.from('cron_state')
-      .select('last_run')
-      .eq('job_name', 'new-remate-alerts')
-      .single()
-
-    // lastRunData available for future use if we want to filter by new-since-last-run
-    void lastRunData
-
-    // Get all active alerts with filters
+    // Alertas activas suscriptas a remate.created. (Columnas reales: `id`, `status`
+    // — antes se usaba `alerta_id`/`activa`, inexistentes → la query fallaba.)
     const { data: alerts, error: alertsError } = await service
       .from('alertas')
-      .select(`
-        alerta_id,
-        user_id,
-        webhook_url,
-        filters,
-        users!inner(email)
-      `)
-      .eq('activa', true)
+      .select('id, user_id, webhook_url, filters')
+      .eq('status', 'active')
       .contains('events', ['remate.created'])
 
     if (alertsError) {
@@ -85,12 +71,21 @@ export async function GET(req: NextRequest) {
     }
 
     if (!alerts || alerts.length === 0) {
-      // Update last run even if no alerts
-      await updateLastRun(service, now)
-      return NextResponse.json({ 
-        message: 'No active alerts subscribed to remate.created', 
-        ...results 
+      return NextResponse.json({
+        message: 'No active alerts subscribed to remate.created',
+        ...results,
       })
+    }
+
+    // Email del dueño de cada alerta: alertas.user_id → FK a auth.users, así que se
+    // resuelve con el RPC get_user_emails (el embed `users(email)` no existe).
+    const alertUserIds = [...new Set(alerts.map((a) => a.user_id).filter(Boolean))] as string[]
+    const emailByUserId = new Map<string, string>()
+    if (alertUserIds.length > 0) {
+      const { data: emails } = await service.rpc('get_user_emails', { p_ids: alertUserIds })
+      for (const row of emails || []) {
+        if (row.email) emailByUserId.set(row.id, row.email)
+      }
     }
 
     // Find remates added since last run
@@ -126,10 +121,9 @@ export async function GET(req: NextRequest) {
     results.checked = auctions.length
 
     if (newRemates.length === 0) {
-      await updateLastRun(service, now)
-      return NextResponse.json({ 
-        message: 'No new PRO remates found', 
-        ...results 
+      return NextResponse.json({
+        message: 'No new PRO remates found',
+        ...results,
       })
     }
 
@@ -155,14 +149,13 @@ export async function GET(req: NextRequest) {
           continue
         }
 
-        // Match found!
-        const users = alert.users as { email: string }[] | { email: string } | null
-        const userEmail = Array.isArray(users) ? users[0]?.email : users?.email
+        // Match found! Email resuelto vía el RPC (arriba).
+        const userEmail = alert.user_id ? emailByUserId.get(alert.user_id) : undefined
         if (!userEmail) continue
 
         matches.push({
-          alertaId: alert.alerta_id,
-          userId: alert.user_id,
+          alertaId: alert.id,
+          userId: alert.user_id ?? '',
           email: userEmail,
           webhookUrl: alert.webhook_url || undefined,
           remateTitle: remate.title,
@@ -218,9 +211,6 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // Update last run timestamp
-    await updateLastRun(service, now)
-
     return NextResponse.json({
       success: true,
       message: `Processed ${results.newRemates} new PRO remates, sent ${results.alertsSent} alerts`,
@@ -234,14 +224,4 @@ export async function GET(req: NextRequest) {
       { status: 500 }
     )
   }
-}
-
-async function updateLastRun(service: ReturnType<typeof requireServiceClientLegacy>, timestamp: Date) {
-  await service.from('cron_state')
-    .upsert({
-      job_name: 'new-remate-alerts',
-      last_run: timestamp.toISOString(),
-    }, {
-      onConflict: 'job_name',
-    })
 }

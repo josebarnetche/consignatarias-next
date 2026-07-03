@@ -86,8 +86,11 @@ Hecho en v1.74.1 → v1.75.0:
 - [x] **Tests** — v1.75.0 (vitest, 17: parser + DAL + contrato del endpoint).
 - [x] **ALLOWLIST con gobernanza** — v1.75.0 (dueño/fecha/severidad/vencimiento).
 
+Hecho en v1.75.1:
+- [x] **Burndown de los 5 `TODO(canon)`** — RPC `get_user_emails` reactivó `remate-reminders` + `new-remate-alerts`; `medios_pago` reconciliado (columna agregada); insert muerto de `webhooks/auth` eliminado. **0 TODO(canon).**
+- [x] **`cron_state` fuera de la ALLOWLIST** — `new-remate-alerts` reescrito (era triple-roto: `cron_state` + `alerta_id`/`activa` + embed `users`).
+
 Sigue pendiente:
 - [ ] Verificar en prod con sesión logueada los 2 flujos auth-gated: subir un DT-e (`user_dtes`) y seguir una consignataria (`user_favorites`). (Los otros 3 —zona, watch, webhook— verificados a nivel data-layer.)
 - [ ] Completar el baseline con `supabase db pull` (enums, secuencias, índices, RLS/policies) — requiere credenciales de DB.
-- [ ] Burndown de los `TODO(canon)` quarantined (5 features rotas: `medios_pago`, embeds `users(...)`, `outreach_log.user_id`).
-- [ ] Vaciar la ALLOWLIST resolviendo `users` (API-key de alertas → `api_keys` hasheadas) y `cron_state` (¿= `cron_runs`?).
+- [ ] Vaciar el último ítem de la ALLOWLIST: `users` (API-key legacy de `alertas/*` + `onboarding-emails` → migrar a `api_keys` hasheadas; hoy en el client legacy sin tipar).
