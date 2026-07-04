@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.94.1] — 2026-07-04
+
+### Fixes de la tanda universo (review de Jose)
+
+- **El martillazo rediseñado** — la maza ahora es inconfundible (cabeza con tapas, tapa cielo, mango a la mano) y el golpe es una caída vertical con rebote sobre el taco (la rotación rígida anterior hundía la cabeza bajo el piso: en SVG y-abajo, levantar es rotación positiva). Onda/polvo/dato emanan del taco.
+- **Banner "¿Vendo ahora?" de la landing** — copy acortado a una línea y media (se apilaba en 3-4 líneas entre el badge y el CTA).
+- **Footer con marca en terminal y landing** — el SystemFooter (todas las sub-páginas de la terminal) y el footer de la landing llevan el isotipo vectorial + wordmark con puntos cielo + © Memola Medios S.A.S. (la landing usaba el raster viejo).
+
 ## [1.94.0] — 2026-07-04
 
 ### El universo gráfico entra a las páginas (antes: solo en share cards)

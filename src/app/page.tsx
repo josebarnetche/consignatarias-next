@@ -389,8 +389,8 @@ export default async function LandingPage() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm text-zinc-300 leading-relaxed">
-                Sabés cuánto vale. <span className="text-zinc-100 font-medium">¿Conviene venderla hoy?</span>{" "}
-                Calculá tu lote y mirá si el precio está caro o barato vs. los últimos 365 días.
+                Sabés cuánto vale — <span className="text-zinc-100 font-medium">¿conviene venderla hoy?</span>{" "}
+                Compará tu lote contra los últimos 365 días.
               </p>
             </div>
             <Link
@@ -656,10 +656,14 @@ export default async function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-              <div className="flex items-center gap-3">
-                <Image src="/icon-32.png" alt="Consignatarias.com.ar" width={24} height={24} className="rounded opacity-60" />
-                <span className="text-xs font-medium text-zinc-500 tracking-tight">
-                  consignatarias.com.ar &copy; 2026
+              <div className="flex items-center gap-2.5">
+                <svg width="18" height="18" viewBox="0 0 512 512" aria-hidden="true" className="opacity-80">
+                  <path d="M 413.61 379.14 A 200 200 0 1 1 367.83 90.17 L 321.98 158.17 A 118 118 0 1 0 348.99 328.66 Z" fill="#fafafa" />
+                  <rect x="379.7" y="168.1" width="118" height="118" fill="#38bdf8" />
+                </svg>
+                <span className="text-xs font-medium text-zinc-400 tracking-tight lowercase">
+                  consignatarias<span className="text-sky-400">.</span>com<span className="text-sky-400">.</span>ar
+                  <span className="text-zinc-600"> &copy; {new Date().getFullYear()}</span>
                 </span>
               </div>
 

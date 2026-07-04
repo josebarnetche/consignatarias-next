@@ -548,9 +548,18 @@ function SystemFooter() {
         ))}
       </div>
 
-      {/* Baseline: copyright · share · contacto */}
+      {/* Baseline: marca · copyright · share · contacto */}
       <div className="max-w-6xl mx-auto mt-6 pt-4 border-t border-terminal-border flex items-center justify-between text-xxs text-zinc-500 flex-wrap gap-2">
-        <span>consignatarias.com.ar &copy; 2026</span>
+        <span className="flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 512 512" aria-hidden="true" className="opacity-80">
+            <path d="M 413.61 379.14 A 200 200 0 1 1 367.83 90.17 L 321.98 158.17 A 118 118 0 1 0 348.99 328.66 Z" fill="#fafafa" />
+            <rect x="379.7" y="168.1" width="118" height="118" fill="#38bdf8" />
+          </svg>
+          <span className="font-terminal text-zinc-300 lowercase">
+            consignatarias<span className="text-accent">.</span>com<span className="text-accent">.</span>ar
+          </span>
+          <span>&copy; {new Date().getFullYear()} · Memola Medios S.A.S.</span>
+        </span>
         <div className="flex items-center gap-3 flex-wrap justify-end">
           <a
             href={shareHref}
