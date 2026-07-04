@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.93.0] — 2026-07-04
+
+### Pivot a API-first + productor gratis, onboarding no-técnico y pago de punta a punta
+
+Rediseño del modelo de negocio y el pricing, cierre del flujo de pago, sistema de valor del usuario free (karma + marcar remates) y alineación de marca. Consolida los bumps 1.89.0→1.92.0 (hechos sin changelog) + el trabajo posterior.
+
+- **Monetización / pricing (API-first, todo USD).** `/planes` reescrito: **productor GRATIS primero** (banner + "crear cuenta con Google"), después la caja real — **API/MCP** (Starter USD 49, Growth 299, Scale a medida) — y consignataria (alcance, prueba). PRO Usuario (ARS 7.900, 0 subs reales) retirado. Starter con copy **MCP-first** para el operador no-técnico (arquetipo: Apesteguía, consignataria con pull diario, ~7% de su quota). Consistencia: `/enterprise` (99/500/700→49/299/a-medida + calculadora de volumen que ya no contradice Growth), `/upgrade` y `/pro` (tour muerto) → redirect a `/planes`, `llms.txt` y api-docs actualizados.
+- **De-gate de las herramientas del productor (presentadas como NUEVO).** PRO Usuario retirado dejaba las herramientas bloqueadas sin puerta de compra. De-gate en `ProReveal`, `RequirePro`, `useSessionTier`, `ProChartGate`, `HistoryDownloadPro` (passthrough) + las APIs (`vender-ahora`, `inmag-export`, `reportes/download`). Calculadora, ¿vendo ahora?, comparador, histórico, estacionalidad y exports ahora **gratis** para todos; tag "NUEVO" en el nav; se sacaron los labels/badges "PRO" estáticos que quedaban.
+- **Pago de punta a punta (auditoría E2E).** El webhook de Rebill exigía mapear `plan_id→api_tier` vía env, pero los payment-links se crean por-checkout (para llevar el `userId`) con precio inline → `plan_id` dinámico, inmapeable. Fix: el webhook otorga por **`metadata.api_tier`** (seguro: links 100% server-side con la secret key, firma verificada, checkout self-serve solo emite Starter). Montos Enterprise de la lib 99/500→49/299. Post-pago: `/cuenta/api-keys` con **welcome "✓ Tu plan X está activo"** + panel de uso (X/10.000 req · %) + al generar la key, el **connector MCP listo para pegar, con la key adentro** (Claude/Cursor) — onboarding para el cliente no-técnico.
+- **Valor del usuario free — karma + marcar remates.** Tabla `remate_marks` (RLS) + API toggle + motor `karma.ts` (Novato→Referente = hacienda cargada + marcas + antigüedad, con tests). Botón **"Estuve / Fui ✓"** en la lista de remates (desktop + mobile) con **social proof** ("X productores fueron a este remate", contador compartido vía contexto). Badge de karma en `/cuenta`. Tracker de hacienda cargada + karma por usuario en Observabilidad (`/admin/ops`).
+- **Nav + marca.** Header rediseñado: nav del productor limpio (4 dropdowns, sin TERMINAL, logo = wordmark `consignatarias·com` con el punto en accent, sonda azul parpadeante), MCP/API al footer, PLANES como link sutil; activity bar y reloj-con-fecha eliminados. El ★ PRO de consignataria/featured (badge + glow + fila de remate) pasó de amber → **cielo**, cerrando la doctrina "cielo = único acento" (se preservó `live-badge-amber`).
+- **MCP.** Servidor a 10 tools (+ `get_inmag_historico`, `get_precios_detallados`, `get_contexto_macro`, `buscar_frigorifico`), consistencia INMAG vs categorías (métrica etiquetada, variación robusta con flag de rueda de bajo volumen), onboarding de API key descubrible (param `api_key` + errores específicos), y anuncio en `/llms.txt`.
+
+**Verificación:** tsc 0 · check-db-refs OK 65/65 · 40 tests · pricing/pago/de-gate verificados en prod · 13 screenshots del journey público capturados con Playwright.
+
 ## [1.88.0] — 2026-07-04
 
 ### Identidad v2.0 aplicada a todo el sitio — "El campo, medido"
