@@ -112,7 +112,7 @@ export default function SuscriptoresPage() {
             <TrendingUp className="w-3 h-3" />
             Activos
           </div>
-          <div className="text-2xl font-terminal text-green-400">{stats?.active || 0}</div>
+          <div className="text-2xl font-terminal text-emerald-400">{stats?.active || 0}</div>
         </div>
         <div className="terminal-panel p-4">
           <div className="flex items-center gap-2 text-zinc-500 text-xxs uppercase tracking-wider mb-2">
@@ -185,7 +185,7 @@ export default function SuscriptoresPage() {
                 </span>
                 <span className={`px-2 py-0.5 text-xxs font-terminal rounded ${
                   sub.status === 'active' 
-                    ? 'bg-green-500/20 text-green-400' 
+                    ? 'bg-emerald-500/20 text-emerald-400' 
                     : 'bg-red-500/20 text-red-400'
                 }`}>
                   {sub.status}

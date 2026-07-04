@@ -72,7 +72,7 @@ export default function ArrepentimientoForm() {
         />
       </div>
       {status === 'error' && (
-        <p className="text-rose-400 text-xs">
+        <p className="text-red-400 text-xs">
           No pudimos procesar la solicitud. Escribinos directamente a{' '}
           <a href="mailto:agro@memola.com.ar" className="underline">agro@memola.com.ar</a>.
         </p>

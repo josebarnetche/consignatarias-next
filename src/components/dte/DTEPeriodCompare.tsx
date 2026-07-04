@@ -209,7 +209,7 @@ export function DTEPeriodCompare({ dtes }: DTEPeriodCompareProps) {
     
     return (
       <span className={`inline-flex items-center gap-0.5 text-sm font-medium ${
-        change.type === 'up' ? 'text-green-400' : 'text-red-400'
+        change.type === 'up' ? 'text-emerald-400' : 'text-red-400'
       }`}>
         {change.type === 'up' ? (
           <ArrowUpRight className="w-3.5 h-3.5" />
@@ -222,7 +222,7 @@ export function DTEPeriodCompare({ dtes }: DTEPeriodCompareProps) {
   };
   
   return (
-    <div className="bg-gradient-to-br from-indigo-500/10 to-blue-500/5 border border-indigo-500/20 rounded-xl overflow-hidden">
+    <div className="bg-gradient-to-br from-indigo-500/10 to-sky-500/5 border border-indigo-500/20 rounded-xl overflow-hidden">
       {/* Header - always visible */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
@@ -357,7 +357,7 @@ export function DTEPeriodCompare({ dtes }: DTEPeriodCompareProps) {
               {comparison.cabezas.type !== 'same' && (
                 <div className={`px-3 py-2 rounded-lg text-sm ${
                   comparison.cabezas.type === 'up' 
-                    ? 'bg-green-500/10 text-green-300 border border-green-500/20' 
+                    ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' 
                     : 'bg-red-500/10 text-red-300 border border-red-500/20'
                 }`}>
                   {comparison.cabezas.type === 'up' ? '📈' : '📉'}{' '}

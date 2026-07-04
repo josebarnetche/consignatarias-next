@@ -44,7 +44,7 @@ function fmtChange(n: number): string {
 
 function ChangeIndicator({ value }: { value: number }) {
   if (value > 2) {
-    return <TrendingUp className="w-3.5 h-3.5 text-green-500" />;
+    return <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />;
   } else if (value < -2) {
     return <TrendingDown className="w-3.5 h-3.5 text-red-500" />;
   }
@@ -176,7 +176,7 @@ export function CategoryComparison() {
                         <ChangeIndicator value={cat.yoy} />
                         <span
                           className={`tabular-nums ${
-                            cat.yoy >= 0 ? 'text-green-400' : 'text-red-400'
+                            cat.yoy >= 0 ? 'text-emerald-400' : 'text-red-400'
                           }`}
                         >
                           {fmtChange(cat.yoy)}
@@ -190,7 +190,7 @@ export function CategoryComparison() {
                     {cat.y2y !== null ? (
                       <span
                         className={`tabular-nums ${
-                          cat.y2y >= 0 ? 'text-green-400' : 'text-red-400'
+                          cat.y2y >= 0 ? 'text-emerald-400' : 'text-red-400'
                         }`}
                       >
                         {fmtChange(cat.y2y)}
@@ -221,11 +221,11 @@ export function CategoryComparison() {
         {data.bestPerformer && (
           <div className="mt-4 pt-4 border-t border-zinc-800">
             <div className="flex items-start gap-2 text-sm">
-              <TrendingUp className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+              <TrendingUp className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
               <p className="text-zinc-400">
-                <span className="text-green-400 font-medium">{data.bestPerformer.label}</span>
+                <span className="text-emerald-400 font-medium">{data.bestPerformer.label}</span>
                 {' '}lidera con{' '}
-                <span className="text-green-400 tabular-nums">
+                <span className="text-emerald-400 tabular-nums">
                   {fmtChange(data.bestPerformer.yoy ?? 0)}
                 </span>
                 {' '}interanual. Precio actual: ${fmt(data.bestPerformer.current, 2)}/kg vivo.

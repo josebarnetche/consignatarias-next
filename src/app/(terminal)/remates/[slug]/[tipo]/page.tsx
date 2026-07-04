@@ -171,26 +171,26 @@ export default async function ProvinceTypePage({ params }: PageParams) {
   })).filter((p) => p.count > 0)
 
   return (
-    <main className="min-h-screen bg-black text-green-500 font-mono p-4 md:p-8">
+    <main className="min-h-screen bg-black text-sky-500 font-mono p-4 md:p-8">
       <BreadcrumbSchema items={breadcrumbItems} />
 
       {/* Header */}
       <div className="max-w-6xl mx-auto mb-8">
-        <div className="flex items-center gap-2 text-sm text-green-700 mb-4">
-          <Link href="/" className="hover:text-green-400">inicio</Link>
+        <div className="flex items-center gap-2 text-sm text-sky-700 mb-4">
+          <Link href="/" className="hover:text-sky-400">inicio</Link>
           <span>/</span>
-          <Link href="/remates" className="hover:text-green-400">remates</Link>
+          <Link href="/remates" className="hover:text-sky-400">remates</Link>
           <span>/</span>
-          <Link href={`/remates/${provincia}`} className="hover:text-green-400">{provincia}</Link>
+          <Link href={`/remates/${provincia}`} className="hover:text-sky-400">{provincia}</Link>
           <span>/</span>
-          <span className="text-green-500">{tipo}</span>
+          <span className="text-sky-500">{tipo}</span>
         </div>
 
         <h1 className="text-2xl md:text-3xl font-bold mb-4">
           Remates de {typeConfig.displayName} en {provinceConfig.displayName}
         </h1>
 
-        <p className="text-green-600 mb-6">
+        <p className="text-sky-600 mb-6">
           {remates.length} {remates.length === 1 ? 'subasta programada' : 'subastas programadas'} de {typeConfig.displayName.toLowerCase()} en {provinceConfig.displayName}.
           Calendario actualizado con todas las consignatarias verificadas de la provincia.
         </p>
@@ -199,7 +199,7 @@ export default async function ProvinceTypePage({ params }: PageParams) {
         <div className="flex flex-wrap gap-2 mb-4">
           <Link
             href={`/remates/${provincia}`}
-            className="px-3 py-1 text-sm border border-green-800 text-green-600 hover:bg-green-900/30 rounded"
+            className="px-3 py-1 text-sm border border-sky-800 text-sky-600 hover:bg-sky-900/30 rounded"
           >
             Todos
           </Link>
@@ -209,8 +209,8 @@ export default async function ProvinceTypePage({ params }: PageParams) {
               href={`/remates/${provincia}/${t.slug}`}
               className={`px-3 py-1 text-sm border rounded transition-colors ${
                 t.slug === tipo
-                  ? 'bg-green-500 text-black border-green-500'
-                  : 'border-green-800 text-green-600 hover:bg-green-900/30'
+                  ? 'bg-sky-500 text-black border-sky-500'
+                  : 'border-sky-800 text-sky-600 hover:bg-sky-900/30'
               }`}
             >
               {t.displayName} ({t.count})
@@ -220,14 +220,14 @@ export default async function ProvinceTypePage({ params }: PageParams) {
 
         {/* Province links for same type */}
         {provinceCounts.length > 1 && (
-          <div className="text-sm text-green-700 mb-6">
+          <div className="text-sm text-sky-700 mb-6">
             <span className="mr-2">Ver {typeConfig.displayName.toLowerCase()} en:</span>
             {provinceCounts.slice(0, 8).map((p, i) => (
               <span key={p.slug}>
                 {i > 0 && <span className="mx-1">·</span>}
                 <Link
                   href={`/remates/${p.slug}/${tipo}`}
-                  className={`hover:text-green-400 ${p.slug === provincia ? 'text-green-500 underline' : ''}`}
+                  className={`hover:text-sky-400 ${p.slug === provincia ? 'text-sky-500 underline' : ''}`}
                 >
                   {p.displayName}
                 </Link>
@@ -240,20 +240,20 @@ export default async function ProvinceTypePage({ params }: PageParams) {
       {/* Remates List */}
       <div className="max-w-6xl mx-auto">
         {remates.length === 0 ? (
-          <div className="border border-green-900 p-8 text-center">
-            <p className="text-green-600 mb-4">
+          <div className="border border-sky-900 p-8 text-center">
+            <p className="text-sky-600 mb-4">
               No hay remates de {typeConfig.displayName.toLowerCase()} programados en {provinceConfig.displayName} actualmente.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 href={`/remates/${provincia}`}
-                className="text-green-400 hover:underline"
+                className="text-sky-400 hover:underline"
               >
                 Ver todos los remates en {provinceConfig.displayName}
               </Link>
               <Link
                 href={`/remates/tipo/${tipo}`}
-                className="text-green-400 hover:underline"
+                className="text-sky-400 hover:underline"
               >
                 Ver {typeConfig.displayName.toLowerCase()} en todo el país
               </Link>
@@ -263,43 +263,43 @@ export default async function ProvinceTypePage({ params }: PageParams) {
           <div className="space-y-2">
             {remates.map((remate, idx) => {
               const slug = getCanonicalSlug(remate.consignatariaSlug || '')
-              const typeColor = TYPE_COLORS[remate.type as keyof typeof TYPE_COLORS] || 'text-green-500'
+              const typeColor = TYPE_COLORS[remate.type as keyof typeof TYPE_COLORS] || 'text-sky-500'
               const typeLabel = TYPE_LABELS[remate.type as keyof typeof TYPE_LABELS] || remate.type
               const catLabel = CAT_LABELS[remate.mainCategory as keyof typeof CAT_LABELS] || remate.mainCategory
 
               return (
                 <div
                   key={`${remate.date}-${remate.consignatariaSlug}-${idx}`}
-                  className="border border-green-900 p-4 hover:border-green-700 transition-colors"
+                  className="border border-sky-900 p-4 hover:border-sky-700 transition-colors"
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-green-600">{formatDateShort(remate.date)}</span>
-                        <span className="text-green-800">|</span>
+                        <span className="text-sky-600">{formatDateShort(remate.date)}</span>
+                        <span className="text-sky-800">|</span>
                         <Link
                           href={slug ? `/consignatarias/${slug}` : '/consignatarias'}
-                          className="text-green-400 hover:underline font-semibold"
+                          className="text-sky-400 hover:underline font-semibold"
                         >
                           {remate.consignatariaName}
                         </Link>
                       </div>
-                      <div className="text-sm text-green-700 mt-1">
+                      <div className="text-sm text-sky-700 mt-1">
                         {getCity(remate.location)} · {getProvinceCode(remate.province)}
                         {remate.time && ` · ${remate.time}`}
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className={`text-xs px-2 py-0.5 rounded ${typeColor} bg-green-900/30`}>
+                      <span className={`text-xs px-2 py-0.5 rounded ${typeColor} bg-sky-900/30`}>
                         {typeLabel}
                       </span>
                       {catLabel && (
-                        <span className="text-xs text-green-600">
+                        <span className="text-xs text-sky-600">
                           {catLabel}
                         </span>
                       )}
                       {remate.estimatedHeads && (
-                        <span className="text-xs text-green-700">
+                        <span className="text-xs text-sky-700">
                           {remate.estimatedHeads.toLocaleString()} cab.
                         </span>
                       )}
@@ -313,10 +313,10 @@ export default async function ProvinceTypePage({ params }: PageParams) {
       </div>
 
       {/* SEO Footer */}
-      <footer className="max-w-6xl mx-auto mt-12 pt-8 border-t border-green-900">
-        <div className="grid md:grid-cols-2 gap-8 text-sm text-green-700">
+      <footer className="max-w-6xl mx-auto mt-12 pt-8 border-t border-sky-900">
+        <div className="grid md:grid-cols-2 gap-8 text-sm text-sky-700">
           <div>
-            <h2 className="text-green-500 font-semibold mb-2">
+            <h2 className="text-sky-500 font-semibold mb-2">
               Remates de {typeConfig.displayName} en {provinceConfig.displayName}
             </h2>
             <p>
@@ -325,25 +325,25 @@ export default async function ProvinceTypePage({ params }: PageParams) {
             </p>
           </div>
           <div>
-            <h3 className="text-green-500 font-semibold mb-2">Enlaces relacionados</h3>
+            <h3 className="text-sky-500 font-semibold mb-2">Enlaces relacionados</h3>
             <ul className="space-y-1">
               <li>
-                <Link href={`/remates/${provincia}`} className="hover:text-green-400">
+                <Link href={`/remates/${provincia}`} className="hover:text-sky-400">
                   Todos los remates en {provinceConfig.displayName}
                 </Link>
               </li>
               <li>
-                <Link href={`/remates/tipo/${tipo}`} className="hover:text-green-400">
+                <Link href={`/remates/tipo/${tipo}`} className="hover:text-sky-400">
                   {typeConfig.displayName} en toda Argentina
                 </Link>
               </li>
               <li>
-                <Link href="/consignatarias" className="hover:text-green-400">
+                <Link href="/consignatarias" className="hover:text-sky-400">
                   Directorio de consignatarias
                 </Link>
               </li>
               <li>
-                <Link href="/mercado/inmag" className="hover:text-green-400">
+                <Link href="/mercado/inmag" className="hover:text-sky-400">
                   Precios INMAG
                 </Link>
               </li>

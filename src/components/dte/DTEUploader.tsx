@@ -227,9 +227,9 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
                 ${isDemo
                   ? 'bg-amber-500/20 text-amber-400'
                   : ocrConfidence > 80 
-                    ? 'bg-green-500/20 text-green-400' 
+                    ? 'bg-emerald-500/20 text-emerald-400' 
                     : ocrConfidence > 60 
-                      ? 'bg-yellow-500/20 text-yellow-400'
+                      ? 'bg-amber-500/20 text-amber-400'
                       : 'bg-red-500/20 text-red-400'
                 }
               `}>
@@ -273,8 +273,8 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
   if (step === 'success') {
     return (
       <div className="w-full max-w-2xl mx-auto">
-        <div className="bg-gray-900/50 border border-green-500/30 rounded-xl p-8 text-center">
-          <CheckCircle2 className="w-16 h-16 mx-auto mb-4 text-green-500" />
+        <div className="bg-gray-900/50 border border-emerald-500/30 rounded-xl p-8 text-center">
+          <CheckCircle2 className="w-16 h-16 mx-auto mb-4 text-emerald-500" />
           <h3 className="text-xl font-semibold text-white mb-2">
             ¡Guía guardada!
           </h3>

@@ -56,7 +56,7 @@ export default function Badge({
     return (
       <span
         title={title}
-        className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-xxs font-terminal uppercase tracking-wider rounded-[2px] border border-amber-400/60 text-amber-300 bg-gradient-to-r from-amber-500/10 to-yellow-500/10 ${className}`.trim()}
+        className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-xxs font-terminal uppercase tracking-wider rounded-[2px] border border-amber-400/60 text-amber-300 bg-gradient-to-r from-amber-500/10 to-amber-500/10 ${className}`.trim()}
       >
         {children}
       </span>

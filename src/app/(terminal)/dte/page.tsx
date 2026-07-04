@@ -115,8 +115,8 @@ export default function DTEPage() {
         {/* Hero */}
         <header className="mb-10">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
-              <FileText className="w-8 h-8 text-cyan-400" />
+            <div className="p-3 rounded-xl bg-sky-500/10 border border-sky-500/20">
+              <FileText className="w-8 h-8 text-sky-400" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-zinc-100">
@@ -158,7 +158,7 @@ export default function DTEPage() {
           
           <div className="bg-zinc-900/30 border border-zinc-800 rounded-lg p-5">
             <div className="flex items-center gap-3 mb-3">
-              <Shield className="w-5 h-5 text-green-400" />
+              <Shield className="w-5 h-5 text-emerald-400" />
               <h3 className="font-medium text-zinc-200">Emitido por SENASA</h3>
             </div>
             <p className="text-sm text-zinc-400">
@@ -168,7 +168,7 @@ export default function DTEPage() {
           
           <div className="bg-zinc-900/30 border border-zinc-800 rounded-lg p-5">
             <div className="flex items-center gap-3 mb-3">
-              <CheckCircle2 className="w-5 h-5 text-blue-400" />
+              <CheckCircle2 className="w-5 h-5 text-sky-400" />
               <h3 className="font-medium text-zinc-200">100% digital</h3>
             </div>
             <p className="text-sm text-zinc-400">
@@ -194,7 +194,7 @@ export default function DTEPage() {
           <div className="space-y-4">
             {HOWTO_STEPS.map((step, index) => (
               <div key={index} className="flex gap-4">
-                <div className="shrink-0 w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-sm">
+                <div className="shrink-0 w-8 h-8 rounded-full bg-sky-500/20 border border-sky-500/30 flex items-center justify-center text-sky-400 font-bold text-sm">
                   {index + 1}
                 </div>
                 <div className="flex-1 pb-4 border-b border-zinc-800 last:border-0">
@@ -205,8 +205,8 @@ export default function DTEPage() {
             ))}
           </div>
           
-          <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-            <p className="text-sm text-blue-300">
+          <div className="mt-6 p-4 bg-sky-500/10 border border-sky-500/20 rounded-lg">
+            <p className="text-sm text-sky-300">
               <strong>Tip:</strong> El trámite demora aproximadamente 15 minutos la primera vez. 
               Tené a mano el RENSPA de destino antes de empezar.
             </p>
@@ -223,19 +223,19 @@ export default function DTEPage() {
                 <h3 className="font-medium text-zinc-200 mb-3">Datos del movimiento</h3>
                 <ul className="space-y-2 text-sm text-zinc-400">
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                     Número único de DT-e
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                     Fecha de emisión y movimiento
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                     Motivo del traslado
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                     Datos del transportista
                   </li>
                 </ul>
@@ -245,19 +245,19 @@ export default function DTEPage() {
                 <h3 className="font-medium text-zinc-200 mb-3">Datos de la hacienda</h3>
                 <ul className="space-y-2 text-sm text-zinc-400">
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                     RENSPA origen y destino
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                     Titular y establecimiento
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                     Especie y cantidad de cabezas
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                     Categorías y peso total
                   </li>
                 </ul>
@@ -289,10 +289,10 @@ export default function DTEPage() {
         </section>
 
         {/* CTA Section - conversion to /mi-cuenta/guias */}
-        <section className="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-xl p-6 mb-10">
+        <section className="bg-gradient-to-br from-sky-500/10 to-sky-500/5 border border-sky-500/20 rounded-xl p-6 mb-10">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-            <div className="p-4 rounded-xl bg-cyan-500/20 shrink-0">
-              <Upload className="w-8 h-8 text-cyan-400" />
+            <div className="p-4 rounded-xl bg-sky-500/20 shrink-0">
+              <Upload className="w-8 h-8 text-sky-400" />
             </div>
             <div className="flex-1">
               <h3 className="text-xl font-bold text-zinc-100 mb-2">
@@ -305,7 +305,7 @@ export default function DTEPage() {
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/login?next=/mi-cuenta/guias"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-zinc-900 font-medium rounded-lg transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-zinc-900 font-medium rounded-lg transition-colors"
                 >
                   <Upload className="w-4 h-4" />
                   Subir mis DT-e
@@ -321,17 +321,17 @@ export default function DTEPage() {
           </div>
           
           {/* Feature bullets */}
-          <div className="grid md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-cyan-500/20">
+          <div className="grid md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-sky-500/20">
             <div className="flex items-center gap-2 text-sm text-zinc-300">
-              <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
               Extracción automática con OCR
             </div>
             <div className="flex items-center gap-2 text-sm text-zinc-300">
-              <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
               Historial completo de movimientos
             </div>
             <div className="flex items-center gap-2 text-sm text-zinc-300">
-              <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
               Análisis de compras y ventas
             </div>
           </div>

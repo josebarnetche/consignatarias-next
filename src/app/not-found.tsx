@@ -31,7 +31,7 @@ export default function NotFound() {
         <div className="space-y-3">
           <Link
             href="/remates"
-            className="block w-full px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg transition-colors"
+            className="block w-full px-6 py-3 bg-sky-600 hover:bg-sky-500 text-white font-medium rounded-lg transition-colors"
           >
             Ver calendario de remates
           </Link>
@@ -54,7 +54,7 @@ export default function NotFound() {
           ¿Creés que esto es un error?{' '}
           <a
             href="mailto:soporte@consignatarias.com.ar"
-            className="text-blue-400 hover:text-blue-300 underline"
+            className="text-sky-400 hover:text-sky-300 underline"
           >
             Contactanos
           </a>

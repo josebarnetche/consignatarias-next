@@ -90,7 +90,7 @@ export function SeasonalPattern() {
                       className={`
                         absolute w-full rounded-sm transition-all
                         ${isPositive 
-                          ? 'bg-green-500/70 bottom-1/2' 
+                          ? 'bg-emerald-500/70 bottom-1/2' 
                           : 'bg-red-500/70 top-1/2'
                         }
                         ${isCurrent ? 'ring-2 ring-sky-500 ring-offset-1 ring-offset-zinc-900' : ''}
@@ -110,7 +110,7 @@ export function SeasonalPattern() {
                   {/* Change value */}
                   <span className={`
                     text-xxs tabular-nums
-                    ${isPositive ? 'text-green-400/80' : 'text-red-400/80'}
+                    ${isPositive ? 'text-emerald-400/80' : 'text-red-400/80'}
                   `}>
                     {fmt(m.avgChange)}
                   </span>
@@ -124,10 +124,10 @@ export function SeasonalPattern() {
         <div className="grid md:grid-cols-2 gap-4">
           {/* Best months to sell */}
           {patterns.bestMonths.length > 0 && (
-            <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="w-4 h-4 text-green-500" />
-                <span className="text-sm font-medium text-green-400">Mejor momento para vender</span>
+                <TrendingUp className="w-4 h-4 text-emerald-500" />
+                <span className="text-sm font-medium text-emerald-400">Mejor momento para vender</span>
               </div>
               <div className="text-sm text-zinc-300">
                 {patterns.bestMonths.map(m => m.month).join(', ')}
@@ -140,10 +140,10 @@ export function SeasonalPattern() {
 
           {/* Best months to buy */}
           {patterns.worstMonths.length > 0 && (
-            <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+            <div className="bg-sky-500/10 border border-sky-500/20 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <TrendingDown className="w-4 h-4 text-blue-500" />
-                <span className="text-sm font-medium text-blue-400">Mejor momento para comprar</span>
+                <TrendingDown className="w-4 h-4 text-sky-500" />
+                <span className="text-sm font-medium text-sky-400">Mejor momento para comprar</span>
               </div>
               <div className="text-sm text-zinc-300">
                 {patterns.worstMonths.map(m => m.month).join(', ')}
@@ -163,7 +163,7 @@ export function SeasonalPattern() {
               <p className="text-sm text-zinc-400">
                 <span className="text-accent font-medium">{patterns.currentPattern.month}</span>
                 {' '}históricamente muestra{' '}
-                <span className={patterns.currentPattern.avgChange >= 0 ? 'text-green-400' : 'text-red-400'}>
+                <span className={patterns.currentPattern.avgChange >= 0 ? 'text-emerald-400' : 'text-red-400'}>
                   {fmt(patterns.currentPattern.avgChange)}
                 </span>
                 {' '}de variación mensual (basado en {patterns.currentPattern.samples} años).

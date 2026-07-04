@@ -105,7 +105,7 @@ export default function MercadoCanuelasPage() {
             <span className="text-zinc-500 text-lg">{inmag.unit}</span>
           </div>
 
-          <div className={`flex items-center gap-1 ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+          <div className={`flex items-center gap-1 ${isPositive ? 'text-emerald-500' : 'text-red-500'}`}>
             {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
             <span className="text-sm font-medium">
               {isPositive ? '+' : ''}{inmag.change.toFixed(1)}% vs. día anterior
@@ -130,7 +130,7 @@ export default function MercadoCanuelasPage() {
               <div key={key} className="bg-zinc-900/30 border border-zinc-800 rounded p-3">
                 <p className="text-zinc-400 text-xs mb-1">{labels[key] || key}</p>
                 <p className="text-zinc-100 text-lg font-semibold">${data.current.toLocaleString('es-AR')}</p>
-                <p className={`text-xs ${catIsPositive ? 'text-green-500' : 'text-red-500'}`}>
+                <p className={`text-xs ${catIsPositive ? 'text-emerald-500' : 'text-red-500'}`}>
                   {catIsPositive ? '+' : ''}{data.change.toFixed(1)}%
                 </p>
               </div>

@@ -285,7 +285,7 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
           <p className="text-sm text-gray-400">Cabezas movidas</p>
         </div>
         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
-          <p className="text-2xl font-bold text-green-500">{stats.thisMonth}</p>
+          <p className="text-2xl font-bold text-emerald-500">{stats.thisMonth}</p>
           <p className="text-sm text-gray-400">Este mes</p>
         </div>
       </div>

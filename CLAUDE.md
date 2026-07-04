@@ -3,7 +3,7 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.30.8 (2026-06-05). See [CHANGELOG.md](CHANGELOG.md) for the full history. Recent train (v1.29.x→v1.30): El Corredor pipeline repair + broadened blast, mobile/desktop overflow fixes, INMAG-$0 hydration hotfix, the **conversion swarm** push (email-first checkout removing the login wall, PRO prompt/copy + B2B CTA fixes, post-payment success state), citability hardening (generated `/llms.txt`, INMAG Dataset freshness, methodology audit), and **Pillar 2: the institutional access offering** on `/enterprise` (we sell *access + service*, not a data license — legally de-risked, since MAG's INMAG is public and Ley 11.723 protects its compilation). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+**Current version:** v1.88.0 (2026-07-04). See [CHANGELOG.md](CHANGELOG.md) for the full history. Latest train (v1.88.0): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
 
 ---
 

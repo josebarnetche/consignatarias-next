@@ -244,7 +244,7 @@ export default async function TipoRematesPage({ params }: Props) {
           ) : (
             <div className="text-center py-12 text-zinc-500">
               <p>No hay remates de {config.name} programados próximamente.</p>
-              <Link href="/" className="text-green-500 hover:text-green-400 mt-2 inline-block">
+              <Link href="/" className="text-sky-500 hover:text-sky-400 mt-2 inline-block">
                 Ver todos los remates →
               </Link>
             </div>
@@ -254,7 +254,7 @@ export default async function TipoRematesPage({ params }: Props) {
             <div className="mt-6 text-center">
               <Link 
                 href={`/?tipo=${config.name}`}
-                className="inline-flex items-center gap-2 text-green-500 hover:text-green-400"
+                className="inline-flex items-center gap-2 text-sky-500 hover:text-sky-400"
               >
                 Ver todos los {upcoming.length} remates de {config.name} →
               </Link>

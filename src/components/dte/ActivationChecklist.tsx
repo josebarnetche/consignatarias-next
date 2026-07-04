@@ -93,13 +93,13 @@ export function ActivationChecklist({ dteCount }: ActivationChecklistProps) {
   // All complete? Show celebration briefly, then hide
   if (completedCount === items.length) {
     return (
-      <div className="bg-gradient-to-r from-green-900/30 to-gray-900/50 border border-green-700/50 rounded-xl p-6 mb-8">
+      <div className="bg-gradient-to-r from-emerald-900/30 to-gray-900/50 border border-emerald-700/50 rounded-xl p-6 mb-8">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-green-600/20 flex items-center justify-center">
-            <Sparkles className="w-6 h-6 text-green-400" />
+          <div className="w-12 h-12 rounded-full bg-emerald-600/20 flex items-center justify-center">
+            <Sparkles className="w-6 h-6 text-emerald-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-green-400">¡Activación completa!</h3>
+            <h3 className="font-semibold text-emerald-400">¡Activación completa!</h3>
             <p className="text-sm text-gray-400">
               Completaste todos los pasos. Ya sos un usuario activo.
             </p>
@@ -110,10 +110,10 @@ export function ActivationChecklist({ dteCount }: ActivationChecklistProps) {
   }
 
   return (
-    <div className="bg-gradient-to-r from-blue-900/20 to-gray-900/50 border border-blue-800/30 rounded-xl p-6 mb-8">
+    <div className="bg-gradient-to-r from-sky-900/20 to-gray-900/50 border border-sky-800/30 rounded-xl p-6 mb-8">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="font-semibold text-blue-400 flex items-center gap-2">
+          <h3 className="font-semibold text-sky-400 flex items-center gap-2">
             <Sparkles className="w-4 h-4" />
             Tu progreso de activación
           </h3>
@@ -130,7 +130,7 @@ export function ActivationChecklist({ dteCount }: ActivationChecklistProps) {
       {/* Progress bar */}
       <div className="h-2 bg-gray-800 rounded-full mb-6 overflow-hidden">
         <div 
-          className="h-full bg-gradient-to-r from-blue-600 to-green-500 rounded-full transition-all duration-500"
+          className="h-full bg-gradient-to-r from-sky-600 to-emerald-500 rounded-full transition-all duration-500"
           style={{ width: `${progressPercent}%` }}
         />
       </div>
@@ -142,18 +142,18 @@ export function ActivationChecklist({ dteCount }: ActivationChecklistProps) {
             key={item.id}
             className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
               item.completed 
-                ? 'bg-green-900/10 border border-green-900/30' 
+                ? 'bg-emerald-900/10 border border-emerald-900/30' 
                 : 'bg-gray-900/50 border border-gray-800 hover:border-gray-700'
             }`}
           >
             {item.completed ? (
-              <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
+              <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
             ) : (
               <Circle className="w-5 h-5 text-gray-600 shrink-0" />
             )}
             
             <div className="flex-1 min-w-0">
-              <p className={`font-medium ${item.completed ? 'text-green-400 line-through' : 'text-white'}`}>
+              <p className={`font-medium ${item.completed ? 'text-emerald-400 line-through' : 'text-white'}`}>
                 {item.label}
               </p>
               <p className="text-xs text-gray-500 truncate">{item.description}</p>
@@ -162,7 +162,7 @@ export function ActivationChecklist({ dteCount }: ActivationChecklistProps) {
             {!item.completed && item.href && (
               <Link 
                 href={item.href}
-                className="text-blue-400 hover:text-blue-300 transition-colors"
+                className="text-sky-400 hover:text-sky-300 transition-colors"
               >
                 <ChevronRight className="w-5 h-5" />
               </Link>

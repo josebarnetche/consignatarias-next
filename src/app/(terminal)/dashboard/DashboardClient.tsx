@@ -610,7 +610,7 @@ export default function DashboardClient({
                       </a>
                       <a
                         href={`/api/calendario/${consignataria.canonical_slug}`}
-                        className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors text-center"
+                        className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors text-center"
                         title="Agregar a Google Calendar, Apple Calendar u Outlook"
                       >
                         📅 Calendario

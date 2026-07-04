@@ -7,6 +7,24 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.88.0] — 2026-07-04
+
+### Identidad v2.0 aplicada a todo el sitio — "El campo, medido"
+
+Se aplicó el sistema de marca v2.0 (manual en `marca/`, gitignorado por peso; reproducible por script) a todas las superficies del sitio. La regla madre: **cielo (sky-400) es el único acento de marca**; pastura/emerald queda reservado a lo semántico (variación positiva, en vivo, éxito), ámbar a callouts/PRO/karma, rojo a lo negativo.
+
+- **Favicons + OG global** — isotipo "la C y el dato" formalizado (vector) en `favicon.ico` 16/32/48 + `icon-*` + `apple-icon`; `og-image.png` nuevo (campo-noche + lockup + KPIs). Se detectó y reemplazó `src/app/opengraph-image.png` (convención de archivo) que pisaba al metadata con un diseño de mayo.
+- **OGs por sección** — `/remates`, `/mercado`, `/frigorificos` con tarjeta propia (imágenes del sistema) cableada en metadata.
+- **OGs dinámicos rebrandeados** — helper compartido **`src/lib/og/brand.tsx`** (colores, isotipo, JetBrains Mono TTF en `src/fonts/`, BrandChrome, Halo). Rediseñados: INMAG (precio vivo), `consignatarias/[slug]` (+ badge PRO ámbar), `remates/[slug]` (fecha-panel, tipo, cabezas es-AR) y fallbacks. `twitter-image` y `go/[slug]` pasan a re-exports de la misma tarjeta (una sola fuente de verdad).
+- **Consolidación de acentos (~480 conversiones en ~100 archivos)** — emerald/amber usados como acento de sección → cielo (hero de landing, mapa de cobertura, INMAG, arrendamiento, spread, DTE/Mis Guías, enterprise, mcp, planes); charts INMAG/arrendamiento a `SEMANTIC_HEX.accent`. Unificación de familias rezagadas: green→emerald semántico, blue/cyan→sky, yellow→amber, rose→red. Se PRESERVARON: fila destacada PRO de remates, callouts de honestidad metodológica, karma/logros, éxitos, EN VIVO, WhatsApp (identidad), paletas categóricas (typeColors, DTE charts, STAGE_COLORS, calendarios Google/Outlook/Apple) y chips GET/POST (convención HTTP). Violeta de pricing enterprise → jerarquía zinc→cielo→sky-300.
+- **QA visual** — 12 páginas clave antes/después (prod vs dev) + barrido de 12 páginas adicionales; tarjetas OG verificadas con render real en dev (perfil, remate, fallback, twitter, go).
+- **El Corredor manifest-driven** — la landing `/el-corredor` hardcodeaba "Mayo 2026 · 05/26": ahora lee `public/el-corredor/manifest.json` (edición, cover, OG, short) y deriva "próxima edición" del `ym` — no vuelve a quedar vieja. Se quitó el KPI interanual hardcodeado de mayo (dato de edición vieja; el INMAG vivo queda).
+- **Fix drift falso `remate_marks`** — la tabla existía en prod; el snapshot `database.types.ts` estaba viejo. Regenerado desde prod (Supabase MCP): `check-db-refs` 65/65 sin drift.
+
+Alineación de facto con `src/lib/ui/tokens.ts` ("Estado ≠ marca"), que ya documentaba esta doctrina. Assets fuente y manual navegable: `marca/manual/index.html`.
+
+**Verificación:** tsc 0 · check-db-refs OK 65/65 · QA visual 24 páginas · OGs 200 en dev y prod.
+
 ## [1.75.4] — 2026-07-03
 
 ### Correcciones a v1.75.3 — el cambio de `alertas/*` era un cambio de CONTRATO, no solo limpieza

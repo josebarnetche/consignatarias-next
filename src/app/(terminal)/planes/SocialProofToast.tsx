@@ -104,8 +104,8 @@ export default function SocialProofToast() {
     >
       <div className="bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl p-3 max-w-xs">
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
-            <span className="text-green-500 text-sm">✓</span>
+          <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+            <span className="text-emerald-500 text-sm">✓</span>
           </div>
           <div>
             <p className="text-zinc-200 text-sm font-medium">

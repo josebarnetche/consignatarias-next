@@ -439,8 +439,8 @@ export default async function RemateDetailPage({ params }: Props) {
           {/* Status badges */}
           <div className="mb-4 flex flex-wrap gap-2">
             {isToday && (
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-sm font-medium">
-                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-medium">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 Hoy
               </span>
             )}
@@ -489,7 +489,7 @@ export default async function RemateDetailPage({ params }: Props) {
               {/* Date & Time */}
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-lg bg-slate-800">
-                  <Calendar className="w-6 h-6 text-blue-400" />
+                  <Calendar className="w-6 h-6 text-sky-400" />
                 </div>
                 <div>
                   <p className="text-sm text-slate-500 mb-1">Fecha</p>
@@ -525,7 +525,7 @@ export default async function RemateDetailPage({ params }: Props) {
                   {consigProfile ? (
                     <Link 
                       href={consignatariaProfilePath(remate.consignatariaSlug)}
-                      className="text-white font-medium hover:text-blue-400 transition-colors"
+                      className="text-white font-medium hover:text-sky-400 transition-colors"
                     >
                       {remate.consignatariaName}
                     </Link>
@@ -544,7 +544,7 @@ export default async function RemateDetailPage({ params }: Props) {
                   <p className="text-sm text-slate-500 mb-1">Tipo</p>
                   <Link 
                     href={`/remates/tipo/${remate.type}`}
-                    className="text-white font-medium hover:text-blue-400 transition-colors"
+                    className="text-white font-medium hover:text-sky-400 transition-colors"
                   >
                     {typeName}
                   </Link>
@@ -555,7 +555,7 @@ export default async function RemateDetailPage({ params }: Props) {
               {categoryLabel && (
                 <div className="flex items-start gap-4">
                   <div className="p-3 rounded-lg bg-slate-800">
-                    <Tag className="w-6 h-6 text-teal-400" />
+                    <Tag className="w-6 h-6 text-sky-400" />
                   </div>
                   <div>
                     <p className="text-sm text-slate-500 mb-1">Categoría principal</p>
@@ -568,7 +568,7 @@ export default async function RemateDetailPage({ params }: Props) {
               {remate.estimatedHeads && (
                 <div className="flex items-start gap-4">
                   <div className="p-3 rounded-lg bg-slate-800">
-                    <Users className="w-6 h-6 text-green-400" />
+                    <Users className="w-6 h-6 text-accent" />
                   </div>
                   <div>
                     <p className="text-sm text-slate-500 mb-1">Cabezas estimadas</p>
@@ -642,7 +642,7 @@ export default async function RemateDetailPage({ params }: Props) {
                   href={normalizeUrl(remate.catalogUrl) || '#'}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-colors"
                 >
                   <ExternalLink className="w-4 h-4" />
                   Ver catálogo
@@ -697,7 +697,7 @@ export default async function RemateDetailPage({ params }: Props) {
                     <p className="text-2xl font-bold text-white tabular-nums">
                       ${formatArs(INMAG_CURRENT)}
                     </p>
-                    <p className={`text-xs mt-1 tabular-nums ${inmagDelta >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    <p className={`text-xs mt-1 tabular-nums ${inmagDelta >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                       {inmagDelta >= 0 ? '+' : ''}{inmagDelta.toFixed(1)}% desde el remate
                     </p>
                   </div>
@@ -706,7 +706,7 @@ export default async function RemateDetailPage({ params }: Props) {
               <p className="text-xs text-slate-600 mt-4">
                 Precio de referencia del novillo en pie. Los valores efectivos por categoría
                 ({categoryLabel ? categoryLabel.toLowerCase() : 'según lote'}) pueden diferir.{' '}
-                <Link href="/mercado/inmag" className="text-blue-400 hover:underline">Ver evolución del INMAG →</Link>
+                <Link href="/mercado/inmag" className="text-sky-400 hover:underline">Ver evolución del INMAG →</Link>
               </p>
             </div>
           )}
@@ -720,7 +720,7 @@ export default async function RemateDetailPage({ params }: Props) {
                 Referencia de precio para <span className="text-slate-200">{categoryLabel}</span>:{' '}
                 <span className="text-white tabular-nums">${formatArs(catPrice.current)}/kg</span>
                 {typeof catPrice.change === 'number' && (
-                  <span className={catPrice.change >= 0 ? 'text-green-400' : 'text-red-400'}> ({catPrice.change >= 0 ? '+' : ''}{catPrice.change.toFixed(1)}%)</span>
+                  <span className={catPrice.change >= 0 ? 'text-emerald-400' : 'text-red-400'}> ({catPrice.change >= 0 ? '+' : ''}{catPrice.change.toFixed(1)}%)</span>
                 )}
                 {MAG_DATE && <span className="text-slate-600"> · MAG, {MAG_DATE}</span>}
               </p>
@@ -779,7 +779,7 @@ export default async function RemateDetailPage({ params }: Props) {
                 {consigEnriched?.bioReferente && (
                   <p className="text-slate-400 text-sm leading-relaxed mt-4 line-clamp-3">{consigEnriched.bioReferente}</p>
                 )}
-                <p className="text-blue-400 text-sm mt-3">Ver perfil completo →</p>
+                <p className="text-sky-400 text-sm mt-3">Ver perfil completo →</p>
               </Link>
             </div>
           )}
@@ -798,7 +798,7 @@ export default async function RemateDetailPage({ params }: Props) {
                   />
                 ))}
               </div>
-              <Link href={consignatariaProfilePath(remate.consignatariaSlug)} className="inline-block mt-3 text-blue-400 text-sm hover:underline">
+              <Link href={consignatariaProfilePath(remate.consignatariaSlug)} className="inline-block mt-3 text-sky-400 text-sm hover:underline">
                 Ver todos los remates de {consigDisplay} →
               </Link>
             </div>
@@ -818,7 +818,7 @@ export default async function RemateDetailPage({ params }: Props) {
                   />
                 ))}
               </div>
-              <Link href={provinceHub} className="inline-block mt-3 text-blue-400 text-sm hover:underline">
+              <Link href={provinceHub} className="inline-block mt-3 text-sky-400 text-sm hover:underline">
                 Ver el calendario de remates en {provinceName} →
               </Link>
             </div>
@@ -838,7 +838,7 @@ export default async function RemateDetailPage({ params }: Props) {
                   />
                 ))}
               </div>
-              <Link href={`/remates/tipo/${remate.type}`} className="inline-block mt-3 text-blue-400 text-sm hover:underline">
+              <Link href={`/remates/tipo/${remate.type}`} className="inline-block mt-3 text-sky-400 text-sm hover:underline">
                 Ver todos los remates de {typeName.toLowerCase()} →
               </Link>
             </div>
@@ -857,11 +857,11 @@ export default async function RemateDetailPage({ params }: Props) {
           
           {/* DT-e Upload CTA (Lock-in: user-provided data) - show on past/today remates */}
           {(isPast || isToday) && (
-            <div className="mt-8 bg-slate-900 rounded-xl border border-cyan-800/50 p-6">
+            <div className="mt-8 bg-slate-900 rounded-xl border border-sky-800/50 p-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-2">
-                    <svg className="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-5 h-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     <span className="text-white font-semibold">
@@ -874,7 +874,7 @@ export default async function RemateDetailPage({ params }: Props) {
                 </div>
                 <Link
                   href="/mi-cuenta/guias"
-                  className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium rounded-lg transition-colors"
+                  className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium rounded-lg transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -886,7 +886,7 @@ export default async function RemateDetailPage({ params }: Props) {
           )}
 
           {/* CTA */}
-          <div className="mt-8 bg-gradient-to-r from-blue-900/50 to-purple-900/50 rounded-xl border border-blue-800/50 p-6 text-center">
+          <div className="mt-8 bg-gradient-to-r from-sky-900/50 to-purple-900/50 rounded-xl border border-sky-800/50 p-6 text-center">
             <p className="text-lg font-semibold text-white mb-2">
               ¿Organizás remates?
             </p>
@@ -895,7 +895,7 @@ export default async function RemateDetailPage({ params }: Props) {
             </p>
             <Link
               href="/planes"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-medium transition-colors"
             >
               Ver planes
             </Link>

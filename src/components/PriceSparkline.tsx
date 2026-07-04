@@ -60,7 +60,7 @@ export function PriceSparkline({
     }
   }, [data, width, height])
   
-  const changeColor = change >= 0 ? 'text-green-400' : 'text-red-400'
+  const changeColor = change >= 0 ? 'text-emerald-400' : 'text-red-400'
   const changeSign = change >= 0 ? '+' : ''
   
   const fmt = (n: number) => n.toLocaleString('es-AR', { maximumFractionDigits: 0 })

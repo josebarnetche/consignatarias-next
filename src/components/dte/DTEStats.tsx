@@ -202,10 +202,10 @@ export function DTEStats({ dtes }: DTEStatsProps) {
 
         {/* Cabezas Milestone Progress */}
         {stats.nextCabezasMilestone && (
-          <div className="bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20 rounded-xl p-5">
+          <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 border border-emerald-500/20 rounded-xl p-5">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-green-500/20 rounded-lg">
-                <TrendingUp className="w-5 h-5 text-green-500" />
+              <div className="p-2 bg-emerald-500/20 rounded-lg">
+                <TrendingUp className="w-5 h-5 text-emerald-500" />
               </div>
               <div>
                 <p className="text-sm text-gray-400">Próximo hito</p>
@@ -216,11 +216,11 @@ export function DTEStats({ dtes }: DTEStatsProps) {
             {/* Progress bar */}
             <div className="relative h-3 bg-gray-800 rounded-full overflow-hidden mb-2">
               <div 
-                className="absolute inset-y-0 left-0 bg-gradient-to-r from-green-500 to-green-400 rounded-full transition-all duration-500"
+                className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-500"
                 style={{ width: `${Math.min(stats.cabezasProgress, 100)}%` }}
               />
             </div>
-            <p className="text-sm text-green-400/80">
+            <p className="text-sm text-emerald-400/80">
               {stats.cabezasToNextMilestone?.toLocaleString('es-AR')} cabezas más
             </p>
           </div>
@@ -231,7 +231,7 @@ export function DTEStats({ dtes }: DTEStatsProps) {
       {stats.thisMonthDtes > 0 && (
         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
           <div className="flex items-center gap-3 mb-3">
-            <Calendar className="w-5 h-5 text-blue-400" />
+            <Calendar className="w-5 h-5 text-sky-400" />
             <h3 className="font-semibold text-white">Este mes</h3>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -240,7 +240,7 @@ export function DTEStats({ dtes }: DTEStatsProps) {
               <p className="text-sm text-gray-400">guías subidas</p>
             </div>
             <div>
-              <p className="text-2xl font-bold text-blue-400">{stats.thisMonthCabezas.toLocaleString('es-AR')}</p>
+              <p className="text-2xl font-bold text-sky-400">{stats.thisMonthCabezas.toLocaleString('es-AR')}</p>
               <p className="text-sm text-gray-400">cabezas movidas</p>
             </div>
           </div>
@@ -293,7 +293,7 @@ export function DTEStats({ dtes }: DTEStatsProps) {
             {stats.topCategory && (
               <div className="flex items-start gap-3">
                 <div className="p-1.5 bg-gray-800 rounded-lg">
-                  <Target className="w-4 h-4 text-green-400" />
+                  <Target className="w-4 h-4 text-emerald-400" />
                 </div>
                 <div>
                   <p className="text-lg font-bold text-white capitalize">{stats.topCategory.name}s</p>
@@ -309,13 +309,13 @@ export function DTEStats({ dtes }: DTEStatsProps) {
               <div className="flex items-start gap-3">
                 <div className="p-1.5 bg-gray-800 rounded-lg">
                   <TrendingUp className={`w-4 h-4 ${
-                    stats.trend === 'up' ? 'text-green-400' : 
+                    stats.trend === 'up' ? 'text-emerald-400' : 
                     stats.trend === 'down' ? 'text-red-400' : 'text-gray-400'
                   }`} />
                 </div>
                 <div>
                   <p className={`text-lg font-bold ${
-                    stats.trend === 'up' ? 'text-green-400' : 
+                    stats.trend === 'up' ? 'text-emerald-400' : 
                     stats.trend === 'down' ? 'text-red-400' : 'text-white'
                   }`}>
                     {stats.trend === 'up' ? 'En alza' : 
@@ -372,10 +372,10 @@ export function DTEStats({ dtes }: DTEStatsProps) {
             {stats.achievedCabezasMilestones.map(milestone => (
               <div 
                 key={`cabezas-${milestone}`}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500/20 border border-green-500/30 rounded-full"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/20 border border-emerald-500/30 rounded-full"
               >
-                <Award className="w-3.5 h-3.5 text-green-500" />
-                <span className="text-sm text-green-300">{milestone.toLocaleString('es-AR')} cab</span>
+                <Award className="w-3.5 h-3.5 text-emerald-500" />
+                <span className="text-sm text-emerald-300">{milestone.toLocaleString('es-AR')} cab</span>
               </div>
             ))}
           </div>

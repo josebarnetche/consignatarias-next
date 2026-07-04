@@ -1049,7 +1049,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                 <Link
                   href={`/planes?audience=consignataria&from=profile-${profile.canonicalSlug}`}
                   rel="nofollow"
-                  className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 text-xxs font-terminal uppercase tracking-wider rounded-[2px] border border-amber-400/60 text-amber-300 bg-gradient-to-r from-amber-500/15 to-yellow-500/10 motion-hover hover:shadow-lg hover:shadow-warning/20"
+                  className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 text-xxs font-terminal uppercase tracking-wider rounded-[2px] border border-amber-400/60 text-amber-300 bg-gradient-to-r from-amber-500/15 to-amber-500/10 motion-hover hover:shadow-lg hover:shadow-warning/20"
                 >
                   <span aria-hidden>★</span>
                   Activar PRO — $45.000/mes

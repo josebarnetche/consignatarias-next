@@ -95,7 +95,7 @@ export default function MercadoLiniersPage() {
             <span className="text-zinc-500 text-lg">{inmag.unit}</span>
           </div>
           
-          <div className={`flex items-center gap-1 ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+          <div className={`flex items-center gap-1 ${isPositive ? 'text-emerald-500' : 'text-red-500'}`}>
             {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
             <span className="text-sm font-medium">
               {isPositive ? '+' : ''}{inmag.change.toFixed(1)}% vs. día anterior
@@ -122,7 +122,7 @@ export default function MercadoLiniersPage() {
                 <p className="text-zinc-100 text-lg font-semibold">
                   ${data.current.toLocaleString('es-AR')}
                 </p>
-                <p className={`text-xs ${catIsPositive ? 'text-green-500' : 'text-red-500'}`}>
+                <p className={`text-xs ${catIsPositive ? 'text-emerald-500' : 'text-red-500'}`}>
                   {catIsPositive ? '+' : ''}{data.change.toFixed(1)}%
                 </p>
               </div>

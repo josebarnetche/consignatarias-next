@@ -2,11 +2,20 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
+import corredorManifest from '../../../../public/el-corredor/manifest.json'
 import { getCurrentSession } from '@/lib/user-tier'
 import { SubscribeForm } from './SubscribeForm'
 import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/JsonLd'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
+
+// Edición vigente desde el manifest — la landing nunca vuelve a quedar vieja.
+const ED = corredorManifest.current
+const ED_LABEL = ED.edition_label.replace(' · ', ' ') // "Junio 2026"
+const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+const _edM = Number(ED.ym.split('-')[1]) // 1-12
+const NEXT_CIERRE = MESES[_edM % 12]              // mes que cubre la próxima edición
+const NEXT_SALE = MESES[(_edM + 1) % 12]          // mes en que sale
 
 export const metadata: Metadata = {
   title: 'El Corredor — cierre mensual del mercado bovino argentino',
@@ -21,10 +30,10 @@ export const metadata: Metadata = {
     type: 'article',
     images: [
       {
-        url: `${APP_URL}/el-corredor/og-mayo-2026.png`,
+        url: `${APP_URL}${ED.og_path}`,
         width: 1200,
         height: 630,
-        alt: 'El Corredor — Mayo 2026',
+        alt: `El Corredor — ${ED_LABEL}`,
       },
     ],
   },
@@ -32,7 +41,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'El Corredor — cierre mensual del mercado bovino argentino',
     description: 'Mesa de hacienda argentina. PDF gratuito.',
-    images: [`${APP_URL}/el-corredor/og-mayo-2026.png`],
+    images: [`${APP_URL}${ED.og_path}`],
   },
 }
 
@@ -133,19 +142,18 @@ export default async function ElCorredorLanding() {
               {/* Live KPI strip */}
               <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 mb-10 pb-6 border-b border-zinc-800">
                 <span className="text-xs font-mono uppercase tracking-widest text-zinc-500">Última edición ·</span>
-                <span className="text-sm font-mono text-zinc-300">Mayo 2026</span>
+                <span className="text-sm font-mono text-zinc-300">{ED_LABEL}</span>
                 <span className="text-zinc-700">·</span>
                 <span className="text-sm font-mono text-zinc-300">
                   INMAG cerró <span className="text-white font-semibold">{closeFmt}</span>
                 </span>
-                <span className="text-zinc-700">·</span>
-                <span className="text-sm font-mono text-emerald-400">+24,4% USD interanual real</span>
+
               </div>
 
               <SubscribeForm source="hero" userEmail={userEmail} />
 
               <p className="text-xs font-mono text-zinc-600 mt-4">
-                Sin tarjeta. Sin trial. Próxima edición en julio. Te podés desuscribir en cualquier momento.
+                Sin tarjeta. Sin trial. Próxima edición en {NEXT_SALE}. Te podés desuscribir en cualquier momento.
               </p>
             </div>
 
@@ -154,8 +162,8 @@ export default async function ElCorredorLanding() {
               <div className="absolute -inset-8 bg-sky-500/10 blur-3xl rounded-full" />
               <div className="relative">
                 <Image
-                  src="/el-corredor/cover-mayo-2026.png"
-                  alt="El Corredor — Mayo 2026"
+                  src={ED.cover_path}
+                  alt={`El Corredor — ${ED_LABEL}`}
                   width={384}
                   height={512}
                   className="w-full max-w-[384px] h-auto rounded shadow-2xl shadow-black/50 border border-zinc-800"
@@ -163,7 +171,7 @@ export default async function ElCorredorLanding() {
                 />
                 <div className="absolute -bottom-3 left-4 right-4 text-center">
                   <span className="inline-block bg-sky-400 text-zinc-950 text-xs font-mono uppercase tracking-widest px-3 py-1.5 font-bold">
-                    Edición 05/26 · Disponible
+                    Edición {ED.edition_short} · Disponible
                   </span>
                 </div>
               </div>
@@ -295,7 +303,7 @@ export default async function ElCorredorLanding() {
             <SubscribeForm source="footer-cta" userEmail={userEmail} />
           </div>
           <p className="text-xs font-mono text-zinc-600 mt-4">
-            Próxima edición: cierre de junio 2026 · primer día hábil de julio
+            Próxima edición: cierre de {NEXT_CIERRE} · primer día hábil de {NEXT_SALE}
           </p>
         </div>
       </section>
