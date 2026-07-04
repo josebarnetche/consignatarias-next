@@ -56,6 +56,16 @@ const ok = (text: string): ToolResult => ({ content: [{ type: 'text', text }] })
 const fail = (text: string): ToolResult => ({ content: [{ type: 'text', text }], isError: true })
 const fmt = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
 
+// Ubicación limpia: evita duplicar la provincia cuando ya viene en location
+// (635/763 remates traen "Ciudad, Provincia" + province → "…, Provincia, PROVINCIA").
+function cleanLocation(location: string | null | undefined, province: string | null | undefined): string {
+  const loc = (location || '').trim()
+  const prov = (province || '').trim()
+  if (!loc) return prov
+  if (!prov || loc.toLowerCase().includes(prov.toLowerCase())) return loc
+  return `${loc}, ${prov}`
+}
+
 const TOOLS: Tool[] = [
   {
     name: 'get_indice_novillo',
@@ -256,7 +266,7 @@ const TOOLS: Tool[] = [
       if (upcoming.length === 0) return ok('No hay remates próximos con esos filtros.')
       const lines = upcoming.map(
         (r) =>
-          `${r.date}${r.time ? ' ' + r.time : ''} · ${r.consignatariaName} · ${r.location}, ${r.province}` +
+          `${r.date}${r.time ? ' ' + r.time : ''} · ${r.consignatariaName} · ${cleanLocation(r.location, r.province)}` +
           `${r.mainCategory ? ' · ' + r.mainCategory : ''}${r.youtubeUrl ? ' · 🔴 en vivo' : ''}`,
       )
       return ok(`Próximos ${upcoming.length} remates:\n${lines.join('\n')}`)
