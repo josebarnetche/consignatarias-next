@@ -126,6 +126,31 @@ function ApiCard({ tier }: { tier: ApiTier }) {
 export default function PlanesToggle() {
   return (
     <div>
+      {/* Productor — GRATIS, primero (es la base del modelo) */}
+      <div
+        className="terminal-panel flex flex-col md:flex-row md:items-center gap-4 mb-5 px-panel py-4"
+        style={{ borderColor: 'rgba(16,185,129,0.35)' }}
+      >
+        <div className="flex-1">
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <span className="text-2xl font-terminal tabular-nums text-emerald-400">$0</span>
+            <span className="text-emerald-300 text-label tracking-widest">PRODUCTOR · GRATIS · SIEMPRE</span>
+          </div>
+          <p className="text-zinc-400 text-data mt-1 max-w-2xl">
+            Todo el observatorio, sin costo: INMAG diario, precios por categoría, calendario de remates,
+            directorio de consignatarias y frigoríficos, calculadoras y alertas. El productor no paga — es la
+            razón por la que el dato es la referencia.
+          </p>
+        </div>
+        <Link
+          href="/login"
+          className="terminal-btn text-center shrink-0"
+          style={{ borderColor: 'rgba(16,185,129,0.6)', color: '#10b981' }}
+        >
+          Crear cuenta gratis con Google →
+        </Link>
+      </div>
+
       {/* API / MCP — el corazón del pricing */}
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
         <p className="text-label tracking-widest text-zinc-400">
@@ -139,45 +164,9 @@ export default function PlanesToggle() {
         ))}
       </div>
 
-      {/* Segunda fila: productor gratis + consignataria (alcance) */}
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Productor — gratis */}
-        <div className="terminal-panel flex flex-col">
-          <div
-            className="terminal-panel-header"
-            style={{ color: '#10b981', borderBottomColor: 'rgba(16,185,129,0.25)' }}
-          >
-            Productor · gratis
-          </div>
-          <div className="px-panel py-4 flex-1 flex flex-col">
-            <div className="mb-1">
-              <span className="text-2xl font-terminal tabular-nums text-zinc-100">$0</span>
-              <span className="text-zinc-500 text-data ml-1">/siempre</span>
-            </div>
-            <p className="text-zinc-500 text-data mb-4">
-              Todo el observatorio, sin costo. El productor no paga — es la razón por la
-              que el dato es la referencia.
-            </p>
-            <ul className="space-y-2 mb-6 flex-1">
-              {[
-                'INMAG diario + precios por categoría',
-                'Calendario unificado de remates',
-                'Directorio de consignatarias y frigoríficos',
-                'Calculadoras (neto en mano, ¿vendo ahora?)',
-                'Alertas de precio por email',
-              ].map((f) => (
-                <li key={f} className="flex items-start gap-2 text-data text-zinc-300">
-                  <span className="text-emerald-500 mt-0.5">+</span>
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
-            <Link href="/login" className="terminal-btn w-full text-center">
-              Crear cuenta gratis
-            </Link>
-          </div>
-        </div>
-
+      {/* Consignataria — alcance (opcional, secundario) */}
+      <p className="text-label tracking-widest text-zinc-400 mt-6 mb-3">Consignatarias · alcance (opcional)</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Consignataria — alcance (prueba, no "pagá por aparecer") */}
         <div className="terminal-panel flex flex-col" style={{ borderColor: 'rgba(245,158,11,0.3)' }}>
           <div

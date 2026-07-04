@@ -49,8 +49,84 @@ async function fetchRecentEvents(limit: number, errorsOnly = false): Promise<Ops
 }
 
 /* ------------------------------------------------------------------ */
+/*  MI GANADO — hacienda cargada por los usuarios (valor que aportan)  */
+/* ------------------------------------------------------------------ */
+
+interface GanadoUserRow {
+  userId: string
+  cabezas: number
+  kilos: number
+  valueArs: number
+  categorias: string[]
+  updatedAt: string
+  alertsOptIn: boolean
+}
+interface GanadoTracker {
+  users: number
+  totalCabezas: number
+  totalKilos: number
+  totalValueArs: number
+  byCategoria: Array<{ categoria: string; cabezas: number }>
+  rows: GanadoUserRow[]
+}
+
+async function fetchGanadoTracker(): Promise<GanadoTracker> {
+  const empty: GanadoTracker = { users: 0, totalCabezas: 0, totalKilos: 0, totalValueArs: 0, byCategoria: [], rows: [] }
+  const admin = createAdminClient()
+  const { data, error } = await admin
+    .from('user_ganado')
+    .select('user_id, items, last_seen_value_ars, updated_at, alerts_opt_in')
+    .order('updated_at', { ascending: false })
+  if (error) {
+    console.error('[admin/ops] fetchGanadoTracker error:', error.message)
+    return empty
+  }
+  const catMap = new Map<string, number>()
+  const rows: GanadoUserRow[] = (data ?? []).map((r) => {
+    const items = (Array.isArray(r.items) ? r.items : []) as Array<{ categoria?: string; cabezas?: number; peso?: number }>
+    let cabezas = 0, kilos = 0
+    const cats = new Set<string>()
+    for (const it of items) {
+      const c = Number(it.cabezas) || 0
+      cabezas += c
+      kilos += c * (Number(it.peso) || 0)
+      if (it.categoria) {
+        cats.add(it.categoria)
+        catMap.set(it.categoria, (catMap.get(it.categoria) ?? 0) + c)
+      }
+    }
+    return {
+      userId: r.user_id as string,
+      cabezas,
+      kilos,
+      valueArs: Number(r.last_seen_value_ars) || 0,
+      categorias: [...cats],
+      updatedAt: r.updated_at as string,
+      alertsOptIn: !!r.alerts_opt_in,
+    }
+  })
+  return {
+    users: rows.length,
+    totalCabezas: rows.reduce((s, r) => s + r.cabezas, 0),
+    totalKilos: rows.reduce((s, r) => s + r.kilos, 0),
+    totalValueArs: rows.reduce((s, r) => s + r.valueArs, 0),
+    byCategoria: [...catMap.entries()].map(([categoria, cabezas]) => ({ categoria, cabezas })).sort((a, b) => b.cabezas - a.cabezas),
+    rows,
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /*  HELPERS                                                            */
 /* ------------------------------------------------------------------ */
+
+function fmtInt(n: number): string {
+  return Math.round(n).toLocaleString('es-AR')
+}
+function fmtArsShort(n: number): string {
+  if (n >= 1_000_000) return '$' + (n / 1_000_000).toFixed(1) + 'M'
+  if (n >= 1_000) return '$' + (n / 1_000).toFixed(0) + 'k'
+  return '$' + Math.round(n)
+}
 
 function ageColor(row: CronHealthRow): string {
   if (row.age_hours === null) return 'text-zinc-500'
@@ -95,10 +171,11 @@ function shortId(req: string | null): string {
 /* ------------------------------------------------------------------ */
 
 export default async function AdminOpsPage() {
-  const [crons, recentEvents, recentErrors] = await Promise.all([
+  const [crons, recentEvents, recentErrors, ganado] = await Promise.all([
     getCronHealth(),
     fetchRecentEvents(50),
     fetchRecentEvents(20, true),
+    fetchGanadoTracker(),
   ])
 
   return (
@@ -120,6 +197,66 @@ export default async function AdminOpsPage() {
             <OpsRefreshButton />
           </div>
         </div>
+      </div>
+
+      {/* ============================================================ */}
+      {/*  MI GANADO — hacienda cargada por los usuarios                */}
+      {/* ============================================================ */}
+      <div className="terminal-panel mt-px">
+        <div className="terminal-panel-header flex items-center justify-between">
+          <span className="text-zinc-400 text-xxs tracking-widest">MI GANADO — HACIENDA CARGADA</span>
+          <span className="text-xxs text-zinc-500 font-terminal tabular-nums">
+            {ganado.users} usuario{ganado.users !== 1 ? 's' : ''} · {fmtInt(ganado.totalCabezas)} cab
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-terminal-border">
+          <Stat label="Usuarios" value={fmtInt(ganado.users)} />
+          <Stat label="Cabezas" value={fmtInt(ganado.totalCabezas)} />
+          <Stat label="Kilos" value={fmtInt(ganado.totalKilos)} />
+          <Stat label="Valor cargado" value={fmtArsShort(ganado.totalValueArs)} accent />
+        </div>
+
+        {ganado.byCategoria.length > 0 && (
+          <div className="px-panel py-2 flex flex-wrap gap-1.5 border-b border-terminal-border">
+            {ganado.byCategoria.map((c) => (
+              <span key={c.categoria} className="text-xxs font-terminal text-zinc-400 border border-terminal-border rounded px-2 py-0.5">
+                {c.categoria} · <span className="tabular-nums text-zinc-200">{fmtInt(c.cabezas)}</span>
+              </span>
+            ))}
+          </div>
+        )}
+
+        {ganado.rows.length === 0 ? (
+          <div className="px-panel py-6 text-center">
+            <span className="text-zinc-500 text-data font-terminal">Nadie cargó hacienda todavía</span>
+          </div>
+        ) : (
+          <>
+            <div className="border-b border-terminal-border px-cell py-px2 hidden md:flex items-center gap-0 bg-terminal-panel">
+              <span className="w-[90px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Usuario</span>
+              <span className="w-[80px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">Cabezas</span>
+              <span className="w-[90px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">Kilos</span>
+              <span className="w-[80px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">Valor</span>
+              <span className="flex-1 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Categorías</span>
+              <span className="w-[60px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-center">Alertas</span>
+              <span className="w-[150px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Actualizado</span>
+            </div>
+            {ganado.rows.map((r) => (
+              <div key={r.userId} className="border-b border-terminal-border px-cell py-1.5 flex items-center gap-0">
+                <span className="w-[90px] flex-shrink-0 text-xxs font-terminal text-zinc-400 tabular-nums">{r.userId.slice(0, 8)}</span>
+                <span className="w-[80px] flex-shrink-0 text-xxs font-terminal tabular-nums text-zinc-200 text-right">{fmtInt(r.cabezas)}</span>
+                <span className="w-[90px] flex-shrink-0 text-xxs font-terminal tabular-nums text-zinc-400 text-right">{fmtInt(r.kilos)}</span>
+                <span className="w-[80px] flex-shrink-0 text-xxs font-terminal tabular-nums text-accent text-right">{fmtArsShort(r.valueArs)}</span>
+                <span className="flex-1 text-xxs font-terminal text-zinc-500 truncate">{r.categorias.join(', ') || '—'}</span>
+                <span className="w-[60px] flex-shrink-0 text-center text-xxs font-terminal">
+                  {r.alertsOptIn ? <span className="text-positive">on</span> : <span className="text-zinc-600">—</span>}
+                </span>
+                <span className="w-[150px] flex-shrink-0 text-xxs font-terminal tabular-nums text-zinc-500">{fmtDate(r.updatedAt)}</span>
+              </div>
+            ))}
+          </>
+        )}
       </div>
 
       {/* ============================================================ */}
@@ -269,6 +406,15 @@ export default async function AdminOpsPage() {
           </>
         )}
       </div>
+    </div>
+  )
+}
+
+function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+  return (
+    <div className="bg-terminal-panel px-cell py-3">
+      <div className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">{label}</div>
+      <div className={`text-lg font-terminal tabular-nums ${accent ? 'text-accent' : 'text-zinc-100'}`}>{value}</div>
     </div>
   )
 }
