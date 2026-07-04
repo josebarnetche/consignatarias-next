@@ -2,15 +2,14 @@
 
 import { useMemo, useState } from 'react'
 
-// Anchor points: requests/mes → USD/mes
-// Curve has decreasing $/1K marginal cost (typical SaaS API)
+// Anchor points: requests/mes → USD/mes (estimados; Scale se cierra "a medida").
+// Scale arranca ARRIBA de Growth (100K = USD 299); curva con $/1K marginal decreciente.
 const ANCHORS: Array<{ requests: number; usd: number }> = [
-  { requests: 100_000, usd: 700 },
-  { requests: 250_000, usd: 1200 },
-  { requests: 500_000, usd: 1800 },
-  { requests: 1_000_000, usd: 2800 },
-  { requests: 2_000_000, usd: 4500 },
-  { requests: 5_000_000, usd: 7500 },
+  { requests: 250_000, usd: 599 },
+  { requests: 500_000, usd: 999 },
+  { requests: 1_000_000, usd: 1699 },
+  { requests: 2_000_000, usd: 2899 },
+  { requests: 5_000_000, usd: 5499 },
 ]
 
 const MIN_IDX = 0
