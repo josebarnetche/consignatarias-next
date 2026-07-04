@@ -8,6 +8,27 @@ import { SignOutButton } from './SignOutButton'
 import { UpgradeConfirmTracker } from '@/components/UpgradeConfirmTracker'
 import { UpgradeActivating } from '@/components/UpgradeActivating'
 import KarmaBadge from '@/components/KarmaBadge'
+import NewsletterOptIn from './NewsletterOptIn'
+
+function ChecklistItem({ done, href, label, sub }: { done: boolean; href: string; label: string; sub: string }) {
+  return (
+    <Link href={href} className="flex items-center gap-3 px-panel py-3 hover:bg-sky-500/[0.04] transition-colors group">
+      <span
+        aria-hidden="true"
+        className={`w-5 h-5 rounded-full border flex items-center justify-center text-xxs flex-shrink-0 ${
+          done ? 'border-positive/40 bg-positive/10 text-positive' : 'border-zinc-700 text-transparent'
+        }`}
+      >
+        ✓
+      </span>
+      <div className="flex-1 min-w-0">
+        <div className="text-sm text-zinc-200 group-hover:text-sky-300 transition-colors">{label}</div>
+        <div className="text-xxs text-zinc-500">{sub}</div>
+      </div>
+      <span className="text-zinc-600 group-hover:text-sky-400 text-xs font-mono flex-shrink-0 transition-colors">→</span>
+    </Link>
+  )
+}
 
 export const metadata: Metadata = {
   title: 'Tu cuenta',
@@ -60,6 +81,20 @@ export default async function CuentaPage({ searchParams }: PageProps) {
   const hasEnterprise = apiTier !== 'none'
   const isProUser = tier === 'pro'
 
+  // Estado real del checklist de arranque (una query liviana por señal).
+  const [{ data: ganado }, { data: newsletterRow }, { count: marksCount }] = await Promise.all([
+    service.from('user_ganado').select('items, alerts_opt_in').eq('user_id', user.id).maybeSingle(),
+    service.from('newsletter_subscribers').select('id, status').eq('email', (user.email ?? '').toLowerCase()).maybeSingle(),
+    service.from('remate_marks').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+  ])
+  const ganadoItems = Array.isArray(ganado?.items) ? (ganado!.items as unknown[]) : []
+  const checkHacienda = ganadoItems.length > 0
+  const checkAlerta = ganado?.alerts_opt_in === true
+  const checkNewsletter = newsletterRow?.status === 'active'
+  const checkMarcas = (marksCount ?? 0) > 0
+  const doneCount = [checkHacienda, checkAlerta, checkNewsletter, checkMarcas].filter(Boolean).length
+  const isNewUser = doneCount === 0
+
   const periodEnd = sub?.current_period_end ? new Date(sub.current_period_end) : null
   const periodEndStr = periodEnd
     ? periodEnd.toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' })
@@ -67,9 +102,6 @@ export default async function CuentaPage({ searchParams }: PageProps) {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-12 text-sm">
-      <div className="mb-6">
-        <KarmaBadge />
-      </div>
       {/* Fire the GA4 pro_upgrade conversion only when the DB confirms PRO (tier),
           never on the bare ?upgraded=true redirect param. */}
       <UpgradeConfirmTracker
@@ -130,8 +162,47 @@ export default async function CuentaPage({ searchParams }: PageProps) {
         </div>
       )}
 
-      <h1 className="text-zinc-100 text-2xl font-medium mb-2">Tu cuenta</h1>
+      <h1 className="text-zinc-100 text-2xl font-medium mb-2">
+        {isNewUser ? 'Bienvenido a consignatarias.com' : 'Tu cuenta'}
+      </h1>
       <p className="text-zinc-500 text-xs font-mono mb-6">{user.email}</p>
+
+      {isNewUser && (
+        <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+          Esta es la terminal del mercado ganadero argentino: el INMAG y los precios por categoría
+          actualizados cada día hábil, el calendario de remates de todo el país y el directorio de
+          consignatarias y frigoríficos — gratis. Así le sacás el jugo:
+        </p>
+      )}
+
+      {/* Checklist de arranque — con estado real; queda como utilidad permanente */}
+      <div className="terminal-panel mb-8">
+        <div className="terminal-panel-header flex items-center justify-between">
+          <span>Empezá por acá</span>
+          <span className="text-xxs text-zinc-500 font-terminal tabular-nums">{doneCount}/4</span>
+        </div>
+        <div className="divide-y divide-terminal-border">
+          <ChecklistItem
+            done={checkHacienda}
+            href="/mi-ganado"
+            label="Cargá tu hacienda en Mi Ganado"
+            sub="Tu stock valuado al INMAG de cada día, como una cartera."
+          />
+          <ChecklistItem
+            done={checkAlerta}
+            href="/mi-ganado"
+            label="Activá el aviso semanal de valor"
+            sub="Cada lunes, cuánto vale tu hacienda y cuánto cambió."
+          />
+          <NewsletterOptIn email={user.email ?? ''} initialDone={checkNewsletter} />
+          <ChecklistItem
+            done={checkMarcas}
+            href="/remates"
+            label="Marcá los remates que te interesan"
+            sub="Seguí remates y marcá en cuáles estuviste — arma tu historial."
+          />
+        </div>
+      </div>
 
       {!justUpgraded && (
         <Link
@@ -189,22 +260,10 @@ export default async function CuentaPage({ searchParams }: PageProps) {
             )}
           </>
         ) : (
-          <>
-            <p className="text-zinc-300 font-mono text-sm mb-1">
-              Cuenta gratuita, acceso al detalle completo de remates, consignatarias y
-              datos del mercado.
-            </p>
-            <p className="text-zinc-500 font-mono text-xs mb-4">
-              Sumate a PRO para filtros avanzados, descargas premium y archivo
-              histórico completo.
-            </p>
-            <Link
-              href="/upgrade"
-              className="inline-flex items-center gap-2 bg-sky-400 hover:bg-sky-300 active:bg-sky-500 text-zinc-950 font-mono font-bold uppercase tracking-widest text-xs px-4 py-2 rounded transition-colors"
-            >
-              Activar PRO · ARS $7.900/mes →
-            </Link>
-          </>
+          <p className="text-zinc-300 font-mono text-sm">
+            Cuenta gratuita, con acceso completo a remates, consignatarias, precios y
+            datos del mercado.
+          </p>
         )}
       </div>
 
@@ -267,6 +326,11 @@ export default async function CuentaPage({ searchParams }: PageProps) {
           </p>
         </Link>
       )}
+
+      {/* Karma — al final y explicado; para el usuario nuevo es contexto, no portada */}
+      <div className="mt-8 mb-6">
+        <KarmaBadge />
+      </div>
 
       <div className="border-t border-zinc-800 pt-6">
         <SignOutButton />

@@ -42,6 +42,10 @@ export default function KarmaBadge() {
         <span className="text-xxs text-zinc-500 font-terminal tabular-nums">{k.score} pts</span>
       </div>
       <div className="px-panel py-4">
+        <p className="text-zinc-500 text-xxs leading-relaxed mb-3">
+          El karma es tu reputación de productor en la terminal: mide lo que aportás al dato del
+          mercado — tu hacienda cargada, los remates que marcás y tu antigüedad.
+        </p>
         <div className="flex items-baseline gap-2 flex-wrap">
           <span className="text-2xl font-terminal text-sky-300">{k.level}</span>
           {k.nextLevel && k.toNext != null && (

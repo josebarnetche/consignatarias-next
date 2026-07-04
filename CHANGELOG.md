@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.98.0] — 2026-07-04
+
+### /cuenta: bienvenida + checklist de arranque; el karma se explica y va al final
+
+El primer render post-verificación de email era "Tu karma · 0 pts · Novato" sin explicar qué es el
+karma, más un upsell a PRO Usuario (discontinuado). Rediseño del recorrido:
+
+- **Bienvenida para usuario nuevo** — si no completó nada todavía, el título es "Bienvenido a consignatarias.com" con un párrafo de qué es la terminal.
+- **Checklist "Empezá por acá" (N/4) con estado real** — cargar hacienda en Mi Ganado (`user_ganado`), activar el aviso semanal de valor (`alerts_opt_in`), suscribirse al resumen semanal con un click desde la misma fila (`NewsletterOptIn` → `/api/newsletter`, el email ya lo tenemos) y marcar remates (`remate_marks`). Queda como utilidad permanente, no solo primera vez.
+- **Karma al final y explicado** — `KarmaBadge` abre con "El karma es tu reputación de productor en la terminal: mide lo que aportás al dato del mercado…" y la página lo muestra después de plan/reportes, no como portada.
+- **Sin upsell PRO Usuario** — la card de plan FREE ya no vende "Activar PRO · ARS $7.900/mes" (línea discontinuada; quedan superficies PRO en calculadora/inmag/vender-ahora/planes para una limpieza aparte).
+
 ## [1.97.0] — 2026-07-04
 
 ### El overview se convierte en home de broker
