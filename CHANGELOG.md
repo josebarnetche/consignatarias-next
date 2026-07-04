@@ -25,6 +25,66 @@ Alineación de facto con `src/lib/ui/tokens.ts` ("Estado ≠ marca"), que ya doc
 
 **Verificación:** tsc 0 · check-db-refs OK 65/65 · QA visual 24 páginas · OGs 200 en dev y prod.
 
+> **Nota (backfill 2026-07-04):** las entradas 1.76.0→1.87.0 se reconstruyeron desde git — esos bumps se hicieron en `package.json` sin escribir el changelog. Detalle completo en los cuerpos de commit referenciados.
+
+## [1.87.0] — 2026-07-04
+
+### Karma del productor — valor a cambio de free (`07d23e9`)
+
+Sistema de señal a cambio de gratuidad: tabla `remate_marks` ("estuve en este remate" / "sigo a esta consignataria", RLS por usuario), `POST /api/remates/mark` (toggle idempotente con sesión Google), motor de karma (`src/lib/karma.ts`, función pura + tests) y vista en admin. El usuario free aporta asistencia + confianza, no dinero.
+
+## [1.86.0] — 2026-07-04
+
+### Herramientas del productor de-gateadas (`cf07bbf`)
+
+PRO Usuario fue retirado; sus herramientas quedaban bloqueadas sin puerta de compra. ProReveal/RequirePro → passthrough con tracking `tool_view` por herramienta; `useSessionTier` → 'pro' para todos. Comparar, histórico, estacionalidad, exports y reporte semanal quedan gratis, comunicados como NUEVOS.
+
+## [1.85.0] — 2026-07-04
+
+### Tracker Mi Ganado en Observabilidad + productor-free primero (`6090240`)
+
+## [1.84.0] — 2026-07-04
+
+### Pricing API-first — la caja es la API/MCP (`7f9d93f`)
+
+Rediseño de `/planes` con research + costos reales: 3 tiers de API en USD (Starter 49 / Growth 299 / Scale a medida) para instituciones; **el productor va GRATIS** (moat + autoridad — el directorio pago v1 lo probó con 0 subs). PRO Usuario eliminado del pricing.
+
+## [1.83.0] — 2026-07-04
+
+### Header compacto (`9922b45`)
+
+Fuera activity bar, "TERMINAL" y fecha; entra el logo de marca. Continúa el rediseño de `740768a`.
+
+## [1.82.0] — 2026-07-04
+
+### Rediseño del header — sacar la sobrecarga de la top bar (`740768a`)
+
+## [1.81.0] — 2026-07-04
+
+### Área Desarrolladores + Planes visible en nav (`8cb2abe`)
+
+Reframe por segmento (productor / consignataria / empresa·IA).
+
+## [1.80.0–1.80.2] — 2026-07-04
+
+### Página /mcp (AI-ready) + fixes del MCP (`893069c`, `cb3d3ca`, `fc0609d`)
+
+- `/mcp`: presentación del servidor con las 10 tools, config de conexión y CTA a planes; grupo de nav "API / IA"; sección "Hecho para que las IAs lo usen" en la landing.
+- Fixes: consistencia INMAG vs categorías, onboarding de API key, dedup de provincia en `list_remates`, descripción del registry con términos en español.
+
+## [1.78.0–1.79.1] — 2026-07-04
+
+### Servidor MCP — Consignatarias como servicio para agentes IA (`903c5d5` → `2deba16`)
+
+Las IAs ya son la audiencia #1 (325 referrals/mes). Salto de "web que las IAs scrapean" a "tool que las IAs llaman": servidor MCP remoto propio (JSON-RPC 2.0 Streamable HTTP, sin deps) en `/api/mcp`, listado en el registry oficial como `ar.com.consignatarias/cattle-market` y anunciado en `llms.txt`. Creció de 4 a **10 tools**: índice, histórico, precios (base + detallados), contexto macro, remates, consignatarias, frigoríficos, arrendamiento y alerta de precio (API key).
+
+## [1.76.0–1.77.1] — 2026-07-03
+
+### Motor de alertas de precio por umbral + retención (`e3fe87b` → `4fec698`)
+
+- **Alertas por umbral** ("avisame cuando el novillo cruce $X"): tabla `price_alerts` (email/user/webhook, categoría, umbral, dirección), captura en `/api/alertas/precio`, cron diario de evaluación. La retención más pegajosa: conecta el tráfico IA con un loop de email, y la puerta AI/API permite que el agente que trae el tráfico cree la alerta.
+- Captura de alta intención arriba en `/mercado/arrendamiento`; botón "Actualizar" en `/admin/ops`.
+
 ## [1.75.4] — 2026-07-03
 
 ### Correcciones a v1.75.3 — el cambio de `alertas/*` era un cambio de CONTRATO, no solo limpieza
