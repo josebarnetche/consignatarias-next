@@ -10,6 +10,15 @@ jobs:
   send-newsletter:
     runs-on: ubuntu-latest
     steps:
+      - name: cron-hook start
+        id: cronstart
+        run: |
+          RUN_ID=$(curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" \
+            -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"workflow_name":"weekly-newsletter","phase":"start"}' | jq -r '.run_id // empty')
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
       - name: Send Weekly Newsletter
         run: |
           set -euo pipefail
@@ -21,3 +30,12 @@ jobs:
           BODY=$(printf '%s' "$RESP" | sed '$d')
           echo "HTTP $CODE — $BODY"
           { [ "$CODE" -ge 200 ] && [ "$CODE" -lt 300 ]; } || { echo "::error::weekly-newsletter failed (HTTP $CODE)"; exit 1; }
+
+      - name: cron-hook finish
+        if: always() && steps.cronstart.outputs.run_id != ''
+        run: |
+          ST="ok"; [ "${{ job.status }}" != "success" ] && ST="error"
+          curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" \
+            -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"workflow_name\":\"weekly-newsletter\",\"phase\":\"finish\",\"run_id\":${{ steps.cronstart.outputs.run_id }},\"status\":\"$ST\"}" || true
