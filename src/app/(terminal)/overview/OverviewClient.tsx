@@ -28,6 +28,14 @@ const rematesPast = rematesData.filter((r) => r.date < TODAY);
 const nextAuctions = [...rematesToday, ...rematesUpcoming].slice(0, 8);
 const totalHeadsUpcoming = [...rematesToday, ...rematesUpcoming].reduce((s, r) => s + (r.estimatedHeads ?? 0), 0);
 
+function IconChip({ icon, size = "w-5 h-5", img = "w-3.5 h-3.5" }: { icon: string; size?: string; img?: string }) {
+  return (
+    <span className={`${size} rounded-sm bg-zinc-100 inline-flex items-center justify-center select-none`} aria-hidden="true">
+      <img src={`/marca/iconos-color/${icon}.png`} alt="" className={img} />
+    </span>
+  );
+}
+
 const categoryLabels: Record<string, string> = {
   novillos: "Novillos", novillitos: "Novillitos", vaquillonas: "Vaquillonas",
   vacas: "Vacas", toros: "Toros", terneros: "Terneros",
@@ -54,7 +62,14 @@ const catColumns: DataColumn<CatRow>[] = [
   {
     key: "cat",
     header: "Categoría",
-    cell: (r) => <span className="text-zinc-300 uppercase text-data sm:text-xxs tracking-wider">{r.name}</span>,
+    cell: (r) => (
+      <span className="inline-flex items-center gap-2">
+        <span className="hidden sm:flex w-7 h-6 rounded-sm bg-zinc-100 items-center justify-center select-none" aria-hidden="true">
+          <img src={`/marca/glifos-color/glifo-${r.key.replace(/s$/, "")}.png`} alt="" className="h-4 w-auto" />
+        </span>
+        <span className="text-zinc-300 uppercase text-data sm:text-xxs tracking-wider">{r.name}</span>
+      </span>
+    ),
   },
   {
     key: "current",
@@ -88,7 +103,7 @@ export default function OverviewClient() {
       {/* MERCADO HOY — una sola fila, fuente única (sin ticker duplicado) */}
       <section className="terminal-panel">
         <div className="terminal-panel-header flex items-center justify-between">
-          <span className="font-heading section-heading">Mercado hoy</span>
+          <span className="font-heading section-heading flex items-center gap-2"><IconChip icon="indice" />Mercado hoy</span>
           <span className="text-xxs text-zinc-500 tabular-nums">{marketPrices.lastUpdate}</span>
         </div>
         {/* Mobile: INMAG hero a todo el ancho, luego macro en 2 col. Desktop: fila fluida. */}
@@ -120,6 +135,7 @@ export default function OverviewClient() {
         <section className="terminal-panel">
           <div className="terminal-panel-header flex items-center justify-between">
             <span className="font-heading section-heading flex items-center gap-2">
+              <IconChip icon="martillo" />
               Remates próximos
               {rematesToday.length > 0 && (
                 <Badge tone="live" dot>{rematesToday.length} HOY</Badge>
@@ -179,7 +195,7 @@ export default function OverviewClient() {
 
           <section className="terminal-panel">
             <div className="terminal-panel-header">
-              <span className="font-heading section-heading">Categorías $/kg vivo</span>
+              <span className="font-heading section-heading flex items-center gap-2"><IconChip icon="bascula" />Categorías $/kg vivo</span>
             </div>
             <DataTable
               columns={catColumns}

@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.95.0] — 2026-07-04
+
+### Íconos color + terminal bajo el manual de marca
+
+- **Tintas color en chips hueso** — los pictogramas y glifos del sitio pasan de la tinta blanco (plana sobre carbón) a la versión COLOR (carbón + acento cielo) dentro de chips `bg-zinc-100` redondeados, el patrón que mejor lee sobre carbón: cards de `/mcp` (chip 40px), 404 (chip 80px), tabla de `/mercado` y hero de `/precios/[categoria]`. Nuevos assets `public/marca/iconos-color/` y `glifos-color/` (`deploy_assets_web.py`, total 752 KB).
+- **Overview con marca** — los tres paneles de `/overview` (Mercado hoy, Remates próximos, Categorías $/kg vivo) llevan chip de ícono color en el header (`IconChip`), y cada fila de categorías muestra su glifo color en chip hueso (≥sm).
+- **Footer compacto en /overview** — el SystemFooter oculta el sitemap de 4 columnas en la pantalla-terminal y deja solo la línea de marca; en el resto de las sub-páginas queda completo.
+
+**Verificación:** tsc 0 · QA visual en dev de /overview, /mcp y /precios/toro.
+
 ## [1.94.1] — 2026-07-04
 
 ### Fixes de la tanda universo (review de Jose)

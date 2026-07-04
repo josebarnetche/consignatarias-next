@@ -16,7 +16,9 @@ export default function NotFound() {
       <div className="text-center max-w-md">
         {/* Error code */}
         <div className="mb-6 flex flex-col items-center gap-4">
-          <img src="/marca/iconos/buscador-lupa.png" alt="" aria-hidden="true" className="w-20 opacity-70 select-none" />
+          <span className="w-20 h-20 rounded-lg bg-zinc-100 flex items-center justify-center select-none" aria-hidden="true">
+            <img src="/marca/iconos-color/buscador-lupa.png" alt="" className="w-14 h-14" />
+          </span>
           <span className="text-6xl font-mono font-bold text-zinc-700">404</span>
         </div>
 

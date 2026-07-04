@@ -515,14 +515,18 @@ const FOOTER_COLUMNS: FooterColumn[] = [
 ];
 
 function SystemFooter() {
+  const pathname = usePathname();
+  // /overview es la pantalla de trabajo: footer compacto (solo baseline),
+  // sin el sitemap de 4 columnas (ese vive en las páginas de contenido/SEO).
+  const compact = pathname === "/overview";
   const shareHref = `https://wa.me/?text=${encodeURIComponent(
     "Mirá este calendario de remates ganaderos: https://www.consignatarias.com.ar/remates"
   )}`;
 
   return (
     <footer className="border-t border-terminal-border bg-terminal-panel px-4 py-6">
-      {/* Sitemap — 4 columnas */}
-      <div className="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-4 max-w-6xl mx-auto">
+      {/* Sitemap — 4 columnas (oculto en /overview) */}
+      <div className={compact ? "hidden" : "grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-4 max-w-6xl mx-auto"}>
         {FOOTER_COLUMNS.map((col) => (
           <div key={col.title} className="min-w-0">
             <h3 className="text-xxs font-terminal uppercase tracking-widest text-zinc-500 mb-2 pb-1.5 border-b border-terminal-border">
@@ -549,7 +553,7 @@ function SystemFooter() {
       </div>
 
       {/* Baseline: marca · copyright · share · contacto */}
-      <div className="max-w-6xl mx-auto mt-6 pt-4 border-t border-terminal-border flex items-center justify-between text-xxs text-zinc-500 flex-wrap gap-2">
+      <div className={`max-w-6xl mx-auto flex items-center justify-between text-xxs text-zinc-500 flex-wrap gap-2 ${compact ? "" : "mt-6 pt-4 border-t border-terminal-border"}`}>
         <span className="flex items-center gap-2">
           <svg width="16" height="16" viewBox="0 0 512 512" aria-hidden="true" className="opacity-80">
             <path d="M 413.61 379.14 A 200 200 0 1 1 367.83 90.17 L 321.98 158.17 A 118 118 0 1 0 348.99 328.66 Z" fill="#fafafa" />

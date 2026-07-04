@@ -13,7 +13,7 @@
 .ping{transform-origin:980px 128px;opacity:0;animation:ping 4.2s ease-out infinite}
 @keyframes ping{0%,62%{transform:scale(.2);opacity:0}68%{opacity:1;transform:scale(1)}86%{transform:scale(2.6);opacity:0}100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){.strike,.ring,.dust,.dato,.ping{animation:none}.ring{opacity:.5;transform:scale(.5)}.dato,.ping{opacity:1}}
-</style>
+</style><rect width="1200" height="420" fill="#09090b"/>
 <line x1="40" y1="330" x2="1160" y2="330" stroke="#27272a" stroke-width="2"/>
 <circle class="ring r1" cx="205" cy="296" r="360" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="4 9"/><circle class="ring r2" cx="205" cy="296" r="360" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="4 9"/><circle class="ring r3" cx="205" cy="296" r="360" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="4 9"/>
 <!-- taco -->

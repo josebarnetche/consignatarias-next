@@ -75,12 +75,9 @@ export default function McpPage() {
         <div className="grid gap-px bg-terminal-border rounded-xl overflow-hidden border border-terminal-border">
           {TOOLS.map((t) => (
             <div key={t.name} className="bg-terminal-panel p-4 flex items-start justify-between gap-4">
-              <img
-                src={`/marca/iconos/${TOOL_ICONS[t.name] ?? 'onda'}.png`}
-                alt=""
-                aria-hidden="true"
-                className="w-9 h-9 shrink-0 opacity-80 select-none"
-              />
+              <span className="w-10 h-10 shrink-0 rounded bg-zinc-100 flex items-center justify-center select-none" aria-hidden="true">
+                <img src={`/marca/iconos-color/${TOOL_ICONS[t.name] ?? 'onda'}.png`} alt="" className="w-7 h-7" />
+              </span>
               <div className="min-w-0 flex-1">
                 <code className="text-sky-300 font-mono text-sm">{t.name}</code>
                 <p className="text-zinc-400 text-sm mt-0.5">{t.desc}</p>

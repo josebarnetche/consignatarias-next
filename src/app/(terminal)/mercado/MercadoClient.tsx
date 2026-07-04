@@ -76,12 +76,13 @@ const categoryColumns: DataColumn<CategoryRow>[] = [
     width: 'w-[110px] sm:w-[160px]',
     cell: (cat) => (
       <Link href={`/mercado/${cat.name.toLowerCase()}`} className="inline-flex items-center gap-2 font-semibold text-zinc-200 motion-hover hover:text-accent">
-        <img
-          src={`/marca/glifos/glifo-${cat.name.toLowerCase().replace(/s$/, '')}.png`}
-          alt=""
-          aria-hidden="true"
-          className="h-5 w-auto opacity-70 hidden sm:block select-none"
-        />
+        <span className="hidden sm:flex w-7 h-6 rounded-sm bg-zinc-100 items-center justify-center select-none" aria-hidden="true">
+          <img
+            src={`/marca/glifos-color/glifo-${cat.name.toLowerCase().replace(/s$/, '')}.png`}
+            alt=""
+            className="h-4 w-auto"
+          />
+        </span>
         {cat.name}
       </Link>
     ),

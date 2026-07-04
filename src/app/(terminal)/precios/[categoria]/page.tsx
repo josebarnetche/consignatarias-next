@@ -346,12 +346,9 @@ export default async function PreciosCategoriaPage({
           <span className="text-zinc-300">{c.title}</span>
         </div>
 
-        <img
-          src={`/marca/glifos/${GLIFOS[categoria]}.png`}
-          alt=""
-          aria-hidden="true"
-          className="float-right ml-4 mt-1 w-24 md:w-32 opacity-90 select-none pointer-events-none"
-        />
+        <span className="float-right ml-4 mt-1 w-24 md:w-32 rounded-md bg-zinc-100 p-2 flex items-center justify-center select-none pointer-events-none" aria-hidden="true">
+          <img src={`/marca/glifos-color/${GLIFOS[categoria]}.png`} alt="" className="w-full h-auto" />
+        </span>
         <h1 className="text-2xl md:text-3xl font-heading text-zinc-100 mb-1 leading-tight">
           Precio del kilo vivo de {c.singular} hoy:{' '}
           <span style={{ color: '#38bdf8' }}>${fmt(price)}</span>
