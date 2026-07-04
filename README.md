@@ -143,9 +143,11 @@ Planes:
 
 | Plan | Cap mensual | Precio |
 |---|---:|---:|
-| Starter | 10.000 req | USD 49/mes |
-| Growth | 100.000 req | USD 299/mes |
+| Starter | 10.000 req | ARS 74.000/mes |
+| Growth | 100.000 req | ARS 451.000/mes |
 | Scale | 100K–5M req | A medida |
+
+Facturación mensual en ARS vía Rebill (anual –15%; exterior: transferencia o USDT al equivalente).
 
 También como **servidor MCP** para agentes IA: endpoint `https://www.consignatarias.com.ar/api/mcp`
 (10 tools; listado en el registry oficial como `ar.com.consignatarias/cattle-market`). Detalle en

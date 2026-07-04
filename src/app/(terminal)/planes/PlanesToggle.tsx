@@ -3,7 +3,10 @@
 import Link from 'next/link'
 
 /* ============================================================
-   Pricing API-first (todo en USD).
+   Pricing API-first (todo en ARS — Rebill factura en ARS).
+   Dos productos DISTINTOS, visualmente separados:
+   - API/MCP (cielo): el dato como servicio, para devs/instituciones.
+   - PRO Consignataria (ámbar, el color del badge dorado): alcance.
    - El observatorio del productor es GRATIS (moat + autoridad).
    - La caja es la API/MCP para instituciones (frigoríficos, traders,
      agtech, fondos, bancos). Starter barato para land-and-expand.
@@ -24,7 +27,7 @@ interface ApiTier {
 const API_TIERS: ApiTier[] = [
   {
     name: 'Starter',
-    price: 'USD 49',
+    price: 'ARS 74.000',
     period: '/mes',
     desc: 'Conectá tu asistente IA (Claude, Cursor) al dato ganadero — sin programar. Para el operador, la firma o la consignataria que quiere el dato a diario.',
     features: [
@@ -39,7 +42,7 @@ const API_TIERS: ApiTier[] = [
   },
   {
     name: 'Growth',
-    price: 'USD 299',
+    price: 'ARS 451.000',
     period: '/mes',
     desc: 'Agtech, medios agro, fondos. Volumen + automatización.',
     features: [
@@ -154,9 +157,9 @@ export default function PlanesToggle() {
       {/* API / MCP — el corazón del pricing */}
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
         <p className="text-label tracking-widest text-zinc-400">
-          API / MCP — el precio del ganado argentino como servicio
+          API / MCP — el dato ganadero como servicio · para desarrolladores, agtech e instituciones
         </p>
-        <span className="text-xxs font-terminal text-zinc-500">Facturación en USD · anual –15%</span>
+        <span className="text-xxs font-terminal text-zinc-500">Facturación mensual en ARS vía Rebill · anual –15%</span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {API_TIERS.map((t) => (
@@ -164,21 +167,26 @@ export default function PlanesToggle() {
         ))}
       </div>
 
-      {/* Consignataria — alcance (opcional, secundario) */}
-      <p className="text-label tracking-widest text-zinc-400 mt-6 mb-3">Consignatarias · alcance (opcional)</p>
+      {/* Consignataria — PRODUCTO APARTE (alcance, no data-service): ámbar como su badge */}
+      <div className="mt-8 mb-3 flex flex-wrap items-baseline justify-between gap-2 border-t border-terminal-border pt-6">
+        <p className="text-label tracking-widest text-zinc-400">
+          PRO Consignataria — alcance para casas consignatarias · otro producto, otro precio
+        </p>
+        <span className="text-xxs font-terminal text-zinc-500">Facturación mensual en ARS vía Rebill</span>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Consignataria — alcance (prueba, no "pagá por aparecer") */}
-        <div className="terminal-panel flex flex-col" style={{ borderColor: 'rgba(56,189,248,0.3)' }}>
+        <div className="terminal-panel flex flex-col" style={{ borderColor: 'rgba(251,191,36,0.35)' }}>
           <div
             className="terminal-panel-header"
-            style={{ color: '#38bdf8', borderBottomColor: 'rgba(56,189,248,0.25)' }}
+            style={{ color: '#fbbf24', borderBottomColor: 'rgba(251,191,36,0.25)' }}
           >
-            Consignataria · alcance
+            PRO Consignataria · alcance
           </div>
           <div className="px-panel py-4 flex-1 flex flex-col">
             <div className="mb-1">
-              <span className="text-2xl font-terminal tabular-nums" style={{ color: '#38bdf8' }}>
-                USD 39
+              <span className="text-2xl font-terminal tabular-nums" style={{ color: '#fbbf24' }}>
+                ARS 45.000
               </span>
               <span className="text-zinc-500 text-data ml-1">/mes</span>
             </div>
@@ -190,12 +198,12 @@ export default function PlanesToggle() {
             <ul className="space-y-2 mb-6 flex-1">
               {[
                 'Promoción de remates por email a la base de productores',
-                'Perfil verificado y destacado (badge)',
+                'Perfil verificado y destacado (badge dorado)',
                 'Analytics de perfil (vistas, ranking)',
                 'Landing propia + QR para catálogos',
               ].map((f) => (
                 <li key={f} className="flex items-start gap-2 text-data text-zinc-300">
-                  <span style={{ color: '#38bdf8' }} className="mt-0.5">+</span>
+                  <span style={{ color: '#fbbf24' }} className="mt-0.5">+</span>
                   <span>{f}</span>
                 </li>
               ))}
@@ -203,7 +211,7 @@ export default function PlanesToggle() {
             <Link
               href="/enterprise#consignataria"
               className="terminal-btn w-full text-center"
-              style={{ borderColor: 'rgba(56,189,248,0.6)', color: '#38bdf8' }}
+              style={{ borderColor: 'rgba(251,191,36,0.6)', color: '#fbbf24' }}
             >
               Probar gratis
             </Link>

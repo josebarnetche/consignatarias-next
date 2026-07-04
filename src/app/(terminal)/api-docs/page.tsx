@@ -143,7 +143,7 @@ export default function ApiDocsPage() {
             <Link href="/enterprise" className="text-accent hover:text-accent-bright">
               Plan Enterprise
             </Link>{' '}
-            (desde USD 49/mes) agrega API key dedicada, mayor cupo, webhooks y
+            (desde ARS 74.000/mes) agrega API key dedicada, mayor cupo, webhooks y
             soporte. Fuente principal de precios: Mercado Agroganadero (MAG)
             Cañuelas, cacheado y citado.
           </p>
@@ -422,13 +422,13 @@ export default function ApiDocsPage() {
                   <td className="py-2 text-zinc-500 text-right">best effort</td>
                 </tr>
                 <tr className="border-b border-terminal-border">
-                  <td className="py-2 text-zinc-400">Enterprise Starter (USD 49)</td>
+                  <td className="py-2 text-zinc-400">Enterprise Starter (ARS 74.000)</td>
                   <td className="py-2 text-zinc-300 text-right tabular-nums">10.000</td>
                   <td className="py-2 text-zinc-300 text-right tabular-nums">30/min</td>
                   <td className="py-2 text-zinc-300 text-right">99,5%</td>
                 </tr>
                 <tr className="border-b border-terminal-border">
-                  <td className="py-2 text-zinc-400">Enterprise Growth (USD 299)</td>
+                  <td className="py-2 text-zinc-400">Enterprise Growth (ARS 451.000)</td>
                   <td className="py-2 text-zinc-300 text-right tabular-nums">100.000</td>
                   <td className="py-2 text-zinc-300 text-right tabular-nums">300/min</td>
                   <td className="py-2 text-zinc-300 text-right">99,8%</td>

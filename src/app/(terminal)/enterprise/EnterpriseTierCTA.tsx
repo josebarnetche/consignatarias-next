@@ -229,7 +229,7 @@ export function EnterpriseTierCTA({ tier, accent, defaultCtaText, defaultCtaHref
           </button>
           {error && <p className="mt-2 text-xxs text-red-400 text-center">{error}</p>}
           <p className="mt-2 text-xxs text-zinc-500 text-center">
-            ARS al equivalente USD via Rebill. Cancelás cuando quieras.
+            Débito mensual en ARS vía Rebill. Cancelás cuando quieras.
           </p>
         </>
       )
@@ -259,12 +259,12 @@ export function EnterpriseTierCTA({ tier, accent, defaultCtaText, defaultCtaHref
             className="terminal-btn w-full text-center disabled:opacity-50"
             style={{ borderColor: `${accent}99`, color: accent }}
           >
-            {redirecting ? 'Redirigiendo a pago…' : 'Contratar Starter · USD 49/mes →'}
+            {redirecting ? 'Redirigiendo a pago…' : 'Contratar Starter · ARS 74.000/mes →'}
           </button>
         </form>
         {error && <p className="mt-2 text-xxs text-red-400 text-center">{error}</p>}
         <p className="mt-2 text-xxs text-zinc-500 text-center">
-          Pagás con ese email; el acceso llega por link mágico. ARS al equivalente USD via Rebill.
+          Pagás con ese email; el acceso llega por link mágico. Débito mensual en ARS vía Rebill.
         </p>
       </>
     )

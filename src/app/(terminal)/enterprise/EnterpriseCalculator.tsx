@@ -2,14 +2,14 @@
 
 import { useMemo, useState } from 'react'
 
-// Anchor points: requests/mes → USD/mes (estimados; Scale se cierra "a medida").
-// Scale arranca ARRIBA de Growth (100K = USD 299); curva con $/1K marginal decreciente.
-const ANCHORS: Array<{ requests: number; usd: number }> = [
-  { requests: 250_000, usd: 599 },
-  { requests: 500_000, usd: 999 },
-  { requests: 1_000_000, usd: 1699 },
-  { requests: 2_000_000, usd: 2899 },
-  { requests: 5_000_000, usd: 5499 },
+// Anchor points: requests/mes → ARS/mes (estimados; Scale se cierra "a medida").
+// Scale arranca ARRIBA de Growth (100K = ARS 451.000); curva con $/1K marginal decreciente.
+const ANCHORS: Array<{ requests: number; ars: number }> = [
+  { requests: 250_000, ars: 900_000 },
+  { requests: 500_000, ars: 1_500_000 },
+  { requests: 1_000_000, ars: 2_550_000 },
+  { requests: 2_000_000, ars: 4_400_000 },
+  { requests: 5_000_000, ars: 8_300_000 },
 ]
 
 const MIN_IDX = 0
@@ -23,8 +23,8 @@ function formatRequests(n: number): string {
   return `${(n / 1000).toFixed(0)}K`
 }
 
-function formatUSD(n: number): string {
-  return n.toLocaleString('en-US')
+function formatARS(n: number): string {
+  return n.toLocaleString('es-AR')
 }
 
 export default function EnterpriseCalculator() {
@@ -32,9 +32,9 @@ export default function EnterpriseCalculator() {
   const [idx, setIdx] = useState(2) // default: 500K
 
   const current = ANCHORS[idx]
-  const annual = useMemo(() => current.usd * 12 * 0.85, [current]) // 15% off anual
+  const annual = useMemo(() => current.ars * 12 * 0.85, [current]) // 15% off anual
   const perThousand = useMemo(
-    () => (current.usd / (current.requests / 1000)).toFixed(2),
+    () => (current.ars / (current.requests / 1000)).toFixed(2),
     [current],
   )
 
@@ -69,7 +69,7 @@ export default function EnterpriseCalculator() {
               className="text-2xl font-terminal tabular-nums"
               style={{ color: '#7dd3fc' }}
             >
-              USD {formatUSD(current.usd)}
+              ARS {formatARS(current.ars)}
             </div>
           </div>
           <div className="bg-terminal-panel px-4 py-3">
@@ -77,7 +77,7 @@ export default function EnterpriseCalculator() {
               Anual (–15%)
             </div>
             <div className="text-zinc-300 text-2xl font-terminal tabular-nums">
-              USD {formatUSD(Math.round(annual))}
+              ARS {formatARS(Math.round(annual))}
             </div>
           </div>
           <div className="bg-terminal-panel px-4 py-3">
@@ -85,7 +85,7 @@ export default function EnterpriseCalculator() {
               Costo / 1.000 req
             </div>
             <div className="text-zinc-300 text-2xl font-terminal tabular-nums">
-              USD {perThousand}
+              ARS {perThousand}
             </div>
           </div>
         </div>

@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.101.0] — 2026-07-04
+
+### Pricing unificado: TODO EN ARS, dos productos bien separados
+
+Decisión de Jose: Rebill factura en ARS → los precios publicados son los que Rebill cobra, y
+API/MCP vs PRO Consignataria son productos distintos que no deben confundirse.
+
+- **Canónico en ARS** (= `src/lib/rebill.ts`): API Starter **ARS 74.000/mes** · Growth **ARS 451.000/mes** · Scale a medida · PRO Consignataria **ARS 45.000/mes**. Sin más USD en pricing: /planes, /enterprise (cards, metadata, FAQ de moneda, CTA Starter, nota de la calculadora), calculadora Scale (anclas en ARS), /api-docs, UpgradeNudge, README y CLAUDE.md.
+- **Separación visual de productos en /planes** — API/MCP en cielo ("el dato ganadero como servicio · para desarrolladores, agtech e instituciones") y **PRO Consignataria en ámbar** (el color de su badge dorado), con divisor y título propio: "alcance para casas consignatarias · otro producto, otro precio". Precios además bien distintos (74.000 vs 45.000).
+- Fix cosmético: la card Scale ya no muestra "ARS … /mes" alrededor de "A medida".
+- Se resuelve el ⚠️ de v1.100.1 (tres precios de Consignataria conviviendo).
+
 ## [1.100.1] — 2026-07-04
 
 ### Consistencia: docs y pricing alineados al modelo vigente (productor gratis, API-first)

@@ -37,8 +37,9 @@ El tren de julio movió el modelo de negocio y la cara del producto:
 - **Pendientes que este tren dejó marcados:** (1) pago de prueba real Rebill (sigue siendo EL gate);
   (2) pipeline `mag-lots` en 0 filas (alimenta `/api/lots` Enterprise); (3) contador B2B
   "N productores siguen tus remates" en dashboard/outreach de consignataria (el dato ya existe:
-  `user_favorites` + `remate_marks`); (4) **inconsistencia de pricing Consignataria**: /planes dice
-  USD 39/mes pero dashboard/perfil/checkout siguen en ARS 45.000 — unificar.
+  `user_favorites` + `remate_marks`); (4) ✅ pricing unificado
+  TODO EN ARS (v1.101.0): API Starter 74.000 / Growth 451.000 / Scale a medida · Consignataria 45.000
+  — dos productos separados también visualmente (API cielo / Consignataria ámbar).
 
 ---
 

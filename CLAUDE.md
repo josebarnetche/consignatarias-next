@@ -3,7 +3,7 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.100.1 (2026-07-04). See [CHANGELOG.md](CHANGELOG.md) for the full history. Latest train (v1.88–1.96): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+**Current version:** v1.101.0 (2026-07-04). See [CHANGELOG.md](CHANGELOG.md) for the full history. Latest train (v1.88–1.96): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
 
 ---
 
@@ -20,13 +20,13 @@ nothing** — PRO Usuario (ARS 7.900) was retired in July 2026; all producer too
 neto en mano, comparador, spread, seasonality, INMAG history) are free. The producer IS the value:
 
 1. **Enterprise API/MCP + institutional access** — `cnsg_live_*` keys, Bearer auth, 28-day billing
-   periods, three tiers (Starter USD 49 / Growth USD 299 / Scale a medida), MCP server
-   (`ar.com.consignatarias/cattle-market`). Institutions pay for **access + service** (maintained
-   USD-normalized feed, bulk delivery, support, our derived indices) — *not* a license/redistribution
-   of MAG's public series
-2. **PRO Consignataria** (sales-led B2B) — featured listings, claimed profile, leads, email reach.
-   ⚠️ Pricing inconsistente hoy: /planes dice USD 39/mes; dashboard/perfil/checkout siguen en
-   ARS 45.000 — unificar antes de vender
+   periods, three tiers (Starter ARS 74.000 / Growth ARS 451.000 / Scale a medida — todo en ARS,
+   Rebill factura en ARS), MCP server (`ar.com.consignatarias/cattle-market`). Institutions pay for
+   **access + service** (maintained USD-normalized feed, bulk delivery, support, our derived
+   indices) — *not* a license/redistribution of MAG's public series
+2. **PRO Consignataria** (sales-led B2B, **ARS 45.000/mes**) — featured listings, claimed profile,
+   leads, email reach. Producto DISTINTO del API (en /planes va en ámbar, el color de su badge;
+   el API va en cielo) — no mezclar precios ni copy entre ambos
 
 **Live:** https://www.consignatarias.com.ar
 **Owner:** Memola Medios SAS (`agro@memola.com.ar`)

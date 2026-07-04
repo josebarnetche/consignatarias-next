@@ -9,7 +9,7 @@ interface Props {
 }
 
 const NEXT_TIER: Record<'starter' | 'growth', { name: string; price: string; quota: string }> = {
-  starter: { name: 'Growth', price: 'USD 299/mes', quota: '100.000 req/mes + dashboards + reportes' },
+  starter: { name: 'Growth', price: 'ARS 451.000/mes', quota: '100.000 req/mes + dashboards + reportes' },
   growth: { name: 'Scale', price: 'a medida', quota: '100K–5M req/mes + white-label + CSM' },
 }
 

@@ -70,11 +70,11 @@ const FAQ_ITEMS = [
 export const metadata: Metadata = {
   title: 'Planes y Precios',
   description:
-    'El observatorio es gratis para el productor. La API/MCP del mercado ganadero argentino desde USD 49/mes, para apps, agentes IA, agtech y análisis.',
+    'El observatorio es gratis para el productor. La API/MCP del mercado ganadero argentino desde ARS 74.000/mes, para apps, agentes IA, agtech y análisis.',
   openGraph: {
     title: 'Planes y Precios',
     description:
-      'Productor gratis. La API/MCP del ganado argentino desde USD 49/mes para apps y agentes.',
+      'Productor gratis. La API/MCP del ganado argentino desde ARS 74.000/mes para apps y agentes.',
     url: 'https://www.consignatarias.com.ar/planes',
     type: 'website',
   },

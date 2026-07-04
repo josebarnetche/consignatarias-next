@@ -8,11 +8,11 @@ import { PLATFORM_STATS } from '@/lib/platform-stats'
 export const metadata: Metadata = {
   title: 'Enterprise — API y datos del mercado ganadero argentino',
   description:
-    'API completa, webhooks, reportes y dashboards sobre el mercado ganadero argentino. 3 planes: Starter USD 49, Growth USD 299, Scale a medida. Para apps agtech, frigoríficos, bancos y traders.',
+    'API completa, webhooks, reportes y dashboards sobre el mercado ganadero argentino. 3 planes: Starter ARS 74.000, Growth ARS 451.000, Scale a medida. Para apps agtech, frigoríficos, bancos y traders.',
   openGraph: {
     title: 'Enterprise',
     description:
-      'API del mercado ganadero argentino. Starter USD 49, Growth USD 299, Scale a medida.',
+      'API del mercado ganadero argentino. Starter ARS 74.000, Growth ARS 451.000, Scale a medida.',
     url: 'https://www.consignatarias.com.ar/enterprise',
     type: 'website',
   },
@@ -43,9 +43,9 @@ const FAQ_ITEMS = [
       'Reporte semanal en PDF (lectura del mercado, INMAG, USD, oferta por región, remates destacados) + JSON estructurado para procesamiento. Llega los lunes a las 9:00 ART por email + descargable desde tu dashboard.',
   },
   {
-    question: '¿Cobran en USD o ARS?',
+    question: '¿Cobran en ARS o USD?',
     answer:
-      'Pago en USD vía transferencia bancaria internacional, USDT (red Tron o ETH), o factura local en ARS al tipo de cambio MEP del día de emisión. Contrato anual con 15% de descuento.',
+      'Todo se factura en ARS: débito mensual automático vía Rebill. Si operás desde el exterior, aceptamos transferencia internacional o USDT (red Tron o ETH) al equivalente del día. Contrato anual con 15% de descuento.',
   },
   {
     question: '¿Puedo probar antes de pagar?',
@@ -63,8 +63,8 @@ const TIERS = [
   {
     name: 'Starter',
     tagline: 'Para apps y dev',
-    price: '49',
-    priceUnit: 'USD/mes',
+    price: '74.000',
+    priceUnit: 'ARS/mes',
     cycle: 'Mensual o anual (–15%)',
     description:
       'Apps en desarrollo, productos chicos, valorización de rodeos, dashboards internos. Lectura diaria suficiente.',
@@ -87,8 +87,8 @@ const TIERS = [
   {
     name: 'Growth',
     tagline: 'API + reportes + dashboards',
-    price: '299',
-    priceUnit: 'USD/mes',
+    price: '451.000',
+    priceUnit: 'ARS/mes',
     cycle: 'Mensual o anual (–15%)',
     description:
       'Apps en producción, frigoríficos, bancos, agroinsumos. Todo lo que necesitás para construir y operar.',
@@ -273,14 +273,15 @@ export default function EnterprisePage() {
               </div>
               <div className="px-panel py-5 flex-1 flex flex-col">
                 <div className="mb-1 flex items-baseline gap-1 flex-wrap">
-                  <span className="text-zinc-500 text-data">USD</span>
+                  {/* "A medida" no lleva moneda ni período */}
+                  {/^[\d.]+$/.test(tier.price) && <span className="text-zinc-500 text-data">ARS</span>}
                   <span
                     className="text-3xl font-terminal tabular-nums"
                     style={{ color: tier.accent }}
                   >
                     {tier.price}
                   </span>
-                  <span className="text-zinc-500 text-data ml-1">/mes</span>
+                  {/^[\d.]+$/.test(tier.price) && <span className="text-zinc-500 text-data ml-1">/mes</span>}
                 </div>
                 <p className="text-zinc-500 text-xxs mb-3">{tier.cycle}</p>
                 <div className="mb-4 inline-block">
@@ -396,7 +397,7 @@ export default function EnterprisePage() {
           <EnterpriseCalculator />
           <p className="text-zinc-500 text-xxs mt-3 text-center">
             Precios incluyen todo lo del plan Growth + features de Scale. Volumen ≤ 100K
-            req/mes ya está cubierto por Growth (USD 299).
+            req/mes ya está cubierto por Growth (ARS 451.000).
           </p>
         </div>
 
