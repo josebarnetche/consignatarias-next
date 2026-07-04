@@ -31,6 +31,7 @@ import {
 import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge, { VerifiedBadge } from '@/components/badges/ProBadge'
 import { Badge, Stat, DataTable, type DataColumn } from '@/components/ui'
+import { FollowButton } from '@/components/ui/FollowButton'
 import { SEMANTIC_HEX } from '@/lib/ui/tokens'
 import VideoGallery, { type ConsignatariaVideo } from '@/components/video/VideoGallery'
 import { Accordion } from './_wave2/Accordion'
@@ -663,6 +664,10 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                 </>
               )}
             </div>
+          </div>
+          {/* Seguir — el loop del productor: aviso cuando publica remate/catálogo */}
+          <div className="flex-shrink-0 self-start">
+            <FollowButton slug={profile.canonicalSlug} displayName={profile.displayName} size="sm" />
           </div>
         </div>
 

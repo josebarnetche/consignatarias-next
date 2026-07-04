@@ -2,7 +2,9 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase'
 import DashboardClient from './DashboardClient'
+import ProductorDashboard from './ProductorDashboard'
 import rematesData from '@/lib/data/remates.json'
+import marketPrices from '@/lib/data/market-prices.json'
 
 export const dynamic = 'force-dynamic'
 
@@ -47,6 +49,59 @@ export default async function DashboardPage() {
     .select('*')
     .eq('claimant_email', user.email!)
     .order('created_at', { ascending: false })
+
+  // PRODUCTOR (la mayoría de los registros): sin perfil B2B reclamado ni claims
+  // pendientes → panel de productor (hacienda + consignatarias seguidas + marcas),
+  // no el flujo de reclamar consignataria/frigorífico.
+  const isProductor = !consignataria && !frigorifico && !(claims?.length) && !(frigoClaims?.length)
+  if (isProductor) {
+    const hoy = new Date().toISOString().slice(0, 10)
+    const [{ data: favs }, { data: ganado }, { count: marksCount }] = await Promise.all([
+      service.from('user_favorites').select('consignataria_slug').eq('user_id', user.id),
+      service.from('user_ganado').select('items').eq('user_id', user.id).maybeSingle(),
+      service.from('remate_marks').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+    ])
+
+    const cats = marketPrices.categories as Record<string, { current: number }>
+    const ganadoItems = Array.isArray(ganado?.items)
+      ? (ganado!.items as { categoria: string; cabezas: number; peso: number }[])
+      : []
+    let herdValueArs: number | null = null
+    let herdCabezas = 0
+    if (ganadoItems.length > 0) {
+      herdValueArs = 0
+      for (const it of ganadoItems) {
+        const precio = cats[it.categoria]?.current ?? marketPrices.inmag.current
+        herdValueArs += (it.cabezas || 0) * (it.peso || 0) * precio
+        herdCabezas += it.cabezas || 0
+      }
+    }
+
+    const followedSlugs = new Set((favs ?? []).map((f) => f.consignataria_slug))
+    const upcoming = (rematesData as { id: number; consignatariaSlug: string; consignatariaName: string; date: string; time: string | null; location: string; status: string }[])
+      .filter((r) => r.date >= hoy && r.status === 'scheduled' && followedSlugs.has(r.consignatariaSlug))
+      .sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? ''))
+      .slice(0, 8)
+      .map((r) => ({
+        id: r.id,
+        date: r.date,
+        time: r.time,
+        consignatariaName: r.consignatariaName,
+        consignatariaSlug: r.consignatariaSlug,
+        location: r.location,
+      }))
+
+    return (
+      <ProductorDashboard
+        email={user.email ?? ''}
+        herdValueArs={herdValueArs}
+        herdCabezas={herdCabezas}
+        followedCount={followedSlugs.size}
+        upcoming={upcoming}
+        marksCount={marksCount ?? 0}
+      />
+    )
+  }
 
   // Get upcoming scraped auctions for this consignataria
   const today = new Date().toISOString().slice(0, 10)

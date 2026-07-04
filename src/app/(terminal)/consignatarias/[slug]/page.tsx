@@ -489,7 +489,7 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
         latestRemateSummary={latestRemateSummary}
         rematesEspeciales={rematesEspeciales}
         mediosPagoSlot={
-          <div className="max-w-6xl mx-auto px-4">
+          <div key="medios-pago" className="max-w-6xl mx-auto px-4">
             <MediosPagoSection
               mediosPago={enrichedProfile.mediosPago || []}
               consignatariaName={enrichedProfile.displayName}

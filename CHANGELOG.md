@@ -7,6 +7,23 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.99.0] — 2026-07-04
+
+### El dashboard reconoce al productor (la mayoría de los registros)
+
+`/dashboard` asumía que todo usuario era una consignataria o frigorífico por reclamar. Ahora, si no
+tenés perfil B2B ni claims pendientes, ves el **panel de productor**:
+
+- **Mi ganado** — valor de tu hacienda hoy (o CTA para cargarla).
+- **Tus consignatarias** — cuántas seguís y los **próximos remates de las que seguís** (el loop: seguir → aviso cuando publican; el cron `remate-reminders` ya existía). Sin seguidas, CTA al directorio.
+- **Remates marcados** y acceso a alertas/resumen desde /cuenta.
+- El flujo "reclamá tu perfil" (consignataria/frigorífico) queda como card secundaria al pie.
+
+Además: **botón Seguir en el perfil de consignataria** — `FollowButton` existía pero solo estaba
+montado en `/go/[slug]`; ahora está en el header del perfil (funciona anónimo con localStorage +
+opt-in de resumen por email). Esto arma el dato B2B "N productores siguen tus remates"
+(`user_favorites` + `remate_marks.consignataria_slug`). Fix: key faltante en `mediosPagoSlot`.
+
 ## [1.98.0] — 2026-07-04
 
 ### /cuenta: bienvenida + checklist de arranque; el karma se explica y va al final
