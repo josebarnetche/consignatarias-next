@@ -117,6 +117,80 @@ const TOOLS: Tool[] = [
     },
   },
   {
+    name: 'buscar_consignataria',
+    description:
+      'Busca consignatarias/casas de remate del directorio argentino por nombre, localidad o provincia. Devuelve nombre, ubicación, categoría, contacto y el perfil en consignatarias.com.ar.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        query: { type: 'string', description: 'Nombre, localidad o razón social a buscar' },
+        provincia: { type: 'string', description: 'Filtra por provincia (opcional)' },
+        limite: { type: 'number', description: 'Máximo de resultados (default 8)' },
+      },
+      required: ['query'],
+      additionalProperties: false,
+    },
+    async run(args) {
+      // Sanitizar el término para el filtro .or() de PostgREST (evita romper la query).
+      const q = String(args.query || '').replace(/[^\p{L}\p{N}\s]/gu, '').trim().slice(0, 80)
+      if (q.length < 2) return fail('Pasá un término de al menos 2 caracteres.')
+      const prov = typeof args.provincia === 'string' ? args.provincia.replace(/[^\p{L}\p{N}\s]/gu, '').trim() : ''
+      const limite = Math.min(typeof args.limite === 'number' ? args.limite : 8, 25)
+
+      const service = requireServiceClient()
+      let qb = service
+        .from('consignatarias')
+        .select('display_name, canonical_slug, province, location, category, phone, whatsapp, website')
+        .or(`display_name.ilike.%${q}%,name.ilike.%${q}%,location.ilike.%${q}%`)
+      if (prov) qb = qb.ilike('province', `%${prov}%`)
+      const { data, error } = await qb.limit(limite)
+      if (error) return fail('Error buscando en el directorio.')
+      if (!data || data.length === 0) return ok(`Sin resultados para "${q}".`)
+
+      const lines = data.map((c) => {
+        const contacto = c.whatsapp || c.phone || c.website || ''
+        return `${c.display_name}${c.location ? ' · ' + c.location : c.province ? ' · ' + c.province : ''}` +
+          `${c.category ? ' · ' + c.category : ''}${contacto ? ' · ' + contacto : ''}\n  https://www.consignatarias.com.ar/consignatarias/${c.canonical_slug}`
+      })
+      return ok(`${data.length} resultado(s) para "${q}":\n${lines.join('\n')}`)
+    },
+  },
+  {
+    name: 'calcular_arrendamiento',
+    description:
+      'Calcula el canon de arrendamiento rural argentino en pesos: kg de novillo por hectárea × hectáreas × precio del novillo (índice INMAG). Es el método de referencia (contrato indexado al novillo).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        kg_ha: { type: 'number', description: 'Kg de novillo por hectárea por mes (típico 3-6)' },
+        hectareas: { type: 'number', description: 'Cantidad de hectáreas' },
+        precio_novillo: { type: 'number', description: 'Precio del novillo ARS/kg (default: INMAG actual)' },
+      },
+      required: ['kg_ha', 'hectareas'],
+      additionalProperties: false,
+    },
+    async run(args) {
+      const kgHa = Number(args.kg_ha)
+      const hectareas = Number(args.hectareas)
+      const precio = Number.isFinite(Number(args.precio_novillo)) && Number(args.precio_novillo) > 0
+        ? Number(args.precio_novillo)
+        : prices.inmag.current
+      if (!Number.isFinite(kgHa) || kgHa <= 0 || !Number.isFinite(hectareas) || hectareas <= 0)
+        return fail('kg_ha y hectareas deben ser números positivos.')
+      const canonMensual = kgHa * hectareas * precio
+      const canonAnual = canonMensual * 12
+      const canonHaMes = kgHa * precio
+      return ok(
+        `Arrendamiento — ${kgHa} kg novillo/ha/mes · ${hectareas} ha · novillo ${fmt(precio)}/kg\n` +
+          `Canon mensual: ${fmt(canonMensual)}\n` +
+          `Canon anual: ${fmt(canonAnual)}\n` +
+          `Por hectárea/mes: ${fmt(canonHaMes)}\n\n` +
+          JSON.stringify({ canon_mensual: Math.round(canonMensual), canon_anual: Math.round(canonAnual), canon_ha_mes: Math.round(canonHaMes), kg_ha: kgHa, hectareas, precio_novillo: precio }) +
+          `\n\n(Método de referencia indexado al novillo. Es un cálculo, no asesoramiento.)`,
+      )
+    },
+  },
+  {
     name: 'crear_alerta_precio',
     description:
       'Crea una alerta de precio por umbral: cuando el precio de referencia de una categoría cruza el valor dado, se notifica por webhook (POST price.threshold_crossed). Requiere una API key de un plan.',
