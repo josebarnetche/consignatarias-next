@@ -103,3 +103,5 @@ scripts/archive/ga4-auth.html
 scripts/archive/traffic-compare.mjs
 scripts/archive/traffic-report.js
 scripts/archive/value-events-report.js
+# Sistema de marca (assets fuente pesados, no van al deploy)
+marca/
