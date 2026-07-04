@@ -144,7 +144,7 @@ export default function TerminosPage() {
           <h2 className="text-zinc-100 text-lg font-medium mb-2">10. Cuentas, suscripciones y pagos</h2>
           <p className="text-zinc-400">
             El acceso al directorio y a los datos de mercado es, en general, libre y gratuito. Ciertas
-            funcionalidades requieren suscripción paga (PRO Usuario, PRO Consignataria y Enterprise). Los pagos
+            funcionalidades requieren suscripción paga (PRO Consignataria y Enterprise). Los pagos
             en pesos se procesan a través de Rebill y, para Enterprise, también por transferencia o USDT; Memola
             no almacena datos completos de tarjetas. Las suscripciones se renuevan automáticamente por períodos
             sucesivos salvo cancelación. El usuario puede cancelar en cualquier momento desde su cuenta, sin

@@ -53,9 +53,9 @@ export default async function ApiKeysPage({
               Las API keys son parte de un plan Enterprise.
             </p>
             <p className="text-zinc-500 text-data mb-5">
-              Si sos PRO Usuario, tenés acceso de lectura premium (reportes,
-              filtros, archivo) pero no acceso a la API. El acceso programático
-              es un producto separado pensado para apps, frigoríficos, bancos
+              Tu cuenta gratuita incluye toda la lectura (reportes, filtros,
+              archivo) pero no acceso a la API. El acceso programático es un
+              producto separado pensado para apps, frigoríficos, bancos
               y traders.
             </p>
             <Link

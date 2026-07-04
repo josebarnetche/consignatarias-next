@@ -9,8 +9,8 @@ interface Props {
 }
 
 const NEXT_TIER: Record<'starter' | 'growth', { name: string; price: string; quota: string }> = {
-  starter: { name: 'Growth', price: 'USD 500/mes (~ARS 700.000)', quota: '50.000 req/mes + dashboards + reportes' },
-  growth: { name: 'Scale', price: 'desde USD 700/mes', quota: '100K–5M req/mes + white-label + CSM' },
+  starter: { name: 'Growth', price: 'USD 299/mes', quota: '100.000 req/mes + dashboards + reportes' },
+  growth: { name: 'Scale', price: 'a medida', quota: '100K–5M req/mes + white-label + CSM' },
 }
 
 export function UpgradeNudge({ plan, usagePct, daysLeft }: Props) {

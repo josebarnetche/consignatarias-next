@@ -5,8 +5,10 @@
 El precio de referencia del ganado argentino, hecho dato: la **familia de índices** (INMAG diario
 desde 2015, en pesos y en dólares, panel de categorías, arrendamiento, spread), el **directorio**
 de 104 consignatarias en 12 provincias y 1.092 frigoríficos cruzados contra SENASA, el **calendario**
-de remates y una **API pública**. Datos abiertos y citables; capa PRO para productores/asesores/
-contadores y Enterprise para integradores. Live: **[www.consignatarias.com.ar](https://www.consignatarias.com.ar)**.
+de remates, una **API pública** y un **servidor MCP** para agentes IA (registry oficial:
+`ar.com.consignatarias/cattle-market`). Datos abiertos y citables; **gratis para el productor**;
+PRO Consignataria para operadores y Enterprise API/MCP para integradores.
+Live: **[www.consignatarias.com.ar](https://www.consignatarias.com.ar)**.
 
 > **De agregador de remates a infraestructura de inteligencia.** El directorio y el calendario son
 > una superficie; la columna vertebral es la capa de datos e índices del mercado bovino argentino.
@@ -71,9 +73,10 @@ Lo que desbloqueás reclamando el perfil:
 
 ---
 
-### PRO Consignataria · ARS 45.000/mes
+### PRO Consignataria
 
-La versión paga para consignatarias que quieren capturar más demanda. Incluye:
+La versión paga para consignatarias que quieren capturar más demanda (precio vigente en
+[`/planes`](https://www.consignatarias.com.ar/planes)). Incluye:
 
 - **Badge dorado** y tratamiento visual destacado en cada remate listado
 - **Listing destacado** en el directorio (perfil expandido con logo grande, alianza visual)
@@ -112,12 +115,18 @@ Si lo que querés es comprar o vender hacienda:
 - [`/precios`](https://www.consignatarias.com.ar/precios) · cotización diaria de las 6 categorías + INMAG
 - [`/mi-ganado`](https://www.consignatarias.com.ar/mi-ganado) · **la libreta del campo**: cargá tu hacienda una vez y mirá cuánto vale **hoy al INMAG** (ARS + USD), con la variación desde tu última visita y la curva de cómo evoluciona tu rodeo en el tiempo. Gratis con tu cuenta; queda guardado y el valor se mueve solo con el mercado
 - [`/mercado`](https://www.consignatarias.com.ar/mercado) · análisis de tendencia con USD blue / oficial
-- [`/pro`](https://www.consignatarias.com.ar/pro) · **el tour de PRO Usuario** — ¿Vendo ahora?, Neto en mano, Comparador, Spread y estacionalidad, con preview gratis y la decisión detrás de PRO
+- [`/overview`](https://www.consignatarias.com.ar/overview) · **la terminal** — home estilo broker: mercado hoy, tu ganado valuado (7d), remates de hoy y la semana, precios por categoría
+- [`/comparar`](https://www.consignatarias.com.ar/comparar) · comparador de consignatarias — actividad, frecuencia y quién remata más seguido
 - [`/calendario-exportar`](https://www.consignatarias.com.ar/calendario-exportar) · exportá a tu calendario (`.ics`) los remates de **varias localidades a la vez** (checkboxes por provincia)
 - [`/consignatarias`](https://www.consignatarias.com.ar/consignatarias) · grilla por región (Pampa Húmeda · Centro · Mesopotamia · NEA · NOA · Cuyo · Patagonia)
 - [`/frigorificos`](https://www.consignatarias.com.ar/frigorificos) · 1.092 plantas con badge SENASA · vigente / sin verificación
 
-**PRO Usuario · ARS 7.900/mes.** Las herramientas del que vende hacienda: **¿Vendo ahora?** (percentil de 30 y 365 días en dólares reales + lectura del momento de venta), **Neto en mano** (del bruto al neto), **Comparador** con medios de pago y días de cobro, **Spread** y **estacionalidad** mes×año. El valor de tu hacienda lo ves gratis; la decisión se desbloquea con PRO (mismo patrón en todas: gancho gratis → decisión PRO). Suma archivo histórico INMAG + descargas El Corredor / El Oráculo. Tour en [`/pro`](https://www.consignatarias.com.ar/pro) · activación en [`/planes`](https://www.consignatarias.com.ar/planes).
+**Todo gratis para el productor** (desde jul-2026 — PRO Usuario fue retirado): **¿Vendo ahora?**
+(percentil de 30 y 365 días en dólares reales), **Neto en mano**, **Comparador**, **Spread**,
+**estacionalidad** e histórico INMAG. Con tu cuenta gratuita sumás **Mi Ganado** (tu stock valuado
+al día), seguimiento de consignatarias con aviso de remates, alertas de precio y el **karma de
+productor** (checklist de arranque: con 3 de 4 pasos ya sos Productor). El que paga es el lado
+institucional (API/MCP) y la consignataria (alcance), no el productor — el productor ES el valor.
 
 ---
 
@@ -132,11 +141,15 @@ Tres endpoints con Bearer auth. Pricing público en [`/enterprise`](https://www.
 
 Planes:
 
-| Plan | Cap mensual | Rate limit | Precio |
-|---|---:|---:|---:|
-| Starter | 1.000 req | 30 / min | USD 99 |
-| Growth | 50.000 req | 300 / min | USD 500 |
-| Scale | 100K–5M req (slider) | 5.000 / min | USD 700–7.500 |
+| Plan | Cap mensual | Precio |
+|---|---:|---:|
+| Starter | 10.000 req | USD 49/mes |
+| Growth | 100.000 req | USD 299/mes |
+| Scale | 100K–5M req | A medida |
+
+También como **servidor MCP** para agentes IA: endpoint `https://www.consignatarias.com.ar/api/mcp`
+(10 tools; listado en el registry oficial como `ar.com.consignatarias/cattle-market`). Detalle en
+[`/mcp`](https://www.consignatarias.com.ar/mcp).
 
 Documentación: [`/api-docs`](https://www.consignatarias.com.ar/api-docs).
 
@@ -190,4 +203,4 @@ Operadores comerciales que construyen infraestructura propietaria — no agencia
 
 ---
 
-v1.39.0 · 2026-06-20 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0
+v1.100.0 · 2026-07-04 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0

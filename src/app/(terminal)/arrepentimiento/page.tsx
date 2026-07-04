@@ -20,7 +20,7 @@ export default function ArrepentimientoPage() {
 
       <h1 className="text-zinc-100 text-2xl font-medium mb-2">Botón de Arrepentimiento</h1>
       <p className="text-zinc-400 mb-6">
-        Si contrataste un plan a distancia (PRO Usuario, PRO Consignataria o Enterprise) podés{' '}
+        Si contrataste un plan a distancia (PRO Consignataria o Enterprise) podés{' '}
         <strong className="text-zinc-200">arrepentirte dentro de los 10 días corridos</strong> y dejarlo sin
         efecto, <strong className="text-zinc-200">sin costo ni responsabilidad</strong>, conforme al art. 34 de
         la Ley 24.240 de Defensa del Consumidor, el art. 1110 del Código Civil y Comercial y la Resolución

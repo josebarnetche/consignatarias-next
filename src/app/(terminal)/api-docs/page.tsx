@@ -335,8 +335,8 @@ export default function ApiDocsPage() {
             </pre>
             <p className="text-zinc-500 text-xs">
               También aceptamos cookie de sesión: si llamás desde un browser
-              logueado el response incluye todas tus keys activas, el tier de
-              PRO Usuario y el tier Enterprise por separado.
+              logueado el response incluye todas tus keys activas y tu tier
+              Enterprise.
             </p>
           </div>
         </div>
@@ -423,18 +423,18 @@ export default function ApiDocsPage() {
                 </tr>
                 <tr className="border-b border-terminal-border">
                   <td className="py-2 text-zinc-400">Enterprise Starter (USD 49)</td>
-                  <td className="py-2 text-zinc-300 text-right tabular-nums">1.000</td>
+                  <td className="py-2 text-zinc-300 text-right tabular-nums">10.000</td>
                   <td className="py-2 text-zinc-300 text-right tabular-nums">30/min</td>
                   <td className="py-2 text-zinc-300 text-right">99,5%</td>
                 </tr>
                 <tr className="border-b border-terminal-border">
-                  <td className="py-2 text-zinc-400">Enterprise Growth (USD 500)</td>
-                  <td className="py-2 text-zinc-300 text-right tabular-nums">50.000</td>
+                  <td className="py-2 text-zinc-400">Enterprise Growth (USD 299)</td>
+                  <td className="py-2 text-zinc-300 text-right tabular-nums">100.000</td>
                   <td className="py-2 text-zinc-300 text-right tabular-nums">300/min</td>
                   <td className="py-2 text-zinc-300 text-right">99,8%</td>
                 </tr>
                 <tr>
-                  <td className="py-2 text-zinc-400">Enterprise Scale (USD 700+)</td>
+                  <td className="py-2 text-zinc-400">Enterprise Scale (a medida)</td>
                   <td className="py-2 text-zinc-300 text-right tabular-nums">100K–5M</td>
                   <td className="py-2 text-zinc-300 text-right tabular-nums">5.000/min</td>
                   <td className="py-2 text-zinc-300 text-right">99,9%</td>

@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.100.1] — 2026-07-04
+
+### Consistencia: docs y pricing alineados al modelo vigente (productor gratis, API-first)
+
+- **README** reescrito en lo comercial: productor GRATIS (PRO Usuario retirado), MCP en el intro y en la sección API, tabla Enterprise real (Starter USD 49 · 10.000 req / Growth USD 299 · 100.000 req / Scale a medida), /pro → /overview y /comparar en la sección del productor, versión al pie.
+- **ROADMAP** — nueva sección "Estado v1.76 → v1.100"; ítems P2 marcados (Mi Panel ✅, alerta de precio ✅, muro PRO obsoleto); milestone "10+ PRO Usuario" tachado; pendientes marcados (pago real Rebill, pipeline mag-lots en 0, contador B2B de seguidores, pricing Consignataria inconsistente).
+- **CLAUDE.md** — revenue lines: 3 → 2 (Enterprise API/MCP + PRO Consignataria; productor gratis).
+- **FIX de cuota real:** `api-keys.ts` aplicaba Starter 1.000 / Growth 50.000 req/mes mientras /enterprise vende 10.000 / 100.000 → enforcement alineado a lo publicado.
+- **Copy stale barrido:** api-docs (tabla de planes USD 500/700 → 299/a medida; cuotas; "PRO Usuario" en auth), calculadora de /enterprise (Growth USD 500 → 299), UpgradeNudge de api-keys, términos y arrepentimiento (lista de planes vigentes), comentario del checkout (USD 99 → 49). `docs/PRO-PRODUCT-STANDARD.md` marcado OBSOLETO (instruía construir muros PRO Usuario).
+- ⚠️ **Pendiente decidido no tocar acá:** PRO Consignataria — /planes publica USD 39/mes pero Rebill cobra ARS 45.000 (≈USD 30) y dashboard/perfil dicen "$45.000/mes". Unificar precio y copy antes de vender.
+
 ## [1.100.0] — 2026-07-04
 
 ### El checklist de arranque celebra y el karma se mueve en vivo

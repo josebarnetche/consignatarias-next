@@ -395,8 +395,8 @@ export default function EnterprisePage() {
         <div id="calculadora" className="mb-10 scroll-mt-24">
           <EnterpriseCalculator />
           <p className="text-zinc-500 text-xxs mt-3 text-center">
-            Precios incluyen todo lo del plan Growth + features de Scale. Volumen ≤ 50K
-            req/mes ya está cubierto por Growth (USD 500).
+            Precios incluyen todo lo del plan Growth + features de Scale. Volumen ≤ 100K
+            req/mes ya está cubierto por Growth (USD 299).
           </p>
         </div>
 

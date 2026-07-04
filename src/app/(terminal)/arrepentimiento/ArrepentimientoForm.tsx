@@ -60,7 +60,7 @@ export default function ArrepentimientoForm() {
         <label className="block text-xxs text-zinc-500 uppercase tracking-wider mb-1">Plan o N° de operación (opcional)</label>
         <input
           type="text" value={identificador} onChange={(e) => setIdentificador(e.target.value)}
-          placeholder="Ej.: PRO Usuario / comprobante de pago"
+          placeholder="Ej.: PRO Consignataria / comprobante de pago"
           className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-sm text-zinc-200 placeholder-zinc-600"
         />
       </div>

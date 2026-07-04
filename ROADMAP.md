@@ -1,6 +1,6 @@
 # Roadmap
 
-**Current:** v1.39.0 (June 20, 2026) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
+**Current:** v1.100.0 (2026-07-04) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
 **Strategic frame:** [docs/strategy/POSITIONING-THESIS.md](docs/strategy/POSITIONING-THESIS.md) — own the
 category **"el precio de referencia del ganado argentino"** via three pillars (Index family ·
 Institutional access · Online-auction flywheel) across three horizons.
@@ -12,6 +12,33 @@ MAJOR boundary, so the product stays on 1.x.
 > first dollar is **unblocked** (email-first checkout live for both B2C and Enterprise, verified to
 > reach a real Rebill payment link). The remaining gate is a real test payment + the institutional
 > sales motion — not more code.
+
+---
+
+## Estado — v1.76 → v1.100 (2026-07-04)
+
+El tren de julio movió el modelo de negocio y la cara del producto:
+
+- **Pricing API-first + retiro de PRO Usuario.** El productor va **GRATIS** (des-gate app-wide:
+  `ProReveal`/`RequirePro` passthrough; /pro y /upgrade redirigen; código muerto de checkout eliminado
+  en v1.98). Revenue = **Enterprise API/MCP** (Starter USD 49 / Growth USD 299 / Scale a medida) +
+  **PRO Consignataria** (alcance). `/planes` reescrito por segmento.
+- **MCP live** — 10 tools sobre `/api/mcp`, listado en el registry oficial como
+  `ar.com.consignatarias/cattle-market`. El AI-traffic (326 referrals/mes) es el moat de autoridad.
+- **Identidad v2.0 aplicada a todo el sitio** (v1.88 → v1.97): isotipo/favicons/OGs dinámicos per-slug
+  (`src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento), universo gráfico dentro de
+  las páginas (glifos/íconos color, martillazo animado, hero-pampa) y `/overview` rediseñado como
+  **home de broker** (Mi Ganado 7d + remates hoy/semana + tiles de precios).
+- **El producto del productor** (v1.96 → v1.100): `/comparar` gratis y honesto ("quién remata más
+  seguido"; se eliminó la promesa de medios de pago — dato que no existe); **dashboard de productor**
+  (hacienda + consignatarias seguidas + próximos remates; FollowButton por fin en el perfil);
+  onboarding de /cuenta (bienvenida + checklist con celebración) y **karma con arranque** (+20 por
+  paso; 3 de 4 = Productor).
+- **Pendientes que este tren dejó marcados:** (1) pago de prueba real Rebill (sigue siendo EL gate);
+  (2) pipeline `mag-lots` en 0 filas (alimenta `/api/lots` Enterprise); (3) contador B2B
+  "N productores siguen tus remates" en dashboard/outreach de consignataria (el dato ya existe:
+  `user_favorites` + `remate_marks`); (4) **inconsistencia de pricing Consignataria**: /planes dice
+  USD 39/mes pero dashboard/perfil/checkout siguen en ARS 45.000 — unificar.
 
 ---
 
@@ -52,10 +79,12 @@ Tras la auditoría de seguridad + el review general + el paso de Canon Agent (fu
 13. Sacar `remates.json` (450 KB) del bundle del **cliente** (props desde el server).
 
 **P2 — Producto / retención (Proyecto B fases 2-3):**
-14. "Mi Panel" del productor (unificar mi-ganado + alertas + seguidos + DT-e).
-15. Alerta por **precio objetivo** ("avisame cuando el novillo pase $X").
+14. ✅ "Mi Panel" del productor — `ProductorDashboard` en /dashboard (v1.99.0: hacienda + seguidas +
+    próximos remates + marcas). Falta integrar DT-e ahí.
+15. ✅ Alerta por **precio objetivo** — motor `price_alerts` + cron diario + captura `/api/alertas/precio`.
 16. Leads v2 (estado nuevo/contactado + notificación por email a la consignataria).
-17. Validar el CTR real del muro PRO ahora que el denominador del funnel está limpio.
+17. ~~Validar el CTR del muro PRO~~ — obsoleto: PRO Usuario retirado (jul-2026); la métrica ahora es
+    `tool_view` de las herramientas liberadas.
 
 **P0 histórico (sigue vigente):** verificar `REBILL_WEBHOOK_SECRET` + correr un **pago de prueba real** — el gate de revenue está en ops, no en código.
 
@@ -205,7 +234,7 @@ structured measurement of the **71% dark pool** (long arc). RWA / CD+W / tokeniz
 **v2.0.0 = USD 2.000+ MRR across the product lines, sustained 30 days.**
 - [ ] 5+ Enterprise customers paying (Starter/Growth/Scale or a institutional-access) — *1 active prospect already consuming `/api/precios` daily (cattle-software dev); not yet paying*
 - [ ] 1+ PRO Consignataria paying
-- [ ] 10+ PRO Usuario paying
+- ~~10+ PRO Usuario paying~~ — obsoleto: PRO Usuario retirado (jul-2026); el productor va gratis
 - [ ] Total MRR ≥ USD 2.000 normalized at MEP
 - [ ] ≥1 public case study / institutional reference
 
@@ -233,7 +262,7 @@ institutional-access (outbound to institutions — the highest-ACV path per both
 
 ### Pillar 1/2 — Real reports + content moat (was v1.15)
 - [ ] El Corredor monthly (pipeline now works) + Oráculo quarterly + INMAG historical archive zip
-- [ ] PRO Usuario monthly digest by email; download-count A/B (free preview vs full lock)
+- [ ] Resumen semanal por email al productor (ya opt-in desde el checklist de /cuenta); download-count A/B
 
 ### Marketing / GEO (ongoing, was v1.19)
 - [ ] More `/precios/[X]` long-tail landings; press outreach (La Nación campo, Bichos de Campo, agritotal)
@@ -293,8 +322,9 @@ sacrifice the transaction** until the reference is unassailable.
 
 ## Open Strategic Questions
 
-1. **Test payment first** — before any more conversion code, confirm the Rebill→webhook→PRO path with a
-   real ARS 7.900 payment (deferred by owner; gates the whole revenue story).
+1. **Test payment first** — before any more conversion code, confirm the Rebill→webhook→activation path
+   with a real payment (PRO Consignataria or Enterprise; PRO Usuario ya no existe). Deferred by owner;
+   gates the whole revenue story.
 2. **Institutional-access go-to-market** — bespoke/sales-led (current) vs a published institutional price.
    Outbound targets: banks (cattle-collateral), export frigoríficos, MATBA-ROFEX, fintech.
 3. **Lite tier (USD 29) & Stripe** — capture global devs / international cards, or stay Argentina-Rebill
@@ -304,6 +334,6 @@ sacrifice the transaction** until the reference is unassailable.
 
 ---
 
-*Roadmap rewritten: 4 June 2026 (v1.30.3), reframed around the positioning thesis.*
+*Estado v1.76→v1.100 agregado: 4 July 2026. Roadmap rewritten: 4 June 2026 (v1.30.3), reframed around the positioning thesis.*
 *Prior: 13 May 2026 (v1.13→v1.20 milestone plan, now historical).*
 *Real bottleneck: the first verified dollar + institutional sales motion (owner-led).*

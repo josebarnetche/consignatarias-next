@@ -1,3 +1,8 @@
+> ⚠️ **OBSOLETO (2026-07-04).** PRO Usuario fue **retirado**: todas las herramientas del productor
+> son gratis y los gates (`ProReveal`/`RequirePro`) quedaron en passthrough. NO construyas nuevos
+> muros PRO Usuario siguiendo este documento — queda como referencia histórica del estándar de
+> gating blando. El modelo vigente: productor gratis; revenue = Enterprise API/MCP + PRO Consignataria.
+
 # PRO Product Standard — consignatarias.com.ar
 
 > El estándar de los productos **PRO Usuario** (ARS 7.900/mes). Todo agente que construye

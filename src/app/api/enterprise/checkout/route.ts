@@ -8,8 +8,8 @@ export const dynamic = 'force-dynamic'
 /**
  * POST /api/enterprise/checkout
  *
- * Creates a Rebill payment link for Enterprise Starter (USD 99/mes facturado
- * en ARS al equivalente). Requires logged-in user. Returns { checkoutUrl }.
+ * Creates a Rebill payment link for Enterprise Starter (USD 49/mes facturado
+ * en ARS al equivalente — ver src/lib/rebill.ts). Requires logged-in user. Returns { checkoutUrl }.
  *
  * Higher tiers (Growth, Scale) stay sales-led via mailto for now.
  */

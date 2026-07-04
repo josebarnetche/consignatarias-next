@@ -21,8 +21,9 @@ export interface PlanLimits {
 }
 
 export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
-  starter: { monthlyQuota: 1_000, rateLimitPerMin: 30 },
-  growth: { monthlyQuota: 50_000, rateLimitPerMin: 300 },
+  // Cuotas = las publicadas en /enterprise (v1.100.1; antes 1k/50k, menos que lo vendido)
+  starter: { monthlyQuota: 10_000, rateLimitPerMin: 30 },
+  growth: { monthlyQuota: 100_000, rateLimitPerMin: 300 },
   scale: { monthlyQuota: 5_000_000, rateLimitPerMin: 5_000 },
 }
 
