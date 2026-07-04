@@ -8,11 +8,11 @@ import { PLATFORM_STATS } from '@/lib/platform-stats'
 export const metadata: Metadata = {
   title: 'Enterprise — API y datos del mercado ganadero argentino',
   description:
-    'API completa, webhooks, reportes y dashboards sobre el mercado ganadero argentino. 3 planes: Starter USD 99, Growth USD 500, Scale por volumen. Para apps agtech, frigoríficos, bancos y traders.',
+    'API completa, webhooks, reportes y dashboards sobre el mercado ganadero argentino. 3 planes: Starter USD 49, Growth USD 299, Scale a medida. Para apps agtech, frigoríficos, bancos y traders.',
   openGraph: {
     title: 'Enterprise',
     description:
-      'API del mercado ganadero argentino. Starter USD 99, Growth USD 500, Scale request-based.',
+      'API del mercado ganadero argentino. Starter USD 49, Growth USD 299, Scale a medida.',
     url: 'https://www.consignatarias.com.ar/enterprise',
     type: 'website',
   },
@@ -63,12 +63,12 @@ const TIERS = [
   {
     name: 'Starter',
     tagline: 'Para apps y dev',
-    price: '99',
+    price: '49',
     priceUnit: 'USD/mes',
     cycle: 'Mensual o anual (–15%)',
     description:
       'Apps en desarrollo, productos chicos, valorización de rodeos, dashboards internos. Lectura diaria suficiente.',
-    requests: '1.000 req/mes',
+    requests: '10.000 req/mes',
     features: [
       'API key dedicada',
       'INMAG diario + serie histórica completa (desde 2015)',
@@ -87,12 +87,12 @@ const TIERS = [
   {
     name: 'Growth',
     tagline: 'API + reportes + dashboards',
-    price: '500',
+    price: '299',
     priceUnit: 'USD/mes',
     cycle: 'Mensual o anual (–15%)',
     description:
       'Apps en producción, frigoríficos, bancos, agroinsumos. Todo lo que necesitás para construir y operar.',
-    requests: '50.000 req/mes',
+    requests: '100.000 req/mes',
     features: [
       'Todo lo del plan Starter',
       'Webhooks ilimitados',
@@ -113,9 +113,9 @@ const TIERS = [
   {
     name: 'Scale',
     tagline: 'Apps de alto volumen',
-    price: 'desde 700',
-    priceUnit: 'USD/mes',
-    cycle: 'Por volumen · calculadora abajo',
+    price: 'A medida',
+    priceUnit: '',
+    cycle: 'Por volumen · hablemos',
     description:
       'Apps con miles de usuarios, integraciones con sistemas internos, múltiples equipos consumiendo la API.',
     requests: '100K → 5M req/mes',

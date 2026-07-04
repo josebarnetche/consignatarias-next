@@ -1,7 +1,6 @@
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 import PlanesTracker from './PlanesTracker'
-import MobileStickyCTA from './MobileStickyCTA'
 import PlatformStats from './PlatformStats'
 import SocialProofToast from './SocialProofToast'
 import PlanesToggle from './PlanesToggle'
@@ -174,13 +173,8 @@ export default function PlanesPage() {
           </div>
         </div>
 
-        {/* Bottom spacer for mobile sticky CTA */}
-        <div className="h-20 md:hidden" />
       </div>
 
-      <Suspense fallback={null}>
-        <MobileStickyCTA />
-      </Suspense>
       <SocialProofToast />
     </>
   )

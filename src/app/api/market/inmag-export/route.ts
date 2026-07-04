@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { getCurrentSession } from '@/lib/user-tier'
 import { fetchInmagSeries } from '@/lib/charts/data'
 
 // Reads the session cookie + the DB → must render dynamically.
@@ -13,21 +12,7 @@ export const dynamic = 'force-dynamic'
  * window (free + indexable); the complete decade-long dataset is a PRO asset.
  */
 export async function GET() {
-  const { user, tier } = await getCurrentSession()
-
-  if (tier !== 'pro') {
-    return NextResponse.json(
-      {
-        error: 'pro_required',
-        message: user
-          ? 'La descarga del histórico completo es una función PRO. Activá PRO Usuario para exportarlo.'
-          : 'Iniciá sesión y activá PRO Usuario para descargar el histórico completo del INMAG.',
-        upgrade: '/upgrade?next=/mercado/inmag',
-      },
-      { status: 403 },
-    )
-  }
-
+  // PRO Usuario retirado (2026-07): el histórico completo del INMAG es GRATIS.
   const today = new Date().toISOString().slice(0, 10)
   const rows = await fetchInmagSeries('2015-01-01', today)
   const clean = rows.filter((r) => r.inmag !== null)

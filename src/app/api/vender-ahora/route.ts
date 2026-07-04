@@ -88,8 +88,10 @@ export async function GET(req: NextRequest) {
     usd_blue: usdBlue,
   }
 
-  // ── Gating: PRO siempre; free obtiene UNA probada completa por semana (1 categoría). ──
-  const isPro = session.tier === 'pro'
+  // ── PRO Usuario retirado (2026-07): ¿vendo ahora? es GRATIS para todos.
+  //    Se mantiene la maquinaria de "probada" abajo por compat (queda inerte). ──
+  const isPro = true
+  void session
   const now = new Date()
   const weekKey = isoWeekKey(now)
 

@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
-import { getCurrentSession } from '@/lib/user-tier'
-import { hasApiAccess } from '@/lib/api-keys'
 import { getReport, recordDownload } from '@/lib/reports'
 
 export const runtime = 'nodejs'
@@ -23,14 +21,8 @@ export async function GET(
     )
   }
 
-  // PRO Usuario OR any Enterprise tier
-  const session = await getCurrentSession()
-  const isEnterprise = await hasApiAccess(user.id)
-  if (session.tier !== 'pro' && !isEnterprise) {
-    return NextResponse.redirect(
-      new URL('/upgrade?next=/cuenta/reportes', req.url),
-    )
-  }
+  // PRO Usuario retirado (2026-07): los reportes son gratis para cualquier cuenta
+  // (el login de arriba alcanza — es el intercambio de valor del usuario free).
 
   // Report exists?
   const report = getReport(slug)

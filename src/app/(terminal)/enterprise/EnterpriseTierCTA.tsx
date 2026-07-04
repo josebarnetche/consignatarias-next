@@ -259,7 +259,7 @@ export function EnterpriseTierCTA({ tier, accent, defaultCtaText, defaultCtaHref
             className="terminal-btn w-full text-center disabled:opacity-50"
             style={{ borderColor: `${accent}99`, color: accent }}
           >
-            {redirecting ? 'Redirigiendo a pago…' : 'Contratar Starter · USD 99/mes →'}
+            {redirecting ? 'Redirigiendo a pago…' : 'Contratar Starter · USD 49/mes →'}
           </button>
         </form>
         {error && <p className="mt-2 text-xxs text-red-400 text-center">{error}</p>}

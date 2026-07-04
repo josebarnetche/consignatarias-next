@@ -40,7 +40,7 @@ INMAG: ${inmagStr} ARS/kg vivo (Δ ${pctStr} vs jornada previa: ${prevStr})
 
 > El precio de referencia del ganado argentino, hecho dato: calendario unificado de remates + directorio de consignatarias y frigoríficos + inteligencia del mercado bovino argentino (INMAG diario, USD blue, familia de índices). Cobertura: ~${rematesIdx} remates indexados, ${consignatarias} consignatarias canónicas, ${frig} frigoríficos habilitados MAGYP, 12 provincias. Última actualización de datos: ${lastDate}.
 
-Owned by Memola Medios SAS (\`agro@memola.com.ar\`). Public-data first, paywall layered on PRO features + Enterprise API.
+Owned by Memola Medios SAS (\`agro@memola.com.ar\`). Free for producers; monetized via the Enterprise API + MCP (data-as-a-service) and consignataria reach.
 
 ## For AI agents — MCP server (fastest, structured access)
 
@@ -68,11 +68,11 @@ Los tools de lectura son públicos. \`crear_alerta_precio\` requiere una API key
 
 ## What this site is
 
-\`consignatarias.com.ar\` is the **price-discovery / reference-index layer** of the Argentine cattle market — the public, citable reference the country never institutionalized (the role CEPEA/B3 plays in Brazil, MPR in the US, the OYCI in Australia). Three product lines coexist:
+\`consignatarias.com.ar\` is the **price-discovery / reference-index layer** of the Argentine cattle market — the public, citable reference the country never institutionalized (the role CEPEA/B3 plays in Brazil, MPR in the US, the OYCI in Australia). Business model:
 
-1. **Directorio + calendario** (free, indexable) — remates, consignatarias, frigorificos, ciudades, tipos
-2. **PRO Usuario** (ARS 7.900/mes) — power-user dashboard, exports, alerts
-3. **Enterprise API** (\`cnsg_live_*\` keys, Bearer auth) — \`/api/precios\`, \`/api/lots\`. Tiers Starter / Growth / Scale, self-serve via Rebill.
+1. **Productor — free.** The whole observatory is free for cattle producers: INMAG, prices, remates, directory, calculators, alerts. They are the audience that makes the data authoritative (the moat), not a revenue line.
+2. **Enterprise API + MCP** (\`cnsg_live_*\` keys, Bearer auth) — \`/api/precios\`, \`/api/lots\` + the MCP server. Tiers **Starter USD 49, Growth USD 299, Scale a medida** (por volumen). This is the revenue: apps, AI agents, agtech, frigoríficos, traders, funds, banks pay for programmatic access.
+3. **Consignataria — alcance** (USD 39/mo, prueba gratis) — reach: promote auctions to the producer base + featured profile.
 
 ## Current reference reading (as of ${lastDate})
 
