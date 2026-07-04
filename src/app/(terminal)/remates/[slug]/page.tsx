@@ -538,7 +538,7 @@ export default async function RemateDetailPage({ params }: Props) {
               {/* Type */}
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-lg bg-slate-800">
-                  <Tag className="w-6 h-6 text-amber-400" />
+                  <Tag className="w-6 h-6 text-accent" />
                 </div>
                 <div>
                   <p className="text-sm text-slate-500 mb-1">Tipo</p>

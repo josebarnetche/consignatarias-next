@@ -75,7 +75,7 @@ export default function LiveHero(p: LiveHeroProps) {
 
       {/* headline broadsheet */}
       <h1 className={`text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-normal text-zinc-100 tracking-[-0.03em] leading-[0.98] mb-7 ${reveal(60)}`}>
-        Los <span className="text-amber-400">consignatarios</span>{' '}
+        Los <span className="text-accent">consignatarios</span>{' '}
         <span className="text-zinc-500">que mueven el mercado argentino.</span>
       </h1>
 

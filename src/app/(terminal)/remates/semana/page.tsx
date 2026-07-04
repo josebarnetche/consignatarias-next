@@ -112,7 +112,7 @@ function RemateCard({ remate }: { remate: Remate }) {
         <div className="flex-1 min-w-0">
           <Link
             href={consignatariaProfilePath(remate.consignatariaSlug)}
-            className="text-lg font-medium text-zinc-100 hover:text-amber-400 transition-colors line-clamp-1"
+            className="text-lg font-medium text-zinc-100 hover:text-accent transition-colors line-clamp-1"
           >
             {remate.consignatariaName}
           </Link>
@@ -128,7 +128,7 @@ function RemateCard({ remate }: { remate: Remate }) {
 
       {/* Details */}
       <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-400 mb-3">
-        <div className="flex items-center gap-1.5 text-amber-400/80">
+        <div className="flex items-center gap-1.5 text-accent/80">
           <Calendar className="w-3.5 h-3.5" />
           <span className="font-medium">{formatDate(remate.date)}</span>
         </div>
@@ -276,7 +276,7 @@ export default function RematesSemanaPage() {
         {count > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-amber-400">{count}</div>
+              <div className="text-2xl font-bold text-accent">{count}</div>
               <div className="text-xs text-zinc-500">Remates</div>
             </div>
             <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 text-center">
@@ -320,7 +320,7 @@ export default function RematesSemanaPage() {
             <div className="flex flex-wrap justify-center gap-3 mt-6">
               <Link
                 href="/remates"
-                className="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm font-medium rounded hover:bg-amber-500/20 transition-colors"
+                className="px-4 py-2 bg-sky-500/10 border border-sky-500/30 text-accent text-sm font-medium rounded hover:bg-sky-500/20 transition-colors"
               >
                 Ver todos los remates
               </Link>
@@ -339,11 +339,11 @@ export default function RematesSemanaPage() {
               .map(([date, dateRemates]) => (
                 <section key={date}>
                   <h2 className="text-lg font-medium text-zinc-300 mb-3 flex items-center gap-2 sticky top-0 bg-zinc-950/90 py-2 z-10">
-                    <Calendar className="w-4 h-4 text-amber-400" />
+                    <Calendar className="w-4 h-4 text-accent" />
                     {formatDate(date)}
                     <span className="text-sm text-zinc-600">({dateRemates.length})</span>
                     {date === todayStr && (
-                      <span className="px-2 py-0.5 text-xs bg-emerald-500/20 text-emerald-400 rounded">HOY</span>
+                      <span className="px-2 py-0.5 text-xs bg-sky-500/20 text-accent rounded">HOY</span>
                     )}
                   </h2>
                   <div className="space-y-3">
@@ -372,7 +372,7 @@ export default function RematesSemanaPage() {
           </Link>
           <Link
             href="/remates"
-            className="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm rounded hover:bg-amber-500/20 transition-colors"
+            className="px-4 py-2 bg-sky-500/10 border border-sky-500/30 text-accent text-sm rounded hover:bg-sky-500/20 transition-colors"
           >
             Calendario Completo
           </Link>
@@ -394,7 +394,7 @@ export default function RematesSemanaPage() {
             </p>
             <p>
               Podés filtrar por provincia, tipo de remate o consignataria en nuestro{' '}
-              <Link href="/remates" className="text-amber-400 hover:underline">calendario principal de remates</Link>.
+              <Link href="/remates" className="text-accent hover:underline">calendario principal de remates</Link>.
               Muchos remates ofrecen transmisión en vivo por YouTube o plataformas propias.
             </p>
           </div>
@@ -404,19 +404,19 @@ export default function RematesSemanaPage() {
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href="/mercado"
-            className="text-sm text-amber-500/80 hover:text-amber-400 transition-colors"
+            className="text-sm text-accent/80 hover:text-accent-bright transition-colors"
           >
             Precios del mercado →
           </Link>
           <Link
             href="/consignatarias"
-            className="text-sm text-amber-500/80 hover:text-amber-400 transition-colors"
+            className="text-sm text-accent/80 hover:text-accent-bright transition-colors"
           >
             Directorio de consignatarias →
           </Link>
           <Link
             href="/reporte-semanal"
-            className="text-sm text-amber-500/80 hover:text-amber-400 transition-colors"
+            className="text-sm text-accent/80 hover:text-accent-bright transition-colors"
           >
             Descargar reporte semanal →
           </Link>

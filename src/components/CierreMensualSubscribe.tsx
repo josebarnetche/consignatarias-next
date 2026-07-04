@@ -7,7 +7,8 @@ import { useState } from 'react'
  * "Subscribe and on the 1st of each month you get the average of the month
  * that closed." Posts to /api/newsletter with source='cierre-mensual'.
  *
- * accent: 'amber' (arrendamiento) | 'emerald' (inmag).
+ * accent: 'amber' (arrendamiento) | 'emerald' (inmag). Nota: ambas variantes
+ * renderizan el acento de marca (cielo); solo el ✓ de éxito conserva color propio.
  */
 export default function CierreMensualSubscribe({
   accent = 'amber',
@@ -28,8 +29,8 @@ export default function CierreMensualSubscribe({
   const [msg, setMsg] = useState('')
 
   const c = accent === 'emerald'
-    ? { ring: 'focus-within:border-emerald-500/60', btn: 'bg-emerald-500 hover:bg-emerald-400', text: 'text-emerald-400', border: 'border-emerald-500/20', glow: 'from-emerald-500/5' }
-    : { ring: 'focus-within:border-amber-500/60', btn: 'bg-amber-500 hover:bg-amber-400', text: 'text-amber-400', border: 'border-amber-500/20', glow: 'from-amber-500/5' }
+    ? { ring: 'focus-within:border-sky-500/60', btn: 'bg-accent hover:bg-sky-300', text: 'text-emerald-400', border: 'border-sky-500/20', glow: 'from-sky-500/5' }
+    : { ring: 'focus-within:border-sky-500/60', btn: 'bg-accent hover:bg-sky-300', text: 'text-accent', border: 'border-sky-500/20', glow: 'from-sky-500/5' }
 
   const nextMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1)
     .toLocaleDateString('es-AR', { month: 'long' })

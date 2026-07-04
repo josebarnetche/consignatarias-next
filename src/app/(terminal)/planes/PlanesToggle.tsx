@@ -129,12 +129,12 @@ export default function PlanesToggle() {
       {/* Productor — GRATIS, primero (es la base del modelo) */}
       <div
         className="terminal-panel flex flex-col md:flex-row md:items-center gap-4 mb-5 px-panel py-4"
-        style={{ borderColor: 'rgba(16,185,129,0.35)' }}
+        style={{ borderColor: 'rgba(56,189,248,0.35)' }}
       >
         <div className="flex-1">
           <div className="flex items-baseline gap-2 flex-wrap">
-            <span className="text-2xl font-terminal tabular-nums text-emerald-400">$0</span>
-            <span className="text-emerald-300 text-label tracking-widest">PRODUCTOR · GRATIS · SIEMPRE</span>
+            <span className="text-2xl font-terminal tabular-nums text-accent">$0</span>
+            <span className="text-sky-300 text-label tracking-widest">PRODUCTOR · GRATIS · SIEMPRE</span>
           </div>
           <p className="text-zinc-400 text-data mt-1 max-w-2xl">
             Todo el observatorio, sin costo: INMAG diario, precios por categoría, calendario de remates,
@@ -145,7 +145,7 @@ export default function PlanesToggle() {
         <Link
           href="/login"
           className="terminal-btn text-center shrink-0"
-          style={{ borderColor: 'rgba(16,185,129,0.6)', color: '#10b981' }}
+          style={{ borderColor: 'rgba(56,189,248,0.6)', color: '#38bdf8' }}
         >
           Crear cuenta gratis con Google →
         </Link>

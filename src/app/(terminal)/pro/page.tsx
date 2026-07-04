@@ -99,7 +99,7 @@ export default function ProTourPage() {
           <p className="text-zinc-600 text-xxs">
             Sin permanencia · Cancelás cuando quieras · Pago por Rebill
           </p>
-          <p className="text-emerald-400/90 text-xxs">
+          <p className="text-accent/90 text-xxs">
             🎁 ¿No querés pagar a ciegas?{' '}
             <Link href="/mercado/vender-ahora" className="underline underline-offset-2 hover:text-accent">
               Probá un veredicto completo gratis esta semana

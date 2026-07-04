@@ -20,7 +20,7 @@ export async function FaenaStats() {
     <div className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-6">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-semibold text-zinc-100">Faena Nacional</h3>
-        <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 text-xs text-emerald-400">
+        <span className="rounded-full bg-sky-500/10 border border-sky-500/20 px-2 py-1 text-xs text-accent">
           Datos oficiales
         </span>
       </div>

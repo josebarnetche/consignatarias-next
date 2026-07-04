@@ -295,9 +295,9 @@ export function DTEPeriodCompare({ dtes }: DTEPeriodCompareProps) {
                     <ChangeIndicator change={comparison.cabezas} />
                   </div>
                   <div className="flex items-center justify-center gap-2 text-lg font-bold">
-                    <span className="text-amber-500">{stats1.totalCabezas.toLocaleString('es-AR')}</span>
+                    <span className="text-accent">{stats1.totalCabezas.toLocaleString('es-AR')}</span>
                     <span className="text-gray-500">vs</span>
-                    <span className="text-amber-500/60">{stats2.totalCabezas.toLocaleString('es-AR')}</span>
+                    <span className="text-accent/60">{stats2.totalCabezas.toLocaleString('es-AR')}</span>
                   </div>
                   <p className="text-xs text-gray-500 mt-1">cabezas</p>
                 </div>

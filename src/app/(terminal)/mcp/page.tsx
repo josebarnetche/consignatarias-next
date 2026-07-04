@@ -28,8 +28,8 @@ export default function McpPage() {
     <div className="min-h-screen">
       {/* Hero */}
       <section className="max-w-4xl mx-auto px-4 pt-14 pb-8">
-        <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/[0.07] px-3 py-1 text-xxs font-terminal uppercase tracking-widest text-emerald-300">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> AI-ready · MCP server
+        <span className="inline-flex items-center gap-2 rounded-full border border-sky-500/40 bg-sky-500/[0.07] px-3 py-1 text-xxs font-terminal uppercase tracking-widest text-sky-300">
+          <span className="h-1.5 w-1.5 rounded-full bg-accent" /> AI-ready · MCP server
         </span>
         <h1 className="mt-5 text-3xl sm:text-4xl font-bold text-white leading-tight">
           El mercado ganadero argentino, como tools para tu agente IA
@@ -47,7 +47,7 @@ export default function McpPage() {
         <div className="terminal-panel rounded-xl p-5 sm:p-6">
           <p className="text-label tracking-widest text-zinc-400 mb-3">CONECTAR</p>
           <p className="text-sm text-zinc-400 mb-2">Endpoint (Streamable HTTP, JSON-RPC 2.0):</p>
-          <code className="block bg-black/40 border border-terminal-border rounded-lg px-4 py-3 text-emerald-300 font-mono text-sm break-all">
+          <code className="block bg-black/40 border border-terminal-border rounded-lg px-4 py-3 text-sky-300 font-mono text-sm break-all">
             {ENDPOINT}
           </code>
           <p className="text-sm text-zinc-400 mt-4 mb-2">Config del cliente (Claude Desktop, Cursor, Windsurf…):</p>
@@ -69,7 +69,7 @@ export default function McpPage() {
           {TOOLS.map((t) => (
             <div key={t.name} className="bg-terminal-panel p-4 flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <code className="text-emerald-300 font-mono text-sm">{t.name}</code>
+                <code className="text-sky-300 font-mono text-sm">{t.name}</code>
                 <p className="text-zinc-400 text-sm mt-0.5">{t.desc}</p>
               </div>
               <span
@@ -90,7 +90,7 @@ export default function McpPage() {
 
       {/* CTA */}
       <section className="max-w-4xl mx-auto px-4 pb-16">
-        <div className="rounded-xl border border-amber-500/30 bg-amber-500/[0.05] p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
+        <div className="rounded-xl border border-sky-500/30 bg-sky-500/[0.05] p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
           <div>
             <h2 className="text-lg font-semibold text-white">¿Construís sobre datos ganaderos?</h2>
             <p className="text-sm text-zinc-400 mt-1">
@@ -101,7 +101,7 @@ export default function McpPage() {
             <Link href="/api-docs" className="rounded-lg border border-terminal-border px-4 py-2 text-sm text-zinc-200 hover:border-zinc-500">
               Ver la API
             </Link>
-            <Link href="/planes" className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-black hover:bg-amber-400">
+            <Link href="/planes" className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-zinc-950 hover:bg-sky-300">
               Ver planes
             </Link>
           </div>

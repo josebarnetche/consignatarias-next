@@ -114,7 +114,7 @@ function RemateCard({ remate }: { remate: Remate }) {
           <div className="flex items-center gap-2">
             <Link
               href={consignatariaProfilePath(remate.consignatariaSlug)}
-              className="text-lg font-medium text-zinc-200 hover:text-amber-400 transition-colors line-clamp-1"
+              className="text-lg font-medium text-zinc-200 hover:text-accent transition-colors line-clamp-1"
             >
               {remate.consignatariaName}
             </Link>
@@ -291,7 +291,7 @@ export default function RematesAnterioresPage() {
             <div className="flex flex-wrap justify-center gap-3 mt-6">
               <Link
                 href="/remates"
-                className="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm font-medium rounded hover:bg-amber-500/20 transition-colors"
+                className="px-4 py-2 bg-sky-500/10 border border-sky-500/30 text-accent text-sm font-medium rounded hover:bg-sky-500/20 transition-colors"
               >
                 Ver próximos remates
               </Link>
@@ -345,19 +345,19 @@ export default function RematesAnterioresPage() {
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href="/remates"
-            className="text-sm text-amber-500/80 hover:text-amber-400 transition-colors"
+            className="text-sm text-accent/80 hover:text-accent-bright transition-colors"
           >
             ← Ver próximos remates
           </Link>
           <Link
             href="/consignatarias"
-            className="text-sm text-amber-500/80 hover:text-amber-400 transition-colors"
+            className="text-sm text-accent/80 hover:text-accent-bright transition-colors"
           >
             Directorio de consignatarias →
           </Link>
           <Link
             href="/mercado"
-            className="text-sm text-amber-500/80 hover:text-amber-400 transition-colors"
+            className="text-sm text-accent/80 hover:text-accent-bright transition-colors"
           >
             Precios del mercado →
           </Link>

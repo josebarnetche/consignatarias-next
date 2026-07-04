@@ -31,9 +31,9 @@ export default function PriceThresholdAlertSignup({
   const [state, setState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   const [msg, setMsg] = useState('')
 
-  const ring = accent === 'amber' ? 'focus-within:border-amber-500/50' : 'focus-within:border-emerald-500/50'
-  const btn = accent === 'amber' ? 'bg-amber-500 hover:bg-amber-400' : 'bg-emerald-500 hover:bg-emerald-400'
-  const chipOn = accent === 'amber' ? 'bg-amber-500 text-black border-amber-500' : 'bg-emerald-500 text-black border-emerald-500'
+  const ring = accent === 'amber' ? 'focus-within:border-sky-500/50' : 'focus-within:border-sky-500/50'
+  const btn = accent === 'amber' ? 'bg-accent hover:bg-sky-300' : 'bg-accent hover:bg-sky-300'
+  const chipOn = accent === 'amber' ? 'bg-accent text-zinc-950 border-accent' : 'bg-accent text-zinc-950 border-accent'
   const fmt = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
 
   async function submit(e: React.FormEvent) {

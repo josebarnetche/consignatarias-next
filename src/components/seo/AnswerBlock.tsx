@@ -13,8 +13,8 @@ import type { ReactNode } from 'react'
  */
 export function AnswerBlock({ question, answer }: { question: string; answer: ReactNode }) {
   return (
-    <div className="mb-6 max-w-2xl rounded-lg border border-amber-500/25 bg-amber-500/[0.04] px-4 py-3">
-      <p className="text-xxs font-terminal uppercase tracking-wider text-amber-500/80 mb-1.5">
+    <div className="mb-6 max-w-2xl rounded-lg border border-sky-500/25 bg-sky-500/[0.04] px-4 py-3">
+      <p className="text-xxs font-terminal uppercase tracking-wider text-accent/80 mb-1.5">
         {question}
       </p>
       <p className="speakable-content text-sm text-zinc-200 leading-relaxed">{answer}</p>

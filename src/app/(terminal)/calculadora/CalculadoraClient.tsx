@@ -180,8 +180,8 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
             const price = prices.categories[cat.value]
             return (
               <Link key={cat.value} href={`/mercado/${cat.value}`} className="text-center group">
-                <div className="text-xxs text-zinc-500 uppercase group-hover:text-amber-400 transition-colors">{cat.label}</div>
-                <div className="text-sm text-zinc-200 font-mono group-hover:text-amber-400 transition-colors">
+                <div className="text-xxs text-zinc-500 uppercase group-hover:text-accent transition-colors">{cat.label}</div>
+                <div className="text-sm text-zinc-200 font-mono group-hover:text-accent transition-colors">
                   {price ? fmtCurrency(price.current) : '—'}
                 </div>
               </Link>
@@ -297,7 +297,7 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
         <div className="space-y-6 mt-6">
           {/* ── GANCHO GRATIS: valor estimado (data pública INMAG) ── */}
           <div className="terminal-panel">
-            <div className="terminal-panel-header text-emerald-400">Valor bruto estimado</div>
+            <div className="terminal-panel-header text-accent">Valor bruto estimado</div>
             <div className="px-panel py-6">
               <div className="grid grid-cols-2 gap-6 mb-6">
                 <HeroNumber label="Total cabezas" value={fmt(totals.totalCabezas)} />

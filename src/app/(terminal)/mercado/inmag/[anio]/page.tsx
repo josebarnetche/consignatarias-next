@@ -280,7 +280,7 @@ export default async function InmagYearPage({
                 href={`/mercado/inmag/${y}`}
                 className={`text-xxs font-terminal px-2 py-1 rounded border ${
                   y === year
-                    ? 'border-amber-500/60 text-amber-400 bg-amber-500/10'
+                    ? 'border-sky-500/60 text-accent bg-sky-500/10'
                     : 'border-terminal-border text-zinc-400 hover:text-zinc-200'
                 }`}
               >

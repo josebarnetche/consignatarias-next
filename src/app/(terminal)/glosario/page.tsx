@@ -256,7 +256,7 @@ export default function GlosarioPage() {
                 {entry.link && (
                   <Link 
                     href={entry.link.href} 
-                    className="block mt-2 text-xs text-amber-400 hover:text-amber-300 transition-colors"
+                    className="block mt-2 text-xs text-accent hover:text-sky-300 transition-colors"
                   >
                     {entry.link.text}
                   </Link>

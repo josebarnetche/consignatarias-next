@@ -22,10 +22,10 @@ export default function DteCtaClient() {
   if (!isLoggedIn) return null
   
   return (
-    <section className="mt-8 bg-gradient-to-r from-amber-500/10 to-emerald-500/10 border border-amber-500/20 rounded-lg p-5">
+    <section className="mt-8 bg-gradient-to-r from-sky-500/10 to-sky-500/5 border border-sky-500/20 rounded-lg p-5">
       <div className="flex items-start gap-4">
-        <div className="p-2.5 bg-amber-500/20 rounded-lg shrink-0">
-          <Upload className="w-5 h-5 text-amber-400" />
+        <div className="p-2.5 bg-sky-500/20 rounded-lg shrink-0">
+          <Upload className="w-5 h-5 text-accent" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="text-base font-medium text-zinc-100 mb-1">
@@ -37,7 +37,7 @@ export default function DteCtaClient() {
           </p>
           <Link
             href="/mi-cuenta/guias"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 border border-amber-500/30 text-amber-400 text-sm font-medium rounded hover:bg-amber-500/30 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-sky-500/20 border border-sky-500/30 text-accent text-sm font-medium rounded hover:bg-sky-500/30 transition-colors"
           >
             <Upload className="w-4 h-4" />
             Subir mi DT-e

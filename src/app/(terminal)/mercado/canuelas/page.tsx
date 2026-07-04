@@ -94,7 +94,7 @@ export default function MercadoCanuelasPage() {
         {/* Main Price Card */}
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
-            <Building2 className="w-5 h-5 text-amber-500" />
+            <Building2 className="w-5 h-5 text-accent" />
             <span className="text-zinc-400 text-sm">Mercado de Cañuelas (MAG) — Índice INMAG</span>
           </div>
 
@@ -141,7 +141,7 @@ export default function MercadoCanuelasPage() {
         {/* Info Section */}
         <div className="bg-zinc-900/30 border border-zinc-800 rounded-lg p-6 mb-8">
           <h2 className="text-lg font-semibold text-zinc-100 mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-amber-500" />
+            <MapPin className="w-5 h-5 text-accent" />
             Cañuelas, el Mercado Agroganadero (ex Liniers)
           </h2>
           <div className="text-zinc-400 text-sm space-y-4">
@@ -167,7 +167,7 @@ export default function MercadoCanuelasPage() {
         {/* Related Links */}
         <div className="border-t border-zinc-800 pt-6">
           <h3 className="text-zinc-300 font-medium mb-4 flex items-center gap-2">
-            <BarChart3 className="w-4 h-4 text-amber-500" />
+            <BarChart3 className="w-4 h-4 text-accent" />
             Más datos de mercado
           </h3>
           <div className="flex flex-wrap gap-2">

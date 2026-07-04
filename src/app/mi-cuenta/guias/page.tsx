@@ -163,8 +163,8 @@ export default function MisGuiasPage() {
         )}
 
         {/* How it works - Step by step visual guide */}
-        <div className="mb-12 bg-gradient-to-r from-amber-900/20 to-gray-900/50 border border-amber-800/30 rounded-xl p-6">
-          <h2 className="text-lg font-semibold text-amber-400 mb-4 flex items-center gap-2">
+        <div className="mb-12 bg-gradient-to-r from-sky-900/20 to-gray-900/50 border border-sky-800/30 rounded-xl p-6">
+          <h2 className="text-lg font-semibold text-accent mb-4 flex items-center gap-2">
             <Zap className="w-5 h-5" />
             ¿Cómo funciona?
           </h2>
@@ -172,15 +172,15 @@ export default function MisGuiasPage() {
             {howToSteps.map((step, index) => (
               <div key={index} className="relative">
                 {/* Step number */}
-                <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-amber-600 flex items-center justify-center text-xs font-bold text-white">
+                <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-accent flex items-center justify-center text-xs font-bold text-zinc-950">
                   {index + 1}
                 </div>
                 <div className="bg-gray-900/60 border border-gray-800 rounded-lg p-4 h-full">
                   <div className="flex items-start gap-2 mb-2">
-                    {index === 0 && <Camera className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />}
-                    {index === 1 && <FileText className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />}
-                    {index === 2 && <Zap className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />}
-                    {index === 3 && <CheckCircle2 className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />}
+                    {index === 0 && <Camera className="w-4 h-4 text-accent shrink-0 mt-0.5" />}
+                    {index === 1 && <FileText className="w-4 h-4 text-accent shrink-0 mt-0.5" />}
+                    {index === 2 && <Zap className="w-4 h-4 text-accent shrink-0 mt-0.5" />}
+                    {index === 3 && <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" />}
                     <h3 className="text-sm font-medium text-white">{step.name}</h3>
                   </div>
                   <p className="text-xs text-gray-400 leading-relaxed">{step.text}</p>
@@ -197,21 +197,21 @@ export default function MisGuiasPage() {
         {/* Benefits */}
         <div className="grid md:grid-cols-3 gap-4 mb-12">
           <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
-            <FileText className="w-8 h-8 text-amber-500 mb-3" />
+            <FileText className="w-8 h-8 text-accent mb-3" />
             <h3 className="font-semibold text-white mb-1">Extracción automática</h3>
             <p className="text-sm text-gray-400">
               Subí una foto y extraemos los datos automáticamente.
             </p>
           </div>
           <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
-            <History className="w-8 h-8 text-amber-500 mb-3" />
+            <History className="w-8 h-8 text-accent mb-3" />
             <h3 className="font-semibold text-white mb-1">Historial completo</h3>
             <p className="text-sm text-gray-400">
               Todas tus guías en un solo lugar, buscables y exportables.
             </p>
           </div>
           <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
-            <TrendingUp className="w-8 h-8 text-amber-500 mb-3" />
+            <TrendingUp className="w-8 h-8 text-accent mb-3" />
             <h3 className="font-semibold text-white mb-1">Analytics</h3>
             <p className="text-sm text-gray-400">
               Visualizá tu operación: cabezas por mes, categorías, tendencias.

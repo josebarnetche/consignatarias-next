@@ -126,7 +126,7 @@ function RemateCard({ remate }: { remate: Remate }) {
         <div className="flex-1 min-w-0">
           <Link
             href={consignatariaProfilePath(remate.consignatariaSlug)}
-            className="text-lg font-medium text-zinc-100 hover:text-amber-400 transition-colors line-clamp-1"
+            className="text-lg font-medium text-zinc-100 hover:text-accent transition-colors line-clamp-1"
           >
             {remate.consignatariaName}
           </Link>
@@ -142,7 +142,7 @@ function RemateCard({ remate }: { remate: Remate }) {
 
       {/* Details */}
       <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-400 mb-3">
-        <div className="flex items-center gap-1.5 text-amber-400/80">
+        <div className="flex items-center gap-1.5 text-accent/80">
           <Calendar className="w-3.5 h-3.5" />
           <span className="font-medium">{formatDateShort(remate.date)}</span>
         </div>
@@ -283,7 +283,7 @@ export default function RematesFinDeSemanaPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
-            <div className="text-2xl font-bold text-amber-400">{count}</div>
+            <div className="text-2xl font-bold text-accent">{count}</div>
             <div className="text-xs text-zinc-500">Remates</div>
           </div>
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
@@ -328,7 +328,7 @@ export default function RematesFinDeSemanaPage() {
           >
             Esta semana
           </Link>
-          <span className="px-3 py-1.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded">
+          <span className="px-3 py-1.5 bg-sky-500/20 text-accent border border-sky-500/30 rounded">
             Fin de semana
           </span>
         </div>
@@ -345,7 +345,7 @@ export default function RematesFinDeSemanaPage() {
             </p>
             <Link
               href="/remates/semana"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded hover:bg-amber-500/30 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-sky-500/20 text-accent border border-sky-500/30 rounded hover:bg-sky-500/30 transition-colors"
             >
               Ver remates de la semana
             </Link>
@@ -356,7 +356,7 @@ export default function RematesFinDeSemanaPage() {
             {saturdayRemates.length > 0 && (
               <section>
                 <h2 className="text-lg font-semibold text-zinc-100 mb-4 flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-amber-400" />
+                  <Calendar className="w-5 h-5 text-accent" />
                   Sábado {new Date(saturday + 'T12:00:00').getDate()} — {saturdayRemates.length} remate{saturdayRemates.length !== 1 ? 's' : ''}
                 </h2>
                 <div className="space-y-3">
@@ -371,7 +371,7 @@ export default function RematesFinDeSemanaPage() {
             {sundayRemates.length > 0 && (
               <section>
                 <h2 className="text-lg font-semibold text-zinc-100 mb-4 flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-amber-400" />
+                  <Calendar className="w-5 h-5 text-accent" />
                   Domingo {new Date(sunday + 'T12:00:00').getDate()} — {sundayRemates.length} remate{sundayRemates.length !== 1 ? 's' : ''}
                 </h2>
                 <div className="space-y-3">

@@ -43,7 +43,7 @@ export function ShareBadge({
         <button
           type="button"
           onClick={onCopy}
-          className="shrink-0 text-xxs font-terminal uppercase tracking-wider text-amber-500/80 hover:text-amber-400 transition-colors"
+          className="shrink-0 text-xxs font-terminal uppercase tracking-wider text-accent/80 hover:text-accent transition-colors"
         >
           {copied ? 'Copiado ✓' : 'Copiar embed'}
         </button>

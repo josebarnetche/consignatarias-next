@@ -120,7 +120,7 @@ export default async function CalendarioPage({ params }: Props) {
                     <div className="text-xs text-zinc-500">{a.location}</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm text-emerald-400">{formatDate(a.date)}</div>
+                    <div className="text-sm text-accent">{formatDate(a.date)}</div>
                     {a.time && <div className="text-xs text-zinc-500">{a.time}</div>}
                   </div>
                 </div>

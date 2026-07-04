@@ -48,7 +48,7 @@ export function SocialProofStats() {
   return (
     <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm">
       <div className="flex items-center gap-2 text-gray-400">
-        <FileText className="w-4 h-4 text-amber-500" />
+        <FileText className="w-4 h-4 text-accent" />
         <span>
           <span className="font-semibold text-white">{stats.totalDtes.toLocaleString('es-AR')}</span>
           {' '}guías procesadas
@@ -57,7 +57,7 @@ export function SocialProofStats() {
       
       {stats.uniqueUsers > 1 && (
         <div className="flex items-center gap-2 text-gray-400">
-          <Users className="w-4 h-4 text-amber-500" />
+          <Users className="w-4 h-4 text-accent" />
           <span>
             <span className="font-semibold text-white">{stats.uniqueUsers}</span>
             {' '}productores activos
@@ -67,7 +67,7 @@ export function SocialProofStats() {
 
       {stats.totalCabezas > 0 && (
         <div className="flex items-center gap-2 text-gray-400">
-          <TrendingUp className="w-4 h-4 text-amber-500" />
+          <TrendingUp className="w-4 h-4 text-accent" />
           <span>
             <span className="font-semibold text-white">{stats.totalCabezas.toLocaleString('es-AR')}</span>
             {' '}cabezas registradas

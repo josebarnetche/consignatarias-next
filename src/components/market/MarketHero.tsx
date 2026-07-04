@@ -41,12 +41,12 @@ interface MarketHeroProps {
 }
 
 const ACCENT_BG: Record<MarketHeroProps['accent'], string> = {
-  emerald: 'from-emerald-950/20 via-zinc-950 to-zinc-950',
-  amber: 'from-amber-950/20 via-zinc-950 to-zinc-950',
+  emerald: 'from-sky-950/20 via-zinc-950 to-zinc-950',
+  amber: 'from-sky-950/20 via-zinc-950 to-zinc-950',
 }
 const ACCENT_GLOW: Record<MarketHeroProps['accent'], string> = {
-  emerald: 'bg-emerald-500/5',
-  amber: 'bg-amber-500/5',
+  emerald: 'bg-sky-500/5',
+  amber: 'bg-sky-500/5',
 }
 
 export function MarketHero({

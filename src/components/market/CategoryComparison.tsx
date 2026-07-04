@@ -125,7 +125,7 @@ export function CategoryComparison() {
   return (
     <div className="terminal-panel">
       <div className="terminal-panel-header flex items-center gap-2">
-        <BarChart3 className="w-4 h-4 text-amber-500" />
+        <BarChart3 className="w-4 h-4 text-accent" />
         <span className="font-heading">COMPARATIVA POR CATEGORÍA</span>
         <span className="text-zinc-500 mx-1">&mdash;</span>
         <span className="text-zinc-500 text-sm normal-case">

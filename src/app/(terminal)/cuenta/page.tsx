@@ -133,18 +133,18 @@ export default async function CuentaPage({ searchParams }: PageProps) {
       {!justUpgraded && (
         <Link
           href="/dashboard"
-          className="block mb-8 border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 rounded-lg p-4 transition-colors group"
+          className="block mb-8 border border-sky-500/30 bg-sky-500/5 hover:bg-sky-500/10 rounded-lg p-4 transition-colors group"
         >
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-emerald-400 font-mono text-sm font-medium">
+              <div className="text-accent font-mono text-sm font-medium">
                 Ir al dashboard →
               </div>
               <div className="text-zinc-500 text-xs font-mono mt-0.5">
                 Tu workspace de datos, reportes y precios
               </div>
             </div>
-            <span className="text-emerald-400/40 group-hover:text-emerald-400 text-xl font-mono transition-colors">
+            <span className="text-accent/40 group-hover:text-accent text-xl font-mono transition-colors">
               ↗
             </span>
           </div>

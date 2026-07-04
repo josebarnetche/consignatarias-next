@@ -303,7 +303,7 @@ export default async function PrecioCategoriaProvinciaPage({
               <strong className="text-zinc-500">Iriarte 2008</strong> (precio interior = precio Liniers − flete −
               gastos de comercialización). Es una <strong className="text-zinc-500">estimación propia</strong>, no un
               precio transado: surge de un dato puntual extrapolado por distancia. El precio real se forma en los{' '}
-              <Link href={`/remates/${provincia}`} className="text-amber-500/80 hover:text-amber-400 underline underline-offset-2">remates en origen</Link>{' '}
+              <Link href={`/remates/${provincia}`} className="text-accent/80 hover:text-accent-bright underline underline-offset-2">remates en origen</Link>{' '}
               y depende de kilaje, terminación y demanda del día.
             </MethodologyMicroBlock>
           </div>

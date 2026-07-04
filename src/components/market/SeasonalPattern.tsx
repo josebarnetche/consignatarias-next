@@ -63,7 +63,7 @@ export function SeasonalPattern() {
   return (
     <div className="terminal-panel">
       <div className="terminal-panel-header flex items-center gap-2">
-        <Calendar className="w-4 h-4 text-amber-500" />
+        <Calendar className="w-4 h-4 text-accent" />
         <span className="font-heading">ESTACIONALIDAD</span>
         <span className="text-zinc-500 mx-1">&mdash;</span>
         <span className="text-zinc-500 text-sm normal-case">Patrones históricos mensuales</span>
@@ -93,7 +93,7 @@ export function SeasonalPattern() {
                           ? 'bg-green-500/70 bottom-1/2' 
                           : 'bg-red-500/70 top-1/2'
                         }
-                        ${isCurrent ? 'ring-2 ring-amber-500 ring-offset-1 ring-offset-zinc-900' : ''}
+                        ${isCurrent ? 'ring-2 ring-sky-500 ring-offset-1 ring-offset-zinc-900' : ''}
                       `}
                       style={{ height: `${barHeight / 2}%` }}
                     />
@@ -102,7 +102,7 @@ export function SeasonalPattern() {
                   {/* Label */}
                   <span className={`
                     text-xxs mt-1
-                    ${isCurrent ? 'text-amber-400 font-bold' : 'text-zinc-500'}
+                    ${isCurrent ? 'text-accent font-bold' : 'text-zinc-500'}
                   `}>
                     {m.month}
                   </span>
@@ -159,9 +159,9 @@ export function SeasonalPattern() {
         {patterns.currentPattern && (
           <div className="mt-4 pt-4 border-t border-zinc-800">
             <div className="flex items-start gap-2">
-              <Lightbulb className="w-4 h-4 text-amber-500 mt-0.5" />
+              <Lightbulb className="w-4 h-4 text-accent mt-0.5" />
               <p className="text-sm text-zinc-400">
-                <span className="text-amber-400 font-medium">{patterns.currentPattern.month}</span>
+                <span className="text-accent font-medium">{patterns.currentPattern.month}</span>
                 {' '}históricamente muestra{' '}
                 <span className={patterns.currentPattern.avgChange >= 0 ? 'text-green-400' : 'text-red-400'}>
                   {fmt(patterns.currentPattern.avgChange)}

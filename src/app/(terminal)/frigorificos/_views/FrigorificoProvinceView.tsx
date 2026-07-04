@@ -266,9 +266,9 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
           </div>
         </div>
 
-        <div className="mt-4 terminal-panel border-amber-500/30 bg-amber-500/5">
-          <div className="terminal-panel-header" style={{ borderBottomColor: 'rgba(245, 158, 11, 0.3)' }}>
-            <span className="text-amber-400 text-label tracking-widest">¿OPERÁS UN FRIGORÍFICO EN {config.displayName.toUpperCase()}?</span>
+        <div className="mt-4 terminal-panel border-sky-500/30 bg-sky-500/5">
+          <div className="terminal-panel-header" style={{ borderBottomColor: 'rgba(56, 189, 248, 0.3)' }}>
+            <span className="text-accent text-label tracking-widest">¿OPERÁS UN FRIGORÍFICO EN {config.displayName.toUpperCase()}?</span>
           </div>
           <div className="px-panel py-4 space-y-3">
             <p className="text-data font-terminal text-zinc-300">
@@ -292,7 +292,7 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
               <Link
                 href="/frigorificos/verificar"
                 rel="nofollow"
-                className="inline-block px-4 py-2.5 bg-amber-500/20 border border-amber-500/40 text-amber-400 text-data font-terminal rounded-terminal hover:bg-amber-500/30 transition-colors"
+                className="inline-block px-4 py-2.5 bg-sky-500/20 border border-sky-500/40 text-accent text-data font-terminal rounded-terminal hover:bg-sky-500/30 transition-colors"
               >
                 Reclamar perfil gratis →
               </Link>

@@ -158,7 +158,7 @@ export default function FAQPage() {
                         <Link
                           key={linkIndex}
                           href={link.href}
-                          className="inline-flex items-center gap-1 text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
+                          className="inline-flex items-center gap-1 text-sm text-accent hover:text-sky-300 transition-colors"
                         >
                           {link.text}
                           <span>→</span>
@@ -190,7 +190,7 @@ export default function FAQPage() {
               </Link>
               <Link
                 href="/remates"
-                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors"
+                className="px-6 py-3 bg-accent hover:bg-sky-300 text-zinc-950 rounded-lg transition-colors"
               >
                 Ver Próximos Remates
               </Link>

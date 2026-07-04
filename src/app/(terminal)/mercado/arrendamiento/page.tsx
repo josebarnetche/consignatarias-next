@@ -270,18 +270,18 @@ export default function ArrendamientoPage() {
               ]}
             />
             <div className="flex items-center gap-3 mb-3">
-              <span className="px-2.5 py-1 bg-amber-500/10 text-amber-400 text-xs font-medium rounded-full border border-amber-500/20">
+              <span className="px-2.5 py-1 bg-sky-500/10 text-accent text-xs font-medium rounded-full border border-sky-500/20">
                 ACTUALIZADO HOY
               </span>
               <span className="text-sm text-zinc-500">Mercado Agroganadero</span>
             </div>
             <h1 className="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-3">
               Índice Novillo
-              <span className="block text-amber-400">Arrendamiento</span>
+              <span className="block text-accent">Arrendamiento</span>
             </h1>
             <p className="text-zinc-400 max-w-xl text-lg">
               Precio de referencia para contratos de arrendamiento rural en Argentina.
-              Basado en el <Link href="/mercado/inmag" className="text-amber-400 hover:underline">INMAG</Link> del Mercado Agroganadero.
+              Basado en el <Link href="/mercado/inmag" className="text-accent hover:underline">INMAG</Link> del Mercado Agroganadero.
             </p>
           </div>
         </MarketHero>
@@ -301,7 +301,7 @@ export default function ArrendamientoPage() {
 
         {/* What is the Index */}
         <section className="max-w-6xl mx-auto px-4 py-12">
-          <div className="bg-gradient-to-br from-amber-500/5 to-transparent border border-amber-500/10 rounded-2xl p-6 lg:p-8">
+          <div className="bg-gradient-to-br from-sky-500/5 to-transparent border border-sky-500/10 rounded-2xl p-6 lg:p-8">
             <h2 className="text-2xl font-bold text-white mb-4">
               ¿Qué es el Índice Novillo Arrendamiento?
             </h2>
@@ -312,7 +312,7 @@ export default function ArrendamientoPage() {
                   más utilizado en Argentina para calcular el canon de los contratos de arrendamiento rural.
                 </p>
                 <p>
-                  Se basa en el precio del novillo publicado por el <Link href="/mercado/inmag" className="text-amber-400 hover:underline">Mercado Agroganadero de Buenos Aires (INMAG)</Link>, 
+                  Se basa en el precio del novillo publicado por el <Link href="/mercado/inmag" className="text-accent hover:underline">Mercado Agroganadero de Buenos Aires (INMAG)</Link>, 
                   que integra las operaciones de Liniers y Cañuelas.
                 </p>
                 <p>
@@ -331,7 +331,7 @@ export default function ArrendamientoPage() {
             <h2 className="text-xl font-semibold text-white">Evolución del Índice (90 días)</h2>
             <Link 
               href="/api-docs" 
-              className="text-sm text-zinc-500 hover:text-amber-400 transition-colors flex items-center gap-1"
+              className="text-sm text-zinc-500 hover:text-accent-bright transition-colors flex items-center gap-1"
             >
               <span>API</span>
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -344,7 +344,7 @@ export default function ArrendamientoPage() {
             <InteractivePriceChart 
               data={recentSeries} 
               height={380}
-              accentColor={SEMANTIC_HEX.warning}
+              accentColor={SEMANTIC_HEX.accent}
               showVolume={true}
             />
           </Suspense>
@@ -452,18 +452,18 @@ export default function ArrendamientoPage() {
           <div className="grid md:grid-cols-3 gap-4">
             <Link 
               href="/mercado/inmag"
-              className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 hover:border-emerald-500/30 transition-all group"
+              className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 hover:border-sky-500/30 transition-all group"
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-emerald-400 transition-colors">
+                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-accent-bright transition-colors">
                     INMAG - Índice Oficial
                   </h3>
                   <p className="text-sm text-zinc-500">
                     Cotización diaria del Mercado Agroganadero de Buenos Aires.
                   </p>
                 </div>
-                <svg className="w-5 h-5 text-zinc-600 group-hover:text-emerald-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-zinc-600 group-hover:text-accent-bright transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </div>
@@ -471,18 +471,18 @@ export default function ArrendamientoPage() {
 
             <Link 
               href="/mercado/liniers"
-              className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 hover:border-emerald-500/30 transition-all group"
+              className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 hover:border-sky-500/30 transition-all group"
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-emerald-400 transition-colors">
+                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-accent-bright transition-colors">
                     Mercado de Liniers
                   </h3>
                   <p className="text-sm text-zinc-500">
                     Precios por categoría y remates del día en Liniers.
                   </p>
                 </div>
-                <svg className="w-5 h-5 text-zinc-600 group-hover:text-emerald-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-zinc-600 group-hover:text-accent-bright transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </div>
@@ -490,18 +490,18 @@ export default function ArrendamientoPage() {
 
             <Link 
               href="/mercado"
-              className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-6 hover:bg-amber-500/15 transition-all group"
+              className="bg-sky-500/10 border border-sky-500/20 rounded-2xl p-6 hover:bg-sky-500/15 transition-all group"
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-amber-400 mb-2">
+                  <h3 className="text-lg font-semibold text-accent mb-2">
                     Todos los Precios
                   </h3>
-                  <p className="text-sm text-amber-400/70">
+                  <p className="text-sm text-accent/70">
                     Categorías, maíz, dólar y más indicadores del mercado.
                   </p>
                 </div>
-                <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </div>
@@ -519,18 +519,18 @@ export default function ArrendamientoPage() {
         <section className="max-w-6xl mx-auto px-4 pb-12">
           <Link
             href="/mi-ganado"
-            className="block bg-gradient-to-r from-emerald-500/10 to-zinc-900/30 border border-emerald-500/20 rounded-2xl p-6 hover:border-emerald-500/40 transition-all group"
+            className="block bg-gradient-to-r from-sky-500/10 to-zinc-900/30 border border-sky-500/20 rounded-2xl p-6 hover:border-sky-500/40 transition-all group"
           >
             <div className="flex items-center justify-between gap-4">
               <div>
-                <div className="text-xs text-emerald-400 uppercase tracking-wider mb-1">Tu hacienda al INMAG</div>
-                <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-emerald-400 transition-colors">¿Cuánto vale tu rodeo hoy?</h3>
+                <div className="text-xs text-accent uppercase tracking-wider mb-1">Tu hacienda al INMAG</div>
+                <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-accent-bright transition-colors">¿Cuánto vale tu rodeo hoy?</h3>
                 <p className="text-sm text-zinc-400 max-w-xl">
                   Cargá tu hacienda una vez en <strong className="text-zinc-200">Mi Ganado</strong> y mirá su
                   valor actualizado al INMAG cada día hábil — en pesos y en dólares. Gratis con tu cuenta.
                 </p>
               </div>
-              <svg className="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5 text-accent shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </div>

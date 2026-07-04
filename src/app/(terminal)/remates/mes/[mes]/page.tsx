@@ -242,7 +242,7 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
               </div>
               {stats.totalHeads > 0 && (
                 <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-emerald-400">{fmt(stats.totalHeads)}</div>
+                  <div className="text-2xl font-bold text-accent">{fmt(stats.totalHeads)}</div>
                   <div className="text-sm text-zinc-500">Cabezas est.</div>
                 </div>
               )}
@@ -274,7 +274,7 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
             </p>
             <Link
               href="/remates"
-              className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-lg transition-colors"
+              className="inline-flex items-center gap-2 bg-accent hover:bg-sky-300 text-zinc-950 px-6 py-3 rounded-lg transition-colors"
             >
               Ver todos los remates
             </Link>
@@ -322,7 +322,7 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
                   href={`/remates/mes/${m}`}
                   className={`px-4 py-2 rounded-lg text-sm transition-colors ${
                     isActive
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-accent text-zinc-950'
                       : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white'
                   }`}
                 >

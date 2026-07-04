@@ -46,7 +46,7 @@ export function TopFollowed({ className = '' }: { className?: string }) {
   return (
     <div className={`terminal-panel ${className}`}>
       <div className="terminal-panel-header flex items-center gap-2">
-        <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
+        <TrendingUp className="w-3.5 h-3.5 text-accent" />
         <span className="text-xxs text-zinc-400 uppercase tracking-widest font-terminal">
           Más Seguidas
         </span>
@@ -70,7 +70,7 @@ export function TopFollowed({ className = '' }: { className?: string }) {
                 <span className="text-xxs text-zinc-600 w-4 text-right font-mono">
                   {index + 1}
                 </span>
-                <span className="text-data text-zinc-200 truncate group-hover:text-amber-400 transition-colors">
+                <span className="text-data text-zinc-200 truncate group-hover:text-accent transition-colors">
                   {c.displayName}
                 </span>
               </div>
@@ -87,7 +87,7 @@ export function TopFollowed({ className = '' }: { className?: string }) {
         <div className="border-t border-terminal-border px-panel py-2">
           <p className="text-xxs text-zinc-500 leading-relaxed">
             Las consignatarias más seguidas por productores. 
-            <Link href="/mi-cuenta/favoritos" className="text-amber-400/80 hover:text-amber-400 ml-1">
+            <Link href="/mi-cuenta/favoritos" className="text-accent/80 hover:text-accent ml-1">
               Ver tus favoritas →
             </Link>
           </p>
@@ -134,7 +134,7 @@ export function TopFollowedCompact({ className = '' }: { className?: string }) {
             <Link
               key={c.slug}
               href={`/consignatarias/${c.slug}`}
-              className="text-zinc-400 hover:text-amber-400 whitespace-nowrap"
+              className="text-zinc-400 hover:text-accent whitespace-nowrap"
             >
               {c.displayName}
             </Link>

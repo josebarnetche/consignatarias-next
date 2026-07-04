@@ -230,7 +230,7 @@ export default async function GoLandingPage({ params }: Props) {
                     href={normalizeUrl(nextRemate.catalogUrl) || '#'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 min-w-[140px] text-center px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-lg transition-colors"
+                    className="flex-1 min-w-[140px] text-center px-4 py-2.5 bg-accent hover:bg-sky-300 text-zinc-950 font-medium rounded-lg transition-colors"
                   >
                     📋 Ver Catálogo
                   </a>

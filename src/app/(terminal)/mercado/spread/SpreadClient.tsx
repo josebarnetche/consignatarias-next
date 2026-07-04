@@ -98,14 +98,14 @@ export default function SpreadClient() {
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6 mb-6">
           {loading ? (
             <div className="flex items-center justify-center py-8">
-              <div className="animate-spin h-6 w-6 border-2 border-amber-500 border-t-transparent rounded-full" />
+              <div className="animate-spin h-6 w-6 border-2 border-sky-500 border-t-transparent rounded-full" />
             </div>
           ) : error || !data ? (
             <div className="text-center py-8 text-zinc-500">
               No pudimos cargar la relación en este momento.{' '}
               <button
                 onClick={() => window.location.reload()}
-                className="text-amber-400 hover:underline"
+                className="text-accent hover:underline"
               >
                 Reintentar
               </button>
@@ -114,7 +114,7 @@ export default function SpreadClient() {
             <>
               {/* Main spread indicator */}
               <div className="flex flex-col items-center mb-6">
-                <div className="text-6xl font-bold font-terminal tabular-nums text-amber-400 mb-2">
+                <div className="text-6xl font-bold font-terminal tabular-nums text-accent mb-2">
                   {data.spread.toFixed(1)}:1
                 </div>
                 <div
@@ -165,8 +165,8 @@ export default function SpreadClient() {
               </div>
 
               {/* Interpretation — gancho de lectura pública */}
-              <div className="bg-amber-500/10 border border-amber-500/30 rounded p-4">
-                <div className="text-amber-400 font-medium mb-2">📊 Interpretación</div>
+              <div className="bg-sky-500/10 border border-sky-500/30 rounded p-4">
+                <div className="text-accent font-medium mb-2">📊 Interpretación</div>
                 <p className="text-zinc-300 text-sm">
                   Con una relación de <strong>{data.spread.toFixed(1)}:1</strong>, se necesitan{' '}
                   <strong>{data.spread.toFixed(1)} kg de maíz</strong> para comprar 1 kg de novillo vivo.
@@ -225,13 +225,13 @@ export default function SpreadClient() {
 
         {/* Navigation */}
         <div className="flex flex-wrap gap-4 text-sm">
-          <Link href="/mercado" className="text-amber-400 hover:underline">
+          <Link href="/mercado" className="text-accent hover:underline">
             ← Ver Mercado
           </Link>
-          <Link href="/mercado/liniers" className="text-amber-400 hover:underline">
+          <Link href="/mercado/liniers" className="text-accent hover:underline">
             Precios Liniers →
           </Link>
-          <Link href="/calculadora" className="text-amber-400 hover:underline">
+          <Link href="/calculadora" className="text-accent hover:underline">
             Calculadora →
           </Link>
         </div>

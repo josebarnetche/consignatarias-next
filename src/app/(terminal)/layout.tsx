@@ -145,7 +145,7 @@ const TAG_STYLE: Record<NonNullable<NavLeaf["tag"]>, string> = {
   live: "border-positive text-positive",
   pro: "border-amber-400/60 text-amber-300",
   core: "border-zinc-500 text-zinc-300",
-  new: "border-emerald-500/60 text-emerald-300",
+  new: "border-sky-500/60 text-sky-300",
 };
 
 const TAG_LABEL: Record<NonNullable<NavLeaf["tag"]>, string> = {

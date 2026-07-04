@@ -74,7 +74,7 @@ export function ProvinceCluster({
           <Link
             key={l.key}
             href={l.href}
-            className="inline-flex items-center text-xs text-accent hover:text-accent-bright border border-terminal-border hover:border-amber-600/60 rounded px-3 py-1.5 transition-colors"
+            className="inline-flex items-center text-xs text-accent hover:text-accent-bright border border-terminal-border hover:border-sky-600/60 rounded px-3 py-1.5 transition-colors"
           >
             {l.label} →
           </Link>

@@ -79,7 +79,7 @@ export default function ArrepentimientoForm() {
       )}
       <button
         type="submit" disabled={status === 'sending'}
-        className="w-full py-3 bg-amber-500 hover:bg-amber-400 disabled:opacity-60 text-zinc-950 text-sm font-medium rounded transition-colors"
+        className="w-full py-3 bg-accent hover:bg-sky-300 disabled:opacity-60 text-zinc-950 text-sm font-medium rounded transition-colors"
       >
         {status === 'sending' ? 'Enviando…' : 'Enviar solicitud de arrepentimiento'}
       </button>

@@ -77,7 +77,7 @@ export function DTEForm({ initialData, onSubmit, onCancel }: DTEFormProps) {
             type="text"
             value={data.numero_dte || ''}
             onChange={(e) => handleChange('numero_dte', e.target.value)}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-accent focus:ring-1 focus:ring-accent"
             placeholder="24-0012345678"
           />
         </div>
@@ -89,7 +89,7 @@ export function DTEForm({ initialData, onSubmit, onCancel }: DTEFormProps) {
             type="number"
             value={data.cantidad_cabezas || ''}
             onChange={(e) => handleChange('cantidad_cabezas', parseInt(e.target.value) || 0)}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-accent focus:ring-1 focus:ring-accent"
             placeholder="150"
           />
         </div>
@@ -104,7 +104,7 @@ export function DTEForm({ initialData, onSubmit, onCancel }: DTEFormProps) {
             type="date"
             value={data.fecha_emision || ''}
             onChange={(e) => handleChange('fecha_emision', e.target.value)}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-accent focus:ring-1 focus:ring-accent"
           />
         </div>
         <div>
@@ -115,7 +115,7 @@ export function DTEForm({ initialData, onSubmit, onCancel }: DTEFormProps) {
             type="date"
             value={data.fecha_movimiento || ''}
             onChange={(e) => handleChange('fecha_movimiento', e.target.value)}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-accent focus:ring-1 focus:ring-accent"
           />
         </div>
       </div>
@@ -129,7 +129,7 @@ export function DTEForm({ initialData, onSubmit, onCancel }: DTEFormProps) {
             type="text"
             value={data.renspa_origen || ''}
             onChange={(e) => handleChange('renspa_origen', e.target.value)}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-accent focus:ring-1 focus:ring-accent"
             placeholder="04.123.0.12345/00"
           />
         </div>
@@ -141,7 +141,7 @@ export function DTEForm({ initialData, onSubmit, onCancel }: DTEFormProps) {
             type="text"
             value={data.renspa_destino || ''}
             onChange={(e) => handleChange('renspa_destino', e.target.value)}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-accent focus:ring-1 focus:ring-accent"
             placeholder="04.789.0.67890/00"
           />
         </div>
@@ -154,7 +154,7 @@ export function DTEForm({ initialData, onSubmit, onCancel }: DTEFormProps) {
         <select
           value={data.motivo || ''}
           onChange={(e) => handleChange('motivo', e.target.value)}
-          className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+          className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-accent focus:ring-1 focus:ring-accent"
         >
           <option value="">Seleccionar...</option>
           {MOTIVOS.map(m => (
@@ -167,7 +167,7 @@ export function DTEForm({ initialData, onSubmit, onCancel }: DTEFormProps) {
       <div>
         <label className="block text-sm font-medium text-gray-400 mb-2">
           Categorías {totalCategorias > 0 && (
-            <span className="text-amber-500">({totalCategorias} cabezas)</span>
+            <span className="text-accent">({totalCategorias} cabezas)</span>
           )}
         </label>
         <div className="grid grid-cols-3 gap-2">
@@ -178,7 +178,7 @@ export function DTEForm({ initialData, onSubmit, onCancel }: DTEFormProps) {
                 min="0"
                 value={categorias[cat] || ''}
                 onChange={(e) => handleCategoriaChange(cat, parseInt(e.target.value) || 0)}
-                className="w-16 px-2 py-1 bg-gray-800 border border-gray-700 rounded text-white text-sm focus:border-amber-500"
+                className="w-16 px-2 py-1 bg-gray-800 border border-gray-700 rounded text-white text-sm focus:border-accent"
                 placeholder="0"
               />
               <span className="text-sm text-gray-400 capitalize">{cat}</span>
@@ -208,7 +208,7 @@ export function DTEForm({ initialData, onSubmit, onCancel }: DTEFormProps) {
                 type="text"
                 value={data.titular_origen || ''}
                 onChange={(e) => handleChange('titular_origen', e.target.value)}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-accent focus:ring-1 focus:ring-accent"
               />
             </div>
             <div>
@@ -219,7 +219,7 @@ export function DTEForm({ initialData, onSubmit, onCancel }: DTEFormProps) {
                 type="text"
                 value={data.titular_destino || ''}
                 onChange={(e) => handleChange('titular_destino', e.target.value)}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-accent focus:ring-1 focus:ring-accent"
               />
             </div>
           </div>
@@ -232,7 +232,7 @@ export function DTEForm({ initialData, onSubmit, onCancel }: DTEFormProps) {
                 type="text"
                 value={data.establecimiento_origen || ''}
                 onChange={(e) => handleChange('establecimiento_origen', e.target.value)}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-accent focus:ring-1 focus:ring-accent"
               />
             </div>
             <div>
@@ -243,7 +243,7 @@ export function DTEForm({ initialData, onSubmit, onCancel }: DTEFormProps) {
                 type="text"
                 value={data.establecimiento_destino || ''}
                 onChange={(e) => handleChange('establecimiento_destino', e.target.value)}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-accent focus:ring-1 focus:ring-accent"
               />
             </div>
           </div>
@@ -255,7 +255,7 @@ export function DTEForm({ initialData, onSubmit, onCancel }: DTEFormProps) {
               type="number"
               value={data.peso_total_kg || ''}
               onChange={(e) => handleChange('peso_total_kg', parseInt(e.target.value) || 0)}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-accent focus:ring-1 focus:ring-accent"
               placeholder="57000"
             />
           </div>
@@ -266,7 +266,7 @@ export function DTEForm({ initialData, onSubmit, onCancel }: DTEFormProps) {
       <div className="flex gap-3 pt-4">
         <button
           type="submit"
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-amber-500 hover:bg-amber-600 text-black font-medium rounded-lg transition-colors"
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-accent hover:bg-sky-300 text-zinc-950 font-medium rounded-lg transition-colors"
         >
           <Save className="w-4 h-4" />
           Guardar

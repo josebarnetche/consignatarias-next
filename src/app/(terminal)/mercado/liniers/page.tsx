@@ -84,7 +84,7 @@ export default function MercadoLiniersPage() {
         {/* Main Price Card */}
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
-            <Building2 className="w-5 h-5 text-amber-500" />
+            <Building2 className="w-5 h-5 text-accent" />
             <span className="text-zinc-400 text-sm">Índice INMAG — Referencia Nacional</span>
           </div>
           
@@ -133,7 +133,7 @@ export default function MercadoLiniersPage() {
         {/* Info Section */}
         <div className="bg-zinc-900/30 border border-zinc-800 rounded-lg p-6 mb-8">
           <h2 className="text-lg font-semibold text-zinc-100 mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-amber-500" />
+            <MapPin className="w-5 h-5 text-accent" />
             Sobre el Mercado de Liniers
           </h2>
           
@@ -159,7 +159,7 @@ export default function MercadoLiniersPage() {
         {/* Related Links */}
         <div className="border-t border-zinc-800 pt-6">
           <h3 className="text-zinc-300 font-medium mb-4 flex items-center gap-2">
-            <BarChart3 className="w-4 h-4 text-amber-500" />
+            <BarChart3 className="w-4 h-4 text-accent" />
             Más datos de mercado
           </h3>
           

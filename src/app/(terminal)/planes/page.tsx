@@ -109,7 +109,7 @@ export default function PlanesPage() {
           {/* Por qué pagar — por segmento */}
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl">
             <div className="rounded-lg border border-terminal-border bg-terminal-panel p-3">
-              <p className="text-xxs font-terminal uppercase tracking-widest text-emerald-400 mb-1">Productor · gratis</p>
+              <p className="text-xxs font-terminal uppercase tracking-widest text-accent mb-1">Productor · gratis</p>
               <p className="text-data text-zinc-400">Datos, remates, directorio y alertas. No pagás nada.</p>
             </div>
             <div className="rounded-lg border border-terminal-border bg-terminal-panel p-3">

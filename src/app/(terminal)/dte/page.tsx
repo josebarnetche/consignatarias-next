@@ -148,7 +148,7 @@ export default function DTEPage() {
         <section className="grid gap-4 md:grid-cols-2 mb-10">
           <div className="bg-zinc-900/30 border border-zinc-800 rounded-lg p-5">
             <div className="flex items-center gap-3 mb-3">
-              <Clock className="w-5 h-5 text-amber-400" />
+              <Clock className="w-5 h-5 text-accent" />
               <h3 className="font-medium text-zinc-200">Validez: 72 horas</h3>
             </div>
             <p className="text-sm text-zinc-400">

@@ -47,7 +47,7 @@ export function LongTermChart() {
     <div className="terminal-panel">
       <div className="terminal-panel-header flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-amber-500" />
+          <TrendingUp className="w-4 h-4 text-accent" />
           <span className="font-heading">HISTÓRICO IGMAG</span>
           <span className="text-zinc-500 mx-1">&mdash;</span>
           <span className="text-zinc-500 text-sm normal-case">Promedios mensuales</span>
@@ -62,7 +62,7 @@ export function LongTermChart() {
               className={`
                 px-2 py-1 text-xs font-medium rounded transition-colors
                 ${range === r 
-                  ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' 
+                  ? 'bg-sky-500/20 text-accent border border-sky-500/30'
                   : 'text-zinc-500 hover:text-zinc-300 border border-transparent'
                 }
               `}

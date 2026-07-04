@@ -113,7 +113,7 @@ function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl }: { rem
 
   return (
     <article className={`bg-zinc-900/50 border rounded-lg overflow-hidden hover:border-zinc-600 transition-colors ${
-      isLive ? 'border-red-500/50 ring-1 ring-red-500/20' : isToday ? 'border-amber-500/30' : isProbable ? 'border-zinc-800/70' : 'border-zinc-800'
+      isLive ? 'border-red-500/50 ring-1 ring-red-500/20' : isToday ? 'border-sky-500/30' : isProbable ? 'border-zinc-800/70' : 'border-zinc-800'
     }`}>
       {/* YouTube Thumbnail — only when we have a confirmed video id */}
       {videoId && (
@@ -143,7 +143,7 @@ function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl }: { rem
             </div>
           )}
           {isToday && !isLive && (
-            <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2 py-1 bg-amber-500 rounded-sm">
+            <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2 py-1 bg-accent rounded-sm">
               <span className="text-black text-xs font-bold">HOY</span>
             </div>
           )}
@@ -168,7 +168,7 @@ function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl }: { rem
             canal habitual: <a href={watchUrl} target="_blank" rel="noopener noreferrer" className="text-zinc-300 hover:text-red-400 underline-offset-2 hover:underline">YouTube /streams</a>
           </span>
           {isToday && (
-            <span className="ml-auto px-1.5 py-0.5 bg-amber-500 rounded-sm text-black text-xxs font-bold">HOY</span>
+            <span className="ml-auto px-1.5 py-0.5 bg-accent rounded-sm text-black text-xxs font-bold">HOY</span>
           )}
         </div>
       )}
@@ -179,7 +179,7 @@ function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl }: { rem
           <div className="flex-1 min-w-0">
             <Link
               href={consignatariaProfilePath(remate.consignatariaSlug)}
-              className="text-lg font-medium text-zinc-100 hover:text-amber-400 transition-colors line-clamp-1"
+              className="text-lg font-medium text-zinc-100 hover:text-accent transition-colors line-clamp-1"
             >
               {remate.consignatariaName}
             </Link>
@@ -378,7 +378,7 @@ export default async function RematesEnVivoPage() {
           </div>
           <span className="text-zinc-700">|</span>
           <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-amber-400" />
+            <Calendar className="w-4 h-4 text-accent" />
             <span className="text-zinc-400 text-sm">
               <strong className="text-zinc-200">{todayCount}</strong> hoy
             </span>
@@ -396,7 +396,7 @@ export default async function RematesEnVivoPage() {
             <div className="flex flex-wrap justify-center gap-3 mt-6">
               <Link
                 href="/remates"
-                className="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm font-medium rounded hover:bg-amber-500/20 transition-colors"
+                className="px-4 py-2 bg-sky-500/10 border border-sky-500/30 text-accent text-sm font-medium rounded hover:bg-sky-500/20 transition-colors"
               >
                 Ver todos los remates
               </Link>
@@ -472,26 +472,26 @@ export default async function RematesEnVivoPage() {
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href="/remates"
-            className="text-sm text-amber-500/80 hover:text-amber-400 transition-colors"
+            className="text-sm text-accent/80 hover:text-accent-bright transition-colors"
           >
             Ver todos los remates →
           </Link>
           <Link
             href="/remates/hoy"
-            className="text-sm text-amber-500/80 hover:text-amber-400 transition-colors"
+            className="text-sm text-accent/80 hover:text-accent-bright transition-colors"
           >
             Remates de hoy →
           </Link>
           <Link
             href="/consignatarias"
-            className="text-sm text-amber-500/80 hover:text-amber-400 transition-colors"
+            className="text-sm text-accent/80 hover:text-accent-bright transition-colors"
           >
             Directorio de consignatarias →
           </Link>
         </div>
 
         {/* CTA */}
-        <div className="mt-8 bg-gradient-to-r from-red-900/30 to-amber-900/30 border border-red-800/30 rounded-lg p-6 text-center">
+        <div className="mt-8 bg-gradient-to-r from-red-900/30 to-sky-900/30 border border-red-800/30 rounded-lg p-6 text-center">
           <p className="text-lg font-semibold text-white mb-2">
             ¿Tu consignataria transmite en vivo?
           </p>

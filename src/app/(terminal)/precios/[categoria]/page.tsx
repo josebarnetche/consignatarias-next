@@ -462,7 +462,7 @@ export default async function PreciosCategoriaPage({
                 <Link
                   key={o.slug}
                   href={`/precios/comparar/${par}`}
-                  className="text-xxs font-terminal px-3 py-1.5 rounded border border-terminal-border bg-terminal-panel text-zinc-300 hover:border-amber-500/40 hover:text-amber-400 transition-colors"
+                  className="text-xxs font-terminal px-3 py-1.5 rounded border border-terminal-border bg-terminal-panel text-zinc-300 hover:border-sky-500/40 hover:text-accent-bright transition-colors"
                 >
                   {c.title} vs {o.label}
                 </Link>

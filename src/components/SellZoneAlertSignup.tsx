@@ -92,12 +92,12 @@ export default function SellZoneAlertSignup({
             placeholder="tu@email.com"
             value={email}
             onChange={(e) => { setEmail(e.target.value); if (state === 'error') setState('idle') }}
-            className="flex-1 bg-zinc-950 border border-zinc-700 rounded px-3 py-2 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-emerald-500/60"
+            className="flex-1 bg-zinc-950 border border-zinc-700 rounded px-3 py-2 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-sky-500/60"
           />
           <button
             type="submit"
             disabled={state === 'loading'}
-            className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-medium px-5 py-2 rounded text-sm transition-colors disabled:opacity-60 whitespace-nowrap"
+            className="bg-accent hover:bg-sky-300 text-zinc-950 font-medium px-5 py-2 rounded text-sm transition-colors disabled:opacity-60 whitespace-nowrap"
           >
             {state === 'loading' ? 'Anotando…' : 'Avisame'}
           </button>

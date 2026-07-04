@@ -39,7 +39,7 @@ const RANGE_CONFIG: Record<TimeRange, { label: string; days: number | null }> = 
 export function InteractivePriceChart({ 
   data: initialData, 
   height = 320,
-  accentColor = '#10b981',
+  accentColor = '#38bdf8',
   showVolume = true,
   className = '',
 }: InteractivePriceChartProps) {
@@ -235,7 +235,7 @@ export function InteractivePriceChart({
               className={`
                 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200
                 ${range === r 
-                  ? 'bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/30' 
+                  ? 'bg-sky-500/15 text-accent ring-1 ring-sky-500/30'
                   : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50'
                 }
                 ${loading ? 'opacity-50 cursor-wait' : 'cursor-pointer'}
@@ -267,7 +267,7 @@ export function InteractivePriceChart({
               className="absolute inset-0 flex items-center justify-center bg-zinc-900/60 backdrop-blur-sm z-20"
             >
               <div className="flex items-center gap-3">
-                <div className="w-5 h-5 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-sky-500/30 border-t-sky-500 rounded-full animate-spin" />
                 <span className="text-sm text-zinc-400">Cargando datos...</span>
               </div>
             </motion.div>

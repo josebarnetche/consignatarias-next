@@ -376,7 +376,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
       onClick={handleRowClick}
       onKeyDown={(e) => { if (e.key === 'Enter') handleRowClick() }}
       className={`group border-b border-terminal-border hover:bg-zinc-800/50 transition-colors duration-75 cursor-pointer ${
-        isToday ? 'bg-amber-500/[0.03]' : ''
+        isToday ? 'bg-sky-500/[0.03]' : ''
       }${index < 20 ? ' row-enter' : ''}`}
       style={index < 20 ? { animationDelay: `${index * 30}ms` } : undefined}
     >

@@ -159,7 +159,7 @@ export default function IndicesPage() {
               className="block bg-terminal-panel hover:bg-zinc-900/70 transition-colors px-panel py-5 group"
             >
               <div className="flex items-baseline justify-between gap-3 mb-1">
-                <h2 className="text-zinc-100 font-medium group-hover:text-amber-400 transition-colors">
+                <h2 className="text-zinc-100 font-medium group-hover:text-accent-bright transition-colors">
                   {idx.name} <span className="text-zinc-500 font-normal text-sm">· {idx.tagline}</span>
                 </h2>
                 <span className="text-zinc-600 text-xxs font-terminal uppercase whitespace-nowrap">{idx.cadence}</span>

@@ -80,7 +80,7 @@ export default function WelcomeChecklist({ profileSlug: _profileSlug, displayNam
         {/* Progress bar */}
         <div className="gradient-bar w-full max-w-[200px]">
           <div
-            className="gradient-bar-fill-amber"
+            className="gradient-bar-fill"
             style={{ width: `${(completed / total) * 100}%` }}
           />
         </div>

@@ -221,7 +221,7 @@ export default function MercadoPage() {
       </div>
 
       {/* ── Calculator CTA ──────────────────────────────────────── */}
-      <div className="terminal-panel bg-gradient-to-r from-amber-950/20 to-transparent border-amber-800/30">
+      <div className="terminal-panel bg-gradient-to-r from-sky-950/20 to-transparent border-sky-800/30">
         <div className="px-panel py-4 flex items-center justify-between gap-4">
           <div>
             <span className="text-zinc-200 font-medium">¿Cuánto vale tu tropa?</span>
@@ -231,7 +231,7 @@ export default function MercadoPage() {
           </div>
           <Link
             href="/calculadora"
-            className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-zinc-900 font-medium text-sm rounded transition-colors whitespace-nowrap"
+            className="px-4 py-2 bg-accent hover:bg-sky-300 text-zinc-900 font-medium text-sm rounded transition-colors whitespace-nowrap"
           >
             Calcular valor →
           </Link>

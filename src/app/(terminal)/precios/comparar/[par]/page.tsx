@@ -178,7 +178,7 @@ export default async function CompararPage({ params }: { params: Promise<{ par: 
           <div className="divide-y divide-terminal-border">
             {rows.map((r) => (
               <div key={r.slug} className="px-panel py-3 flex items-center justify-between">
-                <Link href={`/precios/${r.slug}`} className="text-zinc-200 hover:text-amber-400 transition-colors">
+                <Link href={`/precios/${r.slug}`} className="text-zinc-200 hover:text-accent-bright transition-colors">
                   {CATEGORIES[r.slug].title}
                 </Link>
                 <div className="flex items-baseline gap-3 font-terminal tabular-nums">

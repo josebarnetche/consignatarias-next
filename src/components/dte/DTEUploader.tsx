@@ -121,7 +121,7 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
             border-2 border-dashed rounded-xl p-12 text-center cursor-pointer
             transition-all duration-200
             ${isDragActive 
-              ? 'border-amber-500 bg-amber-500/10' 
+              ? 'border-accent bg-sky-500/10'
               : 'border-gray-700 hover:border-gray-600 bg-gray-900/50'
             }
           `}
@@ -143,9 +143,9 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
           </p>
           <button
             onClick={handleDemoMode}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-amber-400 
-                       bg-amber-500/10 border border-amber-500/30 rounded-lg
-                       hover:bg-amber-500/20 hover:border-amber-500/50 transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-accent
+                       bg-sky-500/10 border border-sky-500/30 rounded-lg
+                       hover:bg-sky-500/20 hover:border-sky-500/50 transition-all"
           >
             <Sparkles className="w-4 h-4" />
             Probar con ejemplo
@@ -179,7 +179,7 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
                 className="max-h-48 mx-auto rounded-lg opacity-50"
               />
               <div className="absolute inset-0 flex items-center justify-center">
-                <Loader2 className="w-12 h-12 text-amber-500 animate-spin" />
+                <Loader2 className="w-12 h-12 text-accent animate-spin" />
               </div>
             </div>
           )}
@@ -188,7 +188,7 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
           </p>
           <div className="w-full bg-gray-800 rounded-full h-2 mb-2">
             <div 
-              className="bg-amber-500 h-2 rounded-full transition-all duration-300"
+              className="bg-accent h-2 rounded-full transition-all duration-300"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -246,7 +246,7 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
             ) : isDemo ? (
               <div className="flex items-center justify-center h-48 bg-gray-800/50 rounded-lg border border-dashed border-gray-700">
                 <div className="text-center text-gray-500">
-                  <Sparkles className="w-12 h-12 mx-auto mb-2 text-amber-500/50" />
+                  <Sparkles className="w-12 h-12 mx-auto mb-2 text-accent/50" />
                   <p className="text-sm">Vista previa no disponible en demo</p>
                 </div>
               </div>
@@ -283,7 +283,7 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
           </p>
           <button
             onClick={handleReset}
-            className="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-black font-medium rounded-lg transition-colors"
+            className="px-6 py-3 bg-accent hover:bg-sky-300 text-zinc-950 font-medium rounded-lg transition-colors"
           >
             Subir otra guía
           </button>

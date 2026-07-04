@@ -131,7 +131,7 @@ export default function LeadCaptureModal({
                     onChange={(e) => setName(e.target.value)}
                     required
                     placeholder="Juan Pérez"
-                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
+                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:border-accent transition-colors"
                   />
                 </div>
 
@@ -145,7 +145,7 @@ export default function LeadCaptureModal({
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+54 9 11 1234-5678"
-                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
+                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:border-accent transition-colors"
                   />
                 </div>
 
@@ -159,7 +159,7 @@ export default function LeadCaptureModal({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="juan@ejemplo.com"
-                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
+                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:border-accent transition-colors"
                   />
                 </div>
 
@@ -173,7 +173,7 @@ export default function LeadCaptureModal({
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Quisiera consultar sobre..."
                     rows={2}
-                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors resize-none"
+                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:border-accent transition-colors resize-none"
                   />
                 </div>
 
@@ -185,7 +185,7 @@ export default function LeadCaptureModal({
                 <button
                   type="submit"
                   disabled={isSubmitting || !name || (!phone && !email)}
-                  className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 disabled:bg-zinc-700 disabled:text-zinc-500 text-white font-semibold rounded-lg transition-colors"
+                  className="w-full py-3 bg-accent hover:bg-sky-300 disabled:bg-zinc-700 disabled:text-zinc-500 text-zinc-950 font-semibold rounded-lg transition-colors"
                 >
                   {isSubmitting ? 'Enviando...' : 'Enviar y continuar a WhatsApp'}
                 </button>

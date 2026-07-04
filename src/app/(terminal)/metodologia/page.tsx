@@ -47,22 +47,22 @@ export default function MetodologiaPage() {
         {/* Quick Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
           <div className="border border-zinc-800 rounded p-3 text-center">
-            <Database className="w-4 h-4 text-amber-500 mx-auto mb-1" />
+            <Database className="w-4 h-4 text-accent mx-auto mb-1" />
             <p className="text-zinc-200 text-lg font-medium">12</p>
             <p className="text-zinc-500 text-xs">Provincias</p>
           </div>
           <div className="border border-zinc-800 rounded p-3 text-center">
-            <BarChart3 className="w-4 h-4 text-amber-500 mx-auto mb-1" />
+            <BarChart3 className="w-4 h-4 text-accent mx-auto mb-1" />
             <p className="text-zinc-200 text-lg font-medium">6</p>
             <p className="text-zinc-500 text-xs">Categorías</p>
           </div>
           <div className="border border-zinc-800 rounded p-3 text-center">
-            <Calendar className="w-4 h-4 text-amber-500 mx-auto mb-1" />
+            <Calendar className="w-4 h-4 text-accent mx-auto mb-1" />
             <p className="text-zinc-200 text-lg font-medium">2015→</p>
             <p className="text-zinc-500 text-xs">Histórico (11 años)</p>
           </div>
           <div className="border border-zinc-800 rounded p-3 text-center">
-            <Users className="w-4 h-4 text-amber-500 mx-auto mb-1" />
+            <Users className="w-4 h-4 text-accent mx-auto mb-1" />
             <p className="text-zinc-200 text-lg font-medium">104</p>
             <p className="text-zinc-500 text-xs">Consignatarias</p>
           </div>
@@ -70,7 +70,7 @@ export default function MetodologiaPage() {
 
         {/* Section 1: Fuentes */}
         <h2 className="text-zinc-200 text-lg font-medium mt-8 mb-4 flex items-center gap-2">
-          <Database className="w-4 h-4 text-amber-500" />
+          <Database className="w-4 h-4 text-accent" />
           1. Fuentes de Datos
         </h2>
         
@@ -114,7 +114,7 @@ export default function MetodologiaPage() {
 
         {/* Section 2: Cálculo */}
         <h2 className="text-zinc-200 text-lg font-medium mt-8 mb-4 flex items-center gap-2">
-          <BarChart3 className="w-4 h-4 text-amber-500" />
+          <BarChart3 className="w-4 h-4 text-accent" />
           2. Cómo se arma cada precio
         </h2>
 
@@ -125,7 +125,7 @@ export default function MetodologiaPage() {
           <span className="text-zinc-200">precio observado directo</span> del Mercado Agroganadero, que
           publica un precio por categoría. Mostramos ese número, no un promedio ponderado inventado.
         </p>
-        <div className="border border-emerald-800/40 bg-emerald-900/10 rounded p-3 mb-4 text-xs text-zinc-400">
+        <div className="border border-sky-800/40 bg-sky-900/10 rounded p-3 mb-4 text-xs text-zinc-400">
           Antes evaluamos un índice ponderado por composición de faena; lo descartamos porque tenemos la
           fuente real por categoría. <span className="text-zinc-300">Cada precio es un dato observado, no un ratio.</span>
         </div>
@@ -151,7 +151,7 @@ export default function MetodologiaPage() {
 
         {/* Section 3: Cobertura */}
         <h2 className="text-zinc-200 text-lg font-medium mt-8 mb-4 flex items-center gap-2">
-          <Shield className="w-4 h-4 text-amber-500" />
+          <Shield className="w-4 h-4 text-accent" />
           3. Cobertura Geográfica
         </h2>
 
@@ -183,7 +183,7 @@ export default function MetodologiaPage() {
 
         {/* Section 4: Acceso */}
         <h2 className="text-zinc-200 text-lg font-medium mt-8 mb-4 flex items-center gap-2">
-          <FileText className="w-4 h-4 text-amber-500" />
+          <FileText className="w-4 h-4 text-accent" />
           4. Publicación y Acceso
         </h2>
 
@@ -232,7 +232,7 @@ export default function MetodologiaPage() {
             </Link>
             <Link
               href="/enterprise#acceso-institucional"
-              className="inline-flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 border border-emerald-700/50 rounded px-3 py-1.5"
+              className="inline-flex items-center gap-1 text-xs text-accent hover:text-sky-300 border border-sky-700/50 rounded px-3 py-1.5"
             >
               Acceso institucional <ExternalLink className="w-3 h-3" />
             </Link>

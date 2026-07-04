@@ -328,11 +328,11 @@ export default function EnterprisePage() {
             structured, USD-normalized feed + bulk delivery + support, plus our derived analysis.
             We deliberately do NOT license/redistribute a third party's raw series (Ley 11.723
             protects compilations; redistribution would need MAG's authorization). Higher-ACV,
-            sales-led, emerald accent vs the sky per-request tiers above. ──────────────────── */}
-        <div id="acceso-institucional" className="terminal-panel mb-10 scroll-mt-24" style={{ borderColor: 'rgba(52,211,153,0.45)', boxShadow: '0 0 24px rgba(52,211,153,0.08)' }}>
+            sales-led, sky accent (brand consolidation) like the per-request tiers above. ──────────────────── */}
+        <div id="acceso-institucional" className="terminal-panel mb-10 scroll-mt-24" style={{ borderColor: 'rgba(56,189,248,0.45)', boxShadow: '0 0 24px rgba(56,189,248,0.08)' }}>
           <div
             className="terminal-panel-header flex items-center justify-between"
-            style={{ color: '#34d399', borderBottomColor: 'rgba(52,211,153,0.4)' }}
+            style={{ color: '#38bdf8', borderBottomColor: 'rgba(56,189,248,0.4)' }}
           >
             <span>Acceso institucional</span>
             <span className="text-zinc-500 text-xxs font-terminal normal-case tracking-normal">
@@ -356,21 +356,21 @@ export default function EnterprisePage() {
               <div>
                 <div className="text-zinc-200 text-xxs font-terminal uppercase tracking-wider mb-2">Qué incluye el acceso</div>
                 <ul className="space-y-1.5 text-data text-zinc-400">
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Nuestra serie INMAG archivada (2015→hoy, 11 años), normalizada + overlay USD oficial y blue</li>
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Datos lote-level estructurados por nosotros</li>
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Índices derivados propios (INMAG-USD, spreads, derivados — cálculos nuestros)</li>
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Entrega bulk / snapshots históricos / feed programado (sin rate-limit)</li>
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">+</span> Soporte dedicado + SLA + actualización mantenida</li>
+                  <li className="flex gap-2"><span className="text-accent mt-0.5">+</span> Nuestra serie INMAG archivada (2015→hoy, 11 años), normalizada + overlay USD oficial y blue</li>
+                  <li className="flex gap-2"><span className="text-accent mt-0.5">+</span> Datos lote-level estructurados por nosotros</li>
+                  <li className="flex gap-2"><span className="text-accent mt-0.5">+</span> Índices derivados propios (INMAG-USD, spreads, derivados — cálculos nuestros)</li>
+                  <li className="flex gap-2"><span className="text-accent mt-0.5">+</span> Entrega bulk / snapshots históricos / feed programado (sin rate-limit)</li>
+                  <li className="flex gap-2"><span className="text-accent mt-0.5">+</span> Soporte dedicado + SLA + actualización mantenida</li>
                 </ul>
               </div>
               <div>
                 <div className="text-zinc-200 text-xxs font-terminal uppercase tracking-wider mb-2">Para qué</div>
                 <ul className="space-y-1.5 text-data text-zinc-400">
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">›</span> <span><span className="text-zinc-300">Bancos</span> — valuación de hacienda como garantía (cattle-collateral lending)</span></li>
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">›</span> <span><span className="text-zinc-300">Frigoríficos exportadores</span> — pricing y cobertura de compra</span></li>
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">›</span> <span><span className="text-zinc-300">Exchanges / MATBA-ROFEX</span> — referencia de settlement para un contrato a futuro</span></li>
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">›</span> <span><span className="text-zinc-300">Fintech / agtech</span> — el dato bajo el capó del producto</span></li>
-                  <li className="flex gap-2"><span className="text-emerald-400 mt-0.5">›</span> <span><span className="text-zinc-300">Research / prensa</span> — la serie citable con metodología</span></li>
+                  <li className="flex gap-2"><span className="text-accent mt-0.5">›</span> <span><span className="text-zinc-300">Bancos</span> — valuación de hacienda como garantía (cattle-collateral lending)</span></li>
+                  <li className="flex gap-2"><span className="text-accent mt-0.5">›</span> <span><span className="text-zinc-300">Frigoríficos exportadores</span> — pricing y cobertura de compra</span></li>
+                  <li className="flex gap-2"><span className="text-accent mt-0.5">›</span> <span><span className="text-zinc-300">Exchanges / MATBA-ROFEX</span> — referencia de settlement para un contrato a futuro</span></li>
+                  <li className="flex gap-2"><span className="text-accent mt-0.5">›</span> <span><span className="text-zinc-300">Fintech / agtech</span> — el dato bajo el capó del producto</span></li>
+                  <li className="flex gap-2"><span className="text-accent mt-0.5">›</span> <span><span className="text-zinc-300">Research / prensa</span> — la serie citable con metodología</span></li>
                 </ul>
               </div>
             </div>
@@ -383,7 +383,7 @@ export default function EnterprisePage() {
               <a
                 href="mailto:agro@memola.com.ar?subject=Acceso%20institucional%20—%20consignatarias.com.ar&body=Hola,%20queremos%20evaluar%20un%20acceso%20institucional%20al%20servicio.%0A%0AInstituci%C3%B3n:%0ATipo%20(banco%20/%20frigor%C3%ADfico%20/%20exchange%20/%20fintech%20/%20otro):%0AUso%20previsto%20(valuaci%C3%B3n%20/%20uso%20interno%20/%20an%C3%A1lisis):%0ASeries%20de%20inter%C3%A9s%20(INMAG-USD%20/%20lote-level%20/%20%C3%ADndices):"
                 className="terminal-btn whitespace-nowrap shrink-0"
-                style={{ borderColor: 'rgba(52,211,153,0.6)', color: '#34d399' }}
+                style={{ borderColor: 'rgba(56,189,248,0.6)', color: '#38bdf8' }}
               >
                 Solicitar acceso institucional →
               </a>

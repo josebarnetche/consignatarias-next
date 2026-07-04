@@ -139,7 +139,7 @@ export default function FavoritosPage() {
             </p>
             <Link
               href={`/login?next=${encodeURIComponent('/mi-cuenta/favoritos')}`}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded-lg transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-sky-300 text-zinc-950 font-semibold rounded-lg transition-colors"
             >
               Iniciar sesión
             </Link>
@@ -170,7 +170,7 @@ export default function FavoritosPage() {
             </p>
             <Link
               href="/consignatarias"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-sky-300 text-zinc-950 font-semibold rounded-lg transition-colors"
             >
               Explorar consignatarias →
             </Link>
@@ -234,7 +234,7 @@ export default function FavoritosPage() {
                           <div className="text-xs text-zinc-500">{r.displayName}</div>
                         </div>
                         <div className="text-right flex-shrink-0">
-                          <div className="text-sm text-amber-400 font-medium">{formatDate(r.date)}</div>
+                          <div className="text-sm text-accent font-medium">{formatDate(r.date)}</div>
                           <div className={`text-xs font-medium ${countdown.urgent ? 'text-emerald-400' : 'text-zinc-500'}`}>
                             {countdown.text}
                           </div>
@@ -266,7 +266,7 @@ export default function FavoritosPage() {
                       <div>
                         <Link 
                           href={`/go/${fav.consignataria_slug}`}
-                          className="text-white font-medium hover:text-amber-400 transition-colors flex items-center gap-2"
+                          className="text-white font-medium hover:text-accent transition-colors flex items-center gap-2"
                         >
                           {profile?.displayName || fav.consignataria_slug}
                           <ExternalLink className="w-3.5 h-3.5 opacity-50" />

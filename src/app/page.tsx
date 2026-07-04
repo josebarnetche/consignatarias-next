@@ -322,18 +322,18 @@ export default async function LandingPage() {
                 Dónde cubrimos
               </div>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-normal text-zinc-100 tracking-tight leading-tight">
-                Remates en <span className="text-amber-400">cada provincia</span>.
+                Remates en <span className="text-accent">cada provincia</span>.
               </h2>
             </div>
             <CoverageMap counts={provinceRemateCounts} />
           </div>
 
           {/* Conversion block — shown after value proofs */}
-          <div className="relative z-10 mt-20 rounded-lg border border-amber-500/20 bg-gradient-to-br from-amber-950/30 via-zinc-900/60 to-zinc-900/60 p-8 md:p-10 backdrop-blur-sm">
+          <div className="relative z-10 mt-20 rounded-lg border border-sky-500/20 bg-gradient-to-br from-sky-950/30 via-zinc-900/60 to-zinc-900/60 p-8 md:p-10 backdrop-blur-sm">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div className="max-w-2xl">
-                <div className="inline-flex items-center gap-2 text-[0.65rem] text-amber-400/80 uppercase tracking-widest mb-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                <div className="inline-flex items-center gap-2 text-[0.65rem] text-accent/80 uppercase tracking-widest mb-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
                   Para consignatarias y martilleros
                 </div>
                 <h2 className="text-2xl md:text-3xl lg:text-4xl font-normal text-zinc-100 tracking-tight leading-tight mb-3">
@@ -347,7 +347,7 @@ export default async function LandingPage() {
                 href="https://calendar.app.google/gr2BXY1ooDMki8TK7"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative flex items-center justify-center gap-3 text-base md:text-lg font-medium text-black bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 hover:from-amber-200 hover:via-amber-300 hover:to-amber-400 transition-all rounded-md py-5 px-10 shadow-[0_0_40px_rgba(251,191,36,0.35)] hover:shadow-[0_0_60px_rgba(251,191,36,0.55)] whitespace-nowrap shrink-0"
+                className="group relative flex items-center justify-center gap-3 text-base md:text-lg font-medium text-zinc-950 bg-gradient-to-br from-sky-300 via-sky-400 to-sky-500 hover:from-sky-200 hover:via-sky-300 hover:to-sky-400 transition-all rounded-md py-5 px-10 shadow-[0_0_40px_rgba(56,189,248,0.35)] hover:shadow-[0_0_60px_rgba(56,189,248,0.55)] whitespace-nowrap shrink-0"
               >
                 <span className="w-2 h-2 rounded-full bg-black/70 animate-pulse" />
                 Reservar reunión
@@ -366,7 +366,7 @@ export default async function LandingPage() {
           {/* Par productor: ya sabe cuánto vale su hacienda (widget) → ahora, ¿conviene
               venderla hoy? El semáforo gratis + el camino a la decisión completa. Primera
               vez que el valor PRO Usuario aparece en la puerta de entrada. */}
-          <div className="mt-6 rounded-lg border border-emerald-500/20 bg-emerald-950/10 p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="mt-6 rounded-lg border border-sky-500/20 bg-sky-950/10 p-5 flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="shrink-0">
               <SellZoneBadge categoriaLabel="novillo" />
             </div>
@@ -378,7 +378,7 @@ export default async function LandingPage() {
             </div>
             <Link
               href="/mercado/vender-ahora"
-              className="shrink-0 inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-950 bg-emerald-400 hover:bg-emerald-300 transition-colors rounded py-2.5 px-5 whitespace-nowrap"
+              className="shrink-0 inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-950 bg-accent hover:bg-sky-300 transition-colors rounded py-2.5 px-5 whitespace-nowrap"
             >
               ¿Vendo ahora?
               <IconArrowRight />
@@ -400,7 +400,7 @@ export default async function LandingPage() {
             <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-8 relative">
               <div className="text-5xl font-bold text-zinc-800 absolute top-4 right-6 select-none">1</div>
               <div className="relative z-10">
-                <div className="text-xs font-medium text-emerald-400 uppercase tracking-widest mb-3">Recopilamos</div>
+                <div className="text-xs font-medium text-accent uppercase tracking-widest mb-3">Recopilamos</div>
                 <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
                   Datos de {totalConsignatarias}+ consignatarias, cada día
                 </p>
@@ -410,7 +410,7 @@ export default async function LandingPage() {
             <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-8 relative">
               <div className="text-5xl font-bold text-zinc-800 absolute top-4 right-6 select-none">2</div>
               <div className="relative z-10">
-                <div className="text-xs font-medium text-emerald-400 uppercase tracking-widest mb-3">Estructuramos</div>
+                <div className="text-xs font-medium text-accent uppercase tracking-widest mb-3">Estructuramos</div>
                 <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
                   Fecha, provincia, tipo, cabezas, links
                 </p>
@@ -420,7 +420,7 @@ export default async function LandingPage() {
             <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-8 relative">
               <div className="text-5xl font-bold text-zinc-800 absolute top-4 right-6 select-none">3</div>
               <div className="relative z-10">
-                <div className="text-xs font-medium text-emerald-400 uppercase tracking-widest mb-3">Vos filtrás</div>
+                <div className="text-xs font-medium text-accent uppercase tracking-widest mb-3">Vos filtrás</div>
                 <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
                   Y tenés todo el mercado en una pantalla
                 </p>
@@ -440,11 +440,11 @@ export default async function LandingPage() {
         {/*  AI-READY — MCP                                               */}
         {/* ============================================================ */}
         <section id="ai-ready" className="max-w-7xl mx-auto px-6 pt-24 pb-24">
-          <div className="rounded-2xl border border-emerald-500/25 bg-gradient-to-br from-emerald-500/[0.06] to-transparent p-8 sm:p-12">
+          <div className="rounded-2xl border border-sky-500/25 bg-gradient-to-br from-sky-500/[0.06] to-transparent p-8 sm:p-12">
             <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 items-center">
               <div>
-                <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/[0.08] px-3 py-1 text-xs font-mono uppercase tracking-widest text-emerald-300">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> AI-ready · MCP
+                <span className="inline-flex items-center gap-2 rounded-full border border-sky-500/40 bg-sky-500/[0.08] px-3 py-1 text-xs font-mono uppercase tracking-widest text-sky-300">
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent" /> AI-ready · MCP
                 </span>
                 <h2 className="mt-5 text-3xl sm:text-4xl font-bold text-white leading-tight">
                   Hecho para que las IAs lo usen
@@ -458,7 +458,7 @@ export default async function LandingPage() {
                 <div className="mt-7 flex flex-wrap gap-3">
                   <Link
                     href="/mcp"
-                    className="rounded-lg bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-black hover:bg-emerald-400 transition-colors"
+                    className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-sky-300 transition-colors"
                   >
                     Ver el MCP y sus tools
                   </Link>
@@ -477,9 +477,9 @@ export default async function LandingPage() {
     "url": "https://www.consignatarias.com.ar/api/mcp"
   }
 }`}</pre>
-                <p className="text-emerald-300 mt-4">get_indice_novillo() → $4.154/kg</p>
-                <p className="text-emerald-300">get_precios_hacienda(&quot;vacas&quot;)</p>
-                <p className="text-emerald-300">crear_alerta_precio(novillo &gt; 5000)</p>
+                <p className="text-sky-300 mt-4">get_indice_novillo() → $4.154/kg</p>
+                <p className="text-sky-300">get_precios_hacienda(&quot;vacas&quot;)</p>
+                <p className="text-sky-300">crear_alerta_precio(novillo &gt; 5000)</p>
               </div>
             </div>
           </div>
@@ -668,7 +668,7 @@ export default async function LandingPage() {
                 <Link href="/terminos" className="hover:text-zinc-300 transition-colors">Términos</Link>
                 <Link href="/privacidad" className="hover:text-zinc-300 transition-colors">Privacidad</Link>
                 <Link href="/aviso-legal" className="hover:text-zinc-300 transition-colors">Aviso legal</Link>
-                <Link href="/arrepentimiento" className="text-amber-500/90 hover:text-amber-400 transition-colors">Botón de Arrepentimiento</Link>
+                <Link href="/arrepentimiento" className="text-accent/90 hover:text-accent transition-colors">Botón de Arrepentimiento</Link>
               </div>
               <span className="text-xs text-zinc-700">
                 © {new Date().getFullYear()} Memola Medios S.A.S. · agro@memola.com.ar

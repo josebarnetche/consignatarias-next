@@ -30,7 +30,7 @@ export default function HistoryDownloadPro() {
     return (
       <a
         href="/api/market/inmag-export"
-        className="text-xs text-emerald-500 hover:text-emerald-400 transition-colors flex items-center gap-1"
+        className="text-xs text-accent hover:text-accent-bright transition-colors flex items-center gap-1"
       >
         Descargar histórico completo (CSV, 2015→)
         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

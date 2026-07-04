@@ -102,9 +102,9 @@ export default function ValuationWidget() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-emerald-500/10 via-zinc-900 to-zinc-900 border border-emerald-500/30 rounded-xl p-6 md:p-8 relative overflow-hidden">
+    <div className="bg-gradient-to-br from-sky-500/10 via-zinc-900 to-zinc-900 border border-sky-500/30 rounded-xl p-6 md:p-8 relative overflow-hidden">
       {/* Background glow */}
-      <div className="absolute top-0 left-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute top-0 left-0 w-48 h-48 bg-sky-500/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
       
       <div className="relative z-10">
         <h3 className="text-xl font-medium text-zinc-100 mb-1">
@@ -124,7 +124,7 @@ export default function ValuationWidget() {
               onChange={(e) => { markCalcInteraction(); setHeads(Math.max(1, parseInt(e.target.value) || 1)); }}
               min={1}
               max={10000}
-              className="w-full bg-zinc-900 border border-zinc-700 focus:border-emerald-500/50 rounded-lg px-4 py-2.5 text-zinc-100 text-lg font-mono outline-none transition-colors"
+              className="w-full bg-zinc-900 border border-zinc-700 focus:border-sky-500/50 rounded-lg px-4 py-2.5 text-zinc-100 text-lg font-mono outline-none transition-colors"
             />
           </div>
           <div>
@@ -133,7 +133,7 @@ export default function ValuationWidget() {
               id="vw-category"
               value={category}
               onChange={(e) => { markCalcInteraction(); setCategory(e.target.value as CategoryKey); }}
-              className="w-full bg-zinc-900 border border-zinc-700 focus:border-emerald-500/50 rounded-lg px-4 py-2.5 text-zinc-100 outline-none transition-colors cursor-pointer"
+              className="w-full bg-zinc-900 border border-zinc-700 focus:border-sky-500/50 rounded-lg px-4 py-2.5 text-zinc-100 outline-none transition-colors cursor-pointer"
             >
               {CATEGORIES.map(c => (
                 <option key={c.key} value={c.key}>{c.label}</option>
@@ -146,7 +146,7 @@ export default function ValuationWidget() {
               id="vw-province"
               value={province}
               onChange={(e) => { markCalcInteraction(); setProvince(e.target.value); }}
-              className="w-full bg-zinc-900 border border-zinc-700 focus:border-emerald-500/50 rounded-lg px-4 py-2.5 text-zinc-100 outline-none transition-colors cursor-pointer"
+              className="w-full bg-zinc-900 border border-zinc-700 focus:border-sky-500/50 rounded-lg px-4 py-2.5 text-zinc-100 outline-none transition-colors cursor-pointer"
             >
               {PROVINCES.map(p => (
                 <option key={p} value={p}>{p}</option>
@@ -163,7 +163,7 @@ export default function ValuationWidget() {
                 Valor estimado
               </div>
               <div className="flex items-baseline gap-3">
-                <span className="text-4xl md:text-5xl font-medium text-emerald-400 tracking-tight">
+                <span className="text-4xl md:text-5xl font-medium text-accent tracking-tight">
                   ${fmt(calculation.totalValue)}
                 </span>
                 <span className={`text-sm font-mono ${calculation.change > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -193,13 +193,13 @@ export default function ValuationWidget() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="tu@email.com"
-              className="flex-1 bg-zinc-900 border border-zinc-700 focus:border-emerald-500/50 rounded-lg px-4 py-2.5 text-zinc-100 text-sm outline-none transition-colors"
+              className="flex-1 bg-zinc-900 border border-zinc-700 focus:border-sky-500/50 rounded-lg px-4 py-2.5 text-zinc-100 text-sm outline-none transition-colors"
               required
             />
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 disabled:bg-emerald-500/50 text-black font-medium rounded-lg text-sm transition-colors whitespace-nowrap"
+              className="px-6 py-2.5 bg-accent hover:bg-sky-300 disabled:bg-sky-500/50 text-zinc-950 font-medium rounded-lg text-sm transition-colors whitespace-nowrap"
             >
               {isSubmitting ? 'Enviando...' : 'Recibí el cierre mensual'}
             </button>
@@ -212,7 +212,7 @@ export default function ValuationWidget() {
             </div>
             <Link
               href="/mercado/arrendamiento"
-              className="inline-flex items-center gap-1.5 text-sm text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm text-accent hover:text-sky-300 font-medium transition-colors"
             >
               Ver cuánto rinde para tu arrendamiento →
             </Link>

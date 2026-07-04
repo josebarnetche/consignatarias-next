@@ -69,7 +69,7 @@ export default function ContactlessLeadForm({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="inline-flex items-center justify-center rounded-terminal bg-emerald-500 hover:bg-emerald-400 px-3 py-2 text-sm font-semibold text-white transition-colors"
+          className="inline-flex items-center justify-center rounded-terminal bg-accent hover:bg-sky-300 px-3 py-2 text-sm font-semibold text-zinc-950 transition-colors"
         >
           Pedí que te contacten
         </button>
@@ -78,7 +78,7 @@ export default function ContactlessLeadForm({
   }
 
   const inputCls =
-    'w-full rounded-terminal border border-terminal-border bg-terminal-bg/60 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-600 outline-none focus:border-emerald-500'
+    'w-full rounded-terminal border border-terminal-border bg-terminal-bg/60 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-600 outline-none focus:border-accent'
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-2">
@@ -90,7 +90,7 @@ export default function ContactlessLeadForm({
       <button
         type="submit"
         disabled={sending || !name || (!phone && !email)}
-        className="rounded-terminal bg-emerald-500 hover:bg-emerald-400 disabled:bg-zinc-700 disabled:text-zinc-500 px-3 py-2 text-sm font-semibold text-white transition-colors"
+        className="rounded-terminal bg-accent hover:bg-sky-300 disabled:bg-zinc-700 disabled:text-zinc-500 px-3 py-2 text-sm font-semibold text-zinc-950 transition-colors"
       >
         {sending ? 'Enviando…' : 'Enviar'}
       </button>

@@ -40,7 +40,7 @@ export default function ConsignatariaSearch({ items }: { items: Item[] }) {
         onChange={(e) => setQ(e.target.value)}
         placeholder="Buscá tu consignataria por nombre…"
         autoComplete="off"
-        className="w-full rounded-lg border border-white/10 bg-[#0a0a0f]/80 px-4 py-3 text-base text-zinc-100 placeholder:text-zinc-500 outline-none backdrop-blur-md focus:border-amber-400/60"
+        className="w-full rounded-lg border border-white/10 bg-[#0a0a0f]/80 px-4 py-3 text-base text-zinc-100 placeholder:text-zinc-500 outline-none backdrop-blur-md focus:border-sky-400/60"
       />
       {matches.length > 0 && (
         <ul className="absolute left-0 right-0 top-full z-30 mt-1.5 overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0f]/95 shadow-xl backdrop-blur-md">
@@ -48,7 +48,7 @@ export default function ConsignatariaSearch({ items }: { items: Item[] }) {
             <li key={it.slug}>
               <Link
                 href={`/consignatarias/${it.slug}`}
-                className="block px-4 py-2.5 text-sm text-zinc-200 hover:bg-amber-400/10 hover:text-white"
+                className="block px-4 py-2.5 text-sm text-zinc-200 hover:bg-sky-400/10 hover:text-white"
               >
                 {it.name}
               </Link>
@@ -59,7 +59,7 @@ export default function ConsignatariaSearch({ items }: { items: Item[] }) {
       {nq.length >= 2 && matches.length === 0 && (
         <div className="absolute left-0 right-0 top-full z-30 mt-1.5 rounded-lg border border-white/10 bg-[#0a0a0f]/95 px-4 py-2.5 text-sm text-zinc-500 backdrop-blur-md">
           Sin resultados ·{' '}
-          <Link href="/consignatarias" className="text-amber-400 hover:text-amber-300">
+          <Link href="/consignatarias" className="text-accent hover:text-sky-300">
             ver todas
           </Link>
         </div>

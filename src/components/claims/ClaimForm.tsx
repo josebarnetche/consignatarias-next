@@ -129,9 +129,9 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
 
       <div className="px-panel py-4 space-y-4">
         {/* Social proof */}
-        <div className="flex items-center gap-2 px-3 py-2 bg-amber-500/5 border border-amber-500/20 rounded">
-          <span className="text-amber-400">🏆</span>
-          <span className="text-amber-300/90 text-xs font-terminal">
+        <div className="flex items-center gap-2 px-3 py-2 bg-sky-500/5 border border-sky-500/20 rounded">
+          <span className="text-accent">🏆</span>
+          <span className="text-sky-300/90 text-xs font-terminal">
             Administrá tu perfil gratis: remates, datos y contacto al día
           </span>
         </div>

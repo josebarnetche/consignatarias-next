@@ -37,7 +37,7 @@ function Field({ label, value, onChange, suffix, step = 1, min = 0 }: {
   return (
     <label className="block">
       <span className="block text-xs text-zinc-500 mb-1">{label}</span>
-      <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 focus-within:border-amber-500/60">
+      <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 focus-within:border-sky-500/60">
         <input
           type="number" min={min} step={step} value={value}
           onChange={(e) => onChange(Math.max(min, parseFloat(e.target.value) || 0))}
@@ -85,9 +85,9 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
   const priceIsToday = Math.round(precio) === Math.round(priceToday)
 
   return (
-    <div className="bg-zinc-900/60 rounded-xl p-5 border border-amber-500/20">
+    <div className="bg-zinc-900/60 rounded-xl p-5 border border-sky-500/20">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-amber-400">Calculá tu arrendamiento</h3>
+        <h3 className="text-lg font-semibold text-accent">Calculá tu arrendamiento</h3>
         <span className="text-xxs text-zinc-600 font-mono">en kg de novillo</span>
       </div>
 
@@ -98,7 +98,7 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
         <div className="col-span-2">
           <Field label="Índice novillo (hoy)" value={precio} onChange={setPrecio} suffix="$/kg" />
           {!priceIsToday && (
-            <button onClick={() => setPrecio(priceToday)} className="text-xxs text-amber-500/80 hover:text-amber-400 mt-1">
+            <button onClick={() => setPrecio(priceToday)} className="text-xxs text-accent/80 hover:text-accent-bright mt-1">
               ← volver al valor de hoy (${fmt(priceToday)})
             </button>
           )}
@@ -106,9 +106,9 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
       </div>
 
       {/* Canon animado */}
-      <div className="rounded-lg bg-amber-500/5 border border-amber-500/20 p-4 mb-4">
+      <div className="rounded-lg bg-sky-500/5 border border-sky-500/20 p-4 mb-4">
         <div className="text-xs text-zinc-500 mb-1">Canon mensual</div>
-        <div className="text-3xl font-bold font-mono text-amber-400 tabular-nums">${fmt(animCanon)}</div>
+        <div className="text-3xl font-bold font-mono text-accent tabular-nums">${fmt(animCanon)}</div>
         <div className="text-sm text-zinc-500 font-mono mt-1">Anual ${fmt(canonAnual)}</div>
         <div className="text-xxs text-zinc-600 mt-2">{hectareas} ha × {kgHa} kg × ${fmt(precio)}/kg</div>
       </div>
@@ -127,7 +127,7 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
           </div>
           <div className="flex justify-between text-zinc-400">
             <span>Sellos ({sellos}%)</span>
-            <span className="text-amber-400 font-mono font-medium">${fmt(sellosCosto)}</span>
+            <span className="text-accent font-mono font-medium">${fmt(sellosCosto)}</span>
           </div>
         </div>
         <p className="text-xxs text-zinc-600 mt-2">
@@ -138,7 +138,7 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
       {/* Guardar */}
       <button
         onClick={guardar}
-        className="w-full mt-5 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 font-medium transition-colors"
+        className="w-full mt-5 py-2.5 rounded-lg bg-accent hover:bg-sky-300 text-zinc-950 font-medium transition-colors"
       >
         {saved ? '✓ Guardado en este dispositivo' : 'Guardar mi cálculo'}
       </button>

@@ -45,7 +45,7 @@ export default function LiveRemateTicker() {
   if (!data?.active || !data.session) return null
 
   return (
-    <section className="rounded-xl border border-amber-500/30 bg-zinc-950/60 p-4 my-4">
+    <section className="rounded-xl border border-sky-500/30 bg-zinc-950/60 p-4 my-4">
       <header className="flex items-center gap-2 mb-3">
         <span className="inline-block h-2 w-2 rounded-full bg-red-500 animate-pulse" />
         <span className="text-xs font-mono uppercase tracking-wider text-red-400">En vivo</span>
@@ -61,7 +61,7 @@ export default function LiveRemateTicker() {
         <div className="mb-3">
           <div className="text-[10px] uppercase tracking-wider text-zinc-500">Lote actual</div>
           <div className="text-lg text-zinc-100">
-            <span className="font-semibold text-amber-400">{data.current.categoria}</span>
+            <span className="font-semibold text-accent">{data.current.categoria}</span>
             {' · '}
             <span className="font-mono">{ars(data.current.precio)}/kg</span>
             {data.current.cabezas ? <span className="text-zinc-400 text-sm"> · {data.current.cabezas} cab.</span> : null}
@@ -85,7 +85,7 @@ export default function LiveRemateTicker() {
         <div className="text-xs font-mono text-zinc-500 max-h-24 overflow-y-auto">
           {data.recent.slice(1).map((l, i) => (
             <div key={i} className="flex gap-2">
-              <span className="text-amber-400/70 w-32 shrink-0 truncate">{l.categoria}</span>
+              <span className="text-accent/70 w-32 shrink-0 truncate">{l.categoria}</span>
               <span className="text-zinc-300">{ars(l.precio)}/kg</span>
               {l.cabezas ? <span className="text-zinc-600">{l.cabezas} cab.</span> : null}
             </div>

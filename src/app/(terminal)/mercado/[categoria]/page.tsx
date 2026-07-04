@@ -448,7 +448,7 @@ export default async function CategoriaPage({
           <ul className="space-y-2">
             {config.useCases.map((useCase, i) => (
               <li key={i} className="flex items-start gap-2 text-zinc-400">
-                <span className="text-emerald-500 mt-1">•</span>
+                <span className="text-accent mt-1">•</span>
                 <span>{useCase}</span>
               </li>
             ))}
@@ -461,7 +461,7 @@ export default async function CategoriaPage({
           <ul className="space-y-2">
             {config.priceFactors.map((factor, i) => (
               <li key={i} className="flex items-start gap-2 text-zinc-400">
-                <span className="text-amber-500 mt-1">•</span>
+                <span className="text-accent mt-1">•</span>
                 <span>{factor}</span>
               </li>
             ))}
@@ -483,7 +483,7 @@ export default async function CategoriaPage({
             ))}
             <Link
               href="/mercado/inmag"
-              className="px-3 py-1.5 bg-emerald-900/50 hover:bg-emerald-800/50 text-emerald-400 text-sm rounded-md transition-colors"
+              className="px-3 py-1.5 bg-sky-900/50 hover:bg-sky-800/50 text-accent text-sm rounded-md transition-colors"
             >
               INMAG
             </Link>

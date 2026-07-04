@@ -67,17 +67,17 @@ export default function WatchlistNotifyOptin({
     : 'Te incluimos en el resumen semanal de remates — y guardamos lo que seguís. Así no perdés lo guardado si cambiás de teléfono.';
 
   return (
-    <div className={`bg-zinc-900 border border-amber-500/20 rounded-xl p-4 ${className}`}>
+    <div className={`bg-zinc-900 border border-sky-500/20 rounded-xl p-4 ${className}`}>
       <h4 className="text-sm font-bold text-white mb-1">Sumate al resumen semanal</h4>
       <p className="text-zinc-400 text-xs mb-3 leading-relaxed">{subtitle}</p>
 
       {state === 'ok' ? (
-        <div className="flex items-center gap-2 text-amber-400 text-sm font-medium">
+        <div className="flex items-center gap-2 text-accent text-sm font-medium">
           <span>✓</span><span>{msg}</span>
         </div>
       ) : (
         <form onSubmit={submit} className="flex flex-col sm:flex-row gap-2">
-          <div className="flex-1 bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2 focus-within:border-amber-500/60">
+          <div className="flex-1 bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2 focus-within:border-sky-500/60">
             <input
               type="email"
               inputMode="email"
@@ -91,7 +91,7 @@ export default function WatchlistNotifyOptin({
           <button
             type="submit"
             disabled={state === 'loading'}
-            className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-medium text-sm px-4 py-2 rounded-lg transition-colors disabled:opacity-60 whitespace-nowrap"
+            className="bg-accent hover:bg-sky-300 text-zinc-950 font-medium text-sm px-4 py-2 rounded-lg transition-colors disabled:opacity-60 whitespace-nowrap"
           >
             {state === 'loading' ? 'Anotando…' : 'Avisame'}
           </button>

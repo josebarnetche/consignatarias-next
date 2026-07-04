@@ -79,20 +79,20 @@ export default function OnboardingPrompt() {
   return (
     <Link
       href="/mi-cuenta/guias"
-      className="group flex items-center gap-1.5 px-2 py-1 rounded-md bg-amber-900/30 border border-amber-700/40 hover:bg-amber-900/50 hover:border-amber-600/50 transition-all"
+      className="group flex items-center gap-1.5 px-2 py-1 rounded-md bg-sky-900/30 border border-sky-700/40 hover:bg-sky-900/50 hover:border-sky-600/50 transition-all"
       title="Subí tu primera guía DT-e y comenzá a construir tu historial"
     >
-      <span className="text-amber-500 text-sm">📋</span>
-      <span className="text-xxs font-terminal uppercase tracking-wider text-amber-400 group-hover:text-amber-300 transition-colors hidden sm:inline">
+      <span className="text-accent text-sm">📋</span>
+      <span className="text-xxs font-terminal uppercase tracking-wider text-accent group-hover:text-sky-300 transition-colors hidden sm:inline">
         Subí tu primera guía
       </span>
-      <span className="text-xxs font-terminal uppercase tracking-wider text-amber-400 group-hover:text-amber-300 transition-colors sm:hidden">
+      <span className="text-xxs font-terminal uppercase tracking-wider text-accent group-hover:text-sky-300 transition-colors sm:hidden">
         DT-e
       </span>
       {/* Close button */}
       <button
         onClick={handleDismiss}
-        className="ml-1 p-0.5 text-amber-600 hover:text-amber-400 transition-colors opacity-0 group-hover:opacity-100"
+        className="ml-1 p-0.5 text-sky-600 hover:text-accent transition-colors opacity-0 group-hover:opacity-100"
         aria-label="Ocultar"
       >
         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">

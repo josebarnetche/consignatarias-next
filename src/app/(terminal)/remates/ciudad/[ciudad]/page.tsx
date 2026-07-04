@@ -166,7 +166,7 @@ export default async function CityRematesPage({ params }: { params: Promise<{ ci
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-2 flex items-center gap-3">
-            <MapPin className="w-7 h-7 text-amber-500" />
+            <MapPin className="w-7 h-7 text-accent" />
             Remates en {cityOnly}
           </h1>
           <p className="text-zinc-400">
@@ -177,17 +177,17 @@ export default async function CityRematesPage({ params }: { params: Promise<{ ci
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3 mb-8">
           <div className="bg-zinc-900/50 border border-zinc-800 rounded p-3 text-center">
-            <Calendar className="w-4 h-4 text-amber-500 mx-auto mb-1" />
+            <Calendar className="w-4 h-4 text-accent mx-auto mb-1" />
             <p className="text-zinc-100 text-lg font-bold">{upcomingAuctions.length}</p>
             <p className="text-zinc-500 text-xs">Próximos</p>
           </div>
           <div className="bg-zinc-900/50 border border-zinc-800 rounded p-3 text-center">
-            <Building2 className="w-4 h-4 text-amber-500 mx-auto mb-1" />
+            <Building2 className="w-4 h-4 text-accent mx-auto mb-1" />
             <p className="text-zinc-100 text-lg font-bold">{consignatarias.length}</p>
             <p className="text-zinc-500 text-xs">Consignatarias</p>
           </div>
           <div className="bg-zinc-900/50 border border-zinc-800 rounded p-3 text-center">
-            <MapPin className="w-4 h-4 text-amber-500 mx-auto mb-1" />
+            <MapPin className="w-4 h-4 text-accent mx-auto mb-1" />
             <p className="text-zinc-100 text-lg font-bold">{cityAuctions.length}</p>
             <p className="text-zinc-500 text-xs">Total histórico</p>
           </div>
@@ -261,13 +261,13 @@ export default async function CityRematesPage({ params }: { params: Promise<{ ci
             {/* Province link */}
             <Link
               href={`/remates/${normalizeCity(province)}`}
-              className="flex items-center justify-between w-full p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg hover:bg-amber-500/20 transition-colors mb-4"
+              className="flex items-center justify-between w-full p-4 bg-sky-500/10 border border-sky-500/30 rounded-lg hover:bg-sky-500/20 transition-colors mb-4"
             >
               <div className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-amber-500" />
-                <span className="text-amber-400 font-medium">Ver todos los remates en {province}</span>
+                <MapPin className="w-5 h-5 text-accent" />
+                <span className="text-accent font-medium">Ver todos los remates en {province}</span>
               </div>
-              <span className="text-amber-500">→</span>
+              <span className="text-accent">→</span>
             </Link>
             
             {/* Other cities in province */}
@@ -282,7 +282,7 @@ export default async function CityRematesPage({ params }: { params: Promise<{ ci
                     <Link
                       key={cSlug}
                       href={`/remates/ciudad/${cSlug}`}
-                      className="text-xs text-zinc-400 hover:text-amber-500 border border-zinc-800 rounded px-2 py-1"
+                      className="text-xs text-zinc-400 hover:text-accent border border-zinc-800 rounded px-2 py-1"
                     >
                       {cName}
                     </Link>

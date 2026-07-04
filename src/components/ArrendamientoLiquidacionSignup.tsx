@@ -93,9 +93,9 @@ export default function ArrendamientoLiquidacionSignup({
   }
 
   return (
-    <div className="bg-gradient-to-br from-amber-500/[0.06] to-transparent border border-amber-500/20 rounded-2xl p-6 lg:p-8">
+    <div className="bg-gradient-to-br from-sky-500/[0.06] to-transparent border border-sky-500/20 rounded-2xl p-6 lg:p-8">
       <div className="max-w-2xl">
-        <div className="text-xxs text-amber-400/80 uppercase tracking-widest mb-2 font-mono">Para liquidar tu contrato</div>
+        <div className="text-xxs text-accent/80 uppercase tracking-widest mb-2 font-mono">Para liquidar tu contrato</div>
         <h3 className="text-xl font-bold text-white mb-2">Tu canon, ya liquidado, cada cierre de mes</h3>
         <p className="text-zinc-400 text-sm mb-5 leading-relaxed">
           Cargá tu contrato una vez y, apenas cierra el mes, te llega <strong className="text-zinc-200">el canon exacto
@@ -104,7 +104,7 @@ export default function ArrendamientoLiquidacionSignup({
         </p>
 
         {state === 'ok' ? (
-          <div className="flex items-center gap-2 text-amber-400 font-medium">
+          <div className="flex items-center gap-2 text-positive font-medium">
             <span className="text-lg">✓</span><span>{msg}</span>
           </div>
         ) : (
@@ -113,7 +113,7 @@ export default function ArrendamientoLiquidacionSignup({
             <div className="grid grid-cols-2 gap-3 max-w-md">
               <label className="block">
                 <span className="block text-xs text-zinc-500 mb-1">Kg novillo / ha / mes</span>
-                <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 focus-within:border-amber-500/60">
+                <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 focus-within:border-sky-500/60">
                   <input
                     type="number" min={0} step={0.5} value={kgHa}
                     onChange={(e) => { setKgHa(Math.max(0, parseFloat(e.target.value) || 0)); if (state === 'error') setState('idle') }}
@@ -124,7 +124,7 @@ export default function ArrendamientoLiquidacionSignup({
               </label>
               <label className="block">
                 <span className="block text-xs text-zinc-500 mb-1">Superficie</span>
-                <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 focus-within:border-amber-500/60">
+                <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 focus-within:border-sky-500/60">
                   <input
                     type="number" min={0} step={1} value={hectareas}
                     onChange={(e) => { setHectareas(Math.max(0, parseFloat(e.target.value) || 0)); if (state === 'error') setState('idle') }}
@@ -138,13 +138,13 @@ export default function ArrendamientoLiquidacionSignup({
             {/* Canon en vivo — ancla de valor antes de pedir el email */}
             {canon > 0 && (
               <p className="text-sm text-zinc-400 font-mono">
-                Tu canon hoy: <span className="text-amber-400 font-semibold">${fmt(canon)}</span>
+                Tu canon hoy: <span className="text-accent font-semibold">${fmt(canon)}</span>
                 <span className="text-zinc-600"> ({hectareas} ha × {kgHa} kg × ${fmt(priceToday)}/kg)</span>
               </p>
             )}
 
             <div className="flex flex-col sm:flex-row gap-3 max-w-md">
-              <div className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 focus-within:border-amber-500/60">
+              <div className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 focus-within:border-sky-500/60">
                 <input
                   type="email" inputMode="email" autoComplete="email" placeholder="tu@email.com"
                   value={email}
@@ -154,7 +154,7 @@ export default function ArrendamientoLiquidacionSignup({
               </div>
               <button
                 type="submit" disabled={state === 'loading'}
-                className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-medium px-6 py-2.5 rounded-lg transition-colors disabled:opacity-60 whitespace-nowrap"
+                className="bg-accent hover:bg-sky-300 text-zinc-950 font-medium px-6 py-2.5 rounded-lg transition-colors disabled:opacity-60 whitespace-nowrap"
               >
                 {state === 'loading' ? 'Anotando…' : 'Recibir mi canon'}
               </button>

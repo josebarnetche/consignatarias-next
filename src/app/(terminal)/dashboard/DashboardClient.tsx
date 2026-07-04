@@ -541,13 +541,13 @@ export default function DashboardClient({
                 <button onClick={() => setActiveTab('resultados')} className="px-3 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors">
                   Cargar resultados
                 </button>
-                <Link href="/mi-cuenta/guias" className="px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-500/20 transition-colors">
+                <Link href="/mi-cuenta/guias" className="px-3 py-1.5 bg-sky-500/10 border border-sky-500/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-sky-500/20 transition-colors">
                   📄 Mis Guías DT-e
                 </Link>
                 {tierLabel !== 'FREE' && (
                   <a 
                     href={`/api/consignatarias/${consignataria.canonical_slug}/report`}
-                    className="px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-500/20 transition-colors"
+                    className="px-3 py-1.5 bg-sky-500/10 border border-sky-500/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-sky-500/20 transition-colors"
                   >
                     📄 Reporte PDF
                   </a>
@@ -902,8 +902,8 @@ export default function DashboardClient({
             </div>
           ) : (
             <div className="px-panel py-10 text-center space-y-4">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-amber-500/10 border border-amber-500/20 mb-2">
-                <svg className="w-7 h-7 text-amber-500/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-sky-500/10 border border-sky-500/20 mb-2">
+                <svg className="w-7 h-7 text-sky-500/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </div>

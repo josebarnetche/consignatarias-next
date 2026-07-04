@@ -74,7 +74,7 @@ export function ObservedPricesSection({ slug }: { slug: string }) {
         if (!cats.length) return null
         return (
           <div key={seg} className="mb-5">
-            <h3 className="text-xs uppercase tracking-wider text-amber-500/80 mb-2">{SEGMENTO_LABEL[seg]}</h3>
+            <h3 className="text-xs uppercase tracking-wider text-accent/80 mb-2">{SEGMENTO_LABEL[seg]}</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-sm border-collapse">
                 <thead>
