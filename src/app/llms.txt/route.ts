@@ -54,11 +54,13 @@ Owned by Memola Medios SAS (\`agro@memola.com.ar\`). Public-data first, paywall 
 
 Available tools:
 - \`get_indice_novillo\` — INMAG (índice novillo) hoy: precio de referencia ARS/kg + variación
+- \`get_inmag_historico\` — evolución del INMAG (tendencia, min/máx, variación del período)
 - \`get_precios_hacienda\` — precios por categoría (novillo, novillito, vaquillona, vaca, toro, ternero)
 - \`get_precios_detallados\` — precios por subcategoría (ej. "NOVILLOS Regular +430") con mín/prom/máx
 - \`get_contexto_macro\` — dólar blue/oficial, maíz FOB, spread novillo/maíz (proxy de margen feedlot)
 - \`list_remates\` — calendario de remates (filtro por provincia)
 - \`buscar_consignataria\` — directorio de consignatarias/casas de remate por nombre o zona
+- \`buscar_frigorifico\` — frigoríficos habilitados MAGYP/SENASA (1.100+ plantas) por nombre/provincia/CUIT
 - \`calcular_arrendamiento\` — canon de arrendamiento rural indexado al novillo
 - \`crear_alerta_precio\` — alerta cuando un precio cruza un umbral → notifica por webhook
 

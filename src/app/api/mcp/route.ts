@@ -3,6 +3,7 @@ import { requireServiceClient } from '@/lib/supabase'
 import { authenticate } from '@/lib/api-auth'
 import marketPrices from '@/lib/data/market-prices.json'
 import rematesData from '@/lib/data/remates.json'
+import frigorificosData from '@/lib/data/frigorificos.json'
 import { isValidCategory, categoryLabel, getCurrentPrice, CATEGORY_VALUES } from '@/lib/price-alerts'
 
 export const runtime = 'nodejs'
@@ -47,6 +48,9 @@ const remates = rematesData as unknown as Array<{
   time: string | null; location: string; province: string; mainCategory: string
   estimatedHeads: number | null; youtubeUrl: string | null; status: string
 }>
+const frigorificos = frigorificosData as unknown as Array<{
+  cuit: string; name: string; matricula: string | null; province: string; stage: number; senasaActive?: boolean
+}>
 
 const ok = (text: string): ToolResult => ({ content: [{ type: 'text', text }] })
 const fail = (text: string): ToolResult => ({ content: [{ type: 'text', text }], isError: true })
@@ -65,6 +69,45 @@ const TOOLS: Tool[] = [
           `Hoy: ${fmt(current)}/kg vivo (${change >= 0 ? '+' : ''}${change}% vs anterior ${fmt(prev)})\n` +
           `Fuente: Mercado Agroganadero (Cañuelas), vía consignatarias.com.ar\n\n` +
           JSON.stringify({ inmag: current, change_pct: change, prev, unit: 'ARS/kg vivo', date: prices.lastUpdate }),
+      )
+    },
+  },
+  {
+    name: 'get_inmag_historico',
+    description:
+      'Evolución histórica del Índice Novillo (INMAG) en ARS/kg vivo. Devuelve valor inicial/final, variación, mínimo y máximo del período, y una muestra de la serie. Sirve para tendencia.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        dias: { type: 'number', description: 'Ventana en días hacia atrás (default 30, máx 730)' },
+      },
+      additionalProperties: false,
+    },
+    async run(args) {
+      const dias = Math.min(Math.max(typeof args.dias === 'number' ? args.dias : 30, 2), 730)
+      const desde = new Date(Date.now() - dias * 86400000).toISOString().slice(0, 10)
+      const service = requireServiceClient()
+      const { data, error } = await service
+        .from('mag_inmag_history')
+        .select('date, inmag_value')
+        .gte('date', desde)
+        .order('date', { ascending: true })
+      if (error) return fail('Error leyendo el histórico INMAG.')
+      const rows = (data || []).filter((r) => r.inmag_value != null) as Array<{ date: string; inmag_value: number }>
+      if (rows.length === 0) return ok(`Sin datos INMAG en los últimos ${dias} días.`)
+      const vals = rows.map((r) => Number(r.inmag_value))
+      const first = vals[0], last = vals[vals.length - 1]
+      const min = Math.min(...vals), max = Math.max(...vals)
+      const changePct = first > 0 ? ((last - first) / first) * 100 : 0
+      // muestra: hasta ~8 puntos espaciados
+      const step = Math.max(1, Math.floor(rows.length / 8))
+      const sample = rows.filter((_, i) => i % step === 0 || i === rows.length - 1)
+      return ok(
+        `INMAG — últimos ${dias} días (${rows.length} ruedas, ARS/kg vivo)\n` +
+          `Inicio (${rows[0].date}): ${fmt(first)} → Hoy (${rows[rows.length - 1].date}): ${fmt(last)} (${changePct >= 0 ? '+' : ''}${changePct.toFixed(1)}%)\n` +
+          `Mínimo: ${fmt(min)} · Máximo: ${fmt(max)}\n\nSerie:\n` +
+          sample.map((r) => `  ${r.date}: ${fmt(Number(r.inmag_value))}`).join('\n') +
+          '\n\n' + JSON.stringify({ dias, inicio: first, fin: last, change_pct: Math.round(changePct * 10) / 10, min, max, ruedas: rows.length }),
       )
     },
   },
@@ -220,6 +263,36 @@ const TOOLS: Tool[] = [
           `${c.category ? ' · ' + c.category : ''}${contacto ? ' · ' + contacto : ''}\n  https://www.consignatarias.com.ar/consignatarias/${c.canonical_slug}`
       })
       return ok(`${data.length} resultado(s) para "${q}":\n${lines.join('\n')}`)
+    },
+  },
+  {
+    name: 'buscar_frigorifico',
+    description:
+      'Busca frigoríficos habilitados MAGYP/SENASA (1.100+ plantas) por nombre, provincia o CUIT. Devuelve nombre, provincia, CUIT, matrícula y ciclo. Filtro por provincia.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        query: { type: 'string', description: 'Nombre o CUIT a buscar (opcional si se pasa provincia)' },
+        provincia: { type: 'string', description: 'Filtra por provincia' },
+        limite: { type: 'number', description: 'Máximo de resultados (default 10)' },
+      },
+      additionalProperties: false,
+    },
+    async run(args) {
+      const q = String(args.query || '').toLowerCase().trim()
+      const prov = String(args.provincia || '').toLowerCase().trim()
+      const limite = Math.min(typeof args.limite === 'number' ? args.limite : 10, 30)
+      if (!q && !prov) return fail('Pasá un nombre/CUIT o una provincia.')
+      const res = frigorificos
+        .filter((f) => (!q || f.name.toLowerCase().includes(q) || (f.cuit || '').includes(q)) && (!prov || (f.province || '').toLowerCase().includes(prov)))
+        .slice(0, limite)
+      if (res.length === 0) return ok('Sin frigoríficos con esos filtros.')
+      const lines = res.map(
+        (f) =>
+          `${f.name} · ${f.province}${f.matricula ? ' · Mat. ' + f.matricula : ''} · CUIT ${f.cuit}` +
+          `${f.stage ? ' · Ciclo ' + f.stage : ''}${f.senasaActive === false ? ' · (inactivo SENASA)' : ''}`,
+      )
+      return ok(`${res.length} frigorífico(s):\n${lines.join('\n')}`)
     },
   },
   {
