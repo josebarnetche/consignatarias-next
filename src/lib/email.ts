@@ -567,6 +567,100 @@ export async function sendSellZoneAlert(
 }
 
 /* ------------------------------------------------------------------ */
+/*  PRICE THRESHOLD ALERTS ("avisame cuando el X cruce $Y")           */
+/* ------------------------------------------------------------------ */
+
+const fmtArs = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
+
+/** Confirmación de alta de una alerta de precio por umbral. */
+export async function sendPriceAlertConfirm(
+  email: string,
+  data: { categoryLabel: string; threshold: number; direction: 'above' | 'below'; current: number | null },
+) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+  const cat = escapeHtml(data.categoryLabel)
+  const verbo = data.direction === 'above' ? 'cruce' : 'baje de'
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: email,
+      subject: `Listo — te aviso cuando el ${data.categoryLabel} ${verbo} ${fmtArs(data.threshold)}`,
+      headers: listUnsubHeaders(email, 'price-alert-confirm'),
+      html: `
+        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
+          <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Alerta de precio activada · ${cat}</p>
+          <h2 style="color:#fff;font-size:18px;margin:0 0 16px">Te aviso cuando ${data.direction === 'above' ? 'cruce' : 'baje de'} ${fmtArs(data.threshold)}</h2>
+          <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">
+            Vas a recibir <strong style="color:#e4e4e7">un solo mail</strong> cuando el ${cat} ${verbo}
+            <strong style="color:#34d399">${fmtArs(data.threshold)}/kg</strong>. Nada de spam por cada movimiento.
+          </p>
+          ${data.current !== null ? `
+          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;text-align:center;margin-bottom:16px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Precio hoy</p>
+            <p style="color:#38bdf8;font-size:32px;font-weight:bold;margin:0;font-family:monospace">${fmtArs(data.current)}<span style="color:#71717a;font-size:14px">/kg</span></p>
+          </div>` : ''}
+          <div style="text-align:center;margin:24px 0">
+            <a href="${APP_URL}/precios" style="background:#38bdf8;color:#0a0a0f;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">VER PRECIOS EN VIVO</a>
+          </div>
+          <p style="color:#3f3f46;font-size:10px;margin:12px 0 0">
+            Consignatarias.com.ar &nbsp;&bull;&nbsp;
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#3f3f46">Desuscribirme</a>
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
+/** El disparo: el precio cruzó el umbral. */
+export async function sendPriceThresholdAlert(
+  email: string,
+  data: { categoryLabel: string; threshold: number; direction: 'above' | 'below'; current: number },
+) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+  const cat = escapeHtml(data.categoryLabel)
+  const verboPasado = data.direction === 'above' ? 'cruzó' : 'bajó de'
+  const color = data.direction === 'above' ? '#34d399' : '#f87171'
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: email,
+      subject: `El ${data.categoryLabel} ${verboPasado} ${fmtArs(data.threshold)} — está en ${fmtArs(data.current)}`,
+      headers: listUnsubHeaders(email, 'price-alert'),
+      html: `
+        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
+          <p style="color:${color};font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Alerta de precio · ${cat}</p>
+          <h2 style="color:#fff;font-size:19px;margin:0 0 16px">El ${cat} ${verboPasado} ${fmtArs(data.threshold)}</h2>
+          <div style="background:#16161d;border:1px solid ${color}66;border-left:3px solid ${color};border-radius:4px;padding:18px;margin-bottom:16px;text-align:center">
+            <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Precio de referencia hoy</p>
+            <p style="color:${color};font-size:34px;font-weight:bold;margin:0;font-family:monospace">${fmtArs(data.current)}<span style="color:#71717a;font-size:14px">/kg</span></p>
+            <p style="color:#a1a1aa;font-size:12px;margin:8px 0 0">Tu umbral: ${fmtArs(data.threshold)}</p>
+          </div>
+          <div style="text-align:center;margin:24px 0">
+            <a href="${APP_URL}/precios" style="background:${color};color:#0a0a0f;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">VER PRECIOS Y REMATES</a>
+          </div>
+          <p style="color:#71717a;font-size:11px;margin:16px 0 0;line-height:1.6">
+            Precio de referencia del Mercado Agroganadero (categoría ${cat}). No considera condición del lote ni plaza zonal. Es información, no asesoramiento.
+          </p>
+          <p style="color:#3f3f46;font-size:10px;margin:12px 0 0">
+            Consignatarias.com.ar &nbsp;&bull;&nbsp;
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#3f3f46">Desuscribirme</a>
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /*  WEEKLY NEWSLETTER                                                  */
 /* ------------------------------------------------------------------ */
 
