@@ -270,6 +270,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
           )}
           {/* Links */}
           <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+          <RemateMarkButton remateId={String(auction.id)} markType="attended" label="Estuve" labelMarked="Fui ✓" />
             {auction.catalogUrl && (
               <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
                 onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
@@ -437,6 +438,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
         )}
         {/* Links */}
         <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+          <RemateMarkButton remateId={String(auction.id)} markType="attended" label="Estuve" labelMarked="Fui ✓" />
           {auction.catalogUrl && (
             <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
               onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}

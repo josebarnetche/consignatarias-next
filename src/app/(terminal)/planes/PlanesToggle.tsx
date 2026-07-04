@@ -168,16 +168,16 @@ export default function PlanesToggle() {
       <p className="text-label tracking-widest text-zinc-400 mt-6 mb-3">Consignatarias · alcance (opcional)</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Consignataria — alcance (prueba, no "pagá por aparecer") */}
-        <div className="terminal-panel flex flex-col" style={{ borderColor: 'rgba(245,158,11,0.3)' }}>
+        <div className="terminal-panel flex flex-col" style={{ borderColor: 'rgba(56,189,248,0.3)' }}>
           <div
             className="terminal-panel-header"
-            style={{ color: '#fbbf24', borderBottomColor: 'rgba(245,158,11,0.25)' }}
+            style={{ color: '#38bdf8', borderBottomColor: 'rgba(56,189,248,0.25)' }}
           >
             Consignataria · alcance
           </div>
           <div className="px-panel py-4 flex-1 flex flex-col">
             <div className="mb-1">
-              <span className="text-2xl font-terminal tabular-nums" style={{ color: '#fbbf24' }}>
+              <span className="text-2xl font-terminal tabular-nums" style={{ color: '#38bdf8' }}>
                 USD 39
               </span>
               <span className="text-zinc-500 text-data ml-1">/mes</span>
@@ -195,7 +195,7 @@ export default function PlanesToggle() {
                 'Landing propia + QR para catálogos',
               ].map((f) => (
                 <li key={f} className="flex items-start gap-2 text-data text-zinc-300">
-                  <span style={{ color: '#fbbf24' }} className="mt-0.5">+</span>
+                  <span style={{ color: '#38bdf8' }} className="mt-0.5">+</span>
                   <span>{f}</span>
                 </li>
               ))}
@@ -203,7 +203,7 @@ export default function PlanesToggle() {
             <Link
               href="/enterprise#consignataria"
               className="terminal-btn w-full text-center"
-              style={{ borderColor: 'rgba(245,158,11,0.6)', color: '#fbbf24' }}
+              style={{ borderColor: 'rgba(56,189,248,0.6)', color: '#38bdf8' }}
             >
               Probar gratis
             </Link>
