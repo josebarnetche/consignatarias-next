@@ -6,6 +6,7 @@ import ArrendamientoCalculator from './ArrendamientoCalculator'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import ArrendamientoLiquidacionSignup from '@/components/ArrendamientoLiquidacionSignup'
+import PriceAlertSignup from '@/components/PriceAlertSignup'
 import HerramientasCTA from '@/components/HerramientasCTA'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import SinceLastVisit from '@/components/landing/SinceLastVisit'
@@ -284,6 +285,19 @@ export default function ArrendamientoPage() {
             </p>
           </div>
         </MarketHero>
+
+        {/* Captura de alta intención, arriba: el visitante (mayormente desde IA)
+            acaba de ver el número del arrendamiento → le ofrecemos avisarle cuando
+            cambie, con fricción mínima (solo email). Convierte visitas one-shot en un
+            loop de email. La oferta profunda (liquidar el canon con kg/ha) va más abajo. */}
+        <section className="max-w-3xl mx-auto px-4 pt-6">
+          <PriceAlertSignup
+            source="alerta-arrendamiento"
+            page="/mercado/arrendamiento"
+            accent="amber"
+            title="¿Seguís el arrendamiento? Te aviso cuando cambie"
+          />
+        </section>
 
         {/* What is the Index */}
         <section className="max-w-6xl mx-auto px-4 py-12">
