@@ -44,7 +44,9 @@ export async function GET(
 
     const supabase = requireServiceClient()
 
-    // Get alert (verify ownership via api_key)
+    // Get alert (ownership por user_id). PGRST116 = 0 filas (no existe / no es tuya)
+    // → 404 sin distinguir (no filtrar ownership). Cualquier OTRO error es un fallo
+    // operativo real → se loguea para no volverlo invisible.
     const { data: alerta, error } = await supabase
       .from('alertas')
       .select('*')
@@ -52,6 +54,9 @@ export async function GET(
       .eq('user_id', userId)
       .single()
 
+    if (error && error.code !== 'PGRST116') {
+      console.error('[alertas GET] error de DB al buscar la alerta:', error)
+    }
     if (error || !alerta) {
       return NextResponse.json({
         success: false,
@@ -59,7 +64,7 @@ export async function GET(
           code: 'NOT_FOUND',
           message: 'Alerta no encontrada',
         },
-      }, { 
+      }, {
         status: 404,
         headers: { 'Cache-Control': 'no-store' },
       })

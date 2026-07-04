@@ -1,28 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { authenticate } from '@/lib/api-auth'
+import type { Plan } from '@/lib/api-keys'
 import { alertaCreateSchema, ALERTA_EVENTS, ALERTA_FREQUENCIES } from '@/lib/validators/alerta'
 
-// Alert limits by plan
-const PLAN_LIMITS = {
-  free: 3,
-  pro: 25,
-  enterprise: 100,
-} as const
+// Límite de alertas activas por plan API. Tipado contra `Plan` (starter/growth/scale)
+// —los tiers reales que devuelve authenticate()— para que un desalineo sea error de
+// COMPILACIÓN y no un cap silencioso. (Antes usaba free/pro/enterprise, que NO son
+// planes reales → getAlertLimit caía siempre al fallback y capaba a todos en 3.)
+const ALERT_LIMITS: Record<Plan, number> = {
+  starter: 25,
+  growth: 100,
+  scale: 500,
+}
 
-type PlanType = keyof typeof PLAN_LIMITS
-
-function getAlertLimit(plan?: string): number {
-  if (plan && plan in PLAN_LIMITS) {
-    return PLAN_LIMITS[plan as PlanType]
-  }
-  return PLAN_LIMITS.free
+function getAlertLimit(plan: Plan): number {
+  return ALERT_LIMITS[plan]
 }
 
 // El auth de este endpoint usa el sistema canónico `authenticate()` (api_keys
-// hasheadas, con cupo + IP allowlist + plan Enterprise). Antes había un
-// validateApiKey local que buscaba `users.api_key` en TEXTO PLANO contra una tabla
-// `users` inexistente en prod (roto + inseguro). Ownership de las alertas: por
+// hasheadas, con cupo mensual + IP allowlist + requiere un plan API activo:
+// starter/growth/scale). Antes había un validateApiKey local que buscaba
+// `users.api_key` en TEXTO PLANO contra una tabla `public.users` inexistente en
+// prod → SIEMPRE devolvía 401 (endpoint muerto). Ownership de las alertas: por
 // `user_id` (no por la key), consistente con los crons de entrega.
 
 /**
@@ -30,8 +30,7 @@ function getAlertLimit(plan?: string): number {
  * 
  * Create a new alert subscription.
  * 
- * Headers:
- *   api_key: sk_live_xxxxx
+ * Auth: Authorization: Bearer sk_... (API key del plan; ver /cuenta/api-keys)
  * 
  * Request body:
  * {
@@ -162,8 +161,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
  * 
  * List user's alert subscriptions.
  * 
- * Headers:
- *   api_key: sk_live_xxxxx
+ * Auth: Authorization: Bearer sk_... (API key del plan; ver /cuenta/api-keys)
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
