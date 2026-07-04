@@ -168,12 +168,12 @@ export async function createUserSubscriptionLink(
 /**
  * Generic factory for an Enterprise API plan payment link.
  *
- * `apiTier` controls metadata routing (the webhook reads this to set
- * user_subscriptions.api_tier). Default amounts:
- *   - starter: ARS 139.900 (USD 99 al blue ~1400)
- *   - growth:  ARS 700.000 (USD 500 al blue ~1400)
- * Override via REBILL_ENTERPRISE_{STARTER,GROWTH}_AMOUNT envs.
- * Scale stays sales-led (mailto), no self-serve link.
+ * `apiTier` controls metadata routing (the webhook reads este api_tier del metadata
+ * para setear user_subscriptions.api_tier). Montos por defecto (pricing 2026-07):
+ *   - starter: ARS 74.000  (~USD 49 al blue ~1510)
+ *   - growth:  ARS 451.000 (~USD 299 al blue ~1510)
+ * Son ARS pegados al USD del momento — ajustar vía REBILL_ENTERPRISE_{STARTER,GROWTH}_AMOUNT
+ * env a medida que se mueve el blue. Scale queda sales-led (mailto), sin link self-serve.
  */
 async function createEnterprisePlanLink(
   userId: string,
@@ -185,7 +185,7 @@ async function createEnterprisePlanLink(
     throw new Error('REBILL_SECRET_KEY is not configured')
   }
 
-  const defaultAmounts = { starter: 139900, growth: 700000 }
+  const defaultAmounts = { starter: 74000, growth: 451000 }
   const envKey = apiTier === 'growth' ? 'REBILL_ENTERPRISE_GROWTH_AMOUNT' : 'REBILL_ENTERPRISE_STARTER_AMOUNT'
   const amount = parseInt(process.env[envKey] || String(defaultAmounts[apiTier]), 10)
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'

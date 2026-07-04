@@ -145,25 +145,31 @@ export async function POST(request: NextRequest) {
           const customerEmail = metadata?.customerEmail
           const claimedTier = metadata?.api_tier as 'starter' | 'growth' | 'scale' | undefined
           const planDerivedTier = plan_id ? PLAN_ID_TO_API_TIER[plan_id] : undefined
-          // plan_id is the source of truth; metadata is informational only.
+          // Preferimos plan_id si el env REBILL_*_PLAN_ID está configurado (planes
+          // estables). PERO los payment-links se crean POR-CHECKOUT para llevar el
+          // userId en metadata → el price/plan_id es dinámico (cada link genera un
+          // `plp_` nuevo) y no se puede pre-configurar. Por eso el fallback es
+          // metadata.api_tier, que es SEGURO:
+          //  - el payment-link se crea 100% server-side con REBILL_SECRET_KEY (el
+          //    cliente NO puede crear un link ni forjar su metadata);
+          //  - el webhook verifica la firma (REBILL_WEBHOOK_SECRET);
+          //  - el checkout self-serve sólo emite Starter (createEnterpriseStarterLink
+          //    hardcodea el tier); Growth/Scale son links que creamos a mano en la
+          //    venta. metadata.api_tier siempre lo pone nuestro server.
           if (planDerivedTier && claimedTier && planDerivedTier !== claimedTier) {
             console.warn(
-              `Rebill webhook: metadata.api_tier (${claimedTier}) disagrees with plan_id-derived tier (${planDerivedTier}) for plan ${plan_id}. Using plan_id.`,
+              `Rebill webhook: metadata.api_tier (${claimedTier}) != plan_id-derived (${planDerivedTier}) para plan ${plan_id}. Uso plan_id.`,
             )
           }
-          // plan_id is the ONLY source of truth. Never fall back to the
-          // client-supplied metadata.api_tier — doing so let a caller request
-          // `scale` whenever the REBILL_*_PLAN_ID env map was unset or the
-          // plan_id didn't match. If we can't derive the tier from a known
-          // plan_id, refuse to grant API access.
-          if (!planDerivedTier) {
+          const VALID_TIERS: ReadonlyArray<'starter' | 'growth' | 'scale'> = ['starter', 'growth', 'scale']
+          const apiTier: 'starter' | 'growth' | 'scale' | undefined =
+            planDerivedTier ?? (claimedTier && VALID_TIERS.includes(claimedTier) ? claimedTier : undefined)
+          if (!apiTier) {
             console.error(
-              `Rebill webhook: could not derive api_tier from plan_id (${plan_id}). ` +
-                `Refusing to grant API access from client-claimed tier (${claimedTier}).`,
+              `Rebill webhook: sin plan_id mapeable (${plan_id}) ni metadata.api_tier válido (${claimedTier}). No se otorga acceso.`,
             )
             break
           }
-          const apiTier: 'starter' | 'growth' | 'scale' = planDerivedTier
           if (!userId) break
 
           // Read existing email/tier so we don't overwrite PRO Usuario state
