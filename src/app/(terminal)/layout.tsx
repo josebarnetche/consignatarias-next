@@ -83,6 +83,15 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Exportar / Calendario", href: "/calendario-exportar" },
     ],
   },
+  {
+    label: "API / IA",
+    match: "/mcp",
+    items: [
+      { label: "MCP para IAs", href: "/mcp", hint: "El sitio como tools MCP", tag: "live" },
+      { label: "API Enterprise", href: "/api-docs", hint: "REST + API keys" },
+      { label: "Planes y precios", href: "/planes", hint: "PRO + Enterprise", tag: "pro" },
+    ],
+  },
 ];
 
 // Mobile: the scrollable bar can't host dropdowns, so we flatten to the highest-
@@ -100,6 +109,8 @@ const MOBILE_NAV: MobileNavLink[] = [
   { label: "FRIGORIF.", href: "/frigorificos" },
   { label: "CONSIGNAT.", href: "/consignatarias" },
   { label: "CALCULAR", href: "/calculadora", tag: "pro" },
+  { label: "MCP", href: "/mcp", tag: "live" },
+  { label: "PLANES", href: "/planes", tag: "pro" },
 ];
 
 /* ------------------------------------------------------------------ */

@@ -437,6 +437,55 @@ export default async function LandingPage() {
         <ConsignatariasShowcase items={showcaseItems} />
 
         {/* ============================================================ */}
+        {/*  AI-READY — MCP                                               */}
+        {/* ============================================================ */}
+        <section id="ai-ready" className="max-w-7xl mx-auto px-6 pt-24 pb-24">
+          <div className="rounded-2xl border border-emerald-500/25 bg-gradient-to-br from-emerald-500/[0.06] to-transparent p-8 sm:p-12">
+            <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 items-center">
+              <div>
+                <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/[0.08] px-3 py-1 text-xs font-mono uppercase tracking-widest text-emerald-300">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> AI-ready · MCP
+                </span>
+                <h2 className="mt-5 text-3xl sm:text-4xl font-bold text-white leading-tight">
+                  Hecho para que las IAs lo usen
+                </h2>
+                <p className="mt-4 text-zinc-400 leading-relaxed max-w-xl">
+                  Consignatarias expone un <strong className="text-zinc-200">servidor MCP</strong>: Claude, ChatGPT,
+                  Cursor o cualquier agente se conecta y consulta precios (INMAG), remates, consignatarias, frigoríficos
+                  y arrendamiento en tiempo real — con nuestra data, en vez de scrapear. La referencia del ganado
+                  argentino, ahora como herramienta nativa para agentes.
+                </p>
+                <div className="mt-7 flex flex-wrap gap-3">
+                  <Link
+                    href="/mcp"
+                    className="rounded-lg bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-black hover:bg-emerald-400 transition-colors"
+                  >
+                    Ver el MCP y sus tools
+                  </Link>
+                  <Link
+                    href="/api-docs"
+                    className="rounded-lg border border-zinc-700 px-5 py-2.5 text-sm text-zinc-200 hover:border-zinc-500 transition-colors"
+                  >
+                    API Enterprise
+                  </Link>
+                </div>
+              </div>
+              <div className="rounded-xl border border-zinc-800 bg-black/40 p-5 font-mono text-xs text-zinc-400 overflow-x-auto">
+                <p className="text-zinc-600 mb-2"># conectá cualquier agente MCP</p>
+                <pre className="text-zinc-300">{`{
+  "consignatarias": {
+    "url": "https://www.consignatarias.com.ar/api/mcp"
+  }
+}`}</pre>
+                <p className="text-emerald-300 mt-4">get_indice_novillo() → $4.154/kg</p>
+                <p className="text-emerald-300">get_precios_hacienda(&quot;vacas&quot;)</p>
+                <p className="text-emerald-300">crear_alerta_precio(novillo &gt; 5000)</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ============================================================ */}
         {/*  EL CORREDOR — LEAD MAGNET                                    */}
         {/* ============================================================ */}
         <section id="el-corredor" className="max-w-7xl mx-auto px-6 pt-24 pb-24">
