@@ -177,36 +177,36 @@ function AuctionRowStatic({ auction }: { auction: Auction }) {
   const isFeatured = !!(auction as Auction & { featured?: boolean }).featured
 
   return (
-    <div className={`border-b ${isFeatured ? 'border-amber-500/30 bg-amber-500/[0.04]' : 'border-terminal-border hover:bg-zinc-800/50'} transition-colors relative`}>
-      {isFeatured && <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-amber-400" />}
+    <div className={`border-b ${isFeatured ? 'border-sky-500/30 bg-sky-500/[0.04]' : 'border-terminal-border hover:bg-zinc-800/50'} transition-colors relative`}>
+      {isFeatured && <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-sky-400" />}
 
       {/* Mobile */}
       <div className="md:hidden p-3 space-y-1.5">
         <div className="flex items-center gap-2">
           {isFeatured && (
-            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 border border-amber-500/50 bg-amber-500/10">
-              <span className="text-amber-400 text-[10px]">★</span>
-              <span className="text-amber-400 font-terminal text-[10px] font-bold tracking-wider">PRO</span>
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 border border-sky-500/50 bg-sky-500/10">
+              <span className="text-sky-400 text-[10px]">★</span>
+              <span className="text-sky-400 font-terminal text-[10px] font-bold tracking-wider">PRO</span>
             </span>
           )}
-          <span className={`text-data tabular-nums font-terminal ${isFeatured ? 'text-amber-300' : 'text-zinc-300'}`}>
+          <span className={`text-data tabular-nums font-terminal ${isFeatured ? 'text-sky-300' : 'text-zinc-300'}`}>
             {formatDateShort(auction.date)}
           </span>
           {auction.time && (
-            <span className={`text-data tabular-nums font-terminal ${isFeatured ? 'text-amber-300/70' : 'text-zinc-400'}`}>{auction.time}</span>
+            <span className={`text-data tabular-nums font-terminal ${isFeatured ? 'text-sky-300/70' : 'text-zinc-400'}`}>{auction.time}</span>
           )}
         </div>
         <div>
           <Link
             href={`/consignatarias/${profileSlug}`}
-            className={`font-terminal font-medium text-data hover:underline ${isFeatured ? 'text-amber-200' : 'text-zinc-200 hover:text-accent'} transition-colors`}
+            className={`font-terminal font-medium text-data hover:underline ${isFeatured ? 'text-sky-200' : 'text-zinc-200 hover:text-accent'} transition-colors`}
           >
             {auction.consignatariaName}
           </Link>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-xxs text-zinc-500">{city}</span>
-          <span className={`terminal-tag ${isFeatured ? 'border-amber-500 text-amber-400' : TYPE_COLORS[auction.type] || 'border-zinc-500 text-zinc-400'} text-[10px]`}>
+          <span className={`terminal-tag ${isFeatured ? 'border-sky-500 text-sky-400' : TYPE_COLORS[auction.type] || 'border-zinc-500 text-zinc-400'} text-[10px]`}>
             {TYPE_LABELS[auction.type] || auction.type.toUpperCase()}
           </span>
           <span className="text-xxs text-zinc-500">{CAT_LABELS[auction.mainCategory]}</span>
@@ -221,17 +221,17 @@ function AuctionRowStatic({ auction }: { auction: Auction }) {
       {/* Desktop */}
       <div className="hidden md:flex items-center gap-0 px-cell py-1.5" style={isFeatured ? { paddingLeft: '1rem' } : undefined}>
         {isFeatured && (
-          <span className="inline-flex items-center gap-1 mr-2 px-1.5 py-0.5 border border-amber-500/50 bg-amber-500/10 flex-shrink-0">
-            <span className="text-amber-400 text-[10px]">★</span>
-            <span className="text-amber-400 font-terminal text-[10px] font-bold tracking-wider">PRO</span>
+          <span className="inline-flex items-center gap-1 mr-2 px-1.5 py-0.5 border border-sky-500/50 bg-sky-500/10 flex-shrink-0">
+            <span className="text-sky-400 text-[10px]">★</span>
+            <span className="text-sky-400 font-terminal text-[10px] font-bold tracking-wider">PRO</span>
           </span>
         )}
-        <span className={`w-[56px] flex-shrink-0 text-data tabular-nums font-terminal ${isFeatured ? 'text-amber-300 font-medium' : 'text-zinc-300'}`}>
+        <span className={`w-[56px] flex-shrink-0 text-data tabular-nums font-terminal ${isFeatured ? 'text-sky-300 font-medium' : 'text-zinc-300'}`}>
           {formatDateShort(auction.date)}
         </span>
         <span className="w-[52px] flex-shrink-0 text-data tabular-nums font-terminal">
           {auction.time ? (
-            <span className={isFeatured ? 'text-amber-300/70' : 'text-zinc-300'}>{auction.time}</span>
+            <span className={isFeatured ? 'text-sky-300/70' : 'text-zinc-300'}>{auction.time}</span>
           ) : (
             <span className="text-zinc-500">&mdash;</span>
           )}
@@ -239,21 +239,21 @@ function AuctionRowStatic({ auction }: { auction: Auction }) {
         <span className="flex-1 min-w-0 text-data font-terminal truncate">
           <Link
             href={`/consignatarias/${profileSlug}`}
-            className={`hover:underline transition-colors ${isFeatured ? 'text-amber-200 font-medium hover:text-amber-100' : 'text-zinc-200 hover:text-accent'}`}
+            className={`hover:underline transition-colors ${isFeatured ? 'text-sky-200 font-medium hover:text-sky-100' : 'text-zinc-200 hover:text-accent'}`}
           >
             {auction.consignatariaName}
           </Link>
         </span>
-        <span className={`w-[140px] flex-shrink-0 text-data font-terminal truncate text-right pr-2 ${isFeatured ? 'text-amber-400/50' : 'text-zinc-500'}`}>
+        <span className={`w-[140px] flex-shrink-0 text-data font-terminal truncate text-right pr-2 ${isFeatured ? 'text-sky-400/50' : 'text-zinc-500'}`}>
           {city}
         </span>
-        <span className={`terminal-tag ${isFeatured ? 'border-amber-500 text-amber-400' : TYPE_COLORS[auction.type] || 'border-zinc-500 text-zinc-400'} text-[10px] mr-2`}>
+        <span className={`terminal-tag ${isFeatured ? 'border-sky-500 text-sky-400' : TYPE_COLORS[auction.type] || 'border-zinc-500 text-zinc-400'} text-[10px] mr-2`}>
           {TYPE_LABELS[auction.type] || auction.type.toUpperCase()}
         </span>
-        <span className={`w-[42px] flex-shrink-0 text-xxs font-terminal ${isFeatured ? 'text-amber-400/60' : 'text-zinc-500'}`}>
+        <span className={`w-[42px] flex-shrink-0 text-xxs font-terminal ${isFeatured ? 'text-sky-400/60' : 'text-zinc-500'}`}>
           {CAT_LABELS[auction.mainCategory]}
         </span>
-        <span className={`w-[60px] flex-shrink-0 text-data font-terminal tabular-nums text-right ${isFeatured ? 'text-amber-300 font-medium' : 'text-zinc-400'}`}>
+        <span className={`w-[60px] flex-shrink-0 text-data font-terminal tabular-nums text-right ${isFeatured ? 'text-sky-300 font-medium' : 'text-zinc-400'}`}>
           {auction.estimatedHeads != null ? `~${auction.estimatedHeads.toLocaleString('es-AR')}` : '—'}
         </span>
       </div>

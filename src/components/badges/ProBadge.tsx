@@ -4,7 +4,7 @@
  * PRO Badge with optional verified checkmark.
  * Used in auction listings and consignataria profiles.
  * 
- * Design: Gold/amber color scheme with subtle glow animation.
+ * Design: Sky (accent de marca) color scheme with subtle glow animation.
  * Conveys premium status to non-technical users.
  */
 
@@ -35,8 +35,8 @@ export default function ProBadge({
     <span 
       className={`
         inline-flex items-center font-terminal font-bold tracking-wider
-        border border-amber-500/50 bg-gradient-to-r from-amber-500/20 to-amber-600/10
-        text-amber-400 rounded-sm
+        border border-sky-500/50 bg-gradient-to-r from-sky-500/20 to-sky-600/10
+        text-sky-400 rounded-sm
         ${animated ? 'pro-badge-glow' : ''}
         ${sizeClasses[size]}
         ${className}
@@ -46,7 +46,7 @@ export default function ProBadge({
     >
       {/* Star icon */}
       <svg 
-        className={`${size === 'sm' ? 'w-2.5 h-2.5' : size === 'md' ? 'w-3 h-3' : 'w-4 h-4'} text-amber-400`} 
+        className={`${size === 'sm' ? 'w-2.5 h-2.5' : size === 'md' ? 'w-3 h-3' : 'w-4 h-4'} text-sky-400`} 
         fill="currentColor" 
         viewBox="0 0 20 20"
       >
@@ -58,7 +58,7 @@ export default function ProBadge({
       {/* Verified checkmark */}
       {verified && (
         <svg 
-          className={`${size === 'sm' ? 'w-2.5 h-2.5' : size === 'md' ? 'w-3 h-3' : 'w-4 h-4'} text-amber-300`}
+          className={`${size === 'sm' ? 'w-2.5 h-2.5' : size === 'md' ? 'w-3 h-3' : 'w-4 h-4'} text-sky-300`}
           fill="currentColor" 
           viewBox="0 0 20 20"
         >
@@ -94,7 +94,7 @@ export function VerifiedBadge({
       aria-label="Verificada"
     >
       <svg 
-        className={`${sizeClasses[size]} text-amber-400`}
+        className={`${sizeClasses[size]} text-sky-400`}
         fill="currentColor" 
         viewBox="0 0 20 20"
       >
