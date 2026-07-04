@@ -173,7 +173,7 @@ export function VideoGallery({ videos, consignatariaName: _consignatariaName }: 
                   href={`https://youtube.com/watch?v=${activeVideo.youtube_video_id}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-amber-500 hover:text-amber-400"
+                  className="flex items-center gap-1 text-accent hover:text-accent-bright"
                 >
                   Ver en YouTube <ExternalLink className="w-4 h-4" />
                 </a>

@@ -334,9 +334,9 @@ export default function RematesAnterioresPage() {
               identificar consignatarias activas en tu zona y seguir el ritmo de operaciones del sector ganadero.
             </p>
             <p>
-              Para ver los próximos remates programados, visitá el <Link href="/remates" className="text-amber-500 hover:text-amber-400">calendario de remates</Link> o 
-              las páginas de <Link href="/remates/hoy" className="text-amber-500 hover:text-amber-400">remates hoy</Link> y{' '}
-              <Link href="/remates/semana" className="text-amber-500 hover:text-amber-400">remates esta semana</Link>.
+              Para ver los próximos remates programados, visitá el <Link href="/remates" className="text-accent hover:text-accent-bright">calendario de remates</Link> o 
+              las páginas de <Link href="/remates/hoy" className="text-accent hover:text-accent-bright">remates hoy</Link> y{' '}
+              <Link href="/remates/semana" className="text-accent hover:text-accent-bright">remates esta semana</Link>.
             </p>
           </div>
         </section>

@@ -380,7 +380,7 @@ export default function ArrendamientoPage() {
               <span className="text-xs text-zinc-600">Últimos 12 meses</span>
               <Link 
                 href="/api/market/history?days=365&format=csv"
-                className="text-xs text-amber-500 hover:text-amber-400 transition-colors flex items-center gap-1"
+                className="text-xs text-accent hover:text-accent-bright transition-colors flex items-center gap-1"
               >
                 Descargar histórico completo
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -259,12 +259,12 @@ export default async function InmagYearPage({
         {/* Year navigation */}
         <div className="flex items-center justify-between gap-2 mb-6">
           {YEARS.includes(prevYear) ? (
-            <Link href={`/mercado/inmag/${prevYear}`} className="text-xs text-amber-500 hover:text-amber-400 border border-amber-800/50 rounded px-3 py-1.5">
+            <Link href={`/mercado/inmag/${prevYear}`} className="text-xs text-accent hover:text-accent-bright border border-terminal-border rounded px-3 py-1.5">
               ← Novillo en {prevYear}
             </Link>
           ) : <span />}
           {YEARS.includes(nextYear) ? (
-            <Link href={`/mercado/inmag/${nextYear}`} className="text-xs text-amber-500 hover:text-amber-400 border border-amber-800/50 rounded px-3 py-1.5">
+            <Link href={`/mercado/inmag/${nextYear}`} className="text-xs text-accent hover:text-accent-bright border border-terminal-border rounded px-3 py-1.5">
               Novillo en {nextYear} →
             </Link>
           ) : <span />}

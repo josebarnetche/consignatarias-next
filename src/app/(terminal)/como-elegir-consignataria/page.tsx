@@ -124,10 +124,10 @@ export default function ComoElegirConsignatariaPage() {
             por <strong className="text-amber-400">medios de pago y días de cobro</strong>.
           </p>
           <div className="flex flex-wrap gap-2">
-            <Link href="/consignatarias" className="inline-flex items-center gap-1 text-xs text-amber-500 hover:text-amber-400 border border-amber-800/50 rounded px-3 py-1.5">
+            <Link href="/consignatarias" className="inline-flex items-center gap-1 text-xs text-accent hover:text-accent-bright border border-terminal-border rounded px-3 py-1.5">
               Ver directorio de consignatarias →
             </Link>
-            <Link href="/comparar" className="inline-flex items-center gap-1 text-xs text-amber-500 hover:text-amber-400 border border-amber-800/50 rounded px-3 py-1.5">
+            <Link href="/comparar" className="inline-flex items-center gap-1 text-xs text-accent hover:text-accent-bright border border-terminal-border rounded px-3 py-1.5">
               Comparar consignatarias →
             </Link>
           </div>

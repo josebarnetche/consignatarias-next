@@ -378,7 +378,7 @@ export default function EnterprisePage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-terminal-border pt-4">
               <p className="text-zinc-500 text-data">
                 Metodología publicada (v1.3) + cobertura declarada con honestidad —{' '}
-                <a href="/metodologia" className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2">ver metodología →</a>
+                <a href="/metodologia" className="text-accent hover:text-accent-bright underline underline-offset-2">ver metodología →</a>
               </p>
               <a
                 href="mailto:agro@memola.com.ar?subject=Acceso%20institucional%20—%20consignatarias.com.ar&body=Hola,%20queremos%20evaluar%20un%20acceso%20institucional%20al%20servicio.%0A%0AInstituci%C3%B3n:%0ATipo%20(banco%20/%20frigor%C3%ADfico%20/%20exchange%20/%20fintech%20/%20otro):%0AUso%20previsto%20(valuaci%C3%B3n%20/%20uso%20interno%20/%20an%C3%A1lisis):%0ASeries%20de%20inter%C3%A9s%20(INMAG-USD%20/%20lote-level%20/%20%C3%ADndices):"

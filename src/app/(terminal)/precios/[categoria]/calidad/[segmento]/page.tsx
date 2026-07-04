@@ -161,7 +161,7 @@ export default async function QualitySegmentPage({
         <PriceCTA />
 
         <p className="text-sm text-zinc-400">
-          <Link href={`/precios/${categoria}`} className="text-amber-500 hover:text-amber-400">
+          <Link href={`/precios/${categoria}`} className="text-accent hover:text-accent-bright">
             ← Ver todos los precios de {cat.title.toLowerCase()}
           </Link>
         </p>

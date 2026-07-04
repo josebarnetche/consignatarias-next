@@ -153,13 +153,13 @@ export default function MercadoCanuelasPage() {
             </p>
             <p>
               Es el principal mercado concentrador de hacienda del país y la referencia de formación de precios. Su
-              índice, el <Link href="/mercado/inmag" className="text-amber-500 hover:text-amber-400">INMAG</Link>,
+              índice, el <Link href="/mercado/inmag" className="text-accent hover:text-accent-bright">INMAG</Link>,
               es el promedio ponderado por volumen del novillo operado cada día hábil. Cuando en el campo se habla
               de &ldquo;precio Liniers&rdquo;, hoy se refiere en la práctica al precio de Cañuelas.
             </p>
             <p>
               Para la serie histórica desde 2015, el INMAG en dólares y la metodología completa, ver{' '}
-              <Link href="/mercado/inmag" className="text-amber-500 hover:text-amber-400">la página del INMAG</Link>.
+              <Link href="/mercado/inmag" className="text-accent hover:text-accent-bright">la página del INMAG</Link>.
             </p>
           </div>
         </div>
@@ -178,7 +178,7 @@ export default function MercadoCanuelasPage() {
               { href: '/mercado/spread', label: 'Spread Maíz-Novillo' },
               { href: '/remates', label: 'Calendario de remates' },
             ].map((l) => (
-              <Link key={l.href} href={l.href} className="inline-flex items-center gap-1 text-xs text-amber-500 hover:text-amber-400 border border-amber-800/50 rounded px-3 py-1.5">
+              <Link key={l.href} href={l.href} className="inline-flex items-center gap-1 text-xs text-accent hover:text-accent-bright border border-terminal-border rounded px-3 py-1.5">
                 {l.label} <ExternalLink className="w-3 h-3" />
               </Link>
             ))}

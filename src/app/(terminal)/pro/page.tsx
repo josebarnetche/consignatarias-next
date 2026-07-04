@@ -101,7 +101,7 @@ export default function ProTourPage() {
           </p>
           <p className="text-emerald-400/90 text-xxs">
             🎁 ¿No querés pagar a ciegas?{' '}
-            <Link href="/mercado/vender-ahora" className="underline underline-offset-2 hover:text-emerald-300">
+            <Link href="/mercado/vender-ahora" className="underline underline-offset-2 hover:text-accent">
               Probá un veredicto completo gratis esta semana
             </Link>
           </p>

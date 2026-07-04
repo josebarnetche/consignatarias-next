@@ -202,12 +202,12 @@ export default function IndicesPage() {
               Los índices se construyen sobre datos primarios del Mercado Agroganadero (INMAG y categorías),
               el dólar paralelo (para las versiones en términos reales) y el maíz FOB (spread). La metodología
               completa y las fuentes están publicadas en{' '}
-              <Link href="/metodologia" className="text-amber-500 hover:text-amber-400">/metodología</Link>.
+              <Link href="/metodologia" className="text-accent hover:text-accent-bright">/metodología</Link>.
             </p>
             <p className="text-zinc-500 text-xxs">
               Cita sugerida: «INMAG (Mercado Agroganadero Argentino), vía consignatarias.com.ar, [fecha]». Datos
               abiertos para uso con atribución; acceso institucional al servicio vía{' '}
-              <Link href="/enterprise" className="text-amber-500 hover:text-amber-400">API Enterprise</Link>.
+              <Link href="/enterprise" className="text-accent hover:text-accent-bright">API Enterprise</Link>.
             </p>
           </div>
         </div>

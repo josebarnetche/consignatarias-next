@@ -214,19 +214,19 @@ export default function MetodologiaPage() {
           <div className="flex flex-wrap gap-2">
             <Link 
               href="/mercado/inmag" 
-              className="inline-flex items-center gap-1 text-xs text-amber-500 hover:text-amber-400 border border-amber-800/50 rounded px-3 py-1.5"
+              className="inline-flex items-center gap-1 text-xs text-accent hover:text-accent-bright border border-terminal-border rounded px-3 py-1.5"
             >
               Ver precios en vivo <ExternalLink className="w-3 h-3" />
             </Link>
             <Link 
               href="/mercado/spread" 
-              className="inline-flex items-center gap-1 text-xs text-amber-500 hover:text-amber-400 border border-amber-800/50 rounded px-3 py-1.5"
+              className="inline-flex items-center gap-1 text-xs text-accent hover:text-accent-bright border border-terminal-border rounded px-3 py-1.5"
             >
               Spread Maíz-Novillo <ExternalLink className="w-3 h-3" />
             </Link>
             <Link
               href="/api-docs"
-              className="inline-flex items-center gap-1 text-xs text-amber-500 hover:text-amber-400 border border-amber-800/50 rounded px-3 py-1.5"
+              className="inline-flex items-center gap-1 text-xs text-accent hover:text-accent-bright border border-terminal-border rounded px-3 py-1.5"
             >
               Documentación API <ExternalLink className="w-3 h-3" />
             </Link>

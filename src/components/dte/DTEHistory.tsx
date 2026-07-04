@@ -397,7 +397,7 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
         </div>
         <a 
           href="/planes" 
-          className="text-sm font-medium text-amber-500 hover:text-amber-400 transition-colors"
+          className="text-sm font-medium text-accent hover:text-accent-bright transition-colors"
         >
           Ver planes →
         </a>

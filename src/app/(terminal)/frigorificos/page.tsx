@@ -49,6 +49,7 @@ export const metadata: Metadata = {
     description: `Directorio completo de frigoríficos y mataderos habilitados en Argentina. ${totalFrigorificos} establecimientos con datos oficiales SENASA: CUIT, matrícula, provincia, etapa de habilitación.`,
     url: 'https://www.consignatarias.com.ar/frigorificos',
     type: 'website',
+    images: [{ url: '/og-frigorificos.png', width: 1200, height: 630 }],
   },
   alternates: {
     canonical: 'https://www.consignatarias.com.ar/frigorificos',

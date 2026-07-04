@@ -40,6 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: `Calendario de ${totalAuctions} remates ganaderos en Argentina. Filtros por provincia, tipo y fecha.`,
       url: 'https://www.consignatarias.com.ar/remates',
       type: 'website',
+      images: [{ url: '/og-remates.png', width: 1200, height: 630 }],
     },
     alternates: {
       canonical: 'https://www.consignatarias.com.ar/remates',

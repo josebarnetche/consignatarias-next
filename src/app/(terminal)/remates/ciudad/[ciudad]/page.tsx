@@ -226,7 +226,7 @@ export default async function CityRematesPage({ params }: { params: Promise<{ ci
           <div className="text-center py-12 text-zinc-500">
             <MapPin className="w-12 h-12 mx-auto mb-4 opacity-30" />
             <p>No hay remates registrados en {displayName}</p>
-            <Link href="/remates" className="text-amber-500 hover:text-amber-400 text-sm mt-2 inline-block">
+            <Link href="/remates" className="text-accent hover:text-accent-bright text-sm mt-2 inline-block">
               Ver todos los remates →
             </Link>
           </div>
