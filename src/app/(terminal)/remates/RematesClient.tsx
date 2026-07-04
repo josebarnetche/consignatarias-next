@@ -23,6 +23,7 @@ import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge from '@/components/badges/ProBadge'
 import RematesFilterBar from '@/components/remates/RematesFilterBar'
 import RemateMarkButton from '@/components/RemateMarkButton'
+import { RemateMarksProvider } from '@/components/RemateMarksContext'
 import { Badge } from '@/components/ui'
 import { trackAuctionClick, trackFilterApply, trackOutboundClick, trackBulkIcsExport } from '@/lib/analytics'
 import { downloadBulkICSFile } from '@/lib/utils/ics'
@@ -831,6 +832,7 @@ export default function RematesPage() {
 
   /* ---- Render ---- */
   return (
+    <RemateMarksProvider>
     <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 space-y-0">
       <div className="terminal-panel">
         {/* -- Panel header ----------------------------------------- */}
@@ -1115,5 +1117,6 @@ export default function RematesPage() {
       {/* ADD REMATE MODAL */}
       {showAddModal && <AddRemateModal onClose={() => setShowAddModal(false)} />}
     </div>
+    </RemateMarksProvider>
   )
 }
