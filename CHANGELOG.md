@@ -7,6 +7,22 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.75.4] — 2026-07-03
+
+### Correcciones a v1.75.3 — el cambio de `alertas/*` era un cambio de CONTRATO, no solo limpieza
+
+Un review señaló, con razón, que v1.75.3 se presentó como "cierre de deuda" cuando en realidad **cambió una superficie pública** (auth, header, ownership, plan, columna) y estaba **sobrevendido**. Correcciones concretas:
+
+- **Bug real corregido — límite por plan.** `getAlertLimit` mapeaba `free/pro/enterprise`, pero `authenticate()` devuelve `plan ∈ {starter, growth, scale}` → `plan in PLAN_LIMITS` era **siempre false** y **todos quedaban capados en 3 alertas** (el fallback). Ahora el límite está tipado contra el `Plan` real (`Record<Plan, number>`: starter 25 / growth 100 / scale 500), así un desalineo futuro es **error de compilación**, no un cap silencioso.
+- **Doc inline corregida.** El comentario de la route seguía enseñando el contrato viejo (`Headers: api_key: sk_live_xxxxx`) mientras el código exige `Authorization: Bearer`. Corregido. También se corrigió "plan Enterprise" (no existe ese plan) → el auth requiere **un plan API activo** (starter/growth/scale).
+- **Migración ya no es un drop a ciegas.** `20260703_alertas_drop_plaintext_api_key.sql` ahora **guarda**: solo dropea `api_key` si la columna existe **y no tiene datos**; si un entorno divergente tuviera filas con valor, **falla con un mensaje** en vez de destruir irreversiblemente. ("Tabla vacía" era un estado de prod —0 filas verificadas—, no una garantía universal.)
+- **Tests de contrato (antes: cero).** +10 tests para `alertas/*`: auth requerido (401 sin key), límite por plan real (starter crea con 3 pero corta en 25; scale permite 100), body inválido (400), y **ownership** en `[alerta_id]` (alerta ajena/inexistente → 404 sin filtrar, propia → 200). `pnpm check` prueba compilación + scanner; estos prueban el contrato.
+- **`error` vs 404 distinguido.** En `[alerta_id]` GET, un `PGRST116` (0 filas) es 404 normal; cualquier **otro** error de DB ahora se **loguea** (fallo operativo visible), sin filtrar ownership.
+
+**Reencuadre honesto del "breaking change":** el header y el auth cambiaron, pero el endpoint viejo estaba **100% roto en prod** — buscaba `public.users` (tabla inexistente) → **siempre devolvía 401**. No hay consumidor funcional que romper; es el reemplazo de un endpoint muerto, no la ruptura de una API viva. Aun así, lo que **falta** para llamarlo cierre de contrato (documentado, no hecho): actualizar la **doc pública/externa** del API, definir política de **deprecación/versionado** para cambios futuros, y una **verificación E2E** con una API key real de un plan. La afirmación "cero deuda real de acceso sin tipar" de v1.75.3 aplica al *checker* (0 `.from('users')`), pero quedan pendientes reales rastreados (baseline incompleto, 2 flujos auth-gated sin verificar en prod) — no es cierre operativo total.
+
+**Verificación:** `pnpm check` verde (tsc 0, eslint 0, db-refs 331, **27/27 tests**).
+
 ## [1.75.3] — 2026-07-03
 
 ### `alertas/*` a `api_keys` hasheadas — deuda `users` cerrada, ALLOWLIST vaciada
