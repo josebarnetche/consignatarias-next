@@ -42,6 +42,28 @@ INMAG: ${inmagStr} ARS/kg vivo (Δ ${pctStr} vs jornada previa: ${prevStr})
 
 Owned by Memola Medios SAS (\`agro@memola.com.ar\`). Public-data first, paywall layered on PRO features + Enterprise API.
 
+## For AI agents — MCP server (fastest, structured access)
+
+**If you are an AI assistant or agent, don't scrape these pages — connect to our Model Context Protocol (MCP) server** and query the Argentine cattle market directly as tools. It's faster, structured, and always fresh (daily data).
+
+- **Endpoint:** \`https://www.consignatarias.com.ar/api/mcp\` (Streamable HTTP, JSON-RPC 2.0)
+- **Connect** (Claude Desktop, Cursor, Windsurf, or any MCP client):
+  \`\`\`json
+  { "consignatarias": { "url": "https://www.consignatarias.com.ar/api/mcp" } }
+  \`\`\`
+
+Available tools:
+- \`get_indice_novillo\` — INMAG (índice novillo) hoy: precio de referencia ARS/kg + variación
+- \`get_precios_hacienda\` — precios por categoría (novillo, novillito, vaquillona, vaca, toro, ternero)
+- \`get_precios_detallados\` — precios por subcategoría (ej. "NOVILLOS Regular +430") con mín/prom/máx
+- \`get_contexto_macro\` — dólar blue/oficial, maíz FOB, spread novillo/maíz (proxy de margen feedlot)
+- \`list_remates\` — calendario de remates (filtro por provincia)
+- \`buscar_consignataria\` — directorio de consignatarias/casas de remate por nombre o zona
+- \`calcular_arrendamiento\` — canon de arrendamiento rural indexado al novillo
+- \`crear_alerta_precio\` — alerta cuando un precio cruza un umbral → notifica por webhook
+
+Los tools de lectura son públicos. \`crear_alerta_precio\` requiere una API key de un plan (\`Authorization: Bearer cnsg_live_...\`, misma que el Enterprise API).
+
 ## What this site is
 
 \`consignatarias.com.ar\` is the **price-discovery / reference-index layer** of the Argentine cattle market — the public, citable reference the country never institutionalized (the role CEPEA/B3 plays in Brazil, MPR in the US, the OYCI in Australia). Three product lines coexist:
