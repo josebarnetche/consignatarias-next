@@ -1,29 +1,22 @@
 import React from 'react'
-import { getCurrentSession } from '@/lib/user-tier'
-import { PaywallCard } from './Paywall'
 
 interface RequireProProps {
   children: React.ReactNode
-  /** Custom paywall UI. If omitted, default PaywallCard. */
+  /** Compat: paywall UI del viejo gate (ignorado). */
   fallback?: React.ReactNode
-  /** Optional headline for default paywall (override the generic copy). */
+  /** Compat (ignorado). */
   feature?: string
-  /** Redirect path after upgrade (default: current URL) */
+  /** Compat (ignorado). */
   redirectTo?: string
 }
 
 /**
- * Server component. Renders children only for PRO users.
- *
- * - Anonymous → PaywallCard with login CTA
- * - Free logged-in → PaywallCard with upgrade CTA
- * - PRO → renders children
+ * (Ex-)gate PRO server-side. PRO Usuario fue retirado (2026-07): estas secciones
+ * (exports, reporte semanal, calendario) son ahora GRATIS. Passthrough — se mantiene
+ * la firma para no tocar los callers.
  */
-export async function RequirePro({ children, fallback, feature, redirectTo }: RequireProProps) {
-  const { user, tier } = await getCurrentSession()
-  if (tier === 'pro') return <>{children}</>
-  if (fallback) return <>{fallback}</>
-  return <PaywallCard loggedIn={user !== null} feature={feature} redirectTo={redirectTo} />
+export async function RequirePro({ children }: RequireProProps) {
+  return <>{children}</>
 }
 
 export { PaywallCard } from './Paywall'

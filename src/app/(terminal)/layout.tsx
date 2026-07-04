@@ -19,7 +19,7 @@ interface NavLeaf {
   /** Optional descriptive sub-line shown in the dropdown panel. */
   hint?: string;
   /** Visual emphasis tag. */
-  tag?: "live" | "pro" | "core";
+  tag?: "live" | "pro" | "core" | "new";
 }
 
 interface NavGroup {
@@ -72,9 +72,9 @@ const NAV_GROUPS: NavGroup[] = [
     label: "HERRAMIENTAS",
     match: "/calculadora",
     items: [
-      { label: "Calculadora", href: "/calculadora", hint: "Net-back · ¿vendo ahora?", tag: "pro" },
-      { label: "Comparar", href: "/comparar", hint: "Medios de pago" },
-      { label: "Mi Ganado", href: "/mi-ganado", hint: "Valor de tu rodeo" },
+      { label: "Calculadora", href: "/calculadora", hint: "Neto en mano · ¿vendo ahora? · ahora gratis", tag: "new" },
+      { label: "Comparar", href: "/comparar", hint: "Medios de pago · ahora gratis", tag: "new" },
+      { label: "Mi Ganado", href: "/mi-ganado", hint: "Valor de tu rodeo · ahora gratis", tag: "new" },
       { label: "Exportar / Calendario", href: "/calendario-exportar" },
     ],
   },
@@ -96,7 +96,7 @@ const MOBILE_NAV: MobileNavLink[] = [
   { label: "REMATES", href: "/remates" },
   { label: "FRIGORIF.", href: "/frigorificos" },
   { label: "CONSIGNAT.", href: "/consignatarias" },
-  { label: "CALCULAR", href: "/calculadora", tag: "pro" },
+  { label: "CALCULAR", href: "/calculadora", tag: "new" },
   { label: "PLANES", href: "/planes", tag: "pro" },
 ];
 
@@ -145,12 +145,14 @@ const TAG_STYLE: Record<NonNullable<NavLeaf["tag"]>, string> = {
   live: "border-positive text-positive",
   pro: "border-amber-400/60 text-amber-300",
   core: "border-zinc-500 text-zinc-300",
+  new: "border-emerald-500/60 text-emerald-300",
 };
 
 const TAG_LABEL: Record<NonNullable<NavLeaf["tag"]>, string> = {
   live: "LIVE",
   pro: "PRO",
   core: "NÚCLEO",
+  new: "NUEVO",
 };
 
 function NavTag({ tag }: { tag: NonNullable<NavLeaf["tag"]> }) {

@@ -37,14 +37,17 @@ export function useSessionTier(): SessionState {
         if (cancelled || !data) return
         setState({
           loggedIn: !!data.loggedIn,
-          tier: (data.tier as Tier) ?? 'anonymous',
+          // PRO Usuario retirado (2026-07): las herramientas del productor son
+          // gratis para todos → forzamos 'pro' para abrir los gates que consultan
+          // este hook. loggedIn/email se mantienen reales.
+          tier: 'pro',
           email: data.email ?? null,
           loading: false,
         })
       })
       .catch(() => {
         if (cancelled) return
-        setState({ loggedIn: false, tier: 'anonymous', email: null, loading: false })
+        setState({ loggedIn: false, tier: 'pro', email: null, loading: false })
       })
     return () => {
       cancelled = true
