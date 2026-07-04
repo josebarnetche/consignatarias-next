@@ -308,7 +308,7 @@ export default async function InmagDolaresPage() {
                   title="Función PRO Usuario"
                   description="La serie completa del INMAG en dólares desde 2015 — la década entera del ciclo ganadero, más la descarga en CSV."
                 >
-                  <PriceLineChart data={monthlyAll} height={240} accentColor="#a78bfa" decimals={2} prefix="US$ " />
+                  <PriceLineChart data={monthlyAll} height={240} accentColor="#7dd3fc" decimals={2} prefix="US$ " />
                 </ProChartGate>
                 <div className="px-panel pb-3 text-zinc-500 text-xxs">
                   Cada punto = promedio del mes. Fuente: INMAG (MAG Cañuelas) ÷ dólar blue venta (ambitofinanciero / argentinadatos).

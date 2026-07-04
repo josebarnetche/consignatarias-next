@@ -43,7 +43,7 @@ export default function EnterpriseCalculator() {
     <div className="terminal-panel">
       <div
         className="terminal-panel-header flex items-center justify-between"
-        style={{ color: '#a78bfa', borderBottomColor: 'rgba(167, 139, 250, 0.3)' }}
+        style={{ color: '#7dd3fc', borderBottomColor: 'rgba(125, 211, 252, 0.3)' }}
       >
         <span>Scale · Calculadora de volumen</span>
         <span className="text-zinc-500 text-xxs font-terminal normal-case tracking-normal">
@@ -68,7 +68,7 @@ export default function EnterpriseCalculator() {
             </div>
             <div
               className="text-2xl font-terminal tabular-nums"
-              style={{ color: '#a78bfa' }}
+              style={{ color: '#7dd3fc' }}
             >
               USD {formatUSD(current.usd)}
             </div>
@@ -103,7 +103,7 @@ export default function EnterpriseCalculator() {
             aria-label="Volumen de requests mensuales"
             className="w-full"
             style={{
-              accentColor: '#a78bfa',
+              accentColor: '#38bdf8',
             }}
           />
 
@@ -114,7 +114,7 @@ export default function EnterpriseCalculator() {
                 key={a.requests}
                 onClick={() => setIdx(i)}
                 className="cursor-pointer hover:text-zinc-300 transition-colors"
-                style={i === idx ? { color: '#a78bfa' } : undefined}
+                style={i === idx ? { color: '#7dd3fc' } : undefined}
                 aria-label={`Seleccionar ${formatRequests(a.requests)} requests/mes`}
               >
                 {formatRequests(a.requests)}
@@ -134,7 +134,7 @@ export default function EnterpriseCalculator() {
             className="terminal-btn whitespace-nowrap"
             style={{
               borderColor: 'rgba(167, 139, 250, 0.6)',
-              color: '#a78bfa',
+              color: '#7dd3fc',
             }}
           >
             Contratar Scale →

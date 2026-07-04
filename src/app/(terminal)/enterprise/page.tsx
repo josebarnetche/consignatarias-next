@@ -131,7 +131,7 @@ const TIERS = [
     ],
     cta: 'Calcular volumen ↓',
     ctaHref: '#calculadora',
-    accent: '#a78bfa',
+    accent: '#7dd3fc',
     highlight: false,
   },
 ]
