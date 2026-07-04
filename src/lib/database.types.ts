@@ -1806,6 +1806,33 @@ export type Database = {
         }
         Relationships: []
       }
+      remate_marks: {
+        Row: {
+          consignataria_slug: string | null
+          created_at: string
+          id: string
+          mark_type: string
+          remate_id: string | null
+          user_id: string
+        }
+        Insert: {
+          consignataria_slug?: string | null
+          created_at?: string
+          id?: string
+          mark_type: string
+          remate_id?: string | null
+          user_id: string
+        }
+        Update: {
+          consignataria_slug?: string | null
+          created_at?: string
+          id?: string
+          mark_type?: string
+          remate_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       remates: {
         Row: {
           auction_type: Database["public"]["Enums"]["auction_type"] | null
