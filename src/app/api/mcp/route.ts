@@ -19,7 +19,7 @@ export const maxDuration = 60
  * Implementación propia (sin mcp-handler) para no arrastrar el conflicto zod v3/v4 ni
  * Redis: el subset que necesita un tool-server es chico — initialize / tools/list /
  * tools/call. Los tools de lectura son públicos; `crear_alerta_precio` requiere una
- * API key de un plan (Authorization: Bearer sk_..., mismo sistema que el API REST).
+ * API key de un plan (Authorization: Bearer cnsg_live_..., mismo sistema que el API REST).
  */
 
 const SERVER_INFO = { name: 'consignatarias', version: '1.0.0' }
@@ -36,8 +36,8 @@ interface Tool {
 }
 
 const prices = marketPrices as unknown as {
-  inmag: { current: number; change: number; prev: number }
-  categories: Record<string, { current: number; change: number }>
+  inmag: { current: number; change: number; prev: number; series?: Array<{ date: string; value: number; volume: number }> }
+  categories: Record<string, { current: number; change: number; prev?: number; sioWeek?: string; latestVolume?: number }>
   corn: { current: number; change: number; unit: string }
   usdBlue: { current: number; change: number }
   usdOficial: { current: number; change: number }
@@ -60,15 +60,41 @@ const TOOLS: Tool[] = [
   {
     name: 'get_indice_novillo',
     description:
-      'Índice Novillo (INMAG) del Mercado Agroganadero argentino: precio de referencia hoy en ARS/kg vivo, variación y fecha. Es el número que el mercado bovino argentino usa como referencia del novillo.',
+      'Índice Novillo (INMAG) del Mercado Agroganadero argentino: precio de referencia hoy en ARS/kg vivo, con variación diaria, volumen y tendencia. Es el índice DIARIO ponderado por volumen del canal formal MAG (métrica distinta de los precios por categoría de get_precios_hacienda, que son observación semanal).',
     inputSchema: { type: 'object', properties: {}, additionalProperties: false },
     async run() {
-      const { current, change, prev } = prices.inmag
+      const series = prices.inmag.series || []
+      const n = series.length
+      if (n === 0) {
+        const { current, change, prev } = prices.inmag
+        return ok(`Índice Novillo (INMAG) — ${prices.lastUpdate}\nHoy: ${fmt(current)}/kg vivo (${change >= 0 ? '+' : ''}${change}% vs ${fmt(prev)})`)
+      }
+      const hoy = series[n - 1]
+      const prevRueda = n > 1 ? series[n - 2] : null
+      const last5 = series.slice(-5)
+      const avg5 = last5.reduce((s, p) => s + p.value, 0) / last5.length
+      const diaChange = prevRueda ? ((hoy.value - prevRueda.value) / prevRueda.value) * 100 : 0
+      const vsAvg = avg5 ? ((hoy.value - avg5) / avg5) * 100 : 0
+      // Flag de rueda flaca: la INMAG diaria es ruidosa y una rueda de bajo volumen
+      // puede exagerar el % día-a-día. Comparamos el volumen previo con la mediana reciente.
+      const recentVols = last5.map((p) => p.volume).sort((a, b) => a - b)
+      const medVol = recentVols[Math.floor(recentVols.length / 2)] || 0
+      const thinPrev = !!prevRueda && medVol > 0 && prevRueda.volume < medVol * 0.6
       return ok(
-        `Índice Novillo (INMAG) — ${prices.lastUpdate}\n` +
-          `Hoy: ${fmt(current)}/kg vivo (${change >= 0 ? '+' : ''}${change}% vs anterior ${fmt(prev)})\n` +
-          `Fuente: Mercado Agroganadero (Cañuelas), vía consignatarias.com.ar\n\n` +
-          JSON.stringify({ inmag: current, change_pct: change, prev, unit: 'ARS/kg vivo', date: prices.lastUpdate }),
+        `Índice Novillo (INMAG) — ${hoy.date}\n` +
+          `Hoy: ${fmt(hoy.value)}/kg vivo · volumen ${hoy.volume.toLocaleString('es-AR')} cab\n` +
+          (prevRueda
+            ? `Variación vs rueda previa (${prevRueda.date}, ${fmt(prevRueda.value)}): ${diaChange >= 0 ? '+' : ''}${diaChange.toFixed(1)}%` +
+              (thinPrev ? ' ⚠ la rueda previa fue de bajo volumen; la variación diaria puede exagerar' : '') + '\n'
+            : '') +
+          `Tendencia: promedio últimas 5 ruedas ${fmt(avg5)} — hoy ${vsAvg >= 0 ? '+' : ''}${vsAvg.toFixed(1)}% vs esa media\n` +
+          `Métrica: índice DIARIO ponderado por volumen del canal formal MAG (Cañuelas). Los precios por categoría (get_precios_hacienda) son una observación SEMANAL distinta — no comparar 1:1.\n\n` +
+          JSON.stringify({
+            inmag: hoy.value, date: hoy.date, volume: hoy.volume,
+            change_dia_pct: Math.round(diaChange * 10) / 10, prev_date: prevRueda?.date ?? null, prev: prevRueda?.value ?? null,
+            avg_5_ruedas: Math.round(avg5 * 100) / 100, change_vs_avg5_pct: Math.round(vsAvg * 10) / 10,
+            prev_low_volume: thinPrev, unit: 'ARS/kg vivo', metric: 'inmag_daily_volume_weighted',
+          }),
       )
     },
   },
@@ -114,7 +140,7 @@ const TOOLS: Tool[] = [
   {
     name: 'get_precios_hacienda',
     description:
-      'Precios de hacienda en ARS/kg vivo por categoría (novillos, novillitos, vaquillonas, vacas, toros, terneros) del Mercado Agroganadero argentino. Sin argumento devuelve todas.',
+      'Precios de hacienda por categoría (novillos, novillitos, vaquillonas, vacas, toros, terneros) en ARS/kg vivo — observación SEMANAL del SIO/Mercado Agroganadero. Es una métrica distinta del índice INMAG diario (get_indice_novillo): no comparar 1:1. Sin argumento devuelve todas.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -126,10 +152,20 @@ const TOOLS: Tool[] = [
       const cat = typeof args.categoria === 'string' ? args.categoria : null
       const entries = Object.entries(prices.categories).filter(([k]) => !cat || k === cat)
       if (entries.length === 0) return fail(`Categoría desconocida. Válidas: ${Object.keys(prices.categories).join(', ')}`)
-      const lines = entries.map(([k, v]) => `${k}: ${fmt(v.current)}/kg (${v.change >= 0 ? '+' : ''}${v.change}%)`)
+      const week = entries.map(([, v]) => v.sioWeek).find(Boolean) || null
+      const lines = entries.map(([k, v]) => {
+        const vol = v.latestVolume
+        const thin = vol != null && vol < 200
+        return `${k}: ${fmt(v.current)}/kg${vol != null ? ` · ${vol} cab` : ''}${thin ? ' (pocos datos)' : ''}`
+      })
       return ok(
-        `Precios de hacienda — ${prices.lastUpdate} (ARS/kg vivo)\n${lines.join('\n')}\n\n` +
-          JSON.stringify(Object.fromEntries(entries.map(([k, v]) => [k, { price: v.current, change_pct: v.change }]))),
+        `Precios de hacienda por categoría — observación SIO ${week ? `(${week})` : 'semanal'}, ARS/kg vivo\n` +
+          `⚠ Métrica SEMANAL por categoría — distinta del índice INMAG diario (ver get_indice_novillo). No comparar 1:1.\n` +
+          `${lines.join('\n')}\n\n` +
+          JSON.stringify({
+            metric: 'sio_weekly_by_category', week,
+            prices: Object.fromEntries(entries.map(([k, v]) => [k, { price: v.current, head: v.latestVolume ?? null }])),
+          }),
       )
     },
   },
@@ -333,7 +369,7 @@ const TOOLS: Tool[] = [
   {
     name: 'crear_alerta_precio',
     description:
-      'Crea una alerta de precio por umbral: cuando el precio de referencia de una categoría cruza el valor dado, se notifica por webhook (POST price.threshold_crossed). Requiere una API key de un plan.',
+      'Crea una alerta de precio por umbral: cuando el precio de una categoría cruza el valor dado, se notifica por webhook (POST price.threshold_crossed). REQUIERE API KEY de un plan Enterprise. Autenticá de una de dos formas: (a) header del cliente MCP "headers": {"Authorization": "Bearer cnsg_live_..."}, o (b) el parámetro api_key de esta tool. Conseguí la key en https://www.consignatarias.com.ar/cuenta/api-keys',
     requiresAuth: true,
     inputSchema: {
       type: 'object',
@@ -342,13 +378,32 @@ const TOOLS: Tool[] = [
         umbral: { type: 'number', description: 'Umbral en ARS/kg vivo (ej. 5000)' },
         direccion: { type: 'string', enum: ['above', 'below'], description: 'Cruzar hacia arriba o abajo (default above)' },
         webhook_url: { type: 'string', description: 'URL https pública que recibe el POST cuando cruza' },
+        api_key: { type: 'string', description: 'API key del plan (cnsg_live_...). Opcional si ya la pasás por el header Authorization: Bearer.' },
       },
       required: ['categoria', 'umbral', 'webhook_url'],
       additionalProperties: false,
     },
     async run(args, req) {
-      const auth = await authenticate(req)
-      if (!auth.ok) return fail('Requiere una API key válida de un plan. Conseguí una en /cuenta/api-keys.')
+      // Auth: header Authorization: Bearer cnsg_live_..., o el arg api_key como fallback
+      // (algunos clientes MCP no mandan headers custom fácil — hacerlo descubrible por schema).
+      let authReq = req
+      const apiKeyArg = typeof args.api_key === 'string' ? args.api_key.trim() : ''
+      if (!req.headers.get('authorization') && apiKeyArg) {
+        const headers = new Headers(req.headers)
+        headers.set('authorization', apiKeyArg.toLowerCase().startsWith('bearer ') ? apiKeyArg : `Bearer ${apiKeyArg}`)
+        authReq = new NextRequest(req.url, { headers })
+      }
+      const auth = await authenticate(authReq)
+      if (!auth.ok) {
+        let reason = ''
+        try { const b = await auth.response.json(); reason = b?.error?.message || '' } catch { /* ignore */ }
+        return fail(
+          `${reason || 'No autorizado.'}\n\nCómo autenticar (elegí una):\n` +
+            `1) Header del cliente MCP: "headers": { "Authorization": "Bearer cnsg_live_..." }\n` +
+            `2) El parámetro api_key de esta tool.\n` +
+            `Gestioná tu key en https://www.consignatarias.com.ar/cuenta/api-keys · planes en https://www.consignatarias.com.ar/planes`,
+        )
+      }
       const categoria = String(args.categoria || '').toLowerCase()
       const umbral = Number(args.umbral)
       const direccion = args.direccion === 'below' ? 'below' : 'above'
@@ -407,7 +462,7 @@ export async function POST(req: NextRequest) {
         capabilities: { tools: {} },
         serverInfo: SERVER_INFO,
         instructions:
-          'Datos del mercado ganadero argentino (precios de hacienda, índice novillo INMAG, remates). Usá get_indice_novillo y get_precios_hacienda para precios de referencia, list_remates para el calendario, y crear_alerta_precio (con API key) para avisos por umbral.',
+          'Datos del mercado ganadero argentino. get_indice_novillo = índice INMAG DIARIO (ponderado por volumen); get_precios_hacienda = precios por categoría, observación SEMANAL — son métricas distintas, no las compares 1:1. Tools de lectura públicas. crear_alerta_precio REQUIERE API key de un plan Enterprise: pasala por el header Authorization: Bearer cnsg_live_... (config "headers" del cliente MCP) o por el parámetro api_key de la tool. Key en https://www.consignatarias.com.ar/cuenta/api-keys',
       })
     case 'ping':
       return rpcResult(id, {})
