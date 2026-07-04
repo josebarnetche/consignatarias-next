@@ -11344,6 +11344,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Faena, Invernada y Cria - 14.00hs.",
+    "consignatariaName": "Monasterio",
+    "consignatariaSlug": "monasterio",
+    "date": "2026-07-28",
+    "time": "14:00",
+    "location": "Daireaux, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Daireaux Faena, Invernada y Cria - 14.00hs.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 598,
+    "status": "scheduled"
+  },
+  {
     "title": "Remate Hacienda Gorda",
     "consignatariaName": "FERIALVAREZ S.R.L.",
     "consignatariaSlug": "ferialvarez-s-r-l",
@@ -11359,7 +11378,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.ferialvarez.com.ar",
-    "id": 598,
+    "id": 599,
     "status": "scheduled"
   },
   {
@@ -11378,7 +11397,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "pkf.com.ar/",
-    "id": 599,
+    "id": 600,
     "status": "scheduled"
   },
   {
@@ -11397,25 +11416,6 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 600,
-    "status": "scheduled"
-  },
-  {
-    "title": "Faena, Invernada y Cria - 14.00hs.",
-    "consignatariaName": "Monasterio",
-    "consignatariaSlug": "monasterio",
-    "date": "2026-07-28",
-    "time": "14:00",
-    "location": "Daireaux, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Daireaux Faena, Invernada y Cria - 14.00hs.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 601,
     "status": "scheduled"
   },
