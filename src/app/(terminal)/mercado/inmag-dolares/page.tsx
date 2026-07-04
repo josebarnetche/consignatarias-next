@@ -301,11 +301,10 @@ export default async function InmagDolaresPage() {
               <div className="terminal-panel mb-6">
                 <div className="terminal-panel-header flex items-center gap-2">
                   Histórico completo — desde 2015
-                  <span className="text-[10px] font-terminal font-bold tracking-wider border border-amber-500/50 bg-amber-500/10 text-amber-400 rounded-sm px-1 py-0.5">PRO</span>
                 </div>
                 <ProChartGate
                   context="inmag-dolares-decade"
-                  title="Función PRO Usuario"
+                  title="Histórico completo"
                   description="La serie completa del INMAG en dólares desde 2015 — la década entera del ciclo ganadero, más la descarga en CSV."
                 >
                   <PriceLineChart data={monthlyAll} height={240} accentColor="#7dd3fc" decimals={2} prefix="US$ " />

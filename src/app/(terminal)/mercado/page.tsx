@@ -162,7 +162,7 @@ export default function MercadoPage() {
         </div>
       </div>
 
-      {/* PRO Usuario features: seasonality + calculator CTA */}
+      {/* Herramientas gratis: estacionalidad + calculadora CTA */}
       <div className="px-4 py-4 max-w-6xl mx-auto space-y-4">
         <SeasonalityHeatmap />
         <div
@@ -173,7 +173,7 @@ export default function MercadoPage() {
           }}
         >
           <div className="terminal-panel-header" style={{ color: '#38bdf8' }}>
-            Calculadora ¿Vendo ahora? (PRO Usuario)
+            Calculadora ¿Vendo ahora?
           </div>
           <div className="px-panel py-5 flex flex-col md:flex-row md:items-center gap-4">
             <p className="text-zinc-300 text-data flex-1">
