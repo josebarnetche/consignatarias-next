@@ -1,0 +1,52 @@
+name: Price Alerts
+
+# Motor de disparo de las alertas de precio por umbral. Corre diario a la tarde ART
+# (después del cierre/scrape de MAG del día), detecta cruces y notifica (email/webhook)
+# una vez por alerta. Minuto no-redondo para evitar el throttling de schedules de GH.
+# Manual: workflow_dispatch con dryRun=true reporta qué dispararía SIN mandar nada.
+on:
+  schedule:
+    - cron: '17 21 * * *' # 21:17 UTC ≈ 18:17 ART, diario
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        description: 'Dry run (no manda emails/webhooks, solo reporta)'
+        required: false
+        default: 'false'
+
+jobs:
+  fire:
+    runs-on: ubuntu-latest
+    steps:
+      - name: cron-hook start
+        id: cronstart
+        run: |
+          RUN_ID=$(curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" \
+            -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"workflow_name":"price-alerts","phase":"start"}' | jq -r '.run_id // empty')
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Fire price alerts
+        run: |
+          set -euo pipefail
+          DRY="${{ github.event.inputs.dryRun || 'false' }}"
+          URL="https://www.consignatarias.com.ar/api/cron/price-alerts"
+          if [ "$DRY" = "true" ]; then URL="$URL?dryRun=1"; fi
+          echo "POST $URL"
+          RESP=$(curl -sS -w $'\n%{http_code}' -X POST "$URL" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}")
+          CODE=$(printf '%s' "$RESP" | tail -n1)
+          BODY=$(printf '%s' "$RESP" | sed '$d')
+          echo "HTTP $CODE"
+          echo "$BODY"
+          { [ "$CODE" -ge 200 ] && [ "$CODE" -lt 300 ]; } || { echo "::error::price-alerts HTTP $CODE"; exit 1; }
+
+      - name: cron-hook finish
+        if: always() && steps.cronstart.outputs.run_id != ''
+        run: |
+          ST="ok"; [ "${{ job.status }}" != "success" ] && ST="error"
+          curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" \
+            -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"workflow_name\":\"price-alerts\",\"phase\":\"finish\",\"run_id\":${{ steps.cronstart.outputs.run_id }},\"status\":\"$ST\"}" || true
