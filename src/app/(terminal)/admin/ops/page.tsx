@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase-server'
 import { getCronHealth, type CronHealthRow } from '@/lib/ops'
+import { OpsRefreshButton } from './OpsRefreshButton'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -112,9 +113,12 @@ export default async function AdminOpsPage() {
               Observabilidad v1.14
             </span>
           </div>
-          <span className="text-xxs text-zinc-500 font-terminal tabular-nums">
-            {new Date().toLocaleString('es-AR')}
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-xxs text-zinc-500 font-terminal tabular-nums">
+              {new Date().toLocaleString('es-AR')}
+            </span>
+            <OpsRefreshButton />
+          </div>
         </div>
       </div>
 
