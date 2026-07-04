@@ -37,6 +37,9 @@ interface Tool {
 const prices = marketPrices as unknown as {
   inmag: { current: number; change: number; prev: number }
   categories: Record<string, { current: number; change: number }>
+  corn: { current: number; change: number; unit: string }
+  usdBlue: { current: number; change: number }
+  usdOficial: { current: number; change: number }
   lastUpdate: string
 }
 const remates = rematesData as unknown as Array<{
@@ -84,6 +87,70 @@ const TOOLS: Tool[] = [
       return ok(
         `Precios de hacienda — ${prices.lastUpdate} (ARS/kg vivo)\n${lines.join('\n')}\n\n` +
           JSON.stringify(Object.fromEntries(entries.map(([k, v]) => [k, { price: v.current, change_pct: v.change }]))),
+      )
+    },
+  },
+  {
+    name: 'get_precios_detallados',
+    description:
+      'Precios por SUBCATEGORÍA del Mercado Agroganadero (ej. "NOVILLOS Regular +430", "VACAS Conserva Buena") con mínimo, promedio y máximo en ARS/kg vivo. Más granular que get_precios_hacienda. Filtro opcional por grupo (novillos/novillitos/vaquillonas/vacas/toros).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        grupo: { type: 'string', enum: ['novillos', 'novillitos', 'vaquillonas', 'vacas', 'toros'] },
+      },
+      additionalProperties: false,
+    },
+    async run(args) {
+      const grupo = typeof args.grupo === 'string' ? args.grupo.toLowerCase() : null
+      const service = requireServiceClient()
+      const { data: latest } = await service
+        .from('mag_prices_detailed')
+        .select('date')
+        .order('date', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+      if (!latest?.date) return ok('Sin datos de precios detallados por ahora.')
+      let qb = service
+        .from('mag_prices_detailed')
+        .select('subcategory, category_group, price_min, price_avg, price_max, head_count')
+        .eq('date', latest.date)
+      if (grupo) qb = qb.eq('category_group', grupo)
+      const { data, error } = await qb.order('category_group')
+      if (error) return fail('Error leyendo precios detallados.')
+      if (!data || data.length === 0) return ok('Sin subcategorías para ese filtro.')
+      const lines = data.map(
+        (r) =>
+          `${r.subcategory}: prom ${r.price_avg != null ? fmt(Number(r.price_avg)) : 's/d'}` +
+          `${r.price_min != null && r.price_max != null ? ` (${fmt(Number(r.price_min))}–${fmt(Number(r.price_max))})` : ''}` +
+          `${r.head_count ? ` · ${r.head_count} cab` : ''}`,
+      )
+      return ok(`Precios detallados por subcategoría — ${latest.date} (ARS/kg vivo)\n${lines.join('\n')}`)
+    },
+  },
+  {
+    name: 'get_contexto_macro',
+    description:
+      'Contexto macro del mercado ganadero argentino: dólar blue y oficial (ARS), maíz FOB (USD/tn), y el spread novillo/maíz (kg de maíz que compra un kg de novillo — proxy de rentabilidad de feedlot).',
+    inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+    async run() {
+      const maizArsKg = (prices.corn.current * prices.usdBlue.current) / 1000 // USD/tn → ARS/kg
+      const novilloArsKg = prices.inmag.current
+      const kgMaizPorKgNovillo = maizArsKg > 0 ? novilloArsKg / maizArsKg : 0
+      return ok(
+        `Contexto macro — ${prices.lastUpdate}\n` +
+          `Dólar blue: ${fmt(prices.usdBlue.current)} ARS · oficial: ${fmt(prices.usdOficial.current)} ARS\n` +
+          `Maíz FOB: USD ${prices.corn.current}/tn (≈ ${fmt(maizArsKg)} ARS/kg)\n` +
+          `Novillo (INMAG): ${fmt(novilloArsKg)} ARS/kg\n` +
+          `Spread novillo/maíz: ${kgMaizPorKgNovillo.toFixed(1)} kg de maíz por kg de novillo\n\n` +
+          JSON.stringify({
+            usd_blue: prices.usdBlue.current,
+            usd_oficial: prices.usdOficial.current,
+            maiz_usd_tn: prices.corn.current,
+            maiz_ars_kg: Math.round(maizArsKg * 100) / 100,
+            novillo_ars_kg: novilloArsKg,
+            kg_maiz_por_kg_novillo: Math.round(kgMaizPorKgNovillo * 10) / 10,
+          }),
       )
     },
   },

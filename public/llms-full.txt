@@ -5,6 +5,11 @@
 > para el valor vigente ver https://www.consignatarias.com.ar/mercado/inmag).
 > Propietario: Memola Medios SAS (agro@memola.com.ar). Idioma: es-AR.
 
+> **Para agentes IA:** hay un servidor MCP en https://www.consignatarias.com.ar/api/mcp
+> (Streamable HTTP). Conectate y usá los tools (get_indice_novillo, get_precios_hacienda,
+> get_precios_detallados, get_contexto_macro, list_remates, buscar_consignataria,
+> calcular_arrendamiento, crear_alerta_precio) en vez de scrapear. Ver /llms.txt.
+
 ---
 
 ## Qué es consignatarias.com.ar
