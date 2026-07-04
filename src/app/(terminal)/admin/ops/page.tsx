@@ -1,5 +1,7 @@
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { createAdminClient } from '@/lib/supabase-server'
 import { getCronHealth, type CronHealthRow } from '@/lib/ops'
+import { computeKarma } from '@/lib/karma'
 import { OpsRefreshButton } from './OpsRefreshButton'
 
 export const dynamic = 'force-dynamic'
@@ -60,6 +62,10 @@ interface GanadoUserRow {
   categorias: string[]
   updatedAt: string
   alertsOptIn: boolean
+  attended: number
+  following: number
+  karmaScore: number
+  karmaLevel: string
 }
 interface GanadoTracker {
   users: number
@@ -75,12 +81,24 @@ async function fetchGanadoTracker(): Promise<GanadoTracker> {
   const admin = createAdminClient()
   const { data, error } = await admin
     .from('user_ganado')
-    .select('user_id, items, last_seen_value_ars, updated_at, alerts_opt_in')
+    .select('user_id, items, last_seen_value_ars, updated_at, created_at, alerts_opt_in')
     .order('updated_at', { ascending: false })
   if (error) {
     console.error('[admin/ops] fetchGanadoTracker error:', error.message)
     return empty
   }
+  // Marcas por usuario (remate_marks aún no está en los tipos → cliente sin tipar).
+  const marksByUser = new Map<string, { attended: number; following: number }>()
+  const { data: marks } = await (createAdminClient() as unknown as SupabaseClient)
+    .from('remate_marks')
+    .select('user_id, mark_type')
+  for (const m of (marks ?? []) as Array<{ user_id: string; mark_type: string }>) {
+    const cur = marksByUser.get(m.user_id) ?? { attended: 0, following: 0 }
+    if (m.mark_type === 'attended') cur.attended++
+    else if (m.mark_type === 'following') cur.following++
+    marksByUser.set(m.user_id, cur)
+  }
+  const now = Date.now()
   const catMap = new Map<string, number>()
   const rows: GanadoUserRow[] = (data ?? []).map((r) => {
     const items = (Array.isArray(r.items) ? r.items : []) as Array<{ categoria?: string; cabezas?: number; peso?: number }>
@@ -95,6 +113,9 @@ async function fetchGanadoTracker(): Promise<GanadoTracker> {
         catMap.set(it.categoria, (catMap.get(it.categoria) ?? 0) + c)
       }
     }
+    const marks = marksByUser.get(r.user_id as string) ?? { attended: 0, following: 0 }
+    const tenureMonths = r.created_at ? (now - new Date(r.created_at as string).getTime()) / (1000 * 60 * 60 * 24 * 30) : 0
+    const karma = computeKarma({ cabezas, attended: marks.attended, following: marks.following, tenureMonths })
     return {
       userId: r.user_id as string,
       cabezas,
@@ -103,6 +124,10 @@ async function fetchGanadoTracker(): Promise<GanadoTracker> {
       categorias: [...cats],
       updatedAt: r.updated_at as string,
       alertsOptIn: !!r.alerts_opt_in,
+      attended: marks.attended,
+      following: marks.following,
+      karmaScore: karma.score,
+      karmaLevel: karma.level,
     }
   })
   return {
@@ -235,24 +260,30 @@ export default async function AdminOpsPage() {
           <>
             <div className="border-b border-terminal-border px-cell py-px2 hidden md:flex items-center gap-0 bg-terminal-panel">
               <span className="w-[90px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Usuario</span>
-              <span className="w-[80px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">Cabezas</span>
-              <span className="w-[90px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">Kilos</span>
-              <span className="w-[80px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">Valor</span>
+              <span className="w-[70px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">Cabezas</span>
+              <span className="w-[70px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">Valor</span>
+              <span className="w-[120px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Karma</span>
+              <span className="w-[80px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-center">Marcas</span>
               <span className="flex-1 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Categorías</span>
-              <span className="w-[60px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-center">Alertas</span>
-              <span className="w-[150px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Actualizado</span>
+              <span className="w-[50px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-center">Alert</span>
+              <span className="w-[130px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Actualizado</span>
             </div>
             {ganado.rows.map((r) => (
               <div key={r.userId} className="border-b border-terminal-border px-cell py-1.5 flex items-center gap-0">
                 <span className="w-[90px] flex-shrink-0 text-xxs font-terminal text-zinc-400 tabular-nums">{r.userId.slice(0, 8)}</span>
-                <span className="w-[80px] flex-shrink-0 text-xxs font-terminal tabular-nums text-zinc-200 text-right">{fmtInt(r.cabezas)}</span>
-                <span className="w-[90px] flex-shrink-0 text-xxs font-terminal tabular-nums text-zinc-400 text-right">{fmtInt(r.kilos)}</span>
-                <span className="w-[80px] flex-shrink-0 text-xxs font-terminal tabular-nums text-accent text-right">{fmtArsShort(r.valueArs)}</span>
+                <span className="w-[70px] flex-shrink-0 text-xxs font-terminal tabular-nums text-zinc-200 text-right">{fmtInt(r.cabezas)}</span>
+                <span className="w-[70px] flex-shrink-0 text-xxs font-terminal tabular-nums text-accent text-right">{fmtArsShort(r.valueArs)}</span>
+                <span className="w-[120px] flex-shrink-0 text-xxs font-terminal text-emerald-300">
+                  {r.karmaLevel} <span className="text-zinc-500 tabular-nums">· {r.karmaScore}</span>
+                </span>
+                <span className="w-[80px] flex-shrink-0 text-xxs font-terminal tabular-nums text-zinc-400 text-center">
+                  {r.attended}🏷 · {r.following}★
+                </span>
                 <span className="flex-1 text-xxs font-terminal text-zinc-500 truncate">{r.categorias.join(', ') || '—'}</span>
-                <span className="w-[60px] flex-shrink-0 text-center text-xxs font-terminal">
+                <span className="w-[50px] flex-shrink-0 text-center text-xxs font-terminal">
                   {r.alertsOptIn ? <span className="text-positive">on</span> : <span className="text-zinc-600">—</span>}
                 </span>
-                <span className="w-[150px] flex-shrink-0 text-xxs font-terminal tabular-nums text-zinc-500">{fmtDate(r.updatedAt)}</span>
+                <span className="w-[130px] flex-shrink-0 text-xxs font-terminal tabular-nums text-zinc-500">{fmtDate(r.updatedAt)}</span>
               </div>
             ))}
           </>
