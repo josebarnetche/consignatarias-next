@@ -35,12 +35,7 @@ interface NavLink {
   href: string;
 }
 
-// TERMINAL is a simple link (resuelve la doble puerta: /overview, no "/").
-// The rest are grouped dropdowns. This lifts the buried assets out of the
-// footer: /mercado/inmag (activo #1) + /mercado/arrendamiento (11k impr) into
-// MERCADO, and /calculadora into HERRAMIENTAS.
-const NAV_TERMINAL: NavLink = { label: "TERMINAL", href: "/overview" };
-
+// Dropdowns agrupados. El logo (→ /overview) reemplaza al viejo link TERMINAL.
 const NAV_GROUPS: NavGroup[] = [
   {
     label: "MERCADO",
@@ -118,26 +113,17 @@ function TerminalClock() {
     return () => clearInterval(id);
   }, []);
 
-  if (!now) return <span className="text-zinc-500">--:--:--</span>;
-
-  const date = now.toLocaleDateString("es-AR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
+  if (!now) return <span className="text-zinc-500 text-data hidden sm:inline">--:--</span>;
 
   const time = now.toLocaleTimeString("es-AR", {
     hour: "2-digit",
     minute: "2-digit",
-    second: "2-digit",
     hour12: false,
   });
 
   return (
-    <span className="tabular-nums text-zinc-400 text-data font-terminal tracking-wide">
-      <span className="text-zinc-500 hidden sm:inline">{date.toUpperCase()}</span>
-      <span className="mx-1.5 text-terminal-border hidden sm:inline">|</span>
-      <span className="text-zinc-300">{time}</span>
+    <span className="tabular-nums text-zinc-500 text-data font-terminal tracking-wide hidden sm:inline">
+      {time}
     </span>
   );
 }
@@ -297,10 +283,6 @@ export default function TerminalLayout({
 }) {
   const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // Static values (updated on deploy) — no API call needed.
-  // consignatarias = getAllProfiles().length (canonical registry, what the landing shows). Keep in sync.
-  const [stats] = useState({ remates: 392, consignatarias: 104, provincias: 14 });
-
   // Check auth state
   useEffect(() => {
     const supabase = createClient();
@@ -335,67 +317,28 @@ export default function TerminalLayout({
 
   return (
     <div className="bg-terminal-bg text-zinc-100 min-h-screen flex flex-col font-terminal text-sm">
-      {/* -- ACTIVITY BAR ------------------------------------------- */}
-      <div className="activity-bar hidden md:flex justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-zinc-500 tracking-widest uppercase">
-            {stats.remates || '—'} REMATES
-          </span>
-          <span className="text-terminal-border">&middot;</span>
-          <span className="text-zinc-500 tracking-widest uppercase">
-            {stats.consignatarias || '—'} CONSIGNATARIAS
-          </span>
-          <span className="text-terminal-border">&middot;</span>
-          <span className="text-zinc-500 tracking-widest uppercase">
-            {stats.provincias || '—'} PROVINCIAS
-          </span>
-        </div>
-        <div className="flex items-center">
-          <span className="text-zinc-500">
-            ULT. ACT. 14:00 ART
-          </span>
-        </div>
-      </div>
-
       {/* -- HEADER BAR ------------------------------------------- */}
       <header className="border-b border-terminal-border bg-terminal-panel flex-shrink-0">
-        <div className="flex items-center justify-between px-4 h-12">
-          {/* -- LEFT: Logo -- */}
-          <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-2 group">
+        <div className="flex items-center justify-between px-4 h-10">
+          {/* -- LEFT: Logo (marca — mono, minúscula, punto en accent) -- */}
+          <div className="flex items-center gap-4">
+            <Link href="/overview" className="flex items-center gap-1.5 group" title="consignatarias.com.ar">
               <span className="live-indicator flex-shrink-0" />
-              <span className="font-heading text-sm font-semibold tracking-wide text-zinc-100 group-hover:text-accent transition-colors">
-                consignatarias.com.ar
+              <span className="font-terminal text-[13px] font-semibold tracking-tight text-zinc-100 lowercase group-hover:text-accent transition-colors">
+                consignatarias<span className="text-accent">.</span>com
               </span>
             </Link>
 
-            {/* -- NAV (desktop) — TERMINAL link + grouped dropdowns -- */}
+            {/* -- NAV (desktop) — dropdowns del mundo del productor -- */}
             <nav className="hidden md:flex items-center">
-              <span className="text-terminal-border mr-3">|</span>
-              {(() => {
-                const active = matchPath(pathname, NAV_TERMINAL.href);
-                return (
-                  <Link
-                    href={NAV_TERMINAL.href}
-                    className={`relative px-2 py-1.5 text-xxs font-terminal uppercase tracking-widest motion-hover ${
-                      active ? "text-accent" : "text-zinc-500 hover:text-zinc-100"
-                    }`}
-                  >
-                    {NAV_TERMINAL.label}
-                    {active && (
-                      <span
-                        className="absolute bottom-0 left-1 right-1 h-px bg-accent"
-                        style={{ borderRadius: "1px" }}
-                      />
-                    )}
-                  </Link>
-                );
-              })()}
-              {NAV_GROUPS.map((group) => (
+              <span className="text-terminal-border mr-1">|</span>
+              {NAV_GROUPS.map((group, i) => (
                 <span key={group.label} className="flex items-center">
-                  <span className="text-terminal-border mx-1 text-xxs select-none">
-                    /
-                  </span>
+                  {i > 0 && (
+                    <span className="text-terminal-border mx-1 text-xxs select-none">
+                      /
+                    </span>
+                  )}
                   <NavDropdown
                     group={group}
                     active={isGroupActive(pathname, group)}
