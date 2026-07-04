@@ -7,69 +7,54 @@ import SocialProofToast from './SocialProofToast'
 import PlanesToggle from './PlanesToggle'
 import { SaaSPricingSchema, FAQPageSchema, SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
-// Pricing data for schema (all visible tiers across audiences)
+// Pricing data for schema (modelo API-first, todo en USD).
 const PRICING_PLANS = [
   {
-    name: 'Gratuito',
-    description: 'Acceso básico al observatorio del mercado bovino argentino y al directorio de consignatarias.',
+    name: 'Productor (gratis)',
+    description: 'Observatorio completo del mercado bovino argentino, sin costo: precios, remates, directorio, calculadoras y alertas.',
     price: 0,
-    features: ['Calendario unificado de remates', 'Directorio de consignatarias y frigoríficos', 'INMAG diario'],
+    features: ['INMAG diario y precios por categoría', 'Calendario unificado de remates', 'Directorio de consignatarias y frigoríficos', 'Calculadoras (neto en mano, ¿vendo ahora?)', 'Alertas de precio por email'],
   },
   {
-    name: 'PRO Usuario',
-    description: 'Las herramientas de decisión del que vende hacienda: cuánto te queda neto, cuándo conviene vender y a quién. Para productores, asesores, contadores y brokers.',
-    price: 7900,
-    priceCurrency: 'ARS',
-    features: [
-      'Calculadora neto en mano: comisión, gastos y flete descontados del bruto',
-      'Calculadora «¿Vendo ahora?» con percentiles de 30 y 365 días',
-      'Comparador con medios de pago y días de cobro de cada consignataria',
-      'Histórico INMAG completo 2015→ con descarga en CSV',
-      'Estacionalidad: la década completa mes × año (z-score)',
-      'Filtros avanzados de remates (rango de fechas, cabezas mínimas)',
-      'Descargas El Corredor + El Oráculo',
-    ],
-  },
-  {
-    name: 'PRO Consignataria',
-    description: 'Promoción de cada remate por email a +500 productores. Badge PRO, analytics y herramientas para consignatarias y frigoríficos.',
-    price: 45000,
-    priceCurrency: 'ARS',
-    features: ['Promoción de remates por email', 'Perfil verificado y destacado', 'Analytics de perfil', 'Remates con badge PRO', 'Landing personalizada', 'QR para catálogos', 'Calendario sincronizable'],
-  },
-  {
-    name: 'Enterprise · Starter',
-    description: 'API completa para apps en desarrollo. 1.000 req/mes.',
-    price: 99,
+    name: 'API Starter',
+    description: 'API/MCP del mercado ganadero argentino para devs, analistas y firmas. 10.000 req/mes.',
+    price: 49,
     priceCurrency: 'USD',
-    features: ['API key dedicada', 'Endpoints INMAG, categorías, USD, remates, directorios', 'Histórico completo', '1 webhook'],
+    features: ['10.000 requests/mes', 'Endpoints INMAG, categorías, USD, remates, directorios', 'Acceso MCP (tools de lectura)', 'Histórico completo', '1 webhook'],
   },
   {
-    name: 'Enterprise · Growth',
-    description: 'API + webhooks + reportes semanales + dashboards. 50K req/mes.',
-    price: 500,
+    name: 'API Growth',
+    description: 'API + webhooks + alertas + reportes para agtech, medios agro y fondos. 100.000 req/mes.',
+    price: 299,
     priceCurrency: 'USD',
-    features: ['Todo lo de Starter', 'Webhooks ilimitados', 'Exports CSV/JSON', 'Reporte semanal PDF+JSON', 'Dashboards personalizados', 'Alertas configurables', 'Analyst access'],
+    features: ['100.000 requests/mes', 'Webhooks ilimitados + alertas de precio (MCP write)', 'Exports CSV/JSON', 'Reporte semanal PDF+JSON', 'Soporte prioritario'],
   },
   {
-    name: 'Enterprise · Scale',
-    description: 'Apps de alto volumen. Pricing por requests, 100K → 5M req/mes.',
-    price: 700,
+    name: 'API Scale',
+    description: 'Alto volumen + SLA para bancos, agtech grande y exchanges. A medida.',
+    price: 999,
     priceCurrency: 'USD',
-    features: ['Todo lo de Growth', 'Volume pricing', 'Multi-usuario con roles', 'Integración ERP/BI', 'White-label opcional', 'CSM desde 500K req/mes'],
+    features: ['Volumen alto (500K → 5M req)', 'SLA + uptime garantizado', 'Multi-usuario con roles', 'Integración ERP/BI', 'White-label opcional'],
+  },
+  {
+    name: 'Consignataria (alcance)',
+    description: 'Promoción de remates a la base de productores + perfil destacado. Prueba gratis.',
+    price: 39,
+    priceCurrency: 'USD',
+    features: ['Promoción de remates por email', 'Perfil verificado y destacado', 'Analytics de perfil', 'Landing propia + QR'],
   },
 ]
 
 const FAQ_ITEMS = [
   {
-    question: '¿Cuál es la diferencia entre PRO Usuario y PRO Consignataria?',
+    question: '¿Qué es gratis y qué se paga?',
     answer:
-      'PRO Usuario es para productores, asesores y contadores que quieren acceso ilimitado al observatorio (filtros, detalle de perfiles, descargas, archivo histórico). PRO Consignataria es para consignatarias y frigoríficos que quieren aparecer destacados en el directorio (badge dorado, promoción de remates por email, analytics). Son productos distintos con precios distintos — usá el toggle arriba para ver el que te corresponde.',
+      'El observatorio del productor es 100% gratis: precios INMAG, remates, directorio, calculadoras y alertas por email. Se paga solo el acceso programático a los datos (API + MCP) para apps, agentes IA, agtech, frigoríficos, traders, fondos y bancos; y opcionalmente el plan de alcance para consignatarias que quieren promocionar sus remates.',
   },
   {
     question: '¿Cómo funciona el pago?',
     answer:
-      'Procesamos pagos con tarjeta de crédito y débito a través de Rebill, plataforma certificada para Argentina y Latinoamérica. La suscripción se renueva automáticamente cada mes. Enterprise se factura en USD vía transferencia, USDT o factura ARS al MEP.',
+      'Los planes de API y de alcance se facturan en USD (transferencia, USDT o factura ARS al MEP), con renovación mensual y 15% off en pago anual. El productor no paga nada.',
   },
   {
     question: '¿Puedo cancelar en cualquier momento?',
@@ -86,11 +71,11 @@ const FAQ_ITEMS = [
 export const metadata: Metadata = {
   title: 'Planes y Precios',
   description:
-    'Planes para productores, consignatarias y empresas. PRO Usuario ARS $7.900/mes, PRO Consignataria ARS $45.000/mes, Enterprise desde USD 99/mes.',
+    'El observatorio es gratis para el productor. La API/MCP del mercado ganadero argentino desde USD 49/mes, para apps, agentes IA, agtech y análisis.',
   openGraph: {
     title: 'Planes y Precios',
     description:
-      'Tres audiencias, tres planes. Productores, consignatarias y empresas con API.',
+      'Productor gratis. La API/MCP del ganado argentino desde USD 49/mes para apps y agentes.',
     url: 'https://www.consignatarias.com.ar/planes',
     type: 'website',
   },
