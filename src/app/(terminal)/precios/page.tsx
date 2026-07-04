@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { BreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import HerramientasCTA from '@/components/HerramientasCTA'
+import PriceThresholdAlertSignup from '@/components/PriceThresholdAlertSignup'
 import marketPrices from '@/lib/data/market-prices.json'
 
 const fmt = (n: number) => n.toLocaleString('es-AR', { maximumFractionDigits: 0 })
@@ -119,6 +120,20 @@ export default function PreciosHubPage() {
             )
           })}
         </section>
+
+        {/* Alerta de precio por umbral — la retención más pegajosa: seteás un número
+            redondo y esperás el ping. Captura el tráfico (mayormente IA) que viene a
+            mirar el precio y se va. */}
+        {inmagPrice && (
+          <section className="mb-8">
+            <PriceThresholdAlertSignup
+              category="inmag"
+              categoryLabel="novillo"
+              currentPrice={inmagPrice}
+              page="/precios"
+            />
+          </section>
+        )}
 
         {/* Related pages */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">

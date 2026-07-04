@@ -1662,6 +1662,54 @@ export type Database = {
           },
         ]
       }
+      price_alerts: {
+        Row: {
+          category: string
+          created_at: string
+          direction: string
+          email: string | null
+          id: number
+          last_fired_at: string | null
+          last_value: number | null
+          source: string
+          status: string
+          threshold: number
+          updated_at: string
+          user_id: string | null
+          webhook_url: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          direction?: string
+          email?: string | null
+          id?: never
+          last_fired_at?: string | null
+          last_value?: number | null
+          source?: string
+          status?: string
+          threshold: number
+          updated_at?: string
+          user_id?: string | null
+          webhook_url?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          direction?: string
+          email?: string | null
+          id?: never
+          last_fired_at?: string | null
+          last_value?: number | null
+          source?: string
+          status?: string
+          threshold?: number
+          updated_at?: string
+          user_id?: string | null
+          webhook_url?: string | null
+        }
+        Relationships: []
+      }
       processed_webhook_events: {
         Row: {
           event_id: string
