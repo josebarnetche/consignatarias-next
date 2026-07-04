@@ -83,18 +83,10 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Exportar / Calendario", href: "/calendario-exportar" },
     ],
   },
-  {
-    label: "DESARROLLADORES",
-    match: "/mcp",
-    items: [
-      { label: "MCP para IAs", href: "/mcp", hint: "El sitio como tools para agentes", tag: "live" },
-      { label: "API Enterprise", href: "/api-docs", hint: "REST + API keys" },
-    ],
-  },
 ];
-
-// Link de Planes fuera de los grupos: visible siempre (no enterrado en un dropdown).
-const NAV_PLANES: NavLink = { label: "PLANES", href: "/planes" };
+// Nota: MCP + API (audiencia developer/IA) NO van en el nav del productor —
+// viven en el footer (Empresa) + la página /mcp + /llms.txt + el registry MCP.
+// Planes va como link sutil a la derecha, no como item de nav.
 
 // Mobile: the scrollable bar can't host dropdowns, so we flatten to the highest-
 // value destinations — INMAG (activo #1), Calculadora y Arrendamiento dejan de
@@ -410,20 +402,20 @@ export default function TerminalLayout({
                   />
                 </span>
               ))}
-              <span className="text-terminal-border mx-1 text-xxs select-none">/</span>
-              <Link
-                href={NAV_PLANES.href}
-                className={`relative px-2 py-1.5 text-xxs font-terminal uppercase tracking-widest motion-hover ${
-                  matchPath(pathname, NAV_PLANES.href) ? "text-amber-300" : "text-amber-400/80 hover:text-amber-300"
-                }`}
-              >
-                {NAV_PLANES.label}
-              </Link>
             </nav>
           </div>
 
           {/* -- RIGHT: Clock + Onboarding + Auth -- */}
           <div className="flex items-center gap-3">
+            <Link
+              href="/planes"
+              className={`text-xxs font-terminal uppercase tracking-wider transition-colors hidden sm:inline ${
+                matchPath(pathname, "/planes") ? "text-amber-300" : "text-zinc-500 hover:text-amber-300"
+              }`}
+            >
+              Planes
+            </Link>
+            <span className="text-terminal-border hidden sm:inline">|</span>
             <TerminalClock />
             <span className="text-terminal-border hidden sm:inline">|</span>
             <OnboardingPrompt />
@@ -562,6 +554,7 @@ const FOOTER_COLUMNS: FooterColumn[] = [
       { label: "Preguntas frecuentes", href: "/preguntas-frecuentes" },
       { label: "Glosario", href: "/glosario" },
       { label: "API", href: "/api-docs" },
+      { label: "MCP para IAs", href: "/mcp" },
       { label: "Acceso institucional", href: "/enterprise#acceso-institucional" },
     ],
   },

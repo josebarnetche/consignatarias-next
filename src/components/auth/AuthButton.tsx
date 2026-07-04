@@ -36,21 +36,16 @@ export default function AuthButton() {
     )
   }
 
-  const email = user.email ?? ''
-  const short = email.length > 20 ? email.slice(0, 18) + '…' : email
-
   return (
     <div className="flex items-center gap-2">
       <Link
         href="/dashboard"
         className="text-xxs font-terminal uppercase tracking-wider text-accent hover:text-accent-bright transition-colors"
+        title={user.email ?? undefined}
       >
         Mi Panel
       </Link>
       <span className="text-zinc-700 text-xxs select-none hidden sm:inline">|</span>
-      <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline" title={email}>
-        {short}
-      </span>
       <form action="/api/auth/logout" method="POST">
         <button
           type="submit"
