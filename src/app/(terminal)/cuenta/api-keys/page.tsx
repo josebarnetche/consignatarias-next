@@ -13,7 +13,12 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic'
 
-export default async function ApiKeysPage() {
+export default async function ApiKeysPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ enterprise_activated?: string }>
+}) {
+  const justActivated = (await searchParams).enterprise_activated
   const supabase = await createClient()
   const { data: userData } = await supabase.auth.getUser()
   const user = userData.user
@@ -116,6 +121,25 @@ export default async function ApiKeysPage() {
           guardalo en tu .env y no lo compartas por chat ni email.
         </p>
       </div>
+
+      {/* Welcome post-pago (cae acá tras un pago aprobado, ?enterprise_activated=<tier>) */}
+      {justActivated && (
+        <div className="terminal-panel mb-6" style={{ borderColor: 'rgba(16,185,129,0.4)' }}>
+          <div className="terminal-panel-header" style={{ color: '#10b981' }}>
+            ✓ Tu plan {justActivated.charAt(0).toUpperCase() + justActivated.slice(1)} está activo
+          </div>
+          <div className="px-panel py-4">
+            <p className="text-zinc-200 text-data mb-1">
+              Bienvenido — ya tenés acceso a la API + el MCP del mercado ganadero argentino.
+            </p>
+            <p className="text-zinc-500 text-xxs">
+              Empezá acá: <span className="text-zinc-300">1)</span> generá tu primera key abajo ·{' '}
+              <span className="text-zinc-300">2)</span> copiá el connector MCP (viene con tu key) ·{' '}
+              <span className="text-zinc-300">3)</span> pegalo en Claude/Cursor o usá la API. Dudas: agro@memola.com.ar
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Plan + usage */}
       <div className="terminal-panel mb-6">

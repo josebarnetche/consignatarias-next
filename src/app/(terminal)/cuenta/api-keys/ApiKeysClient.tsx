@@ -51,6 +51,7 @@ export default function ApiKeysClient({ initialKeys }: Props) {
     name: string
   } | null>(null)
   const [copied, setCopied] = useState(false)
+  const [copiedConn, setCopiedConn] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [revoking, setRevoking] = useState<string | null>(null)
   const nameInputId = useId()
@@ -166,6 +167,30 @@ export default function ApiKeysClient({ initialKeys }: Props) {
       // ignore
     }
   }, [generatedSecret])
+
+  // Config MCP lista para pegar (Claude Desktop, Cursor…), con la key adentro.
+  const connectorConfig = generatedSecret
+    ? JSON.stringify(
+        {
+          consignatarias: {
+            url: 'https://www.consignatarias.com.ar/api/mcp',
+            headers: { Authorization: `Bearer ${generatedSecret.secret}` },
+          },
+        },
+        null,
+        2,
+      )
+    : ''
+  const copyConnector = useCallback(async () => {
+    if (!connectorConfig) return
+    try {
+      await navigator.clipboard.writeText(connectorConfig)
+      setCopiedConn(true)
+      setTimeout(() => setCopiedConn(false), 2000)
+    } catch {
+      // ignore
+    }
+  }, [connectorConfig])
 
   return (
     <>
@@ -401,12 +426,35 @@ export default function ApiKeysClient({ initialKeys }: Props) {
                 </button>
               </div>
 
-              <p className="text-zinc-500 text-xxs mb-5">
+              <p className="text-zinc-500 text-xxs mb-4">
                 Pegala en tu <code className="text-zinc-400 bg-zinc-900 px-1">.env</code>{' '}
                 como <code className="text-zinc-400 bg-zinc-900 px-1">CONSIGNATARIAS_API_KEY</code>{' '}
                 o usala como header{' '}
                 <code className="text-zinc-400 bg-zinc-900 px-1">Authorization: Bearer …</code>
               </p>
+
+              {/* Connector MCP no-técnico — pegá y listo en Claude/Cursor */}
+              <div className="border-t border-terminal-border pt-4 mb-5">
+                <p className="text-zinc-200 text-data font-medium mb-1">¿No sos técnico? Conectá tu asistente IA</p>
+                <p className="text-zinc-500 text-xxs mb-2">
+                  Pegá esto en la config MCP de Claude Desktop / Cursor — ya lleva tu key adentro:
+                </p>
+                <div className="bg-zinc-950 border border-terminal-border px-3 py-2 mb-2">
+                  <pre className="text-zinc-300 text-xxs font-terminal overflow-x-auto whitespace-pre-wrap break-all">{connectorConfig}</pre>
+                </div>
+                <button
+                  type="button"
+                  onClick={copyConnector}
+                  className="terminal-btn text-xxs"
+                  style={{ borderColor: 'rgba(56,189,248,0.5)', color: '#38bdf8' }}
+                >
+                  {copiedConn ? 'Copiado ✓' : 'Copiar config MCP'}
+                </button>
+                <p className="text-zinc-600 text-xxs mt-2">
+                  Después preguntale a tu asistente “¿precio del novillo hoy?”. Guía completa en{' '}
+                  <a href="/mcp" className="text-accent hover:underline">consignatarias.com.ar/mcp</a>.
+                </p>
+              </div>
 
               <button
                 type="button"
