@@ -1,0 +1,16 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
+  "name": "ar.com.consignatarias/cattle-market",
+  "description": "Mercado ganadero argentino como tools MCP: precio de referencia (INMAG índice novillo), precios de hacienda por categoría y subcategoría, contexto macro (dólar/maíz), calendario de remates, directorio de consignatarias, cálculo de arrendamiento y alertas de precio por umbral.",
+  "version": "1.0.0",
+  "repository": {
+    "url": "https://github.com/josebarnetche/consignatarias-next",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://www.consignatarias.com.ar/api/mcp"
+    }
+  ]
+}
