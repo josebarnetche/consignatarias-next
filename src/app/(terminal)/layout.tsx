@@ -90,7 +90,6 @@ interface MobileNavLink extends NavLink {
   tag?: NavLeaf["tag"];
 }
 const MOBILE_NAV: MobileNavLink[] = [
-  { label: "TERMINAL", href: "/overview" },
   { label: "INMAG", href: "/mercado/inmag", tag: "live" },
   { label: "ARRIENDO", href: "/mercado/arrendamiento" },
   { label: "PRECIOS", href: "/precios" },
