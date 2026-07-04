@@ -1,7 +1,6 @@
-import { readFile } from 'fs/promises'
-import { join } from 'path'
 import { ImageResponse } from 'next/og'
 import marketData from '@/lib/data/market-prices.json'
+import { OG_COLORS, loadOgFonts, BrandChrome, Halo } from '@/lib/og/brand'
 
 // Dynamic price-OG card for /mercado/inmag — bakes the live INMAG number into
 // every WhatsApp / social / press link preview (the same "price-in-the-title"
@@ -9,32 +8,16 @@ import marketData from '@/lib/data/market-prices.json'
 // is git-committed by the daily scraper, so the card refreshes on each deploy
 // with a clean cache-bust — no runtime cost.
 //
-// Brand system v2.0 (marca/): carbón + JetBrains Mono + cielo como único acento;
-// pastura/rojo SOLO para la variación. Isotipo "la C y el dato" en el chrome.
+// Sistema de marca compartido en src/lib/og/brand.tsx.
 
 export const alt = 'INMAG hoy — Índice Novillo del Mercado Agroganadero de Buenos Aires'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
-const CARBON = '#09090b'
-const PANEL = '#18181b'
-const LINEA = '#27272a'
-const HUESO = '#fafafa'
-const MUTED = '#a1a1aa'
-const MUTED2 = '#71717a'
-const CIELO = '#38bdf8'
-const PASTURA = '#10b981'
-const ROJO = '#f87171'
-
-// Isotipo "la C y el dato" — misma geometría que marca/build_logos.py
-const ISO_RING =
-  'M 413.61 379.14 A 200 200 0 1 1 367.83 90.17 L 321.98 158.17 A 118 118 0 1 0 348.99 328.66 Z'
+const { CARBON, PANEL, LINEA, HUESO, MUTED, MUTED2, CIELO, PASTURA, ROJO } = OG_COLORS
 
 export default async function OGImage() {
-  const [fontBold, fontMedium] = await Promise.all([
-    readFile(join(process.cwd(), 'src/fonts/JetBrainsMono-Bold.ttf')),
-    readFile(join(process.cwd(), 'src/fonts/JetBrainsMono-Medium.ttf')),
-  ])
+  const fonts = await loadOgFonts()
 
   const inmag = marketData.inmag
   const price = Math.round(inmag.current).toLocaleString('es-AR')
@@ -63,19 +46,7 @@ export default async function OGImage() {
           overflow: 'hidden',
         }}
       >
-        {/* halo cielo — el único gradiente permitido */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '-260px',
-            left: '300px',
-            width: '640px',
-            height: '520px',
-            background: 'radial-gradient(circle, rgba(56,189,248,0.09) 0%, transparent 70%)',
-            borderRadius: '9999px',
-            display: 'flex',
-          }}
-        />
+        <Halo />
 
         <div
           style={{
@@ -88,27 +59,7 @@ export default async function OGImage() {
             position: 'relative',
           }}
         >
-          {/* chrome de marca */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
-            <svg width="46" height="46" viewBox="0 0 512 512">
-              <path d={ISO_RING} fill={HUESO} />
-              <rect x="379.7" y="168.1" width="118" height="118" fill={CIELO} />
-            </svg>
-            <span style={{ color: HUESO, fontSize: 27, fontWeight: 700, display: 'flex' }}>
-              consignatarias<span style={{ color: CIELO }}>.</span>com
-            </span>
-            <span
-              style={{
-                color: MUTED2,
-                fontSize: 15,
-                fontWeight: 500,
-                letterSpacing: '0.2em',
-                marginLeft: '12px',
-              }}
-            >
-              MERCADO GANADERO ARGENTINO
-            </span>
-          </div>
+          <BrandChrome />
 
           {/* el número */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -181,10 +132,7 @@ export default async function OGImage() {
     ),
     {
       ...size,
-      fonts: [
-        { name: 'JetBrains Mono', data: fontBold, weight: 700, style: 'normal' },
-        { name: 'JetBrains Mono', data: fontMedium, weight: 500, style: 'normal' },
-      ],
+      fonts,
     }
   )
 }
