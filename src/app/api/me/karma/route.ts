@@ -18,12 +18,14 @@ export async function GET() {
 
   const admin = createAdminClient()
 
-  // Hacienda cargada (cabezas) + antigüedad (proxy: created_at del rodeo).
+  // Hacienda cargada (cabezas) + antigüedad (proxy: created_at del rodeo) +
+  // opt-in del aviso semanal de valor.
   let cabezas = 0
   let tenureMonths = 0
+  let alertaSemanal = false
   const { data: ganado } = await admin
     .from('user_ganado')
-    .select('items, created_at')
+    .select('items, created_at, alerts_opt_in')
     .eq('user_id', user.id)
     .maybeSingle()
   if (ganado) {
@@ -32,6 +34,18 @@ export async function GET() {
     if (ganado.created_at) {
       tenureMonths = (Date.now() - new Date(ganado.created_at as string).getTime()) / (1000 * 60 * 60 * 24 * 30)
     }
+    alertaSemanal = ganado.alerts_opt_in === true
+  }
+
+  // Resumen semanal (newsletter) — por email de la cuenta.
+  let newsletter = false
+  if (user.email) {
+    const { data: nl } = await admin
+      .from('newsletter_subscribers')
+      .select('status')
+      .eq('email', user.email.toLowerCase())
+      .maybeSingle()
+    newsletter = nl?.status === 'active'
   }
 
   // Marcas (remate_marks aún no está en los tipos → cliente sin tipar).
@@ -46,6 +60,16 @@ export async function GET() {
     else if (m.mark_type === 'following') following++
   }
 
-  const karma = computeKarma({ cabezas, attended, following, tenureMonths })
-  return NextResponse.json({ loggedIn: true, ...karma, inputs: { cabezas, attended, following } })
+  const karma = computeKarma({ cabezas, attended, following, tenureMonths, alertaSemanal, newsletter })
+  return NextResponse.json({
+    loggedIn: true,
+    ...karma,
+    inputs: { cabezas, attended, following },
+    checklist: {
+      hacienda: cabezas > 0,
+      alerta: alertaSemanal,
+      newsletter,
+      marcas: attended + following > 0,
+    },
+  })
 }

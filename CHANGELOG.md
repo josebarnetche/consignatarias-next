@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.100.0] — 2026-07-04
+
+### El checklist de arranque celebra y el karma se mueve en vivo
+
+- **Karma con componente ARRANQUE** — el motor (`src/lib/karma.ts`) suma +20 pts por cada paso del checklist (hacienda cargada, aviso semanal, resumen semanal, primer remate marcado/seguido): **con 3 de 4 el usuario sale de Novato → Productor** (60 ≥ 50). `/api/me/karma` incorpora las señales nuevas (`alerts_opt_in` + `newsletter_subscribers`) y devuelve el estado del checklist; tests actualizados.
+- **Chispitas + karma en vivo** — el checklist de /cuenta es ahora `ArranqueChecklist` (cliente): cada paso completado dispara un burst de partículas cielo/ámbar sobre el check; los pasos completados en otras páginas se celebran al volver (diff contra el último estado visto en localStorage, escalonado); el header del panel muestra el karma EN VIVO ("N pts · Nivel") con count-up, y al subir de nivel aparece la línea brillante "★ ¡Subiste a Productor!". La suscripción al resumen sigue siendo un click inline y ahora suma karma al instante. Respeta `prefers-reduced-motion`.
+- `KarmaBadge` muestra el chip "Arranque" en el desglose.
+
 ## [1.99.0] — 2026-07-04
 
 ### El dashboard reconoce al productor (la mayoría de los registros)

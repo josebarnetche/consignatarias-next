@@ -9,7 +9,7 @@ interface KarmaData {
   levelIndex?: number
   nextLevel?: string | null
   toNext?: number
-  breakdown?: { hacienda: number; engagement: number; tenure: number }
+  breakdown?: { arranque?: number; hacienda: number; engagement: number; tenure: number }
   inputs?: { cabezas: number; attended: number; following: number }
 }
 
@@ -54,6 +54,7 @@ export default function KarmaBadge() {
         </div>
         {k.breakdown && (
           <div className="mt-3 flex flex-wrap gap-1.5">
+            {k.breakdown.arranque != null && <Chip label="Arranque" value={k.breakdown.arranque} hint="checklist" />}
             <Chip label="Hacienda" value={k.breakdown.hacienda} hint={k.inputs ? `${k.inputs.cabezas} cab` : undefined} />
             <Chip label="Marcas" value={k.breakdown.engagement} hint={k.inputs ? `${k.inputs.attended} remates · ${k.inputs.following} seguidas` : undefined} />
             <Chip label="Antigüedad" value={k.breakdown.tenure} />

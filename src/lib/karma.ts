@@ -6,6 +6,11 @@
  *  - attended: remates marcados como "estuve acá".
  *  - following: consignatarias que sigue.
  *  - tenureMonths: antigüedad de la cuenta.
+ *  - alertaSemanal / newsletter: opt-ins de arranque (checklist de /cuenta).
+ *
+ * El componente ARRANQUE premia el checklist de activación: 20 pts por cada
+ * uno de los 4 pasos (hacienda cargada, alerta semanal, resumen semanal,
+ * primer remate marcado). Con 3 de 4 (60 pts) el usuario ya sale de Novato.
  *
  * Función PURA (sin DB) para ser testeable y reusable en server/cliente.
  */
@@ -15,9 +20,12 @@ export interface KarmaInput {
   attended: number
   following: number
   tenureMonths: number
+  alertaSemanal?: boolean
+  newsletter?: boolean
 }
 
 export interface KarmaBreakdown {
+  arranque: number
   hacienda: number
   engagement: number
   tenure: number
@@ -39,11 +47,22 @@ export const KARMA_LEVELS: Array<{ min: number; name: string }> = [
   { min: 350, name: 'Referente' },
 ]
 
+/** Los 4 pasos del checklist de arranque, como booleanos. */
+export function arranqueItems(i: KarmaInput): boolean[] {
+  return [
+    (i.cabezas || 0) > 0,                                // cargó hacienda
+    !!i.alertaSemanal,                                   // aviso semanal de valor
+    !!i.newsletter,                                      // resumen semanal
+    (i.attended || 0) + (i.following || 0) > 0,          // marcó remates / sigue
+  ]
+}
+
 export function computeKarma(i: KarmaInput): Karma {
+  const arranque = arranqueItems(i).filter(Boolean).length * 20
   const hacienda = Math.min(Math.round((i.cabezas || 0) / 5), 200) // 1 pt cada 5 cabezas, tope 200
   const engagement = Math.min((i.attended || 0) * 15 + (i.following || 0) * 5, 150)
   const tenure = Math.min((i.tenureMonths || 0) * 4, 60)
-  const score = hacienda + engagement + tenure
+  const score = arranque + hacienda + engagement + tenure
 
   let levelIndex = 0
   for (let k = KARMA_LEVELS.length - 1; k >= 0; k--) {
@@ -59,6 +78,6 @@ export function computeKarma(i: KarmaInput): Karma {
     levelIndex,
     nextLevel: next ? next.name : null,
     toNext: next ? Math.max(0, next.min - score) : 0,
-    breakdown: { hacienda, engagement, tenure },
+    breakdown: { arranque, hacienda, engagement, tenure },
   }
 }

@@ -8,27 +8,7 @@ import { SignOutButton } from './SignOutButton'
 import { UpgradeConfirmTracker } from '@/components/UpgradeConfirmTracker'
 import { UpgradeActivating } from '@/components/UpgradeActivating'
 import KarmaBadge from '@/components/KarmaBadge'
-import NewsletterOptIn from './NewsletterOptIn'
-
-function ChecklistItem({ done, href, label, sub }: { done: boolean; href: string; label: string; sub: string }) {
-  return (
-    <Link href={href} className="flex items-center gap-3 px-panel py-3 hover:bg-sky-500/[0.04] transition-colors group">
-      <span
-        aria-hidden="true"
-        className={`w-5 h-5 rounded-full border flex items-center justify-center text-xxs flex-shrink-0 ${
-          done ? 'border-positive/40 bg-positive/10 text-positive' : 'border-zinc-700 text-transparent'
-        }`}
-      >
-        ✓
-      </span>
-      <div className="flex-1 min-w-0">
-        <div className="text-sm text-zinc-200 group-hover:text-sky-300 transition-colors">{label}</div>
-        <div className="text-xxs text-zinc-500">{sub}</div>
-      </div>
-      <span className="text-zinc-600 group-hover:text-sky-400 text-xs font-mono flex-shrink-0 transition-colors">→</span>
-    </Link>
-  )
-}
+import ArranqueChecklist from './ArranqueChecklist'
 
 export const metadata: Metadata = {
   title: 'Tu cuenta',
@@ -175,34 +155,16 @@ export default async function CuentaPage({ searchParams }: PageProps) {
         </p>
       )}
 
-      {/* Checklist de arranque — con estado real; queda como utilidad permanente */}
-      <div className="terminal-panel mb-8">
-        <div className="terminal-panel-header flex items-center justify-between">
-          <span>Empezá por acá</span>
-          <span className="text-xxs text-zinc-500 font-terminal tabular-nums">{doneCount}/4</span>
-        </div>
-        <div className="divide-y divide-terminal-border">
-          <ChecklistItem
-            done={checkHacienda}
-            href="/mi-ganado"
-            label="Cargá tu hacienda en Mi Ganado"
-            sub="Tu stock valuado al INMAG de cada día, como una cartera."
-          />
-          <ChecklistItem
-            done={checkAlerta}
-            href="/mi-ganado"
-            label="Activá el aviso semanal de valor"
-            sub="Cada lunes, cuánto vale tu hacienda y cuánto cambió."
-          />
-          <NewsletterOptIn email={user.email ?? ''} initialDone={checkNewsletter} />
-          <ChecklistItem
-            done={checkMarcas}
-            href="/remates"
-            label="Marcá los remates que te interesan"
-            sub="Seguí remates y marcá en cuáles estuviste — arma tu historial."
-          />
-        </div>
-      </div>
+      {/* Checklist de arranque — estado real + celebración + karma en vivo */}
+      <ArranqueChecklist
+        email={user.email ?? ''}
+        initial={{
+          hacienda: checkHacienda,
+          alerta: checkAlerta,
+          newsletter: checkNewsletter,
+          marcas: checkMarcas,
+        }}
+      />
 
       {!justUpgraded && (
         <Link
