@@ -920,7 +920,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           larga de la firma vive en el bloque server (resumen) por SEO. */}
 
       {/* ============================================================ */}
-      {/*  MEDIOS DE PAGO (PRO-gated, rendered server-side)             */}
+      {/*  MEDIOS DE PAGO (público, solo si la titular los publicó)      */}
       {/* ============================================================ */}
       {mediosPagoSlot}
 

@@ -48,7 +48,10 @@ export default async function CompararPage() {
       a.consignatariaSlug === profile.canonicalSlug || 
       a.consignatariaName === profile.displayName
     )
-    const upcoming = profileAuctions.filter(a => a.date >= today)
+    const upcoming = profileAuctions
+      .filter(a => a.date >= today)
+      .sort((a, b) => a.date.localeCompare(b.date))
+    const next = upcoming[0] ?? null
     const provincias = [...new Set(profileAuctions.map(a => a.province))]
     const tipos = [...new Set(profileAuctions.map(a => a.type))]
     const totalCabezas = profileAuctions.reduce((s, a) => s + (a.estimatedHeads || 0), 0)
@@ -58,6 +61,8 @@ export default async function CompararPage() {
       name: profile.displayName,
       totalRemates: profileAuctions.length,
       upcomingRemates: upcoming.length,
+      nextDate: next?.date ?? null,
+      nextLocation: next?.location ?? null,
       provincias,
       tipos,
       totalCabezas,

@@ -104,7 +104,6 @@ export default async function CuentaPage({ searchParams }: PageProps) {
               {[
                 { href: '/mercado/vender-ahora', label: 'Calculadora ¿Vendo ahora?', sub: 'valor por cabeza + percentil de mercado' },
                 { href: '/mercado/inmag', label: 'Histórico INMAG + descargas', sub: 'serie completa desde 2015, export CSV' },
-                { href: '/consignatarias', label: 'Medios de pago', sub: 'plazos y condiciones por consignataria' },
                 { href: '/frigorificos', label: 'Verificación SENASA expandida', sub: 'detalle de habilitación Ciclo I/II/III' },
               ].map((f) => (
                 <Link
@@ -196,8 +195,8 @@ export default async function CuentaPage({ searchParams }: PageProps) {
               datos del mercado.
             </p>
             <p className="text-zinc-500 font-mono text-xs mb-4">
-              Sumate a PRO para medios de pago, filtros avanzados, descargas premium y
-              archivo histórico.
+              Sumate a PRO para filtros avanzados, descargas premium y archivo
+              histórico completo.
             </p>
             <Link
               href="/upgrade"

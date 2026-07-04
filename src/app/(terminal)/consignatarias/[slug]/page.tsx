@@ -493,7 +493,6 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
             <MediosPagoSection
               mediosPago={enrichedProfile.mediosPago || []}
               consignatariaName={enrichedProfile.displayName}
-              redirectTo={`/consignatarias/${canonical}`}
             />
           </div>
         }

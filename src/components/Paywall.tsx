@@ -56,8 +56,8 @@ export function PaywallCard({ loggedIn, feature, redirectTo }: PaywallProps) {
         <div className="flex-1 min-w-0">
           <p className="text-zinc-200 font-mono text-sm mb-1.5">{headline}</p>
           <p className="text-zinc-400 font-mono text-xs leading-relaxed mb-4">
-            PRO te da acceso ilimitado al detalle de remates, perfiles, filtros avanzados,
-            medios de pago de cada consignataria y descargas premium. ARS $7.900/mes ·
+            PRO te da acceso ilimitado al detalle de remates, perfiles, filtros avanzados
+            y descargas premium. ARS $7.900/mes ·
             cancelás cuando quieras.
           </p>
           {loggedIn ? (

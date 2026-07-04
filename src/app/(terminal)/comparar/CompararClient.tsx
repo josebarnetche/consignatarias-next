@@ -1,34 +1,18 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import { useSessionTier } from '@/lib/use-session-tier'
-import { ProReveal, HeroNumber, StatPill } from '@/components/pro'
+import { HeroNumber, StatPill } from '@/components/pro'
 
 const FREE_LIMIT = 3
 
-const METODO_LABELS: Record<string, string> = {
-  'transferencia': 'Transferencia',
-  'cheque': 'Cheque',
-  'efectivo': 'Efectivo',
-  'al-rinde': 'Al rinde',
-  'al-gancho': 'Al gancho',
-  'usd-billete': 'USD billete',
-  'usdt': 'USDT',
-  'permuta': 'Permuta',
-  'mercado-pago': 'Mercado Pago',
-}
+const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
 
-interface MediosPagoSummary {
-  metodos: string[]
-  plazoMin: number | null
-}
-
-function fmtPlazo(dias: number | null): string {
-  if (dias === null) return '—'
-  if (dias === 0) return 'Contado'
-  if (dias === 1) return '1 día'
-  return `${dias} días`
+// Parse the ISO date by hand — new Date('YYYY-MM-DD') is UTC-midnight and
+// shifts a day in ART, and would also hydrate differently client-side.
+function fmtFecha(iso: string): string {
+  const [, m, d] = iso.split('-')
+  return `${parseInt(d, 10)} ${MESES[parseInt(m, 10) - 1]}`
 }
 
 interface ConsignatariaStats {
@@ -36,6 +20,8 @@ interface ConsignatariaStats {
   name: string
   totalRemates: number
   upcomingRemates: number
+  nextDate: string | null
+  nextLocation: string | null
   provincias: string[]
   tipos: string[]
   totalCabezas: number
@@ -142,31 +128,16 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
   const winner = ranked[0]
   const runnerUp = ranked[1]
 
-  // Medios de pago + plazo de cobro — PRO. Fetched on demand (never baked into
-  // the static HTML) and only when the user is PRO.
-  const session = useSessionTier()
-  const [medios, setMedios] = useState<Record<string, MediosPagoSummary>>({})
-
-  useEffect(() => {
-    if (session.tier !== 'pro' || selected.length === 0) return
-    const slugs = selected.join(',')
-    fetch(`/api/consignatarias/medios-pago?slugs=${encodeURIComponent(slugs)}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((j) => {
-        if (j?.result) setMedios((prev) => ({ ...prev, ...j.result }))
-      })
-      .catch(() => {})
-  }, [session.tier, selected])
-
-  // PRO commercial-terms decision: shortest collection term among the selection.
-  const fastestPayer = useMemo(() => {
-    if (session.tier !== 'pro') return null
-    const withPlazo = selectedConsignatarias
-      .map((c) => ({ c, plazo: medios[c.slug]?.plazoMin }))
-      .filter((x): x is { c: ConsignatariaStats; plazo: number } => typeof x.plazo === 'number')
-    if (withPlazo.length === 0) return null
-    return withPlazo.reduce((best, x) => (x.plazo < best.plazo ? x : best))
-  }, [session.tier, selectedConsignatarias, medios])
+  // Salida más rápida: quién tiene el próximo remate más cercano en fecha.
+  // El plazo real que el productor controla no es el de cobro (dato que no
+  // existe público) sino el de SALIDA — cuándo puede efectivamente vender.
+  const fastestExit = useMemo(() => {
+    const withNext = selectedConsignatarias.filter(
+      (c): c is ConsignatariaStats & { nextDate: string } => c.nextDate !== null
+    )
+    if (withNext.length === 0) return null
+    return withNext.reduce((best, c) => (c.nextDate < best.nextDate ? c : best))
+  }, [selectedConsignatarias])
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -180,7 +151,7 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
         </h1>
         <p className="text-zinc-400 text-sm leading-relaxed">
           Seleccioná hasta {FREE_LIMIT} consignatarias y decidí <span className="text-zinc-200">a cuál mandarle tu hacienda</span>.
-          Ordenamos por encaje real: actividad, volumen y trayectoria.
+          Ordenamos por encaje real — actividad, volumen y trayectoria — y te decimos quién te da salida antes.
         </p>
       </div>
 
@@ -363,6 +334,27 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                       ))}
                     </tr>
 
+                    {/* Próximo remate — fecha y lugar concretos */}
+                    <tr className="border-b border-terminal-border">
+                      <td className="px-panel py-3 text-sm text-zinc-400">
+                        Próximo remate
+                      </td>
+                      {selectedConsignatarias.map(c => (
+                        <td key={c.slug} className="px-4 py-3 text-sm">
+                          {c.nextDate ? (
+                            <div>
+                              <span className="font-mono text-zinc-200">{fmtFecha(c.nextDate)}</span>
+                              {c.nextLocation && (
+                                <div className="text-xxs text-zinc-500 mt-0.5">{c.nextLocation}</div>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-zinc-600">—</span>
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+
                     {/* Total Remates */}
                     <tr className="border-b border-terminal-border">
                       <td className="px-panel py-3 text-sm text-zinc-400">
@@ -442,64 +434,24 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                 </table>
               </div>
 
-              {/* PRO — commercial terms decision (gated). Free user sees the FORM, blurred. */}
-              <ProReveal
-                from="/comparar"
-                title="Condiciones comerciales — PRO"
-                benefit="Compará medios de pago y días de cobro de cada una, y mirá quién te paga más rápido."
-                placeholder={<TermsSkeleton names={selectedConsignatarias.map((c) => c.name)} />}
-              >
-                <div>
-                  {/* Decision line: who pays fastest */}
-                  {fastestPayer && selectedConsignatarias.length > 1 && (
-                    <div className="mb-4">
-                      <HeroNumber
-                        label="Cobrás más rápido en"
-                        value={fastestPayer.c.name}
-                        tone="positive"
-                        size="text-lg"
-                        sub={`${fmtPlazo(fastestPayer.plazo)} de plazo`}
-                      />
-                    </div>
-                  )}
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <tbody>
-                        <tr className="border-b border-terminal-border">
-                          <td className="py-3 pr-4 text-sm text-zinc-400 align-top">Medios de pago</td>
-                          {selectedConsignatarias.map((c) => (
-                            <td key={c.slug} className="px-3 py-3 text-sm text-zinc-200 align-top">
-                              {medios[c.slug]?.metodos?.length ? (
-                                <div className="flex flex-wrap gap-1">
-                                  {medios[c.slug].metodos.map((m) => (
-                                    <span key={m} className="text-xxs bg-zinc-800 px-1.5 py-0.5 rounded">{METODO_LABELS[m] || m}</span>
-                                  ))}
-                                </div>
-                              ) : (
-                                <span className="text-zinc-600 text-xxs">Sin publicar</span>
-                              )}
-                            </td>
-                          ))}
-                        </tr>
-                        <tr>
-                          <td className="py-3 pr-4 text-sm text-zinc-400">Días de cobro</td>
-                          {selectedConsignatarias.map((c) => {
-                            const plazo = medios[c.slug]?.plazoMin ?? null
-                            const isFastest = fastestPayer?.c.slug === c.slug && selectedConsignatarias.length > 1
-                            return (
-                              <td key={c.slug} className="px-3 py-3 text-sm font-mono">
-                                <span style={isFastest ? { color: '#34d399' } : undefined} className={isFastest ? '' : 'text-zinc-200'}>
-                                  {fmtPlazo(plazo)}
-                                </span>
-                              </td>
-                            )
-                          })}
-                        </tr>
-                      </tbody>
-                    </table>
+              {/* Salida — quién te da salida antes (dato real: calendario de remates) */}
+              {fastestExit && selectedConsignatarias.length > 1 && (
+                <div className="terminal-panel">
+                  <div className="terminal-panel-header">Salida más rápida</div>
+                  <div className="px-panel py-5">
+                    <HeroNumber
+                      label="Tu hacienda sale antes con"
+                      value={fastestExit.name}
+                      tone="positive"
+                      size="text-lg"
+                      sub={`remata el ${fmtFecha(fastestExit.nextDate)}${fastestExit.nextLocation ? ` · ${fastestExit.nextLocation}` : ''}`}
+                    />
+                    <p className="text-zinc-500 text-xxs mt-3 leading-relaxed">
+                      Según el calendario de remates programados. Consultá el cierre de inscripción de hacienda con la consignataria.
+                    </p>
                   </div>
                 </div>
-              </ProReveal>
+              )}
 
               {/* Actions */}
               <div className="terminal-panel">
@@ -555,29 +507,6 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
           )}
         </div>
       </div>
-    </div>
-  )
-}
-
-/**
- * Non-real placeholder for the blurred PRO teaser — obviously-fake skeleton
- * rows keyed to the selected names, so a free user sees the SHAPE of the
- * commercial-terms table without any real or fabricated numbers leaking.
- */
-function TermsSkeleton({ names }: { names: string[] }) {
-  return (
-    <div className="space-y-4">
-      <div className="h-2.5 bg-zinc-800 rounded-sm" style={{ width: '40%' }} />
-      {['Medios de pago', 'Días de cobro'].map((row) => (
-        <div key={row} className="flex items-center gap-3">
-          <span className="text-data text-zinc-500 w-28 shrink-0">{row}</span>
-          <div className="flex gap-2 flex-1">
-            {names.map((n, i) => (
-              <div key={n} className="flex-1 h-5 bg-zinc-800 rounded-sm" style={{ opacity: 0.5 + (i % 2) * 0.2 }} />
-            ))}
-          </div>
-        </div>
-      ))}
     </div>
   )
 }

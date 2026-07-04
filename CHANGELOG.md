@@ -7,6 +7,23 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.96.0] — 2026-07-04
+
+### El comparador se libera y cambia de premisa: de "quién te paga antes" a "quién te da salida antes"
+
+La capa PRO de `/comparar` prometía medios de pago y días de cobro por consignataria — un dato que
+no existe (0 de 86 en la base) y que las consignatarias no van a publicar: es información negociada
+y competitivamente sensible. Se elimina la promesa y se reemplaza por el dato real equivalente que
+sí poseemos: el calendario.
+
+- **`/comparar` 100% gratis** — se quita el bloque PRO "Condiciones comerciales" (blur + gate sobre datos vacíos) y el fetch a `/api/consignatarias/medios-pago` (endpoint eliminado; 33→32 endpoints).
+- **"Salida más rápida"** — nuevo panel de decisión: entre las seleccionadas, quién tiene el próximo remate más cercano en fecha, con plaza ("Tu hacienda sale antes con X — remata el 8 jul · Río Cuarto, Córdoba"). Nueva fila "Próximo remate" (fecha + lugar) en la tabla comparativa.
+- **Medios de pago en perfiles sin paywall** — `MediosPagoSection` deja de mostrar PaywallCard/placeholder: solo se renderiza si la titular del perfil cargó datos (regla "datos reales"; hoy ninguna → no aparece).
+- **Copy PRO saneado** — se quita "medios de pago" como beneficio en /cuenta, Paywall genérico, guía cómo-elegir y hint del nav (ahora "Quién te da salida antes · gratis").
+- **Fix hydration** — `DatasetSchema` usaba `new Date().toISOString()` con milisegundos como `dateModified` default → mismatch server/cliente en todas las páginas; ahora precisión de día (como ya hacía el otro schema).
+
+**Verificación:** tsc 0 · QA interactivo en dev de /comparar (selección de 3, panel salida, fila próximo remate) y perfil consignataria (sin paywall, sin issues de hydration).
+
 ## [1.95.0] — 2026-07-04
 
 ### Íconos color + terminal bajo el manual de marca

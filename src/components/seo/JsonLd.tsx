@@ -109,7 +109,7 @@ export function DatasetSchema({
   description,
   url,
   keywords = [],
-  dateModified = new Date().toISOString(),
+  dateModified = new Date().toISOString().slice(0, 10),
   creator = 'Memola Medios SAS',
 }: DatasetSchemaProps) {
   const schema = {
