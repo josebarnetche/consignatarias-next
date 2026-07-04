@@ -15,7 +15,8 @@ export default function NotFound() {
     <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 py-16 bg-slate-950">
       <div className="text-center max-w-md">
         {/* Error code */}
-        <div className="mb-6">
+        <div className="mb-6 flex flex-col items-center gap-4">
+          <img src="/marca/iconos/buscador-lupa.png" alt="" aria-hidden="true" className="w-20 opacity-70 select-none" />
           <span className="text-6xl font-mono font-bold text-zinc-700">404</span>
         </div>
 

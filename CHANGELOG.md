@@ -7,6 +7,19 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.94.0] — 2026-07-04
+
+### El universo gráfico entra a las páginas (antes: solo en share cards)
+
+Primera tanda de la marca v2.0 DENTRO del sitio (assets en `public/marca/`, ~456 KB, `marca/deploy_assets_web.py`):
+
+- **Glifos de hacienda** — la silueta de cada categoría en el hero de `/precios/[categoria]` y en la tabla PRECIOS POR CATEGORIA de `/mercado` (link con glifo 20px). El precio del H1 de precios pasa de ámbar inline a cielo (rezago del barrido).
+- **Pictogramas** — cards de tools de `/mcp` (ícono por tool: índice, báscula, calendario, casa-remates, frigorífico, arrendamiento, alerta…) y el 404 (buscador-lupa).
+- **Foto de marca en la landing** — `hero-pampa.jpg` (panorámica del amanecer) como fondo del hero con degradés de legibilidad.
+- **El martillazo animado** — el motivo de marca (golpe → polvo → onda → dato → sonda, SVG+CSS, respeta reduced-motion) como firma al pie del hero de la landing (desktop).
+
+**Verificación:** tsc 0 · QA visual en dev de landing, /mercado, /precios/novillos, /mcp y 404.
+
 ## [1.93.0] — 2026-07-04
 
 ### Pivot a API-first + productor gratis, onboarding no-técnico y pago de punta a punta

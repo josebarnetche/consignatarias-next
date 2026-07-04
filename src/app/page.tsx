@@ -283,6 +283,23 @@ export default async function LandingPage() {
         {/*  HERO                                                        */}
         {/* ============================================================ */}
         <section className="relative max-w-7xl mx-auto px-6 pt-16 pb-32">
+          {/* Foto de marca: la panorámica del amanecer (banco marca/), detrás de todo */}
+          <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/marca/hero-pampa.jpg"
+              alt=""
+              className="w-full h-full object-cover object-[center_35%] opacity-35"
+              fetchPriority="high"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/70 to-[#09090b]/30" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#09090b]/60 via-transparent to-[#09090b]" />
+          </div>
+          {/* El martillazo — motivo animado de marca (golpe → onda → dato → sonda) */}
+          <div className="absolute bottom-6 right-6 z-[1] w-[340px] xl:w-[420px] opacity-70 pointer-events-none hidden lg:block" aria-hidden="true">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/marca/martillazo.svg" alt="" className="w-full h-auto" />
+          </div>
           {/* Background Grid */}
           <div
             className="absolute inset-0 z-0 pointer-events-none opacity-20"

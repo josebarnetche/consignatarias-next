@@ -122,6 +122,11 @@ export function generateStaticParams() {
   return ALL_CATEGORIES.map((categoria) => ({ categoria }))
 }
 
+const GLIFOS: Record<CategorySlug, string> = {
+  novillos: 'glifo-novillo', novillitos: 'glifo-novillito', vaquillonas: 'glifo-vaquillona',
+  vacas: 'glifo-vaca', toros: 'glifo-toro', terneros: 'glifo-ternero',
+}
+
 const fmt = (n: number) => n.toLocaleString('es-AR')
 
 function isValidCategoria(s: string): s is CategorySlug {
@@ -341,9 +346,15 @@ export default async function PreciosCategoriaPage({
           <span className="text-zinc-300">{c.title}</span>
         </div>
 
+        <img
+          src={`/marca/glifos/${GLIFOS[categoria]}.png`}
+          alt=""
+          aria-hidden="true"
+          className="float-right ml-4 mt-1 w-24 md:w-32 opacity-90 select-none pointer-events-none"
+        />
         <h1 className="text-2xl md:text-3xl font-heading text-zinc-100 mb-1 leading-tight">
           Precio del kilo vivo de {c.singular} hoy:{' '}
-          <span style={{ color: '#fbbf24' }}>${fmt(price)}</span>
+          <span style={{ color: '#38bdf8' }}>${fmt(price)}</span>
         </h1>
         <p className="text-zinc-400 text-sm mb-4">
           <DataStamp isoDate={lastUpdate} /> desde el Mercado Agroganadero (INMAG) ·{' '}

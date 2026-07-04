@@ -10,6 +10,13 @@ export const metadata: Metadata = {
 
 const ENDPOINT = 'https://www.consignatarias.com.ar/api/mcp'
 
+const TOOL_ICONS: Record<string, string> = {
+  get_indice_novillo: 'indice', get_inmag_historico: 'indice', get_precios_hacienda: 'bascula',
+  get_precios_detallados: 'bascula', get_contexto_macro: 'dolar-billete', list_remates: 'calendario',
+  buscar_consignataria: 'casa-remates', buscar_frigorifico: 'frigorifico',
+  calcular_arrendamiento: 'arrendamiento', crear_alerta_precio: 'alerta',
+}
+
 const TOOLS = [
   { name: 'get_indice_novillo', desc: 'INMAG (índice novillo) hoy: precio de referencia + variación', auth: false },
   { name: 'get_inmag_historico', desc: 'Evolución del INMAG: tendencia, mín/máx y variación del período', auth: false },
@@ -68,7 +75,13 @@ export default function McpPage() {
         <div className="grid gap-px bg-terminal-border rounded-xl overflow-hidden border border-terminal-border">
           {TOOLS.map((t) => (
             <div key={t.name} className="bg-terminal-panel p-4 flex items-start justify-between gap-4">
-              <div className="min-w-0">
+              <img
+                src={`/marca/iconos/${TOOL_ICONS[t.name] ?? 'onda'}.png`}
+                alt=""
+                aria-hidden="true"
+                className="w-9 h-9 shrink-0 opacity-80 select-none"
+              />
+              <div className="min-w-0 flex-1">
                 <code className="text-sky-300 font-mono text-sm">{t.name}</code>
                 <p className="text-zinc-400 text-sm mt-0.5">{t.desc}</p>
               </div>
