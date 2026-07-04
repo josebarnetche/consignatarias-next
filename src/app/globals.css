@@ -433,13 +433,13 @@
   50% { opacity: 0.5; }
 }
 
-/* PRO badge glow animation */
+/* PRO badge glow animation — cielo (accent de marca v2.0) */
 @keyframes pro-glow {
-  0%, 100% { 
-    box-shadow: 0 0 8px rgba(251, 191, 36, 0.2), 0 0 16px rgba(251, 191, 36, 0.1);
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.2), 0 0 16px rgba(56, 189, 248, 0.1);
   }
-  50% { 
-    box-shadow: 0 0 12px rgba(251, 191, 36, 0.35), 0 0 24px rgba(251, 191, 36, 0.15);
+  50% {
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.35), 0 0 24px rgba(56, 189, 248, 0.15);
   }
 }
 

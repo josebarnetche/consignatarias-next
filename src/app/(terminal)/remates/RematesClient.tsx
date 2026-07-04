@@ -207,22 +207,22 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
         tabIndex={0}
         onClick={handleRowClick}
         onKeyDown={(e) => { if (e.key === 'Enter') handleRowClick() }}
-        className={`group border-b-2 border-amber-500/30 bg-amber-500/[0.04] hover:bg-amber-500/[0.08] transition-colors duration-75 cursor-pointer relative overflow-hidden shadow-amber-glow${index < 20 ? ' row-enter' : ''}`}
+        className={`group border-b-2 border-sky-500/30 bg-sky-500/[0.04] hover:bg-sky-500/[0.08] transition-colors duration-75 cursor-pointer relative overflow-hidden shadow-sky-glow${index < 20 ? ' row-enter' : ''}`}
         style={index < 20 ? { animationDelay: `${index * 30}ms` } : undefined}
       >
         {/* Amber left accent bar */}
-        <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-amber-400" />
+        <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-sky-400" />
 
         {/* --- MOBILE CARD (shown below md) --- */}
         <div className="md:hidden p-3 pl-4 space-y-1.5 rounded-terminal shadow-panel">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ProBadge verified={true} size="sm" />
-              <span className="text-data tabular-nums font-terminal text-amber-300 font-medium">
+              <span className="text-data tabular-nums font-terminal text-sky-300 font-medium">
                 {formatDateShort(auction.date)}
               </span>
               {auction.time && (
-                <span className="text-data tabular-nums font-terminal text-amber-300/70">{auction.time}</span>
+                <span className="text-data tabular-nums font-terminal text-sky-300/70">{auction.time}</span>
               )}
             </div>
             <div className="flex items-center gap-1.5">
@@ -238,33 +238,33 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
           <div onClick={(e) => e.stopPropagation()}>
             <a
               href={`/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`}
-              className="text-amber-200 font-terminal font-medium text-data hover:underline"
+              className="text-sky-200 font-terminal font-medium text-data hover:underline"
             >
               {auction.consignatariaName}
             </a>
           </div>
-          <div className="text-xxs font-terminal text-amber-300/60 truncate">{auction.title}</div>
+          <div className="text-xxs font-terminal text-sky-300/60 truncate">{auction.title}</div>
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xxs text-amber-400/50">{city}</span>
-            <span className="text-xxs text-amber-500/40">{auction.province}</span>
-            <span className={`terminal-tag border-amber-500 text-amber-400 text-[10px]`}>
+            <span className="text-xxs text-sky-400/50">{city}</span>
+            <span className="text-xxs text-sky-500/40">{auction.province}</span>
+            <span className={`terminal-tag border-sky-500 text-sky-400 text-[10px]`}>
               {TYPE_LABELS[auction.type] || auction.type.toUpperCase()}
             </span>
-            <span className="text-xxs text-amber-400/60">{CAT_LABELS[auction.mainCategory]}</span>
+            <span className="text-xxs text-sky-400/60">{CAT_LABELS[auction.mainCategory]}</span>
             {auction.estimatedHeads != null && (
-              <span className="text-data font-terminal tabular-nums text-amber-300 font-medium">
+              <span className="text-data font-terminal tabular-nums text-sky-300 font-medium">
                 ~{auction.estimatedHeads.toLocaleString('es-AR')} cab
               </span>
             )}
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[9px] font-terminal text-amber-500/50 px-1 py-0.5 border border-amber-500/20 rounded-sm">{sourceBadge}</span>
+            <span className="text-[9px] font-terminal text-sky-500/50 px-1 py-0.5 border border-sky-500/20 rounded-sm">{sourceBadge}</span>
             {isTodayPast && <span className="text-[9px] font-terminal text-positive">HOY</span>}
             {freshness && <span className={`text-[9px] font-terminal ${freshness.className}`}>{freshness.text}</span>}
           </div>
           {/* Supply chain intel - top remitente localities */}
           {topLocalidades.length > 0 && (
-            <div className="flex items-center gap-1 text-[10px] text-amber-400/40 font-terminal">
+            <div className="flex items-center gap-1 text-[10px] text-sky-400/40 font-terminal">
               <span>🏠</span>
               <span>{topLocalidades.join(', ')}</span>
             </div>
@@ -275,7 +275,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
             {auction.catalogUrl && (
               <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
                 onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
-                className="text-xxs font-terminal text-amber-400 hover:text-amber-200 transition-colors" aria-label="Descargar catálogo">Catálogo</a>
+                className="text-xxs font-terminal text-sky-400 hover:text-sky-200 transition-colors" aria-label="Descargar catálogo">Catálogo</a>
             )}
             {auction.youtubeUrl && (
               <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
@@ -294,68 +294,68 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
             <span className="mr-2 flex-shrink-0">
               <ProBadge verified={true} size="sm" />
             </span>
-            <span className="w-[56px] flex-shrink-0 text-data tabular-nums font-terminal text-amber-300 font-medium">
+            <span className="w-[56px] flex-shrink-0 text-data tabular-nums font-terminal text-sky-300 font-medium">
               {formatDateShort(auction.date)}
             </span>
             <span className="w-[52px] flex-shrink-0 text-data tabular-nums font-terminal">
               {auction.time ? (
-                <span className="text-amber-300/70">{auction.time}</span>
+                <span className="text-sky-300/70">{auction.time}</span>
               ) : (
-                <span className="text-amber-500/30">&mdash;</span>
+                <span className="text-sky-500/30">&mdash;</span>
               )}
             </span>
             <span className="flex-1 min-w-0 text-data font-terminal truncate" onClick={(e) => e.stopPropagation()}>
               <a
                 href={`/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`}
-                className="text-amber-200 font-medium hover:text-amber-100 hover:underline transition-colors"
+                className="text-sky-200 font-medium hover:text-sky-100 hover:underline transition-colors"
                 title={auction.consignatariaName}
               >
                 {auction.consignatariaName}
               </a>
             </span>
-            <span className="w-[140px] flex-shrink-0 text-data font-terminal text-amber-400/50 truncate text-right pr-2">
+            <span className="w-[140px] flex-shrink-0 text-data font-terminal text-sky-400/50 truncate text-right pr-2">
               {city}
             </span>
-            <span className="w-[36px] flex-shrink-0 text-xxs font-terminal text-amber-500/50 text-right">
+            <span className="w-[36px] flex-shrink-0 text-xxs font-terminal text-sky-500/50 text-right">
               {getProvinceCode(auction.province)}
             </span>
           </div>
           {/* Line 2 */}
           <div className="flex items-center gap-0 px-cell pl-4 pb-px">
-            <span className="text-xxs font-terminal text-amber-300/60 truncate">{auction.title}</span>
+            <span className="text-xxs font-terminal text-sky-300/60 truncate">{auction.title}</span>
           </div>
           {/* Line 3 */}
           <div className="flex items-center gap-0 px-cell pl-4 pb-1.5">
-            <span className="terminal-tag border-amber-500 text-amber-400 mr-1.5 text-[10px]">
+            <span className="terminal-tag border-sky-500 text-sky-400 mr-1.5 text-[10px]">
               {TYPE_LABELS_SHORT[auction.type] || auction.type.toUpperCase()}
             </span>
-            <span className="w-[42px] flex-shrink-0 text-xxs font-terminal text-amber-400/60">
+            <span className="w-[42px] flex-shrink-0 text-xxs font-terminal text-sky-400/60">
               {CAT_CODES[auction.mainCategory]}
             </span>
-            <span className="text-[9px] font-terminal text-amber-500/50 px-1 py-0.5 border border-amber-500/20 rounded-sm mr-1.5">{sourceBadge}</span>
+            <span className="text-[9px] font-terminal text-sky-500/50 px-1 py-0.5 border border-sky-500/20 rounded-sm mr-1.5">{sourceBadge}</span>
             {isTodayPast && <span className="text-[9px] font-terminal text-positive mr-1.5">HOY</span>}
             {freshness && <span className={`text-[9px] font-terminal ${freshness.className} mr-1.5`}>{freshness.text}</span>}
             {/* Supply chain intel */}
             {topLocalidades.length > 0 && (
-              <span className="text-[9px] font-terminal text-amber-400/40 mr-1.5 flex items-center gap-0.5">
+              <span className="text-[9px] font-terminal text-sky-400/40 mr-1.5 flex items-center gap-0.5">
                 <span>🏠</span>
                 <span>{topLocalidades.join(', ')}</span>
               </span>
             )}
-            <span className="w-[60px] flex-shrink-0 text-data font-terminal tabular-nums text-amber-300 text-right font-medium">
+            <span className="w-[60px] flex-shrink-0 text-data font-terminal tabular-nums text-sky-300 text-right font-medium">
               {auction.estimatedHeads != null ? `~${auction.estimatedHeads.toLocaleString('es-AR')}` : '—'}
             </span>
             <span className="w-[80px] flex-shrink-0 ml-2">
               <StatusBadge date={auction.date} time={auction.time} today={today} />
             </span>
-            <span className="flex-1 min-w-0 ml-2 text-xxs font-terminal text-amber-400/40 truncate">
+            <span className="flex-1 min-w-0 ml-2 text-xxs font-terminal text-sky-400/40 truncate">
               {auction.description}
             </span>
             <span className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
               {auction.catalogUrl && (
                 <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
                   onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
-                  className="text-xxs font-terminal text-amber-400 hover:text-amber-200 transition-colors" aria-label="Descargar catálogo" title="Catálogo">CAT</a>
+                  className="text-xxs font-terminal text-sky-400 hover:text-sky-200 transition-colors" aria-label="Descargar catálogo" title="Catálogo">CAT</a>
               )}
               {auction.youtubeUrl && (
                 <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"

@@ -143,6 +143,7 @@ module.exports = {
         'live-glow': '0 0 12px rgba(16, 185, 129, 0.2)',
         'live-glow-lg': '0 0 20px rgba(16, 185, 129, 0.3)',
         'amber-glow': '0 0 12px rgba(251, 191, 36, 0.15)',
+        'sky-glow': '0 0 12px rgba(56, 189, 248, 0.15)',
       },
     },
   },
