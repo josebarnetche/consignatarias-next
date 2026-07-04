@@ -121,7 +121,7 @@ export default function ComoElegirConsignatariaPage() {
         <div className="mt-10 border border-zinc-800 bg-zinc-900/40 rounded-lg p-5">
           <p className="text-zinc-200 mb-3">
             Compará consignatarias por plaza, frecuencia y tipo de remate — el comparador es gratis y te
-            dice <strong className="text-accent">quién te da salida antes</strong> según el calendario de remates.
+            dice <strong className="text-accent">quién remata más seguido</strong> según los remates indexados.
           </p>
           <div className="flex flex-wrap gap-2">
             <Link href="/consignatarias" className="inline-flex items-center gap-1 text-xs text-accent hover:text-accent-bright border border-terminal-border rounded px-3 py-1.5">

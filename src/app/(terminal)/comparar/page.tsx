@@ -54,18 +54,22 @@ export default async function CompararPage() {
     const next = upcoming[0] ?? null
     const provincias = [...new Set(profileAuctions.map(a => a.province))]
     const tipos = [...new Set(profileAuctions.map(a => a.type))]
-    const totalCabezas = profileAuctions.reduce((s, a) => s + (a.estimatedHeads || 0), 0)
+    // Cadencia REALIZADA: remates ya ocurridos en los últimos 6 meses —
+    // disjunto de "próximos" (el índice retiene ~6 meses hacia atrás).
+    // NO usamos cabezas: es dato no verificado.
+    const seisMesesAtras = new Date(Date.now() - 183 * 86400000).toISOString().slice(0, 10)
+    const remates6m = profileAuctions.filter(a => a.date >= seisMesesAtras && a.date < today).length
 
     return {
       slug: profile.canonicalSlug,
       name: profile.displayName,
       totalRemates: profileAuctions.length,
       upcomingRemates: upcoming.length,
+      remates6m,
       nextDate: next?.date ?? null,
       nextLocation: next?.location ?? null,
       provincias,
       tipos,
-      totalCabezas,
       verified: verifiedMap.get(profile.canonicalSlug) || false,
     }
   }).filter(c => c.totalRemates > 0)

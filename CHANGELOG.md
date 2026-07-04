@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.96.1] — 2026-07-04
+
+### Comparador: frecuencia en vez de "salida antes"; cabezas fuera (review de Jose)
+
+- **"Remata más seguido" reemplaza "Salida más rápida"** — quién remata antes depende del día que mires; la cadencia es la señal robusta. Nuevo panel: consignataria con más remates *realizados* en los últimos 6 meses (+ programados). La fila "Próximo remate" (fecha + plaza) se mantiene como dato.
+- **Cabezas eliminadas del comparador** — dato no verificado: "definitivamente no es 0, pero tampoco podemos asegurarlo". Sale la fila "Cabezas (est.)" y el componente Volumen del score.
+- **Score con 2 señales disjuntas** — actividad (programados, 0.6) + frecuencia (realizados 6 meses, 0.4). Se elimina "trayectoria": el índice solo retiene ~6 meses hacia atrás (mín. 09-ene-2026), así que total ≡ ventana y la señal estaba duplicada. Sale también la fila redundante "Total remates".
+
 ## [1.96.0] — 2026-07-04
 
 ### El comparador se libera y cambia de premisa: de "quién te paga antes" a "quién te da salida antes"

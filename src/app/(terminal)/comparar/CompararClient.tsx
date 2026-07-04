@@ -20,11 +20,11 @@ interface ConsignatariaStats {
   name: string
   totalRemates: number
   upcomingRemates: number
+  remates6m: number
   nextDate: string | null
   nextLocation: string | null
   provincias: string[]
   tipos: string[]
-  totalCabezas: number
   verified: boolean
 }
 
@@ -36,26 +36,24 @@ const TYPE_LABELS: Record<string, string> = {
   reproductores: 'Reproductores',
 }
 
-function fmt(n: number): string {
-  return n.toLocaleString('es-AR')
-}
-
 /**
  * "Mejor encaje" score — a decision aid built ONLY from real public signals
  * already present per consignataria (no invented data). It answers the
  * producer's real question: "¿a cuál de estas le mando mi hacienda?".
  *
- * Three real signals, normalized 0–100 *within the currently selected set*
- * (a relative comparison, not an absolute claim):
- *   - actividad próxima  (upcomingRemates) — quién está moviendo hacienda AHORA
- *   - volumen            (totalCabezas)    — escala de la plaza
- *   - trayectoria        (totalRemates)    — histórico de remates indexados
+ * Two DISJOINT real signals, normalized 0–100 *within the currently selected
+ * set* (a relative comparison, not an absolute claim):
+ *   - actividad   (upcomingRemates) — remates ya programados hacia adelante
+ *   - frecuencia  (remates6m)       — cadencia realizada: remates ocurridos
+ *                                     en los últimos 6 meses
+ * El índice solo retiene ~6 meses hacia atrás, así que NO hay señal de
+ * "trayectoria" larga (sería la misma frecuencia duplicada). Cabezas NO
+ * participa: es dato no verificado (tampoco podemos asegurarlo).
  * Verified profiles get a small, transparent confidence nudge.
  */
 interface ScoredConsignataria extends ConsignatariaStats {
   actividadPct: number
-  volumenPct: number
-  trayectoriaPct: number
+  frecuenciaPct: number
   score: number
 }
 
@@ -66,17 +64,15 @@ function relPct(value: number, max: number): number {
 
 function scoreSelection(list: ConsignatariaStats[]): ScoredConsignataria[] {
   const maxUpcoming = Math.max(1, ...list.map((c) => c.upcomingRemates))
-  const maxCabezas = Math.max(1, ...list.map((c) => c.totalCabezas))
-  const maxRemates = Math.max(1, ...list.map((c) => c.totalRemates))
+  const max6m = Math.max(1, ...list.map((c) => c.remates6m))
 
   return list.map((c) => {
     const actividadPct = relPct(c.upcomingRemates, maxUpcoming)
-    const volumenPct = relPct(c.totalCabezas, maxCabezas)
-    const trayectoriaPct = relPct(c.totalRemates, maxRemates)
-    // Decision weighting: lo que MUEVE hoy pesa más que el histórico.
-    const base = actividadPct * 0.5 + volumenPct * 0.3 + trayectoriaPct * 0.2
+    const frecuenciaPct = relPct(c.remates6m, max6m)
+    // Decision weighting: lo programado pesa un poco más que lo realizado.
+    const base = actividadPct * 0.6 + frecuenciaPct * 0.4
     const score = Math.round(Math.min(100, base + (c.verified ? 4 : 0)))
-    return { ...c, actividadPct, volumenPct, trayectoriaPct, score }
+    return { ...c, actividadPct, frecuenciaPct, score }
   })
 }
 
@@ -128,15 +124,13 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
   const winner = ranked[0]
   const runnerUp = ranked[1]
 
-  // Salida más rápida: quién tiene el próximo remate más cercano en fecha.
-  // El plazo real que el productor controla no es el de cobro (dato que no
-  // existe público) sino el de SALIDA — cuándo puede efectivamente vender.
-  const fastestExit = useMemo(() => {
-    const withNext = selectedConsignatarias.filter(
-      (c): c is ConsignatariaStats & { nextDate: string } => c.nextDate !== null
-    )
-    if (withNext.length === 0) return null
-    return withNext.reduce((best, c) => (c.nextDate < best.nextDate ? c : best))
+  // Cadencia: quién organiza remates más seguido (ventana 6 meses del índice).
+  // Más remates por mes = más oportunidades de venta, dato robusto y nuestro
+  // — a diferencia de "quién remata antes", que depende del día que mires.
+  const mostFrequent = useMemo(() => {
+    const withCadencia = selectedConsignatarias.filter((c) => c.remates6m > 0)
+    if (withCadencia.length === 0) return null
+    return withCadencia.reduce((best, c) => (c.remates6m > best.remates6m ? c : best))
   }, [selectedConsignatarias])
 
   return (
@@ -151,7 +145,7 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
         </h1>
         <p className="text-zinc-400 text-sm leading-relaxed">
           Seleccioná hasta {FREE_LIMIT} consignatarias y decidí <span className="text-zinc-200">a cuál mandarle tu hacienda</span>.
-          Ordenamos por encaje real — actividad, volumen y trayectoria — y te decimos quién te da salida antes.
+          Ordenamos por encaje real — remates programados y cadencia realizada — y te decimos quién remata más seguido.
         </p>
       </div>
 
@@ -256,7 +250,7 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                   <div className="px-panel py-5">
                     <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                       <HeroNumber
-                        label="Recomendada por actividad y volumen"
+                        label="Recomendada por actividad y frecuencia"
                         value={winner.name}
                         tone="accent"
                         size="text-xl"
@@ -289,13 +283,12 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                             <span className="ml-auto text-zinc-500 text-xxs font-terminal tabular-nums">encaje {c.score}</span>
                           </div>
                           <StatPill label="Actividad (próximos remates)" value={c.actividadPct} />
-                          <StatPill label="Volumen (cabezas)" value={c.volumenPct} />
-                          <StatPill label="Trayectoria (remates)" value={c.trayectoriaPct} />
+                          <StatPill label="Frecuencia (realizados 6 meses)" value={c.frecuenciaPct} />
                         </div>
                       ))}
                     </div>
                     <p className="text-zinc-500 text-xxs mt-4 leading-relaxed">
-                      Encaje relativo entre las seleccionadas, sobre datos públicos: próximos remates, cabezas estimadas y remates indexados. No es recomendación de inversión.
+                      Encaje relativo entre las seleccionadas, sobre datos públicos del índice: remates programados y cadencia realizada en 6 meses. No es recomendación de inversión.
                     </p>
                   </div>
                 </div>
@@ -355,26 +348,14 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                       ))}
                     </tr>
 
-                    {/* Total Remates */}
+                    {/* Frecuencia — cadencia realizada (disjunta de próximos) */}
                     <tr className="border-b border-terminal-border">
                       <td className="px-panel py-3 text-sm text-zinc-400">
-                        Total remates
+                        Realizados últimos 6 meses
                       </td>
                       {selectedConsignatarias.map(c => (
                         <td key={c.slug} className="px-4 py-3 text-sm text-zinc-200 font-mono">
-                          {c.totalRemates}
-                        </td>
-                      ))}
-                    </tr>
-
-                    {/* Cabezas */}
-                    <tr className="border-b border-terminal-border">
-                      <td className="px-panel py-3 text-sm text-zinc-400">
-                        Cabezas (est.)
-                      </td>
-                      {selectedConsignatarias.map(c => (
-                        <td key={c.slug} className="px-4 py-3 text-sm text-zinc-200 font-mono">
-                          {c.totalCabezas > 0 ? `~${fmt(c.totalCabezas)}` : <span className="text-zinc-600">s/d</span>}
+                          {c.remates6m}
                         </td>
                       ))}
                     </tr>
@@ -434,20 +415,20 @@ export default function CompararClient({ consignatarias }: { consignatarias: Con
                 </table>
               </div>
 
-              {/* Salida — quién te da salida antes (dato real: calendario de remates) */}
-              {fastestExit && selectedConsignatarias.length > 1 && (
+              {/* Cadencia — quién organiza remates más seguido (dato real: índice) */}
+              {mostFrequent && selectedConsignatarias.length > 1 && (
                 <div className="terminal-panel">
-                  <div className="terminal-panel-header">Salida más rápida</div>
+                  <div className="terminal-panel-header">Remata más seguido</div>
                   <div className="px-panel py-5">
                     <HeroNumber
-                      label="Tu hacienda sale antes con"
-                      value={fastestExit.name}
+                      label="Más oportunidades de venta con"
+                      value={mostFrequent.name}
                       tone="positive"
                       size="text-lg"
-                      sub={`remata el ${fmtFecha(fastestExit.nextDate)}${fastestExit.nextLocation ? ` · ${fastestExit.nextLocation}` : ''}`}
+                      sub={`${mostFrequent.remates6m} remates realizados en los últimos 6 meses${mostFrequent.upcomingRemates > 0 ? ` · ${mostFrequent.upcomingRemates} más ya programados` : ''}`}
                     />
                     <p className="text-zinc-500 text-xxs mt-3 leading-relaxed">
-                      Según el calendario de remates programados. Consultá el cierre de inscripción de hacienda con la consignataria.
+                      Remates indexados por consignatarias.com en la ventana de 6 meses, incluidos los ya programados.
                     </p>
                   </div>
                 </div>
