@@ -22,6 +22,7 @@ import {
 import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge from '@/components/badges/ProBadge'
 import RematesFilterBar from '@/components/remates/RematesFilterBar'
+import RemateMarkButton from '@/components/RemateMarkButton'
 import { Badge } from '@/components/ui'
 import { trackAuctionClick, trackFilterApply, trackOutboundClick, trackBulkIcsExport } from '@/lib/analytics'
 import { downloadBulkICSFile } from '@/lib/utils/ics'
@@ -516,6 +517,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
           </span>
           <span className="flex-1" />
           <span className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+            <RemateMarkButton remateId={String(auction.id)} markType="attended" label="Estuve" labelMarked="Fui ✓" />
             {auction.catalogUrl && (
               <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
                 onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}

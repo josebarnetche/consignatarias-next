@@ -7,6 +7,7 @@ import { CancelButton } from './CancelButton'
 import { SignOutButton } from './SignOutButton'
 import { UpgradeConfirmTracker } from '@/components/UpgradeConfirmTracker'
 import { UpgradeActivating } from '@/components/UpgradeActivating'
+import KarmaBadge from '@/components/KarmaBadge'
 
 export const metadata: Metadata = {
   title: 'Tu cuenta',
@@ -66,6 +67,9 @@ export default async function CuentaPage({ searchParams }: PageProps) {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-12 text-sm">
+      <div className="mb-6">
+        <KarmaBadge />
+      </div>
       {/* Fire the GA4 pro_upgrade conversion only when the DB confirms PRO (tier),
           never on the bare ?upgraded=true redirect param. */}
       <UpgradeConfirmTracker
