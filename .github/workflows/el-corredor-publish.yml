@@ -29,6 +29,15 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: cron-hook start
+        id: cronstart
+        run: |
+          RUN_ID=$(curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" \
+            -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"workflow_name":"el-corredor-publish","phase":"start"}' | jq -r '.run_id // empty')
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -92,3 +101,12 @@ jobs:
           if [ "$HTTP" -lt 200 ] || [ "$HTTP" -ge 300 ]; then
             echo "::error::Blast failed with HTTP $HTTP"; exit 1
           fi
+
+      - name: cron-hook finish
+        if: always() && steps.cronstart.outputs.run_id != ''
+        run: |
+          ST="ok"; [ "${{ job.status }}" != "success" ] && ST="error"
+          curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" \
+            -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"workflow_name\":\"el-corredor-publish\",\"phase\":\"finish\",\"run_id\":${{ steps.cronstart.outputs.run_id }},\"status\":\"$ST\"}" || true
