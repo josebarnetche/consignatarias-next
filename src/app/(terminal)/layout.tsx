@@ -84,15 +84,17 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: "API / IA",
+    label: "DESARROLLADORES",
     match: "/mcp",
     items: [
-      { label: "MCP para IAs", href: "/mcp", hint: "El sitio como tools MCP", tag: "live" },
+      { label: "MCP para IAs", href: "/mcp", hint: "El sitio como tools para agentes", tag: "live" },
       { label: "API Enterprise", href: "/api-docs", hint: "REST + API keys" },
-      { label: "Planes y precios", href: "/planes", hint: "PRO + Enterprise", tag: "pro" },
     ],
   },
 ];
+
+// Link de Planes fuera de los grupos: visible siempre (no enterrado en un dropdown).
+const NAV_PLANES: NavLink = { label: "PLANES", href: "/planes" };
 
 // Mobile: the scrollable bar can't host dropdowns, so we flatten to the highest-
 // value destinations — INMAG (activo #1), Calculadora y Arrendamiento dejan de
@@ -109,7 +111,6 @@ const MOBILE_NAV: MobileNavLink[] = [
   { label: "FRIGORIF.", href: "/frigorificos" },
   { label: "CONSIGNAT.", href: "/consignatarias" },
   { label: "CALCULAR", href: "/calculadora", tag: "pro" },
-  { label: "MCP", href: "/mcp", tag: "live" },
   { label: "PLANES", href: "/planes", tag: "pro" },
 ];
 
@@ -409,6 +410,15 @@ export default function TerminalLayout({
                   />
                 </span>
               ))}
+              <span className="text-terminal-border mx-1 text-xxs select-none">/</span>
+              <Link
+                href={NAV_PLANES.href}
+                className={`relative px-2 py-1.5 text-xxs font-terminal uppercase tracking-widest motion-hover ${
+                  matchPath(pathname, NAV_PLANES.href) ? "text-amber-300" : "text-amber-400/80 hover:text-amber-300"
+                }`}
+              >
+                {NAV_PLANES.label}
+              </Link>
             </nav>
           </div>
 

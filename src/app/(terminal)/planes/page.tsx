@@ -114,10 +114,28 @@ export default function PlanesPage() {
             Planes y Precios
           </h1>
           <p className="text-zinc-400 text-sm max-w-2xl">
-            Tres audiencias, tres precios. Elegí el toggle según seas
-            productor/asesor o consignataria/frigorífico. Enterprise (API +
-            datos para empresas) está disponible para ambos.
+            El observatorio del mercado ganadero es <strong className="text-zinc-200">gratis</strong> para
+            el productor: precios INMAG, remates, directorio y alertas. Se paga por dos cosas concretas:
+            <strong className="text-zinc-200"> alcance</strong> (consignatarias que promocionan sus remates a
+            productores) y <strong className="text-zinc-200"> la data por programa</strong> (empresas y agentes
+            IA que la consumen vía API + MCP).
           </p>
+
+          {/* Por qué pagar — por segmento */}
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl">
+            <div className="rounded-lg border border-terminal-border bg-terminal-panel p-3">
+              <p className="text-xxs font-terminal uppercase tracking-widest text-emerald-400 mb-1">Productor · gratis</p>
+              <p className="text-data text-zinc-400">Datos, remates, directorio y alertas. No pagás nada.</p>
+            </div>
+            <div className="rounded-lg border border-terminal-border bg-terminal-panel p-3">
+              <p className="text-xxs font-terminal uppercase tracking-widest text-amber-300 mb-1">Consignataria</p>
+              <p className="text-data text-zinc-400">Alcance: promocioná tus remates a productores + perfil destacado.</p>
+            </div>
+            <div className="rounded-lg border border-terminal-border bg-terminal-panel p-3">
+              <p className="text-xxs font-terminal uppercase tracking-widest text-sky-300 mb-1">Empresa · IA</p>
+              <p className="text-data text-zinc-400">La data por API + MCP para tus apps y agentes.</p>
+            </div>
+          </div>
 
           <PlatformStats />
         </div>
