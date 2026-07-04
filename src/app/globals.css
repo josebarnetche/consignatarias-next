@@ -293,6 +293,24 @@
     animation: ring-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
+  /* Variante de cabecera (marca): sonda AZUL (accent) que parpadea + halo.
+     El manual pide el pulse en --accent; el verde queda para "live/verified". */
+  .live-indicator-accent {
+    @apply relative inline-block w-2.5 h-2.5 rounded-full flex-shrink-0;
+    background-color: #38bdf8;
+    animation: dot-blink 1.4s ease-in-out infinite;
+  }
+  .live-indicator-accent::after {
+    content: '';
+    @apply absolute inset-0 rounded-full;
+    background-color: #38bdf8;
+    animation: ring-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  @keyframes dot-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
   /* --- Live badge ----------------------------------------- */
   .live-badge {
     @apply inline-flex items-center gap-1.5 px-2 py-0.5

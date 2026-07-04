@@ -322,7 +322,7 @@ export default function TerminalLayout({
           {/* -- LEFT: Logo (marca — mono, minúscula, punto en accent) -- */}
           <div className="flex items-center gap-4">
             <Link href="/overview" className="flex items-center gap-1.5 group" title="consignatarias.com.ar">
-              <span className="live-indicator flex-shrink-0" />
+              <span className="live-indicator-accent flex-shrink-0" />
               <span className="font-terminal text-[13px] font-semibold tracking-tight text-zinc-100 lowercase group-hover:text-accent transition-colors">
                 consignatarias<span className="text-accent">.</span>com
               </span>
