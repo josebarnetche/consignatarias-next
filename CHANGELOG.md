@@ -7,6 +7,19 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.97.0] — 2026-07-04
+
+### El overview se convierte en home de broker
+
+Rediseño de `/overview` con recorrido visual de terminal financiera: estado del mercado → tu posición → la agenda → los instrumentos.
+
+- **Mi Ganado como módulo de cartera** — nuevo widget (`MiGanadoWidget`, cliente) arriba a la izquierda: tu stock valuado al INMAG de hoy (ARS + USD + cabezas), variación 7 días y sparkline de la semana (la composición actual valuada al índice de cada día, misma lógica que /mi-ganado). Sin sesión o sin hacienda muestra el CTA compacto "Tu stock, a valor de hoy".
+- **Remates hoy y esta semana** — panel único a dos columnas: HOY (borde ámbar, badge live) y ESTA SEMANA (próximos 7 días, "+N más"), con cabezas de la semana en el pie.
+- **Precios como panel de instrumentos** — las categorías dejan la tabla y pasan a 6 tiles estilo watchlist con el glifo color GRANDE (chip 56px), precio mono y variación; cada tile linkea a /precios/[categoria].
+- La tendencia INMAG acompaña a Mi Ganado en la fila "tu posición vs el índice".
+
+**Verificación:** tsc 0 · QA visual en dev del recorrido completo (estado logged-out del widget incluido).
+
 ## [1.96.1] — 2026-07-04
 
 ### Comparador: frecuencia en vez de "salida antes"; cabezas fuera (review de Jose)
