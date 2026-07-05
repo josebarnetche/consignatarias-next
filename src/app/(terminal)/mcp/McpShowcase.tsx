@@ -12,6 +12,8 @@ import { useEffect, useRef } from 'react'
 export interface ShowcaseData {
   fecha: string
   inmag: { current: string; changePct: string; up: boolean }
+  /** Conversación épica: lote de 40 novillos valuado al día */
+  lote: { cab: string; kgTotal: string; ars: string; usd: string; ytdPct: string; weekPct: string }
   cats: Array<{ name: string; price: string; change: string }>
   spark: { points: string; fromDate: string; toDate: string; periodPct: string }
   macro: { blue: string; maiz: string; spread: string }
@@ -56,6 +58,78 @@ function Scene({
   )
 }
 
+function ExtendedChat({ d }: { d: ShowcaseData }) {
+  const msgs: Array<{ kind: 'u' | 'a' | 't'; body: React.ReactNode }> = [
+    { kind: 'u', body: <>Tengo un lote de {d.lote.cab} novillos de ~450 kg. ¿Cuánto vale hoy?</> },
+    { kind: 't', body: <>get_indice_novillo()</> },
+    {
+      kind: 'a',
+      body: (
+        <>
+          Al INMAG de hoy (<strong className="text-zinc-100">${d.inmag.current}/kg</strong>), tus{' '}
+          {d.lote.kgTotal} kg valen{' '}
+          <strong className="text-positive">${d.lote.ars}</strong>{' '}
+          <span className="text-zinc-500">≈ USD {d.lote.usd} al blue.</span>
+        </>
+      ),
+    },
+    { kind: 'u', body: <>¿Y cómo viene el mercado?</> },
+    { kind: 't', body: <>get_inmag_historico()</> },
+    {
+      kind: 'a',
+      body: (
+        <>
+          En lo que va del año el índice acumula <strong className="text-positive">{d.lote.ytdPct}</strong>;
+          la última rueda marcó {d.lote.weekPct} semanal.
+        </>
+      ),
+    },
+    { kind: 'u', body: <>Avisame si el novillo pasa los $4.300.</> },
+    { kind: 't', body: <>crear_alerta_precio()</> },
+    {
+      kind: 'a',
+      body: (
+        <>
+          <span className="text-positive">✓</span> Listo — te aviso por email o webhook cuando el
+          INMAG cruce <strong className="text-zinc-100">$4.300</strong>.
+        </>
+      ),
+    },
+  ]
+  return (
+    <div className="mcp-scene" data-scene>
+      <div className="terminal-panel rounded-xl p-4 sm:p-6 space-y-3 relative overflow-hidden">
+        <div className="flex items-center gap-2 pb-2 border-b border-terminal-border">
+          <span className="h-2 w-2 rounded-full bg-positive animate-pulse" aria-hidden="true" />
+          <span className="text-xxs font-terminal uppercase tracking-widest text-zinc-500">
+            Tu asistente · conectado a consignatarias.com
+          </span>
+        </div>
+        {msgs.map((m, i) => {
+          const delay = { transitionDelay: `${0.25 + i * 0.55}s` }
+          if (m.kind === 't')
+            return (
+              <div key={i} className="cx-m inline-flex items-center gap-1.5 rounded border border-sky-500/40 bg-sky-500/[0.07] px-2 py-0.5 text-xxs font-mono text-sky-300" style={delay}>
+                ⚡ {m.body}
+              </div>
+            )
+          if (m.kind === 'u')
+            return (
+              <div key={i} className="cx-m flex justify-end" style={delay}>
+                <div className="max-w-[85%] rounded-lg rounded-br-sm bg-zinc-800 px-3.5 py-2 text-sm text-zinc-100">{m.body}</div>
+              </div>
+            )
+          return (
+            <div key={i} className="cx-m flex" style={delay}>
+              <div className="max-w-[90%] rounded-lg rounded-tl-sm border border-terminal-border bg-black/30 px-3.5 py-2.5 text-sm text-zinc-300 leading-relaxed">{m.body}</div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 export default function McpShowcase(d: ShowcaseData) {
   const rootRef = useRef<HTMLDivElement>(null)
 
@@ -94,13 +168,22 @@ export default function McpShowcase(d: ShowcaseData) {
         @keyframes sparkp{0%{transform:scale(.5)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
         .mcp-scene.on .sc-line{stroke-dasharray:600;stroke-dashoffset:600;animation:draw 1.6s ease 1.8s forwards}
         @keyframes draw{to{stroke-dashoffset:0}}
+        .mcp-scene .cx-m{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+        .mcp-scene.on .cx-m{opacity:1;transform:none}
         @media (prefers-reduced-motion:reduce){
+          .mcp-scene .cx-m{opacity:1;transform:none;transition:none}
           .mcp-scene .sc-user,.mcp-scene .sc-tool,.mcp-scene .sc-resp{opacity:1;transform:none;transition:none}
           .mcp-scene .sc-typing{display:none}
           .mcp-scene.on .sc-line{animation:none;stroke-dasharray:none}
           .sc-typing .dot,.mcp-scene.on .sc-spark{animation:none}
         }
       `}</style>
+
+      <ExtendedChat d={d} />
+
+      <p className="text-xxs font-terminal uppercase tracking-widest text-zinc-500 text-center pt-2">
+        Y tool por tool ↓
+      </p>
 
       <Scene n={1} tool="get_indice_novillo" icon="indice" pregunta="¿A cuánto está el novillo hoy?">
         <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-1">INMAG · {d.fecha}</div>

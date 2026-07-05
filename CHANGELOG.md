@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.103.0] — 2026-07-04
+
+### /mcp épica: fondos del universo, chat extendido y carousel de IAs
+
+- **El ovejero digital de fondo del hero** — `feat-mcp.jpg` (render 3D del universo: el perro arreando cubos de dato hacia la tranquera) full-bleed con degradés de legibilidad hacia carbón. El alambrado eléctrico del relato (`rel-alambrado.jpg`) queda de fondo sutil detrás del bloque CONECTAR.
+- **Carousel de logos IA** — marquee infinito de logos blancos (Claude, OpenAI, Perplexity, Gemini, Copilot, Cursor, Windsurf, Mistral, Ollama) bajo el hero, con mask de fade en los bordes; fuente Simple Icons (CC0) + OpenAI (Wikimedia), rasterizados a PNG blanco por `marca/gen_ai_logos.py` → `public/marca/ai/` (44 KB). Estático con reduced-motion.
+- **Chat extendido épico** — antes de las 8 escenas, una conversación completa de 9 mensajes que aparecen en secuencia (~5s): lote de 40 novillos valuado al INMAG del día (kg totales, ARS y USD reales), lectura del año vs semana, y alerta de precio creada. Header "Tu asistente · conectado a consignatarias.com" con punto vivo. Puente "Y tool por tool ↓" hacia las escenas.
+
 ## [1.102.0] — 2026-07-04
 
 ### /mcp: "Scrolleá para descubrir" — el servidor MCP demostrado en vivo

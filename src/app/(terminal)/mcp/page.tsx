@@ -92,8 +92,19 @@ function buildShowcase(): ShowcaseData {
   const consignatarias = [...erNames.entries()].map(([nombre, zona]) => ({ nombre, zona }))
 
   const kgHa = 100
+  const loteCab = 40
+  const loteKg = loteCab * 450
+  const loteArs = loteKg * inmag.current
   return {
     fecha: marketPrices.lastUpdate,
+    lote: {
+      cab: String(loteCab),
+      kgTotal: fmt(loteKg),
+      ars: fmt(loteArs),
+      usd: fmt(loteArs / marketPrices.usdBlue.current),
+      ytdPct: `${periodPct >= 0 ? '+' : ''}${periodPct.toFixed(1)}%`,
+      weekPct: `${inmag.change >= 0 ? '+' : ''}${inmag.change}%`,
+    },
     inmag: {
       current: fmt(inmag.current),
       changePct: `${Math.abs(inmag.change)}%`,
@@ -125,8 +136,17 @@ export default function McpPage() {
   const showcase = buildShowcase()
   return (
     <div className="min-h-screen">
-      {/* Hero + CTA arriba (patrón blueprint: la licencia primero, el descubrimiento abajo) */}
-      <section className="max-w-4xl mx-auto px-4 pt-14 pb-10">
+      {/* Hero + CTA arriba (patrón blueprint) — fondo: el ovejero digital arreando el dato */}
+      <section className="relative overflow-hidden">
+        <img
+          src="/marca/feat-mcp.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover object-[70%_center] opacity-55"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/80 to-[#09090b]/20" aria-hidden="true" />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#09090b]" aria-hidden="true" />
+        <div className="relative max-w-4xl mx-auto px-4 pt-16 pb-14">
         <span className="inline-flex items-center gap-2 rounded-full border border-sky-500/40 bg-sky-500/[0.07] px-3 py-1 text-xxs font-terminal uppercase tracking-widest text-sky-300">
           <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Servidor MCP oficial
         </span>
@@ -145,10 +165,41 @@ export default function McpPage() {
             Planes · desde ARS 74.000/mes
           </Link>
         </div>
-        <p className="mt-10 text-xxs font-terminal uppercase tracking-widest text-zinc-500 flex items-center gap-2">
+        <p className="mt-10 text-xxs font-terminal uppercase tracking-widest text-zinc-400 flex items-center gap-2">
           Scrolleá para descubrir lo que tu asistente puede hacer
           <span aria-hidden="true" className="text-sky-400">↓</span>
         </p>
+        </div>
+      </section>
+
+      {/* Funciona con — carousel de logos IA (blanco, marquee infinito) */}
+      <section className="border-y border-terminal-border/60 bg-black/20 py-5 overflow-hidden">
+        <p className="text-center text-xxs font-terminal uppercase tracking-widest text-zinc-600 mb-4">
+          Funciona con tu asistente
+        </p>
+        <div className="ai-marquee relative">
+          <div className="ai-track flex items-center gap-14 w-max pr-14">
+            {[0, 1].map((dup) => (
+              <div key={dup} className="flex items-center gap-14" aria-hidden={dup === 1}>
+                {['claude', 'openai', 'perplexity', 'googlegemini', 'githubcopilot', 'cursor', 'windsurf', 'mistralai', 'ollama'].map((l) => (
+                  <img
+                    key={l}
+                    src={`/marca/ai/${l}.png`}
+                    alt={dup === 0 ? l : ''}
+                    className={`${l === 'openai' ? 'h-6' : 'h-7'} w-auto opacity-50`}
+                    loading="lazy"
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+        <style>{`
+          .ai-track{animation:ai-marquee 36s linear infinite}
+          @keyframes ai-marquee{to{transform:translateX(-50%)}}
+          .ai-marquee{mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent)}
+          @media (prefers-reduced-motion:reduce){.ai-track{animation:none;flex-wrap:wrap;width:auto;justify-content:center}}
+        `}</style>
       </section>
 
       {/* Showcase animado — 8 tools, datos del día */}
@@ -156,9 +207,17 @@ export default function McpPage() {
         <McpShowcase {...showcase} />
       </section>
 
-      {/* Connect */}
-      <section id="conectar" className="max-w-4xl mx-auto px-4 pb-8 scroll-mt-16">
-        <div className="terminal-panel rounded-xl p-5 sm:p-6">
+      {/* Connect — el alambrado que lleva la corriente del dato, de fondo */}
+      <section id="conectar" className="relative scroll-mt-16 py-10 overflow-hidden">
+        <img
+          src="/marca/rel-alambrado.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover opacity-25"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#09090b] via-[#09090b]/60 to-[#09090b]" aria-hidden="true" />
+        <div className="relative max-w-4xl mx-auto px-4">
+        <div className="terminal-panel rounded-xl p-5 sm:p-6 bg-[#0b0b0e]/90 backdrop-blur-sm">
           <p className="text-label tracking-widest text-zinc-400 mb-3">CONECTAR</p>
           <p className="text-sm text-zinc-400 mb-2">Endpoint (Streamable HTTP, JSON-RPC 2.0):</p>
           <code className="block bg-black/40 border border-terminal-border rounded-lg px-4 py-3 text-sky-300 font-mono text-sm break-all">
@@ -173,6 +232,7 @@ export default function McpPage() {
           <p className="text-xs text-zinc-600 mt-3">
             Listado en el registry oficial de MCP como <code className="text-zinc-400">ar.com.consignatarias/cattle-market</code>.
           </p>
+        </div>
         </div>
       </section>
 
