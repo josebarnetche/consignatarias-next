@@ -217,6 +217,9 @@ async function actionProcessOne() {
     .from('mag_scrape_queue')
     .select('id, date, mag_consignataria_id, tipo')
     .eq('status', 'pending')
+    // Newest-first: el mercado reciente (lo que alimenta el pulso "en vivo" y el
+    // intel) se scrapea primero; el histórico viejo se backfillea después.
+    .order('date', { ascending: false })
     .order('enqueued_at', { ascending: true })
     .limit(1)
 
