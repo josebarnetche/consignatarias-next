@@ -2180,5 +2180,13 @@
         "total": 5
       }
     ]
+  },
+  "arrendamientoOficial": {
+    "date": "2026-07-03",
+    "index": 4198.438,
+    "periodStart": "2026-06-24",
+    "periodEnd": "2026-07-03",
+    "periodIndex": 4213.507,
+    "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   }
 }

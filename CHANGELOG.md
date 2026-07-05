@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.104.0] — 2026-07-04
+
+### Catálogo de endpoints MAG + índice oficial de arrendamiento en API/MCP
+
+- **`docs/mag-endpoints-catalogo.md`** — inventario completo y VERIFICADO en vivo de las fuentes públicas del MAG: sondeo de `hacienda1/2/6.dll` + extracción del menú oficial del hub (`haciinfo000001`). 7 endpoints ya consumidos (mapeados a pipeline/tabla/API/MCP), 7 sin consumir con su oportunidad (⭐ serie Novillitos 401/420 **desde 2005** — 20 años, `haciinfo000307`), formatos, encoding latin-1 y próximos pasos por valor.
+- **Índice Sugerido para Arrendamientos Rurales (haciinfo000013) integrado**:
+  - `scrape-auctions.mjs` suma `scrapeArrendamientoOficial()` (últimos 10 días + fila Totales) → `market-prices.json.arrendamientoOficial`. Sembrado hoy con dato real: **$4.198,438 (03/07)** · período $4.213,507.
+  - **MCP `calcular_arrendamiento`** usa el índice oficial como precio default (antes INMAG) y declara la fuente en texto y JSON; `get_contexto_macro` lo agrega a la respuesta. Verificado en vivo por JSON-RPC.
+  - **`/api/precios`** expone el campo aditivo `indice_arrendamiento_oficial` (null hasta que el scrape corra).
+  - La escena de arrendamiento del showcase de /mcp calcula con el índice oficial.
+- Pendientes priorizados en el catálogo: P0 revivir `mag-lots-pipeline` (000007, tabla en 0), P1 backfill serie 2005 (000307).
+
 ## [1.103.0] — 2026-07-04
 
 ### /mcp épica: fondos del universo, chat extendido y carousel de IAs

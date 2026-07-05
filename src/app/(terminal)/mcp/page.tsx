@@ -92,6 +92,9 @@ function buildShowcase(): ShowcaseData {
   const consignatarias = [...erNames.entries()].map(([nombre, zona]) => ({ nombre, zona }))
 
   const kgHa = 100
+  // Índice oficial de arrendamiento del MAG (haciinfo000013) si el scrape lo trajo
+  const arrOficial = (marketPrices as unknown as { arrendamientoOficial?: { index: number; date: string } }).arrendamientoOficial
+  const arrPrecio = arrOficial?.index ?? inmag.current
   const loteCab = 40
   const loteKg = loteCab * 450
   const loteArs = loteKg * inmag.current
@@ -126,8 +129,9 @@ function buildShowcase(): ShowcaseData {
     consignatarias,
     arriendo: {
       kgHa: String(kgHa),
-      precio: fmt(inmag.current),
-      porHaAnio: fmt(kgHa * inmag.current),
+      precio: fmt(arrPrecio),
+      porHaAnio: fmt(kgHa * arrPrecio),
+      oficial: !!arrOficial,
     },
   }
 }

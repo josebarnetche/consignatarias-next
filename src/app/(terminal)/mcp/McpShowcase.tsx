@@ -19,7 +19,7 @@ export interface ShowcaseData {
   macro: { blue: string; maiz: string; spread: string }
   remates: Array<{ fecha: string; hora: string; nombre: string; lugar: string }>
   consignatarias: Array<{ nombre: string; zona: string }>
-  arriendo: { kgHa: string; precio: string; porHaAnio: string }
+  arriendo: { kgHa: string; precio: string; porHaAnio: string; oficial: boolean }
 }
 
 function Scene({
@@ -258,7 +258,11 @@ export default function McpShowcase(d: ShowcaseData) {
         <div className="text-2xl font-mono font-medium text-zinc-50 tabular-nums mt-1">
           ${d.arriendo.porHaAnio} <span className="text-sm text-zinc-500">por ha/año</span>
         </div>
-        <div className="text-xxs text-zinc-500 mt-1">Canon indexado al novillo INMAG del día.</div>
+        <div className="text-xxs text-zinc-500 mt-1">
+          {d.arriendo.oficial
+            ? 'Al índice oficial de arrendamiento del MAG (del día).'
+            : 'Canon indexado al novillo INMAG del día.'}
+        </div>
       </Scene>
 
       <Scene n={8} tool="crear_alerta_precio" icon="alerta" pregunta="Avisame si el novillo pasa los $4.500.">

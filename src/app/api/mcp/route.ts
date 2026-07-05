@@ -226,12 +226,15 @@ const TOOLS: Tool[] = [
       const maizArsKg = (prices.corn.current * prices.usdBlue.current) / 1000 // USD/tn → ARS/kg
       const novilloArsKg = prices.inmag.current
       const kgMaizPorKgNovillo = maizArsKg > 0 ? novilloArsKg / maizArsKg : 0
+      const arrOficial = (prices as { arrendamientoOficial?: { index: number; date: string } }).arrendamientoOficial ?? null
       return ok(
         `Contexto macro — ${prices.lastUpdate}\n` +
           `Dólar blue: ${fmt(prices.usdBlue.current)} ARS · oficial: ${fmt(prices.usdOficial.current)} ARS\n` +
           `Maíz FOB: USD ${prices.corn.current}/tn (≈ ${fmt(maizArsKg)} ARS/kg)\n` +
           `Novillo (INMAG): ${fmt(novilloArsKg)} ARS/kg\n` +
-          `Spread novillo/maíz: ${kgMaizPorKgNovillo.toFixed(1)} kg de maíz por kg de novillo\n\n` +
+          `Spread novillo/maíz: ${kgMaizPorKgNovillo.toFixed(1)} kg de maíz por kg de novillo\n` +
+          (arrOficial ? `Índice arrendamiento oficial (MAG): ${fmt(arrOficial.index)} ARS/kg (${arrOficial.date})\n` : '') +
+          `\n` +
           JSON.stringify({
             usd_blue: prices.usdBlue.current,
             usd_oficial: prices.usdOficial.current,
@@ -239,6 +242,7 @@ const TOOLS: Tool[] = [
             maiz_ars_kg: Math.round(maizArsKg * 100) / 100,
             novillo_ars_kg: novilloArsKg,
             kg_maiz_por_kg_novillo: Math.round(kgMaizPorKgNovillo * 10) / 10,
+            indice_arrendamiento_oficial: arrOficial ?? null,
           }),
       )
     },
@@ -344,7 +348,7 @@ const TOOLS: Tool[] = [
   {
     name: 'calcular_arrendamiento',
     description:
-      'Calcula el canon de arrendamiento rural argentino en pesos: kg de novillo por hectárea × hectáreas × precio del novillo (índice INMAG). Es el método de referencia (contrato indexado al novillo).',
+      'Calcula el canon de arrendamiento rural argentino en pesos: kg de novillo por hectárea × hectáreas × precio del novillo. Por defecto usa el ÍNDICE SUGERIDO PARA ARRENDAMIENTOS RURALES oficial del MAG (haciinfo000013); si no está disponible, el INMAG del día.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -358,21 +362,27 @@ const TOOLS: Tool[] = [
     async run(args) {
       const kgHa = Number(args.kg_ha)
       const hectareas = Number(args.hectareas)
-      const precio = Number.isFinite(Number(args.precio_novillo)) && Number(args.precio_novillo) > 0
-        ? Number(args.precio_novillo)
-        : prices.inmag.current
+      // Índice oficial del MAG para arrendamientos (haciinfo000013), si el scrape lo trajo.
+      const oficial = (prices as { arrendamientoOficial?: { index: number; date: string; periodIndex?: number | null } }).arrendamientoOficial
+      const custom = Number.isFinite(Number(args.precio_novillo)) && Number(args.precio_novillo) > 0
+      const precio = custom ? Number(args.precio_novillo) : (oficial?.index ?? prices.inmag.current)
+      const fuentePrecio = custom
+        ? 'precio provisto'
+        : oficial
+          ? `índice oficial de arrendamiento MAG ${oficial.date}`
+          : 'INMAG del día'
       if (!Number.isFinite(kgHa) || kgHa <= 0 || !Number.isFinite(hectareas) || hectareas <= 0)
         return fail('kg_ha y hectareas deben ser números positivos.')
       const canonMensual = kgHa * hectareas * precio
       const canonAnual = canonMensual * 12
       const canonHaMes = kgHa * precio
       return ok(
-        `Arrendamiento — ${kgHa} kg novillo/ha/mes · ${hectareas} ha · novillo ${fmt(precio)}/kg\n` +
+        `Arrendamiento — ${kgHa} kg novillo/ha/mes · ${hectareas} ha · ${fmt(precio)}/kg (${fuentePrecio})\n` +
           `Canon mensual: ${fmt(canonMensual)}\n` +
           `Canon anual: ${fmt(canonAnual)}\n` +
           `Por hectárea/mes: ${fmt(canonHaMes)}\n\n` +
-          JSON.stringify({ canon_mensual: Math.round(canonMensual), canon_anual: Math.round(canonAnual), canon_ha_mes: Math.round(canonHaMes), kg_ha: kgHa, hectareas, precio_novillo: precio }) +
-          `\n\n(Método de referencia indexado al novillo. Es un cálculo, no asesoramiento.)`,
+          JSON.stringify({ canon_mensual: Math.round(canonMensual), canon_anual: Math.round(canonAnual), canon_ha_mes: Math.round(canonHaMes), kg_ha: kgHa, hectareas, precio_novillo: precio, fuente_precio: fuentePrecio, indice_arrendamiento_oficial: oficial ?? null }) +
+          `\n\n(Índice oficial: "INMAG sugerido para arrendamientos rurales", MAG. Es un cálculo, no asesoramiento.)`,
       )
     },
   },

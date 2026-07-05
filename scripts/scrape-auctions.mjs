@@ -1246,6 +1246,70 @@ async function scrapeDetailedCategoryPrices() {
 }
 
 // ---------------------------------------------------------------------------
+// Source 12b: Índice oficial de arrendamiento (haciinfo000013)
+// "INMAG SUGERIDO PARA ARRENDAMIENTOS RURALES / ROFEX POR DIA" — el índice que
+// el MAG publica para contratos de arrendamiento rural. Pedimos los últimos 10
+// días y guardamos el último día con dato + el índice del período (fila Totales).
+// Catálogo completo de endpoints MAG: docs/mag-endpoints-catalogo.md
+// ---------------------------------------------------------------------------
+
+async function scrapeArrendamientoOficial() {
+  console.log("[12b] Scraping índice oficial de arrendamiento (haciinfo000013)...");
+  const fmtDMY = (d) =>
+    `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
+  const end = new Date();
+  const start = new Date(Date.now() - 10 * 86400000);
+  const url =
+    `https://www.mercadoagroganadero.com.ar/dll/hacienda2.dll/haciinfo000013` +
+    `?txtFECHAINI=${encodeURIComponent(fmtDMY(start))}&txtFECHAFIN=${encodeURIComponent(fmtDMY(end))}`;
+  const html = await fetchHTML(url);
+  if (!html) return null;
+
+  const parseNum = (str) => parseFloat(String(str).replace(/\./g, "").replace(",", "."));
+  const rows = [...html.matchAll(/<TR[^>]*>([\s\S]*?)<\/TR>/gi)].map((m) =>
+    [...m[1].matchAll(/<T[DH][^>]*>([\s\S]*?)<\/T[DH]>/gi)].map((c) =>
+      c[1].replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").trim()
+    )
+  );
+
+  const daily = [];
+  let periodIndex = null;
+  for (const cells of rows) {
+    const ne = cells.filter(Boolean);
+    if (ne.length < 4) continue;
+    const isTotal = /Totales/i.test(ne[0]);
+    const dateM = ne[0].match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    if (!isTotal && !dateM) continue;
+    // Celdas: Fecha|Cab|Importe|Índice(|Variación). El índice viene con 3 decimales.
+    const idxCell = ne[3];
+    if (!/\d,\d{3}$/.test(idxCell || "")) continue;
+    const idx = Math.round(parseNum(idxCell) * 1000) / 1000;
+    if (!Number.isFinite(idx) || idx <= 0) continue;
+    if (isTotal) {
+      periodIndex = idx;
+    } else {
+      daily.push({ date: `${dateM[3]}-${dateM[2]}-${dateM[1]}`, index: idx });
+    }
+  }
+
+  if (daily.length === 0) {
+    console.warn("  [WARN] Sin filas del índice de arrendamiento");
+    return null;
+  }
+  daily.sort((a, b) => a.date.localeCompare(b.date));
+  const last = daily[daily.length - 1];
+  console.log(`  Índice arrendamiento oficial: $${last.index} (${last.date}) · período $${periodIndex ?? "—"}`);
+  return {
+    date: last.date,
+    index: last.index,
+    periodStart: daily[0].date,
+    periodEnd: last.date,
+    periodIndex,
+    source: "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)",
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Source 13: MAG Entry for Consignatarias with Auctions Today
 // Queries haciinfo000006 for each consignataria that has an auction today
 // ---------------------------------------------------------------------------
@@ -1569,7 +1633,7 @@ async function main() {
   console.log(`\n=== Ganado Terminal Scraper — ${todayISO()} ===\n`);
 
   // Scrape all sources in parallel
-  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, hkagro, entresurcos, nea, dollar, cattlePrices, cornPrice, categoryPrices, provinceEntry, consignatarioEntry, detailedCategories] = await Promise.all([
+  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, hkagro, entresurcos, nea, dollar, cattlePrices, cornPrice, categoryPrices, provinceEntry, consignatarioEntry, detailedCategories, arrendamientoOficial] = await Promise.all([
     scrapeCACG(),
     scrapeColombo(),
     scrapeOFarrell(),
@@ -1586,6 +1650,7 @@ async function main() {
     scrapeProvinceEntry(), // haciinfo000003: cattle entry by province
     scrapeConsignatarioEntry(), // haciinfo000006: cattle entry by consignatario
     scrapeDetailedCategoryPrices(), // haciinfo000502: detailed subcategory prices
+    scrapeArrendamientoOficial(), // haciinfo000013: índice oficial de arrendamiento
   ]);
 
   // Combine all scraped auctions
@@ -1860,6 +1925,12 @@ async function main() {
       categories: detailedCategories.categories,
     };
     console.log(`Updated detailed categories: ${detailedCategories.categories.length} subcategories`);
+  }
+
+  // Update índice oficial de arrendamiento (haciinfo000013)
+  if (arrendamientoOficial) {
+    market.arrendamientoOficial = arrendamientoOficial;
+    console.log(`Updated arrendamiento oficial: $${arrendamientoOficial.index} (${arrendamientoOficial.date})`);
   }
 
   // Update auction day entry data (MAG entry for consignatarias with auctions today)

@@ -240,6 +240,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           unidad: inmag.unit,
           variacion_semanal: inmagChangeStr
         },
+        // Aditivo (v1.104.0): índice oficial del MAG para arrendamientos rurales
+        // (haciinfo000013). null hasta que el scrape diario lo traiga.
+        indice_arrendamiento_oficial:
+          (marketPrices as { arrendamientoOficial?: { index: number; date: string; periodIndex?: number | null; source?: string } }).arrendamientoOficial ?? null,
         fuente: 'INMAG - Mercado Agroganadero',
         fecha_actualizacion: marketPrices.lastUpdate
       },
