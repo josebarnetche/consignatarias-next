@@ -124,7 +124,10 @@ async function fetchLotPage(date: string, magId: number, tipo: 'FAENA' | 'INVERN
     `&lisConsignatario=${magId}&lisTipo=${lisTipo}&CP=&LISTADO=SI`
   const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  return await res.text()
+  // El MAG sirve ISO-8859-1 (Latin-1). res.text() asume UTF-8 y rompe ñ/á/é
+  // en los nombres de remitente (ej. "CABAÑAS" → "CABA�AS"). Decodificar Latin-1.
+  const buf = await res.arrayBuffer()
+  return new TextDecoder('iso-8859-1').decode(buf)
 }
 
 /* ============================================================
