@@ -1,8 +1,3 @@
-// AUTOGENERADO desde el esquema de PRODUCCIÓN (proyecto nyqkgorazkwcufkzxmhd).
-// Fuente de verdad del esquema. NO editar a mano. Regenerar con el MCP
-// generate_typescript_types o `supabase gen types typescript`.
-// Ver docs/PROYECTO-C-fuente-de-verdad-esquema.md
-
 export type Json =
   | string
   | number
@@ -1423,6 +1418,27 @@ export type Database = {
           usd_blue_prev?: number | null
           usd_oficial?: number | null
           usd_oficial_prev?: number | null
+        }
+        Relationships: []
+      }
+      market_watchlist: {
+        Row: {
+          consignataria_slug: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          consignataria_slug: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          consignataria_slug?: string
+          created_at?: string
+          id?: string
+          user_id?: string
         }
         Relationships: []
       }
