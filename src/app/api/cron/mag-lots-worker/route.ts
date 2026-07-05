@@ -248,7 +248,13 @@ async function actionProcessOne() {
         completed_at: new Date().toISOString(),
       })
       .eq('id', job.id as number)
-    return { processed: 0, failed_job: job.id, error: 'fetch_failed' }
+    // Incluir remaining: sin él, el runner (que lee d.remaining) lo toma como 0
+    // y corta el loop entero por un solo job fallado.
+    const { count: remFetch } = await supabase
+      .from('mag_scrape_queue')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'pending')
+    return { processed: 0, failed_job: job.id, error: 'fetch_failed', remaining: remFetch ?? 0 }
   }
 
   const lots = parseLots(html)
@@ -276,7 +282,11 @@ async function actionProcessOne() {
           completed_at: new Date().toISOString(),
         })
         .eq('id', job.id as number)
-      return { processed: 0, failed_job: job.id, error: insertErr.message }
+      const { count: remIns } = await supabase
+        .from('mag_scrape_queue')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'pending')
+      return { processed: 0, failed_job: job.id, error: insertErr.message, remaining: remIns ?? 0 }
     }
     rowsInserted = count ?? records.length
   }
