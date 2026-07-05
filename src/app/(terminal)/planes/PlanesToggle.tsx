@@ -26,16 +26,14 @@ interface ApiTier {
 
 const API_TIERS: ApiTier[] = [
   {
-    name: 'Starter',
+    name: 'Starter · Conectá tu IA',
     price: 'ARS 74.000',
     period: '/mes',
-    desc: 'Conectá tu asistente IA (Claude, Cursor) al dato ganadero — sin programar. Para el operador, la firma o la consignataria que quiere el dato a diario.',
+    desc: 'Tu asistente (Claude, ChatGPT, Cursor) responde con el dato ganadero real. MCP incluido, sin programar.',
     features: [
-      'Conector MCP listo para pegar (viene con tu key)',
-      'Preguntale a tu asistente: “¿precio del novillo hoy?”',
-      'API REST también, si preferís integrarla vos',
-      '10.000 requests/mes (a un uso diario típico, te sobra)',
-      'INMAG, categorías, USD, remates, directorios + histórico',
+      'Conector MCP listo para pegar + API REST',
+      '10.000 requests/mes',
+      'INMAG, precios, remates y directorios + histórico',
     ],
     cta: 'Empezar',
     href: '/enterprise',
@@ -44,12 +42,11 @@ const API_TIERS: ApiTier[] = [
     name: 'Growth',
     price: 'ARS 451.000',
     period: '/mes',
-    desc: 'Agtech, medios agro, fondos. Volumen + automatización.',
+    desc: 'Para operar en producción: volumen, webhooks y reportes.',
     features: [
       '100.000 requests/mes',
-      'Webhooks ilimitados + alertas de precio (MCP write)',
-      'Exports CSV/JSON',
-      'Reporte semanal PDF + JSON',
+      'Webhooks + alertas de precio',
+      'Exports CSV/JSON + reporte semanal',
       'Soporte prioritario',
     ],
     highlight: true,
@@ -60,13 +57,11 @@ const API_TIERS: ApiTier[] = [
     name: 'Scale',
     price: 'A medida',
     period: '',
-    desc: 'Bancos, agtech grande, exchanges. Volumen y SLA.',
+    desc: 'Volumen alto con SLA, para bancos y agtech grande.',
     features: [
-      'Volumen alto (500K → 5M requests)',
-      'SLA + uptime garantizado',
-      'Multi-usuario con roles',
-      'Integración ERP / BI',
-      'White-label opcional',
+      '100K → 5M requests/mes',
+      'SLA + multi-usuario con roles',
+      'Integración ERP/BI · white-label',
     ],
     cta: 'Hablemos',
     href: '/enterprise#acceso-institucional',
@@ -157,7 +152,7 @@ export default function PlanesToggle() {
       {/* API / MCP — el corazón del pricing */}
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
         <p className="text-label tracking-widest text-zinc-400">
-          API / MCP — el dato ganadero como servicio · para desarrolladores, agtech e instituciones
+          API / MCP — conectá tu IA o tu sistema al dato ganadero
         </p>
         <span className="text-xxs font-terminal text-zinc-500">Facturación mensual en ARS vía Rebill · anual –15%</span>
       </div>
@@ -170,7 +165,7 @@ export default function PlanesToggle() {
       {/* Consignataria — PRODUCTO APARTE (alcance, no data-service): ámbar como su badge */}
       <div className="mt-8 mb-3 flex flex-wrap items-baseline justify-between gap-2 border-t border-terminal-border pt-6">
         <p className="text-label tracking-widest text-zinc-400">
-          PRO Consignataria — alcance para casas consignatarias · otro producto, otro precio
+          PRO Consignataria — más productores en tus remates
         </p>
         <span className="text-xxs font-terminal text-zinc-500">Facturación mensual en ARS vía Rebill</span>
       </div>
@@ -192,15 +187,14 @@ export default function PlanesToggle() {
             </div>
             <p className="text-zinc-500 text-xxs mb-3">Prueba gratis · sin permanencia</p>
             <p className="text-zinc-500 text-data mb-4">
-              Promocioná tus remates a la base de productores y destacá tu perfil. Se paga
-              solo si te trae consultas — probalo antes.
+              Lo que obtenés:
             </p>
             <ul className="space-y-2 mb-6 flex-1">
               {[
-                'Promoción de remates por email a la base de productores',
-                'Perfil verificado y destacado (badge dorado)',
-                'Analytics de perfil (vistas, ranking)',
-                'Landing propia + QR para catálogos',
+                'Cada remate tuyo, por email a la base de productores',
+                'Badge dorado + perfil destacado en el directorio',
+                'Analytics: cuántos productores miran tu perfil',
+                'Landing propia + QR para tus catálogos',
               ].map((f) => (
                 <li key={f} className="flex items-start gap-2 text-data text-zinc-300">
                   <span style={{ color: '#fbbf24' }} className="mt-0.5">+</span>

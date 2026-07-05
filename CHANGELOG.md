@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.101.1] — 2026-07-04
+
+### /planes: decir menos es más
+
+- **Starter se llama "Starter · Conectá tu IA"** — el MCP es el gancho, no un feature enterrado: "Tu asistente (Claude, ChatGPT, Cursor) responde con el dato ganadero real. MCP incluido, sin programar." 3 bullets en vez de 5.
+- **Growth y Scale recortadas** a lo esencial (4 y 3 bullets).
+- **PRO Consignataria abre con "Lo que obtenés:"** y 4 entregables concretos (cada remate por email a la base, badge dorado + destacado, analytics de perfil, landing + QR). Header de sección: "más productores en tus remates".
+
 ## [1.101.0] — 2026-07-04
 
 ### Pricing unificado: TODO EN ARS, dos productos bien separados
