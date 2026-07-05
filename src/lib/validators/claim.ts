@@ -9,7 +9,8 @@ export const claimSchema = z.object({
     .string()
     .regex(/^\d{2}-\d{8}-\d$/, 'CUIT debe tener formato XX-XXXXXXXX-X')
     .optional()
-    .or(z.literal('')),
+    .or(z.literal(''))
+    .nullable(),
   claimant_email: z
     .string()
     .email('Email inválido')
@@ -23,12 +24,14 @@ export const claimSchema = z.object({
     .string()
     .max(50)
     .optional()
-    .or(z.literal('')),
+    .or(z.literal(''))
+    .nullable(),
   claimant_role: z
     .string()
     .max(100)
     .optional()
-    .or(z.literal('')),
+    .or(z.literal(''))
+    .nullable(),
 })
 
 export type ClaimInput = z.infer<typeof claimSchema>
@@ -68,12 +71,14 @@ export const frigorificoClaimSchema = z.object({
     .string()
     .max(50)
     .optional()
-    .or(z.literal('')),
+    .or(z.literal(''))
+    .nullable(),
   claimant_role: z
     .string()
     .max(100)
     .optional()
-    .or(z.literal('')),
+    .or(z.literal(''))
+    .nullable(),
 })
 
 export type FrigorificoClaimInput = z.infer<typeof frigorificoClaimSchema>

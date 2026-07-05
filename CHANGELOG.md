@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.106.1] — 2026-07-05
+
+### FIX CRÍTICO: el reclamo de consignataria estaba roto desde el 10 de abril
+
+`ClaimForm` enviaba `cuit: null, claimant_phone: null, claimant_role: null` (rezago del commit
+`718b27e` "Reduce friction" que recortó el form a 2 campos) y el schema zod no acepta `null`
+(`.optional()` = solo `undefined`) → **el 100% de los envíos de "Verificar y acceder" devolvía
+"Datos inválidos" durante ~3 meses**. Consistente con la base: 0 claims desde marzo. La entrada del
+funnel B2B (reclamar perfil → PRO Consignataria) estaba muerta.
+
+- Form: envía solo los 2 campos del formulario (sin claves null).
+- Validator: `cuit`/`claimant_phone`/`claimant_role` ahora `.nullable()` (defensa server-side).
+- Verificado sin side effects contra un perfil ya reclamado: ambos payloads pasan la validación y
+  llegan al 409 de negocio. El flujo de frigoríficos no tenía el bug (manda el CUIT real).
+
 ## [1.106.0] — 2026-07-05
 
 ### CUITs de consignatarias + revivir el scraper transaccional del MAG (haciinfo000007)

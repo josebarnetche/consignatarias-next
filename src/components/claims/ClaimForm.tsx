@@ -55,14 +55,13 @@ export default function ClaimForm({ slug, displayName }: ClaimFormProps) {
       const res = await fetch('/api/claims', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        // Solo los 2 campos del form. NUNCA null: el schema zod los rechaza
+        // (esto tuvo el claim flow roto del 10/04 al 05/07 — "Datos inválidos"
+        // en el 100% de los envíos). Teléfono/rol/CUIT llegan en el onboarding.
         body: JSON.stringify({
           consignataria_slug: slug,
           claimant_name: form.claimant_name,
           claimant_email: form.claimant_email,
-          // These will be collected later in onboarding
-          claimant_phone: null,
-          claimant_role: null,
-          cuit: null,
         }),
       })
 
