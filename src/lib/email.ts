@@ -845,6 +845,8 @@ interface PostRemateRequestParams {
   location: string
   remateDate: string
   remateTitle: string
+  /** Productores únicos que siguen a la casa / sus remates en la terminal (dato real; 0 = omitir) */
+  seguidores?: number
 }
 
 export async function sendPostRemateResultsRequest({
@@ -854,6 +856,7 @@ export async function sendPostRemateResultsRequest({
   location,
   remateDate: _remateDate,
   remateTitle: _remateTitle,
+  seguidores = 0,
 }: PostRemateRequestParams) {
   const resend = await getResend()
   if (!resend) return { success: false, error: 'Resend not configured' }
@@ -885,8 +888,10 @@ export async function sendPostRemateResultsRequest({
         `  3. Cabezas vendidas`,
         ``,
         `Respondé este mail con los números o una foto de la`,
-        `planilla. Lo publico en el perfil de ${cleanName} y te`,
-        `paso el link.`,
+        `planilla. Lo publico en el perfil de ${cleanName}${seguidores > 0 ? ` —` : ' y te'}`,
+        ...(seguidores > 0
+          ? [`${seguidores} productor${seguidores === 1 ? ' sigue' : 'es siguen'} sus remates en la terminal — y te paso el link.`]
+          : [`paso el link.`]),
         ``,
         `Gracias,`,
         `José — +54 3773 418130`,

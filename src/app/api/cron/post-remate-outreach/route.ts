@@ -164,6 +164,24 @@ export async function POST(request: NextRequest) {
       continue
     }
 
+    // Demanda real sobre la casa: productores únicos entre seguir-perfil,
+    // watch-de-remates y marcas. Es EL argumento del outreach — dato, no humo.
+    let seguidores = 0
+    try {
+      const [{ data: favU }, { data: favR }, { data: marks }] = await Promise.all([
+        supabase.from('user_favorites').select('user_id').eq('consignataria_slug', slug),
+        supabase.from('remate_favorites').select('user_id').eq('consignataria_slug', slug),
+        supabase.from('remate_marks').select('user_id').eq('consignataria_slug', slug),
+      ])
+      const uniq = new Set<string>()
+      for (const r of [...(favU ?? []), ...(favR ?? []), ...(marks ?? [])]) {
+        if (r.user_id) uniq.add(r.user_id as string)
+      }
+      seguidores = uniq.size
+    } catch {
+      seguidores = 0 // el outreach sale igual, sin el número
+    }
+
     // Send the email
     const result = await sendPostRemateResultsRequest({
       to: contactInfo.email,
@@ -172,6 +190,7 @@ export async function POST(request: NextRequest) {
       location: auction.location || auction.province || 'Argentina',
       remateDate: auction.date,
       remateTitle: auction.title,
+      seguidores,
     })
 
     if (result.success) {

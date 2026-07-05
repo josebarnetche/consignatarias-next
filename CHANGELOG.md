@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.105.0] — 2026-07-05
+
+### Data útil para la consignataria: su demanda real, en el dashboard y en el outreach
+
+El producto B2B se vende con el dato que ya generamos: cuántos productores están pendientes de cada casa.
+
+- **Dashboard de consignataria** — "Tu impacto" pasa de 4 a 6 métricas: se suman **"productores te siguen"** (`user_favorites`, el FollowButton del perfil) y **"marcas en tus remates"** (`remate_marks`). La señal de audiencia ahora suma seguidores + watchlist: "N productores están pendientes de tus remates… tu audiencia cautiva".
+- **Outreach post-remate con el número real** — el mail que pide los promedios ahora dice "Lo publico en el perfil de X — **N productores siguen sus remates en la terminal** — y te paso el link". N = usuarios únicos entre seguir-perfil, watchlist y marcas (sin doble conteo; si es 0, la línea no aparece). Es el argumento de venta de PRO Consignataria dicho con dato, no con humo.
+
 ## [1.104.0] — 2026-07-04
 
 ### Catálogo de endpoints MAG + índice oficial de arrendamiento en API/MCP

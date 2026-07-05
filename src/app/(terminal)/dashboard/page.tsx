@@ -217,6 +217,29 @@ export default async function DashboardPage() {
   }
 
   // Get total remate watchers (demand signal)
+  // Demanda directa: productores que SIGUEN a la casa (user_favorites, del
+  // FollowButton del perfil) y marcas en sus remates (remate_marks).
+  let followersCount = 0
+  let marksCount = 0
+  if (consignataria) {
+    try {
+      const [{ count: fc }, { count: mc }] = await Promise.all([
+        service
+          .from('user_favorites')
+          .select('*', { count: 'exact', head: true })
+          .eq('consignataria_slug', consignataria.canonical_slug),
+        service
+          .from('remate_marks')
+          .select('*', { count: 'exact', head: true })
+          .eq('consignataria_slug', consignataria.canonical_slug),
+      ])
+      followersCount = fc ?? 0
+      marksCount = mc ?? 0
+    } catch {
+      /* tablas nuevas — el dashboard no se cae por esto */
+    }
+  }
+
   let totalWatchers = 0
   if (consignataria) {
     try {
@@ -358,6 +381,8 @@ export default async function DashboardPage() {
       viewCount={viewCount}
       whatsappClicks={whatsappClicks}
       leadsCount={leadsCount}
+      followersCount={followersCount}
+      marksCount={marksCount}
       leads={leads}
       totalWatchers={totalWatchers}
       viewPercentile={viewPercentile}

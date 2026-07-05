@@ -119,6 +119,8 @@ interface Props {
   viewCount: number
   whatsappClicks: number
   leadsCount: number
+  followersCount?: number
+  marksCount?: number
   leads?: Lead[]
   totalWatchers: number
   viewPercentile: number
@@ -141,7 +143,7 @@ type TabKey = 'resumen' | 'leads' | 'remates' | 'editar' | 'resultados' | 'plan'
 
 export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
-  auctionResults, viewCount, whatsappClicks, leadsCount, leads = [], totalWatchers, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
+  auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, marksCount = 0, leads = [], totalWatchers, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
   dteCount = 0, alreadyRedeemed = false,
 }: Props) {
   const showChecklist = consignataria && completedFields && Object.values(completedFields).filter(Boolean).length < 5
@@ -387,7 +389,27 @@ export default function DashboardClient({
               </div>
               <div className="px-panel py-4">
                 {/* Stats grid - always show all 4 metrics */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  {/* Seguidores — el dato B2B: productores suscriptos a tus remates */}
+                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
+                    <div className="text-2xl font-terminal tabular-nums text-sky-300 font-bold">
+                      {followersCount.toLocaleString('es-AR')}
+                    </div>
+                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
+                      productores te siguen
+                    </div>
+                  </div>
+
+                  {/* Marcas en tus remates */}
+                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
+                    <div className="text-2xl font-terminal tabular-nums text-sky-300 font-bold">
+                      {marksCount.toLocaleString('es-AR')}
+                    </div>
+                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
+                      marcas en tus remates
+                    </div>
+                  </div>
+
                   {/* Views */}
                   <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
                     <div className="text-2xl font-terminal tabular-nums text-zinc-100 font-bold">
@@ -451,16 +473,16 @@ export default function DashboardClient({
                 )}
 
                 {/* Demand Signal - Watchers */}
-                {totalWatchers > 0 && (
+                {(totalWatchers + followersCount) > 0 && (
                   <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-terminal mb-4">
                     <div className="flex items-start gap-2">
                       <span className="text-emerald-400 text-lg">👁️</span>
                       <div>
                         <p className="text-sm font-terminal text-emerald-300 font-medium">
-                          {totalWatchers} {totalWatchers === 1 ? 'productor está' : 'productores están'} siguiendo tus remates
+                          {totalWatchers + followersCount} {(totalWatchers + followersCount) === 1 ? 'productor está' : 'productores están'} pendientes de tus remates
                         </p>
                         <p className="text-xxs font-terminal text-zinc-400 mt-1">
-                          Reciben alertas cuando publicás nuevos remates. Esta es tu audiencia cautiva.
+                          Entre seguidores de tu casa y remates en watchlist. Reciben avisos cuando publicás — tu audiencia cautiva.
                         </p>
                       </div>
                     </div>
