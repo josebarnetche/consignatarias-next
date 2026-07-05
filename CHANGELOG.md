@@ -7,6 +7,19 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.106.0] — 2026-07-05
+
+### CUITs de consignatarias + revivir el scraper transaccional del MAG (haciinfo000007)
+
+Ronda de validación y enriquecimiento de la base de consignatarias contra el Mercado Agroganadero de Cañuelas, más el arreglo del pipeline de ventas por consignatario que estaba muerto.
+
+- **Directorio enriquecido con CUIT (0 → 90 de 113 firmas).** La columna `consignatarias.cuit` estaba 100% vacía. Un swarm cruzó las razones sociales contra cuitonline.com (corroborado con Dateas/BORA/Nosis, con chequeo de homónimos y tipo societario) → 91% de hit. Cargados los de confianza alta/media. Validación cruzada contra el MAG (`haciinfo000008`, que resuelve CUIT→razón social): 11 casos donde el MAG mostraba otro nombre resultaron **confirmados** por AFIP (el MAG guarda un nombre de contacto distinto del titular).
+- **+27 consignatarios activos del MAG que faltaban** en el directorio (Santamarina e Hijos, Madelan, Gahan, Heguy Hnos, Lartirigoyen & Oromí, Harrington y Lafuente, Crespo y Rodríguez, Irey Izcurdia…), detectados matcheando nuestra base contra la lista canónica de 45 consignatarios del dropdown de `haciinfo000006`/`000007`. Base: **86 → 113 firmas**.
+- **Fix del scraper `mag-lots-worker` (haciinfo000007) — estaba trayendo 0 filas.** `mag_consignataria_sales_lots` llevaba semanas VACÍO pese a jobs marcados "done". Dos bugs: (1) el worker armaba la URL con los params de `000008` (`txtFECHAINI/FIN`, `LisConsignatario` mayúscula, `txtTipo=palabra`) → el DLL los ignoraba y devolvía el default → parser 0 filas. Correcto: `txtFECHA` única, `lisConsignatario` minúscula, `lisTipo` numérico, `CP=`. (2) El upsert usaba `onConflict` de 6 columnas pero **no existía la constraint única** → todo insert fallaba con "no unique or exclusion constraint matching the ON CONFLICT"; agregado índice `mag_lots_natural_key` (migración `20260705`). Bonus: los returns de error del worker no incluían `remaining` → un solo job fallado cortaba el loop entero del runner; corregido. Cola reseteada (2.816 jobs pendientes) y worker re-disparado.
+- **Auditoría de cosecha de datos MAG:** confirmado que INMAG diario (`mag_inmag_history`, ~2015→hoy, 2.254 días), USD blue (5.644) y precios por categoría (`mag_prices_detailed`, fresco) SÍ se cosechan; las tablas `market_category_prices`/`market_price_series` son legacy muertas (el dato vive en `mag_prices_detailed`).
+
+**Nota:** el catálogo de endpoints MAG y la receta para correr un CUIT quedan documentados en la memoria del proyecto. Cambios de datos (CUITs, +27 firmas) aplicados directo en Supabase; el índice va como migración.
+
 ## [1.105.0] — 2026-07-05
 
 ### Data útil para la consignataria: su demanda real, en el dashboard y en el outreach
