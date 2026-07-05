@@ -59,7 +59,8 @@ Available tools:
 - \`get_precios_detallados\` — precios por subcategoría (ej. "NOVILLOS Regular +430") con mín/prom/máx
 - \`get_contexto_macro\` — dólar blue/oficial, maíz FOB, spread novillo/maíz (proxy de margen feedlot)
 - \`list_remates\` — calendario de remates (filtro por provincia)
-- \`buscar_consignataria\` — directorio de consignatarias/casas de remate por nombre o zona
+- \`buscar_consignataria\` — directorio de consignatarias/casas de remate por nombre o zona (incluye CUIT)
+- \`actividad_consignatarias\` — ranking de cabezas operadas y precio promedio por firma en el MAG de Cañuelas (mercado de referencia, ~12% nacional)
 - \`buscar_frigorifico\` — frigoríficos habilitados MAGYP/SENASA (1.100+ plantas) por nombre/provincia/CUIT
 - \`calcular_arrendamiento\` — canon de arrendamiento rural indexado al novillo
 - \`crear_alerta_precio\` — alerta cuando un precio cruza un umbral → notifica por webhook

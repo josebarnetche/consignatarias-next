@@ -300,7 +300,7 @@ const TOOLS: Tool[] = [
       const service = requireServiceClient()
       let qb = service
         .from('consignatarias')
-        .select('display_name, canonical_slug, province, location, category, phone, whatsapp, website')
+        .select('display_name, canonical_slug, province, location, category, phone, whatsapp, website, cuit')
         .or(`display_name.ilike.%${q}%,name.ilike.%${q}%,location.ilike.%${q}%`)
       if (prov) qb = qb.ilike('province', `%${prov}%`)
       const { data, error } = await qb.limit(limite)
@@ -310,9 +310,80 @@ const TOOLS: Tool[] = [
       const lines = data.map((c) => {
         const contacto = c.whatsapp || c.phone || c.website || ''
         return `${c.display_name}${c.location ? ' · ' + c.location : c.province ? ' · ' + c.province : ''}` +
-          `${c.category ? ' · ' + c.category : ''}${contacto ? ' · ' + contacto : ''}\n  https://www.consignatarias.com.ar/consignatarias/${c.canonical_slug}`
+          `${c.category ? ' · ' + c.category : ''}${c.cuit ? ' · CUIT ' + c.cuit : ''}${contacto ? ' · ' + contacto : ''}\n  https://www.consignatarias.com.ar/consignatarias/${c.canonical_slug}`
       })
       return ok(`${data.length} resultado(s) para "${q}":\n${lines.join('\n')}`)
+    },
+  },
+  {
+    name: 'actividad_consignatarias',
+    description:
+      'Ranking de actividad de las consignatarias en el Mercado Agroganadero de Cañuelas (el mercado concentrador que fija el precio de referencia, ~12% de la faena nacional): cabezas operadas y precio promedio por firma en un período. Es el dato del mercado de REFERENCIA, no el total nacional (buena parte del ganado se opera fuera de Cañuelas).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        desde: { type: 'string', description: 'Fecha inicio YYYY-MM-DD (default: últimos 7 días)' },
+        hasta: { type: 'string', description: 'Fecha fin YYYY-MM-DD (default: hoy)' },
+        categoria: { type: 'string', description: 'Filtra por categoría: NOVILLO, NOVILLITO, VACA, VAQUILLONA, TORO (opcional)' },
+        limite: { type: 'number', description: 'Máximo de firmas en el ranking (default 15)' },
+      },
+      additionalProperties: false,
+    },
+    async run(args) {
+      const service = requireServiceClient()
+      const today = new Date().toISOString().slice(0, 10)
+      const hasta = typeof args.hasta === 'string' ? args.hasta : today
+      const desde =
+        typeof args.desde === 'string'
+          ? args.desde
+          : new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10)
+      const categoria = typeof args.categoria === 'string' ? args.categoria.toUpperCase().trim() : ''
+      const limite = Math.min(typeof args.limite === 'number' ? args.limite : 15, 45)
+
+      let qb = service
+        .from('mag_consignataria_sales_lots')
+        .select('mag_consignataria_id, head_count, price')
+        .gte('date', desde)
+        .lte('date', hasta)
+      if (categoria) qb = qb.ilike('category', `%${categoria}%`)
+      const { data, error } = await qb.limit(50000)
+      if (error) return fail('Error consultando la actividad del mercado.')
+      if (!data || data.length === 0)
+        return ok(
+          `Sin operaciones registradas en el MAG entre ${desde} y ${hasta}${categoria ? ` (${categoria})` : ''}. El dato se scrapea a diario tras el cierre (14:00 ART).`,
+        )
+
+      const { data: firms } = await service.from('mag_consignatarias').select('mag_id, name')
+      const nameById = new Map((firms || []).map((f) => [f.mag_id as number, f.name as string]))
+
+      const agg = new Map<number, { cabezas: number; priceSum: number; priceN: number }>()
+      for (const r of data) {
+        const id = r.mag_consignataria_id as number
+        const a = agg.get(id) || { cabezas: 0, priceSum: 0, priceN: 0 }
+        a.cabezas += (r.head_count as number) || 0
+        const p = r.price != null ? Number(r.price) : 0
+        if (p > 0) {
+          a.priceSum += p
+          a.priceN++
+        }
+        agg.set(id, a)
+      }
+      const rows = [...agg.entries()]
+        .map(([id, a]) => ({
+          name: nameById.get(id) || `firma #${id}`,
+          cabezas: a.cabezas,
+          precio: a.priceN ? Math.round(a.priceSum / a.priceN) : null,
+        }))
+        .sort((x, y) => y.cabezas - x.cabezas)
+        .slice(0, limite)
+      const totalCab = rows.reduce((s, r) => s + r.cabezas, 0)
+      const lines = rows.map(
+        (r, i) =>
+          `${i + 1}. ${r.name} — ${r.cabezas.toLocaleString('es-AR')} cab${r.precio ? ` · $${r.precio.toLocaleString('es-AR')}/kg prom` : ''}`,
+      )
+      return ok(
+        `Actividad en el MAG Cañuelas (mercado de referencia) ${desde} → ${hasta}${categoria ? ` · ${categoria}` : ''}:\n${lines.join('\n')}\n\nTop ${rows.length}: ${totalCab.toLocaleString('es-AR')} cabezas. Nota: es el mercado concentrador de referencia (~12% nacional) — no incluye lo operado fuera de Cañuelas (ferias del interior, venta directa).`,
+      )
     },
   },
   {
