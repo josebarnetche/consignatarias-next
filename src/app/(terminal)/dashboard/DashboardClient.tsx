@@ -12,6 +12,7 @@ import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2
 import QRCode from '@/components/QRCode'
 import { UpgradeConfirmTracker } from '@/components/UpgradeConfirmTracker'
 import MarketIntelPanel from '@/components/MarketIntelPanel'
+import MagPulse from '@/components/MagPulse'
 import { trackEvent } from '@/lib/analytics'
 
 interface Consignataria {
@@ -343,6 +344,11 @@ export default function DashboardClient({
             viewPercentile={consignataria?.verified ? viewPercentile : 0}
             provincialRank={provincialRank}
           />
+
+          {/* Pulso del mercado — drip animado de la actividad de Cañuelas (dopamina + progreso) */}
+          <div className="mt-4">
+            <MagPulse />
+          </div>
 
           {/* Intel de mercado — seguí la actividad de la competencia en el MAG (gancho + upsell) */}
           {consignataria && (
