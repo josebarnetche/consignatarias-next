@@ -150,8 +150,10 @@ Planes:
 Facturación mensual en ARS vía Rebill (anual –15%; exterior: transferencia o USDT al equivalente).
 
 También como **servidor MCP** para agentes IA: endpoint `https://www.consignatarias.com.ar/api/mcp`
-(10 tools; listado en el registry oficial como `ar.com.consignatarias/cattle-market`). Detalle en
-[`/mcp`](https://www.consignatarias.com.ar/mcp).
+(10 tools; listado en el registry oficial como `ar.com.consignatarias/cattle-market`). Demo animada
+con los datos del día en [`/mcp`](https://www.consignatarias.com.ar/mcp). Incluye el **índice oficial
+de arrendamiento del MAG** (además del INMAG) — catálogo completo de fuentes MAG en
+[`docs/mag-endpoints-catalogo.md`](docs/mag-endpoints-catalogo.md).
 
 Documentación: [`/api-docs`](https://www.consignatarias.com.ar/api-docs).
 
@@ -205,4 +207,4 @@ Operadores comerciales que construyen infraestructura propietaria — no agencia
 
 ---
 
-v1.100.0 · 2026-07-04 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0
+v1.104.0 · 2026-07-04 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0
