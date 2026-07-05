@@ -1,12 +1,17 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import marketPrices from '@/lib/data/market-prices.json'
+import rematesData from '@/lib/data/remates.json'
+import McpShowcase, { type ShowcaseData } from './McpShowcase'
 
 export const metadata: Metadata = {
   title: 'MCP — Consignatarias para agentes IA | consignatarias.com.ar',
   description:
-    'Servidor MCP (Model Context Protocol): el mercado ganadero argentino como tools para agentes IA. Precios INMAG, remates, consignatarias, arrendamiento y alertas — conectás Claude, Cursor o cualquier agente y consultás en tiempo real.',
+    'Servidor MCP oficial (Model Context Protocol): el mercado ganadero argentino como tools para agentes IA. Precios INMAG, remates, consignatarias, arrendamiento y alertas — conectás Claude, Cursor o cualquier agente y consultás en tiempo real.',
   alternates: { canonical: 'https://www.consignatarias.com.ar/mcp' },
 }
+
+export const revalidate = 3600
 
 const ENDPOINT = 'https://www.consignatarias.com.ar/api/mcp'
 
@@ -30,27 +35,129 @@ const TOOLS = [
   { name: 'crear_alerta_precio', desc: 'Alerta cuando un precio cruza un umbral → notifica por webhook', auth: true },
 ]
 
+const fmt = (n: number) => Math.round(n).toLocaleString('es-AR')
+
+/* ── Datos REALES del día para el showcase (nunca inventados) ── */
+function buildShowcase(): ShowcaseData {
+  const TODAY = new Date().toISOString().slice(0, 10)
+  const inmag = marketPrices.inmag
+  const catLabels: Record<string, string> = {
+    novillos: 'Novillo', novillitos: 'Novillito', vaquillonas: 'Vaquillona',
+    vacas: 'Vaca', toros: 'Toro', terneros: 'Ternero',
+  }
+  const cats = Object.entries(marketPrices.categories).map(([k, v]) => {
+    const c = v as { current: number; change: number }
+    return { name: catLabels[k] ?? k, price: fmt(c.current), change: `${c.change >= 0 ? '+' : ''}${c.change}%` }
+  })
+
+  // Sparkline: lo que va del año (la pregunta es "este año") → polyline 300×70
+  const anio = TODAY.slice(0, 4)
+  const serieFull = marketPrices.inmag.series as { date: string; value: number }[]
+  const serie = serieFull.filter((p) => p.date >= `${anio}-01-01`)
+  const vals = serie.map((p) => p.value)
+  const min = Math.min(...vals)
+  const max = Math.max(...vals)
+  const pts = serie
+    .map((p, i) => {
+      const x = (i / Math.max(1, serie.length - 1)) * 300
+      const y = 66 - ((p.value - min) / Math.max(1, max - min)) * 62
+      return `${x.toFixed(1)},${y.toFixed(1)}`
+    })
+    .join(' ')
+  const first = vals[0]
+  const last = vals[vals.length - 1]
+  const periodPct = first > 0 ? ((last - first) / first) * 100 : 0
+
+  const upcoming = rematesData
+    .filter((r) => r.date >= TODAY && r.status === 'scheduled')
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? ''))
+  const remates = upcoming.slice(0, 4).map((r) => {
+    const [, m, d] = r.date.split('-')
+    return {
+      fecha: r.date === TODAY ? 'HOY' : `${d}/${m}`,
+      hora: r.time ?? '—',
+      nombre: r.consignatariaName,
+      lugar: r.location.split(',')[0],
+    }
+  })
+
+  // Consignatarias reales que operan en Entre Ríos (del índice de remates)
+  const erNames = new Map<string, string>()
+  for (const r of rematesData) {
+    if (r.province === 'ENTRE RIOS' && !erNames.has(r.consignatariaName)) {
+      erNames.set(r.consignatariaName, r.location.split(',')[0])
+    }
+    if (erNames.size >= 3) break
+  }
+  const consignatarias = [...erNames.entries()].map(([nombre, zona]) => ({ nombre, zona }))
+
+  const kgHa = 100
+  return {
+    fecha: marketPrices.lastUpdate,
+    inmag: {
+      current: fmt(inmag.current),
+      changePct: `${Math.abs(inmag.change)}%`,
+      up: inmag.change >= 0,
+    },
+    cats,
+    spark: {
+      points: pts,
+      fromDate: serie[0]?.date ?? '',
+      toDate: serie[serie.length - 1]?.date ?? '',
+      periodPct: `${periodPct >= 0 ? '+' : ''}${periodPct.toFixed(1)}%`,
+    },
+    macro: {
+      blue: fmt(marketPrices.usdBlue.current),
+      maiz: marketPrices.corn.current.toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+      spread: (inmag.current / (marketPrices.corn.current * (marketPrices.usdBlue.current / 1000))).toFixed(1),
+    },
+    remates,
+    consignatarias,
+    arriendo: {
+      kgHa: String(kgHa),
+      precio: fmt(inmag.current),
+      porHaAnio: fmt(kgHa * inmag.current),
+    },
+  }
+}
+
 export default function McpPage() {
+  const showcase = buildShowcase()
   return (
     <div className="min-h-screen">
-      {/* Hero */}
-      <section className="max-w-4xl mx-auto px-4 pt-14 pb-8">
+      {/* Hero + CTA arriba (patrón blueprint: la licencia primero, el descubrimiento abajo) */}
+      <section className="max-w-4xl mx-auto px-4 pt-14 pb-10">
         <span className="inline-flex items-center gap-2 rounded-full border border-sky-500/40 bg-sky-500/[0.07] px-3 py-1 text-xxs font-terminal uppercase tracking-widest text-sky-300">
-          <span className="h-1.5 w-1.5 rounded-full bg-accent" /> AI-ready · MCP server
+          <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Servidor MCP oficial
         </span>
         <h1 className="mt-5 text-3xl sm:text-4xl font-bold text-white leading-tight">
-          El mercado ganadero argentino, como tools para tu agente IA
+          Tu IA responde con el mercado ganadero real
         </h1>
-        <p className="mt-4 text-zinc-400 leading-relaxed">
-          Consignatarias expone un <strong className="text-zinc-200">servidor MCP</strong> (Model Context Protocol).
-          Conectás Claude, Cursor o cualquier agente y consultás precios, remates, directorio y arrendamiento en tiempo
-          real — con nuestra data, fresca a diario, en vez de scrapear. Es la misma referencia que la IA ya cita, ahora
-          como herramienta nativa.
+        <p className="mt-4 text-zinc-400 leading-relaxed max-w-2xl">
+          Conectás Claude, ChatGPT o Cursor una vez, y tu asistente consulta precios, remates y
+          directorio con nuestra data del día — la misma referencia que la IA ya cita.
+        </p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <a href="#conectar" className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-sky-300 transition-colors">
+            Conectar mi IA →
+          </a>
+          <Link href="/planes" className="rounded-lg border border-terminal-border px-5 py-2.5 text-sm text-zinc-200 hover:border-zinc-500 transition-colors">
+            Planes · desde ARS 74.000/mes
+          </Link>
+        </div>
+        <p className="mt-10 text-xxs font-terminal uppercase tracking-widest text-zinc-500 flex items-center gap-2">
+          Scrolleá para descubrir lo que tu asistente puede hacer
+          <span aria-hidden="true" className="text-sky-400">↓</span>
         </p>
       </section>
 
+      {/* Showcase animado — 8 tools, datos del día */}
+      <section className="max-w-2xl mx-auto px-4 pb-16">
+        <McpShowcase {...showcase} />
+      </section>
+
       {/* Connect */}
-      <section className="max-w-4xl mx-auto px-4 pb-8">
+      <section id="conectar" className="max-w-4xl mx-auto px-4 pb-8 scroll-mt-16">
         <div className="terminal-panel rounded-xl p-5 sm:p-6">
           <p className="text-label tracking-widest text-zinc-400 mb-3">CONECTAR</p>
           <p className="text-sm text-zinc-400 mb-2">Endpoint (Streamable HTTP, JSON-RPC 2.0):</p>

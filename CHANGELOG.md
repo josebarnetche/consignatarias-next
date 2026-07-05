@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.102.0] — 2026-07-04
+
+### /mcp: "Scrolleá para descubrir" — el servidor MCP demostrado en vivo
+
+Rediseño al patrón blueprint de daisyUI (CTA arriba, descubrimiento animado abajo):
+
+- **Hero nuevo** — badge "Servidor MCP oficial", H1 "Tu IA responde con el mercado ganadero real", CTA doble (Conectar mi IA → ancla al config / Planes · desde ARS 74.000) y la invitación "Scrolleá para descubrir lo que tu asistente puede hacer ↓".
+- **Showcase animado de 8 tools** (`McpShowcase.tsx`) — cada tool es una conversación real que se anima al entrar en viewport: pregunta → typing → chip del tool call (⚡) → respuesta con **los datos del día** (nunca inventados; server-side desde market-prices + remates): INMAG con variación, grid de 6 categorías, sparkline YTD que se dibuja, macro (blue/maíz/spread), 4 remates reales, consignatarias de Entre Ríos del índice, canon de arrendamiento calculado al INMAG del día, y alerta creada (badge API key). IntersectionObserver + CSS; respeta `prefers-reduced-motion`. `revalidate: 3600`.
+- El bloque CONECTAR, la tabla de tools y el CTA final quedan debajo del recorrido.
+
 ## [1.101.1] — 2026-07-04
 
 ### /planes: decir menos es más
