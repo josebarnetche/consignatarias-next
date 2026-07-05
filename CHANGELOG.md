@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.107.0] — 2026-07-05
+
+### Integración del dato nuevo: Intel de mercado (seguí a la competencia) + MCP/API
+
+Cablea el transaccional del MAG (recién destrabado) y los CUITs en las superficies de producto, con el frame acordado: **el MAG es el mercado de referencia (~12% nacional), no el total** — nada de overpromise, y el valor es ver lo que operan los OTROS.
+
+- **Intel de mercado en el dashboard de la consignataria.** Nuevo `MarketIntelPanel` en el Resumen (solo firmas reclamadas, como gancho): seguí hasta N consignatarias y view cuántas cabezas y a qué precio operaron en el MAG de Cañuelas. Tabla `market_watchlist` (RLS) + API `/api/market-intel` (GET/POST/DELETE) con **capa de monetización por tier: free sigue 3 firmas, PRO sube a 20 + histórico**. Copy honesto ("no incluye ferias del interior ni venta directa").
+- **MCP (11 tools).** Nuevo `actividad_consignatarias` — ranking de cabezas + precio promedio por firma en el MAG de referencia. **CUIT** agregado a `buscar_consignataria` (90 firmas). Actualizado `/mcp` y `llms.txt`.
+- **API.** `/api/lots` (transaccional lote-level, ya existía) ahora con data fluyendo; el perfil `/api/consignatarias/[slug]` ya expone CUIT.
+- **Pendiente menor:** regenerar `database.types.ts` para incluir `market_watchlist` (hoy da DRIFT en check-db-refs — la tabla existe en prod, es snapshot stale). El **feed** de actividad diaria ("X operó Y cabezas") queda anotado como próximo paso.
+
 ## [1.106.1] — 2026-07-05
 
 ### FIX CRÍTICO: el reclamo de consignataria estaba roto desde el 10 de abril
