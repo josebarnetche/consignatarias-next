@@ -11,6 +11,7 @@ import { WhatsAppIconButton } from '@/components/share/WhatsAppShare'
 import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2, Inbox } from 'lucide-react'
 import QRCode from '@/components/QRCode'
 import { UpgradeConfirmTracker } from '@/components/UpgradeConfirmTracker'
+import MarketIntelPanel from '@/components/MarketIntelPanel'
 import { trackEvent } from '@/lib/analytics'
 
 interface Consignataria {
@@ -342,6 +343,13 @@ export default function DashboardClient({
             viewPercentile={consignataria?.verified ? viewPercentile : 0}
             provincialRank={provincialRank}
           />
+
+          {/* Intel de mercado — seguí la actividad de la competencia en el MAG (gancho + upsell) */}
+          {consignataria && (
+            <div className="mt-4">
+              <MarketIntelPanel />
+            </div>
+          )}
 
           {showChecklist && completedFields && consignataria && (
             <WelcomeChecklist profileSlug={consignataria.canonical_slug} displayName={consignataria.display_name} completedFields={completedFields} />
