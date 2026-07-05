@@ -114,10 +114,14 @@ function parseLots(html: string): ParsedLot[] {
 
 async function fetchLotPage(date: string, magId: number, tipo: 'FAENA' | 'INVERNADA') {
   const dateMag = ddmmyyyy(date)
+  // haciinfo000007 usa txtFECHA (fecha única), lisConsignatario (minúscula) y
+  // lisTipo numérico (1=FAENA, 2=INVERNADA). Los nombres viejos (txtFECHAINI/FIN,
+  // LisConsignatario mayúscula, txtTipo=palabra) eran de 000008 → el DLL los
+  // ignoraba y devolvía el default (hoy, sin consignatario) → 0 filas parseadas.
+  const lisTipo = tipo === 'FAENA' ? 1 : 2
   const url =
-    `${URL_007}?txtFECHAINI=${encodeURIComponent(dateMag)}` +
-    `&txtFECHAFIN=${encodeURIComponent(dateMag)}` +
-    `&LisConsignatario=${magId}&txtTipo=${tipo}&LISTADO=SI`
+    `${URL_007}?txtFECHA=${encodeURIComponent(dateMag)}` +
+    `&lisConsignatario=${magId}&lisTipo=${lisTipo}&CP=&LISTADO=SI`
   const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   return await res.text()
