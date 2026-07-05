@@ -7,6 +7,13 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.108.0] — 2026-07-05
+
+### Pulso del mercado: drip animado de la actividad de Cañuelas en el overview
+
+- **`MagPulse`** en el Resumen del dashboard: dripea las cabezas operadas por consignatario del último día con datos, con **count-up (ease-out)**, reveal escalonado y barra que se llena — dopamínico, con sensación de progreso (el acumulado histórico de operaciones también cuenta hacia arriba). Endpoint público `/api/market-pulse`.
+- **Worker `mag-lots` ahora drena newest-first** (`order by date desc`): el mercado reciente se scrapea primero para que el pulso y el intel se sientan en vivo; el histórico viejo se backfillea después.
+
 ## [1.107.0] — 2026-07-05
 
 ### Integración del dato nuevo: Intel de mercado (seguí a la competencia) + MCP/API
