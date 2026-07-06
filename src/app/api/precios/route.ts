@@ -86,7 +86,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const detallado = searchParams.get('detallado') === 'true'
     const historicoParam = searchParams.get('historico')
     const historicoDays = historicoParam
-      ? Math.max(7, Math.min(3650, parseInt(historicoParam, 10) || 90))
+      // Tope 7700 días (~21 años): la serie novillitos 401/420 arranca en 2006.
+      ? Math.max(7, Math.min(7700, parseInt(historicoParam, 10) || 90))
       : null
 
     // Detailed mode — return 16 sub-categories from mag_prices_detailed
@@ -118,6 +119,46 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           subcategorias: rows,
           fuente: 'Mercado Agroganadero — haciinfo000502 (Resolución MPyT)',
           fuente_url: 'https://www.mercadoagroganadero.com.ar/dll/hacienda1.dll/haciinfo000502',
+        },
+        timestamp: new Date().toISOString(),
+      })
+      response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=600')
+      if (auth) setQuotaHeaders(response, auth)
+      return finalize(response)
+    }
+
+    // Historical mode — serie=novillitos devuelve la serie Novillitos 401/420
+    // (haciinfo000307, diaria desde 2005 — era Liniers + era MAG). Aditivo v1.108.0.
+    const serieParam = searchParams.get('serie')?.toLowerCase() || null
+    if (historicoDays !== null && (serieParam === 'novillitos' || serieParam === 'novillito_401_420')) {
+      const admin = createAdminClient()
+      const cutoff = new Date()
+      cutoff.setUTCDate(cutoff.getUTCDate() - historicoDays)
+      const { data, error } = await admin
+        .from('mag_novillito_history')
+        .select('date, price_max, price_min, price_avg, price_median, head_count, total_kgs, kg_per_head, total_amount')
+        .gte('date', cutoff.toISOString().slice(0, 10))
+        .order('date', { ascending: true })
+      if (error || !data || data.length === 0) {
+        return finalize(NextResponse.json({
+          success: false,
+          error: { code: 'NO_SERIES_DATA', message: 'Sin datos de la serie novillitos para ese rango.' },
+        }, { status: 503 }))
+      }
+      const values = data.map((r) => Number(r.price_avg)).filter((v) => Number.isFinite(v))
+      const response = NextResponse.json({
+        success: true,
+        data: {
+          serie: 'novillitos_401_420',
+          descripcion: 'Precio Novillitos 401/420 kg — serie diaria desde 9/12/2005 (sugerida por el MAG como reemplazo de la antigua categoría Novillos 401/420, base de contratos de arrendamiento)',
+          dias: data.length,
+          desde: data[0].date,
+          hasta: data[data.length - 1].date,
+          min: Math.min(...values),
+          max: Math.max(...values),
+          series: data,
+          fuente: 'Mercado Agroganadero — haciinfo000307',
+          fuente_url: 'https://www.mercadoagroganadero.com.ar/dll/hacienda6.dll/haciinfo000307',
         },
         timestamp: new Date().toISOString(),
       })

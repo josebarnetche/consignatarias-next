@@ -7,6 +7,26 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.110.0] — 2026-07-05
+
+### La serie de 20 años: Novillitos 401/420 desde 2006, backfilleada y viva
+
+El P1 del catálogo MAG. `haciinfo000307` publica la serie diaria del Novillito 401/420 kg desde la
+era Liniers — la base contractual histórica de arrendamientos.
+
+- **`mag_novillito_history`** (migración aplicada a prod): **4.046 días** backfilleados, del
+  **02/01/2006 al 03/07/2026** (0 meses fallados) — de $2,38/kg a $4.537/kg. Max/mín/promedio/mediana +
+  cabezas + kilos por día. El histórico Enterprise pasa de 11 a **20,5 años**.
+- **`scripts/backfill-novillitos.mjs`** — one-shot mes a mes (el DLL no acepta rangos largos), throttle
+  2s, retry por mes, y **sanity check anti-backfill-fantasma**: verifica tras el primer upsert que la
+  tabla realmente tenga filas (el primer run "upserteó" 4.046 días a un path corrupto que Supabase
+  respondía 2xx vacío — causa: valores de `.env.local` con `\n` literal; el script ahora sanitiza).
+- **Upkeep diario** — `/api/cron/scrape-mag-detailed` (22:37 L-V) suma la sección novillito: upsert
+  del día junto con INMAG/detallado/USD.
+- **API**: `GET /api/precios?historico=N&serie=novillitos` (aditivo, key Enterprise) devuelve la serie
+  con min/max del rango y fuente; el tope de `historico` sube de 3.650 a 7.700 días (~21 años).
+- Catálogo MAG actualizado: 000307 ✅ integrado; 000007 (lots) ✅ revivido en v1.106.0.
+
 ## [1.109.0] — 2026-07-05
 
 ### Pulso público + Intel de-gateado por julio

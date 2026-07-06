@@ -200,6 +200,7 @@ export async function POST(req: NextRequest) {
     date: targetDateIso,
     detailed_upserted: 0,
     inmag_upserted: 0,
+    novillito_upserted: 0,
     usd_upserted: 0,
     errors: [] as string[],
   }
@@ -247,6 +248,69 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     result.errors.push(
       `inmag fetch: ${err instanceof Error ? err.message : 'unknown'}`,
+    )
+  }
+
+  // 2b. Serie Novillitos 401/420 (haciinfo000307) para la misma fecha —
+  //     mantiene mag_novillito_history al día tras el backfill 2005→hoy
+  //     (scripts/backfill-novillitos.mjs). Nota: el DLL responde latin-1,
+  //     pero acá solo parseamos dígitos/fechas → res.text() alcanza.
+  try {
+    const urlNov =
+      `https://www.mercadoagroganadero.com.ar/dll/hacienda6.dll/haciinfo000307` +
+      `?txtFECHAINI=${encodeURIComponent(targetDateMag)}` +
+      `&txtFECHAFIN=${encodeURIComponent(targetDateMag)}`
+    const res = await fetch(urlNov, { headers: { 'User-Agent': USER_AGENT } })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const html = await res.text()
+    // Fila: Fecha | Máx | Mín | Prom | Mediana | Cabezas | Kgs | Kgs/Cab | Importe
+    interface NovRow {
+      date: string
+      price_max: number | null
+      price_min: number | null
+      price_avg: number
+      price_median: number | null
+      head_count: number | null
+      total_kgs: number | null
+      kg_per_head: number | null
+      total_amount: number | null
+    }
+    const novRows: NovRow[] = []
+    for (const tr of html.matchAll(/<TR[^>]*>([\s\S]*?)<\/TR>/gi)) {
+      const cells = [...tr[1].matchAll(/<T[DH][^>]*>([\s\S]*?)<\/T[DH]>/gi)]
+        .map((c) => c[1].replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').trim())
+        .filter(Boolean)
+      if (cells.length < 9) continue
+      const dm = cells[0].match(/(\d{2})\/(\d{2})\/(\d{4})/)
+      if (!dm) continue
+      const num = (v: string) => {
+        const n = parseFloat(v.replace(/[$\s]/g, '').replace(/\./g, '').replace(',', '.'))
+        return Number.isFinite(n) ? n : null
+      }
+      const [pMax, pMin, pAvg, pMed, cab, kgs, kgCab, imp] = cells.slice(1, 9).map(num)
+      if (pAvg === null || pAvg <= 0) continue
+      novRows.push({
+        date: `${dm[3]}-${dm[2]}-${dm[1]}`,
+        price_max: pMax,
+        price_min: pMin,
+        price_avg: pAvg,
+        price_median: pMed && pMed > 0 ? pMed : null,
+        head_count: cab !== null ? Math.round(cab) : null,
+        total_kgs: kgs,
+        kg_per_head: kgCab,
+        total_amount: imp,
+      })
+    }
+    if (novRows.length > 0) {
+      const { error } = await supabase
+        .from('mag_novillito_history')
+        .upsert(novRows, { onConflict: 'date' })
+      if (error) result.errors.push(`novillito upsert: ${error.message}`)
+      else result.novillito_upserted = novRows.length
+    }
+  } catch (err) {
+    result.errors.push(
+      `novillito fetch: ${err instanceof Error ? err.message : 'unknown'}`,
     )
   }
 

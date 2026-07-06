@@ -1221,6 +1221,45 @@ export type Database = {
         }
         Relationships: []
       }
+      mag_novillito_history: {
+        Row: {
+          created_at: string
+          date: string
+          head_count: number | null
+          kg_per_head: number | null
+          price_avg: number | null
+          price_max: number | null
+          price_median: number | null
+          price_min: number | null
+          total_amount: number | null
+          total_kgs: number | null
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          head_count?: number | null
+          kg_per_head?: number | null
+          price_avg?: number | null
+          price_max?: number | null
+          price_median?: number | null
+          price_min?: number | null
+          total_amount?: number | null
+          total_kgs?: number | null
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          head_count?: number | null
+          kg_per_head?: number | null
+          price_avg?: number | null
+          price_max?: number | null
+          price_median?: number | null
+          price_min?: number | null
+          total_amount?: number | null
+          total_kgs?: number | null
+        }
+        Relationships: []
+      }
       mag_prices_detailed: {
         Row: {
           category_group: string

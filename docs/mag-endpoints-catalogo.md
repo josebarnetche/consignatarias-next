@@ -18,7 +18,7 @@ Encoding: **latin-1** (no UTF-8). HTML de tablas `<TR>/<TD>` parseable por regex
 | `haciinfo000002` | hacienda1 | Precios por Categoría (Clasificación **RUCA**) | `scrape-auctions.mjs` → `market-prices.json.categories` (6 categorías del sitio) |
 | `haciinfo000003` | hacienda1 | **Entrada por Provincia** | `scrape-auctions.mjs` → `market-prices.json.provinceEntry` |
 | `haciinfo000006` | hacienda1 | **Entrada por Consignatario** | `scrape-auctions.mjs` → `consignatarioEntry` + `auctionDayEntries` (datos MAG en perfiles) |
-| `haciinfo000007` | hacienda1 | Analítico de ventas por consignatario (**lote-level**) | `mag-lots-pipeline.yml` → `mag_consignataria_sales_lots` → `/api/lots` ⚠️ **tabla en 0 filas — pipeline a revisar** |
+| `haciinfo000007` | hacienda1 | Analítico de ventas por consignatario (**lote-level**) | `mag-lots-pipeline.yml` → `mag_consignataria_sales_lots` → `/api/lots` ✅ pipeline revivido en v1.106.0 (cosechando) |
 | `haciinfo000011` | hacienda2 | **Totales de cabezas, importes e I.N.M.A.G.** en un período | `scrape-auctions.mjs` (fuente del INMAG diario) → `market-prices.json.inmag` + `mag_inmag_history` |
 | `haciinfo000013` | hacienda2 | **Índice Sugerido para Arrendamientos Rurales** (INMAG/ROFEX por día) | ✅ **v1.104.0**: `scrapeArrendamientoOficial()` → `market-prices.json.arrendamientoOficial` → MCP `calcular_arrendamiento` + `get_contexto_macro` + `/api/precios.indice_arrendamiento_oficial` |
 | `haciinfo000502` | hacienda1 | Precios por Categoría **RESOL-2018-32-APN-SGA#MPYT** (16 subcategorías) | `mag-detailed-prices.yml` → `mag_prices_detailed` → `/api/precios?detallado=true` + MCP `get_precios_detallados` |
@@ -31,7 +31,7 @@ Encoding: **latin-1** (no UTF-8). HTML de tablas `<TR>/<TD>` parseable por regex
 | `haciinfo000014` | hacienda2 | **Índice General MAG en un período** | Serie del índice general por rango de fechas | Backfill/verificación cruzada del INMAG histórico |
 | `haciinfo000224` | hacienda6 | **Analítico de Precios (Clasificación MAG)** | Analítico por categoría con la clasificación propia del MAG | Tercera vista de precios (RUCA vs RESOL vs MAG); enriquecer `?detallado` |
 | `haciinfo000225` | hacienda6 | **Resumen de Precios (Clasificación MAG)** | Resumen agregado de la clasificación MAG | Ídem — versión resumen |
-| `haciinfo000307` | hacienda6 | **Precio Novillitos 401/420 kg** | Serie Max/Mín/Prom/Mediana + cabezas + kg **desde el 9/12/2005** (ONCCA 5701/2005). El propio MAG la publica "debido a la demanda de usuarios que tienen contratos de arrendamiento basados en la antigua categoría" | ⭐ **Serie de 20 años** — producto histórico Enterprise (`?historico` hoy llega a 2015) + segunda base contractual de arrendamiento |
+| `haciinfo000307` | hacienda6 | **Precio Novillitos 401/420 kg** | Serie Max/Mín/Prom/Mediana + cabezas + kg **desde el 9/12/2005** (era Liniers + era MAG). ⚠️ el DLL NO acepta rangos largos: pedir MES a MES | ✅ **v1.108.0**: backfill `scripts/backfill-novillitos.mjs` → `mag_novillito_history` · upkeep diario en `/api/cron/scrape-mag-detailed` · API `GET /api/precios?historico=N&serie=novillitos` |
 | `hacigraf000015` | hacienda2 | Gráfico cabezas remitidas por **Remitente** | Gráfico (JS) por remitente | Dato a nivel PRODUCTOR (ver `docs/archive/BATTLE-6-REMITENTE-NETWORK.md`) |
 | `hacigraf000016` | hacienda2 | Evolución precios promedios por categoría | Gráfico de evolución | Redundante con nuestra serie propia |
 
@@ -61,10 +61,11 @@ El índice viene con 3 decimales y coma (`4.198,438`); el parser identifica la c
 
 ## Próximos pasos sugeridos (por valor)
 
-1. **P0 — revivir `mag-lots-pipeline` (000007):** la tabla `mag_consignataria_sales_lots` está en 0
-   filas y respalda `/api/lots` (producto Enterprise vendido) y el futuro comparador por precio logrado.
-2. **P1 — serie Novillitos 401/420 (000307):** backfill 2005→hoy a una tabla propia; extiende el
-   histórico Enterprise de 11 a 20 años y agrega la segunda base contractual de arrendamiento.
+1. ~~P0 — revivir `mag-lots-pipeline` (000007)~~ ✅ hecho en v1.106.0 (05-jul, sesión paralela):
+   params del DLL corregidos + constraint única del upsert; la tabla cosecha (322+ filas, 2.816 jobs
+   re-encolados). Siguiente: comparador por **precio logrado**.
+2. ~~P1 — serie Novillitos 401/420 (000307)~~ ✅ hecho en v1.108.0 (05-jul): tabla
+   `mag_novillito_history` + backfill 2005→hoy + upkeep diario + `?serie=novillitos` en la API.
 3. **P2 — analítico/resumen clasificación MAG (000224/225):** tercera clasificación de precios para
    `?detallado`.
 4. **P2 — movimientos de hacienda (000005):** explorar formato; posible señal de oferta.
