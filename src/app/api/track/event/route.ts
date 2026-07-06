@@ -43,6 +43,7 @@ export async function POST(req: NextRequest) {
       ai_engine: clip(body.aiEngine, 32),
       path: clip(body.path, 512),
       session_id: clip(body.sessionId, 64),
+      visitor_id: req.cookies.get('cid')?.value ?? null, // liga el evento al visitante first-party
       meta,
     })
 

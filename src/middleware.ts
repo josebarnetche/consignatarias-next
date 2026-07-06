@@ -156,6 +156,19 @@ export async function middleware(request: NextRequest) {
   // Refresh session — do NOT remove this
   await supabase.auth.getUser()
 
+  // First-party visitor ID (cookie propia `cid`, anónima). Base de la capa de datos
+  // first-party: atribución + stitching a la cuenta al loguearse. httpOnly (la lee el
+  // server en /api/track/*); 1 año. Solo se setea si no existe.
+  if (!request.cookies.get('cid')) {
+    supabaseResponse.cookies.set('cid', crypto.randomUUID(), {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 365,
+      path: '/',
+    })
+  }
+
   return supabaseResponse
 }
 

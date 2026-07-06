@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Script from 'next/script';
 import AnalyticsProvider from '@/components/AnalyticsProvider';
+import CookieConsent from '@/components/CookieConsent';
 import WhatsAppLeadFAB from '@/components/WhatsAppLeadFAB';
 import rematesData from '@/lib/data/remates.json';
 
@@ -158,6 +159,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <AnalyticsProvider />
+        <CookieConsent />
         {children}
         {/* Burbuja global de WhatsApp (lead "sumá tu consignataria" → whatsapp_lead).
             Montada en el ROOT layout para que aparezca en TODAS las páginas,

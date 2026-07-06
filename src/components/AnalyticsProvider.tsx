@@ -155,11 +155,72 @@ function SignupTracker() {
   return null
 }
 
+/**
+ * VisitTracker — capa first-party. Una vez por sesión, manda la atribución (landing,
+ * referrer, utm, motor de IA, device) a /api/track/visit, que hace el upsert del
+ * visitante (cookie `cid` seteada en middleware): first-touch + last-touch, cuenta de
+ * visitas y stitching a la cuenta al loguearse. El `cid` lo lee el server desde la
+ * cookie httpOnly; acá no se toca. Best-effort, no bloquea la navegación.
+ */
+function VisitTracker() {
+  useEffect(() => {
+    try {
+      const key = 'visit_fired'
+      if (sessionStorage.getItem(key)) return
+      sessionStorage.setItem(key, '1')
+
+      const params = new URLSearchParams(window.location.search)
+      let refHost: string | null = null
+      const ref = document.referrer
+      if (ref) {
+        try {
+          refHost = new URL(ref).hostname
+        } catch {
+          /* ref no parseable */
+        }
+      }
+      let aiEngine: string | null = null
+      try {
+        aiEngine = sessionStorage.getItem('ai_engine')
+      } catch {
+        /* storage */
+      }
+      if (!aiEngine && refHost) aiEngine = AI_ENGINES.find(([re]) => re.test(refHost!))?.[1] ?? null
+      if (!aiEngine) {
+        const utm = params.get('utm_source')
+        if (utm) aiEngine = engineFromUtm(utm)
+      }
+      const device = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
+
+      const payload = JSON.stringify({
+        landing: window.location.pathname,
+        referrer: refHost,
+        utm_source: params.get('utm_source'),
+        utm_medium: params.get('utm_medium'),
+        utm_campaign: params.get('utm_campaign'),
+        ai_engine: aiEngine,
+        device,
+        new_session: true,
+      })
+      fetch('/api/track/visit', {
+        method: 'POST',
+        body: payload,
+        headers: { 'Content-Type': 'application/json' },
+        keepalive: true,
+      }).catch(() => {})
+    } catch {
+      /* storage / parse unavailable — no-op */
+    }
+  }, [])
+  return null
+}
+
 export default function AnalyticsProvider() {
   return (
     <Suspense fallback={null}>
       <PageViewTracker />
       <AiReferralTracker />
+      <VisitTracker />
       <SignupTracker />
     </Suspense>
   )
