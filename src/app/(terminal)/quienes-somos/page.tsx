@@ -46,7 +46,7 @@ export default function QuienesSomosPage() {
         <h2 className="text-zinc-200 text-lg font-medium mt-8 mb-3">Que hacemos</h2>
         <p className="text-zinc-400 mb-6">
           Agregamos informacion de remates de hacienda de mas de 67 consignatarias en 10 provincias
-          argentinas en un solo calendario unificado. Tambien mantenemos un directorio de 364 plantas
+          argentinas en un solo calendario unificado. Tambien mantenemos un directorio de 1.102 plantas
           frigorificas habilitadas por MAGYP y un panel de precios de mercado con el indice INMAG,
           precios por categoria de hacienda, maiz FOB y cotizacion del dolar.
         </p>

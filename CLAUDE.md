@@ -61,7 +61,7 @@ neto en mano, comparador, spread, seasonality, INMAG history) are free. The prod
 | Public Enterprise endpoints (auth-gated) | 2 — `/api/precios`, `/api/lots` | |
 | Consignatarias (canonical) | 104 | `src/lib/data/consignataria-slugs.ts` (`getAllProfiles().length` — the public count) |
 | Consignatarias (DB row count) | 86 | `consignatarias` table |
-| Frigorificos | 364 | SENASA/MAGYP data |
+| Frigorificos | 1.102 | SENASA/MAGYP data |
 | Remates indexed | ~380 active | `src/lib/data/remates.json` (daily scrape) |
 | Provincias | 12 | |
 | MAG consignatarias (master list) | 44 | `mag_consignatarias` table |

@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     template: '%s | Consignatarias.com.ar',
   },
   description:
-    `Calendario unificado de remates ganaderos de múltiples consignatarias argentinas. ${rematesCount} remates, 364 frigoríficos MAGYP, precios INMAG en tiempo real. Acceso libre.`,
+    `Calendario unificado de remates ganaderos de múltiples consignatarias argentinas. ${rematesCount} remates, 1.102 frigoríficos MAGYP, precios INMAG en tiempo real. Acceso libre.`,
   keywords: [
     'remates ganaderos',
     'consignatarias argentina',
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     url: 'https://www.consignatarias.com.ar',
     siteName: 'Consignatarias.com.ar',
     title: 'Remates Ganaderos Argentina | Calendario 2026 | Consignatarias.com.ar',
-    description: `Calendario unificado de ${rematesCount} remates ganaderos, 364 frigoríficos y precios INMAG. La plataforma de inteligencia del mercado ganadero argentino.`,
+    description: `Calendario unificado de ${rematesCount} remates ganaderos, 1.102 frigoríficos y precios INMAG. La plataforma de inteligencia del mercado ganadero argentino.`,
     images: [
       {
         url: '/og-image.png',
@@ -78,7 +78,7 @@ export const metadata: Metadata = {
     site: '@consignatarias',
     creator: '@memola_onbase',
     title: 'Remates Ganaderos Argentina | Calendario 2026',
-    description: `Calendario unificado de ${rematesCount} remates ganaderos, 364 frigoríficos y precios INMAG. Inteligencia del mercado ganadero argentino.`,
+    description: `Calendario unificado de ${rematesCount} remates ganaderos, 1.102 frigoríficos y precios INMAG. Inteligencia del mercado ganadero argentino.`,
     images: ['/og-image.png'],
   },
   alternates: {
@@ -151,7 +151,7 @@ export default function RootLayout({
         />
         <DatasetSchema
           name="Directorio de Frigoríficos MAGYP Argentina"
-          description="364 plantas frigoríficas habilitadas por MAGYP con datos de provincia, etapa y matrícula"
+          description="1.102 plantas frigoríficas habilitadas por MAGYP con datos de provincia, etapa y matrícula"
           url="https://www.consignatarias.com.ar/frigorificos"
           keywords={['frigorificos argentina', 'plantas faena', 'MAGYP']}
         />

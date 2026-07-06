@@ -23,7 +23,7 @@ export default function PlatformStats() {
     setStats({
       consignatarias: 104,
       remates: 392,
-      frigorificos: 364,
+      frigorificos: 1102,
       provincias: 14,
       subscribers: 500
     })
