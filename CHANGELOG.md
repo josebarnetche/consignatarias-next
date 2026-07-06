@@ -7,6 +7,13 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.114.0] — 2026-07-05
+
+### Landing PRO reenfocada + personalizable por consignataria (ABM)
+
+- **Reframe del PRO:** no es "aparecer" (tu firma ya está en el directorio) sino **destacar**. La escena PRO ahora dice "Ya aparecés. Con PRO, destacás." + **analizamos tus redes (logos IG/FB/WhatsApp/YouTube/TikTok) y tu web, y te posicionamos**. Nuevos mockups: "tu consignataria destacada" (badge dorado) y "tu remate destacado".
+- **Landing personalizable por firma (`/para-consignatarias/[slug]`):** le mandás a cada consignataria su link y la landing se arma con SU nombre y provincia (hero, mockups) + **su actividad medida en el MAG** ("y a vos ya te medimos: X operó Y cabezas en el último cierre"). ABM puro. La base `/para-consignatarias` queda genérica; las personalizadas son noindex.
+
 ## [1.113.0] — 2026-07-05
 
 ### La serie de 20 años, navegable y comunicada
