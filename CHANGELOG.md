@@ -7,7 +7,7 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
-## [1.117.0] — 2026-07-06
+## [1.120.0] — 2026-07-06
 
 ### Todos los emails al manual de marca completo + BIMI listo
 
