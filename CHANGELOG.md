@@ -7,6 +7,19 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.121.0] — 2026-07-06
+
+### Capa de datos first-party: ID de visitante, atribución y stitching (cimiento)
+
+Base para aprovechar la información de usuarios de forma propia y legal (consentimiento implícito, Ley 25.326).
+
+- **Cookie propia `cid`** (httpOnly, 1 año) seteada en el middleware = ID de visitante anónimo, persistente entre sesiones.
+- **Tabla `visitors`**: first-touch + last-touch (landing, referrer, utm, motor de IA, device), conteo de visitas/pageviews, y **stitching** (`user_id` al loguearse — todo el historial anónimo queda atado a la cuenta). RPC atómica `upsert_visitor` (preserva first-touch, incrementa, stitchea).
+- **`/api/track/visit`** + **`VisitTracker`** (en `AnalyticsProvider`): el cliente manda la atribución 1×/sesión; el server lee el `cid` de la cookie. Con reintento por el race de la primera carga.
+- **`value_events.visitor_id`**: cada evento se liga al visitante.
+- **Banner de consentimiento discreto** → política de privacidad.
+- Verificado end-to-end (cid + atribución + banner). **Próximo**: personalización + dashboard de visitantes en Observabilidad.
+
 ## [1.120.0] — 2026-07-06
 
 ### Todos los emails al manual de marca completo + BIMI listo
