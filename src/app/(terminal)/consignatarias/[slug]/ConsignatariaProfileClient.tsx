@@ -593,17 +593,28 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
   const logoSrc = profile.logoUrl ?? getLogoUrl(profile.canonicalSlug)
   const brandColor = !profile.logoUrl ? getBrandColor(profile.canonicalSlug) : null
 
-  // Perfil PRO: el último remate en video va autoplay/mute en el hero. Fuente: el
-  // último video del canal mapeado (= último remate subido), o el youtubeUrl del
-  // remate más reciente. (consignataria_videos está vacía → no se usa como primaria.)
+  // Perfil PRO: el último remate en video va autoplay/mute en el hero — PERO solo si la
+  // transmisión es RECIENTE. Si la firma no transmite hace meses (ej. Bressan), un
+  // reproductor viejo queda peor que nada, aunque sea PRO → no se muestra. El logo
+  // destacado + badge PRO quedan igual. Fuente: canal mapeado o youtubeUrl del remate.
   const isPro = tier === 'pro' || tier === 'enterprise'
   const ytId = (url?: string | null): string | null =>
     url?.match(/(?:v=|youtu\.be\/|\/live\/|\/embed\/|shorts\/)([a-zA-Z0-9_-]{11})/)?.[1] ?? null
-  const latestAuctionVideoUrl = [...auctions]
-    .filter((a) => a.youtubeUrl)
-    .sort((a, b) => (b.date || '').localeCompare(a.date || ''))[0]?.youtubeUrl
+  const PRO_VIDEO_FRESH_DAYS = 45
+  const videoCandidates: Array<{ id: string; date: string }> = []
+  if (youtubeChannel?.latestVideo?.videoId && youtubeChannel.latestVideo.publishedAt) {
+    videoCandidates.push({ id: youtubeChannel.latestVideo.videoId, date: youtubeChannel.latestVideo.publishedAt })
+  }
+  for (const a of auctions) {
+    const id = ytId(a.youtubeUrl)
+    if (id && a.date) videoCandidates.push({ id, date: a.date })
+  }
+  videoCandidates.sort((x, y) => y.date.localeCompare(x.date))
+  const freshestVideo = videoCandidates[0]
   const latestVideoId =
-    youtubeChannel?.latestVideo?.videoId ?? ytId(latestAuctionVideoUrl) ?? videos[0]?.youtube_video_id ?? null
+    freshestVideo && Date.now() - new Date(freshestVideo.date).getTime() < PRO_VIDEO_FRESH_DAYS * 86_400_000
+      ? freshestVideo.id
+      : null
 
   return (
     <div className="max-w-6xl mx-auto px-2 sm:px-4 pt-3 pb-20 md:pb-3 space-y-0">
