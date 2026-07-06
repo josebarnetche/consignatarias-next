@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
 import corredorManifest from '../../../../public/el-corredor/manifest.json'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { getCurrentSession } from '@/lib/user-tier'
 import { createAdminClient } from '@/lib/supabase-server'
 import { SubscribeForm } from './SubscribeForm'
@@ -104,42 +105,20 @@ const MESES_C = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
  */
 async function getMonthlyConsignatarioStats() {
   try {
-    const db = createAdminClient()
+    // La agregación va en la DB (rpc): traer los lotes y sumar en JS toca el cap
+    // de 1.000 filas de Supabase → totales parciales. La función hace el GROUP BY.
+    const db = createAdminClient() as unknown as SupabaseClient
     const now = new Date()
     const lastPrev = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1) - 86400000)
     const y = lastPrev.getUTCFullYear()
     const m = lastPrev.getUTCMonth() + 1
-    const mm = String(m).padStart(2, '0')
-    const from = `${y}-${mm}-01`
-    const to = `${y}-${mm}-${String(lastPrev.getUTCDate()).padStart(2, '0')}`
 
-    const { data: lots } = await db
-      .from('mag_consignataria_sales_lots')
-      .select('mag_consignataria_id, head_count, date')
-      .gte('date', from)
-      .lte('date', to)
-      .limit(100000)
-    if (!lots || lots.length === 0) return null
+    const { data } = await db.rpc('mag_monthly_consignatario_stats', { p_year: y, p_month: m })
+    if (!data) return null
+    const d = data as { total: number; firms_count: number; days: number; top: { name: string; cabezas: number }[] }
+    if (!d.top || d.top.length === 0) return null
 
-    const { data: names } = await db.from('mag_consignatarias').select('mag_id, name')
-    const nameById = new Map((names || []).map((n) => [n.mag_id, n.name]))
-
-    const byFirm = new Map<number, number>()
-    const days = new Set<string>()
-    let total = 0
-    for (const r of lots) {
-      const c = r.head_count || 0
-      total += c
-      if (r.date) days.add(r.date)
-      byFirm.set(r.mag_consignataria_id, (byFirm.get(r.mag_consignataria_id) || 0) + c)
-    }
-    const firms = [...byFirm.entries()]
-      .map(([id, cabezas]) => ({ name: nameById.get(id) || `Firma #${id}`, cabezas }))
-      .filter((f) => f.cabezas > 0)
-      .sort((a, b) => b.cabezas - a.cabezas)
-    if (firms.length === 0) return null
-
-    return { label: `${MESES_C[m - 1]} ${y}`, total, firmsCount: firms.length, days: days.size, top: firms.slice(0, 15) }
+    return { label: `${MESES_C[m - 1]} ${y}`, total: d.total, firmsCount: d.firms_count, days: d.days, top: d.top }
   } catch {
     return null
   }
