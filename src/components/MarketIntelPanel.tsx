@@ -66,8 +66,21 @@ export default function MarketIntelPanel() {
     fetch('/api/consignatarias/ranking')
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
-        const list = (j?.ranking || j?.consignatarias || j?.items || []) as Array<{ slug: string; name: string }>
-        if (Array.isArray(list)) setFirms(list.filter((f) => f.slug && f.name))
+        // /api/consignatarias/ranking devuelve { data: [{ slug, nombre, ... }] }.
+        // Antes buscábamos ranking/consignatarias/items + campo `name` → lista vacía
+        // y el droplist quedaba sin opciones (no se podía agregar ninguna firma).
+        const list = (j?.data || j?.ranking || j?.consignatarias || j?.items || []) as Array<{
+          slug: string
+          nombre?: string
+          name?: string
+        }>
+        if (Array.isArray(list)) {
+          setFirms(
+            list
+              .filter((f) => f.slug && (f.nombre || f.name))
+              .map((f) => ({ slug: f.slug, name: (f.nombre || f.name) as string })),
+          )
+        }
       })
       .catch(() => {})
   }, [])
