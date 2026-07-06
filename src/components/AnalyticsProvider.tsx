@@ -202,12 +202,24 @@ function VisitTracker() {
         device,
         new_session: true,
       })
-      fetch('/api/track/visit', {
-        method: 'POST',
-        body: payload,
-        headers: { 'Content-Type': 'application/json' },
-        keepalive: true,
-      }).catch(() => {})
+      // En la PRIMERA visita la cookie `cid` la setea el middleware en la respuesta
+      // de la página; si el fetch corre antes de que el browser la comprometa, el
+      // server responde no-cid. Reintentamos una vez (para entonces ya está).
+      const send = (retry: boolean) => {
+        fetch('/api/track/visit', {
+          method: 'POST',
+          body: payload,
+          headers: { 'Content-Type': 'application/json' },
+        })
+          .then((r) => r.json())
+          .then((j) => {
+            if (!retry && j && j.ok === false && j.reason === 'no-cid') {
+              setTimeout(() => send(true), 1500)
+            }
+          })
+          .catch(() => {})
+      }
+      send(false)
     } catch {
       /* storage / parse unavailable — no-op */
     }
