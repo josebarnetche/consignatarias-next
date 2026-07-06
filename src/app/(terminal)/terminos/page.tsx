@@ -4,11 +4,11 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Términos y Condiciones',
   description:
-    'Términos y condiciones de uso de consignatarias.com.ar, operado por Memola Medios S.A.S. Naturaleza del servicio, fuentes de datos, propiedad intelectual, suscripciones, descargo de responsabilidad y solicitudes de remoción.',
+    'Términos y condiciones de uso de consignatarias.com.ar, operado por Memola Medios S.A.S. Naturaleza del servicio, fuentes de datos, propiedad intelectual, suscripciones, API y MCP, descargo de responsabilidad y solicitudes de remoción.',
   alternates: { canonical: 'https://www.consignatarias.com.ar/terminos' },
 }
 
-const UPDATED = '31 de mayo de 2026'
+const UPDATED = '6 de julio de 2026'
 
 export default function TerminosPage() {
   return (
@@ -49,9 +49,10 @@ export default function TerminosPage() {
         <section>
           <h2 className="text-zinc-100 text-lg font-medium mb-2">3. Naturaleza del servicio</h2>
           <p className="text-zinc-400">
-            El Sitio es un <strong className="text-zinc-200">directorio y observatorio de información</strong>{' '}
-            del mercado ganadero argentino: calendario de remates, directorio de consignatarias y frigoríficos,
-            e indicadores de mercado (INMAG, derivados y series históricas). Memola{' '}
+            El Sitio es un <strong className="text-zinc-200">observatorio del mercado ganadero argentino</strong>:
+            indicadores de mercado (INMAG y sus series desde 2015, precios por categoría, derivados), calendario
+            nacional de remates, directorio de consignatarias y frigoríficos habilitados, y el dato transaccional
+            del Mercado Agroganadero de Cañuelas presentado operación por operación. Memola{' '}
             <strong className="text-zinc-200">no es</strong> consignataria, comisionista, corredor, martillero,
             agente de liquidación y compensación, entidad financiera ni parte de las operaciones de compraventa,
             remate o faena de hacienda. El Sitio no realiza intermediación en dichas operaciones ni garantiza su
@@ -130,10 +131,13 @@ export default function TerminosPage() {
           <h2 className="text-zinc-100 text-lg font-medium mb-2">9. Propiedad intelectual</h2>
           <p className="text-zinc-400">
             La selección, organización, sistematización y presentación de los datos, la base de datos, el
-            software, el diseño, la marca, los logotipos, los índices y los contenidos editoriales propios del
-            Sitio (incluidos El Oráculo y El Corredor) son de titularidad de Memola o se utilizan con
-            autorización, y están protegidos por la Ley 11.723 y normas concordantes. Los datos públicos
-            subyacentes (precios, registros oficiales, hechos) no son objeto de apropiación. Queda prohibida la
+            software, el diseño, la marca, los logotipos, los índices derivados propios y los contenidos
+            editoriales del Sitio (incluidos El Oráculo y El Corredor) son de titularidad de Memola o se utilizan
+            con autorización, y están protegidos por la Ley 11.723 y normas concordantes. El{' '}
+            <strong className="text-zinc-200">INMAG es un índice y una marca del Mercado Agroganadero (MAG)</strong>:
+            Memola lo reproduce, normaliza y republica con cita de fuente, sin arrogarse su titularidad. Los datos
+            públicos subyacentes (precios, registros oficiales, hechos) son información pública reprocesada y no
+            son objeto de apropiación. Queda prohibida la
             reproducción, extracción sustancial, scraping masivo o reutilización sistemática de la base de datos
             o del contenido del Sitio sin autorización escrita de Memola, sin perjuicio de la cita de fuente
             para usos legítimos e informativos.
@@ -143,10 +147,16 @@ export default function TerminosPage() {
         <section>
           <h2 className="text-zinc-100 text-lg font-medium mb-2">10. Cuentas, suscripciones y pagos</h2>
           <p className="text-zinc-400">
-            El acceso al directorio y a los datos de mercado es, en general, libre y gratuito. Ciertas
-            funcionalidades requieren suscripción paga (PRO Consignataria y Enterprise). Los pagos
-            en pesos se procesan a través de Rebill y, para Enterprise, también por transferencia o USDT; Memola
-            no almacena datos completos de tarjetas. Las suscripciones se renuevan automáticamente por períodos
+            El acceso del productor al observatorio —índices, precios, calendario de remates, directorio,
+            calculadoras, alertas y &ldquo;Mi Ganado&rdquo;— es libre y gratuito. Ciertas funcionalidades para
+            consignatarias, desarrolladores e instituciones requieren suscripción paga:{' '}
+            <strong className="text-zinc-200">PRO Consignataria</strong> (con prueba gratis y sin permanencia) y
+            los planes <strong className="text-zinc-200">Enterprise</strong> de API/MCP (Starter, Growth y
+            Scale). Los precios vigentes de cada plan figuran en{' '}
+            <Link href="/planes" className="text-sky-400 hover:underline">/planes</Link> y{' '}
+            <Link href="/enterprise" className="text-sky-400 hover:underline">/enterprise</Link>. Los pagos en
+            pesos (ARS) se procesan a través de Rebill; Memola no almacena datos completos de tarjetas. Las
+            suscripciones se renuevan automáticamente por períodos
             sucesivos salvo cancelación. El usuario puede cancelar en cualquier momento desde su cuenta, sin
             penalidad; el acceso continúa hasta el final del período ya abonado. Se reconocen los derechos del
             consumidor previstos en la Ley 24.240 de Defensa del Consumidor, incluido el{' '}
@@ -162,13 +172,21 @@ export default function TerminosPage() {
         </section>
 
         <section>
-          <h2 className="text-zinc-100 text-lg font-medium mb-2">11. API Enterprise</h2>
+          <h2 className="text-zinc-100 text-lg font-medium mb-2">11. API y MCP Enterprise</h2>
           <p className="text-zinc-400">
-            El acceso programático vía API está sujeto a los cupos del plan contratado y a períodos de
-            facturación de 28 días. Superar el cupo devuelve{' '}
-            <code className="text-zinc-300 bg-zinc-900 px-1">429 quota_exceeded</code>. No está permitido
-            revender, sublicenciar ni redistribuir el acceso o los datos de la API sin acuerdo escrito. Memola
-            puede suspender claves ante uso abusivo o contrario a estos términos.
+            El acceso programático a los datos se ofrece a través de la <strong className="text-zinc-200">API
+            REST</strong> (INMAG, precios por categoría, remates, dato transaccional lote a lote y directorios) y
+            del <strong className="text-zinc-200">servidor MCP propio</strong> de Memola, publicado en el registro
+            oficial de MCP como{' '}
+            <code className="text-zinc-300 bg-zinc-900 px-1">ar.com.consignatarias/cattle-market</code>, y está
+            reservado a los planes Enterprise. La autenticación se realiza mediante{' '}
+            <strong className="text-zinc-200">claves de API</strong>, personales e intransferibles, sujetas a los
+            cupos y límites de tasa del plan contratado y a períodos de facturación de 28 días. Se espera un uso
+            razonable dentro de esos límites; superar el cupo devuelve{' '}
+            <code className="text-zinc-300 bg-zinc-900 px-1">429 quota_exceeded</code>. No está permitido revender,
+            sublicenciar ni redistribuir el acceso o los datos de la API o del MCP sin acuerdo escrito: lo
+            contratado es el acceso y el servicio, no una licencia de redistribución de las series públicas
+            subyacentes. Memola puede suspender claves ante uso abusivo o contrario a estos términos.
           </p>
         </section>
 

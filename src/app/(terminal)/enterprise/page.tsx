@@ -6,13 +6,13 @@ import { EnterpriseTierCTA } from './EnterpriseTierCTA'
 import { PLATFORM_STATS } from '@/lib/platform-stats'
 
 export const metadata: Metadata = {
-  title: 'Enterprise — API y datos del mercado ganadero argentino',
+  title: 'Enterprise — API y MCP del mercado ganadero argentino',
   description:
-    'API completa, webhooks, reportes y dashboards sobre el mercado ganadero argentino. 3 planes: Starter ARS 74.000, Growth ARS 451.000, Scale a medida. Para apps agtech, frigoríficos, bancos y traders.',
+    'API REST y servidor MCP sobre el mercado ganadero argentino: INMAG, precios por categoría, calendario de remates, dato transaccional del MAG y directorios. Para apps agtech, frigoríficos, bancos, traders y agentes de IA. 3 planes: Starter, Growth y Scale — ver /planes.',
   openGraph: {
     title: 'Enterprise',
     description:
-      'API del mercado ganadero argentino. Starter ARS 74.000, Growth ARS 451.000, Scale a medida.',
+      'API y MCP del mercado ganadero argentino, para instituciones y agentes de IA. Starter, Growth y Scale — ver /planes.',
     url: 'https://www.consignatarias.com.ar/enterprise',
     type: 'website',
   },
@@ -25,7 +25,12 @@ const FAQ_ITEMS = [
   {
     question: '¿Qué endpoints incluye la API?',
     answer:
-      `Índice INMAG (actual + histórico desde 2015), la serie Novillitos 401/420 DESDE 2006 en ARS y USD (oficial y blue — 20 años, única por API), precios por categoría (novillos, novillitos, vaquillonas, vacas, toros, terneros), índice oficial de arrendamiento, USD oficial y blue, calendario de remates, directorio de ${PLATFORM_STATS.consignatariasCanonical} consignatarias y ${PLATFORM_STATS.frigorificos} frigoríficos. Documentación completa en /api-docs.`,
+      `Índice INMAG (actual + histórico desde 2015), la serie Novillitos 401/420 DESDE 2006 en ARS y USD (oficial y blue — 20 años, única por API), precios por categoría (novillos, novillitos, vaquillonas, vacas, toros, terneros), índice oficial de arrendamiento, USD oficial y blue, calendario de remates, el dato transaccional del MAG de Cañuelas lote por lote (cabezas y precio por consignatario) y el directorio de ${PLATFORM_STATS.consignatariasCanonical} consignatarias y ${PLATFORM_STATS.frigorificos} frigoríficos. Todo disponible por REST o por el servidor MCP. Documentación completa en /api-docs.`,
+  },
+  {
+    question: '¿Tienen servidor MCP para agentes de IA?',
+    answer:
+      'Sí. Publicamos un servidor MCP propio (~11 tools de lectura) listado en el registry oficial de MCP como "ar.com.consignatarias/cattle-market". Cualquier agente o asistente compatible con MCP (Claude, ChatGPT, Copilot y clientes propios) puede consultar INMAG, precios por categoría, remates, el dato lote-level del MAG y los directorios en lenguaje natural. Se autentica con la misma API key (Bearer) que la API REST, sin integración aparte.',
   },
   {
     question: '¿Qué pasa si supero el límite de requests de mi plan?',
@@ -70,7 +75,8 @@ const TIERS = [
       'Apps en desarrollo, productos chicos, valorización de rodeos, dashboards internos. Lectura diaria suficiente.',
     requests: '10.000 req/mes',
     features: [
-      'API key dedicada',
+      'API key dedicada (Bearer) — API REST + MCP',
+      'Servidor MCP en el registry oficial (ar.com.consignatarias/cattle-market) — ~11 tools de lectura para agentes de IA',
       'INMAG diario + histórico desde 2015',
       'Serie Novillitos 401/420 desde 2006 — 20 años en ARS y USD (única por API)',
       '16 sub-categorías oficiales MAG con corte por peso',
@@ -102,7 +108,7 @@ const TIERS = [
       'Dashboards web personalizados',
       'Alertas configurables (INMAG, sub-categoría, USD, remates)',
       'Acceso al analista por email/Slack',
-      'Lote-level transactional data (próximamente)',
+      'Dato transaccional del MAG lote por lote (cabezas y precio por consignatario)',
       'SLA 99,8% — soporte en 4h hábiles',
     ],
     cta: 'Contratar Growth',
@@ -209,7 +215,7 @@ export default function EnterprisePage() {
               Enterprise
             </span>
             <span className="text-zinc-500 text-xxs font-terminal uppercase tracking-wider">
-              API + datos del mercado ganadero argentino
+              API + MCP del mercado ganadero argentino
             </span>
           </div>
           <h1 className="text-2xl md:text-3xl font-heading text-zinc-100 mb-3 leading-tight">
@@ -217,10 +223,12 @@ export default function EnterprisePage() {
             <span className="text-zinc-400"> argentino. Sin armar scraping propio.</span>
           </h1>
           <p className="text-zinc-400 text-sm max-w-3xl leading-relaxed">
-            Tres planes pensados para distintas verticales: apps agtech en
-            desarrollo, productos en producción y operadores de alto volumen.
-            INMAG, precios por categoría, calendario de remates, directorios y
-            webhooks — todo bajo un solo contrato.
+            El dato del mercado ganadero argentino como servicio, para
+            instituciones y agentes de IA. INMAG, precios por categoría,
+            calendario de remates, el dato transaccional del MAG, directorios y
+            webhooks — por API REST o servidor MCP, bajo un solo contrato. Tres
+            planes según la vertical: apps agtech en desarrollo, productos en
+            producción y operadores de alto volumen.
           </p>
         </div>
       </section>

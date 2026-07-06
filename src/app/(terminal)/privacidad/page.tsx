@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.consignatarias.com.ar/privacidad' },
 }
 
-const UPDATED = '31 de mayo de 2026'
+const UPDATED = '6 de julio de 2026'
 
 export default function PrivacidadPage() {
   return (
@@ -33,11 +33,13 @@ export default function PrivacidadPage() {
         <section>
           <h2 className="text-zinc-100 text-lg font-medium mb-2">2. Datos que recolectamos</h2>
           <ul className="text-zinc-400 space-y-1 list-disc list-inside">
-            <li>Email y nombre al crear una cuenta o suscribirte al newsletter.</li>
-            <li>Datos de facturación al contratar un plan PRO o Enterprise (procesados por el proveedor de pagos; no almacenamos números completos de tarjeta).</li>
-            <li>Datos de uso y métricas agregadas (Google Analytics 4).</li>
+            <li>Email al suscribirte al newsletter de faena o a las alertas (alerta de precio por umbral, cierre mensual de arrendamiento).</li>
+            <li>Datos de cuenta al registrarte, incluidos los que nos comparte Google al iniciar sesión con tu cuenta de Google (nombre, email y foto de perfil).</li>
+            <li>Datos de facturación al contratar un plan Enterprise (API/MCP) o PRO Consignataria (procesados por el proveedor de pagos; no almacenamos números completos de tarjeta).</li>
+            <li>Claves de API (API keys) y registros de uso, para usuarios Enterprise.</li>
+            <li>Datos de uso y métricas: Google Analytics 4, vistas de perfil y referrals de IA (de qué motor o asistente —p. ej. ChatGPT o Copilot— proviene cada visita).</li>
+            <li>Contenido que declarás en el observatorio: watchlists del intel de mercado, tu rodeo en «Mi Ganado» y las marcas de remates que seguís o publicás.</li>
             <li>Datos técnicos: dirección IP, tipo de navegador (user-agent) y registros de actividad, para seguridad, prevención de abusos y diagnóstico.</li>
-            <li>Claves de API y registros de uso (para usuarios Enterprise).</li>
           </ul>
           <p className="text-zinc-400 mt-2">
             La carga de datos es voluntaria. La negativa a proporcionar ciertos datos puede impedir el uso de
@@ -48,10 +50,12 @@ export default function PrivacidadPage() {
         <section>
           <h2 className="text-zinc-100 text-lg font-medium mb-2">3. Finalidad y base del tratamiento</h2>
           <p className="text-zinc-400">
-            Tratamos los datos para: operar el servicio y la cuenta del usuario; procesar y facturar
-            suscripciones; enviar el newsletter al que el usuario se suscribió y comunicaciones relativas a su
-            cuenta y a la prestación del servicio; gestionar el uso de la API; prevenir fraudes y abusos; y
-            elaborar métricas agregadas. El tratamiento se realiza con el consentimiento libre, expreso e
+            Tratamos los datos para: operar el observatorio y la cuenta del usuario; guardar sus watchlists,
+            su rodeo en «Mi Ganado» y sus marcas de remates; enviar el newsletter y las alertas a las que el
+            usuario se suscribió (alerta de precio por umbral, cierre mensual de arrendamiento, faena) y
+            comunicaciones relativas a su cuenta y a la prestación del servicio; procesar y facturar
+            suscripciones; gestionar el uso de la API y del servidor MCP; prevenir fraudes y abusos; y elaborar
+            métricas agregadas. El tratamiento se realiza con el consentimiento libre, expreso e
             informado del titular (arts. 5 y 6 de la Ley 25.326), prestado al crear una cuenta, suscribirse o
             contratar un plan. <strong className="text-zinc-200">No vendemos ni cedemos datos personales a
             terceros con fines publicitarios.</strong>
@@ -78,9 +82,11 @@ export default function PrivacidadPage() {
             ley. Para ejercerlos, escribí a{' '}
             <a href="mailto:legales@memola.com.ar" className="text-sky-400 hover:underline">legales@memola.com.ar</a>.
             Responderemos el acceso dentro de los 10 días corridos y la rectificación o supresión dentro de los
-            5 días hábiles, conforme a los plazos legales. El titular puede asimismo realizar denuncias o
-            reclamos ante la <strong className="text-zinc-200">Agencia de Acceso a la Información Pública
-            (AAIP)</strong>, órgano de control de la Ley 25.326.
+            5 días hábiles, conforme a los plazos legales. Podés darte de baja del newsletter y de las alertas en
+            cualquier momento desde el enlace de cada email o desde tu cuenta, y solicitar la eliminación de tu
+            cuenta y de los datos no sujetos a conservación legal escribiéndonos a la casilla indicada. El titular
+            puede asimismo realizar denuncias o reclamos ante la <strong className="text-zinc-200">Agencia de
+            Acceso a la Información Pública (AAIP)</strong>, órgano de control de la Ley 25.326.
           </p>
         </section>
 

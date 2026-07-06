@@ -3,8 +3,8 @@ import Link from 'next/link'
 import { SectionBreadcrumbSchema, SpeakableSchema, DefinedTermSetSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
-  title: 'Glosario Ganadero — 39 Términos del Mercado',
-  description: 'Glosario completo con 39 definiciones del mercado ganadero argentino: remate, consignataria, INMAG, DT-e, invernada, feedlot, Liniers, categorías de hacienda, razas y más.',
+  title: 'Glosario Ganadero — 46 Términos del Mercado',
+  description: 'Glosario completo con 46 definiciones del mercado ganadero argentino: remate, consignataria, INMAG, MAG, DT-e, invernada, feedlot, arrendamiento, categorías de hacienda, razas y más.',
   openGraph: {
     title: 'Glosario Ganadero',
     description: 'Glosario con definiciones de terminos del mercado ganadero argentino: remate, consignataria, INMAG, invernada, cria, frigorifico y mas.',
@@ -76,7 +76,7 @@ const GLOSSARY_TERMS: GlossaryTerm[] = [
   },
   {
     term: 'INMAG',
-    definition: 'Indice Novillo del Mercado Agroganadero. Precio de referencia del kilogramo vivo de novillo, publicado por el Mercado Agroganadero de Liniers. Es el principal indicador de precios de la hacienda vacuna en Argentina, expresado en $/kg vivo.',
+    definition: 'Indice Novillo del Mercado Agroganadero (MAG). Precio de referencia del kilogramo vivo de novillo, publicado por el Mercado Agroganadero de Cañuelas, con serie disponible desde 2015. Es el principal indicador de precios de la hacienda vacuna en Argentina, expresado en $/kg vivo.',
     link: { href: '/mercado/inmag', text: 'Ver precio INMAG actual →' },
   },
   {
@@ -161,8 +161,8 @@ const GLOSSARY_TERMS: GlossaryTerm[] = [
   },
   {
     term: 'Liniers',
-    definition: 'Mercado de Hacienda de Liniers, ubicado en Buenos Aires. Es el principal mercado concentrador de ganado de Argentina y referencia nacional de precios. Opera diariamente con subastas públicas.',
-    link: { href: '/mercado/inmag', text: 'Ver precio INMAG (referencia Liniers) →' },
+    definition: 'Mercado de Hacienda de Liniers, histórico mercado concentrador de ganado de la Ciudad de Buenos Aires. Operó con subastas públicas diarias hasta 2022, cuando cerró y sus operaciones se trasladaron al Mercado Agroganadero (MAG) de Cañuelas, actual referencia nacional de precios.',
+    link: { href: '/mercado/inmag', text: 'Ver precio INMAG (referencia MAG) →' },
   },
   {
     term: 'Lote',
@@ -208,6 +208,15 @@ const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Vientre',
     definition: 'Hembra bovina apta para reproducción: vaca o vaquillona en servicio, preñada o con cría al pie. Los vientres son la base del rodeo de cría y se comercializan en remates especiales.',
   },
+  {
+    term: 'MAG',
+    definition: 'Mercado Agroganadero de Cañuelas. Principal mercado concentrador de hacienda de Argentina, en funcionamiento desde 2022 tras el cierre del histórico Mercado de Liniers. Publica el INMAG y datos de operaciones (cabezas y precios) que sirven de referencia de precios para todo el país.',
+    link: { href: '/mercado/inmag', text: 'Ver datos del MAG →' },
+  },
+  {
+    term: 'Arrendamiento',
+    definition: 'Alquiler de campos para uso ganadero. En el mercado suele expresarse en kilogramos de novillo por hectárea, lo que ata su valor al precio de la hacienda. Su cierre mensual de referencia es un indicador seguido por productores e inversores.',
+  },
 ]
 
 const BASE_URL = 'https://www.consignatarias.com.ar'
@@ -234,7 +243,7 @@ export default function GlosarioPage() {
       />
       <SpeakableSchema
         url="https://www.consignatarias.com.ar/glosario"
-        headline="Glosario Ganadero — 39 Términos del Mercado"
+        headline="Glosario Ganadero — 46 Términos del Mercado"
         cssSelectors={['h1', '.glossary-term', '.glossary-definition']}
       />
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
@@ -276,7 +285,7 @@ export default function GlosarioPage() {
 
         {/* Footer */}
         <p className="text-zinc-500 text-xs mt-4">
-          Ultima actualizacion: Marzo 2026. Memola Medios S.A.S. &mdash; Todos los derechos reservados.
+          Ultima actualizacion: Julio 2026. Memola Medios S.A.S. &mdash; Todos los derechos reservados.
         </p>
       </div>
     </>

@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.119.0] — 2026-07-06
+
+### Páginas de contenido/legal actualizadas al producto actual
+
+Refresh de 5 páginas para reflejar lo que el sitio ES hoy (API + MCP, intel, PRO Consignataria, dato transaccional del MAG), sin inventar ni romper la solidez legal.
+
+- **Términos** (`/terminos`): servicio = observatorio (INMAG desde 2015 + dato transaccional MAG Cañuelas); INMAG aclarado como índice y marca del MAG (Memola republica con cita, sin apropiárselo); sección "API y MCP Enterprise" (API keys, uso razonable, prohibición de reventa del dato); productor gratis + PRO/Enterprise pagos vía Rebill en ARS; precios remiten a /planes-/enterprise (sin hardcodear). Fecha → 06-jul.
+- **Privacidad** (`/privacidad`): datos recolectados al día (email, login Google, API keys, GA4 + vistas de perfil + referrals de IA, watchlists, Mi Ganado, marcas); procesadores (Rebill/Resend/GA/Supabase/Vercel); derechos (baja de newsletter/alertas, borrado de cuenta, AAIP Ley 25.326).
+- **El Oráculo / manifiesto** (`/el-oraculo` + `docs/EL-ORACULO-MANIFIESTO.md`): modelo en 3 capas (productor gratis · API+MCP para instituciones/IA · PRO Consignataria); misión ampliada a "legible por personas y máquinas/IA"; INMAG "desde 2015".
+- **Glosario** (`/glosario`): conteo 39→46; INMAG corregido (Cañuelas, no Liniers); Liniers marcado como cerrado (2022); sumados MAG y Arrendamiento.
+- **Enterprise** (`/enterprise`): API REST + servidor MCP (11 tools, registry oficial), auth por API key, tiers — alineado a "el dato del mercado como servicio para instituciones y agentes IA".
+
 ## [1.118.0] — 2026-07-06
 
 ### Cron mensual: el cierre de arrendamiento por email a los suscriptos

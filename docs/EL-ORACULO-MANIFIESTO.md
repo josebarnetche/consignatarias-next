@@ -4,7 +4,7 @@
 
 > Manifiesto fundacional · consignatarias.com.ar
 > Mesa de mercado · Memola Medios SAS
-> Edición 01/2026 — 10 de mayo de 2026
+> Edición 01/2026 · 10 de mayo de 2026 — revisado 6 de julio de 2026
 
 ---
 
@@ -31,7 +31,7 @@ El oracle del mercado bovino argentino funciona porque las consignatarias operan
 Este documento defiende una tesis y describe un programa.
 
 La tesis: **el INMAG es el único precio público auditable del mercado bovino argentino, hoy es el quasi-oracle del sector y consignatarias.com.ar es la mesa que lo lee para el resto del país**.
-El programa: convertir esa lectura en infraestructura de información, con metodología abierta, cadencia diaria y archivo público.
+El programa: convertir esa lectura en infraestructura de información —con metodología abierta, cadencia diaria y archivo público, legible tanto por personas como por las máquinas y los agentes de IA que hoy consultan el dato.
 
 Cita textual de la cátedra FCV-UBA 2018, p.3:
 
@@ -259,7 +259,7 @@ Estrena:
 
 El precio que publica MAG-Cañuelas se conoce hoy como **INMAG — Índice del Mercado Agroganadero**.
 Es el sucesor directo del precio Liniers.
-Es el precio que consignatarias.com.ar publica diariamente desde enero de 2024 (337+ días de serie reconstruida al cierre de esta edición).
+Es el precio que consignatarias.com.ar publica diariamente, con serie reconstruida que empalma hacia atrás hasta 2015.
 
 ### III.3 El vacío académico post-2018
 
@@ -440,7 +440,7 @@ Se expresa en pesos argentinos por kilo vivo ($/kg vivo).
 
 Al cierre de esta edición (10/05/2026, datos al último día disponible de scraping):
 
-- **Serie reconstruida en pipeline propio:** 337+ días continuos desde enero de 2024.
+- **Serie reconstruida en pipeline propio:** diaria y continua, con historia que se remonta a 2015.
 - **Cobertura:** todos los días hábiles con operatoria en MAG.
 - **Frecuencia de actualización:** diaria, post-cierre (~17:00 ART).
 - **Comparable interanual real en USD oficial:** disponible desde noviembre de 2011 (USD oficial Banco Nación, vía dolarapi.com).
@@ -625,14 +625,21 @@ Es el backlog editorial de las próximas 12-18 ediciones.
 ### IX.1 Quiénes somos
 
 **consignatarias.com.ar** es una marca-producto de **Memola Medios SAS**, sociedad por acciones simplificada con sede en Argentina, dedicada a hacer observable y comparable la actividad del mercado bovino argentino.
-Los productos activos al cierre de esta edición:
+Los productos activos al cierre de esta edición se ordenan en tres capas.
 
-- **El Calendario** — calendario unificado de remates (366+ eventos cargados, 84 consignatarias, 14 provincias).
-- **El Directorio** — directorio de casas consignatarias (~74 perfiles).
-- **Los Frigoríficos** — directorio de frigoríficos (364 establecimientos, base SENASA).
-- **INMAG en vivo** — serie diaria del cierre del MAG, 337+ días.
-- **El Corredor** — cierre mensual del mercado, 12 páginas, distribución gratuita por email.
+**El observatorio — gratuito para el productor.** Todo el dato de referencia es libre, indexable y citable. El productor no paga nada:
+
+- **El Calendario** — calendario nacional unificado de remates (~380 eventos, 12 provincias).
+- **El Directorio** — directorio de casas consignatarias (más de un centenar de perfiles).
+- **Los Frigoríficos** — directorio de frigoríficos habilitados (364 establecimientos, base SENASA/MAGYP).
+- **INMAG en vivo** — serie diaria del cierre del MAG, reconstruida desde 2015, en pesos y en USD oficial.
+- **Mi Ganado, comparador, neto en mano, spread, alertas de precio** — calculadoras y avisos operativos para el productor, sin costo.
+- **El Corredor** — cierre mensual del mercado, distribución gratuita por email.
 - **El Oráculo** — este manifiesto.
+
+**El dato como servicio — API + MCP.** La misma lectura, entregada a desarrolladores, instituciones y agentes de IA: endpoints REST (INMAG, precios por categoría, remates, operación por operación, directorios) con autenticación por API key, y un servidor MCP propio de lectura publicado en el registry oficial de MCP como `ar.com.consignatarias/cattle-market`. Los planes Enterprise (Starter / Growth / Scale) se publican en `/planes` y `/enterprise`. Las instituciones pagan por acceso y servicio —feed normalizado en USD, entrega masiva, soporte, índices derivados—, no por una licencia de la serie pública del MAG.
+
+**PRO Consignataria.** Para la casa consignataria: destacar y publicitar sus remates en el sitio y por email a la base de productores, y medir su presencia en las IAs —cuántas veces la citan asistentes como ChatGPT o Copilot cuando alguien pregunta por su plaza—. Prueba gratuita, sin permanencia.
 
 La mesa que lo escribe es un equipo pequeño que opera detrás del producto.
 Lee a Iriarte 2008, a FCV-UBA 2018, a Diez 2020 y a Scoponi-Santi 2018 con el mismo gusto que mira el cierre del INMAG.
@@ -664,7 +671,8 @@ Las ediciones siguientes (cadencia tentativa: una por trimestre) actualizan:
 
 **El Corredor** (cierre mensual, 12 páginas) es la pulsación operativa.
 **El Oráculo** (manifiesto, este documento) es la tesis estructural.
-**El Calendario / El Directorio / Los Frigoríficos / INMAG en vivo** son los productos de datos en vivo.
+**El Calendario / El Directorio / Los Frigoríficos / INMAG en vivo** son los productos de datos en vivo, gratuitos para el productor.
+**La API y el servidor MCP** son esa misma lectura entregada a máquinas y agentes de IA; **PRO Consignataria** es la capa comercial para las casas del sector.
 
 Próximos productos en backlog editorial (referencia: briefs del cross-reference matrix sección B):
 
@@ -883,7 +891,7 @@ Padrón histórico de consignatarias: 441 firmas en abril 2008 (Iriarte 2008, p.
 Cobertura efectiva de oracle: el INMAG es referencia auditable del 12% del volumen y guía adoptada por el 88% restante.
 
 Lo que está faltando: la captura del 78% privado, el padrón actualizado 2026, el balance académico post-cierre Liniers, el marco regulatorio ALyC ganadero, los comparables internacionales.
-Lo que existe: el INMAG diario, la serie reconstruida 2024-2026, el calendario unificado, el directorio.
+Lo que existe: el INMAG diario, la serie reconstruida desde 2015, el calendario unificado, el directorio — gratis para el productor, y en API + MCP para instituciones y agentes de IA.
 
 La mesa publica El Oráculo como tesis estructural.
 Publica El Corredor cada mes como pulsación.
@@ -896,7 +904,7 @@ Prometemos contarte qué pasó, por qué pasó, y qué quedó observable.
 
 **Mesa de mercado · consignatarias.com**
 *Mercado Decision Infrastructure*
-*Edición 01/2026 · 10 de mayo de 2026*
+*Edición 01/2026 · 10 de mayo de 2026 · revisado 6 de julio de 2026*
 
 Bibliografía completa: sección XI.
 Notas de calidad: sección XII.
