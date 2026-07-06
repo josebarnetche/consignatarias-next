@@ -4,6 +4,7 @@ import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
 import corredorManifest from '../../../../public/el-corredor/manifest.json'
 import { getCurrentSession } from '@/lib/user-tier'
+import { createAdminClient } from '@/lib/supabase-server'
 import { SubscribeForm } from './SubscribeForm'
 import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/JsonLd'
 
@@ -90,9 +91,60 @@ const FAQ = [
   },
 ]
 
+const MESES_C = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+
+/**
+ * Cabezas operadas por consignatario en el MAG de Cañuelas durante el último mes
+ * calendario cerrado — dato transaccional propio (mag_consignataria_sales_lots),
+ * agregado por firma. Devuelve null si todavía no hay datos del mes.
+ */
+async function getMonthlyConsignatarioStats() {
+  try {
+    const db = createAdminClient()
+    const now = new Date()
+    const lastPrev = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1) - 86400000)
+    const y = lastPrev.getUTCFullYear()
+    const m = lastPrev.getUTCMonth() + 1
+    const mm = String(m).padStart(2, '0')
+    const from = `${y}-${mm}-01`
+    const to = `${y}-${mm}-${String(lastPrev.getUTCDate()).padStart(2, '0')}`
+
+    const { data: lots } = await db
+      .from('mag_consignataria_sales_lots')
+      .select('mag_consignataria_id, head_count, date')
+      .gte('date', from)
+      .lte('date', to)
+      .limit(100000)
+    if (!lots || lots.length === 0) return null
+
+    const { data: names } = await db.from('mag_consignatarias').select('mag_id, name')
+    const nameById = new Map((names || []).map((n) => [n.mag_id, n.name]))
+
+    const byFirm = new Map<number, number>()
+    const days = new Set<string>()
+    let total = 0
+    for (const r of lots) {
+      const c = r.head_count || 0
+      total += c
+      if (r.date) days.add(r.date)
+      byFirm.set(r.mag_consignataria_id, (byFirm.get(r.mag_consignataria_id) || 0) + c)
+    }
+    const firms = [...byFirm.entries()]
+      .map(([id, cabezas]) => ({ name: nameById.get(id) || `Firma #${id}`, cabezas }))
+      .filter((f) => f.cabezas > 0)
+      .sort((a, b) => b.cabezas - a.cabezas)
+    if (firms.length === 0) return null
+
+    return { label: `${MESES_C[m - 1]} ${y}`, total, firmsCount: firms.length, days: days.size, top: firms.slice(0, 15) }
+  } catch {
+    return null
+  }
+}
+
 export default async function ElCorredorLanding() {
   const { user } = await getCurrentSession()
   const userEmail = user?.email ?? null
+  const consigStats = await getMonthlyConsignatarioStats()
   return (
     <div className="min-h-screen bg-zinc-950">
       <SectionBreadcrumbSchema section="el-corredor" sectionName="El Corredor" />
@@ -205,6 +257,51 @@ export default async function ElCorredorLanding() {
           </div>
         </div>
       </section>
+
+      {/* CABEZAS POR CONSIGNATARIO — dato transaccional del MAG (mes cerrado) */}
+      {consigStats && (
+        <section className="border-b border-zinc-800">
+          <div className="max-w-6xl mx-auto px-4 py-16 lg:py-24">
+            <div className="mb-10">
+              <div className="text-xs font-mono uppercase tracking-[0.22em] text-sky-400 font-semibold mb-4">
+                · Dato transaccional del MAG · {consigStats.label}
+              </div>
+              <h2 className="text-3xl lg:text-4xl font-mono font-bold text-white tracking-tight max-w-3xl">
+                Cabezas operadas por consignatario
+              </h2>
+              <p className="text-zinc-400 text-sm font-mono leading-relaxed mt-4 max-w-2xl">
+                Operación por operación en el Mercado Agroganadero de Cañuelas.{' '}
+                <span className="text-white font-semibold">{consigStats.firmsCount}</span> firmas ·{' '}
+                <span className="text-white font-semibold">{consigStats.total.toLocaleString('es-AR')}</span> cabezas ·{' '}
+                {consigStats.days} jornada{consigStats.days !== 1 ? 's' : ''}.
+              </p>
+            </div>
+
+            <div className="border border-zinc-800 rounded overflow-hidden">
+              {consigStats.top.map((f, i) => {
+                const pct = Math.max(2, Math.round((f.cabezas / consigStats.top[0].cabezas) * 100))
+                return (
+                  <div key={f.name} className="relative flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 last:border-0 bg-zinc-950">
+                    <div className="absolute inset-y-0 left-0 bg-sky-500/10" style={{ width: `${pct}%` }} aria-hidden />
+                    <span className="relative flex items-baseline gap-3 min-w-0">
+                      <span className="text-zinc-600 font-mono text-xs w-5 shrink-0 text-right">{i + 1}</span>
+                      <span className="text-zinc-200 font-mono text-sm truncate">{f.name}</span>
+                    </span>
+                    <span className="relative text-white font-mono text-sm font-semibold tabular-nums shrink-0 ml-3">
+                      {f.cabezas.toLocaleString('es-AR')}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+
+            <p className="text-zinc-600 text-xs font-mono mt-3 max-w-2xl">
+              Fuente: MAG Cañuelas (haciinfo000007), procesado por consignatarias<span className="text-sky-400">.</span>com. El
+              ranking completo, por categoría y con serie mensual, en cada edición de El Corredor.
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* AUTORIDAD / MARCO */}
       <section className="border-b border-zinc-800 bg-zinc-900/30">
