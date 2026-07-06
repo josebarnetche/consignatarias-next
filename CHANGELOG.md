@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.117.0] — 2026-07-06
+
+### Todos los emails al manual de marca completo + BIMI listo
+
+- **Newsletter semanal reescrita 100% al manual** (`buildWeeklyNewsletterHtml`, función pura testeable): panel carbón, isotipo cielo + wordmark en el header, filas de remate estilo terminal (PRO con ★ y borde ámbar), CTA cielo con texto carbón, cero emojis, radius 2px, mono. **Prueba real enviada a Jose** con los 55 remates de la semana (Resend 200) — es lo que sale el lunes 10:00.
+- **24 templates más migrados** al mismo estándar vía `darkEmailShell()`: claims (confirmación/aprobado/rechazado/admin), PRO consignataria (eyebrow ámbar), alertas (sell-zone, precio, umbral — verde/rojo solo semánticos, CTA siempre cielo), DT-e ×3, bienvenidas ×2, faena, métricas y cierre mensual, Corredor delivery, Enterprise (welcome/quota/trial), arrendamiento, invitaciones. Digest semanal re-tokenizado (`digest-template.ts`). Emojis eliminados de subjects y cuerpos; grids no email-safe → tablas.
+- **Sin marca a propósito**: los mails personales de outreach (texto plano "escrito desde Gmail").
+- **Avatar del remitente (logo en el inbox)**: `public/bimi-logo.svg` (SVG Tiny-PS válido, isotipo sobre carbón) + guía completa en `docs/email-brand-avatar.md` — falta el paso DNS de Jose: DMARC `p=none`→`quarantine` + registro `default._bimi`; Gmail además exige VMC/CMC (certificado pago) — Yahoo/Fastmail lo muestran sin costo; Gravatar como atajo gratis.
+
 ## [1.119.0] — 2026-07-06
 
 ### Páginas de contenido/legal actualizadas al producto actual

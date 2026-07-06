@@ -53,6 +53,37 @@ export function emailBrandFooter(dark = false): string {
 }
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'agro@memola.com.ar'
 
+/* ------------------------------------------------------------------ */
+/*  SHELL OSCURO — manual de marca v2 (mismo patrón que la newsletter   */
+/*  semanal): carbón #09090b, header oscuro integrado (isotipo cielo +  */
+/*  wordmark hueso con punto cielo, border-bottom #27272a), tablas      */
+/*  role="presentation", máx 560px centrado, mono en todo.              */
+/* ------------------------------------------------------------------ */
+
+const EMAIL_MONO = "ui-monospace,'JetBrains Mono',Menlo,Consolas,monospace"
+
+function darkEmailShell(inner: string): string {
+  return `
+  <body style="margin:0;padding:0;background:#09090b">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#09090b"><tr><td align="center" style="padding:28px 12px">
+  <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%">
+
+    <tr><td style="padding:0 0 18px 0;border-bottom:1px solid #27272a">
+      <img src="${APP_URL}/marca/email/isotipo-cielo.png" width="26" height="26" alt="" style="vertical-align:middle;border:0">
+      <span style="font-family:${EMAIL_MONO};font-size:14px;font-weight:600;color:#fafafa;vertical-align:middle;margin-left:8px">consignatarias<span style="color:#38bdf8">.</span>com</span>
+    </td></tr>
+
+    <tr><td style="padding:22px 0 0">
+      <div style="font-family:${EMAIL_MONO};color:#fafafa">
+${inner}
+      </div>
+    </td></tr>
+
+  </table>
+  </td></tr></table>
+  </body>`
+}
+
 /**
  * listUnsubHeaders — headers RFC 8058 (List-Unsubscribe + List-Unsubscribe-Post)
  * para emails warm/recordatorios. Calcado del bloque canónico del digest
@@ -87,11 +118,11 @@ function listUnsubHeaders(email: string, campaign?: string): Record<string, stri
 function legalIdentificationHtml(email: string): string {
   const unsubscribeLink = `${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}`
   return `
-    <p style="color:#3f3f46;font-size:10px;line-height:1.6;margin:16px 0 0">
+    <p style="color:#52525b;font-size:10px;line-height:1.6;margin:16px 0 0">
       Memola Medios SAS — consignatarias.com.ar. Obtuvimos su email del registro
       público del Mercado Agroganadero (MAG). Si no desea recibir más estos avisos,
       puede darse de baja en cualquier momento:
-      <a href="${unsubscribeLink}" style="color:#52525b;text-decoration:underline">cancelar suscripción</a>.
+      <a href="${unsubscribeLink}" style="color:#71717a;text-decoration:underline">cancelar suscripción</a>.
     </p>
   `
 }
@@ -104,15 +135,14 @@ export async function sendClaimConfirmation(email: string, displayName: string, 
     from: FROM,
     to: email,
     subject: `Solicitud de verificación — ${displayName}`,
-    html: `
-      ${emailBrandHeader()}
-      <h2>Solicitud recibida</h2>
-      <p>Recibimos tu solicitud de verificación del perfil de <strong>${safeName}</strong>.</p>
-      <p>Nuestro equipo revisará tu solicitud y te contactaremos a la brevedad.</p>
-      <p><a href="${APP_URL}/consignatarias/${slug}">Ver perfil</a></p>
-      <hr>
-      <p style="color:#888;font-size:12px">Consignatarias.com.ar — Directorio ganadero</p>
-    `,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Verificaci&oacute;n de perfil</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 12px">Solicitud recibida</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 10px">Recibimos tu solicitud de verificación del perfil de <strong style="color:#fafafa">${safeName}</strong>.</p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">Nuestro equipo revisará tu solicitud y te contactaremos a la brevedad.</p>
+      <p style="margin:0 0 20px"><a href="${APP_URL}/consignatarias/${slug}" style="color:#38bdf8">Ver perfil</a></p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Consignatarias.com.ar — Directorio ganadero</p>
+    `),
   }).catch(() => {})
 }
 
@@ -124,14 +154,13 @@ export async function sendConsignatariaProWelcome(email: string, displayName: st
     from: FROM,
     to: email,
     subject: `Tu perfil PRO está activo — ${displayName}`,
-    html: `
-      ${emailBrandHeader()}
-      <h2>Bienvenida a PRO</h2>
-      <p>El perfil de <strong>${safeName}</strong> en consignatarias.com.ar quedó <strong>activo como PRO</strong>: aparecés con prioridad (destacado) ante los productores que buscan consignataria, con tu historial de remates, tu calendario y la analítica de tu perfil.</p>
-      <p><a href="${APP_URL}/consignatarias/${slug}">Ver tu perfil</a> · <a href="${APP_URL}/dashboard">Ir a tu panel</a></p>
-      <hr>
-      <p style="color:#888;font-size:12px">Consignatarias.com.ar — la referencia del mercado ganadero</p>
-    `,
+    html: darkEmailShell(`
+      <p style="color:#fbbf24;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">&#9733; Consignataria PRO</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 12px">Bienvenida a PRO</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">El perfil de <strong style="color:#fafafa">${safeName}</strong> en consignatarias.com.ar quedó <strong style="color:#fafafa">activo como PRO</strong>: aparecés con prioridad (destacado) ante los productores que buscan consignataria, con tu historial de remates, tu calendario y la analítica de tu perfil.</p>
+      <p style="margin:0 0 20px"><a href="${APP_URL}/consignatarias/${slug}" style="color:#38bdf8">Ver tu perfil</a> &middot; <a href="${APP_URL}/dashboard" style="color:#38bdf8">Ir a tu panel</a></p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Consignatarias.com.ar — la referencia del mercado ganadero</p>
+    `),
   }).catch(() => {})
 }
 
@@ -157,15 +186,14 @@ export async function sendConsignatariaViewsOutreach(opts: {
       // Mismo bloque de headers que el digest / sendRemateResultsToProducer.
       headers: listUnsubHeaders(opts.to, 'views_outreach'),
       subject: `Tu perfil en consignatarias.com.ar fue visto ${opts.views} veces este mes`,
-      html: `
-      ${emailBrandHeader()}
-        <p>Hola, equipo de <strong>${safeName}</strong>:</p>
-        <p>Tu perfil en consignatarias.com.ar fue visto <strong>${opts.views} veces</strong> en los últimos 30 días por productores que buscan dónde y con quién operar.</p>
-        <p>Con <strong>PRO</strong> aparecés con prioridad (destacado), con tu badge verificado, tu calendario y la analítica de tu perfil — para que esas visitas se vuelvan consultas.</p>
-        <p><a href="${APP_URL}/consignatarias/${opts.slug}/activar">Activá PRO acá</a> — ARS 45.000/mes, cancelás cuando quieras.</p>
-        <p>Saludos,<br>José — consignatarias.com.ar</p>
+      html: darkEmailShell(`
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Hola, equipo de <strong style="color:#fafafa">${safeName}</strong>:</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Tu perfil en consignatarias.com.ar fue visto <strong style="color:#fafafa">${opts.views} veces</strong> en los últimos 30 días por productores que buscan dónde y con quién operar.</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Con <strong style="color:#fbbf24">PRO</strong> aparecés con prioridad (destacado), con tu badge verificado, tu calendario y la analítica de tu perfil — para que esas visitas se vuelvan consultas.</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px"><a href="${APP_URL}/consignatarias/${opts.slug}/activar" style="color:#38bdf8">Activá PRO acá</a> — ARS 45.000/mes, cancelás cuando quieras.</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 4px">Saludos,<br>José — consignatarias.com.ar</p>
         ${legalIdentificationHtml(opts.to)}
-      `,
+      `),
     })
     return { success: true }
   } catch {
@@ -188,15 +216,15 @@ export async function sendClaimNotificationToAdmin(
     from: FROM,
     to: ADMIN_EMAIL,
     subject: `Nueva solicitud de verificación: ${displayName}`,
-    html: `
-      ${emailBrandHeader()}
-      <h2>Nueva solicitud de verificación</h2>
-      <p><strong>Consignataria:</strong> ${safeName} (<code>${slug}</code>)</p>
-      <p><strong>Email:</strong> ${safeClaim}</p>
-      ${claimantName ? `<p><strong>Nombre:</strong> ${escapeHtml(claimantName)}</p>` : ''}
-      ${cuit ? `<p><strong>CUIT:</strong> ${escapeHtml(cuit)}</p>` : ''}
-      <p><a href="${APP_URL}/admin/claims">Revisar en admin</a></p>
-    `,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Admin &middot; claims</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 14px">Nueva solicitud de verificación</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Consignataria:</strong> ${safeName} (<code style="color:#38bdf8">${slug}</code>)</p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Email:</strong> ${safeClaim}</p>
+      ${claimantName ? `<p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Nombre:</strong> ${escapeHtml(claimantName)}</p>` : ''}
+      ${cuit ? `<p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">CUIT:</strong> ${escapeHtml(cuit)}</p>` : ''}
+      <p style="margin:16px 0 0"><a href="${APP_URL}/admin/claims" style="color:#38bdf8">Revisar en admin</a></p>
+    `),
   }).catch(() => {})
 }
 
@@ -223,15 +251,15 @@ export async function sendArrepentimientoRequest(data: {
     to: [ADMIN_EMAIL, 'legales@memola.com.ar'],
     replyTo: data.email,
     subject: `Botón de Arrepentimiento — solicitud de ${data.nombre}`,
-    html: `
-      ${emailBrandHeader()}
-      <h2>Solicitud de arrepentimiento / baja (Res. 424/2020 · art. 34 LDC)</h2>
-      <p><strong>Nombre:</strong> ${nombre}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      <p><strong>Identificador / contrato:</strong> ${ident}</p>
-      <p><strong>Motivo (opcional):</strong> ${motivo}</p>
-      <p>Plazo legal de respuesta y reversión inmediata del cargo si corresponde.</p>
-    `,
+    html: darkEmailShell(`
+      <p style="color:#fbbf24;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Admin &middot; legales</p>
+      <h2 style="color:#fafafa;font-size:18px;font-weight:700;margin:0 0 14px">Solicitud de arrepentimiento / baja (Res. 424/2020 &middot; art. 34 LDC)</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Nombre:</strong> ${nombre}</p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Email:</strong> ${email}</p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Identificador / contrato:</strong> ${ident}</p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Motivo (opcional):</strong> ${motivo}</p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:16px 0 0">Plazo legal de respuesta y reversión inmediata del cargo si corresponde.</p>
+    `),
   }).catch(() => {})
 
   // Acknowledge to the user
@@ -239,15 +267,15 @@ export async function sendArrepentimientoRequest(data: {
     from: FROM,
     to: data.email,
     subject: 'Recibimos tu solicitud de arrepentimiento — Consignatarias.com.ar',
-    html: `
-      ${emailBrandHeader()}
-      <h2>Recibimos tu solicitud</h2>
-      <p>Hola ${nombre}, registramos tu solicitud de arrepentimiento / baja conforme al
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Bot&oacute;n de arrepentimiento</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 12px">Recibimos tu solicitud</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Hola ${nombre}, registramos tu solicitud de arrepentimiento / baja conforme al
       art. 34 de la Ley 24.240 y la Resolución 424/2020.</p>
-      <p>La procesaremos sin costo a la brevedad. Si tu suscripción está activa, podés además
-      darla de baja desde tu cuenta en <a href="${APP_URL}/cuenta">${APP_URL}/cuenta</a>.</p>
-      <p>Ante cualquier duda: <a href="mailto:${ADMIN_EMAIL}">${ADMIN_EMAIL}</a>.</p>
-    `,
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">La procesaremos sin costo a la brevedad. Si tu suscripción está activa, podés además
+      darla de baja desde tu cuenta en <a href="${APP_URL}/cuenta" style="color:#38bdf8">${APP_URL}/cuenta</a>.</p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0">Ante cualquier duda: <a href="mailto:${ADMIN_EMAIL}" style="color:#38bdf8">${ADMIN_EMAIL}</a>.</p>
+    `),
   }).catch(() => {})
 }
 
@@ -259,16 +287,15 @@ export async function sendClaimApproved(email: string, displayName: string, slug
     from: FROM,
     to: email,
     subject: `Perfil aprobado — ${displayName}`,
-    html: `
-      ${emailBrandHeader()}
-      <h2>Tu perfil fue aprobado</h2>
-      <p>Tu solicitud de verificación del perfil de <strong>${safeName}</strong> fue aprobada.</p>
-      <p><a href="${APP_URL}/consignatarias/${slug}">Ver tu perfil</a></p>
-      <p>Ya podés acceder a tu panel de consignataria:</p>
-      <p><a href="${APP_URL}/login" style="background:#22c55e;color:#fff;padding:8px 16px;text-decoration:none;border-radius:4px;display:inline-block">Acceder a mi panel</a></p>
-      <hr>
-      <p style="color:#888;font-size:12px">Consignatarias.com.ar — Directorio ganadero</p>
-    `,
+    html: darkEmailShell(`
+      <p style="color:#34d399;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Verificaci&oacute;n aprobada</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 12px">Tu perfil fue aprobado</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Tu solicitud de verificación del perfil de <strong style="color:#fafafa">${safeName}</strong> fue aprobada.</p>
+      <p style="margin:0 0 12px"><a href="${APP_URL}/consignatarias/${slug}" style="color:#38bdf8">Ver tu perfil</a></p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 14px">Ya podés acceder a tu panel de consignataria:</p>
+      <p style="margin:0 0 20px"><a href="${APP_URL}/login" style="background:#38bdf8;color:#09090b;padding:11px 26px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Acceder a mi panel</a></p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Consignatarias.com.ar — Directorio ganadero</p>
+    `),
   }).catch(() => {})
 }
 
@@ -284,15 +311,14 @@ export async function sendFrigorificoClaimConfirmation(email: string, frigorific
     from: FROM,
     to: email,
     subject: `Solicitud de registro — ${frigorificoName}`,
-    html: `
-      ${emailBrandHeader()}
-      <h2>Solicitud recibida</h2>
-      <p>Recibimos tu solicitud de registro del frigorífico <strong>${safeName}</strong>.</p>
-      <p>Nuestro equipo revisará tu solicitud y te contactaremos a la brevedad.</p>
-      <p><a href="${APP_URL}/frigorificos">Ver directorio de frigoríficos</a></p>
-      <hr>
-      <p style="color:#888;font-size:12px">Consignatarias.com.ar — Directorio ganadero</p>
-    `,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Registro de frigor&iacute;fico</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 12px">Solicitud recibida</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 10px">Recibimos tu solicitud de registro del frigorífico <strong style="color:#fafafa">${safeName}</strong>.</p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">Nuestro equipo revisará tu solicitud y te contactaremos a la brevedad.</p>
+      <p style="margin:0 0 20px"><a href="${APP_URL}/frigorificos" style="color:#38bdf8">Ver directorio de frigoríficos</a></p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Consignatarias.com.ar — Directorio ganadero</p>
+    `),
   }).catch(() => {})
 }
 
@@ -310,15 +336,15 @@ export async function sendFrigorificoClaimNotificationToAdmin(
     from: FROM,
     to: ADMIN_EMAIL,
     subject: `Nuevo registro frigorífico: ${frigorificoName}`,
-    html: `
-      ${emailBrandHeader()}
-      <h2>Nueva solicitud de registro (frigorífico)</h2>
-      <p><strong>Frigorífico:</strong> ${safeName}</p>
-      <p><strong>CUIT:</strong> ${escapeHtml(cuit)}</p>
-      <p><strong>Email:</strong> ${safeClaim}</p>
-      ${claimantName ? `<p><strong>Nombre:</strong> ${escapeHtml(claimantName)}</p>` : ''}
-      <p><a href="${APP_URL}/admin/claims">Revisar en admin</a></p>
-    `,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Admin &middot; claims</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 14px">Nueva solicitud de registro (frigorífico)</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Frigorífico:</strong> ${safeName}</p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">CUIT:</strong> ${escapeHtml(cuit)}</p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Email:</strong> ${safeClaim}</p>
+      ${claimantName ? `<p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Nombre:</strong> ${escapeHtml(claimantName)}</p>` : ''}
+      <p style="margin:16px 0 0"><a href="${APP_URL}/admin/claims" style="color:#38bdf8">Revisar en admin</a></p>
+    `),
   }).catch(() => {})
 }
 
@@ -341,21 +367,19 @@ export async function sendMonthlyMetrics(
     from: FROM,
     to: email,
     subject: `Resumen ${monthName} — ${displayName}`,
-    html: `
-      ${emailBrandHeader()}
-      <div style="font-family:monospace;max-width:480px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-        <h2 style="color:#fff;font-size:16px;margin:0 0 4px">RESUMEN MENSUAL</h2>
+    html: darkEmailShell(`
+        <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Resumen mensual</p>
         <p style="color:#71717a;font-size:12px;margin:0 0 20px">${safeName} — ${escapeHtml(monthName)}</p>
 
-        <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;text-align:center;margin-bottom:16px">
-          <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Vistas del perfil</p>
-          <p style="color:#22c55e;font-size:32px;font-weight:bold;margin:0">${viewsFormatted}</p>
+        <div style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:16px;text-align:center;margin-bottom:16px">
+          <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.12em">Vistas del perfil</p>
+          <p style="color:#38bdf8;font-size:32px;font-weight:bold;margin:0">${viewsFormatted}</p>
           <p style="color:#71717a;font-size:11px;margin:4px 0 0">productores vieron tu perfil este mes</p>
         </div>
 
         ${views > 0 ? `
         <p style="color:#a1a1aa;font-size:12px;line-height:1.5">
-          Tu perfil de <strong style="color:#e4e4e7">${safeName}</strong> recibio ${viewsFormatted} visitas en ${escapeHtml(monthName)}.
+          Tu perfil de <strong style="color:#fafafa">${safeName}</strong> recibio ${viewsFormatted} visitas en ${escapeHtml(monthName)}.
           ${views >= 50 ? 'Excelente visibilidad.' : views >= 20 ? 'Buen alcance.' : 'Completa tu perfil para mejorar tu visibilidad.'}
         </p>
         ` : `
@@ -365,20 +389,19 @@ export async function sendMonthlyMetrics(
         `}
 
         <div style="margin:20px 0;text-align:center">
-          <a href="${APP_URL}/dashboard" style="background:#22c55e;color:#fff;padding:10px 20px;text-decoration:none;border-radius:4px;display:inline-block;font-size:12px;font-weight:bold;letter-spacing:1px">VER MI PANEL</a>
+          <a href="${APP_URL}/dashboard" style="background:#38bdf8;color:#09090b;padding:11px 26px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver mi panel</a>
         </div>
 
         <div style="border-top:1px solid #27272a;padding-top:12px;margin-top:20px">
-          <p style="color:#52525b;font-size:11px;margin:0">
-            <a href="${APP_URL}/consignatarias/${slug}" style="color:#52525b">Ver perfil publico</a>
-            &nbsp;&bull;&nbsp;
-            <a href="${APP_URL}/planes" style="color:#52525b">Mejorar mi plan</a>
+          <p style="color:#71717a;font-size:11px;margin:0">
+            <a href="${APP_URL}/consignatarias/${slug}" style="color:#71717a">Ver perfil publico</a>
+            &nbsp;&middot;&nbsp;
+            <a href="${APP_URL}/planes" style="color:#71717a">Mejorar mi plan</a>
           </p>
         </div>
 
-        <p style="color:#3f3f46;font-size:10px;margin:16px 0 0">Consignatarias.com.ar — Directorio ganadero</p>
-      </div>
-    `,
+        <p style="color:#52525b;font-size:10px;margin:16px 0 0">Consignatarias.com.ar — Directorio ganadero</p>
+    `),
   }).catch(() => {})
 }
 
@@ -422,55 +445,52 @@ export async function sendMonthlyClose(
       from: FROM,
       to: email,
       subject: `Cierre ${data.monthLabel}: Índice Novillo promedio ${money(data.avg)}/kg`,
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-          <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Cierre mensual · Índice Novillo Arrendamiento</p>
-          <h2 style="color:#fff;font-size:18px;margin:0 0 20px">${escapeHtml(data.monthLabel)}</h2>
+      html: darkEmailShell(`
+          <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 4px">Cierre mensual &middot; &Iacute;ndice Novillo Arrendamiento</p>
+          <h2 style="color:#fafafa;font-size:18px;font-weight:700;margin:0 0 20px">${escapeHtml(data.monthLabel)}</h2>
 
-          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:20px;text-align:center;margin-bottom:16px">
-            <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Promedio del mes</p>
-            <p style="color:#f59e0b;font-size:36px;font-weight:bold;margin:0;font-family:monospace">${money(data.avg)}<span style="color:#71717a;font-size:16px">/kg</span></p>
-            ${changePct !== null ? `<p style="color:${up ? '#22c55e' : '#ef4444'};font-size:13px;margin:6px 0 0">${up ? '▲' : '▼'} ${up ? '+' : ''}${changePct.toFixed(1)}% vs. ${escapeHtml(data.prevMonthLabel || 'mes anterior')}</p>` : ''}
+          <div style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:20px;text-align:center;margin-bottom:16px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.12em">Promedio del mes</p>
+            <p style="color:#38bdf8;font-size:36px;font-weight:bold;margin:0">${money(data.avg)}<span style="color:#71717a;font-size:16px">/kg</span></p>
+            ${changePct !== null ? `<p style="color:${up ? '#34d399' : '#f87171'};font-size:13px;margin:6px 0 0">${up ? '&#9650;' : '&#9660;'} ${up ? '+' : ''}${changePct.toFixed(1)}% vs. ${escapeHtml(data.prevMonthLabel || 'mes anterior')}</p>` : ''}
           </div>
 
-          <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-bottom:20px">
             <tr>
-              <td style="padding:8px 0;color:#71717a;font-size:12px;border-bottom:1px solid #27272a">Mínimo del mes</td>
-              <td style="padding:8px 0;color:#e4e4e7;font-size:12px;text-align:right;border-bottom:1px solid #27272a;font-family:monospace">${money(data.min)}/kg</td>
+              <td style="padding:8px 0;font-family:${EMAIL_MONO};color:#71717a;font-size:12px;border-bottom:1px solid #27272a">Mínimo del mes</td>
+              <td style="padding:8px 0;font-family:${EMAIL_MONO};color:#fafafa;font-size:12px;text-align:right;border-bottom:1px solid #27272a">${money(data.min)}/kg</td>
             </tr>
             <tr>
-              <td style="padding:8px 0;color:#71717a;font-size:12px;border-bottom:1px solid #27272a">Máximo del mes</td>
-              <td style="padding:8px 0;color:#e4e4e7;font-size:12px;text-align:right;border-bottom:1px solid #27272a;font-family:monospace">${money(data.max)}/kg</td>
+              <td style="padding:8px 0;font-family:${EMAIL_MONO};color:#71717a;font-size:12px;border-bottom:1px solid #27272a">Máximo del mes</td>
+              <td style="padding:8px 0;font-family:${EMAIL_MONO};color:#fafafa;font-size:12px;text-align:right;border-bottom:1px solid #27272a">${money(data.max)}/kg</td>
             </tr>
             <tr>
-              <td style="padding:8px 0;color:#71717a;font-size:12px">Ruedas computadas</td>
-              <td style="padding:8px 0;color:#e4e4e7;font-size:12px;text-align:right;font-family:monospace">${data.ruedas}</td>
+              <td style="padding:8px 0;font-family:${EMAIL_MONO};color:#71717a;font-size:12px">Ruedas computadas</td>
+              <td style="padding:8px 0;font-family:${EMAIL_MONO};color:#fafafa;font-size:12px;text-align:right">${data.ruedas}</td>
             </tr>
           </table>
 
           ${canon !== null && data.lease ? `
-          <div style="background:#16161d;border-left:3px solid #f59e0b;border-radius:4px;padding:14px 16px;margin-bottom:20px">
-            <p style="color:#71717a;font-size:11px;margin:0 0 6px;text-transform:uppercase;letter-spacing:1px">Tu arrendamiento este mes</p>
+          <div style="background:#18181b;border:1px solid #27272a;border-left:3px solid #38bdf8;border-radius:2px;padding:14px 16px;margin-bottom:20px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 6px;text-transform:uppercase;letter-spacing:.12em">Tu arrendamiento este mes</p>
             <p style="color:#a1a1aa;font-size:13px;margin:0;line-height:1.6">
-              ${data.lease.hectareas} ha × ${data.lease.kgHa} kg/ha × ${money(data.avg)} = <strong style="color:#f59e0b;font-size:16px">${money(canon)}</strong>/mes
+              ${data.lease.hectareas} ha × ${data.lease.kgHa} kg/ha × ${money(data.avg)} = <strong style="color:#38bdf8;font-size:16px">${money(canon)}</strong>/mes
             </p>
           </div>` : ''}
 
           <div style="text-align:center;margin:24px 0">
-            <a href="${APP_URL}/mercado/arrendamiento" style="background:#f59e0b;color:#0a0a0f;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">CALCULAR MI ARRENDAMIENTO</a>
+            <a href="${APP_URL}/mercado/arrendamiento" style="background:#38bdf8;color:#09090b;padding:12px 28px;text-decoration:none;border-radius:2px;display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Calcular mi arrendamiento</a>
           </div>
 
           <p style="color:#71717a;font-size:11px;margin:20px 0 0;line-height:1.6">
             Fuente: Mercado Agroganadero de Buenos Aires (INMAG). Promedio simple de las ruedas del mes.
           </p>
-          <p style="color:#3f3f46;font-size:10px;margin:12px 0 0">
+          <p style="color:#52525b;font-size:10px;margin:12px 0 0">
             Consignatarias.com.ar
-            &nbsp;&bull;&nbsp;
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#3f3f46">Desuscribirme</a>
+            &nbsp;&middot;&nbsp;
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -499,37 +519,34 @@ export async function sendSellZoneAlertConfirm(
       to: email,
       subject: `Listo — te aviso cuando el ${data.categoriaLabel} entre en zona de venta`,
       headers: listUnsubHeaders(email, 'sell-zone-confirm'),
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-          <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Alerta activada · ${cat}</p>
-          <h2 style="color:#fff;font-size:18px;margin:0 0 16px">Te aviso cuando convenga vender</h2>
+      html: darkEmailShell(`
+          <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 4px">Alerta activada &middot; ${cat}</p>
+          <h2 style="color:#fafafa;font-size:18px;font-weight:700;margin:0 0 16px">Te aviso cuando convenga vender</h2>
           <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">
-            Vas a recibir <strong style="color:#e4e4e7">un solo mail</strong> cuando el ${cat} esté
+            Vas a recibir <strong style="color:#fafafa">un solo mail</strong> cuando el ${cat} esté
             <strong style="color:#34d399">caro vs el último año Y empiece a girar</strong> (precio real en la
             franja alta del año pero ya sin hacer nuevos máximos). Esa combinación —no el percentil solo— es la
             que históricamente marcó zona de salida. Nada de spam por cada movimiento, ni avisos de "vendé"
             mientras el mercado todavía sube.
           </p>
           ${data.pct365 !== null ? `
-          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;text-align:center;margin-bottom:16px">
-            <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Hoy el mercado está en</p>
-            <p style="color:#38bdf8;font-size:32px;font-weight:bold;margin:0;font-family:monospace">percentil ${data.pct365}<span style="color:#71717a;font-size:14px"> / año</span></p>
+          <div style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:16px;text-align:center;margin-bottom:16px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.12em">Hoy el mercado está en</p>
+            <p style="color:#38bdf8;font-size:32px;font-weight:bold;margin:0">percentil ${data.pct365}<span style="color:#71717a;font-size:14px"> / año</span></p>
           </div>` : ''}
           <div style="text-align:center;margin:24px 0">
-            <a href="${APP_URL}/mercado/vender-ahora" style="background:#38bdf8;color:#0a0a0f;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">VER EL ANÁLISIS COMPLETO</a>
+            <a href="${APP_URL}/mercado/vender-ahora" style="background:#38bdf8;color:#09090b;padding:12px 28px;text-decoration:none;border-radius:2px;display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver el análisis completo</a>
           </div>
           <p style="color:#71717a;font-size:11px;margin:16px 0 0;line-height:1.6">
             Medimos el INMAG en dólares reales (INMAG ÷ dólar blue) para neutralizar la inflación.
             Para el novillo el percentil es preciso; para el resto refleja la dirección del mercado.
             Es información, no asesoramiento.
           </p>
-          <p style="color:#3f3f46;font-size:10px;margin:12px 0 0">
-            Consignatarias.com.ar &nbsp;&bull;&nbsp;
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#3f3f46">Desuscribirme</a>
+          <p style="color:#52525b;font-size:10px;margin:12px 0 0">
+            Consignatarias.com.ar &nbsp;&middot;&nbsp;
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -555,12 +572,10 @@ export async function sendSellZoneAlert(
       to: email,
       subject: `El ${data.categoriaLabel} está caro vs el año (percentil ${data.pct365}) ${trendTxt}`,
       headers: listUnsubHeaders(email, 'sell-zone-alert'),
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-          <p style="color:#34d399;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Zona alta del año · ${cat}</p>
-          <h2 style="color:#fff;font-size:19px;margin:0 0 16px">Precio alto y girando — históricamente, zona de salida</h2>
-          <div style="background:#16161d;border:1px solid #34d39966;border-left:3px solid #34d399;border-radius:4px;padding:18px;margin-bottom:16px">
+      html: darkEmailShell(`
+          <p style="color:#34d399;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.12em">Zona alta del año &middot; ${cat}</p>
+          <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 16px">Precio alto y girando — históricamente, zona de salida</h2>
+          <div style="background:#18181b;border:1px solid rgba(52,211,153,.4);border-left:3px solid #34d399;border-radius:2px;padding:18px;margin-bottom:16px">
             <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0">
               En dólares reales, el ${cat} está en el <strong style="color:#34d399">percentil ${data.pct365} del último año</strong>
               y en el <strong style="color:#34d399">percentil ${data.pct30} del último mes</strong> — y ${trendTxt}.
@@ -568,34 +583,33 @@ export async function sendSellZoneAlert(
               La decisión es tuya: esto describe dónde está el precio, no te dice qué hacer.
             </p>
           </div>
-          <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-bottom:20px">
             <tr>
-              <td style="padding:8px 0;color:#71717a;font-size:12px;border-bottom:1px solid #27272a">Percentil últimos 30 días</td>
-              <td style="padding:8px 0;color:#e4e4e7;font-size:12px;text-align:right;border-bottom:1px solid #27272a;font-family:monospace">${data.pct30}</td>
+              <td style="padding:8px 0;font-family:${EMAIL_MONO};color:#71717a;font-size:12px;border-bottom:1px solid #27272a">Percentil últimos 30 días</td>
+              <td style="padding:8px 0;font-family:${EMAIL_MONO};color:#fafafa;font-size:12px;text-align:right;border-bottom:1px solid #27272a">${data.pct30}</td>
             </tr>
             <tr>
-              <td style="padding:8px 0;color:#71717a;font-size:12px;border-bottom:1px solid #27272a">Percentil último año</td>
-              <td style="padding:8px 0;color:#e4e4e7;font-size:12px;text-align:right;border-bottom:1px solid #27272a;font-family:monospace">${data.pct365}</td>
+              <td style="padding:8px 0;font-family:${EMAIL_MONO};color:#71717a;font-size:12px;border-bottom:1px solid #27272a">Percentil último año</td>
+              <td style="padding:8px 0;font-family:${EMAIL_MONO};color:#fafafa;font-size:12px;text-align:right;border-bottom:1px solid #27272a">${data.pct365}</td>
             </tr>
             ${data.inmagUsdHoy !== null ? `<tr>
-              <td style="padding:8px 0;color:#71717a;font-size:12px">INMAG en USD reales (hoy)</td>
-              <td style="padding:8px 0;color:#e4e4e7;font-size:12px;text-align:right;font-family:monospace">USD ${data.inmagUsdHoy.toFixed(2)}/kg</td>
+              <td style="padding:8px 0;font-family:${EMAIL_MONO};color:#71717a;font-size:12px">INMAG en USD reales (hoy)</td>
+              <td style="padding:8px 0;font-family:${EMAIL_MONO};color:#fafafa;font-size:12px;text-align:right">USD ${data.inmagUsdHoy.toFixed(2)}/kg</td>
             </tr>` : ''}
           </table>
           <div style="text-align:center;margin:24px 0">
-            <a href="${APP_URL}/mercado/vender-ahora" style="background:#34d399;color:#0a0a0f;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">CALCULAR MI LOTE A ESTE PRECIO</a>
+            <a href="${APP_URL}/mercado/vender-ahora" style="background:#38bdf8;color:#09090b;padding:12px 28px;text-decoration:none;border-radius:2px;display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Calcular mi lote a este precio</a>
           </div>
           <p style="color:#71717a;font-size:11px;margin:16px 0 0;line-height:1.6">
             Medido sobre el INMAG en dólares reales (INMAG ÷ dólar blue). Para el novillo el percentil es preciso;
             para el resto refleja la dirección del mercado. No considera condición del lote, costos de retención ni
             plaza zonal. Es información, no asesoramiento.
           </p>
-          <p style="color:#3f3f46;font-size:10px;margin:12px 0 0">
-            Consignatarias.com.ar &nbsp;&bull;&nbsp;
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#3f3f46">Desuscribirme</a>
+          <p style="color:#52525b;font-size:10px;margin:12px 0 0">
+            Consignatarias.com.ar &nbsp;&middot;&nbsp;
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -624,29 +638,26 @@ export async function sendPriceAlertConfirm(
       to: email,
       subject: `Listo — te aviso cuando el ${data.categoryLabel} ${verbo} ${fmtArs(data.threshold)}`,
       headers: listUnsubHeaders(email, 'price-alert-confirm'),
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-          <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Alerta de precio activada · ${cat}</p>
-          <h2 style="color:#fff;font-size:18px;margin:0 0 16px">Te aviso cuando ${data.direction === 'above' ? 'cruce' : 'baje de'} ${fmtArs(data.threshold)}</h2>
+      html: darkEmailShell(`
+          <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 4px">Alerta de precio activada &middot; ${cat}</p>
+          <h2 style="color:#fafafa;font-size:18px;font-weight:700;margin:0 0 16px">Te aviso cuando ${data.direction === 'above' ? 'cruce' : 'baje de'} ${fmtArs(data.threshold)}</h2>
           <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">
-            Vas a recibir <strong style="color:#e4e4e7">un solo mail</strong> cuando el ${cat} ${verbo}
-            <strong style="color:#34d399">${fmtArs(data.threshold)}/kg</strong>. Nada de spam por cada movimiento.
+            Vas a recibir <strong style="color:#fafafa">un solo mail</strong> cuando el ${cat} ${verbo}
+            <strong style="color:#38bdf8">${fmtArs(data.threshold)}/kg</strong>. Nada de spam por cada movimiento.
           </p>
           ${data.current !== null ? `
-          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;text-align:center;margin-bottom:16px">
-            <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Precio hoy</p>
-            <p style="color:#38bdf8;font-size:32px;font-weight:bold;margin:0;font-family:monospace">${fmtArs(data.current)}<span style="color:#71717a;font-size:14px">/kg</span></p>
+          <div style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:16px;text-align:center;margin-bottom:16px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.12em">Precio hoy</p>
+            <p style="color:#38bdf8;font-size:32px;font-weight:bold;margin:0">${fmtArs(data.current)}<span style="color:#71717a;font-size:14px">/kg</span></p>
           </div>` : ''}
           <div style="text-align:center;margin:24px 0">
-            <a href="${APP_URL}/precios" style="background:#38bdf8;color:#0a0a0f;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">VER PRECIOS EN VIVO</a>
+            <a href="${APP_URL}/precios" style="background:#38bdf8;color:#09090b;padding:12px 28px;text-decoration:none;border-radius:2px;display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver precios en vivo</a>
           </div>
-          <p style="color:#3f3f46;font-size:10px;margin:12px 0 0">
-            Consignatarias.com.ar &nbsp;&bull;&nbsp;
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#3f3f46">Desuscribirme</a>
+          <p style="color:#52525b;font-size:10px;margin:12px 0 0">
+            Consignatarias.com.ar &nbsp;&middot;&nbsp;
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -670,28 +681,25 @@ export async function sendPriceThresholdAlert(
       to: email,
       subject: `El ${data.categoryLabel} ${verboPasado} ${fmtArs(data.threshold)} — está en ${fmtArs(data.current)}`,
       headers: listUnsubHeaders(email, 'price-alert'),
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-          <p style="color:${color};font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Alerta de precio · ${cat}</p>
-          <h2 style="color:#fff;font-size:19px;margin:0 0 16px">El ${cat} ${verboPasado} ${fmtArs(data.threshold)}</h2>
-          <div style="background:#16161d;border:1px solid ${color}66;border-left:3px solid ${color};border-radius:4px;padding:18px;margin-bottom:16px;text-align:center">
-            <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Precio de referencia hoy</p>
-            <p style="color:${color};font-size:34px;font-weight:bold;margin:0;font-family:monospace">${fmtArs(data.current)}<span style="color:#71717a;font-size:14px">/kg</span></p>
+      html: darkEmailShell(`
+          <p style="color:${color};font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.12em">Alerta de precio &middot; ${cat}</p>
+          <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 16px">El ${cat} ${verboPasado} ${fmtArs(data.threshold)}</h2>
+          <div style="background:#18181b;border:1px solid ${color}66;border-left:3px solid ${color};border-radius:2px;padding:18px;margin-bottom:16px;text-align:center">
+            <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.12em">Precio de referencia hoy</p>
+            <p style="color:${color};font-size:34px;font-weight:bold;margin:0">${fmtArs(data.current)}<span style="color:#71717a;font-size:14px">/kg</span></p>
             <p style="color:#a1a1aa;font-size:12px;margin:8px 0 0">Tu umbral: ${fmtArs(data.threshold)}</p>
           </div>
           <div style="text-align:center;margin:24px 0">
-            <a href="${APP_URL}/precios" style="background:${color};color:#0a0a0f;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">VER PRECIOS Y REMATES</a>
+            <a href="${APP_URL}/precios" style="background:#38bdf8;color:#09090b;padding:12px 28px;text-decoration:none;border-radius:2px;display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver precios y remates</a>
           </div>
           <p style="color:#71717a;font-size:11px;margin:16px 0 0;line-height:1.6">
             Precio de referencia del Mercado Agroganadero (categoría ${cat}). No considera condición del lote ni plaza zonal. Es información, no asesoramiento.
           </p>
-          <p style="color:#3f3f46;font-size:10px;margin:12px 0 0">
-            Consignatarias.com.ar &nbsp;&bull;&nbsp;
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#3f3f46">Desuscribirme</a>
+          <p style="color:#52525b;font-size:10px;margin:12px 0 0">
+            Consignatarias.com.ar &nbsp;&middot;&nbsp;
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -723,71 +731,89 @@ export async function sendWeeklyNewsletter(
   const resend = await getResend()
   if (!resend) return
 
+  resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: `Remates de la semana — ${weekRange} · ${totalRemates} programados`,
+    html: buildWeeklyNewsletterHtml(email, featuredRemates, totalRemates, weekRange),
+  }).catch(() => {})
+}
+
+/**
+ * HTML de la newsletter semanal, 100% manual de marca v2:
+ * carbón #09090b · panel #18181b · línea #27272a · hueso · cielo ÚNICO acento
+ * (CTA), ámbar SOLO para PRO consignataria, radius 2px, mono, sin emojis.
+ * Exportado puro para poder previsualizar/testear sin enviar.
+ */
+export function buildWeeklyNewsletterHtml(
+  email: string,
+  featuredRemates: FeaturedRemate[],
+  totalRemates: number,
+  weekRange: string,
+): string {
+  const MONO = "ui-monospace,'JetBrains Mono',Menlo,Consolas,monospace"
   const formatDate = (dateStr: string) => {
-    const [_y, m, d] = dateStr.split('-')
+    const [, m, d] = dateStr.split('-')
     return `${d}/${m}`
   }
 
   const rematesHtml = featuredRemates.map(r => `
-    <div style="background:#16161d;border:1px solid ${r.isPro ? '#fbbf24' : '#27272a'};border-radius:4px;padding:12px;margin-bottom:8px;${r.isPro ? 'border-left:3px solid #fbbf24;' : ''}">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
-        <span style="color:${r.isPro ? '#fbbf24' : '#e4e4e7'};font-weight:bold;font-size:13px">
-          ${r.isPro ? '★ ' : ''}${escapeHtml(r.consignataria)}
-        </span>
-        <span style="color:#71717a;font-size:11px">${formatDate(r.date)}${r.time ? ` ${r.time}` : ''}</span>
-      </div>
-      <p style="color:#a1a1aa;font-size:12px;margin:0 0 4px">${escapeHtml(r.title)}</p>
-      <p style="color:#52525b;font-size:11px;margin:0">
-        📍 ${escapeHtml(r.location)}
-        ${r.heads ? ` · 🐄 ${r.heads.toLocaleString('es-AR')} cab` : ''}
-      </p>
-    </div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#18181b;border:1px solid ${r.isPro ? 'rgba(251,191,36,.5)' : '#27272a'};${r.isPro ? 'border-left:3px solid #fbbf24;' : ''}border-radius:2px;margin-bottom:8px">
+      <tr><td style="padding:12px 14px">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+          <td style="font-family:${MONO};color:${r.isPro ? '#fbbf24' : '#fafafa'};font-weight:600;font-size:13px">${r.isPro ? '&#9733; ' : ''}${escapeHtml(r.consignataria)}</td>
+          <td align="right" style="font-family:${MONO};color:#71717a;font-size:11px;white-space:nowrap">${formatDate(r.date)}${r.time ? ` &middot; ${r.time}` : ''}</td>
+        </tr></table>
+        <p style="font-family:${MONO};color:#a1a1aa;font-size:12px;margin:6px 0 3px;line-height:1.4">${escapeHtml(r.title)}</p>
+        <p style="font-family:${MONO};color:#71717a;font-size:11px;margin:0">${escapeHtml(r.location)}${r.heads ? ` &middot; ${r.heads.toLocaleString('es-AR')} cab` : ''}</p>
+      </td></tr>
+    </table>
   `).join('')
 
-  resend.emails.send({
-    from: FROM,
-    to: email,
-    subject: `🐄 ${featuredRemates.length} Remates Destacados — ${weekRange}`,
-    html: `
-      ${emailBrandHeader()}
-      <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-        <h2 style="color:#fff;font-size:16px;margin:0 0 4px">REMATES DE LA SEMANA</h2>
-        <p style="color:#71717a;font-size:12px;margin:0 0 20px">${escapeHtml(weekRange)} — ${totalRemates} remates programados</p>
+  return `
+  <body style="margin:0;padding:0;background:#09090b">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#09090b"><tr><td align="center" style="padding:28px 12px">
+  <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%">
 
-        <div style="margin-bottom:20px">
-          ${rematesHtml}
-        </div>
+    <tr><td style="padding:0 0 18px 0;border-bottom:1px solid #27272a">
+      <img src="${APP_URL}/marca/email/isotipo-cielo.png" width="26" height="26" alt="" style="vertical-align:middle;border:0">
+      <span style="font-family:${MONO};font-size:14px;font-weight:600;color:#fafafa;vertical-align:middle;margin-left:8px">consignatarias<span style="color:#38bdf8">.</span>com</span>
+    </td></tr>
 
-        <div style="text-align:center;margin:20px 0">
-          <a href="${APP_URL}/remates" style="background:#22c55e;color:#fff;padding:10px 24px;text-decoration:none;border-radius:4px;display:inline-block;font-size:12px;font-weight:bold;letter-spacing:1px">VER TODOS LOS REMATES</a>
-        </div>
+    <tr><td style="padding:22px 0 4px">
+      <p style="font-family:${MONO};color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Cierre semanal &middot; calendario</p>
+      <h1 style="font-family:${MONO};color:#fafafa;font-size:19px;margin:0 0 4px;font-weight:700">Remates de la semana</h1>
+      <p style="font-family:${MONO};color:#71717a;font-size:12px;margin:0 0 18px">${escapeHtml(weekRange)} &middot; ${totalRemates} remates programados en el pa&iacute;s</p>
+    </td></tr>
 
-        <div style="background:#16161d;border:1px solid #fbbf24;border-radius:4px;padding:12px;margin:20px 0;text-align:center">
-          <p style="color:#fbbf24;font-size:11px;margin:0 0 4px;font-weight:bold">★ CONSIGNATARIAS PRO</p>
-          <p style="color:#a1a1aa;font-size:11px;margin:0">
-            Los remates destacados son de consignatarias PRO verificadas.
-            <a href="${APP_URL}/planes" style="color:#fbbf24">Conocé los beneficios →</a>
-          </p>
-        </div>
+    <tr><td>${rematesHtml}</td></tr>
 
-        <div style="border-top:1px solid #27272a;padding-top:12px;margin-top:20px">
-          <p style="color:#52525b;font-size:11px;margin:0">
-            <a href="${APP_URL}/remates" style="color:#52525b">Ver calendario</a>
-            &nbsp;&bull;&nbsp;
-            <a href="${APP_URL}/mercado" style="color:#52525b">Precios del mercado</a>
-            &nbsp;&bull;&nbsp;
-            <a href="${APP_URL}/consignatarias" style="color:#52525b">Directorio</a>
-          </p>
-        </div>
+    <tr><td align="center" style="padding:20px 0">
+      <a href="${APP_URL}/remates" style="font-family:${MONO};background:#38bdf8;color:#09090b;padding:11px 26px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver todos los remates &rarr;</a>
+    </td></tr>
 
-        <p style="color:#3f3f46;font-size:10px;margin:16px 0 0">
-          Recibís este email porque te suscribiste a consignatarias.com.ar
-          <br>
-          <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#3f3f46">Desuscribirme</a>
-        </p>
-      </div>
-    `,
-  }).catch(() => {})
+    <tr><td style="background:#18181b;border:1px solid rgba(251,191,36,.4);border-radius:2px;padding:12px 14px;text-align:center">
+      <p style="font-family:${MONO};color:#fbbf24;font-size:11px;margin:0 0 4px;font-weight:700;letter-spacing:.08em">&#9733; CONSIGNATARIAS PRO</p>
+      <p style="font-family:${MONO};color:#a1a1aa;font-size:11px;margin:0;line-height:1.5">Los remates destacados son de consignatarias PRO verificadas. <a href="${APP_URL}/planes" style="color:#fbbf24">Conoc&eacute; los beneficios &rarr;</a></p>
+    </td></tr>
+
+    <tr><td style="border-top:1px solid #27272a;padding:14px 0 0;margin-top:18px">
+      <p style="font-family:${MONO};color:#71717a;font-size:11px;margin:14px 0 0">
+        <a href="${APP_URL}/remates" style="color:#71717a">Calendario</a> &nbsp;&middot;&nbsp;
+        <a href="${APP_URL}/mercado" style="color:#71717a">Precios</a> &nbsp;&middot;&nbsp;
+        <a href="${APP_URL}/consignatarias" style="color:#71717a">Directorio</a> &nbsp;&middot;&nbsp;
+        <a href="${APP_URL}/mi-ganado" style="color:#71717a">Mi Ganado</a>
+      </p>
+      <p style="font-family:${MONO};color:#52525b;font-size:10px;margin:14px 0 0;line-height:1.6">
+        consignatarias<span style="color:#38bdf8">.</span>com &mdash; el precio de referencia del ganado argentino.<br>
+        Recib&iacute;s este email porque te suscribiste.
+        <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
+      </p>
+    </td></tr>
+
+  </table>
+  </td></tr></table>
+  </body>`
 }
 
 /* ------------------------------------------------------------------ */
@@ -833,15 +859,14 @@ export async function sendClaimRejected(email: string, displayName: string, reas
     from: FROM,
     to: email,
     subject: `Verificación rechazada — ${displayName}`,
-    html: `
-      ${emailBrandHeader()}
-      <h2>Verificación rechazada</h2>
-      <p>Lamentamos informarte que tu solicitud de verificación del perfil de <strong>${safeName}</strong> fue rechazada.</p>
-      ${reason ? `<p><strong>Motivo:</strong> ${escapeHtml(reason)}</p>` : ''}
-      <p>Si creés que es un error, contactanos a <a href="mailto:${ADMIN_EMAIL}">${ADMIN_EMAIL}</a>.</p>
-      <hr>
-      <p style="color:#888;font-size:12px">Consignatarias.com.ar — Directorio ganadero</p>
-    `,
+    html: darkEmailShell(`
+      <p style="color:#f87171;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Verificaci&oacute;n de perfil</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 12px">Verificación rechazada</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Lamentamos informarte que tu solicitud de verificación del perfil de <strong style="color:#fafafa">${safeName}</strong> fue rechazada.</p>
+      ${reason ? `<p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px"><strong style="color:#fafafa">Motivo:</strong> ${escapeHtml(reason)}</p>` : ''}
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 20px">Si creés que es un error, contactanos a <a href="mailto:${ADMIN_EMAIL}" style="color:#38bdf8">${ADMIN_EMAIL}</a>.</p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Consignatarias.com.ar — Directorio ganadero</p>
+    `),
   }).catch(() => {})
 }
 
@@ -1067,7 +1092,7 @@ export async function sendFaenaNewsletter({
   const formatNumber = (n: number) => n.toLocaleString('es-AR')
   const formatChange = (pct: number) => {
     const sign = pct >= 0 ? '+' : ''
-    const color = pct >= 0 ? '#22c55e' : '#ef4444'
+    const color = pct >= 0 ? '#34d399' : '#f87171'
     return `<span style="color:${color};font-weight:bold">${sign}${pct.toFixed(1)}%</span>`
   }
 
@@ -1075,61 +1100,59 @@ export async function sendFaenaNewsletter({
     await resend.emails.send({
       from: FROM,
       to,
-      subject: `📊 Faena ${currentMonth}: ${formatNumber(cabezas)} cabezas`,
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-          <h2 style="color:#fff;font-size:16px;margin:0 0 4px">REPORTE MENSUAL DE FAENA</h2>
+      subject: `Faena ${currentMonth}: ${formatNumber(cabezas)} cabezas`,
+      html: darkEmailShell(`
+          <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 4px">Reporte mensual de faena</p>
           <p style="color:#71717a;font-size:12px;margin:0 0 20px">${escapeHtml(currentMonth)} — Datos oficiales</p>
 
-          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:20px;text-align:center;margin-bottom:16px">
-            <p style="color:#71717a;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">Faena total</p>
-            <p style="color:#22c55e;font-size:36px;font-weight:bold;margin:0">${formatNumber(cabezas)}</p>
+          <div style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:20px;text-align:center;margin-bottom:16px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:.12em">Faena total</p>
+            <p style="color:#38bdf8;font-size:36px;font-weight:bold;margin:0">${formatNumber(cabezas)}</p>
             <p style="color:#71717a;font-size:12px;margin:8px 0 0">cabezas faenadas</p>
           </div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-            <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;text-align:center">
-              <p style="color:#71717a;font-size:10px;margin:0 0 6px;text-transform:uppercase">vs mes anterior</p>
-              <p style="font-size:18px;margin:0">${formatChange(monthlyChange)}</p>
-            </div>
-            <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;text-align:center">
-              <p style="color:#71717a;font-size:10px;margin:0 0 6px;text-transform:uppercase">vs año anterior</p>
-              <p style="font-size:18px;margin:0">${formatChange(yearlyChange)}</p>
-            </div>
-          </div>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px"><tr>
+            <td width="49%" style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:16px;text-align:center">
+              <p style="font-family:${EMAIL_MONO};color:#71717a;font-size:10px;margin:0 0 6px;text-transform:uppercase;letter-spacing:.12em">vs mes anterior</p>
+              <p style="font-family:${EMAIL_MONO};font-size:18px;margin:0">${formatChange(monthlyChange)}</p>
+            </td>
+            <td width="2%"></td>
+            <td width="49%" style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:16px;text-align:center">
+              <p style="font-family:${EMAIL_MONO};color:#71717a;font-size:10px;margin:0 0 6px;text-transform:uppercase;letter-spacing:.12em">vs año anterior</p>
+              <p style="font-family:${EMAIL_MONO};font-size:18px;margin:0">${formatChange(yearlyChange)}</p>
+            </td>
+          </tr></table>
 
-          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;margin-bottom:20px">
-            <p style="color:#71717a;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">Últimos 12 meses</p>
-            <p style="color:#fff;font-size:24px;font-weight:bold;margin:0">${formatNumber(total12Months)}</p>
+          <div style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:16px;margin-bottom:20px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:.12em">Últimos 12 meses</p>
+            <p style="color:#fafafa;font-size:24px;font-weight:bold;margin:0">${formatNumber(total12Months)}</p>
             <p style="color:#71717a;font-size:11px;margin:4px 0 0">cabezas faenadas (acumulado)</p>
           </div>
 
-          <p style="color:#a1a1aa;font-size:11px;line-height:1.5;margin-bottom:16px">
+          <p style="color:#a1a1aa;font-size:11px;line-height:1.5;margin:0 0 16px">
             Fuente: Secretaría de Agricultura, Ganadería y Pesca — datos.gob.ar
           </p>
 
           <div style="text-align:center;margin:20px 0">
-            <a href="${APP_URL}/frigorificos" style="background:#22c55e;color:#fff;padding:10px 24px;text-decoration:none;border-radius:4px;display:inline-block;font-size:12px;font-weight:bold;letter-spacing:1px">VER FRIGORÍFICOS</a>
+            <a href="${APP_URL}/frigorificos" style="background:#38bdf8;color:#09090b;padding:11px 26px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver frigoríficos</a>
           </div>
 
           <div style="border-top:1px solid #27272a;padding-top:12px;margin-top:20px">
-            <p style="color:#52525b;font-size:11px;margin:0">
-              <a href="${APP_URL}/remates" style="color:#52525b">Ver remates</a>
-              &nbsp;&bull;&nbsp;
-              <a href="${APP_URL}/mercado" style="color:#52525b">Precios del mercado</a>
-              &nbsp;&bull;&nbsp;
-              <a href="${APP_URL}/frigorificos" style="color:#52525b">Directorio</a>
+            <p style="color:#71717a;font-size:11px;margin:0">
+              <a href="${APP_URL}/remates" style="color:#71717a">Ver remates</a>
+              &nbsp;&middot;&nbsp;
+              <a href="${APP_URL}/mercado" style="color:#71717a">Precios del mercado</a>
+              &nbsp;&middot;&nbsp;
+              <a href="${APP_URL}/frigorificos" style="color:#71717a">Directorio</a>
             </p>
           </div>
 
-          <p style="color:#3f3f46;font-size:10px;margin:16px 0 0">
+          <p style="color:#52525b;font-size:10px;margin:16px 0 0">
             Recibís este email porque te suscribiste al reporte de faena.
             <br>
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#3f3f46">Desuscribirme</a>
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -1160,21 +1183,19 @@ export async function sendWelcomeEmail({ to, userName }: WelcomeEmailParams) {
     await resend.emails.send({
       from: FROM,
       to,
-      subject: '🐄 Bienvenido a Consignatarias.com.ar',
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-          <h2 style="color:#fff;font-size:18px;margin:0 0 16px">${greeting}</h2>
-          
+      subject: 'Bienvenido a Consignatarias.com.ar',
+      html: darkEmailShell(`
+          <h2 style="color:#fafafa;font-size:18px;font-weight:700;margin:0 0 16px">${greeting}</h2>
+
           <p style="color:#a1a1aa;font-size:13px;line-height:1.6;margin:0 0 16px">
             Ya tenés acceso a la plataforma más completa de remates ganaderos de Argentina.
           </p>
 
-          <div style="background:#16161d;border:1px solid #22c55e;border-left:3px solid #22c55e;border-radius:4px;padding:16px;margin-bottom:20px">
-            <p style="color:#22c55e;font-size:12px;margin:0 0 8px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
-              📋 Tu próximo paso
+          <div style="background:#18181b;border:1px solid #27272a;border-left:3px solid #38bdf8;border-radius:2px;padding:16px;margin-bottom:20px">
+            <p style="color:#38bdf8;font-size:11px;margin:0 0 8px;font-weight:bold;text-transform:uppercase;letter-spacing:.12em">
+              Tu próximo paso
             </p>
-            <p style="color:#e4e4e7;font-size:14px;margin:0 0 8px">
+            <p style="color:#fafafa;font-size:14px;margin:0 0 8px">
               <strong>Subí tu primera guía DT-e</strong>
             </p>
             <p style="color:#a1a1aa;font-size:12px;margin:0">
@@ -1183,27 +1204,26 @@ export async function sendWelcomeEmail({ to, userName }: WelcomeEmailParams) {
           </div>
 
           <div style="text-align:center;margin:24px 0">
-            <a href="${APP_URL}/dashboard" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
-              IR A MI PANEL
+            <a href="${APP_URL}/dashboard" style="background:#38bdf8;color:#09090b;padding:12px 28px;text-decoration:none;border-radius:2px;display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">
+              Ir a mi panel
             </a>
           </div>
 
           <div style="border-top:1px solid #27272a;padding-top:16px;margin-top:24px">
-            <p style="color:#71717a;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:.12em">
               También podés:
             </p>
             <p style="color:#a1a1aa;font-size:12px;margin:0;line-height:1.8">
-              → <a href="${APP_URL}/remates" style="color:#22c55e;text-decoration:none">Ver próximos remates</a><br>
-              → <a href="${APP_URL}/mercado/inmag" style="color:#22c55e;text-decoration:none">Consultar precios INMAG</a><br>
-              → <a href="${APP_URL}/consignatarias" style="color:#22c55e;text-decoration:none">Explorar consignatarias</a>
+              &rarr; <a href="${APP_URL}/remates" style="color:#38bdf8;text-decoration:none">Ver próximos remates</a><br>
+              &rarr; <a href="${APP_URL}/mercado/inmag" style="color:#38bdf8;text-decoration:none">Consultar precios INMAG</a><br>
+              &rarr; <a href="${APP_URL}/consignatarias" style="color:#38bdf8;text-decoration:none">Explorar consignatarias</a>
             </p>
           </div>
 
-          <p style="color:#3f3f46;font-size:10px;margin:24px 0 0">
+          <p style="color:#52525b;font-size:10px;margin:24px 0 0">
             Consignatarias.com.ar — Directorio ganadero
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -1234,25 +1254,23 @@ export async function sendDteUploadReminder({ to, userName, daysSinceSignup }: D
     await resend.emails.send({
       from: FROM,
       to,
-      subject: '📋 Subí tu primera guía DT-e y llevá el control',
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-          <h2 style="color:#fff;font-size:16px;margin:0 0 16px">${greeting},</h2>
-          
+      subject: 'Subí tu primera guía DT-e y llevá el control',
+      html: darkEmailShell(`
+          <h2 style="color:#fafafa;font-size:16px;font-weight:700;margin:0 0 16px">${greeting},</h2>
+
           <p style="color:#a1a1aa;font-size:13px;line-height:1.6;margin:0 0 16px">
             ${timeContext} en consignatarias.com.ar pero todavía no subiste tu primera guía DT-e.
           </p>
 
-          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;margin-bottom:16px">
-            <p style="color:#fbbf24;font-size:12px;margin:0 0 12px;font-weight:bold">
+          <div style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:16px;margin-bottom:16px">
+            <p style="color:#38bdf8;font-size:11px;margin:0 0 12px;font-weight:bold;text-transform:uppercase;letter-spacing:.12em">
               ¿Por qué subir tus guías?
             </p>
             <p style="color:#a1a1aa;font-size:12px;margin:0;line-height:1.8">
-              ✓ Tus datos, guardados de forma segura<br>
-              ✓ Historial de todas tus operaciones<br>
-              ✓ Estadísticas: categorías, pesos, consignatarias<br>
-              ✓ Exportá tus datos cuando quieras
+              &#10003; Tus datos, guardados de forma segura<br>
+              &#10003; Historial de todas tus operaciones<br>
+              &#10003; Estadísticas: categorías, pesos, consignatarias<br>
+              &#10003; Exportá tus datos cuando quieras
             </p>
           </div>
 
@@ -1261,18 +1279,17 @@ export async function sendDteUploadReminder({ to, userName, daysSinceSignup }: D
           </p>
 
           <div style="text-align:center;margin:24px 0">
-            <a href="${APP_URL}/dashboard" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
-              IR A MI PANEL
+            <a href="${APP_URL}/dashboard" style="background:#38bdf8;color:#09090b;padding:12px 28px;text-decoration:none;border-radius:2px;display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">
+              Ir a mi panel
             </a>
           </div>
 
-          <p style="color:#3f3f46;font-size:10px;margin:24px 0 0">
+          <p style="color:#52525b;font-size:10px;margin:24px 0 0">
             Consignatarias.com.ar — Directorio ganadero
             <br>
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#3f3f46">Desuscribirme</a>
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -1300,54 +1317,49 @@ export async function sendFirstDteSuccess({ to, userName, dteCount }: FirstDteSu
     await resend.emails.send({
       from: FROM,
       to,
-      subject: '🎉 ¡Subiste tu primera guía DT-e!',
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-          <div style="text-align:center;margin-bottom:20px">
-            <span style="font-size:48px">🎉</span>
-          </div>
+      subject: '¡Subiste tu primera guía DT-e!',
+      html: darkEmailShell(`
+          <p style="color:#34d399;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 10px;text-align:center">Primera gu&iacute;a cargada</p>
 
-          <h2 style="color:#fff;font-size:18px;margin:0 0 16px;text-align:center">${greeting}</h2>
-          
+          <h2 style="color:#fafafa;font-size:18px;font-weight:700;margin:0 0 16px;text-align:center">${greeting}</h2>
+
           <p style="color:#a1a1aa;font-size:13px;line-height:1.6;margin:0 0 16px;text-align:center">
             Ya ${dteCount > 1 ? `tenés ${dteCount} guías` : 'tenés tu primera guía'} guardada en tu cuenta.
           </p>
 
-          <div style="background:#16161d;border:1px solid #22c55e;border-radius:4px;padding:20px;margin-bottom:20px;text-align:center">
-            <p style="color:#22c55e;font-size:32px;font-weight:bold;margin:0">${dteCount}</p>
-            <p style="color:#71717a;font-size:11px;margin:4px 0 0;text-transform:uppercase">guía${dteCount > 1 ? 's' : ''} guardada${dteCount > 1 ? 's' : ''}</p>
+          <div style="background:#18181b;border:1px solid rgba(52,211,153,.5);border-radius:2px;padding:20px;margin-bottom:20px;text-align:center">
+            <p style="color:#34d399;font-size:32px;font-weight:bold;margin:0">${dteCount}</p>
+            <p style="color:#71717a;font-size:11px;margin:4px 0 0;text-transform:uppercase;letter-spacing:.12em">guía${dteCount > 1 ? 's' : ''} guardada${dteCount > 1 ? 's' : ''}</p>
           </div>
 
           <p style="color:#a1a1aa;font-size:12px;line-height:1.6;margin:0 0 16px">
             Seguí subiendo tus guías para construir tu historial completo de operaciones.
           </p>
 
-          <div style="background:#16161d;border:1px solid #fbbf24;border-radius:4px;padding:16px;margin-bottom:20px">
-            <p style="color:#fbbf24;font-size:11px;margin:0 0 8px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
-              ★ CON PRO
+          <div style="background:#18181b;border:1px solid rgba(251,191,36,.4);border-radius:2px;padding:16px;margin-bottom:20px">
+            <p style="color:#fbbf24;font-size:11px;margin:0 0 8px;font-weight:bold;text-transform:uppercase;letter-spacing:.12em">
+              &#9733; Con PRO
             </p>
             <p style="color:#a1a1aa;font-size:12px;margin:0;line-height:1.6">
               Exportá tus datos, alertas ilimitadas, y estadísticas avanzadas de tus operaciones.
             </p>
             <p style="margin:12px 0 0">
               <a href="${APP_URL}/planes" style="color:#fbbf24;font-size:12px;text-decoration:none">
-                Ver planes PRO →
+                Ver planes PRO &rarr;
               </a>
             </p>
           </div>
 
           <div style="text-align:center;margin:24px 0">
-            <a href="${APP_URL}/dashboard" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
-              VER MIS GUÍAS
+            <a href="${APP_URL}/dashboard" style="background:#38bdf8;color:#09090b;padding:12px 28px;text-decoration:none;border-radius:2px;display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">
+              Ver mis guías
             </a>
           </div>
 
-          <p style="color:#3f3f46;font-size:10px;margin:24px 0 0;text-align:center">
+          <p style="color:#52525b;font-size:10px;margin:24px 0 0;text-align:center">
             Consignatarias.com.ar — Directorio ganadero
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -1390,58 +1402,56 @@ export async function sendDteRetentionReminder({
     await resend.emails.send({
       from: FROM,
       to,
-      subject: `📋 Tu historial te espera — ${formatNumber(totalCabezas)} cabezas registradas`,
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-          <h2 style="color:#fff;font-size:16px;margin:0 0 16px">${greeting},</h2>
-          
+      subject: `Tu historial te espera — ${formatNumber(totalCabezas)} cabezas registradas`,
+      html: darkEmailShell(`
+          <h2 style="color:#fafafa;font-size:16px;font-weight:700;margin:0 0 16px">${greeting},</h2>
+
           <p style="color:#a1a1aa;font-size:13px;line-height:1.6;margin:0 0 16px">
             ${timeMessage} que no subís guías DT-e. Tu historial sigue esperándote.
           </p>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-            <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;text-align:center">
-              <p style="color:#22c55e;font-size:24px;font-weight:bold;margin:0">${totalDtes}</p>
-              <p style="color:#71717a;font-size:10px;margin:4px 0 0;text-transform:uppercase">guías guardadas</p>
-            </div>
-            <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;text-align:center">
-              <p style="color:#22c55e;font-size:24px;font-weight:bold;margin:0">${formatNumber(totalCabezas)}</p>
-              <p style="color:#71717a;font-size:10px;margin:4px 0 0;text-transform:uppercase">cabezas</p>
-            </div>
-          </div>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px"><tr>
+            <td width="49%" style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:16px;text-align:center">
+              <p style="font-family:${EMAIL_MONO};color:#38bdf8;font-size:24px;font-weight:bold;margin:0">${totalDtes}</p>
+              <p style="font-family:${EMAIL_MONO};color:#71717a;font-size:10px;margin:4px 0 0;text-transform:uppercase;letter-spacing:.12em">guías guardadas</p>
+            </td>
+            <td width="2%"></td>
+            <td width="49%" style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:16px;text-align:center">
+              <p style="font-family:${EMAIL_MONO};color:#38bdf8;font-size:24px;font-weight:bold;margin:0">${formatNumber(totalCabezas)}</p>
+              <p style="font-family:${EMAIL_MONO};color:#71717a;font-size:10px;margin:4px 0 0;text-transform:uppercase;letter-spacing:.12em">cabezas</p>
+            </td>
+          </tr></table>
 
           <p style="color:#a1a1aa;font-size:12px;line-height:1.6;margin:0 0 16px">
             ¿Participaste en algún remate esta semana? Sumá tu próxima guía y mantené tu historial actualizado.
           </p>
 
           <div style="text-align:center;margin:24px 0">
-            <a href="${APP_URL}/dashboard" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
-              IR A MI PANEL
+            <a href="${APP_URL}/dashboard" style="background:#38bdf8;color:#09090b;padding:12px 28px;text-decoration:none;border-radius:2px;display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">
+              Ir a mi panel
             </a>
           </div>
 
-          <div style="background:#16161d;border:1px solid #fbbf24;border-radius:4px;padding:16px;margin-bottom:20px">
-            <p style="color:#fbbf24;font-size:11px;margin:0 0 8px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
-              ★ CONSEJO PRO
+          <div style="background:#18181b;border:1px solid rgba(251,191,36,.4);border-radius:2px;padding:16px;margin-bottom:20px">
+            <p style="color:#fbbf24;font-size:11px;margin:0 0 8px;font-weight:bold;text-transform:uppercase;letter-spacing:.12em">
+              &#9733; Consejo PRO
             </p>
             <p style="color:#a1a1aa;font-size:12px;margin:0;line-height:1.6">
               Los productores PRO pueden exportar todas sus guías y ver estadísticas avanzadas por categoría y consignataria.
             </p>
             <p style="margin:8px 0 0">
               <a href="${APP_URL}/planes" style="color:#fbbf24;font-size:11px;text-decoration:none">
-                Ver planes →
+                Ver planes &rarr;
               </a>
             </p>
           </div>
 
-          <p style="color:#3f3f46;font-size:10px;margin:24px 0 0">
+          <p style="color:#52525b;font-size:10px;margin:24px 0 0">
             Consignatarias.com.ar — Directorio ganadero
             <br>
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#3f3f46">Desuscribirme</a>
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -1473,44 +1483,41 @@ export async function sendNewRemateAlert({
   resend.emails.send({
     from: FROM,
     to,
-    subject: `🐄 Nuevo remate: ${consignataria} — ${formatDate(fecha)}`,
-    html: `
-      ${emailBrandHeader()}
-      <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-        <p style="color:#fbbf24;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">
-          ★ NUEVA PUBLICACIÓN
+    subject: `Nuevo remate: ${consignataria} — ${formatDate(fecha)}`,
+    html: darkEmailShell(`
+        <p style="color:#fbbf24;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:.12em">
+          &#9733; Nueva publicaci&oacute;n
         </p>
-        <h2 style="color:#fff;font-size:18px;margin:0 0 16px">${safeConsig}</h2>
-        
-        <div style="background:#16161d;border:1px solid #fbbf24;border-left:3px solid #fbbf24;border-radius:4px;padding:16px;margin-bottom:16px">
-          <p style="color:#e4e4e7;font-size:14px;margin:0 0 8px;font-weight:bold">${safeTitle}</p>
+        <h2 style="color:#fafafa;font-size:18px;font-weight:700;margin:0 0 16px">${safeConsig}</h2>
+
+        <div style="background:#18181b;border:1px solid rgba(251,191,36,.5);border-left:3px solid #fbbf24;border-radius:2px;padding:16px;margin-bottom:16px">
+          <p style="color:#fafafa;font-size:14px;margin:0 0 8px;font-weight:bold">${safeTitle}</p>
           <p style="color:#a1a1aa;font-size:12px;margin:0">
-            📅 ${formatDate(fecha)} &nbsp;&bull;&nbsp; 📍 ${safeProv}
+            ${formatDate(fecha)} &nbsp;&middot;&nbsp; ${safeProv}
           </p>
         </div>
 
         <p style="color:#a1a1aa;font-size:12px;line-height:1.5">
-          Una consignataria PRO que seguís acaba de publicar un nuevo remate. 
+          Una consignataria PRO que seguís acaba de publicar un nuevo remate.
           Visitá el link para ver los detalles completos.
         </p>
 
         <div style="text-align:center;margin:20px 0">
-          <a href="${url}" style="background:#22c55e;color:#fff;padding:10px 24px;text-decoration:none;border-radius:4px;display:inline-block;font-size:12px;font-weight:bold;letter-spacing:1px">VER REMATE</a>
+          <a href="${url}" style="background:#38bdf8;color:#09090b;padding:11px 26px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver remate</a>
         </div>
 
         <div style="border-top:1px solid #27272a;padding-top:12px;margin-top:20px">
-          <p style="color:#52525b;font-size:11px;margin:0">
+          <p style="color:#71717a;font-size:11px;margin:0">
             Recibís este email porque tenés una alerta activa para ${safeProv || 'esta zona'}.
             <br>
-            <a href="${APP_URL}/alertas/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">
+            <a href="${APP_URL}/alertas/unsubscribe?email=${encodeURIComponent(to)}" style="color:#71717a">
               Modificar mis alertas
             </a>
           </p>
         </div>
 
-        <p style="color:#3f3f46;font-size:10px;margin:16px 0 0">Consignatarias.com.ar — Directorio ganadero</p>
-      </div>
-    `,
+        <p style="color:#52525b;font-size:10px;margin:16px 0 0">Consignatarias.com.ar — Directorio ganadero</p>
+    `),
   }).catch(() => {})
 }
 
@@ -1568,35 +1575,32 @@ export async function sendRemateResultsToProducer({
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
       subject: `Así cerró el remate de ${consignataria}`,
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-          <p style="color:#71717a;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">
+      html: darkEmailShell(`
+          <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 8px">
             Resultados del remate
           </p>
-          <h2 style="color:#fff;font-size:18px;margin:0 0 16px">${safeConsig}</h2>
+          <h2 style="color:#fafafa;font-size:18px;font-weight:700;margin:0 0 16px">${safeConsig}</h2>
 
           <p style="color:#a1a1aa;font-size:13px;line-height:1.6;margin:0 0 16px">
-            Cerró el remate de <strong style="color:#e4e4e7">${safeConsig}</strong> en ${safeLoc}.
+            Cerró el remate de <strong style="color:#fafafa">${safeConsig}</strong> en ${safeLoc}.
           </p>
 
-          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:20px;text-align:center;margin-bottom:16px">
-            <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">${safeCat}</p>
-            <p style="color:#f59e0b;font-size:32px;font-weight:bold;margin:0;font-family:monospace">${money(avgPrice)}<span style="color:#71717a;font-size:16px">/kg</span></p>
+          <div style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:20px;text-align:center;margin-bottom:16px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.12em">${safeCat}</p>
+            <p style="color:#38bdf8;font-size:32px;font-weight:bold;margin:0">${money(avgPrice)}<span style="color:#71717a;font-size:16px">/kg</span></p>
             <p style="color:#71717a;font-size:11px;margin:6px 0 0">promedio sobre ${cabezasFmt} cabezas</p>
           </div>
 
           <div style="text-align:center;margin:24px 0">
-            <a href="${perfilUrl}" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">VER TODOS LOS PROMEDIOS</a>
+            <a href="${perfilUrl}" style="background:#38bdf8;color:#09090b;padding:12px 28px;text-decoration:none;border-radius:2px;display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver todos los promedios</a>
           </div>
 
-          <p style="color:#3f3f46;font-size:10px;margin:24px 0 0">
+          <p style="color:#52525b;font-size:10px;margin:24px 0 0">
             Recibís este email porque seguís a ${safeConsig} en consignatarias.com.ar
             <br>
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#3f3f46">Desuscribirme</a>
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -1648,29 +1652,27 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
   // Qué recibe REALMENTE según a qué se suscribió (alineado con newsletter-segments).
   const bullets =
     isMonthlyClose
-      ? '📊 <strong>Cierre mensual del Índice Novillo</strong> — el promedio del mes que cerró, el 1°'
+      ? '<strong>Cierre mensual del Índice Novillo</strong> — el promedio del mes que cerró, el 1°'
     : isFaena
-      ? '🥩 <strong>Reporte mensual de faena</strong> — cabezas faenadas, variación interanual y acumulado'
+      ? '<strong>Reporte mensual de faena</strong> — cabezas faenadas, variación interanual y acumulado'
     : isCorredor
-      ? '📄 <strong>El Corredor</strong> — el cierre mensual del mercado bovino, en PDF'
+      ? '<strong>El Corredor</strong> — el cierre mensual del mercado bovino, en PDF'
     : isSubastaPorFirma
-      ? '🔔 <strong>Recordatorios de remate</strong> — te avisamos antes de cada subasta de las firmas que seguís (el día previo y al arrancar) y cómo cerró'
+      ? '<strong>Recordatorios de remate</strong> — te avisamos antes de cada subasta de las firmas que seguís (el día previo y al arrancar) y cómo cerró'
     : isProductOnly
-      ? '🔔 Te avisamos cuando <strong>mejoremos la herramienta</strong> o agreguemos nuevos campos'
+      ? 'Te avisamos cuando <strong>mejoremos la herramienta</strong> o agreguemos nuevos campos'
     : isWeekly
-      ? '📅 <strong>Resumen semanal de remates</strong> — los más importantes, cada lunes'
-      : '📅 <strong>Resumen semanal de remates</strong> — los más importantes, cada lunes' // fail-safe: igual que isWeeklyRecipient
+      ? '<strong>Resumen semanal de remates</strong> — los más importantes, cada lunes'
+      : '<strong>Resumen semanal de remates</strong> — los más importantes, cada lunes' // fail-safe: igual que isWeeklyRecipient
 
   try {
     await resend.emails.send({
       from: FROM,
       to,
-      subject: '🐄 Bienvenido al newsletter de Consignatarias.com.ar',
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
-          <h2 style="color:#fff;font-size:18px;margin:0 0 16px">¡Gracias por suscribirte!</h2>
-          
+      subject: 'Bienvenido al newsletter de Consignatarias.com.ar',
+      html: darkEmailShell(`
+          <h2 style="color:#fafafa;font-size:18px;font-weight:700;margin:0 0 16px">¡Gracias por suscribirte!</h2>
+
           <p style="color:#a1a1aa;font-size:13px;line-height:1.6;margin:0 0 16px">
             ${sourceContext}
           </p>
@@ -1679,29 +1681,29 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
             A partir de ahora vas a recibir:
           </p>
 
-          <div style="background:#16161d;border:1px solid #27272a;border-radius:4px;padding:16px;margin-bottom:20px">
-            <p style="color:#e4e4e7;font-size:13px;margin:0;line-height:1.8">
+          <div style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:16px;margin-bottom:20px">
+            <p style="color:#fafafa;font-size:13px;margin:0;line-height:1.8">
               ${bullets}
             </p>
           </div>
 
-          <div style="background:#16161d;border:1px solid #22c55e;border-left:3px solid #22c55e;border-radius:4px;padding:16px;margin-bottom:20px">
-            <p style="color:#22c55e;font-size:12px;margin:0 0 8px;font-weight:bold;text-transform:uppercase;letter-spacing:1px">
-              💡 ¿Sabías que podés crear una cuenta gratis?
+          <div style="background:#18181b;border:1px solid #27272a;border-left:3px solid #38bdf8;border-radius:2px;padding:16px;margin-bottom:20px">
+            <p style="color:#38bdf8;font-size:11px;margin:0 0 8px;font-weight:bold;text-transform:uppercase;letter-spacing:.12em">
+              ¿Sabías que podés crear una cuenta gratis?
             </p>
             <p style="color:#a1a1aa;font-size:12px;margin:0;line-height:1.6">
               Con una cuenta podés guardar tus guías DT-e, configurar alertas personalizadas y acceder a estadísticas de tus operaciones.
             </p>
             <p style="margin:12px 0 0">
-              <a href="${APP_URL}/registro" style="color:#22c55e;font-size:12px;text-decoration:none;font-weight:bold">
-                Crear cuenta gratis →
+              <a href="${APP_URL}/registro" style="color:#38bdf8;font-size:12px;text-decoration:none;font-weight:bold">
+                Crear cuenta gratis &rarr;
               </a>
             </p>
           </div>
 
           <div style="text-align:center;margin:24px 0">
-            <a href="${APP_URL}/remates" style="background:#22c55e;color:#fff;padding:12px 28px;text-decoration:none;border-radius:4px;display:inline-block;font-size:13px;font-weight:bold;letter-spacing:1px">
-              VER PRÓXIMOS REMATES
+            <a href="${APP_URL}/remates" style="background:#38bdf8;color:#09090b;padding:12px 28px;text-decoration:none;border-radius:2px;display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">
+              Ver próximos remates
             </a>
           </div>
 
@@ -1710,19 +1712,18 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
               También podés explorar:
             </p>
             <p style="color:#a1a1aa;font-size:12px;margin:0;line-height:1.8">
-              → <a href="${APP_URL}/mercado/inmag" style="color:#22c55e;text-decoration:none">Precios INMAG actualizados</a><br>
-              → <a href="${APP_URL}/consignatarias" style="color:#22c55e;text-decoration:none">Directorio de consignatarias</a><br>
-              → <a href="${APP_URL}/frigorificos" style="color:#22c55e;text-decoration:none">Frigoríficos habilitados</a>
+              &rarr; <a href="${APP_URL}/mercado/inmag" style="color:#38bdf8;text-decoration:none">Precios INMAG actualizados</a><br>
+              &rarr; <a href="${APP_URL}/consignatarias" style="color:#38bdf8;text-decoration:none">Directorio de consignatarias</a><br>
+              &rarr; <a href="${APP_URL}/frigorificos" style="color:#38bdf8;text-decoration:none">Frigoríficos habilitados</a>
             </p>
           </div>
 
-          <p style="color:#3f3f46;font-size:10px;margin:24px 0 0">
+          <p style="color:#52525b;font-size:10px;margin:24px 0 0">
             Consignatarias.com.ar — Directorio ganadero
             <br>
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#3f3f46">Desuscribirme</a>
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -1756,20 +1757,17 @@ export async function sendSubscriptionInvite(
       to,
       replyTo: 'hola@consignatarias.com',
       subject: precio ? `El Índice Novillo cerró en ${precio} — ¿te lo mando cada mes?` : 'El cierre mensual del Índice Novillo — ¿te interesa?',
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family:system-ui,-apple-system,sans-serif;max-width:480px;margin:0 auto;color:#1a1a1a;font-size:15px;line-height:1.6">
-          <p>${saludo}</p>
-          <p>Soy José Barnetche. Armamos <strong>consignatarias.com.ar</strong> — el INMAG y los precios del Mercado Agroganadero, al día.</p>
-          <p>Todos los meses publicamos el <strong>cierre del Índice Novillo</strong>${precio ? ` (hoy <strong>${precio}</strong>)` : ''} — el número que se usa para liquidar arrendamientos y seguir el mercado.</p>
-          <p>Si te sirve, te lo puedo mandar <strong>el 1° de cada mes</strong>. Suscribite acá (30 segundos):</p>
+      html: darkEmailShell(`
+          <p style="color:#a1a1aa;font-size:14px;line-height:1.7;margin:0 0 12px">${saludo}</p>
+          <p style="color:#a1a1aa;font-size:14px;line-height:1.7;margin:0 0 12px">Soy José Barnetche. Armamos <strong style="color:#fafafa">consignatarias.com.ar</strong> — el INMAG y los precios del Mercado Agroganadero, al día.</p>
+          <p style="color:#a1a1aa;font-size:14px;line-height:1.7;margin:0 0 12px">Todos los meses publicamos el <strong style="color:#fafafa">cierre del Índice Novillo</strong>${precio ? ` (hoy <strong style="color:#38bdf8">${precio}</strong>)` : ''} — el número que se usa para liquidar arrendamientos y seguir el mercado.</p>
+          <p style="color:#a1a1aa;font-size:14px;line-height:1.7;margin:0 0 12px">Si te sirve, te lo puedo mandar <strong style="color:#fafafa">el 1° de cada mes</strong>. Suscribite acá (30 segundos):</p>
           <p style="margin:24px 0">
-            <a href="${subscribeUrl}" style="background:#16a34a;color:#fff;padding:11px 22px;text-decoration:none;border-radius:6px;font-weight:600">Recibir el cierre mensual →</a>
+            <a href="${subscribeUrl}" style="background:#38bdf8;color:#09090b;padding:11px 22px;text-decoration:none;border-radius:2px;font-weight:600;font-size:13px">Recibir el cierre mensual &rarr;</a>
           </p>
-          <p style="color:#666;font-size:13px">Si no te interesa, ignorá este mail — no te escribo de nuevo. Cualquier cosa, respondé a este correo.</p>
-          <p style="color:#999;font-size:13px">José · consignatarias.com.ar</p>
-        </div>
-      `,
+          <p style="color:#71717a;font-size:13px;line-height:1.6;margin:0 0 8px">Si no te interesa, ignorá este mail — no te escribo de nuevo. Cualquier cosa, respondé a este correo.</p>
+          <p style="color:#52525b;font-size:13px;margin:0">José &middot; consignatarias.com.ar</p>
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -1793,13 +1791,8 @@ export async function sendElCorredorDelivery(email: string, edition: string, pdf
       from: FROM,
       to: email,
       subject: `El Corredor · ${edition} — tu copia adentro`,
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family: 'SF Mono', 'Cascadia Code', ui-monospace, Menlo, Consolas, monospace; max-width: 560px; background: #09090b; color: #fafafa; padding: 32px;">
-          <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; margin-bottom: 28px;">
-            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#38bdf8; margin-right:10px;"></span>
-            <strong style="color:#fafafa">consignatarias.com</strong>
-            <span style="color:#38bdf8; margin: 0 8px;">·</span>
+      html: darkEmailShell(`
+          <div style="font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #71717a; margin-bottom: 24px;">
             Mercado Decision Infrastructure
           </div>
 
@@ -1825,10 +1818,9 @@ export async function sendElCorredorDelivery(email: string, edition: string, pdf
             <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color: #71717a;">desuscribite acá</a>.
           </p>
           <p style="font-size: 11px; color: #71717a; margin: 16px 0 0 0;">
-            Mesa de mercado · consignatarias.com
+            Mesa de mercado &middot; consignatarias.com
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -1871,14 +1863,9 @@ export async function sendEnterpriseWelcome(p: EnterpriseWelcomeParams) {
       to: p.to,
       replyTo: ADMIN_EMAIL,
       subject: `Bienvenido a Enterprise ${planLabel} — consignatarias.com.ar`,
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family: 'SF Mono', 'Cascadia Code', ui-monospace, Menlo, Consolas, monospace; max-width: 560px; background: #09090b; color: #fafafa; padding: 32px;">
-          <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; margin-bottom: 28px;">
-            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#38bdf8; margin-right:10px;"></span>
-            <strong style="color:#fafafa">consignatarias.com</strong>
-            <span style="color:#38bdf8; margin: 0 8px;">·</span>
-            Enterprise · ${planLabel}
+      html: darkEmailShell(`
+          <div style="font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #38bdf8; margin-bottom: 24px;">
+            Enterprise &middot; ${planLabel}
           </div>
 
           <h1 style="font-size: 28px; font-weight: 700; letter-spacing: -0.02em; color: #fafafa; margin: 0 0 16px 0;">
@@ -1891,7 +1878,7 @@ export async function sendEnterpriseWelcome(p: EnterpriseWelcomeParams) {
             de remates, directorios, lote-level).
           </p>
 
-          <div style="background: #18181b; border: 1px solid #27272a; padding: 16px; margin: 24px 0;">
+          <div style="background: #18181b; border: 1px solid #27272a; border-radius: 2px; padding: 16px; margin: 24px 0;">
             <p style="margin:0 0 8px 0; color:#fafafa; font-weight:600; font-size:13px;">Próximos 3 pasos:</p>
             <ol style="margin:0; padding-left:20px; color:#d4d4d8; font-size:13px; line-height:1.7;">
               <li>Andá a <a href="${dashboardUrl}" style="color:#38bdf8">/cuenta/api-keys</a> y generá tu primera key</li>
@@ -1917,10 +1904,9 @@ export async function sendEnterpriseWelcome(p: EnterpriseWelcomeParams) {
             desde tu dashboard cuando quieras.
           </p>
           <p style="font-size: 11px; color: #71717a; margin: 16px 0 0 0;">
-            Mesa de mercado · consignatarias.com
+            Mesa de mercado &middot; consignatarias.com
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -1960,14 +1946,9 @@ export async function sendQuotaAlert(p: QuotaAlertParams) {
       to: p.to,
       replyTo: ADMIN_EMAIL,
       subject: `Tu API key "${p.keyName}" llegó al ${pct}% del cupo mensual`,
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family: 'SF Mono', 'Cascadia Code', ui-monospace, Menlo, Consolas, monospace; max-width: 560px; background: #09090b; color: #fafafa; padding: 32px;">
-          <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; margin-bottom: 28px;">
-            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#fbbf24; margin-right:10px;"></span>
-            <strong style="color:#fafafa">consignatarias.com</strong>
-            <span style="color:#fbbf24; margin: 0 8px;">·</span>
-            Enterprise API · ${planLabel}
+      html: darkEmailShell(`
+          <div style="font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #fbbf24; margin-bottom: 24px;">
+            Enterprise API &middot; ${planLabel}
           </div>
 
           <h1 style="font-size: 28px; font-weight: 700; letter-spacing: -0.02em; color: #fafafa; margin: 0 0 16px 0;">
@@ -1982,8 +1963,8 @@ export async function sendQuotaAlert(p: QuotaAlertParams) {
             <strong style="color:#38bdf8">${planLabel}</strong>.
           </p>
 
-          <div style="background: #18181b; border: 1px solid #27272a; padding: 16px; margin: 24px 0;">
-            <table style="width: 100%; font-size: 13px; color: #d4d4d8;">
+          <div style="background: #18181b; border: 1px solid #27272a; border-radius: 2px; padding: 16px; margin: 24px 0;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width: 100%; font-family:${EMAIL_MONO}; font-size: 13px; color: #d4d4d8;">
               <tr><td style="padding: 4px 0; color: #71717a;">Usado este mes</td><td style="padding: 4px 0; text-align: right; color: #fbbf24;">${usedFmt}</td></tr>
               <tr><td style="padding: 4px 0; color: #71717a;">Restante</td><td style="padding: 4px 0; text-align: right;">${remainingFmt}</td></tr>
               <tr><td style="padding: 4px 0; color: #71717a;">Cupo plan ${planLabel}</td><td style="padding: 4px 0; text-align: right;">${limitFmt}</td></tr>
@@ -2012,10 +1993,9 @@ export async function sendQuotaAlert(p: QuotaAlertParams) {
             o tenés dudas, respondé este mail.
           </p>
           <p style="font-size: 11px; color: #71717a; margin: 16px 0 0 0;">
-            Mesa de mercado · consignatarias.com
+            Mesa de mercado &middot; consignatarias.com
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -2060,13 +2040,8 @@ export async function sendTrialNudge(p: TrialNudgeParams) {
       to: p.to,
       replyTo: ADMIN_EMAIL,
       subject,
-      html: `
-      ${emailBrandHeader()}
-        <div style="font-family: 'SF Mono', 'Cascadia Code', ui-monospace, Menlo, Consolas, monospace; max-width: 560px; background: #09090b; color: #fafafa; padding: 32px;">
-          <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; margin-bottom: 28px;">
-            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#38bdf8; margin-right:10px;"></span>
-            <strong style="color:#fafafa">consignatarias.com</strong>
-            <span style="color:#38bdf8; margin: 0 8px;">·</span>
+      html: darkEmailShell(`
+          <div style="font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #38bdf8; margin-bottom: 24px;">
             Enterprise API
           </div>
 
@@ -2089,7 +2064,7 @@ export async function sendTrialNudge(p: TrialNudgeParams) {
             Usaste ${usedFmt} de ${limitFmt} requests del período.
           </p>
 
-          <div style="background: #18181b; border: 1px solid #27272a; padding: 18px; margin: 24px 0;">
+          <div style="background: #18181b; border: 1px solid #27272a; border-radius: 2px; padding: 18px; margin: 24px 0;">
             <p style="margin:0 0 12px 0; color:#fafafa; font-weight:600; font-size:13px;">Todo lo que ya tenés a mano en la API:</p>
             <ul style="margin:0; padding-left:18px; color:#d4d4d8; font-size:13px; line-height:1.8;">
               <li>INMAG diario + serie histórica completa (desde 2015)</li>
@@ -2103,7 +2078,7 @@ export async function sendTrialNudge(p: TrialNudgeParams) {
             </ul>
           </div>
 
-          <div style="background: #0c1f2b; border: 1px solid #164e63; padding: 18px; margin: 24px 0;">
+          <div style="background: #18181b; border: 1px solid rgba(56,189,248,.4); border-left: 3px solid #38bdf8; border-radius: 2px; padding: 18px; margin: 24px 0;">
             <p style="margin:0 0 8px 0; color:#38bdf8; font-weight:700; font-size:13px; letter-spacing:0.04em;">Si la prueba te cierra, el paso natural es Growth</p>
             <p style="margin:0 0 12px 0; color:#d4d4d8; font-size:13px; line-height:1.7;">
               <strong style="color:#fafafa">50.000 req/mes</strong> · 300 req/min — pensado para apps en producción.
@@ -2137,10 +2112,9 @@ export async function sendTrialNudge(p: TrialNudgeParams) {
             mostrarnos qué armaste, respondé este mail y te leemos.
           </p>
           <p style="font-size: 11px; color: #71717a; margin: 16px 0 0 0;">
-            Mesa de mercado · consignatarias.com
+            Mesa de mercado &middot; consignatarias.com
           </p>
-        </div>
-      `,
+      `),
     })
     return { success: true }
   } catch (err) {
@@ -2170,7 +2144,7 @@ export async function sendArrendamientoCierre(opts: {
     opts.change != null ? `${opts.change >= 0 ? '+' : ''}${opts.change.toFixed(1)}% vs. el mes anterior` : ''
   const canon = opts.kgHa && opts.hectareas ? opts.kgHa * opts.hectareas * opts.inmag : null
   const canonBlock = canon
-    ? `<p style="margin:18px 0 0 0;font-size:15px;color:#18181b">Con tu contrato (<strong>${escapeHtml(String(opts.kgHa))} kg/ha × ${escapeHtml(String(opts.hectareas))} ha</strong>), el canon de ${escapeHtml(opts.mesLabel)} es <strong style="color:#0284c7">$${Math.round(canon).toLocaleString('es-AR')}</strong>.</p>`
+    ? `<p style="margin:18px 0 0 0;font-size:15px;color:#a1a1aa">Con tu contrato (<strong style="color:#fafafa">${escapeHtml(String(opts.kgHa))} kg/ha × ${escapeHtml(String(opts.hectareas))} ha</strong>), el canon de ${escapeHtml(opts.mesLabel)} es <strong style="color:#38bdf8">$${Math.round(canon).toLocaleString('es-AR')}</strong>.</p>`
     : ''
 
   try {
@@ -2179,16 +2153,15 @@ export async function sendArrendamientoCierre(opts: {
       to: opts.to,
       subject: `Cierre INMAG ${opts.mesLabel}: $${inmagFmt}/kg — para tu arrendamiento`,
       headers: listUnsubHeaders(opts.to, 'arrendamiento-cierre'),
-      html: `<div style="max-width:560px;margin:0 auto;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#18181b">
-        ${emailBrandHeader()}
-        <p style="font-size:15px;line-height:1.6;margin:0 0 6px 0">El cierre del INMAG de <strong>${escapeHtml(opts.mesLabel)}</strong> — el promedio oficial del Mercado Agroganadero para liquidar tu arrendamiento del mes:</p>
-        <div style="font-family:ui-monospace,Menlo,monospace;font-size:34px;font-weight:700;color:#0284c7;margin:14px 0 2px 0">$${inmagFmt}<span style="font-size:15px;color:#71717a;font-weight:400"> /kg</span></div>
+      html: darkEmailShell(`
+        <p style="font-size:15px;line-height:1.6;color:#a1a1aa;margin:0 0 6px 0">El cierre del INMAG de <strong style="color:#fafafa">${escapeHtml(opts.mesLabel)}</strong> — el promedio oficial del Mercado Agroganadero para liquidar tu arrendamiento del mes:</p>
+        <div style="font-size:34px;font-weight:700;color:#38bdf8;margin:14px 0 2px 0">$${inmagFmt}<span style="font-size:15px;color:#71717a;font-weight:400"> /kg</span></div>
         ${changeStr ? `<p style="margin:0;font-size:13px;color:#71717a">${changeStr}</p>` : ''}
         ${canonBlock}
-        <p style="margin:24px 0"><a href="${APP_URL}/mercado/arrendamiento" style="display:inline-block;background:#38bdf8;color:#09090b;padding:12px 22px;text-decoration:none;font-weight:600;font-size:13px;border-radius:2px">Ver el detalle y la serie →</a></p>
+        <p style="margin:24px 0"><a href="${APP_URL}/mercado/arrendamiento" style="display:inline-block;background:#38bdf8;color:#09090b;padding:12px 22px;text-decoration:none;font-weight:600;font-size:13px;border-radius:2px">Ver el detalle y la serie &rarr;</a></p>
         <p style="font-size:12px;color:#a1a1aa;margin:0">Es el mismo número que publica el MAG. Un mail por mes, al cierre.</p>
-        ${emailBrandFooter()}
-      </div>`,
+        <p style="font-family:${EMAIL_MONO};color:#52525b;font-size:10px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px;line-height:1.6">consignatarias<span style="color:#38bdf8">.</span>com &mdash; el precio de referencia del ganado argentino &middot; <a href="${APP_URL}" style="color:#71717a">consignatarias.com.ar</a></p>
+      `),
     })
     if (error) return { success: false, error: error.message }
     return { success: true }
