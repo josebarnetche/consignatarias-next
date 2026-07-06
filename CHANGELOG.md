@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.117.0] — 2026-07-06
+
+### Arrendamiento: el cierre mensual OFICIAL del MAG (el número para las facturas)
+
+La gente liquida el arrendamiento con el **cierre mensual del mes anterior** (promedio ponderado por volumen), no con el promedio simple de la serie diaria — que daba mal (4.172 en vez de 4.164 para junio).
+
+- **Nueva tabla `inmag_monthly_close`** con los cierres OFICIALES bajados del MAG (`haciinfo000011` rango mensual, fila "Totales"): 30 meses (2024-01 → 2026-06). **Junio 2026 = 4.164,558 — coincide EXACTO** con el MAG.
+- **`/mercado/arrendamiento`** ahora muestra un panel prominente **"Cierre del mes · el número para tu factura"** ($4.164,558/kg · junio 2026) + la tabla mensual reconstruida con los cierres oficiales (antes: promedio simple, incorrecto).
+- **Pendiente:** cron mensual que agregue el mes nuevo automáticamente (hoy backfilleado a mano); y opcional, que la calculadora permita liquidar con el cierre mensual además del valor de hoy.
+
 ## [1.116.0] — 2026-07-06
 
 ### El universo de marca, desplegado: las 60 oportunidades de la auditoría implementadas
