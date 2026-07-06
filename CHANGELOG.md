@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.112.0] — 2026-07-05
+
+### Landing scroll-to-discover de consignataria PRO (`/para-consignatarias`)
+
+Landing de ventas para consignatarias, distinta de la de dev (`/mcp`). Frame acordado: **autoridad del dato de referencia + discovery (IA/Google) + herramientas PRO** — sin overpromise de "miles de productores" (la base directa es chica; el alcance real hoy es IA/SEO).
+
+- Escenas con reveal on-scroll (IntersectionObserver + CSS, respeta reduced-motion): hero → **el dato en vivo** (embed del Pulso) + stats reales → **el alcance** (~325 consultas de IA/mes) → **la oferta PRO** (ARS 45.000, 4 beneficios) → **el intel de regalo** → CTA.
+- Linkeada en el nav **DIRECTORIO → "Sumá tu firma"**. CTAs a `/planes#consignataria`.
+
 ## [1.111.0] — 2026-07-05
 
 ### La serie de 20 años, ahora también en dólares (oficial y blue)
