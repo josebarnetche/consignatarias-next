@@ -74,9 +74,20 @@ export async function GET(req: NextRequest) {
   )
 
   const magIds = [...magIdBySlug.values()]
-  const desde = new Date(Date.now() - days * 86400000).toISOString().slice(0, 10)
   const aggByMagId = new Map<number, { cabezas: number; priceSum: number; priceN: number }>()
   if (magIds.length) {
+    // Anclar la ventana al último día CON datos (el scrapeo puede ir atrasado),
+    // así el intel siempre muestra la actividad más reciente disponible en vez de
+    // dar 0 cuando el último cierre cargado es más viejo que `days` calendario.
+    const { data: latest } = await db
+      .from('mag_consignataria_sales_lots')
+      .select('date')
+      .in('mag_consignataria_id', magIds)
+      .order('date', { ascending: false })
+      .limit(1)
+    const maxDate: string | undefined = latest?.[0]?.date
+    const anchorMs = maxDate ? new Date(maxDate + 'T00:00').getTime() : Date.now()
+    const desde = new Date(anchorMs - days * 86400000).toISOString().slice(0, 10)
     const { data: lots } = await db
       .from('mag_consignataria_sales_lots')
       .select('mag_consignataria_id, head_count, price')
