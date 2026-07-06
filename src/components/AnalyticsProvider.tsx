@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, Suspense } from 'react'
-import { trackPageView, trackEvent, trackSignup } from '@/lib/analytics'
+import { trackPageView, trackEvent, trackSignup, trackValueEvent } from '@/lib/analytics'
 
 /**
  * Tracks GA4 pageviews on every Next.js App Router navigation.
@@ -227,12 +227,56 @@ function VisitTracker() {
   return null
 }
 
+/**
+ * EngagementTracker — señales pasivas por ruta, ligadas al visitor_id (el beacon de
+ * value_events adjunta el cid). scroll_depth: una vez al superar 75%. time_on_page:
+ * una vez, al dejar la página (cambio de ruta SPA o tab oculto), con los segundos.
+ * Alimenta el dashboard de visitantes y las cohortes de engagement.
+ */
+function EngagementTracker() {
+  const pathname = usePathname()
+  useEffect(() => {
+    const start = Date.now()
+    let deepFired = false
+    let timeFired = false
+    const fireTime = () => {
+      if (timeFired) return
+      const secs = Math.round((Date.now() - start) / 1000)
+      if (secs >= 5 && secs < 3600) {
+        timeFired = true
+        trackValueEvent('time_on_page', { meta: { seconds: secs, path: pathname } })
+      }
+    }
+    const onScroll = () => {
+      if (deepFired) return
+      const el = document.documentElement
+      const ratio = (el.scrollTop + window.innerHeight) / (el.scrollHeight || 1)
+      if (ratio >= 0.75) {
+        deepFired = true
+        trackValueEvent('scroll_depth', { meta: { depth: 75, path: pathname } })
+      }
+    }
+    const onHide = () => {
+      if (document.visibilityState === 'hidden') fireTime()
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    document.addEventListener('visibilitychange', onHide)
+    return () => {
+      fireTime()
+      window.removeEventListener('scroll', onScroll)
+      document.removeEventListener('visibilitychange', onHide)
+    }
+  }, [pathname])
+  return null
+}
+
 export default function AnalyticsProvider() {
   return (
     <Suspense fallback={null}>
       <PageViewTracker />
       <AiReferralTracker />
       <VisitTracker />
+      <EngagementTracker />
       <SignupTracker />
     </Suspense>
   )

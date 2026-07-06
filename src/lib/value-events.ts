@@ -51,6 +51,11 @@ export const VALUE_EVENTS = {
   live_click: { weight: 5, group: 'engagement', label: 'Abrir transmisión en vivo' },
   youtube_channel_click: { weight: 3, group: 'engagement', label: 'Abrir canal de YouTube' },
 
+  // --- Señales de engagement pasivo (first-party, ligadas al visitor_id) ---
+  scroll_depth: { weight: 1, group: 'engagement', label: 'Scroll profundo (≥75%)' },
+  time_on_page: { weight: 1, group: 'engagement', label: 'Tiempo en página' },
+  tool_used: { weight: 4, group: 'engagement', label: 'Usó una herramienta' },
+
   // --- Funnel de pago ---
   pro_prompt_view: { weight: 1, group: 'funnel', label: 'Vio el muro PRO' },
   pro_prompt_click: { weight: 6, group: 'funnel', label: 'Clic en el muro PRO' },

@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.122.0] — 2026-07-06
+
+### Datos first-party, parte 2: dashboard + personalización + señales de engagement
+
+Sobre el cimiento (v1.121): ver, usar y enriquecer la data del visitante.
+
+- **Dashboard de visitantes** (`/admin/ops` → panel VISITANTES): total, registrados (stitched), nuevos 7d, recurrentes + breakdown por motor de IA / fuente / device + últimos 12 visitantes con su atribución. Función SQL `visitor_stats()`.
+- **Personalización** (`getVisitorContext()` + `/api/visitor/me` + `SmartWelcome`): segmenta al visitante (consignataria / ai-curious / returning / nuevo) desde su historial y muestra un mensaje adaptado, progresivo (no des-optimiza) y descartable. 'nuevo' no ve nada.
+- **Señales de engagement** en `value_events` (ligadas al `visitor_id`): `scroll_depth` (≥75%), `time_on_page` (segundos, al dejar la página) vía `EngagementTracker`; `tool_used` definido para instrumentar herramientas.
+
 ## [1.121.0] — 2026-07-06
 
 ### Capa de datos first-party: ID de visitante, atribución y stitching (cimiento)

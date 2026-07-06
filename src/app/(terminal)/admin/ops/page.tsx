@@ -196,12 +196,45 @@ function shortId(req: string | null): string {
 /*  PAGE                                                               */
 /* ------------------------------------------------------------------ */
 
+interface VisitorBucket {
+  k: string
+  n: number
+}
+interface VisitorRecent {
+  ft_landing: string | null
+  ft_utm_source: string | null
+  ft_ai_engine: string | null
+  ft_device: string | null
+  visits: number
+  pageviews: number
+  registered: boolean
+  last_seen_at: string
+}
+interface VisitorStats {
+  total: number
+  stitched: number
+  new_7d: number
+  returning: number
+  by_engine: VisitorBucket[]
+  by_source: VisitorBucket[]
+  by_device: VisitorBucket[]
+  recent: VisitorRecent[]
+}
+
+async function fetchVisitorStats(): Promise<VisitorStats | null> {
+  const db = createAdminClient() as unknown as SupabaseClient
+  const { data, error } = await db.rpc('visitor_stats')
+  if (error || !data) return null
+  return data as unknown as VisitorStats
+}
+
 export default async function AdminOpsPage() {
-  const [crons, recentEvents, recentErrors, ganado] = await Promise.all([
+  const [crons, recentEvents, recentErrors, ganado, visitors] = await Promise.all([
     getCronHealth(),
     fetchRecentEvents(50),
     fetchRecentEvents(20, true),
     fetchGanadoTracker(),
+    fetchVisitorStats(),
   ])
 
   return (
@@ -283,6 +316,67 @@ export default async function AdminOpsPage() {
                   {r.alertsOptIn ? <span className="text-positive">on</span> : <span className="text-zinc-600">—</span>}
                 </span>
                 <span className="w-[130px] flex-shrink-0 text-xxs font-terminal tabular-nums text-zinc-500">{fmtDate(r.updatedAt)}</span>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+
+      {/* ============================================================ */}
+      {/*  VISITANTES — capa de datos first-party                       */}
+      {/* ============================================================ */}
+      <div className="terminal-panel mt-px">
+        <div className="terminal-panel-header flex items-center justify-between">
+          <span className="text-zinc-400 text-xxs tracking-widest">VISITANTES — CAPA FIRST-PARTY</span>
+          <span className="text-xxs text-zinc-500 font-terminal tabular-nums">
+            {visitors ? `${fmtInt(visitors.total)} visitante${visitors.total !== 1 ? 's' : ''}` : 'sin datos'}
+          </span>
+        </div>
+
+        {!visitors || visitors.total === 0 ? (
+          <EmptyState icon="onda" compact title="Todavía no hay visitantes registrados" />
+        ) : (
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-terminal-border">
+              <Stat label="Total" value={fmtInt(visitors.total)} />
+              <Stat label="Registrados" value={fmtInt(visitors.stitched)} />
+              <Stat label="Nuevos 7d" value={fmtInt(visitors.new_7d)} accent />
+              <Stat label="Recurrentes" value={fmtInt(visitors.returning)} />
+            </div>
+
+            <div className="px-panel py-2.5 border-b border-terminal-border space-y-1.5">
+              {([['Motor de IA', visitors.by_engine], ['Fuente', visitors.by_source], ['Device', visitors.by_device]] as [string, VisitorBucket[]][]).map(([title, buckets]) => (
+                <div key={title} className="flex items-baseline gap-1.5 flex-wrap">
+                  <span className="text-xxs text-zinc-600 font-terminal uppercase w-[76px] flex-shrink-0 tracking-wider">{title}</span>
+                  {buckets.length === 0 ? (
+                    <span className="text-xxs text-zinc-600 font-terminal">—</span>
+                  ) : (
+                    buckets.map((b) => (
+                      <span key={b.k} className="text-xxs font-terminal text-zinc-400 border border-terminal-border rounded px-2 py-0.5 truncate max-w-[220px]">
+                        {b.k} · <span className="tabular-nums text-zinc-200">{b.n}</span>
+                      </span>
+                    ))
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="border-b border-terminal-border px-cell py-px2 hidden md:flex items-center gap-0 bg-terminal-panel">
+              <span className="flex-1 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Landing</span>
+              <span className="w-[120px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Origen</span>
+              <span className="w-[70px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-center">Device</span>
+              <span className="w-[64px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">Vis/PV</span>
+              <span className="w-[60px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-center">Cuenta</span>
+              <span className="w-[120px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">Última vez</span>
+            </div>
+            {visitors.recent.map((v, i) => (
+              <div key={i} className="border-b border-terminal-border px-cell py-1.5 flex items-center gap-0">
+                <span className="flex-1 text-xxs font-terminal text-zinc-300 truncate">{v.ft_landing || '—'}</span>
+                <span className="w-[120px] flex-shrink-0 text-xxs font-terminal text-zinc-400 truncate">{v.ft_ai_engine || v.ft_utm_source || 'directo'}</span>
+                <span className="w-[70px] flex-shrink-0 text-xxs font-terminal text-zinc-500 text-center">{v.ft_device || '?'}</span>
+                <span className="w-[64px] flex-shrink-0 text-xxs font-terminal tabular-nums text-zinc-400 text-right">{v.visits}/{v.pageviews}</span>
+                <span className="w-[60px] flex-shrink-0 text-center text-xxs">{v.registered ? <span className="text-accent">●</span> : <span className="text-zinc-600">○</span>}</span>
+                <span className="w-[120px] flex-shrink-0 text-xxs font-terminal tabular-nums text-zinc-500">{fmtDate(v.last_seen_at)}</span>
               </div>
             ))}
           </>

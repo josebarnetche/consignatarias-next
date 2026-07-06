@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import AuthButton from "@/components/auth/AuthButton";
 import OnboardingPrompt from "@/components/onboarding/OnboardingPrompt";
 import PageTransition from "@/components/ui/PageTransition";
+import SmartWelcome from "@/components/SmartWelcome";
 import { createClient } from "@/lib/supabase-browser";
 
 /* ------------------------------------------------------------------ */
@@ -431,6 +432,7 @@ export default function TerminalLayout({
       {/* contenido en cambios de ruta — shell (header/footer) persistente.  */}
       {/* SSR-safe: el primer paint no anima; degrada a no-op con            */}
       {/* prefers-reduced-motion.                                            */}
+      <SmartWelcome />
       <main className="flex-1 min-h-0">
         <PageTransition>{children}</PageTransition>
       </main>

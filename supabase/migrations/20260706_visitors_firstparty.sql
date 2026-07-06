@@ -45,3 +45,19 @@ begin
     lt_utm_source = excluded.lt_utm_source, lt_utm_medium = excluded.lt_utm_medium,
     lt_utm_campaign = excluded.lt_utm_campaign, lt_ai_engine = excluded.lt_ai_engine;
 end $$;
+
+-- Agregados para el dashboard de visitantes en /admin/ops: totales, stitching,
+-- nuevos 7d, recurrentes, y breakdowns por motor de IA / fuente / device + recientes.
+create or replace function visitor_stats()
+returns json language sql security definer set search_path = public as $$
+  select json_build_object(
+    'total', (select count(*) from visitors),
+    'stitched', (select count(*) from visitors where user_id is not null),
+    'new_7d', (select count(*) from visitors where first_seen_at > now() - interval '7 days'),
+    'returning', (select count(*) from visitors where visits > 1),
+    'by_engine', (select coalesce(json_agg(row_to_json(t)),'[]') from (select ft_ai_engine as k, count(*)::int as n from visitors where ft_ai_engine is not null group by ft_ai_engine order by n desc limit 8) t),
+    'by_source', (select coalesce(json_agg(row_to_json(t)),'[]') from (select coalesce(nullif(ft_utm_source,''), ft_referrer, 'directo') as k, count(*)::int as n from visitors group by 1 order by n desc limit 8) t),
+    'by_device', (select coalesce(json_agg(row_to_json(t)),'[]') from (select coalesce(ft_device,'?') as k, count(*)::int as n from visitors group by 1 order by n desc) t),
+    'recent', (select coalesce(json_agg(row_to_json(t)),'[]') from (select ft_landing, ft_utm_source, ft_ai_engine, ft_device, visits, pageviews, (user_id is not null) as registered, last_seen_at from visitors order by last_seen_at desc limit 12) t)
+  );
+$$;
