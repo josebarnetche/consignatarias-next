@@ -127,6 +127,22 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       return finalize(response)
     }
 
+    // PostgREST capa CADA request en 1000 filas (max-rows del proyecto) — para
+    // series largas hay que paginar con .range(). El .limit() solo no alcanza.
+    type PageQuery<T> = (from: number, to: number) => PromiseLike<{ data: T[] | null; error: { message: string } | null }>
+    const pageAll = async <T,>(q: PageQuery<T>): Promise<{ data: T[]; error: string | null }> => {
+      const out: T[] = []
+      for (let from = 0; ; from += 1000) {
+        const { data, error } = await q(from, from + 999)
+        if (error) return { data: out, error: error.message }
+        if (!data || data.length === 0) break
+        out.push(...data)
+        if (data.length < 1000) break
+        if (from > 20000) break // backstop
+      }
+      return { data: out, error: null }
+    }
+
     // Historical mode — serie=novillitos devuelve la serie Novillitos 401/420
     // (haciinfo000307, diaria desde 2005 — era Liniers + era MAG). Aditivo v1.108.0.
     const serieParam = searchParams.get('serie')?.toLowerCase() || null
@@ -134,30 +150,77 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       const admin = createAdminClient()
       const cutoff = new Date()
       cutoff.setUTCDate(cutoff.getUTCDate() - historicoDays)
-      const { data, error } = await admin
-        .from('mag_novillito_history')
-        .select('date, price_max, price_min, price_avg, price_median, head_count, total_kgs, kg_per_head, total_amount')
-        .gte('date', cutoff.toISOString().slice(0, 10))
-        .order('date', { ascending: true })
+      const { data, error } = await pageAll((from, to) =>
+        admin
+          .from('mag_novillito_history')
+          .select('date, price_max, price_min, price_avg, price_median, head_count, total_kgs, kg_per_head, total_amount')
+          .gte('date', cutoff.toISOString().slice(0, 10))
+          .order('date', { ascending: true })
+          .range(from, to),
+      )
       if (error || !data || data.length === 0) {
         return finalize(NextResponse.json({
           success: false,
           error: { code: 'NO_SERIES_DATA', message: 'Sin datos de la serie novillitos para ese rango.' },
         }, { status: 503 }))
       }
-      const values = data.map((r) => Number(r.price_avg)).filter((v) => Number.isFinite(v))
+      // Conversión a USD (as-of join: último FX conocido ≤ fecha). El oficial
+      // cubre 2006→hoy (usd_oficial_history); el blue existe desde 2011
+      // (usd_blue_history) — antes del cepo no había brecha: pre-2011 el blue
+      // se reporta null (usá el oficial).
+      const fromDate = data[0].date
+      const lastDate = data[data.length - 1].date
+      const [{ data: fxOf }, { data: fxBl }] = await Promise.all([
+        pageAll((from, to) =>
+          admin.from('usd_oficial_history').select('date, venta').lte('date', lastDate).gte('date', '2005-12-01').order('date', { ascending: true }).range(from, to),
+        ),
+        pageAll((from, to) =>
+          admin.from('usd_blue_history').select('date, venta').lte('date', lastDate).gte('date', '2005-12-01').order('date', { ascending: true }).range(from, to),
+        ),
+      ])
+      void fromDate
+      const asof = (fx: Array<{ date: string; venta: number | null }> | null) => {
+        const arr = (fx ?? []).filter((r) => r.venta && r.venta > 0)
+        let i = 0
+        let last: number | null = null
+        return (date: string): number | null => {
+          while (i < arr.length && arr[i].date <= date) {
+            last = Number(arr[i].venta)
+            i++
+          }
+          return last
+        }
+      }
+      const ofAt = asof(fxOf)
+      const blAt = asof(fxBl)
+      const series = data.map((r) => {
+        const avg = Number(r.price_avg)
+        const of = ofAt(r.date)
+        const bl = blAt(r.date)
+        return {
+          ...r,
+          usd_oficial: of,
+          usd_blue: bl,
+          price_avg_usd_oficial: of ? Math.round((avg / of) * 1000) / 1000 : null,
+          price_avg_usd_blue: bl ? Math.round((avg / bl) * 1000) / 1000 : null,
+        }
+      })
+      const values = series.map((r) => Number(r.price_avg)).filter((v) => Number.isFinite(v))
+      const usdOfVals = series.map((r) => r.price_avg_usd_oficial).filter((v): v is number => v !== null)
       const response = NextResponse.json({
         success: true,
         data: {
           serie: 'novillitos_401_420',
-          descripcion: 'Precio Novillitos 401/420 kg — serie diaria desde 9/12/2005 (sugerida por el MAG como reemplazo de la antigua categoría Novillos 401/420, base de contratos de arrendamiento)',
-          dias: data.length,
-          desde: data[0].date,
-          hasta: data[data.length - 1].date,
+          descripcion: 'Precio Novillitos 401/420 kg — serie diaria desde 2006 (publicada por el MAG como reemplazo de la antigua categoría Novillos 401/420, base de contratos de arrendamiento). Incluye conversión a USD oficial (2006→hoy) y USD blue (2011→hoy; antes del cepo no había brecha).',
+          dias: series.length,
+          desde: series[0].date,
+          hasta: series[series.length - 1].date,
           min: Math.min(...values),
           max: Math.max(...values),
-          series: data,
-          fuente: 'Mercado Agroganadero — haciinfo000307',
+          min_usd_oficial: usdOfVals.length ? Math.min(...usdOfVals) : null,
+          max_usd_oficial: usdOfVals.length ? Math.max(...usdOfVals) : null,
+          series,
+          fuente: 'Mercado Agroganadero — haciinfo000307 · FX: BCRA A3500 + ArgentinaDatos + dolarapi',
           fuente_url: 'https://www.mercadoagroganadero.com.ar/dll/hacienda6.dll/haciinfo000307',
         },
         timestamp: new Date().toISOString(),
@@ -172,18 +235,23 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       const admin = createAdminClient()
       const cutoff = new Date()
       cutoff.setUTCDate(cutoff.getUTCDate() - historicoDays)
-      const { data, error } = await admin
-        .from('mag_inmag_history')
-        .select('date, head_count, total_amount, inmag_value, inmag_calculated, variation')
-        .gte('date', cutoff.toISOString().slice(0, 10))
-        .order('date', { ascending: true })
+      // Fix v1.111.0 (bug preexistente): PostgREST capa en 1000 filas — un
+      // historico=3650 devolvía solo ~4 años en silencio. Paginamos.
+      const { data, error } = await pageAll((from, to) =>
+        admin
+          .from('mag_inmag_history')
+          .select('date, head_count, total_amount, inmag_value, inmag_calculated, variation')
+          .gte('date', cutoff.toISOString().slice(0, 10))
+          .order('date', { ascending: true })
+          .range(from, to),
+      )
 
       if (error || !data) {
         return finalize(NextResponse.json({
           success: false,
           error: {
             code: 'HISTORY_FETCH_FAILED',
-            message: error?.message ?? 'Failed to load INMAG history.',
+            message: error ?? 'Failed to load INMAG history.',
           },
         }, { status: 500 }))
       }

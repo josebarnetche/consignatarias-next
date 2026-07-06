@@ -2153,6 +2153,30 @@ export type Database = {
         }
         Relationships: []
       }
+      usd_oficial_history: {
+        Row: {
+          compra: number | null
+          created_at: string
+          date: string
+          source: string | null
+          venta: number
+        }
+        Insert: {
+          compra?: number | null
+          created_at?: string
+          date: string
+          source?: string | null
+          venta: number
+        }
+        Update: {
+          compra?: number | null
+          created_at?: string
+          date?: string
+          source?: string | null
+          venta?: number
+        }
+        Relationships: []
+      }
       user_dtes: {
         Row: {
           cantidad_cabezas: number | null

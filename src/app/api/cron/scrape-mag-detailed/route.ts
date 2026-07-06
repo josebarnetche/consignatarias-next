@@ -22,6 +22,7 @@ const USER_AGENT = 'consignatarias.com.ar scraper (contact: agro@memola.com.ar)'
 const URL_BASE_DETAILED = 'https://www.mercadoagroganadero.com.ar/dll/hacienda1.dll/haciinfo000502'
 const URL_BASE_INMAG = 'https://www.mercadoagroganadero.com.ar/dll/hacienda2.dll/haciinfo000011'
 const URL_DOLAR_BLUE = 'https://dolarapi.com/v1/dolares/blue'
+const URL_DOLAR_OFICIAL = 'https://dolarapi.com/v1/dolares/oficial'
 
 /**
  * Subcategory → { group, threshold } mapping. group is the canonical
@@ -333,6 +334,30 @@ export async function POST(req: NextRequest) {
       )
       if (error) result.errors.push(`usd upsert: ${error.message}`)
       else result.usd_upserted = 1
+    }
+  } catch (err) {
+    result.errors.push(`usd fetch: ${err instanceof Error ? err.message : 'unknown'}`)
+  }
+
+  // 3b. USD OFICIAL today → usd_oficial_history (para las series largas en USD;
+  //     backfill 2006→hoy: scripts/backfill-usd-oficial.mjs).
+  try {
+    const res = await fetch(URL_DOLAR_OFICIAL, { headers: { 'User-Agent': USER_AGENT } })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const json = (await res.json()) as { compra?: number; venta?: number }
+    if (typeof json.venta === 'number' && json.venta > 0) {
+      const { error } = await supabase.from('usd_oficial_history').upsert(
+        [
+          {
+            date: targetDateIso,
+            venta: json.venta,
+            compra: typeof json.compra === 'number' ? json.compra : null,
+            source: 'dolarapi',
+          },
+        ],
+        { onConflict: 'date' },
+      )
+      if (error) result.errors.push(`usd oficial upsert: ${error.message}`)
     }
   } catch (err) {
     result.errors.push(

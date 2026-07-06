@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.111.0] — 2026-07-05
+
+### La serie de 20 años, ahora también en dólares (oficial y blue)
+
+Idea de Jose: con FX histórico, la serie novillitos se vuelve comparable a través de la inflación.
+
+- **`usd_oficial_history`** (tabla nueva + migración): dólar oficial diario **2006 → hoy, 6.901 filas** — BCRA estadisticascambiarias (2006-2010, A3500) + ArgentinaDatos (2011→hoy) + dolarapi (upkeep diario en el cron, sección 3b). Backfill: `scripts/backfill-usd-oficial.mjs` (con sanitizado de env + sanity check).
+- **`?serie=novillitos` en USD** — cada punto suma `usd_oficial`, `usd_blue`, `price_avg_usd_oficial` y `price_avg_usd_blue` (as-of join: último FX conocido ≤ fecha; el blue existe desde 2011 — pre-cepo no había brecha → null). Validado end-to-end: 2006 USD 0,79/kg · 2015 oficial 1,93 vs blue 1,33 · 2023 oficial 2,05 vs blue 0,93 · hoy 2,75/2,73. **Nadie más sirve esta serie por API.**
+- **FIX (preexistente): PostgREST capa cada request en 1.000 filas** — `historico=3650` del INMAG devolvía solo ~4 años EN SILENCIO, y la serie nueva habría quedado en 2006-2010. Nuevo helper `pageAll()` con `.range()` paginado en las 4 queries de series largas.
+
 ## [1.110.0] — 2026-07-05
 
 ### La serie de 20 años: Novillitos 401/420 desde 2006, backfilleada y viva
