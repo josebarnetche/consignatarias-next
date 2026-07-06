@@ -67,6 +67,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: "Frigoríficos", href: "/frigorificos", hint: "364 plantas SENASA" },
       { label: "Consignatarias", href: "/consignatarias", hint: "104 firmas" },
+      { label: "Sumá tu firma", href: "/para-consignatarias", hint: "PRO · más alcance para tus remates" },
     ],
   },
   {
