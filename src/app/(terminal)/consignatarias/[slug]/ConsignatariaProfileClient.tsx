@@ -593,9 +593,17 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
   const logoSrc = profile.logoUrl ?? getLogoUrl(profile.canonicalSlug)
   const brandColor = !profile.logoUrl ? getBrandColor(profile.canonicalSlug) : null
 
-  // Perfil PRO: el último remate (featured o más reciente) va autoplay/mute en el hero.
+  // Perfil PRO: el último remate en video va autoplay/mute en el hero. Fuente: el
+  // último video del canal mapeado (= último remate subido), o el youtubeUrl del
+  // remate más reciente. (consignataria_videos está vacía → no se usa como primaria.)
   const isPro = tier === 'pro' || tier === 'enterprise'
-  const latestVideoId = videos[0]?.youtube_video_id ?? null
+  const ytId = (url?: string | null): string | null =>
+    url?.match(/(?:v=|youtu\.be\/|\/live\/|\/embed\/|shorts\/)([a-zA-Z0-9_-]{11})/)?.[1] ?? null
+  const latestAuctionVideoUrl = [...auctions]
+    .filter((a) => a.youtubeUrl)
+    .sort((a, b) => (b.date || '').localeCompare(a.date || ''))[0]?.youtubeUrl
+  const latestVideoId =
+    youtubeChannel?.latestVideo?.videoId ?? ytId(latestAuctionVideoUrl) ?? videos[0]?.youtube_video_id ?? null
 
   return (
     <div className="max-w-6xl mx-auto px-2 sm:px-4 pt-3 pb-20 md:pb-3 space-y-0">
