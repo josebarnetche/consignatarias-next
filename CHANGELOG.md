@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.118.0] — 2026-07-06
+
+### Cron mensual: el cierre de arrendamiento por email a los suscriptos
+
+Los suscriptos de `/mercado/arrendamiento` (source `arrendamiento-liquidacion`) reciben, a principio de cada mes, el **cierre OFICIAL del INMAG del mes que cerró** — el número para su factura, con su **canon ya calculado** si guardaron su contrato (kg/ha × ha).
+
+- Cron GH Action `arrendamiento-cierre` (día 3, 09:00 ART): baja el cierre del MAG (`haciinfo000011` Totales), lo upsertea en `inmag_monthly_close` (idempotente) y emailea vía Resend (`sendArrendamientoCierre`). Mismo patrón que faena-newsletter. `?month=YYYY-MM` fuerza un mes.
+- Verificado: el run re-scrapeó junio (4.164,558) y guardó; con 0 suscriptos, 0 mails. Así el sistema queda listo para cuando alguien se anote.
+
 ## [1.117.0] — 2026-07-06
 
 ### Arrendamiento: el cierre mensual OFICIAL del MAG (el número para las facturas)
