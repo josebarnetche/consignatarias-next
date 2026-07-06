@@ -20,10 +20,10 @@ export const dynamic = 'force-dynamic'
 const FREE_MAX = 3
 const PRO_MAX = 20
 
-// Promo: durante julio 2026 el intel está DE-GATEADO — acceso completo para todos
-// (sin límite de tier). A partir del 1-ago vuelve el gate free 3 / PRO 20.
+// Promo: hasta el 31-jul-2026 el intel está DE-GATEADO — todos pueden seguir
+// TODAS las firmas, sin límite. A partir del 1-ago vuelve el gate free 3 / PRO 20.
 const DEGATE_UNTIL = '2026-07-31'
-const DEGATE_MAX = 45
+const DEGATE_MAX = 999
 function isDeGated(): boolean {
   return new Date().toISOString().slice(0, 10) <= DEGATE_UNTIL
 }

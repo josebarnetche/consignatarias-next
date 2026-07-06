@@ -12,7 +12,7 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 ### Pulso público + Intel de-gateado por julio
 
 - **`/mercado/pulso` — página pública** del Pulso del mercado (antes solo en el dashboard): la actividad de Cañuelas por consignatario, con count-up + drip, visible sin login. Agregada al menú **MERCADO → Pulso del mercado** (tag live). Sirve de demo y de contenido de autoridad.
-- **Intel de mercado DE-GATEADO hasta el 31-jul (`DEGATE_UNTIL`).** Durante julio, `/api/market-intel` da acceso completo a todos (hasta 45 firmas seguidas, sin importar el tier) — el panel muestra "Julio: acceso completo gratis" en vez del upsell. A partir del 1-ago vuelve el gate free 3 / PRO 20.
+- **Intel de mercado DE-GATEADO hasta el 31-jul (`DEGATE_UNTIL`).** Durante julio, `/api/market-intel` da acceso completo a todos: **todos pueden seguir TODAS las firmas, sin límite**, sin importar el tier — el panel muestra "Julio: acceso completo gratis" en vez del upsell. A partir del 1-ago vuelve el gate free 3 / PRO 20.
 - **Linkeo `mag_consignatarias` ↔ directorio:** backfill del `consignataria_canonical_slug` (0 → 22, y **las 19 firmas con data quedaron todas linkeadas**), así el Intel muestra cabezas reales por firma seguida.
 
 ## [1.108.0] — 2026-07-05

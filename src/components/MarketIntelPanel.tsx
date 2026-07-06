@@ -186,7 +186,9 @@ export default function MarketIntelPanel() {
         {msg && <p className="text-amber-400 text-xxs mt-2">{msg}</p>}
         {data && (
           <p className="text-zinc-600 text-xxs mt-2">
-            {wl.length}/{data.maxFirms} firmas · {data.degated ? 'julio: acceso completo' : data.tier === 'pro' ? 'PRO' : 'free'}
+            {data.degated
+              ? `${wl.length} firma(s) · julio: seguí todas, sin límite`
+              : `${wl.length}/${data.maxFirms} firmas · ${data.tier === 'pro' ? 'PRO' : 'free'}`}
           </p>
         )}
       </div>
