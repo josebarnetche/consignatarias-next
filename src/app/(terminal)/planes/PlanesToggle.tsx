@@ -152,6 +152,9 @@ export default function PlanesToggle() {
       {/* API / MCP — el corazón del pricing */}
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
         <p className="text-label tracking-widest text-zinc-400">
+          <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
+            <img src="/marca/iconos-color/agente-ia.png" alt="" className="w-6 h-6" />
+          </span>
           API / MCP — conectá tu IA o tu sistema al dato ganadero
         </p>
         <span className="text-xxs font-terminal text-zinc-500">Facturación mensual en ARS vía Rebill · anual –15%</span>
@@ -165,6 +168,9 @@ export default function PlanesToggle() {
       {/* Consignataria — PRODUCTO APARTE (alcance, no data-service): ámbar como su badge */}
       <div className="mt-8 mb-3 flex flex-wrap items-baseline justify-between gap-2 border-t border-terminal-border pt-6">
         <p className="text-label tracking-widest text-zinc-400">
+          <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
+            <img src="/marca/iconos-color/casa-remates.png" alt="" className="w-6 h-6" />
+          </span>
           PRO Consignataria — más productores en tus remates
         </p>
         <span className="text-xxs font-terminal text-zinc-500">Facturación mensual en ARS vía Rebill</span>

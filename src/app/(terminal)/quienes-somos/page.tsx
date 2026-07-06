@@ -20,15 +20,28 @@ export default function QuienesSomosPage() {
     <>
       <SectionBreadcrumbSchema section="quienes-somos" sectionName="Quienes Somos" />
       <OrganizationSchema />
+      {/* Hero — el arreo (linocut del universo de marca) */}
+      <section className="relative overflow-hidden">
+        <img
+          src="/marca/ilus/ilu-hero-arreo.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover object-[70%_center] opacity-40"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/80 to-[#09090b]/25" aria-hidden="true" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-[#09090b]" aria-hidden="true" />
+        <div className="relative max-w-3xl mx-auto px-4 pt-14 pb-10 text-sm leading-relaxed">
+          {/* Title */}
+          <h1 className="text-zinc-100 text-2xl font-medium mb-6">Quienes Somos</h1>
+
+          <p className="text-zinc-400">
+            Consignatarias.com.ar es una plataforma de inteligencia del mercado ganadero argentino
+            desarrollada por Memola Medios S.A.S.
+          </p>
+        </div>
+      </section>
+
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
-        {/* Title */}
-        <h1 className="text-zinc-100 text-2xl font-medium mb-6">Quienes Somos</h1>
-
-        <p className="text-zinc-400 mb-6">
-          Consignatarias.com.ar es una plataforma de inteligencia del mercado ganadero argentino
-          desarrollada por Memola Medios S.A.S.
-        </p>
-
         {/* Que hacemos */}
         <h2 className="text-zinc-200 text-lg font-medium mt-8 mb-3">Que hacemos</h2>
         <p className="text-zinc-400 mb-6">
@@ -85,6 +98,15 @@ export default function QuienesSomosPage() {
             <span>Fuentes manuales: IderCor, Etchevehere Rural, Coop. La Ganadera, Tradicion Ganadera, y otras</span>
           </li>
         </ul>
+
+        {/* Imagen editorial — la marca a fuego (linocut del universo de marca) */}
+        <img
+          src="/marca/ilus/ilu-c-marca-fuego.jpg"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          className="w-full rounded-xl my-8"
+        />
 
         {/* Metodologia */}
         <h2 className="text-zinc-200 text-lg font-medium mt-8 mb-3">Metodologia</h2>

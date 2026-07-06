@@ -64,7 +64,13 @@ export default function NewsletterSignup({
   return (
     <div className={`w-full ${compact ? 'max-w-sm' : 'max-w-md'}`}>
       {!compact && promise && (
-        <p className="text-sm text-zinc-400 mb-3 leading-relaxed">{promise}</p>
+        <div className="flex items-start gap-2.5 mb-3">
+          <span className="inline-flex w-8 h-8 rounded bg-zinc-100 items-center justify-center select-none shrink-0" aria-hidden="true">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/marca/iconos-color/campana.png" alt="" className="w-5 h-5" />
+          </span>
+          <p className="text-sm text-zinc-400 leading-relaxed">{promise}</p>
+        </div>
       )}
       <form onSubmit={handleSubmit} className={`flex ${compact ? 'flex-row gap-2' : 'flex-col sm:flex-row gap-3'} w-full`}>
         <input

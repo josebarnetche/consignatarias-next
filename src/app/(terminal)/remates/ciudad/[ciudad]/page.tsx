@@ -6,6 +6,7 @@ import type { Auction } from '@/lib/db/schema'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { MapPin, Calendar, Building2 } from 'lucide-react'
 import AuctionCard from '@/components/remates/auction-card'
+import { EmptyState } from '@/components/ui'
 
 const auctions = rematesData as Auction[]
 
@@ -223,13 +224,15 @@ export default async function CityRematesPage({ params }: { params: Promise<{ ci
 
         {/* No auctions state */}
         {cityAuctions.length === 0 && (
-          <div className="text-center py-12 text-zinc-500">
-            <MapPin className="w-12 h-12 mx-auto mb-4 opacity-30" />
-            <p>No hay remates registrados en {displayName}</p>
-            <Link href="/remates" className="text-accent hover:text-accent-bright text-sm mt-2 inline-block">
-              Ver todos los remates →
-            </Link>
-          </div>
+          <EmptyState
+            icon="casa-remates"
+            title={`No hay remates registrados en ${displayName}`}
+            cta={
+              <Link href="/remates" className="text-accent hover:text-accent-bright text-sm inline-block">
+                Ver todos los remates →
+              </Link>
+            }
+          />
         )}
 
         {/* FAQ */}

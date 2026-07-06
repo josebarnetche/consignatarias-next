@@ -6,6 +6,7 @@ import type { Auction } from '@/lib/db/schema'
 import { BreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { EmptyState } from '@/components/ui'
 import {
   formatDateShort,
   getCity,
@@ -486,11 +487,7 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
 
           {/* Empty state */}
           {provinceAuctions.length === 0 && (
-            <div className="px-panel py-8 text-center">
-              <p className="text-data text-zinc-500 font-terminal">
-                No hay remates registrados en {config.displayName}.
-              </p>
-            </div>
+            <EmptyState icon="martillo" title={`No hay remates registrados en ${config.displayName}.`} />
           )}
 
           {/* Footer */}

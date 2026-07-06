@@ -13,6 +13,7 @@ import { CitaBlock } from '@/components/seo/CitaBlock'
 import PriceWhatsAppShare from '@/components/share/PriceWhatsAppShare'
 import { MethodologyMicroBlock } from '@/components/seo/MethodologyMicroBlock'
 import { PriceCTA } from '@/components/PriceCTA'
+import { EmptyState } from '@/components/ui'
 
 /* ============================================================
    /precios/[categoria]/[provincia] — geo × category long-tail.
@@ -357,12 +358,16 @@ export default async function PrecioCategoriaProvinciaPage({
               ))}
             </div>
           ) : (
-            <div className="px-panel py-4 text-sm text-zinc-500">
-              No hay remates de {cat.title.toLowerCase()} programados en {prov.display} en este momento.{' '}
-              <Link href={`/remates/${provincia}`} className="text-accent hover:text-accent-bright">
-                Ver todos los remates en {prov.display} →
-              </Link>
-            </div>
+            <EmptyState
+              icon="martillo"
+              compact
+              title={`No hay remates de ${cat.title.toLowerCase()} programados en ${prov.display} en este momento.`}
+              cta={
+                <Link href={`/remates/${provincia}`} className="text-accent hover:text-accent-bright">
+                  Ver todos los remates en {prov.display} →
+                </Link>
+              }
+            />
           )}
         </div>
 

@@ -59,7 +59,17 @@ export default function LoginClient() {
   }
 
   return (
-    <div className="max-w-md mx-auto px-4 py-16 text-sm">
+    <div className="relative overflow-hidden">
+      {/* Fondo de marca: el arreo (linocut), sutil detrás del panel del form */}
+      <img
+        src="/marca/ilus/ilu-hero-arreo.jpg"
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full object-cover opacity-25"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#09090b] via-[#09090b]/60 to-[#09090b]" aria-hidden="true" />
+    <div className="relative max-w-md mx-auto px-4 py-16 text-sm">
+      <div className="terminal-panel rounded-xl p-6 sm:p-8 bg-[#0b0b0e]/90 backdrop-blur-sm">
       <div className="mb-8 text-center">
         <h1 className="text-zinc-100 text-2xl font-medium mb-2">Ingresá</h1>
         <p className="text-zinc-500 text-xs font-mono">
@@ -130,6 +140,8 @@ export default function LoginClient() {
         </a>
         .
       </p>
+      </div>
+    </div>
     </div>
   )
 }

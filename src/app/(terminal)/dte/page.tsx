@@ -104,31 +104,44 @@ export default function DTEPage() {
         totalTime="PT15M"
       />
 
+      {/* Hero — render de marca de las guías (universo v2.0) */}
+      <section className="relative overflow-hidden">
+        <img
+          src="/marca/features/feat-guias.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover object-[70%_center] opacity-40"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/80 to-[#09090b]/25" aria-hidden="true" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-[#09090b]" aria-hidden="true" />
+        <div className="relative max-w-4xl mx-auto px-4 pt-8 pb-10">
+          {/* Breadcrumb */}
+          <nav className="text-xs text-zinc-500 mb-6">
+            <Link href="/" className="hover:text-zinc-300">Inicio</Link>
+            <span className="mx-2">›</span>
+            <span className="text-zinc-400">DT-e</span>
+          </nav>
+
+          {/* Hero */}
+          <header>
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-sky-500/10 border border-sky-500/20">
+                <FileText className="w-8 h-8 text-sky-400" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-zinc-100">
+                  DT-e: Documento de Tránsito Electrónico
+                </h1>
+                <p className="text-zinc-400 mt-1">
+                  Guía completa para el traslado legal de ganado en Argentina
+                </p>
+              </div>
+            </div>
+          </header>
+        </div>
+      </section>
+
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Breadcrumb */}
-        <nav className="text-xs text-zinc-500 mb-6">
-          <Link href="/" className="hover:text-zinc-300">Inicio</Link>
-          <span className="mx-2">›</span>
-          <span className="text-zinc-400">DT-e</span>
-        </nav>
-
-        {/* Hero */}
-        <header className="mb-10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 rounded-xl bg-sky-500/10 border border-sky-500/20">
-              <FileText className="w-8 h-8 text-sky-400" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-zinc-100">
-                DT-e: Documento de Tránsito Electrónico
-              </h1>
-              <p className="text-zinc-400 mt-1">
-                Guía completa para el traslado legal de ganado en Argentina
-              </p>
-            </div>
-          </div>
-        </header>
-
         {/* Quick summary */}
         <section className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6 mb-8">
           <h2 className="text-xl font-semibold text-zinc-100 mb-4">¿Qué es el DT-e?</h2>

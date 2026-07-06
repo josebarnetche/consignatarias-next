@@ -2,6 +2,7 @@
 
 import { HeroNumber, StatPill } from '@/components/pro'
 import { formatVigencia, resolveGreetingName, greetingByHour } from './welcome-utils'
+import { EmptyState } from '@/components/ui'
 
 type Tier = 'FREE' | 'PRO' | 'ENTERPRISE'
 
@@ -108,9 +109,7 @@ export default function WelcomeHero({
                 <div className="text-zinc-500 text-xxs font-terminal uppercase tracking-wider mb-1">
                   Vistas de perfil · últimos 30 días
                 </div>
-                <p className="text-zinc-500 text-data font-terminal">
-                  Tu perfil todavía no registró vistas.
-                </p>
+                <EmptyState icon="buscador-lupa" compact title="Tu perfil todavía no registró vistas." />
               </div>
             )}
           </div>

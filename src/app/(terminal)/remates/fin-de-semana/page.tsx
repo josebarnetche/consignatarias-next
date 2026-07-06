@@ -5,6 +5,7 @@ import { consignatariaProfilePath, getCanonicalSlug } from '@/lib/data/consignat
 import { normalizeUrl } from '@/lib/utils/url'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { Calendar, Clock, MapPin, Users, ExternalLink, Play, FileText } from 'lucide-react'
+import { EmptyState } from '@/components/ui'
 
 // Regenerate hourly for fresh TODAY
 export const revalidate = 3600
@@ -335,20 +336,20 @@ export default function RematesFinDeSemanaPage() {
 
         {/* Remates list */}
         {count === 0 ? (
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-8 text-center">
-            <div className="text-4xl mb-3">📅</div>
-            <h2 className="text-lg font-medium text-zinc-100 mb-2">
-              No hay remates programados
-            </h2>
-            <p className="text-sm text-zinc-500 mb-4">
-              No encontramos subastas para este fin de semana. Los remates suelen anunciarse con poca anticipación.
-            </p>
-            <Link
-              href="/remates/semana"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-sky-500/20 text-accent border border-sky-500/30 rounded hover:bg-sky-500/30 transition-colors"
-            >
-              Ver remates de la semana
-            </Link>
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg">
+            <EmptyState
+              icon="calendario"
+              title="No hay remates programados"
+              sub="No encontramos subastas para este fin de semana. Los remates suelen anunciarse con poca anticipación."
+              cta={
+                <Link
+                  href="/remates/semana"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-sky-500/20 text-accent border border-sky-500/30 rounded hover:bg-sky-500/30 transition-colors"
+                >
+                  Ver remates de la semana
+                </Link>
+              }
+            />
           </div>
         ) : (
           <div className="space-y-8">

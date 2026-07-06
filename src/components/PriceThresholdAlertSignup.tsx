@@ -74,9 +74,15 @@ export default function PriceThresholdAlertSignup({
 
   return (
     <div className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-6">
-      <h3 className="text-xl font-bold text-white mb-1">
-        ¿Seguís el {categoryLabel.toLowerCase()}? Te aviso cuando cruce un precio
-      </h3>
+      <div className="flex items-center gap-3 mb-1">
+        <span className="inline-flex w-8 h-8 rounded bg-zinc-100 items-center justify-center select-none shrink-0" aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/marca/iconos-color/alerta.png" alt="" className="w-5 h-5" />
+        </span>
+        <h3 className="text-xl font-bold text-white">
+          ¿Seguís el {categoryLabel.toLowerCase()}? Te aviso cuando cruce un precio
+        </h3>
+      </div>
       <p className="text-zinc-400 text-sm mb-4">
         Hoy está en <span className="text-white font-mono">{fmt(currentPrice)}/kg</span>. Elegí un umbral y te
         mandamos <strong className="text-zinc-300">un solo mail</strong> cuando lo cruce.

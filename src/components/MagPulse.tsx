@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { EmptyState } from '@/components/ui'
 
 interface Firm {
   name: string
@@ -115,9 +116,12 @@ export default function MagPulse() {
         <div className="terminal-panel-header" style={{ color: '#38bdf8', borderBottomColor: 'rgba(56,189,248,0.25)' }}>
           Pulso del mercado · Cañuelas
         </div>
-        <div className="px-panel py-5 text-zinc-500 text-xxs">
-          Todavía registrando operaciones. El pulso arranca tras el cierre del mercado (14:00 ART).
-        </div>
+        <EmptyState
+          icon="onda"
+          compact
+          title="Todavía registrando operaciones."
+          sub="El pulso arranca tras el cierre del mercado (14:00 ART)."
+        />
       </div>
     )
   }

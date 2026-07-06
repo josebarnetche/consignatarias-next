@@ -149,9 +149,15 @@ export default function ConsignatariaShowcase({
 
       {/* ── Hero ── */}
       <section className="min-h-[70vh] flex flex-col justify-center max-w-2xl mx-auto px-4 pt-10 pb-6">
-        {firm && (
-          <div className="text-xxs font-terminal uppercase tracking-widest text-zinc-600 mb-3">{firm.nombre}</div>
-        )}
+        <div className="flex items-center gap-2.5 mb-3">
+          <span className="inline-flex w-8 h-8 rounded bg-zinc-100 items-center justify-center select-none shrink-0" aria-hidden="true">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/marca/iconos-color/casa-remates.png" alt="" className="w-5 h-5" />
+          </span>
+          {firm && (
+            <span className="text-xxs font-terminal uppercase tracking-widest text-zinc-600">{firm.nombre}</span>
+          )}
+        </div>
         <h1 className="text-4xl md:text-5xl font-heading text-zinc-100 leading-[1.08] mb-4">
           El productor ya no busca en la guía. <span className="text-amber-400">Pregunta.</span>
         </h1>

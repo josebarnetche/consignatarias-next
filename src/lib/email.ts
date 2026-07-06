@@ -27,6 +27,30 @@ const FROM = process.env.RESEND_FROM_EMAIL || 'Consignatarias <noreply@consignat
 // Any from: address must end in @consignatarias.com or Resend rejects the send.
 const FROM_PERSONAL = process.env.RESEND_FROM_PERSONAL || 'José Barnetche <hola@consignatarias.com>'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
+
+/* ------------------------------------------------------------------ */
+/*  MARCA EN EMAILS — header/footer del isotipo (v1.114.0)             */
+/*  Solo para templates HTML de producto. Los mails PERSONALES de      */
+/*  outreach (texto plano, "escritos desde Gmail") NO llevan marca:    */
+/*  es diseño deliberado, no un olvido.                                */
+/* ------------------------------------------------------------------ */
+
+export function emailBrandHeader(dark = false): string {
+  const iso = `${APP_URL}/marca/email/isotipo-${dark ? 'cielo' : 'carbon'}.png`
+  const color = dark ? '#fafafa' : '#18181b'
+  const border = dark ? '#27272a' : '#e4e4e7'
+  return `<div style="padding:0 0 14px 0;border-bottom:1px solid ${border};margin-bottom:18px">` +
+    `<img src="${iso}" width="26" height="26" alt="" style="vertical-align:middle;border:0">` +
+    `<span style="font-family:ui-monospace,Menlo,monospace;font-size:14px;font-weight:600;color:${color};vertical-align:middle;margin-left:8px">consignatarias<span style="color:#38bdf8">.</span>com</span>` +
+    `</div>`
+}
+
+export function emailBrandFooter(dark = false): string {
+  const muted = dark ? '#71717a' : '#888888'
+  return `<p style="font-family:ui-monospace,Menlo,monospace;color:${muted};font-size:11px;margin-top:22px;border-top:1px solid ${dark ? '#27272a' : '#e4e4e7'};padding-top:12px">` +
+    `consignatarias<span style="color:#38bdf8">.</span>com — el precio de referencia del ganado argentino · ` +
+    `<a href="${APP_URL}" style="color:#0284c7">consignatarias.com.ar</a></p>`
+}
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'agro@memola.com.ar'
 
 /**
@@ -81,6 +105,7 @@ export async function sendClaimConfirmation(email: string, displayName: string, 
     to: email,
     subject: `Solicitud de verificación — ${displayName}`,
     html: `
+      ${emailBrandHeader()}
       <h2>Solicitud recibida</h2>
       <p>Recibimos tu solicitud de verificación del perfil de <strong>${safeName}</strong>.</p>
       <p>Nuestro equipo revisará tu solicitud y te contactaremos a la brevedad.</p>
@@ -100,6 +125,7 @@ export async function sendConsignatariaProWelcome(email: string, displayName: st
     to: email,
     subject: `Tu perfil PRO está activo — ${displayName}`,
     html: `
+      ${emailBrandHeader()}
       <h2>Bienvenida a PRO</h2>
       <p>El perfil de <strong>${safeName}</strong> en consignatarias.com.ar quedó <strong>activo como PRO</strong>: aparecés con prioridad (destacado) ante los productores que buscan consignataria, con tu historial de remates, tu calendario y la analítica de tu perfil.</p>
       <p><a href="${APP_URL}/consignatarias/${slug}">Ver tu perfil</a> · <a href="${APP_URL}/dashboard">Ir a tu panel</a></p>
@@ -132,6 +158,7 @@ export async function sendConsignatariaViewsOutreach(opts: {
       headers: listUnsubHeaders(opts.to, 'views_outreach'),
       subject: `Tu perfil en consignatarias.com.ar fue visto ${opts.views} veces este mes`,
       html: `
+      ${emailBrandHeader()}
         <p>Hola, equipo de <strong>${safeName}</strong>:</p>
         <p>Tu perfil en consignatarias.com.ar fue visto <strong>${opts.views} veces</strong> en los últimos 30 días por productores que buscan dónde y con quién operar.</p>
         <p>Con <strong>PRO</strong> aparecés con prioridad (destacado), con tu badge verificado, tu calendario y la analítica de tu perfil — para que esas visitas se vuelvan consultas.</p>
@@ -162,6 +189,7 @@ export async function sendClaimNotificationToAdmin(
     to: ADMIN_EMAIL,
     subject: `Nueva solicitud de verificación: ${displayName}`,
     html: `
+      ${emailBrandHeader()}
       <h2>Nueva solicitud de verificación</h2>
       <p><strong>Consignataria:</strong> ${safeName} (<code>${slug}</code>)</p>
       <p><strong>Email:</strong> ${safeClaim}</p>
@@ -196,6 +224,7 @@ export async function sendArrepentimientoRequest(data: {
     replyTo: data.email,
     subject: `Botón de Arrepentimiento — solicitud de ${data.nombre}`,
     html: `
+      ${emailBrandHeader()}
       <h2>Solicitud de arrepentimiento / baja (Res. 424/2020 · art. 34 LDC)</h2>
       <p><strong>Nombre:</strong> ${nombre}</p>
       <p><strong>Email:</strong> ${email}</p>
@@ -211,6 +240,7 @@ export async function sendArrepentimientoRequest(data: {
     to: data.email,
     subject: 'Recibimos tu solicitud de arrepentimiento — Consignatarias.com.ar',
     html: `
+      ${emailBrandHeader()}
       <h2>Recibimos tu solicitud</h2>
       <p>Hola ${nombre}, registramos tu solicitud de arrepentimiento / baja conforme al
       art. 34 de la Ley 24.240 y la Resolución 424/2020.</p>
@@ -230,6 +260,7 @@ export async function sendClaimApproved(email: string, displayName: string, slug
     to: email,
     subject: `Perfil aprobado — ${displayName}`,
     html: `
+      ${emailBrandHeader()}
       <h2>Tu perfil fue aprobado</h2>
       <p>Tu solicitud de verificación del perfil de <strong>${safeName}</strong> fue aprobada.</p>
       <p><a href="${APP_URL}/consignatarias/${slug}">Ver tu perfil</a></p>
@@ -254,6 +285,7 @@ export async function sendFrigorificoClaimConfirmation(email: string, frigorific
     to: email,
     subject: `Solicitud de registro — ${frigorificoName}`,
     html: `
+      ${emailBrandHeader()}
       <h2>Solicitud recibida</h2>
       <p>Recibimos tu solicitud de registro del frigorífico <strong>${safeName}</strong>.</p>
       <p>Nuestro equipo revisará tu solicitud y te contactaremos a la brevedad.</p>
@@ -279,6 +311,7 @@ export async function sendFrigorificoClaimNotificationToAdmin(
     to: ADMIN_EMAIL,
     subject: `Nuevo registro frigorífico: ${frigorificoName}`,
     html: `
+      ${emailBrandHeader()}
       <h2>Nueva solicitud de registro (frigorífico)</h2>
       <p><strong>Frigorífico:</strong> ${safeName}</p>
       <p><strong>CUIT:</strong> ${escapeHtml(cuit)}</p>
@@ -309,6 +342,7 @@ export async function sendMonthlyMetrics(
     to: email,
     subject: `Resumen ${monthName} — ${displayName}`,
     html: `
+      ${emailBrandHeader()}
       <div style="font-family:monospace;max-width:480px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
         <h2 style="color:#fff;font-size:16px;margin:0 0 4px">RESUMEN MENSUAL</h2>
         <p style="color:#71717a;font-size:12px;margin:0 0 20px">${safeName} — ${escapeHtml(monthName)}</p>
@@ -389,6 +423,7 @@ export async function sendMonthlyClose(
       to: email,
       subject: `Cierre ${data.monthLabel}: Índice Novillo promedio ${money(data.avg)}/kg`,
       html: `
+      ${emailBrandHeader()}
         <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
           <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Cierre mensual · Índice Novillo Arrendamiento</p>
           <h2 style="color:#fff;font-size:18px;margin:0 0 20px">${escapeHtml(data.monthLabel)}</h2>
@@ -465,6 +500,7 @@ export async function sendSellZoneAlertConfirm(
       subject: `Listo — te aviso cuando el ${data.categoriaLabel} entre en zona de venta`,
       headers: listUnsubHeaders(email, 'sell-zone-confirm'),
       html: `
+      ${emailBrandHeader()}
         <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
           <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Alerta activada · ${cat}</p>
           <h2 style="color:#fff;font-size:18px;margin:0 0 16px">Te aviso cuando convenga vender</h2>
@@ -520,6 +556,7 @@ export async function sendSellZoneAlert(
       subject: `El ${data.categoriaLabel} está caro vs el año (percentil ${data.pct365}) ${trendTxt}`,
       headers: listUnsubHeaders(email, 'sell-zone-alert'),
       html: `
+      ${emailBrandHeader()}
         <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
           <p style="color:#34d399;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Zona alta del año · ${cat}</p>
           <h2 style="color:#fff;font-size:19px;margin:0 0 16px">Precio alto y girando — históricamente, zona de salida</h2>
@@ -588,6 +625,7 @@ export async function sendPriceAlertConfirm(
       subject: `Listo — te aviso cuando el ${data.categoryLabel} ${verbo} ${fmtArs(data.threshold)}`,
       headers: listUnsubHeaders(email, 'price-alert-confirm'),
       html: `
+      ${emailBrandHeader()}
         <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
           <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Alerta de precio activada · ${cat}</p>
           <h2 style="color:#fff;font-size:18px;margin:0 0 16px">Te aviso cuando ${data.direction === 'above' ? 'cruce' : 'baje de'} ${fmtArs(data.threshold)}</h2>
@@ -633,6 +671,7 @@ export async function sendPriceThresholdAlert(
       subject: `El ${data.categoryLabel} ${verboPasado} ${fmtArs(data.threshold)} — está en ${fmtArs(data.current)}`,
       headers: listUnsubHeaders(email, 'price-alert'),
       html: `
+      ${emailBrandHeader()}
         <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
           <p style="color:${color};font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px">Alerta de precio · ${cat}</p>
           <h2 style="color:#fff;font-size:19px;margin:0 0 16px">El ${cat} ${verboPasado} ${fmtArs(data.threshold)}</h2>
@@ -710,6 +749,7 @@ export async function sendWeeklyNewsletter(
     to: email,
     subject: `🐄 ${featuredRemates.length} Remates Destacados — ${weekRange}`,
     html: `
+      ${emailBrandHeader()}
       <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
         <h2 style="color:#fff;font-size:16px;margin:0 0 4px">REMATES DE LA SEMANA</h2>
         <p style="color:#71717a;font-size:12px;margin:0 0 20px">${escapeHtml(weekRange)} — ${totalRemates} remates programados</p>
@@ -794,6 +834,7 @@ export async function sendClaimRejected(email: string, displayName: string, reas
     to: email,
     subject: `Verificación rechazada — ${displayName}`,
     html: `
+      ${emailBrandHeader()}
       <h2>Verificación rechazada</h2>
       <p>Lamentamos informarte que tu solicitud de verificación del perfil de <strong>${safeName}</strong> fue rechazada.</p>
       ${reason ? `<p><strong>Motivo:</strong> ${escapeHtml(reason)}</p>` : ''}
@@ -819,6 +860,7 @@ export async function sendRemateReminder(email: string, subject: string, htmlBod
     headers: listUnsubHeaders(email, 'remate_reminder'),
     subject,
     html: `
+      ${emailBrandHeader()}
       <div style="font-family:-apple-system,system-ui,sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#fafafa">
         ${htmlBody}
         <hr style="border:none;border-top:1px solid #e4e4e7;margin:24px 0">
@@ -1035,6 +1077,7 @@ export async function sendFaenaNewsletter({
       to,
       subject: `📊 Faena ${currentMonth}: ${formatNumber(cabezas)} cabezas`,
       html: `
+      ${emailBrandHeader()}
         <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
           <h2 style="color:#fff;font-size:16px;margin:0 0 4px">REPORTE MENSUAL DE FAENA</h2>
           <p style="color:#71717a;font-size:12px;margin:0 0 20px">${escapeHtml(currentMonth)} — Datos oficiales</p>
@@ -1119,6 +1162,7 @@ export async function sendWelcomeEmail({ to, userName }: WelcomeEmailParams) {
       to,
       subject: '🐄 Bienvenido a Consignatarias.com.ar',
       html: `
+      ${emailBrandHeader()}
         <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
           <h2 style="color:#fff;font-size:18px;margin:0 0 16px">${greeting}</h2>
           
@@ -1192,6 +1236,7 @@ export async function sendDteUploadReminder({ to, userName, daysSinceSignup }: D
       to,
       subject: '📋 Subí tu primera guía DT-e y llevá el control',
       html: `
+      ${emailBrandHeader()}
         <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
           <h2 style="color:#fff;font-size:16px;margin:0 0 16px">${greeting},</h2>
           
@@ -1257,6 +1302,7 @@ export async function sendFirstDteSuccess({ to, userName, dteCount }: FirstDteSu
       to,
       subject: '🎉 ¡Subiste tu primera guía DT-e!',
       html: `
+      ${emailBrandHeader()}
         <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
           <div style="text-align:center;margin-bottom:20px">
             <span style="font-size:48px">🎉</span>
@@ -1346,6 +1392,7 @@ export async function sendDteRetentionReminder({
       to,
       subject: `📋 Tu historial te espera — ${formatNumber(totalCabezas)} cabezas registradas`,
       html: `
+      ${emailBrandHeader()}
         <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
           <h2 style="color:#fff;font-size:16px;margin:0 0 16px">${greeting},</h2>
           
@@ -1428,6 +1475,7 @@ export async function sendNewRemateAlert({
     to,
     subject: `🐄 Nuevo remate: ${consignataria} — ${formatDate(fecha)}`,
     html: `
+      ${emailBrandHeader()}
       <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
         <p style="color:#fbbf24;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">
           ★ NUEVA PUBLICACIÓN
@@ -1521,6 +1569,7 @@ export async function sendRemateResultsToProducer({
       },
       subject: `Así cerró el remate de ${consignataria}`,
       html: `
+      ${emailBrandHeader()}
         <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
           <p style="color:#71717a;font-size:11px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1px">
             Resultados del remate
@@ -1618,6 +1667,7 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
       to,
       subject: '🐄 Bienvenido al newsletter de Consignatarias.com.ar',
       html: `
+      ${emailBrandHeader()}
         <div style="font-family:monospace;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e4e4e7;padding:24px;border-radius:4px">
           <h2 style="color:#fff;font-size:18px;margin:0 0 16px">¡Gracias por suscribirte!</h2>
           
@@ -1707,6 +1757,7 @@ export async function sendSubscriptionInvite(
       replyTo: 'hola@consignatarias.com',
       subject: precio ? `El Índice Novillo cerró en ${precio} — ¿te lo mando cada mes?` : 'El cierre mensual del Índice Novillo — ¿te interesa?',
       html: `
+      ${emailBrandHeader()}
         <div style="font-family:system-ui,-apple-system,sans-serif;max-width:480px;margin:0 auto;color:#1a1a1a;font-size:15px;line-height:1.6">
           <p>${saludo}</p>
           <p>Soy José Barnetche. Armamos <strong>consignatarias.com.ar</strong> — el INMAG y los precios del Mercado Agroganadero, al día.</p>
@@ -1743,6 +1794,7 @@ export async function sendElCorredorDelivery(email: string, edition: string, pdf
       to: email,
       subject: `El Corredor · ${edition} — tu copia adentro`,
       html: `
+      ${emailBrandHeader()}
         <div style="font-family: 'SF Mono', 'Cascadia Code', ui-monospace, Menlo, Consolas, monospace; max-width: 560px; background: #09090b; color: #fafafa; padding: 32px;">
           <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; margin-bottom: 28px;">
             <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#38bdf8; margin-right:10px;"></span>
@@ -1820,6 +1872,7 @@ export async function sendEnterpriseWelcome(p: EnterpriseWelcomeParams) {
       replyTo: ADMIN_EMAIL,
       subject: `Bienvenido a Enterprise ${planLabel} — consignatarias.com.ar`,
       html: `
+      ${emailBrandHeader()}
         <div style="font-family: 'SF Mono', 'Cascadia Code', ui-monospace, Menlo, Consolas, monospace; max-width: 560px; background: #09090b; color: #fafafa; padding: 32px;">
           <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; margin-bottom: 28px;">
             <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#38bdf8; margin-right:10px;"></span>
@@ -1908,6 +1961,7 @@ export async function sendQuotaAlert(p: QuotaAlertParams) {
       replyTo: ADMIN_EMAIL,
       subject: `Tu API key "${p.keyName}" llegó al ${pct}% del cupo mensual`,
       html: `
+      ${emailBrandHeader()}
         <div style="font-family: 'SF Mono', 'Cascadia Code', ui-monospace, Menlo, Consolas, monospace; max-width: 560px; background: #09090b; color: #fafafa; padding: 32px;">
           <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; margin-bottom: 28px;">
             <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#fbbf24; margin-right:10px;"></span>
@@ -2007,6 +2061,7 @@ export async function sendTrialNudge(p: TrialNudgeParams) {
       replyTo: ADMIN_EMAIL,
       subject,
       html: `
+      ${emailBrandHeader()}
         <div style="font-family: 'SF Mono', 'Cascadia Code', ui-monospace, Menlo, Consolas, monospace; max-width: 560px; background: #09090b; color: #fafafa; padding: 32px;">
           <div style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #71717a; margin-bottom: 28px;">
             <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#38bdf8; margin-right:10px;"></span>

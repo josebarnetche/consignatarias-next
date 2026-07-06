@@ -6,6 +6,7 @@ import { RematesListSchema, BreadcrumbSchema } from '@/components/seo/JsonLd'
 import { Calendar, ArrowLeft, ArrowRight, ChevronRight } from 'lucide-react'
 import AuctionCard from '@/components/remates/auction-card'
 import type { Auction } from '@/lib/db/schema'
+import { EmptyState } from '@/components/ui'
 
 const auctions = remates as Auction[]
 
@@ -262,23 +263,23 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
       {/* Auction List */}
       <section className="mx-auto max-w-6xl px-4 py-8">
         {stats.count === 0 ? (
-          <div className="text-center py-16">
-            <Calendar className="h-16 w-16 text-zinc-700 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-zinc-400 mb-2">
-              No hay remates programados para {monthConfig.name}
-            </h2>
-            <p className="text-zinc-500 mb-6">
-              {isPastMonth
+          <EmptyState
+            icon="calendario"
+            title={`No hay remates programados para ${monthConfig.name}`}
+            sub={
+              isPastMonth
                 ? 'Este mes ya pasó. Consultá el calendario actual.'
-                : 'Aún no se publicaron remates para este mes. Volvé pronto.'}
-            </p>
-            <Link
-              href="/remates"
-              className="inline-flex items-center gap-2 bg-accent hover:bg-sky-300 text-zinc-950 px-6 py-3 rounded-lg transition-colors"
-            >
-              Ver todos los remates
-            </Link>
-          </div>
+                : 'Aún no se publicaron remates para este mes. Volvé pronto.'
+            }
+            cta={
+              <Link
+                href="/remates"
+                className="inline-flex items-center gap-2 bg-accent hover:bg-sky-300 text-zinc-950 px-6 py-3 rounded-lg transition-colors"
+              >
+                Ver todos los remates
+              </Link>
+            }
+          />
         ) : (
           <div className="space-y-8">
             {Object.entries(weekGroups)

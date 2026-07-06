@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Mail, Calendar, Tag, Users, TrendingUp, RefreshCw } from 'lucide-react'
+import { EmptyState } from '@/components/ui'
 
 interface Subscriber {
   id: string
@@ -166,9 +167,7 @@ export default function SuscriptoresPage() {
         </div>
         
         {realSubscribers.length === 0 ? (
-          <div className="p-8 text-center text-zinc-500">
-            No hay suscriptores reales aún
-          </div>
+          <EmptyState icon="campana" compact title="No hay suscriptores reales aún" />
         ) : (
           <div className="divide-y divide-terminal-border">
             {realSubscribers.map((sub) => (

@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.116.0] — 2026-07-06
+
+### El universo de marca, desplegado: las 60 oportunidades de la auditoría implementadas
+
+De 5,5/10 (auditoría en `docs/marca-oportunidades.md`) a cobertura total, en una tanda:
+
+- **Assets deployados** (`public/marca/`, ahora 9,3 MB, reproducible en `deploy_assets_web.py`): los 12 renders 3D `features/feat-*`, 5 patterns linocut, 27 ilustraciones (incl. las 8 cabeceras `ilu-sec-*`), 16 renders del Oráculo y los isotipos para email.
+- **Favicon transparente** — la C en tinta cielo sin fondo negro (visible en pestañas claras y oscuras); apple-icon conserva carbón (iOS rellena el alpha con blanco).
+- **`<EmptyState>` nuevo en el design system** y aplicado a los **23 empty states** del sitio (dashboard, admin, remates ×7, frigoríficos, DT-e, videos, buscadores…): pictograma color en chip hueso + copy original + CTA conservado.
+- **`loading.tsx` y `error.tsx` globales** (no existían): la sonda respirando con la curva de marca / alerta con retry.
+- **21 heros y fondos de sección**: el Oráculo con su monolito 3D, login con el arreo linocut, arrendamiento/inmag/enterprise/dte/en-vivo/directorio con sus renders `feat-*`, quiénes-somos ilustrada, patterns sutiles en pulso/mercado/novillo-historico, y chips de ícono en los h1 de calculadora, spread, internacional, exportar, calendario-exportar, reportes, api-docs, vender-ahora y /planes (API=agente-ia, PRO Consignataria=casa-remates).
+- **31 emails HTML con header de marca** (isotipo + wordmark con punto cielo) vía `emailBrandHeader()`; los mails personales de outreach quedan SIN marca a propósito (texto plano deliberado).
+- **14 componentes**: HerramientasCTA con chip por herramienta, los 6 signups de alertas, showcases de consignatarias, SinceLastVisit, onboarding (checklist/progreso/prompt) y MilestoneBadges DT-e.
+- Adaptados con criterio (documentado): candado del Paywall y estrella de seguir se mantienen (íconos funcionales/semánticos); Badge/CoverageMap sin cambios visuales de riesgo.
+
 ## [1.115.0] — 2026-07-06
 
 ### Producto Consignataria PRO cerrado + landing rehecha sobre eso

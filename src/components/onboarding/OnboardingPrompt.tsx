@@ -82,7 +82,10 @@ export default function OnboardingPrompt() {
       className="group flex items-center gap-1.5 px-2 py-1 rounded-md bg-sky-900/30 border border-sky-700/40 hover:bg-sky-900/50 hover:border-sky-600/50 transition-all"
       title="Subí tu primera guía DT-e y comenzá a construir tu historial"
     >
-      <span className="text-accent text-sm">📋</span>
+      <span className="inline-flex w-5 h-5 rounded bg-zinc-100 items-center justify-center select-none shrink-0" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/marca/iconos-color/guia-dte.png" alt="" className="w-3.5 h-3.5" />
+      </span>
       <span className="text-xxs font-terminal uppercase tracking-wider text-accent group-hover:text-sky-300 transition-colors hidden sm:inline">
         Subí tu primera guía
       </span>

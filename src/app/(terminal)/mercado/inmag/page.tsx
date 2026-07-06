@@ -245,7 +245,18 @@ export default function InmagPage() {
       />
 
       <div className="min-h-screen">
-        {/* Hero Section — número-hero compartido con /mercado/arrendamiento (MarketHero) */}
+        {/* Hero Section — número-hero compartido con /mercado/arrendamiento (MarketHero),
+            envuelto con el render de marca del INMAG en vivo (universo v2.0) */}
+        <section className="relative overflow-hidden">
+          <img
+            src="/marca/features/feat-inmag-vivo.jpg"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full object-cover object-[70%_center] opacity-40"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/80 to-[#09090b]/25" aria-hidden="true" />
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-[#09090b]" aria-hidden="true" />
+          <div className="relative">
         <MarketHero
           accent="emerald"
           priceLabel="Precio Actual"
@@ -287,6 +298,8 @@ export default function InmagPage() {
             />
           </div>
         </MarketHero>
+          </div>
+        </section>
 
         {/* Alerta de ZONA DE VENTA — FASE 1, con motor real (cron sell-zone-alerts).
             Intención de "inmag hoy": quieren saber cuándo conviene vender. Esta es la

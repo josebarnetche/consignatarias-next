@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
+import { EmptyState } from '@/components/ui'
 
 interface Item {
   slug: string
@@ -57,11 +58,17 @@ export default function ConsignatariaSearch({ items }: { items: Item[] }) {
         </ul>
       )}
       {nq.length >= 2 && matches.length === 0 && (
-        <div className="absolute left-0 right-0 top-full z-30 mt-1.5 rounded-lg border border-white/10 bg-[#0a0a0f]/95 px-4 py-2.5 text-sm text-zinc-500 backdrop-blur-md">
-          Sin resultados ·{' '}
-          <Link href="/consignatarias" className="text-accent hover:text-sky-300">
-            ver todas
-          </Link>
+        <div className="absolute left-0 right-0 top-full z-30 mt-1.5 rounded-lg border border-white/10 bg-[#0a0a0f]/95 backdrop-blur-md">
+          <EmptyState
+            icon="buscador-lupa"
+            compact
+            title="Sin resultados"
+            cta={
+              <Link href="/consignatarias" className="text-accent hover:text-sky-300">
+                ver todas
+              </Link>
+            }
+          />
         </div>
       )}
     </div>

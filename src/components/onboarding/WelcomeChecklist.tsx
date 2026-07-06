@@ -40,7 +40,13 @@ export default function WelcomeChecklist({ profileSlug: _profileSlug, displayNam
   return (
     <div className="terminal-panel">
       <div className="terminal-panel-header flex items-center justify-between">
-        <span className="text-zinc-200 text-label tracking-widest">COMPLETÁ TU PERFIL</span>
+        <span className="flex items-center gap-2">
+          <span className="inline-flex w-5 h-5 rounded bg-zinc-100 items-center justify-center select-none shrink-0" aria-hidden="true">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/marca/iconos-color/guia-dte.png" alt="" className="w-3.5 h-3.5" />
+          </span>
+          <span className="text-zinc-200 text-label tracking-widest">COMPLETÁ TU PERFIL</span>
+        </span>
         <span className="text-xxs font-terminal tabular-nums text-zinc-500">
           {completed}/{total} completados
         </span>

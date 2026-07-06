@@ -161,6 +161,9 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
           ← Ver precios de mercado
         </Link>
         <h1 className="text-2xl font-terminal text-zinc-100 mb-3">
+          <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
+            <img src="/marca/iconos-color/bascula.png" alt="" className="w-6 h-6" />
+          </span>
           Calculadora de Precios de Hacienda
         </h1>
         <p className="text-zinc-400 text-sm leading-relaxed">

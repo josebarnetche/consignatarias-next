@@ -58,7 +58,12 @@ export default async function ReportesPage() {
           <span>/</span>
           <span className="text-zinc-300">Mis reportes</span>
         </div>
-        <h1 className="text-xl font-heading text-zinc-100 mb-2">Mis reportes</h1>
+        <h1 className="text-xl font-heading text-zinc-100 mb-2">
+          <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
+            <img src="/marca/iconos-color/guia-dte.png" alt="" className="w-6 h-6" />
+          </span>
+          Mis reportes
+        </h1>
         <p className="text-zinc-400 text-sm max-w-2xl">
           Reportes premium incluidos en tu plan PRO. Descargás cuantas veces
           necesites — registramos el conteo para que sepas qué ya descargaste.

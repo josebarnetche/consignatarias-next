@@ -135,9 +135,17 @@ export default function MercadoPage() {
   return (
     <div className="px-4 py-4 max-w-6xl mx-auto space-y-px">
 
-      {/* ── Page header ─────────────────────────────────────────── */}
-      <div className="terminal-panel">
-        <div className="terminal-panel-header flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+      {/* ── Page header — banda guarda-C del universo de marca, sutil ── */}
+      <div className="terminal-panel relative overflow-hidden">
+        <img
+          src="/marca/patterns/24-guarda-c.jpg"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover opacity-15"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#09090b]/80 via-[#09090b]/50 to-[#09090b]/80" aria-hidden="true" />
+        <div className="relative terminal-panel-header flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
           <h1 className="section-heading">
             MERCADO <span className="text-zinc-500 mx-1">&mdash;</span> INDICES Y PRECIOS DE REFERENCIA
           </h1>

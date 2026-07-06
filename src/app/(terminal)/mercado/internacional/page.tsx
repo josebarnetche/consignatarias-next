@@ -42,21 +42,34 @@ export default async function InternacionalPage() {
     <>
       <SectionBreadcrumbSchema section="mercado/internacional" sectionName="Referencia internacional" />
       <div className="px-4 py-6 max-w-3xl mx-auto space-y-6">
-        <div>
-          <Link
-            href="/mercado"
-            className="text-xxs font-terminal uppercase tracking-wider text-zinc-500 hover:text-accent transition-colors"
-          >
-            ← Mercado
-          </Link>
-          <h1 className="text-2xl md:text-3xl font-heading text-zinc-100 mt-2 mb-1 leading-tight">
-            Precio internacional de la hacienda — Chicago (CME)
-          </h1>
-          <p className="text-zinc-400 text-sm max-w-2xl">
-            El benchmark global del precio de la hacienda en pie: el novillo gordo (Live Cattle)
-            y la invernada (Feeder Cattle) de Chicago, convertidos a USD/kg vivo para leerlos en
-            el mismo lenguaje que el precio argentino.
-          </p>
+        <div className="relative overflow-hidden rounded-xl">
+          <img
+            src="/marca/ilus/ilu-c-tropa-aerea.jpg"
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover opacity-15"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#09090b]/40 via-[#09090b]/70 to-[#09090b]" aria-hidden="true" />
+          <div className="relative py-3">
+            <Link
+              href="/mercado"
+              className="text-xxs font-terminal uppercase tracking-wider text-zinc-500 hover:text-accent transition-colors"
+            >
+              ← Mercado
+            </Link>
+            <h1 className="text-2xl md:text-3xl font-heading text-zinc-100 mt-2 mb-1 leading-tight">
+              <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
+                <img src="/marca/iconos-color/dolar-billete.png" alt="" className="w-6 h-6" />
+              </span>
+              Precio internacional de la hacienda — Chicago (CME)
+            </h1>
+            <p className="text-zinc-400 text-sm max-w-2xl">
+              El benchmark global del precio de la hacienda en pie: el novillo gordo (Live Cattle)
+              y la invernada (Feeder Cattle) de Chicago, convertidos a USD/kg vivo para leerlos en
+              el mismo lenguaje que el precio argentino.
+            </p>
+          </div>
         </div>
 
         {/* Panel en vivo (mismo componente que /mercado) */}

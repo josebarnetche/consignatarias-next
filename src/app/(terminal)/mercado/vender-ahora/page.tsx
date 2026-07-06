@@ -32,6 +32,9 @@ export default async function VenderAhoraPage() {
           <span className="text-zinc-300">¿Vendo ahora?</span>
         </div>
         <h1 className="text-2xl md:text-3xl font-heading text-zinc-100 mb-1 leading-tight">
+          <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
+            <img src="/marca/iconos-color/alerta.png" alt="" className="w-6 h-6" />
+          </span>
           ¿Vendo ahora?
         </h1>
         <p className="text-zinc-400 text-sm mb-6 max-w-2xl">

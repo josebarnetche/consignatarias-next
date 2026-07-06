@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase-server'
 import { getCronHealth, type CronHealthRow } from '@/lib/ops'
 import { computeKarma } from '@/lib/karma'
 import { OpsRefreshButton } from './OpsRefreshButton'
+import { EmptyState } from '@/components/ui'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -253,9 +254,7 @@ export default async function AdminOpsPage() {
         )}
 
         {ganado.rows.length === 0 ? (
-          <div className="px-panel py-6 text-center">
-            <span className="text-zinc-500 text-data font-terminal">Nadie cargó hacienda todavía</span>
-          </div>
+          <EmptyState icon="glifo-novillo" compact title="Nadie cargó hacienda todavía" />
         ) : (
           <>
             <div className="border-b border-terminal-border px-cell py-px2 hidden md:flex items-center gap-0 bg-terminal-panel">
@@ -310,9 +309,7 @@ export default async function AdminOpsPage() {
         </div>
 
         {crons.length === 0 ? (
-          <div className="px-panel py-6 text-center">
-            <span className="text-zinc-500 text-data font-terminal">No hay registros de crons aún</span>
-          </div>
+          <EmptyState icon="onda" compact title="No hay registros de crons aún" />
         ) : (
           crons.map((row) => (
             <div key={row.workflow_name} className="border-b border-terminal-border px-cell py-1.5 flex items-center gap-0">

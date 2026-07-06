@@ -7,6 +7,7 @@ import { useFavorites } from '@/hooks/useFavorites';
 import rematesData from '@/lib/data/remates.json';
 import type { Auction } from '@/lib/db/schema';
 import { getProfile } from '@/lib/data/consignataria-slugs';
+import { EmptyState } from '@/components/ui';
 
 const auctions = rematesData as Auction[];
 
@@ -160,20 +161,20 @@ export default function FavoritosPage() {
 
         {/* Empty State */}
         {!isLoading && isLoggedIn && favorites.length === 0 && (
-          <div className="bg-zinc-800/50 border border-zinc-700 rounded-xl p-8 text-center">
-            <Star className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
-            <h2 className="text-lg font-semibold text-white mb-2">
-              Todavía no seguís ninguna consignataria
-            </h2>
-            <p className="text-zinc-400 mb-6">
-              Explorá el directorio y seguí a las que te interesan para ver sus remates en un solo lugar.
-            </p>
-            <Link
-              href="/consignatarias"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-sky-300 text-zinc-950 font-semibold rounded-lg transition-colors"
-            >
-              Explorar consignatarias →
-            </Link>
+          <div className="bg-zinc-800/50 border border-zinc-700 rounded-xl">
+            <EmptyState
+              icon="casa-remates"
+              title="Todavía no seguís ninguna consignataria"
+              sub="Explorá el directorio y seguí a las que te interesan para ver sus remates en un solo lugar."
+              cta={
+                <Link
+                  href="/consignatarias"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-sky-300 text-zinc-950 font-semibold rounded-lg transition-colors"
+                >
+                  Explorar consignatarias →
+                </Link>
+              }
+            />
           </div>
         )}
 

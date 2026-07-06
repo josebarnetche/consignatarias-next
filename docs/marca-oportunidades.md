@@ -1,7 +1,9 @@
 # Universo de marca — auditoría de aplicación y mapa de oportunidades
 
 > **2026-07-06.** Barrido completo de `src/app` (89 páginas) + `src/components`.
-> Puntaje global: **5,5 / 10** — fundamentos excelentes, despliegue del universo pobre.
+> Puntaje global al auditar: **5,5 / 10**. → **IMPLEMENTADO EN v1.114.0 (06-jul)**: las 60
+> oportunidades ejecutadas (23 empty states, 21 heros/fondos, 31 emails, loading/error, 14
+> componentes, assets deployados). Este doc queda como registro del mapa y del patrón de auditoría.
 > Assets fuente en `marca/` (gitignorado); deployados en `public/marca/`.
 
 ## Puntaje por dimensión

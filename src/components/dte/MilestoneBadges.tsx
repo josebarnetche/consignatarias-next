@@ -93,23 +93,28 @@ export function MilestoneBadges({ dteCount, showAll = false, showShare = true }:
       {/* Badge display */}
       <div className="flex flex-wrap gap-2">
         {displayBadges.map((badge) => {
-          const Icon = badge.icon;
           const earned = dteCount >= badge.threshold;
-          
+
           return (
             <div
               key={badge.id}
               className={`
                 flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm
                 transition-all duration-200
-                ${earned 
-                  ? `${badge.bgColor} ${badge.borderColor} ${badge.color}` 
+                ${earned
+                  ? `${badge.bgColor} ${badge.borderColor} ${badge.color}`
                   : 'bg-gray-800/50 border-gray-700 text-gray-500'
                 }
               `}
               title={badge.description}
             >
-              <Icon className={`w-4 h-4 ${earned ? badge.color : 'text-gray-600'}`} />
+              <span
+                className={`inline-flex w-5 h-5 rounded bg-zinc-100 items-center justify-center select-none shrink-0 ${earned ? '' : 'opacity-40 grayscale'}`}
+                aria-hidden="true"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/marca/iconos-color/guia-dte.png" alt="" className="w-3.5 h-3.5" />
+              </span>
               <span className={earned ? 'font-medium' : 'opacity-50'}>
                 {badge.name}
               </span>

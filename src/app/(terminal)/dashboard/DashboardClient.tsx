@@ -14,6 +14,7 @@ import { UpgradeConfirmTracker } from '@/components/UpgradeConfirmTracker'
 import MarketIntelPanel from '@/components/MarketIntelPanel'
 import MagPulse from '@/components/MagPulse'
 import { trackEvent } from '@/lib/analytics'
+import { EmptyState } from '@/components/ui'
 
 interface Consignataria {
   display_name: string
@@ -844,11 +845,13 @@ export default function DashboardClient({
             </p>
           </div>
           {leads.length === 0 ? (
-            <div className="rounded-terminal border border-terminal-border bg-terminal-panel p-6 text-center">
-              <div className="text-sm text-zinc-300 mb-1">Todavía no hay leads.</div>
-              <div className="text-xs text-zinc-500">
-                Cuando un productor deje sus datos o toque tu WhatsApp desde el perfil, aparece acá con nombre y contacto.
-              </div>
+            <div className="rounded-terminal border border-terminal-border bg-terminal-panel">
+              <EmptyState
+                icon="buscador-lupa"
+                compact
+                title="Todavía no hay leads."
+                sub="Cuando un productor deje sus datos o toque tu WhatsApp desde el perfil, aparece acá con nombre y contacto."
+              />
             </div>
           ) : (
             <div className="divide-y divide-terminal-border rounded-terminal border border-terminal-border bg-terminal-panel">
@@ -1281,12 +1284,16 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
 
       {ownerAuctions.length === 0 && scrapedAuctions.length === 0 && !showForm && (
         <div className="terminal-panel">
-          <div className="px-panel py-6 text-center space-y-2">
-            <p className="text-xxs font-terminal text-zinc-500">No hay remates cargados todavia.</p>
-            <button onClick={startCreate} className="text-xxs font-terminal text-positive hover:underline">
-              Agregar tu primer remate →
-            </button>
-          </div>
+          <EmptyState
+            icon="martillo"
+            compact
+            title="No hay remates cargados todavia."
+            cta={
+              <button onClick={startCreate} className="text-xxs font-terminal text-positive hover:underline">
+                Agregar tu primer remate →
+              </button>
+            }
+          />
         </div>
       )}
     </div>

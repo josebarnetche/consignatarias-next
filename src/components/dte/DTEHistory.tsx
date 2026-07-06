@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase-browser';
-import { FileText, Trash2, Edit2, AlertCircle, TrendingUp, Loader2, Download } from 'lucide-react';
+import { Trash2, Edit2, AlertCircle, TrendingUp, Loader2, Download } from 'lucide-react';
+import { EmptyState } from '@/components/ui';
 import { trackDteDelete } from '@/lib/analytics';
 import { DTEStats } from './DTEStats';
 import { DTEPeriodCompare } from './DTEPeriodCompare';
@@ -220,16 +221,12 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
     return (
       <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 border border-gray-700 rounded-xl overflow-hidden">
         {/* Hero section */}
-        <div className="p-8 text-center border-b border-gray-700/50">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-sky-500/10 border border-sky-500/30 mb-4">
-            <FileText className="w-8 h-8 text-accent" />
-          </div>
-          <h3 className="text-xl font-semibold text-white mb-2">
-            Tu historial está vacío
-          </h3>
-          <p className="text-gray-400 max-w-md mx-auto">
-            Subí tu primera guía DT-e y empezá a construir tu historial de movimientos.
-          </p>
+        <div className="border-b border-gray-700/50">
+          <EmptyState
+            icon="guia-dte"
+            title="Tu historial está vacío"
+            sub="Subí tu primera guía DT-e y empezá a construir tu historial de movimientos."
+          />
         </div>
         
         {/* Benefits grid */}

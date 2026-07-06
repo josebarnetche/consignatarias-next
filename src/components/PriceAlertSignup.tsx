@@ -84,7 +84,13 @@ export default function PriceAlertSignup({
   return (
     <div className={`bg-gradient-to-br ${c.glow} to-transparent border ${c.border} rounded-2xl p-6 lg:p-8`}>
       <div className="max-w-2xl">
-        <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
+        <div className="flex items-center gap-3 mb-2">
+          <span className="inline-flex w-8 h-8 rounded bg-zinc-100 items-center justify-center select-none shrink-0" aria-hidden="true">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/marca/iconos-color/alerta.png" alt="" className="w-5 h-5" />
+          </span>
+          <h3 className="text-xl font-bold text-white">{title}</h3>
+        </div>
         <p className="text-zinc-400 text-sm mb-5 leading-relaxed">{resolvedSubtitle}</p>
 
         {state === 'ok' ? (

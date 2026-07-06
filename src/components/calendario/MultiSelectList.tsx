@@ -1,6 +1,7 @@
 'use client'
 
 import type { ProvinceGroup } from './multiSelectUtils'
+import { EmptyState } from '@/components/ui'
 
 /** Terminal-styled checkbox: square w-4 h-4, accent when checked, dash when
  * indeterminate. No native browser blue. The clickable hit-area (≥40px) lives in
@@ -60,11 +61,12 @@ export default function MultiSelectList({
 
   if (groups.length === 0) {
     return (
-      <div className="px-panel py-cell">
-        <p className="text-data text-zinc-500">
-          No hay remates programados para este filtro. Ampliá el período o cambiá provincia/tipo.
-        </p>
-      </div>
+      <EmptyState
+        icon="calendario"
+        compact
+        title="No hay remates programados para este filtro."
+        sub="Ampliá el período o cambiá provincia/tipo."
+      />
     )
   }
 

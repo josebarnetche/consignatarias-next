@@ -3,6 +3,7 @@ import { heatmapSvg } from '@/lib/charts/svg'
 import { HeroNumber, StatPill } from '@/components/pro'
 import InmagSeasonalityGate from './InmagSeasonalityGate'
 import InmagHistoryExport from './InmagHistoryExport'
+import { EmptyState } from '@/components/ui'
 
 const RECENT_YEARS = 3 // free window — enough to read the seasonal shape
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
@@ -32,9 +33,7 @@ export async function InmagDecadaCompleta() {
     return (
       <div className="terminal-panel">
         <div className="terminal-panel-header">La década completa — histórico + estacionalidad</div>
-        <div className="px-panel py-6 text-zinc-500 text-data">
-          Todavía no hay serie suficiente para leer el patrón estacional.
-        </div>
+        <EmptyState icon="indice" compact title="Todavía no hay serie suficiente para leer el patrón estacional." />
       </div>
     )
   }

@@ -6,6 +6,7 @@ import frigorificosData from '@/lib/data/frigorificos.json'
 import summaryData from '@/lib/data/frigorificos-summary.json'
 import { trackSearch, trackFilterApply } from '@/lib/analytics'
 import { ProvinceLinkGrid } from '@/components/seo/ProvinceLinkGrid'
+import { EmptyState } from '@/components/ui'
 
 /* ------------------------------------------------------------------ */
 /*  TYPES                                                              */
@@ -553,28 +554,24 @@ export default function FrigorificosPage() {
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="text-center py-12">
-                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-zinc-800/50 border border-zinc-700/50 mb-3">
-                        <svg className="w-6 h-6 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
-                      </div>
-                      <p className="text-data text-zinc-400 font-terminal font-medium mb-1">
-                        No se encontraron frigoríficos
-                      </p>
-                      <p className="text-xxs text-zinc-600 font-terminal mb-4">
-                        {search ? `Sin resultados para "${search}"` : 'Probá ajustando los filtros'}
-                      </p>
-                      <button
-                        onClick={() => {
-                          setSearch('')
-                          setFilterProvince('')
-                          setFilterStage('')
-                        }}
-                        className="px-3 py-1.5 text-xxs text-accent hover:text-accent-bright font-terminal transition-colors border border-accent/30 rounded hover:bg-accent/10"
-                      >
-                        LIMPIAR FILTROS
-                      </button>
+                    <td colSpan={5}>
+                      <EmptyState
+                        icon="frigorifico"
+                        title="No se encontraron frigoríficos"
+                        sub={search ? `Sin resultados para "${search}"` : 'Probá ajustando los filtros'}
+                        cta={
+                          <button
+                            onClick={() => {
+                              setSearch('')
+                              setFilterProvince('')
+                              setFilterStage('')
+                            }}
+                            className="px-3 py-1.5 text-xxs text-accent hover:text-accent-bright font-terminal transition-colors border border-accent/30 rounded hover:bg-accent/10"
+                          >
+                            LIMPIAR FILTROS
+                          </button>
+                        }
+                      />
                     </td>
                   </tr>
                 ) : (

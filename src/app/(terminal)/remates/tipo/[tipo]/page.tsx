@@ -13,6 +13,7 @@ import {
   TYPE_COLORS,
   CAT_LABELS,
 } from '@/lib/ui/tokens'
+import { EmptyState } from '@/components/ui'
 
 /* ------------------------------------------------------------------ */
 /*  TYPE CONFIGURATION                                                  */
@@ -242,12 +243,15 @@ export default async function TipoRematesPage({ params }: Props) {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 text-zinc-500">
-              <p>No hay remates de {config.name} programados próximamente.</p>
-              <Link href="/" className="text-sky-500 hover:text-sky-400 mt-2 inline-block">
-                Ver todos los remates →
-              </Link>
-            </div>
+            <EmptyState
+              icon="martillo"
+              title={`No hay remates de ${config.name} programados próximamente.`}
+              cta={
+                <Link href="/" className="text-sky-500 hover:text-sky-400 inline-block">
+                  Ver todos los remates →
+                </Link>
+              }
+            />
           )}
 
           {upcoming.length > 30 && (

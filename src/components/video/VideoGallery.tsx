@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { Play, X, ExternalLink } from 'lucide-react'
+import { EmptyState } from '@/components/ui'
 
 export interface ConsignatariaVideo {
   id: string
@@ -60,10 +61,7 @@ export function VideoGallery({ videos, consignatariaName: _consignatariaName }: 
 
   if (!videos.length) {
     return (
-      <div className="text-center py-12 text-gray-500">
-        <Play className="w-12 h-12 mx-auto mb-4 opacity-50" />
-        <p>No hay videos disponibles</p>
-      </div>
+      <EmptyState icon="onda" compact title="No hay videos disponibles" />
     )
   }
 

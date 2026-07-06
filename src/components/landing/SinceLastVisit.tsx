@@ -92,6 +92,10 @@ export default function SinceLastVisit({ snapshot }: { snapshot: SinceLastVisitS
       className="flex items-center gap-2 overflow-hidden border-b border-terminal-border bg-terminal-panel px-3 sm:px-4 py-2 sm:py-1.5 text-xxs font-terminal tabular-nums text-zinc-400 transition-colors hover:bg-terminal-border/30"
     >
       <span className="status-dot-live flex-shrink-0" />
+      <span className="inline-flex w-5 h-5 rounded bg-zinc-100 items-center justify-center select-none flex-shrink-0" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/marca/iconos-color/onda.png" alt="" className="w-3.5 h-3.5" />
+      </span>
       <span className="hidden sm:inline uppercase tracking-widest text-zinc-500 flex-shrink-0">Desde tu última visita</span>
       <span className="sm:hidden uppercase tracking-widest text-zinc-500 flex-shrink-0">Última visita</span>
       <span className="text-terminal-border flex-shrink-0">·</span>

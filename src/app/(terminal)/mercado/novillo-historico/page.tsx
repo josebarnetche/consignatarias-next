@@ -97,18 +97,30 @@ export default async function NovilloHistoricoPage() {
         keywords={['novillito', 'precio novillo historico', 'hacienda dolares', 'INMAG', 'Liniers', 'Cañuelas']}
       />
 
-      <p className="text-xxs font-terminal text-zinc-500 uppercase tracking-widest mb-2">
-        <Link href="/mercado" className="text-accent hover:text-accent-bright">Mercado</Link> / Novillo histórico
-      </p>
-      <h1 className="text-2xl sm:text-3xl font-bold text-zinc-50 leading-tight mb-3">
-        El novillo en dólares: 20 años de historia
-      </h1>
-      <p className="text-zinc-400 leading-relaxed mb-8 max-w-2xl">
-        La serie diaria del <strong className="text-zinc-200">Novillito 401/420 kg</strong> desde enero de 2006 —
-        de la era Liniers al MAG de Cañuelas — convertida a{' '}
-        <strong className="text-zinc-200">dólar oficial y blue</strong>. En pesos nominales la serie es inflación;
-        en dólares se ve el precio real de la hacienda a través de cuatro regímenes cambiarios.
-      </p>
+      {/* Hero — la luna sobre el campo (linocut), fondo sutil */}
+      <div className="relative overflow-hidden rounded-xl mb-8">
+        <img
+          src="/marca/ilus/ilu-c-luna.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover opacity-20"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#09090b]/40 via-[#09090b]/70 to-[#09090b]" aria-hidden="true" />
+        <div className="relative py-4">
+          <p className="text-xxs font-terminal text-zinc-500 uppercase tracking-widest mb-2">
+            <Link href="/mercado" className="text-accent hover:text-accent-bright">Mercado</Link> / Novillo histórico
+          </p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-zinc-50 leading-tight mb-3">
+            El novillo en dólares: 20 años de historia
+          </h1>
+          <p className="text-zinc-400 leading-relaxed max-w-2xl">
+            La serie diaria del <strong className="text-zinc-200">Novillito 401/420 kg</strong> desde enero de 2006 —
+            de la era Liniers al MAG de Cañuelas — convertida a{' '}
+            <strong className="text-zinc-200">dólar oficial y blue</strong>. En pesos nominales la serie es inflación;
+            en dólares se ve el precio real de la hacienda a través de cuatro regímenes cambiarios.
+          </p>
+        </div>
+      </div>
 
       {/* Stats hoy */}
       {last && (

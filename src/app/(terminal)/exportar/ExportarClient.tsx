@@ -62,18 +62,31 @@ export default function ExportarClient() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="mb-8">
+      {/* Header — fondo sutil: el archivo histórico (universo de marca) */}
+      <div className="relative overflow-hidden rounded-xl mb-8">
+        <img
+          src="/marca/features/feat-archivo-historico.jpg"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover opacity-15"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#09090b]/40 via-[#09090b]/70 to-[#09090b]" aria-hidden="true" />
+        <div className="relative py-3">
         <Link href="/remates" className="text-xxs font-terminal text-accent hover:text-accent-bright mb-4 inline-block">
           ← Volver a remates
         </Link>
         <h1 className="text-2xl font-terminal text-zinc-100 mb-3">
+          <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
+            <img src="/marca/iconos-color/indice.png" alt="" className="w-6 h-6" />
+          </span>
           Exportar Datos de Remates
         </h1>
         <p className="text-zinc-400 text-sm leading-relaxed">
-          Descargá los datos de remates ganaderos en formato CSV o JSON. 
+          Descargá los datos de remates ganaderos en formato CSV o JSON.
           Ideal para análisis, reportes o integración con otros sistemas.
         </p>
+        </div>
       </div>
 
       {status !== 'ready' ? (

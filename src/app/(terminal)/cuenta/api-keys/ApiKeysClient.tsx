@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useId, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { EmptyState } from '@/components/ui'
 
 export interface KeyRow {
   id: string
@@ -208,19 +209,20 @@ export default function ApiKeysClient({ initialKeys }: Props) {
         </div>
 
         {keys.length === 0 ? (
-          <div className="px-panel py-10 text-center">
-            <p className="text-zinc-400 text-data mb-4">
-              Todavía no generaste ninguna API key.
-            </p>
-            <button
-              type="button"
-              onClick={() => setShowCreateModal(true)}
-              className="terminal-btn"
-              style={{ borderColor: 'rgba(56, 189, 248, 0.6)', color: '#38bdf8' }}
-            >
-              Generar mi primera key →
-            </button>
-          </div>
+          <EmptyState
+            icon="agente-ia"
+            title="Todavía no generaste ninguna API key."
+            cta={
+              <button
+                type="button"
+                onClick={() => setShowCreateModal(true)}
+                className="terminal-btn"
+                style={{ borderColor: 'rgba(56, 189, 248, 0.6)', color: '#38bdf8' }}
+              >
+                Generar mi primera key →
+              </button>
+            }
+          />
         ) : (
           <div className="divide-y divide-terminal-border">
             {keys.map((k) => (

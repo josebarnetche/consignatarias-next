@@ -158,8 +158,17 @@ export default async function ConsignatariasDirectoryPage() {
       <FAQPageSchema items={CONSIGNATARIAS_FAQ} />
       <ConsignatariasItemListSchema entries={entries} />
       
-      {/* SEO-optimized intro section */}
-      <section className="px-4 pt-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-4xl">
+      {/* SEO-optimized intro section — fondo: el buscador (render de marca) */}
+      <section className="relative overflow-hidden">
+        <img
+          src="/marca/features/feat-buscador.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover object-[70%_center] opacity-30"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/80 to-[#09090b]/25" aria-hidden="true" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-[#09090b]" aria-hidden="true" />
+        <div className="relative px-4 pt-6 pb-4 text-zinc-400 text-sm leading-relaxed max-w-4xl">
         <h1 className="text-zinc-100 text-xl font-semibold mb-3">
           Directorio de Consignatarias de Hacienda en Argentina
         </h1>
@@ -173,6 +182,7 @@ export default async function ConsignatariasDirectoryPage() {
           (general, especial, invernada, reproductores), provincias de operación y cronograma completo. 
           Datos actualizados diariamente desde fuentes públicas.
         </p>
+        </div>
       </section>
       
       <ConsignatariasDirectoryClient entries={entries} provinceLinks={provinceLinks} />

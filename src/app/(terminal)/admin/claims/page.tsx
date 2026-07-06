@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { EmptyState } from '@/components/ui'
 
 interface Claim {
   id: string
@@ -109,9 +110,7 @@ export default function AdminClaimsPage() {
             <span className="text-zinc-500 text-data font-terminal">Cargando...</span>
           </div>
         ) : claims.length === 0 ? (
-          <div className="px-panel py-8 text-center">
-            <span className="text-zinc-500 text-data font-terminal">No hay solicitudes</span>
-          </div>
+          <EmptyState icon="guia-dte" compact title="No hay solicitudes" />
         ) : (
           <div className="divide-y divide-terminal-border">
             {claims.map(claim => (

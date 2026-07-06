@@ -321,39 +321,52 @@ export default async function RematesEnVivoPage() {
       <SectionBreadcrumbSchema section="remates/en-vivo" sectionName="Remates en Vivo" />
       {schemaRemates.length > 0 && <RematesListSchema remates={schemaRemates} />}
 
-      <div className="px-4 py-6 max-w-5xl mx-auto">
-        {/* Breadcrumb */}
-        <nav className="text-xs text-zinc-500 mb-4">
-          <Link href="/" className="hover:text-zinc-300">Inicio</Link>
-          <span className="mx-2">›</span>
-          <Link href="/remates" className="hover:text-zinc-300">Remates</Link>
-          <span className="mx-2">›</span>
-          <span className="text-zinc-400">En Vivo</span>
-        </nav>
+      {/* Hero — render de marca de los remates en vivo (universo v2.0) */}
+      <section className="relative overflow-hidden">
+        <img
+          src="/marca/features/feat-remates-vivo.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover object-[70%_center] opacity-40"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/80 to-[#09090b]/25" aria-hidden="true" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-[#09090b]" aria-hidden="true" />
+        <div className="relative px-4 pt-6 pb-6 max-w-5xl mx-auto">
+          {/* Breadcrumb */}
+          <nav className="text-xs text-zinc-500 mb-4">
+            <Link href="/" className="hover:text-zinc-300">Inicio</Link>
+            <span className="mx-2">›</span>
+            <Link href="/remates" className="hover:text-zinc-300">Remates</Link>
+            <span className="mx-2">›</span>
+            <span className="text-zinc-400">En Vivo</span>
+          </nav>
 
-        {/* Ticker de transcripción del remate en vivo (lo llena el worker off-Vercel).
-            Se auto-oculta si no hay sesión activa, así que es seguro montarlo siempre. */}
-        <LiveRemateTicker />
+          {/* Ticker de transcripción del remate en vivo (lo llena el worker off-Vercel).
+              Se auto-oculta si no hay sesión activa, así que es seguro montarlo siempre. */}
+          <LiveRemateTicker />
 
-        {/* Header */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-2xl font-semibold text-zinc-100">
-              🔴 Remates Ganaderos en Vivo
-            </h1>
-            {todayCount > 0 && (
-              <span className="flex items-center gap-1.5 px-2 py-1 bg-red-600 rounded text-sm font-medium text-white">
-                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                {todayCount} hoy
-              </span>
-            )}
+          {/* Header */}
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-2xl font-semibold text-zinc-100">
+                🔴 Remates Ganaderos en Vivo
+              </h1>
+              {todayCount > 0 && (
+                <span className="flex items-center gap-1.5 px-2 py-1 bg-red-600 rounded text-sm font-medium text-white">
+                  <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                  {todayCount} hoy
+                </span>
+              )}
+            </div>
+            <p className="text-zinc-400">
+              Remates de hacienda con transmisión por YouTube. Confirmados con video directo o vía
+              el canal habitual de la consignataria. Participá de las subastas desde cualquier lugar.
+            </p>
           </div>
-          <p className="text-zinc-400">
-            Remates de hacienda con transmisión por YouTube. Confirmados con video directo o vía
-            el canal habitual de la consignataria. Participá de las subastas desde cualquier lugar.
-          </p>
         </div>
+      </section>
 
+      <div className="px-4 py-6 max-w-5xl mx-auto">
         {/* Stats bar */}
         <div className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-zinc-900/50 border border-zinc-800 rounded-lg">
           <div className="flex items-center gap-2">

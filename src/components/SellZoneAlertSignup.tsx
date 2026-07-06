@@ -67,24 +67,27 @@ export default function SellZoneAlertSignup({
       style={{ borderColor: 'rgba(52, 211, 153, 0.3)', background: 'rgba(52, 211, 153, 0.04)' }}
     >
       <div className="flex items-start gap-2 mb-1.5">
-        <span className="text-base leading-none mt-0.5">📩</span>
+        <span className="inline-flex w-6 h-6 rounded bg-zinc-100 items-center justify-center select-none shrink-0" aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/marca/iconos-color/alerta.png" alt="" className="w-4 h-4" />
+        </span>
         <h3 className="text-zinc-100 text-sm font-medium">
           {enZonaDeVenta
             ? `Avisame la próxima vez que el ${categoriaLabel} entre en zona de venta`
             : `Avisame cuando el ${categoriaLabel} entre en zona de venta`}
         </h3>
       </div>
-      <p className="text-zinc-400 text-xs leading-relaxed mb-4 pl-6">
+      <p className="text-zinc-400 text-xs leading-relaxed mb-4 pl-8">
         Un solo mail cuando esté caro vs el año <strong className="text-zinc-300">y empiece a girar</strong> —
         no por cada movimiento, ni un &quot;vendé&quot; mientras el mercado todavía sube. Gratis, sin tarjeta.
       </p>
 
       {state === 'ok' ? (
-        <div className="flex items-center gap-2 text-emerald-400 text-sm font-medium pl-6">
+        <div className="flex items-center gap-2 text-emerald-400 text-sm font-medium pl-8">
           <span className="text-lg">✓</span><span>{msg}</span>
         </div>
       ) : (
-        <form onSubmit={submit} className="flex flex-col sm:flex-row gap-2 pl-6">
+        <form onSubmit={submit} className="flex flex-col sm:flex-row gap-2 pl-8">
           <input
             type="email"
             inputMode="email"
@@ -103,9 +106,9 @@ export default function SellZoneAlertSignup({
           </button>
         </form>
       )}
-      {state === 'error' && <p className="text-red-400 text-xs mt-2 pl-6">{msg}</p>}
+      {state === 'error' && <p className="text-red-400 text-xs mt-2 pl-8">{msg}</p>}
       {state !== 'ok' && (
-        <p className="text-xs text-zinc-600 mt-3 pl-6">
+        <p className="text-xs text-zinc-600 mt-3 pl-8">
           Te podés desuscribir cuando quieras.
         </p>
       )}

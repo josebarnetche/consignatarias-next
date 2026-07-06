@@ -1,0 +1,317 @@
+Build started Sat May 30 00:11:32 -03 2026
+
+> consignatarias-next@1.18.0 build /Users/josebarnetche/consignatarias
+> next build
+
+   ▲ Next.js 15.5.12
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 5.5s
+   Linting and checking validity of types ...
+
+./src/app/(terminal)/consignatarias/[slug]/ConsignatariaProfileClient.tsx
+3:30  Warning: 'useState' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/app/(terminal)/consignatarias/[slug]/page.tsx
+15:3  Warning: 'getAllCanonicalSlugs' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/app/(terminal)/frigorificos/[slug]/page.tsx
+11:3  Warning: 'isHabilitadoVigente' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/app/(terminal)/login/FounderUrgency.tsx
+22:16  Warning: 'setData' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+23:19  Warning: 'setVisible' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/app/(terminal)/mercado/inmag-dolares/page.tsx
+68:9  Warning: 'usdSeries' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+76:9  Warning: 'arsSeries' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/app/(terminal)/mi-ganado/MiGanadoClient.tsx
+249:6  Warning: React Hook useMemo has a missing dependency: 'prices.inmag'. Either include it or remove the dependency array. Mutable values like 'prices.inmag.current' aren't valid dependencies because mutating them doesn't re-render the component.  react-hooks/exhaustive-deps
+
+./src/app/(terminal)/planes/SocialProofToast.tsx
+20:19  Warning: 'setSignups' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/app/(terminal)/remates/RematesClient.tsx
+657:25  Warning: 'setFeaturedSlugs' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/app/(terminal)/remates/anteriores/page.tsx
+5:10  Warning: 'normalizeUrl' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/app/(terminal)/remates/en-vivo/page.tsx
+5:36  Warning: 'getCanonicalSlug' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/app/api/cron/mag-lots-worker/route.ts
+51:10  Warning: 'stripTags' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/app/api/vender-ahora/route.ts
+2:10  Warning: 'createAdminClient' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/app/page.tsx
+157:7  Warning: 'todayEnVivo' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/components/AnimatedPrice.tsx
+25:10  Warning: 'easeOutSuperSlow' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/components/charts/InteractivePriceChart.tsx
+78:9  Warning: The 'padding' object makes the dependencies of useMemo Hook (at line 164) change on every render. To fix this, wrap the initialization of 'padding' in its own useMemo() Hook.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/2552) ...
+   Generating static pages (638/2552) 
+   Generating static pages (1276/2552) 
+   Generating static pages (1914/2552) 
+Top followed API error: Error: Dynamic server usage: Route /api/top-followed couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at y (.next/server/app/api/top-followed/route.js:1:2504) {
+  description: "Route /api/top-followed couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+ ✓ Generating static pages (2552/2552)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                                               Size  First Load JS  Revalidate  Expire
+┌ ○ /                                                                  4.68 kB         125 kB
+├ ○ /_not-found                                                          382 B         103 kB
+├ ƒ /admin/claims                                                       1.6 kB         105 kB
+├ ƒ /admin/consignatarias                                               2.8 kB         106 kB
+├ ƒ /admin/dashboard                                                    3.7 kB         110 kB
+├ ƒ /admin/frigorifico-claims                                          1.61 kB         105 kB
+├ ƒ /admin/ops                                                           382 B         103 kB
+├ ƒ /admin/reviews                                                     1.98 kB         108 kB
+├ ƒ /admin/suscriptores                                                2.82 kB         106 kB
+├ ○ /api-docs                                                          2.93 kB         109 kB
+├ ƒ /api/account                                                         382 B         103 kB
+├ ƒ /api/admin/claims                                                    382 B         103 kB
+├ ƒ /api/admin/claims/[id]                                               382 B         103 kB
+├ ƒ /api/admin/consignatarias                                            382 B         103 kB
+├ ƒ /api/admin/consignatarias/[slug]                                     382 B         103 kB
+├ ƒ /api/admin/dashboard                                                 382 B         103 kB
+├ ƒ /api/admin/frigorifico-claims                                        382 B         103 kB
+├ ƒ /api/admin/frigorifico-claims/[id]                                   382 B         103 kB
+├ ƒ /api/admin/reviews/[id]/approve                                      382 B         103 kB
+├ ƒ /api/admin/reviews/[id]/reject                                       382 B         103 kB
+├ ƒ /api/admin/suscriptores                                              382 B         103 kB
+├ ƒ /api/alertas                                                         382 B         103 kB
+├ ƒ /api/alertas/[alerta_id]                                             382 B         103 kB
+├ ƒ /api/auction-results                                                 382 B         103 kB
+├ ƒ /api/auth/logout                                                     382 B         103 kB
+├ ƒ /api/calendario/[slug]                                               382 B         103 kB
+├ ƒ /api/calendario/ical                                                 382 B         103 kB
+├ ƒ /api/claims                                                          382 B         103 kB
+├ ƒ /api/consignataria/[slug]                                            382 B         103 kB
+├ ƒ /api/consignatarias/[slug]                                           382 B         103 kB
+├ ƒ /api/consignatarias/[slug]/auctions                                  382 B         103 kB
+├ ƒ /api/consignatarias/[slug]/auctions/[id]                             382 B         103 kB
+├ ƒ /api/consignatarias/[slug]/logo                                      382 B         103 kB
+├ ƒ /api/consignatarias/[slug]/report                                    382 B         103 kB
+├ ƒ /api/consignatarias/[slug]/videos                                    382 B         103 kB
+├ ƒ /api/consignatarias/ranking                                          382 B         103 kB
+├ ƒ /api/cron/backfill-inmag                                             382 B         103 kB
+├ ƒ /api/cron/backfill-usd                                               382 B         103 kB
+├ ƒ /api/cron/faena-newsletter                                           382 B         103 kB
+├ ƒ /api/cron/mag-lots-worker                                            382 B         103 kB
+├ ƒ /api/cron/monthly-close                                              382 B         103 kB
+├ ƒ /api/cron/monthly-metrics                                            382 B         103 kB
+├ ƒ /api/cron/new-remate-alerts                                          382 B         103 kB
+├ ƒ /api/cron/onboarding-emails                                          382 B         103 kB
+├ ƒ /api/cron/post-remate-outreach                                       382 B         103 kB
+├ ƒ /api/cron/quota-alerts                                               382 B         103 kB
+├ ƒ /api/cron/remate-reminders                                           382 B         103 kB
+├ ƒ /api/cron/scrape-mag-detailed                                        382 B         103 kB
+├ ƒ /api/cron/trial-nudges                                               382 B         103 kB
+├ ƒ /api/cron/weekly-newsletter                                          382 B         103 kB
+├ ƒ /api/el-corredor/blast                                               382 B         103 kB
+├ ƒ /api/el-corredor/subscribe                                           382 B         103 kB
+├ ƒ /api/enterprise/checkout                                             382 B         103 kB
+├ ƒ /api/enterprise/upgrade                                              382 B         103 kB
+├ ƒ /api/featured-slugs                                                  382 B         103 kB
+├ ƒ /api/featured/check                                                  382 B         103 kB
+├ ƒ /api/form-abandonment                                                382 B         103 kB
+├ ƒ /api/frigorifico-claims                                              382 B         103 kB
+├ ƒ /api/frigorificos/[cuit]                                             382 B         103 kB
+├ ƒ /api/health                                                          382 B         103 kB
+├ ƒ /api/internal/cron-hook                                              382 B         103 kB
+├ ƒ /api/internal/keys                                                   382 B         103 kB
+├ ƒ /api/leads                                                           382 B         103 kB
+├ ƒ /api/lots                                                            382 B         103 kB
+├ ƒ /api/market/categories                                               382 B         103 kB
+├ ƒ /api/market/history                                                  382 B         103 kB
+├ ƒ /api/market/spread                                                   382 B         103 kB
+├ ƒ /api/me                                                              382 B         103 kB
+├ ƒ /api/newsletter                                                      382 B         103 kB
+├ ƒ /api/planes                                                          382 B         103 kB
+├ ƒ /api/precios                                                         382 B         103 kB
+├ ƒ /api/profile-views                                                   382 B         103 kB
+├ ƒ /api/redeem-points                                                   382 B         103 kB
+├ ƒ /api/remates/[remateId]/watch                                        382 B         103 kB
+├ ƒ /api/remates/buscar                                                  382 B         103 kB
+├ ƒ /api/remates/calendario                                              382 B         103 kB
+├ ƒ /api/remates/export                                                  382 B         103 kB
+├ ƒ /api/remates/hoy                                                     382 B         103 kB
+├ ƒ /api/remates/proximos                                                382 B         103 kB
+├ ƒ /api/remates/stats                                                   382 B         103 kB
+├ ƒ /api/remates/top                                                     382 B         103 kB
+├ ƒ /api/reportes/[slug]/download                                        382 B         103 kB
+├ ƒ /api/reviews/submit                                                  382 B         103 kB
+├ ƒ /api/stats/dte                                                       382 B         103 kB
+├ ƒ /api/stats/platform                                                  382 B         103 kB
+├ ƒ /api/stats/pro-spots                                                 382 B         103 kB
+├ ƒ /api/stats/recent-signups                                            382 B         103 kB
+├ ƒ /api/status                                                          382 B         103 kB
+├ ƒ /api/subscribe                                                       382 B         103 kB
+├ ƒ /api/subscribe/cancel                                                382 B         103 kB
+├ ƒ /api/subscribe/checkout                                              382 B         103 kB
+├ ƒ /api/subscription-status                                             382 B         103 kB
+├ ƒ /api/subscriptions/cancel                                            382 B         103 kB
+├ ƒ /api/top-followed                                                    382 B         103 kB
+├ ƒ /api/track/whatsapp                                                  382 B         103 kB
+├ ƒ /api/vender-ahora                                                    382 B         103 kB
+├ ƒ /api/webhooks/auth                                                   382 B         103 kB
+├ ƒ /api/webhooks/rebill                                                 382 B         103 kB
+├ ƒ /api/webhooks/register                                               382 B         103 kB
+├ ƒ /api/widget/[slug]                                                   382 B         103 kB
+├ ○ /apple-icon                                                          382 B         103 kB
+├ ƒ /auth/callback                                                       382 B         103 kB
+├ ○ /calculadora                                                       3.42 kB         114 kB
+├ ƒ /calendario-exportar                                               4.79 kB         111 kB
+├ ● /calendario/[slug]                                                 2.92 kB         109 kB
+├   ├ /calendario/afa
+├   ├ /calendario/aj-mendizabal
+├   ├ /calendario/agroactiva
+├   └ [+101 more paths]
+├ ○ /calidad                                                           2.93 kB         109 kB
+├ ○ /comparar                                                          2.67 kB         113 kB
+├ ○ /consignatarias                                                    7.21 kB         114 kB
+├ ● /consignatarias/[slug]                                             16.2 kB         131 kB
+├   ├ /consignatarias/buenos-aires
+├   ├ /consignatarias/chaco
+├   ├ /consignatarias/cordoba
+├   └ [+114 more paths]
+├ ● /consignatarias/[slug]/opengraph-image-19c3d9                        382 B         103 kB
+├   ├ /consignatarias/buenos-aires/opengraph-image-19c3d9
+├   ├ /consignatarias/chaco/opengraph-image-19c3d9
+├   ├ /consignatarias/cordoba/opengraph-image-19c3d9
+├   └ [+114 more paths]
+├ ● /consignatarias/[slug]/remitentes                                    177 B         107 kB
+├   ├ /consignatarias/monasterio-tattersall-s-a/remitentes
+├   └ /consignatarias/gananor-pujol/remitentes
+├ ● /consignatarias/[slug]/twitter-image-19c3d9                          382 B         103 kB
+├   ├ /consignatarias/buenos-aires/twitter-image-19c3d9
+├   ├ /consignatarias/chaco/twitter-image-19c3d9
+├   ├ /consignatarias/cordoba/twitter-image-19c3d9
+├   └ [+114 more paths]
+├ ● /consignatarias/[slug]/verificar                                   2.77 kB         109 kB
+├   ├ /consignatarias/buenos-aires/verificar
+├   ├ /consignatarias/chaco/verificar
+├   ├ /consignatarias/cordoba/verificar
+├   └ [+114 more paths]
+├ ƒ /cuenta                                                            1.37 kB         162 kB
+├ ƒ /cuenta/api-keys                                                   4.41 kB         111 kB
+├ ƒ /cuenta/reportes                                                     177 B         107 kB
+├ ƒ /dashboard                                                         15.3 kB         127 kB
+├ ƒ /dashboard/resultados/nuevo                                        2.23 kB         105 kB
+├ ○ /dte                                                               2.92 kB         109 kB
+├ ƒ /el-corredor                                                       2.71 kB         168 kB
+├ ○ /el-oraculo                                                         2.9 kB         106 kB
+├ ○ /enterprise                                                        5.61 kB         112 kB
+├ ƒ /exportar                                                          2.35 kB         113 kB
+├ ○ /frigorificos                                                      35.2 kB         142 kB          1d      1y
+├ ● /frigorificos/[slug]                                               2.92 kB         109 kB
+├   ├ /frigorificos/30716219190
+├   ├ /frigorificos/30560378056
+├   ├ /frigorificos/30540080298
+├   └ [+1109 more paths]
+├ ○ /frigorificos/verificar                                            2.92 kB         109 kB
+├ ○ /glosario                                                          2.92 kB         109 kB
+├ ● /go/[slug]                                                         7.12 kB         176 kB          1h      1y
+├   ├ /go/afa                                                                                          1h      1y
+├   ├ /go/aj-mendizabal                                                                                1h      1y
+├   ├ /go/agroactiva                                                                                   1h      1y
+├   └ [+101 more paths]
+├ ○ /login                                                             2.35 kB         160 kB
+├ ○ /mercado                                                           10.1 kB         116 kB          1d      1y
+├ ● /mercado/[categoria]                                               1.18 kB         116 kB
+├   ├ /mercado/terneros
+├   ├ /mercado/novillos
+├   ├ /mercado/novillitos
+├   └ [+3 more paths]
+├ ○ /mercado/arrendamiento                                             4.66 kB         157 kB
+├ ○ /mercado/inmag                                                       218 B         162 kB
+├ ○ /mercado/inmag-dolares                                             2.93 kB         109 kB          1d      1y
+├ ○ /mercado/liniers                                                   2.92 kB         109 kB
+├ ○ /mercado/spread                                                    5.06 kB         111 kB
+├ ƒ /mercado/vender-ahora                                              4.98 kB         111 kB
+├ ○ /metodologia                                                       2.93 kB         109 kB
+├ ○ /mi-cuenta/favoritos                                               4.65 kB         188 kB
+├ ○ /mi-cuenta/guias                                                   34.9 kB         199 kB
+├ ○ /mi-ganado                                                         6.72 kB         167 kB
+├ ○ /opengraph-image.png                                                   0 B            0 B
+├ ○ /overview                                                          2.92 kB         109 kB
+├ ○ /planes                                                            11.7 kB         172 kB
+├ ○ /precios                                                           2.92 kB         109 kB
+├ ● /precios/[categoria]                                               2.93 kB         109 kB
+├   ├ /precios/novillos
+├   ├ /precios/novillitos
+├   ├ /precios/vaquillonas
+├   └ [+3 more paths]
+├ ○ /precios/hacienda-en-pie                                           2.93 kB         109 kB
+├ ○ /preguntas-frecuentes                                              2.92 kB         109 kB
+├ ○ /privacidad                                                          177 B         107 kB
+├ ○ /quienes-somos                                                      2.9 kB         106 kB
+├ ○ /remates                                                           12.5 kB         150 kB
+├ ● /remates/[slug]                                                    1.72 kB         112 kB
+├   ├ /remates/umc-haciendas-villaguay-general-entre-rios-2026-01-09
+├   ├ /remates/umc-haciendas-villaguay-especial-entre-rios-2026-02-03
+├   ├ /remates/umc-haciendas-villaguay-general-corrientes-2026-02-06
+├   └ [+434 more paths]
+├ ● /remates/[slug]/[tipo]                                             2.92 kB         109 kB
+├   ├ /remates/buenos-aires/invernada
+├   ├ /remates/buenos-aires/cria
+├   ├ /remates/buenos-aires/general
+├   └ [+32 more paths]
+├ ƒ /remates/[slug]/opengraph-image-1yas3k                               382 B         103 kB
+├ ○ /remates/anteriores                                                2.93 kB         109 kB
+├ ● /remates/ciudad/[ciudad]                                           2.93 kB         109 kB
+├   ├ /remates/ciudad/villaguay-entre-rios
+├   ├ /remates/ciudad/mercedes-corrientes
+├   ├ /remates/ciudad/rosario-del-tala-entre-rios
+├   └ [+150 more paths]
+├ ○ /remates/en-vivo                                                   2.93 kB         114 kB
+├ ○ /remates/fin-de-semana                                             2.93 kB         109 kB
+├ ○ /remates/hoy                                                       4.43 kB         165 kB
+├ ○ /remates/manana                                                    2.93 kB         109 kB
+├ ● /remates/mes/[mes]                                                 2.92 kB         109 kB
+├   ├ /remates/mes/enero
+├   ├ /remates/mes/febrero
+├   ├ /remates/mes/marzo
+├   └ [+9 more paths]
+├ ○ /remates/semana                                                    2.93 kB         109 kB
+├ ● /remates/tipo/[tipo]                                               2.92 kB         109 kB
+├   ├ /remates/tipo/invernada
+├   ├ /remates/tipo/cria
+├   ├ /remates/tipo/general
+├   └ [+2 more paths]
+├ ƒ /reporte-semanal                                                    6.4 kB         113 kB
+├ ○ /robots.txt                                                          382 B         103 kB
+├ ƒ /rss.xml                                                             382 B         103 kB
+├ ○ /sitemap.xml                                                         382 B         103 kB
+├ ○ /terminos                                                            177 B         107 kB
+├ ○ /twitter-image.png                                                     0 B            0 B
+└ ƒ /upgrade                                                             739 B         107 kB
++ First Load JS shared by all                                           103 kB
+  ├ chunks/4541e4b6-760b0d5571ac80b3.js                                54.2 kB
+  ├ chunks/9388-9dad69ddeb11d8fa.js                                    46.5 kB
+  └ other shared chunks (total)                                        2.17 kB
+
+
+ƒ Middleware                                                            106 kB
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+
+EXIT_CODE=0
+Build finished Sat May 30 00:12:14 -03 2026

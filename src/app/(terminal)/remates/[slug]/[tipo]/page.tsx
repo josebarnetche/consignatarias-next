@@ -5,6 +5,7 @@ import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { BreadcrumbSchema } from '@/components/seo/JsonLd'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { EmptyState } from '@/components/ui'
 import {
   formatDateShort,
   getCity,
@@ -240,24 +241,27 @@ export default async function ProvinceTypePage({ params }: PageParams) {
       {/* Remates List */}
       <div className="max-w-6xl mx-auto">
         {remates.length === 0 ? (
-          <div className="border border-sky-900 p-8 text-center">
-            <p className="text-sky-600 mb-4">
-              No hay remates de {typeConfig.displayName.toLowerCase()} programados en {provinceConfig.displayName} actualmente.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link
-                href={`/remates/${provincia}`}
-                className="text-sky-400 hover:underline"
-              >
-                Ver todos los remates en {provinceConfig.displayName}
-              </Link>
-              <Link
-                href={`/remates/tipo/${tipo}`}
-                className="text-sky-400 hover:underline"
-              >
-                Ver {typeConfig.displayName.toLowerCase()} en todo el país
-              </Link>
-            </div>
+          <div className="border border-sky-900">
+            <EmptyState
+              icon="martillo"
+              title={`No hay remates de ${typeConfig.displayName.toLowerCase()} programados en ${provinceConfig.displayName} actualmente.`}
+              cta={
+                <div className="flex flex-wrap justify-center gap-4">
+                  <Link
+                    href={`/remates/${provincia}`}
+                    className="text-sky-400 hover:underline"
+                  >
+                    Ver todos los remates en {provinceConfig.displayName}
+                  </Link>
+                  <Link
+                    href={`/remates/tipo/${tipo}`}
+                    className="text-sky-400 hover:underline"
+                  >
+                    Ver {typeConfig.displayName.toLowerCase()} en todo el país
+                  </Link>
+                </div>
+              }
+            />
           </div>
         ) : (
           <div className="space-y-2">
