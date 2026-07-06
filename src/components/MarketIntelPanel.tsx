@@ -63,7 +63,9 @@ export default function MarketIntelPanel() {
   }, [days, load])
 
   useEffect(() => {
-    fetch('/api/consignatarias/ranking')
+    // Lista COMPLETA (con o sin remates), no el ranking — así el droplist incluye
+    // a todas las firmas, no solo las que tienen remates cargados.
+    fetch('/api/consignatarias/list')
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
         // /api/consignatarias/ranking devuelve { data: [{ slug, nombre, ... }] }.
@@ -159,7 +161,13 @@ export default function MarketIntelPanel() {
             {wl.map((f) => (
               <div key={f.slug} className="flex items-center justify-between border-b border-terminal-border pb-1.5">
                 <div className="min-w-0">
-                  <div className="text-zinc-200 text-data truncate">{f.display_name}</div>
+                  <Link
+                    href={`/consignatarias/${f.slug}`}
+                    className="text-zinc-200 text-data truncate block hover:text-sky-300 transition-colors"
+                    title={`Ver perfil y remates de ${f.display_name}`}
+                  >
+                    {f.display_name}
+                  </Link>
                   {!f.en_mag && <div className="text-zinc-600 text-xxs">opera fuera de Cañuelas — sin dato transaccional</div>}
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
