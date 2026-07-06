@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import marketPrices from "@/lib/data/market-prices.json";
 import frigorificosSummary from "@/lib/data/frigorificos-summary.json";
 import rematesData from "@/lib/data/remates.json";
+import corredorManifest from "../../public/el-corredor/manifest.json";
 import { getAllProfiles } from "@/lib/data/consignataria-slugs";
 import { resolveYoutubeUrl } from "@/lib/youtube-live";
 import { getLogoUrl, getBrandColor, getBrandKeepColor } from "@/lib/data/logo-map";
@@ -195,6 +196,17 @@ export const metadata: Metadata = {
 /* ================================================================== */
 /*  PAGE                                                               */
 /* ================================================================== */
+// El Corredor — SIEMPRE desde el manifest (nunca hardcodear la edición: quedó
+// en mayo con junio ya publicado). Mismo source que /el-corredor.
+const CORREDOR = corredorManifest.current as {
+  ym: string; edition_label: string; edition_short: string; cover_path: string;
+};
+const CORREDOR_NEXT = (() => {
+  const m = Number(CORREDOR.ym.split("-")[1]);
+  const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  return MESES[m % 12]; // m es 1-based → % 12 da el índice del mes siguiente
+})();
+
 export default async function LandingPage() {
   // USD blue en vivo — descongela la cinta y activa el DeltaFlash real. Falla
   // suave: si el fetch devuelve null, usamos el cierre del build (soft-fail).
@@ -552,10 +564,10 @@ export default async function LandingPage() {
                   href="/el-corredor?ref=homepage"
                   className="inline-flex items-center gap-2 bg-sky-400 hover:bg-sky-300 active:bg-sky-500 text-zinc-950 font-mono font-bold uppercase tracking-widest text-sm px-6 py-3 rounded transition-colors"
                 >
-                  Recibir Edición 05/26 →
+                  Recibir Edición {CORREDOR.edition_short} →
                 </a>
                 <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
-                  Sin tarjeta · próxima edición en julio
+                  Sin tarjeta · próxima edición en {CORREDOR_NEXT}
                 </span>
               </div>
             </div>
@@ -564,15 +576,15 @@ export default async function LandingPage() {
               <div className="absolute -inset-8 bg-sky-500/10 blur-3xl rounded-full pointer-events-none" />
               <Link href="/el-corredor?ref=homepage" className="relative block">
                 <Image
-                  src="/el-corredor/cover-mayo-2026.png"
-                  alt="El Corredor — Mayo 2026"
+                  src={CORREDOR.cover_path}
+                  alt={`El Corredor — ${CORREDOR.edition_label}`}
                   width={320}
                   height={427}
                   className="w-full max-w-[320px] h-auto rounded shadow-2xl shadow-black/50 border border-zinc-800 hover:border-sky-500/40 transition-colors"
                 />
                 <div className="absolute -bottom-3 left-4 right-4 text-center pointer-events-none">
                   <span className="inline-block bg-sky-400 text-zinc-950 text-xs font-mono uppercase tracking-widest px-3 py-1.5 font-bold rounded">
-                    Edición 05/26 · Disponible
+                    Edición {CORREDOR.edition_short} · Disponible
                   </span>
                 </div>
               </Link>
