@@ -89,7 +89,7 @@ jobs:
           # El batch procesa hasta COUNT jobs por llamada con DELAY ms entre hits
           # al MAG (el 1 req/min era precaución). Así un día entero entra en 3h.
           COUNT=80
-          DELAY=3000
+          DELAY=1500
 
           REMAINING=999
           MAX_ITERATIONS=400
