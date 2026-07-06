@@ -4,7 +4,7 @@ import { authorizeCron } from '@/lib/cron-auth'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-export const maxDuration = 120
+export const maxDuration = 300
 
 /**
  * Lote-level scraper worker for MAG haciinfo000007.
@@ -322,6 +322,36 @@ async function actionProcessOne() {
   }
 }
 
+/* ============================================================
+   Process BATCH: drena varios jobs en una sola llamada, con un delay
+   corto entre hits al MAG (el 1 req/min era precaución, no un acuerdo).
+   Así el runner hace pocas llamadas y la cola de un día entra en el
+   límite de 3h de GH Actions. Corta por count, por presupuesto de
+   tiempo (margen bajo maxDuration) o por cola vacía.
+   ============================================================ */
+async function actionProcessBatch(count: number, delayMs: number, budgetMs: number) {
+  const started = Date.now()
+  let processed = 0
+  let failed = 0
+  let rowsInserted = 0
+  let remaining = 0
+  let iterations = 0
+  for (let i = 0; i < count; i++) {
+    const r = await actionProcessOne()
+    iterations++
+    remaining = (r.remaining as number) ?? 0
+    processed += (r.processed as number) ?? 0
+    rowsInserted += (r.rows_inserted as number) ?? 0
+    if (r.failed_job) failed++
+    // Cola vacía (no procesó nada y no queda nada pendiente) → cortar.
+    if (((r.processed as number) ?? 0) === 0 && remaining === 0) break
+    // Presupuesto de tiempo: dejar margen bajo maxDuration (300s).
+    if (Date.now() - started > budgetMs) break
+    if (i < count - 1) await new Promise((res) => setTimeout(res, delayMs))
+  }
+  return { processed, failed, rows_inserted: rowsInserted, remaining, iterations }
+}
+
 export async function POST(req: NextRequest) {
   // Fail CLOSED in every environment. The previous check only enforced the
   // secret when NODE_ENV === 'production', leaving DB writes + outbound
@@ -349,8 +379,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, action, ...result })
     }
     if (action === 'process') {
-      const result = await actionProcessOne()
-      return NextResponse.json({ ok: true, action, ...result })
+      const count = Math.max(1, Math.min(2000, parseInt(searchParams.get('count') ?? '1', 10) || 1))
+      const delayMs = Math.max(0, Math.min(65000, parseInt(searchParams.get('delay') ?? '3000', 10) || 3000))
+      if (count === 1) {
+        const result = await actionProcessOne()
+        return NextResponse.json({ ok: true, action, ...result })
+      }
+      const result = await actionProcessBatch(count, delayMs, 260_000)
+      return NextResponse.json({ ok: true, action, count, delayMs, ...result })
     }
     return NextResponse.json({ error: 'unknown_action', actions: ['discover', 'enqueue', 'process'] }, { status: 400 })
   } catch (err) {
