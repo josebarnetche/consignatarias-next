@@ -1028,6 +1028,36 @@ export type Database = {
         }
         Relationships: []
       }
+      inmag_monthly_close: {
+        Row: {
+          cabezas: number | null
+          importe: number | null
+          inmag: number
+          month: number
+          scraped_at: string
+          source: string | null
+          year: number
+        }
+        Insert: {
+          cabezas?: number | null
+          importe?: number | null
+          inmag: number
+          month: number
+          scraped_at?: string
+          source?: string | null
+          year: number
+        }
+        Update: {
+          cabezas?: number | null
+          importe?: number | null
+          inmag?: number
+          month?: number
+          scraped_at?: string
+          source?: string | null
+          year?: number
+        }
+        Relationships: []
+      }
       live_remate_lot: {
         Row: {
           audio_t: number | null
