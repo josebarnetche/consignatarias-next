@@ -15,16 +15,31 @@ interface IntelResp {
   tier: string
   maxFirms: number
   days: number
-  degated?: boolean
+  anon?: boolean
   watchlist: IntelFirm[]
 }
 
 const fmt = (n: number) => n.toLocaleString('es-AR')
+const LS_KEY = 'intel_firms'
+
+function readLocal(): string[] {
+  try {
+    return JSON.parse(localStorage.getItem(LS_KEY) || '[]')
+  } catch {
+    return []
+  }
+}
+function writeLocal(slugs: string[]) {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(slugs))
+  } catch {}
+}
 
 /**
- * Intel de mercado — el usuario sigue hasta N consignatarias y compara su
- * actividad (cabezas + precio) en el MAG de Cañuelas (mercado de referencia).
- * Free sigue 3; PRO sigue 20 + histórico. Es "lo que operan los OTROS".
+ * Intel de mercado — seguí la actividad (cabezas + precio) de las consignatarias
+ * en el MAG de Cañuelas, el mercado de referencia. Funciona logueado (watchlist
+ * en el servidor) y anónimo (watchlist en localStorage). Presentado como el
+ * experience completo (PRO).
  */
 export default function MarketIntelPanel() {
   const [data, setData] = useState<IntelResp | null>(null)
@@ -35,7 +50,10 @@ export default function MarketIntelPanel() {
   const [loading, setLoading] = useState(true)
 
   const load = useCallback(async (d: number) => {
-    const r = await fetch(`/api/market-intel?days=${d}`)
+    const local = readLocal()
+    const qs = new URLSearchParams({ days: String(d) })
+    if (local.length) qs.set('firms', local.join(','))
+    const r = await fetch(`/api/market-intel?${qs.toString()}`)
     if (r.ok) setData(await r.json())
     setLoading(false)
   }, [])
@@ -57,6 +75,13 @@ export default function MarketIntelPanel() {
   const add = async () => {
     if (!pick) return
     setMsg('')
+    if (data?.anon) {
+      const local = readLocal()
+      if (!local.includes(pick)) writeLocal([...local, pick])
+      setPick('')
+      load(days)
+      return
+    }
     const r = await fetch('/api/market-intel', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -72,6 +97,11 @@ export default function MarketIntelPanel() {
   }
 
   const remove = async (slug: string) => {
+    if (data?.anon) {
+      writeLocal(readLocal().filter((s) => s !== slug))
+      load(days)
+      return
+    }
     await fetch(`/api/market-intel?slug=${encodeURIComponent(slug)}`, { method: 'DELETE' })
     load(days)
   }
@@ -82,7 +112,7 @@ export default function MarketIntelPanel() {
   const options = firms.filter((f) => !followed.has(f.slug))
 
   return (
-    <div className="terminal-panel">
+    <div className="terminal-panel" style={{ borderColor: 'rgba(56,189,248,0.28)' }}>
       <div
         className="terminal-panel-header flex items-center justify-between"
         style={{ color: '#38bdf8', borderBottomColor: 'rgba(56,189,248,0.25)' }}
@@ -107,17 +137,10 @@ export default function MarketIntelPanel() {
           ferias del interior ni venta directa.
         </p>
 
-        {data?.degated && (
-          <p className="text-emerald-400 text-xxs mb-3 flex items-center gap-1.5">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Julio: acceso completo gratis — seguí todas las firmas que quieras.
-          </p>
-        )}
-
         {loading ? (
           <p className="text-zinc-600 text-xxs">Cargando…</p>
         ) : wl.length === 0 ? (
-          <p className="text-zinc-600 text-xxs mb-3">Todavía no seguís ninguna firma. Agregá abajo para empezar.</p>
+          <p className="text-zinc-600 text-xxs mb-3">Elegí una firma abajo para ver su actividad.</p>
         ) : (
           <div className="space-y-1.5 mb-3">
             {wl.map((f) => (
@@ -147,15 +170,11 @@ export default function MarketIntelPanel() {
         {atLimit ? (
           <div className="mt-2 rounded-[2px] border border-sky-500/30 bg-sky-500/[0.04] px-3 py-2">
             <p className="text-zinc-300 text-xxs">
-              {data?.degated
-                ? `Seguís el máximo de ${data?.maxFirms} firmas.`
-                : data?.tier === 'pro'
-                  ? `Seguís el máximo de ${data?.maxFirms} firmas.`
-                  : `Seguís ${data?.maxFirms} firmas (el máximo del plan free).`}
+              {data?.tier === 'pro' ? `Seguís el máximo de ${data?.maxFirms} firmas.` : `Seguís ${data?.maxFirms} firmas.`}
             </p>
-            {data?.tier !== 'pro' && !data?.degated && (
+            {data?.tier !== 'pro' && (
               <Link href="/planes" className="text-sky-300 text-xxs hover:underline">
-                Con PRO seguí hasta 20 firmas + histórico + alertas →
+                Seguí más firmas con PRO →
               </Link>
             )}
           </div>
@@ -184,13 +203,6 @@ export default function MarketIntelPanel() {
           </div>
         )}
         {msg && <p className="text-amber-400 text-xxs mt-2">{msg}</p>}
-        {data && (
-          <p className="text-zinc-600 text-xxs mt-2">
-            {data.degated
-              ? `${wl.length} firma(s) · julio: seguí todas, sin límite`
-              : `${wl.length}/${data.maxFirms} firmas · ${data.tier === 'pro' ? 'PRO' : 'free'}`}
-          </p>
-        )}
       </div>
     </div>
   )

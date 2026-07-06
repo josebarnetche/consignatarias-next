@@ -39,17 +39,27 @@ function admin(): SupabaseClient {
 
 export async function GET(req: NextRequest) {
   const { user, tier } = await getCurrentSession()
-  if (!user) return NextResponse.json({ error: 'auth' }, { status: 401 })
   const maxFirms = effectiveMax(tier)
   const days = Math.min(Math.max(parseInt(req.nextUrl.searchParams.get('days') || '30', 10) || 30, 1), 90)
   const db = admin()
 
-  const { data: wl } = await db
-    .from('market_watchlist')
-    .select('consignataria_slug')
-    .eq('user_id', user.id)
-  const slugs: string[] = (wl || []).map((w: { consignataria_slug: string }) => w.consignataria_slug)
-  if (slugs.length === 0) return NextResponse.json({ tier, maxFirms, days, degated: isDeGated(), watchlist: [] })
+  // Logueado → watchlist en el servidor. Anónimo → firmas del querystring
+  // (las guarda el cliente en localStorage). El dato es público.
+  let slugs: string[]
+  if (user) {
+    const { data: wl } = await db
+      .from('market_watchlist')
+      .select('consignataria_slug')
+      .eq('user_id', user.id)
+    slugs = (wl || []).map((w: { consignataria_slug: string }) => w.consignataria_slug)
+  } else {
+    slugs = (req.nextUrl.searchParams.get('firms') || '')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .slice(0, maxFirms)
+  }
+  if (slugs.length === 0) return NextResponse.json({ tier, maxFirms, days, anon: !user, watchlist: [] })
 
   const [{ data: consigs }, { data: mags }] = await Promise.all([
     db.from('consignatarias').select('canonical_slug, display_name, cuit').in('canonical_slug', slugs),
@@ -98,7 +108,7 @@ export async function GET(req: NextRequest) {
     }
   })
   watchlist.sort((x, y) => y.cabezas - x.cabezas)
-  return NextResponse.json({ tier, maxFirms, days, degated: isDeGated(), watchlist })
+  return NextResponse.json({ tier, maxFirms, days, anon: !user, watchlist })
 }
 
 export async function POST(req: NextRequest) {

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import MagPulse from '@/components/MagPulse'
+import MarketIntelPanel from '@/components/MarketIntelPanel'
 
 export const metadata: Metadata = {
   title: 'Pulso del mercado — Cañuelas en vivo',
@@ -21,6 +22,9 @@ export default function PulsoPage() {
         </p>
       </div>
       <MagPulse />
+      <div className="mt-5">
+        <MarketIntelPanel />
+      </div>
     </div>
   )
 }
