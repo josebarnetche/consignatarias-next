@@ -30,6 +30,7 @@ import {
 } from '@/lib/ui/tokens'
 import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge, { VerifiedBadge } from '@/components/badges/ProBadge'
+import ProRemateVideo from '@/components/pro/ProRemateVideo'
 import { Badge, Stat, DataTable, type DataColumn } from '@/components/ui'
 import { FollowButton } from '@/components/ui/FollowButton'
 import { SEMANTIC_HEX } from '@/lib/ui/tokens'
@@ -592,6 +593,10 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
   const logoSrc = profile.logoUrl ?? getLogoUrl(profile.canonicalSlug)
   const brandColor = !profile.logoUrl ? getBrandColor(profile.canonicalSlug) : null
 
+  // Perfil PRO: el último remate (featured o más reciente) va autoplay/mute en el hero.
+  const isPro = tier === 'pro' || tier === 'enterprise'
+  const latestVideoId = videos[0]?.youtube_video_id ?? null
+
   return (
     <div className="max-w-6xl mx-auto px-2 sm:px-4 pt-3 pb-20 md:pb-3 space-y-0">
       {/* ============================================================ */}
@@ -617,14 +622,14 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
         <div className="px-panel pt-4 pb-4 border-b border-terminal-border flex items-start gap-3 sm:gap-4">
           {logoSrc && (
             <div
-              className={`rounded-terminal border overflow-hidden flex-shrink-0 relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 ${
-                tier === 'pro' || tier === 'enterprise'
-                  ? 'border-warning/40 shadow-lg shadow-warning/10'
-                  : 'border-terminal-border'
+              className={`rounded-terminal border overflow-hidden flex-shrink-0 relative flex items-center justify-center ${
+                isPro
+                  ? 'w-20 h-20 sm:w-24 sm:h-24 border-warning/60 ring-1 ring-warning/30 shadow-lg shadow-warning/20'
+                  : 'w-16 h-16 sm:w-20 sm:h-20 border-terminal-border'
               }`}
               style={{ backgroundColor: brandColor || (profile.logoUrl ? '#ffffff' : 'var(--terminal-bg, #0b0b0e)') }}
             >
-              <Image src={logoSrc} alt={`Logo ${profile.displayName}`} className="object-contain p-2" width={80} height={80} unoptimized />
+              <Image src={logoSrc} alt={`Logo ${profile.displayName}`} className="object-contain p-2" width={96} height={96} unoptimized />
             </div>
           )}
           <div className="min-w-0 flex-1">
@@ -670,6 +675,14 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
             <FollowButton slug={profile.canonicalSlug} displayName={profile.displayName} size="sm" />
           </div>
         </div>
+
+        {/* PRO — vidriera: el último remate en autoplay/mute, reproductor limpio (sin
+            íconos, pausable). Distingue el perfil PRO del común. */}
+        {isPro && latestVideoId && (
+          <div className="px-panel pt-3 pb-1 border-b border-terminal-border">
+            <ProRemateVideo videoId={latestVideoId} title={`Último remate — ${profile.displayName}`} />
+          </div>
+        )}
 
         <div className="px-panel py-3 grid gap-3 grid-cols-1 lg:grid-cols-3">
           {/* CARD A — PRÓXIMO REMATE (Job 1) */}
