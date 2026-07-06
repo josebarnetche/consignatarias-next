@@ -8,6 +8,10 @@ import { createAdminClient } from '@/lib/supabase-server'
 import { SubscribeForm } from './SubscribeForm'
 import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/JsonLd'
 
+// El stat de cabezas por consignatario lee la DB en vivo; sin esto, el Data Cache
+// de Next sirve el query de Supabase con lag (se veía 7.5k vs 35.6k reales).
+export const dynamic = 'force-dynamic'
+
 const APP_URL = 'https://www.consignatarias.com.ar'
 
 // Edición vigente desde el manifest — la landing nunca vuelve a quedar vieja.
