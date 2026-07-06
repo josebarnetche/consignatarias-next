@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.127.0] — 2026-07-06
+
+### Pipeline MAG, El Corredor, droplist e inicio del perfil PRO
+
+- **Pipeline mag-lots arreglado** (se cancelaba a las 3h): batch processing con delay configurable. Backfill de junio 2026 completo (13 días · 35.637 cabezas · 22 firmas).
+- **El Corredor** suma "Cabezas operadas por consignatario · mes cerrado" (dato transaccional del MAG, agregado en la DB con `mag_monthly_consignatario_stats`).
+- **Droplist del intel/pulso** ahora trae las 103 firmas (con o sin remates) vía `/api/consignatarias/list`, y cada una linkea a su perfil.
+- **Perfil PRO diferenciado (primer planteo)**: logo destacado (más grande + glow ámbar) y el último remate en autoplay/mute en un reproductor sin íconos pero pausable (`ProRemateVideo`). Solo para tier pro/enterprise.
+
 ## [1.123.0] — 2026-07-06
 
 ### `tool_used` cableado en las calculadoras
