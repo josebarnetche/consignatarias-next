@@ -50,8 +50,6 @@ export interface MagEntryData {
 
 // Cost optimization: static at build time (no ISR, rebuild on deploy)
 export const revalidate = false
-// TEMPORAL (mostrar perfil PRO en vivo): render dinámico → tier en runtime. REVERTIR.
-export const dynamic = 'force-dynamic'
 // Allow dynamic rendering for slugs not in generateStaticParams output.
 // Profile slugs are merged in but Next 15 has a quirk with sibling
 // generateStaticParams overlap — falling back to dynamic for safety.
