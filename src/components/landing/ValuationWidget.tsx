@@ -3,7 +3,7 @@
 import { useState, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import marketPrices from '@/lib/data/market-prices.json';
-import { trackEvent } from '@/lib/analytics';
+import { trackEvent, trackValueEvent } from '@/lib/analytics';
 
 const CATEGORIES = [
   { key: 'terneros', label: 'Terneros', avgKg: 180 },
@@ -51,6 +51,8 @@ export default function ValuationWidget() {
     if (interactedRef.current) return;
     interactedRef.current = true;
     trackEvent('valuation_calc_used', { category, province });
+    // Señal first-party ligada al visitor_id (herramienta usada).
+    trackValueEvent('tool_used', { meta: { tool: 'valuacion', category, province } });
   };
 
   const calculation = useMemo(() => {

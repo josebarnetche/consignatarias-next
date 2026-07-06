@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { trackValueEvent } from '@/lib/analytics'
 
 function fmt(n: number): string {
   return Math.round(n || 0).toLocaleString('es-AR')
@@ -57,6 +58,14 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
   const [sellos, setSellos] = useState(1.0)
   const [saved, setSaved] = useState(false)
 
+  // Señal first-party: una vez, al primer cambio real de un input (no en el mount).
+  const usedRef = useRef(false)
+  const markUsed = () => {
+    if (usedRef.current) return
+    usedRef.current = true
+    trackValueEvent('tool_used', { meta: { tool: 'arrendamiento' } })
+  }
+
   // Restaurar lo guardado (en este dispositivo). El precio siempre arranca hoy.
   useEffect(() => {
     try {
@@ -77,6 +86,7 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
   const animCanon = useCountUp(canonMensual)
 
   function guardar() {
+    markUsed()
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ kgHa, hectareas, anios, sellos })) } catch { /* ignore */ }
     setSaved(true)
     setTimeout(() => setSaved(false), 2500)
@@ -93,8 +103,8 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
 
       {/* Inputs */}
       <div className="grid grid-cols-2 gap-3 mb-5">
-        <Field label="Kg novillo / ha / mes" value={kgHa} onChange={setKgHa} suffix="kg" />
-        <Field label="Superficie" value={hectareas} onChange={setHectareas} suffix="ha" />
+        <Field label="Kg novillo / ha / mes" value={kgHa} onChange={(n) => { markUsed(); setKgHa(n) }} suffix="kg" />
+        <Field label="Superficie" value={hectareas} onChange={(n) => { markUsed(); setHectareas(n) }} suffix="ha" />
         <div className="col-span-2">
           <Field label="Índice novillo (hoy)" value={precio} onChange={setPrecio} suffix="$/kg" />
           {!priceIsToday && (

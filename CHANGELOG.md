@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.123.0] — 2026-07-06
+
+### `tool_used` cableado en las calculadoras
+
+Cierra la señal de "herramienta usada" de la capa first-party: la calculadora de valuación (`ValuationWidget`) y la de arrendamiento (`ArrendamientoCalculator`) disparan `tool_used` (una vez, al primer uso real de un input) con `meta.tool` = `valuacion` / `arrendamiento`. Ligado al `visitor_id` como el resto de `value_events`.
+
 ## [1.122.0] — 2026-07-06
 
 ### Datos first-party, parte 2: dashboard + personalización + señales de engagement
