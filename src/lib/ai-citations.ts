@@ -56,10 +56,12 @@ export async function getAiCitationStats(): Promise<{
     claude: 'Claude',
     perplexity: 'Perplexity',
   }
+  const pretty = (slug: string) =>
+    slug.replace(/-/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase())
   const citadas: Citada[] = [...bySlug.entries()]
     .map(([slug, e]) => ({
       slug,
-      nombre: names.get(slug) || slug,
+      nombre: names.get(slug) || pretty(slug),
       refs: e.refs,
       engines: [...e.engines].map((x) => prettyEngine[x] || x).join(' · '),
     }))

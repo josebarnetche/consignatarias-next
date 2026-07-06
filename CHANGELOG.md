@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.115.0] — 2026-07-06
+
+### Producto Consignataria PRO cerrado + landing rehecha sobre eso
+
+**Producto (definido con Jose):** PRO = **destacá y publicitá tus remates** (destacados en el sitio + por email a la base) + **medí tu presencia en las IAs**. Se descartó el "análisis de redes" (no monitoreamos RRSS). El "priorizar en respuestas de IA" queda como roadmap a validar (hoy los referrals vienen del SEO/crawl, no del MCP) — se vende MEDICIÓN, no prioridad. CRM = v2.
+
+- **Landing rehecha** (la anterior era floja) liderando con el dato sorpresa REAL de `ai_referrals`: **las IAs ya citaron 15 consignatarias el último mes** (Rosgan 4×, Hasenkamp, UMC, Colombo y Magliano, Saenz Valiente…) sobre 351 consultas/mes (Copilot 81% · ChatGPT 19%). Escenas: hook IA → publicitá tus remates → perfil destacado + medición IA ("sin humo") → teaser CRM.
+- **Personalizada por slug** ahora muestra las **citas de IA reales de la firma** ("Copilot recomendó a {firma} N veces el último mes") + su actividad en el MAG. Helper `lib/ai-citations.ts`.
+- **Hallazgo:** ya podemos medir qué consignataria citó cada IA (engine + path en `ai_referrals`) — feature honesto y funcionando.
+
 ## [1.114.0] — 2026-07-05
 
 ### Landing PRO reenfocada + personalizable por consignataria (ABM)
