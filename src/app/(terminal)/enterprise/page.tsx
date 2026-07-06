@@ -25,7 +25,7 @@ const FAQ_ITEMS = [
   {
     question: '¿Qué endpoints incluye la API?',
     answer:
-      `Índice INMAG (actual + histórico desde 2022), precios por categoría (novillos, novillitos, vaquillonas, vacas, toros, terneros), USD oficial y blue, calendario de remates (próximos, búsqueda, por consignataria/provincia), directorio de ${PLATFORM_STATS.consignatariasCanonical} consignatarias y ${PLATFORM_STATS.frigorificos} frigoríficos. Documentación completa en /api-docs.`,
+      `Índice INMAG (actual + histórico desde 2015), la serie Novillitos 401/420 DESDE 2006 en ARS y USD (oficial y blue — 20 años, única por API), precios por categoría (novillos, novillitos, vaquillonas, vacas, toros, terneros), índice oficial de arrendamiento, USD oficial y blue, calendario de remates, directorio de ${PLATFORM_STATS.consignatariasCanonical} consignatarias y ${PLATFORM_STATS.frigorificos} frigoríficos. Documentación completa en /api-docs.`,
   },
   {
     question: '¿Qué pasa si supero el límite de requests de mi plan?',
@@ -71,7 +71,8 @@ const TIERS = [
     requests: '10.000 req/mes',
     features: [
       'API key dedicada',
-      'INMAG diario + serie histórica completa (desde 2015)',
+      'INMAG diario + histórico desde 2015',
+      'Serie Novillitos 401/420 desde 2006 — 20 años en ARS y USD (única por API)',
       '16 sub-categorías oficiales MAG con corte por peso',
       'Calendario remates, directorios consignatarias + frigoríficos, USD',
       '1 webhook configurable',

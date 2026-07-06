@@ -439,6 +439,26 @@ export default async function PreciosCategoriaPage({
           </div>
         </div>
 
+        {/* Serie histórica 20 años en USD (solo novillos/novillitos) */}
+        {(categoria === 'novillos' || categoria === 'novillitos') && (
+          <Link
+            href="/mercado/novillo-historico"
+            className="terminal-panel mb-6 block px-panel py-4 hover:border-sky-500/40 transition-colors group"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm text-zinc-200 group-hover:text-sky-300 transition-colors">
+                  El novillo en dólares: 20 años de historia →
+                </p>
+                <p className="text-xxs text-zinc-500 mt-0.5">
+                  Serie diaria del Novillito 401/420 desde 2006, en USD oficial y blue. Gráficos y API.
+                </p>
+              </div>
+              <span className="text-sky-400 text-xl font-mono shrink-0" aria-hidden="true">↗</span>
+            </div>
+          </Link>
+        )}
+
         {/* Otras categorías */}
         <div className="terminal-panel mb-6">
           <div className="terminal-panel-header">Otras categorías</div>

@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.113.0] — 2026-07-05
+
+### La serie de 20 años, navegable y comunicada
+
+- **Nueva página `/mercado/novillo-historico`** — "El novillo en dólares: 20 años de historia": stats del día (USD oficial/blue, mín/máx 20 años), gráfico mensual 2006→hoy al oficial, gráfico de la brecha (blue 2011→hoy), últimos 12 meses diario, FAQ con datos vivos (Dataset + FAQPage schema), y CTA a la API (`?serie=novillitos`). SSG diario. En el sitemap.
+- **Navegación**: ítem "Novillo 20 años" en el menú MERCADO (tag new).
+- **/enterprise comunica la serie**: el alcance de datos y los features de Starter ahora dicen "Serie Novillitos 401/420 desde 2006 — 20 años en ARS y USD (única por API)" + índice de arrendamiento; corregido "histórico desde 2022" → 2015.
+- **/precios/novillos y /precios/novillitos** linkean la página histórica ("El novillo en dólares: 20 años de historia →").
+
 ## [1.112.0] — 2026-07-05
 
 ### Landing scroll-to-discover de consignataria PRO (`/para-consignatarias`)

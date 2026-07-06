@@ -45,6 +45,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Pulso del mercado", href: "/mercado/pulso", hint: "Cañuelas por firma, en vivo", tag: "live" },
       { label: "Arrendamiento", href: "/mercado/arrendamiento", hint: "Valor del campo" },
       { label: "INMAG en USD", href: "/mercado/inmag-dolares", hint: "Serie dolarizada" },
+      { label: "Novillo 20 años", href: "/mercado/novillo-historico", hint: "2006→hoy · USD oficial y blue", tag: "new" },
       { label: "Maíz / Novillo", href: "/mercado/spread", hint: "Relación de canje" },
       { label: "Precios hoy", href: "/precios", hint: "Hacienda en pie" },
       { label: "Categorías", href: "/mercado", hint: "Terneros, novillos, vacas" },

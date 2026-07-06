@@ -83,6 +83,53 @@ export async function fetchInmagSeries(fromIso: string, toIso: string): Promise<
   }))
 }
 
+export interface NovillitoUsdDay {
+  date: string
+  ars: number
+  usd_oficial: number | null
+  usd_blue: number | null
+}
+
+/**
+ * Serie Novillitos 401/420 (mag_novillito_history, 2006→hoy) convertida a USD
+ * oficial y blue con as-of join (último FX conocido ≤ fecha). El blue existe
+ * desde 2011 — antes del cepo no había brecha → null.
+ */
+export async function fetchNovillitoUsdJoined(fromIso: string, toIso: string): Promise<NovillitoUsdDay[]> {
+  const [nov, oficial, blue] = await Promise.all([
+    fetchAllByDate('mag_novillito_history', 'date, price_avg', fromIso, toIso),
+    fetchAllByDate('usd_oficial_history', 'date, venta', fromIso, toIso),
+    fetchAllByDate('usd_blue_history', 'date, venta', fromIso, toIso),
+  ])
+  const asof = (rows: Record<string, unknown>[]) => {
+    let i = 0
+    let last: number | null = null
+    return (date: string): number | null => {
+      while (i < rows.length && (rows[i].date as string) <= date) {
+        const v = rows[i].venta as number | null
+        if (v && v > 0) last = Number(v)
+        i++
+      }
+      return last
+    }
+  }
+  const ofAt = asof(oficial)
+  const blAt = asof(blue)
+  return nov
+    .filter((r) => r.price_avg !== null && Number(r.price_avg) > 0)
+    .map((r) => {
+      const ars = Number(r.price_avg)
+      const of = ofAt(r.date as string)
+      const bl = blAt(r.date as string)
+      return {
+        date: r.date as string,
+        ars,
+        usd_oficial: of ? Math.round((ars / of) * 1000) / 1000 : null,
+        usd_blue: bl ? Math.round((ars / bl) * 1000) / 1000 : null,
+      }
+    })
+}
+
 export async function fetchUsdSeries(fromIso: string, toIso: string): Promise<DailyUsd[]> {
   const data = await fetchAllByDate('usd_blue_history', 'date, venta', fromIso, toIso)
   return data.map((r) => ({

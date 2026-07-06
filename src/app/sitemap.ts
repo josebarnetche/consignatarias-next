@@ -265,6 +265,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.95,
     },
     {
+      url: `${baseUrl}/mercado/novillo-historico`,
+      lastModified: priceDate,
+      changeFrequency: 'daily' as const,
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/mercado/internacional`,
       lastModified: priceDate,
       changeFrequency: 'daily' as const,
