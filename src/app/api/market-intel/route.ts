@@ -20,6 +20,18 @@ export const dynamic = 'force-dynamic'
 const FREE_MAX = 3
 const PRO_MAX = 20
 
+// Promo: durante julio 2026 el intel está DE-GATEADO — acceso completo para todos
+// (sin límite de tier). A partir del 1-ago vuelve el gate free 3 / PRO 20.
+const DEGATE_UNTIL = '2026-07-31'
+const DEGATE_MAX = 45
+function isDeGated(): boolean {
+  return new Date().toISOString().slice(0, 10) <= DEGATE_UNTIL
+}
+function effectiveMax(tier: string): number {
+  if (isDeGated()) return DEGATE_MAX
+  return tier === 'pro' ? PRO_MAX : FREE_MAX
+}
+
 // market_watchlist aún no está en database.types → cliente sin tipar.
 function admin(): SupabaseClient {
   return createAdminClient() as unknown as SupabaseClient
@@ -28,7 +40,7 @@ function admin(): SupabaseClient {
 export async function GET(req: NextRequest) {
   const { user, tier } = await getCurrentSession()
   if (!user) return NextResponse.json({ error: 'auth' }, { status: 401 })
-  const maxFirms = tier === 'pro' ? PRO_MAX : FREE_MAX
+  const maxFirms = effectiveMax(tier)
   const days = Math.min(Math.max(parseInt(req.nextUrl.searchParams.get('days') || '30', 10) || 30, 1), 90)
   const db = admin()
 
@@ -37,7 +49,7 @@ export async function GET(req: NextRequest) {
     .select('consignataria_slug')
     .eq('user_id', user.id)
   const slugs: string[] = (wl || []).map((w: { consignataria_slug: string }) => w.consignataria_slug)
-  if (slugs.length === 0) return NextResponse.json({ tier, maxFirms, days, watchlist: [] })
+  if (slugs.length === 0) return NextResponse.json({ tier, maxFirms, days, degated: isDeGated(), watchlist: [] })
 
   const [{ data: consigs }, { data: mags }] = await Promise.all([
     db.from('consignatarias').select('canonical_slug, display_name, cuit').in('canonical_slug', slugs),
@@ -86,13 +98,13 @@ export async function GET(req: NextRequest) {
     }
   })
   watchlist.sort((x, y) => y.cabezas - x.cabezas)
-  return NextResponse.json({ tier, maxFirms, days, watchlist })
+  return NextResponse.json({ tier, maxFirms, days, degated: isDeGated(), watchlist })
 }
 
 export async function POST(req: NextRequest) {
   const { user, tier } = await getCurrentSession()
   if (!user) return NextResponse.json({ error: 'auth' }, { status: 401 })
-  const maxFirms = tier === 'pro' ? PRO_MAX : FREE_MAX
+  const maxFirms = effectiveMax(tier)
   const body = (await req.json().catch(() => ({}))) as { slug?: string }
   const slug = typeof body.slug === 'string' ? body.slug.trim() : ''
   if (!slug) return NextResponse.json({ error: 'slug requerido' }, { status: 400 })

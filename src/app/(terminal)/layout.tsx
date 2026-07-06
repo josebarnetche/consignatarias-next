@@ -42,6 +42,7 @@ const NAV_GROUPS: NavGroup[] = [
     match: "/mercado",
     items: [
       { label: "INMAG hoy", href: "/mercado/inmag", hint: "Precio de referencia", tag: "live" },
+      { label: "Pulso del mercado", href: "/mercado/pulso", hint: "Cañuelas por firma, en vivo", tag: "live" },
       { label: "Arrendamiento", href: "/mercado/arrendamiento", hint: "Valor del campo" },
       { label: "INMAG en USD", href: "/mercado/inmag-dolares", hint: "Serie dolarizada" },
       { label: "Maíz / Novillo", href: "/mercado/spread", hint: "Relación de canje" },

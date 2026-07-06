@@ -15,6 +15,7 @@ interface IntelResp {
   tier: string
   maxFirms: number
   days: number
+  degated?: boolean
   watchlist: IntelFirm[]
 }
 
@@ -106,6 +107,13 @@ export default function MarketIntelPanel() {
           ferias del interior ni venta directa.
         </p>
 
+        {data?.degated && (
+          <p className="text-emerald-400 text-xxs mb-3 flex items-center gap-1.5">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            Julio: acceso completo gratis — seguí todas las firmas que quieras.
+          </p>
+        )}
+
         {loading ? (
           <p className="text-zinc-600 text-xxs">Cargando…</p>
         ) : wl.length === 0 ? (
@@ -139,11 +147,13 @@ export default function MarketIntelPanel() {
         {atLimit ? (
           <div className="mt-2 rounded-[2px] border border-sky-500/30 bg-sky-500/[0.04] px-3 py-2">
             <p className="text-zinc-300 text-xxs">
-              {data?.tier === 'pro'
+              {data?.degated
                 ? `Seguís el máximo de ${data?.maxFirms} firmas.`
-                : `Seguís ${data?.maxFirms} firmas (el máximo del plan free).`}
+                : data?.tier === 'pro'
+                  ? `Seguís el máximo de ${data?.maxFirms} firmas.`
+                  : `Seguís ${data?.maxFirms} firmas (el máximo del plan free).`}
             </p>
-            {data?.tier !== 'pro' && (
+            {data?.tier !== 'pro' && !data?.degated && (
               <Link href="/planes" className="text-sky-300 text-xxs hover:underline">
                 Con PRO seguí hasta 20 firmas + histórico + alertas →
               </Link>
@@ -176,7 +186,7 @@ export default function MarketIntelPanel() {
         {msg && <p className="text-amber-400 text-xxs mt-2">{msg}</p>}
         {data && (
           <p className="text-zinc-600 text-xxs mt-2">
-            {wl.length}/{data.maxFirms} firmas · {data.tier === 'pro' ? 'PRO' : 'free'}
+            {wl.length}/{data.maxFirms} firmas · {data.degated ? 'julio: acceso completo' : data.tier === 'pro' ? 'PRO' : 'free'}
           </p>
         )}
       </div>
