@@ -2147,3 +2147,52 @@ export async function sendTrialNudge(p: TrialNudgeParams) {
     return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
   }
 }
+
+/**
+ * Cierre mensual del INMAG para el arrendamiento — se envía a principio de cada
+ * mes a los suscriptos de /mercado/arrendamiento (source arrendamiento-liquidacion).
+ * Trae el promedio ponderado OFICIAL del mes que cerró (el número para la factura)
+ * y, si el suscripto guardó su contrato (kg/ha × ha), su canon ya calculado.
+ */
+export async function sendArrendamientoCierre(opts: {
+  to: string
+  mesLabel: string
+  inmag: number
+  change?: number | null
+  kgHa?: number | null
+  hectareas?: number | null
+}): Promise<{ success: boolean; error?: string }> {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'RESEND_API_KEY no configurada' }
+
+  const inmagFmt = opts.inmag.toLocaleString('es-AR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
+  const changeStr =
+    opts.change != null ? `${opts.change >= 0 ? '+' : ''}${opts.change.toFixed(1)}% vs. el mes anterior` : ''
+  const canon = opts.kgHa && opts.hectareas ? opts.kgHa * opts.hectareas * opts.inmag : null
+  const canonBlock = canon
+    ? `<p style="margin:18px 0 0 0;font-size:15px;color:#18181b">Con tu contrato (<strong>${escapeHtml(String(opts.kgHa))} kg/ha × ${escapeHtml(String(opts.hectareas))} ha</strong>), el canon de ${escapeHtml(opts.mesLabel)} es <strong style="color:#0284c7">$${Math.round(canon).toLocaleString('es-AR')}</strong>.</p>`
+    : ''
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: opts.to,
+      subject: `Cierre INMAG ${opts.mesLabel}: $${inmagFmt}/kg — para tu arrendamiento`,
+      headers: listUnsubHeaders(opts.to, 'arrendamiento-cierre'),
+      html: `<div style="max-width:560px;margin:0 auto;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#18181b">
+        ${emailBrandHeader()}
+        <p style="font-size:15px;line-height:1.6;margin:0 0 6px 0">El cierre del INMAG de <strong>${escapeHtml(opts.mesLabel)}</strong> — el promedio oficial del Mercado Agroganadero para liquidar tu arrendamiento del mes:</p>
+        <div style="font-family:ui-monospace,Menlo,monospace;font-size:34px;font-weight:700;color:#0284c7;margin:14px 0 2px 0">$${inmagFmt}<span style="font-size:15px;color:#71717a;font-weight:400"> /kg</span></div>
+        ${changeStr ? `<p style="margin:0;font-size:13px;color:#71717a">${changeStr}</p>` : ''}
+        ${canonBlock}
+        <p style="margin:24px 0"><a href="${APP_URL}/mercado/arrendamiento" style="display:inline-block;background:#38bdf8;color:#09090b;padding:12px 22px;text-decoration:none;font-weight:600;font-size:13px;border-radius:2px">Ver el detalle y la serie →</a></p>
+        <p style="font-size:12px;color:#a1a1aa;margin:0">Es el mismo número que publica el MAG. Un mail por mes, al cierre.</p>
+        ${emailBrandFooter()}
+      </div>`,
+    })
+    if (error) return { success: false, error: error.message }
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}

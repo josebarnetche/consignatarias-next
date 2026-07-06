@@ -1,0 +1,45 @@
+name: Arrendamiento — cierre mensual
+
+# 3 de cada mes, 12:00 UTC (09:00 ART). Baja del MAG el cierre OFICIAL del INMAG
+# del mes que cerró, lo guarda en inmag_monthly_close y lo manda por email a los
+# suscriptos de /mercado/arrendamiento (con su canon calculado). El 3 da tiempo a
+# que el MAG tenga cargados los últimos días del mes.
+on:
+  schedule:
+    - cron: '0 12 3 * *'
+  workflow_dispatch:
+
+jobs:
+  arrendamiento-cierre:
+    runs-on: ubuntu-latest
+    steps:
+      - name: cron-hook start
+        id: cronstart
+        run: |
+          RUN_ID=$(curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" \
+            -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"workflow_name":"arrendamiento-cierre","phase":"start"}' | jq -r '.run_id // empty')
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Enviar cierre de arrendamiento
+        run: |
+          set -euo pipefail
+          RESP=$(curl -sS -w $'\n%{http_code}' -X POST \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            --max-time 300 \
+            "https://www.consignatarias.com.ar/api/cron/arrendamiento-cierre")
+          CODE=$(printf '%s' "$RESP" | tail -n1)
+          BODY=$(printf '%s' "$RESP" | sed '$d')
+          echo "HTTP $CODE — $BODY"
+          { [ "$CODE" -ge 200 ] && [ "$CODE" -lt 300 ]; } || { echo "::error::arrendamiento-cierre failed (HTTP $CODE)"; exit 1; }
+
+      - name: cron-hook finish
+        if: always() && steps.cronstart.outputs.run_id != ''
+        run: |
+          ST="ok"; [ "${{ job.status }}" != "success" ] && ST="error"
+          curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" \
+            -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"workflow_name\":\"arrendamiento-cierre\",\"phase\":\"finish\",\"run_id\":${{ steps.cronstart.outputs.run_id }},\"status\":\"$ST\"}" || true
