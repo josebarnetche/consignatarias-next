@@ -1,7 +1,9 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import marketData from '@/lib/data/market-prices.json'
+import { createAdminClient } from '@/lib/supabase-server'
 import ArrendamientoCalculator from './ArrendamientoCalculator'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
@@ -55,6 +57,32 @@ function getMonthlyAverages(data: typeof series) {
 }
 
 const monthlyAverages = getMonthlyAverages(series)
+
+export const dynamic = 'force-dynamic'
+
+const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+
+/**
+ * Cierres mensuales OFICIALES del MAG (tabla inmag_monthly_close) — el promedio
+ * ponderado del mes que se usa para liquidar arrendamientos. Coincide EXACTO con
+ * el MAG (ej. junio 2026 = 4.164,558), a diferencia del promedio simple de la serie.
+ */
+async function getMonthlyCloses() {
+  const db = createAdminClient() as unknown as SupabaseClient
+  const { data } = await db
+    .from('inmag_monthly_close')
+    .select('year, month, inmag, cabezas')
+    .order('year', { ascending: false })
+    .order('month', { ascending: false })
+    .limit(13)
+  return (data || []).map((r) => ({
+    year: r.year as number,
+    month: r.month as number,
+    label: `${MESES[(r.month as number) - 1]} ${r.year}`,
+    inmag: Number(r.inmag),
+    cabezas: r.cabezas as number | null,
+  }))
+}
 
 export const metadata: Metadata = {
   // Live price baked into the title — self-answering pattern matching the dominant
@@ -158,7 +186,12 @@ function formatMonth(monthKey: string): string {
   return date.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })
 }
 
-export default function ArrendamientoPage() {
+export default async function ArrendamientoPage() {
+  const closes = await getMonthlyCloses()
+  const cierre = closes[0] // el mes cerrado más reciente — el número para facturar
+  const cierrePrev = closes[1]
+  const cierreChange = cierre && cierrePrev ? ((cierre.inmag - cierrePrev.inmag) / cierrePrev.inmag) * 100 : null
+
   const recentSeries = series.slice(-90) // 90 days for better trend visibility
   const last30 = series.slice(-30)
   const minVal = Math.min(...last30.map(s => s.value))
@@ -186,52 +219,40 @@ export default function ArrendamientoPage() {
     },
   ]
 
-  // Promedios mensuales con variación mes a mes (más reciente primero).
-  const monthlyRows = monthlyAverages.map((month, i) => {
-    const prevMonth = monthlyAverages[i + 1]
+  // Cierres mensuales OFICIALES del MAG (el número para liquidar), variación mes a mes.
+  const monthlyRows = closes.map((m, i) => {
+    const prev = closes[i + 1]
     return {
-      ...month,
-      change: prevMonth ? ((month.avg - prevMonth.avg) / prevMonth.avg) * 100 : null,
+      label: m.label,
+      inmag: m.inmag,
+      cabezas: m.cabezas,
+      change: prev ? ((m.inmag - prev.inmag) / prev.inmag) * 100 : null,
     }
   })
 
   const monthlyColumns: DataColumn<(typeof monthlyRows)[number]>[] = [
     {
-      key: 'month',
+      key: 'label',
       header: 'Mes',
-      cell: (r) => <span className="text-zinc-300 capitalize">{formatMonth(r.month)}</span>,
+      cell: (r) => <span className="text-zinc-300 capitalize">{r.label}</span>,
     },
     {
-      key: 'avg',
-      header: 'Promedio',
+      key: 'inmag',
+      header: 'Cierre INMAG',
       numeric: true,
       cell: (r) => (
         <span className="inline-flex items-baseline gap-2">
-          <PriceCell value={r.avg} prefix="$" suffix="/kg" />
+          <PriceCell value={r.inmag} prefix="$" suffix="/kg" />
           <Delta change={r.change} format={(abs) => abs.toFixed(1)} className="text-xxs" />
         </span>
       ),
     },
     {
-      key: 'min',
-      header: 'Mínimo',
+      key: 'cabezas',
+      header: 'Cabezas',
       numeric: true,
       hideBelowSm: true,
-      cell: (r) => <PriceCell value={r.min} prefix="$" tone="neutral" />,
-    },
-    {
-      key: 'max',
-      header: 'Máximo',
-      numeric: true,
-      hideBelowSm: true,
-      cell: (r) => <PriceCell value={r.max} prefix="$" tone="neutral" />,
-    },
-    {
-      key: 'count',
-      header: 'Ruedas',
-      numeric: true,
-      hideBelowSm: true,
-      cell: (r) => <span className="text-zinc-500 tabular-nums">{r.count}</span>,
+      cell: (r) => <span className="text-zinc-500 tabular-nums">{r.cabezas?.toLocaleString('es-AR') ?? '—'}</span>,
     },
   ]
 
@@ -361,18 +382,53 @@ export default function ArrendamientoPage() {
           <HerramientasCTA />
         </section>
 
-        {/* Monthly Averages Table */}
+        {/* Cierre mensual oficial (el número para facturar) + tabla */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
-          <h2 className="text-xl font-semibold text-white mb-6">Promedios Mensuales del Índice</h2>
+          {cierre && (
+            <div className="terminal-panel mb-6" style={{ borderColor: 'rgba(56,189,248,0.4)' }}>
+              <div
+                className="terminal-panel-header flex items-center justify-between"
+                style={{ color: '#38bdf8', borderBottomColor: 'rgba(56,189,248,0.25)' }}
+              >
+                <span>Cierre del mes · el número para tu factura</span>
+                <span className="text-zinc-500 text-xxs font-terminal normal-case tracking-normal">
+                  fuente: MAG — INMAG oficial
+                </span>
+              </div>
+              <div className="px-panel py-5">
+                <div className="flex items-baseline gap-3 flex-wrap">
+                  <span className="text-3xl font-terminal tabular-nums text-sky-300">
+                    ${cierre.inmag.toLocaleString('es-AR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+                  </span>
+                  <span className="text-zinc-500 text-data">
+                    /kg · cierre de <span className="capitalize text-zinc-300">{cierre.label}</span>
+                  </span>
+                  {cierreChange != null && (
+                    <span className={`text-data ${cierreChange >= 0 ? 'text-positive' : 'text-negative'}`}>
+                      {cierreChange >= 0 ? '+' : ''}
+                      {cierreChange.toFixed(1)}% vs. mes anterior
+                    </span>
+                  )}
+                </div>
+                <p className="text-zinc-600 text-xxs mt-2">
+                  Promedio ponderado del mes cerrado — el valor que se usa para liquidar el arrendamiento. Coincide
+                  exacto con el Mercado Agroganadero.
+                </p>
+              </div>
+            </div>
+          )}
+
+          <h2 className="text-xl font-semibold text-white mb-2">Cierre mensual del INMAG</h2>
           <p className="text-zinc-500 text-sm mb-4">
-            Los contratos de arrendamiento suelen utilizar el promedio mensual del índice para calcular el canon.
+            Los contratos de arrendamiento se liquidan con el cierre mensual del índice. Estos son los promedios
+            oficiales del MAG, mes a mes.
           </p>
-          
+
           <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl overflow-hidden">
             <DataTable
               columns={monthlyColumns}
               rows={monthlyRows}
-              rowKey={(r) => r.month}
+              rowKey={(r) => r.label}
               rowTone={(r) => (r.change == null ? null : signedTone(r.change))}
             />
 
