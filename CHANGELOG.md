@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.132.0] — 2026-07-07
+
+### Arrendamiento: una sola captura, en la posición que convierte
+
+`/mercado/arrendamiento` tenía dos capturas compitiendo: la alerta genérica (solo email, `alerta-arrendamiento`) arriba del fold convertía por posición (~7 subs/sem) y el form de liquidación —que captura el contrato (kg/ha + ha) y liquida el canon a cada cierre de mes— vivía debajo del calculador y convertía 0 por estar bajo el fold. Diagnóstico de analytics: la página es la más engaged del sitio (48 eventos de valor/7d, ~5x la siguiente) y ChatGPT la cita 68 veces. Se unifica: el form de liquidación (`ArrendamientoLiquidacionSignup`) sube al slot de alta intención y se remueve la alerta genérica de esa página. Un solo embudo, capturando el dato de contrato que segmenta/monetiza. Baseline a batir: 7 subs/sem, ahora en `arrendamiento-liquidacion`.
+
+### MCP: observabilidad de tool calls (`mcp_call` → `ops_events`)
+
+El endpoint `/api/mcp` no dejaba rastro de las consultas de agentes AI: las tool calls de lectura (`get_indice_novillo`, `get_precios_hacienda`, etc.) se ejecutaban sin loguearse, así que no había forma de saber si alguien consulta el server. Ahora cada request emite `mcp_call` a `ops_events` (fire-and-forget, mismo canal que el API REST) con método (`initialize` / `tools/list` / `tools/call` / notificaciones), tool, argumentos (con `api_key` redactada), `clientInfo` del agente, user-agent, IP y latencia. Al prenderlo se confirmó que el MCP ya lo descubren e indexan registries del ecosistema (Siglume MCP Router, Glimind/SentinelOracle, agent-tools.cloud, MCPScoringEngine) — discovery activo, 0 tool calls reales de agentes todavía. No cambia el comportamiento de ninguna tool.
+
 ## [1.131.0] — 2026-07-07
 
 ### Logging por-request de la API: saber qué consume cada key sin adivinar
