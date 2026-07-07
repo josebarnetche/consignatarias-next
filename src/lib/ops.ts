@@ -18,6 +18,7 @@ import { waitUntil } from '@vercel/functions'
 
 export type OpsEventType =
   | 'api_call'
+  | 'mcp_call'
   | 'webhook_received'
   | 'cron_started'
   | 'cron_finished'

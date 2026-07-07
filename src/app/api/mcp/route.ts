@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { authenticate } from '@/lib/api-auth'
+import { logEvent } from '@/lib/ops'
 import marketPrices from '@/lib/data/market-prices.json'
 import rematesData from '@/lib/data/remates.json'
 import frigorificosData from '@/lib/data/frigorificos.json'
@@ -531,23 +532,55 @@ function rpcError(id: unknown, code: number, message: string) {
   return NextResponse.json({ jsonrpc: '2.0', id, error: { code, message } }, { headers: { 'Cache-Control': 'no-store' } })
 }
 
+// ── Observabilidad ───────────────────────────────────────────────────────────
+// Cada request MCP deja rastro en ops_events (fire-and-forget, mismo canal que el
+// API REST). Sin esto no hay forma de saber si un agente AI consulta el server.
+function reqMeta(req: NextRequest) {
+  return {
+    ua: req.headers.get('user-agent')?.slice(0, 200) ?? null,
+    ip: (req.headers.get('x-forwarded-for') || '').split(',')[0].trim().slice(0, 64) || null,
+    has_auth: !!req.headers.get('authorization'),
+  }
+}
+// Nunca logueamos la api_key: la redactamos de los argumentos de la tool.
+function redactArgs(args: unknown): Record<string, unknown> | null {
+  if (!args || typeof args !== 'object') return null
+  const clone: Record<string, unknown> = { ...(args as Record<string, unknown>) }
+  if ('api_key' in clone) clone.api_key = '[redacted]'
+  return clone
+}
+function logMcp(opts: { method?: string; ok: boolean; startedAt: number; meta?: Record<string, unknown> }) {
+  void logEvent({
+    eventType: 'mcp_call',
+    status: opts.ok ? 'ok' : 'error',
+    route: '/api/mcp',
+    statusCode: opts.ok ? 200 : 400,
+    latencyMs: Date.now() - opts.startedAt,
+    metadata: { method: opts.method ?? null, ...(opts.meta ?? {}) },
+  })
+}
+
 export async function POST(req: NextRequest) {
+  const startedAt = Date.now()
+  const rmeta = reqMeta(req)
   let msg: { id?: unknown; method?: string; params?: Record<string, unknown> }
   try {
     msg = await req.json()
   } catch {
+    logMcp({ method: 'parse_error', ok: false, startedAt, meta: rmeta })
     return rpcError(null, -32700, 'Parse error')
   }
   const { id, method, params } = msg
 
-  // Notificaciones (sin id) → 202 sin body.
+  // Notificaciones (sin id) → 202 sin body. Se loguea igual: es señal de cliente vivo.
   if (id === undefined || id === null) {
-    if (method === 'notifications/initialized') return new NextResponse(null, { status: 202 })
+    logMcp({ method: method ?? 'notification', ok: true, startedAt, meta: rmeta })
     return new NextResponse(null, { status: 202 })
   }
 
   switch (method) {
     case 'initialize':
+      logMcp({ method: 'initialize', ok: true, startedAt, meta: { ...rmeta, client: params?.clientInfo ?? null } })
       return rpcResult(id, {
         protocolVersion: (params?.protocolVersion as string) || PROTOCOL_VERSION,
         capabilities: { tools: {} },
@@ -556,24 +589,33 @@ export async function POST(req: NextRequest) {
           'Datos del mercado ganadero argentino. get_indice_novillo = índice INMAG DIARIO (ponderado por volumen); get_precios_hacienda = precios por categoría, observación SEMANAL — son métricas distintas, no las compares 1:1. Tools de lectura públicas. crear_alerta_precio REQUIERE API key de un plan Enterprise: pasala por el header Authorization: Bearer cnsg_live_... (config "headers" del cliente MCP) o por el parámetro api_key de la tool. Key en https://www.consignatarias.com.ar/cuenta/api-keys',
       })
     case 'ping':
+      logMcp({ method: 'ping', ok: true, startedAt, meta: rmeta })
       return rpcResult(id, {})
     case 'tools/list':
+      logMcp({ method: 'tools/list', ok: true, startedAt, meta: rmeta })
       return rpcResult(id, {
         tools: TOOLS.map((t) => ({ name: t.name, description: t.description, inputSchema: t.inputSchema })),
       })
     case 'tools/call': {
       const name = params?.name as string
       const tool = TOOLS.find((t) => t.name === name)
-      if (!tool) return rpcError(id, -32602, `Tool desconocida: ${name}`)
+      if (!tool) {
+        logMcp({ method: 'tools/call', ok: false, startedAt, meta: { ...rmeta, tool: name ?? null, error: 'unknown_tool' } })
+        return rpcError(id, -32602, `Tool desconocida: ${name}`)
+      }
+      const args = (params?.arguments as Record<string, unknown>) || {}
       try {
-        const result = await tool.run((params?.arguments as Record<string, unknown>) || {}, req)
+        const result = await tool.run(args, req)
+        logMcp({ method: 'tools/call', ok: !result.isError, startedAt, meta: { ...rmeta, tool: name, args: redactArgs(args), is_error: result.isError ?? false } })
         return rpcResult(id, result)
       } catch (err) {
         console.error('[mcp] tool error', name, err)
+        logMcp({ method: 'tools/call', ok: false, startedAt, meta: { ...rmeta, tool: name, args: redactArgs(args), error: 'exception' } })
         return rpcResult(id, { content: [{ type: 'text', text: 'Error interno ejecutando la tool.' }], isError: true })
       }
     }
     default:
+      logMcp({ method: method ?? 'unknown', ok: false, startedAt, meta: { ...rmeta, error: 'unsupported_method' } })
       return rpcError(id, -32601, `Método no soportado: ${method}`)
   }
 }
