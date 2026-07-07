@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse, after } from 'next/server'
 import {
   getUserCurrentPeriodUsage,
   getUserPlan,
   incrementUsage,
+  logApiRequest,
   PLAN_LIMITS,
   verifyApiKey,
   type VerifiedKey,
@@ -62,6 +63,23 @@ export async function authenticate(req: NextRequest): Promise<AuthResult> {
       response: errorResponse('invalid_key', 'Invalid or revoked API key', 401),
     }
   }
+
+  // Log por-request (best-effort, post-respuesta vía after()): captura qué
+  // endpoint + params + user-agent + referer + ip consume cada key, para
+  // identificar consumidores sin inferir del dato. Se registra apenas la key
+  // es válida, así también quedan los rechazos por plan/cuota de abajo.
+  const url = new URL(req.url)
+  after(() =>
+    logApiRequest(key.id, {
+      method: req.method,
+      path: url.pathname,
+      query: url.search || null,
+      userAgent: req.headers.get('user-agent'),
+      referer: req.headers.get('referer'),
+      ip: getRequestIp(req),
+      status: null,
+    }).catch(() => {}),
+  )
 
   // Enforce the per-key IP allowlist. It was stored on the key but never
   // checked, so the advertised allowlist was a no-op and keys worked from any

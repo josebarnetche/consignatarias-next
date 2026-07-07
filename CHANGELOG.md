@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.131.0] — 2026-07-07
+
+### Logging por-request de la API: saber qué consume cada key sin adivinar
+
+Antes solo teníamos el conteo diario (`api_usage_daily`) y el route a secas en `ops_events` — no distinguía `?detallado` de `?serie`, ni el host/app/user-agent. Ahora:
+
+- **Tabla `api_request_log`** (method · path · query · user_agent · referer · ip · ts) escrita vía `after()` en `authenticate()` — best-effort, no bloquea la respuesta, cubre todos los endpoints auth-gated desde un solo lugar.
+- **Vista `api_consumers_summary`**: por key → dueño, volumen, paths+queries, user-agents, IPs, referers, en una query.
+- **`docs/API-CONSUMERS.md`**: las consultas listas y cómo leerlas para el caso Muu/Apesteguía (si `queries` incluye `?detallado=true` → arma el board con nuestra data; si no → scrapea el MAG por su cuenta).
+- Contexto: `changa` (mapesteguia@gmail.com) pega SOLO `/api/precios`, 1.236 req 200 desde el 14-may; falta capturar qué variante — el logging nuevo lo revela en el próximo día de uso.
+
 ## [1.130.0] — 2026-07-07
 
 ### "El novillo en dólares" — showcase histórico del Enterprise API

@@ -175,6 +175,53 @@ export type Database = {
         }
         Relationships: []
       }
+      api_request_log: {
+        Row: {
+          api_key_id: string
+          id: number
+          ip: string | null
+          method: string | null
+          path: string | null
+          query: string | null
+          referer: string | null
+          status: number | null
+          ts: string
+          user_agent: string | null
+        }
+        Insert: {
+          api_key_id: string
+          id?: never
+          ip?: string | null
+          method?: string | null
+          path?: string | null
+          query?: string | null
+          referer?: string | null
+          status?: number | null
+          ts?: string
+          user_agent?: string | null
+        }
+        Update: {
+          api_key_id?: string
+          id?: never
+          ip?: string | null
+          method?: string | null
+          path?: string | null
+          query?: string | null
+          referer?: string | null
+          status?: number | null
+          ts?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_request_log_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       api_usage_daily: {
         Row: {
           api_key_id: string
@@ -857,18 +904,21 @@ export type Database = {
           note: string | null
           state: string | null
           updated_at: string
+          version: number
         }
         Insert: {
           id: string
           note?: string | null
           state?: string | null
           updated_at?: string
+          version?: number
         }
         Update: {
           id?: string
           note?: string | null
           state?: string | null
           updated_at?: string
+          version?: number
         }
         Relationships: []
       }
@@ -1751,6 +1801,7 @@ export type Database = {
         Row: {
           category: string
           created_at: string
+          currency: string
           direction: string
           email: string | null
           id: number
@@ -1766,6 +1817,7 @@ export type Database = {
         Insert: {
           category: string
           created_at?: string
+          currency?: string
           direction?: string
           email?: string | null
           id?: never
@@ -1781,6 +1833,7 @@ export type Database = {
         Update: {
           category?: string
           created_at?: string
+          currency?: string
           direction?: string
           email?: string | null
           id?: never
@@ -2482,6 +2535,7 @@ export type Database = {
           path: string | null
           session_id: string | null
           source: string | null
+          visitor_id: string | null
           weight: number
         }
         Insert: {
@@ -2495,6 +2549,7 @@ export type Database = {
           path?: string | null
           session_id?: string | null
           source?: string | null
+          visitor_id?: string | null
           weight?: number
         }
         Update: {
@@ -2508,7 +2563,80 @@ export type Database = {
           path?: string | null
           session_id?: string | null
           source?: string | null
+          visitor_id?: string | null
           weight?: number
+        }
+        Relationships: []
+      }
+      visitors: {
+        Row: {
+          cid: string
+          consent: string
+          first_seen_at: string
+          ft_ai_engine: string | null
+          ft_device: string | null
+          ft_landing: string | null
+          ft_referrer: string | null
+          ft_utm_campaign: string | null
+          ft_utm_medium: string | null
+          ft_utm_source: string | null
+          last_seen_at: string
+          lt_ai_engine: string | null
+          lt_landing: string | null
+          lt_referrer: string | null
+          lt_utm_campaign: string | null
+          lt_utm_medium: string | null
+          lt_utm_source: string | null
+          pageviews: number
+          updated_at: string
+          user_id: string | null
+          visits: number
+        }
+        Insert: {
+          cid: string
+          consent?: string
+          first_seen_at?: string
+          ft_ai_engine?: string | null
+          ft_device?: string | null
+          ft_landing?: string | null
+          ft_referrer?: string | null
+          ft_utm_campaign?: string | null
+          ft_utm_medium?: string | null
+          ft_utm_source?: string | null
+          last_seen_at?: string
+          lt_ai_engine?: string | null
+          lt_landing?: string | null
+          lt_referrer?: string | null
+          lt_utm_campaign?: string | null
+          lt_utm_medium?: string | null
+          lt_utm_source?: string | null
+          pageviews?: number
+          updated_at?: string
+          user_id?: string | null
+          visits?: number
+        }
+        Update: {
+          cid?: string
+          consent?: string
+          first_seen_at?: string
+          ft_ai_engine?: string | null
+          ft_device?: string | null
+          ft_landing?: string | null
+          ft_referrer?: string | null
+          ft_utm_campaign?: string | null
+          ft_utm_medium?: string | null
+          ft_utm_source?: string | null
+          last_seen_at?: string
+          lt_ai_engine?: string | null
+          lt_landing?: string | null
+          lt_referrer?: string | null
+          lt_utm_campaign?: string | null
+          lt_utm_medium?: string | null
+          lt_utm_source?: string | null
+          pageviews?: number
+          updated_at?: string
+          user_id?: string | null
+          visits?: number
         }
         Relationships: []
       }
@@ -2734,6 +2862,12 @@ export type Database = {
         Returns: undefined
       }
       increment_api_usage: { Args: { p_key_id: string }; Returns: number }
+      mag_monthly_consignatario_stats: {
+        Args: { p_month: number; p_year: number }
+        Returns: Json
+      }
+      novillo_usd_days: { Args: { p_dates: string[] }; Returns: Json }
+      novillo_usd_series: { Args: never; Returns: Json }
       record_report_download: {
         Args: {
           p_ip?: unknown
@@ -2743,6 +2877,22 @@ export type Database = {
         }
         Returns: number
       }
+      upsert_visitor: {
+        Args: {
+          p_ai_engine: string
+          p_cid: string
+          p_device: string
+          p_landing: string
+          p_new_session: boolean
+          p_referrer: string
+          p_user: string
+          p_utm_campaign: string
+          p_utm_medium: string
+          p_utm_source: string
+        }
+        Returns: undefined
+      }
+      visitor_stats: { Args: never; Returns: Json }
     }
     Enums: {
       auction_source: "web" | "social" | "tv" | "manual"

@@ -218,6 +218,37 @@ export async function incrementUsage(apiKeyId: string): Promise<number> {
   return data as number
 }
 
+export interface ApiRequestMeta {
+  method: string | null
+  path: string | null
+  query: string | null
+  userAgent: string | null
+  referer: string | null
+  ip: string | null
+  status: number | null
+}
+
+/**
+ * Log por-request de la API B2B → tabla api_request_log. Best-effort:
+ * un fallo de logging jamás debe afectar la respuesta (se llama vía after()).
+ * Sirve para identificar QUÉ consume cada key y desde dónde (host/app/UA),
+ * sin tener que inferirlo del dato. Ver docs/API-CONSUMERS.md.
+ */
+export async function logApiRequest(apiKeyId: string, meta: ApiRequestMeta): Promise<void> {
+  const admin = createAdminClient()
+  const { error } = await admin.from('api_request_log').insert({
+    api_key_id: apiKeyId,
+    method: meta.method,
+    path: meta.path,
+    query: meta.query,
+    status: meta.status,
+    user_agent: meta.userAgent,
+    referer: meta.referer,
+    ip: meta.ip,
+  })
+  if (error) console.error('logApiRequest failed', error.message)
+}
+
 /**
  * Returns the user's Enterprise API tier, or null if they have no API access.
  * Reads user_subscriptions.api_tier (independent of tier = PRO Usuario).
