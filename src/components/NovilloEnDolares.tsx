@@ -52,7 +52,15 @@ const fmtDate = (iso: string) => {
   return `${parseInt(d, 10)} ${MES[parseInt(m, 10) - 1]} ${y}`
 }
 
-export default function NovilloEnDolares({ days, series }: { days: NovilloDay[]; series: NovilloPoint[] }) {
+export default function NovilloEnDolares({
+  days,
+  series,
+  totalDays,
+}: {
+  days: NovilloDay[]
+  series: NovilloPoint[]
+  totalDays: number
+}) {
   const [active, setActive] = useState(days.length - 1)
   const sceneRefs = useRef<(HTMLDivElement | null)[]>([])
 
@@ -136,7 +144,7 @@ export default function NovilloEnDolares({ days, series }: { days: NovilloDay[];
           </div>
           <div className="text-right text-xxs font-mono text-zinc-500 leading-relaxed">
             <div>
-              INMAG <span className="text-zinc-300 tabular-nums">${cur.inmag.toLocaleString('es-AR')}/kg</span>
+              INMAG <span className="text-zinc-300 tabular-nums">${Math.round(cur.inmag).toLocaleString('es-AR')}/kg</span>
             </div>
             <div>
               Blue <span className="text-zinc-300 tabular-nums">${cur.blue.toLocaleString('es-AR')}</span>
@@ -198,7 +206,7 @@ export default function NovilloEnDolares({ days, series }: { days: NovilloDay[];
       {/* CTA */}
       <section className="py-20 text-center border-t border-zinc-800 mt-10">
         <h2 className="text-2xl md:text-3xl font-mono font-bold text-white tracking-tight mb-4">
-          Esto es un día. Tenemos los {(series.length * 20).toLocaleString('es-AR')}+.
+          Esto es un puñado de días. Tenemos los {totalDays.toLocaleString('es-AR')}.
         </h2>
         <p className="text-zinc-400 font-mono text-sm max-w-xl mx-auto mb-8 leading-relaxed">
           Convertimos el HTML ISO-8859-1 del Mercado Agroganadero en la serie histórica completa del INMAG —

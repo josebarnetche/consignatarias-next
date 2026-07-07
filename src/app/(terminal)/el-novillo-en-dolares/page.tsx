@@ -60,6 +60,11 @@ type RpcDay = { date: string; inmag: number | null; blue: number | null; usd_blu
 export default async function ElNovilloEnDolaresPage() {
   const db = createAdminClient() as unknown as SupabaseClient
 
+  const { count: totalDays } = await createAdminClient()
+    .from('mag_inmag_history')
+    .select('*', { count: 'exact', head: true })
+    .not('inmag_value', 'is', null)
+
   const { data: seriesRaw } = await db.rpc('novillo_usd_series')
   const series: NovilloPoint[] = ((seriesRaw as { date: string; usd: number }[] | null) || []).map((p) => ({
     date: p.date,
@@ -102,5 +107,5 @@ export default async function ElNovilloEnDolaresPage() {
     )
   }
 
-  return <NovilloEnDolares days={days} series={series} />
+  return <NovilloEnDolares days={days} series={series} totalDays={totalDays ?? 2254} />
 }
