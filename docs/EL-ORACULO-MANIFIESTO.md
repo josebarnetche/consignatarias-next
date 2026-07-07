@@ -373,7 +373,7 @@ Es un mapeo institucional.
 | Caja de Valores | Corral + sanitario + control SENASA |
 | Clearing & Settlement (T+1 / T+2) | Cobranza 7-12 días (99,5% cobrabilidad — Iriarte 2008, p.89-91) |
 | Fondo de Garantía Bursátil | Fondo de garantía 1% (FCV-UBA 2018, p.11) |
-| CNV — Resolución 731/18 | (vacío post-disolución ONCCA 2014) |
+| CNV — Resolución 731/18 | SENASA + ARCA en lo sanitario/fiscal — sin equivalente prudencial (post-ONCCA 2012) |
 | Comitente | Productor remitente |
 | Operador de Pantalla / Operador a Distancia | Comisionista / representante |
 | Mercado Continuo + Subasta de Apertura/Cierre | Subasta pública diaria + venta al oído (40%) |
@@ -388,29 +388,42 @@ FCV-UBA 2018 (p.11) describe el fondo de garantía como mecanismo de cobertura d
 Diez 2020 (p.40) explicita la "garantía de cobro" como ventaja de feria/internet/consignataria sobre directa — la definición es la de un clearing.
 Scoponi-Santi 2018 (p.52) documenta el arbitraje vía Cámara Arbitral de Cereales de Bahía Blanca en el caso MEGANAR — exactamente la función del tribunal arbitral bursátil.
 
-### V.3 El vacío regulatorio
+### V.3 El vacío prudencial (precisión necesaria)
 
-En el mercado financiero argentino, la Resolución General 731/18 de la CNV (Comisión Nacional de Valores) define formalmente:
+Primero, lo que NO es este vacío — porque decir "las consignatarias no están reguladas" sería falso, y este manifiesto no publica falsedades.
 
-- Qué es un ALyC.
+La consignataria argentina opera bajo un marco regulatorio denso:
+
+- **SENASA** habilita y fiscaliza los locales de remate-feria y los mercados concentradores; sin habilitación sanitaria no hay remate.
+- **Todo movimiento de hacienda viaja con DT-e** (Documento de Tránsito electrónico) emitido contra el sistema de SENASA — trazabilidad animal por animal.
+- **RENSPA**: cada establecimiento remitente está inscripto en el Registro Nacional Sanitario de Productores Agropecuarios; la consignataria opera sobre hacienda de origen registrado, con existencias declaradas en SIGSA.
+- **ARCA (ex-AFIP)**: Registro Fiscal de Operadores en la compraventa de hacienda, regímenes de retención y percepción de IVA y Ganancias específicos de la actividad, facturación electrónica de cada operación.
+- **Padrones y matrículas provinciales**, marcas y señales, y la disciplina gremial de la CACG.
+
+En lo **sanitario** y en lo **fiscal**, el mercado bovino está más trazado que muchos mercados financieros.
+
+El vacío es otro, y es específico: el **prudencial-financiero**.
+
+En el mercado financiero argentino, la Resolución General 731/18 de la CNV (Comisión Nacional de Valores) define formalmente para un ALyC:
+
 - Qué patrimonio neto mínimo debe tener.
-- Qué obligaciones de informe, contabilidad segregada, ratios de liquidez debe cumplir.
+- Qué obligaciones de informe, contabilidad segregada y ratios de liquidez debe cumplir.
 - Qué régimen sancionatorio se le aplica.
 - Qué responsabilidad solidaria asume frente a sus comitentes.
 
-En el mercado bovino argentino, no existe el equivalente.
-La ONCCA, que cumplió parcialmente esa función entre 1996 y 2012, fue disuelta en 2012 (verificación pendiente sobre fecha exacta).
-Las casas consignatarias se inscriben hoy ante ARCA (ex-AFIP) y, en algunos casos, en padrones provinciales — pero **no existe una autoridad federal de aplicación que homologue la categoría "consignatario de hacienda" con régimen análogo al de la CNV**.
+Para la consignataria — que ejerce exactamente esa función de liquidación y compensación, custodiando la plata del productor entre la venta y la cobranza — ese capítulo no existe.
+La ONCCA lo cubrió parcialmente entre 1996 y 2012, y fue disuelta en 2012 (verificación pendiente sobre fecha exacta).
+SENASA regula la sanidad del animal; ARCA, el impuesto de la operación. **Nadie regula la solvencia del que liquida.**
 
 Esto significa:
 
 - **No hay patrimonio neto mínimo regulado.** Una casa consignataria puede operar con capitalización subóptima sin que ningún regulador lo detecte.
-- **No hay obligación de reporte público.** Volúmenes, comisiones, incobrables — no se publican.
-- **No hay régimen sancionatorio formal.** La sanción opera vía exclusión gremial (CACG) o vía boca a boca, no por procedimiento administrativo.
-- **No hay padrón actualizado público.** Iriarte 2008 (p.93) documentaba 441 firmas activas a abril de 2008. consignatarias.com.ar identifica ~74 perfiles activos al cierre de esta edición. La diferencia es enorme — y no está auditada.
+- **No hay obligación de reporte público de su negocio.** Volúmenes, comisiones, incobrables — no se publican (lo sanitario y lo fiscal se reporta, pero no es público ni habla de solvencia).
+- **No hay régimen sancionatorio prudencial.** La sanción financiera opera vía exclusión gremial (CACG) o boca a boca, no por procedimiento administrativo.
+- **No hay matrícula pública de la categoría.** Existen padrones fiscales y sanitarios de operadores de hacienda, pero ninguna matrícula pública de "consignatario" con estados contables auditados. Iriarte 2008 (p.93) documentaba 441 firmas activas a abril de 2008; consignatarias.com.ar identifica ~74 perfiles activos al cierre de esta edición. La diferencia es enorme — y no está auditada.
 
-**Vacío histórico**: nadie formalizó la categoría regulatoria "ALyC ganadero" en Argentina.
-La consignataria opera con todas las funciones de un ALyC pero sin el marco normativo correspondiente.
+**El vacío preciso**: nadie formalizó la categoría prudencial "ALyC ganadero" en Argentina.
+La consignataria cumple todo el marco sanitario y fiscal de su actividad — y ejerce las funciones financieras de un ALyC sin el capítulo prudencial correspondiente.
 
 ### V.4 Consecuencias del reframe
 
