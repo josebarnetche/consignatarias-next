@@ -9,29 +9,29 @@
 
 ---
 
-## Introducción · La paradoja del oracle ausente
+## Introducción · La paradoja de la pizarra ausente
 
 El mercado bovino argentino opera todos los días.
 Mueve, según rangos canónicos de stock y faena, entre 11,5 y 15 millones de cabezas al año (FCV-UBA 2018, p.17-18).
 Faena registrada 2024-2025: del orden de 13 millones de cabezas anuales (SENASA, datos.gob.ar serie 40.3_VC_0_M_15, verificación pendiente al cierre de esta edición).
 Valor implícito: entre USD 10.000 y USD 15.000 millones por año, dependiendo de mix de categorías y tipo de cambio.
 
-No tiene un oracle de precios formal regulado.
+No tiene un precio de referencia oficial — una pizarra regulada que un contrato pueda citar sin discusión. (En las finanzas a eso le dicen "oracle de precios": la fuente de verdad que todos consultan. Acá lo vamos a llamar por su nombre de siempre: la pizarra.)
 
-Tiene un quasi-oracle.
+Tiene una pizarra de hecho.
 Se llama INMAG.
 Se calcula todas las tardes en Cañuelas, en el predio del Mercado Agroganadero S.A. (MAG), sobre la operatoria del día.
 Sucede al precio de Liniers, que cumplió esa función entre 1901 y 2018.
 Es la referencia que un productor en Mercedes, un trader en Microcentro y un contador en Trelew leen al mismo tiempo, sin que nadie les haya dicho que tienen que hacerlo.
 
 El detalle institucional es que no hay norma que lo obligue.
-No existe la categoría regulatoria "oracle de precios bovinos" en el marco argentino.
+No existe la categoría regulatoria "precio de referencia bovino" en el marco argentino.
 No existe la figura "ALyC ganadero" homologada por una autoridad de aplicación, como sí existe el Agente de Liquidación y Compensación en el mercado financiero (CNV Resolución 731/18).
-El oracle del mercado bovino argentino funciona porque las consignatarias operan, el MAG publica el cierre, los medios lo difunden y el resto del país lo adopta — todos los días, sin que ningún papel diga que así tiene que ser.
+La pizarra del mercado bovino argentino funciona porque las consignatarias operan, el MAG publica el cierre, los medios lo difunden y el resto del país lo adopta — todos los días, sin que ningún papel diga que así tiene que ser.
 
 Este documento defiende una tesis y describe un programa.
 
-La tesis: **el INMAG es el único precio público auditable del mercado bovino argentino, hoy es el quasi-oracle del sector y consignatarias.com.ar es la mesa que lo lee para el resto del país**.
+La tesis: **el INMAG es el único precio público auditable del mercado bovino argentino, hoy es la pizarra de hecho del sector y consignatarias.com.ar es la mesa que la lee para el resto del país**.
 El programa: convertir esa lectura en infraestructura de información —con metodología abierta, cadencia diaria y archivo público, legible tanto por personas como por las máquinas y los agentes de IA que hoy consultan el dato.
 
 Cita textual de la cátedra FCV-UBA 2018, p.3:
@@ -78,7 +78,7 @@ Cerró su operatoria física en 2018 (RESOL-2018-32 APN-SGA #MPYT, verificación
 
 ### I.2 Las cinco razones por las que Liniers fijaba el precio
 
-La cátedra FCV-UBA 2018 (p.3) enumera por qué Liniers funcionaba como oracle aunque concentrara menos del 15% del volumen físico:
+La cátedra FCV-UBA 2018 (p.3) enumera por qué Liniers funcionaba como pizarra nacional aunque concentrara menos del 15% del volumen físico:
 
 1. **Cantidad de animales encerrados a diario.** Volumen mínimo viable para sostener subasta pública continua.
 2. **Venta pública.** Subasta a viva voz, martillero, oferta y demanda observables.
@@ -101,7 +101,7 @@ Iriarte (p.104) registra una observación sui generis:
 
 > "Liniers no tiene equivalente mundial."
 
-Era el último gran mercado concentrador presencial de hacienda en pie de un país desarrollado en términos cárnicos. Brasil, Estados Unidos, la Unión Europea, Australia, Uruguay habían reemplazado sus equivalentes por sistemas de price discovery descentralizado (subasta electrónica, encuestas oficiales, futuros). Argentina mantuvo Liniers operando con martillero hasta 2018.
+Era el último gran mercado concentrador presencial de hacienda en pie de un país desarrollado en términos cárnicos. Brasil, Estados Unidos, la Unión Europea, Australia, Uruguay habían reemplazado sus equivalentes por sistemas de formación de precio descentralizada (subasta electrónica, encuestas oficiales, futuros). Argentina mantuvo Liniers operando con martillero hasta 2018.
 
 ### I.3 Operatoria interna
 
@@ -180,7 +180,7 @@ Diez 2020, doce años después, mide ese diferencial en una operación-tipo del 
 
 ### II.2 Por qué funcionaba
 
-Las cinco razones de formación de precio listadas por la cátedra FCV-UBA 2018 son condiciones de price discovery, no de volumen.
+Las cinco razones de formación de precio listadas por la cátedra FCV-UBA 2018 son condiciones de formación de precio, no de volumen.
 Un mercado concentrador no necesita mover el 50% del país para fijar precio.
 Necesita ser:
 
@@ -216,7 +216,7 @@ El precio Liniers se publicaba (Iriarte 2008):
 - En los principales diarios (Clarín Rural, La Nación Campo, La Voz del Interior).
 
 La difusión no era marketing — era infraestructura.
-Sin esa cobertura, el precio Liniers no podría haber sido benchmark del país.
+Sin esa cobertura, el precio Liniers no podría haber sido el número de referencia del país.
 
 Lo dice FCV-UBA 2018, p.3:
 
@@ -237,7 +237,7 @@ Los factores convergentes:
 - **Densidad urbana de Mataderos.** 31 hectáreas en CABA, rodeadas de uso residencial.
 - **Costos operativos crecientes.** Canon a SAGPyA, salarios, instalaciones envejecidas.
 - **Lobby Cañuelas.** El proyecto de relocalización en MAG-Cañuelas, sobre 100+ hectáreas, ofrecía ventajas logísticas (acceso autopista, ruta 3).
-- **Cambios de modalidad.** El directo en estancia ya movía el 71% del volumen (FCV-UBA 2018, p.2). El mercado físico, aún funcional como oracle, era operativamente innecesario para la mayoría de los participantes.
+- **Cambios de modalidad.** El directo en estancia ya movía el 71% del volumen (FCV-UBA 2018, p.2). El mercado físico, aún funcional como referencia, era operativamente innecesario para la mayoría de los participantes.
 - **Intervención previa (2005-2008).** Los "precios sugeridos" de la Secretaría de Comercio habían erosionado la credibilidad del cierre como referencia libre (Iriarte 2008, p.105).
 
 Resolución de cierre: **RESOL-2018-32 APN-SGA #MPYT** (referencia documentada en cross-reference matrix; verificación textual pendiente al cierre de esta edición).
@@ -265,7 +265,7 @@ Es el precio que consignatarias.com.ar publica diariamente, con serie reconstrui
 ### III.3 El vacío académico post-2018
 
 Aquí la mesa debe ser explícita.
-La bibliografía académica argentina sobre el rol oracle de MAG todavía no se consolidó.
+La bibliografía académica argentina sobre el rol del MAG como precio de referencia todavía no se consolidó.
 La cátedra FCV-UBA 2018 escribió antes del cierre (su edición es contemporánea pero el contenido refleja datos pre-2018).
 Iriarte 2008 documentó el deterioro pre-cierre pero no vivió el evento.
 Diez 2020 menciona el precio Liniers como referencia operativa el 27/05/2020 — dos años después del cierre físico — lo que sugiere que en la práctica el sector siguió llamando "precio Liniers" al precio MAG durante años (Diez 2020, p.29).
@@ -274,7 +274,7 @@ Scoponi-Santi 2018 no aborda el cierre.
 CNDC 2017 (referencia citada en inventory y cross-reference matrix, no leída a fondo en esta sesión) trata el mercado pre-cierre.
 Posibles fuentes 2018-2026 a verificar en próximas ediciones (verificación pendiente): Scoponi 2021 INTA, Iglesias-Ghezan 2010 INTA, Ponti 2011, Otaño 2005.
 
-Este vacío — sin obra académica consolidada sobre la función oracle de MAG-Cañuelas — es **una de las razones por las que se publica este manifiesto**.
+Este vacío — sin obra académica consolidada sobre la función de referencia de MAG-Cañuelas — es **una de las razones por las que se publica este manifiesto**.
 
 ---
 
@@ -325,7 +325,7 @@ Esto es lo que la mesa llama, internamente, **el canal fantasma**.
 Implicaciones del canal fantasma:
 
 - **Arrendamientos.** Indexaciones por kilo vivo se calculan usando INMAG. Si INMAG refleja solo el 12% del volumen, el otro 88% no tiene defensa contractual contra divergencia regional.
-- **Contratos forward.** Sin precio observable público, los contratos a plazo se referencian al INMAG por defecto, transfiriendo el riesgo base al productor.
+- **Contratos a plazo (forward).** Sin un precio público de la venta directa, los contratos a plazo se atan al INMAG por defecto, y el productor termina cargando con la diferencia.
 - **Indexación de costos del feedlot.** El compromiso de devolución se ata al INMAG. Cualquier divergencia entre INMAG y precio realizable es asumida por el productor o el comprador, sin compensación.
 - **Tributación.** La AFIP utiliza INMAG como referencia para tasación de retenciones. Sin observabilidad del precio real del 88%, hay margen de subdeclaración no auditable.
 - **Crédito ganadero.** Garantías reales sobre hacienda se valúan al INMAG. Sin captura del 88% real, las garantías son sub o sobrevaluadas.
@@ -333,7 +333,7 @@ Implicaciones del canal fantasma:
 El productor que opera fuera del MAG paga el costo de la opacidad sin verlo.
 El productor que opera dentro del MAG paga la comisión del consignatario y recibe a cambio cobranza + difusión pública.
 
-### IV.4 La paradoja del oracle restringido
+### IV.4 La paradoja de la referencia restringida
 
 El INMAG es preciso para el 12% que lo compone.
 Es referencia útil — pero no garantía — para el 88% que lo sigue.
@@ -343,7 +343,7 @@ Es una descripción de su cobertura.
 
 Lo que está faltando, y la sesión 8 del workspace de research lo identifica como gap real del sector (referencia interna, no publicada), es la **captura del 78% privado**.
 No con un INMAG ampliado. No con un VWAP del MAG.
-Con un **observable price universe** que reconstruya, mediante buckets granulares y modelo estadístico bayesiano jerárquico, el precio real del directo.
+Con un **mapa de precios reales** (lo que internamente llamamos *observable price universe*) que reconstruya, con datos por categoría y un modelo estadístico, el precio real de la venta directa.
 
 Esa construcción excede el alcance de este manifiesto.
 Lo importante, al cierre de esta edición, es nombrar el vacío.
@@ -358,7 +358,11 @@ El resto se opera sobre confianza, contrato bilateral y memoria institucional de
 ### V.1 El reframe
 
 Hay una forma de leer toda la bibliografía del sector que la propia bibliografía no propone, pero que emerge sin esfuerzo al cruzarla.
-La consignataria es funcionalmente una **ALyC** (Agente de Liquidación y Compensación) del mercado bovino.
+¿Qué es una ALyC? En la Bolsa, es la sociedad que ejecuta tus órdenes, te guarda la plata y te liquida las operaciones — **casi un banco**, pero de operaciones bursátiles: no presta, custodia y paga. Justamente porque maneja plata ajena, la CNV le exige patrimonio mínimo y contabilidad separada.
+
+La consignataria hace exactamente eso con la hacienda: vende por vos, cobra por vos, te tiene la plata entre la venta y la cobranza (7-12 días) y te la liquida con garantía de cobro. Un banco chico de campo — sin regulación de banco.
+
+La consignataria es, entonces, funcionalmente una **ALyC** (Agente de Liquidación y Compensación) del mercado bovino.
 El MAG-Cañuelas es funcionalmente la **bolsa** donde esas ALyCs operan.
 El INMAG es funcionalmente el **Merval del agro** — el índice del mercado.
 
@@ -378,7 +382,7 @@ Es un mapeo institucional.
 | Comitente | Productor remitente |
 | Operador de Pantalla / Operador a Distancia | Comisionista / representante |
 | Mercado Continuo + Subasta de Apertura/Cierre | Subasta pública diaria + venta al oído (40%) |
-| Tickers + ISIN | Categorías ONCCA + buckets MAG |
+| Tickers + ISIN | Categorías ONCCA + tramos de precio del MAG |
 | Precio de pizarra / cierre del MERVAL | Cierre INMAG diario |
 | Series históricas auditadas | Series MAG/Liniers desde 1972 (Iriarte 2008, cap.6) |
 | Tribunal Arbitral de la Bolsa | Cámara Arbitral de Cereales (en MEGANAR; Scoponi-Santi 2018, p.52) |
@@ -459,7 +463,7 @@ Al cierre de esta edición (10/05/2026, datos al último día disponible de scra
 - **Frecuencia de actualización:** diaria, post-cierre (~17:00 ART).
 - **Comparable interanual real en USD oficial:** disponible desde noviembre de 2011 (USD oficial Banco Nación, vía dolarapi.com).
 - **Categorías derivadas computadas:** novillos, novillitos, vaquillonas, vacas, toros, terneros (ratios sobre INMAG base, basados en relación histórica).
-- **18 buckets reales del MAG (haciinfo000502):** verificación pendiente sobre integración granular al pipeline.
+- **18 tramos de precio reales del MAG (haciinfo000502):** verificación pendiente sobre integración granular al pipeline.
 
 INMAG actual reportado al cierre de la última jornada publicada (datos del archivo `market-prices.json` al 7 de marzo de 2026): $4.392,35/kg vivo de novillo (verificación pendiente sobre cierre del 10/05/2026).
 Variación intermensual a esa fecha: -7%.
@@ -471,8 +475,8 @@ Sobre estos números, una nota metodológica honesta: la serie pública de consi
 Lo que el INMAG es:
 
 - El único precio público auditable del mercado bovino argentino.
-- El benchmark utilizado por arrendamientos, contratos forward, indexaciones tributarias, valuación de garantías reales.
-- La continuidad histórica de Liniers — la serie reconstruida (1972-2018 Liniers + 2018-2026 INMAG) es la única que cubre 50+ años de price discovery cárnico argentino.
+- El número de referencia usado por arrendamientos, contratos a futuro, indexaciones impositivas y tasación de garantías.
+- La continuidad histórica de Liniers — la serie reconstruida (1972-2018 Liniers + 2018-2026 INMAG) es la única que cubre 50+ años de formación de precio de la carne argentina.
 
 Lo que el INMAG no es:
 
@@ -487,7 +491,7 @@ La mesa lo lee todos los días.
 
 ---
 
-## VII. Los indicadores que componen el oracle
+## VII. Los indicadores que componen la referencia
 
 consignatarias.com.ar publica seis indicadores que, en conjunto, constituyen la lectura operativa del mercado bovino argentino para una jornada cualquiera.
 Cada uno se describe con (a) qué mide, (b) cómo se calcula en nuestro pipeline, (c) por qué importa.
@@ -517,21 +521,21 @@ Cada uno se describe con (a) qué mide, (b) cómo se calcula en nuestro pipeline
 - **Interpretación.** T/N > 1: fase de **retención** (los productores compiten por reposición, el ternero vale más por kg que el novillo terminado). T/N < 1: fase de **liquidación** (sobreoferta de ternero, descuento sobre el novillo). Rango histórico canónico: 0,97-1,10 (FCV-UBA 2018, p.19). Extremos modernos: 0,90-1,29.
 - **Por qué importa.** Es el **indicador líder simple** del ciclo ganadero. Anticipa rotación de margen entre cría e invernada. Reconstruible diariamente desde INMAG. Ningún otro publicador argentino lo expone como dashboard público.
 
-### VII.5 18 buckets reales del MAG (haciinfo000502)
+### VII.5 Los 18 tramos de precio reales del MAG (haciinfo000502)
 
 - **Qué mide.** Subcategorías oficiales del MAG por tipo, peso y terminación (verificación pendiente sobre granularidad exacta).
 - **Cómo se calcula.** Captura del endpoint público (verificación pendiente sobre URL y formato).
-- **Por qué importa.** El INMAG agregado oculta la dispersión interna por bucket. Un novillito de 280 kg y un novillo terminado de 480 kg no son la misma operación. Los buckets son el siguiente nivel de granularidad — lo más cercano a "tickers" del mercado bovino.
+- **Por qué importa.** El INMAG promedio esconde la dispersión interna por categoría. Un novillito de 280 kg y un novillo terminado de 480 kg no son la misma operación. Los tramos por categoría son el siguiente nivel de detalle — lo más parecido a los "tickers" del mercado bovino.
 
-### VII.6 Cobertura efectiva del oracle — volumen MAG vs faena nacional
+### VII.6 Cobertura efectiva de la referencia — volumen MAG vs faena nacional
 
 - **Qué mide.** Cabezas operadas en MAG en el mes / faena nacional total del mismo mes.
 - **Cómo se calcula.** Volumen MAG (de difusión institucional MAG-Cañuelas) / faena SENASA.
-- **Por qué importa.** Es la métrica de honestidad metodológica del INMAG como oracle. Si MAG cubre el 12% de la faena, el INMAG es benchmark del 12% y referencia del 88%. Esta métrica se publica explícitamente en cada cierre mensual.
+- **Por qué importa.** Es la métrica de honestidad metodológica del INMAG como referencia. Si MAG cubre el 12% de la faena, el INMAG es referencia auditable del 12% y guía adoptada del 88%. Esta métrica se publica explícitamente en cada cierre mensual.
 
 ### VII.7 Una nota sobre lo que no se publica todavía
 
-- **Precio del directo (canal fantasma).** No publicable hasta construir observable price universe — proyecto de magnitud 24-36 meses (referencia interna sesión 8 del workspace de research).
+- **Precio del directo (canal fantasma).** No publicable hasta construir el mapa de precios reales — proyecto de 24-36 meses (referencia interna sesión 8 del workspace de research).
 - **Precio sombra del SOB, NEA, NOA, Patagonia, Cuyo.** Diez 2020 mide +8,63% premium Liniers sobre SOB en un punto único. Se requiere serie histórica regional para publicar como indicador permanente.
 - **Lag temporal Liniers→interior.** Diez 2020 (p.42) lo reconoce explícitamente como pregunta abierta. consignatarias.com.ar puede aportarlo si extiende su pipeline a precios regionales de remates-feria.
 
@@ -550,7 +554,7 @@ Vacío E5 del inventory del workspace de research.
 No se identificó al cierre de esta edición obra académica argentina consolidada que documente:
 
 - El cierre de Liniers como evento institucional con cuantificación de impacto sectorial.
-- La transición Liniers → MAG-Cañuelas con balance de pérdidas/ganancias en función oracle.
+- La transición Liniers → MAG-Cañuelas con balance de pérdidas/ganancias en la función de referencia.
 - El estado actual de la captura del INMAG sobre la faena nacional (con serie 2018-2026).
 - La evolución del padrón de consignatarias 2008 (441 firmas Iriarte) → 2026.
 
@@ -565,10 +569,10 @@ Fuentes potenciales a verificar en próximas ediciones (verificación pendiente)
 ### VIII.2 Captura del 78% privado
 
 Identificado en la sesión 8 del workspace de research (referencia interna, no publicada) como problema de **mercado**, no de research.
-La bibliografía no lo va a resolver. Lo va a resolver la construcción de un observable price universe — proyecto de magnitud 24-36 meses, USD 500K-2M, equipo cuantitativo + legal + business development.
+La bibliografía no lo va a resolver. Lo va a resolver la construcción de un mapa de precios reales — proyecto de 24-36 meses, USD 500K-2M, con equipo cuantitativo, legal y comercial.
 Requisitos previos:
 
-- Buckets granulares aceptados por el sector.
+- Tramos de precio por categoría aceptados por el sector.
 - Modelo estadístico bayesiano jerárquico.
 - Estrategia de captura de price data del directo (encuestas a productores, datos de feedlot, hojas de remate de operaciones particulares, sensores en frigoríficos).
 - Forma legal de la entidad que opere ese price layer (cooperativa de información, fundación, S.A., asociación civil).
@@ -667,7 +671,7 @@ Cuando se equivoca, lo aclara en la próxima edición.
 Tres razones operativas:
 
 1. **El cierre de Liniers en 2018 sigue sin balance académico consolidado.** Si la mesa no lo escribe, ningún otro actor del sector tiene incentivo + método + cadencia para hacerlo.
-2. **El INMAG opera como oracle sin reconocimiento formal.** Nombrarlo como tal, con la metodología abierta y el mapeo institucional, le da entidad pública al rol que ya cumple.
+2. **El INMAG opera como precio de referencia sin reconocimiento formal.** Nombrarlo como tal, con la metodología abierta y el mapeo institucional, le da entidad pública al rol que ya cumple.
 3. **El sector tiene memoria, pero no archivo.** La memoria es Iriarte 2008 (libro impreso, 242 páginas, 1.000 ejemplares originales). El archivo es la cadencia digital, indexada, citable. El producto consignatarias.com.ar aspira al archivo.
 
 ### IX.3 Cadencia esperada
@@ -723,6 +727,7 @@ Para fuentes nuevas todavía no leídas a fondo: `(Autor año, verificación pen
 - **Ciclo Ganadero.** Variación periódica de las existencias ganaderas con duración histórica de 5-6 años, en aceleración por tecnificación (FCV-UBA 2018, p.15).
 - **CNV.** Comisión Nacional de Valores.
 - **Consignataria / casa consignataria.** Persona jurídica inscripta en padrón provincial y/o ARCA que intermedia entre productor y comprador de hacienda, cobra comisión, garantiza pago. Equivalente funcional de un ALyC (interpretación de la mesa).
+- **ALyC.** Agente de Liquidación y Compensación. En la Bolsa: el que te custodia la plata y te liquida las operaciones — casi un banco, pero sin prestar. La tesis de la sección V: la consignataria cumple ese mismo rol con la hacienda, sin el marco prudencial que la CNV le exige al ALyC bursátil.
 - **Consignatario Directo / ganchera.** Modalidad definida por Resolución 1235 JNC 1978: recibe ganado del productor, lo faena y comercializa la carne y subproductos rindiendo cuenta (Iriarte 2008, p.117).
 - **Directo en estancia.** Operación productor↔comprador (frigorífico/matarife/feedlot) sin paso por mercado concentrador (FCV-UBA 2018, p.5; Iriarte 2008, p.131).
 - **INMAG.** Índice del Mercado Agroganadero. Precio promedio ponderado del novillo tipo exportación operado en MAG-Cañuelas, publicado al cierre diario.
@@ -730,8 +735,8 @@ Para fuentes nuevas todavía no leídas a fondo: `(Autor año, verificación pen
 - **MAG.** Mercado Agroganadero S.A. — Cañuelas, provincia de Buenos Aires. Sucesor de Liniers desde 2018.
 - **MEGANAR.** Mercado Electrónico de la Ganadería Argentina. Iniciativa de la Bolsa de Cereales de Bahía Blanca (2011-2017), gobernanza autocoptada de 3 consignatarios (Aberasturi, Brazzola, ACA), discontinuada por insuficiencia de volumen (Scoponi-Santi 2018, p.50-51).
 - **Novillo terminado / novillo tipo exportación.** Categoría base del INMAG. Peso de faena ~430-480 kg en pie.
-- **Observable price universe.** Término interno de la mesa (no en bibliografía) para referirse al sistema agregado de precios reales del mercado bovino con cobertura significativa del 78% privado. Proyecto futuro.
-- **Oracle.** Término interno de la mesa para describir la función de price discovery con cobertura nacional. Liniers fue oracle 1901-2018; INMAG es quasi-oracle 2018-presente.
+- **Mapa de precios reales (*observable price universe*).** Nombre interno de la mesa (no está en la bibliografía) para el sistema que agregaría los precios reales de todo el mercado bovino, incluida la venta directa (el 78% privado que hoy no se ve). Proyecto futuro.
+- **Pizarra / precio de referencia ("oracle").** El precio público que todo el mercado mira para negociar, aunque cada uno opere por su lado. En finanzas le dicen "oracle". Liniers fue la pizarra nacional 1901-2018; el INMAG lo es de hecho desde 2018.
 - **Plaza Rural.** Plataforma de remate online creada en 2000 por 10 consignatarios bonaerenses + Plaza Ganadera S.A. (Scoponi-Santi 2018, p.48).
 - **Recupero.** Crédito bruto de matanza. Valor económico de los subproductos del animal (cuero, achuras, sebo, huesos) que queda en poder del frigorífico. Composición típica 2008: 60% cuero, 26% achuras, 14% grasa/huesos (Iriarte 2008, p.151).
 - **Remate-feria.** Subasta pública en pista o corrales del interior, organizada por consignatario titular del predio. En retroceso estructural: 36% de la faena en 1958-1978 → 9% en 2018 (Iriarte 2008, p.93; FCV-UBA 2018, p.2).
@@ -902,7 +907,7 @@ INMAG cerró el último día publicado en $4.392,35/kg vivo (-7% intermensual, d
 Faena nacional 2024-2025: del orden de 13 millones de cabezas/año (rango canónico FCV-UBA: 11,5-15 M).
 Volumen MAG sobre faena nacional: 10-15% (rango histórico Liniers-equivalente, verificación pendiente sobre serie 2018-2026).
 Padrón histórico de consignatarias: 441 firmas en abril 2008 (Iriarte 2008, p.93).
-Cobertura efectiva de oracle: el INMAG es referencia auditable del 12% del volumen y guía adoptada por el 88% restante.
+Cobertura efectiva de la referencia: el INMAG es pizarra auditable del 12% del volumen y guía adoptada por el 88% restante.
 
 Lo que está faltando: la captura del 78% privado, el padrón actualizado 2026, el balance académico post-cierre Liniers, el marco regulatorio ALyC ganadero, los comparables internacionales.
 Lo que existe: el INMAG diario, la serie reconstruida desde 2015, el calendario unificado, el directorio — gratis para el productor, y en API + MCP para instituciones y agentes de IA.
