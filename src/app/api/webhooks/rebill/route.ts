@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendEnterpriseWelcome, sendConsignatariaProWelcome } from '@/lib/email'
 import { getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
@@ -276,6 +277,15 @@ export async function POST(request: NextRequest) {
             .update({ featured: true })
             .eq('canonical_slug', entitySlug)
 
+          // El perfil es estático (revalidate=false) → sin esto, el PRO recién se vería
+          // en el próximo deploy. Revalidamos on-demand para que el hero PRO (logo
+          // destacado + video del último remate) aparezca al instante de suscribirse.
+          try {
+            revalidatePath(`/consignatarias/${getCanonicalSlug(entitySlug) || entitySlug}`)
+          } catch (err) {
+            console.error('revalidatePath consignataria PRO (activación) failed:', err)
+          }
+
           // Welcome email (best-effort, non-blocking). Tier=pro is already granted
           // by the subscriptions upsert above; this just confirms it to the firm.
           const welcomeTo = metadata?.customerEmail
@@ -353,6 +363,12 @@ export async function POST(request: NextRequest) {
               .from('consignatarias')
               .update({ featured: false })
               .eq('canonical_slug', entSub.entity_slug)
+            // Revalidar el perfil para que deje de mostrar el hero PRO al instante.
+            try {
+              revalidatePath(`/consignatarias/${getCanonicalSlug(entSub.entity_slug) || entSub.entity_slug}`)
+            } catch (err) {
+              console.error('revalidatePath consignataria (cancelación) failed:', err)
+            }
           }
         } else {
           // Try matching as PRO Usuario subscription first
