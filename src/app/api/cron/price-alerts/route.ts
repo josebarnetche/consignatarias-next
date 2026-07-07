@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { requireServiceClient } from '@/lib/supabase'
 import { authorizeCron } from '@/lib/cron-auth'
 import { sendPriceThresholdAlert } from '@/lib/email'
-import { getCurrentPrice, categoryLabel, crossed } from '@/lib/price-alerts'
+import { getCurrentPriceInCurrency, categoryLabel, crossed } from '@/lib/price-alerts'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -27,9 +28,9 @@ export async function POST(req: NextRequest) {
   const dryRun = new URL(req.url).searchParams.get('dryRun') === '1'
   const service = requireServiceClient()
 
-  const { data: alerts, error } = await service
+  const { data: alerts, error } = await (service as unknown as SupabaseClient)
     .from('price_alerts')
-    .select('id, email, webhook_url, category, threshold, direction, last_value')
+    .select('id, email, webhook_url, category, threshold, direction, last_value, currency')
     .eq('status', 'active')
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
@@ -38,14 +39,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Sin alertas activas', checked: 0, fired: 0, dryRun })
   }
 
-  // Precio actual por categoría (una lectura por categoría distinta).
-  const priceByCat = new Map<string, number | null>()
-  for (const cat of new Set(alerts.map((a) => a.category))) {
+  // Precio actual por (categoría, moneda) — el USD se convierte con el dólar blue.
+  const priceByKey = new Map<string, number | null>()
+  for (const key of new Set(alerts.map((a) => `${a.category}:${a.currency ?? 'ars'}`))) {
+    const [cat, cur] = key.split(':')
     try {
-      priceByCat.set(cat, await getCurrentPrice(service, cat))
+      priceByKey.set(key, await getCurrentPriceInCurrency(service, cat, cur))
     } catch (e) {
-      console.error('[cron/price-alerts] precio', cat, e)
-      priceByCat.set(cat, null)
+      console.error('[cron/price-alerts] precio', key, e)
+      priceByKey.set(key, null)
     }
   }
 
@@ -53,7 +55,7 @@ export async function POST(req: NextRequest) {
   const updatedLastValue: number[] = []
 
   for (const a of alerts) {
-    const current = priceByCat.get(a.category) ?? null
+    const current = priceByKey.get(`${a.category}:${a.currency ?? 'ars'}`) ?? null
     if (current == null) continue
 
     const dir = a.direction === 'below' ? 'below' : 'above'
@@ -68,6 +70,7 @@ export async function POST(req: NextRequest) {
           threshold: a.threshold,
           direction: dir,
           current,
+          currency: a.currency ?? 'ars',
         }).catch((e) => console.error('[cron/price-alerts] mail', a.id, e))
       }
       if (a.webhook_url) {
@@ -76,7 +79,7 @@ export async function POST(req: NextRequest) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             event: 'price.threshold_crossed',
-            data: { category: a.category, threshold: a.threshold, current, direction: dir },
+            data: { category: a.category, threshold: a.threshold, current, direction: dir, currency: a.currency ?? 'ars' },
             timestamp: new Date().toISOString(),
           }),
         }).catch((e) => console.error('[cron/price-alerts] webhook', a.id, e))

@@ -65,6 +65,37 @@ export async function getCurrentPrice(
   return Math.round((sum / sameDay.length) * 100) / 100
 }
 
+/** Último dólar blue (venta) — para convertir precios ARS → USD en las alertas. */
+export async function getUsdBlue(service: ServiceClient): Promise<number | null> {
+  const { data } = await service
+    .from('usd_blue_history')
+    .select('venta')
+    .order('date', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+  return data?.venta ?? null
+}
+
+/**
+ * Precio actual en la MONEDA de la alerta: ARS directo, o USD (÷ dólar blue). Así el
+ * umbral ("avisame cuando el kilo supere XX USD/ARS") y el last_value quedan en la
+ * misma unidad y el cruce se detecta bien.
+ */
+export async function getCurrentPriceInCurrency(
+  service: ServiceClient,
+  category: string,
+  currency: string,
+): Promise<number | null> {
+  const ars = await getCurrentPrice(service, category)
+  if (ars == null) return null
+  if (currency === 'usd') {
+    const blue = await getUsdBlue(service)
+    if (!blue || blue <= 0) return null
+    return Math.round((ars / blue) * 100) / 100
+  }
+  return ars
+}
+
 /** ¿La alerta cruzó su umbral? current del lado del umbral y last_value del otro. */
 export function crossed(
   direction: 'above' | 'below',

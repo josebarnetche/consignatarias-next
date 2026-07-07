@@ -57,6 +57,9 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
   const [anios, setAnios] = useState(3)
   const [sellos, setSellos] = useState(1.0)
   const [saved, setSaved] = useState(false)
+  // Suscripción al cierre mensual por email (consolidada acá: la calculadora ES el signup).
+  const [email, setEmail] = useState('')
+  const [subState, setSubState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
 
   // Señal first-party: una vez, al primer cambio real de un input (no en el mount).
   const usedRef = useRef(false)
@@ -90,6 +93,26 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ kgHa, hectareas, anios, sellos })) } catch { /* ignore */ }
     setSaved(true)
     setTimeout(() => setSaved(false), 2500)
+  }
+
+  async function suscribir(e: React.FormEvent) {
+    e.preventDefault()
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setSubState('error'); return }
+    markUsed()
+    setSubState('loading')
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'arrendamiento-liquidacion', kgHa, hectareas }),
+      })
+      if (res.ok) {
+        setSubState('ok')
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ kgHa, hectareas, anios, sellos })) } catch { /* ignore */ }
+      } else setSubState('error')
+    } catch {
+      setSubState('error')
+    }
   }
 
   const priceIsToday = Math.round(precio) === Math.round(priceToday)
@@ -153,6 +176,39 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
         {saved ? '✓ Guardado en este dispositivo' : 'Guardar mi cálculo'}
       </button>
       <p className="text-xxs text-zinc-600 text-center mt-2">Se guarda en tu navegador y se recalcula al precio del día cada vez que volvés.</p>
+
+      {/* Suscripción al cierre mensual — la calculadora ES el signup (una sola caja) */}
+      <div className="mt-4 pt-4 border-t border-zinc-800">
+        {subState === 'ok' ? (
+          <p className="text-accent text-sm text-center">
+            ✓ Listo. A principio de cada mes te llega el cierre oficial del INMAG + tu canon (${fmt(canonMensual)}).
+          </p>
+        ) : (
+          <form onSubmit={suscribir}>
+            <p className="text-xs text-zinc-400 mb-2">
+              📧 Recibí el cierre de cada mes por email, con <span className="text-zinc-200">tu canon ya calculado</span>.
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="email"
+                inputMode="email"
+                placeholder="tu@email.com"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); if (subState === 'error') setSubState('idle') }}
+                className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-sky-500/60"
+              />
+              <button
+                type="submit"
+                disabled={subState === 'loading'}
+                className="bg-zinc-800 hover:bg-zinc-700 text-white px-4 rounded-lg text-sm transition-colors disabled:opacity-50 shrink-0"
+              >
+                {subState === 'loading' ? '…' : 'Recibir'}
+              </button>
+            </div>
+            {subState === 'error' && <p className="text-red-400 text-xxs mt-1">Revisá el email.</p>}
+          </form>
+        )}
+      </div>
     </div>
   )
 }

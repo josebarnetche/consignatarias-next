@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { requireServiceClient } from '@/lib/supabase'
 import { authenticate } from '@/lib/api-auth'
 import { sendPriceAlertConfirm } from '@/lib/email'
 import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limit-db'
-import { isValidCategory, categoryLabel, getCurrentPrice } from '@/lib/price-alerts'
+import { isValidCategory, categoryLabel, getCurrentPriceInCurrency } from '@/lib/price-alerts'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -36,7 +37,7 @@ function isPublicHttpsUrl(raw: string): boolean {
 
 export async function POST(req: NextRequest) {
   let body: {
-    email?: unknown; category?: unknown; threshold?: unknown; direction?: unknown; webhook_url?: unknown
+    email?: unknown; category?: unknown; threshold?: unknown; direction?: unknown; webhook_url?: unknown; currency?: unknown
   }
   try {
     body = await req.json()
@@ -47,6 +48,7 @@ export async function POST(req: NextRequest) {
   const category = typeof body.category === 'string' ? body.category.toLowerCase().trim() : ''
   const threshold = typeof body.threshold === 'number' ? body.threshold : Number(body.threshold)
   const direction = body.direction === 'below' ? 'below' : 'above'
+  const currency = body.currency === 'usd' ? 'usd' : 'ars'
 
   // Validación compartida.
   if (!isValidCategory(category)) {
@@ -72,11 +74,11 @@ export async function POST(req: NextRequest) {
     }
 
     let current: number | null = null
-    try { current = await getCurrentPrice(supabase, category) } catch (e) {
+    try { current = await getCurrentPriceInCurrency(supabase, category, currency) } catch (e) {
       console.error('[alertas/precio:api] getCurrentPrice:', e)
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as unknown as SupabaseClient)
       .from('price_alerts')
       .insert({
         user_id: auth.key.userId,
@@ -84,6 +86,7 @@ export async function POST(req: NextRequest) {
         category,
         threshold,
         direction,
+        currency,
         last_value: current,
         status: 'active',
         source: 'api',
@@ -115,15 +118,16 @@ export async function POST(req: NextRequest) {
   }
 
   let current: number | null = null
-  try { current = await getCurrentPrice(supabase, category) } catch (e) {
+  try { current = await getCurrentPriceInCurrency(supabase, category, currency) } catch (e) {
     console.error('[alertas/precio] getCurrentPrice:', e)
   }
 
-  const { error } = await supabase.from('price_alerts').insert({
+  const { error } = await (supabase as unknown as SupabaseClient).from('price_alerts').insert({
     email,
     category,
     threshold,
     direction,
+    currency,
     last_value: current,
     status: 'active',
     source: 'web',
@@ -141,6 +145,7 @@ export async function POST(req: NextRequest) {
     threshold,
     direction,
     current,
+    currency,
   }).catch((e) => console.error('[alertas/precio] confirm mail:', e))
 
   return NextResponse.json({ success: true, current })

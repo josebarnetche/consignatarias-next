@@ -7,8 +7,7 @@ import { createAdminClient } from '@/lib/supabase-server'
 import ArrendamientoCalculator from './ArrendamientoCalculator'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
-import ArrendamientoLiquidacionSignup from '@/components/ArrendamientoLiquidacionSignup'
-import PriceAlertSignup from '@/components/PriceAlertSignup'
+import NovilloAlertSignup from '@/components/NovilloAlertSignup'
 import HerramientasCTA from '@/components/HerramientasCTA'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import SinceLastVisit from '@/components/landing/SinceLastVisit'
@@ -188,6 +187,14 @@ function formatMonth(monthKey: string): string {
 
 export default async function ArrendamientoPage() {
   const closes = await getMonthlyCloses()
+  // Último blue para la alerta (permite el toggle USD + el hint "hoy está en X USD").
+  const { data: blueRow } = await (createAdminClient() as unknown as SupabaseClient)
+    .from('usd_blue_history')
+    .select('venta')
+    .order('date', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+  const blueToday = typeof blueRow?.venta === 'number' ? blueRow.venta : undefined
   const cierre = closes[0] // el mes cerrado más reciente — el número para facturar
   const cierrePrev = closes[1]
   const cierreChange = cierre && cierrePrev ? ((cierre.inmag - cierrePrev.inmag) / cierrePrev.inmag) * 100 : null
@@ -325,12 +332,7 @@ export default async function ArrendamientoPage() {
             cambie, con fricción mínima (solo email). Convierte visitas one-shot en un
             loop de email. La oferta profunda (liquidar el canon con kg/ha) va más abajo. */}
         <section className="max-w-3xl mx-auto px-4 pt-6">
-          <PriceAlertSignup
-            source="alerta-arrendamiento"
-            page="/mercado/arrendamiento"
-            accent="amber"
-            title="¿Seguís el arrendamiento? Te aviso cuando cambie"
-          />
+          <NovilloAlertSignup priceToday={inmag.current} blueToday={blueToday} />
         </section>
 
         {/* What is the Index */}
@@ -384,14 +386,9 @@ export default async function ArrendamientoPage() {
           </Suspense>
         </section>
 
-        {/* Captura liderada por la LIQUIDACIÓN — el job real del cluster que explota
-            (+110% WoW): el que liquida un canon cada mes, no el que vende hacienda.
-            Self-contained (inputs del contrato inline) + canon en vivo + promesa
-            cumplible (cierre mensual con TU canon). Reemplaza las dos capturas
-            genéricas que convertían ~0 contra el tráfico #2 del sitio. */}
+        {/* La suscripción al cierre mensual (con TU canon) vive ahora DENTRO de la
+            calculadora — una sola caja, sin re-pedir kg/ha. Acá solo el próximo paso. */}
         <section className="max-w-6xl mx-auto px-4 pt-4 pb-8">
-          <ArrendamientoLiquidacionSignup priceToday={inmag.current} page="/mercado/arrendamiento" />
-          {/* Cosas para hacer — la entrada #1 (57% bounce) necesita un próximo paso. */}
           <HerramientasCTA />
         </section>
 
