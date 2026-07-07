@@ -83,7 +83,7 @@ export default function NovilloEnDolares({
   }, [])
 
   const cur = days[active]
-  const animUsd = useCountUp(cur?.usd_blue ?? 0)
+  const animUsd = useCountUp(cur?.usd_blue ?? 0, 950)
 
   // Chart SVG del espinazo (serie mensual, USD blue).
   const chart = useMemo(() => {
@@ -112,7 +112,13 @@ export default function NovilloEnDolares({
     return { W, H, x, y, path, areaPath, dayIdx }
   }, [series, days])
 
-  const activeIdx = chart.dayIdx[active]
+  // Marcador que GLIDEA por la línea (índice float animado) en vez de saltar entre días.
+  const animIdx = useCountUp(chart.dayIdx[active] ?? 0, 950)
+  const mFloor = Math.max(0, Math.min(series.length - 1, Math.floor(animIdx)))
+  const mCeil = Math.min(series.length - 1, mFloor + 1)
+  const mFrac = animIdx - mFloor
+  const markerX = chart.x(animIdx)
+  const markerY = series.length ? chart.y(series[mFloor].usd + (series[mCeil].usd - series[mFloor].usd) * mFrac) : 0
 
   return (
     <div className="max-w-5xl mx-auto px-4">
@@ -170,25 +176,22 @@ export default function NovilloEnDolares({
           <path d={chart.areaPath} fill="url(#novGrad)" />
           <path d={chart.path} fill="none" stroke="#38bdf8" strokeWidth={2} vectorEffect="non-scaling-stroke" opacity={0.85} />
           {chart.dayIdx.map((si, i) => (
-            <circle
-              key={i}
-              cx={chart.x(si)}
-              cy={chart.y(series[si].usd)}
-              r={i === active ? 7 : 3}
-              fill={i === active ? '#38bdf8' : '#3f3f46'}
-            />
+            <circle key={i} cx={chart.x(si)} cy={chart.y(series[si].usd)} r={2.5} fill="#52525b" />
           ))}
+          {/* Marcador que glidea */}
           <line
-            x1={chart.x(activeIdx)}
-            x2={chart.x(activeIdx)}
+            x1={markerX}
+            x2={markerX}
             y1={0}
             y2={chart.H}
             stroke="#38bdf8"
             strokeWidth={1}
             strokeDasharray="3 3"
             vectorEffect="non-scaling-stroke"
-            opacity={0.4}
+            opacity={0.35}
           />
+          <circle cx={markerX} cy={markerY} r={9} fill="#38bdf8" opacity={0.2} />
+          <circle cx={markerX} cy={markerY} r={4} fill="#38bdf8" />
         </svg>
       </div>
 
@@ -201,8 +204,8 @@ export default function NovilloEnDolares({
             ref={(el) => {
               sceneRefs.current[i] = el
             }}
-            className={`min-h-[62vh] flex flex-col justify-center border-l-2 pl-5 md:pl-8 transition-colors duration-500 ${
-              i === active ? 'border-sky-500' : 'border-zinc-800'
+            className={`min-h-[62vh] flex flex-col justify-center border-l-2 pl-5 md:pl-8 transition-all duration-700 ease-out ${
+              i === active ? 'border-sky-500 opacity-100 translate-x-0' : 'border-zinc-800 opacity-30 -translate-x-1'
             }`}
           >
             <div className="text-xs font-mono uppercase tracking-widest text-sky-400/80 mb-2">{fmtDate(d.date)}</div>
