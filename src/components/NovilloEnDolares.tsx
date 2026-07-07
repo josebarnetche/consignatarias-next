@@ -132,6 +132,9 @@ export default function NovilloEnDolares({
         </p>
       </section>
 
+      {/* Wrapper del "machine": la barra sticky se despega al terminar las escenas.
+          Sin esto, quedaba pinned hasta el final y tapaba el CTA. */}
+      <div>
       {/* CHART + NÚMERO STICKY */}
       <div className="sticky top-2 z-20 bg-zinc-950/85 backdrop-blur border border-zinc-800 rounded-xl p-4 md:p-6 mb-8">
         <div className="flex items-end justify-between gap-4 flex-wrap">
@@ -211,6 +214,8 @@ export default function NovilloEnDolares({
           </div>
         ))}
       </div>
+      </div>
+      {/* /wrapper del machine */}
 
       {/* CTA — pb generoso para despejar el banner de cookies + el FAB de WhatsApp */}
       <section className="pt-20 pb-44 text-center border-t border-zinc-800 mt-10">
