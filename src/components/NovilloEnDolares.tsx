@@ -45,7 +45,8 @@ function useCountUp(target: number, durationMs = 900): number {
   return val
 }
 
-const fmtUsd = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
+// En Argentina "$" se lee como pesos → los valores en dólares SIEMPRE con "USD".
+const fmtUsd = (n: number) => 'USD ' + Math.round(n).toLocaleString('es-AR')
 const fmtDate = (iso: string) => {
   const [y, m, d] = iso.split('-')
   const MES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
@@ -94,6 +95,7 @@ export default function NovilloEnDolares({
     const x = (i: number) => (i / (series.length - 1)) * W
     const y = (v: number) => H - ((v - min) / (max - min)) * H
     const path = series.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)},${y(p.usd).toFixed(1)}`).join(' ')
+    const areaPath = `${path} L${W},${H} L0,${H} Z`
     // índice de serie más cercano a cada día importante
     const dayIdx = days.map((d) => {
       let best = 0
@@ -107,7 +109,7 @@ export default function NovilloEnDolares({
       })
       return best
     })
-    return { W, H, x, y, path, dayIdx }
+    return { W, H, x, y, path, areaPath, dayIdx }
   }, [series, days])
 
   const activeIdx = chart.dayIdx[active]
@@ -156,7 +158,14 @@ export default function NovilloEnDolares({
         </div>
 
         <svg viewBox={`0 0 ${chart.W} ${chart.H}`} className="w-full h-28 md:h-36 mt-3" preserveAspectRatio="none">
-          <path d={chart.path} fill="none" stroke="#38bdf8" strokeWidth={2} vectorEffect="non-scaling-stroke" opacity={0.5} />
+          <defs>
+            <linearGradient id="novGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#38bdf8" stopOpacity={0.3} />
+              <stop offset="100%" stopColor="#38bdf8" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <path d={chart.areaPath} fill="url(#novGrad)" />
+          <path d={chart.path} fill="none" stroke="#38bdf8" strokeWidth={2} vectorEffect="non-scaling-stroke" opacity={0.85} />
           {chart.dayIdx.map((si, i) => (
             <circle
               key={i}
@@ -203,8 +212,8 @@ export default function NovilloEnDolares({
         ))}
       </div>
 
-      {/* CTA */}
-      <section className="py-20 text-center border-t border-zinc-800 mt-10">
+      {/* CTA — pb generoso para despejar el banner de cookies + el FAB de WhatsApp */}
+      <section className="pt-20 pb-44 text-center border-t border-zinc-800 mt-10">
         <h2 className="text-2xl md:text-3xl font-mono font-bold text-white tracking-tight mb-4">
           Esto es un puñado de días. Tenemos los {totalDays.toLocaleString('es-AR')}.
         </h2>
