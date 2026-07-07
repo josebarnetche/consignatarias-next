@@ -341,7 +341,7 @@ export default async function ElOraculoPage() {
         <div className="relative max-w-3xl mx-auto px-4 pt-16 pb-10 text-sm leading-relaxed">
           <h1 className="text-zinc-100 text-2xl font-medium mb-2">El Oráculo</h1>
           <p className="text-zinc-500 text-xs mb-6">
-            Edición 01/2026 · revisado 6 de julio de 2026 — Mesa de mercado · consignatarias.com
+            Edición 01/2026 · revisado 7 de julio de 2026 — Mesa de mercado · consignatarias.com
           </p>
           <p className="text-zinc-300 italic leading-relaxed">
             El precio que el mercado bovino argentino sigue todos los días — verificable, citable, sin épica.

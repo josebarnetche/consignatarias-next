@@ -4,7 +4,8 @@
 
 > Manifiesto fundacional · consignatarias.com.ar
 > Mesa de mercado · Memola Medios SAS
-> Edición 01/2026 · 10 de mayo de 2026 — revisado 6 de julio de 2026
+> Edición 01/2026 · 10 de mayo de 2026 — revisado 7 de julio de 2026
+> Revisión 07-jul: V.3 reescrita — el vacío es prudencial-financiero, no regulatorio a secas (SENASA/RENSPA/DT-e/ARCA regulan denso lo sanitario y fiscal).
 
 ---
 
