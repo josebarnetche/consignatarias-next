@@ -1833,47 +1833,47 @@
   "categories": {
     "novillos": {
       "current": 4165,
-      "prev": 4154,
-      "change": 0.3,
+      "prev": 4165,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1295
     },
     "novillitos": {
       "current": 3957,
-      "prev": 3946,
-      "change": 0.3,
+      "prev": 3957,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1102
     },
     "vaquillonas": {
       "current": 3749,
-      "prev": 3739,
-      "change": 0.3,
+      "prev": 3749,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1022
     },
     "vacas": {
       "current": 2999,
-      "prev": 2991,
-      "change": 0.3,
+      "prev": 2999,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 2500
     },
     "toros": {
       "current": 2707,
-      "prev": 2700,
-      "change": 0.3,
+      "prev": 2707,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 294
     },
     "terneros": {
       "current": 4582,
-      "prev": 4569,
-      "change": 0.3,
+      "prev": 4582,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
@@ -1893,8 +1893,8 @@
   },
   "usdOficial": {
     "current": 1515,
-    "prev": 1510,
-    "change": 0.3,
+    "prev": 1515,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
@@ -1948,8 +1948,8 @@
         "category": "NOVILLOS Esp.Joven + 430",
         "minPrice": 3500,
         "maxPrice": 4700,
-        "avgPrice": 4275.41,
-        "cabezas": 1354
+        "avgPrice": 4275.17,
+        "cabezas": 1340
       },
       {
         "category": "NOVILLOS Regular h 430",
@@ -1976,8 +1976,8 @@
         "category": "NOVILLITOS Esp. + 390",
         "minPrice": 3500,
         "maxPrice": 5100,
-        "avgPrice": 4615.7,
-        "cabezas": 966
+        "avgPrice": 4603.58,
+        "cabezas": 990
       },
       {
         "category": "NOVILLITOS Regular",
@@ -2074,8 +2074,8 @@
         "category": "Totales",
         "minPrice": 0,
         "maxPrice": 0,
-        "avgPrice": 3687.79,
-        "cabezas": 9019
+        "avgPrice": 3688.18,
+        "cabezas": 9029
       }
     ]
   },
@@ -2309,10 +2309,10 @@
   },
   "arrendamientoOficial": {
     "date": "2026-07-07",
-    "index": 4268.069,
+    "index": 4266.993,
     "periodStart": "2026-06-30",
     "periodEnd": "2026-07-07",
-    "periodIndex": 4268.732,
+    "periodIndex": 4268.351,
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   }
 }
