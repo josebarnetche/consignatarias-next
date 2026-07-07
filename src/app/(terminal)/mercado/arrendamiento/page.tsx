@@ -7,7 +7,7 @@ import { createAdminClient } from '@/lib/supabase-server'
 import ArrendamientoCalculator from './ArrendamientoCalculator'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
-import NovilloAlertSignup from '@/components/NovilloAlertSignup'
+import ArrendamientoLiquidacionSignup from '@/components/ArrendamientoLiquidacionSignup'
 import HerramientasCTA from '@/components/HerramientasCTA'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import SinceLastVisit from '@/components/landing/SinceLastVisit'
@@ -187,14 +187,6 @@ function formatMonth(monthKey: string): string {
 
 export default async function ArrendamientoPage() {
   const closes = await getMonthlyCloses()
-  // Último blue para la alerta (permite el toggle USD + el hint "hoy está en X USD").
-  const { data: blueRow } = await (createAdminClient() as unknown as SupabaseClient)
-    .from('usd_blue_history')
-    .select('venta')
-    .order('date', { ascending: false })
-    .limit(1)
-    .maybeSingle()
-  const blueToday = typeof blueRow?.venta === 'number' ? blueRow.venta : undefined
   const cierre = closes[0] // el mes cerrado más reciente — el número para facturar
   const cierrePrev = closes[1]
   const cierreChange = cierre && cierrePrev ? ((cierre.inmag - cierrePrev.inmag) / cierrePrev.inmag) * 100 : null
@@ -327,12 +319,16 @@ export default async function ArrendamientoPage() {
           </div>
         </section>
 
-        {/* Captura de alta intención, arriba: el visitante (mayormente desde IA)
-            acaba de ver el número del arrendamiento → le ofrecemos avisarle cuando
-            cambie, con fricción mínima (solo email). Convierte visitas one-shot en un
-            loop de email. La oferta profunda (liquidar el canon con kg/ha) va más abajo. */}
+        {/* Captura ÚNICA, en el slot de alta intención (apenas debajo del número-hero).
+            El visitante —mayormente desde IA/Google— acaba de ver el número del
+            arrendamiento; acá mismo carga su contrato (kg/ha + ha, pre-cargado) y recibe
+            SU canon liquidado a cada cierre de mes. Unificación (2026-07): antes esta
+            oferta profunda vivía debajo del calculador y convertía 0 por estar bajo el
+            fold, mientras la alerta genérica ocupaba este slot y convertía por posición,
+            no por valor. Un solo embudo, en la posición ganadora, capturando el dato de
+            contrato que después segmenta/monetiza. */}
         <section className="max-w-3xl mx-auto px-4 pt-6">
-          <NovilloAlertSignup priceToday={inmag.current} blueToday={blueToday} />
+          <ArrendamientoLiquidacionSignup priceToday={inmag.current} page="/mercado/arrendamiento" />
         </section>
 
         {/* What is the Index */}
@@ -386,8 +382,8 @@ export default async function ArrendamientoPage() {
           </Suspense>
         </section>
 
-        {/* La suscripción al cierre mensual (con TU canon) vive ahora DENTRO de la
-            calculadora — una sola caja, sin re-pedir kg/ha. Acá solo el próximo paso. */}
+        {/* La captura de liquidación se movió arriba (slot de alta intención). Acá
+            queda el próximo-paso para la entrada #1 (57% bounce). */}
         <section className="max-w-6xl mx-auto px-4 pt-4 pb-8">
           <HerramientasCTA />
         </section>
