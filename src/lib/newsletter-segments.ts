@@ -34,11 +34,13 @@ export const SEGMENT_SOURCES = {
   // Subasta-por-firma — recordatorios de remate (T-24h / T-1h en vivo / resultados) al
   // productor que pidió seguir la agenda de una firma. Consumido por el cron remate-reminders.
   subastaPorFirma: ['watchlist-notify'],
-  // Monthly Índice Novillo close (1st) — price / INMAG / arrendamiento intent.
-  // alerta-arrendamiento + alerta-inmag reciben el cierre mensual (mismo número del INMAG).
-  // arrendamiento-liquidacion = captura liderada por la liquidación (guarda el contrato
-  // kg/ha + ha) → recibe el cierre mensual con SU canon ya calculado (vía lease_*).
-  monthlyClose: ['cierre-mensual', 'valuation_widget', 'calculadora', 'alerta-arrendamiento', 'alerta-inmag', 'arrendamiento-liquidacion'],
+  // Monthly Índice Novillo close (1st) — price / INMAG intent.
+  // OJO: 'arrendamiento-liquidacion' NO va acá. Lo maneja el cron dedicado
+  // `arrendamiento-cierre` (día 3), que manda el cierre OFICIAL ponderado del MAG
+  // (coincide con la factura) + el canon del suscripto. Tenerlo acá causaba DOBLE email
+  // (día 1 monthly-close + día 3) y con número distinto (monthly-close usa promedio
+  // SIMPLE, no el oficial ponderado).
+  monthlyClose: ['cierre-mensual', 'valuation_widget', 'calculadora', 'alerta-arrendamiento', 'alerta-inmag'],
   // El Corredor PDF (1st) — lead magnet
   corredor: ['el-corredor'],
   // Monthly faena report
