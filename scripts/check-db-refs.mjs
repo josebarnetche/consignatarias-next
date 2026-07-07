@@ -54,6 +54,17 @@ const ALLOWLIST = new Map([
     owner: 'infra', since: '2026-07-03', severity: 'baja',
     exit: 'Se cierra si un futuro generador la incluye. No es deuda real.',
   }],
+  // Objetos creados esta semana vía SQL en prod (capa first-party, agregados MAG,
+  // showcase novillo-USD). VERIFICADO 2026-07-07: los 6 existen en prod. El único
+  // pendiente es regenerar src/lib/database.types.ts para que los liste. Se cierran
+  // solos al regenerar los tipos.
+  ...(['visitors', 'upsert_visitor', 'visitor_stats', 'mag_monthly_consignatario_stats', 'novillo_usd_days', 'novillo_usd_series'].map(
+    (name) => [name, {
+      reason: 'FALSO POSITIVO: existe en prod (verificado 2026-07-07); database.types.ts aún sin regenerar.',
+      owner: 'infra', since: '2026-07-07', severity: 'baja',
+      exit: 'Se cierra al regenerar database.types.ts.',
+    }],
+  )),
 ])
 
 // ── 1. Esquema real de prod (desde los tipos generados) ──────────────────────

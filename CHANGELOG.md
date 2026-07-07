@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.130.0] — 2026-07-07
+
+### "El novillo en dólares" — showcase histórico del Enterprise API
+
+Página `/el-novillo-en-dolares`: máquina scrollable que muestra el valor de un novillo (~460 kg) en USD en los días clave de Argentina desde 2015, cruzando INMAG diario con el dólar blue. Chart-espinazo con marcador que glidea + número gigante con count-up; escenas por evento (cepo Macri USD 782 → piso USD 446 → récord de hoy). Es el demo del pitch "from ISO-8859-1 to full historic". Funciones SQL `novillo_usd_days`/`novillo_usd_series`. USD siempre explícito (en Argentina "$" = pesos), CTA a `/enterprise`.
+
+### Perfil PRO — refinamientos
+
+- **Freshness gate del video**: el reproductor del último remate en el hero PRO solo aparece si la transmisión es de los últimos 45 días. Si la firma no transmite hace meses, muestra logo destacado + badge PRO pero sin video viejo.
+- **Revalidación on-demand**: el webhook de Rebill hace `revalidatePath('/consignatarias/<slug>')` al activar/cancelar la suscripción PRO → el hero PRO aparece/desaparece al instante, sin esperar un deploy (el perfil es estático).
+
+### Housekeeping
+
+- **Drift check**: verificado que los 6 objetos flaggeados (`visitors`, `upsert_visitor`, `visitor_stats`, `mag_monthly_consignatario_stats`, `novillo_usd_days`, `novillo_usd_series`) SÍ existen en prod; documentados en la allowlist de `check-db-refs` como falso positivo (cierran al regenerar `database.types.ts`).
+
 ## [1.127.0] — 2026-07-06
 
 ### Pipeline MAG, El Corredor, droplist e inicio del perfil PRO
