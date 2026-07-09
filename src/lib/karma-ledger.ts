@@ -15,6 +15,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { requireServiceClient } from '@/lib/supabase'
+import { VALUE_EVENTS, type ValueEvent } from '@/lib/value-events'
 
 /**
  * Cliente service-role tipado en modo laxo para las ops de karma. Las tablas/RPC
@@ -106,6 +107,43 @@ export async function spendKarma(
   })
   if (error || typeof data !== 'number') return null
   return data === -1 ? null : data // -1 = saldo insuficiente
+}
+
+/** Karma ganado hoy (UTC) por engagement pasivo — para el techo anti-gaming. */
+async function engagementKarmaToday(userId: string): Promise<number> {
+  const sb = karmaDb()
+  const start = new Date()
+  start.setUTCHours(0, 0, 0, 0)
+  const { data, error } = await sb
+    .from('karma_ledger')
+    .select('delta')
+    .eq('user_id', userId)
+    .like('reason', 'engage:%')
+    .gte('created_at', start.toISOString())
+  if (error || !Array.isArray(data)) return 0
+  return (data as Array<{ delta: number }>).reduce((a, r) => a + (r.delta > 0 ? r.delta : 0), 0)
+}
+
+/**
+ * Acredita karma por un value-event de un usuario logueado. El engagement PASIVO
+ * (grupo 'engagement': time_on_page, scroll…) tiene techo diario anti-gaming; los
+ * grupos de intención real (lead, funnel, conversión, recurrencia, b2b, discovery)
+ * acreditan completo. Llamado desde el beacon /api/track/event. Best-effort.
+ */
+export async function awardValueEventKarma(userId: string, event: string): Promise<void> {
+  const def = VALUE_EVENTS[event as ValueEvent]
+  if (!def) return
+  const base = def.weight * KARMA.earnPerValueWeight
+  if (base <= 0) return
+
+  if (def.group === 'engagement') {
+    const earnedToday = await engagementKarmaToday(userId)
+    const remaining = KARMA.dailyEngagementCap - earnedToday
+    if (remaining <= 0) return
+    await awardKarma(userId, Math.min(base, remaining), `engage:${event}`)
+  } else {
+    await awardKarma(userId, base, `value:${event}`)
+  }
 }
 
 /** Desbloquea una función gastando su costo del catálogo. null si no alcanza. */
