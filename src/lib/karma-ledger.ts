@@ -146,6 +146,40 @@ export async function awardValueEventKarma(userId: string, event: string): Promi
   }
 }
 
+/** Cuánta reputación ya se acreditó al ledger (filas reason='seed:reputation'). */
+async function reputationCredited(userId: string): Promise<number> {
+  const sb = karmaDb()
+  const { data, error } = await sb
+    .from('karma_ledger')
+    .select('delta')
+    .eq('user_id', userId)
+    .eq('reason', 'seed:reputation')
+  if (error || !Array.isArray(data)) return 0
+  return (data as Array<{ delta: number }>).reduce((a, r) => a + r.delta, 0)
+}
+
+/**
+ * Unifica el karma-REPUTACIÓN (derivado: hacienda/marcas/antigüedad) dentro del
+ * saldo del ledger. Hace TOP-UP: si la reputación actual supera lo ya acreditado,
+ * agrega la diferencia (la reputación no baja, así que solo sube). Devuelve el
+ * saldo de coins y cuánto de él es reputación (el resto es actividad in-app − gastos).
+ * Idempotente en la práctica: si no creció, no acredita nada.
+ */
+export async function syncReputationAndBalance(
+  userId: string,
+  reputationScore: number,
+): Promise<{ coins: number; reputation: number }> {
+  const credited = await reputationCredited(userId)
+  const target = Math.max(0, Math.floor(reputationScore))
+  let reputation = credited
+  if (target > credited) {
+    await awardKarma(userId, target - credited, 'seed:reputation')
+    reputation = target
+  }
+  const coins = await getKarmaBalance(userId)
+  return { coins, reputation }
+}
+
 /** Desbloquea una función gastando su costo del catálogo. null si no alcanza. */
 export async function unlockWithKarma(
   userId: string,

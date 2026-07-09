@@ -193,7 +193,7 @@ export default function ArranqueChecklist({ email, initial }: Props) {
         <span className="text-xxs font-terminal tabular-nums">
           <span className="text-zinc-500">{doneCount}/4 · </span>
           {karma?.loggedIn ? (
-            <span className="text-sky-300">{displayScore} pts · {karma.level}</span>
+            <span className="text-sky-300">{Math.round(displayScore)} coins · {karma.level}</span>
           ) : (
             <span className="text-zinc-600">karma…</span>
           )}

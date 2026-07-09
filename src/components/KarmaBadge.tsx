@@ -5,18 +5,19 @@ import { useEffect, useState } from 'react'
 interface KarmaData {
   loggedIn: boolean
   score?: number
+  coins?: number
   level?: string
   levelIndex?: number
   nextLevel?: string | null
   toNext?: number
-  breakdown?: { arranque?: number; hacienda: number; engagement: number; tenure: number }
+  breakdown?: { arranque?: number; hacienda: number; engagement: number; tenure: number; actividad?: number }
   inputs?: { cabezas: number; attended: number; following: number }
 }
 
 /**
- * Karma del productor — reputación como contribuidor de dato (hacienda cargada +
- * marcas + antigüedad). Es la contracara del "gratis": cuanto más aportás, más
- * karma. Se muestra al usuario logueado; anónimo → nada.
+ * Karma del productor — tu SALDO de coins: lo ganás usando la terminal (hacienda
+ * cargada + marcas + antigüedad + actividad in-app) y lo vas a poder gastar para
+ * desbloquear funciones. Un solo número, entero. Logueado → se muestra; anónimo → nada.
  */
 export default function KarmaBadge() {
   const [k, setK] = useState<KarmaData | null>(null)
@@ -39,12 +40,13 @@ export default function KarmaBadge() {
         style={{ color: '#38bdf8', borderBottomColor: 'rgba(56,189,248,0.25)' }}
       >
         <span>Tu karma</span>
-        <span className="text-xxs text-zinc-500 font-terminal tabular-nums">{k.score} pts</span>
+        <span className="text-xxs text-zinc-500 font-terminal tabular-nums">{Math.round(k.score ?? 0)} coins</span>
       </div>
       <div className="px-panel py-4">
         <p className="text-zinc-500 text-xxs leading-relaxed mb-3">
-          El karma es tu reputación de productor en la terminal: mide lo que aportás al dato del
-          mercado — tu hacienda cargada, los remates que marcás y tu antigüedad.
+          El karma es tu saldo de <span className="text-sky-300">coins</span>: lo ganás usando la
+          terminal — tu hacienda cargada, los remates que marcás, tu antigüedad y tu actividad — y
+          lo vas a poder gastar para desbloquear funciones.
         </p>
         <div className="flex items-baseline gap-2 flex-wrap">
           <span className="text-2xl font-terminal text-sky-300">{k.level}</span>
@@ -58,10 +60,14 @@ export default function KarmaBadge() {
             <Chip label="Hacienda" value={k.breakdown.hacienda} hint={k.inputs ? `${k.inputs.cabezas} cab` : undefined} />
             <Chip label="Marcas" value={k.breakdown.engagement} hint={k.inputs ? `${k.inputs.attended} remates · ${k.inputs.following} seguidas` : undefined} />
             <Chip label="Antigüedad" value={k.breakdown.tenure} />
+            {k.breakdown.actividad != null && k.breakdown.actividad > 0 && (
+              <Chip label="Actividad" value={k.breakdown.actividad} hint="uso de la app" />
+            )}
           </div>
         )}
         <p className="text-zinc-600 text-xxs mt-3">
-          Subí tu karma cargando tu hacienda en Mi Ganado y marcando los remates en los que estuviste.
+          Sumá coins cargando tu hacienda en Mi Ganado, marcando los remates en los que estuviste, y
+          usando la terminal.
         </p>
       </div>
     </div>

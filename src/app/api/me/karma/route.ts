@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getCurrentSession } from '@/lib/user-tier'
 import { createAdminClient } from '@/lib/supabase-server'
-import { computeKarma } from '@/lib/karma'
+import { computeKarma, levelForScore } from '@/lib/karma'
+import { syncReputationAndBalance } from '@/lib/karma-ledger'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -60,10 +61,22 @@ export async function GET() {
     else if (m.mark_type === 'following') following++
   }
 
-  const karma = computeKarma({ cabezas, attended, following, tenureMonths, alertaSemanal, newsletter })
+  const rep = computeKarma({ cabezas, attended, following, tenureMonths, alertaSemanal, newsletter })
+  // Unificación (Fase 2): el número que ve el usuario = SALDO de coins (ledger).
+  // La reputación se sincroniza como crédito (top-up si creció); la actividad
+  // in-app suma coins por encima. Todo entero, sin decimales.
+  const { coins, reputation } = await syncReputationAndBalance(user.id, rep.score)
+  const lvl = levelForScore(coins)
+  const actividad = Math.max(0, coins - reputation)
   return NextResponse.json({
     loggedIn: true,
-    ...karma,
+    score: coins, // UNIFICADO — el saldo de coins ES el karma (entero)
+    coins,
+    level: lvl.level,
+    levelIndex: lvl.levelIndex,
+    nextLevel: lvl.nextLevel,
+    toNext: lvl.toNext,
+    breakdown: { ...rep.breakdown, actividad },
     inputs: { cabezas, attended, following },
     checklist: {
       hacienda: cabezas > 0,
