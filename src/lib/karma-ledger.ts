@@ -188,3 +188,27 @@ export async function unlockWithKarma(
 ): Promise<number | null> {
   return spendKarma(userId, KARMA.unlockCost[unlock], `spend:${unlock}`, refId)
 }
+
+/**
+ * ¿El usuario tiene activo un desbloqueo? Es time-boxed: vale si gastó por él en
+ * los últimos `windowDays` (se lee del propio ledger, sin tabla extra). Con
+ * windowDays grande (p.ej. 3650) se comporta como desbloqueo permanente.
+ */
+export async function hasUnlock(
+  userId: string,
+  unlock: KarmaUnlock,
+  windowDays = 30,
+): Promise<boolean> {
+  const sb = karmaDb()
+  const since = new Date()
+  since.setUTCDate(since.getUTCDate() - windowDays)
+  const { data, error } = await sb
+    .from('karma_ledger')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('reason', `spend:${unlock}`)
+    .gte('created_at', since.toISOString())
+    .limit(1)
+  if (error || !Array.isArray(data)) return false
+  return data.length > 0
+}
