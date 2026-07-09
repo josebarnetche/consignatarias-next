@@ -1,18 +1,20 @@
 'use client'
 
-import { useSessionTier } from '@/lib/use-session-tier'
-import { ProReveal } from '@/components/pro'
+import { useState } from 'react'
+import KarmaUnlockButton from '@/components/KarmaUnlockButton'
 
 /**
- * Descarga PRO del histórico INMAG completo (2015 → hoy) en CSV.
+ * Descarga del histórico INMAG completo (2015 → hoy) en CSV.
  *
- * Gating unificado al patrón <ProReveal>:
- *  - PRO  → el botón real de descarga (/api/market/inmag-export). El endpoint
- *    además re-valida el tier server-side (defensa en profundidad).
- *  - free/anon → ven la FORMA del dataset (columnas + cantidad de filas, que es
- *    estructura pública, no cifras de mercado) borrosa, con el CTA de PRO.
+ * Gating por COINS (Fase 3 del karma): el precio del día y la serie reciente son
+ * gratis; el DATASET completo (bulk CSV) se desbloquea gastando los coins que el
+ * usuario gana usando la terminal — sin pagar plata. Anónimo/free ve la FORMA del
+ * dataset (columnas + filas, estructura pública, no cifras) y el botón de desbloqueo.
  *
- * `rowCount` es real (cuenta de mag_inmag_history) y se pasa desde el server.
+ * `rowCount` es real (cuenta de mag_inmag_history), pasado desde el server.
+ *
+ * Nota: el endpoint /api/market/inmag-export sigue abierto — este gate es de UX/
+ * valor, no una barrera dura. Endurecer el endpoint con el mismo unlock = follow-up.
  */
 export default function InmagHistoryExport({
   rowCount,
@@ -21,11 +23,9 @@ export default function InmagHistoryExport({
   rowCount: number
   fromYear: number
 }) {
-  const { tier } = useSessionTier()
-  const isPro = tier === 'pro'
+  const [unlocked, setUnlocked] = useState(false)
 
-  // El borroso es estructura, no datos: nombres de columna + recuento de filas.
-  // No filtra ninguna cifra de mercado.
+  // El "preview" es estructura, no datos: nombres de columna + recuento de filas.
   const datasetShape = (
     <div className="font-terminal text-data text-zinc-400 space-y-2">
       <div className="text-zinc-200">
@@ -39,12 +39,16 @@ export default function InmagHistoryExport({
     </div>
   )
 
-  if (isPro) {
+  const header = (
+    <div className="terminal-panel-header" style={{ color: '#38bdf8' }}>
+      Descarga del histórico completo (CSV)
+    </div>
+  )
+
+  if (unlocked) {
     return (
       <div className="terminal-panel" style={{ borderColor: 'rgba(56, 189, 248, 0.4)' }}>
-        <div className="terminal-panel-header" style={{ color: '#38bdf8' }}>
-          Descarga del histórico completo (CSV)
-        </div>
+        {header}
         <div className="px-panel py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           {datasetShape}
           <a
@@ -63,12 +67,24 @@ export default function InmagHistoryExport({
   }
 
   return (
-    <ProReveal
-      from="/mercado/inmag"
-      title="Descarga del histórico completo (CSV)"
-      benefit={`Bajá las ${rowCount.toLocaleString('es-AR')} filas del INMAG (${fromYear} → hoy) en CSV para tu planilla: precio por kilo vivo y cabezas operadas, día por día.`}
-    >
-      {datasetShape}
-    </ProReveal>
+    <div className="terminal-panel" style={{ borderColor: 'rgba(56, 189, 248, 0.25)' }}>
+      {header}
+      <div className="px-panel py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {datasetShape}
+        <div className="shrink-0">
+          <KarmaUnlockButton
+            unlock="inmag_history_deep"
+            label="el histórico completo"
+            onUnlocked={() => setUnlocked(true)}
+          />
+        </div>
+      </div>
+      <div className="px-panel pb-4 -mt-1">
+        <p className="text-xxs text-zinc-600 font-terminal leading-relaxed">
+          El precio del día es gratis. El dataset completo ({fromYear}→) lo desbloqueás con los coins
+          que ganás usando la terminal — sin pagar.
+        </p>
+      </div>
+    </div>
   )
 }
