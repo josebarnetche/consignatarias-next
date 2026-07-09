@@ -122,12 +122,6 @@ function ApiCard({ tier }: { tier: ApiTier }) {
 }
 
 export default function PlanesToggle() {
-  // CTA de la consignataria = WhatsApp de ventas (PRO Consignataria es sales-led B2B,
-  // y es el canal del público). Antes apuntaba a /enterprise#consignataria, un ancla
-  // que NO existe → CTA muerto hacia el único plan vendible.
-  const consignatariaWa = `https://wa.me/5493773418130?text=${encodeURIComponent(
-    'Hola! Quiero probar PRO Consignataria — destacar mi firma y llegar a los productores. ¿Cómo activo la prueba gratis?',
-  )}`
   return (
     <div>
       {/* Productor — GRATIS, primero (es la base del modelo) */}
@@ -205,15 +199,13 @@ export default function PlanesToggle() {
               <span className="text-zinc-500 text-data ml-1">/mes</span>
             </div>
             <p className="text-zinc-500 text-xxs mb-4">Probá gratis, sin permanencia.</p>
-            <a
-              href={consignatariaWa}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/consignatarias/activar"
               className="terminal-btn w-full text-center"
               style={{ borderColor: 'rgba(251,191,36,0.6)', color: '#fbbf24' }}
             >
               Probar gratis →
-            </a>
+            </Link>
           </div>
         </div>
       </div>
