@@ -155,44 +155,40 @@ export default function PlanesToggle() {
         </Link>
       </div>
 
-      {/* PRO Consignataria — SEGUNDO y prominente: es el plan que SÍ se vende hoy.
-          id="consignataria" (+ scroll-mt) para que los CTAs (banner SmartWelcome,
-          ConsignatariaShowcase, /planes#consignataria) scrolleen ACÁ. */}
+      {/* PRO Consignataria — NUESTRO PRODUCTO #1: primero de los pagos, a todo el
+          ancho y destacado. id="consignataria" (+scroll-mt) para que los CTAs
+          (banner SmartWelcome, ConsignatariaShowcase, /planes#consignataria) caigan ACÁ. */}
       <div id="consignataria" className="scroll-mt-24 mb-3 flex flex-wrap items-baseline justify-between gap-2">
-        <p className="text-label tracking-widest text-zinc-400">
+        <p className="text-label tracking-widest text-amber-300">
           <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
             <img src="/marca/iconos-color/casa-remates.png" alt="" className="w-6 h-6" />
           </span>
-          PRO Consignataria — más productores en tus remates
+          ¿Sos consignataria? Que más productores vean tus remates
         </p>
         <span className="text-xxs font-terminal text-zinc-500">Facturación mensual en ARS vía Rebill</span>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-        {/* Consignataria — alcance (prueba, no "pagá por aparecer") */}
-        <div className="terminal-panel flex flex-col" style={{ borderColor: 'rgba(251,191,36,0.5)', boxShadow: '0 0 20px rgba(251,191,36,0.08)' }}>
-          <div
-            className="terminal-panel-header"
-            style={{ color: '#fbbf24', borderBottomColor: 'rgba(251,191,36,0.25)' }}
-          >
-            PRO Consignataria · alcance
-          </div>
-          <div className="px-panel py-4 flex-1 flex flex-col">
-            <div className="mb-1">
-              <span className="text-2xl font-terminal tabular-nums" style={{ color: '#fbbf24' }}>
-                ARS 45.000
-              </span>
-              <span className="text-zinc-500 text-data ml-1">/mes</span>
-            </div>
-            <p className="text-zinc-500 text-xxs mb-3">Prueba gratis · sin permanencia</p>
-            <p className="text-zinc-500 text-data mb-4">
-              Lo que obtenés:
+      <div
+        className="terminal-panel mb-10"
+        style={{ borderColor: 'rgba(251,191,36,0.5)', boxShadow: '0 0 24px rgba(251,191,36,0.1)' }}
+      >
+        <div
+          className="terminal-panel-header"
+          style={{ color: '#fbbf24', borderBottomColor: 'rgba(251,191,36,0.25)' }}
+        >
+          PRO Consignataria
+        </div>
+        <div className="px-panel py-5 flex flex-col md:flex-row md:items-center gap-6">
+          <div className="flex-1">
+            <p className="text-zinc-300 text-data mb-4">
+              Cada vez que publicás un remate, se lo avisamos por email a toda la base de productores.
+              Y tu firma queda destacada en el directorio.
             </p>
-            <ul className="space-y-2 mb-6 flex-1">
+            <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2">
               {[
-                'Cada remate tuyo, por email a la base de productores',
-                'Badge dorado + perfil destacado en el directorio',
-                'Analytics: cuántos productores miran tu perfil',
-                'Landing propia + QR para tus catálogos',
+                'Avisamos cada remate tuyo por email a más de 500 productores',
+                'Tu perfil destacado, con distintivo dorado en el directorio',
+                'Ves cuántos productores miran tu perfil',
+                'Tu propia página y código QR para tus catálogos',
               ].map((f) => (
                 <li key={f} className="flex items-start gap-2 text-data text-zinc-300">
                   <span style={{ color: '#fbbf24' }} className="mt-0.5">+</span>
@@ -200,6 +196,15 @@ export default function PlanesToggle() {
                 </li>
               ))}
             </ul>
+          </div>
+          <div className="md:w-60 shrink-0 md:border-l md:border-terminal-border md:pl-6 flex flex-col items-start">
+            <div className="mb-1">
+              <span className="text-3xl font-terminal tabular-nums" style={{ color: '#fbbf24' }}>
+                ARS 45.000
+              </span>
+              <span className="text-zinc-500 text-data ml-1">/mes</span>
+            </div>
+            <p className="text-zinc-500 text-xxs mb-4">Probá gratis, sin permanencia.</p>
             <a
               href={consignatariaWa}
               target="_blank"

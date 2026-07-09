@@ -98,11 +98,11 @@ export default function PlanesPage() {
             Planes y Precios
           </h1>
           <p className="text-zinc-400 text-sm max-w-2xl">
-            El observatorio del mercado ganadero es <strong className="text-zinc-200">gratis</strong> para
-            el productor: precios INMAG, remates, directorio y alertas. Se paga por dos cosas concretas:
-            <strong className="text-zinc-200"> alcance</strong> (consignatarias que promocionan sus remates a
-            productores) y <strong className="text-zinc-200"> la data por programa</strong> (empresas y agentes
-            IA que la consumen vía API + MCP).
+            Todo el mercado ganadero es <strong className="text-zinc-200">gratis</strong> para el productor:
+            precios, remates, directorio y alertas. Solo pagan dos: las{' '}
+            <strong className="text-amber-300">consignatarias</strong> que quieren que más productores vean
+            sus remates, y las <strong className="text-zinc-200">empresas o IAs</strong> que usan nuestros
+            datos por API.
           </p>
 
           {/* Por qué pagar — por segmento */}
@@ -113,7 +113,7 @@ export default function PlanesPage() {
             </div>
             <div className="rounded-lg border border-terminal-border bg-terminal-panel p-3">
               <p className="text-xxs font-terminal uppercase tracking-widest text-amber-300 mb-1">Consignataria</p>
-              <p className="text-data text-zinc-400">Alcance: promocioná tus remates a productores + perfil destacado.</p>
+              <p className="text-data text-zinc-400">Que más productores vean tus remates: se lo avisamos a toda la base + tu perfil destacado.</p>
             </div>
             <div className="rounded-lg border border-terminal-border bg-terminal-panel p-3">
               <p className="text-xxs font-terminal uppercase tracking-widest text-sky-300 mb-1">Empresa · IA</p>
