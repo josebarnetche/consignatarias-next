@@ -7,6 +7,7 @@ import {
   unlockWithKarma,
   type KarmaUnlock,
 } from '@/lib/karma-ledger'
+import { syncUserReputation } from '@/lib/karma-reputation'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -24,13 +25,13 @@ function isUnlock(x: unknown): x is KarmaUnlock {
   return typeof x === 'string' && Object.prototype.hasOwnProperty.call(KARMA.unlockCost, x)
 }
 
-async function currentUserId(): Promise<string | null> {
+async function currentUser(): Promise<{ id: string; email: string | null } | null> {
   try {
     const sb = await createServerSupabase()
     const {
       data: { user },
     } = await sb.auth.getUser()
-    return user?.id ?? null
+    return user ? { id: user.id, email: user.email ?? null } : null
   } catch {
     return null
   }
@@ -41,13 +42,18 @@ export async function GET(req: NextRequest) {
   if (!isUnlock(unlock)) {
     return NextResponse.json({ error: 'unknown unlock' }, { status: 400 })
   }
-  const userId = await currentUserId()
+  const user = await currentUser()
   const cost = KARMA.unlockCost[unlock]
-  if (!userId) {
+  if (!user) {
     return NextResponse.json({ loggedIn: false, unlocked: false, balance: 0, cost })
   }
-  const [unlocked, balance] = await Promise.all([hasUnlock(userId, unlock), getKarmaBalance(userId)])
-  return NextResponse.json({ loggedIn: true, unlocked, balance, cost })
+  // Sincroniza la reputación al ledger → el saldo mostrado está COMPLETO aunque el
+  // usuario no haya pasado por /cuenta.
+  const [unlocked, { coins }] = await Promise.all([
+    hasUnlock(user.id, unlock),
+    syncUserReputation(user.id, user.email),
+  ])
+  return NextResponse.json({ loggedIn: true, unlocked, balance: coins, cost })
 }
 
 export async function POST(req: NextRequest) {
@@ -56,21 +62,24 @@ export async function POST(req: NextRequest) {
   if (!isUnlock(unlock)) {
     return NextResponse.json({ error: 'unknown unlock' }, { status: 400 })
   }
-  const userId = await currentUserId()
-  if (!userId) {
+  const user = await currentUser()
+  if (!user) {
     return NextResponse.json({ error: 'auth' }, { status: 401 })
   }
   const cost = KARMA.unlockCost[unlock]
 
+  // Sincroniza la reputación al ledger ANTES de gastar → el saldo está completo.
+  await syncUserReputation(user.id, user.email)
+
   // Idempotente: si ya está desbloqueado, no re-cobra.
-  if (await hasUnlock(userId, unlock)) {
-    return NextResponse.json({ ok: true, already: true, balance: await getKarmaBalance(userId), cost })
+  if (await hasUnlock(user.id, unlock)) {
+    return NextResponse.json({ ok: true, already: true, balance: await getKarmaBalance(user.id), cost })
   }
 
-  const newBalance = await unlockWithKarma(userId, unlock, `${userId}:${Date.now()}`)
+  const newBalance = await unlockWithKarma(user.id, unlock, `${user.id}:${Date.now()}`)
   if (newBalance === null) {
     return NextResponse.json(
-      { error: 'insufficient', balance: await getKarmaBalance(userId), cost },
+      { error: 'insufficient', balance: await getKarmaBalance(user.id), cost },
       { status: 402 },
     )
   }
