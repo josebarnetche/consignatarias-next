@@ -122,6 +122,12 @@ function ApiCard({ tier }: { tier: ApiTier }) {
 }
 
 export default function PlanesToggle() {
+  // CTA de la consignataria = WhatsApp de ventas (PRO Consignataria es sales-led B2B,
+  // y es el canal del público). Antes apuntaba a /enterprise#consignataria, un ancla
+  // que NO existe → CTA muerto hacia el único plan vendible.
+  const consignatariaWa = `https://wa.me/5493773418130?text=${encodeURIComponent(
+    'Hola! Quiero probar PRO Consignataria — destacar mi firma y llegar a los productores. ¿Cómo activo la prueba gratis?',
+  )}`
   return (
     <div>
       {/* Productor — GRATIS, primero (es la base del modelo) */}
@@ -149,24 +155,10 @@ export default function PlanesToggle() {
         </Link>
       </div>
 
-      {/* API / MCP — el corazón del pricing */}
-      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-        <p className="text-label tracking-widest text-zinc-400">
-          <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
-            <img src="/marca/iconos-color/agente-ia.png" alt="" className="w-6 h-6" />
-          </span>
-          API / MCP — conectá tu IA o tu sistema al dato ganadero
-        </p>
-        <span className="text-xxs font-terminal text-zinc-500">Facturación mensual en ARS vía Rebill · anual –15%</span>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {API_TIERS.map((t) => (
-          <ApiCard key={t.name} tier={t} />
-        ))}
-      </div>
-
-      {/* Consignataria — PRODUCTO APARTE (alcance, no data-service): ámbar como su badge */}
-      <div className="mt-8 mb-3 flex flex-wrap items-baseline justify-between gap-2 border-t border-terminal-border pt-6">
+      {/* PRO Consignataria — SEGUNDO y prominente: es el plan que SÍ se vende hoy.
+          id="consignataria" (+ scroll-mt) para que los CTAs (banner SmartWelcome,
+          ConsignatariaShowcase, /planes#consignataria) scrolleen ACÁ. */}
+      <div id="consignataria" className="scroll-mt-24 mb-3 flex flex-wrap items-baseline justify-between gap-2">
         <p className="text-label tracking-widest text-zinc-400">
           <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
             <img src="/marca/iconos-color/casa-remates.png" alt="" className="w-6 h-6" />
@@ -175,9 +167,9 @@ export default function PlanesToggle() {
         </p>
         <span className="text-xxs font-terminal text-zinc-500">Facturación mensual en ARS vía Rebill</span>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
         {/* Consignataria — alcance (prueba, no "pagá por aparecer") */}
-        <div className="terminal-panel flex flex-col" style={{ borderColor: 'rgba(251,191,36,0.35)' }}>
+        <div className="terminal-panel flex flex-col" style={{ borderColor: 'rgba(251,191,36,0.5)', boxShadow: '0 0 20px rgba(251,191,36,0.08)' }}>
           <div
             className="terminal-panel-header"
             style={{ color: '#fbbf24', borderBottomColor: 'rgba(251,191,36,0.25)' }}
@@ -208,15 +200,33 @@ export default function PlanesToggle() {
                 </li>
               ))}
             </ul>
-            <Link
-              href="/enterprise#consignataria"
+            <a
+              href={consignatariaWa}
+              target="_blank"
+              rel="noopener noreferrer"
               className="terminal-btn w-full text-center"
               style={{ borderColor: 'rgba(251,191,36,0.6)', color: '#fbbf24' }}
             >
-              Probar gratis
-            </Link>
+              Probar gratis →
+            </a>
           </div>
         </div>
+      </div>
+
+      {/* API / MCP — segundo producto (instituciones/agtech), abajo del plan vendible */}
+      <div className="mt-8 mb-3 flex flex-wrap items-baseline justify-between gap-2 border-t border-terminal-border pt-6">
+        <p className="text-label tracking-widest text-zinc-400">
+          <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
+            <img src="/marca/iconos-color/agente-ia.png" alt="" className="w-6 h-6" />
+          </span>
+          API / MCP — conectá tu IA o tu sistema al dato ganadero
+        </p>
+        <span className="text-xxs font-terminal text-zinc-500">Facturación mensual en ARS vía Rebill · anual –15%</span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {API_TIERS.map((t) => (
+          <ApiCard key={t.name} tier={t} />
+        ))}
       </div>
     </div>
   )
