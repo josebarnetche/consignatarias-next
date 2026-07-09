@@ -1,6 +1,7 @@
 'use client'
 
 import { generateICSContent } from '@/lib/utils/ics'
+import { trackValueEvent } from '@/lib/analytics'
 
 interface AddToCalendarButtonProps {
   title: string
@@ -54,14 +55,10 @@ export function AddToCalendarButton({
     document.body.removeChild(link)
     URL.revokeObjectURL(blobUrl)
     
-    // Track event
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'calendar_download', {
-        event_category: 'engagement',
-        event_label: title,
-        value: 1,
-      })
-    }
+    // Track: value-event (GA4 + ledger de recurrencia, peso 6). Antes usaba
+    // window.gtag crudo con params UA-legacy y NO entraba al índice de valor
+    // (drift P0-1, ver docs/analytics/audit.md).
+    trackValueEvent('calendar_download', { entityType: 'remate', meta: { title } })
   }
 
   return (

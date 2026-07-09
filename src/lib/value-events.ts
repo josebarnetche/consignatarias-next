@@ -34,6 +34,7 @@ export interface ValueEventDef {
 export const VALUE_EVENTS = {
   // --- Recurrencia (lo que nos faltaba: que el anónimo vuelva) ---
   calendar_subscribe: { weight: 12, group: 'recurrencia', label: 'Suscripción a calendario' },
+  calendar_download: { weight: 6, group: 'recurrencia', label: 'Descargó .ics de un remate' },
   newsletter_subscribe: { weight: 8, group: 'recurrencia', label: 'Suscripción a newsletter' },
   alert_create: { weight: 8, group: 'recurrencia', label: 'Alerta creada' },
 

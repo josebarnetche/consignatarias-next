@@ -1,0 +1,1350 @@
+{
+  "$schema_note": "Tracking plan = fuente de verdad del instrumentado de consignatarias.com.ar. Fase A del trabajo de tracking (metodología analyze→schema→verify adaptada del skill analytics-tracking-automation, SIN GTM: acá se usa gtag.js directo + ledger propio value_events).",
+  "generated": "2026-07-09",
+  "ga4_property": "481391781",
+  "ga4_measurement_id": "G-6CZMZH9S6Y",
+  "uses_gtm": false,
+  "seen_window": "GA4 90d (cierre 2026-07-05) — conteos de eventCount",
+  "systems": {
+    "ga4": "trackEvent() → gtag('event',...). Wrapper central en src/lib/analytics.ts. Solo dispara en PROD_HOSTS (www/consignatarias.com.ar); localhost y *.vercel.app se descartan.",
+    "value_ledger": "trackValueEvent()/emitValueBeacon() → beacon a /api/track/event → tabla value_events. Peso/grupo definidos en src/lib/value-events.ts (el server deriva el peso, NO confía en el cliente). Índice de valor = Σ count×peso.",
+    "ga4_auto": "Enhanced Measurement de GA4 (no instrumentado por nosotros): session_start, first_visit, user_engagement, page_view(auto off), scroll, click, form_start, form_submit."
+  },
+  "ga4_key_events": [
+    "purchase",
+    "profile_view",
+    "outbound_click",
+    "auction_click"
+  ],
+  "field_legend": {
+    "fire": "trackEvent=GA4 | trackValueEvent=GA4+ledger | emitValueBeacon=solo ledger | raw_gtag=window.gtag directo (bypassa helper) | ga4_auto=Enhanced Measurement | server=backend",
+    "key": "es Key Event en GA4",
+    "val": "{ledger, weight, group} si entra al value_events; null si no",
+    "seen90": "eventCount en GA4 últimos 90d (0 = definido pero no visto en la ventana)",
+    "status": "ok | drift (inconsistencia) | gap (definido, poco/no disparado) | dead (definido y sin call-site) | auto"
+  },
+  "events": [
+    {
+      "n": "page_view",
+      "fire": "trackEvent",
+      "wrapper": "trackPageView",
+      "def": "analytics.ts:42",
+      "sites": [
+        "AnalyticsProvider.tsx:23 (SPA route change)"
+      ],
+      "params": [
+        "page_path",
+        "page_location"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 18821,
+      "status": "ok",
+      "note": "gtag config con send_page_view:false → esta es la ÚNICA fuente de pageview (SPA-aware)."
+    },
+    {
+      "n": "session_start",
+      "fire": "ga4_auto",
+      "seen90": 7116,
+      "status": "auto",
+      "note": "Enhanced Measurement."
+    },
+    {
+      "n": "first_visit",
+      "fire": "ga4_auto",
+      "seen90": 5375,
+      "status": "auto"
+    },
+    {
+      "n": "user_engagement",
+      "fire": "ga4_auto",
+      "seen90": 5427,
+      "status": "auto"
+    },
+    {
+      "n": "scroll",
+      "fire": "ga4_auto",
+      "seen90": 2204,
+      "status": "auto",
+      "note": "Auto 90% de GA4. Distinto de nuestro scroll_depth (≥75%, ledger)."
+    },
+    {
+      "n": "click",
+      "fire": "ga4_auto",
+      "seen90": 341,
+      "status": "auto",
+      "note": "Outbound-click automático de GA4; convive con nuestro outbound_click custom."
+    },
+    {
+      "n": "form_start",
+      "fire": "ga4_auto",
+      "seen90": 80,
+      "status": "auto"
+    },
+    {
+      "n": "form_submit",
+      "fire": "ga4_auto",
+      "seen90": 3,
+      "status": "auto"
+    },
+    {
+      "n": "profile_view",
+      "fire": "trackEvent",
+      "wrapper": "trackProfileView",
+      "def": "analytics.ts:95",
+      "sites": [
+        "ConsignatariaProfileClient.tsx:493 (useEffect on mount)"
+      ],
+      "params": [
+        "consignataria_slug",
+        "consignataria_name",
+        "auction_count"
+      ],
+      "key": true,
+      "val": null,
+      "seen90": 844,
+      "status": "ok",
+      "note": "Key event #1 (conversión dominante). Ojo: también hay POST /api/profile-views paralelo (tabla profile_views)."
+    },
+    {
+      "n": "outbound_click",
+      "fire": "trackEvent",
+      "wrapper": "trackOutboundClick",
+      "def": "analytics.ts:104",
+      "sites": [
+        "ConsignatariaProfileClient (x11)",
+        "RematesClient (x9)",
+        "WhatsAppShare",
+        "CitaBlock:19",
+        "+ más"
+      ],
+      "params": [
+        "url",
+        "link_type"
+      ],
+      "key": true,
+      "val": null,
+      "seen90": 110,
+      "status": "ok",
+      "note": "link_type ∈ catalog|youtube|source|whatsapp|whatsapp_fab|website."
+    },
+    {
+      "n": "auction_click",
+      "fire": "trackEvent",
+      "wrapper": "trackAuctionClick",
+      "def": "analytics.ts:65",
+      "sites": [
+        "RematesClient.tsx:194"
+      ],
+      "params": [
+        "auction_id",
+        "consignataria",
+        "consignataria_slug",
+        "province",
+        "auction_type",
+        "auction_date",
+        "destination",
+        "is_featured"
+      ],
+      "key": true,
+      "val": null,
+      "seen90": 69,
+      "status": "ok"
+    },
+    {
+      "n": "purchase",
+      "fire": "trackEvent",
+      "wrapper": "trackProUpgrade",
+      "def": "analytics.ts:304",
+      "sites": [
+        "UpgradeConfirmTracker.tsx:57 (solo tras confirmación DB)"
+      ],
+      "params": [
+        "transaction_id",
+        "value",
+        "currency",
+        "plan_name",
+        "conversion_source",
+        "items"
+      ],
+      "key": true,
+      "val": {
+        "ledger": "subscription_paid",
+        "weight": 100,
+        "group": "conversion",
+        "emitted_by": "server (webhook rebill)"
+      },
+      "seen90": 0,
+      "status": "gap",
+      "note": "0 compras en 90d. La conversión de valor (subscription_paid w100) la emite el webhook server-side, NO este evento cliente."
+    },
+    {
+      "n": "filter_apply",
+      "fire": "trackEvent",
+      "wrapper": "trackFilterApply",
+      "def": "analytics.ts:87",
+      "sites": [
+        "RematesClient.tsx:801,804,809,813",
+        "FrigorificosClient.tsx:351,365"
+      ],
+      "params": [
+        "filter_type",
+        "filter_value"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 293,
+      "status": "ok"
+    },
+    {
+      "n": "search",
+      "fire": "trackEvent",
+      "wrapper": "trackSearch",
+      "def": "analytics.ts:112",
+      "sites": [
+        "FrigorificosClient.tsx:253"
+      ],
+      "params": [
+        "search_term",
+        "result_count",
+        "page"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 158,
+      "status": "ok"
+    },
+    {
+      "n": "calculadora_calculate",
+      "fire": "trackEvent",
+      "wrapper": "(inline)",
+      "def": "CalculadoraClient.tsx:127",
+      "sites": [
+        "CalculadoraClient.tsx:127"
+      ],
+      "params": [
+        "categorias",
+        "lineas",
+        "total_cabezas",
+        "total_kilos",
+        "valor_bruto"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 41,
+      "status": "ok"
+    },
+    {
+      "n": "calculadora_lead",
+      "fire": "trackEvent",
+      "wrapper": "(inline)",
+      "def": "CalculadoraClient.tsx:144",
+      "sites": [
+        "CalculadoraClient.tsx:144"
+      ],
+      "params": [
+        "source",
+        "valor_bruto",
+        "total_cabezas"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 1,
+      "status": "ok"
+    },
+    {
+      "n": "valuation_calc_used",
+      "fire": "trackEvent",
+      "wrapper": "(inline)",
+      "def": "ValuationWidget.tsx:53",
+      "sites": [
+        "ValuationWidget.tsx:53"
+      ],
+      "params": [
+        "—"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 14,
+      "status": "ok",
+      "note": "Calc del landing (distinto de /calculadora). También emite tool_used (ledger)."
+    },
+    {
+      "n": "valuation_lead",
+      "fire": "trackEvent",
+      "wrapper": "(inline)",
+      "def": "ValuationWidget.tsx:90",
+      "sites": [
+        "ValuationWidget.tsx:90"
+      ],
+      "params": [
+        "—"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "account_nudge",
+      "fire": "trackEvent",
+      "wrapper": "trackAccountNudge",
+      "def": "analytics.ts:126",
+      "sites": [
+        "AccountNudge.tsx:85,106,111,122"
+      ],
+      "params": [
+        "nudge_action(view|click|dismiss)",
+        "nudge_reason"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "new",
+      "note": "NUEVO (Fase 1 nudge-first). Disparado por requestAccountNudge desde CalculadoraClient:159, SellZoneAlertSignup:59, ConsignatariaProfileClient:797,809. Aún sin datos (pre-deploy)."
+    },
+    {
+      "n": "pro_prompt_view",
+      "fire": "trackEvent+ledger",
+      "wrapper": "trackProPromptView",
+      "def": "analytics.ts:187",
+      "sites": [
+        "ProPromptView.tsx:23",
+        "ProUpgradePrompt.tsx:47",
+        "SeasonalityView.tsx:27"
+      ],
+      "params": [
+        "prompt_context",
+        "prompt_variant",
+        "context",
+        "variant"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "pro_prompt_view",
+        "weight": 1,
+        "group": "funnel"
+      },
+      "seen90": 2728,
+      "status": "ok",
+      "note": "RESUELTO: params duplicados (context/variant) removidos; quedan prompt_context/prompt_variant."
+    },
+    {
+      "n": "pro_prompt_click",
+      "fire": "trackEvent+ledger",
+      "wrapper": "trackProPromptClick",
+      "def": "analytics.ts:202",
+      "sites": [
+        "ProUpgradePrompt.tsx:53",
+        "SeasonalityView.tsx:43"
+      ],
+      "params": [
+        "prompt_context",
+        "prompt_variant",
+        "context",
+        "variant"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "pro_prompt_click",
+        "weight": 6,
+        "group": "funnel"
+      },
+      "seen90": 19,
+      "status": "ok",
+      "note": "RESUELTO: params duplicados removidos. CTR del muro = 19/2728 ≈ 0,7%."
+    },
+    {
+      "n": "planes_view",
+      "fire": "trackEvent+ledger",
+      "wrapper": "trackPlanesView",
+      "def": "analytics.ts:249",
+      "sites": [
+        "PlanesTracker.tsx:19"
+      ],
+      "params": [
+        "source"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "planes_view",
+        "weight": 8,
+        "group": "funnel"
+      },
+      "seen90": 106,
+      "status": "ok"
+    },
+    {
+      "n": "checkout_start",
+      "fire": "trackEvent+ledger",
+      "wrapper": "trackCheckoutStart",
+      "def": "analytics.ts:258",
+      "sites": [
+        "SubscribeButton.tsx:42"
+      ],
+      "params": [
+        "plan_name",
+        "plan_price",
+        "value",
+        "currency",
+        "context",
+        "variant"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "checkout_start",
+        "weight": 30,
+        "group": "funnel"
+      },
+      "seen90": 0,
+      "status": "gap",
+      "note": "Ledger emite peso 30 pero GA4 no vio ninguno en 90d."
+    },
+    {
+      "n": "checkout_redirect",
+      "fire": "trackEvent",
+      "wrapper": "trackCheckoutRedirect",
+      "def": "analytics.ts:277",
+      "sites": [
+        "SubscribeButton.tsx:58"
+      ],
+      "params": [
+        "plan_name",
+        "plan_price",
+        "value",
+        "currency",
+        "context",
+        "variant"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "free_taste_unlock",
+      "fire": "trackEvent",
+      "wrapper": "trackFreeTasteUnlock",
+      "def": "analytics.ts:241",
+      "sites": [
+        "VenderAhoraClient.tsx:87"
+      ],
+      "params": [
+        "taste_context",
+        "categoria"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 2,
+      "status": "ok"
+    },
+    {
+      "n": "sign_up",
+      "fire": "trackEvent+ledger",
+      "wrapper": "trackSignup",
+      "def": "analytics.ts:320",
+      "sites": [
+        "AnalyticsProvider.tsx:141 (SignupTracker en ?signup=1)"
+      ],
+      "params": [
+        "signup_method"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "signup",
+        "weight": 15,
+        "group": "funnel",
+        "name_mismatch": "GA4=sign_up, ledger=signup"
+      },
+      "seen90": 4,
+      "status": "drift",
+      "note": "NAME MISMATCH deliberado GA4 'sign_up' vs ledger 'signup'. Consistente si se sabe; trampa si no."
+    },
+    {
+      "n": "alert_subscribe",
+      "fire": "trackEvent+ledger",
+      "wrapper": "trackAlertSubscribe",
+      "def": "analytics.ts:421",
+      "sites": [
+        "SellZoneAlertSignup.tsx:56",
+        "PriceAlertSignup.tsx:75",
+        "PriceThresholdAlertSignup.tsx:52",
+        "ArrendamientoLiquidacionSignup.tsx:86"
+      ],
+      "params": [
+        "source",
+        "page"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "alert_create",
+        "weight": 8,
+        "group": "recurrencia",
+        "name_mismatch": "GA4=alert_subscribe, ledger=alert_create"
+      },
+      "seen90": 10,
+      "status": "drift",
+      "note": "NAME MISMATCH GA4 'alert_subscribe' vs ledger 'alert_create'."
+    },
+    {
+      "n": "cta_click",
+      "fire": "trackEvent",
+      "wrapper": "trackCTA",
+      "def": "analytics.ts:135",
+      "sites": [
+        "LiveHero.tsx:134,142,150,159"
+      ],
+      "params": [
+        "cta_name",
+        "location",
+        "context",
+        "variant"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 46,
+      "status": "ok"
+    },
+    {
+      "n": "internal_nav_click",
+      "fire": "trackEvent",
+      "wrapper": "trackInternalNavClick",
+      "def": "analytics.ts:433",
+      "sites": [
+        "ProvinceLinkGrid.tsx:75"
+      ],
+      "params": [
+        "from_hub",
+        "to_province",
+        "silo"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 63,
+      "status": "ok"
+    },
+    {
+      "n": "since_last_visit_shown",
+      "fire": "trackEvent",
+      "wrapper": "trackSinceLastVisitShown",
+      "def": "analytics.ts:405",
+      "sites": [
+        "SinceLastVisit.tsx:70"
+      ],
+      "params": [
+        "has_delta",
+        "page"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 648,
+      "status": "ok"
+    },
+    {
+      "n": "since_last_visit_click",
+      "fire": "trackEvent",
+      "wrapper": "trackSinceLastVisitClick",
+      "def": "analytics.ts:413",
+      "sites": [
+        "SinceLastVisit.tsx:91"
+      ],
+      "params": [
+        "page"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 18,
+      "status": "ok"
+    },
+    {
+      "n": "watchlist_save",
+      "fire": "trackEvent",
+      "wrapper": "trackWatchlistSave",
+      "def": "analytics.ts:455",
+      "sites": [
+        "FollowButton.tsx:53"
+      ],
+      "params": [
+        "item_type",
+        "auth_state"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 1,
+      "status": "ok"
+    },
+    {
+      "n": "watchlist_return",
+      "fire": "trackEvent",
+      "wrapper": "trackWatchlistReturn",
+      "def": "analytics.ts:466",
+      "sites": [],
+      "params": [
+        "count"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "dead",
+      "note": "Wrapper definido, SIN call-site en el código."
+    },
+    {
+      "n": "watchlist_notify_optin",
+      "fire": "trackEvent",
+      "wrapper": "trackWatchlistNotifyOptin",
+      "def": "analytics.ts:473",
+      "sites": [],
+      "params": [
+        "item_type"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "dead",
+      "note": "Wrapper definido, SIN call-site (WatchlistNotifyOptin no lo llama)."
+    },
+    {
+      "n": "watchlist_merge",
+      "fire": "trackEvent",
+      "wrapper": "trackWatchlistMerge",
+      "def": "analytics.ts:480",
+      "sites": [
+        "useFavorites.ts:109"
+      ],
+      "params": [
+        "merged"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "digest_open",
+      "fire": "trackEvent",
+      "wrapper": "trackDigestOpen",
+      "def": "analytics.ts:487",
+      "sites": [],
+      "params": [
+        "campaign"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "dead",
+      "note": "Sin call-site cliente (los digests son email; el open se mide server/pixel, no acá)."
+    },
+    {
+      "n": "digest_click",
+      "fire": "trackEvent",
+      "wrapper": "trackDigestClick",
+      "def": "analytics.ts:494",
+      "sites": [],
+      "params": [
+        "campaign",
+        "target"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "dead"
+    },
+    {
+      "n": "auction_email_click",
+      "fire": "trackEvent",
+      "wrapper": "trackAuctionEmailClick",
+      "def": "analytics.ts:510",
+      "sites": [],
+      "params": [
+        "mail",
+        "consignataria_slug",
+        "destination"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "dead",
+      "note": "Sin call-site. Los clics de mail llegan por querystring; no hay handler que llame este wrapper."
+    },
+    {
+      "n": "claim_cta_click",
+      "fire": "trackEvent+ledger",
+      "wrapper": "trackClaimCTA",
+      "def": "analytics.ts:149",
+      "sites": [
+        "(via ConsignatariaProfileClient trackValueEvent:978?)"
+      ],
+      "params": [
+        "consignataria_slug",
+        "consignataria_name"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "claim_cta_click",
+        "weight": 4,
+        "group": "b2b"
+      },
+      "seen90": 1,
+      "status": "ok"
+    },
+    {
+      "n": "claim_submit",
+      "fire": "trackEvent",
+      "wrapper": "trackClaimSubmit",
+      "def": "analytics.ts:157",
+      "sites": [
+        "ClaimForm.tsx:52",
+        "FrigorificoClaimForm.tsx:49"
+      ],
+      "params": [
+        "consignataria_slug",
+        "consignataria_name"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "claim_success",
+      "fire": "trackEvent",
+      "wrapper": "trackClaimSuccess",
+      "def": "analytics.ts:165",
+      "sites": [
+        "ClaimForm.tsx:69",
+        "FrigorificoClaimForm.tsx:63"
+      ],
+      "params": [
+        "consignataria_slug",
+        "consignataria_name"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "dte_page_view",
+      "fire": "trackEvent",
+      "wrapper": "trackDtePageView",
+      "def": "analytics.ts:329",
+      "sites": [
+        "mi-cuenta/guias/page.tsx:19"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap",
+      "note": "Feature DT-e — bajo volumen; no visto en 90d."
+    },
+    {
+      "n": "dte_upload_start",
+      "fire": "trackEvent",
+      "wrapper": "trackDteUploadStart",
+      "def": "analytics.ts:334",
+      "sites": [
+        "DTEUploader.tsx:52"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "dte_ocr_complete",
+      "fire": "trackEvent",
+      "wrapper": "trackDteOcrComplete",
+      "def": "analytics.ts:339",
+      "sites": [
+        "DTEUploader.tsx:67"
+      ],
+      "params": [
+        "ocr_confidence",
+        "confidence_bucket"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "dte_save",
+      "fire": "trackEvent",
+      "wrapper": "trackDteSave",
+      "def": "analytics.ts:347",
+      "sites": [
+        "mi-cuenta/guias/page.tsx:85"
+      ],
+      "params": [
+        "is_first_dte",
+        "cabezas"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "activation_first_dte",
+      "fire": "trackEvent",
+      "wrapper": "trackDteSave(isFirst)",
+      "def": "analytics.ts:355",
+      "sites": [
+        "(dentro de trackDteSave)"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap",
+      "note": "Momento de activación clave — candidato a Key Event si DT-e escala."
+    },
+    {
+      "n": "dte_milestone",
+      "fire": "trackEvent",
+      "wrapper": "trackDteMilestone",
+      "def": "analytics.ts:360",
+      "sites": [
+        "mi-cuenta/guias/page.tsx:87"
+      ],
+      "params": [
+        "dte_count"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "dte_delete",
+      "fire": "trackEvent",
+      "wrapper": "trackDteDelete",
+      "def": "analytics.ts:369",
+      "sites": [
+        "DTEHistory.tsx:115"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "dte_demo_start",
+      "fire": "trackEvent",
+      "wrapper": "trackDteDemoStart",
+      "def": "analytics.ts:374",
+      "sites": [
+        "DTEUploader.tsx:106"
+      ],
+      "params": [
+        "source"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "milestone_share",
+      "fire": "trackEvent",
+      "wrapper": "trackMilestoneShare",
+      "def": "analytics.ts:379",
+      "sites": [
+        "MilestoneBadges.tsx:86"
+      ],
+      "params": [
+        "badge_id",
+        "badge_name",
+        "dte_count"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "bulk_ics_export",
+      "fire": "trackEvent",
+      "wrapper": "trackBulkIcsExport",
+      "def": "analytics.ts:388",
+      "sites": [
+        "RematesClient.tsx:787"
+      ],
+      "params": [
+        "count",
+        "period",
+        "has_filters"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "calendar_download",
+      "fire": "raw_gtag",
+      "wrapper": "(ninguno)",
+      "def": "AddToCalendarButton.tsx:59",
+      "sites": [
+        "AddToCalendarButton.tsx:59"
+      ],
+      "params": [
+        "(inline)"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "calendar_download",
+        "weight": 6,
+        "group": "recurrencia"
+      },
+      "seen90": 5,
+      "status": "ok",
+      "note": "RESUELTO (2026-07-09): ahora usa trackValueEvent (GA4 + ledger recurrencia w6). Antes era window.gtag crudo."
+    },
+    {
+      "n": "calendar_subscribe",
+      "fire": "trackValueEvent",
+      "wrapper": "(inline)",
+      "def": "CalendarButtons.tsx:21",
+      "sites": [
+        "CalendarButtons.tsx:21"
+      ],
+      "params": [
+        "entity_type",
+        "entity_slug"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "calendar_subscribe",
+        "weight": 12,
+        "group": "recurrencia"
+      },
+      "seen90": 1,
+      "status": "ok"
+    },
+    {
+      "n": "newsletter_subscribe",
+      "fire": "trackValueEvent",
+      "wrapper": "(inline)",
+      "def": "NewsletterSignup.tsx:47",
+      "sites": [
+        "NewsletterSignup.tsx:47"
+      ],
+      "params": [
+        "entity_type",
+        "entity_slug"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "newsletter_subscribe",
+        "weight": 8,
+        "group": "recurrencia"
+      },
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "contact_whatsapp",
+      "fire": "trackValueEvent",
+      "wrapper": "trackWhatsAppClick",
+      "def": "analytics.ts:223",
+      "sites": [
+        "ConsignatariaProfileClient.tsx:797(via trackWhatsAppClick)",
+        "WhatsAppLeadFAB (no)",
+        "SmartCTA"
+      ],
+      "params": [
+        "entity_type",
+        "entity_slug",
+        "source"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "contact_whatsapp",
+        "weight": 10,
+        "group": "lead"
+      },
+      "seen90": "n/a",
+      "status": "ok",
+      "note": "Emite outbound_click(GA)+contact_whatsapp(ledger)+beacon /api/track/whatsapp. Handler unificado."
+    },
+    {
+      "n": "whatsapp_lead",
+      "fire": "trackValueEvent",
+      "wrapper": "(inline)",
+      "def": "WhatsAppLeadFAB.tsx:40",
+      "sites": [
+        "WhatsAppLeadFAB.tsx:40"
+      ],
+      "params": [
+        "—"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "whatsapp_lead",
+        "weight": 12,
+        "group": "b2b"
+      },
+      "seen90": 7,
+      "status": "ok",
+      "note": "FAB global 'sumá tu consignataria' → lead B2B a NUESTRO número."
+    },
+    {
+      "n": "lead_form",
+      "fire": "trackValueEvent",
+      "wrapper": "(inline)",
+      "def": "ContactlessLeadForm.tsx:49",
+      "sites": [
+        "ContactlessLeadForm.tsx:49"
+      ],
+      "params": [
+        "entity_type",
+        "entity_slug"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "lead_form",
+        "weight": 10,
+        "group": "lead"
+      },
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "catalog_click",
+      "fire": "trackValueEvent",
+      "wrapper": "(inline)",
+      "def": "ConsignatariaProfileClient.tsx:742/736",
+      "sites": [
+        "ConsignatariaProfileClient.tsx:736,742"
+      ],
+      "params": [
+        "entity_type",
+        "entity_slug"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "catalog_click",
+        "weight": 5,
+        "group": "engagement"
+      },
+      "seen90": 5,
+      "status": "ok"
+    },
+    {
+      "n": "live_click",
+      "fire": "trackValueEvent",
+      "wrapper": "(inline)",
+      "def": "ConsignatariaProfileClient.tsx:978",
+      "sites": [
+        "ConsignatariaProfileClient.tsx:978"
+      ],
+      "params": [
+        "entity_type",
+        "entity_slug"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "live_click",
+        "weight": 5,
+        "group": "engagement"
+      },
+      "seen90": 12,
+      "status": "ok"
+    },
+    {
+      "n": "tool_used",
+      "fire": "trackValueEvent",
+      "wrapper": "(inline)",
+      "def": "ValuationWidget.tsx:55 / ArrendamientoCalculator.tsx:69",
+      "sites": [
+        "ValuationWidget.tsx:55",
+        "ArrendamientoCalculator.tsx:69"
+      ],
+      "params": [
+        "—"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "tool_used",
+        "weight": 4,
+        "group": "engagement"
+      },
+      "seen90": 11,
+      "status": "ok"
+    },
+    {
+      "n": "time_on_page",
+      "fire": "trackValueEvent",
+      "wrapper": "(EngagementTracker)",
+      "def": "AnalyticsProvider.tsx:247",
+      "sites": [
+        "AnalyticsProvider.tsx:247"
+      ],
+      "params": [
+        "—"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "time_on_page",
+        "weight": 1,
+        "group": "engagement"
+      },
+      "seen90": 988,
+      "status": "ok",
+      "note": "Señal de tiempo-en-app — sustrato natural para karma (Fase 2 gating)."
+    },
+    {
+      "n": "scroll_depth",
+      "fire": "trackValueEvent",
+      "wrapper": "(EngagementTracker)",
+      "def": "AnalyticsProvider.tsx:256",
+      "sites": [
+        "AnalyticsProvider.tsx:256"
+      ],
+      "params": [
+        "—"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "scroll_depth",
+        "weight": 1,
+        "group": "engagement"
+      },
+      "seen90": 205,
+      "status": "ok"
+    },
+    {
+      "n": "ai_referral",
+      "fire": "trackValueEvent",
+      "wrapper": "(AiReferralTracker)",
+      "def": "AnalyticsProvider/analytics",
+      "sites": [
+        "AnalyticsProvider (ai_engine en sessionStorage)"
+      ],
+      "params": [
+        "ai_engine"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "ai_referral",
+        "weight": 3,
+        "group": "discovery"
+      },
+      "seen90": 419,
+      "status": "ok",
+      "note": "Setea sessionStorage('ai_engine') que luego atribuye TODO el ledger a source='ai'."
+    },
+    {
+      "n": "tool_view",
+      "fire": "trackValueEvent/trackEvent",
+      "wrapper": "(TrackOnMount)",
+      "def": "TrackOnMount.tsx:25",
+      "sites": [
+        "TrackOnMount.tsx:25"
+      ],
+      "params": [
+        "—"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 90,
+      "status": "ok"
+    },
+    {
+      "n": "chart_view",
+      "fire": "trackEvent",
+      "wrapper": "(ProChartGate)",
+      "def": "ProChartGate.tsx:27",
+      "sites": [
+        "ProChartGate.tsx:27"
+      ],
+      "params": [
+        "—"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 2,
+      "status": "ok"
+    },
+    {
+      "n": "remate_mark_toggle",
+      "fire": "trackEvent",
+      "wrapper": "(inline)",
+      "def": "RemateMarkButton.tsx:54",
+      "sites": [
+        "RemateMarkButton.tsx:54"
+      ],
+      "params": [
+        "—"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap",
+      "note": "Alimenta karma (remate_marks). No visto en 90d — verificar que dispara."
+    },
+    {
+      "n": "remate_mark_login_prompt",
+      "fire": "trackEvent",
+      "wrapper": "(inline)",
+      "def": "RemateMarkButton.tsx:62",
+      "sites": [
+        "RemateMarkButton.tsx:62"
+      ],
+      "params": [
+        "—"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "widget_code_copy",
+      "fire": "trackEvent",
+      "wrapper": "(inline)",
+      "def": "(embed widget)",
+      "sites": [
+        "(widget embebible)"
+      ],
+      "params": [
+        "—"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "inmag_csv_download",
+      "fire": "trackEvent",
+      "wrapper": "(HistoryDownloadPro)",
+      "def": "HistoryDownloadPro.tsx:14",
+      "sites": [
+        "HistoryDownloadPro.tsx:14"
+      ],
+      "params": [
+        "—"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "referral_whatsapp_share",
+      "fire": "trackEvent",
+      "wrapper": "(inline)",
+      "def": "(share)",
+      "sites": [
+        "PriceWhatsAppShare / WhatsAppShare"
+      ],
+      "params": [
+        "—"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "referral_link_copy",
+      "fire": "trackEvent",
+      "wrapper": "(inline)",
+      "def": "(share)",
+      "sites": [
+        "(share components)"
+      ],
+      "params": [
+        "—"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap"
+    },
+    {
+      "n": "digest_open_placeholder",
+      "fire": "n/a",
+      "seen90": 0,
+      "status": "note",
+      "note": "Ver digest_open/click arriba (dead)."
+    },
+    {
+      "n": "contact_phone",
+      "fire": "(no emitido)",
+      "wrapper": null,
+      "def": "value-events.ts:42 (definido)",
+      "sites": [],
+      "params": [],
+      "key": false,
+      "val": {
+        "ledger": "contact_phone",
+        "weight": 6,
+        "group": "lead"
+      },
+      "seen90": 0,
+      "status": "ok",
+      "note": "RESUELTO: el tel del perfil ahora es tel: link con trackValueEvent(contact_phone). Antes texto plano."
+    },
+    {
+      "n": "contact_email",
+      "fire": "(no emitido)",
+      "wrapper": null,
+      "def": "value-events.ts:43 (definido)",
+      "sites": [],
+      "params": [],
+      "key": false,
+      "val": {
+        "ledger": "contact_email",
+        "weight": 6,
+        "group": "lead"
+      },
+      "seen90": 0,
+      "status": "ok",
+      "note": "RESUELTO: el mailto del perfil ahora dispara trackValueEvent(contact_email)."
+    },
+    {
+      "n": "contact_web",
+      "fire": "(no emitido)",
+      "wrapper": null,
+      "def": "value-events.ts:44 (definido)",
+      "sites": [],
+      "params": [],
+      "key": false,
+      "val": {
+        "ledger": "contact_web",
+        "weight": 4,
+        "group": "lead"
+      },
+      "seen90": 0,
+      "status": "ok",
+      "note": "RESUELTO: el link web del perfil ahora dispara contact_web ademas de outbound_click."
+    },
+    {
+      "n": "youtube_channel_click",
+      "fire": "(no emitido)",
+      "wrapper": null,
+      "def": "value-events.ts:52 (definido)",
+      "sites": [],
+      "params": [],
+      "key": false,
+      "val": {
+        "ledger": "youtube_channel_click",
+        "weight": 3,
+        "group": "engagement"
+      },
+      "seen90": 0,
+      "status": "dead",
+      "note": "DEFINIDO (w3) pero sin emisor."
+    }
+  ],
+  "out_of_scope": {
+    "trackCron": "src/lib/ops.ts:215 — instrumentación server-side de crons (ops_events), NO es GA4/analytics de producto. 8 call-sites en /api/cron/*. Fuera del tracking plan de front."
+  },
+  "last_fixed": "2026-07-09: P0-1 (calendar_download), P0-2 (contact_phone/email/web), P1-6 (pro_prompt params)."
+}
