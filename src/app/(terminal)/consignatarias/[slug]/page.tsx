@@ -10,6 +10,7 @@ import { mergedSlugStaticParams } from '../_views/sluglist'
 import rematesData from '@/lib/data/remates.json'
 import marketData from '@/lib/data/market-prices.json'
 import existenciasData from '@/lib/data/existencias-bovinas.json'
+import consignatariasRegistry from '@/lib/data/consignatarias.json'
 import type { Auction } from '@/lib/db/schema'
 import {
   getCanonicalSlug,
@@ -56,6 +57,41 @@ export const revalidate = false
 export const dynamicParams = true
 
 const auctions = rematesData as Auction[]
+
+/* ------------------------------------------------------------------ */
+/*  CUIT lookup + formatting (navegacional/CUIT search intent)         */
+/* ------------------------------------------------------------------ */
+
+// Normaliza un nombre de firma para matchear contra el registro (mayúsculas,
+// puntuación y acentos aparte). "Colombo y Colombo SA" -> "colomboycolombosa".
+const normalizeFirmName = (s: string) =>
+  s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]/g, '')
+
+// Índice CUIT por nombre normalizado, derivado de consignatarias.json (registro
+// MAG). Best-effort: sólo las firmas presentes en el registro reciben CUIT; el
+// resto queda en null (no se inventa el dato).
+const CUIT_BY_NAME: Record<string, string> = (() => {
+  const map: Record<string, string> = {}
+  for (const r of consignatariasRegistry as Array<{ name?: string; cuit?: string }>) {
+    if (r?.name && r?.cuit) map[normalizeFirmName(r.name)] = r.cuit
+  }
+  return map
+})()
+
+function lookupCuit(displayName: string): string | null {
+  return CUIT_BY_NAME[normalizeFirmName(displayName)] ?? null
+}
+
+// Formatea 11 dígitos como XX-XXXXXXXX-X. Entrada ya formateada o atípica pasa igual.
+function formatCuit(cuit: string): string {
+  const digits = cuit.replace(/\D/g, '')
+  if (digits.length !== 11) return cuit
+  return `${digits.slice(0, 2)}-${digits.slice(2, 10)}-${digits.slice(10)}`
+}
 
 /**
  * Resolve a URL slug to render under. Curated slugs resolve to their canonical;
@@ -214,8 +250,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? `${profile.displayName} — ${customSEO.titleSuffix}`
     : `${profile.displayName}: Precios y Remates de Hacienda`
 
+  // CUIT desde el registro MAG (consignatarias.json). Cuando existe, se añade a
+  // la description para capturar además la búsqueda por CUIT crudo de la firma.
+  const cuit = lookupCuit(profile.displayName)
+
   const description = customSEO?.description
-    || `Remates y precios de hacienda de ${profile.displayName}${geo}. ${profileAuctions.length} remates registrados${upcoming > 0 ? `, ${upcoming} próximos` : ''}. Cotizaciones por categoría actualizadas tras cada remate.`
+    || `Remates y precios de hacienda de ${profile.displayName}${geo}. ${profileAuctions.length} remates registrados${upcoming > 0 ? `, ${upcoming} próximos` : ''}. Cotizaciones por categoría actualizadas tras cada remate.${cuit ? ` CUIT ${formatCuit(cuit)}.` : ''}`
 
   // Thin profiles (0–1 remates, no SEO enhancement) have too little unique
   // content to index — keep them crawlable/followable but out of the index.
@@ -360,8 +400,10 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
   const upcomingCount = profileAuctions.filter(a => a.date >= today).length
   const tipos = [...new Set(profileAuctions.map(a => a.type).filter(Boolean))]
   const provincesList = provinces.length ? provinces.join(', ') : primaryProvince
+  // CUIT: preferir el enriquecido (DB) y caer al registro MAG por nombre.
+  const bodyCuit = enrichedProfile.cuit || lookupCuit(enrichedProfile.displayName)
   const consigSummary =
-    `${enrichedProfile.displayName} es una consignataria de hacienda con ${profileAuctions.length} ${profileAuctions.length === 1 ? 'remate registrado' : 'remates registrados'} en consignatarias.com.ar` +
+    `${enrichedProfile.displayName} es una consignataria de hacienda${bodyCuit ? `, CUIT ${formatCuit(bodyCuit)},` : ''} con ${profileAuctions.length} ${profileAuctions.length === 1 ? 'remate registrado' : 'remates registrados'} en consignatarias.com.ar` +
     (upcomingCount > 0 ? `, ${upcomingCount} ${upcomingCount === 1 ? 'próximo' : 'próximos'}` : '') +
     `. Opera en ${provinces.length > 1 ? `${provinces.length} provincias (${provincesList})` : provincesList}` +
     (tipos.length ? `, con remates de ${tipos.join(', ')}` : '') +
@@ -436,6 +478,41 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
           addressRegion: primaryProvince,
         }}
         url={`https://www.consignatarias.com.ar/consignatarias/${canonical}`}
+      />
+      {/* Entidad-firma con CUIT como identifier — señal de autoridad para la query
+          navegacional de marca ("colombo y colombo", "bressan y cia") y para saltar
+          sobre directorios genéricos. Inline (la Organization de JsonLd.tsx describe
+          al sitio, no a la firma). El identifier sólo se emite si hay CUIT. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: enrichedProfile.displayName,
+            url: `https://www.consignatarias.com.ar/consignatarias/${canonical}`,
+            areaServed: { '@type': 'AdministrativeArea', name: primaryProvince },
+            ...(primaryCity
+              ? {
+                  address: {
+                    '@type': 'PostalAddress',
+                    addressLocality: primaryCity,
+                    addressRegion: primaryProvince,
+                    addressCountry: 'AR',
+                  },
+                }
+              : {}),
+            ...(bodyCuit
+              ? {
+                  identifier: {
+                    '@type': 'PropertyValue',
+                    propertyID: 'CUIT',
+                    value: formatCuit(bodyCuit),
+                  },
+                }
+              : {}),
+          }),
+        }}
       />
       {upcomingAuctions.map(auction => (
         <EventSchema

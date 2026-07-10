@@ -20,6 +20,19 @@ import rematesData from '@/lib/data/remates.json'
 const inmag = marketData.inmag
 const series = inmag.series as Array<{ date: string; value: number; volume?: number }>
 
+// Índice OFICIAL de arrendamiento del MAG (haciinfo000013, "índice sugerido para
+// arrendamientos rurales"). Es la cifra correcta para arrendamiento — más precisa que usar
+// el INMAG diario como proxy. `index` = valor del día; `periodIndex` = promedio del período
+// vigente (lo que se liquida). El INMAG diario queda como referencia secundaria.
+const arr = marketData.arrendamientoOficial as {
+  date: string
+  index: number
+  periodStart: string
+  periodEnd: string
+  periodIndex: number
+  source: string
+}
+
 // Snapshot server para "Desde tu última visita" (mismo patrón que /overview).
 const TODAY = new Date().toISOString().slice(0, 10)
 const inmagSnapshotDate = series[series.length - 1]?.date ?? marketData.lastUpdate
@@ -89,8 +102,8 @@ export const metadata: Metadata = {
   // centavos ($4.283,84→$4.284) that were truncating the title at 60 chars and adding
   // SERP noise; dropping "(índice INMAG)" frees room. Description leads with the literal
   // query + live variation + an action hook ("calculá el canon"). v1.40 CTR pass.
-  title: `Precio Novillo Arrendamiento Hoy: $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg`,
-  description: `Precio del novillo para arrendamiento hoy: $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1)}%). Calculá el canon de tu campo en kg/ha al índice INMAG. Promedio mensual y serie histórica.`,
+  title: `Precio Novillo Arrendamiento Hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg`,
+  description: `Precio del novillo para arrendamiento hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg — índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero (período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)}, act. ${fmtFecha(arr.date)}). INMAG novillo diario: $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1)}%). Calculá el canon de tu campo en kg/ha.`,
   keywords: [
     'índice novillo arrendamiento',
     'indice novillo arrendamiento hoy',
@@ -103,8 +116,8 @@ export const metadata: Metadata = {
     'INMAG arrendamiento',
   ],
   openGraph: {
-    title: `Índice Novillo Arrendamiento Hoy: $${inmag.current.toLocaleString('es-AR')}/kg | Consignatarias`,
-    description: `Índice Novillo Arrendamiento actualizado. Variación: ${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1)}%. Referencia para contratos de arrendamiento rural en Argentina.`,
+    title: `Índice Novillo Arrendamiento Hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg | Consignatarias`,
+    description: `Índice oficial del novillo para arrendamiento: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg (act. ${fmtFecha(arr.date)}). Referencia para contratos de arrendamiento rural en Argentina.`,
     url: 'https://www.consignatarias.com.ar/mercado/arrendamiento',
     type: 'website',
   },
@@ -121,7 +134,7 @@ function FAQSchema() {
       // hoy". Esta FAQ la responde con el NÚMERO VIVO → es lo que una IA cita cuando
       // le preguntan el precio de hoy (antes ninguna FAQ tenía el valor actual).
       question: '¿Cuál es el precio del novillo para arrendamiento hoy?',
-      answer: `El precio del novillo para arrendamiento hoy es $${hoyStr} por kilo vivo (${chgStr} respecto de la jornada previa), según el INMAG del Mercado Agroganadero de Cañuelas. Para calcular el canon de un arrendamiento se multiplica: canon mensual = kilos de novillo pactados por hectárea × $${hoyStr} × cantidad de hectáreas. Para liquidar contratos suele usarse el promedio mensual del índice, no el valor de un día.`,
+      answer: `El precio del novillo para arrendamiento hoy es $${fmt(arr.index)} por kilo vivo, según el índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero (haciinfo000013), correspondiente al período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)} y actualizado el ${fmtFecha(arr.date)}; el promedio del período es $${fmt(arr.periodIndex)}/kg. Como referencia, el INMAG del novillo diario cotiza a $${hoyStr}/kg (${chgStr} respecto de la jornada previa). Para calcular el canon de un arrendamiento se multiplica: canon mensual = kilos de novillo pactados por hectárea × precio del índice × cantidad de hectáreas. Para liquidar contratos suele usarse el promedio mensual del índice, no el valor de un día.`,
     },
     {
       question: '¿Qué es el índice novillo arrendamiento?',
@@ -170,31 +183,49 @@ function ArrendamientoSchema() {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Dataset',
-    name: 'Índice Novillo Arrendamiento - INMAG',
-    description: 'Índice de precios del novillo utilizado como referencia para contratos de arrendamiento rural en Argentina.',
+    name: 'Índice Novillo Arrendamiento - Mercado Agroganadero',
+    description: 'Índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero (haciinfo000013), usado como referencia para el canon de contratos de arrendamiento rural en Argentina. Incluye el INMAG del novillo diario como referencia secundaria.',
     url: 'https://www.consignatarias.com.ar/mercado/arrendamiento',
-    keywords: ['índice novillo', 'arrendamiento rural', 'INMAG', 'precio ganado', 'mercado ganadero'],
+    keywords: ['índice novillo', 'arrendamiento rural', 'índice arrendamiento', 'INMAG', 'precio ganado', 'mercado ganadero'],
     // C11: entidad única MAG Cañuelas (coherente con /mercado/inmag y mercado/canuelas).
     creator: { '@type': 'Organization', name: 'Mercado Agroganadero de Cañuelas', sameAs: 'https://www.mercadoagroganadero.com.ar' },
     temporalCoverage: `${series[0]?.date}/${series[series.length - 1]?.date}`,
     license: 'https://creativecommons.org/licenses/by/4.0/',
     isAccessibleForFree: true,
     spatialCoverage: { '@type': 'Place', name: 'Argentina' },
-    // El valor VIGENTE dentro del Dataset → una IA que lee el structured data tiene el
+    // Los valores VIGENTES dentro del Dataset → una IA que lee el structured data tiene el
     // número del día sin scrapear la página, y el feed machine-readable para verificarlo.
-    variableMeasured: {
-      '@type': 'PropertyValue',
-      name: 'Índice Novillo Arrendamiento (INMAG)',
-      value: inmag.current,
-      unitText: 'ARS/kg vivo',
-      measurementTechnique: 'Promedio ponderado por volumen del novillo en el Mercado Agroganadero de Cañuelas',
-    },
+    // Primario: índice OFICIAL de arrendamiento; secundario: INMAG novillo diario.
+    variableMeasured: [
+      {
+        '@type': 'PropertyValue',
+        name: 'Índice Novillo Arrendamiento (oficial MAG)',
+        alternateName: 'Índice sugerido para arrendamientos rurales',
+        value: arr.index,
+        unitText: 'ARS/kg vivo',
+        measurementTechnique: 'Índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero (haciinfo000013)',
+      },
+      {
+        '@type': 'PropertyValue',
+        name: 'Índice de arrendamiento del período',
+        value: arr.periodIndex,
+        unitText: 'ARS/kg vivo',
+        measurementTechnique: `Promedio del período ${arr.periodStart}/${arr.periodEnd} — el valor que se usa para liquidar`,
+      },
+      {
+        '@type': 'PropertyValue',
+        name: 'INMAG Novillo (referencia diaria)',
+        value: inmag.current,
+        unitText: 'ARS/kg vivo',
+        measurementTechnique: 'Promedio ponderado por volumen del novillo en el Mercado Agroganadero de Cañuelas',
+      },
+    ],
     distribution: {
       '@type': 'DataDownload',
       encodingFormat: 'application/json',
       contentUrl: 'https://www.consignatarias.com.ar/precios.json',
     },
-    dateModified: inmagSnapshotDate,
+    dateModified: arr.date,
   }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }
@@ -209,16 +240,45 @@ function ArrendamientoDefinedTermSchema() {
     '@id': 'https://www.consignatarias.com.ar/glosario#indice-novillo-arrendamiento',
     name: 'Índice Novillo Arrendamiento',
     alternateName: 'Precio novillo para arrendamiento',
-    description:
-      'El índice novillo arrendamiento es el precio del novillo (INMAG del Mercado Agroganadero de Cañuelas, en pesos por kilo vivo) usado como referencia para calcular y ajustar el canon de los contratos de arrendamiento rural en Argentina. El canon se pacta en kilos de novillo por hectárea y se liquida al promedio mensual del índice.',
+    description: `El índice novillo arrendamiento es el precio del novillo (en pesos por kilo vivo) usado como referencia para calcular y ajustar el canon de los contratos de arrendamiento rural en Argentina. Hoy el índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero es $${fmt(arr.index)}/kg (act. ${fmtFecha(arr.date)}). El canon se pacta en kilos de novillo por hectárea y se liquida al promedio mensual del índice.`,
     inDefinedTermSet: 'https://www.consignatarias.com.ar/glosario#set',
     url: 'https://www.consignatarias.com.ar/mercado/arrendamiento',
   }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }
 
+// QAPage — refuerza el snippet de la query head "precio novillo para arrendamiento hoy"
+// (además del FAQPage). El QAPage tiene una única Question con su acceptedAnswer dateada,
+// señal directa de que la página responde ESA pregunta con el número y su fecha.
+function QAPageSchema() {
+  const answer = `El precio del novillo para arrendamiento hoy es $${fmt(arr.index)} por kilo vivo, según el índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero (período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)}, actualizado el ${fmtFecha(arr.date)}). El promedio del período —el valor que se usa para liquidar— es $${fmt(arr.periodIndex)}/kg. El canon se calcula como kilos de novillo pactados por hectárea × precio del índice × cantidad de hectáreas.`
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'QAPage',
+    mainEntity: {
+      '@type': 'Question',
+      name: '¿Cuál es el precio del novillo para arrendamiento hoy?',
+      text: '¿Cuál es el precio del novillo para arrendamiento hoy y cómo se calcula el canon?',
+      answerCount: 1,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: answer,
+        url: 'https://www.consignatarias.com.ar/mercado/arrendamiento',
+        dateCreated: arr.date,
+      },
+    },
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+}
+
 function fmt(n: number): string {
   return n.toLocaleString('es-AR', { maximumFractionDigits: 0 })
+}
+
+// ISO (YYYY-MM-DD) → "8 julio 2026" sin desfase de timezone (parseo manual, no new Date()).
+function fmtFecha(iso: string): string {
+  const [y, m, d] = iso.split('-').map(Number)
+  return `${d} ${MESES[m - 1]} ${y}`
 }
 
 function formatMonth(monthKey: string): string {
@@ -303,9 +363,10 @@ export default async function ArrendamientoPage() {
       <ArrendamientoSchema />
       <ArrendamientoDefinedTermSchema />
       <FAQSchema />
+      <QAPageSchema />
       <SpeakableSchema
         url="https://www.consignatarias.com.ar/mercado/arrendamiento"
-        headline={`Precio novillo arrendamiento hoy: $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg`}
+        headline={`Precio novillo arrendamiento hoy: $${fmt(arr.index)}/kg`}
       />
 
       <SinceLastVisit
@@ -361,6 +422,18 @@ export default async function ArrendamientoPage() {
               Precio de referencia para contratos de arrendamiento rural en Argentina.
               Basado en el <Link href="/mercado/inmag" className="text-accent hover:underline">INMAG</Link> del Mercado Agroganadero.
             </p>
+
+            {/* AnswerBlock — respuesta answer-first a la query head, con fecha explícita.
+                Señal de frescura para saltar a top-3 en "precio novillo para arrendamiento hoy".
+                Número oficial de arrendamiento + período vigente + fecha de actualización. */}
+            <div className="mt-6 max-w-xl rounded-xl border border-sky-500/20 bg-sky-500/[0.06] p-4">
+              <p className="text-zinc-200 text-base leading-relaxed">
+                <strong className="text-white">Precio novillo para arrendamiento hoy: ${fmt(arr.index)}/kg.</strong>{' '}
+                Índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero.
+                Período {fmtFecha(arr.periodStart)}–{fmtFecha(arr.periodEnd)} (promedio ${fmt(arr.periodIndex)}/kg,
+                el valor que se liquida). Actualizado {fmtFecha(arr.date)}.
+              </p>
+            </div>
           </div>
         </MarketHero>
           </div>
@@ -551,6 +624,56 @@ export default async function ArrendamientoPage() {
                 </div>
               </details>
             ))}
+          </div>
+        </section>
+
+        {/* Índice de arrendamiento por fuente — captura los modificadores de fuente
+            ("índice novillo arrendamiento Liniers/Cañuelas") sin canibalizar la página
+            madre. Landings dedicadas por mercado de origen. */}
+        <section className="max-w-6xl mx-auto px-4 pb-12">
+          <h2 className="text-lg font-semibold text-white mb-2">Índice de arrendamiento por fuente</h2>
+          <p className="text-zinc-500 text-sm mb-6">
+            El índice de arrendamiento integra las operaciones del Mercado Agroganadero. Consultá el detalle
+            por mercado de origen.
+          </p>
+          <div className="grid md:grid-cols-2 gap-4">
+            <Link
+              href="/mercado/arrendamiento/liniers"
+              className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 hover:border-sky-500/30 transition-all group"
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-accent-bright transition-colors">
+                    Índice arrendamiento Liniers
+                  </h3>
+                  <p className="text-sm text-zinc-500">
+                    El índice novillo para arrendamiento con referencia al Mercado de Liniers.
+                  </p>
+                </div>
+                <svg className="w-5 h-5 text-zinc-600 group-hover:text-accent-bright transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </div>
+            </Link>
+
+            <Link
+              href="/mercado/arrendamiento/canuelas"
+              className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 hover:border-sky-500/30 transition-all group"
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-accent-bright transition-colors">
+                    Índice arrendamiento Cañuelas
+                  </h3>
+                  <p className="text-sm text-zinc-500">
+                    El índice novillo para arrendamiento con referencia al Mercado Agroganadero de Cañuelas.
+                  </p>
+                </div>
+                <svg className="w-5 h-5 text-zinc-600 group-hover:text-accent-bright transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </div>
+            </Link>
           </div>
         </section>
 

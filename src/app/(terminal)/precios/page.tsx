@@ -1,9 +1,12 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { BreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { BreadcrumbSchema, FAQPageSchema, SpeakableSchema, DatasetSchema } from '@/components/seo/JsonLd'
 import HerramientasCTA from '@/components/HerramientasCTA'
 import PriceThresholdAlertSignup from '@/components/PriceThresholdAlertSignup'
 import marketPrices from '@/lib/data/market-prices.json'
+
+// Rebuild diario: el JSON se refresca cada tarde (14:00 ART) vía scraper → git commit → Vercel.
+export const revalidate = 86400
 
 const fmt = (n: number) => n.toLocaleString('es-AR', { maximumFractionDigits: 0 })
 
@@ -18,21 +21,44 @@ const CATEGORIES = [
 
 const lastUpdate = (marketPrices as { lastUpdate?: string }).lastUpdate ?? new Date().toISOString().slice(0, 10)
 
+// Números vivos derivados del JSON para interpolar en SERP, panel answer-first y schemas.
+const inmag = marketPrices.inmag as { current: number; change: number }
+const inmagChange = inmag.change
+const inmagChangeStr = `${inmagChange >= 0 ? '+' : ''}${inmagChange}%`
+const novilloLive = Math.round(marketPrices.categories.novillos.current)
+const vacaLive = Math.round(marketPrices.categories.vacas.current)
+const terneroLive = Math.round(marketPrices.categories.terneros.current)
+
+// 1ª oración citable — head-query "precios de hacienda hoy" respondida con el número exacto y su fecha.
+const ANSWER_LEAD = `Hoy en el Mercado Agroganadero: novillo $${fmt(novilloLive)}/kg, vaca $${fmt(vacaLive)}/kg, ternero $${fmt(terneroLive)}/kg vivo. INMAG $${fmt(inmag.current)} (${inmagChangeStr}). Actualizado ${lastUpdate}.`
+
 export const metadata: Metadata = {
-  title: 'Precios de Hacienda Hoy — Novillo, Vaca, Ternero, Toro · INMAG diario',
-  description: `Precios de hacienda actualizados al ${lastUpdate}: novillo, novillito, vaquillona, vaca, toro y ternero. Kilo vivo en ARS desde el Mercado Agroganadero, con histórico y referencia INMAG. Consulta libre.`,
+  title: `Precios de Hacienda Hoy — Novillo $${fmt(novilloLive)}, Vaca $${fmt(vacaLive)}, Ternero $${fmt(terneroLive)}/kg · INMAG`,
+  description: `Precios de hacienda al ${lastUpdate}: novillo $${fmt(novilloLive)}/kg, vaca $${fmt(vacaLive)}/kg, ternero $${fmt(terneroLive)}/kg vivo. INMAG $${fmt(inmag.current)} (${inmagChangeStr}). Kilo vivo en ARS desde el Mercado Agroganadero, con histórico y panel de categorías. Consulta libre.`,
   alternates: {
     canonical: 'https://www.consignatarias.com.ar/precios',
   },
   openGraph: {
-    title: 'Precios de Hacienda Hoy — Argentina',
-    description: `Precios de hacienda al ${lastUpdate}: novillo, vaca, ternero, toro y demás categorías. Actualizado diariamente desde MAG.`,
+    title: `Precios de Hacienda Hoy — Novillo $${fmt(novilloLive)}/kg`,
+    description: `Precios de hacienda al ${lastUpdate}: novillo $${fmt(novilloLive)}/kg, vaca $${fmt(vacaLive)}/kg, ternero $${fmt(terneroLive)}/kg vivo. INMAG $${fmt(inmag.current)}. Actualizado diariamente desde MAG.`,
     url: 'https://www.consignatarias.com.ar/precios',
     type: 'website',
   },
 }
 
 const FAQ_PRECIOS = [
+  {
+    question: '¿Cuánto vale el novillo hoy?',
+    answer: `El kilo vivo de novillo cotiza a $${fmt(novilloLive)} en el Mercado Agroganadero (MAG-Cañuelas). El INMAG, referencia del novillo de exportación, cerró en $${fmt(inmag.current)} (${inmagChangeStr} semanal). Actualizado el ${lastUpdate}.`,
+  },
+  {
+    question: '¿Cuánto vale la vaca hoy?',
+    answer: `El kilo vivo de vaca cotiza a $${fmt(vacaLive)} en el Mercado Agroganadero. Es un promedio de plaza: las subcategorías (especial, conserva, manufactura) tienen dispersión de precio según tipificación. Actualizado el ${lastUpdate}.`,
+  },
+  {
+    question: '¿Cuánto vale el ternero hoy?',
+    answer: `El kilo vivo de ternero cotiza a $${fmt(terneroLive)} en el Mercado Agroganadero. El ternero de invernada suele cotizar por encima del gordo por la demanda de recría y engorde. Actualizado el ${lastUpdate}.`,
+  },
   {
     question: '¿Dónde se actualizan los precios?',
     answer: 'Los precios se actualizan diariamente con el cierre del Mercado Agroganadero (MAG-Cañuelas), publicador del INMAG. Los datos pasan por el flujo automático del sitio cada tarde (15:30 ART).',
@@ -71,6 +97,18 @@ export default function PreciosHubPage() {
         ]}
       />
       <FAQPageSchema items={FAQ_PRECIOS} />
+      <SpeakableSchema
+        url="https://www.consignatarias.com.ar/precios"
+        headline={ANSWER_LEAD}
+        cssSelectors={['h1', '.speakable-content']}
+      />
+      <DatasetSchema
+        name={`Precios de hacienda por categoría — Mercado Agroganadero (${lastUpdate})`}
+        description={`Kilo vivo en ARS por categoría (novillo, novillito, vaquillona, vaca, toro, ternero) y referencia INMAG del novillo de exportación, publicados por el Mercado Agroganadero (MAG-Cañuelas). Unidad: $/kg vivo. Fecha: ${lastUpdate}.`}
+        url="https://www.consignatarias.com.ar/precios"
+        keywords={['precios hacienda', 'novillo', 'vaca', 'ternero', 'INMAG', 'kilo vivo', 'Mercado Agroganadero', 'MAG']}
+        dateModified={lastUpdate}
+      />
 
       <main className="max-w-4xl mx-auto px-4 py-8 text-zinc-300">
         {/* Breadcrumb */}
@@ -82,9 +120,34 @@ export default function PreciosHubPage() {
           <span className="text-zinc-300">Precios</span>
         </nav>
 
-        <h1 className="text-2xl md:text-3xl font-heading text-zinc-100 mb-2 leading-tight">
+        <h1 className="text-2xl md:text-3xl font-heading text-zinc-100 mb-3 leading-tight">
           Precios de hacienda hoy
         </h1>
+
+        {/* Panel answer-first: la 1ª oración lista los números vivos con fecha —
+            citable por IA/voz (Speakable) y respuesta directa a "precios de hacienda hoy". */}
+        <section className="mb-6 rounded-terminal border border-accent/40 bg-accent/[0.06] p-4 sm:p-5">
+          <p className="speakable-content text-sm sm:text-base text-zinc-200 leading-relaxed">
+            {ANSWER_LEAD}
+          </p>
+          <dl className="mt-4 grid grid-cols-3 gap-px bg-terminal-border overflow-hidden rounded-terminal">
+            <div className="bg-terminal-panel p-3">
+              <dt className="text-xxs uppercase tracking-wider text-zinc-500">Novillo</dt>
+              <dd className="text-xl font-terminal tabular-nums text-zinc-100">${fmt(novilloLive)}</dd>
+            </div>
+            <div className="bg-terminal-panel p-3">
+              <dt className="text-xxs uppercase tracking-wider text-zinc-500">Vaca</dt>
+              <dd className="text-xl font-terminal tabular-nums text-zinc-100">${fmt(vacaLive)}</dd>
+            </div>
+            <div className="bg-terminal-panel p-3">
+              <dt className="text-xxs uppercase tracking-wider text-zinc-500">Ternero</dt>
+              <dd className="text-xl font-terminal tabular-nums text-zinc-100">${fmt(terneroLive)}</dd>
+            </div>
+          </dl>
+          <p className="mt-3 text-xxs uppercase tracking-wider text-zinc-500">
+            $/kg vivo · Mercado Agroganadero (MAG-Cañuelas) · INMAG <span className={`tabular-nums ${inmagChange >= 0 ? 'val-positive' : 'val-negative'}`}>${fmt(inmag.current)} ({inmagChangeStr})</span>
+          </p>
+        </section>
         <p className="text-sm text-zinc-400 mb-1">
           Kilo vivo en ARS desde el Mercado Agroganadero (MAG-Cañuelas). Actualizado: <span className="text-zinc-200 tabular-nums">{lastUpdate}</span>.
         </p>

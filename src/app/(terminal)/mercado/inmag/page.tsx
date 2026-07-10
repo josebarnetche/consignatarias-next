@@ -85,6 +85,30 @@ const INMAG_FAQS = [
   },
 ]
 
+// QAPage — one canonical Q&A that fuses the definitional intent ("qué es INMAG")
+// with the value intent ("inmag hoy"). Distinct from FAQPage: QAPage marks a
+// single accepted answer, which maximizes snippet eligibility for the head term
+// "inmag" (pos ~7 → target 1) and "inmag hoy". Answer leads with the live number.
+function InmagQAPageSchema() {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'QAPage',
+    '@id': 'https://www.consignatarias.com.ar/mercado/inmag#qapage',
+    mainEntity: {
+      '@type': 'Question',
+      name: '¿Qué es el INMAG y cuánto vale hoy?',
+      text: '¿Qué es el INMAG y cuánto vale hoy el kilo vivo de novillo?',
+      answerCount: 1,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        url: 'https://www.consignatarias.com.ar/mercado/inmag',
+        text: `El INMAG es el Índice Novillo del Mercado Agroganadero de Cañuelas (ex Liniers): el precio promedio ponderado del novillo, en pesos por kilo vivo, publicado al cierre de cada día hábil. Hoy vale $${inmag.current.toLocaleString('es-AR')} por kilo vivo (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(2)}% vs. el cierre anterior), actualizado el ${marketData.lastUpdate}. Es la referencia de precio más usada del mercado ganadero argentino, con histórico desde 2015 en pesos y dólares.`,
+      },
+    },
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+}
+
 // JSON-LD Schema
 function InmagSchema() {
   const schema = {
@@ -229,6 +253,7 @@ export default function InmagPage() {
       <InmagSchema />
       <InmagDefinedTermSchema />
       <FAQPageSchema items={INMAG_FAQS} />
+      <InmagQAPageSchema />
       <SpeakableSchema
         url="https://www.consignatarias.com.ar/mercado/inmag"
         headline="INMAG hoy — Índice Novillo del Mercado Agroganadero"
@@ -280,17 +305,22 @@ export default function InmagPage() {
               </span>
               <FreshnessStamp updatedAt={marketData.lastUpdate} />
             </div>
+            {/* Answer-first H1: opens with the exact term + the live value, so the
+                insignia query "inmag" / "inmag hoy" is answered in the heading itself. */}
             <h1 className="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-3">
-              <span className="block text-accent">INMAG</span>
-              Índice Novillo Mercado Agroganadero
+              <span className="block text-accent">
+                INMAG hoy: ${fmt(inmag.current)}/kg vivo ({inmag.change >= 0 ? '+' : ''}{inmag.change.toFixed(1)}%)
+              </span>
+              Índice Novillo del Mercado Agroganadero
             </h1>
-            {/* Clean definition lede — first prose on the page, written as a
-                self-contained snippet so Google can lift it for "qué es el inmag". */}
+            {/* Definitional-navigational lede — first prose on the page, a self-contained
+                snippet that fuses "qué es el inmag" (definición) con "inmag hoy" (valor). */}
             <p className="speakable-content text-zinc-400 max-w-xl text-lg">
-              El <strong className="text-zinc-200">INMAG (Índice Novillo Mercado Agroganadero)</strong> es
-              el precio promedio ponderado del novillo en el Mercado Agroganadero de Cañuelas (ex Liniers),
-              publicado al cierre de cada día hábil. Es la referencia de precio más usada del mercado
-              ganadero argentino, con histórico desde 2015 y metodología abierta.
+              <strong className="text-zinc-200">INMAG</strong> es el Índice Novillo del Mercado
+              Agroganadero de Cañuelas; hoy vale <strong className="text-zinc-200">${fmt(inmag.current)}</strong> por
+              kilo vivo, actualizado {marketData.lastUpdate}. Es el precio promedio ponderado del novillo
+              (ex Liniers), publicado al cierre de cada día hábil, y la referencia de precio más usada del
+              mercado ganadero argentino, con histórico desde 2015 y metodología abierta.
             </p>
             <CitaBlock
               citation={`INMAG (Índice Novillo del Mercado Agroganadero), vía consignatarias.com.ar, ${marketData.lastUpdate} — $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 2 })}/kg vivo`}
@@ -618,6 +648,12 @@ export default function InmagPage() {
           <p className="text-xs text-zinc-600 mt-8 text-center">
             Fuente: Mercado Agroganadero de Buenos Aires (mercadoagroganadero.com.ar).
             Datos actualizados automáticamente cada día hábil.
+          </p>
+          <p className="text-xs text-zinc-600 mt-2 text-center">
+            El INMAG surge del Mercado Agroganadero de Cañuelas — la misma fuente del{' '}
+            <Link href="/mercado/arrendamiento/canuelas" className="text-accent/80 hover:text-accent-bright underline underline-offset-2">
+              índice de arrendamiento rural en Cañuelas →
+            </Link>
           </p>
           <p className="text-xs text-zinc-600 mt-2 text-center">
             ¿Bancos, frigoríficos, exchanges o fintech? Acceso institucional al feed completo INMAG (2015→) con USD y metodología —{' '}

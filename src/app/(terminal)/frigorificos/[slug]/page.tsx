@@ -173,10 +173,10 @@ export async function generateMetadata({
   if (!f) return { title: 'Frigorifico no encontrado' }
 
   const localidadStr = (f as { localidad?: string }).localidad || f.province
-  // Brand queries (the establishment name) dominate this family, so lead with the name and
-  // keep the title short (the old title packed CUIT + province + matrícula and truncated in
-  // the SERP). CUIT/matrícula move to the description, which still answers the data queries.
-  const title = `${f.name} — Frigorífico SENASA en ${localidadStr}`
+  // El usuario pega el CUIT crudo (ej "30500120882") y la ficha rankea, pero si el título
+  // muestra sólo la razón social no reconoce el match → CTR ~0. Arrancamos el título con el
+  // CUIT formateado (el número pegado aparece literal en el SERP) seguido de la razón social.
+  const title = `CUIT ${formatCuit(f.cuit)} — ${f.name} (Frigorífico SENASA, ${localidadStr})`
   const description = `${f.name} en ${localidadStr}: frigorífico habilitado SENASA, ${stageName(f.stage)}, Mat. ${f.matricula}, CUIT ${formatCuit(f.cuit)}. Datos oficiales MAGYP/SENASA, actualizado 2026.`
 
   return {
@@ -222,6 +222,15 @@ function LocalBusinessSchema({
     name,
     description: `Frigorífico ${stage === 1 ? 'de faena y desposte' : stage === 2 ? 'de desposte' : 'depósito'} en ${localidad || province}, Argentina. Matricula SENASA/MAGYP.`,
     url: `https://www.consignatarias.com.ar/frigorificos/${cuit}`,
+    // Asociación número→entidad: el CUIT como identificador fiscal de la empresa,
+    // para que una búsqueda por el CUIT crudo resuelva a este establecimiento.
+    taxID: cuit,
+    vatID: cuit,
+    identifier: {
+      '@type': 'PropertyValue',
+      propertyID: 'CUIT',
+      value: cuit,
+    },
     ...(phone && { telephone: phone }),
     ...(email && { email }),
     ...(website && { sameAs: website.startsWith('http') ? website : `https://${website}` }),
@@ -237,6 +246,46 @@ function LocalBusinessSchema({
       name: 'Argentina',
     },
     priceRange: '$$',
+  }
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  )
+}
+
+// QAPage inline: responde literalmente "¿a qué empresa corresponde el CUIT NNN?".
+// El número crudo aparece en la pregunta (head-query) y la respuesta trae el dato
+// exacto (razón social + habilitación) para que la IA/SERP cite la asociación.
+function CuitQAPageSchema({
+  cuit,
+  name,
+  localidad,
+  province,
+  stage,
+  matricula,
+}: {
+  cuit: string
+  name: string
+  localidad: string | null
+  province: string
+  stage: number
+  matricula: string
+}) {
+  const localidadStr = localidad || province
+  const answer = `El CUIT ${formatCuit(cuit)} corresponde a ${name}, un frigorífico habilitado por SENASA (${stageName(stage)}, matrícula ${matricula}) con sede en ${localidadStr}, Argentina. Datos oficiales MAGYP/SENASA.`
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'QAPage',
+    mainEntity: {
+      '@type': 'Question',
+      name: `¿A qué empresa corresponde el CUIT ${cuit}?`,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: answer,
+      },
+    },
   }
   return (
     <script
@@ -296,6 +345,7 @@ export default async function FrigorificoDetailPage({
   const relatedFrigs = relatedFrigorificos(cuit, province)
   const provinceSlug = (province || '').toLowerCase().replace(/\s+/g, '-')
   const existencias = existenciasFor(province)
+  const localidadStr = localidad || province
 
   return (
     <>
@@ -309,6 +359,14 @@ export default async function FrigorificoDetailPage({
         website={website}
         direccion={direccion}
         stage={basicF.stage}
+      />
+      <CuitQAPageSchema
+        cuit={cuit}
+        name={name}
+        localidad={localidad}
+        province={province}
+        stage={basicF.stage}
+        matricula={basicF.matricula}
       />
       <BreadcrumbSchema items={[
         { name: 'Inicio', url: 'https://www.consignatarias.com.ar' },
@@ -357,6 +415,12 @@ export default async function FrigorificoDetailPage({
             </div>
             <p className="text-xxs font-terminal text-zinc-500 uppercase tracking-widest mt-1">
               Frigorífico{tipo ? ` · ${tipo.replace(/_/g, ' ')}` : ''}
+            </p>
+            {/* Answer-first: reconocimiento del CUIT crudo como primera oración citable —
+                el dato exacto (razón social + habilitación) en la 1ª frase de la ficha. */}
+            <p className="text-data font-terminal text-zinc-300 leading-relaxed mt-2.5">
+              El CUIT <span className="text-zinc-100 tabular-nums">{formatCuit(basicF.cuit)}</span> corresponde a{' '}
+              <span className="text-zinc-100">{name}</span>, frigorífico habilitado SENASA ({stageName(basicF.stage)}, Mat. {basicF.matricula}) en {localidadStr}.
             </p>
             <div className="flex items-center gap-x-2 gap-y-1 flex-wrap mt-2.5 text-xxs font-terminal">
               <span className="px-1.5 py-0.5 border border-terminal-border text-zinc-400 rounded-terminal">

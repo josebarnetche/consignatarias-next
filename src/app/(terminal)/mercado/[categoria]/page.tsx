@@ -9,6 +9,15 @@ import { PriceCTA } from '@/components/PriceCTA'
 import { Stat, Delta } from '@/components/ui'
 import SellZoneAlertSignup from '@/components/SellZoneAlertSignup'
 import SellZoneBadge from '@/components/SellZoneBadge'
+import { FAQPageSchema, DefinedTermSetSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+
+export const revalidate = 86400 // daily rebuild via Vercel (mirrors scraper cadence)
+
+// es-AR thousands formatting for the live number, reused across SERP + schemas + copy
+const fmt = (n: number) => n.toLocaleString('es-AR', { maximumFractionDigits: 0 })
+
+// Gender-agreeing article: vaca/vaquillona = "una", the rest = "un". Same rule as generateMetadata.
+const articleFor = (slug: string) => (slug === 'vacas' || slug === 'vaquillonas' ? 'una' : 'un')
 
 /* ================================================================== */
 /*  CATEGORY CONFIG                                                    */
@@ -359,9 +368,58 @@ export default async function CategoriaPage({
   const inmag = marketData.inmag.current
   const vsInmag = price > 0 && inmag > 0 ? ((price - inmag) / inmag * 100).toFixed(1) : null
 
+  // Live-number citability layer — everything derived from CATEGORY_CONFIG + the JSON.
+  const lastUpdate = marketData.lastUpdate
+  const article = articleFor(categoria)
+  const changeStr = `${change >= 0 ? '+' : ''}${change}%`
+  const nameLower = config.name.toLowerCase()
+  const pluralLower = config.namePlural.toLowerCase()
+  // Answer-first sentence: the exact number + date up front, optimized for featured snippet / voz.
+  const answerFirst = `Hoy ${article} ${nameLower} cotiza a $${fmt(price)} por kilo vivo en el Mercado Agroganadero (${changeStr} semanal). Actualizado el ${lastUpdate}.`
+
+  // FAQ — questions mirror the head-query strings; answers lead with the live number + date.
+  const faqItems = [
+    {
+      question: `¿Cuánto vale ${article} ${nameLower} hoy en Argentina?`,
+      answer: `${answerFirst} Precio observado del Mercado Agroganadero de Cañuelas, en pesos por kilo vivo.`,
+    },
+    {
+      question: `¿Qué determina el precio ${article === 'una' ? 'de la' : 'del'} ${nameLower}?`,
+      answer: `El precio ${article === 'una' ? 'de la' : 'del'} ${nameLower} lo determinan: ${config.priceFactors.join('; ')}. Hoy cotiza $${fmt(price)}/kg vivo (${changeStr} semanal, ${lastUpdate}).`,
+    },
+    {
+      question: `¿Para qué se ${article === 'una' ? 'compran' : 'compran'} ${pluralLower}?`,
+      answer: `Principales destinos: ${config.useCases.join('; ')}. Referencia de precio actual: $${fmt(price)}/kg vivo (${lastUpdate}).`,
+    },
+    {
+      question: `¿Qué es ${article} ${nameLower}?`,
+      answer: config.definition,
+    },
+  ]
+
+  // DefinedTerm — the category entity as a citable, resolvable definition with the live price.
+  const definedTerms = [
+    {
+      name: config.name,
+      description: `${config.definition} Precio de referencia hoy: $${fmt(price)}/kg vivo en el Mercado Agroganadero (${changeStr} semanal, ${lastUpdate}).`,
+      url: `https://www.consignatarias.com.ar/mercado/${categoria}`,
+    },
+  ]
+
   return (
     <>
       <CategoryPriceSchema config={config} price={price} change={change} />
+      <FAQPageSchema items={faqItems} />
+      <DefinedTermSetSchema
+        name={`Precio ${config.name} — Argentina`}
+        description={`Definición y precio de referencia ${article === 'una' ? 'de la' : 'del'} ${nameLower} en el mercado ganadero argentino, actualizado a diario.`}
+        url={`https://www.consignatarias.com.ar/mercado/${categoria}`}
+        terms={definedTerms}
+      />
+      <SpeakableSchema
+        url={`https://www.consignatarias.com.ar/mercado/${categoria}`}
+        headline={answerFirst}
+      />
 
       <article className="px-4 pt-4 pb-8">
         {/* Header */}
@@ -377,7 +435,13 @@ export default async function CategoriaPage({
           <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-2">
             Precio {config.name} Argentina
           </h1>
-          
+
+          {/* Answer-first: la respuesta a "¿cuánto sale/cuesta ...?" en la 1ª oración,
+              con el número vivo + fecha. Citable (featured snippet / voz). */}
+          <p className="speakable-content text-zinc-200 text-base md:text-lg leading-relaxed max-w-2xl mb-2">
+            {answerFirst}
+          </p>
+
           <p className="text-zinc-400 max-w-2xl">
             {config.description}
           </p>

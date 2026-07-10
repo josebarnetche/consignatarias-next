@@ -100,6 +100,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'daily',
       priority: 1,
     },
+    // Answer-pages + landings de arrendamiento creadas por el swarm GEO (2026-07-10).
+    { url: `${baseUrl}/que-es-una-consignataria`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${baseUrl}/cuanto-vale-una-vaca`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${baseUrl}/mercado/arrendamiento/liniers`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${baseUrl}/mercado/arrendamiento/canuelas`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.8 },
     {
       url: `${baseUrl}/overview`,
       lastModified: priceDate,
