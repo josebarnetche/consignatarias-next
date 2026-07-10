@@ -1,7 +1,8 @@
 {
   "_doc": "Provincia de DOMICILIO (sede fiscal/comercial) por consignataria — fuente autoritativa. La usa el scraper como FALLBACK de provincia SOLO cuando el remate no trae localidad (no pisa la provincia resuelta por la localidad del evento). También backfillea consignatarias.province. Clave = slug canónico. Todas las entradas tienen respaldo: ficha de CUIT (cuitonline), sitio oficial, o localidad/provincia en el nombre. Verificado por web-research jul-2026.",
   "_pending": "SIN provincia confirmada (1): consignataria-serrano (no se halló localidad/provincia con fuente sólida).",
-  "_medium_confidence": "Respaldadas por fuente secundaria (sitio/prensa/directorio) pero SIN ficha CUIT con domicilio explícito — confirmar si aparece dato mejor: amoz, arzoz, gananor-pujol, idercor, j-s-russo, javier-bardin, la-ganadera, nangapiry, madelan, melicur-ganados, brivio-y-arzoz, koerner.",
+  "_medium_confidence": "Respaldadas por fuente secundaria (sitio/prensa/directorio) pero SIN ficha CUIT con domicilio explícito — confirmar si aparece dato mejor: amoz, arzoz, gananor-pujol, j-s-russo, javier-bardin, la-ganadera, nangapiry, madelan, melicur-ganados, brivio-y-arzoz, koerner.",
+  "_confirmado_jose": "idercor=CORRIENTES (confirmado por José, jul-2026).",
   "provinces": {
     "afa": "SANTA FE",
     "mondino": "CORDOBA",
