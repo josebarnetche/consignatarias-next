@@ -505,9 +505,11 @@ export async function scrapeRosgan() {
 }
 
 // ---------------------------------------------------------------------------
-// Source: Canal Rural / El Rural (elrural.com/remates/) — agenda de remates
-// televisados. Bloqueada para IPs de datacenter (403); se fetchea desde IP
-// residencial AR vía scripts/local-nea-fetch.mjs. Lista server-rendered:
+// Source: Canal Rural / El Rural — agenda de remates televisados.
+// URL: elrural.com/remates/ mudó (302) a remates.elrural.com/ (2026-07). Se apunta
+// directo al subdominio nuevo. Sigue bloqueada para IPs de datacenter (403); se
+// fetchea desde IP residencial AR vía scripts/local-nea-fetch.mjs. Lista
+// server-rendered:
 // cada ítem tiene h3.titulo + h4.casa + h4.fecha ("DD de Mes") + h4.hora + botón ver-remate.
 // ---------------------------------------------------------------------------
 const PROVINCE_NAMES = [
@@ -526,7 +528,7 @@ function provinceFromTitle(t) {
 export async function scrapeCanalRural() {
   const SRC = "Canal Rural";
   try {
-    const html = await fetchText("https://elrural.com/remates/", 25000);
+    const html = await fetchText("https://remates.elrural.com/", 25000);
     const today = todayISO();
     const year0 = Number(today.slice(0, 4));
     const out = [];
@@ -536,10 +538,13 @@ export async function scrapeCanalRural() {
     for (const b of btns) {
       const ctx = html.slice(prevEnd, b.index);
       prevEnd = b.index;
-      const casa = unescapeHtml(stripTags((ctx.match(/<h4 class="casa[^"]*">([\s\S]*?)<\/h4>/) || [])[1] || "")).trim();
+      let casa = unescapeHtml(stripTags((ctx.match(/<h4 class="casa[^"]*">([\s\S]*?)<\/h4>/) || [])[1] || "")).trim();
       const titulo = unescapeHtml(stripTags((ctx.match(/<h3 class="[^"]*titulo[^"]*">([\s\S]*?)<\/h3>/) || [])[1] || "")).trim();
-      const name = casa || titulo;
-      if (!name) continue;
+      // A veces la "casa" viene basura (un dominio, ej. "elrural.com") → el nombre
+      // real de la firma está en el título antes del "|" ("Campos Bajos SRL | Gordos…").
+      if (/\.(com|ar|net|org)\b/i.test(casa) || !/[a-zA-Z]{3}/.test(casa)) casa = "";
+      const name = casa || titulo.split("|")[0].trim();
+      if (!name || /\.(com|ar|net|org)\b/i.test(name)) continue;
 
       const fm = ctx.match(/(\d{1,2})\s+de\s+([A-Za-zÁÉÍÓÚáéíóú]+)/);
       if (!fm) continue;
@@ -571,7 +576,7 @@ export async function scrapeCanalRural() {
         youtubeUrl: null,
         catalogUrl: b[1] || null,
         source: "tv", // Canal Rural = televisado
-        sourceUrl: "https://elrural.com/remates/",
+        sourceUrl: "https://remates.elrural.com/",
         status: statusForDate(date),
       });
     }
