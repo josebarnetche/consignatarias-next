@@ -5,7 +5,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import marketData from '@/lib/data/market-prices.json'
 import { createAdminClient } from '@/lib/supabase-server'
 import ArrendamientoCalculator from './ArrendamientoCalculator'
-import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import ArrendamientoLiquidacionSignup from '@/components/ArrendamientoLiquidacionSignup'
 import HerramientasCTA from '@/components/HerramientasCTA'
@@ -113,7 +113,16 @@ export const metadata: Metadata = {
 
 // FAQPage Schema
 function FAQSchema() {
+  const hoyStr = inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 0 })
+  const chgStr = `${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1)}%`
   const faqs = [
+    {
+      // La query #1 del sitio en Search Console es "precio novillo (para) arrendamiento
+      // hoy". Esta FAQ la responde con el NÚMERO VIVO → es lo que una IA cita cuando
+      // le preguntan el precio de hoy (antes ninguna FAQ tenía el valor actual).
+      question: '¿Cuál es el precio del novillo para arrendamiento hoy?',
+      answer: `El precio del novillo para arrendamiento hoy es $${hoyStr} por kilo vivo (${chgStr} respecto de la jornada previa), según el INMAG del Mercado Agroganadero de Cañuelas. Para calcular el canon de un arrendamiento se multiplica: canon mensual = kilos de novillo pactados por hectárea × $${hoyStr} × cantidad de hectáreas. Para liquidar contratos suele usarse el promedio mensual del índice, no el valor de un día.`,
+    },
     {
       question: '¿Qué es el índice novillo arrendamiento?',
       answer: 'El índice novillo arrendamiento es el valor de referencia utilizado para calcular el canon de los contratos de arrendamiento rural en Argentina. Se basa en el precio del novillo en el Mercado Agroganadero de Buenos Aires (INMAG) y permite ajustar el valor del alquiler de campos de manera objetiva y transparente según las condiciones del mercado ganadero.'
@@ -171,6 +180,39 @@ function ArrendamientoSchema() {
     license: 'https://creativecommons.org/licenses/by/4.0/',
     isAccessibleForFree: true,
     spatialCoverage: { '@type': 'Place', name: 'Argentina' },
+    // El valor VIGENTE dentro del Dataset → una IA que lee el structured data tiene el
+    // número del día sin scrapear la página, y el feed machine-readable para verificarlo.
+    variableMeasured: {
+      '@type': 'PropertyValue',
+      name: 'Índice Novillo Arrendamiento (INMAG)',
+      value: inmag.current,
+      unitText: 'ARS/kg vivo',
+      measurementTechnique: 'Promedio ponderado por volumen del novillo en el Mercado Agroganadero de Cañuelas',
+    },
+    distribution: {
+      '@type': 'DataDownload',
+      encodingFormat: 'application/json',
+      contentUrl: 'https://www.consignatarias.com.ar/precios.json',
+    },
+    dateModified: inmagSnapshotDate,
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+}
+
+// DefinedTerm — define la ENTIDAD "índice novillo arrendamiento" (paridad con el
+// InmagDefinedTermSchema de /mercado/inmag). Alimenta el featured snippet de la query
+// head "indice novillo arrendamiento" aunque el orgánico esté en pos ~6-7.
+function ArrendamientoDefinedTermSchema() {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTerm',
+    '@id': 'https://www.consignatarias.com.ar/glosario#indice-novillo-arrendamiento',
+    name: 'Índice Novillo Arrendamiento',
+    alternateName: 'Precio novillo para arrendamiento',
+    description:
+      'El índice novillo arrendamiento es el precio del novillo (INMAG del Mercado Agroganadero de Cañuelas, en pesos por kilo vivo) usado como referencia para calcular y ajustar el canon de los contratos de arrendamiento rural en Argentina. El canon se pacta en kilos de novillo por hectárea y se liquida al promedio mensual del índice.',
+    inDefinedTermSet: 'https://www.consignatarias.com.ar/glosario#set',
+    url: 'https://www.consignatarias.com.ar/mercado/arrendamiento',
   }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }
@@ -259,7 +301,12 @@ export default async function ArrendamientoPage() {
     <>
       <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
       <ArrendamientoSchema />
+      <ArrendamientoDefinedTermSchema />
       <FAQSchema />
+      <SpeakableSchema
+        url="https://www.consignatarias.com.ar/mercado/arrendamiento"
+        headline={`Precio novillo arrendamiento hoy: $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg`}
+      />
 
       <SinceLastVisit
         snapshot={{
