@@ -180,34 +180,46 @@ export function getEffectiveToday(): string {
 }
 
 /**
- * Get current ART time as { hours, minutes } for status calculations.
+ * Fecha REAL de hoy en ART (YYYY-MM-DD), SIN el shift de las 20:00 de
+ * getEffectiveToday(). Para el estado real de un remate y la relación hoy/mañana
+ * del badge — NO para filtrar qué remates listar como próximos.
  */
-function getARTNow(): { hours: number; minutes: number } {
+export function getRealToday(): string {
   const art = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }))
-  return { hours: art.getHours(), minutes: art.getMinutes() }
+  return `${art.getFullYear()}-${String(art.getMonth() + 1).padStart(2, '0')}-${String(art.getDate()).padStart(2, '0')}`
 }
 
 /**
- * Compute effective auction status based on real-time ART clock.
+ * Compute effective auction status based on the REAL-TIME ART clock.
+ *
+ * IMPORTANTE: el estado se computa contra la fecha/hora REAL de ART, NO contra el
+ * parámetro `today`. Los callers pasan `getEffectiveToday()`, que corre la fecha a
+ * MAÑANA después de las 20:00 (solo para LISTAR próximos remates). Usar ese today
+ * shifteado acá causaba un bug: de noche, un remate de mañana a la tarde aparecía
+ * "FINALIZADO" (today=mañana + reloj de esta noche → parecía pasado, y el badge se
+ * contradecía con el countdown). El `today` se mantiene por compatibilidad de firma
+ * pero se ignora — el estado real de un remate no depende del shift de listado.
  *
  * Rules:
- * - date < today → completed
- * - date > today → scheduled
- * - date === today:
+ * - date < hoy(ART) → completed
+ * - date > hoy(ART) → scheduled
+ * - date === hoy(ART):
  *   - time known → scheduled until start, live during (up to 3h), completed after
  *   - time null  → live from 08:00 ART, completed after 20:00 ART
  */
 export function getEffectiveStatus(
   date: string,
   time: string | null,
-  today: string
+  _today?: string,
 ): Auction['status'] {
-  if (date < today) return 'completed'
-  if (date > today) return 'scheduled'
+  const art = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }))
+  const realToday = `${art.getFullYear()}-${String(art.getMonth() + 1).padStart(2, '0')}-${String(art.getDate()).padStart(2, '0')}`
 
-  // date === today — compute based on current ART time
-  const { hours, minutes } = getARTNow()
-  const nowMinutes = hours * 60 + minutes
+  if (date < realToday) return 'completed'
+  if (date > realToday) return 'scheduled'
+
+  // date === hoy(ART) — compute based on current ART time
+  const nowMinutes = art.getHours() * 60 + art.getMinutes()
 
   if (time) {
     const [h, m] = time.split(':').map(Number)
