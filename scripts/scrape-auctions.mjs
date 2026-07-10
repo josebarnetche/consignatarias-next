@@ -168,6 +168,9 @@ const CITY_PROVINCE_MAP = {
   "AZUL": "BUENOS AIRES",
   "BAHIA BLANCA": "BUENOS AIRES",
   "BAHÍA BLANCA": "BUENOS AIRES",
+  "BOLIVAR": "BUENOS AIRES",
+  "SAN CARLOS DE BOLIVAR": "BUENOS AIRES",
+  "SAN CARLOS DE BOLÍVAR": "BUENOS AIRES",
   "CARHUE": "BUENOS AIRES",
   "CASTELLI": "BUENOS AIRES",
   "CHIVILCOY": "BUENOS AIRES",
@@ -1490,6 +1493,19 @@ const SLUG_DEDUP_MAP = {
   // (apóstrofo, abreviaturas) → sin estos alias, la firma aparece 2 veces.
   'o-farrell': 'ofarrell',
   'alfredo-s-mondino': 'alfredo-sebastian-mondino',
+  // Pares detectados por audit-data-integrity (2026-07-10): variantes del mismo
+  // evento que aparecían 2 veces por slug distinto (mismo canónico+fecha+tipo).
+  'wallace-sa': 'wallace-hnos',
+  'wallace-hnos-s-a': 'wallace-hnos',
+  'carlos-j-lanser-s-a': 'lanser',
+  'ledesma': 's-l-ledesma',
+  's-l-ledesma-y-cia-s-a': 's-l-ledesma',
+  'jorge-y-martin-de-la-serna': 'de-la-serna',
+  'jorge-y-martin-de-la-serna-s-r-l': 'de-la-serna',
+  'monasterio': 'monasterio-tattersall',
+  'monasterio-tattersall-s-a': 'monasterio-tattersall',
+  'reggi-y-cia': 'reggi',
+  'reggi-y-cia-s-r-l': 'reggi',
 };
 
 export function deduplicateAuctions(auctions) {
@@ -1498,7 +1514,10 @@ export function deduplicateAuctions(auctions) {
     (a.consignatariaSlug || "")
       .replace(/-s-a$/, "").replace(/-sa$/, "").replace(/-s-r-l$/, "").replace(/-srl$/, "");
   const firmDateOf = (a) => `${a.date}|${normSlugOf(a)}`;
-  const locKeyOf = (a) => (a.location || "").split(",")[0].trim().toLowerCase();
+  // locKey insensible a acentos: "Bolívar" ≡ "Bolivar", "Chascomús" ≡ "Chascomus".
+  // Sin esto, el mismo evento con la localidad tipeada distinto no colapsaba.
+  const locKeyOf = (a) => (a.location || "").split(",")[0].trim().toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g, "");
   const mergeInto = (existing, a) => {
     // Prefiere la entrada con más datos: solo completa lo que falta.
     if (a.estimatedHeads && !existing.estimatedHeads) existing.estimatedHeads = a.estimatedHeads;
@@ -1732,7 +1751,7 @@ async function main() {
   await enrichProvinces([...validCurated, ...validScraped, ...localNEA]);
 
   // Merge curated + freshly scraped
-  const merged = deduplicateAuctions([...validCurated, ...validScraped, ...localNEA]);
+  let merged = deduplicateAuctions([...validCurated, ...validScraped, ...localNEA]);
 
   // Sort by date, then time
   merged.sort(
@@ -1771,6 +1790,14 @@ async function main() {
     }
   }
   if (homeFilled) console.log(`Fallback domicilio: ${homeFilled} remate(s) con provincia inferida de la consignataria.`);
+
+  // Segundo pase de dedup: CONSIG_SLUG_FIX y los aliases remapean slugs DESPUÉS del
+  // primer dedup, lo que puede dejar dos filas del mismo evento (mismo canónico+fecha+
+  // localidad) que el primer pase no vio como iguales. Re-dedup es idempotente y
+  // colapsa esos residuos. (audit-data-integrity flaggeaba ~18 remates duplicados.)
+  const beforeDedup2 = merged.length;
+  merged = deduplicateAuctions(merged);
+  if (merged.length < beforeDedup2) console.log(`Dedup 2° pase: -${beforeDedup2 - merged.length} remate(s) duplicado(s) colapsado(s).`);
 
   // Assign sequential IDs
   merged.forEach((a, i) => {
