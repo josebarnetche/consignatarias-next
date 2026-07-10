@@ -39,7 +39,8 @@ import { SEMANTIC_HEX } from '@/lib/ui/tokens'
 import VideoGallery, { type ConsignatariaVideo } from '@/components/video/VideoGallery'
 import { Accordion } from './_wave2/Accordion'
 import { StickyBar } from './_wave2/StickyBar'
-import { getLogoUrl, getBrandColor } from '@/lib/data/logo-map'
+import { getIdentityColor } from '@/lib/data/logo-map'
+import IdentityMark from '@/components/consignataria/IdentityMark'
 import RemateEspecialDestaque from '@/components/consignataria/RemateEspecialDestaque'
 import { type RemateEspecial, findRemateEspecial } from '@/lib/data/remates-especiales'
 // DteCTA removed - not relevant for consignatarias viewing their profile
@@ -597,10 +598,17 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
     return `${d.getDate()} ${(MONTH_FULL[d.getMonth()] || '').slice(0, 3).toLowerCase()}`
   }
 
-  // Logo: usa el subido por la firma, o el del logo-map (firmas más importantes).
-  // Los del logo-map están pensados para fondo de color de marca → mejor legibilidad.
-  const logoSrc = profile.logoUrl ?? getLogoUrl(profile.canonicalSlug)
-  const brandColor = !profile.logoUrl ? getBrandColor(profile.canonicalSlug) : null
+  // Identidad v3: el color de marca es ACENTO (wash del cover, monograma), nunca
+  // fondo del logo. getIdentityColor SIEMPRE devuelve un color válido — curado si
+  // existe, si no derivado del nombre. El avatar lo resuelve <IdentityMark/>.
+  const identityColor = getIdentityColor(profile.canonicalSlug, profile.displayName)
+  const ESP_LABELS: Record<string, string> = {
+    cria: 'cría', invernada: 'invernada', general: 'hacienda general',
+    reproductores: 'reproductores', lechera: 'lechera', mixto: 'mixto',
+  }
+  const descriptor = profile.especialidad
+    ? `Consignataria de hacienda · ${ESP_LABELS[profile.especialidad] || profile.especialidad}`
+    : 'Consignataria de hacienda'
 
   // Perfil PRO: el último remate en video va autoplay/mute en el hero — PERO solo si la
   // transmisión es RECIENTE. Si la firma no transmite hace meses (ej. Bressan), un
@@ -645,62 +653,114 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           )}
         </div>
 
-        {/* IDENTIDAD — logo + nombre grande, estilo ficha de ALYC / gestora. Lo
-            primero que ve el productor al entrar: quién es la firma de un vistazo. */}
-        <div className="px-panel pt-4 pb-4 border-b border-terminal-border flex items-start gap-3 sm:gap-4">
-          {logoSrc && (
-            <div
-              className={`rounded-terminal border overflow-hidden flex-shrink-0 relative flex items-center justify-center ${
-                isPro
-                  ? 'w-20 h-20 sm:w-24 sm:h-24 border-warning/60 ring-1 ring-warning/30 shadow-lg shadow-warning/20'
-                  : 'w-16 h-16 sm:w-20 sm:h-20 border-terminal-border'
-              }`}
-              style={{ backgroundColor: brandColor || (profile.logoUrl ? '#ffffff' : 'var(--terminal-bg, #0b0b0e)') }}
-            >
-              <Image src={logoSrc} alt={`Logo ${profile.displayName}`} className="object-contain p-2" width={96} height={96} unoptimized />
+        {/* ============================================================ */}
+        {/*  COVER v3 — banda branded. Menos terminal, más ficha de marca.  */}
+        {/*  Grilla terminal + wash del color de la firma (acento, no fondo  */}
+        {/*  del logo) fundido al carbón para montar el avatar encima.       */}
+        {/* ============================================================ */}
+        <div className="relative h-24 sm:h-32 overflow-hidden border-b border-terminal-border">
+          <div
+            className="absolute inset-0 opacity-50"
+            aria-hidden
+            style={{
+              backgroundImage:
+                'linear-gradient(#27272a 1px,transparent 1px),linear-gradient(90deg,#27272a 1px,transparent 1px)',
+              backgroundSize: '34px 34px',
+              maskImage: 'linear-gradient(180deg,rgba(0,0,0,.7),transparent)',
+              WebkitMaskImage: 'linear-gradient(180deg,rgba(0,0,0,.7),transparent)',
+            }}
+          />
+          <div
+            className="absolute inset-0"
+            aria-hidden
+            style={{ background: `radial-gradient(120% 150% at 80% -20%, ${identityColor}, transparent 60%)`, opacity: 0.28 }}
+          />
+          <div
+            className="absolute inset-x-0 bottom-0 h-1/2"
+            aria-hidden
+            style={{ background: 'linear-gradient(180deg,transparent,rgba(9,9,11,.85) 70%,var(--terminal-bg,#0b0b0e))' }}
+          />
+        </div>
+
+        {/* HERO — avatar montado sobre el cover + identidad. */}
+        <div className="px-panel pb-4 border-b border-terminal-border">
+          <div className="flex items-end gap-3 sm:gap-4 -mt-9 sm:-mt-11 relative z-10">
+            <IdentityMark
+              slug={profile.canonicalSlug}
+              name={profile.displayName}
+              logoUrl={profile.logoUrl}
+              size={84}
+              isPro={isPro}
+            />
+            <div className="min-w-0 flex-1 pb-0.5">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-2xl sm:text-3xl font-bold text-zinc-50 tracking-tight leading-none">
+                  {profile.displayName}
+                </h1>
+                {(tier === 'pro' || tier === 'enterprise') ? (
+                  <ProBadge verified={profile.verified} size="md" />
+                ) : profile.verified ? (
+                  <VerifiedBadge size="md" />
+                ) : null}
+              </div>
             </div>
-          )}
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-xl sm:text-2xl font-bold text-zinc-50 tracking-tight leading-tight">
-                {profile.displayName}
-              </h1>
-              {(tier === 'pro' || tier === 'enterprise') ? (
-                <ProBadge verified={profile.verified} size="md" />
-              ) : profile.verified ? (
-                <VerifiedBadge size="md" />
-              ) : null}
-            </div>
-            <p className="text-xxs font-terminal text-zinc-500 uppercase tracking-widest mt-1">
-              Consignataria de hacienda
-            </p>
-            <div className="flex items-center gap-x-2 gap-y-1 flex-wrap mt-2.5">
-              {provinces.map(prov => (
-                <Badge key={prov} tone="neutral" className="text-zinc-400 normal-case tracking-normal">
-                  {prov}
-                </Badge>
-              ))}
-              {auctions.length > 0 && (
-                <>
-                  <span className="text-terminal-border text-xxs">·</span>
-                  <span className="text-xxs font-terminal text-zinc-400 tabular-nums">
-                    {auctions.length} {auctions.length === 1 ? 'remate' : 'remates'}
-                  </span>
-                </>
-              )}
-              {upcoming.length > 0 && (
-                <>
-                  <span className="text-terminal-border text-xxs">·</span>
-                  <span className="text-xxs font-terminal text-accent tabular-nums">
-                    {upcoming.length} próximo{upcoming.length !== 1 ? 's' : ''}
-                  </span>
-                </>
-              )}
+            <div className="flex-shrink-0 self-end pb-0.5 hidden sm:block">
+              <FollowButton slug={profile.canonicalSlug} displayName={profile.displayName} size="sm" />
             </div>
           </div>
-          {/* Seguir — el loop del productor: aviso cuando publica remate/catálogo */}
-          <div className="flex-shrink-0 self-start">
-            <FollowButton slug={profile.canonicalSlug} displayName={profile.displayName} size="sm" />
+
+          <p className="text-data text-zinc-400 mt-2.5">{descriptor}</p>
+          <div className="flex items-center gap-x-2 gap-y-1 flex-wrap mt-2 text-xxs font-terminal text-zinc-500">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="opacity-70 shrink-0"><path d="M12 21s-7-5.6-7-11a7 7 0 0114 0c0 5.4-7 11-7 11z" /><circle cx="12" cy="10" r="2.5" /></svg>
+            <span className="text-zinc-400">{provinces.length ? provinces.join(' · ') : 'Argentina'}</span>
+            {profile.anosOficio ? (
+              <>
+                <span className="text-terminal-border">·</span>
+                <span className="tabular-nums">{profile.anosOficio} años en el oficio</span>
+              </>
+            ) : null}
+          </div>
+
+          {/* Acciones — fila clara y legible (menos "terminal"). */}
+          <div className="flex flex-wrap gap-2 mt-4">
+            <a
+              href="#contacto"
+              className="inline-flex items-center gap-2 rounded-terminal bg-emerald-500 hover:bg-emerald-400 px-4 py-2 text-sm font-semibold text-white transition-colors"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 shrink-0" aria-hidden><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" /></svg>
+              Contactar
+            </a>
+            <div className="sm:hidden">
+              <FollowButton slug={profile.canonicalSlug} displayName={profile.displayName} size="sm" />
+            </div>
+            <Link href={`/calendario/${profile.canonicalSlug}`} className="inline-flex items-center gap-2 rounded-terminal border border-terminal-border hover:border-zinc-500 px-4 py-2 text-sm font-medium text-zinc-200 transition-colors">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden><rect x="3" y="4" width="18" height="17" rx="2" /><path d="M3 9h18M8 2v4M16 2v4" /></svg>
+              Suscribir calendario
+            </Link>
+            <Link href={`/go/${profile.canonicalSlug}`} className="inline-flex items-center gap-2 rounded-terminal border border-terminal-border hover:border-zinc-500 px-4 py-2 text-sm font-medium text-zinc-200 transition-colors">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v14" /></svg>
+              Compartir
+            </Link>
+          </div>
+        </div>
+
+        {/* STAT TILES — el pulso de la firma de un vistazo. */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-terminal-border border-b border-terminal-border [&>div:nth-child(2)]:border-l-0 sm:[&>div]:border-l">
+          <div className="px-panel py-3">
+            <div className="text-xl sm:text-2xl font-bold text-zinc-100 tabular-nums leading-none">{auctions.length}</div>
+            <div className="text-xxs uppercase tracking-widest text-zinc-500 mt-1.5">Remates</div>
+          </div>
+          <div className="px-panel py-3">
+            <div className="text-xl sm:text-2xl font-bold text-accent tabular-nums leading-none">{upcoming.length}</div>
+            <div className="text-xxs uppercase tracking-widest text-zinc-500 mt-1.5">Próximos</div>
+          </div>
+          <div className="px-panel py-3 border-t border-terminal-border sm:border-t-0">
+            <div className="text-xl sm:text-2xl font-bold text-zinc-100 tabular-nums leading-none">{provinces.length || 1}</div>
+            <div className="text-xxs uppercase tracking-widest text-zinc-500 mt-1.5">{provinces.length === 1 ? 'Provincia' : 'Provincias'}</div>
+          </div>
+          <div className="px-panel py-3 border-t border-terminal-border sm:border-t-0">
+            <div className="text-xl sm:text-2xl font-bold text-zinc-100 tabular-nums leading-none">{historial.last90Count}</div>
+            <div className="text-xxs uppercase tracking-widest text-zinc-500 mt-1.5">Últimos 90 d</div>
           </div>
         </div>
 
@@ -796,7 +856,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           </div>
 
           {/* CARD C — SEGUIR / CONTACTAR (Job 3) */}
-          <div className="rounded-terminal border border-terminal-border bg-terminal-bg/40 p-3 flex flex-col">
+          <div id="contacto" className="rounded-terminal border border-terminal-border bg-terminal-bg/40 p-3 flex flex-col scroll-mt-20">
             <div className="text-xxs uppercase tracking-widest text-zinc-500 mb-2">Seguir / contactar</div>
             {(profile.whatsapp || profile.phone || profile.email || profile.website) ? (
               <div className="flex flex-col gap-1.5">
@@ -1258,22 +1318,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                   href={`/consignatarias/${related.slug}`}
                   className="group flex flex-col items-center gap-2 p-3 bg-zinc-900/50 border border-terminal-border rounded-terminal hover:border-accent/30 hover:bg-zinc-800/50 transition-colors"
                 >
-                  {(() => {
-                    // Logo: el subido, o el del logo-map (firmas importantes) sobre su color de marca.
-                    const relLogo = related.logoUrl ?? getLogoUrl(related.slug)
-                    const relColor = !related.logoUrl ? getBrandColor(related.slug) : null
-                    return relLogo ? (
-                      <div className="w-12 h-12 rounded-terminal overflow-hidden flex items-center justify-center" style={{ backgroundColor: relColor || '#ffffff' }}>
-                        <Image src={relLogo} alt={`Logo ${related.name}`} width={48} height={48} className="object-contain p-1" unoptimized />
-                      </div>
-                    ) : (
-                      <div className="w-12 h-12 rounded-terminal bg-zinc-800 flex items-center justify-center">
-                        <span className="text-lg font-terminal text-zinc-500">
-                          {related.name.charAt(0).toUpperCase()}
-                        </span>
-                      </div>
-                    )
-                  })()}
+                  <IdentityMark slug={related.slug} name={related.name} logoUrl={related.logoUrl} size={48} />
                   <span className="text-xxs font-terminal text-zinc-300 group-hover:text-accent text-center line-clamp-2 transition-colors">
                     {related.name}
                   </span>

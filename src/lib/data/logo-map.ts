@@ -86,6 +86,31 @@ export function getBrandColor(slug: string): string | null {
   return CONSIGNATARIA_BRANDS[slug]?.color ?? null
 }
 
+/**
+ * Banda de hues que leen bien sobre carbón (verdes campo, azules, teja, vino,
+ * ocre) — sin amarillos/limas chillones. Con S/L fijos, el color derivado NUNCA
+ * sale feo ni ilegible. Esto es lo que hace que TODA firma sin color curado
+ * tenga igual un color de marca estable y agradable, sin cargar nada.
+ */
+const IDENTITY_HUE_BAND = [152, 158, 205, 215, 224, 258, 12, 352, 28, 190]
+
+/** Color determinístico derivado del nombre (hash → banda controlada). */
+export function deriveBrandColor(name: string): string {
+  let h = 0
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0
+  const hue = IDENTITY_HUE_BAND[h % IDENTITY_HUE_BAND.length]
+  return `hsl(${hue} 42% 34%)`
+}
+
+/**
+ * Color de IDENTIDAD de una firma: el curado si existe, si no uno derivado del
+ * nombre. SIEMPRE devuelve un color válido — nunca null. Se usa como acento
+ * (monograma, wash del cover), NUNCA como fondo detrás del logo.
+ */
+export function getIdentityColor(slug: string, name: string): string {
+  return CONSIGNATARIA_BRANDS[slug]?.color ?? deriveBrandColor(name)
+}
+
 /** Whether the logo should keep its own colors (not be forced white). */
 export function getBrandKeepColor(slug: string): boolean {
   return CONSIGNATARIA_BRANDS[slug]?.keepColor ?? false
