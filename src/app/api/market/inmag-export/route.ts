@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { fetchInmagSeries } from '@/lib/charts/data'
+import { createClient as createServerSupabase } from '@/lib/supabase-server'
+import { hasUnlock } from '@/lib/karma-ledger'
 
 // Reads the session cookie + the DB → must render dynamically.
 export const dynamic = 'force-dynamic'
@@ -7,12 +9,33 @@ export const dynamic = 'force-dynamic'
 /**
  * GET /api/market/inmag-export
  *
- * PRO-only CSV export of the FULL INMAG daily series (2015 → today), pulled
- * from mag_inmag_history. The on-page charts/tables show only the recent
- * window (free + indexable); the complete decade-long dataset is a PRO asset.
+ * CSV export del histórico INMAG completo (2015 → hoy), desde mag_inmag_history.
+ * Los charts/tablas de la página muestran solo la ventana reciente (gratis +
+ * indexable); el dataset completo se desbloquea con COINS (Fase 3 del karma).
+ *
+ * Este check es defensa en profundidad: la UI (InmagHistoryExport) ya no expone
+ * el link hasta desbloquear, y acá revalidamos el unlock server-side para que no
+ * se pueda bajar el CSV pegándole directo al endpoint.
  */
 export async function GET() {
-  // PRO Usuario retirado (2026-07): el histórico completo del INMAG es GRATIS.
+  let userId: string | null = null
+  try {
+    const sb = await createServerSupabase()
+    const {
+      data: { user },
+    } = await sb.auth.getUser()
+    userId = user?.id ?? null
+  } catch {
+    /* sin sesión */
+  }
+
+  if (!userId || !(await hasUnlock(userId, 'inmag_history_deep'))) {
+    return NextResponse.json(
+      { error: 'locked', message: 'Desbloqueá el histórico completo con tus coins en /mercado/inmag.' },
+      { status: 403 },
+    )
+  }
+
   const today = new Date().toISOString().slice(0, 10)
   const rows = await fetchInmagSeries('2015-01-01', today)
   const clean = rows.filter((r) => r.inmag !== null)

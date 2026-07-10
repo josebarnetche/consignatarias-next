@@ -7,6 +7,7 @@ import Script from 'next/script';
 import AnalyticsProvider from '@/components/AnalyticsProvider';
 import CookieConsent from '@/components/CookieConsent';
 import WhatsAppLeadFAB from '@/components/WhatsAppLeadFAB';
+import AccountNudge from '@/components/AccountNudge';
 import rematesData from '@/lib/data/remates.json';
 
 const inter = Inter({
@@ -165,6 +166,9 @@ export default function RootLayout({
             Montada en el ROOT layout para que aparezca en TODAS las páginas,
             incluida la home de la raíz (que no usa el layout terminal). */}
         <WhatsAppLeadFAB />
+        {/* Nudge-first: invita (nunca obliga) a crear cuenta gratis con Google en
+            momentos de alta intención. Global, no bloqueante. Ver src/lib/account-nudge.ts */}
+        <AccountNudge />
         <Analytics />
         <SpeedInsights />
         {/* gtag.js download deferred to browser idle (lazyOnload) — keeps ~157 KiB of

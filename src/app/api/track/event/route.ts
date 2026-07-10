@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
+import { createClient as createServerSupabase } from '@/lib/supabase-server'
 import { isValueEvent, VALUE_EVENTS } from '@/lib/value-events'
+import { awardValueEventKarma } from '@/lib/karma-ledger'
 import type { Json } from '@/lib/database.types'
 
 /**
@@ -51,6 +53,25 @@ export async function POST(req: NextRequest) {
       console.error('value_event insert error:', error)
       // tabla puede no existir en algún entorno — no romper la navegación.
     }
+
+    // Karma (Fase 2): el usuario logueado gana karma por sus eventos de valor
+    // (engagement pasivo con techo diario; intención real, completo). Short-circuit
+    // barato para anónimos (mayoría) → no cargamos el hot path con un getUser inútil.
+    const hasAuth = req.cookies
+      .getAll()
+      .some((c) => c.name.startsWith('sb-') && c.name.includes('auth-token'))
+    if (hasAuth) {
+      try {
+        const sb = await createServerSupabase()
+        const {
+          data: { user },
+        } = await sb.auth.getUser()
+        if (user) await awardValueEventKarma(user.id, event)
+      } catch {
+        /* best-effort: nunca romper el beacon por acreditar karma */
+      }
+    }
+
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('track event error:', error)

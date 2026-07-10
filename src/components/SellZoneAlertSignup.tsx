@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { trackAlertSubscribe } from '@/lib/analytics'
+import { requestAccountNudge } from '@/lib/account-nudge'
 
 /**
  * SellZoneAlertSignup — captura de la alerta personalizada de ZONA DE VENTA
@@ -53,6 +54,9 @@ export default function SellZoneAlertSignup({
         setState('ok')
         setMsg(`Listo — te avisamos cuando el ${categoriaLabel} entre en zona de venta.`)
         trackAlertSubscribe({ source: `alerta-venta:${categoria}`, page })
+        // Nudge-first: la alerta ya quedó anotada con el email. Invitamos (sin
+        // obligar) a convertir ese email en una cuenta para gestionar las alertas.
+        requestAccountNudge({ reason: 'alert_subscribe' })
       } else {
         setState('error'); setMsg(data.error || 'No se pudo anotar. Probá de nuevo.')
       }

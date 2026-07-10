@@ -61,23 +61,41 @@ export function computeKarma(i: KarmaInput): Karma {
   const arranque = arranqueItems(i).filter(Boolean).length * 20
   const hacienda = Math.min(Math.round((i.cabezas || 0) / 5), 200) // 1 pt cada 5 cabezas, tope 200
   const engagement = Math.min((i.attended || 0) * 15 + (i.following || 0) * 5, 150)
-  const tenure = Math.min((i.tenureMonths || 0) * 4, 60)
+  const tenure = Math.min(Math.round((i.tenureMonths || 0) * 4), 60) // redondeado: sin decimales
   const score = arranque + hacienda + engagement + tenure
 
+  const lvl = levelForScore(score)
+  return {
+    score,
+    level: lvl.level,
+    levelIndex: lvl.levelIndex,
+    nextLevel: lvl.nextLevel,
+    toNext: lvl.toNext,
+    breakdown: { arranque, hacienda, engagement, tenure },
+  }
+}
+
+/** Nivel para un puntaje/saldo dado. Reusado por el karma-reputación y por el
+ *  saldo unificado de coins (el nivel deriva del número que se muestra). */
+export function levelForScore(score: number): {
+  level: string
+  levelIndex: number
+  nextLevel: string | null
+  toNext: number
+} {
+  const n = Math.round(score)
   let levelIndex = 0
   for (let k = KARMA_LEVELS.length - 1; k >= 0; k--) {
-    if (score >= KARMA_LEVELS[k].min) {
+    if (n >= KARMA_LEVELS[k].min) {
       levelIndex = k
       break
     }
   }
   const next = KARMA_LEVELS[levelIndex + 1] ?? null
   return {
-    score,
     level: KARMA_LEVELS[levelIndex].name,
     levelIndex,
     nextLevel: next ? next.name : null,
-    toNext: next ? Math.max(0, next.min - score) : 0,
-    breakdown: { arranque, hacienda, engagement, tenure },
+    toNext: next ? Math.max(0, next.min - n) : 0,
   }
 }

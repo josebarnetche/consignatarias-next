@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { ProReveal, HeroNumber, StatPill } from '@/components/pro'
 import { trackEvent, trackOutboundClick } from '@/lib/analytics'
+import { requestAccountNudge } from '@/lib/account-nudge'
 
 interface MarketPrices {
   inmag: { current: number; prev: number; change: number }
@@ -151,6 +152,11 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
     }
 
     setShowResult(true)
+
+    // Nudge-first: el resultado ya se mostró. Al anónimo lo invitamos (sin
+    // obligarlo) a crear cuenta gratis para guardar el historial. El toast global
+    // se autosuprime si ya está logueado o si fue pospuesto.
+    requestAccountNudge({ reason: 'calc_result' })
   }
 
   return (

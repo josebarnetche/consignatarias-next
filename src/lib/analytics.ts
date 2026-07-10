@@ -36,6 +36,26 @@ function gtag(...args: unknown[]) {
 }
 
 /**
+ * Test-mode capture hook. Un harness de verificación (Playwright/browser) setea
+ * `window.__CNSG_TRACK_TEST__ = true` ANTES de interactuar; a partir de ahí cada
+ * evento que pasa por `trackEvent` se acumula en `window.__cnsgEvents` para poder
+ * afirmarlo. Es puramente aditivo: en producción el flag nunca se setea, así que
+ * esto es un no-op y NO cambia el comportamiento. Existe porque los eventos no
+ * disparan en dev/CI (analyticsEnabled() es false fuera de PROD_HOSTS), y sin
+ * esto no habría forma de verificar el instrumentado. Ver docs/analytics/.
+ */
+interface TrackTestWindow {
+  __CNSG_TRACK_TEST__?: boolean
+  __cnsgEvents?: Array<{ event: string; params?: Record<string, unknown> }>
+}
+function captureForTest(eventName: string, params?: Record<string, unknown>) {
+  if (typeof window === 'undefined') return
+  const w = window as unknown as TrackTestWindow
+  if (!w.__CNSG_TRACK_TEST__) return
+  ;(w.__cnsgEvents ||= []).push({ event: eventName, params })
+}
+
+/**
  * Send a GA4 pageview for SPA navigations.
  * Called by the AnalyticsProvider on every route change.
  */
@@ -54,6 +74,7 @@ export function trackEvent(
   eventName: string,
   params?: Record<string, unknown>
 ) {
+  captureForTest(eventName, params)
   gtag('event', eventName, params)
 }
 
@@ -114,6 +135,19 @@ export function trackSearch(query: string, resultCount: number, page: string) {
     search_term: query,
     result_count: resultCount,
     page,
+  })
+}
+
+/**
+ * Account-creation nudge (soft, non-blocking). Fired by the global AccountNudge
+ * toast. `action` segments the funnel: shown → clicked (→ Google) or dismissed.
+ * The producer is never blocked; this only measures the conversion to a free
+ * account at high-intent moments (save, calc, alert, contact reveal).
+ */
+export function trackAccountNudge(action: 'view' | 'click' | 'dismiss', reason: string) {
+  trackEvent('account_nudge', {
+    nudge_action: action,
+    nudge_reason: reason,
   })
 }
 
@@ -178,8 +212,6 @@ export function trackProPromptView(context: string, variant: ProPromptVariant) {
   trackEvent('pro_prompt_view', {
     prompt_context: context,
     prompt_variant: variant,
-    context,
-    variant,
   })
   emitValueBeacon('pro_prompt_view', { meta: { context, variant } })
 }
@@ -190,8 +222,6 @@ export function trackProPromptClick(context: string, variant: ProPromptVariant) 
   trackEvent('pro_prompt_click', {
     prompt_context: context,
     prompt_variant: variant,
-    context,
-    variant,
   })
   emitValueBeacon('pro_prompt_click', { meta: { context, variant } })
 }
