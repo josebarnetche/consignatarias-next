@@ -65,6 +65,16 @@ const ALLOWLIST = new Map([
       exit: 'Se cierra al regenerar database.types.ts.',
     }],
   )),
+  // Capa de karma/coins (migración 20260709_karma_ledger.sql). VERIFICADO
+  // 2026-07-10: los 3 objetos EXISTEN en prod (probado el flujo earn/spend end-to-end
+  // vía MCP). El DRIFT era falsa alarma por tipos sin regenerar + el cast karmaDb().
+  ...(['karma_ledger', 'karma_balance', 'spend_karma'].map(
+    (name) => [name, {
+      reason: 'FALSO POSITIVO: existe en prod (verificado 2026-07-10, flujo probado); database.types.ts aún sin regenerar.',
+      owner: 'infra', since: '2026-07-10', severity: 'baja',
+      exit: 'Se cierra al regenerar database.types.ts (y permite quitar el cast karmaDb()).',
+    }],
+  )),
 ])
 
 // ── 1. Esquema real de prod (desde los tipos generados) ──────────────────────

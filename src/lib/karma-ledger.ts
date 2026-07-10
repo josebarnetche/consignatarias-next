@@ -37,12 +37,15 @@ export const KARMA = {
   earnPerValueWeight: 1,
   /** Techo de karma/día por engagement pasivo (time_on_page, scroll…) anti-gaming. */
   dailyEngagementCap: 40,
-  /** Créditos de arranque, una sola vez por usuario (idempotentes por ref). */
-  seed: {
-    load_hacienda: 20,
-    first_follow: 5,
-    newsletter: 8,
-  },
+  // NOTA: no hay "seed credits" nombrados. El bootstrap del saldo sale de dos
+  // fuentes REALES que sí están cableadas: (1) value-events del journey
+  // (signup=15, newsletter_subscribe=8, alert_create=8, calendar_subscribe=12…
+  // vía awardValueEventKarma) y (2) la reputación derivada (hacienda/marcas/
+  // antigüedad → seed:reputation, vía syncReputationAndBalance). Un `KARMA.seed`
+  // paralelo (load_hacienda/first_follow/newsletter) existió como config pero
+  // nunca se acreditó y se pisaba con newsletter_subscribe → removido (2026-07-10).
+  // Si se quiere premiar "seguir una firma" o "cargar una guía", agregarlos como
+  // value-events (no resucitar el esquema paralelo).
   /** Catálogo de gasto: qué desbloquea y cuánto cuesta. */
   unlockCost: {
     inmag_history_deep: 30,
