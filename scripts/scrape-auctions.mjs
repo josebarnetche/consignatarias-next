@@ -29,6 +29,32 @@ const LOCAL_NEA_PATH = resolve(DATA_DIR, "remates-local-nea.json");
 const MARKET_PATH = resolve(DATA_DIR, "market-prices.json");
 const YOUTUBE_PATH = resolve(DATA_DIR, "youtube-channels.json");
 const MAG_CONSIG_PATH = resolve(DATA_DIR, "mag-consignatarios.json");
+const PROVINCES_PATH = resolve(DATA_DIR, "consignataria-provinces.json");
+
+// Provincia de DOMICILIO por consignataria (fuente autoritativa curada). Se usa
+// como FALLBACK cuando el remate no trae localidad para resolver por georef —
+// NO pisa la provincia resuelta por la localidad del evento. Ver el JSON.
+let HOME_PROVINCE = { provinces: {}, aliases: {} };
+try { HOME_PROVINCE = JSON.parse(readFileSync(PROVINCES_PATH, "utf-8")); } catch { /* opcional */ }
+
+/**
+ * Provincia de domicilio de una consignataria por su slug (o variantes).
+ * Resuelve: directo → alias curado → strip de sufijos societarios. null si no hay.
+ */
+function homeProvinceFor(slug) {
+  if (!slug) return null;
+  const P = HOME_PROVINCE.provinces || {};
+  const A = HOME_PROVINCE.aliases || {};
+  if (P[slug]) return P[slug];
+  if (A[slug] && P[A[slug]]) return P[A[slug]];
+  const stripped = slug
+    .replace(/-s-a$/, "").replace(/-sa$/, "")
+    .replace(/-s-r-l$/, "").replace(/-srl$/, "")
+    .replace(/-s-c-a$/, "").replace(/-hnos$/, "").replace(/-haciendas$/, "");
+  if (P[stripped]) return P[stripped];
+  if (A[stripped] && P[A[stripped]]) return P[A[stripped]];
+  return null;
+}
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -1729,6 +1755,22 @@ async function main() {
       a.consignatariaName = fix.name;
     }
   }
+
+  // Fallback de provincia por DOMICILIO de la consignataria — SOLO para remates
+  // que quedaron sin provincia (la localidad del evento no vino o no resolvió por
+  // georef, ej. remates televisados sin sede física). No pisa nada ya resuelto.
+  // Corrige el warning de GSC "Falta el campo name (en location)" en origen.
+  let homeFilled = 0;
+  for (const a of merged) {
+    if (a.province && String(a.province).trim()) continue;
+    const prov = homeProvinceFor(a.consignatariaSlug);
+    if (prov) {
+      a.province = prov;
+      homeFilled++;
+      console.log(`  [HOME] ${a.consignatariaSlug}: (sin provincia) → ${prov}`);
+    }
+  }
+  if (homeFilled) console.log(`Fallback domicilio: ${homeFilled} remate(s) con provincia inferida de la consignataria.`);
 
   // Assign sequential IDs
   merged.forEach((a, i) => {
