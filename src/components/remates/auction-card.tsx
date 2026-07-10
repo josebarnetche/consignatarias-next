@@ -38,11 +38,15 @@ function formatDate(dateStr: string): string {
 }
 
 export default function AuctionCard({ auction }: AuctionCardProps) {
-  const status = statusConfig[auction.status]
+  // Defensivo: una fila con status/type fuera del enum (dato incompleto de una
+  // fuente) NO debe romper el prerender de TODA la página (era un crash de build:
+  // statusConfig[undefined].bg). Cae a defaults seguros.
+  const status = statusConfig[auction.status] ?? statusConfig.completed
+  const accent = typeAccent[auction.type] ?? typeAccent.general ?? ''
 
   return (
     <article
-      className={`bg-white rounded-xl border border-stone-200 border-l-4 ${typeAccent[auction.type]} card-hover overflow-hidden`}
+      className={`bg-white rounded-xl border border-stone-200 border-l-4 ${accent} card-hover overflow-hidden`}
     >
       {/* Top bar: date + status */}
       <div className="flex items-center justify-between px-5 pt-4 pb-2">

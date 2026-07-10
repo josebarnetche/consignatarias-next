@@ -6,6 +6,14 @@ const nextConfig = {
 
   trailingSlash: false,
 
+  // Las rutas opengraph-image (next/og) leen src/fonts/*.ttf en runtime con
+  // readFile(process.cwd()+...). En el Lambda de Vercel esos .ttf NO se traceaban
+  // al bundle de la función → ENOENT (579 errores en /remates/[slug]/opengraph-image).
+  // Esto fuerza a incluir las fuentes en toda ruta opengraph-image.
+  outputFileTracingIncludes: {
+    '/**/opengraph-image': ['./src/fonts/JetBrainsMono-Bold.ttf', './src/fonts/JetBrainsMono-Medium.ttf'],
+  },
+
   // Security headers (redirects + cache headers handled by vercel.json)
   async headers() {
     return [

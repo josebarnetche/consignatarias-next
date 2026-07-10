@@ -517,7 +517,7 @@ interface RemateListItem {
   date: string;
   time?: string;
   location: string;
-  province: string;
+  province: string | null;
   consignatariaName: string;
   type: string;
   estimatedHeads?: number;

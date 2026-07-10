@@ -164,7 +164,7 @@ function remateSummary(r: Remate): string {
   const t = (TYPE_LABELS[r.type] || r.type || '').toLowerCase()
   const cat = r.mainCategory ? (CATEGORY_LABELS[r.mainCategory] || '').toLowerCase() : ''
   const city = cityOf(r)
-  const prov = PROVINCE_NAMES[r.province] || r.province
+  const prov = PROVINCE_NAMES[r.province ?? ''] || r.province || ''
   const when = formatDate(r.date).replace(/ \d{4}$/, '')
   const catClause = cat && r.mainCategory !== 'mixto' ? ` con foco en ${cat}` : ''
   const headsClause = r.estimatedHeads ? `, con unas ${r.estimatedHeads.toLocaleString('es-AR')} cabezas` : ''
@@ -266,7 +266,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   }
   
-  const provinceName = PROVINCE_NAMES[remate.province] || remate.province
+  const provinceName = PROVINCE_NAMES[remate.province ?? ''] || remate.province || ''
   const typeName = TYPE_LABELS[remate.type] || remate.type
   const dateFormatted = formatDate(remate.date)
   
@@ -309,7 +309,7 @@ export default async function RemateDetailPage({ params }: Props) {
     notFound()
   }
   
-  const provinceName = PROVINCE_NAMES[remate.province] || remate.province
+  const provinceName = PROVINCE_NAMES[remate.province ?? ''] || remate.province || ''
   const typeName = TYPE_LABELS[remate.type] || remate.type
   const dateFormatted = formatDate(remate.date)
   const today = new Date().toISOString().slice(0, 10)
@@ -371,7 +371,7 @@ export default async function RemateDetailPage({ params }: Props) {
   const priceKey = remate.mainCategory ? CATEGORY_PRICE_KEY[remate.mainCategory] : null
   const catPrice = priceKey ? MAG_CATEGORIES[priceKey] : null
   // Breed reference for the province's region.
-  const breed = regionBreed(remate.province)
+  const breed = regionBreed(remate.province ?? '')
   // Cattle stock for the province (SENASA).
   const existencias = (existenciasData as unknown as Record<string, { total: number; year: number }>)[(remate.province || '').toUpperCase()] ?? null
   // Data-derived summary for the current remate (unique paragraph on the page).
