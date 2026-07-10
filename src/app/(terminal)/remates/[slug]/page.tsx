@@ -398,7 +398,7 @@ export default async function RemateDetailPage({ params }: Props) {
         startDate={`${remate.date}T${remate.time || '10:00'}:00-03:00`}
         endDate={`${remate.date}T${remate.time ? String(parseInt(remate.time.split(':')[0]) + 4).padStart(2, '0') + ':00' : '16:00'}:00-03:00`}
         location={{
-          name: remate.location,
+          name: remate.location?.trim() || provinceName || 'Argentina',
           address: `${remate.location}, ${provinceName}, Argentina`,
         }}
         organizer={remate.consignatariaName}

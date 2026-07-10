@@ -322,10 +322,11 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
         startDate: auction.time ? `${auction.date}T${auction.time}:00-03:00` : auction.date,
         location: {
           '@type': 'Place',
-          name: getCity(auction.location),
+          // Place.name requerido: si no hay ciudad, caemos a la provincia (config).
+          name: getCity(auction.location) || config.displayName || 'Argentina',
           address: {
             '@type': 'PostalAddress',
-            addressLocality: getCity(auction.location),
+            addressLocality: getCity(auction.location) || config.displayName || 'Argentina',
             addressRegion: config.displayName,
             addressCountry: 'AR',
           },

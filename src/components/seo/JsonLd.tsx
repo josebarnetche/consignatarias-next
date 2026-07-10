@@ -181,7 +181,9 @@ export function EventSchema({
     eventStatus: 'https://schema.org/EventScheduled',
     location: {
       '@type': 'Place',
-      name: location.name,
+      // Place.name requerido: si la firma no cargó ciudad, caemos a la dirección
+      // (que ya incluye provincia/país) o a 'Argentina'. Nunca vacío.
+      name: location.name?.trim() || location.address?.trim() || 'Argentina',
       address: {
         '@type': 'PostalAddress',
         addressLocality: location.address,
@@ -533,10 +535,18 @@ export function RematesListSchema({ remates }: { remates: RemateListItem[] }) {
     description: `Calendario de ${remates.length} remates ganaderos programados`,
     numberOfItems: remates.length,
     itemListElement: topRemates.map((remate, index) => {
-      const startDateTime = remate.time 
-        ? `${remate.date}T${remate.time}:00` 
+      const startDateTime = remate.time
+        ? `${remate.date}T${remate.time}:00`
         : `${remate.date}T10:00:00`;
-      
+
+      // Place.name es requerido por schema.org. Muchas firmas no cargan `location`
+      // (solo la provincia) → sin fallback, JSON.stringify dropea el campo y GSC
+      // avisa "Falta el campo name (en location)". Fallback para el NOMBRE: ciudad →
+      // provincia → país. Para la localidad NO inventamos "Argentina" (no es una
+      // localidad): se omite si no hay ciudad/provincia real.
+      const cityOrProvince = remate.location?.trim() || remate.province?.trim() || undefined;
+      const placeName = cityOrProvince || 'Argentina';
+
       return {
         '@type': 'ListItem',
         position: index + 1,
@@ -549,11 +559,11 @@ export function RematesListSchema({ remates }: { remates: RemateListItem[] }) {
           eventStatus: 'https://schema.org/EventScheduled',
           location: {
             '@type': 'Place',
-            name: remate.location,
+            name: placeName,
             address: {
               '@type': 'PostalAddress',
-              addressLocality: remate.location,
-              addressRegion: remate.province,
+              addressLocality: cityOrProvince,
+              addressRegion: remate.province?.trim() || undefined,
               addressCountry: 'AR',
             },
           },
