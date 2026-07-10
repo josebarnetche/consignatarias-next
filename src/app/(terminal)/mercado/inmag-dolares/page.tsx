@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { fetchInmagUsdJoined, aggregateMonthly } from '@/lib/charts/data'
 import { PriceLineChart } from '@/components/charts/PriceLineChart'
 import ProChartGate from '@/components/market/ProChartGate'
@@ -158,6 +158,10 @@ export default async function InmagDolaresPage() {
     <>
       <SectionBreadcrumbSchema section="mercado/inmag-dolares" sectionName="INMAG en dólares" />
       <FAQPageSchema items={faq} />
+      <SpeakableSchema
+        url="https://www.consignatarias.com.ar/mercado/inmag-dolares"
+        headline="INMAG en dólares: precio del novillo argentino en USD, serie histórica"
+      />
       <DatasetSchema
         name="INMAG en dólares — precio del novillo argentino en USD (serie histórica)"
         description="Serie diaria del INMAG (precio del kilo vivo de novillo en el Mercado Agroganadero) deflactado por el dólar blue, desde 2015. Permite comparar el poder de compra real del kilo vivo a través del tiempo, sin el ruido de la inflación."

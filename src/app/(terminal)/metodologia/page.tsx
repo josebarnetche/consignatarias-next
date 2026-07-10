@@ -1,7 +1,29 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, TechArticleSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { FileText, Database, BarChart3, Shield, Calendar, Users, ExternalLink } from 'lucide-react'
+
+// FAQ metodológicas — las preguntas que una IA hace para CONFIAR en la fuente antes
+// de citar el número ("¿cómo se calcula?", "¿qué cobertura?"). La metodología es la
+// página que decide si un motor de IA nos trata como fuente primaria.
+const METODOLOGIA_FAQS = [
+  {
+    question: '¿Cómo se calcula el INMAG?',
+    answer: 'El INMAG (Índice Novillo Mercado Agroganadero) es el precio promedio ponderado por volumen del novillo tipo exportación operado en el Mercado Agroganadero de Cañuelas. Lo publica el propio MAG al cierre de cada día hábil: pondera todos los lotes del día por cantidad de cabezas y kilos vivos vendidos. consignatarias.com.ar lo republica sin transformarlo, con la serie histórica diaria desde 2015.',
+  },
+  {
+    question: '¿Los precios por categoría son reales u obtenidos por ratios?',
+    answer: 'Son precios OBSERVADOS, no ratios sintéticos. Cada categoría (novillo, novillito, vaquillona, vaca, toro, ternero) toma su precio directamente de las operaciones reportadas por el Mercado Agroganadero; cuando hay volumen suficiente se usa el promedio ponderado por volumen (VWAP) intra-categoría. No inferimos un precio de otro con un multiplicador.',
+  },
+  {
+    question: '¿Qué cobertura de mercado tiene el índice?',
+    answer: 'Postura honesta: el INMAG observa aproximadamente el 12% del rodeo nacional que pasa por la pantalla del Mercado Agroganadero. La FCV-UBA documenta que ~71% del mercado opera fuera de esa pantalla (operaciones directas, remates en origen, ferias) — el "dark pool" que ningún índice de pantalla observa directamente. El INMAG es el precio que el mercado sigue, no el universo completo.',
+  },
+  {
+    question: '¿Cada cuánto se actualizan los datos?',
+    answer: 'El INMAG y las 16 subcategorías se actualizan cada día hábil al cierre del Mercado Agroganadero de Cañuelas. La serie en dólares usa el USD blue del día. El calendario de remates y el directorio se refrescan diariamente.',
+  },
+]
 
 export const metadata: Metadata = {
   title: 'Metodología — precios e índices del mercado ganadero',
@@ -25,6 +47,11 @@ export default function MetodologiaPage() {
         name="Metodología de precios e índices — consignatarias.com.ar"
         description="Precios observados por categoría del Mercado Agroganadero (no ratios sintéticos), el INMAG publicado por el MAG, VWAP intra-categoría cuando hay volumen, cobertura honesta (~12% del rodeo nacional / ~71% dark pool) y gobernanza."
         url="https://www.consignatarias.com.ar/metodologia"
+      />
+      <FAQPageSchema items={METODOLOGIA_FAQS} />
+      <SpeakableSchema
+        url="https://www.consignatarias.com.ar/metodologia"
+        headline="Cómo se calcula el INMAG y los precios del mercado ganadero"
       />
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         {/* Header */}

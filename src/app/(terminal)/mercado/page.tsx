@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import MercadoClient from './MercadoClient'
-import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { LongTermChart } from '@/components/market/LongTermChart'
 import { SeasonalPattern } from '@/components/market/SeasonalPattern'
 import { CategoryComparison } from '@/components/market/CategoryComparison'
@@ -90,6 +90,10 @@ export default function MercadoPage() {
     <>
       <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
       <FAQPageSchema items={MERCADO_FAQ} />
+      <SpeakableSchema
+        url="https://www.consignatarias.com.ar/mercado"
+        headline="Precios del mercado ganadero argentino hoy: novillo, categorías y dólar"
+      />
       <section className="px-4 pt-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-3xl">
         <h2 className="text-zinc-200 text-lg font-medium mb-2">Precios del mercado ganadero argentino</h2>
         <p className="mb-2">

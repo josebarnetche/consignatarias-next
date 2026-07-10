@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
-import { SectionBreadcrumbSchema, DatasetSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, DatasetSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { ShareBadge } from '@/components/share/ShareBadge'
 
 /* ============================================================
@@ -123,6 +123,10 @@ export default function IndicesPage() {
     <>
       <SectionBreadcrumbSchema section="indices" sectionName="Índices del mercado" />
       <FAQPageSchema items={FAQS} />
+      <SpeakableSchema
+        url="https://www.consignatarias.com.ar/indices"
+        headline="Familia de índices de referencia del mercado ganadero argentino"
+      />
       {FAMILY.map((idx) => (
         <DatasetSchema
           key={idx.name}

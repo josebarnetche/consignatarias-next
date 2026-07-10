@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { SectionBreadcrumbSchema, TechArticleSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, TechArticleSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { TrendingUp, TrendingDown, Building2, MapPin, ExternalLink, BarChart3 } from 'lucide-react'
 import marketData from '@/lib/data/market-prices.json'
 
@@ -66,6 +66,10 @@ export default function MercadoCanuelasPage() {
         ]}
       />
       <FAQPageSchema items={FAQS} />
+      <SpeakableSchema
+        url="https://www.consignatarias.com.ar/mercado/canuelas"
+        headline="Mercado Agroganadero de Cañuelas: qué es y precio del novillo hoy"
+      />
 
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
