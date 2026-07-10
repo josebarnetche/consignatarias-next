@@ -46,6 +46,18 @@ export function OrganizationSchema({
       'https://twitter.com/consignatarias',
       'https://www.linkedin.com/company/memola-medios',
     ],
+    // Señal de autoridad de entidad para el knowledge-graph / motores de IA: sobre
+    // QUÉ es autoridad este sitio. Linkea a los entes de Wikidata para que la IA
+    // reconozca la entidad, no solo el string. Refuerza la citación en GEO/AEO.
+    knowsAbout: [
+      { '@type': 'DefinedTerm', name: 'INMAG', alternateName: 'Índice Novillo Mercado Agroganadero', url: 'https://www.consignatarias.com.ar/mercado/inmag' },
+      { '@type': 'DefinedTerm', name: 'Índice Novillo Arrendamiento', url: 'https://www.consignatarias.com.ar/mercado/arrendamiento' },
+      { '@type': 'Thing', name: 'Precio del novillo en Argentina' },
+      { '@type': 'Thing', name: 'Mercado Agroganadero de Cañuelas' },
+      { '@type': 'Thing', name: 'Arrendamiento rural en Argentina' },
+      { '@type': 'Thing', name: 'Consignataria de hacienda' },
+      { '@type': 'Thing', name: 'Mercado ganadero bovino argentino' },
+    ],
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',
