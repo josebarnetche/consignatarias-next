@@ -100,11 +100,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'daily',
       priority: 1,
     },
-    // Answer-pages + landings de arrendamiento creadas por el swarm GEO (2026-07-10).
+    // Answer-pages + landings creadas por los swarm GEO (2026-07-10).
     { url: `${baseUrl}/que-es-una-consignataria`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${baseUrl}/cuanto-vale-una-vaca`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/mercado/arrendamiento/liniers`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/mercado/arrendamiento/canuelas`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.8 },
+    // Tanda 2 — answer-pages informacionales de alto volumen.
+    { url: `${baseUrl}/categorias-de-hacienda`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${baseUrl}/cuanto-pesa-un-novillo`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${baseUrl}/cuanto-pesa-una-media-res`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.7 },
+    { url: `${baseUrl}/rendimiento-al-gancho`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${baseUrl}/como-vender-hacienda`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${baseUrl}/como-se-calcula-el-canon-de-arrendamiento`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.75 },
+    { url: `${baseUrl}/impuesto-de-sellos-arrendamiento`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${baseUrl}/que-es-la-invernada`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.65 },
+    { url: `${baseUrl}/que-es-la-cria-y-recria`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.65 },
+    { url: `${baseUrl}/que-es-un-feedlot`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.65 },
+    { url: `${baseUrl}/que-es-el-renspa`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.7 },
     {
       url: `${baseUrl}/overview`,
       lastModified: priceDate,

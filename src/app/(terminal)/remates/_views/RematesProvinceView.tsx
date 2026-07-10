@@ -3,7 +3,7 @@ import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import marketPrices from '@/lib/data/market-prices.json'
 import type { Auction } from '@/lib/db/schema'
-import { BreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { BreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import { EmptyState } from '@/components/ui'
@@ -284,6 +284,19 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
   const types = new Set(provinceAuctions.map(a => a.type))
   const totalHeads = provinceAuctions.reduce((s, a) => s + (a.estimatedHeads ?? 0), 0)
 
+  // Live market numbers (reused from metadata; interpolated at build, revalida diario)
+  const novillo = Math.round(
+    (marketPrices.categories as Record<string, { current: number }>).novillos.current,
+  )
+  const lastUpdate = marketPrices.lastUpdate
+  const fmt = (n: number) => n.toLocaleString('es-AR')
+
+  // Answer-first: recuento vivo + precio de referencia fechado (AEO / speakable)
+  const answerFirst =
+    upcomingAuctions.length > 0
+      ? `En ${config.displayName} hay ${upcomingAuctions.length} ${upcomingAuctions.length === 1 ? 'remate de hacienda programado' : 'remates de hacienda programados'} (${consignatarias.size} ${consignatarias.size === 1 ? 'consignataria' : 'consignatarias'}${totalHeads > 0 ? `, ~${fmt(totalHeads)} cabezas estimadas` : ''}); el novillo cotiza hoy $${fmt(novillo)}/kg vivo según el INMAG (${lastUpdate}).`
+      : `En ${config.displayName} no hay remates de hacienda programados por ahora; el novillo cotiza hoy $${fmt(novillo)}/kg vivo según el INMAG (${lastUpdate}).`
+
   const topConsignatarias = [...consignatarias].slice(0, 6)
   const typeLabels = [...types].map(t => TYPE_LABELS[t] || t.toUpperCase())
   const faqItems = [
@@ -359,6 +372,13 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
       {/* JSON-LD: FAQ */}
       <FAQPageSchema items={faqItems} />
 
+      {/* JSON-LD: Speakable (answer-first para voz / AEO) */}
+      <SpeakableSchema
+        url={`https://www.consignatarias.com.ar/remates/${provincia}`}
+        headline={`Remates de hacienda en ${config.displayName}`}
+        cssSelectors={['h1', '.speakable-content']}
+      />
+
       <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 space-y-0">
         {/* Back link */}
         <div className="mb-2">
@@ -429,6 +449,9 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
             <h1 className="text-lg font-terminal text-zinc-200 mb-3">
               Remates Ganaderos en {config.displayName}
             </h1>
+            <p className="speakable-content text-sm text-zinc-300 leading-relaxed mb-3">
+              {answerFirst}
+            </p>
             <p className="text-sm text-zinc-400 leading-relaxed">
               {config.intro}
             </p>
