@@ -28,6 +28,7 @@ import {
   getProvinceCode,
   getEffectiveToday,
   getEffectiveStatus,
+  getRealToday,
 } from '@/lib/ui/tokens'
 import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge, { VerifiedBadge } from '@/components/badges/ProBadge'
@@ -56,7 +57,13 @@ import type { MagEntryData } from './page'
 
 function StatusBadge({ date, time, today }: { date: string; time: string | null; today: string }) {
   const effectiveStatus = getEffectiveStatus(date, time, today)
-  const isToday = date === today
+  // Relación hoy/mañana contra la fecha REAL de ART (no el `today` shifteado de
+  // getEffectiveToday, que corre a mañana después de las 20:00 solo para listar).
+  const realToday = getRealToday()
+  const isToday = date === realToday
+  const t = new Date(`${realToday}T12:00:00`)
+  t.setDate(t.getDate() + 1)
+  const isTomorrow = date === t.toISOString().slice(0, 10)
   if (effectiveStatus === 'live') {
     return (
       <Badge tone="live" dot className="border-transparent !px-0" title="En vivo">
@@ -71,11 +78,12 @@ function StatusBadge({ date, time, today }: { date: string; time: string | null;
       </Badge>
     )
   }
+  const dayLabel = isToday ? 'HOY' : isTomorrow ? 'MAÑANA' : 'PROGRAMADO'
   const scheduledBadge = (
-    <span className="inline-flex items-center gap-1.5" role="img" aria-label={isToday ? 'Hoy' : 'Programado'}>
+    <span className="inline-flex items-center gap-1.5" role="img" aria-label={dayLabel}>
       <span className={`status-dot ${isToday ? 'bg-positive animate-pulse-live' : 'bg-accent'}`} />
       <span className={`font-terminal text-xxs ${isToday ? 'text-positive' : 'text-accent'}`}>
-        {isToday ? 'HOY' : 'PROGRAMADO'}
+        {dayLabel}
       </span>
     </span>
   )
