@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import DecimalNumberInput from '@/components/ui/DecimalNumberInput'
 import { trackAlertSubscribe } from '@/lib/analytics'
 
 /**
@@ -120,9 +121,10 @@ export default function ArrendamientoLiquidacionSignup({
               <label className="block">
                 <span className="block text-xs text-zinc-500 mb-1">Kg novillo / ha / mes</span>
                 <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 focus-within:border-sky-500/60">
-                  <input
-                    type="number" min={0} step={0.5} value={kgHa}
-                    onChange={(e) => { setKgHa(Math.max(0, parseFloat(e.target.value) || 0)); if (state === 'error') setState('idle') }}
+                  <DecimalNumberInput
+                    value={kgHa}
+                    onChange={(n) => { setKgHa(n); if (state === 'error') setState('idle') }}
+                    ariaLabel="Kg novillo por hectárea por mes"
                     className="w-full bg-transparent text-white font-mono outline-none"
                   />
                   <span className="text-zinc-500 text-sm">kg</span>
@@ -131,9 +133,10 @@ export default function ArrendamientoLiquidacionSignup({
               <label className="block">
                 <span className="block text-xs text-zinc-500 mb-1">Superficie</span>
                 <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 focus-within:border-sky-500/60">
-                  <input
-                    type="number" min={0} step={1} value={hectareas}
-                    onChange={(e) => { setHectareas(Math.max(0, parseFloat(e.target.value) || 0)); if (state === 'error') setState('idle') }}
+                  <DecimalNumberInput
+                    value={hectareas}
+                    onChange={(n) => { setHectareas(n); if (state === 'error') setState('idle') }}
+                    ariaLabel="Superficie en hectáreas"
                     className="w-full bg-transparent text-white font-mono outline-none"
                   />
                   <span className="text-zinc-500 text-sm">ha</span>

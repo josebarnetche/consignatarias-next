@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
+import DecimalNumberInput from '@/components/ui/DecimalNumberInput'
 import { trackValueEvent } from '@/lib/analytics'
 
 function fmt(n: number): string {
@@ -32,16 +33,18 @@ function useCountUp(target: number, durationMs = 650): number {
 
 const STORAGE_KEY = 'arrendamiento-calc-v1'
 
-function Field({ label, value, onChange, suffix, step = 1, min = 0 }: {
-  label: string; value: number; onChange: (n: number) => void; suffix?: string; step?: number; min?: number
+function Field({ label, value, onChange, suffix, min = 0 }: {
+  label: string; value: number; onChange: (n: number) => void; suffix?: string; min?: number
 }) {
   return (
     <label className="block">
       <span className="block text-xs text-zinc-500 mb-1">{label}</span>
       <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 focus-within:border-sky-500/60">
-        <input
-          type="number" min={min} step={step} value={value}
-          onChange={(e) => onChange(Math.max(min, parseFloat(e.target.value) || 0))}
+        <DecimalNumberInput
+          value={value}
+          onChange={onChange}
+          min={min}
+          ariaLabel={label}
           className="w-full bg-transparent text-white font-mono text-lg outline-none"
         />
         {suffix && <span className="text-zinc-500 text-sm whitespace-nowrap">{suffix}</span>}
@@ -151,7 +154,7 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
         <div className="text-xs text-zinc-500 uppercase tracking-wider mb-3">Costos de firma del contrato</div>
         <div className="grid grid-cols-2 gap-3 mb-3">
           <Field label="Duración" value={anios} onChange={setAnios} suffix="años" min={1} />
-          <Field label="Impuesto de sellos" value={sellos} onChange={setSellos} suffix="%" step={0.1} />
+          <Field label="Impuesto de sellos" value={sellos} onChange={setSellos} suffix="%" />
         </div>
         <div className="space-y-2 text-sm">
           <div className="flex justify-between text-zinc-400">
