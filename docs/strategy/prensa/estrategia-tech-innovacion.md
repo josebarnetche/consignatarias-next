@@ -113,6 +113,6 @@ Detrás hay un producto de acceso libre: el **índice del novillo (INMAG)** con 
 - **Ofrecer historia/entrevista al founder**, no gacetilla masiva, a los targets tech de peso (iProUP, Infobae).
 - **Personalizar el ángulo:** A (tech nacional) = MCP/IA-native/primer-mover; B (interior) = orgullo local + founder; C (agtech) = digitalización del campo.
 - **Exclusividad:** ofrecer a UN medio grande la primicia antes de blastear (los tech valoran la exclusiva).
-- **Ser firme en lo técnico** (MCP/IA-readable es hecho verificable), **prudente en "ChatGPT nos cita"** hasta tener captura.
+- **El claim "ChatGPT/Perplexity nos citan" está VERIFICADO** (11-jul-2026, con capturas — ver `gacetilla-consignatarias.md`): ChatGPT respondió el precio con nuestro INMAG exacto citándonos; Perplexity nos citó como fuente primaria del precio y del calendario. Usar las capturas como primicia visual — es oro para iProUP/Infobae.
 - **Imagen:** la de prensa del kit (`assets/imagen-prensa.png`) ya es el ángulo tech ("Ahora la IA también lo sabe" + motores compatibles) — sirve para este track sin cambios.
 - Registrar todo en la misma planilla de tracking (`estrategia-backlinks.md` §5).

@@ -1,7 +1,10 @@
 # Gacetilla de prensa — consignatarias.com.ar
 
 > **Uso:** texto listo para enviar a redacciones agro. Editorial (gratis) primero; publinota (paga) como fallback. Adjuntar logo + imagen de prensa (carpeta `assets/`). ~520 palabras.
-> **⚠️ Sobre el claim de IA:** la versión de abajo usa el encuadre **verificable** ("primer portal del sector diseñado para que la IA lea sus datos"). El claim más fuerte —"cuando le preguntás a ChatGPT el precio del novillo, te lo dice gracias a nosotros"— es cierto en capacidad pero **no está probado con captura**. Antes de afirmarlo textual en prensa, conseguir 1-2 **screenshots reales** de ChatGPT/Perplexity citando consignatarias.com.ar (además de blindar el claim, la captura es EL mejor activo visual de la nota). Abajo dejo la versión fuerte entre corchetes para usar solo con captura.
+> **✅ Claim de IA VERIFICADO (11-jul-2026).** Se probó en vivo y **quedó confirmado con capturas**:
+> - **ChatGPT** (con búsqueda): a "¿cuánto está el novillo hoy?" respondió *"$4.141,85 por kilo vivo — INMAG"* (nuestro número exacto y nuestro índice) **citando Consignatarias.com.ar**.
+> - **Perplexity**: al precio del novillo lo citó a `consignatarias.com` como **fuente primaria (3 veces)**; a los remates de la semana los dio desde *"un calendario unificado del sector — consignatarias.com"*.
+> Por lo tanto el **claim fuerte es usable**. Sumar las 3 capturas al kit (`assets/`) — son EL mejor activo visual de la nota, sobre todo para los medios tech (iProUP/Infobae).
 
 ---
 
@@ -17,9 +20,7 @@ El portal de información ganadera —precio del novillo, índice de arrendamien
 
 **Buenos Aires / Corrientes —** consignatarias.com.ar, el portal de datos del mercado ganadero argentino, se consolida como la referencia abierta del sector y da un paso que ningún otro portal ganadero del país había dado: **estar diseñado para que los asistentes de inteligencia artificial puedan leer y responder con sus datos**.
 
-En la práctica, cuando alguien consulta a un asistente de IA —como ChatGPT o Perplexity— **cuánto está el novillo en la Argentina o cuándo hay remate en Córdoba, la información puede provenir de la fuente abierta y estructurada de consignatarias.com.ar.** El portal publica un servidor **MCP** (el estándar que usan los agentes de IA para consultar datos) y una API abierta, junto con archivos de datos legibles por máquinas. Es el primer portal del mercado ganadero argentino en ofrecer esta compatibilidad.
-
-*[VERSIÓN FUERTE — usar solo con captura: "Hoy, si le preguntás a ChatGPT cuánto está el novillo o cuándo hay remate en tu provincia, te lo sabe decir gracias a consignatarias.com.ar."]*
+En la práctica ya sucede: **hoy, si le preguntás a ChatGPT o a Perplexity cuánto está el novillo o qué remates de hacienda hay esta semana, te responden con datos de consignatarias.com.ar** —en el caso del precio, con su índice INMAG. El portal publica un servidor **MCP** (el estándar que usan los agentes de IA para consultar datos), una API abierta y archivos de datos legibles por máquinas. Es el primer portal del mercado ganadero argentino en ofrecer esta compatibilidad, y esa infraestructura es la que permite que los asistentes respondan con información abierta, verificable y actualizada en lugar de datos viejos o inventados.
 
 Detrás de esa función hay un producto de información gratuito y de acceso libre:
 
@@ -37,7 +38,7 @@ El acceso a los datos es libre y gratuito en **consignatarias.com.ar**.
 **Acerca de consignatarias.com.ar** — Portal de información e inteligencia del mercado ganadero argentino. Publica el índice del novillo (INMAG) y el índice de arrendamiento, el calendario nacional de remates, el directorio de consignatarias y frigoríficos, y ofrece acceso abierto a sus datos por API y por servidor MCP para agentes de inteligencia artificial. Es un producto de Memola Medios SAS.
 
 **Contacto de prensa:** agro@memola.com.ar · consignatarias.com.ar
-**Material adjunto:** logotipo (PNG/SVG) e imagen de prensa. *(Sumar screenshot de IA citando el portal cuando esté disponible.)*
+**Material adjunto:** logotipo (PNG/SVG), imagen de prensa y **capturas de ChatGPT y Perplexity citando el portal** (la prueba visual del claim).
 
 ---
 
