@@ -1,7 +1,7 @@
 Medio,Track,Peldaño,Contacto,Confianza,Gacetilla,¿Exclusiva?,Fecha envío,Estado,¿Respondió?,¿Publicó?,URL publicada,¿Dofollow?,Costo,Notas
-iProUP,tech,2,contacto@iproup.com,alta,tech,SÍ (primicia),,pendiente,,,,,,"Ofrecer exclusiva + entrevista. Email tanda 1."
-Valor Carne,agro,2,info@valorcarne.com.ar,alta,estándar,no,,pendiente,,,,,,"Vertical carne clave. Email tanda 1."
-CorrientesHoy,interior,1,redaccion@corrienteshoy.com,media,estándar,no,,pendiente,,,,,,"Ángulo orgullo local + startup. Email tanda 1. Confirmar email (403)."
+iProUP,tech,2,contacto@iproup.com,alta,tech,SÍ (primicia),2026-07-11,enviado,,,,,,"Enviado desde agencia@memola.com.ar (From consignatarias.com.ar), Reply-To agro@. Exclusiva ofrecida."
+Valor Carne,agro,2,info@valorcarne.com.ar,alta,estándar,no,2026-07-11,enviado,,,,,,"Enviado 11-jul desde agencia@ (Reply-To agro@). Vertical carne clave."
+CorrientesHoy,interior,1,redaccion@corrienteshoy.com,media,estándar,no,2026-07-11,enviado,,,,,,"Enviado 11-jul (Reply-To agro@). OJO: email era 'media' (403) — vigilar bounce en agro@."
 Agrositio,agro,2,info@agrositio.com,alta,estándar,no,,pendiente,,,,,,"Utilidad ejecutiva/dato. Email tanda 2."
 Infobae Tecno,tech,3,redaccion@infobae.com,alta,tech,no,,pendiente,,,,,,"Masivo. Candidato a primicia si iProUP no engancha. Email tanda 2."
 La Gaceta,interior,2,contacto@lagaceta.com.ar,alta,estándar,no,,pendiente,,,,,,"Interior/NOA formal. Email tanda 2."

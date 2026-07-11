@@ -1,0 +1,23 @@
+GACETILLA DE PRENSA — consignatarias.com.ar (versión tecnología / innovación)
+
+TÍTULO
+Una startup argentina hace que la inteligencia artificial entienda el mercado ganadero
+
+BAJADA
+consignatarias.com.ar es el primer portal del sector con servidor MCP y API abierta: la infraestructura que permite a los agentes de IA leer y responder con el precio del ganado, el índice de arrendamiento y el calendario de remates del país.
+
+CUERPO
+Argentina exporta carne por más de USD 3.700 millones al año, pero el precio de su ganado vivía disperso en flyers, planillas y grupos de WhatsApp. Una startup argentina —consignatarias.com.ar, de Memola Medios SAS— decidió convertir ese mercado analógico en dato estructurado, abierto y, ahora, legible por inteligencia artificial.
+
+El portal es el primero del mercado ganadero argentino en publicar un servidor MCP (Model Context Protocol, el estándar que usan los agentes de IA para consultar datos en tiempo real) junto con una API abierta y archivos de datos legibles por máquinas. En la práctica, cuando alguien le pregunta a un asistente de IA —como ChatGPT o Perplexity— cuánto está el novillo o cuándo hay remate en una provincia, la respuesta se construye a partir de los datos abiertos de consignatarias.com.ar. En pruebas de julio de 2026, ChatGPT respondió el precio del novillo con el valor exacto del índice INMAG del portal, citándolo como fuente.
+
+Detrás hay un producto de acceso libre: el índice del novillo (INMAG) con serie diaria desde 2015 en pesos y dólares, el índice de arrendamiento, el calendario nacional de remates y el directorio de consignatarias y frigoríficos. La apuesta de fondo es volverse el precio de referencia del ganado argentino —una referencia pública para un mercado donde la mayor parte de la hacienda se comercializa sin un índice abierto—.
+
+El proyecto se construyó desde el interior del país, y su fundador proviene del propio campo: un productor que decidió construir la infraestructura de datos que el sector no tenía.
+
+"La inteligencia artificial ya es como la gente se informa. Que un asistente pueda responder con datos abiertos, verificables y actualizados del campo argentino —en vez de con información vieja o inventada— es exactamente lo que veníamos a resolver", señalan desde Memola Medios SAS.
+
+ACERCA DE consignatarias.com.ar
+Portal de información e inteligencia del mercado ganadero argentino; publica el índice del novillo (INMAG) y de arrendamiento, el calendario de remates y el directorio del sector, con acceso abierto por API y por servidor MCP para agentes de IA. Producto de Memola Medios SAS.
+
+Contacto de prensa: agro@memola.com.ar — consignatarias.com.ar
