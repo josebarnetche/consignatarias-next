@@ -14,15 +14,15 @@ Vender **PRO Fundador ARS 45.000/mes (o 120.000/90d prepago), máx 5-10 pilotos 
 | **Reporte PDF con columna muerta** (`subscriptions.consignataria_slug`) → isPro siempre false | ✅ REAL | **ARREGLADO** (usa entity_type/entity_slug). commit 397e265 |
 | **Schema /planes USD stale + "Prueba gratis"** (SaaSPricingSchema lee `currency` no `priceCurrency` → renderizaba "ARS 49") | ✅ REAL | **ARREGLADO** (ARS reales 74k/451k/45k, sin trial, FAQ→ARS). commit 397e265 |
 | **`/go` no revalida** tras pago/baja (webhook revalidaba perfil, no /go) | ✅ REAL | **ARREGLADO** (revalida /go en alta y cancelación). commit 397e265 |
-| **Fuente PRO duplicada**: `getFeaturedSlugs` (featured OR sub) vs `getEntityTier` (solo sub) → firma featured=true se ve PRO en directorio, FREE en /go. Ninguno valida `current_period_end`. | ✅ REAL, alto impacto | **PENDIENTE — decisión** (ver abajo) |
-| Cancelación instantánea vs fin de período (webhook apaga status+featured al instante) | ⚠️ A CONFIRMAR | **PENDIENTE — falta semántica Rebill** |
+| **Fuente PRO duplicada**: `getFeaturedSlugs` (featured OR sub) vs `getEntityTier` (solo sub) → firma featured=true se ve PRO en directorio, FREE en /go. Ninguno valida `current_period_end`. | ✅ REAL, alto impacto | **ARREGLADO** — fuente única `getConsignatariaPlanStatus` (featured=PRO permanente OR sub activa con período vigente); getEntityTier delega, reporte PDF y getFeaturedSlugs usan la misma regla. commit 899edef |
+| Cancelación instantánea vs fin de período (webhook apaga status+featured al instante) | ⚠️ A CONFIRMAR | **PENDIENTE — falta semántica Rebill.** El helper ya es period-aware, así que si se decide honrar hasta `current_period_end` alcanza con NO apagar `featured`/`status` en el webhook y setear el período. Hoy el cancel de consignataria baja status=cancelled + featured=false al instante. |
 | "Probá gratis" engañoso en CTA visible | ❌ MAL LEÍDO | El "gratis" del CTA es la cuenta de PRODUCTOR (correcto). (El trial stale estaba en el schema, ya arreglado.) |
 | "Moneda inconsistente, unificar a ARS" | ❌ MATIZADO | El USD era solo del schema (stale), no de la UI. "Unificar productos" habría roto. Ya arreglado el schema. |
 | Lead tracking sobrepromete identidad (click WhatsApp ≠ lead) | ✅ REAL (no verificado a fondo) | PENDIENTE (P0/P1) — separar clicks anónimos de leads en dashboard |
 
 ## Decisiones pendientes (bloquean 2 P0)
 
-**1. Helper único `getConsignatariaPlanStatus(slug)`** — el de mayor impacto. Decisión: **¿`featured=true` (destaque manual) = PRO completo?** Recomendación: **SÍ** (es como el directorio ya lo trata; `getFeaturedSlugs` está documentado como "unified source of truth"). Build: helper único = `featured=true OR sub status='active' con current_period_end vigente`; enchufarlo en `/go` (getEntityTier), reporte PDF, y donde haya decisión comercial. Reemplazar llamadas directas. Tests: active / past_due / cancelled-con-período-vigente / expired / featured-manual.
+**1. ✅ RESUELTO (commit 899edef).** Helper único `getConsignatariaPlanStatus(slug)` en `src/lib/features.ts`: `featured=true` (permanente, sin período) OR sub `status='active'` con `current_period_end` vigente/null → `{isPro, tier, source, periodEnd}`. `getEntityTier` delega para consignatarias (ahora honra featured + valida período); reporte PDF usa el helper; `getFeaturedSlugs` valida período en batch. Decisión tomada: **featured=true SÍ = PRO** (como ya lo trataba el directorio). Typecheck limpio, deploy Ready. Pendiente opcional: tests unitarios de los 5 casos (active/past_due/cancelled-con-período/expired/featured).
 
 **2. Cancelación** — falta saber: **¿Rebill dispara el webhook `cancelled` al pedir la baja o al fin del período?** Si al pedir la baja → el fix es soportar `cancel_at_period_end` (mantener PRO hasta `current_period_end`). Si al vencimiento → ya está bien. José: confirmar comportamiento Rebill.
 
@@ -36,5 +36,9 @@ Vender **PRO Fundador ARS 45.000/mes (o 120.000/90d prepago), máx 5-10 pilotos 
 ## P1/P2 sueltos (del audit, no verificados)
 Videos PRO usan `slug` no `canonical_slug`; `remates/hoy` usa UTC (no ART); `Mis reportes` vs download con reglas de acceso opuestas; "Destacado del Mes" se confunde con destaque PRO pago; ranking provincial ignora remates propios; promesa de citas IA no está en dashboard por firma. **Verificar cada uno antes de tocar.**
 
-## Próximo paso sugerido (post-compactado)
-Arrancar por el **helper único de plan (decisión 1, con featured=PRO)** — cierra el P0 de mayor impacto y es self-contained — O por el **DAL de remates mergeados (Epic B)** que es el corazón de la promesa de distribución. Pedir a José la semántica de Rebill para cerrar la cancelación. Todo lo hecho hasta acá: commit **397e265** (3 P0). Verificar deploy Vercel del 397e265 antes de seguir.
+## Próximo paso sugerido
+Decisión 1 (helper único) **cerrada** — commit **899edef**, deploy Ready. Siguiente:
+1. **Epic B — DAL de remates mergeados** (corazón de "cargá tu remate y lo distribuimos"): el remate owner-created no propaga a /go/widget/iCal/PDF. Es el de mayor valor de producto y self-contained.
+2. **Decisión 2 (cancelación)** — necesita respuesta de José: ¿Rebill dispara `subscription.cancelled` al pedir la baja o al fin del período? El helper ya es period-aware; si es al pedir la baja, el fix es no apagar featured/status al instante y honrar hasta `current_period_end`.
+
+Commits del audit: **397e265** (3 P0) + **899edef** (fuente única de plan).
