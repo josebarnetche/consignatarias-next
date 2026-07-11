@@ -1,0 +1,3775 @@
+{
+ "property": "properties/481391781",
+ "generatedFor": "2026-07-08",
+ "reports": {
+  "totals90": {
+   "label": "totals90",
+   "single": {
+    "totalUsers": 5396,
+    "newUsers": 5375,
+    "activeUsers": 5391,
+    "sessions": 7217,
+    "engagedSessions": 4146,
+    "engagementRate": 0.5744769294720798,
+    "averageSessionDuration": 204.4984114130525,
+    "userEngagementDuration": 403352,
+    "screenPageViews": 18821,
+    "eventCount": 46288,
+    "sessionsPerUser": 1.3387126692635876,
+    "screenPageViewsPerSession": 2.6078703062214217,
+    "bounceRate": 0.4255230705279202
+   }
+  },
+  "totals28": {
+   "label": "totals28",
+   "single": {
+    "totalUsers": 3211,
+    "newUsers": 3103,
+    "activeUsers": 3188,
+    "sessions": 4113,
+    "engagedSessions": 2261,
+    "engagementRate": 0.549720398735716,
+    "averageSessionDuration": 199.92493604789692,
+    "userEngagementDuration": 228151,
+    "screenPageViews": 11613,
+    "eventCount": 28164,
+    "sessionsPerUser": 1.290150564617315,
+    "screenPageViewsPerSession": 2.823486506199854,
+    "bounceRate": 0.45027960126428396
+   }
+  },
+  "totals28prev": {
+   "label": "totals28prev",
+   "dh": [],
+   "mh": [
+    "totalUsers",
+    "newUsers",
+    "sessions",
+    "engagementRate",
+    "averageSessionDuration",
+    "screenPageViews",
+    "eventCount"
+   ],
+   "rows": [
+    {
+     "totalUsers": 1559,
+     "newUsers": 1513,
+     "sessions": 1999,
+     "engagementRate": 0.6103051525762881,
+     "averageSessionDuration": 214.87928136918458,
+     "screenPageViews": 4336,
+     "eventCount": 11404
+    }
+   ],
+   "totals": [],
+   "rowCount": 1,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "age90": {
+   "label": "age90",
+   "dh": [
+    "userAgeBracket"
+   ],
+   "mh": [
+    "totalUsers",
+    "activeUsers",
+    "engagementRate",
+    "averageSessionDuration",
+    "screenPageViewsPerSession"
+   ],
+   "rows": [
+    {
+     "userAgeBracket": "unknown",
+     "totalUsers": 2932,
+     "activeUsers": 2928,
+     "engagementRate": 0.543064126643413,
+     "averageSessionDuration": 193.34961565629192,
+     "screenPageViewsPerSession": 2.8194258116447544
+    },
+    {
+     "userAgeBracket": "65+",
+     "totalUsers": 747,
+     "activeUsers": 744,
+     "engagementRate": 0.6198019801980198,
+     "averageSessionDuration": 196.5836592960396,
+     "screenPageViewsPerSession": 2.715841584158416
+    },
+    {
+     "userAgeBracket": "45-54",
+     "totalUsers": 637,
+     "activeUsers": 629,
+     "engagementRate": 0.6353211009174312,
+     "averageSessionDuration": 261.88557066284403,
+     "screenPageViewsPerSession": 3.0860091743119265
+    },
+    {
+     "userAgeBracket": "55-64",
+     "totalUsers": 423,
+     "activeUsers": 416,
+     "engagementRate": 0.5758754863813229,
+     "averageSessionDuration": 326.9477100136187,
+     "screenPageViewsPerSession": 2.0525291828793772
+    },
+    {
+     "userAgeBracket": "25-34",
+     "totalUsers": 377,
+     "activeUsers": 371,
+     "engagementRate": 0.6125760649087221,
+     "averageSessionDuration": 175.3212005111562,
+     "screenPageViewsPerSession": 1.9148073022312373
+    },
+    {
+     "userAgeBracket": "35-44",
+     "totalUsers": 340,
+     "activeUsers": 333,
+     "engagementRate": 0.5784313725490197,
+     "averageSessionDuration": 157.29219641666666,
+     "screenPageViewsPerSession": 1.7720588235294117
+    },
+    {
+     "userAgeBracket": "18-24",
+     "totalUsers": 77,
+     "activeUsers": 77,
+     "engagementRate": 0.5638297872340425,
+     "averageSessionDuration": 102.95333162765957,
+     "screenPageViewsPerSession": 1.6702127659574468
+    }
+   ],
+   "totals": [],
+   "rowCount": 7,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "age28": {
+   "label": "age28",
+   "dh": [
+    "userAgeBracket"
+   ],
+   "mh": [
+    "totalUsers"
+   ],
+   "rows": [
+    {
+     "userAgeBracket": "unknown",
+     "totalUsers": 1711
+    },
+    {
+     "userAgeBracket": "65+",
+     "totalUsers": 404
+    },
+    {
+     "userAgeBracket": "45-54",
+     "totalUsers": 385
+    },
+    {
+     "userAgeBracket": "55-64",
+     "totalUsers": 262
+    },
+    {
+     "userAgeBracket": "25-34",
+     "totalUsers": 238
+    },
+    {
+     "userAgeBracket": "35-44",
+     "totalUsers": 219
+    },
+    {
+     "userAgeBracket": "18-24",
+     "totalUsers": 42
+    }
+   ],
+   "totals": [],
+   "rowCount": 7,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "gender90": {
+   "label": "gender90",
+   "dh": [
+    "userGender"
+   ],
+   "mh": [
+    "totalUsers",
+    "engagementRate",
+    "averageSessionDuration",
+    "screenPageViewsPerSession"
+   ],
+   "rows": [
+    {
+     "userGender": "unknown",
+     "totalUsers": 2771,
+     "engagementRate": 0.5355624822896005,
+     "averageSessionDuration": 187.1063135083593,
+     "screenPageViewsPerSession": 2.782091243978464
+    },
+    {
+     "userGender": "female",
+     "totalUsers": 1666,
+     "engagementRate": 0.6071111111111112,
+     "averageSessionDuration": 240.77918845955557,
+     "screenPageViewsPerSession": 2.565777777777778
+    },
+    {
+     "userGender": "male",
+     "totalUsers": 1033,
+     "engagementRate": 0.6196136701337296,
+     "averageSessionDuration": 203.42769744650815,
+     "screenPageViewsPerSession": 2.399702823179792
+    }
+   ],
+   "totals": [],
+   "rowCount": 3,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "ageGender90": {
+   "label": "ageGender90",
+   "dh": [
+    "userAgeBracket",
+    "userGender"
+   ],
+   "mh": [
+    "totalUsers",
+    "engagementRate"
+   ],
+   "rows": [
+    {
+     "userAgeBracket": "unknown",
+     "userGender": "unknown",
+     "totalUsers": 2771,
+     "engagementRate": 0.5355624822896005
+    },
+    {
+     "userAgeBracket": "65+",
+     "userGender": "female",
+     "totalUsers": 436,
+     "engagementRate": 0.596964586846543
+    },
+    {
+     "userAgeBracket": "45-54",
+     "userGender": "female",
+     "totalUsers": 388,
+     "engagementRate": 0.6395563770794824
+    },
+    {
+     "userAgeBracket": "65+",
+     "userGender": "male",
+     "totalUsers": 320,
+     "engagementRate": 0.6515513126491647
+    },
+    {
+     "userAgeBracket": "25-34",
+     "userGender": "female",
+     "totalUsers": 290,
+     "engagementRate": 0.609254498714653
+    },
+    {
+     "userAgeBracket": "35-44",
+     "userGender": "female",
+     "totalUsers": 258,
+     "engagementRate": 0.5922330097087378
+    },
+    {
+     "userAgeBracket": "45-54",
+     "userGender": "male",
+     "totalUsers": 253,
+     "engagementRate": 0.6234939759036144
+    },
+    {
+     "userAgeBracket": "55-64",
+     "userGender": "male",
+     "totalUsers": 240,
+     "engagementRate": 0.6137931034482759
+    },
+    {
+     "userAgeBracket": "55-64",
+     "userGender": "female",
+     "totalUsers": 186,
+     "engagementRate": 0.5291479820627802
+    },
+    {
+     "userAgeBracket": "unknown",
+     "userGender": "female",
+     "totalUsers": 123,
+     "engagementRate": 0.6598639455782312
+    },
+    {
+     "userAgeBracket": "25-34",
+     "userGender": "male",
+     "totalUsers": 88,
+     "engagementRate": 0.6190476190476191
+    },
+    {
+     "userAgeBracket": "35-44",
+     "userGender": "male",
+     "totalUsers": 84,
+     "engagementRate": 0.5353535353535354
+    },
+    {
+     "userAgeBracket": "unknown",
+     "userGender": "male",
+     "totalUsers": 42,
+     "engagementRate": 0.6
+    },
+    {
+     "userAgeBracket": "18-24",
+     "userGender": "female",
+     "totalUsers": 41,
+     "engagementRate": 0.6041666666666666
+    },
+    {
+     "userAgeBracket": "18-24",
+     "userGender": "male",
+     "totalUsers": 36,
+     "engagementRate": 0.5217391304347826
+    }
+   ],
+   "totals": [],
+   "rowCount": 15,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "interests90": {
+   "label": "interests90",
+   "dh": [
+    "brandingInterest"
+   ],
+   "mh": [
+    "totalUsers",
+    "engagementRate"
+   ],
+   "rows": [
+    {
+     "brandingInterest": "News & Politics/Avid News Readers",
+     "totalUsers": 256,
+     "engagementRate": 0.688622754491018
+    },
+    {
+     "brandingInterest": "Technology/Technophiles",
+     "totalUsers": 238,
+     "engagementRate": 0.5956284153005464
+    },
+    {
+     "brandingInterest": "Banking & Finance/Avid Investors",
+     "totalUsers": 211,
+     "engagementRate": 0.677536231884058
+    },
+    {
+     "brandingInterest": "Sports & Fitness/Sports Fans/Soccer Fans",
+     "totalUsers": 209,
+     "engagementRate": 0.7216494845360825
+    },
+    {
+     "brandingInterest": "News & Politics/Avid News Readers/Entertainment News Enthusiasts",
+     "totalUsers": 147,
+     "engagementRate": 0.6568627450980392
+    },
+    {
+     "brandingInterest": "News & Politics/Avid News Readers/Avid Local News Readers",
+     "totalUsers": 138,
+     "engagementRate": 0.5748792270531401
+    },
+    {
+     "brandingInterest": "Lifestyles & Hobbies/Shutterbugs",
+     "totalUsers": 118,
+     "engagementRate": 0.5609756097560976
+    },
+    {
+     "brandingInterest": "News & Politics/Avid News Readers/Avid Business News Readers",
+     "totalUsers": 109,
+     "engagementRate": 0.7132867132867133
+    },
+    {
+     "brandingInterest": "Travel/Travel Buffs",
+     "totalUsers": 105,
+     "engagementRate": 0.5816993464052288
+    },
+    {
+     "brandingInterest": "Lifestyles & Hobbies/Business Professionals",
+     "totalUsers": 90,
+     "engagementRate": 0.6302521008403361
+    },
+    {
+     "brandingInterest": "Lifestyles & Hobbies/Thrill Seekers",
+     "totalUsers": 89,
+     "engagementRate": 0.7364341085271318
+    },
+    {
+     "brandingInterest": "Media & Entertainment/Music Lovers",
+     "totalUsers": 88,
+     "engagementRate": 0.6916666666666667
+    },
+    {
+     "brandingInterest": "Vehicles & Transportation/Auto Enthusiasts",
+     "totalUsers": 83,
+     "engagementRate": 0.6764705882352942
+    },
+    {
+     "brandingInterest": "Home & Garden/Home Decor Enthusiasts",
+     "totalUsers": 78,
+     "engagementRate": 0.5691056910569106
+    },
+    {
+     "brandingInterest": "News & Politics/Avid News Readers/Avid Political News Readers",
+     "totalUsers": 77,
+     "engagementRate": 0.6666666666666666
+    },
+    {
+     "brandingInterest": "Technology/Mobile Enthusiasts",
+     "totalUsers": 77,
+     "engagementRate": 0.6428571428571429
+    },
+    {
+     "brandingInterest": "Food & Dining/Cooking Enthusiasts/Aspiring Chefs",
+     "totalUsers": 69,
+     "engagementRate": 0.6235294117647059
+    },
+    {
+     "brandingInterest": "Media & Entertainment/Movie Lovers",
+     "totalUsers": 64,
+     "engagementRate": 0.7037037037037037
+    },
+    {
+     "brandingInterest": "Sports & Fitness/Sports Fans/Motor Sports Enthusiasts",
+     "totalUsers": 63,
+     "engagementRate": 0.7472527472527473
+    },
+    {
+     "brandingInterest": "Sports & Fitness/Sports Fans",
+     "totalUsers": 60,
+     "engagementRate": 0.6621621621621622
+    },
+    {
+     "brandingInterest": "Shoppers/Shopping Enthusiasts",
+     "totalUsers": 58,
+     "engagementRate": 0.627906976744186
+    },
+    {
+     "brandingInterest": "Media & Entertainment/TV Lovers",
+     "totalUsers": 53,
+     "engagementRate": 0.6388888888888888
+    },
+    {
+     "brandingInterest": "Lifestyles & Hobbies/Green Living Enthusiasts",
+     "totalUsers": 46,
+     "engagementRate": 0.5714285714285714
+    },
+    {
+     "brandingInterest": "Shoppers/Bargain Hunters",
+     "totalUsers": 41,
+     "engagementRate": 0.5
+    },
+    {
+     "brandingInterest": "Media & Entertainment/Music Lovers/World Music Fans",
+     "totalUsers": 36,
+     "engagementRate": 0.6097560975609756
+    }
+   ],
+   "totals": [],
+   "rowCount": 62,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "country90": {
+   "label": "country90",
+   "dh": [
+    "country"
+   ],
+   "mh": [
+    "totalUsers",
+    "sessions",
+    "engagementRate"
+   ],
+   "rows": [
+    {
+     "country": "Argentina",
+     "totalUsers": 4848,
+     "sessions": 6498,
+     "engagementRate": 0.6026469682979378
+    },
+    {
+     "country": "United States",
+     "totalUsers": 108,
+     "sessions": 116,
+     "engagementRate": 0.2413793103448276
+    },
+    {
+     "country": "Singapore",
+     "totalUsers": 100,
+     "sessions": 100,
+     "engagementRate": 0.04
+    },
+    {
+     "country": "Brazil",
+     "totalUsers": 49,
+     "sessions": 79,
+     "engagementRate": 0.7215189873417721
+    },
+    {
+     "country": "China",
+     "totalUsers": 40,
+     "sessions": 44,
+     "engagementRate": 0.22727272727272727
+    },
+    {
+     "country": "France",
+     "totalUsers": 30,
+     "sessions": 33,
+     "engagementRate": 0.30303030303030304
+    },
+    {
+     "country": "Poland",
+     "totalUsers": 22,
+     "sessions": 22,
+     "engagementRate": 0.045454545454545456
+    },
+    {
+     "country": "Chile",
+     "totalUsers": 20,
+     "sessions": 25,
+     "engagementRate": 0.6
+    },
+    {
+     "country": "Netherlands",
+     "totalUsers": 19,
+     "sessions": 19,
+     "engagementRate": 0.15789473684210525
+    },
+    {
+     "country": "Spain",
+     "totalUsers": 17,
+     "sessions": 21,
+     "engagementRate": 0.38095238095238093
+    },
+    {
+     "country": "(not set)",
+     "totalUsers": 16,
+     "sessions": 16,
+     "engagementRate": 0.0625
+    },
+    {
+     "country": "Germany",
+     "totalUsers": 14,
+     "sessions": 14,
+     "engagementRate": 0.5714285714285714
+    },
+    {
+     "country": "Uruguay",
+     "totalUsers": 13,
+     "sessions": 17,
+     "engagementRate": 0.7647058823529411
+    },
+    {
+     "country": "Hong Kong",
+     "totalUsers": 12,
+     "sessions": 12,
+     "engagementRate": 0
+    },
+    {
+     "country": "United Kingdom",
+     "totalUsers": 9,
+     "sessions": 9,
+     "engagementRate": 0.1111111111111111
+    }
+   ],
+   "totals": [],
+   "rowCount": 60,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "region90": {
+   "label": "region90",
+   "dh": [
+    "region"
+   ],
+   "mh": [
+    "totalUsers",
+    "sessions",
+    "engagementRate",
+    "averageSessionDuration",
+    "keyEvents"
+   ],
+   "rows": [
+    {
+     "region": "Buenos Aires Province",
+     "totalUsers": 1534,
+     "sessions": 2000,
+     "engagementRate": 0.627,
+     "averageSessionDuration": 294.950334756,
+     "keyEvents": 234
+    },
+    {
+     "region": "Buenos Aires",
+     "totalUsers": 1194,
+     "sessions": 1535,
+     "engagementRate": 0.5980456026058631,
+     "averageSessionDuration": 168.65506204299675,
+     "keyEvents": 283
+    },
+    {
+     "region": "Santa Fe Province",
+     "totalUsers": 549,
+     "sessions": 762,
+     "engagementRate": 0.615485564304462,
+     "averageSessionDuration": 231.86166369422574,
+     "keyEvents": 129
+    },
+    {
+     "region": "Cordoba Province",
+     "totalUsers": 394,
+     "sessions": 494,
+     "engagementRate": 0.5688259109311741,
+     "averageSessionDuration": 170.7802015182186,
+     "keyEvents": 51
+    },
+    {
+     "region": "Entre Rios Province",
+     "totalUsers": 336,
+     "sessions": 453,
+     "engagementRate": 0.5783664459161147,
+     "averageSessionDuration": 167.38372448785873,
+     "keyEvents": 87
+    },
+    {
+     "region": "Corrientes Province",
+     "totalUsers": 193,
+     "sessions": 254,
+     "engagementRate": 0.6299212598425197,
+     "averageSessionDuration": 208.7026622992126,
+     "keyEvents": 61
+    },
+    {
+     "region": "(not set)",
+     "totalUsers": 166,
+     "sessions": 167,
+     "engagementRate": 0.08383233532934131,
+     "averageSessionDuration": 17.63833097005988,
+     "keyEvents": 8
+    },
+    {
+     "region": "La Pampa Province",
+     "totalUsers": 130,
+     "sessions": 157,
+     "engagementRate": 0.49044585987261147,
+     "averageSessionDuration": 114.35339646496814,
+     "keyEvents": 17
+    },
+    {
+     "region": "Chaco Province",
+     "totalUsers": 103,
+     "sessions": 134,
+     "engagementRate": 0.5597014925373134,
+     "averageSessionDuration": 206.72126962686565,
+     "keyEvents": 18
+    },
+    {
+     "region": "Mendoza Province",
+     "totalUsers": 83,
+     "sessions": 96,
+     "engagementRate": 0.5729166666666666,
+     "averageSessionDuration": 130.84641671875002,
+     "keyEvents": 16
+    },
+    {
+     "region": "Salta Province",
+     "totalUsers": 79,
+     "sessions": 94,
+     "engagementRate": 0.5531914893617021,
+     "averageSessionDuration": 110.08990712765957,
+     "keyEvents": 5
+    },
+    {
+     "region": "Tucuman Province",
+     "totalUsers": 77,
+     "sessions": 90,
+     "engagementRate": 0.5888888888888889,
+     "averageSessionDuration": 73.21205676666668,
+     "keyEvents": 6
+    },
+    {
+     "region": "Misiones Province",
+     "totalUsers": 72,
+     "sessions": 97,
+     "engagementRate": 0.6391752577319587,
+     "averageSessionDuration": 126.93514658762886,
+     "keyEvents": 7
+    },
+    {
+     "region": "Neuquen Province",
+     "totalUsers": 61,
+     "sessions": 68,
+     "engagementRate": 0.5588235294117647,
+     "averageSessionDuration": 243.04096995588236,
+     "keyEvents": 7
+    },
+    {
+     "region": "Rio Negro Province",
+     "totalUsers": 52,
+     "sessions": 71,
+     "engagementRate": 0.6056338028169014,
+     "averageSessionDuration": 180.8986229859155,
+     "keyEvents": 4
+    },
+    {
+     "region": "San Luis Province",
+     "totalUsers": 42,
+     "sessions": 48,
+     "engagementRate": 0.6875,
+     "averageSessionDuration": 196.42966835416667,
+     "keyEvents": 7
+    },
+    {
+     "region": "Santiago del Estero Province",
+     "totalUsers": 40,
+     "sessions": 44,
+     "engagementRate": 0.6363636363636364,
+     "averageSessionDuration": 80.30227270454544,
+     "keyEvents": 5
+    },
+    {
+     "region": "Chubut Province",
+     "totalUsers": 30,
+     "sessions": 34,
+     "engagementRate": 0.7058823529411765,
+     "averageSessionDuration": 188.17396352941176,
+     "keyEvents": 2
+    },
+    {
+     "region": "Oregon",
+     "totalUsers": 30,
+     "sessions": 30,
+     "engagementRate": 0,
+     "averageSessionDuration": 0.8431054666666667,
+     "keyEvents": 0
+    },
+    {
+     "region": "Formosa Province",
+     "totalUsers": 29,
+     "sessions": 39,
+     "engagementRate": 0.5641025641025641,
+     "averageSessionDuration": 230.702350025641,
+     "keyEvents": 6
+    },
+    {
+     "region": "State of Sao Paulo",
+     "totalUsers": 22,
+     "sessions": 32,
+     "engagementRate": 0.75,
+     "averageSessionDuration": 353.84915128125,
+     "keyEvents": 15
+    },
+    {
+     "region": "Ile-de-France",
+     "totalUsers": 21,
+     "sessions": 22,
+     "engagementRate": 0.13636363636363635,
+     "averageSessionDuration": 44.08772104545454,
+     "keyEvents": 2
+    },
+    {
+     "region": "Masovian Voivodeship",
+     "totalUsers": 21,
+     "sessions": 21,
+     "engagementRate": 0.047619047619047616,
+     "averageSessionDuration": 0.9604692857142856,
+     "keyEvents": 0
+    },
+    {
+     "region": "San Juan Province",
+     "totalUsers": 17,
+     "sessions": 18,
+     "engagementRate": 0.6111111111111112,
+     "averageSessionDuration": 273.28523283333334,
+     "keyEvents": 0
+    },
+    {
+     "region": "Virginia",
+     "totalUsers": 16,
+     "sessions": 16,
+     "engagementRate": 0.3125,
+     "averageSessionDuration": 183.100246375,
+     "keyEvents": 0
+    },
+    {
+     "region": "Jujuy Province",
+     "totalUsers": 15,
+     "sessions": 18,
+     "engagementRate": 0.6666666666666666,
+     "averageSessionDuration": 269.5153251666667,
+     "keyEvents": 1
+    },
+    {
+     "region": "Catamarca Province",
+     "totalUsers": 14,
+     "sessions": 17,
+     "engagementRate": 0.7058823529411765,
+     "averageSessionDuration": 168.254652,
+     "keyEvents": 0
+    },
+    {
+     "region": "State of Para",
+     "totalUsers": 14,
+     "sessions": 24,
+     "engagementRate": 0.75,
+     "averageSessionDuration": 799.885495,
+     "keyEvents": 7
+    },
+    {
+     "region": "Santiago Metropolitan Region",
+     "totalUsers": 13,
+     "sessions": 15,
+     "engagementRate": 0.6666666666666666,
+     "averageSessionDuration": 140.53391326666667,
+     "keyEvents": 1
+    },
+    {
+     "region": "Tierra del Fuego Province",
+     "totalUsers": 11,
+     "sessions": 11,
+     "engagementRate": 0.7272727272727273,
+     "averageSessionDuration": 33.05778209090909,
+     "keyEvents": 1
+    }
+   ],
+   "totals": [],
+   "rowCount": 173,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "city90": {
+   "label": "city90",
+   "dh": [
+    "city"
+   ],
+   "mh": [
+    "totalUsers",
+    "sessions",
+    "engagementRate"
+   ],
+   "rows": [
+    {
+     "city": "Buenos Aires",
+     "totalUsers": 1194,
+     "sessions": 1535,
+     "engagementRate": 0.5980456026058631
+    },
+    {
+     "city": "(not set)",
+     "totalUsers": 662,
+     "sessions": 766,
+     "engagementRate": 0.47389033942558745
+    },
+    {
+     "city": "Cordoba",
+     "totalUsers": 155,
+     "sessions": 185,
+     "engagementRate": 0.5513513513513514
+    },
+    {
+     "city": "Santa Fe",
+     "totalUsers": 153,
+     "sessions": 203,
+     "engagementRate": 0.645320197044335
+    },
+    {
+     "city": "Rosario",
+     "totalUsers": 150,
+     "sessions": 245,
+     "engagementRate": 0.5428571428571428
+    },
+    {
+     "city": "Corrientes",
+     "totalUsers": 100,
+     "sessions": 127,
+     "engagementRate": 0.6377952755905512
+    },
+    {
+     "city": "Mar del Plata",
+     "totalUsers": 84,
+     "sessions": 91,
+     "engagementRate": 0.6043956043956044
+    },
+    {
+     "city": "Parana",
+     "totalUsers": 68,
+     "sessions": 84,
+     "engagementRate": 0.6785714285714286
+    },
+    {
+     "city": "Salta",
+     "totalUsers": 66,
+     "sessions": 80,
+     "engagementRate": 0.55
+    },
+    {
+     "city": "La Plata",
+     "totalUsers": 61,
+     "sessions": 66,
+     "engagementRate": 0.7272727272727273
+    },
+    {
+     "city": "San Miguel de Tucuman",
+     "totalUsers": 60,
+     "sessions": 64,
+     "engagementRate": 0.59375
+    },
+    {
+     "city": "Lanus",
+     "totalUsers": 55,
+     "sessions": 66,
+     "engagementRate": 0.5909090909090909
+    },
+    {
+     "city": "Resistencia",
+     "totalUsers": 54,
+     "sessions": 66,
+     "engagementRate": 0.5909090909090909
+    },
+    {
+     "city": "Santa Rosa",
+     "totalUsers": 54,
+     "sessions": 66,
+     "engagementRate": 0.5
+    },
+    {
+     "city": "Bahia Blanca",
+     "totalUsers": 53,
+     "sessions": 57,
+     "engagementRate": 0.5789473684210527
+    },
+    {
+     "city": "Rio Cuarto",
+     "totalUsers": 52,
+     "sessions": 62,
+     "engagementRate": 0.6774193548387096
+    },
+    {
+     "city": "Neuquen",
+     "totalUsers": 50,
+     "sessions": 57,
+     "engagementRate": 0.5964912280701754
+    },
+    {
+     "city": "Tandil",
+     "totalUsers": 39,
+     "sessions": 71,
+     "engagementRate": 0.49295774647887325
+    },
+    {
+     "city": "Olavarria",
+     "totalUsers": 38,
+     "sessions": 54,
+     "engagementRate": 0.5185185185185185
+    },
+    {
+     "city": "Mercedes",
+     "totalUsers": 34,
+     "sessions": 55,
+     "engagementRate": 0.6363636363636364
+    },
+    {
+     "city": "Posadas",
+     "totalUsers": 34,
+     "sessions": 44,
+     "engagementRate": 0.6136363636363636
+    },
+    {
+     "city": "Gualeguaychu",
+     "totalUsers": 31,
+     "sessions": 44,
+     "engagementRate": 0.5
+    },
+    {
+     "city": "Concepcion del Uruguay",
+     "totalUsers": 29,
+     "sessions": 38,
+     "engagementRate": 0.6842105263157895
+    },
+    {
+     "city": "Concordia",
+     "totalUsers": 29,
+     "sessions": 36,
+     "engagementRate": 0.6944444444444444
+    },
+    {
+     "city": "Junin",
+     "totalUsers": 27,
+     "sessions": 29,
+     "engagementRate": 0.6206896551724138
+    },
+    {
+     "city": "San Luis",
+     "totalUsers": 26,
+     "sessions": 29,
+     "engagementRate": 0.6551724137931034
+    },
+    {
+     "city": "Formosa",
+     "totalUsers": 25,
+     "sessions": 34,
+     "engagementRate": 0.5
+    },
+    {
+     "city": "Azul",
+     "totalUsers": 23,
+     "sessions": 28,
+     "engagementRate": 0.5
+    },
+    {
+     "city": "Saladillo",
+     "totalUsers": 23,
+     "sessions": 25,
+     "engagementRate": 0.64
+    },
+    {
+     "city": "Santiago del Estero",
+     "totalUsers": 23,
+     "sessions": 24,
+     "engagementRate": 0.7083333333333334
+    },
+    {
+     "city": "Goya",
+     "totalUsers": 21,
+     "sessions": 33,
+     "engagementRate": 0.6666666666666666
+    },
+    {
+     "city": "Mendoza",
+     "totalUsers": 21,
+     "sessions": 22,
+     "engagementRate": 0.6363636363636364
+    },
+    {
+     "city": "Warsaw",
+     "totalUsers": 21,
+     "sessions": 21,
+     "engagementRate": 0.047619047619047616
+    },
+    {
+     "city": "Paris",
+     "totalUsers": 19,
+     "sessions": 20,
+     "engagementRate": 0.05
+    },
+    {
+     "city": "Reconquista",
+     "totalUsers": 19,
+     "sessions": 30,
+     "engagementRate": 0.7666666666666667
+    }
+   ],
+   "totals": [],
+   "rowCount": 643,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "device90": {
+   "label": "device90",
+   "dh": [
+    "deviceCategory"
+   ],
+   "mh": [
+    "totalUsers",
+    "sessions",
+    "engagementRate",
+    "averageSessionDuration",
+    "screenPageViewsPerSession",
+    "bounceRate"
+   ],
+   "rows": [
+    {
+     "deviceCategory": "desktop",
+     "totalUsers": 2896,
+     "sessions": 4193,
+     "engagementRate": 0.6253279274982113,
+     "averageSessionDuration": 277.7415028638207,
+     "screenPageViewsPerSession": 3.045075125208681,
+     "bounceRate": 0.3746720725017887
+    },
+    {
+     "deviceCategory": "mobile",
+     "totalUsers": 2496,
+     "sessions": 3019,
+     "engagementRate": 0.4879099039417025,
+     "averageSessionDuration": 102.59953162802253,
+     "screenPageViewsPerSession": 1.9950314673733025,
+     "bounceRate": 0.5120900960582975
+    },
+    {
+     "deviceCategory": "tablet",
+     "totalUsers": 11,
+     "sessions": 12,
+     "engagementRate": 0.4166666666666667,
+     "averageSessionDuration": 128.91063958333334,
+     "screenPageViewsPerSession": 2.5,
+     "bounceRate": 0.5833333333333334
+    }
+   ],
+   "totals": [],
+   "rowCount": 3,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "os90": {
+   "label": "os90",
+   "dh": [
+    "operatingSystem"
+   ],
+   "mh": [
+    "totalUsers",
+    "engagementRate"
+   ],
+   "rows": [
+    {
+     "operatingSystem": "Windows",
+     "totalUsers": 2617,
+     "engagementRate": 0.6565252201761409
+    },
+    {
+     "operatingSystem": "Android",
+     "totalUsers": 1868,
+     "engagementRate": 0.5002344116268167
+    },
+    {
+     "operatingSystem": "iOS",
+     "totalUsers": 641,
+     "engagementRate": 0.4742268041237113
+    },
+    {
+     "operatingSystem": "Macintosh",
+     "totalUsers": 165,
+     "engagementRate": 0.5330739299610895
+    },
+    {
+     "operatingSystem": "Linux",
+     "totalUsers": 98,
+     "engagementRate": 0.20192307692307693
+    },
+    {
+     "operatingSystem": "(not set)",
+     "totalUsers": 15,
+     "engagementRate": 0.06666666666666667
+    },
+    {
+     "operatingSystem": "Chrome OS",
+     "totalUsers": 1,
+     "engagementRate": 1
+    }
+   ],
+   "totals": [],
+   "rowCount": 7,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "browser90": {
+   "label": "browser90",
+   "dh": [
+    "browser"
+   ],
+   "mh": [
+    "totalUsers",
+    "engagementRate"
+   ],
+   "rows": [
+    {
+     "browser": "Chrome",
+     "totalUsers": 3970,
+     "engagementRate": 0.5538577626862856
+    },
+    {
+     "browser": "Edge",
+     "totalUsers": 703,
+     "engagementRate": 0.6860809476801579
+    },
+    {
+     "browser": "Safari",
+     "totalUsers": 528,
+     "engagementRate": 0.4707692307692308
+    },
+    {
+     "browser": "Samsung Internet",
+     "totalUsers": 88,
+     "engagementRate": 0.44
+    },
+    {
+     "browser": "Firefox",
+     "totalUsers": 75,
+     "engagementRate": 0.6730769230769231
+    },
+    {
+     "browser": "(not set)",
+     "totalUsers": 16,
+     "engagementRate": 0.0625
+    },
+    {
+     "browser": "Opera",
+     "totalUsers": 12,
+     "engagementRate": 0.8571428571428571
+    },
+    {
+     "browser": "Safari (in-app)",
+     "totalUsers": 5,
+     "engagementRate": 0.2
+    },
+    {
+     "browser": "Android Webview",
+     "totalUsers": 3,
+     "engagementRate": 0.3333333333333333
+    },
+    {
+     "browser": "YaBrowser",
+     "totalUsers": 1,
+     "engagementRate": 0.5
+    }
+   ],
+   "totals": [],
+   "rowCount": 10,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "mobileModel90": {
+   "label": "mobileModel90",
+   "dh": [
+    "mobileDeviceModel"
+   ],
+   "mh": [
+    "totalUsers"
+   ],
+   "rows": [
+    {
+     "mobileDeviceModel": "(not set)",
+     "totalUsers": 3010
+    },
+    {
+     "mobileDeviceModel": "iPhone",
+     "totalUsers": 631
+    },
+    {
+     "mobileDeviceModel": "SM-A155M",
+     "totalUsers": 55
+    },
+    {
+     "mobileDeviceModel": "SM-A165M",
+     "totalUsers": 38
+    },
+    {
+     "mobileDeviceModel": "SM-A065M",
+     "totalUsers": 31
+    },
+    {
+     "mobileDeviceModel": "Moto G24 Power",
+     "totalUsers": 27
+    },
+    {
+     "mobileDeviceModel": "moto g15",
+     "totalUsers": 26
+    },
+    {
+     "mobileDeviceModel": "SM-A217M",
+     "totalUsers": 24
+    },
+    {
+     "mobileDeviceModel": "SM-A045M",
+     "totalUsers": 23
+    },
+    {
+     "mobileDeviceModel": "XT-2343-1",
+     "totalUsers": 23
+    },
+    {
+     "mobileDeviceModel": "2409BRN2CL",
+     "totalUsers": 22
+    },
+    {
+     "mobileDeviceModel": "SM-A546E",
+     "totalUsers": 22
+    },
+    {
+     "mobileDeviceModel": "Moto G52",
+     "totalUsers": 21
+    },
+    {
+     "mobileDeviceModel": "Moto G85 5G",
+     "totalUsers": 21
+    },
+    {
+     "mobileDeviceModel": "SM-A135M",
+     "totalUsers": 21
+    },
+    {
+     "mobileDeviceModel": "SM-A566E",
+     "totalUsers": 21
+    },
+    {
+     "mobileDeviceModel": "SM-A525M",
+     "totalUsers": 20
+    },
+    {
+     "mobileDeviceModel": "SM-A037U",
+     "totalUsers": 19
+    },
+    {
+     "mobileDeviceModel": "Moto G32",
+     "totalUsers": 18
+    },
+    {
+     "mobileDeviceModel": "SM-A145M",
+     "totalUsers": 17
+    }
+   ],
+   "totals": [],
+   "rowCount": 389,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "resolution90": {
+   "label": "resolution90",
+   "dh": [
+    "screenResolution"
+   ],
+   "mh": [
+    "totalUsers"
+   ],
+   "rows": [
+    {
+     "screenResolution": "1366x768",
+     "totalUsers": 754
+    },
+    {
+     "screenResolution": "1536x864",
+     "totalUsers": 553
+    },
+    {
+     "screenResolution": "1920x1080",
+     "totalUsers": 515
+    },
+    {
+     "screenResolution": "384x832",
+     "totalUsers": 284
+    },
+    {
+     "screenResolution": "412x915",
+     "totalUsers": 184
+    },
+    {
+     "screenResolution": "1280x720",
+     "totalUsers": 177
+    },
+    {
+     "screenResolution": "800x600",
+     "totalUsers": 172
+    },
+    {
+     "screenResolution": "390x844",
+     "totalUsers": 156
+    },
+    {
+     "screenResolution": "385x854",
+     "totalUsers": 138
+    },
+    {
+     "screenResolution": "432x960",
+     "totalUsers": 138
+    },
+    {
+     "screenResolution": "360x800",
+     "totalUsers": 117
+    },
+    {
+     "screenResolution": "393x852",
+     "totalUsers": 111
+    },
+    {
+     "screenResolution": "402x874",
+     "totalUsers": 106
+    },
+    {
+     "screenResolution": "1440x900",
+     "totalUsers": 90
+    },
+    {
+     "screenResolution": "1600x900",
+     "totalUsers": 76
+    }
+   ],
+   "totals": [],
+   "rowCount": 321,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "language90": {
+   "label": "language90",
+   "dh": [
+    "language"
+   ],
+   "mh": [
+    "totalUsers"
+   ],
+   "rows": [
+    {
+     "language": "Spanish",
+     "totalUsers": 4817
+    },
+    {
+     "language": "English",
+     "totalUsers": 485
+    },
+    {
+     "language": "Chinese",
+     "totalUsers": 55
+    },
+    {
+     "language": "Portuguese",
+     "totalUsers": 16
+    },
+    {
+     "language": "Italian",
+     "totalUsers": 7
+    },
+    {
+     "language": "French",
+     "totalUsers": 5
+    },
+    {
+     "language": "Japanese",
+     "totalUsers": 3
+    },
+    {
+     "language": "Russian",
+     "totalUsers": 3
+    },
+    {
+     "language": "Polish",
+     "totalUsers": 2
+    },
+    {
+     "language": "Dutch",
+     "totalUsers": 1
+    },
+    {
+     "language": "Turkish",
+     "totalUsers": 1
+    },
+    {
+     "language": "Ukrainian",
+     "totalUsers": 1
+    }
+   ],
+   "totals": [],
+   "rowCount": 13,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "channel90": {
+   "label": "channel90",
+   "dh": [
+    "sessionDefaultChannelGroup"
+   ],
+   "mh": [
+    "sessions",
+    "totalUsers",
+    "engagementRate",
+    "averageSessionDuration",
+    "keyEvents"
+   ],
+   "rows": [
+    {
+     "sessionDefaultChannelGroup": "Organic Search",
+     "sessions": 5630,
+     "totalUsers": 4361,
+     "engagementRate": 0.6216696269982238,
+     "averageSessionDuration": 210.05487815754887,
+     "keyEvents": 835
+    },
+    {
+     "sessionDefaultChannelGroup": "Direct",
+     "sessions": 855,
+     "totalUsers": 730,
+     "engagementRate": 0.33801169590643276,
+     "averageSessionDuration": 149.45567587953215,
+     "keyEvents": 110
+    },
+    {
+     "sessionDefaultChannelGroup": "Unassigned",
+     "sessions": 261,
+     "totalUsers": 129,
+     "engagementRate": 0.4674329501915709,
+     "averageSessionDuration": 261.3635862873563,
+     "keyEvents": 36
+    },
+    {
+     "sessionDefaultChannelGroup": "Referral",
+     "sessions": 180,
+     "totalUsers": 99,
+     "engagementRate": 0.6611111111111111,
+     "averageSessionDuration": 344.4152002111111,
+     "keyEvents": 21
+    },
+    {
+     "sessionDefaultChannelGroup": "AI Assistant",
+     "sessions": 125,
+     "totalUsers": 101,
+     "engagementRate": 0.576,
+     "averageSessionDuration": 236.07637693599997,
+     "keyEvents": 21
+    },
+    {
+     "sessionDefaultChannelGroup": "Organic Social",
+     "sessions": 24,
+     "totalUsers": 21,
+     "engagementRate": 0.3333333333333333,
+     "averageSessionDuration": 239.63704533333336,
+     "keyEvents": 0
+    }
+   ],
+   "totals": [],
+   "rowCount": 6,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "sourceMedium90": {
+   "label": "sourceMedium90",
+   "dh": [
+    "sessionSourceMedium"
+   ],
+   "mh": [
+    "sessions",
+    "totalUsers",
+    "engagementRate"
+   ],
+   "rows": [
+    {
+     "sessionSourceMedium": "google / organic",
+     "sessions": 4156,
+     "totalUsers": 3334,
+     "engagementRate": 0.5969682386910491
+    },
+    {
+     "sessionSourceMedium": "bing / organic",
+     "sessions": 965,
+     "totalUsers": 678,
+     "engagementRate": 0.6880829015544041
+    },
+    {
+     "sessionSourceMedium": "(direct) / (none)",
+     "sessions": 855,
+     "totalUsers": 730,
+     "engagementRate": 0.33801169590643276
+    },
+    {
+     "sessionSourceMedium": "ar.search.yahoo.com / referral",
+     "sessions": 401,
+     "totalUsers": 272,
+     "engagementRate": 0.655860349127182
+    },
+    {
+     "sessionSourceMedium": "chatgpt.com / referral",
+     "sessions": 123,
+     "totalUsers": 76,
+     "engagementRate": 0.6991869918699187
+    },
+    {
+     "sessionSourceMedium": "chatgpt.com / ai-assistant",
+     "sessions": 111,
+     "totalUsers": 90,
+     "engagementRate": 0.5675675675675675
+    },
+    {
+     "sessionSourceMedium": "chatgpt.com / (not set)",
+     "sessions": 110,
+     "totalUsers": 96,
+     "engagementRate": 0.5909090909090909
+    },
+    {
+     "sessionSourceMedium": "direct / (not set)",
+     "sessions": 69,
+     "totalUsers": 17,
+     "engagementRate": 0.5217391304347826
+    },
+    {
+     "sessionSourceMedium": "exportar / (not set)",
+     "sessions": 55,
+     "totalUsers": 1,
+     "engagementRate": 0.2545454545454545
+    },
+    {
+     "sessionSourceMedium": "accounts.google.com / referral",
+     "sessions": 35,
+     "totalUsers": 6,
+     "engagementRate": 0.5714285714285714
+    },
+    {
+     "sessionSourceMedium": "yahoo / organic",
+     "sessions": 31,
+     "totalUsers": 27,
+     "engagementRate": 0.8064516129032258
+    },
+    {
+     "sessionSourceMedium": "es.search.yahoo.com / referral",
+     "sessions": 23,
+     "totalUsers": 17,
+     "engagementRate": 0.5217391304347826
+    },
+    {
+     "sessionSourceMedium": "duckduckgo / organic",
+     "sessions": 19,
+     "totalUsers": 13,
+     "engagementRate": 0.631578947368421
+    },
+    {
+     "sessionSourceMedium": "ntp.msn.com / referral",
+     "sessions": 14,
+     "totalUsers": 3,
+     "engagementRate": 0.14285714285714285
+    },
+    {
+     "sessionSourceMedium": "copilot.com / (not set)",
+     "sessions": 12,
+     "totalUsers": 4,
+     "engagementRate": 0.16666666666666666
+    },
+    {
+     "sessionSourceMedium": "t.co / referral",
+     "sessions": 11,
+     "totalUsers": 9,
+     "engagementRate": 0.45454545454545453
+    },
+    {
+     "sessionSourceMedium": "cn.bing.com / referral",
+     "sessions": 9,
+     "totalUsers": 6,
+     "engagementRate": 0.4444444444444444
+    },
+    {
+     "sessionSourceMedium": "claude.ai / ai-assistant",
+     "sessions": 8,
+     "totalUsers": 4,
+     "engagementRate": 0.5
+    },
+    {
+     "sessionSourceMedium": "copilot.com / referral",
+     "sessions": 7,
+     "totalUsers": 6,
+     "engagementRate": 0.42857142857142855
+    },
+    {
+     "sessionSourceMedium": "espanol.search.yahoo.com / referral",
+     "sessions": 7,
+     "totalUsers": 6,
+     "engagementRate": 1
+    },
+    {
+     "sessionSourceMedium": "(not set)",
+     "sessions": 6,
+     "totalUsers": 6,
+     "engagementRate": 0
+    },
+    {
+     "sessionSourceMedium": "copilot.com / ai-assistant",
+     "sessions": 5,
+     "totalUsers": 5,
+     "engagementRate": 0.6
+    },
+    {
+     "sessionSourceMedium": "m.facebook.com / referral",
+     "sessions": 5,
+     "totalUsers": 5,
+     "engagementRate": 0
+    },
+    {
+     "sessionSourceMedium": "mx.search.yahoo.com / referral",
+     "sessions": 5,
+     "totalUsers": 3,
+     "engagementRate": 1
+    },
+    {
+     "sessionSourceMedium": "facebook.com / referral",
+     "sessions": 4,
+     "totalUsers": 4,
+     "engagementRate": 0.25
+    }
+   ],
+   "totals": [],
+   "rowCount": 48,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "firstUserSource90": {
+   "label": "firstUserSource90",
+   "dh": [
+    "firstUserSourceMedium"
+   ],
+   "mh": [
+    "totalUsers"
+   ],
+   "rows": [
+    {
+     "firstUserSourceMedium": "google / organic",
+     "totalUsers": 3325
+    },
+    {
+     "firstUserSourceMedium": "(direct) / (none)",
+     "totalUsers": 733
+    },
+    {
+     "firstUserSourceMedium": "bing / organic",
+     "totalUsers": 677
+    },
+    {
+     "firstUserSourceMedium": "ar.search.yahoo.com / referral",
+     "totalUsers": 271
+    },
+    {
+     "firstUserSourceMedium": "chatgpt.com / (not set)",
+     "totalUsers": 94
+    },
+    {
+     "firstUserSourceMedium": "chatgpt.com / ai-assistant",
+     "totalUsers": 89
+    },
+    {
+     "firstUserSourceMedium": "chatgpt.com / referral",
+     "totalUsers": 75
+    },
+    {
+     "firstUserSourceMedium": "yahoo / organic",
+     "totalUsers": 26
+    },
+    {
+     "firstUserSourceMedium": "es.search.yahoo.com / referral",
+     "totalUsers": 17
+    },
+    {
+     "firstUserSourceMedium": "duckduckgo / organic",
+     "totalUsers": 13
+    },
+    {
+     "firstUserSourceMedium": "t.co / referral",
+     "totalUsers": 9
+    },
+    {
+     "firstUserSourceMedium": "cn.bing.com / referral",
+     "totalUsers": 6
+    },
+    {
+     "firstUserSourceMedium": "copilot.com / referral",
+     "totalUsers": 6
+    },
+    {
+     "firstUserSourceMedium": "espanol.search.yahoo.com / referral",
+     "totalUsers": 6
+    },
+    {
+     "firstUserSourceMedium": "copilot.com / ai-assistant",
+     "totalUsers": 5
+    },
+    {
+     "firstUserSourceMedium": "m.facebook.com / referral",
+     "totalUsers": 5
+    },
+    {
+     "firstUserSourceMedium": "claude.ai / ai-assistant",
+     "totalUsers": 4
+    },
+    {
+     "firstUserSourceMedium": "copilot.com / (not set)",
+     "totalUsers": 4
+    },
+    {
+     "firstUserSourceMedium": "facebook.com / referral",
+     "totalUsers": 4
+    },
+    {
+     "firstUserSourceMedium": "ig / social",
+     "totalUsers": 3
+    }
+   ],
+   "totals": [],
+   "rowCount": 37,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "newReturning90": {
+   "label": "newReturning90",
+   "dh": [
+    "newVsReturning"
+   ],
+   "mh": [
+    "totalUsers",
+    "sessions",
+    "engagementRate",
+    "averageSessionDuration",
+    "screenPageViewsPerSession",
+    "eventCount"
+   ],
+   "rows": [
+    {
+     "newVsReturning": "new",
+     "totalUsers": 5372,
+     "sessions": 5430,
+     "engagementRate": 0.6222836095764273,
+     "averageSessionDuration": 166.48330123020258,
+     "screenPageViewsPerSession": 2.294475138121547,
+     "eventCount": 33166
+    },
+    {
+     "newVsReturning": "returning",
+     "totalUsers": 779,
+     "sessions": 1407,
+     "engagementRate": 0.5159914712153518,
+     "averageSessionDuration": 336.62150135536604,
+     "screenPageViewsPerSession": 4.350390902629709,
+     "eventCount": 12419
+    },
+    {
+     "newVsReturning": "(not set)",
+     "totalUsers": 209,
+     "sessions": 330,
+     "engagementRate": 0.03636363636363636,
+     "averageSessionDuration": 297.67956691212123,
+     "screenPageViewsPerSession": 0.7303030303030303,
+     "eventCount": 703
+    }
+   ],
+   "totals": [],
+   "rowCount": 3,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "pages90": {
+   "label": "pages90",
+   "dh": [
+    "pagePath"
+   ],
+   "mh": [
+    "screenPageViews",
+    "totalUsers",
+    "userEngagementDuration",
+    "engagementRate",
+    "keyEvents"
+   ],
+   "rows": [
+    {
+     "pagePath": "/frigorificos",
+     "screenPageViews": 1860,
+     "totalUsers": 382,
+     "userEngagementDuration": 48133,
+     "engagementRate": 0.7306397306397306,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/mercado/arrendamiento",
+     "screenPageViews": 1533,
+     "totalUsers": 986,
+     "userEngagementDuration": 44773,
+     "engagementRate": 0.4684615384615385,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/",
+     "screenPageViews": 807,
+     "totalUsers": 473,
+     "userEngagementDuration": 10429,
+     "engagementRate": 0.5613126079447323,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/mercado/inmag",
+     "screenPageViews": 765,
+     "totalUsers": 444,
+     "userEngagementDuration": 20854,
+     "engagementRate": 0.6077057793345009,
+     "keyEvents": 2
+    },
+    {
+     "pagePath": "/consignatarias",
+     "screenPageViews": 547,
+     "totalUsers": 265,
+     "userEngagementDuration": 10063,
+     "engagementRate": 0.8580441640378549,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/frigorificos/buenos-aires",
+     "screenPageViews": 527,
+     "totalUsers": 83,
+     "userEngagementDuration": 12232,
+     "engagementRate": 0.693069306930693,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/overview",
+     "screenPageViews": 519,
+     "totalUsers": 222,
+     "userEngagementDuration": 8501,
+     "engagementRate": 0.8788927335640139,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/remates",
+     "screenPageViews": 495,
+     "totalUsers": 242,
+     "userEngagementDuration": 12135,
+     "engagementRate": 0.9473684210526315,
+     "keyEvents": 76
+    },
+    {
+     "pagePath": "/mercado",
+     "screenPageViews": 473,
+     "totalUsers": 227,
+     "userEngagementDuration": 9862,
+     "engagementRate": 0.8231292517006803,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/frigorificos/santa-fe",
+     "screenPageViews": 423,
+     "totalUsers": 70,
+     "userEngagementDuration": 8293,
+     "engagementRate": 0.8163265306122449,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/precios",
+     "screenPageViews": 211,
+     "totalUsers": 99,
+     "userEngagementDuration": 3839,
+     "engagementRate": 0.8495575221238938,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/frigorificos/entre-rios",
+     "screenPageViews": 183,
+     "totalUsers": 50,
+     "userEngagementDuration": 3241,
+     "engagementRate": 0.6197183098591549,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/calculadora",
+     "screenPageViews": 146,
+     "totalUsers": 70,
+     "userEngagementDuration": 6630,
+     "engagementRate": 0.9166666666666666,
+     "keyEvents": 1
+    },
+    {
+     "pagePath": "/mercado/liniers",
+     "screenPageViews": 146,
+     "totalUsers": 100,
+     "userEngagementDuration": 3464,
+     "engagementRate": 0.6779661016949152,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/planes",
+     "screenPageViews": 137,
+     "totalUsers": 81,
+     "userEngagementDuration": 3418,
+     "engagementRate": 0.925531914893617,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/remates/corrientes",
+     "screenPageViews": 129,
+     "totalUsers": 65,
+     "userEngagementDuration": 2405,
+     "engagementRate": 0.7183098591549296,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/mercado/inmag/2024",
+     "screenPageViews": 122,
+     "totalUsers": 7,
+     "userEngagementDuration": 453,
+     "engagementRate": 0.7272727272727273,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/mercado/inmag/2025",
+     "screenPageViews": 122,
+     "totalUsers": 7,
+     "userEngagementDuration": 402,
+     "engagementRate": 1,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/mercado/terneros",
+     "screenPageViews": 114,
+     "totalUsers": 85,
+     "userEngagementDuration": 2198,
+     "engagementRate": 0.78,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/frigorificos/corrientes",
+     "screenPageViews": 111,
+     "totalUsers": 19,
+     "userEngagementDuration": 1212,
+     "engagementRate": 0.8333333333333334,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/remates/en-vivo",
+     "screenPageViews": 107,
+     "totalUsers": 58,
+     "userEngagementDuration": 1623,
+     "engagementRate": 0.8611111111111112,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/mercado/canuelas",
+     "screenPageViews": 101,
+     "totalUsers": 70,
+     "userEngagementDuration": 3373,
+     "engagementRate": 0.7093023255813954,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/remates/entre-rios",
+     "screenPageViews": 99,
+     "totalUsers": 66,
+     "userEngagementDuration": 1993,
+     "engagementRate": 0.6486486486486487,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/mi-ganado",
+     "screenPageViews": 87,
+     "totalUsers": 49,
+     "userEngagementDuration": 1784,
+     "engagementRate": 0.98,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/frigorificos/verificar",
+     "screenPageViews": 79,
+     "totalUsers": 43,
+     "userEngagementDuration": 2041,
+     "engagementRate": 0.9574468085106383,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/remates/semana",
+     "screenPageViews": 79,
+     "totalUsers": 46,
+     "userEngagementDuration": 2223,
+     "engagementRate": 0.9491525423728814,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/frigorificos/33684058679",
+     "screenPageViews": 78,
+     "totalUsers": 41,
+     "userEngagementDuration": 1073,
+     "engagementRate": 0.5409836065573771,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/login",
+     "screenPageViews": 77,
+     "totalUsers": 51,
+     "userEngagementDuration": 1185,
+     "engagementRate": 0.9814814814814815,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/mercado/inmag/2023",
+     "screenPageViews": 76,
+     "totalUsers": 4,
+     "userEngagementDuration": 219,
+     "engagementRate": 0.8571428571428571,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/mercado/toros",
+     "screenPageViews": 75,
+     "totalUsers": 64,
+     "userEngagementDuration": 1226,
+     "engagementRate": 0.5606060606060606,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/mercado/novillos",
+     "screenPageViews": 63,
+     "totalUsers": 46,
+     "userEngagementDuration": 760,
+     "engagementRate": 0.6415094339622641,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/mercado/inmag/2026",
+     "screenPageViews": 62,
+     "totalUsers": 5,
+     "userEngagementDuration": 241,
+     "engagementRate": 1,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/remates/la-pampa",
+     "screenPageViews": 62,
+     "totalUsers": 32,
+     "userEngagementDuration": 1007,
+     "engagementRate": 0.575,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/frigorificos/30707283250",
+     "screenPageViews": 59,
+     "totalUsers": 41,
+     "userEngagementDuration": 1296,
+     "engagementRate": 0.8181818181818182,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/consignatarias/colombo-y-magliano",
+     "screenPageViews": 56,
+     "totalUsers": 41,
+     "userEngagementDuration": 818,
+     "engagementRate": 0.9545454545454546,
+     "keyEvents": 56
+    },
+    {
+     "pagePath": "/mercado/vacas",
+     "screenPageViews": 56,
+     "totalUsers": 48,
+     "userEngagementDuration": 1078,
+     "engagementRate": 0.660377358490566,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/consignatarias/sivero",
+     "screenPageViews": 54,
+     "totalUsers": 43,
+     "userEngagementDuration": 1295,
+     "engagementRate": 0.9777777777777777,
+     "keyEvents": 60
+    },
+    {
+     "pagePath": "/remates/buenos-aires",
+     "screenPageViews": 54,
+     "totalUsers": 26,
+     "userEngagementDuration": 647,
+     "engagementRate": 0.9310344827586207,
+     "keyEvents": 0
+    },
+    {
+     "pagePath": "/consignatarias/umc-villaguay",
+     "screenPageViews": 51,
+     "totalUsers": 30,
+     "userEngagementDuration": 927,
+     "engagementRate": 0.9722222222222222,
+     "keyEvents": 52
+    },
+    {
+     "pagePath": "/dte",
+     "screenPageViews": 51,
+     "totalUsers": 40,
+     "userEngagementDuration": 2153,
+     "engagementRate": 0.5869565217391305,
+     "keyEvents": 0
+    }
+   ],
+   "totals": [],
+   "rowCount": 1520,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "landing90": {
+   "label": "landing90",
+   "dh": [
+    "landingPage"
+   ],
+   "mh": [
+    "sessions",
+    "totalUsers",
+    "engagementRate",
+    "averageSessionDuration",
+    "keyEvents",
+    "bounceRate"
+   ],
+   "rows": [
+    {
+     "landingPage": "/mercado/arrendamiento",
+     "sessions": 1170,
+     "totalUsers": 952,
+     "engagementRate": 0.4777777777777778,
+     "averageSessionDuration": 165.60607167179487,
+     "keyEvents": 2,
+     "bounceRate": 0.5222222222222223
+    },
+    {
+     "landingPage": "/",
+     "sessions": 465,
+     "totalUsers": 384,
+     "engagementRate": 0.4752688172043011,
+     "averageSessionDuration": 186.31764476344088,
+     "keyEvents": 114,
+     "bounceRate": 0.524731182795699
+    },
+    {
+     "landingPage": "/mercado/inmag",
+     "sessions": 425,
+     "totalUsers": 357,
+     "engagementRate": 0.5741176470588235,
+     "averageSessionDuration": 428.28500192235293,
+     "keyEvents": 2,
+     "bounceRate": 0.4258823529411765
+    },
+    {
+     "landingPage": "(not set)",
+     "sessions": 424,
+     "totalUsers": 360,
+     "engagementRate": 0.04245283018867924,
+     "averageSessionDuration": 11.123790985849059,
+     "keyEvents": 10,
+     "bounceRate": 0.9575471698113207
+    },
+    {
+     "landingPage": "/frigorificos",
+     "sessions": 328,
+     "totalUsers": 243,
+     "engagementRate": 0.6341463414634146,
+     "averageSessionDuration": 575.0197763963414,
+     "keyEvents": 6,
+     "bounceRate": 0.36585365853658536
+    },
+    {
+     "landingPage": "/consignatarias",
+     "sessions": 111,
+     "totalUsers": 92,
+     "engagementRate": 0.6576576576576577,
+     "averageSessionDuration": 301.69682874774776,
+     "keyEvents": 79,
+     "bounceRate": 0.34234234234234234
+    },
+    {
+     "landingPage": "/mercado/liniers",
+     "sessions": 100,
+     "totalUsers": 93,
+     "engagementRate": 0.71,
+     "averageSessionDuration": 240.66274223,
+     "keyEvents": 3,
+     "bounceRate": 0.29
+    },
+    {
+     "landingPage": "/mercado/terneros",
+     "sessions": 77,
+     "totalUsers": 71,
+     "engagementRate": 0.7922077922077922,
+     "averageSessionDuration": 209.27405266233765,
+     "keyEvents": 3,
+     "bounceRate": 0.2077922077922078
+    },
+    {
+     "landingPage": "/mercado",
+     "sessions": 74,
+     "totalUsers": 57,
+     "engagementRate": 0.5135135135135135,
+     "averageSessionDuration": 242.80769052702703,
+     "keyEvents": 3,
+     "bounceRate": 0.4864864864864865
+    },
+    {
+     "landingPage": "/frigorificos/buenos-aires",
+     "sessions": 70,
+     "totalUsers": 63,
+     "engagementRate": 0.6285714285714286,
+     "averageSessionDuration": 278.2340859714286,
+     "keyEvents": 1,
+     "bounceRate": 0.37142857142857144
+    },
+    {
+     "landingPage": "/frigorificos/santa-fe",
+     "sessions": 69,
+     "totalUsers": 58,
+     "engagementRate": 0.782608695652174,
+     "averageSessionDuration": 572.1404899130436,
+     "keyEvents": 0,
+     "bounceRate": 0.21739130434782608
+    },
+    {
+     "landingPage": "/mercado/canuelas",
+     "sessions": 66,
+     "totalUsers": 57,
+     "engagementRate": 0.7121212121212122,
+     "averageSessionDuration": 218.0504871666667,
+     "keyEvents": 5,
+     "bounceRate": 0.2878787878787879
+    },
+    {
+     "landingPage": "/mercado/toros",
+     "sessions": 61,
+     "totalUsers": 60,
+     "engagementRate": 0.5409836065573771,
+     "averageSessionDuration": 103.90027562295082,
+     "keyEvents": 1,
+     "bounceRate": 0.45901639344262296
+    },
+    {
+     "landingPage": "/frigorificos/entre-rios",
+     "sessions": 58,
+     "totalUsers": 43,
+     "engagementRate": 0.603448275862069,
+     "averageSessionDuration": 357.06940460344833,
+     "keyEvents": 1,
+     "bounceRate": 0.39655172413793105
+    },
+    {
+     "landingPage": "/remates/entre-rios",
+     "sessions": 58,
+     "totalUsers": 54,
+     "engagementRate": 0.5862068965517241,
+     "averageSessionDuration": 146.06246405172413,
+     "keyEvents": 24,
+     "bounceRate": 0.41379310344827586
+    },
+    {
+     "landingPage": "/remates/corrientes",
+     "sessions": 53,
+     "totalUsers": 50,
+     "engagementRate": 0.6415094339622641,
+     "averageSessionDuration": 198.47572258490567,
+     "keyEvents": 52,
+     "bounceRate": 0.3584905660377358
+    },
+    {
+     "landingPage": "/frigorificos/33684058679",
+     "sessions": 51,
+     "totalUsers": 36,
+     "engagementRate": 0.5294117647058824,
+     "averageSessionDuration": 139.68838035294118,
+     "keyEvents": 0,
+     "bounceRate": 0.47058823529411764
+    },
+    {
+     "landingPage": "/precios",
+     "sessions": 49,
+     "totalUsers": 44,
+     "engagementRate": 0.7346938775510204,
+     "averageSessionDuration": 143.4710389591837,
+     "keyEvents": 2,
+     "bounceRate": 0.2653061224489796
+    },
+    {
+     "landingPage": "/overview",
+     "sessions": 44,
+     "totalUsers": 22,
+     "engagementRate": 0.4090909090909091,
+     "averageSessionDuration": 169.78452936363635,
+     "keyEvents": 9,
+     "bounceRate": 0.5909090909090909
+    },
+    {
+     "landingPage": "/consignatarias/sivero",
+     "sessions": 43,
+     "totalUsers": 41,
+     "engagementRate": 0.9767441860465116,
+     "averageSessionDuration": 97.66107388372093,
+     "keyEvents": 65,
+     "bounceRate": 0.023255813953488372
+    },
+    {
+     "landingPage": "/dte",
+     "sessions": 40,
+     "totalUsers": 37,
+     "engagementRate": 0.6,
+     "averageSessionDuration": 216.572817725,
+     "keyEvents": 0,
+     "bounceRate": 0.4
+    },
+    {
+     "landingPage": "/mercado/vacas",
+     "sessions": 40,
+     "totalUsers": 39,
+     "engagementRate": 0.6,
+     "averageSessionDuration": 150.268413975,
+     "keyEvents": 0,
+     "bounceRate": 0.4
+    },
+    {
+     "landingPage": "/remates/la-pampa",
+     "sessions": 38,
+     "totalUsers": 31,
+     "engagementRate": 0.5789473684210527,
+     "averageSessionDuration": 168.18531681578946,
+     "keyEvents": 8,
+     "bounceRate": 0.42105263157894735
+    },
+    {
+     "landingPage": "/mercado/novillos",
+     "sessions": 37,
+     "totalUsers": 33,
+     "engagementRate": 0.4864864864864865,
+     "averageSessionDuration": 127.73989062162161,
+     "keyEvents": 0,
+     "bounceRate": 0.5135135135135135
+    },
+    {
+     "landingPage": "/remates",
+     "sessions": 36,
+     "totalUsers": 32,
+     "engagementRate": 0.6666666666666666,
+     "averageSessionDuration": 281.3737478888889,
+     "keyEvents": 23,
+     "bounceRate": 0.3333333333333333
+    },
+    {
+     "landingPage": "/consignatarias/cooperativa-guillermo-lehmann",
+     "sessions": 35,
+     "totalUsers": 33,
+     "engagementRate": 1,
+     "averageSessionDuration": 29.413414914285717,
+     "keyEvents": 48,
+     "bounceRate": 0
+    },
+    {
+     "landingPage": "/frigorificos/30707283250",
+     "sessions": 30,
+     "totalUsers": 30,
+     "engagementRate": 0.7666666666666667,
+     "averageSessionDuration": 130.54760326666667,
+     "keyEvents": 0,
+     "bounceRate": 0.23333333333333334
+    },
+    {
+     "landingPage": "/calculadora",
+     "sessions": 29,
+     "totalUsers": 21,
+     "engagementRate": 0.8275862068965517,
+     "averageSessionDuration": 245.04508555172413,
+     "keyEvents": 0,
+     "bounceRate": 0.1724137931034483
+    },
+    {
+     "landingPage": "/frigorificos/30708419695",
+     "sessions": 29,
+     "totalUsers": 28,
+     "engagementRate": 0.5517241379310345,
+     "averageSessionDuration": 47.88679044827586,
+     "keyEvents": 0,
+     "bounceRate": 0.4482758620689655
+    },
+    {
+     "landingPage": "/remates/santa-fe",
+     "sessions": 26,
+     "totalUsers": 22,
+     "engagementRate": 0.6538461538461539,
+     "averageSessionDuration": 84.89326515384616,
+     "keyEvents": 2,
+     "bounceRate": 0.34615384615384615
+    }
+   ],
+   "totals": [],
+   "rowCount": 1099,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "hour90": {
+   "label": "hour90",
+   "dh": [
+    "hour"
+   ],
+   "mh": [
+    "sessions",
+    "totalUsers"
+   ],
+   "rows": [
+    {
+     "hour": "0",
+     "sessions": 106,
+     "totalUsers": 104
+    },
+    {
+     "hour": "1",
+     "sessions": 65,
+     "totalUsers": 61
+    },
+    {
+     "hour": "10",
+     "sessions": 645,
+     "totalUsers": 601
+    },
+    {
+     "hour": "11",
+     "sessions": 688,
+     "totalUsers": 628
+    },
+    {
+     "hour": "12",
+     "sessions": 567,
+     "totalUsers": 524
+    },
+    {
+     "hour": "13",
+     "sessions": 417,
+     "totalUsers": 375
+    },
+    {
+     "hour": "14",
+     "sessions": 474,
+     "totalUsers": 445
+    },
+    {
+     "hour": "15",
+     "sessions": 453,
+     "totalUsers": 415
+    },
+    {
+     "hour": "16",
+     "sessions": 449,
+     "totalUsers": 411
+    },
+    {
+     "hour": "17",
+     "sessions": 418,
+     "totalUsers": 395
+    },
+    {
+     "hour": "18",
+     "sessions": 395,
+     "totalUsers": 387
+    },
+    {
+     "hour": "19",
+     "sessions": 419,
+     "totalUsers": 411
+    },
+    {
+     "hour": "2",
+     "sessions": 50,
+     "totalUsers": 47
+    },
+    {
+     "hour": "20",
+     "sessions": 377,
+     "totalUsers": 365
+    },
+    {
+     "hour": "21",
+     "sessions": 292,
+     "totalUsers": 284
+    },
+    {
+     "hour": "22",
+     "sessions": 196,
+     "totalUsers": 188
+    },
+    {
+     "hour": "23",
+     "sessions": 167,
+     "totalUsers": 161
+    },
+    {
+     "hour": "3",
+     "sessions": 37,
+     "totalUsers": 35
+    },
+    {
+     "hour": "4",
+     "sessions": 53,
+     "totalUsers": 52
+    },
+    {
+     "hour": "5",
+     "sessions": 46,
+     "totalUsers": 45
+    },
+    {
+     "hour": "6",
+     "sessions": 86,
+     "totalUsers": 84
+    },
+    {
+     "hour": "7",
+     "sessions": 172,
+     "totalUsers": 170
+    },
+    {
+     "hour": "8",
+     "sessions": 397,
+     "totalUsers": 352
+    },
+    {
+     "hour": "9",
+     "sessions": 520,
+     "totalUsers": 477
+    }
+   ],
+   "totals": [],
+   "rowCount": 24,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "dow90": {
+   "label": "dow90",
+   "dh": [
+    "dayOfWeek"
+   ],
+   "mh": [
+    "sessions",
+    "totalUsers",
+    "engagementRate"
+   ],
+   "rows": [
+    {
+     "dayOfWeek": "0",
+     "sessions": 555,
+     "totalUsers": 490,
+     "engagementRate": 0.5135135135135135
+    },
+    {
+     "dayOfWeek": "1",
+     "sessions": 1289,
+     "totalUsers": 1104,
+     "engagementRate": 0.5865011636927852
+    },
+    {
+     "dayOfWeek": "2",
+     "sessions": 1277,
+     "totalUsers": 1050,
+     "engagementRate": 0.6068911511354738
+    },
+    {
+     "dayOfWeek": "3",
+     "sessions": 1184,
+     "totalUsers": 995,
+     "engagementRate": 0.5734797297297297
+    },
+    {
+     "dayOfWeek": "4",
+     "sessions": 1262,
+     "totalUsers": 1084,
+     "engagementRate": 0.5927099841521395
+    },
+    {
+     "dayOfWeek": "5",
+     "sessions": 1018,
+     "totalUsers": 861,
+     "engagementRate": 0.5726915520628684
+    },
+    {
+     "dayOfWeek": "6",
+     "sessions": 525,
+     "totalUsers": 488,
+     "engagementRate": 0.5085714285714286
+    }
+   ],
+   "totals": [],
+   "rowCount": 7,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "events90": {
+   "label": "events90",
+   "dh": [
+    "eventName"
+   ],
+   "mh": [
+    "eventCount",
+    "totalUsers",
+    "eventCountPerUser"
+   ],
+   "rows": [
+    {
+     "eventName": "page_view",
+     "eventCount": 18821,
+     "totalUsers": 5393,
+     "eventCountPerUser": 3.492484691037298
+    },
+    {
+     "eventName": "session_start",
+     "eventCount": 7116,
+     "totalUsers": 5395,
+     "eventCountPerUser": 1.3202226345083488
+    },
+    {
+     "eventName": "user_engagement",
+     "eventCount": 5427,
+     "totalUsers": 3242,
+     "eventCountPerUser": 1.6985915492957746
+    },
+    {
+     "eventName": "first_visit",
+     "eventCount": 5375,
+     "totalUsers": 5371,
+     "eventCountPerUser": 1.0007447402718301
+    },
+    {
+     "eventName": "pro_prompt_view",
+     "eventCount": 2728,
+     "totalUsers": 1308,
+     "eventCountPerUser": 2.088820826952527
+    },
+    {
+     "eventName": "scroll",
+     "eventCount": 2204,
+     "totalUsers": 1642,
+     "eventCountPerUser": 1.3471882640586796
+    },
+    {
+     "eventName": "time_on_page",
+     "eventCount": 988,
+     "totalUsers": 191,
+     "eventCountPerUser": 5.283422459893048
+    },
+    {
+     "eventName": "profile_view",
+     "eventCount": 844,
+     "totalUsers": 532,
+     "eventCountPerUser": 1.586466165413534
+    },
+    {
+     "eventName": "since_last_visit_shown",
+     "eventCount": 648,
+     "totalUsers": 256,
+     "eventCountPerUser": 2.5714285714285716
+    },
+    {
+     "eventName": "ai_referral",
+     "eventCount": 419,
+     "totalUsers": 310,
+     "eventCountPerUser": 1.3559870550161812
+    },
+    {
+     "eventName": "click",
+     "eventCount": 341,
+     "totalUsers": 195,
+     "eventCountPerUser": 1.7487179487179487
+    },
+    {
+     "eventName": "filter_apply",
+     "eventCount": 293,
+     "totalUsers": 73,
+     "eventCountPerUser": 4.013698630136986
+    },
+    {
+     "eventName": "scroll_depth",
+     "eventCount": 205,
+     "totalUsers": 88,
+     "eventCountPerUser": 2.3295454545454546
+    },
+    {
+     "eventName": "search",
+     "eventCount": 158,
+     "totalUsers": 24,
+     "eventCountPerUser": 6.583333333333333
+    },
+    {
+     "eventName": "outbound_click",
+     "eventCount": 110,
+     "totalUsers": 62,
+     "eventCountPerUser": 1.7741935483870968
+    },
+    {
+     "eventName": "planes_view",
+     "eventCount": 106,
+     "totalUsers": 81,
+     "eventCountPerUser": 1.308641975308642
+    },
+    {
+     "eventName": "tool_view",
+     "eventCount": 90,
+     "totalUsers": 35,
+     "eventCountPerUser": 2.6470588235294117
+    },
+    {
+     "eventName": "form_start",
+     "eventCount": 80,
+     "totalUsers": 67,
+     "eventCountPerUser": 1.1940298507462686
+    },
+    {
+     "eventName": "auction_click",
+     "eventCount": 69,
+     "totalUsers": 38,
+     "eventCountPerUser": 1.8157894736842106
+    },
+    {
+     "eventName": "internal_nav_click",
+     "eventCount": 63,
+     "totalUsers": 41,
+     "eventCountPerUser": 1.5365853658536586
+    },
+    {
+     "eventName": "cta_click",
+     "eventCount": 46,
+     "totalUsers": 29,
+     "eventCountPerUser": 1.5862068965517242
+    },
+    {
+     "eventName": "calculadora_calculate",
+     "eventCount": 41,
+     "totalUsers": 11,
+     "eventCountPerUser": 3.727272727272727
+    },
+    {
+     "eventName": "pro_prompt_click",
+     "eventCount": 19,
+     "totalUsers": 19,
+     "eventCountPerUser": 1
+    },
+    {
+     "eventName": "since_last_visit_click",
+     "eventCount": 18,
+     "totalUsers": 8,
+     "eventCountPerUser": 2.25
+    },
+    {
+     "eventName": "valuation_calc_used",
+     "eventCount": 14,
+     "totalUsers": 12,
+     "eventCountPerUser": 1.1666666666666667
+    },
+    {
+     "eventName": "live_click",
+     "eventCount": 12,
+     "totalUsers": 3,
+     "eventCountPerUser": 4
+    },
+    {
+     "eventName": "tool_used",
+     "eventCount": 11,
+     "totalUsers": 10,
+     "eventCountPerUser": 1.1
+    },
+    {
+     "eventName": "alert_subscribe",
+     "eventCount": 10,
+     "totalUsers": 10,
+     "eventCountPerUser": 1
+    },
+    {
+     "eventName": "whatsapp_lead",
+     "eventCount": 7,
+     "totalUsers": 7,
+     "eventCountPerUser": 1
+    },
+    {
+     "eventName": "calendar_download",
+     "eventCount": 5,
+     "totalUsers": 4,
+     "eventCountPerUser": 1.25
+    },
+    {
+     "eventName": "catalog_click",
+     "eventCount": 5,
+     "totalUsers": 3,
+     "eventCountPerUser": 1.6666666666666667
+    },
+    {
+     "eventName": "sign_up",
+     "eventCount": 4,
+     "totalUsers": 4,
+     "eventCountPerUser": 1
+    },
+    {
+     "eventName": "form_submit",
+     "eventCount": 3,
+     "totalUsers": 2,
+     "eventCountPerUser": 1.5
+    },
+    {
+     "eventName": "chart_view",
+     "eventCount": 2,
+     "totalUsers": 2,
+     "eventCountPerUser": 1
+    },
+    {
+     "eventName": "free_taste_unlock",
+     "eventCount": 2,
+     "totalUsers": 2,
+     "eventCountPerUser": 1
+    },
+    {
+     "eventName": "calculadora_lead",
+     "eventCount": 1,
+     "totalUsers": 1,
+     "eventCountPerUser": 1
+    },
+    {
+     "eventName": "calendar_subscribe",
+     "eventCount": 1,
+     "totalUsers": 1,
+     "eventCountPerUser": 1
+    },
+    {
+     "eventName": "claim_cta_click",
+     "eventCount": 1,
+     "totalUsers": 1,
+     "eventCountPerUser": 1
+    },
+    {
+     "eventName": "watchlist_save",
+     "eventCount": 1,
+     "totalUsers": 1,
+     "eventCountPerUser": 1
+    }
+   ],
+   "totals": [],
+   "rowCount": 39,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "keyEvents90": {
+   "label": "keyEvents90",
+   "dh": [
+    "eventName"
+   ],
+   "mh": [
+    "keyEvents",
+    "totalUsers"
+   ],
+   "rows": [
+    {
+     "eventName": "profile_view",
+     "keyEvents": 844,
+     "totalUsers": 532
+    },
+    {
+     "eventName": "outbound_click",
+     "keyEvents": 110,
+     "totalUsers": 62
+    },
+    {
+     "eventName": "auction_click",
+     "keyEvents": 69,
+     "totalUsers": 38
+    },
+    {
+     "eventName": "ai_referral",
+     "keyEvents": 0,
+     "totalUsers": 310
+    },
+    {
+     "eventName": "alert_subscribe",
+     "keyEvents": 0,
+     "totalUsers": 10
+    },
+    {
+     "eventName": "calculadora_calculate",
+     "keyEvents": 0,
+     "totalUsers": 11
+    },
+    {
+     "eventName": "calculadora_lead",
+     "keyEvents": 0,
+     "totalUsers": 1
+    },
+    {
+     "eventName": "calendar_download",
+     "keyEvents": 0,
+     "totalUsers": 4
+    },
+    {
+     "eventName": "calendar_subscribe",
+     "keyEvents": 0,
+     "totalUsers": 1
+    },
+    {
+     "eventName": "catalog_click",
+     "keyEvents": 0,
+     "totalUsers": 3
+    },
+    {
+     "eventName": "chart_view",
+     "keyEvents": 0,
+     "totalUsers": 2
+    },
+    {
+     "eventName": "claim_cta_click",
+     "keyEvents": 0,
+     "totalUsers": 1
+    },
+    {
+     "eventName": "click",
+     "keyEvents": 0,
+     "totalUsers": 195
+    },
+    {
+     "eventName": "cta_click",
+     "keyEvents": 0,
+     "totalUsers": 29
+    },
+    {
+     "eventName": "filter_apply",
+     "keyEvents": 0,
+     "totalUsers": 73
+    }
+   ],
+   "totals": [],
+   "rowCount": 39,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "aiEngine90": {
+   "label": "aiEngine90",
+   "dh": [
+    "customEvent:ai_engine"
+   ],
+   "mh": [
+    "eventCount",
+    "totalUsers",
+    "sessions"
+   ],
+   "rows": [
+    {
+     "customEvent:ai_engine": "(not set)",
+     "eventCount": 40272,
+     "totalUsers": 4830,
+     "sessions": 6381
+    },
+    {
+     "customEvent:ai_engine": "copilot",
+     "eventCount": 306,
+     "totalUsers": 215,
+     "sessions": 237
+    },
+    {
+     "customEvent:ai_engine": "chatgpt",
+     "eventCount": 67,
+     "totalUsers": 59,
+     "sessions": 60
+    },
+    {
+     "customEvent:ai_engine": "claude",
+     "eventCount": 1,
+     "totalUsers": 1,
+     "sessions": 1
+    },
+    {
+     "customEvent:ai_engine": "gemini",
+     "eventCount": 1,
+     "totalUsers": 1,
+     "sessions": 1
+    }
+   ],
+   "totals": [],
+   "rowCount": 5,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "searchTerms90": {
+   "label": "searchTerms90",
+   "dh": [
+    "customEvent:search_term"
+   ],
+   "mh": [
+    "eventCount"
+   ],
+   "rows": [
+    {
+     "customEvent:search_term": "(not set)",
+     "eventCount": 46125
+    },
+    {
+     "customEvent:search_term": "103",
+     "eventCount": 3
+    },
+    {
+     "customEvent:search_term": "frigorifico h v",
+     "eventCount": 3
+    },
+    {
+     "customEvent:search_term": "2gtrans",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "3",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "agropecuaria transur",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "agropecuaria transur s a",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "bra",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "ccoto",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "federa",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "frigolar",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "h",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "laragon",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "magromer",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "o",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "pico",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "pilotti",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "r",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "soc",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "supermercados mayoristas makro s. a.",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "tresnal",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "valientes",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "villa olga",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "wurstwaren",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "wurstwaren s.a.",
+     "eventCount": 2
+    },
+    {
+     "customEvent:search_term": "1",
+     "eventCount": 1
+    },
+    {
+     "customEvent:search_term": "1237",
+     "eventCount": 1
+    },
+    {
+     "customEvent:search_term": "1989",
+     "eventCount": 1
+    },
+    {
+     "customEvent:search_term": "2",
+     "eventCount": 1
+    },
+    {
+     "customEvent:search_term": "2g",
+     "eventCount": 1
+    }
+   ],
+   "totals": [],
+   "rowCount": 138,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "consignataria90": {
+   "label": "consignataria90",
+   "dh": [
+    "customEvent:consignataria"
+   ],
+   "mh": [
+    "eventCount",
+    "totalUsers"
+   ],
+   "rows": [
+    {
+     "customEvent:consignataria": "(not set)",
+     "eventCount": 46219,
+     "totalUsers": 5396
+    },
+    {
+     "customEvent:consignataria": "Colombo y Colombo SA",
+     "eventCount": 6,
+     "totalUsers": 4
+    },
+    {
+     "customEvent:consignataria": "SIVERO Y CIA. S.A.",
+     "eventCount": 4,
+     "totalUsers": 1
+    },
+    {
+     "customEvent:consignataria": "UMC SA - Haciendas Villaguay SRL",
+     "eventCount": 4,
+     "totalUsers": 3
+    },
+    {
+     "customEvent:consignataria": "Gananor Pujol SA",
+     "eventCount": 3,
+     "totalUsers": 2
+    },
+    {
+     "customEvent:consignataria": "JAUREGUI LORDA S.R.L.",
+     "eventCount": 3,
+     "totalUsers": 2
+    },
+    {
+     "customEvent:consignataria": "Mondino",
+     "eventCount": 3,
+     "totalUsers": 3
+    },
+    {
+     "customEvent:consignataria": "SÁENZ VALIENTE, BULLRICH Y CIA. S.A.",
+     "eventCount": 3,
+     "totalUsers": 2
+    },
+    {
+     "customEvent:consignataria": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
+     "eventCount": 2,
+     "totalUsers": 2
+    },
+    {
+     "customEvent:consignataria": "Bressan y Cia. SRL",
+     "eventCount": 2,
+     "totalUsers": 2
+    },
+    {
+     "customEvent:consignataria": "COOP. LA GANADERA",
+     "eventCount": 2,
+     "totalUsers": 1
+    },
+    {
+     "customEvent:consignataria": "DARWASH S.A.",
+     "eventCount": 2,
+     "totalUsers": 2
+    },
+    {
+     "customEvent:consignataria": "MONASTERIO TATTERSALL S.A.",
+     "eventCount": 2,
+     "totalUsers": 1
+    },
+    {
+     "customEvent:consignataria": "Monasterio",
+     "eventCount": 2,
+     "totalUsers": 1
+    },
+    {
+     "customEvent:consignataria": "Reggi y Cia. SRL",
+     "eventCount": 2,
+     "totalUsers": 2
+    },
+    {
+     "customEvent:consignataria": "Rosgan",
+     "eventCount": 2,
+     "totalUsers": 2
+    },
+    {
+     "customEvent:consignataria": "A. Mendizábal",
+     "eventCount": 1,
+     "totalUsers": 1
+    },
+    {
+     "customEvent:consignataria": "ALFREDO SEBASTIÁN MONDINO",
+     "eventCount": 1,
+     "totalUsers": 1
+    },
+    {
+     "customEvent:consignataria": "COLOMBO Y MAGLIANO S.A.",
+     "eventCount": 1,
+     "totalUsers": 1
+    },
+    {
+     "customEvent:consignataria": "COMPAÑÍA CONSIGNATARIA PAZ HNOS. S.R.L.",
+     "eventCount": 1,
+     "totalUsers": 1
+    },
+    {
+     "customEvent:consignataria": "Campos y Ganados",
+     "eventCount": 1,
+     "totalUsers": 1
+    },
+    {
+     "customEvent:consignataria": "Colombo Y Maliagno2",
+     "eventCount": 1,
+     "totalUsers": 1
+    },
+    {
+     "customEvent:consignataria": "Colombo y Magliano S.A.",
+     "eventCount": 1,
+     "totalUsers": 1
+    },
+    {
+     "customEvent:consignataria": "Coop. La Ganadera",
+     "eventCount": 1,
+     "totalUsers": 1
+    },
+    {
+     "customEvent:consignataria": "DANIEL BLANCO Y CÍA. S.A.",
+     "eventCount": 1,
+     "totalUsers": 1
+    }
+   ],
+   "totals": [],
+   "rowCount": 43,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "province90": {
+   "label": "province90",
+   "dh": [
+    "customEvent:province"
+   ],
+   "mh": [
+    "eventCount"
+   ],
+   "rows": [
+    {
+     "customEvent:province": "(not set)",
+     "eventCount": 46202
+    },
+    {
+     "customEvent:province": "BUENOS AIRES",
+     "eventCount": 29
+    },
+    {
+     "customEvent:province": "Corrientes",
+     "eventCount": 17
+    },
+    {
+     "customEvent:province": "CORRIENTES",
+     "eventCount": 12
+    },
+    {
+     "customEvent:province": "ENTRE RIOS",
+     "eventCount": 8
+    },
+    {
+     "customEvent:province": "CORDOBA",
+     "eventCount": 7
+    },
+    {
+     "customEvent:province": "SANTA FE",
+     "eventCount": 4
+    },
+    {
+     "customEvent:province": "SAN LUIS",
+     "eventCount": 3
+    },
+    {
+     "customEvent:province": "CAPITAL FEDERAL",
+     "eventCount": 2
+    },
+    {
+     "customEvent:province": "CHACO",
+     "eventCount": 2
+    },
+    {
+     "customEvent:province": "FORMOSA",
+     "eventCount": 1
+    },
+    {
+     "customEvent:province": "TUCUMAN",
+     "eventCount": 1
+    }
+   ],
+   "totals": [],
+   "rowCount": 12,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "filterType90": {
+   "label": "filterType90",
+   "dh": [
+    "customEvent:filter_type",
+    "customEvent:filter_value"
+   ],
+   "mh": [
+    "eventCount"
+   ],
+   "rows": [
+    {
+     "customEvent:filter_type": "(not set)",
+     "customEvent:filter_value": "(not set)",
+     "eventCount": 45992
+    },
+    {
+     "customEvent:filter_type": "province",
+     "customEvent:filter_value": "BUENOS AIRES",
+     "eventCount": 65
+    },
+    {
+     "customEvent:filter_type": "type",
+     "customEvent:filter_value": "1",
+     "eventCount": 46
+    },
+    {
+     "customEvent:filter_type": "province",
+     "customEvent:filter_value": "SANTA FE",
+     "eventCount": 31
+    },
+    {
+     "customEvent:filter_type": "type",
+     "customEvent:filter_value": "2",
+     "eventCount": 25
+    },
+    {
+     "customEvent:filter_type": "type",
+     "customEvent:filter_value": "3",
+     "eventCount": 23
+    },
+    {
+     "customEvent:filter_type": "province",
+     "customEvent:filter_value": "CHACO",
+     "eventCount": 13
+    },
+    {
+     "customEvent:filter_type": "period",
+     "customEvent:filter_value": "hoy",
+     "eventCount": 11
+    },
+    {
+     "customEvent:filter_type": "period",
+     "customEvent:filter_value": "pasados",
+     "eventCount": 10
+    },
+    {
+     "customEvent:filter_type": "period",
+     "customEvent:filter_value": "proximos",
+     "eventCount": 10
+    },
+    {
+     "customEvent:filter_type": "province",
+     "customEvent:filter_value": "CORDOBA",
+     "eventCount": 8
+    },
+    {
+     "customEvent:filter_type": "province",
+     "customEvent:filter_value": "CORRIENTES",
+     "eventCount": 7
+    },
+    {
+     "customEvent:filter_type": "province",
+     "customEvent:filter_value": "ENTRE RIOS",
+     "eventCount": 6
+    },
+    {
+     "customEvent:filter_type": "province",
+     "customEvent:filter_value": "LA PAMPA",
+     "eventCount": 5
+    },
+    {
+     "customEvent:filter_type": "type",
+     "customEvent:filter_value": "general",
+     "eventCount": 4
+    },
+    {
+     "customEvent:filter_type": "province",
+     "customEvent:filter_value": "CATAMARCA",
+     "eventCount": 3
+    },
+    {
+     "customEvent:filter_type": "province",
+     "customEvent:filter_value": "LA RIOJA",
+     "eventCount": 3
+    },
+    {
+     "customEvent:filter_type": "province",
+     "customEvent:filter_value": "SANTIAGO DEL ESTERO",
+     "eventCount": 3
+    },
+    {
+     "customEvent:filter_type": "type",
+     "customEvent:filter_value": "cria",
+     "eventCount": 3
+    },
+    {
+     "customEvent:filter_type": "en_vivo",
+     "customEvent:filter_value": "on",
+     "eventCount": 2
+    },
+    {
+     "customEvent:filter_type": "province",
+     "customEvent:filter_value": "CHUBUT",
+     "eventCount": 2
+    },
+    {
+     "customEvent:filter_type": "province",
+     "customEvent:filter_value": "FORMOSA",
+     "eventCount": 2
+    },
+    {
+     "customEvent:filter_type": "province",
+     "customEvent:filter_value": "MENDOZA",
+     "eventCount": 2
+    },
+    {
+     "customEvent:filter_type": "province",
+     "customEvent:filter_value": "MISIONES",
+     "eventCount": 2
+    },
+    {
+     "customEvent:filter_type": "province",
+     "customEvent:filter_value": "NEUQUEN",
+     "eventCount": 2
+    }
+   ],
+   "totals": [],
+   "rowCount": 31,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "auctionType90": {
+   "label": "auctionType90",
+   "dh": [
+    "customEvent:auction_type"
+   ],
+   "mh": [
+    "eventCount"
+   ],
+   "rows": [
+    {
+     "customEvent:auction_type": "(not set)",
+     "eventCount": 46219
+    },
+    {
+     "customEvent:auction_type": "general",
+     "eventCount": 37
+    },
+    {
+     "customEvent:auction_type": "especial",
+     "eventCount": 14
+    },
+    {
+     "customEvent:auction_type": "invernada",
+     "eventCount": 14
+    },
+    {
+     "customEvent:auction_type": "reproductores",
+     "eventCount": 4
+    }
+   ],
+   "totals": [],
+   "rowCount": 5,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "outbound90": {
+   "label": "outbound90",
+   "dh": [
+    "customEvent:destination",
+    "customEvent:link_type"
+   ],
+   "mh": [
+    "eventCount"
+   ],
+   "rows": [
+    {
+     "customEvent:destination": "(not set)",
+     "customEvent:link_type": "(not set)",
+     "eventCount": 46106
+    },
+    {
+     "customEvent:destination": "source",
+     "customEvent:link_type": "(not set)",
+     "eventCount": 67
+    },
+    {
+     "customEvent:destination": "(not set)",
+     "customEvent:link_type": "source",
+     "eventCount": 61
+    },
+    {
+     "customEvent:destination": "(not set)",
+     "customEvent:link_type": "youtube",
+     "eventCount": 24
+    },
+    {
+     "customEvent:destination": "(not set)",
+     "customEvent:link_type": "website",
+     "eventCount": 18
+    },
+    {
+     "customEvent:destination": "(not set)",
+     "customEvent:link_type": "catalog",
+     "eventCount": 7
+    },
+    {
+     "customEvent:destination": "(not set)",
+     "customEvent:link_type": "whatsapp",
+     "eventCount": 3
+    },
+    {
+     "customEvent:destination": "profile",
+     "customEvent:link_type": "(not set)",
+     "eventCount": 2
+    }
+   ],
+   "totals": [],
+   "rowCount": 8,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "audiences90": {
+   "label": "audiences90",
+   "dh": [
+    "audienceName"
+   ],
+   "mh": [
+    "activeUsers"
+   ],
+   "rows": [
+    {
+     "audienceName": "All Users",
+     "activeUsers": 5391
+    }
+   ],
+   "totals": [],
+   "rowCount": 1,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "deviceReturning90": {
+   "label": "deviceReturning90",
+   "dh": [
+    "deviceCategory",
+    "newVsReturning"
+   ],
+   "mh": [
+    "totalUsers",
+    "engagementRate"
+   ],
+   "rows": [
+    {
+     "deviceCategory": "desktop",
+     "newVsReturning": "new",
+     "totalUsers": 2882,
+     "engagementRate": 0.7009155645981688
+    },
+    {
+     "deviceCategory": "mobile",
+     "newVsReturning": "new",
+     "totalUsers": 2486,
+     "engagementRate": 0.5185036202735318
+    },
+    {
+     "deviceCategory": "desktop",
+     "newVsReturning": "returning",
+     "totalUsers": 529,
+     "engagementRate": 0.5348837209302325
+    },
+    {
+     "deviceCategory": "mobile",
+     "newVsReturning": "returning",
+     "totalUsers": 248,
+     "engagementRate": 0.46808510638297873
+    },
+    {
+     "deviceCategory": "desktop",
+     "newVsReturning": "(not set)",
+     "totalUsers": 113,
+     "engagementRate": 0.005
+    },
+    {
+     "deviceCategory": "mobile",
+     "newVsReturning": "(not set)",
+     "totalUsers": 96,
+     "engagementRate": 0.08461538461538462
+    },
+    {
+     "deviceCategory": "tablet",
+     "newVsReturning": "new",
+     "totalUsers": 10,
+     "engagementRate": 0.5
+    },
+    {
+     "deviceCategory": "tablet",
+     "newVsReturning": "returning",
+     "totalUsers": 2,
+     "engagementRate": 0
+    }
+   ],
+   "totals": [],
+   "rowCount": 8,
+   "meta": {
+    "thresholds": false
+   }
+  },
+  "sessionsBucket90": {
+   "label": "sessionsBucket90",
+   "dh": [
+    "newVsReturning"
+   ],
+   "mh": [
+    "sessions",
+    "totalUsers"
+   ],
+   "rows": [
+    {
+     "newVsReturning": "new",
+     "sessions": 5430,
+     "totalUsers": 5372
+    },
+    {
+     "newVsReturning": "returning",
+     "sessions": 1407,
+     "totalUsers": 779
+    },
+    {
+     "newVsReturning": "(not set)",
+     "sessions": 330,
+     "totalUsers": 209
+    }
+   ],
+   "totals": [],
+   "rowCount": 3,
+   "meta": {
+    "thresholds": false
+   }
+  }
+ }
+}

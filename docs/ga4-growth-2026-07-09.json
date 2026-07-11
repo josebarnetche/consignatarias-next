@@ -1,0 +1,992 @@
+{
+ "generatedFor": "2026-07-09",
+ "periods": [
+  {
+   "label": "90d previos",
+   "days": 90,
+   "users": 773,
+   "perDay": 8.6
+  },
+  {
+   "label": "Últimos 90d",
+   "days": 90,
+   "users": 5514,
+   "perDay": 61.3
+  },
+  {
+   "label": "Últimos 60d",
+   "days": 60,
+   "users": 4912,
+   "perDay": 81.9
+  },
+  {
+   "label": "Últimos 30d",
+   "days": 30,
+   "users": 3439,
+   "perDay": 114.6
+  },
+  {
+   "label": "Últimos 14d",
+   "days": 14,
+   "users": 1975,
+   "perDay": 141.1
+  },
+  {
+   "label": "Últimos 7d",
+   "days": 7,
+   "users": 1075,
+   "perDay": 153.6
+  }
+ ],
+ "daily": [
+  {
+   "date": "20260105",
+   "newUsers": 3,
+   "activeUsers": 3,
+   "cum": 3
+  },
+  {
+   "date": "20260106",
+   "newUsers": 0,
+   "activeUsers": 1,
+   "cum": 3
+  },
+  {
+   "date": "20260107",
+   "newUsers": 2,
+   "activeUsers": 2,
+   "cum": 5
+  },
+  {
+   "date": "20260121",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 6
+  },
+  {
+   "date": "20260122",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 7
+  },
+  {
+   "date": "20260123",
+   "newUsers": 2,
+   "activeUsers": 2,
+   "cum": 9
+  },
+  {
+   "date": "20260125",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 10
+  },
+  {
+   "date": "20260126",
+   "newUsers": 1,
+   "activeUsers": 2,
+   "cum": 11
+  },
+  {
+   "date": "20260128",
+   "newUsers": 25,
+   "activeUsers": 25,
+   "cum": 36
+  },
+  {
+   "date": "20260129",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 37
+  },
+  {
+   "date": "20260131",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 38
+  },
+  {
+   "date": "20260201",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 39
+  },
+  {
+   "date": "20260202",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 40
+  },
+  {
+   "date": "20260203",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 41
+  },
+  {
+   "date": "20260205",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 42
+  },
+  {
+   "date": "20260206",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 43
+  },
+  {
+   "date": "20260208",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 44
+  },
+  {
+   "date": "20260209",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 45
+  },
+  {
+   "date": "20260211",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 46
+  },
+  {
+   "date": "20260213",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 47
+  },
+  {
+   "date": "20260219",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 48
+  },
+  {
+   "date": "20260221",
+   "newUsers": 2,
+   "activeUsers": 2,
+   "cum": 50
+  },
+  {
+   "date": "20260223",
+   "newUsers": 5,
+   "activeUsers": 5,
+   "cum": 55
+  },
+  {
+   "date": "20260224",
+   "newUsers": 0,
+   "activeUsers": 1,
+   "cum": 55
+  },
+  {
+   "date": "20260225",
+   "newUsers": 3,
+   "activeUsers": 3,
+   "cum": 58
+  },
+  {
+   "date": "20260226",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 59
+  },
+  {
+   "date": "20260227",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 60
+  },
+  {
+   "date": "20260228",
+   "newUsers": 2,
+   "activeUsers": 2,
+   "cum": 62
+  },
+  {
+   "date": "20260301",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 63
+  },
+  {
+   "date": "20260302",
+   "newUsers": 1,
+   "activeUsers": 2,
+   "cum": 64
+  },
+  {
+   "date": "20260303",
+   "newUsers": 6,
+   "activeUsers": 6,
+   "cum": 70
+  },
+  {
+   "date": "20260304",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 71
+  },
+  {
+   "date": "20260305",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 72
+  },
+  {
+   "date": "20260306",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 73
+  },
+  {
+   "date": "20260307",
+   "newUsers": 1,
+   "activeUsers": 1,
+   "cum": 74
+  },
+  {
+   "date": "20260308",
+   "newUsers": 3,
+   "activeUsers": 3,
+   "cum": 77
+  },
+  {
+   "date": "20260309",
+   "newUsers": 7,
+   "activeUsers": 8,
+   "cum": 84
+  },
+  {
+   "date": "20260310",
+   "newUsers": 7,
+   "activeUsers": 8,
+   "cum": 91
+  },
+  {
+   "date": "20260311",
+   "newUsers": 8,
+   "activeUsers": 9,
+   "cum": 99
+  },
+  {
+   "date": "20260312",
+   "newUsers": 14,
+   "activeUsers": 17,
+   "cum": 113
+  },
+  {
+   "date": "20260313",
+   "newUsers": 10,
+   "activeUsers": 12,
+   "cum": 123
+  },
+  {
+   "date": "20260314",
+   "newUsers": 4,
+   "activeUsers": 5,
+   "cum": 127
+  },
+  {
+   "date": "20260315",
+   "newUsers": 32,
+   "activeUsers": 35,
+   "cum": 159
+  },
+  {
+   "date": "20260316",
+   "newUsers": 30,
+   "activeUsers": 31,
+   "cum": 189
+  },
+  {
+   "date": "20260317",
+   "newUsers": 21,
+   "activeUsers": 21,
+   "cum": 210
+  },
+  {
+   "date": "20260318",
+   "newUsers": 20,
+   "activeUsers": 20,
+   "cum": 230
+  },
+  {
+   "date": "20260319",
+   "newUsers": 17,
+   "activeUsers": 19,
+   "cum": 247
+  },
+  {
+   "date": "20260320",
+   "newUsers": 23,
+   "activeUsers": 26,
+   "cum": 270
+  },
+  {
+   "date": "20260321",
+   "newUsers": 19,
+   "activeUsers": 20,
+   "cum": 289
+  },
+  {
+   "date": "20260322",
+   "newUsers": 11,
+   "activeUsers": 12,
+   "cum": 300
+  },
+  {
+   "date": "20260323",
+   "newUsers": 20,
+   "activeUsers": 20,
+   "cum": 320
+  },
+  {
+   "date": "20260324",
+   "newUsers": 14,
+   "activeUsers": 14,
+   "cum": 334
+  },
+  {
+   "date": "20260325",
+   "newUsers": 27,
+   "activeUsers": 28,
+   "cum": 361
+  },
+  {
+   "date": "20260326",
+   "newUsers": 34,
+   "activeUsers": 36,
+   "cum": 395
+  },
+  {
+   "date": "20260327",
+   "newUsers": 28,
+   "activeUsers": 28,
+   "cum": 423
+  },
+  {
+   "date": "20260328",
+   "newUsers": 20,
+   "activeUsers": 24,
+   "cum": 443
+  },
+  {
+   "date": "20260329",
+   "newUsers": 18,
+   "activeUsers": 22,
+   "cum": 461
+  },
+  {
+   "date": "20260330",
+   "newUsers": 25,
+   "activeUsers": 31,
+   "cum": 486
+  },
+  {
+   "date": "20260331",
+   "newUsers": 28,
+   "activeUsers": 31,
+   "cum": 514
+  },
+  {
+   "date": "20260401",
+   "newUsers": 15,
+   "activeUsers": 17,
+   "cum": 529
+  },
+  {
+   "date": "20260402",
+   "newUsers": 47,
+   "activeUsers": 48,
+   "cum": 576
+  },
+  {
+   "date": "20260403",
+   "newUsers": 38,
+   "activeUsers": 38,
+   "cum": 614
+  },
+  {
+   "date": "20260404",
+   "newUsers": 6,
+   "activeUsers": 7,
+   "cum": 620
+  },
+  {
+   "date": "20260405",
+   "newUsers": 13,
+   "activeUsers": 14,
+   "cum": 633
+  },
+  {
+   "date": "20260406",
+   "newUsers": 67,
+   "activeUsers": 68,
+   "cum": 700
+  },
+  {
+   "date": "20260407",
+   "newUsers": 30,
+   "activeUsers": 34,
+   "cum": 730
+  },
+  {
+   "date": "20260408",
+   "newUsers": 21,
+   "activeUsers": 21,
+   "cum": 751
+  },
+  {
+   "date": "20260409",
+   "newUsers": 26,
+   "activeUsers": 29,
+   "cum": 777
+  },
+  {
+   "date": "20260410",
+   "newUsers": 27,
+   "activeUsers": 29,
+   "cum": 804
+  },
+  {
+   "date": "20260411",
+   "newUsers": 6,
+   "activeUsers": 6,
+   "cum": 810
+  },
+  {
+   "date": "20260412",
+   "newUsers": 9,
+   "activeUsers": 10,
+   "cum": 819
+  },
+  {
+   "date": "20260413",
+   "newUsers": 22,
+   "activeUsers": 26,
+   "cum": 841
+  },
+  {
+   "date": "20260414",
+   "newUsers": 43,
+   "activeUsers": 48,
+   "cum": 884
+  },
+  {
+   "date": "20260415",
+   "newUsers": 31,
+   "activeUsers": 36,
+   "cum": 915
+  },
+  {
+   "date": "20260416",
+   "newUsers": 25,
+   "activeUsers": 27,
+   "cum": 940
+  },
+  {
+   "date": "20260417",
+   "newUsers": 15,
+   "activeUsers": 19,
+   "cum": 955
+  },
+  {
+   "date": "20260418",
+   "newUsers": 13,
+   "activeUsers": 13,
+   "cum": 968
+  },
+  {
+   "date": "20260419",
+   "newUsers": 11,
+   "activeUsers": 13,
+   "cum": 979
+  },
+  {
+   "date": "20260420",
+   "newUsers": 23,
+   "activeUsers": 27,
+   "cum": 1002
+  },
+  {
+   "date": "20260421",
+   "newUsers": 27,
+   "activeUsers": 30,
+   "cum": 1029
+  },
+  {
+   "date": "20260422",
+   "newUsers": 14,
+   "activeUsers": 20,
+   "cum": 1043
+  },
+  {
+   "date": "20260423",
+   "newUsers": 16,
+   "activeUsers": 17,
+   "cum": 1059
+  },
+  {
+   "date": "20260424",
+   "newUsers": 17,
+   "activeUsers": 22,
+   "cum": 1076
+  },
+  {
+   "date": "20260425",
+   "newUsers": 8,
+   "activeUsers": 12,
+   "cum": 1084
+  },
+  {
+   "date": "20260426",
+   "newUsers": 7,
+   "activeUsers": 7,
+   "cum": 1091
+  },
+  {
+   "date": "20260427",
+   "newUsers": 28,
+   "activeUsers": 31,
+   "cum": 1119
+  },
+  {
+   "date": "20260428",
+   "newUsers": 22,
+   "activeUsers": 26,
+   "cum": 1141
+  },
+  {
+   "date": "20260429",
+   "newUsers": 20,
+   "activeUsers": 22,
+   "cum": 1161
+  },
+  {
+   "date": "20260430",
+   "newUsers": 33,
+   "activeUsers": 35,
+   "cum": 1194
+  },
+  {
+   "date": "20260501",
+   "newUsers": 9,
+   "activeUsers": 11,
+   "cum": 1203
+  },
+  {
+   "date": "20260502",
+   "newUsers": 10,
+   "activeUsers": 10,
+   "cum": 1213
+  },
+  {
+   "date": "20260503",
+   "newUsers": 13,
+   "activeUsers": 15,
+   "cum": 1226
+  },
+  {
+   "date": "20260504",
+   "newUsers": 24,
+   "activeUsers": 30,
+   "cum": 1250
+  },
+  {
+   "date": "20260505",
+   "newUsers": 17,
+   "activeUsers": 19,
+   "cum": 1267
+  },
+  {
+   "date": "20260506",
+   "newUsers": 43,
+   "activeUsers": 45,
+   "cum": 1310
+  },
+  {
+   "date": "20260507",
+   "newUsers": 43,
+   "activeUsers": 45,
+   "cum": 1353
+  },
+  {
+   "date": "20260508",
+   "newUsers": 29,
+   "activeUsers": 31,
+   "cum": 1382
+  },
+  {
+   "date": "20260509",
+   "newUsers": 21,
+   "activeUsers": 23,
+   "cum": 1403
+  },
+  {
+   "date": "20260510",
+   "newUsers": 20,
+   "activeUsers": 22,
+   "cum": 1423
+  },
+  {
+   "date": "20260511",
+   "newUsers": 42,
+   "activeUsers": 48,
+   "cum": 1465
+  },
+  {
+   "date": "20260512",
+   "newUsers": 45,
+   "activeUsers": 49,
+   "cum": 1510
+  },
+  {
+   "date": "20260513",
+   "newUsers": 28,
+   "activeUsers": 32,
+   "cum": 1538
+  },
+  {
+   "date": "20260514",
+   "newUsers": 44,
+   "activeUsers": 46,
+   "cum": 1582
+  },
+  {
+   "date": "20260515",
+   "newUsers": 29,
+   "activeUsers": 31,
+   "cum": 1611
+  },
+  {
+   "date": "20260516",
+   "newUsers": 22,
+   "activeUsers": 24,
+   "cum": 1633
+  },
+  {
+   "date": "20260517",
+   "newUsers": 21,
+   "activeUsers": 23,
+   "cum": 1654
+  },
+  {
+   "date": "20260518",
+   "newUsers": 62,
+   "activeUsers": 65,
+   "cum": 1716
+  },
+  {
+   "date": "20260519",
+   "newUsers": 41,
+   "activeUsers": 44,
+   "cum": 1757
+  },
+  {
+   "date": "20260520",
+   "newUsers": 48,
+   "activeUsers": 54,
+   "cum": 1805
+  },
+  {
+   "date": "20260521",
+   "newUsers": 60,
+   "activeUsers": 66,
+   "cum": 1865
+  },
+  {
+   "date": "20260522",
+   "newUsers": 38,
+   "activeUsers": 44,
+   "cum": 1903
+  },
+  {
+   "date": "20260523",
+   "newUsers": 20,
+   "activeUsers": 21,
+   "cum": 1923
+  },
+  {
+   "date": "20260524",
+   "newUsers": 17,
+   "activeUsers": 20,
+   "cum": 1940
+  },
+  {
+   "date": "20260525",
+   "newUsers": 29,
+   "activeUsers": 33,
+   "cum": 1969
+  },
+  {
+   "date": "20260526",
+   "newUsers": 64,
+   "activeUsers": 69,
+   "cum": 2033
+  },
+  {
+   "date": "20260527",
+   "newUsers": 78,
+   "activeUsers": 87,
+   "cum": 2111
+  },
+  {
+   "date": "20260528",
+   "newUsers": 66,
+   "activeUsers": 77,
+   "cum": 2177
+  },
+  {
+   "date": "20260529",
+   "newUsers": 65,
+   "activeUsers": 74,
+   "cum": 2242
+  },
+  {
+   "date": "20260530",
+   "newUsers": 35,
+   "activeUsers": 38,
+   "cum": 2277
+  },
+  {
+   "date": "20260531",
+   "newUsers": 26,
+   "activeUsers": 27,
+   "cum": 2303
+  },
+  {
+   "date": "20260601",
+   "newUsers": 101,
+   "activeUsers": 110,
+   "cum": 2404
+  },
+  {
+   "date": "20260602",
+   "newUsers": 72,
+   "activeUsers": 83,
+   "cum": 2476
+  },
+  {
+   "date": "20260603",
+   "newUsers": 95,
+   "activeUsers": 104,
+   "cum": 2571
+  },
+  {
+   "date": "20260604",
+   "newUsers": 89,
+   "activeUsers": 94,
+   "cum": 2660
+  },
+  {
+   "date": "20260605",
+   "newUsers": 70,
+   "activeUsers": 79,
+   "cum": 2730
+  },
+  {
+   "date": "20260606",
+   "newUsers": 37,
+   "activeUsers": 42,
+   "cum": 2767
+  },
+  {
+   "date": "20260607",
+   "newUsers": 34,
+   "activeUsers": 42,
+   "cum": 2801
+  },
+  {
+   "date": "20260608",
+   "newUsers": 113,
+   "activeUsers": 124,
+   "cum": 2914
+  },
+  {
+   "date": "20260609",
+   "newUsers": 109,
+   "activeUsers": 119,
+   "cum": 3023
+  },
+  {
+   "date": "20260610",
+   "newUsers": 113,
+   "activeUsers": 123,
+   "cum": 3136
+  },
+  {
+   "date": "20260611",
+   "newUsers": 115,
+   "activeUsers": 133,
+   "cum": 3251
+  },
+  {
+   "date": "20260612",
+   "newUsers": 96,
+   "activeUsers": 106,
+   "cum": 3347
+  },
+  {
+   "date": "20260613",
+   "newUsers": 41,
+   "activeUsers": 44,
+   "cum": 3388
+  },
+  {
+   "date": "20260614",
+   "newUsers": 29,
+   "activeUsers": 32,
+   "cum": 3417
+  },
+  {
+   "date": "20260615",
+   "newUsers": 69,
+   "activeUsers": 76,
+   "cum": 3486
+  },
+  {
+   "date": "20260616",
+   "newUsers": 96,
+   "activeUsers": 114,
+   "cum": 3582
+  },
+  {
+   "date": "20260617",
+   "newUsers": 117,
+   "activeUsers": 126,
+   "cum": 3699
+  },
+  {
+   "date": "20260618",
+   "newUsers": 120,
+   "activeUsers": 135,
+   "cum": 3819
+  },
+  {
+   "date": "20260619",
+   "newUsers": 108,
+   "activeUsers": 121,
+   "cum": 3927
+  },
+  {
+   "date": "20260620",
+   "newUsers": 41,
+   "activeUsers": 45,
+   "cum": 3968
+  },
+  {
+   "date": "20260621",
+   "newUsers": 49,
+   "activeUsers": 51,
+   "cum": 4017
+  },
+  {
+   "date": "20260622",
+   "newUsers": 116,
+   "activeUsers": 127,
+   "cum": 4133
+  },
+  {
+   "date": "20260623",
+   "newUsers": 138,
+   "activeUsers": 148,
+   "cum": 4271
+  },
+  {
+   "date": "20260624",
+   "newUsers": 114,
+   "activeUsers": 126,
+   "cum": 4385
+  },
+  {
+   "date": "20260625",
+   "newUsers": 147,
+   "activeUsers": 162,
+   "cum": 4532
+  },
+  {
+   "date": "20260626",
+   "newUsers": 123,
+   "activeUsers": 140,
+   "cum": 4655
+  },
+  {
+   "date": "20260627",
+   "newUsers": 63,
+   "activeUsers": 68,
+   "cum": 4718
+  },
+  {
+   "date": "20260628",
+   "newUsers": 49,
+   "activeUsers": 59,
+   "cum": 4767
+  },
+  {
+   "date": "20260629",
+   "newUsers": 167,
+   "activeUsers": 186,
+   "cum": 4934
+  },
+  {
+   "date": "20260630",
+   "newUsers": 143,
+   "activeUsers": 165,
+   "cum": 5077
+  },
+  {
+   "date": "20260701",
+   "newUsers": 190,
+   "activeUsers": 208,
+   "cum": 5267
+  },
+  {
+   "date": "20260702",
+   "newUsers": 185,
+   "activeUsers": 203,
+   "cum": 5452
+  },
+  {
+   "date": "20260703",
+   "newUsers": 131,
+   "activeUsers": 152,
+   "cum": 5583
+  },
+  {
+   "date": "20260704",
+   "newUsers": 116,
+   "activeUsers": 125,
+   "cum": 5699
+  },
+  {
+   "date": "20260705",
+   "newUsers": 136,
+   "activeUsers": 152,
+   "cum": 5835
+  },
+  {
+   "date": "20260706",
+   "newUsers": 184,
+   "activeUsers": 212,
+   "cum": 6019
+  },
+  {
+   "date": "20260707",
+   "newUsers": 107,
+   "activeUsers": 127,
+   "cum": 6126
+  },
+  {
+   "date": "20260708",
+   "newUsers": 144,
+   "activeUsers": 172,
+   "cum": 6270
+  }
+ ],
+ "cumTotal": 6270
+}
