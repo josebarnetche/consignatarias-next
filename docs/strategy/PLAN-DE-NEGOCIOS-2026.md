@@ -14,11 +14,11 @@ Los dos planes originales identifican **los mismos dos motores** (B2B consignata
 
 - **Motor 1 — cuña de caja (meses 0–12): PRO Consignataria.** Es lo único **cobrable en 90 días con el producto que ya existe** (perfil verificado + remates destacados + distribución + tracking de leads + reporte). Su universo es chico y su techo es bajo, pero genera caja, relaciones sectoriales y —clave— **el dato de resultados de remate** que alimenta el moat.
 - **Motor 2 — el verdadero prize (meses 6–36): capa de datos e índice de referencia.** API/MCP + serie histórica normalizada en USD + patrocinio de índices/reportes. Alto margen, defensible, ciclo de venta largo, WTP institucional **no validada**. Es donde está el techo real y el moat.
-- **La regla que los une:** **el Motor 1 financia y alimenta al Motor 2.** PRO Consignataria no es el destino; es la cuña que paga la construcción de la posición de "precio de referencia del ganado argentino" (la tesis de `POSITIONING-THESIS.md`, comparable CEPEA/B3). Si se confunde la cuña con el destino, el negocio se queda en su techo bajo (~USD 15–30k ARR de PRO sola).
+- **La regla que los une:** **el Motor 1 financia y alimenta al Motor 2.** PRO Consignataria no es el destino; es la cuña que paga la construcción de la posición de "precio de referencia del ganado argentino" (la tesis de `POSITIONING-THESIS.md`, comparable CEPEA/B3). Si se confunde la cuña con el destino, el negocio se queda en el techo acotado de PRO sola (~USD 13k ARR en el conservador de ~35 casas; hasta ~USD 40–80k en base/expansivo — chico en todos los casos frente al prize institucional).
 
-**Recomendación inequívoca (desarrollada en §22):** consignatarias.com.ar debe ser **la infraestructura neutral de información y datos del mercado ganadero argentino, con el índice de referencia como activo central** — productor gratis (audiencia + autoridad + dato de comportamiento), consignatarias pagando por alcance medible (cuña), empresas e instituciones pagando por datos/API/licencias (prize). **NO** marketplace transaccional, **NO** SaaS/ERP completo de gestión, **NO** terminal paga al productor, **NO** comparador con ranking agresivo, **NO** vivir de publicidad programática.
+**Recomendación inequívoca (desarrollada en §24):** consignatarias.com.ar debe ser **la infraestructura neutral de información y datos del mercado ganadero argentino, con el índice de referencia como activo central** — productor gratis (audiencia + autoridad + dato de comportamiento), consignatarias pagando por alcance medible (cuña), empresas e instituciones pagando por datos/API/licencias (prize). **NO** marketplace transaccional, **NO** SaaS/ERP completo de gestión, **NO** terminal paga al productor, **NO** comparador con ranking agresivo, **NO** vivir de publicidad programática.
 
-**Techo realista.** Es un **negocio de información sectorial de alto margen y nicho**, no venture-scale. SOM a 3 años en Argentina: escenario **base ~USD 140k ARR / expansivo ~USD 370k ARR** (§20), con optionalidad de escala (otras especies/países, ser LA fuente citada por IA) solo si hay PMF argentino demostrado.
+**Techo realista.** Es un **negocio de información sectorial de alto margen y nicho**, no venture-scale. SOM a 3 años en Argentina (a TC ARS 1.450/USD, §19): escenario **base ~ARS 142M ≈ USD 98k ARR / expansivo ~ARS 370M ≈ USD 255k ARR** (§19), con optionalidad de escala (otras especies/países, ser LA fuente citada por IA) solo si hay PMF argentino demostrado.
 
 ---
 
@@ -31,7 +31,7 @@ consignatarias.com.ar es hoy un **activo de audiencia y autoridad sin motor de i
 - **735 remates** indexados; **283 programados** desde hoy; **166 con cabezas estimadas** (suma 535.547 cab) — cobertura parcial (`remates.json`).
 - **1.102 frigoríficos** en el directorio (`frigorificos.json`).
 - **INMAG $4.141,85/kg vivo** (fuente MAG) y **índice arrendamiento $4.198/kg** (`market-prices.json`).
-- **Tráfico:** ~3.439 usuarios GA4 (30d) / ~1.075 (7d); **GSC 28d: ~890 clics/sem, ~2.595 clics acumulados**, posición media ~6,2. Queries líderes: "precio novillo para arrendamiento hoy", "índice novillo arrendamiento", "inmag". **El hub de arrendamiento concentra el 44% de todos los clics.**
+- **Tráfico:** ~3.439 usuarios GA4 (30d) / ~1.075 (7d); **GSC 28d: ~2.595 clics acumulados, posición media ~6,5**; última semana (7d): ~913 clics, posición ~6,3. Queries líderes: "precio novillo para arrendamiento hoy", "índice novillo arrendamiento", "inmag". **El hub de arrendamiento concentra el 44% de todos los clics.**
 
 **La tesis central:** el negocio NO está en el productor como pagador (WTP nula, precio spot gratis en el MAG/Agrofy) ni exclusivamente en las consignatarias (universo chico, frecuencia baja). El productor es la **audiencia** que da distribución y autoridad. La consignataria es la **cuña de caja**. El dinero de largo plazo y el moat están en el **dato institucional**: quien construye modelos de precio/riesgo/valuación y —cada vez más— los agentes de IA que necesitan una fuente estructurada y citable. El activo defendible no es el calendario scrapeado (replicable, caro) sino **la serie histórica normalizada + los resultados de remate verificados**.
 
@@ -74,9 +74,9 @@ Evaluado por frecuencia, importancia de la decisión, WTP, costo operativo y dif
 
 **Concentración (el dato que manda para segmentar):** **67% de los productores (<100 cab) posee el 10% del stock; el 4% (>1.000 cab) concentra el 49%** (SAGyP 2024). Sistemas: cría 66% UP/56% stock; ciclo completo 16%/18%; invernada 14%/16%; feedlot 1%/3% (~1.100 estab). Geografía: Bs. As. 37,6%; ~65% en 4 provincias pampeanas; NEA 16% (creciendo).
 
-**Comercialización — el dato más importante (y su límite):** última foto oficial (ex-ONCCA 2010): **venta directa ~80%, mercado concentrador ~12%, remate feria ~7,6%**; la pantalla no figura desagregada. Tendencia posterior: **más directo, menos feria/concentrador** (evidencia académica regional UNS: venta directa sin intermediario pasó de 25% a 45% entre 2007 y 2020). Volúmenes duros: **MAG Cañuelas 1,20 M cab (2024) / 1,11 M (2025) = ~8% de la faena** (45 firmas consignatarias); **ROSGAN >5 M acumulado, ~400–500k/año, invernada** (11 firmas socias). **Comisión ~3% + 1% garantía al vendedor** (o 5%+imp según otra fuente), 4% comprador; **costo total de venta: directo ~4,5–7,9%, concentrador ~9,3–14%**. Estacionalidad: zafra de terneros en otoño (**mar–may**).
+**Comercialización — el dato más importante (y su límite):** última foto oficial (ex-ONCCA 2010): **venta directa ~80%, mercado concentrador ~12%, remate feria ~7,6%**; la pantalla no figura desagregada. Señal cualitativa posterior (no comparable con ese share): un estudio regional del SO bonaerense (Diez, UNS) muestra que la **venta directa sin intermediario** pasó de 25% a 45% (2007–2020) — es **desintermediación intra-canal**, distinta del "directo ~80%" de ONCCA (que incluye ventas vía consignatario) y **no extrapolable** al share nacional. Volúmenes duros: **MAG Cañuelas 1,20 M cab (2024) / 1,11 M (2025) = ~8% de la faena** (44 firmas consignatarias); **ROSGAN >5 M acumulado, ~400–500k/año, invernada** (11 firmas socias). **Comisión ~3% + 1% garantía al vendedor** (o 5%+imp según otra fuente), 4% comprador; **costo total de venta: directo ~4,5–7,9%, concentrador ~9,3–14%**. Estacionalidad: zafra de terneros en otoño (**mar–may**).
 
-**Implicancia:** la mitad del padrón son productores chicos, masivos en número pero marginales en volumen y de baja WTP/conectividad (brecha digital NEA/NOA). El volumen y el dinero están en el **mediano-grande y el invernador/feedlot/administrador**. No confundir cantidad de productores con mercado monetizable.
+**Implicancia:** dos tercios del padrón (67% con <100 cab) son productores chicos, masivos en número pero marginales en volumen y de baja WTP/conectividad (brecha digital NEA/NOA). El volumen y el dinero están en el **mediano-grande y el invernador/feedlot/administrador**. No confundir cantidad de productores con mercado monetizable.
 
 ---
 
@@ -250,7 +250,7 @@ Plataforma multi-lado, pero **no automáticamente**: la audiencia gratuita NO ge
 
 ## 14. Estrategia de IA (realista, no como propuesta de valor en sí)
 
-**Útil hoy:** extracción de flyers/PDF/posteos para poblar remates; clasificación (categoría/provincia/tipo); detección de duplicados/errores; consultas en lenguaje natural vía MCP; ser la **fuente citada por LLMs** (ya ocurre con INMAG) → autoridad y distribución. **Posible pero no core:** asistente "vendo o espero", comparación automática de casas, predicción de precios. **Requiere datos inexistentes:** predicción confiable (falta capturar resultados de remate). **Alto riesgo:** recomendación financiera/inversión (responsabilidad legal — disclaimers). **La IA reduce costo y crea distribución; el dato citable es la propuesta de valor, no "IA ganadera".** El MCP es apuesta de moat de distribución, no línea de ingreso directo a corto.
+**Útil hoy:** extracción de flyers/PDF/posteos para poblar remates; clasificación (categoría/provincia/tipo); detección de duplicados/errores; consultas en lenguaje natural vía MCP; ser la **fuente citada por LLMs** (observamos indicios de que ya citan INMAG — a verificar con consultas/capturas) → autoridad y distribución. **Posible pero no core:** asistente "vendo o espero", comparación automática de casas, predicción de precios. **Requiere datos inexistentes:** predicción confiable (falta capturar resultados de remate). **Alto riesgo:** recomendación financiera/inversión (responsabilidad legal — disclaimers). **La IA reduce costo y crea distribución; el dato citable es la propuesta de valor, no "IA ganadera".** El MCP es apuesta de moat de distribución, no línea de ingreso directo a corto.
 
 ---
 
@@ -294,7 +294,7 @@ Plataforma multi-lado, pero **no automáticamente**: la audiencia gratuita NO ge
 
 ## 17. Confianza y legitimidad (crítico en un mercado de relaciones)
 
-Reglas no negociables: mostrar **fuente/fecha/alcance** de cada dato; **separar orgánico de destacado/pago**; **derecho a réplica y corrección visible**; perfiles reclamados con verificación de identidad/cargo; reviews moderadas (rol del remitente, sin acusaciones no verificables); no publicar "mejor consignataria" sin metodología y resultados; **diferenciar precio observado / estimado / resultado real**; privacidad de leads/IPs/consultas; **consejo asesor sectorial** (3 consignatarias regionales, 2 productores, 1 economista ganadero, 1 abogado/compliance — legitima el índice, movimiento CEPEA/academia).
+Reglas no negociables: mostrar **fuente/fecha/alcance** de cada dato; **separar orgánico de destacado/pago**; **derecho a réplica y corrección visible**; perfiles reclamados con verificación de identidad/cargo; reviews moderadas (rol del remitente, sin acusaciones no verificables); no publicar "mejor consignataria" sin metodología y resultados; **diferenciar precio observado / estimado / resultado real**; privacidad de leads/IPs/consultas; **consejo asesor sectorial + académico** (3 consignatarias regionales, 2 productores, 1 economista ganadero, 1 abogado/compliance, y **1 académico agro co-validando la metodología del índice —UNS/FCV-UBA—**: es la pieza CEPEA-grade, el índice que una universidad co-firma es el que un banco y un regulador referencian). *Hito explícito de Horizonte 1 (0–12m): co-validación/co-publicación académica de la metodología (contactar Scoponi/UNS + FCV-UBA), en línea con `POSITIONING-THESIS.md`.*
 
 **Cómo no ser percibido como amenaza:** vender *"alcance y confianza verificable"*, no *"te vamos a rankear"*. La comparación empieza por hechos (actividad, zonas, tipos de remate, condiciones declaradas, fuentes); el score reputacional, si existe, llega tarde y con explicación. Mensaje a las casas: *"te traemos al productor en su momento de decisión y le damos una referencia que legitima tu operación; no te comparamos ni te reemplazamos."*
 
@@ -304,19 +304,19 @@ Reglas no negociables: mostrar **fuente/fecha/alcance** de cada dato; **separar 
 
 **Verificado/interno:** 104 perfiles; 735 remates (283 futuros); 166 con cabezas (535.547); ~500 suscriptores newsletter; ~3.439 usuarios/30d.
 
-**Supuestos de mercado (a validar):** consignatarias/operadores comercialmente relevantes alcanzables **250–400** (⚠️ el MAG tiene 45 firmas; el número nacional no es público — pedir padrón SIOCAL); casas dispuestas a pagar promoción medible en 36m **35–150** según escenario; clientes API/enterprise potenciales en Argentina **20–80** (agtech, medios, consultoras, bancos, aseguradoras, frigoríficos, apps); sponsors **5–25** marcas con presupuesto sectorial.
+**Supuestos de mercado (a validar):** consignatarias/operadores comercialmente relevantes alcanzables **250–400** (⚠️ el MAG tiene 44 firmas; el número nacional no es público — pedir padrón SIOCAL); casas dispuestas a pagar promoción medible en 36m **35–150** según escenario; clientes API/enterprise potenciales en Argentina **20–80** (agtech, medios, consultoras, bancos, aseguradoras, frigoríficos, apps); sponsors **5–25** marcas con presupuesto sectorial.
 
-**Advertencia de escala (la que ata todo):** con un universo de ~250–400 consignatarias, **PRO Consignataria sola tiene techo bajo** (~USD 15–30k ARR). Para pasar de ahí, el driver **no** son más PRO sino **contratos API/datos institucionales de ticket alto (Growth/Scale) + licencias de serie histórica + sponsors**. El negocio es 80% función del **ticket y número de cuentas institucionales**, no de las consignatarias.
+**Advertencia de escala (la que ata todo):** con un universo de ~250–400 consignatarias, **PRO Consignataria sola tiene techo acotado**: rinde apenas **~USD 13k ARR** en el escenario realista de ~35 casas pagas, y aun en base/expansivo (85–150 casas × ARS 45.000–65.000/mes, TC 1.450) solo **~USD 40–80k ARR** — una fracción del prize institucional (~USD 255k del expansivo). Para pasar de ahí, el driver **no** son más PRO sino **contratos API/datos institucionales de ticket alto (Growth/Scale) + licencias de serie histórica + sponsors**. El negocio es 80% función del **ticket y número de cuentas institucionales**, no de las consignatarias.
 
 ---
 
 ## 19. Modelo financiero mensual, 36 meses (fórmulas + escenarios + sensibilidad)
 
-**Supuestos (explícitos, en USD reales para no fabricar precisión inflacionaria; cobros pueden ser ARS ajustados):** PRO sube de USD 45 a USD 65 equivalente; API incluye Starter/Growth y un Scale chico desde mes ~20; sponsors arrancan con audiencia probada; costos = desarrollo + datos + soporte + ventas + marketing + editorial + legal + admin + viajes; modelo **lean/founder-led** (sin equipo grande). Break-even base en **~mes 33**.
+**Supuestos y unidad (importante):** el modelo está expresado en **miles de ARS (k ARS)** — es la unidad interna consistente (ej. 3 PRO × ARS 45.000 = **135** k ARS). *Corrección vs. el insumo: éste rotulaba estas cifras como "USD" a un **TC implícito ≈ 1.000** (1 USD = 1.000 ARS), lo que inflaba toda la lectura en USD ~45%.* **TC de referencia = ARS 1.450/USD** (consistente con el índice novillo de §3: ~$3.565/kg ÷ USD 2,45). Para leer en **USD reales, dividir las cifras k ARS por 1,45**. Supuestos: PRO de ARS 45.000 a ~65.000/mes (§12 apunta a 75.000–120.000, más ambicioso); API Starter/Growth + un Scale chico desde mes ~20; sponsors con audiencia probada; costos = desarrollo + datos + soporte + ventas + marketing + editorial + legal + admin + viajes (mayormente ARS-denominados); modelo **lean/founder-led**. Como ingresos y costos están en la misma unidad, el **break-even (~mes 33) no cambia** con el TC; lo que cambia es su expresión en USD.
 
-**Trayectoria base (hitos):**
+**Trayectoria base (cifras en k ARS; USD ≈ ÷1,45):**
 
-| Mes | Consig. pagas | API eq. | Ingresos USD | Costos USD | Neto USD |
+| Mes | Consig. pagas | API eq. | Ingresos (k ARS) | Costos (k ARS) | Neto (k ARS) |
 |---:|---:|---|---:|---:|---:|
 | 3 | 3 | 0 | 135 | 4.500 | −4.365 |
 | 6 | 10 | 2 Starter | 548 | 5.500 | −4.952 |
@@ -327,11 +327,13 @@ Reglas no negociables: mostrar **fuente/fecha/alcance** de cada dato; **separar 
 | **33** | **78** | **11 Starter + 5 Growth + 1 Scale** | **10.444** | **10.300** | **+144 ← break-even** |
 | 36 | 85 | 12 Starter + 5 Growth + 1 Scale | 11.808 | 10.500 | +1.308 |
 
-**Escenarios (MRR mes 36):** Conservador **~USD 3.575** (35 PRO + poco API → no alcanza escala, requiere costos muy bajos o pivot) · Base **~USD 11.808** (ARR run-rate ~**USD 142k**, break-even ~mes 33) · Expansivo **~USD 30.800** (ARR ~**USD 370k**; 150 PRO + API fuerte + sponsors → rentable y financiable).
+**Capital a fondear (la cifra contra la que decide un board):** el flujo negativo se **acumula** hasta el break-even; el pozo de caja toca su mínimo cerca del **mes 32 en ~ARS 110M (≈ USD 76k)** — ese es el **capital total a fondear** en el escenario base. **Conservador:** no alcanza break-even a 36m → el pozo no cierra sin recortar costos o pivotar (fondeo >ARS 130M y creciente). **Expansivo:** break-even anticipado, pico de caja menor (~ARS 90–100M ≈ USD 62–69k).
 
-**Métricas objetivo (base):** MRR m12/24/36 = USD 2.0k/7.4k/11.8k; margen bruto 75→85%; CAC PRO USD 100–350 / API USD 500–4.000; churn PRO 2–7% / API 1–5%; payback PRO 3–6m / API 4–12m; **costo de dato por cliente → marginal** (clave del margen).
+**Escenarios (MRR mes 36):** Conservador **~ARS 3,6M ≈ USD 2.465** (35 PRO + poco API → no alcanza escala, requiere costos muy bajos o pivot) · Base **~ARS 11,8M ≈ USD 8.150** (ARR run-rate ~**ARS 142M ≈ USD 98k**, break-even ~mes 33) · Expansivo **~ARS 30,8M ≈ USD 21.200** (ARR ~**ARS 370M ≈ USD 255k**; 150 PRO + API fuerte + sponsors → rentable y financiable).
 
-**Sensibilidad (la palanca dominante):** si PRO queda en USD 35 y no sube → base pierde ~USD 2.550/mes al m36. Si no se cierran 3 Growth o 1 Scale → el m36 cae bajo break-even. Si la audiencia no supera ~10.000 usuarios/mes segmentados → el patrocinio es accesorio, no motor. **Si no se incorporan resultados de remate → la API queda expuesta a sustitución por scraping de fuentes públicas.** ⚠️ Además: llegar a **85 consignatarias pagas es agresivo** contra un universo de ~250–400 — es el supuesto más frágil del modelo; validar el padrón SIOCAL y la conversión real en los pilotos.
+**Métricas objetivo (base):** MRR m12/24/36 = ARS 2,0M/7,4M/11,8M (USD ~1,4k/5,1k/8,1k); margen bruto 75→85%; CAC PRO ~ARS 145–500k / API ~ARS 0,7–5,8M (órdenes de magnitud); churn PRO 2–7% / API 1–5%; payback PRO 3–6m / API 4–12m; **costo de dato por cliente → marginal** (clave del margen).
+
+**Sensibilidad (la palanca dominante):** si PRO queda en ARS 35.000 y no sube → base pierde ~ARS 2,5M/mes al m36. Si no se cierran 3 Growth o 1 Scale → el m36 cae bajo break-even. Si la audiencia no supera ~10.000 usuarios/mes segmentados → el patrocinio es accesorio, no motor. **Si no se incorporan resultados de remate → la API queda expuesta a sustitución por scraping de fuentes públicas.** ⚠️ Además: llegar a **85 consignatarias pagas es agresivo** contra un universo de ~250–400 — es el supuesto más frágil del modelo; validar el padrón SIOCAL y la conversión real en los pilotos.
 
 ---
 
@@ -347,6 +349,8 @@ Reglas no negociables: mostrar **fuente/fecha/alcance** de cada dato; **separar 
 | Ciclo de venta API largo | Alta | Medio | Demos sin cierre | Starter técnico + casos + caja puente PRO |
 | Conflicto por rankings | Media | Alto | Quejas/pedidos de baja | Sin ranking visible, réplica, metodología |
 | Falta de resultados de remate | **Alta** | Alto | No hay comparación real | Producto de carga/acta de cierre con incentivo |
+| **Datos incompletos/desactualizados** | **Alta** | Alto | Reclamos, remates duplicados (hoy 166/735 con cabezas) | SLA interno de datos, fuentes con fecha visible, corrección fácil |
+| **Resistencia cultural del sector** | **Alta** | Medio | No cargan claims, baja respuesta | Vender como complemento (no reemplazo), apoyarse en referentes |
 | Responsabilidad por recomendaciones | Media | Alto | Uso de "vendo ahora" como consejo | Disclaimer, rangos, no asesoramiento financiero |
 | Baja frecuencia de uso del productor | **Alta** | Medio | Retención mensual baja | Alertas, arrendamiento (estacional-recurrente), digest |
 | Competidor institucional (cámara/media/ROSGAN) | Media | Alto | Lanzan índice/directorio rival | Moat de histórico + citación IA + ser primero |
@@ -361,7 +365,7 @@ Reglas no negociables: mostrar **fuente/fecha/alcance** de cada dato; **separar 
 
 **Muestra mínima:** 20 productores (cría, invernada, CC, feedlot, cabañas, chicos, medianos, empresas, NEA/pampeana/extrapampeana); 15 consignatarias (nacionales, regionales, cooperativas, locales, digitalizadas y manuales); 10 otros (compradores, frigoríficos, bancos, aseguradoras, sociedades rurales, veterinarios, CREA, media).
 
-**Productor (última operación real):** "Contame tu última venta: categoría, canal, casa, fecha, plazo, por qué ese canal / qué alternativas descartaste / cómo supiste si el precio fue bueno / qué gasto te sorprendió en la liquidación / la última vez que buscaste precio online, qué hiciste después / qué información NO le darías a una plataforma / qué presupuesto ya pagás (asesor, software, informe, grupo, publicidad, comisión) / la última vez que fijaste un arrendamiento, cómo calculaste el canon."
+**Productor (última operación real):** "Contame tu última venta: categoría, canal, casa, fecha, plazo, por qué ese canal / qué alternativas descartaste / cómo supiste si el precio fue bueno / qué gasto te sorprendió en la liquidación / la última vez que buscaste precio online, qué hiciste después / qué información NO le darías a una plataforma / cuál fue tu último error comercial y cuánto costó / qué tendría que pasar para consultar una consignataria nueva / qué presupuesto ya pagás (asesor, software, informe, grupo, publicidad, comisión) / la última vez que fijaste un arrendamiento, cómo calculaste el canon."
 
 **Consignataria:** "Último remate: cómo lo difundiste, cuánto costó, qué funcionó / cómo captás productores nuevos / dónde perdés tiempo cargando datos / consultas por WhatsApp: cómo las seguís / qué NO querés publicar / cómo medís si un remate tuvo buena convocatoria / cuánto gastás/mes en flyers/redes/medios/radio/web/sistemas / qué pagarías si trae consultas medibles / qué te daría miedo de una comparación pública."
 
@@ -379,7 +383,7 @@ Reglas no negociables: mostrar **fuente/fecha/alcance** de cada dato; **separar 
 
 **Meses 4–12 — Repetibilidad + moat de datos.** Producto: PRO v2 (onboarding automatizado) + API Starter/Growth empaquetada + reporte patrocinable; empezar a capturar resultados de remate. Cliente: ~25 consignatarias, ~5 API, 1 sponsor. KPI: MRR ~USD 2.000 eq., churn <6%, remates >90% frescos, primeros resultados en la serie. **Avanzar si** hay PMF en al menos una línea (retención + expansión).
 
-**Meses 13–36 — Escala nacional e institucional.** Producto: resultados de remate + históricos + API/licencias + reportes + CRM liviano + consejo asesor. Cliente: ~85 consignatarias, ~18 API, sponsors. KPI: ARR base ~USD 142k (expansivo ~370k), break-even ~mes 33, 40% de remates con resultados, 3 clientes institucionales, citación IA dominante. **Servicios financieros/transaccionales solo si fueron validados** (datos de resultados + reputación + partner regulado). **No avanzar si** el dato propio no supera a las fuentes públicas.
+**Meses 13–36 — Escala nacional e institucional.** Producto: resultados de remate + históricos + API/licencias + reportes + CRM liviano + consejo asesor. Cliente: ~85 consignatarias, ~18 API, sponsors. KPI: ARR base ~ARS 142M ≈ USD 98k (expansivo ~ARS 370M ≈ USD 255k, TC 1.450), break-even ~mes 33, 40% de remates con resultados, 3 clientes institucionales, citación IA dominante. **Servicios financieros/transaccionales solo si fueron validados** (datos de resultados + reputación + partner regulado). **No avanzar si** el dato propio no supera a las fuentes públicas.
 
 ---
 
