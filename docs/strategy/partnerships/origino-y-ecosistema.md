@@ -14,23 +14,26 @@ consignatarias.com.ar es la **capa de datos-hub**; los partners complementarios 
 
 ## 1) Nota de outreach a Origino (LISTA — enviar con OK de José)
 
-**Para:** info@origino.io · **Cc/att:** —
-**Asunto:** consignatarias.com.ar + Origino: una integración que suma a los dos
+**Contexto (clave):** NO es un primer contacto. José ya había planteado hace un tiempo una **alianza Memola Medios SAS ↔ Origino para difundir la tokenización de RWA en el NEA**. La nota RETOMA esa idea, ahora con una plataforma concreta (consignatarias.com.ar / Mi Ganado) sobre la mesa.
+**⚠️ José: confirmá/ajustá** el saludo (¿fue a Diego Heinrich / Nicolás Balestrini directo?) y cualquier detalle de aquella conversación — yo no sé la historia exacta.
 
-> Hola, equipo de Origino:
->
-> Les escribo desde consignatarias.com.ar, el portal de datos del mercado ganadero argentino (índice del novillo INMAG, índice de arrendamiento, calendario nacional de remates y directorio del sector; acceso libre, con API y servidor MCP abiertos). Seguimos con admiración lo que hacen con la trazabilidad y la tokenización por animal: son de los que están construyendo la capa de identidad del ganado argentino que al sector le faltaba.
->
-> Más que pedirles algo, queríamos ponernos a disposición y compartir una idea. Tenemos una sección, Mi Ganado, donde el productor carga su hacienda y ve su valor actualizado al índice cada día. Son, justamente, productores en el momento en que están pensando su rodeo como activo — el público ideal para dar el paso a certificar y trazar sus animales con ustedes.
->
-> ¿Les interesaría explorar una integración? Puede ser tan simple como un camino desde Mi Ganado hacia Origino, o algo más profundo aprovechando que los dos trabajamos con datos abiertos y API. Nos entusiasma que dos proyectos que están digitalizando el mismo mercado, desde ángulos complementarios, se potencien.
->
-> Quedamos a disposición para una charla cuando les quede cómodo.
->
-> Saludos,
-> José Barnetche — consignatarias.com.ar (Memola Medios SAS) — agro@memola.com.ar
+**Para:** info@origino.io (o el contacto directo con quien lo hablaste) · **Reply-To:** agro@memola.com.ar
+**Asunto:** Retomamos la alianza Memola × Origino: ahora con la plataforma para difundir RWA en el NEA
 
-*(Adjuntar: nada de prensa. Opcional, un one-liner de qué es Mi Ganado. Enviar desde el mismo pipeline SMTP, Reply-To agro@.)*
+> Hola [Diego / Nicolás / equipo de Origino]:
+>
+> Hace un tiempo les había planteado la idea de una alianza entre Memola Medios SAS y Origino para difundir la tokenización de RWA en el NEA. La sigo teniendo muy presente — y ahora tenemos la pieza que le faltaba: una plataforma concreta.
+>
+> Desde Memola construimos consignatarias.com.ar, el portal de datos del mercado ganadero argentino (índice del novillo INMAG, índice de arrendamiento, calendario de remates y directorio, con API y servidor MCP abiertos). Tiene una sección, Mi Ganado, donde el productor carga su hacienda y ve su valor actualizado al índice cada día: es decir, productores del NEA y de todo el país justo en el momento en que piensan su rodeo como activo. El público y el momento exactos para dar el paso a certificar, trazar y tokenizar con ustedes.
+>
+> Retomo entonces aquella idea, ahora con algo tangible: podríamos integrar Mi Ganado con Origino —un camino directo del productor hacia la trazabilidad/tokenización— y difundir juntos el RWA ganadero en el NEA, cada uno desde lo suyo: ustedes, la infraestructura de identidad del animal; nosotros, la audiencia, el dato y la distribución.
+>
+> ¿Coordinamos una charla para bajarla a algo concreto?
+>
+> Un abrazo,
+> José Barnetche — Memola Medios SAS · consignatarias.com.ar · agro@memola.com.ar
+
+*(Sin adjuntos de prensa; es una nota de relación. Enviar desde el pipeline SMTP, Reply-To agro@.)*
 
 ---
 
