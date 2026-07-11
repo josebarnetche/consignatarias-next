@@ -1,9 +1,13 @@
 # Roadmap
 
-**Current:** v1.100.0 (2026-07-04) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
-**Strategic frame:** [docs/strategy/POSITIONING-THESIS.md](docs/strategy/POSITIONING-THESIS.md) — own the
-category **"el precio de referencia del ganado argentino"** via three pillars (Index family ·
-Institutional access · Online-auction flywheel) across three horizons.
+**Current:** v1.138.0 (2026-07-11) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
+**Strategic frame:** [docs/strategy/PLAN-DE-NEGOCIOS-2026.md](docs/strategy/PLAN-DE-NEGOCIOS-2026.md)
+(plan de negocios v2, 36 meses — el marco canónico) + [docs/strategy/POSITIONING-THESIS.md](docs/strategy/POSITIONING-THESIS.md)
+(tesis de categoría). **Dos motores de ingreso secuenciados** sobre la capa de datos libre y citable:
+**Motor 1 — PRO Consignataria** (cuña de caja, meses 0–12) **financia y alimenta** →
+**Motor 2 — capa de datos e índice institucional** (API/MCP, el *prize* y el moat, meses 6–36).
+Techo realista (SOM 3 años, TC ARS 1.450/USD): base ~ARS 142M ≈ **USD 98k ARR** / expansivo ~ARS 370M ≈
+**USD 255k ARR**. Negocio de información sectorial de alto margen y nicho, no venture-scale.
 **Versioning:** [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (v1.0.0) is the
 MAJOR boundary, so the product stays on 1.x.
 
@@ -12,6 +16,53 @@ MAJOR boundary, so the product stays on 1.x.
 > first dollar is **unblocked** (email-first checkout live for both B2C and Enterprise, verified to
 > reach a real Rebill payment link). The remaining gate is a real test payment + the institutional
 > sales motion — not more code.
+
+---
+
+## Estado — v1.101 → v1.138 (2026-07-11) · alineado al plan de negocios
+
+El plan de negocios v2 (fusión, 11-jul) es ahora **el marco canónico** y reencuadra los "3 pilares" en
+**2 motores secuenciados**. Los pilares no desaparecen — se ordenan por quién paga y cuándo:
+
+| Motor | Qué | Quién paga | Ventana | Pilar(es) que lo nutren |
+|---|---|---|---|---|
+| **1 — PRO Consignataria** (la cuña) | Perfil verificado + remates destacados + distribución + tracking + reporte | Casas regionales/coops | **0–12m, cobrable ya** | Flywheel de remates (P3) + directorio |
+| **2 — Datos e índice institucional** (el prize) | API/MCP + serie histórica USD + resultados de remate + licencias/reportes | Agtech, bancos, aseguradoras, feedlots, media, IA | **6–36m, ciclo largo** | Index family (P1) + Institutional access (P2) |
+
+**La regla que los une:** el Motor 1 **financia y alimenta** al Motor 2 (genera caja, relaciones sectoriales
+y —clave— el dato de resultados de remate que es el moat máximo). Confundir la cuña con el destino deja el
+negocio en el techo acotado de PRO sola (~USD 13k ARR en el conservador de ~35 casas).
+
+**Qué shippeó este tramo, mapeado a los motores:**
+- **Motor 1 (PRO Consignataria) — endurecido para venderse.** `/planes` reescrito con PRO como producto #1
+  en lenguaje llano; **activación self-serve** (`/consignatarias/activar`, sin humano en el medio, saca a
+  José del cuello de botella); y el **hardening del audit de 3 sprints** (v1.138): fuente única de plan
+  (`getConsignatariaPlanStatus`, featured=PRO + período válido), reporte PDF pago arreglado, schema de
+  precios en ARS reales, revalidación de `/go`, **gracia hasta fin de mes al cancelar** (Rebill cancela
+  inmediato/terminal, la gracia la implementamos nosotros), videos PRO revividos, `remates/hoy` en hora ART.
+- **Capa de audiencia (Motor 0, gratis) — retención y señal.** Cuenta nudge-first + **economía de coins
+  (karma)**: el productor gana coins usando la terminal y desbloquea el histórico INMAG sin pagar plata;
+  perfil de consignataria v3 branded; tracking plan como fuente de verdad.
+- **Motor 2 (datos/autoridad) — citabilidad.** Swarm GEO/AEO (+50 answer-pages, schema de citabilidad,
+  `llms-full`), widget embebible del índice, y el **claim de IA verificado en vivo** (ChatGPT + Perplexity
+  citan el portal) — la distribución que precede a la venta institucional.
+
+### Roadmap de 4 etapas (del plan §22 — con criterio de avanzar/detener)
+
+| Etapa | Foco | KPI de salida | Avanzar / Detener |
+|---|---|---|---|
+| **Días 1–30** | Validar el pagador inicial | 20 casas contactadas + 3 prospectos institucionales; ≥5 pilotos con compromiso | **Avanzar** si ≥5 casas aceptan piloto · **Detener** si nadie paga y no hay interés institucional |
+| **Días 31–90** | Primer ingreso | **≥7 PRO pagando + 3 testimonios, 1 sponsor, 1 design-partner API; ≥ARS 3M MRR; 60% renueva** | **Avanzar** si hay MRR recurrente + 1 renovación · **Detener** si 0 cierres pagos (WTP falló) |
+| **Meses 4–12** | Repetibilidad + moat de datos | PRO v2 (onboarding auto) + API empaquetada; empezar a capturar resultados de remate; MRR ~USD 2.000 eq., churn <6% | **Avanzar** si hay PMF en ≥1 línea (retención + expansión) |
+| **Meses 13–36** | Escala nacional e institucional | ~85 consignatarias, ~18 API, sponsors; **ARR base ~USD 98k (expansivo ~USD 255k)**, break-even ~mes 33, 3 clientes institucionales, citación IA dominante | Servicios financieros/transaccionales **solo si** validados · **No avanzar** si el dato propio no supera al público |
+
+> **⚠️ Hipótesis que puede invalidar TODO (test explícito a 90 días):** si tras ~50 conversaciones comerciales
+> **menos de 5 consignatarias pagan** el precio piloto **y ningún cliente B2B paga por datos/API**, el mercado
+> monetizable inmediato es demasiado chico → **pivotar a medio/autoridad de bajo costo o a servicios de datos/
+> reportes a medida, NO seguir construyendo SaaS.**
+
+**El cuello sigue siendo comercial, no técnico:** el producto de la cuña (Motor 1) está listo y self-serve; el
+gate es el **primer pago real verificado** (Rebill→webhook→activación) y la **venta founder-led** de los pilotos.
 
 ---
 
@@ -232,6 +283,9 @@ structured measurement of the **71% dark pool** (long arc). RWA / CD+W / tokeniz
 
 ## v2.0.0 Definition (the revenue milestone — still the goal)
 
+> Alineación con el plan de negocios: v2.0.0 = la salida de la etapa **"Meses 4–12"** del roadmap de 4
+> etapas (§22, arriba) — el punto de PMF en ≥1 línea. Las etapas Días 1–30 y 31–90 son los gates previos.
+
 **v2.0.0 = USD 2.000+ MRR across the product lines, sustained 30 days.**
 - [ ] 5+ Enterprise customers paying (Starter/Growth/Scale or a institutional-access) — *1 active prospect already consuming `/api/precios` daily (cattle-software dev); not yet paying*
 - [ ] 1+ PRO Consignataria paying
@@ -335,6 +389,7 @@ sacrifice the transaction** until the reference is unassailable.
 
 ---
 
+*Alineado al plan de negocios v2 (2 motores + roadmap de 4 etapas + hipótesis-kill 90d): 11 July 2026 (v1.138.0). Estado v1.101→v1.138 agregado.*
 *Estado v1.76→v1.100 agregado: 4 July 2026. Roadmap rewritten: 4 June 2026 (v1.30.3), reframed around the positioning thesis.*
 *Prior: 13 May 2026 (v1.13→v1.20 milestone plan, now historical).*
 *Real bottleneck: the first verified dollar + institutional sales motion (owner-led).*
