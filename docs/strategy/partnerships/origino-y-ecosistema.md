@@ -72,7 +72,7 @@ consignatarias.com.ar es la **capa de datos-hub**; los partners complementarios 
 
 > Hola [nombre]:
 >
-> Vengo mirando lo que construyeron con Nera. Que Santander se quedara con la mitad dice bastante del lugar que se ganaron en el financiamiento del agro; llegar a esa escala conectando productores con crédito no es poca cosa.
+> Vengo mirando lo que construyeron con Nera. Financiarse en el campo suele ser un laberinto, y armar un puente que de verdad conecte al productor con el crédito no es poca cosa; ustedes lo llevaron a una escala que pocos alcanzaron.
 >
 > Yo vengo del campo y armé consignatarias.com.ar, un portal de datos del mercado ganadero. Adentro hay una sección, Mi Ganado, donde el productor carga su hacienda y ve su valor actualizado cada día. Es el productor mirando su rodeo como un activo —y, muchas veces, como un respaldo—. Ese es justo el momento en que aparece la pregunta del financiamiento, y es ahí donde nuestros trabajos se cruzan: yo tengo al productor cuando empieza a pensarlo en esos términos; ustedes tienen la vía para que ese respaldo se vuelva capital.
 >
