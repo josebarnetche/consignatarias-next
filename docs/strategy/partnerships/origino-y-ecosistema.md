@@ -83,6 +83,15 @@ consignatarias.com.ar es la **capa de datos-hub**; los partners complementarios 
 > Saludos,
 > José Barnetche · consignatarias.com.ar (Memola Medios SAS) · agro@memola.com.ar
 
+**Canal verificado (11-jul):** Nera NO tiene email público. Contacto: **WhatsApp +54 9 11 4444-6753** (principal) · LinkedIn `nera-agro` · IG/FB `nera.agro`. La versión email de arriba queda para cuando se consiga una dirección; para ahora, usar la versión WhatsApp:
+
+**Versión WhatsApp (mandar desde el teléfono al +54 9 11 4444-6753):**
+> Hola, equipo de Nera. Soy José Barnetche. Vengo mirando lo que construyeron: conectar al productor con el crédito —que suele ser un laberinto— y a esa escala, tiene mucho mérito.
+>
+> Yo vengo del campo y armé consignatarias.com.ar, un portal de datos del mercado ganadero. Tiene una sección, Mi Ganado, donde el productor carga su hacienda y ve su valor al día: es el productor mirando su rodeo como un activo, y muchas veces como un respaldo, justo cuando aparece la pregunta del financiamiento.
+>
+> Creo que hay una integración con sentido ahí —un camino de Mi Ganado a Nera—. No escribo para pedir nada; prefiero proponerla. ¿Les interesa conversarlo? Mi mail es agro@memola.com.ar.
+
 ---
 
 ## 3) Cola de outreach (misma "puesta a disposición", a medida)
