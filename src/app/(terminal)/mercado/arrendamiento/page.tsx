@@ -141,6 +141,10 @@ function FAQSchema() {
       answer: 'El índice novillo arrendamiento es el valor de referencia utilizado para calcular el canon de los contratos de arrendamiento rural en Argentina. Se basa en el precio del novillo en el Mercado Agroganadero de Buenos Aires (INMAG) y permite ajustar el valor del alquiler de campos de manera objetiva y transparente según las condiciones del mercado ganadero.'
     },
     {
+      question: '¿Cuál es el índice novillo arrendamiento mensual?',
+      answer: `Para los contratos de arrendamiento se usa el índice novillo arrendamiento mensual —el promedio del período, no el valor de un solo día— para evitar la volatilidad diaria. El promedio mensual vigente del índice oficial (haciinfo000013) es $${fmt(arr.periodIndex)} por kilo vivo, correspondiente al período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)}. El canon mensual se calcula como kilos de novillo por hectárea × ese promedio mensual × cantidad de hectáreas; el canon anual es ese valor multiplicado por 12.`
+    },
+    {
       question: '¿Cómo se calcula el arrendamiento con el índice novillo?',
       answer: 'El cálculo típico es: Canon mensual = Kilos de novillo pactados × Precio índice novillo × Hectáreas. Por ejemplo, si el contrato establece 4 kg de novillo por hectárea, y el campo tiene 500 ha, con un índice de $4.329/kg, el canon mensual sería aproximadamente $8.658.000. Los contratos suelen estipular un promedio mensual del índice.'
     },
@@ -582,6 +586,10 @@ export default async function ArrendamientoPage() {
               {
                 q: '¿Qué es el índice novillo arrendamiento?',
                 a: 'El índice novillo arrendamiento es el valor de referencia utilizado para calcular el canon de los contratos de arrendamiento rural en Argentina. Se basa en el precio del novillo en el Mercado Agroganadero de Buenos Aires (INMAG) y permite ajustar el valor del alquiler de campos de manera objetiva y transparente según las condiciones del mercado ganadero.'
+              },
+              {
+                q: '¿Cuál es el índice novillo arrendamiento mensual?',
+                a: `Para los contratos de arrendamiento se usa el índice novillo arrendamiento mensual —el promedio del período, no el valor de un solo día— para evitar la volatilidad diaria. El promedio mensual vigente del índice oficial es $${fmt(arr.periodIndex)} por kilo vivo. El canon mensual se calcula como kilos de novillo por hectárea × ese promedio mensual × cantidad de hectáreas; el canon anual es ese valor multiplicado por 12.`
               },
               {
                 q: '¿Cómo se calcula el arrendamiento con el índice novillo?',
