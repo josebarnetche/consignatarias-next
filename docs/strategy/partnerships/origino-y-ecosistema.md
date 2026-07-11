@@ -63,6 +63,28 @@ consignatarias.com.ar es la **capa de datos-hub**; los partners complementarios 
 
 ---
 
+## 2-bis) Nota a Nera — financiación (BORRADOR, revisar)
+
+**Contexto:** sin historia personal previa (a diferencia de Origino). Se escribe desde la **observación honesta**, mismo registro contenido. **⚠️ Canal a resolver:** Nera no expone email público —contacto vía nera-agro.com (form) o LinkedIn—; hay que conseguir un email o mandarlo por ahí. **José: si tenés algún cruce real con ellos, lo meto; si no, va así.**
+
+**Para:** (a resolver — form/LinkedIn/email) · **Reply-To:** agro@memola.com.ar
+**Asunto:** consignatarias.com.ar + Nera: el productor, justo cuando piensa su hacienda como respaldo
+
+> Hola [nombre]:
+>
+> Vengo mirando lo que construyeron con Nera. Que Santander se quedara con la mitad dice bastante del lugar que se ganaron en el financiamiento del agro; llegar a esa escala conectando productores con crédito no es poca cosa.
+>
+> Yo vengo del campo y armé consignatarias.com.ar, un portal de datos del mercado ganadero. Adentro hay una sección, Mi Ganado, donde el productor carga su hacienda y ve su valor actualizado cada día. Es el productor mirando su rodeo como un activo —y, muchas veces, como un respaldo—. Ese es justo el momento en que aparece la pregunta del financiamiento, y es ahí donde nuestros trabajos se cruzan: yo tengo al productor cuando empieza a pensarlo en esos términos; ustedes tienen la vía para que ese respaldo se vuelva capital.
+>
+> No escribo para pedir nada. Escribo porque veo una integración con sentido —un camino desde Mi Ganado hacia Nera para el productor que quiere financiar su hacienda— y prefiero proponerla.
+>
+> Si les interesa, me gustaría conversarlo.
+>
+> Saludos,
+> José Barnetche · consignatarias.com.ar (Memola Medios SAS) · agro@memola.com.ar
+
+---
+
 ## 3) Cola de outreach (misma "puesta a disposición", a medida)
 Orden sugerido: **Origino** (trazabilidad, el más natural) → **Nera** (financiación) → **La Segunda/Sancor** (seguro) → **BitCow** (inversión, el más sensible por neutralidad) → **Allflex/Villanueva** (RFID). Cada uno con su nota propia; ninguno es "publiquen lo nuestro", todos son "integremos / valor mutuo".
 
