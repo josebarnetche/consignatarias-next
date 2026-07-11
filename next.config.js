@@ -18,15 +18,12 @@ const nextConfig = {
   async headers() {
     return [
       {
+        // Universally-safe headers for EVERY path (incl. los widgets embebibles).
         source: '/:path*',
         headers: [
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
           },
           {
             key: 'X-Content-Type-Options',
@@ -43,22 +40,35 @@ const nextConfig = {
             value: 'max-age=63072000; includeSubDomains; preload',
           },
           {
-            // Conservative CSP that does NOT break inline JSON-LD or the
-            // first-party analytics already on the page. It blocks the
-            // high-value injection vectors: framing (clickjacking beyond
-            // X-Frame-Options), <base> hijacking, and plugin/object embeds,
-            // and upgrades any stray http subresource. A full script-src
-            // nonce policy can follow once inline JSON-LD is migrated.
+            // CSP sin las directivas de framing — esas van en el bloque de abajo,
+            // que EXCLUYE /api/widget para dejar los widgets embebibles en sitios
+            // de terceros (motor de backlinks del data-layer). base-uri/object-src/
+            // upgrade son seguros en todos lados, widget incluido.
             key: 'Content-Security-Policy',
             value: [
               // NOTE: intentionally no `default-src` — that would fall through
               // to connect-src/script-src and break the browser Supabase
               // client + Vercel analytics. Only the always-safe directives:
-              "frame-ancestors 'self'",
               "base-uri 'self'",
               "object-src 'none'",
               'upgrade-insecure-requests',
             ].join('; '),
+          },
+        ],
+      },
+      {
+        // Anti-clickjacking (framing) para TODO menos /api/widget/*. Los widgets
+        // (índice, remates) setean sus propios headers de framing permisivos en el
+        // route handler y deben poder embeberse en webs de consignatarias/contadores.
+        source: '/((?!api/widget).*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: "frame-ancestors 'self'",
           },
         ],
       },

@@ -769,6 +769,37 @@ export default async function ArrendamientoPage() {
           </Link>
         </section>
 
+        {/* Embed + citación — activo de backlinks: el índice en vivo para pegar en
+            cualquier web (consignatarias, contadores, blogs rurales). Cada embed es
+            un backlink temático; el dato siempre fresco = incentivo a dejarlo puesto. */}
+        <section className="max-w-6xl mx-auto px-4 pb-12">
+          <div className="border border-terminal-border bg-terminal-panel/40 rounded-2xl p-6">
+            <div className="text-xs text-accent uppercase tracking-wider mb-1">Insertá este índice en tu web</div>
+            <h3 className="text-lg font-semibold text-white mb-2">Índice del novillo para arrendamiento, siempre actualizado</h3>
+            <p className="text-sm text-zinc-400 max-w-2xl mb-4">
+              Pegá este código en tu sitio y mostrá el valor del día — se actualiza solo cada día hábil.
+              Uso libre con atribución. Ideal para consignatarias, estudios contables y medios del agro.
+            </p>
+            <pre className="text-xs text-zinc-300 bg-black/40 border border-terminal-border rounded-lg p-3 overflow-x-auto font-mono">
+{`<iframe src="https://www.consignatarias.com.ar/api/widget/indice"
+        width="340" height="180" style="border:0"
+        title="Índice novillo arrendamiento"></iframe>`}
+            </pre>
+            <p className="text-xs text-zinc-500 mt-3">
+              Versión compacta: agregá <code className="text-zinc-300">?compact=1</code> ·
+              claro: <code className="text-zinc-300">?theme=light</code> ·{' '}
+              <a href="/api/widget/indice" target="_blank" rel="noopener" className="text-accent hover:text-accent-bright transition-colors">
+                ver el widget →
+              </a>
+            </p>
+            <p className="text-xs text-zinc-500 mt-4 pt-3 border-t border-terminal-border">
+              <span className="text-zinc-400 font-medium">Cómo citar:</span> Consignatarias.com.ar —
+              Índice del novillo para arrendamiento (Mercado Agroganadero, haciinfo000013).
+              Recuperado de https://www.consignatarias.com.ar/mercado/arrendamiento
+            </p>
+          </div>
+        </section>
+
         {/* PRO CTA — conversion surface on the #2 traffic page (P1) */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
           <ProUpgradePrompt
