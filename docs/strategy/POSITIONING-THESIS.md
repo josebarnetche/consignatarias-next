@@ -4,7 +4,7 @@
 **Date:** 2026-05-31
 **Owner:** Memola Medios SAS
 **Status:** Board-level strategy. Builds on and sharpens `docs/EL-ORACULO-FRAMEWORK.md`. Does not contradict it.
-**Companion docs:** `geo-audit-2026-05-30/CITATION-AUDIT.md`, `geo-audit-2026-05-30/SEO-OPPORTUNITIES.md`, `ROADMAP.md`.
+**Companion docs:** `PLAN-DE-NEGOCIOS-2026.md` (el plan de negocios cuantificado a 36m que operacionaliza esta tesis — segmentación, TAM/SAM/SOM, monetización, MVP, modelo financiero y recomendación), `geo-audit-2026-05-30/CITATION-AUDIT.md`, `geo-audit-2026-05-30/SEO-OPPORTUNITIES.md`, `ROADMAP.md`.
 
 > **One-line thesis.** consignatarias.com.ar should not position as "the Bloomberg of Argentine cattle." It should position as **the price-discovery layer for the market that has none** — the public, citable reference for the 71% of Argentine hacienda that today trades in the dark. That is the créneau no global comparable occupies, because in every mature market that white space was filled decades ago by an exchange-index partnership. Argentina never built one. The Oráculo's job for the next 36 months is to *be* that index before anyone licenses it into existence.
 
