@@ -22,29 +22,31 @@ const lastUpdate = marketPrices.lastUpdate
 const fmt = (n: number) => n.toLocaleString('es-AR')
 const arrIndexR = Math.round(arr.index)
 
-// Ejemplo numérico reproducible: campo agrícola, 200 kg novillo/ha/año, 100 ha.
-const EJ_KG_HA = 200
+// Ejemplo numérico reproducible: campo ganadero, 5 kg novillo/ha/MES, 100 ha.
+// El arrendamiento rural se pacta en kg de novillo por hectárea POR MES (no por año).
+const EJ_KG_HA_MES = 5
 const EJ_HA = 100
-const ejKgTotal = EJ_KG_HA * EJ_HA // 20.000 kg
-const ejValor = ejKgTotal * arr.index
+const ejKgMes = EJ_KG_HA_MES * EJ_HA // 500 kg de novillo por mes
+const ejCanonMensual = ejKgMes * arr.index
+const ejCanonAnual = ejCanonMensual * 12
 
 // HowTo — el cálculo en 4 pasos, mismo array para el schema y el bloque visible.
 const PASOS = [
   {
-    name: 'Acordar los kilos de novillo por hectárea',
-    text: 'Las partes pactan cuántos kilos de novillo por hectárea y por año paga el arrendatario. El valor depende de la aptitud del campo: un lote agrícola de primera paga más kg/ha que un campo de invernada o de cría.',
+    name: 'Acordar los kilos de novillo por hectárea y por mes',
+    text: 'Las partes pactan cuántos kilos de novillo por hectárea y por mes paga el arrendatario. El valor depende de la aptitud del campo: un lote agrícola de primera paga más kg/ha/mes que un campo de invernada o de cría.',
   },
   {
     name: 'Multiplicar por la superficie',
-    text: 'Se multiplican los kg de novillo por hectárea por la cantidad de hectáreas arrendadas para obtener el total de kilos de novillo del contrato por año.',
+    text: 'Se multiplican los kg de novillo por hectárea por mes por la cantidad de hectáreas arrendadas para obtener el total de kilos de novillo del canon mensual.',
   },
   {
     name: 'Tomar el precio del novillo de referencia a la fecha de pago',
     text: `Se toma el índice o precio del kilo de novillo de referencia vigente a la fecha de cada pago —el índice sugerido para arrendamientos del Mercado Agroganadero, hoy $${fmt(arr.index)}/kg (${arr.date})—, para que el canon siga al valor real de la hacienda.`,
   },
   {
-    name: 'Multiplicar kilos totales por el precio del kilo',
-    text: `Se multiplican los kilos totales de novillo por el precio en pesos del kilo. Ejemplo: ${fmt(ejKgTotal)} kg × $${fmt(arr.index)} = $${fmt(ejValor)} por año.`,
+    name: 'Multiplicar los kilos por el precio del kilo',
+    text: `Se multiplican los kilos de novillo por el precio en pesos del kilo. Ejemplo: ${EJ_KG_HA_MES} kg/ha/mes × ${EJ_HA} ha = ${fmt(ejKgMes)} kg × $${fmt(arr.index)} = $${fmt(ejCanonMensual)} de canon mensual (equivale a $${fmt(ejCanonAnual)} al año, 12 meses).`,
   },
 ]
 
@@ -54,7 +56,7 @@ const FAQ = [
   {
     question: '¿Cuántos kg de novillo por hectárea se pagan de arrendamiento?',
     answer:
-      'Depende de la aptitud del campo y la zona. Como referencia orientativa: un campo agrícola de buena aptitud suele pactarse entre 150 y 350 kg de novillo por hectárea y por año, mientras que un campo ganadero (invernada o cría) va de 40 a 120 kg/ha. Son rangos de mercado; el valor exacto lo acuerdan las partes según la calidad del lote, el acceso, la humedad y el destino productivo.',
+      'El arrendamiento se pacta en kilos de novillo por hectárea POR MES. Como referencia orientativa: un campo agrícola de buena aptitud en zona núcleo suele pactarse entre 8 y 12 kg de novillo por hectárea y por mes, mientras que un campo ganadero (invernada o cría) en zona marginal va de 3 a 6 kg/ha/mes. Son rangos de mercado; el valor exacto lo acuerdan las partes según la calidad del lote, el acceso, la humedad y el destino productivo. El canon anual es ese valor mensual multiplicado por 12.',
   },
   {
     question: '¿Cuánto es el índice de arrendamiento hoy?',
@@ -72,13 +74,13 @@ const TERMINOS = [
   {
     name: 'Canon de arrendamiento',
     description:
-      'Precio que el arrendatario paga al dueño del campo por el uso y goce de la tierra durante el plazo del contrato. En el arrendamiento rural argentino suele pactarse en kilos de novillo por hectárea y por año, y se liquida en pesos multiplicando esos kilos por el precio del kilo de novillo de referencia a la fecha de pago.',
+      'Precio que el arrendatario paga al dueño del campo por el uso y goce de la tierra durante el plazo del contrato. En el arrendamiento rural argentino suele pactarse en kilos de novillo por hectárea y por mes, y se liquida en pesos multiplicando esos kilos por el precio del kilo de novillo de referencia a la fecha de pago. El canon anual es el mensual por 12.',
     url: PAGE_URL,
   },
   {
-    name: 'Kilos de novillo por hectárea (kg novillo/ha)',
+    name: 'Kilos de novillo por hectárea por mes (kg novillo/ha/mes)',
     description:
-      'Unidad de medida del canon de arrendamiento: cantidad de kilos de novillo que se paga por cada hectárea y por año. Al expresar la renta en kilos de hacienda en vez de en pesos, el contrato queda indexado al valor real del ganado y protegido de la inflación.',
+      'Unidad de medida del canon de arrendamiento: cantidad de kilos de novillo que se paga por cada hectárea y por mes. Al expresar la renta en kilos de hacienda en vez de en pesos, el contrato queda indexado al valor real del ganado y protegido de la inflación.',
   },
   {
     name: 'Índice de arrendamiento del Mercado Agroganadero',
@@ -139,7 +141,7 @@ export default function ComoSeCalculaElCanonDeArrendamientoPage() {
       />
       <HowToSchema
         name="Cómo calcular el canon de arrendamiento rural en kilos de novillo"
-        description="Método para calcular el canon de arrendamiento de un campo pactado en kilos de novillo por hectárea y por año."
+        description="Método para calcular el canon de arrendamiento de un campo pactado en kilos de novillo por hectárea y por mes."
         steps={PASOS}
       />
       <DatasetSchema
@@ -165,15 +167,16 @@ export default function ComoSeCalculaElCanonDeArrendamientoPage() {
 
         {/* Answer-first: primera oración = la respuesta citable a la head-query */}
         <p className="speakable-content text-zinc-200 text-base mb-4">
-          El canon de arrendamiento rural se pacta en kilos de novillo por hectárea y por año: se
-          multiplica los kg/ha acordados por el precio del kilo de novillo del índice de referencia,
-          que hoy (<strong>{arr.date}</strong>) es de <strong>${fmt(arrIndexR)}/kg</strong> según el
-          Mercado Agroganadero (haciinfo000013).
+          El canon de arrendamiento rural se pacta en kilos de novillo por hectárea y por mes: se
+          multiplican los kg/ha/mes acordados por el precio del kilo de novillo del índice de
+          referencia, que hoy (<strong>{arr.date}</strong>) es de <strong>${fmt(arrIndexR)}/kg</strong> según el
+          Mercado Agroganadero (haciinfo000013). El canon anual es ese valor mensual por 12.
         </p>
 
         <p className="mb-4">
-          En fórmula: <strong>kg de novillo por hectárea × hectáreas × precio del kilo de novillo =
-          canon anual en pesos</strong>. Los kilos por hectárea los acuerdan las partes según la
+          En fórmula: <strong>kg de novillo por hectárea por mes × hectáreas × precio del kilo de
+          novillo = canon mensual en pesos</strong> (y el anual = mensual × 12). Los kilos por
+          hectárea los acuerdan las partes según la
           aptitud del campo; el precio del kilo de novillo se toma del índice de referencia a la
           fecha de cada pago. Es un índice de referencia del mercado —esta página no fija el precio—:
           cada contrato lo acuerdan el dueño del campo y el arrendatario.
@@ -184,9 +187,9 @@ export default function ComoSeCalculaElCanonDeArrendamientoPage() {
             Ejemplo
           </p>
           <p className="text-zinc-200">
-            Un campo agrícola de <strong>{EJ_KG_HA} kg de novillo/ha/año</strong> sobre{' '}
-            <strong>{EJ_HA} ha</strong> = {fmt(ejKgTotal)} kg × ${fmt(arr.index)} ={' '}
-            <strong>${fmt(ejValor)}</strong> por año.
+            Un campo ganadero de <strong>{EJ_KG_HA_MES} kg de novillo/ha/mes</strong> sobre{' '}
+            <strong>{EJ_HA} ha</strong> = {fmt(ejKgMes)} kg × ${fmt(arr.index)} ={' '}
+            <strong>${fmt(ejCanonMensual)}</strong> de canon mensual (${fmt(ejCanonAnual)} al año).
           </p>
           <p className="text-xxs text-zinc-500 mt-1">
             Precio del kilo de novillo de referencia: ${fmt(arr.index)}/kg (Mercado Agroganadero,{' '}
