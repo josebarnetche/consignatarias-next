@@ -245,6 +245,12 @@ export default async function ElNovilloEnDolaresPage() {
             </Link>{' '}
             cómo se construye el INMAG y a qué dólar se convierte.
           </p>
+          <p>
+            <Link href="/mercado/arrendamiento" className="text-sky-400 hover:text-sky-300 transition-colors">
+              Precio del novillo para arrendamiento →
+            </Link>{' '}
+            el índice sugerido para fijar y ajustar el canon en kg/ha.
+          </p>
         </div>
 
         <p className="text-xxs text-zinc-600 mt-8 leading-relaxed">

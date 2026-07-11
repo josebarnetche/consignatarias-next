@@ -282,6 +282,9 @@ export default function PrecioDelNovilloEnPiePage() {
             <Link href="/mercado/inmag" className="text-accent hover:text-accent-bright transition-colors">
               Índice INMAG →
             </Link>
+            <Link href="/mercado/arrendamiento" className="text-accent hover:text-accent-bright transition-colors">
+              Índice novillo para arrendamiento →
+            </Link>
             <Link href="/mercado/canuelas" className="text-accent hover:text-accent-bright transition-colors">
               Mercado de Cañuelas →
             </Link>

@@ -291,6 +291,9 @@ export default function QueEsLaInvernadaPage() {
           <Link href="/mercado/novillos" className="text-zinc-500 hover:text-accent transition-colors">
             Precio del novillo hoy
           </Link>
+          <Link href="/mercado/arrendamiento" className="text-zinc-500 hover:text-accent transition-colors">
+            Arrendamiento de campos →
+          </Link>
           <Link href="/glosario" className="text-zinc-500 hover:text-accent transition-colors">
             Glosario ganadero
           </Link>

@@ -238,6 +238,9 @@ export default function QueEsLaCriaYRecriaPage() {
           <Link href="/categorias-de-hacienda" className="text-zinc-500 hover:text-accent transition-colors">
             Categorías de hacienda
           </Link>
+          <Link href="/mercado/arrendamiento" className="text-zinc-500 hover:text-accent transition-colors">
+            Arrendamiento rural →
+          </Link>
           <Link href="/glosario" className="text-zinc-500 hover:text-accent transition-colors">
             Glosario ganadero
           </Link>

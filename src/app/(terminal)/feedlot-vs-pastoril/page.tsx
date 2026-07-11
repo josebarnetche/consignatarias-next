@@ -315,6 +315,9 @@ export default function FeedlotVsPastorilPage() {
             <Link href="/que-es-un-feedlot" className="text-accent hover:text-accent-bright transition-colors">
               Qué es un feedlot →
             </Link>
+            <Link href="/mercado/arrendamiento" className="text-accent hover:text-accent-bright transition-colors">
+              Arrendamiento pastoril →
+            </Link>
             <Link href="/que-es-la-invernada" className="text-accent hover:text-accent-bright transition-colors">
               Qué es la invernada →
             </Link>

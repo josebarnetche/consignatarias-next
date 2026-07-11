@@ -345,6 +345,10 @@ export default function PrecioDeTranqueraPage() {
               Índices del mercado →
             </Link>{' '}
             ·{' '}
+            <Link href="/mercado/arrendamiento" className="text-accent hover:text-accent-bright transition-colors">
+              Índice de arrendamiento →
+            </Link>{' '}
+            ·{' '}
             <Link href="/vender-hacienda-guia" className="text-accent hover:text-accent-bright transition-colors">
               Guía para vender hacienda →
             </Link>

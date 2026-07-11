@@ -312,6 +312,9 @@ export default function QueEsElEquivalenteVacaPage() {
             <Link href="/como-se-calcula-el-canon-de-arrendamiento" className="text-accent hover:text-accent-bright transition-colors">
               Cómo se calcula el canon de arrendamiento
             </Link>
+            <Link href="/mercado/arrendamiento" className="text-accent hover:text-accent-bright transition-colors">
+              Canon de arrendamiento en kg/ha →
+            </Link>
             <Link href="/que-es-la-invernada" className="text-accent hover:text-accent-bright transition-colors">
               Qué es la invernada
             </Link>

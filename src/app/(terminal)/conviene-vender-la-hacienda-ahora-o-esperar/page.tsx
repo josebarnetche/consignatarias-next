@@ -389,6 +389,9 @@ export default function ConvieneVenderLaHaciendaAhoraOEsperarPage() {
             <Link href="/precio-del-ternero-en-pie" className="text-accent hover:text-accent-bright transition-colors">
               Precio del ternero en pie →
             </Link>
+            <Link href="/mercado/arrendamiento" className="text-accent hover:text-accent-bright transition-colors">
+              Precio del novillo de arrendamiento →
+            </Link>
             <Link href="/vender-hacienda-guia" className="text-accent hover:text-accent-bright transition-colors">
               Guía para vender hacienda →
             </Link>
