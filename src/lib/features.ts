@@ -25,8 +25,12 @@ const FREE_STATUS: ConsignatariaPlanStatus = {
  *
  * Una firma es PRO si:
  *   1. `consignatarias.featured = true` — destaque manual, permanente (sin período), O
- *   2. tiene una suscripción `status='active'` (entity_type='consignataria') cuyo
- *      `current_period_end` sigue vigente (o es null).
+ *   2. tiene una suscripción cuyo acceso sigue vigente:
+ *      - `status='active'` con `current_period_end` vigente (o null), O
+ *      - `status='cancelled'` DENTRO del período ya pagado (gracia hasta fin de mes).
+ *        Rebill cancela inmediato y terminal (no tiene gracia nativa ni evento al
+ *        vencer), así que la gracia la resolvemos acá: el mes ya está pagado, se
+ *        honra hasta `current_period_end` y ahí cae a FREE. Igual que PRO Usuario.
  *
  * Antes esto vivía duplicado y divergente: `getFeaturedSlugs` (featured OR sub, para
  * el directorio) vs `getEntityTier` (solo sub, para /go y el perfil) → una firma con
@@ -54,7 +58,9 @@ export async function getConsignatariaPlanStatus(
         .select('plan_name, status, current_period_end')
         .eq('entity_type', 'consignataria')
         .eq('entity_slug', canonicalSlug)
-        .eq('status', 'active')
+        // Una sola fila por entidad (upsert onConflict entity_type,entity_slug).
+        // Traemos active Y cancelled: la cancelada puede seguir en gracia.
+        .in('status', ['active', 'cancelled'])
         .maybeSingle(),
     ])
 
@@ -63,12 +69,14 @@ export async function getConsignatariaPlanStatus(
       return { isPro: true, tier: 'pro', source: 'featured', periodEnd: null }
     }
 
-    // 2. Suscripción activa con período vigente.
+    // 2. Suscripción con acceso vigente. Active: honra período vigente o null.
+    //    Cancelled: honra SOLO durante la gracia (período aún vigente).
     const sub = subRes.data
     if (sub) {
       const periodValid =
-        !sub.current_period_end || new Date(sub.current_period_end) > new Date()
-      if (periodValid) {
+        !!sub.current_period_end && new Date(sub.current_period_end) > new Date()
+      const grant = sub.status === 'active' ? !sub.current_period_end || periodValid : periodValid
+      if (grant) {
         const tier: EntityTier = sub.plan_name?.toLowerCase().includes('enterprise')
           ? 'enterprise'
           : 'pro'

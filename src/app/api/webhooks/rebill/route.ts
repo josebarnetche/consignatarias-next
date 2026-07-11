@@ -357,12 +357,19 @@ export async function POST(request: NextRequest) {
           .maybeSingle()
 
         if (entSub) {
+          // Gracia hasta fin de mes: marcamos status='cancelled' pero NO tocamos
+          // current_period_end. El helper period-aware (getConsignatariaPlanStatus /
+          // getFeaturedSlugs) honra una sub cancelada mientras el período pagado siga
+          // vigente, y recién ahí cae a FREE. Rebill cancela inmediato y no manda evento
+          // al vencer, así que el flip lo hace el rebuild diario del scraper (~24h).
           await service
             .from('subscriptions')
             .update({ status: 'cancelled', updated_at: new Date().toISOString() })
             .eq('rebill_subscription_id', subscription_id)
 
           if (entSub.entity_type === 'consignataria') {
+            // featured=false a propósito: la permanencia PRO durante la gracia la gobierna
+            // current_period_end de la sub, no el flag manual (que sería PRO para siempre).
             await service
               .from('consignatarias')
               .update({ featured: false })

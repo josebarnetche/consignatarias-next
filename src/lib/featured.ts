@@ -4,8 +4,9 @@ import { createServiceClient } from '@/lib/supabase'
  * Unified source of truth for PRO consignatarias.
  *
  * A firm is PRO if `consignatarias.featured = true` (destaque manual, permanente)
- * OR it has an active subscription (`entity_type = 'consignataria'`,
- * `status = 'active'`) cuyo `current_period_end` sigue vigente (o es null).
+ * OR tiene una suscripción con acceso vigente: `status='active'` con período
+ * vigente/null, o `status='cancelled'` aún DENTRO del período pagado (gracia hasta
+ * fin de mes — Rebill cancela inmediato y sin gracia nativa, la resolvemos acá).
  *
  * Misma regla que la fuente única `getConsignatariaPlanStatus` (features.ts),
  * en versión batch para el directorio. Returns the set of canonical_slug values
@@ -24,16 +25,19 @@ export async function getFeaturedSlugs(): Promise<Set<string>> {
         .eq('featured', true),
       supabase
         .from('subscriptions')
-        .select('entity_slug, current_period_end')
+        .select('entity_slug, status, current_period_end')
         .eq('entity_type', 'consignataria')
-        .eq('status', 'active'),
+        .in('status', ['active', 'cancelled']),
     ])
 
     const now = Date.now()
     const fromFeatured = (featuredRes.data || []).map(d => d.canonical_slug)
     const fromSubs = (subsRes.data || [])
-      // Excluir suscripciones activas cuyo período ya venció (o mantener las sin período).
-      .filter(d => !d.current_period_end || new Date(d.current_period_end).getTime() > now)
+      .filter(d => {
+        const periodValid = !!d.current_period_end && new Date(d.current_period_end).getTime() > now
+        // active: vigente o sin período. cancelled: solo en gracia (período vigente).
+        return d.status === 'active' ? !d.current_period_end || periodValid : periodValid
+      })
       .map(d => d.entity_slug)
 
     return new Set([...fromFeatured, ...fromSubs])
