@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getCanonicalSlug, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
-import { createServiceClient } from '@/lib/supabase'
+import { getConsignatariaPlanStatus } from '@/lib/features'
 import { generateConsignatariaPDF } from '@/lib/pdf/generateConsignatariaPDF'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
@@ -52,28 +52,8 @@ export async function GET(req: NextRequest, { params }: Props) {
   const types = [...new Set(profileAuctions.map(a => a.type))]
   const totalCabezas = profileAuctions.reduce((sum, a) => sum + (a.estimatedHeads || 0), 0)
 
-  // Check if PRO subscriber
-  let isPro = false
-  try {
-    const service = createServiceClient()
-    if (service) {
-      // Check subscription status
-      // Schema actual: la suscripción de una entidad se identifica por
-      // entity_type/entity_slug (NO por la columna vieja consignataria_slug, que
-      // dejaba isPro siempre en false y sacaba el branding PRO del reporte pago).
-      const { data: sub } = await service
-        .from('subscriptions')
-        .select('status, plan_name')
-        .eq('entity_type', 'consignataria')
-        .eq('entity_slug', canonical)
-        .eq('status', 'active')
-        .maybeSingle()
-
-      isPro = !!sub
-    }
-  } catch {
-    // Continue without PRO status
-  }
+  // Estado PRO desde la fuente única (honra featured=true y valida el período).
+  const { isPro } = await getConsignatariaPlanStatus(canonical)
 
   // Generate PDF
   const doc = generateConsignatariaPDF({
