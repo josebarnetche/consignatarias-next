@@ -343,7 +343,7 @@ export async function sendFrigorificoClaimNotificationToAdmin(
       <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">CUIT:</strong> ${escapeHtml(cuit)}</p>
       <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Email:</strong> ${safeClaim}</p>
       ${claimantName ? `<p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Nombre:</strong> ${escapeHtml(claimantName)}</p>` : ''}
-      <p style="margin:16px 0 0"><a href="${APP_URL}/admin/claims" style="color:#38bdf8">Revisar en admin</a></p>
+      <p style="margin:16px 0 0"><a href="${APP_URL}/admin/frigorifico-claims" style="color:#38bdf8">Revisar en admin</a></p>
     `),
   }).catch(() => {})
 }
