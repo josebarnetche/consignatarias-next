@@ -97,12 +97,12 @@ async function getMonthlyCloses() {
 }
 
 export const metadata: Metadata = {
-  // Live price baked into the title — self-answering pattern matching the dominant
-  // query "precio novillo (para) arrendamiento hoy". maximumFractionDigits:0 drops the
-  // centavos ($4.283,84→$4.284) that were truncating the title at 60 chars and adding
-  // SERP noise; dropping "(índice INMAG)" frees room. Description leads with the literal
-  // query + live variation + an action hook ("calculá el canon"). v1.40 CTR pass.
-  title: `Precio Novillo Arrendamiento Hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg`,
+  // Live price baked into the title — self-answering pattern. GSC (jul-2026): además de
+  // "precio novillo arrendamiento hoy" (la que convierte), hay ~8.500 imp/28d en
+  // "indice novillo arrendamiento*" a CTR 0,5-1,1% porque el <title> no contenía la
+  // palabra "índice" (sí estaba en OG/keywords/H1, pero Google pesa el <title>). Se agrega
+  // "e Índice" sin perder precio/hoy/$número. ~52 chars, no trunca. v1.40 + jul-2026 CTR pass.
+  title: `Precio e Índice Novillo Arrendamiento Hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg`,
   description: `Precio del novillo para arrendamiento hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg — índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero (período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)}, act. ${fmtFecha(arr.date)}). INMAG novillo diario: $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1)}%). Calculá el canon de tu campo en kg/ha.`,
   keywords: [
     'índice novillo arrendamiento',

@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, Suspense } from 'react'
-import { trackPageView, trackEvent, trackSignup, trackValueEvent } from '@/lib/analytics'
+import { trackPageView, trackEvent, trackSignup, emitValueBeacon } from '@/lib/analytics'
 
 /**
  * Tracks GA4 pageviews on every Next.js App Router navigation.
@@ -244,7 +244,12 @@ function EngagementTracker() {
       const secs = Math.round((Date.now() - start) / 1000)
       if (secs >= 5 && secs < 3600) {
         timeFired = true
-        trackValueEvent('time_on_page', { meta: { seconds: secs, path: pathname } })
+        // Beacon-only (NO gtag): esta señal dispara en visibilitychange→hidden y
+        // en el cleanup de ruta. Si el usuario deja la pestaña en background >30min
+        // y vuelve/cierra, un `time_on_page` a GA4 abre una SESIÓN FANTASMA sin
+        // page_view (landing en blanco, source (not set) → Unassigned). Ya vive en
+        // el ledger first-party; a GA4 no le aporta nada y le ensucia la atribución.
+        emitValueBeacon('time_on_page', { meta: { seconds: secs, path: pathname } })
       }
     }
     const onScroll = () => {
@@ -253,7 +258,9 @@ function EngagementTracker() {
       const ratio = (el.scrollTop + window.innerHeight) / (el.scrollHeight || 1)
       if (ratio >= 0.75) {
         deepFired = true
-        trackValueEvent('scroll_depth', { meta: { depth: 75, path: pathname } })
+        // Beacon-only (NO gtag): misma razón que time_on_page — evita sesiones
+        // fantasma en GA4. La señal se conserva en el ledger first-party.
+        emitValueBeacon('scroll_depth', { meta: { depth: 75, path: pathname } })
       }
     }
     const onHide = () => {

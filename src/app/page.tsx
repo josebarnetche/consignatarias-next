@@ -297,13 +297,23 @@ export default async function LandingPage() {
         <section className="relative max-w-7xl mx-auto px-6 pt-16 pb-32">
           {/* Foto de marca: la panorámica del amanecer (banco marca/), detrás de todo */}
           <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/marca/hero-pampa.jpg"
-              alt=""
-              className="w-full h-full object-cover object-[center_35%] opacity-35"
-              fetchPriority="high"
-            />
+            {/* WebP + variante mobile (60% del tráfico): 298KB JPG → 59KB/24KB webp.
+                Decorativa (opacity-35, detrás de gradientes) → compresión agresiva.
+                Baja el LCP mobile que PSI medía en ~5s. JPG queda de fallback. */}
+            <picture>
+              <source
+                media="(max-width: 768px)"
+                srcSet="/marca/hero-pampa-mobile.webp"
+                type="image/webp"
+              />
+              <source srcSet="/marca/hero-pampa.webp" type="image/webp" />
+              <img
+                src="/marca/hero-pampa.jpg"
+                alt=""
+                className="w-full h-full object-cover object-[center_35%] opacity-35"
+                fetchPriority="high"
+              />
+            </picture>
             <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/70 to-[#09090b]/30" />
             <div className="absolute inset-0 bg-gradient-to-b from-[#09090b]/60 via-transparent to-[#09090b]" />
           </div>
@@ -675,11 +685,11 @@ export default async function LandingPage() {
                 </svg>
                 <span className="text-xs font-medium text-zinc-400 tracking-tight lowercase">
                   consignatarias<span className="text-sky-400">.</span>com<span className="text-sky-400">.</span>ar
-                  <span className="text-zinc-600"> &copy; {new Date().getFullYear()}</span>
+                  <span className="text-zinc-500"> &copy; {new Date().getFullYear()}</span>
                 </span>
               </div>
 
-              <div className="flex items-center gap-6 text-xs text-zinc-500">
+              <div className="flex items-center gap-6 text-xs text-zinc-400">
                 <Link href="/overview" className="hover:text-zinc-300 transition-colors">Terminal</Link>
                 <Link href="/remates" className="hover:text-zinc-300 transition-colors">Remates</Link>
                 <Link href="/consignatarias" className="hover:text-zinc-300 transition-colors">Directorio</Link>
@@ -687,13 +697,13 @@ export default async function LandingPage() {
                 <Link href="/mercado" className="hover:text-zinc-300 transition-colors">Mercado</Link>
               </div>
 
-              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest">
+              <div className="text-[0.65rem] text-zinc-400 uppercase tracking-widest">
                 Datos actualizados diariamente
               </div>
             </div>
 
             <div className="border-t border-zinc-800/50 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-zinc-500">
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-zinc-400">
                 <Link href="/planes" className="hover:text-zinc-300 transition-colors">Planes</Link>
                 <Link href="/glosario" className="hover:text-zinc-300 transition-colors">Glosario</Link>
                 <Link href="/calidad" className="hover:text-zinc-300 transition-colors">Calidad de datos</Link>
@@ -703,7 +713,7 @@ export default async function LandingPage() {
                 <Link href="/aviso-legal" className="hover:text-zinc-300 transition-colors">Aviso legal</Link>
                 <Link href="/arrepentimiento" className="text-accent/90 hover:text-accent transition-colors">Botón de Arrepentimiento</Link>
               </div>
-              <span className="text-xs text-zinc-700">
+              <span className="text-xs text-zinc-500">
                 © {new Date().getFullYear()} Memola Medios S.A.S. · agro@memola.com.ar
               </span>
             </div>
