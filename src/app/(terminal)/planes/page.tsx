@@ -6,40 +6,44 @@ import SocialProofToast from './SocialProofToast'
 import PlanesToggle from './PlanesToggle'
 import { SaaSPricingSchema, FAQPageSchema, SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
-// Pricing data for schema (modelo API-first, todo en USD).
+// Pricing data for schema. Todo en ARS (Rebill factura en ARS) — antes estaba en USD
+// stale y SaaSPricingSchema lee `currency` (no `priceCurrency`), así que renderizaba
+// los números USD etiquetados como ARS (ej. "ARS 49"). Ahora refleja los precios reales
+// visibles en PlanesToggle (Starter 74.000 / Growth 451.000 / Scale a medida / PRO 45.000).
 const PRICING_PLANS = [
   {
     name: 'Productor (gratis)',
     description: 'Observatorio completo del mercado bovino argentino, sin costo: precios, remates, directorio, calculadoras y alertas.',
     price: 0,
+    currency: 'ARS',
     features: ['INMAG diario y precios por categoría', 'Calendario unificado de remates', 'Directorio de consignatarias y frigoríficos', 'Calculadoras (neto en mano, ¿vendo ahora?)', 'Alertas de precio por email'],
   },
   {
     name: 'API Starter',
     description: 'API/MCP del mercado ganadero argentino para devs, analistas y firmas. 10.000 req/mes.',
-    price: 49,
-    priceCurrency: 'USD',
+    price: 74000,
+    currency: 'ARS',
     features: ['10.000 requests/mes', 'Endpoints INMAG, categorías, USD, remates, directorios', 'Acceso MCP (tools de lectura)', 'Histórico completo', '1 webhook'],
   },
   {
     name: 'API Growth',
     description: 'API + webhooks + alertas + reportes para agtech, medios agro y fondos. 100.000 req/mes.',
-    price: 299,
-    priceCurrency: 'USD',
+    price: 451000,
+    currency: 'ARS',
     features: ['100.000 requests/mes', 'Webhooks ilimitados + alertas de precio (MCP write)', 'Exports CSV/JSON', 'Reporte semanal PDF+JSON', 'Soporte prioritario'],
   },
   {
     name: 'API Scale',
-    description: 'Alto volumen + SLA para bancos, agtech grande y exchanges. A medida.',
-    price: 999,
-    priceCurrency: 'USD',
+    description: 'Alto volumen + SLA para bancos, agtech grande y exchanges. A medida (cotización, desde el nivel Growth).',
+    price: 451000,
+    currency: 'ARS',
     features: ['Volumen alto (500K → 5M req)', 'SLA + uptime garantizado', 'Multi-usuario con roles', 'Integración ERP/BI', 'White-label opcional'],
   },
   {
     name: 'Consignataria (alcance)',
-    description: 'Promoción de remates a la base de productores + perfil destacado. Prueba gratis.',
-    price: 39,
-    priceCurrency: 'USD',
+    description: 'Promoción de remates a la base de productores + perfil verificado y destacado. Facturación mensual en ARS.',
+    price: 45000,
+    currency: 'ARS',
     features: ['Promoción de remates por email', 'Perfil verificado y destacado', 'Analytics de perfil', 'Landing propia + QR'],
   },
 ]
@@ -53,7 +57,7 @@ const FAQ_ITEMS = [
   {
     question: '¿Cómo funciona el pago?',
     answer:
-      'Los planes de API y de alcance se facturan en USD (transferencia, USDT o factura ARS al MEP), con renovación mensual y 15% off en pago anual. El productor no paga nada.',
+      'Los planes de API y de alcance se facturan en ARS vía Rebill, con renovación mensual y 15% off en pago anual. El productor no paga nada.',
   },
   {
     question: '¿Puedo cancelar en cualquier momento?',

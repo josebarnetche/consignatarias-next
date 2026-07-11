@@ -281,7 +281,11 @@ export async function POST(request: NextRequest) {
           // en el próximo deploy. Revalidamos on-demand para que el hero PRO (logo
           // destacado + video del último remate) aparezca al instante de suscribirse.
           try {
-            revalidatePath(`/consignatarias/${getCanonicalSlug(entitySlug) || entitySlug}`)
+            const cslug = getCanonicalSlug(entitySlug) || entitySlug
+            revalidatePath(`/consignatarias/${cslug}`)
+            // La landing /go (QR/flyers) también es estática → sin esto el QR seguiría
+            // mostrando FREE tras pagar. Se revalida junto con el perfil.
+            revalidatePath(`/go/${cslug}`)
           } catch (err) {
             console.error('revalidatePath consignataria PRO (activación) failed:', err)
           }
@@ -363,9 +367,11 @@ export async function POST(request: NextRequest) {
               .from('consignatarias')
               .update({ featured: false })
               .eq('canonical_slug', entSub.entity_slug)
-            // Revalidar el perfil para que deje de mostrar el hero PRO al instante.
+            // Revalidar perfil + landing /go para que dejen de mostrar el hero PRO al instante.
             try {
-              revalidatePath(`/consignatarias/${getCanonicalSlug(entSub.entity_slug) || entSub.entity_slug}`)
+              const cslug = getCanonicalSlug(entSub.entity_slug) || entSub.entity_slug
+              revalidatePath(`/consignatarias/${cslug}`)
+              revalidatePath(`/go/${cslug}`)
             } catch (err) {
               console.error('revalidatePath consignataria (cancelación) failed:', err)
             }

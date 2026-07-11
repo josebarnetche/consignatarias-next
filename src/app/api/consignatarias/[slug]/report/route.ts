@@ -58,13 +58,17 @@ export async function GET(req: NextRequest, { params }: Props) {
     const service = createServiceClient()
     if (service) {
       // Check subscription status
+      // Schema actual: la suscripción de una entidad se identifica por
+      // entity_type/entity_slug (NO por la columna vieja consignataria_slug, que
+      // dejaba isPro siempre en false y sacaba el branding PRO del reporte pago).
       const { data: sub } = await service
         .from('subscriptions')
         .select('status, plan_name')
-        .eq('consignataria_slug', canonical)
+        .eq('entity_type', 'consignataria')
+        .eq('entity_slug', canonical)
         .eq('status', 'active')
-        .single()
-      
+        .maybeSingle()
+
       isPro = !!sub
     }
   } catch {
