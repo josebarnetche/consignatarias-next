@@ -57,9 +57,12 @@ export async function GET(request: NextRequest): Promise<NextResponse<SuccessRes
     const provincia = searchParams.get('provincia')?.toUpperCase() || null
     const consignataria = searchParams.get('consignataria') || null
 
-    // Get today's date in Argentina timezone
-    const today = new Date()
-    const todayStr = today.toISOString().split('T')[0]
+    // "Hoy" en horario de Argentina. Antes usaba toISOString() (UTC), así que de
+    // noche (21–24h ART = 00–03h UTC del día siguiente) mostraba el "hoy" equivocado.
+    // en-CA da formato YYYY-MM-DD; mismo patrón que el cron de outreach.
+    const todayStr = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/Argentina/Buenos_Aires',
+    }).format(new Date())
 
     // Filter to today's remates only
     const filtered = (remates as Array<{

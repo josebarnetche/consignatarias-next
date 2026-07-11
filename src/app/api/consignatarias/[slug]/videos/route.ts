@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
+import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 
 // GET /api/consignatarias/[slug]/videos - Get video gallery for a consignataria
 export async function GET(
@@ -10,11 +11,18 @@ export async function GET(
     const { slug } = await params
     const supabase = await createClient()
 
-    // First get the consignataria ID from slug
+    // La tabla consignatarias se indexa por canonical_slug (no existe columna `slug`);
+    // resolvemos el param (que puede ser variante) al canónico antes de consultar.
+    const canonical = getCanonicalSlug(slug)
+    if (!canonical) {
+      return NextResponse.json({ error: 'Consignataria not found' }, { status: 404 })
+    }
+
+    // First get the consignataria ID from its canonical slug
     const { data: consignataria, error: consigError } = await supabase
       .from('consignatarias')
       .select('id')
-      .eq('slug', slug)
+      .eq('canonical_slug', canonical)
       .single()
 
     if (consigError || !consignataria) {
@@ -72,11 +80,17 @@ export async function POST(
       )
     }
 
+    // Resolver al canónico (ver GET) antes de verificar propiedad.
+    const canonical = getCanonicalSlug(slug)
+    if (!canonical) {
+      return NextResponse.json({ error: 'Consignataria not found' }, { status: 404 })
+    }
+
     // Get consignataria and check ownership
     const { data: consignataria, error: consigError } = await supabase
       .from('consignatarias')
       .select('id, claimed_by_email, name')
-      .eq('slug', slug)
+      .eq('canonical_slug', canonical)
       .single()
 
     if (consigError || !consignataria) {
