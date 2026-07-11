@@ -24,13 +24,15 @@ const arrIndex = Math.round(arr.index) // $/kg novillo sugerido para arrendamien
 const lastUpdate = marketPrices.lastUpdate
 const fmt = (n: number) => n.toLocaleString('es-AR')
 
-/* Ejemplo evergreen: 100 ha × 200 kg novillo/ha/año × 3 años de plazo.
+/* Ejemplo evergreen: 100 ha × 5 kg novillo/ha/MES × 3 años de plazo.
+   El canon se pacta en kg/ha/mes (ganadero 3-6, agrícola de primera 8-12).
    La base imponible del sellado es el VALOR TOTAL del contrato: canon
-   por todo el plazo, no un año. */
+   mensual por todos los meses del plazo, no un año. */
 const EJ_HA = 100
-const EJ_KG_HA_ANIO = 200
+const EJ_KG_HA_MES = 5
 const EJ_ANIOS = 3
-const ejKgTotales = EJ_HA * EJ_KG_HA_ANIO * EJ_ANIOS // 60.000 kg novillo
+const EJ_MESES = EJ_ANIOS * 12 // 36 meses de plazo
+const ejKgTotales = EJ_HA * EJ_KG_HA_MES * EJ_MESES // 18.000 kg novillo
 const ejBase = ejKgTotales * arrIndex // base imponible en pesos
 const EJ_ALICUOTA = 0.012 // 1,2% de referencia (rango típico 1%-1,5%)
 const ejSellos = Math.round(ejBase * EJ_ALICUOTA) // impuesto total
@@ -91,7 +93,7 @@ const FAQ = [
   },
   {
     question: '¿Sobre qué monto se calcula el impuesto de sellos?',
-    answer: `Se calcula sobre el canon total de todo el plazo del contrato, no sobre un año. La base imponible es el valor económico completo: canon anual multiplicado por la cantidad de años. Ejemplo con el índice oficial de arrendamiento del MAG (${arrDate}): un contrato de ${EJ_HA} ha a ${EJ_KG_HA_ANIO} kg de novillo por hectárea y año, por ${EJ_ANIOS} años, son ${fmt(ejKgTotales)} kg × $${fmt(arrIndex)}/kg = base de $${fmt(ejBase)}; una alícuota de referencia del 1,2% da un sellado total de ~$${fmt(ejSellos)}.`,
+    answer: `Se calcula sobre el canon total de todo el plazo del contrato, no sobre un año. La base imponible es el valor económico completo: canon mensual multiplicado por todos los meses del plazo. Ejemplo con el índice oficial de arrendamiento del MAG (${arrDate}): un contrato de ${EJ_HA} ha a ${EJ_KG_HA_MES} kg de novillo por hectárea y por mes, por ${EJ_ANIOS} años (${EJ_MESES} meses), son ${EJ_HA} × ${EJ_KG_HA_MES} × ${EJ_MESES} = ${fmt(ejKgTotales)} kg × $${fmt(arrIndex)}/kg = base de $${fmt(ejBase)}; una alícuota de referencia del 1,2% da un sellado total de ~$${fmt(ejSellos)}.`,
   },
   {
     question: '¿Cuánto tiempo tengo para sellar el contrato?',
@@ -211,8 +213,8 @@ export default function ImpuestoDeSellosArrendamientoPage() {
         <h2 className="text-zinc-200 text-lg font-medium mb-3">Ejemplo de cálculo</h2>
         <p className="text-zinc-400 mb-3">
           Tomemos un contrato de <span className="text-zinc-300">{EJ_HA} ha</span> con un canon de{' '}
-          {EJ_KG_HA_ANIO} kg de novillo por hectárea y por año, a <span className="text-zinc-300">{EJ_ANIOS} años</span>{' '}
-          de plazo. El canon total en kilos es {EJ_HA} × {EJ_KG_HA_ANIO} × {EJ_ANIOS} ={' '}
+          {EJ_KG_HA_MES} kg de novillo por hectárea y por mes, a <span className="text-zinc-300">{EJ_ANIOS} años</span>{' '}
+          de plazo ({EJ_MESES} meses). El canon total en kilos es {EJ_HA} × {EJ_KG_HA_MES} × {EJ_MESES} ={' '}
           <span className="text-zinc-300">{fmt(ejKgTotales)} kg</span> de novillo. Para llevarlo a pesos
           usamos el índice oficial de arrendamiento del Mercado Agroganadero (referencia sugerida, {arrDate}):
         </p>
@@ -240,7 +242,7 @@ export default function ImpuestoDeSellosArrendamientoPage() {
         <p className="text-zinc-400 mb-4">
           La base imponible es el monto sobre el que se aplica la alícuota. En un arrendamiento rural es
           el <span className="text-zinc-300">valor total del contrato por todo el plazo</span>: canon
-          anual multiplicado por la cantidad de años. Un error frecuente es sellar solo sobre un año —el
+          mensual multiplicado por todos los meses del plazo. Un error frecuente es sellar solo sobre un año —el
           fisco calcula sobre el compromiso económico completo del contrato—. Cuando el canon se pacta en
           quintales de soja o kilos de novillo, se lo convierte a pesos con un valor de referencia para
           fijar la base; por eso conviene dejar clara en el contrato la fórmula de conversión.

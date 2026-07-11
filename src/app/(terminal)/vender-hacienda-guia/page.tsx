@@ -45,7 +45,7 @@ const TERMINOS = [
   {
     name: 'Desbaste',
     description:
-      'Descuento porcentual que se aplica al peso de la hacienda para compensar el contenido gástrico y la pérdida de peso por el ayuno y el transporte. Suele ubicarse entre el 3% y el 5% del peso vivo, según el estado del animal y la distancia al destino; incide directamente sobre el precio de tranquera.',
+      'Descuento porcentual que se aplica al peso de la hacienda para compensar el contenido gástrico y la pérdida de peso por el ayuno y el transporte. Suele ubicarse en ~5% a 8% del peso vivo (puede superar el 10% en traslados largos), según el estado del animal y la distancia al destino; incide directamente sobre el precio de tranquera.',
     url: `${PAGE_URL}#desbaste`,
   },
   {
@@ -295,7 +295,7 @@ export default function VenderHaciendaGuiaPage() {
             </Link>.
           </li>
           <li>
-            <span className="text-zinc-300">Desbaste:</span> descuento del 3% al 5% sobre el peso para
+            <span className="text-zinc-300">Desbaste:</span> descuento de ~5% a 8% (puede superar el 10% en traslados largos) sobre el peso para
             compensar el contenido gástrico y la merma por ayuno y transporte. Ver{' '}
             <Link href="/desbaste-de-la-hacienda" className="text-accent hover:text-accent-bright transition-colors">
               el desbaste de la hacienda

@@ -66,7 +66,7 @@ const FAQ = [
   {
     question: '¿Cuál tiene menor comisión?',
     answer:
-      'La venta directa entre productor y comprador puede no tener comisión de intermediario si las partes operan sin consignataria, mientras que el remate y la consignación descuentan la comisión de la firma —habitualmente del 3% al 5% más IVA sobre el vendedor, un valor que fija cada consignataria, no esta página. Menor comisión no significa mejor resultado: un remate con varios compradores puede cerrar un precio más alto que compense la comisión, y la venta directa sin intermediario traslada al productor la búsqueda de comprador y la gestión del cobro.',
+      'La venta directa entre productor y comprador puede no tener comisión de intermediario si las partes operan sin consignataria, mientras que el remate y la consignación descuentan la comisión de la firma —habitualmente 2%–4% más IVA sobre el vendedor (típico ~3%), hasta 5% en algunos casos, un valor que fija cada consignataria, no esta página. Menor comisión no significa mejor resultado: un remate con varios compradores puede cerrar un precio más alto que compense la comisión, y la venta directa sin intermediario traslada al productor la búsqueda de comprador y la gestión del cobro.',
   },
   {
     question: '¿Cuál da precio más transparente?',
@@ -260,7 +260,7 @@ export default function VenderEnRemateVsVentaDirectaVsConsignacionPage() {
           </Link>
           . Delega en un tercero matriculado toda la comercialización, útil cuando el productor no
           quiere buscar comprador ni conducir la venta. La contrapartida es la comisión —habitualmente
-          del 3% al 5% más IVA sobre el vendedor, que fija cada firma, no esta página. Ver{' '}
+          2%–4% más IVA sobre el vendedor (típico ~3%), hasta 5% en algunos casos, que fija cada firma, no esta página. Ver{' '}
           <Link
             href="/cuanto-cobra-de-comision-una-consignataria"
             className="text-accent hover:text-accent-bright transition-colors"
@@ -303,11 +303,11 @@ export default function VenderEnRemateVsVentaDirectaVsConsignacionPage() {
               </tr>
               <tr className="border-b border-terminal-border/60 align-top">
                 <td className="px-3 py-2 text-zinc-200 font-medium">Comisión</td>
-                <td className="px-3 py-2 text-zinc-400">3%–5% + IVA (según firma)</td>
+                <td className="px-3 py-2 text-zinc-400">2%–4% + IVA (~3%; hasta 5% según firma)</td>
                 <td className="px-3 py-2 text-zinc-400">
                   Puede no haber si es sin intermediario
                 </td>
-                <td className="px-3 py-2 text-zinc-400">3%–5% + IVA (según firma)</td>
+                <td className="px-3 py-2 text-zinc-400">2%–4% + IVA (~3%; hasta 5% según firma)</td>
               </tr>
               <tr className="border-b border-terminal-border/60 align-top">
                 <td className="px-3 py-2 text-zinc-200 font-medium">Transparencia</td>

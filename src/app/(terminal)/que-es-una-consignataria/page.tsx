@@ -39,7 +39,7 @@ const TERMINOS = [
   {
     name: 'Comisión de venta',
     description:
-      'Honorario que cobra la consignataria por intermediar la operación, calculado como porcentaje sobre el valor de venta de la hacienda —habitualmente entre 3% y 5%—. Se descuenta de la liquidación al productor, junto con los gastos de remate (fletes, sanidad, guías, sellados).',
+      'Honorario que cobra la consignataria por intermediar la operación, calculado como porcentaje sobre el valor de venta de la hacienda —habitualmente 2–4% (frecuentemente ~3%), a veces hasta 5%, más IVA—. Se descuenta de la liquidación al productor, junto con los gastos de remate (fletes, sanidad, guías, sellados).',
   },
   {
     name: 'Remate de hacienda',
@@ -61,7 +61,7 @@ const FAQ = [
   },
   {
     question: '¿Cuánto cobra una consignataria de hacienda?',
-    answer: `Una consignataria cobra una comisión de entre 3% y 5% sobre el valor de venta de la hacienda, que se descuenta de la liquidación al productor junto con los gastos de remate (fletes, sanidad, guías, sellados). Ejemplo con precio actual: un novillo de ${EJEMPLO_PESO} kg vivo a $${fmt(novillo)}/kg (INMAG del ${lastUpdate}) vale $${fmt(ejemploValor)}; la comisión ronda entre $${fmt(ejemploComisionMin)} (3%) y $${fmt(ejemploComisionMax)} (5%).`,
+    answer: `Una consignataria cobra una comisión sobre el valor de venta de la hacienda —habitualmente 2–4% (frecuentemente ~3%), a veces hasta 5%, más IVA—, que se descuenta de la liquidación al productor junto con los gastos de remate (fletes, sanidad, guías, sellados). Ejemplo con precio actual: un novillo de ${EJEMPLO_PESO} kg vivo a $${fmt(novillo)}/kg (INMAG del ${lastUpdate}) vale $${fmt(ejemploValor)}; la comisión ronda entre $${fmt(ejemploComisionMin)} (3%) y $${fmt(ejemploComisionMax)} (5%).`,
   },
   {
     question: '¿En qué se diferencia de un frigorífico?',
@@ -71,14 +71,14 @@ const FAQ = [
   {
     question: '¿Qué es la comisión de venta?',
     answer:
-      'La comisión de venta es el honorario que cobra la consignataria por intermediar la operación: un porcentaje sobre el valor de venta de la hacienda, habitualmente entre 3% y 5%. Es distinta de los gastos de remate (fletes, sanidad, guías, sellados), que también se descuentan de la liquidación al productor.',
+      'La comisión de venta es el honorario que cobra la consignataria por intermediar la operación: un porcentaje sobre el valor de venta de la hacienda, habitualmente 2–4% (frecuentemente ~3%), a veces hasta 5%, más IVA. Es distinta de los gastos de remate (fletes, sanidad, guías, sellados), que también se descuentan de la liquidación al productor.',
   },
 ]
 
 export const metadata: Metadata = {
   title: 'Qué es una consignataria de hacienda y cuánto cobra',
   description:
-    'Una consignataria de hacienda es el intermediario entre el productor y el comprador: vende la hacienda por cuenta y orden del productor y cobra una comisión, habitualmente 3-5% sobre el valor de venta. Definición, diferencia con frigorífico y rematador, cómo cobra y marco de matrícula.',
+    'Una consignataria de hacienda es el intermediario entre el productor y el comprador: vende la hacienda por cuenta y orden del productor y cobra una comisión, habitualmente 2–4% (a veces hasta 5%) más IVA sobre el valor de venta. Definición, diferencia con frigorífico y rematador, cómo cobra y marco de matrícula.',
   keywords: [
     'qué es una consignataria',
     'que es una consignataria de hacienda',
@@ -93,7 +93,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Qué es una consignataria de hacienda y cuánto cobra',
     description:
-      'Definición de consignataria de hacienda: intermediario entre productor y comprador que cobra una comisión de 3-5% sobre el valor de venta. Diferencia con frigorífico y rematador.',
+      'Definición de consignataria de hacienda: intermediario entre productor y comprador que cobra una comisión habitualmente de 2–4% (hasta 5%) más IVA sobre el valor de venta. Diferencia con frigorífico y rematador.',
     url: `${BASE_URL}/que-es-una-consignataria`,
     type: 'article',
     images: ['https://www.consignatarias.com.ar/og.png'],
@@ -130,8 +130,8 @@ export default function QueEsUnaConsignatariaPage() {
         <p className="speakable-content text-zinc-300 text-base mb-6">
           Una consignataria de hacienda es la firma que actúa como intermediario comercial entre el
           productor ganadero y el comprador (frigorífico, invernador o rematador), vende la hacienda
-          por cuenta y orden del productor y cobra una comisión —habitualmente 3-5% sobre el valor de
-          venta—.
+          por cuenta y orden del productor y cobra una comisión —habitualmente 2–4% (frecuentemente
+          ~3%), a veces hasta 5%, más IVA, sobre el valor de venta—.
         </p>
 
         <p className="text-zinc-400 mb-8">
@@ -180,9 +180,11 @@ export default function QueEsUnaConsignatariaPage() {
         <h2 className="text-zinc-200 text-lg font-medium mb-3">Cómo cobra: comisión y gastos</h2>
         <p className="text-zinc-400 mb-4">
           El ingreso de la consignataria es la comisión de venta: un porcentaje sobre el valor de
-          venta de la hacienda, habitualmente entre 3% y 5%. Se descuenta de la liquidación al
+          venta de la hacienda, habitualmente 2–4% (frecuentemente ~3%), a veces hasta 5%, más IVA.
+          Se descuenta de la liquidación al
           productor. Aparte de la comisión, de esa liquidación también se descuentan los gastos de
-          remate —fletes, sanidad, guías (DT-e), sellados e IVA cuando corresponde—. El productor
+          remate —fletes, sanidad, guías (provincial/municipal), DT-e (SENASA), sellados e IVA
+          cuando corresponde—. El productor
           recibe el neto: valor de venta menos comisión menos gastos.
         </p>
 

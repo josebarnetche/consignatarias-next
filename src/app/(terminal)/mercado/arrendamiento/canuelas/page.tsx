@@ -33,7 +33,7 @@ const fmt3 = (n: number): string =>
   n.toLocaleString('es-AR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
 const inmagChangeStr = `${inmag.change >= 0 ? '+' : ''}${inmag.change}%`
 
-// Ejemplo canónico de canon (campo tipo, 4 kg/ha, 500 ha) al índice del día.
+// Ejemplo canónico de canon MENSUAL (campo tipo, 4 kg/ha/mes, 500 ha) al índice del período.
 const EXAMPLE_HA = 500
 const EXAMPLE_KG_HA = 4
 const exampleCanon = EXAMPLE_HA * EXAMPLE_KG_HA * arrendamientoOficial.index
@@ -47,7 +47,7 @@ const FAQ: { question: string; answer: string }[] = [
   },
   {
     question: '¿Qué relación hay entre el INMAG y el índice de arrendamiento de Cañuelas?',
-    answer: `Son la misma serie vista desde dos usos. El INMAG (Índice del Mercado Agroganadero) es el promedio ponderado por volumen del precio del novillo que se opera físicamente en el Mercado Agroganadero de Cañuelas. Ese mismo número, tomado como referencia para ajustar el canon de los contratos de arrendamiento rural, es el "índice novillo arrendamiento". Hoy el INMAG está en $${fmt(inmag.current)}/kg vivo y el índice de arrendamiento en $${fmt(arrendamientoOficial.index)}/kg.`,
+    answer: `Comparten la fuente, pero no son idénticos día a día. El INMAG (Índice del Mercado Agroganadero) es el promedio ponderado por volumen del precio del novillo que se opera físicamente en el Mercado Agroganadero de Cañuelas. El «índice novillo arrendamiento» se construye a partir del INMAG como un promedio del período —no el valor de una sola jornada—, y por eso puede diferir del INMAG del día. Hoy el INMAG está en $${fmt(inmag.current)}/kg vivo y el índice de arrendamiento del período en $${fmt(arrendamientoOficial.index)}/kg.`,
   },
   {
     question: '¿Cañuelas y Liniers son lo mismo para el arrendamiento?',
@@ -55,7 +55,7 @@ const FAQ: { question: string; answer: string }[] = [
   },
   {
     question: '¿Cómo se calcula el canon de un arrendamiento en kg de novillo por hectárea?',
-    answer: `El cálculo es: canon = kilos de novillo pactados por hectárea × índice novillo × hectáreas. Por ejemplo, un contrato de ${EXAMPLE_KG_HA} kg/ha sobre ${EXAMPLE_HA} ha, al índice de Cañuelas de $${fmt(arrendamientoOficial.index)}/kg, da un canon de $${fmt(exampleCanon)}. El valor en kg/ha depende de la aptitud del campo: agrícola de zona núcleo 8–12 kg/ha, ganadero marginal 3–6 kg/ha.`,
+    answer: `El canon se pacta en kilos de novillo por hectárea por mes. El cálculo es: canon MENSUAL = kg/ha/mes × índice novillo × hectáreas. Por ejemplo, un contrato de ${EXAMPLE_KG_HA} kg/ha/mes sobre ${EXAMPLE_HA} ha, al índice de Cañuelas de $${fmt(arrendamientoOficial.index)}/kg, da un canon mensual de $${fmt(exampleCanon)} (el canon anual = canon mensual × 12). El valor en kg/ha/mes depende de la aptitud del campo: agrícola de zona núcleo 8–12 kg/ha/mes, ganadero marginal 3–6 kg/ha/mes.`,
   },
   {
     question: '¿Se usa el índice de un día o un promedio del período?',
@@ -70,7 +70,7 @@ const FAQ: { question: string; answer: string }[] = [
 const TERMS: DefinedTermItem[] = [
   {
     name: 'Índice novillo arrendamiento (Cañuelas)',
-    description: `Precio del novillo en el Mercado Agroganadero de Cañuelas, en pesos por kilo vivo, usado como referencia para calcular y ajustar el canon de los contratos de arrendamiento rural. Al ${arrendamientoOficial.date} es de $${fmt(arrendamientoOficial.index)}/kg. Se pacta en kilos de novillo por hectárea y se liquida al promedio del período.`,
+    description: `Precio del novillo en el Mercado Agroganadero de Cañuelas, en pesos por kilo vivo, usado como referencia para calcular y ajustar el canon de los contratos de arrendamiento rural. Al ${arrendamientoOficial.date} es de $${fmt(arrendamientoOficial.index)}/kg. Se pacta en kilos de novillo por hectárea por mes y se liquida al promedio del período (canon anual = canon mensual × 12).`,
     url: PAGE_URL,
   },
   {
@@ -137,7 +137,7 @@ function ArrendamientoCanuelasDataset() {
 
 export const metadata: Metadata = {
   title: `Índice Novillo Arrendamiento Cañuelas: $${fmt(arrendamientoOficial.index)}/kg`,
-  description: `Índice novillo arrendamiento del Mercado Agroganadero de Cañuelas: $${fmt(arrendamientoOficial.index)}/kg vivo al ${arrendamientoOficial.date}. Se basa en el INMAG ($${fmt(inmag.current)}/kg, ${inmagChangeStr}). Cómo calcular el canon en kg/ha.`,
+  description: `Índice novillo arrendamiento del Mercado Agroganadero de Cañuelas: $${fmt(arrendamientoOficial.index)}/kg vivo al ${arrendamientoOficial.date}. Se basa en el INMAG ($${fmt(inmag.current)}/kg, ${inmagChangeStr}). Cómo calcular el canon en kg/ha/mes.`,
   keywords: [
     'indice novillo arrendamiento mercado de cañuelas',
     'índice novillo arrendamiento cañuelas',
@@ -149,7 +149,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: `Índice Novillo Arrendamiento Cañuelas: $${fmt(arrendamientoOficial.index)}/kg`,
-    description: `Índice de arrendamiento del Mercado Agroganadero de Cañuelas al ${arrendamientoOficial.date}. Basado en el INMAG. Cálculo del canon en kg/ha.`,
+    description: `Índice de arrendamiento del Mercado Agroganadero de Cañuelas al ${arrendamientoOficial.date}. Basado en el INMAG. Cálculo del canon en kg/ha/mes.`,
     url: PAGE_URL,
     type: 'website',
   },
@@ -240,29 +240,32 @@ export default function ArrendamientoCanuelasPage() {
               El{' '}
               <Link href="/mercado/inmag" className="text-accent hover:underline">INMAG</Link>{' '}
               (Índice del Mercado Agroganadero) es el promedio ponderado por volumen de ese novillo. El
-              «índice novillo arrendamiento» no es otro número: es el mismo INMAG tomado como referencia para
-              ajustar el canon. Por eso resolver «Cañuelas» y «arrendamiento» es resolver una sola cosa — el precio
-              del novillo en Cañuelas, hoy ${fmt(inmag.current)}/kg.
+              «índice novillo arrendamiento» sale de la misma fuente, pero es el índice sugerido para
+              arrendamientos: un promedio del período construido sobre el INMAG —no el valor diario—, por eso
+              puede diferir del INMAG del día. Aun así, resolver «Cañuelas» y «arrendamiento» es resolver una
+              misma cosa — el precio del novillo en Cañuelas, hoy ${fmt(inmag.current)}/kg.
             </p>
           </div>
         </section>
 
         {/* Cómo calcular el canon en kg/ha */}
         <section className="mt-12">
-          <h2 className="text-2xl font-bold text-white mb-4">Cómo calcular el canon en kg/ha</h2>
+          <h2 className="text-2xl font-bold text-white mb-4">Cómo calcular el canon en kg/ha/mes</h2>
           <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 max-w-2xl">
             <p className="text-zinc-300 font-medium mb-3">
-              Canon = kilos de novillo por hectárea × índice novillo × hectáreas
+              Canon MENSUAL = kg/ha/mes × índice novillo × hectáreas
             </p>
             <p className="text-zinc-400 text-sm leading-relaxed">
-              Un contrato de <strong className="text-zinc-200">{EXAMPLE_KG_HA} kg/ha</strong> sobre{' '}
+              Un contrato de <strong className="text-zinc-200">{EXAMPLE_KG_HA} kg/ha/mes</strong> sobre{' '}
               <strong className="text-zinc-200">{EXAMPLE_HA} ha</strong>, al índice de Cañuelas de{' '}
-              <strong className="text-zinc-200">${fmt(arrendamientoOficial.index)}/kg</strong>, da un canon de{' '}
-              <strong className="text-sky-300">${fmt(exampleCanon)}</strong>.
+              <strong className="text-zinc-200">${fmt(arrendamientoOficial.index)}/kg</strong>, da un canon
+              mensual de <strong className="text-sky-300">${fmt(exampleCanon)}</strong>. El canon anual = canon
+              mensual × 12.
             </p>
             <p className="text-zinc-500 text-xs mt-4">
-              El valor en kg/ha depende de la aptitud del campo: agrícola de zona núcleo 8–12 kg/ha, ganadero
-              marginal 3–6 kg/ha. Los contratos se liquidan con el promedio del período, no con el valor de un solo día.
+              El valor en kg/ha/mes depende de la aptitud del campo: agrícola de zona núcleo 8–12 kg/ha/mes,
+              ganadero marginal 3–6 kg/ha/mes. Los contratos se liquidan con el promedio del período, no con el
+              valor de un solo día.
             </p>
             <p className="text-zinc-600 text-xxs mt-4">
               Para la serie completa y el calculador, ver{' '}

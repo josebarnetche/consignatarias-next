@@ -26,7 +26,7 @@ const novillo = price('novillos')
 const cabezasTipo = 50
 const pesoTipo = 450
 const valorLoteTipo = novillo * pesoTipo * cabezasTipo // $/kg × kg × cabezas
-const comisionVentaPct = 5 // referencia habitual sobre el vendedor (%), no fijada por esta página
+const comisionVentaPct = 3 // referencia habitual sobre el vendedor (%): típico ~3%, no fijada por esta página
 const comisionCompraPct = 3 // referencia habitual sobre el comprador (%), no fijada por esta página
 const comisionVentaTipo = Math.round((valorLoteTipo * comisionVentaPct) / 100)
 const comisionCompraTipo = Math.round((valorLoteTipo * comisionCompraPct) / 100)
@@ -48,7 +48,7 @@ const TERMINOS = [
   {
     name: 'Comisión de venta',
     description:
-      'Porcentaje que paga el vendedor sobre el importe de la hacienda comercializada. Se descuenta en la liquidación junto con el IVA y los gastos. Es el concepto principal del costo de vender por consignación y ronda habitualmente el 3% al 5% más IVA.',
+      'Porcentaje que paga el vendedor sobre el importe de la hacienda comercializada. Se descuenta en la liquidación junto con el IVA y los gastos. Es el concepto principal del costo de vender por consignación y ronda habitualmente el 2% al 4% (a veces hasta 5%), típicamente cerca del 3%, más IVA.',
     url: `${BASE_URL}/como-leer-una-liquidacion-de-hacienda`,
   },
   {
@@ -69,7 +69,7 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿Cuánto cobra de comisión una consignataria?',
-    answer: `Una consignataria de hacienda cobra habitualmente una comisión en torno al 3% al 5% del importe de la operación más IVA, y su valor lo fija cada firma —no lo determina esta página. Sobre un lote testigo de ${cabezasTipo} novillos de ${pesoTipo} kg al precio de referencia de hoy ($${fmt(novillo)}/kg vivo, ${lastUpdate}), el lote vale unos $${fmt(valorLoteTipo)} y una comisión de venta del ${comisionVentaPct}% equivale a cerca de $${fmt(comisionVentaTipo)}. Es un ejemplo orientativo con precio de referencia del mercado (INMAG/MAG), no una cotización.`,
+    answer: `Una consignataria de hacienda cobra habitualmente una comisión de venta en torno al 2% al 4% del importe de la operación —a veces hasta el 5%—, típicamente cerca del 3% más IVA, y su valor lo fija cada firma, no lo determina esta página. Sobre un lote testigo de ${cabezasTipo} novillos de ${pesoTipo} kg al precio de referencia de hoy ($${fmt(novillo)}/kg vivo, ${lastUpdate}), el lote vale unos $${fmt(valorLoteTipo)} y una comisión de venta del ${comisionVentaPct}% equivale a cerca de $${fmt(comisionVentaTipo)}. Es un ejemplo orientativo con precio de referencia del mercado (INMAG/MAG), no una cotización.`,
   },
   {
     question: '¿La comisión la paga el comprador o el vendedor?',
@@ -90,7 +90,7 @@ const FAQ = [
 
 export const metadata: Metadata = {
   title: `Cuánto cobra de comisión una consignataria de hacienda (${lastUpdate.slice(0, 4)})`,
-  description: `La comisión de una consignataria de hacienda se ubica habitualmente en torno al 3% al 5% del importe de la operación más IVA, y la fija cada firma —no esta página. Comisión de venta vs compra, gastos de comercialización y ejemplo sobre un lote al precio de referencia (novillo $${fmt(novillo)}/kg vivo, ${lastUpdate}).`,
+  description: `La comisión de venta de una consignataria de hacienda se ubica habitualmente en torno al 2% al 4% del importe de la operación —a veces hasta el 5%—, típicamente cerca del 3% más IVA, y la fija cada firma, no esta página. Comisión de venta vs compra, gastos de comercialización y ejemplo sobre un lote al precio de referencia (novillo $${fmt(novillo)}/kg vivo, ${lastUpdate}).`,
   keywords: [
     'cuanto cobra de comision una consignataria de hacienda',
     'cuanto cobra una consignataria',
@@ -105,7 +105,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: 'Cuánto cobra de comisión una consignataria de hacienda',
-    description: `La comisión ronda habitualmente el 3% al 5% del importe de la operación más IVA, y la fija cada firma. Venta vs compra, gastos y ejemplo sobre un lote al precio de referencia (${lastUpdate}).`,
+    description: `La comisión de venta ronda habitualmente el 2% al 4% del importe de la operación —a veces hasta el 5%—, típicamente cerca del 3% más IVA, y la fija cada firma. Venta vs compra, gastos y ejemplo sobre un lote al precio de referencia (${lastUpdate}).`,
     url: PAGE_URL,
     type: 'article',
     images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
@@ -161,10 +161,11 @@ export default function CuantoCobraDeComisionUnaConsignatariaPage() {
 
         {/* Answer-first: primera oración autocontenida y citable */}
         <p className="speakable-content text-zinc-200 text-base mb-4">
-          La <strong>comisión de una consignataria de hacienda</strong> se ubica habitualmente{' '}
-          <strong>en torno al 3% al 5% del importe de la operación</strong> más IVA, y la fija cada
-          firma —es un porcentaje de <strong>referencia del mercado</strong>, no fijado por esta
-          página.
+          La <strong>comisión de venta de una consignataria de hacienda</strong> se ubica
+          habitualmente{' '}
+          <strong>en torno al 2% al 4% del importe de la operación</strong> —a veces hasta el 5%—,
+          típicamente cerca del <strong>3%</strong> más IVA, y la fija cada firma: es un porcentaje
+          de <strong>referencia del mercado</strong>, no fijado por esta página.
         </p>
 
         <p className="mb-4">
@@ -221,7 +222,9 @@ export default function CuantoCobraDeComisionUnaConsignatariaPage() {
                 <td className="px-3 py-2 text-zinc-200 font-medium">Comisión de venta</td>
                 <td className="px-3 py-2 text-zinc-400">Vendedor</td>
                 <td className="px-3 py-2 text-zinc-400">Importe de la venta</td>
-                <td className="px-3 py-2 text-right text-zinc-300">3%–5% + IVA</td>
+                <td className="px-3 py-2 text-right text-zinc-300">
+                  2%–4% (hasta 5%) · típ. ~3% + IVA
+                </td>
               </tr>
               <tr className="border-b border-terminal-border/60 align-top">
                 <td className="px-3 py-2 text-zinc-200 font-medium">Comisión de compra</td>

@@ -57,12 +57,12 @@ const TERMINOS = [
   {
     name: 'Gastos de venta',
     description:
-      'Costos que se descuentan de la liquidación además de la comisión: fletes, sanidad, guías (DT-e), sellados e IVA cuando corresponde. El productor recibe el neto: valor de venta menos comisión menos gastos.',
+      'Costos que se descuentan de la liquidación además de la comisión: fletes, sanidad, guías de traslado, DT-e, sellados e IVA cuando corresponde. El productor recibe el neto: valor de venta menos comisión menos gastos.',
   },
   {
     name: 'DT-e (Documento de Tránsito electrónico)',
     description:
-      'Documento electrónico de SENASA que ampara el traslado de hacienda entre establecimientos y hacia el destino de venta (remate, feria o frigorífico). Es requisito para mover y vender ganado en Argentina.',
+      'Documento sanitario electrónico de SENASA que ampara el traslado de hacienda entre establecimientos y hacia el destino de venta (remate, feria o frigorífico). Es distinto de la guía de traslado provincial —ligada al boleto de marca—, que acredita la propiedad: la DT-e es sanitaria y la emite SENASA. Es requisito para mover y vender ganado en Argentina.',
     url: `${BASE_URL}/dte`,
   },
 ]
@@ -74,7 +74,7 @@ const TERMINOS = [
 const HOWTO_STEPS = [
   {
     name: 'Tener el RENSPA y las DT-e al día',
-    text: 'Antes de vender, el establecimiento debe tener el RENSPA vigente y las DT-e (guías electrónicas de SENASA) en regla. Sin RENSPA activo y sin la documentación sanitaria, la hacienda no puede moverse ni venderse.',
+    text: 'Antes de vender, el establecimiento debe tener el RENSPA vigente y las DT-e (el documento sanitario de tránsito de SENASA) en regla, además de la guía de traslado provincial que acredita la propiedad. Sin RENSPA activo y sin la documentación sanitaria, la hacienda no puede moverse ni venderse.',
     url: `${BASE_URL}/que-es-el-renspa`,
   },
   {
@@ -110,7 +110,7 @@ const FAQ = [
   {
     question: '¿Qué necesito para vender hacienda?',
     answer:
-      'Para vender hacienda en Argentina necesitás el RENSPA del establecimiento vigente, las DT-e (guías electrónicas de SENASA) que amparen el traslado, y elegir un canal de venta (consignación, remate feria o venta directa). Si vendés por consignación o remate, la consignataria habilitada organiza la operación, garantiza la cobranza y liquida el neto tras descontar comisión y gastos.',
+      'Para vender hacienda en Argentina necesitás el RENSPA del establecimiento vigente, las DT-e (el documento sanitario de tránsito de SENASA) que amparen el traslado, la guía de traslado provincial que acredita la propiedad, y elegir un canal de venta (consignación, remate feria o venta directa). Si vendés por consignación o remate, la consignataria habilitada organiza la operación, garantiza la cobranza y liquida el neto tras descontar comisión y gastos.',
   },
   {
     question: '¿Cuál conviene, remate o venta directa?',
@@ -252,8 +252,8 @@ export default function ComoVenderHaciendaPage() {
         <p className="text-zinc-400 mb-4">
           El ingreso de la consignataria es la comisión de venta: un porcentaje sobre el valor de venta
           de la hacienda, de referencia del mercado, habitualmente entre 3% y 5%. Se descuenta de la
-          liquidación al productor junto con los gastos de venta —fletes, sanidad, guías (DT-e),
-          sellados e IVA cuando corresponde—. El productor recibe el neto: valor de venta menos comisión
+          liquidación al productor junto con los gastos de venta —fletes, sanidad, guías de traslado,
+          DT-e, sellados e IVA cuando corresponde—. El productor recibe el neto: valor de venta menos comisión
           menos gastos. La comisión no la fija esta página: la acuerda cada firma con el productor antes
           de la operación.
         </p>
@@ -270,12 +270,18 @@ export default function ComoVenderHaciendaPage() {
             .
           </li>
           <li>
-            <span className="text-zinc-300">DT-e (guías):</span> el Documento de Tránsito electrónico de
-            SENASA que ampara el traslado de la hacienda hacia el remate, la feria o el frigorífico.{' '}
+            <span className="text-zinc-300">DT-e (Documento de Tránsito electrónico):</span> el
+            documento sanitario de SENASA que ampara el traslado de la hacienda hacia el remate, la
+            feria o el frigorífico.{' '}
             <Link href="/dte" className="text-accent hover:underline">
               Qué es la DT-e
             </Link>
             .
+          </li>
+          <li>
+            <span className="text-zinc-300">Guía de traslado:</span> documento provincial —ligado al
+            boleto de marca— que acredita la propiedad de la hacienda. Es distinto de la DT-e: la guía
+            es provincial y prueba la titularidad; la DT-e es sanitaria y la emite SENASA.
           </li>
           <li>
             <span className="text-zinc-300">Documentación sanitaria:</span> planes de vacunación al día

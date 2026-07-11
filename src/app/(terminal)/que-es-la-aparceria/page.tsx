@@ -62,7 +62,7 @@ const TERMINOS = [
   {
     name: 'Canon',
     description:
-      'Precio cierto y fijo que paga el arrendatario por el uso del campo, típicamente expresado en kilos de novillo o quintales de grano por hectárea y por año. Es el rasgo que separa al arrendamiento de la aparcería: en el arrendamiento hay canon, en la aparcería hay reparto de frutos.',
+      'Precio cierto y fijo que paga el arrendatario por el uso del campo, típicamente expresado en kilos de novillo por hectárea y por mes (o quintales de grano por hectárea y por campaña); el total anual es el canon mensual multiplicado por doce. Es el rasgo que separa al arrendamiento de la aparcería: en el arrendamiento hay canon, en la aparcería hay reparto de frutos.',
     url: `${BASE_URL}/como-se-calcula-el-canon-de-arrendamiento`,
   },
   {

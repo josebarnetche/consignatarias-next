@@ -34,7 +34,7 @@ const comisionTipo = Math.round((importeBruto * comisionPct) / 100)
 const PASOS = [
   {
     name: 'Verificar cabezas y kilos netos',
-    text: 'El primer control es la cantidad de cabezas y el peso. La liquidación parte del peso vivo de balanza y le aplica el desbaste pactado (la merma por ayuno y transporte), que suele ir del 2% al 5%. Los kilos netos son el peso vivo menos ese desbaste: sobre esos kilos, no sobre el peso de balanza, se factura la operación. Conviene cotejar cabezas y kilos con el romaneo y el remito de pesada.',
+    text: 'El primer control es la cantidad de cabezas y el peso. La liquidación parte del peso vivo de balanza y le aplica el desbaste pactado (la merma por ayuno y transporte). La merma física por ayuno y viaje ronda el 5% al 8%, aunque el desbaste comercial que se pacta —sobre todo en venta directa— puede ser menor, del 2% al 4%. Los kilos netos son el peso vivo menos ese desbaste: sobre esos kilos, no sobre el peso de balanza, se factura la operación. Conviene cotejar cabezas y kilos con el romaneo y el remito de pesada.',
     url: `${BASE_URL}/desbaste-de-la-hacienda`,
   },
   {
@@ -48,7 +48,7 @@ const PASOS = [
   },
   {
     name: 'Restar la comisión de consignación',
-    text: 'La consignataria descuenta su comisión, un porcentaje sobre el importe bruto de venta que remunera el servicio de comercialización. Ronda habitualmente el 3% al 5% más IVA y lo fija cada firma. Es el renglón más grande después del bruto y conviene verificar que el porcentaje coincida con lo pactado.',
+    text: 'La consignataria descuenta su comisión, un porcentaje sobre el importe bruto de venta que remunera el servicio de comercialización. Ronda habitualmente el 2% al 4% más IVA (a veces 5%) y lo fija cada firma. Es el renglón más grande después del bruto y conviene verificar que el porcentaje coincida con lo pactado.',
     url: `${BASE_URL}/cuanto-cobra-de-comision-una-consignataria`,
   },
   {
@@ -84,7 +84,7 @@ const TERMINOS = [
   {
     name: 'Desbaste',
     description:
-      'Descuento porcentual que se aplica al peso vivo de balanza para reflejar la merma por ayuno y transporte. Habitualmente del 2% al 5%, se pacta antes de la operación y convierte el peso bruto en kilos netos facturables.',
+      'Descuento porcentual que se aplica al peso vivo de balanza para reflejar la merma por ayuno y transporte. La merma física ronda el 5% al 8%, aunque el desbaste comercial pactado puede ser menor —del 2% al 4%, típico en venta directa—; se pacta antes de la operación y convierte el peso bruto en kilos netos facturables.',
     url: `${BASE_URL}/desbaste-de-la-hacienda`,
   },
   {
@@ -96,7 +96,7 @@ const TERMINOS = [
   {
     name: 'Comisión de consignación',
     description:
-      'Porcentaje sobre el importe bruto que cobra la consignataria por comercializar la hacienda. Ronda el 3% al 5% más IVA, lo fija cada firma y se descuenta en la liquidación; no lo determina esta página.',
+      'Porcentaje sobre el importe bruto que cobra la consignataria por comercializar la hacienda. Ronda el 2% al 4% más IVA (a veces 5%), lo fija cada firma y se descuenta en la liquidación; no lo determina esta página.',
     url: `${BASE_URL}/cuanto-cobra-de-comision-una-consignataria`,
   },
   {
@@ -123,12 +123,12 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿Qué me descuentan de la liquidación de hacienda?',
-    answer: `De la liquidación de hacienda se descuentan, sobre el importe bruto de venta, la comisión de la consignataria (habitualmente 3%–5% más IVA), los gastos de comercialización (guía y DT-e, flete, impuesto de sellos, sanidad y tasas) y el IVA que corresponda según la condición fiscal del productor. Lo que queda es el neto a cobrar. Sobre un lote testigo de ${cabezasTipo} novillos de ${pesoTipo} kg al precio de referencia de hoy ($${fmt(novillo)}/kg vivo, ${lastUpdate}), el bruto ronda $${fmt(importeBruto)} y una comisión del ${comisionPct}% equivale a unos $${fmt(comisionTipo)}. Es un ejemplo orientativo con precio de referencia del mercado (INMAG/MAG), no una cotización.`,
+    answer: `De la liquidación de hacienda se descuentan, sobre el importe bruto de venta, la comisión de la consignataria (habitualmente 2%–4% más IVA, a veces 5%), los gastos de comercialización (guía y DT-e, flete, impuesto de sellos, sanidad y tasas) y el IVA que corresponda según la condición fiscal del productor. Lo que queda es el neto a cobrar. Sobre un lote testigo de ${cabezasTipo} novillos de ${pesoTipo} kg al precio de referencia de hoy ($${fmt(novillo)}/kg vivo, ${lastUpdate}), el bruto ronda $${fmt(importeBruto)} y una comisión del ${comisionPct}% equivale a unos $${fmt(comisionTipo)}. Es un ejemplo orientativo con precio de referencia del mercado (INMAG/MAG), no una cotización.`,
   },
   {
     question: '¿Qué es la comisión de consignación?',
     answer:
-      'La comisión de consignación es el porcentaje que cobra la consignataria por comercializar la hacienda del productor. Se calcula sobre el importe bruto de venta, ronda el 3% al 5% más IVA y lo fija cada firma —no esta página. Es el descuento más grande de la liquidación después del propio bruto y conviene verificar que el porcentaje coincida con lo pactado antes de la operación.',
+      'La comisión de consignación es el porcentaje que cobra la consignataria por comercializar la hacienda del productor. Se calcula sobre el importe bruto de venta, ronda el 2% al 4% más IVA (a veces 5%) y lo fija cada firma —no esta página. Es el descuento más grande de la liquidación después del propio bruto y conviene verificar que el porcentaje coincida con lo pactado antes de la operación.',
   },
   {
     question: '¿Qué son los gastos de comercialización?',
@@ -262,7 +262,8 @@ export default function ComoLeerUnaLiquidacionDeHaciendaPage() {
               <tr className="border-b border-terminal-border/60 align-top">
                 <td className="px-3 py-2 text-zinc-200 font-medium">Desbaste</td>
                 <td className="px-3 py-2 text-zinc-400">
-                  Merma pactada (2%–5%) que se descuenta del peso vivo para dar los kilos netos.
+                  Merma que se descuenta del peso vivo para dar los kilos netos (física ~5%–8%;
+                  desbaste comercial pactado 2%–4%).
                 </td>
                 <td className="px-3 py-2 text-zinc-500">−</td>
               </tr>
@@ -283,14 +284,24 @@ export default function ComoLeerUnaLiquidacionDeHaciendaPage() {
               <tr className="border-b border-terminal-border/60 align-top">
                 <td className="px-3 py-2 text-zinc-200 font-medium">Comisión de consignación</td>
                 <td className="px-3 py-2 text-zinc-400">
-                  Porcentaje de la consignataria sobre el bruto (3%–5% + IVA), lo fija cada firma.
+                  Porcentaje de la consignataria sobre el bruto (2%–4% + IVA, a veces 5%), lo fija
+                  cada firma.
                 </td>
                 <td className="px-3 py-2 text-zinc-500">−</td>
               </tr>
               <tr className="border-b border-terminal-border/60 align-top">
-                <td className="px-3 py-2 text-zinc-200 font-medium">Guía y DT-e</td>
+                <td className="px-3 py-2 text-zinc-200 font-medium">Guía / boleto de marca</td>
                 <td className="px-3 py-2 text-zinc-400">
-                  Documentación de tránsito de SENASA que ampara el movimiento de la hacienda.
+                  Documento provincial o municipal que acredita la propiedad de la hacienda para su
+                  traslado.
+                </td>
+                <td className="px-3 py-2 text-zinc-500">−</td>
+              </tr>
+              <tr className="border-b border-terminal-border/60 align-top">
+                <td className="px-3 py-2 text-zinc-200 font-medium">DT-e</td>
+                <td className="px-3 py-2 text-zinc-400">
+                  Documento de Tránsito electrónico de SENASA (sanitario) que ampara el movimiento
+                  entre establecimientos.
                 </td>
                 <td className="px-3 py-2 text-zinc-500">−</td>
               </tr>
@@ -361,7 +372,8 @@ export default function ComoLeerUnaLiquidacionDeHaciendaPage() {
         </h2>
         <p className="mb-4">
           La <strong>comisión de consignación</strong> es el descuento mayor después del bruto: un
-          porcentaje sobre el importe de venta —habitualmente del 3% al 5% más IVA— que remunera a
+          porcentaje sobre el importe de venta —habitualmente del 2% al 4% más IVA, a veces 5%— que
+          remunera a
           la consignataria por comercializar la hacienda, y que{' '}
           <Link
             href="/cuanto-cobra-de-comision-una-consignataria"

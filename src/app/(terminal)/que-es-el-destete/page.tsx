@@ -37,7 +37,7 @@ const PASOS = [
   {
     name: 'Definir el tipo de destete: convencional, precoz o hiperprecoz',
     text:
-      'El destete convencional se hace a los 6–8 meses (150–200 días). El destete precoz se adelanta a los 60–90 días para aliviar a la vaca en años secos o de poca oferta forrajera, y el hiperprecoz baja de los 60 días. Cuanto antes se desteta, más manejo y suplementación requiere el ternero.',
+      'El destete convencional se hace a los 6–8 meses (180–240 días). El destete precoz se adelanta a los 60–90 días para aliviar a la vaca en años secos o de poca oferta forrajera, y el hiperprecoz baja de los 60 días. Cuanto antes se desteta, más manejo y suplementación requiere el ternero.',
   },
   {
     name: 'Separar el ternero de la vaca y adaptarlo',
@@ -102,7 +102,7 @@ const FAQ = [
   {
     question: '¿A qué edad se desteta el ternero?',
     answer:
-      'El destete convencional se hace a los 6–8 meses de edad (unos 150–200 días), cuando el ternero ya rumia y puede vivir de pasto o ración sin la leche de la madre. El momento exacto depende de la oferta forrajera, la condición de la vaca y el sistema del campo; en años buenos se estira, en años secos se adelanta.',
+      'El destete convencional se hace a los 6–8 meses de edad (unos 180–240 días), cuando el ternero ya rumia y puede vivir de pasto o ración sin la leche de la madre. El momento exacto depende de la oferta forrajera, la condición de la vaca y el sistema del campo; en años buenos se estira, en años secos se adelanta.',
   },
   {
     question: '¿Qué es el destete precoz y cuándo conviene?',
