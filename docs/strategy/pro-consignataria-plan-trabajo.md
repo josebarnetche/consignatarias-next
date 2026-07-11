@@ -33,8 +33,14 @@ Vender **PRO Fundador ARS 45.000/mes (o 120.000/90d prepago), máx 5-10 pilotos 
 - **Epic D — Distribución auditable:** tabla `promotion_campaigns` (slug/remate/canal/sent/clicked/lead) para responder "¿a cuántos llegó mi remate?". Hoy no hay log por remate/campaña.
 - **Epic E — Reporte mensual como performance:** cambiar el PDF de "ficha institucional" a "performance del mes" (vistas, contactos, leads, remates, distribución, vs período anterior, top remate, recomendaciones). Reenviar/descargar desde dashboard.
 
-## P1/P2 sueltos (del audit, no verificados)
-Videos PRO usan `slug` no `canonical_slug`; `remates/hoy` usa UTC (no ART); `Mis reportes` vs download con reglas de acceso opuestas; "Destacado del Mes" se confunde con destaque PRO pago; ranking provincial ignora remates propios; promesa de citas IA no está en dashboard por firma. **Verificar cada uno antes de tocar.**
+## P1/P2 sueltos — VERIFICADOS (11-jul) · el audit NO define P3/P4, corta en P2
+- ✅ **Videos PRO (P1) — ARREGLADO (commit 00578f1).** `videos/route.ts` consultaba `consignatarias.slug`, columna que NO existe en prod (solo `canonical_slug`, verificado por information_schema) → GET y POST daban 404 siempre, feature muerta. Ahora resuelve canónico + `canonical_slug`.
+- ✅ **remates/hoy UTC (P2) — ARREGLADO (commit 00578f1).** La API usaba `toISOString()` (UTC); de noche mostraba el día equivocado. Ahora `Intl.DateTimeFormat en-CA` timeZone Buenos_Aires. La página ya estaba bien.
+- ✅ **PRO por puntos vencido activo (P1) — YA CUBIERTO (899edef).** `redeem-points` escribe `subscriptions(status=active, current_period_end)`; el helper period-aware ya lo expira. Sin trabajo extra.
+- ⏳ **Ranking provincial ignora owner-remates (P2) — REAL, atado a Epic B.** `ranking/route.ts` lee solo `remates.json`. Se arregla al enchufar el DAL mergeado (Epic B), no antes.
+- 🔵 **NO tocados (no son bugs, son decisiones):** "Destacado del Mes" naming (`api/featured/check`) = renombre cosmético; "Mis reportes" vs descarga = política de acceso a definir; módulo de citas IA por firma = feature nueva, requiere que `ai_referrals` sea atribuible por firma. Pedir criterio a José si se quieren abordar.
+
+**El resto de P1 = Epics C/D/E (leads, distribución, reporte-performance).**
 
 ## Próximo paso sugerido
 Decisión 1 (helper único) **cerrada** — commit **899edef**, deploy Ready. Siguiente:
