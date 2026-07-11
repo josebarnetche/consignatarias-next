@@ -14,26 +14,28 @@ consignatarias.com.ar es la **capa de datos-hub**; los partners complementarios 
 
 ## 1) Nota de outreach a Origino (LISTA — enviar con OK de José)
 
-**Contexto (clave):** NO es un primer contacto. José ya había planteado hace un tiempo una **alianza Memola Medios SAS ↔ Origino para difundir la tokenización de RWA en el NEA**. La nota RETOMA esa idea, ahora con una plataforma concreta (consignatarias.com.ar / Mi Ganado) sobre la mesa.
-**⚠️ José: confirmá/ajustá** el saludo (¿fue a Diego Heinrich / Nicolás Balestrini directo?) y cualquier detalle de aquella conversación — yo no sé la historia exacta.
+**Contexto (real, corregido):** NO hay contacto previo. José los sigue desde **Carnes Validadas** (recuerda el **caso Pilagá**), los cruzó en **Cryptopal** hace unos años, y la **obligatoriedad de la caravana electrónica** le terminó de confirmar que el futuro del sector va por ahí (identidad digital / trazabilidad / RWA). Quiere genuinamente hacer algo juntos. **Tono: hiper-humanizado, de persona a persona, primera persona singular — nada corporativo.**
+**⚠️ José: poné el nombre** (Diego Heinrich CEO / Nicolás Balestrini COO) y ajustá lo que quieras.
 
-**Para:** info@origino.io (o el contacto directo con quien lo hablaste) · **Reply-To:** agro@memola.com.ar
-**Asunto:** Retomamos la alianza Memola × Origino: ahora con la plataforma para difundir RWA en el NEA
+**Para:** info@origino.io (o el personal de Diego/Nicolás si lo tenés) · **Reply-To:** agro@memola.com.ar
+**Asunto:** Los sigo desde Carnes Validadas — me gustaría que hagamos algo juntos
 
-> Hola [Diego / Nicolás / equipo de Origino]:
+> Hola [Diego / Nicolás]:
 >
-> Hace un tiempo les había planteado la idea de una alianza entre Memola Medios SAS y Origino para difundir la tokenización de RWA en el NEA. La sigo teniendo muy presente — y ahora tenemos la pieza que le faltaba: una plataforma concreta.
+> Te escribo medio de corazón y sin vueltas. Hace años que los vengo siguiendo: los conocí con Carnes Validadas —me acuerdo del caso Pilagá— y me parece que los crucé en Cryptopal hace un tiempo. Así que no les escribo de golpe, les escribo después de tenerles el ojo puesto un buen rato.
 >
-> Desde Memola construimos consignatarias.com.ar, el portal de datos del mercado ganadero argentino (índice del novillo INMAG, índice de arrendamiento, calendario de remates y directorio, con API y servidor MCP abiertos). Tiene una sección, Mi Ganado, donde el productor carga su hacienda y ve su valor actualizado al índice cada día: es decir, productores del NEA y de todo el país justo en el momento en que piensan su rodeo como activo. El público y el momento exactos para dar el paso a certificar, trazar y tokenizar con ustedes.
+> La verdad es que cuando hicieron obligatoria la caravana electrónica terminé de confirmar algo que venía masticando: el futuro del ganado argentino pasa por la identidad digital del animal. Ustedes ya lo estaban construyendo cuando casi nadie lo miraba, y eso tiene muchísimo mérito.
 >
-> Retomo entonces aquella idea, ahora con algo tangible: podríamos integrar Mi Ganado con Origino —un camino directo del productor hacia la trazabilidad/tokenización— y difundir juntos el RWA ganadero en el NEA, cada uno desde lo suyo: ustedes, la infraestructura de identidad del animal; nosotros, la audiencia, el dato y la distribución.
+> Yo vengo del campo. Armé consignatarias.com.ar, un portal de datos del mercado ganadero —el índice del novillo, el arrendamiento, los remates— y adentro hay una sección, Mi Ganado, donde el productor carga su hacienda y ve su valor al día. Es, básicamente, el productor mirando su rodeo como un activo. Y ahí siento que nuestros mundos se tocan: ustedes le dan identidad y trazabilidad al animal; yo tengo al productor y la audiencia justo en ese momento.
 >
-> ¿Coordinamos una charla para bajarla a algo concreto?
+> No te vengo a pedir nada puntual. Me interesa de verdad que hagamos algo juntos —difundir el RWA ganadero en el NEA, integrar Mi Ganado con Origino, lo que le encontremos sentido—. Me late que hay algo grande ahí y prefiero decírtelo de frente.
 >
-> Un abrazo,
-> José Barnetche — Memola Medios SAS · consignatarias.com.ar · agro@memola.com.ar
+> ¿Nos tomamos un café, virtual o real, y lo charlamos?
+>
+> Un abrazo grande,
+> José Barnetche · consignatarias.com.ar (Memola Medios SAS) · agro@memola.com.ar
 
-*(Sin adjuntos de prensa; es una nota de relación. Enviar desde el pipeline SMTP, Reply-To agro@.)*
+*(Sin adjuntos; es una carta, no un pitch. Enviar desde el pipeline SMTP, Reply-To agro@.)*
 
 ---
 
