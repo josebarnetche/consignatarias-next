@@ -7,6 +7,79 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.138.0] — 2026-07-11
+
+### PRO Consignataria — hardening del producto vendible (audit de 3 sprints)
+
+José pegó un audit consolidado de qué hace vendible a PRO Consignataria (Motor 1, ARS 45.000/mes). Verificado contra el código real —los hallazgos de un audit por lectura pueden estar stale— y cerrados los bloqueantes:
+
+- **Fuente única de plan** (`getConsignatariaPlanStatus`): antes `getFeaturedSlugs` (directorio) y `getEntityTier` (`/go`, perfil, crons) divergían — una firma con `featured=true` se veía PRO en un lado y FREE en otro, y ninguna validaba `current_period_end`. Ahora un solo helper: PRO = destaque manual permanente **o** suscripción activa con período vigente. `getEntityTier` y el reporte PDF delegan; el directorio aplica la misma regla en batch.
+- **Reporte PDF pago** dejó de usar la columna muerta `subscriptions.consignataria_slug` (dejaba `isPro=false` siempre y sacaba el branding PRO del reporte) → resuelve por `entity_type`/`entity_slug`.
+- **Schema de `/planes`**: estaba en USD stale con "Prueba gratis", y como `SaaSPricingSchema` lee `currency` (no `priceCurrency`) renderizaba "ARS 49". Corregido a los precios ARS reales (74k/451k/45k), sin trial, FAQ en ARS vía Rebill.
+- **Revalidación de `/go`**: el webhook de Rebill revalidaba el perfil pero no la landing `/go` (el QR seguía FREE tras pagar) → ahora revalida ambas en alta y baja.
+- **Cancelación con gracia hasta fin de mes**: Rebill cancela inmediato y terminal (no tiene `cancel_at_period_end` ni gracia nativa — confirmado en su doc; ojo que Rebill ≠ Rebilly). Como el mes ya está pagado, la lectura honra la suscripción cancelada mientras `current_period_end` siga vigente y ahí cae a FREE (igual que PRO Usuario). El flip en las páginas estáticas lo hace el rebuild diario.
+- **Videos PRO** (feature muerta): `/api/consignatarias/[slug]/videos` consultaba `consignatarias.slug`, columna que no existe en prod (solo `canonical_slug`, verificado por `information_schema`) → GET y POST devolvían 404 siempre. Ahora resuelve el canónico.
+- **`/api/remates/hoy`** calculaba "hoy" con `toISOString()` (UTC) pese al comentario "Argentina timezone" → de noche mostraba el día equivocado. Ahora usa hora de Buenos Aires (la página ya lo hacía bien; solo la API).
+
+### Housekeeping
+
+- **Índice de Calidad de la Hacienda**: se prototipó un indicador de calidad derivado del MAG y se removió el mismo día — la rueda del MAG mide grado comercial, no calidad real (genética/cabaña), y la muestra es insuficiente para publicar el dato.
+
+## [1.137.0] — 2026-07-11
+
+### Swarm GEO/AEO — citabilidad para motores de IA
+
+Cuando hoy le preguntás a ChatGPT o Perplexity el precio del novillo o cuándo hay remate, la respuesta sale de acá — y se productizó para que siga pasando:
+
+- **Más de 50 answer-pages** (4 tandas: informacionales, tier-2, tier-3 práctico/comparativo y una pilar) reescritas answer-first con schema de citabilidad. Baseline de citation-audit tomado para medir NO→CITADA a fin de mes.
+- **Schema de arrendamiento + `llms-full.txt`** generados; `knowsAbout` en el Organization (autoridad de entidad para AEO); schema de citabilidad en la cola de páginas de autoridad.
+- **Repaso factual** del swarm: 17 correcciones en 10 páginas + fix del canon de arrendamiento (es kg/ha por MES, no por año).
+- **Enlazado interno** hacia `/mercado/arrendamiento` reforzado (5→13 páginas) + FAQ "¿cuál es el índice novillo arrendamiento mensual?" en el hub (schema + visible).
+- **Widget embebible del índice** + caja "insertá/citá" para backlinks, con el header scoping que permite framear el widget (`frame-ancestors`) sin abrir el resto del sitio.
+- Claim de IA **verificado en vivo**: ChatGPT devuelve nuestro INMAG exacto y nos cita; Perplexity nos cita como fuente primaria del precio y del calendario de remates.
+
+### Analytics y performance
+
+- **Sesiones fantasma de GA4**: los eventos de engagement pasivo (`time_on_page`, `scroll_depth`) creaban sesiones sin pageview → ahora se emiten por beacon sin gatillar sesión.
+- **Hero en webp** (mobile/desktop) + contraste del footer + title de índice arrendamiento.
+
+## [1.136.0] — 2026-07-10
+
+### Perfil de consignataria v3 — ficha branded
+
+El color de marca dejaba de funcionar como fondo del logo (64/104 firmas sin color curado, logos no blanqueables) → pasa a ser ACENTO. Nuevo `IdentityMark`: con logo, tarjeta clara legible siempre; sin logo, isotipo de consignatarias sobre el color de marca (curado, o derivado del nombre por hash a una banda que lee bien sobre carbón, así toda firma tiene color estable). Layout de ficha: cover band + avatar montado sobre el borde + nombre grande + stat tiles.
+
+### SEO, datos e integridad
+
+- **`Place.name` siempre presente** en el schema Event (warning GSC "Falta el campo name en location"): fallback ciudad → provincia → "Argentina" en los 3 generadores.
+- **Provincia por domicilio** de la consignataria como fallback del scraper (mapa autoritativo `consignataria-provinces.json`, 103/104 firmas web-verificadas por CUIT/sitio/localidad) — solo cuando el remate quedó sin provincia; no pisa la del evento.
+- **Scraper**: colapsa remates duplicados (P0 de integridad), recupera ~20 remates de Canal Rural (mudó de dominio), y alias de slug variante (reggi-y-cia→reggi).
+- **Deploy**: arreglados el build intermitente y 579 errores de runtime en las imágenes OG.
+
+## [1.135.0] — 2026-07-09
+
+### Fixes de precisión — reloj de remates e inputs de arrendamiento
+
+- **Estado del remate contra el reloj REAL de ART**: un remate de mañana a la tarde aparecía FINALIZADO de noche (el `today` shifteado a mañana después de las 20:00 chocaba con el reloj real → `date===today` + hora pasada = "completed"). `getEffectiveStatus` ahora computa contra la fecha/hora real de ART (el `today` shifteado queda solo para filtrar listados); el badge del perfil suma el estado MAÑANA.
+- **Inputs decimales de arrendamiento**: no se podía cargar el contrato real (1,6 kg/ha) — los `type=number` no aceptan la coma argentina y el `step` invalidaba decimales. Nuevo `DecimalNumberInput` (coma o punto, sin saltos al tipear, sin cero a la izquierda).
+
+## [1.134.0] — 2026-07-09
+
+### PRO Consignataria, vendible y self-serve
+
+- **CTAs muertos arreglados**: los 3 links a PRO Consignataria (único plan vendible hoy) eran anclas rotas (`/planes#consignataria` sin ancla; `/enterprise#consignataria`, sección inexistente) → el usuario nunca llegaba a la oferta. Ancla agregada, CTA al WhatsApp de ventas, y el plan sube de último a segundo y destacado (glow ámbar).
+- **Copy en lenguaje llano**: fuera la jerga (sales-led, alcance, badge, observatorio); headline "¿Sos consignataria? Que más productores vean tus remates" + beneficios claros (avisamos cada remate a +500 productores, perfil con distintivo dorado, analytics de perfil, página y QR propios).
+- **Activación self-serve** (`/consignatarias/activar`): buscás tu firma en el directorio (~104) y activás PRO sola vía checkout de Rebill, sin humano en el medio. Antes cada firma le escribía a José y él onboardeaba a mano (cuello de botella).
+
+## [1.133.0] — 2026-07-09
+
+### Cuenta nudge-first + economía de coins (karma)
+
+- **Nudge de cuenta** (`AccountNudge`, bus pub/sub): invita a crear cuenta gratis con Google en momentos de alta intención (calc, alerta, contacto), nunca bloquea la acción, snooze 24h. Fiel a la doctrina "el productor es el valor".
+- **Karma con saldo gastable** (`karma_ledger`, append-only + `spend_karma()` atómica con advisory lock): el usuario gana coins usando la terminal (value-events, con techo diario anti-gaming en el engagement pasivo) y los gasta para desbloquear funciones — sin pagar plata. La reputación (hacienda/marcas/antigüedad) se sincroniza al saldo con top-up idempotente; el usuario ve un solo número entero.
+- **Primer gate por coins**: la descarga del histórico INMAG completo (2015→ CSV) se desbloquea con coins (30), con defensa en profundidad — el endpoint `/api/market/inmag-export` revalida el unlock server-side (403 si no; antes servía el CSV a cualquiera). El precio del día y la serie reciente siguen gratis.
+- **Tracking plan** como fuente de verdad (~55 eventos) + auditoría + hook de modo-test (Playwright), sin GTM. Fixes P0: `calendar_download` pasa por el ledger (GA4 + value_events); los leads de perfil (teléfono/email/web) emiten value-event — el índice de valor deja de estar ciego al lead no-WhatsApp.
+
 ## [1.132.0] — 2026-07-07
 
 ### Arrendamiento: una sola captura, en la posición que convierte
