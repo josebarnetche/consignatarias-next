@@ -18,21 +18,19 @@ consignatarias.com.ar es la **capa de datos-hub**; los partners complementarios 
 **⚠️ José: poné el nombre** (Diego Heinrich CEO / Nicolás Balestrini COO) y ajustá lo que quieras.
 
 **Para:** info@origino.io (o el personal de Diego/Nicolás si lo tenés) · **Reply-To:** agro@memola.com.ar
-**Asunto:** Los sigo desde Carnes Validadas — me gustaría que hagamos algo juntos
+**Asunto:** Los sigo hace años — creo que hay algo para hacer juntos
 
 > Hola [Diego / Nicolás]:
 >
-> Te escribo medio de corazón y sin vueltas. Hace años que los vengo siguiendo: los conocí con Carnes Validadas —me acuerdo del caso Pilagá— y me parece que los crucé en Cryptopal hace un tiempo. Así que no les escribo de golpe, les escribo después de tenerles el ojo puesto un buen rato.
+> Hace años que sigo lo que hacen. Primero como Carnes Validadas —tengo presente el caso Pilagá—, después los crucé en Cryptopal, y cuando la caravana electrónica se volvió obligatoria terminé de entender lo que ustedes venían diciendo desde antes: que el futuro del ganado argentino iba a pasar por la identidad del animal. Lo estaban construyendo cuando casi nadie lo miraba.
 >
-> La verdad es que cuando hicieron obligatoria la caravana electrónica terminé de confirmar algo que venía masticando: el futuro del ganado argentino pasa por la identidad digital del animal. Ustedes ya lo estaban construyendo cuando casi nadie lo miraba, y eso tiene muchísimo mérito.
+> Yo vengo del campo. Armé consignatarias.com.ar, un portal de datos del mercado ganadero: el índice del novillo, el arrendamiento, los remates. Adentro hay una sección, Mi Ganado, donde el productor carga su hacienda y ve su valor actualizado cada día. En el fondo es el productor mirando su rodeo como un activo, quizás por primera vez. Ahí es donde nuestros trabajos se tocan: ustedes le dan identidad y trazabilidad al animal; yo tengo al productor en el momento exacto en que empieza a pensarlo así.
 >
-> Yo vengo del campo. Armé consignatarias.com.ar, un portal de datos del mercado ganadero —el índice del novillo, el arrendamiento, los remates— y adentro hay una sección, Mi Ganado, donde el productor carga su hacienda y ve su valor al día. Es, básicamente, el productor mirando su rodeo como un activo. Y ahí siento que nuestros mundos se tocan: ustedes le dan identidad y trazabilidad al animal; yo tengo al productor y la audiencia justo en ese momento.
+> No escribo para pedir nada. Escribo porque creo que hay algo para hacer juntos —difundir el RWA ganadero en el NEA, integrar Mi Ganado con Origino, lo que tenga sentido— y prefiero decirlo antes que dejarlo pasar.
 >
-> No te vengo a pedir nada puntual. Me interesa de verdad que hagamos algo juntos —difundir el RWA ganadero en el NEA, integrar Mi Ganado con Origino, lo que le encontremos sentido—. Me late que hay algo grande ahí y prefiero decírtelo de frente.
+> Si les interesa, me gustaría conversarlo.
 >
-> ¿Nos tomamos un café, virtual o real, y lo charlamos?
->
-> Un abrazo grande,
+> Saludos,
 > José Barnetche · consignatarias.com.ar (Memola Medios SAS) · agro@memola.com.ar
 
 *(Sin adjuntos; es una carta, no un pitch. Enviar desde el pipeline SMTP, Reply-To agro@.)*
