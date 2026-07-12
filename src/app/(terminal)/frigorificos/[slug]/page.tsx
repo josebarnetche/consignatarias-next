@@ -5,6 +5,9 @@ import frigorificosData from '@/lib/data/frigorificos.json'
 import frigorificosEnrichedData from '@/lib/data/frigorificos-enriched.json'
 import existenciasData from '@/lib/data/existencias-bovinas.json'
 import { getFrigorificoProfile } from '@/lib/dal/frigorificos'
+import { getFrigorificoPlanStatus, frigorificoPuedeInterprovincial } from '@/lib/features'
+import { createServiceClient } from '@/lib/supabase'
+import CompraMayorista, { type VitrinaProduct } from './CompraMayorista'
 import { BreadcrumbSchema } from '@/components/seo/JsonLd'
 import {
   getSenasaRecord,
@@ -348,6 +351,29 @@ export default async function FrigorificoDetailPage({
   const session = await getCurrentSession()
   const isPro = session.tier === 'pro'
 
+  // Vitrina de carne: el gate es el plan del DUEÑO del frigorífico (no el del
+  // visitante). Sólo se muestra el catálogo + RFQ si el frigorífico es PRO y
+  // cargó productos activos. El gate regulatorio (envío interprovincial) se
+  // resuelve por constancia verificada, no por el dato scrapeado.
+  const [ownerPlan, puedeInterprovincial] = await Promise.all([
+    getFrigorificoPlanStatus(cuit),
+    frigorificoPuedeInterprovincial(cuit),
+  ])
+  let vitrinaProducts: VitrinaProduct[] = []
+  if (ownerPlan.isPro) {
+    const svc = createServiceClient()
+    if (svc) {
+      const { data } = await svc
+        .from('frigorifico_products')
+        .select('id, producto, categoria, estado, unidad_venta, unidades_por_bulto, pedido_minimo, precio_modo, segmento, interprovincial')
+        .eq('frigorifico_cuit', cuit)
+        .eq('status', 'active')
+        .order('segmento', { ascending: true })
+      vitrinaProducts = (data as VitrinaProduct[]) || []
+    }
+  }
+  const tieneVitrina = ownerPlan.isPro && vitrinaProducts.length > 0
+
   // Enrichment: data-derived summary, province neighbours, cattle stock.
   const summary = frigorificoSummary({ name, matricula: basicF.matricula, stage: basicF.stage, localidad, province, grupoEmpresario, tipo, volumenFaena })
   const relatedFrigs = relatedFrigorificos(cuit, province)
@@ -456,6 +482,18 @@ export default async function FrigorificoDetailPage({
           </div>
         </div>
       </div>
+
+      {/* Vitrina de carne + RFQ mayorista — sólo si el frigorífico es PRO y cargó
+          productos. El gate de envío interprovincial se pasa al form (§3.3). */}
+      {tieneVitrina && (
+        <CompraMayorista
+          cuit={cuit}
+          frigorificoName={name}
+          frigoProvince={province}
+          puedeInterprovincial={puedeInterprovincial}
+          products={vitrinaProducts}
+        />
+      )}
 
       {/* Data grid */}
       <div className="terminal-panel">

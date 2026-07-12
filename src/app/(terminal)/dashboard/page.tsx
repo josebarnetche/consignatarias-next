@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase'
-import DashboardClient from './DashboardClient'
+import DashboardClient, { type FrigoProduct, type FrigoRfq } from './DashboardClient'
 import ProductorDashboard from './ProductorDashboard'
 import rematesData from '@/lib/data/remates.json'
 import marketPrices from '@/lib/data/market-prices.json'
@@ -370,6 +370,27 @@ export default async function DashboardPage() {
     alreadyRedeemed = false
   }
 
+  // Frigorífico PRO — catálogo de carne + pedidos mayoristas (RFQ) para el panel.
+  let frigoProducts: FrigoProduct[] = []
+  let frigoRfqs: FrigoRfq[] = []
+  if (frigorifico) {
+    const [prodRes, rfqRes] = await Promise.all([
+      service
+        .from('frigorifico_products')
+        .select('id, producto, categoria, estado, presentacion, unidad_venta, unidades_por_bulto, pedido_minimo, precio_modo, precio_desde, precio_kg, segmento, disponibilidad, interprovincial, status')
+        .eq('frigorifico_cuit', frigorifico.cuit)
+        .order('created_at', { ascending: false }),
+      service
+        .from('frigorifico_rfq')
+        .select('id, provincia_entrega, tipo_comprador, nombre, empresa, whatsapp, email, mensaje, producto_snapshot, estado, created_at')
+        .eq('frigorifico_cuit', frigorifico.cuit)
+        .order('created_at', { ascending: false })
+        .limit(50),
+    ])
+    frigoProducts = (prodRes.data as FrigoProduct[]) || []
+    frigoRfqs = (rfqRes.data as FrigoRfq[]) || []
+  }
+
   return (
     <DashboardClient
       email={user.email!}
@@ -391,6 +412,8 @@ export default async function DashboardPage() {
       subscription={subscription}
       frigorifico={frigorifico}
       frigoClaims={frigoClaims || []}
+      frigoProducts={frigoProducts}
+      frigoRfqs={frigoRfqs}
       dteCount={dteCount}
       alreadyRedeemed={alreadyRedeemed}
     />

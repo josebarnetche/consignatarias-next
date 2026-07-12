@@ -8,7 +8,7 @@ import WelcomeChecklist from '@/components/onboarding/WelcomeChecklist'
 import ProfileProgressTracker from '@/components/onboarding/ProfileProgressTracker'
 import { WelcomeHero, ProActivatedModule, type NextStep } from '@/components/welcome'
 import { WhatsAppIconButton } from '@/components/share/WhatsAppShare'
-import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2, Inbox } from 'lucide-react'
+import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2, Inbox, Package } from 'lucide-react'
 import QRCode from '@/components/QRCode'
 import { UpgradeConfirmTracker } from '@/components/UpgradeConfirmTracker'
 import MarketIntelPanel from '@/components/MarketIntelPanel'
@@ -104,6 +104,38 @@ interface FrigoClaim {
   created_at: string
 }
 
+export interface FrigoProduct {
+  id: number
+  producto: string
+  categoria: string | null
+  estado: string | null
+  presentacion?: string | null
+  unidad_venta: string | null
+  unidades_por_bulto: number | null
+  pedido_minimo: number | null
+  precio_modo: string | null
+  precio_desde?: number | null
+  precio_kg?: number | null
+  segmento: string | null
+  disponibilidad?: string | null
+  interprovincial: boolean
+  status: string | null
+}
+
+export interface FrigoRfq {
+  id: number
+  provincia_entrega: string
+  tipo_comprador: string | null
+  nombre: string | null
+  empresa: string | null
+  whatsapp: string | null
+  email: string
+  mensaje: string | null
+  producto_snapshot: unknown
+  estado: string | null
+  created_at: string
+}
+
 interface Lead {
   id: number
   name: string
@@ -135,6 +167,8 @@ interface Props {
   subscription: Subscription | null
   frigorifico?: Frigorifico | null
   frigoClaims?: FrigoClaim[]
+  frigoProducts?: FrigoProduct[]
+  frigoRfqs?: FrigoRfq[]
   dteCount?: number
   alreadyRedeemed?: boolean
 }
@@ -145,11 +179,12 @@ function formatDate(d: string) {
   return `${parts[2]}/${parts[1]}`
 }
 
-type TabKey = 'resumen' | 'leads' | 'remates' | 'editar' | 'resultados' | 'plan' | 'frigorifico'
+type TabKey = 'resumen' | 'leads' | 'remates' | 'editar' | 'resultados' | 'plan' | 'frigorifico' | 'catalogo' | 'pedidos'
 
 export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
   auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, marksCount = 0, leads = [], totalWatchers, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
+  frigoProducts = [], frigoRfqs = [],
   dteCount = 0, alreadyRedeemed = false,
 }: Props) {
   const showChecklist = consignataria && completedFields && Object.values(completedFields).filter(Boolean).length < 5
@@ -259,6 +294,10 @@ export default function DashboardClient({
   tabs.push({ key: 'plan', label: 'Mi plan', icon: <CreditCard className="w-3.5 h-3.5" /> })
   if (frigorifico) {
     tabs.push({ key: 'frigorifico', label: 'Frigorífico', icon: <Building2 className="w-3.5 h-3.5" /> })
+    if (frigorifico.verified) {
+      tabs.push({ key: 'catalogo', label: `Catálogo (${frigoProducts.length})`, icon: <Package className="w-3.5 h-3.5" /> })
+      tabs.push({ key: 'pedidos', label: `Pedidos (${frigoRfqs.length})`, icon: <Inbox className="w-3.5 h-3.5" /> })
+    }
   }
 
   const hasPendingClaim = claims.some(c => c.status === 'pending') || frigoClaims.some(c => c.status === 'pending')
@@ -997,6 +1036,16 @@ export default function DashboardClient({
           )}
         </>
       )}
+
+      {/* ============ TAB: CATALOGO (productos de carne) ============ */}
+      {activeTab === 'catalogo' && frigorifico && (
+        <FrigoProductManager cuit={frigorifico.cuit} initial={frigoProducts} />
+      )}
+
+      {/* ============ TAB: PEDIDOS (RFQ mayoristas) ============ */}
+      {activeTab === 'pedidos' && frigorifico && (
+        <FrigoPedidos rfqs={frigoRfqs} />
+      )}
     </div>
   )
 }
@@ -1512,6 +1561,152 @@ function FrigorificoEditForm({ cuit, initial }: { cuit: string; initial: { phone
             {feedback && <span className={`text-xxs font-terminal ${feedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{feedback.msg}</span>}
           </div>
         </form>
+      </div>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  FRIGORIFICO — CATALOGO (productos de carne)                        */
+/* ------------------------------------------------------------------ */
+
+const EMPTY_PRODUCT = {
+  producto: '', categoria: 'vacuno', estado: 'fresco', presentacion: 'suelto',
+  unidad_venta: 'kg', unidades_por_bulto: '', pedido_minimo: '1', precio_modo: 'consultar',
+  segmento: 'carnicerias', interprovincial: false,
+}
+
+function FrigoProductManager({ cuit, initial }: { cuit: string; initial: FrigoProduct[] }) {
+  const [items, setItems] = useState<FrigoProduct[]>(initial)
+  const [form, setForm] = useState(EMPTY_PRODUCT)
+  const [showForm, setShowForm] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [feedback, setFeedback] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
+
+  const inputClass = 'w-full bg-terminal-bg border border-terminal-border text-zinc-200 text-xxs font-terminal px-2 py-1.5 rounded-terminal focus:outline-none focus:border-accent transition-colors'
+
+  async function handleAdd(e: React.FormEvent) {
+    e.preventDefault()
+    if (!form.producto.trim()) { setFeedback({ type: 'err', msg: 'El nombre del producto es obligatorio' }); return }
+    setSaving(true); setFeedback(null)
+    try {
+      const res = await fetch(`/api/frigorificos/${cuit}/products`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...form,
+          unidades_por_bulto: form.unidades_por_bulto ? Number(form.unidades_por_bulto) : null,
+          pedido_minimo: form.pedido_minimo ? Number(form.pedido_minimo) : 1,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setFeedback({ type: 'err', msg: data.error || 'Error al agregar' }); return }
+      setItems(prev => [data as FrigoProduct, ...prev])
+      setForm(EMPTY_PRODUCT); setShowForm(false)
+      setFeedback({ type: 'ok', msg: 'Producto agregado' })
+    } catch { setFeedback({ type: 'err', msg: 'Error de conexión' }) }
+    finally { setSaving(false) }
+  }
+
+  async function handleDelete(id: number) {
+    if (!confirm('¿Eliminar este producto?')) return
+    try {
+      const res = await fetch(`/api/frigorificos/${cuit}/products/${id}`, { method: 'DELETE' })
+      if (res.ok) setItems(prev => prev.filter(p => p.id !== id))
+    } catch { /* noop */ }
+  }
+
+  return (
+    <div className="terminal-panel">
+      <div className="terminal-panel-header flex items-center justify-between">
+        <span className="text-zinc-200 text-label tracking-widest">CATÁLOGO MAYORISTA</span>
+        <button onClick={() => setShowForm(s => !s)} className="text-xxs font-terminal text-accent hover:underline">{showForm ? 'Cancelar' : '+ Agregar producto'}</button>
+      </div>
+      <div className="px-panel py-3 space-y-3">
+        <p className="text-[11px] text-zinc-500 font-terminal">Cargá tus productos de carne/embutidos. Los compradores mayoristas te piden cotización desde tu perfil público.</p>
+
+        {showForm && (
+          <form onSubmit={handleAdd} className="space-y-3 border border-terminal-border rounded-terminal p-3">
+            <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Producto *</label><input type="text" value={form.producto} onChange={e => setForm(f => ({ ...f, producto: e.target.value }))} className={inputClass} placeholder="Ej: Caja mayorista salamín x300u" /></div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Categoría</label>
+                <select value={form.categoria} onChange={e => setForm(f => ({ ...f, categoria: e.target.value }))} className={inputClass}>
+                  {['vacuno','cerdo','cordero','embutidos','elaborados','combos'].map(c => <option key={c} value={c}>{c}</option>)}
+                </select></div>
+              <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Estado</label>
+                <select value={form.estado} onChange={e => setForm(f => ({ ...f, estado: e.target.value }))} className={inputClass}>
+                  {['fresco','curado','congelado','envasado_al_vacio'].map(c => <option key={c} value={c}>{c.replace(/_/g,' ')}</option>)}
+                </select></div>
+              <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Venta por</label>
+                <select value={form.unidad_venta} onChange={e => setForm(f => ({ ...f, unidad_venta: e.target.value }))} className={inputClass}>
+                  {['kg','caja','unidad','pack','media_res'].map(c => <option key={c} value={c}>{c.replace(/_/g,' ')}</option>)}
+                </select></div>
+              <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">U/bulto</label><input type="number" min={0} value={form.unidades_por_bulto} onChange={e => setForm(f => ({ ...f, unidades_por_bulto: e.target.value }))} className={inputClass} placeholder="300" /></div>
+              <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Pedido mín.</label><input type="number" min={1} value={form.pedido_minimo} onChange={e => setForm(f => ({ ...f, pedido_minimo: e.target.value }))} className={inputClass} /></div>
+              <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Segmento</label>
+                <select value={form.segmento} onChange={e => setForm(f => ({ ...f, segmento: e.target.value }))} className={inputClass}>
+                  {['carnicerias','gastronomia','distribuidores','minorista'].map(c => <option key={c} value={c}>{c}</option>)}
+                </select></div>
+            </div>
+            <div className="flex items-center gap-3">
+              <button type="submit" disabled={saving} className="px-4 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors disabled:opacity-50 rounded-terminal">{saving ? 'Guardando…' : 'Agregar'}</button>
+            </div>
+          </form>
+        )}
+        {feedback && <p className={`text-xxs font-terminal ${feedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{feedback.msg}</p>}
+
+        {items.length === 0 ? (
+          <p className="text-xxs text-zinc-600 font-terminal py-2">Todavía no cargaste productos.</p>
+        ) : (
+          <div className="divide-y divide-terminal-border">
+            {items.map(p => (
+              <div key={p.id} className="py-2 flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="text-data font-terminal text-zinc-200 truncate">{p.producto}</p>
+                  <p className="text-[10px] text-zinc-500 font-terminal">{[p.categoria, p.estado, p.unidad_venta, p.unidades_por_bulto ? `${p.unidades_por_bulto} u/bulto` : null].filter(Boolean).join(' · ')}{p.status === 'paused' ? ' · PAUSADO' : ''}</p>
+                </div>
+                <button onClick={() => handleDelete(p.id)} className="text-[10px] font-terminal text-negative hover:underline flex-shrink-0">Eliminar</button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  FRIGORIFICO — PEDIDOS (RFQ mayoristas recibidos)                   */
+/* ------------------------------------------------------------------ */
+
+function FrigoPedidos({ rfqs }: { rfqs: FrigoRfq[] }) {
+  return (
+    <div className="terminal-panel">
+      <div className="terminal-panel-header"><span className="text-zinc-200 text-label tracking-widest">PEDIDOS MAYORISTAS</span></div>
+      <div className="px-panel py-3">
+        {rfqs.length === 0 ? (
+          <p className="text-xxs text-zinc-600 font-terminal py-2">Todavía no recibiste pedidos. Cuando un comprador pida cotización desde tu perfil, aparece acá.</p>
+        ) : (
+          <div className="divide-y divide-terminal-border">
+            {rfqs.map(r => {
+              const snap = Array.isArray(r.producto_snapshot) ? (r.producto_snapshot as Array<{ producto?: string; cantidad?: number }>) : []
+              return (
+                <div key={r.id} className="py-3 space-y-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-data font-terminal text-zinc-200">{r.empresa || r.nombre || r.email}</span>
+                    <span className="text-[10px] text-zinc-500 font-terminal tabular-nums">{formatDate(r.created_at.slice(0, 10))}</span>
+                  </div>
+                  <p className="text-[11px] text-zinc-400 font-terminal">Entrega en <span className="text-zinc-200">{r.provincia_entrega}</span>{r.tipo_comprador ? ` · ${r.tipo_comprador}` : ''}</p>
+                  {snap.length > 0 && <p className="text-[11px] text-zinc-400 font-terminal">{snap.map(s => `${s.cantidad ?? ''} × ${s.producto ?? ''}`.trim()).join(' · ')}</p>}
+                  {r.mensaje && <p className="text-[11px] text-zinc-500 font-terminal italic">«{r.mensaje}»</p>}
+                  <div className="flex items-center gap-3 pt-0.5">
+                    {r.whatsapp && <a href={`https://wa.me/${r.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="text-[10px] font-terminal text-accent hover:underline">WhatsApp</a>}
+                    <a href={`mailto:${r.email}`} className="text-[10px] font-terminal text-accent hover:underline">{r.email}</a>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
       </div>
     </div>
   )
