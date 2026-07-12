@@ -861,25 +861,25 @@ export default function RematesPage() {
         <div className="border-b border-terminal-border px-panel py-1.5 hidden md:flex items-center gap-6 flex-wrap">
           <div className="flex items-center gap-1.5">
             <span className="text-xxs text-zinc-500 uppercase">Total:</span>
-            <span className="text-data tabular-nums text-zinc-300 font-terminal">{auctions.length}</span>
+            <span className="stat-countup text-data tabular-nums text-zinc-300 font-terminal" style={{ animationDelay: '0ms' }}>{auctions.length}</span>
             <span className="text-xxs text-zinc-500">remates</span>
           </div>
           <div className="text-terminal-border text-xxs select-none">|</div>
           <div className="flex items-center gap-1.5">
             <span className="text-xxs text-zinc-500 uppercase">Cabezas est.:</span>
-            <span className="text-data tabular-nums text-zinc-300 font-terminal">
+            <span className="stat-countup text-data tabular-nums text-zinc-300 font-terminal" style={{ animationDelay: '60ms' }}>
               ~{totalHeads.toLocaleString('es-AR')}
             </span>
           </div>
           <div className="text-terminal-border text-xxs select-none">|</div>
           <div className="flex items-center gap-1.5">
             <span className="text-xxs text-zinc-500 uppercase">Provincias:</span>
-            <span className="text-data tabular-nums text-zinc-300 font-terminal">{uniqueProvinces}</span>
+            <span className="stat-countup text-data tabular-nums text-zinc-300 font-terminal" style={{ animationDelay: '120ms' }}>{uniqueProvinces}</span>
           </div>
           <div className="text-terminal-border text-xxs select-none">|</div>
           <div className="flex items-center gap-1.5">
             <span className="text-xxs text-zinc-500 uppercase">Hoy:</span>
-            <span className={`text-data tabular-nums font-terminal ${todayAuctions.length > 0 ? 'text-positive' : 'text-zinc-500'}`}>
+            <span className={`stat-countup text-data tabular-nums font-terminal ${todayAuctions.length > 0 ? 'text-positive' : 'text-zinc-500'}`} style={{ animationDelay: '180ms' }}>
               {todayAuctions.length}
             </span>
           </div>

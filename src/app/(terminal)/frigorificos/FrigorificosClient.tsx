@@ -551,7 +551,7 @@ export default function FrigorificosPage() {
                   <th className="w-20"></th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody key={`${sortField}-${sortDir}`}>
                 {filtered.length === 0 ? (
                   <tr>
                     <td colSpan={5}>

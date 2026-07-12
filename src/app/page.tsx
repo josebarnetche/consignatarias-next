@@ -434,7 +434,7 @@ export default async function LandingPage() {
           <h2 className="text-2xl md:text-3xl font-medium text-zinc-100 tracking-tight text-center mb-16">
             Cómo funciona
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="reveal-stagger grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Step 1 */}
             <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-8 relative">
               <div className="text-5xl font-bold text-zinc-800 absolute top-4 right-6 select-none">1</div>
@@ -550,7 +550,7 @@ export default async function LandingPage() {
                 mes próximo. <span className="text-sky-400">PDF gratuito con email.</span>
               </p>
 
-              <ul className="space-y-2.5 text-sm font-mono text-zinc-400 mb-8">
+              <ul className="reveal-stagger space-y-2.5 text-sm font-mono text-zinc-400 mb-8">
                 <li className="flex items-start gap-3">
                   <span className="text-sky-400 font-mono">→</span>
                   INMAG diario + comparable interanual real en USD oficial y blue

@@ -137,11 +137,15 @@ export default function ConsignatariasDirectoryClient({
 
         {filtered.map((entry, i) => (
           <Link
-            key={entry.slug}
+            // key incluye el orden → remonta y re-dispara row-enter al reordenar
+            // (restagger tipo Bloomberg), estable al filtrar por búsqueda.
+            key={`${sortBy}-${entry.slug}`}
             href={`/consignatarias/${entry.slug}`}
-            className={`group border-b border-terminal-border hover:bg-zinc-800/50 hover:shadow-panel-hover transition-colors block rounded-terminal row-enter`}
+            className={`group relative overflow-hidden border-b border-terminal-border hover:bg-zinc-800/50 transition-colors block rounded-terminal row-enter`}
             style={i < 20 ? { animationDelay: `${i * 30}ms` } : undefined}
           >
+            {/* Riel de acento a la izquierda al hover (scaleX/opacity, GPU-safe). */}
+            <span aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-0.5 bg-accent origin-left scale-x-0 opacity-0 transition duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100 group-hover:opacity-100" />
             {/* MOBILE */}
             <div className="md:hidden p-3 space-y-1">
               <div className="flex items-center justify-between">

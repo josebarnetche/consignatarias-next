@@ -696,6 +696,22 @@
   .reveal-init { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
 
+/* Stagger de hijos DENTRO de una sección que entra al viewport. Solo para
+   secciones con SECUENCIA real (pasos 1→2→3, lista) — NO en todas (presupuesto
+   de moción). Estado oculto scopeado bajo .reveal-init → degrada solo con el
+   media query global. Duración = token slow (0.4s). */
+.reveal-init .reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1), transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-init.reveal-in .reveal-stagger > * { opacity: 1; transform: none; }
+.reveal-init.reveal-in .reveal-stagger > *:nth-child(1) { transition-delay: 40ms; }
+.reveal-init.reveal-in .reveal-stagger > *:nth-child(2) { transition-delay: 120ms; }
+.reveal-init.reveal-in .reveal-stagger > *:nth-child(3) { transition-delay: 200ms; }
+.reveal-init.reveal-in .reveal-stagger > *:nth-child(4) { transition-delay: 280ms; }
+.reveal-init.reveal-in .reveal-stagger > *:nth-child(5) { transition-delay: 360ms; }
+
 /* ------------------------------------------------------------------ */
 /*  Interacción global — se propaga a TODOS los botones/inputs/cards   */
 /*  (no solo a los primitivos .terminal-*). Bajo nivel, bajo riesgo.   */

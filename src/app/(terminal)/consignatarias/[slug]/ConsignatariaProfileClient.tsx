@@ -747,19 +747,19 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
         {/* STAT TILES — el pulso de la firma de un vistazo. */}
         <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-terminal-border border-b border-terminal-border [&>div:nth-child(2)]:border-l-0 sm:[&>div]:border-l">
           <div className="px-panel py-3">
-            <div className="text-xl sm:text-2xl font-bold text-zinc-100 tabular-nums leading-none">{auctions.length}</div>
+            <div className="stat-countup text-xl sm:text-2xl font-bold text-zinc-100 tabular-nums leading-none" style={{ animationDelay: '0ms' }}>{auctions.length}</div>
             <div className="text-xxs uppercase tracking-widest text-zinc-500 mt-1.5">Remates</div>
           </div>
           <div className="px-panel py-3">
-            <div className="text-xl sm:text-2xl font-bold text-accent tabular-nums leading-none">{upcoming.length}</div>
+            <div className="stat-countup text-xl sm:text-2xl font-bold text-accent tabular-nums leading-none" style={{ animationDelay: '60ms' }}>{upcoming.length}</div>
             <div className="text-xxs uppercase tracking-widest text-zinc-500 mt-1.5">Próximos</div>
           </div>
           <div className="px-panel py-3 border-t border-terminal-border sm:border-t-0">
-            <div className="text-xl sm:text-2xl font-bold text-zinc-100 tabular-nums leading-none">{provinces.length || 1}</div>
+            <div className="stat-countup text-xl sm:text-2xl font-bold text-zinc-100 tabular-nums leading-none" style={{ animationDelay: '120ms' }}>{provinces.length || 1}</div>
             <div className="text-xxs uppercase tracking-widest text-zinc-500 mt-1.5">{provinces.length === 1 ? 'Provincia' : 'Provincias'}</div>
           </div>
           <div className="px-panel py-3 border-t border-terminal-border sm:border-t-0">
-            <div className="text-xl sm:text-2xl font-bold text-zinc-100 tabular-nums leading-none">{historial.last90Count}</div>
+            <div className="stat-countup text-xl sm:text-2xl font-bold text-zinc-100 tabular-nums leading-none" style={{ animationDelay: '180ms' }}>{historial.last90Count}</div>
             <div className="text-xxs uppercase tracking-widest text-zinc-500 mt-1.5">Últimos 90 d</div>
           </div>
         </div>

@@ -256,7 +256,7 @@ export default function EnterprisePage() {
           {TIERS.map((tier) => (
             <div
               key={tier.name}
-              className="terminal-panel flex flex-col relative"
+              className="terminal-panel hover-lift flex flex-col relative"
               style={
                 tier.highlight
                   ? {

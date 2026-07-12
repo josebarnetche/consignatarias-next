@@ -72,7 +72,7 @@ function ApiCard({ tier }: { tier: ApiTier }) {
   const accent = tier.highlight
   return (
     <div
-      className="terminal-panel flex flex-col relative"
+      className="terminal-panel hover-lift flex flex-col relative"
       style={
         accent
           ? { borderColor: 'rgba(56,189,248,0.5)', boxShadow: '0 0 20px rgba(56,189,248,0.08)' }

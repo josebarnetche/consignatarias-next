@@ -377,6 +377,9 @@ export default function DashboardClient({
         </div>
       )}
 
+      {/* key={activeTab} re-dispara el cross-fade (page-transition) en cada cambio
+          de tab, sin cambiar la semántica de estado. */}
+      <div key={activeTab} className="page-transition space-y-4">
       {/* ============ TAB: RESUMEN ============ */}
       {activeTab === 'resumen' && (
         <>
@@ -1053,6 +1056,7 @@ export default function DashboardClient({
       {activeTab === 'pedidos' && frigorifico && (
         <FrigoPedidos rfqs={frigoRfqs} />
       )}
+      </div>
     </div>
   )
 }
