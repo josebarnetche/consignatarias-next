@@ -57,7 +57,7 @@ export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string;
   'esteban-abelenda': { logo: 'esteban-abelenda.png', color: '#b33a3a', whiteLogo: true, wordmark: true },
   'consignataria-galarraga': { logo: 'consignataria-galarraga.svg', color: '#00253c' },
   'de-la-serna': { logo: 'de-la-serna.png', color: '#1f3d2e' },
-  'pepa-knubel-ferrero': { logo: 'pepa-knubel-ferrero.png', color: '#0078c0' },
+  'pepa-knubel-ferrero': { logo: 'pepa-knubel-ferrero.png', color: '#0078c0', whiteLogo: true },
   'vicar-ganadera': { logo: 'vicar-ganadera.png', color: '#006090' },
 }
 
@@ -126,8 +126,8 @@ export function getBrandWhiteLogo(slug: string): boolean {
   return CONSIGNATARIA_BRANDS[slug]?.whiteLogo ?? false
 }
 
-// Wordmark ancho (horizontal) → en un avatar cuadrado queda una tirita. Se muestra
-// el isotipo sobre el color de marca en su lugar (limpio y legible).
+// Wordmark ancho (horizontal) → en el avatar cuadrado usa padding reducido para
+// ocupar casi todo el ancho y leerse (si no, queda una tirita).
 export function getBrandWordmark(slug: string): boolean {
   return CONSIGNATARIA_BRANDS[slug]?.wordmark ?? false
 }
