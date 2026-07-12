@@ -268,7 +268,10 @@ function QAPageSchema() {
         '@type': 'Answer',
         text: answer,
         url: 'https://www.consignatarias.com.ar/mercado/arrendamiento',
-        dateCreated: arr.date,
+        // arr.date es YYYY-MM-DD (fecha sola). schema.org Answer.dateCreated como
+        // DateTime necesita hora + zona horaria, o Google lo marca "inválido / falta
+        // zona horaria". Se completa a medianoche en hora de Argentina (UTC-3, sin DST).
+        dateCreated: `${arr.date}T00:00:00-03:00`,
       },
     },
   }
