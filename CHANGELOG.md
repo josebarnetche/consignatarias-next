@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.140.0] — 2026-07-12
+
+### Frigorífico PRO — el perfil como superficie de venta de carne
+
+El perfil de frigorífico deja de ser una ficha registral y suma una capa de venta mayorista B2B (infraestructura; se activa cuando un establecimiento reclama su perfil y carga su catálogo real):
+
+- **Vitrina + "Comprá al por mayor" (RFQ)** en el perfil: el comprador elige productos + cantidad de bultos, su provincia de entrega y sus datos, y pide una cotización (es un lead, no un checkout — el cierre es consultivo). Funciona sobre cualquier frigorífico: si no está reclamado, el pedido llega a `agro@memola.com.ar`; si está reclamado, al dueño (con copia). Doble captura: lead al establecimiento + señal a la capa de datos.
+- **Dos gates distintos** (antes confundidos): **comercial** — la vitrina la habilita el plan del **frigorífico dueño** (`getFrigorificoPlanStatus`), corrigiendo un bug que gateaba por el plan del *visitante* (`session.tier`); y **regulatorio** — ofrecer **envío interprovincial** exige tránsito federal **verificado por constancia** (`frigorificoPuedeInterprovincial`), nunca derivado del dato scrapeado. Si la entrega es fuera de la provincia y el establecimiento no lo tiene, el envío se deshabilita con copy honesto.
+- **Panel del dueño**: tabs **Catálogo** (alta/baja de productos de carne/embutidos) y **Pedidos** (los RFQ recibidos, con contacto directo por WhatsApp/mail).
+- **Modelo de datos**: `frigorifico_products` (clon del motor de remates, RLS + GET público con column-list anti-leak), `frigorifico_rfq` (leads mayoristas, privado), y campos `habilitacion_*` en `frigorifico_profiles` para el gate de confianza por constancia.
+- **Fix regulatorio**: el perfil ya no afirma *"Autorizada para tránsito federal"* deducido del Ciclo/Etapa — el ciclo es el eslabón productivo (faena/desposte), no la jurisdicción; afirmarlo por establecimiento sin constancia era un claim sin base.
+
 ## [1.139.0] — 2026-07-11
 
 ### Frigoríficos — paridad con consignatarias (logo + edición self-service)
