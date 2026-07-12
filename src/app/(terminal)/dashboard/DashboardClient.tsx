@@ -94,6 +94,8 @@ interface Frigorifico {
   whatsapp?: string | null
   location?: string | null
   logo_url?: string | null
+  habilitacion_nivel?: string | null
+  habilitacion_verificada?: boolean | null
 }
 
 interface FrigoClaim {
@@ -1032,7 +1034,10 @@ export default function DashboardClient({
             </div>
           </div>
           {frigorifico.verified && (
-            <FrigorificoEditForm cuit={frigorifico.cuit} initial={{ phone: frigorifico.phone || '', email: frigorifico.email || '', website: frigorifico.website || '', description: frigorifico.description || '', whatsapp: frigorifico.whatsapp || '', location: frigorifico.location || '', logoUrl: frigorifico.logo_url || null }} />
+            <>
+              <FrigorificoEditForm cuit={frigorifico.cuit} initial={{ phone: frigorifico.phone || '', email: frigorifico.email || '', website: frigorifico.website || '', description: frigorifico.description || '', whatsapp: frigorifico.whatsapp || '', location: frigorifico.location || '', logoUrl: frigorifico.logo_url || null }} />
+              <HabilitacionForm cuit={frigorifico.cuit} nivel={frigorifico.habilitacion_nivel || ''} verificada={!!frigorifico.habilitacion_verificada} />
+            </>
           )}
         </>
       )}
@@ -1562,6 +1567,74 @@ function FrigorificoEditForm({ cuit, initial }: { cuit: string; initial: { phone
           </div>
         </form>
       </div>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  FRIGORIFICO — HABILITACIÓN (constancia → verificación admin)       */
+/* ------------------------------------------------------------------ */
+
+function HabilitacionForm({ cuit, nivel: initialNivel, verificada }: { cuit: string; nivel: string; verificada: boolean }) {
+  const [nivel, setNivel] = useState(initialNivel)
+  const [nro, setNro] = useState('')
+  const [file, setFile] = useState<File | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [feedback, setFeedback] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
+  const inputClass = 'w-full bg-terminal-bg border border-terminal-border text-zinc-200 text-xxs font-terminal px-2 py-1.5 rounded-terminal focus:outline-none focus:border-accent transition-colors'
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!nivel) { setFeedback({ type: 'err', msg: 'Elegí el nivel de habilitación' }); return }
+    setSaving(true); setFeedback(null)
+    try {
+      const fd = new FormData()
+      fd.append('nivel', nivel)
+      fd.append('nro', nro)
+      if (file) fd.append('doc', file)
+      const res = await fetch(`/api/frigorificos/${cuit}/habilitacion`, { method: 'POST', body: fd })
+      const data = await res.json()
+      if (!res.ok) { setFeedback({ type: 'err', msg: data.error || 'Error al enviar' }); return }
+      setFeedback({ type: 'ok', msg: 'Declaración enviada. La verificamos y activamos tu badge de alcance.' })
+    } catch { setFeedback({ type: 'err', msg: 'Error de conexión' }) }
+    finally { setSaving(false) }
+  }
+
+  return (
+    <div className="terminal-panel">
+      <div className="terminal-panel-header flex items-center justify-between">
+        <span className="text-zinc-200 text-label tracking-widest">HABILITACIÓN SENASA</span>
+        {verificada
+          ? <span className="text-xxs font-terminal px-1.5 py-0.5 border border-positive/30 text-positive rounded-terminal">VERIFICADA</span>
+          : initialNivel
+            ? <span className="text-xxs font-terminal px-1.5 py-0.5 border border-amber-500/30 text-amber-300 rounded-terminal">EN REVISIÓN</span>
+            : null}
+      </div>
+      <form onSubmit={handleSubmit} className="px-panel py-3 space-y-3">
+        <p className="text-[11px] text-zinc-500 font-terminal leading-relaxed">
+          Declará tu nivel de habilitación y subí la constancia. Sólo con <strong className="text-zinc-300">tránsito federal verificado</strong> tu perfil muestra el badge «Habilitado para envío nacional» y podés ofrecer venta interprovincial. La verificamos a mano — nadie se auto-habilita.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Nivel</label>
+            <select value={nivel} onChange={e => setNivel(e.target.value)} className={inputClass}>
+              <option value="">Elegí…</option>
+              <option value="nacional">Nacional (tránsito federal)</option>
+              <option value="provincial">Provincial</option>
+              <option value="municipal">Municipal</option>
+            </select>
+          </div>
+          <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">N° de habilitación</label><input type="text" value={nro} onChange={e => setNro(e.target.value)} className={inputClass} /></div>
+        </div>
+        <div>
+          <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Constancia (PDF/foto)</label>
+          <input type="file" accept="application/pdf,image/jpeg,image/png,image/webp" onChange={e => setFile(e.target.files?.[0] || null)} className="text-xxs font-terminal text-zinc-400 file:mr-2 file:px-2 file:py-1 file:border file:border-terminal-border file:bg-terminal-bg file:text-accent file:rounded-terminal file:text-xxs" />
+        </div>
+        <div className="flex items-center gap-3">
+          <button type="submit" disabled={saving} className="px-4 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors disabled:opacity-50 rounded-terminal">{saving ? 'Enviando…' : 'Enviar declaración'}</button>
+          {feedback && <span className={`text-xxs font-terminal ${feedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{feedback.msg}</span>}
+        </div>
+      </form>
     </div>
   )
 }

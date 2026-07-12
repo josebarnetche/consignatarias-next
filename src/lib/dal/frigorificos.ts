@@ -44,6 +44,9 @@ export interface EnrichedFrigorifico {
   featured: boolean
   claimedByEmail: string | null
   claimedAt: string | null
+  // Habilitación (gate de confianza por constancia — §3 del spec privado)
+  habilitacionNivel: string | null
+  habilitacionVerificada: boolean
 }
 
 const staticData = frigorificosEnriched as StaticFrigorifico[]
@@ -86,6 +89,8 @@ export async function getFrigorificoProfile(cuit: string): Promise<EnrichedFrigo
       featured: data?.featured || false,
       claimedByEmail: data?.claimed_by_email || null,
       claimedAt: data?.claimed_at || null,
+      habilitacionNivel: data?.habilitacion_nivel || null,
+      habilitacionVerificada: data?.habilitacion_verificada || false,
     }
   } catch {
     // Fallback to static-only data if Supabase unavailable
@@ -111,6 +116,8 @@ export async function getFrigorificoProfile(cuit: string): Promise<EnrichedFrigo
       featured: false,
       claimedByEmail: null,
       claimedAt: null,
+      habilitacionNivel: null,
+      habilitacionVerificada: false,
     }
   }
 }

@@ -8,6 +8,7 @@ import { getFrigorificoProfile } from '@/lib/dal/frigorificos'
 import { getFrigorificoPlanStatus, frigorificoPuedeInterprovincial } from '@/lib/features'
 import { createServiceClient } from '@/lib/supabase'
 import CompraMayorista, { type VitrinaProduct } from './CompraMayorista'
+import BadgeConfianza from '@/components/frigorifico/BadgeConfianza'
 import { BreadcrumbSchema } from '@/components/seo/JsonLd'
 import {
   getSenasaRecord,
@@ -335,6 +336,8 @@ export default async function FrigorificoDetailPage({
   const verified = profile?.verified || false
   const logoUrl = profile?.logoUrl || null
   const whatsapp = profile?.whatsapp || null
+  const habilitacionNivel = profile?.habilitacionNivel || null
+  const habilitacionVerificada = profile?.habilitacionVerificada || false
   const grupoEmpresario = profile?.grupoEmpresario || null
   const tipo = profile?.tipo || null
   const direccion = profile?.direccion || null
@@ -458,6 +461,16 @@ export default async function FrigorificoDetailPage({
             <p className="text-xxs font-terminal text-zinc-500 uppercase tracking-widest mt-1">
               Frigorífico{tipo ? ` · ${tipo.replace(/_/g, ' ')}` : ''}
             </p>
+            <div className="mt-2">
+              <BadgeConfianza
+                senasaActive={senasaVigente}
+                senasaScrapedDate={senasaScrapedDate}
+                verified={verified}
+                habilitacionNivel={habilitacionNivel}
+                habilitacionVerificada={habilitacionVerificada}
+                province={province}
+              />
+            </div>
             {/* Answer-first: reconocimiento del CUIT crudo como primera oración citable —
                 el dato exacto (razón social + habilitación) en la 1ª frase de la ficha. */}
             <p className="text-data font-terminal text-zinc-300 leading-relaxed mt-2.5">

@@ -39,7 +39,7 @@ export default async function DashboardPage() {
   // Get user's verified frigorifico (if any)
   const { data: frigorifico } = await service
     .from('frigorifico_profiles')
-    .select('cuit, display_name, verified, phone, email, website, description, whatsapp, location, logo_url')
+    .select('cuit, display_name, verified, phone, email, website, description, whatsapp, location, logo_url, habilitacion_nivel, habilitacion_verificada')
     .eq('claimed_by_email', user.email!)
     .single()
 
