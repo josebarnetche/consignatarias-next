@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.141.0] — 2026-07-12
+
+### Frigorífico PRO — confianza verificada + monetización
+
+Cierra el vertical de venta de carne con la capa de confianza y el motor de caja:
+
+- **Escalera de confianza** (`<BadgeConfianza>`): el perfil muestra su estado real, ordenado por confianza y con copy honesto — desde "No figura en registro SENASA" hasta "Habilitado para envío nacional · Tránsito Federal". La afirmación de alcance nacional vive **sólo** en el estado verificado; el paso por el registro scrapeado se muestra como dato factual con fecha, nunca como afirmación de jurisdicción.
+- **Habilitación por constancia**: el titular declara su nivel (nacional/provincial/municipal), su número y sube la constancia (PDF/foto); un **admin la verifica a mano** antes de encender el badge de alcance. Nadie se auto-habilita — declarar siempre resetea la verificación. Es la vía que activa el envío interprovincial sin depender de inferencias sobre el dato scrapeado.
+- **Checkout PRO Frigorífico** (ARS 45.000/mes, Rebill): "Activar PRO" desde el panel del establecimiento habilita su vitrina de carne + los pedidos mayoristas. Reusa el mecanismo de suscripción entity-agnóstico; el webhook activa/cancela con la misma gracia hasta fin de período que el PRO Consignataria.
+
 ## [1.140.0] — 2026-07-12
 
 ### Frigorífico PRO — el perfil como superficie de venta de carne
