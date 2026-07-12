@@ -58,11 +58,11 @@ export default function IdentityMark({
   // el logo servido desde /logos/ (curado) o subido a storage (la firma sube su
   // propio logo blanco). Prevalece sobre la tarjeta clara.
   const onBrand = getBrandWhiteLogo(slug)
-  // Un wordmark blanco ancho quedaría como una tirita en el cuadrado → mejor el
-  // isotipo sobre el color de marca. Se descarta el logo y cae al caso "sin logo".
-  const wideWhite = onBrand && getBrandWordmark(slug)
+  // Wordmark ancho → SIEMPRE muestra su logo (no el isotipo), pero con padding
+  // reducido para que ocupe casi todo el ancho del cuadrado y se lea.
+  const wordmark = getBrandWordmark(slug)
   const radius = Math.round(size * 0.22)
-  const pad = Math.round(size * 0.16)
+  const pad = Math.round(size * (wordmark ? 0.06 : 0.16))
 
   // Anillo de destaque PRO (cielo, acorde al ProBadge de marca).
   const ring = isPro
@@ -76,8 +76,8 @@ export default function IdentityMark({
     ...ring,
   }
 
-  // ── Caso 1: logo (salvo wordmark blanco ancho → va al isotipo) ───────────
-  if (logo && !wideWhite) {
+  // ── Caso 1: logo ────────────────────────────────────────────────────────
+  if (logo) {
     // whiteLogo → sobre el color de marca; keepColor (multicolor) → sobre carbón;
     // resto → tarjeta hueso (el 99% de los logos están hechos para fondo claro).
     // Si el color de marca es CLARO, el logo blanco no leería → va sobre carbón.
