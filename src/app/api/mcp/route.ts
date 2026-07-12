@@ -614,6 +614,19 @@ export async function POST(req: NextRequest) {
         return rpcResult(id, { content: [{ type: 'text', text: 'Error interno ejecutando la tool.' }], isError: true })
       }
     }
+    // Somos un server tools-only, pero los crawlers de registries/scoring probean
+    // estas capabilities estándar. Antes caían al default → -32601 (400), lo que baja
+    // el score de compatibilidad. Respondemos con listas vacías (spec-correcto).
+    case 'prompts/list':
+      logMcp({ method: 'prompts/list', ok: true, startedAt, meta: rmeta })
+      return rpcResult(id, { prompts: [] })
+    case 'resources/list':
+      logMcp({ method: 'resources/list', ok: true, startedAt, meta: rmeta })
+      return rpcResult(id, { resources: [] })
+    case 'resources/templates/list':
+      logMcp({ method: 'resources/templates/list', ok: true, startedAt, meta: rmeta })
+      return rpcResult(id, { resourceTemplates: [] })
+
     default:
       logMcp({ method: method ?? 'unknown', ok: false, startedAt, meta: { ...rmeta, error: 'unsupported_method' } })
       return rpcError(id, -32601, `Método no soportado: ${method}`)
