@@ -20,6 +20,17 @@ import { getLogoUrl, getIdentityColor, getBrandKeepColor, getBrandWhiteLogo } fr
  * sobre carbón, no sobre tarjeta blanca.
  */
 
+// Luminancia relativa de un hex → true si el color es "claro". Un logo blanco
+// sobre un color de marca claro (dorado, celeste) no lee: en ese caso el avatar
+// va sobre carbón en vez del color.
+function isLightHex(hex: string): boolean {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex)
+  if (!m) return false
+  const n = parseInt(m[1], 16)
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.6
+}
+
 // Isotipo — misma geometría que src/lib/og/brand.tsx / marca/build_logos.py.
 const ISO_RING =
   'M 413.61 379.14 A 200 200 0 1 1 367.83 90.17 L 321.98 158.17 A 118 118 0 1 0 348.99 328.66 Z'
@@ -66,7 +77,9 @@ export default function IdentityMark({
   if (logo) {
     // whiteLogo → sobre el color de marca; keepColor (multicolor) → sobre carbón;
     // resto → tarjeta hueso (el 99% de los logos están hechos para fondo claro).
-    const brandColor = onBrand ? getIdentityColor(slug, name) : null
+    // Si el color de marca es CLARO, el logo blanco no leería → va sobre carbón.
+    const brandRaw = onBrand ? getIdentityColor(slug, name) : null
+    const brandColor = brandRaw && !isLightHex(brandRaw) ? brandRaw : (onBrand ? 'var(--terminal-bg,#0b0b0e)' : null)
     const onCard = !keepColor && !onBrand
     return (
       <div
