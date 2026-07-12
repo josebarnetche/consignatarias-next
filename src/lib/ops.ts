@@ -56,29 +56,32 @@ export interface CronHealthRow {
 /*  Keep workflow_name keys aligned with .github/workflows/*.yml names.*/
 /* ------------------------------------------------------------------ */
 
+// Cadencias derivadas de los cron reales en .github/workflows/*.yml (verificado
+// 2026-07-12). NO incluir: manuales (workflow_dispatch: backfill-inmag/usd,
+// mag-lots-discover) ni deshabilitados (disabled/: mag-remitentes, remate-reminders,
+// new-remate-alerts, monthly-metrics, pro-consignataria-outreach) — no son crons
+// programados y ensuciaban el dashboard como "nunca corrió"/"overdue". Los no
+// listados caen a 24h por default (getCronHealth), así que TODO scheduled va acá.
 export const EXPECTED_CRONS: Record<string, number> = {
-  // Daily (24h cadence)
-  'scrape-auctions': 24,
-  'mag-detailed-prices': 24,
-  'mag-lots-pipeline': 24,
-  'mag-lots-discover': 24,
-  'mag-remitentes': 24,
-  'backfill-inmag': 24,
-  'backfill-usd': 24,
-  'remate-reminders': 24,
-  'new-remate-alerts': 24,
-  'quota-alerts': 24,
-  'post-remate-outreach': 24,
-  'trial-nudges': 24,
-  // Weekly (168h cadence)
+  // Diarios (24h)
+  'scrape-auctions': 24,            // 14:00 ART
+  'post-remate-outreach': 24,       // ventana horaria 14-22h
+  'price-alerts': 24,               // 21:17
+  'trial-nudges': 24,               // 13:17
+  'data-freshness-alert': 24,       // 01:00
+  // Días laborables / parciales — tolerancia mayor para no marcar overdue el finde
+  'mag-detailed-prices': 72,        // Lun-Vie 22:37 → hueco máx ~72h (Vie→Lun)
+  'mag-lots-pipeline': 100,         // Mar/Mié/Vie 22:42 → hueco máx ~96h
+  // Semanales (168h) — lunes
+  'quota-alerts': 168,              // (era 24, mal: corre solo los lunes)
   'weekly-newsletter': 168,
   'weekly-digest': 168,
-  'el-corredor-publish': 168,
-  // Monthly (~720h cadence)
-  'monthly-metrics': 720,
-  'monthly-close': 720,
-  'faena-newsletter': 720,
-  'scrape-senasa-habilitados': 720,
+  // Mensuales (~720h)
+  'arrendamiento-cierre': 720,      // día 3 (faltaba → default 24 daba falso overdue)
+  'el-corredor-publish': 720,       // día 1 (era 168, mal: es mensual)
+  'faena-newsletter': 720,          // día 3
+  'monthly-close': 720,             // día 1
+  'scrape-senasa-habilitados': 720, // día 1
 }
 
 /* ------------------------------------------------------------------ */
