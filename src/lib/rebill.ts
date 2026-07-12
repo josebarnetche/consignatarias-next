@@ -285,8 +285,9 @@ export async function createEnterpriseGrowthLink(
 
 /**
  * createEnterpriseStarterLink — payment link para plan Enterprise Starter (API).
- * USD 99/mes facturado en ARS al equivalente del momento del cobro.
- * Default ARS 139.900 (override con REBILL_ENTERPRISE_STARTER_AMOUNT).
+ * ARS 74.000/mes (override con REBILL_ENTERPRISE_STARTER_AMOUNT), alineado con el
+ * precio publicado en /planes y con createEnterprisePlanLink. El default viejo era
+ * 139.900 (precio stale) → el checkout cobraba distinto de lo que muestra la página.
  * Setea metadata.kind='enterprise_starter_subscription' para que el webhook
  * lo rutee a la rama que actualiza user_subscriptions.api_tier='starter'.
  */
@@ -299,7 +300,7 @@ export async function createEnterpriseStarterLink(
     throw new Error('REBILL_SECRET_KEY is not configured')
   }
 
-  const amount = parseInt(process.env.REBILL_ENTERPRISE_STARTER_AMOUNT || '139900', 10)
+  const amount = parseInt(process.env.REBILL_ENTERPRISE_STARTER_AMOUNT || '74000', 10)
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
 
   const payload = {
