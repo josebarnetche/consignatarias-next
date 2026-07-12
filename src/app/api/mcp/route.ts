@@ -525,6 +525,93 @@ const TOOLS: Tool[] = [
 ]
 
 // ── JSON-RPC 2.0 handler ─────────────────────────────────────────────────────
+// ── Prompts (plantillas reutilizables que el cliente MCP ofrece al usuario) ──
+// Exponer prompts reales (no lista vacía) sube el score en los scoring-engines de
+// MCP y le da a los agentes flujos listos. Cada uno arma un mensaje que instruye al
+// modelo a usar las tools de arriba. Curados del catálogo de 55 preguntas.
+type McpPrompt = {
+  name: string
+  description: string
+  arguments: Array<{ name: string; description: string; required?: boolean }>
+  build: (a: Record<string, string>) => string
+}
+
+const PROMPTS: McpPrompt[] = [
+  {
+    name: 'precio_novillo_hoy',
+    description: 'Precio del novillo hoy (INMAG) en pesos y dólares, con su variación.',
+    arguments: [],
+    build: () => 'Decime cuánto está el novillo hoy en el Mercado Agroganadero, en pesos y en dólares, y cómo varió respecto de la semana pasada. Usá las tools de consignatarias.',
+  },
+  {
+    name: 'panorama_mercado',
+    description: 'Panorama del mercado ganadero hoy: precio, dólar, remates de la semana y consignatarias más activas.',
+    arguments: [],
+    build: () => 'Armá un panorama del mercado ganadero argentino de hoy usando las tools de consignatarias: precio del novillo (INMAG) en ARS y USD, contexto macro (dólar/maíz/faena), remates de esta semana y las consignatarias más activas por cabezas operadas en Cañuelas.',
+  },
+  {
+    name: 'novillo_en_dolares',
+    description: 'Cuánto vale un novillo en dólares hoy, según su peso.',
+    arguments: [{ name: 'kg', description: 'Peso del novillo en kg (default 460)', required: false }],
+    build: (a) => `¿Cuánto vale un novillo de ${a.kg || '460'} kg en dólares hoy? Usá el INMAG y el dólar de las tools de consignatarias.`,
+  },
+  {
+    name: 'actividad_consignataria',
+    description: 'Cuántas cabezas operó una consignataria y a qué precio promedio, en un período.',
+    arguments: [
+      { name: 'firma', description: 'Nombre de la consignataria', required: true },
+      { name: 'periodo', description: 'Período, ej. "este mes" (default: último mes)', required: false },
+    ],
+    build: (a) => `¿Cuántas cabezas operó la consignataria "${a.firma || ''}" en ${a.periodo || 'el último mes'} en el Mercado Agroganadero de Cañuelas, y a qué precio promedio? Usá actividad_consignatarias.`,
+  },
+  {
+    name: 'ranking_consignatarias',
+    description: 'Ranking de consignatarias por cabezas operadas en Cañuelas, con precio promedio.',
+    arguments: [
+      { name: 'periodo', description: 'Período (default: este mes)', required: false },
+      { name: 'categoria', description: 'Categoría: NOVILLO, VACA, etc. (opcional)', required: false },
+    ],
+    build: (a) => `Rankeá las consignatarias por cabezas operadas en ${a.periodo || 'este mes'}${a.categoria ? `, categoría ${a.categoria}` : ''}, con su precio promedio. Usá actividad_consignatarias.`,
+  },
+  {
+    name: 'calcular_arrendamiento',
+    description: 'Calcula el canon de arrendamiento con el índice novillo del mes.',
+    arguments: [
+      { name: 'hectareas', description: 'Cantidad de hectáreas', required: true },
+      { name: 'kg_ha', description: 'Kilos de novillo por hectárea pactados', required: true },
+    ],
+    build: (a) => `Calculá el canon de arrendamiento de ${a.hectareas || ''} hectáreas a ${a.kg_ha || ''} kg de novillo por hectárea, con el índice de arrendamiento del mes. Usá calcular_arrendamiento.`,
+  },
+  {
+    name: 'remates_provincia',
+    description: 'Calendario de remates de hacienda en una provincia.',
+    arguments: [{ name: 'provincia', description: 'Provincia', required: true }],
+    build: (a) => `¿Qué remates de hacienda hay próximamente en ${a.provincia || ''}? Dame fecha, consignataria, tipo y cabezas estimadas. Usá list_remates.`,
+  },
+  {
+    name: 'vender_ahora_o_esperar',
+    description: 'Análisis de si conviene vender ahora o esperar, según el histórico en USD.',
+    arguments: [{ name: 'categoria', description: 'Categoría (default: novillo)', required: false }],
+    build: (a) => `¿Conviene vender ${a.categoria || 'el novillo'} ahora o esperar? Compará el precio actual contra su histórico en dólares reales (últimos 12 meses) con las tools de consignatarias. Aclarar que no es una recomendación financiera.`,
+  },
+  {
+    name: 'valuar_lote',
+    description: 'Valúa un lote de hacienda con el precio de hoy.',
+    arguments: [
+      { name: 'cabezas', description: 'Cantidad de cabezas', required: true },
+      { name: 'kg', description: 'Peso promedio por cabeza', required: true },
+      { name: 'categoria', description: 'Categoría (default: novillo)', required: false },
+    ],
+    build: (a) => `¿Cuánto vale un lote de ${a.cabezas || ''} ${a.categoria || 'novillos'} de ${a.kg || ''} kg cada uno, con el precio de hoy? Usá el INMAG / precios por categoría de consignatarias.`,
+  },
+  {
+    name: 'reporte_semanal',
+    description: 'Reporte semanal del mercado ganadero, listo para publicar.',
+    arguments: [],
+    build: () => 'Armá un reporte semanal del mercado ganadero argentino, listo para publicar: precio del novillo (INMAG) en ARS y USD con su variación, precios por categoría, contexto macro, remates destacados de la semana y consignatarias más activas. Usá las tools de consignatarias y citá la fuente.',
+  },
+]
+
 function rpcResult(id: unknown, result: unknown) {
   return NextResponse.json({ jsonrpc: '2.0', id, result }, { headers: { 'Cache-Control': 'no-store' } })
 }
@@ -583,7 +670,7 @@ export async function POST(req: NextRequest) {
       logMcp({ method: 'initialize', ok: true, startedAt, meta: { ...rmeta, client: params?.clientInfo ?? null } })
       return rpcResult(id, {
         protocolVersion: (params?.protocolVersion as string) || PROTOCOL_VERSION,
-        capabilities: { tools: {} },
+        capabilities: { tools: {}, prompts: {} },
         serverInfo: SERVER_INFO,
         instructions:
           'Datos del mercado ganadero argentino. get_indice_novillo = índice INMAG DIARIO (ponderado por volumen); get_precios_hacienda = precios por categoría, observación SEMANAL — son métricas distintas, no las compares 1:1. Tools de lectura públicas. crear_alerta_precio REQUIERE API key de un plan Enterprise: pasala por el header Authorization: Bearer cnsg_live_... (config "headers" del cliente MCP) o por el parámetro api_key de la tool. Key en https://www.consignatarias.com.ar/cuenta/api-keys',
@@ -619,7 +706,23 @@ export async function POST(req: NextRequest) {
     // el score de compatibilidad. Respondemos con listas vacías (spec-correcto).
     case 'prompts/list':
       logMcp({ method: 'prompts/list', ok: true, startedAt, meta: rmeta })
-      return rpcResult(id, { prompts: [] })
+      return rpcResult(id, {
+        prompts: PROMPTS.map((p) => ({ name: p.name, description: p.description, arguments: p.arguments })),
+      })
+    case 'prompts/get': {
+      const pname = params?.name as string
+      const prompt = PROMPTS.find((p) => p.name === pname)
+      if (!prompt) {
+        logMcp({ method: 'prompts/get', ok: false, startedAt, meta: { ...rmeta, error: 'unknown_prompt', prompt: pname ?? null } })
+        return rpcError(id, -32602, `Prompt desconocido: ${pname}`)
+      }
+      const pargs = (params?.arguments as Record<string, string>) || {}
+      logMcp({ method: 'prompts/get', ok: true, startedAt, meta: { ...rmeta, prompt: pname } })
+      return rpcResult(id, {
+        description: prompt.description,
+        messages: [{ role: 'user', content: { type: 'text', text: prompt.build(pargs) } }],
+      })
+    }
     case 'resources/list':
       logMcp({ method: 'resources/list', ok: true, startedAt, meta: rmeta })
       return rpcResult(id, { resources: [] })
