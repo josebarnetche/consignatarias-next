@@ -171,6 +171,7 @@ interface Props {
   frigoClaims?: FrigoClaim[]
   frigoProducts?: FrigoProduct[]
   frigoRfqs?: FrigoRfq[]
+  frigoIsPro?: boolean
   dteCount?: number
   alreadyRedeemed?: boolean
 }
@@ -186,7 +187,7 @@ type TabKey = 'resumen' | 'leads' | 'remates' | 'editar' | 'resultados' | 'plan'
 export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
   auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, marksCount = 0, leads = [], totalWatchers, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
-  frigoProducts = [], frigoRfqs = [],
+  frigoProducts = [], frigoRfqs = [], frigoIsPro = false,
   dteCount = 0, alreadyRedeemed = false,
 }: Props) {
   const showChecklist = consignataria && completedFields && Object.values(completedFields).filter(Boolean).length < 5
@@ -1033,6 +1034,7 @@ export default function DashboardClient({
               <Link href={`/frigorificos/${frigorifico.cuit}`} className="text-xxs text-accent font-terminal hover:underline">Ver perfil publico →</Link>
             </div>
           </div>
+          {frigorifico.verified && <FrigoProCTA cuit={frigorifico.cuit} email={email} isPro={frigoIsPro} />}
           {frigorifico.verified && (
             <>
               <FrigorificoEditForm cuit={frigorifico.cuit} initial={{ phone: frigorifico.phone || '', email: frigorifico.email || '', website: frigorifico.website || '', description: frigorifico.description || '', whatsapp: frigorifico.whatsapp || '', location: frigorifico.location || '', logoUrl: frigorifico.logo_url || null }} />
@@ -1566,6 +1568,59 @@ function FrigorificoEditForm({ cuit, initial }: { cuit: string; initial: { phone
             {feedback && <span className={`text-xxs font-terminal ${feedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{feedback.msg}</span>}
           </div>
         </form>
+      </div>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  FRIGORIFICO — ACTIVAR PRO (vitrina de carne + RFQ)                 */
+/* ------------------------------------------------------------------ */
+
+function FrigoProCTA({ cuit, email, isPro }: { cuit: string; email: string; isPro: boolean }) {
+  const [loading, setLoading] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+
+  if (isPro) {
+    return (
+      <div className="terminal-panel">
+        <div className="terminal-panel-header flex items-center justify-between">
+          <span className="text-zinc-200 text-label tracking-widest">PRO FRIGORÍFICO</span>
+          <span className="text-xxs font-terminal px-1.5 py-0.5 border border-accent/40 text-accent rounded-terminal">ACTIVO</span>
+        </div>
+        <div className="px-panel py-3">
+          <p className="text-[11px] text-zinc-500 font-terminal">Tu vitrina de carne y el pedido mayorista están publicados en tu perfil. Cargá productos en la pestaña Catálogo.</p>
+        </div>
+      </div>
+    )
+  }
+
+  async function activar() {
+    setLoading(true); setErr(null)
+    try {
+      const res = await fetch('/api/frigorifico/checkout-public', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cuit, email }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.checkoutUrl) { setErr(data.error || 'No se pudo iniciar el pago'); return }
+      window.location.href = data.checkoutUrl
+    } catch { setErr('Error de conexión') }
+    finally { setLoading(false) }
+  }
+
+  return (
+    <div className="terminal-panel">
+      <div className="terminal-panel-header"><span className="text-zinc-200 text-label tracking-widest">ACTIVÁ PRO FRIGORÍFICO</span></div>
+      <div className="px-panel py-3 space-y-3">
+        <p className="text-[11px] text-zinc-400 font-terminal leading-relaxed">
+          Publicá tu <strong className="text-zinc-200">catálogo de carne</strong> y recibí <strong className="text-zinc-200">pedidos mayoristas</strong> de compradores de todo el país directo en tu perfil. <strong className="text-accent">ARS 45.000/mes</strong>, cancelás cuando quieras.
+        </p>
+        <button onClick={activar} disabled={loading} className="px-4 py-2 bg-accent/10 border border-accent/40 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors disabled:opacity-50 rounded-terminal">
+          {loading ? 'Redirigiendo…' : 'Activar PRO · ARS 45.000/mes'}
+        </button>
+        {err && <p className="text-xxs text-negative font-terminal">{err}</p>}
+        <p className="text-[10px] text-zinc-600 font-terminal">Pago seguro vía Rebill. Se activa automáticamente al confirmar.</p>
       </div>
     </div>
   )

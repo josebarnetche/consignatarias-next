@@ -98,6 +98,56 @@ export async function createConsignatariaSubscriptionLink(
   return JSON.parse(responseText)
 }
 
+/**
+ * createFrigorificoSubscriptionLink — link PRO recurrente para un frigorífico.
+ * Igual que el de consignataria pero entity_type='frigorifico' → el webhook (Branch 2)
+ * upserta subscriptions(active) y prende frigorifico_profiles.featured → el perfil
+ * habilita la vitrina de carne + RFQ. Precio anclado al PRO Consignataria (spec §H3).
+ */
+export async function createFrigorificoSubscriptionLink(
+  entitySlug: string,
+  customerEmail: string,
+) {
+  const secretKey = process.env.REBILL_SECRET_KEY
+  if (!secretKey) {
+    throw new Error('REBILL_SECRET_KEY is not configured')
+  }
+
+  const amount = parseInt(process.env.REBILL_FRIGO_PRO_AMOUNT || '45000', 10)
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
+
+  const payload = {
+    title: [{ language: 'es', text: 'PRO Frigorífico — consignatarias.com.ar' }],
+    paymentMethods: [{ methods: ['card'], currency: 'ARS' }],
+    prices: [{ amount, currency: 'ARS' }],
+    metadata: {
+      entitySlug,
+      entityType: 'frigorifico',
+      customerEmail,
+    },
+    redirectUrls: {
+      approved: `${appUrl}/frigorificos/${entitySlug}?upgraded=true`,
+    },
+    isSingleUse: false, // recurring subscription
+  }
+
+  const res = await fetch(`${REBILL_API}/payment-links`, {
+    method: 'POST',
+    headers: {
+      'x-api-key': secretKey,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  const responseText = await res.text()
+  if (!res.ok) {
+    console.error('Rebill frigorifico subscription error:', res.status, responseText)
+    throw new Error(`Rebill error: ${res.status} ${responseText}`)
+  }
+  return JSON.parse(responseText)
+}
+
 export async function cancelSubscription(rebillSubscriptionId: string) {
   const res = await fetch(`${REBILL_API}/subscriptions/${rebillSubscriptionId}/cancel`, {
     method: 'POST',

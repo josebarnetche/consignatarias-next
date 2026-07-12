@@ -307,6 +307,22 @@ export async function POST(request: NextRequest) {
           }
         }
 
+        if (entityType === 'frigorifico') {
+          // El plan PRO ya está otorgado por el upsert de subscriptions (getFrigorifico
+          // PlanStatus lo lee), así que la vitrina de carne se habilita aunque no exista
+          // fila de perfil. Si el frigorífico reclamó, prendemos también featured.
+          await service
+            .from('frigorifico_profiles')
+            .update({ featured: true })
+            .eq('cuit', entitySlug)
+          // El perfil es estático → revalidar para que la vitrina + RFQ aparezcan ya.
+          try {
+            revalidatePath(`/frigorificos/${entitySlug}`)
+          } catch (err) {
+            console.error('revalidatePath frigorifico PRO (activación) failed:', err)
+          }
+        }
+
         break
       }
 
@@ -381,6 +397,20 @@ export async function POST(request: NextRequest) {
               revalidatePath(`/go/${cslug}`)
             } catch (err) {
               console.error('revalidatePath consignataria (cancelación) failed:', err)
+            }
+          }
+
+          if (entSub.entity_type === 'frigorifico') {
+            // Misma gracia que consignataria: featured=false, pero el helper honra la
+            // sub cancelada hasta current_period_end (la vitrina sigue hasta fin de mes).
+            await service
+              .from('frigorifico_profiles')
+              .update({ featured: false })
+              .eq('cuit', entSub.entity_slug)
+            try {
+              revalidatePath(`/frigorificos/${entSub.entity_slug}`)
+            } catch (err) {
+              console.error('revalidatePath frigorifico (cancelación) failed:', err)
             }
           }
         } else {

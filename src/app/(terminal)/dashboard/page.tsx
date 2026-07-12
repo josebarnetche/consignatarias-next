@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase'
+import { getFrigorificoPlanStatus } from '@/lib/features'
 import DashboardClient, { type FrigoProduct, type FrigoRfq } from './DashboardClient'
 import ProductorDashboard from './ProductorDashboard'
 import rematesData from '@/lib/data/remates.json'
@@ -373,6 +374,10 @@ export default async function DashboardPage() {
   // Frigorífico PRO — catálogo de carne + pedidos mayoristas (RFQ) para el panel.
   let frigoProducts: FrigoProduct[] = []
   let frigoRfqs: FrigoRfq[] = []
+  let frigoIsPro = false
+  if (frigorifico) {
+    frigoIsPro = (await getFrigorificoPlanStatus(frigorifico.cuit)).isPro
+  }
   if (frigorifico) {
     const [prodRes, rfqRes] = await Promise.all([
       service
@@ -414,6 +419,7 @@ export default async function DashboardPage() {
       frigoClaims={frigoClaims || []}
       frigoProducts={frigoProducts}
       frigoRfqs={frigoRfqs}
+      frigoIsPro={frigoIsPro}
       dteCount={dteCount}
       alreadyRedeemed={alreadyRedeemed}
     />
