@@ -59,6 +59,9 @@ export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string;
   'de-la-serna': { logo: 'de-la-serna.png', color: '#1f3d2e' },
   'pepa-knubel-ferrero': { logo: 'pepa-knubel-ferrero.png', color: '#0078c0', whiteLogo: true },
   'vicar-ganadera': { logo: 'vicar-ganadera.png', color: '#006090' },
+  // Logos bajados de los sitios oficiales (jul-2026).
+  'haciendas-federales': { logo: 'haciendas-federales.svg', color: '#065f46', whiteLogo: true, wordmark: true },
+  'kofman-y-lissarrague': { logo: 'kofman-y-lissarrague.png', color: '#3090c0', wordmark: true },
 }
 
 /** Frigorífico logos (used elsewhere; no brand-wall color treatment). */
