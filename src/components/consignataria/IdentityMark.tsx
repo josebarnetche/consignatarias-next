@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { getLogoUrl, getIdentityColor, getBrandKeepColor, getBrandWhiteLogo } from '@/lib/data/logo-map'
+import { getLogoUrl, getIdentityColor, getBrandKeepColor, getBrandWhiteLogo, getBrandWordmark } from '@/lib/data/logo-map'
 
 /**
  * IdentityMark — el avatar de una consignataria, intencional SIEMPRE.
@@ -58,6 +58,9 @@ export default function IdentityMark({
   // el logo servido desde /logos/ (curado) o subido a storage (la firma sube su
   // propio logo blanco). Prevalece sobre la tarjeta clara.
   const onBrand = getBrandWhiteLogo(slug)
+  // Un wordmark blanco ancho quedaría como una tirita en el cuadrado → mejor el
+  // isotipo sobre el color de marca. Se descarta el logo y cae al caso "sin logo".
+  const wideWhite = onBrand && getBrandWordmark(slug)
   const radius = Math.round(size * 0.22)
   const pad = Math.round(size * 0.16)
 
@@ -73,8 +76,8 @@ export default function IdentityMark({
     ...ring,
   }
 
-  // ── Caso 1: logo ────────────────────────────────────────────────────────
-  if (logo) {
+  // ── Caso 1: logo (salvo wordmark blanco ancho → va al isotipo) ───────────
+  if (logo && !wideWhite) {
     // whiteLogo → sobre el color de marca; keepColor (multicolor) → sobre carbón;
     // resto → tarjeta hueso (el 99% de los logos están hechos para fondo claro).
     // Si el color de marca es CLARO, el logo blanco no leería → va sobre carbón.
