@@ -232,11 +232,12 @@ export function PriceLineChart({
         style={{
           left: `${((hovered ?? lastPoint).x / VW) * 100}%`,
           top: `${(hovered ?? lastPoint).y}px`,
-          width: hovered ? 9 : 7,
-          height: hovered ? 9 : 7,
+          width: 8,
+          height: 8,
           background: accentColor,
-          transform: 'translate(-50%, -50%)',
+          transform: `translate(-50%, -50%) scale(${hovered ? 1.15 : 0.85})`,
           boxShadow: hovered ? '0 0 0 2px #0a0a0f' : 'none',
+          transition: 'transform 120ms cubic-bezier(0.22,1,0.36,1), box-shadow 120ms cubic-bezier(0.22,1,0.36,1)',
         }}
       />
 

@@ -17,6 +17,10 @@ function useCountUp(target: number, durationMs = 650): number {
     const from = fromRef.current
     const to = target
     if (from === to) return
+    if (typeof window !== 'undefined' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      fromRef.current = to; setVal(to); return
+    }
     const start = performance.now()
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / durationMs)

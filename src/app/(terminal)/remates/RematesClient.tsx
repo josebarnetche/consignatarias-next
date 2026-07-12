@@ -207,7 +207,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
         tabIndex={0}
         onClick={handleRowClick}
         onKeyDown={(e) => { if (e.key === 'Enter') handleRowClick() }}
-        className={`group border-b-2 border-sky-500/30 bg-sky-500/[0.04] hover:bg-sky-500/[0.08] transition-colors duration-75 cursor-pointer relative overflow-hidden shadow-sky-glow${index < 20 ? ' row-enter' : ''}`}
+        className={`group border-b-2 border-sky-500/30 bg-sky-500/[0.04] hover:bg-sky-500/[0.08] focus-visible:outline-none focus-visible:bg-sky-500/[0.10] focus-visible:shadow-[inset_2px_0_0_#38bdf8] transition-colors duration-75 cursor-pointer relative overflow-hidden shadow-sky-glow${index < 20 ? ' row-enter' : ''}`}
         style={index < 20 ? { animationDelay: `${index * 30}ms` } : undefined}
       >
         {/* Amber left accent bar */}
@@ -378,7 +378,7 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
       tabIndex={0}
       onClick={handleRowClick}
       onKeyDown={(e) => { if (e.key === 'Enter') handleRowClick() }}
-      className={`group border-b border-terminal-border hover:bg-zinc-800/50 transition-colors duration-75 cursor-pointer ${
+      className={`group border-b border-terminal-border hover:bg-zinc-800/50 focus-visible:outline-none focus-visible:bg-zinc-800/60 focus-visible:shadow-[inset_2px_0_0_#38bdf8] transition-colors duration-75 cursor-pointer ${
         isToday ? 'bg-sky-500/[0.03]' : ''
       }${index < 20 ? ' row-enter' : ''}`}
       style={index < 20 ? { animationDelay: `${index * 30}ms` } : undefined}
