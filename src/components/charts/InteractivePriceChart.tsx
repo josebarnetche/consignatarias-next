@@ -266,9 +266,9 @@ export function InteractivePriceChart({
               exit={{ opacity: 0 }}
               className="absolute inset-0 flex items-center justify-center bg-zinc-900/60 backdrop-blur-sm z-20"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-5 h-5 border-2 border-sky-500/30 border-t-sky-500 rounded-full animate-spin" />
-                <span className="text-sm text-zinc-400">Cargando datos...</span>
+              <div className="flex flex-col items-center gap-3 w-48">
+                <div className="terminal-skeleton h-1.5 w-full" />
+                <span className="text-xs text-zinc-500 font-terminal uppercase tracking-wider">Cargando serie…</span>
               </div>
             </motion.div>
           )}
@@ -403,14 +403,23 @@ export function InteractivePriceChart({
           {/* End point (current price) */}
           {points.length > 0 && hoveredIndex === null && (
             <g>
+              {/* halo expansivo (ring-pulse) + núcleo estático — la cadencia "live"
+                  del sistema, unificada con los demás indicadores en vivo. */}
               <circle
                 cx={points[points.length - 1].x}
                 cy={points[points.length - 1].y}
                 r={6}
                 fill={accentColor}
+                className="animate-ring-pulse"
+                style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+              />
+              <circle
+                cx={points[points.length - 1].x}
+                cy={points[points.length - 1].y}
+                r={5}
+                fill={accentColor}
                 stroke="#18181b"
                 strokeWidth={2}
-                className="animate-pulse"
               />
             </g>
           )}
