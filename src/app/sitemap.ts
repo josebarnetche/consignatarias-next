@@ -380,6 +380,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     },
     {
+      // Showcase del MCP / compatibilidad con IAs — pieza central de la tesis de
+      // "fuente citable por motores de IA". Estaba FUERA del sitemap y se indexó
+      // tarde, sólo por enlaces internos (home/nav/api-keys). Se agrega para
+      // discovery robusto y prioridad de rastreo.
+      url: `${baseUrl}/mcp`,
+      lastModified: buildDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/precios`,
       lastModified: priceDate,
       changeFrequency: 'daily' as const,
