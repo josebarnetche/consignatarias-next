@@ -106,7 +106,13 @@ function stageName(stage: number): string {
 }
 
 function stageDescription(stage: number): string {
-  if (stage === 1) return 'Planta habilitada para faena y desposte de reses. Autorizada para transito federal.'
+  // La Etapa/Ciclo describe el ESLABÓN PRODUCTIVO (faena/desposte/depósito),
+  // NO la jurisdicción de tránsito. El alcance (federal / provincial / municipal)
+  // depende de la habilitación del establecimiento, que el registro scrapeado no
+  // acredita por sí solo — por eso NO se afirma "tránsito federal" acá (se explica
+  // en genérico más abajo). Afirmarlo por establecimiento sin constancia es un
+  // claim regulatorio sin base.
+  if (stage === 1) return 'Planta habilitada para faena y desposte de reses.'
   if (stage === 2) return 'Planta habilitada para desposte y procesamiento de medias reses. Sin faena propia.'
   return 'Deposito frigorifico habilitado para almacenamiento y conservacion de carnes.'
 }
