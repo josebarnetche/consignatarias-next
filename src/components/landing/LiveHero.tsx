@@ -27,12 +27,14 @@ function prefersReduced() {
 }
 
 /** Cuenta hasta `target`. SSR/hidratación renderizan el valor final (sin flash de 0,
- *  sin mismatch); la animación arranca post-mount y se saltea con reduced-motion. */
-function useCountUp(target: number, duration = 850) {
+ *  sin mismatch); la animación arranca post-mount y se saltea con reduced-motion.
+ *  Arranca en 0.85× para que el tick de entrada se PERCIBA (antes 0.9× casi no se
+ *  movía), con ease-out-quart — sensación de terminal "en vivo" sin ser gimmick. */
+function useCountUp(target: number, duration = 1100) {
   const [val, setVal] = useState(target)
   useEffect(() => {
     if (prefersReduced()) { setVal(target); return }
-    const start = target * 0.9
+    const start = target * 0.85
     const t0 = performance.now()
     let raf = 0
     const tick = (t: number) => {
@@ -54,7 +56,8 @@ export default function LiveHero(p: LiveHeroProps) {
   useEffect(() => setMounted(true), [])
 
   // Stagger con clases delay-* ESTÁTICAS (Tailwind no genera clases armadas en runtime).
-  const DELAY: Record<number, string> = { 0: '', 60: 'delay-75', 120: 'delay-100', 180: 'delay-200', 240: 'delay-300' }
+  // Cadencia pareja de 80ms — waterfall uniforme (antes 75/100/200/300 saltaba).
+  const DELAY: Record<number, string> = { 0: '', 60: 'delay-[80ms]', 120: 'delay-[160ms]', 180: 'delay-[240ms]', 240: 'delay-[320ms]' }
   const reveal = (d: number) =>
     `transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
       mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
@@ -132,10 +135,10 @@ export default function LiveHero(p: LiveHeroProps) {
         <Link
           href="/overview"
           onClick={() => trackCTA('acceder_terminal', 'hero', { context: 'landing-hero', variant: 'default' })}
-          className="inline-flex items-center justify-center gap-2 text-sm font-medium text-[#0b0b0e] bg-zinc-100 hover:bg-white transition-colors rounded py-3 px-6"
+          className="group inline-flex items-center justify-center gap-2 text-sm font-medium text-[#0b0b0e] bg-zinc-100 hover:bg-white transition-colors rounded py-3 px-6"
         >
           Acceder al Terminal
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-200 ease-out group-hover:translate-x-1"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
         </Link>
         <Link
           href="/consignatarias"
@@ -157,9 +160,10 @@ export default function LiveHero(p: LiveHeroProps) {
         <Link
           href="/remates/semana"
           onClick={() => trackCTA('calendario_semana', 'hero', { context: 'landing-hero', variant: 'default' })}
-          className="inline-flex items-center justify-center text-sm font-medium text-zinc-400 hover:text-zinc-200 transition-colors py-3 px-3"
+          className="group inline-flex items-center justify-center gap-1 text-sm font-medium text-zinc-400 hover:text-zinc-200 transition-colors py-3 px-3"
         >
-          Calendario de la semana →
+          Calendario de la semana
+          <span className="inline-block transition-transform duration-200 ease-out group-hover:translate-x-1">→</span>
         </Link>
       </div>
     </div>
