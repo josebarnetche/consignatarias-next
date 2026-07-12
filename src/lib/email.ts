@@ -349,6 +349,79 @@ export async function sendFrigorificoClaimNotificationToAdmin(
 }
 
 /* ------------------------------------------------------------------ */
+/*  FRIGORÍFICO — RFQ (pedido de cotización mayorista)                 */
+/* ------------------------------------------------------------------ */
+
+interface RfqPayload {
+  frigorificoName: string
+  cuit: string
+  provinciaEntrega: string
+  tipoComprador?: string | null
+  nombre?: string | null
+  empresa?: string | null
+  whatsapp?: string | null
+  email: string
+  mensaje?: string | null
+  resumenProductos?: string | null
+}
+
+/**
+ * Avisa del RFQ al dueño del frigorífico (si el perfil está reclamado) y SIEMPRE
+ * a agro@ (doble captura: lead al dueño + señal a la capa de datos; y fallback
+ * — es la casilla donde hoy cae el pedido de San Miguel). `to` = dueño || admin.
+ */
+export async function sendFrigorificoRfqNotification(ownerEmail: string | null, p: RfqPayload) {
+  const resend = await getResend()
+  if (!resend) return
+  const to = ownerEmail || ADMIN_EMAIL
+  const rows: [string, string | null | undefined][] = [
+    ['Frigorífico', p.frigorificoName],
+    ['Entrega en', p.provinciaEntrega],
+    ['Tipo de comprador', p.tipoComprador],
+    ['Productos', p.resumenProductos],
+    ['Contacto', p.nombre],
+    ['Empresa', p.empresa],
+    ['WhatsApp', p.whatsapp],
+    ['Email', p.email],
+    ['Mensaje', p.mensaje],
+  ]
+  const body = rows
+    .filter(([, v]) => v)
+    .map(([k, v]) => `<p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">${k}:</strong> ${escapeHtml(String(v))}</p>`)
+    .join('')
+  resend.emails.send({
+    from: FROM,
+    to,
+    ...(ownerEmail ? { bcc: ADMIN_EMAIL } : {}),
+    replyTo: p.email,
+    subject: `Nuevo pedido mayorista — ${p.frigorificoName} (${p.provinciaEntrega})`,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Pedido mayorista &middot; RFQ</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 14px">Te llegó un pedido de cotización</h2>
+      ${body}
+      <p style="margin:16px 0 0"><a href="${APP_URL}/dashboard" style="color:#38bdf8">Ver en tu panel</a></p>
+    `),
+  }).catch(() => {})
+}
+
+/** Confirmación al comprador mayorista. */
+export async function sendFrigorificoRfqConfirmation(buyerEmail: string, frigorificoName: string) {
+  const resend = await getResend()
+  if (!resend) return
+  resend.emails.send({
+    from: FROM,
+    to: buyerEmail,
+    subject: `Pedido enviado — ${frigorificoName}`,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Pedido mayorista</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 12px">Recibimos tu pedido</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 10px">Tu pedido de cotización a <strong style="color:#fafafa">${escapeHtml(frigorificoName)}</strong> fue enviado. El establecimiento te contactará con la cotización a la brevedad.</p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Consignatarias.com.ar — Directorio ganadero</p>
+    `),
+  }).catch(() => {})
+}
+
+/* ------------------------------------------------------------------ */
 /*  MONTHLY METRICS                                                    */
 /* ------------------------------------------------------------------ */
 

@@ -120,3 +120,79 @@ export async function getEntityTier(entityType: string, entitySlug: string): Pro
     return 'free'
   }
 }
+
+/**
+ * Estado de plan de un FRIGORÍFICO (por CUIT). Misma regla que consignatarias:
+ * PRO si `frigorifico_profiles.featured = true` (destaque manual, permanente) O
+ * suscripción `active`/`cancelled` con `current_period_end` vigente
+ * (entity_type='frigorifico', entity_slug=cuit). Soft-fail a FREE.
+ *
+ * Reemplaza el patrón viejo de gatear el perfil por `session.tier` (plan del
+ * VISITANTE), que es incorrecto: para "vender carne" el gate es el plan del
+ * DUEÑO del frigorífico.
+ */
+export async function getFrigorificoPlanStatus(cuit: string): Promise<ConsignatariaPlanStatus> {
+  try {
+    const service = createServiceClient()
+    if (!service) return FREE_STATUS
+
+    const [profileRes, subRes] = await Promise.all([
+      service
+        .from('frigorifico_profiles')
+        .select('featured')
+        .eq('cuit', cuit)
+        .maybeSingle(),
+      service
+        .from('subscriptions')
+        .select('plan_name, status, current_period_end')
+        .eq('entity_type', 'frigorifico')
+        .eq('entity_slug', cuit)
+        .in('status', ['active', 'cancelled'])
+        .maybeSingle(),
+    ])
+
+    if (profileRes.data?.featured === true) {
+      return { isPro: true, tier: 'pro', source: 'featured', periodEnd: null }
+    }
+
+    const sub = subRes.data
+    if (sub) {
+      const periodValid =
+        !!sub.current_period_end && new Date(sub.current_period_end) > new Date()
+      const grant = sub.status === 'active' ? !sub.current_period_end || periodValid : periodValid
+      if (grant) {
+        const tier: EntityTier = sub.plan_name?.toLowerCase().includes('enterprise')
+          ? 'enterprise'
+          : 'pro'
+        return { isPro: true, tier, source: 'subscription', periodEnd: sub.current_period_end ?? null }
+      }
+    }
+
+    return FREE_STATUS
+  } catch {
+    return FREE_STATUS
+  }
+}
+
+/**
+ * Gate REGULATORIO (distinto del comercial): ¿el frigorífico puede OFRECER venta
+ * con envío interprovincial? Sólo si declaró habilitación NACIONAL y un admin la
+ * verificó con constancia. NO se deriva del dato scrapeado (`stage`/`senasaActive`
+ * NO codifican jurisdicción — ver spec privado §3). Soft-fail a false (conservador).
+ */
+export async function frigorificoPuedeInterprovincial(cuit: string): Promise<boolean> {
+  try {
+    const service = createServiceClient()
+    if (!service) return false
+
+    const { data } = await service
+      .from('frigorifico_profiles')
+      .select('habilitacion_nivel, habilitacion_verificada')
+      .eq('cuit', cuit)
+      .maybeSingle()
+
+    return data?.habilitacion_nivel === 'nacional' && data?.habilitacion_verificada === true
+  } catch {
+    return false
+  }
+}

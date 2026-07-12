@@ -964,6 +964,90 @@ export type Database = {
         }
         Relationships: []
       }
+      frigorifico_products: {
+        Row: {
+          categoria: string | null
+          created_at: string | null
+          created_by: string
+          disponibilidad: string | null
+          escala_volumen: Json | null
+          estado: string | null
+          foto_url: string | null
+          frigorifico_cuit: string
+          id: number
+          incremento: number | null
+          interprovincial: boolean
+          moneda: string | null
+          pedido_minimo: number | null
+          peso_unidad_g: number | null
+          precio_desde: number | null
+          precio_kg: number | null
+          precio_modo: string | null
+          presentacion: string | null
+          producto: string
+          segmento: string | null
+          sku: string | null
+          status: string | null
+          unidad_venta: string | null
+          unidades_por_bulto: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string | null
+          created_by: string
+          disponibilidad?: string | null
+          escala_volumen?: Json | null
+          estado?: string | null
+          foto_url?: string | null
+          frigorifico_cuit: string
+          id?: number
+          incremento?: number | null
+          interprovincial?: boolean
+          moneda?: string | null
+          pedido_minimo?: number | null
+          peso_unidad_g?: number | null
+          precio_desde?: number | null
+          precio_kg?: number | null
+          precio_modo?: string | null
+          presentacion?: string | null
+          producto: string
+          segmento?: string | null
+          sku?: string | null
+          status?: string | null
+          unidad_venta?: string | null
+          unidades_por_bulto?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string | null
+          created_by?: string
+          disponibilidad?: string | null
+          escala_volumen?: Json | null
+          estado?: string | null
+          foto_url?: string | null
+          frigorifico_cuit?: string
+          id?: number
+          incremento?: number | null
+          interprovincial?: boolean
+          moneda?: string | null
+          pedido_minimo?: number | null
+          peso_unidad_g?: number | null
+          precio_desde?: number | null
+          precio_kg?: number | null
+          precio_modo?: string | null
+          presentacion?: string | null
+          producto?: string
+          segmento?: string | null
+          sku?: string | null
+          status?: string | null
+          unidad_venta?: string | null
+          unidades_por_bulto?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       frigorifico_profiles: {
         Row: {
           claimed_at: string | null
@@ -974,6 +1058,11 @@ export type Database = {
           display_name: string
           email: string | null
           featured: boolean
+          habilitacion_doc_url: string | null
+          habilitacion_nivel: string | null
+          habilitacion_nro: string | null
+          habilitacion_verificada: boolean
+          habilitacion_verificada_at: string | null
           location: string | null
           logo_url: string | null
           phone: string | null
@@ -991,6 +1080,11 @@ export type Database = {
           display_name: string
           email?: string | null
           featured?: boolean
+          habilitacion_doc_url?: string | null
+          habilitacion_nivel?: string | null
+          habilitacion_nro?: string | null
+          habilitacion_verificada?: boolean
+          habilitacion_verificada_at?: string | null
           location?: string | null
           logo_url?: string | null
           phone?: string | null
@@ -1008,12 +1102,74 @@ export type Database = {
           display_name?: string
           email?: string | null
           featured?: boolean
+          habilitacion_doc_url?: string | null
+          habilitacion_nivel?: string | null
+          habilitacion_nro?: string | null
+          habilitacion_verificada?: boolean
+          habilitacion_verificada_at?: string | null
           location?: string | null
           logo_url?: string | null
           phone?: string | null
           updated_at?: string
           verified?: boolean
           website?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      frigorifico_rfq: {
+        Row: {
+          created_at: string | null
+          cuit_comprador: string | null
+          email: string
+          empresa: string | null
+          estado: string | null
+          frigorifico_cuit: string
+          id: number
+          ip: string | null
+          mensaje: string | null
+          nombre: string | null
+          producto_snapshot: Json | null
+          provincia_entrega: string
+          tier_al_momento: string | null
+          tipo_comprador: string | null
+          updated_at: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          cuit_comprador?: string | null
+          email: string
+          empresa?: string | null
+          estado?: string | null
+          frigorifico_cuit: string
+          id?: number
+          ip?: string | null
+          mensaje?: string | null
+          nombre?: string | null
+          producto_snapshot?: Json | null
+          provincia_entrega: string
+          tier_al_momento?: string | null
+          tipo_comprador?: string | null
+          updated_at?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          cuit_comprador?: string | null
+          email?: string
+          empresa?: string | null
+          estado?: string | null
+          frigorifico_cuit?: string
+          id?: number
+          ip?: string | null
+          mensaje?: string | null
+          nombre?: string | null
+          producto_snapshot?: Json | null
+          provincia_entrega?: string
+          tier_al_momento?: string | null
+          tipo_comprador?: string | null
+          updated_at?: string | null
           whatsapp?: string | null
         }
         Relationships: []
