@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.142.0] — 2026-07-12
+
+### Pase de animación y UX (audit multi-agente, on-brand)
+
+Un swarm de 8 agentes auditó 7 superficies del sitio y un director de diseño curó las 34 propuestas contra la estética terminal (con un **presupuesto de moción** para no volver el sitio "juguete" y 4 ideas sobre-animadas descartadas). Se aplicó el TOP 12, todo reusando los primitivos de motion existentes y degradando con `prefers-reduced-motion`:
+
+- **Fixes que violaban las propias reglas del sistema:** el hover-dot del chart animaba `width/height` (layout) → `transform: scale` (GPU-safe); el count-up del arrendamiento no honraba reduced-motion → guard agregado; las filas de remate (`role=link`) no tenían señal de foco de teclado → riel de acento por `focus-visible`.
+- **De-flash (matar los clichés de dashboard-IA):** spinner rotante → skeleton (barrido de cinta); `animate-ping`/`animate-pulse` de los indicadores "en vivo" (dot de precio, banner de remates) → `ring-pulse`, unificando una sola cadencia de "vivo" en todo el producto.
+- **Pulido sobrio:** `hover-lift` en las pricing cards; stagger de hijos al entrar en viewport **solo** en "Cómo funciona" y "El Corredor" (secuencias reales); cross-fade entre tabs del dashboard; restagger de filas al reordenar el directorio (ripple tipo Bloomberg); riel de acento en hover de fila (+ se removió un `hover:shadow` que no animaba); count-up escalonado en los stat tiles del perfil y remates.
+
 ## [1.141.0] — 2026-07-12
 
 ### Frigorífico PRO — confianza verificada + monetización
