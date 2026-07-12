@@ -91,6 +91,9 @@ interface Frigorifico {
   email?: string | null
   website?: string | null
   description?: string | null
+  whatsapp?: string | null
+  location?: string | null
+  logo_url?: string | null
 }
 
 interface FrigoClaim {
@@ -990,7 +993,7 @@ export default function DashboardClient({
             </div>
           </div>
           {frigorifico.verified && (
-            <FrigorificoEditForm cuit={frigorifico.cuit} initial={{ phone: frigorifico.phone || '', email: frigorifico.email || '', website: frigorifico.website || '', description: frigorifico.description || '' }} />
+            <FrigorificoEditForm cuit={frigorifico.cuit} initial={{ phone: frigorifico.phone || '', email: frigorifico.email || '', website: frigorifico.website || '', description: frigorifico.description || '', whatsapp: frigorifico.whatsapp || '', location: frigorifico.location || '', logoUrl: frigorifico.logo_url || null }} />
           )}
         </>
       )}
@@ -1435,9 +1438,12 @@ function ProfileEditForm({ slug, initial, logoUrl: initialLogoUrl }: ProfileEdit
 /*  FRIGORIFICO EDIT FORM                                               */
 /* ------------------------------------------------------------------ */
 
-function FrigorificoEditForm({ cuit, initial }: { cuit: string; initial: { phone: string; email: string; website: string; description: string } }) {
-  const [form, setForm] = useState(initial)
+function FrigorificoEditForm({ cuit, initial }: { cuit: string; initial: { phone: string; email: string; website: string; description: string; whatsapp: string; location: string; logoUrl: string | null } }) {
+  const { logoUrl: initialLogo, ...initialFields } = initial
+  const [form, setForm] = useState(initialFields)
+  const [logoUrl, setLogoUrl] = useState<string | null>(initialLogo)
   const [saving, setSaving] = useState(false)
+  const [uploadingLogo, setUploadingLogo] = useState(false)
   const [feedback, setFeedback] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
@@ -1452,23 +1458,61 @@ function FrigorificoEditForm({ cuit, initial }: { cuit: string; initial: { phone
     finally { setSaving(false) }
   }
 
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadingLogo(true)
+    setFeedback(null)
+    try {
+      const fd = new FormData()
+      fd.append('logo', file)
+      const res = await fetch(`/api/frigorificos/${cuit}/logo`, { method: 'POST', body: fd })
+      const data = await res.json()
+      if (!res.ok) { setFeedback({ type: 'err', msg: data.error || 'Error al subir el logo' }); return }
+      setLogoUrl(data.logo_url)
+      setFeedback({ type: 'ok', msg: 'Logo actualizado' })
+    } catch { setFeedback({ type: 'err', msg: 'Error de conexion' }) }
+    finally { setUploadingLogo(false) }
+  }
+
   const inputClass = 'w-full bg-terminal-bg border border-terminal-border text-zinc-200 text-xxs font-terminal px-2 py-1.5 rounded-terminal focus:outline-none focus:border-accent transition-colors'
 
   return (
     <div className="terminal-panel">
       <div className="terminal-panel-header"><span className="text-zinc-200 text-label tracking-widest">EDITAR FRIGORIFICO</span></div>
-      <form onSubmit={handleSubmit} className="px-panel py-3 space-y-3">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Telefono</label><input type="text" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} className={inputClass} placeholder="+54 11 1234-5678" /></div>
-          <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Email</label><input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className={inputClass} placeholder="contacto@ejemplo.com" /></div>
-          <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Sitio web</label><input type="text" value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} className={inputClass} placeholder="https://ejemplo.com" /></div>
-        </div>
-        <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Descripcion</label><textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className={`${inputClass} resize-none`} rows={3} maxLength={1000} /><span className="text-[10px] text-zinc-700 font-terminal">{form.description.length}/1000</span></div>
+      <div className="px-panel py-3 space-y-3">
+        {/* Logo — subida (JPG/PNG/WebP/SVG, máx 2 MB) */}
         <div className="flex items-center gap-3">
-          <button type="submit" disabled={saving} className="px-4 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors disabled:opacity-50">{saving ? 'Guardando...' : 'Guardar cambios'}</button>
-          {feedback && <span className={`text-xxs font-terminal ${feedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{feedback.msg}</span>}
+          <div className="w-14 h-14 rounded-terminal border border-terminal-border bg-zinc-100 flex items-center justify-center flex-shrink-0 overflow-hidden p-1">
+            {logoUrl
+              // eslint-disable-next-line @next/next/no-img-element
+              ? <img src={logoUrl} alt="Logo" className="max-w-full max-h-full object-contain" />
+              : <span className="text-xxs text-zinc-500 font-terminal">Sin logo</span>}
+          </div>
+          <div>
+            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Logo</label>
+            <label className="inline-block px-3 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors cursor-pointer rounded-terminal">
+              {uploadingLogo ? 'Subiendo...' : 'Subir logo'}
+              <input type="file" accept="image/jpeg,image/png,image/webp,image/svg+xml" onChange={handleLogoUpload} disabled={uploadingLogo} className="hidden" />
+            </label>
+            <p className="text-[10px] text-zinc-700 font-terminal mt-1">JPG, PNG, WebP o SVG · máx 2 MB</p>
+          </div>
         </div>
-      </form>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Telefono</label><input type="text" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} className={inputClass} placeholder="+54 11 1234-5678" /></div>
+            <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">WhatsApp</label><input type="text" value={form.whatsapp} onChange={e => setForm(f => ({ ...f, whatsapp: e.target.value }))} className={inputClass} placeholder="+54 9 11 1234-5678" /></div>
+            <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Email</label><input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className={inputClass} placeholder="contacto@ejemplo.com" /></div>
+            <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Sitio web</label><input type="text" value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} className={inputClass} placeholder="https://ejemplo.com" /></div>
+            <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Localidad</label><input type="text" value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))} className={inputClass} placeholder="Ciudad, Provincia" /></div>
+          </div>
+          <div><label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Descripcion</label><textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className={`${inputClass} resize-none`} rows={3} maxLength={1000} /><span className="text-[10px] text-zinc-700 font-terminal">{form.description.length}/1000</span></div>
+          <div className="flex items-center gap-3">
+            <button type="submit" disabled={saving} className="px-4 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors disabled:opacity-50">{saving ? 'Guardando...' : 'Guardar cambios'}</button>
+            {feedback && <span className={`text-xxs font-terminal ${feedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{feedback.msg}</span>}
+          </div>
+        </form>
+      </div>
     </div>
   )
 }

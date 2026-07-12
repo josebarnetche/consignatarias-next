@@ -37,7 +37,9 @@ export interface EnrichedFrigorifico {
   description: string | null
   volumenFaena: string | null
   notas: string | null
-  // Supabase-only fields
+  // Supabase-only fields (perfil reclamado)
+  logoUrl: string | null
+  whatsapp: string | null
   verified: boolean
   featured: boolean
   claimedByEmail: string | null
@@ -68,7 +70,8 @@ export async function getFrigorificoProfile(cuit: string): Promise<EnrichedFrigo
       stage: staticEntry.stage,
       grupoEmpresario: staticEntry.grupoEmpresario,
       tipo: staticEntry.tipo,
-      localidad: staticEntry.localidad,
+      // La localidad editada en el perfil reclamado pisa la scrapeada.
+      localidad: data?.location || staticEntry.localidad,
       direccion: staticEntry.direccion,
       // Supabase profile overrides enriched JSON
       phone: data?.phone || staticEntry.telefono || null,
@@ -77,6 +80,8 @@ export async function getFrigorificoProfile(cuit: string): Promise<EnrichedFrigo
       description: data?.description || staticEntry.notas || null,
       volumenFaena: staticEntry.volumenFaena,
       notas: staticEntry.notas,
+      logoUrl: data?.logo_url || null,
+      whatsapp: data?.whatsapp || null,
       verified: data?.verified || false,
       featured: data?.featured || false,
       claimedByEmail: data?.claimed_by_email || null,
@@ -100,6 +105,8 @@ export async function getFrigorificoProfile(cuit: string): Promise<EnrichedFrigo
       description: staticEntry.notas || null,
       volumenFaena: staticEntry.volumenFaena,
       notas: staticEntry.notas,
+      logoUrl: null,
+      whatsapp: null,
       verified: false,
       featured: false,
       claimedByEmail: null,

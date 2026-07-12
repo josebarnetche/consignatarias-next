@@ -974,10 +974,13 @@ export type Database = {
           display_name: string
           email: string | null
           featured: boolean
+          location: string | null
+          logo_url: string | null
           phone: string | null
           updated_at: string
           verified: boolean
           website: string | null
+          whatsapp: string | null
         }
         Insert: {
           claimed_at?: string | null
@@ -988,10 +991,13 @@ export type Database = {
           display_name: string
           email?: string | null
           featured?: boolean
+          location?: string | null
+          logo_url?: string | null
           phone?: string | null
           updated_at?: string
           verified?: boolean
           website?: string | null
+          whatsapp?: string | null
         }
         Update: {
           claimed_at?: string | null
@@ -1002,10 +1008,13 @@ export type Database = {
           display_name?: string
           email?: string | null
           featured?: boolean
+          location?: string | null
+          logo_url?: string | null
           phone?: string | null
           updated_at?: string
           verified?: boolean
           website?: string | null
+          whatsapp?: string | null
         }
         Relationships: []
       }

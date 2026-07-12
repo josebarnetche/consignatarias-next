@@ -324,12 +324,14 @@ export default async function FrigorificoDetailPage({
   const website = profile?.website || null
   const description = profile?.description || null
   const verified = profile?.verified || false
+  const logoUrl = profile?.logoUrl || null
+  const whatsapp = profile?.whatsapp || null
   const grupoEmpresario = profile?.grupoEmpresario || null
   const tipo = profile?.tipo || null
   const direccion = profile?.direccion || null
   const volumenFaena = profile?.volumenFaena || null
 
-  const hasContact = phone || email || website
+  const hasContact = phone || email || website || whatsapp
 
   // SENASA habilitación check: cross-reference with current registry snapshot.
   // Free users see the verdict (vigente/no encontrada). PRO users get the
@@ -394,14 +396,22 @@ export default async function FrigorificoDetailPage({
           </span>
         </div>
         <div className="px-panel pt-4 pb-4 flex items-start gap-3 sm:gap-4">
-          <div
-            className={`rounded-terminal border ${stageBorderColor(basicF.stage)} bg-terminal-bg/60 flex-shrink-0 flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20`}
-            aria-hidden
-          >
-            <span className={`text-2xl sm:text-3xl font-bold ${stageColor(basicF.stage)}`}>
-              {name.charAt(0).toUpperCase()}
-            </span>
-          </div>
+          {logoUrl ? (
+            /* Logo cargado por el frigorífico reclamado → tarjeta clara, legible siempre. */
+            <div className="rounded-terminal border border-terminal-border bg-zinc-100 flex-shrink-0 flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 p-1.5 overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={logoUrl} alt={`Logo de ${name}`} className="max-w-full max-h-full object-contain" />
+            </div>
+          ) : (
+            <div
+              className={`rounded-terminal border ${stageBorderColor(basicF.stage)} bg-terminal-bg/60 flex-shrink-0 flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20`}
+              aria-hidden
+            >
+              <span className={`text-2xl sm:text-3xl font-bold ${stageColor(basicF.stage)}`}>
+                {name.charAt(0).toUpperCase()}
+              </span>
+            </div>
+          )}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-xl sm:text-2xl font-bold text-zinc-50 tracking-tight leading-tight">
@@ -622,6 +632,19 @@ export default async function FrigorificoDetailPage({
               <div className="px-panel py-2.5 flex items-center justify-between">
                 <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Telefono</span>
                 <span className="text-data font-terminal text-zinc-200">{phone}</span>
+              </div>
+            )}
+            {whatsapp && (
+              <div className="px-panel py-2.5 flex items-center justify-between">
+                <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">WhatsApp</span>
+                <a
+                  href={`https://wa.me/${whatsapp.replace(/\D/g, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-data font-terminal text-accent hover:underline"
+                >
+                  {whatsapp}
+                </a>
               </div>
             )}
             {email && (

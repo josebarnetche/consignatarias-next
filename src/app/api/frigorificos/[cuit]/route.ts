@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { requireAuth } from '@/lib/admin-auth'
 import { frigorificoProfileUpdateSchema } from '@/lib/validators/frigorifico-profile'
+import { revalidatePath } from 'next/cache'
 
 type Props = { params: Promise<{ cuit: string }> }
 
@@ -53,6 +54,13 @@ export async function PATCH(req: NextRequest, { params }: Props) {
   if (error) {
     console.error('Frigorifico profile update error:', error)
     return NextResponse.json({ error: 'Error al actualizar' }, { status: 500 })
+  }
+
+  // El perfil público es estático → revalidar para reflejar la edición al instante.
+  try {
+    revalidatePath(`/frigorificos/${cuit}`)
+  } catch {
+    // best-effort
   }
 
   return NextResponse.json({ frigorifico: data })

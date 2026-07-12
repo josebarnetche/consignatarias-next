@@ -3,6 +3,7 @@ import { requireServiceClient } from '@/lib/supabase'
 import { frigorificoClaimSchema } from '@/lib/validators/claim'
 import { sendFrigorificoClaimConfirmation, sendFrigorificoClaimNotificationToAdmin } from '@/lib/email'
 import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limit-db'
+import { logEvent } from '@/lib/ops'
 
 export async function POST(req: NextRequest) {
   try {
@@ -72,6 +73,17 @@ export async function POST(req: NextRequest) {
       claimant_email,
       claimant_name || undefined,
     )
+
+    // Observabilidad: que el claim aparezca en /admin/ops (no solo en el mail,
+    // que es best-effort). La fila en frigorifico_claims es la fuente durable;
+    // esto es la traza operativa.
+    logEvent({
+      eventType: 'form_submit',
+      status: 'ok',
+      route: '/api/frigorifico-claims',
+      statusCode: 201,
+      metadata: { form: 'frigorifico_claim', cuit: frigorifico_cuit, name: frigorifico_name },
+    })
 
     return NextResponse.json(
       { message: 'Solicitud enviada correctamente' },

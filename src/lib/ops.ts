@@ -22,6 +22,7 @@ export type OpsEventType =
   | 'webhook_received'
   | 'cron_started'
   | 'cron_finished'
+  | 'form_submit'
   | 'error'
 
 export type OpsStatus = 'ok' | 'error' | 'timeout'
