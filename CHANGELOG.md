@@ -7,6 +7,20 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.139.0] — 2026-07-11
+
+### Frigoríficos — paridad con consignatarias (logo + edición self-service)
+
+Un frigorífico reclamado dejaba de ser "el registro scrapeado + una tilde de verificado": el andamiaje (claim → verificación → `frigorifico_profiles` → DAL que mergea JSON + DB) ya existía, pero le faltaban logo y campos, así que el dueño no podía enriquecer nada. Fundación de paridad con el modelo de consignatarias:
+
+- **Logo por frigorífico** (lo que no existía): columna `logo_url` + endpoint `POST /api/frigorificos/[cuit]/logo` (espeja el de consignataria — bucket `consignataria-assets`, prefijo `frigo-`, gate por `claimed_by_email`), subida desde el dashboard y render en el perfil público (tarjeta clara con el logo, o el monograma por etapa si no hay).
+- **Editor self-service ampliado**: el formulario del dashboard ya editaba teléfono/email/web/descripción; ahora suma **WhatsApp, localidad y logo**. La localidad editada pisa la scrapeada.
+- **WhatsApp** en la sección de contacto del perfil (link `wa.me`).
+- **Revalidación on-demand** de `/frigorificos/[cuit]` tras editar o subir logo (el perfil es estático).
+- **Observabilidad del registro**: el submit de un claim ahora emite `ops_events` (`form_submit`) → aparece en `/admin/ops`, no solo en el mail (best-effort). La fila en `frigorifico_claims` sigue siendo la fuente durable, y el aviso al admin ahora deep-linkea al panel correcto (`/admin/frigorifico-claims`, antes iba al de consignatarias).
+
+Nota de negocio: los frigoríficos **no son un pagador** en el plan (Motor 1 = consignatarias); esto es calidad de dato, relación y SEO — que la plataforma no sea "solo un scraper".
+
 ## [1.138.0] — 2026-07-11
 
 ### PRO Consignataria — hardening del producto vendible (audit de 3 sprints)
