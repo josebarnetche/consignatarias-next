@@ -130,11 +130,14 @@
   }
 
   .terminal-table tbody tr {
-    transition: background-color 0.08s ease;
+    transition: background-color 120ms cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .terminal-table tbody tr:hover {
-    background-color: rgba(56, 189, 248, 0.04);
+    background-color: rgba(56, 189, 248, 0.05);
+    /* barra de acento a la izquierda (inset) — fila "enfocada", cero layout shift */
+    box-shadow: inset 2px 0 0 0 #38bdf8;
   }
 
   .terminal-table tbody tr:hover td {
@@ -177,22 +180,32 @@
   }
 
   /* --- Buttons -------------------------------------------- */
+  /* Transición de color + transform + sombra: el hover levanta apenas y agrega un
+     glow de acento; el active hunde (press táctil). Curva `standard` del sistema. */
   .terminal-btn {
     @apply inline-flex items-center justify-center
            px-3 py-1.5 text-label font-terminal uppercase
            tracking-wider border border-terminal-border
-           text-zinc-300 bg-terminal-panel
-           transition-colors duration-100;
+           text-zinc-300 bg-terminal-panel;
     border-radius: 2px;
     min-height: 36px;
+    transition: color 120ms cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 120ms cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 120ms cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 160ms cubic-bezier(0.22, 1, 0.36, 1),
+                transform 120ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .terminal-btn:hover {
     @apply border-accent text-accent bg-accent/5;
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.18), 0 4px 14px -6px rgba(56, 189, 248, 0.35);
   }
 
   .terminal-btn:active {
     @apply bg-accent/10;
+    transform: translateY(0) scale(0.975);
+    box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.22);
   }
 
   .terminal-btn-primary {
@@ -206,26 +219,52 @@
            text-zinc-100 placeholder-zinc-500;
     border-radius: 2px;
     min-height: 36px;
+    transition: border-color 120ms cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 160ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
+  /* Focus con anillo de acento suave (glow), no solo el borde. */
   .terminal-input:focus {
     @apply border-accent outline-none;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
   }
 
   /* --- Nav link ------------------------------------------- */
+  /* Underline que crece desde el centro en hover (scaleX), además del color. */
   .terminal-nav-link {
-    @apply px-3 py-1.5 text-label font-terminal uppercase
+    @apply relative px-3 py-1.5 text-label font-terminal uppercase
            tracking-widest text-zinc-400
-           border-b-2 border-transparent
            transition-colors duration-100;
+  }
+
+  .terminal-nav-link::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 0;
+    height: 2px;
+    background-color: #38bdf8;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .terminal-nav-link:hover {
     @apply text-zinc-200;
   }
 
+  .terminal-nav-link:hover::after {
+    transform: scaleX(0.6);
+    background-color: #52525b;
+  }
+
   .terminal-nav-link-active {
-    @apply terminal-nav-link text-accent border-accent;
+    @apply terminal-nav-link text-accent;
+  }
+
+  .terminal-nav-link-active::after {
+    transform: scaleX(1);
   }
 
   /* --- Dividers ------------------------------------------- */
@@ -655,4 +694,39 @@
 .reveal-init.reveal-in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   .reveal-init { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Interacción global — se propaga a TODOS los botones/inputs/cards   */
+/*  (no solo a los primitivos .terminal-*). Bajo nivel, bajo riesgo.   */
+/* ------------------------------------------------------------------ */
+
+/* Foco de teclado visible y consistente (accesibilidad + prolijidad).
+   :where() = especificidad 0 → cualquier componente lo puede pisar. */
+:where(a, button, [role='button'], input, select, textarea, summary):focus-visible {
+  outline: 2px solid rgba(56, 189, 248, 0.55);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Press táctil universal: cualquier botón se hunde apenas al apretarlo. NO
+     tocamos transition-property (para no pisar las transiciones inline de cada
+     botón); el scale es instantáneo al click — snappy y se siente el tap. */
+  button:not(:disabled):active,
+  [role='button']:not([aria-disabled='true']):active {
+    transform: scale(0.97);
+  }
+
+  /* Utilidad de card: elevación + glow de acento al pasar el mouse.
+     Aplicar a tiles/cards clickeables (directorio, perfiles, planes). */
+  .hover-lift {
+    transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 180ms cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.18), 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+  }
 }
