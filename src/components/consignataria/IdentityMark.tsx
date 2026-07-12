@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { getLogoUrl, getIdentityColor, getBrandKeepColor } from '@/lib/data/logo-map'
+import { getLogoUrl, getIdentityColor, getBrandKeepColor, getBrandWhiteLogo } from '@/lib/data/logo-map'
 
 /**
  * IdentityMark — el avatar de una consignataria, intencional SIEMPRE.
@@ -42,6 +42,9 @@ export default function IdentityMark({
   const logo = logoUrl ?? getLogoUrl(slug)
   const uploaded = Boolean(logoUrl)
   const keepColor = !uploaded && getBrandKeepColor(slug)
+  // Logo blanco (curado) → va sobre el color de marca, no sobre tarjeta clara
+  // (donde un logo blanco desaparece).
+  const onBrand = !uploaded && getBrandWhiteLogo(slug)
   const radius = Math.round(size * 0.22)
   const pad = Math.round(size * 0.16)
 
@@ -59,24 +62,34 @@ export default function IdentityMark({
 
   // ── Caso 1: logo ────────────────────────────────────────────────────────
   if (logo) {
-    // keepColor → sobre carbón (la marca ya lee); resto → tarjeta hueso.
-    const onCard = !keepColor
+    // whiteLogo → sobre el color de marca; keepColor (multicolor) → sobre carbón;
+    // resto → tarjeta hueso (el 99% de los logos están hechos para fondo claro).
+    const brandColor = onBrand ? getIdentityColor(slug, name) : null
+    const onCard = !keepColor && !onBrand
     return (
       <div
         className={`relative flex items-center justify-center overflow-hidden flex-shrink-0 ${className}`}
         style={{
           ...base,
-          background: onCard ? '#f4f4f5' : 'var(--terminal-bg,#0b0b0e)',
-          boxShadow: onCard ? ring.boxShadow : `${ring.boxShadow}, inset 0 0 0 1px var(--terminal-border,#27272a)`,
+          background: brandColor ?? (onCard ? '#f4f4f5' : 'var(--terminal-bg,#0b0b0e)'),
+          boxShadow: onCard || onBrand ? ring.boxShadow : `${ring.boxShadow}, inset 0 0 0 1px var(--terminal-border,#27272a)`,
         }}
       >
+        {/* Brillo sutil para dar volumen sobre el color plano (igual que el caso sin logo). */}
+        {onBrand && (
+          <span
+            aria-hidden
+            className="absolute inset-0"
+            style={{ background: 'linear-gradient(150deg,rgba(255,255,255,.16),transparent 55%)' }}
+          />
+        )}
         <Image
           src={logo}
           alt={`Logo ${name}`}
           width={size}
           height={size}
           unoptimized
-          className="object-contain"
+          className="relative object-contain"
           style={{ padding: pad, width: '100%', height: '100%' }}
         />
       </div>

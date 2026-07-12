@@ -13,8 +13,12 @@
 
 // keepColor: render the logo in its own colors instead of forcing it white
 // (for multicolor marks that read fine on the black tile, e.g. UMC's mascot).
-export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string; keepColor?: boolean }> = {
-  'colombo-y-magliano': { logo: 'colombo-y-magliano.svg', color: '#215732' },
+// whiteLogo: el logo es BLANCO/monocromo claro → en el avatar (IdentityMark) va
+// sobre el COLOR DE MARCA, no sobre la tarjeta clara (donde un logo blanco
+// desaparece). Regla de Jose: el bg del avatar puede ser el color de la firma
+// cuando el logotipo es blanco.
+export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string; keepColor?: boolean; whiteLogo?: boolean }> = {
+  'colombo-y-magliano': { logo: 'colombo-y-magliano.svg', color: '#215732', whiteLogo: true },
   'colombo-y-colombo': { logo: 'colombo-y-colombo.png', color: '#b30738' },
   'bressan-y-cia': { logo: 'bressan-y-cia.png', color: '#a99134' },
   'ofarrell': { logo: 'ofarrell.svg', color: '#183048' },
@@ -39,7 +43,7 @@ export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string;
   'hk-agro': { logo: 'hk-agro.png', color: '#e8731c' },
   'talano-hermanos': { logo: 'talano-hermanos.png', color: '#a81818' },
   'casa-usandizaga': { logo: 'casa-usandizaga.png', color: '#d81818' },
-  'darwash': { logo: 'darwash.svg', color: '#0d6c79' },
+  'darwash': { logo: 'darwash.svg', color: '#0d6c79', whiteLogo: true },
   'ganadera-salliquelo': { logo: 'ganadera-salliquelo.png', color: '#a08020' },
   'ganaderos-de-elordi': { logo: 'ganaderos-de-elordi.png', color: '#a81830' },
   'ganaderos-de-formosa': { logo: 'ganaderos-de-formosa.png', color: '#487830' },
@@ -105,7 +109,8 @@ export function deriveBrandColor(name: string): string {
 /**
  * Color de IDENTIDAD de una firma: el curado si existe, si no uno derivado del
  * nombre. SIEMPRE devuelve un color válido — nunca null. Se usa como acento
- * (monograma, wash del cover), NUNCA como fondo detrás del logo.
+ * (monograma, wash del cover) y, EXCEPCIÓN, como fondo del avatar cuando el logo
+ * es blanco (whiteLogo) — donde un logo blanco necesita el color detrás.
  */
 export function getIdentityColor(slug: string, name: string): string {
   return CONSIGNATARIA_BRANDS[slug]?.color ?? deriveBrandColor(name)
@@ -114,6 +119,11 @@ export function getIdentityColor(slug: string, name: string): string {
 /** Whether the logo should keep its own colors (not be forced white). */
 export function getBrandKeepColor(slug: string): boolean {
   return CONSIGNATARIA_BRANDS[slug]?.keepColor ?? false
+}
+
+// Logo blanco → el avatar va sobre el color de marca (no sobre tarjeta clara).
+export function getBrandWhiteLogo(slug: string): boolean {
+  return CONSIGNATARIA_BRANDS[slug]?.whiteLogo ?? false
 }
 
 /** Check if a logo exists for the given slug. */
