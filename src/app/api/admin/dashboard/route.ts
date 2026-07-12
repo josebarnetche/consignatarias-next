@@ -126,11 +126,12 @@ export async function GET() {
   const owners = users.filter((u: { role: string }) => u.role === 'owner').length
 
   // ── PRO Usuario + Enterprise API revenue (tabla user_subscriptions) ──
-  // Precios reales (ARS/mes): PRO Usuario 7900, API starter 139900, growth 700000.
+  // Precios reales (ARS/mes): PRO Usuario 7900, API starter 74000, growth 451000
+  // (alineados con /planes y rebill.ts; antes estaban stale 139900/700000 e inflaban el MRR).
   // Scale es sales-led (sin self-serve) → no se computa. Se EXCLUYEN las cuentas
   // internas (admin/owner) para no inflar MRR con la cuenta del founder.
   const USER_PRO_PRICE = 7900
-  const API_PRICE: Record<string, number> = { starter: 139900, growth: 700000 }
+  const API_PRICE: Record<string, number> = { starter: 74000, growth: 451000 }
   const internalUserIds = new Set(
     users
       .filter((u: { role: string }) => u.role === 'admin' || u.role === 'owner')
