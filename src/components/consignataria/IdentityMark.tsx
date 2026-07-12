@@ -42,9 +42,11 @@ export default function IdentityMark({
   const logo = logoUrl ?? getLogoUrl(slug)
   const uploaded = Boolean(logoUrl)
   const keepColor = !uploaded && getBrandKeepColor(slug)
-  // Logo blanco (curado) → va sobre el color de marca, no sobre tarjeta clara
-  // (donde un logo blanco desaparece).
-  const onBrand = !uploaded && getBrandWhiteLogo(slug)
+  // Logo blanco → va sobre el color de marca, no sobre tarjeta clara (donde un logo
+  // blanco desaparece). El flag es conocimiento curado del slug, así que aplica esté
+  // el logo servido desde /logos/ (curado) o subido a storage (la firma sube su
+  // propio logo blanco). Prevalece sobre la tarjeta clara.
+  const onBrand = getBrandWhiteLogo(slug)
   const radius = Math.round(size * 0.22)
   const pad = Math.round(size * 0.16)
 
