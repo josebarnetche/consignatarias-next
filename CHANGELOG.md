@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.150.1] — 2026-07-13
+
+### Calendario mensual — franja tentativa de la 2da campaña
+
+El calendario de 12 meses ahora muestra la 2da campaña antiaftosa como una **franja tentativa** en el 2do semestre (Sep–Nov, ventana típica), con estilo visualmente distinto de la 1ra: borde punteado y tono accent en vez del relleno emerald, más el item en la leyenda y la nota "tentativa · el mes exacto lo fija tu ente". Diferencia clara entre la 1ra (ventana confirmada) y la 2da (tentativa), sin afirmar un mes que no es citable con precisión.
+
 ## [1.150.0] — 2026-07-13
 
 ### Validador de RENSPA como herramienta propia + calendario mensual

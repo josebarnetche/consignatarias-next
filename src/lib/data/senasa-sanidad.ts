@@ -212,7 +212,7 @@ export const CALENDARIO_AFTOSA_2026: CampanaAftosa[] = [
 // con el grueso del país en marzo. La 2da campaña cae en el 2do semestre pero el mes
 // exacto lo fija el Ente Sanitario, así que NO se pinta mes por mes: se nota aparte.
 export const MESES = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'] as const
-export const CALENDARIO_MENSUAL: Record<string, { campana: '1ra' | null; grueso?: boolean; nota?: string }> = {
+export const CALENDARIO_MENSUAL: Record<string, { campana: '1ra' | '2da' | null; grueso?: boolean; tentativa?: boolean; nota?: string }> = {
   ENE: { campana: '1ra', nota: 'Arranque (Jujuy, Catamarca, Tucumán)' },
   FEB: { campana: '1ra' },
   MAR: { campana: '1ra', grueso: true, nota: 'Grueso del país' },
@@ -221,13 +221,14 @@ export const CALENDARIO_MENSUAL: Record<string, { campana: '1ra' | null; grueso?
   JUN: { campana: null },
   JUL: { campana: null },
   AGO: { campana: null },
-  SEP: { campana: null },
-  OCT: { campana: null },
-  NOV: { campana: null },
+  // 2da campaña (terneros/terneras): ventana TENTATIVA del 2do semestre — el mes exacto lo fija cada ente.
+  SEP: { campana: '2da', tentativa: true },
+  OCT: { campana: '2da', tentativa: true, nota: 'Ventana típica' },
+  NOV: { campana: '2da', tentativa: true },
   DIC: { campana: null },
 }
 export const SEGUNDA_CAMPANA_NOTA =
-  '2da campaña (solo terneros y terneras): 2do semestre — el mes exacto lo fija tu Ente Sanitario.'
+  '2da campaña (solo terneros y terneras): la ventana del 2do semestre es tentativa — el mes exacto lo fija tu Ente Sanitario.'
 
 // ── Requisitos sanitarios de movimiento (bovinos) ────────────────────────────
 export interface RequisitoMovimiento {
