@@ -81,6 +81,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Mi Ganado", href: "/mi-ganado", hint: "Valor de tu rodeo · ahora gratis", tag: "new" },
       { label: "Validar RENSPA", href: "/renspa", hint: "Decodificá el código de tu establecimiento", tag: "new" },
       { label: "Sanidad / SENASA", href: "/sanidad", hint: "Vacunación · requisitos de movimiento", tag: "new" },
+      { label: "Buenas Prácticas (BPG)", href: "/buenas-practicas", hint: "Guía Red BPA · salud y bienestar", tag: "new" },
       { label: "Exportar / Calendario", href: "/calendario-exportar" },
     ],
   },

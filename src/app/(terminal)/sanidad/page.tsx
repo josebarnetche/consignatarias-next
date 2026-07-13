@@ -60,7 +60,12 @@ export default function SanidadPage() {
 
       {/* Nota de fuentes */}
       <div className="rounded-terminal border border-terminal-border bg-terminal-panel px-4 py-3 text-data text-zinc-400">
-        {SANIDAD_DISCLAIMER}
+        {SANIDAD_DISCLAIMER}{' '}
+        Más allá de lo obligatorio, mirá las{' '}
+        <Link href="/buenas-practicas" className="text-accent hover:text-accent-bright underline underline-offset-2">
+          Buenas Prácticas Ganaderas
+        </Link>
+        .
       </div>
 
       {/* Índice navegable */}

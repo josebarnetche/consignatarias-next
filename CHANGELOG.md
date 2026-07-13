@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.151.0] — 2026-07-13
+
+### Buenas Prácticas Ganaderas (BPG) — `/buenas-practicas`
+
+Nueva página de contenido que carga las **Buenas Prácticas Ganaderas** para vacunos de carne, resumidas y atribuidas a la Guía de la **Red BPA** (Comisión de Ganadería, 2019, con respaldo de SENASA/INTA/IPCVA/SRA/CRA/etc.):
+
+- **Framework de 14 temas en 4 bloques** (Personas · Infraestructura · Ambiente · Animal), cada uno con su descripción.
+- **Prácticas clave de Salud animal** (plan sanitario con veterinario, registros con período de carencia, bioseguridad/cuarentena, manejo de medicamentos con cadena de frío y PEPS, uso prudente de antimicrobianos, manejo integrado de plagas) y **Bienestar animal** (manejo calmo con zona de fuga, destete de bajo estrés, buen alojamiento, procedimientos humanitarios, plan de emergencia).
+- Distingue explícito: BPG **voluntarias** vs. planes SENASA **obligatorios** (link a `/sanidad`).
+- Contenido reescrito y resumido con atribución + link a la guía (no reproducción textual — respeto de autoría). En nav (Herramientas), sitemap, y cross-link desde `/sanidad`.
+
 ## [1.150.1] — 2026-07-13
 
 ### Calendario mensual — franja tentativa de la 2da campaña

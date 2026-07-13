@@ -434,6 +434,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     },
     {
+      url: `${baseUrl}/buenas-practicas`,
+      lastModified: buildDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    },
+    {
       url: `${baseUrl}/calendario-exportar`,
       lastModified: buildDate,
       changeFrequency: 'weekly' as const,
