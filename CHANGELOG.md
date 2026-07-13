@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.153.1] — 2026-07-13
+
+### /admin/ops — debug: dos falsos "overdue" removidos de EXPECTED_CRONS
+
+Auditoría del dashboard de ops. El cableado y la data están sanos (15 workflows con 0 errores en 7 días, ops_events sin anomalías, `mcp-consumption-alert` corriendo). Se corrigieron dos falsos positivos del mapa `EXPECTED_CRONS`:
+
+- **`weekly-digest`** removido: el workflow ya no existe (ni activo ni disabled) → mostraba "overdue" permanente.
+- **`data-freshness-alert`** removido: es un alert GitHub-native (`::error::`), no loguea a `cron_runs` → mostraba "nunca corrió" permanente. Su falla sigue siendo visible en GitHub Actions.
+
+Nota (sin cambio de código): `scrape-senasa-habilitados` (mensual, día 1) no tiene corridas en `cron_runs` — conviene verificar que haya disparado el 01-jul.
+
 ## [1.153.0] — 2026-07-13
 
 ### Alerta de ops — primer consumo MCP real e identificable

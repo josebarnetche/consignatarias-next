@@ -68,15 +68,16 @@ export const EXPECTED_CRONS: Record<string, number> = {
   'post-remate-outreach': 24,       // ventana horaria 14-22h
   'price-alerts': 24,               // 21:17
   'trial-nudges': 24,               // 13:17
-  'data-freshness-alert': 24,       // 01:00
   'mcp-consumption-alert': 24,      // 09:00 ART — primer tools/call identificado
+  // data-freshness-alert NO va acá: es un alert GitHub-native (::error::), no loguea a
+  // cron_runs → mostraba falso "nunca corrió". Su falla es visible en GitHub Actions.
   // Días laborables / parciales — tolerancia mayor para no marcar overdue el finde
   'mag-detailed-prices': 72,        // Lun-Vie 22:37 → hueco máx ~72h (Vie→Lun)
   'mag-lots-pipeline': 100,         // Mar/Mié/Vie 22:42 → hueco máx ~96h
   // Semanales (168h) — lunes
   'quota-alerts': 168,              // (era 24, mal: corre solo los lunes)
   'weekly-newsletter': 168,
-  'weekly-digest': 168,
+  // weekly-digest removido: el workflow ya no existe (falso "overdue" permanente).
   // Mensuales (~720h)
   'arrendamiento-cierre': 720,      // día 3 (faltaba → default 24 daba falso overdue)
   'el-corredor-publish': 720,       // día 1 (era 168, mal: es mensual)
