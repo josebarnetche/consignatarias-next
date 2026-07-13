@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { CALENDARIO_AFTOSA_2026 } from '@/lib/data/senasa-sanidad'
+import CalendarioMensual from '@/components/sanidad/CalendarioMensual'
 
 /**
  * Banda "Calendario sanitario" para la landing. Muestra las campañas de
@@ -32,20 +32,7 @@ export default function CalendarioSanitario() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {CALENDARIO_AFTOSA_2026.map((c) => (
-            <div key={c.campana} className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-6">
-              <div className="flex items-baseline justify-between">
-                <h3 className="text-base font-semibold text-zinc-100">{c.campana} campaña antiaftosa</h3>
-                <span className="text-xs text-accent font-mono">{c.ventana}</span>
-              </div>
-              <p className="mt-2 text-sm text-zinc-300 font-medium">{c.categorias}</p>
-              <p className="mt-2 text-xs text-zinc-500 leading-relaxed">
-                El día exacto por distrito lo fija el Plan Local del Ente Sanitario.
-              </p>
-            </div>
-          ))}
-        </div>
+        <CalendarioMensual />
 
         <p className="mt-6 text-xs text-zinc-600">
           Fuente: Res. SENASA 711/2025. El día exacto por distrito lo fija el Ente Sanitario local.

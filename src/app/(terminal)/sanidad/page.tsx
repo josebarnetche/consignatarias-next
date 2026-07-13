@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import Breadcrumb from '@/components/ui/Breadcrumb'
 import { FAQPageSchema } from '@/components/seo/JsonLd'
-import RenspaValidator from './RenspaValidator'
+import CalendarioMensual from '@/components/sanidad/CalendarioMensual'
 import {
   SANIDAD_DISCLAIMER, PLANES, CALENDARIO_AFTOSA_2026, REQUISITOS_MOVIMIENTO,
   ZONAS_AFTOSA, FUENTES, fuentesDe, COMO_FUNCIONA, TRAMITES, FAQ_SANIDAD,
@@ -134,6 +134,9 @@ export default function SanidadPage() {
         <p className="text-data text-zinc-500 mb-4">
           Res. SENASA 711/2025. El día exacto por distrito lo fija el Plan Local del Ente Sanitario.
         </p>
+        <div className="mb-6">
+          <CalendarioMensual />
+        </div>
         <div className="grid gap-4 sm:grid-cols-2">
           {CALENDARIO_AFTOSA_2026.map((c) => (
             <div key={c.campana} className="rounded-terminal border border-terminal-border bg-terminal-panel p-4">
@@ -191,14 +194,19 @@ export default function SanidadPage() {
         </div>
       </section>
 
-      {/* Validador RENSPA (interactivo) */}
+      {/* RENSPA → herramienta aparte */}
       <section id="renspa" className="mt-10 scroll-mt-24">
         <h2 className="text-lg font-semibold text-white mb-1">Validar / decodificar un RENSPA</h2>
         <p className="text-data text-zinc-500 mb-4">
-          Pegá un código RENSPA (17 caracteres, formato 00.000.0.00000.00) y te lo descompongo en sus
-          segmentos. Se valida la estructura, no la vigencia.
+          El RENSPA (17 caracteres, formato 00.000.0.00000.00) identifica productor + establecimiento +
+          actividad, y es la base para vacunar y emitir el DT-e.
         </p>
-        <RenspaValidator />
+        <Link
+          href="/renspa"
+          className="inline-flex items-center gap-2 rounded-terminal border border-accent/40 bg-accent/10 px-4 py-2 text-data text-accent hover:bg-accent/20 transition-colors"
+        >
+          Abrir el validador de RENSPA →
+        </Link>
       </section>
 
       {/* Trámites */}

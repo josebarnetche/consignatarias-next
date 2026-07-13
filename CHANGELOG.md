@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.150.0] — 2026-07-13
+
+### Validador de RENSPA como herramienta propia + calendario mensual
+
+Dos ajustes de producto pedidos:
+
+- **`/renspa` — herramienta independiente.** El validador de RENSPA salió de `/sanidad` (no es contenido regulatorio de SENASA, es una utilidad) y pasó a su propia página en **Herramientas** (nav + sitemap), con explicación del formato (17 caracteres, PP·DDD·J·EEEEE·RR) y links a la consulta oficial. En `/sanidad` queda un CTA que apunta a la herramienta. Componente movido a `components/sanidad/RenspaValidator.tsx`.
+- **Calendario de vacunación en formato mensual.** Nuevo `CalendarioMensual` (12 meses): pinta la 1ra campaña (enero→abril, Res. 711/2025) y destaca el grueso del país (marzo); la 2da campaña va como nota (2do semestre, según ente) — no se pinta mes por mes porque el mes exacto lo fija el Ente Sanitario y no es citable con precisión. Reemplaza las 2 tarjetas de la banda de la landing (más claro) y se suma arriba del detalle en `/sanidad`.
+
 ## [1.149.1] — 2026-07-13
 
 ### Sanidad — tono del disclaimer

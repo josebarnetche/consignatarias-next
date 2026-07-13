@@ -207,6 +207,28 @@ export const CALENDARIO_AFTOSA_2026: CampanaAftosa[] = [
   },
 ]
 
+// ── Calendario mensual antiaftosa (vista de 12 meses) ───────────────────────
+// Solo se marcan los meses citables: la 1ra campaña corre enero→abril (Res. 711/2025),
+// con el grueso del país en marzo. La 2da campaña cae en el 2do semestre pero el mes
+// exacto lo fija el Ente Sanitario, así que NO se pinta mes por mes: se nota aparte.
+export const MESES = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'] as const
+export const CALENDARIO_MENSUAL: Record<string, { campana: '1ra' | null; grueso?: boolean; nota?: string }> = {
+  ENE: { campana: '1ra', nota: 'Arranque (Jujuy, Catamarca, Tucumán)' },
+  FEB: { campana: '1ra' },
+  MAR: { campana: '1ra', grueso: true, nota: 'Grueso del país' },
+  ABR: { campana: '1ra', nota: 'Salta y La Rioja (regiones diferenciadas)' },
+  MAY: { campana: null },
+  JUN: { campana: null },
+  JUL: { campana: null },
+  AGO: { campana: null },
+  SEP: { campana: null },
+  OCT: { campana: null },
+  NOV: { campana: null },
+  DIC: { campana: null },
+}
+export const SEGUNDA_CAMPANA_NOTA =
+  '2da campaña (solo terneros y terneras): 2do semestre — el mes exacto lo fija tu Ente Sanitario.'
+
 // ── Requisitos sanitarios de movimiento (bovinos) ────────────────────────────
 export interface RequisitoMovimiento {
   concepto: string
