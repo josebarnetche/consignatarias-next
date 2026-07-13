@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.148.1] — 2026-07-13
+
+### MCP — sanidad en las descripciones de todos los directorios
+
+Las tools de sanidad ya estaban en el endpoint y en el listado del server-card; faltaba reflejar la capa sanitaria en las **descripciones top-level** de los manifests y del registry oficial (que propagan a los aggregators):
+
+- `/.well-known/mcp/server.json` y `server-card.json`: la descripción ahora incluye "sanidad SENASA (calendario de vacunación antiaftosa, requisitos de movimiento, RENSPA, DT-e)".
+- **Registry oficial** (registry.modelcontextprotocol.io): re-publicado **v1.1.0** con descripción actualizada ("…consignatarias, frigoríficos y sanidad SENASA"). Requirió rotar el keypair Ed25519 de verificación DNS (la clave del 4-jul se había perdido) — DNS gestionado en Vercel; la nueva clave privada quedó en Keychain (`mcp-publisher-consignatarias`) para futuras publicaciones sin rotar.
+- Glama/Forge y demás aggregators que introspectan el endpoint en vivo levantan las 5 tools de sanidad automáticamente en su próximo re-crawl.
+
 ## [1.148.0] — 2026-07-13
 
 ### MCP — tools RENSPA y DT-e / número de tropa (16 tools)
