@@ -1,9 +1,11 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Breadcrumb from '@/components/ui/Breadcrumb'
+import { FAQPageSchema } from '@/components/seo/JsonLd'
+import RenspaValidator from './RenspaValidator'
 import {
   SANIDAD_DISCLAIMER, PLANES, CALENDARIO_AFTOSA_2026, REQUISITOS_MOVIMIENTO,
-  ZONAS_AFTOSA, FUENTES, fuentesDe,
+  ZONAS_AFTOSA, FUENTES, fuentesDe, COMO_FUNCIONA, TRAMITES, FAQ_SANIDAD,
 } from '@/lib/data/senasa-sanidad'
 
 export const metadata: Metadata = {
@@ -62,8 +64,41 @@ export default function SanidadPage() {
         {SANIDAD_DISCLAIMER}
       </div>
 
-      {/* Planes sanitarios */}
+      {/* Índice navegable */}
+      <nav aria-label="Índice" className="mt-6 flex flex-wrap gap-2 text-xxs">
+        {[
+          ['#planes', 'Planes sanitarios'],
+          ['#aftosa', 'Vacunación aftosa'],
+          ['#movimiento', 'Mover hacienda'],
+          ['#renspa', 'Validar RENSPA'],
+          ['#tramites', 'Trámites'],
+          ['#faq', 'Preguntas frecuentes'],
+        ].map(([href, label]) => (
+          <a
+            key={href}
+            href={href}
+            className="rounded-full border border-terminal-border bg-terminal-panel px-3 py-1 text-zinc-400 hover:border-accent hover:text-accent transition-colors"
+          >
+            {label}
+          </a>
+        ))}
+      </nav>
+
+      {/* Cómo funciona el sistema */}
       <section className="mt-10">
+        <h2 className="text-lg font-semibold text-white mb-4">Cómo funciona el sistema sanitario</h2>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {COMO_FUNCIONA.map((c) => (
+            <div key={c.titulo} className="rounded-terminal border border-terminal-border bg-terminal-panel p-4">
+              <h3 className="text-data font-semibold text-white">{c.titulo}</h3>
+              <p className="mt-2 text-data text-zinc-400">{c.texto}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Planes sanitarios */}
+      <section id="planes" className="mt-10 scroll-mt-24">
         <h2 className="text-lg font-semibold text-white mb-1">Planes sanitarios obligatorios</h2>
         <p className="text-data text-zinc-500 mb-4">Bovinos y bubalinos. Cada ficha cita su resolución.</p>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -95,7 +130,7 @@ export default function SanidadPage() {
       </section>
 
       {/* Calendario aftosa + zonas */}
-      <section className="mt-10">
+      <section id="aftosa" className="mt-10 scroll-mt-24">
         <h2 className="text-lg font-semibold text-white mb-1">Vacunación antiaftosa 2026</h2>
         <p className="text-data text-zinc-500 mb-4">
           Res. SENASA 711/2025. El día exacto por distrito lo fija el Plan Local del Ente Sanitario.
@@ -137,7 +172,7 @@ export default function SanidadPage() {
       </section>
 
       {/* Requisitos de movimiento */}
-      <section className="mt-10">
+      <section id="movimiento" className="mt-10 scroll-mt-24">
         <h2 className="text-lg font-semibold text-white mb-1">Requisitos para mover hacienda</h2>
         <p className="text-data text-zinc-500 mb-4">
           Bovinos. El DT-e se emite en SIGSA (requiere clave fiscal ARCA); acá está qué se exige.
@@ -157,15 +192,68 @@ export default function SanidadPage() {
         </div>
       </section>
 
+      {/* Validador RENSPA (interactivo) */}
+      <section id="renspa" className="mt-10 scroll-mt-24">
+        <h2 className="text-lg font-semibold text-white mb-1">Validar / decodificar un RENSPA</h2>
+        <p className="text-data text-zinc-500 mb-4">
+          Pegá un código RENSPA (17 caracteres, formato 00.000.0.00000.00) y te lo descompongo en sus
+          segmentos. Se valida la estructura, no la vigencia.
+        </p>
+        <RenspaValidator />
+      </section>
+
+      {/* Trámites */}
+      <section id="tramites" className="mt-10 scroll-mt-24">
+        <h2 className="text-lg font-semibold text-white mb-4">Trámites</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {TRAMITES.map((t) => (
+            <a
+              key={t.titulo}
+              href={t.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group rounded-terminal border border-terminal-border bg-terminal-panel p-4 hover:border-accent transition-colors"
+            >
+              <h3 className="text-data font-semibold text-white group-hover:text-accent">{t.titulo} ↗</h3>
+              <p className="mt-1 text-data text-zinc-400">{t.descripcion}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="mt-10 scroll-mt-24">
+        <h2 className="text-lg font-semibold text-white mb-4">Preguntas frecuentes</h2>
+        <div className="space-y-3">
+          {FAQ_SANIDAD.map((f) => (
+            <details key={f.pregunta} className="rounded-terminal border border-terminal-border bg-terminal-panel p-4 group">
+              <summary className="cursor-pointer text-data font-medium text-zinc-100 marker:text-accent list-disc list-inside">
+                {f.pregunta}
+              </summary>
+              <p className="mt-2 text-data text-zinc-400">{f.respuesta}</p>
+              {f.fuentes && f.fuentes.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-x-3 text-xxs">
+                  {fuentesDe(f.fuentes).map((x) => (
+                    <a key={x.norma} href={x.url} target="_blank" rel="noopener noreferrer" className="text-accent/80 hover:text-accent">
+                      {x.norma} ↗
+                    </a>
+                  ))}
+                </div>
+              )}
+            </details>
+          ))}
+        </div>
+      </section>
+
       {/* CTA MCP / IA */}
       <section className="mt-10 rounded-terminal border border-accent/30 bg-accent/5 p-5">
         <h2 className="text-base font-semibold text-white">Consultá esto con un agente de IA</h2>
         <p className="mt-2 text-data text-zinc-300">
-          Estos datos también se exponen como <span className="text-accent">tools MCP</span> —
-          <code className="text-accent"> sanidad_plan</code>, <code className="text-accent">sanidad_calendario_aftosa</code> y{' '}
-          <code className="text-accent">sanidad_requisitos_movimiento</code> — para que Claude, Cursor u otro
-          agente respondan “¿qué tengo que vacunar este mes?” o “¿qué necesito para mover de Corrientes a Buenos Aires?”
-          citando la resolución.
+          Estos datos también se exponen como <span className="text-accent">5 tools MCP</span> —
+          <code className="text-accent"> sanidad_plan</code>, <code className="text-accent">sanidad_calendario_aftosa</code>,{' '}
+          <code className="text-accent">sanidad_requisitos_movimiento</code>, <code className="text-accent">sanidad_renspa</code> y{' '}
+          <code className="text-accent">sanidad_dte_tropa</code> — para que Claude, Cursor u otro agente respondan
+          “¿qué tengo que vacunar este mes?” o “¿qué necesito para mover de Corrientes a Buenos Aires?” citando la resolución.
         </p>
         <Link href="/mcp" className="mt-3 inline-block text-data text-accent hover:text-accent-bright underline underline-offset-2">
           Ver el servidor MCP →
@@ -185,6 +273,8 @@ export default function SanidadPage() {
           ))}
         </ul>
       </section>
+
+      <FAQPageSchema items={FAQ_SANIDAD.map((f) => ({ question: f.pregunta, answer: f.respuesta }))} />
     </div>
   )
 }

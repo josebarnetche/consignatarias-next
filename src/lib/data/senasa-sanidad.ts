@@ -248,6 +248,85 @@ export const REQUISITOS_MOVIMIENTO: RequisitoMovimiento[] = [
   },
 ]
 
+// ── Cómo funciona el sistema (contexto para la página, más allá del MCP) ─────
+export const COMO_FUNCIONA = [
+  {
+    titulo: 'SENASA fija la estrategia; los entes ejecutan',
+    texto:
+      'El SENASA (Servicio Nacional de Sanidad y Calidad Agroalimentaria) define los planes sanitarios nacionales. En la aftosa, la vacunación en campo la ejecutan los ~303 Entes Sanitarios locales (fundaciones y asociaciones sin fines de lucro), con Planes Locales aprobados por la CONALFA (Comisión Nacional de Lucha contra la Fiebre Aftosa) y coordinados con las COPROSA provinciales. Por eso el día exacto de vacunación cambia según tu ente.',
+  },
+  {
+    titulo: 'Todo se apoya en el RENSPA',
+    texto:
+      'El RENSPA (Registro Nacional Sanitario de Productores Agropecuarios) asocia productor + establecimiento + actividad. Es la base de todo: sin RENSPA vigente no se registra la vacunación ni se emite el DT-e para mover hacienda.',
+  },
+  {
+    titulo: 'Mover hacienda = DT-e',
+    texto:
+      'Cada movimiento de animales (a un remate, a otro campo, a faena) se ampara con un DT-e (Documento de Tránsito electrónico), que se emite en el sistema SIGSA de SENASA con clave fiscal ARCA. Al emitirlo, el sistema valida que la sanidad esté al día (aftosa, brucelosis, barrera de garrapata).',
+  },
+]
+
+// ── Trámites oficiales (links, para la página) ────────────────────────────────
+export interface Tramite {
+  titulo: string
+  descripcion: string
+  url: string
+}
+
+export const TRAMITES: Tramite[] = [
+  { titulo: 'Inscribir o actualizar un RENSPA', descripcion: '100% online con clave fiscal ARCA (servicio "MI SENASA").', url: 'https://www.argentina.gob.ar/senasa/micrositios/renspa' },
+  { titulo: 'Emitir un DT-e', descripcion: 'Documento de Tránsito electrónico para mover animales (SIGSA).', url: 'https://www.argentina.gob.ar/servicio/solicitar-emision-del-documento-de-transito-dte-para-animales-vivos-y-subproductos-de' },
+  { titulo: 'Consultar vigencia de un RENSPA', descripcion: 'Búsqueda pública de productores agropecuarios.', url: 'https://aps2.senasa.gov.ar/registros/faces/publico/personas/tc_productoresagropecuarios.jsp' },
+  { titulo: 'Digesto normativo SENASA', descripcion: 'Todas las resoluciones por capítulo (aftosa, brucelosis, etc.).', url: 'https://digesto.senasa.gob.ar/' },
+]
+
+// ── Preguntas frecuentes (respuestas citadas, para la página + FAQ JSON-LD) ──
+export interface FaqSanidad {
+  pregunta: string
+  respuesta: string
+  fuentes?: string[]
+}
+
+export const FAQ_SANIDAD: FaqSanidad[] = [
+  {
+    pregunta: '¿Qué categorías se vacunan contra la aftosa en cada campaña?',
+    respuesta:
+      'En la 1ra campaña (enero a abril) se vacuna la totalidad de las categorías bovinas y bubalinas. En la 2da campaña se vacunan únicamente terneros y terneras (dosis de refuerzo). El día exacto lo fija el Plan Local de tu Ente Sanitario.',
+    fuentes: ['aftosa_calendario_2026'],
+  },
+  {
+    pregunta: '¿La Patagonia se vacuna contra la aftosa?',
+    respuesta:
+      'No. La Patagonia (Tierra del Fuego, Santa Cruz, Chubut y parte de Río Negro y Neuquén) y los Valles de Calingasta (San Juan) son zona libre SIN vacunación. Mover hacienda hacia o desde esa zona tiene requisitos diferenciales por la barrera zoosanitaria.',
+    fuentes: ['aftosa_plan'],
+  },
+  {
+    pregunta: '¿Qué necesito para mover hacienda a un remate?',
+    respuesta:
+      'RENSPA vigente (origen y destino), un DT-e emitido en SIGSA (con clave fiscal ARCA), la vacunación antiaftosa al día según la campaña y, cuando corresponde, la serología de brucelosis. Si el movimiento cruza la barrera de garrapata, se exige tratamiento garrapaticida y certificación.',
+    fuentes: ['dte', 'brucelosis_movimiento'],
+  },
+  {
+    pregunta: '¿Cuándo se hace la serología de brucelosis para movimiento?',
+    respuesta:
+      'Para movimiento o exposiciones, los machos mayores de 6 meses y las hembras mayores de 18 meses requieren un diagnóstico serológico negativo dentro de los 60 días corridos previos. Están exentos los provenientes de un Establecimiento Libre de Brucelosis Bovina.',
+    fuentes: ['brucelosis_movimiento'],
+  },
+  {
+    pregunta: '¿La vacunación de brucelosis es obligatoria?',
+    respuesta:
+      'Sí. La vacunación con cepa B19 es obligatoria en el 100% de las terneras de 3 a 8 meses, en simultáneo con las campañas antiaftosa, en todo el país salvo la zona libre (Tierra del Fuego, Antártida e Islas del Atlántico Sur).',
+    fuentes: ['brucelosis_plan'],
+  },
+  {
+    pregunta: '¿Cómo saco un RENSPA?',
+    respuesta:
+      'La inscripción y actualización del RENSPA es 100% online, con clave fiscal ARCA, a través del servicio "MI SENASA". El RENSPA identifica al productor, el establecimiento y la actividad, y es requisito para vacunar y para emitir el DT-e.',
+    fuentes: ['renspa'],
+  },
+]
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 export function fuentesDe(keys: string[]): Fuente[] {
   return keys.map((k) => FUENTES[k]).filter(Boolean)

@@ -7,6 +7,20 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.149.0] — 2026-07-13
+
+### /sanidad — página de contenido navegable (más allá del MCP)
+
+La página deja de ser un espejo de las tools y pasa a ser un recurso propio, navegable y con info que el MCP no da:
+
+- **Índice navegable** (chips ancla) a Planes · Vacunación · Movimiento · RENSPA · Trámites · FAQ, con `scroll-mt` para el offset del nav.
+- **"Cómo funciona el sistema sanitario"**: contexto real (SENASA fija la estrategia / los ~303 entes ejecutan con CONALFA-COPROSA / todo se apoya en el RENSPA / mover = DT-e).
+- **Validador de RENSPA interactivo** (client component): pegás el código y se descompone en provincia · departamento · jurisdicción · establecimiento · productor en el navegador — algo que la web da y el MCP no.
+- **Trámites** con deep-links oficiales (sacar RENSPA, emitir DT-e, consultar vigencia, digesto).
+- **Preguntas frecuentes** (6, con la resolución fuente en cada una) + **FAQPage JSON-LD** para GEO/SEO.
+
+Todo sobre el dataset citado; sin dato inventado.
+
 ## [1.148.1] — 2026-07-13
 
 ### MCP — sanidad en las descripciones de todos los directorios
