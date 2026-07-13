@@ -63,6 +63,9 @@ Available tools:
 - \`actividad_consignatarias\` — ranking de cabezas operadas y precio promedio por firma en el MAG de Cañuelas (mercado de referencia, ~12% nacional)
 - \`buscar_frigorifico\` — frigoríficos habilitados MAGYP/SENASA (1.100+ plantas) por nombre/provincia/CUIT
 - \`calcular_arrendamiento\` — canon de arrendamiento rural indexado al novillo
+- \`sanidad_plan\` — ficha de un plan sanitario SENASA (aftosa, brucelosis, tuberculosis, garrapata) con su resolución
+- \`sanidad_calendario_aftosa\` — calendario de vacunación antiaftosa 2026 (Res. 711/2025) + zona con/sin vacunación por provincia
+- \`sanidad_requisitos_movimiento\` — requisitos para mover hacienda (RENSPA, DT-e, serología brucelosis, barrera de garrapata) con fuente
 - \`crear_alerta_precio\` — alerta cuando un precio cruza un umbral → notifica por webhook
 
 Los tools de lectura son públicos. \`crear_alerta_precio\` requiere una API key de un plan (\`Authorization: Bearer cnsg_live_...\`, misma que el Enterprise API).

@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.146.0] — 2026-07-13
+
+### Capa Sanidad / SENASA — MVP (dato regulatorio citado, MCP + web)
+
+Nueva capa de datos: el **régimen sanitario del ganado argentino**, codificado desde resoluciones SENASA **públicas y citadas** (cada regla con su Nº de resolución + URL oficial). Modelo inspirado en el server `Ansvar-Systems/uk-livestock` (regulatory-knowledge-as-MCP). Extiende la tesis "capa de dato citable consumible por agentes" hacia un whitespace vacío en el ecosistema MCP (sanidad animal) y defendible por lo tedioso de ensamblar.
+
+- **Dataset** `src/lib/data/senasa-sanidad.ts`: 4 planes obligatorios (aftosa, brucelosis, tuberculosis, garrapata/tristeza), zonas de aftosa con/sin vacunación por provincia, calendario 2026 (Res. 711/2025) y requisitos de movimiento (RENSPA, DT-e, serología, barrera). Regla de oro: para fechas/límites que fija el Plan Local del ente o los anexos, se devuelve la **ventana + la cita**, nunca un dato inventado.
+- **3 tools MCP** (total 14): `sanidad_plan` (ficha de enfermedad), `sanidad_calendario_aftosa` (calendario + zona por provincia), `sanidad_requisitos_movimiento` (qué se exige para mover hacienda, marca cruce de barrera aftosa). Todas de solo lectura, con annotations, y devolviendo la resolución fuente.
+- **Página `/sanidad`** (SSG, indexable/GEO): planes, calendario, zonas y requisitos con deep-links a argentina.gob.ar/SENASA + banner de disclaimer + CTA al MCP. En nav (Herramientas), sitemap, `llms.txt` y `server-card.json`.
+- **Fuera del MVP** (fast-follow): existencias/movimientos por especie (CSV de datos.magyp.gob.ar), verificador de vigencia de RENSPA (consulta pública JSF). El DT-e/SIGSA queda fuera (requiere clave fiscal ARCA).
+
 ## [1.145.0] — 2026-07-13
 
 ### MCP — tool annotations (behavioral hints) + títulos

@@ -6,6 +6,10 @@ import marketPrices from '@/lib/data/market-prices.json'
 import rematesData from '@/lib/data/remates.json'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import { isValidCategory, categoryLabel, getCurrentPrice, CATEGORY_VALUES } from '@/lib/price-alerts'
+import {
+  SANIDAD_DISCLAIMER, PLANES, CALENDARIO_AFTOSA_2026, REQUISITOS_MOVIMIENTO,
+  fuentesDe, planPorId, zonaAftosaDe,
+} from '@/lib/data/senasa-sanidad'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -54,6 +58,9 @@ const TOOL_TITLES: Record<string, string> = {
   actividad_consignatarias: 'Ranking de actividad de consignatarias',
   buscar_frigorifico: 'Buscar frigorífico',
   calcular_arrendamiento: 'Calcular arrendamiento rural',
+  sanidad_plan: 'Plan sanitario SENASA (ficha)',
+  sanidad_calendario_aftosa: 'Calendario de vacunación antiaftosa',
+  sanidad_requisitos_movimiento: 'Requisitos sanitarios de movimiento',
   crear_alerta_precio: 'Crear alerta de precio',
 }
 
@@ -492,6 +499,95 @@ const TOOLS: Tool[] = [
           JSON.stringify({ canon_mensual: Math.round(canonMensual), canon_anual: Math.round(canonAnual), canon_ha_mes: Math.round(canonHaMes), kg_ha: kgHa, hectareas, precio_novillo: precio, fuente_precio: fuentePrecio, indice_arrendamiento_oficial: oficial ?? null }) +
           `\n\n(Índice oficial: "INMAG sugerido para arrendamientos rurales", MAG. Es un cálculo, no asesoramiento.)`,
       )
+    },
+  },
+  {
+    name: 'sanidad_plan',
+    description:
+      'Ficha de un plan sanitario obligatorio de SENASA para bovinos: aftosa, brucelosis, tuberculosis o garrapata/tristeza. Devuelve agente, régimen (vacunación/testeo), categorías afectadas, si es zoonosis y las resoluciones fuente (con URL oficial). Sin argumento lista los 4 planes. Es información regulatoria citada, no operativa (para mover hacienda usá sanidad_requisitos_movimiento).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        enfermedad: { type: 'string', enum: ['aftosa', 'brucelosis', 'tuberculosis', 'garrapata'], description: 'Plan a consultar; sin este arg devuelve los 4' },
+      },
+      additionalProperties: false,
+    },
+    async run(args) {
+      const id = typeof args.enfermedad === 'string' ? args.enfermedad : null
+      const planes = id ? [planPorId(id)].filter(Boolean) : PLANES
+      if (planes.length === 0) return fail('Enfermedad desconocida. Válidas: aftosa, brucelosis, tuberculosis, garrapata.')
+      const bloques = planes.map((p) => {
+        const src = fuentesDe(p!.fuentes).map((f) => `${f.norma} — ${f.titulo}: ${f.url}`).join('\n  ')
+        return (
+          `● ${p!.enfermedad}${p!.zoonosis ? ' (ZOONOSIS)' : ''}\n` +
+          `Agente: ${p!.agente}\n` +
+          `Especies: ${p!.especies.join(', ')} · Obligatorio: ${p!.obligatorio ? 'sí' : 'no'}\n` +
+          `Régimen: ${p!.regimen}\n` +
+          `Categorías: ${p!.categorias_afectadas}\n` +
+          `${p!.resumen}\n` +
+          `Fuentes:\n  ${src}`
+        )
+      })
+      return ok(`${bloques.join('\n\n')}\n\n${SANIDAD_DISCLAIMER}`)
+    },
+  },
+  {
+    name: 'sanidad_calendario_aftosa',
+    description:
+      'Calendario de vacunación antiaftosa 2026 de SENASA (Res. 711/2025) y estado de zona por provincia. Devuelve las ventanas de la 1ra campaña (todas las categorías) y 2da campaña (solo terneros/terneras), y si la provincia está en zona CON o SIN vacunación (Patagonia/Calingasta). El día exacto por distrito lo fija el Plan Local del Ente Sanitario — devuelve la ventana + la cita, nunca un día inventado.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        provincia: { type: 'string', description: 'Provincia para saber el estado de zona (opcional)' },
+      },
+      additionalProperties: false,
+    },
+    async run(args) {
+      const prov = typeof args.provincia === 'string' ? args.provincia : null
+      let zonaTxt = ''
+      if (prov) {
+        const z = zonaAftosaDe(prov)
+        if (!z) zonaTxt = `Provincia "${prov}" no reconocida.\n\n`
+        else {
+          const estado = z.estado === 'sin_vacunacion' ? 'ZONA SIN VACUNACIÓN (no se vacuna aftosa)' : z.estado === 'mixta' ? 'ZONA MIXTA' : 'ZONA CON VACUNACIÓN'
+          zonaTxt = `${z.provincia}: ${estado}${z.nota ? ` — ${z.nota}` : ''}\n\n`
+        }
+      }
+      const camp = CALENDARIO_AFTOSA_2026.map(
+        (c) => `${c.campana} campaña — ${c.ventana}\nCategorías: ${c.categorias}\n${c.detalle}`,
+      ).join('\n\n')
+      const f = fuentesDe(['aftosa_calendario_2026', 'aftosa_plan'])
+      return ok(
+        `Vacunación antiaftosa 2026\n\n${zonaTxt}${camp}\n\nFuentes:\n  ${f.map((x) => `${x.norma}: ${x.url}`).join('\n  ')}\n\n${SANIDAD_DISCLAIMER}`,
+      )
+    },
+  },
+  {
+    name: 'sanidad_requisitos_movimiento',
+    description:
+      'Requisitos sanitarios de SENASA para mover hacienda bovina (RENSPA, DT-e, aftosa al día, serología de brucelosis, barrera de garrapata, transporte habilitado), con la resolución fuente de cada uno. Si pasás provincia de origen y destino, señala si el movimiento cruza la barrera de aftosa (zona con↔sin vacunación). No emite el DT-e (eso es SIGSA, requiere clave fiscal ARCA); informa qué se exige.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        provincia_origen: { type: 'string', description: 'Provincia de origen (opcional)' },
+        provincia_destino: { type: 'string', description: 'Provincia de destino (opcional)' },
+      },
+      additionalProperties: false,
+    },
+    async run(args) {
+      const org = typeof args.provincia_origen === 'string' ? zonaAftosaDe(args.provincia_origen) : null
+      const dst = typeof args.provincia_destino === 'string' ? zonaAftosaDe(args.provincia_destino) : null
+      let barrera = ''
+      if (org && dst && org.estado !== dst.estado && (org.estado === 'sin_vacunacion' || dst.estado === 'sin_vacunacion')) {
+        barrera = `⚠ El movimiento ${org.provincia} → ${dst.provincia} cruza la barrera zoosanitaria de aftosa (zona con vacunación ↔ zona sin vacunación): tiene requisitos diferenciales estrictos. Consultar a SENASA/Ente antes de mover.\n\n`
+      } else if (org && dst) {
+        barrera = `${org.provincia} → ${dst.provincia}: ambas ${org.estado === 'sin_vacunacion' ? 'en zona sin vacunación' : 'en zona con vacunación'} (sin cruce de barrera de aftosa).\n\n`
+      }
+      const reqs = REQUISITOS_MOVIMIENTO.map((r) => {
+        const f = fuentesDe(r.fuentes).map((x) => x.norma).join(', ')
+        return `● ${r.concepto} [${f}]\n  ${r.regla}`
+      }).join('\n')
+      return ok(`Requisitos para mover hacienda bovina (SENASA)\n\n${barrera}${reqs}\n\n${SANIDAD_DISCLAIMER}`)
     },
   },
   {
