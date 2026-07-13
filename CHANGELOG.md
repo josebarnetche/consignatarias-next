@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.148.0] — 2026-07-13
+
+### MCP — tools RENSPA y DT-e / número de tropa (16 tools)
+
+Dos tools nuevas en la capa Sanidad, ambas de referencia/validación (ni RENSPA ni el DT-e tienen API pública — viven tras clave fiscal ARCA en SIGSA):
+
+- **`sanidad_renspa`**: valida y decodifica un código RENSPA en sus segmentos — provincia · departamento · jurisdicción de oficina local · establecimiento · productor. Formato oficial verificado: **13 dígitos / 17 caracteres** con máscara `00.000.0.00000.00` (Infoleg + instructivo MAGyP). Acepta con o sin puntos; remite a la consulta pública oficial para la vigencia (no la infiere).
+- **`sanidad_dte_tropa`**: explica el DT-e (Documento de Tránsito electrónico) / número de tropa que ampara el movimiento de hacienda a remate o faena — qué es, qué se necesita para emitirlo (RENSPA vigente + clave fiscal ARCA + vacunación al día) y cómo se encadena con `sanidad_requisitos_movimiento`. No emite ni consulta un DT-e real.
+
+Actualizados server-card y llms.txt (16 tools). El MCP pasa de 14 a 16 tools.
+
 ## [1.147.0] — 2026-07-13
 
 ### Sanidad en la landing — banda "Calendario sanitario"

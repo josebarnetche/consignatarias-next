@@ -66,6 +66,8 @@ Available tools:
 - \`sanidad_plan\` — ficha de un plan sanitario SENASA (aftosa, brucelosis, tuberculosis, garrapata) con su resolución
 - \`sanidad_calendario_aftosa\` — calendario de vacunación antiaftosa 2026 (Res. 711/2025) + zona con/sin vacunación por provincia
 - \`sanidad_requisitos_movimiento\` — requisitos para mover hacienda (RENSPA, DT-e, serología brucelosis, barrera de garrapata) con fuente
+- \`sanidad_renspa\` — valida y decodifica un código RENSPA (17 dígitos, 00.000.0.00000.00) en sus segmentos
+- \`sanidad_dte_tropa\` — explica el DT-e / número de tropa (qué ampara, requisitos para emitirlo) — referencia
 - \`crear_alerta_precio\` — alerta cuando un precio cruza un umbral → notifica por webhook
 
 Los tools de lectura son públicos. \`crear_alerta_precio\` requiere una API key de un plan (\`Authorization: Bearer cnsg_live_...\`, misma que el Enterprise API).

@@ -38,6 +38,55 @@ export const FUENTES: Record<string, Fuente> = {
   dte: { norma: 'DT-e (SIGSA)', titulo: 'Documento de Tránsito electrónico', url: 'https://www.argentina.gob.ar/senasa/micrositios/dte' },
   renspa: { norma: 'RENSPA', titulo: 'Registro Nacional Sanitario de Productores Agropecuarios', url: 'https://www.argentina.gob.ar/senasa/micrositios/renspa' },
   renspa_consulta: { norma: 'Consulta pública RENSPA', titulo: 'Búsqueda de Productores Agropecuarios', url: 'https://aps2.senasa.gov.ar/registros/faces/publico/personas/tc_productoresagropecuarios.jsp' },
+  renspa_formato: { norma: 'RENSPA — estructura del código', titulo: '17 caracteres, formato 00.000.0.00000.00 (Infoleg / Instructivo MAGyP)', url: 'https://servicios.infoleg.gob.ar/infolegInternet/anexos/65000-69999/69503/norma.htm' },
+}
+
+// ── RENSPA: validación/decodificación de estructura ──────────────────────────
+// Formato oficial: 17 caracteres, máscara 00.000.0.00000.00
+//   PP (provincia) · DDD (departamento/partido) · J (jurisdicción de oficina local)
+//   · EEEEE (predio/establecimiento, único en el departamento) · RR (productor en el predio)
+export interface RenspaDecode {
+  valido: boolean
+  normalizado?: string
+  provincia?: string
+  departamento?: string
+  jurisdiccion?: string
+  establecimiento?: string
+  productor?: string
+  error?: string
+}
+
+export function decodeRenspa(input: string): RenspaDecode {
+  const raw = (input || '').trim()
+  const digits = raw.replace(/\D/g, '')
+  // 17 caracteres en total, de los cuales 13 son dígitos (los otros 4 son los puntos
+  // del formato 00.000.0.00000.00): provincia(2)+departamento(3)+jurisdicción(1)+predio(5)+productor(2).
+  if (digits.length !== 13) {
+    return { valido: false, error: `El RENSPA tiene 13 dígitos (formato 00.000.0.00000.00, 17 caracteres con los puntos); recibí ${digits.length}.` }
+  }
+  const normalizado = `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 6)}.${digits.slice(6, 11)}.${digits.slice(11, 13)}`
+  return {
+    valido: true,
+    normalizado,
+    provincia: digits.slice(0, 2),
+    departamento: digits.slice(2, 5),
+    jurisdiccion: digits.slice(5, 6),
+    establecimiento: digits.slice(6, 11),
+    productor: digits.slice(11, 13),
+  }
+}
+
+// ── DT-e (Documento de Tránsito electrónico) — ficha de referencia ───────────
+export const DTE_INFO = {
+  que_es:
+    'El DT-e (Documento de Tránsito electrónico) ampara y habilita el tránsito de animales vivos y subproductos en todo el territorio nacional. Reemplaza al DTA en papel. Es el "número de tropa" que identifica cada movimiento de hacienda (por ejemplo, la tropa que llega a un remate o a faena).',
+  emision:
+    'Se emite en el sistema SIGSA de SENASA. Requiere: RENSPA vigente (origen y destino), clave fiscal ARCA con el servicio habilitado, CBU para el pago de aranceles (SIGAD) y conexión. Si lo gestiona un tercero (consignatario/transportista), necesita autorización del titular del RENSPA. La autogestión es obligatoria cuando interviene un consignatario o un feedlot.',
+  requisitos_sanitarios:
+    'Al emitir el DT-e, SIGSA valida los requisitos sanitarios del movimiento: RENSPA vigente, vacunación antiaftosa al día según campaña, serología de brucelosis cuando corresponde (Res. 421/2025) y barrera de garrapata si cruza la zona. Ver la tool sanidad_requisitos_movimiento.',
+  no_publico:
+    'La emisión y consulta del DT-e NO tienen API pública abierta: viven detrás de la clave fiscal ARCA en SIGSA. Esta herramienta explica qué es y qué se necesita; no emite ni consulta el DT-e real.',
+  fuentes: ['dte', 'transporte'] as string[],
 }
 
 // ── Planes sanitarios (fichas de enfermedad) ────────────────────────────────

@@ -8,7 +8,7 @@ import frigorificosData from '@/lib/data/frigorificos.json'
 import { isValidCategory, categoryLabel, getCurrentPrice, CATEGORY_VALUES } from '@/lib/price-alerts'
 import {
   SANIDAD_DISCLAIMER, PLANES, CALENDARIO_AFTOSA_2026, REQUISITOS_MOVIMIENTO,
-  fuentesDe, planPorId, zonaAftosaDe,
+  FUENTES, fuentesDe, planPorId, zonaAftosaDe, decodeRenspa, DTE_INFO,
 } from '@/lib/data/senasa-sanidad'
 
 export const runtime = 'nodejs'
@@ -61,6 +61,8 @@ const TOOL_TITLES: Record<string, string> = {
   sanidad_plan: 'Plan sanitario SENASA (ficha)',
   sanidad_calendario_aftosa: 'Calendario de vacunación antiaftosa',
   sanidad_requisitos_movimiento: 'Requisitos sanitarios de movimiento',
+  sanidad_renspa: 'Validar / decodificar RENSPA',
+  sanidad_dte_tropa: 'DT-e (número de tropa) — referencia',
   crear_alerta_precio: 'Crear alerta de precio',
 }
 
@@ -588,6 +590,58 @@ const TOOLS: Tool[] = [
         return `● ${r.concepto} [${f}]\n  ${r.regla}`
       }).join('\n')
       return ok(`Requisitos para mover hacienda bovina (SENASA)\n\n${barrera}${reqs}\n\n${SANIDAD_DISCLAIMER}`)
+    },
+  },
+  {
+    name: 'sanidad_renspa',
+    description:
+      'Valida y decodifica un código RENSPA (Registro Nacional Sanitario de Productores Agropecuarios): 17 caracteres, formato 00.000.0.00000.00. Devuelve los segmentos (provincia, departamento, jurisdicción de oficina local, establecimiento y productor) y explica qué identifica. NO consulta la vigencia en vivo (la base de SENASA está tras clave fiscal ARCA); para verificar vigencia remite a la consulta pública oficial.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        renspa: { type: 'string', description: 'Código RENSPA, con o sin puntos (ej. 01.234.5.67890.12)' },
+      },
+      required: ['renspa'],
+      additionalProperties: false,
+    },
+    async run(args) {
+      const d = decodeRenspa(String(args.renspa || ''))
+      if (!d.valido) {
+        return ok(
+          `RENSPA inválido: ${d.error}\n` +
+            `Formato oficial: 17 dígitos, 00.000.0.00000.00 (provincia · departamento · jurisdicción · establecimiento · productor).\n` +
+            `Fuente: ${FUENTES.renspa_formato.url}`,
+        )
+      }
+      return ok(
+        `RENSPA ${d.normalizado} — estructura válida\n` +
+          `Provincia (código SENASA): ${d.provincia}\n` +
+          `Departamento/partido: ${d.departamento}\n` +
+          `Jurisdicción (oficina local): ${d.jurisdiccion}\n` +
+          `Establecimiento/predio: ${d.establecimiento}\n` +
+          `Productor en el predio: ${d.productor}\n\n` +
+          `Un RENSPA asocia productor + establecimiento + actividad; es la base para emitir el DT-e y registrar la vacunación.\n` +
+          `Verificar VIGENCIA (dato en vivo, no expuesto por API): ${FUENTES.renspa_consulta.url}\n` +
+          `Fuente del formato: ${FUENTES.renspa_formato.url}\n\n` +
+          `Nota: se valida la ESTRUCTURA del código, no que el RENSPA exista o esté vigente.`,
+      )
+    },
+  },
+  {
+    name: 'sanidad_dte_tropa',
+    description:
+      'Explica el DT-e (Documento de Tránsito electrónico) / número de tropa que ampara el movimiento de hacienda a remate o faena: qué es, qué requisitos hacen falta para emitirlo (RENSPA vigente, clave fiscal ARCA, vacunación al día) y cómo se encadena con los requisitos sanitarios. NO emite ni consulta un DT-e real (SIGSA está tras clave fiscal ARCA); es referencia. Para el detalle de requisitos por movimiento usá sanidad_requisitos_movimiento.',
+    inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+    async run() {
+      const f = fuentesDe(DTE_INFO.fuentes).map((x) => `${x.norma}: ${x.url}`).join('\n  ')
+      return ok(
+        `DT-e — Documento de Tránsito electrónico (número de tropa)\n\n` +
+          `${DTE_INFO.que_es}\n\n` +
+          `Emisión: ${DTE_INFO.emision}\n\n` +
+          `Requisitos sanitarios: ${DTE_INFO.requisitos_sanitarios}\n\n` +
+          `${DTE_INFO.no_publico}\n\n` +
+          `Fuentes:\n  ${f}\n\n${SANIDAD_DISCLAIMER}`,
+      )
     },
   },
   {
