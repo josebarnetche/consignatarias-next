@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.152.1] — 2026-07-13
+
+### MCP — instructions del initialize + directorios al día (sanidad + BPG)
+
+Auditoría de consistencia: las 17 tools ya tenían su descripción, pero el overview del servidor y algunos directorios estaban desactualizados. Se corrigió:
+
+- **`initialize.instructions`**: reescrito como overview completo de las 6 familias de tools (mercado, directorio/remates, herramientas, sanidad SENASA, buenas prácticas, y crear_alerta_precio con su auth). Antes solo mencionaba precios y la alerta.
+- **`server.json` y `server-card.json`**: la descripción ahora incluye las buenas prácticas ganaderas (además de sanidad).
+- **Registry oficial** (registry.modelcontextprotocol.io): re-publicado **v1.2.0** con descripción que suma "buenas prácticas" (≤100 chars), firmado con la clave DNS guardada en Keychain (sin rotar).
+
 ## [1.152.0] — 2026-07-13
 
 ### BPG completo — subpágina por tema + tool MCP

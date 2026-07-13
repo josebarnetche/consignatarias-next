@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
   "name": "ar.com.consignatarias/cattle-market",
   "title": "Consignatarias — Mercado Ganadero Argentino",
-  "description": "Datos en vivo del mercado ganadero argentino como tools MCP: Índice Novillo (INMAG) diario en ARS y USD desde 2015, precios de hacienda por categoría, contexto macro (dólar, maíz), calendario de remates, directorio de consignatarias y frigoríficos, calculadora de arrendamiento en kg de novillo, y sanidad SENASA (calendario de vacunación antiaftosa, requisitos de movimiento, RENSPA, DT-e). La referencia de precio del ganado argentino, consultable por agentes de IA.",
+  "description": "Datos en vivo del mercado ganadero argentino como tools MCP: Índice Novillo (INMAG) diario en ARS y USD desde 2015, precios de hacienda por categoría, contexto macro (dólar, maíz), calendario de remates, directorio de consignatarias y frigoríficos, calculadora de arrendamiento en kg de novillo, sanidad SENASA (calendario de vacunación antiaftosa, requisitos de movimiento, RENSPA, DT-e) y buenas prácticas ganaderas (Guía Red BPA). La referencia de precio del ganado argentino, consultable por agentes de IA.",
   "version": "1.0.0",
   "websiteUrl": "https://www.consignatarias.com.ar",
   "remotes": [

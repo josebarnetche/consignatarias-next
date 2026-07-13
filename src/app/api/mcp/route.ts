@@ -904,7 +904,13 @@ export async function POST(req: NextRequest) {
         capabilities: { tools: {}, prompts: {} },
         serverInfo: SERVER_INFO,
         instructions:
-          'Datos del mercado ganadero argentino. get_indice_novillo = índice INMAG DIARIO (ponderado por volumen); get_precios_hacienda = precios por categoría, observación SEMANAL — son métricas distintas, no las compares 1:1. Tools de lectura públicas. crear_alerta_precio REQUIERE API key de un plan Enterprise: pasala por el header Authorization: Bearer cnsg_live_... (config "headers" del cliente MCP) o por el parámetro api_key de la tool. Key en https://www.consignatarias.com.ar/cuenta/api-keys',
+          'Datos e infraestructura del mercado ganadero argentino como tools MCP.\n' +
+          '• Mercado: get_indice_novillo (índice INMAG DIARIO, ponderado por volumen) y get_precios_hacienda (precios por categoría, observación SEMANAL) son métricas distintas — no las compares 1:1; además get_inmag_historico, get_precios_detallados y get_contexto_macro.\n' +
+          '• Directorio y remates: buscar_consignataria, actividad_consignatarias, buscar_frigorifico, list_remates.\n' +
+          '• Herramientas: calcular_arrendamiento.\n' +
+          '• Sanidad SENASA (dato regulatorio, con la resolución citada): sanidad_plan, sanidad_calendario_aftosa, sanidad_requisitos_movimiento, sanidad_renspa (valida/decodifica RENSPA), sanidad_dte_tropa (DT-e / número de tropa).\n' +
+          '• Buenas Prácticas Ganaderas (14 temas, Guía Red BPA): buenas_practicas.\n' +
+          'Todas son de lectura y públicas, salvo crear_alerta_precio, que REQUIERE API key de un plan Enterprise: pasala por el header Authorization: Bearer cnsg_live_... o por el parámetro api_key. Alta en https://www.consignatarias.com.ar/cuenta/api-keys',
       }, negotiated)
     }
     case 'ping':

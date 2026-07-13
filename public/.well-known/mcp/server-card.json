@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/draft/server-card.schema.json",
   "name": "ar.com.consignatarias/cattle-market",
   "title": "Consignatarias — Mercado Ganadero Argentino",
-  "description": "La infraestructura de inteligencia de mercado del ganado argentino, expuesta como servidor MCP. Índice Novillo (INMAG) diario ponderado por volumen del Mercado Agroganadero (Cañuelas) en ARS y USD desde 2015, panel de precios por categoría, contexto macro, remates, directorio de consignatarias y frigoríficos, herramientas de cálculo (arrendamiento, valuación de lote, ¿vendo ahora o espero?), y una capa de sanidad SENASA (planes obligatorios, calendario de vacunación antiaftosa, requisitos de movimiento, RENSPA, DT-e), todo con la resolución fuente citada.",
+  "description": "La infraestructura de inteligencia de mercado del ganado argentino, expuesta como servidor MCP. Índice Novillo (INMAG) diario ponderado por volumen del Mercado Agroganadero (Cañuelas) en ARS y USD desde 2015, panel de precios por categoría, contexto macro, remates, directorio de consignatarias y frigoríficos, herramientas de cálculo (arrendamiento, valuación de lote, ¿vendo ahora o espero?), una capa de sanidad SENASA (planes obligatorios, calendario de vacunación antiaftosa, requisitos de movimiento, RENSPA, DT-e) con la resolución fuente citada, y las Buenas Prácticas Ganaderas (14 temas, Guía Red BPA).",
   "version": "1.0.0",
   "protocolVersions": ["2026-07-28", "2025-06-18", "2025-03-26"],
   "websiteUrl": "https://www.consignatarias.com.ar",
