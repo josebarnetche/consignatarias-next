@@ -77,7 +77,7 @@ const TOOLS: Tool[] = [
   {
     name: 'get_indice_novillo',
     description:
-      'Índice Novillo (INMAG) del Mercado Agroganadero argentino: precio de referencia hoy en ARS/kg vivo, con variación diaria, volumen y tendencia. Es el índice DIARIO ponderado por volumen del canal formal MAG (métrica distinta de los precios por categoría de get_precios_hacienda, que son observación semanal).',
+      'INMAG diario del Mercado Agroganadero (MAG/Cañuelas): novillo de referencia HOY en ARS/kg vivo, ponderado por volumen. Devuelve valor, volumen, variación vs rueda previa (marca ruedas flacas) y promedio 5 ruedas. Sin args. Histórico: get_inmag_historico. NO da precios por categoría (get_precios_hacienda, semanal) ni subcategoría (get_precios_detallados); no comparar 1:1.',
     inputSchema: { type: 'object', properties: {}, additionalProperties: false },
     async run() {
       const series = prices.inmag.series || []
@@ -118,7 +118,7 @@ const TOOLS: Tool[] = [
   {
     name: 'get_inmag_historico',
     description:
-      'Evolución histórica del Índice Novillo (INMAG) en ARS/kg vivo. Devuelve valor inicial/final, variación, mínimo y máximo del período, y una muestra de la serie. Sirve para tendencia.',
+      'Serie histórica del Índice Novillo (INMAG), ARS/kg vivo (MAG/Cañuelas) — TENDENCIA. Devuelve valor inicial y final, variación %, mínimo, máximo, nº de ruedas y una muestra (~8 puntos). Índice DIARIO ponderado por volumen. Param dias: ventana atrás (default 30, mín 2, máx 730). Valor de HOY → get_indice_novillo; por categoría (semanal) → get_precios_hacienda, no comparar 1:1.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -157,7 +157,7 @@ const TOOLS: Tool[] = [
   {
     name: 'get_precios_hacienda',
     description:
-      'Precios de hacienda por categoría (novillos, novillitos, vaquillonas, vacas, toros, terneros) en ARS/kg vivo — observación SEMANAL del SIO/Mercado Agroganadero. Es una métrica distinta del índice INMAG diario (get_indice_novillo): no comparar 1:1. Sin argumento devuelve todas.',
+      'Precios de hacienda por categoría (novillos, novillitos, vaquillonas, vacas, toros, terneros) del Mercado Agroganadero: observación SEMANAL del SIO, ARS/kg vivo. Cada una: precio actual, cabezas y aviso si <200 cab (pocos datos). categoria (enum) filtra una; sin arg, todas. NO es el INMAG diario (get_indice_novillo, no comparar 1:1) ni subcategorías (get_precios_detallados).',
     inputSchema: {
       type: 'object',
       properties: {
@@ -189,7 +189,7 @@ const TOOLS: Tool[] = [
   {
     name: 'get_precios_detallados',
     description:
-      'Precios por SUBCATEGORÍA del Mercado Agroganadero (ej. "NOVILLOS Regular +430", "VACAS Conserva Buena") con mínimo, promedio y máximo en ARS/kg vivo. Más granular que get_precios_hacienda. Filtro opcional por grupo (novillos/novillitos/vaquillonas/vacas/toros).',
+      'Precios por SUBCATEGORÍA del Mercado Agroganadero (MAG/Cañuelas), último día hábil: ej. "NOVILLOS Regular +430", "VACAS Conserva Buena" — mín/prom/máx en ARS/kg vivo + cabezas. Más granular que get_precios_hacienda (categorías); NO es el índice INMAG diario (get_indice_novillo). Param opcional grupo (novillos/novillitos/vaquillonas/vacas/toros); sin filtro, todas.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -227,7 +227,7 @@ const TOOLS: Tool[] = [
   {
     name: 'get_contexto_macro',
     description:
-      'Contexto macro del mercado ganadero argentino: dólar blue y oficial (ARS), maíz FOB (USD/tn), y el spread novillo/maíz (kg de maíz que compra un kg de novillo — proxy de rentabilidad de feedlot).',
+      'Contexto macro del mercado ganadero argentino, sin parámetros: dólar blue y oficial (ARS), maíz FOB (USD/tn y ARS/kg), novillo INMAG (ARS/kg) y el spread novillo/maíz (kg de maíz que compra 1 kg novillo; proxy de rentabilidad de feedlot); y, si hay, índice de arrendamiento MAG (ARS/kg). NO da la serie INMAG (→get_indice_novillo) ni precios por categoría (→get_precios_hacienda).',
     inputSchema: { type: 'object', properties: {}, additionalProperties: false },
     async run() {
       const maizArsKg = (prices.corn.current * prices.usdBlue.current) / 1000 // USD/tn → ARS/kg
@@ -257,7 +257,7 @@ const TOOLS: Tool[] = [
   {
     name: 'list_remates',
     description:
-      'Próximos remates de hacienda en Argentina. Filtros opcionales: provincia y límite. Devuelve fecha, consignataria, ubicación, categoría y transmisión en vivo si hay.',
+      'Calendario de próximos remates de hacienda en Argentina: solo programados, fecha ≥ hoy, ordenados por fecha. Devuelve fecha, hora, consignataria, localidad/provincia, categoría principal y si hay transmisión en vivo. Params: provincia (subcadena, opcional), limite (default 10, máx 50). No da precios ni INMAG: usá get_precios_hacienda/get_indice_novillo.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -286,7 +286,7 @@ const TOOLS: Tool[] = [
   {
     name: 'buscar_consignataria',
     description:
-      'Busca consignatarias/casas de remate del directorio argentino por nombre, localidad o provincia. Devuelve nombre, ubicación, categoría, contacto y el perfil en consignatarias.com.ar.',
+      'Directorio de consignatarias/casas de remate de hacienda por nombre, razón social o localidad (query, mín 2 car). Devuelve nombre, localidad/provincia, categoría, CUIT, un contacto (WhatsApp/teléfono/web) y el perfil en consignatarias.com.ar. Opcional: provincia; limite (def 8, máx 25). NO da actividad de mercado: para cabezas/precio en el MAG usá actividad_consignatarias.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -325,7 +325,7 @@ const TOOLS: Tool[] = [
   {
     name: 'actividad_consignatarias',
     description:
-      'Ranking de actividad de las consignatarias en el Mercado Agroganadero de Cañuelas (el mercado concentrador que fija el precio de referencia, ~12% de la faena nacional): cabezas operadas y precio promedio por firma en un período. Es el dato del mercado de REFERENCIA, no el total nacional (buena parte del ganado se opera fuera de Cañuelas).',
+      'Ranking de consignatarias por CABEZAS operadas en el Mercado Agroganadero (MAG, Cañuelas; mercado de referencia) en un período, con precio promedio ARS/kg por firma. Para "qué firma operó más"; NO da precio de mercado (get_precios_hacienda) ni índice diario (get_indice_novillo). Args: desde (def. 7d), hasta (hoy), categoria (NOVILLO/VACA… opc.), limite (def. 15, máx. 45).',
     inputSchema: {
       type: 'object',
       properties: {
@@ -396,7 +396,7 @@ const TOOLS: Tool[] = [
   {
     name: 'buscar_frigorifico',
     description:
-      'Busca frigoríficos habilitados MAGYP/SENASA (1.100+ plantas) por nombre, provincia o CUIT. Devuelve nombre, provincia, CUIT, matrícula y ciclo. Filtro por provincia.',
+      'Directorio de frigoríficos y plantas de faena habilitados MAGYP/SENASA (1.102). Buscá por nombre, CUIT o provincia. Por planta devuelve nombre, provincia, matrícula, CUIT y ciclo; marca las inactivas en SENASA. Requiere query (nombre/CUIT) o provincia (una alcanza); limite default 10, máx 30. No da precios ni faena — es directorio.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -426,7 +426,7 @@ const TOOLS: Tool[] = [
   {
     name: 'calcular_arrendamiento',
     description:
-      'Calcula el canon de arrendamiento rural argentino en pesos: kg de novillo por hectárea × hectáreas × precio del novillo. Por defecto usa el ÍNDICE SUGERIDO PARA ARRENDAMIENTOS RURALES oficial del MAG (haciinfo000013); si no está disponible, el INMAG del día.',
+      'Calcula el canon de arrendamiento de campo (ARS) = kg novillo/ha/mes × hectáreas × precio. Devuelve canon mensual, anual y por ha/mes. Sin precio_novillo usa el índice oficial de arrendamientos del MAG (haciinfo000013), o el INMAG del día si falta. Solo calcula: para consultar precios usá get_indice_novillo o get_precios_hacienda. Estimación, no asesoramiento.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -467,7 +467,7 @@ const TOOLS: Tool[] = [
   {
     name: 'crear_alerta_precio',
     description:
-      'Crea una alerta de precio por umbral: cuando el precio de una categoría cruza el valor dado, se notifica por webhook (POST price.threshold_crossed). REQUIERE API KEY de un plan Enterprise. Autenticá de una de dos formas: (a) header del cliente MCP "headers": {"Authorization": "Bearer cnsg_live_..."}, o (b) el parámetro api_key de esta tool. Conseguí la key en https://www.consignatarias.com.ar/cuenta/api-keys',
+      'Crea una alerta: cuando el precio de una categoría cruza el umbral, avisa a tu webhook https (POST price.threshold_crossed). Única tool de escritura (el resto lee). REQUIERE API key Enterprise (Bearer cnsg_live_… o param api_key; alta en /cuenta/api-keys). Params: categoria (inmag=índice diario; resto semanal), umbral ARS/kg vivo, direccion above|below (def above), webhook_url. Devuelve id y precio.',
     requiresAuth: true,
     inputSchema: {
       type: 'object',

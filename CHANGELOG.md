@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.144.0] — 2026-07-13
+
+### MCP — tool descriptions tier-A (ranking de aggregators)
+
+Reescritura de las 11 tool descriptions del server MCP con el rubro de calidad de **Glama** (TDQS, 6 dimensiones: Purpose Clarity, Usage Guidelines, Behavioral Transparency, Parameter Semantics, Conciseness, Contextual Completeness). Es la palanca de ranking real: Glama y otros aggregators se conectan al endpoint EN VIVO, introspectan los schemas y puntúan las descripciones tal cual se sirven — un server publicado con descripciones pobres queda invisible aunque esté en todos los registries.
+
+- **Desambiguación entre tools hermanas**, el error más caro para un agente: cada description ahora dice explícitamente cuándo NO usarla — `get_indice_novillo` (INMAG **diario**, ponderado por volumen) vs `get_precios_hacienda` (categorías, **semanal**) vs `get_precios_detallados` (subcategorías), con "no comparar 1:1"; `buscar_consignataria` (directorio) vs `actividad_consignatarias` (cabezas operadas en el MAG).
+- **Behavioral Transparency**: cada una declara qué devuelve exactamente y sus caveats reales (flag de rueda flaca, aviso `<200 cab`, `crear_alerta_precio` = única tool de escritura y requiere API key Enterprise).
+- **Parameter Semantics**: defaults y límites de cada parámetro (ventanas de días, límites de resultados, enums de categoría), antes ausentes.
+
+Generado por un swarm de 18 agentes (11 reescrituras + 6 dossiers de submission por registry + 1 de artefactos de descubrimiento); aplicado tras verificar cada description contra el `run()` real de su tool. Sin cambios de comportamiento — solo el texto de `tools/list`.
+
 ## [1.143.0] — 2026-07-13
 
 ### MCP — descubrimiento y compatibilidad con el spec 2026-07-28
