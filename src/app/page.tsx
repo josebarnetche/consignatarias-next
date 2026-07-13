@@ -266,9 +266,13 @@ export default async function LandingPage() {
           </div>
 
           <div className="hidden md:flex items-center gap-8 text-sm font-normal text-zinc-400">
+            <Link href="/consignatarias" className="hover:text-zinc-100 transition-colors">Directorio</Link>
             <Link href="/remates" className="hover:text-zinc-100 transition-colors">Remates</Link>
-            <Link href="/remates/en-vivo" className="flex items-center gap-1.5 text-red-400 hover:text-red-300 transition-colors">
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+            <Link
+              href="/remates/en-vivo"
+              className={`flex items-center gap-1.5 transition-colors ${enVivoCount > 0 ? 'text-red-400 hover:text-red-300' : 'hover:text-zinc-100'}`}
+            >
+              <span className={`w-2 h-2 rounded-full ${enVivoCount > 0 ? 'bg-red-500 animate-pulse' : 'bg-zinc-600'}`} />
               En Vivo
               {enVivoCount > 0 && <span className="text-xs text-red-500">({enVivoCount})</span>}
             </Link>

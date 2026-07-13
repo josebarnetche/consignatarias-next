@@ -115,7 +115,9 @@ function TerminalClock() {
 
   useEffect(() => {
     setNow(new Date());
-    const id = setInterval(() => setNow(new Date()), 1000);
+    // El reloj muestra solo HH:MM → alcanza con refrescar cada 30s (antes 1s
+    // re-renderizaba el layout de todas las páginas del terminal cada segundo).
+    const id = setInterval(() => setNow(new Date()), 30000);
     return () => clearInterval(id);
   }, []);
 

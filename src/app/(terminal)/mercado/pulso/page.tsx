@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: 'Pulso del mercado — Cañuelas en vivo',
   description:
     'La actividad del Mercado Agroganadero de Cañuelas, operación por operación: cabezas por consignatario del último cierre. El mercado de referencia, medido.',
+  alternates: { canonical: 'https://www.consignatarias.com.ar/mercado/pulso' },
 }
 
 export const dynamic = 'force-dynamic'

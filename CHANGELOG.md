@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.155.1] — 2026-07-13
+
+### Auditoría — Tanda 2: quick-wins (nav, SEO, perf, correctness)
+
+Ocho correcciones seguras del backlog del swarm:
+
+- **Nav landing**: link "Directorio" (→ /consignatarias, la superficie con más equity) agregado; el "En Vivo" pasa a rojo/pulso **solo cuando hay transmisión** (antes: falsa urgencia hacia una sección vacía).
+- **SEO**: `/el-novillo-en-dolares` y `/mercado/pulso` sumadas al sitemap; canonical agregado a `/mercado/pulso`; `/mi-cuenta/` al disallow de robots (páginas de usuario sin valor de índice).
+- **Perf**: TerminalClock de 1s → 30s (mostraba solo HH:MM pero re-renderizaba el layout de todo el terminal cada segundo).
+- **Correctness**: `/api/market/history?days=abc` ahora cae al default 30 (antes NaN → devolvía la serie completa de 365); eliminada la llamada muerta `auth.admin.generateLink` en `/api/claims` (una round-trip de red menos por reclamo).
+
 ## [1.155.0] — 2026-07-13
 
 ### Auditoría — Tanda 1: los 2 riesgos reales (webhook de pagos + "prueba gratis" falsa)

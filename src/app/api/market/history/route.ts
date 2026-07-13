@@ -65,8 +65,10 @@ export async function GET(request: NextRequest) {
       return d >= fromDate && d <= toDate
     })
   } else {
-    // Days mode (default: 30)
-    const days = Math.min(Math.max(parseInt(daysParam || '30', 10), 1), 365)
+    // Days mode (default: 30). Guarda contra ?days=abc → NaN (antes devolvía la
+    // serie completa en vez del default de 30).
+    const parsedDays = parseInt(daysParam || '30', 10)
+    const days = Math.min(Math.max(Number.isFinite(parsedDays) ? parsedDays : 30, 1), 365)
     const cutoffDate = new Date()
     cutoffDate.setDate(cutoffDate.getDate() - days)
     

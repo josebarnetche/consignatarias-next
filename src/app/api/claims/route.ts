@@ -110,19 +110,6 @@ export async function POST(req: NextRequest) {
     // inbox. We do NOT create the auth user or assign 'owner' role here —
     // that happens on admin approval.
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
-    try {
-      await supabase.auth.admin.generateLink({
-        type: 'magiclink',
-        email: claimant_email,
-        options: {
-          redirectTo: `${appUrl}/auth/callback?next=/dashboard`,
-        },
-      })
-      // The generateLink with admin API doesn't send the email automatically.
-      // Use signInWithOtp via a server-side call instead:
-    } catch {
-      // Non-blocking
-    }
 
     // Send magic link via OTP (this actually sends the email)
     try {
