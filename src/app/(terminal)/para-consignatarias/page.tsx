@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: 'Para consignatarias — publicitá tus remates donde el mercado mira',
   description:
     'Con PRO tus remates se destacan en el sitio, salen por email a la base de productores y medís cuánto te citan las IAs (ChatGPT, Copilot). El dato de referencia del mercado ganadero.',
+  alternates: { canonical: 'https://www.consignatarias.com.ar/para-consignatarias' },
 }
 
 export const dynamic = 'force-dynamic'

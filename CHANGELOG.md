@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.154.0] — 2026-07-13
+
+### Auditoría de sitio (swarm) — primeros quick-wins de credibilidad/GEO
+
+Un swarm de 7 agentes auditó el sitio en 7 dimensiones (54 findings → backlog priorizado). Primera tanda de correcciones factuales seguras (las de mayor impacto en credibilidad, que es lo que citan los LLMs — el comprador #1):
+
+- **`llms.txt`: precios obsoletos corregidos** — decía "Starter USD 49, Growth USD 299" y "Consignataria USD 39/mo, prueba gratis"; ahora los reales "Starter ARS 74.000, Growth ARS 451.000" y "PRO Consignataria ARS 45.000/mes". Los LLMs citaban mal la propia oferta.
+- **`/quienes-somos`: cobertura desactualizada** — "67 consignatarias en 10 provincias" → "más de 100 en 12 provincias".
+- **`/para-consignatarias` al sitemap + canonical** — la principal landing de captación del cliente que paga estaba huérfana (solo descubrible por links internos).
+
+El resto del backlog (features + quick-wins P2/P3) queda para revisar/priorizar.
+
 ## [1.153.2] — 2026-07-13
 
 ### scrape-senasa-habilitados — el cron mensual no disparaba; pasa a semanal

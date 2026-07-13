@@ -447,6 +447,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     })),
     {
+      url: `${baseUrl}/para-consignatarias`,
+      lastModified: buildDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/calendario-exportar`,
       lastModified: buildDate,
       changeFrequency: 'weekly' as const,
