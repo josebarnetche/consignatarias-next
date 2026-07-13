@@ -58,9 +58,8 @@ export default function SanidadPage() {
         </p>
       </header>
 
-      {/* Disclaimer */}
-      <div className="rounded-terminal border border-warning/30 bg-warning/5 px-4 py-3 text-data text-zinc-300">
-        <span className="text-warning font-medium">Referencia, no reemplaza a SENASA. </span>
+      {/* Nota de fuentes */}
+      <div className="rounded-terminal border border-terminal-border bg-terminal-panel px-4 py-3 text-data text-zinc-400">
         {SANIDAD_DISCLAIMER}
       </div>
 

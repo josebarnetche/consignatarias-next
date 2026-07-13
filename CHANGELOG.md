@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.149.1] — 2026-07-13
+
+### Sanidad — tono del disclaimer
+
+Se quitó "no reemplaza a SENASA" del disclaimer (en el dataset, la página `/sanidad` y la banda de la landing): decir lo obvio sonaba condescendiente y como si no entendiéramos que SENASA es la autoridad del sector. El texto ahora es deferente y útil — "cada regla está codificada desde su resolución SENASA y citada; los días exactos los fija tu Ente Sanitario; confirmá la vigencia con tu ente antes de operar" — y la nota pasó de estilo "warning" a nota neutra. Cambio también propaga a las salidas de las tools MCP de sanidad (usan el mismo texto).
+
 ## [1.149.0] — 2026-07-13
 
 ### /sanidad — página de contenido navegable (más allá del MCP)

@@ -13,9 +13,8 @@
  */
 
 export const SANIDAD_DISCLAIMER =
-  'Información sanitaria de referencia, codificada desde resoluciones SENASA públicas y citada. ' +
-  'No reemplaza la consulta a SENASA ni al Ente Sanitario local: los días exactos de vacunación los fija el Plan Local del ente, ' +
-  'y los límites geográficos de las zonas/barreras están en los anexos de cada resolución. Verificar vigencia antes de operar.'
+  'Cada regla está codificada desde su resolución SENASA y citada. Los días exactos de vacunación los fija el Plan Local de tu Ente Sanitario ' +
+  'y los límites de las zonas y barreras están en los anexos de cada resolución: confirmá la vigencia con tu ente antes de operar.'
 
 export interface Fuente {
   norma: string // ej. "Res. SENASA 711/2025"

@@ -48,8 +48,8 @@ export default function CalendarioSanitario() {
         </div>
 
         <p className="mt-6 text-xs text-zinc-600">
-          Fuente: Res. SENASA 711/2025. Información de referencia — no reemplaza a SENASA ni al Ente
-          Sanitario local. Detalle, brucelosis, garrapata y requisitos de movimiento en{' '}
+          Fuente: Res. SENASA 711/2025. El día exacto por distrito lo fija el Ente Sanitario local.
+          Detalle, brucelosis, garrapata y requisitos de movimiento en{' '}
           <Link href="/sanidad" className="text-zinc-400 hover:text-accent underline underline-offset-2">
             /sanidad
           </Link>
