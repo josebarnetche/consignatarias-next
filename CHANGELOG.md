@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.145.0] — 2026-07-13
+
+### MCP — tool annotations (behavioral hints) + títulos
+
+`tools/list` ahora emite las **annotations MCP** (spec 2025-03-26+) de cada tool: `readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint` + `title` humano. Cierra la crítica recurrente del scorer de Glama en TDQS ("*No annotations are provided… the description does not disclose read-only nature, side effects, or required permissions*") — que penalizaba a **todas** las tools por igual. Es la forma estructurada y correcta de declarar el comportamiento, en vez de inflar cada description con "solo lectura, sin auth" (lo que castigaría la dimensión de concisión).
+
+- Las 10 tools de lectura → `readOnlyHint: true`, `idempotentHint: true`, `destructiveHint: false`, `openWorldHint: true` (consultan datos de mercado en vivo).
+- `crear_alerta_precio` (única de escritura) → `readOnlyHint: false`, `idempotentHint: false`, `destructiveHint: false` (crea un recurso, no destruye).
+- `title` legible por tool (ej. "Índice Novillo (INMAG) hoy") en el listado y en cada annotation.
+
 ## [1.144.0] — 2026-07-13
 
 ### MCP — tool descriptions tier-A (ranking de aggregators)

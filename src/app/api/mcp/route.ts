@@ -42,6 +42,36 @@ interface Tool {
   run: (args: Record<string, unknown>, req: NextRequest) => Promise<ToolResult>
 }
 
+// Títulos humanos por tool (annotation `title`) — Glama y los clientes MCP los muestran.
+const TOOL_TITLES: Record<string, string> = {
+  get_indice_novillo: 'Índice Novillo (INMAG) hoy',
+  get_inmag_historico: 'Histórico del Índice Novillo (INMAG)',
+  get_precios_hacienda: 'Precios de hacienda por categoría',
+  get_precios_detallados: 'Precios por subcategoría',
+  get_contexto_macro: 'Contexto macro ganadero',
+  list_remates: 'Próximos remates de hacienda',
+  buscar_consignataria: 'Buscar consignataria',
+  actividad_consignatarias: 'Ranking de actividad de consignatarias',
+  buscar_frigorifico: 'Buscar frigorífico',
+  calcular_arrendamiento: 'Calcular arrendamiento rural',
+  crear_alerta_precio: 'Crear alerta de precio',
+}
+
+// MCP tool annotations (spec 2025-03-26+): declaran el comportamiento de forma
+// ESTRUCTURADA — es lo que Glama (y otros scorers) esperan para la dimensión
+// "side effects / auth / destructive". Todas las tools son de solo lectura sobre
+// datos de mercado (open-world) salvo crear_alerta_precio, que crea un recurso.
+function toolAnnotations(t: Tool) {
+  const readOnly = !t.requiresAuth
+  return {
+    title: TOOL_TITLES[t.name] ?? t.name,
+    readOnlyHint: readOnly, // no muta estado del mundo (solo consulta)
+    destructiveHint: false, // ninguna borra/sobreescribe datos
+    idempotentHint: readOnly, // repetir una lectura no cambia nada; crear_alerta sí genera otra
+    openWorldHint: true, // consultan datos de mercado en vivo (fuente externa)
+  }
+}
+
 const prices = marketPrices as unknown as {
   inmag: { current: number; change: number; prev: number; series?: Array<{ date: string; value: number; volume: number }> }
   categories: Record<string, { current: number; change: number; prev?: number; sioWeek?: string; latestVolume?: number }>
@@ -703,7 +733,13 @@ export async function POST(req: NextRequest) {
     case 'tools/list':
       logMcp({ method: 'tools/list', ok: true, startedAt, meta: rmeta })
       return rpcResult(id, {
-        tools: TOOLS.map((t) => ({ name: t.name, description: t.description, inputSchema: t.inputSchema })),
+        tools: TOOLS.map((t) => ({
+          name: t.name,
+          title: TOOL_TITLES[t.name] ?? t.name,
+          description: t.description,
+          inputSchema: t.inputSchema,
+          annotations: toolAnnotations(t),
+        })),
       }, pv)
     case 'tools/call': {
       const name = params?.name as string
