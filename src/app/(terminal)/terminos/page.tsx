@@ -150,7 +150,7 @@ export default function TerminosPage() {
             El acceso del productor al observatorio —índices, precios, calendario de remates, directorio,
             calculadoras, alertas y &ldquo;Mi Ganado&rdquo;— es libre y gratuito. Ciertas funcionalidades para
             consignatarias, desarrolladores e instituciones requieren suscripción paga:{' '}
-            <strong className="text-zinc-200">PRO Consignataria</strong> (con prueba gratis y sin permanencia) y
+            <strong className="text-zinc-200">PRO Consignataria</strong> (ARS 45.000/mes, sin permanencia) y
             los planes <strong className="text-zinc-200">Enterprise</strong> de API/MCP (Starter, Growth y
             Scale). Los precios vigentes de cada plan figuran en{' '}
             <Link href="/planes" className="text-sky-400 hover:underline">/planes</Link> y{' '}

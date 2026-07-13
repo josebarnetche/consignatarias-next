@@ -198,13 +198,13 @@ export default function PlanesToggle() {
               </span>
               <span className="text-zinc-500 text-data ml-1">/mes</span>
             </div>
-            <p className="text-zinc-500 text-xxs mb-4">Probá gratis, sin permanencia.</p>
+            <p className="text-zinc-500 text-xxs mb-4">ARS 45.000/mes · cancelás cuando quieras.</p>
             <Link
               href="/consignatarias/activar"
               className="terminal-btn w-full text-center"
               style={{ borderColor: 'rgba(251,191,36,0.6)', color: '#fbbf24' }}
             >
-              Probar gratis →
+              Activar PRO →
             </Link>
           </div>
         </div>

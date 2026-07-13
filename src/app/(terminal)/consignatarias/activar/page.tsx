@@ -29,7 +29,7 @@ export default function ActivarEntryPage() {
         <h1 className="text-xl font-heading text-zinc-100 mb-2">Activá PRO para tu firma</h1>
         <p className="text-zinc-400 text-data max-w-md leading-relaxed">
           Que más productores vean tus remates: te lo avisamos por email a toda la base, tu perfil
-          queda destacado y tenés tu propia página. Prueba gratis, sin permanencia. Buscá tu firma
+          queda destacado y tenés tu propia página. ARS 45.000/mes, sin permanencia: cancelás cuando quieras. Buscá tu firma
           para empezar.
         </p>
       </div>

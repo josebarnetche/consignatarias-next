@@ -7,6 +7,13 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.155.0] — 2026-07-13
+
+### Auditoría — Tanda 1: los 2 riesgos reales (webhook de pagos + "prueba gratis" falsa)
+
+- **Webhook Rebill — bug de entitlement corregido.** El dedup marcaba el evento como procesado *antes* de otorgar el acceso; si un `await` posterior fallaba, el reintento lo veía como duplicado y **el cliente que pagó quedaba sin acceso**. Fix: si el otorgamiento falla, se **revierte la fila de dedup** antes del 500, así el retry de Rebill re-procesa. Idempotencia preservada.
+- **"Prueba gratis" (falsa) removida** de las 4 superficies (PlanesToggle copy + botón, /consignatarias/activar, /terminos). El checkout cobra ARS 45.000 al instante sin trial → riesgo de Defensa del Consumidor. Copy honesto: "ARS 45.000/mes · cancelás cuando quieras" (se mantiene "sin permanencia", que sí es cierto). "Crear cuenta gratis" queda (crear cuenta ES gratis).
+
 ## [1.154.0] — 2026-07-13
 
 ### Auditoría de sitio (swarm) — primeros quick-wins de credibilidad/GEO

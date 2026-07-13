@@ -26,6 +26,10 @@ function verifySignature(payload: string, signature: string | null, secret: stri
 }
 
 export async function POST(request: NextRequest) {
+  // Fila de dedup insertada para este evento. Si el otorgamiento posterior falla,
+  // la borramos en el catch para que el reintento de Rebill NO la vea como
+  // "duplicate" y pueda re-procesar (si no, un cliente que pagó queda sin acceso).
+  let dedupEventId: string | null = null
   try {
     // Get raw body for signature verification
     const rawBody = await request.text()
@@ -85,6 +89,8 @@ export async function POST(request: NextRequest) {
         { status: 500 },
       )
     }
+    // Dedup insertado OK: a partir de acá, si algo falla hay que revertirlo (catch).
+    dedupEventId = eventId
 
     // Server-side plan_id → api_tier map. Trust the plan_id reference
     // from Rebill, never the metadata.api_tier claim (attacker-controlled
@@ -451,6 +457,20 @@ export async function POST(request: NextRequest) {
     // Return 500 so Rebill retries — silent 200s mask real failures and
     // we end up with partially-applied subscription state.
     console.error('Webhook error:', err)
+    // Revertir el dedup: si ya lo habíamos marcado como procesado pero el
+    // otorgamiento falló, borrar la fila para que el retry re-procese (si no,
+    // el evento queda "procesado" sin haber otorgado el acceso al que pagó).
+    if (dedupEventId) {
+      try {
+        await requireServiceClient()
+          .from('processed_webhook_events')
+          .delete()
+          .eq('event_id', dedupEventId)
+          .eq('source', 'rebill')
+      } catch (rollbackErr) {
+        console.error('Webhook dedup rollback failed:', rollbackErr)
+      }
+    }
     const message = err instanceof Error ? err.message : 'unknown'
     return NextResponse.json(
       { error: 'internal_error', message },
