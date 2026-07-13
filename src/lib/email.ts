@@ -2245,3 +2245,61 @@ export async function sendArrendamientoCierre(opts: {
     return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
   }
 }
+
+/* ------------------------------------------------------------------ */
+/*  ALERTA INTERNA — primer consumo MCP real e identificable.          */
+/*  Se dispara cuando un tools/call trae clientInfo NOMBRADO (no un    */
+/*  crawler anónimo). Es el hito que importa seguir del MCP.           */
+/* ------------------------------------------------------------------ */
+export interface McpConsumptionEvent {
+  tool: string
+  client: string
+  version?: string | null
+  at: string // ISO
+  args?: string | null
+}
+
+export async function sendMcpConsumptionAlert(events: McpConsumptionEvent[]) {
+  const resend = await getResend()
+  if (!resend || events.length === 0) return { success: false, error: 'no_resend_or_empty' }
+  const to = process.env.OPS_ALERT_EMAIL || 'agro@memola.com.ar'
+
+  const rows = events
+    .map(
+      (e) =>
+        `<tr>
+          <td style="padding:6px 10px;border-bottom:1px solid #eee;font-family:monospace">${escapeHtml(e.client)}${e.version ? ' <span style="color:#999">v' + escapeHtml(e.version) + '</span>' : ''}</td>
+          <td style="padding:6px 10px;border-bottom:1px solid #eee;font-family:monospace">${escapeHtml(e.tool)}</td>
+          <td style="padding:6px 10px;border-bottom:1px solid #eee;color:#555">${escapeHtml(e.at)}</td>
+        </tr>`,
+    )
+    .join('')
+
+  const html = `
+    <div style="font-family:system-ui,-apple-system,sans-serif;max-width:560px;margin:0 auto;color:#111">
+      <h2 style="font-size:18px">🎯 Consumo real del MCP</h2>
+      <p style="color:#444">Un agente <strong>identificado</strong> (con clientInfo nombrado) llamó tools del servidor MCP — no es un crawler anónimo. ${events.length} llamada(s):</p>
+      <table style="border-collapse:collapse;width:100%;font-size:13px">
+        <thead><tr>
+          <th align="left" style="padding:6px 10px;border-bottom:2px solid #111">Cliente</th>
+          <th align="left" style="padding:6px 10px;border-bottom:2px solid #111">Tool</th>
+          <th align="left" style="padding:6px 10px;border-bottom:2px solid #111">Cuándo (UTC)</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <p style="color:#888;font-size:12px;margin-top:16px">Se filtran crawlers/scoring/probes y llamadas anónimas. Detalle en /admin/ops.</p>
+    </div>`
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to,
+      subject: `🎯 MCP: consumo real de ${events.map((e) => e.client).filter((c, i, a) => a.indexOf(c) === i).join(', ')}`,
+      html,
+    })
+    if (error) return { success: false, error: error.message }
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}

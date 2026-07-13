@@ -69,6 +69,7 @@ export const EXPECTED_CRONS: Record<string, number> = {
   'price-alerts': 24,               // 21:17
   'trial-nudges': 24,               // 13:17
   'data-freshness-alert': 24,       // 01:00
+  'mcp-consumption-alert': 24,      // 09:00 ART — primer tools/call identificado
   // Días laborables / parciales — tolerancia mayor para no marcar overdue el finde
   'mag-detailed-prices': 72,        // Lun-Vie 22:37 → hueco máx ~72h (Vie→Lun)
   'mag-lots-pipeline': 100,         // Mar/Mié/Vie 22:42 → hueco máx ~96h

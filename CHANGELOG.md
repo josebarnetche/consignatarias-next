@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.153.0] — 2026-07-13
+
+### Alerta de ops — primer consumo MCP real e identificable
+
+Nuevo cron `mcp-consumption-alert`: avisa por email (a `agro@memola.com.ar`) cuando un agente **identificado** (con `clientInfo` nombrado) llama una tool del MCP — el hito que importa seguir, filtrando el ruido.
+
+- **Filtro**: sólo `tools/call` con `clientInfo.name` presente y que no sea crawler/scoring/probe (denylist de nombres conocidos + heurística `probe|scanner|scoring|registry|spec-check|bot…`) ni prueba propia. Las llamadas anónimas (como el `get_indice_novillo` recurrente) y los ~1.400 handshakes de discovery no disparan nada.
+- **Dedup por watermark**: guarda el id máximo procesado como evento `mcp_alert_watermark` en `ops_events` (sin tabla nueva); cada corrida sólo mira ids nuevos. La primera corrida es no-op (fija el watermark; no hay tool_calls nombrados históricos).
+- Cron route `src/app/api/cron/mcp-consumption-alert` (auth `x-cron-secret`) + workflow GitHub Actions diario (09:00 ART) + `sendMcpConsumptionAlert` en `email.ts` + registrado en `EXPECTED_CRONS` (visible en /admin/ops).
+
 ## [1.152.1] — 2026-07-13
 
 ### MCP — instructions del initialize + directorios al día (sanidad + BPG)
