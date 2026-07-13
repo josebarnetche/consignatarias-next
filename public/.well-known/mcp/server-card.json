@@ -1,0 +1,54 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/draft/server-card.schema.json",
+  "name": "ar.com.consignatarias/cattle-market",
+  "title": "Consignatarias — Mercado Ganadero Argentino",
+  "description": "La infraestructura de inteligencia de mercado del ganado argentino, expuesta como servidor MCP. Índice Novillo (INMAG) diario ponderado por volumen del Mercado Agroganadero (Cañuelas) en ARS y USD desde 2015, panel de precios por categoría, contexto macro, remates, directorio de consignatarias y frigoríficos, y herramientas de cálculo (arrendamiento, valuación de lote, ¿vendo ahora o espero?).",
+  "version": "1.0.0",
+  "protocolVersions": ["2026-07-28", "2025-06-18", "2025-03-26"],
+  "websiteUrl": "https://www.consignatarias.com.ar",
+  "documentationUrl": "https://www.consignatarias.com.ar/api-docs",
+  "vendor": {
+    "name": "Memola Medios SAS",
+    "url": "https://www.consignatarias.com.ar",
+    "contact": "agro@memola.com.ar"
+  },
+  "transport": {
+    "type": "streamable-http",
+    "url": "https://www.consignatarias.com.ar/api/mcp"
+  },
+  "capabilities": {
+    "tools": true,
+    "prompts": true,
+    "resources": false
+  },
+  "authentication": {
+    "type": "bearer",
+    "required": false,
+    "description": "Las tools de lectura son públicas. crear_alerta_precio requiere una API key de un plan Enterprise (Authorization: Bearer cnsg_live_...). Alta en https://www.consignatarias.com.ar/cuenta/api-keys",
+    "tokenUrl": "https://www.consignatarias.com.ar/planes"
+  },
+  "tools": [
+    { "name": "get_indice_novillo", "description": "Índice Novillo (INMAG) de hoy en ARS/kg vivo: precio de referencia diario ponderado por volumen del Mercado Agroganadero, con variación y tendencia." },
+    { "name": "get_inmag_historico", "description": "Evolución histórica del Índice Novillo (INMAG) en ARS/kg vivo: inicial, final, variación, mínimo, máximo y serie muestreada de una ventana de días." },
+    { "name": "get_precios_hacienda", "description": "Precios de hacienda por categoría (novillo, vaca, vaquillona, ternero…) — observación semanal del mercado." },
+    { "name": "get_precios_detallados", "description": "Precios detallados por sub-categoría del Mercado Agroganadero." },
+    { "name": "get_contexto_macro", "description": "Contexto macro para leer el precio de la hacienda: dólar oficial y blue, y maíz." },
+    { "name": "list_remates", "description": "Calendario de remates de hacienda en Argentina: fecha, consignataria, ubicación, categoría y cabezas estimadas." },
+    { "name": "buscar_consignataria", "description": "Busca una consignataria/casa consignataria en el directorio por nombre o provincia." },
+    { "name": "actividad_consignatarias", "description": "Actividad de las consignatarias del Mercado Agroganadero: cabezas y lotes operados por firma en un período." },
+    { "name": "buscar_frigorifico", "description": "Busca un frigorífico argentino en el registro por nombre, matrícula o provincia." },
+    { "name": "calcular_arrendamiento", "description": "Calcula el valor de un arrendamiento rural pactado en kilos de novillo por hectárea, a precio de hoy." },
+    { "name": "crear_alerta_precio", "description": "Crea una alerta de precio para una categoría de hacienda (requiere API key Enterprise)." }
+  ],
+  "prompts": [
+    { "name": "precio_novillo_hoy", "description": "El precio del novillo hoy, con contexto." },
+    { "name": "panorama_mercado", "description": "Panorama del mercado ganadero argentino hoy." },
+    { "name": "novillo_en_dolares", "description": "El novillo argentino valuado en dólares." },
+    { "name": "actividad_consignataria", "description": "Actividad de una consignataria puntual en un período." },
+    { "name": "ranking_consignatarias", "description": "Ranking de consignatarias más activas por período y categoría." },
+    { "name": "remates_provincia", "description": "Remates de hacienda en una provincia." },
+    { "name": "vender_ahora_o_esperar", "description": "¿Conviene vender la hacienda ahora o esperar?" },
+    { "name": "valuar_lote", "description": "Valúa un lote de hacienda al precio de hoy." },
+    { "name": "reporte_semanal", "description": "Reporte semanal del mercado ganadero, listo para publicar." }
+  ]
+}

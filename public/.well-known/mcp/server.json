@@ -1,0 +1,14 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "ar.com.consignatarias/cattle-market",
+  "title": "Consignatarias — Mercado Ganadero Argentino",
+  "description": "Datos en vivo del mercado ganadero argentino como tools MCP: Índice Novillo (INMAG) diario en ARS y USD desde 2015, precios de hacienda por categoría, contexto macro (dólar, maíz), calendario de remates, directorio de consignatarias y frigoríficos, y calculadora de arrendamiento en kg de novillo. La referencia de precio del ganado argentino, consultable por agentes de IA.",
+  "version": "1.0.0",
+  "websiteUrl": "https://www.consignatarias.com.ar",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://www.consignatarias.com.ar/api/mcp"
+    }
+  ]
+}

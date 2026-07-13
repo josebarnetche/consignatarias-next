@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.143.0] — 2026-07-13
+
+### MCP — descubrimiento y compatibilidad con el spec 2026-07-28
+
+Preparación del server MCP para el spec MCP del **2026-07-28** (un prober público, `mcp-spec-check`, escaneó los 7.850 servers del registry oficial el 12-jul; el 90,8% no pasa los checks obligatorios). Corrimos los 3 checks contra producción y cerramos los dos gaps:
+
+- **routing-headers**: cada respuesta MCP ahora emite el header `MCP-Protocol-Version` (antes ausente). Negociación de versión explícita: soportamos `2026-07-28` / `2025-06-18` / `2025-03-26`, devolvemos la que pida el cliente si la conocemos, si no la última — en vez de reflejar ciegamente cualquier string. El `GET` (405) anuncia transporte, versiones y la URL del server-card por header `Link`.
+- **discover**: servimos `/.well-known/mcp/server.json` (schema del registry oficial, namespace `ar.com.consignatarias/cattle-market`) y `/.well-known/mcp/server-card.json` (card rica SEP-1649/2127 con las 11 tools, 9 prompts, auth y vendor). Antes los 4 paths `.well-known` daban 404.
+- **session-independence**: ya pasaba — el server es stateless (tools-only, `force-dynamic`).
+
+Sin cambios de comportamiento para los clientes actuales; es aditivo (headers nuevos + manifests estáticos).
+
 ## [1.142.0] — 2026-07-12
 
 ### Pase de animación y UX (audit multi-agente, on-brand)

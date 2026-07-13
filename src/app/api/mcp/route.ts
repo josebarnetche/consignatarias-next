@@ -24,7 +24,13 @@ export const maxDuration = 60
  */
 
 const SERVER_INFO = { name: 'consignatarias', version: '1.0.0' }
-const PROTOCOL_VERSION = '2025-06-18'
+// Versiones del protocolo MCP que soportamos. Somos tools-only + stateless, así que
+// la compatibilidad es hacia adelante: negociamos la que pida el cliente si la conocemos,
+// si no devolvemos la última. LATEST se emite además en el header MCP-Protocol-Version
+// de cada respuesta (lo exige el spec 2026-07-28 — "routing-headers").
+const SUPPORTED_PROTOCOL_VERSIONS = ['2026-07-28', '2025-06-18', '2025-03-26'] as const
+const LATEST_PROTOCOL_VERSION = SUPPORTED_PROTOCOL_VERSIONS[0]
+const PROTOCOL_VERSION = LATEST_PROTOCOL_VERSION
 
 // ── Tools (wrappers finos sobre data/lógica existente) ───────────────────────
 type ToolResult = { content: Array<{ type: 'text'; text: string }>; isError?: boolean }
@@ -612,11 +618,16 @@ const PROMPTS: McpPrompt[] = [
   },
 ]
 
-function rpcResult(id: unknown, result: unknown) {
-  return NextResponse.json({ jsonrpc: '2.0', id, result }, { headers: { 'Cache-Control': 'no-store' } })
+// Todas las respuestas MCP llevan MCP-Protocol-Version (spec 2026-07-28, routing-headers).
+function mcpHeaders(pv?: string): Record<string, string> {
+  const v = pv && (SUPPORTED_PROTOCOL_VERSIONS as readonly string[]).includes(pv) ? pv : LATEST_PROTOCOL_VERSION
+  return { 'Cache-Control': 'no-store', 'MCP-Protocol-Version': v }
 }
-function rpcError(id: unknown, code: number, message: string) {
-  return NextResponse.json({ jsonrpc: '2.0', id, error: { code, message } }, { headers: { 'Cache-Control': 'no-store' } })
+function rpcResult(id: unknown, result: unknown, pv?: string) {
+  return NextResponse.json({ jsonrpc: '2.0', id, result }, { headers: mcpHeaders(pv) })
+}
+function rpcError(id: unknown, code: number, message: string, pv?: string) {
+  return NextResponse.json({ jsonrpc: '2.0', id, error: { code, message } }, { headers: mcpHeaders(pv) })
 }
 
 // ── Observabilidad ───────────────────────────────────────────────────────────
@@ -650,55 +661,66 @@ function logMcp(opts: { method?: string; ok: boolean; startedAt: number; meta?: 
 export async function POST(req: NextRequest) {
   const startedAt = Date.now()
   const rmeta = reqMeta(req)
+  // Versión que viaja en el header MCP-Protocol-Version (spec 2026-07-28). Se refleja
+  // en el header de cada respuesta vía mcpHeaders(pv).
+  const pv = req.headers.get('mcp-protocol-version') || undefined
   let msg: { id?: unknown; method?: string; params?: Record<string, unknown> }
   try {
     msg = await req.json()
   } catch {
     logMcp({ method: 'parse_error', ok: false, startedAt, meta: rmeta })
-    return rpcError(null, -32700, 'Parse error')
+    return rpcError(null, -32700, 'Parse error', pv)
   }
   const { id, method, params } = msg
 
   // Notificaciones (sin id) → 202 sin body. Se loguea igual: es señal de cliente vivo.
   if (id === undefined || id === null) {
     logMcp({ method: method ?? 'notification', ok: true, startedAt, meta: rmeta })
-    return new NextResponse(null, { status: 202 })
+    return new NextResponse(null, { status: 202, headers: mcpHeaders(pv) })
   }
 
   switch (method) {
-    case 'initialize':
-      logMcp({ method: 'initialize', ok: true, startedAt, meta: { ...rmeta, client: params?.clientInfo ?? null } })
+    case 'initialize': {
+      // Negociación: si el cliente pide una versión que soportamos, la devolvemos; si no,
+      // la última. Preferimos el protocolVersion del body; si falta, el del header.
+      const requested = (params?.protocolVersion as string) || pv
+      const negotiated =
+        requested && (SUPPORTED_PROTOCOL_VERSIONS as readonly string[]).includes(requested)
+          ? requested
+          : LATEST_PROTOCOL_VERSION
+      logMcp({ method: 'initialize', ok: true, startedAt, meta: { ...rmeta, client: params?.clientInfo ?? null, protocol: negotiated } })
       return rpcResult(id, {
-        protocolVersion: (params?.protocolVersion as string) || PROTOCOL_VERSION,
+        protocolVersion: negotiated,
         capabilities: { tools: {}, prompts: {} },
         serverInfo: SERVER_INFO,
         instructions:
           'Datos del mercado ganadero argentino. get_indice_novillo = índice INMAG DIARIO (ponderado por volumen); get_precios_hacienda = precios por categoría, observación SEMANAL — son métricas distintas, no las compares 1:1. Tools de lectura públicas. crear_alerta_precio REQUIERE API key de un plan Enterprise: pasala por el header Authorization: Bearer cnsg_live_... (config "headers" del cliente MCP) o por el parámetro api_key de la tool. Key en https://www.consignatarias.com.ar/cuenta/api-keys',
-      })
+      }, negotiated)
+    }
     case 'ping':
       logMcp({ method: 'ping', ok: true, startedAt, meta: rmeta })
-      return rpcResult(id, {})
+      return rpcResult(id, {}, pv)
     case 'tools/list':
       logMcp({ method: 'tools/list', ok: true, startedAt, meta: rmeta })
       return rpcResult(id, {
         tools: TOOLS.map((t) => ({ name: t.name, description: t.description, inputSchema: t.inputSchema })),
-      })
+      }, pv)
     case 'tools/call': {
       const name = params?.name as string
       const tool = TOOLS.find((t) => t.name === name)
       if (!tool) {
         logMcp({ method: 'tools/call', ok: false, startedAt, meta: { ...rmeta, tool: name ?? null, error: 'unknown_tool' } })
-        return rpcError(id, -32602, `Tool desconocida: ${name}`)
+        return rpcError(id, -32602, `Tool desconocida: ${name}`, pv)
       }
       const args = (params?.arguments as Record<string, unknown>) || {}
       try {
         const result = await tool.run(args, req)
         logMcp({ method: 'tools/call', ok: !result.isError, startedAt, meta: { ...rmeta, tool: name, args: redactArgs(args), is_error: result.isError ?? false } })
-        return rpcResult(id, result)
+        return rpcResult(id, result, pv)
       } catch (err) {
         console.error('[mcp] tool error', name, err)
         logMcp({ method: 'tools/call', ok: false, startedAt, meta: { ...rmeta, tool: name, args: redactArgs(args), error: 'exception' } })
-        return rpcResult(id, { content: [{ type: 'text', text: 'Error interno ejecutando la tool.' }], isError: true })
+        return rpcResult(id, { content: [{ type: 'text', text: 'Error interno ejecutando la tool.' }], isError: true }, pv)
       }
     }
     // Somos un server tools-only, pero los crawlers de registries/scoring probean
@@ -708,35 +730,51 @@ export async function POST(req: NextRequest) {
       logMcp({ method: 'prompts/list', ok: true, startedAt, meta: rmeta })
       return rpcResult(id, {
         prompts: PROMPTS.map((p) => ({ name: p.name, description: p.description, arguments: p.arguments })),
-      })
+      }, pv)
     case 'prompts/get': {
       const pname = params?.name as string
       const prompt = PROMPTS.find((p) => p.name === pname)
       if (!prompt) {
         logMcp({ method: 'prompts/get', ok: false, startedAt, meta: { ...rmeta, error: 'unknown_prompt', prompt: pname ?? null } })
-        return rpcError(id, -32602, `Prompt desconocido: ${pname}`)
+        return rpcError(id, -32602, `Prompt desconocido: ${pname}`, pv)
       }
       const pargs = (params?.arguments as Record<string, string>) || {}
       logMcp({ method: 'prompts/get', ok: true, startedAt, meta: { ...rmeta, prompt: pname } })
       return rpcResult(id, {
         description: prompt.description,
         messages: [{ role: 'user', content: { type: 'text', text: prompt.build(pargs) } }],
-      })
+      }, pv)
     }
     case 'resources/list':
       logMcp({ method: 'resources/list', ok: true, startedAt, meta: rmeta })
-      return rpcResult(id, { resources: [] })
+      return rpcResult(id, { resources: [] }, pv)
     case 'resources/templates/list':
       logMcp({ method: 'resources/templates/list', ok: true, startedAt, meta: rmeta })
-      return rpcResult(id, { resourceTemplates: [] })
+      return rpcResult(id, { resourceTemplates: [] }, pv)
 
     default:
       logMcp({ method: method ?? 'unknown', ok: false, startedAt, meta: { ...rmeta, error: 'unsupported_method' } })
-      return rpcError(id, -32601, `Método no soportado: ${method}`)
+      return rpcError(id, -32601, `Método no soportado: ${method}`, pv)
   }
 }
 
-// No ofrecemos stream server→cliente (tool-server stateless): GET → 405.
+// No ofrecemos stream server→cliente (tool-server stateless): GET → 405, pero anunciamos
+// el descubrimiento (server-card) en el header para los crawlers que hacen probe por GET.
 export async function GET() {
-  return NextResponse.json({ error: 'Method Not Allowed. Usá POST (JSON-RPC MCP).' }, { status: 405 })
+  return NextResponse.json(
+    {
+      error: 'Method Not Allowed. Usá POST (JSON-RPC MCP).',
+      transport: 'streamable-http',
+      protocolVersions: SUPPORTED_PROTOCOL_VERSIONS,
+      discovery: 'https://www.consignatarias.com.ar/.well-known/mcp/server.json',
+    },
+    {
+      status: 405,
+      headers: {
+        Allow: 'POST',
+        'MCP-Protocol-Version': LATEST_PROTOCOL_VERSION,
+        Link: '</.well-known/mcp/server.json>; rel="mcp-server-card"',
+      },
+    },
+  )
 }
