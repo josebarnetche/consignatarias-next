@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.153.2] — 2026-07-13
+
+### scrape-senasa-habilitados — el cron mensual no disparaba; pasa a semanal
+
+Verificación disparando el workflow a mano: el **script funciona** (scrape Ciclo I/II/III → merge → commit → push, todos los steps verdes) y refrescó los frigoríficos (865 activos · 237 sin verificación · 1.102 total). El problema no era el scraper sino que **GitHub Actions no ejecutó el cron mensual** (`23 7 1 * *`) en jun ni jul-2026 — comportamiento conocido: despriorioza schedules de baja frecuencia.
+
+- Schedule cambiado a **semanal** (`23 7 * * 1`, lunes 04:23 ART): dispara mucho más confiable y, como los habilitados cambian poco, casi siempre es no-op (sin commit).
+- `EXPECTED_CRONS['scrape-senasa-habilitados']` ajustado de 720h a 168h.
+
 ## [1.153.1] — 2026-07-13
 
 ### /admin/ops — debug: dos falsos "overdue" removidos de EXPECTED_CRONS

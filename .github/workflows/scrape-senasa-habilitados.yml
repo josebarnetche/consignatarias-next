@@ -12,7 +12,7 @@ name: SENASA Habilitados (monthly)
 # .github/workflows/mag-detailed-prices.yml).
 on:
   schedule:
-    - cron: '23 7 1 * *'
+    - cron: '23 7 * * 1'  # Lunes 04:23 ART. Semanal, no mensual: GitHub saltea los cron mensuales de baja frecuencia. Los habilitados cambian poco → la mayoría de las corridas son no-op (sin commit).
   workflow_dispatch: # manual trigger anytime
 
 permissions:

@@ -77,13 +77,15 @@ export const EXPECTED_CRONS: Record<string, number> = {
   // Semanales (168h) — lunes
   'quota-alerts': 168,              // (era 24, mal: corre solo los lunes)
   'weekly-newsletter': 168,
+  // scrape-senasa-habilitados: movido de mensual a semanal (lunes). GitHub salteaba
+  // el cron mensual (no disparó jun ni jul-2026); cambia poco → casi siempre no-op.
+  'scrape-senasa-habilitados': 168,
   // weekly-digest removido: el workflow ya no existe (falso "overdue" permanente).
   // Mensuales (~720h)
   'arrendamiento-cierre': 720,      // día 3 (faltaba → default 24 daba falso overdue)
   'el-corredor-publish': 720,       // día 1 (era 168, mal: es mensual)
   'faena-newsletter': 720,          // día 3
   'monthly-close': 720,             // día 1
-  'scrape-senasa-habilitados': 720, // día 1
 }
 
 /* ------------------------------------------------------------------ */
