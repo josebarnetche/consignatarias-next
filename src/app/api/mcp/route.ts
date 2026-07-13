@@ -10,6 +10,7 @@ import {
   SANIDAD_DISCLAIMER, PLANES, CALENDARIO_AFTOSA_2026, REQUISITOS_MOVIMIENTO,
   FUENTES, fuentesDe, planPorId, zonaAftosaDe, decodeRenspa, DTE_INFO,
 } from '@/lib/data/senasa-sanidad'
+import { BPG_TEMAS, BPG_FUENTE } from '@/lib/data/bpg-ganaderas'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -63,6 +64,7 @@ const TOOL_TITLES: Record<string, string> = {
   sanidad_requisitos_movimiento: 'Requisitos sanitarios de movimiento',
   sanidad_renspa: 'Validar / decodificar RENSPA',
   sanidad_dte_tropa: 'DT-e (número de tropa) — referencia',
+  buenas_practicas: 'Buenas Prácticas Ganaderas (BPG)',
   crear_alerta_precio: 'Crear alerta de precio',
 }
 
@@ -641,6 +643,34 @@ const TOOLS: Tool[] = [
           `Requisitos sanitarios: ${DTE_INFO.requisitos_sanitarios}\n\n` +
           `${DTE_INFO.no_publico}\n\n` +
           `Fuentes:\n  ${f}\n\n${SANIDAD_DISCLAIMER}`,
+      )
+    },
+  },
+  {
+    name: 'buenas_practicas',
+    description:
+      'Buenas Prácticas Ganaderas (BPG) para la producción de vacunos de carne, resumidas de la Guía de la Red BPA (2019). Sin argumento lista los 14 temas (organización, personal, establecimiento, instalaciones, suelo, agua, forrajes, estiércol, residuos, cambio climático, manejo de rodeo, alimentación, salud animal, bienestar animal). Con un tema, devuelve cómo implementarlo (secciones y prácticas). Son voluntarias — para lo sanitario OBLIGATORIO usá sanidad_plan / sanidad_requisitos_movimiento.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        tema: { type: 'string', description: 'Slug o nombre del tema (ej. "salud-animal", "manejo-rodeo", "agua"); sin este arg lista los 14' },
+      },
+      additionalProperties: false,
+    },
+    async run(args) {
+      const q = typeof args.tema === 'string' ? args.tema.toLowerCase().trim() : ''
+      if (!q) {
+        const lista = BPG_TEMAS.map((t) => `${String(t.n).padStart(2, '0')}. ${t.titulo} [${t.slug}] — ${t.resumen}`).join('\n')
+        return ok(`Buenas Prácticas Ganaderas (BPG) — 14 temas:\n${lista}\n\nPedí un tema por su slug o nombre para ver cómo implementarlo.\nFuente: ${BPG_FUENTE.titulo} (${BPG_FUENTE.autor}, ${BPG_FUENTE.anio}).`)
+      }
+      const t = BPG_TEMAS.find((x) => x.slug === q || x.titulo.toLowerCase() === q || x.titulo.toLowerCase().includes(q) || x.slug.includes(q))
+      if (!t) return fail(`Tema no encontrado. Temas: ${BPG_TEMAS.map((x) => x.slug).join(', ')}.`)
+      const cuerpo = t.secciones
+        .map((s) => `▸ ${s.subtitulo}\n${s.practicas.map((p) => `  - ${p}`).join('\n')}`)
+        .join('\n\n')
+      return ok(
+        `Buenas Prácticas Ganaderas — ${t.titulo} (${t.bloque})\n\n${t.intro}\n\n${cuerpo}\n\n` +
+          `Fuente: ${BPG_FUENTE.titulo} (${BPG_FUENTE.autor}, ${BPG_FUENTE.anio}). Resumen — no reemplaza la guía completa. https://www.consignatarias.com.ar/buenas-practicas/${t.slug}`,
       )
     },
   },

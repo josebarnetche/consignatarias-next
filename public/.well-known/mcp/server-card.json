@@ -43,6 +43,7 @@
     { "name": "sanidad_requisitos_movimiento", "description": "Requisitos sanitarios de SENASA para mover hacienda bovina (RENSPA, DT-e, serología de brucelosis, barrera de garrapata), con fuente." },
     { "name": "sanidad_renspa", "description": "Valida y decodifica un código RENSPA (17 dígitos, 00.000.0.00000.00) en sus segmentos; remite a la consulta oficial para vigencia." },
     { "name": "sanidad_dte_tropa", "description": "Explica el DT-e / número de tropa que ampara el movimiento de hacienda: qué es y qué se necesita para emitirlo (referencia, no lo emite)." },
+    { "name": "buenas_practicas", "description": "Buenas Prácticas Ganaderas (BPG) para vacunos de carne, 14 temas resumidos de la Guía de la Red BPA: cómo implementar cada uno (salud, bienestar, manejo de rodeo, alimentación, agua, forrajes, etc.)." },
     { "name": "crear_alerta_precio", "description": "Crea una alerta de precio para una categoría de hacienda (requiere API key Enterprise)." }
   ],
   "prompts": [

@@ -4,6 +4,7 @@ import rematesData from '@/lib/data/remates.json'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import marketPrices from '@/lib/data/market-prices.json'
 import { getQualitySegments, CABEZAS_INDEX_THRESHOLD } from '@/lib/data/quality-segments'
+import { BPG_TEMAS } from '@/lib/data/bpg-ganaderas'
 
 /* ------------------------------------------------------------------ */
 /*  PROVINCE SLUG MAP (must match [provincia]/page.tsx)                 */
@@ -439,6 +440,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     },
+    ...BPG_TEMAS.map((t) => ({
+      url: `${baseUrl}/buenas-practicas/${t.slug}`,
+      lastModified: buildDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.5,
+    })),
     {
       url: `${baseUrl}/calendario-exportar`,
       lastModified: buildDate,

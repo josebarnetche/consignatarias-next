@@ -1,15 +1,15 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Breadcrumb from '@/components/ui/Breadcrumb'
-import { BPG_FUENTE, BPG_INTRO, BPG_BLOQUES, BPG_DESTACADOS } from '@/lib/data/bpg-ganaderas'
+import { BPG_FUENTE, BPG_INTRO, BLOQUES, temasPorBloque } from '@/lib/data/bpg-ganaderas'
 
 export const metadata: Metadata = {
   title: 'Buenas Prácticas Ganaderas (BPG) — guía para vacunos de carne | Consignatarias',
   description:
-    'Las Buenas Prácticas Ganaderas para la producción de ganado vacuno de carne, resumidas: 14 temas en 4 bloques (personas, infraestructura, ambiente y animal), con las prácticas clave de salud y bienestar animal. Basado en la Guía de la Red BPA.',
+    'Las Buenas Prácticas Ganaderas para la producción de ganado vacuno de carne, resumidas: 14 temas en 4 bloques (personas, infraestructura, ambiente y animal), cada uno con cómo implementarlo. Basado en la Guía de la Red BPA.',
   keywords: [
     'buenas prácticas ganaderas', 'BPG', 'BPA', 'ganado vacuno de carne', 'plan sanitario',
-    'bienestar animal', 'período de carencia', 'bioseguridad', 'manejo de rodeo', 'Red BPA', 'SENASA',
+    'bienestar animal', 'manejo de rodeo', 'alimentación', 'agua', 'forrajes', 'Red BPA', 'SENASA',
   ],
   alternates: { canonical: 'https://www.consignatarias.com.ar/buenas-practicas' },
 }
@@ -27,56 +27,38 @@ export default function BuenasPracticasPage() {
         <p className="mt-3 text-zinc-400 max-w-2xl">{BPG_INTRO}</p>
       </header>
 
-      {/* Atribución */}
       <div className="rounded-terminal border border-terminal-border bg-terminal-panel px-4 py-3 text-data text-zinc-400">
         Resumen basado en la{' '}
         <a href={BPG_FUENTE.url} target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-bright underline underline-offset-2">
           {BPG_FUENTE.titulo} ↗
         </a>{' '}
-        ({BPG_FUENTE.autor}, {BPG_FUENTE.anio}), con respaldo de {BPG_FUENTE.respaldo}. Contenido reescrito y
-        resumido; la guía completa es la fuente.
+        ({BPG_FUENTE.autor}, {BPG_FUENTE.anio}), con respaldo de {BPG_FUENTE.respaldo}. Cada tema tiene su
+        página con cómo implementarlo. Contenido reescrito y resumido; la guía completa es la fuente.
       </div>
 
-      {/* Framework: 4 bloques × 14 temas */}
-      <section className="mt-10">
-        <h2 className="text-lg font-semibold text-white mb-1">Los 14 temas, en 4 bloques</h2>
-        <p className="text-data text-zinc-500 mb-4">El marco completo de la guía.</p>
-        <div className="space-y-6">
-          {BPG_BLOQUES.map((b) => (
-            <div key={b.bloque}>
-              <h3 className="text-xxs uppercase tracking-widest text-accent mb-3">{b.bloque}</h3>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {b.temas.map((t) => (
-                  <div key={t.n} className="rounded-terminal border border-terminal-border bg-terminal-panel p-4">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-xxs font-terminal text-zinc-600">{String(t.n).padStart(2, '0')}</span>
-                      <h4 className="text-data font-semibold text-white">{t.titulo}</h4>
-                    </div>
-                    <p className="mt-1 text-data text-zinc-400">{t.resumen}</p>
+      <section className="mt-10 space-y-8">
+        {BLOQUES.map((bloque) => (
+          <div key={bloque}>
+            <h2 className="text-xxs uppercase tracking-widest text-accent mb-3">{bloque}</h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {temasPorBloque(bloque).map((t) => (
+                <Link
+                  key={t.slug}
+                  href={`/buenas-practicas/${t.slug}`}
+                  className="group rounded-terminal border border-terminal-border bg-terminal-panel p-4 hover:border-accent transition-colors"
+                >
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-xxs font-terminal text-zinc-600">{String(t.n).padStart(2, '0')}</span>
+                    <h3 className="text-data font-semibold text-white group-hover:text-accent">{t.titulo} →</h3>
                   </div>
-                ))}
-              </div>
+                  <p className="mt-1 text-data text-zinc-400">{t.resumen}</p>
+                </Link>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </section>
 
-      {/* Destacados: Salud + Bienestar */}
-      {BPG_DESTACADOS.map((d) => (
-        <section key={d.tema} className="mt-10">
-          <h2 className="text-lg font-semibold text-white mb-1">{d.tema} — prácticas clave</h2>
-          <ul className="mt-3 space-y-2">
-            {d.practicas.map((p, i) => (
-              <li key={i} className="flex gap-3 text-data text-zinc-300">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent/60" />
-                <span>{p}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
-
-      {/* Relación con sanidad */}
       <section className="mt-10 rounded-terminal border border-accent/30 bg-accent/5 p-5">
         <h2 className="text-base font-semibold text-white">Sanidad obligatoria vs. buenas prácticas</h2>
         <p className="mt-2 text-data text-zinc-300">

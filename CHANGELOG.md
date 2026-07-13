@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.152.0] — 2026-07-13
+
+### BPG completo — subpágina por tema + tool MCP
+
+Se profundizó la guía de Buenas Prácticas Ganaderas cargando **los 14 temas completos** desde la Guía de la Red BPA (2019), extraídos del PDF y reescritos/atribuidos:
+
+- **Subpágina por tema** (`/buenas-practicas/[slug]`, 14 páginas SSG): cada una con "cómo implementarlo" — el intro del tema + sus secciones con las prácticas accionables (organización, personal, establecimiento, instalaciones, suelo, agua, forrajes, estiércol/efluentes, residuos, cambio climático, manejo de rodeo, alimentación, salud animal, bienestar animal), con navegación anterior/siguiente y vuelta al índice.
+- **Índice** (`/buenas-practicas`) reescrito: los 14 temas agrupados por bloque, cada card enlaza a su subpágina.
+- **Tool MCP `buenas_practicas`** (17 tools): sin argumento lista los 14 temas; con un tema devuelve cómo implementarlo. Aclara que las BPG son voluntarias vs. lo sanitario obligatorio.
+- Las 14 subpáginas en el sitemap; server-card y llms.txt actualizados.
+- Contenido reescrito y resumido con atribución + link a la guía (no reproducción textual).
+
 ## [1.151.0] — 2026-07-13
 
 ### Buenas Prácticas Ganaderas (BPG) — `/buenas-practicas`
