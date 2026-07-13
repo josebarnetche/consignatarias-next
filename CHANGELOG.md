@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.147.0] — 2026-07-13
+
+### Sanidad en la landing — banda "Calendario sanitario"
+
+Integra el tema sanitario a la home: una banda **Calendario sanitario** (`CalendarioSanitario.tsx`) entre "Cómo funciona" y el showcase, con las campañas de vacunación antiaftosa 2026 (Res. SENASA 711/2025), el caveat del Plan Local del Ente, y CTA a `/sanidad`. Server component sobre el dataset citado, sin lógica de fecha (SSG-safe), consistente con el manual de marca.
+
+**Nota de dato:** el open-data de SENASA en datos.magyp.gob.ar (existencias/movimientos por especie) **termina en 2018-2019** pese al metadata reciente — se descartó ingerirlo como dato corriente (regla de datos reales). El bloque "duro" de números frescos no está disponible ahí; la capa sanitaria se sostiene en las reglas/resoluciones citadas.
+
 ## [1.146.0] — 2026-07-13
 
 ### Capa Sanidad / SENASA — MVP (dato regulatorio citado, MCP + web)

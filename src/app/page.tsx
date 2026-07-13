@@ -10,6 +10,7 @@ import { resolveYoutubeUrl } from "@/lib/youtube-live";
 import { getLogoUrl, getBrandColor, getBrandKeepColor } from "@/lib/data/logo-map";
 import { getFeaturedSlugs } from "@/lib/featured";
 import ConsignatariasShowcase from "@/components/landing/ConsignatariasShowcase";
+import CalendarioSanitario from "@/components/landing/CalendarioSanitario";
 import ConsignatariaSearch from "@/components/landing/ConsignatariaSearch";
 import { FAQPageSchema, OrganizationSchema, WebSiteSchema } from "@/components/seo/JsonLd";
 import NewsletterSignup from "@/components/NewsletterSignup";
@@ -467,6 +468,13 @@ export default async function LandingPage() {
             </div>
           </div>
         </section>
+
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
+
+        {/* ============================================================ */}
+        {/*  CALENDARIO SANITARIO — SENASA (aftosa/brucelosis/movimiento) */}
+        {/* ============================================================ */}
+        <CalendarioSanitario />
 
         <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
 
