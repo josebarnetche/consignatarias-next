@@ -11,7 +11,7 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ### Logo Pastore
 
-- Ficha `Edgar E. Pastore y Cia.` (`/consignatarias/pastore`) ahora muestra su logo. Tomado del brazo de marca (pastore.com.ar), recortada la bajada "INMOBILIARIA" → monograma EP + wordmark PASTORE en blanco sobre el bordó de marca `#813247` (`whiteLogo`, `wordmark`).
+- Ficha `Edgar E. Pastore y Cia.` (`/consignatarias/pastore`) ahora muestra su logo. Tomado del brazo de marca (pastore.com.ar), recortada la bajada "INMOBILIARIA" → monograma EP + wordmark PASTORE en blanco sobre el azul marino de marca `#0e2f60` (`whiteLogo`, `wordmark`).
 
 ## [1.160.0] — 2026-07-13
 
