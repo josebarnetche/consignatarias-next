@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.157.0] — 2026-07-13
+
+### MCP — tool get_indice_liquidacion (18 tools)
+
+El Índice de Liquidación ahora también es consumible por agentes de IA, no solo web. Nueva tool `get_indice_liquidacion` (sin args): devuelve la lectura fresca de Cañuelas (% hembras del mes, con interpretación liquidación/retención) + la serie mensual reciente + el contexto histórico de la faena de hembras nacional (1998-2019: mín/máx/último) + el caveat de que Cañuelas no se compara 1:1 con la faena nacional, con la fuente citada. Actualizados `initialize.instructions`, server-card y llms.txt. El MCP pasa de 17 a 18 tools.
+
 ## [1.156.0] — 2026-07-13
 
 ### Índice de Liquidación — el nuevo índice de la familia (Motor 2)

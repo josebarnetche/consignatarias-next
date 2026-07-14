@@ -11,6 +11,7 @@ import {
   FUENTES, fuentesDe, planPorId, zonaAftosaDe, decodeRenspa, DTE_INFO,
 } from '@/lib/data/senasa-sanidad'
 import { BPG_TEMAS, BPG_FUENTE } from '@/lib/data/bpg-ganaderas'
+import { getLiquidacion, LIQUIDACION_CAVEAT } from '@/lib/data/liquidacion'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -54,6 +55,7 @@ const TOOL_TITLES: Record<string, string> = {
   get_precios_hacienda: 'Precios de hacienda por categoría',
   get_precios_detallados: 'Precios por subcategoría',
   get_contexto_macro: 'Contexto macro ganadero',
+  get_indice_liquidacion: 'Índice de Liquidación (% hembras)',
   list_remates: 'Próximos remates de hacienda',
   buscar_consignataria: 'Buscar consignataria',
   actividad_consignatarias: 'Ranking de actividad de consignatarias',
@@ -291,6 +293,33 @@ const TOOLS: Tool[] = [
             novillo_ars_kg: novilloArsKg,
             kg_maiz_por_kg_novillo: Math.round(kgMaizPorKgNovillo * 10) / 10,
             indice_arrendamiento_oficial: arrOficial ?? null,
+          }),
+      )
+    },
+  },
+  {
+    name: 'get_indice_liquidacion',
+    description:
+      'Índice de Liquidación: participación de HEMBRAS (vacas + vaquillonas) en la hacienda operada en el Mercado Agroganadero (Cañuelas) — indicador ADELANTADO de liquidación (descarga de vientres) vs. retención (armado de rodeo). Sin args. Devuelve la lectura fresca de Cañuelas (mensual, 2026→) y el contexto histórico de la faena de hembras NACIONAL (1998-2019). Ojo: Cañuelas corre estructuralmente por encima de la faena nacional — no comparar 1:1.',
+    inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+    async run() {
+      const { actual, canuelas, nacional, interpretacion, fuenteNacional } = await getLiquidacion()
+      if (!actual) return ok('Índice de Liquidación — sin dato reciente del mercado.')
+      const recientes = canuelas.slice(-4).map((p) => `${p.mes}: ${p.pct}% (${p.cabezas?.toLocaleString('es-AR')} cab)`).join(' · ')
+      const natMin = nacional.reduce((m, p) => (p.pct < m.pct ? p : m), nacional[0])
+      const natMax = nacional.reduce((m, p) => (p.pct > m.pct ? p : m), nacional[0])
+      return ok(
+        `Índice de Liquidación (% hembras) — lectura de Cañuelas ${actual.mes}: ${actual.pct}%\n` +
+          `${interpretacion}\n\n` +
+          `Serie Cañuelas reciente: ${recientes}\n\n` +
+          `Contexto histórico — faena de hembras NACIONAL (${fuenteNacional.nombre}): serie 1998-2019, mínimo ${natMin.pct}% (${natMin.mes}, retención), máximo ${natMax.pct}% (${natMax.mes}, liquidación), último oficial ${nacional[nacional.length - 1].pct}% (${nacional[nacional.length - 1].mes}).\n\n` +
+          `${LIQUIDACION_CAVEAT}\n` +
+          JSON.stringify({
+            metric: 'participacion_hembras',
+            canuelas_actual_pct: actual.pct, mes: actual.mes, cabezas: actual.cabezas,
+            canuelas_serie: canuelas,
+            nacional_min: { pct: natMin.pct, mes: natMin.mes }, nacional_max: { pct: natMax.pct, mes: natMax.mes },
+            nacional_ultimo: nacional[nacional.length - 1], fuente_nacional: fuenteNacional.url,
           }),
       )
     },
@@ -905,7 +934,7 @@ export async function POST(req: NextRequest) {
         serverInfo: SERVER_INFO,
         instructions:
           'Datos e infraestructura del mercado ganadero argentino como tools MCP.\n' +
-          '• Mercado: get_indice_novillo (índice INMAG DIARIO, ponderado por volumen) y get_precios_hacienda (precios por categoría, observación SEMANAL) son métricas distintas — no las compares 1:1; además get_inmag_historico, get_precios_detallados y get_contexto_macro.\n' +
+          '• Mercado: get_indice_novillo (índice INMAG DIARIO, ponderado por volumen) y get_precios_hacienda (precios por categoría, observación SEMANAL) son métricas distintas — no las compares 1:1; además get_inmag_historico, get_precios_detallados, get_contexto_macro y get_indice_liquidacion (% hembras, liquidación vs retención).\n' +
           '• Directorio y remates: buscar_consignataria, actividad_consignatarias, buscar_frigorifico, list_remates.\n' +
           '• Herramientas: calcular_arrendamiento.\n' +
           '• Sanidad SENASA (dato regulatorio, con la resolución citada): sanidad_plan, sanidad_calendario_aftosa, sanidad_requisitos_movimiento, sanidad_renspa (valida/decodifica RENSPA), sanidad_dte_tropa (DT-e / número de tropa).\n' +

@@ -58,6 +58,7 @@ Available tools:
 - \`get_precios_hacienda\` — precios por categoría (novillo, novillito, vaquillona, vaca, toro, ternero)
 - \`get_precios_detallados\` — precios por subcategoría (ej. "NOVILLOS Regular +430") con mín/prom/máx
 - \`get_contexto_macro\` — dólar blue/oficial, maíz FOB, spread novillo/maíz (proxy de margen feedlot)
+- \`get_indice_liquidacion\` — Índice de Liquidación: % hembras operadas (liquidación vs retención) + contexto histórico faena nacional
 - \`list_remates\` — calendario de remates (filtro por provincia)
 - \`buscar_consignataria\` — directorio de consignatarias/casas de remate por nombre o zona (incluye CUIT)
 - \`actividad_consignatarias\` — ranking de cabezas operadas y precio promedio por firma en el MAG de Cañuelas (mercado de referencia, ~12% nacional)

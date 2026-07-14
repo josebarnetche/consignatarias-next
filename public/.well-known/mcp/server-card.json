@@ -33,6 +33,7 @@
     { "name": "get_precios_hacienda", "description": "Precios de hacienda por categoría (novillo, vaca, vaquillona, ternero…) — observación semanal del mercado." },
     { "name": "get_precios_detallados", "description": "Precios detallados por sub-categoría del Mercado Agroganadero." },
     { "name": "get_contexto_macro", "description": "Contexto macro para leer el precio de la hacienda: dólar oficial y blue, y maíz." },
+    { "name": "get_indice_liquidacion", "description": "Índice de Liquidación: participación de hembras en la hacienda operada (indicador adelantado de liquidación vs. retención), con contexto histórico de la faena nacional." },
     { "name": "list_remates", "description": "Calendario de remates de hacienda en Argentina: fecha, consignataria, ubicación, categoría y cabezas estimadas." },
     { "name": "buscar_consignataria", "description": "Busca una consignataria/casa consignataria en el directorio por nombre o provincia." },
     { "name": "actividad_consignatarias", "description": "Actividad de las consignatarias del Mercado Agroganadero: cabezas y lotes operados por firma en un período." },
