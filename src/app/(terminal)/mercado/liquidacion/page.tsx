@@ -8,7 +8,7 @@ export const revalidate = 43200 // 12h — la serie de Cañuelas se actualiza co
 export const metadata: Metadata = {
   title: 'Índice de Liquidación — participación de hembras en la hacienda | Consignatarias',
   description:
-    'La participación de hembras (vacas + vaquillonas) en la hacienda operada en el Mercado Agroganadero: el indicador adelantado de liquidación vs. retención del rodeo argentino. Con el contexto histórico de la faena nacional de hembras (1998-2019, MAGyP).',
+    'La participación de hembras (vacas + vaquillonas) en la hacienda operada en el Mercado Agroganadero: el indicador adelantado de liquidación vs. retención del rodeo argentino. Con el contexto histórico de la faena nacional de hembras (1998-2025, MAGyP).',
   keywords: [
     'índice de liquidación', 'liquidación de vientres', 'participación de hembras', 'faena de hembras',
     'retención de vientres', 'stock ganadero', 'rodeo argentino', 'vacas vaquillonas', 'ciclo ganadero',
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.consignatarias.com.ar/mercado/liquidacion' },
 }
 
-// ── Chart SVG del histórico nacional (1998-2019), server-rendered ────────────
+// ── Chart SVG del histórico nacional (1998-2025), server-rendered ────────────
 function HistoricoChart({ serie }: { serie: PuntoHembras[] }) {
   const W = 720, H = 240, padX = 8, padY = 16
   const vals = serie.map((p) => p.pct)
@@ -33,7 +33,7 @@ function HistoricoChart({ serie }: { serie: PuntoHembras[] }) {
     .filter((t, idx, arr) => t.year !== arr[idx - 1]?.year && Number(t.year) % 4 === 0)
   return (
     <div className="overflow-x-auto">
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full min-w-[560px]" role="img" aria-label="Serie histórica de participación de hembras en la faena nacional, 1998 a 2019">
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full min-w-[560px]" role="img" aria-label="Serie histórica de participación de hembras en la faena nacional, 1998 a 2025">
         <defs>
           <linearGradient id="liqfill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.18" />
@@ -63,7 +63,7 @@ export default async function LiquidacionPage() {
 
   const faqs = [
     { question: '¿Qué es el Índice de Liquidación?', answer: 'Es la participación de hembras (vacas + vaquillonas) en la hacienda. Una participación alta señala liquidación —el productor descarga vientres, el rodeo se achica— y una baja señala retención —se guardan vientres para armar rodeo—. Es un termómetro del ciclo ganadero.' },
-    { question: '¿De dónde sale el dato?', answer: `La lectura fresca sale de la hacienda operada en el Mercado Agroganadero (Cañuelas), rueda por rueda, desde 2026. El contexto histórico de largo plazo es la faena nacional de hembras publicada por ${fuenteNacional.nombre} (1998-2019).` },
+    { question: '¿De dónde sale el dato?', answer: 'La lectura fresca sale de la hacienda operada en el Mercado Agroganadero (Cañuelas), rueda por rueda, desde 2026. El contexto histórico nacional es la faena de hembras: mensual de MAGyP/DNCCA (1998-2019) y trimestral del IPCVA (2019-2025), la misma métrica unida.' },
     { question: '¿Por qué el número de Cañuelas es más alto que el histórico nacional?', answer: 'Porque son métricas distintas: Cañuelas es la hacienda operada en el mercado concentrador (que recibe mucha venta de vaca y vaquillona), y corre estructuralmente por encima de la faena nacional. No se comparan 1:1 en nivel; la señal está en la magnitud y la tendencia.' },
   ]
 
@@ -109,9 +109,9 @@ export default async function LiquidacionPage() {
 
       {/* Contexto histórico nacional */}
       <section className="mt-10">
-        <h2 className="text-lg font-semibold text-white mb-1">El contexto: faena de hembras nacional, 1998-2019</h2>
+        <h2 className="text-lg font-semibold text-white mb-1">El contexto: faena de hembras nacional, 1998-2025</h2>
         <p className="text-data text-zinc-500 mb-4">
-          El arco de largo plazo del ciclo ganadero argentino. Fuente oficial: {fuenteNacional.nombre.split('—')[0].trim()}.
+          El arco de largo plazo del ciclo ganadero argentino. Mensual 1998-2019 (MAGyP/DNCCA) + trimestral 2019-2025 (IPCVA), la misma métrica unida.
         </p>
         <div className="rounded-terminal border border-terminal-border bg-terminal-panel p-4">
           <HistoricoChart serie={nacional} />
@@ -122,8 +122,8 @@ export default async function LiquidacionPage() {
           </div>
         </div>
         <p className="mt-3 text-xxs text-zinc-600">
-          La serie nacional está congelada en ago-2019 (el portal MAGyP dejó de actualizarla). Sirve de telón de fondo
-          histórico; la lectura fresca de arriba es nuestra, del operado en Cañuelas.
+          El tramo 1998-2025 es mensual (MAGyP/DNCCA, congelado en 2019); de ahí a 2025 es trimestral (informes del IPCVA,
+          reconstruido). Es el telón de fondo nacional; la lectura fresca de arriba es nuestra, del operado en Cañuelas.
         </p>
 
         {/* Ancla nacional actual (PDF mensual MAGyP) — puentea el hueco 2019→hoy */}
@@ -156,7 +156,7 @@ export default async function LiquidacionPage() {
         <ul className="space-y-2 text-data text-zinc-300">
           <li className="flex gap-3"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent/60" /><span><strong className="text-zinc-100">Hembras</strong> = vacas + vaquillonas (incluye sus estados), sobre el total de cabezas operadas.</span></li>
           <li className="flex gap-3"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent/60" /><span><strong className="text-zinc-100">Lectura Cañuelas</strong> (2026→): hacienda operada en el Mercado Agroganadero, mercado concentrador de referencia (~12% de la faena nacional). Es un indicador <strong className="text-zinc-100">adelantado</strong>, más granular y propietario.</span></li>
-          <li className="flex gap-3"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent/60" /><span><strong className="text-zinc-100">Contexto nacional</strong> (1998-2019): faena de hembras nacional, {fuenteNacional.nombre}. Es la faena (rezagada), no el operado — corre en un nivel más bajo. No comparar 1:1 con Cañuelas.</span></li>
+          <li className="flex gap-3"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent/60" /><span><strong className="text-zinc-100">Contexto nacional</strong> (1998-2025): faena de hembras nacional — mensual de MAGyP/DNCCA (1998-2019) + trimestral del IPCVA (2019-2025), la misma métrica. Es la faena (rezagada), no el operado — corre en un nivel más bajo. No comparar 1:1 con Cañuelas.</span></li>
         </ul>
       </section>
 
@@ -181,7 +181,7 @@ export default async function LiquidacionPage() {
 
       <DatasetSchema
         name="Índice de Liquidación — participación de hembras en la hacienda argentina"
-        description="Participación de hembras (vacas + vaquillonas) en la hacienda operada en el Mercado Agroganadero (2026→), con el contexto histórico de la faena nacional de hembras (1998-2019)."
+        description="Participación de hembras (vacas + vaquillonas) en la hacienda operada en el Mercado Agroganadero (2026→), con el contexto histórico de la faena nacional de hembras (1998-2025)."
         url="https://www.consignatarias.com.ar/mercado/liquidacion"
         keywords={['índice de liquidación', 'participación de hembras', 'faena de hembras', 'ciclo ganadero', 'retención de vientres']}
       />

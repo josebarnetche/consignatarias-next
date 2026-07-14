@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.159.0] — 2026-07-13
+
+### Índice de Liquidación — backfill 2019-2025 (serie nacional continua 1998-2025)
+
+Se cerró el hueco 2019→hoy de la serie nacional parseando los **informes trimestrales de faena del IPCVA**. Ahora la serie nacional de % hembras es **continua 1998-2025** (281 puntos): mensual de MAGyP/DNCCA (1998-2019, 260 meses) + trimestral del IPCVA (2019-2025, 21 trimestres) — la misma métrica, unida sin gap.
+
+- **Backfill** `scripts/backfill-ipcva-hembras.mjs` (corrida única): descarga 23 PDFs trimestrales del listado IPCVA (`vertodas.php?se=83`), extrae con `pdftotext` el % hembras de la prosa ("La faena de hembras se ubicó… en el X%"). 23/23 parseados. Cross-valida con el histórico (2019-Q3 IPCVA 47,5% ≈ MAGyP ago-2019 47%). Output `faena-hembras-nacional-trimestral.json`.
+- Faltan sólo 1T/2T-2020 (IPCVA los publicó en .docx) y 2025 Q1/Q2/Q4 (no publicados).
+- El chart de `/mercado/liquidacion` y la tool MCP `get_indice_liquidacion` ahora muestran el arco completo 1998-2025 (mín 35,97% oct-2011 · máx 52,3% abr-2019). El índice queda con las 3 capas completas y profundidad de 27 años.
+
 ## [1.158.0] — 2026-07-13
 
 ### Índice de Liquidación — ancla nacional actual (scraper del PDF mensual de MAGyP)

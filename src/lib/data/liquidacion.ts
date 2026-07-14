@@ -14,6 +14,7 @@
  */
 import { requireServiceClient } from '@/lib/supabase'
 import historicoRaw from './faena-hembras-nacional-historico.json'
+import trimestralRaw from './faena-hembras-nacional-trimestral.json'
 import actualRaw from './faena-hembras-nacional-actual.json'
 
 export interface PuntoHembras {
@@ -30,6 +31,16 @@ export const HISTORICO_NACIONAL = historicoRaw as {
   cobertura: string
   serie: PuntoHembras[]
 }
+
+// Serie nacional CONTINUA: histórico mensual MAGyP (1998→2019-08) + trimestral IPCVA
+// (2019-2025, puntos posteriores a 2019-08 ubicados en el mes de cierre del trimestre).
+// Es la misma métrica (faena de hembras nacional) → se une sin gap.
+export const SERIE_NACIONAL: PuntoHembras[] = (() => {
+  const hist = (historicoRaw as { serie: PuntoHembras[] }).serie
+  const ultimoHist = hist[hist.length - 1].mes
+  const tri = (trimestralRaw as { serie: PuntoHembras[] }).serie.filter((p) => p.mes > ultimoHist)
+  return [...hist, ...tri].sort((a, b) => a.mes.localeCompare(b.mes))
+})()
 
 /**
  * Serie mensual de % hembras operadas en Cañuelas, desde que hay dato (may-2026).
@@ -92,7 +103,7 @@ export async function getLiquidacion(): Promise<LiquidacionSnapshot> {
   return {
     actual,
     canuelas,
-    nacional: HISTORICO_NACIONAL.serie,
+    nacional: SERIE_NACIONAL,
     nacionalActual: NACIONAL_ACTUAL,
     interpretacion: interpretar(actual?.pct ?? null),
     fuenteNacional: { nombre: HISTORICO_NACIONAL.fuente, url: HISTORICO_NACIONAL.fuente_url },

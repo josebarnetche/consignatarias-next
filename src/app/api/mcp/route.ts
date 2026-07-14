@@ -316,7 +316,7 @@ const TOOLS: Tool[] = [
           `${interpretacion}\n\n` +
           `Serie Cañuelas reciente: ${recientes}\n\n` +
           `${anclaNac}` +
-          `Contexto histórico — faena de hembras NACIONAL (${fuenteNacional.nombre}): serie 1998-2019, mínimo ${natMin.pct}% (${natMin.mes}, retención), máximo ${natMax.pct}% (${natMax.mes}, liquidación), último oficial ${nacional[nacional.length - 1].pct}% (${nacional[nacional.length - 1].mes}).\n\n` +
+          `Contexto histórico — faena de hembras NACIONAL (mensual MAGyP/DNCCA 1998-2019 + trimestral IPCVA 2019-2025): mínimo ${natMin.pct}% (${natMin.mes}, retención), máximo ${natMax.pct}% (${natMax.mes}, liquidación), último ${nacional[nacional.length - 1].pct}% (${nacional[nacional.length - 1].mes}).\n\n` +
           `${LIQUIDACION_CAVEAT}\n` +
           JSON.stringify({
             metric: 'participacion_hembras',
