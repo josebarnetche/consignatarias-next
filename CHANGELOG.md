@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.161.0] — 2026-07-14
+
+### Lote de logos de consignatarias (+20 fichas)
+
+Swarm de investigación (5 agentes) sobre las 60 fichas sin logo → se rastreó el sitio oficial de cada firma y se extrajo el mejor asset (favicon/apple-touch/header). Bajados, autocropeados, con color de marca muestreado del propio logo, y agregados al `logo-map.ts`:
+
+- **20 firmas nuevas con logo** (cobertura 43 → 63/103): Aguerre, Aguirre Vazquez, A.J. Mendizabal, Arzuaga, Consignataria Vittori, Cooperativa Porteña, Ferialvarez, Ferias Lito Araneta, Ganaderos de Ceres, Goenaga, Gregorio Aberasturi, Herrero Hnos, Hourcade Albelo, Javier Bardin, Lartirigoyen (brazo Oromí), Martín y Alonso, Melicurá (+ Melicur Ganados = misma firma), Oregui, Raúl Mendizabal, Sociedad Rural de Rafaela.
+- 4 son marcas claras/blancas (`whiteLogo`) → renderizan sobre su color de marca: A.J. Mendizabal, Arzuaga, Javier Bardin, Lartirigoyen.
+- Sin logo utilizable (firmas chicas sin web, dominios caídos o solo Facebook): ~30 firmas. 3 fichas quedaron marcadas como probable mal-catalogación (Agroactiva = la expo, no consignataria; IderCor = organismo público de Corrientes; "Ganados Remates" = sin firma independiente verificable) — revisar aparte.
+
 ## [1.160.1] — 2026-07-14
 
 ### Logo Pastore

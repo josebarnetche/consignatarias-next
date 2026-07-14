@@ -25,6 +25,30 @@ export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string;
   // Pastore Inmobiliaria); recortada la bajada "INMOBILIARIA", queda monograma EP +
   // wordmark PASTORE en blanco sobre el azul marino de marca #0e2f60.
   'pastore': { logo: 'pastore.png', color: '#0e2f60', whiteLogo: true, wordmark: true },
+  // ── Lote 2026-07: logos tomados de los sitios oficiales de cada firma (favicon/
+  // header/apple-touch), autocropeados; color = tinta de marca muestreada del propio
+  // logo. Los 4 con whiteLogo son marcas claras/blancas → van sobre su color de marca.
+  'aguerre': { logo: 'aguerre.png', color: '#904818' },
+  'aguirre-vazquez': { logo: 'aguirre-vazquez.png', color: '#604890', wordmark: true },
+  'aj-mendizabal': { logo: 'aj-mendizabal.png', color: '#1f3a5f', whiteLogo: true, wordmark: true },
+  'arzuaga': { logo: 'arzuaga.png', color: '#16456b', whiteLogo: true, wordmark: true },
+  'consignataria-vittori': { logo: 'consignataria-vittori.png', color: '#906030' },
+  'cooperativa-portena': { logo: 'cooperativa-portena.png', color: '#007830', wordmark: true },
+  'ferialvarez': { logo: 'ferialvarez.png', color: '#16403e', wordmark: true },
+  'ferias-lito-araneta': { logo: 'ferias-lito-araneta.png', color: '#1f3a5f' },
+  'ganaderos-de-ceres': { logo: 'ganaderos-de-ceres.png', color: '#016087' },
+  'goenaga': { logo: 'goenaga.png', color: '#1f3a5f', wordmark: true },
+  'gregorio-aberasturi': { logo: 'gregorio-aberasturi.png', color: '#006030', wordmark: true },
+  'herrero-hnos': { logo: 'herrero-hnos.png', color: '#1a9e75' },
+  'hourcade-albelo': { logo: 'hourcade-albelo.png', color: '#003018', wordmark: true },
+  'javier-bardin': { logo: 'javier-bardin.png', color: '#530903', whiteLogo: true, wordmark: true },
+  'lartirigoyen': { logo: 'lartirigoyen.png', color: '#004b2a', whiteLogo: true, wordmark: true },
+  'martin-y-alonso': { logo: 'martin-y-alonso.png', color: '#906048', wordmark: true },
+  'melicura': { logo: 'melicura.png', color: '#187830', wordmark: true },
+  'melicur-ganados': { logo: 'melicura.png', color: '#187830', wordmark: true },
+  'oregui': { logo: 'oregui.png', color: '#c09060' },
+  'raul-mendizabal': { logo: 'raul-mendizabal.png', color: '#737342', wordmark: true },
+  'rural-rafaela': { logo: 'rural-rafaela.png', color: '#1f3a5f' },
   'ofarrell': { logo: 'ofarrell.svg', color: '#183048' },
   'cooperativa-guillermo-lehmann': { logo: 'cooperativa-guillermo-lehmann.png', color: '#00924d', whiteLogo: true, wordmark: true },
   'ferias-rauch': { logo: 'ferias-rauch.png', color: '#936f54' },
