@@ -21,6 +21,10 @@ export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string;
   'colombo-y-magliano': { logo: 'colombo-y-magliano.svg', color: '#215732', whiteLogo: true },
   'colombo-y-colombo': { logo: 'colombo-y-colombo.png', color: '#b30738', whiteLogo: true },
   'bressan-y-cia': { logo: 'bressan-y-cia.png', color: '#a99134' },
+  // Edgar E. Pastore y Cia. SRL — logo tomado del brazo de marca (pastore.com.ar,
+  // Pastore Inmobiliaria); recortada la bajada "INMOBILIARIA", queda monograma EP +
+  // wordmark PASTORE en blanco sobre el bordó de marca #813247.
+  'pastore': { logo: 'pastore.png', color: '#813247', whiteLogo: true, wordmark: true },
   'ofarrell': { logo: 'ofarrell.svg', color: '#183048' },
   'cooperativa-guillermo-lehmann': { logo: 'cooperativa-guillermo-lehmann.png', color: '#00924d', whiteLogo: true, wordmark: true },
   'ferias-rauch': { logo: 'ferias-rauch.png', color: '#936f54' },

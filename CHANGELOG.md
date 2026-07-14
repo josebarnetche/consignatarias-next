@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.160.1] — 2026-07-14
+
+### Logo Pastore
+
+- Ficha `Edgar E. Pastore y Cia.` (`/consignatarias/pastore`) ahora muestra su logo. Tomado del brazo de marca (pastore.com.ar), recortada la bajada "INMOBILIARIA" → monograma EP + wordmark PASTORE en blanco sobre el bordó de marca `#813247` (`whiteLogo`, `wordmark`).
+
 ## [1.160.0] — 2026-07-13
 
 ### Fixes del review integral (webhook de pagos + "prueba gratis" + chart)
