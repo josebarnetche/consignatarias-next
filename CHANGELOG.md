@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.160.0] — 2026-07-13
+
+### Fixes del review integral (webhook de pagos + "prueba gratis" + chart)
+
+Una revisión adversarial de la sesión (agente integral) encontró que **el fix del webhook de v1.155.0 no cubría el modo de falla real**. Corregido de verdad, más 2 cabos sueltos:
+
+- **🔴 Webhook Rebill — el bug real, ahora sí cerrado.** El rollback del dedup solo corría ante una excepción, pero los 3 upserts de entitlement (`user_subscriptions` Enterprise y PRO, `subscriptions` entity) **no chequeaban `.error`** — supabase-js devuelve `{error}` en vez de tirar. Si un grant fallaba: no había excepción → no corría el rollback → HTTP 200 → el retry de Rebill lo veía como duplicado → **el cliente que pagó quedaba sin acceso**. Ahora cada grant chequea `.error` y hace `throw` → corre el rollback del dedup → Rebill reintenta y re-procesa.
+- **🟠 "Prueba gratis" (falsa) — 2 superficies que faltaban.** El botón "Probar gratis →" en `ConsignatariaShowcase` (live en /para-consignatarias) → "Activar PRO →"; y el `metadata.description` de `/consignatarias/activar` terminaba en "Prueba gratis." (indexable) → copy honesto. Ahora NO queda ninguna en superficies PRO.
+- **🟡 Chart del Índice de Liquidación — eje X por fecha real.** Estaba por índice de punto, comprimiendo 2019-2025 (21 trimestres) en ~8% del ancho; ahora escala por fecha, respetando la proporción temporal del arco 1998-2025.
+- Menor: description de la tool `get_indice_liquidacion` actualizada a "1998-2025"; `package.json` version sincronizada.
+
 ## [1.159.0] — 2026-07-13
 
 ### Índice de Liquidación — backfill 2019-2025 (serie nacional continua 1998-2025)

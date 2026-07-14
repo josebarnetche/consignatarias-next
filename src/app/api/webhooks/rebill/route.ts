@@ -186,21 +186,27 @@ export async function POST(request: NextRequest) {
             .eq('user_id', userId)
             .maybeSingle()
 
-          await service
-            .from('user_subscriptions')
-            .upsert(
-              {
-                user_id: userId,
-                email: existing?.email || customerEmail || '',
-                tier: existing?.tier ?? 'free',
-                api_tier: apiTier,
-                rebill_enterprise_subscription_id: subscription_id,
-                rebill_customer_id: customer_id,
-                api_tier_activated_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-              },
-              { onConflict: 'user_id' },
-            )
+          {
+            // supabase-js NO tira ante un write fallido: devuelve { error }. Hay que
+            // chequearlo y throw, para que corra el rollback del dedup y Rebill reintente
+            // (si no, el cliente que pagó queda sin acceso y el retry lo ve como duplicado).
+            const { error: grantErr } = await service
+              .from('user_subscriptions')
+              .upsert(
+                {
+                  user_id: userId,
+                  email: existing?.email || customerEmail || '',
+                  tier: existing?.tier ?? 'free',
+                  api_tier: apiTier,
+                  rebill_enterprise_subscription_id: subscription_id,
+                  rebill_customer_id: customer_id,
+                  api_tier_activated_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString(),
+                },
+                { onConflict: 'user_id' },
+              )
+            if (grantErr) throw new Error(`enterprise entitlement grant failed: ${grantErr.message}`)
+          }
 
           // Welcome email (best-effort, non-blocking failure)
           if (customerEmail) {
@@ -226,22 +232,25 @@ export async function POST(request: NextRequest) {
           const periodEnd = new Date()
           periodEnd.setDate(periodEnd.getDate() + 30)
 
-          await service
-            .from('user_subscriptions')
-            .upsert(
-              {
-                user_id: userId,
-                email: customerEmail || '',
-                tier: 'pro',
-                rebill_subscription_id: subscription_id,
-                rebill_customer_id: customer_id,
-                status: 'active',
-                current_period_end: periodEnd.toISOString(),
-                upgraded_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-              },
-              { onConflict: 'user_id' }
-            )
+          {
+            const { error: grantErr } = await service
+              .from('user_subscriptions')
+              .upsert(
+                {
+                  user_id: userId,
+                  email: customerEmail || '',
+                  tier: 'pro',
+                  rebill_subscription_id: subscription_id,
+                  rebill_customer_id: customer_id,
+                  status: 'active',
+                  current_period_end: periodEnd.toISOString(),
+                  upgraded_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString(),
+                },
+                { onConflict: 'user_id' }
+              )
+            if (grantErr) throw new Error(`user PRO entitlement grant failed: ${grantErr.message}`)
+          }
 
           break
         }
@@ -261,21 +270,24 @@ export async function POST(request: NextRequest) {
         const periodEnd = new Date()
         periodEnd.setDate(periodEnd.getDate() + 30)
 
-        await service
-          .from('subscriptions')
-          .upsert(
-            {
-              entity_type: entityType,
-              entity_slug: entitySlug,
-              plan_name: planName,
-              rebill_subscription_id: subscription_id,
-              rebill_customer_id: customer_id,
-              status: 'active',
-              current_period_end: periodEnd.toISOString(),
-              updated_at: new Date().toISOString(),
-            },
-            { onConflict: 'entity_type,entity_slug' }
-          )
+        {
+          const { error: grantErr } = await service
+            .from('subscriptions')
+            .upsert(
+              {
+                entity_type: entityType,
+                entity_slug: entitySlug,
+                plan_name: planName,
+                rebill_subscription_id: subscription_id,
+                rebill_customer_id: customer_id,
+                status: 'active',
+                current_period_end: periodEnd.toISOString(),
+                updated_at: new Date().toISOString(),
+              },
+              { onConflict: 'entity_type,entity_slug' }
+            )
+          if (grantErr) throw new Error(`entity entitlement grant failed: ${grantErr.message}`)
+        }
 
         if (entityType === 'consignataria') {
           await service

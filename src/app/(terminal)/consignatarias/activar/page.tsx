@@ -5,7 +5,7 @@ import ActivarFinder from '@/components/consignataria/ActivarFinder'
 export const metadata: Metadata = {
   title: 'Activá PRO — encontrá tu consignataria',
   description:
-    'Activá PRO Consignataria: promocioná tus remates a la base de productores, perfil destacado y tu propia página. Buscá tu firma para empezar. Prueba gratis.',
+    'Activá PRO Consignataria: promocioná tus remates a la base de productores, perfil destacado y tu propia página. ARS 45.000/mes, sin permanencia: cancelás cuando quieras.',
   robots: { index: false, follow: true },
   alternates: { canonical: 'https://www.consignatarias.com.ar/consignatarias/activar' },
 }

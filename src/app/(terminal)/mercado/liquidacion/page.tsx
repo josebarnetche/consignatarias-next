@@ -23,7 +23,17 @@ function HistoricoChart({ serie }: { serie: PuntoHembras[] }) {
   const vals = serie.map((p) => p.pct)
   const min = Math.floor(Math.min(...vals) - 1)
   const max = Math.ceil(Math.max(...vals) + 1)
-  const x = (i: number) => padX + (i / (serie.length - 1)) * (W - 2 * padX)
+  // Eje X por FECHA real (no por índice): la serie mezcla puntos mensuales (1998-2019)
+  // y trimestrales (2019-2025); escalar por índice comprimiría los últimos 6 años en
+  // ~8% del ancho. Convertimos 'YYYY-MM' a año decimal.
+  const toT = (mes: string) => {
+    const [y, m] = mes.split('-').map(Number)
+    return y + (m - 1) / 12
+  }
+  const ts = serie.map((p) => toT(p.mes))
+  const tMin = ts[0]
+  const tMax = ts[ts.length - 1]
+  const x = (i: number) => padX + ((ts[i] - tMin) / (tMax - tMin)) * (W - 2 * padX)
   const y = (v: number) => padY + (1 - (v - min) / (max - min)) * (H - 2 * padY)
   const path = serie.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)},${y(p.pct).toFixed(1)}`).join(' ')
   const area = `${path} L${x(serie.length - 1).toFixed(1)},${H - padY} L${x(0).toFixed(1)},${H - padY} Z`

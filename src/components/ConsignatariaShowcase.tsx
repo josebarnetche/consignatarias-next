@@ -224,7 +224,7 @@ export default function ConsignatariaShowcase({
             className="terminal-btn"
             style={{ borderColor: 'rgba(251,191,36,0.6)', color: '#fbbf24' }}
           >
-            Probar gratis →
+            Activar PRO →
           </Link>
           <span className="text-zinc-600 text-xxs font-terminal">ARS 45.000/mes · sin permanencia</span>
         </div>
