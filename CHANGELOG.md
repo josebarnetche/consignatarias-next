@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.157.1] — 2026-07-13
+
+### Fix — Índice de Liquidación devolvía sólo parte de mayo (cap de PostgREST)
+
+El helper leía los ~8.500 lotes crudos vía PostgREST, que se capea en **1.000 filas** (`db-max-rows`) pese al `.limit(100000)` → devolvía sólo parte del primer mes (mostraba mayo como "actual" en vez de julio, con valores parciales). Fix: **RPC `get_canuelas_hembras_mensual`** (migración) que agrega en la base y devuelve ~3 filas, sin límite. Ahora la lectura es correcta (may 68,8 · jun 62,1 · jul 63,9%). Afecta la página `/mercado/liquidacion` y la tool MCP `get_indice_liquidacion`.
+
 ## [1.157.0] — 2026-07-13
 
 ### MCP — tool get_indice_liquidacion (18 tools)

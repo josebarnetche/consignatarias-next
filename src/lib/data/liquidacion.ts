@@ -30,43 +30,22 @@ export const HISTORICO_NACIONAL = historicoRaw as {
   serie: PuntoHembras[]
 }
 
-// Hembras = vacas y vaquillonas (incluye sus estados: muerta/caída). El resto
-// (novillos, novillitos, toros, etc.) no computa como hembra.
-const ES_HEMBRA = /^VAC|^VAQ/i
-
 /**
  * Serie mensual de % hembras operadas en Cañuelas, desde que hay dato (may-2026).
- * Se apoya en mag_consignataria_sales_lots (lote-level, categoría + cabezas).
+ * Usa el RPC get_canuelas_hembras_mensual (agrega en la base: leer los lotes crudos
+ * vía PostgREST se capea en 1.000 filas y devolvía sólo parte del primer mes).
+ * Hembras = vacas + vaquillonas (regex ^VAC|^VAQ en el RPC).
  */
 export async function getCanuelasHembrasMensual(): Promise<PuntoHembras[]> {
   const service = requireServiceClient()
-  const { data, error } = await service
-    .from('mag_consignataria_sales_lots')
-    .select('date, category, head_count')
-    .order('date', { ascending: true })
-    .limit(100000)
+  // Cast: el RPC es nuevo (migración 20260713) y aún no está en los tipos generados.
+  const { data, error } = await service.rpc('get_canuelas_hembras_mensual' as never)
   if (error || !data) return []
-
-  const buckets = new Map<string, { hembras: number; total: number }>()
-  for (const r of data) {
-    const date = r.date as string | null
-    if (!date) continue
-    const mes = date.slice(0, 7)
-    const heads = (r.head_count as number) || 0
-    if (heads <= 0) continue
-    const b = buckets.get(mes) || { hembras: 0, total: 0 }
-    b.total += heads
-    if (ES_HEMBRA.test((r.category as string) || '')) b.hembras += heads
-    buckets.set(mes, b)
-  }
-
-  return [...buckets.entries()]
-    .sort((a, b) => a[0].localeCompare(b[0]))
-    .map(([mes, b]) => ({
-      mes,
-      pct: b.total > 0 ? Math.round((b.hembras / b.total) * 1000) / 10 : 0,
-      cabezas: b.total,
-    }))
+  return (data as { mes: string; hembras: number; total: number }[]).map((r) => ({
+    mes: r.mes,
+    pct: r.total > 0 ? Math.round((Number(r.hembras) / Number(r.total)) * 1000) / 10 : 0,
+    cabezas: Number(r.total),
+  }))
 }
 
 export interface LiquidacionSnapshot {
