@@ -3,8 +3,9 @@
 **La infraestructura de inteligencia del mercado ganadero argentino.**
 
 El precio de referencia del ganado argentino, hecho dato: la **familia de índices** (INMAG diario
-desde 2015, en pesos y en dólares, panel de categorías, arrendamiento, spread), el **directorio**
-de 104 consignatarias en 12 provincias y 1.092 frigoríficos cruzados contra SENASA, el **calendario**
+desde 2015, en pesos y en dólares, panel de categorías, arrendamiento, spread maíz-novillo e
+**Índice de Liquidación** = % hembras), el **directorio**
+de 104 consignatarias en 12 provincias y 1.102 frigoríficos cruzados contra SENASA, el **calendario**
 de remates, una **API pública** y un **servidor MCP** para agentes IA (registry oficial:
 `ar.com.consignatarias/cattle-market`). Datos abiertos y citables; **gratis para el productor**;
 PRO Consignataria para operadores y Enterprise API/MCP para integradores.
@@ -150,10 +151,12 @@ Planes:
 Facturación mensual en ARS vía Rebill (anual –15%; exterior: transferencia o USDT al equivalente).
 
 También como **servidor MCP** para agentes IA: endpoint `https://www.consignatarias.com.ar/api/mcp`
-(10 tools; listado en el registry oficial como `ar.com.consignatarias/cattle-market`). Demo animada
-con los datos del día en [`/mcp`](https://www.consignatarias.com.ar/mcp). Incluye el **índice oficial
-de arrendamiento del MAG** (además del INMAG) — catálogo completo de fuentes MAG en
-[`docs/mag-endpoints-catalogo.md`](docs/mag-endpoints-catalogo.md).
+(**18 tools**; listado en el registry oficial como `ar.com.consignatarias/cattle-market`, y en Glama —
+quality A — y Forge). Demo animada con los datos del día en [`/mcp`](https://www.consignatarias.com.ar/mcp).
+Cubre mercado (INMAG, precios por categoría, macro, **Índice de Liquidación** = % hembras), remates,
+directorio de consignatarias y frigoríficos, arrendamiento, **sanidad SENASA** (calendario de vacunación,
+requisitos de movimiento, RENSPA, DT-e) y **Buenas Prácticas Ganaderas** — todo con la fuente citada.
+Catálogo completo de fuentes MAG en [`docs/mag-endpoints-catalogo.md`](docs/mag-endpoints-catalogo.md).
 
 Documentación: [`/api-docs`](https://www.consignatarias.com.ar/api-docs).
 
@@ -207,4 +210,4 @@ Operadores comerciales que construyen infraestructura propietaria — no agencia
 
 ---
 
-v1.104.0 · 2026-07-04 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0
+v1.159.0 · 2026-07-13 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0

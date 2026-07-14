@@ -1,6 +1,6 @@
 # Roadmap
 
-**Current:** v1.138.0 (2026-07-11) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
+**Current:** v1.159.0 (2026-07-13) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
 **Strategic frame:** [docs/strategy/PLAN-DE-NEGOCIOS-2026.md](docs/strategy/PLAN-DE-NEGOCIOS-2026.md)
 (plan de negocios v2, 36 meses — el marco canónico) + [docs/strategy/POSITIONING-THESIS.md](docs/strategy/POSITIONING-THESIS.md)
 (tesis de categoría). **Dos motores de ingreso secuenciados** sobre la capa de datos libre y citable:
@@ -16,6 +16,38 @@ MAJOR boundary, so the product stays on 1.x.
 > first dollar is **unblocked** (email-first checkout live for both B2C and Enterprise, verified to
 > reach a real Rebill payment link). The remaining gate is a real test payment + the institutional
 > sales motion — not more code.
+
+---
+
+## Estado — v1.139 → v1.159 (2026-07-13) · el tramo del Motor 2 (datos/índice/autoridad)
+
+Este tramo profundizó fuerte el **Motor 2** (la capa de datos, el *prize* y el moat), sumó contenido citable
+nuevo, y endureció riesgos del Motor 1. Todo en prod, con changelog.
+
+**Motor 2 — datos, índice y autoridad (el grueso):**
+- **MCP consolidado y distribuido.** De ~11 a **18 tools** con descriptions tier-A (rubro TDQS) + annotations;
+  pasa los 3 checks del **spec MCP 2026-07-28** (del ~9% de servers listos); `.well-known/mcp/*`; `initialize`
+  como mapa completo. Presente en los **3 índices**: registry oficial (**v1.2.0**), **Glama (quality A)** y Forge.
+  Alerta de ops que avisa el **primer consumo real identificable** (el hito que separa "indexado" de "usado").
+- **Índice de Liquidación** (6º de la familia, `/mercado/liquidacion` + tool MCP): **% hembras**, indicador
+  adelantado de liquidación vs. retención. 3 capas honestas: Cañuelas propio (adelantado, diario, vía RPC) +
+  ancla nacional actual (scraper del PDF mensual de MAGyP) + **serie nacional continua 1998-2025** (mensual
+  MAGyP + backfill trimestral IPCVA, 23 PDFs parseados). Es el dato procesado citable que diferencia del spot
+  gratis — consumible por web (GEO) y por IA (MCP).
+- **Sanidad SENASA + Buenas Prácticas Ganaderas.** Nueva capa de dato regulatorio citado (planes, calendario
+  de vacunación, requisitos de movimiento, RENSPA, DT-e) + guía BPG de 14 temas — whitespace vacío en el
+  ecosistema agtech-MCP, indexable y consumible por agentes.
+
+**Motor 1 — hardening de riesgos (auditoría por swarm):**
+- **Fix del webhook Rebill:** un cliente que pagaba podía quedar sin acceso (el dedup marcaba el evento como
+  procesado antes de otorgar el entitlement) → rollback del dedup ante fallo para que el retry re-procese.
+- **"Prueba gratis" (falsa) removida** de 5 superficies (el checkout cobra al instante; riesgo Defensa del
+  Consumidor) → copy honesto "ARS 45.000/mes, cancelás cuando quieras".
+- Quick-wins de credibilidad/GEO: precios reales en `llms.txt`, cobertura corregida, sitemap, perf, correctness.
+
+**El cuello sigue siendo comercial, no técnico.** Este tramo hizo el Motor 2 mucho más profundo y citable, pero
+el gate no cambió: la **primera institución que consulte de forma recurrente e identificada** (o el primer PRO
+pagando). Se resuelve vendiendo, no con más código.
 
 ---
 
