@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.158.0] — 2026-07-13
+
+### Índice de Liquidación — ancla nacional actual (scraper del PDF mensual de MAGyP)
+
+Rellena el hueco 2019→hoy de la serie nacional. Como no existe CSV/API limpio post-2019 (IPCVA tiene su tabla caída), se scrapea el **informe mensual de faena de MAGyP/DNCCA** (PDF de URL fija, se actualiza ~día 10):
+
+- **Scraper** `scripts/scrape-faena-hembras-magyp.mjs`: descarga el PDF, extrae con `pdftotext` el **% de hembras acumulado del año** (YTD), el año previo y la faena total. Verificado: mayo-2026 = **47,5%** (vs 47,0% en 2025), 4.943.845 cabezas. Output `faena-hembras-nacional-actual.json`.
+- **Workflow** `scrape-faena-hembras.yml` (semanal, lunes; instala poppler-utils; commitea si cambia) + registrado en `EXPECTED_CRONS`.
+- **Surface**: "Ancla nacional actual" en `/mercado/liquidacion` (puentea el hueco del histórico 2019) y en la tool MCP `get_indice_liquidacion`.
+
+Con esto el índice tiene las 3 capas: Cañuelas fresco (adelantado, propio) + ancla nacional actual (YTD, oficial) + arco histórico 1998-2019.
+
 ## [1.157.1] — 2026-07-13
 
 ### Fix — Índice de Liquidación devolvía sólo parte de mayo (cap de PostgREST)

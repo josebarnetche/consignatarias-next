@@ -57,7 +57,7 @@ function HistoricoChart({ serie }: { serie: PuntoHembras[] }) {
 }
 
 export default async function LiquidacionPage() {
-  const { actual, canuelas, nacional, interpretacion, fuenteNacional } = await getLiquidacion()
+  const { actual, canuelas, nacional, nacionalActual, interpretacion, fuenteNacional } = await getLiquidacion()
   const natMin = nacional.reduce((m, p) => (p.pct < m.pct ? p : m), nacional[0])
   const natMax = nacional.reduce((m, p) => (p.pct > m.pct ? p : m), nacional[0])
 
@@ -125,6 +125,29 @@ export default async function LiquidacionPage() {
           La serie nacional está congelada en ago-2019 (el portal MAGyP dejó de actualizarla). Sirve de telón de fondo
           histórico; la lectura fresca de arriba es nuestra, del operado en Cañuelas.
         </p>
+
+        {/* Ancla nacional actual (PDF mensual MAGyP) — puentea el hueco 2019→hoy */}
+        {nacionalActual?.pct_hembras != null && (
+          <div className="mt-4 rounded-terminal border border-terminal-border bg-terminal-panel p-4">
+            <p className="text-xxs uppercase tracking-widest text-zinc-500 mb-1">Ancla nacional actual</p>
+            <p className="text-data text-zinc-200">
+              Faena de hembras nacional, acumulado a <span className="text-zinc-100">{nacionalActual.mes_informe}</span>:{' '}
+              <span className="text-white font-semibold">{nacionalActual.pct_hembras}%</span>
+              {nacionalActual.pct_hembras_anio_previo != null && (
+                <span className="text-zinc-500"> (vs {nacionalActual.pct_hembras_anio_previo}% el año previo)</span>
+              )}
+              {nacionalActual.faena_total_cabezas != null && (
+                <span className="text-zinc-500"> · {nacionalActual.faena_total_cabezas.toLocaleString('es-AR')} cabezas faenadas</span>
+              )}
+              .
+            </p>
+            <p className="mt-2 text-xxs text-zinc-600">
+              Es el dato acumulado del año (YTD), no mensual, del{' '}
+              <a href={nacionalActual.fuente_url} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-accent underline underline-offset-2">informe mensual de MAGyP</a>.
+              La faena nacional corre por debajo del operado en Cañuelas.
+            </p>
+          </div>
+        )}
       </section>
 
       {/* Metodología */}

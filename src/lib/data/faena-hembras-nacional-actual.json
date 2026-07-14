@@ -1,0 +1,12 @@
+{
+  "fuente": "Informe mensual de faena y producción de carne bovina — MAGyP/DNCCA",
+  "fuente_url": "https://www.magyp.gob.ar/sitio/areas/bovinos/informacion_interes/informes/000008_Informe_MENSUAL_de_faena_y_produccion_de_carne_bovina.pdf",
+  "metrica": "porcentaje_hembras_faena_acumulado_ytd",
+  "descripcion": "Participación de hembras en la faena bovina NACIONAL, acumulado del año a Mayo de 2026.",
+  "mes_informe": "Mayo de 2026",
+  "anio": "2026",
+  "pct_hembras": 47.5,
+  "pct_hembras_anio_previo": 47,
+  "faena_total_cabezas": 4943845,
+  "actualizado": "2026-07-14"
+}

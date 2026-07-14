@@ -14,6 +14,7 @@
  */
 import { requireServiceClient } from '@/lib/supabase'
 import historicoRaw from './faena-hembras-nacional-historico.json'
+import actualRaw from './faena-hembras-nacional-actual.json'
 
 export interface PuntoHembras {
   mes: string // YYYY-MM
@@ -48,10 +49,23 @@ export async function getCanuelasHembrasMensual(): Promise<PuntoHembras[]> {
   }))
 }
 
+export interface NacionalActual {
+  mes_informe: string | null
+  anio: string
+  pct_hembras: number
+  pct_hembras_anio_previo: number | null
+  faena_total_cabezas: number | null
+  fuente: string
+  fuente_url: string
+}
+
+export const NACIONAL_ACTUAL = actualRaw as NacionalActual
+
 export interface LiquidacionSnapshot {
   actual: PuntoHembras | null // último mes de Cañuelas
   canuelas: PuntoHembras[] // serie propia (2026→)
   nacional: PuntoHembras[] // histórico nacional (1998-2019)
+  nacionalActual: NacionalActual // ancla nacional actual (YTD, PDF mensual MAGyP)
   interpretacion: string
   fuenteNacional: { nombre: string; url: string }
 }
@@ -79,6 +93,7 @@ export async function getLiquidacion(): Promise<LiquidacionSnapshot> {
     actual,
     canuelas,
     nacional: HISTORICO_NACIONAL.serie,
+    nacionalActual: NACIONAL_ACTUAL,
     interpretacion: interpretar(actual?.pct ?? null),
     fuenteNacional: { nombre: HISTORICO_NACIONAL.fuente, url: HISTORICO_NACIONAL.fuente_url },
   }

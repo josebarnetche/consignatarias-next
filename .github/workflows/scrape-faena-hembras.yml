@@ -1,0 +1,60 @@
+name: Faena Hembras Nacional (MAGyP)
+
+# Ancla nacional actual del % de hembras en la faena, del PDF mensual de MAGyP/DNCCA
+# (URL fija, se sobrescribe ~día 10 de cada mes). Rellena el hueco 2019→hoy del
+# Índice de Liquidación (el dataset CKAN está congelado en 2019).
+# Cadence: semanal (lunes) — el PDF cambia mensual, así que casi siempre es no-op;
+# semanal dispara mucho más confiable que mensual en GitHub Actions.
+on:
+  schedule:
+    - cron: '41 8 * * 1'  # Lunes 05:41 ART. Minuto no-redondo para evitar el throttling de schedules.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: cron-hook start
+        id: cronstart
+        run: |
+          RUN_ID=$(curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" -H "Content-Type: application/json" -d '{"workflow_name":"scrape-faena-hembras","phase":"start"}' | jq -r '.run_id // empty')
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install poppler (pdftotext)
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
+      - name: Scrape faena hembras (PDF mensual MAGyP)
+        run: SCRAPE_DATE=$(date -u +%Y-%m-%d) node scripts/scrape-faena-hembras-magyp.mjs
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --quiet src/lib/data/faena-hembras-nacional-actual.json && \
+            echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/lib/data/faena-hembras-nacional-actual.json
+          PCT=$(node -e "console.log(require('./src/lib/data/faena-hembras-nacional-actual.json').pct_hembras)")
+          MES=$(node -e "console.log(require('./src/lib/data/faena-hembras-nacional-actual.json').mes_informe)")
+          git commit -m "data: faena hembras nacional — ${PCT}% acumulado a ${MES} — $(date -u +%Y-%m-%d)"
+          git push
+
+      - name: cron-hook finish
+        if: always() && steps.cronstart.outputs.run_id != ''
+        run: |
+          ST="ok"; [ "${{ job.status }}" != "success" ] && ST="error"
+          curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" -H "Content-Type: application/json" -d "{\"workflow_name\":\"scrape-faena-hembras\",\"phase\":\"finish\",\"run_id\":${{ steps.cronstart.outputs.run_id }},\"status\":\"$ST\"}" || true

@@ -303,21 +303,26 @@ const TOOLS: Tool[] = [
       'Índice de Liquidación: participación de HEMBRAS (vacas + vaquillonas) en la hacienda operada en el Mercado Agroganadero (Cañuelas) — indicador ADELANTADO de liquidación (descarga de vientres) vs. retención (armado de rodeo). Sin args. Devuelve la lectura fresca de Cañuelas (mensual, 2026→) y el contexto histórico de la faena de hembras NACIONAL (1998-2019). Ojo: Cañuelas corre estructuralmente por encima de la faena nacional — no comparar 1:1.',
     inputSchema: { type: 'object', properties: {}, additionalProperties: false },
     async run() {
-      const { actual, canuelas, nacional, interpretacion, fuenteNacional } = await getLiquidacion()
+      const { actual, canuelas, nacional, nacionalActual, interpretacion, fuenteNacional } = await getLiquidacion()
       if (!actual) return ok('Índice de Liquidación — sin dato reciente del mercado.')
       const recientes = canuelas.slice(-4).map((p) => `${p.mes}: ${p.pct}% (${p.cabezas?.toLocaleString('es-AR')} cab)`).join(' · ')
       const natMin = nacional.reduce((m, p) => (p.pct < m.pct ? p : m), nacional[0])
       const natMax = nacional.reduce((m, p) => (p.pct > m.pct ? p : m), nacional[0])
+      const anclaNac = nacionalActual?.pct_hembras != null
+        ? `Ancla nacional actual (faena, acumulado a ${nacionalActual.mes_informe}): ${nacionalActual.pct_hembras}%${nacionalActual.pct_hembras_anio_previo != null ? ` (vs ${nacionalActual.pct_hembras_anio_previo}% el año previo)` : ''}. Fuente: informe mensual MAGyP.\n`
+        : ''
       return ok(
         `Índice de Liquidación (% hembras) — lectura de Cañuelas ${actual.mes}: ${actual.pct}%\n` +
           `${interpretacion}\n\n` +
           `Serie Cañuelas reciente: ${recientes}\n\n` +
+          `${anclaNac}` +
           `Contexto histórico — faena de hembras NACIONAL (${fuenteNacional.nombre}): serie 1998-2019, mínimo ${natMin.pct}% (${natMin.mes}, retención), máximo ${natMax.pct}% (${natMax.mes}, liquidación), último oficial ${nacional[nacional.length - 1].pct}% (${nacional[nacional.length - 1].mes}).\n\n` +
           `${LIQUIDACION_CAVEAT}\n` +
           JSON.stringify({
             metric: 'participacion_hembras',
             canuelas_actual_pct: actual.pct, mes: actual.mes, cabezas: actual.cabezas,
             canuelas_serie: canuelas,
+            nacional_actual: nacionalActual?.pct_hembras != null ? { pct: nacionalActual.pct_hembras, periodo: nacionalActual.mes_informe, anio_previo: nacionalActual.pct_hembras_anio_previo } : null,
             nacional_min: { pct: natMin.pct, mes: natMin.mes }, nacional_max: { pct: natMax.pct, mes: natMax.mes },
             nacional_ultimo: nacional[nacional.length - 1], fuente_nacional: fuenteNacional.url,
           }),
