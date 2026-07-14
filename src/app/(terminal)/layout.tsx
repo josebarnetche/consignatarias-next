@@ -48,6 +48,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "INMAG en USD", href: "/mercado/inmag-dolares", hint: "Serie dolarizada" },
       { label: "Novillo 20 años", href: "/mercado/novillo-historico", hint: "2006→hoy · USD oficial y blue", tag: "new" },
       { label: "Maíz / Novillo", href: "/mercado/spread", hint: "Relación de canje" },
+      { label: "Índice de Liquidación", href: "/mercado/liquidacion", hint: "% hembras · liquidación vs retención", tag: "new" },
       { label: "Precios hoy", href: "/precios", hint: "Hacienda en pie" },
       { label: "Categorías", href: "/mercado", hint: "Terneros, novillos, vacas" },
       { label: "Internacional", href: "/mercado/internacional", hint: "Chicago (CME) USD/kg" },

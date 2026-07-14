@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.156.0] — 2026-07-13
+
+### Índice de Liquidación — el nuevo índice de la familia (Motor 2)
+
+Nuevo índice citable (`/mercado/liquidacion`): la **participación de hembras** (vacas + vaquillonas) en la hacienda — el indicador adelantado de **liquidación** (descarga de vientres) vs. **retención** (armado de rodeo) del ciclo ganadero. Es dato de estructura que nadie más publica como índice.
+
+- **Dos capas, honestas y distintas:** (1) **lectura fresca de Cañuelas** (serie propia, may-2026→, calculada de `mag_consignataria_sales_lots`: hembras/total operado — hoy ~64%, señal de liquidación intensa); (2) **contexto histórico nacional** (faena de hembras, 1998-2019, 260 meses, ingerido de MAGyP/DNCCA como `faena-hembras-nacional-historico.json`).
+- **Rigor:** el operado en Cañuelas corre estructuralmente por encima de la faena nacional (Cañuelas concentra venta de vientres) → **no se comparan 1:1**; se muestran separados (lectura fresca + arco histórico), con el caveat explícito. Nada de línea continua falsa.
+- Página SSG/ISR con chart histórico SVG propio, metodología, FAQ + DatasetSchema/Speakable/FAQPage (GEO). Sumado a la **familia de índices** (`/indices`), al nav (Mercado) y al sitemap.
+- Fast-follow: tool MCP `get_indice_liquidacion` + scraper del PDF mensual de MAGyP para el ancla nacional actual (IPCVA no es scrapeable hoy — su tabla está caída).
+
 ## [1.155.1] — 2026-07-13
 
 ### Auditoría — Tanda 2: quick-wins (nav, SEO, perf, correctness)

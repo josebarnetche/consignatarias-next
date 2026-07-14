@@ -101,6 +101,15 @@ const FAMILY: IndexDef[] = [
     href: '/mercado/spread',
     keywords: ['spread maíz novillo', 'rentabilidad invernada', 'relación maíz novillo'],
   },
+  {
+    name: 'Índice de Liquidación',
+    tagline: 'Participación de hembras en la hacienda',
+    what: 'La proporción de hembras (vacas + vaquillonas) en la hacienda operada: el indicador adelantado de liquidación (descarga de vientres) vs. retención (armado de rodeo) del ciclo ganadero. Un dato de estructura que nadie más publica como índice.',
+    methodology: 'Hembras sobre total de cabezas operadas en el Mercado Agroganadero (serie propia, 2026→), con el contexto histórico de la faena de hembras nacional (MAGyP, 1998-2019).',
+    cadence: 'Diario',
+    href: '/mercado/liquidacion',
+    keywords: ['índice de liquidación', 'participación de hembras', 'retención de vientres', 'ciclo ganadero'],
+  },
 ]
 
 const FAQS = [
