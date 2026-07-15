@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import AuthButton from "@/components/auth/AuthButton";
 import OnboardingPrompt from "@/components/onboarding/OnboardingPrompt";
 import PageTransition from "@/components/ui/PageTransition";
+import PromoEltigreBanner from "@/components/promo/PromoEltigreBanner";
 import SmartWelcome from "@/components/SmartWelcome";
 import { createClient } from "@/lib/supabase-browser";
 
@@ -440,6 +441,11 @@ export default function TerminalLayout({
       {/* SSR-safe: el primer paint no anima; degrada a no-op con            */}
       {/* prefers-reduced-motion.                                            */}
       <SmartWelcome />
+      {/* Promo temporal del remate El Tigre — arriba del contenido en las páginas
+          de alto tráfico. Se auto-oculta cuando cierra la pre-oferta. */}
+      <div className="max-w-6xl mx-auto w-full px-3 sm:px-4 pt-3">
+        <PromoEltigreBanner />
+      </div>
       <main className="flex-1 min-h-0">
         <PageTransition>{children}</PageTransition>
       </main>

@@ -22,6 +22,7 @@ import ScrollReveal from "@/components/landing/ScrollReveal";
 import { CoverageMap } from "@/components/landing/CoverageMap";
 import SellZoneBadge from "@/components/SellZoneBadge";
 import PreofertasActivas from "@/components/PreofertasActivas";
+import PromoEltigreBanner from "@/components/promo/PromoEltigreBanner";
 
 /* ================================================================== */
 /*  SVG ICONS                                                          */
@@ -400,6 +401,13 @@ export default async function LandingPage() {
               </a>
             </div>
           </div>
+        </section>
+
+        {/* ============================================================ */}
+        {/*  PROMO — 34° Remate Cabaña El Tigre (temporal, auto-expira)  */}
+        {/* ============================================================ */}
+        <section className="max-w-4xl mx-auto px-6 pt-2 pb-2">
+          <PromoEltigreBanner />
         </section>
 
         {/* ============================================================ */}

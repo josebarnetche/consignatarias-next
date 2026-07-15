@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.175.0] — 2026-07-15
+
+### Banner promo del Remate El Tigre (temporal, video autoreproducible)
+
+Promo del 34° Remate Cabaña El Tigre con **video autoreproducible** (muteado, loop, 252KB web-optimizado del reel de campaña), estilo premium El Tigre (bordó + atardecer, NO terminal), mobile-first. Copy "Comprá tu toro por internet · 70 toros". Ubicado en **posición 3 del landing** + **arriba del contenido en todas las páginas del terminal** (cubre las top-10 de GSC: arrendamiento, precios, inmag, frigoríficos, consignatarias…). **Se auto-oculta** cuando cierra la pre-oferta (jue 16-jul 20:00) — sin necesidad de otro deploy.
+
 ## [1.174.0] — 2026-07-15
 
 ### Panel genético — EPDs decodificados + EPD estrella + pedigree
