@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Preoferta } from '@/lib/data/preofertas'
 import CondicionesRemate from '@/components/preoferta/CondicionesRemate'
+import PanelGenetico from '@/components/preoferta/PanelGenetico'
 
 /** Formatea un ISO a "vie 17-jul 14:00" (es-AR, corto). */
 function fmtFecha(iso: string): string {
@@ -147,6 +148,8 @@ export default function PreofertaClient({
                       : <span className="text-zinc-600">Sé el primero en marcar interés en este lote</span>}
                   </span>
                 </div>
+
+                <PanelGenetico lote={lote} lotes={remate.lotes} />
 
                 <CondicionesRemate remate={remate} />
 

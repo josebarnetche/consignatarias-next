@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.174.0] — 2026-07-15
+
+### Panel genético — EPDs decodificados + EPD estrella + pedigree
+
+Los EPDs de los 7 toros de pedigree (corrales 1-4) extraídos del PDF y decodificados a beneficio del comprador: cada EPD (P.D. peso destete, C.E. fertilidad, P.F. peso final, A.M. leche, L&C, P.N. facilidad de parto) con su valor, precisión (● dots), barra relativa al remate y traducción en una línea. **EPD estrella** auto-seleccionado (donde el toro rankea mejor). Pedigree (nombre registrado + padre/madre). Es "la genética a través de la pantalla" — aparece solo en los toros con datos EPD.
+
 ## [1.173.0] — 2026-07-15
 
 ### Ficha de pre-oferta = dossier de activo genético (no e-commerce)

@@ -23,6 +23,16 @@ export interface PreofertaLote {
   peso?: string
   base?: number
   elrural_id?: string
+  nombre?: string          // nombre registrado del toro (pedigree)
+  epd?: {
+    pint: string | null
+    pn: { v: number; prec?: number }
+    pd: { v: number; prec?: number }
+    am: { v: number; prec?: number }
+    lyc: { v: number }
+    pf: { v: number; prec?: number }
+    ce: { v: number; prec?: number }
+  }
 }
 
 export interface Preoferta {
