@@ -155,35 +155,45 @@ function OfertaWidget({
   const INC = 100_000
   const minimo = tieneOfertas ? actual + INC : base
   const [monto, setMonto] = useState<number>(minimo)
+  const [nombre, setNombre] = useState('')
+  const [cuit, setCuit] = useState('')
+  const [telefono, setTelefono] = useState('')
   const [msg, setMsg] = useState<string | null>(null)
+  const [ok, setOk] = useState(false)
   const [busy, setBusy] = useState(false)
 
   useEffect(() => { setMonto(minimo) }, [minimo, rp])
+  useEffect(() => { setMsg(null); setOk(false) }, [rp])
+
+  const cuitOk = cuit.replace(/\D/g, '').length === 11
 
   const ofertar = async () => {
     setMsg(null); setBusy(true)
     try {
       const r = await fetch('/api/preoferta/bid', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lote_rp: rp, amount: monto }),
+        body: JSON.stringify({ lote_rp: rp, amount: monto, nombre, cuit, telefono }),
       })
       const j = await r.json()
-      if (r.ok) { onNuevoValor(j.actual); setMonto(j.proximo); setMsg('✓ Oferta registrada (prueba)') }
+      if (r.ok) { onNuevoValor(j.actual); setMonto(j.proximo); setOk(true); setMsg('✓ Oferta registrada. Te representamos en la preoferta del remate.') }
       else if (j.needsAuth) setMsg('Ingresá para ofertar.')
       else { setMsg(j.error ?? 'No se pudo ofertar.'); if (j.actual) onNuevoValor(j.actual) }
     } catch { setMsg('Error de red.') }
     setBusy(false)
   }
 
+  const inputCls = 'bg-zinc-900 border border-terminal-border rounded px-2.5 py-2 text-sm text-zinc-100 placeholder:text-zinc-600 w-full'
+
   return (
     <div className="mt-4">
+      {/* Valor actual + monto */}
       <div className="flex flex-col sm:flex-row rounded-lg overflow-hidden border border-terminal-border">
         <div className="bg-positive text-black px-4 py-3 flex flex-col justify-center sm:min-w-[170px]">
           <span className="text-xxs font-terminal font-bold tracking-widest opacity-80">VALOR ACTUAL</span>
           <span className="font-mono font-extrabold text-2xl leading-none tabular-nums whitespace-nowrap">{fmt(actual)}</span>
         </div>
         <div className="bg-black/30 px-3 py-2.5 flex-1 flex items-center gap-2">
-          <button disabled={!abierta} onClick={() => setMonto((m) => Math.max(minimo, m - INC))} className="w-9 h-9 rounded border border-terminal-border text-zinc-300 font-bold disabled:opacity-40">«</button>
+          <button disabled={!abierta} onClick={() => setMonto((m) => Math.max(minimo, m - INC))} className="w-9 h-9 rounded border border-terminal-border text-zinc-300 font-bold disabled:opacity-40" aria-label="Bajar $100.000">«</button>
           <input
             inputMode="numeric" value={monto.toLocaleString('es-AR')}
             onChange={(e) => setMonto(parseInt(e.target.value.replace(/\D/g, ''), 10) || 0)}
@@ -191,28 +201,49 @@ function OfertaWidget({
             className="flex-1 min-w-0 bg-zinc-900 border border-terminal-border rounded px-2 py-2 text-center font-mono text-lg text-zinc-100 tabular-nums"
             aria-label="Su oferta"
           />
-          <button disabled={!abierta} onClick={() => setMonto((m) => m + INC)} className="w-9 h-9 rounded border border-terminal-border text-zinc-300 font-bold disabled:opacity-40">»</button>
+          <button disabled={!abierta} onClick={() => setMonto((m) => m + INC)} className="w-9 h-9 rounded border border-terminal-border text-zinc-300 font-bold disabled:opacity-40" aria-label="Subir $100.000">»</button>
         </div>
-        {userEmail ? (
-          <button
-            onClick={ofertar} disabled={!abierta || busy || monto < minimo}
-            className="bg-negative hover:bg-red-700 disabled:opacity-50 text-white font-bold px-5 py-3 text-sm tracking-wide"
-          >
-            {busy ? '...' : 'OFERTAR AHORA'}
-          </button>
-        ) : (
-          <a href="/cuenta" className="bg-negative hover:bg-red-700 text-white font-bold px-5 py-3 text-sm tracking-wide grid place-items-center text-center">
-            INGRESÁ PARA OFERTAR
-          </a>
-        )}
       </div>
-      <div className="flex items-center justify-between mt-1.5 text-xxs">
+
+      {userEmail ? (
+        ok ? (
+          <div className="mt-3 rounded-lg border border-positive/40 bg-positive/[0.07] p-3 text-sm text-zinc-200">
+            ✓ Oferta registrada por <b className="font-mono">{fmt(actual)}</b>. La llevamos a la preoferta del remate y validamos al ofertante. Podés ofertar por otro lote.
+          </div>
+        ) : (
+          <>
+            {/* Identidad del ofertante (para representarlo + informe) */}
+            <div className="grid sm:grid-cols-3 gap-2 mt-3">
+              <input className={inputCls} placeholder="Nombre y apellido / razón social" value={nombre} onChange={(e) => setNombre(e.target.value)} disabled={!abierta} />
+              <input className={inputCls} placeholder="CUIT (11 dígitos)" inputMode="numeric" value={cuit} onChange={(e) => setCuit(e.target.value)} disabled={!abierta} />
+              <input className={inputCls} placeholder="Teléfono de contacto" inputMode="tel" value={telefono} onChange={(e) => setTelefono(e.target.value)} disabled={!abierta} />
+            </div>
+            <button
+              onClick={ofertar}
+              disabled={!abierta || busy || monto < minimo || nombre.trim().length < 3 || !cuitOk || telefono.replace(/\D/g, '').length < 8}
+              className="mt-2 w-full bg-negative hover:bg-red-700 disabled:opacity-50 text-white font-bold px-5 py-3 text-sm tracking-wide rounded-lg"
+            >
+              {busy ? 'Registrando…' : `OFERTAR ${fmt(monto)}`}
+            </button>
+          </>
+        )
+      ) : (
+        <a href="/cuenta" className="mt-3 block bg-negative hover:bg-red-700 text-white font-bold px-5 py-3 text-sm tracking-wide rounded-lg text-center">
+          INGRESÁ PARA OFERTAR
+        </a>
+      )}
+
+      <div className="flex items-center justify-between mt-1.5 text-xxs gap-2">
         <span className="text-zinc-500">
           Mínimo próxima oferta: <b className="text-zinc-300 font-mono">{fmt(minimo)}</b> · incremento $100.000
         </span>
-        {msg && <span className={msg.startsWith('✓') ? 'text-positive' : 'text-amber-300'}>{msg}</span>}
+        {msg && !ok && <span className="text-amber-300 text-right">{msg}</span>}
       </div>
-      {userEmail && <p className="text-zinc-600 text-xxs mt-1">Ofertás como {userEmail} · las ofertas son de PRUEBA, no vinculantes.</p>}
+      {userEmail && !ok && (
+        <p className="text-zinc-600 text-xxs mt-1">
+          Registramos tu oferta y te representamos en la preoferta del remate. Validamos al ofertante (informe crediticio). Prueba interna.
+        </p>
+      )}
     </div>
   )
 }

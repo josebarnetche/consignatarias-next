@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.167.0] — 2026-07-15
+
+### Pre-oferta El Tigre → modelo LEAD vetado (no libro paralelo)
+
+Reencuadre de doctrina (José): no competir con el libro de ofertas de elrural (evita el conflicto de exclusividad/fragmentación). En vez de eso, **capturamos la oferta + identidad del comprador**, la validamos, y José la carga en elrural con su user (equipara el libro). El comprador-real queda nuestro, ya vetado. Objetivo: validación para reemplazar el sistema oxidado, no escala.
+
+- **Captura de identidad**: el formulario de oferta ahora pide nombre/razón social, **CUIT** (para el informe crediticio InfoExperto) y teléfono. API valida (CUIT 11 díg). Copy honesto: "registramos tu oferta y te representamos en la preoferta".
+- **Consola admin** `/admin/preoferta` (admin-gated): ofertas recibidas con lote, monto (TOP marcado), ofertante, CUIT, contacto y fecha → flujo InfoExperto → cargar en elrural (link al remate 603).
+- Columnas nuevas en `preoferta_bids`: bidder_name/cuit/phone, relayed_at, infoexperto.
+
 ## [1.166.0] — 2026-07-15
 
 ### Pre-oferta integrada (PRUEBA) — 34° Remate Cabaña El Tigre

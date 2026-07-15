@@ -59,12 +59,18 @@ export async function POST(req: NextRequest) {
   }
 
   // 3) input
-  let body: { lote_rp?: string; amount?: number }
+  let body: { lote_rp?: string; amount?: number; nombre?: string; cuit?: string; telefono?: string }
   try { body = await req.json() } catch { return NextResponse.json({ error: 'Body inválido.' }, { status: 400 }) }
   const rp = String(body.lote_rp ?? '')
   const amount = Math.floor(Number(body.amount))
+  const nombre = String(body.nombre ?? '').trim()
+  const cuit = String(body.cuit ?? '').replace(/\D/g, '')
+  const telefono = String(body.telefono ?? '').trim()
   if (!RPS.has(rp)) return NextResponse.json({ error: 'Lote inexistente.' }, { status: 400 })
   if (!Number.isFinite(amount) || amount <= 0) return NextResponse.json({ error: 'Monto inválido.' }, { status: 400 })
+  if (nombre.length < 3) return NextResponse.json({ error: 'Ingresá nombre y apellido (o razón social).' }, { status: 400 })
+  if (cuit.length !== 11) return NextResponse.json({ error: 'CUIT inválido (11 dígitos) — lo necesitamos para el informe.' }, { status: 400 })
+  if (telefono.replace(/\D/g, '').length < 8) return NextResponse.json({ error: 'Ingresá un teléfono de contacto.' }, { status: 400 })
 
   // 4) monto ≥ actual + incremento
   const max = await currentByLote()
@@ -80,6 +86,9 @@ export async function POST(req: NextRequest) {
     lote_rp: rp,
     amount,
     bidder_email: user.email,
+    bidder_name: nombre,
+    bidder_cuit: cuit,
+    bidder_phone: telefono,
   })
   if (error) return NextResponse.json({ error: 'No se pudo registrar la oferta.' }, { status: 500 })
 
