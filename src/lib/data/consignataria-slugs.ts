@@ -11,14 +11,13 @@ export interface ConsignatariaProfile {
 }
 
 /* ------------------------------------------------------------------ */
-/*  PROFILE REGISTRY  (103 unique entities — THE canonical public count;
+/*  PROFILE REGISTRY  (95 unique entities — THE canonical public count;
     getAllProfiles().length feeds landing, /consignatarias, header & /stats)  */
 /* ------------------------------------------------------------------ */
 
 const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'afa', displayName: 'Agricultores Federados Argentinos SCL', allSlugs: ['afa', 'agricultores-federados-argentinos-soc-coop-lt'] },
   { canonicalSlug: 'aj-mendizabal', displayName: 'A.J. Mendizabal', allSlugs: ['aj-mendizabal'] },
-  { canonicalSlug: 'agroactiva', displayName: 'Agroactiva', allSlugs: ['agroactiva'] },
   { canonicalSlug: 'aguerre', displayName: 'Aguerre SRL', allSlugs: ['aguerre', 'aguerre-srl', 'aguerre-s-r-l'] },
   { canonicalSlug: 'aguirre-vazquez', displayName: 'Aguirre Vazquez SA', allSlugs: ['aguirre-vazquez', 'aguirre-vazquez-s-a'] },
   
@@ -55,7 +54,6 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'hasenkamp', displayName: 'Consignataria Hasenkamp SRL', allSlugs: ['hasenkamp', 'consignataria-hasenkamp-s-r-l'] },
   { canonicalSlug: 'herrero-hnos', displayName: 'Herrero Hnos. SRL', allSlugs: ['herrero-hnos', 'herrero-hermanos', 'herrero-hnos-srl'] },
   { canonicalSlug: 'hk-agro', displayName: 'HK Agro SRL', allSlugs: ['hk-agro'] },
-  { canonicalSlug: 'idercor', displayName: 'IderCor', allSlugs: ['idercor'] },
   { canonicalSlug: 'ildarraz-hnos', displayName: 'Ildarraz Hnos', allSlugs: ['ildarraz-hnos', 'ildarraz-hnos-s-a'] },
   { canonicalSlug: 'j-s-russo', displayName: 'J. S. Russo y Cia. SA', allSlugs: ['j-s-russo-cia-s-a'] },
   { canonicalSlug: 'jauregui-lorda', displayName: 'Jauregui Lorda SRL', allSlugs: ['jauregui-lorda', 'jauregui-lorda-s-r-l', 'jauregui-lorda-haciendas'] },
@@ -71,22 +69,16 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'nangapiry', displayName: 'Nangapiry SA', allSlugs: ['nangapiry'] },
   { canonicalSlug: 'nestor-fuentes', displayName: 'Nestor Hugo Fuentes', allSlugs: ['nestor-fuentes', 'nestor-hugo-fuentes-s-a', 'nestor-hugo-fuentes-sa'] },
   { canonicalSlug: 'ofarrell', displayName: "Ivan L. O'Farrell Consignataria", allSlugs: ['ofarrell', 'ivan-l-ofarrell-srl', 'ivan-l-o-farrell-s-r-l', 'o-farrell'] },
-  { canonicalSlug: 'oregui', displayName: 'Oregui Cia SA', allSlugs: ['oregui-cia-sa'] },
+  { canonicalSlug: 'oregui', displayName: 'Oregui Cia SA', allSlugs: ['oregui', 'oregui-cia-sa'] },
   { canonicalSlug: 'orella', displayName: 'Orella SRL', allSlugs: ['orella'] },
   { canonicalSlug: 'pastore', displayName: 'Edgar E. Pastore y Cia. SRL', allSlugs: ['pastore', 'edgar-e-pastore-y-cia-s-r-l'] },
   { canonicalSlug: 'pedro-noel-irey', displayName: 'Pedro Noel Irey SRL', allSlugs: ['pedro-noel-irey', 'pedro-noel-irey-s-r-l'] },
   { canonicalSlug: 'pepa-knubel-ferrero', displayName: 'Pepa, Knubel y Ferrero SRL', allSlugs: ['pepa-knubel-ferrero', 'pepa-knubel-y-ferrero-s-r-l'] },
-  { canonicalSlug: 'produccion-chaco', displayName: 'Ministerio de Producción del Chaco', allSlugs: ['produccion-chaco'] },
   { canonicalSlug: 'productores-rurales-sud', displayName: 'Productores Rurales del Sud Coop. Ltda.', allSlugs: ['productores-rurales-sud'] },
   { canonicalSlug: 'raul-mendizabal', displayName: 'Raul Mendizabal y Cia. SAC', allSlugs: ['raul-mendizabal-y-cia-sac'] },
   { canonicalSlug: 'reggi', displayName: 'Reggi y Cia. SRL', allSlugs: ['reggi', 'reggi-y-cia', 'reggi-y-cia-s-r-l'] },
   { canonicalSlug: 'rodriguez-egana', displayName: 'Horacio Rodriguez Egaña', allSlugs: ['rodriguez-egana', 'horacio-rodriguez-egana-consignaciones-s-r-l', 'hre'] },
   { canonicalSlug: 'rosgan', displayName: 'Rosgan', allSlugs: ['rosgan'] },
-  { canonicalSlug: 'rural-chaco', displayName: 'Sociedad Rural del Chaco', allSlugs: ['rural-chaco'] },
-  { canonicalSlug: 'rural-corrientes', displayName: 'Sociedad Rural de Corrientes', allSlugs: ['rural-corrientes'] },
-  { canonicalSlug: 'rural-gualeguaychu', displayName: 'Sociedad Rural de Gualeguaychú', allSlugs: ['rural-gualeguaychu'] },
-  { canonicalSlug: 'rural-misiones', displayName: 'Sociedad Rural de Misiones', allSlugs: ['rural-misiones'] },
-  { canonicalSlug: 'rural-rafaela', displayName: 'Sociedad Rural de Rafaela', allSlugs: ['rural-rafaela'] },
   { canonicalSlug: 's-l-ledesma', displayName: 'S. L. Ledesma y Cia. SA', allSlugs: ['s-l-ledesma', 's-l-ledesma-y-cia-s-a', 'ledesma'] },
   { canonicalSlug: 'saenz-valiente-bullrich', displayName: 'Saenz Valiente, Bullrich y Cia. SA', allSlugs: ['saenz-valiente-bullrich', 'saenz-valiente-bullrich-y-cia-', 'saenz-valiente-bullrich-y-cia-s-a'] },
   { canonicalSlug: 'sivero', displayName: 'Sivero y Cia. SA', allSlugs: ['sivero', 'sivero-y-cia-s-a'] },
@@ -153,6 +145,22 @@ for (const profile of PROFILES) {
 /* ------------------------------------------------------------------ */
 /*  PUBLIC API                                                         */
 /* ------------------------------------------------------------------ */
+
+/**
+ * Entidades que NO son consignatarias aunque el scraper las capture como
+ * "organizador" de un remate: la Sociedad Rural es el PREDIO/institución donde
+ * se rematiza, no la firma que rematiza (casi cada localidad ganadera tiene la
+ * suya). Idem expos (Agroactiva, Expoagro), organismos públicos y el canal de TV.
+ * Se filtra por PATRÓN de nombre, no por lista fija, para que generalice.
+ * OJO: mantener en sync con la copia en scripts/scrape-auctions.mjs (otro runtime).
+ */
+export const NON_CONSIGNATARIA_RE =
+  /sociedad\s+rural|\bexpoagro\b|\bagroactiva\b|expo\s+(rural|palermo|agro)|ministerio\s+de|instituto\s+de\s+desarrollo|\bidercor\b|canal\s+rural|\bghc\s*logo\b/i
+
+/** True si el nombre corresponde a un predio/institución/evento, no a una consignataria. */
+export function isNonConsignataria(name: string | null | undefined): boolean {
+  return !!name && NON_CONSIGNATARIA_RE.test(name)
+}
 
 /** Get the canonical slug for any raw slug from remates.json. Returns null if unknown. */
 export function getCanonicalSlug(rawSlug: string): string | null {

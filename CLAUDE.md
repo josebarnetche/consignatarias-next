@@ -3,7 +3,7 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.162.0 (2026-07-14). See [CHANGELOG.md](CHANGELOG.md) for the full history. Latest train (v1.88–1.96): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+**Current version:** v1.163.0 (2026-07-14). See [CHANGELOG.md](CHANGELOG.md) for the full history. Latest train (v1.88–1.96): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
 
 ---
 
@@ -59,7 +59,7 @@ neto en mano, comparador, spread, seasonality, INMAG history) are free. The prod
 | Sitemap URLs | 1062 | `src/app/sitemap.ts` (shrinks as scraper archives remates) |
 | API endpoints | 32 under `src/app/api/` | route handlers |
 | Public Enterprise endpoints (auth-gated) | 2 — `/api/precios`, `/api/lots` | |
-| Consignatarias (canonical) | 103 | `src/lib/data/consignataria-slugs.ts` (`getAllProfiles().length` — the public count) |
+| Consignatarias (canonical) | 95 | `src/lib/data/consignataria-slugs.ts` (`getAllProfiles().length` — the public count) |
 | Consignatarias (DB row count) | 113 | `consignatarias` table |
 | Frigorificos | 1.102 | SENASA/MAGYP data |
 | Remates indexed | ~380 active | `src/lib/data/remates.json` (daily scrape) |

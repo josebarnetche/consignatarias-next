@@ -48,7 +48,6 @@ export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string;
   'melicur-ganados': { logo: 'melicura.png', color: '#187830', wordmark: true },
   'oregui': { logo: 'oregui.png', color: '#c09060' },
   'raul-mendizabal': { logo: 'raul-mendizabal.png', color: '#737342', wordmark: true },
-  'rural-rafaela': { logo: 'rural-rafaela.png', color: '#1f3a5f' },
   'ofarrell': { logo: 'ofarrell.svg', color: '#183048' },
   'cooperativa-guillermo-lehmann': { logo: 'cooperativa-guillermo-lehmann.png', color: '#00924d', whiteLogo: true, wordmark: true },
   'ferias-rauch': { logo: 'ferias-rauch.png', color: '#936f54' },

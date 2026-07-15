@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.163.0] — 2026-07-14
+
+### Sociedades Rurales / expos / organismos NO son consignatarias — sacadas del directorio
+
+Doctrina (José): la Sociedad Rural es el **predio/institución** donde se rematiza, no la firma que rematiza — y casi cada localidad ganadera tiene la suya, así que catalogarlas es infinito e incorrecto. Idem expos (Agroactiva) y organismos (IderCor, Min. Producción Chaco).
+
+- **8 entidades sacadas del registry** (fichas 103 → 95): 5 sociedades rurales (Chaco, Corrientes, Gualeguaychú, Misiones, Rafaela), Agroactiva, IderCor, Min. Producción del Chaco.
+- **Denylist por PATRÓN de nombre** (`NON_CONSIGNATARIA_RE` + `isNonConsignataria()`), no lista fija, para que generalice a futuras Soc. Rurales. Cableado en 3 lugares:
+  - **scraper** (`scrape-auctions.mjs`): filtra estos organizadores antes de escribir → los scrapes futuros salen limpios.
+  - **página de ficha**: no sintetiza ficha para un organizador no-consignataria → `notFound`.
+  - **registry**: helper exportado para consumo del front.
+- **`remates.json` limpiado** (788 → 770): -18 entradas de no-consignatarias (incluye de yapa `Sociedad Rural de Jesús María`, `Canal Rural` y el artefacto `Ghc Logo`).
+- Removido el logo de rural-rafaela (ya no es ficha). Fix de paso: `oregui` no tenía su propio slug en `allSlugs`.
+- Orphans de remates: 32 (inicio de sesión) → 15. Restan ~9 firmas nuevas sin ficha (Bucket B), 3 artefactos numéricos del scraper (Bucket C) y 2 ambiguos (`santillan`, `a-saenz-cia-s-a`).
+
 ## [1.162.0] — 2026-07-14
 
 ### Revisión integral de fichas — Bucket A: 14 remates huérfanos reconectados

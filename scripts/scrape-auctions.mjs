@@ -1799,6 +1799,17 @@ async function main() {
   merged = deduplicateAuctions(merged);
   if (merged.length < beforeDedup2) console.log(`Dedup 2° pase: -${beforeDedup2 - merged.length} remate(s) duplicado(s) colapsado(s).`);
 
+  // Filtrar "organizadores" que NO son consignatarias: la Sociedad Rural es el
+  // PREDIO donde se rematiza (casi cada localidad tiene la suya), no la firma;
+  // idem expos, organismos y el canal de TV. Se filtra por PATRÓN de nombre.
+  // OJO: mantener en sync con NON_CONSIGNATARIA_RE en src/lib/data/consignataria-slugs.ts
+  const NON_CONSIGNATARIA_RE =
+    /sociedad\s+rural|\bexpoagro\b|\bagroactiva\b|expo\s+(rural|palermo|agro)|ministerio\s+de|instituto\s+de\s+desarrollo|\bidercor\b|canal\s+rural|\bghc\s*logo\b/i;
+  const beforeNC = merged.length;
+  merged = merged.filter((a) => !NON_CONSIGNATARIA_RE.test(a.consignatariaName || ""));
+  if (merged.length < beforeNC)
+    console.log(`Filtradas ${beforeNC - merged.length} entrada(s) de no-consignatarias (soc. rural/expo/organismo).`);
+
   // Assign sequential IDs
   merged.forEach((a, i) => {
     a.id = i + 1;

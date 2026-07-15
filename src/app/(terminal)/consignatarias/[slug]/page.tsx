@@ -15,6 +15,7 @@ import type { Auction } from '@/lib/db/schema'
 import {
   getCanonicalSlug,
   getProfile,
+  isNonConsignataria,
   getAuctionsForProfile,
   synthesizeProfile,
 } from '@/lib/data/consignataria-slugs'
@@ -102,7 +103,11 @@ function formatCuit(cuit: string): string {
 function resolveConsignatariaSlug(slug: string): string | null {
   const canonical = getCanonicalSlug(slug)
   if (canonical) return canonical
-  if (auctions.some(a => a.consignatariaSlug === slug)) return slug
+  // Un remate suelto sintetiza su ficha — salvo que el "organizador" sea un
+  // predio/institución (Sociedad Rural, expo, organismo): esos no son
+  // consignatarias y no deben tener ficha (→ notFound).
+  const match = auctions.find(a => a.consignatariaSlug === slug)
+  if (match && !isNonConsignataria(match.consignatariaName)) return slug
   return null
 }
 
