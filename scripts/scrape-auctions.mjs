@@ -1799,6 +1799,22 @@ async function main() {
   merged = deduplicateAuctions(merged);
   if (merged.length < beforeDedup2) console.log(`Dedup 2° pase: -${beforeDedup2 - merged.length} remate(s) duplicado(s) colapsado(s).`);
 
+  // Limpiar sufijo-artefacto de dígito pegado al nombre (viene del versionado de
+  // filenames de logo: "bermejo_y_cia3.png" → "Bermejo Y Cia3"). Solo un dígito
+  // pegado DIRECTO a una letra ("Cia3"→"Cia", "Hacienda2"→"Hacienda"); no toca
+  // números separados ("25 de Mayo") ni con espacio previo. Reslugifica al limpiar.
+  let nameFixed = 0;
+  for (const a of merged) {
+    if (!a.consignatariaName) continue;
+    const cleaned = a.consignatariaName.replace(/([A-Za-zÁÉÍÓÚÑáéíóúñ])\d+\b/g, "$1").replace(/\s+/g, " ").trim();
+    if (cleaned && cleaned !== a.consignatariaName) {
+      a.consignatariaName = cleaned;
+      a.consignatariaSlug = slugify(cleaned);
+      nameFixed++;
+    }
+  }
+  if (nameFixed) console.log(`Nombres normalizados (dígito-artefacto): ${nameFixed}.`);
+
   // Filtrar "organizadores" que NO son consignatarias: la Sociedad Rural es el
   // PREDIO donde se rematiza (casi cada localidad tiene la suya), no la firma;
   // idem expos, organismos y el canal de TV. Se filtra por PATRÓN de nombre.

@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.163.1] — 2026-07-14
+
+### Bucket C: nombres con dígito-artefacto normalizados
+
+Tres firmas aparecían con un dígito pegado al nombre ("Bermejo Y Cia**3**", "...Hacienda**2**", "...Ltda**2**") — sufijo de versionado de filenames de logo que se filtraba al nombre y al slug. Normalización en el scraper (solo dígito pegado directo a letra; no toca "25 de Mayo") + `remates.json` limpiado. Bonus: un "Coop. La Ganadera" con doble espacio ahora resuelve a su ficha `la-ganadera`.
+
 ## [1.163.0] — 2026-07-14
 
 ### Sociedades Rurales / expos / organismos NO son consignatarias — sacadas del directorio
