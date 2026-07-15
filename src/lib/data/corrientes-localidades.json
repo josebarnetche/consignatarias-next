@@ -1,0 +1,350 @@
+[
+ {
+  "nombre": "9 de Julio (Est. Pueblo 9 de Julio)",
+  "departamento": "San Roque"
+ },
+ {
+  "nombre": "Alvear",
+  "departamento": "General Alvear"
+ },
+ {
+  "nombre": "Bella Vista",
+  "departamento": "Bella Vista"
+ },
+ {
+  "nombre": "Bonpland",
+  "departamento": "Paso de los Libres"
+ },
+ {
+  "nombre": "Carolina",
+  "departamento": "Goya"
+ },
+ {
+  "nombre": "Cazadores Correntinos",
+  "departamento": "Curuzú Cuatiá"
+ },
+ {
+  "nombre": "Cecilio Echavarría",
+  "departamento": "Lavalle"
+ },
+ {
+  "nombre": "Chavarrí­a",
+  "departamento": "San Roque"
+ },
+ {
+  "nombre": "Colonia Carlos Pellegrini",
+  "departamento": "San Martín"
+ },
+ {
+  "nombre": "Colonia Libertad",
+  "departamento": "Monte Caseros"
+ },
+ {
+  "nombre": "Colonia Liebig",
+  "departamento": "Ituzaingó"
+ },
+ {
+  "nombre": "Colonia Pando",
+  "departamento": "San Roque"
+ },
+ {
+  "nombre": "Concepción del Yaguareté Corá",
+  "departamento": "Concepción"
+ },
+ {
+  "nombre": "Coronel Desiderio Sosa",
+  "departamento": "Santo Tomé"
+ },
+ {
+  "nombre": "Corrientes",
+  "departamento": "Capital"
+ },
+ {
+  "nombre": "Cruz de los Milagros",
+  "departamento": "Lavalle"
+ },
+ {
+  "nombre": "Curuzú Cuatiá",
+  "departamento": "Curuzú Cuatiá"
+ },
+ {
+  "nombre": "El Caimán",
+  "departamento": "San Miguel"
+ },
+ {
+  "nombre": "El Sombrero",
+  "departamento": "Empedrado"
+ },
+ {
+  "nombre": "Empedrado",
+  "departamento": "Empedrado"
+ },
+ {
+  "nombre": "Esquina",
+  "departamento": "Esquina"
+ },
+ {
+  "nombre": "Estación Libertad",
+  "departamento": "Monte Caseros"
+ },
+ {
+  "nombre": "Estación Torrent",
+  "departamento": "General Alvear"
+ },
+ {
+  "nombre": "Felipe Yofré",
+  "departamento": "Mercedes"
+ },
+ {
+  "nombre": "Garaví",
+  "departamento": "Santo Tomé"
+ },
+ {
+  "nombre": "Garruchos",
+  "departamento": "Santo Tomé"
+ },
+ {
+  "nombre": "Gobernador Martínez",
+  "departamento": "Lavalle"
+ },
+ {
+  "nombre": "Gobernador Virasoro",
+  "departamento": "Santo Tomé"
+ },
+ {
+  "nombre": "Goya",
+  "departamento": "Goya"
+ },
+ {
+  "nombre": "Guaviraví",
+  "departamento": "San Martín"
+ },
+ {
+  "nombre": "Ingenio Primer Correntino",
+  "departamento": "San Cosme"
+ },
+ {
+  "nombre": "Itá Ibaté",
+  "departamento": "General Paz"
+ },
+ {
+  "nombre": "Itatí",
+  "departamento": "Itatí"
+ },
+ {
+  "nombre": "Ituzaingó",
+  "departamento": "Ituzaingó"
+ },
+ {
+  "nombre": "Juan Pujol",
+  "departamento": "Monte Caseros"
+ },
+ {
+  "nombre": "La Cruz",
+  "departamento": "San Martín"
+ },
+ {
+  "nombre": "Lavalle",
+  "departamento": "Lavalle"
+ },
+ {
+  "nombre": "Lomas de Vallejos",
+  "departamento": "General Paz"
+ },
+ {
+  "nombre": "Loreto",
+  "departamento": "San Miguel"
+ },
+ {
+  "nombre": "Los Flotadores",
+  "departamento": "Esquina"
+ },
+ {
+  "nombre": "Manuel Derqui",
+  "departamento": "Empedrado"
+ },
+ {
+  "nombre": "Mariano I. Loza (Est. Justino Solari)",
+  "departamento": "Mercedes"
+ },
+ {
+  "nombre": "Mburucuyá",
+  "departamento": "Mburucuyá"
+ },
+ {
+  "nombre": "Mercedes",
+  "departamento": "Mercedes"
+ },
+ {
+  "nombre": "Mocoretá",
+  "departamento": "Monte Caseros"
+ },
+ {
+  "nombre": "Monte Caseros",
+  "departamento": "Monte Caseros"
+ },
+ {
+  "nombre": "Nuestra Señora del Rosario de Caá Catí",
+  "departamento": "General Paz"
+ },
+ {
+  "nombre": "Pago de los Deseos",
+  "departamento": "Saladas"
+ },
+ {
+  "nombre": "Palmar Grande",
+  "departamento": "General Paz"
+ },
+ {
+  "nombre": "Parada Acuña",
+  "departamento": "Monte Caseros"
+ },
+ {
+  "nombre": "Parada Labougle",
+  "departamento": "Monte Caseros"
+ },
+ {
+  "nombre": "Parada Pucheta",
+  "departamento": "Paso de los Libres"
+ },
+ {
+  "nombre": "Paso de la Patria",
+  "departamento": "San Cosme"
+ },
+ {
+  "nombre": "Paso de los Libres",
+  "departamento": "Paso de los Libres"
+ },
+ {
+  "nombre": "Pedro R. Fernández (Est. Mantilla)",
+  "departamento": "San Roque"
+ },
+ {
+  "nombre": "Perugorría",
+  "departamento": "Curuzú Cuatiá"
+ },
+ {
+  "nombre": "Pueblo Libertador",
+  "departamento": "Esquina"
+ },
+ {
+  "nombre": "Puerto Valle",
+  "departamento": "Ituzaingó"
+ },
+ {
+  "nombre": "Ramada Paso",
+  "departamento": "Itatí"
+ },
+ {
+  "nombre": "Riachuelo",
+  "departamento": "Capital"
+ },
+ {
+  "nombre": "Rincón Ombú Chico",
+  "departamento": "Ituzaingó"
+ },
+ {
+  "nombre": "Saladas",
+  "departamento": "Saladas"
+ },
+ {
+  "nombre": "San Alonso",
+  "departamento": "Santo Tomé"
+ },
+ {
+  "nombre": "San Antonio",
+  "departamento": "Ituzaingó"
+ },
+ {
+  "nombre": "San Antonio de Itatí",
+  "departamento": "Berón de Astrada"
+ },
+ {
+  "nombre": "San Carlos",
+  "departamento": "Ituzaingó"
+ },
+ {
+  "nombre": "San Cayetano",
+  "departamento": "Capital"
+ },
+ {
+  "nombre": "San Cosme",
+  "departamento": "San Cosme"
+ },
+ {
+  "nombre": "San Isidro",
+  "departamento": "Empedrado"
+ },
+ {
+  "nombre": "San Lorenzo",
+  "departamento": "Saladas"
+ },
+ {
+  "nombre": "San Luis del Palmar",
+  "departamento": "San Luis del Palmar"
+ },
+ {
+  "nombre": "San Miguel",
+  "departamento": "San Miguel"
+ },
+ {
+  "nombre": "San Roque",
+  "departamento": "San Roque"
+ },
+ {
+  "nombre": "Santa Ana de los Guácaras",
+  "departamento": "Capital"
+ },
+ {
+  "nombre": "Santa Lucí­a",
+  "departamento": "Lavalle"
+ },
+ {
+  "nombre": "Santa Rosa",
+  "departamento": "Concepción"
+ },
+ {
+  "nombre": "Santo Tomé",
+  "departamento": "Santo Tomé"
+ },
+ {
+  "nombre": "Sauce",
+  "departamento": "Sauce"
+ },
+ {
+  "nombre": "Tabay",
+  "departamento": "Concepción"
+ },
+ {
+  "nombre": "Tapebicuá",
+  "departamento": "Paso de los Libres"
+ },
+ {
+  "nombre": "Tatacuá",
+  "departamento": "Concepción"
+ },
+ {
+  "nombre": "Tres de Abril",
+  "departamento": "Bella Vista"
+ },
+ {
+  "nombre": "Villa Córdoba",
+  "departamento": "Lavalle"
+ },
+ {
+  "nombre": "Villa Olivari",
+  "departamento": "Ituzaingó"
+ },
+ {
+  "nombre": "Yahapé",
+  "departamento": "Berón de Astrada"
+ },
+ {
+  "nombre": "Yapeyú",
+  "departamento": "San Martín"
+ },
+ {
+  "nombre": "Yatay Ti Calle",
+  "departamento": "Lavalle"
+ }
+]

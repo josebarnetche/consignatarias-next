@@ -4,13 +4,15 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { requireAdmin } from '@/lib/admin-auth'
 import { requireServiceClient } from '@/lib/supabase'
 import { getPreoferta } from '@/lib/data/preofertas'
+import { repPorLocalidad } from '@/lib/data/reggi-reps'
 
 export const metadata: Metadata = { title: 'Ofertas recibidas · Pre-oferta', robots: { index: false } }
 export const dynamic = 'force-dynamic'
 
 interface Bid {
   lote_rp: string; amount: number; bidder_name: string | null; bidder_cuit: string | null
-  bidder_phone: string | null; bidder_email: string; created_at: string; relayed_at: string | null
+  bidder_phone: string | null; bidder_email: string; bidder_localidad: string | null
+  created_at: string; relayed_at: string | null
 }
 
 const fmt = (n: number) => '$ ' + n.toLocaleString('es-AR')
@@ -35,7 +37,7 @@ export default async function AdminPreofertaPage({ params }: { params: Promise<{
   const service = requireServiceClient() as unknown as SupabaseClient
   const { data } = await service
     .from('preoferta_bids')
-    .select('lote_rp, amount, bidder_name, bidder_cuit, bidder_phone, bidder_email, created_at, relayed_at')
+    .select('lote_rp, amount, bidder_name, bidder_cuit, bidder_phone, bidder_email, bidder_localidad, created_at, relayed_at')
     .eq('remate_slug', p.slug)
     .order('created_at', { ascending: false })
   const bids = (data ?? []) as Bid[]
@@ -67,6 +69,7 @@ export default async function AdminPreofertaPage({ params }: { params: Promise<{
                 <th className="text-left py-2 px-3">Ofertante</th>
                 <th className="text-left py-2 px-3">CUIT</th>
                 <th className="text-left py-2 px-3">Contacto</th>
+                <th className="text-left py-2 px-3">Localidad · Rep sugerido</th>
                 <th className="text-left py-2 px-3">Cuándo</th>
               </tr>
             </thead>
@@ -86,6 +89,15 @@ export default async function AdminPreofertaPage({ params }: { params: Promise<{
                     <td className="py-2.5 px-3 text-zinc-400">
                       <div>{b.bidder_phone || '—'}</div>
                       <div className="text-xxs text-zinc-600">{b.bidder_email}</div>
+                    </td>
+                    <td className="py-2.5 px-3 text-zinc-400">
+                      <div className="text-zinc-300">{b.bidder_localidad || '—'}</div>
+                      {(() => {
+                        const r = b.bidder_localidad ? repPorLocalidad(b.bidder_localidad) : null
+                        return r
+                          ? <div className="text-xxs text-positive mt-0.5">{r.zona} · {r.reps.map((x) => `${x.nombre} ${x.tel}`).join(' · ')}</div>
+                          : <div className="text-xxs text-zinc-600">sin rep asignado</div>
+                      })()}
                     </td>
                     <td className="py-2.5 px-3 text-zinc-500 text-xxs tabular-nums">{new Date(b.created_at).toLocaleString('es-AR')}</td>
                   </tr>

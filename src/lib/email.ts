@@ -150,7 +150,7 @@ export async function sendClaimConfirmation(email: string, displayName: string, 
 export async function sendPreofertaAlert(opts: {
   remate: string; remateSlug: string; lote: string; loteRp: string; monto: number
   nombre: string; cuit: string; telefono: string; email: string; consignataria: string
-  elruralHref: string
+  elruralHref: string; localidad?: string | null; rep?: string | null
 }) {
   const resend = await getResend()
   if (!resend) return
@@ -168,8 +168,10 @@ export async function sendPreofertaAlert(opts: {
         <tr><td style="padding:4px 0;color:#71717a">Ofertante</td><td style="padding:4px 0;color:#fafafa"><strong>${e(opts.nombre)}</strong></td></tr>
         <tr><td style="padding:4px 0;color:#71717a">CUIT</td><td style="padding:4px 0;font-family:monospace">${e(opts.cuit)}</td></tr>
         <tr><td style="padding:4px 0;color:#71717a">Tel&eacute;fono</td><td style="padding:4px 0">${e(opts.telefono)}</td></tr>
+        ${opts.localidad ? `<tr><td style="padding:4px 0;color:#71717a">Localidad</td><td style="padding:4px 0">${e(opts.localidad)}</td></tr>` : ''}
         <tr><td style="padding:4px 0;color:#71717a">Email</td><td style="padding:4px 0">${e(opts.email)}</td></tr>
       </table>
+      ${opts.rep ? `<div style="margin:14px 0 0;padding:10px 12px;border:1px solid #14532d;background:#0b1f13;border-radius:8px"><span style="color:#4ade80;font-size:11px;text-transform:uppercase;letter-spacing:.1em">Rep de Reggi sugerido (por zona)</span><div style="color:#e4e4e7;font-size:13px;margin-top:3px">${e(opts.rep)}</div></div>` : ''}
       <p style="margin:18px 0 6px"><a href="${APP_URL}/admin/preoferta/${e(opts.remateSlug)}" style="color:#38bdf8">Ver en la consola &rarr;</a></p>
       <p style="margin:0 0 20px"><a href="${e(opts.elruralHref)}" style="color:#38bdf8">Cargar en elrural &rarr;</a></p>
       <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Flujo: CUIT &rarr; InfoExperto &rarr; cargar en elrural con tu user. El comprador queda nuestro.</p>

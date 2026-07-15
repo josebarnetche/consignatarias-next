@@ -4,6 +4,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Preoferta } from '@/lib/data/preofertas'
 import CondicionesRemate from '@/components/preoferta/CondicionesRemate'
 import PanelGenetico from '@/components/preoferta/PanelGenetico'
+import { localidadesCorrientes } from '@/lib/data/reggi-reps'
+
+const LOCALIDADES = localidadesCorrientes()
 
 /** Formatea un ISO a "vie 17-jul 14:00" (es-AR, corto). */
 function fmtFecha(iso: string): string {
@@ -219,6 +222,7 @@ function OfertaWidget({
   const [nombre, setNombre] = useState('')
   const [cuit, setCuit] = useState('')
   const [telefono, setTelefono] = useState('')
+  const [localidad, setLocalidad] = useState('')
   const [acepto, setAcepto] = useState(false)
   const [msg, setMsg] = useState<string | null>(null)
   const [ok, setOk] = useState(false)
@@ -234,7 +238,7 @@ function OfertaWidget({
     try {
       const r = await fetch('/api/preoferta/bid', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ remate: remateSlug, lote_rp: rp, amount: monto, nombre, cuit, telefono }),
+        body: JSON.stringify({ remate: remateSlug, lote_rp: rp, amount: monto, nombre, cuit, telefono, localidad }),
       })
       const j = await r.json()
       if (r.ok) { onNuevoValor(j.actual); setMonto(j.proximo); setOk(true); setMsg(`✓ Listo. ${consignataria} te contacta por este lote.`) }
@@ -289,6 +293,14 @@ function OfertaWidget({
               <input className={inputCls} placeholder="CUIT (11 dígitos)" inputMode="numeric" value={cuit} onChange={(e) => setCuit(e.target.value)} disabled={!abierta} />
               <input className={inputCls} placeholder="Teléfono de contacto" inputMode="tel" value={telefono} onChange={(e) => setTelefono(e.target.value)} disabled={!abierta} />
             </div>
+            <select
+              className={`${inputCls} mt-2 ${localidad ? 'text-zinc-100' : 'text-zinc-600'}`}
+              value={localidad} onChange={(e) => setLocalidad(e.target.value)} disabled={!abierta}
+              aria-label="Localidad (Corrientes)"
+            >
+              <option value="">¿Desde qué localidad consultás? (Corrientes)</option>
+              {LOCALIDADES.map((l) => <option key={l} value={l} className="text-zinc-100 bg-zinc-900">{l}</option>)}
+            </select>
             {/* Consentimiento de verificación de CUIT (obligatorio) */}
             <label className="flex items-start gap-2 mt-2.5 cursor-pointer text-xs text-zinc-300 leading-snug">
               <input type="checkbox" checked={acepto} onChange={(e) => setAcepto(e.target.checked)} disabled={!abierta} className="mt-0.5 h-4 w-4 accent-positive shrink-0" />
@@ -296,7 +308,7 @@ function OfertaWidget({
             </label>
             <button
               onClick={ofertar}
-              disabled={!abierta || busy || !acepto || monto < minimo || nombre.trim().length < 3 || !cuitOk || telefono.replace(/\D/g, '').length < 8}
+              disabled={!abierta || busy || !acepto || !localidad || monto < minimo || nombre.trim().length < 3 || !cuitOk || telefono.replace(/\D/g, '').length < 8}
               className="mt-2.5 w-full bg-negative hover:bg-red-700 disabled:opacity-40 text-white font-bold px-5 py-3.5 text-sm tracking-wide rounded-lg"
             >
               {busy ? 'Registrando…' : `CONFIRMAR PRE-OFERTA · LOTE ${lote} · ${fmt(monto)}`}
