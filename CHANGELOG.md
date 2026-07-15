@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.172.0] — 2026-07-15
+
+### Pre-oferta = SISTEMA (multi-remate) + observabilidad y notificación
+
+El Tigre fue el primero (cabaña cliente Memola + Reggi consignataria PRO); ahora es una capa reusable para cualquier remate/consignataria/cabaña.
+
+- **Generalización**: registry `preofertas.ts` (agregar un remate = un JSON + una línea). Ruta dinámica `/preoferta/[slug]`, API por `remate` slug, admin `/admin/preoferta/[slug]`, copy y fechas derivados de los datos (nada hardcodeado a una marca).
+- **Descubrimiento**: componente `PreofertasActivas` (pre-ofertas abiertas, clickeables) en **overview**, **landing** y nueva página **/preofertas**; entrada **"Pre-ofertas"** en el nav de Herramientas.
+- **Observabilidad admin**: **Admin → PRE-OFERTAS** (índice con conteo de ofertas por remate → consola por remate con ofertante/CUIT/monto + deep-link a elrural).
+- **Notificación**: cada pre-oferta dispara un email a **agro@memola.com.ar** (`sendPreofertaAlert`) con lote, monto, ofertante, CUIT, teléfono + links a la consola y al lote en elrural.
+- Scraper del espejo generalizado (itera todas las pre-ofertas abiertas del registry).
+
 ## [1.171.0] — 2026-07-15
 
 ### Espejo del libro de elrural en vivo — observabilidad total

@@ -1,7 +1,17 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { PreofertaData } from './page'
+import type { Preoferta } from '@/lib/data/preofertas'
+
+/** Formatea un ISO a "vie 17-jul 14:00" (es-AR, corto). */
+function fmtFecha(iso: string): string {
+  const d = new Date(iso)
+  const dias = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb']
+  const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
+  const hh = String(d.getHours()).padStart(2, '0')
+  const mm = String(d.getMinutes()).padStart(2, '0')
+  return `${dias[d.getDay()]} ${d.getDate()}-${meses[d.getMonth()]} ${hh}:${mm}`
+}
 
 const fmt = (n: number) => '$ ' + n.toLocaleString('es-AR')
 /** Precio por kilo — el lenguaje del ICP (piensa en $/kg, no en total). */
@@ -17,7 +27,7 @@ export default function PreofertaClient({
   userEmail,
   serverNow,
 }: {
-  remate: PreofertaData
+  remate: Preoferta
   valoresIniciales: Record<string, number>
   interes: Record<string, number>
   userEmail: string | null
@@ -38,7 +48,7 @@ export default function PreofertaClient({
   // refresco de valores cada 15s
   const refresh = useCallback(async () => {
     try {
-      const r = await fetch('/api/preoferta/bid', { cache: 'no-store' })
+      const r = await fetch(`/api/preoferta/bid?remate=${encodeURIComponent(remate.slug)}`, { cache: 'no-store' })
       if (r.ok) { const j = await r.json(); setValores(j.valores ?? {}) }
     } catch { /* noop */ }
   }, [])
@@ -75,12 +85,12 @@ export default function PreofertaClient({
       </div>
       <h1 className="text-2xl md:text-3xl font-heading text-zinc-100 leading-tight">{remate.remate}</h1>
       <p className="text-zinc-400 text-data mt-1">
-        {remate.consignataria} · {remate.lugar} · Remate 17-jul 14:00
+        {remate.consignataria} · {remate.lugar} · Remate {fmtFecha(remate.fecha)}
       </p>
       <p className="text-zinc-500 text-xs mt-1">
         {abierta
-          ? <>Cierra en <b className="text-zinc-200 tabular-nums">{dd}d {String(hh).padStart(2, '0')}h {String(mm).padStart(2, '0')}m</b> · jue 16-jul 20:00</>
-          : <>Cerró el jue 16-jul 20:00</>}
+          ? <>Cierra en <b className="text-zinc-200 tabular-nums">{dd}d {String(hh).padStart(2, '0')}h {String(mm).padStart(2, '0')}m</b> · {fmtFecha(remate.cierre_preoferta)}</>
+          : <>Cerró el {fmtFecha(remate.cierre_preoferta)}</>}
         {' · '}{remate.lotes.length} lotes con video
       </p>
       {(() => {
@@ -152,6 +162,8 @@ export default function PreofertaClient({
                 </div>
 
                 <OfertaWidget
+                  remateSlug={remate.slug}
+                  consignataria={remate.consignataria}
                   rp={lote.rp}
                   actual={valorDe(lote.rp)}
                   base={baseDe(lote.rp)}
@@ -199,9 +211,9 @@ export default function PreofertaClient({
 }
 
 function OfertaWidget({
-  rp, actual, base, tieneOfertas, abierta, userEmail, onNuevoValor,
+  remateSlug, consignataria, rp, actual, base, tieneOfertas, abierta, userEmail, onNuevoValor,
 }: {
-  rp: string; actual: number; base: number; tieneOfertas: boolean; abierta: boolean; userEmail: string | null;
+  remateSlug: string; consignataria: string; rp: string; actual: number; base: number; tieneOfertas: boolean; abierta: boolean; userEmail: string | null;
   onNuevoValor: (v: number) => void
 }) {
   const INC = 100_000
@@ -224,10 +236,10 @@ function OfertaWidget({
     try {
       const r = await fetch('/api/preoferta/bid', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lote_rp: rp, amount: monto, nombre, cuit, telefono }),
+        body: JSON.stringify({ remate: remateSlug, lote_rp: rp, amount: monto, nombre, cuit, telefono }),
       })
       const j = await r.json()
-      if (r.ok) { onNuevoValor(j.actual); setMonto(j.proximo); setOk(true); setMsg('✓ Listo. Reggi & Cía te contacta por este lote.') }
+      if (r.ok) { onNuevoValor(j.actual); setMonto(j.proximo); setOk(true); setMsg(`✓ Listo. ${consignataria} te contacta por este lote.`) }
       else if (j.needsAuth) setMsg('Ingresá para ofertar.')
       else { setMsg(j.error ?? 'No se pudo ofertar.'); if (j.actual) onNuevoValor(j.actual) }
     } catch { setMsg('Error de red.') }
@@ -260,7 +272,7 @@ function OfertaWidget({
       {userEmail ? (
         ok ? (
           <div className="mt-3 rounded-lg border border-positive/40 bg-positive/[0.07] p-3 text-sm text-zinc-200">
-            ✓ Interés registrado en <b className="font-mono">{fmt(actual)}</b>. <b>Reggi &amp; Cía</b> —consignataria del remate— te contacta por este lote. Podés marcar otro.
+            ✓ Interés registrado en <b className="font-mono">{fmt(actual)}</b>. <b>{consignataria}</b> —consignataria del remate— te contacta por este lote. Podés marcar otro.
           </div>
         ) : (
           <>
@@ -293,7 +305,7 @@ function OfertaWidget({
       </div>
       {userEmail && !ok && (
         <p className="text-zinc-600 text-xxs mt-1">
-          Te ponemos en contacto directo con Reggi &amp; Cía, la consignataria del remate. El precio es orientativo: la operación se cierra con ellos. Prueba interna.
+          Te ponemos en contacto directo con {consignataria}, la consignataria del remate. El precio es orientativo: la operación se cierra con ellos. Prueba interna.
         </p>
       )}
     </div>

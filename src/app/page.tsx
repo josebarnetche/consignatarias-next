@@ -21,6 +21,7 @@ import LiveHero from "@/components/landing/LiveHero";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import { CoverageMap } from "@/components/landing/CoverageMap";
 import SellZoneBadge from "@/components/SellZoneBadge";
+import PreofertasActivas from "@/components/PreofertasActivas";
 
 /* ================================================================== */
 /*  SVG ICONS                                                          */
@@ -399,6 +400,13 @@ export default async function LandingPage() {
               </a>
             </div>
           </div>
+        </section>
+
+        {/* ============================================================ */}
+        {/*  PRE-OFERTAS ABIERTAS — puente al remate                     */}
+        {/* ============================================================ */}
+        <section className="max-w-4xl mx-auto px-6 pt-6">
+          <PreofertasActivas />
         </section>
 
         {/* ============================================================ */}

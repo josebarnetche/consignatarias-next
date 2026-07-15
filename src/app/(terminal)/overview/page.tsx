@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import OverviewClient from './OverviewClient'
+import PreofertasActivas from '@/components/PreofertasActivas'
 import SinceLastVisit from '@/components/landing/SinceLastVisit'
 import { SectionBreadcrumbSchema, WebApplicationSchema } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
@@ -75,6 +76,9 @@ export default function OverviewPage() {
           'Estadísticas de mercado',
         ]}
       />
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 pt-4">
+        <PreofertasActivas />
+      </div>
       <OverviewClient />
     </>
   )

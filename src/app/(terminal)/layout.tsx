@@ -77,6 +77,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: "HERRAMIENTAS",
     match: "/calculadora",
     items: [
+      { label: "Pre-ofertas", href: "/preofertas", hint: "Pre-ofertá lotes de remates de cabaña · el puente al martillo", tag: "new" },
       { label: "Calculadora", href: "/calculadora", hint: "Neto en mano · ¿vendo ahora? · ahora gratis", tag: "new" },
       { label: "Comparar", href: "/comparar", hint: "Quién remata más seguido · gratis", tag: "new" },
       { label: "Mi Ganado", href: "/mi-ganado", hint: "Valor de tu rodeo · ahora gratis", tag: "new" },

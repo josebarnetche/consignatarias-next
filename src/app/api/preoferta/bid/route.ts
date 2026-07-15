@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase-server'
 import { requireServiceClient } from '@/lib/supabase'
-import preoferta from '@/lib/data/preoferta-el-tigre.json'
+import { getPreoferta, type Preoferta } from '@/lib/data/preofertas'
+import { sendPreofertaAlert } from '@/lib/email'
 
 // preoferta_bids no está en los tipos generados (tabla de prueba) → client sin tipar.
 const db = () => requireServiceClient() as unknown as SupabaseClient
@@ -11,24 +12,17 @@ export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 /**
- * Pre-oferta (PRUEBA interna). GET → valor actual por lote. POST → ofertar
- * (requiere sesión). Ofertas marcadas is_test=true: NO vinculantes.
+ * Pre-oferta (PRUEBA interna), multi-remate. Toma ?remate=<slug> (GET) o
+ * body.remate (POST). GET → valor actual por lote (espejo elrural). POST →
+ * ofertar (requiere sesión). Ofertas is_test=true: NO vinculantes.
  */
 
-const REMATE_SLUG = 'el-tigre'
 const INCREMENTO = 100_000
-const CIERRE = new Date(preoferta.cierre_preoferta as string).getTime()
-const LOTES = preoferta.lotes as Array<{ rp: string; base?: number }>
-const RPS = new Set(LOTES.map((l) => l.rp))
-/** Base real por lote (scrape elrural); fallback a la base global. */
-const baseFor = (rp: string) => LOTES.find((l) => l.rp === rp)?.base ?? (preoferta.base as number)
+const baseFor = (p: Preoferta, rp: string) => p.lotes.find((l) => l.rp === rp)?.base ?? p.base
+const cierreMs = (p: Preoferta) => new Date(p.cierre_preoferta).getTime()
 
-/** Valor actual (máxima oferta) por lote, o la base si no hubo ofertas. */
-async function currentByLote(): Promise<Record<string, number>> {
-  const { data } = await db()
-    .from('preoferta_bids')
-    .select('lote_rp, amount')
-    .eq('remate_slug', REMATE_SLUG)
+async function currentByLote(slug: string): Promise<Record<string, number>> {
+  const { data } = await db().from('preoferta_bids').select('lote_rp, amount').eq('remate_slug', slug)
   const max: Record<string, number> = {}
   for (const b of (data ?? []) as Array<{ lote_rp: string; amount: number }>) {
     if (!max[b.lote_rp] || b.amount > max[b.lote_rp]) max[b.lote_rp] = b.amount
@@ -36,53 +30,56 @@ async function currentByLote(): Promise<Record<string, number>> {
   return max
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const slug = req.nextUrl.searchParams.get('remate') ?? ''
+  const p = getPreoferta(slug)
+  if (!p) return NextResponse.json({ error: 'Remate inexistente.' }, { status: 404 })
   // "valor actual" = espejo del libro de elrural (no nuestras ofertas).
   const { data } = await db()
     .from('preoferta_mirror')
     .select('valores, scraped_at')
-    .eq('remate_slug', REMATE_SLUG)
+    .eq('remate_slug', p.slug)
     .maybeSingle()
   return NextResponse.json({
-    base: preoferta.base as number,
+    base: p.base,
     incremento: INCREMENTO,
-    cierra: preoferta.cierre_preoferta,
-    abierta: Date.now() < CIERRE,
+    cierra: p.cierre_preoferta,
+    abierta: Date.now() < cierreMs(p),
     valores: (data?.valores as Record<string, number>) ?? {},
     espejo_at: data?.scraped_at ?? null,
   })
 }
 
 export async function POST(req: NextRequest) {
+  // 0) input + remate
+  let body: { remate?: string; lote_rp?: string; amount?: number; nombre?: string; cuit?: string; telefono?: string }
+  try { body = await req.json() } catch { return NextResponse.json({ error: 'Body inválido.' }, { status: 400 }) }
+  const p = getPreoferta(String(body.remate ?? ''))
+  if (!p) return NextResponse.json({ error: 'Remate inexistente.' }, { status: 404 })
+
   // 1) sesión
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user?.email) {
-    return NextResponse.json({ error: 'Ingresá para ofertar.', needsAuth: true }, { status: 401 })
-  }
+  if (!user?.email) return NextResponse.json({ error: 'Ingresá para ofertar.', needsAuth: true }, { status: 401 })
 
-  // 2) preoferta abierta
-  if (Date.now() >= CIERRE) {
-    return NextResponse.json({ error: 'La pre-oferta está cerrada.' }, { status: 409 })
-  }
+  // 2) abierta
+  if (Date.now() >= cierreMs(p)) return NextResponse.json({ error: 'La pre-oferta está cerrada.' }, { status: 409 })
 
-  // 3) input
-  let body: { lote_rp?: string; amount?: number; nombre?: string; cuit?: string; telefono?: string }
-  try { body = await req.json() } catch { return NextResponse.json({ error: 'Body inválido.' }, { status: 400 }) }
+  // 3) validación
   const rp = String(body.lote_rp ?? '')
   const amount = Math.floor(Number(body.amount))
   const nombre = String(body.nombre ?? '').trim()
   const cuit = String(body.cuit ?? '').replace(/\D/g, '')
   const telefono = String(body.telefono ?? '').trim()
-  if (!RPS.has(rp)) return NextResponse.json({ error: 'Lote inexistente.' }, { status: 400 })
+  if (!p.lotes.some((l) => l.rp === rp)) return NextResponse.json({ error: 'Lote inexistente.' }, { status: 400 })
   if (!Number.isFinite(amount) || amount <= 0) return NextResponse.json({ error: 'Monto inválido.' }, { status: 400 })
   if (nombre.length < 3) return NextResponse.json({ error: 'Ingresá nombre y apellido (o razón social).' }, { status: 400 })
   if (cuit.length !== 11) return NextResponse.json({ error: 'CUIT inválido (11 dígitos) — lo necesitamos para el informe.' }, { status: 400 })
   if (telefono.replace(/\D/g, '').length < 8) return NextResponse.json({ error: 'Ingresá un teléfono de contacto.' }, { status: 400 })
 
   // 4) monto ≥ actual + incremento
-  const max = await currentByLote()
-  const b = baseFor(rp)
+  const max = await currentByLote(p.slug)
+  const b = baseFor(p, rp)
   const actual = max[rp] ?? b
   const minimo = (max[rp] ? actual + INCREMENTO : b)
   if (amount < minimo) {
@@ -91,7 +88,7 @@ export async function POST(req: NextRequest) {
 
   // 5) insertar (service-role; is_test=true por default)
   const { error } = await db().from('preoferta_bids').insert({
-    remate_slug: REMATE_SLUG,
+    remate_slug: p.slug,
     lote_rp: rp,
     amount,
     bidder_email: user.email,
@@ -100,6 +97,16 @@ export async function POST(req: NextRequest) {
     bidder_phone: telefono,
   })
   if (error) return NextResponse.json({ error: 'No se pudo registrar la oferta.' }, { status: 500 })
+
+  // 6) notificar (fire-and-forget) — agro@memola.com.ar
+  const lote = p.lotes.find((l) => l.rp === rp)
+  const elruralHref = lote?.elrural_id
+    ? `https://preofertas.elrural.com/lote/${lote.elrural_id}`
+    : (p.elrural_remate_id ? `https://preofertas.elrural.com/remate/${p.elrural_remate_id}` : '')
+  void sendPreofertaAlert({
+    remate: p.remate, remateSlug: p.slug, lote: lote?.lote ?? rp, loteRp: rp, monto: amount,
+    nombre, cuit, telefono, email: user.email, consignataria: p.consignataria, elruralHref,
+  })
 
   return NextResponse.json({ ok: true, lote_rp: rp, actual: amount, proximo: amount + INCREMENTO })
 }

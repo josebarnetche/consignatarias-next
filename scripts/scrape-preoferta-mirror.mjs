@@ -12,23 +12,20 @@
  * Env: NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY
  * Uso: node scripts/scrape-preoferta-mirror.mjs
  */
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
 
-const REMATE_SLUG = 'el-tigre'
 const BASE_URL = 'https://preofertas.elrural.com/lote/ajax'
 const UA = 'Mozilla/5.0 AppleWebKit/537.36 Chrome/120 Safari/537.36'
 const clean = (s) => (s || '').trim().replace(/^["']|["']$/g, '')
-
-const data = JSON.parse(readFileSync('src/lib/data/preoferta-el-tigre.json', 'utf8'))
-
-// Guarda de cierre — no correr pasado el cierre de la pre-oferta.
-if (Date.now() >= new Date(data.cierre_preoferta).getTime()) {
-  console.log('Pre-oferta cerrada — nada que espejar.')
-  process.exit(0)
-}
-
 const parseMonto = (s) => parseInt(String(s).replace(/[^\d]/g, ''), 10) || 0
+
+// Todas las pre-ofertas del registry (un JSON por remate) que sigan ABIERTAS.
+const DIR = 'src/lib/data'
+const PREOFERTAS = readdirSync(DIR)
+  .filter((f) => /^preoferta-.*\.json$/.test(f))
+  .map((f) => JSON.parse(readFileSync(`${DIR}/${f}`, 'utf8')))
+  .filter((p) => p.slug && p.cierre_preoferta && Date.now() < new Date(p.cierre_preoferta).getTime())
 
 async function valorActual(id) {
   try {
@@ -45,32 +42,34 @@ async function valorActual(id) {
 }
 
 async function main() {
-  const lotes = (data.lotes ?? []).filter((l) => l.elrural_id)
-  const valores = {}
-  let ok = 0
-  for (const l of lotes) {
-    const v = await valorActual(l.elrural_id)
-    if (v != null) { valores[l.rp] = v; ok++ }
-    await new Promise((res) => setTimeout(res, 120)) // gentil con elrural
-  }
-  console.log(`Espejo: ${ok}/${lotes.length} lotes con valor de elrural.`)
-
-  // Guarda: si no scrapeamos nada (p.ej. Cloudflare bloqueó la IP de CI), NO
-  // pisar el espejo existente con un objeto vacío.
-  if (ok === 0) {
-    console.error('0 lotes espejados — probable bloqueo de IP. No se actualiza (evita clobber).')
-    process.exit(1)
-  }
+  if (PREOFERTAS.length === 0) { console.log('No hay pre-ofertas abiertas — nada que espejar.'); return }
 
   const SUPABASE_URL = clean(process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL)
   const SERVICE_KEY = clean(process.env.SUPABASE_SERVICE_ROLE_KEY)
   if (!SUPABASE_URL || !SERVICE_KEY) { console.error('Faltan envs de Supabase.'); process.exit(1) }
   const supabase = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: false } })
-  const { error } = await supabase
-    .from('preoferta_mirror')
-    .upsert({ remate_slug: REMATE_SLUG, valores, scraped_at: new Date().toISOString() }, { onConflict: 'remate_slug' })
-  if (error) { console.error('Upsert falló:', error.message); process.exit(1) }
-  console.log('Espejo actualizado en preoferta_mirror.')
+
+  let algo = false
+  for (const p of PREOFERTAS) {
+    const lotes = (p.lotes ?? []).filter((l) => l.elrural_id)
+    const valores = {}
+    let ok = 0
+    for (const l of lotes) {
+      const v = await valorActual(l.elrural_id)
+      if (v != null) { valores[l.rp] = v; ok++ }
+      await new Promise((res) => setTimeout(res, 120)) // gentil con elrural
+    }
+    console.log(`[${p.slug}] Espejo: ${ok}/${lotes.length} lotes.`)
+    // Guarda: si no scrapeamos nada (Cloudflare bloqueó la IP), NO pisar con vacío.
+    if (ok === 0) { console.error(`[${p.slug}] 0 lotes — probable bloqueo de IP; no se actualiza.`); continue }
+    const { error } = await supabase
+      .from('preoferta_mirror')
+      .upsert({ remate_slug: p.slug, valores, scraped_at: new Date().toISOString() }, { onConflict: 'remate_slug' })
+    if (error) { console.error(`[${p.slug}] Upsert falló:`, error.message); continue }
+    algo = true
+  }
+  if (!algo) process.exit(1) // ninguna se pudo espejar (todas bloqueadas)
+  console.log('Espejo actualizado.')
 }
 
 main().catch((e) => { console.error(e.message); process.exit(1) })
