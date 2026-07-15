@@ -1,12 +1,13 @@
 name: Espejo pre-oferta El Tigre (elrural)
 
 # Espeja el VALOR ACTUAL del libro de elrural → Supabase (preoferta_mirror).
-# Ventana corta: la pre-oferta cierra jue 16-jul 20:00 ART; el script se auto-
-# desactiva pasado el cierre (guarda interna), así que este cron puede quedar
-# hasta que se borre el workflow. GitHub cron es best-effort (puede atrasar).
+#
+# ⚠️ NO en schedule: elrural está detrás de Cloudflare y bloquea las IP de
+# datacenter de GitHub Actions (probado: 0/71 lotes desde CI). Igual que el
+# NEA (ver local-nea-fetch.mjs), este scrape debe correr desde una IP
+# RESIDENCIAL AR — localmente (cron/launchd en la Mac) durante la ventana de
+# pre-oferta. El script tiene guarda: si scrapea 0, no pisa el espejo.
 on:
-  schedule:
-    - cron: '*/10 * * * *'   # cada 10 min
   workflow_dispatch:
 
 jobs:
