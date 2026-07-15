@@ -31,16 +31,18 @@ export default async function PreofertaPage({ params }: { params: Promise<{ slug
     .select('valores')
     .eq('remate_slug', preoferta.slug)
     .maybeSingle()
-  const valores = ((mirror?.valores as Record<string, number>) ?? {})
+  const valores: Record<string, number> = { ...((mirror?.valores as Record<string, number>) ?? {}) }
 
-  // Interés = nuestras señales (leads) por lote.
+  // Nuestras ofertas: cuentan como interés (leads) Y elevan el valor actual —
+  // el valor mostrado = máx(libro elrural, nuestra mejor oferta).
   const { data } = await service
     .from('preoferta_bids')
-    .select('lote_rp')
+    .select('lote_rp, amount')
     .eq('remate_slug', preoferta.slug)
   const interes: Record<string, number> = {}
-  for (const b of (data ?? []) as Array<{ lote_rp: string }>) {
+  for (const b of (data ?? []) as Array<{ lote_rp: string; amount: number }>) {
     interes[b.lote_rp] = (interes[b.lote_rp] ?? 0) + 1
+    if (!valores[b.lote_rp] || b.amount > valores[b.lote_rp]) valores[b.lote_rp] = b.amount
   }
 
   return (

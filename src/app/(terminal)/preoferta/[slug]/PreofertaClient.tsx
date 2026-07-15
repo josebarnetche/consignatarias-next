@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Preoferta } from '@/lib/data/preofertas'
+import CondicionesRemate from '@/components/preoferta/CondicionesRemate'
 
 /** Formatea un ISO a "vie 17-jul 14:00" (es-AR, corto). */
 function fmtFecha(iso: string): string {
@@ -14,11 +15,6 @@ function fmtFecha(iso: string): string {
 }
 
 const fmt = (n: number) => '$ ' + n.toLocaleString('es-AR')
-/** Precio por kilo — el lenguaje del ICP (piensa en $/kg, no en total). */
-const porKilo = (monto: number, peso?: string) => {
-  const p = peso ? parseInt(peso.replace(/\D/g, ''), 10) : 0
-  return p > 0 ? '$ ' + Math.round(monto / p).toLocaleString('es-AR') + '/kg' : null
-}
 
 export default function PreofertaClient({
   remate,
@@ -134,22 +130,13 @@ export default function PreofertaClient({
                   </p>
                 )}
 
-                {/* ── $/kilo (lenguaje del ICP) + argumento genético + observabilidad ── */}
-                <div className="mt-3 grid sm:grid-cols-[auto_1fr] gap-3 items-center">
-                  {porKilo(valorDe(lote.rp), lote.peso) && (
-                    <div className="rounded-lg border border-terminal-border bg-black/30 px-3.5 py-2 text-center shrink-0">
-                      <div className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">Queda a</div>
-                      <div className="font-mono font-bold text-xl text-zinc-100 tabular-nums leading-none">{porKilo(valorDe(lote.rp), lote.peso)}</div>
-                      <div className="text-xxs text-zinc-600">sobre {lote.peso} kg</div>
-                    </div>
-                  )}
-                  <p className="text-sm text-zinc-300 leading-snug">
-                    No comprás kilos: comprás la genética que <b className="text-zinc-100">se los pone a tu rodeo</b>.
-                    {lote.ce && parseFloat(String(lote.ce).replace(',', '.')) >= 34
-                      ? <> C.E. <b className="text-zinc-100">{lote.ce} cm</b> → alta fertilidad, más terneros por servicio.</>
-                      : null}
-                  </p>
-                </div>
+                {/* ── Argumento genético (valor total, no $/kg) ── */}
+                <p className="mt-3 text-sm text-zinc-300 leading-snug">
+                  Comprás un <b className="text-zinc-100">reproductor seleccionado</b> — la genética que le pone kilos y fertilidad a tu rodeo.
+                  {lote.ce && parseFloat(String(lote.ce).replace(',', '.')) >= 34
+                    ? <> C.E. <b className="text-zinc-100">{lote.ce} cm</b> → alta fertilidad, más terneros por servicio.</>
+                    : null}
+                </p>
 
                 {/* Observabilidad — demanda medida por lote */}
                 <div className="mt-2 flex items-center gap-2 text-xxs">
@@ -161,16 +148,20 @@ export default function PreofertaClient({
                   </span>
                 </div>
 
+                <CondicionesRemate remate={remate} />
+
                 <OfertaWidget
                   remateSlug={remate.slug}
                   consignataria={remate.consignataria}
+                  cabana={remate.cabana}
+                  lote={lote.lote}
                   rp={lote.rp}
                   actual={valorDe(lote.rp)}
                   base={baseDe(lote.rp)}
                   tieneOfertas={valores[lote.rp] != null}
                   abierta={abierta}
                   userEmail={userEmail}
-                  onNuevoValor={() => { /* el valor actual lo manda el espejo de elrural, no nuestra oferta */ }}
+                  onNuevoValor={(v) => setValores((s) => ({ ...s, [lote.rp]: Math.max(v, s[lote.rp] ?? 0) }))}
                 />
               </div>
             </div>
@@ -194,7 +185,7 @@ export default function PreofertaClient({
                   <div className="min-w-0">
                     <div className="text-zinc-200 text-sm font-semibold truncate">Lote {l.lote} · RP {l.rp}</div>
                     <div className="text-positive text-xs font-mono tabular-nums">
-                      {porKilo(valorDe(l.rp), l.peso) ?? fmt(valorDe(l.rp))}
+                      {fmt(valorDe(l.rp))}
                     </div>
                     <div className="text-zinc-600 text-xxs">
                       {(interes[l.rp] ?? 0) > 0 ? `${interes[l.rp]} interesado${interes[l.rp] === 1 ? '' : 's'}` : `Corral ${l.corral}`}
@@ -211,9 +202,9 @@ export default function PreofertaClient({
 }
 
 function OfertaWidget({
-  remateSlug, consignataria, rp, actual, base, tieneOfertas, abierta, userEmail, onNuevoValor,
+  remateSlug, consignataria, cabana, lote, rp, actual, base, tieneOfertas, abierta, userEmail, onNuevoValor,
 }: {
-  remateSlug: string; consignataria: string; rp: string; actual: number; base: number; tieneOfertas: boolean; abierta: boolean; userEmail: string | null;
+  remateSlug: string; consignataria: string; cabana: string; lote: string; rp: string; actual: number; base: number; tieneOfertas: boolean; abierta: boolean; userEmail: string | null;
   onNuevoValor: (v: number) => void
 }) {
   const INC = 100_000
@@ -222,6 +213,7 @@ function OfertaWidget({
   const [nombre, setNombre] = useState('')
   const [cuit, setCuit] = useState('')
   const [telefono, setTelefono] = useState('')
+  const [acepto, setAcepto] = useState(false)
   const [msg, setMsg] = useState<string | null>(null)
   const [ok, setOk] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -252,9 +244,10 @@ function OfertaWidget({
     <div className="mt-4">
       {/* Valor actual + monto */}
       <div className="flex flex-col sm:flex-row rounded-lg overflow-hidden border border-terminal-border">
-        <div className="bg-positive text-black px-4 py-3 flex flex-col justify-center sm:min-w-[170px]">
-          <span className="text-xxs font-terminal font-bold tracking-widest opacity-80">VALOR ACTUAL · libro elrural</span>
+        <div className="bg-positive text-black px-4 py-3 flex flex-col justify-center sm:min-w-[180px]">
+          <span className="text-xxs font-terminal font-bold tracking-widest opacity-80">VALOR DE COMPRA</span>
           <span className="font-mono font-extrabold text-2xl leading-none tabular-nums whitespace-nowrap">{fmt(actual)}</span>
+          <span className="text-[10px] opacity-70 mt-0.5">+ IVA · valor total del reproductor</span>
         </div>
         <div className="bg-black/30 px-3 py-2.5 flex-1 flex items-center gap-2">
           <button disabled={!abierta} onClick={() => setMonto((m) => Math.max(minimo, m - INC))} className="w-9 h-9 rounded border border-terminal-border text-zinc-300 font-bold disabled:opacity-40" aria-label="Bajar $100.000">«</button>
@@ -272,42 +265,49 @@ function OfertaWidget({
       {userEmail ? (
         ok ? (
           <div className="mt-3 rounded-lg border border-positive/40 bg-positive/[0.07] p-3 text-sm text-zinc-200">
-            ✓ Interés registrado en <b className="font-mono">{fmt(actual)}</b>. <b>{consignataria}</b> —consignataria del remate— te contacta por este lote. Podés marcar otro.
+            <div className="font-terminal text-xxs uppercase tracking-widest text-positive mb-1">Pre-oferta registrada</div>
+            Pre-oferta de <b className="font-mono">{fmt(actual)}</b> por el Lote {lote}. Un asesor de <b>{consignataria}</b> te va a contactar para <b>validar tu CUIT</b>. Recién ahí queda firme.
           </div>
         ) : (
           <>
-            {/* Identidad del ofertante (para representarlo + informe) */}
-            <div className="grid sm:grid-cols-3 gap-2 mt-3">
+            {/* Gravedad: estás COMPRANDO un toro por internet */}
+            <div className="mt-3 rounded-lg border border-amber-500/40 bg-amber-400/[0.07] px-3.5 py-2.5">
+              <div className="text-xxs font-terminal uppercase tracking-widest text-amber-200 mb-1">Estás por pre-ofertar por un toro</div>
+              <p className="text-xs text-amber-100/80 leading-snug">
+                Lote {lote} · {cabana}. Una pre-oferta es una manifestación seria de interés sobre un <b className="text-amber-100">reproductor registrado</b>. No es una compra en un clic: es el primer paso de una operación ganadera que se cierra con {consignataria}.
+              </p>
+            </div>
+            {/* Identidad del ofertante (para verificar el CUIT) */}
+            <div className="grid sm:grid-cols-3 gap-2 mt-2.5">
               <input className={inputCls} placeholder="Nombre y apellido / razón social" value={nombre} onChange={(e) => setNombre(e.target.value)} disabled={!abierta} />
               <input className={inputCls} placeholder="CUIT (11 dígitos)" inputMode="numeric" value={cuit} onChange={(e) => setCuit(e.target.value)} disabled={!abierta} />
               <input className={inputCls} placeholder="Teléfono de contacto" inputMode="tel" value={telefono} onChange={(e) => setTelefono(e.target.value)} disabled={!abierta} />
             </div>
+            {/* Consentimiento de verificación de CUIT (obligatorio) */}
+            <label className="flex items-start gap-2 mt-2.5 cursor-pointer text-xs text-zinc-300 leading-snug">
+              <input type="checkbox" checked={acepto} onChange={(e) => setAcepto(e.target.checked)} disabled={!abierta} className="mt-0.5 h-4 w-4 accent-positive shrink-0" />
+              <span>Entiendo y acepto que {cabana} / {consignataria} me contacten para <b className="text-zinc-100">verificar mi relación con el CUIT ingresado</b>, y que recién una vez validada mi identidad podremos avanzar con la pre-oferta.</span>
+            </label>
             <button
               onClick={ofertar}
-              disabled={!abierta || busy || monto < minimo || nombre.trim().length < 3 || !cuitOk || telefono.replace(/\D/g, '').length < 8}
-              className="mt-2 w-full bg-negative hover:bg-red-700 disabled:opacity-50 text-white font-bold px-5 py-3 text-sm tracking-wide rounded-lg"
+              disabled={!abierta || busy || !acepto || monto < minimo || nombre.trim().length < 3 || !cuitOk || telefono.replace(/\D/g, '').length < 8}
+              className="mt-2.5 w-full bg-negative hover:bg-red-700 disabled:opacity-40 text-white font-bold px-5 py-3.5 text-sm tracking-wide rounded-lg"
             >
-              {busy ? 'Registrando…' : 'QUE ME CONTACTE REGGI POR ESTE LOTE →'}
+              {busy ? 'Registrando…' : `CONFIRMAR PRE-OFERTA · LOTE ${lote} · ${fmt(monto)}`}
             </button>
+            <p className="text-zinc-600 text-xxs mt-1.5 text-center">Te vamos a llamar para validar tu CUIT antes de registrar la pre-oferta.</p>
           </>
         )
       ) : (
         <a href="/cuenta" className="mt-3 block bg-negative hover:bg-red-700 text-white font-bold px-5 py-3 text-sm tracking-wide rounded-lg text-center">
-          INGRESÁ PARA OFERTAR
+          INGRESÁ PARA PRE-OFERTAR
         </a>
       )}
 
       <div className="flex items-center justify-between mt-1.5 text-xxs gap-2">
-        <span className="text-zinc-500">
-          Precio orientativo · base <b className="text-zinc-300 font-mono">{fmt(base)}</b>
-        </span>
+        <span className="text-zinc-500">Base del lote: <b className="text-zinc-300 font-mono">{fmt(base)}</b></span>
         {msg && !ok && <span className="text-amber-300 text-right">{msg}</span>}
       </div>
-      {userEmail && !ok && (
-        <p className="text-zinc-600 text-xxs mt-1">
-          Te ponemos en contacto directo con {consignataria}, la consignataria del remate. El precio es orientativo: la operación se cierra con ellos. Prueba interna.
-        </p>
-      )}
     </div>
   )
 }

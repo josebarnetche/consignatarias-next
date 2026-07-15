@@ -39,6 +39,13 @@ export interface Preoferta {
   base: number
   cierre_preoferta: string // ISO
   fuente_precios?: string
+  veterinario?: string
+  flete_gratis?: boolean
+  condiciones?: {
+    sanidad: string[]
+    garantia: { plazo: string; cubre: string; no_cubre: string; exclusion: string }
+    financiacion: string
+  }
   lotes: PreofertaLote[]
 }
 

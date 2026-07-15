@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.173.0] — 2026-07-15
+
+### Ficha de pre-oferta = dossier de activo genético (no e-commerce)
+
+Rediseño con criterio (agente revisó el catálogo). "Estás comprando un toro por internet", no un kilo de carne:
+
+- **Fuera $/kilo** (se sentía caro) → **VALOR DE COMPRA** total del reproductor "+ IVA".
+- **La oferta modifica el valor**: valor mostrado = máx(libro elrural, nuestra mejor oferta); ofertar sube el número.
+- **Dossier de condiciones** (`CondicionesRemate`, fiel al catálogo): franja de confianza (sellos), **sanidad** (6 controles + veterinario M.V. Raúl Roldán), **garantía** de cabaña 90 días (qué cubre / qué no + exclusión textual de los 10 días), **financiación** (flete gratis firme; condiciones a confirmar — no se inventó nada).
+- **Gravedad + consentimiento**: banner "Estás por pre-ofertar por un toro" + **checkbox obligatorio** de verificación de CUIT ("acepto que me contacten para verificar mi relación con el CUIT ingresado…"), CTA "CONFIRMAR PRE-OFERTA · LOTE X", post-envío "un asesor te contacta para validar tu CUIT".
+- Argumento genético reforzado (reproductor seleccionado; C.E. → fertilidad). Condiciones cargadas al registry (por remate).
+
 ## [1.172.0] — 2026-07-15
 
 ### Pre-oferta = SISTEMA (multi-remate) + observabilidad y notificación

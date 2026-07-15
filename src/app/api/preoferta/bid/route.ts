@@ -34,18 +34,23 @@ export async function GET(req: NextRequest) {
   const slug = req.nextUrl.searchParams.get('remate') ?? ''
   const p = getPreoferta(slug)
   if (!p) return NextResponse.json({ error: 'Remate inexistente.' }, { status: 404 })
-  // "valor actual" = espejo del libro de elrural (no nuestras ofertas).
+  // "valor actual" = máx(libro elrural, nuestras ofertas).
   const { data } = await db()
     .from('preoferta_mirror')
     .select('valores, scraped_at')
     .eq('remate_slug', p.slug)
     .maybeSingle()
+  const valores: Record<string, number> = { ...((data?.valores as Record<string, number>) ?? {}) }
+  const nuestras = await currentByLote(p.slug)
+  for (const [rp, v] of Object.entries(nuestras)) {
+    if (!valores[rp] || v > valores[rp]) valores[rp] = v
+  }
   return NextResponse.json({
     base: p.base,
     incremento: INCREMENTO,
     cierra: p.cierre_preoferta,
     abierta: Date.now() < cierreMs(p),
-    valores: (data?.valores as Record<string, number>) ?? {},
+    valores,
     espejo_at: data?.scraped_at ?? null,
   })
 }

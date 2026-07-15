@@ -784,5 +784,24 @@
    "lote": "51"
   }
  ],
- "fuente_precios": "elrural.com/remate/603 (scrape)"
+ "fuente_precios": "elrural.com/remate/603 (scrape)",
+ "veterinario": "M.V. Raúl Roldán",
+ "flete_gratis": true,
+ "condiciones": {
+  "sanidad": [
+   "Libres de Brucelosis y Tuberculosis",
+   "Toros libres de Trichomoniasis, vacunados contra Campylobacteriosis",
+   "Aptitud genital completa · libres de anomalías genitales",
+   "Vacunados contra Aftosa y Carbunclo",
+   "Nacidos y criados en zona de Mio Mio",
+   "Inmunizados contra Babesiosis y Anaplasmosis (5 aplicaciones de sangre, INTA Mercedes)"
+  ],
+  "garantia": {
+   "plazo": "90 días desde la fecha de venta (Reglamento Soc. Rural de Mercedes)",
+   "cubre": "Tristeza (Babesiosis/Anaplasmosis) confirmada por observación microscópica: si el animal muere, devolución del importe + comisiones y gastos, o reemplazo por otro reproductor. Si se recupera con tratamiento, el vendedor cubre los gastos.",
+   "no_cubre": "Si no se confirma por microscopía, el vendedor queda exento. El incumplimiento de los requisitos de reclamo invalida la garantía.",
+   "exclusion": "La cabaña no aceptará ningún reclamo relacionado con la aptitud genital, análisis de brucelosis, tuberculosis, babesiosis y tricomoniasis a posteriori de los diez días de retirados los toros de la Sociedad Rural."
+  },
+  "financiacion": "Importante financiación disponible · flete bonificado (gratis). Condiciones a confirmar con la consignataria."
+ }
 }
