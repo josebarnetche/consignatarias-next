@@ -1,16 +1,11 @@
 {
   "inmag": {
-    "current": 4346.06,
-    "prev": 4141.85,
-    "change": 4.9,
+    "current": 4297.36,
+    "prev": 4346.06,
+    "change": -1.1,
     "unit": "$/kg vivo",
     "source": "mercadoagroganadero.com.ar",
     "series": [
-      {
-        "date": "2024-01-05",
-        "value": 1327.99,
-        "volume": 11734
-      },
       {
         "date": "2024-01-09",
         "value": 1345.18,
@@ -1830,69 +1825,74 @@
         "date": "2026-07-14",
         "value": 4346.06,
         "volume": 9187
+      },
+      {
+        "date": "2026-07-15",
+        "value": 4297.36,
+        "volume": 6694
       }
     ],
-    "latestVolume": 9187,
-    "periodVolume": 170280
+    "latestVolume": 6694,
+    "periodVolume": 169988
   },
   "categories": {
     "novillos": {
-      "current": 4346,
+      "current": 4346.6,
       "prev": 4346,
       "change": 0,
-      "source": "MAG (derived from INMAG)",
+      "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1189
+      "latestVolume": 1860
     },
     "novillitos": {
-      "current": 4129,
+      "current": 4711.69,
       "prev": 4129,
-      "change": 0,
-      "source": "MAG (derived from INMAG)",
+      "change": 14.1,
+      "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 807
+      "latestVolume": 1379
     },
     "vaquillonas": {
-      "current": 3911,
+      "current": 4494.2,
       "prev": 3911,
-      "change": 0,
-      "source": "MAG (derived from INMAG)",
+      "change": 14.9,
+      "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1122
+      "latestVolume": 2684
     },
     "vacas": {
-      "current": 3129,
+      "current": 2762.27,
       "prev": 3129,
-      "change": 0,
-      "source": "MAG (derived from INMAG)",
-      "latestVolume": 1941
+      "change": -11.7,
+      "source": "mercadoagroganadero.com.ar (observed)",
+      "latestVolume": 2818
     },
     "toros": {
-      "current": 2825,
+      "current": 2796.12,
       "prev": 2825,
-      "change": 0,
-      "source": "MAG (derived from INMAG)",
+      "change": -1,
+      "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 171
+      "latestVolume": 183
     },
     "terneros": {
-      "current": 4781,
+      "current": 4727,
       "prev": 4781,
-      "change": 0,
+      "change": -1.1,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
     "current": 223.3,
-    "prev": 225.5,
-    "change": -1,
+    "prev": 223.3,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1520,
+    "current": 1530,
     "prev": 1520,
-    "change": 0,
+    "change": 0.7,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
@@ -1903,184 +1903,178 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-07-14",
+  "lastUpdate": "2026-07-15",
   "provinceEntry": {
-    "date": "2026-07-14",
-    "totalCabezas": 9187,
+    "date": "2026-07-15",
+    "totalCabezas": 6694,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 7124,
-        "total": 7138,
-        "percentage": 77.7
-      },
-      {
-        "province": "CORDOBA",
-        "enPie": 573,
-        "total": 574,
-        "percentage": 6.25
+        "enPie": 5801,
+        "total": 5814,
+        "percentage": 86.85
       },
       {
         "province": "LA PAMPA",
-        "enPie": 558,
-        "total": 558,
-        "percentage": 6.07
+        "enPie": 450,
+        "total": 450,
+        "percentage": 6.72
       },
       {
-        "province": "ENTRE RIOS",
-        "enPie": 434,
-        "total": 434,
-        "percentage": 4.72
+        "province": "CORDOBA",
+        "enPie": 165,
+        "total": 165,
+        "percentage": 2.46
       },
       {
         "province": "SANTA FE",
-        "enPie": 430,
-        "total": 430,
-        "percentage": 4.68
+        "enPie": 139,
+        "total": 139,
+        "percentage": 2.08
       },
       {
-        "province": "SAN LUIS",
-        "enPie": 53,
-        "total": 53,
-        "percentage": 0.58
+        "province": "ENTRE RIOS",
+        "enPie": 126,
+        "total": 126,
+        "percentage": 1.88
       }
     ]
   },
   "detailedCategories": {
-    "date": "2026-07-14",
+    "date": "2026-07-15",
     "categories": [
       {
         "category": "NOVILLOS Esp.Joven + 430",
-        "minPrice": 3600,
-        "maxPrice": 4800,
-        "avgPrice": 4408.83,
-        "cabezas": 1610
+        "minPrice": 3300,
+        "maxPrice": 4750,
+        "avgPrice": 4395.96,
+        "cabezas": 1015
       },
       {
         "category": "NOVILLOS Regular h 430",
-        "minPrice": 4400,
-        "maxPrice": 4500,
-        "avgPrice": 4428.77,
-        "cabezas": 40
-      },
-      {
-        "category": "NOVILLOS Regular + 430",
         "minPrice": 3500,
-        "maxPrice": 4500,
-        "avgPrice": 3867.65,
-        "cabezas": 210
-      },
-      {
-        "category": "NOVILLITOS Esp. h 390",
-        "minPrice": 2700,
-        "maxPrice": 5450,
-        "avgPrice": 4971.63,
-        "cabezas": 803
-      },
-      {
-        "category": "NOVILLITOS Esp. + 390",
-        "minPrice": 3800,
-        "maxPrice": 5050,
-        "avgPrice": 4438.93,
-        "cabezas": 534
-      },
-      {
-        "category": "NOVILLITOS Regular",
-        "minPrice": 3200,
         "maxPrice": 4100,
-        "avgPrice": 3671.86,
+        "avgPrice": 3719.78,
         "cabezas": 42
       },
       {
-        "category": "VAQUILLONAS Esp. h 390",
-        "minPrice": 3400,
+        "category": "NOVILLOS Regular + 430",
+        "minPrice": 3000,
+        "maxPrice": 4600,
+        "avgPrice": 3850.61,
+        "cabezas": 173
+      },
+      {
+        "category": "NOVILLITOS Esp. h 390",
+        "minPrice": 3500,
         "maxPrice": 5400,
-        "avgPrice": 4853.32,
-        "cabezas": 1817
+        "avgPrice": 4719.4,
+        "cabezas": 454
+      },
+      {
+        "category": "NOVILLITOS Esp. + 390",
+        "minPrice": 3500,
+        "maxPrice": 5000,
+        "avgPrice": 4391.7,
+        "cabezas": 438
+      },
+      {
+        "category": "NOVILLITOS Regular",
+        "minPrice": 3800,
+        "maxPrice": 4800,
+        "avgPrice": 4012.99,
+        "cabezas": 112
+      },
+      {
+        "category": "VAQUILLONAS Esp. h 390",
+        "minPrice": 3450,
+        "maxPrice": 5400,
+        "avgPrice": 4697.28,
+        "cabezas": 827
       },
       {
         "category": "VAQUILLONAS Esp. + 390",
-        "minPrice": 2600,
-        "maxPrice": 4900,
-        "avgPrice": 3985.19,
-        "cabezas": 519
+        "minPrice": 2500,
+        "maxPrice": 4760,
+        "avgPrice": 4063.4,
+        "cabezas": 393
       },
       {
         "category": "VAQUILLONAS Regular",
-        "minPrice": 2300,
-        "maxPrice": 4900,
-        "avgPrice": 3692.12,
-        "cabezas": 348
+        "minPrice": 4100,
+        "maxPrice": 4700,
+        "avgPrice": 4171.55,
+        "cabezas": 144
       },
       {
         "category": "VACAS Esp.Joven h 430",
-        "minPrice": 1800,
-        "maxPrice": 3250,
-        "avgPrice": 2781.43,
-        "cabezas": 86
+        "minPrice": 1750,
+        "maxPrice": 3500,
+        "avgPrice": 2814.86,
+        "cabezas": 141
       },
       {
         "category": "VACAS Esp.Joven + 430",
         "minPrice": 2200,
-        "maxPrice": 4000,
-        "avgPrice": 3181.59,
-        "cabezas": 958
+        "maxPrice": 4020,
+        "avgPrice": 3138.76,
+        "cabezas": 630
       },
       {
         "category": "VACAS Regular",
-        "minPrice": 1800,
-        "maxPrice": 3500,
-        "avgPrice": 2594.1,
-        "cabezas": 1290
+        "minPrice": 2000,
+        "maxPrice": 3600,
+        "avgPrice": 2605.52,
+        "cabezas": 1656
       },
       {
         "category": "VACAS Conserva Buena",
-        "minPrice": 1700,
-        "maxPrice": 3500,
-        "avgPrice": 2326.54,
-        "cabezas": 415
+        "minPrice": 1750,
+        "maxPrice": 2700,
+        "avgPrice": 2219.93,
+        "cabezas": 304
       },
       {
         "category": "VACAS Conserva Inferior",
-        "minPrice": 1800,
-        "maxPrice": 2520,
-        "avgPrice": 1979.43,
-        "cabezas": 69
+        "minPrice": 1700,
+        "maxPrice": 4300,
+        "avgPrice": 1947.07,
+        "cabezas": 105
       },
       {
         "category": "TOROS Esp.",
-        "minPrice": 3000,
-        "maxPrice": 3400,
-        "avgPrice": 3048.2,
-        "cabezas": 82
+        "minPrice": 2050,
+        "maxPrice": 3800,
+        "avgPrice": 2841.71,
+        "cabezas": 148
       },
       {
         "category": "TOROS Regular",
-        "minPrice": 2400,
-        "maxPrice": 3200,
-        "avgPrice": 2560.92,
-        "cabezas": 102
+        "minPrice": 1900,
+        "maxPrice": 3400,
+        "avgPrice": 2689.37,
+        "cabezas": 137
       },
       {
         "category": "MEJ Esp. h 430",
-        "minPrice": 3000,
+        "minPrice": 3700,
         "maxPrice": 5000,
-        "avgPrice": 3812.62,
-        "cabezas": 87
+        "avgPrice": 4162.96,
+        "cabezas": 77
       },
       {
         "category": "MEJ Regular",
         "minPrice": 2600,
-        "maxPrice": 3600,
-        "avgPrice": 2979.05,
-        "cabezas": 15
+        "maxPrice": 4300,
+        "avgPrice": 3254.29,
+        "cabezas": 18
       },
       {
         "category": "Totales",
         "minPrice": 0,
         "maxPrice": 0,
-        "avgPrice": 3829.62,
-        "cabezas": 9027
+        "avgPrice": 3542.15,
+        "cabezas": 6814
       }
     ]
   },
@@ -2409,11 +2403,11 @@
     ]
   },
   "arrendamientoOficial": {
-    "date": "2026-07-14",
-    "index": 4354.708,
+    "date": "2026-07-15",
+    "index": 4308.572,
     "periodStart": "2026-07-07",
-    "periodEnd": "2026-07-14",
-    "periodIndex": 4282.185,
+    "periodEnd": "2026-07-15",
+    "periodIndex": 4287.518,
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   }
 }
