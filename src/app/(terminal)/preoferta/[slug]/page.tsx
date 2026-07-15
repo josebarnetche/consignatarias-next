@@ -14,10 +14,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title: p ? `Pre-oferta · ${p.remate}` : 'Pre-oferta', robots: { index: false, follow: false } }
 }
 
-export default async function PreofertaPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function PreofertaPage({
+  params, searchParams,
+}: {
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ lote?: string }>
+}) {
   const { slug } = await params
+  const { lote } = await searchParams
   const preoferta = getPreoferta(slug)
   if (!preoferta) notFound()
+  const initialLote = preoferta.lotes.some((l) => l.rp === lote) ? lote! : (preoferta.lotes[0]?.rp ?? null)
 
   // sesión (para ofertar)
   const supabase = await createClient()
@@ -52,6 +59,7 @@ export default async function PreofertaPage({ params }: { params: Promise<{ slug
       interes={interes}
       userEmail={user?.email ?? null}
       serverNow={Date.now()}
+      initialLote={initialLote}
     />
   )
 }

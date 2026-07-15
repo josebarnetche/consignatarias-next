@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.176.0] — 2026-07-15
+
+### Promo → vidriera informativa de lotes (menos vendedor)
+
+Reemplaza el banner de video único por una **vidriera**: flyer oficial del 34° remate + los **lotes de mejor valor** (los de pedigree con EPD) con su **mini-video de YouTube** (embed limpio, sin controles ni íconos, autoplay muteado/loop), los **datos del toro** (nombre, RP, peso, P.D./C.E.) y su **valor**, con botón **Pre-ofertar** que **deep-linkea a ese lote** (?lote=RP → la ficha abre en ese toro). Tono informativo. Auto-oculta al cerrar la pre-oferta.
+
 ## [1.175.0] — 2026-07-15
 
 ### Banner promo del Remate El Tigre (temporal, video autoreproducible)

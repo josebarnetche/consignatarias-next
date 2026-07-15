@@ -1,56 +1,80 @@
 import Link from 'next/link'
 import { getPreoferta } from '@/lib/data/preofertas'
 
-/* Banner promocional TEMPORAL del 34° Remate Cabaña El Tigre. Estilo premium
-   (no terminal): bordó de marca + atardecer, video autoreproducible (muteado,
-   loop), mobile-first. Se auto-oculta cuando cierra la pre-oferta. */
+/* Vidriera informativa del 34° Remate Cabaña El Tigre: flyer oficial + los lotes
+   de mejor valor (pedigree, con EPD) con su mini-video (YouTube limpio, sin
+   controles), los datos del toro, el valor del lote y acceso directo a pre-ofertar.
+   Tono informativo, no vendedor. Se auto-oculta al cerrar la pre-oferta. */
+
+const fmt = (n: number) => '$ ' + n.toLocaleString('es-AR')
+const ytSrc = (id: string) =>
+  `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&modestbranding=1&playsinline=1&rel=0&disablekb=1&fs=0`
 
 export default function PromoEltigreBanner() {
   const p = getPreoferta('el-tigre')
   if (!p || Date.now() >= new Date(p.cierre_preoferta).getTime()) return null
 
-  return (
-    <Link
-      href="/preoferta/el-tigre"
-      aria-label="Comprá toros en el 34° Remate Cabaña El Tigre"
-      className="group block overflow-hidden rounded-2xl no-underline"
-      style={{ background: 'linear-gradient(120deg,#4a1420 0%,#6d1a2e 45%,#8a2540 100%)' }}
-    >
-      <div className="flex flex-col sm:flex-row items-stretch">
-        {/* Video vertical (autoplay muteado) */}
-        <div className="relative sm:w-[150px] shrink-0 bg-black/30">
-          <video
-            className="w-full h-[210px] sm:h-full object-cover"
-            autoPlay muted loop playsInline preload="metadata"
-            poster="/promo/eltigre-preoferta.jpg"
-          >
-            <source src="/promo/eltigre-preoferta.mp4" type="video/mp4" />
-          </video>
-        </div>
+  // "mejores valores" = los toros de pedigree (traen EPD), hasta 4.
+  const destacados = p.lotes.filter((l) => l.epd && l.video).slice(0, 4)
+  if (destacados.length === 0) return null
 
-        {/* Copy + CTA */}
-        <div className="flex-1 p-4 sm:p-5 flex flex-col justify-center text-white">
-          <div className="inline-flex items-center gap-1.5 self-start rounded-full px-2.5 py-0.5 mb-2"
-            style={{ background: 'rgba(212,162,78,.18)', border: '1px solid rgba(212,162,78,.5)' }}>
-            <span className="h-1.5 w-1.5 rounded-full bg-[#e7c37a] animate-pulse" />
-            <span className="text-[11px] font-semibold tracking-wider" style={{ color: '#e7c37a' }}>PRE-OFERTA ABIERTA</span>
+  return (
+    <section aria-label={`Lotes destacados — ${p.remate}`}
+      className="rounded-2xl border border-terminal-border overflow-hidden"
+      style={{ background: 'linear-gradient(180deg,rgba(109,26,46,.12),transparent 60%)' }}>
+      {/* Cabecera informativa: flyer + datos del remate */}
+      <div className="flex items-center gap-3 p-3 sm:p-4 border-b border-terminal-border/60">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/promo/flyer-eltigre.jpg" alt="Flyer 34° Remate Cabaña El Tigre"
+          className="w-[52px] sm:w-[64px] rounded-md border border-terminal-border shrink-0" loading="lazy" />
+        <div className="min-w-0">
+          <div className="text-zinc-100 font-medium leading-snug">34° Remate Anual · Cabaña El Tigre</div>
+          <div className="text-zinc-400 text-xs mt-0.5">
+            70 toros · vie 17-jul · Soc. Rural de Mercedes · Reggi &amp; Cía
           </div>
-          <h3 className="font-serif text-[22px] sm:text-[26px] leading-tight" style={{ fontFamily: 'Georgia,serif' }}>
-            El próximo padre de tu rodeo
-          </h3>
-          <p className="text-[13.5px] mt-1" style={{ color: 'rgba(255,255,255,.82)' }}>
-            <b>70 toros</b> seleccionados — Braford · Brangus · P. Hereford. 34° Remate Anual <b>Cabaña El Tigre</b>,
-            viernes 17 de julio en Soc. Rural de Mercedes. Flete gratis.
-          </p>
-          <div className="flex items-center gap-3 mt-3 flex-wrap">
-            <span className="inline-flex items-center rounded-lg px-4 py-2 text-sm font-bold text-[#4a1420] transition-transform group-hover:translate-x-0.5"
-              style={{ background: 'linear-gradient(180deg,#f0d49a,#d4a24e)' }}>
-              Ver los toros y pre-ofertar &rarr;
-            </span>
-            <span className="text-[11px]" style={{ color: 'rgba(255,255,255,.6)' }}>Pre-oferta cierra jue 16-jul 20:00</span>
+          <div className="text-xxs font-terminal uppercase tracking-wider text-positive mt-1 inline-flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-positive animate-pulse" /> Pre-oferta abierta · cierra jue 16-jul 20:00
           </div>
         </div>
+        <Link href="/preoferta/el-tigre" className="ml-auto hidden sm:inline-block text-xxs font-terminal uppercase tracking-wider text-accent hover:text-accent-bright shrink-0">
+          Ver los 86 lotes &rarr;
+        </Link>
       </div>
-    </Link>
+
+      {/* Vidriera: lotes de mejor valor con su mini-video */}
+      <div className="flex gap-3 p-3 sm:p-4 overflow-x-auto">
+        {destacados.map((l) => {
+          const valor = l.base ?? p.base
+          const pd = l.epd!.pd.v
+          const ce = l.epd!.ce.v
+          return (
+            <div key={l.rp} className="shrink-0 w-[210px] rounded-xl border border-terminal-border bg-black/30 overflow-hidden flex flex-col">
+              <div className="relative bg-black" style={{ aspectRatio: '16 / 9' }}>
+                <iframe
+                  src={ytSrc(l.video)} title={l.nombre ?? `Lote ${l.lote}`}
+                  className="absolute inset-0 w-full h-full pointer-events-none"
+                  allow="autoplay; encrypted-media" loading="lazy" tabIndex={-1}
+                />
+              </div>
+              <div className="p-2.5 flex-1 flex flex-col">
+                <div className="text-zinc-100 text-sm font-semibold leading-tight truncate">{l.nombre ?? `Lote ${l.lote}`}</div>
+                <div className="text-zinc-500 text-xxs mt-0.5">Lote {l.lote} · RP {l.rp}{l.peso ? ` · ${l.peso} kg` : ''}</div>
+                <div className="flex flex-wrap gap-1.5 mt-1.5">
+                  {pd > 0 && <span className="text-xxs font-terminal text-zinc-300 border border-terminal-border rounded px-1.5 py-0.5">P.D. +{String(pd).replace('.', ',')}</span>}
+                  <span className="text-xxs font-terminal text-zinc-300 border border-terminal-border rounded px-1.5 py-0.5">C.E. {String(ce).replace('.', ',')}</span>
+                </div>
+                <div className="mt-auto pt-2">
+                  <div className="text-positive font-mono font-bold tabular-nums text-sm">{fmt(valor)}</div>
+                  <Link href={`/preoferta/el-tigre?lote=${l.rp}`}
+                    className="mt-1.5 block text-center rounded-lg bg-negative hover:bg-red-700 text-white text-xxs font-bold uppercase tracking-wider py-2">
+                    Pre-ofertar &rarr;
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </section>
   )
 }
