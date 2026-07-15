@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.164.0] — 2026-07-15
+
+### Bucket B: 9 consignatarias nuevas al directorio (fichas 95 → 104)
+
+Firmas que ya remataban (aparecían en `remates.json`) pero no tenían ficha. Verificadas por web-research (nombre legal, provincia, que sean consignatarias reales) antes de curar:
+
+- **9 fichas nuevas**: Hugo R. Aristegui y Cía. SRL (Cacharí, BA) · ATREU-CO Coop. Agropecuaria Ltda. (Macachín, LP) · Bermejo y Cía. SRL (Salliqueló, BA) · Casa Lago SA (Gral. La Madrid, BA) · Fraccarolli y Ronconi SRL (Urdinarrain, ER) · La Alianza Coop. Agrícola Ganadera Ltda. (Pigüé, BA) · Pedro y Raúl Alonso Ganados SA (Tandil, BA) · Remates Agropecuarios CIASA SA (San Carlos de Bolívar, BA) · Soc. Coop. Agrícola Ganadera Ltda. (Gral. San Martín, LP).
+- **Duplicado detectado y fusionado**: "Talano Hnos." era la misma firma que la ficha existente `talano-hermanos` → mergeado en allSlugs, no duplicado (lo cazó el chequeo de colisiones).
+- Orphans de remates: 15 → **5**. Restan 5 casos que requieren tu criterio: `alfredo-cavanagh` (representante de Sáenz Valiente Bullrich, no firma propia), `campos-bajos-srl` y `cyg-n-hacienda` (sin evidencia sólida / artefacto), `santillan` y `a-saenz-cia-s-a` (ambiguos).
+
 ## [1.163.1] — 2026-07-14
 
 ### Bucket C: nombres con dígito-artefacto normalizados

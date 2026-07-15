@@ -11,7 +11,7 @@ export interface ConsignatariaProfile {
 }
 
 /* ------------------------------------------------------------------ */
-/*  PROFILE REGISTRY  (95 unique entities — THE canonical public count;
+/*  PROFILE REGISTRY  (104 unique entities — THE canonical public count;
     getAllProfiles().length feeds landing, /consignatarias, header & /stats)  */
 /* ------------------------------------------------------------------ */
 
@@ -99,7 +99,7 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'esteban-abelenda', displayName: 'Esteban Abelenda SA', allSlugs: ['esteban-abelenda', 'esteban-abelenda-s-a', 'esteban-i-abelenda-s-a'] },
   { canonicalSlug: 'de-la-serna', displayName: 'Jorge y Martín de la Serna SRL', allSlugs: ['de-la-serna', 'jorge-y-martin-de-la-serna-s-r-l', 'jorge-y-martin-de-la-serna'] },
   { canonicalSlug: 'duhalde', displayName: 'Duhalde y Cía. SRL', allSlugs: ['duhalde', 'duhalde-y-cia-s-r-l'] },
-  { canonicalSlug: 'talano-hermanos', displayName: 'Talano Hermanos SRL', allSlugs: ['talano-hermanos', 'talano-hermanos-s-r-l'] },
+  { canonicalSlug: 'talano-hermanos', displayName: 'Talano Hermanos SRL', allSlugs: ['talano-hermanos', 'talano-hermanos-s-r-l', 'talano-hnos', 'talano-hnos-s-a'] },
 
   // Curated 2026-05-25 — real consignatarias that had remates but no profile
   // (were rendering as synthesized/uncurated). Now indexable. The 2 junk
@@ -120,6 +120,17 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'goenaga', displayName: 'Goenaga', allSlugs: ['goenaga'] },
   { canonicalSlug: 'consignataria-vittori', displayName: 'Consignataria Vittori', allSlugs: ['consignataria-vittori', 'vittori'] },
   { canonicalSlug: 'koerner', displayName: 'Koerner', allSlugs: ['koerner', 'adolfo-s-koerner-y-cia-s-a'] },
+  // Lote 2026-07: firmas que ya rematan (aparecían en remates.json sin ficha) —
+  // nombre/provincia verificados por web-research antes de curar.
+  { canonicalSlug: 'aristegui', displayName: 'Hugo R. Aristegui y Cía. SRL', allSlugs: ['aristegui'] },
+  { canonicalSlug: 'atreuco', displayName: 'ATREU-CO Cooperativa Agropecuaria Ltda.', allSlugs: ['atreuco'] },
+  { canonicalSlug: 'bermejo-y-cia', displayName: 'Bermejo y Cía. SRL', allSlugs: ['bermejo-y-cia', 'bermejo-y-cia-s-r-l'] },
+  { canonicalSlug: 'casalago', displayName: 'Casa Lago SA', allSlugs: ['casalago', 'casa-lago', 'casa-lago-s-a'] },
+  { canonicalSlug: 'fraccarolli-y-ronconi', displayName: 'Fraccarolli y Ronconi SRL', allSlugs: ['fraccarolli-y-ronconi', 'fraccarolli-y-ronconi-s-r-l'] },
+  { canonicalSlug: 'la-alianza-coop', displayName: 'La Alianza Coop. Agrícola Ganadera Ltda.', allSlugs: ['la-alianza-coop', 'la-alianza-cooperativa-agricola-ganadera-ltda'] },
+  { canonicalSlug: 'pedro-y-raul-alonso', displayName: 'Pedro y Raúl Alonso Ganados SA', allSlugs: ['pedro-y-raul-alonso', 'pedro-y-raul-alonso-ganados-s-a'] },
+  { canonicalSlug: 'remates-agropecuarios-ciasa', displayName: 'Remates Agropecuarios CIASA SA', allSlugs: ['remates-agropecuarios-ciasa', 'remates-agropecuarios-ciasa-s-a'] },
+  { canonicalSlug: 'coop-agricola-ganadera-san-martin', displayName: 'Soc. Coop. Agrícola Ganadera Ltda. (Gral. San Martín)', allSlugs: ['coop-agricola-ganadera-san-martin', 'sociedad-agricola-ganadera-ltda'] },
 ]
 
 /* ------------------------------------------------------------------ */
