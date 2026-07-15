@@ -36,11 +36,11 @@ export default function PromoEltigreBanner() {
             <span className="text-[11px] font-semibold tracking-wider" style={{ color: '#e7c37a' }}>PRE-OFERTA ABIERTA</span>
           </div>
           <h3 className="font-serif text-[22px] sm:text-[26px] leading-tight" style={{ fontFamily: 'Georgia,serif' }}>
-            Comprá tu toro por internet
+            El próximo padre de tu rodeo
           </h3>
           <p className="text-[13.5px] mt-1" style={{ color: 'rgba(255,255,255,.82)' }}>
-            <b>70 toros</b> Braford · Brangus · P. Hereford — 34° Remate Anual <b>Cabaña El Tigre</b>.
-            Viernes 17 de julio, Soc. Rural de Mercedes. Flete gratis.
+            <b>70 toros</b> seleccionados — Braford · Brangus · P. Hereford. 34° Remate Anual <b>Cabaña El Tigre</b>,
+            viernes 17 de julio en Soc. Rural de Mercedes. Flete gratis.
           </p>
           <div className="flex items-center gap-3 mt-3 flex-wrap">
             <span className="inline-flex items-center rounded-lg px-4 py-2 text-sm font-bold text-[#4a1420] transition-transform group-hover:translate-x-0.5"
