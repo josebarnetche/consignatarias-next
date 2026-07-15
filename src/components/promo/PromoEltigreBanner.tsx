@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getPreoferta } from '@/lib/data/preofertas'
+import CorrientesSilueta from '@/components/marca/CorrientesSilueta'
 
 /* Vidriera informativa del 34° Remate Cabaña El Tigre: flyer oficial + los lotes
    de mejor valor (pedigree, con EPD) con su mini-video (YouTube limpio, sin
@@ -34,9 +35,17 @@ export default function PromoEltigreBanner() {
             <span className="h-1.5 w-1.5 rounded-full bg-positive animate-pulse" /> Pre-oferta abierta · cierra jue 16-jul 20:00
           </div>
         </div>
-        <Link href="/preoferta/el-tigre" className="ml-auto hidden sm:inline-block text-xxs font-terminal uppercase tracking-wider text-accent hover:text-accent-bright shrink-0">
-          Ver los 86 lotes &rarr;
-        </Link>
+        {/* Sello: silueta real de Corrientes + Toros Correntinos */}
+        <div className="ml-auto flex items-center gap-2.5 shrink-0 pl-2 border-l border-terminal-border/60">
+          <CorrientesSilueta className="w-8 h-8 sm:w-9 sm:h-9 text-accent/80" />
+          <div className="leading-none">
+            <div className="text-[9px] font-terminal uppercase tracking-[0.18em] text-zinc-500">Toros</div>
+            <div className="text-sm sm:text-base font-semibold text-zinc-100 tracking-tight">Correntinos</div>
+            <Link href="/preoferta/el-tigre" className="hidden sm:inline-block mt-0.5 text-[10px] font-terminal uppercase tracking-wider text-accent hover:text-accent-bright">
+              Ver los 86 lotes &rarr;
+            </Link>
+          </div>
+        </div>
       </div>
 
       {/* Vidriera: lotes de mejor valor con su mini-video */}

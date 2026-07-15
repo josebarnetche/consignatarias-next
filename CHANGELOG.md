@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.178.1] — 2026-07-15
+
+### Sello "Toros Correntinos" con la silueta real de Corrientes
+
+En la cabecera del cuadrito promocional del 34° Remate El Tigre, a la derecha, un sello con el **trazado real de la provincia de Corrientes** (Natural Earth 10m simplificado a 68 puntos, `CorrientesSilueta`) + "Toros Correntinos". Anclaje geográfico del ICP.
+
 ## [1.178.0] — 2026-07-15
 
 ### Tasas de financiación por canal bancario — el gap descubrible (MOAT)
