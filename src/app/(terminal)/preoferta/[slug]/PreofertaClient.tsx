@@ -85,6 +85,7 @@ export default function PreofertaClient({
       <h1 className="text-2xl md:text-3xl font-heading text-zinc-100 leading-tight">{remate.remate}</h1>
       <p className="text-zinc-400 text-data mt-1">
         {remate.consignataria} · {remate.lugar} · Remate {fmtFecha(remate.fecha)}
+        {remate.martillero ? <><br /><span className="text-zinc-500 text-xs">Martillero: {remate.martillero}</span></> : null}
       </p>
       <p className="text-zinc-500 text-xs mt-1">
         {abierta

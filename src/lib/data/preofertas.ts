@@ -50,6 +50,7 @@ export interface Preoferta {
   cierre_preoferta: string // ISO
   fuente_precios?: string
   veterinario?: string
+  martillero?: string
   flete_gratis?: boolean
   condiciones?: {
     sanidad: string[]
