@@ -37,13 +37,19 @@ async function currentByLote(): Promise<Record<string, number>> {
 }
 
 export async function GET() {
-  const max = await currentByLote()
+  // "valor actual" = espejo del libro de elrural (no nuestras ofertas).
+  const { data } = await db()
+    .from('preoferta_mirror')
+    .select('valores, scraped_at')
+    .eq('remate_slug', REMATE_SLUG)
+    .maybeSingle()
   return NextResponse.json({
     base: preoferta.base as number,
     incremento: INCREMENTO,
     cierra: preoferta.cierre_preoferta,
     abierta: Date.now() < CIERRE,
-    valores: max,
+    valores: (data?.valores as Record<string, number>) ?? {},
+    espejo_at: data?.scraped_at ?? null,
   })
 }
 

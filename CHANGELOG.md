@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.171.0] — 2026-07-15
+
+### Espejo del libro de elrural en vivo — observabilidad total
+
+Consignatarias se vuelve la **ventana de observabilidad del libro de elrural** (no un libro paralelo): mostramos el valor actual REAL de cada lote, subiendo, en $/kilo, con la genética al lado.
+
+- **Endpoint descubierto**: `GET preofertas.elrural.com/lote/<id>/ofertas` (público, JSON) → historial de ofertas por lote; el valor actual es la mayor.
+- **`scripts/scrape-preoferta-mirror.mjs`** + cron **`preoferta-mirror.yml`** (cada 10 min): espeja el valor actual de los 86 lotes → tabla `preoferta_mirror` (jsonb). Auto-noop pasado el cierre.
+- La página usa el **espejo de elrural** como "valor actual" (etiqueta "libro elrural"); nuestras ofertas son la señal de **interés/leads**, no el libro. Sembrado inicial (todo en base, 0 ofertas aún).
+
 ## [1.170.0] — 2026-07-15
 
 ### Precios base REALES por lote (scrape de elrural) — Pulga no nos da datos

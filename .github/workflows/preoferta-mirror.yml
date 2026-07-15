@@ -1,0 +1,26 @@
+name: Espejo pre-oferta El Tigre (elrural)
+
+# Espeja el VALOR ACTUAL del libro de elrural → Supabase (preoferta_mirror).
+# Ventana corta: la pre-oferta cierra jue 16-jul 20:00 ART; el script se auto-
+# desactiva pasado el cierre (guarda interna), así que este cron puede quedar
+# hasta que se borre el workflow. GitHub cron es best-effort (puede atrasar).
+on:
+  schedule:
+    - cron: '*/10 * * * *'   # cada 10 min
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install deps
+        run: npm install --legacy-peer-deps
+      - name: Espejar valor actual de elrural
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/scrape-preoferta-mirror.mjs

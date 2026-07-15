@@ -158,7 +158,7 @@ export default function PreofertaClient({
                   tieneOfertas={valores[lote.rp] != null}
                   abierta={abierta}
                   userEmail={userEmail}
-                  onNuevoValor={(v) => setValores((s) => ({ ...s, [lote.rp]: v }))}
+                  onNuevoValor={() => { /* el valor actual lo manda el espejo de elrural, no nuestra oferta */ }}
                 />
               </div>
             </div>
@@ -241,7 +241,7 @@ function OfertaWidget({
       {/* Valor actual + monto */}
       <div className="flex flex-col sm:flex-row rounded-lg overflow-hidden border border-terminal-border">
         <div className="bg-positive text-black px-4 py-3 flex flex-col justify-center sm:min-w-[170px]">
-          <span className="text-xxs font-terminal font-bold tracking-widest opacity-80">VALOR ACTUAL</span>
+          <span className="text-xxs font-terminal font-bold tracking-widest opacity-80">VALOR ACTUAL · libro elrural</span>
           <span className="font-mono font-extrabold text-2xl leading-none tabular-nums whitespace-nowrap">{fmt(actual)}</span>
         </div>
         <div className="bg-black/30 px-3 py-2.5 flex-1 flex items-center gap-2">

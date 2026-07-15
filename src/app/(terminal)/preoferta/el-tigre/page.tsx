@@ -19,14 +19,21 @@ export default async function PreofertaElTigrePage() {
 
   // valor actual por lote (máx oferta) — service role
   const service = requireServiceClient() as unknown as SupabaseClient
+  // "Valor actual" = espejo del libro de elrural (lo actualiza el cron scrape-preoferta-mirror).
+  const { data: mirror } = await service
+    .from('preoferta_mirror')
+    .select('valores')
+    .eq('remate_slug', 'el-tigre')
+    .maybeSingle()
+  const valores = ((mirror?.valores as Record<string, number>) ?? {})
+
+  // Interés = nuestras propias señales (leads), por lote.
   const { data } = await service
     .from('preoferta_bids')
-    .select('lote_rp, amount')
+    .select('lote_rp')
     .eq('remate_slug', 'el-tigre')
-  const valores: Record<string, number> = {}
-  const interes: Record<string, number> = {}   // observabilidad: interesados por lote
-  for (const b of (data ?? []) as Array<{ lote_rp: string; amount: number }>) {
-    if (!valores[b.lote_rp] || b.amount > valores[b.lote_rp]) valores[b.lote_rp] = b.amount
+  const interes: Record<string, number> = {}
+  for (const b of (data ?? []) as Array<{ lote_rp: string }>) {
     interes[b.lote_rp] = (interes[b.lote_rp] ?? 0) + 1
   }
 
