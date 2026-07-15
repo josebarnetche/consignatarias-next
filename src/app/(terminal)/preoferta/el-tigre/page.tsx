@@ -24,14 +24,17 @@ export default async function PreofertaElTigrePage() {
     .select('lote_rp, amount')
     .eq('remate_slug', 'el-tigre')
   const valores: Record<string, number> = {}
+  const interes: Record<string, number> = {}   // observabilidad: interesados por lote
   for (const b of (data ?? []) as Array<{ lote_rp: string; amount: number }>) {
     if (!valores[b.lote_rp] || b.amount > valores[b.lote_rp]) valores[b.lote_rp] = b.amount
+    interes[b.lote_rp] = (interes[b.lote_rp] ?? 0) + 1
   }
 
   return (
     <PreofertaClient
       remate={preoferta as unknown as PreofertaData}
       valoresIniciales={valores}
+      interes={interes}
       userEmail={user?.email ?? null}
       serverNow={Date.now()}
     />

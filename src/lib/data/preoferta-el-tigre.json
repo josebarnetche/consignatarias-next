@@ -94,13 +94,15 @@
    "rp": "10439",
    "corral": "5",
    "video": "vLQoW0cWMzE",
-   "lote": "5A"
+   "lote": "5A",
+   "peso": "735"
   },
   {
    "rp": "13449",
    "corral": "5",
    "video": "A_eMYj1HQKg",
-   "lote": "5B"
+   "lote": "5B",
+   "peso": "670"
   },
   {
    "rp": "13503",
@@ -112,415 +114,484 @@
    "rp": "13507",
    "corral": "6",
    "video": "xNNCU_viLXw",
-   "lote": "6B"
+   "lote": "6B",
+   "peso": "705"
   },
   {
    "rp": "13463",
    "corral": "7",
    "video": "ZceAfVi0Tbk",
-   "lote": "7A"
+   "lote": "7A",
+   "peso": "625"
   },
   {
    "rp": "13553",
    "corral": "7",
    "video": "Nx-WY__LsJc",
-   "lote": "7B"
+   "lote": "7B",
+   "peso": "640"
   },
   {
    "rp": "13525",
    "corral": "8",
    "video": "V9axFNt5Frg",
-   "lote": "8A"
+   "lote": "8A",
+   "peso": "625"
   },
   {
    "rp": "13555",
    "corral": "8",
    "video": "zY6IOLRdWug",
-   "lote": "8B"
+   "lote": "8B",
+   "peso": "685"
   },
   {
    "rp": "13441",
    "corral": "9",
    "video": "XyjZvtfpT1Y",
-   "lote": "9A"
+   "lote": "9A",
+   "peso": "635"
   },
   {
    "rp": "13515",
    "corral": "9",
    "video": "HuMXv1iSUag",
-   "lote": "9B"
+   "lote": "9B",
+   "peso": "625"
   },
   {
    "rp": "13477",
    "corral": "10",
    "video": "nTSyF80csnI",
-   "lote": "10A"
+   "lote": "10A",
+   "peso": "625"
   },
   {
    "rp": "13491",
    "corral": "10",
    "video": "uuYFJ4-kxu0",
-   "lote": "10B"
+   "lote": "10B",
+   "peso": "625"
   },
   {
    "rp": "0409",
    "corral": "11",
    "video": "fM6UtBz2K94",
-   "lote": "11A"
+   "lote": "11A",
+   "peso": "600"
   },
   {
    "rp": "13423",
    "corral": "11",
    "video": "Z4n_Lch4WM4",
-   "lote": "11B"
+   "lote": "11B",
+   "peso": "610"
   },
   {
    "rp": "13395",
    "corral": "12",
    "video": "QmeD5YhgEzs",
-   "lote": "12A"
+   "lote": "12A",
+   "peso": "645"
   },
   {
    "rp": "13461",
    "corral": "12",
    "video": "HvMlnCuFn0Q",
-   "lote": "12B"
+   "lote": "12B",
+   "peso": "635"
   },
   {
    "rp": "13413",
    "corral": "13",
    "video": "EVIk3PL1g5o",
-   "lote": "13A"
+   "lote": "13A",
+   "peso": "625"
   },
   {
    "rp": "13469",
    "corral": "13",
    "video": "-QXoQndCkPM",
-   "lote": "13B"
+   "lote": "13B",
+   "peso": "610"
   },
   {
    "rp": "13471",
    "corral": "14",
    "video": "-cbxZwZAW5A",
-   "lote": "14A"
+   "lote": "14A",
+   "peso": "600"
   },
   {
    "rp": "13533",
    "corral": "14",
    "video": "LeeX8IvCKrc",
-   "lote": "14B"
+   "lote": "14B",
+   "peso": "655"
   },
   {
    "rp": "13445",
    "corral": "15",
    "video": "ArplmgKHHEw",
-   "lote": "15A"
+   "lote": "15A",
+   "peso": "625"
   },
   {
    "rp": "13551",
    "corral": "15",
    "video": "kO21p3XdsKc",
-   "lote": "15B"
+   "lote": "15B",
+   "peso": "610"
   },
   {
    "rp": "13403",
    "corral": "16",
    "video": "LlV3dIKH6BQ",
-   "lote": "16A"
+   "lote": "16A",
+   "peso": "595"
   },
   {
    "rp": "13437",
    "corral": "16",
    "video": "acOgrNj4zrU",
-   "lote": "16B"
+   "lote": "16B",
+   "peso": "600"
   },
   {
    "rp": "13467",
    "corral": "17",
    "video": "90-ZYfvjovQ",
-   "lote": "17A"
+   "lote": "17A",
+   "peso": "600"
   },
   {
    "rp": "13473",
    "corral": "17",
    "video": "maBumd8hfJY",
-   "lote": "17B"
+   "lote": "17B",
+   "peso": "590"
   },
   {
    "rp": "13447",
    "corral": "18",
    "video": "q9VDEZ82U1c",
-   "lote": "18A"
+   "lote": "18A",
+   "peso": "620"
   },
   {
    "rp": "13459",
    "corral": "18",
    "video": "bXZC-4-duek",
-   "lote": "18B"
+   "lote": "18B",
+   "peso": "580"
   },
   {
    "rp": "13481",
    "corral": "19",
    "video": "q5O076BQ0YA",
-   "lote": "19A"
+   "lote": "19A",
+   "peso": "550"
   },
   {
    "rp": "13495",
    "corral": "19",
    "video": "qXx7viW3-rQ",
-   "lote": "19B"
+   "lote": "19B",
+   "peso": "600"
   },
   {
    "rp": "13443",
    "corral": "20",
    "video": "tw4g770Phxw",
-   "lote": "20A"
+   "lote": "20A",
+   "peso": "595"
   },
   {
    "rp": "13493",
    "corral": "20",
    "video": "XpSywgif3AI",
-   "lote": "20B"
+   "lote": "20B",
+   "peso": "610"
   },
   {
    "rp": "13389",
    "corral": "21",
    "video": "vC0GR3EjRLE",
-   "lote": "21A"
+   "lote": "21A",
+   "peso": "585"
   },
   {
    "rp": "13429",
    "corral": "21",
    "video": "-vxmcOa7BRs",
-   "lote": "21B"
+   "lote": "21B",
+   "peso": "590"
   },
   {
    "rp": "13381",
    "corral": "22",
    "video": "akbkJqy55X0",
-   "lote": "22A"
+   "lote": "22A",
+   "peso": "530"
   },
   {
    "rp": "13465",
    "corral": "22",
    "video": "nHn06U654Ns",
-   "lote": "22B"
+   "lote": "22B",
+   "peso": "570"
   },
   {
    "rp": "13497",
    "corral": "23",
    "video": "uq85GwBfr1w",
-   "lote": "23A"
+   "lote": "23A",
+   "peso": "550"
   },
   {
    "rp": "13509",
    "corral": "23",
    "video": "nqK0PWHFaFo",
-   "lote": "23B"
+   "lote": "23B",
+   "peso": "555"
   },
   {
    "rp": "13433",
    "corral": "24",
    "video": "nD5ulJysNrk",
-   "lote": "24A"
+   "lote": "24A",
+   "peso": "530"
   },
   {
    "rp": "13439",
    "corral": "24",
    "video": "ci9OE3Eun38",
-   "lote": "24B"
+   "lote": "24B",
+   "peso": "555"
   },
   {
    "rp": "13419",
    "corral": "25",
    "video": "QewOYWqYesk",
-   "lote": "25A"
+   "lote": "25A",
+   "peso": "560"
   },
   {
    "rp": "13455",
    "corral": "25",
    "video": "VL3cqUM4CF8",
-   "lote": "25B"
+   "lote": "25B",
+   "peso": "605"
   },
   {
    "rp": "13421",
    "corral": "26",
    "video": "Eouk-_A44xY",
-   "lote": "26A"
+   "lote": "26A",
+   "peso": "620"
   },
   {
    "rp": "13561",
    "corral": "26",
    "video": "0f8EE0y9Y5g",
-   "lote": "26B"
+   "lote": "26B",
+   "peso": "600"
   },
   {
    "rp": "13393",
    "corral": "27",
    "video": "9FEpc9Q6jKM",
-   "lote": "27A"
+   "lote": "27A",
+   "peso": "590"
   },
   {
    "rp": "13415",
    "corral": "27",
    "video": "Jefu1sPgg-U",
-   "lote": "27B"
+   "lote": "27B",
+   "peso": "540"
   },
   {
    "rp": "13407",
    "corral": "28",
    "video": "4z0EgYU87zE",
-   "lote": "28A"
+   "lote": "28A",
+   "peso": "615"
   },
   {
    "rp": "13457",
    "corral": "28",
    "video": "XYVqyLAX2gg",
-   "lote": "28B"
+   "lote": "28B",
+   "peso": "600"
   },
   {
    "rp": "13435",
    "corral": "29",
    "video": "d8_1NsRxfXY",
-   "lote": "29A"
+   "lote": "29A",
+   "peso": "565"
   },
   {
    "rp": "13511",
    "corral": "29",
    "video": "3OTL1OQQePw",
-   "lote": "29B"
+   "lote": "29B",
+   "peso": "570"
   },
   {
    "rp": "13401",
    "corral": "30",
    "video": "lh6mZJYLDmU",
-   "lote": "30A"
+   "lote": "30A",
+   "peso": "715"
   },
   {
    "rp": "13523",
    "corral": "30",
    "video": "hkwjU9BUS20",
-   "lote": "30B"
+   "lote": "30B",
+   "peso": "665"
   },
   {
    "rp": "13527",
    "corral": "31",
    "video": "_KHyXqvgtbY",
-   "lote": "31A"
+   "lote": "31A",
+   "peso": "705"
   },
   {
    "rp": "13539",
    "corral": "31",
    "video": "bjHq3icLYwU",
-   "lote": "31B"
+   "lote": "31B",
+   "peso": "665"
   },
   {
    "rp": "13385",
    "corral": "32",
    "video": "zuLZ30XehRU",
-   "lote": "32A"
+   "lote": "32A",
+   "peso": "670"
   },
   {
    "rp": "13535",
    "corral": "32",
    "video": "rJGrgFwx2fM",
-   "lote": "32B"
+   "lote": "32B",
+   "peso": "690"
   },
   {
    "rp": "13383",
    "corral": "33",
    "video": "i059JR_iEpQ",
-   "lote": "33A"
+   "lote": "33A",
+   "peso": "685"
   },
   {
    "rp": "13391",
    "corral": "33",
    "video": "0wRyzFnKJdo",
-   "lote": "33B"
+   "lote": "33B",
+   "peso": "630"
   },
   {
    "rp": "13529",
    "corral": "33",
    "video": "OvyZSfx5jmQ",
-   "lote": "33C"
+   "lote": "33C",
+   "peso": "635"
   },
   {
    "rp": "13387",
    "corral": "34",
    "video": "7QlrStM3pnE",
-   "lote": "34A"
+   "lote": "34A",
+   "peso": "580"
   },
   {
    "rp": "13557",
    "corral": "34",
    "video": "P0DYuCuzqYw",
-   "lote": "34B"
+   "lote": "34B",
+   "peso": "655"
   },
   {
    "rp": "13547",
    "corral": "35",
    "video": "5E3JU2g43NI",
-   "lote": "35A"
+   "lote": "35A",
+   "peso": "595"
   },
   {
    "rp": "13559",
    "corral": "35",
    "video": "nOAhXx9_Osk",
-   "lote": "35B"
+   "lote": "35B",
+   "peso": "575"
   },
   {
    "rp": "112",
    "corral": "40",
    "video": "-I8-Ck1PsfI",
-   "lote": "40A"
+   "lote": "40A",
+   "peso": "555"
   },
   {
    "rp": "137",
    "corral": "40",
    "video": "sDfzVKfcbsQ",
-   "lote": "40B"
+   "lote": "40B",
+   "peso": "550"
   },
   {
    "rp": "003",
    "corral": "41",
    "video": "ZB-qKTk6a_c",
-   "lote": "41"
+   "lote": "41",
+   "peso": "730"
   },
   {
    "rp": "005",
    "corral": "42",
    "video": "xYgelw5NWSk",
-   "lote": "42A"
+   "lote": "42A",
+   "peso": "735"
   },
   {
    "rp": "014",
    "corral": "42",
    "video": "weuBPjbdL2A",
-   "lote": "42B"
+   "lote": "42B",
+   "peso": "750"
   },
   {
    "rp": "034",
    "corral": "43",
    "video": "U4Jq-JjWGN0",
-   "lote": "43A"
+   "lote": "43A",
+   "peso": "545"
   },
   {
    "rp": "036",
    "corral": "43",
    "video": "E3ihtJ0uk-I",
-   "lote": "43B"
+   "lote": "43B",
+   "peso": "530"
   },
   {
    "rp": "024",
    "corral": "44",
    "video": "_kY6NWQQJoU",
-   "lote": "44A"
+   "lote": "44A",
+   "peso": "535"
   },
   {
    "rp": "028",
    "corral": "44",
    "video": "rHgA26dKgzM",
-   "lote": "44B"
+   "lote": "44B",
+   "peso": "520"
   },
   {
    "rp": "099",

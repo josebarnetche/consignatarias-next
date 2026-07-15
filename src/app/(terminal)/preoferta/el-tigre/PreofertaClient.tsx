@@ -4,15 +4,22 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { PreofertaData } from './page'
 
 const fmt = (n: number) => '$ ' + n.toLocaleString('es-AR')
+/** Precio por kilo — el lenguaje del ICP (piensa en $/kg, no en total). */
+const porKilo = (monto: number, peso?: string) => {
+  const p = peso ? parseInt(peso.replace(/\D/g, ''), 10) : 0
+  return p > 0 ? '$ ' + Math.round(monto / p).toLocaleString('es-AR') + '/kg' : null
+}
 
 export default function PreofertaClient({
   remate,
   valoresIniciales,
+  interes,
   userEmail,
   serverNow,
 }: {
   remate: PreofertaData
   valoresIniciales: Record<string, number>
+  interes: Record<string, number>
   userEmail: string | null
   serverNow: number
 }) {
@@ -75,6 +82,18 @@ export default function PreofertaClient({
           : <>Cerró el jue 16-jul 20:00</>}
         {' · '}{remate.lotes.length} lotes con video
       </p>
+      {(() => {
+        const totalInt = Object.values(interes).reduce((a, b) => a + b, 0)
+        const lotesInt = Object.keys(interes).length
+        return (
+          <p className="text-xxs font-terminal uppercase tracking-widest text-zinc-600 mt-1.5">
+            El remate, medido ·{' '}
+            {totalInt > 0
+              ? <><b className="text-positive">{totalInt}</b> {totalInt === 1 ? 'interesado' : 'interesados'} en {lotesInt} {lotesInt === 1 ? 'lote' : 'lotes'}</>
+              : <span>demanda por lote en vivo</span>}
+          </p>
+        )
+      })()}
 
       <div className="grid lg:grid-cols-[1fr_360px] gap-5 mt-5">
         {/* ── Detalle del lote seleccionado ── */}
@@ -103,6 +122,34 @@ export default function PreofertaClient({
                     {lote.madre ? <> · Madre <b className="text-zinc-200">{lote.madre}</b></> : null}
                   </p>
                 )}
+
+                {/* ── $/kilo (lenguaje del ICP) + argumento genético + observabilidad ── */}
+                <div className="mt-3 grid sm:grid-cols-[auto_1fr] gap-3 items-center">
+                  {porKilo(valorDe(lote.rp), lote.peso) && (
+                    <div className="rounded-lg border border-terminal-border bg-black/30 px-3.5 py-2 text-center shrink-0">
+                      <div className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">Queda a</div>
+                      <div className="font-mono font-bold text-xl text-zinc-100 tabular-nums leading-none">{porKilo(valorDe(lote.rp), lote.peso)}</div>
+                      <div className="text-xxs text-zinc-600">sobre {lote.peso} kg</div>
+                    </div>
+                  )}
+                  <p className="text-sm text-zinc-300 leading-snug">
+                    No comprás kilos: comprás la genética que <b className="text-zinc-100">se los pone a tu rodeo</b>.
+                    {lote.ce && parseFloat(String(lote.ce).replace(',', '.')) >= 34
+                      ? <> C.E. <b className="text-zinc-100">{lote.ce} cm</b> → alta fertilidad, más terneros por servicio.</>
+                      : null}
+                  </p>
+                </div>
+
+                {/* Observabilidad — demanda medida por lote */}
+                <div className="mt-2 flex items-center gap-2 text-xxs">
+                  <span className="inline-flex items-center gap-1.5 text-zinc-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-positive" />
+                    {(interes[lote.rp] ?? 0) > 0
+                      ? <><b className="text-zinc-200">{interes[lote.rp]}</b> {interes[lote.rp] === 1 ? 'productor interesado' : 'productores interesados'} en este lote</>
+                      : <span className="text-zinc-600">Sé el primero en marcar interés en este lote</span>}
+                  </span>
+                </div>
+
                 <OfertaWidget
                   rp={lote.rp}
                   actual={valorDe(lote.rp)}
@@ -133,8 +180,12 @@ export default function PreofertaClient({
                   <img src={`https://i.ytimg.com/vi/${l.video}/mqdefault.jpg`} alt="" className="w-20 h-12 object-cover rounded shrink-0 bg-zinc-800" loading="lazy" />
                   <div className="min-w-0">
                     <div className="text-zinc-200 text-sm font-semibold truncate">Lote {l.lote} · RP {l.rp}</div>
-                    <div className="text-zinc-500 text-xxs">Corral {l.corral}</div>
-                    <div className="text-positive text-xs font-mono tabular-nums">{fmt(valorDe(l.rp))}</div>
+                    <div className="text-positive text-xs font-mono tabular-nums">
+                      {porKilo(valorDe(l.rp), l.peso) ?? fmt(valorDe(l.rp))}
+                    </div>
+                    <div className="text-zinc-600 text-xxs">
+                      {(interes[l.rp] ?? 0) > 0 ? `${interes[l.rp]} interesado${interes[l.rp] === 1 ? '' : 's'}` : `Corral ${l.corral}`}
+                    </div>
                   </div>
                 </button>
               )

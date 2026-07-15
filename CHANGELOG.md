@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.169.0] — 2026-07-15
+
+### Preoferta 2.0 — al lenguaje del ICP ($/kilo) + genética + observabilidad al centro
+
+El descubrimiento guiado era sobre-ingeniería. El ICP (según GSC, mundo "novillo arrendamiento") piensa en **$/kilo**, pero un toro no se compra por kilo sino por **genética**. El sistema ahora traduce entre ambos y pone la **demanda medida** al centro:
+
+- **$/kilo por lote** (peso extraído para 71/86 lotes del PDF): "queda a $X/kg sobre N kg" — el lenguaje que el productor entiende.
+- **Argumento genético**: "no comprás kilos, comprás la genética que se los pone a tu rodeo"; C.E. ≥ 34 cm decodificado como fertilidad.
+- **Observabilidad como centro**: interesados por lote (cartelera + detalle + "el remate, medido" en el header) — la demanda medida es el activo, on-brand con la tesis de Consignatarias.
+
 ## [1.168.0] — 2026-07-15
 
 ### Preoferta como PUENTE — módulo en el perfil de Reggi + reencuadro directo-a-consignataria
