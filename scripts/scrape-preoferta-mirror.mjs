@@ -55,6 +55,13 @@ async function main() {
   }
   console.log(`Espejo: ${ok}/${lotes.length} lotes con valor de elrural.`)
 
+  // Guarda: si no scrapeamos nada (p.ej. Cloudflare bloqueó la IP de CI), NO
+  // pisar el espejo existente con un objeto vacío.
+  if (ok === 0) {
+    console.error('0 lotes espejados — probable bloqueo de IP. No se actualiza (evita clobber).')
+    process.exit(1)
+  }
+
   const SUPABASE_URL = clean(process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL)
   const SERVICE_KEY = clean(process.env.SUPABASE_SERVICE_ROLE_KEY)
   if (!SUPABASE_URL || !SERVICE_KEY) { console.error('Faltan envs de Supabase.'); process.exit(1) }
