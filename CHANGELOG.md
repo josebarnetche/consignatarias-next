@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.164.1] — 2026-07-15
+
+### Los últimos 5 remates huérfanos resueltos → orphans 0
+
+- `alfredo-cavanagh` → fusionado en **Sáenz Valiente Bullrich** (Cavanagh es su representante/martillero en Corrientes, no firma propia).
+- `cyg-n-hacienda` → fusionado en **Campos y Ganados SA** ("CyG"; el "N Hacienda" era artefacto de scrape).
+- 3 fichas nuevas para firmas con remate real pero sin web (nombre tal cual del listado publicado): **A. Saenz y Cía. SA** (Liniers), **Santillán** (Lobos, BA), **Campos Bajos SRL**.
+- Resultado: **0 remates huérfanos** (arrancamos la revisión con 32). Directorio 104 → 107 fichas.
+
 ## [1.164.0] — 2026-07-15
 
 ### Bucket B: 9 consignatarias nuevas al directorio (fichas 95 → 104)

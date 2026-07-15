@@ -11,7 +11,7 @@ export interface ConsignatariaProfile {
 }
 
 /* ------------------------------------------------------------------ */
-/*  PROFILE REGISTRY  (104 unique entities — THE canonical public count;
+/*  PROFILE REGISTRY  (107 unique entities — THE canonical public count;
     getAllProfiles().length feeds landing, /consignatarias, header & /stats)  */
 /* ------------------------------------------------------------------ */
 
@@ -27,7 +27,7 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'ariel-saenz', displayName: 'Ariel Saenz y Cia', allSlugs: ['ariel-saenz-y-cia'] },
   { canonicalSlug: 'arzoz', displayName: 'Arzoz y Cia SA', allSlugs: ['arzoz'] },
   { canonicalSlug: 'bressan-y-cia', displayName: 'Bressan y Cia. SRL', allSlugs: ['bressan', 'bressan-y-cia-s-r-l', 'bressan-y-cia-srl'] },
-  { canonicalSlug: 'campos-y-ganados', displayName: 'Campos y Ganados SA', allSlugs: ['campos-y-ganados', 'campos-y-ganados-s-a', 'campos-y-ganados-sa'] },
+  { canonicalSlug: 'campos-y-ganados', displayName: 'Campos y Ganados SA', allSlugs: ['campos-y-ganados', 'campos-y-ganados-s-a', 'campos-y-ganados-sa', 'cyg-n-hacienda'] },
   { canonicalSlug: 'casa-usandizaga', displayName: 'Casa Usandizaga SA', allSlugs: ['casa-usandizaga', 'casa-usandizaga-s-a'] },
   { canonicalSlug: 'colombo-y-colombo', displayName: 'Colombo y Colombo SA', allSlugs: ['colombo-y-colombo', 'colombo-y-colombo-sa', 'colombo-y-colombo-s-a'] },
   { canonicalSlug: 'colombo-y-magliano', displayName: 'Colombo y Magliano SA', allSlugs: ['colombo-y-magliano', 'colombo-y-magliano-s-a', 'colombo-y-magliano-sa', 'colombo-y-maliagno2'] },
@@ -80,7 +80,7 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'rodriguez-egana', displayName: 'Horacio Rodriguez Egaña', allSlugs: ['rodriguez-egana', 'horacio-rodriguez-egana-consignaciones-s-r-l', 'hre'] },
   { canonicalSlug: 'rosgan', displayName: 'Rosgan', allSlugs: ['rosgan'] },
   { canonicalSlug: 's-l-ledesma', displayName: 'S. L. Ledesma y Cia. SA', allSlugs: ['s-l-ledesma', 's-l-ledesma-y-cia-s-a', 'ledesma'] },
-  { canonicalSlug: 'saenz-valiente-bullrich', displayName: 'Saenz Valiente, Bullrich y Cia. SA', allSlugs: ['saenz-valiente-bullrich', 'saenz-valiente-bullrich-y-cia-', 'saenz-valiente-bullrich-y-cia-s-a'] },
+  { canonicalSlug: 'saenz-valiente-bullrich', displayName: 'Saenz Valiente, Bullrich y Cia. SA', allSlugs: ['saenz-valiente-bullrich', 'saenz-valiente-bullrich-y-cia-', 'saenz-valiente-bullrich-y-cia-s-a', 'alfredo-cavanagh'] },
   { canonicalSlug: 'sivero', displayName: 'Sivero y Cia. SA', allSlugs: ['sivero', 'sivero-y-cia-s-a'] },
   { canonicalSlug: 'trade-food', displayName: 'Trade Food SA', allSlugs: ['trade-food-s-a'] },
   { canonicalSlug: 'tradicion-ganadera', displayName: 'Tradición Ganadera SA', allSlugs: ['tradicion-ganadera', 'tradicion-ganadera-sa-porro-srl'] },
@@ -131,6 +131,10 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'pedro-y-raul-alonso', displayName: 'Pedro y Raúl Alonso Ganados SA', allSlugs: ['pedro-y-raul-alonso', 'pedro-y-raul-alonso-ganados-s-a'] },
   { canonicalSlug: 'remates-agropecuarios-ciasa', displayName: 'Remates Agropecuarios CIASA SA', allSlugs: ['remates-agropecuarios-ciasa', 'remates-agropecuarios-ciasa-s-a'] },
   { canonicalSlug: 'coop-agricola-ganadera-san-martin', displayName: 'Soc. Coop. Agrícola Ganadera Ltda. (Gral. San Martín)', allSlugs: ['coop-agricola-ganadera-san-martin', 'sociedad-agricola-ganadera-ltda'] },
+  // Firmas con remate real pero sin web; nombre tomado tal cual del listado publicado.
+  { canonicalSlug: 'a-saenz', displayName: 'A. Saenz y Cía. SA', allSlugs: ['a-saenz', 'a-saenz-cia-s-a'] },
+  { canonicalSlug: 'santillan', displayName: 'Santillán', allSlugs: ['santillan'] },
+  { canonicalSlug: 'campos-bajos', displayName: 'Campos Bajos SRL', allSlugs: ['campos-bajos', 'campos-bajos-srl'] },
 ]
 
 /* ------------------------------------------------------------------ */
