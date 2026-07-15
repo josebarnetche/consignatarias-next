@@ -13,9 +13,14 @@ interface Bid {
   bidder_phone: string | null; bidder_email: string; created_at: string; relayed_at: string | null
 }
 
+const LOTES = preoferta.lotes as Array<{ rp: string; lote: string; corral: string; elrural_id?: string }>
 const loteLabel = (rp: string) => {
-  const l = (preoferta.lotes as Array<{ rp: string; lote: string; corral: string }>).find((x) => x.rp === rp)
+  const l = LOTES.find((x) => x.rp === rp)
   return l ? `Lote ${l.lote} · Corral ${l.corral}` : `RP ${rp}`
+}
+const elruralHref = (rp: string) => {
+  const id = LOTES.find((x) => x.rp === rp)?.elrural_id
+  return id ? `https://preofertas.elrural.com/lote/${id}` : 'https://preofertas.elrural.com/remate/603'
 }
 const fmt = (n: number) => '$ ' + n.toLocaleString('es-AR')
 
@@ -71,6 +76,7 @@ export default async function AdminPreofertaPage() {
                     <td className="py-2.5 pr-3 text-zinc-300">
                       {loteLabel(b.lote_rp)}
                       {esMax && <span className="ml-1.5 text-xxs text-positive font-terminal">TOP</span>}
+                      <a href={elruralHref(b.lote_rp)} target="_blank" rel="noopener noreferrer" className="ml-1.5 text-xxs text-accent hover:text-accent-bright">elrural ↗</a>
                     </td>
                     <td className="py-2.5 px-3 text-right font-mono tabular-nums text-zinc-100">{fmt(b.amount)}</td>
                     <td className="py-2.5 px-3 text-zinc-200">{b.bidder_name || '—'}</td>

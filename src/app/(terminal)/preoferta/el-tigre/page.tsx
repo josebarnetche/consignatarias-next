@@ -59,5 +59,7 @@ export interface PreofertaData {
     reg?: string
     ce?: string
     peso?: string
+    base?: number       // base real por lote (scrape elrural)
+    elrural_id?: string // id del lote en preofertas.elrural.com
   }>
 }

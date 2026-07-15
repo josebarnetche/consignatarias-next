@@ -16,7 +16,9 @@
    "reg": "D",
    "ce": "38,5",
    "peso": "900",
-   "lote": "1"
+   "lote": "1",
+   "base": 7500000,
+   "elrural_id": "149092"
   },
   {
    "rp": "13307",
@@ -28,7 +30,9 @@
    "reg": "A",
    "ce": "43,0",
    "peso": "782",
-   "lote": "2A"
+   "lote": "2A",
+   "base": 7500000,
+   "elrural_id": "149094"
   },
   {
    "rp": "403",
@@ -40,7 +44,9 @@
    "reg": "D",
    "ce": "48,0",
    "peso": "800",
-   "lote": "2B"
+   "lote": "2B",
+   "base": 7500000,
+   "elrural_id": "149093"
   },
   {
    "rp": "13323",
@@ -52,7 +58,9 @@
    "reg": "A",
    "ce": "38,5",
    "peso": "700",
-   "lote": "3A"
+   "lote": "3A",
+   "base": 7500000,
+   "elrural_id": "149095"
   },
   {
    "rp": "13351",
@@ -64,7 +72,9 @@
    "reg": "D",
    "ce": "44,0",
    "peso": "750",
-   "lote": "3B"
+   "lote": "3B",
+   "base": 7500000,
+   "elrural_id": "149096"
   },
   {
    "rp": "399",
@@ -76,7 +86,9 @@
    "reg": "D",
    "ce": "42,5",
    "peso": "680",
-   "lote": "4A"
+   "lote": "4A",
+   "base": 7500000,
+   "elrural_id": "149097"
   },
   {
    "rp": "401",
@@ -88,90 +100,116 @@
    "reg": "A",
    "ce": "35,5",
    "peso": "690",
-   "lote": "4B"
+   "lote": "4B",
+   "base": 7500000,
+   "elrural_id": "149098"
   },
   {
    "rp": "10439",
    "corral": "5",
    "video": "vLQoW0cWMzE",
    "lote": "5A",
-   "peso": "735"
+   "peso": "735",
+   "base": 6500000,
+   "elrural_id": "149099"
   },
   {
    "rp": "13449",
    "corral": "5",
    "video": "A_eMYj1HQKg",
    "lote": "5B",
-   "peso": "670"
+   "peso": "670",
+   "base": 6500000,
+   "elrural_id": "149100"
   },
   {
    "rp": "13503",
    "corral": "6",
    "video": "Wpx4P1xy-SY",
-   "lote": "6A"
+   "lote": "6A",
+   "base": 6500000,
+   "elrural_id": "149101"
   },
   {
    "rp": "13507",
    "corral": "6",
    "video": "xNNCU_viLXw",
    "lote": "6B",
-   "peso": "705"
+   "peso": "705",
+   "base": 6500000,
+   "elrural_id": "149102"
   },
   {
    "rp": "13463",
    "corral": "7",
    "video": "ZceAfVi0Tbk",
    "lote": "7A",
-   "peso": "625"
+   "peso": "625",
+   "base": 6500000,
+   "elrural_id": "149103"
   },
   {
    "rp": "13553",
    "corral": "7",
    "video": "Nx-WY__LsJc",
    "lote": "7B",
-   "peso": "640"
+   "peso": "640",
+   "base": 6500000,
+   "elrural_id": "149104"
   },
   {
    "rp": "13525",
    "corral": "8",
    "video": "V9axFNt5Frg",
    "lote": "8A",
-   "peso": "625"
+   "peso": "625",
+   "base": 6500000,
+   "elrural_id": "149105"
   },
   {
    "rp": "13555",
    "corral": "8",
    "video": "zY6IOLRdWug",
    "lote": "8B",
-   "peso": "685"
+   "peso": "685",
+   "base": 6500000,
+   "elrural_id": "149106"
   },
   {
    "rp": "13441",
    "corral": "9",
    "video": "XyjZvtfpT1Y",
    "lote": "9A",
-   "peso": "635"
+   "peso": "635",
+   "base": 6500000,
+   "elrural_id": "149107"
   },
   {
    "rp": "13515",
    "corral": "9",
    "video": "HuMXv1iSUag",
    "lote": "9B",
-   "peso": "625"
+   "peso": "625",
+   "base": 6500000,
+   "elrural_id": "149108"
   },
   {
    "rp": "13477",
    "corral": "10",
    "video": "nTSyF80csnI",
    "lote": "10A",
-   "peso": "625"
+   "peso": "625",
+   "base": 6500000,
+   "elrural_id": "149109"
   },
   {
    "rp": "13491",
    "corral": "10",
    "video": "uuYFJ4-kxu0",
    "lote": "10B",
-   "peso": "625"
+   "peso": "625",
+   "base": 6500000,
+   "elrural_id": "149110"
   },
   {
    "rp": "0409",
@@ -185,364 +223,468 @@
    "corral": "11",
    "video": "Z4n_Lch4WM4",
    "lote": "11B",
-   "peso": "610"
+   "peso": "610",
+   "base": 6500000,
+   "elrural_id": "149111"
   },
   {
    "rp": "13395",
    "corral": "12",
    "video": "QmeD5YhgEzs",
    "lote": "12A",
-   "peso": "645"
+   "peso": "645",
+   "base": 6500000,
+   "elrural_id": "149113"
   },
   {
    "rp": "13461",
    "corral": "12",
    "video": "HvMlnCuFn0Q",
    "lote": "12B",
-   "peso": "635"
+   "peso": "635",
+   "base": 6500000,
+   "elrural_id": "149114"
   },
   {
    "rp": "13413",
    "corral": "13",
    "video": "EVIk3PL1g5o",
    "lote": "13A",
-   "peso": "625"
+   "peso": "625",
+   "base": 6500000,
+   "elrural_id": "149115"
   },
   {
    "rp": "13469",
    "corral": "13",
    "video": "-QXoQndCkPM",
    "lote": "13B",
-   "peso": "610"
+   "peso": "610",
+   "base": 6500000,
+   "elrural_id": "149116"
   },
   {
    "rp": "13471",
    "corral": "14",
    "video": "-cbxZwZAW5A",
    "lote": "14A",
-   "peso": "600"
+   "peso": "600",
+   "base": 6500000,
+   "elrural_id": "149117"
   },
   {
    "rp": "13533",
    "corral": "14",
    "video": "LeeX8IvCKrc",
    "lote": "14B",
-   "peso": "655"
+   "peso": "655",
+   "base": 6500000,
+   "elrural_id": "149118"
   },
   {
    "rp": "13445",
    "corral": "15",
    "video": "ArplmgKHHEw",
    "lote": "15A",
-   "peso": "625"
+   "peso": "625",
+   "base": 6500000,
+   "elrural_id": "149119"
   },
   {
    "rp": "13551",
    "corral": "15",
    "video": "kO21p3XdsKc",
    "lote": "15B",
-   "peso": "610"
+   "peso": "610",
+   "base": 6500000,
+   "elrural_id": "149120"
   },
   {
    "rp": "13403",
    "corral": "16",
    "video": "LlV3dIKH6BQ",
    "lote": "16A",
-   "peso": "595"
+   "peso": "595",
+   "base": 6500000,
+   "elrural_id": "149121"
   },
   {
    "rp": "13437",
    "corral": "16",
    "video": "acOgrNj4zrU",
    "lote": "16B",
-   "peso": "600"
+   "peso": "600",
+   "base": 6500000,
+   "elrural_id": "149122"
   },
   {
    "rp": "13467",
    "corral": "17",
    "video": "90-ZYfvjovQ",
    "lote": "17A",
-   "peso": "600"
+   "peso": "600",
+   "base": 6500000,
+   "elrural_id": "149123"
   },
   {
    "rp": "13473",
    "corral": "17",
    "video": "maBumd8hfJY",
    "lote": "17B",
-   "peso": "590"
+   "peso": "590",
+   "base": 6500000,
+   "elrural_id": "149124"
   },
   {
    "rp": "13447",
    "corral": "18",
    "video": "q9VDEZ82U1c",
    "lote": "18A",
-   "peso": "620"
+   "peso": "620",
+   "base": 6500000,
+   "elrural_id": "149125"
   },
   {
    "rp": "13459",
    "corral": "18",
    "video": "bXZC-4-duek",
    "lote": "18B",
-   "peso": "580"
+   "peso": "580",
+   "base": 6500000,
+   "elrural_id": "149126"
   },
   {
    "rp": "13481",
    "corral": "19",
    "video": "q5O076BQ0YA",
    "lote": "19A",
-   "peso": "550"
+   "peso": "550",
+   "base": 6500000,
+   "elrural_id": "149127"
   },
   {
    "rp": "13495",
    "corral": "19",
    "video": "qXx7viW3-rQ",
    "lote": "19B",
-   "peso": "600"
+   "peso": "600",
+   "base": 6500000,
+   "elrural_id": "149128"
   },
   {
    "rp": "13443",
    "corral": "20",
    "video": "tw4g770Phxw",
    "lote": "20A",
-   "peso": "595"
+   "peso": "595",
+   "base": 6500000,
+   "elrural_id": "149129"
   },
   {
    "rp": "13493",
    "corral": "20",
    "video": "XpSywgif3AI",
    "lote": "20B",
-   "peso": "610"
+   "peso": "610",
+   "base": 6500000,
+   "elrural_id": "149130"
   },
   {
    "rp": "13389",
    "corral": "21",
    "video": "vC0GR3EjRLE",
    "lote": "21A",
-   "peso": "585"
+   "peso": "585",
+   "base": 6500000,
+   "elrural_id": "149131"
   },
   {
    "rp": "13429",
    "corral": "21",
    "video": "-vxmcOa7BRs",
    "lote": "21B",
-   "peso": "590"
+   "peso": "590",
+   "base": 6500000,
+   "elrural_id": "149132"
   },
   {
    "rp": "13381",
    "corral": "22",
    "video": "akbkJqy55X0",
    "lote": "22A",
-   "peso": "530"
+   "peso": "530",
+   "base": 6500000,
+   "elrural_id": "149133"
   },
   {
    "rp": "13465",
    "corral": "22",
    "video": "nHn06U654Ns",
    "lote": "22B",
-   "peso": "570"
+   "peso": "570",
+   "base": 6500000,
+   "elrural_id": "149134"
   },
   {
    "rp": "13497",
    "corral": "23",
    "video": "uq85GwBfr1w",
    "lote": "23A",
-   "peso": "550"
+   "peso": "550",
+   "base": 6500000,
+   "elrural_id": "149135"
   },
   {
    "rp": "13509",
    "corral": "23",
    "video": "nqK0PWHFaFo",
    "lote": "23B",
-   "peso": "555"
+   "peso": "555",
+   "base": 6500000,
+   "elrural_id": "149136"
   },
   {
    "rp": "13433",
    "corral": "24",
    "video": "nD5ulJysNrk",
    "lote": "24A",
-   "peso": "530"
+   "peso": "530",
+   "base": 6500000,
+   "elrural_id": "149137"
   },
   {
    "rp": "13439",
    "corral": "24",
    "video": "ci9OE3Eun38",
    "lote": "24B",
-   "peso": "555"
+   "peso": "555",
+   "base": 6500000,
+   "elrural_id": "149138"
   },
   {
    "rp": "13419",
    "corral": "25",
    "video": "QewOYWqYesk",
    "lote": "25A",
-   "peso": "560"
+   "peso": "560",
+   "base": 6500000,
+   "elrural_id": "149139"
   },
   {
    "rp": "13455",
    "corral": "25",
    "video": "VL3cqUM4CF8",
    "lote": "25B",
-   "peso": "605"
+   "peso": "605",
+   "base": 6500000,
+   "elrural_id": "149140"
   },
   {
    "rp": "13421",
    "corral": "26",
    "video": "Eouk-_A44xY",
    "lote": "26A",
-   "peso": "620"
+   "peso": "620",
+   "base": 6500000,
+   "elrural_id": "149141"
   },
   {
    "rp": "13561",
    "corral": "26",
    "video": "0f8EE0y9Y5g",
    "lote": "26B",
-   "peso": "600"
+   "peso": "600",
+   "base": 6500000,
+   "elrural_id": "149142"
   },
   {
    "rp": "13393",
    "corral": "27",
    "video": "9FEpc9Q6jKM",
    "lote": "27A",
-   "peso": "590"
+   "peso": "590",
+   "base": 6500000,
+   "elrural_id": "149143"
   },
   {
    "rp": "13415",
    "corral": "27",
    "video": "Jefu1sPgg-U",
    "lote": "27B",
-   "peso": "540"
+   "peso": "540",
+   "base": 6500000,
+   "elrural_id": "149144"
   },
   {
    "rp": "13407",
    "corral": "28",
    "video": "4z0EgYU87zE",
    "lote": "28A",
-   "peso": "615"
+   "peso": "615",
+   "base": 6500000,
+   "elrural_id": "149145"
   },
   {
    "rp": "13457",
    "corral": "28",
    "video": "XYVqyLAX2gg",
    "lote": "28B",
-   "peso": "600"
+   "peso": "600",
+   "base": 6500000,
+   "elrural_id": "149146"
   },
   {
    "rp": "13435",
    "corral": "29",
    "video": "d8_1NsRxfXY",
    "lote": "29A",
-   "peso": "565"
+   "peso": "565",
+   "base": 6500000,
+   "elrural_id": "149147"
   },
   {
    "rp": "13511",
    "corral": "29",
    "video": "3OTL1OQQePw",
    "lote": "29B",
-   "peso": "570"
+   "peso": "570",
+   "base": 6500000,
+   "elrural_id": "149148"
   },
   {
    "rp": "13401",
    "corral": "30",
    "video": "lh6mZJYLDmU",
    "lote": "30A",
-   "peso": "715"
+   "peso": "715",
+   "base": 7000000,
+   "elrural_id": "149149"
   },
   {
    "rp": "13523",
    "corral": "30",
    "video": "hkwjU9BUS20",
    "lote": "30B",
-   "peso": "665"
+   "peso": "665",
+   "base": 7000000,
+   "elrural_id": "149150"
   },
   {
    "rp": "13527",
    "corral": "31",
    "video": "_KHyXqvgtbY",
    "lote": "31A",
-   "peso": "705"
+   "peso": "705",
+   "base": 7000000,
+   "elrural_id": "149151"
   },
   {
    "rp": "13539",
    "corral": "31",
    "video": "bjHq3icLYwU",
    "lote": "31B",
-   "peso": "665"
+   "peso": "665",
+   "base": 7000000,
+   "elrural_id": "149152"
   },
   {
    "rp": "13385",
    "corral": "32",
    "video": "zuLZ30XehRU",
    "lote": "32A",
-   "peso": "670"
+   "peso": "670",
+   "base": 6500000,
+   "elrural_id": "149153"
   },
   {
    "rp": "13535",
    "corral": "32",
    "video": "rJGrgFwx2fM",
    "lote": "32B",
-   "peso": "690"
+   "peso": "690",
+   "base": 6500000,
+   "elrural_id": "149154"
   },
   {
    "rp": "13383",
    "corral": "33",
    "video": "i059JR_iEpQ",
    "lote": "33A",
-   "peso": "685"
+   "peso": "685",
+   "base": 6500000,
+   "elrural_id": "149155"
   },
   {
    "rp": "13391",
    "corral": "33",
    "video": "0wRyzFnKJdo",
    "lote": "33B",
-   "peso": "630"
+   "peso": "630",
+   "base": 6500000,
+   "elrural_id": "149156"
   },
   {
    "rp": "13529",
    "corral": "33",
    "video": "OvyZSfx5jmQ",
    "lote": "33C",
-   "peso": "635"
+   "peso": "635",
+   "base": 6500000,
+   "elrural_id": "149157"
   },
   {
    "rp": "13387",
    "corral": "34",
    "video": "7QlrStM3pnE",
    "lote": "34A",
-   "peso": "580"
+   "peso": "580",
+   "base": 6500000,
+   "elrural_id": "149158"
   },
   {
    "rp": "13557",
    "corral": "34",
    "video": "P0DYuCuzqYw",
    "lote": "34B",
-   "peso": "655"
+   "peso": "655",
+   "base": 6500000,
+   "elrural_id": "149159"
   },
   {
    "rp": "13547",
    "corral": "35",
    "video": "5E3JU2g43NI",
    "lote": "35A",
-   "peso": "595"
+   "peso": "595",
+   "base": 6500000,
+   "elrural_id": "149160"
   },
   {
    "rp": "13559",
    "corral": "35",
    "video": "nOAhXx9_Osk",
    "lote": "35B",
-   "peso": "575"
+   "peso": "575",
+   "base": 6500000,
+   "elrural_id": "149161"
   },
   {
    "rp": "112",
    "corral": "40",
    "video": "-I8-Ck1PsfI",
    "lote": "40A",
-   "peso": "555"
+   "peso": "555",
+   "base": 6500000,
+   "elrural_id": "149169"
   },
   {
    "rp": "137",
    "corral": "40",
    "video": "sDfzVKfcbsQ",
    "lote": "40B",
-   "peso": "550"
+   "peso": "550",
+   "base": 6500000,
+   "elrural_id": "149170"
   },
   {
    "rp": "003",
@@ -635,5 +777,6 @@
    "video": "BFlOaUrb7Yk",
    "lote": "51"
   }
- ]
+ ],
+ "fuente_precios": "elrural.com/remate/603 (scrape)"
 }

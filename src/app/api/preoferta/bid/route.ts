@@ -16,10 +16,12 @@ export const runtime = 'nodejs'
  */
 
 const REMATE_SLUG = 'el-tigre'
-const BASE = preoferta.base as number
 const INCREMENTO = 100_000
 const CIERRE = new Date(preoferta.cierre_preoferta as string).getTime()
-const RPS = new Set((preoferta.lotes as Array<{ rp: string }>).map((l) => l.rp))
+const LOTES = preoferta.lotes as Array<{ rp: string; base?: number }>
+const RPS = new Set(LOTES.map((l) => l.rp))
+/** Base real por lote (scrape elrural); fallback a la base global. */
+const baseFor = (rp: string) => LOTES.find((l) => l.rp === rp)?.base ?? (preoferta.base as number)
 
 /** Valor actual (máxima oferta) por lote, o la base si no hubo ofertas. */
 async function currentByLote(): Promise<Record<string, number>> {
@@ -37,7 +39,7 @@ async function currentByLote(): Promise<Record<string, number>> {
 export async function GET() {
   const max = await currentByLote()
   return NextResponse.json({
-    base: BASE,
+    base: preoferta.base as number,
     incremento: INCREMENTO,
     cierra: preoferta.cierre_preoferta,
     abierta: Date.now() < CIERRE,
@@ -74,8 +76,9 @@ export async function POST(req: NextRequest) {
 
   // 4) monto ≥ actual + incremento
   const max = await currentByLote()
-  const actual = max[rp] ?? BASE
-  const minimo = (max[rp] ? actual + INCREMENTO : BASE)
+  const b = baseFor(rp)
+  const actual = max[rp] ?? b
+  const minimo = (max[rp] ? actual + INCREMENTO : b)
   if (amount < minimo) {
     return NextResponse.json({ error: `La oferta debe ser de al menos $${minimo.toLocaleString('es-AR')}.`, actual, minimo }, { status: 422 })
   }

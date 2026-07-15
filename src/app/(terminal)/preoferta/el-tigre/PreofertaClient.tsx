@@ -47,7 +47,8 @@ export default function PreofertaClient({
     return () => clearInterval(t)
   }, [refresh])
 
-  const valorDe = (rp: string) => valores[rp] ?? remate.base
+  const baseDe = (rp: string) => remate.lotes.find((l) => l.rp === rp)?.base ?? remate.base
+  const valorDe = (rp: string) => valores[rp] ?? baseDe(rp)
   const lote = remate.lotes.find((l) => l.rp === sel) ?? null
 
   const restante = Math.max(0, cierre - ahora)
@@ -153,7 +154,7 @@ export default function PreofertaClient({
                 <OfertaWidget
                   rp={lote.rp}
                   actual={valorDe(lote.rp)}
-                  base={remate.base}
+                  base={baseDe(lote.rp)}
                   tieneOfertas={valores[lote.rp] != null}
                   abierta={abierta}
                   userEmail={userEmail}

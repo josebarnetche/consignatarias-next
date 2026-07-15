@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.170.0] — 2026-07-15
+
+### Precios base REALES por lote (scrape de elrural) — Pulga no nos da datos
+
+La base no es uniforme: **6,5M (67 lotes) / 7M (5) / 7,5M (14)**. El hardcode de 7,5M estaba mal. Fuente de verdad = la pre-oferta de elrural (pública, server-rendered); la cabaña/consignataria no aporta precios.
+
+- **`scripts/scrape-preoferta-elrural.mjs`**: scrapea el remate 603 → base + `elrural_id` por lote (match por RP). Aplicado a 71/86 lotes.
+- Base **por lote** en toda la lógica (página, API de oferta, $/kilo) en vez de la global.
+- **Deep-link a elrural por lote** en la consola admin (`/lote/<id>`) para cargar la oferta relayada en el lote exacto.
+- Base para el próximo paso: espejar el valor actual en vivo (cada `/lote/<id>` tiene su "Valor Actual") vía cron → Consignatarias como ventana de observabilidad del libro.
+
 ## [1.169.0] — 2026-07-15
 
 ### Preoferta 2.0 — al lenguaje del ICP ($/kilo) + genética + observabilidad al centro
