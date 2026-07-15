@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.162.0] — 2026-07-14
+
+### Revisión integral de fichas — Bucket A: 14 remates huérfanos reconectados
+
+Auditoría integral del registry de consignatarias detectó **32 slugs de remates que no resolvían a ninguna ficha** (`getCanonicalSlug` → null), generando páginas sintetizadas sueltas en vez de sumarse a la firma real (duplicación + dilución SEO + remates que no aparecían en su ficha).
+
+- **14 variantes mapeadas a su ficha canónica** vía `allSlugs` (activa el 308 redirect y engancha los remates a la ficha real vía `getAuctionsForProfile`): o-farrell→ofarrell, hourcade-albelo-y-cia→hourcade-albelo, jauregui-lorda-haciendas→jauregui-lorda, alfredo-s-mondino→mondino, coop-guillermo-lehmann→cooperativa-guillermo-lehmann, esteban-i-abelenda-s-a→esteban-abelenda, f-rauch→ferias-rauch, adolfo-s-koerner-y-cia-s-a→koerner, ledesma→s-l-ledesma, ganaderos-de-formosa-s-r-l→ganaderos-de-formosa, ganados-remates-s-a→ganados-remates, etchevehere-rural-com-ar→etchevehere-rural, hre→rodriguez-egana, ricardo-mendizabal-consignaciones-s-r-l→a-mendizabal.
+- De paso, `s-l-ledesma` y `ariel-saenz` no tenían su propio slug canónico en `allSlugs` — corregido en s-l-ledesma.
+- Orphans 32 → 18 (restan firmas nuevas sin ficha + artefactos del scraper + 2 casos ambiguos: `santillan`, `a-saenz-cia-s-a`).
+- Drift de docs: registry "104"→103 (real `getAllProfiles()`), CLAUDE.md DB "86"→113.
+
 ## [1.161.0] — 2026-07-14
 
 ### Lote de logos de consignatarias (+20 fichas)

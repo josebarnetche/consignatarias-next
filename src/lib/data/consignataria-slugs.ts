@@ -11,7 +11,7 @@ export interface ConsignatariaProfile {
 }
 
 /* ------------------------------------------------------------------ */
-/*  PROFILE REGISTRY  (104 unique entities — THE canonical public count;
+/*  PROFILE REGISTRY  (103 unique entities — THE canonical public count;
     getAllProfiles().length feeds landing, /consignatarias, header & /stats)  */
 /* ------------------------------------------------------------------ */
 
@@ -33,22 +33,22 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'colombo-y-colombo', displayName: 'Colombo y Colombo SA', allSlugs: ['colombo-y-colombo', 'colombo-y-colombo-sa', 'colombo-y-colombo-s-a'] },
   { canonicalSlug: 'colombo-y-magliano', displayName: 'Colombo y Magliano SA', allSlugs: ['colombo-y-magliano', 'colombo-y-magliano-s-a', 'colombo-y-magliano-sa', 'colombo-y-maliagno2'] },
   { canonicalSlug: 'consignataria-serrano', displayName: 'Consignataria Serrano SA', allSlugs: ['consignataria-serrano', 'consignataria-serrano-s-a'] },
-  { canonicalSlug: 'cooperativa-guillermo-lehmann', displayName: 'Cooperativa Guillermo Lehmann', allSlugs: ['cooperativa-guillermo-lehmann', 'coop-agric-ganad-ltda-guillermo-lehmann', 'cooperativa-lehmann', 'coop-lehmann'] },
+  { canonicalSlug: 'cooperativa-guillermo-lehmann', displayName: 'Cooperativa Guillermo Lehmann', allSlugs: ['cooperativa-guillermo-lehmann', 'coop-agric-ganad-ltda-guillermo-lehmann', 'cooperativa-lehmann', 'coop-lehmann', 'coop-guillermo-lehmann'] },
   { canonicalSlug: 'cooperativa-portena', displayName: 'Cooperativa Porteña Ltda.', allSlugs: ['cooperativa-portena'] },
   { canonicalSlug: 'cripco-obera', displayName: 'CRIPCO Oberá', allSlugs: ['cripco-obera'] },
   { canonicalSlug: 'daniel-blanco', displayName: 'Daniel Blanco y Cia. SA', allSlugs: ['daniel-blanco', 'daniel-blanco-y-cia-s-a'] },
   { canonicalSlug: 'darwash', displayName: 'Darwash SA', allSlugs: ['darwash-s-a'] },
-  { canonicalSlug: 'etchevehere-rural', displayName: 'Etchevehere Rural SRL', allSlugs: ['etchevehere-rural', 'etchevehere-rural-s-r-l'] },
-  { canonicalSlug: 'ferias-rauch', displayName: 'Ferias Rauch SA', allSlugs: ['ferias-rauch', 'ferias-rauch-s-a', 'ferias-rauch-sa'] },
+  { canonicalSlug: 'etchevehere-rural', displayName: 'Etchevehere Rural SRL', allSlugs: ['etchevehere-rural', 'etchevehere-rural-s-r-l', 'etchevehere-rural-com-ar'] },
+  { canonicalSlug: 'ferias-rauch', displayName: 'Ferias Rauch SA', allSlugs: ['ferias-rauch', 'ferias-rauch-s-a', 'ferias-rauch-sa', 'f-rauch'] },
   { canonicalSlug: 'ferias-rodeo-huinca', displayName: 'Ferias Rodeo Huinca SRL', allSlugs: ['ferias-rodeo-huinca-s-r-l'] },
   { canonicalSlug: 'ferialvarez', displayName: 'Ferialvarez SRL', allSlugs: ['ferialvarez', 'ferialvarez-s-r-l'] },
   { canonicalSlug: 'ferias-rurales-25-de-mayo', displayName: 'Ferias Rurales de 25 de Mayo SA', allSlugs: ['ferias-rurales-de-25-de-mayo-s-a'] },
   { canonicalSlug: 'ganadera-salliquelo', displayName: 'Ganadera Salliqueló SA', allSlugs: ['ganadera-salliquelo', 'ganadera-salliquelo-s-a', 'ganadera-salliquelo-sa'] },
   { canonicalSlug: 'ganaderos-de-elordi', displayName: 'Ganaderos de Elordi SA', allSlugs: ['ganaderos-de-elordi-s-a', 'ganaderos-elordi', 'elordi'] },
   { canonicalSlug: 'ganaderos-de-ceres', displayName: 'Ganaderos de Ceres Coop. Ltda.', allSlugs: ['ganaderos-de-ceres', 'ganaderos-de-ceres-cooperativa-ltda'] },
-  { canonicalSlug: 'ganaderos-de-formosa', displayName: 'Ganaderos de Formosa SRL', allSlugs: ['ganaderos-de-formosa', 'ganaderos-formosa'] },
+  { canonicalSlug: 'ganaderos-de-formosa', displayName: 'Ganaderos de Formosa SRL', allSlugs: ['ganaderos-de-formosa', 'ganaderos-formosa', 'ganaderos-de-formosa-s-r-l'] },
   { canonicalSlug: 'ganaderos-de-general-acha', displayName: 'Ganaderos de General Acha SA', allSlugs: ['ganaderos-de-general-acha-s-a', 'ganaderos-de-general-acha-sa', 'ganaderos-gral-acha'] },
-  { canonicalSlug: 'ganados-remates', displayName: 'Ganados Remates SA', allSlugs: ['ganados-remates'] },
+  { canonicalSlug: 'ganados-remates', displayName: 'Ganados Remates SA', allSlugs: ['ganados-remates', 'ganados-remates-s-a'] },
   { canonicalSlug: 'gananor-pujol', displayName: 'Gananor Pujol SA', allSlugs: ['gananor-pujol', 'gananor-pujol-s-a'] },
   { canonicalSlug: 'h-nieva', displayName: 'H. Nieva y Asociados', allSlugs: ['h-nieva-y-asociados'] },
   { canonicalSlug: 'haciendas-federales', displayName: 'Haciendas Federales SRL', allSlugs: ['haciendas-federales', 'haciendas-federales-srl'] },
@@ -58,7 +58,7 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'idercor', displayName: 'IderCor', allSlugs: ['idercor'] },
   { canonicalSlug: 'ildarraz-hnos', displayName: 'Ildarraz Hnos', allSlugs: ['ildarraz-hnos', 'ildarraz-hnos-s-a'] },
   { canonicalSlug: 'j-s-russo', displayName: 'J. S. Russo y Cia. SA', allSlugs: ['j-s-russo-cia-s-a'] },
-  { canonicalSlug: 'jauregui-lorda', displayName: 'Jauregui Lorda SRL', allSlugs: ['jauregui-lorda', 'jauregui-lorda-s-r-l'] },
+  { canonicalSlug: 'jauregui-lorda', displayName: 'Jauregui Lorda SRL', allSlugs: ['jauregui-lorda', 'jauregui-lorda-s-r-l', 'jauregui-lorda-haciendas'] },
   { canonicalSlug: 'javier-bardin', displayName: 'Javier Bardin', allSlugs: ['javier-bardin'] },
   { canonicalSlug: 'kofman-y-lissarrague', displayName: 'Kofman y Lissarrague SRL', allSlugs: ['kofman-y-lissarrague', 'kofman-y-lissarrague-srl'] },
   { canonicalSlug: 'javier-ulises-avalos', displayName: 'Javier Ulises Avalos', allSlugs: ['javier-ulises-avalos'] },
@@ -66,11 +66,11 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'lalor', displayName: 'Martin G. Lalor SA', allSlugs: ['lalor', 'martin-g-lalor-s-a', 'martin-g-lalor'] },
   { canonicalSlug: 'lanser', displayName: 'Carlos J. Lanser SA', allSlugs: ['lanser', 'carlos-j-lanser-s-a'] },
   { canonicalSlug: 'marcos-matteucci', displayName: 'Marcos Matteucci', allSlugs: ['marcos-matteucci'] },
-  { canonicalSlug: 'mondino', displayName: 'Alfredo Sebastián Mondino', allSlugs: ['mondino', 'alfredo-sebastian-mondino', 'alfredo-smondino'] },
+  { canonicalSlug: 'mondino', displayName: 'Alfredo Sebastián Mondino', allSlugs: ['mondino', 'alfredo-sebastian-mondino', 'alfredo-smondino', 'alfredo-s-mondino'] },
   { canonicalSlug: 'monasterio-tattersall', displayName: 'Monasterio Tattersall SA', allSlugs: ['monasterio-tattersall', 'monasterio-tattersall-s-a', 'monasterio'] },
   { canonicalSlug: 'nangapiry', displayName: 'Nangapiry SA', allSlugs: ['nangapiry'] },
   { canonicalSlug: 'nestor-fuentes', displayName: 'Nestor Hugo Fuentes', allSlugs: ['nestor-fuentes', 'nestor-hugo-fuentes-s-a', 'nestor-hugo-fuentes-sa'] },
-  { canonicalSlug: 'ofarrell', displayName: "Ivan L. O'Farrell Consignataria", allSlugs: ['ofarrell', 'ivan-l-ofarrell-srl', 'ivan-l-o-farrell-s-r-l'] },
+  { canonicalSlug: 'ofarrell', displayName: "Ivan L. O'Farrell Consignataria", allSlugs: ['ofarrell', 'ivan-l-ofarrell-srl', 'ivan-l-o-farrell-s-r-l', 'o-farrell'] },
   { canonicalSlug: 'oregui', displayName: 'Oregui Cia SA', allSlugs: ['oregui-cia-sa'] },
   { canonicalSlug: 'orella', displayName: 'Orella SRL', allSlugs: ['orella'] },
   { canonicalSlug: 'pastore', displayName: 'Edgar E. Pastore y Cia. SRL', allSlugs: ['pastore', 'edgar-e-pastore-y-cia-s-r-l'] },
@@ -80,14 +80,14 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'productores-rurales-sud', displayName: 'Productores Rurales del Sud Coop. Ltda.', allSlugs: ['productores-rurales-sud'] },
   { canonicalSlug: 'raul-mendizabal', displayName: 'Raul Mendizabal y Cia. SAC', allSlugs: ['raul-mendizabal-y-cia-sac'] },
   { canonicalSlug: 'reggi', displayName: 'Reggi y Cia. SRL', allSlugs: ['reggi', 'reggi-y-cia', 'reggi-y-cia-s-r-l'] },
-  { canonicalSlug: 'rodriguez-egana', displayName: 'Horacio Rodriguez Egaña', allSlugs: ['rodriguez-egana', 'horacio-rodriguez-egana-consignaciones-s-r-l'] },
+  { canonicalSlug: 'rodriguez-egana', displayName: 'Horacio Rodriguez Egaña', allSlugs: ['rodriguez-egana', 'horacio-rodriguez-egana-consignaciones-s-r-l', 'hre'] },
   { canonicalSlug: 'rosgan', displayName: 'Rosgan', allSlugs: ['rosgan'] },
   { canonicalSlug: 'rural-chaco', displayName: 'Sociedad Rural del Chaco', allSlugs: ['rural-chaco'] },
   { canonicalSlug: 'rural-corrientes', displayName: 'Sociedad Rural de Corrientes', allSlugs: ['rural-corrientes'] },
   { canonicalSlug: 'rural-gualeguaychu', displayName: 'Sociedad Rural de Gualeguaychú', allSlugs: ['rural-gualeguaychu'] },
   { canonicalSlug: 'rural-misiones', displayName: 'Sociedad Rural de Misiones', allSlugs: ['rural-misiones'] },
   { canonicalSlug: 'rural-rafaela', displayName: 'Sociedad Rural de Rafaela', allSlugs: ['rural-rafaela'] },
-  { canonicalSlug: 's-l-ledesma', displayName: 'S. L. Ledesma y Cia. SA', allSlugs: ['s-l-ledesma-y-cia-s-a'] },
+  { canonicalSlug: 's-l-ledesma', displayName: 'S. L. Ledesma y Cia. SA', allSlugs: ['s-l-ledesma', 's-l-ledesma-y-cia-s-a', 'ledesma'] },
   { canonicalSlug: 'saenz-valiente-bullrich', displayName: 'Saenz Valiente, Bullrich y Cia. SA', allSlugs: ['saenz-valiente-bullrich', 'saenz-valiente-bullrich-y-cia-', 'saenz-valiente-bullrich-y-cia-s-a'] },
   { canonicalSlug: 'sivero', displayName: 'Sivero y Cia. SA', allSlugs: ['sivero', 'sivero-y-cia-s-a'] },
   { canonicalSlug: 'trade-food', displayName: 'Trade Food SA', allSlugs: ['trade-food-s-a'] },
@@ -99,12 +99,12 @@ const PROFILES: ConsignatariaProfile[] = [
 
   // Added 2026-05-24 — these had remates but no profile entry, so the detail
   // page 404'd on redirect (data-integrity audit P1 "unresolvable-slugs").
-  { canonicalSlug: 'hourcade-albelo', displayName: 'Hourcade, Albelo y Cía. SA', allSlugs: ['hourcade-albelo', 'hourcade-albelo-y-cia-s-a'] },
+  { canonicalSlug: 'hourcade-albelo', displayName: 'Hourcade, Albelo y Cía. SA', allSlugs: ['hourcade-albelo', 'hourcade-albelo-y-cia-s-a', 'hourcade-albelo-y-cia'] },
   { canonicalSlug: 'consignataria-bh', displayName: 'Consignataria BH SRL', allSlugs: ['consignataria-bh', 'consignataria-bh-s-r-l'] },
   { canonicalSlug: 'paz-hnos', displayName: 'Compañía Consignataria Paz Hnos. SRL', allSlugs: ['paz-hnos', 'compania-consignataria-paz-hnos-s-r-l'] },
   { canonicalSlug: 'lanusse-santillan', displayName: 'Lanusse-Santillán y Cía. SA', allSlugs: ['lanusse-santillan', 'lanusse-santillan-y-cia-s-a'] },
   { canonicalSlug: 'consignataria-galarraga', displayName: 'Consignataria Galarraga SA', allSlugs: ['consignataria-galarraga', 'consignataria-galarraga-s-a'] },
-  { canonicalSlug: 'esteban-abelenda', displayName: 'Esteban Abelenda SA', allSlugs: ['esteban-abelenda', 'esteban-abelenda-s-a'] },
+  { canonicalSlug: 'esteban-abelenda', displayName: 'Esteban Abelenda SA', allSlugs: ['esteban-abelenda', 'esteban-abelenda-s-a', 'esteban-i-abelenda-s-a'] },
   { canonicalSlug: 'de-la-serna', displayName: 'Jorge y Martín de la Serna SRL', allSlugs: ['de-la-serna', 'jorge-y-martin-de-la-serna-s-r-l', 'jorge-y-martin-de-la-serna'] },
   { canonicalSlug: 'duhalde', displayName: 'Duhalde y Cía. SRL', allSlugs: ['duhalde', 'duhalde-y-cia-s-r-l'] },
   { canonicalSlug: 'talano-hermanos', displayName: 'Talano Hermanos SRL', allSlugs: ['talano-hermanos', 'talano-hermanos-s-r-l'] },
@@ -114,7 +114,7 @@ const PROFILES: ConsignatariaProfile[] = [
   // scraper slugs (sociedad-agricola-ganadera-ltda2, cyg-n-hacienda2) are left
   // uncurated on purpose.
   { canonicalSlug: 'madelan', displayName: 'Madelán y Cía.', allSlugs: ['madelan', 'madelan-y-cia'] },
-  { canonicalSlug: 'a-mendizabal', displayName: 'A. Mendizábal', allSlugs: ['a-mendizabal'] },
+  { canonicalSlug: 'a-mendizabal', displayName: 'A. Mendizábal', allSlugs: ['a-mendizabal', 'ricardo-mendizabal-consignaciones-s-r-l'] },
   { canonicalSlug: 'lartirigoyen', displayName: 'Lartirigoyen', allSlugs: ['lartirigoyen'] },
   { canonicalSlug: 'arzuaga', displayName: 'Néstor A. Arzuaga y Cía. S.C.A.', allSlugs: ['arzuaga', 'nestor-a-arzuaga-y-cia-s-c-a'] },
   { canonicalSlug: 'melicur-ganados', displayName: 'Melicur Ganados', allSlugs: ['melicur-ganados'] },
@@ -127,7 +127,7 @@ const PROFILES: ConsignatariaProfile[] = [
   { canonicalSlug: 'gregorio-aberasturi', displayName: 'Gregorio Aberasturi SRL', allSlugs: ['gregorio-aberasturi', 'gregorio-aberasturi-s-r-l'] },
   { canonicalSlug: 'goenaga', displayName: 'Goenaga', allSlugs: ['goenaga'] },
   { canonicalSlug: 'consignataria-vittori', displayName: 'Consignataria Vittori', allSlugs: ['consignataria-vittori', 'vittori'] },
-  { canonicalSlug: 'koerner', displayName: 'Koerner', allSlugs: ['koerner'] },
+  { canonicalSlug: 'koerner', displayName: 'Koerner', allSlugs: ['koerner', 'adolfo-s-koerner-y-cia-s-a'] },
 ]
 
 /* ------------------------------------------------------------------ */
