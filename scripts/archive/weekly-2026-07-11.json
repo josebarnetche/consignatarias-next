@@ -1,0 +1,1427 @@
+{
+  "ga4Totals": {
+    "dimensionHeaders": [
+      {
+        "name": "dateRange"
+      }
+    ],
+    "metricHeaders": [
+      {
+        "name": "sessions",
+        "type": "TYPE_INTEGER"
+      },
+      {
+        "name": "totalUsers",
+        "type": "TYPE_INTEGER"
+      },
+      {
+        "name": "newUsers",
+        "type": "TYPE_INTEGER"
+      },
+      {
+        "name": "screenPageViews",
+        "type": "TYPE_INTEGER"
+      },
+      {
+        "name": "engagedSessions",
+        "type": "TYPE_INTEGER"
+      },
+      {
+        "name": "averageSessionDuration",
+        "type": "TYPE_SECONDS"
+      },
+      {
+        "name": "eventCount",
+        "type": "TYPE_INTEGER"
+      }
+    ],
+    "rows": [
+      {
+        "dimensionValues": [
+          {
+            "value": "prv"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "1205"
+          },
+          {
+            "value": "1015"
+          },
+          {
+            "value": "928"
+          },
+          {
+            "value": "3338"
+          },
+          {
+            "value": "623"
+          },
+          {
+            "value": "164.70966283983404"
+          },
+          {
+            "value": "8355"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "cur"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "1199"
+          },
+          {
+            "value": "998"
+          },
+          {
+            "value": "911"
+          },
+          {
+            "value": "3993"
+          },
+          {
+            "value": "576"
+          },
+          {
+            "value": "374.86642344954134"
+          },
+          {
+            "value": "10449"
+          }
+        ]
+      }
+    ],
+    "rowCount": 2,
+    "metadata": {
+      "currencyCode": "USD",
+      "timeZone": "America/Buenos_Aires"
+    },
+    "kind": "analyticsData#runReport"
+  },
+  "ga4Channels": {
+    "dimensionHeaders": [
+      {
+        "name": "sessionDefaultChannelGroup"
+      },
+      {
+        "name": "dateRange"
+      }
+    ],
+    "metricHeaders": [
+      {
+        "name": "sessions",
+        "type": "TYPE_INTEGER"
+      }
+    ],
+    "rows": [
+      {
+        "dimensionValues": [
+          {
+            "value": "Organic Search"
+          },
+          {
+            "value": "prv"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "1009"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "Organic Search"
+          },
+          {
+            "value": "cur"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "912"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "Direct"
+          },
+          {
+            "value": "cur"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "160"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "Direct"
+          },
+          {
+            "value": "prv"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "149"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "Unassigned"
+          },
+          {
+            "value": "cur"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "145"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "Cross-network"
+          },
+          {
+            "value": "cur"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "40"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "AI Assistant"
+          },
+          {
+            "value": "prv"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "34"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "AI Assistant"
+          },
+          {
+            "value": "cur"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "29"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "Unassigned"
+          },
+          {
+            "value": "prv"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "9"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "Referral"
+          },
+          {
+            "value": "cur"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "4"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "Referral"
+          },
+          {
+            "value": "prv"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "3"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "Cross-network"
+          },
+          {
+            "value": "prv"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "0"
+          }
+        ]
+      }
+    ],
+    "rowCount": 6,
+    "metadata": {
+      "currencyCode": "USD",
+      "timeZone": "America/Buenos_Aires"
+    },
+    "kind": "analyticsData#runReport"
+  },
+  "ga4Landing": {
+    "dimensionHeaders": [
+      {
+        "name": "landingPage"
+      }
+    ],
+    "metricHeaders": [
+      {
+        "name": "sessions",
+        "type": "TYPE_INTEGER"
+      },
+      {
+        "name": "totalUsers",
+        "type": "TYPE_INTEGER"
+      }
+    ],
+    "rows": [
+      {
+        "dimensionValues": [
+          {
+            "value": "/mercado/arrendamiento"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "360"
+          },
+          {
+            "value": "314"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": ""
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "106"
+          },
+          {
+            "value": "96"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "53"
+          },
+          {
+            "value": "36"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/mercado/inmag"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "45"
+          },
+          {
+            "value": "43"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "(not set)"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "42"
+          },
+          {
+            "value": "37"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/frigorificos"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "38"
+          },
+          {
+            "value": "31"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/remates/entre-rios"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "13"
+          },
+          {
+            "value": "13"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/frigorificos/santa-fe"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "12"
+          },
+          {
+            "value": "11"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/mercado"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "11"
+          },
+          {
+            "value": "8"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/mercado/liniers"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "10"
+          },
+          {
+            "value": "9"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/precios"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "9"
+          },
+          {
+            "value": "8"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/consignatarias"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "8"
+          },
+          {
+            "value": "8"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/frigorificos/30708202025"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "8"
+          },
+          {
+            "value": "7"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/mercado/toros"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "8"
+          },
+          {
+            "value": "8"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/precios/vacas"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "8"
+          },
+          {
+            "value": "8"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/consignatarias/hasenkamp"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "7"
+          },
+          {
+            "value": "4"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/mercado/canuelas"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "7"
+          },
+          {
+            "value": "7"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/remates/corrientes"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "7"
+          },
+          {
+            "value": "7"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/consignatarias/sivero"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "6"
+          },
+          {
+            "value": "5"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "/frigorificos/30708126191"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "6"
+          },
+          {
+            "value": "5"
+          }
+        ]
+      }
+    ],
+    "rowCount": 399,
+    "metadata": {
+      "currencyCode": "USD",
+      "timeZone": "America/Buenos_Aires"
+    },
+    "kind": "analyticsData#runReport"
+  },
+  "ga4Daily": {
+    "dimensionHeaders": [
+      {
+        "name": "date"
+      }
+    ],
+    "metricHeaders": [
+      {
+        "name": "sessions",
+        "type": "TYPE_INTEGER"
+      },
+      {
+        "name": "totalUsers",
+        "type": "TYPE_INTEGER"
+      }
+    ],
+    "rows": [
+      {
+        "dimensionValues": [
+          {
+            "value": "20260627"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "78"
+          },
+          {
+            "value": "70"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "20260628"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "73"
+          },
+          {
+            "value": "65"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "20260629"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "208"
+          },
+          {
+            "value": "192"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "20260630"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "199"
+          },
+          {
+            "value": "169"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "20260701"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "234"
+          },
+          {
+            "value": "214"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "20260702"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "232"
+          },
+          {
+            "value": "210"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "20260703"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "183"
+          },
+          {
+            "value": "158"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "20260704"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "133"
+          },
+          {
+            "value": "127"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "20260705"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "170"
+          },
+          {
+            "value": "156"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "20260706"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "244"
+          },
+          {
+            "value": "220"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "20260707"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "157"
+          },
+          {
+            "value": "135"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "20260708"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "199"
+          },
+          {
+            "value": "178"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "20260709"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "118"
+          },
+          {
+            "value": "109"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "20260710"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "176"
+          },
+          {
+            "value": "159"
+          }
+        ]
+      }
+    ],
+    "rowCount": 14,
+    "metadata": {
+      "currencyCode": "USD",
+      "timeZone": "America/Buenos_Aires"
+    },
+    "kind": "analyticsData#runReport"
+  },
+  "gscCur": {
+    "clicks": 890,
+    "impressions": 44874,
+    "ctr": 0.019833311048714178,
+    "position": 6.186187993047199
+  },
+  "gscPrv": {
+    "clicks": 825,
+    "impressions": 44456,
+    "ctr": 0.01855767500449883,
+    "position": 6.4202132445564155
+  },
+  "gscQueries": [
+    {
+      "keys": [
+        "indice novillo arrendamiento"
+      ],
+      "clicks": 27,
+      "impressions": 1706,
+      "ctr": 0.015826494724501757,
+      "position": 7.125439624853458
+    },
+    {
+      "keys": [
+        "precio novillo arrendamiento"
+      ],
+      "clicks": 22,
+      "impressions": 965,
+      "ctr": 0.022797927461139896,
+      "position": 5.361658031088083
+    },
+    {
+      "keys": [
+        "precio novillo arrendamiento mensual"
+      ],
+      "clicks": 22,
+      "impressions": 694,
+      "ctr": 0.03170028818443804,
+      "position": 4.123919308357349
+    },
+    {
+      "keys": [
+        "precio novillo para arrendamiento hoy"
+      ],
+      "clicks": 17,
+      "impressions": 1175,
+      "ctr": 0.01446808510638298,
+      "position": 5.580425531914893
+    },
+    {
+      "keys": [
+        "novillo arrendamiento"
+      ],
+      "clicks": 12,
+      "impressions": 1140,
+      "ctr": 0.010526315789473684,
+      "position": 5.737719298245614
+    },
+    {
+      "keys": [
+        "precio novillo arrendamiento mercado de liniers"
+      ],
+      "clicks": 9,
+      "impressions": 405,
+      "ctr": 0.022222222222222223,
+      "position": 6.869135802469136
+    },
+    {
+      "keys": [
+        "indice novillo arrendamiento mensual"
+      ],
+      "clicks": 8,
+      "impressions": 825,
+      "ctr": 0.009696969696969697,
+      "position": 5.589090909090909
+    },
+    {
+      "keys": [
+        "precio del novillo de arrendamiento"
+      ],
+      "clicks": 8,
+      "impressions": 195,
+      "ctr": 0.041025641025641026,
+      "position": 5
+    },
+    {
+      "keys": [
+        "precio novillo arrendamiento mercado de cañuelas"
+      ],
+      "clicks": 8,
+      "impressions": 406,
+      "ctr": 0.019704433497536946,
+      "position": 6.874384236453202
+    },
+    {
+      "keys": [
+        "inmag"
+      ],
+      "clicks": 7,
+      "impressions": 374,
+      "ctr": 0.01871657754010695,
+      "position": 6.149732620320855
+    },
+    {
+      "keys": [
+        "precio de novillo de arrendamiento"
+      ],
+      "clicks": 7,
+      "impressions": 200,
+      "ctr": 0.035,
+      "position": 6.33
+    },
+    {
+      "keys": [
+        "precio del kg de novillo para arrendamiento diario la nacion"
+      ],
+      "clicks": 6,
+      "impressions": 154,
+      "ctr": 0.03896103896103896,
+      "position": 4.818181818181818
+    },
+    {
+      "keys": [
+        "precio novillo para arrendamiento hoy canal rural"
+      ],
+      "clicks": 6,
+      "impressions": 227,
+      "ctr": 0.02643171806167401,
+      "position": 5.035242290748899
+    },
+    {
+      "keys": [
+        "agrupacion de colaboracion san antonio"
+      ],
+      "clicks": 5,
+      "impressions": 23,
+      "ctr": 0.21739130434782608,
+      "position": 4.304347826086957
+    },
+    {
+      "keys": [
+        "indice de novillo para arrendamiento"
+      ],
+      "clicks": 5,
+      "impressions": 129,
+      "ctr": 0.03875968992248062,
+      "position": 4.75968992248062
+    },
+    {
+      "keys": [
+        "indice novillo arrendamiento mercado de cañuelas"
+      ],
+      "clicks": 5,
+      "impressions": 395,
+      "ctr": 0.012658227848101266,
+      "position": 8.61012658227848
+    },
+    {
+      "keys": [
+        "precio novillo arrendamiento cañuelas"
+      ],
+      "clicks": 5,
+      "impressions": 173,
+      "ctr": 0.028901734104046242,
+      "position": 6.809248554913295
+    },
+    {
+      "keys": [
+        "precio novillo arrendamiento hoy"
+      ],
+      "clicks": 5,
+      "impressions": 167,
+      "ctr": 0.029940119760479042,
+      "position": 4.790419161676647
+    },
+    {
+      "keys": [
+        "indice arrendamiento mercado de liniers"
+      ],
+      "clicks": 3,
+      "impressions": 163,
+      "ctr": 0.018404907975460124,
+      "position": 7.282208588957055
+    },
+    {
+      "keys": [
+        "indice novillo arrendamiento el rural"
+      ],
+      "clicks": 3,
+      "impressions": 148,
+      "ctr": 0.02027027027027027,
+      "position": 4.533783783783784
+    },
+    {
+      "keys": [
+        "inmag hoy"
+      ],
+      "clicks": 3,
+      "impressions": 51,
+      "ctr": 0.058823529411764705,
+      "position": 3.823529411764706
+    },
+    {
+      "keys": [
+        "precio novillo de arrendamiento"
+      ],
+      "clicks": 3,
+      "impressions": 125,
+      "ctr": 0.024,
+      "position": 4.704000000000001
+    },
+    {
+      "keys": [
+        "promedio novillo arrendamiento"
+      ],
+      "clicks": 3,
+      "impressions": 116,
+      "ctr": 0.02586206896551724,
+      "position": 5.224137931034483
+    },
+    {
+      "keys": [
+        "índice novillo arrendamiento mensual el rural"
+      ],
+      "clicks": 3,
+      "impressions": 199,
+      "ctr": 0.01507537688442211,
+      "position": 5.4623115577889445
+    },
+    {
+      "keys": [
+        "deltacar"
+      ],
+      "clicks": 2,
+      "impressions": 8,
+      "ctr": 0.25,
+      "position": 3.125
+    },
+    {
+      "keys": [
+        "frigorifico don jose srl"
+      ],
+      "clicks": 2,
+      "impressions": 11,
+      "ctr": 0.18181818181818182,
+      "position": 4.545454545454545
+    },
+    {
+      "keys": [
+        "i.n.m.a.g. hoy"
+      ],
+      "clicks": 2,
+      "impressions": 19,
+      "ctr": 0.10526315789473684,
+      "position": 4.105263157894736
+    },
+    {
+      "keys": [
+        "indice arrendamiento"
+      ],
+      "clicks": 2,
+      "impressions": 368,
+      "ctr": 0.005434782608695652,
+      "position": 7.385869565217392
+    },
+    {
+      "keys": [
+        "indice de arrendamiento"
+      ],
+      "clicks": 2,
+      "impressions": 559,
+      "ctr": 0.0035778175313059034,
+      "position": 6.536672629695886
+    },
+    {
+      "keys": [
+        "indice novillo arrendamiento mercado de liniers"
+      ],
+      "clicks": 2,
+      "impressions": 82,
+      "ctr": 0.024390243902439025,
+      "position": 7.841463414634147
+    }
+  ],
+  "gscPages": [
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/mercado/arrendamiento"
+      ],
+      "clicks": 390,
+      "impressions": 22853,
+      "ctr": 0.0170655931387564,
+      "position": 6.019734826937382
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/mercado/inmag"
+      ],
+      "clicks": 43,
+      "impressions": 1613,
+      "ctr": 0.026658400495970243,
+      "position": 5.744575325480471
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos"
+      ],
+      "clicks": 18,
+      "impressions": 673,
+      "ctr": 0.02674591381872214,
+      "position": 6.4962852897474
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/"
+      ],
+      "clicks": 10,
+      "impressions": 192,
+      "ctr": 0.052083333333333336,
+      "position": 4.401041666666666
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/remates/entre-rios"
+      ],
+      "clicks": 10,
+      "impressions": 62,
+      "ctr": 0.16129032258064516,
+      "position": 4.483870967741936
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/consignatarias/cooperativa-guillermo-lehmann"
+      ],
+      "clicks": 8,
+      "impressions": 194,
+      "ctr": 0.041237113402061855,
+      "position": 6.891752577319588
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos/santa-fe"
+      ],
+      "clicks": 7,
+      "impressions": 303,
+      "ctr": 0.0231023102310231,
+      "position": 6.8283828382838285
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos/30708419695"
+      ],
+      "clicks": 6,
+      "impressions": 104,
+      "ctr": 0.057692307692307696,
+      "position": 6.269230769230769
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/remates/la-pampa"
+      ],
+      "clicks": 6,
+      "impressions": 53,
+      "ctr": 0.11320754716981132,
+      "position": 5
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/consignatarias"
+      ],
+      "clicks": 5,
+      "impressions": 179,
+      "ctr": 0.027932960893854747,
+      "position": 5.173184357541899
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/consignatarias/sivero"
+      ],
+      "clicks": 5,
+      "impressions": 42,
+      "ctr": 0.11904761904761904,
+      "position": 4.785714285714286
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos/30707283250"
+      ],
+      "clicks": 5,
+      "impressions": 86,
+      "ctr": 0.05813953488372093,
+      "position": 5.1976744186046515
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos/30708126191"
+      ],
+      "clicks": 5,
+      "impressions": 20,
+      "ctr": 0.25,
+      "position": 2.7
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos/30708202025"
+      ],
+      "clicks": 5,
+      "impressions": 40,
+      "ctr": 0.125,
+      "position": 4.2
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos/buenos-aires"
+      ],
+      "clicks": 5,
+      "impressions": 533,
+      "ctr": 0.009380863039399626,
+      "position": 8.320825515947467
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos/cordoba"
+      ],
+      "clicks": 5,
+      "impressions": 110,
+      "ctr": 0.045454545454545456,
+      "position": 7.2
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos/corrientes"
+      ],
+      "clicks": 5,
+      "impressions": 52,
+      "ctr": 0.09615384615384616,
+      "position": 5.5
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/mercado"
+      ],
+      "clicks": 5,
+      "impressions": 955,
+      "ctr": 0.005235602094240838,
+      "position": 7.880628272251309
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/mercado/toros"
+      ],
+      "clicks": 5,
+      "impressions": 405,
+      "ctr": 0.012345679012345678,
+      "position": 5.57283950617284
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/consignatarias/etchevehere-rural"
+      ],
+      "clicks": 4,
+      "impressions": 61,
+      "ctr": 0.06557377049180328,
+      "position": 6.80327868852459
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos/20049834811"
+      ],
+      "clicks": 4,
+      "impressions": 10,
+      "ctr": 0.4,
+      "position": 3.2
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos/30695160417"
+      ],
+      "clicks": 4,
+      "impressions": 55,
+      "ctr": 0.07272727272727272,
+      "position": 4.218181818181819
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos/30707731601"
+      ],
+      "clicks": 4,
+      "impressions": 33,
+      "ctr": 0.12121212121212122,
+      "position": 8.848484848484848
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos/30710439245"
+      ],
+      "clicks": 4,
+      "impressions": 36,
+      "ctr": 0.1111111111111111,
+      "position": 6.305555555555555
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos/30717324923"
+      ],
+      "clicks": 4,
+      "impressions": 11,
+      "ctr": 0.36363636363636365,
+      "position": 4
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos/30718308204"
+      ],
+      "clicks": 4,
+      "impressions": 42,
+      "ctr": 0.09523809523809523,
+      "position": 4.642857142857142
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/frigorificos/formosa"
+      ],
+      "clicks": 4,
+      "impressions": 28,
+      "ctr": 0.14285714285714285,
+      "position": 3.75
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/precios/vacas"
+      ],
+      "clicks": 4,
+      "impressions": 1623,
+      "ctr": 0.0024645717806531116,
+      "position": 5.418361059765866
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/remates/corrientes"
+      ],
+      "clicks": 4,
+      "impressions": 61,
+      "ctr": 0.06557377049180328,
+      "position": 3.4754098360655736
+    },
+    {
+      "keys": [
+        "https://www.consignatarias.com.ar/consignatarias/hasenkamp"
+      ],
+      "clicks": 3,
+      "impressions": 110,
+      "ctr": 0.02727272727272727,
+      "position": 5.781818181818182
+    }
+  ]
+}

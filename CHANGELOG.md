@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.178.0] — 2026-07-15
+
+### Tasas de financiación por canal bancario — el gap descubrible (MOAT)
+
+Las condiciones financieras reales del remate (tasas por banco, plazo y moneda) existían sólo en un flyer de WhatsApp que la consignataria manda el día previo: no indexadas, no comparables, se pierden tras el remate. **Ahora se capturan, estructuran y publican atadas a la pre-oferta/remate** — capa de inteligencia también del *cómo se paga*, no sólo del *cuánto vale*.
+
+- **Tabla comparable en `/preoferta/<slug>#financiacion`** (`CondicionesRemate`): tasas en **pesos** (7 canales × 180/270/360 días) y en **dólares** (5 canales · TNA), verbatim del flyer oficial R&C. Deadline de prefactura (24/07/2026), aclaración MiPyME/interés vencido y teléfonos de asesoramiento.
+- **Gancho en el perfil de la consignataria** (`RemateEspecialDestaque`): "N canales de financiación bancaria · tasas publicadas →" con deep-link al dossier.
+- **Modelo de datos:** `condiciones.financiacion.tasas` en la pre-oferta (`pesos.canales[]`, `dolares.canales[]`, `aclaracion`, `prefactura_hasta`, `asesoramiento`). Replicable para cualquier remate.
+- **Research doc + evidencia:** `07-gaps-de-informacion/financiacion-remates-por-canal.md` + flyers originales.
+
 ## [1.177.0] — 2026-07-15
 
 ### Ruteo de leads por zona + campo localidad (Corrientes)

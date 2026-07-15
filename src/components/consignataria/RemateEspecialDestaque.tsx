@@ -158,6 +158,17 @@ export default function RemateEspecialDestaque({ remate }: { remate: RemateEspec
               ))}
             </div>
           )}
+          {remate.financiacionCanales && (
+            <Link
+              href={`/preoferta/${remate.preofertaSlug}#financiacion`}
+              className="mt-2.5 flex items-center justify-between gap-2 rounded-terminal border border-terminal-border bg-black/20 px-2.5 py-2 hover:border-accent/40 transition-colors group"
+            >
+              <span className="text-xxs font-terminal text-zinc-300">
+                <b className="text-zinc-100 tabular-nums">{remate.financiacionCanales}</b> canales de financiación bancaria · tasas publicadas
+              </span>
+              <span className="text-xxs text-accent group-hover:text-accent-bright">ver &rarr;</span>
+            </Link>
+          )}
           <Link
             href={`/preoferta/${remate.preofertaSlug}`}
             className="mt-2.5 inline-flex items-center justify-center w-full rounded-terminal bg-positive/[0.08] border border-positive/40 text-positive font-terminal text-xxs uppercase tracking-wider py-2.5 hover:bg-positive/[0.14] transition-colors"

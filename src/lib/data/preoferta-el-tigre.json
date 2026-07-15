@@ -1,1005 +1,1104 @@
 {
- "slug": "el-tigre",
- "consignatariaSlug": "reggi",
- "cabana": "Cabaña El Tigre",
- "es_cliente_memola": true,
- "consignataria_pro": true,
- "elrural_remate_id": "603",
- "remate": "34° Remate Anual Cabaña El Tigre",
- "fecha": "2026-07-17T14:00",
- "lugar": "Sociedad Rural de Mercedes, Corrientes",
- "consignataria": "Reggi & Cía · Martín Pando",
- "base": 7500000,
- "cierre_preoferta": "2026-07-16T20:00",
- "lotes": [
-  {
-   "rp": "407",
-   "corral": "1",
-   "video": "zpQmyuBnAZs",
-   "fn": "01/10/23",
-   "padre": "Chañar 3259",
-   "madre": "Payubrera 304",
-   "reg": "D",
-   "ce": "38,5",
-   "peso": "900",
-   "lote": "1",
-   "base": 7500000,
-   "elrural_id": "149092",
-   "nombre": "Payubrero 407",
-   "epd": {
-    "pint": "0",
-    "pn": {
-     "v": 0.3,
-     "prec": 0.63
+  "slug": "el-tigre",
+  "consignatariaSlug": "reggi",
+  "cabana": "Cabaña El Tigre",
+  "es_cliente_memola": true,
+  "consignataria_pro": true,
+  "elrural_remate_id": "603",
+  "remate": "34° Remate Anual Cabaña El Tigre",
+  "fecha": "2026-07-17T14:00",
+  "lugar": "Sociedad Rural de Mercedes, Corrientes",
+  "consignataria": "Reggi & Cía · Martín Pando",
+  "base": 7500000,
+  "cierre_preoferta": "2026-07-16T20:00",
+  "lotes": [
+    {
+      "rp": "407",
+      "corral": "1",
+      "video": "zpQmyuBnAZs",
+      "fn": "01/10/23",
+      "padre": "Chañar 3259",
+      "madre": "Payubrera 304",
+      "reg": "D",
+      "ce": "38,5",
+      "peso": "900",
+      "lote": "1",
+      "base": 7500000,
+      "elrural_id": "149092",
+      "nombre": "Payubrero 407",
+      "epd": {
+        "pint": "0",
+        "pn": {
+          "v": 0.3,
+          "prec": 0.63
+        },
+        "pd": {
+          "v": 13.42,
+          "prec": 0.72
+        },
+        "am": {
+          "v": -0.62,
+          "prec": 0.4
+        },
+        "lyc": {
+          "v": 6.08
+        },
+        "pf": {
+          "v": 14.2,
+          "prec": 0.79
+        },
+        "ce": {
+          "v": 0.84,
+          "prec": 0.26
+        }
+      }
     },
-    "pd": {
-     "v": 13.42,
-     "prec": 0.72
+    {
+      "rp": "13307",
+      "corral": "2",
+      "video": "7JFj-Xtse8E",
+      "fn": "22/07/23",
+      "padre": "Gualicho",
+      "madre": "Piqueno 11454",
+      "reg": "A",
+      "ce": "43,0",
+      "peso": "782",
+      "lote": "2A",
+      "base": 7500000,
+      "elrural_id": "149094",
+      "nombre": "Lote 2A",
+      "epd": {
+        "pint": "B",
+        "pn": {
+          "v": -0.28,
+          "prec": 0.68
+        },
+        "pd": {
+          "v": 5.79,
+          "prec": 0.76
+        },
+        "am": {
+          "v": 2.51,
+          "prec": 0.51
+        },
+        "lyc": {
+          "v": 5.41
+        },
+        "pf": {
+          "v": 24.47,
+          "prec": 0.8
+        },
+        "ce": {
+          "v": -0.06,
+          "prec": 0.4
+        }
+      }
     },
-    "am": {
-     "v": -0.62,
-     "prec": 0.4
+    {
+      "rp": "403",
+      "corral": "2",
+      "video": "Mo2eGsn7wJQ",
+      "fn": "13/08/23",
+      "padre": "Fanfarrón",
+      "madre": "Leonel 916",
+      "reg": "D",
+      "ce": "48,0",
+      "peso": "800",
+      "lote": "2B",
+      "base": 7500000,
+      "elrural_id": "149093",
+      "nombre": "Payubrero 403",
+      "epd": {
+        "pint": "A",
+        "pn": {
+          "v": 0.81,
+          "prec": 0.69
+        },
+        "pd": {
+          "v": 10.05,
+          "prec": 0.76
+        },
+        "am": {
+          "v": -1.49,
+          "prec": 0.56
+        },
+        "lyc": {
+          "v": 3.53
+        },
+        "pf": {
+          "v": 10.72,
+          "prec": 0.81
+        },
+        "ce": {
+          "v": 0.48,
+          "prec": 0.43
+        }
+      }
     },
-    "lyc": {
-     "v": 6.08
+    {
+      "rp": "13323",
+      "corral": "3",
+      "video": "I9SqdEazP7k",
+      "fn": "28/07/23",
+      "padre": "Gualicho",
+      "madre": "Piqueno 11454",
+      "reg": "A",
+      "ce": "38,5",
+      "peso": "700",
+      "lote": "3A",
+      "base": 7500000,
+      "elrural_id": "149095",
+      "nombre": "Piqueno 13323",
+      "epd": {
+        "pint": null,
+        "pn": {
+          "v": 0.3,
+          "prec": 0.3
+        },
+        "pd": {
+          "v": 0.68,
+          "prec": 7.06
+        },
+        "am": {
+          "v": 0.76,
+          "prec": 2.09
+        },
+        "lyc": {
+          "v": 0.51
+        },
+        "pf": {
+          "v": 5.63,
+          "prec": 23.25
+        },
+        "ce": {
+          "v": 0.8,
+          "prec": -0.37
+        }
+      }
     },
-    "pf": {
-     "v": 14.2,
-     "prec": 0.79
+    {
+      "rp": "13351",
+      "corral": "3",
+      "video": "5HmFamW_AVI",
+      "fn": "15/08/23",
+      "padre": "Experto",
+      "madre": "Leonel 880",
+      "reg": "D",
+      "ce": "44,0",
+      "peso": "750",
+      "lote": "3B",
+      "base": 7500000,
+      "elrural_id": "149096",
+      "nombre": "Piqueno 13351",
+      "epd": {
+        "pint": "B",
+        "pn": {
+          "v": 1.13,
+          "prec": 0.74
+        },
+        "pd": {
+          "v": 6.78,
+          "prec": 0.8
+        },
+        "am": {
+          "v": 1.85,
+          "prec": 0.65
+        },
+        "lyc": {
+          "v": 5.24
+        },
+        "pf": {
+          "v": 19.08,
+          "prec": 0.83
+        },
+        "ce": {
+          "v": 1.14,
+          "prec": 0.48
+        }
+      }
     },
-    "ce": {
-     "v": 0.84,
-     "prec": 0.26
+    {
+      "rp": "399",
+      "corral": "4",
+      "video": "QiRfQ2QmezY",
+      "fn": "10/08/23",
+      "padre": "Fanfarrón",
+      "madre": "Leonel 980",
+      "reg": "D",
+      "ce": "42,5",
+      "peso": "680",
+      "lote": "4A",
+      "base": 7500000,
+      "elrural_id": "149097",
+      "nombre": "Payubrero 399",
+      "epd": {
+        "pint": null,
+        "pn": {
+          "v": 0.56,
+          "prec": 0.56
+        },
+        "pd": {
+          "v": 0.72,
+          "prec": 6.84
+        },
+        "am": {
+          "v": 0.77,
+          "prec": 0.99
+        },
+        "lyc": {
+          "v": 0.56
+        },
+        "pf": {
+          "v": 4.41,
+          "prec": 13.55
+        },
+        "ce": {
+          "v": 0.68,
+          "prec": 0.9
+        }
+      }
+    },
+    {
+      "rp": "401",
+      "corral": "4",
+      "video": "vJSXxTpu8U8",
+      "fn": "12/08/23",
+      "padre": "Guyacuru",
+      "madre": "Vicumac 36",
+      "reg": "A",
+      "ce": "35,5",
+      "peso": "690",
+      "lote": "4B",
+      "base": 7500000,
+      "elrural_id": "149098",
+      "nombre": "Payubrero 401",
+      "epd": {
+        "pint": "B",
+        "pn": {
+          "v": 0.09,
+          "prec": 0.68
+        },
+        "pd": {
+          "v": 5.06,
+          "prec": 0.73
+        },
+        "am": {
+          "v": -1.85,
+          "prec": 0.59
+        },
+        "lyc": {
+          "v": 0.67
+        },
+        "pf": {
+          "v": 8.2,
+          "prec": 0.64
+        },
+        "ce": {
+          "v": 0.36,
+          "prec": 0.33
+        }
+      }
+    },
+    {
+      "rp": "10439",
+      "corral": "5",
+      "video": "vLQoW0cWMzE",
+      "lote": "5A",
+      "peso": "735",
+      "base": 6500000,
+      "elrural_id": "149099"
+    },
+    {
+      "rp": "13449",
+      "corral": "5",
+      "video": "A_eMYj1HQKg",
+      "lote": "5B",
+      "peso": "670",
+      "base": 6500000,
+      "elrural_id": "149100"
+    },
+    {
+      "rp": "13503",
+      "corral": "6",
+      "video": "Wpx4P1xy-SY",
+      "lote": "6A",
+      "base": 6500000,
+      "elrural_id": "149101"
+    },
+    {
+      "rp": "13507",
+      "corral": "6",
+      "video": "xNNCU_viLXw",
+      "lote": "6B",
+      "peso": "705",
+      "base": 6500000,
+      "elrural_id": "149102"
+    },
+    {
+      "rp": "13463",
+      "corral": "7",
+      "video": "ZceAfVi0Tbk",
+      "lote": "7A",
+      "peso": "625",
+      "base": 6500000,
+      "elrural_id": "149103"
+    },
+    {
+      "rp": "13553",
+      "corral": "7",
+      "video": "Nx-WY__LsJc",
+      "lote": "7B",
+      "peso": "640",
+      "base": 6500000,
+      "elrural_id": "149104"
+    },
+    {
+      "rp": "13525",
+      "corral": "8",
+      "video": "V9axFNt5Frg",
+      "lote": "8A",
+      "peso": "625",
+      "base": 6500000,
+      "elrural_id": "149105"
+    },
+    {
+      "rp": "13555",
+      "corral": "8",
+      "video": "zY6IOLRdWug",
+      "lote": "8B",
+      "peso": "685",
+      "base": 6500000,
+      "elrural_id": "149106"
+    },
+    {
+      "rp": "13441",
+      "corral": "9",
+      "video": "XyjZvtfpT1Y",
+      "lote": "9A",
+      "peso": "635",
+      "base": 6500000,
+      "elrural_id": "149107"
+    },
+    {
+      "rp": "13515",
+      "corral": "9",
+      "video": "HuMXv1iSUag",
+      "lote": "9B",
+      "peso": "625",
+      "base": 6500000,
+      "elrural_id": "149108"
+    },
+    {
+      "rp": "13477",
+      "corral": "10",
+      "video": "nTSyF80csnI",
+      "lote": "10A",
+      "peso": "625",
+      "base": 6500000,
+      "elrural_id": "149109"
+    },
+    {
+      "rp": "13491",
+      "corral": "10",
+      "video": "uuYFJ4-kxu0",
+      "lote": "10B",
+      "peso": "625",
+      "base": 6500000,
+      "elrural_id": "149110"
+    },
+    {
+      "rp": "0409",
+      "corral": "11",
+      "video": "fM6UtBz2K94",
+      "lote": "11A",
+      "peso": "600"
+    },
+    {
+      "rp": "13423",
+      "corral": "11",
+      "video": "Z4n_Lch4WM4",
+      "lote": "11B",
+      "peso": "610",
+      "base": 6500000,
+      "elrural_id": "149111"
+    },
+    {
+      "rp": "13395",
+      "corral": "12",
+      "video": "QmeD5YhgEzs",
+      "lote": "12A",
+      "peso": "645",
+      "base": 6500000,
+      "elrural_id": "149113"
+    },
+    {
+      "rp": "13461",
+      "corral": "12",
+      "video": "HvMlnCuFn0Q",
+      "lote": "12B",
+      "peso": "635",
+      "base": 6500000,
+      "elrural_id": "149114"
+    },
+    {
+      "rp": "13413",
+      "corral": "13",
+      "video": "EVIk3PL1g5o",
+      "lote": "13A",
+      "peso": "625",
+      "base": 6500000,
+      "elrural_id": "149115"
+    },
+    {
+      "rp": "13469",
+      "corral": "13",
+      "video": "-QXoQndCkPM",
+      "lote": "13B",
+      "peso": "610",
+      "base": 6500000,
+      "elrural_id": "149116"
+    },
+    {
+      "rp": "13471",
+      "corral": "14",
+      "video": "-cbxZwZAW5A",
+      "lote": "14A",
+      "peso": "600",
+      "base": 6500000,
+      "elrural_id": "149117"
+    },
+    {
+      "rp": "13533",
+      "corral": "14",
+      "video": "LeeX8IvCKrc",
+      "lote": "14B",
+      "peso": "655",
+      "base": 6500000,
+      "elrural_id": "149118"
+    },
+    {
+      "rp": "13445",
+      "corral": "15",
+      "video": "ArplmgKHHEw",
+      "lote": "15A",
+      "peso": "625",
+      "base": 6500000,
+      "elrural_id": "149119"
+    },
+    {
+      "rp": "13551",
+      "corral": "15",
+      "video": "kO21p3XdsKc",
+      "lote": "15B",
+      "peso": "610",
+      "base": 6500000,
+      "elrural_id": "149120"
+    },
+    {
+      "rp": "13403",
+      "corral": "16",
+      "video": "LlV3dIKH6BQ",
+      "lote": "16A",
+      "peso": "595",
+      "base": 6500000,
+      "elrural_id": "149121"
+    },
+    {
+      "rp": "13437",
+      "corral": "16",
+      "video": "acOgrNj4zrU",
+      "lote": "16B",
+      "peso": "600",
+      "base": 6500000,
+      "elrural_id": "149122"
+    },
+    {
+      "rp": "13467",
+      "corral": "17",
+      "video": "90-ZYfvjovQ",
+      "lote": "17A",
+      "peso": "600",
+      "base": 6500000,
+      "elrural_id": "149123"
+    },
+    {
+      "rp": "13473",
+      "corral": "17",
+      "video": "maBumd8hfJY",
+      "lote": "17B",
+      "peso": "590",
+      "base": 6500000,
+      "elrural_id": "149124"
+    },
+    {
+      "rp": "13447",
+      "corral": "18",
+      "video": "q9VDEZ82U1c",
+      "lote": "18A",
+      "peso": "620",
+      "base": 6500000,
+      "elrural_id": "149125"
+    },
+    {
+      "rp": "13459",
+      "corral": "18",
+      "video": "bXZC-4-duek",
+      "lote": "18B",
+      "peso": "580",
+      "base": 6500000,
+      "elrural_id": "149126"
+    },
+    {
+      "rp": "13481",
+      "corral": "19",
+      "video": "q5O076BQ0YA",
+      "lote": "19A",
+      "peso": "550",
+      "base": 6500000,
+      "elrural_id": "149127"
+    },
+    {
+      "rp": "13495",
+      "corral": "19",
+      "video": "qXx7viW3-rQ",
+      "lote": "19B",
+      "peso": "600",
+      "base": 6500000,
+      "elrural_id": "149128"
+    },
+    {
+      "rp": "13443",
+      "corral": "20",
+      "video": "tw4g770Phxw",
+      "lote": "20A",
+      "peso": "595",
+      "base": 6500000,
+      "elrural_id": "149129"
+    },
+    {
+      "rp": "13493",
+      "corral": "20",
+      "video": "XpSywgif3AI",
+      "lote": "20B",
+      "peso": "610",
+      "base": 6500000,
+      "elrural_id": "149130"
+    },
+    {
+      "rp": "13389",
+      "corral": "21",
+      "video": "vC0GR3EjRLE",
+      "lote": "21A",
+      "peso": "585",
+      "base": 6500000,
+      "elrural_id": "149131"
+    },
+    {
+      "rp": "13429",
+      "corral": "21",
+      "video": "-vxmcOa7BRs",
+      "lote": "21B",
+      "peso": "590",
+      "base": 6500000,
+      "elrural_id": "149132"
+    },
+    {
+      "rp": "13381",
+      "corral": "22",
+      "video": "akbkJqy55X0",
+      "lote": "22A",
+      "peso": "530",
+      "base": 6500000,
+      "elrural_id": "149133"
+    },
+    {
+      "rp": "13465",
+      "corral": "22",
+      "video": "nHn06U654Ns",
+      "lote": "22B",
+      "peso": "570",
+      "base": 6500000,
+      "elrural_id": "149134"
+    },
+    {
+      "rp": "13497",
+      "corral": "23",
+      "video": "uq85GwBfr1w",
+      "lote": "23A",
+      "peso": "550",
+      "base": 6500000,
+      "elrural_id": "149135"
+    },
+    {
+      "rp": "13509",
+      "corral": "23",
+      "video": "nqK0PWHFaFo",
+      "lote": "23B",
+      "peso": "555",
+      "base": 6500000,
+      "elrural_id": "149136"
+    },
+    {
+      "rp": "13433",
+      "corral": "24",
+      "video": "nD5ulJysNrk",
+      "lote": "24A",
+      "peso": "530",
+      "base": 6500000,
+      "elrural_id": "149137"
+    },
+    {
+      "rp": "13439",
+      "corral": "24",
+      "video": "ci9OE3Eun38",
+      "lote": "24B",
+      "peso": "555",
+      "base": 6500000,
+      "elrural_id": "149138"
+    },
+    {
+      "rp": "13419",
+      "corral": "25",
+      "video": "QewOYWqYesk",
+      "lote": "25A",
+      "peso": "560",
+      "base": 6500000,
+      "elrural_id": "149139"
+    },
+    {
+      "rp": "13455",
+      "corral": "25",
+      "video": "VL3cqUM4CF8",
+      "lote": "25B",
+      "peso": "605",
+      "base": 6500000,
+      "elrural_id": "149140"
+    },
+    {
+      "rp": "13421",
+      "corral": "26",
+      "video": "Eouk-_A44xY",
+      "lote": "26A",
+      "peso": "620",
+      "base": 6500000,
+      "elrural_id": "149141"
+    },
+    {
+      "rp": "13561",
+      "corral": "26",
+      "video": "0f8EE0y9Y5g",
+      "lote": "26B",
+      "peso": "600",
+      "base": 6500000,
+      "elrural_id": "149142"
+    },
+    {
+      "rp": "13393",
+      "corral": "27",
+      "video": "9FEpc9Q6jKM",
+      "lote": "27A",
+      "peso": "590",
+      "base": 6500000,
+      "elrural_id": "149143"
+    },
+    {
+      "rp": "13415",
+      "corral": "27",
+      "video": "Jefu1sPgg-U",
+      "lote": "27B",
+      "peso": "540",
+      "base": 6500000,
+      "elrural_id": "149144"
+    },
+    {
+      "rp": "13407",
+      "corral": "28",
+      "video": "4z0EgYU87zE",
+      "lote": "28A",
+      "peso": "615",
+      "base": 6500000,
+      "elrural_id": "149145"
+    },
+    {
+      "rp": "13457",
+      "corral": "28",
+      "video": "XYVqyLAX2gg",
+      "lote": "28B",
+      "peso": "600",
+      "base": 6500000,
+      "elrural_id": "149146"
+    },
+    {
+      "rp": "13435",
+      "corral": "29",
+      "video": "d8_1NsRxfXY",
+      "lote": "29A",
+      "peso": "565",
+      "base": 6500000,
+      "elrural_id": "149147"
+    },
+    {
+      "rp": "13511",
+      "corral": "29",
+      "video": "3OTL1OQQePw",
+      "lote": "29B",
+      "peso": "570",
+      "base": 6500000,
+      "elrural_id": "149148"
+    },
+    {
+      "rp": "13401",
+      "corral": "30",
+      "video": "lh6mZJYLDmU",
+      "lote": "30A",
+      "peso": "715",
+      "base": 7000000,
+      "elrural_id": "149149"
+    },
+    {
+      "rp": "13523",
+      "corral": "30",
+      "video": "hkwjU9BUS20",
+      "lote": "30B",
+      "peso": "665",
+      "base": 7000000,
+      "elrural_id": "149150"
+    },
+    {
+      "rp": "13527",
+      "corral": "31",
+      "video": "_KHyXqvgtbY",
+      "lote": "31A",
+      "peso": "705",
+      "base": 7000000,
+      "elrural_id": "149151"
+    },
+    {
+      "rp": "13539",
+      "corral": "31",
+      "video": "bjHq3icLYwU",
+      "lote": "31B",
+      "peso": "665",
+      "base": 7000000,
+      "elrural_id": "149152"
+    },
+    {
+      "rp": "13385",
+      "corral": "32",
+      "video": "zuLZ30XehRU",
+      "lote": "32A",
+      "peso": "670",
+      "base": 6500000,
+      "elrural_id": "149153"
+    },
+    {
+      "rp": "13535",
+      "corral": "32",
+      "video": "rJGrgFwx2fM",
+      "lote": "32B",
+      "peso": "690",
+      "base": 6500000,
+      "elrural_id": "149154"
+    },
+    {
+      "rp": "13383",
+      "corral": "33",
+      "video": "i059JR_iEpQ",
+      "lote": "33A",
+      "peso": "685",
+      "base": 6500000,
+      "elrural_id": "149155"
+    },
+    {
+      "rp": "13391",
+      "corral": "33",
+      "video": "0wRyzFnKJdo",
+      "lote": "33B",
+      "peso": "630",
+      "base": 6500000,
+      "elrural_id": "149156"
+    },
+    {
+      "rp": "13529",
+      "corral": "33",
+      "video": "OvyZSfx5jmQ",
+      "lote": "33C",
+      "peso": "635",
+      "base": 6500000,
+      "elrural_id": "149157"
+    },
+    {
+      "rp": "13387",
+      "corral": "34",
+      "video": "7QlrStM3pnE",
+      "lote": "34A",
+      "peso": "580",
+      "base": 6500000,
+      "elrural_id": "149158"
+    },
+    {
+      "rp": "13557",
+      "corral": "34",
+      "video": "P0DYuCuzqYw",
+      "lote": "34B",
+      "peso": "655",
+      "base": 6500000,
+      "elrural_id": "149159"
+    },
+    {
+      "rp": "13547",
+      "corral": "35",
+      "video": "5E3JU2g43NI",
+      "lote": "35A",
+      "peso": "595",
+      "base": 6500000,
+      "elrural_id": "149160"
+    },
+    {
+      "rp": "13559",
+      "corral": "35",
+      "video": "nOAhXx9_Osk",
+      "lote": "35B",
+      "peso": "575",
+      "base": 6500000,
+      "elrural_id": "149161"
+    },
+    {
+      "rp": "112",
+      "corral": "40",
+      "video": "-I8-Ck1PsfI",
+      "lote": "40A",
+      "peso": "555",
+      "base": 6500000,
+      "elrural_id": "149169"
+    },
+    {
+      "rp": "137",
+      "corral": "40",
+      "video": "sDfzVKfcbsQ",
+      "lote": "40B",
+      "peso": "550",
+      "base": 6500000,
+      "elrural_id": "149170"
+    },
+    {
+      "rp": "003",
+      "corral": "41",
+      "video": "ZB-qKTk6a_c",
+      "lote": "41",
+      "peso": "730"
+    },
+    {
+      "rp": "005",
+      "corral": "42",
+      "video": "xYgelw5NWSk",
+      "lote": "42A",
+      "peso": "735"
+    },
+    {
+      "rp": "014",
+      "corral": "42",
+      "video": "weuBPjbdL2A",
+      "lote": "42B",
+      "peso": "750"
+    },
+    {
+      "rp": "034",
+      "corral": "43",
+      "video": "U4Jq-JjWGN0",
+      "lote": "43A",
+      "peso": "545"
+    },
+    {
+      "rp": "036",
+      "corral": "43",
+      "video": "E3ihtJ0uk-I",
+      "lote": "43B",
+      "peso": "530"
+    },
+    {
+      "rp": "024",
+      "corral": "44",
+      "video": "_kY6NWQQJoU",
+      "lote": "44A",
+      "peso": "535"
+    },
+    {
+      "rp": "028",
+      "corral": "44",
+      "video": "rHgA26dKgzM",
+      "lote": "44B",
+      "peso": "520"
+    },
+    {
+      "rp": "099",
+      "corral": "45",
+      "video": "Af6kNTh3ZYs",
+      "lote": "45"
+    },
+    {
+      "rp": "12274",
+      "corral": "46",
+      "video": "cbdnMLMsyGQ",
+      "lote": "46"
+    },
+    {
+      "rp": "13398",
+      "corral": "47",
+      "video": "edqhf72R1yM",
+      "lote": "47"
+    },
+    {
+      "rp": "12740",
+      "corral": "48",
+      "video": "Z8KSuMe1Qlo",
+      "lote": "48"
+    },
+    {
+      "rp": "064",
+      "corral": "49",
+      "video": "-xMsejrPkdU",
+      "lote": "49"
+    },
+    {
+      "rp": "025",
+      "corral": "50",
+      "video": "oEAkw-UtyzU",
+      "lote": "50"
+    },
+    {
+      "rp": "105",
+      "corral": "51",
+      "video": "BFlOaUrb7Yk",
+      "lote": "51"
     }
-   }
-  },
-  {
-   "rp": "13307",
-   "corral": "2",
-   "video": "7JFj-Xtse8E",
-   "fn": "22/07/23",
-   "padre": "Gualicho",
-   "madre": "Piqueno 11454",
-   "reg": "A",
-   "ce": "43,0",
-   "peso": "782",
-   "lote": "2A",
-   "base": 7500000,
-   "elrural_id": "149094",
-   "nombre": "Lote 2A",
-   "epd": {
-    "pint": "B",
-    "pn": {
-     "v": -0.28,
-     "prec": 0.68
-    },
-    "pd": {
-     "v": 5.79,
-     "prec": 0.76
-    },
-    "am": {
-     "v": 2.51,
-     "prec": 0.51
-    },
-    "lyc": {
-     "v": 5.41
-    },
-    "pf": {
-     "v": 24.47,
-     "prec": 0.8
-    },
-    "ce": {
-     "v": -0.06,
-     "prec": 0.4
-    }
-   }
-  },
-  {
-   "rp": "403",
-   "corral": "2",
-   "video": "Mo2eGsn7wJQ",
-   "fn": "13/08/23",
-   "padre": "Fanfarrón",
-   "madre": "Leonel 916",
-   "reg": "D",
-   "ce": "48,0",
-   "peso": "800",
-   "lote": "2B",
-   "base": 7500000,
-   "elrural_id": "149093",
-   "nombre": "Payubrero 403",
-   "epd": {
-    "pint": "A",
-    "pn": {
-     "v": 0.81,
-     "prec": 0.69
-    },
-    "pd": {
-     "v": 10.05,
-     "prec": 0.76
-    },
-    "am": {
-     "v": -1.49,
-     "prec": 0.56
-    },
-    "lyc": {
-     "v": 3.53
-    },
-    "pf": {
-     "v": 10.72,
-     "prec": 0.81
-    },
-    "ce": {
-     "v": 0.48,
-     "prec": 0.43
-    }
-   }
-  },
-  {
-   "rp": "13323",
-   "corral": "3",
-   "video": "I9SqdEazP7k",
-   "fn": "28/07/23",
-   "padre": "Gualicho",
-   "madre": "Piqueno 11454",
-   "reg": "A",
-   "ce": "38,5",
-   "peso": "700",
-   "lote": "3A",
-   "base": 7500000,
-   "elrural_id": "149095",
-   "nombre": "Piqueno 13323",
-   "epd": {
-    "pint": null,
-    "pn": {
-     "v": 0.3,
-     "prec": 0.3
-    },
-    "pd": {
-     "v": 0.68,
-     "prec": 7.06
-    },
-    "am": {
-     "v": 0.76,
-     "prec": 2.09
-    },
-    "lyc": {
-     "v": 0.51
-    },
-    "pf": {
-     "v": 5.63,
-     "prec": 23.25
-    },
-    "ce": {
-     "v": 0.8,
-     "prec": -0.37
-    }
-   }
-  },
-  {
-   "rp": "13351",
-   "corral": "3",
-   "video": "5HmFamW_AVI",
-   "fn": "15/08/23",
-   "padre": "Experto",
-   "madre": "Leonel 880",
-   "reg": "D",
-   "ce": "44,0",
-   "peso": "750",
-   "lote": "3B",
-   "base": 7500000,
-   "elrural_id": "149096",
-   "nombre": "Piqueno 13351",
-   "epd": {
-    "pint": "B",
-    "pn": {
-     "v": 1.13,
-     "prec": 0.74
-    },
-    "pd": {
-     "v": 6.78,
-     "prec": 0.8
-    },
-    "am": {
-     "v": 1.85,
-     "prec": 0.65
-    },
-    "lyc": {
-     "v": 5.24
-    },
-    "pf": {
-     "v": 19.08,
-     "prec": 0.83
-    },
-    "ce": {
-     "v": 1.14,
-     "prec": 0.48
-    }
-   }
-  },
-  {
-   "rp": "399",
-   "corral": "4",
-   "video": "QiRfQ2QmezY",
-   "fn": "10/08/23",
-   "padre": "Fanfarrón",
-   "madre": "Leonel 980",
-   "reg": "D",
-   "ce": "42,5",
-   "peso": "680",
-   "lote": "4A",
-   "base": 7500000,
-   "elrural_id": "149097",
-   "nombre": "Payubrero 399",
-   "epd": {
-    "pint": null,
-    "pn": {
-     "v": 0.56,
-     "prec": 0.56
-    },
-    "pd": {
-     "v": 0.72,
-     "prec": 6.84
-    },
-    "am": {
-     "v": 0.77,
-     "prec": 0.99
-    },
-    "lyc": {
-     "v": 0.56
-    },
-    "pf": {
-     "v": 4.41,
-     "prec": 13.55
-    },
-    "ce": {
-     "v": 0.68,
-     "prec": 0.9
-    }
-   }
-  },
-  {
-   "rp": "401",
-   "corral": "4",
-   "video": "vJSXxTpu8U8",
-   "fn": "12/08/23",
-   "padre": "Guyacuru",
-   "madre": "Vicumac 36",
-   "reg": "A",
-   "ce": "35,5",
-   "peso": "690",
-   "lote": "4B",
-   "base": 7500000,
-   "elrural_id": "149098",
-   "nombre": "Payubrero 401",
-   "epd": {
-    "pint": "B",
-    "pn": {
-     "v": 0.09,
-     "prec": 0.68
-    },
-    "pd": {
-     "v": 5.06,
-     "prec": 0.73
-    },
-    "am": {
-     "v": -1.85,
-     "prec": 0.59
-    },
-    "lyc": {
-     "v": 0.67
-    },
-    "pf": {
-     "v": 8.2,
-     "prec": 0.64
-    },
-    "ce": {
-     "v": 0.36,
-     "prec": 0.33
-    }
-   }
-  },
-  {
-   "rp": "10439",
-   "corral": "5",
-   "video": "vLQoW0cWMzE",
-   "lote": "5A",
-   "peso": "735",
-   "base": 6500000,
-   "elrural_id": "149099"
-  },
-  {
-   "rp": "13449",
-   "corral": "5",
-   "video": "A_eMYj1HQKg",
-   "lote": "5B",
-   "peso": "670",
-   "base": 6500000,
-   "elrural_id": "149100"
-  },
-  {
-   "rp": "13503",
-   "corral": "6",
-   "video": "Wpx4P1xy-SY",
-   "lote": "6A",
-   "base": 6500000,
-   "elrural_id": "149101"
-  },
-  {
-   "rp": "13507",
-   "corral": "6",
-   "video": "xNNCU_viLXw",
-   "lote": "6B",
-   "peso": "705",
-   "base": 6500000,
-   "elrural_id": "149102"
-  },
-  {
-   "rp": "13463",
-   "corral": "7",
-   "video": "ZceAfVi0Tbk",
-   "lote": "7A",
-   "peso": "625",
-   "base": 6500000,
-   "elrural_id": "149103"
-  },
-  {
-   "rp": "13553",
-   "corral": "7",
-   "video": "Nx-WY__LsJc",
-   "lote": "7B",
-   "peso": "640",
-   "base": 6500000,
-   "elrural_id": "149104"
-  },
-  {
-   "rp": "13525",
-   "corral": "8",
-   "video": "V9axFNt5Frg",
-   "lote": "8A",
-   "peso": "625",
-   "base": 6500000,
-   "elrural_id": "149105"
-  },
-  {
-   "rp": "13555",
-   "corral": "8",
-   "video": "zY6IOLRdWug",
-   "lote": "8B",
-   "peso": "685",
-   "base": 6500000,
-   "elrural_id": "149106"
-  },
-  {
-   "rp": "13441",
-   "corral": "9",
-   "video": "XyjZvtfpT1Y",
-   "lote": "9A",
-   "peso": "635",
-   "base": 6500000,
-   "elrural_id": "149107"
-  },
-  {
-   "rp": "13515",
-   "corral": "9",
-   "video": "HuMXv1iSUag",
-   "lote": "9B",
-   "peso": "625",
-   "base": 6500000,
-   "elrural_id": "149108"
-  },
-  {
-   "rp": "13477",
-   "corral": "10",
-   "video": "nTSyF80csnI",
-   "lote": "10A",
-   "peso": "625",
-   "base": 6500000,
-   "elrural_id": "149109"
-  },
-  {
-   "rp": "13491",
-   "corral": "10",
-   "video": "uuYFJ4-kxu0",
-   "lote": "10B",
-   "peso": "625",
-   "base": 6500000,
-   "elrural_id": "149110"
-  },
-  {
-   "rp": "0409",
-   "corral": "11",
-   "video": "fM6UtBz2K94",
-   "lote": "11A",
-   "peso": "600"
-  },
-  {
-   "rp": "13423",
-   "corral": "11",
-   "video": "Z4n_Lch4WM4",
-   "lote": "11B",
-   "peso": "610",
-   "base": 6500000,
-   "elrural_id": "149111"
-  },
-  {
-   "rp": "13395",
-   "corral": "12",
-   "video": "QmeD5YhgEzs",
-   "lote": "12A",
-   "peso": "645",
-   "base": 6500000,
-   "elrural_id": "149113"
-  },
-  {
-   "rp": "13461",
-   "corral": "12",
-   "video": "HvMlnCuFn0Q",
-   "lote": "12B",
-   "peso": "635",
-   "base": 6500000,
-   "elrural_id": "149114"
-  },
-  {
-   "rp": "13413",
-   "corral": "13",
-   "video": "EVIk3PL1g5o",
-   "lote": "13A",
-   "peso": "625",
-   "base": 6500000,
-   "elrural_id": "149115"
-  },
-  {
-   "rp": "13469",
-   "corral": "13",
-   "video": "-QXoQndCkPM",
-   "lote": "13B",
-   "peso": "610",
-   "base": 6500000,
-   "elrural_id": "149116"
-  },
-  {
-   "rp": "13471",
-   "corral": "14",
-   "video": "-cbxZwZAW5A",
-   "lote": "14A",
-   "peso": "600",
-   "base": 6500000,
-   "elrural_id": "149117"
-  },
-  {
-   "rp": "13533",
-   "corral": "14",
-   "video": "LeeX8IvCKrc",
-   "lote": "14B",
-   "peso": "655",
-   "base": 6500000,
-   "elrural_id": "149118"
-  },
-  {
-   "rp": "13445",
-   "corral": "15",
-   "video": "ArplmgKHHEw",
-   "lote": "15A",
-   "peso": "625",
-   "base": 6500000,
-   "elrural_id": "149119"
-  },
-  {
-   "rp": "13551",
-   "corral": "15",
-   "video": "kO21p3XdsKc",
-   "lote": "15B",
-   "peso": "610",
-   "base": 6500000,
-   "elrural_id": "149120"
-  },
-  {
-   "rp": "13403",
-   "corral": "16",
-   "video": "LlV3dIKH6BQ",
-   "lote": "16A",
-   "peso": "595",
-   "base": 6500000,
-   "elrural_id": "149121"
-  },
-  {
-   "rp": "13437",
-   "corral": "16",
-   "video": "acOgrNj4zrU",
-   "lote": "16B",
-   "peso": "600",
-   "base": 6500000,
-   "elrural_id": "149122"
-  },
-  {
-   "rp": "13467",
-   "corral": "17",
-   "video": "90-ZYfvjovQ",
-   "lote": "17A",
-   "peso": "600",
-   "base": 6500000,
-   "elrural_id": "149123"
-  },
-  {
-   "rp": "13473",
-   "corral": "17",
-   "video": "maBumd8hfJY",
-   "lote": "17B",
-   "peso": "590",
-   "base": 6500000,
-   "elrural_id": "149124"
-  },
-  {
-   "rp": "13447",
-   "corral": "18",
-   "video": "q9VDEZ82U1c",
-   "lote": "18A",
-   "peso": "620",
-   "base": 6500000,
-   "elrural_id": "149125"
-  },
-  {
-   "rp": "13459",
-   "corral": "18",
-   "video": "bXZC-4-duek",
-   "lote": "18B",
-   "peso": "580",
-   "base": 6500000,
-   "elrural_id": "149126"
-  },
-  {
-   "rp": "13481",
-   "corral": "19",
-   "video": "q5O076BQ0YA",
-   "lote": "19A",
-   "peso": "550",
-   "base": 6500000,
-   "elrural_id": "149127"
-  },
-  {
-   "rp": "13495",
-   "corral": "19",
-   "video": "qXx7viW3-rQ",
-   "lote": "19B",
-   "peso": "600",
-   "base": 6500000,
-   "elrural_id": "149128"
-  },
-  {
-   "rp": "13443",
-   "corral": "20",
-   "video": "tw4g770Phxw",
-   "lote": "20A",
-   "peso": "595",
-   "base": 6500000,
-   "elrural_id": "149129"
-  },
-  {
-   "rp": "13493",
-   "corral": "20",
-   "video": "XpSywgif3AI",
-   "lote": "20B",
-   "peso": "610",
-   "base": 6500000,
-   "elrural_id": "149130"
-  },
-  {
-   "rp": "13389",
-   "corral": "21",
-   "video": "vC0GR3EjRLE",
-   "lote": "21A",
-   "peso": "585",
-   "base": 6500000,
-   "elrural_id": "149131"
-  },
-  {
-   "rp": "13429",
-   "corral": "21",
-   "video": "-vxmcOa7BRs",
-   "lote": "21B",
-   "peso": "590",
-   "base": 6500000,
-   "elrural_id": "149132"
-  },
-  {
-   "rp": "13381",
-   "corral": "22",
-   "video": "akbkJqy55X0",
-   "lote": "22A",
-   "peso": "530",
-   "base": 6500000,
-   "elrural_id": "149133"
-  },
-  {
-   "rp": "13465",
-   "corral": "22",
-   "video": "nHn06U654Ns",
-   "lote": "22B",
-   "peso": "570",
-   "base": 6500000,
-   "elrural_id": "149134"
-  },
-  {
-   "rp": "13497",
-   "corral": "23",
-   "video": "uq85GwBfr1w",
-   "lote": "23A",
-   "peso": "550",
-   "base": 6500000,
-   "elrural_id": "149135"
-  },
-  {
-   "rp": "13509",
-   "corral": "23",
-   "video": "nqK0PWHFaFo",
-   "lote": "23B",
-   "peso": "555",
-   "base": 6500000,
-   "elrural_id": "149136"
-  },
-  {
-   "rp": "13433",
-   "corral": "24",
-   "video": "nD5ulJysNrk",
-   "lote": "24A",
-   "peso": "530",
-   "base": 6500000,
-   "elrural_id": "149137"
-  },
-  {
-   "rp": "13439",
-   "corral": "24",
-   "video": "ci9OE3Eun38",
-   "lote": "24B",
-   "peso": "555",
-   "base": 6500000,
-   "elrural_id": "149138"
-  },
-  {
-   "rp": "13419",
-   "corral": "25",
-   "video": "QewOYWqYesk",
-   "lote": "25A",
-   "peso": "560",
-   "base": 6500000,
-   "elrural_id": "149139"
-  },
-  {
-   "rp": "13455",
-   "corral": "25",
-   "video": "VL3cqUM4CF8",
-   "lote": "25B",
-   "peso": "605",
-   "base": 6500000,
-   "elrural_id": "149140"
-  },
-  {
-   "rp": "13421",
-   "corral": "26",
-   "video": "Eouk-_A44xY",
-   "lote": "26A",
-   "peso": "620",
-   "base": 6500000,
-   "elrural_id": "149141"
-  },
-  {
-   "rp": "13561",
-   "corral": "26",
-   "video": "0f8EE0y9Y5g",
-   "lote": "26B",
-   "peso": "600",
-   "base": 6500000,
-   "elrural_id": "149142"
-  },
-  {
-   "rp": "13393",
-   "corral": "27",
-   "video": "9FEpc9Q6jKM",
-   "lote": "27A",
-   "peso": "590",
-   "base": 6500000,
-   "elrural_id": "149143"
-  },
-  {
-   "rp": "13415",
-   "corral": "27",
-   "video": "Jefu1sPgg-U",
-   "lote": "27B",
-   "peso": "540",
-   "base": 6500000,
-   "elrural_id": "149144"
-  },
-  {
-   "rp": "13407",
-   "corral": "28",
-   "video": "4z0EgYU87zE",
-   "lote": "28A",
-   "peso": "615",
-   "base": 6500000,
-   "elrural_id": "149145"
-  },
-  {
-   "rp": "13457",
-   "corral": "28",
-   "video": "XYVqyLAX2gg",
-   "lote": "28B",
-   "peso": "600",
-   "base": 6500000,
-   "elrural_id": "149146"
-  },
-  {
-   "rp": "13435",
-   "corral": "29",
-   "video": "d8_1NsRxfXY",
-   "lote": "29A",
-   "peso": "565",
-   "base": 6500000,
-   "elrural_id": "149147"
-  },
-  {
-   "rp": "13511",
-   "corral": "29",
-   "video": "3OTL1OQQePw",
-   "lote": "29B",
-   "peso": "570",
-   "base": 6500000,
-   "elrural_id": "149148"
-  },
-  {
-   "rp": "13401",
-   "corral": "30",
-   "video": "lh6mZJYLDmU",
-   "lote": "30A",
-   "peso": "715",
-   "base": 7000000,
-   "elrural_id": "149149"
-  },
-  {
-   "rp": "13523",
-   "corral": "30",
-   "video": "hkwjU9BUS20",
-   "lote": "30B",
-   "peso": "665",
-   "base": 7000000,
-   "elrural_id": "149150"
-  },
-  {
-   "rp": "13527",
-   "corral": "31",
-   "video": "_KHyXqvgtbY",
-   "lote": "31A",
-   "peso": "705",
-   "base": 7000000,
-   "elrural_id": "149151"
-  },
-  {
-   "rp": "13539",
-   "corral": "31",
-   "video": "bjHq3icLYwU",
-   "lote": "31B",
-   "peso": "665",
-   "base": 7000000,
-   "elrural_id": "149152"
-  },
-  {
-   "rp": "13385",
-   "corral": "32",
-   "video": "zuLZ30XehRU",
-   "lote": "32A",
-   "peso": "670",
-   "base": 6500000,
-   "elrural_id": "149153"
-  },
-  {
-   "rp": "13535",
-   "corral": "32",
-   "video": "rJGrgFwx2fM",
-   "lote": "32B",
-   "peso": "690",
-   "base": 6500000,
-   "elrural_id": "149154"
-  },
-  {
-   "rp": "13383",
-   "corral": "33",
-   "video": "i059JR_iEpQ",
-   "lote": "33A",
-   "peso": "685",
-   "base": 6500000,
-   "elrural_id": "149155"
-  },
-  {
-   "rp": "13391",
-   "corral": "33",
-   "video": "0wRyzFnKJdo",
-   "lote": "33B",
-   "peso": "630",
-   "base": 6500000,
-   "elrural_id": "149156"
-  },
-  {
-   "rp": "13529",
-   "corral": "33",
-   "video": "OvyZSfx5jmQ",
-   "lote": "33C",
-   "peso": "635",
-   "base": 6500000,
-   "elrural_id": "149157"
-  },
-  {
-   "rp": "13387",
-   "corral": "34",
-   "video": "7QlrStM3pnE",
-   "lote": "34A",
-   "peso": "580",
-   "base": 6500000,
-   "elrural_id": "149158"
-  },
-  {
-   "rp": "13557",
-   "corral": "34",
-   "video": "P0DYuCuzqYw",
-   "lote": "34B",
-   "peso": "655",
-   "base": 6500000,
-   "elrural_id": "149159"
-  },
-  {
-   "rp": "13547",
-   "corral": "35",
-   "video": "5E3JU2g43NI",
-   "lote": "35A",
-   "peso": "595",
-   "base": 6500000,
-   "elrural_id": "149160"
-  },
-  {
-   "rp": "13559",
-   "corral": "35",
-   "video": "nOAhXx9_Osk",
-   "lote": "35B",
-   "peso": "575",
-   "base": 6500000,
-   "elrural_id": "149161"
-  },
-  {
-   "rp": "112",
-   "corral": "40",
-   "video": "-I8-Ck1PsfI",
-   "lote": "40A",
-   "peso": "555",
-   "base": 6500000,
-   "elrural_id": "149169"
-  },
-  {
-   "rp": "137",
-   "corral": "40",
-   "video": "sDfzVKfcbsQ",
-   "lote": "40B",
-   "peso": "550",
-   "base": 6500000,
-   "elrural_id": "149170"
-  },
-  {
-   "rp": "003",
-   "corral": "41",
-   "video": "ZB-qKTk6a_c",
-   "lote": "41",
-   "peso": "730"
-  },
-  {
-   "rp": "005",
-   "corral": "42",
-   "video": "xYgelw5NWSk",
-   "lote": "42A",
-   "peso": "735"
-  },
-  {
-   "rp": "014",
-   "corral": "42",
-   "video": "weuBPjbdL2A",
-   "lote": "42B",
-   "peso": "750"
-  },
-  {
-   "rp": "034",
-   "corral": "43",
-   "video": "U4Jq-JjWGN0",
-   "lote": "43A",
-   "peso": "545"
-  },
-  {
-   "rp": "036",
-   "corral": "43",
-   "video": "E3ihtJ0uk-I",
-   "lote": "43B",
-   "peso": "530"
-  },
-  {
-   "rp": "024",
-   "corral": "44",
-   "video": "_kY6NWQQJoU",
-   "lote": "44A",
-   "peso": "535"
-  },
-  {
-   "rp": "028",
-   "corral": "44",
-   "video": "rHgA26dKgzM",
-   "lote": "44B",
-   "peso": "520"
-  },
-  {
-   "rp": "099",
-   "corral": "45",
-   "video": "Af6kNTh3ZYs",
-   "lote": "45"
-  },
-  {
-   "rp": "12274",
-   "corral": "46",
-   "video": "cbdnMLMsyGQ",
-   "lote": "46"
-  },
-  {
-   "rp": "13398",
-   "corral": "47",
-   "video": "edqhf72R1yM",
-   "lote": "47"
-  },
-  {
-   "rp": "12740",
-   "corral": "48",
-   "video": "Z8KSuMe1Qlo",
-   "lote": "48"
-  },
-  {
-   "rp": "064",
-   "corral": "49",
-   "video": "-xMsejrPkdU",
-   "lote": "49"
-  },
-  {
-   "rp": "025",
-   "corral": "50",
-   "video": "oEAkw-UtyzU",
-   "lote": "50"
-  },
-  {
-   "rp": "105",
-   "corral": "51",
-   "video": "BFlOaUrb7Yk",
-   "lote": "51"
-  }
- ],
- "fuente_precios": "elrural.com/remate/603 (scrape)",
- "veterinario": "M.V. Raúl Roldán",
- "flete_gratis": true,
- "condiciones": {
-  "sanidad": [
-   "Libres de Brucelosis y Tuberculosis",
-   "Toros libres de Trichomoniasis, vacunados contra Campylobacteriosis",
-   "Aptitud genital completa · libres de anomalías genitales",
-   "Vacunados contra Aftosa y Carbunclo",
-   "Nacidos y criados en zona de Mio Mio",
-   "Inmunizados contra Babesiosis y Anaplasmosis (5 aplicaciones de sangre, INTA Mercedes)"
   ],
-  "garantia": {
-   "plazo": "90 días desde la fecha de venta (Reglamento Soc. Rural de Mercedes)",
-   "cubre": "Tristeza (Babesiosis/Anaplasmosis) confirmada por observación microscópica: si el animal muere, devolución del importe + comisiones y gastos, o reemplazo por otro reproductor. Si se recupera con tratamiento, el vendedor cubre los gastos.",
-   "no_cubre": "Si no se confirma por microscopía, el vendedor queda exento. El incumplimiento de los requisitos de reclamo invalida la garantía.",
-   "exclusion": "La cabaña no aceptará ningún reclamo relacionado con la aptitud genital, análisis de brucelosis, tuberculosis, babesiosis y tricomoniasis a posteriori de los diez días de retirados los toros de la Sociedad Rural."
+  "fuente_precios": "elrural.com/remate/603 (scrape)",
+  "veterinario": "M.V. Raúl Roldán",
+  "flete_gratis": true,
+  "condiciones": {
+    "sanidad": [
+      "Libres de Brucelosis y Tuberculosis",
+      "Toros libres de Trichomoniasis, vacunados contra Campylobacteriosis",
+      "Aptitud genital completa · libres de anomalías genitales",
+      "Vacunados contra Aftosa y Carbunclo",
+      "Nacidos y criados en zona de Mio Mio",
+      "Inmunizados contra Babesiosis y Anaplasmosis (5 aplicaciones de sangre, INTA Mercedes)"
+    ],
+    "garantia": {
+      "plazo": "90 días desde la fecha de venta (Reglamento Soc. Rural de Mercedes)",
+      "cubre": "Tristeza (Babesiosis/Anaplasmosis) confirmada por observación microscópica: si el animal muere, devolución del importe + comisiones y gastos, o reemplazo por otro reproductor. Si se recupera con tratamiento, el vendedor cubre los gastos.",
+      "no_cubre": "Si no se confirma por microscopía, el vendedor queda exento. El incumplimiento de los requisitos de reclamo invalida la garantía.",
+      "exclusion": "La cabaña no aceptará ningún reclamo relacionado con la aptitud genital, análisis de brucelosis, tuberculosis, babesiosis y tricomoniasis a posteriori de los diez días de retirados los toros de la Sociedad Rural."
+    },
+    "financiacion": {
+      "puntos": [
+        "Apto RIMI",
+        "Cuotas",
+        "Descuento por pago de contado",
+        "Flete gratis"
+      ],
+      "nota": "Apto RIMI — Régimen de Incentivo para Medianas Inversiones, vigente para remates de reproductores. Consultá cuotas y descuento por pago de contado con Reggi & Cía.",
+      "tasas": {
+        "pesos": {
+          "columnas": [
+            "180 días",
+            "270 días",
+            "360 días"
+          ],
+          "canales": [
+            {
+              "entidad": "AgroNación · Banco Nación",
+              "tasas": [
+                "6%",
+                "13%",
+                "20%"
+              ]
+            },
+            {
+              "entidad": "BNA Conecta",
+              "unico": {
+                "plazo": "18, 24 y 36 meses",
+                "tasa": "20% TNA"
+              }
+            },
+            {
+              "entidad": "BBVA",
+              "tasas": [
+                "5%",
+                "11%",
+                "18%"
+              ]
+            },
+            {
+              "entidad": "Banco de Corrientes · Visa Agro",
+              "tasas": [
+                "8%",
+                "16%",
+                "25%"
+              ]
+            },
+            {
+              "entidad": "Nera · Santander",
+              "tasas": [
+                "6%",
+                "14%",
+                "23%"
+              ]
+            },
+            {
+              "entidad": "Nera · Galicia",
+              "tasas": [
+                "6%",
+                "16%",
+                "26%"
+              ]
+            },
+            {
+              "entidad": "Banco Macro · RedAgro",
+              "tasas": [
+                "7%",
+                "18%",
+                "29%"
+              ]
+            }
+          ],
+          "nota": "Las alícuotas incluyen descuento por pago de contado."
+        },
+        "dolares": {
+          "canales": [
+            {
+              "entidad": "Banco Nación · Préstamos USD",
+              "tna": "6%"
+            },
+            {
+              "entidad": "BBVA",
+              "tna": "4,9%"
+            },
+            {
+              "entidad": "Nera · Galicia",
+              "tna": "5,5%"
+            },
+            {
+              "entidad": "Nera · Santander",
+              "tna": "5%"
+            },
+            {
+              "entidad": "Banco Macro · RedAgro",
+              "tna": "6,5%"
+            }
+          ],
+          "nota": "El cliente absorbe 9% de descuento por pago de contado."
+        },
+        "aclaracion": "Tasas de interés vencido. Sujetas a modificación por parte de la entidad bancaria. Válidas para empresas con certificado MiPyME vigente. Costo de arancel a cargo del cliente.",
+        "prefactura_hasta": "2026-07-24",
+        "asesoramiento": [
+          "(3774) 430176",
+          "(3774) 445942",
+          "(3774) 590222"
+        ]
+      }
+    }
   },
-  "financiacion": {
-   "puntos": [
-    "Apto RIMI",
-    "Cuotas",
-    "Descuento por pago de contado",
-    "Flete gratis"
-   ],
-   "nota": "Apto RIMI — Régimen de Incentivo para Medianas Inversiones, vigente para remates de reproductores. Consultá cuotas y descuento por pago de contado con Reggi & Cía."
-  }
- },
- "martillero": "Casimiro Reggi (h) · Corredor Público M.P. 192"
+  "martillero": "Casimiro Reggi (h) · Corredor Público M.P. 192"
 }

@@ -47,6 +47,8 @@ export interface RemateEspecial {
   preofertaThumbs?: string[]
   /** Total de lotes en la pre-oferta (para el CTA "ver los N lotes"). */
   preofertaLotes?: number
+  /** Cantidad de canales de financiación bancaria publicados (gancho al dossier). */
+  financiacionCanales?: number
 }
 
 const REMATES_ESPECIALES = rematesEspecialesData as RemateEspecial[]

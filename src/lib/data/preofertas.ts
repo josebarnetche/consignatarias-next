@@ -55,7 +55,25 @@ export interface Preoferta {
   condiciones?: {
     sanidad: string[]
     garantia: { plazo: string; cubre: string; no_cubre: string; exclusion: string }
-    financiacion: { puntos: string[]; nota?: string }
+    financiacion: {
+      puntos: string[]
+      nota?: string
+      // Tasas reales por canal bancario (el MOAT: condiciones publicadas, comparables).
+      tasas?: {
+        pesos?: {
+          columnas: string[]
+          canales: Array<{ entidad: string; tasas?: string[]; unico?: { plazo: string; tasa: string } }>
+          nota?: string
+        }
+        dolares?: {
+          canales: Array<{ entidad: string; tna: string }>
+          nota?: string
+        }
+        aclaracion?: string
+        prefactura_hasta?: string  // ISO
+        asesoramiento?: string[]
+      }
+    }
   }
   lotes: PreofertaLote[]
 }
