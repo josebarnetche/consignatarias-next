@@ -33,6 +33,7 @@ export default async function PreofertaElTigrePage() {
       remate={preoferta as unknown as PreofertaData}
       valoresIniciales={valores}
       userEmail={user?.email ?? null}
+      serverNow={Date.now()}
     />
   )
 }

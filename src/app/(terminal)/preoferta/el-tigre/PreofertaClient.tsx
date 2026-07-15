@@ -9,15 +9,17 @@ export default function PreofertaClient({
   remate,
   valoresIniciales,
   userEmail,
+  serverNow,
 }: {
   remate: PreofertaData
   valoresIniciales: Record<string, number>
   userEmail: string | null
+  serverNow: number
 }) {
   const [valores, setValores] = useState<Record<string, number>>(valoresIniciales)
   const [sel, setSel] = useState<string | null>(remate.lotes[0]?.rp ?? null)
   const cierre = useMemo(() => new Date(remate.cierre_preoferta).getTime(), [remate.cierre_preoferta])
-  const [ahora, setAhora] = useState<number>(cierre) // evita mismatch SSR; se corrige en efecto
+  const [ahora, setAhora] = useState<number>(serverNow) // hora del server → SSR y cliente coinciden
   const abierta = ahora < cierre
 
   useEffect(() => {
