@@ -7,8 +7,6 @@ import { getPreoferta } from '@/lib/data/preofertas'
    Tono informativo, no vendedor. Se auto-oculta al cerrar la pre-oferta. */
 
 const fmt = (n: number) => '$ ' + n.toLocaleString('es-AR')
-const ytSrc = (id: string) =>
-  `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&modestbranding=1&playsinline=1&rel=0&disablekb=1&fs=0`
 
 export default function PromoEltigreBanner() {
   const p = getPreoferta('el-tigre')
@@ -50,11 +48,12 @@ export default function PromoEltigreBanner() {
           return (
             <div key={l.rp} className="shrink-0 w-[210px] rounded-xl border border-terminal-border bg-black/30 overflow-hidden flex flex-col">
               <div className="relative bg-black" style={{ aspectRatio: '16 / 9' }}>
-                <iframe
-                  src={ytSrc(l.video)} title={l.nombre ?? `Lote ${l.lote}`}
-                  className="absolute inset-0 w-full h-full pointer-events-none"
-                  allow="autoplay; encrypted-media" loading="lazy" tabIndex={-1}
-                />
+                <video
+                  className="absolute inset-0 w-full h-full object-cover"
+                  autoPlay muted loop playsInline preload="metadata"
+                >
+                  <source src={`/promo/lotes/lote-${l.rp}.mp4`} type="video/mp4" />
+                </video>
               </div>
               <div className="p-2.5 flex-1 flex flex-col">
                 <div className="text-zinc-100 text-sm font-semibold leading-tight truncate">{l.nombre ?? `Lote ${l.lote}`}</div>
