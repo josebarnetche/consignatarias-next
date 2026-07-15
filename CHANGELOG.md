@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.168.0] — 2026-07-15
+
+### Preoferta como PUENTE — módulo en el perfil de Reggi + reencuadro directo-a-consignataria
+
+Giro de doctrina (José): la preoferta no es "elegí precio, ofertá" (eso es la 1.0); es el **puente productor↔remate: dar a conocer los lotes**. Y el lead va **directo a la consignataria (Reggi)**, no "representamos".
+
+- **Mini-módulo de preoferta en el perfil de Reggi** (`/consignatarias/reggi`) vía el mecanismo genérico `RemateEspecial`: doble **cuenta regresiva** (al remate vie 17-jul y al cierre de preoferta jue 16-jul 20:00), tira de lotes con video, y CTA a `/preoferta/el-tigre`. Config-driven (nuevos campos opcionales `preofertaSlug/cierrePreoferta/remateAt/preofertaThumbs/preofertaLotes`), reutilizable.
+- **Copy reencuadrado** en `/preoferta/el-tigre`: fuera "representar en la preoferta" → "que me contacte Reggi por este lote"; precio orientativo, la operación se cierra con la consignataria.
+
 ## [1.167.0] — 2026-07-15
 
 ### Pre-oferta El Tigre → modelo LEAD vetado (no libro paralelo)
