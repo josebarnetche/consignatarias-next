@@ -7,6 +7,23 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.165.0] — 2026-07-15
+
+### Backfill de localidades + alineamiento de la tabla `consignatarias` con el registry
+
+La columna `location` la consume el MCP `buscar_consignataria` ("Firma · Localidad"). Estaba vacía en la mayoría.
+
+**Backfill de localidad** (DB `location`, 19 → 60 filas): derivada del **pueblo de la feria propia** de cada firma en los remates publicados, filtrando predios de expo/mercado compartidos (Liniers/Cañuelas, San Nicolás/Expoagro, Palermo). Solo el pueblo, no el sufijo de provincia del scrape (venía sucio). Guarda de no-pisar dato curado.
+
+**Alineamiento DB↔registry:**
+- **−11 no-consignatarias borradas** de la DB (las 5 sociedades rurales, Agroactiva, IderCor, Min. Producción Chaco, Expo Palermo, Expoagro, Las Nacionales) → el MCP ya no las devuelve.
+- **−3 filas duplicadas** fusionadas (aguerre/aguerre-srl, mondino/alfredo-smondino, cooperativa-guillermo-lehmann/cooperativa-lehmann); al mergear se recuperó teléfono de las variantes y se corrigieron 2 localidades mal backfilleadas (Mondino: Olavarría→**Villa María**, su domicilio real en Córdoba; Lehmann: Emilia→**Lehmann**).
+- **+12 firmas nuevas insertadas** (Bucket B) con display_name/categoría/provincia/localidad → ahora aparecen en el MCP.
+- Todas las filas categorizadas como `Consignataria`. DB 113 → 111 filas.
+- 3 slugs-variante de la DB (madelan-s-a, consignataria-melicura-s-a, lartirigoyen-oromi-s-a) sumados al `allSlugs` del registry para que su link del MCP redirija a la ficha real.
+
+Pendiente (pase aparte, delicado): ~20 filas DB de consignatarias reales que no están en el registry público (firmas históricas sin remates scrapeados) y la limpieza de la columna `province` (varias mal resueltas por el scrape).
+
 ## [1.164.1] — 2026-07-15
 
 ### Los últimos 5 remates huérfanos resueltos → orphans 0

@@ -105,12 +105,12 @@ const PROFILES: ConsignatariaProfile[] = [
   // (were rendering as synthesized/uncurated). Now indexable. The 2 junk
   // scraper slugs (sociedad-agricola-ganadera-ltda2, cyg-n-hacienda2) are left
   // uncurated on purpose.
-  { canonicalSlug: 'madelan', displayName: 'Madelán y Cía.', allSlugs: ['madelan', 'madelan-y-cia'] },
+  { canonicalSlug: 'madelan', displayName: 'Madelán y Cía.', allSlugs: ['madelan', 'madelan-y-cia', 'madelan-s-a'] },
   { canonicalSlug: 'a-mendizabal', displayName: 'A. Mendizábal', allSlugs: ['a-mendizabal', 'ricardo-mendizabal-consignaciones-s-r-l'] },
-  { canonicalSlug: 'lartirigoyen', displayName: 'Lartirigoyen', allSlugs: ['lartirigoyen'] },
+  { canonicalSlug: 'lartirigoyen', displayName: 'Lartirigoyen', allSlugs: ['lartirigoyen', 'lartirigoyen-oromi-s-a'] },
   { canonicalSlug: 'arzuaga', displayName: 'Néstor A. Arzuaga y Cía. S.C.A.', allSlugs: ['arzuaga', 'nestor-a-arzuaga-y-cia-s-c-a'] },
   { canonicalSlug: 'melicur-ganados', displayName: 'Melicur Ganados', allSlugs: ['melicur-ganados'] },
-  { canonicalSlug: 'melicura', displayName: 'Consignataria Melicura', allSlugs: ['melicura', 'consignataria-melicura'] },
+  { canonicalSlug: 'melicura', displayName: 'Consignataria Melicura', allSlugs: ['melicura', 'consignataria-melicura', 'consignataria-melicura-s-a'] },
   { canonicalSlug: 'martin-y-alonso', displayName: 'Martín y Alonso', allSlugs: ['martin-y-alonso'] },
   { canonicalSlug: 'sucesores-de-brivio', displayName: 'Sucesores de Brivio', allSlugs: ['sucesores-de-brivio'] },
   { canonicalSlug: 'brivio-y-arzoz', displayName: 'Brivio y Arzoz', allSlugs: ['brivio-y-arzoz'] },
