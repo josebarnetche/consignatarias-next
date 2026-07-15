@@ -70,7 +70,12 @@ export default function CondicionesRemate({ remate }: { remate: Preoferta }) {
         <summary className="cursor-pointer text-xxs font-terminal uppercase tracking-widest text-zinc-400 list-none flex items-center justify-between">
           Financiación {remate.flete_gratis && <span className="text-positive normal-case tracking-normal font-sans">· flete gratis</span>} <span className="text-zinc-600">▾</span>
         </summary>
-        <p className="text-sm text-zinc-300 leading-snug mt-2.5">{c.financiacion}</p>
+        <div className="flex flex-wrap gap-1.5 mt-2.5">
+          {c.financiacion.puntos.map((p) => (
+            <span key={p} className="text-xs font-terminal text-zinc-200 border border-terminal-border rounded-terminal px-2 py-1 bg-black/20">{p}</span>
+          ))}
+        </div>
+        {c.financiacion.nota && <p className="text-sm text-zinc-400 leading-snug mt-2.5">{c.financiacion.nota}</p>}
       </details>
     </div>
   )

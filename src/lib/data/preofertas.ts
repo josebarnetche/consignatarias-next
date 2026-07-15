@@ -54,7 +54,7 @@ export interface Preoferta {
   condiciones?: {
     sanidad: string[]
     garantia: { plazo: string; cubre: string; no_cubre: string; exclusion: string }
-    financiacion: string
+    financiacion: { puntos: string[]; nota?: string }
   }
   lotes: PreofertaLote[]
 }

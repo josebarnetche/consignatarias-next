@@ -991,6 +991,14 @@
    "no_cubre": "Si no se confirma por microscopía, el vendedor queda exento. El incumplimiento de los requisitos de reclamo invalida la garantía.",
    "exclusion": "La cabaña no aceptará ningún reclamo relacionado con la aptitud genital, análisis de brucelosis, tuberculosis, babesiosis y tricomoniasis a posteriori de los diez días de retirados los toros de la Sociedad Rural."
   },
-  "financiacion": "Importante financiación disponible · flete bonificado (gratis). Condiciones a confirmar con la consignataria."
+  "financiacion": {
+   "puntos": [
+    "Apto RIMI",
+    "Cuotas",
+    "Descuento por pago de contado",
+    "Flete gratis"
+   ],
+   "nota": "Consultá las condiciones y el detalle de la financiación con Reggi & Cía, la consignataria del remate."
+  }
  }
 }
