@@ -175,7 +175,7 @@ function OfertaWidget({
         body: JSON.stringify({ lote_rp: rp, amount: monto, nombre, cuit, telefono }),
       })
       const j = await r.json()
-      if (r.ok) { onNuevoValor(j.actual); setMonto(j.proximo); setOk(true); setMsg('✓ Oferta registrada. Te representamos en la preoferta del remate.') }
+      if (r.ok) { onNuevoValor(j.actual); setMonto(j.proximo); setOk(true); setMsg('✓ Listo. Reggi & Cía te contacta por este lote.') }
       else if (j.needsAuth) setMsg('Ingresá para ofertar.')
       else { setMsg(j.error ?? 'No se pudo ofertar.'); if (j.actual) onNuevoValor(j.actual) }
     } catch { setMsg('Error de red.') }
@@ -208,7 +208,7 @@ function OfertaWidget({
       {userEmail ? (
         ok ? (
           <div className="mt-3 rounded-lg border border-positive/40 bg-positive/[0.07] p-3 text-sm text-zinc-200">
-            ✓ Oferta registrada por <b className="font-mono">{fmt(actual)}</b>. La llevamos a la preoferta del remate y validamos al ofertante. Podés ofertar por otro lote.
+            ✓ Interés registrado en <b className="font-mono">{fmt(actual)}</b>. <b>Reggi &amp; Cía</b> —consignataria del remate— te contacta por este lote. Podés marcar otro.
           </div>
         ) : (
           <>
@@ -223,7 +223,7 @@ function OfertaWidget({
               disabled={!abierta || busy || monto < minimo || nombre.trim().length < 3 || !cuitOk || telefono.replace(/\D/g, '').length < 8}
               className="mt-2 w-full bg-negative hover:bg-red-700 disabled:opacity-50 text-white font-bold px-5 py-3 text-sm tracking-wide rounded-lg"
             >
-              {busy ? 'Registrando…' : `OFERTAR ${fmt(monto)}`}
+              {busy ? 'Registrando…' : 'QUE ME CONTACTE REGGI POR ESTE LOTE →'}
             </button>
           </>
         )
@@ -235,13 +235,13 @@ function OfertaWidget({
 
       <div className="flex items-center justify-between mt-1.5 text-xxs gap-2">
         <span className="text-zinc-500">
-          Mínimo próxima oferta: <b className="text-zinc-300 font-mono">{fmt(minimo)}</b> · incremento $100.000
+          Precio orientativo · base <b className="text-zinc-300 font-mono">{fmt(base)}</b>
         </span>
         {msg && !ok && <span className="text-amber-300 text-right">{msg}</span>}
       </div>
       {userEmail && !ok && (
         <p className="text-zinc-600 text-xxs mt-1">
-          Registramos tu oferta y te representamos en la preoferta del remate. Validamos al ofertante (informe crediticio). Prueba interna.
+          Te ponemos en contacto directo con Reggi &amp; Cía, la consignataria del remate. El precio es orientativo: la operación se cierra con ellos. Prueba interna.
         </p>
       )}
     </div>

@@ -34,6 +34,19 @@ export interface RemateEspecial {
   preOffer: string
   catalogUrl?: string | null
   youtubeUrl?: string | null
+  /* ── Módulo de pre-oferta integrado (opcional) ──
+     Cuando hay preofertaSlug se renderiza el mini-módulo: doble cuenta regresiva
+     (al remate y al cierre de la pre-oferta), tira de lotes y CTA a /preoferta/<slug>. */
+  /** Slug de la pre-oferta integrada, p.ej. "el-tigre" → /preoferta/el-tigre. */
+  preofertaSlug?: string
+  /** Cierre de la pre-oferta, ISO "YYYY-MM-DDTHH:MM". */
+  cierrePreoferta?: string
+  /** Fecha+hora del remate para la cuenta regresiva, ISO "YYYY-MM-DDTHH:MM". */
+  remateAt?: string
+  /** IDs de YouTube de algunos lotes para la tira de previews. */
+  preofertaThumbs?: string[]
+  /** Total de lotes en la pre-oferta (para el CTA "ver los N lotes"). */
+  preofertaLotes?: number
 }
 
 const REMATES_ESPECIALES = rematesEspecialesData as RemateEspecial[]

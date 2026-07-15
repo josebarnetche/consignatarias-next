@@ -1,10 +1,36 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import type { RemateEspecial } from '@/lib/data/remates-especiales'
 import { normalizeUrl } from '@/lib/utils/url'
 import { trackOutboundClick } from '@/lib/analytics'
 import { Badge } from '@/components/ui'
+
+/** Cuenta regresiva compacta a un instante ISO. */
+function Countdown({ to, label }: { to: string; label: string }) {
+  const target = new Date(to).getTime()
+  const [now, setNow] = useState(target)
+  useEffect(() => {
+    setNow(Date.now())
+    const t = setInterval(() => setNow(Date.now()), 1000)
+    return () => clearInterval(t)
+  }, [])
+  const d = Math.max(0, target - now)
+  const dd = Math.floor(d / 864e5)
+  const hh = Math.floor((d % 864e5) / 36e5)
+  const mm = Math.floor((d % 36e5) / 6e4)
+  const vencido = d <= 0
+  return (
+    <div className="flex-1 min-w-[130px] rounded-terminal border border-terminal-border bg-black/30 px-2.5 py-2">
+      <div className="text-[10px] font-terminal uppercase tracking-wider text-zinc-500">{label}</div>
+      <div className={`font-mono tabular-nums text-sm font-bold ${vencido ? 'text-zinc-500' : 'text-zinc-100'}`}>
+        {vencido ? '—' : `${dd}d ${String(hh).padStart(2, '0')}h ${String(mm).padStart(2, '0')}m`}
+      </div>
+    </div>
+  )
+}
 
 /* ------------------------------------------------------------------ */
 /*  REMATE ESPECIAL — DESTAQUE                                         */
@@ -109,6 +135,37 @@ export default function RemateEspecialDestaque({ remate }: { remate: RemateEspec
           </span>
         )}
       </div>
+
+      {/* ── Módulo de pre-oferta integrado ── */}
+      {remate.preofertaSlug && (
+        <div className="mt-3 pt-3 border-t border-terminal-border/60">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <span className="text-xxs font-terminal uppercase tracking-widest text-positive inline-flex items-center gap-1.5">
+              <span className="status-dot bg-positive animate-pulse-live" /> Pre-oferta abierta
+            </span>
+            <span className="text-xxs text-zinc-500">el puente al remate · conocé los lotes</span>
+          </div>
+          <div className="flex gap-2">
+            {remate.remateAt && <Countdown to={remate.remateAt} label="Al remate" />}
+            {remate.cierrePreoferta && <Countdown to={remate.cierrePreoferta} label="Cierra pre-oferta" />}
+          </div>
+          {remate.preofertaThumbs && remate.preofertaThumbs.length > 0 && (
+            <div className="flex gap-1.5 mt-2.5 overflow-x-auto">
+              {remate.preofertaThumbs.map((v) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img key={v} src={`https://i.ytimg.com/vi/${v}/mqdefault.jpg`} alt="" loading="lazy"
+                  className="w-[74px] h-[44px] object-cover rounded shrink-0 border border-terminal-border bg-zinc-800" />
+              ))}
+            </div>
+          )}
+          <Link
+            href={`/preoferta/${remate.preofertaSlug}`}
+            className="mt-2.5 inline-flex items-center justify-center w-full rounded-terminal bg-positive/[0.08] border border-positive/40 text-positive font-terminal text-xxs uppercase tracking-wider py-2.5 hover:bg-positive/[0.14] transition-colors"
+          >
+            Ver los {remate.preofertaLotes ?? ''} lotes con video y pre-ofertar &rarr;
+          </Link>
+        </div>
+      )}
 
       {/* CTAs — only when a URL exists */}
       {(catalogUrl || youtubeUrl) && (
