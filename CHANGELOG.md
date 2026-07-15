@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.166.0] — 2026-07-15
+
+### Pre-oferta integrada (PRUEBA) — 34° Remate Cabaña El Tigre
+
+Sistema de pre-oferta propio, integrado en Consignatarias, para probar en vivo mientras la preoferta de El Tigre está abierta (cierra jue 16-jul 20:00). Ruta **no indexada** `/preoferta/el-tigre`.
+
+- **Dataset** `preoferta-el-tigre.json`: 86 lotes con su video de YouTube, extraídos y mapeados del catálogo PDF (cada botón de video del PDF ↔ su RP por posición). 7 corrales iniciales con descripción completa (padre/madre/CE/peso); resto con RP+corral+video.
+- **Página**: grilla de lotes con thumbnails de YouTube + detalle con **video embebido** + widget **VALOR ACTUAL** gigante + **OFERTAR AHORA**, replicando el formato de elrural pero con nuestros datos y videos. Countdown al cierre.
+- **Backend real**: tabla `preoferta_bids` (RLS, solo service-role), API `/api/preoferta/bid` con login (magic-link), validación de monto (≥ actual + $100.000) y de cierre. Ofertas marcadas `is_test=true` — **NO vinculantes**. Refresco de valores cada 15s.
+
 ## [1.165.0] — 2026-07-15
 
 ### Backfill de localidades + alineamiento de la tabla `consignatarias` con el registry

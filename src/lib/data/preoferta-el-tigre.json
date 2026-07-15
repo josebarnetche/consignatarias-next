@@ -1,0 +1,568 @@
+{
+ "remate": "34° Remate Anual Cabaña El Tigre",
+ "fecha": "2026-07-17T14:00",
+ "lugar": "Sociedad Rural de Mercedes, Corrientes",
+ "consignataria": "Reggi & Cía · Martín Pando",
+ "base": 7500000,
+ "cierre_preoferta": "2026-07-16T20:00",
+ "lotes": [
+  {
+   "rp": "407",
+   "corral": "1",
+   "video": "zpQmyuBnAZs",
+   "fn": "01/10/23",
+   "padre": "Chañar 3259",
+   "madre": "Payubrera 304",
+   "reg": "D",
+   "ce": "38,5",
+   "peso": "900",
+   "lote": "1"
+  },
+  {
+   "rp": "13307",
+   "corral": "2",
+   "video": "7JFj-Xtse8E",
+   "fn": "22/07/23",
+   "padre": "Gualicho",
+   "madre": "Piqueno 11454",
+   "reg": "A",
+   "ce": "43,0",
+   "peso": "782",
+   "lote": "2A"
+  },
+  {
+   "rp": "403",
+   "corral": "2",
+   "video": "Mo2eGsn7wJQ",
+   "fn": "13/08/23",
+   "padre": "Fanfarrón",
+   "madre": "Leonel 916",
+   "reg": "D",
+   "ce": "48,0",
+   "peso": "800",
+   "lote": "2B"
+  },
+  {
+   "rp": "13323",
+   "corral": "3",
+   "video": "I9SqdEazP7k",
+   "fn": "28/07/23",
+   "padre": "Gualicho",
+   "madre": "Piqueno 11454",
+   "reg": "A",
+   "ce": "38,5",
+   "peso": "700",
+   "lote": "3A"
+  },
+  {
+   "rp": "13351",
+   "corral": "3",
+   "video": "5HmFamW_AVI",
+   "fn": "15/08/23",
+   "padre": "Experto",
+   "madre": "Leonel 880",
+   "reg": "D",
+   "ce": "44,0",
+   "peso": "750",
+   "lote": "3B"
+  },
+  {
+   "rp": "399",
+   "corral": "4",
+   "video": "QiRfQ2QmezY",
+   "fn": "10/08/23",
+   "padre": "Fanfarrón",
+   "madre": "Leonel 980",
+   "reg": "D",
+   "ce": "42,5",
+   "peso": "680",
+   "lote": "4A"
+  },
+  {
+   "rp": "401",
+   "corral": "4",
+   "video": "vJSXxTpu8U8",
+   "fn": "12/08/23",
+   "padre": "Guyacuru",
+   "madre": "Vicumac 36",
+   "reg": "A",
+   "ce": "35,5",
+   "peso": "690",
+   "lote": "4B"
+  },
+  {
+   "rp": "10439",
+   "corral": "5",
+   "video": "vLQoW0cWMzE",
+   "lote": "5A"
+  },
+  {
+   "rp": "13449",
+   "corral": "5",
+   "video": "A_eMYj1HQKg",
+   "lote": "5B"
+  },
+  {
+   "rp": "13503",
+   "corral": "6",
+   "video": "Wpx4P1xy-SY",
+   "lote": "6A"
+  },
+  {
+   "rp": "13507",
+   "corral": "6",
+   "video": "xNNCU_viLXw",
+   "lote": "6B"
+  },
+  {
+   "rp": "13463",
+   "corral": "7",
+   "video": "ZceAfVi0Tbk",
+   "lote": "7A"
+  },
+  {
+   "rp": "13553",
+   "corral": "7",
+   "video": "Nx-WY__LsJc",
+   "lote": "7B"
+  },
+  {
+   "rp": "13525",
+   "corral": "8",
+   "video": "V9axFNt5Frg",
+   "lote": "8A"
+  },
+  {
+   "rp": "13555",
+   "corral": "8",
+   "video": "zY6IOLRdWug",
+   "lote": "8B"
+  },
+  {
+   "rp": "13441",
+   "corral": "9",
+   "video": "XyjZvtfpT1Y",
+   "lote": "9A"
+  },
+  {
+   "rp": "13515",
+   "corral": "9",
+   "video": "HuMXv1iSUag",
+   "lote": "9B"
+  },
+  {
+   "rp": "13477",
+   "corral": "10",
+   "video": "nTSyF80csnI",
+   "lote": "10A"
+  },
+  {
+   "rp": "13491",
+   "corral": "10",
+   "video": "uuYFJ4-kxu0",
+   "lote": "10B"
+  },
+  {
+   "rp": "0409",
+   "corral": "11",
+   "video": "fM6UtBz2K94",
+   "lote": "11A"
+  },
+  {
+   "rp": "13423",
+   "corral": "11",
+   "video": "Z4n_Lch4WM4",
+   "lote": "11B"
+  },
+  {
+   "rp": "13395",
+   "corral": "12",
+   "video": "QmeD5YhgEzs",
+   "lote": "12A"
+  },
+  {
+   "rp": "13461",
+   "corral": "12",
+   "video": "HvMlnCuFn0Q",
+   "lote": "12B"
+  },
+  {
+   "rp": "13413",
+   "corral": "13",
+   "video": "EVIk3PL1g5o",
+   "lote": "13A"
+  },
+  {
+   "rp": "13469",
+   "corral": "13",
+   "video": "-QXoQndCkPM",
+   "lote": "13B"
+  },
+  {
+   "rp": "13471",
+   "corral": "14",
+   "video": "-cbxZwZAW5A",
+   "lote": "14A"
+  },
+  {
+   "rp": "13533",
+   "corral": "14",
+   "video": "LeeX8IvCKrc",
+   "lote": "14B"
+  },
+  {
+   "rp": "13445",
+   "corral": "15",
+   "video": "ArplmgKHHEw",
+   "lote": "15A"
+  },
+  {
+   "rp": "13551",
+   "corral": "15",
+   "video": "kO21p3XdsKc",
+   "lote": "15B"
+  },
+  {
+   "rp": "13403",
+   "corral": "16",
+   "video": "LlV3dIKH6BQ",
+   "lote": "16A"
+  },
+  {
+   "rp": "13437",
+   "corral": "16",
+   "video": "acOgrNj4zrU",
+   "lote": "16B"
+  },
+  {
+   "rp": "13467",
+   "corral": "17",
+   "video": "90-ZYfvjovQ",
+   "lote": "17A"
+  },
+  {
+   "rp": "13473",
+   "corral": "17",
+   "video": "maBumd8hfJY",
+   "lote": "17B"
+  },
+  {
+   "rp": "13447",
+   "corral": "18",
+   "video": "q9VDEZ82U1c",
+   "lote": "18A"
+  },
+  {
+   "rp": "13459",
+   "corral": "18",
+   "video": "bXZC-4-duek",
+   "lote": "18B"
+  },
+  {
+   "rp": "13481",
+   "corral": "19",
+   "video": "q5O076BQ0YA",
+   "lote": "19A"
+  },
+  {
+   "rp": "13495",
+   "corral": "19",
+   "video": "qXx7viW3-rQ",
+   "lote": "19B"
+  },
+  {
+   "rp": "13443",
+   "corral": "20",
+   "video": "tw4g770Phxw",
+   "lote": "20A"
+  },
+  {
+   "rp": "13493",
+   "corral": "20",
+   "video": "XpSywgif3AI",
+   "lote": "20B"
+  },
+  {
+   "rp": "13389",
+   "corral": "21",
+   "video": "vC0GR3EjRLE",
+   "lote": "21A"
+  },
+  {
+   "rp": "13429",
+   "corral": "21",
+   "video": "-vxmcOa7BRs",
+   "lote": "21B"
+  },
+  {
+   "rp": "13381",
+   "corral": "22",
+   "video": "akbkJqy55X0",
+   "lote": "22A"
+  },
+  {
+   "rp": "13465",
+   "corral": "22",
+   "video": "nHn06U654Ns",
+   "lote": "22B"
+  },
+  {
+   "rp": "13497",
+   "corral": "23",
+   "video": "uq85GwBfr1w",
+   "lote": "23A"
+  },
+  {
+   "rp": "13509",
+   "corral": "23",
+   "video": "nqK0PWHFaFo",
+   "lote": "23B"
+  },
+  {
+   "rp": "13433",
+   "corral": "24",
+   "video": "nD5ulJysNrk",
+   "lote": "24A"
+  },
+  {
+   "rp": "13439",
+   "corral": "24",
+   "video": "ci9OE3Eun38",
+   "lote": "24B"
+  },
+  {
+   "rp": "13419",
+   "corral": "25",
+   "video": "QewOYWqYesk",
+   "lote": "25A"
+  },
+  {
+   "rp": "13455",
+   "corral": "25",
+   "video": "VL3cqUM4CF8",
+   "lote": "25B"
+  },
+  {
+   "rp": "13421",
+   "corral": "26",
+   "video": "Eouk-_A44xY",
+   "lote": "26A"
+  },
+  {
+   "rp": "13561",
+   "corral": "26",
+   "video": "0f8EE0y9Y5g",
+   "lote": "26B"
+  },
+  {
+   "rp": "13393",
+   "corral": "27",
+   "video": "9FEpc9Q6jKM",
+   "lote": "27A"
+  },
+  {
+   "rp": "13415",
+   "corral": "27",
+   "video": "Jefu1sPgg-U",
+   "lote": "27B"
+  },
+  {
+   "rp": "13407",
+   "corral": "28",
+   "video": "4z0EgYU87zE",
+   "lote": "28A"
+  },
+  {
+   "rp": "13457",
+   "corral": "28",
+   "video": "XYVqyLAX2gg",
+   "lote": "28B"
+  },
+  {
+   "rp": "13435",
+   "corral": "29",
+   "video": "d8_1NsRxfXY",
+   "lote": "29A"
+  },
+  {
+   "rp": "13511",
+   "corral": "29",
+   "video": "3OTL1OQQePw",
+   "lote": "29B"
+  },
+  {
+   "rp": "13401",
+   "corral": "30",
+   "video": "lh6mZJYLDmU",
+   "lote": "30A"
+  },
+  {
+   "rp": "13523",
+   "corral": "30",
+   "video": "hkwjU9BUS20",
+   "lote": "30B"
+  },
+  {
+   "rp": "13527",
+   "corral": "31",
+   "video": "_KHyXqvgtbY",
+   "lote": "31A"
+  },
+  {
+   "rp": "13539",
+   "corral": "31",
+   "video": "bjHq3icLYwU",
+   "lote": "31B"
+  },
+  {
+   "rp": "13385",
+   "corral": "32",
+   "video": "zuLZ30XehRU",
+   "lote": "32A"
+  },
+  {
+   "rp": "13535",
+   "corral": "32",
+   "video": "rJGrgFwx2fM",
+   "lote": "32B"
+  },
+  {
+   "rp": "13383",
+   "corral": "33",
+   "video": "i059JR_iEpQ",
+   "lote": "33A"
+  },
+  {
+   "rp": "13391",
+   "corral": "33",
+   "video": "0wRyzFnKJdo",
+   "lote": "33B"
+  },
+  {
+   "rp": "13529",
+   "corral": "33",
+   "video": "OvyZSfx5jmQ",
+   "lote": "33C"
+  },
+  {
+   "rp": "13387",
+   "corral": "34",
+   "video": "7QlrStM3pnE",
+   "lote": "34A"
+  },
+  {
+   "rp": "13557",
+   "corral": "34",
+   "video": "P0DYuCuzqYw",
+   "lote": "34B"
+  },
+  {
+   "rp": "13547",
+   "corral": "35",
+   "video": "5E3JU2g43NI",
+   "lote": "35A"
+  },
+  {
+   "rp": "13559",
+   "corral": "35",
+   "video": "nOAhXx9_Osk",
+   "lote": "35B"
+  },
+  {
+   "rp": "112",
+   "corral": "40",
+   "video": "-I8-Ck1PsfI",
+   "lote": "40A"
+  },
+  {
+   "rp": "137",
+   "corral": "40",
+   "video": "sDfzVKfcbsQ",
+   "lote": "40B"
+  },
+  {
+   "rp": "003",
+   "corral": "41",
+   "video": "ZB-qKTk6a_c",
+   "lote": "41"
+  },
+  {
+   "rp": "005",
+   "corral": "42",
+   "video": "xYgelw5NWSk",
+   "lote": "42A"
+  },
+  {
+   "rp": "014",
+   "corral": "42",
+   "video": "weuBPjbdL2A",
+   "lote": "42B"
+  },
+  {
+   "rp": "034",
+   "corral": "43",
+   "video": "U4Jq-JjWGN0",
+   "lote": "43A"
+  },
+  {
+   "rp": "036",
+   "corral": "43",
+   "video": "E3ihtJ0uk-I",
+   "lote": "43B"
+  },
+  {
+   "rp": "024",
+   "corral": "44",
+   "video": "_kY6NWQQJoU",
+   "lote": "44A"
+  },
+  {
+   "rp": "028",
+   "corral": "44",
+   "video": "rHgA26dKgzM",
+   "lote": "44B"
+  },
+  {
+   "rp": "099",
+   "corral": "45",
+   "video": "Af6kNTh3ZYs",
+   "lote": "45"
+  },
+  {
+   "rp": "12274",
+   "corral": "46",
+   "video": "cbdnMLMsyGQ",
+   "lote": "46"
+  },
+  {
+   "rp": "13398",
+   "corral": "47",
+   "video": "edqhf72R1yM",
+   "lote": "47"
+  },
+  {
+   "rp": "12740",
+   "corral": "48",
+   "video": "Z8KSuMe1Qlo",
+   "lote": "48"
+  },
+  {
+   "rp": "064",
+   "corral": "49",
+   "video": "-xMsejrPkdU",
+   "lote": "49"
+  },
+  {
+   "rp": "025",
+   "corral": "50",
+   "video": "oEAkw-UtyzU",
+   "lote": "50"
+  },
+  {
+   "rp": "105",
+   "corral": "51",
+   "video": "BFlOaUrb7Yk",
+   "lote": "51"
+  }
+ ]
+}
