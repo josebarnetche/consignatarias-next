@@ -7,6 +7,35 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.177.0] — 2026-07-15
+
+### Ruteo de leads por zona + campo localidad (Corrientes)
+
+La pre-oferta captura la **localidad del comprador** y rutea el lead al **representante de Reggi de esa zona**.
+
+- **Campo localidad** en el formulario: select con las **87 localidades de Corrientes** (fuente oficial georef del gobierno, con su departamento). Obligatorio.
+- **Registry de reps de Reggi por zona** (`reggi-reps.ts`, del catálogo): Mercedes, Goya, Paso de los Libres, Santo Tomé, Norte de Corrientes, Esquina — con teléfonos, mapeados a los 25 departamentos. Helper localidad → depto → zona → rep.
+- **Consola admin**: cada lead muestra su localidad + el **rep sugerido** (nombre + teléfono).
+- **Email a agro@memola.com.ar**: incluye localidad + rep sugerido. Teléfonos NO públicos (solo backoffice).
+
+## [1.176.3] — 2026-07-15
+
+### RIMI expandido + martillero (del flyer oficial R&C)
+
+Financiación: chips Apto RIMI · Cuotas · Descuento por pago de contado · Flete gratis, con la sigla expandida ("Régimen de Incentivo para Medianas Inversiones, vigente para remates de reproductores"). Martillero Casimiro Reggi (h) M.P. 192 en la ficha.
+
+## [1.176.2] — 2026-07-15
+
+### Financiación real de la pre-oferta
+
+Financiación estructurada (chips) con los términos reales pasados por José.
+
+## [1.176.1] — 2026-07-15
+
+### Vidriera con video local limpio
+
+Los 4 videos de los lotes destacados bajados de sus URLs de YouTube (del PDF) a mp4 web (~250KB c/u), autoplay muteado/loop sin íconos ni chrome de YouTube. Reemplaza el iframe que forzaba título/logo.
+
 ## [1.176.0] — 2026-07-15
 
 ### Promo → vidriera informativa de lotes (menos vendedor)
