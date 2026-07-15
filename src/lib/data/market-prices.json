@@ -1838,7 +1838,7 @@
   "categories": {
     "novillos": {
       "current": 4346.6,
-      "prev": 4346,
+      "prev": 4346.6,
       "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
@@ -1846,39 +1846,39 @@
     },
     "novillitos": {
       "current": 4711.69,
-      "prev": 4129,
-      "change": 14.1,
+      "prev": 4711.69,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 1379
     },
     "vaquillonas": {
       "current": 4494.2,
-      "prev": 3911,
-      "change": 14.9,
+      "prev": 4494.2,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 2684
     },
     "vacas": {
       "current": 2762.27,
-      "prev": 3129,
-      "change": -11.7,
+      "prev": 2762.27,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "latestVolume": 2818
     },
     "toros": {
       "current": 2796.12,
-      "prev": 2825,
-      "change": -1,
+      "prev": 2796.12,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 183
     },
     "terneros": {
       "current": 4727,
-      "prev": 4781,
-      "change": -1.1,
+      "prev": 4727,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
@@ -1891,8 +1891,8 @@
   },
   "usdBlue": {
     "current": 1530,
-    "prev": 1520,
-    "change": 0.7,
+    "prev": 1530,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
@@ -2017,15 +2017,15 @@
         "category": "VACAS Esp.Joven + 430",
         "minPrice": 2200,
         "maxPrice": 4020,
-        "avgPrice": 3138.76,
-        "cabezas": 630
+        "avgPrice": 3138.89,
+        "cabezas": 628
       },
       {
         "category": "VACAS Regular",
         "minPrice": 2000,
         "maxPrice": 3600,
-        "avgPrice": 2605.52,
-        "cabezas": 1656
+        "avgPrice": 2606.2,
+        "cabezas": 1658
       },
       {
         "category": "VACAS Conserva Buena",
