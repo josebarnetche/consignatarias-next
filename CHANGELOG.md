@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.178.3] — 2026-07-16
+
+### Fix: el video del lote ya no manda a un "video no disponible" de YouTube
+
+Al reproducir un lote, YouTube mostraba tarjetas de "Más videos" con sugerencias de otros canales; al clickearlas el usuario caía en un video con embed deshabilitado (Error 153 · "Ver en YouTube"), que se leía como un 404. El embed de la ficha pasa a `youtube-nocookie` con `rel=0&modestbranding=1&playsinline=1&iv_load_policy=3`: las sugerencias quedan limitadas al **mismo canal de El Tigre** (otros lotes, todos reproducibles), sin anotaciones ni saltos a videos ajenos.
+
 ## [1.178.2] — 2026-07-15
 
 ### Preoferta a su proporción: fuera la promo site-wide

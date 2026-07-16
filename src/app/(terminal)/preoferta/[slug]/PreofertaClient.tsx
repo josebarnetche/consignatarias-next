@@ -117,7 +117,7 @@ export default function PreofertaClient({
               <div className="relative bg-black" style={{ aspectRatio: '16 / 9' }}>
                 <iframe
                   key={lote.rp}
-                  src={`https://www.youtube.com/embed/${lote.video}`}
+                  src={`https://www.youtube-nocookie.com/embed/${lote.video}?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3`}
                   title={`Lote ${lote.lote} · RP ${lote.rp}`}
                   className="absolute inset-0 w-full h-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
