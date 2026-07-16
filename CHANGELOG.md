@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.179.1] — 2026-07-16
+
+### "N vieron este lote" — viewship como prueba social pública
+
+La ficha muestra, junto al interés, los **visitantes únicos** que abrieron ese lote ("N vieron este lote", con ícono de ojo). Sólo aparece cuando hay al menos una vista. El server cuenta únicos por lote desde `preoferta_views`; el interés y el viewship conviven en la misma línea de observabilidad.
+
 ## [1.179.0] — 2026-07-16
 
 ### Viewship: observabilidad de vistas por lote + 15 bases corregidas

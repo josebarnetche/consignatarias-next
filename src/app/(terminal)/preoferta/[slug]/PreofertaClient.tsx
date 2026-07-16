@@ -36,6 +36,7 @@ export default function PreofertaClient({
   remate,
   valoresIniciales,
   interes,
+  vistas,
   userEmail,
   serverNow,
   initialLote,
@@ -43,6 +44,7 @@ export default function PreofertaClient({
   remate: Preoferta
   valoresIniciales: Record<string, number>
   interes: Record<string, number>
+  vistas: Record<string, number>
   userEmail: string | null
   serverNow: number
   initialLote?: string | null
@@ -176,13 +178,21 @@ export default function PreofertaClient({
                 </p>
 
                 {/* Observabilidad — demanda medida por lote */}
-                <div className="mt-2 flex items-center gap-2 text-xxs">
+                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xxs">
                   <span className="inline-flex items-center gap-1.5 text-zinc-400">
                     <span className="h-1.5 w-1.5 rounded-full bg-positive" />
                     {(interes[lote.rp] ?? 0) > 0
                       ? <><b className="text-zinc-200">{interes[lote.rp]}</b> {interes[lote.rp] === 1 ? 'productor interesado' : 'productores interesados'} en este lote</>
                       : <span className="text-zinc-600">Sé el primero en marcar interés en este lote</span>}
                   </span>
+                  {(vistas[lote.rp] ?? 0) > 0 && (
+                    <span className="inline-flex items-center gap-1 text-zinc-500" title="Visitantes únicos que abrieron este lote">
+                      <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" />
+                      </svg>
+                      <b className="text-zinc-300">{vistas[lote.rp]}</b> {vistas[lote.rp] === 1 ? 'vio' : 'vieron'} este lote
+                    </span>
+                  )}
                 </div>
 
                 <PanelGenetico lote={lote} lotes={remate.lotes} />

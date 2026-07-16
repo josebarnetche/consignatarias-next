@@ -52,11 +52,25 @@ export default async function PreofertaPage({
     if (!valores[b.lote_rp] || b.amount > valores[b.lote_rp]) valores[b.lote_rp] = b.amount
   }
 
+  // Viewship público: visitantes únicos por lote (prueba social).
+  const { data: viewsRows } = await service
+    .from('preoferta_views')
+    .select('lote_rp, visitor')
+    .eq('remate_slug', preoferta.slug)
+    .not('lote_rp', 'is', null)
+  const vistasSets: Record<string, Set<string>> = {}
+  for (const v of (viewsRows ?? []) as Array<{ lote_rp: string; visitor: string | null }>) {
+    ;(vistasSets[v.lote_rp] ??= new Set()).add(v.visitor ?? 'anon')
+  }
+  const vistas: Record<string, number> = {}
+  for (const rp of Object.keys(vistasSets)) vistas[rp] = vistasSets[rp].size
+
   return (
     <PreofertaClient
       remate={preoferta}
       valoresIniciales={valores}
       interes={interes}
+      vistas={vistas}
       userEmail={user?.email ?? null}
       serverNow={Date.now()}
       initialLote={initialLote}
