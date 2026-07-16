@@ -43,10 +43,12 @@ export default function PanelGenetico({ lote, lotes }: { lote: PreofertaLote; lo
   const star = ORDER.reduce((best, k) => (norm(k) > norm(best) ? k : best), ORDER[0])
   const fmtV = (k: EpdKey) => { const v = val(lote, k)!; return (v > 0 && META[k].higherBetter ? '+' : '') + v.toString().replace('.', ',') }
 
+  // prec es una fracción 0..1; clampeamos para no romper el render con datos sucios.
   const dots = (prec?: number) => {
-    const n = Math.round((prec ?? 0) * 5)
+    const n = Math.max(0, Math.min(5, Math.round((prec ?? 0) * 5)))
     return '●'.repeat(n) + '○'.repeat(5 - n)
   }
+  const precValida = (prec?: number): prec is number => prec != null && prec >= 0 && prec <= 1
 
   return (
     <div className="mt-4 rounded-terminal border border-terminal-border bg-black/20 p-3.5">
@@ -86,7 +88,7 @@ export default function PanelGenetico({ lote, lotes }: { lote: PreofertaLote; lo
                 <span className="text-zinc-300">{META[k].label} <span className="text-zinc-600 text-xxs">{META[k].sigla}</span></span>
                 <span className="font-mono text-zinc-100 tabular-nums shrink-0">
                   {fmtV(k)}{META[k].unit ? ' ' + META[k].unit : ''}
-                  {prec != null && <span className="text-zinc-600 text-xxs ml-1.5" title={`Precisión ${prec}`}>{dots(prec)}</span>}
+                  {precValida(prec) && <span className="text-zinc-600 text-xxs ml-1.5" title={`Precisión ${prec}`}>{dots(prec)}</span>}
                 </span>
               </div>
               <div className="h-1.5 rounded-full bg-zinc-800 mt-1 overflow-hidden">
