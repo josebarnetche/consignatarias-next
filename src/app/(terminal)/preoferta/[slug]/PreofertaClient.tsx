@@ -20,6 +20,15 @@ function fmtFecha(iso: string): string {
 
 const fmt = (n: number) => '$ ' + n.toLocaleString('es-AR')
 
+/** Ícono de ojo (viewship). */
+function Ojo({ className = 'w-3.5 h-3.5' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" />
+    </svg>
+  )
+}
+
 /** ID anónimo estable por navegador — para contar visitantes únicos sin cookies. */
 function getVisitorId(): string {
   try {
@@ -187,9 +196,7 @@ export default function PreofertaClient({
                   </span>
                   {(vistas[lote.rp] ?? 0) > 0 && (
                     <span className="inline-flex items-center gap-1 text-zinc-500" title="Visitantes únicos que abrieron este lote">
-                      <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" />
-                      </svg>
+                      <Ojo />
                       <b className="text-zinc-300">{vistas[lote.rp]}</b> {vistas[lote.rp] === 1 ? 'vio' : 'vieron'} este lote
                     </span>
                   )}
@@ -217,9 +224,9 @@ export default function PreofertaClient({
           )}
         </div>
 
-        {/* ── Cartelera ── */}
+        {/* ── Catálogo ── */}
         <div>
-          <div className="text-xxs font-terminal uppercase tracking-widest text-zinc-500 mb-2">Cartelera · {remate.lotes.length} lotes</div>
+          <div className="text-xxs font-terminal uppercase tracking-widest text-zinc-500 mb-2">Catálogo · {remate.lotes.length} lotes</div>
           <div className="grid grid-cols-2 lg:grid-cols-1 gap-2 max-h-[70vh] overflow-y-auto pr-1">
             {remate.lotes.map((l) => {
               const on = l.rp === sel
@@ -236,8 +243,16 @@ export default function PreofertaClient({
                     <div className="text-positive text-xs font-mono tabular-nums">
                       {fmt(valorDe(l.rp))}
                     </div>
-                    <div className="text-zinc-600 text-xxs">
-                      {(interes[l.rp] ?? 0) > 0 ? `${interes[l.rp]} interesado${interes[l.rp] === 1 ? '' : 's'}` : `Corral ${l.corral}`}
+                    <div className="text-zinc-600 text-xxs flex items-center gap-x-2 gap-y-0.5 flex-wrap">
+                      {(interes[l.rp] ?? 0) > 0 && (
+                        <span className="text-positive">{interes[l.rp]} interesado{interes[l.rp] === 1 ? '' : 's'}</span>
+                      )}
+                      {(vistas[l.rp] ?? 0) > 0 && (
+                        <span className="inline-flex items-center gap-0.5 text-zinc-500"><Ojo className="w-3 h-3" />{vistas[l.rp]}</span>
+                      )}
+                      {(interes[l.rp] ?? 0) === 0 && (vistas[l.rp] ?? 0) === 0 && (
+                        <span>Corral {l.corral}</span>
+                      )}
                     </div>
                   </div>
                 </button>

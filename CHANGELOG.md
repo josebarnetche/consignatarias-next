@@ -7,6 +7,13 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.179.2] — 2026-07-16
+
+### Viewship en el catálogo + "Cartelera" pasa a "Catálogo"
+
+- El conteo de vistas únicas (👁 N) ahora también aparece en cada card del catálogo de lotes, junto al interés. Sin actividad, la card muestra el corral.
+- La columna lateral de lotes se llama **Catálogo** (antes "Cartelera").
+
 ## [1.179.1] — 2026-07-16
 
 ### "N vieron este lote" — viewship como prueba social pública
