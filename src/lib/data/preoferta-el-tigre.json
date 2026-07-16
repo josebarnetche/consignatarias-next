@@ -6,11 +6,11 @@
   "consignataria_pro": true,
   "elrural_remate_id": "603",
   "remate": "34° Remate Anual Cabaña El Tigre",
-  "fecha": "2026-07-17T14:00",
+  "fecha": "2026-07-17T14:00:00-03:00",
   "lugar": "Sociedad Rural de Mercedes, Corrientes",
   "consignataria": "Reggi & Cía · Martín Pando",
   "base": 7500000,
-  "cierre_preoferta": "2026-07-16T20:00",
+  "cierre_preoferta": "2026-07-16T20:00:00-03:00",
   "lotes": [
     {
       "rp": "407",
