@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.178.2] — 2026-07-15
+
+### Preoferta a su proporción: fuera la promo site-wide
+
+La preoferta de El Tigre es un one-off (un cliente, un remate que cierra 16-jul 20:00); su promo se había extendido a todo el sitio y diluía el posicionamiento de capa de datos. Se recorta la huella a lo proporcional.
+
+- **Quitado:** banner en `(terminal)/layout` (todas las páginas, incl. top-10 de GSC) + banner y `PreofertasActivas` en la landing.
+- **Intacto:** la página propia `/preoferta/el-tigre`, el módulo en el perfil de Reggi, la captura de lead + ruteo por zona, y el **MOAT de financiación por canal**.
+- Componentes `PromoEltigreBanner` / `PreofertasActivas` / `CorrientesSilueta` quedan dormidos (reusables para el próximo remate del sistema), sin renderizarse.
+
 ## [1.178.1] — 2026-07-15
 
 ### Sello "Toros Correntinos" con la silueta real de Corrientes
