@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.179.0] — 2026-07-16
+
+### Viewship: observabilidad de vistas por lote + 15 bases corregidas
+
+- **Chequeo integral de los 86 lotes:** todos con video reproducible (`playableInEmbed`, sin restricción) y datos completos. Se detectaron **15 lotes generales sin base** (corral 11A + 41–51) que caían al fallback de 7,5M (precio de pedigree) — corregidos a **6,5M**, el precio del tramo general al que pertenecen (inferido del propio catálogo; no estaban en el libro de elrural).
+- **Observabilidad de viewship:** nueva tabla `preoferta_views` + endpoint `POST /api/preoferta/view`. La ficha registra vista de página y vista por lote (deduplicadas por visitante vía `localStorage`, fire-and-forget).
+- **Panel en el admin** (`/admin/preoferta/[slug]`): visitantes únicos, vistas totales, y **funnel por lote** (vistas → únicos → interesados), ordenado por vistas. El remate, medido de punta a punta.
+
 ## [1.178.3] — 2026-07-16
 
 ### Fix: el video del lote ya no manda a un "video no disponible" de YouTube

@@ -411,7 +411,9 @@
       "corral": "11",
       "video": "fM6UtBz2K94",
       "lote": "11A",
-      "peso": "600"
+      "peso": "600",
+      "base": 6500000,
+      "base_inferida": true
     },
     {
       "rp": "13423",
@@ -886,91 +888,119 @@
       "corral": "41",
       "video": "ZB-qKTk6a_c",
       "lote": "41",
-      "peso": "730"
+      "peso": "730",
+      "base": 6500000,
+      "base_inferida": true
     },
     {
       "rp": "005",
       "corral": "42",
       "video": "xYgelw5NWSk",
       "lote": "42A",
-      "peso": "735"
+      "peso": "735",
+      "base": 6500000,
+      "base_inferida": true
     },
     {
       "rp": "014",
       "corral": "42",
       "video": "weuBPjbdL2A",
       "lote": "42B",
-      "peso": "750"
+      "peso": "750",
+      "base": 6500000,
+      "base_inferida": true
     },
     {
       "rp": "034",
       "corral": "43",
       "video": "U4Jq-JjWGN0",
       "lote": "43A",
-      "peso": "545"
+      "peso": "545",
+      "base": 6500000,
+      "base_inferida": true
     },
     {
       "rp": "036",
       "corral": "43",
       "video": "E3ihtJ0uk-I",
       "lote": "43B",
-      "peso": "530"
+      "peso": "530",
+      "base": 6500000,
+      "base_inferida": true
     },
     {
       "rp": "024",
       "corral": "44",
       "video": "_kY6NWQQJoU",
       "lote": "44A",
-      "peso": "535"
+      "peso": "535",
+      "base": 6500000,
+      "base_inferida": true
     },
     {
       "rp": "028",
       "corral": "44",
       "video": "rHgA26dKgzM",
       "lote": "44B",
-      "peso": "520"
+      "peso": "520",
+      "base": 6500000,
+      "base_inferida": true
     },
     {
       "rp": "099",
       "corral": "45",
       "video": "Af6kNTh3ZYs",
-      "lote": "45"
+      "lote": "45",
+      "base": 6500000,
+      "base_inferida": true
     },
     {
       "rp": "12274",
       "corral": "46",
       "video": "cbdnMLMsyGQ",
-      "lote": "46"
+      "lote": "46",
+      "base": 6500000,
+      "base_inferida": true
     },
     {
       "rp": "13398",
       "corral": "47",
       "video": "edqhf72R1yM",
-      "lote": "47"
+      "lote": "47",
+      "base": 6500000,
+      "base_inferida": true
     },
     {
       "rp": "12740",
       "corral": "48",
       "video": "Z8KSuMe1Qlo",
-      "lote": "48"
+      "lote": "48",
+      "base": 6500000,
+      "base_inferida": true
     },
     {
       "rp": "064",
       "corral": "49",
       "video": "-xMsejrPkdU",
-      "lote": "49"
+      "lote": "49",
+      "base": 6500000,
+      "base_inferida": true
     },
     {
       "rp": "025",
       "corral": "50",
       "video": "oEAkw-UtyzU",
-      "lote": "50"
+      "lote": "50",
+      "base": 6500000,
+      "base_inferida": true
     },
     {
       "rp": "105",
       "corral": "51",
       "video": "BFlOaUrb7Yk",
-      "lote": "51"
+      "lote": "51",
+      "base": 6500000,
+      "base_inferida": true
     }
   ],
   "fuente_precios": "elrural.com/remate/603 (scrape)",

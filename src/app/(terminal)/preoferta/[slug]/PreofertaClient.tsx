@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Preoferta } from '@/lib/data/preofertas'
 import CondicionesRemate from '@/components/preoferta/CondicionesRemate'
 import PanelGenetico from '@/components/preoferta/PanelGenetico'
@@ -19,6 +19,18 @@ function fmtFecha(iso: string): string {
 }
 
 const fmt = (n: number) => '$ ' + n.toLocaleString('es-AR')
+
+/** ID anónimo estable por navegador — para contar visitantes únicos sin cookies. */
+function getVisitorId(): string {
+  try {
+    let v = localStorage.getItem('cnsg_vid')
+    if (!v) {
+      v = 'v-' + Math.random().toString(36).slice(2) + Date.now().toString(36)
+      localStorage.setItem('cnsg_vid', v)
+    }
+    return v
+  } catch { return 'anon' }
+}
 
 export default function PreofertaClient({
   remate,
@@ -58,6 +70,24 @@ export default function PreofertaClient({
     const t = setInterval(refresh, 15000)
     return () => clearInterval(t)
   }, [refresh])
+
+  // Observabilidad de viewship: vista de página (una vez) + vista por lote
+  // (deduplicada por rp en esta sesión). Fire-and-forget.
+  const vistoRef = useRef<Set<string>>(new Set())
+  const registrarVista = useCallback((loteRp: string | null) => {
+    const key = loteRp ?? '__page__'
+    if (vistoRef.current.has(key)) return
+    vistoRef.current.add(key)
+    try {
+      fetch('/api/preoferta/view', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
+        body: JSON.stringify({ remate: remate.slug, lote_rp: loteRp, visitor: getVisitorId() }),
+      }).catch(() => {})
+    } catch { /* noop */ }
+  }, [remate.slug])
+
+  useEffect(() => { registrarVista(null) }, [registrarVista])       // vista de página
+  useEffect(() => { if (sel) registrarVista(sel) }, [sel, registrarVista]) // vista de lote
 
   const baseDe = (rp: string) => remate.lotes.find((l) => l.rp === rp)?.base ?? remate.base
   const valorDe = (rp: string) => valores[rp] ?? baseDe(rp)

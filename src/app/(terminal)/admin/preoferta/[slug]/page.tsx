@@ -46,6 +46,31 @@ export default async function AdminPreofertaPage({ params }: { params: Promise<{
   for (const b of bids) if (!max[b.lote_rp] || b.amount > max[b.lote_rp]) max[b.lote_rp] = b.amount
   const totalLotes = new Set(bids.map((b) => b.lote_rp)).size
 
+  // ── Observabilidad de viewship ──
+  const { data: viewsData } = await service
+    .from('preoferta_views')
+    .select('lote_rp, visitor')
+    .eq('remate_slug', p.slug)
+  const views = (viewsData ?? []) as Array<{ lote_rp: string | null; visitor: string | null }>
+  const vistasPorLote: Record<string, number> = {}
+  const unicosPorLote: Record<string, Set<string>> = {}
+  const visitantesUnicos = new Set<string>()
+  let vistasPagina = 0
+  for (const v of views) {
+    if (v.visitor) visitantesUnicos.add(v.visitor)
+    if (v.lote_rp == null) { vistasPagina++; continue }
+    vistasPorLote[v.lote_rp] = (vistasPorLote[v.lote_rp] ?? 0) + 1
+    ;(unicosPorLote[v.lote_rp] ??= new Set()).add(v.visitor ?? 'anon')
+  }
+  const interesPorLote: Record<string, number> = {}
+  for (const b of bids) interesPorLote[b.lote_rp] = (interesPorLote[b.lote_rp] ?? 0) + 1
+  const totalVistas = views.length
+  // funnel por lote, ordenado por vistas desc (sólo lotes con al menos una vista)
+  const funnel = Object.keys(vistasPorLote)
+    .map((rp) => ({ rp, vistas: vistasPorLote[rp], unicos: unicosPorLote[rp]?.size ?? 0, interes: interesPorLote[rp] ?? 0 }))
+    .sort((a, b) => b.vistas - a.vistas)
+  const convGlobal = visitantesUnicos.size > 0 ? Math.round((totalLotes / visitantesUnicos.size) * 100) : 0
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-6">
       <h1 className="text-2xl font-heading text-zinc-100">Ofertas recibidas · {p.remate}</h1>
@@ -56,6 +81,53 @@ export default async function AdminPreofertaPage({ params }: { params: Promise<{
       <p className="text-zinc-600 text-xxs mt-1">
         Flujo: tomás el CUIT → corrés el informe en InfoExperto → si pasa, cargás la oferta en elrural con tu user (equipara el libro). El comprador queda nuestro.
       </p>
+
+      {/* ── Observabilidad · viewship ── */}
+      <div className="mt-5 rounded-terminal border border-terminal-border bg-black/20 p-4">
+        <div className="text-xxs font-terminal uppercase tracking-widest text-zinc-500 mb-3">Observabilidad · viewship</div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { k: 'Visitantes únicos', v: visitantesUnicos.size },
+            { k: 'Vistas totales', v: totalVistas },
+            { k: 'Lotes con interés', v: totalLotes },
+            { k: 'Únicos → lead', v: `${convGlobal}%` },
+          ].map((s) => (
+            <div key={s.k} className="rounded-terminal border border-terminal-border/60 bg-black/20 px-3 py-2.5">
+              <div className="text-2xl font-mono tabular-nums text-zinc-100 leading-none">{s.v}</div>
+              <div className="text-xxs text-zinc-500 mt-1">{s.k}</div>
+            </div>
+          ))}
+        </div>
+
+        {funnel.length > 0 ? (
+          <div className="mt-3.5 overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="text-[10px] font-terminal uppercase tracking-wider text-zinc-500 border-b border-terminal-border">
+                  <th className="text-left py-1.5 pr-3">Lote</th>
+                  <th className="text-right py-1.5 px-3">Vistas</th>
+                  <th className="text-right py-1.5 px-3">Únicos</th>
+                  <th className="text-right py-1.5 px-3">Interesados</th>
+                </tr>
+              </thead>
+              <tbody>
+                {funnel.map((f) => (
+                  <tr key={f.rp} className="border-b border-terminal-border/40">
+                    <td className="py-1.5 pr-3 text-zinc-300 whitespace-nowrap">{loteLabel(f.rp)}</td>
+                    <td className="py-1.5 px-3 text-right font-mono tabular-nums text-zinc-100">{f.vistas}</td>
+                    <td className="py-1.5 px-3 text-right font-mono tabular-nums text-zinc-400">{f.unicos}</td>
+                    <td className="py-1.5 px-3 text-right font-mono tabular-nums">
+                      {f.interes > 0 ? <span className="text-positive">{f.interes}</span> : <span className="text-zinc-600">0</span>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="text-zinc-600 text-xs mt-3">Sin vistas registradas todavía. {vistasPagina > 0 ? `(${vistasPagina} vistas de página sin lote)` : ''}</p>
+        )}
+      </div>
 
       {bids.length === 0 ? (
         <p className="text-zinc-500 text-sm mt-8">Todavía no hay ofertas. Probá dejando una en <a href={`/preoferta/${p.slug}`} className="text-accent">/preoferta/{p.slug}</a>.</p>
