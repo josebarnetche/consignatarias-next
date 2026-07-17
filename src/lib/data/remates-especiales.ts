@@ -53,9 +53,19 @@ export interface RemateEspecial {
 
 const REMATES_ESPECIALES = rematesEspecialesData as RemateEspecial[]
 
-/** All remates especiales operated by a given consignataria (by canonical slug). */
+/** Fecha de hoy en ART (YYYY-MM-DD) — el server corre en UTC. */
+function hoyART(): string {
+  return new Date(Date.now() - 3 * 3600 * 1000).toISOString().slice(0, 10)
+}
+
+/**
+ * Remates especiales de una consignataria (por slug), excluyendo los cuya fecha
+ * ya pasó — así el destaque se auto-oculta el día después del remate y no queda
+ * publicidad vieja colgada en el perfil.
+ */
 export function getRematesEspecialesForSlug(slug: string): RemateEspecial[] {
-  return REMATES_ESPECIALES.filter((r) => r.consignatariaSlug === slug)
+  const hoy = hoyART()
+  return REMATES_ESPECIALES.filter((r) => r.consignatariaSlug === slug && r.date >= hoy)
 }
 
 /**

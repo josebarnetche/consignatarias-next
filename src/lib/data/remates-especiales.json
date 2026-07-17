@@ -1,38 +1,5 @@
 [
   {
-    "consignatariaSlug": "reggi",
-    "brand": "Cabaña El Tigre",
-    "brandLogo": null,
-    "breeds": [
-      "Braford",
-      "Brangus",
-      "P. Hereford"
-    ],
-    "title": "34° Remate Anual — Cabaña El Tigre",
-    "date": "2026-07-17",
-    "time": "14:00",
-    "location": "Sociedad Rural de Mercedes",
-    "province": "CORRIENTES",
-    "lotes": "70 toros · 55 vaquillas · 3 terneras",
-    "modality": "Streaming en vivo",
-    "preOffer": "Flete gratis · importante financiación",
-    "catalogUrl": null,
-    "youtubeUrl": null,
-    "preofertaSlug": "el-tigre",
-    "cierrePreoferta": "2026-07-16T20:00:00-03:00",
-    "remateAt": "2026-07-17T14:00:00-03:00",
-    "preofertaThumbs": [
-      "zpQmyuBnAZs",
-      "7JFj-Xtse8E",
-      "Mo2eGsn7wJQ",
-      "I9SqdEazP7k",
-      "5HmFamW_AVI",
-      "QiRfQ2QmezY"
-    ],
-    "preofertaLotes": 86,
-    "financiacionCanales": 7
-  },
-  {
     "consignatariaSlug": "etchevehere-rural",
     "brand": "Farming Salentein",
     "brandLogo": "/logos/salentein-farms.svg",
