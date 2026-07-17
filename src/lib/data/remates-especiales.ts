@@ -49,6 +49,12 @@ export interface RemateEspecial {
   preofertaLotes?: number
   /** Cantidad de canales de financiación bancaria publicados (gancho al dossier). */
   financiacionCanales?: number
+  /**
+   * Token que debe aparecer en el título del remate del calendario para que este
+   * destaque le corresponda. Evita que el badge matchee cualquier remate de la
+   * misma consignataria en la misma fecha (p.ej. una feria semanal). Case-insensitive.
+   */
+  matchTitle?: string
 }
 
 const REMATES_ESPECIALES = rematesEspecialesData as RemateEspecial[]
@@ -69,19 +75,25 @@ export function getRematesEspecialesForSlug(slug: string): RemateEspecial[] {
 }
 
 /**
- * Match a normal remate against a remate especial config entry by
- * consignatariaSlug + date. Returns the especial when the consignataria
- * operates one on that date, otherwise null. This is the join key used to
- * surface the expositor badge on listing/calendar cards.
+ * Match a normal remate against a remate especial config entry. Joins by
+ * consignatariaSlug + date, y —cuando el destaque define `matchTitle`— exige
+ * además que ese token aparezca en el título del remate. Así el badge sale SOLO
+ * en el remate que marcamos, no en cualquier otro de esa consignataria/fecha
+ * (p.ej. una feria semanal que cae el mismo día). Returns null si no matchea.
  */
 export function findRemateEspecial(
   consignatariaSlug: string,
   date: string,
+  auctionTitle?: string,
 ): RemateEspecial | null {
   return (
-    REMATES_ESPECIALES.find(
-      (r) => r.consignatariaSlug === consignatariaSlug && r.date === date,
-    ) ?? null
+    REMATES_ESPECIALES.find((r) => {
+      if (r.consignatariaSlug !== consignatariaSlug || r.date !== date) return false
+      if (r.matchTitle) {
+        return (auctionTitle ?? '').toLowerCase().includes(r.matchTitle.toLowerCase())
+      }
+      return true
+    }) ?? null
   )
 }
 

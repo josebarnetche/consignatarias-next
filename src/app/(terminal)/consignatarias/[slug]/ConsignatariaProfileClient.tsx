@@ -1363,7 +1363,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
               </span>
             </div>
             {group.auctions.map(auction => (
-              <ProfileAuctionRow key={auction.id} auction={auction} today={today} especial={findRemateEspecial(auction.consignatariaSlug, auction.date)} />
+              <ProfileAuctionRow key={auction.id} auction={auction} today={today} especial={findRemateEspecial(auction.consignatariaSlug, auction.date, auction.title)} />
             ))}
           </div>
         ))}
@@ -1394,7 +1394,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                   </span>
                 </div>
                 {group.auctions.map(auction => (
-                  <ProfileAuctionRow key={auction.id} auction={auction} today={today} especial={findRemateEspecial(auction.consignatariaSlug, auction.date)} />
+                  <ProfileAuctionRow key={auction.id} auction={auction} today={today} especial={findRemateEspecial(auction.consignatariaSlug, auction.date, auction.title)} />
                 ))}
               </div>
             ))}
