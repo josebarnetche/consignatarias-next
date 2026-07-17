@@ -28,6 +28,18 @@ La ficha muestra, junto al interés, los **visitantes únicos** que abrieron ese
 - **Observabilidad de viewship:** nueva tabla `preoferta_views` + endpoint `POST /api/preoferta/view`. La ficha registra vista de página y vista por lote (deduplicadas por visitante vía `localStorage`, fire-and-forget).
 - **Panel en el admin** (`/admin/preoferta/[slug]`): visitantes únicos, vistas totales, y **funnel por lote** (vistas → únicos → interesados), ordenado por vistas. El remate, medido de punta a punta.
 
+## [1.180.0] — 2026-07-17
+
+### Ficha de pre-oferta rediseñada (mobile-first) + pre-oferta como módulo PRO
+
+**Rediseño de la ficha** (`PreofertaClient`, reusable para futuras pre-ofertas):
+- **Mobile:** navegador de lotes como **strip horizontal sticky arriba** (antes estaba sepultado en un scroll anidado al fondo — inusable). Tap → sube al detalle.
+- **Jerarquía clara:** header limpio (pills de estado + countdown), video, datos, y el bloque de **valor + pre-oferta arriba** (accionable primero), con el argumento genético y las condiciones como respaldo debajo.
+- **Widget de oferta con divulgación progresiva:** "Valor actual del lote" prominente + un solo botón "Pre-ofertar"; el formulario (monto, identidad, localidad, consentimiento) se despliega al tocarlo — se acabó el muro de inputs. CTA en **cielo** (acento de marca) en vez de rojo. Inputs apilados en mobile. Estado cerrado explícito.
+- Desktop: sidebar de catálogo sticky y prolija, con viewship por lote.
+
+**Pre-oferta como beneficio PRO Consignataria:** "Módulo de pre-oferta (lotes con video + captura de leads)" listado en `/planes` y en el pitch de upgrade del perfil.
+
 ## [1.178.3] — 2026-07-16
 
 ### Fix: el video del lote ya no manda a un "video no disponible" de YouTube

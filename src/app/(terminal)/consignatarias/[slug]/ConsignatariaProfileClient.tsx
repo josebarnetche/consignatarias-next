@@ -1150,7 +1150,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                       Para tu firma · cada remate tuyo, enviado a +500 productores
                     </p>
                     <p className="text-xxs text-zinc-500 font-terminal">
-                      Con PRO, tus remates llegan por email a toda nuestra base activa. Badge dorado, analytics de perfil, y landing personalizada.
+                      Con PRO, tus remates llegan por email a toda nuestra base activa. Módulo de pre-oferta (lotes con video + captura de leads), badge dorado, analytics de perfil y landing personalizada.
                     </p>
                   </div>
                 </div>

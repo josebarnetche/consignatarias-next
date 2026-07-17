@@ -44,7 +44,7 @@ const PRICING_PLANS = [
     description: 'Promoción de remates a la base de productores + perfil verificado y destacado. Facturación mensual en ARS.',
     price: 45000,
     currency: 'ARS',
-    features: ['Promoción de remates por email', 'Perfil verificado y destacado', 'Analytics de perfil', 'Landing propia + QR'],
+    features: ['Promoción de remates por email', 'Módulo de pre-oferta: lotes con video + captura de leads', 'Perfil verificado y destacado', 'Analytics de perfil', 'Landing propia + QR'],
   },
 ]
 
