@@ -9,7 +9,7 @@ import { getFrigorificoPlanStatus, frigorificoPuedeInterprovincial } from '@/lib
 import { createServiceClient } from '@/lib/supabase'
 import CompraMayorista, { type VitrinaProduct } from './CompraMayorista'
 import BadgeConfianza from '@/components/frigorifico/BadgeConfianza'
-import { BreadcrumbSchema } from '@/components/seo/JsonLd'
+import { BreadcrumbSchema, QAPageSchema } from '@/components/seo/JsonLd'
 import {
   getSenasaRecord,
   getSenasaScrapedDate,
@@ -285,22 +285,12 @@ function CuitQAPageSchema({
 }) {
   const localidadStr = localidad || province
   const answer = `El CUIT ${formatCuit(cuit)} corresponde a ${name}, un frigorífico habilitado por SENASA (${stageName(stage)}, matrícula ${matricula}) con sede en ${localidadStr}, Argentina. Datos oficiales MAGYP/SENASA.`
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'QAPage',
-    mainEntity: {
-      '@type': 'Question',
-      name: `¿A qué empresa corresponde el CUIT ${cuit}?`,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: answer,
-      },
-    },
-  }
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    <QAPageSchema
+      question={`¿A qué empresa corresponde el CUIT ${cuit}?`}
+      answer={answer}
+      url={`https://www.consignatarias.com.ar/frigorificos/${cuit}`}
+      id={`https://www.consignatarias.com.ar/frigorificos/${cuit}#qapage`}
     />
   )
 }

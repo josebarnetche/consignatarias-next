@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import marketData from '@/lib/data/market-prices.json'
-import { FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { FAQPageSchema, SpeakableSchema, QAPageSchema } from '@/components/seo/JsonLd'
 import Breadcrumb from '@/components/ui/Breadcrumb'
 import { CitaBlock } from '@/components/seo/CitaBlock'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
@@ -90,23 +90,15 @@ const INMAG_FAQS = [
 // single accepted answer, which maximizes snippet eligibility for the head term
 // "inmag" (pos ~7 → target 1) and "inmag hoy". Answer leads with the live number.
 function InmagQAPageSchema() {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'QAPage',
-    '@id': 'https://www.consignatarias.com.ar/mercado/inmag#qapage',
-    mainEntity: {
-      '@type': 'Question',
-      name: '¿Qué es el INMAG y cuánto vale hoy?',
-      text: '¿Qué es el INMAG y cuánto vale hoy el kilo vivo de novillo?',
-      answerCount: 1,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        url: 'https://www.consignatarias.com.ar/mercado/inmag',
-        text: `El INMAG es el Índice Novillo del Mercado Agroganadero de Cañuelas (ex Liniers): el precio promedio ponderado del novillo, en pesos por kilo vivo, publicado al cierre de cada día hábil. Hoy vale $${inmag.current.toLocaleString('es-AR')} por kilo vivo (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(2)}% vs. el cierre anterior), actualizado el ${marketData.lastUpdate}. Es la referencia de precio más usada del mercado ganadero argentino, con histórico desde 2015 en pesos y dólares.`,
-      },
-    },
-  }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  return (
+    <QAPageSchema
+      id="https://www.consignatarias.com.ar/mercado/inmag#qapage"
+      question="¿Qué es el INMAG y cuánto vale hoy?"
+      questionText="¿Qué es el INMAG y cuánto vale hoy el kilo vivo de novillo?"
+      url="https://www.consignatarias.com.ar/mercado/inmag"
+      answer={`El INMAG es el Índice Novillo del Mercado Agroganadero de Cañuelas (ex Liniers): el precio promedio ponderado del novillo, en pesos por kilo vivo, publicado al cierre de cada día hábil. Hoy vale $${inmag.current.toLocaleString('es-AR')} por kilo vivo (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(2)}% vs. el cierre anterior), actualizado el ${marketData.lastUpdate}. Es la referencia de precio más usada del mercado ganadero argentino, con histórico desde 2015 en pesos y dólares.`}
+    />
+  )
 }
 
 // JSON-LD Schema

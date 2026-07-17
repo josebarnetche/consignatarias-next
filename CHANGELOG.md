@@ -28,6 +28,13 @@ La ficha muestra, junto al interés, los **visitantes únicos** que abrieron ese
 - **Observabilidad de viewship:** nueva tabla `preoferta_views` + endpoint `POST /api/preoferta/view`. La ficha registra vista de página y vista por lote (deduplicadas por visitante vía `localStorage`, fire-and-forget).
 - **Panel en el admin** (`/admin/preoferta/[slug]`): visitantes únicos, vistas totales, y **funnel por lote** (vistas → únicos → interesados), ordenado por vistas. El remate, medido de punta a punta.
 
+## [1.181.0] — 2026-07-17
+
+### Publicidad de El Tigre retirada + datos estructurados Q&A (GSC) corregidos
+
+- **El Tigre:** terminada la pre-oferta, se retira su entrada de `remates-especiales.json` (saca tarjeta expositor + módulo del perfil de Reggi). `getRematesEspecialesForSlug` ahora auto-oculta especiales con fecha pasada. La ficha `/preoferta/el-tigre` y su data quedan intactas.
+- **Q&A structured data (GSC):** los 3 QAPage inline (frigorífico/CUIT, INMAG, arrendamiento) tenían campos faltantes — el de frigorífico sin `answerCount` daba **error** (89 elementos inválidos), y todos sin `author`/`datePublished`/`upvoteCount`/`url`/`text` (warnings, ~91). Nuevo builder `QAPageSchema` en `JsonLd.tsx` con todos los campos requeridos y recomendados por Google (fecha con zona ART, `datePublished` en vez del `dateCreated` problemático). Los 3 pasan por el builder.
+
 ## [1.180.0] — 2026-07-17
 
 ### Ficha de pre-oferta rediseñada (mobile-first) + pre-oferta como módulo PRO

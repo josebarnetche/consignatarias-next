@@ -317,6 +317,49 @@ export function FAQPageSchema({ items }: { items: FAQItem[] }) {
   );
 }
 
+// QAPage Schema — una única Question con su acceptedAnswer, para páginas que
+// responden literalmente UNA pregunta cabecera (CUIT, "qué es INMAG", etc.).
+// Incluye TODOS los campos que Google pide/recomienda para el resultado Q&A:
+// answerCount (obligatorio) + author, datePublished, upvoteCount, url, text.
+const QA_AUTHOR = { '@type': 'Organization', name: 'consignatarias.com.ar', url: 'https://www.consignatarias.com.ar' } as const
+// Fecha de publicación estable (con zona ART) — no usar now() para no generar
+// "churn" de fechas en cada build. Representa cuándo se publicó el Q&A.
+const QA_DEFAULT_DATE = '2025-06-01T00:00:00-03:00'
+
+export interface QAItem {
+  question: string        // título de la pregunta (name)
+  questionText?: string   // texto completo de la pregunta (default: question)
+  answer: string          // texto de la respuesta aceptada
+  url: string             // URL canónica de la respuesta/página
+  datePublished?: string  // ISO con zona horaria (default: QA_DEFAULT_DATE)
+  id?: string             // @id opcional
+}
+
+export function QAPageSchema({ question, questionText, answer, url, datePublished = QA_DEFAULT_DATE, id }: QAItem) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'QAPage',
+    ...(id ? { '@id': id } : {}),
+    mainEntity: {
+      '@type': 'Question',
+      name: question,
+      text: questionText ?? question,
+      answerCount: 1,
+      author: QA_AUTHOR,
+      datePublished,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: answer,
+        url,
+        author: QA_AUTHOR,
+        datePublished,
+        upvoteCount: 0,
+      },
+    },
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+}
+
 // DefinedTermSet — the glossary as a machine-readable set of citable entities.
 // Each term becomes a schema.org DefinedTerm with a stable @id (URL#term) so AI
 // answer engines and search can resolve "qué es X" to a canonical definition here.

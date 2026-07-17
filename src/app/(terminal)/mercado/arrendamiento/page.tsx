@@ -5,7 +5,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import marketData from '@/lib/data/market-prices.json'
 import { createAdminClient } from '@/lib/supabase-server'
 import ArrendamientoCalculator from './ArrendamientoCalculator'
-import { SectionBreadcrumbSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, SpeakableSchema, QAPageSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import ArrendamientoLiquidacionSignup from '@/components/ArrendamientoLiquidacionSignup'
 import HerramientasCTA from '@/components/HerramientasCTA'
@@ -254,28 +254,17 @@ function ArrendamientoDefinedTermSchema() {
 // QAPage — refuerza el snippet de la query head "precio novillo para arrendamiento hoy"
 // (además del FAQPage). El QAPage tiene una única Question con su acceptedAnswer dateada,
 // señal directa de que la página responde ESA pregunta con el número y su fecha.
-function QAPageSchema() {
+function ArrendamientoQAPageSchema() {
   const answer = `El precio del novillo para arrendamiento hoy es $${fmt(arr.index)} por kilo vivo, según el índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero (período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)}, actualizado el ${fmtFecha(arr.date)}). El promedio del período —el valor que se usa para liquidar— es $${fmt(arr.periodIndex)}/kg. El canon se calcula como kilos de novillo pactados por hectárea × precio del índice × cantidad de hectáreas.`
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'QAPage',
-    mainEntity: {
-      '@type': 'Question',
-      name: '¿Cuál es el precio del novillo para arrendamiento hoy?',
-      text: '¿Cuál es el precio del novillo para arrendamiento hoy y cómo se calcula el canon?',
-      answerCount: 1,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: answer,
-        url: 'https://www.consignatarias.com.ar/mercado/arrendamiento',
-        // arr.date es YYYY-MM-DD (fecha sola). schema.org Answer.dateCreated como
-        // DateTime necesita hora + zona horaria, o Google lo marca "inválido / falta
-        // zona horaria". Se completa a medianoche en hora de Argentina (UTC-3, sin DST).
-        dateCreated: `${arr.date}T00:00:00-03:00`,
-      },
-    },
-  }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  return (
+    <QAPageSchema
+      question="¿Cuál es el precio del novillo para arrendamiento hoy?"
+      questionText="¿Cuál es el precio del novillo para arrendamiento hoy y cómo se calcula el canon?"
+      answer={answer}
+      url="https://www.consignatarias.com.ar/mercado/arrendamiento"
+      id="https://www.consignatarias.com.ar/mercado/arrendamiento#qapage"
+    />
+  )
 }
 
 function fmt(n: number): string {
@@ -370,7 +359,7 @@ export default async function ArrendamientoPage() {
       <ArrendamientoSchema />
       <ArrendamientoDefinedTermSchema />
       <FAQSchema />
-      <QAPageSchema />
+      <ArrendamientoQAPageSchema />
       <SpeakableSchema
         url="https://www.consignatarias.com.ar/mercado/arrendamiento"
         headline={`Precio novillo arrendamiento hoy: $${fmt(arr.index)}/kg`}
