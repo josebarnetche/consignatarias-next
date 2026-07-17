@@ -28,6 +28,17 @@ La ficha muestra, junto al interés, los **visitantes únicos** que abrieron ese
 - **Observabilidad de viewship:** nueva tabla `preoferta_views` + endpoint `POST /api/preoferta/view`. La ficha registra vista de página y vista por lote (deduplicadas por visitante vía `localStorage`, fire-and-forget).
 - **Panel en el admin** (`/admin/preoferta/[slug]`): visitantes únicos, vistas totales, y **funnel por lote** (vistas → únicos → interesados), ordenado por vistas. El remate, medido de punta a punta.
 
+## [1.182.0] — 2026-07-17
+
+### Relación maíz/novillo: serie histórica completa (2015→) en /mercado/spread
+
+Hasta ahora el spread maíz/novillo mostraba solo el valor del día. Se construye la **serie histórica mensual completa** con datos 100% reales:
+
+- **Maíz FOB histórico** (`corn-fob-historico.json`): 139 meses (2015-01→2026-07) backfilleados del web service de MAGyP (posición HS 1005), vía `scripts/backfill-corn-fob.mjs`.
+- **Ratio maíz/novillo** (`maiz-novillo-historico.json`): novillo INMAG en USD (dólar blue) ÷ maíz FOB en USD, mensual — mismo método que la lectura en vivo. Mín 2,39:1 (oct-2020, margen ahogado), máx 13,94:1 (feb-2026), último 12,31:1.
+- **Chart histórico** server-rendered en `/mercado/spread` con línea de umbral 12:1 y stats mín/máx/último. La `/indices` refleja "histórico mensual + diario".
+- El **% retención de vientres** (índice de liquidación, `/mercado/liquidacion`) ya tenía su histórico completo 1998-2025 (MAGyP + IPCVA) + Cañuelas 2026; queda a la par.
+
 ## [1.181.0] — 2026-07-17
 
 ### Publicidad de El Tigre retirada + datos estructurados Q&A (GSC) corregidos

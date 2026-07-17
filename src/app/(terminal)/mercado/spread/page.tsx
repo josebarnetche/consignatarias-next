@@ -7,9 +7,61 @@ import {
   DatasetSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import maizNovilloHist from '@/lib/data/maiz-novillo-historico.json'
 import SpreadClient from './SpreadClient'
 
 export const revalidate = 86400
+
+type PuntoRatio = { mes: string; ratio: number }
+
+// ── Chart SVG del histórico de la relación maíz/novillo (2015→), server-rendered.
+//    Línea de umbral 12:1 punteada. Eje X por fecha real. ──────────────────────
+function RatioHistoricoChart({ serie, umbral }: { serie: PuntoRatio[]; umbral: number }) {
+  const W = 720, H = 240, padX = 8, padY = 16
+  const vals = serie.map((p) => p.ratio)
+  const min = Math.max(0, Math.floor(Math.min(...vals) - 1))
+  const max = Math.ceil(Math.max(...vals) + 1)
+  const toT = (mes: string) => { const [y, m] = mes.split('-').map(Number); return y + (m - 1) / 12 }
+  const ts = serie.map((p) => toT(p.mes))
+  const tMin = ts[0], tMax = ts[ts.length - 1]
+  const x = (i: number) => padX + ((ts[i] - tMin) / (tMax - tMin)) * (W - 2 * padX)
+  const y = (v: number) => padY + (1 - (v - min) / (max - min)) * (H - 2 * padY)
+  const path = serie.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)},${y(p.ratio).toFixed(1)}`).join(' ')
+  const area = `${path} L${x(serie.length - 1).toFixed(1)},${H - padY} L${x(0).toFixed(1)},${H - padY} Z`
+  const yearTicks = serie
+    .map((p, i) => ({ year: p.mes.slice(0, 4), i }))
+    .filter((t, idx, arr) => t.year !== arr[idx - 1]?.year && Number(t.year) % 2 === 0)
+  return (
+    <div className="overflow-x-auto">
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full min-w-[560px]" role="img" aria-label="Serie histórica de la relación maíz/novillo, 2015 a hoy">
+        <defs>
+          <linearGradient id="spreadfill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="#38bdf8" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        {[min, Math.round((min + max) / 2), max].map((v) => (
+          <g key={v}>
+            <line x1={padX} x2={W - padX} y1={y(v)} y2={y(v)} stroke="#27272a" strokeWidth="1" />
+            <text x={padX} y={y(v) - 3} fill="#52525b" fontSize="10" fontFamily="monospace">{v}:1</text>
+          </g>
+        ))}
+        {/* umbral de referencia */}
+        {umbral >= min && umbral <= max && (
+          <g>
+            <line x1={padX} x2={W - padX} y1={y(umbral)} y2={y(umbral)} stroke="#fbbf24" strokeWidth="1" strokeDasharray="4 3" opacity="0.7" />
+            <text x={W - padX} y={y(umbral) - 3} fill="#fbbf24" fontSize="10" fontFamily="monospace" textAnchor="end" opacity="0.9">umbral {umbral}:1</text>
+          </g>
+        )}
+        {yearTicks.map((t) => (
+          <text key={t.year} x={x(t.i)} y={H - 3} fill="#52525b" fontSize="9" fontFamily="monospace" textAnchor="middle">{t.year}</text>
+        ))}
+        <path d={area} fill="url(#spreadfill)" />
+        <path d={path} fill="none" stroke="#38bdf8" strokeWidth="1.5" />
+      </svg>
+    </div>
+  )
+}
 
 const PAGE_URL = 'https://www.consignatarias.com.ar/mercado/spread'
 
@@ -140,6 +192,37 @@ export default function SpreadPage() {
           </Link>
         </div>
       </section>
+
+      {/* ── Serie histórica (2015→): el contexto de largo plazo ──────────────── */}
+      {(() => {
+        const serie = (maizNovilloHist.serie as PuntoRatio[])
+        const umbral = maizNovilloHist.umbral_referencia as number
+        const hmin = serie.reduce((a, b) => (b.ratio < a.ratio ? b : a))
+        const hmax = serie.reduce((a, b) => (b.ratio > a.ratio ? b : a))
+        const fmtMes = (mes: string) => {
+          const M = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
+          const [y, m] = mes.split('-'); return `${M[Number(m) - 1]}-${y}`
+        }
+        return (
+          <section className="max-w-4xl mx-auto px-4 pt-8">
+            <div className="rounded-xl border border-terminal-border bg-black/20 p-4 sm:p-5">
+              <div className="flex items-baseline justify-between gap-3 flex-wrap mb-3">
+                <h2 className="text-lg font-medium text-zinc-100">Histórico de la relación · desde 2015</h2>
+                <span className="text-xs text-zinc-500">mensual · promedio ponderado</span>
+              </div>
+              <RatioHistoricoChart serie={serie} umbral={umbral} />
+              <div className="flex flex-wrap gap-x-5 gap-y-1 mt-3 text-xs text-zinc-400">
+                <span>Mínimo: <span className="text-negative font-mono">{hmin.ratio}:1</span> ({fmtMes(hmin.mes)}) — margen ahogado</span>
+                <span>Máximo: <span className="text-positive font-mono">{hmax.ratio}:1</span> ({fmtMes(hmax.mes)}) — corral holgado</span>
+                <span>Último: <span className="text-zinc-200 font-mono">{serie[serie.length - 1].ratio}:1</span> ({fmtMes(serie[serie.length - 1].mes)})</span>
+              </div>
+              <p className="text-xxs text-zinc-600 mt-2.5 leading-snug">
+                Novillo INMAG en USD (dólar blue) ÷ maíz FOB MAGyP en USD. Serie mensual reconstruida con datos públicos (INMAG desde 2015, maíz FOB por posición HS 1005). La lectura del día, abajo, usa el valor spot.
+              </p>
+            </div>
+          </section>
+        )
+      })()}
 
       {/* Herramienta interactiva: la relación en vivo + decisión operativa */}
       <SpreadClient />
