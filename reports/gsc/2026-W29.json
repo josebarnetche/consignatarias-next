@@ -268,19 +268,17 @@
   },
   "traffic": {
     "range": {
-      "current_from": "2026-07-11T21:39:13.659Z",
-      "previous_from": "2026-07-04T21:39:13.660Z"
+      "current_from": "2026-07-11T21:45:28.257Z",
+      "previous_from": "2026-07-04T21:45:28.258Z"
     },
     "traffic": {
       "cur": {
-        "visitantes": 1000,
-        "pageviews": 1501,
-        "aiVisits": 64
+        "visitantes": 1558,
+        "aiVisits": 116
       },
       "prev": {
-        "visitantes": 1000,
-        "pageviews": 1205,
-        "aiVisits": 72
+        "visitantes": 1076,
+        "aiVisits": 85
       }
     },
     "aiEngines": [
@@ -361,5 +359,5 @@
     ],
     "profileViewsTotal": 181
   },
-  "generated": "2026-07-18T21:39:13.265Z"
+  "generated": "2026-07-18T21:45:27.667Z"
 }

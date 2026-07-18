@@ -34,7 +34,7 @@ GSC: 2026-07-09 → 2026-07-15. Generado 2026-07-18.
 - /frigorificos/30707283250 — 6 clicks
 
 ## Tráfico (últimos 7 días)
-- Visitantes: 1.000 · Pageviews: 1.501 · Desde IA: 64
+- Visitantes: 1.558 · Desde IA: 116 · Vistas de perfil: 181
 
 ### Motores de IA
 - copilot: 93
