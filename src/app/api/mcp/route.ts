@@ -31,12 +31,23 @@ export const maxDuration = 60
 
 const SERVER_INFO = { name: 'consignatarias', version: '1.0.0' }
 // Versiones del protocolo MCP que soportamos. Somos tools-only + stateless, así que
-// la compatibilidad es hacia adelante: negociamos la que pida el cliente si la conocemos,
-// si no devolvemos la última. LATEST se emite además en el header MCP-Protocol-Version
-// de cada respuesta (lo exige el spec 2026-07-28 — "routing-headers").
+// la compatibilidad es hacia adelante: negociamos la que pida el cliente si la conocemos.
+// Si pide una desconocida NO devolvemos la última a ciegas: un cliente que pide
+// 2026-03-26 no implementa 2026-07-28 y corta la conexión ("Server's protocol version
+// is not supported") — bajamos a la más nueva que no sea posterior a la pedida.
+// LATEST se emite además en el header MCP-Protocol-Version de cada respuesta
+// (lo exige el spec 2026-07-28 — "routing-headers").
 const SUPPORTED_PROTOCOL_VERSIONS = ['2026-07-28', '2025-06-18', '2025-03-26'] as const
 const LATEST_PROTOCOL_VERSION = SUPPORTED_PROTOCOL_VERSIONS[0]
+const OLDEST_PROTOCOL_VERSION = SUPPORTED_PROTOCOL_VERSIONS[SUPPORTED_PROTOCOL_VERSIONS.length - 1]
 const PROTOCOL_VERSION = LATEST_PROTOCOL_VERSION
+
+// Las versiones son fechas ISO: comparan lexicográficamente. SUPPORTED va de más
+// nueva a más vieja, así que find() da la más nueva compatible con lo pedido.
+function negotiateProtocolVersion(requested?: string): string {
+  if (!requested) return LATEST_PROTOCOL_VERSION
+  return SUPPORTED_PROTOCOL_VERSIONS.find((v) => v <= requested) ?? OLDEST_PROTOCOL_VERSION
+}
 
 // ── Tools (wrappers finos sobre data/lógica existente) ───────────────────────
 type ToolResult = { content: Array<{ type: 'text'; text: string }>; isError?: boolean }
@@ -864,8 +875,7 @@ const PROMPTS: McpPrompt[] = [
 
 // Todas las respuestas MCP llevan MCP-Protocol-Version (spec 2026-07-28, routing-headers).
 function mcpHeaders(pv?: string): Record<string, string> {
-  const v = pv && (SUPPORTED_PROTOCOL_VERSIONS as readonly string[]).includes(pv) ? pv : LATEST_PROTOCOL_VERSION
-  return { 'Cache-Control': 'no-store', 'MCP-Protocol-Version': v }
+  return { 'Cache-Control': 'no-store', 'MCP-Protocol-Version': negotiateProtocolVersion(pv) }
 }
 function rpcResult(id: unknown, result: unknown, pv?: string) {
   return NextResponse.json({ jsonrpc: '2.0', id, result }, { headers: mcpHeaders(pv) })
@@ -925,13 +935,11 @@ export async function POST(req: NextRequest) {
 
   switch (method) {
     case 'initialize': {
-      // Negociación: si el cliente pide una versión que soportamos, la devolvemos; si no,
-      // la última. Preferimos el protocolVersion del body; si falta, el del header.
+      // Negociación: la que pida el cliente si la soportamos; si no, la más nueva
+      // no posterior a la pedida. Preferimos el protocolVersion del body; si falta,
+      // el del header.
       const requested = (params?.protocolVersion as string) || pv
-      const negotiated =
-        requested && (SUPPORTED_PROTOCOL_VERSIONS as readonly string[]).includes(requested)
-          ? requested
-          : LATEST_PROTOCOL_VERSION
+      const negotiated = negotiateProtocolVersion(requested)
       logMcp({ method: 'initialize', ok: true, startedAt, meta: { ...rmeta, client: params?.clientInfo ?? null, protocol: negotiated } })
       return rpcResult(id, {
         protocolVersion: negotiated,
