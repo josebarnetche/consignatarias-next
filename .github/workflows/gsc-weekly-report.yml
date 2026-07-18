@@ -1,0 +1,48 @@
+name: gsc-weekly-report
+
+# Reporte semanal de SEO (Search Console) + tráfico (GA4): genera archivos en
+# reports/gsc/, los commitea al repo, y emailea el resumen.
+# Auth durable por service account (secret GA4_SA_KEY, agregado como usuario en GSC).
+
+on:
+  schedule:
+    - cron: '0 13 * * 1' # lunes 13:00 UTC = 10:00 ART
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: install deps
+        run: npm install --legacy-peer-deps
+
+      - name: generar + emailear reporte
+        run: node scripts/gsc-report.mjs
+        env:
+          GA4_SA_KEY: ${{ secrets.GA4_SA_KEY }}
+          GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
+          GSC_SA_KEY: ${{ secrets.GSC_SA_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+          GSC_REPORT_TO: ${{ secrets.GSC_REPORT_TO }}
+
+      - name: commit reports
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add reports/gsc/
+          if git diff --staged --quiet; then
+            echo "sin cambios en reports/"
+          else
+            git commit -m "chore(reports): reporte semanal SEO/tráfico $(date -u +%Y-W%V)"
+            git push
+          fi

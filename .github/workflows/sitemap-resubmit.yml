@@ -1,0 +1,37 @@
+name: sitemap-resubmit
+
+# Re-submite el sitemap a Google Search Console tras cada deploy a main (fuerza el
+# re-fetch de la versión nueva). Espera un poco a que Vercel publique el deploy.
+# Auth por service account con scope de escritura (secret, SA con permiso en GSC).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+# Evita re-submits en ráfaga: si llegan varios pushes, corre solo el último.
+concurrency:
+  group: sitemap-resubmit
+  cancel-in-progress: true
+
+jobs:
+  resubmit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: install deps
+        run: npm install --legacy-peer-deps
+
+      - name: esperar deploy de Vercel (~4 min)
+        run: sleep 240
+
+      - name: re-submitir sitemap
+        run: node scripts/gsc-submit-sitemap.mjs
+        env:
+          GSC_SA_KEY: ${{ secrets.GSC_SA_KEY }}
+          GA4_SA_KEY: ${{ secrets.GA4_SA_KEY }}

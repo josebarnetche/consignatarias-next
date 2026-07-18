@@ -1,0 +1,478 @@
+{
+  "range": {
+    "start": "2026-07-09",
+    "end": "2026-07-15",
+    "pstart": "2026-07-02",
+    "pend": "2026-07-08"
+  },
+  "gsc": {
+    "cur": {
+      "clicks": 765,
+      "impressions": 38465,
+      "ctr": 0.0198882100610945,
+      "position": 6.061016508514234
+    },
+    "prev": {
+      "clicks": 890,
+      "impressions": 44874,
+      "ctr": 0.019833311048714178,
+      "position": 6.186187993047199
+    },
+    "queries": [
+      {
+        "keys": [
+          "indice novillo arrendamiento"
+        ],
+        "clicks": 18,
+        "impressions": 958,
+        "ctr": 0.018789144050104383,
+        "position": 5.866388308977036
+      },
+      {
+        "keys": [
+          "precio novillo arrendamiento"
+        ],
+        "clicks": 15,
+        "impressions": 547,
+        "ctr": 0.027422303473491772,
+        "position": 5.742230347349177
+      },
+      {
+        "keys": [
+          "precio novillo arrendamiento mensual"
+        ],
+        "clicks": 10,
+        "impressions": 372,
+        "ctr": 0.026881720430107527,
+        "position": 4.301075268817204
+      },
+      {
+        "keys": [
+          "precio novillo para arrendamiento hoy"
+        ],
+        "clicks": 9,
+        "impressions": 669,
+        "ctr": 0.013452914798206279,
+        "position": 5.240657698056801
+      },
+      {
+        "keys": [
+          "novillo arrendamiento"
+        ],
+        "clicks": 7,
+        "impressions": 758,
+        "ctr": 0.009234828496042216,
+        "position": 6.112137203166227
+      },
+      {
+        "keys": [
+          "precio novillo arrendamiento mercado de cañuelas"
+        ],
+        "clicks": 7,
+        "impressions": 297,
+        "ctr": 0.02356902356902357,
+        "position": 5.656565656565657
+      },
+      {
+        "keys": [
+          "precio novillo arrendamiento mercado de liniers"
+        ],
+        "clicks": 7,
+        "impressions": 227,
+        "ctr": 0.030837004405286344,
+        "position": 6.105726872246696
+      },
+      {
+        "keys": [
+          "indice novillo arrendamiento mensual"
+        ],
+        "clicks": 6,
+        "impressions": 347,
+        "ctr": 0.01729106628242075,
+        "position": 6.743515850144092
+      },
+      {
+        "keys": [
+          "precio del novillo de arrendamiento"
+        ],
+        "clicks": 6,
+        "impressions": 137,
+        "ctr": 0.043795620437956206,
+        "position": 5.109489051094891
+      },
+      {
+        "keys": [
+          "novillo arrendamiento hoy"
+        ],
+        "clicks": 5,
+        "impressions": 71,
+        "ctr": 0.07042253521126761,
+        "position": 5.28169014084507
+      },
+      {
+        "keys": [
+          "indice novillo arrendamiento mercado de cañuelas"
+        ],
+        "clicks": 4,
+        "impressions": 265,
+        "ctr": 0.01509433962264151,
+        "position": 5.686792452830189
+      },
+      {
+        "keys": [
+          "novillo de arrendamiento"
+        ],
+        "clicks": 4,
+        "impressions": 138,
+        "ctr": 0.028985507246376812,
+        "position": 4.702898550724638
+      },
+      {
+        "keys": [
+          "precio novillo arrendamiento hoy"
+        ],
+        "clicks": 4,
+        "impressions": 124,
+        "ctr": 0.03225806451612903,
+        "position": 4.629032258064516
+      },
+      {
+        "keys": [
+          "precio novillo para arrendamiento hoy canal rural"
+        ],
+        "clicks": 4,
+        "impressions": 177,
+        "ctr": 0.022598870056497175,
+        "position": 5.8192090395480225
+      },
+      {
+        "keys": [
+          "inmag"
+        ],
+        "clicks": 3,
+        "impressions": 226,
+        "ctr": 0.01327433628318584,
+        "position": 6.676991150442478
+      },
+      {
+        "keys": [
+          "precio arrendamiento novillo"
+        ],
+        "clicks": 3,
+        "impressions": 43,
+        "ctr": 0.06976744186046512,
+        "position": 4.558139534883721
+      },
+      {
+        "keys": [
+          "precio del kg de novillo para arrendamiento diario la nacion"
+        ],
+        "clicks": 3,
+        "impressions": 120,
+        "ctr": 0.025,
+        "position": 5.575
+      },
+      {
+        "keys": [
+          "precio novillo de arrendamiento"
+        ],
+        "clicks": 3,
+        "impressions": 85,
+        "ctr": 0.03529411764705882,
+        "position": 5.294117647058823
+      },
+      {
+        "keys": [
+          "promedio novillo arrendamiento"
+        ],
+        "clicks": 3,
+        "impressions": 60,
+        "ctr": 0.05,
+        "position": 5.55
+      },
+      {
+        "keys": [
+          "agroindustrias quilmes"
+        ],
+        "clicks": 2,
+        "impressions": 6,
+        "ctr": 0.3333333333333333,
+        "position": 3
+      },
+      {
+        "keys": [
+          "consignatarias"
+        ],
+        "clicks": 2,
+        "impressions": 3,
+        "ctr": 0.6666666666666666,
+        "position": 1.3333333333333333
+      },
+      {
+        "keys": [
+          "darwash"
+        ],
+        "clicks": 2,
+        "impressions": 59,
+        "ctr": 0.03389830508474576,
+        "position": 7.745762711864407
+      },
+      {
+        "keys": [
+          "establecimiento oficial 392"
+        ],
+        "clicks": 2,
+        "impressions": 2,
+        "ctr": 1,
+        "position": 1
+      },
+      {
+        "keys": [
+          "indice arrendamiento"
+        ],
+        "clicks": 2,
+        "impressions": 177,
+        "ctr": 0.011299435028248588,
+        "position": 6.926553672316384
+      },
+      {
+        "keys": [
+          "indice de arrendamiento liniers"
+        ],
+        "clicks": 2,
+        "impressions": 23,
+        "ctr": 0.08695652173913043,
+        "position": 7.826086956521739
+      }
+    ],
+    "pages": [
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/mercado/arrendamiento"
+        ],
+        "clicks": 263,
+        "impressions": 14377,
+        "ctr": 0.018293107045976212,
+        "position": 5.686582736314947
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/frigorificos"
+        ],
+        "clicks": 21,
+        "impressions": 770,
+        "ctr": 0.02727272727272727,
+        "position": 7.033766233766234
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/mercado/inmag"
+        ],
+        "clicks": 21,
+        "impressions": 943,
+        "ctr": 0.022269353128313893,
+        "position": 6.249204665959703
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/remates/entre-rios"
+        ],
+        "clicks": 12,
+        "impressions": 74,
+        "ctr": 0.16216216216216217,
+        "position": 4.527027027027027
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/"
+        ],
+        "clicks": 11,
+        "impressions": 313,
+        "ctr": 0.03514376996805112,
+        "position": 4.533546325878595
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/precios/vacas"
+        ],
+        "clicks": 11,
+        "impressions": 2084,
+        "ctr": 0.00527831094049904,
+        "position": 5.050863723608446
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/consignatarias"
+        ],
+        "clicks": 10,
+        "impressions": 193,
+        "ctr": 0.05181347150259067,
+        "position": 5.430051813471502
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/como-funciona-un-remate-ganadero"
+        ],
+        "clicks": 8,
+        "impressions": 77,
+        "ctr": 0.1038961038961039,
+        "position": 2.7272727272727275
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/mercado/toros"
+        ],
+        "clicks": 8,
+        "impressions": 401,
+        "ctr": 0.0199501246882793,
+        "position": 5.371571072319202
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/frigorificos/30707283250"
+        ],
+        "clicks": 6,
+        "impressions": 72,
+        "ctr": 0.08333333333333333,
+        "position": 5.541666666666667
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/frigorificos/santa-fe"
+        ],
+        "clicks": 6,
+        "impressions": 261,
+        "ctr": 0.022988505747126436,
+        "position": 6.796934865900383
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/remates/corrientes"
+        ],
+        "clicks": 6,
+        "impressions": 72,
+        "ctr": 0.08333333333333333,
+        "position": 3.763888888888889
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/mercado"
+        ],
+        "clicks": 5,
+        "impressions": 708,
+        "ctr": 0.007062146892655367,
+        "position": 8.341807909604519
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/remates/ciudad/gualeguaychu-entre-rios"
+        ],
+        "clicks": 5,
+        "impressions": 25,
+        "ctr": 0.2,
+        "position": 6.8
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/cuanto-vale-un-toro"
+        ],
+        "clicks": 4,
+        "impressions": 77,
+        "ctr": 0.05194805194805195,
+        "position": 4.467532467532468
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/cuanto-vale-una-vaca"
+        ],
+        "clicks": 4,
+        "impressions": 534,
+        "ctr": 0.00749063670411985,
+        "position": 5.305243445692884
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/frigorificos/30695160417"
+        ],
+        "clicks": 4,
+        "impressions": 55,
+        "ctr": 0.07272727272727272,
+        "position": 4.727272727272727
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/frigorificos/30715604775"
+        ],
+        "clicks": 4,
+        "impressions": 10,
+        "ctr": 0.4,
+        "position": 3.9
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/mercado/spread"
+        ],
+        "clicks": 4,
+        "impressions": 51,
+        "ctr": 0.0784313725490196,
+        "position": 5.03921568627451
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/mercado/vacas"
+        ],
+        "clicks": 4,
+        "impressions": 657,
+        "ctr": 0.0060882800608828,
+        "position": 6.155251141552512
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/remates/la-pampa"
+        ],
+        "clicks": 4,
+        "impressions": 59,
+        "ctr": 0.06779661016949153,
+        "position": 5.220338983050848
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/remates/misiones"
+        ],
+        "clicks": 4,
+        "impressions": 23,
+        "ctr": 0.17391304347826086,
+        "position": 2.4782608695652173
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/consignatarias/colombo-y-magliano"
+        ],
+        "clicks": 3,
+        "impressions": 114,
+        "ctr": 0.02631578947368421,
+        "position": 5.982456140350878
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/consignatarias/cooperativa-guillermo-lehmann"
+        ],
+        "clicks": 3,
+        "impressions": 94,
+        "ctr": 0.031914893617021274,
+        "position": 7.840425531914893
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/consignatarias/daniel-blanco"
+        ],
+        "clicks": 3,
+        "impressions": 63,
+        "ctr": 0.047619047619047616,
+        "position": 5.555555555555555
+      }
+    ]
+  },
+  "ga4": null,
+  "generated": "2026-07-18T20:56:42.715Z"
+}
