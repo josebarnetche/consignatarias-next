@@ -89,9 +89,10 @@ export async function POST(req: NextRequest) {
 
     for (const sub of toSend) {
       try {
-        await sendWeeklyNewsletter(sub.email, featuredRemates, upcomingAuctions.length, weekRange)
-        sent++
-        await new Promise(r => setTimeout(r, 100))
+        const res = await sendWeeklyNewsletter(sub.email, featuredRemates, upcomingAuctions.length, weekRange)
+        if (res.success) sent++
+        else errors.push(`${sub.email}: ${res.error ?? 'send failed'}`)
+        await new Promise(r => setTimeout(r, 500)) // ≥500ms: Resend ~2 req/s, evita 429
       } catch (err) {
         errors.push(`${sub.email}: ${err}`)
       }

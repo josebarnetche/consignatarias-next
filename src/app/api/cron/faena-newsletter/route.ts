@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
         })
         if (result.success) sent++
         else errors.push(`${sub.email}: ${result.error}`)
-        await new Promise(r => setTimeout(r, 100))
+        await new Promise(r => setTimeout(r, 500))
       } catch (err) {
         errors.push(`${sub.email}: ${err}`)
       }

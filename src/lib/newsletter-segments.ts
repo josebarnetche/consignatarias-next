@@ -29,11 +29,20 @@
  *                                          ESE contenido, no el digest semanal genérico.
  */
 export const SEGMENT_SOURCES = {
-  // Weekly remates digest (Mondays).
-  weekly: ['remates', 'reporte-semanal', 'homepage'],
-  // Subasta-por-firma — recordatorios de remate (T-24h / T-1h en vivo / resultados) al
-  // productor que pidió seguir la agenda de una firma. Consumido por el cron remate-reminders.
-  subastaPorFirma: ['watchlist-notify'],
+  // Weekly remates digest (Mondays). 'watchlist-notify' vive acá (2026-07-18): su
+  // cron dedicado (remate-reminders) está deshabilitado y no captura la firma
+  // seguida, así que hasta que ese motor esté vivo el opt-in recibe el weekly
+  // (que es lo que el propio opt-in le promete: "vas en el resumen semanal").
+  weekly: ['remates', 'reporte-semanal', 'homepage', 'watchlist-notify'],
+  // Subasta-por-firma — recordatorios de remate por firma seguida. VACÍO por ahora:
+  // el cron remate-reminders está en disabled/ y el opt-in aún no persiste el slug.
+  // Cuando se re-habilite con scope por firma, repoblar con 'watchlist-notify'
+  // (y sacarlo de weekly).
+  subastaPorFirma: [] as string[],
+  // Cierre de arrendamiento (día 3) — cierre oficial ponderado + canon del suscripto,
+  // vía cron arrendamiento-cierre. Segmento propio para EXCLUIRLO del weekly (si no,
+  // caía al fail-safe y recibía doble email: weekly lunes + arrendamiento día 3).
+  arrendamientoCierre: ['arrendamiento-liquidacion'],
   // Monthly Índice Novillo close (1st) — price / INMAG intent.
   // OJO: 'arrendamiento-liquidacion' NO va acá. Lo maneja el cron dedicado
   // `arrendamiento-cierre` (día 3), que manda el cierre OFICIAL ponderado del MAG
@@ -59,12 +68,13 @@ function norm(source: string | null | undefined): string {
   return (source ?? '').trim().toLowerCase()
 }
 
-/** A source explicitly claimed by faena / monthlyClose / corredor / subastaPorFirma (their own content). */
+/** A source claimed by un segmento con su propio contenido → NO recibe el weekly. */
 function inSpecificSegment(s: string): boolean {
   return (
     (SEGMENT_SOURCES.faena as readonly string[]).includes(s) ||
     (SEGMENT_SOURCES.monthlyClose as readonly string[]).includes(s) ||
     (SEGMENT_SOURCES.corredor as readonly string[]).includes(s) ||
+    (SEGMENT_SOURCES.arrendamientoCierre as readonly string[]).includes(s) ||
     (SEGMENT_SOURCES.subastaPorFirma as readonly string[]).includes(s)
   )
 }

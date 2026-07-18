@@ -551,6 +551,7 @@ export async function sendMonthlyClose(
       from: FROM,
       to: email,
       subject: `Cierre ${data.monthLabel}: Índice Novillo promedio ${money(data.avg)}/kg`,
+      headers: listUnsubHeaders(email, 'monthly-close'),
       html: darkEmailShell(`
           <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 4px">Cierre mensual &middot; &Iacute;ndice Novillo Arrendamiento</p>
           <h2 style="color:#fafafa;font-size:18px;font-weight:700;margin:0 0 20px">${escapeHtml(data.monthLabel)}</h2>
@@ -836,16 +837,26 @@ export async function sendWeeklyNewsletter(
   featuredRemates: FeaturedRemate[],
   totalRemates: number,
   weekRange: string,
-) {
+): Promise<{ success: boolean; error?: string }> {
   const resend = await getResend()
-  if (!resend) return
+  if (!resend) return { success: false, error: 'no-resend' }
 
-  resend.emails.send({
-    from: FROM,
-    to: email,
-    subject: `Remates de la semana — ${weekRange} · ${totalRemates} programados`,
-    html: buildWeeklyNewsletterHtml(email, featuredRemates, totalRemates, weekRange),
-  }).catch(() => {})
+  try {
+    // await + return: antes era fire-and-forget con .catch(()=>{}), así el cron
+    // reportaba siempre sent==total aunque Resend fallara/rebotara. Ahora se
+    // detecta la falla. + List-Unsubscribe (RFC 8058) que Gmail/Yahoo exigen a bulk.
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: email,
+      subject: `Remates de la semana — ${weekRange} · ${totalRemates} programados`,
+      html: buildWeeklyNewsletterHtml(email, featuredRemates, totalRemates, weekRange),
+      headers: listUnsubHeaders(email, 'weekly'),
+    })
+    if (error) return { success: false, error: String((error as { message?: string }).message || error) }
+    return { success: true }
+  } catch (e) {
+    return { success: false, error: e instanceof Error ? e.message : String(e) }
+  }
 }
 
 /**
@@ -1210,6 +1221,7 @@ export async function sendFaenaNewsletter({
       from: FROM,
       to,
       subject: `Faena ${currentMonth}: ${formatNumber(cabezas)} cabezas`,
+      headers: listUnsubHeaders(to, 'faena'),
       html: darkEmailShell(`
           <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 4px">Reporte mensual de faena</p>
           <p style="color:#71717a;font-size:12px;margin:0 0 20px">${escapeHtml(currentMonth)} — Datos oficiales</p>

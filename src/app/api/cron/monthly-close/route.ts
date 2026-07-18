@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
           : null
         await sendMonthlyClose(sub.email, { ...payload, lease })
         sent++
-        await new Promise((r) => setTimeout(r, 120))
+        await new Promise((r) => setTimeout(r, 500))
       } catch (err) {
         errors.push(`${sub.email}: ${err}`)
       }

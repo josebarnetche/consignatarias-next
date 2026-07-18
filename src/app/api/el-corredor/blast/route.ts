@@ -16,13 +16,15 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.c
 // market-interested segments — they subscribed for cattle-market content and the
 // monthly close is exactly that. Excludes product-only sources (exportar-datos).
 // As the corredor segment grows via the lead-magnet CTAs, it becomes the core.
+// Audiencia de El Corredor (PDF mensual, día 1). NO incluir sources que ya tienen
+// su propio email de mercado el mismo período (2026-07-18): 'cierre-mensual' y
+// 'valuation_widget' reciben monthly-close (día 1) y 'frigorificos' recibe faena
+// (día 3) → doble email de mercado. Quedan los que opt-in a El Corredor + el weekly
+// (contenido distinto: digest de remates vs informe mensual).
 const EL_CORREDOR_AUDIENCE = [
   ...SEGMENT_SOURCES.corredor, // 'el-corredor'
-  'cierre-mensual',
   'reporte-semanal',
   'remates',
-  'frigorificos',
-  'valuation_widget',
 ]
 
 /**

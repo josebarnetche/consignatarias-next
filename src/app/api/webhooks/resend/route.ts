@@ -122,5 +122,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'insert_failed' }, { status: 500 })
   }
 
+  // Supresión: hard bounce → baja por rebote; queja de spam → desuscribir. Si no,
+  // seguimos mandándole al que rebota/marca spam y quemamos la reputación del dominio.
+  const recipient = row.recipient
+  if (recipient && (type === 'bounced' || type === 'complained')) {
+    const isHardBounce = type === 'bounced' && (row.bounce_type ?? '').toLowerCase().includes('hard')
+    if (isHardBounce || type === 'complained') {
+      const status = type === 'complained' ? 'unsubscribed' : 'bounced'
+      const { error: supErr } = await service.from('newsletter_subscribers').update({ status }).eq('email', recipient)
+      if (supErr) console.error('[resend-webhook] supresión falló:', supErr.message)
+    }
+  }
+
   return NextResponse.json({ received: true })
 }
