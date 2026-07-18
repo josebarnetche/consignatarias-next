@@ -184,13 +184,22 @@ const TOOLS: Tool[] = [
       const dias = Math.min(Math.max(typeof args.dias === 'number' ? args.dias : 30, 2), 5000)
       const desde = new Date(Date.now() - dias * 86400000).toISOString().slice(0, 10)
       const service = requireServiceClient()
-      const { data, error } = await service
-        .from('mag_inmag_history')
-        .select('date, inmag_value')
-        .gte('date', desde)
-        .order('date', { ascending: true })
-      if (error) return fail('Error leyendo el histórico INMAG.')
-      const rows = (data || []).filter((r) => r.inmag_value != null) as Array<{ date: string; inmag_value: number }>
+      // Paginado: PostgREST capea cada request a 1.000 filas — sin esto, una ventana
+      // larga devuelve la serie truncada (2015→2019) como si fuera completa.
+      const PAGE = 1000
+      const all: Array<{ date: string; inmag_value: number | null }> = []
+      for (let from = 0; ; from += PAGE) {
+        const { data, error } = await service
+          .from('mag_inmag_history')
+          .select('date, inmag_value')
+          .gte('date', desde)
+          .order('date', { ascending: true })
+          .range(from, from + PAGE - 1)
+        if (error) return fail('Error leyendo el histórico INMAG.')
+        all.push(...(data || []))
+        if (!data || data.length < PAGE) break
+      }
+      const rows = all.filter((r) => r.inmag_value != null) as Array<{ date: string; inmag_value: number }>
       if (rows.length === 0) return ok(`Sin datos INMAG en los últimos ${dias} días.`)
       const vals = rows.map((r) => Number(r.inmag_value))
       const first = vals[0], last = vals[vals.length - 1]
