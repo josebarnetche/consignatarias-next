@@ -22,7 +22,10 @@ const CRED = join(HERE, 'archive/oauth-credentials.json')
 const TOKEN = join(HERE, 'archive/oauth-token.json')
 const PORT = 3333
 const REDIRECT = `http://localhost:${PORT}`
-const SCOPE = ['https://www.googleapis.com/auth/webmasters.readonly']
+// Scope completo (lectura + escritura): permite inspección/analytics Y acciones
+// de escritura (re-submitir sitemap, sitemaps.submit). Si sólo querés lectura,
+// usá 'https://www.googleapis.com/auth/webmasters.readonly'.
+const SCOPE = ['https://www.googleapis.com/auth/webmasters']
 
 const cred = JSON.parse(readFileSync(CRED, 'utf8')).installed
 const oauth2 = new google.auth.OAuth2(cred.client_id, cred.client_secret, REDIRECT)
