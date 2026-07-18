@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.185.0] — 2026-07-18
+
+### MCP: histórico INMAG con fechas exactas + serie en USD
+
+- **`desde`/`hasta` (YYYY-MM-DD)** en `get_inmag_historico`: rango exacto, incluida la consulta puntual (`desde=hasta` → "¿cuánto valía el novillo el 20-mar-2020?"). `dias` sigue como default.
+- **`moneda: 'usd'`**: la serie convertida por dólar blue venta con último valor conocido a cada fecha (forward-fill) — la misma regla que `novillo_usd_series()` y las alertas. Blue leído paginado igual que el índice. Unidad explícita en header y JSON; nota de conversión en la respuesta.
+- Dato citable que habilita: en pesos el índice hizo +25.608% desde 2015; **en dólares blue, +135%** (US$ 1,20 → US$ 2,82/kg vivo).
+- Regenerados `database.types.ts` desde prod (DRIFT y ALLOWLIST del pre-commit a cero — eran falsos positivos por snapshot viejo + parser sin soporte one-liner del generador nuevo).
+
 ## [1.184.1] — 2026-07-18
 
 ### Fix: identidad v2 en todos los previews sociales (OG/Twitter)
