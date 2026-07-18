@@ -80,6 +80,7 @@ export const metadata: Metadata = {
     'mercado agroganadero',
   ],
   openGraph: {
+    images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
     title: `Hacienda en Pie Hoy — INMAG $${fmt(inmag)} (${inmagChangeStr})`,
     description: `Precios kilo vivo por categoría · Novillo $${fmt(novillo.price)} · Ternero $${fmt(ternero.price)} · Actualizado ${lastUpdate}.`,
     url: 'https://www.consignatarias.com.ar/precios/hacienda-en-pie',

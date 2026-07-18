@@ -30,7 +30,8 @@ export async function generateMetadata(): Promise<Metadata> {
       'precio novillo 2006',
       'novillo dolar blue historico',
     ],
-    openGraph: { title, description, url: 'https://www.consignatarias.com.ar/mercado/novillo-historico', type: 'website' },
+    openGraph: {
+      images: [{ url: '/og-mercado.png', width: 1200, height: 630 }], title, description, url: 'https://www.consignatarias.com.ar/mercado/novillo-historico', type: 'website' },
     alternates: { canonical: 'https://www.consignatarias.com.ar/mercado/novillo-historico' },
   }
 }

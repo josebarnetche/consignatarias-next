@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: 'Comparar Consignatarias',
   description: 'Compará consignatarias de hacienda lado a lado. Remates programados, provincias de operación, tipos de remate y más.',
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'Comparar Consignatarias',
     description: 'Herramienta de comparación de consignatarias ganaderas.',
     url: 'https://www.consignatarias.com.ar/comparar',

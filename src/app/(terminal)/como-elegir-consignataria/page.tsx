@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     'comisión consignataria hacienda', 'consignataria de confianza', 'qué consignataria elegir',
   ],
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'Cómo Elegir una Consignataria de Hacienda — Guía 2026',
     description: 'Los 7 criterios para elegir consignataria: matrícula, plaza, comisión, días de cobro, medios de pago, frecuencia y reputación.',
     url: `${APP_URL}/como-elegir-consignataria`,

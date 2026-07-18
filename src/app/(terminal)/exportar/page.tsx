@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: 'Exportar Datos de Remates',
   description: 'Descargá los datos de remates ganaderos en formato CSV o JSON. Filtros por provincia, tipo y fecha.',
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'Exportar Datos de Remates',
     description: 'Descargá remates en CSV o JSON para análisis.',
     url: 'https://www.consignatarias.com.ar/exportar',

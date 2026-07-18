@@ -79,6 +79,7 @@ export async function generateMetadata(): Promise<Metadata> {
       'venta ganado sabado domingo',
     ],
     openGraph: {
+      images: [{ url: '/og-remates.png', width: 1200, height: 630 }],
       title: `Remates Fin de Semana — ${count} Subastas`,
       description: `${count} remates de ganado este sábado y domingo. Ver calendario con horarios, ubicaciones y transmisiones en vivo.`,
       url: 'https://www.consignatarias.com.ar/remates/fin-de-semana',

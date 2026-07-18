@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: 'Exportar Calendario de Remates',
   description: 'Descargá el calendario de remates ganaderos en formato iCal. Sincronizá automáticamente con Google Calendar, Apple Calendar o Outlook.',
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'Exportar Calendario de Remates',
     description: 'Sincronizá los remates ganaderos con tu calendario. Google Calendar, Apple Calendar, Outlook.',
     url: 'https://www.consignatarias.com.ar/calendario-exportar',

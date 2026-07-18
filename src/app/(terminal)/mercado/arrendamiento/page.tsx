@@ -116,6 +116,7 @@ export const metadata: Metadata = {
     'INMAG arrendamiento',
   ],
   openGraph: {
+    images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
     title: `Índice Novillo Arrendamiento Hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg | Consignatarias`,
     description: `Índice oficial del novillo para arrendamiento: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg (act. ${fmtFecha(arr.date)}). Referencia para contratos de arrendamiento rural en Argentina.`,
     url: 'https://www.consignatarias.com.ar/mercado/arrendamiento',

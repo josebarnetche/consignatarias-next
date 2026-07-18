@@ -234,6 +234,7 @@ export async function generateMetadata({
     description: `¿Cuánto vale ${article} ${config.name.toLowerCase()} en Argentina hoy? Cotiza $${priceFormatted}/kg vivo en el Mercado Agroganadero, actualizado a diario. Histórico y rango por categoría.`,
     keywords: config.keywords,
     openGraph: {
+      images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
       title: `Precio ${config.name} Hoy: $${priceFormatted}/kg`,
       description: `Cotización actualizada de ${config.namePlural.toLowerCase()} en Argentina. Precio por kilo vivo, histórico y análisis del mercado ganadero.`,
       url: `https://www.consignatarias.com.ar/mercado/${categoria}`,

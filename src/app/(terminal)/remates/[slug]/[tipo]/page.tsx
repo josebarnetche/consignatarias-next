@@ -83,6 +83,7 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
     title,
     description,
     openGraph: {
+      images: [{ url: '/og-remates.png', width: 1200, height: 630 }],
       title,
       description,
       type: 'website',

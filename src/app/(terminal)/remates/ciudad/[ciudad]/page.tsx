@@ -90,6 +90,7 @@ export async function generateMetadata({ params }: { params: Promise<{ ciudad: s
     description: `Calendario de remates de hacienda en ${displayName}. ${upcomingCount} remates próximos. Invernada, cría, reproductores y más.`,
     keywords: [`remates ${cityOnly.toLowerCase()}`, `remates hacienda ${cityOnly.toLowerCase()}`, `ganado ${cityOnly.toLowerCase()}`, 'remates ganaderos'],
     openGraph: {
+      images: [{ url: '/og-remates.png', width: 1200, height: 630 }],
       title: `Remates en ${cityOnly}`,
       description: `${upcomingCount} remates de hacienda próximos en ${displayName}`,
       url: `https://www.consignatarias.com.ar/remates/ciudad/${ciudad}`,

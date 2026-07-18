@@ -148,6 +148,7 @@ export const metadata: Metadata = {
     'mercado agroganadero cañuelas arrendamiento',
   ],
   openGraph: {
+    images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
     title: `Índice Novillo Arrendamiento Cañuelas: $${fmt(arrendamientoOficial.index)}/kg`,
     description: `Índice de arrendamiento del Mercado Agroganadero de Cañuelas al ${arrendamientoOficial.date}. Basado en el INMAG. Cálculo del canon en kg/ha/mes.`,
     url: PAGE_URL,

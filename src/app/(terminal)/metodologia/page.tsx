@@ -29,6 +29,7 @@ export const metadata: Metadata = {
   title: 'Metodología — precios e índices del mercado ganadero',
   description: 'Cómo armamos los datos: precios observados por categoría (fuente MAG, no ratios sintéticos), el INMAG que publica el propio MAG, cobertura honesta (~12% del rodeo) y gobernanza. Transparencia total.',
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'Metodología — precios e índices del mercado ganadero',
     description: 'Precios observados por categoría (no sintéticos), el INMAG del MAG, cobertura honesta y gobernanza.',
     url: 'https://www.consignatarias.com.ar/metodologia',

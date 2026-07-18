@@ -141,6 +141,7 @@ export async function generateMetadata({
       `hacienda ${prov.display.toLowerCase()}`,
     ],
     openGraph: {
+      images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
       title,
       description,
       url: `https://www.consignatarias.com.ar/precios/${categoria}/${provincia}`,

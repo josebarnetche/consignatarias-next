@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     'Novillo gordo (Live Cattle) e invernada (Feeder Cattle) de Chicago (CME) convertidos a USD/kg vivo, comparados contra el novillo argentino (INMAG en dólares). La referencia global del precio de la hacienda en pie.',
   alternates: { canonical: 'https://www.consignatarias.com.ar/mercado/internacional' },
   openGraph: {
+    images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
     title: 'Precio internacional de la hacienda — Chicago (CME)',
     description:
       'Live Cattle y Feeder Cattle en USD/kg vivo, comparados con el novillo argentino (INMAG USD).',

@@ -124,6 +124,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       `calendario remates ${config.name}`,
     ],
     openGraph: {
+      images: [{ url: '/og-remates.png', width: 1200, height: 630 }],
       title,
       description,
       type: 'website',

@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: 'Calculadora de Precios de Hacienda',
   description: 'Calculá el valor estimado de tu hacienda con precios INMAG actualizados. Novillos, terneros, vaquillonas, vacas y toros.',
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'Calculadora de Precios de Hacienda',
     description: 'Estimá el valor de tu tropa con precios INMAG del día.',
     url: 'https://www.consignatarias.com.ar/calculadora',

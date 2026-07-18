@@ -35,6 +35,7 @@ export const metadata: Metadata = {
     'índice arrendamiento rural', 'spread maíz novillo', 'INMAG en dólares',
   ],
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'Índices del Mercado Ganadero Argentino',
     description: 'La familia de índices de referencia del ganado argentino: INMAG, USD, categorías, arrendamiento y spread. Serie diaria desde 2015.',
     url: `${APP_URL}/indices`,

@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: 'Calidad de Datos',
   description: 'Fuentes de datos, metodologia de recoleccion, validacion y frescura de la informacion en Consignatarias.com.ar. 9 fuentes, actualizacion diaria a las 14:00 ART.',
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'Calidad de Datos',
     description: 'Fuentes de datos, metodologia y frescura de la informacion ganadera en Consignatarias.com.ar.',
     url: 'https://www.consignatarias.com.ar/calidad',

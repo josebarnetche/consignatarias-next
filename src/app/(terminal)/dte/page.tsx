@@ -22,6 +22,7 @@ export const metadata: Metadata = {
     'documento transporte hacienda',
   ],
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'DT-e: Documento de Tránsito Electrónico — Guía Completa',
     description: 'Todo lo que necesitás saber sobre el DT-e para traslado de ganado en Argentina: qué es, cómo tramitarlo, requisitos y más.',
     url: 'https://www.consignatarias.com.ar/dte',

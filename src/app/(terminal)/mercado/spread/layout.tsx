@@ -14,6 +14,7 @@ export const metadata: Metadata = {
     'feedlot argentina',
   ],
   openGraph: {
+    images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
     title: 'Relación Maíz/Novillo | Indicador de Rentabilidad Feedlot',
     description: 'Spread maíz/novillo en tiempo real. Umbral de rentabilidad y análisis de márgenes para feedlots.',
     type: 'website',

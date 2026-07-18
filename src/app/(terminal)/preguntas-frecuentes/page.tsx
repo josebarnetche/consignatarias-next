@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: 'Preguntas Frecuentes — Remates Ganaderos',
   description: 'Respuestas a las preguntas más frecuentes sobre remates de ganado en Argentina: cómo participar, qué es una consignataria, dónde ver remates en vivo, y más.',
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'Preguntas Frecuentes — Remates Ganaderos',
     description: 'Todo lo que necesitás saber sobre remates de ganado en Argentina: cómo comprar, vender, y participar en subastas ganaderas.',
     url: 'https://www.consignatarias.com.ar/preguntas-frecuentes',

@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   description:
     'API REST y servidor MCP sobre el mercado ganadero argentino: INMAG, precios por categoría, calendario de remates, dato transaccional del MAG y directorios. Para apps agtech, frigoríficos, bancos, traders y agentes de IA. 3 planes: Starter, Growth y Scale — ver /planes.',
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'Enterprise',
     description:
       'API y MCP del mercado ganadero argentino, para instituciones y agentes de IA. Starter, Growth y Scale — ver /planes.',

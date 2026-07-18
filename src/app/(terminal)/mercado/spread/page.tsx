@@ -116,6 +116,7 @@ export const metadata: Metadata = {
     'cuando conviene el feedlot',
   ],
   openGraph: {
+    images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
     title: `Relación Maíz/Novillo — ${ratioStr}:1 · Rentabilidad Feedlot`,
     description: `Indicador clave para feedlots: cuántos kilos de maíz se compran con un kilo de novillo. Hoy ${ratioStr}:1 (${lastUpdate}). Actualizado a diario.`,
     url: PAGE_URL,

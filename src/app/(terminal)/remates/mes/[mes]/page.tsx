@@ -124,6 +124,7 @@ export async function generateMetadata({ params }: { params: Promise<{ mes: stri
       `remates cria ${mes}`,
     ],
     openGraph: {
+      images: [{ url: '/og-remates.png', width: 1200, height: 630 }],
       title: `Remates Ganaderos ${monthConfig.name} ${year} — ${stats.count} Subastas`,
       description,
       url: `https://www.consignatarias.com.ar/remates/mes/${mes}`,

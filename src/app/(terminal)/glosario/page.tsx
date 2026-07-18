@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: 'Glosario Ganadero — 46 Términos del Mercado',
   description: 'Glosario completo con 46 definiciones del mercado ganadero argentino: remate, consignataria, INMAG, MAG, DT-e, invernada, feedlot, arrendamiento, categorías de hacienda, razas y más.',
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'Glosario Ganadero',
     description: 'Glosario con definiciones de terminos del mercado ganadero argentino: remate, consignataria, INMAG, invernada, cria, frigorifico y mas.',
     url: 'https://www.consignatarias.com.ar/glosario',

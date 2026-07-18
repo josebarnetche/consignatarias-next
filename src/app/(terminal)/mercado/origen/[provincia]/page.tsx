@@ -87,7 +87,8 @@ export async function generateMetadata({ params }: { params: Promise<{ provincia
   return {
     title,
     description,
-    openGraph: { title, description, url, type: 'website' },
+    openGraph: {
+      images: [{ url: '/og-mercado.png', width: 1200, height: 630 }], title, description, url, type: 'website' },
     alternates: { canonical: url },
   }
 }

@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     'mercado agroganadero precios', 'MAG cañuelas precios hoy',
   ],
   openGraph: {
+    images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
     title: `Precio Mercado de Cañuelas Hoy: $${inmagVal.toLocaleString('es-AR')}/kg vivo`,
     description: 'Cotización diaria del Mercado de Cañuelas (Mercado Agroganadero, ex Liniers) vía índice INMAG. Novillos, vacas, terneros y más.',
     url: 'https://www.consignatarias.com.ar/mercado/canuelas',

@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: 'API Documentation',
   description: 'Documentación de la API pública de consignatarias.com.ar. Accede a datos de remates ganaderos, precios INMAG, consignatarias y frigoríficos.',
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'API Documentation',
     description: 'API pública del mercado ganadero argentino. Remates, precios, consignatarias.',
     url: 'https://www.consignatarias.com.ar/api-docs',

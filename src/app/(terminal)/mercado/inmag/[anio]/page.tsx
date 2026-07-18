@@ -96,6 +96,7 @@ export async function generateMetadata({
       `precio hacienda ${anio}`, `novillo dolares ${anio}`, `precio kilo vivo ${anio}`,
     ],
     openGraph: {
+      images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
       title,
       description,
       url: `${APP_URL}/mercado/inmag/${anio}`,

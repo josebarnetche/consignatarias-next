@@ -31,6 +31,7 @@ export const metadata: Metadata = {
     'inteligencia ganadera',
   ],
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: `Mercado Ganadero Hoy — INMAG $${fmt(inmag)} (${changeStr})`,
     description: `Terminal unificada del mercado bovino argentino. Remates, INMAG diario, frigoríficos y referencias macro.`,
     url: 'https://www.consignatarias.com.ar/overview',

@@ -49,7 +49,8 @@ export async function generateMetadata({
   return {
     title,
     description,
-    openGraph: { title, description, url, type: 'website' },
+    openGraph: {
+      images: [{ url: '/og-mercado.png', width: 1200, height: 630 }], title, description, url, type: 'website' },
     alternates: { canonical: url },
     // Thin sample → keep out of the index (still followable), per the consignataria thin pattern.
     ...(row.cabezas < CABEZAS_INDEX_THRESHOLD ? { robots: { index: false, follow: true } } : {}),

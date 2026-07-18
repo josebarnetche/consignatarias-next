@@ -64,6 +64,7 @@ export const metadata: Metadata = {
     'ferias ganaderas argentina',
   ],
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: `Consignatarias de Hacienda Argentina | ${totalConsignatarias} en Directorio`,
     description: `Directorio completo de consignatarias de hacienda con calendario de remates ganaderos. ${totalConsignatarias} consignatarias activas en Argentina.`,
     url: 'https://www.consignatarias.com.ar/consignatarias',

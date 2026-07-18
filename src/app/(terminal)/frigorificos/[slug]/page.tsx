@@ -193,6 +193,7 @@ export async function generateMetadata({
     title,
     description,
     openGraph: {
+      images: [{ url: '/og-frigorificos.png', width: 1200, height: 630 }],
       title,
       description,
       url: `https://www.consignatarias.com.ar/frigorificos/${f.cuit}`,

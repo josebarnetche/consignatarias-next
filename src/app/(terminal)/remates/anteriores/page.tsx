@@ -65,6 +65,7 @@ export async function generateMetadata(): Promise<Metadata> {
       'remates terminados',
     ],
     openGraph: {
+      images: [{ url: '/og-remates.png', width: 1200, height: 630 }],
       title: `Remates Anteriores — ${count} Subastas Completadas`,
       description: `Historial de remates ganaderos completados. Consultá las últimas subastas realizadas en Argentina.`,
       url: 'https://www.consignatarias.com.ar/remates/anteriores',

@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: 'Reporte Semanal del Mercado Ganadero',
   description: 'Descargá el reporte semanal con precios INMAG, próximos remates y tendencias del mercado ganadero argentino.',
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'Reporte Semanal del Mercado Ganadero',
     description: 'Precios INMAG, próximos remates y tendencias. Descargá gratis.',
     url: 'https://www.consignatarias.com.ar/reporte-semanal',

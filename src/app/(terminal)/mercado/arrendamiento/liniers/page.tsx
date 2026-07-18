@@ -63,6 +63,7 @@ export const metadata: Metadata = {
     'novillo liniers canon',
   ],
   openGraph: {
+    images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
     title: `Índice Novillo Arrendamiento Mercado de Liniers: $${fmt(arrendamiento.index)}/kg`,
     description: `Referencia Liniers/Mercado Agroganadero para arrendamientos rurales: $${fmt(arrendamiento.index)}/kg al ${arrendamiento.date}. El sucesor operativo del viejo índice de Liniers.`,
     url: URL,

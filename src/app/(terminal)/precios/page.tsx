@@ -39,6 +39,7 @@ export const metadata: Metadata = {
     canonical: 'https://www.consignatarias.com.ar/precios',
   },
   openGraph: {
+    images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
     title: `Precios de Hacienda Hoy — Novillo $${fmt(novilloLive)}/kg`,
     description: `Precios de hacienda al ${lastUpdate}: novillo $${fmt(novilloLive)}/kg, vaca $${fmt(vacaLive)}/kg, ternero $${fmt(terneroLive)}/kg vivo. INMAG $${fmt(inmag.current)}. Actualizado diariamente desde MAG.`,
     url: 'https://www.consignatarias.com.ar/precios',

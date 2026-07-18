@@ -104,7 +104,8 @@ export async function generateMetadata({ params }: { params: Promise<{ par: stri
       'hacienda en pie',
       'mercado ganadero argentina',
     ],
-    openGraph: { title, description, url, type: 'website' },
+    openGraph: {
+      images: [{ url: '/og-mercado.png', width: 1200, height: 630 }], title, description, url, type: 'website' },
     alternates: { canonical: url },
   }
 }

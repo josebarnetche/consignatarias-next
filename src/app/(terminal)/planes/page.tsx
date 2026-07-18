@@ -77,6 +77,7 @@ export const metadata: Metadata = {
   description:
     'El observatorio es gratis para el productor. La API/MCP del mercado ganadero argentino desde ARS 74.000/mes, para apps, agentes IA, agtech y análisis.',
   openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'Planes y Precios',
     description:
       'Productor gratis. La API/MCP del ganado argentino desde ARS 74.000/mes para apps y agentes.',

@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   description: 'Precios del Mercado de Liniers actualizados. Cotización de novillos, vacas, terneros y más. Referencia oficial del mercado ganadero argentino.',
   keywords: ['mercado de liniers', 'precios liniers hoy', 'hacienda liniers', 'cotización ganado', 'precios ganado argentina'],
   openGraph: {
+    images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
     title: 'Mercado de Liniers — Precios de Hacienda Hoy',
     description: 'Cotización actualizada del Mercado de Liniers. Novillos, vacas, terneros y más.',
     url: 'https://www.consignatarias.com.ar/mercado/liniers',
