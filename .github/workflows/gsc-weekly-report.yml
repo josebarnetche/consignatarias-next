@@ -3,6 +3,7 @@ name: gsc-weekly-report
 # Reporte semanal de SEO (Search Console) + tráfico (GA4): genera archivos en
 # reports/gsc/, los commitea al repo, y emailea el resumen.
 # Auth durable por service account (secret GA4_SA_KEY, agregado como usuario en GSC).
+# Si el SA no está configurado, se salta limpio — ver reports/gsc/README.md.
 
 on:
   schedule:
@@ -15,27 +16,38 @@ permissions:
 jobs:
   report:
     runs-on: ubuntu-latest
+    env:
+      GA4_SA_KEY: ${{ secrets.GA4_SA_KEY }}
+      GSC_SA_KEY: ${{ secrets.GSC_SA_KEY }}
+      GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+      GSC_REPORT_TO: ${{ secrets.GSC_REPORT_TO }}
     steps:
-      - uses: actions/checkout@v5
+      - name: check config
+        id: cfg
+        run: |
+          if [ -n "$GSC_SA_KEY" ] || [ -n "$GA4_SA_KEY" ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::GSC service account sin configurar — omitiendo reporte. Ver reports/gsc/README.md"
+          fi
 
+      - uses: actions/checkout@v5
+        if: steps.cfg.outputs.ok == 'true'
       - uses: actions/setup-node@v4
+        if: steps.cfg.outputs.ok == 'true'
         with:
           node-version: '22'
-
       - name: install deps
+        if: steps.cfg.outputs.ok == 'true'
         run: npm install --legacy-peer-deps
-
       - name: generar + emailear reporte
+        if: steps.cfg.outputs.ok == 'true'
         run: node scripts/gsc-report.mjs
-        env:
-          GA4_SA_KEY: ${{ secrets.GA4_SA_KEY }}
-          GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
-          GSC_SA_KEY: ${{ secrets.GSC_SA_KEY }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
-          GSC_REPORT_TO: ${{ secrets.GSC_REPORT_TO }}
-
       - name: commit reports
+        if: steps.cfg.outputs.ok == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

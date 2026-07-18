@@ -3,13 +3,13 @@ name: sitemap-resubmit
 # Re-submite el sitemap a Google Search Console tras cada deploy a main (fuerza el
 # re-fetch de la versión nueva). Espera un poco a que Vercel publique el deploy.
 # Auth por service account con scope de escritura (secret, SA con permiso en GSC).
+# Si el SA no está configurado, se salta limpio (no falla) — ver reports/gsc/README.md.
 
 on:
   push:
     branches: [main]
   workflow_dispatch: {}
 
-# Evita re-submits en ráfaga: si llegan varios pushes, corre solo el último.
 concurrency:
   group: sitemap-resubmit
   cancel-in-progress: true
@@ -17,21 +17,32 @@ concurrency:
 jobs:
   resubmit:
     runs-on: ubuntu-latest
+    env:
+      GSC_SA_KEY: ${{ secrets.GSC_SA_KEY }}
+      GA4_SA_KEY: ${{ secrets.GA4_SA_KEY }}
     steps:
-      - uses: actions/checkout@v5
+      - name: check config
+        id: cfg
+        run: |
+          if [ -n "$GSC_SA_KEY" ] || [ -n "$GA4_SA_KEY" ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::GSC service account sin configurar — omitiendo re-submit. Ver reports/gsc/README.md"
+          fi
 
+      - uses: actions/checkout@v5
+        if: steps.cfg.outputs.ok == 'true'
       - uses: actions/setup-node@v4
+        if: steps.cfg.outputs.ok == 'true'
         with:
           node-version: '22'
-
       - name: install deps
+        if: steps.cfg.outputs.ok == 'true'
         run: npm install --legacy-peer-deps
-
       - name: esperar deploy de Vercel (~4 min)
+        if: steps.cfg.outputs.ok == 'true'
         run: sleep 240
-
       - name: re-submitir sitemap
+        if: steps.cfg.outputs.ok == 'true'
         run: node scripts/gsc-submit-sitemap.mjs
-        env:
-          GSC_SA_KEY: ${{ secrets.GSC_SA_KEY }}
-          GA4_SA_KEY: ${{ secrets.GA4_SA_KEY }}
