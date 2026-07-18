@@ -2281,7 +2281,7 @@ export async function sendArrendamientoCierre(opts: {
         ${canonBlock}
         <p style="margin:24px 0"><a href="${APP_URL}/mercado/arrendamiento" style="display:inline-block;background:#38bdf8;color:#09090b;padding:12px 22px;text-decoration:none;font-weight:600;font-size:13px;border-radius:2px">Ver el detalle y la serie &rarr;</a></p>
         <p style="font-size:12px;color:#a1a1aa;margin:0">Es el mismo número que publica el MAG. Un mail por mes, al cierre.</p>
-        <p style="font-family:${EMAIL_MONO};color:#52525b;font-size:10px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px;line-height:1.6">consignatarias<span style="color:#38bdf8">.</span>com &mdash; el precio de referencia del ganado argentino &middot; <a href="${APP_URL}" style="color:#71717a">consignatarias.com.ar</a></p>
+        <p style="font-family:${EMAIL_MONO};color:#52525b;font-size:10px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px;line-height:1.6">consignatarias<span style="color:#38bdf8">.</span>com &mdash; el precio de referencia del ganado argentino &middot; <a href="${APP_URL}" style="color:#71717a">consignatarias.com.ar</a> &middot; <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(opts.to)}" style="color:#52525b">Desuscribirme</a></p>
       `),
     })
     if (error) return { success: false, error: error.message }
