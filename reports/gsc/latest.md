@@ -33,3 +33,25 @@ GSC: 2026-07-09 → 2026-07-15. Generado 2026-07-18.
 - /mercado/toros — 8 clicks
 - /frigorificos/30707283250 — 6 clicks
 
+## Tráfico (últimos 7 días)
+- Visitantes: 1.000 · Pageviews: 1.501 · Desde IA: 64
+
+### Motores de IA
+- copilot: 93
+- chatgpt: 22
+- claude: 1
+
+### Perfiles más visitados
+- reggi — 28
+- colombo-y-magliano — 19
+- etchevehere-rural — 9
+- pastore — 8
+- cooperativa-guillermo-lehmann — 6
+- sivero — 6
+- haciendas-federales — 5
+- kofman-y-lissarrague — 5
+- travaglia — 5
+- daniel-blanco — 5
+- saenz-valiente-bullrich — 4
+- javier-ulises-avalos — 3
+

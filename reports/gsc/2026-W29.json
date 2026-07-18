@@ -266,6 +266,100 @@
       }
     ]
   },
-  "traffic": null,
-  "generated": "2026-07-18T21:35:48.042Z"
+  "traffic": {
+    "range": {
+      "current_from": "2026-07-11T21:39:13.659Z",
+      "previous_from": "2026-07-04T21:39:13.660Z"
+    },
+    "traffic": {
+      "cur": {
+        "visitantes": 1000,
+        "pageviews": 1501,
+        "aiVisits": 64
+      },
+      "prev": {
+        "visitantes": 1000,
+        "pageviews": 1205,
+        "aiVisits": 72
+      }
+    },
+    "aiEngines": [
+      {
+        "engine": "copilot",
+        "visits": 93
+      },
+      {
+        "engine": "chatgpt",
+        "visits": 22
+      },
+      {
+        "engine": "claude",
+        "visits": 1
+      }
+    ],
+    "topProfiles": [
+      {
+        "slug": "reggi",
+        "type": "consignataria",
+        "views": 28
+      },
+      {
+        "slug": "colombo-y-magliano",
+        "type": "consignataria",
+        "views": 19
+      },
+      {
+        "slug": "etchevehere-rural",
+        "type": "consignataria",
+        "views": 9
+      },
+      {
+        "slug": "pastore",
+        "type": "consignataria",
+        "views": 8
+      },
+      {
+        "slug": "cooperativa-guillermo-lehmann",
+        "type": "consignataria",
+        "views": 6
+      },
+      {
+        "slug": "sivero",
+        "type": "consignataria",
+        "views": 6
+      },
+      {
+        "slug": "haciendas-federales",
+        "type": "consignataria",
+        "views": 5
+      },
+      {
+        "slug": "kofman-y-lissarrague",
+        "type": "consignataria",
+        "views": 5
+      },
+      {
+        "slug": "travaglia",
+        "type": "consignataria",
+        "views": 5
+      },
+      {
+        "slug": "daniel-blanco",
+        "type": "consignataria",
+        "views": 5
+      },
+      {
+        "slug": "saenz-valiente-bullrich",
+        "type": "consignataria",
+        "views": 4
+      },
+      {
+        "slug": "javier-ulises-avalos",
+        "type": "consignataria",
+        "views": 3
+      }
+    ],
+    "profileViewsTotal": 181
+  },
+  "generated": "2026-07-18T21:39:13.265Z"
 }
