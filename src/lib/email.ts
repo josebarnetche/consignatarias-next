@@ -141,7 +141,7 @@ export async function sendClaimConfirmation(email: string, displayName: string, 
       <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 10px">Recibimos tu solicitud de verificación del perfil de <strong style="color:#fafafa">${safeName}</strong>.</p>
       <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">Nuestro equipo revisará tu solicitud y te contactaremos a la brevedad.</p>
       <p style="margin:0 0 20px"><a href="${APP_URL}/consignatarias/${slug}" style="color:#38bdf8">Ver perfil</a></p>
-      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Consignatarias.com.ar — Directorio ganadero</p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">consignatarias.com — el precio de referencia del ganado argentino</p>
     `),
   }).catch(() => {})
 }
@@ -327,7 +327,7 @@ export async function sendClaimApproved(email: string, displayName: string, slug
       <p style="margin:0 0 12px"><a href="${APP_URL}/consignatarias/${slug}" style="color:#38bdf8">Ver tu perfil</a></p>
       <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 14px">Ya podés acceder a tu panel de consignataria:</p>
       <p style="margin:0 0 20px"><a href="${APP_URL}/login" style="background:#38bdf8;color:#09090b;padding:11px 26px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Acceder a mi panel</a></p>
-      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Consignatarias.com.ar — Directorio ganadero</p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">consignatarias.com — el precio de referencia del ganado argentino</p>
     `),
   }).catch(() => {})
 }
@@ -350,7 +350,7 @@ export async function sendFrigorificoClaimConfirmation(email: string, frigorific
       <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 10px">Recibimos tu solicitud de registro del frigorífico <strong style="color:#fafafa">${safeName}</strong>.</p>
       <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">Nuestro equipo revisará tu solicitud y te contactaremos a la brevedad.</p>
       <p style="margin:0 0 20px"><a href="${APP_URL}/frigorificos" style="color:#38bdf8">Ver directorio de frigoríficos</a></p>
-      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Consignatarias.com.ar — Directorio ganadero</p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">consignatarias.com — el precio de referencia del ganado argentino</p>
     `),
   }).catch(() => {})
 }
@@ -449,7 +449,7 @@ export async function sendFrigorificoRfqConfirmation(buyerEmail: string, frigori
       <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Pedido mayorista</p>
       <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 12px">Recibimos tu pedido</h2>
       <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 10px">Tu pedido de cotización a <strong style="color:#fafafa">${escapeHtml(frigorificoName)}</strong> fue enviado. El establecimiento te contactará con la cotización a la brevedad.</p>
-      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Consignatarias.com.ar — Directorio ganadero</p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">consignatarias.com — el precio de referencia del ganado argentino</p>
     `),
   }).catch(() => {})
 }
@@ -506,7 +506,7 @@ export async function sendMonthlyMetrics(
           </p>
         </div>
 
-        <p style="color:#52525b;font-size:10px;margin:16px 0 0">Consignatarias.com.ar — Directorio ganadero</p>
+        <p style="color:#52525b;font-size:10px;margin:16px 0 0">consignatarias.com — el precio de referencia del ganado argentino</p>
     `),
   }).catch(() => {})
 }
@@ -985,7 +985,7 @@ export async function sendClaimRejected(email: string, displayName: string, reas
       <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Lamentamos informarte que tu solicitud de verificación del perfil de <strong style="color:#fafafa">${safeName}</strong> fue rechazada.</p>
       ${reason ? `<p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px"><strong style="color:#fafafa">Motivo:</strong> ${escapeHtml(reason)}</p>` : ''}
       <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 20px">Si creés que es un error, contactanos a <a href="mailto:${ADMIN_EMAIL}" style="color:#38bdf8">${ADMIN_EMAIL}</a>.</p>
-      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Consignatarias.com.ar — Directorio ganadero</p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">consignatarias.com — el precio de referencia del ganado argentino</p>
     `),
   }).catch(() => {})
 }
@@ -1010,7 +1010,7 @@ export async function sendRemateReminder(email: string, subject: string, htmlBod
         ${htmlBody}
         <hr style="border:none;border-top:1px solid #e4e4e7;margin:24px 0">
         <p style="color:#71717a;font-size:12px">
-          Consignatarias.com.ar — Directorio ganadero
+          consignatarias.com — el precio de referencia del ganado argentino
           <br>
           <a href="${APP_URL}/alertas/unsubscribe?email=${encodeURIComponent(email)}" style="color:#3f3f46">
             Desuscribirme de recordatorios
@@ -1342,7 +1342,7 @@ export async function sendWelcomeEmail({ to, userName }: WelcomeEmailParams) {
           </div>
 
           <p style="color:#52525b;font-size:10px;margin:24px 0 0">
-            Consignatarias.com.ar — Directorio ganadero
+            consignatarias.com — el precio de referencia del ganado argentino
           </p>
       `),
     })
@@ -1406,7 +1406,7 @@ export async function sendDteUploadReminder({ to, userName, daysSinceSignup }: D
           </div>
 
           <p style="color:#52525b;font-size:10px;margin:24px 0 0">
-            Consignatarias.com.ar — Directorio ganadero
+            consignatarias.com — el precio de referencia del ganado argentino
             <br>
             <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
@@ -1478,7 +1478,7 @@ export async function sendFirstDteSuccess({ to, userName, dteCount }: FirstDteSu
           </div>
 
           <p style="color:#52525b;font-size:10px;margin:24px 0 0;text-align:center">
-            Consignatarias.com.ar — Directorio ganadero
+            consignatarias.com — el precio de referencia del ganado argentino
           </p>
       `),
     })
@@ -1568,7 +1568,7 @@ export async function sendDteRetentionReminder({
           </div>
 
           <p style="color:#52525b;font-size:10px;margin:24px 0 0">
-            Consignatarias.com.ar — Directorio ganadero
+            consignatarias.com — el precio de referencia del ganado argentino
             <br>
             <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
@@ -1637,7 +1637,7 @@ export async function sendNewRemateAlert({
           </p>
         </div>
 
-        <p style="color:#52525b;font-size:10px;margin:16px 0 0">Consignatarias.com.ar — Directorio ganadero</p>
+        <p style="color:#52525b;font-size:10px;margin:16px 0 0">consignatarias.com — el precio de referencia del ganado argentino</p>
     `),
   }).catch(() => {})
 }
@@ -1840,7 +1840,7 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
           </div>
 
           <p style="color:#52525b;font-size:10px;margin:24px 0 0">
-            Consignatarias.com.ar — Directorio ganadero
+            consignatarias.com — el precio de referencia del ganado argentino
             <br>
             <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
           </p>

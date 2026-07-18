@@ -19,7 +19,7 @@ export interface FaenaStats {
 }
 
 const FAENA_API_URL =
-  'https://apis.datos.gob.ar/series/api/series?ids=40.3_VC_0_M_15&limit=13&sort=desc&format=json';
+  'https://apis.datos.gob.ar/series/api/series/?ids=40.3_VC_0_M_15&limit=13&sort=desc&format=json';
 
 interface ApiResponse {
   data: [string, number][];
@@ -67,7 +67,7 @@ export async function getFaenaStats(): Promise<FaenaStats | null> {
 
 export function formatFaenaDate(dateStr: string): string {
   const date = new Date(dateStr);
-  return date.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
+  return date.toLocaleDateString('es-AR', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 }
 
 export function formatCabezas(n: number): string {

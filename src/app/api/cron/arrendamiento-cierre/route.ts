@@ -103,17 +103,22 @@ export async function POST(req: NextRequest) {
       const errors: string[] = []
       for (const sub of toSend) {
         try {
+          // Sanity del canon personalizado: el arrendamiento real es 3-6 kg/ha/mes.
+          // Fuera de (0, 20] es carga errónea → mandamos el cierre sin canon (mejor
+          // que un número absurdo que rompe la credibilidad del índice).
+          const rawKg = sub.lease_kg_ha as number | null
+          const kgHa = rawKg != null && rawKg > 0 && rawKg <= 20 ? rawKg : null
           const r = await sendArrendamientoCierre({
             to: sub.email,
             mesLabel,
             inmag: close.inmag,
             change,
-            kgHa: sub.lease_kg_ha as number | null,
-            hectareas: sub.lease_hectareas as number | null,
+            kgHa,
+            hectareas: kgHa != null ? (sub.lease_hectareas as number | null) : null,
           })
           if (r.success) sent++
           else errors.push(`${sub.email}: ${r.error}`)
-          await new Promise((res) => setTimeout(res, 100))
+          await new Promise((res) => setTimeout(res, 500))
         } catch (err) {
           errors.push(`${sub.email}: ${err instanceof Error ? err.message : 'error'}`)
         }
