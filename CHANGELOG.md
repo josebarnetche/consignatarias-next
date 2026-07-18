@@ -28,6 +28,16 @@ La ficha muestra, junto al interés, los **visitantes únicos** que abrieron ese
 - **Observabilidad de viewship:** nueva tabla `preoferta_views` + endpoint `POST /api/preoferta/view`. La ficha registra vista de página y vista por lote (deduplicadas por visitante vía `localStorage`, fire-and-forget).
 - **Panel en el admin** (`/admin/preoferta/[slug]`): visitantes únicos, vistas totales, y **funnel por lote** (vistas → únicos → interesados), ordenado por vistas. El remate, medido de punta a punta.
 
+## [1.182.1] — 2026-07-18
+
+### Fix: imágenes OpenGraph a prueba de 5xx (558 páginas en GSC)
+
+GSC reportaba 558 páginas con error de servidor 5xx, todas imágenes OpenGraph de remates (`/remates/{slug}/opengraph-image`). `next/og` es pesado y el font-load (`readFile` de los `.ttf`) podía fallar en runtime bajo carga de crawl → 5xx que bloquea la indexación.
+
+- **`loadOgFonts` (compartido):** ahora devuelve `undefined` en vez de tirar si no puede leer los fonts → `ImageResponse` cae a su tipografía por defecto. Protege TODAS las rutas OG (remates, consignatarias, mercado, go).
+- **`remates/[slug]/opengraph-image`:** handler envuelto en try/catch → imagen mínima 200 ante cualquier fallo (datos, render, memoria). `runtime = 'nodejs'` explícito.
+- Resultado: la ruta OG nunca responde 5xx. Re-validar en GSC ("Validar corrección").
+
 ## [1.182.0] — 2026-07-17
 
 ### Relación maíz/novillo: serie histórica completa (2015→) en /mercado/spread
