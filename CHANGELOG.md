@@ -28,6 +28,20 @@ La ficha muestra, junto al interés, los **visitantes únicos** que abrieron ese
 - **Observabilidad de viewship:** nueva tabla `preoferta_views` + endpoint `POST /api/preoferta/view`. La ficha registra vista de página y vista por lote (deduplicadas por visitante vía `localStorage`, fire-and-forget).
 - **Panel en el admin** (`/admin/preoferta/[slug]`): visitantes únicos, vistas totales, y **funnel por lote** (vistas → únicos → interesados), ordenado por vistas. El remate, medido de punta a punta.
 
+## [1.183.0] — 2026-07-18
+
+### Auditoría técnica de SEO (ultracode) — 17 fixes de indexabilidad
+
+Workflow multi-agente que reprodujo los checks de GSC crawleando el sitio + código (el token del API de GSC estaba caído): 30 hallazgos → 23 confirmados adversarialmente → 17 corregidos.
+
+- **Sitemap:** excluye perfiles thin (noindex) — señal contradictoria — y deduplica por URL.
+- **og:image:** `/og.png` (404) → `/og-image.png` en 19 páginas + JsonLd.
+- **Structured data:** Event a `OfflineEventAttendanceMode` (Mixed exigía VirtualLocation), `startDate` con `-03:00`, url única por Event; Product con `image` y precio estable, plan a-medida con `priceSpecification.minPrice`; dedup Organization/WebSite (home↔layout); Dataset movido a sus páginas; perfil de consignataria unificado en un solo nodo LocalBusiness (con CUIT/image/areaServed).
+- **Canonical:** `/remates/tipo/*` a www (antes non-www que redirige).
+- **Metadata:** `/preofertas` sin marca duplicada; slug de consignataria inexistente con noindex explícito.
+
+Quedan pendientes (LOW / decisiones): soft-404 en entidades inexistentes (quirk de prerender de Next), largo de titles/descriptions, canonical self en utilitarias.
+
 ## [1.182.2] — 2026-07-18
 
 ### SEO: menos crawl desperdiciado en superficies noindex
