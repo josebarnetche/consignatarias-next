@@ -7,6 +7,26 @@ export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 export const revalidate = false
 export const dynamicParams = true
+export const runtime = 'nodejs' // next/og necesita Node (fs para los fonts); nunca edge
+
+// Los fonts se leen del filesystem (outputFileTracingIncludes en next.config). Si por
+// cualquier motivo fallan en runtime, NO abortamos: ImageResponse usa su tipografía
+// por defecto. Así la ruta nunca devuelve 5xx por un font faltante.
+async function safeFonts() {
+  try { return await loadOgFonts() } catch { return undefined }
+}
+
+// Fallback último, sin ninguna dependencia (ni fonts ni datos): garantiza un 200.
+function minimalFallback() {
+  return new ImageResponse(
+    (
+      <div style={{ width: '100%', height: '100%', background: C.CARBON, color: C.HUESO, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 44, fontWeight: 700 }}>
+        consignatarias.com.ar
+      </div>
+    ),
+    { ...size },
+  )
+}
 
 const TYPE_LABELS: Record<string, string> = {
   invernada: 'INVERNADA',
@@ -32,7 +52,7 @@ function generateRemateSlug(r: typeof rematesData[0]): string {
 }
 
 async function fallback(message = 'Remate Ganadero') {
-  const fonts = await loadOgFonts()
+  const fonts = await safeFonts()
   return new ImageResponse(
     (
       <div
@@ -55,17 +75,25 @@ async function fallback(message = 'Remate Ganadero') {
         <div style={{ color: C.MUTED, fontSize: 26, fontWeight: 500 }}>{message}</div>
       </div>
     ),
-    { ...size, fonts },
+    { ...size, ...(fonts ? { fonts } : {}) },
   )
 }
 
 export default async function OGImage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params
+  try {
+    return await renderOG(await params)
+  } catch {
+    // Cualquier fallo (datos, render, memoria) → imagen mínima 200, nunca 5xx.
+    return minimalFallback()
+  }
+}
+
+async function renderOG({ slug }: { slug: string }) {
   const remate = (rematesData as typeof rematesData).find((r) => generateRemateSlug(r) === slug)
 
+  const fonts = await safeFonts()
   if (!remate) return fallback()
 
-  const fonts = await loadOgFonts()
   const date = new Date((remate.date as string) + 'T12:00:00')
   const day = String(date.getDate()).padStart(2, '0')
   const month = MONTHS_ES[date.getMonth()] ?? ''
@@ -193,6 +221,6 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
         </div>
       </div>
     ),
-    { ...size, fonts },
+    { ...size, ...(fonts ? { fonts } : {}) },
   )
 }

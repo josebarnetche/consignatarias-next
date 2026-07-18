@@ -22,15 +22,24 @@ export const OG_COLORS = {
 export const ISO_RING =
   'M 413.61 379.14 A 200 200 0 1 1 367.83 90.17 L 321.98 158.17 A 118 118 0 1 0 348.99 328.66 Z'
 
-export async function loadOgFonts() {
-  const [bold, medium] = await Promise.all([
-    readFile(join(process.cwd(), 'src/fonts/JetBrainsMono-Bold.ttf')),
-    readFile(join(process.cwd(), 'src/fonts/JetBrainsMono-Medium.ttf')),
-  ])
-  return [
-    { name: 'JetBrains Mono', data: bold, weight: 700 as const, style: 'normal' as const },
-    { name: 'JetBrains Mono', data: medium, weight: 500 as const, style: 'normal' as const },
-  ]
+type OgFont = { name: string; data: Buffer; weight: 700 | 500; style: 'normal' }
+
+// Devuelve undefined si los .ttf no se pueden leer en runtime (bundle serverless,
+// cold start, etc.) en vez de tirar: así ImageResponse cae a su tipografía por
+// defecto y la ruta OG nunca responde 5xx por un font faltante.
+export async function loadOgFonts(): Promise<OgFont[] | undefined> {
+  try {
+    const [bold, medium] = await Promise.all([
+      readFile(join(process.cwd(), 'src/fonts/JetBrainsMono-Bold.ttf')),
+      readFile(join(process.cwd(), 'src/fonts/JetBrainsMono-Medium.ttf')),
+    ])
+    return [
+      { name: 'JetBrains Mono', data: bold, weight: 700, style: 'normal' },
+      { name: 'JetBrains Mono', data: medium, weight: 500, style: 'normal' },
+    ]
+  } catch {
+    return undefined
+  }
 }
 
 export function IsoMark({ size = 46 }: { size?: number }) {
