@@ -113,7 +113,7 @@ export const metadata: Metadata = {
       'La invernada es la etapa del ciclo ganadero en la que el animal destetado se engorda hasta el peso de faena (400-500 kg). Cría vs. recría, campo vs. feedlot y la cuenta del invernador con precios reales.',
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

@@ -104,7 +104,7 @@ export const metadata: Metadata = {
       'El precio de tranquera es el neto que recibe el productor tras desbaste, comisión, flete y gastos; el de pizarra es el bruto de referencia. Cómo se pasa de uno al otro.',
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

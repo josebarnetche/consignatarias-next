@@ -139,7 +139,7 @@ export const metadata: Metadata = {
     description: `Los dos sistemas para terminar un animal comparados lado a lado: costo por kilo, tiempo de terminación, inversión y riesgo climático. Novillo de referencia a $${fmt(novillo)}/kg vivo (${lastUpdate}).`,
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

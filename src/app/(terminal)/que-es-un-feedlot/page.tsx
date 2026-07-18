@@ -119,7 +119,7 @@ export const metadata: Metadata = {
       'Definición de feedlot: engorde a corral con dieta rica en maíz, 1 a 1,5 kg/día de aumento, faena en 90-150 días. Cuánto cuesta, cuánto maíz consume y comparación con la invernada a campo.',
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

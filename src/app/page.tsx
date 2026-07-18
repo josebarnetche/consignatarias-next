@@ -12,7 +12,7 @@ import { getFeaturedSlugs } from "@/lib/featured";
 import ConsignatariasShowcase from "@/components/landing/ConsignatariasShowcase";
 import CalendarioSanitario from "@/components/landing/CalendarioSanitario";
 import ConsignatariaSearch from "@/components/landing/ConsignatariaSearch";
-import { FAQPageSchema, OrganizationSchema, WebSiteSchema } from "@/components/seo/JsonLd";
+import { FAQPageSchema } from "@/components/seo/JsonLd";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import ValuationWidget from "@/components/landing/ValuationWidget";
 import MarketTape, { type TapeItem } from "@/components/landing/MarketTape";
@@ -250,9 +250,7 @@ export default async function LandingPage() {
 
   return (
     <div className="font-sans text-zinc-300 selection:bg-zinc-800 selection:text-zinc-100">
-      {/* SEO Structured Data */}
-      <OrganizationSchema />
-      <WebSiteSchema />
+      {/* Organization + WebSite ya vienen del root layout (no duplicar acá). */}
       {/* ============================================================ */}
       {/*  NAVBAR                                                       */}
       {/* ============================================================ */}

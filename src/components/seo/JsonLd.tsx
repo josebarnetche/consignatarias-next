@@ -537,7 +537,7 @@ export function VideoObjectSchema({
     '@type': 'VideoObject',
     name,
     description,
-    thumbnailUrl: thumbnailUrl || 'https://www.consignatarias.com.ar/og.png',
+    thumbnailUrl: thumbnailUrl || 'https://www.consignatarias.com.ar/og-image.png',
     uploadDate,
     duration,
     contentUrl,
@@ -590,9 +590,10 @@ export function RematesListSchema({ remates }: { remates: RemateListItem[] }) {
     description: `Calendario de ${remates.length} remates ganaderos programados`,
     numberOfItems: remates.length,
     itemListElement: topRemates.map((remate, index) => {
+      // Con offset ART (-03:00): sin zona, Google marca la fecha como ambigua.
       const startDateTime = remate.time
-        ? `${remate.date}T${remate.time}:00`
-        : `${remate.date}T10:00:00`;
+        ? `${remate.date}T${remate.time}:00-03:00`
+        : `${remate.date}T10:00:00-03:00`;
 
       // Place.name es requerido por schema.org. Muchas firmas no cargan `location`
       // (solo la provincia) → sin fallback, JSON.stringify dropea el campo y GSC
@@ -610,7 +611,9 @@ export function RematesListSchema({ remates }: { remates: RemateListItem[] }) {
           name: `Remate ${remate.type} - ${remate.consignatariaName}`,
           description: `Remate de ${remate.type} organizado por ${remate.consignatariaName}${remate.estimatedHeads ? ` (~${remate.estimatedHeads} cabezas)` : ''}`,
           startDate: startDateTime,
-          eventAttendanceMode: 'https://schema.org/MixedEventAttendanceMode',
+          // Las ferias son presenciales; Mixed/Online exige VirtualLocation.url
+          // (que no tenemos por lote de lista) → Offline es lo correcto y válido.
+          eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
           eventStatus: 'https://schema.org/EventScheduled',
           location: {
             '@type': 'Place',
@@ -626,7 +629,9 @@ export function RematesListSchema({ remates }: { remates: RemateListItem[] }) {
             '@type': 'Organization',
             name: remate.consignatariaName,
           },
-          url: remate.url || `https://www.consignatarias.com.ar/remates`,
+          // URL única por evento o se omite: compartir /remates entre todos degrada
+          // el rich result (Google prefiere una URL única por Event, o ninguna).
+          ...(remate.url ? { url: remate.url } : {}),
         },
       };
     }),
@@ -648,6 +653,7 @@ interface PricingPlan {
   currency?: string;
   billingPeriod?: string;
   features: string[];
+  custom?: boolean; // plan "a medida": price es piso (desde), no precio fijo
 }
 
 export function SaaSPricingSchema({ plans }: { plans: PricingPlan[] }) {
@@ -666,17 +672,21 @@ export function SaaSPricingSchema({ plans }: { plans: PricingPlan[] }) {
           '@type': 'Product',
           name: `Plan ${plan.name}`,
           description: plan.description,
+          image: 'https://www.consignatarias.com.ar/og-image.png',
           brand: {
             '@type': 'Organization',
             name: 'Consignatarias.com.ar',
           },
+          // Plan "a medida": price es piso → priceSpecification.minPrice, no un
+          // precio fijo (evita mostrar un precio engañoso). Los demás, precio fijo.
           offers: {
             '@type': 'Offer',
-            price: plan.price,
             priceCurrency: plan.currency || 'ARS',
-            priceValidUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
             availability: 'https://schema.org/InStock',
             url: 'https://www.consignatarias.com.ar/planes',
+            ...(plan.custom
+              ? { priceSpecification: { '@type': 'PriceSpecification', minPrice: plan.price, priceCurrency: plan.currency || 'ARS' } }
+              : { price: plan.price, priceValidUntil: '2026-12-31' }), // estable: sin churn
           },
         },
       })),

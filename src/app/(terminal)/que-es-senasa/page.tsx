@@ -121,7 +121,7 @@ export const metadata: Metadata = {
       'El SENASA es el organismo que regula la sanidad animal, la trazabilidad y la habilitación de establecimientos en Argentina. RENSPA, DT-e, habilitación de frigoríficos y campaña antiaftosa, explicados.',
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

@@ -106,7 +106,7 @@ export const metadata: Metadata = {
       'La guía de hacienda es el documento municipal o provincial que acredita el traslado y la propiedad del ganado, distinto del DT-e sanitario de SENASA. Guía vs DT-e, cuándo se necesita y cómo se tramita.',
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

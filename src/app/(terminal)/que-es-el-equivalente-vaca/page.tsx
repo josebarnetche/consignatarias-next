@@ -152,7 +152,7 @@ export const metadata: Metadata = {
       'El equivalente vaca (EV) mide el requerimiento de una vaca de cría de 400 kg y permite comparar el consumo de cada categoría del rodeo. Coeficientes por categoría y uso en carga animal y receptividad.',
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

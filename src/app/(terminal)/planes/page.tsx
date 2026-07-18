@@ -37,6 +37,7 @@ const PRICING_PLANS = [
     description: 'Alto volumen + SLA para bancos, agtech grande y exchanges. A medida (cotización, desde el nivel Growth).',
     price: 451000,
     currency: 'ARS',
+    custom: true,
     features: ['Volumen alto (500K → 5M req)', 'SLA + uptime garantizado', 'Multi-usuario con roles', 'Integración ERP/BI', 'White-label opcional'],
   },
   {

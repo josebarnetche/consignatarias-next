@@ -96,7 +96,7 @@ export const metadata: Metadata = {
       'Definición de consignataria de hacienda: intermediario entre productor y comprador que cobra una comisión habitualmente de 2–4% (hasta 5%) más IVA sobre el valor de venta. Diferencia con frigorífico y rematador.',
     url: `${BASE_URL}/que-es-una-consignataria`,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: `${BASE_URL}/que-es-una-consignataria`,

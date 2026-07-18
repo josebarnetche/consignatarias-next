@@ -135,7 +135,7 @@ export const metadata: Metadata = {
       `Los tres canales de venta, la composición del precio de tranquera, el desbaste, los gastos de comercialización y la documentación obligatoria. Novillo de referencia a $${fmt(novillo)}/kg vivo (${lastUpdate}).`,
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

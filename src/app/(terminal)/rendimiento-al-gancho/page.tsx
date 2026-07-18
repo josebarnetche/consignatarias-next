@@ -126,7 +126,7 @@ export const metadata: Metadata = {
     description: `El rinde de un novillo ronda el 56-58%: de 450 kg vivos salen ~${kgGancho} kg de res. A $${fmt(novillo)}/kg vivo, el equivalente al gancho ≈ $${fmt(precioGancho)}/kg (Mercado Agroganadero, ${lastUpdate}).`,
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

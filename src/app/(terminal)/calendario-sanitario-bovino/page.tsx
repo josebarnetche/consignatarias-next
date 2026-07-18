@@ -145,7 +145,7 @@ export const metadata: Metadata = {
       'El calendario sanitario bovino organiza las vacunaciones y tratamientos del año; la campaña antiaftosa (dos por año, regulada por SENASA) es la más importante. Cuándo se vacuna, obligatoriedad y qué pasa si no vacunás.',
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

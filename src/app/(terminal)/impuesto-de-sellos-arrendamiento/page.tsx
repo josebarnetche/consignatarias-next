@@ -128,7 +128,7 @@ export const metadata: Metadata = {
       'Tributo provincial sobre el valor total del contrato (canon × todo el plazo), alícuota de ~1% a 1,5% según la provincia, repartido por mitades entre arrendador y arrendatario. Mecánica, base imponible y plazos.',
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

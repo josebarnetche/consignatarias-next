@@ -141,7 +141,7 @@ export const metadata: Metadata = {
     description: `Los tres canales para vender hacienda en Argentina, la comisión de referencia (3-5%), la documentación necesaria y cómo elegir consignataria. Precio de referencia del novillo hoy: $${fmt(novillo)}/kg vivo (INMAG del ${lastUpdate}).`,
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

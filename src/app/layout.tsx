@@ -111,7 +111,7 @@ export const metadata: Metadata = {
   },
 };
 
-import { OrganizationSchema, WebSiteSchema, DatasetSchema } from '@/components/seo/JsonLd';
+import { OrganizationSchema, WebSiteSchema } from '@/components/seo/JsonLd';
 
 export default function RootLayout({
   children,
@@ -142,21 +142,10 @@ export default function RootLayout({
             />
           </>
         )}
-        {/* Schema.org Structured Data */}
+        {/* Schema.org — Organization + WebSite son de sitio (van en el layout).
+            Los Dataset viven en su página (/remates, /frigorificos), no globales. */}
         <OrganizationSchema />
         <WebSiteSchema />
-        <DatasetSchema
-          name="Calendario de Remates Ganaderos Argentina"
-          description="Base de datos actualizada de remates ganaderos de múltiples consignatarias argentinas"
-          url="https://www.consignatarias.com.ar/remates"
-          keywords={['remates ganaderos', 'subastas hacienda', 'consignatarias argentina']}
-        />
-        <DatasetSchema
-          name="Directorio de Frigoríficos MAGYP Argentina"
-          description="1.102 plantas frigoríficas habilitadas por MAGYP con datos de provincia, etapa y matrícula"
-          url="https://www.consignatarias.com.ar/frigorificos"
-          keywords={['frigorificos argentina', 'plantas faena', 'MAGYP']}
-        />
       </head>
       <body className="antialiased">
         <AnalyticsProvider />

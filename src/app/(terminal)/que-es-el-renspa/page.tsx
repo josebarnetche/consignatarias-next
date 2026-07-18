@@ -133,7 +133,7 @@ export const metadata: Metadata = {
       'El RENSPA es el código obligatorio de SENASA que vincula al productor con su campo: sin él no se puede mover ni vender hacienda. Alta gratis paso a paso, costo y diferencia con CUIG y marca.',
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

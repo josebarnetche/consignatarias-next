@@ -1,5 +1,7 @@
 import { MetadataRoute } from 'next'
-import { getAllCanonicalSlugs } from '@/lib/data/consignataria-slugs'
+import { getAllCanonicalSlugs, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
+import { getProfileSEO } from '@/lib/data/profile-seo'
+import type { Auction } from '@/lib/db/schema'
 import rematesData from '@/lib/data/remates.json'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import marketPrices from '@/lib/data/market-prices.json'
@@ -541,13 +543,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // Consignataria profile pages
-  const consignatariaPages: MetadataRoute.Sitemap = getAllCanonicalSlugs().map((slug) => ({
-    url: `${baseUrl}/consignatarias/${slug}`,
-    lastModified: buildDate,
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }))
+  // Consignataria profile pages — SOLO las indexables. Los perfiles "thin"
+  // (<2 remates y sin SEO custom) se sirven noindex; incluirlos en el sitemap
+  // sería una señal contradictoria hacia Google. Mismo criterio que el `thin`
+  // de generateMetadata en consignatarias/[slug]/page.tsx.
+  const auctionsForSitemap = rematesData as unknown as Auction[]
+  const consignatariaPages: MetadataRoute.Sitemap = getAllCanonicalSlugs()
+    .filter((slug) => getAuctionsForProfile(auctionsForSitemap, slug).length >= 2 || getProfileSEO(slug))
+    .map((slug) => ({
+      url: `${baseUrl}/consignatarias/${slug}`,
+      lastModified: buildDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }))
 
   // Frigorificos by province landing pages
   const FRIGORIFICO_PROVINCE_SLUGS: Record<string, string> = {
@@ -708,7 +716,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     }))
 
-  return [
+  const all = [
     ...staticPages,
     ...provincePages,
     ...consignatariasByProvincePages,
@@ -727,4 +735,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...monthPages,
     ...origenPages,
   ]
+  // Dedupe por URL — nunca emitir un <loc> repetido (p.ej. dos remates que
+  // colapsan al mismo slug). Se conserva la primera aparición.
+  return Array.from(new Map(all.map((e) => [e.url, e])).values())
 }

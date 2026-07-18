@@ -151,7 +151,7 @@ export const metadata: Metadata = {
       'El ROSGAN es el Mercado Ganadero de Rosario: se rematan lotes de hacienda por pantalla y video sin trasladar los animales. Diferencia con el remate físico, cómo comprar y dónde ver el catálogo.',
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

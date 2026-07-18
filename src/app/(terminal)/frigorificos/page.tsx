@@ -5,7 +5,7 @@ import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import marketPrices from '@/lib/data/market-prices.json'
 import rematesData from '@/lib/data/remates.json'
-import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema, DatasetSchema } from '@/components/seo/JsonLd'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { FaenaStats } from '@/components/FaenaStats'
 import { MagActivity } from '@/components/MagActivity'
@@ -155,6 +155,13 @@ export default function FrigorificosPage() {
         }}
       />
       <SectionBreadcrumbSchema section="frigorificos" sectionName="Frigoríficos" />
+      <DatasetSchema
+        name="Directorio de Frigoríficos MAGYP Argentina"
+        description="1.102 plantas frigoríficas habilitadas por MAGYP con datos de provincia, etapa y matrícula"
+        url="https://www.consignatarias.com.ar/frigorificos"
+        keywords={['frigorificos argentina', 'plantas faena', 'MAGYP']}
+        dateModified="2026-07-01"
+      />
       <FrigorificosItemListSchema />
       <FAQPageSchema items={FRIGORIFICOS_FAQ} />
       <SpeakableSchema

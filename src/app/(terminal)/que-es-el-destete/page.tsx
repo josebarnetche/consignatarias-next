@@ -138,7 +138,7 @@ export const metadata: Metadata = {
       'El destete separa al ternero de la vaca: la madre recupera condición y el ternero pasa a recría o venta. El destete precoz se adelanta a los 60–90 días para aliviar la vaca en años secos.',
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

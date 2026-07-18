@@ -139,7 +139,7 @@ export const metadata: Metadata = {
       'El DT-e es el documento obligatorio de SENASA para trasladar hacienda: vincula el RENSPA de origen y destino con la marca del productor. Qué es, cómo sacarlo en SIGSA paso a paso y cuánto cuesta.',
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

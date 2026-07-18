@@ -101,7 +101,7 @@ export const metadata: Metadata = {
       'La cría produce el ternero al destete; la recría lo desarrolla hasta la invernada. Definición citable, índice de destete y dónde encaja cada etapa en el ciclo cría → recría → invernada → terminación.',
     url: PAGE_URL,
     type: 'article',
-    images: ['https://www.consignatarias.com.ar/og.png'],
+    images: ['https://www.consignatarias.com.ar/og-image.png'],
   },
   alternates: {
     canonical: PAGE_URL,

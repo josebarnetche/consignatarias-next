@@ -4,7 +4,7 @@ import RematesClient from './RematesClient'
 import NextRemateCountdown from '@/components/remates/NextRemateCountdown'
 import rematesData from '@/lib/data/remates.json'
 import { getAllProfiles, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
-import { SectionBreadcrumbSchema, FAQPageSchema, RematesListSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, FAQPageSchema, RematesListSchema, DatasetSchema } from '@/components/seo/JsonLd'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { Breadcrumb } from '@/components/ui'
 
@@ -116,6 +116,12 @@ export default function RematesPage() {
       <SectionBreadcrumbSchema section="remates" sectionName="Remates" />
       <FAQPageSchema items={FAQ_ITEMS} />
       <RematesListSchema remates={upcomingRemates} />
+      <DatasetSchema
+        name="Calendario de Remates Ganaderos Argentina"
+        description="Base de datos actualizada de remates ganaderos de múltiples consignatarias argentinas"
+        url="https://www.consignatarias.com.ar/remates"
+        keywords={['remates ganaderos', 'subastas hacienda', 'consignatarias argentina']}
+      />
       {/* Breadcrumb visual (§3.2). El JSON-LD ya lo emite SectionBreadcrumbSchema
           arriba, así que acá schema={false} para no duplicar structured data. */}
       <div className="px-4 pt-3">
