@@ -19,19 +19,19 @@ export async function GET(req: NextRequest) {
   const w1 = since(7)   // inicio semana actual
   const w2 = since(14)  // inicio semana previa
 
-  // Totales de visitantes/pageviews (tabla visitors, por last_seen_at).
-  const totals = async (from: string, to?: string) => {
-    let q = db.from('visitors').select('pageviews, lt_ai_engine').gte('last_seen_at', from)
+  // Totales por COUNT exacto (head:true, sin traer filas — PostgREST capea en 1000).
+  const countIn = async (from: string, to: string | null, aiOnly: boolean) => {
+    let q = db.from('visitors').select('*', { count: 'exact', head: true }).gte('last_seen_at', from)
     if (to) q = q.lt('last_seen_at', to)
-    const { data } = await q
-    const rows = (data ?? []) as Array<{ pageviews: number | null; lt_ai_engine: string | null }>
-    return {
-      visitantes: rows.length,
-      pageviews: rows.reduce((a, r) => a + (Number(r.pageviews) || 0), 0),
-      aiVisits: rows.filter((r) => r.lt_ai_engine).length,
-    }
+    if (aiOnly) q = q.not('lt_ai_engine', 'is', null)
+    const { count } = await q
+    return count ?? 0
   }
-  const [cur, prev] = await Promise.all([totals(w1), totals(w2, w1)])
+  const totals = async (from: string, to: string | null) => ({
+    visitantes: await countIn(from, to, false),
+    aiVisits: await countIn(from, to, true),
+  })
+  const [cur, prev] = await Promise.all([totals(w1, null), totals(w2, w1)])
 
   // Desglose por motor de AI (última semana).
   const { data: aiRows } = await db.from('visitors').select('lt_ai_engine').gte('last_seen_at', w1).not('lt_ai_engine', 'is', null)

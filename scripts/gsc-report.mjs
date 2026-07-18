@@ -178,7 +178,7 @@ function buildMd({ r, gsc, tr, week }) {
   L.push(`### Top queries`, ...gsc.queries.slice(0, 12).map((q) => `- ${q.keys[0]} — ${nf(q.clicks)} clicks, pos ${q.position.toFixed(1)}`), ``)
   L.push(`### Top páginas`, ...gsc.pages.slice(0, 10).map((q) => `- ${q.keys[0].replace(SITE_URL, '')} — ${nf(q.clicks)} clicks`), ``)
   if (tr && !tr.error) {
-    L.push(`## Tráfico (últimos 7 días)`, `- Visitantes: ${nf(tr.traffic.cur.visitantes)} · Pageviews: ${nf(tr.traffic.cur.pageviews)} · Desde IA: ${nf(tr.traffic.cur.aiVisits)}`, ``)
+    L.push(`## Tráfico (últimos 7 días)`, `- Visitantes: ${nf(tr.traffic.cur.visitantes)} · Desde IA: ${nf(tr.traffic.cur.aiVisits)} · Vistas de perfil: ${nf(tr.profileViewsTotal)}`, ``)
     L.push(`### Motores de IA`, ...(tr.aiEngines || []).map((a) => `- ${a.engine}: ${nf(a.visits)}`), ``)
     L.push(`### Perfiles más visitados`, ...(tr.topProfiles || []).map((x) => `- ${x.slug} — ${nf(x.views)}`), ``)
   } else if (tr?.error) L.push(`## Tráfico\n_No disponible: ${tr.error}._`, '')
