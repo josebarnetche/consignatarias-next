@@ -225,11 +225,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return meta ?? {}
   }
 
+  // Slug inexistente: noindex explícito (el componente hace notFound()). Evita
+  // heredar el 'index, follow' del layout y que quede un robots contradictorio.
+  const noIndexMeta = { title: 'Consignataria no encontrada', robots: { index: false, follow: false } }
   const canonical = resolveConsignatariaSlug(slug)
-  if (!canonical) return {}
+  if (!canonical) return noIndexMeta
 
   const profile = getOrSynthesizeProfile(canonical)
-  if (!profile) return {}
+  if (!profile) return noIndexMeta
 
   const profileAuctions = getAuctionsForProfile(auctions, canonical)
   const upcoming = profileAuctions.filter(a => a.date >= new Date().toISOString().slice(0, 10)).length
@@ -475,6 +478,10 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
           { name: enrichedProfile.displayName, url: `https://www.consignatarias.com.ar/consignatarias/${canonical}` },
         ]}
       />
+      {/* Un solo nodo por la firma: LocalBusiness (subtipo de Organization) con el
+          CUIT como identifier — señal de autoridad para la query de marca. Antes
+          se emitían LocalBusiness + Organization por la misma entidad (nodos
+          duplicados); ahora unificado. */}
       <LocalBusinessSchema
         name={enrichedProfile.displayName}
         description={enrichedProfile.description || `Consignataria de hacienda. ${profileAuctions.length} remates programados en ${provinces.join(', ')}.`}
@@ -483,41 +490,9 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
           addressRegion: primaryProvince,
         }}
         url={`https://www.consignatarias.com.ar/consignatarias/${canonical}`}
-      />
-      {/* Entidad-firma con CUIT como identifier — señal de autoridad para la query
-          navegacional de marca ("colombo y colombo", "bressan y cia") y para saltar
-          sobre directorios genéricos. Inline (la Organization de JsonLd.tsx describe
-          al sitio, no a la firma). El identifier sólo se emite si hay CUIT. */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Organization',
-            name: enrichedProfile.displayName,
-            url: `https://www.consignatarias.com.ar/consignatarias/${canonical}`,
-            areaServed: { '@type': 'AdministrativeArea', name: primaryProvince },
-            ...(primaryCity
-              ? {
-                  address: {
-                    '@type': 'PostalAddress',
-                    addressLocality: primaryCity,
-                    addressRegion: primaryProvince,
-                    addressCountry: 'AR',
-                  },
-                }
-              : {}),
-            ...(bodyCuit
-              ? {
-                  identifier: {
-                    '@type': 'PropertyValue',
-                    propertyID: 'CUIT',
-                    value: formatCuit(bodyCuit),
-                  },
-                }
-              : {}),
-          }),
-        }}
+        image="https://www.consignatarias.com.ar/og-image.png"
+        areaServed={primaryProvince}
+        cuit={bodyCuit ? formatCuit(bodyCuit) : undefined}
       />
       {upcomingAuctions.map(auction => (
         <EventSchema

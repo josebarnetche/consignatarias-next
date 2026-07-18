@@ -3,7 +3,7 @@ import PreofertasActivas from '@/components/PreofertasActivas'
 import { getActivePreofertas } from '@/lib/data/preofertas'
 
 export const metadata: Metadata = {
-  title: 'Pre-ofertas de remates · Consignatarias.com.ar',
+  title: 'Pre-ofertas de remates de cabaña',
   description: 'Pre-ofertá los lotes de los remates de cabaña antes del martillo: video, valor actual y genética de cada reproductor, y contacto directo con la consignataria.',
 }
 export const dynamic = 'force-dynamic'

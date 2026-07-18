@@ -56,7 +56,7 @@ neto en mano, comparador, spread, seasonality, INMAG history) are free. The prod
 
 | Thing | Count | Source of truth |
 |---|---|---|
-| Sitemap URLs | 1062 | `src/app/sitemap.ts` (shrinks as scraper archives remates) |
+| Sitemap URLs | ~2400 | `src/app/sitemap.ts` (dedup por URL; excluye perfiles thin noindex; varía con el scrape) |
 | API endpoints | 32 under `src/app/api/` | route handlers |
 | Public Enterprise endpoints (auth-gated) | 2 — `/api/precios`, `/api/lots` | |
 | Consignatarias (canonical) | 107 | `src/lib/data/consignataria-slugs.ts` (`getAllProfiles().length` — the public count) |

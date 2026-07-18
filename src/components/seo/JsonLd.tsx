@@ -229,6 +229,9 @@ interface LocalBusinessSchemaProps {
   };
   telephone?: string;
   url?: string;
+  image?: string;
+  areaServed?: string;
+  cuit?: string; // se emite como identifier PropertyValue (señal de autoridad de entidad)
 }
 
 export function LocalBusinessSchema({
@@ -237,6 +240,9 @@ export function LocalBusinessSchema({
   address,
   telephone,
   url,
+  image,
+  areaServed,
+  cuit,
 }: LocalBusinessSchemaProps) {
   const schema = {
     '@context': 'https://schema.org',
@@ -244,6 +250,7 @@ export function LocalBusinessSchema({
     '@id': url,
     name,
     description,
+    ...(image ? { image } : {}),
     address: {
       '@type': 'PostalAddress',
       streetAddress: address.streetAddress,
@@ -251,6 +258,8 @@ export function LocalBusinessSchema({
       addressRegion: address.addressRegion,
       addressCountry: 'AR',
     },
+    ...(areaServed ? { areaServed: { '@type': 'AdministrativeArea', name: areaServed } } : {}),
+    ...(cuit ? { identifier: { '@type': 'PropertyValue', propertyID: 'CUIT', value: cuit } } : {}),
     telephone,
     url,
   };

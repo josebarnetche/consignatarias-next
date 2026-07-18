@@ -130,7 +130,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale: 'es_AR',
     },
     alternates: {
-      canonical: `https://consignatarias.com.ar/remates/tipo/${config.slug}`,
+      canonical: `https://www.consignatarias.com.ar/remates/tipo/${config.slug}`,
     },
   }
 }
@@ -182,9 +182,9 @@ export default async function TipoRematesPage({ params }: Props) {
   const provinces = [...new Set(upcoming.map(a => a.province))].length
 
   const breadcrumbs = [
-    { name: 'Inicio', url: 'https://consignatarias.com.ar' },
-    { name: 'Remates', url: 'https://consignatarias.com.ar' },
-    { name: `Remates de ${config.displayName}`, url: `https://consignatarias.com.ar/remates/tipo/${config.slug}` },
+    { name: 'Inicio', url: 'https://www.consignatarias.com.ar' },
+    { name: 'Remates', url: 'https://www.consignatarias.com.ar' },
+    { name: `Remates de ${config.displayName}`, url: `https://www.consignatarias.com.ar/remates/tipo/${config.slug}` },
   ]
 
   return (
