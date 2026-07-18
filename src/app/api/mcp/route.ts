@@ -172,17 +172,41 @@ const TOOLS: Tool[] = [
   {
     name: 'get_inmag_historico',
     description:
-      'Serie histórica del Índice Novillo (INMAG), ARS/kg vivo — TENDENCIA. Serie diaria desde 2015-01-05: MAG/Cañuelas desde may-2022, antes era Mercado de Liniers (índice empalmado; la respuesta lo aclara cuando el rango cruza esa frontera). Devuelve valor inicial y final, variación %, mínimo, máximo, nº de ruedas y una muestra (~8 puntos). Índice DIARIO ponderado por volumen. Param dias: ventana atrás (default 30, mín 2, máx 5000 ≈ serie completa). Valor de HOY → get_indice_novillo; por categoría (semanal) → get_precios_hacienda, no comparar 1:1.',
+      'Serie histórica del Índice Novillo (INMAG) — TENDENCIA. Serie diaria desde 2015-01-05: MAG/Cañuelas desde may-2022, antes era Mercado de Liniers (índice empalmado; la respuesta lo aclara cuando el rango cruza esa frontera). Devuelve valor inicial y final, variación %, mínimo, máximo, nº de ruedas y una muestra (~8 puntos). Índice DIARIO ponderado por volumen. Rango: dias (ventana atrás, default 30, máx 5000 ≈ serie completa) o desde/hasta (YYYY-MM-DD, exacto — sirve para una fecha puntual: desde=hasta). moneda: ars (default) o usd (dólar blue venta, último valor conocido a cada fecha). Valor de HOY → get_indice_novillo; por categoría (semanal) → get_precios_hacienda, no comparar 1:1.',
     inputSchema: {
       type: 'object',
       properties: {
-        dias: { type: 'number', description: 'Ventana en días hacia atrás (default 30, máx 5000; la serie arranca 2015-01-05)' },
+        dias: { type: 'number', description: 'Ventana en días hacia atrás (default 30, máx 5000; la serie arranca 2015-01-05). Ignorado si se pasa desde/hasta.' },
+        desde: { type: 'string', description: 'Fecha inicial YYYY-MM-DD (opcional; la serie arranca 2015-01-05)' },
+        hasta: { type: 'string', description: 'Fecha final YYYY-MM-DD (opcional; default hoy). desde=hasta consulta una fecha puntual.' },
+        moneda: { type: 'string', enum: ['ars', 'usd'], description: 'ars (default) o usd — conversión por dólar blue venta, último valor conocido a cada fecha (regla de /mercado/inmag-dolares)' },
       },
       additionalProperties: false,
     },
     async run(args) {
-      const dias = Math.min(Math.max(typeof args.dias === 'number' ? args.dias : 30, 2), 5000)
-      const desde = new Date(Date.now() - dias * 86400000).toISOString().slice(0, 10)
+      const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
+      const hoy = new Date().toISOString().slice(0, 10)
+      const moneda = args.moneda === 'usd' ? 'usd' : 'ars'
+      // Rango: desde/hasta exactos si vienen; si no, la ventana `dias` hacia atrás.
+      let desde: string
+      let hasta: string
+      let rangoLabel: string
+      if (typeof args.desde === 'string' || typeof args.hasta === 'string') {
+        if (
+          (typeof args.desde === 'string' && !ISO_DATE.test(args.desde)) ||
+          (typeof args.hasta === 'string' && !ISO_DATE.test(args.hasta))
+        )
+          return fail('desde/hasta deben ser fechas YYYY-MM-DD (ej. 2020-03-20).')
+        desde = typeof args.desde === 'string' ? args.desde : '2015-01-05'
+        hasta = typeof args.hasta === 'string' && args.hasta < hoy ? args.hasta : hoy
+        if (desde > hasta) return fail('desde no puede ser posterior a hasta.')
+        rangoLabel = `${desde} → ${hasta}`
+      } else {
+        const dias = Math.min(Math.max(typeof args.dias === 'number' ? args.dias : 30, 2), 5000)
+        desde = new Date(Date.now() - dias * 86400000).toISOString().slice(0, 10)
+        hasta = hoy
+        rangoLabel = `últimos ${dias} días`
+      }
       const service = requireServiceClient()
       // Paginado: PostgREST capea cada request a 1.000 filas — sin esto, una ventana
       // larga devuelve la serie truncada (2015→2019) como si fuera completa.
@@ -193,18 +217,51 @@ const TOOLS: Tool[] = [
           .from('mag_inmag_history')
           .select('date, inmag_value')
           .gte('date', desde)
+          .lte('date', hasta)
           .order('date', { ascending: true })
           .range(from, from + PAGE - 1)
         if (error) return fail('Error leyendo el histórico INMAG.')
         all.push(...(data || []))
         if (!data || data.length < PAGE) break
       }
-      const rows = all.filter((r) => r.inmag_value != null) as Array<{ date: string; inmag_value: number }>
-      if (rows.length === 0) return ok(`Sin datos INMAG en los últimos ${dias} días.`)
-      const vals = rows.map((r) => Number(r.inmag_value))
+      let rows = (all.filter((r) => r.inmag_value != null) as Array<{ date: string; inmag_value: number }>).map(
+        (r) => ({ date: r.date, valor: Number(r.inmag_value) }),
+      )
+      if (rows.length === 0)
+        return ok(`Sin ruedas INMAG en el rango ${rangoLabel}. La serie arranca el 2015-01-05 y solo hay valor en días de rueda (Lun-Vie, sin feriados).`)
+      // Conversión a USD: dólar blue venta, último valor conocido a cada fecha
+      // (forward-fill) — la misma regla que /mercado/inmag-dolares y las alertas.
+      if (moneda === 'usd') {
+        const margen = new Date(new Date(`${desde}T00:00:00Z`).getTime() - 14 * 86400000).toISOString().slice(0, 10)
+        const blues: Array<{ date: string; venta: number }> = []
+        for (let from = 0; ; from += PAGE) {
+          const { data, error } = await service
+            .from('usd_blue_history')
+            .select('date, venta')
+            .gte('date', margen)
+            .lte('date', hasta)
+            .not('venta', 'is', null)
+            .order('date', { ascending: true })
+            .range(from, from + PAGE - 1)
+          if (error) return fail('Error leyendo la serie del dólar blue.')
+          blues.push(...((data || []) as Array<{ date: string; venta: number }>))
+          if (!data || data.length < PAGE) break
+        }
+        if (blues.length === 0) return fail('Sin cotización blue para el rango pedido.')
+        let bi = 0
+        rows = rows.flatMap((r) => {
+          while (bi + 1 < blues.length && blues[bi + 1].date <= r.date) bi++
+          const blue = blues[bi].date <= r.date ? Number(blues[bi].venta) : null
+          return blue && blue > 0 ? [{ date: r.date, valor: Math.round((r.valor / blue) * 100) / 100 }] : []
+        })
+        if (rows.length === 0) return ok(`Sin ruedas INMAG convertibles a USD en el rango ${rangoLabel}.`)
+      }
+      const vals = rows.map((r) => r.valor)
       const first = vals[0], last = vals[vals.length - 1]
       const min = Math.min(...vals), max = Math.max(...vals)
       const changePct = first > 0 ? ((last - first) / first) * 100 : 0
+      const unidad = moneda === 'usd' ? 'USD/kg vivo (blue)' : 'ARS/kg vivo'
+      const fmtVal = (v: number) => (moneda === 'usd' ? `US$ ${v.toFixed(2)}` : fmt(v))
       // muestra: hasta ~8 puntos espaciados
       const step = Math.max(1, Math.floor(rows.length / 8))
       const sample = rows.filter((_, i) => i % step === 0 || i === rows.length - 1)
@@ -216,13 +273,18 @@ const TOOLS: Tool[] = [
       const notaEra = cruzaEra
         ? `\n\n⚠ Nota metodológica: los valores anteriores al ${MAG_DESDE} corresponden a la era Mercado de Liniers (el MAG de Cañuelas opera desde esa fecha). Serie empalmada, misma metodología de índice diario ponderado por volumen. Citar como "índice novillo (Liniers/MAG)" para rangos que cruzan esa frontera.`
         : ''
+      const notaUsd =
+        moneda === 'usd'
+          ? `\n\nConversión USD: dólar blue venta, último valor conocido a cada fecha (fuente usd_blue_history, serie 2011→).`
+          : ''
       return ok(
-        `INMAG — últimos ${dias} días (${rows.length} ruedas, ARS/kg vivo)\n` +
-          `Inicio (${rows[0].date}): ${fmt(first)} → Hoy (${rows[rows.length - 1].date}): ${fmt(last)} (${changePct >= 0 ? '+' : ''}${changePct.toFixed(1)}%)\n` +
-          `Mínimo: ${fmt(min)} · Máximo: ${fmt(max)}\n\nSerie:\n` +
-          sample.map((r) => `  ${r.date}: ${fmt(Number(r.inmag_value))}`).join('\n') +
+        `INMAG — ${rangoLabel} (${rows.length} ruedas, ${unidad})\n` +
+          `Inicio (${rows[0].date}): ${fmtVal(first)} → Fin (${rows[rows.length - 1].date}): ${fmtVal(last)} (${changePct >= 0 ? '+' : ''}${changePct.toFixed(1)}%)\n` +
+          `Mínimo: ${fmtVal(min)} · Máximo: ${fmtVal(max)}\n\nSerie:\n` +
+          sample.map((r) => `  ${r.date}: ${fmtVal(r.valor)}`).join('\n') +
           notaEra +
-          '\n\n' + JSON.stringify({ dias, inicio: first, fin: last, change_pct: Math.round(changePct * 10) / 10, min, max, ruedas: rows.length, ...(cruzaEra ? { era_liniers_hasta: MAG_DESDE } : {}) }),
+          notaUsd +
+          '\n\n' + JSON.stringify({ desde: rows[0].date, hasta: rows[rows.length - 1].date, moneda, unidad, inicio: first, fin: last, change_pct: Math.round(changePct * 10) / 10, min, max, ruedas: rows.length, ...(cruzaEra ? { era_liniers_hasta: MAG_DESDE } : {}) }),
       )
     },
   },
