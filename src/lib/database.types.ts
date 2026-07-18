@@ -1001,7 +1001,7 @@ export type Database = {
           estado?: string | null
           foto_url?: string | null
           frigorifico_cuit: string
-          id?: number
+          id?: never
           incremento?: number | null
           interprovincial?: boolean
           moneda?: string | null
@@ -1028,7 +1028,7 @@ export type Database = {
           estado?: string | null
           foto_url?: string | null
           frigorifico_cuit?: string
-          id?: number
+          id?: never
           incremento?: number | null
           interprovincial?: boolean
           moneda?: string | null
@@ -1143,7 +1143,7 @@ export type Database = {
           empresa?: string | null
           estado?: string | null
           frigorifico_cuit: string
-          id?: number
+          id?: never
           ip?: string | null
           mensaje?: string | null
           nombre?: string | null
@@ -1161,7 +1161,7 @@ export type Database = {
           empresa?: string | null
           estado?: string | null
           frigorifico_cuit?: string
-          id?: number
+          id?: never
           ip?: string | null
           mensaje?: string | null
           nombre?: string | null
@@ -1270,6 +1270,36 @@ export type Database = {
           scraped_at?: string
           source?: string | null
           year?: number
+        }
+        Relationships: []
+      }
+      karma_ledger: {
+        Row: {
+          created_at: string
+          delta: number
+          id: number
+          reason: string
+          ref_id: string | null
+          ref_type: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          delta: number
+          id?: never
+          reason: string
+          ref_id?: string | null
+          ref_type?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          delta?: number
+          id?: never
+          reason?: string
+          ref_id?: string | null
+          ref_type?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -1962,6 +1992,96 @@ export type Database = {
           },
         ]
       }
+      preoferta_bids: {
+        Row: {
+          amount: number
+          bidder_cuit: string | null
+          bidder_email: string
+          bidder_localidad: string | null
+          bidder_name: string | null
+          bidder_phone: string | null
+          created_at: string
+          id: string
+          infoexperto: string | null
+          is_test: boolean
+          lote_rp: string
+          relayed_at: string | null
+          remate_slug: string
+        }
+        Insert: {
+          amount: number
+          bidder_cuit?: string | null
+          bidder_email: string
+          bidder_localidad?: string | null
+          bidder_name?: string | null
+          bidder_phone?: string | null
+          created_at?: string
+          id?: string
+          infoexperto?: string | null
+          is_test?: boolean
+          lote_rp: string
+          relayed_at?: string | null
+          remate_slug: string
+        }
+        Update: {
+          amount?: number
+          bidder_cuit?: string | null
+          bidder_email?: string
+          bidder_localidad?: string | null
+          bidder_name?: string | null
+          bidder_phone?: string | null
+          created_at?: string
+          id?: string
+          infoexperto?: string | null
+          is_test?: boolean
+          lote_rp?: string
+          relayed_at?: string | null
+          remate_slug?: string
+        }
+        Relationships: []
+      }
+      preoferta_mirror: {
+        Row: {
+          remate_slug: string
+          scraped_at: string
+          valores: Json
+        }
+        Insert: {
+          remate_slug: string
+          scraped_at?: string
+          valores?: Json
+        }
+        Update: {
+          remate_slug?: string
+          scraped_at?: string
+          valores?: Json
+        }
+        Relationships: []
+      }
+      preoferta_views: {
+        Row: {
+          created_at: string
+          id: number
+          lote_rp: string | null
+          remate_slug: string
+          visitor: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          lote_rp?: string | null
+          remate_slug: string
+          visitor?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          lote_rp?: string | null
+          remate_slug?: string
+          visitor?: string | null
+        }
+        Relationships: []
+      }
       price_alerts: {
         Row: {
           category: string
@@ -2010,6 +2130,72 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
           webhook_url?: string | null
+        }
+        Relationships: []
+      }
+      proactive_review_events: {
+        Row: {
+          action: string
+          created_at: string
+          id: number
+          item_id: string
+          note: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: never
+          item_id: string
+          note?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: never
+          item_id?: string
+          note?: string | null
+        }
+        Relationships: []
+      }
+      proactive_review_items: {
+        Row: {
+          caption: string | null
+          due_date: string | null
+          familia: string | null
+          first_comment: string | null
+          formato: string | null
+          item_id: string
+          media_path: string | null
+          note: string | null
+          source: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          caption?: string | null
+          due_date?: string | null
+          familia?: string | null
+          first_comment?: string | null
+          formato?: string | null
+          item_id: string
+          media_path?: string | null
+          note?: string | null
+          source: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          caption?: string | null
+          due_date?: string | null
+          familia?: string | null
+          first_comment?: string | null
+          formato?: string | null
+          item_id?: string
+          media_path?: string | null
+          note?: string | null
+          source?: string
+          status?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -2917,6 +3103,22 @@ export type Database = {
       }
     }
     Views: {
+      api_consumers_summary: {
+        Row: {
+          ips: string[] | null
+          key_name: string | null
+          owner_email: string | null
+          paths: string[] | null
+          prefix: string | null
+          primero: string | null
+          queries: string[] | null
+          referers: string[] | null
+          reqs: number | null
+          ultimo: string | null
+          user_agents: string[] | null
+        }
+        Relationships: []
+      }
       consignataria_followers: {
         Row: {
           consignataria_slug: string | null
@@ -2949,6 +3151,14 @@ export type Database = {
       bump_rate_limit: {
         Args: { p_bucket: string; p_window_start: string }
         Returns: number
+      }
+      get_canuelas_hembras_mensual: {
+        Args: never
+        Returns: {
+          hembras: number
+          mes: string
+          total: number
+        }[]
       }
       get_dashboard_counts: { Args: never; Returns: Json }
       get_recent_user_infos: {
@@ -3027,6 +3237,7 @@ export type Database = {
         Returns: undefined
       }
       increment_api_usage: { Args: { p_key_id: string }; Returns: number }
+      karma_balance: { Args: { p_user: string }; Returns: number }
       mag_monthly_consignatario_stats: {
         Args: { p_month: number; p_year: number }
         Returns: Json
@@ -3039,6 +3250,15 @@ export type Database = {
           p_report_slug: string
           p_user_agent?: string
           p_user_id: string
+        }
+        Returns: number
+      }
+      spend_karma: {
+        Args: {
+          p_cost: number
+          p_reason: string
+          p_ref_id?: string
+          p_user: string
         }
         Returns: number
       }

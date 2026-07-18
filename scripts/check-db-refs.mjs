@@ -49,32 +49,11 @@ const STRICT = process.argv.includes('--strict') || process.env.CHECK_DB_REFS_ST
  * No es un cementerio: si vence sin resolver, la CI de gobierno debería escalarla.
  */
 const ALLOWLIST = new Map([
-  ['increment_api_usage', {
-    reason: 'FALSO POSITIVO: la función SÍ existe en prod (la usa api-keys.ts) pero el generador de tipos no la lista en Functions.',
-    owner: 'infra', since: '2026-07-03', severity: 'baja',
-    exit: 'Se cierra si un futuro generador la incluye. No es deuda real.',
-  }],
-  // Objetos creados esta semana vía SQL en prod (capa first-party, agregados MAG,
-  // showcase novillo-USD). VERIFICADO 2026-07-07: los 6 existen en prod. El único
-  // pendiente es regenerar src/lib/database.types.ts para que los liste. Se cierran
-  // solos al regenerar los tipos.
-  ...(['visitors', 'upsert_visitor', 'visitor_stats', 'mag_monthly_consignatario_stats', 'novillo_usd_days', 'novillo_usd_series'].map(
-    (name) => [name, {
-      reason: 'FALSO POSITIVO: existe en prod (verificado 2026-07-07); database.types.ts aún sin regenerar.',
-      owner: 'infra', since: '2026-07-07', severity: 'baja',
-      exit: 'Se cierra al regenerar database.types.ts.',
-    }],
-  )),
-  // Capa de karma/coins (migración 20260709_karma_ledger.sql). VERIFICADO
-  // 2026-07-10: los 3 objetos EXISTEN en prod (probado el flujo earn/spend end-to-end
-  // vía MCP). El DRIFT era falsa alarma por tipos sin regenerar + el cast karmaDb().
-  ...(['karma_ledger', 'karma_balance', 'spend_karma'].map(
-    (name) => [name, {
-      reason: 'FALSO POSITIVO: existe en prod (verificado 2026-07-10, flujo probado); database.types.ts aún sin regenerar.',
-      owner: 'infra', since: '2026-07-10', severity: 'baja',
-      exit: 'Se cierra al regenerar database.types.ts (y permite quitar el cast karmaDb()).',
-    }],
-  )),
+  // Vaciada el 2026-07-18: database.types.ts regenerado desde prod — las 10 entradas
+  // (increment_api_usage, visitors/upsert_visitor/visitor_stats, agregados MAG,
+  // novillo_usd_*, karma_*) ya aparecen en los tipos y se cerraron solas, como
+  // documentaba su criterio de salida. Nuevas entradas exigen: dueño, fecha,
+  // severidad y criterio de vencimiento.
 ])
 
 // ── 1. Esquema real de prod (desde los tipos generados) ──────────────────────
@@ -87,7 +66,9 @@ export function parseTypes(ts) {
     const sec = line.match(/^ {4}(Tables|Views|Functions|Enums|CompositeTypes): \{$/)
     if (sec) { section = sec[1]; continue }
     if (/^ {4}\}/.test(line)) { section = null; continue }
-    const key = line.match(/^ {6}([A-Za-z_][\w]*): \{$/)
+    // Acepta entrada multilínea (`nombre: {`) y one-liner del generador nuevo
+    // (`nombre: { Args: ...; Returns: ... }`).
+    const key = line.match(/^ {6}([A-Za-z_][\w]*): \{/)
     if (!key) continue
     if (section === 'Tables' || section === 'Views') tables.add(key[1])
     else if (section === 'Functions') fns.add(key[1])
