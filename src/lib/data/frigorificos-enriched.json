@@ -6514,5 +6514,23 @@
     "notas": null,
     "enrichedAt": null,
     "enrichmentSource": null
+  },
+  {
+    "cuit": "30694424410",
+    "name": "SODECAR S.A.",
+    "matricula": "1357",
+    "province": "SANTA FE",
+    "stage": 2,
+    "grupoEmpresario": null,
+    "tipo": null,
+    "localidad": "Rafaela",
+    "direccion": "Lisandro de la Torre 1450, S2300 Rafaela, Santa Fe",
+    "telefono": "+54 3492 57-9716",
+    "email": "contacto@sodecar.com.ar",
+    "web": "https://sodecar.com.ar/",
+    "volumenFaena": null,
+    "notas": "Empresa de Rafaela dedicada a la elaboracion y comercializacion de fiambres, chacinados y productos carnicos, con distribucion nacional.",
+    "enrichedAt": "2026-07-18",
+    "enrichmentSource": "web"
   }
 ]

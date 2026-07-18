@@ -241,7 +241,7 @@ function ArticleSchema({
       name: 'Consignatarias.com.ar',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://www.consignatarias.com.ar/Consignatariaslogo.png',
+        url: 'https://www.consignatarias.com.ar/logo.png',
       },
     },
   }
