@@ -172,16 +172,16 @@ const TOOLS: Tool[] = [
   {
     name: 'get_inmag_historico',
     description:
-      'Serie histórica del Índice Novillo (INMAG), ARS/kg vivo (MAG/Cañuelas) — TENDENCIA. Devuelve valor inicial y final, variación %, mínimo, máximo, nº de ruedas y una muestra (~8 puntos). Índice DIARIO ponderado por volumen. Param dias: ventana atrás (default 30, mín 2, máx 730). Valor de HOY → get_indice_novillo; por categoría (semanal) → get_precios_hacienda, no comparar 1:1.',
+      'Serie histórica del Índice Novillo (INMAG), ARS/kg vivo — TENDENCIA. Serie diaria desde 2015-01-05: MAG/Cañuelas desde may-2022, antes era Mercado de Liniers (índice empalmado; la respuesta lo aclara cuando el rango cruza esa frontera). Devuelve valor inicial y final, variación %, mínimo, máximo, nº de ruedas y una muestra (~8 puntos). Índice DIARIO ponderado por volumen. Param dias: ventana atrás (default 30, mín 2, máx 5000 ≈ serie completa). Valor de HOY → get_indice_novillo; por categoría (semanal) → get_precios_hacienda, no comparar 1:1.',
     inputSchema: {
       type: 'object',
       properties: {
-        dias: { type: 'number', description: 'Ventana en días hacia atrás (default 30, máx 730)' },
+        dias: { type: 'number', description: 'Ventana en días hacia atrás (default 30, máx 5000; la serie arranca 2015-01-05)' },
       },
       additionalProperties: false,
     },
     async run(args) {
-      const dias = Math.min(Math.max(typeof args.dias === 'number' ? args.dias : 30, 2), 730)
+      const dias = Math.min(Math.max(typeof args.dias === 'number' ? args.dias : 30, 2), 5000)
       const desde = new Date(Date.now() - dias * 86400000).toISOString().slice(0, 10)
       const service = requireServiceClient()
       const { data, error } = await service
@@ -199,12 +199,21 @@ const TOOLS: Tool[] = [
       // muestra: hasta ~8 puntos espaciados
       const step = Math.max(1, Math.floor(rows.length / 8))
       const sample = rows.filter((_, i) => i % step === 0 || i === rows.length - 1)
+      // Frontera institucional: el MAG (Cañuelas) opera desde el 2022-05-17; los valores
+      // previos son la era Mercado de Liniers, serie empalmada con la misma metodología.
+      // Si el rango la cruza, se aclara — un agente no debe citar "INMAG 2020" sin contexto.
+      const MAG_DESDE = '2022-05-17'
+      const cruzaEra = rows[0].date < MAG_DESDE
+      const notaEra = cruzaEra
+        ? `\n\n⚠ Nota metodológica: los valores anteriores al ${MAG_DESDE} corresponden a la era Mercado de Liniers (el MAG de Cañuelas opera desde esa fecha). Serie empalmada, misma metodología de índice diario ponderado por volumen. Citar como "índice novillo (Liniers/MAG)" para rangos que cruzan esa frontera.`
+        : ''
       return ok(
         `INMAG — últimos ${dias} días (${rows.length} ruedas, ARS/kg vivo)\n` +
           `Inicio (${rows[0].date}): ${fmt(first)} → Hoy (${rows[rows.length - 1].date}): ${fmt(last)} (${changePct >= 0 ? '+' : ''}${changePct.toFixed(1)}%)\n` +
           `Mínimo: ${fmt(min)} · Máximo: ${fmt(max)}\n\nSerie:\n` +
           sample.map((r) => `  ${r.date}: ${fmt(Number(r.inmag_value))}`).join('\n') +
-          '\n\n' + JSON.stringify({ dias, inicio: first, fin: last, change_pct: Math.round(changePct * 10) / 10, min, max, ruedas: rows.length }),
+          notaEra +
+          '\n\n' + JSON.stringify({ dias, inicio: first, fin: last, change_pct: Math.round(changePct * 10) / 10, min, max, ruedas: rows.length, ...(cruzaEra ? { era_liniers_hasta: MAG_DESDE } : {}) }),
       )
     },
   },
