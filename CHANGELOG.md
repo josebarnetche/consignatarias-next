@@ -7,6 +7,30 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.184.1] — 2026-07-18
+
+### Fix: identidad v2 en todos los previews sociales (OG/Twitter)
+
+Dos fugas de la marca vieja en las tarjetas de socials, detectadas al compartir `/mercado/spread`:
+
+- **`src/app/twitter-image.png` (identidad v1, may-2026) cascadeaba como `twitter:image` a TODO el sitio** — X y las plataformas que caen a twitter:image mostraban el logo viejo aun donde el og:image ya era v2. Eliminado: el fallback pasa a `og-image.png` (v2).
+- **48 páginas definían `openGraph` sin `images`**, pisando la herencia del root (quedaban sin og:image y las plataformas caían al twitter viejo). Se inyecta el asset v2 por sección: `og-mercado` (mercado/precios), `og-remates`, `og-frigorificos`, `og-image` (resto). Los 4 segmentos con OG dinámico propio (consignatarias/[slug], remates/[slug], inmag, /go) ya eran v2 y quedaron intactos.
+- Se elimina `public/og-image-new.png` (identidad vieja, sin referencias).
+
+## [1.184.0] — 2026-07-18
+
+### MCP: histórico INMAG serie completa (2015→) + nota de era Liniers/MAG
+
+- **`get_inmag_historico` cap 730 → 5.000 días** (≈ serie completa desde 2015-01-05, 1.713 ruedas). El cap era un guardrail arbitrario que escondía 9 de los 11 años del diferencial del producto. La respuesta sigue liviana: muestrea ~8 puntos sea cual sea la ventana.
+- **Nota metodológica automática**: cuando el rango cruza el 2022-05-17 (primera rueda del MAG en Cañuelas; antes, Mercado de Liniers) la respuesta lo aclara y el JSON agrega `era_liniers_hasta` — un agente no debe citar "INMAG 2020" sin contexto.
+- **Fix de truncado silencioso**: PostgREST capea cada request a 1.000 filas; al abrir la ventana, la serie volvía cortada en 2019 *presentándose como completa*. La lectura ahora pagina con `.range()` hasta agotar.
+
+## [1.183.1] — 2026-07-18
+
+### Fix MCP: negociación de protocolo hacia abajo (reconexión de Claude Code)
+
+El `initialize` devolvía siempre la última versión soportada (2026-07-28) ante una versión desconocida. Un cliente que pide una intermedia (p.ej. 2026-03-26) no implementa la última y corta con "Server's protocol version is not supported" — le pasaba a Claude Code. Ahora `negotiateProtocolVersion()` baja a la más nueva soportada que no sea posterior a la pedida (fechas ISO comparan lexicográficamente); el header `MCP-Protocol-Version` usa la misma regla. Verificado en prod contra los 7 casos de negociación.
+
 ## [1.179.2] — 2026-07-16
 
 ### Viewship en el catálogo + "Cartelera" pasa a "Catálogo"

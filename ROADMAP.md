@@ -1,6 +1,6 @@
 # Roadmap
 
-**Current:** v1.159.0 (2026-07-13) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
+**Current:** v1.184.1 (2026-07-18) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
 **Strategic frame:** [docs/strategy/PLAN-DE-NEGOCIOS-2026.md](docs/strategy/PLAN-DE-NEGOCIOS-2026.md)
 (plan de negocios v2, 36 meses — el marco canónico) + [docs/strategy/POSITIONING-THESIS.md](docs/strategy/POSITIONING-THESIS.md)
 (tesis de categoría). **Dos motores de ingreso secuenciados** sobre la capa de datos libre y citable:
@@ -16,6 +16,29 @@ MAJOR boundary, so the product stays on 1.x.
 > first dollar is **unblocked** (email-first checkout live for both B2C and Enterprise, verified to
 > reach a real Rebill payment link). The remaining gate is a real test payment + the institutional
 > sales motion — not more code.
+
+---
+
+## Estado — v1.160 → v1.184 (2026-07-18) · interoperabilidad + señal de demanda AI
+
+Tramo corto de hardening de la superficie citable, con la **primera medición seria de demanda AI**:
+
+- **SEO/crawl (v1.182.x–1.183.0):** OG a prueba de 5xx (558 páginas en GSC), robots.txt recupera crawl
+  budget (1.320 noindex crawleadas), auditoría técnica ultracode (17 fixes de indexabilidad).
+- **MCP interoperable y con la serie entera (v1.183.1–1.184.0):** fix de negociación de protocolo
+  (clientes con versión intermedia — Claude Code — cortaban la conexión); `get_inmag_historico` pasa de
+  730 días a la **serie completa 2015→** con nota automática de era Liniers/MAG y fix de un truncado
+  silencioso de PostgREST. Los 18 tools verificados end-to-end.
+- **Identidad v2 en previews sociales (v1.184.1):** se elimina el twitter-image v1 que cascadeaba a todo
+  el sitio + 48 páginas sin og:image reciben el asset v2 por sección.
+- **Medición de demanda AI (infra nueva, fuera del repo):** GA4 consultable por API (SA `ga4-reader`,
+  script `~/.config/consignatarias/ga4_ai_traffic.py`). Dato al 17-jul: **canal AI Assistant = 2,45% de
+  las sesiones (34/7d)** — chatgpt.com 29, copilot 4, claude.ai 1 — con **el engagement más alto del
+  sitio** (55,9% vs 37,6%; claude.ai 20min). En el MCP: discovery masivo (~2k handshakes/día), consumo
+  real todavía ~0 — los evaluadores ya ejercitan tools (paso previo a rankear en catálogos).
+
+**Lectura:** los motores AI ya citan y traen el tráfico de mejor intención del sitio; el MCP está
+distribuido pero aún sin consumidor final. El gate no cambió: **comercial, no técnico.**
 
 ---
 
