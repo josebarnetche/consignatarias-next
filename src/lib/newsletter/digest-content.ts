@@ -52,8 +52,51 @@ export interface DigestModel {
   inmag: InmagDelta | null
   remates: RematesSummary | null
   topCategory: TopCategoryMove | null
+  /** Titular para el subject: el "número más extremo" de la semana, rankeado
+   *  contra la ventana histórica REAL disponible. null → subject genérico. */
+  headline: string | null
   /** true si TODAS las secciones fallaron → el caller decide no mandar nada. */
   empty: boolean
+}
+
+const money = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
+const signed = (p: number) => (p >= 0 ? '+' : '') + p.toFixed(1) + '%'
+
+/**
+ * Titular del subject. Rankea el Δ% semanal del INMAG contra la distribución de
+ * cambios semanales de la ventana disponible (~18 meses en market-prices.json).
+ * Elige plantilla según qué tan extremo es — de récord de ventana a hook neutral —
+ * así casi toda semana tiene un asunto con dato, no solo la ~15% con récord.
+ * Nunca afirma "récord histórico": el claim se acota a las N semanas reales.
+ */
+function computeHeadline(inmag: InmagDelta | null): string | null {
+  if (!inmag || typeof inmag.changePct !== 'number') return null
+  const pct = inmag.changePct
+  const dir = pct >= 0 ? 'suba' : 'caída'
+  try {
+    const series = (marketPrices as { inmag?: { series?: Array<{ date: string; value: number }> } }).inmag?.series
+    const pts = Array.isArray(series) ? series.filter((p) => typeof p?.value === 'number' && p.value > 0 && p?.date) : []
+    if (pts.length >= 60) {
+      // Δ% semanal cada 7 días sobre la serie diaria.
+      const weekly: number[] = []
+      for (let i = 7; i < pts.length; i += 7) {
+        const a = pts[i - 7].value, b = pts[i].value
+        if (a > 0) weekly.push(((b - a) / a) * 100)
+      }
+      const nWeeks = weekly.length
+      if (nWeeks >= 8) {
+        const absNow = Math.abs(pct)
+        const strictlyBigger = weekly.filter((w) => Math.abs(w) > absNow).length
+        const percentile = Math.round((1 - strictlyBigger / nWeeks) * 100)
+        if (strictlyBigger === 0) return `Novillo ${signed(pct)} — la mayor ${dir} en ${nWeeks} semanas`
+        if (percentile >= 85) return `Novillo ${signed(pct)} — de los mayores movimientos del último año`
+        if (percentile <= 20 && absNow < 0.6) return `El novillo cerró plano esta semana · ${money(inmag.current)}/kg`
+      }
+    }
+  } catch { /* fallback abajo */ }
+  // Hook neutral pero concreto (siempre trae el número).
+  if (Math.abs(pct) >= 0.3) return `Novillo ${signed(pct)} esta semana · ${money(inmag.current)}/kg`
+  return `El novillo esta semana: ${money(inmag.current)}/kg`
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -219,6 +262,7 @@ export function buildDigestModel(reference?: Date): DigestModel {
     inmag,
     remates,
     topCategory,
+    headline: computeHeadline(inmag),
     empty: !inmag && !remates && !topCategory,
   }
 }

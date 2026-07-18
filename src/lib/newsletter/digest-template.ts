@@ -157,14 +157,14 @@ export function buildDigestEmail(model: DigestModel, recipient: string): DigestE
     : `<p style="color:#a1a1aa;font-size:16px;line-height:1.5">Esta semana no hubo cambios destacados. Volvé a
        <a href="${withDigestUtm('/mercado', 'fallback')}" style="color:#38bdf8">ver el mercado</a>.</p>`
 
-  // --- Subject: lead con el dato más fuerte (INMAG si está) -----------------
-  let subject = 'Qué cambió esta semana en el mercado ganadero'
-  if (model.inmag) {
-    const up = model.inmag.changePct >= 0
-    subject = `INMAG ${up ? '+' : ''}${model.inmag.changePct.toFixed(1)}% — qué cambió esta semana`
-  } else if (model.topCategory) {
-    subject = `${model.topCategory.label} ${model.topCategory.changePct >= 0 ? '+' : ''}${model.topCategory.changePct.toFixed(1)}% — qué cambió esta semana`
-  }
+  // --- Subject: el "número extremo" de la semana (rankeado vs la ventana real)
+  // es la mayor palanca de apertura. Fallback a los subjects previos. ----------
+  let subject = model.headline
+    || (model.inmag
+      ? `INMAG ${model.inmag.changePct >= 0 ? '+' : ''}${model.inmag.changePct.toFixed(1)}% — qué cambió esta semana`
+      : model.topCategory
+        ? `${model.topCategory.label} ${model.topCategory.changePct >= 0 ? '+' : ''}${model.topCategory.changePct.toFixed(1)}% — qué cambió esta semana`
+        : 'Qué cambió esta semana en el mercado ganadero')
 
   const html = `
     <div style="font-family:ui-monospace,'JetBrains Mono',Menlo,Consolas,monospace;max-width:600px;margin:0 auto;background:#09090b;color:#e4e4e7;padding:32px;border-radius:2px">
