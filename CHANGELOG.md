@@ -28,6 +28,12 @@ La ficha muestra, junto al interés, los **visitantes únicos** que abrieron ese
 - **Observabilidad de viewship:** nueva tabla `preoferta_views` + endpoint `POST /api/preoferta/view`. La ficha registra vista de página y vista por lote (deduplicadas por visitante vía `localStorage`, fire-and-forget).
 - **Panel en el admin** (`/admin/preoferta/[slug]`): visitantes únicos, vistas totales, y **funnel por lote** (vistas → únicos → interesados), ordenado por vistas. El remate, medido de punta a punta.
 
+## [1.182.2] — 2026-07-18
+
+### SEO: menos crawl desperdiciado en superficies noindex
+
+GSC reportaba 1.320 páginas "Excluida por noindex" — el grueso, superficies utilitarias que ya iban noindex pero Google igual crawleaba (`/go/*` redirects, `/login`, `/upgrade`, `/cuenta/`, `*/verificar` incl. `/frigorificos/verificar?cuit=`). Se agregan al `Disallow` del `robots.txt` (todos los agentes) → Google deja de visitarlas, se limpia el reporte y se recupera crawl budget para el contenido real. Los remates pasados ya resuelven con 301 (middleware). Los perfiles de consignataria con <2 remates siguen noindex por diseño (thin-content, decisión mantenida).
+
 ## [1.182.1] — 2026-07-18
 
 ### Fix: imágenes OpenGraph a prueba de 5xx (558 páginas en GSC)
