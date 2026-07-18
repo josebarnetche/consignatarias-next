@@ -25,6 +25,7 @@ jobs:
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
       GSC_REPORT_TO: ${{ secrets.GSC_REPORT_TO }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
     steps:
       - name: check config
         id: cfg
