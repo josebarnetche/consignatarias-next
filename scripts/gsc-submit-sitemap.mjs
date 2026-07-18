@@ -32,14 +32,15 @@ async function client() {
     await jwt.authorize()
     return { sc: google.searchconsole({ version: 'v1', auth: jwt }), via: 'service-account' }
   }
-  const credPath = join(HERE, 'archive/oauth-credentials.json'), tokPath = join(HERE, 'archive/oauth-token.json')
-  if (existsSync(credPath) && existsSync(tokPath)) {
-    const cred = JSON.parse(readFileSync(credPath, 'utf8')).installed
+  const credRaw = process.env.GSC_OAUTH_CREDENTIALS || (existsSync(join(HERE, 'archive/oauth-credentials.json')) && readFileSync(join(HERE, 'archive/oauth-credentials.json'), 'utf8'))
+  const tokRaw = process.env.GSC_OAUTH_TOKEN || (existsSync(join(HERE, 'archive/oauth-token.json')) && readFileSync(join(HERE, 'archive/oauth-token.json'), 'utf8'))
+  if (credRaw && tokRaw) {
+    const cred = JSON.parse(credRaw).installed
     const o = new google.auth.OAuth2(cred.client_id, cred.client_secret, 'http://localhost:3333')
-    o.setCredentials(JSON.parse(readFileSync(tokPath, 'utf8')))
+    o.setCredentials(JSON.parse(tokRaw))
     return { sc: google.searchconsole({ version: 'v1', auth: o }), via: 'oauth-token' }
   }
-  throw new Error('Sin auth de GSC con scope de escritura.')
+  throw new Error('Sin auth de GSC con scope de escritura (ni SA ni token OAuth por env/archivo).')
 }
 
 async function main() {

@@ -20,15 +20,17 @@ jobs:
     env:
       GSC_SA_KEY: ${{ secrets.GSC_SA_KEY }}
       GA4_SA_KEY: ${{ secrets.GA4_SA_KEY }}
+      GSC_OAUTH_CREDENTIALS: ${{ secrets.GSC_OAUTH_CREDENTIALS }}
+      GSC_OAUTH_TOKEN: ${{ secrets.GSC_OAUTH_TOKEN }}
     steps:
       - name: check config
         id: cfg
         run: |
-          if [ -n "$GSC_SA_KEY" ] || [ -n "$GA4_SA_KEY" ]; then
+          if [ -n "$GSC_SA_KEY" ] || [ -n "$GA4_SA_KEY" ] || [ -n "$GSC_OAUTH_TOKEN" ]; then
             echo "ok=true" >> "$GITHUB_OUTPUT"
           else
             echo "ok=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::GSC service account sin configurar — omitiendo re-submit. Ver reports/gsc/README.md"
+            echo "::notice::GSC sin auth configurada — omitiendo re-submit. Ver reports/gsc/README.md"
           fi
 
       - uses: actions/checkout@v5

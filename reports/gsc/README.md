@@ -17,29 +17,32 @@ node scripts/gsc-submit-sitemap.mjs    # re-submite el sitemap
 
 ## Setup (una vez) — para que corra durable en CI
 
-La automatización usa un **service account** (no el token OAuth, que caduca a los 7 días
-en apps "testing"). El SA de GA4 ya existe; hay que **darle acceso a GSC** y **subir los
-secrets a GitHub**.
+> No hay ningún service account en el proyecto (se verificó en Vercel). El camino
+> más simple es reusar el **token OAuth** que ya funciona, y **publicar la app OAuth**
+> para que deje de caducar. (Alternativa con SA más abajo.)
 
-**1. Dar acceso del service account a GSC**
-En [Search Console](https://search.google.com/search-console) → propiedad
-`consignatarias.com.ar` → **Configuración → Usuarios y permisos → Agregar usuario**:
-- Pegá el `client_email` del service account de GA4 (está en el JSON `GA4_SA_KEY`).
-- Permiso: **Completo** (necesario para `sitemaps.submit`; para solo el reporte alcanza "Restringido").
+**1. Publicar la app OAuth (quita la caducidad de 7 días)**
+[Google Cloud Console](https://console.cloud.google.com/apis/credentials/consent) →
+proyecto de la app (client id `64872477839-…`) → **OAuth consent screen** →
+**Publishing status: Publish app** (de "Testing" a "In production"). Con eso el
+refresh token de `oauth-token.json` no vuelve a expirar.
+→ Después corré `node scripts/gsc-auth.mjs` una vez más para tener un token fresco.
 
 **2. Secrets del repo** (GitHub → Settings → Secrets and variables → Actions):
-| Secret | Valor |
+| Secret | De dónde sale |
 |---|---|
-| `GA4_SA_KEY` | el JSON del service account (o el mismo `GSC_SA_KEY`) |
-| `GA4_PROPERTY_ID` | property id numérico de GA4 (ej. `123456789`) |
-| `RESEND_API_KEY` | key de Resend (mismo del resto del sitio) |
+| `GSC_OAUTH_CREDENTIALS` | contenido de `scripts/archive/oauth-credentials.json` |
+| `GSC_OAUTH_TOKEN` | contenido de `scripts/archive/oauth-token.json` (tras publicar + re-auth) |
+| `RESEND_API_KEY` | el mismo de Vercel (Settings → Env → copiar) |
 | `RESEND_FROM_EMAIL` | opcional (default `noreply@consignatarias.com`) |
-| `GSC_REPORT_TO` | destinatario(s) del email, coma-separados (default `jose.barnetche19@gmail.com`) |
+| `GSC_REPORT_TO` | tu email (default `jose.barnetche19@gmail.com`) |
+| `GA4_PROPERTY_ID` + `GA4_SA_KEY` | opcionales — solo si querés la sección GA4 (requiere crear un SA, ver abajo) |
 
-Ya con eso, `gsc-weekly-report` corre solo los lunes y `sitemap-resubmit` en cada deploy.
+Con eso `gsc-weekly-report` corre los lunes y `sitemap-resubmit` en cada deploy.
 
-## Alternativa: token OAuth (no durable)
-Si no querés service account, los scripts caen al token OAuth
-(`scripts/archive/oauth-token.json`, renovable con `node scripts/gsc-auth.mjs`), pero
-**caduca cada ~7 días** salvo que publiques la app OAuth a "Producción" en Google Cloud
-Console. Para CI, el service account es lo recomendado.
+## Alternativa durable: service account
+Más robusto pero más setup. En Google Cloud Console: crear un service account, habilitar
+"Search Console API" + "Analytics Data API", descargar el JSON key. Su `client_email`
+(`…@….iam.gserviceaccount.com`) se agrega como usuario en GSC (**Completo**, para el
+re-submit) y en GA4 (Viewer). El JSON va al secret `GSC_SA_KEY` (y `GA4_SA_KEY` para GA4).
+No caduca nunca. Los scripts prefieren SA si está; si no, usan el token OAuth.

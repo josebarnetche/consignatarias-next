@@ -47,16 +47,16 @@ async function gscClient() {
     await jwt.authorize()
     return { sc: google.searchconsole({ version: 'v1', auth: jwt }), via: 'service-account (' + sa.client_email + ')' }
   }
-  // fallback OAuth
-  const credPath = join(HERE, 'archive/oauth-credentials.json')
-  const tokPath = join(HERE, 'archive/oauth-token.json')
-  if (existsSync(credPath) && existsSync(tokPath)) {
-    const cred = JSON.parse(readFileSync(credPath, 'utf8')).installed
+  // fallback OAuth: env (CI, secrets) o archivos locales
+  const credRaw = process.env.GSC_OAUTH_CREDENTIALS || (existsSync(join(HERE, 'archive/oauth-credentials.json')) && readFileSync(join(HERE, 'archive/oauth-credentials.json'), 'utf8'))
+  const tokRaw = process.env.GSC_OAUTH_TOKEN || (existsSync(join(HERE, 'archive/oauth-token.json')) && readFileSync(join(HERE, 'archive/oauth-token.json'), 'utf8'))
+  if (credRaw && tokRaw) {
+    const cred = JSON.parse(credRaw).installed
     const o = new google.auth.OAuth2(cred.client_id, cred.client_secret, 'http://localhost:3333')
-    o.setCredentials(JSON.parse(readFileSync(tokPath, 'utf8')))
+    o.setCredentials(JSON.parse(tokRaw))
     return { sc: google.searchconsole({ version: 'v1', auth: o }), via: 'oauth-token (caduca ~7d si la app OAuth está en testing)' }
   }
-  throw new Error('Sin auth de GSC (ni GSC_SA_KEY/GA4_SA_KEY ni oauth-token.json).')
+  throw new Error('Sin auth de GSC (ni service account ni token OAuth por env/archivo).')
 }
 
 const iso = (d) => d.toISOString().slice(0, 10)
