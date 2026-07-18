@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
+import { sendLeadAlert } from '@/lib/email'
 import { z } from 'zod'
 import crypto from 'crypto'
 
@@ -83,9 +84,31 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Error al guardar consulta' }, { status: 500 })
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Consulta enviada. La consignataria te contactará pronto.' 
+    // Alerta instantánea a la firma (solo si el perfil está reclamado). El contacto
+    // va completo si es PRO (featured), enmascarado si no → empuja la conversión.
+    try {
+      const { data: cons } = await supabase
+        .from('consignatarias')
+        .select('display_name, claimed_by_email, featured')
+        .eq('canonical_slug', slug)
+        .maybeSingle()
+      const owner = (cons as { display_name?: string; claimed_by_email?: string | null; featured?: boolean } | null)
+      if (owner?.claimed_by_email) {
+        void sendLeadAlert({
+          to: owner.claimed_by_email,
+          consignataria: owner.display_name || slug,
+          slug,
+          isPro: !!owner.featured,
+          lead: { name, phone, email, message },
+        })
+      }
+    } catch (e) {
+      console.error('Lead alert error:', e)
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Consulta enviada. La consignataria te contactará pronto.'
     })
   } catch (error) {
     console.error('Lead API error:', error)

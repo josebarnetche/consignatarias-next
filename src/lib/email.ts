@@ -2348,3 +2348,65 @@ export async function sendMcpConsumptionAlert(events: McpConsumptionEvent[]) {
     return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
   }
 }
+
+/**
+ * Alerta instantánea a la consignataria cuando entra un lead. Se dispara desde
+ * /api/leads tras el insert. Solo se envía si el perfil está reclamado
+ * (consignatarias.claimed_by_email). El contacto (nombre/teléfono/email/mensaje)
+ * va COMPLETO si el perfil es PRO (featured); si no, va enmascarado con CTA a PRO
+ * — ver el lead sin poder tocarlo empuja la conversión.
+ */
+export async function sendLeadAlert(opts: {
+  to: string
+  consignataria: string
+  slug: string
+  isPro: boolean
+  lead: { name: string; phone?: string | null; email?: string | null; message?: string | null }
+}): Promise<{ success: boolean; error?: string }> {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'no-resend' }
+  const { to, consignataria, slug, isPro, lead } = opts
+  const profileUrl = `${APP_URL}/consignatarias/${slug}`
+
+  const contact = isPro
+    ? `
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#18181b;border:1px solid #27272a;border-radius:2px;margin:16px 0">
+        <tr><td style="padding:16px">
+          <p style="color:#fafafa;font-size:15px;font-weight:700;margin:0 0 8px">${escapeHtml(lead.name)}</p>
+          ${lead.phone ? `<p style="margin:0 0 4px"><a href="tel:${escapeHtml(lead.phone)}" style="color:#38bdf8;font-size:14px;text-decoration:none">📞 ${escapeHtml(lead.phone)}</a></p>` : ''}
+          ${lead.email ? `<p style="margin:0 0 4px"><a href="mailto:${escapeHtml(lead.email)}" style="color:#38bdf8;font-size:14px;text-decoration:none">✉ ${escapeHtml(lead.email)}</a></p>` : ''}
+          ${lead.message ? `<p style="color:#a1a1aa;font-size:13px;margin:10px 0 0;border-top:1px solid #27272a;padding-top:10px">"${escapeHtml(lead.message)}"</p>` : ''}
+        </td></tr>
+      </table>
+      <p style="color:#a1a1aa;font-size:13px;margin:0">Respondé rápido: el primero en contactar suele ganar la operación.</p>`
+    : `
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#18181b;border:1px solid #f59e0b40;border-radius:2px;margin:16px 0">
+        <tr><td style="padding:16px">
+          <p style="color:#fafafa;font-size:14px;margin:0 0 10px">Tenés una consulta nueva de <b>${escapeHtml(lead.name)}</b>${lead.message ? ` sobre: "${escapeHtml(lead.message.slice(0, 60))}${lead.message.length > 60 ? '…' : ''}"` : ''}.</p>
+          <p style="color:#f59e0b;font-size:13px;margin:0">🔒 El teléfono y el email del interesado están disponibles con <b>PRO Consignataria</b>.</p>
+          <a href="${APP_URL}/planes?audience=consignataria&from=lead-alert" style="display:inline-block;margin-top:12px;background:#f59e0b;color:#09090b;font-size:13px;font-weight:700;padding:9px 16px;border-radius:2px;text-decoration:none">Activar PRO y ver el contacto →</a>
+        </td></tr>
+      </table>`
+
+  const html = darkEmailShell(`
+    <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 4px">Nueva consulta</p>
+    <h2 style="color:#fafafa;font-size:18px;font-weight:700;margin:0 0 4px">Un productor consultó por ${escapeHtml(consignataria)}</h2>
+    <p style="color:#71717a;font-size:12px;margin:0 0 4px">Entró por tu perfil en consignatarias.com</p>
+    ${contact}
+    <p style="margin:16px 0 0"><a href="${profileUrl}" style="color:#71717a;font-size:12px">Ver tu perfil →</a></p>
+  `)
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to,
+      subject: isPro ? `Nueva consulta de ${lead.name} · ${consignataria}` : `Tenés una consulta nueva · ${consignataria}`,
+      html,
+      headers: listUnsubHeaders(to, 'lead-alert'),
+    })
+    if (error) return { success: false, error: String((error as { message?: string }).message || error) }
+    return { success: true }
+  } catch (e) {
+    return { success: false, error: e instanceof Error ? e.message : String(e) }
+  }
+}
