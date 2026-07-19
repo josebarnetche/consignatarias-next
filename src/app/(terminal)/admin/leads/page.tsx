@@ -143,7 +143,7 @@ export default function AdminLeadsPage() {
                       {l.email && <a href={`mailto:${l.email}`} className="flex items-center gap-1 text-sky-400"><Mail className="h-3.5 w-3.5" />{l.email}</a>}
                       {(l.zona || l.province) && <span className="flex items-center gap-1 text-zinc-400"><MapPin className="h-3.5 w-3.5" />{[l.zona, l.province].filter(Boolean).join(', ')}</span>}
                     </div>
-                    {l.message && <p className="mt-2 border-l-2 border-zinc-700 pl-2 text-sm text-zinc-400">"{l.message}"</p>}
+                    {l.message && <p className="mt-2 border-l-2 border-zinc-700 pl-2 text-sm text-zinc-400">&ldquo;{l.message}&rdquo;</p>}
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-zinc-500">Operación est.</p>

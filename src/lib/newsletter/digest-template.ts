@@ -159,7 +159,7 @@ export function buildDigestEmail(model: DigestModel, recipient: string): DigestE
 
   // --- Subject: el "número extremo" de la semana (rankeado vs la ventana real)
   // es la mayor palanca de apertura. Fallback a los subjects previos. ----------
-  let subject = model.headline
+  const subject = model.headline
     || (model.inmag
       ? `INMAG ${model.inmag.changePct >= 0 ? '+' : ''}${model.inmag.changePct.toFixed(1)}% — qué cambió esta semana`
       : model.topCategory
