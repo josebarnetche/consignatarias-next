@@ -46,6 +46,9 @@ export const VALUE_EVENTS = {
   // Form "pedí que te contacten" enviado (firmas sin contacto público). Lead
   // capturado de verdad — pesa como un WhatsApp.
   lead_form: { weight: 10, group: 'lead', label: 'Form de contacto enviado' },
+  // Motor de lead-gen a performance (herramientas gratis → producer_lead ruteado).
+  lead_capture_open: { weight: 4, group: 'lead', label: 'Abrió "que me contacten"' },
+  lead_capture_submit: { weight: 12, group: 'lead', label: 'Lead de productor enviado' },
 
   // --- Engagement con un remate ---
   catalog_click: { weight: 5, group: 'engagement', label: 'Abrir catálogo' },

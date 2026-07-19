@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import DecimalNumberInput from '@/components/ui/DecimalNumberInput'
 import { trackValueEvent } from '@/lib/analytics'
+import LeadCapture from '@/components/leads/LeadCapture'
 
 function fmt(n: number): string {
   return Math.round(n || 0).toLocaleString('es-AR')
@@ -215,6 +216,17 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
             {subState === 'error' && <p className="text-red-400 text-xxs mt-1">Revisá el email.</p>}
           </form>
         )}
+      </div>
+
+      {/* Puente a la máquina de lead-gen: el dueño del campo tiene (o coloca)
+          hacienda → conectarlo con una consignataria de su zona. Gratis para él. */}
+      <div className="mt-4">
+        <LeadCapture
+          source="arrendamiento"
+          defaultIntent="vender"
+          title="¿Tenés hacienda en ese campo?"
+          subtitle="Conectate gratis con una consignataria de tu zona para venderla o consignarla."
+        />
       </div>
     </div>
   )

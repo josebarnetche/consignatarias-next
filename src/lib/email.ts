@@ -2410,3 +2410,106 @@ export async function sendLeadAlert(opts: {
     return { success: false, error: e instanceof Error ? e.message : String(e) }
   }
 }
+
+/**
+ * sendProducerLeadOps — alerta INTERNA (a agro@memola.com.ar) por cada producer_lead
+ * capturado en las herramientas gratis. Es el DRIVER del ruteo a performance: las
+ * consignatarias no usan la web, así que Jose recibe el lead + las firmas candidatas
+ * de la zona con links de WhatsApp/tel ya armados, y las conecta a mano. Cobramos 1%
+ * al cierre. No se le manda mail cold a las firms sin opt-in; esto va a inbox propio.
+ */
+export async function sendProducerLeadOps(opts: {
+  leadId: number
+  intent: string
+  category?: string | null
+  headCount?: number | null
+  province?: string | null
+  zona?: string | null
+  source?: string | null
+  lead: { name: string; phone?: string | null; email?: string | null; message?: string | null }
+  estimatedValueArs?: number | null
+  feeArs?: number | null
+  feePct?: number
+  matches: Array<{
+    displayName: string
+    slug: string
+    province: string | null
+    location: string | null
+    featured: boolean
+    contactable: boolean
+    waLink: string | null
+    phone: string | null
+  }>
+}): Promise<{ success: boolean; error?: string }> {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'no-resend' }
+  const { leadId, intent, category, headCount, province, zona, source, lead, estimatedValueArs, feeArs, feePct, matches } = opts
+
+  const ars = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
+  const intentLabel: Record<string, string> = {
+    vender: 'Quiere VENDER hacienda', comprar: 'Quiere COMPRAR hacienda',
+    arrendar: 'Consulta por ARRENDAMIENTO', consignar: 'Quiere CONSIGNAR', tasar: 'Pide una TASACIÓN',
+  }
+  const zonaTxt = [zona, province].filter(Boolean).join(', ') || 'sin zona'
+  const catTxt = [headCount ? `${headCount.toLocaleString('es-AR')} cab` : null, category].filter(Boolean).join(' · ')
+
+  const economics = estimatedValueArs
+    ? `<tr><td style="padding:12px 16px;background:#0f1a12;border:1px solid #16a34a40;border-radius:2px">
+         <p style="color:#4ade80;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 6px">Potencial de la operación</p>
+         <p style="color:#fafafa;font-size:15px;margin:0">Valor estimado <b>${ars(estimatedValueArs)}</b> · Fee ${feePct ?? 1}% ≈ <b style="color:#4ade80">${feeArs ? ars(feeArs) : '—'}</b></p>
+         <p style="color:#71717a;font-size:11px;margin:6px 0 0">Estimación cabezas × peso ref × INMAG. El fee real se fija al cierre.</p>
+       </td></tr>`
+    : `<tr><td style="padding:10px 16px;background:#18181b;border:1px solid #27272a;border-radius:2px">
+         <p style="color:#a1a1aa;font-size:13px;margin:0">Sin cabezas para estimar valor — priorizar por zona/intención.</p>
+       </td></tr>`
+
+  const firmRows = matches.length
+    ? matches.map((m) => `
+      <tr><td style="padding:10px 0;border-top:1px solid #27272a">
+        <p style="margin:0 0 3px">
+          <span style="color:#fafafa;font-size:14px;font-weight:600">${escapeHtml(m.displayName)}</span>
+          ${m.featured ? '<span style="color:#f59e0b;font-size:10px;font-weight:700;margin-left:6px">★ PARTNER</span>' : ''}
+          ${!m.contactable ? '<span style="color:#52525b;font-size:10px;margin-left:6px">(sin tel en DB → backoffice)</span>' : ''}
+        </p>
+        <p style="color:#71717a;font-size:12px;margin:0 0 6px">${escapeHtml([m.location, m.province].filter(Boolean).join(', ') || '')}</p>
+        <p style="margin:0">
+          ${m.waLink ? `<a href="${m.waLink}" style="display:inline-block;background:#25D366;color:#052e16;font-size:12px;font-weight:700;padding:6px 12px;border-radius:2px;text-decoration:none;margin-right:6px">WhatsApp →</a>` : ''}
+          ${m.phone ? `<a href="tel:${escapeHtml(m.phone)}" style="color:#38bdf8;font-size:12px;text-decoration:none;margin-right:6px">📞 ${escapeHtml(m.phone)}</a>` : ''}
+          <a href="${APP_URL}/consignatarias/${m.slug}" style="color:#71717a;font-size:12px;text-decoration:none">perfil ↗</a>
+        </p>
+      </td></tr>`).join('')
+    : `<tr><td style="padding:10px 0;color:#a1a1aa;font-size:13px">Sin firmas cargadas en esa zona — rutear desde el backoffice.</td></tr>`
+
+  const html = darkEmailShell(`
+    <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 4px">Nuevo lead · #${leadId}</p>
+    <h2 style="color:#fafafa;font-size:18px;font-weight:700;margin:0 0 2px">${escapeHtml(intentLabel[intent] || intent)}</h2>
+    <p style="color:#71717a;font-size:12px;margin:0 0 16px">${escapeHtml(zonaTxt)}${catTxt ? ` · ${escapeHtml(catTxt)}` : ''}${source ? ` · vía ${escapeHtml(source)}` : ''}</p>
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#18181b;border:1px solid #27272a;border-radius:2px;margin:0 0 12px"><tr><td style="padding:14px 16px">
+      <p style="color:#fafafa;font-size:15px;font-weight:700;margin:0 0 6px">${escapeHtml(lead.name)}</p>
+      ${lead.phone ? `<p style="margin:0 0 3px"><a href="tel:${escapeHtml(lead.phone)}" style="color:#38bdf8;font-size:14px;text-decoration:none">📞 ${escapeHtml(lead.phone)}</a></p>` : ''}
+      ${lead.email ? `<p style="margin:0 0 3px"><a href="mailto:${escapeHtml(lead.email)}" style="color:#38bdf8;font-size:14px;text-decoration:none">✉ ${escapeHtml(lead.email)}</a></p>` : ''}
+      ${lead.message ? `<p style="color:#a1a1aa;font-size:13px;margin:8px 0 0;border-top:1px solid #27272a;padding-top:8px">"${escapeHtml(lead.message)}"</p>` : ''}
+    </td></tr></table>
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 16px"><tr><td>${economics}</td></tr></table>
+
+    <p style="color:#71717a;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 2px">Firmas candidatas (zona)</p>
+    <table width="100%" cellpadding="0" cellspacing="0">${firmRows}</table>
+
+    <p style="margin:18px 0 0"><a href="${APP_URL}/admin/leads" style="color:#38bdf8;font-size:13px;font-weight:600;text-decoration:none">Abrir la board de leads →</a></p>
+  `)
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: ADMIN_EMAIL,
+      subject: `🐄 Lead #${leadId} · ${intentLabel[intent] || intent} · ${zonaTxt}${feeArs ? ` · fee ≈${ars(feeArs)}` : ''}`,
+      html,
+    })
+    if (error) return { success: false, error: String((error as { message?: string }).message || error) }
+    return { success: true }
+  } catch (e) {
+    return { success: false, error: e instanceof Error ? e.message : String(e) }
+  }
+}

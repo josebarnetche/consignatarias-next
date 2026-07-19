@@ -8,6 +8,7 @@ const ADMIN_TABS = [
   { href: '/admin/dashboard', label: 'DASHBOARD' },
   { href: '/admin/claims', label: 'VERIFICACIONES' },
   { href: '/admin/consignatarias', label: 'CONSIGNATARIAS' },
+  { href: '/admin/leads', label: 'LEADS' },
   { href: '/admin/preoferta', label: 'PRE-OFERTAS' },
   { href: '/admin/reviews', label: 'RESEÑAS' },
   { href: '/admin/suscriptores', label: 'SUSCRIPTORES' },
