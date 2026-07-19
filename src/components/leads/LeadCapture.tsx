@@ -38,6 +38,9 @@ export interface LeadCaptureProps {
   presetHeadCount?: number
   /** Provincia pre-cargada si la página la conoce. */
   presetProvince?: string
+  /** Categoría contextual (novillos, vacas…) — no se muestra como campo, mejora
+   *  la estimación de valor/fee del lead. */
+  presetCategory?: string
   title?: string
   subtitle?: string
   /** CTA colapsado (texto del banner). */
@@ -50,6 +53,7 @@ export default function LeadCapture({
   defaultIntent = 'vender',
   presetHeadCount,
   presetProvince,
+  presetCategory,
   title = 'Conectate con una consignataria de tu zona',
   subtitle = 'Gratis para vos. Una firma de tu región te contacta para operar tu hacienda.',
   ctaLabel = 'Que me contacte una consignataria →',
@@ -86,6 +90,7 @@ export default function LeadCapture({
         body: JSON.stringify({
           intent,
           source,
+          category: presetCategory || undefined,
           province: province || undefined,
           zona: zona.trim() || undefined,
           headCount: headCount ? Number(headCount) : undefined,

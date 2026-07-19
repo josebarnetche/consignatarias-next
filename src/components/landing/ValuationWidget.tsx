@@ -4,6 +4,7 @@ import { useState, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import marketPrices from '@/lib/data/market-prices.json';
 import { trackEvent, trackValueEvent } from '@/lib/analytics';
+import LeadCapture from '@/components/leads/LeadCapture';
 
 const CATEGORIES = [
   { key: 'terneros', label: 'Terneros', avgKg: 180 },
@@ -227,6 +228,21 @@ export default function ValuationWidget() {
           <span>Peso promedio por categoría</span>
           <span>•</span>
           <span>Sin costo de flete ni comisión</span>
+        </div>
+
+        {/* Lead-gen: el productor ya valuó su hacienda → conectarlo con una
+            consignataria de su zona para venderla. Pasa cabezas/provincia/categoría
+            del cálculo para estimar el fee del lead. */}
+        <div className="mt-5">
+          <LeadCapture
+            source="valuation"
+            defaultIntent="vender"
+            presetHeadCount={heads}
+            presetProvince={province}
+            presetCategory={category}
+            title="¿Querés venderla al mejor precio?"
+            subtitle="Conectate gratis con una consignataria de tu zona. Ellos te consiguen el comprador."
+          />
         </div>
       </div>
     </div>
