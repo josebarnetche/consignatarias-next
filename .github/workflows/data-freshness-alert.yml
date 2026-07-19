@@ -22,10 +22,16 @@ jobs:
       - name: Check the pipeline ran today
         run: |
           TODAY=$(date +%F)
+          YESTERDAY=$(date -d yesterday +%F)   # GNU date (ubuntu-latest), respeta TZ=ART del env
           LAST=$(git log -1 --format=%cd --date=format-local:%F -- src/lib/data/last-build-trigger.json || echo "")
-          echo "Hoy (ART): $TODAY · último run del scraper (commit de last-build-trigger.json, ART): ${LAST:-nunca}"
-          if [ "$LAST" != "$TODAY" ]; then
-            echo "::error::El scraper NO corrió hoy ($TODAY). Último run: ${LAST:-nunca}. El cron de GitHub probablemente se atrasó/saltó. Disparalo: gh workflow run scrape-auctions.yml"
+          echo "Hoy (ART): $TODAY · ayer: $YESTERDAY · último run del scraper (commit de last-build-trigger.json, ART): ${LAST:-nunca}"
+          # Tolerancia de 1 día: el cron '0 1 * * *' (22:00 ART) es best-effort y GitHub
+          # lo atrasa hasta cruzar la medianoche ART; ahí TODAY rota y el último scrape
+          # (de ayer a la tarde, legítimo) queda a 1 día → falso positivo. Aceptamos hoy
+          # O ayer. Si falta un día calendario ENTERO, LAST cae a >=2 días (ni hoy ni ayer)
+          # y la alerta vuelve a disparar (preserva el caso real 2026-06-16).
+          if [ "$LAST" != "$TODAY" ] && [ "$LAST" != "$YESTERDAY" ]; then
+            echo "::error::El scraper no corrió ni hoy ($TODAY) ni ayer ($YESTERDAY) — >=2 días sin data fresca. Último run: ${LAST:-nunca}. El cron de GitHub probablemente se atrasó/saltó. Disparalo: gh workflow run scrape-auctions.yml"
             exit 1
           fi
-          echo "✓ El pipeline corrió hoy — data fresca."
+          echo "✓ El pipeline corrió hoy o ayer — data fresca."

@@ -95,7 +95,20 @@ jobs:
             MSG="ci: daily rebuild trigger — $(date -u +%Y-%m-%d)"
           fi
           git commit -m "$MSG"
-          git push
+          # Push robusto ante carrera non-fast-forward: si otro commit (humano u otro
+          # workflow) aterriza en main entre el checkout y el push, git rechaza el push
+          # (fetch first). Antes fallaba el job y mandaba un mail de fallo espurio,
+          # perdiendo el commit de datos. Rebase + reintento absorbe la carrera.
+          for attempt in 1 2 3 4 5; do
+            if git push; then
+              echo "✓ push OK (intento $attempt)"; exit 0
+            fi
+            echo "push rechazado (intento $attempt) — rebase sobre origin/main y reintento…"
+            git pull --rebase --autostash origin main || true
+            sleep $((attempt * 3))
+          done
+          echo "::error::git push falló tras 5 intentos (carrera persistente en main)."
+          exit 1
 
       - name: cron-hook finish
         if: always() && steps.cronstart.outputs.run_id != ''
