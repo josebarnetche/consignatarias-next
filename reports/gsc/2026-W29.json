@@ -1,158 +1,158 @@
 {
   "range": {
-    "start": "2026-07-09",
-    "end": "2026-07-15",
-    "pstart": "2026-07-02",
-    "pend": "2026-07-08"
+    "start": "2026-07-11",
+    "end": "2026-07-17",
+    "pstart": "2026-07-04",
+    "pend": "2026-07-10"
   },
   "gsc": {
     "cur": {
-      "clicks": 765,
-      "impressions": 38465,
-      "ctr": 0.0198882100610945,
-      "position": 6.061016508514234
+      "clicks": 828,
+      "impressions": 42892,
+      "ctr": 0.019304299170008393,
+      "position": 5.995290497062389
     },
     "prev": {
-      "clicks": 890,
-      "impressions": 44874,
-      "ctr": 0.019833311048714178,
-      "position": 6.186187993047199
+      "clicks": 834,
+      "impressions": 39088,
+      "ctr": 0.021336471551371264,
+      "position": 6.204998976668031
     },
     "queries": [
       {
         "keys": [
           "indice novillo arrendamiento"
         ],
-        "clicks": 18,
-        "impressions": 958,
-        "ctr": 0.018789144050104383,
-        "position": 5.866388308977036
+        "clicks": 22,
+        "impressions": 1129,
+        "ctr": 0.01948627103631532,
+        "position": 5.585473870682019
+      },
+      {
+        "keys": [
+          "novillo arrendamiento"
+        ],
+        "clicks": 13,
+        "impressions": 797,
+        "ctr": 0.01631116687578419,
+        "position": 5.909661229611041
       },
       {
         "keys": [
           "precio novillo arrendamiento"
         ],
-        "clicks": 15,
-        "impressions": 547,
-        "ctr": 0.027422303473491772,
-        "position": 5.742230347349177
+        "clicks": 12,
+        "impressions": 563,
+        "ctr": 0.021314387211367674,
+        "position": 5.593250444049733
       },
       {
         "keys": [
           "precio novillo arrendamiento mensual"
         ],
-        "clicks": 10,
-        "impressions": 372,
-        "ctr": 0.026881720430107527,
-        "position": 4.301075268817204
+        "clicks": 9,
+        "impressions": 363,
+        "ctr": 0.024793388429752067,
+        "position": 4.435261707988981
+      },
+      {
+        "keys": [
+          "precio novillo arrendamiento mercado de liniers"
+        ],
+        "clicks": 9,
+        "impressions": 223,
+        "ctr": 0.04035874439461883,
+        "position": 6.349775784753363
       },
       {
         "keys": [
           "precio novillo para arrendamiento hoy"
         ],
         "clicks": 9,
-        "impressions": 669,
-        "ctr": 0.013452914798206279,
-        "position": 5.240657698056801
-      },
-      {
-        "keys": [
-          "novillo arrendamiento"
-        ],
-        "clicks": 7,
-        "impressions": 758,
-        "ctr": 0.009234828496042216,
-        "position": 6.112137203166227
-      },
-      {
-        "keys": [
-          "precio novillo arrendamiento mercado de cañuelas"
-        ],
-        "clicks": 7,
-        "impressions": 297,
-        "ctr": 0.02356902356902357,
-        "position": 5.656565656565657
-      },
-      {
-        "keys": [
-          "precio novillo arrendamiento mercado de liniers"
-        ],
-        "clicks": 7,
-        "impressions": 227,
-        "ctr": 0.030837004405286344,
-        "position": 6.105726872246696
+        "impressions": 721,
+        "ctr": 0.012482662968099861,
+        "position": 5.0360610263522885
       },
       {
         "keys": [
           "indice novillo arrendamiento mensual"
         ],
-        "clicks": 6,
-        "impressions": 347,
-        "ctr": 0.01729106628242075,
-        "position": 6.743515850144092
-      },
-      {
-        "keys": [
-          "precio del novillo de arrendamiento"
-        ],
-        "clicks": 6,
-        "impressions": 137,
-        "ctr": 0.043795620437956206,
-        "position": 5.109489051094891
-      },
-      {
-        "keys": [
-          "novillo arrendamiento hoy"
-        ],
-        "clicks": 5,
-        "impressions": 71,
-        "ctr": 0.07042253521126761,
-        "position": 5.28169014084507
-      },
-      {
-        "keys": [
-          "indice novillo arrendamiento mercado de cañuelas"
-        ],
-        "clicks": 4,
-        "impressions": 265,
-        "ctr": 0.01509433962264151,
-        "position": 5.686792452830189
-      },
-      {
-        "keys": [
-          "novillo de arrendamiento"
-        ],
-        "clicks": 4,
-        "impressions": 138,
-        "ctr": 0.028985507246376812,
-        "position": 4.702898550724638
+        "clicks": 8,
+        "impressions": 357,
+        "ctr": 0.022408963585434174,
+        "position": 6.764705882352941
       },
       {
         "keys": [
           "precio novillo arrendamiento hoy"
         ],
-        "clicks": 4,
-        "impressions": 124,
-        "ctr": 0.03225806451612903,
-        "position": 4.629032258064516
+        "clicks": 7,
+        "impressions": 158,
+        "ctr": 0.04430379746835443,
+        "position": 4.512658227848101
+      },
+      {
+        "keys": [
+          "precio novillo arrendamiento mercado de cañuelas"
+        ],
+        "clicks": 6,
+        "impressions": 313,
+        "ctr": 0.019169329073482427,
+        "position": 5.757188498402556
+      },
+      {
+        "keys": [
+          "indice novillo arrendamiento mercado de cañuelas"
+        ],
+        "clicks": 5,
+        "impressions": 300,
+        "ctr": 0.016666666666666666,
+        "position": 5.286666666666667
+      },
+      {
+        "keys": [
+          "precio del novillo de arrendamiento"
+        ],
+        "clicks": 5,
+        "impressions": 150,
+        "ctr": 0.03333333333333333,
+        "position": 5.1466666666666665
       },
       {
         "keys": [
           "precio novillo para arrendamiento hoy canal rural"
         ],
         "clicks": 4,
-        "impressions": 177,
-        "ctr": 0.022598870056497175,
-        "position": 5.8192090395480225
+        "impressions": 184,
+        "ctr": 0.021739130434782608,
+        "position": 6.244565217391305
       },
       {
         "keys": [
-          "inmag"
+          "indice de novillo para arrendamiento"
         ],
         "clicks": 3,
-        "impressions": 226,
-        "ctr": 0.01327433628318584,
-        "position": 6.676991150442478
+        "impressions": 71,
+        "ctr": 0.04225352112676056,
+        "position": 5.070422535211268
+      },
+      {
+        "keys": [
+          "novillo arrendamiento hoy"
+        ],
+        "clicks": 3,
+        "impressions": 86,
+        "ctr": 0.03488372093023256,
+        "position": 5.744186046511628
+      },
+      {
+        "keys": [
+          "novillo de arrendamiento"
+        ],
+        "clicks": 3,
+        "impressions": 136,
+        "ctr": 0.022058823529411766,
+        "position": 4.8014705882352935
       }
     ],
     "pages": [
@@ -161,134 +161,134 @@
           "https://www.consignatarias.com.ar/mercado/arrendamiento"
         ],
         "clicks": 263,
-        "impressions": 14377,
-        "ctr": 0.018293107045976212,
-        "position": 5.686582736314947
+        "impressions": 15153,
+        "ctr": 0.017356299082689895,
+        "position": 5.621461096812513
       },
       {
         "keys": [
           "https://www.consignatarias.com.ar/frigorificos"
         ],
-        "clicks": 21,
-        "impressions": 770,
-        "ctr": 0.02727272727272727,
-        "position": 7.033766233766234
+        "clicks": 28,
+        "impressions": 882,
+        "ctr": 0.031746031746031744,
+        "position": 6.654195011337868
       },
       {
         "keys": [
           "https://www.consignatarias.com.ar/mercado/inmag"
         ],
-        "clicks": 21,
-        "impressions": 943,
-        "ctr": 0.022269353128313893,
-        "position": 6.249204665959703
-      },
-      {
-        "keys": [
-          "https://www.consignatarias.com.ar/remates/entre-rios"
-        ],
-        "clicks": 12,
-        "impressions": 74,
-        "ctr": 0.16216216216216217,
-        "position": 4.527027027027027
+        "clicks": 18,
+        "impressions": 950,
+        "ctr": 0.018947368421052633,
+        "position": 6.354736842105263
       },
       {
         "keys": [
           "https://www.consignatarias.com.ar/"
         ],
-        "clicks": 11,
-        "impressions": 313,
-        "ctr": 0.03514376996805112,
-        "position": 4.533546325878595
-      },
-      {
-        "keys": [
-          "https://www.consignatarias.com.ar/precios/vacas"
-        ],
-        "clicks": 11,
-        "impressions": 2084,
-        "ctr": 0.00527831094049904,
-        "position": 5.050863723608446
+        "clicks": 12,
+        "impressions": 335,
+        "ctr": 0.03582089552238806,
+        "position": 4.274626865671642
       },
       {
         "keys": [
           "https://www.consignatarias.com.ar/consignatarias"
         ],
+        "clicks": 11,
+        "impressions": 208,
+        "ctr": 0.052884615384615384,
+        "position": 5.355769230769231
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/precios/vacas"
+        ],
         "clicks": 10,
-        "impressions": 193,
-        "ctr": 0.05181347150259067,
-        "position": 5.430051813471502
+        "impressions": 1744,
+        "ctr": 0.005733944954128441,
+        "position": 4.8922018348623855
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/remates/entre-rios"
+        ],
+        "clicks": 9,
+        "impressions": 85,
+        "ctr": 0.10588235294117647,
+        "position": 4.741176470588235
       },
       {
         "keys": [
           "https://www.consignatarias.com.ar/como-funciona-un-remate-ganadero"
         ],
         "clicks": 8,
-        "impressions": 77,
-        "ctr": 0.1038961038961039,
-        "position": 2.7272727272727275
+        "impressions": 84,
+        "ctr": 0.09523809523809523,
+        "position": 2.7857142857142856
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/frigorificos/santa-fe"
+        ],
+        "clicks": 8,
+        "impressions": 292,
+        "ctr": 0.0273972602739726,
+        "position": 6.842465753424658
       },
       {
         "keys": [
           "https://www.consignatarias.com.ar/mercado/toros"
         ],
         "clicks": 8,
-        "impressions": 401,
-        "ctr": 0.0199501246882793,
-        "position": 5.371571072319202
-      },
-      {
-        "keys": [
-          "https://www.consignatarias.com.ar/frigorificos/30707283250"
-        ],
-        "clicks": 6,
-        "impressions": 72,
-        "ctr": 0.08333333333333333,
-        "position": 5.541666666666667
-      },
-      {
-        "keys": [
-          "https://www.consignatarias.com.ar/frigorificos/santa-fe"
-        ],
-        "clicks": 6,
-        "impressions": 261,
-        "ctr": 0.022988505747126436,
-        "position": 6.796934865900383
+        "impressions": 419,
+        "ctr": 0.01909307875894988,
+        "position": 4.914081145584726
       },
       {
         "keys": [
           "https://www.consignatarias.com.ar/remates/corrientes"
         ],
-        "clicks": 6,
-        "impressions": 72,
-        "ctr": 0.08333333333333333,
-        "position": 3.763888888888889
+        "clicks": 8,
+        "impressions": 91,
+        "ctr": 0.08791208791208792,
+        "position": 3.758241758241758
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/cuanto-vale-una-vaca"
+        ],
+        "clicks": 7,
+        "impressions": 750,
+        "ctr": 0.009333333333333334,
+        "position": 5.256
       }
     ]
   },
   "traffic": {
     "range": {
-      "current_from": "2026-07-11T21:45:28.257Z",
-      "previous_from": "2026-07-04T21:45:28.258Z"
+      "current_from": "2026-07-13T15:02:17.553Z",
+      "previous_from": "2026-07-06T15:02:17.553Z"
     },
     "traffic": {
       "cur": {
-        "visitantes": 1558,
-        "aiVisits": 116
+        "visitantes": 1521,
+        "aiVisits": 107
       },
       "prev": {
-        "visitantes": 1076,
-        "aiVisits": 85
+        "visitantes": 1234,
+        "aiVisits": 91
       }
     },
     "aiEngines": [
       {
         "engine": "copilot",
-        "visits": 93
+        "visits": 85
       },
       {
         "engine": "chatgpt",
-        "visits": 22
+        "visits": 21
       },
       {
         "engine": "claude",
@@ -299,17 +299,27 @@
       {
         "slug": "reggi",
         "type": "consignataria",
-        "views": 28
-      },
-      {
-        "slug": "colombo-y-magliano",
-        "type": "consignataria",
-        "views": 19
+        "views": 20
       },
       {
         "slug": "etchevehere-rural",
         "type": "consignataria",
+        "views": 12
+      },
+      {
+        "slug": "colombo-y-magliano",
+        "type": "consignataria",
+        "views": 10
+      },
+      {
+        "slug": "la-ganadera",
+        "type": "consignataria",
         "views": 9
+      },
+      {
+        "slug": "cooperativa-guillermo-lehmann",
+        "type": "consignataria",
+        "views": 8
       },
       {
         "slug": "pastore",
@@ -317,32 +327,12 @@
         "views": 8
       },
       {
-        "slug": "cooperativa-guillermo-lehmann",
+        "slug": "daniel-blanco",
         "type": "consignataria",
-        "views": 6
+        "views": 5
       },
       {
         "slug": "sivero",
-        "type": "consignataria",
-        "views": 6
-      },
-      {
-        "slug": "haciendas-federales",
-        "type": "consignataria",
-        "views": 5
-      },
-      {
-        "slug": "kofman-y-lissarrague",
-        "type": "consignataria",
-        "views": 5
-      },
-      {
-        "slug": "travaglia",
-        "type": "consignataria",
-        "views": 5
-      },
-      {
-        "slug": "daniel-blanco",
         "type": "consignataria",
         "views": 5
       },
@@ -352,12 +342,22 @@
         "views": 4
       },
       {
-        "slug": "javier-ulises-avalos",
+        "slug": "aj-mendizabal",
+        "type": "consignataria",
+        "views": 3
+      },
+      {
+        "slug": "cripco-obera",
+        "type": "consignataria",
+        "views": 3
+      },
+      {
+        "slug": "ferias-rauch",
         "type": "consignataria",
         "views": 3
       }
     ],
-    "profileViewsTotal": 181
+    "profileViewsTotal": 163
   },
-  "generated": "2026-07-18T21:45:27.667Z"
+  "generated": "2026-07-20T15:02:17.020Z"
 }
