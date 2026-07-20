@@ -3,7 +3,7 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.185.0 (2026-07-18). See [CHANGELOG.md](CHANGELOG.md) for the full history. Latest train (v1.88–1.96): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+**Current version:** v1.187.0 (2026-07-20). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
 
 ---
 
@@ -40,14 +40,14 @@ neto en mano, comparador, spread, seasonality, INMAG history) are free. The prod
 |---|---|---|
 | Framework | Next.js 15 (App Router) | Strict TS, mostly SSG + selective Fluid Compute |
 | Hosting | Vercel | Project `consignatarias-next` (NOT the `consignatarias` clone) |
-| Database | Supabase (`nyqkgorazkwcufkzxmhd`) | 24 tables, RLS 42/42, service-role for writes |
+| Database | Supabase (`nyqkgorazkwcufkzxmhd`) | 76 tables + 4 views, RLS 42/42, service-role for writes |
 | Email | Resend | Only `consignatarias.com` is verified — see `src/lib/email.ts` |
 | Payments | Rebill | Webhook with HMAC + idempotency table `processed_webhook_events` |
 | Auth | Supabase magic-link | `user_roles` table for admin gating |
 | Styling | Tailwind CSS 3.4 | Terminal dark theme |
 | Analytics | GA4 (G-6CZMZH9S6Y) + `profile_views` table | |
 | Observability | `ops_events` + `cron_runs` + `/admin/ops` | v1.14.0 |
-| CI/CD | GitHub Actions (14 workflows) | 10 active, 4 disabled (in `.github/workflows/disabled/`) |
+| CI/CD | GitHub Actions (29 workflows) | 23 active, 6 disabled (in `.github/workflows/disabled/`) |
 | MCP | Supabase MCP wired for DB management | |
 
 ---
@@ -56,13 +56,13 @@ neto en mano, comparador, spread, seasonality, INMAG history) are free. The prod
 
 | Thing | Count | Source of truth |
 |---|---|---|
-| Sitemap URLs | ~2400 | `src/app/sitemap.ts` (dedup por URL; excluye perfiles thin noindex; varía con el scrape) |
-| API endpoints | 32 under `src/app/api/` | route handlers |
+| Sitemap URLs | ~2500 | `src/app/sitemap.ts` (dedup por URL; excluye perfiles thin noindex; varía con el scrape) |
+| API endpoints | 137 under `src/app/api/` | route handlers |
 | Public Enterprise endpoints (auth-gated) | 2 — `/api/precios`, `/api/lots` | |
 | Consignatarias (canonical) | 107 | `src/lib/data/consignataria-slugs.ts` (`getAllProfiles().length` — the public count) |
 | Consignatarias (DB row count) | 111 | `consignatarias` table |
-| Frigorificos | 1.102 | SENASA/MAGYP data |
-| Remates indexed | ~380 active | `src/lib/data/remates.json` (daily scrape) |
+| Frigorificos | 1.103 | SENASA/MAGYP data |
+| Remates indexed | ~800 total · ~310 upcoming | `src/lib/data/remates.json` (daily scrape) |
 | Provincias | 12 | |
 | MAG consignatarias (master list) | 44 | `mag_consignatarias` table |
 | INMAG daily series | 2237 rows (2015→today) | `mag_inmag_history` table |
@@ -128,7 +128,7 @@ scripts/
   el-oraculo/                         Oráculo report skill
   archive/                            One-shot scripts from earlier eras (legacy)
 supabase/migrations/                  Canonical migrations (one folder, no /migrations/ duplicate)
-.github/workflows/                    14 workflows: 10 active, 4 in disabled/
+.github/workflows/                    29 workflows: 23 active, 6 in disabled/
 docs/                                 Current strategic docs (Oráculo, Corredor, Brand). Pre-pivot stuff in docs/archive/
 ```
 
@@ -152,7 +152,7 @@ docs/                                 Current strategic docs (Oráculo, Corredor
 ```bash
 pnpm install
 pnpm dev                     # http://localhost:3000
-pnpm build                   # SSG generation (~1062 routes)
+pnpm build                   # SSG generation (~3.400 routes)
 pnpm start                   # production server
 
 # manual data refresh

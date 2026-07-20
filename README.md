@@ -5,7 +5,7 @@
 El precio de referencia del ganado argentino, hecho dato: la **familia de índices** (INMAG diario
 desde 2015, en pesos y en dólares, panel de categorías, arrendamiento, spread maíz-novillo e
 **Índice de Liquidación** = % hembras), el **directorio**
-de 104 consignatarias en 12 provincias y 1.102 frigoríficos cruzados contra SENASA, el **calendario**
+de 107 consignatarias en 12 provincias y 1.103 frigoríficos cruzados contra SENASA, el **calendario**
 de remates, una **API pública** y un **servidor MCP** para agentes IA (registry oficial:
 `ar.com.consignatarias/cattle-market`). Datos abiertos y citables; **gratis para el productor**;
 PRO Consignataria para operadores y Enterprise API/MCP para integradores.
@@ -121,7 +121,7 @@ Si lo que querés es comprar o vender hacienda:
 - [`/comparar`](https://www.consignatarias.com.ar/comparar) · comparador de consignatarias — actividad, frecuencia y quién remata más seguido
 - [`/calendario-exportar`](https://www.consignatarias.com.ar/calendario-exportar) · exportá a tu calendario (`.ics`) los remates de **varias localidades a la vez** (checkboxes por provincia)
 - [`/consignatarias`](https://www.consignatarias.com.ar/consignatarias) · grilla por región (Pampa Húmeda · Centro · Mesopotamia · NEA · NOA · Cuyo · Patagonia)
-- [`/frigorificos`](https://www.consignatarias.com.ar/frigorificos) · 1.092 plantas con badge SENASA · vigente / sin verificación
+- [`/frigorificos`](https://www.consignatarias.com.ar/frigorificos) · 1.103 plantas con badge SENASA · vigente / sin verificación
 
 **Todo gratis para el productor** (desde jul-2026 — PRO Usuario fue retirado): **¿Vendo ahora?**
 (percentil de 30 y 365 días en dólares reales), **Neto en mano**, **Comparador**, **Spread**,

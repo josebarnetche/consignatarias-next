@@ -93,9 +93,9 @@ Every day at 14:00 ART (17:00 UTC), 7 days a week, the scraper:
 
 | Dataset | Records | Source |
 |---|---|---|
-| Auctions | 347 | Scraper + curated, daily refresh |
+| Auctions | ~800 (daily scrape) | Scraper + curated, daily refresh |
 | Consignatarias | 80 canonical / 86 profiles | Registry + research + persona schema (v1.16) |
-| Frigoríficos | 1092 (860 SENASA-verified · 232 sin verificación · 126 enriched) | SENASA monthly snapshot + MAGYP + web research |
+| Frigoríficos | 1103 (866 activos en SENASA · 237 sin verificación) | SENASA monthly snapshot + MAGYP + web research |
 | Market prices | INMAG + 6 categories + 16 sub-categorías | Scraped daily (19:37 ART) |
 | MAG consignatarios | 64 active in master | Pipeline recovered v1.16 |
 | INMAG history | 2.237 días (2015 → today) | Backfill v1.10.1 |
@@ -109,14 +109,14 @@ Every day at 14:00 ART (17:00 UTC), 7 days a week, the scraper:
 |---|---|
 | Framework | Next.js 15 (App Router, strict TS) |
 | Hosting | Vercel (Hobby) |
-| Database | Supabase PostgreSQL (~24 tables, RLS 42/42 policies) |
+| Database | Supabase PostgreSQL (76 tables + 4 views, RLS 42/42 policies) |
 | Email | Resend (only `consignatarias.com` verified) |
 | Payments | Rebill (HMAC + idempotency) |
 | Auth | Supabase magic-link |
 | Styling | Tailwind CSS 3.4 (terminal dark theme) |
 | Analytics | GA4 (`G-6CZMZH9S6Y`) + `profile_views` table |
 | Observability | `ops_events` + `cron_runs` + `/admin/ops` |
-| CI/CD | GitHub Actions (10 active workflows + 4 disabled) |
+| CI/CD | GitHub Actions (23 active workflows + 6 disabled) |
 | Package manager | pnpm 10.30.2 |
 
 **Dependencies:** Next.js 15 · React 19 · Tailwind · `@supabase/supabase-js` · `@supabase/ssr` · `resend` · `zod` · `sharp` · `@vercel/analytics` · `@vercel/speed-insights` · `xlsx` (devDep, SENASA scraper).
@@ -131,13 +131,13 @@ Every day at 14:00 ART (17:00 UTC), 7 days a week, the scraper:
 | `/overview` | Static | Dashboard overview — market summary, upcoming events |
 | `/remates` | Static | Auction feed (filters: province, type, period) |
 | `/remates/[provincia]` | SSG (10) | Province landing pages with SEO copy |
-| `/remates/[slug]` | SSG (~347) | Individual auction detail |
+| `/remates/[slug]` | SSG (~800) | Individual auction detail |
 | `/remates/en-vivo` | Static | Live streaming auctions (YouTube channel-match) |
 | `/remates/hoy` · `/manana` · `/semana` · `/fin-de-semana` · `/anteriores` | Static | Time-window views |
 | `/remates/tipo/[tipo]` | SSG (5) | Invernada · Cría · General · Especial · Reproductores |
 | `/remates/mes/[mes]` | SSG (12) | Monthly views |
 | `/remates/ciudad/[ciudad]` | SSG (~120) | Cities with auctions |
-| `/consignatarias` | Static | Directory of 104 consignatarias |
+| `/consignatarias` | Static | Directory of 107 consignatarias |
 | `/consignatarias/[slug]` | SSG (104) | Profile — Quién Opera + Historial Verificable + Reseñas + calendar + heatmap + videos |
 | `/consignatarias/[slug]/verificar` | SSG | Claim form (noindex) |
 | `/consignatarias/[provincia]` | SSG (13) | Consignatarias by province |
@@ -155,7 +155,7 @@ Every day at 14:00 ART (17:00 UTC), 7 days a week, the scraper:
 | `/quienes-somos` · `/glosario` · `/calidad` · `/metodologia` · `/preguntas-frecuentes` · `/dte` | Static | E-E-A-T pages |
 | `/dashboard` | Dynamic | Owner dashboard (auth) |
 | `/admin/{dashboard,claims,consignatarias,reviews,suscriptores,ops}` | Dynamic | Admin tools (role=admin) |
-| `/api/*` | Dynamic | 33 route handlers |
+| `/api/*` | Dynamic | 137 route handlers |
 
 ---
 
@@ -172,8 +172,8 @@ Quota tiers (`PLANS` in `src/lib/api-keys.ts`):
 
 | Plan | Monthly cap | Rate limit |
 |---|---:|---:|
-| Starter | 1.000 req | 30 / min |
-| Growth | 50.000 req | 300 / min |
+| Starter | 10.000 req | 30 / min |
+| Growth | 100.000 req | 300 / min |
 | Scale | 5.000.000 req | 5.000 / min |
 
 Observability: every authenticated request writes to `ops_events`. View at `/admin/ops`. Rollup via `scripts/audit-api-health.mjs`.
@@ -188,10 +188,10 @@ src/
 │   ├── page.tsx                            # Landing
 │   ├── layout.tsx                          # Root layout + GA4 + next/font
 │   ├── middleware.ts                       # Auth + rate-limit + variant-slug 308s + archived-remate 301s
-│   ├── sitemap.ts                          # Dynamic sitemap (~1062 URLs)
+│   ├── sitemap.ts                          # Dynamic sitemap (~2.500 URLs)
 │   ├── robots.ts                           # robots.txt (AI bots opt-in)
 │   ├── globals.css                         # Terminal theme + landing styles
-│   ├── api/                                # 33 route handlers (see /api-docs)
+│   ├── api/                                # 137 route handlers (see /api-docs)
 │   └── (terminal)/                         # Route group with terminal chrome
 │       ├── layout.tsx                      # Top nav + footer with site map
 │       ├── remates/                        # Auction feed + variants
@@ -210,7 +210,7 @@ src/
 │   └── …
 └── lib/
     ├── data/
-    │   ├── remates.json                    # 347 auctions
+    │   ├── remates.json                    # ~800 auctions (daily scrape)
     │   ├── consignataria-slugs.ts          # 149 raw → 80 canonical map
     │   ├── frigorificos.json               # 1092 frigoríficos (SENASA cross-ref)
     │   ├── senasa-habilitados.json         # Monthly SENASA snapshot (~860 CUITs)
@@ -235,7 +235,7 @@ scripts/
 ├── match-youtube-videos.ts                 # YouTube channel matcher
 └── archive/                                # Legacy one-shots
 
-.github/workflows/                          # 10 active + 4 disabled cron workflows
+.github/workflows/                          # 23 active + 6 disabled cron workflows
 supabase/migrations/                        # YYYYMMDD_<slug>.sql
 ```
 
@@ -246,7 +246,7 @@ supabase/migrations/                        # YYYYMMDD_<slug>.sql
 ```bash
 pnpm install
 pnpm dev                     # http://localhost:3000
-pnpm build                   # SSG (~1062 routes)
+pnpm build                   # SSG (~3.400 routes)
 pnpm start                   # serve production locally
 
 # manual data refresh
