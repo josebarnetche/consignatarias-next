@@ -81,6 +81,7 @@ La versión paga para consignatarias que quieren capturar más demanda (precio v
 
 - **Badge dorado** y tratamiento visual destacado en cada remate listado
 - **Listing destacado** en el directorio (perfil expandido con logo grande, alianza visual)
+- **Leads directos**: cuando un productor deja una consulta en tu perfil, te llega el contacto al toque por email (PRO ve el contacto completo; sin PRO, enmascarado con opción de activar). Prioridad en el ruteo de leads de tu zona
 - **Promoción por email** de cada remate publicado a +500 productores suscriptos
 - **Analytics**: cuántas visitas, qué provincias, qué tipo de productor mira tu perfil
 - **Landing personalizada** con tu branding (`/go/<tu-slug>`)
@@ -210,4 +211,4 @@ Operadores comerciales que construyen infraestructura propietaria — no agencia
 
 ---
 
-v1.159.0 · 2026-07-13 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0
+v1.187.0 · 2026-07-20 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0

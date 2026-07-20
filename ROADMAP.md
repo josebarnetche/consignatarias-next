@@ -1,6 +1,6 @@
 # Roadmap
 
-**Current:** v1.184.1 (2026-07-18) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
+**Current:** v1.187.0 (2026-07-20) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
 **Strategic frame:** [docs/strategy/PLAN-DE-NEGOCIOS-2026.md](docs/strategy/PLAN-DE-NEGOCIOS-2026.md)
 (plan de negocios v2, 36 meses — el marco canónico) + [docs/strategy/POSITIONING-THESIS.md](docs/strategy/POSITIONING-THESIS.md)
 (tesis de categoría). **Dos motores de ingreso secuenciados** sobre la capa de datos libre y citable:
@@ -16,6 +16,27 @@ MAJOR boundary, so the product stays on 1.x.
 > first dollar is **unblocked** (email-first checkout live for both B2C and Enterprise, verified to
 > reach a real Rebill payment link). The remaining gate is a real test payment + the institutional
 > sales motion — not more code.
+
+---
+
+## Estado — v1.185 → v1.187 (2026-07-20) · primera captura de demanda (Motor 1) + hardening de ops
+
+Primera pieza concreta del **Motor 1** que va más allá del listing: capturar demanda del productor y
+convertirla en un lead ruteable, más una tanda de fixes que sacan ruido operativo diario.
+
+- **Motor de lead-gen a performance (v1.187.0):** tabla `producer_leads` (lead ruteable con valor
+  estimado y fee 1%), captura acotada a **arrendamiento** (ofrezco/busco — el único contexto donde el
+  visitante busca una contraparte), ruteo por zona que prioriza firmas `featured`, y board
+  `/admin/leads`. **Toda alerta de lead nuevo** (arrendamiento, pre-ofertas, consultas de perfil) llega
+  al correo del founder (`LEAD_ALERT_TO`). Modelo: 1% sobre la operación cerrada, no suscripción —
+  la cuña para firmas que no usan la web.
+- **Hardening de ops (v1.186.1):** se eliminan los mails de fallo espurios que llegaban a diario —
+  Data Freshness Alert (falso positivo por atraso del cron cruzando la medianoche ART; ahora tolera
+  hoy/ayer), Scrape Auctions (carrera de `git push`, ahora rebase + reintento), y CI/deploy (errores de
+  ESLint que rompían el `next build` de Vercel; regla nueva: `next lint` antes de cada push).
+
+**Lectura:** el Motor 1 pasa de "perfil listado" a "lead en la mano del founder". El gate sigue siendo
+comercial: cerrar la primera operación ruteada y cobrar el 1%.
 
 ---
 

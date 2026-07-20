@@ -7,6 +7,49 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.187.0] — 2026-07-20
+
+### Motor de lead-gen a performance + toda alerta al correo del founder
+
+Primera pieza de captura de demanda del lado producto, **a comisión (1% sobre la
+operación cerrada)** en vez de suscripción — pensada para firmas que no usan la web
+(el ruteo fino lo opera el founder por WhatsApp desde el backoffice).
+
+- **Tabla `producer_leads`**: lead ruteable con intención, zona, cabezas, valor
+  estimado (cabezas × peso ref × INMAG), fee 1% y ciclo de vida
+  (`new → routed → contacted → won/lost`). RLS service-only.
+- **Captura acotada a arrendamiento** (`<LeadCapture>` en `/mercado/arrendamiento`):
+  es el único contexto donde el visitante busca una contraparte — dos direcciones,
+  *ofrezco mi campo* / *busco campo para arrendar*. Los calculadores y el detalle de
+  remate NO piden contacto comercial → sin captura ahí.
+- **Ruteo por zona** (`src/lib/leads/routing.ts`): matchea consignatarias por
+  provincia, prioriza las `featured` (PRO); estima valor de operación y fee.
+- **Board `/admin/leads`**: pipeline, fee potencial/ganado, rutear + cerrar leads.
+- **Toda alerta de lead nuevo al correo del founder** (`LEAD_ALERT_TO`, configurable
+  por env `LEAD_ALERT_EMAILS`): producer-leads, pre-ofertas y consultas de perfil
+  (`/api/leads` — la firma en `to` y el founder en `bcc` si el perfil está reclamado,
+  o directo al founder si no). Antes varias iban solo a `agro@memola`.
+- Limpieza: se quitan los 10 badges "NUEVO" (`tag:"new"`) del nav de herramientas.
+
+## [1.186.1] — 2026-07-19
+
+### Fix: mails de fallo espurios de crons + CI que rompía el deploy de Vercel
+
+Diagnosticado con logs reales + verificación adversarial (swarm de agentes):
+
+- **Data Freshness Alert**: el cron `'0 1 * * *'` (22:00 ART) es best-effort y GitHub
+  lo atrasa hasta cruzar la medianoche ART → "hoy" rota y compara contra el scrape de
+  ayer (legítimo) → `exit 1` espurio casi a diario. 0 días sin scrape en el período
+  auditado → 100% falsos positivos. Fix: tolerar hoy **o** ayer; si falta ≥1 día
+  calendario entero la alerta vuelve a disparar (no se silencia).
+- **Scrape Auctions**: el scraper corría OK y el job moría en `git push` por carrera
+  non-fast-forward cuando otro commit aterrizaba en `main` entre el checkout y el push.
+  Fix: push con rebase + reintento (5×).
+- **CI check / deploy Vercel**: errores de ESLint (`react/no-unescaped-entities`,
+  `prefer-const`) rompían **a la vez** el CI y el `next build` de Vercel (que falla
+  ante lint) → doble mail de fallo por commit. Fix + regla: correr `next lint`
+  (no solo `tsc`) antes de cada push.
+
 ## [1.185.0] — 2026-07-18
 
 ### MCP: histórico INMAG con fechas exactas + serie en USD
