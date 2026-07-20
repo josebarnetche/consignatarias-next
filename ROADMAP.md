@@ -19,6 +19,53 @@ MAJOR boundary, so the product stays on 1.x.
 
 ---
 
+## Próximas versiones (esperadas)
+
+> **Nota de versionado:** los números son **indicativos**, no compromisos — el versionado es por *trains*
+> de features (un train puede juntar varias) y las prioridades ceden ante la señal comercial. El orden y el
+> *gate* de cada horizonte sí son firmes. `v2.0.0` queda **reservado** para un cambio *breaking* del contrato
+> Enterprise API (hoy v1.0.0); mientras el contrato no rompa, el producto sigue en 1.x.
+
+### Horizonte 1 — cerrar el loop de captura → primer peso (v1.188 → ~v1.20x) · **Motor 1**
+
+El motor de lead-gen está vivo (v1.187) pero el revenue sigue en $0. Todo este horizonte es **convertir
+la captura en caja**: instrumentar, sembrar la oferta, y cruzar el gate del primer pago real.
+
+| Versión (esperada) | Foco | Entregable concreto |
+|---|---|---|
+| **v1.188** | Instrumentar el lead-gen | Funnel `open→submit→routed→won` medido en `/admin/leads`; digest semanal de leads al founder; primer **outbound a firmas** para reclamar perfil (sembrar la oferta) |
+| **v1.189** | **Primer pago real** *(el gate histórico desde v1.30)* | Verificar **Rebill → webhook → activación** con un pago real de PRO Consignataria, punta a punta |
+| **v1.190** | PRO Consignataria **self-serve** | Onboarding automático (reclamar → featured → recibe leads) sin intervención del founder — el "PRO v2" del plan |
+| **v1.191** | Prueba B2B en el outreach | Contadores **"N productores siguen tus remates · N leads de tu zona"** en el mail y el perfil — la evidencia que cierra PRO |
+| **v1.192** | 1% operacionalizado | Registrar operación cerrada → fee en la board; primeros **testimonios** de firmas |
+
+**Gate del horizonte** *(plan §22, Días 31–90)*: **≥7 PRO pagando + ~ARS 3M MRR + 60% renueva.**
+⚠️ Si tras ~50 conversaciones **<5 firmas pagan y ningún B2B paga por datos** → **pivotar** a medio/autoridad o
+servicios de datos a medida (la hipótesis que puede invalidar el SaaS).
+
+### Horizonte 2 — empaquetar el Motor 2 y el moat de datos (~v1.2xx) · **Motor 2**
+
+Validado el pagador, profundizar el *prize* (datos / índice / API institucional):
+
+- **`mag-lots` poblado → `/api/lots` con datos reales** (hoy 0 filas): destraba el producto Enterprise de lote.
+- **API empaquetada + primer design-partner**: SLA, exports CSV/JSON, webhooks, reportes — un integrador real ejercitando el contrato.
+- **Captura de resultados de remate** (precio realizado por lote/firma): el dato propietario que **supera al público** — el moat.
+- **El Índice como producto**: nuevos derivados + reporte institucional pago (El Corredor → suscripción).
+- **MCP con consumo real**: pasar de discovery (~2k handshakes/día) a *calls* facturables.
+
+**Gate** *(Meses 4–12)*: **PMF en ≥1 línea** (retención + expansión), MRR ~USD 2.000 eq., churn <6%.
+
+### Horizonte 3 — escala nacional e institucional (~v1.3xx+) · **Motor 2 = el prize**
+
+- **~85 consignatarias · ~18 clientes API · sponsors.**
+- **3 clientes institucionales** (banco / aseguradora / frigorífico / gobierno) pagando por la capa de datos.
+- **ARR base ~USD 98k (expansivo ~USD 255k)**, break-even ~mes 33, citación IA dominante.
+- **Servicios financieros/transaccionales — solo si validados**: crédito contra token-vaca, futuros/índice anticipado, tokenización (el árbol agro-financiero). *No avanzar si el dato propio no supera al público.*
+
+**Gate** *(plan §22, Meses 13–36)*: los KPI de la etapa 4 (ver la tabla "Roadmap de 4 etapas" más abajo).
+
+---
+
 ## Estado — v1.185 → v1.187 (2026-07-20) · primera captura de demanda (Motor 1) + hardening de ops
 
 Primera pieza concreta del **Motor 1** que va más allá del listing: capturar demanda del productor y
