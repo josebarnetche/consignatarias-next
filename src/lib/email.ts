@@ -2430,6 +2430,9 @@ export async function sendProducerLeadOps(opts: {
   estimatedValueArs?: number | null
   feeArs?: number | null
   feePct?: number
+  /** Firma a la que el lead ya quedó pre-ruteado (leads de remate). Si viene, se
+   *  muestra un banner y se omiten las candidatas de zona. */
+  routedTo?: { displayName: string; slug: string; claimed: boolean; featured: boolean } | null
   matches: Array<{
     displayName: string
     slug: string
@@ -2443,7 +2446,7 @@ export async function sendProducerLeadOps(opts: {
 }): Promise<{ success: boolean; error?: string }> {
   const resend = await getResend()
   if (!resend) return { success: false, error: 'no-resend' }
-  const { leadId, intent, category, headCount, province, zona, source, lead, estimatedValueArs, feeArs, feePct, matches } = opts
+  const { leadId, intent, category, headCount, province, zona, source, lead, estimatedValueArs, feeArs, feePct, routedTo, matches } = opts
 
   const ars = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
   const intentLabel: Record<string, string> = {
@@ -2480,6 +2483,27 @@ export async function sendProducerLeadOps(opts: {
       </td></tr>`).join('')
     : `<tr><td style="padding:10px 0;color:#a1a1aa;font-size:13px">Sin firmas cargadas en esa zona — rutear desde el backoffice.</td></tr>`
 
+  // Pre-ruteado (lead de remate): banner con la firma destino en vez de candidatas.
+  const routedBanner = routedTo
+    ? `
+      <p style="color:#4ade80;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 2px">Pre-ruteado a la firma del remate</p>
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f1a12;border:1px solid #16a34a40;border-radius:2px;margin:0 0 6px"><tr><td style="padding:14px 16px">
+        <p style="margin:0 0 4px">
+          <span style="color:#fafafa;font-size:15px;font-weight:700">${escapeHtml(routedTo.displayName)}</span>
+          ${routedTo.featured ? '<span style="color:#f59e0b;font-size:10px;font-weight:700;margin-left:6px">★ PARTNER</span>' : ''}
+        </p>
+        <p style="color:#a1a1aa;font-size:12px;margin:0">${routedTo.claimed
+          ? '✓ Perfil reclamado — ya le mandamos el lead directo a su email' + (routedTo.featured ? ' (contacto completo, es PRO).' : ' (contacto enmascarado, no es PRO todavía).')
+          : 'Perfil sin reclamar — no tiene inbox. Contactala vos desde el backoffice.'}</p>
+        <p style="margin:8px 0 0"><a href="${APP_URL}/consignatarias/${routedTo.slug}" style="color:#71717a;font-size:12px;text-decoration:none">ver perfil ↗</a></p>
+      </td></tr></table>`
+    : ''
+
+  const firmsSection = routedTo
+    ? routedBanner
+    : `<p style="color:#71717a;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 2px">Firmas candidatas (zona)</p>
+       <table width="100%" cellpadding="0" cellspacing="0">${firmRows}</table>`
+
   const html = darkEmailShell(`
     <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 4px">Nuevo lead · #${leadId}</p>
     <h2 style="color:#fafafa;font-size:18px;font-weight:700;margin:0 0 2px">${escapeHtml(intentLabel[intent] || intent)}</h2>
@@ -2494,8 +2518,7 @@ export async function sendProducerLeadOps(opts: {
 
     <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 16px"><tr><td>${economics}</td></tr></table>
 
-    <p style="color:#71717a;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 2px">Firmas candidatas (zona)</p>
-    <table width="100%" cellpadding="0" cellspacing="0">${firmRows}</table>
+    ${firmsSection}
 
     <p style="margin:18px 0 0"><a href="${APP_URL}/admin/leads" style="color:#38bdf8;font-size:13px;font-weight:600;text-decoration:none">Abrir la board de leads →</a></p>
   `)
@@ -2504,7 +2527,7 @@ export async function sendProducerLeadOps(opts: {
     const { error } = await resend.emails.send({
       from: FROM,
       to: ADMIN_EMAIL,
-      subject: `🐄 Lead #${leadId} · ${intentLabel[intent] || intent} · ${zonaTxt}${feeArs ? ` · fee ≈${ars(feeArs)}` : ''}`,
+      subject: `🐄 Lead #${leadId} · ${intentLabel[intent] || intent}${routedTo ? ` → ${routedTo.displayName}` : ` · ${zonaTxt}`}${feeArs ? ` · fee ≈${ars(feeArs)}` : ''}`,
       html,
     })
     if (error) return { success: false, error: String((error as { message?: string }).message || error) }
