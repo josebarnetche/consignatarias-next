@@ -3,8 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { requireServiceClient } from '@/lib/supabase'
 import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limit-db'
 import { estimateOperation, matchConsignatarias, whatsappLink } from '@/lib/leads/routing'
-import { getAllProfiles } from '@/lib/data/consignataria-slugs'
-import { sendProducerLeadOps, sendLeadAlert } from '@/lib/email'
+import { sendProducerLeadOps } from '@/lib/email'
 import { z } from 'zod'
 import crypto from 'crypto'
 
@@ -23,7 +22,7 @@ export const runtime = 'nodejs'
  */
 
 const schema = z.object({
-  intent: z.enum(['vender', 'comprar', 'arrendar', 'consignar', 'tasar']),
+  intent: z.enum(['vender', 'comprar', 'arrendar', 'consignar', 'tasar', 'arrendar_ofrezco', 'arrendar_busco']),
   category: z.string().max(40).optional(),
   headCount: z.number().int().positive().max(100000).optional(),
   province: z.string().max(60).optional(),
@@ -61,29 +60,6 @@ export async function POST(req: NextRequest) {
     const ipHash = crypto.createHash('sha256').update(ip + d.name).digest('hex').slice(0, 16)
 
     const supabase = db()
-
-    // Pre-ruteo automático: si el lead viene del detalle de un remate
-    // (source=remate:<slug>), ya sabemos la firma → lo ruteamos directo a esa
-    // consignataria en vez de dejarlo en 'new' esperando ruteo manual. El slug del
-    // remate puede ser una variante → lo resolvemos al canónico.
-    const remateRaw = d.source.startsWith('remate:') ? d.source.slice('remate:'.length) : null
-    let routedSlug: string | null = null
-    let routedFirm: { displayName: string; claimedByEmail: string | null; featured: boolean } | null = null
-    if (remateRaw) {
-      const prof = getAllProfiles().find((p) => p.canonicalSlug === remateRaw || p.allSlugs.includes(remateRaw))
-      routedSlug = prof?.canonicalSlug ?? remateRaw
-      const { data: firm } = await supabase
-        .from('consignatarias')
-        .select('display_name, claimed_by_email, featured')
-        .eq('canonical_slug', routedSlug)
-        .maybeSingle()
-      const f = firm as { display_name?: string; claimed_by_email?: string | null; featured?: boolean } | null
-      routedFirm = f
-        ? { displayName: f.display_name || routedSlug, claimedByEmail: f.claimed_by_email ?? null, featured: !!f.featured }
-        : null
-    }
-
-    const nowIso = new Date().toISOString()
     const { data: inserted, error } = await supabase
       .from('producer_leads')
       .insert({
@@ -100,9 +76,7 @@ export async function POST(req: NextRequest) {
         estimated_value_ars: estimatedValueArs,
         fee_pct: feePct,
         fee_ars: feeArs,
-        status: routedSlug ? 'routed' : 'new',
-        routed_to_slug: routedSlug,
-        routed_at: routedSlug ? nowIso : null,
+        status: 'new',
         ip_hash: ipHash,
       })
       .select('id')
@@ -114,24 +88,10 @@ export async function POST(req: NextRequest) {
     }
     const leadId = (inserted as { id: number }).id
 
-    // Notificaciones (no bloquean la respuesta al usuario si el mail falla).
+    // Match de firmas de la zona + ops-alert a Jose (driver del ruteo).
+    // No bloquea la respuesta al usuario si el mail falla.
     try {
-      // 1) Pre-ruteado a una firma con perfil RECLAMADO → se lo mandamos directo
-      //    (reclamar = opt-in). PRO ve el contacto completo, Free enmascarado con
-      //    CTA a PRO. Cierra el loop sin intervención manual.
-      if (routedFirm?.claimedByEmail && routedSlug) {
-        await sendLeadAlert({
-          to: routedFirm.claimedByEmail,
-          consignataria: routedFirm.displayName,
-          slug: routedSlug,
-          isPro: routedFirm.featured,
-          lead: { name: d.name, phone: d.phone, email: d.email, message: d.message },
-        })
-      }
-
-      // 2) Ops-alert a Jose (siempre) — supervisa y cobra el 1%. Si está pre-ruteado,
-      //    mostramos la firma destino; si no, las candidatas de la zona para rutear.
-      const matches = routedSlug ? [] : await matchConsignatarias(supabase, { province: d.province, limit: 5 })
+      const matches = await matchConsignatarias(supabase, { province: d.province, limit: 5 })
       const waText = `Hola, tengo un productor interesado (${d.intent}${d.headCount ? `, ${d.headCount} cab` : ''}${d.zona ? `, ${d.zona}` : ''}) vía consignatarias.com. ¿Te lo paso?`
       await sendProducerLeadOps({
         leadId,
@@ -145,9 +105,6 @@ export async function POST(req: NextRequest) {
         estimatedValueArs,
         feeArs,
         feePct,
-        routedTo: routedFirm && routedSlug
-          ? { displayName: routedFirm.displayName, slug: routedSlug, claimed: !!routedFirm.claimedByEmail, featured: routedFirm.featured }
-          : null,
         matches: matches.map((m) => ({
           displayName: m.displayName,
           slug: m.slug,
@@ -160,15 +117,10 @@ export async function POST(req: NextRequest) {
         })),
       })
     } catch (e) {
-      console.error('producer_lead notify error:', e)
+      console.error('producer_lead ops-alert error:', e)
     }
 
-    return NextResponse.json({
-      success: true,
-      message: routedFirm
-        ? `Listo. ${routedFirm.displayName} te va a contactar.`
-        : 'Listo. Una consignataria de tu zona te va a contactar.',
-    })
+    return NextResponse.json({ success: true, message: 'Listo. Te contactamos a la brevedad.' })
   } catch (e) {
     console.error('producer-leads API error:', e)
     return NextResponse.json({ error: 'Error interno' }, { status: 500 })

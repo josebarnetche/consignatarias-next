@@ -7,7 +7,6 @@ import {
   RematesProvinceView,
 } from '../_views/RematesProvinceView'
 import Link from 'next/link'
-import LeadCapture from '@/components/leads/LeadCapture'
 import rematesData from '@/lib/data/remates.json'
 import marketPrices from '@/lib/data/market-prices.json'
 import existenciasData from '@/lib/data/existencias-bovinas.json'
@@ -739,22 +738,6 @@ export default async function RemateDetailPage({ params }: Props) {
               </p>
             )}
           </div>
-
-          {/* Lead-gen: el productor que mira un remate próximo quiere consignar su
-              hacienda → captura directa, con la firma del remate como hint de ruteo
-              (source=remate:<slug>). Solo en remates no finalizados. */}
-          {!isPast && (
-            <div className="mt-8">
-              <LeadCapture
-                source={`remate:${remate.consignatariaSlug}`}
-                defaultIntent="consignar"
-                presetProvince={provinceName}
-                presetCategory={remate.mainCategory ?? undefined}
-                title="¿Querés vender tu hacienda en este remate?"
-                subtitle={`Sumá tus animales al remate de ${consigDisplay}. Dejanos tus datos y te contactan.`}
-              />
-            </div>
-          )}
 
           {/* Consignataria profile card */}
           {consigProfile && (

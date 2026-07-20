@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { ProReveal, HeroNumber, StatPill } from '@/components/pro'
-import LeadCapture from '@/components/leads/LeadCapture'
 import { trackEvent, trackOutboundClick } from '@/lib/analytics'
 import { requestAccountNudge } from '@/lib/account-nudge'
 
@@ -473,20 +472,6 @@ export default function CalculadoraClient({ prices }: { prices: MarketPrices }) 
           </svg>
           Compartir en WhatsApp
         </a>
-      </div>
-
-      {/* Lead-gen: el productor calculó su neto en mano → pico de intención de
-          venta. Conectarlo con una consignataria de su zona (cabezas y categoría
-          del cálculo van como contexto para estimar el fee). */}
-      <div className="mt-6">
-        <LeadCapture
-          source="calculadora"
-          defaultIntent="vender"
-          presetHeadCount={totals.totalCabezas || undefined}
-          presetCategory={items[0]?.categoria}
-          title="¿Querés venderla ahora?"
-          subtitle="Conectate gratis con una consignataria de tu zona y cerrá la operación."
-        />
       </div>
     </div>
   )

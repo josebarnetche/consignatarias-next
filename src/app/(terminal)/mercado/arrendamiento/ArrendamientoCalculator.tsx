@@ -218,14 +218,19 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
         )}
       </div>
 
-      {/* Puente a la máquina de lead-gen: el dueño del campo tiene (o coloca)
-          hacienda → conectarlo con una consignataria de su zona. Gratis para él. */}
+      {/* Lead-gen acotado a arrendamiento: es el único contexto donde el visitante
+          sí busca conectar con una contraparte (ofrecer su campo o buscar uno).
+          Los calculadores/remates NO piden contacto comercial → sin captura ahí. */}
       <div className="mt-4">
         <LeadCapture
           source="arrendamiento"
-          defaultIntent="vender"
-          title="¿Tenés hacienda en ese campo?"
-          subtitle="Conectate gratis con una consignataria de tu zona para venderla o consignarla."
+          defaultIntent="arrendar_ofrezco"
+          intents={[
+            { value: 'arrendar_ofrezco', label: 'Ofrezco mi campo para arrendar' },
+            { value: 'arrendar_busco', label: 'Busco campo para arrendar' },
+          ]}
+          title="¿Querés arrendar un campo?"
+          subtitle="Te conectamos gratis: publicá tu campo para que lo arrienden, o encontrá uno en tu zona."
         />
       </div>
     </div>

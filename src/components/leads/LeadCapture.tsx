@@ -41,6 +41,9 @@ export interface LeadCaptureProps {
   /** Categoría contextual (novillos, vacas…) — no se muestra como campo, mejora
    *  la estimación de valor/fee del lead. */
   presetCategory?: string
+  /** Opciones del dropdown de intención. Si se omite, usa el set completo. Se pasa
+   *  para acotar la captura al contexto de la página (p.ej. solo arrendamiento). */
+  intents?: Array<{ value: string; label: string }>
   title?: string
   subtitle?: string
   /** CTA colapsado (texto del banner). */
@@ -54,9 +57,10 @@ export default function LeadCapture({
   presetHeadCount,
   presetProvince,
   presetCategory,
-  title = 'Conectate con una consignataria de tu zona',
-  subtitle = 'Gratis para vos. Una firma de tu región te contacta para operar tu hacienda.',
-  ctaLabel = 'Que me contacte una consignataria →',
+  intents,
+  title = 'Conectate gratis con una contraparte de tu zona',
+  subtitle = 'Dejanos tus datos y te contactamos. Sin costo para vos.',
+  ctaLabel = 'Quiero que me contacten →',
   className = '',
 }: LeadCaptureProps) {
   const [open, setOpen] = useState(false)
@@ -121,7 +125,7 @@ export default function LeadCapture({
           <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400">✓</span>
           <div>
             <p className="font-semibold text-emerald-300">Listo, {name.split(' ')[0]}.</p>
-            <p className="mt-1 text-sm text-zinc-400">Una consignataria de tu zona te va a contactar. El servicio es sin costo para vos.</p>
+            <p className="mt-1 text-sm text-zinc-400">Te vamos a contactar para conectarte. Sin costo para vos.</p>
           </div>
         </div>
       </div>
@@ -172,7 +176,7 @@ export default function LeadCapture({
             <label className="col-span-2 sm:col-span-1">
               <span className={labelCls}>Qué necesitás</span>
               <select value={intent} onChange={(e) => setIntent(e.target.value)} className={inputCls}>
-                {INTENTS.map((i) => <option key={i.value} value={i.value}>{i.label}</option>)}
+                {(intents ?? INTENTS).map((i) => <option key={i.value} value={i.value}>{i.label}</option>)}
               </select>
             </label>
             <label className="col-span-2 sm:col-span-1">
