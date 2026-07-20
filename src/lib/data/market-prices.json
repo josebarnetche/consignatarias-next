@@ -1890,8 +1890,8 @@
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1535,
-    "prev": 1530,
+    "current": 1540,
+    "prev": 1535,
     "change": 0.3,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
