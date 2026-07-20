@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
-import { sendLeadAlert } from '@/lib/email'
+import { sendLeadAlert, LEAD_ALERT_TO } from '@/lib/email'
 import { z } from 'zod'
 import crypto from 'crypto'
 
@@ -93,12 +93,25 @@ export async function POST(req: NextRequest) {
         .eq('canonical_slug', slug)
         .maybeSingle()
       const owner = (cons as { display_name?: string; claimed_by_email?: string | null; featured?: boolean } | null)
+      const consignataria = owner?.display_name || slug
       if (owner?.claimed_by_email) {
+        // Firma reclamada: le llega a ella (gated PRO) y Jose queda copiado en bcc.
         void sendLeadAlert({
           to: owner.claimed_by_email,
-          consignataria: owner.display_name || slug,
+          bcc: LEAD_ALERT_TO,
+          consignataria,
           slug,
           isPro: !!owner.featured,
+          lead: { name, phone, email, message },
+        })
+      } else {
+        // Sin reclamar: no hay inbox de la firma → el lead va directo a Jose, con
+        // contacto completo (es alerta interna, no la ve la firma).
+        void sendLeadAlert({
+          to: LEAD_ALERT_TO,
+          consignataria,
+          slug,
+          isPro: true,
           lead: { name, phone, email, message },
         })
       }

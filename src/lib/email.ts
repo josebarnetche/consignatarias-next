@@ -53,6 +53,16 @@ export function emailBrandFooter(dark = false): string {
 }
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'agro@memola.com.ar'
 
+/**
+ * Destinatarios de TODA alerta de lead nuevo. Jose quiere recibirlas en su correo
+ * personal además del de Memola. Configurable por env LEAD_ALERT_EMAILS (lista
+ * separada por comas); default: Memola + Gmail personal del founder.
+ */
+export const LEAD_ALERT_TO = (process.env.LEAD_ALERT_EMAILS || 'agro@memola.com.ar,jose.barnetche19@gmail.com')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean)
+
 /* ------------------------------------------------------------------ */
 /*  SHELL OSCURO — manual de marca v2 (mismo patrón que la newsletter   */
 /*  semanal): carbón #09090b, header oscuro integrado (isotipo cielo +  */
@@ -158,7 +168,7 @@ export async function sendPreofertaAlert(opts: {
   const e = escapeHtml
   resend.emails.send({
     from: FROM,
-    to: ADMIN_EMAIL,
+    to: LEAD_ALERT_TO,
     subject: `Pre-oferta ${fmt(opts.monto)} — Lote ${opts.lote} · ${opts.remate}`,
     html: darkEmailShell(`
       <p style="color:#22c55e;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Nueva pre-oferta (lead)</p>
@@ -2357,7 +2367,9 @@ export async function sendMcpConsumptionAlert(events: McpConsumptionEvent[]) {
  * — ver el lead sin poder tocarlo empuja la conversión.
  */
 export async function sendLeadAlert(opts: {
-  to: string
+  to: string | string[]
+  /** Copia oculta (p.ej. Jose, para recibir toda alerta de lead nuevo). */
+  bcc?: string | string[]
   consignataria: string
   slug: string
   isPro: boolean
@@ -2365,7 +2377,7 @@ export async function sendLeadAlert(opts: {
 }): Promise<{ success: boolean; error?: string }> {
   const resend = await getResend()
   if (!resend) return { success: false, error: 'no-resend' }
-  const { to, consignataria, slug, isPro, lead } = opts
+  const { to, bcc, consignataria, slug, isPro, lead } = opts
   const profileUrl = `${APP_URL}/consignatarias/${slug}`
 
   const contact = isPro
@@ -2396,13 +2408,15 @@ export async function sendLeadAlert(opts: {
     <p style="margin:16px 0 0"><a href="${profileUrl}" style="color:#71717a;font-size:12px">Ver tu perfil →</a></p>
   `)
 
+  const primaryTo = Array.isArray(to) ? to[0] : to
   try {
     const { error } = await resend.emails.send({
       from: FROM,
       to,
+      ...(bcc ? { bcc } : {}),
       subject: isPro ? `Nueva consulta de ${lead.name} · ${consignataria}` : `Tenés una consulta nueva · ${consignataria}`,
       html,
-      headers: listUnsubHeaders(to, 'lead-alert'),
+      headers: listUnsubHeaders(primaryTo, 'lead-alert'),
     })
     if (error) return { success: false, error: String((error as { message?: string }).message || error) }
     return { success: true }
@@ -2504,7 +2518,7 @@ export async function sendProducerLeadOps(opts: {
   try {
     const { error } = await resend.emails.send({
       from: FROM,
-      to: ADMIN_EMAIL,
+      to: LEAD_ALERT_TO,
       subject: `🐄 Lead #${leadId} · ${intentLabel[intent] || intent} · ${zonaTxt}${feeArs ? ` · fee ≈${ars(feeArs)}` : ''}`,
       html,
     })
