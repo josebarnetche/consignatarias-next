@@ -1,13 +1,13 @@
 {
-  "scrapedAt": "2026-07-13T21:39:59.281Z",
+  "scrapedAt": "2026-07-20T10:22:23.092Z",
   "source": "https://aps2.senasa.gov.ar/registros/faces/publico/establecimientos/tc_frigorificospublico.jsp",
   "ciclos": [
     "CICLO I - MAT.FRIG.",
     "CICLO II - ELABORADOR",
     "CICLO III - DADOR DE FRIO"
   ],
-  "totalRowsScraped": 1001,
-  "distinctCuits": 865,
+  "totalRowsScraped": 1002,
+  "distinctCuits": 866,
   "unparsableCuits": 0,
   "byCuit": {
     "30707283250": {
@@ -3951,6 +3951,7 @@
       "actividades": [
         "I A - CABEZA DE BOVINO FAENADO",
         "I B - CABEZA DE PORCINO FAENADO",
+        "I B - CABEZA DE PORCINO FAENADO",
         "XXVIII - DEPOSITO / BARRACA P/CUEROS",
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
         "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
@@ -6123,6 +6124,7 @@
       "localidad": "RECONQUISTA",
       "nroOficial": "4467",
       "actividades": [
+        "III B - SEBERIA INCOMESTIBLE",
         "XI - PREPARACION CUEROS CURTIDOS",
         "XXVIII - DEPOSITO / BARRACA P/CUEROS"
       ],
@@ -10217,6 +10219,7 @@
       "localidad": "GOBERNADOR CRESPO",
       "nroOficial": "5284",
       "actividades": [
+        "XII - 4. DESPOSTADA BOVINA",
         "II - 19. ELABORACION DE MILANESAS ENFRIADAS Y CONGELADAS"
       ],
       "ciclos": [
@@ -11755,6 +11758,25 @@
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
         "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
         "XII - 6. DESPOSTADA DE AVES"
+      ],
+      "ciclos": [
+        "CICLO II - ELABORADOR"
+      ]
+    },
+    "30718132157": {
+      "cuit": "30718132157",
+      "tipo": "CICLO II - ELABORADOR",
+      "propietario": "QUTEQ",
+      "nombre": "QUTEQ S.R.L.",
+      "domicilio": "AV. VELEZ SARFIELD N° 5780",
+      "provincia": "BUENOS AIRES",
+      "partido": "VICENTE LOPEZ",
+      "localidad": "MUNRO",
+      "nroOficial": "5712",
+      "actividades": [
+        "II - 6. SOLO ELABORACIÓN EMBUTIDOS COCIDOS",
+        "II - 7. SOLO ELABORACIÓN EMBUTIDOS CRUDOS",
+        "II - 16. ELABORACIÓN DE CHACINADOS NO EMBUTIDOS"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
