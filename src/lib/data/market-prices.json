@@ -1838,47 +1838,47 @@
   "categories": {
     "novillos": {
       "current": 4544,
-      "prev": 4313,
-      "change": 5.4,
+      "prev": 4544,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1267
     },
     "novillitos": {
       "current": 4317,
-      "prev": 4097,
-      "change": 5.4,
+      "prev": 4317,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1057
     },
     "vaquillonas": {
       "current": 4090,
-      "prev": 3881,
-      "change": 5.4,
+      "prev": 4090,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1574
     },
     "vacas": {
       "current": 3272,
-      "prev": 3105,
-      "change": 5.4,
+      "prev": 3272,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 2053
     },
     "toros": {
       "current": 2954,
-      "prev": 2803,
-      "change": 5.4,
+      "prev": 2954,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 221
     },
     "terneros": {
       "current": 4998,
-      "prev": 4744,
-      "change": 5.4,
+      "prev": 4998,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
@@ -1891,8 +1891,8 @@
   },
   "usdBlue": {
     "current": 1545,
-    "prev": 1540,
-    "change": 0.3,
+    "prev": 1545,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
