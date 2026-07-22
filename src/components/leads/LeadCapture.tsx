@@ -63,6 +63,8 @@ export interface LeadCaptureProps {
   priceLabel?: string
   pricePlaceholder?: string
   emoji?: string
+  /** Etiqueta chica arriba del título (solo variant="section"). Sin mención de costo. */
+  badge?: string
   title?: string
   subtitle?: string
   /** Texto del botón de envío. */
@@ -87,10 +89,11 @@ export default function LeadCapture({
   priceLabel = 'Precio que buscás',
   pricePlaceholder,
   emoji = '🐄',
-  title = 'Te conseguimos la operación',
-  subtitle = 'Dejanos qué buscás y a qué precio. Lo trabajamos por vos. Sin costo.',
-  submitLabel = 'Quiero que lo consigan →',
-  ctaLabel = 'Quiero que lo consigan →',
+  badge,
+  title = 'Te lo conseguimos',
+  subtitle = 'Decinos qué necesitás y a qué precio. Nosotros te conseguimos la contraparte.',
+  submitLabel = 'Quiero que me lo consigan →',
+  ctaLabel = 'Quiero que me lo consigan →',
   className = '',
 }: LeadCaptureProps) {
   const isSection = variant === 'section'
@@ -164,7 +167,7 @@ export default function LeadCapture({
           <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400">✓</span>
           <div>
             <p className="font-semibold text-emerald-300">Listo, {name.split(' ')[0]}.</p>
-            <p className="mt-1 text-sm text-zinc-400">Lo empezamos a trabajar y te contactamos. Sin costo para vos.</p>
+            <p className="mt-1 text-sm text-zinc-400">Ya lo estamos moviendo. Te contactamos por WhatsApp.</p>
           </div>
         </div>
       </div>
@@ -245,7 +248,7 @@ export default function LeadCapture({
         >
           {state === 'loading' ? 'Enviando…' : submitLabel}
         </button>
-        <span className="text-xs text-zinc-500">Gratis · sin compromiso · tus datos no se publican</span>
+        <span className="text-xs text-zinc-500">Te contactamos por WhatsApp · tus datos no se publican</span>
       </div>
     </form>
   )
@@ -257,8 +260,8 @@ export default function LeadCapture({
         <div className="flex items-start gap-4 p-6 pb-4">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-sky-500/15 text-2xl">{emoji}</span>
           <div className="min-w-0 flex-1">
-            <span className="inline-block rounded-full bg-sky-500/20 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-sky-300">Servicio · sin costo</span>
-            <h3 className="mt-2 text-xl font-bold text-white">{title}</h3>
+            {badge && <span className="inline-block rounded-full bg-sky-500/20 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-sky-300">{badge}</span>}
+            <h3 className={`text-xl font-bold text-white ${badge ? 'mt-2' : ''}`}>{title}</h3>
             <p className="mt-1 text-sm text-zinc-400">{subtitle}</p>
           </div>
         </div>

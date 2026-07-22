@@ -390,11 +390,12 @@ export default function InmagPage() {
             quantityField="headCount"
             quantityLabel="Cabezas"
             askPrice
-            priceLabel="Precio que buscás ($/kg)"
+            priceLabel="A cuánto querés venderla ($/kg)"
             pricePlaceholder="Ej: 4500"
-            title="Vendé tu hacienda — te conseguimos comprador"
-            subtitle="Decinos qué categoría, cuántas cabezas y a qué precio querés vender. Lo trabajamos por vos y te avisamos. Sin costo."
-            submitLabel="Quiero que me consigan comprador →"
+            badge="Poné tu precio"
+            title="Vendé tu hacienda al precio que buscás"
+            subtitle="Decinos qué tenés y a cuánto la querés vender. Te conseguimos el comprador que pague eso — sin depender de una sola punta."
+            submitLabel="Buscame comprador →"
           />
         </section>
 

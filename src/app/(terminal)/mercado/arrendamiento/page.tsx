@@ -483,19 +483,20 @@ export default async function ArrendamientoPage() {
             source="arrendamiento"
             variant="section"
             emoji="🌾"
-            defaultIntent="arrendar_busco"
+            defaultIntent="arrendar_ofrezco"
             intents={[
+              { value: 'arrendar_ofrezco', label: 'Tengo campo para arrendar' },
               { value: 'arrendar_busco', label: 'Busco campo para arrendar' },
-              { value: 'arrendar_ofrezco', label: 'Ofrezco mi campo para arrendar' },
             ]}
             quantityField="hectareas"
             quantityLabel="Hectáreas"
             askPrice
             priceLabel="Canon que buscás ($/ha/mes)"
             pricePlaceholder="Ej: 25000"
-            title="Arrendá tu campo — te lo conseguimos"
-            subtitle="¿Tenés un campo para arrendar o buscás uno? Decinos la zona, la superficie y el canon que buscás. Lo trabajamos por vos."
-            submitLabel="Quiero que me lo consigan →"
+            badge="Poné tu canon"
+            title="Arrendá tu campo, o conseguí uno"
+            subtitle="Decinos la zona, las hectáreas y el canon que buscás. Te conseguimos la punta que falta — el arrendatario o el campo."
+            submitLabel="Conseguímelo →"
           />
         </section>
 
