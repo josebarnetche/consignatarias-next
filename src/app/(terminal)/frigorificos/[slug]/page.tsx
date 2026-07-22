@@ -9,6 +9,7 @@ import { getFrigorificoPlanStatus, frigorificoPuedeInterprovincial } from '@/lib
 import { createServiceClient } from '@/lib/supabase'
 import CompraMayorista, { type VitrinaProduct } from './CompraMayorista'
 import BadgeConfianza from '@/components/frigorifico/BadgeConfianza'
+import FrigorificoLeadCapture from '@/components/leads/FrigorificoLeadCapture'
 import { BreadcrumbSchema, QAPageSchema } from '@/components/seo/JsonLd'
 import {
   getSenasaRecord,
@@ -498,6 +499,10 @@ export default async function FrigorificoDetailPage({
           products={vitrinaProducts}
         />
       )}
+
+      {/* Captura de venta a faena — el productor llegó al perfil de la planta →
+          intención de venderle. Lo conectamos (comisión), no publicamos su dato. */}
+      <FrigorificoLeadCapture source={`frigorifico:${slug}`} frigorificoName={name} />
 
       {/* Data grid */}
       <div className="terminal-panel">

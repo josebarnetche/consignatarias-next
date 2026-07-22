@@ -7,6 +7,7 @@ import marketPrices from '@/lib/data/market-prices.json'
 import rematesData from '@/lib/data/remates.json'
 import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema, DatasetSchema } from '@/components/seo/JsonLd'
 import NewsletterSignup from '@/components/NewsletterSignup'
+import FrigorificoLeadCapture from '@/components/leads/FrigorificoLeadCapture'
 import { FaenaStats } from '@/components/FaenaStats'
 import { MagActivity } from '@/components/MagActivity'
 import { getSenasaScrapedDate, getSenasaHabilitadosCount } from '@/lib/data/senasa-habilitados'
@@ -270,6 +271,12 @@ export default function FrigorificosPage() {
       </section>
 
       <FrigorificosClient />
+
+      {/* Captura de la demanda real que llega a agro@ buscando datos de frigoríficos:
+          productores que quieren venderle a una planta. Lo estructuramos como lead. */}
+      <section className="px-4 my-6 max-w-3xl mx-auto">
+        <FrigorificoLeadCapture source="frigorificos" />
+      </section>
 
       {/* FAQ — respuestas citables (mismo contenido que FAQPageSchema) */}
       <section className="px-4 mt-6 mb-8 max-w-4xl" aria-label="Preguntas frecuentes sobre frigoríficos habilitados por SENASA">

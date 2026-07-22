@@ -181,12 +181,14 @@ export default function LeadCapture({
   const formEl = (
     <form onSubmit={submit} className={`space-y-3 ${isSection ? '' : 'border-t border-sky-500/15 p-5 pt-4'}`}>
       <div className="grid grid-cols-2 gap-3">
-        <label className="col-span-2 sm:col-span-1">
-          <span className={labelCls}>Qué necesitás</span>
-          <select value={intent} onChange={(e) => setIntent(e.target.value)} className={inputCls}>
-            {(intents ?? INTENTS).map((i) => <option key={i.value} value={i.value}>{i.label}</option>)}
-          </select>
-        </label>
+        {(intents ?? INTENTS).length > 1 && (
+          <label className="col-span-2 sm:col-span-1">
+            <span className={labelCls}>Qué necesitás</span>
+            <select value={intent} onChange={(e) => setIntent(e.target.value)} className={inputCls}>
+              {(intents ?? INTENTS).map((i) => <option key={i.value} value={i.value}>{i.label}</option>)}
+            </select>
+          </label>
+        )}
         {askCategory && (
           <label className="col-span-2 sm:col-span-1">
             <span className={labelCls}>Categoría</span>
