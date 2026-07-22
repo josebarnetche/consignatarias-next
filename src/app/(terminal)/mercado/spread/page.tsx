@@ -9,6 +9,7 @@ import {
 import marketPrices from '@/lib/data/market-prices.json'
 import maizNovilloHist from '@/lib/data/maiz-novillo-historico.json'
 import SpreadClient from './SpreadClient'
+import CompraLeadCapture from '@/components/leads/CompraLeadCapture'
 
 export const revalidate = 86400
 
@@ -227,6 +228,16 @@ export default function SpreadPage() {
 
       {/* Herramienta interactiva: la relación en vivo + decisión operativa */}
       <SpreadClient />
+
+      {/* Captura del lado COMPRADOR — la página del spread es territorio de feedlots
+          (compran invernada para engordar). Alimenta la otra punta del matching. */}
+      <section className="max-w-3xl mx-auto px-4 pb-8">
+        <CompraLeadCapture
+          source="spread"
+          title="¿Comprás para engordar? Te conseguimos la invernada"
+          subtitle="Decinos qué categoría buscás, cuántas cabezas y hasta cuánto pagás. Te conseguimos la hacienda que entre en tu número de reposición."
+        />
+      </section>
 
       {/* ── FAQ visible (mismo array que el FAQPageSchema) ────────────────── */}
       <section className="max-w-4xl mx-auto px-4 pb-8">

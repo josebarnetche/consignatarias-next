@@ -1,5 +1,6 @@
 import type { Resend } from 'resend'
 import { SEGMENT_SOURCES, PRODUCT_UPDATE_ONLY } from './newsletter-segments'
+import { computeSpread, spreadReading } from './leads/spread'
 
 let resendInstance: Resend | null = null
 
@@ -2476,11 +2477,21 @@ export async function sendProducerLeadOps(opts: {
     desiredPriceArs ? `pide ${ars(desiredPriceArs)}${isArrendamiento ? '' : '/kg'}` : null,
   ].filter(Boolean).join(' · ')
 
+  // Inteligencia de spread: precio pedido vs. mercado de la categoría.
+  const spread = computeSpread(category, desiredPriceArs)
+  const spreadHtml = spread
+    ? `<p style="color:${spread.spreadPct <= 3 ? '#4ade80' : '#f59e0b'};font-size:12px;margin:6px 0 0">
+         Spread: pide ${ars(desiredPriceArs || 0)}/kg vs. mercado ${ars(spread.marketPrice)}/kg →
+         <b>${spread.spreadPct >= 0 ? '+' : ''}${spread.spreadPct.toFixed(1)}%</b> (${spreadReading(spread.spreadPct)})
+       </p>`
+    : ''
+
   const economics = estimatedValueArs
     ? `<tr><td style="padding:12px 16px;background:#0f1a12;border:1px solid #16a34a40;border-radius:2px">
          <p style="color:#4ade80;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 6px">Potencial de la operación</p>
          <p style="color:#fafafa;font-size:15px;margin:0">Valor estimado <b>${ars(estimatedValueArs)}</b> · Fee ${feePct ?? 1}% ≈ <b style="color:#4ade80">${feeArs ? ars(feeArs) : '—'}</b></p>
-         <p style="color:#71717a;font-size:11px;margin:6px 0 0">Estimación cabezas × peso ref × INMAG. El fee real se fija al cierre.${desiredPriceArs ? ` Pide ${ars(desiredPriceArs)}/kg → chequeá el spread vs. mercado.` : ''}</p>
+         <p style="color:#71717a;font-size:11px;margin:6px 0 0">Estimación cabezas × peso ref × INMAG. El fee real se fija al cierre.</p>
+         ${spreadHtml}
        </td></tr>`
     : `<tr><td style="padding:10px 16px;background:#18181b;border:1px solid #27272a;border-radius:2px">
          <p style="color:#a1a1aa;font-size:13px;margin:0">${isArrendamiento

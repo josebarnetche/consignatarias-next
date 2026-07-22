@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { RefreshCw, Phone, Mail, MapPin, TrendingUp } from 'lucide-react'
 import { EmptyState } from '@/components/ui'
+import { computeSpread } from '@/lib/leads/spread'
 
 interface Lead {
   id: number
@@ -246,6 +247,12 @@ export default function AdminLeadsPage() {
                           l.desired_price_ars ? `pide ${ars(l.desired_price_ars)}` : null,
                         ].filter(Boolean)
                         return bits.length ? <span className="text-xs text-zinc-500">{bits.join(' · ')}</span> : null
+                      })()}
+                      {(() => {
+                        const sp = computeSpread(l.category, l.desired_price_ars)
+                        if (!sp) return null
+                        const over = sp.spreadPct > 3
+                        return <span className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ${over ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300'}`} title={`pide vs mercado ${ars(sp.marketPrice)}/kg`}>{sp.spreadPct >= 0 ? '+' : ''}{sp.spreadPct.toFixed(0)}% vs mercado</span>
                       })()}
                       <span className="text-xs text-zinc-600">#{l.id} · {fmtDate(l.created_at)}{l.source ? ` · ${l.source}` : ''}</span>
                     </div>
