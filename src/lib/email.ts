@@ -2614,3 +2614,71 @@ export async function sendProducerLeadConfirmation(opts: {
     return { success: false, error: e instanceof Error ? e.message : String(e) }
   }
 }
+
+/**
+ * sendFrigorificoLeadAlert — re-rutea automáticamente al frigorífico una consulta de
+ * venta de un productor, GATEANDO el contacto: la planta ve QUÉ le ofrecen (categoría,
+ * cabezas, zona, precio) pero NO el contacto del productor. Para avanzar responde el
+ * email → cae en agro@memola.com.ar y nosotros conectamos las puntas (queda la
+ * comisión). Menos intervención manual: la planta se entera sola. Los emails salen del
+ * registro público MAGYP/SENASA → footer de identificación legal + opt-out.
+ */
+export async function sendFrigorificoLeadAlert(opts: {
+  to: string
+  frigorificoName: string
+  lead: {
+    category?: string | null
+    headCount?: number | null
+    province?: string | null
+    zona?: string | null
+    desiredPriceArs?: number | null
+    message?: string | null
+  }
+}): Promise<{ success: boolean; error?: string }> {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'no-resend' }
+  const { to, frigorificoName, lead } = opts
+  const ars = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
+  const e = escapeHtml
+  const lugar = [lead.zona, lead.province].filter(Boolean).join(', ')
+
+  const rows = [
+    lead.category ? ['Categoría', e(lead.category)] : null,
+    lead.headCount ? ['Cabezas', lead.headCount.toLocaleString('es-AR')] : null,
+    lugar ? ['Zona', e(lugar)] : null,
+    lead.desiredPriceArs ? ['Precio que pide', `${ars(lead.desiredPriceArs)}/kg`] : null,
+  ].filter(Boolean) as Array<[string, string]>
+
+  const html = darkEmailShell(`
+    <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Consulta de un productor</p>
+    <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 6px">Tenés una consulta de un usuario de nuestra página</h2>
+    <p style="color:#a1a1aa;font-size:14px;line-height:1.6;margin:0 0 16px">
+      Un productor de <b style="color:#fafafa">consignatarias.com</b> quiere venderle hacienda a <b style="color:#fafafa">${e(frigorificoName)}</b>. Esto es lo que ofrece:
+    </p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#18181b;border:1px solid #27272a;border-radius:2px;margin:0 0 16px"><tr><td style="padding:14px 16px">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:#e4e4e7">
+        ${rows.map(([k, v]) => `<tr><td style="padding:4px 0;color:#71717a">${k}</td><td style="padding:4px 0;color:#fafafa;text-align:right"><b>${v}</b></td></tr>`).join('')}
+      </table>
+      ${lead.message ? `<p style="color:#a1a1aa;font-size:13px;margin:10px 0 0;border-top:1px solid #27272a;padding-top:10px">"${e(lead.message)}"</p>` : ''}
+    </td></tr></table>
+    <p style="color:#e4e4e7;font-size:14px;line-height:1.6;margin:0 0 4px">
+      Para tomar contacto con el productor y coordinar la operación, <b style="color:#fafafa">respondé este email</b> y te ponemos en contacto.
+    </p>
+    ${legalIdentificationHtml(to)}
+  `)
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to,
+      replyTo: 'agro@memola.com.ar',
+      subject: `Tenés una consulta de un productor · consignatarias.com`,
+      html,
+      headers: listUnsubHeaders(to, 'frigorifico-lead'),
+    })
+    if (error) return { success: false, error: String((error as { message?: string }).message || error) }
+    return { success: true }
+  } catch (e2) {
+    return { success: false, error: e2 instanceof Error ? e2.message : String(e2) }
+  }
+}

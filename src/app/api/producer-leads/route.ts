@@ -3,7 +3,8 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { requireServiceClient } from '@/lib/supabase'
 import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limit-db'
 import { estimateOperation, matchConsignatarias, whatsappLink, DEFAULT_FEE_PCT } from '@/lib/leads/routing'
-import { sendProducerLeadOps, sendProducerLeadConfirmation } from '@/lib/email'
+import { sendProducerLeadOps, sendProducerLeadConfirmation, sendFrigorificoLeadAlert } from '@/lib/email'
+import { getFrigorificoProfile } from '@/lib/dal/frigorificos'
 import { z } from 'zod'
 import crypto from 'crypto'
 
@@ -110,6 +111,32 @@ export async function POST(req: NextRequest) {
         zona: d.zona,
         province: d.province,
       }).catch((e) => console.error('producer_lead confirmation error:', e))
+    }
+
+    // Re-ruteo automático a la planta si el lead es para un frigorífico específico
+    // (source=frigorifico:<cuit>): la planta se entera sola, con el contacto del
+    // productor GATEADO. Para avanzar responde el mail → cae en agro@ y conectamos
+    // (queda la comisión). Menos intervención manual. No bloquea.
+    if (d.source.startsWith('frigorifico:')) {
+      const cuit = d.source.slice('frigorifico:'.length)
+      getFrigorificoProfile(cuit)
+        .then((prof) => {
+          const to = prof?.email || prof?.claimedByEmail
+          if (!prof || !to) return
+          return sendFrigorificoLeadAlert({
+            to,
+            frigorificoName: prof.name || 'tu frigorífico',
+            lead: {
+              category: d.category,
+              headCount: d.headCount,
+              province: d.province,
+              zona: d.zona,
+              desiredPriceArs: d.desiredPriceArs,
+              message: d.message,
+            },
+          })
+        })
+        .catch((err) => console.error('frigorifico lead re-route error:', err))
     }
 
     // Match de firmas de la zona + ops-alert a Jose (driver del ruteo).
