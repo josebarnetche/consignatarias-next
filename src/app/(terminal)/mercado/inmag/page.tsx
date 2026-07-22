@@ -7,6 +7,7 @@ import Breadcrumb from '@/components/ui/Breadcrumb'
 import { CitaBlock } from '@/components/seo/CitaBlock'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
+import LeadCapture from '@/components/leads/LeadCapture'
 import { ElCorredorCTA } from '@/components/ElCorredorCTA'
 import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
 import SellZoneAlertSignup from '@/components/SellZoneAlertSignup'
@@ -369,6 +370,32 @@ export default function InmagPage() {
               showVolume={true}
             />
           </Suspense>
+        </section>
+
+        {/* Servicio comisionista de VENTA — el visitante acaba de ver el precio del
+            novillo → momento pico para "vendé tu hacienda". La data va a producer_leads
+            y nos avisa a nosotros (no se rutea a consignatarias). Captura categoría,
+            cabezas y precio deseado (el spread vs. INMAG es el negocio). */}
+        <section className="max-w-3xl mx-auto px-4 pb-12">
+          <LeadCapture
+            source="inmag"
+            variant="section"
+            emoji="🐂"
+            defaultIntent="vender"
+            intents={[
+              { value: 'vender', label: 'Vender hacienda' },
+              { value: 'comprar', label: 'Comprar hacienda' },
+            ]}
+            askCategory
+            quantityField="headCount"
+            quantityLabel="Cabezas"
+            askPrice
+            priceLabel="Precio que buscás ($/kg)"
+            pricePlaceholder="Ej: 4500"
+            title="Vendé tu hacienda — te conseguimos comprador"
+            subtitle="Decinos qué categoría, cuántas cabezas y a qué precio querés vender. Lo trabajamos por vos y te avisamos. Sin costo."
+            submitLabel="Quiero que me consigan comprador →"
+          />
         </section>
 
         {/* Variantes y comparativas del INMAG — internal-link panel

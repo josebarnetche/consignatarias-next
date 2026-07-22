@@ -10,6 +10,8 @@ interface Lead {
   intent: string
   category: string | null
   head_count: number | null
+  hectareas: number | null
+  desired_price_ars: number | null
   province: string | null
   zona: string | null
   name: string
@@ -134,7 +136,15 @@ export default function AdminLeadsPage() {
                     <div className="flex flex-wrap items-center gap-2">
                       <span className={`rounded border px-2 py-0.5 text-xs font-medium ${meta.cls}`}>{meta.label}</span>
                       <span className="rounded border border-zinc-700 px-2 py-0.5 text-xs text-zinc-300">{INTENT_LABEL[l.intent] || l.intent}</span>
-                      {l.head_count ? <span className="text-xs text-zinc-500">{l.head_count.toLocaleString('es-AR')} cab{l.category ? ` · ${l.category}` : ''}</span> : l.category ? <span className="text-xs text-zinc-500">{l.category}</span> : null}
+                      {(() => {
+                        const bits = [
+                          l.head_count ? `${l.head_count.toLocaleString('es-AR')} cab` : null,
+                          l.hectareas ? `${l.hectareas.toLocaleString('es-AR')} ha` : null,
+                          l.category,
+                          l.desired_price_ars ? `pide ${ars(l.desired_price_ars)}` : null,
+                        ].filter(Boolean)
+                        return bits.length ? <span className="text-xs text-zinc-500">{bits.join(' · ')}</span> : null
+                      })()}
                       <span className="text-xs text-zinc-600">#{l.id} · {fmtDate(l.created_at)}{l.source ? ` · ${l.source}` : ''}</span>
                     </div>
                     <p className="mt-2 font-semibold text-white">{l.name}</p>

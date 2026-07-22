@@ -5,6 +5,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import marketData from '@/lib/data/market-prices.json'
 import { createAdminClient } from '@/lib/supabase-server'
 import ArrendamientoCalculator from './ArrendamientoCalculator'
+import LeadCapture from '@/components/leads/LeadCapture'
 import { SectionBreadcrumbSchema, SpeakableSchema, QAPageSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import ArrendamientoLiquidacionSignup from '@/components/ArrendamientoLiquidacionSignup'
@@ -472,6 +473,30 @@ export default async function ArrendamientoPage() {
               <ArrendamientoCalculator priceToday={inmag.current} />
             </div>
           </div>
+        </section>
+
+        {/* Servicio comisionista — sección dedicada y prominente. El productor pide
+            que le consigamos el campo (o el arrendatario); la data va a producer_leads
+            y nos avisa a nosotros. Captura hectáreas + canon deseado (el spread). */}
+        <section className="max-w-3xl mx-auto px-4 py-6">
+          <LeadCapture
+            source="arrendamiento"
+            variant="section"
+            emoji="🌾"
+            defaultIntent="arrendar_busco"
+            intents={[
+              { value: 'arrendar_busco', label: 'Busco campo para arrendar' },
+              { value: 'arrendar_ofrezco', label: 'Ofrezco mi campo para arrendar' },
+            ]}
+            quantityField="hectareas"
+            quantityLabel="Hectáreas"
+            askPrice
+            priceLabel="Canon que buscás ($/ha/mes)"
+            pricePlaceholder="Ej: 25000"
+            title="Arrendá tu campo — te lo conseguimos"
+            subtitle="¿Tenés un campo para arrendar o buscás uno? Decinos la zona, la superficie y el canon que buscás. Lo trabajamos por vos."
+            submitLabel="Quiero que me lo consigan →"
+          />
         </section>
 
         {/* Chart Section */}

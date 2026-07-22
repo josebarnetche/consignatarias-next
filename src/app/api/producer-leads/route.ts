@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { requireServiceClient } from '@/lib/supabase'
 import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limit-db'
-import { estimateOperation, matchConsignatarias, whatsappLink } from '@/lib/leads/routing'
+import { estimateOperation, matchConsignatarias, whatsappLink, DEFAULT_FEE_PCT } from '@/lib/leads/routing'
 import { sendProducerLeadOps } from '@/lib/email'
 import { z } from 'zod'
 import crypto from 'crypto'
@@ -25,6 +25,8 @@ const schema = z.object({
   intent: z.enum(['vender', 'comprar', 'arrendar', 'consignar', 'tasar', 'arrendar_ofrezco', 'arrendar_busco']),
   category: z.string().max(40).optional(),
   headCount: z.number().int().positive().max(100000).optional(),
+  hectareas: z.number().int().positive().max(1000000).optional(),
+  desiredPriceArs: z.number().positive().max(1e12).optional(),
   province: z.string().max(60).optional(),
   zona: z.string().max(120).optional(),
   name: z.string().min(2, 'Nombre muy corto').max(120),
@@ -56,7 +58,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Dejanos un teléfono o email para que te contacten' }, { status: 400 })
     }
 
-    const { estimatedValueArs, feeArs, feePct } = estimateOperation({ headCount: d.headCount, category: d.category })
+    // El estimador de valor/fee es de VENTA de hacienda (cabezas × peso × INMAG).
+    // En arrendamiento NO aplica (el "80" son hectáreas, no vacas) → sin valor de
+    // hacienda; el negocio ahí es el canon/spread, que se evalúa con hectáreas +
+    // precio deseado.
+    const isArrendamiento = d.intent.startsWith('arrendar')
+    const { estimatedValueArs, feeArs, feePct } = isArrendamiento
+      ? { estimatedValueArs: null as number | null, feeArs: null as number | null, feePct: DEFAULT_FEE_PCT }
+      : estimateOperation({ headCount: d.headCount, category: d.category })
     const ipHash = crypto.createHash('sha256').update(ip + d.name).digest('hex').slice(0, 16)
 
     const supabase = db()
@@ -65,7 +74,9 @@ export async function POST(req: NextRequest) {
       .insert({
         intent: d.intent,
         category: d.category ?? null,
-        head_count: d.headCount ?? null,
+        head_count: isArrendamiento ? null : (d.headCount ?? null),
+        hectareas: isArrendamiento ? (d.hectareas ?? d.headCount ?? null) : (d.hectareas ?? null),
+        desired_price_ars: d.desiredPriceArs ?? null,
         province: d.province ?? null,
         zona: d.zona ?? null,
         name: d.name,
@@ -97,7 +108,9 @@ export async function POST(req: NextRequest) {
         leadId,
         intent: d.intent,
         category: d.category,
-        headCount: d.headCount,
+        headCount: isArrendamiento ? undefined : d.headCount,
+        hectareas: isArrendamiento ? (d.hectareas ?? d.headCount) : d.hectareas,
+        desiredPriceArs: d.desiredPriceArs,
         province: d.province,
         zona: d.zona,
         source: d.source,

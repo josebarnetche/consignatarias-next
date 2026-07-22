@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import DecimalNumberInput from '@/components/ui/DecimalNumberInput'
 import { trackValueEvent } from '@/lib/analytics'
-import LeadCapture from '@/components/leads/LeadCapture'
 
 function fmt(n: number): string {
   return Math.round(n || 0).toLocaleString('es-AR')
@@ -218,21 +217,6 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
         )}
       </div>
 
-      {/* Lead-gen acotado a arrendamiento: es el único contexto donde el visitante
-          sí busca conectar con una contraparte (ofrecer su campo o buscar uno).
-          Los calculadores/remates NO piden contacto comercial → sin captura ahí. */}
-      <div className="mt-4">
-        <LeadCapture
-          source="arrendamiento"
-          defaultIntent="arrendar_ofrezco"
-          intents={[
-            { value: 'arrendar_ofrezco', label: 'Ofrezco mi campo para arrendar' },
-            { value: 'arrendar_busco', label: 'Busco campo para arrendar' },
-          ]}
-          title="¿Querés arrendar un campo?"
-          subtitle="Te conectamos gratis: publicá tu campo para que lo arrienden, o encontrá uno en tu zona."
-        />
-      </div>
     </div>
   )
 }

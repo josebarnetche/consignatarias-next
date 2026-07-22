@@ -2437,6 +2437,8 @@ export async function sendProducerLeadOps(opts: {
   intent: string
   category?: string | null
   headCount?: number | null
+  hectareas?: number | null
+  desiredPriceArs?: number | null
   province?: string | null
   zona?: string | null
   source?: string | null
@@ -2457,7 +2459,7 @@ export async function sendProducerLeadOps(opts: {
 }): Promise<{ success: boolean; error?: string }> {
   const resend = await getResend()
   if (!resend) return { success: false, error: 'no-resend' }
-  const { leadId, intent, category, headCount, province, zona, source, lead, estimatedValueArs, feeArs, feePct, matches } = opts
+  const { leadId, intent, category, headCount, hectareas, desiredPriceArs, province, zona, source, lead, estimatedValueArs, feeArs, feePct, matches } = opts
 
   const ars = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
   const intentLabel: Record<string, string> = {
@@ -2465,17 +2467,25 @@ export async function sendProducerLeadOps(opts: {
     arrendar: 'Consulta por ARRENDAMIENTO', consignar: 'Quiere CONSIGNAR', tasar: 'Pide una TASACIÓN',
     arrendar_ofrezco: 'OFRECE campo para arrendar', arrendar_busco: 'BUSCA campo para arrendar',
   }
+  const isArrendamiento = intent.startsWith('arrendar')
   const zonaTxt = [zona, province].filter(Boolean).join(', ') || 'sin zona'
-  const catTxt = [headCount ? `${headCount.toLocaleString('es-AR')} cab` : null, category].filter(Boolean).join(' · ')
+  const catTxt = [
+    headCount ? `${headCount.toLocaleString('es-AR')} cab` : null,
+    hectareas ? `${hectareas.toLocaleString('es-AR')} ha` : null,
+    category,
+    desiredPriceArs ? `pide ${ars(desiredPriceArs)}${isArrendamiento ? '' : '/kg'}` : null,
+  ].filter(Boolean).join(' · ')
 
   const economics = estimatedValueArs
     ? `<tr><td style="padding:12px 16px;background:#0f1a12;border:1px solid #16a34a40;border-radius:2px">
          <p style="color:#4ade80;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 6px">Potencial de la operación</p>
          <p style="color:#fafafa;font-size:15px;margin:0">Valor estimado <b>${ars(estimatedValueArs)}</b> · Fee ${feePct ?? 1}% ≈ <b style="color:#4ade80">${feeArs ? ars(feeArs) : '—'}</b></p>
-         <p style="color:#71717a;font-size:11px;margin:6px 0 0">Estimación cabezas × peso ref × INMAG. El fee real se fija al cierre.</p>
+         <p style="color:#71717a;font-size:11px;margin:6px 0 0">Estimación cabezas × peso ref × INMAG. El fee real se fija al cierre.${desiredPriceArs ? ` Pide ${ars(desiredPriceArs)}/kg → chequeá el spread vs. mercado.` : ''}</p>
        </td></tr>`
     : `<tr><td style="padding:10px 16px;background:#18181b;border:1px solid #27272a;border-radius:2px">
-         <p style="color:#a1a1aa;font-size:13px;margin:0">Sin cabezas para estimar valor — priorizar por zona/intención.</p>
+         <p style="color:#a1a1aa;font-size:13px;margin:0">${isArrendamiento
+           ? `Arrendamiento${hectareas ? ` · ${hectareas.toLocaleString('es-AR')} ha` : ''}${desiredPriceArs ? ` · pide ${ars(desiredPriceArs)} de canon` : ''} — el negocio es el canon/spread, no valor de hacienda.`
+           : 'Sin cabezas para estimar valor — priorizar por zona/intención.'}</p>
        </td></tr>`
 
   const firmRows = matches.length
