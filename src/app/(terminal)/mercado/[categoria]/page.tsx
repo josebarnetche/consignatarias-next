@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import marketData from '@/lib/data/market-prices.json'
 import Breadcrumb from '@/components/ui/Breadcrumb'
+import VentaLeadCapture from '@/components/leads/VentaLeadCapture'
 import { CategoryPriceHistory } from '@/components/market/CategoryPriceHistory'
 import { PriceRangeTable } from '@/components/market/PriceRangeTable'
 import { PriceCTA } from '@/components/PriceCTA'
@@ -500,6 +501,12 @@ export default async function CategoriaPage({
         <PriceCTA />
 
         {/* Definition */}
+        {/* Captura de venta comisionista — el visitante mira el precio de esta
+            categoría → intención de venderla. presetCategory oculta el selector. */}
+        <section className="mb-8">
+          <VentaLeadCapture source={`mercado:${categoria}`} presetCategory={categoria} />
+        </section>
+
         <section className="mb-8">
           <h2 className="text-xl font-semibold text-zinc-100 mb-3">¿Qué es un {config.name.toLowerCase()}?</h2>
           <p className="text-zinc-400 leading-relaxed max-w-3xl">

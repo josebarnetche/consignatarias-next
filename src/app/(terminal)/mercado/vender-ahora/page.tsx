@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import VenderAhoraClient from './VenderAhoraClient'
 import SellZoneBadge from '@/components/SellZoneBadge'
+import VentaLeadCapture from '@/components/leads/VentaLeadCapture'
 
 export const dynamic = 'force-dynamic'
 
@@ -49,6 +50,11 @@ export default async function VenderAhoraPage() {
         </div>
 
         <VenderAhoraClient />
+
+        {/* Pico de intención: acaba de evaluar si vender → ofrecerle conseguirle el comprador. */}
+        <div className="mt-8">
+          <VentaLeadCapture source="vender-ahora" />
+        </div>
 
         <p className="text-zinc-500 text-xxs text-center mt-8">
           <Link href="/mercado" className="hover:text-zinc-300 underline-offset-2 hover:underline">

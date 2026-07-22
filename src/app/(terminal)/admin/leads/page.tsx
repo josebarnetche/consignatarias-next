@@ -87,6 +87,43 @@ export default function AdminLeadsPage() {
     }
   }
 
+  // --- #3 Ritmo (funnel): leads por día (14d) + por origen ---
+  const byDay = (() => {
+    const map = new Map<string, number>()
+    for (const l of leads) { const d = l.created_at.slice(0, 10); map.set(d, (map.get(d) || 0) + 1) }
+    const days: Array<{ key: string; count: number }> = []
+    const today = new Date()
+    for (let i = 13; i >= 0; i--) {
+      const dt = new Date(today); dt.setDate(dt.getDate() - i)
+      const key = dt.toISOString().slice(0, 10)
+      days.push({ key, count: map.get(key) || 0 })
+    }
+    return days
+  })()
+  const maxDay = Math.max(1, ...byDay.map((d) => d.count))
+  const bySource = (() => {
+    const map = new Map<string, number>()
+    for (const l of leads) { const s = l.source || '—'; map.set(s, (map.get(s) || 0) + 1) }
+    return [...map.entries()].sort((a, b) => b[1] - a[1])
+  })()
+
+  // --- #4 Matching (comisionista): cruzar puntas opuestas de leads vivos ---
+  const norm = (s: string | null) => (s || '').toLowerCase().trim()
+  const alive = leads.filter((l) => ['new', 'routed', 'contacted'].includes(l.status))
+  const cattleMatches: Array<{ s: Lead; b: Lead }> = []
+  for (const s of alive.filter((l) => l.intent === 'vender')) {
+    for (const b of alive.filter((l) => l.intent === 'comprar')) {
+      if (s.category && b.category && norm(s.category) === norm(b.category)) cattleMatches.push({ s, b })
+    }
+  }
+  const landMatches: Array<{ o: Lead; k: Lead }> = []
+  for (const o of alive.filter((l) => l.intent === 'arrendar_ofrezco')) {
+    for (const k of alive.filter((l) => l.intent === 'arrendar_busco')) {
+      if (o.province && k.province && norm(o.province) === norm(k.province)) landMatches.push({ o, k })
+    }
+  }
+  const hasMatches = cattleMatches.length > 0 || landMatches.length > 0
+
   return (
     <div className="py-4">
       <div className="mb-4 flex items-center justify-between">
@@ -118,6 +155,71 @@ export default function AdminLeadsPage() {
             <p className="text-xs text-zinc-500">Fee ganado</p>
             <p className="text-2xl font-semibold text-emerald-300">{ars(stats.wonFee)}</p>
           </div>
+        </div>
+      )}
+
+      {/* #3 Ritmo (funnel) — leads por día (14d) + por origen */}
+      {leads.length > 0 && (
+        <div className="mb-5 grid gap-3 lg:grid-cols-2">
+          <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-4">
+            <p className="mb-3 text-xs uppercase tracking-wider text-zinc-500">Ritmo · últimos 14 días</p>
+            <div className="flex items-end gap-1" style={{ height: 56 }}>
+              {byDay.map((d) => (
+                <div key={d.key} className="group relative flex-1" title={`${d.key}: ${d.count}`}>
+                  <div
+                    className={`w-full rounded-sm ${d.count > 0 ? 'bg-sky-500/70' : 'bg-zinc-800'}`}
+                    style={{ height: `${Math.max(4, (d.count / maxDay) * 52)}px` }}
+                  />
+                </div>
+              ))}
+            </div>
+            <p className="mt-2 text-xs text-zinc-600">{byDay.reduce((a, d) => a + d.count, 0)} leads en 14 días</p>
+          </div>
+          <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-4">
+            <p className="mb-3 text-xs uppercase tracking-wider text-zinc-500">Por origen</p>
+            <div className="flex flex-wrap gap-2">
+              {bySource.map(([src, n]) => (
+                <span key={src} className="rounded-full border border-zinc-700 bg-zinc-800/50 px-2.5 py-1 text-xs text-zinc-300">
+                  {src} <span className="font-semibold text-sky-300">{n}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* #4 Matching (comisionista) — cruces posibles entre puntas opuestas */}
+      {leads.length > 0 && (
+        <div className="mb-5 rounded-lg border border-amber-500/20 bg-amber-500/5 p-4">
+          <p className="mb-2 text-xs uppercase tracking-wider text-amber-300">Cruces posibles · las dos puntas</p>
+          {!hasMatches ? (
+            <p className="text-sm text-zinc-500">Sin cruces todavía — hacen falta las dos puntas (comprador ↔ vendedor de la misma categoría, u ofrezco ↔ busco campo de la misma provincia).</p>
+          ) : (
+            <div className="space-y-2">
+              {cattleMatches.map(({ s, b }, i) => (
+                <div key={`c${i}`} className="flex flex-wrap items-center gap-2 text-sm">
+                  <span className="rounded bg-emerald-500/20 px-2 py-0.5 text-xs text-emerald-300">VENDE</span>
+                  <span className="text-white">{s.name}</span>
+                  <span className="text-zinc-500">{s.head_count ? `${s.head_count} ${s.category}` : s.category}{s.desired_price_ars ? ` · pide ${ars(s.desired_price_ars)}` : ''}</span>
+                  <span className="text-amber-400">↔</span>
+                  <span className="rounded bg-sky-500/20 px-2 py-0.5 text-xs text-sky-300">COMPRA</span>
+                  <span className="text-white">{b.name}</span>
+                  <span className="text-zinc-500">{b.category}{b.province ? ` · ${b.province}` : ''}</span>
+                </div>
+              ))}
+              {landMatches.map(({ o, k }, i) => (
+                <div key={`l${i}`} className="flex flex-wrap items-center gap-2 text-sm">
+                  <span className="rounded bg-emerald-500/20 px-2 py-0.5 text-xs text-emerald-300">OFRECE campo</span>
+                  <span className="text-white">{o.name}</span>
+                  <span className="text-zinc-500">{o.hectareas ? `${o.hectareas} ha` : ''} · {o.province}</span>
+                  <span className="text-amber-400">↔</span>
+                  <span className="rounded bg-sky-500/20 px-2 py-0.5 text-xs text-sky-300">BUSCA campo</span>
+                  <span className="text-white">{k.name}</span>
+                  <span className="text-zinc-500">{k.hectareas ? `${k.hectareas} ha` : ''} · {k.province}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
