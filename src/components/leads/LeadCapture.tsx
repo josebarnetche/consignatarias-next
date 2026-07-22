@@ -167,7 +167,7 @@ export default function LeadCapture({
           <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400">✓</span>
           <div>
             <p className="font-semibold text-emerald-300">Listo, {name.split(' ')[0]}.</p>
-            <p className="mt-1 text-sm text-zinc-400">Ya lo estamos moviendo. Te contactamos por WhatsApp.</p>
+            <p className="mt-1 text-sm text-zinc-400">Ya lo estamos moviendo. Te contactamos por email a la brevedad.</p>
           </div>
         </div>
       </div>
@@ -248,7 +248,7 @@ export default function LeadCapture({
         >
           {state === 'loading' ? 'Enviando…' : submitLabel}
         </button>
-        <span className="text-xs text-zinc-500">Te contactamos por WhatsApp · tus datos no se publican</span>
+        <span className="text-xs text-zinc-500">Te contactamos por email · tus datos no se publican</span>
       </div>
     </form>
   )

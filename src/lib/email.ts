@@ -2538,3 +2538,68 @@ export async function sendProducerLeadOps(opts: {
     return { success: false, error: e instanceof Error ? e.message : String(e) }
   }
 }
+
+/** Número de WhatsApp directo del founder para consultas de solicitantes. */
+const FOUNDER_WHATSAPP = process.env.FOUNDER_WHATSAPP || '5493773418130'
+
+/**
+ * sendProducerLeadConfirmation — acuse de recibo al PRODUCTOR que cargó una
+ * solicitud (venta / arrendamiento). Confirma que la recibimos, avisa que lo
+ * contactamos por email, y deja una vía directa por WhatsApp al founder para
+ * cualquier consulta. replyTo = agro@memola.com.ar (las respuestas caen ahí).
+ */
+export async function sendProducerLeadConfirmation(opts: {
+  to: string
+  name: string
+  intent: string
+  zona?: string | null
+  province?: string | null
+}): Promise<{ success: boolean; error?: string }> {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'no-resend' }
+  const { to, name, intent, zona, province } = opts
+
+  const intentPhrase: Record<string, string> = {
+    vender: 'vender tu hacienda',
+    comprar: 'comprar hacienda',
+    consignar: 'consignar / rematar',
+    tasar: 'una tasación',
+    arrendar: 'arrendar tu campo',
+    arrendar_ofrezco: 'arrendar tu campo',
+    arrendar_busco: 'conseguir un campo para arrendar',
+  }
+  const phrase = intentPhrase[intent] || 'tu solicitud'
+  const lugar = [zona, province].filter(Boolean).join(', ')
+  const firstName = name.split(' ')[0] || name
+
+  const waText = encodeURIComponent('Hola, cargué una solicitud en consignatarias.com y quería consultar.')
+  const waLink = `https://wa.me/${FOUNDER_WHATSAPP}?text=${waText}`
+
+  const html = darkEmailShell(`
+    <p style="color:#4ade80;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Solicitud recibida</p>
+    <h2 style="color:#fafafa;font-size:20px;font-weight:700;margin:0 0 10px">Recibimos tu solicitud, ${escapeHtml(firstName)}</h2>
+    <p style="color:#a1a1aa;font-size:15px;line-height:1.6;margin:0 0 16px">
+      Tomamos tu pedido para <b style="color:#fafafa">${escapeHtml(phrase)}</b>${lugar ? ` en <b style="color:#fafafa">${escapeHtml(lugar)}</b>` : ''}.
+      Ya lo estamos trabajando y <b style="color:#fafafa">te vamos a contactar por email</b> a la brevedad.
+    </p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#18181b;border:1px solid #27272a;border-radius:2px;margin:0 0 16px"><tr><td style="padding:16px">
+      <p style="color:#e4e4e7;font-size:14px;margin:0 0 12px">Cualquier consulta, escribinos directamente:</p>
+      <a href="${waLink}" style="display:inline-block;background:#25D366;color:#052e16;font-size:14px;font-weight:700;padding:10px 18px;border-radius:4px;text-decoration:none">WhatsApp →</a>
+    </td></tr></table>
+    <p style="color:#71717a;font-size:12px;margin:0">consignatarias.com — el precio de referencia del ganado argentino</p>
+  `)
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to,
+      replyTo: 'agro@memola.com.ar',
+      subject: 'Recibimos tu solicitud — consignatarias.com',
+      html,
+    })
+    if (error) return { success: false, error: String((error as { message?: string }).message || error) }
+    return { success: true }
+  } catch (e) {
+    return { success: false, error: e instanceof Error ? e.message : String(e) }
+  }
+}

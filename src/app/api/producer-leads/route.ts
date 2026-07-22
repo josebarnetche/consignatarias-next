@@ -3,7 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { requireServiceClient } from '@/lib/supabase'
 import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limit-db'
 import { estimateOperation, matchConsignatarias, whatsappLink, DEFAULT_FEE_PCT } from '@/lib/leads/routing'
-import { sendProducerLeadOps } from '@/lib/email'
+import { sendProducerLeadOps, sendProducerLeadConfirmation } from '@/lib/email'
 import { z } from 'zod'
 import crypto from 'crypto'
 
@@ -98,6 +98,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No pudimos guardar tu consulta' }, { status: 500 })
     }
     const leadId = (inserted as { id: number }).id
+
+    // Acuse de recibo al productor (si dejó email): confirma que la recibimos,
+    // que lo contactamos por email, y le deja el WhatsApp directo del founder.
+    // reply-to = agro@memola.com.ar. No bloquea la respuesta.
+    if (d.email) {
+      sendProducerLeadConfirmation({
+        to: d.email,
+        name: d.name,
+        intent: d.intent,
+        zona: d.zona,
+        province: d.province,
+      }).catch((e) => console.error('producer_lead confirmation error:', e))
+    }
 
     // Match de firmas de la zona + ops-alert a Jose (driver del ruteo).
     // No bloquea la respuesta al usuario si el mail falla.
