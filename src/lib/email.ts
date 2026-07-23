@@ -594,14 +594,21 @@ export async function sendMonthlyClose(
             <p style="color:#a1a1aa;font-size:13px;margin:0;line-height:1.6">
               ${data.lease.hectareas} ha × ${data.lease.kgHa} kg/ha × ${money(data.avg)} = <strong style="color:#38bdf8;font-size:16px">${money(canon)}</strong>/mes
             </p>
-          </div>` : ''}
+          </div>` : `
+          <div style="background:#18181b;border:1px solid #27272a;border-left:3px solid #38bdf8;border-radius:2px;padding:14px 16px;margin-bottom:20px">
+            <p style="color:#71717a;font-size:11px;margin:0 0 6px;text-transform:uppercase;letter-spacing:.12em">Recibí TU canon ya calculado</p>
+            <p style="color:#a1a1aa;font-size:13px;margin:0;line-height:1.6">
+              Cargá tus hectáreas y kg/ha una sola vez y cada mes te llega tu arrendamiento liquidado a este promedio.
+              <a href="${APP_URL}/mercado/arrendamiento" style="color:#38bdf8;text-decoration:none;white-space:nowrap">Cargar mi canon →</a>
+            </p>
+          </div>`}
 
           <div style="text-align:center;margin:24px 0">
             <a href="${APP_URL}/mercado/arrendamiento" style="background:#38bdf8;color:#09090b;padding:12px 28px;text-decoration:none;border-radius:2px;display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Calcular mi arrendamiento</a>
           </div>
 
           <p style="color:#71717a;font-size:11px;margin:20px 0 0;line-height:1.6">
-            Fuente: Mercado Agroganadero de Buenos Aires (INMAG). Promedio simple de las ruedas del mes.
+            Fuente: Mercado Agroganadero de Buenos Aires (INMAG). Promedio mensual ponderado (importe total / kilos del mes).
           </p>
           <p style="color:#52525b;font-size:10px;margin:12px 0 0">
             Consignatarias.com.ar

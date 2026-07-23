@@ -5,6 +5,7 @@ import { sendArrendamientoCierre } from '@/lib/email'
 import { capForFreePlan } from '@/lib/email-limits'
 import { trackCron } from '@/lib/ops'
 import { authorizeCron } from '@/lib/cron-auth'
+import { fetchMonthClose } from '@/lib/mag/monthly-close'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -21,32 +22,6 @@ export const maxDuration = 300
  */
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
-const MAG = 'https://www.mercadoagroganadero.com.ar/dll/hacienda2.dll/haciinfo000011'
-
-async function fetchMonthClose(y: number, m: number): Promise<{ inmag: number; cabezas: number; importe: number } | null> {
-  const ld = new Date(y, m, 0).getDate() // último día del mes m (1-based)
-  const mm = String(m).padStart(2, '0')
-  const url = `${MAG}?txtFECHAINI=01/${mm}/${y}&txtFECHAFIN=${String(ld).padStart(2, '0')}/${mm}/${y}&CP=&LISTADO=SI`
-  const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } })
-  if (!res.ok) return null
-  const html = new TextDecoder('iso-8859-1').decode(await res.arrayBuffer())
-  const txt = html
-    .replace(/<\/td>/gi, '\t')
-    .replace(/<\/tr>/gi, '\n')
-    .replace(/<[^>]*>/g, '')
-    .replace(/&nbsp;/g, ' ')
-  for (const line of txt.split('\n')) {
-    if (!/\bTotales\b/.test(line)) continue
-    const nums = line.match(/[\d.]+,\d+|\d[\d.]*/g)
-    if (nums && nums.length >= 3) {
-      const cabezas = parseInt(nums[0].replace(/\./g, ''), 10)
-      const importe = parseFloat(nums[1].replace(/\./g, '').replace(',', '.'))
-      const inmag = parseFloat(nums[2].replace(/\./g, '').replace(',', '.'))
-      if (inmag > 0) return { inmag, cabezas, importe }
-    }
-  }
-  return null
-}
 
 export async function POST(req: NextRequest) {
   if (!authorizeCron(req)) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })

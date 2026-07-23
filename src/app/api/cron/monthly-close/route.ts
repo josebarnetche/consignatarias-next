@@ -5,6 +5,7 @@ import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
 import { capForFreePlan } from '@/lib/email-limits'
 import { trackCron } from '@/lib/ops'
 import { authorizeCron } from '@/lib/cron-auth'
+import { fetchMonthClose } from '@/lib/mag/monthly-close'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -68,9 +69,26 @@ export async function POST(req: NextRequest) {
     }
     const prevStats = await monthStats(prevStart, prevEnd)
 
+    // El número headline es el promedio mensual PONDERADO oficial del MAG (importe/kilos),
+    // el mismo que usa el cron arrendamiento-cierre → ambos crons entregan idéntico número.
+    // Si el MAG todavía no publicó el cierre, cae al promedio simple de ruedas (fallback).
+    const official = await fetchMonthClose(year, monthIdx + 1)
+    const prevOfficial = await fetchMonthClose(prev.getFullYear(), prev.getMonth() + 1)
+    const avg = official?.inmag ?? stats.avg
+    const prevAvg = prevOfficial?.inmag ?? prevStats?.avg ?? null
+
+    // Guarda el cierre oficial (idempotente) para que arrendamiento-cierre y el sitio
+    // lean el mismo valor.
+    if (official) {
+      await supabase.from('inmag_monthly_close').upsert(
+        { year, month: monthIdx + 1, inmag: official.inmag, cabezas: official.cabezas, importe: official.importe, scraped_at: new Date().toISOString() },
+        { onConflict: 'year,month' },
+      )
+    }
+
     const payload = {
-      monthLabel, avg: stats.avg, min: stats.min, max: stats.max, ruedas: stats.ruedas,
-      prevMonthLabel, prevAvg: prevStats?.avg ?? null,
+      monthLabel, avg, min: stats.min, max: stats.max, ruedas: stats.ruedas,
+      prevMonthLabel, prevAvg,
     }
 
     // ── Test mode ──
