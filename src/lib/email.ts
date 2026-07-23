@@ -603,9 +603,13 @@ export async function sendMonthlyClose(
             </p>
           </div>`}
 
-          <div style="text-align:center;margin:24px 0">
+          <div style="text-align:center;margin:24px 0 8px">
             <a href="${APP_URL}/mercado/arrendamiento" style="background:#38bdf8;color:#09090b;padding:12px 28px;text-decoration:none;border-radius:2px;display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Calcular mi arrendamiento</a>
           </div>
+          <p style="text-align:center;color:#a1a1aa;font-size:12px;margin:0 0 8px;line-height:1.6">
+            ¿Dudas con tu canon o querés que te ayudemos con el contrato?
+            <a href="mailto:agro@memola.com.ar?subject=Consulta%20arrendamiento" style="color:#38bdf8;text-decoration:none;white-space:nowrap">Escribinos a agro@memola.com.ar →</a>
+          </p>
 
           <p style="color:#71717a;font-size:11px;margin:20px 0 0;line-height:1.6">
             Fuente: Mercado Agroganadero de Buenos Aires (INMAG). Promedio mensual ponderado (importe total / kilos del mes).
@@ -2297,7 +2301,8 @@ export async function sendArrendamientoCierre(opts: {
         <div style="font-size:34px;font-weight:700;color:#38bdf8;margin:14px 0 2px 0">$${inmagFmt}<span style="font-size:15px;color:#71717a;font-weight:400"> /kg</span></div>
         ${changeStr ? `<p style="margin:0;font-size:13px;color:#71717a">${changeStr}</p>` : ''}
         ${canonBlock}
-        <p style="margin:24px 0"><a href="${APP_URL}/mercado/arrendamiento" style="display:inline-block;background:#38bdf8;color:#09090b;padding:12px 22px;text-decoration:none;font-weight:600;font-size:13px;border-radius:2px">Ver el detalle y la serie &rarr;</a></p>
+        <p style="margin:24px 0 8px"><a href="${APP_URL}/mercado/arrendamiento" style="display:inline-block;background:#38bdf8;color:#09090b;padding:12px 22px;text-decoration:none;font-weight:600;font-size:13px;border-radius:2px">Ver el detalle y la serie &rarr;</a></p>
+        <p style="font-size:13px;color:#a1a1aa;margin:0 0 8px;line-height:1.6">¿Querés que te ayudemos con el contrato o tenés alguna consulta? <a href="mailto:agro@memola.com.ar?subject=Consulta%20arrendamiento%20${encodeURIComponent(opts.mesLabel)}" style="color:#38bdf8;text-decoration:none;white-space:nowrap">Escribinos a agro@memola.com.ar &rarr;</a></p>
         <p style="font-size:12px;color:#a1a1aa;margin:0">Es el mismo número que publica el MAG. Un mail por mes, al cierre.</p>
         <p style="font-family:${EMAIL_MONO};color:#52525b;font-size:10px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px;line-height:1.6">consignatarias<span style="color:#38bdf8">.</span>com &mdash; el precio de referencia del ganado argentino &middot; <a href="${APP_URL}" style="color:#71717a">consignatarias.com.ar</a> &middot; <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(opts.to)}" style="color:#52525b">Desuscribirme</a></p>
       `),
