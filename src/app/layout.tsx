@@ -1,7 +1,6 @@
 import "./globals.css";
 import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Script from 'next/script';
 import AnalyticsProvider from '@/components/AnalyticsProvider';
@@ -158,7 +157,6 @@ export default function RootLayout({
         {/* Nudge-first: invita (nunca obliga) a crear cuenta gratis con Google en
             momentos de alta intención. Global, no bloqueante. Ver src/lib/account-nudge.ts */}
         <AccountNudge />
-        <Analytics />
         <SpeedInsights />
         {/* gtag.js download deferred to browser idle (lazyOnload) — keeps ~157 KiB of
             third-party JS off the mobile critical path (TBT/INP). The inline stub in
