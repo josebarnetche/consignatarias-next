@@ -1,0 +1,363 @@
+{
+  "range": {
+    "start": "2026-07-18",
+    "end": "2026-07-24",
+    "pstart": "2026-07-11",
+    "pend": "2026-07-17"
+  },
+  "gsc": {
+    "cur": {
+      "clicks": 701,
+      "impressions": 47060,
+      "ctr": 0.014895877603059923,
+      "position": 6.233722906927327
+    },
+    "prev": {
+      "clicks": 828,
+      "impressions": 42892,
+      "ctr": 0.019304299170008393,
+      "position": 5.995290497062389
+    },
+    "queries": [
+      {
+        "keys": [
+          "novillo arrendamiento"
+        ],
+        "clicks": 18,
+        "impressions": 703,
+        "ctr": 0.025604551920341393,
+        "position": 5.934566145092461
+      },
+      {
+        "keys": [
+          "precio novillo arrendamiento"
+        ],
+        "clicks": 8,
+        "impressions": 611,
+        "ctr": 0.01309328968903437,
+        "position": 6.3502454991816695
+      },
+      {
+        "keys": [
+          "indice novillo arrendamiento"
+        ],
+        "clicks": 7,
+        "impressions": 1037,
+        "ctr": 0.006750241080038573,
+        "position": 6.356798457087753
+      },
+      {
+        "keys": [
+          "rosgan catalogo"
+        ],
+        "clicks": 7,
+        "impressions": 83,
+        "ctr": 0.08433734939759036,
+        "position": 6.578313253012048
+      },
+      {
+        "keys": [
+          "indice novillo arrendamiento mercado de cañuelas"
+        ],
+        "clicks": 6,
+        "impressions": 272,
+        "ctr": 0.022058823529411766,
+        "position": 5.694852941176471
+      },
+      {
+        "keys": [
+          "precio del kg de novillo para arrendamiento diario la nacion"
+        ],
+        "clicks": 6,
+        "impressions": 145,
+        "ctr": 0.041379310344827586,
+        "position": 6.227586206896552
+      },
+      {
+        "keys": [
+          "valor novillo arrendamiento"
+        ],
+        "clicks": 6,
+        "impressions": 83,
+        "ctr": 0.07228915662650602,
+        "position": 5.132530120481928
+      },
+      {
+        "keys": [
+          "precio novillo arrendamiento mensual"
+        ],
+        "clicks": 5,
+        "impressions": 344,
+        "ctr": 0.014534883720930232,
+        "position": 4.933139534883721
+      },
+      {
+        "keys": [
+          "precio novillo arrendamiento hoy"
+        ],
+        "clicks": 4,
+        "impressions": 153,
+        "ctr": 0.026143790849673203,
+        "position": 5.6797385620915035
+      },
+      {
+        "keys": [
+          "precio novillo arrendamiento mercado de cañuelas"
+        ],
+        "clicks": 4,
+        "impressions": 258,
+        "ctr": 0.015503875968992248,
+        "position": 6.662790697674419
+      },
+      {
+        "keys": [
+          "precio novillo de arrendamiento"
+        ],
+        "clicks": 4,
+        "impressions": 90,
+        "ctr": 0.044444444444444446,
+        "position": 5.333333333333333
+      },
+      {
+        "keys": [
+          "ab logistica"
+        ],
+        "clicks": 3,
+        "impressions": 44,
+        "ctr": 0.06818181818181818,
+        "position": 5.818181818181818
+      },
+      {
+        "keys": [
+          "consignatarias de hacienda en argentina"
+        ],
+        "clicks": 3,
+        "impressions": 10,
+        "ctr": 0.3,
+        "position": 1
+      },
+      {
+        "keys": [
+          "indice arrendamiento mercado de liniers"
+        ],
+        "clicks": 3,
+        "impressions": 125,
+        "ctr": 0.024,
+        "position": 7.792
+      },
+      {
+        "keys": [
+          "novillo arrendamiento hoy"
+        ],
+        "clicks": 3,
+        "impressions": 87,
+        "ctr": 0.034482758620689655,
+        "position": 6.793103448275862
+      }
+    ],
+    "pages": [
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/mercado/arrendamiento"
+        ],
+        "clicks": 152,
+        "impressions": 13449,
+        "ctr": 0.011301955535727564,
+        "position": 6.270875158004313
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/frigorificos"
+        ],
+        "clicks": 32,
+        "impressions": 927,
+        "ctr": 0.034519956850053934,
+        "position": 6.640776699029126
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/frigorificos/santa-fe"
+        ],
+        "clicks": 14,
+        "impressions": 414,
+        "ctr": 0.033816425120772944,
+        "position": 6.898550724637682
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/"
+        ],
+        "clicks": 12,
+        "impressions": 347,
+        "ctr": 0.0345821325648415,
+        "position": 4.002881844380403
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/consignatarias/rosgan"
+        ],
+        "clicks": 8,
+        "impressions": 178,
+        "ctr": 0.0449438202247191,
+        "position": 7.185393258426966
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/frigorificos/tucuman"
+        ],
+        "clicks": 8,
+        "impressions": 165,
+        "ctr": 0.048484848484848485,
+        "position": 6.5636363636363635
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/mercado/toros"
+        ],
+        "clicks": 8,
+        "impressions": 722,
+        "ctr": 0.0110803324099723,
+        "position": 4.749307479224377
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/precios/vacas"
+        ],
+        "clicks": 8,
+        "impressions": 2265,
+        "ctr": 0.003532008830022075,
+        "position": 5.165121412803532
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/consignatarias"
+        ],
+        "clicks": 7,
+        "impressions": 165,
+        "ctr": 0.04242424242424243,
+        "position": 5.975757575757576
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/frigorificos/corrientes"
+        ],
+        "clicks": 7,
+        "impressions": 99,
+        "ctr": 0.0707070707070707,
+        "position": 5.333333333333333
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/mercado"
+        ],
+        "clicks": 7,
+        "impressions": 1509,
+        "ctr": 0.004638833664678595,
+        "position": 7.390987408880053
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/remates/corrientes"
+        ],
+        "clicks": 7,
+        "impressions": 73,
+        "ctr": 0.0958904109589041,
+        "position": 3.7945205479452055
+      }
+    ]
+  },
+  "traffic": {
+    "range": {
+      "current_from": "2026-07-20T15:37:20.776Z",
+      "previous_from": "2026-07-13T15:37:20.776Z"
+    },
+    "traffic": {
+      "cur": {
+        "visitantes": 2005,
+        "aiVisits": 113
+      },
+      "prev": {
+        "visitantes": 1470,
+        "aiVisits": 100
+      }
+    },
+    "aiEngines": [
+      {
+        "engine": "copilot",
+        "visits": 83
+      },
+      {
+        "engine": "chatgpt",
+        "visits": 26
+      },
+      {
+        "engine": "gemini",
+        "visits": 4
+      }
+    ],
+    "topProfiles": [
+      {
+        "slug": "colombo-y-magliano",
+        "type": "consignataria",
+        "views": 22
+      },
+      {
+        "slug": "rosgan",
+        "type": "consignataria",
+        "views": 15
+      },
+      {
+        "slug": "etchevehere-rural",
+        "type": "consignataria",
+        "views": 12
+      },
+      {
+        "slug": "la-ganadera",
+        "type": "consignataria",
+        "views": 11
+      },
+      {
+        "slug": "ofarrell",
+        "type": "consignataria",
+        "views": 7
+      },
+      {
+        "slug": "umc-villaguay",
+        "type": "consignataria",
+        "views": 7
+      },
+      {
+        "slug": "afa",
+        "type": "consignataria",
+        "views": 6
+      },
+      {
+        "slug": "colombo-y-colombo",
+        "type": "consignataria",
+        "views": 6
+      },
+      {
+        "slug": "lalor",
+        "type": "consignataria",
+        "views": 6
+      },
+      {
+        "slug": "kofman-y-lissarrague",
+        "type": "consignataria",
+        "views": 6
+      },
+      {
+        "slug": "cooperativa-guillermo-lehmann",
+        "type": "consignataria",
+        "views": 5
+      },
+      {
+        "slug": "jauregui-lorda",
+        "type": "consignataria",
+        "views": 5
+      }
+    ],
+    "profileViewsTotal": 176
+  },
+  "generated": "2026-07-27T15:37:20.328Z"
+}
