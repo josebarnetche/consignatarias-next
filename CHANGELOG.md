@@ -7,7 +7,55 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
-## [1.187.0] — 2026-07-20
+## [1.188.0] — 2026-07-28
+
+### El MCP se vuelve motor de revenue: alertas free, valuaciones, pagos x402 en USDC y captura de demanda
+
+Auditoría funcional completa del 28-07 convertida en producto: el MCP deja de ser
+solo lectura y pasa a capturar leads, cobrar en cripto y cerrar el loop
+comprador→remate. 22 tools (antes 19).
+
+- **Fix de datos INMAG_DATE** (`src/lib/inmag.ts`): 38 archivos fechaban el índice
+  con `marketPrices.lastUpdate` (fecha del *scrape*) — el sitio decía "INMAG del
+  27-07" con la rueda real del 24-07. Ahora toda etiqueta INMAG usa la última
+  entrada de `inmag.series`; los "Actualizado:", maíz MAGYP, dólar y valores
+  compuestos (spread, novillo en USD) conservan la fecha de scrape a propósito.
+- **Lead magnet en `/que-es-una-consignataria`**: guía visual de 5 láminas
+  (serie educativa on-brand, `marca/build_educativas.py`) como PDF
+  (`public/descargas/`, excepción nueva en `.gitignore` — `*.pdf` global la
+  silenciaba, mismo gotcha que El Corredor) gateado por email
+  (`GuiaConsignatariaDownload`, source `guia-consignataria`).
+- **`crear_alerta_precio` LIBERADA**: free tier sin API key — 3 alertas activas
+  por origen (columna `origin_ip`, migración `20260728_price_alerts_free_tier`) +
+  freno de 10 creaciones/día; key inválida sigue fallando (typo ≠ free); con key
+  Enterprise sin límite. Los scorers de directorios MCP dejan de ver una tool que
+  falla.
+- **Valuaciones para agentes** (`src/lib/valuaciones.ts`): `valuar_tropa`
+  ("¿cuánto valen 350 novillos en Formosa?") y `valuar_arrendamiento_campo`
+  ("¿cuánto arrendar 3.500 has en Corrientes?") — ARS + USD blue/oficial,
+  escenarios 40-100 kg/ha/año al índice haciinfo000013, cero datos inventados.
+  Gratis 5/día por IP.
+- **x402 (HTTP 402 + USDC en Base), implementado contra el spec v1 de Coinbase**
+  (`src/lib/x402.ts` + `x402-handler.ts`): al agotar el cupo gratis, la misma
+  consulta cuesta centavos — `/api/x402/valuar-tropa` US$0,05,
+  `/api/x402/valuar-arrendamiento` US$0,10. verify + settle en el facilitator
+  ANTES de responder; logging `x402_payment` en ops_events; env-gated
+  (`X402_PAYTO_ADDRESS`, apagado = 503). Wallet receptora dedicada de Memola.
+- **PRO Consignataria pagable en USDC** (`/api/x402/pro` + tool
+  `contratar_pro_consignataria`): ARS 45.000/mes cotizado al blue del día,
+  slug validado ANTES de cobrar, activación inmediata que replica el grant del
+  webhook Rebill (extiende vigencia, preserva ids Rebill). Una consignataria —
+  o su agente — activa PRO sin tocar un formulario.
+- **Growth engine — demanda de compra**: "quiero comprar 300 terneros en
+  Corrientes" → matching inmediato contra los remates programados + búsqueda
+  viva. Tool MCP `quiero_comprar`, página `/quiero-comprar` (form público, en
+  sitemap), tablas `demanda_compra`/`demanda_notificaciones`, cron
+  `demanda-matching` (workflow 40 min post-scrape, idempotente) que avisa al
+  comprador por email/webhook de cada remate nuevo que matchee, y lead interno a
+  `LEAD_ALERT_TO` — complementa el motor de producer-leads de 1.187 del lado
+  comprador de hacienda.
+
+
 
 ### Motor de lead-gen a performance + toda alerta al correo del founder
 
