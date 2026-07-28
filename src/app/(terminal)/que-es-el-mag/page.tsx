@@ -9,6 +9,7 @@ import {
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -72,7 +73,7 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿Qué es el MAG (Mercado Agroganadero de Cañuelas)?',
-    answer: `El MAG es el Mercado Agroganadero de Cañuelas, el principal mercado concentrador de hacienda en pie de Argentina. En 2022 reemplazó al histórico Mercado de Liniers y es donde se forma el precio de referencia del ganado bovino por oferta y demanda, con remate a la vista. Su índice, el INMAG, cotiza hoy (${lastUpdate}) a $${inmagCurrent}/kg vivo para el novillo. Es un precio de referencia del mercado, no fijado por esta página.`,
+    answer: `El MAG es el Mercado Agroganadero de Cañuelas, el principal mercado concentrador de hacienda en pie de Argentina. En 2022 reemplazó al histórico Mercado de Liniers y es donde se forma el precio de referencia del ganado bovino por oferta y demanda, con remate a la vista. Su índice, el INMAG, cotiza hoy (${INMAG_DATE}) a $${inmagCurrent}/kg vivo para el novillo. Es un precio de referencia del mercado, no fijado por esta página.`,
   },
   {
     question: '¿Por qué cerró el Mercado de Liniers?',
@@ -81,17 +82,17 @@ const FAQ = [
   },
   {
     question: '¿Cómo se forma el precio en el MAG?',
-    answer: `El precio en el MAG se forma por oferta y demanda mediante remate a la vista: la hacienda llega viva a los corrales, se pesa y se remata por kilo vivo lote por lote, con los compradores (frigoríficos, matarifes, consumo) pujando frente a los animales. El precio del día no está fijado de antemano; surge de esa puja pública y se resume en el INMAG, que hoy (${lastUpdate}) marca $${inmagCurrent}/kg vivo.`,
+    answer: `El precio en el MAG se forma por oferta y demanda mediante remate a la vista: la hacienda llega viva a los corrales, se pesa y se remata por kilo vivo lote por lote, con los compradores (frigoríficos, matarifes, consumo) pujando frente a los animales. El precio del día no está fijado de antemano; surge de esa puja pública y se resume en el INMAG, que hoy (${INMAG_DATE}) marca $${inmagCurrent}/kg vivo.`,
   },
   {
     question: '¿Qué es el INMAG?',
-    answer: `El INMAG (Índice Novillo Mercado Agroganadero) es el precio promedio ponderado del novillo en pie que surge de las operaciones diarias del MAG de Cañuelas, expresado en pesos por kilo vivo. Es el sucesor del índice de Liniers y la referencia del ganado bovino argentino. Al ${lastUpdate} cotiza a $${inmagCurrent}/kg vivo (rueda previa $${inmagPrev}, variación ${inmagChange > 0 ? '+' : ''}${inmagChange}%). Es un valor de referencia, no fijado por esta página.`,
+    answer: `El INMAG (Índice Novillo Mercado Agroganadero) es el precio promedio ponderado del novillo en pie que surge de las operaciones diarias del MAG de Cañuelas, expresado en pesos por kilo vivo. Es el sucesor del índice de Liniers y la referencia del ganado bovino argentino. Al ${INMAG_DATE} cotiza a $${inmagCurrent}/kg vivo (rueda previa $${inmagPrev}, variación ${inmagChange > 0 ? '+' : ''}${inmagChange}%). Es un valor de referencia, no fijado por esta página.`,
   },
 ]
 
 export const metadata: Metadata = {
-  title: `Qué es el MAG (Mercado Agroganadero de Cañuelas): MAG vs Liniers e INMAG ${lastUpdate.slice(0, 4)}`,
-  description: `El MAG es el Mercado Agroganadero de Cañuelas que en 2022 reemplazó al histórico Mercado de Liniers; ahí se forma el precio de referencia del ganado (INMAG) por oferta y demanda a la vista. INMAG hoy (${lastUpdate}): $${inmagCurrent}/kg vivo. Historia, MAG vs Liniers y cómo se forma el precio.`,
+  title: `Qué es el MAG (Mercado Agroganadero de Cañuelas): MAG vs Liniers e INMAG ${INMAG_DATE.slice(0, 4)}`,
+  description: `El MAG es el Mercado Agroganadero de Cañuelas que en 2022 reemplazó al histórico Mercado de Liniers; ahí se forma el precio de referencia del ganado (INMAG) por oferta y demanda a la vista. INMAG hoy (${INMAG_DATE}): $${inmagCurrent}/kg vivo. Historia, MAG vs Liniers y cómo se forma el precio.`,
   keywords: [
     'que es el mag',
     'que es el mercado agroganadero de cañuelas',
@@ -106,7 +107,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: 'Qué es el MAG (Mercado Agroganadero de Cañuelas): MAG vs Liniers',
-    description: `El mercado concentrador de hacienda de Cañuelas que en 2022 reemplazó a Liniers y forma el precio de referencia del ganado (INMAG). Hoy $${inmagCurrent}/kg vivo (${lastUpdate}).`,
+    description: `El mercado concentrador de hacienda de Cañuelas que en 2022 reemplazó a Liniers y forma el precio de referencia del ganado (INMAG). Hoy $${inmagCurrent}/kg vivo (${INMAG_DATE}).`,
     url: PAGE_URL,
     type: 'article',
     images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
@@ -128,7 +129,7 @@ export default function QueEsElMagPage() {
       />
       <DatasetSchema
         name="INMAG — Índice Novillo Mercado Agroganadero (Cañuelas)"
-        description={`Precio de referencia del novillo en pie en el Mercado Agroganadero de Cañuelas (MAG) al ${lastUpdate}: $${inmagCurrent}/kg vivo (rueda previa $${inmagPrev}, variación ${inmagChange > 0 ? '+' : ''}${inmagChange}%). Serie diaria por oferta y demanda a la vista. Precio de referencia del mercado, no fijado por esta página.`}
+        description={`Precio de referencia del novillo en pie en el Mercado Agroganadero de Cañuelas (MAG) al ${INMAG_DATE}: $${inmagCurrent}/kg vivo (rueda previa $${inmagPrev}, variación ${inmagChange > 0 ? '+' : ''}${inmagChange}%). Serie diaria por oferta y demanda a la vista. Precio de referencia del mercado, no fijado por esta página.`}
         url={`${BASE_URL}/mercado/inmag`}
         keywords={['INMAG', 'mercado agroganadero', 'cañuelas', 'novillo en pie', 'precio del ganado', 'MAG', 'liniers']}
         dateModified={lastUpdate}
@@ -164,7 +165,7 @@ export default function QueEsElMagPage() {
         <p className="speakable-content text-zinc-300 text-base mb-6">
           El MAG es el Mercado Agroganadero de Cañuelas, el principal mercado concentrador de
           hacienda en pie de Argentina que en 2022 reemplazó al histórico Mercado de Liniers; ahí se
-          forma el precio de referencia del ganado bovino —el INMAG, hoy ({lastUpdate}) en{' '}
+          forma el precio de referencia del ganado bovino —el INMAG, hoy ({INMAG_DATE}) en{' '}
           <strong className="text-zinc-100">${inmagCurrent}/kg vivo</strong>— por oferta y demanda,
           con remate a la vista.
         </p>
@@ -253,7 +254,7 @@ export default function QueEsElMagPage() {
               <tr className="align-top">
                 <td className="px-3 py-2 text-zinc-300 font-medium">Precio hoy</td>
                 <td className="px-3 py-2 text-zinc-400">—</td>
-                <td className="px-3 py-2 text-zinc-200">${inmagCurrent}/kg vivo ({lastUpdate})</td>
+                <td className="px-3 py-2 text-zinc-200">${inmagCurrent}/kg vivo ({INMAG_DATE})</td>
               </tr>
             </tbody>
           </table>

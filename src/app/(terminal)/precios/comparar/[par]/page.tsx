@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { AnswerBlock } from '@/components/seo/AnswerBlock'
 import { DataStamp } from '@/components/seo/DataStamp'
@@ -74,12 +75,12 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 const artEl = (slug: CategorySlug) => (CATEGORIES[slug].articulo === 'una' ? 'la' : 'el')
 const artDel = (slug: CategorySlug) => (CATEGORIES[slug].articulo === 'una' ? 'de la' : 'del')
 
-function verdict(a: CategorySlug, b: CategorySlug, lastUpdate: string): string {
+function verdict(a: CategorySlug, b: CategorySlug, inmagDate: string): string {
   const { higherSlug, lowerSlug, higherPrice, lowerPrice, pct } = getPrices(a, b)
   if (pct === 0) {
-    return `${cap(artEl(a))} ${CATEGORIES[a].singular} y ${artEl(b)} ${CATEGORIES[b].singular} cotizan prácticamente igual (~$${fmt(higherPrice)}/kg vivo, INMAG ${lastUpdate}).`
+    return `${cap(artEl(a))} ${CATEGORIES[a].singular} y ${artEl(b)} ${CATEGORIES[b].singular} cotizan prácticamente igual (~$${fmt(higherPrice)}/kg vivo, INMAG ${inmagDate}).`
   }
-  return `${cap(artEl(higherSlug))} ${CATEGORIES[higherSlug].singular} ($${fmt(higherPrice)}/kg) cotiza un ${pct}% por encima ${artDel(lowerSlug)} ${CATEGORIES[lowerSlug].singular} ($${fmt(lowerPrice)}/kg) — INMAG, ${lastUpdate}.`
+  return `${cap(artEl(higherSlug))} ${CATEGORIES[higherSlug].singular} ($${fmt(higherPrice)}/kg) cotiza un ${pct}% por encima ${artDel(lowerSlug)} ${CATEGORIES[lowerSlug].singular} ($${fmt(lowerPrice)}/kg) — INMAG, ${inmagDate}.`
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ par: string }> }): Promise<Metadata> {
@@ -89,10 +90,9 @@ export async function generateMetadata({ params }: { params: Promise<{ par: stri
   const { a, b } = parsed
   const cats = marketPrices.categories as Record<string, unknown>
   if (!cats[a] || !cats[b]) return { title: 'Comparación no disponible' }
-  const lastUpdate = marketPrices.lastUpdate
   const { priceA, priceB } = getPrices(a, b)
-  const title = `${CATEGORIES[a].title} vs ${CATEGORIES[b].title}: precio del kilo vivo hoy (INMAG ${lastUpdate})`
-  const description = `Comparación de precio en pie: ${CATEGORIES[a].singular} $${fmt(priceA)}/kg vs ${CATEGORIES[b].singular} $${fmt(priceB)}/kg (INMAG, ${lastUpdate}). ${verdict(a, b, lastUpdate)}`
+  const title = `${CATEGORIES[a].title} vs ${CATEGORIES[b].title}: precio del kilo vivo hoy (INMAG ${INMAG_DATE})`
+  const description = `Comparación de precio en pie: ${CATEGORIES[a].singular} $${fmt(priceA)}/kg vs ${CATEGORIES[b].singular} $${fmt(priceB)}/kg (INMAG, ${INMAG_DATE}). ${verdict(a, b, INMAG_DATE)}`
   const url = `https://www.consignatarias.com.ar/precios/comparar/${par}`
   return {
     title,
@@ -119,7 +119,7 @@ export default async function CompararPage({ params }: { params: Promise<{ par: 
   if (!cats[a] || !cats[b]) notFound()
   const lastUpdate = marketPrices.lastUpdate
   const { priceA, priceB, changeA, changeB, pct, higherSlug, lowerSlug, higherPrice, lowerPrice } = getPrices(a, b)
-  const v = verdict(a, b, lastUpdate)
+  const v = verdict(a, b, INMAG_DATE)
   const rows: { slug: CategorySlug; price: number; change: number }[] = [
     { slug: a, price: priceA, change: changeA },
     { slug: b, price: priceB, change: changeB },
@@ -129,18 +129,18 @@ export default async function CompararPage({ params }: { params: Promise<{ par: 
     { question: `¿Qué vale más hoy, ${CATEGORIES[a].title} o ${CATEGORIES[b].title}?`, answer: v },
     {
       question: `¿Cuánto cuesta el kilo vivo de ${CATEGORIES[a].singular} hoy?`,
-      answer: `$${fmt(priceA)}/kg vivo de ${CATEGORIES[a].singular} (INMAG, ${lastUpdate}).`,
+      answer: `$${fmt(priceA)}/kg vivo de ${CATEGORIES[a].singular} (INMAG, ${INMAG_DATE}).`,
     },
     {
       question: `¿Cuánto cuesta el kilo vivo de ${CATEGORIES[b].singular} hoy?`,
-      answer: `$${fmt(priceB)}/kg vivo de ${CATEGORIES[b].singular} (INMAG, ${lastUpdate}).`,
+      answer: `$${fmt(priceB)}/kg vivo de ${CATEGORIES[b].singular} (INMAG, ${INMAG_DATE}).`,
     },
     {
       question: `¿Cuál es la diferencia de precio entre ${CATEGORIES[a].singular} y ${CATEGORIES[b].singular}?`,
       answer:
         pct === 0
-          ? `Hoy cotizan prácticamente igual (INMAG, ${lastUpdate}).`
-          : `$${fmt(higherPrice - lowerPrice)}/kg (${pct}%): ${CATEGORIES[higherSlug].singular} $${fmt(higherPrice)}/kg vs ${CATEGORIES[lowerSlug].singular} $${fmt(lowerPrice)}/kg (INMAG, ${lastUpdate}).`,
+          ? `Hoy cotizan prácticamente igual (INMAG, ${INMAG_DATE}).`
+          : `$${fmt(higherPrice - lowerPrice)}/kg (${pct}%): ${CATEGORIES[higherSlug].singular} $${fmt(higherPrice)}/kg vs ${CATEGORIES[lowerSlug].singular} $${fmt(lowerPrice)}/kg (INMAG, ${INMAG_DATE}).`,
     },
   ]
 
@@ -192,7 +192,7 @@ export default async function CompararPage({ params }: { params: Promise<{ par: 
             ))}
           </div>
           <div className="px-panel py-2 text-xxs text-zinc-600">
-            $/kg vivo (INMAG, {lastUpdate}). La variación % es semanal; la diferencia entre categorías se calcula sobre el precio actual.
+            $/kg vivo (INMAG, {INMAG_DATE}). La variación % es semanal; la diferencia entre categorías se calcula sobre el precio actual.
           </div>
         </div>
 

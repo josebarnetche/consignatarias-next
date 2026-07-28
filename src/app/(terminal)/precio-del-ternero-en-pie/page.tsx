@@ -8,6 +8,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
 
@@ -119,7 +120,7 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿A cuánto está el kilo de ternero hoy?',
-    answer: `El kilo de ternero vivo en pie está hoy (${lastUpdate}) a $${fmt(ternero)}/kg como precio de referencia del Mercado Agroganadero (INMAG/MAG). Es la categoría que más vale por kilo del panel, por encima del novillito ($${fmt(novillito)}) y el novillo ($${fmt(novillo)}). Un ternero tipo de destete de ${PESO_TERNERO} kg equivale así a unos $${fmt(valorTernero)} de referencia. Es un valor de referencia del mercado, no fijado por esta página.`,
+    answer: `El kilo de ternero vivo en pie está hoy (${INMAG_DATE}) a $${fmt(ternero)}/kg como precio de referencia del Mercado Agroganadero (INMAG/MAG). Es la categoría que más vale por kilo del panel, por encima del novillito ($${fmt(novillito)}) y el novillo ($${fmt(novillo)}). Un ternero tipo de destete de ${PESO_TERNERO} kg equivale así a unos $${fmt(valorTernero)} de referencia. Es un valor de referencia del mercado, no fijado por esta página.`,
   },
   {
     question: '¿Cuándo conviene vender terneros?',
@@ -127,13 +128,13 @@ const FAQ = [
   },
   {
     question: '¿Por qué el ternero vale más por kg que el novillo?',
-    answer: `El ternero vale más por kilo que el novillo porque es hacienda de invernada con potencial de crecimiento por delante, no un animal terminado para faena. Hoy el ternero cotiza $${fmt(ternero)}/kg vivo y el novillo $${fmt(novillo)}/kg (referencia INMAG/MAG, ${lastUpdate}). El comprador paga la promesa de kilos futuros: cada kilo de ternero se convierte en varios kilos de novillo durante la recría y el engorde, y esa expectativa se refleja en el precio por kilo.`,
+    answer: `El ternero vale más por kilo que el novillo porque es hacienda de invernada con potencial de crecimiento por delante, no un animal terminado para faena. Hoy el ternero cotiza $${fmt(ternero)}/kg vivo y el novillo $${fmt(novillo)}/kg (referencia INMAG/MAG, ${INMAG_DATE}). El comprador paga la promesa de kilos futuros: cada kilo de ternero se convierte en varios kilos de novillo durante la recría y el engorde, y esa expectativa se refleja en el precio por kilo.`,
   },
 ]
 
 export const metadata: Metadata = {
   title: `Precio del ternero en pie hoy: $${fmt(ternero)}/kg vivo (${lastUpdate}) y estacionalidad`,
-  description: `El kilo de ternero vivo en pie está hoy (${lastUpdate}) a $${fmt(ternero)}/kg como precio de referencia del Mercado Agroganadero (INMAG/MAG): es la categoría de invernada más buscada por el criador que vende post-destete. Cuánto está el ternero por kilo, cómo lo mueve la zafra de terneros (marzo–mayo) y por qué el invierno sostiene el precio.`,
+  description: `El kilo de ternero vivo en pie está hoy (${INMAG_DATE}) a $${fmt(ternero)}/kg como precio de referencia del Mercado Agroganadero (INMAG/MAG): es la categoría de invernada más buscada por el criador que vende post-destete. Cuánto está el ternero por kilo, cómo lo mueve la zafra de terneros (marzo–mayo) y por qué el invierno sostiene el precio.`,
   keywords: [
     'cuanto esta el kilo de ternero vivo en pie',
     'cuanto esta el kilo de ternero vivo',
@@ -148,7 +149,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: `Precio del ternero en pie hoy: $${fmt(ternero)}/kg vivo`,
-    description: `El kilo de ternero vivo en pie está hoy a $${fmt(ternero)}/kg de referencia (INMAG/MAG, ${lastUpdate}). Precio por kilo, estacionalidad y por qué la invernada vale más que la hacienda gorda.`,
+    description: `El kilo de ternero vivo en pie está hoy a $${fmt(ternero)}/kg de referencia (INMAG/MAG, ${INMAG_DATE}). Precio por kilo, estacionalidad y por qué la invernada vale más que la hacienda gorda.`,
     url: PAGE_URL,
     type: 'article',
     images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
@@ -170,7 +171,7 @@ export default function PrecioDelTerneroEnPiePage() {
       />
       <DatasetSchema
         name="Precio del ternero en pie — Mercado Agroganadero"
-        description={`Precio de referencia por kilo vivo del ternero de invernada en el Mercado Agroganadero de Buenos Aires al ${lastUpdate}: $${fmt(ternero)}/kg vivo. Comparado con novillito ($${fmt(novillito)}), novillo ($${fmt(novillo)}), vaquillona ($${fmt(vaquillona)}) y vaca ($${fmt(vaca)}). Fuente INMAG/MAG.`}
+        description={`Precio de referencia por kilo vivo del ternero de invernada en el Mercado Agroganadero de Buenos Aires al ${INMAG_DATE}: $${fmt(ternero)}/kg vivo. Comparado con novillito ($${fmt(novillito)}), novillo ($${fmt(novillo)}), vaquillona ($${fmt(vaquillona)}) y vaca ($${fmt(vaca)}). Fuente INMAG/MAG.`}
         url={PAGE_URL}
         keywords={['precio ternero', 'ternero en pie', 'kilo vivo', 'invernada', 'zafra de terneros', 'mercado agroganadero', 'INMAG']}
         dateModified={lastUpdate}
@@ -195,7 +196,7 @@ export default function PrecioDelTerneroEnPiePage() {
 
         {/* Answer-first: primera oración autocontenida y citable */}
         <p className="speakable-content text-zinc-200 text-base mb-4">
-          El kilo de ternero vivo en pie está hoy ({lastUpdate}) a{' '}
+          El kilo de ternero vivo en pie está hoy ({INMAG_DATE}) a{' '}
           <strong>${fmt(ternero)}/kg</strong> como precio de referencia del Mercado Agroganadero
           (INMAG/MAG); es la categoría que más vale por kilo, por encima del novillito (
           ${fmt(novillito)}) y el novillo (${fmt(novillo)}).
@@ -350,7 +351,7 @@ export default function PrecioDelTerneroEnPiePage() {
           </table>
         </div>
         <p className="text-xxs text-zinc-500 mb-4">
-          Precio por kilo vivo del Mercado Agroganadero (INMAG y panel de categorías, {lastUpdate}).
+          Precio por kilo vivo del Mercado Agroganadero (INMAG y panel de categorías, {INMAG_DATE}).
           Precio de referencia del mercado (INMAG/MAG), no fijado por esta página; cada firma acuerda
           el precio final con el productor.
         </p>

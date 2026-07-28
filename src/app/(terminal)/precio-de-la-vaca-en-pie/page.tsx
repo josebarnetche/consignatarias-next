@@ -8,6 +8,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
 
@@ -104,7 +105,7 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿A cuánto está el kilo de vaca en pie hoy?',
-    answer: `Hoy (${lastUpdate}) el kilo de vaca en pie está en torno a $${fmt(vaca)}/kg vivo según la referencia del Mercado Agroganadero. Por segmento, la vaca de conserva ronda los $${fmt(vacaConserva)}/kg, la vaca de manufactura los $${fmt(vacaManufactura)}/kg y la vaca buena o gorda los $${fmt(vacaBuena)}/kg. Es un precio de referencia del mercado (INMAG/MAG), no fijado por esta página; cada operación se acuerda por calidad y negociación.`,
+    answer: `Hoy (${INMAG_DATE}) el kilo de vaca en pie está en torno a $${fmt(vaca)}/kg vivo según la referencia del Mercado Agroganadero. Por segmento, la vaca de conserva ronda los $${fmt(vacaConserva)}/kg, la vaca de manufactura los $${fmt(vacaManufactura)}/kg y la vaca buena o gorda los $${fmt(vacaBuena)}/kg. Es un precio de referencia del mercado (INMAG/MAG), no fijado por esta página; cada operación se acuerda por calidad y negociación.`,
   },
   {
     question: '¿Cuánto pesa una vaca?',

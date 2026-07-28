@@ -8,6 +8,7 @@ import {
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -120,7 +121,7 @@ const FAQ = [
       'Un novillo de más de 2 años equivale de forma aproximada a 1,10 EV, es decir, requiere algo más que una vaca de cría; un novillito de 1 a 2 años ronda 0,75 EV. Son valores de referencia: el coeficiente exacto depende del peso, la etapa y la ganancia de peso buscada. A modo de contexto de mercado, el novillo cotiza hoy a $' +
       fmt(novillo) +
       '/kg vivo (' +
-      lastUpdate +
+      INMAG_DATE +
       '), precio de referencia del mercado (INMAG/MAG), no fijado por esta página.',
   },
   {
@@ -209,7 +210,7 @@ export default function QueEsElEquivalenteVacaPage() {
           la vaca de cría vale 1,00 y cada categoría vale una fracción o un múltiplo de ese valor. Es
           una herramienta de manejo del pasto —para calcular carga animal y receptividad—, no un valor
           comercial: como contexto de mercado, el novillo cotiza hoy a ${fmt(novillo)}/kg vivo (
-          {lastUpdate}), precio de referencia del mercado (INMAG/MAG), no fijado por esta página.
+          {INMAG_DATE}), precio de referencia del mercado (INMAG/MAG), no fijado por esta página.
         </p>
 
         {/* Qué es */}

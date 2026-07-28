@@ -8,6 +8,7 @@ import {
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -279,7 +280,7 @@ export default function QueEsLaAparceriaPage() {
         <p className="text-xxs text-zinc-500 mb-4">
           Cuadro conceptual de referencia. El canon de arrendamiento se suele expresar en kilos de
           novillo (precio de referencia del mercado, INMAG/MAG, hoy ${fmt(novillo)}/kg vivo al{' '}
-          {lastUpdate}, no fijado por esta página). Cada contrato se instrumenta según lo que
+          {INMAG_DATE}, no fijado por esta página). Cada contrato se instrumenta según lo que
           acuerden las partes y la Ley 13.246.
         </p>
 

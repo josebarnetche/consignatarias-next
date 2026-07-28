@@ -8,6 +8,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
 
@@ -89,29 +90,29 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿A cuánto está el kilo de novillo en pie hoy?',
-    answer: `Hoy (${lastUpdate}) el kilo de novillo en pie está a $${fmt(inmagPrice)} por kilo vivo según el INMAG, el índice del Mercado Agroganadero. Respecto de la rueda anterior el precio ${changeDir} ${fmt(changeAbs)}%. Es un precio de referencia del mercado (INMAG/MAG), no fijado por esta página; cada firma acuerda el precio final con el productor.`,
+    answer: `Hoy (${INMAG_DATE}) el kilo de novillo en pie está a $${fmt(inmagPrice)} por kilo vivo según el INMAG, el índice del Mercado Agroganadero. Respecto de la rueda anterior el precio ${changeDir} ${fmt(changeAbs)}%. Es un precio de referencia del mercado (INMAG/MAG), no fijado por esta página; cada firma acuerda el precio final con el productor.`,
   },
   {
     question: '¿Dónde se forma el precio del novillo en pie?',
-    answer: `El precio del novillo en pie se forma en el Mercado Agroganadero (MAG) de Cañuelas, provincia de Buenos Aires, la plaza testigo que en 2022 reemplazó al histórico Mercado de Liniers. Ahí se rematan miles de cabezas por rueda y el promedio ponderado por volumen del novillo es el INMAG, hoy en $${fmt(inmagPrice)}/kg vivo (${lastUpdate}). Por eso muchos productores todavía dicen «precio Liniers».`,
+    answer: `El precio del novillo en pie se forma en el Mercado Agroganadero (MAG) de Cañuelas, provincia de Buenos Aires, la plaza testigo que en 2022 reemplazó al histórico Mercado de Liniers. Ahí se rematan miles de cabezas por rueda y el promedio ponderado por volumen del novillo es el INMAG, hoy en $${fmt(inmagPrice)}/kg vivo (${INMAG_DATE}). Por eso muchos productores todavía dicen «precio Liniers».`,
   },
   {
     question: '¿Cuánto vale un novillo entero en pesos?',
-    answer: `El valor de un novillo entero es su peso vivo por el precio por kilo. A $${fmt(inmagPrice)}/kg vivo (INMAG, ${lastUpdate}), un novillo de 450 kg vale unos $${fmt(inmagPrice * 450)} y uno de 400 kg unos $${fmt(inmagPrice * 400)}. Es una referencia orientativa según el peso; el precio final lo acuerda cada firma con el productor.`,
+    answer: `El valor de un novillo entero es su peso vivo por el precio por kilo. A $${fmt(inmagPrice)}/kg vivo (INMAG, ${INMAG_DATE}), un novillo de 450 kg vale unos $${fmt(inmagPrice * 450)} y uno de 400 kg unos $${fmt(inmagPrice * 400)}. Es una referencia orientativa según el peso; el precio final lo acuerda cada firma con el productor.`,
   },
   {
     question: '¿A cuánto está el novillo en dólares?',
-    answer: `El precio del novillo en pie en dólares se obtiene dividiendo el INMAG en pesos ($${fmt(inmagPrice)}/kg vivo, ${lastUpdate}) por el tipo de cambio. Como el dólar se mueve todos los días, ese valor conviene mirarlo actualizado en la página del novillo en dólares, donde el índice se convierte con la cotización vigente.`,
+    answer: `El precio del novillo en pie en dólares se obtiene dividiendo el INMAG en pesos ($${fmt(inmagPrice)}/kg vivo, ${INMAG_DATE}) por el tipo de cambio. Como el dólar se mueve todos los días, ese valor conviene mirarlo actualizado en la página del novillo en dólares, donde el índice se convierte con la cotización vigente.`,
   },
   {
     question: '¿Es lo mismo el precio del novillo que el del novillito?',
-    answer: `No: son categorías distintas. Hoy (${lastUpdate}) el novillo cotiza a $${fmt(novillo)}/kg vivo (categoría de referencia del INMAG) y el novillito, de faena más liviana, a $${fmt(price('novillitos'))}/kg. El novillo es macho castrado de más de 2 años y 400–500 kg; el novillito tiene 1–2 años y 300–390 kg. Ambos son precios de referencia del mercado.`,
+    answer: `No: son categorías distintas. Hoy (${INMAG_DATE}) el novillo cotiza a $${fmt(novillo)}/kg vivo (categoría de referencia del INMAG) y el novillito, de faena más liviana, a $${fmt(price('novillitos'))}/kg. El novillo es macho castrado de más de 2 años y 400–500 kg; el novillito tiene 1–2 años y 300–390 kg. Ambos son precios de referencia del mercado.`,
   },
 ]
 
 export const metadata: Metadata = {
-  title: `Precio del novillo en pie hoy: $${fmt(inmagPrice)}/kg vivo (${lastUpdate}) — Liniers/Cañuelas`,
-  description: `A cuánto está el kilo de novillo en pie hoy (${lastUpdate}): $${fmt(inmagPrice)} por kilo vivo según el INMAG del Mercado Agroganadero (ex-Liniers, Cañuelas). Precio de referencia en pesos, actualizado a diario. Novillo de panel $${fmt(novillo)}/kg.`,
+  title: `Precio del novillo en pie hoy: $${fmt(inmagPrice)}/kg vivo (${INMAG_DATE}) — Liniers/Cañuelas`,
+  description: `A cuánto está el kilo de novillo en pie hoy (${INMAG_DATE}): $${fmt(inmagPrice)} por kilo vivo según el INMAG del Mercado Agroganadero (ex-Liniers, Cañuelas). Precio de referencia en pesos, actualizado a diario. Novillo de panel $${fmt(novillo)}/kg.`,
   keywords: [
     'a cuanto esta el kilo de novillo en pie hoy',
     'a cuánto está el kilo de novillo en pie',
@@ -127,7 +128,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: `Precio del novillo en pie hoy: $${fmt(inmagPrice)}/kg vivo`,
-    description: `A cuánto está el kilo de novillo en pie hoy (${lastUpdate}): $${fmt(inmagPrice)}/kg vivo según el INMAG del Mercado Agroganadero (Cañuelas, ex-Liniers). Precio de referencia en pesos.`,
+    description: `A cuánto está el kilo de novillo en pie hoy (${INMAG_DATE}): $${fmt(inmagPrice)}/kg vivo según el INMAG del Mercado Agroganadero (Cañuelas, ex-Liniers). Precio de referencia en pesos.`,
     url: PAGE_URL,
     type: 'article',
     images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
@@ -152,7 +153,7 @@ export default function PrecioDelNovilloEnPiePage() {
       />
       <DatasetSchema
         name="Índice del novillo en pie — INMAG (Mercado Agroganadero)"
-        description={`Precio de referencia del novillo en pie en pesos por kilo vivo según el INMAG (Índice Novillo Mercado Agroganadero). Al ${lastUpdate}: $${fmt(inmagPrice)}/kg vivo. Serie diaria del Mercado Agroganadero de Cañuelas (ex-Liniers).`}
+        description={`Precio de referencia del novillo en pie en pesos por kilo vivo según el INMAG (Índice Novillo Mercado Agroganadero). Al ${INMAG_DATE}: $${fmt(inmagPrice)}/kg vivo. Serie diaria del Mercado Agroganadero de Cañuelas (ex-Liniers).`}
         url={PAGE_URL}
         keywords={['precio del novillo en pie', 'novillo', 'kilo vivo', 'INMAG', 'mercado agroganadero', 'cañuelas', 'liniers']}
         dateModified={lastUpdate}
@@ -178,7 +179,7 @@ export default function PrecioDelNovilloEnPiePage() {
 
         {/* Answer-first: primera oración autocontenida, citable, con el número vivo */}
         <p className="speakable-content text-zinc-200 text-base mb-4">
-          Hoy ({lastUpdate}) el kilo de novillo en pie está a{' '}
+          Hoy ({INMAG_DATE}) el kilo de novillo en pie está a{' '}
           <strong>${fmt(inmagPrice)} por kilo vivo</strong> según el INMAG, el índice del Mercado
           Agroganadero; respecto de la rueda anterior el precio {changeDir} {fmt(changeAbs)}%.
         </p>
@@ -232,7 +233,7 @@ export default function PrecioDelNovilloEnPiePage() {
         </div>
         <p className="text-xxs text-zinc-500 mb-4">
           Serie del INMAG en el Mercado Agroganadero ({inmag.source}), últimas ruedas al{' '}
-          {lastUpdate}. Precio de referencia por kilo vivo, no fijado por esta página.
+          {INMAG_DATE}. Precio de referencia por kilo vivo, no fijado por esta página.
         </p>
 
         <h2 className="text-zinc-100 text-lg font-medium mb-2">
@@ -240,7 +241,7 @@ export default function PrecioDelNovilloEnPiePage() {
         </h2>
         <p className="mb-4">
           El valor de un animal en pie es su <strong>peso vivo</strong> multiplicado por el precio
-          por kilo. A ${fmt(inmagPrice)}/kg vivo ({lastUpdate}), un novillo de 450 kg ronda los{' '}
+          por kilo. A ${fmt(inmagPrice)}/kg vivo ({INMAG_DATE}), un novillo de 450 kg ronda los{' '}
           <strong>${fmt(inmagPrice * 450)}</strong> y uno de 400 kg unos{' '}
           <strong>${fmt(inmagPrice * 400)}</strong>. Es una cuenta orientativa según el peso y la
           terminación de la hacienda; el precio final lo acuerda cada firma consignataria con el

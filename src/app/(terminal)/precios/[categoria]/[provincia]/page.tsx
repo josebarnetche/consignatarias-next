@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 import rematesData from '@/lib/data/remates.json'
 import existencias from '@/lib/data/existencias-bovinas.json'
 import type { Auction } from '@/lib/db/schema'
@@ -125,10 +126,9 @@ export async function generateMetadata({
   const { categoria, provincia } = await params
   if (!isValid(categoria, provincia)) return { title: 'No encontrado' }
   const { cat, prov, price } = getContext(categoria as CategorySlug, provincia)
-  const lastUpdate = marketPrices.lastUpdate
 
   const title = `Precio del ${cat.singular} en ${prov.display} hoy: $${fmt(price)}/kg (INMAG)`
-  const description = `Precio de referencia del kilo vivo de ${cat.singular} en ${prov.display}: $${fmt(price)}/kg (INMAG, ${lastUpdate}). El precio se forma a nivel nacional en el Mercado Agroganadero; en ${prov.display} la hacienda se comercializa en remates en origen. Próximos remates y consignatarias que operan en la provincia.`
+  const description = `Precio de referencia del kilo vivo de ${cat.singular} en ${prov.display}: $${fmt(price)}/kg (INMAG, ${INMAG_DATE}). El precio se forma a nivel nacional en el Mercado Agroganadero; en ${prov.display} la hacienda se comercializa en remates en origen. Próximos remates y consignatarias que operan en la provincia.`
 
   return {
     title,
@@ -168,12 +168,12 @@ export default async function PrecioCategoriaProvinciaPage({
   const changeColor = change >= 0 ? '#34d399' : '#f87171'
   const promedioPeso = price * cat.promedioKg
   // Geo citation — the estimate label travels WITH the origin number (brand rule #1).
-  const citation = `INMAG (Mercado Agroganadero Argentino), vía consignatarias.com.ar, ${lastUpdate} — referencia nacional $${fmt(price)}/kg; estimado en origen ${prov.display} ~$${fmt(basis.localEstimate)}/kg vivo de ${cat.singular} (estimación por distancia, no precio observado)`
+  const citation = `INMAG (Mercado Agroganadero Argentino), vía consignatarias.com.ar, ${INMAG_DATE} — referencia nacional $${fmt(price)}/kg; estimado en origen ${prov.display} ~$${fmt(basis.localEstimate)}/kg vivo de ${cat.singular} (estimación por distancia, no precio observado)`
 
   const faqItems = [
     {
       question: `¿Cuánto vale el kilo vivo de ${cat.singular} en ${prov.display}?`,
-      answer: `El precio de referencia del kilo vivo de ${cat.singular} es $${fmt(price)} (INMAG, ${lastUpdate}). Es un valor nacional: se forma en el Mercado Agroganadero de Cañuelas. En ${prov.display} el precio realizado puede diferir de esa referencia por flete, costos de comercialización y distancia a los centros de consumo y exportación; en provincias alejadas suele ubicarse por debajo. El precio local se forma en los remates en origen.`,
+      answer: `El precio de referencia del kilo vivo de ${cat.singular} es $${fmt(price)} (INMAG, ${INMAG_DATE}). Es un valor nacional: se forma en el Mercado Agroganadero de Cañuelas. En ${prov.display} el precio realizado puede diferir de esa referencia por flete, costos de comercialización y distancia a los centros de consumo y exportación; en provincias alejadas suele ubicarse por debajo. El precio local se forma en los remates en origen.`,
     },
     {
       question: `¿Dónde se forma el precio del ${cat.singular} en Argentina?`,
@@ -222,7 +222,7 @@ export default async function PrecioCategoriaProvinciaPage({
           answer={
             <>
               El kilo vivo de {cat.singular} cotiza <strong className="text-white">${fmt(price)}/kg</strong> de
-              referencia nacional (INMAG, formado en el Mercado Agroganadero de Cañuelas; {lastUpdate}, {changeStr}{' '}
+              referencia nacional (INMAG, formado en el Mercado Agroganadero de Cañuelas; {INMAG_DATE}, {changeStr}{' '}
               semanal). En {prov.display}, a ~{fmt(prov.km)} km del mercado, el valor estimado en origen es{' '}
               <strong className="text-white">~${fmt(basis.localEstimate)}/kg</strong> (≈ −{basis.discountPct}%), por
               flete y costos de comercialización. El precio real se forma en los remates en origen.

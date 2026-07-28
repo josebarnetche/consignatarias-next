@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 import {
   SectionBreadcrumbSchema,
   FAQPageSchema,
@@ -157,7 +158,7 @@ export async function generateMetadata({
   const changeStr = `${c.change >= 0 ? '+' : ''}${c.change}%`
   const lastUpdate = marketPrices.lastUpdate
 
-  const title = `Precio Kilo Vivo ${c.title} Hoy: $${fmt(price)} (INMAG ${lastUpdate})`
+  const title = `Precio Kilo Vivo ${c.title} Hoy: $${fmt(price)} (INMAG ${INMAG_DATE})`
   const description = `Precio del kilo vivo de ${c.singular} hoy: $${fmt(price)} (${changeStr} semanal). Un ${c.singular} promedio de ${c.promedioKg} kg ronda los $${fmt(price * c.promedioKg)}. Actualizado ${lastUpdate} desde Mercado Agroganadero.`
 
   return {
@@ -176,7 +177,7 @@ export async function generateMetadata({
     ],
     openGraph: {
       images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
-      title: `Precio Kilo Vivo ${c.title} Hoy $${fmt(price)} — INMAG ${lastUpdate}`,
+      title: `Precio Kilo Vivo ${c.title} Hoy $${fmt(price)} — INMAG ${INMAG_DATE}`,
       description,
       url: `https://www.consignatarias.com.ar/precios/${categoria}`,
       type: 'website',
@@ -277,7 +278,7 @@ export default async function PreciosCategoriaPage({
   const cleanName = (cat: string) => (subcatPrefix ? cat.replace(new RegExp('^' + subcatPrefix, 'i'), '').trim() : cat)
 
   // Server-built citation string (CitaBlock copies it; observed/national = "precio de referencia", no estimate tag).
-  const citation = `INMAG (Mercado Agroganadero Argentino), vía consignatarias.com.ar, ${lastUpdate} — $${fmt(price)}/kg vivo de ${c.singular} (precio de referencia)`
+  const citation = `INMAG (Mercado Agroganadero Argentino), vía consignatarias.com.ar, ${INMAG_DATE} — $${fmt(price)}/kg vivo de ${c.singular} (precio de referencia)`
 
   // Sibling categories for navigation
   const others = ALL_CATEGORIES.filter((x) => x !== categoria).map((slug) => ({
@@ -291,12 +292,12 @@ export default async function PreciosCategoriaPage({
   // Direct, number-first answer for each conversational phrasing, built with the
   // live price. Honest: leads with the INMAG reference, then the per-head figure.
   const convoAnswer = (q: string): string => {
-    const head = `El kilo vivo de ${c.singular} está a $${fmt(price)} (INMAG, ${lastUpdate}; ${changeStr} semanal). ${c.articulo[0].toUpperCase()}${c.articulo.slice(1)} ${c.singular} ${c.vivoAdj} de ${c.promedioKg} kg ronda los $${fmt(promedioPeso)} a precio de referencia.`
+    const head = `El kilo vivo de ${c.singular} está a $${fmt(price)} (INMAG, ${INMAG_DATE}; ${changeStr} semanal). ${c.articulo[0].toUpperCase()}${c.articulo.slice(1)} ${c.singular} ${c.vivoAdj} de ${c.promedioKg} kg ronda los $${fmt(promedioPeso)} a precio de referencia.`
     if (q.includes('en pie')) {
-      return `El kilo de ${c.singular} en pie (peso vivo) cotiza a $${fmt(price)} según el INMAG del ${lastUpdate} (${changeStr} semanal). Es la referencia del Mercado Agroganadero; el precio realizado varía según peso, terminación y plaza.`
+      return `El kilo de ${c.singular} en pie (peso vivo) cotiza a $${fmt(price)} según el INMAG del ${INMAG_DATE} (${changeStr} semanal). Es la referencia del Mercado Agroganadero; el precio realizado varía según peso, terminación y plaza.`
     }
     if (q.includes('adulta')) {
-      return `Una vaca adulta de descarte se referencia en $${fmt(price)}/kg vivo (INMAG, ${lastUpdate}). Una vaca de ${c.promedioKg} kg ronda los $${fmt(promedioPeso)}. El valor final depende de estado, terminación y plaza de venta.`
+      return `Una vaca adulta de descarte se referencia en $${fmt(price)}/kg vivo (INMAG, ${INMAG_DATE}). Una vaca de ${c.promedioKg} kg ronda los $${fmt(promedioPeso)}. El valor final depende de estado, terminación y plaza de venta.`
     }
     return head
   }
@@ -304,7 +305,7 @@ export default async function PreciosCategoriaPage({
   const faqItems = [
     {
       question: `¿Cuánto está el kilo vivo de ${c.singular} hoy?`,
-      answer: `El kilo vivo de ${c.singular} cotiza a $${fmt(price)} hoy según el INMAG del ${lastUpdate}, con variación semanal de ${changeStr}. Referencia del Mercado Agroganadero de Buenos Aires.`,
+      answer: `El kilo vivo de ${c.singular} cotiza a $${fmt(price)} hoy según el INMAG del ${INMAG_DATE}, con variación semanal de ${changeStr}. Referencia del Mercado Agroganadero de Buenos Aires.`,
     },
     {
       question: `¿Cuál es el precio del kilo vivo de ${c.singular} en Argentina?`,
@@ -327,7 +328,7 @@ export default async function PreciosCategoriaPage({
       <ProductSchema name={`${c.title} en pie`} price={price} />
       <ArticleSchema
         headline={`Precio del kilo vivo de ${c.singular} hoy: $${fmt(price)}`}
-        description={`Cotización diaria del kilo vivo de ${c.singular} en Argentina, INMAG ${lastUpdate}.`}
+        description={`Cotización diaria del kilo vivo de ${c.singular} en Argentina, INMAG ${INMAG_DATE}.`}
       />
       <SpeakableSchema
         url={`https://www.consignatarias.com.ar/precios/${categoria}`}
@@ -363,7 +364,7 @@ export default async function PreciosCategoriaPage({
           answer={
             <>
               El kilo vivo de {c.singular} cotiza <strong className="text-white">${fmt(price)}/kg</strong> de
-              referencia (INMAG, Mercado Agroganadero de Cañuelas; {lastUpdate}, {changeStr} semanal).{' '}
+              referencia (INMAG, Mercado Agroganadero de Cañuelas; {INMAG_DATE}, {changeStr} semanal).{' '}
               {`${c.articulo.charAt(0).toUpperCase()}${c.articulo.slice(1)}`} {c.singular} promedio de {c.promedioKg} kg
               ronda los <strong className="text-white">${fmt(promedioPeso)}</strong>. El precio realizado varía según
               peso, terminación y la plaza o remate donde se venda.

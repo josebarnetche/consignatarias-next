@@ -10,6 +10,7 @@ import { SeasonalityHeatmap } from '@/components/market/SeasonalityHeatmap'
 import { ElCorredorCTA } from '@/components/ElCorredorCTA'
 import { ChicagoReference } from '@/components/market/ChicagoReference'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // daily rebuild via Vercel
 
@@ -31,7 +32,7 @@ const MERCADO_FAQ = [
   },
   {
     question: '¿Cuál es el precio del kilo vivo de novillo en Argentina?',
-    answer: `El precio del kilo vivo de novillo en Argentina es de $${fmt(novillo)} según el INMAG del ${lastUpdate}, con variación semanal de ${inmagChangeStr}. Es la referencia diaria del Mercado Agroganadero de Buenos Aires.`,
+    answer: `El precio del kilo vivo de novillo en Argentina es de $${fmt(novillo)} según el INMAG del ${INMAG_DATE}, con variación semanal de ${inmagChangeStr}. Es la referencia diaria del Mercado Agroganadero de Buenos Aires.`,
   },
   {
     question: '¿Cuánto sale un ternero vivo en Argentina 2026?',
@@ -74,7 +75,7 @@ export const metadata: Metadata = {
     'cotizacion hacienda',
   ],
   openGraph: {
-    title: `Precio Kilo Vivo Novillo Hoy $${fmt(novillo)} — INMAG ${lastUpdate}`,
+    title: `Precio Kilo Vivo Novillo Hoy $${fmt(novillo)} — INMAG ${INMAG_DATE}`,
     description: `Novillo $${fmt(novillo)} · Ternero $${fmt(ternero)} · Vaquillona $${fmt(vaquillona)} · Vaca $${fmt(vaca)}. Mercado Agroganadero argentino actualizado diariamente.`,
     url: 'https://www.consignatarias.com.ar/mercado',
     type: 'website',

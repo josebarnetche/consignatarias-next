@@ -8,6 +8,7 @@ import {
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -69,7 +70,7 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿Cuánto cobra de comisión una consignataria?',
-    answer: `Una consignataria de hacienda cobra habitualmente una comisión de venta en torno al 2% al 4% del importe de la operación —a veces hasta el 5%—, típicamente cerca del 3% más IVA, y su valor lo fija cada firma, no lo determina esta página. Sobre un lote testigo de ${cabezasTipo} novillos de ${pesoTipo} kg al precio de referencia de hoy ($${fmt(novillo)}/kg vivo, ${lastUpdate}), el lote vale unos $${fmt(valorLoteTipo)} y una comisión de venta del ${comisionVentaPct}% equivale a cerca de $${fmt(comisionVentaTipo)}. Es un ejemplo orientativo con precio de referencia del mercado (INMAG/MAG), no una cotización.`,
+    answer: `Una consignataria de hacienda cobra habitualmente una comisión de venta en torno al 2% al 4% del importe de la operación —a veces hasta el 5%—, típicamente cerca del 3% más IVA, y su valor lo fija cada firma, no lo determina esta página. Sobre un lote testigo de ${cabezasTipo} novillos de ${pesoTipo} kg al precio de referencia de hoy ($${fmt(novillo)}/kg vivo, ${INMAG_DATE}), el lote vale unos $${fmt(valorLoteTipo)} y una comisión de venta del ${comisionVentaPct}% equivale a cerca de $${fmt(comisionVentaTipo)}. Es un ejemplo orientativo con precio de referencia del mercado (INMAG/MAG), no una cotización.`,
   },
   {
     question: '¿La comisión la paga el comprador o el vendedor?',
@@ -170,7 +171,7 @@ export default function CuantoCobraDeComisionUnaConsignatariaPage() {
 
         <p className="mb-4">
           Ese porcentaje se aplica sobre el valor de la hacienda comercializada, que se forma en{' '}
-          <strong>pesos por kilo vivo</strong>. Hoy ({lastUpdate}) el novillo cotiza a{' '}
+          <strong>pesos por kilo vivo</strong>. Hoy ({INMAG_DATE}) el novillo cotiza a{' '}
           <strong>${fmt(novillo)}/kg vivo</strong> como precio de referencia del mercado
           (INMAG/MAG), no fijado por esta página: sobre ese valor se calcula tanto el importe de la
           operación como la comisión y los gastos que se descuentan en la liquidación.

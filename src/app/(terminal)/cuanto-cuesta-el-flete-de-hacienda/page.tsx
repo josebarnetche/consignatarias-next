@@ -8,6 +8,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -180,7 +181,7 @@ export default function CuantoCuestaElFleteDeHaciendaPage() {
         </p>
 
         <p className="mb-4">
-          Como referencia de magnitud, un novillo terminado de {pesoNovillo} kg vale hoy ({lastUpdate})
+          Como referencia de magnitud, un novillo terminado de {pesoNovillo} kg vale hoy ({INMAG_DATE})
           alrededor de <strong>${fmt(valorNovillo)}</strong> al precio de referencia de{' '}
           <strong>${fmt(novillo)}/kg vivo</strong> (INMAG/MAG). Sobre ese valor, el flete incide en un
           porcentaje bajo en viajes cortos y más sensible en la media y larga distancia; siempre se

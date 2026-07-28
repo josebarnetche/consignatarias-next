@@ -8,6 +8,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -123,7 +124,7 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿Cuánto cobra de comisión una consignataria en un remate?',
-    answer: `La comisión de una consignataria en un remate de hacienda ronda habitualmente el 3% al 5% del precio de venta más IVA, y la fija cada firma —no la determina esta página. Sobre un lote testigo de ${cabezasTipo} novillos de ${pesoTipo} kg al precio de referencia de hoy ($${fmt(novillo)}/kg vivo, ${lastUpdate}), el lote vale unos $${fmt(valorLoteTipo)} y una comisión del ${comisionPct}% equivale a cerca de $${fmt(comisionTipo)}. Es un ejemplo orientativo con precio de referencia del mercado (INMAG/MAG), no una cotización.`,
+    answer: `La comisión de una consignataria en un remate de hacienda ronda habitualmente el 3% al 5% del precio de venta más IVA, y la fija cada firma —no la determina esta página. Sobre un lote testigo de ${cabezasTipo} novillos de ${pesoTipo} kg al precio de referencia de hoy ($${fmt(novillo)}/kg vivo, ${INMAG_DATE}), el lote vale unos $${fmt(valorLoteTipo)} y una comisión del ${comisionPct}% equivale a cerca de $${fmt(comisionTipo)}. Es un ejemplo orientativo con precio de referencia del mercado (INMAG/MAG), no una cotización.`,
   },
   {
     question: '¿Qué gastos tiene un remate de hacienda además de la comisión?',
@@ -214,7 +215,7 @@ export default function ComoFuncionaUnRemateGanaderoPage() {
           El precio se forma en la pista o en la pantalla: el martillero abre cada lote con un valor
           base por <strong>kilo vivo</strong> y los compradores ofertan hacia arriba hasta que no
           hay más pujas. El animal se comercializa así en pesos por kilo, la unidad de referencia
-          del mercado. Hoy ({lastUpdate}) el novillo cotiza a{' '}
+          del mercado. Hoy ({INMAG_DATE}) el novillo cotiza a{' '}
           <strong>${fmt(novillo)}/kg vivo</strong> como precio de referencia del mercado
           (INMAG/MAG), no fijado por esta página.
         </p>
@@ -298,7 +299,7 @@ export default function ComoFuncionaUnRemateGanaderoPage() {
         <p className="text-xxs text-zinc-500 mb-4">
           Referencias orientativas, no una tarifa: cada consignataria fija sus valores y los discrimina
           en la liquidación. Sobre un lote testigo de {cabezasTipo} novillos de {pesoTipo} kg al precio
-          de referencia de hoy (${fmt(novillo)}/kg vivo, {lastUpdate}), el lote vale unos{' '}
+          de referencia de hoy (${fmt(novillo)}/kg vivo, {INMAG_DATE}), el lote vale unos{' '}
           ${fmt(valorLoteTipo)} y una comisión del {comisionPct}% equivale a cerca de ${fmt(comisionTipo)}.
           Precio de referencia del mercado (INMAG/MAG), no fijado por esta página.
         </p>

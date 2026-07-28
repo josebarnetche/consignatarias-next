@@ -8,6 +8,7 @@ import {
   DatasetSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
 
@@ -162,7 +163,7 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿Cuál es la diferencia entre novillo y novillito?',
-    answer: `La diferencia entre novillo y novillito es la edad y el peso: ambos son machos castrados, pero el novillito tiene 1–2 años y 300–390 kg, mientras que el novillo supera los 2 años y llega a 400–500 kg. El novillo es la categoría de referencia del mercado (sobre la que se calcula el INMAG) y hoy vale $${fmt(novillo)}/kg vivo; el novillito, de faena más liviana, cotiza a $${fmt(novillito)}/kg (Mercado Agroganadero, ${lastUpdate}). Son precios de referencia del mercado, no fijados por esta página.`,
+    answer: `La diferencia entre novillo y novillito es la edad y el peso: ambos son machos castrados, pero el novillito tiene 1–2 años y 300–390 kg, mientras que el novillo supera los 2 años y llega a 400–500 kg. El novillo es la categoría de referencia del mercado (sobre la que se calcula el INMAG) y hoy vale $${fmt(novillo)}/kg vivo; el novillito, de faena más liviana, cotiza a $${fmt(novillito)}/kg (Mercado Agroganadero, ${INMAG_DATE}). Son precios de referencia del mercado, no fijados por esta página.`,
   },
   {
     question: '¿Novillo o vaquillona, cuál pesa más?',
@@ -180,7 +181,7 @@ const FAQ = [
 
 export const metadata: Metadata = {
   title: `Novillo, novillito, vaquillona, ternero y vaca: diferencias y precios ${lastUpdate.slice(0, 4)}`,
-  description: `Sexo, edad y peso definen cada categoría de hacienda. Novillo (macho castrado +2 años, 400–500 kg) $${fmt(novillo)}/kg, novillito (1–2 años) $${fmt(novillito)}/kg, vaquillona (hembra sin parir) $${fmt(vaquillona)}/kg, ternero $${fmt(ternero)}/kg y vaca $${fmt(vaca)}/kg vivo, con precio de referencia del INMAG (${lastUpdate}).`,
+  description: `Sexo, edad y peso definen cada categoría de hacienda. Novillo (macho castrado +2 años, 400–500 kg) $${fmt(novillo)}/kg, novillito (1–2 años) $${fmt(novillito)}/kg, vaquillona (hembra sin parir) $${fmt(vaquillona)}/kg, ternero $${fmt(ternero)}/kg y vaca $${fmt(vaca)}/kg vivo, con precio de referencia del INMAG (${INMAG_DATE}).`,
   keywords: [
     'diferencia entre novillo novillito vaquillona ternero y vaca',
     'diferencia entre novillo y novillito',
@@ -320,7 +321,7 @@ export default function NovilloVsVaquillonaPage() {
           </table>
         </div>
         <p className="text-xxs text-zinc-500 mb-4">
-          Precio por kilo vivo del Mercado Agroganadero (INMAG y panel de categorías, {lastUpdate}).
+          Precio por kilo vivo del Mercado Agroganadero (INMAG y panel de categorías, {INMAG_DATE}).
           Ternero y ternera comparten el panel de invernada. Es precio de referencia del mercado, no
           fijado por esta página; cada firma acuerda el precio final con el productor.
         </p>
@@ -332,7 +333,7 @@ export default function NovilloVsVaquillonaPage() {
           consumo interno (hoy ${fmt(novillito)}/kg vivo). El <strong>novillo</strong> supera los 2
           años y llega a 400–500 kg, es la categoría de referencia del mercado —sobre la que se
           calcula el INMAG— y la base de la exportación y el consumo pesado (hoy ${fmt(novillo)}/kg).
-          El novillo pesa más y cotiza más caro por kilo que el novillito ({lastUpdate}).
+          El novillo pesa más y cotiza más caro por kilo que el novillito ({INMAG_DATE}).
         </p>
 
         <h2 className="text-zinc-100 text-lg font-medium mb-2">Novillo vs vaquillona</h2>

@@ -8,6 +8,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -146,7 +147,7 @@ const FAQ = [
   },
   {
     question: '¿Cómo se reparte en la capitalización de hacienda?',
-    answer: `Se reparte el aumento de kilos —la diferencia entre la pesada de salida y la de entrada— según el porcentaje pactado al inicio, habitualmente 50/50 o 60/40 a favor del campo. Si esos kilos se valorizan, se toma un precio de referencia del mercado (por ejemplo el novillo a $${fmt(novillo)}/kg vivo o el ternero a $${fmt(ternero)}/kg, INMAG/MAG al ${lastUpdate}, no fijado por esta página). El capitalizador retira su hacienda con más peso y el dueño del campo cobra su parte del kilo producido sin haber comprado los animales.`,
+    answer: `Se reparte el aumento de kilos —la diferencia entre la pesada de salida y la de entrada— según el porcentaje pactado al inicio, habitualmente 50/50 o 60/40 a favor del campo. Si esos kilos se valorizan, se toma un precio de referencia del mercado (por ejemplo el novillo a $${fmt(novillo)}/kg vivo o el ternero a $${fmt(ternero)}/kg, INMAG/MAG al ${INMAG_DATE}, no fijado por esta página). El capitalizador retira su hacienda con más peso y el dueño del campo cobra su parte del kilo producido sin haber comprado los animales.`,
   },
   {
     question: '¿Cuál es la diferencia con el pastoreo y con la aparcería?',
@@ -270,7 +271,7 @@ export default function QueEsLaCapitalizacionDeHaciendaPage() {
         <p className="text-xxs text-zinc-500 mb-4">
           Cuadro conceptual de referencia. El aumento de kilos se valoriza a precio de referencia del
           mercado (INMAG/MAG; novillo hoy ${fmt(novillo)}/kg vivo, ternero ${fmt(ternero)}/kg al{' '}
-          {lastUpdate}, no fijado por esta página). Cada capitalización se instrumenta según lo que
+          {INMAG_DATE}, no fijado por esta página). Cada capitalización se instrumenta según lo que
           acuerden las partes.
         </p>
 

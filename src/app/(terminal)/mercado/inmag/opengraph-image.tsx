@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og'
 import marketData from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 import { OG_COLORS, loadOgFonts, BrandChrome, Halo } from '@/lib/og/brand'
 
 // Dynamic price-OG card for /mercado/inmag — bakes the live INMAG number into
@@ -28,7 +29,7 @@ export default async function OGImage() {
   const changeStr = `${flat ? '' : up ? '↑ +' : '↓ '}${Math.abs(change).toFixed(1).replace('.', ',')}% vs. anterior`
 
   // market-prices.json carries lastUpdate as YYYY-MM-DD; show dd/mm/yyyy.
-  const lastUpdate = (marketData as { lastUpdate?: string }).lastUpdate || ''
+  const lastUpdate = INMAG_DATE // fecha de la última rueda del índice, no del scrape
   const [y, m, d] = lastUpdate.split('-')
   const dateStr = y && m && d ? `${d}/${m}/${y}` : ''
 

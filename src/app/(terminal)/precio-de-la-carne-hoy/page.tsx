@@ -9,6 +9,7 @@ import {
   HowToSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el scraper reescribe el JSON 14:00 ART
 
@@ -38,7 +39,7 @@ const mostradorMax = enPie * 4
 const PASOS = [
   {
     name: 'Animal en pie (INMAG): el precio ancla',
-    text: `El productor vende el novillo por kilo vivo en el remate o el Mercado Agroganadero. Hoy (${lastUpdate}) el kilo vivo de referencia (INMAG) está en $${fmt(enPie)}. Un novillo de ${PESO_VIVO} kg vale así unos $${fmt(valorAnimal)}. Este es el ancla: todo lo que viene después se cuenta a partir de este precio.`,
+    text: `El productor vende el novillo por kilo vivo en el remate o el Mercado Agroganadero. Hoy (${INMAG_DATE}) el kilo vivo de referencia (INMAG) está en $${fmt(enPie)}. Un novillo de ${PESO_VIVO} kg vale así unos $${fmt(valorAnimal)}. Este es el ancla: todo lo que viene después se cuenta a partir de este precio.`,
     url: `${BASE_URL}/mercado/inmag`,
   },
   {
@@ -97,7 +98,7 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿Por qué sube la carne?',
-    answer: `La carne sube cuando sube el animal en pie, que es el ancla del precio: hoy (${lastUpdate}) el kilo vivo de referencia (INMAG) está en $${fmt(enPie)}. Cuando hay menos oferta de hacienda —por sequía, retención de vientres o menos faena— el kilo vivo aumenta en el remate y ese aumento se traslada, eslabón por eslabón, al mostrador. Sobre ese piso se suman la faena, el desposte, el transporte, los impuestos y el margen del comercio (el spread), más el efecto de la inflación y del dólar sobre los costos. Por eso el precio de la carne se mueve, en primer lugar, con el precio de la hacienda en pie.`,
+    answer: `La carne sube cuando sube el animal en pie, que es el ancla del precio: hoy (${INMAG_DATE}) el kilo vivo de referencia (INMAG) está en $${fmt(enPie)}. Cuando hay menos oferta de hacienda —por sequía, retención de vientres o menos faena— el kilo vivo aumenta en el remate y ese aumento se traslada, eslabón por eslabón, al mostrador. Sobre ese piso se suman la faena, el desposte, el transporte, los impuestos y el margen del comercio (el spread), más el efecto de la inflación y del dólar sobre los costos. Por eso el precio de la carne se mueve, en primer lugar, con el precio de la hacienda en pie.`,
   },
   {
     question: '¿Cuánto del precio del asado es el animal en pie?',
@@ -115,7 +116,7 @@ const FAQ = [
 
 export const metadata: Metadata = {
   title: `Precio de la carne hoy: del animal en pie al mostrador (${lastUpdate})`,
-  description: `El precio de la carne al mostrador se forma en tres eslabones: animal en pie (INMAG) → gancho/media res → mostrador. Hoy (${lastUpdate}) el kilo vivo de referencia está en $${fmt(enPie)} y el animal en pie explica solo un cuarto a un tercio del precio de la góndola. Precios de referencia, no de góndola específica.`,
+  description: `El precio de la carne al mostrador se forma en tres eslabones: animal en pie (INMAG) → gancho/media res → mostrador. Hoy (${INMAG_DATE}) el kilo vivo de referencia está en $${fmt(enPie)} y el animal en pie explica solo un cuarto a un tercio del precio de la góndola. Precios de referencia, no de góndola específica.`,
   keywords: [
     'precio de la carne hoy',
     'por que sube la carne',
@@ -130,7 +131,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: `Precio de la carne hoy: del animal en pie al mostrador`,
-    description: `Tres eslabones forman el precio de la carne: animal en pie (INMAG, hoy $${fmt(enPie)}/kg vivo) → gancho/media res → mostrador. El precio en pie es el ancla. Precios de referencia (${lastUpdate}).`,
+    description: `Tres eslabones forman el precio de la carne: animal en pie (INMAG, hoy $${fmt(enPie)}/kg vivo) → gancho/media res → mostrador. El precio en pie es el ancla. Precios de referencia (${INMAG_DATE}).`,
     url: PAGE_URL,
     type: 'article',
     images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
@@ -152,7 +153,7 @@ export default function PrecioDeLaCarneHoyPage() {
       />
       <DatasetSchema
         name="Precio de la carne por eslabón — del animal en pie al mostrador"
-        description={`Precio de referencia de la carne por eslabón al ${lastUpdate}: animal en pie (INMAG) $${fmt(enPie)}/kg vivo, res en gancho ~$${fmt(precioGancho)}/kg, y mostrador de referencia entre $${fmt(mostradorMin)} y $${fmt(mostradorMax)}/kg. Precios de referencia del mercado (INMAG/MAG), no fijados por esta página.`}
+        description={`Precio de referencia de la carne por eslabón al ${INMAG_DATE}: animal en pie (INMAG) $${fmt(enPie)}/kg vivo, res en gancho ~$${fmt(precioGancho)}/kg, y mostrador de referencia entre $${fmt(mostradorMin)} y $${fmt(mostradorMax)}/kg. Precios de referencia del mercado (INMAG/MAG), no fijados por esta página.`}
         url={PAGE_URL}
         keywords={['precio de la carne', 'animal en pie', 'INMAG', 'media res', 'spread', 'kilo vivo', 'mostrador']}
         dateModified={lastUpdate}
@@ -184,7 +185,7 @@ export default function PrecioDeLaCarneHoyPage() {
         <p className="speakable-content text-zinc-200 text-base mb-4">
           El precio de la carne al mostrador se forma en tres eslabones —
           <strong>animal en pie</strong> (INMAG) → <strong>gancho / media res</strong> →{' '}
-          <strong>mostrador</strong>— y el precio en pie es el ancla: hoy ({lastUpdate}) el kilo
+          <strong>mostrador</strong>— y el precio en pie es el ancla: hoy ({INMAG_DATE}) el kilo
           vivo de referencia está en <strong>${fmt(enPie)}</strong>, y sobre ese piso se suman la
           faena, el desposte y el margen del comercio.
         </p>
@@ -252,7 +253,7 @@ export default function PrecioDeLaCarneHoyPage() {
           </table>
         </div>
         <p className="text-xxs text-zinc-500 mb-4">
-          El animal en pie es un dato medido (INMAG / Mercado Agroganadero, {lastUpdate}). El kilo
+          El animal en pie es un dato medido (INMAG / Mercado Agroganadero, {INMAG_DATE}). El kilo
           gancho se deriva del kilo vivo por el rinde; el mostrador es una referencia orientativa
           (del orden de 3 a 4 veces el kilo vivo), no una cotización de góndola específica. El
           precio final de cada corte lo fija la carnicería.

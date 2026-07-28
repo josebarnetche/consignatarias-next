@@ -3,6 +3,7 @@ import Link from 'next/link'
 import marketPrices from '@/lib/data/market-prices.json'
 import rematesData from '@/lib/data/remates.json'
 import McpShowcase, { type ShowcaseData } from './McpShowcase'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const metadata: Metadata = {
   title: 'MCP — Consignatarias para agentes IA | consignatarias.com.ar',
@@ -100,7 +101,7 @@ function buildShowcase(): ShowcaseData {
   const loteKg = loteCab * 450
   const loteArs = loteKg * inmag.current
   return {
-    fecha: marketPrices.lastUpdate,
+    fecha: INMAG_DATE, // fecha de la última rueda real del INMAG, no la del scrape
     lote: {
       cab: String(loteCab),
       kgTotal: fmt(loteKg),

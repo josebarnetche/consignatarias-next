@@ -8,6 +8,7 @@ import {
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -73,7 +74,7 @@ const FAQ = [
   {
     question: '¿Cómo calculo mi precio de tranquera?',
     answer:
-      `Se parte del precio de mercado por kilo vivo —hoy el novillo se referencia en $${fmt(novillo)}/kg (${lastUpdate}) según INMAG/MAG— y se le restan, en orden, el desbaste sobre el peso, la comisión de la consignataria y el flete sobre el importe, más sellos y tasas. El resultado, dividido por los kilos, es el precio neto por kilo o precio de tranquera. La liquidación de la consignataria muestra cada concepto discriminado.`,
+      `Se parte del precio de mercado por kilo vivo —hoy el novillo se referencia en $${fmt(novillo)}/kg (${INMAG_DATE}) según INMAG/MAG— y se le restan, en orden, el desbaste sobre el peso, la comisión de la consignataria y el flete sobre el importe, más sellos y tasas. El resultado, dividido por los kilos, es el precio neto por kilo o precio de tranquera. La liquidación de la consignataria muestra cada concepto discriminado.`,
   },
   {
     question: '¿Conviene comparar el precio de tranquera entre consignatarias?',
@@ -160,7 +161,7 @@ export default function PrecioDeTranqueraPage() {
           productor por su hacienda, una vez descontados el <strong>desbaste</strong>, la{' '}
           <strong>comisión</strong>, el <strong>flete</strong> y los gastos, a diferencia del{' '}
           <strong>precio de mercado o de pizarra</strong>, que es el valor bruto de referencia por
-          kilo vivo. Hoy ({lastUpdate}) el novillo se referencia en{' '}
+          kilo vivo. Hoy ({INMAG_DATE}) el novillo se referencia en{' '}
           <strong>${fmt(novillo)}/kg vivo</strong> como precio de referencia del mercado
           (INMAG/MAG), no fijado por esta página.
         </p>
@@ -275,7 +276,7 @@ export default function PrecioDeTranqueraPage() {
         </h2>
         <p className="mb-4">
           A modo de ejemplo ilustrativo se puede partir del valor de referencia del novillo —hoy{' '}
-          <strong>${fmt(novillo)}/kg vivo</strong> ({lastUpdate}, INMAG/MAG)— y aplicar los
+          <strong>${fmt(novillo)}/kg vivo</strong> ({INMAG_DATE}, INMAG/MAG)— y aplicar los
           descuentos, sabiendo que cada consignataria fija sus condiciones:
         </p>
         <ul className="mb-6 space-y-2 list-disc pl-5 text-zinc-400">

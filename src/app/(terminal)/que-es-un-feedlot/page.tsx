@@ -7,6 +7,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -92,7 +93,7 @@ const FAQ = [
   },
   {
     question: '¿Cuánto maíz necesita?',
-    answer: `Con una conversión de alrededor de 7:1, hacen falta cerca de 7 kg de ración por cada kilo de peso ganado, y el grano es la mayor parte de esa ración: un ciclo de engorde ronda cerca de una tonelada de grano por animal. A precio de mercado, el maíz cotiza US$${fmt(cornUsd)}/tn (MAGYP FOB, ${lastUpdate}) —unos $${fmt(cornArsKg)}/kg al dólar de referencia—, de modo que el costo de alimentación por kilo ganado ronda $${fmt(costoAlimentoPorKg)}, contra un novillo en pie de $${fmt(novillo)}/kg vivo (INMAG del ${lastUpdate}). Son valores de referencia del mercado, no fijados por esta página.`,
+    answer: `Con una conversión de alrededor de 7:1, hacen falta cerca de 7 kg de ración por cada kilo de peso ganado, y el grano es la mayor parte de esa ración: un ciclo de engorde ronda cerca de una tonelada de grano por animal. A precio de mercado, el maíz cotiza US$${fmt(cornUsd)}/tn (MAGYP FOB, ${lastUpdate}) —unos $${fmt(cornArsKg)}/kg al dólar de referencia—, de modo que el costo de alimentación por kilo ganado ronda $${fmt(costoAlimentoPorKg)}, contra un novillo en pie de $${fmt(novillo)}/kg vivo (INMAG del ${INMAG_DATE}). Son valores de referencia del mercado, no fijados por esta página.`,
   },
 ]
 
@@ -162,7 +163,7 @@ export default function QueEsUnFeedlotPage() {
           economía la manda el maíz: hoy cotiza US${fmt(cornUsd)}/tn (MAGYP FOB, {lastUpdate}) —unos $
           {fmt(cornArsKg)}/kg al dólar de referencia—, mientras el novillo de salida vale $
           {fmt(novillo)}/kg vivo y el ternero de reposición que entra al corral $
-          {fmt(ternero)}/kg (INMAG del {lastUpdate}). Son precios de referencia del mercado, no fijados
+          {fmt(ternero)}/kg (INMAG del {INMAG_DATE}). Son precios de referencia del mercado, no fijados
           por esta página.
         </p>
 
@@ -171,7 +172,7 @@ export default function QueEsUnFeedlotPage() {
         <p className="text-zinc-400 mb-4">
           El circuito es simple: se compran terneros o novillitos livianos —hoy el ternero de
           reposición ronda ${fmt(ternero)}/kg y el novillito ${fmt(novillito)}/kg (INMAG del{' '}
-          {lastUpdate})—, se los agrupa por peso y categoría en corrales y se los alimenta con una
+          {INMAG_DATE})—, se los agrupa por peso y categoría en corrales y se los alimenta con una
           ración balanceada varias veces por día. La dieta se arranca con más fibra y se va cargando
           de grano en el período de acostumbramiento para evitar trastornos digestivos (acidosis).
           Durante 90-150 días el animal gana 1 a 1,5 kg diarios; cuando alcanza el peso y la

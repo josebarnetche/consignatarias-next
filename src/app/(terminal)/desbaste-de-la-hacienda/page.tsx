@@ -8,6 +8,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -101,7 +102,7 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿Cuánto es el desbaste normal de la hacienda?',
-    answer: `El desbaste normal de la hacienda va del 3% al 8% del peso vivo, según la distancia del flete y las horas de ayuno: cuanto más largo el viaje y más prolongado el ayuno, mayor la merma pactada. Un valor frecuente en operaciones de corta y media distancia ronda el 4% al 5%. Sobre un novillo de ${pesoVivoTipo} kg vivo, un 5% son ${fmt(kgMermaTipo)} kg menos y quedan ${fmt(kgNetosTipo)} kg netos; a $${fmt(novillo)}/kg vivo (${lastUpdate}, precio de referencia del mercado INMAG/MAG, no fijado por esta página) esa merma equivale a unos $${fmt(diferenciaMerma)}. Es un ejemplo orientativo, no una tarifa.`,
+    answer: `El desbaste normal de la hacienda va del 3% al 8% del peso vivo, según la distancia del flete y las horas de ayuno: cuanto más largo el viaje y más prolongado el ayuno, mayor la merma pactada. Un valor frecuente en operaciones de corta y media distancia ronda el 4% al 5%. Sobre un novillo de ${pesoVivoTipo} kg vivo, un 5% son ${fmt(kgMermaTipo)} kg menos y quedan ${fmt(kgNetosTipo)} kg netos; a $${fmt(novillo)}/kg vivo (${INMAG_DATE}, precio de referencia del mercado INMAG/MAG, no fijado por esta página) esa merma equivale a unos $${fmt(diferenciaMerma)}. Es un ejemplo orientativo, no una tarifa.`,
   },
   {
     question: '¿Por qué me descuentan kilos del peso de balanza?',
@@ -186,7 +187,7 @@ export default function DesbasteDeLaHaciendaPage() {
           <strong>kilo neto</strong> que se factura, y ronda habitualmente el{' '}
           <strong>3% al 8%</strong> según la distancia del flete y las horas de ayuno. Es dinero puro
           que negocia el productor: sobre un novillo a ${fmt(novillo)}/kg vivo (referencia del mercado
-          INMAG/MAG del {lastUpdate}, no fijada por esta página), cada punto de merma son kilos menos
+          INMAG/MAG del {INMAG_DATE}, no fijada por esta página), cada punto de merma son kilos menos
           en la liquidación.
         </p>
 
@@ -230,7 +231,7 @@ export default function DesbasteDeLaHaciendaPage() {
             Un novillo de <strong>{fmt(pesoVivoTipo)} kg vivo</strong> con un{' '}
             <strong>{desbastePctTipo}% de desbaste</strong> pierde {fmt(kgMermaTipo)} kg de merma y
             queda en <strong>{fmt(kgNetosTipo)} kg netos</strong>. A ${fmt(novillo)}/kg vivo (
-            {lastUpdate}), esos {fmt(kgNetosTipo)} kg valen{' '}
+            {INMAG_DATE}), esos {fmt(kgNetosTipo)} kg valen{' '}
             <strong>${fmt(valorConMerma)}</strong>, frente a ${fmt(valorSinMerma)} sin desbaste: la
             merma se lleva unos ${fmt(diferenciaMerma)} por cabeza. Precio de referencia del mercado
             (INMAG/MAG), no fijado por esta página.

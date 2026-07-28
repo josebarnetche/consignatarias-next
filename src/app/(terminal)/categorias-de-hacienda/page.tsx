@@ -8,6 +8,7 @@ import {
   DatasetSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // daily rebuild via Vercel
 
@@ -159,11 +160,11 @@ const FAQ = [
   },
   {
     question: '¿Qué es un MEJ?',
-    answer: `MEJ significa Macho Entero Joven: un bovino macho sin castrar terminado a edad joven (peso similar al novillo, 380–460 kg). Se faena entero porque el animal sin castrar engorda más rápido. No tiene una serie propia en el panel INMAG: en el mercado se cotiza en relación al novillo (hoy $${fmt(novillo)}/kg vivo, ${lastUpdate}) o al novillito (hoy $${fmt(novillito)}/kg) según su grado de terminación.`,
+    answer: `MEJ significa Macho Entero Joven: un bovino macho sin castrar terminado a edad joven (peso similar al novillo, 380–460 kg). Se faena entero porque el animal sin castrar engorda más rápido. No tiene una serie propia en el panel INMAG: en el mercado se cotiza en relación al novillo (hoy $${fmt(novillo)}/kg vivo, ${INMAG_DATE}) o al novillito (hoy $${fmt(novillito)}/kg) según su grado de terminación.`,
   },
   {
     question: '¿Cuál es la diferencia entre novillo y novillito?',
-    answer: `La diferencia entre novillo y novillito es la edad y el peso: ambos son machos castrados, pero el novillito tiene 1–2 años y 300–390 kg, mientras que el novillo supera los 2 años y llega a 400–500 kg. El novillo es la categoría de referencia del mercado (sobre la que se calcula el INMAG) y hoy vale $${fmt(novillo)}/kg vivo; el novillito, de faena más liviana, cotiza a $${fmt(novillito)}/kg (Mercado Agroganadero, ${lastUpdate}).`,
+    answer: `La diferencia entre novillo y novillito es la edad y el peso: ambos son machos castrados, pero el novillito tiene 1–2 años y 300–390 kg, mientras que el novillo supera los 2 años y llega a 400–500 kg. El novillo es la categoría de referencia del mercado (sobre la que se calcula el INMAG) y hoy vale $${fmt(novillo)}/kg vivo; el novillito, de faena más liviana, cotiza a $${fmt(novillito)}/kg (Mercado Agroganadero, ${INMAG_DATE}).`,
   },
   {
     question: '¿Qué categoría de hacienda vale más por kilo?',
@@ -173,7 +174,7 @@ const FAQ = [
 
 export const metadata: Metadata = {
   title: `Categorías de Hacienda Bovina en Argentina: Peso, Edad y Precio ${lastUpdate.slice(0, 4)}`,
-  description: `Las categorías de hacienda bovina son ternero, novillito, novillo, vaquillona, vaca, toro y MEJ, clasificadas por sexo, edad y peso. Precio de referencia por kilo vivo hoy (${lastUpdate}): desde $${fmt(vaca)}/kg (vaca) hasta $${fmt(ternero)}/kg (ternero) según el INMAG.`,
+  description: `Las categorías de hacienda bovina son ternero, novillito, novillo, vaquillona, vaca, toro y MEJ, clasificadas por sexo, edad y peso. Precio de referencia por kilo vivo hoy (${INMAG_DATE}): desde $${fmt(vaca)}/kg (vaca) hasta $${fmt(ternero)}/kg (ternero) según el INMAG.`,
   keywords: [
     'categorias de hacienda',
     'categorias de hacienda ganado bovino',
@@ -237,7 +238,7 @@ export default function CategoriasDeHaciendaPage() {
         <p className="speakable-content text-zinc-200 text-base mb-4">
           Las categorías de hacienda bovina en Argentina son <strong>ternero, novillito, novillo,
           vaquillona, vaca, toro y MEJ</strong>, y se clasifican por sexo, edad y peso; hoy (
-          {lastUpdate}) van desde <strong>${fmt(vaca)}/kg</strong> (vaca) hasta{' '}
+          {INMAG_DATE}) van desde <strong>${fmt(vaca)}/kg</strong> (vaca) hasta{' '}
           <strong>${fmt(ternero)}/kg</strong> (ternero) según el INMAG.
         </p>
 
@@ -299,7 +300,7 @@ export default function CategoriasDeHaciendaPage() {
           </table>
         </div>
         <p className="text-xxs text-zinc-500 mb-4">
-          Precio por kilo vivo del Mercado Agroganadero (INMAG y panel de categorías, {lastUpdate}).
+          Precio por kilo vivo del Mercado Agroganadero (INMAG y panel de categorías, {INMAG_DATE}).
           El &quot;valor ref. animal tipo&quot; es el precio por kilo por el peso medio del rango, redondeado;
           es una referencia orientativa, no una cotización. El MEJ no tiene serie propia en el
           panel INMAG y se cotiza en relación al novillo o novillito.

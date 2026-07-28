@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 import {
   SectionBreadcrumbSchema,
   FAQPageSchema,
@@ -44,7 +45,7 @@ const FAQ = [
   },
   {
     question: '¿Cuánto está el kilo de novillo en pie?',
-    answer: `El kilo de novillo en pie (peso vivo) cotiza a $${fmt(novillo.price)} hoy (INMAG, ${lastUpdate}; ${inmagChangeStr} semanal). "En pie" significa el animal vivo, antes de la faena; es la referencia del Mercado Agroganadero de Buenos Aires.`,
+    answer: `El kilo de novillo en pie (peso vivo) cotiza a $${fmt(novillo.price)} hoy (INMAG, ${INMAG_DATE}; ${inmagChangeStr} semanal). "En pie" significa el animal vivo, antes de la faena; es la referencia del Mercado Agroganadero de Buenos Aires.`,
   },
   {
     question: '¿Cuál es el precio de la hacienda en pie hoy?',

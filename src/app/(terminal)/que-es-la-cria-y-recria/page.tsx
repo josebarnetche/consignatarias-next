@@ -7,6 +7,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -66,7 +67,7 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿Qué produce la cría?',
-    answer: `La cría produce el ternero al destete: la vaca madre gesta y amamanta un ternero hasta los 6-8 meses de vida, y ese ternero destetado es el producto que se vende o pasa a la recría. A precio de mercado, el ternero se comercializa a $${fmt(ternero)}/kg vivo (INMAG del ${lastUpdate}). La eficiencia de la cría se mide por el índice de destete: cuántos terneros se destetan por cada 100 vientres servidos.`,
+    answer: `La cría produce el ternero al destete: la vaca madre gesta y amamanta un ternero hasta los 6-8 meses de vida, y ese ternero destetado es el producto que se vende o pasa a la recría. A precio de mercado, el ternero se comercializa a $${fmt(ternero)}/kg vivo (INMAG del ${INMAG_DATE}). La eficiencia de la cría se mide por el índice de destete: cuántos terneros se destetan por cada 100 vientres servidos.`,
   },
   {
     question: '¿Cuánto dura la recría?',
@@ -75,7 +76,7 @@ const FAQ = [
   },
   {
     question: '¿Cuál es la diferencia entre cría y recría?',
-    answer: `La diferencia es la etapa del animal: la cría trabaja con la vaca madre y produce el ternero hasta el destete; la recría toma ese ternero destetado y lo desarrolla hasta dejarlo listo para la invernada o el engorde. La cría es el vientre y su ternero; la recría es el ternero solo, creciendo. El producto de la cría (el ternero, hoy a $${fmt(ternero)}/kg vivo, INMAG del ${lastUpdate}) es la materia prima de la recría.`,
+    answer: `La diferencia es la etapa del animal: la cría trabaja con la vaca madre y produce el ternero hasta el destete; la recría toma ese ternero destetado y lo desarrolla hasta dejarlo listo para la invernada o el engorde. La cría es el vientre y su ternero; la recría es el ternero solo, creciendo. El producto de la cría (el ternero, hoy a $${fmt(ternero)}/kg vivo, INMAG del ${INMAG_DATE}) es la materia prima de la recría.`,
   },
 ]
 
@@ -144,7 +145,7 @@ export default function QueEsLaCriaYRecriaPage() {
         <p className="text-zinc-400 mb-8">
           Son dos eslabones consecutivos del mismo negocio ganadero. La cría trabaja con el vientre y
           su producto es el ternero al destete; la recría toma ese ternero y lo hace crecer. A precio
-          de mercado, el ternero de la cría se vende a ${fmt(ternero)}/kg vivo (INMAG del {lastUpdate}).
+          de mercado, el ternero de la cría se vende a ${fmt(ternero)}/kg vivo (INMAG del {INMAG_DATE}).
           Ese valor es una referencia de mercado, no un precio que fije esta página.
         </p>
 
@@ -157,7 +158,7 @@ export default function QueEsLaCriaYRecriaPage() {
           vaquillonas) que se sirven una vez al año; cada vientre gesta durante unos nueve meses y
           amamanta al ternero hasta el destete, alrededor de los 6-8 meses de vida y 160-200 kg. El
           producto que sale del campo de cría es el ternero al destete: se vende como categoría propia
-          —hoy a ${fmt(ternero)}/kg vivo (INMAG del {lastUpdate})— o pasa a la etapa de recría dentro
+          —hoy a ${fmt(ternero)}/kg vivo (INMAG del {INMAG_DATE})— o pasa a la etapa de recría dentro
           del mismo ciclo.
         </p>
         <p className="text-zinc-400 mb-8">

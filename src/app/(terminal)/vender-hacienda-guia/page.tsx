@@ -8,6 +8,7 @@ import {
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -94,7 +95,7 @@ const FAQ = [
   {
     question: '¿Cuánto cuesta vender un novillo por consignación?',
     answer:
-      `El costo central es la comisión de la consignataria, de referencia del mercado, que suele ubicarse entre el 3% y el 5% más IVA sobre el precio de venta; a eso se suman flete, gastos de sanidad y guía, e impuesto de sellos. Sobre un novillo de referencia a $${fmt(novillo)}/kg vivo (${lastUpdate}), la comisión es el descuento más visible, pero el peso final tras el desbaste y los demás gastos también inciden en el precio de tranquera. Cada firma fija su comisión y la detalla en la liquidación; es precio de referencia del mercado (INMAG/MAG), no fijado por esta página.`,
+      `El costo central es la comisión de la consignataria, de referencia del mercado, que suele ubicarse entre el 3% y el 5% más IVA sobre el precio de venta; a eso se suman flete, gastos de sanidad y guía, e impuesto de sellos. Sobre un novillo de referencia a $${fmt(novillo)}/kg vivo (${INMAG_DATE}), la comisión es el descuento más visible, pero el peso final tras el desbaste y los demás gastos también inciden en el precio de tranquera. Cada firma fija su comisión y la detalla en la liquidación; es precio de referencia del mercado (INMAG/MAG), no fijado por esta página.`,
   },
   {
     question: '¿Qué me descuentan de la liquidación?',
@@ -109,7 +110,7 @@ const FAQ = [
   {
     question: '¿Qué es el precio de tranquera?',
     answer:
-      `El precio de tranquera es el valor neto que efectivamente percibe el productor por su hacienda, ya descontados el desbaste sobre el peso y todos los gastos de comercialización (comisión, fletes, sanidad, guía, sellos, IVA). Sobre un novillo de referencia a $${fmt(novillo)}/kg vivo (${lastUpdate}), el precio de tranquera es siempre inferior al precio de pizarra: es el número que conviene usar para comparar canales de venta. Es precio de referencia del mercado (INMAG/MAG), no fijado por esta página.`,
+      `El precio de tranquera es el valor neto que efectivamente percibe el productor por su hacienda, ya descontados el desbaste sobre el peso y todos los gastos de comercialización (comisión, fletes, sanidad, guía, sellos, IVA). Sobre un novillo de referencia a $${fmt(novillo)}/kg vivo (${INMAG_DATE}), el precio de tranquera es siempre inferior al precio de pizarra: es el número que conviene usar para comparar canales de venta. Es precio de referencia del mercado (INMAG/MAG), no fijado por esta página.`,
   },
 ]
 
@@ -189,7 +190,7 @@ export default function VenderHaciendaGuiaPage() {
           <strong>kilo vivo</strong> al que se le descuentan el <strong>desbaste</strong> y los{' '}
           <strong>gastos de comercialización</strong> hasta llegar al{' '}
           <strong>precio de tranquera</strong> que efectivamente cobra. El novillo de referencia se
-          ubica en ${fmt(novillo)}/kg vivo ({lastUpdate}) —precio de referencia del mercado
+          ubica en ${fmt(novillo)}/kg vivo ({INMAG_DATE}) —precio de referencia del mercado
           (INMAG/MAG), no fijado por esta página.
         </p>
 

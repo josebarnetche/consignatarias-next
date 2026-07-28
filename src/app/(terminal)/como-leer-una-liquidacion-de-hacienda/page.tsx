@@ -8,6 +8,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -123,7 +124,7 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿Qué me descuentan de la liquidación de hacienda?',
-    answer: `De la liquidación de hacienda se descuentan, sobre el importe bruto de venta, la comisión de la consignataria (habitualmente 2%–4% más IVA, a veces 5%), los gastos de comercialización (guía y DT-e, flete, impuesto de sellos, sanidad y tasas) y el IVA que corresponda según la condición fiscal del productor. Lo que queda es el neto a cobrar. Sobre un lote testigo de ${cabezasTipo} novillos de ${pesoTipo} kg al precio de referencia de hoy ($${fmt(novillo)}/kg vivo, ${lastUpdate}), el bruto ronda $${fmt(importeBruto)} y una comisión del ${comisionPct}% equivale a unos $${fmt(comisionTipo)}. Es un ejemplo orientativo con precio de referencia del mercado (INMAG/MAG), no una cotización.`,
+    answer: `De la liquidación de hacienda se descuentan, sobre el importe bruto de venta, la comisión de la consignataria (habitualmente 2%–4% más IVA, a veces 5%), los gastos de comercialización (guía y DT-e, flete, impuesto de sellos, sanidad y tasas) y el IVA que corresponda según la condición fiscal del productor. Lo que queda es el neto a cobrar. Sobre un lote testigo de ${cabezasTipo} novillos de ${pesoTipo} kg al precio de referencia de hoy ($${fmt(novillo)}/kg vivo, ${INMAG_DATE}), el bruto ronda $${fmt(importeBruto)} y una comisión del ${comisionPct}% equivale a unos $${fmt(comisionTipo)}. Es un ejemplo orientativo con precio de referencia del mercado (INMAG/MAG), no una cotización.`,
   },
   {
     question: '¿Qué es la comisión de consignación?',
@@ -413,7 +414,7 @@ export default function ComoLeerUnaLiquidacionDeHaciendaPage() {
           son cargos con respaldo, no un monto global. Sobre el mismo lote testigo, con un bruto de{' '}
           $
           {fmt(importeBruto)} (
-          {cabezasTipo} novillos × {pesoTipo} kg × ${fmt(novillo)}/kg vivo, {lastUpdate}), una
+          {cabezasTipo} novillos × {pesoTipo} kg × ${fmt(novillo)}/kg vivo, {INMAG_DATE}), una
           comisión del {comisionPct}% equivale a unos ${fmt(comisionTipo)} antes de IVA y gastos.
           Precio de referencia del mercado (INMAG/MAG), no fijado por esta página.
         </p>

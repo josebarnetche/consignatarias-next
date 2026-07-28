@@ -7,6 +7,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -155,7 +156,7 @@ export default function QueEsLaInvernadaPage() {
           compra o recibe el ternero flaco al destete y lo vende gordo para faena. Su negocio está en
           el valor que suma entre esos dos momentos. A precio de mercado actual, el ternero se paga
           alrededor de ${fmt(terneroKg)}/kg vivo y el novillo terminado ${fmt(novilloKg)}/kg
-          (Mercado Agroganadero, INMAG del {lastUpdate}); estos son valores de referencia del mercado,
+          (Mercado Agroganadero, INMAG del {INMAG_DATE}); estos son valores de referencia del mercado,
           no precios fijados por esta página.
         </p>
 
@@ -251,7 +252,7 @@ export default function QueEsLaInvernadaPage() {
         </div>
         <p className="text-xxs text-zinc-500 mb-4">
           Ternero ${fmt(terneroKg)}/kg y novillo ${fmt(novilloKg)}/kg (Mercado Agroganadero, INMAG del{' '}
-          {lastUpdate}). Valores de referencia del mercado.
+          {INMAG_DATE}). Valores de referencia del mercado.
         </p>
         <p className="text-zinc-400 mb-8">
           Esa diferencia de ${fmt(margenBruto)} es <span className="text-zinc-300">margen bruto</span>,

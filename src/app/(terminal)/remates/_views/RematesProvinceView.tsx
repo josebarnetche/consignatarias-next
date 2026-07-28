@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 import type { Auction } from '@/lib/db/schema'
 import { BreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
@@ -144,7 +145,7 @@ export async function rematesProvinceMetadata(provincia: string): Promise<Metada
   const novillo = Math.round(
     (marketPrices.categories as Record<string, { current: number }>).novillos.current,
   )
-  const fecha = marketPrices.lastUpdate
+  const fecha = INMAG_DATE // fecha de la última rueda INMAG, no del scrape
 
   return {
     title: `Remates en ${config.displayName}: ${provinceAuctions.length} en calendario · Novillo $${novillo.toLocaleString('es-AR')}/kg (INMAG)`,
@@ -288,7 +289,7 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
   const novillo = Math.round(
     (marketPrices.categories as Record<string, { current: number }>).novillos.current,
   )
-  const lastUpdate = marketPrices.lastUpdate
+  const lastUpdate = INMAG_DATE // fecha de la última rueda INMAG, no del scrape
   const fmt = (n: number) => n.toLocaleString('es-AR')
 
   // Answer-first: recuento vivo + precio de referencia fechado (AEO / speakable)

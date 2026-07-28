@@ -316,7 +316,7 @@ export default function InmagPage() {
               mercado ganadero argentino, con histórico desde 2015 y metodología abierta.
             </p>
             <CitaBlock
-              citation={`INMAG (Índice Novillo del Mercado Agroganadero), vía consignatarias.com.ar, ${marketData.lastUpdate} — $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 2 })}/kg vivo`}
+              citation={`INMAG (Índice Novillo del Mercado Agroganadero), vía consignatarias.com.ar, ${inmagSnapshotDate} — $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 2 })}/kg vivo`}
               sourceUrl="https://www.consignatarias.com.ar/mercado/inmag"
             />
           </div>

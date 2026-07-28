@@ -8,6 +8,7 @@ import {
   DatasetSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
 
@@ -240,7 +241,7 @@ export default function CuantoValeUnToroPage() {
         </div>
         <p className="text-xxs text-zinc-500 mb-4">
           El toro de faena se cotiza por kilo vivo en el panel de categorías del Mercado
-          Agroganadero (${fmt(toroKg)}/kg, {lastUpdate}). Los valores del reproductor son rangos de
+          Agroganadero (${fmt(toroKg)}/kg, {INMAG_DATE}). Los valores del reproductor son rangos de
           referencia de plaza en remates de cabaña, no una serie del panel INMAG: son precio de
           referencia del mercado, no fijado por esta página, y el valor real de cada toro se define
           en el remate.

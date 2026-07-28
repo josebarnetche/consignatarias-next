@@ -8,6 +8,7 @@ import {
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // daily rebuild via Vercel
 
@@ -76,7 +77,7 @@ const FAQ = [
   {
     question: '¿Cómo se arma una tropa para vender?',
     answer:
-      `Una tropa se arma agrupando animales lo más parejos posible en categoría, peso, edad y estado, porque la hacienda homogénea se vende mejor y a mejor precio. El productor separa por categoría (por ejemplo, novillos —hoy con un precio de referencia de $${fmt(novillo)}/kg vivo al ${lastUpdate}, según el INMAG/MAG, no fijado por esta página—), empareja pesos, da de alta el movimiento y documenta el traslado con DT-e. Cuanto más uniforme la tropa, más previsible el resultado para el comprador.`,
+      `Una tropa se arma agrupando animales lo más parejos posible en categoría, peso, edad y estado, porque la hacienda homogénea se vende mejor y a mejor precio. El productor separa por categoría (por ejemplo, novillos —hoy con un precio de referencia de $${fmt(novillo)}/kg vivo al ${INMAG_DATE}, según el INMAG/MAG, no fijado por esta página—), empareja pesos, da de alta el movimiento y documenta el traslado con DT-e. Cuanto más uniforme la tropa, más previsible el resultado para el comprador.`,
   },
 ]
 
@@ -153,7 +154,7 @@ export default function QueEsUnaTropaDeHaciendaPage() {
           Una <strong>tropa de hacienda</strong> es un conjunto de animales de características
           homogéneas —misma categoría, peso y origen— que se comercializa o traslada como una única
           unidad; es la forma habitual de mover y vender la hacienda en Argentina, con un precio de
-          mercado de referencia (por ejemplo, el novillo a ${fmt(novillo)}/kg vivo al {lastUpdate},
+          mercado de referencia (por ejemplo, el novillo a ${fmt(novillo)}/kg vivo al {INMAG_DATE},
           según el INMAG/MAG) que esta página no fija.
         </p>
 

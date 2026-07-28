@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 import MiGanadoClient from './MiGanadoClient'
 
 export const metadata: Metadata = {
@@ -17,7 +18,7 @@ export default function MiGanadoPage() {
         categories: marketPrices.categories,
         usdBlue: marketPrices.usdBlue,
       }}
-      lastUpdate={marketPrices.lastUpdate}
+      lastUpdate={INMAG_DATE}
     />
   )
 }

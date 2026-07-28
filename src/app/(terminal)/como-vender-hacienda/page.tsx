@@ -8,6 +8,7 @@ import {
   HowToSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -105,7 +106,7 @@ const HOWTO_STEPS = [
 const FAQ = [
   {
     question: '¿Cuánto cobra una consignataria?',
-    answer: `Una consignataria cobra una comisión de referencia del mercado de entre 3% y 5% sobre el valor de venta de la hacienda, que se descuenta de la liquidación al productor junto con los gastos de venta (fletes, sanidad, guías, sellados). Cada firma la acuerda con el productor. Ejemplo con precio actual: un novillo de ${EJEMPLO_PESO} kg vivo a $${fmt(novillo)}/kg (INMAG del ${lastUpdate}) vale $${fmt(ejemploValor)}; la comisión ronda entre $${fmt(ejemploComisionMin)} (3%) y $${fmt(ejemploComisionMax)} (5%).`,
+    answer: `Una consignataria cobra una comisión de referencia del mercado de entre 3% y 5% sobre el valor de venta de la hacienda, que se descuenta de la liquidación al productor junto con los gastos de venta (fletes, sanidad, guías, sellados). Cada firma la acuerda con el productor. Ejemplo con precio actual: un novillo de ${EJEMPLO_PESO} kg vivo a $${fmt(novillo)}/kg (INMAG del ${INMAG_DATE}) vale $${fmt(ejemploValor)}; la comisión ronda entre $${fmt(ejemploComisionMin)} (3%) y $${fmt(ejemploComisionMax)} (5%).`,
   },
   {
     question: '¿Qué necesito para vender hacienda?',
@@ -121,7 +122,7 @@ const FAQ = [
 
 export const metadata: Metadata = {
   title: `Cómo vender hacienda en Argentina: consignación, remate feria o venta directa`,
-  description: `Para vender hacienda hay tres canales: consignación, remate feria o venta directa a frigorífico o invernador. Precio de referencia hoy $${fmt(novillo)}/kg vivo para el novillo (INMAG del ${lastUpdate}). Comisión de referencia 3-5%, documentación necesaria y cómo elegir consignataria.`,
+  description: `Para vender hacienda hay tres canales: consignación, remate feria o venta directa a frigorífico o invernador. Precio de referencia hoy $${fmt(novillo)}/kg vivo para el novillo (INMAG del ${INMAG_DATE}). Comisión de referencia 3-5%, documentación necesaria y cómo elegir consignataria.`,
   keywords: [
     'cómo vender hacienda',
     'como vender hacienda',
@@ -138,7 +139,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: 'Cómo vender hacienda: consignación, remate feria o venta directa',
-    description: `Los tres canales para vender hacienda en Argentina, la comisión de referencia (3-5%), la documentación necesaria y cómo elegir consignataria. Precio de referencia del novillo hoy: $${fmt(novillo)}/kg vivo (INMAG del ${lastUpdate}).`,
+    description: `Los tres canales para vender hacienda en Argentina, la comisión de referencia (3-5%), la documentación necesaria y cómo elegir consignataria. Precio de referencia del novillo hoy: $${fmt(novillo)}/kg vivo (INMAG del ${INMAG_DATE}).`,
     url: PAGE_URL,
     type: 'article',
     images: ['https://www.consignatarias.com.ar/og-image.png'],
@@ -180,7 +181,7 @@ export default function ComoVenderHaciendaPage() {
         <p className="speakable-content text-zinc-300 text-base mb-6">
           Para vender hacienda en Argentina hay tres canales principales: por consignación a través de
           una consignataria, en un remate feria, o por venta directa a frigorífico o invernador; en los
-          tres, el precio de referencia hoy ({lastUpdate}) es de ${fmt(novillo)}/kg vivo para el novillo
+          tres, el precio de referencia hoy ({INMAG_DATE}) es de ${fmt(novillo)}/kg vivo para el novillo
           según el INMAG.
         </p>
 
@@ -188,7 +189,7 @@ export default function ComoVenderHaciendaPage() {
           Cada canal cambia quién fija el precio, cuánto se descuenta de comisión y cuándo cobrás. Sobre
           una venta, la firma cobra una comisión de referencia del mercado de aproximadamente 3-5% sobre
           el valor de venta —cada firma la acuerda con el productor—. A precio actual es tangible: un
-          novillo de {EJEMPLO_PESO} kg vivo a ${fmt(novillo)}/kg (INMAG del {lastUpdate}) vale $
+          novillo de {EJEMPLO_PESO} kg vivo a ${fmt(novillo)}/kg (INMAG del {INMAG_DATE}) vale $
           {fmt(ejemploValor)}; la comisión ronda entre ${fmt(ejemploComisionMin)} (3%) y $
           {fmt(ejemploComisionMax)} (5%), más los gastos de venta. Esta página no fija el precio ni la
           comisión: son valores de referencia del mercado.

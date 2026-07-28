@@ -8,6 +8,7 @@ import {
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -81,7 +82,7 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿Conviene vender la hacienda ahora?',
-    answer: `No hay una respuesta única: conviene o no según el precio de hoy, la tendencia del mercado y el costo de retener ese animal en cada campo. Como marco, se comparan los kilos que el animal sumaría si se retiene —a su precio esperado— contra el costo de mantenerlo (alimento, sanidad, capital inmovilizado) y el riesgo de que el precio baje. Hoy el novillo se referencia en $${fmt(novillo)}/kg vivo (${lastUpdate}) y el índice INMAG viene ${tendencia} (${inmagChangeStr} en la última rueda). Son datos de referencia del mercado (INMAG/MAG), no una recomendación de compraventa ni un precio fijado por esta página.`,
+    answer: `No hay una respuesta única: conviene o no según el precio de hoy, la tendencia del mercado y el costo de retener ese animal en cada campo. Como marco, se comparan los kilos que el animal sumaría si se retiene —a su precio esperado— contra el costo de mantenerlo (alimento, sanidad, capital inmovilizado) y el riesgo de que el precio baje. Hoy el novillo se referencia en $${fmt(novillo)}/kg vivo (${INMAG_DATE}) y el índice INMAG viene ${tendencia} (${inmagChangeStr} en la última rueda). Son datos de referencia del mercado (INMAG/MAG), no una recomendación de compraventa ni un precio fijado por esta página.`,
   },
   {
     question: '¿Cómo sé si el precio va a subir?',
@@ -90,17 +91,17 @@ const FAQ = [
   },
   {
     question: '¿Cuánto cuesta retener un novillo un mes más?',
-    answer: `Depende de cada campo, pero el marco es simple: se pone en la balanza lo que el animal suma contra lo que cuesta mantenerlo. Si un novillo engorda del orden de ${kgMes} kg en el mes, al precio de referencia de hoy ($${fmt(novillo)}/kg vivo, ${lastUpdate}) esos kilos valen unos $${fmt(valorKgGanado)} brutos por cabeza; contra eso hay que descontar el alimento, la sanidad, la mano de obra, el capital inmovilizado y el riesgo de una baja de precio. Es un ejemplo orientativo con precio de referencia del mercado (INMAG/MAG), no una cotización ni una recomendación.`,
+    answer: `Depende de cada campo, pero el marco es simple: se pone en la balanza lo que el animal suma contra lo que cuesta mantenerlo. Si un novillo engorda del orden de ${kgMes} kg en el mes, al precio de referencia de hoy ($${fmt(novillo)}/kg vivo, ${INMAG_DATE}) esos kilos valen unos $${fmt(valorKgGanado)} brutos por cabeza; contra eso hay que descontar el alimento, la sanidad, la mano de obra, el capital inmovilizado y el riesgo de una baja de precio. Es un ejemplo orientativo con precio de referencia del mercado (INMAG/MAG), no una cotización ni una recomendación.`,
   },
   {
     question: '¿Qué es el INMAG?',
-    answer: `El INMAG es el Índice del Mercado Agroganadero: el precio promedio ponderado del kilo vivo que surge de la operatoria del Mercado Agroganadero de Cañuelas. Sirve para leer la tendencia del precio de la hacienda a lo largo del tiempo, no solo el dato de un día. Su último valor de referencia es de $${fmt(inmagCurrent)}/kg vivo (${lastUpdate}), con una variación de ${inmagChangeStr} respecto de la rueda previa. Es una referencia del mercado, no un precio fijado por esta página.`,
+    answer: `El INMAG es el Índice del Mercado Agroganadero: el precio promedio ponderado del kilo vivo que surge de la operatoria del Mercado Agroganadero de Cañuelas. Sirve para leer la tendencia del precio de la hacienda a lo largo del tiempo, no solo el dato de un día. Su último valor de referencia es de $${fmt(inmagCurrent)}/kg vivo (${INMAG_DATE}), con una variación de ${inmagChangeStr} respecto de la rueda previa. Es una referencia del mercado, no un precio fijado por esta página.`,
   },
 ]
 
 export const metadata: Metadata = {
   title: `¿Conviene vender la hacienda ahora o esperar? El marco (${lastUpdate.slice(0, 4)})`,
-  description: `Vender la hacienda hoy o retenerla depende de tres variables: el precio actual, la tendencia del mercado y el costo de mantener el animal. Un marco de decisión con novillo $${fmt(novillo)}/kg vivo e índice INMAG ${tendencia} (${lastUpdate}). Referencia del mercado, no una recomendación de compraventa.`,
+  description: `Vender la hacienda hoy o retenerla depende de tres variables: el precio actual, la tendencia del mercado y el costo de mantener el animal. Un marco de decisión con novillo $${fmt(novillo)}/kg vivo e índice INMAG ${tendencia} (${INMAG_DATE}). Referencia del mercado, no una recomendación de compraventa.`,
   keywords: [
     'conviene vender la hacienda ahora',
     'conviene vender la hacienda ahora o esperar',
@@ -115,7 +116,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: '¿Conviene vender la hacienda ahora o esperar?',
-    description: `Precio actual, tendencia del mercado y costo de retener: el marco para decidir entre vender hoy o esperar. Novillo $${fmt(novillo)}/kg vivo, INMAG ${tendencia} (${lastUpdate}).`,
+    description: `Precio actual, tendencia del mercado y costo de retener: el marco para decidir entre vender hoy o esperar. Novillo $${fmt(novillo)}/kg vivo, INMAG ${tendencia} (${INMAG_DATE}).`,
     url: PAGE_URL,
     type: 'article',
     images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
@@ -173,7 +174,7 @@ export default function ConvieneVenderLaHaciendaAhoraOEsperarPage() {
           <strong>tres variables</strong>: el <strong>precio actual</strong>, la{' '}
           <strong>tendencia del mercado</strong> y el <strong>costo de mantener el animal</strong>{' '}
           —no de una regla fija ni de adivinar el techo del precio. Como referencia de hoy (
-          {lastUpdate}), el novillo cotiza a <strong>${fmt(novillo)}/kg vivo</strong> y el índice
+          {INMAG_DATE}), el novillo cotiza a <strong>${fmt(novillo)}/kg vivo</strong> y el índice
           INMAG viene <strong>{tendencia}</strong> ({inmagChangeStr}): son datos de referencia del
           mercado (INMAG/MAG), no una recomendación de compraventa ni un precio fijado por esta
           página.
@@ -244,7 +245,7 @@ export default function ConvieneVenderLaHaciendaAhoraOEsperarPage() {
           </table>
         </div>
         <p className="text-xxs text-zinc-500 mb-6">
-          Valores de referencia del mercado (INMAG/MAG) al {lastUpdate}, no fijados por esta página.
+          Valores de referencia del mercado (INMAG/MAG) al {INMAG_DATE}, no fijados por esta página.
           El precio efectivo de cada operación depende de la calidad, el peso, la zona y las
           condiciones de venta.
         </p>
@@ -259,7 +260,7 @@ export default function ConvieneVenderLaHaciendaAhoraOEsperarPage() {
           </Link>{' '}
           —el promedio ponderado del kilo vivo del Mercado Agroganadero— permite leer si el mercado
           viene subiendo, bajando o lateralizando. Su último valor de referencia es de{' '}
-          <strong>${fmt(inmagCurrent)}/kg vivo</strong> ({lastUpdate}), con una variación de{' '}
+          <strong>${fmt(inmagCurrent)}/kg vivo</strong> ({INMAG_DATE}), con una variación de{' '}
           <strong>{inmagChangeStr}</strong> respecto de la rueda previa: en este momento el índice
           viene <strong>{tendencia}</strong>.
         </p>
@@ -288,7 +289,7 @@ export default function ConvieneVenderLaHaciendaAhoraOEsperarPage() {
         </p>
         <p className="mb-3">
           El marco es directo: si un novillo engorda del orden de {kgMes} kg en el mes, al precio de
-          referencia de hoy (${fmt(novillo)}/kg vivo, {lastUpdate}) esos kilos valen unos{' '}
+          referencia de hoy (${fmt(novillo)}/kg vivo, {INMAG_DATE}) esos kilos valen unos{' '}
           <strong>${fmt(valorKgGanado)}</strong> brutos por cabeza. Retener conviene mientras ese
           valor —más una eventual suba— supere el costo de mantener el animal más el riesgo asumido.
           El valor al que esa cuenta se da vuelta es el <strong>punto de equilibrio de venta</strong>

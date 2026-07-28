@@ -8,6 +8,7 @@ import {
   DefinedTermSetSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // daily rebuild via Vercel
 
@@ -43,11 +44,11 @@ const PESOS = [
 const NOVILLO_FAQ = [
   {
     question: '¿Cuánto pesa un novillo?',
-    answer: `Un novillo terminado pesa entre 400 y 500 kg de peso vivo (en pie). A la referencia del INMAG del ${lastUpdate} ($${fmt(novillo)}/kg vivo), un novillo de 450 kg equivale a unos $${fmt(novillo450)} por cabeza. El peso vivo es el que se usa para calcular el valor a partir del precio por kilo del Mercado Agroganadero.`,
+    answer: `Un novillo terminado pesa entre 400 y 500 kg de peso vivo (en pie). A la referencia del INMAG del ${INMAG_DATE} ($${fmt(novillo)}/kg vivo), un novillo de 450 kg equivale a unos $${fmt(novillo450)} por cabeza. El peso vivo es el que se usa para calcular el valor a partir del precio por kilo del Mercado Agroganadero.`,
   },
   {
     question: '¿Cuánto pesa un novillo gordo?',
-    answer: `Un novillo gordo o terminado —listo para faena— pesa habitualmente entre 440 y 500+ kg de peso vivo. Los novillos pesados de exportación pueden superar los 520 kg. A $${fmt(novillo)}/kg vivo (INMAG, ${lastUpdate}), un novillo gordo de 480 kg ronda los $${fmt(novillo * 480)}. Por debajo de ~400 kg todavía se lo categoriza como novillito.`,
+    answer: `Un novillo gordo o terminado —listo para faena— pesa habitualmente entre 440 y 500+ kg de peso vivo. Los novillos pesados de exportación pueden superar los 520 kg. A $${fmt(novillo)}/kg vivo (INMAG, ${INMAG_DATE}), un novillo gordo de 480 kg ronda los $${fmt(novillo * 480)}. Por debajo de ~400 kg todavía se lo categoriza como novillito.`,
   },
   {
     question: '¿Cuánto pesa un novillo en kilos vivos vs faenado?',
@@ -90,7 +91,7 @@ const NOVILLO_TERMS = [
 export const metadata: Metadata = {
   // Gana el cluster "cuánto pesa un novillo / cada categoría de hacienda en kilos".
   title: `Cuánto Pesa un Novillo: 400–500 kg (y cada categoría de hacienda)`,
-  description: `Un novillo terminado pesa entre 400 y 500 kg en pie. A la referencia del INMAG (${lastUpdate}) de $${fmt(novillo)}/kg vivo equivale a ~$${fmt(novillo450)} por cabeza de 450 kg. Tabla de peso por categoría: ternero, novillito, vaquillona, vaca y toro.`,
+  description: `Un novillo terminado pesa entre 400 y 500 kg en pie. A la referencia del INMAG (${INMAG_DATE}) de $${fmt(novillo)}/kg vivo equivale a ~$${fmt(novillo450)} por cabeza de 450 kg. Tabla de peso por categoría: ternero, novillito, vaquillona, vaca y toro.`,
   keywords: [
     'cuanto pesa un novillo',
     'cuanto pesa un novillo gordo',
@@ -105,7 +106,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: `Cuánto pesa un novillo — 400 a 500 kg de peso vivo`,
-    description: `Un novillo de 450 kg a $${fmt(novillo)}/kg vivo (INMAG, ${lastUpdate}) vale ~$${fmt(novillo450)}. Tabla de peso por categoría de hacienda.`,
+    description: `Un novillo de 450 kg a $${fmt(novillo)}/kg vivo (INMAG, ${INMAG_DATE}) vale ~$${fmt(novillo450)}. Tabla de peso por categoría de hacienda.`,
     url: PAGE_URL,
     type: 'article',
     images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
@@ -153,7 +154,7 @@ export default function CuantoPesaUnNovilloPage() {
         {/* Answer-first: primera oración = la que gana el featured snippet */}
         <p className="speakable-content text-zinc-200 text-base mb-4">
           Un novillo terminado pesa entre <strong>400 y 500 kg en pie</strong> (peso vivo), y a la
-          referencia del INMAG ({lastUpdate}) de <strong>${fmt(novillo)}/kg vivo</strong> equivale a
+          referencia del INMAG ({INMAG_DATE}) de <strong>${fmt(novillo)}/kg vivo</strong> equivale a
           unos <strong>${fmt(novillo450)}</strong> por cabeza de 450 kg.
         </p>
 

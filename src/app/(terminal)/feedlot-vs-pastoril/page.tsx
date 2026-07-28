@@ -8,6 +8,7 @@ import {
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
 
@@ -105,7 +106,7 @@ const FAQ = [
   },
   {
     question: '¿Cuál engorda más rápido?',
-    answer: `El feedlot engorda más rápido: con ración balanceada y encierre, la terminación se resuelve en el orden de 90 a 120 días, contra los meses o más de un año del engorde pastoril, que depende de la pastura. La contracara de esa velocidad es un costo por kilo producido más alto. El sistema no cambia el precio de venta: el novillo terminado se referencia hoy en $${fmt(novillo)}/kg vivo (INMAG/MAG, ${lastUpdate}).`,
+    answer: `El feedlot engorda más rápido: con ración balanceada y encierre, la terminación se resuelve en el orden de 90 a 120 días, contra los meses o más de un año del engorde pastoril, que depende de la pastura. La contracara de esa velocidad es un costo por kilo producido más alto. El sistema no cambia el precio de venta: el novillo terminado se referencia hoy en $${fmt(novillo)}/kg vivo (INMAG/MAG, ${INMAG_DATE}).`,
   },
   {
     question: '¿Cuál tiene menor costo por kilo?',
@@ -191,7 +192,7 @@ export default function FeedlotVsPastorilPage() {
           los dos sistemas para terminar un animal: el feedlot prioriza velocidad y control con un
           costo por kilo más alto, mientras que el pastoril prioriza menor costo por kilo a mayor
           tiempo. Cuál conviene depende de la relación entre el costo del alimento, el ternero de
-          reposición y el precio de venta —hoy ({lastUpdate}) el novillo terminado se referencia en{' '}
+          reposición y el precio de venta —hoy ({INMAG_DATE}) el novillo terminado se referencia en{' '}
           <strong>${fmt(novillo)}/kg vivo</strong> (INMAG/MAG), precio de referencia del mercado, no
           fijado por esta página.
         </p>

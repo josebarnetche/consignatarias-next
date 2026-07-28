@@ -8,6 +8,7 @@ import {
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -74,7 +75,7 @@ const FAQ = [
       'El remate suele dar la formación de precio más transparente porque el valor surge de una puja pública y observable: varios compradores ofertan y el precio de cierre queda a la vista. En la venta directa el precio se acuerda en privado entre las partes, con menos referencia externa. La consignación hereda la transparencia del canal que use la consignataria. En todos los casos conviene contrastar contra el precio de referencia del mercado —el novillo cotiza hoy a $' +
       fmt(novillo) +
       '/kg vivo (' +
-      lastUpdate +
+      INMAG_DATE +
       '), precio de referencia del mercado (INMAG/MAG), no fijado por esta página.',
   },
   {
@@ -161,7 +162,7 @@ export default function VenderEnRemateVsVentaDirectaVsConsignacionPage() {
           <strong>velocidad de cobro</strong>: el remate forma el precio por puja pública, la venta
           directa por negociación entre partes y la consignación delega la comercialización en una
           firma matriculada a cambio de una comisión. Como referencia, el novillo cotiza hoy a{' '}
-          <strong>${fmt(novillo)}/kg vivo</strong> ({lastUpdate}), precio de referencia del mercado
+          <strong>${fmt(novillo)}/kg vivo</strong> ({INMAG_DATE}), precio de referencia del mercado
           (INMAG/MAG), no fijado por esta página.
         </p>
 
