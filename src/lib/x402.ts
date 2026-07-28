@@ -8,9 +8,12 @@
  * Env (sin estas vars el sistema queda apagado y los endpoints responden 503):
  *   X402_PAYTO_ADDRESS    wallet EVM que recibe los USDC (Base)
  *   X402_NETWORK          "base" | "base-sepolia" (default base-sepolia)
- *   X402_FACILITATOR_URL  default https://x402.org/facilitator (soporta base-sepolia;
- *                         para base mainnet usar el facilitator de CDP)
- *   X402_FACILITATOR_AUTH opcional: valor del header Authorization hacia el facilitator
+ *   X402_FACILITATOR_URL  default: x402.org/facilitator en sepolia; con claves CDP
+ *                         presentes, el facilitator de Coinbase (mainnet, 1.000 tx/mes free)
+ *   X402_FACILITATOR_AUTH opcional: header Authorization estático hacia el facilitator
+ *   CDP_API_KEY_ID + CDP_API_KEY_SECRET  claves de Coinbase Developer Platform:
+ *                         si están, cada llamada al facilitator va firmada con un
+ *                         JWT por-request (generateJwt del SDK) — requisito de mainnet.
  */
 
 const USDC_BY_NETWORK: Record<string, { asset: string; extra: { name: string; version: string } }> = {
@@ -29,16 +32,24 @@ export interface X402Config {
   assetExtra: { name: string; version: string }
 }
 
+const CDP_FACILITATOR_URL = 'https://api.cdp.coinbase.com/platform/v2/x402'
+
+function hasCdpKeys(): boolean {
+  return Boolean(process.env.CDP_API_KEY_ID?.trim() && process.env.CDP_API_KEY_SECRET?.trim())
+}
+
 export function getX402Config(): X402Config | null {
   const payTo = process.env.X402_PAYTO_ADDRESS?.trim()
   if (!payTo || !/^0x[a-fA-F0-9]{40}$/.test(payTo)) return null
   const network = (process.env.X402_NETWORK?.trim() || 'base-sepolia').toLowerCase()
   const usdc = USDC_BY_NETWORK[network]
   if (!usdc) return null
+  // Con claves CDP el default es el facilitator de Coinbase (el que banca mainnet).
+  const defaultFacilitator = hasCdpKeys() ? CDP_FACILITATOR_URL : 'https://x402.org/facilitator'
   return {
     payTo,
     network,
-    facilitatorUrl: (process.env.X402_FACILITATOR_URL?.trim() || 'https://x402.org/facilitator').replace(/\/$/, ''),
+    facilitatorUrl: (process.env.X402_FACILITATOR_URL?.trim() || defaultFacilitator).replace(/\/$/, ''),
     facilitatorAuth: process.env.X402_FACILITATOR_AUTH?.trim() || null,
     asset: usdc.asset,
     assetExtra: usdc.extra,
@@ -123,11 +134,26 @@ export async function verifyAndSettle(
     return { ok: false, reason: 'unsupported_scheme_or_network' }
   }
   const body = JSON.stringify({ x402Version: 1, paymentPayload, paymentRequirements })
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-  if (cfg.facilitatorAuth) headers['Authorization'] = cfg.facilitatorAuth
 
   const call = async (path: '/verify' | '/settle') => {
-    const res = await fetch(`${cfg.facilitatorUrl}${path}`, { method: 'POST', headers, body, signal: AbortSignal.timeout(30_000) })
+    const url = new URL(`${cfg.facilitatorUrl}${path}`)
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (hasCdpKeys()) {
+      // Mainnet (facilitator CDP): JWT firmado por-request con las claves del portal.
+      // Import dinámico para no cargar el SDK cuando x402 corre sin CDP.
+      const { generateJwt } = await import('@coinbase/cdp-sdk/auth')
+      const jwt = await generateJwt({
+        apiKeyId: process.env.CDP_API_KEY_ID!.trim(),
+        apiKeySecret: process.env.CDP_API_KEY_SECRET!.trim(),
+        requestMethod: 'POST',
+        requestHost: url.host,
+        requestPath: url.pathname,
+      })
+      headers['Authorization'] = `Bearer ${jwt}`
+    } else if (cfg.facilitatorAuth) {
+      headers['Authorization'] = cfg.facilitatorAuth
+    }
+    const res = await fetch(url, { method: 'POST', headers, body, signal: AbortSignal.timeout(30_000) })
     if (!res.ok) throw new Error(`facilitator ${path} HTTP ${res.status}`)
     return res.json()
   }
