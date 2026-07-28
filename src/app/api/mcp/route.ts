@@ -12,6 +12,11 @@ import {
 } from '@/lib/data/senasa-sanidad'
 import { BPG_TEMAS, BPG_FUENTE } from '@/lib/data/bpg-ganaderas'
 import { getLiquidacion, LIQUIDACION_CAVEAT } from '@/lib/data/liquidacion'
+import { valuarTropa, valuarArrendamiento, KG_DEFAULT } from '@/lib/valuaciones'
+import { getX402Config } from '@/lib/x402'
+import { cotizarProUsdCents, proArsMensual, proMeses, validarSlugPro } from '@/lib/pro-x402'
+import { CATEGORIAS_DEMANDA, crearDemanda, formatMatches, matchRemates, normalizarCategoria } from '@/lib/demanda'
+import { enforceRateLimit, clientIp } from '@/lib/rate-limit-db'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -25,8 +30,9 @@ export const maxDuration = 60
  *
  * Implementación propia (sin mcp-handler) para no arrastrar el conflicto zod v3/v4 ni
  * Redis: el subset que necesita un tool-server es chico — initialize / tools/list /
- * tools/call. Los tools de lectura son públicos; `crear_alerta_precio` requiere una
- * API key de un plan (Authorization: Bearer cnsg_live_..., mismo sistema que el API REST).
+ * tools/call. TODOS los tools son públicos: `crear_alerta_precio` tiene free tier
+ * (3 alertas activas por origen sin key; con key Enterprise sin límite) y las
+ * valuaciones tienen cupo diario gratis con overflow pago vía x402 (/api/x402/*).
  */
 
 const SERVER_INFO = { name: 'consignatarias', version: '1.0.0' }
@@ -86,7 +92,8 @@ const TOOL_TITLES: Record<string, string> = {
 // "side effects / auth / destructive". Todas las tools son de solo lectura sobre
 // datos de mercado (open-world) salvo crear_alerta_precio, que crea un recurso.
 function toolAnnotations(t: Tool) {
-  const readOnly = !t.requiresAuth
+  // Única tool de escritura: crear_alerta_precio (ya sin auth obligatoria).
+  const readOnly = t.name !== 'crear_alerta_precio'
   return {
     title: TOOL_TITLES[t.name] ?? t.name,
     readOnlyHint: readOnly, // no muta estado del mundo (solo consulta)
@@ -115,6 +122,21 @@ const frigorificos = frigorificosData as unknown as Array<{
 
 const ok = (text: string): ToolResult => ({ content: [{ type: 'text', text }] })
 const fail = (text: string): ToolResult => ({ content: [{ type: 'text', text }], isError: true })
+
+// Mensaje al agotar el cupo diario gratis de valuaciones: si x402 está configurado,
+// ofrece la misma consulta paga en centavos (USDC/Base); si no, el reset diario.
+function cupoValuacionMsg(endpoint: 'valuar-tropa' | 'valuar-arrendamiento', precio: string): string {
+  const base = 'Cupo diario gratis de valuaciones agotado para este origen (se resetea cada 24 h).'
+  if (!getX402Config()) {
+    return `${base} Volvé mañana o pedí una API key Enterprise (sin límites): https://www.consignatarias.com.ar/planes`
+  }
+  return (
+    `${base}\n\nPara seguir SIN esperar: la misma consulta cuesta ${precio} en USDC (red Base) vía x402 — ` +
+    `misma query como GET a https://www.consignatarias.com.ar/api/x402/${endpoint} (mismos params). ` +
+    `La respuesta 402 trae las instrucciones de pago (scheme "exact", header X-PAYMENT); ` +
+    `cualquier cliente x402-aware (@x402/fetch, etc.) lo resuelve solo.`
+  )
+}
 const fmt = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
 
 // Ubicación limpia: evita duplicar la provincia cuando ya viene en location
@@ -800,10 +822,177 @@ const TOOLS: Tool[] = [
     },
   },
   {
+    name: 'valuar_tropa',
+    description:
+      '¿Cuánto valen 350 novillos en Formosa? Valúa una tropa de hacienda a precio MAG del día: total en ARS y en USD (blue y oficial), valor por cabeza y fuente fechada. GRATIS con cupo diario por origen; sin cupo, la misma consulta cuesta US$0,05 en USDC vía x402: https://www.consignatarias.com.ar/api/x402/valuar-tropa. Params: categoria, cabezas, kg_promedio (opcional, si no se asume el peso típico de venta), provincia (opcional).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        categoria: { type: 'string', enum: Object.keys(KG_DEFAULT), description: 'Categoría MAG' },
+        cabezas: { type: 'number', description: 'Cantidad de animales (1 a 100.000)' },
+        kg_promedio: { type: 'number', description: 'Peso vivo promedio en kg (opcional; default: peso típico de venta de la categoría)' },
+        provincia: { type: 'string', description: 'Provincia (opcional; la referencia de precio es nacional MAG)' },
+      },
+      required: ['categoria', 'cabezas'],
+      additionalProperties: false,
+    },
+    async run(args, req) {
+      const rl = await enforceRateLimit({ action: 'mcp_valuacion', identity: `ip:${clientIp(req)}`, limit: 5, windowSeconds: 86_400 })
+      if (!rl.ok) return fail(cupoValuacionMsg('valuar-tropa', 'US$0,05'))
+      try {
+        return ok(
+          valuarTropa({
+            categoria: String(args.categoria || ''),
+            cabezas: Number(args.cabezas),
+            kgPromedio: args.kg_promedio != null ? Number(args.kg_promedio) : undefined,
+            provincia: args.provincia ? String(args.provincia) : undefined,
+          }).texto,
+        )
+      } catch (e) {
+        return fail(e instanceof Error ? e.message : 'Argumentos inválidos.')
+      }
+    },
+  },
+  {
+    name: 'valuar_arrendamiento_campo',
+    description:
+      '¿Cuánto cuesta arrendar un campo de 3.500 has en Corrientes? Canon de arrendamiento ganadero al índice oficial del MAG (haciinfo000013): anual y mensual, en ARS y USD. Con kg_ha_anio pactado da el canon exacto; sin él, escenarios de 40 a 100 kg/ha/año. GRATIS con cupo diario por origen; sin cupo, US$0,10 en USDC vía x402: https://www.consignatarias.com.ar/api/x402/valuar-arrendamiento. Params: hectareas, kg_ha_anio (opcional), provincia (opcional).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        hectareas: { type: 'number', description: 'Superficie en hectáreas (1 a 1.000.000)' },
+        kg_ha_anio: { type: 'number', description: 'Canon pactado en kg de novillo por ha por año (opcional; sin él se responden escenarios)' },
+        provincia: { type: 'string', description: 'Provincia (opcional; el canon por zona/aptitud se pacta, no hay valor oficial provincial)' },
+      },
+      required: ['hectareas'],
+      additionalProperties: false,
+    },
+    async run(args, req) {
+      const rl = await enforceRateLimit({ action: 'mcp_valuacion', identity: `ip:${clientIp(req)}`, limit: 5, windowSeconds: 86_400 })
+      if (!rl.ok) return fail(cupoValuacionMsg('valuar-arrendamiento', 'US$0,10'))
+      try {
+        return ok(
+          valuarArrendamiento({
+            hectareas: Number(args.hectareas),
+            kgHaAnio: args.kg_ha_anio != null ? Number(args.kg_ha_anio) : undefined,
+            provincia: args.provincia ? String(args.provincia) : undefined,
+          }).texto,
+        )
+      } catch (e) {
+        return fail(e instanceof Error ? e.message : 'Argumentos inválidos.')
+      }
+    },
+  },
+  {
+    name: 'quiero_comprar',
+    description:
+      '"Quiero comprar 300 terneros en Corrientes" → te devuelve YA los próximos remates programados que matchean (fecha, consignataria, lugar, link) y deja tu búsqueda activa: te avisamos por email o webhook de cada remate nuevo que matchee. GRATIS. Params: categoria (terneros|novillos|vaquillonas|vacas|toros|mixto — acepta sinónimos), cabezas (opcional), provincia (opcional), email y/o webhook_url (al menos uno, para los avisos).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        categoria: { type: 'string', description: 'Qué busca comprar (terneros, novillos, vaquillonas, vacas, toros, mixto)' },
+        cabezas: { type: 'number', description: 'Cuántas cabezas busca (opcional)' },
+        provincia: { type: 'string', description: 'Dónde (opcional, ej. "Corrientes")' },
+        email: { type: 'string', description: 'Email para los avisos de remates que matcheen' },
+        webhook_url: { type: 'string', description: 'Webhook https para avisos programáticos (POST remate.matched)' },
+        notas: { type: 'string', description: 'Detalle libre (raza, peso, condición, plazo…)' },
+      },
+      required: ['categoria'],
+      additionalProperties: false,
+    },
+    async run(args, req) {
+      const categoria = normalizarCategoria(args.categoria)
+      if (!categoria) return fail(`Categoría no reconocida. Usá: ${CATEGORIAS_DEMANDA.join(', ')} (o sinónimos: ternero, vaca, reproductores…).`)
+      const cabezas = args.cabezas != null && Number.isFinite(Number(args.cabezas)) && Number(args.cabezas) > 0 ? Math.min(Math.round(Number(args.cabezas)), 100_000) : null
+      const provincia = args.provincia ? String(args.provincia).trim() : null
+      const email = typeof args.email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(args.email.trim()) ? args.email.trim().toLowerCase() : null
+      let webhookUrl: string | null = null
+      if (typeof args.webhook_url === 'string' && args.webhook_url.trim()) {
+        const w = args.webhook_url.trim()
+        try {
+          const host = new URL(w).hostname.toLowerCase()
+          if (w.startsWith('https://') && host !== 'localhost' && !/^(127\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host)) webhookUrl = w
+        } catch { /* inválida → null */ }
+      }
+
+      // Sin contacto: igual devolvemos el matching (valor inmediato) + cómo activar el aviso.
+      if (!email && !webhookUrl) {
+        const matches = matchRemates(categoria, provincia)
+        return ok(
+          `Remates programados que matchean (${categoria}${provincia ? `, ${provincia}` : ''}):\n\n${formatMatches(matches)}\n\n` +
+            `Para que te avisemos de cada remate NUEVO que matchee, repetí la llamada con tu email o webhook_url. Calendario completo: https://www.consignatarias.com.ar/remates`,
+        )
+      }
+
+      const rl = await enforceRateLimit({ action: 'demanda_compra', identity: `ip:${clientIp(req)}`, limit: 5, windowSeconds: 86_400 })
+      if (!rl.ok) return fail('Demasiadas búsquedas creadas hoy desde este origen. Probá mañana.')
+
+      try {
+        const { id, matches } = await crearDemanda({
+          categoria,
+          cabezas,
+          provincia,
+          email,
+          webhookUrl,
+          origen: 'mcp',
+          originIp: clientIp(req),
+          notas: args.notas ? String(args.notas).slice(0, 500) : null,
+        })
+        return ok(
+          `Búsqueda #${id} activa: ${cabezas ? `${cabezas.toLocaleString('es-AR')} cab de ` : ''}${categoria}${provincia ? ` en ${provincia}` : ''}. ` +
+            `Te avisamos ${email && webhookUrl ? 'por email y webhook' : email ? 'por email' : 'al webhook'} de cada remate nuevo que matchee.\n\n` +
+            `Remates programados que YA matchean:\n\n${formatMatches(matches)}`,
+        )
+      } catch (e) {
+        return fail(e instanceof Error ? e.message : 'No se pudo registrar la búsqueda.')
+      }
+    },
+  },
+  {
+    name: 'contratar_pro_consignataria',
+    description:
+      'Cotiza y explica cómo activar PRO Consignataria pagando en USDC (x402): perfil destacado, badge PRO, video del último remate y leads en consignatarias.com.ar. Mismo producto que en /planes (ARS 45.000/mes), cotizado al dólar blue del día. Esta tool NO cobra: devuelve el monto exacto y el endpoint x402 para pagar. Params: slug (consignataria del directorio, usá buscar_consignataria si no lo sabés), meses (1-12, default 1).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        slug: { type: 'string', description: 'Slug de la consignataria en el directorio' },
+        meses: { type: 'number', description: 'Meses a contratar (1-12, default 1)' },
+      },
+      required: ['slug'],
+      additionalProperties: false,
+    },
+    async run(args) {
+      const firma = validarSlugPro(args.slug)
+      if (!firma) {
+        return fail('slug inválido: tiene que ser una consignataria del directorio. Encontrala con buscar_consignataria o en https://www.consignatarias.com.ar/consignatarias')
+      }
+      let meses: number
+      try {
+        meses = proMeses(args.meses)
+      } catch (e) {
+        return fail(e instanceof Error ? e.message : 'meses inválido.')
+      }
+      const ars = proArsMensual() * meses
+      const cents = cotizarProUsdCents(meses)
+      const usd = (cents / 100).toFixed(2)
+      const pagoDisponible = Boolean(getX402Config())
+      return ok(
+        `PRO Consignataria — ${firma.nombre} (${firma.canonical})\n\n` +
+          `${meses} mes${meses > 1 ? 'es' : ''}: ARS ${ars.toLocaleString('es-AR')} ≈ US$${usd} en USDC (al blue del día)\n` +
+          `Incluye: perfil destacado en el directorio, badge PRO, video del último remate embebido y leads.\n\n` +
+          (pagoDisponible
+            ? `Para pagar con USDC (x402): GET https://www.consignatarias.com.ar/api/x402/pro?slug=${firma.canonical}&meses=${meses} — ` +
+              `la respuesta 402 trae el monto exacto y las instrucciones (scheme "exact", header X-PAYMENT); cualquier cliente x402-aware lo resuelve. ` +
+              `La activación es inmediata al liquidarse el pago.\n\n`
+            : '') +
+          `También en pesos con tarjeta/débito: https://www.consignatarias.com.ar/consignatarias/${firma.canonical}/activar`,
+      )
+    },
+  },
+  {
     name: 'crear_alerta_precio',
     description:
-      'Crea una alerta: cuando el precio de una categoría cruza el umbral, avisa a tu webhook https (POST price.threshold_crossed). Única tool de escritura (el resto lee). REQUIERE API key Enterprise (Bearer cnsg_live_… o param api_key; alta en /cuenta/api-keys). Params: categoria (inmag=índice diario; resto semanal), umbral ARS/kg vivo, direccion above|below (def above), webhook_url. Devuelve id y precio.',
-    requiresAuth: true,
+      'Crea una alerta: cuando el precio de una categoría cruza el umbral, avisa a tu webhook https (POST price.threshold_crossed). Única tool de escritura (el resto lee). GRATIS sin API key (hasta 3 alertas activas por origen); con key Enterprise (Bearer cnsg_live_… o param api_key) sin límite. Params: categoria (inmag=índice diario; resto semanal), umbral ARS/kg vivo, direccion above|below (def above), webhook_url. Devuelve id y precio.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -817,8 +1006,9 @@ const TOOLS: Tool[] = [
       additionalProperties: false,
     },
     async run(args, req) {
-      // Auth: header Authorization: Bearer cnsg_live_..., o el arg api_key como fallback
-      // (algunos clientes MCP no mandan headers custom fácil — hacerlo descubrible por schema).
+      // Auth OPCIONAL: con key (header Bearer o arg api_key) no hay límites; sin key,
+      // free tier: hasta 3 alertas activas por IP de origen. Una key INVÁLIDA sigue
+      // siendo error (typo ≠ free tier: el caller cree estar autenticado).
       let authReq = req
       const apiKeyArg = typeof args.api_key === 'string' ? args.api_key.trim() : ''
       if (!req.headers.get('authorization') && apiKeyArg) {
@@ -826,16 +1016,19 @@ const TOOLS: Tool[] = [
         headers.set('authorization', apiKeyArg.toLowerCase().startsWith('bearer ') ? apiKeyArg : `Bearer ${apiKeyArg}`)
         authReq = new NextRequest(req.url, { headers })
       }
-      const auth = await authenticate(authReq)
-      if (!auth.ok) {
-        let reason = ''
-        try { const b = await auth.response.json(); reason = b?.error?.message || '' } catch { /* ignore */ }
-        return fail(
-          `${reason || 'No autorizado.'}\n\nCómo autenticar (elegí una):\n` +
-            `1) Header del cliente MCP: "headers": { "Authorization": "Bearer cnsg_live_..." }\n` +
-            `2) El parámetro api_key de esta tool.\n` +
-            `Gestioná tu key en https://www.consignatarias.com.ar/cuenta/api-keys · planes en https://www.consignatarias.com.ar/planes`,
-        )
+      const hasCreds = Boolean(authReq.headers.get('authorization'))
+      let userId: string | null = null
+      if (hasCreds) {
+        const auth = await authenticate(authReq)
+        if (!auth.ok) {
+          let reason = ''
+          try { const b = await auth.response.json(); reason = b?.error?.message || '' } catch { /* ignore */ }
+          return fail(
+            `${reason || 'API key inválida.'}\n\nLa key que pasaste no autentica. Reintentá sin key (free tier: 3 alertas activas) ` +
+              `o gestioná tu key en https://www.consignatarias.com.ar/cuenta/api-keys`,
+          )
+        }
+        userId = auth.key.userId
       }
       const categoria = String(args.categoria || '').toLowerCase()
       const umbral = Number(args.umbral)
@@ -849,17 +1042,35 @@ const TOOLS: Tool[] = [
         return fail('webhook_url debe ser una URL https pública.')
 
       const service = requireServiceClient()
+      const ip = clientIp(req)
+      if (!userId) {
+        // Free tier: 3 alertas activas por IP + freno de abuso (10 creaciones/día).
+        const rl = await enforceRateLimit({ action: 'mcp_alerta_free', identity: `ip:${ip}`, limit: 10, windowSeconds: 86_400 })
+        if (!rl.ok) return fail('Demasiadas creaciones de alerta hoy desde este origen. Probá mañana o usá una API key Enterprise (sin límites): https://www.consignatarias.com.ar/cuenta/api-keys')
+        const { count } = await service
+          .from('price_alerts')
+          .select('id', { count: 'exact', head: true })
+          .eq('status', 'active')
+          .eq('origin_ip', ip)
+        if ((count ?? 0) >= 3) {
+          return fail(
+            'Límite del free tier: 3 alertas activas por origen. Con una API key Enterprise no hay límite ' +
+              '(Bearer cnsg_live_… o param api_key) → https://www.consignatarias.com.ar/cuenta/api-keys',
+          )
+        }
+      }
       let current: number | null = null
       try { current = await getCurrentPrice(service, categoria) } catch { /* best-effort */ }
       const { data, error } = await service
         .from('price_alerts')
-        .insert({ user_id: auth.key.userId, webhook_url: webhook, category: categoria, threshold: umbral, direction: direccion, last_value: current, status: 'active', source: 'api' })
+        .insert({ user_id: userId, origin_ip: userId ? null : ip, webhook_url: webhook, category: categoria, threshold: umbral, direction: direccion, last_value: current, status: 'active', source: 'api' })
         .select('id')
         .single()
       if (error) return fail('No se pudo crear la alerta.')
       return ok(
         `Alerta creada (#${data.id}). Te aviso al webhook cuando el ${categoryLabel(categoria)} ` +
-          `${direccion === 'above' ? 'cruce' : 'baje de'} ${fmt(umbral)}. Precio hoy: ${current != null ? fmt(current) : 's/d'}.`,
+          `${direccion === 'above' ? 'cruce' : 'baje de'} ${fmt(umbral)}. Precio hoy: ${current != null ? fmt(current) : 's/d'}.` +
+          (userId ? '' : '\n\nFree tier: hasta 3 alertas activas por origen. ¿Más alertas + históricos bulk + soporte? Key Enterprise: https://www.consignatarias.com.ar/planes'),
       )
     },
   },
@@ -889,6 +1100,25 @@ const PROMPTS: McpPrompt[] = [
     description: 'Panorama del mercado ganadero hoy: precio, dólar, remates de la semana y consignatarias más activas.',
     arguments: [],
     build: () => 'Armá un panorama del mercado ganadero argentino de hoy usando las tools de consignatarias: precio del novillo (INMAG) en ARS y USD, contexto macro (dólar/maíz/faena), remates de esta semana y las consignatarias más activas por cabezas operadas en Cañuelas.',
+  },
+  {
+    name: 'valuar_tropa',
+    description: 'Cuánto vale una tropa de hacienda hoy, en pesos y dólares.',
+    arguments: [
+      { name: 'categoria', description: 'Categoría (novillos, terneros, vacas…)', required: true },
+      { name: 'cabezas', description: 'Cantidad de animales', required: true },
+      { name: 'provincia', description: 'Provincia (opcional)', required: false },
+    ],
+    build: (a) => `¿Cuánto valen ${a.cabezas || ''} ${a.categoria || 'novillos'}${a.provincia ? ` en ${a.provincia}` : ''} hoy, en pesos y en dólares? Usá valuar_tropa de consignatarias.`,
+  },
+  {
+    name: 'arrendar_campo',
+    description: 'Cuánto cuesta arrendar un campo ganadero, al índice oficial del MAG.',
+    arguments: [
+      { name: 'hectareas', description: 'Superficie en hectáreas', required: true },
+      { name: 'provincia', description: 'Provincia (opcional)', required: false },
+    ],
+    build: (a) => `¿Cuánto cuesta por año y por mes arrendar un campo ganadero de ${a.hectareas || ''} hectáreas${a.provincia ? ` en ${a.provincia}` : ''}? Usá valuar_arrendamiento_campo de consignatarias y mostrame los escenarios en pesos y dólares.`,
   },
   {
     name: 'novillo_en_dolares',
@@ -1032,7 +1262,11 @@ export async function POST(req: NextRequest) {
           '• Herramientas: calcular_arrendamiento.\n' +
           '• Sanidad SENASA (dato regulatorio, con la resolución citada): sanidad_plan, sanidad_calendario_aftosa, sanidad_requisitos_movimiento, sanidad_renspa (valida/decodifica RENSPA), sanidad_dte_tropa (DT-e / número de tropa).\n' +
           '• Buenas Prácticas Ganaderas (14 temas, Guía Red BPA): buenas_practicas.\n' +
-          'Todas son de lectura y públicas, salvo crear_alerta_precio, que REQUIERE API key de un plan Enterprise: pasala por el header Authorization: Bearer cnsg_live_... o por el parámetro api_key. Alta en https://www.consignatarias.com.ar/cuenta/api-keys',
+          '• Valuaciones: valuar_tropa ("¿cuánto valen 350 novillos en Formosa?") y valuar_arrendamiento_campo ("¿cuánto cuesta arrendar 3.500 has en Corrientes?") — total en ARS y USD con fuente fechada. Gratis con cupo diario; sin cupo, la misma consulta cuesta centavos (US$0,05-0,10 en USDC/Base) vía x402 en /api/x402/valuar-tropa y /api/x402/valuar-arrendamiento.\n' +
+          '• Alertas: crear_alerta_precio avisa a tu webhook cuando el precio cruza tu umbral. GRATIS sin key (3 alertas activas por origen); con API key Enterprise sin límite.\n' +
+          '• PRO Consignataria pagable en USDC: contratar_pro_consignataria cotiza (ARS 45.000/mes al blue del día) y da el endpoint x402 (/api/x402/pro) — activación inmediata del perfil destacado al liquidarse el pago.\n' +
+          '• Comprar hacienda: quiero_comprar ("quiero comprar 300 terneros en Corrientes") devuelve YA los remates programados que matchean y deja la búsqueda activa — avisamos por email/webhook de cada remate nuevo que matchee. Gratis.\n' +
+          'Todos los tools son públicos y de lectura salvo crear_alerta_precio (escritura, free tier). Key Enterprise (Bearer cnsg_live_... o param api_key) para alertas ilimitadas, históricos bulk y soporte: https://www.consignatarias.com.ar/cuenta/api-keys',
       }, negotiated)
     }
     case 'ping':

@@ -23,6 +23,7 @@ export type OpsEventType =
   | 'cron_started'
   | 'cron_finished'
   | 'form_submit'
+  | 'x402_payment'
   | 'error'
 
 export type OpsStatus = 'ok' | 'error' | 'timeout'
