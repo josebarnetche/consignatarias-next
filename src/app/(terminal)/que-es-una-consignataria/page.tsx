@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import GuiaConsignatariaDownload from '@/components/GuiaConsignatariaDownload'
 import {
   SectionBreadcrumbSchema,
   DefinedTermSetSchema,
@@ -7,6 +8,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -61,7 +63,7 @@ const FAQ = [
   },
   {
     question: '¿Cuánto cobra una consignataria de hacienda?',
-    answer: `Una consignataria cobra una comisión sobre el valor de venta de la hacienda —habitualmente 2–4% (frecuentemente ~3%), a veces hasta 5%, más IVA—, que se descuenta de la liquidación al productor junto con los gastos de remate (fletes, sanidad, guías, sellados). Ejemplo con precio actual: un novillo de ${EJEMPLO_PESO} kg vivo a $${fmt(novillo)}/kg (INMAG del ${lastUpdate}) vale $${fmt(ejemploValor)}; la comisión ronda entre $${fmt(ejemploComisionMin)} (3%) y $${fmt(ejemploComisionMax)} (5%).`,
+    answer: `Una consignataria cobra una comisión sobre el valor de venta de la hacienda —habitualmente 2–4% (frecuentemente ~3%), a veces hasta 5%, más IVA—, que se descuenta de la liquidación al productor junto con los gastos de remate (fletes, sanidad, guías, sellados). Ejemplo con precio actual: un novillo de ${EJEMPLO_PESO} kg vivo a $${fmt(novillo)}/kg (INMAG del ${INMAG_DATE}) vale $${fmt(ejemploValor)}; la comisión ronda entre $${fmt(ejemploComisionMin)} (3%) y $${fmt(ejemploComisionMax)} (5%).`,
   },
   {
     question: '¿En qué se diferencia de un frigorífico?',
@@ -136,7 +138,7 @@ export default function QueEsUnaConsignatariaPage() {
 
         <p className="text-zinc-400 mb-8">
           A precio de mercado actual, la comisión es tangible: un novillo de {EJEMPLO_PESO} kg vivo a
-          ${fmt(novillo)}/kg (INMAG del {lastUpdate}) vale ${fmt(ejemploValor)}; sobre esa operación la
+          ${fmt(novillo)}/kg (INMAG del {INMAG_DATE}) vale ${fmt(ejemploValor)}; sobre esa operación la
           consignataria cobra entre ${fmt(ejemploComisionMin)} (3%) y ${fmt(ejemploComisionMax)} (5%),
           más los gastos de remate. La comisión no la fija esta página: la acuerda cada firma con el
           productor. Estos son los valores de referencia del mercado.
@@ -152,6 +154,11 @@ export default function QueEsUnaConsignatariaPage() {
           comprador y liquida el neto al productor. Por ese servicio de intermediación cobra la
           comisión.
         </p>
+
+        {/* Lead magnet: la guía visual en PDF */}
+        <div className="mb-8">
+          <GuiaConsignatariaDownload />
+        </div>
 
         {/* Diferencia con frigorífico y rematador */}
         <h2 className="text-zinc-200 text-lg font-medium mb-3">

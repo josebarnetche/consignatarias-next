@@ -105,3 +105,5 @@ scripts/archive/traffic-report.js
 scripts/archive/value-events-report.js
 # Sistema de marca (assets fuente pesados, no van al deploy)
 /marca/
+# ...y las descargas/lead magnets, que también deployan.
+!public/descargas/*.pdf
