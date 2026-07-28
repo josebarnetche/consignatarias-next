@@ -1,0 +1,29 @@
+name: Demanda Matching (growth engine)
+
+# Corre ~40 min después de cada ventana del scraper de remates: para entonces el
+# rebuild de Vercel ya deployó el remates.json nuevo y el matching ve los remates
+# frescos. Idempotente (demanda_notificaciones), así que las corridas de backup
+# no duplican avisos.
+on:
+  schedule:
+    - cron: '40 17 * * *'  # 14:40 ART (tras el scrape primario)
+    - cron: '40 19 * * *'  # 16:40 ART (backup)
+    - cron: '40 21 * * *'  # 18:40 ART (backup)
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  match:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Notificar demandas de compra
+        run: |
+          RESP=$(curl -sS -w $'\n%{http_code}' -X POST \
+            "https://www.consignatarias.com.ar/api/cron/demanda-matching" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}")
+          CODE=$(printf '%s' "$RESP" | tail -n1)
+          BODY=$(printf '%s' "$RESP" | sed '$d')
+          echo "HTTP $CODE — $BODY"
+          [ "$CODE" = "200" ] || exit 1

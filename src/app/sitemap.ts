@@ -120,6 +120,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/cuanto-pesa-una-media-res`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.7 },
     { url: `${baseUrl}/rendimiento-al-gancho`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${baseUrl}/como-vender-hacienda`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${baseUrl}/quiero-comprar`, lastModified: buildDate, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/como-se-calcula-el-canon-de-arrendamiento`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.75 },
     { url: `${baseUrl}/impuesto-de-sellos-arrendamiento`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${baseUrl}/que-es-la-aparceria`, lastModified: priceDate, changeFrequency: 'monthly', priority: 0.7 },

@@ -757,6 +757,77 @@ export type Database = {
         }
         Relationships: []
       }
+      demanda_compra: {
+        Row: {
+          cabezas: number | null
+          categoria: string
+          created_at: string
+          email: string | null
+          id: number
+          notas: string | null
+          origen: string
+          origin_ip: string | null
+          provincia: string | null
+          status: string
+          updated_at: string
+          webhook_url: string | null
+        }
+        Insert: {
+          cabezas?: number | null
+          categoria: string
+          created_at?: string
+          email?: string | null
+          id?: never
+          notas?: string | null
+          origen?: string
+          origin_ip?: string | null
+          provincia?: string | null
+          status?: string
+          updated_at?: string
+          webhook_url?: string | null
+        }
+        Update: {
+          cabezas?: number | null
+          categoria?: string
+          created_at?: string
+          email?: string | null
+          id?: never
+          notas?: string | null
+          origen?: string
+          origin_ip?: string | null
+          provincia?: string | null
+          status?: string
+          updated_at?: string
+          webhook_url?: string | null
+        }
+        Relationships: []
+      }
+      demanda_notificaciones: {
+        Row: {
+          demanda_id: number
+          remate_id: number
+          sent_at: string
+        }
+        Insert: {
+          demanda_id: number
+          remate_id: number
+          sent_at?: string
+        }
+        Update: {
+          demanda_id?: number
+          remate_id?: number
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "demanda_notificaciones_demanda_id_fkey"
+            columns: ["demanda_id"]
+            isOneToOne: false
+            referencedRelation: "demanda_compra"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_events: {
         Row: {
           bounce_type: string | null
@@ -1756,6 +1827,39 @@ export type Database = {
         }
         Relationships: []
       }
+      monitor_acatak: {
+        Row: {
+          common_hashes: number | null
+          detected_at: string
+          evidence: string | null
+          id: number
+          inserted_at: string
+          medio: string
+          ref: string
+          total_hashes: number | null
+        }
+        Insert: {
+          common_hashes?: number | null
+          detected_at: string
+          evidence?: string | null
+          id?: never
+          inserted_at?: string
+          medio: string
+          ref: string
+          total_hashes?: number | null
+        }
+        Update: {
+          common_hashes?: number | null
+          detected_at?: string
+          evidence?: string | null
+          id?: never
+          inserted_at?: string
+          medio?: string
+          ref?: string
+          total_hashes?: number | null
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           capture_context: string | null
@@ -2092,6 +2196,7 @@ export type Database = {
           id: number
           last_fired_at: string | null
           last_value: number | null
+          origin_ip: string | null
           source: string
           status: string
           threshold: number
@@ -2108,6 +2213,7 @@ export type Database = {
           id?: never
           last_fired_at?: string | null
           last_value?: number | null
+          origin_ip?: string | null
           source?: string
           status?: string
           threshold: number
@@ -2124,6 +2230,7 @@ export type Database = {
           id?: never
           last_fired_at?: string | null
           last_value?: number | null
+          origin_ip?: string | null
           source?: string
           status?: string
           threshold?: number
@@ -2220,6 +2327,87 @@ export type Database = {
           metadata?: Json | null
           processed_at?: string
           source?: string
+        }
+        Relationships: []
+      }
+      producer_leads: {
+        Row: {
+          category: string | null
+          closed_at: string | null
+          contacted_at: string | null
+          created_at: string
+          desired_price_ars: number | null
+          email: string | null
+          estimated_value_ars: number | null
+          fee_ars: number | null
+          fee_pct: number
+          head_count: number | null
+          hectareas: number | null
+          id: number
+          intent: string
+          ip_hash: string | null
+          message: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          province: string | null
+          routed_at: string | null
+          routed_to_slug: string | null
+          source: string | null
+          status: string
+          zona: string | null
+        }
+        Insert: {
+          category?: string | null
+          closed_at?: string | null
+          contacted_at?: string | null
+          created_at?: string
+          desired_price_ars?: number | null
+          email?: string | null
+          estimated_value_ars?: number | null
+          fee_ars?: number | null
+          fee_pct?: number
+          head_count?: number | null
+          hectareas?: number | null
+          id?: never
+          intent: string
+          ip_hash?: string | null
+          message?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          province?: string | null
+          routed_at?: string | null
+          routed_to_slug?: string | null
+          source?: string | null
+          status?: string
+          zona?: string | null
+        }
+        Update: {
+          category?: string | null
+          closed_at?: string | null
+          contacted_at?: string | null
+          created_at?: string
+          desired_price_ars?: number | null
+          email?: string | null
+          estimated_value_ars?: number | null
+          fee_ars?: number | null
+          fee_pct?: number
+          head_count?: number | null
+          hectareas?: number | null
+          id?: never
+          intent?: string
+          ip_hash?: string | null
+          message?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          province?: string | null
+          routed_at?: string | null
+          routed_to_slug?: string | null
+          source?: string | null
+          status?: string
+          zona?: string | null
         }
         Relationships: []
       }

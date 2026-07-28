@@ -1602,6 +1602,69 @@ export async function sendDteRetentionReminder({
   }
 }
 
+/** Lead interno del growth engine: entró una demanda de compra. Fire-and-forget. */
+export async function sendDemandaLeadInternal(opts: {
+  id: number
+  categoria: string
+  cabezas: number | null
+  provincia: string | null
+  email: string | null
+  webhookUrl: string | null
+  origen: string
+  matches: number
+}) {
+  const resend = await getResend()
+  if (!resend) return
+  const linea = (k: string, v: string) =>
+    `<p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">${k}:</strong> ${escapeHtml(v)}</p>`
+  resend.emails.send({
+    from: FROM,
+    to: LEAD_ALERT_TO,
+    subject: `Demanda de compra #${opts.id}: ${opts.cabezas ?? '?'} ${opts.categoria}${opts.provincia ? ` — ${opts.provincia}` : ''}`,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Growth &middot; demanda de compra</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 14px">Comprador buscando hacienda</h2>
+      ${linea('Busca', `${opts.cabezas ? opts.cabezas.toLocaleString('es-AR') + ' cab de ' : ''}${opts.categoria}${opts.provincia ? ' en ' + opts.provincia : ''}`)}
+      ${opts.email ? linea('Email', opts.email) : ''}
+      ${opts.webhookUrl ? linea('Webhook', opts.webhookUrl) : ''}
+      ${linea('Origen', opts.origen)}
+      ${linea('Remates que ya matchean', String(opts.matches))}
+      <p style="color:#71717a;font-size:12px;line-height:1.6;margin:14px 0 0">Rutear a la consignataria que corresponda — este contacto es el activo del motor comisionista.</p>
+    `),
+  }).catch(() => {})
+}
+
+/** Aviso al comprador: apareció un remate que matchea su demanda. Fire-and-forget. */
+export async function sendDemandaMatchAlert(opts: {
+  to: string
+  categoria: string
+  cabezas: number | null
+  remate: { titulo: string; consignataria: string; fecha: string; lugar: string; url: string }
+}) {
+  const resend = await getResend()
+  if (!resend) return
+  const safeTitle = escapeHtml(opts.remate.titulo)
+  const safeConsig = escapeHtml(opts.remate.consignataria)
+  resend.emails.send({
+    from: FROM,
+    to: opts.to,
+    subject: `Remate que matchea tu búsqueda: ${opts.remate.consignataria} — ${opts.remate.fecha}`,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Tu b&uacute;squeda de hacienda</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 14px">Apareci&oacute; un remate para vos</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Buscabas ${opts.cabezas ? `${opts.cabezas.toLocaleString('es-AR')} cabezas de ` : ''}${escapeHtml(opts.categoria)} — este remate programado matchea:</p>
+      <div style="background:#18181b;border:1px solid #27272a;border-left:3px solid #38bdf8;border-radius:2px;padding:16px;margin-bottom:16px">
+        <p style="color:#fafafa;font-size:14px;margin:0 0 8px;font-weight:bold">${safeTitle}</p>
+        <p style="color:#a1a1aa;font-size:12px;margin:0">${safeConsig} &nbsp;&middot;&nbsp; ${escapeHtml(opts.remate.fecha)} &nbsp;&middot;&nbsp; ${escapeHtml(opts.remate.lugar)}</p>
+      </div>
+      <div style="text-align:center;margin:20px 0">
+        <a href="${opts.remate.url}" style="background:#38bdf8;color:#09090b;padding:11px 26px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver remate</a>
+      </div>
+      <p style="color:#71717a;font-size:11px;line-height:1.6;margin:0">Seguimos avisándote de cada remate nuevo que matchee. Calendario completo: ${APP_URL}/remates</p>
+    `),
+  }).catch(() => {})
+}
+
 export async function sendNewRemateAlert({
   to,
   remateTitle,
