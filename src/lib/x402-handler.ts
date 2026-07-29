@@ -9,6 +9,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { logEvent } from '@/lib/ops'
+import { sendX402PaymentAlert } from '@/lib/email'
 import {
   buildPaymentRequirements,
   decodePaymentHeader,
@@ -124,6 +125,16 @@ export async function handlePaidTool(req: NextRequest, spec: PaidToolSpec): Prom
       usd_cents: usdCents,
       error_post_pago: payload.data.error === true || undefined,
     },
+  })
+
+  // Aviso interno por cada pago liquidado (fire-and-forget). Los intentos
+  // fallidos NO avisan por mail (los probes generarían ruido) — quedan en /admin/ops.
+  sendX402PaymentAlert({
+    route: new URL(spec.resource).pathname,
+    usdCents,
+    payer: result.settlement.payer,
+    transaction: result.settlement.transaction,
+    network: result.settlement.network,
   })
 
   return NextResponse.json(

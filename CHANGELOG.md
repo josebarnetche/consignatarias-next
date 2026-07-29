@@ -7,6 +7,20 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.188.1] — 2026-07-29
+
+### Fix: spam de avisos de demanda + notificación de pagos x402
+
+- **Bug de los 20+ mails por una demanda**: la idempotencia usaba el `id` numérico
+  de remates.json, que se REASIGNA en cada scrape → remates ya avisados parecían
+  nuevos. Ahora la clave es el slug estable del remate (migración
+  `demanda_notificaciones_stable_key`). Además: UN email resumen por corrida (no
+  un mail por remate), y la creación siembra TODOS los matches vigentes.
+  Se registra antes de enviar: ante fallo, se pierde un aviso, no se duplica.
+- **Aviso por email de cada pago x402 liquidado** (`sendX402PaymentAlert` →
+  `LEAD_ALERT_TO`): monto, endpoint, payer y link a Basescan. Los intentos
+  fallidos no mandan mail (ruido de probes) — quedan en `/admin/ops`.
+
 ## [1.188.0] — 2026-07-28
 
 ### El MCP se vuelve motor de revenue: alertas free, valuaciones, pagos x402 en USDC y captura de demanda

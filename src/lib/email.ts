@@ -1634,33 +1634,65 @@ export async function sendDemandaLeadInternal(opts: {
   }).catch(() => {})
 }
 
-/** Aviso al comprador: apareció un remate que matchea su demanda. Fire-and-forget. */
+/** Aviso al comprador: remates NUEVOS que matchean su demanda — UN email resumen
+ *  por corrida del cron, nunca un mail por remate. Fire-and-forget. */
 export async function sendDemandaMatchAlert(opts: {
   to: string
   categoria: string
   cabezas: number | null
-  remate: { titulo: string; consignataria: string; fecha: string; lugar: string; url: string }
+  remates: Array<{ titulo: string; consignataria: string; fecha: string; lugar: string; url: string }>
 }) {
   const resend = await getResend()
-  if (!resend) return
-  const safeTitle = escapeHtml(opts.remate.titulo)
-  const safeConsig = escapeHtml(opts.remate.consignataria)
+  if (!resend || opts.remates.length === 0) return
+  const n = opts.remates.length
+  const cards = opts.remates
+    .slice(0, 12)
+    .map(
+      (r) => `
+      <div style="background:#18181b;border:1px solid #27272a;border-left:3px solid #38bdf8;border-radius:2px;padding:14px;margin-bottom:10px">
+        <p style="color:#fafafa;font-size:14px;margin:0 0 6px;font-weight:bold"><a href="${r.url}" style="color:#fafafa;text-decoration:none">${escapeHtml(r.titulo)}</a></p>
+        <p style="color:#a1a1aa;font-size:12px;margin:0">${escapeHtml(r.consignataria)} &nbsp;&middot;&nbsp; ${escapeHtml(r.fecha)} &nbsp;&middot;&nbsp; ${escapeHtml(r.lugar)} &nbsp;&middot;&nbsp; <a href="${r.url}" style="color:#38bdf8">ver &rarr;</a></p>
+      </div>`,
+    )
+    .join('')
   resend.emails.send({
     from: FROM,
     to: opts.to,
-    subject: `Remate que matchea tu búsqueda: ${opts.remate.consignataria} — ${opts.remate.fecha}`,
+    subject: n === 1 ? `1 remate nuevo matchea tu búsqueda de ${opts.categoria}` : `${n} remates nuevos matchean tu búsqueda de ${opts.categoria}`,
     html: darkEmailShell(`
       <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Tu b&uacute;squeda de hacienda</p>
-      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 14px">Apareci&oacute; un remate para vos</h2>
-      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Buscabas ${opts.cabezas ? `${opts.cabezas.toLocaleString('es-AR')} cabezas de ` : ''}${escapeHtml(opts.categoria)} — este remate programado matchea:</p>
-      <div style="background:#18181b;border:1px solid #27272a;border-left:3px solid #38bdf8;border-radius:2px;padding:16px;margin-bottom:16px">
-        <p style="color:#fafafa;font-size:14px;margin:0 0 8px;font-weight:bold">${safeTitle}</p>
-        <p style="color:#a1a1aa;font-size:12px;margin:0">${safeConsig} &nbsp;&middot;&nbsp; ${escapeHtml(opts.remate.fecha)} &nbsp;&middot;&nbsp; ${escapeHtml(opts.remate.lugar)}</p>
-      </div>
-      <div style="text-align:center;margin:20px 0">
-        <a href="${opts.remate.url}" style="background:#38bdf8;color:#09090b;padding:11px 26px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver remate</a>
-      </div>
-      <p style="color:#71717a;font-size:11px;line-height:1.6;margin:0">Seguimos avisándote de cada remate nuevo que matchee. Calendario completo: ${APP_URL}/remates</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 14px">${n === 1 ? 'Apareci&oacute; un remate para vos' : `Aparecieron ${n} remates para vos`}</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Buscabas ${opts.cabezas ? `${opts.cabezas.toLocaleString('es-AR')} cabezas de ` : ''}${escapeHtml(opts.categoria)} — ${n === 1 ? 'este remate programado matchea' : 'estos remates programados matchean'}:</p>
+      ${cards}
+      ${n > 12 ? `<p style="color:#71717a;font-size:12px;margin:0 0 12px">&hellip;y ${n - 12} m&aacute;s en el calendario.</p>` : ''}
+      <p style="color:#71717a;font-size:11px;line-height:1.6;margin:14px 0 0">Un solo resumen por corrida — sin spam. Calendario completo: ${APP_URL}/remates</p>
+    `),
+  }).catch(() => {})
+}
+
+/** Aviso interno: entró un pago x402 (USDC). Fire-and-forget a LEAD_ALERT_TO. */
+export async function sendX402PaymentAlert(opts: {
+  route: string
+  usdCents: number
+  payer: string
+  transaction: string
+  network: string
+}) {
+  const resend = await getResend()
+  if (!resend) return
+  const usd = (opts.usdCents / 100).toFixed(2)
+  const txUrl = opts.network === 'base' ? `https://basescan.org/tx/${opts.transaction}` : `https://sepolia.basescan.org/tx/${opts.transaction}`
+  resend.emails.send({
+    from: FROM,
+    to: LEAD_ALERT_TO,
+    subject: `💸 Pago x402: US$${usd} en USDC — ${opts.route}`,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">x402 &middot; pago recibido</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 14px">US$${usd} en USDC</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Endpoint:</strong> ${escapeHtml(opts.route)}</p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Pagador:</strong> <code style="color:#38bdf8">${escapeHtml(opts.payer)}</code></p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Red:</strong> ${escapeHtml(opts.network)}</p>
+      <p style="margin:16px 0 0"><a href="${txUrl}" style="color:#38bdf8">Ver transacci&oacute;n en Basescan &rarr;</a> &nbsp;&middot;&nbsp; <a href="${APP_URL}/admin/ops" style="color:#38bdf8">/admin/ops</a></p>
     `),
   }).catch(() => {})
 }

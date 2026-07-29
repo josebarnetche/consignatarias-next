@@ -805,17 +805,20 @@ export type Database = {
       demanda_notificaciones: {
         Row: {
           demanda_id: number
-          remate_id: number
+          remate_id: number | null
+          remate_key: string
           sent_at: string
         }
         Insert: {
           demanda_id: number
-          remate_id: number
+          remate_id?: number | null
+          remate_key: string
           sent_at?: string
         }
         Update: {
           demanda_id?: number
-          remate_id?: number
+          remate_id?: number | null
+          remate_key?: string
           sent_at?: string
         }
         Relationships: [
@@ -3291,22 +3294,6 @@ export type Database = {
       }
     }
     Views: {
-      api_consumers_summary: {
-        Row: {
-          ips: string[] | null
-          key_name: string | null
-          owner_email: string | null
-          paths: string[] | null
-          prefix: string | null
-          primero: string | null
-          queries: string[] | null
-          referers: string[] | null
-          reqs: number | null
-          ultimo: string | null
-          user_agents: string[] | null
-        }
-        Relationships: []
-      }
       consignataria_followers: {
         Row: {
           consignataria_slug: string | null

@@ -32,19 +32,26 @@ export function normalizarCategoria(raw: unknown): CategoriaDemanda | null {
   return CATEGORIA_ALIASES[k] ?? null
 }
 
-// Misma fórmula que /remates/[slug]/page.tsx (generateRemateSlug).
-function remateUrl(r: Auction): string {
-  const slug = [
+// Misma fórmula que /remates/[slug]/page.tsx (generateRemateSlug). Este slug es
+// además la CLAVE ESTABLE de notificación: los `id` numéricos de remates.json se
+// reasignan en cada scrape (¡no son estables!) y usarlos de clave re-avisaba
+// remates ya vistos — el bug de los 20+ mails del 28-jul.
+function remateSlug(r: Auction): string {
+  return [
     r.consignatariaSlug || 'remate',
     r.type || 'general',
     r.province?.toLowerCase().replace(/\s+/g, '-') || 'argentina',
     r.date,
   ].join('-')
-  return `${BASE_URL}/remates/${slug}`
+}
+
+function remateUrl(r: Auction): string {
+  return `${BASE_URL}/remates/${remateSlug(r)}`
 }
 
 export interface RemateMatch {
   id: number
+  key: string
   titulo: string
   consignataria: string
   fecha: string
@@ -72,6 +79,7 @@ export function matchRemates(categoria: CategoriaDemanda, provincia?: string | n
     .slice(0, limite)
     .map((r) => ({
       id: r.id,
+      key: remateSlug(r),
       titulo: r.title,
       consignataria: r.consignatariaName,
       fecha: r.date,
@@ -101,6 +109,9 @@ export interface DemandaInput {
  */
 export async function crearDemanda(input: DemandaInput): Promise<{ id: number; matches: RemateMatch[] }> {
   const matches = matchRemates(input.categoria, input.provincia)
+  // Sembrar TODOS los matches actuales (no solo los 5 mostrados): el cron avisa
+  // únicamente remates genuinamente nuevos respecto del momento de creación.
+  const todosLosMatches = matchRemates(input.categoria, input.provincia, 1000)
   const service = requireServiceClient()
 
   const { data, error } = await service
@@ -119,10 +130,10 @@ export async function crearDemanda(input: DemandaInput): Promise<{ id: number; m
     .single()
   if (error) throw new Error(`No se pudo registrar la demanda: ${error.message}`)
 
-  if (matches.length > 0) {
+  if (todosLosMatches.length > 0) {
     await service
       .from('demanda_notificaciones')
-      .insert(matches.map((m) => ({ demanda_id: data.id, remate_id: m.id })))
+      .insert(todosLosMatches.map((m) => ({ demanda_id: data.id, remate_key: m.key, remate_id: m.id })))
   }
 
   // Lead interno (fire-and-forget): la demanda ES el activo del motor comisionista.
@@ -148,8 +159,10 @@ export function formatMatches(matches: RemateMatch[]): string {
 }
 
 /**
- * Pase del cron post-scrape: por cada demanda activa, avisar remates matcheados
- * aún no notificados (email y/o webhook) y registrar la notificación.
+ * Pase del cron post-scrape: por cada demanda activa, detectar remates matcheados
+ * aún no notificados (por CLAVE ESTABLE, no id) y avisar con UN email resumen por
+ * corrida (no un mail por remate — el bug de spam del 28-jul). El webhook sí va
+ * por remate (los consumidores programáticos esperan un evento por entidad).
  */
 export async function notificarDemandas(): Promise<{ demandas: number; avisos: number; errores: number }> {
   const service = requireServiceClient()
@@ -164,25 +177,34 @@ export async function notificarDemandas(): Promise<{ demandas: number; avisos: n
 
   const { data: yaAvisadas } = await service
     .from('demanda_notificaciones')
-    .select('demanda_id, remate_id')
+    .select('demanda_id, remate_key')
     .in('demanda_id', demandas.map((d) => d.id))
-  const avisadasSet = new Set((yaAvisadas ?? []).map((n) => `${n.demanda_id}:${n.remate_id}`))
+  const avisadasSet = new Set((yaAvisadas ?? []).map((n) => `${n.demanda_id}:${n.remate_key}`))
 
   for (const d of demandas) {
     out.demandas++
     const cat = normalizarCategoria(d.categoria) ?? 'mixto'
-    const nuevos = matchRemates(cat, d.provincia, 10).filter((m) => !avisadasSet.has(`${d.id}:${m.id}`))
-    for (const m of nuevos) {
-      try {
-        if (d.email) {
-          sendDemandaMatchAlert({
-            to: d.email,
-            categoria: d.categoria,
-            cabezas: d.cabezas,
-            remate: { titulo: m.titulo, consignataria: m.consignataria, fecha: m.fecha, lugar: m.lugar, url: m.url },
-          })
-        }
-        if (d.webhook_url) {
+    const nuevos = matchRemates(cat, d.provincia, 50).filter((m) => !avisadasSet.has(`${d.id}:${m.key}`))
+    if (nuevos.length === 0) continue
+
+    try {
+      // Registrar ANTES de avisar: si el email/webhook falla, preferimos perder un
+      // aviso a repetirlo (el calendario completo siempre está en /remates).
+      const { error: insErr } = await service
+        .from('demanda_notificaciones')
+        .insert(nuevos.map((m) => ({ demanda_id: d.id, remate_key: m.key, remate_id: m.id })))
+      if (insErr) { out.errores++; continue }
+
+      if (d.email) {
+        sendDemandaMatchAlert({
+          to: d.email,
+          categoria: d.categoria,
+          cabezas: d.cabezas,
+          remates: nuevos.map((m) => ({ titulo: m.titulo, consignataria: m.consignataria, fecha: m.fecha, lugar: m.lugar, url: m.url })),
+        })
+      }
+      if (d.webhook_url) {
+        for (const m of nuevos) {
           await fetch(d.webhook_url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -190,11 +212,10 @@ export async function notificarDemandas(): Promise<{ demandas: number; avisos: n
             signal: AbortSignal.timeout(10_000),
           }).catch(() => { out.errores++ })
         }
-        await service.from('demanda_notificaciones').insert({ demanda_id: d.id, remate_id: m.id })
-        out.avisos++
-      } catch {
-        out.errores++
       }
+      out.avisos += nuevos.length
+    } catch {
+      out.errores++
     }
   }
   return out
