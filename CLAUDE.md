@@ -144,6 +144,7 @@ docs/                                 Current strategic docs (Oráculo, Corredor
 - **Admin gate** = `user_roles.role='admin'`. The owner email (`agro@memola.com.ar`) AND the founder personal (`jose.barnetche19@gmail.com`) both have admin.
 - **Observability**: every authenticated request to `/api/precios`, `/api/lots` writes a row to `ops_events`. Visible at `/admin/ops`.
 - **No secrets in mailto: links** — `mailto:agro@memola.com.ar` is correct; it's a real inbox. The Resend sender must use `@consignatarias.com` (only verified domain).
+- **MCP surfaces stay in sync.** Any change to MCP tools (add/remove/gating/pricing) must update ALL FOUR surfaces in the same PR: (1) `src/app/api/mcp/route.ts` — tool descriptions + the `instructions` string in `initialize`, (2) `/mcp` page — `TOOLS` array + footnote copy, (3) `src/app/llms.txt/route.ts` — tool list + access/pricing paragraph, (4) `src/app/llms-full.txt/route.ts` — the MCP callout. x402 pricing (US$0.05 tropa / US$0.10 arrendamiento / PRO al blue) lives in the endpoint specs under `src/app/api/x402/` — if it changes, the copy in all four surfaces changes with it.
 
 ---
 

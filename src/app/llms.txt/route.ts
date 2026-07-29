@@ -70,9 +70,13 @@ Available tools:
 - \`sanidad_renspa\` — valida y decodifica un código RENSPA (17 dígitos, 00.000.0.00000.00) en sus segmentos
 - \`sanidad_dte_tropa\` — explica el DT-e / número de tropa (qué ampara, requisitos para emitirlo) — referencia
 - \`buenas_practicas\` — Buenas Prácticas Ganaderas (14 temas de la Guía Red BPA): cómo implementar salud, bienestar, manejo de rodeo, alimentación, agua, etc.
-- \`crear_alerta_precio\` — alerta cuando un precio cruza un umbral → notifica por webhook
+- \`valuar_tropa\` — "¿cuánto valen 350 novillos en Formosa?": total en ARS y USD (blue y oficial) a precio MAG del día
+- \`valuar_arrendamiento_campo\` — "¿cuánto cuesta arrendar 3.500 has en Corrientes?": canon anual/mensual al índice oficial de arrendamientos, ARS y USD
+- \`quiero_comprar\` — publicá qué hacienda buscás comprar → remates programados que matchean + aviso por email/webhook de cada remate nuevo (también en /quiero-comprar)
+- \`crear_alerta_precio\` — alerta cuando un precio cruza un umbral → notifica por webhook. GRATIS sin key (3 alertas activas por origen)
+- \`contratar_pro_consignataria\` — cotiza y activa PRO Consignataria pagando en USDC (x402), activación inmediata
 
-Los tools de lectura son públicos. \`crear_alerta_precio\` requiere una API key de un plan (\`Authorization: Bearer cnsg_live_...\`, misma que el Enterprise API).
+Todos los tools son públicos y gratis. Las valuaciones tienen cupo diario gratis; agotado el cupo, la misma consulta se paga por request en USDC real (red Base) vía el protocolo x402 — US\$0,05 en \`/api/x402/valuar-tropa\`, US\$0,10 en \`/api/x402/valuar-arrendamiento\`; el 402 trae las instrucciones de pago (scheme "exact", header X-PAYMENT). El PRO Consignataria también se paga en USDC en \`/api/x402/pro\`. API key Enterprise (\`Authorization: Bearer cnsg_live_...\`) para alertas ilimitadas, históricos bulk y soporte.
 
 ## What this site is
 

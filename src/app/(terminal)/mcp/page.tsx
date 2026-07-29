@@ -8,7 +8,7 @@ import { INMAG_DATE } from '@/lib/inmag'
 export const metadata: Metadata = {
   title: 'MCP — Consignatarias para agentes IA | consignatarias.com.ar',
   description:
-    'Servidor MCP oficial (Model Context Protocol): el mercado ganadero argentino como tools para agentes IA. Precios INMAG, remates, consignatarias, arrendamiento y alertas — conectás Claude, Cursor o cualquier agente y consultás en tiempo real.',
+    'Servidor MCP oficial (Model Context Protocol): el mercado ganadero argentino como tools para agentes IA. Precios INMAG, remates, consignatarias, valuaciones de tropa y arrendamiento, búsqueda de hacienda para comprar, alertas gratis y pagos por consulta en USDC (x402) — conectás Claude, Cursor o cualquier agente y operás en tiempo real.',
   alternates: { canonical: 'https://www.consignatarias.com.ar/mcp' },
 }
 
@@ -34,7 +34,11 @@ const TOOLS = [
   { name: 'actividad_consignatarias', desc: 'Ranking de cabezas y precio promedio por firma en el MAG de referencia (Cañuelas)', auth: false },
   { name: 'buscar_frigorifico', desc: 'Frigoríficos habilitados MAGYP/SENASA (1.100+ plantas)', auth: false },
   { name: 'calcular_arrendamiento', desc: 'Canon de arrendamiento rural indexado al novillo', auth: false },
-  { name: 'crear_alerta_precio', desc: 'Alerta cuando un precio cruza un umbral → notifica por webhook', auth: true },
+  { name: 'valuar_tropa', desc: '"¿Cuánto valen 350 novillos?" — total en ARS y USD a precio MAG del día', auth: false },
+  { name: 'valuar_arrendamiento_campo', desc: 'Canon de arrendamiento ganadero al índice oficial, anual y mensual, ARS y USD', auth: false },
+  { name: 'quiero_comprar', desc: 'Publicá qué hacienda buscás → remates que matchean + aviso de cada remate nuevo', auth: false },
+  { name: 'crear_alerta_precio', desc: 'Alerta cuando un precio cruza un umbral → webhook (gratis: 3 activas por origen)', auth: false },
+  { name: 'contratar_pro_consignataria', desc: 'Cotizá y activá PRO Consignataria pagando en USDC (x402), sin formularios', auth: false },
 ]
 
 const fmt = (n: number) => Math.round(n).toLocaleString('es-AR')
@@ -266,8 +270,10 @@ export default function McpPage() {
           ))}
         </div>
         <p className="text-xs text-zinc-500 mt-3">
-          Los tools de lectura son públicos. <code className="text-zinc-400">crear_alerta_precio</code> requiere una API
-          key de un plan (<code className="text-zinc-400">Authorization: Bearer cnsg_live_…</code>).
+          Todos los tools son públicos y gratis. Las valuaciones tienen cupo diario; sin cupo, la misma consulta cuesta
+          centavos en USDC real (red Base) vía <code className="text-zinc-400">x402</code> — el protocolo de pagos para
+          agentes. Con una API key Enterprise (<code className="text-zinc-400">Bearer cnsg_live_…</code>): alertas
+          ilimitadas, históricos bulk y soporte.
         </p>
       </section>
 
