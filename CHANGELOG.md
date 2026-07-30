@@ -7,6 +7,34 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.189.0] — 2026-07-29
+
+### /licencia-datos: la prohibición se convierte en vidriera
+
+Los términos ya protegían la compilación pero no ofrecían camino: prohibir sin
+precio es fricción, con precio es producto. Nueva página pública con la política
+de licenciamiento y los precios a la vista, sin pasar por un vendedor.
+
+- **Qué NO licenciamos, dicho de frente**: el INMAG es índice y marca del Mercado
+  Agroganadero — lo republicamos con cita, sin arrogarnos titularidad (coherente
+  con /metodologia y con la sección 9 de /terminos). Tampoco los registros
+  públicos subyacentes.
+- **Qué SÍ**: calendario de remates compilado, directorio de consignatarias, base
+  de frigoríficos, índices propios derivados (Índice de Liquidación, rankings de
+  actividad), serie histórica archivada y normalizada en USD, y el servicio.
+- **Tres niveles con precio publicado**: Atribución (gratis, con el formato de
+  cita exacto) · Publicación ARS 150.000/mes · Producto desde ARS 400.000/mes ·
+  más uso como referencia contractual, a medida (metodología versionada, aviso de
+  cambios, derecho de auditoría).
+- **Cláusula anti-minería en /terminos §9**: prohíbe minar para desarrollar
+  productos de datos competidores y entrenar modelos con nuestras compilaciones
+  sin acuerdo; deja explícitamente permitido que un asistente responda citándonos.
+- **llms.txt** publica el formato de cita y la frontera de licencia — es lo que
+  leen los motores que ya nos referencian (855 referidos de IA en 60 días:
+  Copilot 651, ChatGPT 190).
+- CTA sin fricción para quien ya publica nuestros datos: no es un problema, es una
+  conversación.
+
 ## [1.188.1] — 2026-07-29
 
 ### Fix: spam de avisos de demanda + notificación de pagos x402

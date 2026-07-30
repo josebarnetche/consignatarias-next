@@ -140,7 +140,17 @@ export default function TerminosPage() {
             son objeto de apropiación. Queda prohibida la
             reproducción, extracción sustancial, scraping masivo o reutilización sistemática de la base de datos
             o del contenido del Sitio sin autorización escrita de Memola, sin perjuicio de la cita de fuente
-            para usos legítimos e informativos.
+            para usos legítimos e informativos. Queda igualmente prohibido{' '}
+            <strong className="text-zinc-200">minar los datos del Sitio con el fin de diseñar, entrenar o
+            desarrollar productos de datos, índices o servicios informativos que compitan</strong> con los de
+            Memola, así como el entrenamiento de modelos de lenguaje con las compilaciones o series históricas
+            del Sitio sin acuerdo escrito; el uso por asistentes de IA para responder una consulta citando la
+            fuente está permitido. Las condiciones de citación y los niveles de licencia (atribución gratuita,
+            publicación, producto y uso como referencia contractual) están publicados en{' '}
+            <Link href="/licencia-datos" className="text-accent hover:text-accent-bright">
+              /licencia-datos
+            </Link>
+            .
           </p>
         </section>
 
