@@ -2066,6 +2066,77 @@ export async function sendElCorredorDelivery(email: string, edition: string, pdf
   }
 }
 
+/**
+ * Corrección de El Corredor — se manda cuando el blast salió con la edición
+ * equivocada (2026-08-01: el manifest importado estáticamente hizo que el mail de
+ * agosto linkeara Junio). Dice el error de frente, da el link correcto y abre el
+ * canal directo por WhatsApp. No reemplaza al delivery normal.
+ */
+export async function sendElCorredorCorreccion(email: string, edition: string, pdfUrl: string) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'RESEND_API_KEY no configurado' }
+
+  const safeEdition = escapeHtml(edition)
+  const safeUrl = escapeHtml(pdfUrl)
+  const waText = encodeURIComponent('Hola, les escribo por El Corredor de consignatarias.com.ar')
+  const waUrl = `https://wa.me/5493773418130?text=${waText}`
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: email,
+      subject: `Perdón — te mandamos El Corredor equivocado. Acá va el de ${edition}`,
+      html: darkEmailShell(`
+          <div style="font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #71717a; margin-bottom: 24px;">
+            Mercado Decision Infrastructure
+          </div>
+
+          <h1 style="font-size: 32px; font-weight: 700; letter-spacing: -0.02em; color: #fafafa; margin: 0 0 4px 0;">El Corredor</h1>
+          <div style="font-size: 14px; color: #38bdf8; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 24px;">${safeEdition} &middot; corrección</div>
+
+          <p style="font-size: 14px; line-height: 1.6; color: #d4d4d8; margin: 0 0 16px 0;">
+            Hace un rato te enviamos <strong style="color:#fafafa">El Corredor</strong>, nuestro resumen
+            mensual de lo que sucede en el mercado. Cometimos un error: te mandamos el de
+            <strong style="color:#fafafa">Junio</strong> en lugar del de ${safeEdition}.
+          </p>
+          <p style="font-size: 14px; line-height: 1.6; color: #d4d4d8; margin: 0 0 20px 0;">
+            Tocá el botón para abrir el de ${safeEdition}, que es el que corresponde.
+          </p>
+
+          <p style="margin: 28px 0;">
+            <a href="${safeUrl}" style="display: inline-block; background: #38bdf8; color: #09090b; padding: 14px 24px; text-decoration: none; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; font-size: 13px; border-radius: 2px;">
+              Abrir El Corredor de ${safeEdition} →
+            </a>
+          </p>
+
+          <hr style="border: none; border-top: 1px solid #27272a; margin: 32px 0;">
+
+          <p style="font-size: 14px; line-height: 1.6; color: #d4d4d8; margin: 0 0 16px 0;">
+            Si querés comunicarte directamente con nosotros para conocer más del proyecto, o dejarnos
+            cualquier comentario, bienvenido sea. Gracias.
+          </p>
+
+          <p style="margin: 20px 0 28px 0;">
+            <a href="${waUrl}" style="display: inline-block; background: #18181b; border: 1px solid #10b981; color: #10b981; padding: 12px 22px; text-decoration: none; font-weight: 600; letter-spacing: 0.04em; font-size: 13px; border-radius: 2px;">
+              Escribinos por WhatsApp
+            </a>
+          </p>
+
+          <p style="font-size: 12px; line-height: 1.6; color: #a1a1aa; margin: 0 0 12px 0;">
+            La próxima edición sale el primer día hábil del mes que viene. Si no la querés recibir,
+            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color: #71717a;">desuscribite acá</a>.
+          </p>
+          <p style="font-size: 11px; color: #71717a; margin: 16px 0 0 0;">
+            Mesa de mercado &middot; consignatarias.com
+          </p>
+      `),
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
 /* ============================================================
    Enterprise welcome — sent on api_tier activation
    ============================================================ */

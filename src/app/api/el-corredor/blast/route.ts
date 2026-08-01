@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
-import { sendElCorredorDelivery } from '@/lib/email'
+import { sendElCorredorDelivery, sendElCorredorCorreccion } from '@/lib/email'
 import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
 import { capForFreePlan } from '@/lib/email-limits'
 import { trackCron } from '@/lib/ops'
@@ -72,8 +72,11 @@ export async function POST(req: NextRequest) {
   // El workflow manda la edición que acaba de publicar. Si el manifest que ve esta
   // función no coincide, NO se envía: preferimos fallar ruidoso a mandarle a 62
   // suscriptores el link de otro mes (lo que pasó el 2026-08-01).
-  const body = (await req.json().catch(() => ({}))) as { expected_ym?: string }
+  const body = (await req.json().catch(() => ({}))) as { expected_ym?: string; mode?: string }
   const expectedYm = typeof body.expected_ym === 'string' ? body.expected_ym.trim() : null
+  // mode=correccion: plantilla que pide disculpas por la edición equivocada y suma
+  // el canal directo de WhatsApp. Envío manual, nunca desde el cron mensual.
+  const modoCorreccion = body.mode === 'correccion'
 
   const outcome = await trackCron('el-corredor-publish', async () => {
     let manifest: CorredorManifest
@@ -126,7 +129,9 @@ export async function POST(req: NextRequest) {
     const errors: string[] = []
 
     for (const email of recipients) {
-      const result = await sendElCorredorDelivery(email, manifest.current.edition_label, pdfUrl)
+      const result = modoCorreccion
+        ? await sendElCorredorCorreccion(email, manifest.current.edition_label, pdfUrl)
+        : await sendElCorredorDelivery(email, manifest.current.edition_label, pdfUrl)
       if (result.success) sent++
       else {
         failed++
