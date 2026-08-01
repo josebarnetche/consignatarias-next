@@ -2137,6 +2137,91 @@ export async function sendElCorredorCorreccion(email: string, edition: string, p
   }
 }
 
+/**
+ * Qué se suscribió cada uno, en criollo. Se le nombra al lector lo que él pidió,
+ * no el slug interno. Si aparece un source nuevo cae en el genérico.
+ */
+const SOURCE_EN_CRIOLLO: Record<string, string> = {
+  'cierre-mensual': 'el cierre mensual del precio del novillo',
+  frigorificos: 'las novedades de frigoríficos',
+  'arrendamiento-liquidacion': 'la liquidación de arrendamientos',
+  'alerta-arrendamiento': 'el aviso del valor del arrendamiento',
+  'alerta-inmag': 'el aviso del precio del novillo',
+  'exportar-datos': 'la descarga de datos del mercado',
+  valuation_widget: 'la calculadora de cuánto vale tu hacienda',
+  calculadora: 'la calculadora del sitio',
+  'watchlist-notify': 'los avisos de lo que seguís',
+  'cuenta-checklist': 'tu cuenta en el sitio',
+}
+
+export function sourceEnCriollo(source: string | null): string {
+  return (source && SOURCE_EN_CRIOLLO[source]) || 'una de las alertas del sitio'
+}
+
+/**
+ * Invitación a El Corredor para quien NO está en la audiencia del informe.
+ *
+ * TEXTO PLANO a propósito: se tiene que sentir un correo de una persona, no una
+ * pieza de marca (el lector es un productor, no un usuario de terminal). Mismo
+ * patrón que sendRemateConfirmRequest: FROM_PERSONAL, replyTo real,
+ * List-Unsubscribe (mitigación AUP). El opt-in es responder el correo — cero
+ * fricción para el lector y pone a Jose a hablar con él, que es el punto.
+ */
+export async function sendElCorredorInvitacion(email: string, source: string | null) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'RESEND_API_KEY no configurado' }
+
+  const waText = encodeURIComponent('Hola José, te escribo por el resumen mensual del mercado')
+  const waUrl = `https://wa.me/5493773418130?text=${waText}`
+
+  try {
+    await resend.emails.send({
+      from: FROM_PERSONAL,
+      to: email,
+      replyTo: 'agro@memola.com.ar',
+      headers: {
+        'List-Unsubscribe': `<${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
+      subject: '¿Te sirve un resumen del mercado, una vez por mes?',
+      text: [
+        'Hola, soy José Barnetche, de consignatarias.com.ar.',
+        '',
+        `Tengo tu correo anotado porque te suscribiste a ${sourceEnCriollo(source)}.`,
+        'Te escribo por otra cosa, y es corta.',
+        '',
+        'Todos los meses armamos un resumen de lo que pasó en el Mercado de',
+        'Cañuelas. Sale el primer día del mes y trae:',
+        '',
+        '  · A cuánto cerró el novillo, en pesos y en dólares.',
+        '  · Cómo se movió cada categoría: terneros, vaquillonas, vacas, toros.',
+        '  · Cuánta hacienda se vendió, y si fue más o menos que el mes pasado.',
+        '  · Si se están reteniendo vientres o vendiendo. Eso le marca a uno si',
+        '    conviene esperar o salir.',
+        '  · Qué esperar para el mes que viene.',
+        '',
+        'Es gratis y son doce carillas, con los números y de dónde salen.',
+        '',
+        '¿Querés que te lo mande? Respondeme este correo con un "sí" y te sumo.',
+        '',
+        `Si preferís, escribime por WhatsApp: ${waUrl}`,
+        '',
+        'Y si no te interesa, no hace falta que hagas nada. Igual seguís',
+        'recibiendo lo que pediste.',
+        '',
+        'Gracias,',
+        'José',
+        '',
+        '—',
+        'José Barnetche · consignatarias.com.ar',
+      ].join('\n'),
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
 /* ============================================================
    Enterprise welcome — sent on api_tier activation
    ============================================================ */
