@@ -75,13 +75,28 @@ jobs:
           echo "changed=true" >> $GITHUB_OUTPUT
 
       - name: Wait for Vercel deploy
+        id: waitdeploy
         if: steps.commit.outputs.changed == 'true'
         run: |
-          # Pre-Vercel CDN propagation buffer
-          sleep 90
-          # Verify the manifest is live
-          PUBLISHED_YM=$(curl -s https://www.consignatarias.com.ar/el-corredor/manifest.json | python3 -c "import json,sys; print(json.load(sys.stdin)['current']['ym'])" 2>/dev/null || echo "unknown")
-          echo "Live manifest current ym: $PUBLISHED_YM"
+          # GATE REAL, no cosmético. Antes era `sleep 90` + un echo informativo: el
+          # build de ~3.400 rutas tarda 2-4 min, así que el blast salía contra el
+          # deployment ANTERIOR y mandaba el link del mes pasado (2026-08-01).
+          # Ahora se poletea hasta que el manifest LIVE sea la edición que acabamos
+          # de publicar; si no llega, el job FALLA y no se manda nada.
+          TARGET_YM=$(python3 -c "import json; print(json.load(open('public/el-corredor/manifest.json'))['current']['ym'])")
+          echo "target_ym=$TARGET_YM" >> $GITHUB_OUTPUT
+          echo "Esperando que el deploy sirva la edición $TARGET_YM…"
+          for i in $(seq 1 30); do
+            sleep 20
+            LIVE=$(curl -s -H 'Cache-Control: no-cache' "https://www.consignatarias.com.ar/el-corredor/manifest.json?cb=$(date +%s)" \
+              | python3 -c "import json,sys; print(json.load(sys.stdin)['current']['ym'])" 2>/dev/null || echo "unknown")
+            echo "  intento $i: live=$LIVE"
+            if [ "$LIVE" = "$TARGET_YM" ]; then
+              echo "✓ deploy propagado tras $((i*20))s"; exit 0
+            fi
+          done
+          echo "::error::El manifest live nunca llegó a $TARGET_YM tras 10 min — NO se envía el blast."
+          exit 1
 
       - name: Blast email to subscribers
         if: (steps.commit.outputs.changed == 'true' || github.event.inputs.force_blast == 'true') && github.event.inputs.skip_blast != 'true'
@@ -93,9 +108,14 @@ jobs:
           if [ -z "$CRON_SECRET" ]; then
             echo "::error::CRON_SECRET not set — cannot blast"; exit 1
           fi
+          # Se manda la edición esperada: si la función ve otra (deploy sin propagar),
+          # responde 409 y no envía nada. Silencio > link equivocado a 62 personas.
+          TARGET_YM="${{ steps.waitdeploy.outputs.target_ym }}"
+          echo "Blast de la edición: ${TARGET_YM:-'(sin target, forzado)'}"
           HTTP=$(curl -s -o /tmp/blast.json -w "%{http_code}" -X POST \
             -H "Authorization: Bearer $CRON_SECRET" \
             -H "Content-Type: application/json" \
+            -d "{\"expected_ym\":\"${TARGET_YM}\"}" \
             https://www.consignatarias.com.ar/api/el-corredor/blast)
           echo "HTTP $HTTP"; cat /tmp/blast.json || true
           if [ "$HTTP" -lt 200 ] || [ "$HTTP" -ge 300 ]; then

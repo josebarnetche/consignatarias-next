@@ -7,6 +7,29 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.189.2] — 2026-08-01
+
+### Fix crítico: el blast de El Corredor mandaba la edición del mes anterior
+
+El 1-ago salió el mail rotulado y linkeado como **Junio** aunque Julio ya estaba
+publicado: la edición de Julio nunca se anunció a los 62 suscriptores.
+
+**Causa raíz — dos fallas encadenadas:**
+- `blast/route.ts` importaba el manifest de forma **estática**
+  (`import manifest from '…/manifest.json'`), así que quedaba congelado en el bundle
+  del build. La ruta era `force-dynamic`, el JSON no.
+- El paso "Wait for Vercel deploy" hacía `sleep 90` y **solo imprimía** el ym: no
+  verificaba nada. Un build de ~3.400 rutas tarda 2-4 min → el blast pegaba contra
+  el deployment anterior, cuyo bundle tenía el manifest del mes pasado.
+
+**Fix en tres capas:**
+- El manifest se lee **en tiempo de request** por fetch `no-store`: hasta un bundle
+  viejo ve la edición correcta.
+- El blast acepta `expected_ym` y responde **409 sin enviar** si el manifest live no
+  coincide. Silencio recuperable > link equivocado a 62 personas.
+- El gate del workflow ahora **poletea hasta 10 min** hasta que el manifest live sea
+  la edición publicada, y **falla el job** si no llega (antes seguía de largo).
+
 ## [1.189.1] — 2026-08-01
 
 ### Fix: El Corredor publicaba texto editorial de ediciones viejas
