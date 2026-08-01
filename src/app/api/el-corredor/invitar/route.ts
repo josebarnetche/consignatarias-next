@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendElCorredorInvitacion } from '@/lib/email'
 import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
+import { capForFreePlan } from '@/lib/email-limits'
 import { trackCron } from '@/lib/ops'
 import { authorizeCron } from '@/lib/cron-auth'
 
@@ -56,12 +57,14 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const targets = data ?? []
+    // Topear al presupuesto diario de Resend: los transaccionales (leads, altas,
+    // alertas) cuentan contra el MISMO cupo y no pueden quedar sin aire.
+    const { toSend: targets, skipped } = capForFreePlan(data ?? [])
     if (body.dry_run) {
       return {
         status: 'ok' as const,
-        message: `dry run: ${targets.length} destinatarios`,
-        metadata: { dry_run: true, total: targets.length },
+        message: `dry run: ${targets.length} destinatarios${skipped ? ` (+${skipped} fuera del cupo diario)` : ''}`,
+        metadata: { dry_run: true, total: targets.length, skipped },
       }
     }
 
@@ -80,8 +83,8 @@ export async function POST(req: NextRequest) {
 
     return {
       status: failed > 0 && sent === 0 ? ('error' as const) : ('ok' as const),
-      message: `Invitación a El Corredor: ${sent}/${targets.length} enviados`,
-      metadata: { sent, failed, total: targets.length, errors },
+      message: `Invitación a El Corredor: ${sent}/${targets.length} enviados${skipped ? ` (${skipped} quedaron para otro día por cupo)` : ''}`,
+      metadata: { sent, failed, total: targets.length, skipped, errors },
     }
   })
 
