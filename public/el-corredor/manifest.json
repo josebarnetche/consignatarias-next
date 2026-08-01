@@ -1,15 +1,21 @@
 {
   "current": {
-    "ym": "2026-06",
-    "edition_label": "Junio · 2026",
-    "edition_short": "06/26",
-    "month_slug": "junio-2026",
-    "pdf_path": "/el-corredor/junio-2026.pdf",
-    "cover_path": "/el-corredor/cover-junio-2026.png",
-    "og_path": "/el-corredor/og-junio-2026.png",
-    "published_at": "2026-07-01T18:54:47.778682Z"
+    "ym": "2026-07",
+    "edition_label": "Julio · 2026",
+    "edition_short": "07/26",
+    "month_slug": "julio-2026",
+    "pdf_path": "/el-corredor/julio-2026.pdf",
+    "cover_path": "/el-corredor/cover-julio-2026.png",
+    "og_path": "/el-corredor/og-julio-2026.png",
+    "published_at": "2026-08-01T17:52:14.071136Z"
   },
   "history": [
+    {
+      "ym": "2026-07",
+      "edition_label": "Julio · 2026",
+      "pdf_path": "/el-corredor/julio-2026.pdf",
+      "published_at": "2026-08-01T17:52:14.071136Z"
+    },
     {
       "ym": "2026-06",
       "edition_label": "Junio · 2026",
