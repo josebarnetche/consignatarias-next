@@ -806,6 +806,31 @@ def usd_kpi_strip(usd_month: dict | None, ia_usd: dict) -> str:
 
 # ---- Tesis del mes próximo (forward-looking) ----
 
+# Mes en que arrancó la serie de remitencia por consignataria (lote a lote del MAG).
+SERIE_REMITENCIA_INICIO = (2026, 5)
+
+
+def proxima_edicion_html(year: int, month: int) -> str:
+    """Bloque 'Próxima edición'. Se calcula por edición: decía 'en 90 días podremos'
+    desde mayo-2026 y seguía diciéndolo en julio, cuando la serie ya estaba completa.
+    Nunca volver a hardcodear un mes ni una promesa con plazo acá."""
+    y0, m0 = SERIE_REMITENCIA_INICIO
+    meses = (year * 12 + month) - (y0 * 12 + m0) + 1
+    inicio = f"{MONTHS_ES[m0]} {y0}"
+    if meses < 3:
+        faltan = 3 - meses
+        return (f"<strong>Próxima edición</strong> — Venimos acumulando la serie de remitencia por "
+                f"consignataria desde {inicio} (uno de los tres datasets que <em>valen plata</em> según "
+                f"el marco conceptual): llevamos {meses} {'mes' if meses == 1 else 'meses'}. "
+                f"Con {faltan} {'mes' if faltan == 1 else 'meses'} más podremos reportar top remitentes, "
+                f"concentración geográfica de oferta y señales anticipatorias por circuito regional.")
+    return (f"<strong>Próxima edición</strong> — La serie de remitencia por consignataria ya acumula "
+            f"<strong>{meses} meses</strong> de lote a lote del MAG (desde {inicio}), uno de los tres "
+            f"datasets que <em>valen plata</em> según el marco conceptual. Con esa profundidad empezamos "
+            f"a incorporar top remitentes, concentración geográfica de oferta y señales anticipatorias "
+            f"por circuito regional.")
+
+
 def tesis_del_mes(inmag: dict, ia_usd: dict, cycle: dict, faena: dict | None,
                    nxt_remates: list[dict]) -> dict:
     """Genera escenario base/alza/baja + recomendación operativa por perfil."""
@@ -867,7 +892,7 @@ def tesis_del_mes(inmag: dict, ia_usd: dict, cycle: dict, faena: dict | None,
     perfiles = [
         ("Productor de cría",
          f"<strong>Regla:</strong> mientras hembras &lt; 45% del MAG y faena interanual &lt; -5%, retener vientres. "
-         f"Salida de ternero del NEA presiona la categoría — flexibilidad para esperar junio mejora net-back."),
+         f"Salida de ternero del NEA presiona la categoría — flexibilidad para esperar {MONTHS_ES[next_m]} mejora net-back."),
         ("Invernador",
          f"<strong>Regla:</strong> mientras ratio novillo/maíz &gt; 1,8x y premium novillito &gt; 10%, retener 30 días. "
          f"Salida de ese rango: liquidar progresivamente."),
@@ -1242,6 +1267,7 @@ def build_html(month: str) -> str:
     usd_strip_html = usd_kpi_strip(usd_month, ia_usd)
 
     ctx = {
+        "proxima_edicion": proxima_edicion_html(inmag["year"], inmag["month"]),
         "title_long": title_long,
         "month_name_upper": inmag["month_name"].upper(),
         "year": inmag["year"],

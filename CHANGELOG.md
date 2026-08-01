@@ -7,6 +7,25 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.189.1] — 2026-08-01
+
+### Fix: El Corredor publicaba texto editorial de ediciones viejas
+
+La edición de Julio (publicada el 1-ago) salió con dos frases hardcodeadas de
+ediciones anteriores. Los datos numéricos eran correctos —INMAG, volúmenes,
+buckets y gráficos de julio— pero el texto envejecía sin que nadie lo notara.
+
+- `render.py`: "flexibilidad para esperar **junio** mejora net-back" era un literal
+  dentro de un f-string, escrito para la edición de mayo. Ahora usa el mes
+  siguiente calculado (`MONTHS_ES[next_m]`) → "esperar agosto" en la de julio.
+- `template.html`: el bloque "Próxima edición" prometía desde mayo que "en 90 días
+  podremos reportar top remitentes" — y en agosto seguía diciéndolo, con la serie
+  ya completa. Reemplazado por `$proxima_edicion`, calculado en
+  `proxima_edicion_html()` a partir de la edición y de `SERIE_REMITENCIA_INICIO`:
+  cuenta los meses reales de serie y cambia el mensaje al llegar a 3.
+- PDF de Julio regenerado y republicado en la misma URL. El mail a suscriptores
+  enlaza el PDF (no lo adjunta), así que la corrección alcanza a quien lo abra.
+
 ## [1.189.0] — 2026-07-29
 
 ### /licencia-datos: la prohibición se convierte en vidriera
