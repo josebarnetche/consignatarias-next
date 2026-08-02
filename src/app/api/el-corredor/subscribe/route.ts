@@ -3,7 +3,7 @@ import { requireServiceClient } from '@/lib/supabase'
 import { sendElCorredorDelivery } from '@/lib/email'
 import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limit-db'
 import { z } from 'zod'
-import manifest from '../../../../../public/el-corredor/manifest.json'
+import { loadCorredorManifest } from '@/lib/el-corredor-manifest'
 
 export const dynamic = 'force-dynamic'
 
@@ -69,6 +69,8 @@ export async function POST(req: NextRequest) {
       // Continue: even if storage fails, try to deliver the PDF — value-first.
     }
 
+    // Manifest en request: la importación estática entregaba la edición del build (1-ago).
+    const manifest = await loadCorredorManifest()
     const pdfUrl = `${APP_URL}${manifest.current.pdf_path}`
     const delivery = await sendElCorredorDelivery(
       normalizedEmail,

@@ -5,37 +5,13 @@ import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
 import { capForFreePlan } from '@/lib/email-limits'
 import { trackCron } from '@/lib/ops'
 import { authorizeCron } from '@/lib/cron-auth'
+import { loadCorredorManifest, type CorredorManifest } from '@/lib/el-corredor-manifest'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
 
-interface CorredorManifest {
-  current: { ym: string; edition_label: string; pdf_path: string }
-}
-
-/**
- * Manifest EN TIEMPO DE REQUEST, nunca `import` estático.
- *
- * 2026-08-01: el manifest se importaba con `import manifest from '…/manifest.json'`,
- * o sea que quedaba congelado en el bundle del build. El workflow publica, commitea,
- * espera 90 s (un build de ~3.400 rutas tarda 2-4 min) y dispara el blast: la función
- * que atendía todavía era la del deployment ANTERIOR, con el manifest del mes pasado.
- * Resultado: el 1-ago salió el mail de "Junio" de nuevo y la edición de Julio nunca
- * se anunció. Leerlo por fetch sin caché hace que hasta un bundle viejo vea la
- * edición correcta.
- */
-async function loadManifest(): Promise<CorredorManifest> {
-  const res = await fetch(`${APP_URL}/el-corredor/manifest.json`, {
-    cache: 'no-store',
-    signal: AbortSignal.timeout(15_000),
-  })
-  if (!res.ok) throw new Error(`manifest HTTP ${res.status}`)
-  const m = (await res.json()) as CorredorManifest
-  if (!m?.current?.ym || !m.current.pdf_path) throw new Error('manifest sin current.ym/pdf_path')
-  return m
-}
 
 // El Corredor (monthly market close) goes to the corredor segment AND the other
 // market-interested segments — they subscribed for cattle-market content and the
@@ -81,7 +57,7 @@ export async function POST(req: NextRequest) {
   const outcome = await trackCron('el-corredor-publish', async () => {
     let manifest: CorredorManifest
     try {
-      manifest = await loadManifest()
+      manifest = await loadCorredorManifest()
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'error'
       return {
