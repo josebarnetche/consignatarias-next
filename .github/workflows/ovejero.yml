@@ -6,7 +6,9 @@ name: El Ovejero (agente diario de leads)
 # no pasó nada deja de leerse en una semana.
 on:
   schedule:
-    - cron: '0 12 * * *'
+    # Lunes a viernes: el agente le escribe a consignatarias reales y el fin de
+    # semana nadie atiende la casilla — un mail de sábado llega al fondo del lunes.
+    - cron: '0 12 * * 1-5'
   workflow_dispatch:
     inputs:
       dry_run:

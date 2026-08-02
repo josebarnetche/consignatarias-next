@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { authorizeCron } from '@/lib/cron-auth'
-import { correrOvejero } from '@/lib/leads/ovejero'
+import { correrOvejero, enviarConsultas, MAX_CONSULTAS_DIA, OUTREACH_ACTIVO } from '@/lib/leads/ovejero'
 import { whatsappLink } from '@/lib/leads/routing'
-import { sendOvejeroDigest } from '@/lib/email'
+import { sendOvejeroDigest, sendConsultaLeadAConsignataria } from '@/lib/email'
 import { trackCron } from '@/lib/ops'
 
 export const runtime = 'nodejs'
@@ -26,6 +26,22 @@ export async function POST(req: NextRequest) {
   const outcome = await trackCron('ovejero', async () => {
     const db = requireServiceClient()
     const r = await correrOvejero(db)
+
+    // Consultas del día a las firmas de la zona. En dryRun se calcula todo pero
+    // no sale ni un mail. Los frenos (cupo, 30 días, una vez por lead) están en
+    // enviarConsultas — acá solo se le pasa cómo enviar.
+    if (!dryRun) {
+      r.consultas = await enviarConsultas(db, r.ranking, ({ email, firma, lead, resumen }) =>
+        sendConsultaLeadAConsignataria({
+          to: email,
+          firma,
+          resumenLead: resumen,
+          zona: lead.zona || lead.province || 'la zona',
+          leadId: lead.id,
+        }),
+      )
+      if (r.consultas.length > 0) r.hayAlgoQueHacer = true
+    }
 
     if (!r.hayAlgoQueHacer) {
       return {
@@ -79,15 +95,26 @@ export async function POST(req: NextRequest) {
           mensaje: z.mensajeSugerido,
           firmas: z.firmas.map((f) => ({ nombre: f.displayName, wa: f.waLink })),
         })),
+        consultas: r.consultas.map((c) => ({ firma: c.firma, leadResumen: c.leadResumen, email: c.email })),
+        ranking: r.ranking.slice(0, 5).map((x) => ({
+          nombre: x.lead.name ?? `Lead #${x.lead.id}`,
+          resumen: `${x.lead.intent} en ${x.lead.zona ?? x.lead.province ?? 's/d'}`,
+          score: x.score,
+          porQue: x.porQue.join(' · '),
+        })),
       })
     }
 
     return {
       status: 'ok' as const,
-      message: `El Ovejero: ${r.matches.length} cruces, ${r.pendientes.length} pendientes, ${r.zonasSinOferta.length} zonas sin oferta`,
+      message: `El Ovejero: ${r.consultas.length} consultas enviadas, ${r.matches.length} cruces, ${r.pendientes.length} pendientes, ${r.zonasSinOferta.length} zonas sin oferta`,
       metadata: {
         enviado: !dryRun,
         dryRun,
+        consultas_enviadas: r.consultas.length,
+        consultas_detalle: r.consultas.map((c) => `${c.firma} <${c.email}> · ${c.leadResumen}`),
+        outreach_activo: OUTREACH_ACTIVO,
+        cupo_diario: MAX_CONSULTAS_DIA,
         matches: r.matches.length,
         pendientes: r.pendientes.length,
         zonas_sin_oferta: r.zonasSinOferta.length,

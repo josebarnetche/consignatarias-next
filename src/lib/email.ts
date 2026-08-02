@@ -2223,6 +2223,58 @@ export async function sendElCorredorInvitacion(email: string, source: string | n
 }
 
 /**
+ * Consulta de El Ovejero a una consignataria: "tengo este productor en tu zona,
+ * ¿podés resolverlo?". Es outreach en frío, así que va con los mismos recaudos que
+ * sendRemateConfirmRequest: texto plano, FROM_PERSONAL, replyTo real,
+ * List-Unsubscribe. El cupo diario y el freno de 30 días viven en ovejero.ts.
+ *
+ * La vara para mandarlo: tiene que ser una OPORTUNIDAD para quien lo recibe —un
+ * comprador o un arrendatario concreto de su zona—, no una novedad nuestra. Si
+ * alguna vez deja de serlo, se apaga con OVEJERO_OUTREACH=off.
+ */
+export async function sendConsultaLeadAConsignataria(opts: {
+  to: string
+  firma: string
+  resumenLead: string
+  zona: string
+  leadId: number
+}): Promise<{ success: boolean; error?: string }> {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend no configurado' }
+
+  try {
+    await resend.emails.send({
+      from: FROM_PERSONAL,
+      to: opts.to,
+      replyTo: 'agro@memola.com.ar',
+      headers: {
+        'List-Unsubscribe': `<${APP_URL}/unsubscribe?email=${encodeURIComponent(opts.to)}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
+      subject: `Un productor de ${opts.zona} — ¿lo pueden atender?`,
+      text: [
+        `Buenas, soy José de consignatarias.com.ar.`,
+        '',
+        `Nos entró un productor por el sitio y es de la zona de ustedes: ${opts.resumenLead}.`,
+        '',
+        `¿Es algo que puedan atender? Si me decís que sí, te paso el contacto y arreglan directo. No cobramos nada por pasarlo.`,
+        '',
+        `Si no es lo suyo, respondeme igual con un "no" y no te escribo más por este tipo de consultas.`,
+        '',
+        `Gracias,`,
+        `José`,
+        '',
+        '—',
+        `José Barnetche · consignatarias.com.ar · ref ${opts.leadId}`,
+      ].join('\n'),
+    })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
+/**
  * Digest diario de El Ovejero. Sale SOLO si hay algo que hacer — un agente que
  * manda "hoy no pasó nada" todos los días deja de leerse a la semana.
  * Todo viene con el link de WhatsApp armado: la acción a un toque.
@@ -2231,10 +2283,14 @@ export async function sendOvejeroDigest(opts: {
   matches: Array<{ quienBusca: string; queBusca: string; quienOfrece: string; queOfrece: string; motivo: string; waBusca: string | null; waOfrece: string | null }>
   pendientes: Array<{ nombre: string; detalle: string; dias: number; urgente: boolean; wa: string | null; email: string | null }>
   zonas: Array<{ provincia: string; buscan: number; mensaje: string; firmas: Array<{ nombre: string; wa: string | null }> }>
+  consultas?: Array<{ firma: string; leadResumen: string; email: string }>
+  ranking?: Array<{ nombre: string; resumen: string; score: number; porQue: string }>
 }) {
   const resend = await getResend()
   if (!resend) return
   const { matches, pendientes, zonas } = opts
+  const consultas = opts.consultas ?? []
+  const ranking = opts.ranking ?? []
 
   const bloque = (titulo: string, cuerpo: string) =>
     `<h3 style="color:#fafafa;font-size:15px;font-weight:700;margin:26px 0 10px">${titulo}</h3>${cuerpo}`
@@ -2288,16 +2344,36 @@ export async function sendOvejeroDigest(opts: {
       )
     : ''
 
-  const total = matches.length + pendientes.length + zonas.length
+  // Lo que el agente ya hizo solo — va PRIMERO: es lo único que no requiere a Jose.
+  const consultasHtml = consultas.length
+    ? bloque(
+        `✉️ ${consultas.length} ${consultas.length === 1 ? 'consulta enviada' : 'consultas enviadas'} en tu nombre`,
+        `<div style="background:#18181b;border:1px solid #27272a;border-left:3px solid #10b981;border-radius:2px;padding:14px;margin-bottom:10px">
+          ${consultas.map((c) => `<p style="color:#d4d4d8;font-size:13px;margin:0 0 6px">→ <strong style="color:#fafafa">${escapeHtml(c.firma)}</strong> — ${escapeHtml(c.leadResumen)}<br><span style="color:#71717a;font-size:11px">${escapeHtml(c.email)}</span></p>`).join('')}
+          <p style="color:#71717a;font-size:11px;margin:10px 0 0">Las respuestas llegan a agro@memola.com.ar. Cuando alguna diga que sí, pasale el contacto del productor.</p>
+        </div>`,
+      )
+    : ''
+
+  const rankingHtml = ranking.length
+    ? bloque(
+        '📊 Dónde conviene poner la energía',
+        `<div style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:14px">
+          ${ranking.map((r, i) => `<p style="color:#d4d4d8;font-size:13px;margin:0 0 6px"><span style="color:#71717a">${i + 1}.</span> <strong style="color:#fafafa">${escapeHtml(r.nombre)}</strong> — ${escapeHtml(r.resumen)}<br><span style="color:#71717a;font-size:11px">${escapeHtml(r.porQue)}</span></p>`).join('')}
+        </div>`,
+      )
+    : ''
+
+  const total = matches.length + pendientes.length + zonas.length + consultas.length
   resend.emails.send({
     from: FROM,
     to: LEAD_ALERT_TO,
-    subject: `El Ovejero — ${total} ${total === 1 ? 'cosa' : 'cosas'} para hacer hoy`,
+    subject: `El Ovejero — ${consultas.length ? `${consultas.length} ${consultas.length === 1 ? 'consulta enviada' : 'consultas enviadas'}, ` : ''}${total - consultas.length} para vos`,
     html: darkEmailShell(`
       <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">El Ovejero &middot; parte del día</p>
-      <h2 style="color:#fafafa;font-size:20px;font-weight:700;margin:0 0 4px">Lo que junté esta mañana</h2>
+      <h2 style="color:#fafafa;font-size:20px;font-weight:700;margin:0 0 4px">Lo que hice y lo que te dejo</h2>
       <p style="color:#71717a;font-size:12px;margin:0 0 4px">Solo te escribo cuando hay algo para hacer.</p>
-      ${matchesHtml}${pendientesHtml}${zonasHtml}
+      ${consultasHtml}${matchesHtml}${pendientesHtml}${zonasHtml}${rankingHtml}
       <p style="margin:26px 0 0"><a href="${APP_URL}/admin/leads" style="color:#38bdf8;font-size:13px">Abrir el board de leads &rarr;</a></p>
     `),
   }).catch(() => {})
