@@ -58,7 +58,9 @@ const ALLOWLIST = new Map([
 
 // ── 1. Esquema real de prod (desde los tipos generados) ──────────────────────
 export function parseTypes(ts) {
-  const lines = ts.split('\n')
+  // split tolerante a CRLF: en Windows el archivo llega con \r y los regex de
+  // abajo anclan con `$` — sin esto no matchea NADA y el checker "no parsea".
+  const lines = ts.split(/\r?\n/)
   const tables = new Set()
   const fns = new Set()
   let section = null
