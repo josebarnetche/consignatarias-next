@@ -1,0 +1,33 @@
+name: El Ovejero (agente diario de leads)
+
+# Todos los días 09:00 ART (12:00 UTC): antes de que arranque la jornada, para que
+# lo que juntó esté arriba en la bandeja. Ver src/lib/leads/ovejero.ts.
+# Si no hay nada que hacer NO manda mail — un agente que avisa todos los días que
+# no pasó nada deja de leerse en una semana.
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Calcular sin mandar el digest (true/false)'
+        default: 'false'
+
+permissions: {}
+
+jobs:
+  ovejero:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Correr El Ovejero
+        run: |
+          Q=""
+          [ "${{ github.event.inputs.dry_run }}" = "true" ] && Q="?dryRun=1"
+          RESP=$(curl -sS -w $'\n%{http_code}' -X POST \
+            "https://www.consignatarias.com.ar/api/cron/ovejero$Q" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}")
+          CODE=$(printf '%s' "$RESP" | tail -n1)
+          BODY=$(printf '%s' "$RESP" | sed '$d')
+          echo "HTTP $CODE — $BODY"
+          [ "$CODE" = "200" ] || exit 1

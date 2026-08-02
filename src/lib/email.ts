@@ -2222,6 +2222,87 @@ export async function sendElCorredorInvitacion(email: string, source: string | n
   }
 }
 
+/**
+ * Digest diario de El Ovejero. Sale SOLO si hay algo que hacer — un agente que
+ * manda "hoy no pasó nada" todos los días deja de leerse a la semana.
+ * Todo viene con el link de WhatsApp armado: la acción a un toque.
+ */
+export async function sendOvejeroDigest(opts: {
+  matches: Array<{ quienBusca: string; queBusca: string; quienOfrece: string; queOfrece: string; motivo: string; waBusca: string | null; waOfrece: string | null }>
+  pendientes: Array<{ nombre: string; detalle: string; dias: number; urgente: boolean; wa: string | null; email: string | null }>
+  zonas: Array<{ provincia: string; buscan: number; mensaje: string; firmas: Array<{ nombre: string; wa: string | null }> }>
+}) {
+  const resend = await getResend()
+  if (!resend) return
+  const { matches, pendientes, zonas } = opts
+
+  const bloque = (titulo: string, cuerpo: string) =>
+    `<h3 style="color:#fafafa;font-size:15px;font-weight:700;margin:26px 0 10px">${titulo}</h3>${cuerpo}`
+
+  const matchesHtml = matches.length
+    ? bloque(
+        `🤝 ${matches.length} ${matches.length === 1 ? 'cruce posible' : 'cruces posibles'} de arrendamiento`,
+        matches
+          .map(
+            (m) => `<div style="background:#18181b;border:1px solid #27272a;border-left:3px solid #10b981;border-radius:2px;padding:14px;margin-bottom:10px">
+              <p style="color:#fafafa;font-size:14px;margin:0 0 6px"><strong>${escapeHtml(m.quienBusca)}</strong> busca ${escapeHtml(m.queBusca)}</p>
+              <p style="color:#fafafa;font-size:14px;margin:0 0 6px"><strong>${escapeHtml(m.quienOfrece)}</strong> ofrece ${escapeHtml(m.queOfrece)}</p>
+              <p style="color:#a1a1aa;font-size:12px;margin:0 0 8px">${escapeHtml(m.motivo)}</p>
+              ${m.waBusca ? `<a href="${m.waBusca}" style="color:#10b981;font-size:12px;margin-right:14px">WhatsApp a quien busca &rarr;</a>` : ''}
+              ${m.waOfrece ? `<a href="${m.waOfrece}" style="color:#10b981;font-size:12px">WhatsApp a quien ofrece &rarr;</a>` : ''}
+            </div>`,
+          )
+          .join(''),
+      )
+    : ''
+
+  const pendientesHtml = pendientes.length
+    ? bloque(
+        `⏳ ${pendientes.length} ${pendientes.length === 1 ? 'lead esperando' : 'leads esperando'} respuesta`,
+        pendientes
+          .map(
+            (p) => `<div style="background:#18181b;border:1px solid ${p.urgente ? '#f87171' : '#27272a'};border-left:3px solid ${p.urgente ? '#f87171' : '#fbbf24'};border-radius:2px;padding:14px;margin-bottom:10px">
+              <p style="color:#fafafa;font-size:14px;margin:0 0 4px"><strong>${escapeHtml(p.nombre)}</strong> — ${escapeHtml(p.detalle)}</p>
+              <p style="color:${p.urgente ? '#f87171' : '#a1a1aa'};font-size:12px;margin:0 0 8px">${p.dias} ${p.dias === 1 ? 'día' : 'días'} esperando${p.urgente ? ' · se está enfriando' : ''}</p>
+              ${p.wa ? `<a href="${p.wa}" style="color:#10b981;font-size:12px;margin-right:14px">Escribirle por WhatsApp &rarr;</a>` : ''}
+              ${p.email ? `<a href="mailto:${escapeHtml(p.email)}" style="color:#38bdf8;font-size:12px">Mail &rarr;</a>` : ''}
+            </div>`,
+          )
+          .join(''),
+      )
+    : ''
+
+  const zonasHtml = zonas.length
+    ? bloque(
+        `📍 Falta oferta en ${zonas.length} ${zonas.length === 1 ? 'zona' : 'zonas'}`,
+        zonas
+          .map(
+            (z) => `<div style="background:#18181b;border:1px solid #27272a;border-left:3px solid #38bdf8;border-radius:2px;padding:14px;margin-bottom:10px">
+              <p style="color:#fafafa;font-size:14px;margin:0 0 6px"><strong>${escapeHtml(z.provincia)}</strong> — ${z.buscan} ${z.buscan === 1 ? 'productor busca' : 'productores buscan'} campo y no tenemos ninguno para ofrecer.</p>
+              <p style="color:#a1a1aa;font-size:12px;line-height:1.6;margin:0 0 10px;font-style:italic">"${escapeHtml(z.mensaje)}"</p>
+              <p style="color:#71717a;font-size:11px;margin:0 0 6px;text-transform:uppercase;letter-spacing:.1em">Pedirle cartera a:</p>
+              ${z.firmas.map((f) => (f.wa ? `<a href="${f.wa}" style="color:#10b981;font-size:12px;display:inline-block;margin:0 12px 4px 0">${escapeHtml(f.nombre)} &rarr;</a>` : `<span style="color:#71717a;font-size:12px;display:inline-block;margin:0 12px 4px 0">${escapeHtml(f.nombre)} (sin tel)</span>`)).join('')}
+            </div>`,
+          )
+          .join(''),
+      )
+    : ''
+
+  const total = matches.length + pendientes.length + zonas.length
+  resend.emails.send({
+    from: FROM,
+    to: LEAD_ALERT_TO,
+    subject: `El Ovejero — ${total} ${total === 1 ? 'cosa' : 'cosas'} para hacer hoy`,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">El Ovejero &middot; parte del día</p>
+      <h2 style="color:#fafafa;font-size:20px;font-weight:700;margin:0 0 4px">Lo que junté esta mañana</h2>
+      <p style="color:#71717a;font-size:12px;margin:0 0 4px">Solo te escribo cuando hay algo para hacer.</p>
+      ${matchesHtml}${pendientesHtml}${zonasHtml}
+      <p style="margin:26px 0 0"><a href="${APP_URL}/admin/leads" style="color:#38bdf8;font-size:13px">Abrir el board de leads &rarr;</a></p>
+    `),
+  }).catch(() => {})
+}
+
 /* ============================================================
    Enterprise welcome — sent on api_tier activation
    ============================================================ */
