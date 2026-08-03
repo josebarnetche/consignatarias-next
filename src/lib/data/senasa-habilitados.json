@@ -1,5 +1,5 @@
 {
-  "scrapedAt": "2026-07-27T10:52:24.839Z",
+  "scrapedAt": "2026-08-03T10:52:56.942Z",
   "source": "https://aps2.senasa.gov.ar/registros/faces/publico/establecimientos/tc_frigorificospublico.jsp",
   "ciclos": [
     "CICLO I - MAT.FRIG.",
@@ -8010,7 +8010,8 @@
         "XII - 2. DESPOSTADA BOVINA Y PORCINA",
         "II - 19. ELABORACION DE MILANESAS ENFRIADAS Y CONGELADAS",
         "II - 20. ELABORACION DE HAMBURGUESAS DE CARNE DE AVES, BOVINA Y PORCINA",
-        "XII - 13. CUARTEO"
+        "XII - 13. CUARTEO",
+        "XII - 15. ELABORACION DE CARNE PICADA"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -14065,11 +14066,11 @@
       "tipo": "CICLO III - DADOR DE FRIO",
       "propietario": "CAROSSIO VAIROLATTI Y CIA SOC DE RESP LTDA",
       "nombre": "CAROSSIO VAIROLATTI Y CIA SOC DE RESP LTDA",
-      "domicilio": "CELSO BARRIOS N° 3778 - BARRIO SAN CARLOS",
-      "provincia": "CORDOBA",
-      "partido": "CAPITAL",
-      "localidad": "CORDOBA",
-      "nroOficial": "4141",
+      "domicilio": "CORTEJARENA  JOSE A. 3067",
+      "provincia": "CIUDAD AUTONOMA DE BUENOS AIRES",
+      "partido": "CIUDAD AUTONOMA DE BUENOS AIRES",
+      "localidad": "CORTEJARENA JOSE A. 2601/3600",
+      "nroOficial": "3322",
       "actividades": [
         "XXX - DEPOSITO PRODUCTOS CARNEOS",
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
@@ -16097,11 +16098,11 @@
       "tipo": "CICLO III - DADOR DE FRIO",
       "propietario": "LOGISTICA LA SERENISIMA SA",
       "nombre": "LOGISTICA LA SERENISIMA S.A.",
-      "domicilio": "RODRIGUEZ PEÑA 1325",
-      "provincia": "MENDOZA",
-      "partido": "MAIPU",
-      "localidad": "LUZURIAGA",
-      "nroOficial": "5594",
+      "domicilio": "GUAYMALLÉN N° 2198",
+      "provincia": "SANTA FE",
+      "partido": "ROSARIO",
+      "localidad": "ROSARIO",
+      "nroOficial": "5586",
       "actividades": [
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
       ],
@@ -17159,12 +17160,13 @@
       "tipo": "CICLO III - DADOR DE FRIO",
       "propietario": "TRANSPORTES NUEVO HORIZONTE SOCIEDAD DE RESPONSABILIDAD LIMI",
       "nombre": "TRANSPORTE NUEVO HORIZONTE S.R.L.",
-      "domicilio": "AV. GENERAL  MOSCONI  Nº 279",
-      "provincia": "BUENOS AIRES",
-      "partido": "LA MATANZA",
-      "localidad": "LOMAS DEL MIRADOR",
-      "nroOficial": "1198",
+      "domicilio": "Avda. Hipolito Irigoyen N  3205 Barrio Industrial Humberto Beghin",
+      "provincia": "CHUBUT",
+      "partido": "ESCALANTE",
+      "localidad": "COMODORO RIVADAVIA",
+      "nroOficial": "3961",
       "actividades": [
+        "XXX - 1. DEPOSITO Y TRANSBORDO DE MERCADERIAS",
         "XXX -  DEPOSITO PRODUCTOS CARNEOS"
       ],
       "ciclos": [
@@ -17251,13 +17253,14 @@
       "tipo": "CICLO III - DADOR DE FRIO",
       "propietario": "TRANSPORTES VESPRINI S A",
       "nombre": "TRANSPORTES VESPRINI S.A.",
-      "domicilio": "RUTA NACIONAL A010 - PARQUE INDUSTRIAL PESADO N° 1145 (LOTE 28 - CIRC. SECTOR 2 - MZA. MZO 6)",
-      "provincia": "CHUBUT",
-      "partido": "BIEDMA",
-      "localidad": "PUERTO MADRYN",
-      "nroOficial": "4939",
+      "domicilio": "ALFREDO PALACIOS N° 1.652 (CAMINO DEL PARQUE SESQUICENTENARIO)",
+      "provincia": "BUENOS AIRES",
+      "partido": "BAHIA BLANCA",
+      "localidad": "BAHIA BLANCA",
+      "nroOficial": "4838",
       "actividades": [
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+        "XXXIII - 1. SÓLO CÁMARA P/DEPÓSITO DE PESCADOS"
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
