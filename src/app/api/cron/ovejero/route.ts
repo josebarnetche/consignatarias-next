@@ -21,11 +21,41 @@ export async function POST(req: NextRequest) {
   if (!authorizeCron(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const dryRun = new URL(req.url).searchParams.get('dryRun') === '1'
+  const url = new URL(req.url)
+  const dryRun = url.searchParams.get('dryRun') === '1'
+  // ?demo=alguien@mail.com → manda UNA consulta de muestra a esa casilla con el
+  // lead mejor rankeado. No toca outreach_log ni le escribe a ninguna firma real.
+  const demoEmail = url.searchParams.get('demo')?.trim() || null
 
   const outcome = await trackCron('ovejero', async () => {
     const db = requireServiceClient()
     const r = await correrOvejero(db)
+
+    if (demoEmail) {
+      const top = r.ranking[0]
+      if (!top) {
+        return { status: 'ok' as const, message: 'no hay leads para armar la demo', metadata: { demo: true } }
+      }
+      const l = top.lead
+      const resumen =
+        l.intent === 'arrendar_busco'
+          ? `busca ${l.hectareas ?? '?'} ha para arrendar`
+          : l.intent === 'arrendar_ofrezco'
+            ? `ofrece ${l.hectareas ?? '?'} ha en arrendamiento`
+            : `quiere vender ${l.head_count ?? '?'} ${l.category ?? 'cabezas'}`
+      const res = await sendConsultaLeadAConsignataria({
+        to: demoEmail,
+        firma: 'DEMO',
+        resumenLead: `${resumen} en ${l.zona ?? l.province ?? 'zona s/d'}`,
+        zona: l.zona || l.province || 'la zona',
+        leadId: l.id,
+      })
+      return {
+        status: res.success ? ('ok' as const) : ('error' as const),
+        message: res.success ? `demo enviada a ${demoEmail}` : `demo falló: ${res.error}`,
+        metadata: { demo: true, to: demoEmail, lead_usado: l.name, resumen },
+      }
+    }
 
     // Consultas del día a las firmas de la zona. En dryRun se calcula todo pero
     // no sale ni un mail. Los frenos (cupo, 30 días, una vez por lead) están en
