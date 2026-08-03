@@ -2257,7 +2257,7 @@ export async function sendConsultaLeadAConsignataria(opts: {
         '',
         `Nos entró un productor por el sitio y es de la zona de ustedes: ${opts.resumenLead}.`,
         '',
-        `¿Es algo que puedan atender? Si me decís que sí, te paso el contacto y arreglan directo. No cobramos nada por pasarlo.`,
+        `¿Tenés algo así en cartera? Avisame y se lo comunico.`,
         '',
         `Si no es lo suyo, respondeme igual con un "no" y no te escribo más por este tipo de consultas.`,
         '',
@@ -2350,7 +2350,7 @@ export async function sendOvejeroDigest(opts: {
         `✉️ ${consultas.length} ${consultas.length === 1 ? 'consulta enviada' : 'consultas enviadas'} en tu nombre`,
         `<div style="background:#18181b;border:1px solid #27272a;border-left:3px solid #10b981;border-radius:2px;padding:14px;margin-bottom:10px">
           ${consultas.map((c) => `<p style="color:#d4d4d8;font-size:13px;margin:0 0 6px">→ <strong style="color:#fafafa">${escapeHtml(c.firma)}</strong> — ${escapeHtml(c.leadResumen)}<br><span style="color:#71717a;font-size:11px">${escapeHtml(c.email)}</span></p>`).join('')}
-          <p style="color:#71717a;font-size:11px;margin:10px 0 0">Las respuestas llegan a agro@memola.com.ar. Cuando alguna diga que sí, pasale el contacto del productor.</p>
+          <p style="color:#71717a;font-size:11px;margin:10px 0 0">Las respuestas llegan a agro@memola.com.ar. Cuando alguna diga que tiene, avisale al productor vos.</p>
         </div>`,
       )
     : ''

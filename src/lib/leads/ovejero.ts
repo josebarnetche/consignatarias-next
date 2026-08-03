@@ -331,7 +331,7 @@ export async function correrOvejero(db: SupabaseClient): Promise<ReporteOvejero>
     const mensajeSugerido =
       `Hola, soy José de consignatarias.com.ar. Tengo ${pedidos.length} ` +
       `${pedidos.length === 1 ? 'productor buscando' : 'productores buscando'} campo para arrendar en ` +
-      `${provincia} (${detalle}). ¿Tenés algo en cartera? Te los paso sin cargo.`
+      `${provincia} (${detalle}). ¿Tenés algo en cartera? Avisame y se lo comunico.`
     zonasSinOferta.push({
       provincia,
       buscan: pedidos.length,
