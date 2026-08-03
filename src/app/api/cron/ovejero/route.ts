@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
     // no sale ni un mail. Los frenos (cupo, 30 días, una vez por lead) están en
     // enviarConsultas — acá solo se le pasa cómo enviar.
     if (!dryRun) {
-      r.consultas = await enviarConsultas(db, r.ranking, ({ email, firma, lead, resumen }) =>
+      const res = await enviarConsultas(db, r.ranking, ({ email, firma, lead, resumen }) =>
         sendConsultaLeadAConsignataria({
           to: email,
           firma,
@@ -70,7 +70,9 @@ export async function POST(req: NextRequest) {
           leadId: lead.id,
         }),
       )
-      if (r.consultas.length > 0) r.hayAlgoQueHacer = true
+      r.consultas = res.enviadas
+      r.sinRespuesta = res.sinRespuesta
+      if (r.consultas.length > 0 || r.sinRespuesta.some((s) => s.agotado)) r.hayAlgoQueHacer = true
     }
 
     if (!r.hayAlgoQueHacer) {
@@ -126,6 +128,16 @@ export async function POST(req: NextRequest) {
           firmas: z.firmas.map((f) => ({ nombre: f.displayName, wa: f.waLink })),
         })),
         consultas: r.consultas.map((c) => ({ firma: c.firma, leadResumen: c.leadResumen, email: c.email })),
+        sinRespuesta: r.sinRespuesta.map((s) => ({
+          nombre: s.lead.name ?? `Lead #${s.lead.id}`,
+          resumen: s.resumen,
+          diagnostico: s.diagnostico,
+          agotado: s.agotado,
+          wa: whatsappLink(
+            s.lead.phone,
+            `Hola ${s.lead.name ?? ''}, soy José de consignatarias.com.ar. Estuve preguntando por lo tuyo en la zona. ¿Seguís buscando?`,
+          ),
+        })),
         ranking: r.ranking.slice(0, 5).map((x) => ({
           nombre: x.lead.name ?? `Lead #${x.lead.id}`,
           resumen: `${x.lead.intent} en ${x.lead.zona ?? x.lead.province ?? 's/d'}`,

@@ -77,12 +77,64 @@ export interface ConsultaEnviada {
   email: string
 }
 
+/** Lead que ya se consultó y sigue sin resolverse. El "¿y si no responden?". */
+export interface LeadSinRespuesta {
+  lead: LeadRow
+  resumen: string
+  firmasConsultadas: number
+  diasDesdePrimeraConsulta: number
+  quedanFirmas: number
+  agotado: boolean
+  diagnostico: string
+}
+
+interface EstadoConsultas {
+  firmasConsultadas: number
+  ultimaConsulta: Date | null
+  primeraConsulta: Date | null
+  slugsConsultados: Set<string>
+}
+
+/** Cuántas firmas se consultaron por cada lead y cuándo — la memoria del agente. */
+async function estadoPorLead(db: SupabaseClient, leadIds: number[]): Promise<Map<number, EstadoConsultas>> {
+  const mapa = new Map<number, EstadoConsultas>()
+  if (leadIds.length === 0) return mapa
+  const { data } = await db
+    .from('outreach_log')
+    .select('consignataria_slug, notes, sent_at')
+    .eq('type', OUTREACH_TYPE)
+    .order('sent_at', { ascending: true })
+
+  for (const row of data ?? []) {
+    const m = /lead_id=(\d+)\|/.exec(row.notes ?? '')
+    if (!m) continue
+    const id = Number(m[1])
+    if (!leadIds.includes(id)) continue
+    const prev = mapa.get(id) ?? {
+      firmasConsultadas: 0,
+      ultimaConsulta: null,
+      primeraConsulta: null,
+      slugsConsultados: new Set<string>(),
+    }
+    const cuando = row.sent_at ? new Date(row.sent_at) : null
+    prev.slugsConsultados.add(row.consignataria_slug)
+    prev.firmasConsultadas = prev.slugsConsultados.size
+    if (cuando) {
+      if (!prev.primeraConsulta) prev.primeraConsulta = cuando
+      prev.ultimaConsulta = cuando
+    }
+    mapa.set(id, prev)
+  }
+  return mapa
+}
+
 export interface ReporteOvejero {
   matches: MatchArrendamiento[]
   pendientes: LeadPendiente[]
   zonasSinOferta: ZonaSinOferta[]
   ranking: LeadRankeado[]
   consultas: ConsultaEnviada[]
+  sinRespuesta: LeadSinRespuesta[]
   hayAlgoQueHacer: boolean
   totales: { leadsActivos: number; demandasActivas: number }
 }
@@ -147,6 +199,16 @@ export const OUTREACH_ACTIVO = (process.env.OVEJERO_OUTREACH || 'on').toLowerCas
 const DIAS_ENTRE_CONSULTAS = 30
 const OUTREACH_TYPE = 'ovejero_lead_match'
 const MAX_FIRMAS_POR_LEAD = 2
+/**
+ * Qué pasa si no contestan. Tres reglas, porque insistir sin criterio quema la
+ * zona y no insistir deja el lead muerto:
+ *  · Se espera DIAS_ESPERA_RESPUESTA antes de ir por la tanda siguiente de firmas
+ *    (mandar 6 mails el mismo día a un pueblo es la forma más rápida de quemarlo).
+ *  · Se corta en MAX_FIRMAS_TOTAL por lead: agotado eso, no se gasta más cupo.
+ *  · Al agotarse, el lead sube al digest con diagnóstico y opciones para Jose.
+ */
+const DIAS_ESPERA_RESPUESTA = 3
+const MAX_FIRMAS_TOTAL_POR_LEAD = 6
 
 function diasDesde(iso: string): number {
   return Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000)
@@ -248,14 +310,78 @@ export async function enviarConsultas(
   db: SupabaseClient,
   ranking: LeadRankeado[],
   enviar: (dest: { email: string; firma: string; lead: LeadRow; resumen: string }) => Promise<{ success: boolean }>,
-): Promise<ConsultaEnviada[]> {
-  if (!OUTREACH_ACTIVO || MAX_CONSULTAS_DIA === 0) return []
+): Promise<{ enviadas: ConsultaEnviada[]; sinRespuesta: LeadSinRespuesta[] }> {
+  const sinRespuesta: LeadSinRespuesta[] = []
+  if (!OUTREACH_ACTIVO || MAX_CONSULTAS_DIA === 0) return { enviadas: [], sinRespuesta }
   const enviadas: ConsultaEnviada[] = []
+  const estados = await estadoPorLead(db, ranking.map((r) => r.lead.id))
+  const ahora = Date.now()
 
   for (const { lead } of ranking) {
+    const est = estados.get(lead.id)
+    const yaConsultadas = est?.firmasConsultadas ?? 0
+    const resumenPrevio = resumenLead(lead)
+
+    if (yaConsultadas > 0) {
+      const diasDesdeUltima = est?.ultimaConsulta
+        ? Math.floor((ahora - est.ultimaConsulta.getTime()) / 86_400_000)
+        : 99
+      const diasDesdePrimera = est?.primeraConsulta
+        ? Math.floor((ahora - est.primeraConsulta.getTime()) / 86_400_000)
+        : 0
+
+      // Techo: ya se preguntó bastante. No se gasta más cupo, sube a decisión.
+      if (yaConsultadas >= MAX_FIRMAS_TOTAL_POR_LEAD) {
+        sinRespuesta.push({
+          lead,
+          resumen: resumenPrevio,
+          firmasConsultadas: yaConsultadas,
+          diasDesdePrimeraConsulta: diasDesdePrimera,
+          quedanFirmas: 0,
+          agotado: true,
+          diagnostico:
+            `Consulté ${yaConsultadas} firmas de ${lead.province ?? 'la zona'} en ${diasDesdePrimera} días y no apareció nada. ` +
+            `Se agotó lo que puedo hacer solo: o le avisás al productor que por ahora no hay, o ampliamos a provincias vecinas.`,
+        })
+        continue
+      }
+
+      // Paciencia: darle aire a las firmas ya consultadas antes de ir por más.
+      if (diasDesdeUltima < DIAS_ESPERA_RESPUESTA) {
+        sinRespuesta.push({
+          lead,
+          resumen: resumenPrevio,
+          firmasConsultadas: yaConsultadas,
+          diasDesdePrimeraConsulta: diasDesdePrimera,
+          quedanFirmas: MAX_FIRMAS_TOTAL_POR_LEAD - yaConsultadas,
+          agotado: false,
+          diagnostico: `${yaConsultadas} ${yaConsultadas === 1 ? 'firma consultada' : 'firmas consultadas'}, esperando respuesta (${diasDesdeUltima} ${diasDesdeUltima === 1 ? 'día' : 'días'}). Si no contestan sigo con las que faltan.`,
+        })
+        continue
+      }
+    }
+
     if (enviadas.length >= MAX_CONSULTAS_DIA) break
     const firmas = await firmasParaConsultar(db, lead)
     const resumen = resumenLead(lead)
+
+    // Sin firmas nuevas en la zona: se acabó la cantera, no es falta de ganas.
+    if (firmas.length === 0 && yaConsultadas > 0) {
+      sinRespuesta.push({
+        lead,
+        resumen,
+        firmasConsultadas: yaConsultadas,
+        diasDesdePrimeraConsulta: est?.primeraConsulta
+          ? Math.floor((ahora - est.primeraConsulta.getTime()) / 86_400_000)
+          : 0,
+        quedanFirmas: 0,
+        agotado: true,
+        diagnostico:
+          `No quedan firmas con email en ${lead.province ?? 'la zona'} sin consultar (llevo ${yaConsultadas}). ` +
+          `Para seguir hace falta cargar más correos de consignatarias o ampliar la búsqueda.`,
+      })
+      continue
+    }
 
     for (const f of firmas) {
       if (enviadas.length >= MAX_CONSULTAS_DIA) break
@@ -271,7 +397,7 @@ export async function enviarConsultas(
       await new Promise((res) => setTimeout(res, 400))
     }
   }
-  return enviadas
+  return { enviadas, sinRespuesta }
 }
 
 export async function correrOvejero(db: SupabaseClient): Promise<ReporteOvejero> {
@@ -356,6 +482,7 @@ export async function correrOvejero(db: SupabaseClient): Promise<ReporteOvejero>
     zonasSinOferta,
     ranking: rankearLeads(leads),
     consultas: [],
+    sinRespuesta: [],
     hayAlgoQueHacer: matches.length > 0 || pendientes.length > 0 || zonasSinOferta.length > 0,
     totales: { leadsActivos: leads.length, demandasActivas: demandasActivas ?? 0 },
   }

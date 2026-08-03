@@ -2284,12 +2284,14 @@ export async function sendOvejeroDigest(opts: {
   pendientes: Array<{ nombre: string; detalle: string; dias: number; urgente: boolean; wa: string | null; email: string | null }>
   zonas: Array<{ provincia: string; buscan: number; mensaje: string; firmas: Array<{ nombre: string; wa: string | null }> }>
   consultas?: Array<{ firma: string; leadResumen: string; email: string }>
+  sinRespuesta?: Array<{ nombre: string; resumen: string; diagnostico: string; agotado: boolean; wa: string | null }>
   ranking?: Array<{ nombre: string; resumen: string; score: number; porQue: string }>
 }) {
   const resend = await getResend()
   if (!resend) return
   const { matches, pendientes, zonas } = opts
   const consultas = opts.consultas ?? []
+  const sinRespuesta = opts.sinRespuesta ?? []
   const ranking = opts.ranking ?? []
 
   const bloque = (titulo: string, cuerpo: string) =>
@@ -2355,6 +2357,22 @@ export async function sendOvejeroDigest(opts: {
       )
     : ''
 
+  // El "¿y si no responden?": lo agotado va arriba porque necesita decisión.
+  const sinRespuestaHtml = sinRespuesta.length
+    ? bloque(
+        `🔁 ${sinRespuesta.length} ${sinRespuesta.length === 1 ? 'lead consultado sin respuesta' : 'leads consultados sin respuesta'}`,
+        sinRespuesta
+          .map(
+            (s) => `<div style="background:#18181b;border:1px solid ${s.agotado ? '#fbbf24' : '#27272a'};border-left:3px solid ${s.agotado ? '#fbbf24' : '#71717a'};border-radius:2px;padding:14px;margin-bottom:10px">
+              <p style="color:#fafafa;font-size:14px;margin:0 0 4px"><strong>${escapeHtml(s.nombre)}</strong> — ${escapeHtml(s.resumen)}${s.agotado ? ' <span style="color:#fbbf24;font-size:11px">· AGOTADO, decide vos</span>' : ''}</p>
+              <p style="color:#a1a1aa;font-size:12px;line-height:1.6;margin:0 0 8px">${escapeHtml(s.diagnostico)}</p>
+              ${s.wa ? `<a href="${s.wa}" style="color:#10b981;font-size:12px">Escribirle al productor &rarr;</a>` : ''}
+            </div>`,
+          )
+          .join(''),
+      )
+    : ''
+
   const rankingHtml = ranking.length
     ? bloque(
         '📊 Dónde conviene poner la energía',
@@ -2373,7 +2391,7 @@ export async function sendOvejeroDigest(opts: {
       <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">El Ovejero &middot; parte del día</p>
       <h2 style="color:#fafafa;font-size:20px;font-weight:700;margin:0 0 4px">Lo que hice y lo que te dejo</h2>
       <p style="color:#71717a;font-size:12px;margin:0 0 4px">Solo te escribo cuando hay algo para hacer.</p>
-      ${consultasHtml}${matchesHtml}${pendientesHtml}${zonasHtml}${rankingHtml}
+      ${consultasHtml}${sinRespuestaHtml}${matchesHtml}${pendientesHtml}${zonasHtml}${rankingHtml}
       <p style="margin:26px 0 0"><a href="${APP_URL}/admin/leads" style="color:#38bdf8;font-size:13px">Abrir el board de leads &rarr;</a></p>
     `),
   }).catch(() => {})
