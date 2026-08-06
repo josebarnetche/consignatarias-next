@@ -20,7 +20,7 @@
  *
  * Agendar con Task Scheduler (ver scripts/local-nea-fetch.bat).
  */
-import { writeFileSync } from "node:fs";
+import { writeFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
@@ -31,10 +31,39 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(__dirname, "..");
 const OUT = resolve(REPO, "src/lib/data/remates-local-nea.json");
 const REL = "src/lib/data/remates-local-nea.json";
+// Worktree auxiliar en main, reusado entre corridas: publica el dato aunque el
+// checkout principal esté parado en una rama feature de otra sesión (no la toca).
+const PUBLISH_WT = resolve(REPO, "..", "consignatarias-nea-publish-wt");
 const noPush = process.argv.includes("--no-push");
 
 function git(cmd) {
   return execSync(`git ${cmd}`, { cwd: REPO, stdio: ["ignore", "pipe", "pipe"] }).toString().trim();
+}
+
+function gitAt(cmd, cwd) {
+  return execSync(`git ${cmd}`, { cwd, stdio: ["ignore", "pipe", "pipe"] }).toString().trim();
+}
+
+// Commitea+pushea el archivo a origin/main desde un worktree separado, sin
+// tocar el checkout principal (que puede estar en cualquier rama, con
+// cambios propios sin commitear de otra sesión).
+function publishViaWorktree(all) {
+  if (!existsSync(PUBLISH_WT)) {
+    console.log(`Creando worktree auxiliar en ${PUBLISH_WT} (rama main)...`);
+    git(`worktree add "${PUBLISH_WT}" main`);
+  }
+  try { gitAt("checkout main", PUBLISH_WT); } catch (e) { console.error("worktree checkout main:", e.message); return; }
+  try { gitAt("pull --ff-only origin main", PUBLISH_WT); } catch (e) { console.error("worktree pull:", e.message); }
+  writeFileSync(resolve(PUBLISH_WT, REL), JSON.stringify(all, null, 2) + "\n");
+  gitAt(`add ${REL}`, PUBLISH_WT);
+  let staged = "";
+  try { staged = gitAt(`diff --cached --name-only -- ${REL}`, PUBLISH_WT); } catch { /* */ }
+  if (!staged) { console.log("Worktree auxiliar: sin cambios en el archivo — nada que commitear."); return; }
+  const d = new Date().toISOString().slice(0, 10);
+  gitAt(`commit -m "data: fetch local NEA (Entre Surcos/Rosgan) — ${d}" -- ${REL}`, PUBLISH_WT);
+  try { gitAt("pull --rebase --autostash origin main", PUBLISH_WT); } catch (e) { console.error("worktree pull --rebase:", e.message); }
+  gitAt("push origin main", PUBLISH_WT);
+  console.log("Publicado via worktree auxiliar (checkout principal intacto).");
 }
 
 (async () => {
@@ -58,6 +87,18 @@ function git(cmd) {
   console.log(`Escrito ${REL} (${all.length} remates)`);
 
   if (noPush) { console.log("--no-push: listo (sin commit)."); return; }
+
+  // Si el checkout no está en main (otra sesión dejó una rama feature activa),
+  // commitear acá pegaría el dato en la rama equivocada y el push a origin main
+  // quedaría rechazado (non-fast-forward) sin avisar por qué. El archivo ya
+  // quedó escrito en disco arriba, así que no se pierde nada: se corta antes
+  // de tocar git y se avisa fuerte.
+  const branch = git("rev-parse --abbrev-ref HEAD");
+  if (branch !== "main") {
+    console.error(`Checkout principal en '${branch}', no en 'main' (otra sesión) — publico via worktree auxiliar sin tocarlo.`);
+    publishViaWorktree(all);
+    return;
+  }
 
   // Commitear SOLO ese archivo (seguro aunque haya otros cambios sin commitear).
   git(`add ${REL}`);
