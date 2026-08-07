@@ -1837,41 +1837,41 @@
   },
   "categories": {
     "novillos": {
-      "current": 4376.94,
+      "current": 4300,
       "prev": 4376.94,
-      "change": 0,
+      "change": -1.8,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1263
+      "latestVolume": 33
     },
     "novillitos": {
-      "current": 4861.53,
+      "current": 4222,
       "prev": 4861.53,
-      "change": 0,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "change": -13.2,
+      "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1035
     },
     "vaquillonas": {
-      "current": 4663.81,
+      "current": 3800,
       "prev": 4663.81,
-      "change": 0,
+      "change": -18.5,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1920
+      "latestVolume": 4
     },
     "vacas": {
-      "current": 3098.02,
+      "current": 3000,
       "prev": 3098.02,
-      "change": 0,
+      "change": -3.2,
       "source": "mercadoagroganadero.com.ar (observed)",
-      "latestVolume": 1859
+      "latestVolume": 1
     },
     "toros": {
-      "current": 3392.32,
+      "current": 2888,
       "prev": 3392.32,
-      "change": 0,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "change": -14.9,
+      "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 143
     },
@@ -1883,16 +1883,16 @@
     }
   },
   "corn": {
-    "current": 225.25,
-    "prev": 227.25,
-    "change": -0.9,
+    "current": 226.17,
+    "prev": 225.25,
+    "change": 0.4,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1540,
+    "current": 1530,
     "prev": 1540,
-    "change": 0,
+    "change": -0.6,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
@@ -1903,184 +1903,49 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-08-05",
+  "lastUpdate": "2026-08-07",
   "provinceEntry": {
-    "date": "2026-08-05",
-    "totalCabezas": 5483,
+    "date": "2026-08-07",
+    "totalCabezas": 75,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 4393,
-        "total": 4397,
-        "percentage": 80.19
-      },
-      {
-        "province": "LA PAMPA",
-        "enPie": 459,
-        "total": 459,
-        "percentage": 8.37
-      },
-      {
-        "province": "CORDOBA",
-        "enPie": 202,
-        "total": 202,
-        "percentage": 3.68
-      },
-      {
-        "province": "ENTRE RIOS",
-        "enPie": 199,
-        "total": 199,
-        "percentage": 3.63
-      },
-      {
-        "province": "SANTA FE",
-        "enPie": 189,
-        "total": 191,
-        "percentage": 3.48
-      },
-      {
-        "province": "SAN LUIS",
-        "enPie": 35,
-        "total": 35,
-        "percentage": 0.64
+        "enPie": 75,
+        "total": 75,
+        "percentage": 100
       }
     ]
   },
   "detailedCategories": {
-    "date": "2026-08-05",
+    "date": "2026-08-07",
     "categories": [
       {
         "category": "NOVILLOS Esp.Joven + 430",
-        "minPrice": 4000,
-        "maxPrice": 4980,
-        "avgPrice": 4573.94,
-        "cabezas": 552
-      },
-      {
-        "category": "NOVILLOS Regular h 430",
-        "minPrice": 3500,
-        "maxPrice": 4400,
-        "avgPrice": 3869.11,
-        "cabezas": 49
-      },
-      {
-        "category": "NOVILLOS Regular + 430",
-        "minPrice": 3700,
-        "maxPrice": 4400,
-        "avgPrice": 4131.79,
-        "cabezas": 161
-      },
-      {
-        "category": "NOVILLITOS Esp. h 390",
-        "minPrice": 4000,
-        "maxPrice": 5400,
-        "avgPrice": 4908.9,
-        "cabezas": 522
-      },
-      {
-        "category": "NOVILLITOS Esp. + 390",
-        "minPrice": 4000,
-        "maxPrice": 5300,
-        "avgPrice": 4780.8,
-        "cabezas": 489
-      },
-      {
-        "category": "NOVILLITOS Regular",
-        "minPrice": 4200,
-        "maxPrice": 4700,
-        "avgPrice": 4161.21,
-        "cabezas": 24
-      },
-      {
-        "category": "VAQUILLONAS Esp. h 390",
-        "minPrice": 4000,
-        "maxPrice": 5300,
-        "avgPrice": 4803.1,
-        "cabezas": 920
+        "minPrice": 4300,
+        "maxPrice": 4300,
+        "avgPrice": 4300,
+        "cabezas": 33
       },
       {
         "category": "VAQUILLONAS Esp. + 390",
-        "minPrice": 3000,
-        "maxPrice": 4620,
-        "avgPrice": 4053.9,
-        "cabezas": 485
-      },
-      {
-        "category": "VAQUILLONAS Regular",
-        "minPrice": 3200,
-        "maxPrice": 4800,
-        "avgPrice": 3767.91,
-        "cabezas": 101
-      },
-      {
-        "category": "VACAS Esp.Joven h 430",
-        "minPrice": 2100,
+        "minPrice": 3800,
         "maxPrice": 3800,
-        "avgPrice": 3163.9,
-        "cabezas": 93
+        "avgPrice": 3800,
+        "cabezas": 4
       },
       {
         "category": "VACAS Esp.Joven + 430",
-        "minPrice": 2300,
-        "maxPrice": 4020,
-        "avgPrice": 3345.47,
-        "cabezas": 901
-      },
-      {
-        "category": "VACAS Regular",
-        "minPrice": 2400,
-        "maxPrice": 4000,
-        "avgPrice": 3002.61,
-        "cabezas": 780
-      },
-      {
-        "category": "VACAS Conserva Buena",
-        "minPrice": 2300,
-        "maxPrice": 2800,
-        "avgPrice": 2489.19,
-        "cabezas": 119
-      },
-      {
-        "category": "VACAS Conserva Inferior",
-        "minPrice": 2400,
-        "maxPrice": 2700,
-        "avgPrice": 2411.45,
-        "cabezas": 18
-      },
-      {
-        "category": "TOROS Esp.",
-        "minPrice": 2100,
-        "maxPrice": 4200,
-        "avgPrice": 3102.42,
-        "cabezas": 114
-      },
-      {
-        "category": "TOROS Regular",
-        "minPrice": 2600,
-        "maxPrice": 3500,
-        "avgPrice": 2788.92,
-        "cabezas": 63
-      },
-      {
-        "category": "MEJ Esp. h 430",
-        "minPrice": 3500,
-        "maxPrice": 4900,
-        "avgPrice": 4355.69,
-        "cabezas": 57
-      },
-      {
-        "category": "MEJ Regular",
-        "minPrice": 2300,
-        "maxPrice": 4100,
-        "avgPrice": 2920.23,
-        "cabezas": 24
+        "minPrice": 3000,
+        "maxPrice": 3000,
+        "avgPrice": 3000,
+        "cabezas": 1
       },
       {
         "category": "Totales",
         "minPrice": 0,
         "maxPrice": 0,
-        "avgPrice": 3916.86,
-        "cabezas": 5472
+        "avgPrice": 4217.56,
+        "cabezas": 38
       }
     ]
   },
