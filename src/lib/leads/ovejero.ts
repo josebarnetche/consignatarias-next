@@ -414,12 +414,51 @@ export async function correrOvejero(db: SupabaseClient): Promise<ReporteOvejero>
   const busca = leads.filter((l) => l.intent === 'arrendar_busco')
   const ofrece = leads.filter((l) => l.intent === 'arrendar_ofrezco')
 
-  // 1 · Matches de arrendamiento
+  // 1 · Matches de arrendamiento: contra otros leads Y contra los campos publicados
+  // en la inmobiliaria rural (que es de donde ahora sale la oferta de verdad).
   const matches: MatchArrendamiento[] = []
   for (const b of busca) {
     for (const o of ofrece) {
       const motivo = compatibilidadZona(b, o)
       if (motivo) matches.push({ busca: b, ofrece: o, motivo })
+    }
+  }
+
+  const { data: camposPub } = await db
+    .from('campos')
+    .select('id, slug, hectareas, provincia, partido, operacion, precio_kg_ha_anio')
+    .eq('status', 'publicado')
+    .neq('operacion', 'venta')
+    .limit(200)
+
+  for (const b of busca) {
+    for (const campo of camposPub ?? []) {
+      // Se reusa la misma compatibilidad tratando al campo como si fuera un lead.
+      const comoLead: LeadRow = {
+        id: -campo.id,
+        created_at: new Date().toISOString(),
+        intent: 'arrendar_ofrezco',
+        province: campo.provincia,
+        zona: campo.partido,
+        category: null,
+        head_count: null,
+        hectareas: campo.hectareas,
+        name: `Campo publicado #${campo.id}`,
+        phone: null,
+        email: null,
+        message: campo.slug,
+        status: 'publicado',
+        estimated_value_ars: null,
+        fee_ars: null,
+      }
+      const motivo = compatibilidadZona(b, comoLead)
+      if (motivo) {
+        matches.push({
+          busca: b,
+          ofrece: comoLead,
+          motivo: `${motivo} — campo publicado en /campos/${campo.slug}`,
+        })
+      }
     }
   }
 

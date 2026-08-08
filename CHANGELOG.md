@@ -7,6 +7,28 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.190.0] — 2026-08-08
+
+### Inmobiliaria rural: campos en arrendamiento y venta
+
+/mercado/arrendamiento era la página con más tráfico del sitio (22% de los clicks
+de búsqueda) y generaba leads de gente **buscando** campo, sin un solo campo para
+ofrecer. El Ovejero no tenía qué cruzar. Ahora hay oferta.
+
+- **`/campos`** — listado público, arrendamiento y venta separados.
+- **`/campos/[slug]`** — ficha con el cálculo que ningún portal inmobiliario hace:
+  el canon se publica en **kg de novillo por ha por año** (como se pacta) y el
+  sitio lo convierte a pesos y dólares **con el índice del día**, mostrando mensual,
+  anual y por hectárea. El monto se mueve con el mercado y se explica por qué.
+- **`/campos/publicar`** — alta gratis en dos minutos, con preview en vivo: al
+  cargar los kilos, el formulario muestra al instante cuánto es por mes.
+- **Contacto del oferente nunca público**: las consultas entran como
+  `producer_leads` (source `campo:<id>`) y las conecta José — misma regla que El
+  Ovejero, la relación no se regala.
+- **Moderación**: todo entra `pendiente` y sale publicado tras revisión.
+- **El Ovejero ahora cruza los leads contra los campos publicados**, no solo
+  contra otros leads.
+
 ## [1.189.2] — 2026-08-01
 
 ### Fix crítico: el blast de El Corredor mandaba la edición del mes anterior

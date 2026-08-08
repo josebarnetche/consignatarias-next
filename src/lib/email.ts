@@ -2222,6 +2222,31 @@ export async function sendElCorredorInvitacion(email: string, source: string | n
   }
 }
 
+/** Aviso interno: entró un campo nuevo para moderar. Fire-and-forget. */
+export async function sendCampoPublicadoOps(opts: {
+  id: number
+  resumen: string
+  precio: string
+  contacto: string
+}) {
+  const resend = await getResend()
+  if (!resend) return
+  resend.emails.send({
+    from: FROM,
+    to: LEAD_ALERT_TO,
+    subject: `🌾 Campo nuevo para revisar #${opts.id}: ${opts.resumen}`,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Inmobiliaria rural &middot; alta</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 14px">Entró un campo</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Campo:</strong> ${escapeHtml(opts.resumen)}</p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Precio:</strong> ${escapeHtml(opts.precio)}</p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Contacto:</strong> ${escapeHtml(opts.contacto)}</p>
+      <p style="color:#71717a;font-size:12px;line-height:1.6;margin:14px 0 0">Está en <strong>pendiente</strong>: no se ve en el sitio hasta que lo apruebes.</p>
+      <p style="margin:16px 0 0"><a href="${APP_URL}/admin/campos" style="color:#38bdf8">Revisar en admin &rarr;</a></p>
+    `),
+  }).catch(() => {})
+}
+
 /**
  * Consulta de El Ovejero a una consignataria: "tengo este productor en tu zona,
  * ¿podés resolverlo?". Es outreach en frío, así que va con los mismos recaudos que

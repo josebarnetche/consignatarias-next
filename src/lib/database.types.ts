@@ -310,6 +310,120 @@ export type Database = {
           },
         ]
       }
+      backfill_bing_20260803: {
+        Row: {
+          columna: string
+          creado_at: string
+          pk: string
+          tabla: string
+          valor_viejo: string | null
+        }
+        Insert: {
+          columna: string
+          creado_at?: string
+          pk: string
+          tabla: string
+          valor_viejo?: string | null
+        }
+        Update: {
+          columna?: string
+          creado_at?: string
+          pk?: string
+          tabla?: string
+          valor_viejo?: string | null
+        }
+        Relationships: []
+      }
+      campos: {
+        Row: {
+          aptitud: string | null
+          capacidad_cabezas: number | null
+          consignataria_slug: string | null
+          consultas: number
+          contacto_email: string | null
+          contacto_nombre: string | null
+          contacto_telefono: string | null
+          created_at: string
+          descripcion: string | null
+          destacado: boolean
+          hectareas: number
+          id: number
+          mejoras: string | null
+          notas_internas: string | null
+          operacion: string
+          origen: string
+          origin_ip: string | null
+          partido: string | null
+          precio_kg_ha_anio: number | null
+          precio_usd_ha: number | null
+          provincia: string
+          published_at: string | null
+          slug: string | null
+          status: string
+          titulo: string | null
+          updated_at: string
+          vistas: number
+        }
+        Insert: {
+          aptitud?: string | null
+          capacidad_cabezas?: number | null
+          consignataria_slug?: string | null
+          consultas?: number
+          contacto_email?: string | null
+          contacto_nombre?: string | null
+          contacto_telefono?: string | null
+          created_at?: string
+          descripcion?: string | null
+          destacado?: boolean
+          hectareas: number
+          id?: never
+          mejoras?: string | null
+          notas_internas?: string | null
+          operacion: string
+          origen?: string
+          origin_ip?: string | null
+          partido?: string | null
+          precio_kg_ha_anio?: number | null
+          precio_usd_ha?: number | null
+          provincia: string
+          published_at?: string | null
+          slug?: string | null
+          status?: string
+          titulo?: string | null
+          updated_at?: string
+          vistas?: number
+        }
+        Update: {
+          aptitud?: string | null
+          capacidad_cabezas?: number | null
+          consignataria_slug?: string | null
+          consultas?: number
+          contacto_email?: string | null
+          contacto_nombre?: string | null
+          contacto_telefono?: string | null
+          created_at?: string
+          descripcion?: string | null
+          destacado?: boolean
+          hectareas?: number
+          id?: never
+          mejoras?: string | null
+          notas_internas?: string | null
+          operacion?: string
+          origen?: string
+          origin_ip?: string | null
+          partido?: string | null
+          precio_kg_ha_anio?: number | null
+          precio_usd_ha?: number | null
+          provincia?: string
+          published_at?: string | null
+          slug?: string | null
+          status?: string
+          titulo?: string | null
+          updated_at?: string
+          vistas?: number
+        }
+        Relationships: []
+      }
       consignataria_auctions: {
         Row: {
           catalog_url: string | null
@@ -1871,9 +1985,11 @@ export type Database = {
           id: string
           lease_hectareas: number | null
           lease_kg_ha: number | null
+          resubscribed_at: string | null
           source: string | null
           status: string | null
           subscribed_at: string | null
+          unsubscribed_at: string | null
         }
         Insert: {
           capture_context?: string | null
@@ -1882,9 +1998,11 @@ export type Database = {
           id?: string
           lease_hectareas?: number | null
           lease_kg_ha?: number | null
+          resubscribed_at?: string | null
           source?: string | null
           status?: string | null
           subscribed_at?: string | null
+          unsubscribed_at?: string | null
         }
         Update: {
           capture_context?: string | null
@@ -1893,9 +2011,11 @@ export type Database = {
           id?: string
           lease_hectareas?: number | null
           lease_kg_ha?: number | null
+          resubscribed_at?: string | null
           source?: string | null
           status?: string | null
           subscribed_at?: string | null
+          unsubscribed_at?: string | null
         }
         Relationships: []
       }
@@ -3327,6 +3447,10 @@ export type Database = {
         Args: { p_bucket: string; p_window_start: string }
         Returns: number
       }
+      es_referral_ia: {
+        Args: { p_engine: string; p_referrer: string }
+        Returns: boolean
+      }
       get_canuelas_hembras_mensual: {
         Args: never
         Returns: {
@@ -3407,15 +3531,72 @@ export type Database = {
           week_start: string
         }[]
       }
+      ia_stats_semana: {
+        Args: { p_desde: string; p_hasta?: string }
+        Returns: {
+          motor: string
+          visitantes: number
+        }[]
+      }
       increment_aperturas: {
         Args: { p_cliente_num: number }
         Returns: undefined
       }
       increment_api_usage: { Args: { p_key_id: string }; Returns: number }
       karma_balance: { Args: { p_user: string }; Returns: number }
+      mag_inmag_cobertura: {
+        Args: never
+        Returns: {
+          anios: number
+          desde: string
+          hasta: string
+          ruedas: number
+        }[]
+      }
+      mag_inmag_estacionalidad: {
+        Args: never
+        Returns: {
+          anios: number
+          anios_sobre_1: number
+          consistente: boolean
+          desvio: number
+          indice_mediano: number
+          indice_medio: number
+          indice_mitad1: number
+          indice_mitad2: number
+          mes: number
+          t_stat: number
+          veredicto: string
+        }[]
+      }
+      mag_inmag_estacionalidad_usd: {
+        Args: never
+        Returns: {
+          anios: number
+          indice_usd: number
+          mes: number
+          t_usd: number
+        }[]
+      }
       mag_monthly_consignatario_stats: {
         Args: { p_month: number; p_year: number }
         Returns: Json
+      }
+      mag_origen_partidos: {
+        Args: { p_min_lotes?: number }
+        Returns: {
+          cabezas: number
+          categorias: Json
+          desde: string
+          hasta: string
+          kg_por_cabeza: number
+          lotes: number
+          lotes_con_precio: number
+          origen_raw: string
+          precio_kg: number
+          provincia: string
+          total_kgs: number
+        }[]
       }
       novillo_usd_days: { Args: { p_dates: string[] }; Returns: Json }
       novillo_usd_series: { Args: never; Returns: Json }
