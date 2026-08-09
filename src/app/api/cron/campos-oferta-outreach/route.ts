@@ -3,7 +3,7 @@ import { requireServiceClient } from '@/lib/supabase'
 import { sendCampoOfertaOutreach } from '@/lib/email'
 import { authorizeCron } from '@/lib/cron-auth'
 import { trackCron } from '@/lib/ops'
-import { TIERRA_PROVINCIAS } from '@/lib/valuacion-campos'
+import { TIERRA_PROVINCIAS, type ProvinciaTierra } from '@/lib/valuacion-campos'
 
 /**
  * POST /api/cron/campos-oferta-outreach
@@ -75,20 +75,17 @@ export async function POST(request: NextRequest) {
             displayName: r.display_name,
             slug: r.canonical_slug,
             views: count ?? 0,
-            provincia: r.province ? capitalizar(r.province) : null,
+            provincia: r.province ? normalizarProvincia(r.province).nombre : null,
           }
         }
       }
-      const valorPorProv = new Map(
-        TIERRA_PROVINCIAS.map((t) => [
-          t.provincia.toLowerCase(),
-          `US$${Math.round(t.usd_ha).toLocaleString('es-AR')} por hectárea`,
-        ]),
-      )
+      const enBase = demo.provincia ? normalizarProvincia(demo.provincia).enBase : null
       const r = await sendCampoOfertaOutreach({
         ...demo,
         to: testEmail,
-        valorHectarea: demo.provincia ? (valorPorProv.get(demo.provincia.toLowerCase()) ?? null) : null,
+        valorHectarea: enBase
+          ? `US$${Math.round(enBase.usd_ha).toLocaleString('es-AR')} por hectárea`
+          : null,
       })
       return {
         message: `test → ${testEmail}${comoSlug ? ` (como ${demo.displayName})` : ''}`,
@@ -128,24 +125,19 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const valorPorProvincia = new Map(
-      TIERRA_PROVINCIAS.map((t) => [
-        t.provincia.toLowerCase(),
-        `US$${Math.round(t.usd_ha).toLocaleString('es-AR')} por hectárea`,
-      ]),
-    )
-
     const candidatas = (firmas ?? [])
       .map((f) => {
         const r = f as { canonical_slug: string; display_name: string; email: string; province: string | null }
-        const provincia = r.province ? capitalizar(r.province) : null
+        const prov = r.province ? normalizarProvincia(r.province) : null
         return {
           slug: r.canonical_slug,
           nombre: r.display_name,
           email: String(r.email).trim().toLowerCase(),
-          provincia,
+          provincia: prov?.nombre ?? null,
           views: conteo.get(r.canonical_slug) ?? 0,
-          valorHectarea: provincia ? (valorPorProvincia.get(provincia.toLowerCase()) ?? null) : null,
+          valorHectarea: prov?.enBase
+            ? `US$${Math.round(prov.enBase.usd_ha).toLocaleString('es-AR')} por hectárea`
+            : null,
         }
       })
       .filter(
@@ -206,10 +198,23 @@ export async function POST(request: NextRequest) {
   return NextResponse.json(outcome)
 }
 
-function capitalizar(s: string): string {
-  return s
+/**
+ * La provincia viene de la base en mayúsculas y sin tildes ("SANTA FE", "CORDOBA").
+ * Se resuelve contra el relevamiento, que tiene la grafía correcta, comparando sin
+ * acentos. Así el mail dice "Santa Fe" y "Córdoba" —y además encuentra el valor de
+ * la hectárea, que con la grafía cruda no matcheaba—. Sin match, título simple.
+ */
+function normalizarProvincia(raw: string): { nombre: string; enBase: ProvinciaTierra | null } {
+  const sinAcentos = (x: string) =>
+    x.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  const k = sinAcentos(raw)
+  const enBase = TIERRA_PROVINCIAS.find((t) => sinAcentos(t.provincia) === k) ?? null
+  if (enBase) return { nombre: enBase.provincia, enBase }
+  const nombre = raw
+    .trim()
     .toLowerCase()
-    .split(' ')
-    .map((w) => (w.length > 2 ? w[0].toUpperCase() + w.slice(1) : w))
+    .split(/\s+/)
+    .map((w) => (w === 'de' || w === 'del' ? w : w.charAt(0).toUpperCase() + w.slice(1)))
     .join(' ')
+  return { nombre, enBase: null }
 }
