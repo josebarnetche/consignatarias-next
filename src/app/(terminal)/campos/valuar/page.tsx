@@ -48,6 +48,13 @@ const FAQ = [
   },
 ]
 
+const APTITUD: Record<string, string> = {
+  ganadera: 'Ganadera',
+  mixta: 'Mixta',
+  agricola: 'Agrícola',
+  forestal: 'Forestal',
+}
+
 const ZONAS = TIERRA.filter((t) => !!t.zona).sort(
   (a, b) => a.provincia.localeCompare(b.provincia, 'es') || b.usd_ha - a.usd_ha,
 )
@@ -137,7 +144,9 @@ export default function ValuarCampoPage() {
                   <tr key={`${t.provincia}-${t.zona}`} className="border-b border-zinc-900">
                     <td className="py-2 pr-3 text-zinc-200 font-sans">{t.zona}</td>
                     <td className="py-2 pr-3 text-zinc-500 font-sans">{t.provincia}</td>
-                    <td className="py-2 pr-3 text-zinc-500 font-sans">{t.aptitud}</td>
+                    <td className="py-2 pr-3 text-zinc-500 font-sans">
+                      {t.aptitud ? (APTITUD[t.aptitud] ?? t.aptitud) : '—'}
+                    </td>
                     <td className="py-2 pr-3 text-right text-accent tabular-nums">
                       {t.usd_ha.toLocaleString('es-AR')}
                     </td>
