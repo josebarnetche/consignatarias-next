@@ -27,7 +27,9 @@ import { TIERRA_PROVINCIAS } from '@/lib/valuacion-campos'
  * si el mensaje no sirve, quiero enterarme con cinco y no con sesenta.
  *
  * ?dry=1 preview sin enviar · ?test=<email> manda uno solo sin tocar el log ·
- * ?min=<n> umbral de visitas · ?cap=<n> tope de la corrida.
+ * ?as=<slug> hace que ese test se arme con los datos REALES de esa firma (nombre,
+ *   provincia y visitas), para revisar el mensaje tal cual lo recibiría ella y no
+ *   un placeholder · ?min=<n> umbral de visitas · ?cap=<n> tope de la corrida.
  */
 const OUTREACH_TYPE = 'campos_oferta'
 const COOLDOWN_DIAS = 45
@@ -48,17 +50,49 @@ export async function POST(request: NextRequest) {
     const db = requireServiceClient()
 
     if (testEmail) {
-      const r = await sendCampoOfertaOutreach({
-        to: testEmail,
+      const comoSlug = (url.searchParams.get('as') || '').trim().toLowerCase()
+      let demo = {
         displayName: 'Consignataria (TEST)',
         slug: 'test',
         views: 42,
-        provincia: 'Corrientes',
-        valorHectarea: 'US$1.900 por hectárea',
+        provincia: 'Corrientes' as string | null,
+      }
+      if (comoSlug) {
+        const { data: f } = await db
+          .from('consignatarias')
+          .select('canonical_slug, display_name, province')
+          .eq('canonical_slug', comoSlug)
+          .maybeSingle()
+        if (f) {
+          const r = f as { canonical_slug: string; display_name: string; province: string | null }
+          const { count } = await db
+            .from('profile_views')
+            .select('id', { count: 'exact', head: true })
+            .eq('entity_type', 'consignataria')
+            .eq('entity_slug', r.canonical_slug)
+            .gte('viewed_at', new Date(Date.now() - 90 * 86_400_000).toISOString())
+          demo = {
+            displayName: r.display_name,
+            slug: r.canonical_slug,
+            views: count ?? 0,
+            provincia: r.province ? capitalizar(r.province) : null,
+          }
+        }
+      }
+      const valorPorProv = new Map(
+        TIERRA_PROVINCIAS.map((t) => [
+          t.provincia.toLowerCase(),
+          `US$${Math.round(t.usd_ha).toLocaleString('es-AR')} por hectárea`,
+        ]),
+      )
+      const r = await sendCampoOfertaOutreach({
+        ...demo,
+        to: testEmail,
+        valorHectarea: demo.provincia ? (valorPorProv.get(demo.provincia.toLowerCase()) ?? null) : null,
       })
       return {
-        message: `test → ${testEmail}`,
-        metadata: { sent: r.success ? 1 : 0, test: true },
+        message: `test → ${testEmail}${comoSlug ? ` (como ${demo.displayName})` : ''}`,
+        metadata: { sent: r.success ? 1 : 0, test: true, como: demo.displayName, vistas90: demo.views },
       }
     }
 
