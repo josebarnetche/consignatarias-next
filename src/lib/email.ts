@@ -245,6 +245,56 @@ export async function sendConsignatariaViewsOutreach(opts: {
   }
 }
 
+/**
+ * Invitación a una firma para que publique los campos que tiene en cartera.
+ *
+ * Es warm por construcción: entra con un dato cierto y propio de esa firma —las
+ * visitas a SU perfil— y no con una promesa. Y el ofrecimiento está pensado para
+ * cómo trabaja una consignataria: el aviso lleva su nombre, linkea a su perfil y
+ * la consulta se le deriva. A un dueño de campo le sirve que no publiquemos su
+ * contacto; a una firma, eso la borraría del negocio.
+ */
+export async function sendCampoOfertaOutreach(opts: {
+  to: string
+  displayName: string
+  slug: string
+  views: number
+  provincia?: string | null
+  valorHectarea?: string | null
+}): Promise<{ success: boolean }> {
+  const resend = await getResend()
+  if (!resend) return { success: false }
+  const safeName = escapeHtml(opts.displayName)
+  const alta = `${APP_URL}/campos/publicar?firma=${encodeURIComponent(opts.slug)}`
+  const zona = opts.provincia ? escapeHtml(opts.provincia) : null
+  try {
+    await resend.emails.send({
+      from: FROM_PERSONAL,
+      to: opts.to,
+      headers: listUnsubHeaders(opts.to, 'campos_oferta'),
+      subject: `¿Tenés campos en cartera? Los publicamos gratis a nombre de ${opts.displayName}`,
+      html: darkEmailShell(`
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Hola, equipo de <strong style="color:#fafafa">${safeName}</strong>:</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Les escribo de consignatarias.com.ar. En los últimos 90 días el perfil de la firma tuvo <strong style="color:#fafafa">${opts.views} visitas</strong> de gente buscando con quién operar.</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Abrimos una sección de campos, y nos está pasando algo que queremos aprovechar: entra bastante gente buscando campo para arrendar o comprar${zona ? ` en ${zona}` : ''}, y del otro lado todavía tenemos poco para mostrarles.</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Si tienen campos en cartera, los pueden publicar <strong style="color:#fafafa">gratis</strong>. Tres cosas, para que quede claro cómo funciona:</p>
+        <ul style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px;padding-left:18px">
+          <li style="margin-bottom:6px">El aviso sale <strong style="color:#fafafa">a nombre de ustedes</strong> y linkea al perfil de la firma.</li>
+          <li style="margin-bottom:6px">Las consultas <strong style="color:#fafafa">se les derivan a ustedes</strong>. El campo es suyo y el cliente también. No cobramos comisión ni nos metemos en la operación.</li>
+          <li style="margin-bottom:6px">Si es arrendamiento, el canon se carga en kilos de novillo y el sitio lo muestra en pesos y dólares al índice del día. Es la única parte donde tenemos algo que otros no.</li>
+        </ul>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px"><a href="${alta}" style="color:#38bdf8">Cargar un campo acá</a> — son dos minutos${opts.valorHectarea ? `. Ahí también está lo que estamos relevando de valor de la hectárea${zona ? ` en ${zona}` : ''}: ${escapeHtml(opts.valorHectarea)}` : ''}.</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Si prefieren mandarme la información por mail y la cargamos nosotros, respondan este mismo mensaje y lo hacemos.</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 4px">Saludos,<br>José Barnetche — consignatarias.com.ar</p>
+        ${legalIdentificationHtml(opts.to)}
+      `),
+    })
+    return { success: true }
+  } catch {
+    return { success: false }
+  }
+}
+
 export async function sendClaimNotificationToAdmin(
   displayName: string,
   slug: string,

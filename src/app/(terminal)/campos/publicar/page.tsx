@@ -3,6 +3,7 @@ import Link from 'next/link'
 import PublicarCampoForm from '@/components/campos/PublicarCampoForm'
 import { fmtArs } from '@/lib/campos'
 import { promedioMesAnterior } from '@/lib/valuacion-campos'
+import { getAllProfiles } from '@/lib/data/consignataria-slugs'
 
 export const revalidate = 3600
 
@@ -22,8 +23,28 @@ export const metadata: Metadata = {
   alternates: { canonical: `${BASE_URL}/campos/publicar` },
 }
 
-export default function PublicarCampoPage() {
+/**
+ * ?firma=<slug> — la firma llega desde su propio mail de invitación y publica a
+ * su nombre. Se resuelve contra el directorio: un slug inventado simplemente cae
+ * al alta normal, no hay nada que forzar.
+ */
+export default async function PublicarCampoPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    firma?: string
+    provincia?: string
+    hectareas?: string
+    partido?: string
+    kg?: string
+  }>
+}) {
   const idx = promedioMesAnterior()
+  const { firma: firmaSlug, provincia, hectareas, partido, kg } = await searchParams
+  const perfil = firmaSlug
+    ? getAllProfiles().find((p) => p.canonicalSlug === firmaSlug.trim().toLowerCase())
+    : null
+  const firma = perfil ? { slug: perfil.canonicalSlug, nombre: perfil.displayName } : null
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
@@ -57,7 +78,16 @@ export default function PublicarCampoPage() {
         {idx.ruedas ? ` (${idx.ruedas} ruedas)` : ''}.
       </p>
 
-      <PublicarCampoForm indice={idx.valor} />
+      <PublicarCampoForm
+        indice={idx.valor}
+        firma={firma}
+        inicial={{
+          provincia: provincia || undefined,
+          hectareas: hectareas || undefined,
+          partido: partido || undefined,
+          kgHaMes: kg || undefined,
+        }}
+      />
 
       <div className="border-t border-zinc-800 pt-4 mt-8 flex flex-wrap gap-4 text-xs">
         <Link href="/campos" className="text-zinc-500 hover:text-accent transition-colors">

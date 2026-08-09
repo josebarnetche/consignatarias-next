@@ -5,6 +5,7 @@ import { createServiceClient } from '@/lib/supabase'
 import { APTITUD_LABEL, capacidadEstimada, fmtArs, fmtHa, fmtUsd, precioVenta, tituloCampo, type Aptitud, type Campo } from '@/lib/campos'
 import { canonEnPlata, valuarCampo } from '@/lib/valuacion-campos'
 import ConsultarCampoForm from '@/components/campos/ConsultarCampoForm'
+import { consignatariaProfilePath, getAllProfiles } from '@/lib/data/consignataria-slugs'
 
 export const revalidate = 1800
 export const dynamicParams = true
@@ -17,7 +18,7 @@ async function traerCampo(slug: string): Promise<Campo | null> {
   const { data } = await db
     .from('campos')
     .select(
-      'id, slug, operacion, hectareas, provincia, partido, aptitud, titulo, descripcion, mejoras, precio_kg_ha_mes, precio_usd_ha, capacidad_cabezas, destacado, status, created_at, published_at',
+      'id, slug, operacion, hectareas, provincia, partido, aptitud, titulo, descripcion, mejoras, precio_kg_ha_mes, precio_usd_ha, capacidad_cabezas, consignataria_slug, destacado, status, created_at, published_at',
     )
     .eq('slug', slug)
     .eq('status', 'publicado')
@@ -47,6 +48,9 @@ export default async function CampoPage({ params }: { params: Promise<{ slug: st
   const { slug } = await params
   const c = await traerCampo(slug)
   if (!c) notFound()
+  const firma = c.consignataria_slug
+    ? (getAllProfiles().find((p) => p.canonicalSlug === c.consignataria_slug)?.displayName ?? null)
+    : null
 
   const arr = c.precio_kg_ha_mes ? canonEnPlata(c.hectareas, c.precio_kg_ha_mes) : null
   const val = valuarCampo({ hectareas: c.hectareas, provincia: c.provincia, zona: c.partido, kgHaMes: c.precio_kg_ha_mes })
@@ -60,6 +64,14 @@ export default async function CampoPage({ params }: { params: Promise<{ slug: st
       </Link>
 
       <h1 className="text-zinc-100 text-2xl font-medium mt-4 mb-2">{tituloCampo(c)}</h1>
+      {firma && (
+        <p className="text-xs text-zinc-500 mb-2">
+          Ofrecido por{' '}
+          <Link href={consignatariaProfilePath(c.consignataria_slug)} className="text-accent hover:underline">
+            {firma}
+          </Link>
+        </p>
+      )}
       <p className="text-zinc-400 mb-6">
         {fmtHa(c.hectareas)}
         {c.partido ? ` · ${c.partido}` : ''} · {c.provincia}

@@ -8,13 +8,29 @@ import { trackValueEvent } from '@/lib/analytics'
  * pacta y se liquida— y se muestra al instante cuánto es en pesos, para que el
  * oferente vea que el número que puso significa algo real.
  */
-export default function PublicarCampoForm({ indice }: { indice: number }) {
+export default function PublicarCampoForm({
+  indice,
+  firma,
+  inicial,
+}: {
+  indice: number
+  /**
+   * Cuando publica una firma, el aviso lleva su nombre y linkea a su perfil.
+   * Es una diferencia de fondo, no cosmética: al dueño de un campo le sirve que
+   * no se publique su contacto; a una consignataria eso la borra del negocio.
+   * Publicando como firma, el campo la muestra a ella.
+   */
+  firma?: { slug: string; nombre: string } | null
+  /** Precarga desde el tasador: quien acaba de valuar su campo no debería
+   *  volver a escribir la provincia y la superficie. */
+  inicial?: { provincia?: string; hectareas?: string; partido?: string; kgHaMes?: string }
+}) {
   const [operacion, setOperacion] = useState<'arrendamiento' | 'venta' | 'ambos'>('arrendamiento')
-  const [hectareas, setHectareas] = useState('')
-  const [provincia, setProvincia] = useState('')
-  const [partido, setPartido] = useState('')
+  const [hectareas, setHectareas] = useState(inicial?.hectareas ?? '')
+  const [provincia, setProvincia] = useState(inicial?.provincia ?? '')
+  const [partido, setPartido] = useState(inicial?.partido ?? '')
   const [aptitud, setAptitud] = useState('ganadera')
-  const [kgHaMes, setKgHaMes] = useState('')
+  const [kgHaMes, setKgHaMes] = useState(inicial?.kgHaMes ?? '')
   const [usdHa, setUsdHa] = useState('')
   const [descripcion, setDescripcion] = useState('')
   const [mejoras, setMejoras] = useState('')
@@ -48,12 +64,15 @@ export default function PublicarCampoForm({ indice }: { indice: number }) {
           contacto_nombre: nombre || null,
           contacto_telefono: telefono || null,
           contacto_email: email || null,
+          consignataria_slug: firma?.slug ?? null,
         }),
       })
       const data = await res.json()
       if (res.ok) {
         setStatus('ok')
-        trackValueEvent('lead_form', { meta: { kind: 'publicar_campo', operacion } })
+        trackValueEvent('lead_form', {
+        meta: { kind: 'publicar_campo', operacion, firma: firma?.slug ?? null },
+      })
       } else {
         setStatus('error')
         setError(data.error || 'No se pudo publicar.')
@@ -69,8 +88,9 @@ export default function PublicarCampoForm({ indice }: { indice: number }) {
       <div className="border border-zinc-800 rounded-lg bg-zinc-900/40 p-6">
         <p className="text-emerald-400 font-medium mb-2">✓ Recibimos tu campo</p>
         <p className="text-zinc-400 text-sm">
-          Lo revisamos y lo publicamos en el día. Si falta algún dato te escribimos. Cuando alguien
-          consulte, te avisamos nosotros — tu contacto no se publica.
+          {firma
+            ? `Lo revisamos y lo publicamos en el día, a nombre de ${firma.nombre} y con link a tu perfil. Las consultas te las derivamos a vos.`
+            : 'Lo revisamos y lo publicamos en el día. Si falta algún dato te escribimos. Cuando alguien consulte, te avisamos nosotros — tu contacto no se publica.'}
         </p>
       </div>
     )
@@ -82,6 +102,18 @@ export default function PublicarCampoForm({ indice }: { indice: number }) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
+      {firma && (
+        <div className="border border-accent/40 rounded-lg bg-accent/[0.04] px-4 py-3">
+          <p className="text-zinc-200 text-sm">
+            Publicando como <strong>{firma.nombre}</strong>
+          </p>
+          <p className="text-zinc-400 text-xs mt-1">
+            El aviso va a llevar el nombre de la firma y a linkear a tu perfil. Las consultas se te
+            derivan a vos: el campo es tuyo y el cliente también.
+          </p>
+        </div>
+      )}
+
       <fieldset className="border border-zinc-800 rounded-lg bg-zinc-900/40 p-5 space-y-3">
         <legend className="text-zinc-300 text-xs px-2">Qué ofrecés</legend>
         <div className="flex flex-wrap gap-2">

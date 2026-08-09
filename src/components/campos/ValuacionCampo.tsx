@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { TIERRA_PROVINCIAS, tierraDe, zonasDe, valuarCampo, type Valuacion } from '@/lib/valuacion-campos'
 
@@ -272,6 +273,23 @@ export default function ValuacionCampo({
               Canon de referencia de la zona: {referencia.canon_fuente}.
             </p>
           )}
+
+          <div className="border-t border-zinc-800 pt-4">
+            <p className="text-zinc-300 text-xs mb-2">
+              ¿Es tu campo y lo querés arrendar o vender?
+            </p>
+            <Link
+              href={`/campos/publicar?provincia=${encodeURIComponent(provincia)}&hectareas=${hectareas}${
+                zona ? `&partido=${encodeURIComponent(zona)}` : ''
+              }${!v.esAgricola ? `&kg=${canon}` : ''}`}
+              className="inline-block px-4 py-2 text-xs bg-accent hover:bg-accent-bright text-zinc-950 font-medium rounded transition-colors"
+            >
+              Publicarlo con estos datos
+            </Link>
+            <p className="text-zinc-600 text-xxs mt-2">
+              Gratis. Tu contacto no se publica: las consultas te las pasamos nosotros.
+            </p>
+          </div>
 
           <p className="text-zinc-600 text-xxs leading-relaxed pt-1">
             Estimación orientativa a partir del canon y de precios relevados por provincia. Novillo tomado a

@@ -37,6 +37,9 @@ export interface Campo {
   precio_kg_ha_mes: number | null
   precio_usd_ha: number | null
   capacidad_cabezas: number | null
+  /** Firma que ofrece el campo. Cuando está, el aviso la muestra y linkea a su
+   *  perfil: para una consignataria, ser invisible en su propio aviso no sirve. */
+  consignataria_slug: string | null
   destacado: boolean
   status: string
   created_at: string

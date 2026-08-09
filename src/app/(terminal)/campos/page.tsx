@@ -4,6 +4,7 @@ import { createServiceClient } from '@/lib/supabase'
 import { APTITUD_LABEL, fmtArs, fmtHa, fmtUsd, precioVenta, tituloCampo, type Aptitud, type Campo } from '@/lib/campos'
 import { canonEnPlata, promedioMesAnterior } from '@/lib/valuacion-campos'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { consignatariaProfilePath, getAllProfiles } from '@/lib/data/consignataria-slugs'
 import { PROVINCIAS_CON_DATO } from '@/lib/campos-seo'
 
 export const revalidate = 1800
@@ -38,7 +39,7 @@ async function traerCampos(): Promise<Campo[]> {
   const { data } = await db
     .from('campos')
     .select(
-      'id, slug, operacion, hectareas, provincia, partido, aptitud, titulo, descripcion, mejoras, precio_kg_ha_mes, precio_usd_ha, capacidad_cabezas, destacado, status, created_at, published_at',
+      'id, slug, operacion, hectareas, provincia, partido, aptitud, titulo, descripcion, mejoras, precio_kg_ha_mes, precio_usd_ha, capacidad_cabezas, consignataria_slug, destacado, status, created_at, published_at',
     )
     .eq('status', 'publicado')
     .order('destacado', { ascending: false })
@@ -47,7 +48,13 @@ async function traerCampos(): Promise<Campo[]> {
   return (data ?? []) as Campo[]
 }
 
+function nombreFirma(slug: string | null): string | null {
+  if (!slug) return null
+  return getAllProfiles().find((p) => p.canonicalSlug === slug)?.displayName ?? null
+}
+
 function CampoCard({ c }: { c: Campo }) {
+  const firma = nombreFirma(c.consignataria_slug)
   const arr = c.precio_kg_ha_mes ? canonEnPlata(c.hectareas, c.precio_kg_ha_mes) : null
   const vta = c.precio_usd_ha ? precioVenta(c.hectareas, c.precio_usd_ha) : null
   return (
@@ -64,6 +71,15 @@ function CampoCard({ c }: { c: Campo }) {
           </span>
         )}
       </div>
+
+      {firma && (
+        <p className="text-xxs text-zinc-500 mb-2">
+          Ofrecido por{' '}
+          <Link href={consignatariaProfilePath(c.consignataria_slug)} className="text-accent hover:underline">
+            {firma}
+          </Link>
+        </p>
+      )}
 
       <p className="text-zinc-500 text-xs mb-3">
         {fmtHa(c.hectareas)}
