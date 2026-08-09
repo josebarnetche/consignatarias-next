@@ -129,11 +129,15 @@ export async function POST(request: NextRequest) {
       .map((f) => {
         const r = f as { canonical_slug: string; display_name: string; email: string; province: string | null }
         const prov = r.province ? normalizarProvincia(r.province) : null
+        // Solo nombramos la provincia si es una de las relevadas. Varias firmas
+        // tienen la oficina en Capital Federal: decirles "hay gente buscando campo
+        // en Capital Federal" delata que el mail lo escribió una máquina.
+        const provinciaRural = prov?.enBase ? prov.nombre : null
         return {
           slug: r.canonical_slug,
           nombre: r.display_name,
           email: String(r.email).trim().toLowerCase(),
-          provincia: prov?.nombre ?? null,
+          provincia: provinciaRural,
           views: conteo.get(r.canonical_slug) ?? 0,
           valorHectarea: prov?.enBase
             ? `US$${Math.round(prov.enBase.usd_ha).toLocaleString('es-AR')} por hectárea`
