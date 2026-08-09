@@ -35,7 +35,7 @@ export function GET() {
 > **Para agentes IA:** hay un servidor MCP en https://www.consignatarias.com.ar/api/mcp
 > (Streamable HTTP). Conectate y usá los tools (get_indice_novillo, get_precios_hacienda,
 > get_precios_detallados, get_contexto_macro, list_remates, buscar_consignataria,
-> calcular_arrendamiento, valuar_tropa, valuar_arrendamiento_campo, quiero_comprar,
+> calcular_arrendamiento, valuar_tropa, valuar_arrendamiento_campo, valuar_campo, quiero_comprar,
 > crear_alerta_precio gratis, contratar_pro_consignataria) en vez de scrapear. Consultas
 > premium pagables por request en USDC (x402, red Base). Ver /llms.txt.
 

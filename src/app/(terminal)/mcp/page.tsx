@@ -36,6 +36,7 @@ const TOOLS = [
   { name: 'calcular_arrendamiento', desc: 'Canon de arrendamiento rural indexado al novillo', auth: false },
   { name: 'valuar_tropa', desc: '"¿Cuánto valen 350 novillos?" — total en ARS y USD a precio MAG del día', auth: false },
   { name: 'valuar_arrendamiento_campo', desc: 'Canon de arrendamiento ganadero al índice oficial, anual y mensual, ARS y USD', auth: false },
+  { name: 'valuar_campo', desc: 'Cuánto vale la hectárea: 15 provincias y 52 zonas, con rango, canon típico y fuente fechada', auth: false },
   { name: 'quiero_comprar', desc: 'Publicá qué hacienda buscás → remates que matchean + aviso de cada remate nuevo', auth: false },
   { name: 'crear_alerta_precio', desc: 'Alerta cuando un precio cruza un umbral → webhook (gratis: 3 activas por origen)', auth: false },
   { name: 'contratar_pro_consignataria', desc: 'Cotizá y activá PRO Consignataria pagando en USDC (x402), sin formularios', auth: false },

@@ -13,6 +13,7 @@ import {
 import { BPG_TEMAS, BPG_FUENTE } from '@/lib/data/bpg-ganaderas'
 import { getLiquidacion, LIQUIDACION_CAVEAT } from '@/lib/data/liquidacion'
 import { valuarTropa, valuarArrendamiento, KG_DEFAULT } from '@/lib/valuaciones'
+import { valuarCampoTexto, TIERRA_PROVINCIAS } from '@/lib/valuacion-campos'
 import { getX402Config } from '@/lib/x402'
 import { cotizarProUsdCents, proArsMensual, proMeses, validarSlugPro } from '@/lib/pro-x402'
 import { CATEGORIAS_DEMANDA, crearDemanda, formatMatches, matchRemates, normalizarCategoria } from '@/lib/demanda'
@@ -888,6 +889,33 @@ const TOOLS: Tool[] = [
     },
   },
   {
+    name: 'valuar_campo',
+    description:
+      '¿Cuánto vale la hectárea en Corrientes? ¿Cuánto vale un campo de 800 has en la cuenca del Salado? Valor de la tierra en dólares por hectárea, con el rango real de la zona, el arrendamiento típico en kg de novillo y la fuente de cada dato. Relevamiento propio: 15 provincias y 52 zonas, cruzando tasadores con serie publicada, catastro provincial y avisos de venta. Distingue campo ganadero de agrícola, porque la tierra agrícola NO se tasa con canon de hacienda. GRATIS, sin cupo. Params: provincia (obligatoria), hectareas (opcional), zona (opcional — acepta el nombre de la zona o el partido), kg_ha_mes (opcional, canon pactado).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        provincia: { type: 'string', description: `Provincia. Con dato propio: ${TIERRA_PROVINCIAS.map((p) => p.provincia).join(', ')}` },
+        hectareas: { type: 'number', description: 'Superficie en hectáreas (opcional; sin ella responde solo el valor por hectárea)' },
+        zona: { type: 'string', description: 'Zona o partido (opcional). Ej: "Cuenca del Salado", "Pergamino", "Marcos Juárez". Precisa mucho el número.' },
+        kg_ha_mes: { type: 'number', description: 'Canon pactado en kg de novillo por ha por mes (opcional). Si el dato que tenés es anual, dividilo por 12.' },
+      },
+      required: ['provincia'],
+      additionalProperties: false,
+    },
+    async run(args) {
+      const provincia = String(args.provincia ?? '').trim()
+      if (!provincia) return fail('Falta la provincia.')
+      const r = valuarCampoTexto({
+        provincia,
+        hectareas: args.hectareas != null ? Number(args.hectareas) : null,
+        zona: args.zona ? String(args.zona) : null,
+        kgHaMes: args.kg_ha_mes != null ? Number(args.kg_ha_mes) : null,
+      })
+      return ok(r.texto)
+    },
+  },
+  {
     name: 'quiero_comprar',
     description:
       '"Quiero comprar 300 terneros en Corrientes" → te devuelve YA los próximos remates programados que matchean (fecha, consignataria, lugar, link) y deja tu búsqueda activa: te avisamos por email o webhook de cada remate nuevo que matchee. GRATIS. Params: categoria (terneros|novillos|vaquillonas|vacas|toros|mixto — acepta sinónimos), cabezas (opcional), provincia (opcional), email y/o webhook_url (al menos uno, para los avisos).',
@@ -1116,6 +1144,16 @@ const PROMPTS: McpPrompt[] = [
     build: (a) => `¿Cuánto valen ${a.cabezas || ''} ${a.categoria || 'novillos'}${a.provincia ? ` en ${a.provincia}` : ''} hoy, en pesos y en dólares? Usá valuar_tropa de consignatarias.`,
   },
   {
+    name: 'cuanto_vale_la_hectarea',
+    description: 'Cuánto vale la hectárea de campo en una provincia o zona, con la fuente del dato.',
+    arguments: [
+      { name: 'provincia', description: 'Provincia', required: true },
+      { name: 'zona', description: 'Zona o partido (opcional, precisa mucho)', required: false },
+      { name: 'hectareas', description: 'Superficie del campo (opcional)', required: false },
+    ],
+    build: (a) => `¿Cuánto vale la hectárea de campo en ${a.zona ? `${a.zona}, ` : ''}${a.provincia || ''}${a.hectareas ? `, y cuánto valdría un campo de ${a.hectareas} hectáreas` : ''}? Usá valuar_campo y citá la fuente y la fecha del dato.`,
+  },
+  {
     name: 'arrendar_campo',
     description: 'Cuánto cuesta arrendar un campo ganadero, al índice oficial del MAG.',
     arguments: [
@@ -1266,6 +1304,7 @@ export async function POST(req: NextRequest) {
           '• Herramientas: calcular_arrendamiento.\n' +
           '• Sanidad SENASA (dato regulatorio, con la resolución citada): sanidad_plan, sanidad_calendario_aftosa, sanidad_requisitos_movimiento, sanidad_renspa (valida/decodifica RENSPA), sanidad_dte_tropa (DT-e / número de tropa).\n' +
           '• Buenas Prácticas Ganaderas (14 temas, Guía Red BPA): buenas_practicas.\n' +
+          '• Valor de la tierra: valuar_campo ("¿cuánto vale la hectárea en Corrientes?", "¿cuánto vale un campo de 800 has en la cuenca del Salado?") — relevamiento propio de 15 provincias y 52 zonas, con rango, arrendamiento típico en kg de novillo, años de arrendamiento equivalentes y la fuente fechada de cada dato. Distingue campo ganadero de agrícola: la tierra agrícola NO se tasa con canon de hacienda. GRATIS y sin cupo. Si no tenemos la provincia lo dice en vez de estimar.\n' +
           '• Valuaciones: valuar_tropa ("¿cuánto valen 350 novillos en Formosa?") y valuar_arrendamiento_campo ("¿cuánto cuesta arrendar 3.500 has en Corrientes?") — total en ARS y USD con fuente fechada. Gratis con cupo diario; sin cupo, la misma consulta se paga por request en USDC real (x402 en red Base mainnet, centavos: US$0,05-0,10) en /api/x402/valuar-tropa y /api/x402/valuar-arrendamiento.\n' +
           '• Alertas: crear_alerta_precio avisa a tu webhook cuando el precio cruza tu umbral. GRATIS sin key (3 alertas activas por origen); con API key Enterprise sin límite.\n' +
           '• PRO Consignataria pagable en USDC: contratar_pro_consignataria cotiza (ARS 45.000/mes al blue del día) y da el endpoint x402 (/api/x402/pro) — activación inmediata del perfil destacado al liquidarse el pago.\n' +

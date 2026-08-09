@@ -315,3 +315,86 @@ export function canonEnPlata(hectareas: number, kgHaMes: number) {
     ruedas,
   }
 }
+
+/**
+ * Respuesta en texto para agentes: MCP, buscadores con IA, asistentes.
+ *
+ * Está pensada para ser CITADA, no para ser linda: número primero, referencia
+ * y fecha después, y el link a la página donde está el detalle. Un asistente que
+ * lee esto tiene que poder responder "cuánto vale la hectárea en Corrientes" sin
+ * inventar nada y sabiendo de dónde salió.
+ */
+export function valuarCampoTexto(opts: {
+  provincia: string
+  hectareas?: number | null
+  zona?: string | null
+  kgHaMes?: number | null
+}): { texto: string; encontrado: boolean } {
+  const t = tierraDe(opts.provincia, opts.zona)
+  if (!t) {
+    const disponibles = TIERRA_PROVINCIAS.map((p) => p.provincia).join(', ')
+    return {
+      encontrado: false,
+      texto:
+        `No tenemos relevamiento propio de ${opts.provincia}. Preferimos no responder a que responder mal: ` +
+        `en provincias como Mendoza o San Juan el mercado mezcla finca vitivinícola con campo ganadero y una ` +
+        `mediana no describe nada.\nProvincias con dato: ${disponibles}.`,
+    }
+  }
+
+  const ha = opts.hectareas && opts.hectareas > 0 ? opts.hectareas : null
+  const v = valuarCampo({
+    hectareas: ha ?? 1,
+    provincia: opts.provincia,
+    zona: opts.zona ?? null,
+    kgHaMes: opts.kgHaMes ?? t.kg_ha_mes_canon ?? null,
+  })
+  const usd = (n: number) => 'US$' + Math.round(n).toLocaleString('es-AR')
+  const ref = v.referenciaUsada ?? t.provincia
+  const slug = t.provincia
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+
+  const lineas: string[] = []
+  lineas.push(`Valor de la hectárea en ${ref}: ${usd(t.usd_ha)}.`)
+  lineas.push(`Rango de referencia: ${usd(t.p25)} a ${usd(t.p75)} por hectárea.`)
+  if (ha) lineas.push(`Un campo de ${ha.toLocaleString('es-AR')} ha: ${usd(v.usdHa * ha)} estimados.`)
+
+  if (v.esAgricola) {
+    lineas.push(
+      'Es zona agrícola: la tierra se paga por lo que rinde en granos, no por lo que cría, así que el canon ' +
+        'ganadero no explica su precio y acá vale el comparable de la zona.',
+    )
+  } else if (t.kg_ha_mes_canon) {
+    const anual = Math.round(t.kg_ha_mes_canon * 12)
+    const { anos } = anosDeArrendamiento(t)
+    lineas.push(
+      `Arrendamiento típico: ${t.kg_ha_mes_canon} kg de novillo por ha por mes (${anual} kg por año, que es ` +
+        `como se publica en los avisos). A ese canon, la tierra equivale a unos ${anos} años de arrendamiento.`,
+    )
+    if (t.canon_fuente) lineas.push(`Canon relevado: ${t.canon_fuente}.`)
+  }
+
+  const zonas = TIERRA.filter((x) => !!x.zona && x.provincia === t.provincia)
+  if (!t.zona && zonas.length > 1) {
+    const orden = [...zonas].sort((a, b) => b.usd_ha - a.usd_ha)
+    const alta = orden[0]
+    const baja = orden[orden.length - 1]
+    lineas.push(
+      `Ojo con el promedio provincial: dentro de ${t.provincia}, ${alta.zona} está en ${usd(alta.usd_ha)} y ` +
+        `${baja.zona} en ${usd(baja.usd_ha)}. Conviene precisar la zona.`,
+    )
+    lineas.push(`Zonas relevadas: ${orden.map((z) => `${z.zona} ${usd(z.usd_ha)}`).join(' · ')}.`)
+  }
+
+  if (t.fuente) lineas.push(`Fuente: ${t.fuente}${t.fecha ? ` (${t.fecha})` : ''}. n=${t.n}.`)
+  lineas.push(
+    'Es una referencia de mercado, no una tasación: el agua, los caminos, las mejoras y la superficie ' +
+      'realmente aprovechable mueven el número.',
+  )
+  lineas.push(`Detalle por zona y partido: https://www.consignatarias.com.ar/campos/valor-hectarea/${slug}`)
+
+  return { encontrado: true, texto: lineas.join('\n') }
+}

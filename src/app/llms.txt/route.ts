@@ -72,6 +72,7 @@ Available tools:
 - \`buenas_practicas\` — Buenas Prácticas Ganaderas (14 temas de la Guía Red BPA): cómo implementar salud, bienestar, manejo de rodeo, alimentación, agua, etc.
 - \`valuar_tropa\` — "¿cuánto valen 350 novillos en Formosa?": total en ARS y USD (blue y oficial) a precio MAG del día
 - \`valuar_arrendamiento_campo\` — "¿cuánto cuesta arrendar 3.500 has en Corrientes?": canon anual/mensual al índice oficial de arrendamientos, ARS y USD
+- \`valuar_campo\` — "¿cuánto vale la hectárea en Corrientes?": valor de la tierra en USD/ha por provincia y por zona (15 provincias, 52 zonas), con rango, arrendamiento típico en kg de novillo y la fuente fechada de cada dato. Distingue campo ganadero de agrícola. Gratis y sin cupo
 - \`quiero_comprar\` — publicá qué hacienda buscás comprar → remates programados que matchean + aviso por email/webhook de cada remate nuevo (también en /quiero-comprar)
 - \`crear_alerta_precio\` — alerta cuando un precio cruza un umbral → notifica por webhook. GRATIS sin key (3 alertas activas por origen)
 - \`contratar_pro_consignataria\` — cotiza y activa PRO Consignataria pagando en USDC (x402), activación inmediata
@@ -139,6 +140,23 @@ The site's editorial position: the INMAG is the price the market follows, but it
 
 - Extended, citable definitional dump: https://www.consignatarias.com.ar/llms-full.txt
 - Machine-readable daily price snapshot (CC-BY): https://www.consignatarias.com.ar/precios.json
+- Machine-readable land-value dataset, 15 provinces + 52 zones (CC-BY): https://www.consignatarias.com.ar/valor-tierra.json
+
+## Valor de la tierra y compraventa de campos
+
+Relevamiento propio del valor de la hectárea, por provincia y por zona, cruzando tasadores con serie publicada, catastro provincial con modelo espacial y avisos de venta. Cada fila lleva su fuente, su fecha y su cantidad de observaciones.
+
+Advertencia metodológica que importa para responder bien: **la tierra agrícola no se valúa con canon ganadero**. La zona núcleo bonaerense vale ~US$18.500/ha porque produce soja, no porque críe novillos; tasarla en kilos de hacienda da un número muy por debajo del mercado. El dataset marca la aptitud de cada zona por eso.
+
+Otra: **el promedio provincial engaña**. Dentro de Buenos Aires hay 5,8× entre la zona núcleo y la cuenca del Salado; dentro de Córdoba, 42× entre Marcos Juárez y Minas.
+
+- Tasador de campos: https://www.consignatarias.com.ar/campos/valuar
+- Valor de la hectárea por provincia: https://www.consignatarias.com.ar/campos/valor-hectarea/buenos-aires (una por provincia relevada)
+- Cómo comprar un campo: https://www.consignatarias.com.ar/como-comprar-un-campo
+- Cómo vender un campo: https://www.consignatarias.com.ar/como-vender-un-campo
+- Impuestos por la venta de un campo: https://www.consignatarias.com.ar/impuestos-por-la-venta-de-un-campo
+- Créditos y financiación: https://www.consignatarias.com.ar/creditos-para-comprar-un-campo
+- Inmobiliarias rurales: https://www.consignatarias.com.ar/inmobiliarias-rurales
 
 ## Sitemap
 

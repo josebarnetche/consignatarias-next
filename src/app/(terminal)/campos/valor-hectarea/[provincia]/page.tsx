@@ -10,7 +10,7 @@ import {
 } from '@/lib/campos-seo'
 import { anosDeArrendamiento, promedioMesAnterior } from '@/lib/valuacion-campos'
 import ValuacionCampo from '@/components/campos/ValuacionCampo'
-import { FAQPageSchema } from '@/components/seo/JsonLd'
+import { FAQPageSchema, DatasetSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 
 export const revalidate = 3600
 export const dynamicParams = false
@@ -105,6 +105,17 @@ export default async function ValorHectareaProvincia({
   return (
     <>
       <FAQPageSchema items={FAQ} />
+      <DatasetSchema
+        name={`Valor de la hectárea de campo en ${t.provincia}`}
+        description={`Valor de referencia, rango y detalle por zona de la hectárea de campo en ${t.provincia}, con la fuente y la fecha de cada dato. ${t.fuente ?? ''}`}
+        url={`${BASE_URL}/campos/valor-hectarea/${provincia}`}
+        keywords={[`valor hectarea ${t.provincia}`, 'precio de la tierra', 'campos', 'Argentina']}
+        dateModified={t.fecha ?? undefined}
+      />
+      <SpeakableSchema
+        url={`${BASE_URL}/campos/valor-hectarea/${provincia}`}
+        headline={`¿Cuánto vale la hectárea en ${t.provincia}?`}
+      />
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         <nav className="text-xs text-zinc-500 mb-4 flex gap-2">
           <Link href="/campos" className="hover:text-accent">Campos</Link>
@@ -117,6 +128,15 @@ export default async function ValorHectareaProvincia({
         <h1 className="text-zinc-100 text-2xl font-medium mb-3">
           ¿Cuánto vale la hectárea en {t.provincia}?
         </h1>
+        {/* Respuesta directa arriba de todo: es lo que cita un buscador con IA. */}
+        <p className="speakable-content text-zinc-300 text-base mb-5">
+          Una hectárea de campo en {t.provincia} vale{' '}
+          <strong className="text-zinc-100">{fmtUsd(t.usd_ha)}</strong> de referencia, dentro de un rango de{' '}
+          {fmtUsd(t.p25)} a {fmtUsd(t.p75)} según la zona y la calidad del campo.
+          {t.aptitud !== 'agricola' && t.kg_ha_mes_canon
+            ? ` El arrendamiento ronda los ${Math.round(t.kg_ha_mes_canon * 12)} kilos de novillo por hectárea por año.`
+            : ''}
+        </p>
 
         <div className="border border-zinc-800 rounded-xl bg-gradient-to-b from-zinc-900/80 to-zinc-950 p-6 mb-6">
           <p className="text-zinc-500 text-xs uppercase tracking-[0.16em] mb-2">Valor de referencia</p>

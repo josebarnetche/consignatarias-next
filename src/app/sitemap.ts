@@ -126,6 +126,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/campos`, lastModified: buildDate, changeFrequency: 'daily', priority: 0.9 },
     { url: `${baseUrl}/campos/publicar`, lastModified: buildDate, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/campos/valuar`, lastModified: buildDate, changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${baseUrl}/valor-tierra.json`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${baseUrl}/como-comprar-un-campo`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/como-vender-un-campo`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/como-publicar-un-campo`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.7 },
