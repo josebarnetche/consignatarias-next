@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import ValuacionCampo from '@/components/campos/ValuacionCampo'
+import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
 import { TIERRA, TIERRA_PROVINCIAS } from '@/lib/valuacion-campos'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 
@@ -181,19 +182,24 @@ export default function ValuarCampoPage() {
           </dl>
         </section>
 
-        <div className="border border-accent/40 rounded-lg bg-accent/[0.04] p-5 mb-8">
-          <p className="text-zinc-200 font-medium mb-1">¿Lo querés arrendar o vender?</p>
-          <p className="text-zinc-400 mb-3">
-            Publicalo gratis. Hay productores buscando campo en el sitio todas las semanas, y tu contacto no
-            se publica: las consultas te las pasamos nosotros.
+        <section className="border border-accent/40 rounded-lg bg-accent/[0.04] p-5 mb-8">
+          <p className="text-zinc-100 text-base font-medium mb-1">
+            ¿Querés que lo miremos con vos?
           </p>
-          <Link
-            href="/campos/publicar"
-            className="inline-block px-4 py-2 text-xs bg-accent hover:bg-accent-bright text-zinc-950 font-medium rounded transition-colors"
-          >
-            Publicar mi campo
-          </Link>
-        </div>
+          <p className="text-zinc-400 mb-4">
+            La calculadora da una referencia de mercado. Si nos dejás los datos, te pasamos la valuación
+            con el detalle de tu zona y lo que estamos viendo de precios y de canon. Sin costo — y tus
+            datos no se publican ni se los damos a nadie.
+          </p>
+          <CapturaCampoForm tipo="tengo" origen="tasador" compacto />
+          <p className="text-zinc-600 text-xs mt-4 pt-3 border-t border-accent/20">
+            Si ya querés ofrecerlo,{' '}
+            <Link href="/campos/publicar" className="text-accent hover:underline">
+              publicalo gratis
+            </Link>
+            .
+          </p>
+        </section>
 
         <section className="mb-8">
           <h2 className="text-zinc-200 text-lg font-medium mb-3">Por provincia</h2>

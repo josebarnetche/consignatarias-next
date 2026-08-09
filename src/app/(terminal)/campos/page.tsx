@@ -4,6 +4,7 @@ import { createServiceClient } from '@/lib/supabase'
 import { APTITUD_LABEL, fmtArs, fmtHa, fmtUsd, precioVenta, tituloCampo, type Aptitud, type Campo } from '@/lib/campos'
 import { canonEnPlata, promedioMesAnterior } from '@/lib/valuacion-campos'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
 import { consignatariaProfilePath, getAllProfiles } from '@/lib/data/consignataria-slugs'
 import { PROVINCIAS_CON_DATO } from '@/lib/campos-seo'
 
@@ -156,19 +157,31 @@ export default async function CamposPage() {
           </Link>
         </p>
 
+        {/* Con la sección vacía, lo que NO hay que hacer es pedir disculpas y no
+            pedir nada. Se anota qué busca cada uno: esa lista es lo que después
+            consigue la oferta, y es nuestra. */}
         {campos.length === 0 ? (
-          <div className="border border-zinc-800 rounded-lg bg-zinc-900/40 p-8 text-center">
-            <p className="text-zinc-200 mb-2">Todavía no hay campos publicados.</p>
-            <p className="text-zinc-400 text-sm mb-5 max-w-lg mx-auto">
-              Estamos abriendo esta sección. Si tenés un campo para arrendar o vender, publicalo: hay
-              productores buscando en el sitio todas las semanas y no les tenemos qué ofrecer.
+          <div className="border border-zinc-800 rounded-lg bg-zinc-900/40 p-6 mb-10">
+            <p className="text-zinc-100 text-base font-medium mb-1">
+              Decinos qué campo estás buscando
             </p>
-            <Link
-              href="/campos/publicar"
-              className="inline-block px-5 py-2.5 text-sm bg-accent hover:bg-accent-bright text-zinc-950 font-medium rounded transition-colors"
-            >
-              Publicar el primero
-            </Link>
+            <p className="text-zinc-400 text-sm mb-5 max-w-2xl">
+              Estamos abriendo la sección y todavía no hay avisos publicados. Dejanos qué buscás —zona,
+              superficie, si es para arrendar o comprar— y te escribimos cuando aparezca algo que encaje.
+              Somos nosotros los que te avisamos: tu contacto no circula.
+            </p>
+            <CapturaCampoForm tipo="busco" origen="campos-vacio" />
+            <p className="text-zinc-600 text-xs mt-5 pt-4 border-t border-zinc-800">
+              ¿Al revés, tenés un campo para arrendar o vender?{' '}
+              <Link href="/campos/publicar" className="text-accent hover:underline">
+                Publicalo gratis
+              </Link>{' '}
+              o{' '}
+              <Link href="/campos/valuar" className="text-accent hover:underline">
+                fijate cuánto vale
+              </Link>
+              .
+            </p>
           </div>
         ) : (
           <>

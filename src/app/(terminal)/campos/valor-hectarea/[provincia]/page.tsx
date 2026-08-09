@@ -10,6 +10,7 @@ import {
 } from '@/lib/campos-seo'
 import { anosDeArrendamiento, promedioMesAnterior } from '@/lib/valuacion-campos'
 import ValuacionCampo from '@/components/campos/ValuacionCampo'
+import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
 import { FAQPageSchema, DatasetSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 
 export const revalidate = 3600
@@ -294,18 +295,43 @@ export default async function ValorHectareaProvincia({
           </dl>
         </section>
 
-        <div className="border border-accent/40 rounded-lg bg-accent/[0.04] p-5 mb-8">
-          <p className="text-zinc-200 font-medium mb-1">¿Tenés un campo en {t.provincia} para vender o arrendar?</p>
-          <p className="text-zinc-400 mb-3">
-            Publicalo gratis. Tu contacto no se publica: las consultas te las pasamos nosotros.
+        <section className="border border-accent/40 rounded-lg bg-accent/[0.04] p-5 mb-6">
+          <p className="text-zinc-100 text-base font-medium mb-1">
+            ¿Tenés un campo en {t.provincia}?
           </p>
-          <Link
-            href="/campos/publicar"
-            className="inline-block px-4 py-2 text-xs bg-accent hover:bg-accent-bright text-zinc-950 font-medium rounded transition-colors"
-          >
-            Publicar mi campo
-          </Link>
-        </div>
+          <p className="text-zinc-400 mb-4">
+            Te pasamos una valuación con el detalle de tu zona y lo que estamos viendo de precios. Sin
+            costo y sin compromiso — tus datos no se publican ni se los damos a nadie.
+          </p>
+          <CapturaCampoForm
+            tipo="tengo"
+            provinciaInicial={t.provincia}
+            origen={`prov-${provincia}`}
+            compacto
+          />
+          <p className="text-zinc-600 text-xs mt-4 pt-3 border-t border-accent/20">
+            Si ya sabés que lo querés ofrecer,{' '}
+            <Link href="/campos/publicar" className="text-accent hover:underline">
+              publicalo gratis acá
+            </Link>
+            .
+          </p>
+        </section>
+
+        <section className="border border-zinc-800 rounded-lg bg-zinc-900/40 p-5 mb-8">
+          <p className="text-zinc-100 text-base font-medium mb-1">
+            ¿Estás buscando campo en {t.provincia}?
+          </p>
+          <p className="text-zinc-400 mb-4">
+            Decinos zona y superficie y te avisamos cuando aparezca algo que encaje.
+          </p>
+          <CapturaCampoForm
+            tipo="busco"
+            provinciaInicial={t.provincia}
+            origen={`prov-${provincia}`}
+            compacto
+          />
+        </section>
 
         <section className="border-t border-zinc-800 pt-4">
           <h2 className="text-zinc-500 text-xs uppercase tracking-[0.16em] mb-3">Otras provincias</h2>

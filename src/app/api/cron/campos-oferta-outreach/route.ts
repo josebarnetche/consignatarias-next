@@ -31,6 +31,18 @@ import { TIERRA_PROVINCIAS, type ProvinciaTierra } from '@/lib/valuacion-campos'
  *   provincia y visitas), para revisar el mensaje tal cual lo recibiría ella y no
  *   un placeholder · ?min=<n> umbral de visitas · ?cap=<n> tope de la corrida.
  */
+/**
+ * ⛔ APAGADO POR DECISIÓN DE PRODUCTO (9-ago-2026).
+ *
+ * El lead es nuestro. Este motor invitaba a las firmas a publicar su cartera con
+ * la consulta derivada a ellas, que es exactamente al revés de cómo queremos que
+ * funcione: la captación se hace con infraestructura en el sitio, no mandando
+ * mails que terminan construyendo la relación de otro.
+ *
+ * Se deja el código —y las diez invitaciones ya enviadas hay que honrarlas— pero
+ * no vuelve a correr salvo que alguien ponga CAMPOS_OUTREACH=on a propósito.
+ */
+const ACTIVO = (process.env.CAMPOS_OUTREACH || 'off').toLowerCase() === 'on'
 const OUTREACH_TYPE = 'campos_oferta'
 const COOLDOWN_DIAS = 45
 const CAP_DURO = 10
@@ -42,6 +54,12 @@ export async function POST(request: NextRequest) {
 
   const url = new URL(request.url)
   const testEmail = (url.searchParams.get('test') || '').trim().toLowerCase()
+  if (!ACTIVO && url.searchParams.get('dry') !== '1') {
+    return NextResponse.json({
+      skipped: 'apagado',
+      motivo: 'La captación de campos se hace en el sitio, no por mail. CAMPOS_OUTREACH=on para reactivar.',
+    })
+  }
   const minViews = parseInt(url.searchParams.get('min') || '10', 10)
   const cap = Math.min(CAP_DURO, Math.max(1, parseInt(url.searchParams.get('cap') || '5', 10)))
   const dry = url.searchParams.get('dry') === '1'

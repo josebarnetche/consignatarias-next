@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
 
 export const revalidate = 86400
 
@@ -155,19 +156,21 @@ export default function ComoVenderCampoPage() {
           </dl>
         </section>
 
-        <div className="border border-accent/40 rounded-lg bg-accent/[0.04] p-5 mb-8">
-          <p className="text-zinc-200 font-medium mb-1">Publicá tu campo, gratis</p>
-          <p className="text-zinc-400 mb-3">
-            Tu contacto no se publica: las consultas te las pasamos nosotros. Y si es para arrendar, el canon
-            sale en kilos de novillo y el sitio lo convierte a pesos con el índice del día.
+        <section className="border border-accent/40 rounded-lg bg-accent/[0.04] p-5 mb-8">
+          <p className="text-zinc-100 text-base font-medium mb-1">Empecemos por cuánto vale</p>
+          <p className="text-zinc-400 mb-4">
+            Dejanos los datos del campo y te pasamos una valuación con el detalle de tu zona y lo que
+            estamos viendo de precios. Sin costo. Tus datos no se publican ni se los damos a nadie.
           </p>
-          <Link
-            href="/campos/publicar"
-            className="inline-block px-4 py-2 text-xs bg-accent hover:bg-accent-bright text-zinc-950 font-medium rounded transition-colors"
-          >
-            Publicar mi campo
-          </Link>
-        </div>
+          <CapturaCampoForm tipo="tengo" origen="guia-vender" />
+          <p className="text-zinc-600 text-xs mt-4 pt-3 border-t border-accent/20">
+            ¿Ya lo querés ofrecer?{' '}
+            <Link href="/campos/publicar" className="text-accent hover:underline">
+              Publicalo gratis
+            </Link>{' '}
+            — el canon en kilos de novillo, convertido a pesos con el índice del día.
+          </p>
+        </section>
 
         <div className="border-t border-zinc-800 pt-4 flex flex-wrap gap-4 text-xs">
           <Link href="/campos/valuar" className="text-zinc-500 hover:text-accent">¿Cuánto vale mi campo?</Link>

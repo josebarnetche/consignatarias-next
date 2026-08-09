@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { PROVINCIAS_CON_DATO } from '@/lib/campos-seo'
+import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
 
 export const revalidate = 86400
 
@@ -210,19 +211,14 @@ export default function ComoComprarCampoPage() {
           </dl>
         </section>
 
-        <div className="border border-accent/40 rounded-lg bg-accent/[0.04] p-5 mb-8">
-          <p className="text-zinc-200 font-medium mb-1">¿Estás buscando campo?</p>
-          <p className="text-zinc-400 mb-3">
-            Decinos qué buscás —zona, superficie, aptitud— y te avisamos cuando aparece algo que encaja. No
-            publicamos tu contacto.
+        <section className="border border-accent/40 rounded-lg bg-accent/[0.04] p-5 mb-8">
+          <p className="text-zinc-100 text-base font-medium mb-1">¿Estás buscando campo?</p>
+          <p className="text-zinc-400 mb-4">
+            Decinos zona, superficie y para qué lo querés, y te avisamos cuando aparezca algo que encaje.
+            Te escribimos nosotros: tu contacto no circula.
           </p>
-          <Link
-            href="/quiero-comprar"
-            className="inline-block px-4 py-2 text-xs bg-accent hover:bg-accent-bright text-zinc-950 font-medium rounded transition-colors"
-          >
-            Decir qué busco
-          </Link>
-        </div>
+          <CapturaCampoForm tipo="busco" origen="guia-comprar" />
+        </section>
 
         <div className="border-t border-zinc-800 pt-4 flex flex-wrap gap-4 text-xs">
           <Link href="/impuestos-por-la-venta-de-un-campo" className="text-zinc-500 hover:text-accent">Impuestos de la operación</Link>
