@@ -46,6 +46,13 @@ export interface ProvinciaTierra {
   kg_ha_mes_canon?: number | null
   usd_por_kg: number
   anos_repago: number
+  /**
+   * A qué se dedica la tierra en esa zona. NO es decorativo: define si el campo
+   * se puede valuar por canon ganadero. La zona núcleo vale US$18.500/ha porque
+   * produce soja, no porque críe novillos — tasarla por kilos de hacienda daría
+   * un número disparatado. En esas zonas mostramos el comparable y lo decimos.
+   */
+  aptitud?: 'ganadera' | 'mixta' | 'agricola' | 'forestal' | null
   fuente?: string | null
   fecha?: string | null
 }
@@ -128,6 +135,8 @@ export interface Valuacion {
   provinciaEnBase: string | null
   /** Qué referencia se terminó usando: la zona puntual o el promedio provincial. */
   referenciaUsada: string | null
+  /** Zona agrícola: el canon ganadero no explica el precio de esa tierra. */
+  esAgricola: boolean
 }
 
 /**
@@ -143,8 +152,12 @@ export function valuarCampo(opts: {
   const novilloUsdKg = novilloArs / mp.usdBlue.current
   const t = tierraDe(opts.provincia, opts.zona)
 
+  // En zona agrícola la tierra no se paga con pasto: el canon ganadero no explica
+  // su valor y usarlo daría un número muy por debajo del mercado real.
+  const esAgricola = t?.aptitud === 'agricola'
+
   let porRenta: Valuacion['porRenta'] = null
-  if (opts.kgHaMes && opts.kgHaMes > 0) {
+  if (opts.kgHaMes && opts.kgHaMes > 0 && !esAgricola) {
     const { anos } = anosDeArrendamiento(t)
     const canonAnualUsdHa = opts.kgHaMes * 12 * novilloUsdKg
     const usdHa = canonAnualUsdHa * anos
@@ -188,6 +201,7 @@ export function valuarCampo(opts: {
     novilloUsdKg,
     provinciaEnBase: t?.provincia ?? null,
     referenciaUsada: t ? (t.zona ? `${t.zona}, ${t.provincia}` : t.provincia) : null,
+    esAgricola,
   }
 }
 

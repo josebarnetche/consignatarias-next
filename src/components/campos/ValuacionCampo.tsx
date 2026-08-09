@@ -181,6 +181,13 @@ export default function ValuacionCampo({
             </div>
           )}
 
+          {v.esAgricola && (
+            <p className="text-xs text-amber-300/90 border border-amber-500/30 rounded px-3 py-2 bg-amber-500/[0.04]">
+              Esta zona es agrícola: la tierra se paga por lo que rinde en granos, no por lo que cría. El
+              canon ganadero no explica su precio, así que acá vale el comparable de la zona.
+            </p>
+          )}
+
           {v.brecha !== null && Math.abs(v.brecha) > 25 && (
             <p className="text-xs text-zinc-400 border border-zinc-800 rounded px-3 py-2 bg-zinc-900/50">
               {v.brecha > 0
