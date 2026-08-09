@@ -3,6 +3,7 @@ import { requireServiceClient } from '@/lib/supabase'
 import { requireAdmin } from '@/lib/admin-auth'
 import { slugCampo } from '@/lib/campos'
 import { revalidatePath } from 'next/cache'
+import { notificarLeadsDeCampo } from '@/lib/campos-match'
 
 /**
  * Moderación de campos. Todo aviso entra `pendiente` y nada sale sin que un
@@ -79,5 +80,13 @@ export async function PATCH(req: NextRequest) {
   revalidatePath('/campos')
   if (patch.slug || c.slug) revalidatePath(`/campos/${patch.slug ?? c.slug}`)
 
-  return NextResponse.json({ ok: true, slug: patch.slug ?? c.slug })
+  // Publicar es el momento en que la lista de espera sirve para algo: se avisa
+  // a quien venía buscando esto. Va después de revalidar para que el link del
+  // mail abra la ficha ya publicada y no un 404.
+  let aviso: { avisados: number; candidatos: number } | null = null
+  if (accion === 'publicar') {
+    aviso = await notificarLeadsDeCampo(id).catch(() => null)
+  }
+
+  return NextResponse.json({ ok: true, slug: patch.slug ?? c.slug, aviso })
 }

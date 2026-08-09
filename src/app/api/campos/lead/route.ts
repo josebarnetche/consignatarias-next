@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { requireServiceClient } from '@/lib/supabase'
 import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limit-db'
-import { sendProducerLeadOps } from '@/lib/email'
-import { tierraDe } from '@/lib/valuacion-campos'
+import { sendProducerLeadOps, sendValuacionAlDueno, sendBusquedaConfirmada } from '@/lib/email'
+import { tierraDe, valuarCampo } from '@/lib/valuacion-campos'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -87,6 +87,53 @@ export async function POST(req: NextRequest) {
     if (error) {
       console.error('[campos/lead] insert:', error.message)
       return NextResponse.json({ error: 'No se pudo registrar.' }, { status: 500 })
+    }
+
+    // Lo que le prometimos en la página, cumplido en el acto. Si esto queda para
+    // hacerlo a mano, el formulario promete algo que no entrega.
+    if (d.email) {
+      const url = ref
+        ? `https://www.consignatarias.com.ar/campos/valor-hectarea/${ref.provincia
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]+/g, '-')}`
+        : null
+      if (d.tipo === 'tengo' && ref) {
+        const v = valuarCampo({
+          hectareas: d.hectareas ?? 1,
+          provincia: d.provincia,
+          zona: d.zona ?? null,
+          kgHaMes: ref.kg_ha_mes_canon ?? null,
+        })
+        void sendValuacionAlDueno({
+          to: d.email.trim().toLowerCase(),
+          nombre: d.nombre.trim(),
+          provincia: ref.provincia,
+          zona: ref.zona ?? null,
+          hectareas: d.hectareas ?? null,
+          usdHa: v.usdHa,
+          p25: ref.p25,
+          p75: ref.p75,
+          usdTotal: d.hectareas ? v.usdHa * d.hectareas : null,
+          referencia: v.referenciaUsada ?? ref.provincia,
+          canonKgHaMes: ref.kg_ha_mes_canon ?? null,
+          esAgricola: v.esAgricola,
+          fuente: ref.fuente ?? null,
+        }).catch(() => {})
+      } else if (d.tipo === 'busco') {
+        void sendBusquedaConfirmada({
+          to: d.email.trim().toLowerCase(),
+          nombre: d.nombre.trim(),
+          provincia: d.provincia.trim(),
+          zona: d.zona?.trim() || null,
+          hectareas: d.hectareas ?? null,
+          operacion: d.operacion === 'comprar' ? 'comprar' : 'arrendar',
+          usdHa: ref?.usd_ha ?? null,
+          canonKgHaMes: ref?.kg_ha_mes_canon ?? null,
+          referencia: url,
+        }).catch(() => {})
+      }
     }
 
     await sendProducerLeadOps({

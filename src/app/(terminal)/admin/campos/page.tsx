@@ -49,6 +49,7 @@ export default function AdminCamposPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [trabajando, setTrabajando] = useState<number | null>(null)
+  const [aviso, setAviso] = useState('')
 
   const traer = useCallback(async (t: Tab) => {
     setLoading(true)
@@ -81,10 +82,18 @@ export default function AdminCamposPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, accion }),
       })
+      const d = await res.json().catch(() => ({}))
       if (!res.ok) {
-        const d = await res.json().catch(() => ({}))
         setError(d.error || 'No se pudo actualizar')
         return
+      }
+      if (accion === 'publicar') {
+        const a = d.aviso as { avisados: number; candidatos: number } | null
+        setAviso(
+          a && a.candidatos > 0
+            ? `Publicado. Se avisó a ${a.avisados} de ${a.candidatos} que estaban buscando algo así.`
+            : 'Publicado. Nadie en la lista de espera buscaba algo así todavía.',
+        )
       }
       await traer(tab)
     } catch {
@@ -123,6 +132,11 @@ export default function AdminCamposPage() {
 
       {error && (
         <p className="text-red-400 text-xs border border-red-500/30 rounded px-3 py-2 mb-4">{error}</p>
+      )}
+      {aviso && (
+        <p className="text-emerald-400 text-xs border border-emerald-500/30 rounded px-3 py-2 mb-4">
+          {aviso}
+        </p>
       )}
 
       {loading ? (

@@ -295,6 +295,159 @@ export async function sendCampoOfertaOutreach(opts: {
   }
 }
 
+/**
+ * Al que acaba de decir "tengo un campo": la valuación, ya.
+ *
+ * En la página le prometimos que le pasábamos la valuación de su zona. Si eso
+ * queda esperando a que alguien lo haga a mano, el formulario promete algo que
+ * no cumple — que es peor que no pedir nada. Se manda en el acto y con el
+ * número, no con un "en breve te contactamos".
+ */
+export async function sendValuacionAlDueno(opts: {
+  to: string
+  nombre: string
+  provincia: string
+  zona?: string | null
+  hectareas?: number | null
+  usdHa: number
+  p25: number
+  p75: number
+  usdTotal?: number | null
+  referencia: string
+  canonKgHaMes?: number | null
+  esAgricola: boolean
+  fuente?: string | null
+}): Promise<{ success: boolean }> {
+  const resend = await getResend()
+  if (!resend) return { success: false }
+  const usd = (n: number) => 'US$' + Math.round(n).toLocaleString('es-AR')
+  const nombre = escapeHtml(opts.nombre.split(' ')[0] || opts.nombre)
+  const donde = escapeHtml(opts.referencia)
+  try {
+    await resend.emails.send({
+      from: FROM_PERSONAL,
+      to: opts.to,
+      headers: listUnsubHeaders(opts.to, 'campos_valuacion'),
+      subject: `Tu campo en ${opts.zona || opts.provincia}: ${usd(opts.usdHa)} por hectárea`,
+      html: darkEmailShell(`
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Hola ${nombre}:</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Esto es lo que estamos viendo en <strong style="color:#fafafa">${donde}</strong>.</p>
+        <div style="border:1px solid #27272a;border-radius:8px;padding:16px;margin:0 0 16px">
+          <p style="color:#71717a;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Valor de referencia</p>
+          <p style="color:#fafafa;font-size:28px;font-family:monospace;margin:0 0 4px">${usd(opts.usdHa)} <span style="color:#71717a;font-size:13px;font-family:sans-serif">por hectárea</span></p>
+          <p style="color:#a1a1aa;font-size:12px;margin:0">Rango de la zona: ${usd(opts.p25)} – ${usd(opts.p75)}</p>
+          ${opts.usdTotal && opts.hectareas ? `<p style="color:#38bdf8;font-size:16px;font-family:monospace;margin:8px 0 0">${usd(opts.usdTotal)} <span style="color:#71717a;font-size:12px;font-family:sans-serif">las ${opts.hectareas.toLocaleString('es-AR')} ha</span></p>` : ''}
+        </div>
+        ${
+          opts.esAgricola
+            ? `<p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Esa zona es agrícola: la tierra ahí se paga por lo que rinde en granos y no por lo que cría, así que el valor sale del comparable de la zona y no de un canon ganadero.</p>`
+            : opts.canonKgHaMes
+              ? `<p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">De arrendamiento, en esa zona se está pactando alrededor de <strong style="color:#fafafa">${opts.canonKgHaMes} kg de novillo por hectárea por mes</strong> (${Math.round(opts.canonKgHaMes * 12)} por año, que es como suele salir publicado).</p>`
+              : ''
+        }
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Es una referencia de mercado y no una tasación: el agua, los caminos, las mejoras y cuánto del campo es realmente aprovechable mueven bastante el número. Si me contás esas cosas lo afinamos.</p>
+        ${opts.fuente ? `<p style="color:#71717a;font-size:11px;line-height:1.6;margin:0 0 16px">De dónde sale el dato: ${escapeHtml(opts.fuente)}.</p>` : ''}
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Si en algún momento lo querés arrendar o vender, <a href="${APP_URL}/campos/publicar" style="color:#38bdf8">se publica gratis</a> y tus datos no salen: las consultas te las pasamos nosotros.</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 4px">Cualquier cosa respondé este mail.<br>José Barnetche — consignatarias.com.ar</p>
+        ${legalIdentificationHtml(opts.to)}
+      `),
+    })
+    return { success: true }
+  } catch {
+    return { success: false }
+  }
+}
+
+/**
+ * Al que busca campo: confirmación con contenido, no un acuse de recibo.
+ *
+ * Le decimos que quedó anotado, pero además le damos algo que le sirve hoy —qué
+ * vale la hectárea en la zona que pidió—, porque puede pasar tiempo hasta que
+ * aparezca un campo que encaje y un mail vacío se lee como que no pasa nada.
+ */
+export async function sendBusquedaConfirmada(opts: {
+  to: string
+  nombre: string
+  provincia: string
+  zona?: string | null
+  hectareas?: number | null
+  operacion: 'arrendar' | 'comprar'
+  usdHa?: number | null
+  canonKgHaMes?: number | null
+  referencia?: string | null
+}): Promise<{ success: boolean }> {
+  const resend = await getResend()
+  if (!resend) return { success: false }
+  const nombre = escapeHtml(opts.nombre.split(' ')[0] || opts.nombre)
+  const donde = escapeHtml(opts.zona ? `${opts.zona}, ${opts.provincia}` : opts.provincia)
+  const usd = (n: number) => 'US$' + Math.round(n).toLocaleString('es-AR')
+  try {
+    await resend.emails.send({
+      from: FROM_PERSONAL,
+      to: opts.to,
+      headers: listUnsubHeaders(opts.to, 'campos_busqueda'),
+      subject: `Quedaste anotado: campo para ${opts.operacion} en ${opts.zona || opts.provincia}`,
+      html: darkEmailShell(`
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Hola ${nombre}:</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Quedó anotado que buscás campo para <strong style="color:#fafafa">${opts.operacion}</strong>${opts.hectareas ? `, de unas ${opts.hectareas.toLocaleString('es-AR')} hectáreas` : ''}, en <strong style="color:#fafafa">${donde}</strong>. Cuando aparezca algo que encaje te escribo yo.</p>
+        ${
+          opts.usdHa
+            ? `<p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Mientras tanto, para que tengas la referencia: en esa zona la hectárea se está moviendo alrededor de <strong style="color:#fafafa">${usd(opts.usdHa)}</strong>${opts.canonKgHaMes ? `, y el arrendamiento cerca de <strong style="color:#fafafa">${opts.canonKgHaMes} kg de novillo por hectárea por mes</strong>` : ''}.</p>`
+            : ''
+        }
+        ${opts.referencia ? `<p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Podés ver el detalle por zona y partido acá: <a href="${opts.referencia}" style="color:#38bdf8">${escapeHtml(opts.referencia.replace('https://www.', ''))}</a></p>` : ''}
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Una aclaración honesta: la sección de campos es nueva y todavía tenemos poco publicado. Por eso te anoto en vez de mandarte a mirar una lista vacía. Si sabés de algo puntual que querés que averigüe, respondeme y lo busco.</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 4px">Saludos,<br>José Barnetche — consignatarias.com.ar</p>
+        ${legalIdentificationHtml(opts.to)}
+      `),
+    })
+    return { success: true }
+  } catch {
+    return { success: false }
+  }
+}
+
+/**
+ * A quien estaba esperando: apareció un campo que encaja con lo que pidió.
+ * Es la razón por la que la lista de espera vale algo.
+ */
+export async function sendCampoMatchALead(opts: {
+  to: string
+  nombre: string
+  campoTitulo: string
+  campoUrl: string
+  resumen: string
+  precio: string
+}): Promise<{ success: boolean }> {
+  const resend = await getResend()
+  if (!resend) return { success: false }
+  const nombre = escapeHtml(opts.nombre.split(' ')[0] || opts.nombre)
+  try {
+    await resend.emails.send({
+      from: FROM_PERSONAL,
+      to: opts.to,
+      headers: listUnsubHeaders(opts.to, 'campos_match'),
+      subject: `Apareció un campo que puede servirte: ${opts.campoTitulo}`,
+      html: darkEmailShell(`
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Hola ${nombre}:</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Se publicó un campo que entra en lo que me habías dicho que buscabas.</p>
+        <div style="border:1px solid #27272a;border-radius:8px;padding:16px;margin:0 0 16px">
+          <p style="color:#fafafa;font-size:15px;font-weight:600;margin:0 0 6px">${escapeHtml(opts.campoTitulo)}</p>
+          <p style="color:#a1a1aa;font-size:13px;line-height:1.6;margin:0 0 8px">${escapeHtml(opts.resumen)}</p>
+          <p style="color:#38bdf8;font-size:14px;font-family:monospace;margin:0">${escapeHtml(opts.precio)}</p>
+        </div>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px"><a href="${opts.campoUrl}" style="color:#38bdf8">Ver la ficha completa</a></p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Si te interesa, respondeme este mail y te conecto.</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 4px">Saludos,<br>José Barnetche — consignatarias.com.ar</p>
+        ${legalIdentificationHtml(opts.to)}
+      `),
+    })
+    return { success: true }
+  } catch {
+    return { success: false }
+  }
+}
+
 export async function sendClaimNotificationToAdmin(
   displayName: string,
   slug: string,
