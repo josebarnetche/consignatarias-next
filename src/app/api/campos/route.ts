@@ -22,7 +22,7 @@ const schema = z.object({
   aptitud: z.enum(APTITUDES).optional().nullable(),
   descripcion: z.string().max(2000).optional().nullable(),
   mejoras: z.string().max(1000).optional().nullable(),
-  precio_kg_ha_anio: z.coerce.number().positive().max(1000).optional().nullable(),
+  precio_kg_ha_mes: z.coerce.number().positive().max(100).optional().nullable(),
   precio_usd_ha: z.coerce.number().positive().optional().nullable(),
   capacidad_cabezas: z.coerce.number().int().positive().max(100_000).optional().nullable(),
   contacto_nombre: z.string().max(120).optional().nullable(),
@@ -48,9 +48,9 @@ export async function POST(req: NextRequest) {
   if (!d.contacto_email && !d.contacto_telefono) {
     return NextResponse.json({ error: 'Dejanos un email o un teléfono para poder contactarte.' }, { status: 400 })
   }
-  if (d.operacion !== 'venta' && !d.precio_kg_ha_anio) {
+  if (d.operacion !== 'venta' && !d.precio_kg_ha_mes) {
     return NextResponse.json(
-      { error: 'Para arrendamiento necesitamos el valor en kg de novillo por hectárea por año. Si no lo tenés definido, poné el que tenías el año pasado y lo ajustamos.' },
+      { error: 'Para arrendamiento necesitamos el canon en kg de novillo por hectárea por mes. Si no lo tenés definido, poné el del año pasado y lo ajustamos.' },
       { status: 400 },
     )
   }
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
         aptitud: d.aptitud || null,
         descripcion: d.descripcion?.trim() || null,
         mejoras: d.mejoras?.trim() || null,
-        precio_kg_ha_anio: d.precio_kg_ha_anio ?? null,
+        precio_kg_ha_mes: d.precio_kg_ha_mes ?? null,
         precio_usd_ha: d.precio_usd_ha ?? null,
         capacidad_cabezas: d.capacidad_cabezas ?? null,
         contacto_nombre: d.contacto_nombre?.trim() || null,
@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
       precio:
         d.operacion === 'venta'
           ? `US$${d.precio_usd_ha}/ha`
-          : `${d.precio_kg_ha_anio} kg/ha/año`,
+          : `${d.precio_kg_ha_mes} kg/ha/mes`,
       contacto: [d.contacto_nombre, d.contacto_telefono, d.contacto_email].filter(Boolean).join(' · '),
     })
 

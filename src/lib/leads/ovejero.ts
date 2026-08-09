@@ -476,7 +476,7 @@ export async function correrOvejero(db: SupabaseClient): Promise<ReporteOvejero>
 
   const { data: camposPub } = await db
     .from('campos')
-    .select('id, slug, hectareas, provincia, partido, operacion, precio_kg_ha_anio')
+    .select('id, slug, hectareas, provincia, partido, operacion, precio_kg_ha_mes')
     .eq('status', 'publicado')
     .neq('operacion', 'venta')
     .limit(200)

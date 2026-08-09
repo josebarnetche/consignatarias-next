@@ -7,6 +7,28 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.191.0] — 2026-08-09
+
+### El canon en kilos por MES, y el tasador de campos
+
+Tres correcciones de fondo a la inmobiliaria rural, dictadas por cómo funciona el
+negocio de verdad.
+
+- **El canon se pacta por MES, no por año**, y se liquida con el **promedio del mes
+  anterior** del novillo — no con el índice del día. Corregido en la base
+  (`precio_kg_ha_mes`), en el alta, en el listado y en la ficha.
+- **`/campos/valuar` — tasador de campos.** Cruza dos vías: lo que el campo
+  **renta** (el canon anualizado por los años de repago de su región) y lo que se
+  **paga** en la zona (relevamiento propio de 11 provincias con mediana y rango
+  p25-p75). Muestra dónde cae el campo dentro del rango real de su provincia, con
+  el canon en un slider que mueve la valuación en vivo. Las dos vías convergen
+  dentro del 1-5% en las 11 provincias — Buenos Aires da 21 años de canon, que es
+  la regla de los veinte años que se usa en el campo.
+- **"Por hectárea" ahora es el valor de venta**, no el canon. En la ficha, si el
+  precio pedido se aparta de la estimación, se dice cuánto y para qué lado.
+- Nueva base `tierra-por-kilo.json`: US$/ha, rango, productividad en kg/ha/año y
+  dólares por kilo de producción anual, por provincia y región.
+
 ## [1.190.0] — 2026-08-08
 
 ### Inmobiliaria rural: campos en arrendamiento y venta

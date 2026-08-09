@@ -2,20 +2,14 @@
  * INMOBILIARIA RURAL — campos ofrecidos en arrendamiento o venta.
  *
  * La diferencia con cualquier portal inmobiliario: el arrendamiento se publica en
- * KG DE NOVILLO por hectárea por año (como se pacta de verdad) y nosotros lo
- * convertimos a pesos y dólares con el índice del día. Un aviso nuestro dice
- * "80 kg/ha/año = $X por mes al índice de hoy"; el de un portal dice "consultar".
+ * KG DE NOVILLO POR HECTÁREA POR MES —como se pacta y se liquida, con el promedio
+ * del mes anterior— y nosotros lo pasamos a plata. Un portal dice "consultar".
+ *
+ * La matemática vive en `valuacion-campos.ts`; acá quedan tipos y formato.
  *
  * El contacto del oferente NUNCA se publica: las consultas entran como lead y las
  * conecta Jose (misma regla que El Ovejero — la relación no se regala).
  */
-import marketPrices from '@/lib/data/market-prices.json'
-
-const mp = marketPrices as unknown as {
-  inmag: { current: number }
-  usdBlue: { current: number }
-  arrendamientoOficial?: { date: string; index: number; periodIndex: number }
-}
 
 export const OPERACIONES = ['arrendamiento', 'venta', 'ambos'] as const
 export const APTITUDES = ['ganadera', 'agricola', 'mixta', 'forestal'] as const
@@ -40,51 +34,13 @@ export interface Campo {
   titulo: string | null
   descripcion: string | null
   mejoras: string | null
-  precio_kg_ha_anio: number | null
+  precio_kg_ha_mes: number | null
   precio_usd_ha: number | null
   capacidad_cabezas: number | null
   destacado: boolean
   status: string
   created_at: string
   published_at: string | null
-}
-
-/** Índice de referencia para arrendamientos: el oficial del MAG si está, si no el INMAG. */
-export function indiceArrendamiento(): { valor: number; fuente: string; fecha: string | null } {
-  const arr = mp.arrendamientoOficial
-  if (arr) {
-    return {
-      valor: arr.periodIndex ?? arr.index,
-      fuente: 'índice oficial de arrendamientos del MAG',
-      fecha: arr.date,
-    }
-  }
-  return { valor: mp.inmag.current, fuente: 'INMAG', fecha: null }
-}
-
-export interface PrecioCalculado {
-  anualArs: number
-  mensualArs: number
-  anualUsd: number
-  porHaMensualArs: number
-  indice: number
-  fuente: string
-  fecha: string | null
-}
-
-/** El cálculo que ningún portal inmobiliario puede hacer: kg de novillo → plata de hoy. */
-export function calcularArrendamiento(hectareas: number, kgHaAnio: number): PrecioCalculado {
-  const { valor, fuente, fecha } = indiceArrendamiento()
-  const anualArs = kgHaAnio * valor * hectareas
-  return {
-    anualArs,
-    mensualArs: anualArs / 12,
-    anualUsd: anualArs / mp.usdBlue.current,
-    porHaMensualArs: anualArs / hectareas / 12,
-    indice: valor,
-    fuente,
-    fecha,
-  }
 }
 
 export function precioVenta(hectareas: number, usdHa: number) {

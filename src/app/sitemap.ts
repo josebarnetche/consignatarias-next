@@ -124,6 +124,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/licencia-datos`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${baseUrl}/campos`, lastModified: buildDate, changeFrequency: 'daily', priority: 0.9 },
     { url: `${baseUrl}/campos/publicar`, lastModified: buildDate, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${baseUrl}/campos/valuar`, lastModified: buildDate, changeFrequency: 'weekly', priority: 0.85 },
     { url: `${baseUrl}/como-se-calcula-el-canon-de-arrendamiento`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.75 },
     { url: `${baseUrl}/impuesto-de-sellos-arrendamiento`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${baseUrl}/que-es-la-aparceria`, lastModified: priceDate, changeFrequency: 'monthly', priority: 0.7 },

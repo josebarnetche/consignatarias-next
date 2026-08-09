@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { trackValueEvent } from '@/lib/analytics'
 
 /**
- * Alta de un campo. El precio de arrendamiento se pide en KG DE NOVILLO por ha por
- * año —como se pacta— y se muestra al instante cuánto es en pesos, para que el
+ * Alta de un campo. El canon se pide en KG DE NOVILLO por ha por MES —como se
+ * pacta y se liquida— y se muestra al instante cuánto es en pesos, para que el
  * oferente vea que el número que puso significa algo real.
  */
 export default function PublicarCampoForm({ indice }: { indice: number }) {
@@ -14,7 +14,7 @@ export default function PublicarCampoForm({ indice }: { indice: number }) {
   const [provincia, setProvincia] = useState('')
   const [partido, setPartido] = useState('')
   const [aptitud, setAptitud] = useState('ganadera')
-  const [kgHa, setKgHa] = useState('')
+  const [kgHaMes, setKgHaMes] = useState('')
   const [usdHa, setUsdHa] = useState('')
   const [descripcion, setDescripcion] = useState('')
   const [mejoras, setMejoras] = useState('')
@@ -25,8 +25,8 @@ export default function PublicarCampoForm({ indice }: { indice: number }) {
   const [error, setError] = useState('')
 
   const ha = Number(hectareas) || 0
-  const kg = Number(kgHa) || 0
-  const previewAnual = ha > 0 && kg > 0 ? kg * indice * ha : 0
+  const kg = Number(kgHaMes) || 0
+  const previewMensual = ha > 0 && kg > 0 ? kg * indice * ha : 0
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -41,7 +41,7 @@ export default function PublicarCampoForm({ indice }: { indice: number }) {
           provincia,
           partido: partido || null,
           aptitud,
-          precio_kg_ha_anio: operacion !== 'venta' ? kgHa || null : null,
+          precio_kg_ha_mes: operacion !== 'venta' ? kgHaMes || null : null,
           precio_usd_ha: operacion !== 'arrendamiento' ? usdHa || null : null,
           descripcion: descripcion || null,
           mejoras: mejoras || null,
@@ -138,26 +138,28 @@ export default function PublicarCampoForm({ indice }: { indice: number }) {
 
         {operacion !== 'venta' && (
           <label className="block">
-            <span className={label}>Kilos de novillo por hectárea por año</span>
+            <span className={label}>Kilos de novillo por hectárea por mes</span>
             <input
               type="number"
-              min={1}
-              max={1000}
-              value={kgHa}
-              onChange={(e) => setKgHa(e.target.value)}
-              placeholder="80"
+              min={0.1}
+              max={100}
+              step={0.1}
+              value={kgHaMes}
+              onChange={(e) => setKgHaMes(e.target.value)}
+              placeholder="5"
               className={input}
             />
             <span className="text-zinc-500 text-xs block mt-1">
-              Así se pacta el arrendamiento. Si no lo tenés definido, poné el del año pasado.
+              Así se pacta y se liquida, con el promedio del mes anterior. Si no lo tenés definido, poné el
+              del año pasado y lo ajustamos.
             </span>
-            {previewAnual > 0 && (
+            {previewMensual > 0 && (
               <div className="mt-2 border border-accent/40 bg-accent/[0.05] rounded px-3 py-2">
                 <p className="text-accent text-sm font-mono">
-                  ≈ ${Math.round(previewAnual / 12).toLocaleString('es-AR')} por mes
+                  ≈ ${Math.round(previewMensual).toLocaleString('es-AR')} por mes
                 </p>
                 <p className="text-zinc-500 text-xs">
-                  ${Math.round(previewAnual).toLocaleString('es-AR')} al año, al índice de hoy
+                  ${Math.round(previewMensual * 12).toLocaleString('es-AR')} al año
                 </p>
               </div>
             )}

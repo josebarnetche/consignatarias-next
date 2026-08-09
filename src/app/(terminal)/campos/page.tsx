@@ -1,18 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { createServiceClient } from '@/lib/supabase'
-import {
-  APTITUD_LABEL,
-  calcularArrendamiento,
-  fmtArs,
-  fmtHa,
-  fmtUsd,
-  indiceArrendamiento,
-  precioVenta,
-  tituloCampo,
-  type Aptitud,
-  type Campo,
-} from '@/lib/campos'
+import { APTITUD_LABEL, fmtArs, fmtHa, fmtUsd, precioVenta, tituloCampo, type Aptitud, type Campo } from '@/lib/campos'
+import { canonEnPlata, promedioMesAnterior } from '@/lib/valuacion-campos'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 export const revalidate = 1800
@@ -20,9 +10,9 @@ export const revalidate = 1800
 const BASE_URL = 'https://www.consignatarias.com.ar'
 
 export const metadata: Metadata = {
-  title: 'Campos en arrendamiento y venta — con el canon en kg de novillo',
+  title: 'Campos en arrendamiento y venta — canon en kg de novillo por mes',
   description:
-    'Campos ganaderos y agrícolas ofrecidos en arrendamiento o venta en Argentina. El arrendamiento se publica en kg de novillo por hectárea por año y lo convertimos a pesos y dólares con el índice del día, para que compares peras con peras.',
+    'Campos ganaderos y agrícolas ofrecidos en arrendamiento o venta en Argentina. El arrendamiento se publica en kg de novillo por hectárea por mes, como se pacta, y lo pasamos a pesos y dólares con el promedio del mes anterior.',
   keywords: [
     'campos en arrendamiento',
     'campos en venta',
@@ -34,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Campos en arrendamiento y venta — consignatarias.com.ar',
     description:
-      'El canon publicado en kg de novillo por ha por año, convertido a pesos y dólares con el índice de hoy.',
+      'El canon publicado en kg de novillo por ha por mes, convertido a pesos y dólares.',
     url: `${BASE_URL}/campos`,
     type: 'website',
   },
@@ -47,7 +37,7 @@ async function traerCampos(): Promise<Campo[]> {
   const { data } = await db
     .from('campos')
     .select(
-      'id, slug, operacion, hectareas, provincia, partido, aptitud, titulo, descripcion, mejoras, precio_kg_ha_anio, precio_usd_ha, capacidad_cabezas, destacado, status, created_at, published_at',
+      'id, slug, operacion, hectareas, provincia, partido, aptitud, titulo, descripcion, mejoras, precio_kg_ha_mes, precio_usd_ha, capacidad_cabezas, destacado, status, created_at, published_at',
     )
     .eq('status', 'publicado')
     .order('destacado', { ascending: false })
@@ -57,7 +47,7 @@ async function traerCampos(): Promise<Campo[]> {
 }
 
 function CampoCard({ c }: { c: Campo }) {
-  const arr = c.precio_kg_ha_anio ? calcularArrendamiento(c.hectareas, c.precio_kg_ha_anio) : null
+  const arr = c.precio_kg_ha_mes ? canonEnPlata(c.hectareas, c.precio_kg_ha_mes) : null
   const vta = c.precio_usd_ha ? precioVenta(c.hectareas, c.precio_usd_ha) : null
   return (
     <article className="border border-zinc-800 rounded-lg bg-zinc-900/40 p-5 hover:border-zinc-700 transition-colors">
@@ -83,12 +73,12 @@ function CampoCard({ c }: { c: Campo }) {
       {arr && (
         <div className="mb-2">
           <p className="text-zinc-200 text-sm font-mono">
-            {c.precio_kg_ha_anio} kg/ha/año
+            {c.precio_kg_ha_mes} kg/ha/mes
             <span className="text-zinc-500"> · </span>
             <span className="text-accent">{fmtArs(arr.mensualArs)}/mes</span>
           </p>
           <p className="text-zinc-500 text-xs">
-            {fmtArs(arr.anualArs)}/año · {fmtUsd(arr.anualUsd)}/año
+            {fmtUsd(arr.mensualUsd)}/mes · {fmtArs(arr.anualArs)} al año
           </p>
         </div>
       )}
@@ -112,7 +102,7 @@ function CampoCard({ c }: { c: Campo }) {
 
 export default async function CamposPage() {
   const campos = await traerCampos()
-  const idx = indiceArrendamiento()
+  const idx = promedioMesAnterior()
   const arrend = campos.filter((c) => c.operacion !== 'venta')
   const venta = campos.filter((c) => c.operacion !== 'arrendamiento')
 
@@ -125,25 +115,27 @@ export default async function CamposPage() {
             <h1 className="text-zinc-100 text-2xl font-medium mb-2">Campos en arrendamiento y venta</h1>
             <p className="text-zinc-400 max-w-2xl">
               El arrendamiento se publica como se pacta en el campo —{' '}
-              <strong className="text-zinc-200">kg de novillo por hectárea por año</strong> — y nosotros lo
-              pasamos a pesos y dólares con el índice del día. Así comparás dos campos de verdad, sin hacer
-              la cuenta a mano.
+              <strong className="text-zinc-200">kg de novillo por hectárea por mes</strong>, liquidado con el
+              promedio del mes anterior — y nosotros lo pasamos a pesos y dólares. Así comparás dos campos
+              de verdad, sin hacer la cuenta a mano.
             </p>
           </div>
-          <Link
-            href="/campos/publicar"
-            className="shrink-0 px-4 py-2 text-xs bg-accent hover:bg-accent-bright text-zinc-950 font-medium rounded transition-colors"
-          >
-            Publicar mi campo
-          </Link>
+          <div className="shrink-0 flex flex-col gap-2">
+            <Link href="/campos/publicar" className="px-4 py-2 text-xs bg-accent hover:bg-accent-bright text-zinc-950 font-medium rounded transition-colors text-center">
+              Publicar mi campo
+            </Link>
+            <Link href="/campos/valuar" className="px-4 py-2 text-xs border border-zinc-700 hover:border-zinc-500 text-zinc-300 rounded transition-colors text-center">
+              ¿Cuánto vale?
+            </Link>
+          </div>
         </div>
 
         <p className="text-zinc-500 text-xs mb-8 border border-zinc-800 rounded px-3 py-2 bg-zinc-900/40">
-          Índice usado hoy: <span className="text-zinc-300 font-mono">{fmtArs(idx.valor)}/kg</span> —{' '}
-          {idx.fuente}
-          {idx.fecha ? ` al ${idx.fecha}` : ''}.{' '}
-          <Link href="/mercado/arrendamiento" className="text-accent hover:text-accent-bright">
-            Cómo se calcula
+          El canon se liquida con el <span className="text-zinc-300">{idx.etiqueta}</span> del novillo:{' '}
+          <span className="text-zinc-300 font-mono">{fmtArs(idx.valor)}/kg</span>
+          {idx.ruedas ? ` (${idx.ruedas} ruedas)` : ''}.{' '}
+          <Link href="/campos/valuar" className="text-accent hover:text-accent-bright">
+            ¿Cuánto vale tu campo?
           </Link>
         </p>
 

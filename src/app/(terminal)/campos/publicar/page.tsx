@@ -1,7 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import PublicarCampoForm from '@/components/campos/PublicarCampoForm'
-import { fmtArs, indiceArrendamiento } from '@/lib/campos'
+import { fmtArs } from '@/lib/campos'
+import { promedioMesAnterior } from '@/lib/valuacion-campos'
 
 export const revalidate = 3600
 
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
 }
 
 export default function PublicarCampoPage() {
-  const idx = indiceArrendamiento()
+  const idx = promedioMesAnterior()
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
@@ -38,8 +39,8 @@ export default function PublicarCampoPage() {
 
       <ul className="text-zinc-400 mb-8 space-y-2 list-disc pl-5">
         <li>
-          <strong className="text-zinc-200">El canon se carga en kilos de novillo</strong>, como se pacta de
-          verdad. El aviso muestra solo cuánto es en pesos y en dólares al índice del día.
+          <strong className="text-zinc-200">El canon se carga en kilos de novillo por mes</strong>, como se
+          pacta y se liquida. El aviso muestra solo cuánto es en pesos y en dólares.
         </li>
         <li>
           <strong className="text-zinc-200">Tu contacto no se publica.</strong> Cuando alguien consulta, te
@@ -51,8 +52,9 @@ export default function PublicarCampoPage() {
       </ul>
 
       <p className="text-zinc-500 text-xs mb-6 border border-zinc-800 rounded px-3 py-2 bg-zinc-900/40">
-        Índice de hoy: <span className="text-zinc-300 font-mono">{fmtArs(idx.valor)}/kg</span> — {idx.fuente}
-        {idx.fecha ? ` al ${idx.fecha}` : ''}.
+        Se liquida con el {idx.etiqueta} del novillo:{' '}
+        <span className="text-zinc-300 font-mono">{fmtArs(idx.valor)}/kg</span>
+        {idx.ruedas ? ` (${idx.ruedas} ruedas)` : ''}.
       </p>
 
       <PublicarCampoForm indice={idx.valor} />

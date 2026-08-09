@@ -355,6 +355,7 @@ export type Database = {
           origin_ip: string | null
           partido: string | null
           precio_kg_ha_anio: number | null
+          precio_kg_ha_mes: number | null
           precio_usd_ha: number | null
           provincia: string
           published_at: string | null
@@ -384,6 +385,7 @@ export type Database = {
           origin_ip?: string | null
           partido?: string | null
           precio_kg_ha_anio?: number | null
+          precio_kg_ha_mes?: number | null
           precio_usd_ha?: number | null
           provincia: string
           published_at?: string | null
@@ -413,6 +415,7 @@ export type Database = {
           origin_ip?: string | null
           partido?: string | null
           precio_kg_ha_anio?: number | null
+          precio_kg_ha_mes?: number | null
           precio_usd_ha?: number | null
           provincia?: string
           published_at?: string | null
