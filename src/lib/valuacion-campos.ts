@@ -62,6 +62,13 @@ export const TIERRA: ProvinciaTierra[] = tierraRaw as ProvinciaTierra[]
 /** Solo las filas provinciales (sin zona), para selectores y tablas resumen. */
 export const TIERRA_PROVINCIAS: ProvinciaTierra[] = TIERRA.filter((t) => !t.zona)
 
+/** Las zonas relevadas dentro de una provincia, para el selector del tasador. */
+export function zonasDe(provincia: string | null | undefined): ProvinciaTierra[] {
+  if (!provincia) return []
+  const p = normalizar(provincia)
+  return TIERRA.filter((t) => !!t.zona && normalizar(t.provincia) === p)
+}
+
 /** El canon se liquida con el PROMEDIO DEL MES ANTERIOR, no con el precio de hoy. */
 export function promedioMesAnterior(): { valor: number; etiqueta: string; ruedas: number } {
   const serie = mp.inmag.series ?? []
@@ -80,6 +87,53 @@ export function promedioMesAnterior(): { valor: number; etiqueta: string; ruedas
 
 function normalizar(s: string): string {
   return s.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+}
+
+/**
+ * De qué zona es cada partido. Un aviso dice "Pergamino", no "zona núcleo", así
+ * que sin esta tabla la ficha de un campo se tasaría siempre con el promedio de
+ * la provincia y las zonas relevadas no servirían para nada.
+ *
+ * Los partidos de referencia son los que publican las propias series (Compañía
+ * Argentina de Tierras para Buenos Aires) más los limítrofes que comparten
+ * ambiente. Un partido que no figura cae al valor provincial, que es lo correcto:
+ * mejor el promedio que una zona forzada.
+ */
+const ZONA_POR_PARTIDO: Record<string, Record<string, string>> = {
+  'buenos aires': {
+    'Zona núcleo': 'pergamino, rojas, salto, colon, arrecifes, ramallo, san nicolas, san pedro, baradero, capitan sarmiento',
+    'Centro oeste': 'bragado, 9 de julio, nueve de julio, general viamonte, lincoln, chivilcoy, alberti, chacabuco, junin, general arenales',
+    'Sudeste': 'balcarce, tandil, loberia, benito juarez, olavarria, azul',
+    'Oeste': 'general villegas, rivadavia, trenque lauquen, pehuajo, carlos tejedor, america, salliquelo, pellegrini',
+    'Sud triguera': 'tres arroyos, san cayetano, necochea, coronel dorrego, adolfo gonzales chaves, coronel pringles',
+    'Cuenca del Salado': 'chascomus, general belgrano, dolores, castelli, pila, rauch, las flores, maipu, ayacucho, magdalena, punta indio, lezama, monte, roque perez, saladillo, general guido, tordillo, general lavalle, general madariaga, brandsen, chapadmalal',
+    'Norte periurbano': 'mercedes, lujan, suipacha, navarro, san andres de giles, exaltacion de la cruz, canuelas, general rodriguez, marcos paz, san antonio de areco',
+  },
+  'santa fe': {
+    'Sur núcleo': 'constitucion, general lopez, caseros, rosario, san lorenzo, belgrano, iriondo, san jeronimo, venado tuerto, casilda, canada de gomez, firmat',
+    'Centro': 'castellanos, las colonias, san martin, la capital, rafaela, esperanza, san justo, sunchales',
+    'Norte': 'vera, general obligado, san javier, 9 de julio, nueve de julio, san cristobal, garay, reconquista, tostado',
+  },
+  'entre rios': {
+    'Oeste': 'victoria, diamante, parana, nogoya, gualeguay',
+    'Este': 'gualeguaychu, colon, concordia, uruguay, san salvador, villaguay',
+    'Norte': 'federal, feliciano, la paz, federacion, tala',
+  },
+}
+
+function zonaPorPartido(provincia: string, zona: string): string | null {
+  const mapa = ZONA_POR_PARTIDO[normalizar(provincia)]
+  if (!mapa) return null
+  const z = normalizar(zona)
+  for (const [nombreZona, partidos] of Object.entries(mapa)) {
+    if (partidos.split(',').some((x) => {
+      const px = x.trim()
+      return z === px || z.includes(px) || px.includes(z)
+    })) {
+      return nombreZona
+    }
+  }
+  return null
 }
 
 /**
@@ -103,6 +157,13 @@ export function tierraDe(provincia: string | null | undefined, zona?: string | n
       return tz === z || z.includes(tz) || tz.includes(z)
     })
     if (porZona) return porZona
+
+    // No coincidió con el nombre de la zona: probamos si lo que vino es un partido.
+    const porNombreDePartido = zonaPorPartido(provincia, zona)
+    if (porNombreDePartido) {
+      const t = enProvincia.find((x) => x.zona === porNombreDePartido)
+      if (t) return t
+    }
   }
   // Sin zona o sin match: la fila provincial (la que no declara zona), o la primera.
   return enProvincia.find((t) => !t.zona) ?? enProvincia[0]
@@ -137,6 +198,11 @@ export interface Valuacion {
   referenciaUsada: string | null
   /** Zona agrícola: el canon ganadero no explica el precio de esa tierra. */
   esAgricola: boolean
+  /**
+   * La tierra de la zona equivale a muchos más años de arrendamiento que en la
+   * pampa. No es un error de cálculo: es que ahí el precio no lo pone el pasto.
+   */
+  masAniosQueLaPampa: boolean
 }
 
 /**
@@ -202,6 +268,7 @@ export function valuarCampo(opts: {
     provinciaEnBase: t?.provincia ?? null,
     referenciaUsada: t ? (t.zona ? `${t.zona}, ${t.provincia}` : t.provincia) : null,
     esAgricola,
+    masAniosQueLaPampa: (porRenta?.anos ?? 0) > 30,
   }
 }
 

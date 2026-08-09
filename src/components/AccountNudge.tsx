@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase-browser'
 import { onAccountNudge, type NudgePayload, type NudgeReason } from '@/lib/account-nudge'
 import { trackAccountNudge } from '@/lib/analytics'
+import { overlayShown, markOverlayShown } from '@/lib/overlay-bus'
 
 /**
  * Global, non-blocking account nudge (mounted once in the root layout, like the
@@ -80,7 +81,9 @@ export default function AccountNudge() {
     const maybeShow = (p: NudgePayload) => {
       if (shownThisLoad.current) return
       if (snoozed()) return
+      if (overlayShown()) return // subscribe modal already took the corner this load
       shownThisLoad.current = true
+      markOverlayShown()
       setPayload(p)
       trackAccountNudge('view', p.reason)
     }
@@ -98,10 +101,11 @@ export default function AccountNudge() {
 
   // Flush a stashed nudge once auth resolves to anonymous.
   useEffect(() => {
-    if (loggedIn === false && pending.current && !shownThisLoad.current && !snoozed()) {
+    if (loggedIn === false && pending.current && !shownThisLoad.current && !snoozed() && !overlayShown()) {
       const p = pending.current
       pending.current = null
       shownThisLoad.current = true
+      markOverlayShown()
       setPayload(p)
       trackAccountNudge('view', p.reason)
     }

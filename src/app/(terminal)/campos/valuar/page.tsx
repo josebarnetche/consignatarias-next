@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import ValuacionCampo from '@/components/campos/ValuacionCampo'
-import { TIERRA_PROVINCIAS } from '@/lib/valuacion-campos'
+import { TIERRA, TIERRA_PROVINCIAS } from '@/lib/valuacion-campos'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 
 export const revalidate = 3600
@@ -34,7 +34,7 @@ const FAQ = [
   {
     question: '¿Cuánto vale una hectárea de campo en Argentina?',
     answer:
-      'Depende muchísimo de la zona: en la pampa húmeda una hectárea ronda los US$3.300, en el NEA entre US$1.100 y US$1.500, en el semiárido pampeano unos US$700, y en la estepa patagónica puede bajar a US$90. Lo que explica esa diferencia es cuánto pasto produce el campo: la tierra vale lo que puede criar.',
+      'Depende muchísimo de la zona, y mucho más de lo que la gente supone. Dentro de la misma provincia de Buenos Aires, la hectárea de la zona núcleo ronda los US$18.500 y la de la cuenca del Salado, que es campo de cría, unos US$3.200: casi seis veces menos. En el NEA se mueve entre US$850 y US$1.900, en el semiárido pampeano unos US$780, y en la estepa patagónica baja a US$90. En campo ganadero lo que explica la diferencia es cuánto pasto produce; en campo agrícola, cuántos quintales.',
   },
   {
     question: '¿Cómo se calcula el valor de un campo?',
@@ -47,6 +47,10 @@ const FAQ = [
       'Porque es la moneda que no se devalúa dentro del negocio. El canon se pacta en kilos de novillo por hectárea por mes y se liquida con el promedio del mes anterior, así el arrendador cobra siempre lo mismo en términos de hacienda, sin importar la inflación ni el tipo de cambio.',
   },
 ]
+
+const ZONAS = TIERRA.filter((t) => !!t.zona).sort(
+  (a, b) => a.provincia.localeCompare(b.provincia, 'es') || b.usd_ha - a.usd_ha,
+)
 
 export default function ValuarCampoPage() {
   return (
@@ -74,9 +78,9 @@ export default function ValuarCampoPage() {
         <section className="mb-8">
           <h2 className="text-zinc-200 text-lg font-medium mb-3">Lo que vale la hectárea, por zona</h2>
           <p className="text-zinc-400 mb-4">
-            Relevamiento propio de precios de venta y de la productividad de cada región. La última columna
-            es la que explica todo: cuántos dólares se pagan por cada kilo de novillo que el campo produce
-            al año.
+            Valores de referencia para campo ganadero, provincia por provincia. La última columna es la que
+            explica todo: cuántos dólares se pagan por cada kilo de novillo que el campo produce al año.
+            Abajo está el detalle por zona, que es donde de verdad se define el precio.
           </p>
           <div className="overflow-x-auto -mx-4 px-4">
             <table className="w-full text-xs border-collapse min-w-[520px]">
@@ -108,6 +112,49 @@ export default function ValuarCampoPage() {
               </tbody>
             </table>
           </div>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-zinc-200 text-lg font-medium mb-3">El detalle por zona</h2>
+          <p className="text-zinc-400 mb-4">
+            El promedio de una provincia dice poco: entre la zona núcleo bonaerense y la cuenca del Salado
+            hay casi seis veces de diferencia, y entre Marcos Juárez y Minas, en Córdoba, cuarenta. Estas son
+            las zonas relevadas, con la fuente y la fecha de cada una.
+          </p>
+          <div className="overflow-x-auto -mx-4 px-4">
+            <table className="w-full text-xs border-collapse min-w-[560px]">
+              <thead>
+                <tr className="text-zinc-500 border-b border-zinc-800">
+                  <th className="text-left font-normal py-2 pr-3">Zona</th>
+                  <th className="text-left font-normal py-2 pr-3">Provincia</th>
+                  <th className="text-left font-normal py-2 pr-3">Aptitud</th>
+                  <th className="text-right font-normal py-2 pr-3">US$/ha</th>
+                  <th className="text-left font-normal py-2 pl-3">Fuente</th>
+                </tr>
+              </thead>
+              <tbody className="font-mono">
+                {ZONAS.map((t) => (
+                  <tr key={`${t.provincia}-${t.zona}`} className="border-b border-zinc-900">
+                    <td className="py-2 pr-3 text-zinc-200 font-sans">{t.zona}</td>
+                    <td className="py-2 pr-3 text-zinc-500 font-sans">{t.provincia}</td>
+                    <td className="py-2 pr-3 text-zinc-500 font-sans">{t.aptitud}</td>
+                    <td className="py-2 pr-3 text-right text-accent tabular-nums">
+                      {t.usd_ha.toLocaleString('es-AR')}
+                    </td>
+                    <td className="py-2 pl-3 text-zinc-600 font-sans text-xxs">
+                      {t.fuente}
+                      {t.fecha ? ` · ${t.fecha}` : ''}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-zinc-600 text-xxs mt-3 leading-relaxed">
+            Los valores de tasadores son de operación; los que salen de avisos son precio pedido y se ajustan
+            antes de usarlos. Faltan provincias enteras y se van sumando a medida que aparece dato serio: es
+            preferible no tener una zona a tenerla mal.
+          </p>
         </section>
 
         <section className="mb-8">

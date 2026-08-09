@@ -36,6 +36,9 @@ function getSourceBadgeColor(source: string): string {
     'remates': 'bg-green-500/20 text-green-400 border-green-500/30',
     'reporte-semanal': 'bg-purple-500/20 text-purple-400 border-purple-500/30',
     'frigorificos': 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+    'el-corredor': 'bg-sky-500/20 text-sky-400 border-sky-500/30',
+    'arrendamiento-liquidacion': 'bg-teal-500/20 text-teal-400 border-teal-500/30',
+    'cierre-mensual': 'bg-sky-500/20 text-sky-400 border-sky-500/30',
   }
   return colors[source] || 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30'
 }
@@ -91,11 +94,45 @@ export default function SuscriptoresPage() {
     !s.email.includes('healthcheck') &&
     !s.email.includes('jarvis')
   )
-  const testSubscribers = subscribers.filter(s => 
-    s.email.includes('test') || 
+  const testSubscribers = subscribers.filter(s =>
+    s.email.includes('test') ||
     s.email.includes('healthcheck') ||
     s.email.includes('jarvis')
   )
+
+  // ── Momentum: mide el efecto de los nuevos CTAs (modal + strips). Todo se
+  // calcula sobre suscriptores REALES para no contaminar con tests/healthchecks.
+  const now = Date.now()
+  const DAY = 24 * 60 * 60 * 1000
+  const ts = (s: Subscriber) => new Date(s.created_at).getTime()
+  const inWindow = (from: number, to: number) =>
+    realSubscribers.filter(s => { const t = ts(s); return t >= now - from * DAY && t < now - to * DAY }).length
+  const last7 = inWindow(7, 0)
+  const prev7 = inWindow(14, 7)
+  const last30 = inWindow(30, 0)
+  const prev30 = inWindow(60, 30)
+  const pct = (cur: number, prev: number) =>
+    prev === 0 ? (cur > 0 ? null : 0) : Math.round(((cur - prev) / prev) * 100)
+  const wow = pct(last7, prev7) // week-over-week
+  const mom = pct(last30, prev30) // month-over-month
+
+  // Sparkline: nuevos suscriptores reales por día, últimos 30 días.
+  const daily: number[] = Array.from({ length: 30 }, (_, i) => {
+    const dayEnd = now - (29 - i) * DAY
+    const dayStart = dayEnd - DAY
+    return realSubscribers.filter(s => { const t = ts(s); return t >= dayStart && t < dayEnd }).length
+  })
+  const dailyMax = Math.max(1, ...daily)
+
+  function TrendBadge({ value }: { value: number | null }) {
+    if (value === null) return <span className="text-xxs text-sky-400">nuevo</span>
+    const up = value >= 0
+    return (
+      <span className={`text-xxs tabular-nums ${up ? 'text-emerald-400' : 'text-red-400'}`}>
+        {up ? '▲' : '▼'} {Math.abs(value)}%
+      </span>
+    )
+  }
 
   return (
     <div className="space-y-4">
@@ -128,6 +165,46 @@ export default function SuscriptoresPage() {
             Tests
           </div>
           <div className="text-2xl font-terminal text-zinc-500">{testSubscribers.length}</div>
+        </div>
+      </div>
+
+      {/* Momentum — mide el efecto de los nuevos CTAs de captura */}
+      <div className="terminal-panel p-4">
+        <div className="flex items-center gap-2 text-xxs text-zinc-500 uppercase tracking-wider mb-3">
+          <TrendingUp className="w-3 h-3" />
+          Momentum de captación
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 items-end">
+          <div>
+            <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-1">Últimos 7 días</div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-terminal text-zinc-100 tabular-nums">{last7}</span>
+              <TrendBadge value={wow} />
+            </div>
+            <div className="text-xxs text-zinc-600 mt-0.5">vs. {prev7} la semana previa</div>
+          </div>
+          <div>
+            <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-1">Últimos 30 días</div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-terminal text-zinc-100 tabular-nums">{last30}</span>
+              <TrendBadge value={mom} />
+            </div>
+            <div className="text-xxs text-zinc-600 mt-0.5">vs. {prev30} el mes previo</div>
+          </div>
+          {/* Sparkline 30d */}
+          <div className="col-span-2">
+            <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-1">Nuevos por día · 30d</div>
+            <div className="flex items-end gap-[2px] h-12">
+              {daily.map((v, i) => (
+                <div
+                  key={i}
+                  title={`${v} nuevo${v === 1 ? '' : 's'}`}
+                  className={`flex-1 rounded-sm ${v > 0 ? 'bg-sky-400/70' : 'bg-zinc-800'}`}
+                  style={{ height: `${Math.max(6, (v / dailyMax) * 100)}%` }}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 

@@ -1,0 +1,269 @@
+{
+  "month": "2026-07",
+  "source": "mercadoagroganadero.com.ar/haciinfo000502",
+  "fetched_at": "2026-08-01",
+  "period_headline": "PRECIOS POR CATEGORIA RESOL-2018-32-APN-SGA#MPYT DESDE EL MIï¿½RCOLES 01/07/2026 AL VIERNES 31/07/2026",
+  "buckets": [
+    {
+      "group": "NOVILLOS",
+      "label": "Esp.Joven + 430",
+      "full": "NOVILLOS Esp.Joven + 430",
+      "min": 3100.0,
+      "max": 4900.0,
+      "avg": 4421.523,
+      "median": 4500.0,
+      "cabezas": 12801,
+      "importe_ars": 27552917500.0,
+      "peso_prom_kg": 6231545.0
+    },
+    {
+      "group": "NOVILLOS",
+      "label": "Regular h 430",
+      "full": "NOVILLOS Regular h 430",
+      "min": 2400.0,
+      "max": 4500.0,
+      "avg": 3936.335,
+      "median": 4000.0,
+      "cabezas": 701,
+      "importe_ars": 1177161000.0,
+      "peso_prom_kg": 299050.0
+    },
+    {
+      "group": "NOVILLOS",
+      "label": "Regular + 430",
+      "full": "NOVILLOS Regular + 430",
+      "min": 2600.0,
+      "max": 4700.0,
+      "avg": 3854.885,
+      "median": 4000.0,
+      "cabezas": 2260,
+      "importe_ars": 4351432500.0,
+      "peso_prom_kg": 1128810.0
+    },
+    {
+      "group": "NOVILLITOS",
+      "label": "Esp. h 390",
+      "full": "NOVILLITOS Esp. h 390",
+      "min": 2700.0,
+      "max": 5600.0,
+      "avg": 4962.684,
+      "median": 5000.0,
+      "cabezas": 7012,
+      "importe_ars": 12236513550.0,
+      "peso_prom_kg": 2465705.0
+    },
+    {
+      "group": "NOVILLITOS",
+      "label": "Esp. + 390",
+      "full": "NOVILLITOS Esp. + 390",
+      "min": 3000.0,
+      "max": 5200.0,
+      "avg": 4550.507,
+      "median": 4670.0,
+      "cabezas": 6064,
+      "importe_ars": 11539289100.0,
+      "peso_prom_kg": 2535825.0
+    },
+    {
+      "group": "NOVILLITOS",
+      "label": "Regular",
+      "full": "NOVILLITOS Regular",
+      "min": 2200.0,
+      "max": 5100.0,
+      "avg": 4035.867,
+      "median": 4000.0,
+      "cabezas": 1471,
+      "importe_ars": 2286056150.0,
+      "peso_prom_kg": 566435.0
+    },
+    {
+      "group": "VAQUILLONAS",
+      "label": "Esp. h 390",
+      "full": "VAQUILLONAS Esp. h 390",
+      "min": 2000.0,
+      "max": 5500.0,
+      "avg": 4746.798,
+      "median": 4800.0,
+      "cabezas": 12233,
+      "importe_ars": 19411533150.0,
+      "peso_prom_kg": 4089395.0
+    },
+    {
+      "group": "VAQUILLONAS",
+      "label": "Esp. + 390",
+      "full": "VAQUILLONAS Esp. + 390",
+      "min": 2200.0,
+      "max": 4920.0,
+      "avg": 4034.96,
+      "median": 4100.0,
+      "cabezas": 4686,
+      "importe_ars": 8178803200.0,
+      "peso_prom_kg": 2026985.0
+    },
+    {
+      "group": "VAQUILLONAS",
+      "label": "Regular",
+      "full": "VAQUILLONAS Regular",
+      "min": 2300.0,
+      "max": 5070.0,
+      "avg": 3843.679,
+      "median": 3900.0,
+      "cabezas": 2860,
+      "importe_ars": 4195663400.0,
+      "peso_prom_kg": 1091575.0
+    },
+    {
+      "group": "VACAS",
+      "label": "Esp.Joven h 430",
+      "full": "VACAS Esp.Joven h 430",
+      "min": 1750.0,
+      "max": 4450.0,
+      "avg": 2873.419,
+      "median": 3100.0,
+      "cabezas": 1644,
+      "importe_ars": 1840195000.0,
+      "peso_prom_kg": 640420.0
+    },
+    {
+      "group": "VACAS",
+      "label": "Esp.Joven + 430",
+      "full": "VACAS Esp.Joven + 430",
+      "min": 1900.0,
+      "max": 4020.0,
+      "avg": 3159.163,
+      "median": 3100.0,
+      "cabezas": 9159,
+      "importe_ars": 15185338900.0,
+      "peso_prom_kg": 4806760.0
+    },
+    {
+      "group": "VACAS",
+      "label": "Regular",
+      "full": "VACAS Regular",
+      "min": 1700.0,
+      "max": 4900.0,
+      "avg": 2666.466,
+      "median": 2600.0,
+      "cabezas": 14569,
+      "importe_ars": 18647848000.0,
+      "peso_prom_kg": 6993470.0
+    },
+    {
+      "group": "VACAS",
+      "label": "Conserva Buena",
+      "full": "VACAS Conserva Buena",
+      "min": 1600.0,
+      "max": 3500.0,
+      "avg": 2296.039,
+      "median": 2300.0,
+      "cabezas": 3481,
+      "importe_ars": 3483021550.0,
+      "peso_prom_kg": 1516970.0
+    },
+    {
+      "group": "VACAS",
+      "label": "Conserva Inferior",
+      "full": "VACAS Conserva Inferior",
+      "min": 1500.0,
+      "max": 4800.0,
+      "avg": 2113.651,
+      "median": 2100.0,
+      "cabezas": 1188,
+      "importe_ars": 1071631650.0,
+      "peso_prom_kg": 507005.0
+    },
+    {
+      "group": "TOROS",
+      "label": "Esp.",
+      "full": "TOROS Esp.",
+      "min": 2000.0,
+      "max": 4100.0,
+      "avg": 3031.128,
+      "median": 3000.0,
+      "cabezas": 1511,
+      "importe_ars": 2994118000.0,
+      "peso_prom_kg": 987790.0
+    },
+    {
+      "group": "TOROS",
+      "label": "Regular",
+      "full": "TOROS Regular",
+      "min": 1700.0,
+      "max": 3500.0,
+      "avg": 2624.054,
+      "median": 2600.0,
+      "cabezas": 1287,
+      "importe_ars": 2040281000.0,
+      "peso_prom_kg": 777530.0
+    },
+    {
+      "group": "TOROS",
+      "label": "MEJ Esp. h 430",
+      "full": "MEJ Esp. h 430",
+      "min": 2500.0,
+      "max": 5200.0,
+      "avg": 4104.758,
+      "median": 4100.0,
+      "cabezas": 1144,
+      "importe_ars": 2053692450.0,
+      "peso_prom_kg": 500320.0
+    },
+    {
+      "group": "TOROS",
+      "label": "MEJ Regular",
+      "full": "MEJ Regular",
+      "min": 2350.0,
+      "max": 4600.0,
+      "avg": 3095.64,
+      "median": 2800.0,
+      "cabezas": 127,
+      "importe_ars": 173247500.0,
+      "peso_prom_kg": 55965.0
+    }
+  ],
+  "subtotals": [
+    {
+      "group": "NOVILLOS",
+      "avg": 4319.071,
+      "cabezas": 15762,
+      "importe_ars": 33081511000.0,
+      "peso_prom_kg": 7659405.0
+    },
+    {
+      "group": "NOVILLITOS",
+      "avg": 4680.679,
+      "cabezas": 14547,
+      "importe_ars": 26061858800.0,
+      "peso_prom_kg": 5567965.0
+    },
+    {
+      "group": "VAQUILLONAS",
+      "avg": 4409.85,
+      "cabezas": 19779,
+      "importe_ars": 31785999750.0,
+      "peso_prom_kg": 7207955.0
+    },
+    {
+      "group": "VACAS",
+      "avg": 2781.132,
+      "cabezas": 30041,
+      "importe_ars": 40228035100.0,
+      "peso_prom_kg": 14464625.0
+    },
+    {
+      "group": "TOROS",
+      "avg": 2851.834,
+      "cabezas": 2798,
+      "importe_ars": 5034399000.0,
+      "peso_prom_kg": 1765320.0
+    },
+    {
+      "group": "TOROS",
+      "avg": 4003.236,
+      "cabezas": 1271,
+      "importe_ars": 2226939950.0,
+      "peso_prom_kg": 556285.0
+    }
+  ],
+  "totals": null
+}

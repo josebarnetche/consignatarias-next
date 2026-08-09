@@ -30,6 +30,7 @@ import consignatariaResources from '@/lib/data/consignataria-resources.json'
 import { getProfileSEO } from '@/lib/data/profile-seo'
 import { getRematesEspecialesForSlug } from '@/lib/data/remates-especiales'
 import ConsignatariaProfileClient from './ConsignatariaProfileClient'
+import SubscribeStrip from '@/components/SubscribeStrip'
 import { MediosPagoSection } from '@/components/consignataria/MediosPagoSection'
 import type { YouTubeChannelData } from './ConsignatariaProfileClient'
 import type { ConsignatariaVideo } from '@/components/video/VideoGallery'
@@ -612,6 +613,18 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
             )}
           </div>
         </div>
+      </section>
+
+      {/* Captura — el visitante que llega a un perfil sigue una firma; acá le
+          ofrecemos el mercado entero (El Corredor, entrega instantánea). */}
+      <section className="max-w-6xl mx-auto px-2 sm:px-4 pb-6">
+        <SubscribeStrip
+          mode="corredor"
+          channel="perfil-consignataria"
+          title="El mercado, no solo esta firma"
+          body={`Seguís a ${enrichedProfile.displayName}. Recibí además El Corredor: el cierre mensual de todo el mercado bovino argentino —INMAG en USD reales, 18 categorías del MAG y la lectura del ciclo— en tu correo.`}
+          cta="Recibir El Corredor"
+        />
       </section>
     </>
   )

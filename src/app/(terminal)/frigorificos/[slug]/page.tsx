@@ -10,6 +10,7 @@ import { createServiceClient } from '@/lib/supabase'
 import CompraMayorista, { type VitrinaProduct } from './CompraMayorista'
 import BadgeConfianza from '@/components/frigorifico/BadgeConfianza'
 import FrigorificoLeadCapture from '@/components/leads/FrigorificoLeadCapture'
+import SubscribeStrip from '@/components/SubscribeStrip'
 import { BreadcrumbSchema, QAPageSchema } from '@/components/seo/JsonLd'
 import {
   getSenasaRecord,
@@ -872,6 +873,18 @@ export default async function FrigorificoDetailPage({
           </div>
         </div>
       )}
+
+      {/* Captura — reporte mensual de faena. El visitante de un perfil de planta
+          está mirando el eslabón de faena; le ofrecemos el dato agregado. */}
+      <SubscribeStrip
+        mode="newsletter"
+        source="frigorificos"
+        channel="perfil-frigorifico"
+        eyebrow="Reporte mensual · faena"
+        title="El pulso de la faena, cada mes"
+        body="Cabezas faenadas a nivel nacional, variación mensual e interanual y el acumulado de 12 meses. El dato que mueve el precio del gordo, directo a tu correo."
+        cta="Recibir el reporte"
+      />
 
       {/* Actions */}
       <div className="flex items-center gap-3">

@@ -7,6 +7,7 @@ import AnalyticsProvider from '@/components/AnalyticsProvider';
 import CookieConsent from '@/components/CookieConsent';
 import WhatsAppLeadFAB from '@/components/WhatsAppLeadFAB';
 import AccountNudge from '@/components/AccountNudge';
+import SubscribeModal from '@/components/SubscribeModal';
 import rematesData from '@/lib/data/remates.json';
 
 const inter = Inter({
@@ -157,6 +158,10 @@ export default function RootLayout({
         {/* Nudge-first: invita (nunca obliga) a crear cuenta gratis con Google en
             momentos de alta intención. Global, no bloqueante. Ver src/lib/account-nudge.ts */}
         <AccountNudge />
+        {/* Captura de suscriptores — muestra El Corredor (informe mensual, entrega
+            instantánea) una vez por visitante tras engagement real. Coordinado con
+            AccountNudge vía overlay-bus para que nunca aparezcan los dos. */}
+        <SubscribeModal />
         <SpeedInsights />
         {/* gtag.js download deferred to browser idle (lazyOnload) — keeps ~157 KiB of
             third-party JS off the mobile critical path (TBT/INP). The inline stub in

@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { TIERRA_PROVINCIAS, valuarCampo, type Valuacion } from '@/lib/valuacion-campos'
+import { TIERRA_PROVINCIAS, tierraDe, zonasDe, valuarCampo, type Valuacion } from '@/lib/valuacion-campos'
 
 /**
  * Tasador de campos — la pieza visual pesada de la inmobiliaria rural.
@@ -33,11 +33,22 @@ export default function ValuacionCampo({
 }) {
   const [hectareas, setHectareas] = useState(hectareasInicial)
   const [provincia, setProvincia] = useState(provinciaInicial)
-  const [kgHaMes, setKgHaMes] = useState<number>(kgHaMesInicial || 5)
+  const [zona, setZona] = useState<string>('')
+  // Mientras el usuario no toque el canon, seguimos el típico de la zona: así el
+  // slider arranca en un número que existe en el campo, no en uno inventado.
+  const [canonTocado, setCanonTocado] = useState(kgHaMesInicial != null)
+  const [kgHaMes, setKgHaMes] = useState<number>(kgHaMesInicial || 4.5)
+
+  const zonas = useMemo(() => zonasDe(provincia), [provincia])
+  const canonTipico = useMemo(
+    () => tierraDe(provincia, zona || null)?.kg_ha_mes_canon ?? null,
+    [provincia, zona],
+  )
+  const canon = canonTocado ? kgHaMes : (canonTipico ?? kgHaMes)
 
   const v: Valuacion = useMemo(
-    () => valuarCampo({ hectareas, provincia, kgHaMes }),
-    [hectareas, provincia, kgHaMes],
+    () => valuarCampo({ hectareas, provincia, zona: zona || null, kgHaMes: canon }),
+    [hectareas, provincia, zona, canon],
   )
 
   const comp = v.porComparables
@@ -84,7 +95,10 @@ export default function ValuacionCampo({
             <span className="text-zinc-400 text-xs block mb-1.5">Provincia</span>
             <select
               value={provincia}
-              onChange={(e) => setProvincia(e.target.value)}
+              onChange={(e) => {
+                setProvincia(e.target.value)
+                setZona('')
+              }}
               className="w-full px-3 py-2 text-sm bg-zinc-900 border border-zinc-800 rounded text-zinc-200 focus:outline-none focus:border-zinc-600"
             >
               {TIERRA_PROVINCIAS.map((t) => (
@@ -94,6 +108,27 @@ export default function ValuacionCampo({
               ))}
             </select>
           </label>
+          <label className="block">
+            <span className="text-zinc-400 text-xs block mb-1.5">
+              Zona {zonas.length === 0 && <span className="text-zinc-600">(sin relevar)</span>}
+            </span>
+            <select
+              value={zona}
+              onChange={(e) => setZona(e.target.value)}
+              disabled={zonas.length === 0}
+              className="w-full px-3 py-2 text-sm bg-zinc-900 border border-zinc-800 rounded text-zinc-200 focus:outline-none focus:border-zinc-600 disabled:opacity-40"
+            >
+              <option value="">Toda la provincia</option>
+              {zonas.map((t) => (
+                <option key={t.zona} value={t.zona as string}>
+                  {t.zona}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <label className="block">
             <span className="text-zinc-400 text-xs block mb-1.5">Hectáreas</span>
             <input
@@ -110,7 +145,7 @@ export default function ValuacionCampo({
           <div className="flex items-baseline justify-between mb-1.5">
             <span className="text-zinc-400 text-xs">Canon de arrendamiento</span>
             <span className="text-accent font-mono text-sm tabular-nums">
-              {kgHaMes.toLocaleString('es-AR', { maximumFractionDigits: 1 })} kg/ha/mes
+              {canon.toLocaleString('es-AR', { maximumFractionDigits: 1 })} kg/ha/mes
             </span>
           </div>
           <input
@@ -118,13 +153,20 @@ export default function ValuacionCampo({
             min={0.1}
             max={20}
             step={0.1}
-            value={kgHaMes}
-            onChange={(e) => setKgHaMes(Number(e.target.value))}
+            value={canon}
+            onChange={(e) => {
+              setCanonTocado(true)
+              setKgHaMes(Number(e.target.value))
+            }}
             className="w-full accent-sky-400"
           />
           <div className="flex justify-between text-xxs text-zinc-600 mt-1">
             <span>0,1</span>
-            <span>kilos de novillo por hectárea por mes</span>
+            <span>
+              {!canonTocado && canonTipico
+                ? `típico de la zona · movelo si sabés el tuyo`
+                : 'kilos de novillo por hectárea por mes'}
+            </span>
             <span>20</span>
           </div>
         </label>
@@ -154,7 +196,7 @@ export default function ValuacionCampo({
               <div>
                 <p className="text-zinc-200 text-sm">Por lo que se paga en la zona</p>
                 <p className="text-zinc-500 text-xs mt-0.5">
-                  {comp.region} · {comp.n} referencias relevadas
+                  {comp.region} · {comp.n === 1 ? 'tasación de referencia' : `${comp.n} referencias relevadas`}
                 </p>
               </div>
               <span className="text-zinc-100 font-mono text-sm shrink-0 tabular-nums">
@@ -185,6 +227,14 @@ export default function ValuacionCampo({
             <p className="text-xs text-amber-300/90 border border-amber-500/30 rounded px-3 py-2 bg-amber-500/[0.04]">
               Esta zona es agrícola: la tierra se paga por lo que rinde en granos, no por lo que cría. El
               canon ganadero no explica su precio, así que acá vale el comparable de la zona.
+            </p>
+          )}
+
+          {v.masAniosQueLaPampa && v.porRenta && (
+            <p className="text-xs text-zinc-400 border border-zinc-800 rounded px-3 py-2 bg-zinc-900/50">
+              Ahí la tierra equivale a {v.porRenta.anos} años de arrendamiento, contra los veintipico de la
+              pampa húmeda. No es un error: en esas zonas el campo se paga también por lo que puede llegar a
+              valer, no solo por lo que produce hoy.
             </p>
           )}
 
