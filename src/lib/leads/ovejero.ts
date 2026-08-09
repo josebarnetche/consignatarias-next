@@ -39,6 +39,7 @@ export interface LeadRow {
   status: string
   estimated_value_ars: number | null
   fee_ars: number | null
+  routed_at?: string | null
 }
 
 export interface MatchArrendamiento {
@@ -242,6 +243,39 @@ function compatibilidadZona(busca: LeadRow, ofrece: LeadRow): string | null {
     : `misma provincia (${busca.province})`
 }
 
+/**
+ * ¿Este lead está en condiciones de que le escribamos a una firma real?
+ *
+ * El 2026-08-07 el agente le escribió a Reggi diciendo "quiere vender ? novillos en
+ * zona s/d" — un lead sin zona ni cantidad. Los límites de VOLUMEN funcionaban; lo
+ * que faltaba era el de CALIDAD. Un mail así quema la relación con la firma y nos
+ * hace quedar como un robot, que es exactamente lo que no queremos ser.
+ */
+export function leadConsultable(l: LeadRow): { ok: boolean; motivo?: string } {
+  if (!l.province && !l.zona) return { ok: false, motivo: 'sin provincia ni zona: la firma no sabría de dónde le hablamos' }
+  if (l.intent === 'vender' && !l.head_count) return { ok: false, motivo: 'venta sin cantidad de cabezas' }
+  if ((l.intent === 'arrendar_busco' || l.intent === 'arrendar_ofrezco') && !l.hectareas) {
+    return { ok: false, motivo: 'arrendamiento sin hectáreas' }
+  }
+  if (!l.phone && !l.email) return { ok: false, motivo: 'sin forma de contactar al productor' }
+  // Ya lo ruteaste: la firma que corresponde ya lo tiene. Volver a preguntar por
+  // ahí duplica el trabajo y te deja mal parado con las dos puntas.
+  if (l.routed_at) return { ok: false, motivo: 'ya está ruteado a una firma' }
+  return { ok: true }
+}
+
+/**
+ * Casillas a las que no se le manda una consulta comercial: prensa, marketing y
+ * RRHH no resuelven un lead y encima nos fichan como spam. Rosgan recibió la
+ * primera consulta en prensarosgan@ — de ahí la lista.
+ */
+const CASILLAS_NO_COMERCIALES = /^(prensa|press|prensarosgan|marketing|comunicacion|comunicaciones|rrhh|recursos|empleos|jobs|legales|newsletter|no-?reply|noreply)/i
+
+function esCasillaComercial(email: string): boolean {
+  const local = email.split('@')[0] ?? ''
+  return !CASILLAS_NO_COMERCIALES.test(local)
+}
+
 function resumenLead(l: LeadRow): string {
   const que =
     l.intent === 'arrendar_busco'
@@ -272,7 +306,7 @@ async function firmasParaConsultar(
     .in('canonical_slug', candidatas.map((c) => c.slug))
   const emailPorSlug = new Map(
     (contactos ?? [])
-      .filter((c) => c.email && c.email.includes('@'))
+      .filter((c) => c.email && c.email.includes('@') && esCasillaComercial(c.email.trim()))
       .map((c) => [c.canonical_slug, c.email.trim().toLowerCase()]),
   )
 
@@ -318,6 +352,22 @@ export async function enviarConsultas(
   const ahora = Date.now()
 
   for (const { lead } of ranking) {
+    // Portero de calidad ANTES que cualquier otra cosa: nunca se le escribe a una
+    // firma real por un lead incompleto. Sube al digest para que lo completen.
+    const calidad = leadConsultable(lead)
+    if (!calidad.ok) {
+      sinRespuesta.push({
+        lead,
+        resumen: resumenLead(lead),
+        firmasConsultadas: 0,
+        diasDesdePrimeraConsulta: 0,
+        quedanFirmas: 0,
+        agotado: false,
+        diagnostico: `No le escribo a ninguna firma por este lead: ${calidad.motivo}. Completalo desde el board o llamalo vos y lo retomo.`,
+      })
+      continue
+    }
+
     const est = estados.get(lead.id)
     const yaConsultadas = est?.firmasConsultadas ?? 0
     const resumenPrevio = resumenLead(lead)
@@ -404,7 +454,7 @@ export async function correrOvejero(db: SupabaseClient): Promise<ReporteOvejero>
   const { data } = await db
     .from('producer_leads')
     .select(
-      'id, created_at, intent, province, zona, category, head_count, hectareas, name, phone, email, message, status, estimated_value_ars, fee_ars',
+      'id, created_at, intent, province, zona, category, head_count, hectareas, name, phone, email, message, status, estimated_value_ars, fee_ars, routed_at',
     )
     .in('status', ['new', 'routed', 'contacted'])
     .order('created_at', { ascending: false })
