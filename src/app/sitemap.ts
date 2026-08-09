@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { PROVINCIAS_CON_DATO } from '@/lib/campos-seo'
 import { getAllCanonicalSlugs, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import { getProfileSEO } from '@/lib/data/profile-seo'
 import type { Auction } from '@/lib/db/schema'
@@ -125,6 +126,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/campos`, lastModified: buildDate, changeFrequency: 'daily', priority: 0.9 },
     { url: `${baseUrl}/campos/publicar`, lastModified: buildDate, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/campos/valuar`, lastModified: buildDate, changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${baseUrl}/como-comprar-un-campo`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/como-vender-un-campo`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/como-publicar-un-campo`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${baseUrl}/impuestos-por-la-venta-de-un-campo`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/creditos-para-comprar-un-campo`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.75 },
+    { url: `${baseUrl}/inmobiliarias-rurales`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.75 },
+    // Una página por provincia con dato propio: "cuánto vale la hectárea en X".
+    ...PROVINCIAS_CON_DATO.map((p) => ({
+      url: `${baseUrl}/campos/valor-hectarea/${p.slug}`,
+      lastModified: buildDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    })),
     { url: `${baseUrl}/como-se-calcula-el-canon-de-arrendamiento`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.75 },
     { url: `${baseUrl}/impuesto-de-sellos-arrendamiento`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${baseUrl}/que-es-la-aparceria`, lastModified: priceDate, changeFrequency: 'monthly', priority: 0.7 },

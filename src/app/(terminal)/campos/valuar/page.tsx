@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     'tasacion de campos',
     'valor campo ganadero',
     'cuanto vale una hectarea',
+    'cuanto cuesta mi campo',
+    'tasador de campos',
+    'valor de mi campo en dolares',
   ],
   openGraph: {
     title: '¿Cuánto vale mi campo?',
@@ -192,9 +195,34 @@ export default function ValuarCampoPage() {
           </Link>
         </div>
 
+        <section className="mb-8">
+          <h2 className="text-zinc-200 text-lg font-medium mb-3">Por provincia</h2>
+          <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs">
+            {TIERRA_PROVINCIAS.map((t) => (
+              <Link
+                key={t.provincia}
+                href={`/campos/valor-hectarea/${t.provincia
+                  .toLowerCase()
+                  .normalize('NFD')
+                  .replace(/[\u0300-\u036f]/g, '')
+                  .replace(/[^a-z0-9]+/g, '-')}`}
+                className="text-zinc-400 hover:text-accent transition-colors"
+              >
+                ¿Cuánto vale la hectárea en {t.provincia}?
+              </Link>
+            ))}
+          </div>
+        </section>
+
         <div className="border-t border-zinc-800 pt-4 flex flex-wrap gap-4 text-xs">
           <Link href="/campos" className="text-zinc-500 hover:text-accent transition-colors">
             Campos publicados →
+          </Link>
+          <Link href="/como-vender-un-campo" className="text-zinc-500 hover:text-accent transition-colors">
+            Cómo vender un campo
+          </Link>
+          <Link href="/impuestos-por-la-venta-de-un-campo" className="text-zinc-500 hover:text-accent transition-colors">
+            Impuestos de la venta
           </Link>
           <Link href="/mercado/arrendamiento" className="text-zinc-500 hover:text-accent transition-colors">
             Índice de arrendamiento

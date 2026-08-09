@@ -113,7 +113,7 @@ function normalizar(s: string): string {
  * ambiente. Un partido que no figura cae al valor provincial, que es lo correcto:
  * mejor el promedio que una zona forzada.
  */
-const ZONA_POR_PARTIDO: Record<string, Record<string, string>> = {
+export const ZONA_POR_PARTIDO: Record<string, Record<string, string>> = {
   'buenos aires': {
     'Zona núcleo': 'pergamino, rojas, salto, colon, arrecifes, ramallo, san nicolas, san pedro, baradero, capitan sarmiento',
     'Centro oeste': 'bragado, 9 de julio, nueve de julio, general viamonte, lincoln, chivilcoy, alberti, chacabuco, junin, general arenales',

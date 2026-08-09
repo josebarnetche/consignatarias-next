@@ -4,6 +4,7 @@ import { createServiceClient } from '@/lib/supabase'
 import { APTITUD_LABEL, fmtArs, fmtHa, fmtUsd, precioVenta, tituloCampo, type Aptitud, type Campo } from '@/lib/campos'
 import { canonEnPlata, promedioMesAnterior } from '@/lib/valuacion-campos'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { PROVINCIAS_CON_DATO } from '@/lib/campos-seo'
 
 export const revalidate = 1800
 
@@ -196,6 +197,53 @@ export default async function CamposPage() {
             Busco hacienda
           </Link>
         </div>
+
+        <section className="border-t border-zinc-800 pt-5 mt-8">
+          <h2 className="text-zinc-500 text-xs uppercase tracking-[0.16em] mb-3">
+            Comprar, vender y tasar un campo
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-xs">
+            <Link href="/campos/valuar" className="text-zinc-400 hover:text-accent transition-colors">
+              ¿Cuánto vale mi campo? — tasador
+            </Link>
+            <Link href="/como-comprar-un-campo" className="text-zinc-400 hover:text-accent transition-colors">
+              Cómo comprar un campo — requisitos y papeles
+            </Link>
+            <Link href="/como-vender-un-campo" className="text-zinc-400 hover:text-accent transition-colors">
+              Cómo vender un campo — precio y tiempos
+            </Link>
+            <Link href="/como-publicar-un-campo" className="text-zinc-400 hover:text-accent transition-colors">
+              Cómo publicar tu campo — guía del aviso
+            </Link>
+            <Link href="/impuestos-por-la-venta-de-un-campo" className="text-zinc-400 hover:text-accent transition-colors">
+              Impuestos por la venta de un campo
+            </Link>
+            <Link href="/creditos-para-comprar-un-campo" className="text-zinc-400 hover:text-accent transition-colors">
+              Créditos y financiación
+            </Link>
+            <Link href="/inmobiliarias-rurales" className="text-zinc-400 hover:text-accent transition-colors">
+              Inmobiliarias rurales
+            </Link>
+            <Link href="/mercado/arrendamiento" className="text-zinc-400 hover:text-accent transition-colors">
+              Índice de arrendamiento
+            </Link>
+          </div>
+          <div className="mt-4 pt-4 border-t border-zinc-900">
+            <p className="text-zinc-500 text-xs mb-2">Cuánto vale la hectárea, provincia por provincia:</p>
+            <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-xxs">
+              {PROVINCIAS_CON_DATO.map((p) => (
+                <Link
+                  key={p.slug}
+                  href={`/campos/valor-hectarea/${p.slug}`}
+                  className="text-zinc-500 hover:text-accent transition-colors"
+                >
+                  {p.provincia}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
       </div>
     </>
   )
