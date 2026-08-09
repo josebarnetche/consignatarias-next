@@ -33,16 +33,27 @@ const mp = marketPrices as unknown as {
 export interface ProvinciaTierra {
   provincia: string
   region: string
+  /** Zona dentro de la provincia ("zona núcleo", "cuenca del Salado"). Opcional:
+   *  las filas sin zona son el valor provincial y sirven de respaldo. */
+  zona?: string | null
   n: number
   usd_ha: number
   p25: number
   p75: number
   kg_ha_ano: number
+  /** Canon típico relevado, en kg de novillo por ha por mes. Cuando existe, se
+   *  usa como sugerencia; el canon del aviso concreto siempre manda. */
+  kg_ha_mes_canon?: number | null
   usd_por_kg: number
   anos_repago: number
+  fuente?: string | null
+  fecha?: string | null
 }
 
 export const TIERRA: ProvinciaTierra[] = tierraRaw as ProvinciaTierra[]
+
+/** Solo las filas provinciales (sin zona), para selectores y tablas resumen. */
+export const TIERRA_PROVINCIAS: ProvinciaTierra[] = TIERRA.filter((t) => !t.zona)
 
 /** El canon se liquida con el PROMEDIO DEL MES ANTERIOR, no con el precio de hoy. */
 export function promedioMesAnterior(): { valor: number; etiqueta: string; ruedas: number } {
@@ -64,14 +75,30 @@ function normalizar(s: string): string {
   return s.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
 }
 
-export function tierraDe(provincia: string | null | undefined): ProvinciaTierra | null {
+/**
+ * Busca la referencia más específica que exista: primero la zona dentro de la
+ * provincia, y si no hay, el valor provincial. Un campo en Pergamino no se tasa
+ * con el promedio de Buenos Aires si tenemos el dato de la zona núcleo.
+ */
+export function tierraDe(provincia: string | null | undefined, zona?: string | null): ProvinciaTierra | null {
   if (!provincia) return null
   const p = normalizar(provincia)
-  return (
-    TIERRA.find((t) => normalizar(t.provincia) === p) ??
-    TIERRA.find((t) => p.includes(normalizar(t.provincia)) || normalizar(t.provincia).includes(p)) ??
-    null
+  const enProvincia = TIERRA.filter(
+    (t) => normalizar(t.provincia) === p || p.includes(normalizar(t.provincia)) || normalizar(t.provincia).includes(p),
   )
+  if (enProvincia.length === 0) return null
+
+  if (zona) {
+    const z = normalizar(zona)
+    const porZona = enProvincia.find((t) => {
+      if (!t.zona) return false
+      const tz = normalizar(t.zona)
+      return tz === z || z.includes(tz) || tz.includes(z)
+    })
+    if (porZona) return porZona
+  }
+  // Sin zona o sin match: la fila provincial (la que no declara zona), o la primera.
+  return enProvincia.find((t) => !t.zona) ?? enProvincia[0]
 }
 
 /**
@@ -99,6 +126,8 @@ export interface Valuacion {
   confianza: 'alta' | 'media' | 'baja'
   novilloUsdKg: number
   provinciaEnBase: string | null
+  /** Qué referencia se terminó usando: la zona puntual o el promedio provincial. */
+  referenciaUsada: string | null
 }
 
 /**
@@ -107,11 +136,12 @@ export interface Valuacion {
 export function valuarCampo(opts: {
   hectareas: number
   provincia: string | null
+  zona?: string | null
   kgHaMes?: number | null
 }): Valuacion {
   const { valor: novilloArs } = promedioMesAnterior()
   const novilloUsdKg = novilloArs / mp.usdBlue.current
-  const t = tierraDe(opts.provincia)
+  const t = tierraDe(opts.provincia, opts.zona)
 
   let porRenta: Valuacion['porRenta'] = null
   if (opts.kgHaMes && opts.kgHaMes > 0) {
@@ -157,6 +187,7 @@ export function valuarCampo(opts: {
     confianza,
     novilloUsdKg,
     provinciaEnBase: t?.provincia ?? null,
+    referenciaUsada: t ? (t.zona ? `${t.zona}, ${t.provincia}` : t.provincia) : null,
   }
 }
 

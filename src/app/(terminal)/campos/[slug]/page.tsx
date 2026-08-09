@@ -49,7 +49,7 @@ export default async function CampoPage({ params }: { params: Promise<{ slug: st
   if (!c) notFound()
 
   const arr = c.precio_kg_ha_mes ? canonEnPlata(c.hectareas, c.precio_kg_ha_mes) : null
-  const val = valuarCampo({ hectareas: c.hectareas, provincia: c.provincia, kgHaMes: c.precio_kg_ha_mes })
+  const val = valuarCampo({ hectareas: c.hectareas, provincia: c.provincia, zona: c.partido, kgHaMes: c.precio_kg_ha_mes })
   const vta = c.precio_usd_ha ? precioVenta(c.hectareas, c.precio_usd_ha) : null
   const cap = capacidadEstimada(c)
 

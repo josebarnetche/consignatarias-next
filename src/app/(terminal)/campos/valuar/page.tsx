@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import ValuacionCampo from '@/components/campos/ValuacionCampo'
-import { TIERRA } from '@/lib/valuacion-campos'
+import { TIERRA_PROVINCIAS } from '@/lib/valuacion-campos'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 
 export const revalidate = 3600
@@ -91,7 +91,7 @@ export default function ValuarCampoPage() {
                 </tr>
               </thead>
               <tbody className="font-mono">
-                {TIERRA.map((t) => (
+                {TIERRA_PROVINCIAS.map((t) => (
                   <tr key={t.provincia} className="border-b border-zinc-900">
                     <td className="py-2 pr-3 text-zinc-200 font-sans">{t.provincia}</td>
                     <td className="py-2 pr-3 text-zinc-500 font-sans">{t.region}</td>

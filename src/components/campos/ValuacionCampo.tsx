@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { TIERRA, valuarCampo, type Valuacion } from '@/lib/valuacion-campos'
+import { TIERRA_PROVINCIAS, valuarCampo, type Valuacion } from '@/lib/valuacion-campos'
 
 /**
  * Tasador de campos — la pieza visual pesada de la inmobiliaria rural.
@@ -87,7 +87,7 @@ export default function ValuacionCampo({
               onChange={(e) => setProvincia(e.target.value)}
               className="w-full px-3 py-2 text-sm bg-zinc-900 border border-zinc-800 rounded text-zinc-200 focus:outline-none focus:border-zinc-600"
             >
-              {TIERRA.map((t) => (
+              {TIERRA_PROVINCIAS.map((t) => (
                 <option key={t.provincia} value={t.provincia}>
                   {t.provincia}
                 </option>
