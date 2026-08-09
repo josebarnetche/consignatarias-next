@@ -618,7 +618,8 @@ const TOOLS: Tool[] = [
     inputSchema: {
       type: 'object',
       properties: {
-        kg_ha: { type: 'number', description: 'Kg de novillo por hectárea por mes (típico 3-6)' },
+        kg_ha: { type: 'number', description: 'Kg de novillo por hectárea. Por MES salvo que se pase periodo="anio" (típico 3-6 por mes, o 36-72 por año). Los avisos suelen publicarlo por año.' },
+        periodo: { type: 'string', enum: ['mes', 'anio'], description: 'Unidad de kg_ha. Por defecto "mes".' },
         hectareas: { type: 'number', description: 'Cantidad de hectáreas' },
         precio_novillo: { type: 'number', description: 'Precio del novillo ARS/kg (default: INMAG actual)' },
       },
@@ -626,8 +627,11 @@ const TOOLS: Tool[] = [
       additionalProperties: false,
     },
     async run(args) {
-      const kgHa = Number(args.kg_ha)
+      const kgHaEntrada = Number(args.kg_ha)
       const hectareas = Number(args.hectareas)
+      // Los avisos se publican en kg/ha/año; adentro se trabaja siempre por mes.
+      const porAnio = String(args.periodo ?? 'mes').toLowerCase().startsWith('an')
+      const kgHa = porAnio ? kgHaEntrada / 12 : kgHaEntrada
       // Índice oficial del MAG para arrendamientos (haciinfo000013), si el scrape lo trajo.
       const oficial = (prices as { arrendamientoOficial?: { index: number; date: string; periodIndex?: number | null } }).arrendamientoOficial
       const custom = Number.isFinite(Number(args.precio_novillo)) && Number(args.precio_novillo) > 0
@@ -637,17 +641,17 @@ const TOOLS: Tool[] = [
         : oficial
           ? `índice oficial de arrendamiento MAG ${oficial.date}`
           : 'INMAG del día'
-      if (!Number.isFinite(kgHa) || kgHa <= 0 || !Number.isFinite(hectareas) || hectareas <= 0)
+      if (!Number.isFinite(kgHaEntrada) || kgHaEntrada <= 0 || !Number.isFinite(hectareas) || hectareas <= 0)
         return fail('kg_ha y hectareas deben ser números positivos.')
       const canonMensual = kgHa * hectareas * precio
       const canonAnual = canonMensual * 12
       const canonHaMes = kgHa * precio
       return ok(
-        `Arrendamiento — ${kgHa} kg novillo/ha/mes · ${hectareas} ha · ${fmt(precio)}/kg (${fuentePrecio})\n` +
+        `Arrendamiento — ${kgHa.toFixed(2)} kg novillo/ha/mes (${(kgHa * 12).toFixed(0)} por año) · ${hectareas} ha · ${fmt(precio)}/kg (${fuentePrecio})\n` +
           `Canon mensual: ${fmt(canonMensual)}\n` +
           `Canon anual: ${fmt(canonAnual)}\n` +
           `Por hectárea/mes: ${fmt(canonHaMes)}\n\n` +
-          JSON.stringify({ canon_mensual: Math.round(canonMensual), canon_anual: Math.round(canonAnual), canon_ha_mes: Math.round(canonHaMes), kg_ha: kgHa, hectareas, precio_novillo: precio, fuente_precio: fuentePrecio, indice_arrendamiento_oficial: oficial ?? null }) +
+          JSON.stringify({ canon_mensual: Math.round(canonMensual), canon_anual: Math.round(canonAnual), canon_ha_mes: Math.round(canonHaMes), kg_ha_mes: Number(kgHa.toFixed(2)), kg_ha_anio: Number((kgHa * 12).toFixed(1)), hectareas, precio_novillo: precio, fuente_precio: fuentePrecio, indice_arrendamiento_oficial: oficial ?? null }) +
           `\n\n(Índice oficial: "INMAG sugerido para arrendamientos rurales", MAG. Es un cálculo, no asesoramiento.)`,
       )
     },
@@ -1149,7 +1153,7 @@ const PROMPTS: McpPrompt[] = [
     description: 'Calcula el canon de arrendamiento con el índice novillo del mes.',
     arguments: [
       { name: 'hectareas', description: 'Cantidad de hectáreas', required: true },
-      { name: 'kg_ha', description: 'Kilos de novillo por hectárea pactados', required: true },
+      { name: 'kg_ha', description: 'Kilos de novillo por hectárea pactados (aclarar si es por mes o por año)', required: true },
     ],
     build: (a) => `Calculá el canon de arrendamiento de ${a.hectareas || ''} hectáreas a ${a.kg_ha || ''} kg de novillo por hectárea, con el índice de arrendamiento del mes. Usá calcular_arrendamiento.`,
   },

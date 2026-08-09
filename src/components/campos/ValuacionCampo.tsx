@@ -34,16 +34,19 @@ export default function ValuacionCampo({
   const [hectareas, setHectareas] = useState(hectareasInicial)
   const [provincia, setProvincia] = useState(provinciaInicial)
   const [zona, setZona] = useState<string>('')
+  // Los avisos de arrendamiento se publican casi siempre en kg/ha/AÑO ("60 kg de
+  // novillo por hectárea, por año"), aunque el pago sea mensual. Si el tasador
+  // solo aceptara el número mensual, cualquiera que copie el número de un aviso
+  // se equivocaría por doce. Adentro siempre se trabaja en kg/ha/mes.
+  const [porAno, setPorAno] = useState(false)
   // Mientras el usuario no toque el canon, seguimos el típico de la zona: así el
   // slider arranca en un número que existe en el campo, no en uno inventado.
   const [canonTocado, setCanonTocado] = useState(kgHaMesInicial != null)
   const [kgHaMes, setKgHaMes] = useState<number>(kgHaMesInicial || 4.5)
 
   const zonas = useMemo(() => zonasDe(provincia), [provincia])
-  const canonTipico = useMemo(
-    () => tierraDe(provincia, zona || null)?.kg_ha_mes_canon ?? null,
-    [provincia, zona],
-  )
+  const referencia = useMemo(() => tierraDe(provincia, zona || null), [provincia, zona])
+  const canonTipico = referencia?.kg_ha_mes_canon ?? null
   const canon = canonTocado ? kgHaMes : (canonTipico ?? kgHaMes)
 
   const v: Valuacion = useMemo(
@@ -143,31 +146,49 @@ export default function ValuacionCampo({
 
         <label className="block">
           <div className="flex items-baseline justify-between mb-1.5">
-            <span className="text-zinc-400 text-xs">Canon de arrendamiento</span>
+            <span className="text-zinc-400 text-xs">
+              Canon de arrendamiento
+              <span className="ml-2 inline-flex rounded overflow-hidden border border-zinc-800 align-middle">
+                {([['mes', false], ['año', true]] as const).map(([etiqueta, valor]) => (
+                  <button
+                    key={etiqueta}
+                    type="button"
+                    onClick={() => setPorAno(valor)}
+                    className={`px-2 py-0.5 text-xxs transition-colors ${
+                      porAno === valor ? 'bg-zinc-700 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'
+                    }`}
+                  >
+                    por {etiqueta}
+                  </button>
+                ))}
+              </span>
+            </span>
             <span className="text-accent font-mono text-sm tabular-nums">
-              {canon.toLocaleString('es-AR', { maximumFractionDigits: 1 })} kg/ha/mes
+              {(porAno ? canon * 12 : canon).toLocaleString('es-AR', { maximumFractionDigits: 1 })}{' '}
+              kg/ha/{porAno ? 'año' : 'mes'}
             </span>
           </div>
           <input
             type="range"
-            min={0.1}
-            max={20}
-            step={0.1}
-            value={canon}
+            min={porAno ? 1 : 0.1}
+            max={porAno ? 240 : 20}
+            step={porAno ? 1 : 0.1}
+            value={porAno ? canon * 12 : canon}
             onChange={(e) => {
               setCanonTocado(true)
-              setKgHaMes(Number(e.target.value))
+              const v = Number(e.target.value)
+              setKgHaMes(porAno ? v / 12 : v)
             }}
             className="w-full accent-sky-400"
           />
           <div className="flex justify-between text-xxs text-zinc-600 mt-1">
-            <span>0,1</span>
+            <span>{porAno ? '1' : '0,1'}</span>
             <span>
               {!canonTocado && canonTipico
-                ? `típico de la zona · movelo si sabés el tuyo`
-                : 'kilos de novillo por hectárea por mes'}
+                ? 'típico de la zona · movelo si sabés el tuyo'
+                : `kilos de novillo por hectárea por ${porAno ? 'año' : 'mes'}`}
             </span>
-            <span>20</span>
+            <span>{porAno ? '240' : '20'}</span>
           </div>
         </label>
       </div>
@@ -243,6 +264,12 @@ export default function ValuacionCampo({
               {v.brecha > 0
                 ? `Lo que rinde está ${Math.round(v.brecha)}% por encima de lo que se paga en la zona: o el campo es mejor que el promedio de su provincia, o el canon está alto.`
                 : `Lo que rinde está ${Math.abs(Math.round(v.brecha))}% por debajo de lo que se paga en la zona: o el canon quedó atrasado, o el campo vale por otra cosa además del pasto.`}
+            </p>
+          )}
+
+          {referencia?.canon_fuente && (
+            <p className="text-zinc-500 text-xxs leading-relaxed">
+              Canon de referencia de la zona: {referencia.canon_fuente}.
             </p>
           )}
 

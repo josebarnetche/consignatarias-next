@@ -41,9 +41,15 @@ export interface ProvinciaTierra {
   p25: number
   p75: number
   kg_ha_ano: number
-  /** Canon típico relevado, en kg de novillo por ha por mes. Cuando existe, se
+  /** Canon típico de la zona, en kg de novillo por ha por mes. Cuando existe, se
    *  usa como sugerencia; el canon del aviso concreto siempre manda. */
   kg_ha_mes_canon?: number | null
+  /**
+   * De dónde salió ese canon. Cuando está cargado, el canon fue RELEVADO (avisos
+   * o estudios) y no derivado de la productividad: manda sobre el supuesto del
+   * 30%, porque es lo que se paga y no lo que suponemos que se paga.
+   */
+  canon_fuente?: string | null
   usd_por_kg: number
   anos_repago: number
   /**
@@ -56,6 +62,14 @@ export interface ProvinciaTierra {
   fuente?: string | null
   fecha?: string | null
 }
+
+/**
+ * Novillo de referencia en dólares. Va FIJO a propósito: `anos_repago` y los años
+ * de arrendamiento describen una relación estructural entre lo que vale la tierra
+ * y lo que produce. Si se movieran con el dólar del día, la tasación de un mismo
+ * campo cambiaría por razones que no tienen nada que ver con el campo.
+ */
+const NOVILLO_REF = 2.92
 
 export const TIERRA: ProvinciaTierra[] = tierraRaw as ProvinciaTierra[]
 
@@ -170,15 +184,30 @@ export function tierraDe(provincia: string | null | undefined, zona?: string | n
 }
 
 /**
- * Años de arrendamiento que equivalen al valor de la tierra en esa provincia.
- * Sale del relevamiento: los años de repago sobre producción bruta, llevados a
- * años de canon con la proporción típica canon/producción (~30%).
+ * Cuántos años de arrendamiento equivalen al valor de la tierra en esa zona.
+ *
+ * Dos caminos, y el primero es mucho mejor:
+ *
+ *  1. CANON RELEVADO. Si sabemos lo que se paga de verdad en la zona, los años
+ *     salen de dividir el valor de la hectárea por ese canon. Nada de supuestos.
+ *  2. DERIVADO. Si no, se asume que el canon es ~30% de la producción bruta.
+ *
+ * El relevamiento de agosto de 2026 mostró que la diferencia no es menor: en
+ * Corrientes el supuesto del 30% daba 35 años, y el canon publicado por la UNNE
+ * (24-48 kg/ha/año) da 18 — prácticamente lo mismo que los 18 que dan los avisos
+ * del Salado, que es otro dato, de otra fuente y de otra provincia. Cuando dos
+ * relevamientos independientes convergen en el mismo número, el que estaba mal
+ * era el supuesto.
  */
 const PROPORCION_CANON_SOBRE_PRODUCCION = 0.3
 const ANOS_POR_DEFECTO = 20
 
 export function anosDeArrendamiento(t: ProvinciaTierra | null): { anos: number; propio: boolean } {
   if (!t) return { anos: ANOS_POR_DEFECTO, propio: false }
+  if (t.canon_fuente && t.kg_ha_mes_canon) {
+    const canonAnualUsd = t.kg_ha_mes_canon * 12 * NOVILLO_REF
+    return { anos: Math.round(t.usd_ha / canonAnualUsd), propio: true }
+  }
   return { anos: Math.round(t.anos_repago / PROPORCION_CANON_SOBRE_PRODUCCION), propio: true }
 }
 

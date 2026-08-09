@@ -63,7 +63,7 @@ Available tools:
 - \`buscar_consignataria\` — directorio de consignatarias/casas de remate por nombre o zona (incluye CUIT)
 - \`actividad_consignatarias\` — ranking de cabezas operadas y precio promedio por firma en el MAG de Cañuelas (mercado de referencia, ~12% nacional)
 - \`buscar_frigorifico\` — frigoríficos habilitados MAGYP/SENASA (1.100+ plantas) por nombre/provincia/CUIT
-- \`calcular_arrendamiento\` — canon de arrendamiento rural indexado al novillo
+- \`calcular_arrendamiento\` — canon de arrendamiento rural indexado al novillo (kg/ha por mes o por año)
 - \`sanidad_plan\` — ficha de un plan sanitario SENASA (aftosa, brucelosis, tuberculosis, garrapata) con su resolución
 - \`sanidad_calendario_aftosa\` — calendario de vacunación antiaftosa 2026 (Res. 711/2025) + zona con/sin vacunación por provincia
 - \`sanidad_requisitos_movimiento\` — requisitos para mover hacienda (RENSPA, DT-e, serología brucelosis, barrera de garrapata) con fuente
