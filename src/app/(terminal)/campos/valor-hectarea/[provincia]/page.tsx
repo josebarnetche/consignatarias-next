@@ -6,6 +6,7 @@ import {
   provinciaPorSlug,
   partidosDeProvincia,
   zonasDeProvincia,
+  slugZona,
   SUPERFICIES_TIPICAS,
 } from '@/lib/campos-seo'
 import { anosDeArrendamiento, promedioMesAnterior } from '@/lib/valuacion-campos'
@@ -229,7 +230,14 @@ export default async function ValorHectareaProvincia({
                 <tbody className="font-mono">
                   {zonas.map((z) => (
                     <tr key={z.zona} className="border-b border-zinc-900">
-                      <td className="py-2 pr-3 text-zinc-200 font-sans">{z.zona}</td>
+                      <td className="py-2 pr-3 font-sans">
+                        <Link
+                          href={`/campos/valor-hectarea/${provincia}/${slugZona(z.zona as string)}`}
+                          className="text-zinc-200 hover:text-accent transition-colors"
+                        >
+                          {z.zona}
+                        </Link>
+                      </td>
                       <td className="py-2 pr-3 text-zinc-500 font-sans">
                         {z.aptitud ? (APTITUD[z.aptitud] ?? z.aptitud) : '—'}
                       </td>

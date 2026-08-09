@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { PROVINCIAS_CON_DATO } from '@/lib/campos-seo'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import type { SupabaseClient } from '@supabase/supabase-js'
@@ -824,6 +825,59 @@ export default async function ArrendamientoPage() {
               Índice del novillo para arrendamiento (Mercado Agroganadero, haciinfo000013).
               Recuperado de https://www.consignatarias.com.ar/mercado/arrendamiento
             </p>
+          </div>
+        </section>
+
+        {/* La página con más búsquedas del sitio no linkeaba a la sección de
+            campos. Quien llega acá está mirando el valor del campo: es el mismo
+            visitante, una pantalla antes. */}
+        <section className="max-w-6xl mx-auto px-4 pb-10">
+          <div className="border border-zinc-800 rounded-lg bg-zinc-900/40 p-6">
+            <h2 className="text-zinc-100 text-lg font-medium mb-1">
+              ¿Y cuánto vale el campo, no el arrendamiento?
+            </h2>
+            <p className="text-zinc-400 text-sm mb-4 max-w-2xl">
+              Relevamos el valor de la hectárea en 15 provincias y 52 zonas, con la fuente y la fecha de
+              cada dato. El tasador cruza lo que el campo renta con lo que se paga en su zona.
+            </p>
+            <div className="flex flex-wrap gap-3 mb-5">
+              <Link
+                href="/campos/valuar"
+                className="px-4 py-2 text-xs bg-accent hover:bg-accent-bright text-zinc-950 font-medium rounded transition-colors"
+              >
+                ¿Cuánto vale mi campo?
+              </Link>
+              <Link
+                href="/campos"
+                className="px-4 py-2 text-xs border border-zinc-700 text-zinc-300 hover:text-accent hover:border-accent rounded transition-colors"
+              >
+                Campos ofrecidos
+              </Link>
+            </div>
+            <div className="border-t border-zinc-800 pt-4">
+              <p className="text-zinc-500 text-xs mb-2">Cuánto vale la hectárea, por provincia:</p>
+              <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-xs">
+                {PROVINCIAS_CON_DATO.map((p) => (
+                  <Link
+                    key={p.slug}
+                    href={`/campos/valor-hectarea/${p.slug}`}
+                    className="text-zinc-400 hover:text-accent transition-colors"
+                  >
+                    {p.provincia}{' '}
+                    <span className="font-mono tabular-nums text-zinc-600">
+                      US${p.usd_ha.toLocaleString('es-AR')}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <div className="border-t border-zinc-800 mt-4 pt-4 flex flex-wrap gap-4 text-xs">
+              <Link href="/como-comprar-un-campo" className="text-zinc-500 hover:text-accent">Cómo comprar un campo</Link>
+              <Link href="/como-vender-un-campo" className="text-zinc-500 hover:text-accent">Cómo vender un campo</Link>
+              <Link href="/impuestos-por-la-venta-de-un-campo" className="text-zinc-500 hover:text-accent">Impuestos de la venta</Link>
+              <Link href="/creditos-para-comprar-un-campo" className="text-zinc-500 hover:text-accent">Financiación</Link>
+              <Link href="/inmobiliarias-rurales" className="text-zinc-500 hover:text-accent">Inmobiliarias rurales</Link>
+            </div>
           </div>
         </section>
 

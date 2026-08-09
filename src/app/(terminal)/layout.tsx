@@ -65,6 +65,20 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
+    label: "CAMPOS",
+    match: "/campos",
+    items: [
+      { label: "Campos ofrecidos", href: "/campos", hint: "Arrendamiento y venta" },
+      { label: "¿Cuánto vale mi campo?", href: "/campos/valuar", hint: "Tasador · 15 provincias, 52 zonas" },
+      { label: "Publicar un campo", href: "/campos/publicar", hint: "Gratis · tu contacto no se publica" },
+      { label: "Cómo comprar un campo", href: "/como-comprar-un-campo", hint: "Papeles y qué mirar antes de señar" },
+      { label: "Cómo vender un campo", href: "/como-vender-un-campo", hint: "Precio, carpeta y tiempos" },
+      { label: "Impuestos de la venta", href: "/impuestos-por-la-venta-de-un-campo", hint: "El ITI ya no existe" },
+      { label: "Créditos y financiación", href: "/creditos-para-comprar-un-campo" },
+      { label: "Inmobiliarias rurales", href: "/inmobiliarias-rurales" },
+    ],
+  },
+  {
     label: "DIRECTORIO",
     match: "/consignatarias",
     items: [

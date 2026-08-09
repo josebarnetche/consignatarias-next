@@ -70,5 +70,29 @@ function titulo(s: string): string {
   return s.replace(/\b[a-z]/g, (c) => c.toUpperCase()).replace(/\bDe\b/g, 'de')
 }
 
+export function slugZona(zona: string): string {
+  return slugProvincia(zona)
+}
+
+/** Todas las zonas relevadas, con su slug, para generar sus páginas. */
+export const ZONAS_CON_DATO = TIERRA.filter((t) => !!t.zona).map((t) => ({
+  ...t,
+  provinciaSlug: slugProvincia(t.provincia),
+  zonaSlug: slugZona(t.zona as string),
+}))
+
+export function zonaPorSlug(provinciaSlug: string, zonaSlug: string) {
+  return (
+    ZONAS_CON_DATO.find((z) => z.provinciaSlug === provinciaSlug && z.zonaSlug === zonaSlug) ?? null
+  )
+}
+
+/** Los partidos que caen en una zona, para que la página los nombre. */
+export function partidosDeZona(provincia: string, zona: string): string[] {
+  return partidosDeProvincia(provincia)
+    .filter((p) => p.zona === zona)
+    .map((p) => p.partido)
+}
+
 /** Superficies típicas de operación, para responder "campos de N hectáreas en X". */
 export const SUPERFICIES_TIPICAS = [100, 200, 500, 1000, 2000, 5000]

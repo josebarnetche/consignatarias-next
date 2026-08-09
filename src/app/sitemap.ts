@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { PROVINCIAS_CON_DATO } from '@/lib/campos-seo'
+import { PROVINCIAS_CON_DATO, ZONAS_CON_DATO } from '@/lib/campos-seo'
 import { getAllCanonicalSlugs, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import { getProfileSEO } from '@/lib/data/profile-seo'
 import type { Auction } from '@/lib/db/schema'
@@ -139,6 +139,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: buildDate,
       changeFrequency: 'weekly' as const,
       priority: 0.8,
+    })),
+    // Y una por zona: es como se busca de verdad ("cuánto vale la hectárea en
+    // Marcos Juárez"), no por promedio provincial.
+    ...ZONAS_CON_DATO.map((z) => ({
+      url: `${baseUrl}/campos/valor-hectarea/${z.provinciaSlug}/${z.zonaSlug}`,
+      lastModified: buildDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
     })),
     { url: `${baseUrl}/como-se-calcula-el-canon-de-arrendamiento`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.75 },
     { url: `${baseUrl}/impuesto-de-sellos-arrendamiento`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.7 },
