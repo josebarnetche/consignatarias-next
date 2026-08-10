@@ -7,6 +7,81 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.192.0] — 2026-08-10
+
+### La tierra medida por zona, el cluster de campos y el lead que es nuestro
+
+El día más largo de la inmobiliaria rural. Tres relevamientos cruzados, 73 páginas
+nuevas y una corrección de rumbo en cómo se captan los leads.
+
+**La base de tierra: de 11 filas a 67** (15 provinciales + 52 zonas). Cruce de
+tasadores con serie publicada (Compañía Argentina de Tierras, CAIR), catastro con
+modelo espacial (IDECOR Córdoba, 26 departamentos) y 506 avisos de venta relevados
+—que son precio *pedido* y se ajustan ~15% antes de compararlos con valores de
+operación—.
+
+- **Nuevo campo `aptitud`.** La tierra agrícola NO se valúa con canon ganadero: la
+  zona núcleo vale US$18.500/ha porque produce soja, no porque críe novillos, y
+  tasarla en kilos de hacienda daba un número muy por debajo del mercado — *plausible*,
+  que es el peor tipo de error. Si la zona es agrícola, la vía de renta no se calcula
+  y la UI lo dice.
+- **El promedio provincial engaña.** Dentro de Buenos Aires hay **5,8×** entre la zona
+  núcleo y la cuenca del Salado; dentro de Córdoba, **42×** entre Marcos Juárez y Minas.
+  Dos filas viejas estaban mal etiquetadas: "Buenos Aires 3.300" era el valor de cría
+  del Salado y "Córdoba 800" el del norte árido.
+- **El canon relevado manda sobre el supuesto del 30%.** Con 30 observaciones reales
+  (avisos vigentes + estudio de la UNNE sobre Corrientes), los años de arrendamiento
+  salen de dividir el valor de la hectárea por lo que se paga de verdad. Corrientes
+  pasó de 35 años (supuesto) a **18,1** (dato) — prácticamente lo mismo que los **18,0**
+  que dan 12 avisos del Salado, que es otra fuente, otra provincia y otro método. La
+  regla de los 20 años queda confirmada con dato de mercado.
+- **El mercado publica el canon en kg/ha/AÑO**, aunque el pago sea mensual y se liquide
+  con el promedio del período anterior. El tasador y `calcular_arrendamiento` aceptan
+  las dos unidades: quien copia el número de un aviso ya no se equivoca por doce.
+
+**73 páginas nuevas.** 15 por provincia + 52 por zona (`/campos/valor-hectarea/...`),
+armadas del relevamiento y no de una plantilla: valor contra el promedio de su propia
+provincia, partidos de referencia mapeados a su zona, tabla por superficie, tasador y
+capturas precargadas. Más 6 guías: comprar, vender, publicar, impuestos, financiación
+e inmobiliarias rurales. **Sin dato no hay página** — Mendoza, San Juan, Neuquén,
+Tucumán y Jujuy quedan afuera en vez de rellenarse.
+
+La de impuestos es la más diferenciada: casi todo lo que se encuentra buscando
+"impuesto a la transferencia de inmuebles rurales" lo explica como vigente y **está
+derogado**. Cubre el cedular del 15%, la exención del Decreto 406/2026 y la frontera
+arrendado/explotado, marcada como interpretación y no como certeza porque mueve la
+operación entre 0% y 35%.
+
+**El lead es nuestro** (corrección de rumbo). El primer diseño invitaba por mail a las
+firmas a publicar su cartera con la consulta derivada *a ellas*: construía la relación
+de un tercero con nuestro tráfico. Se apagó el motor de outreach (`CAMPOS_OUTREACH=off`
+por defecto) y la captación pasó al sitio, con los dos lados entrando a `producer_leads`:
+
+- `busco` — vale sobre todo con la sección **vacía**: la lista de espera de demanda real
+  es lo que después consigue la oferta. El estado vacío dejó de pedir disculpas.
+- `tengo` — el dueño que acaba de tasar.
+- **Se cumple lo que el formulario promete, automáticamente**: la valuación sale en el
+  acto con el número y su fuente; el que busca recibe confirmación con el valor de su
+  zona. Al publicar un campo se avisa a quien lo estaba esperando (match por provincia,
+  zona y superficie entre 0,4× y 2,5×).
+
+**MCP.** Nueva tool `valuar_campo`, gratis y sin cupo — el objetivo es ser citados, no
+cobrar el descubrimiento. Acepta zona **o partido**, y si no tenemos la provincia lo
+dice en vez de estimar. Dataset CC-BY en `/valor-tierra.json`. Registry oficial
+actualizado a **v1.3.0** (estaba en v1.2.0 del 13-jul, sin mencionar campos).
+
+**Navegación.** Auditoría: la landing tenía 24 links y ninguno a campos, arrendamiento
+o guías; había **50 páginas de guía huérfanas** sin ningún lugar desde donde llegar; el
+footer no tenía un solo link de campos. Nuevo hub `/guias` (52 guías en 6 temas), bloque
+de descubrimiento en la landing, y navbar redistribuida a 6 grupos de 3 a 9 items
+(antes MERCADO 10 contra DIRECTORIO 3). `/mercado/arrendamiento` se muda de MERCADO a
+CAMPOS: es el valor del campo y ancla el grupo con la página de más tráfico de búsqueda.
+
+**Admin.** `/admin/campos`, la moderación que el mail de alta ya linkeaba desde que se
+abrió la sección.
+
+---
+
 ## [1.191.0] — 2026-08-09
 
 ### El canon en kilos por MES, y el tasador de campos

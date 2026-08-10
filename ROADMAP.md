@@ -1,6 +1,6 @@
 # Roadmap
 
-**Current:** v1.187.0 (2026-07-20) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
+**Current:** v1.192.0 (2026-08-10) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
 **Strategic frame:** [docs/strategy/PLAN-DE-NEGOCIOS-2026.md](docs/strategy/PLAN-DE-NEGOCIOS-2026.md)
 (plan de negocios v2, 36 meses — el marco canónico) + [docs/strategy/POSITIONING-THESIS.md](docs/strategy/POSITIONING-THESIS.md)
 (tesis de categoría). **Dos motores de ingreso secuenciados** sobre la capa de datos libre y citable:
@@ -31,6 +31,22 @@ MAJOR boundary, so the product stays on 1.x.
 El motor de lead-gen está vivo (v1.187) pero el revenue sigue en $0. Todo este horizonte es **convertir
 la captura en caja**: instrumentar, sembrar la oferta, y cruzar el gate del primer pago real.
 
+> **Dónde estamos de verdad (10-ago-2026, v1.192).** Los números de versión de esta tabla se cumplieron
+> como *trains* pero **no con estos entregables**: v1.188–v1.192 se fueron en construir la línea de
+> **campos e inmobiliaria rural**, que no estaba en el plan y salió de una señal de tráfico real
+> (`/mercado/arrendamiento` es la página con más búsquedas del sitio). Lo que sigue pendiente, sin
+> maquillar:
+>
+> - **El primer pago real de PRO nunca se verificó.** Sigue siendo el gate desde v1.30.
+> - **El outreach a firmas se probó y se apagó.** 10 invitaciones enviadas, ninguna respuesta todavía.
+>   Se apagó por decisión de producto: derivaba el lead a la firma en vez de quedárselo. La captación
+>   pasó a infraestructura en el sitio.
+> - **El MCP tiene cero adopción externa, medido.** De 624 tool-calls en 30 días: 562 son scanners
+>   anónimos (cada IP llama cada tool una vez y no vuelve), 223 somos nosotros, 108 son bots de
+>   monitoreo que se identifican. **Ningún usuario real recurrente.** Las 5 API keys son todas nuestras.
+>   Estamos bien indexados y auditados a diario — pero estar en el catálogo no es estar en el flujo de
+>   trabajo de nadie.
+
 | Versión (esperada) | Foco | Entregable concreto |
 |---|---|---|
 | **v1.188** | Instrumentar el lead-gen | Funnel `open→submit→routed→won` medido en `/admin/leads`; digest semanal de leads al founder; primer **outbound a firmas** para reclamar perfil (sembrar la oferta) |
@@ -51,7 +67,11 @@ Validado el pagador, profundizar el *prize* (datos / índice / API institucional
 - **API empaquetada + primer design-partner**: SLA, exports CSV/JSON, webhooks, reportes — un integrador real ejercitando el contrato.
 - **Captura de resultados de remate** (precio realizado por lote/firma): el dato propietario que **supera al público** — el moat.
 - **El Índice como producto**: nuevos derivados + reporte institucional pago (El Corredor → suscripción).
-- **MCP con consumo real**: pasar de discovery (~2k handshakes/día) a *calls* facturables.
+- **MCP con consumo real**: pasar de discovery a *calls* de un humano concreto. Medido a fondo el
+  10-ago: **0 usuarios externos recurrentes** (ver nota del Horizonte 1). El cuello no es visibilidad
+  —nos auditan a diario SentinelOracle, mcpbeat, verifymcp, SaSame, Airia, Chiark— sino que nadie tiene
+  todavía una razón para configurarlo. El próximo paso es conseguir **uno**, de la red propia, no un
+  desarrollador anónimo.
 
 **Gate** *(Meses 4–12)*: **PMF en ≥1 línea** (retención + expansión), MRR ~USD 2.000 eq., churn <6%.
 

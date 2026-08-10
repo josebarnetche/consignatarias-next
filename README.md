@@ -11,6 +11,18 @@ de remates, una **API pública** y un **servidor MCP** para agentes IA (registry
 PRO Consignataria para operadores y Enterprise API/MCP para integradores.
 Live: **[www.consignatarias.com.ar](https://www.consignatarias.com.ar)**.
 
+### Campos: el valor de la tierra, medido
+
+Relevamiento propio del **valor de la hectárea en 15 provincias y 52 zonas**, cruzando tasadores con
+serie publicada, catastro provincial con modelo espacial y avisos de venta. Cada fila lleva su fuente,
+su fecha y su cantidad de observaciones — y su **aptitud**, porque la tierra agrícola no se valúa con
+canon ganadero: la zona núcleo vale US$18.500/ha porque produce soja, no porque críe novillos.
+
+El tasador [`/campos/valuar`](https://www.consignatarias.com.ar/campos/valuar) cruza dos vías —lo que el
+campo renta y lo que se paga en su zona— y publica el canon en **kg de novillo por hectárea**, como se
+pacta, convertido a pesos con el índice del día. Dataset citable en
+[`/valor-tierra.json`](https://www.consignatarias.com.ar/valor-tierra.json) (CC-BY).
+
 > **De agregador de remates a infraestructura de inteligencia.** El directorio y el calendario son
 > una superficie; la columna vertebral es la capa de datos e índices del mercado bovino argentino.
 > Tesis y posicionamiento completos en [`docs/strategy/POSITIONING-THESIS.md`](docs/strategy/POSITIONING-THESIS.md).
@@ -152,11 +164,12 @@ Planes:
 Facturación mensual en ARS vía Rebill (anual –15%; exterior: transferencia o USDT al equivalente).
 
 También como **servidor MCP** para agentes IA: endpoint `https://www.consignatarias.com.ar/api/mcp`
-(**18 tools**; listado en el registry oficial como `ar.com.consignatarias/cattle-market`, y en Glama —
-quality A — y Forge). Demo animada con los datos del día en [`/mcp`](https://www.consignatarias.com.ar/mcp).
+(**23 tools**; listado en el registry oficial como `ar.com.consignatarias/cattle-market` v1.3.0, y en
+Glama — quality A — y Forge). Demo animada con los datos del día en [`/mcp`](https://www.consignatarias.com.ar/mcp).
 Cubre mercado (INMAG, precios por categoría, macro, **Índice de Liquidación** = % hembras), remates,
-directorio de consignatarias y frigoríficos, arrendamiento, **sanidad SENASA** (calendario de vacunación,
-requisitos de movimiento, RENSPA, DT-e) y **Buenas Prácticas Ganaderas** — todo con la fuente citada.
+directorio de consignatarias y frigoríficos, **valuaciones** (hacienda, arrendamiento y **valor de la
+hectárea por provincia y zona**), **sanidad SENASA** (calendario de vacunación, requisitos de movimiento,
+RENSPA, DT-e) y **Buenas Prácticas Ganaderas** — todo con la fuente citada.
 Catálogo completo de fuentes MAG en [`docs/mag-endpoints-catalogo.md`](docs/mag-endpoints-catalogo.md).
 
 Documentación: [`/api-docs`](https://www.consignatarias.com.ar/api-docs).

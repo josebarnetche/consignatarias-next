@@ -3,7 +3,7 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.191.0 (2026-08-09). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+**Current version:** v1.192.0 (2026-08-10). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
 
 ---
 
@@ -56,7 +56,10 @@ neto en mano, comparador, spread, seasonality, INMAG history) are free. The prod
 
 | Thing | Count | Source of truth |
 |---|---|---|
-| Sitemap URLs | ~2500 | `src/app/sitemap.ts` (dedup por URL; excluye perfiles thin noindex; varía con el scrape) |
+| Sitemap URLs | ~2700 | `src/app/sitemap.ts` (dedup por URL; excluye perfiles thin noindex; varía con el scrape) |
+| Páginas de valor de la tierra | 67 (15 provincias + 52 zonas) | `/campos/valor-hectarea/[provincia]/[zona]` desde `tierra-por-kilo.json` |
+| Guías indexadas | 52 en 6 temas | `src/lib/data/guias.ts` → hub `/guias` |
+| MCP tools | 23 | `src/app/api/mcp/route.ts` · registry `ar.com.consignatarias/cattle-market` v1.3.0 |
 | API endpoints | 137 under `src/app/api/` | route handlers |
 | Public Enterprise endpoints (auth-gated) | 2 — `/api/precios`, `/api/lots` | |
 | Consignatarias (canonical) | 107 | `src/lib/data/consignataria-slugs.ts` (`getAllProfiles().length` — the public count) |
@@ -145,6 +148,7 @@ docs/                                 Current strategic docs (Oráculo, Corredor
 - **Observability**: every authenticated request to `/api/precios`, `/api/lots` writes a row to `ops_events`. Visible at `/admin/ops`.
 - **No secrets in mailto: links** — `mailto:agro@memola.com.ar` is correct; it's a real inbox. The Resend sender must use `@consignatarias.com` (only verified domain).
 - **MCP surfaces stay in sync.** Any change to MCP tools (add/remove/gating/pricing) must update ALL FOUR surfaces in the same PR: (1) `src/app/api/mcp/route.ts` — tool descriptions + the `instructions` string in `initialize`, (2) `/mcp` page — `TOOLS` array + footnote copy, (3) `src/app/llms.txt/route.ts` — tool list + access/pricing paragraph, (4) `src/app/llms-full.txt/route.ts` — the MCP callout. x402 pricing (US$0.05 tropa / US$0.10 arrendamiento / PRO al blue) lives in the endpoint specs under `src/app/api/x402/` — if it changes, the copy in all four surfaces changes with it.
+- **El manifiesto del registry es la QUINTA superficie, y es la única que un humano lee al navegar un directorio.** Vive en `mcp-registry/server.json` (+ `server.json` y `public/.well-known/mcp/server.json`). Si se agregan tools que cambian *de qué se trata* el server, subir `version` y republicar (`mcp-registry/PUBLISH-RUNBOOK.md`). **Límite duro: 100 caracteres de descripción.** La clave privada vive en `~/.mcp-keys/consignatarias-mcp.pem` — sin ella no se puede republicar, pero el namespace está anclado al DOMINIO (TXT en el apex), así que siempre se puede regenerar.
 
 ---
 
