@@ -1891,8 +1891,8 @@
   },
   "usdBlue": {
     "current": 1535,
-    "prev": 1525,
-    "change": 0.7,
+    "prev": 1535,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
