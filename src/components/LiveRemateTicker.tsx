@@ -12,6 +12,7 @@
  * se rotula SIEMPRE como preliminar, nunca como precio oficial.
  */
 import { useEffect, useState } from 'react'
+import PujaLive from './PujaLive'
 
 interface Lot { categoria: string; precio: number; unidad?: 'kg' | 'cabeza'; cabezas: number | null; at: string }
 interface CatAvg { categoria: string; unidad?: 'kg' | 'cabeza'; n: number; mediana: number }
@@ -22,7 +23,7 @@ interface Payload {
   current: Lot | null
   recent: Lot[]
   averages: CatAvg[]
-  transcript?: { texto: string; at: string }[]
+  transcript?: { id: number; texto: string; pujas: number[]; at: string }[]
 }
 
 const ars = (n: number) => '$' + n.toLocaleString('es-AR')
@@ -58,6 +59,8 @@ export default function LiveRemateTicker() {
           lectura automática · preliminar
         </span>
       </header>
+
+      {data.transcript && <PujaLive blocks={data.transcript} />}
 
       {data.current && (
         <div className="mb-3">

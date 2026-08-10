@@ -7,6 +7,22 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.195.0] — 2026-08-10
+
+### La puja como ticker de mercado
+
+El precio del remate ahora se ve como una cotización en vivo: `<PujaLive>`
+reproduce la escalera de pujas del cantaleo (cada precio cantado, extraído
+por bloque con bandas de plausibilidad kg/cabeza) a ~1 por segundo — número
+grande de terminal que parpadea **verde cuando sube**. Que es casi siempre,
+porque en un remate la puja solo sube; el rojo existe solo para el reset del
+lote siguiente. Montado en el ticker de `/remates/en-vivo` y en el strip de
+la ficha, rotulado "canto reproducido · ~1 min detrás del vivo".
+
+Columna nueva `pujas jsonb` en `live_remate_transcript` (aplicada en prod).
+
+---
+
 ## [1.194.0] — 2026-08-10
 
 ### El cantaleo, subtitulado

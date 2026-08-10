@@ -24,7 +24,9 @@ export interface LiveCatAvg {
   mediana: number
 }
 export interface LiveTranscriptBlock {
+  id: number
   texto: string
+  pujas: number[]
   at: string
 }
 export interface LiveRematePayload {
@@ -110,19 +112,19 @@ export async function getLiveRemate(): Promise<LiveRematePayload> {
         select: (c: string) => {
           eq: (k: string, v: string) => {
             order: (c: string, o: { ascending: boolean }) => {
-              limit: (n: number) => Promise<{ data: Array<{ texto: string; created_at: string }> | null }>
+              limit: (n: number) => Promise<{ data: Array<{ id: number; texto: string; pujas: number[] | null; created_at: string }> | null }>
             }
           }
         }
       }
     })
       .from('live_remate_transcript')
-      .select('texto,created_at')
+      .select('id,texto,pujas,created_at')
       .eq('session_id', s.id)
       .order('created_at', { ascending: false })
       .limit(20)
     const transcript: LiveTranscriptBlock[] = (trRaw ?? [])
-      .map((t) => ({ texto: t.texto, at: t.created_at }))
+      .map((t) => ({ id: t.id, texto: t.texto, pujas: t.pujas ?? [], at: t.created_at }))
       .reverse()
 
     return {
