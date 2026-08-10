@@ -1,4 +1,4 @@
-import { TIERRA, anosDeArrendamiento } from '@/lib/valuacion-campos'
+import { TIERRA, anosDeArrendamiento, precioSoja } from '@/lib/valuacion-campos'
 
 /**
  * Superficie citable del relevamiento de valor de la tierra (CC-BY).
@@ -27,10 +27,16 @@ export function GET() {
     rango_usd_ha: { p25: t.p25, p75: t.p75 },
     productividad_kg_ha_anio: t.kg_ha_ano,
     rinde_soja_qq_ha: t.rinde_soja_qq_ha ?? null,
+    // Los años se calculan CON EL CANON DE SOJA, no con el helper general: en una
+    // zona mixta ese helper devuelve los años de la vía ganadera, y mezclarlos con
+    // un canon en quintales daba un número que no correspondía a ninguna de las dos.
     arrendamiento_agricola: t.qq_soja_ha_anio
       ? {
           qq_soja_ha_anio: t.qq_soja_ha_anio,
-          anios_equivalentes_al_valor_de_la_tierra: anosDeArrendamiento(t).anos,
+          canon_usd_ha_anio: Math.round(t.qq_soja_ha_anio * precioSoja().usdQuintal),
+          anios_equivalentes_al_valor_de_la_tierra: Math.round(
+            t.usd_ha / (t.qq_soja_ha_anio * precioSoja().usdQuintal),
+          ),
           canon_relevado: !!t.qq_fuente,
           fuente_canon: t.qq_fuente ?? null,
         }
@@ -57,6 +63,11 @@ export function GET() {
     attribution: 'Relevamiento de consignatarias.com.ar',
     citation: `Valor de la tierra por provincia y zona, consignatarias.com.ar, ${FECHA_RELEVAMIENTO}`,
     unit: 'USD por hectárea',
+    soja_referencia: {
+      usd_quintal: Number(precioSoja().usdQuintal.toFixed(2)),
+      fob_usd_tonelada: precioSoja().fob,
+      nota: 'El FOB de MAGYP llevado a precio disponible, que es con el que se liquida el arrendamiento.',
+    },
     metodologia: {
       resumen:
         'Cruce de tasadores con serie publicada, catastro provincial con modelo espacial y avisos de venta. Los avisos son precio pedido y se ajustan antes de compararlos con valores de operación.',
