@@ -13,11 +13,13 @@ import { createServiceClient } from '@/lib/supabase'
 export interface LiveLot {
   categoria: string
   precio: number
+  unidad: 'kg' | 'cabeza'
   cabezas: number | null
   at: string
 }
 export interface LiveCatAvg {
   categoria: string
+  unidad: 'kg' | 'cabeza'
   n: number
   mediana: number
 }
@@ -27,6 +29,7 @@ export interface LiveRematePayload {
     id: string
     youtubeUrl: string | null
     consignataria: string | null
+    consignatariaSlug: string | null
     location: string | null
     startedAt: string
     lastSeen: string
@@ -64,29 +67,44 @@ export async function getLiveRemate(): Promise<LiveRematePayload> {
 
     const { data: lotsRaw } = await sb
       .from('live_remate_lot')
-      .select('categoria,precio,cabezas,created_at')
+      .select('*')
       .eq('session_id', s.id)
       .order('created_at', { ascending: false })
       .limit(120)
-    const lots = lotsRaw ?? []
+    // `unidad` es de 20260810; database.types.ts aún no la conoce — regenerar
+    // tipos y tipar el select en el próximo commit.
+    const lots = (lotsRaw ?? []) as Array<{
+      categoria: string | null; precio: number | null; cabezas: number | null
+      created_at: string; unidad?: 'kg' | 'cabeza'
+    }>
 
     const recent: LiveLot[] = lots.slice(0, 12).map((l) => ({
-      categoria: l.categoria ?? '', precio: l.precio ?? 0, cabezas: l.cabezas, at: l.created_at,
+      categoria: l.categoria ?? '', precio: l.precio ?? 0,
+      unidad: l.unidad ?? 'kg', cabezas: l.cabezas, at: l.created_at,
     }))
-    const byCat = new Map<string, number[]>()
+    // Mediana por (categoría, unidad): un remate de cabaña no promedia
+    // $/cabeza con $/kg aunque la categoría coincida.
+    const byCat = new Map<string, { unidad: 'kg' | 'cabeza'; ps: number[] }>()
     for (const l of lots) {
       if (!l.categoria || !l.precio) continue
-      if (!byCat.has(l.categoria)) byCat.set(l.categoria, [])
-      byCat.get(l.categoria)!.push(l.precio)
+      const unidad = l.unidad ?? 'kg'
+      const k = `${l.categoria}|${unidad}`
+      if (!byCat.has(k)) byCat.set(k, { unidad, ps: [] })
+      byCat.get(k)!.ps.push(l.precio)
     }
     const averages: LiveCatAvg[] = [...byCat.entries()]
-      .map(([categoria, ps]) => ({ categoria, n: ps.length, mediana: median(ps) }))
+      .map(([k, { unidad, ps }]) => ({
+        categoria: k.split('|')[0], unidad, n: ps.length, mediana: median(ps),
+      }))
       .sort((a, b) => b.n - a.n)
 
     return {
       active: true,
       session: {
         id: s.id, youtubeUrl: s.youtube_url, consignataria: s.consignataria,
+        // consignataria_slug es de 20260810; database.types.ts aún no la
+        // conoce — regenerar tipos y sacar este cast en el próximo commit.
+        consignatariaSlug: (s as { consignataria_slug?: string | null }).consignataria_slug ?? null,
         location: s.location, startedAt: s.started_at, lastSeen: s.last_seen, staleSec,
       },
       current: recent[0] ?? null,

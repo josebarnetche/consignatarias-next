@@ -30,6 +30,7 @@ import consignatariaResources from '@/lib/data/consignataria-resources.json'
 import { getProfileSEO } from '@/lib/data/profile-seo'
 import { getRematesEspecialesForSlug } from '@/lib/data/remates-especiales'
 import ConsignatariaProfileClient from './ConsignatariaProfileClient'
+import LiveRemateFichaStrip from '@/components/LiveRemateFichaStrip'
 import SubscribeStrip from '@/components/SubscribeStrip'
 import { MediosPagoSection } from '@/components/consignataria/MediosPagoSection'
 import type { YouTubeChannelData } from './ConsignatariaProfileClient'
@@ -529,6 +530,10 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
             />
           )
         })}
+
+      {/* Remate en vivo de ESTA firma — solo renderiza si hay sesión activa
+          con su slug (client-side, polling; no afecta el SSG de la ficha). */}
+      <LiveRemateFichaStrip slug={canonical} />
 
       {/* Ficha interactiva — encabeza la página: lo primero que ve el productor
           es la identidad (logo + nombre grande) y los 3 jobs, no un bloque de texto. */}

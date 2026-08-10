@@ -13,8 +13,9 @@
  */
 import { useEffect, useState } from 'react'
 
-interface Lot { categoria: string; precio: number; cabezas: number | null; at: string }
-interface CatAvg { categoria: string; n: number; mediana: number }
+interface Lot { categoria: string; precio: number; unidad?: 'kg' | 'cabeza'; cabezas: number | null; at: string }
+interface CatAvg { categoria: string; unidad?: 'kg' | 'cabeza'; n: number; mediana: number }
+const porUnidad = (u?: string) => (u === 'cabeza' ? '/cab' : '/kg')
 interface Payload {
   active: boolean
   session: { id: string; consignataria: string | null; location: string | null; staleSec: number } | null
@@ -63,7 +64,7 @@ export default function LiveRemateTicker() {
           <div className="text-lg text-zinc-100">
             <span className="font-semibold text-accent">{data.current.categoria}</span>
             {' · '}
-            <span className="font-mono">{ars(data.current.precio)}/kg</span>
+            <span className="font-mono">{ars(data.current.precio)}{porUnidad(data.current.unidad)}</span>
             {data.current.cabezas ? <span className="text-zinc-400 text-sm"> · {data.current.cabezas} cab.</span> : null}
           </div>
         </div>
@@ -74,7 +75,7 @@ export default function LiveRemateTicker() {
           {data.averages.map((a) => (
             <div key={a.categoria} className="rounded-lg bg-zinc-900/70 border border-zinc-800 px-3 py-2">
               <div className="text-[11px] text-zinc-400">{a.categoria}</div>
-              <div className="font-mono text-zinc-100">{ars(a.mediana)}<span className="text-zinc-500 text-xs">/kg</span></div>
+              <div className="font-mono text-zinc-100">{ars(a.mediana)}<span className="text-zinc-500 text-xs">{porUnidad(a.unidad)}</span></div>
               <div className="text-[10px] text-zinc-600">{a.n} lote{a.n !== 1 ? 's' : ''}</div>
             </div>
           ))}
@@ -86,7 +87,7 @@ export default function LiveRemateTicker() {
           {data.recent.slice(1).map((l, i) => (
             <div key={i} className="flex gap-2">
               <span className="text-accent/70 w-32 shrink-0 truncate">{l.categoria}</span>
-              <span className="text-zinc-300">{ars(l.precio)}/kg</span>
+              <span className="text-zinc-300">{ars(l.precio)}{porUnidad(l.unidad)}</span>
               {l.cabezas ? <span className="text-zinc-600">{l.cabezas} cab.</span> : null}
             </div>
           ))}

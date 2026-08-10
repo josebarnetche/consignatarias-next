@@ -7,6 +7,31 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.193.0] — 2026-08-10
+
+### El remate en vivo llega a la ficha de la firma
+
+El ticker de remate en vivo deja de vivir solo en `/remates/en-vivo`: ahora la
+**ficha de la consignataria** muestra su propio remate mientras ocurre —
+transmisión de YouTube embebida y promedios corrientes por categoría en la misma
+pantalla, actualizados cada 8 segundos (`LiveRemateFichaStrip`, montado en el
+perfil; solo renderiza si la sesión activa pertenece a esa firma vía la nueva
+columna `consignataria_slug`).
+
+Segundo cambio de fondo: **precios por cabeza**. Los remates de cabaña
+(reproductores) cantan en millones por animal, no en $/kg — la tabla
+`live_remate_lot` gana la columna `unidad` (`kg`/`cabeza`), las medianas se
+agrupan por categoría+unidad para no promediar peras con manzanas, y el ticker
+y el strip rotulan `/cab` o `/kg` según corresponda.
+
+El worker que alimenta esto (pipeline remate-feed: Whisper local + gpt-oss-20b
+con consenso de banda) corre off-Vercel; las migraciones
+`20260810_live_remate_consignataria_slug` y `20260810_live_remate_lot_unidad`
+ya están aplicadas en prod. El precio sigue rotulado siempre como
+"lectura automática · preliminar".
+
+---
+
 ## [1.192.0] — 2026-08-10
 
 ### La tierra medida por zona, el cluster de campos y el lead que es nuestro
