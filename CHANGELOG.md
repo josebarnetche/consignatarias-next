@@ -80,6 +80,29 @@ CAMPOS: es el valor del campo y ancla el grupo con la página de más tráfico d
 **Admin.** `/admin/campos`, la moderación que el mail de alta ya linkeaba desde que se
 abrió la sección.
 
+**El campo agrícola se valúa en quintales de soja, no se descarta.** La primera versión
+detectaba zona agrícola y se plantaba: mostraba solo el comparable y explicaba por qué no
+podía usar canon ganadero. Correcto pero pobre — el arrendamiento agrícola existe, se
+pacta en **quintales de soja por hectárea por año**, y la mecánica es idéntica a los kilos
+de novillo: solo cambia la moneda.
+
+- Precio de soja al scrape diario (MAGYP, posición 1201). El FOB no sirve directo: el
+  arrendamiento se liquida con el **disponible**, así que la conversión queda explícita en
+  `FOB_A_DISPONIBLE = 0,70`, con nombre, para poder corregirla cuando cambien las retenciones.
+- Cada zona agrícola tiene rinde de soja y canon en qq/ha/año, derivado del **35% del
+  rinde** —la relación con la que se pacta, espejo del 30% del lado ganadero— salvo donde
+  hay canon publicado: zona núcleo 21 qq y Marcos Juárez 19,5 qq mandan sobre el derivado.
+- El slider del tasador cambia de moneda según la zona; el MCP, las páginas de zona y
+  `/valor-tierra.json` dan el número agrícola.
+- **El precio de soja viaja con su fecha y se marca si envejece.** Toda la valuación
+  agrícola cuelga de ese número y, si el scrape se cae, el resultado sigue saliendo igual
+  de convincente. Pasadas tres semanas sin dato nuevo, las tres superficies lo avisan.
+
+Los rendimientos que salen son coherentes con el mercado: zona núcleo 3,7% de renta y 27
+años de arrendamiento, Córdoba agrícola 4-5%, valles de San Luis 8-11%. **La tierra
+agrícola cotiza a menor renta que la ganadera** — se paga más caro por hectárea y rinde
+menos, porque es más líquida y más disputada.
+
 ---
 
 ## [1.191.0] — 2026-08-09

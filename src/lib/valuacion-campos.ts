@@ -28,7 +28,7 @@ import marketPrices from '@/lib/data/market-prices.json'
 const mp = marketPrices as unknown as {
   inmag: { current: number; series?: Array<{ date: string; value: number; volume: number }> }
   usdBlue: { current: number }
-  soy?: { current: number; unit?: string }
+  soy?: { current: number; unit?: string; date?: string }
 }
 
 /**
@@ -42,11 +42,26 @@ const mp = marketPrices as unknown as {
  */
 const FOB_A_DISPONIBLE = 0.7
 const SOJA_FOB_POR_DEFECTO = 464
+/** Más de tres semanas sin dato nuevo: el precio dejó de ser del día. */
+const DIAS_PARA_CONSIDERARLO_VIEJO = 21
 
-export function precioSoja(): { usdTonelada: number; usdQuintal: number; fob: number } {
+export function precioSoja(): {
+  usdTonelada: number
+  usdQuintal: number
+  fob: number
+  fecha: string | null
+  desactualizado: boolean
+} {
   const fob = mp.soy?.current ?? SOJA_FOB_POR_DEFECTO
   const disponible = fob * FOB_A_DISPONIBLE
-  return { usdTonelada: disponible, usdQuintal: disponible / 10, fob }
+  const fecha = mp.soy?.date ?? null
+  // Toda la valuación agrícola cuelga de este precio. Si el scrape se cae, el
+  // número sigue saliendo igual de convincente: por eso se marca la antigüedad
+  // en vez de confiar en que alguien lo note.
+  const desactualizado = fecha
+    ? (Date.now() - new Date(fecha).getTime()) / 86_400_000 > DIAS_PARA_CONSIDERARLO_VIEJO
+    : true
+  return { usdTonelada: disponible, usdQuintal: disponible / 10, fob, fecha, desactualizado }
 }
 
 export interface ProvinciaTierra {
@@ -444,6 +459,13 @@ export function valuarCampoTexto(opts: {
         lineas.push(`Rinde de referencia: ${t.rinde_soja_qq_ha} qq/ha de soja de primera.`)
       }
       if (t.qq_fuente) lineas.push(`Canon relevado: ${t.qq_fuente}.`)
+      const soja = precioSoja()
+      lineas.push(
+        `Soja tomada a US$${soja.usdQuintal.toFixed(1)} el quintal` +
+          (soja.fecha ? ` (FOB de MAGYP del ${soja.fecha}, llevado a disponible)` : '') +
+          (soja.desactualizado ? '. ATENCIÓN: ese precio no se actualiza hace más de tres semanas' : '') +
+          '.',
+      )
     } else {
       lineas.push(
         'Es zona agrícola: la tierra se paga por lo que rinde en granos y el arrendamiento se pacta en ' +

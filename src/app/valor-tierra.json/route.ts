@@ -66,6 +66,8 @@ export function GET() {
     soja_referencia: {
       usd_quintal: Number(precioSoja().usdQuintal.toFixed(2)),
       fob_usd_tonelada: precioSoja().fob,
+      fecha: precioSoja().fecha,
+      desactualizado: precioSoja().desactualizado,
       nota: 'El FOB de MAGYP llevado a precio disponible, que es con el que se liquida el arrendamiento.',
     },
     metodologia: {

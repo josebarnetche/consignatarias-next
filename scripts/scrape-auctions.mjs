@@ -1014,7 +1014,9 @@ async function scrapeSoyPrice() {
     console.log(
       `  Soy FOB (${dateStr}): ${prices.length} positions, avg $${avg} USD/tn`
     );
-    return avg;
+    // Se devuelve CON la fecha del dato, no con la de hoy: la valuación agrícola
+    // depende de este precio y tiene que poder decir de cuándo es.
+    return { price: avg, date: d.toISOString().slice(0, 10) };
   }
 
   console.warn("  [WARN] Could not fetch soybean prices");
@@ -2017,13 +2019,14 @@ async function main() {
   if (soyPrice != null) {
     const prev = market.soy?.current ?? null;
     market.soy = {
-      current: soyPrice,
-      prev: prev ?? soyPrice,
-      change: prev ? parseFloat((((soyPrice - prev) / prev) * 100).toFixed(1)) : 0,
+      current: soyPrice.price,
+      prev: prev ?? soyPrice.price,
+      change: prev ? parseFloat((((soyPrice.price - prev) / prev) * 100).toFixed(1)) : 0,
       unit: "USD/tn",
       source: "MAGYP FOB API",
+      date: soyPrice.date,
     };
-    console.log(`Updated soy: $${soyPrice} USD/tn`);
+    console.log(`Updated soy: $${soyPrice.price} USD/tn (${soyPrice.date})`);
   }
 
   // Update dollar rates if available

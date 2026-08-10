@@ -334,7 +334,7 @@ export default function ValuacionCampo({
           <p className="text-zinc-600 text-xxs leading-relaxed pt-1">
             Estimación orientativa a partir del canon y de precios relevados por zona.{' '}
             {v.unidadCanon === 'qq_soja_anio'
-              ? `Soja tomada a US$${precioSoja().usdQuintal.toFixed(1)} el quintal (FOB de MAGYP llevado a disponible).`
+              ? `Soja tomada a US$${precioSoja().usdQuintal.toFixed(1)} el quintal (FOB de MAGYP${precioSoja().fecha ? ` del ${precioSoja().fecha}` : ''}, llevado a disponible).${precioSoja().desactualizado ? ' ⚠ El precio de la soja no se actualiza hace más de tres semanas.' : ''}`
               : `Novillo tomado a US$${v.novilloUsdKg.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/kg, promedio del mes anterior.`}{' '}
             No reemplaza una tasación profesional.
           </p>
