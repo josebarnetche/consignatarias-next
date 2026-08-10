@@ -142,6 +142,16 @@ class Sink:
         row = {**self.session, "last_seen": _now_iso(), "status": "live"}
         if self.on: self._post("live_remate_session", [row], upsert=True)
 
+    def emit_transcript(self, bloques):
+        """Bloques de cantaleo tal como salieron de Whisper, con las pujas que se
+        oyeron en cada uno. La tabla y el lado que los muestra ya existian; lo que
+        faltaba era esto: nadie los escribia, por eso live_remate_transcript estaba
+        en cero."""
+        if not bloques: return
+        rows = [{"session_id": self.session["id"], "audio_t": t, "texto": txt, "pujas": pujas}
+                for (t, txt, pujas) in bloques]
+        if self.on: self._post("live_remate_transcript", rows)
+
     def emit_lots(self, lots):
         if not lots: return
         rows = [{"session_id": self.session["id"], "audio_t": t, "categoria": c, "precio": p, "cabezas": h}
@@ -210,7 +220,8 @@ def main():
     procs = start_capture(args, chdir)
     live = procs is not None
 
-    processed = set(); rolling = []; emitted = 0
+    processed = set(); rolling = []; emitted = 0; fallo = False
+    cur_cat = [None]  # categoria vigente, para acotar la banda de precios del bloque
     print("[worker] procesando...", file=sys.stderr)
     while True:
         chunks = sorted(glob.glob(os.path.join(chdir, "c_*.wav")))
@@ -219,11 +230,21 @@ def main():
         for ch in todo:
             idx = int(re.search(r"c_(\d+)\.wav", ch).group(1)); off = idx * args.chunk
             t0 = time.time()
+            bloques = []
             try:
                 segs, _ = model.transcribe(ch, language="es", vad_filter=True, beam_size=1)
-                for s in segs: rolling.append((off + s.start, off + s.end, s.text.strip()))
+                for s in segs:
+                    txt = s.text.strip()
+                    if not txt: continue
+                    rolling.append((off + s.start, off + s.end, txt))
+                    # Las pujas del bloque: los precios cantados, en orden de locución.
+                    lo, hi = band(cur_cat[0], args.inmag) if cur_cat[0] else (1, 10**9)
+                    bloques.append((round(off + s.start, 1), txt, prices_in(txt, lo, hi)))
+                    c = detect_cat(txt)
+                    if c: cur_cat[0] = c
             except Exception as e:
                 print(f"[worker] chunk {idx} fallo: {e}", file=sys.stderr)
+            sink.emit_transcript(bloques)
             processed.add(ch)
             lots = parse_rolling(rolling, args.inmag)
             if len(lots) > emitted:
@@ -231,17 +252,28 @@ def main():
                 sink.emit_lots(new)
                 for (_, c, p, h) in new:
                     print(f"  [{off:5d}s] {c:18} ${p}/kg  ({h or '?'} cab)  +{time.time()-t0:.0f}s")
-            sink.heartbeat()
+        sink.heartbeat()
         # condicion de corte
         alive = live and procs[1].poll() is None
+        if live and not alive and not chunks:
+            # yt-dlp o ffmpeg murieron sin producir un solo chunk. Antes esto
+            # giraba en falso para siempre: la sesion quedaba 'live', sin lotes,
+            # sin transcript y sin ningun mensaje. Ahora se dice y se corta.
+            print("[worker] LA CAPTURA MURIO SIN PRODUCIR AUDIO.", file=sys.stderr)
+            print(f"         yt-dlp rc={procs[0].poll()} · ffmpeg rc={procs[1].poll()}", file=sys.stderr)
+            print("         Revisar: que la URL sea una transmision EN CURSO, que yt-dlp este", file=sys.stderr)
+            print("         actualizado y que 'node' exista (lo pide --js-runtimes node).", file=sys.stderr)
+            fallo = True
+            break
         if not alive and not todo and (chunks and all(c in processed for c in chunks) or not live):
             break
         time.sleep(2 if live else 0)
 
     # fin de sesion
-    session_end = {**session, "status": "ended", "last_seen": _now_iso()}
+    session_end = {**session, "status": "error" if fallo else "ended", "last_seen": _now_iso()}
     if sink.on: sink._post("live_remate_session", [session_end], upsert=True)
     print(f"[worker] fin. lotes emitidos: {emitted}", file=sys.stderr)
+    if fallo: sys.exit(1)
 
 if __name__ == "__main__":
     main()
