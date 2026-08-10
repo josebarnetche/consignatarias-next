@@ -6,7 +6,7 @@ import { consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
 import { normalizeUrl } from '@/lib/utils/url'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { resolveYoutubeUrl } from '@/lib/youtube-live'
-import { resolverStream, contactoClicable } from '@/lib/streams'
+import { resolverStream, contactoClicable, videoEnVivoDelCanal } from '@/lib/streams'
 import { getEffectiveStatus } from '@/lib/ui/tokens'
 import StreamWall, { type StreamItem } from '@/components/remates/StreamWall'
 import { createServiceClient } from '@/lib/supabase'
@@ -339,10 +339,33 @@ export default async function RematesEnVivoPage() {
   const contactos = await traerContactos(
     Array.from(new Set(deHoy.map((r) => getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug))),
   )
+  // Para los de hoy preguntamos a YouTube si el canal está realmente al aire.
+  // Son un puñado, y convierte una suposición ("debería estar transmitiendo")
+  // en un hecho ("está transmitiendo este video").
+  const canalesDeHoy = new Map<string, string | null>()
+  await Promise.all(
+    deHoy.map(async (r) => {
+      if (r.youtubeUrl) return
+      const emb = resolverStream(r)
+      if (!emb || emb.tipo !== 'canal') return
+      const chId = emb.embedUrl.match(/channel=([^&]+)/)?.[1]
+      if (!chId || canalesDeHoy.has(chId)) return
+      canalesDeHoy.set(chId, await videoEnVivoDelCanal(chId))
+    }),
+  )
+
   const streams: StreamItem[] = deHoy
     .map((r): StreamItem | null => {
       const emb = resolverStream(r)
       if (!emb) return null
+      // Canal sin transmisión en curso: no hay nada que reproducir. Fuera.
+      let embedUrl = emb.embedUrl
+      if (emb.tipo === 'canal') {
+        const chId = emb.embedUrl.match(/channel=([^&]+)/)?.[1]
+        const vid = chId ? canalesDeHoy.get(chId) : null
+        if (!vid) return null
+        embedUrl = `https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1`
+      }
       const canonical = getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug
       const c = contactos.get(canonical)
       const { tel, wa, visible } = contactoClicable(c?.phone, c?.whatsapp)
@@ -355,7 +378,7 @@ export default async function RematesEnVivoPage() {
         firma: r.consignatariaName,
         slug: canonical,
         perfilHref: consignatariaProfilePath(r.consignatariaSlug),
-        embedUrl: emb.embedUrl,
+        embedUrl,
         watchUrl: emb.watchUrl,
         confianza: emb.confianza,
         hora: r.time,

@@ -37,6 +37,35 @@ function paramsComunes(origen: string): string {
   return `autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1&origin=${encodeURIComponent(origen)}`
 }
 
+/**
+ * ¿El canal está transmitiendo AHORA? Devuelve el id del video en vivo, o null.
+ *
+ * Por qué existe: que un remate figure a las 13:30 no significa que la firma
+ * esté al aire. Puede arrancar tarde, transmitir por otro lado, o no transmitir
+ * esa feria. Embeber "el canal" a ciegas produce un cuadro negro, que es la peor
+ * forma de fallar: parece que el sitio está roto.
+ *
+ * YouTube resuelve /embed/live_stream?channel=<id> a la transmisión en curso, y
+ * si no hay ninguna devuelve una página sin videoId. Preguntarle es barato
+ * cuando se hace solo con los remates DE HOY: son un puñado, no doscientos.
+ */
+export async function videoEnVivoDelCanal(channelId: string): Promise<string | null> {
+  try {
+    const r = await fetch(`https://www.youtube.com/embed/live_stream?channel=${channelId}`, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; consignatarias.com.ar)' },
+      // Se revalida con la página (1 h). No hace falta más frescura que eso.
+      next: { revalidate: 900 },
+    })
+    if (!r.ok) return null
+    const html = await r.text()
+    const id = html.match(/"videoId":"([a-zA-Z0-9_-]{11})"/)?.[1]
+    return id ?? null
+  } catch {
+    // Si YouTube no contesta, preferimos no mostrar player a mostrar uno vacío.
+    return null
+  }
+}
+
 export function resolverStream(
   remate: { consignatariaSlug?: string | null; youtubeUrl?: string | null },
   origen = 'https://www.consignatarias.com.ar',

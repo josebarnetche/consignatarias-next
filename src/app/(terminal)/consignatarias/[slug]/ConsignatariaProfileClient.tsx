@@ -644,8 +644,11 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
     const liveNow = getEffectiveStatus(proximo.date, proximo.time, today) === 'live'
     const emb = resolverStream(proximo)
     if (!emb) return null
-    // Un canal sin remate en curso no tiene nada que reproducir.
-    if (emb.confianza === 'probable' && !liveNow) return null
+    // Solo se embebe con VIDEO confirmado. El embed por canal es una apuesta —
+    // que el remate figure a las 13:30 no significa que la firma esté al aire— y
+    // acá, del lado del cliente, no podemos preguntarle a YouTube si lo está.
+    // Apostar mal da un cuadro negro, que parece un sitio roto.
+    if (emb.tipo !== 'video') return null
     const tel = profile.phone?.trim() || null
     // Misma convención que el botón de WhatsApp de más abajo en esta página:
     // solo dígitos. Dos botones en la misma ficha no pueden armar links distintos.
