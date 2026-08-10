@@ -1503,6 +1503,7 @@ export type Database = {
           id: number
           precio: number | null
           session_id: string
+          unidad: string
         }
         Insert: {
           audio_t?: number | null
@@ -1512,6 +1513,7 @@ export type Database = {
           id?: number
           precio?: number | null
           session_id: string
+          unidad?: string
         }
         Update: {
           audio_t?: number | null
@@ -1521,6 +1523,7 @@ export type Database = {
           id?: number
           precio?: number | null
           session_id?: string
+          unidad?: string
         }
         Relationships: [
           {
@@ -1535,6 +1538,7 @@ export type Database = {
       live_remate_session: {
         Row: {
           consignataria: string | null
+          consignataria_slug: string | null
           id: string
           last_seen: string
           location: string | null
@@ -1545,6 +1549,7 @@ export type Database = {
         }
         Insert: {
           consignataria?: string | null
+          consignataria_slug?: string | null
           id: string
           last_seen?: string
           location?: string | null
@@ -1555,6 +1560,7 @@ export type Database = {
         }
         Update: {
           consignataria?: string | null
+          consignataria_slug?: string | null
           id?: string
           last_seen?: string
           location?: string | null
@@ -1564,6 +1570,41 @@ export type Database = {
           youtube_url?: string | null
         }
         Relationships: []
+      }
+      live_remate_transcript: {
+        Row: {
+          audio_t: number | null
+          created_at: string
+          id: number
+          pujas: Json
+          session_id: string
+          texto: string
+        }
+        Insert: {
+          audio_t?: number | null
+          created_at?: string
+          id?: number
+          pujas?: Json
+          session_id: string
+          texto: string
+        }
+        Update: {
+          audio_t?: number | null
+          created_at?: string
+          id?: number
+          pujas?: Json
+          session_id?: string
+          texto?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_remate_transcript_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "live_remate_session"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mag_consignataria_sales_lots: {
         Row: {

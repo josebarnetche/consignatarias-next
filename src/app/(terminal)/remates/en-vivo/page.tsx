@@ -6,7 +6,7 @@ import { consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
 import { normalizeUrl } from '@/lib/utils/url'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { resolveYoutubeUrl } from '@/lib/youtube-live'
-import { resolverStream, contactoClicable, videoEnVivoDelCanal } from '@/lib/streams'
+import { resolverStream, contactoClicable, videoEnVivoDelCanal, idDeVideo } from '@/lib/streams'
 import { getEffectiveStatus } from '@/lib/ui/tokens'
 import StreamWall, { type StreamItem } from '@/components/remates/StreamWall'
 import { createServiceClient } from '@/lib/supabase'
@@ -102,6 +102,33 @@ interface Remate {
  *  cada scrape, así que un link compartido apuntaría a otro remate mañana. */
 function claveStream(r: { consignatariaSlug: string; date: string; time: string | null }): string {
   return `${r.consignatariaSlug}-${r.date}${r.time ? '-' + r.time.replace(':', '') : ''}`
+}
+
+/**
+ * Sesiones que NUESTRO capturador declara en vivo ahora mismo.
+ *
+ * Es mejor señal que preguntarle a YouTube: cuando el pipeline está siguiendo un
+ * remate ya sabe qué video es, y lo sabe antes de que el endpoint de canal lo
+ * resuelva. Se exige `last_seen` fresco: una sesión que quedó en 'live' porque
+ * el proceso se cayó no es una transmisión, es un registro huérfano.
+ */
+const SESION_FRESCA_MIN = 20
+
+async function sesionesEnVivo(): Promise<Map<string, string>> {
+  const salida = new Map<string, string>()
+  const db = createServiceClient()
+  if (!db) return salida
+  const desde = new Date(Date.now() - SESION_FRESCA_MIN * 60_000).toISOString()
+  const { data } = await db
+    .from('live_remate_session')
+    .select('consignataria_slug, youtube_url, last_seen')
+    .eq('status', 'live')
+    .gte('last_seen', desde)
+  for (const row of data ?? []) {
+    const r = row as { consignataria_slug: string | null; youtube_url: string | null }
+    if (r.consignataria_slug && r.youtube_url) salida.set(r.consignataria_slug, r.youtube_url)
+  }
+  return salida
 }
 
 /** Teléfono y WhatsApp de las firmas que hoy transmiten, para el botón de contacto. */
@@ -342,10 +369,13 @@ export default async function RematesEnVivoPage() {
   // Para los de hoy preguntamos a YouTube si el canal está realmente al aire.
   // Son un puñado, y convierte una suposición ("debería estar transmitiendo")
   // en un hecho ("está transmitiendo este video").
+  const enVivoPropio = await sesionesEnVivo()
   const canalesDeHoy = new Map<string, string | null>()
   await Promise.all(
     deHoy.map(async (r) => {
       if (r.youtubeUrl) return
+      const canonical = getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug
+      if (enVivoPropio.has(canonical)) return // ya lo sabemos por nuestra sesión
       const emb = resolverStream(r)
       if (!emb || emb.tipo !== 'canal') return
       const chId = emb.embedUrl.match(/channel=([^&]+)/)?.[1]
@@ -358,9 +388,13 @@ export default async function RematesEnVivoPage() {
     .map((r): StreamItem | null => {
       const emb = resolverStream(r)
       if (!emb) return null
+      const canonicalR = getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug
       // Canal sin transmisión en curso: no hay nada que reproducir. Fuera.
       let embedUrl = emb.embedUrl
-      if (emb.tipo === 'canal') {
+      const propio = idDeVideo(enVivoPropio.get(canonicalR) ?? null)
+      if (propio) {
+        embedUrl = `https://www.youtube-nocookie.com/embed/${propio}?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1`
+      } else if (emb.tipo === 'canal') {
         const chId = emb.embedUrl.match(/channel=([^&]+)/)?.[1]
         const vid = chId ? canalesDeHoy.get(chId) : null
         if (!vid) return null
