@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-import { TIERRA_PROVINCIAS, tierraDe, zonasDe, valuarCampo, type Valuacion } from '@/lib/valuacion-campos'
+import { TIERRA_PROVINCIAS, tierraDe, zonasDe, valuarCampo, precioSoja, type Valuacion } from '@/lib/valuacion-campos'
 
 /**
  * Tasador de campos — la pieza visual pesada de la inmobiliaria rural.
@@ -44,15 +44,19 @@ export default function ValuacionCampo({
   // slider arranca en un número que existe en el campo, no en uno inventado.
   const [canonTocado, setCanonTocado] = useState(kgHaMesInicial != null)
   const [kgHaMes, setKgHaMes] = useState<number>(kgHaMesInicial || 4.5)
+  // Campo agrícola: el canon se pacta en quintales de soja por ha por año.
+  const [qqHaAnio, setQqHaAnio] = useState<number | null>(null)
 
   const zonas = useMemo(() => zonasDe(provincia), [provincia])
   const referencia = useMemo(() => tierraDe(provincia, zona || null), [provincia, zona])
   const canonTipico = referencia?.kg_ha_mes_canon ?? null
   const canon = canonTocado ? kgHaMes : (canonTipico ?? kgHaMes)
+  const agricola = referencia?.aptitud === 'agricola'
+  const qq = qqHaAnio ?? referencia?.qq_soja_ha_anio ?? null
 
   const v: Valuacion = useMemo(
-    () => valuarCampo({ hectareas, provincia, zona: zona || null, kgHaMes: canon }),
-    [hectareas, provincia, zona, canon],
+    () => valuarCampo({ hectareas, provincia, zona: zona || null, kgHaMes: canon, qqHaAnio: qq }),
+    [hectareas, provincia, zona, canon, qq],
   )
 
   const comp = v.porComparables
@@ -145,6 +149,34 @@ export default function ValuacionCampo({
           </label>
         </div>
 
+        {agricola ? (
+          <label className="block">
+            <div className="flex items-baseline justify-between mb-1.5">
+              <span className="text-zinc-400 text-xs">Arrendamiento (en soja)</span>
+              <span className="text-accent font-mono text-sm tabular-nums">
+                {(qq ?? 0).toLocaleString('es-AR', { maximumFractionDigits: 1 })} qq/ha/año
+              </span>
+            </div>
+            <input
+              type="range"
+              min={1}
+              max={40}
+              step={0.5}
+              value={qq ?? 12}
+              onChange={(e) => setQqHaAnio(Number(e.target.value))}
+              className="w-full accent-sky-400"
+            />
+            <div className="flex justify-between text-xxs text-zinc-600 mt-1">
+              <span>1</span>
+              <span>
+                {qqHaAnio === null && referencia?.qq_soja_ha_anio
+                  ? 'típico de la zona · movelo si sabés el tuyo'
+                  : 'quintales de soja por hectárea por año'}
+              </span>
+              <span>40</span>
+            </div>
+          </label>
+        ) : (
         <label className="block">
           <div className="flex items-baseline justify-between mb-1.5">
             <span className="text-zinc-400 text-xs">
@@ -192,6 +224,7 @@ export default function ValuacionCampo({
             <span>{porAno ? '240' : '20'}</span>
           </div>
         </label>
+        )}
       </div>
 
       {/* Las dos vías */}
@@ -204,7 +237,10 @@ export default function ValuacionCampo({
               <div>
                 <p className="text-zinc-200 text-sm">Por lo que renta</p>
                 <p className="text-zinc-500 text-xs mt-0.5">
-                  {fmtUsd(v.porRenta.canonAnualUsdHa)}/ha al año × {v.porRenta.anos} años
+                  {v.unidadCanon === 'qq_soja_anio'
+                    ? `${v.canonUsado} quintales de soja por ha al año`
+                    : `${v.canonUsado} kg de novillo por ha al mes`}{' '}
+                  = {fmtUsd(v.porRenta.canonAnualUsdHa)}/ha al año × {v.porRenta.anos} años
                 </p>
               </div>
               <span className="text-zinc-100 font-mono text-sm shrink-0 tabular-nums">
@@ -246,9 +282,13 @@ export default function ValuacionCampo({
           )}
 
           {v.esAgricola && (
-            <p className="text-xs text-amber-300/90 border border-amber-500/30 rounded px-3 py-2 bg-amber-500/[0.04]">
-              Esta zona es agrícola: la tierra se paga por lo que rinde en granos, no por lo que cría. El
-              canon ganadero no explica su precio, así que acá vale el comparable de la zona.
+            <p className="text-xs text-zinc-400 border border-zinc-800 rounded px-3 py-2 bg-zinc-900/50">
+              Zona agrícola: acá la tierra se paga por lo que rinde en granos, así que el arrendamiento se
+              pacta en <strong className="text-zinc-200">quintales de soja por hectárea por año</strong> y
+              no en kilos de novillo. Es la misma cuenta, en otra moneda.
+              {referencia?.rinde_soja_qq_ha
+                ? ` Rinde de referencia de la zona: ${referencia.rinde_soja_qq_ha} qq/ha de soja de primera.`
+                : ''}
             </p>
           )}
 
@@ -292,9 +332,11 @@ export default function ValuacionCampo({
           </div>
 
           <p className="text-zinc-600 text-xxs leading-relaxed pt-1">
-            Estimación orientativa a partir del canon y de precios relevados por provincia. Novillo tomado a
-            US${v.novilloUsdKg.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/kg,
-            promedio del mes anterior. No reemplaza una tasación profesional.
+            Estimación orientativa a partir del canon y de precios relevados por zona.{' '}
+            {v.unidadCanon === 'qq_soja_anio'
+              ? `Soja tomada a US$${precioSoja().usdQuintal.toFixed(1)} el quintal (FOB de MAGYP llevado a disponible).`
+              : `Novillo tomado a US$${v.novilloUsdKg.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/kg, promedio del mes anterior.`}{' '}
+            No reemplaza una tasación profesional.
           </p>
         </div>
       )}

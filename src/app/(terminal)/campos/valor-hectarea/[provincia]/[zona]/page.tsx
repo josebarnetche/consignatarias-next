@@ -100,9 +100,10 @@ export default async function ValorHectareaZona({
     ...(esAgricola
       ? [
           {
-            question: `¿Por qué el campo de ${z.zona} vale más que el ganadero?`,
-            answer:
-              'Porque es tierra agrícola: se paga por lo que rinde en granos, no por lo que cría. Valuarla con un canon de hacienda da un número muy por debajo del mercado, y es un error frecuente al comparar campos de distintas zonas de una misma provincia.',
+            question: `¿Cuánto se paga de arrendamiento en ${z.zona}?`,
+            answer: z.qq_soja_ha_anio
+              ? `Al ser zona agrícola, el arrendamiento se pacta en quintales de soja por hectárea por año, no en kilos de novillo. Acá ronda los ${z.qq_soja_ha_anio} quintales por hectárea por año${z.rinde_soja_qq_ha ? `, sobre un rinde de referencia de ${z.rinde_soja_qq_ha} quintales de soja de primera` : ''}. A ese canon, el valor de la tierra equivale a unos ${anos} años de arrendamiento.`
+              : 'Al ser zona agrícola, el arrendamiento se pacta en quintales de soja por hectárea por año y no en kilos de novillo.',
           },
         ]
       : [
@@ -198,11 +199,24 @@ export default async function ValorHectareaZona({
         )}
 
         {esAgricola && (
-          <p className="text-amber-300/90 text-xs border border-amber-500/30 rounded px-4 py-3 bg-amber-500/[0.04] mb-6">
-            Ojo al comparar: esta es tierra agrícola. Se paga por lo que rinde en granos, no por lo que
-            cría, así que tasarla con un canon de hacienda da un número muy por debajo del mercado real.
-            Es el error más caro que se comete al mirar campos de distintas zonas de una misma provincia.
-          </p>
+          <div className="border border-zinc-800 rounded-lg bg-zinc-900/40 px-4 py-3 mb-6">
+            <p className="text-zinc-300 text-xs leading-relaxed">
+              Esta es tierra agrícola, así que el arrendamiento se pacta en{' '}
+              <strong className="text-zinc-100">quintales de soja por hectárea por año</strong> y no en
+              kilos de novillo.
+              {z.qq_soja_ha_anio ? (
+                <>
+                  {' '}
+                  Acá ronda los <strong className="text-zinc-100">{z.qq_soja_ha_anio} qq/ha/año</strong>
+                  {z.rinde_soja_qq_ha ? `, sobre un rinde de referencia de ${z.rinde_soja_qq_ha} qq de soja de primera` : ''}
+                  . A ese canon, la hectárea equivale a unos <strong className="text-zinc-100">{anos} años</strong> de arrendamiento.
+                </>
+              ) : null}
+            </p>
+            {z.qq_fuente && (
+              <p className="text-zinc-600 text-xxs mt-1.5">Canon relevado: {z.qq_fuente}.</p>
+            )}
+          </div>
         )}
 
         <section className="mb-8">

@@ -28,6 +28,25 @@ import marketPrices from '@/lib/data/market-prices.json'
 const mp = marketPrices as unknown as {
   inmag: { current: number; series?: Array<{ date: string; value: number; volume: number }> }
   usdBlue: { current: number }
+  soy?: { current: number; unit?: string }
+}
+
+/**
+ * Precio de la soja para valuar campo agrícola.
+ *
+ * El feed que tenemos es el FOB oficial de MAGYP. El arrendamiento NO se liquida
+ * con el FOB: se liquida con el disponible, que es el FOB menos retenciones y
+ * gastos de embarque. La relación ronda 0,70 y se deja acá, visible y con nombre,
+ * para poder corregirla cuando cambie la política de retenciones — y no enterrada
+ * en una constante sin explicación.
+ */
+const FOB_A_DISPONIBLE = 0.7
+const SOJA_FOB_POR_DEFECTO = 464
+
+export function precioSoja(): { usdTonelada: number; usdQuintal: number; fob: number } {
+  const fob = mp.soy?.current ?? SOJA_FOB_POR_DEFECTO
+  const disponible = fob * FOB_A_DISPONIBLE
+  return { usdTonelada: disponible, usdQuintal: disponible / 10, fob }
 }
 
 export interface ProvinciaTierra {
@@ -59,6 +78,17 @@ export interface ProvinciaTierra {
    * un número disparatado. En esas zonas mostramos el comparable y lo decimos.
    */
   aptitud?: 'ganadera' | 'mixta' | 'agricola' | 'forestal' | null
+  /** Rinde de soja de primera de la zona, en quintales por hectárea. */
+  rinde_soja_qq_ha?: number | null
+  /**
+   * Canon agrícola típico, en QUINTALES DE SOJA por hectárea por año. Es el
+   * equivalente exacto de los kilos de novillo del lado ganadero: la misma
+   * mecánica en otra moneda. Sale del 35% del rinde, que es la relación con la
+   * que se pacta.
+   */
+  qq_soja_ha_anio?: number | null
+  /** De dónde salió el canon en quintales. Cuando está, fue RELEVADO. */
+  qq_fuente?: string | null
   fuente?: string | null
   fecha?: string | null
 }
@@ -204,12 +234,20 @@ const ANOS_POR_DEFECTO = 20
 
 export function anosDeArrendamiento(t: ProvinciaTierra | null): { anos: number; propio: boolean } {
   if (!t) return { anos: ANOS_POR_DEFECTO, propio: false }
+  // Campo agrícola: los años salen del canon en quintales, no de los kilos.
+  if (t.aptitud === 'agricola' && t.qq_soja_ha_anio) {
+    const rentaUsd = t.qq_soja_ha_anio * precioSoja().usdQuintal
+    if (rentaUsd > 0) return { anos: Math.round(t.usd_ha / rentaUsd), propio: true }
+  }
   if (t.canon_fuente && t.kg_ha_mes_canon) {
     const canonAnualUsd = t.kg_ha_mes_canon * 12 * NOVILLO_REF
     return { anos: Math.round(t.usd_ha / canonAnualUsd), propio: true }
   }
   return { anos: Math.round(t.anos_repago / PROPORCION_CANON_SOBRE_PRODUCCION), propio: true }
 }
+
+/** En qué moneda se pacta el arrendamiento de esa tierra. */
+export type UnidadCanon = 'kg_novillo_mes' | 'qq_soja_anio'
 
 export interface Valuacion {
   /** Lo que se muestra grande. */
@@ -228,6 +266,15 @@ export interface Valuacion {
   /** Zona agrícola: el canon ganadero no explica el precio de esa tierra. */
   esAgricola: boolean
   /**
+   * Cómo se pacta el arrendamiento acá. En campo ganadero, kilos de novillo por
+   * hectárea por mes; en campo agrícola, quintales de soja por hectárea por año.
+   * No es una preferencia nuestra: es cómo se firma cada contrato.
+   */
+  unidadCanon: UnidadCanon
+  /** Canon usado, en su propia unidad, y lo que representa en dólares por ha/año. */
+  canonUsado: number | null
+  canonAnualUsdHa: number | null
+  /**
    * La tierra de la zona equivale a muchos más años de arrendamiento que en la
    * pampa. No es un error de cálculo: es que ahí el precio no lo pone el pasto.
    */
@@ -242,19 +289,36 @@ export function valuarCampo(opts: {
   provincia: string | null
   zona?: string | null
   kgHaMes?: number | null
+  /** Canon agrícola en quintales de soja por hectárea por año. */
+  qqHaAnio?: number | null
 }): Valuacion {
   const { valor: novilloArs } = promedioMesAnterior()
   const novilloUsdKg = novilloArs / mp.usdBlue.current
   const t = tierraDe(opts.provincia, opts.zona)
 
-  // En zona agrícola la tierra no se paga con pasto: el canon ganadero no explica
-  // su valor y usarlo daría un número muy por debajo del mercado real.
+  // En zona agrícola la tierra no se paga con pasto — pero eso no es motivo para
+  // no valuarla: se paga con GRANO. El arrendamiento agrícola se pacta en
+  // quintales de soja por hectárea por año, y la mecánica es idéntica.
   const esAgricola = t?.aptitud === 'agricola'
+  const unidadCanon: UnidadCanon = esAgricola ? 'qq_soja_anio' : 'kg_novillo_mes'
 
   let porRenta: Valuacion['porRenta'] = null
-  if (opts.kgHaMes && opts.kgHaMes > 0 && !esAgricola) {
+  let canonUsado: number | null = null
+  let canonAnualUsdHa: number | null = null
+
+  if (esAgricola) {
+    const qq = opts.qqHaAnio && opts.qqHaAnio > 0 ? opts.qqHaAnio : (t?.qq_soja_ha_anio ?? null)
+    if (qq && qq > 0) {
+      const { anos } = anosDeArrendamiento(t)
+      canonUsado = qq
+      canonAnualUsdHa = qq * precioSoja().usdQuintal
+      const usdHa = canonAnualUsdHa * anos
+      porRenta = { usdHa, usdTotal: usdHa * opts.hectareas, canonAnualUsdHa, anos }
+    }
+  } else if (opts.kgHaMes && opts.kgHaMes > 0) {
     const { anos } = anosDeArrendamiento(t)
-    const canonAnualUsdHa = opts.kgHaMes * 12 * novilloUsdKg
+    canonUsado = opts.kgHaMes
+    canonAnualUsdHa = opts.kgHaMes * 12 * novilloUsdKg
     const usdHa = canonAnualUsdHa * anos
     porRenta = { usdHa, usdTotal: usdHa * opts.hectareas, canonAnualUsdHa, anos }
   }
@@ -297,6 +361,9 @@ export function valuarCampo(opts: {
     provinciaEnBase: t?.provincia ?? null,
     referenciaUsada: t ? (t.zona ? `${t.zona}, ${t.provincia}` : t.provincia) : null,
     esAgricola,
+    unidadCanon,
+    canonUsado,
+    canonAnualUsdHa,
     masAniosQueLaPampa: (porRenta?.anos ?? 0) > 30,
   }
 }
@@ -329,6 +396,7 @@ export function valuarCampoTexto(opts: {
   hectareas?: number | null
   zona?: string | null
   kgHaMes?: number | null
+  qqHaAnio?: number | null
 }): { texto: string; encontrado: boolean } {
   const t = tierraDe(opts.provincia, opts.zona)
   if (!t) {
@@ -348,6 +416,7 @@ export function valuarCampoTexto(opts: {
     provincia: opts.provincia,
     zona: opts.zona ?? null,
     kgHaMes: opts.kgHaMes ?? t.kg_ha_mes_canon ?? null,
+    qqHaAnio: opts.qqHaAnio ?? null,
   })
   const usd = (n: number) => 'US$' + Math.round(n).toLocaleString('es-AR')
   const ref = v.referenciaUsada ?? t.provincia
@@ -363,10 +432,24 @@ export function valuarCampoTexto(opts: {
   if (ha) lineas.push(`Un campo de ${ha.toLocaleString('es-AR')} ha: ${usd(v.usdHa * ha)} estimados.`)
 
   if (v.esAgricola) {
-    lineas.push(
-      'Es zona agrícola: la tierra se paga por lo que rinde en granos, no por lo que cría, así que el canon ' +
-        'ganadero no explica su precio y acá vale el comparable de la zona.',
-    )
+    if (t.qq_soja_ha_anio) {
+      const { anos } = anosDeArrendamiento(t)
+      const usdAnio = t.qq_soja_ha_anio * precioSoja().usdQuintal
+      lineas.push(
+        `Zona agrícola: acá el arrendamiento se pacta en QUINTALES DE SOJA por hectárea por año, no en ` +
+          `kilos de novillo. Canon típico: ${t.qq_soja_ha_anio} qq/ha/año (unos ${usd(usdAnio)} por ha al ` +
+          `año). A ese canon, la tierra equivale a unos ${anos} años de arrendamiento.`,
+      )
+      if (t.rinde_soja_qq_ha) {
+        lineas.push(`Rinde de referencia: ${t.rinde_soja_qq_ha} qq/ha de soja de primera.`)
+      }
+      if (t.qq_fuente) lineas.push(`Canon relevado: ${t.qq_fuente}.`)
+    } else {
+      lineas.push(
+        'Es zona agrícola: la tierra se paga por lo que rinde en granos y el arrendamiento se pacta en ' +
+          'quintales de soja, no en kilos de novillo.',
+      )
+    }
   } else if (t.kg_ha_mes_canon) {
     const anual = Math.round(t.kg_ha_mes_canon * 12)
     const { anos } = anosDeArrendamiento(t)

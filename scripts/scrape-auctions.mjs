@@ -979,6 +979,48 @@ async function scrapeCornPrice() {
   return null;
 }
 
+
+// ---------------------------------------------------------------------------
+// Source 8b: Soybean FOB price from MAGYP (HS 1201)
+//
+// Para qué: el arrendamiento AGRÍCOLA se pacta en quintales de soja por hectárea
+// por año, igual que el ganadero se pacta en kilos de novillo. Sin este precio no
+// se puede valuar un campo agrícola por lo que renta.
+// ---------------------------------------------------------------------------
+
+async function scrapeSoyPrice() {
+  console.log("[8b] Fetching soybean FOB price from MAGYP...");
+
+  for (let daysBack = 0; daysBack <= 5; daysBack++) {
+    const d = new Date();
+    d.setDate(d.getDate() - daysBack);
+    const dateStr = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+    const url = `https://www.magyp.gob.ar/sitio/areas/ss_mercados_agropecuarios/ws/ssma/precios_fob.php?Fecha=${dateStr}`;
+
+    const data = await fetchJSON(url);
+    const rows = Array.isArray(data) ? data : data?.posts;
+    if (!rows || rows.length === 0) continue;
+
+    // 1201 = poroto de soja. Se excluyen subproductos (harina, aceite).
+    const prices = rows
+      .filter((p) => p.posicion && String(p.posicion).startsWith("1201"))
+      .map((p) => parseFloat(p.precio))
+      .filter((p) => p > 0);
+
+    if (prices.length === 0) continue;
+
+    const avg =
+      Math.round((prices.reduce((a, b) => a + b, 0) / prices.length) * 100) / 100;
+    console.log(
+      `  Soy FOB (${dateStr}): ${prices.length} positions, avg $${avg} USD/tn`
+    );
+    return avg;
+  }
+
+  console.warn("  [WARN] Could not fetch soybean prices");
+  return null;
+}
+
 // ---------------------------------------------------------------------------
 // Source 9: Per-category prices from MAG (Insight #87)
 // Real observed prices instead of synthetic INMAG ratios
@@ -1678,7 +1720,7 @@ async function main() {
   console.log(`\n=== Ganado Terminal Scraper — ${todayISO()} ===\n`);
 
   // Scrape all sources in parallel
-  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, hkagro, entresurcos, nea, dollar, cattlePrices, cornPrice, categoryPrices, provinceEntry, consignatarioEntry, detailedCategories, arrendamientoOficial] = await Promise.all([
+  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, hkagro, entresurcos, nea, dollar, cattlePrices, cornPrice, soyPrice, categoryPrices, provinceEntry, consignatarioEntry, detailedCategories, arrendamientoOficial] = await Promise.all([
     scrapeCACG(),
     scrapeColombo(),
     scrapeOFarrell(),
@@ -1691,6 +1733,7 @@ async function main() {
     scrapeDollar(),
     scrapeCattlePrices(),
     scrapeCornPrice(),
+    scrapeSoyPrice(),
     scrapeCategoryPrices(), // Insight #87: real per-category prices
     scrapeProvinceEntry(), // haciinfo000003: cattle entry by province
     scrapeConsignatarioEntry(), // haciinfo000006: cattle entry by consignatario
@@ -1968,6 +2011,19 @@ async function main() {
       : 0;
     market.corn.source = "MAGYP FOB API";
     console.log(`Updated corn: $${cornPrice} USD/tn`);
+  }
+
+  // Update soy price if available (arrendamiento agrícola en quintales)
+  if (soyPrice != null) {
+    const prev = market.soy?.current ?? null;
+    market.soy = {
+      current: soyPrice,
+      prev: prev ?? soyPrice,
+      change: prev ? parseFloat((((soyPrice - prev) / prev) * 100).toFixed(1)) : 0,
+      unit: "USD/tn",
+      source: "MAGYP FOB API",
+    };
+    console.log(`Updated soy: $${soyPrice} USD/tn`);
   }
 
   // Update dollar rates if available

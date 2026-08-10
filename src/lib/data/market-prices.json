@@ -2233,5 +2233,12 @@
     "periodEnd": "2026-08-07",
     "periodIndex": 4406.938,
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
+  },
+  "soy": {
+    "current": 464.0,
+    "prev": 464.0,
+    "change": 0,
+    "unit": "USD/tn",
+    "source": "MAGYP FOB API"
   }
 }

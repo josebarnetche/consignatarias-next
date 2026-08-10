@@ -891,14 +891,15 @@ const TOOLS: Tool[] = [
   {
     name: 'valuar_campo',
     description:
-      '¿Cuánto vale la hectárea en Corrientes? ¿Cuánto vale un campo de 800 has en la cuenca del Salado? Valor de la tierra en dólares por hectárea, con el rango real de la zona, el arrendamiento típico en kg de novillo y la fuente de cada dato. Relevamiento propio: 15 provincias y 52 zonas, cruzando tasadores con serie publicada, catastro provincial y avisos de venta. Distingue campo ganadero de agrícola, porque la tierra agrícola NO se tasa con canon de hacienda. GRATIS, sin cupo. Params: provincia (obligatoria), hectareas (opcional), zona (opcional — acepta el nombre de la zona o el partido), kg_ha_mes (opcional, canon pactado).',
+      '¿Cuánto vale la hectárea en Corrientes? ¿Cuánto vale un campo de 800 has en la cuenca del Salado? Valor de la tierra en dólares por hectárea, con el rango real de la zona, el arrendamiento típico en kg de novillo y la fuente de cada dato. Relevamiento propio: 15 provincias y 52 zonas, cruzando tasadores con serie publicada, catastro provincial y avisos de venta. Distingue campo ganadero de agrícola y valúa cada uno en SU moneda: el ganadero en kg de novillo por ha por mes, el agrícola en quintales de soja por ha por año. GRATIS, sin cupo. Params: provincia (obligatoria), hectareas (opcional), zona (opcional — acepta el nombre de la zona o el partido), kg_ha_mes (opcional, canon pactado).',
     inputSchema: {
       type: 'object',
       properties: {
         provincia: { type: 'string', description: `Provincia. Con dato propio: ${TIERRA_PROVINCIAS.map((p) => p.provincia).join(', ')}` },
         hectareas: { type: 'number', description: 'Superficie en hectáreas (opcional; sin ella responde solo el valor por hectárea)' },
         zona: { type: 'string', description: 'Zona o partido (opcional). Ej: "Cuenca del Salado", "Pergamino", "Marcos Juárez". Precisa mucho el número.' },
-        kg_ha_mes: { type: 'number', description: 'Canon pactado en kg de novillo por ha por mes (opcional). Si el dato que tenés es anual, dividilo por 12.' },
+        kg_ha_mes: { type: 'number', description: 'Canon ganadero pactado, en kg de novillo por ha por mes (opcional). Si el dato que tenés es anual, dividilo por 12.' },
+        qq_soja_ha_anio: { type: 'number', description: 'Canon agrícola pactado, en quintales de soja por ha por año (opcional). Es la unidad del arrendamiento agrícola.' },
       },
       required: ['provincia'],
       additionalProperties: false,
@@ -911,6 +912,7 @@ const TOOLS: Tool[] = [
         hectareas: args.hectareas != null ? Number(args.hectareas) : null,
         zona: args.zona ? String(args.zona) : null,
         kgHaMes: args.kg_ha_mes != null ? Number(args.kg_ha_mes) : null,
+        qqHaAnio: args.qq_soja_ha_anio != null ? Number(args.qq_soja_ha_anio) : null,
       })
       return ok(r.texto)
     },

@@ -26,6 +26,15 @@ export function GET() {
     usd_ha: t.usd_ha,
     rango_usd_ha: { p25: t.p25, p75: t.p75 },
     productividad_kg_ha_anio: t.kg_ha_ano,
+    rinde_soja_qq_ha: t.rinde_soja_qq_ha ?? null,
+    arrendamiento_agricola: t.qq_soja_ha_anio
+      ? {
+          qq_soja_ha_anio: t.qq_soja_ha_anio,
+          anios_equivalentes_al_valor_de_la_tierra: anosDeArrendamiento(t).anos,
+          canon_relevado: !!t.qq_fuente,
+          fuente_canon: t.qq_fuente ?? null,
+        }
+      : null,
     arrendamiento_tipico: t.kg_ha_mes_canon
       ? {
           kg_novillo_ha_mes: t.kg_ha_mes_canon,
@@ -54,7 +63,7 @@ export function GET() {
       aptitud:
         'La tierra agrícola no se valúa con canon ganadero: su precio lo explica el rendimiento en granos, no la carga animal.',
       arrendamiento:
-        'El canon se pacta en kg de novillo por hectárea. Los avisos lo publican por año; el pago suele ser mensual y se liquida con el promedio del período anterior.',
+        'El canon GANADERO se pacta en kg de novillo por hectárea. Los avisos lo publican por año; el pago suele ser mensual y se liquida con el promedio del período anterior. El canon AGRÍCOLA se pacta en quintales de soja por hectárea por año — es la misma mecánica en otra moneda, y por eso el campo agrícola se valúa con soja y no con hacienda.',
       url: 'https://www.consignatarias.com.ar/campos/valuar',
     },
     cobertura: {
