@@ -194,8 +194,16 @@ const DIAS_URGENTE = 7
  * Se sube cuando haya respuestas que lo justifiquen, no antes.
  */
 export const MAX_CONSULTAS_DIA = Math.max(0, parseInt(process.env.OVEJERO_MAX_CONSULTAS || '3', 10))
-/** Freno de mano: OVEJERO_OUTREACH=off deja el agente en modo informe. */
-export const OUTREACH_ACTIVO = (process.env.OVEJERO_OUTREACH || 'on').toLowerCase() !== 'off'
+/**
+ * MODO INFORME POR DEFECTO (10-ago-2026). El agente sigue rankeando leads y
+ * mandando el digest, pero NO le escribe a las consignatarias.
+ *
+ * Por qué: la doctrina es que el lead es nuestro. Un agente que le escribe a
+ * doce firmas por cinco leads gasta relación ajena a cambio de poco, y con esta
+ * base de leads todavía chica el criterio no está probado. Se enciende a
+ * propósito con OVEJERO_OUTREACH=on.
+ */
+export const OUTREACH_ACTIVO = (process.env.OVEJERO_OUTREACH || 'off').toLowerCase() === 'on'
 /** Nunca dos consultas a la misma firma por el mismo lead, ni a la misma casilla en 30 días. */
 const DIAS_ENTRE_CONSULTAS = 30
 const OUTREACH_TYPE = 'ovejero_lead_match'
