@@ -1,8 +1,8 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
   "name": "ar.com.consignatarias/cattle-market",
-  "description": "Mercado ganadero argentino: precios INMAG, remates, directorio, sanidad SENASA y buenas prácticas.",
-  "version": "1.2.0",
+  "description": "Mercado ganadero argentino: INMAG, precios, remates, directorio y valor de la hectárea por zona.",
+  "version": "1.3.0",
   "websiteUrl": "https://www.consignatarias.com.ar",
   "remotes": [
     {

@@ -1,8 +1,8 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
   "name": "ar.com.consignatarias/cattle-market",
-  "description": "Ganado argentino: índice novillo INMAG, precios de hacienda, remates, consignatarias, frigoríficos.",
-  "version": "1.0.0",
+  "description": "Mercado ganadero argentino: INMAG, precios, remates, directorio y valor de la hectárea por zona.",
+  "version": "1.3.0",
   "repository": {
     "url": "https://github.com/josebarnetche/consignatarias-next",
     "source": "github"

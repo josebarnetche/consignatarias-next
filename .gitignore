@@ -107,3 +107,6 @@ scripts/archive/value-events-report.js
 /marca/
 # ...y las descargas/lead magnets, que también deployan.
 !public/descargas/*.pdf
+
+# Clave privada del registry MCP: vive en ~/.mcp-keys/, nunca acá.
+*.pem
