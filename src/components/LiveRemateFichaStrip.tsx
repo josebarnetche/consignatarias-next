@@ -23,6 +23,7 @@ interface Payload {
   current: Lot | null
   recent: Lot[]
   averages: CatAvg[]
+  transcript?: { texto: string; at: string }[]
 }
 
 const ars = (n: number) => '$' + n.toLocaleString('es-AR')
@@ -109,8 +110,27 @@ export default function LiveRemateFichaStrip({ slug }: { slug: string }) {
           </div>
         </div>
 
+        {data.transcript && data.transcript.length > 0 && (
+          <div className="mt-3">
+            <div className="text-[10px] uppercase tracking-wider text-zinc-500 mb-1">
+              Cantaleo en vivo · transcripción automática
+            </div>
+            <div className="rounded-lg bg-zinc-900/70 border border-zinc-800 px-3 py-2 max-h-32 overflow-y-auto flex flex-col-reverse">
+              <div className="text-xs text-zinc-400 leading-relaxed font-mono whitespace-pre-wrap">
+                {data.transcript.map((t, i) => (
+                  <span key={i}>
+                    {t.texto}
+                    {i < data.transcript!.length - 1 ? ' · ' : ''}
+                  </span>
+                ))}
+                <span className="inline-block w-2 h-3 bg-red-500/70 animate-pulse ml-1 align-middle" />
+              </div>
+            </div>
+          </div>
+        )}
+
         <p className="mt-3 text-[10px] text-zinc-600 leading-snug">
-          Promedios corrientes transcriptos automáticamente del audio del remate (lectura
+          Promedios y texto transcriptos automáticamente del audio del remate (lectura
           preliminar, no oficial). El promedio oficial lo publica la consignataria al cierre.
         </p>
       </section>

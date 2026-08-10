@@ -7,6 +7,19 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.194.0] — 2026-08-10
+
+### El cantaleo, subtitulado
+
+La transcripción cruda del martillero llega a la pantalla: nueva tabla
+`live_remate_transcript` (bloques de Whisper, escritura service_role, lectura
+pública), el payload de `/api/live-remate` gana `transcript[]`, y tanto el
+ticker de `/remates/en-vivo` como el strip de la ficha muestran el cantaleo
+como subtítulo en vivo con cursor palpitante — rotulado "transcripción
+automática", junto a los precios preliminares.
+
+---
+
 ## [1.193.0] — 2026-08-10
 
 ### El remate en vivo llega a la ficha de la firma

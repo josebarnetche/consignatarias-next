@@ -23,6 +23,10 @@ export interface LiveCatAvg {
   n: number
   mediana: number
 }
+export interface LiveTranscriptBlock {
+  texto: string
+  at: string
+}
 export interface LiveRematePayload {
   active: boolean
   session: {
@@ -38,9 +42,10 @@ export interface LiveRematePayload {
   current: LiveLot | null
   recent: LiveLot[]
   averages: LiveCatAvg[]
+  transcript: LiveTranscriptBlock[]
 }
 
-const EMPTY: LiveRematePayload = { active: false, session: null, current: null, recent: [], averages: [] }
+const EMPTY: LiveRematePayload = { active: false, session: null, current: null, recent: [], averages: [], transcript: [] }
 const STALE_LIMIT_SEC = 180 // si el worker no escribe hace 3 min, lo damos por caído
 
 function median(xs: number[]): number {
@@ -98,6 +103,28 @@ export async function getLiveRemate(): Promise<LiveRematePayload> {
       }))
       .sort((a, b) => b.n - a.n)
 
+    // El subtítulo del cantaleo: últimos bloques transcriptos, cronológicos.
+    // `live_remate_transcript` es de 20260810 — mismo caso de tipos que unidad.
+    const { data: trRaw } = await (sb as unknown as {
+      from: (t: string) => {
+        select: (c: string) => {
+          eq: (k: string, v: string) => {
+            order: (c: string, o: { ascending: boolean }) => {
+              limit: (n: number) => Promise<{ data: Array<{ texto: string; created_at: string }> | null }>
+            }
+          }
+        }
+      }
+    })
+      .from('live_remate_transcript')
+      .select('texto,created_at')
+      .eq('session_id', s.id)
+      .order('created_at', { ascending: false })
+      .limit(20)
+    const transcript: LiveTranscriptBlock[] = (trRaw ?? [])
+      .map((t) => ({ texto: t.texto, at: t.created_at }))
+      .reverse()
+
     return {
       active: true,
       session: {
@@ -110,6 +137,7 @@ export async function getLiveRemate(): Promise<LiveRematePayload> {
       current: recent[0] ?? null,
       recent,
       averages,
+      transcript,
     }
   } catch {
     return EMPTY
