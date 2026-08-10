@@ -44,7 +44,6 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: "INMAG hoy", href: "/mercado/inmag", hint: "Precio de referencia", tag: "live" },
       { label: "Pulso del mercado", href: "/mercado/pulso", hint: "Cañuelas por firma, en vivo", tag: "live" },
-      { label: "Arrendamiento", href: "/mercado/arrendamiento", hint: "Valor del campo" },
       { label: "INMAG en USD", href: "/mercado/inmag-dolares", hint: "Serie dolarizada" },
       { label: "Novillo 20 años", href: "/mercado/novillo-historico", hint: "2006→hoy · USD oficial y blue" },
       { label: "Maíz / Novillo", href: "/mercado/spread", hint: "Relación de canje" },
@@ -62,20 +61,17 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Hoy", href: "/remates/hoy" },
       { label: "Esta semana", href: "/remates/semana" },
       { label: "En vivo", href: "/remates/en-vivo", tag: "live" },
+      { label: "Anteriores", href: "/remates/anteriores", hint: "Resultados de los que ya pasaron" },
     ],
   },
   {
     label: "CAMPOS",
     match: "/campos",
     items: [
-      { label: "Campos ofrecidos", href: "/campos", hint: "Arrendamiento y venta" },
-      { label: "¿Cuánto vale mi campo?", href: "/campos/valuar", hint: "Tasador · 15 provincias, 52 zonas" },
+      { label: "Índice de arrendamiento", href: "/mercado/arrendamiento", hint: "Kg de novillo por hectárea, al índice oficial" },
+      { label: "¿Cuánto vale mi campo?", href: "/campos/valuar", hint: "Tasador · 15 provincias y 52 zonas relevadas" },
+      { label: "Campos ofrecidos", href: "/campos", hint: "En arrendamiento y en venta" },
       { label: "Publicar un campo", href: "/campos/publicar", hint: "Gratis · tu contacto no se publica" },
-      { label: "Cómo comprar un campo", href: "/como-comprar-un-campo", hint: "Papeles y qué mirar antes de señar" },
-      { label: "Cómo vender un campo", href: "/como-vender-un-campo", hint: "Precio, carpeta y tiempos" },
-      { label: "Impuestos de la venta", href: "/impuestos-por-la-venta-de-un-campo", hint: "El ITI ya no existe" },
-      { label: "Créditos y financiación", href: "/creditos-para-comprar-un-campo" },
-      { label: "Inmobiliarias rurales", href: "/inmobiliarias-rurales" },
     ],
   },
   {
@@ -97,8 +93,24 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Mi Ganado", href: "/mi-ganado", hint: "Valor de tu rodeo · ahora gratis" },
       { label: "Validar RENSPA", href: "/renspa", hint: "Decodificá el código de tu establecimiento" },
       { label: "Sanidad / SENASA", href: "/sanidad", hint: "Vacunación · requisitos de movimiento" },
-      { label: "Buenas Prácticas (BPG)", href: "/buenas-practicas", hint: "Guía Red BPA · salud y bienestar" },
+      { label: "Quiero comprar", href: "/quiero-comprar", hint: "Decinos qué buscás y te avisamos del remate" },
       { label: "Exportar / Calendario", href: "/calendario-exportar" },
+    ],
+  },
+  {
+    // Cincuenta páginas explicativas vivían sin ningún lugar desde donde
+    // llegar: se entraba por búsqueda y se salía. El hub las junta y les da
+    // los enlaces internos que las vuelven un cuerpo y no hojas sueltas.
+    label: "GUÍAS",
+    match: "/guias",
+    items: [
+      { label: "Todas las guías", href: "/guias", hint: "El índice completo, por tema", tag: "new" },
+      { label: "Cómo vender hacienda", href: "/vender-hacienda-guia", hint: "Consignación, remate o venta directa" },
+      { label: "Cómo comprar un campo", href: "/como-comprar-un-campo", hint: "Papeles y qué mirar antes de señar" },
+      { label: "Cómo vender un campo", href: "/como-vender-un-campo", hint: "Precio, carpeta y tiempos reales" },
+      { label: "Impuestos de la venta de un campo", href: "/impuestos-por-la-venta-de-un-campo", hint: "El ITI está derogado" },
+      { label: "Buenas Prácticas (BPG)", href: "/buenas-practicas", hint: "Guía Red BPA" },
+      { label: "Glosario", href: "/glosario", hint: "Las palabras del oficio" },
     ],
   },
 ];
@@ -117,9 +129,10 @@ const MOBILE_NAV: MobileNavLink[] = [
   { label: "ARRIENDO", href: "/mercado/arrendamiento" },
   { label: "PRECIOS", href: "/precios" },
   { label: "REMATES", href: "/remates" },
-  { label: "FRIGORIF.", href: "/frigorificos" },
+  { label: "CAMPOS", href: "/campos/valuar" },
   { label: "CONSIGNAT.", href: "/consignatarias" },
   { label: "CALCULAR", href: "/calculadora" },
+  { label: "GUÍAS", href: "/guias" },
   { label: "PLANES", href: "/planes", tag: "pro" },
 ];
 
@@ -496,6 +509,7 @@ const FOOTER_COLUMNS: FooterColumn[] = [
       { label: "Maíz / Novillo", href: "/mercado/spread" },
       { label: "Categorías", href: "/mercado" },
       { label: "Arrendamiento", href: "/mercado/arrendamiento" },
+      { label: "Valor de la hectárea", href: "/campos/valuar" },
     ],
   },
   {
@@ -509,6 +523,8 @@ const FOOTER_COLUMNS: FooterColumn[] = [
       { label: "Exportar", href: "/exportar" },
       { label: "Calendario", href: "/calendario-exportar" },
       { label: "Mi Ganado", href: "/mi-ganado" },
+      { label: "Campos", href: "/campos" },
+      { label: "Publicar un campo", href: "/campos/publicar" },
       { label: "DT-e", href: "/dte" },
       { label: "Planes", href: "/planes" },
     ],
@@ -522,6 +538,7 @@ const FOOTER_COLUMNS: FooterColumn[] = [
       { label: "Reporte semanal", href: "/reporte-semanal" },
       { label: "Manifiesto", href: "/el-oraculo" },
       { label: "Preguntas frecuentes", href: "/preguntas-frecuentes" },
+      { label: "Guías", href: "/guias" },
       { label: "Glosario", href: "/glosario" },
       { label: "API", href: "/api-docs" },
       { label: "MCP para IAs", href: "/mcp" },

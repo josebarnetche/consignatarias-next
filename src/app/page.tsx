@@ -208,6 +208,52 @@ const CORREDOR_NEXT = (() => {
   return MESES[m % 12]; // m es 1-based → % 12 da el índice del mes siguiente
 })();
 
+
+/* Las cuatro puertas de entrada del sitio. Se mantiene corto a propósito: es
+   descubrimiento, no un mapa del sitio — para eso está el footer. */
+const SECCIONES = [
+  {
+    titulo: 'Precios y mercado',
+    bajada: 'El INMAG del día, la serie de veinte años y el precio por categoría.',
+    links: [
+      { label: 'INMAG hoy', href: '/mercado/inmag' },
+      { label: 'Precios de hacienda', href: '/precios' },
+      { label: 'El novillo en dólares', href: '/mercado/inmag-dolares' },
+      { label: 'Índice de liquidación', href: '/mercado/liquidacion' },
+    ],
+  },
+  {
+    titulo: 'Campos',
+    bajada: 'Cuánto vale la hectárea en tu zona y qué se paga de arrendamiento.',
+    links: [
+      { label: '¿Cuánto vale mi campo?', href: '/campos/valuar' },
+      { label: 'Índice de arrendamiento', href: '/mercado/arrendamiento' },
+      { label: 'Campos ofrecidos', href: '/campos' },
+      { label: 'Cómo comprar un campo', href: '/como-comprar-un-campo' },
+    ],
+  },
+  {
+    titulo: 'Remates y firmas',
+    bajada: 'Quién remata, cuándo y dónde. Y con quién conviene operar.',
+    links: [
+      { label: 'Calendario de remates', href: '/remates' },
+      { label: 'Consignatarias', href: '/consignatarias' },
+      { label: 'Frigoríficos', href: '/frigorificos' },
+      { label: 'Comparar firmas', href: '/comparar' },
+    ],
+  },
+  {
+    titulo: 'Herramientas y guías',
+    bajada: 'Para calcular antes de decidir, y para entender lo que se firma.',
+    links: [
+      { label: 'Calculadora de neto', href: '/calculadora' },
+      { label: 'Mi Ganado', href: '/mi-ganado' },
+      { label: 'Todas las guías', href: '/guias' },
+      { label: 'Glosario', href: '/glosario' },
+    ],
+  },
+]
+
 export default async function LandingPage() {
   // USD blue en vivo — descongela la cinta y activa el DeltaFlash real. Falla
   // suave: si el fetch devuelve null, usamos el cierre del build (soft-fail).
@@ -612,7 +658,42 @@ export default async function LandingPage() {
           </div>
         </section>
 
+
         <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
+
+        {/* ============================================================ */}
+        {/*  QUÉ HAY ADENTRO — la landing tenía 24 links y ninguno a      */}
+        {/*  campos, arrendamiento, precios ni guías. La página con más   */}
+        {/*  autoridad del sitio no repartía nada.                        */}
+        {/* ============================================================ */}
+        <section className="max-w-7xl mx-auto px-6 pt-24 pb-24">
+          <h2 className="text-2xl md:text-3xl font-medium text-zinc-100 tracking-tight text-center mb-4">
+            Qué hay adentro
+          </h2>
+          <p className="text-zinc-400 text-sm text-center max-w-2xl mx-auto mb-14">
+            Todo abierto y sin registro. El productor no paga nada.
+          </p>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {SECCIONES.map((sec) => (
+              <div key={sec.titulo} className="border border-zinc-800 rounded-lg bg-zinc-900/30 p-5">
+                <h3 className="text-zinc-100 text-sm font-medium mb-1">{sec.titulo}</h3>
+                <p className="text-zinc-500 text-xs mb-4 leading-relaxed">{sec.bajada}</p>
+                <ul className="space-y-1.5">
+                  {sec.links.map((l) => (
+                    <li key={l.href}>
+                      <Link
+                        href={l.href}
+                        className="text-zinc-400 hover:text-accent text-xs transition-colors"
+                      >
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* ============================================================ */}
         {/*  FAQ                                                          */}
