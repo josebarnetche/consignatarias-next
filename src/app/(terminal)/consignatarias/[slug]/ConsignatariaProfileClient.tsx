@@ -13,6 +13,8 @@ import FeatureGate from '@/components/FeatureGate'
 import ContactlessLeadForm from '@/components/ContactlessLeadForm'
 import { normalizeUrl } from '@/lib/utils/url'
 import { resolveYoutubeUrl } from '@/lib/youtube-live'
+import { resolverStream } from '@/lib/streams'
+import StreamWall, { type StreamItem } from '@/components/remates/StreamWall'
 import { trackProfileView, trackOutboundClick, trackClaimCTA, trackValueEvent, trackWhatsAppClick } from '@/lib/analytics'
 import { requestAccountNudge } from '@/lib/account-nudge'
 import {
@@ -633,6 +635,38 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       ? freshestVideo.id
       : null
 
+  // Transmisión reproducible en esta página: el remate en vivo de esta firma.
+  // El teléfono sale del propio perfil, así que el botón de contacto del player
+  // llama a quien está rematando en ese momento.
+  const proximo = upcoming[0]
+  const streamEnVivo: StreamItem | null = (() => {
+    if (!proximo) return null
+    const liveNow = getEffectiveStatus(proximo.date, proximo.time, today) === 'live'
+    const emb = resolverStream(proximo)
+    if (!emb) return null
+    // Un canal sin remate en curso no tiene nada que reproducir.
+    if (emb.confianza === 'probable' && !liveNow) return null
+    const tel = profile.phone?.trim() || null
+    // Misma convención que el botón de WhatsApp de más abajo en esta página:
+    // solo dígitos. Dos botones en la misma ficha no pueden armar links distintos.
+    const waNum = profile.whatsapp ? profile.whatsapp.replace(/\D/g, '') : null
+    return {
+      id: `${profile.canonicalSlug}-${proximo.date}${proximo.time ? '-' + proximo.time.replace(':', '') : ''}`,
+      titulo: proximo.title,
+      firma: profile.displayName,
+      slug: profile.canonicalSlug,
+      perfilHref: `/consignatarias/${profile.canonicalSlug}`,
+      embedUrl: emb.embedUrl,
+      watchUrl: emb.watchUrl,
+      confianza: emb.confianza,
+      hora: proximo.time,
+      lugar: proximo.province || null,
+      tel: tel ? `tel:${tel.replace(/[^\d+]/g, '')}` : null,
+      wa: waNum ? `https://wa.me/${waNum}` : null,
+      telVisible: tel,
+    }
+  })()
+
   return (
     <div className="max-w-6xl mx-auto px-2 sm:px-4 pt-3 pb-20 md:pb-3 space-y-0">
       {/* ============================================================ */}
@@ -766,11 +800,17 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
 
         {/* PRO — vidriera: el último remate en autoplay/mute, reproductor limpio (sin
             íconos, pausable). Distingue el perfil PRO del común. */}
-        {isPro && latestVideoId && (
+        {/* En vivo AHORA manda sobre el video del último remate: si está rematando,
+            es lo que el productor quiere ver, y con el teléfono al lado. */}
+        {streamEnVivo ? (
+          <div className="px-panel pt-3 pb-1 border-b border-terminal-border">
+            <StreamWall streams={[streamEnVivo]} titulo="Transmisión en vivo" />
+          </div>
+        ) : isPro && latestVideoId ? (
           <div className="px-panel pt-3 pb-1 border-b border-terminal-border">
             <ProRemateVideo videoId={latestVideoId} title={`Último remate — ${profile.displayName}`} />
           </div>
-        )}
+        ) : null}
 
         <div className="px-panel py-3 grid gap-3 grid-cols-1 lg:grid-cols-3">
           {/* CARD A — PRÓXIMO REMATE (Job 1) */}
@@ -800,6 +840,15 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                     if (!live) return null
                     const liveNow = getEffectiveStatus(upcoming[0].date, upcoming[0].time, today) === 'live'
                     if (live.confidence === 'probable' && !liveNow) return null
+                    // Si el stream se puede reproducir en esta misma página, el
+                    // botón NO manda a YouTube: baja al reproductor de acá.
+                    if (streamEnVivo) {
+                      return (
+                        <a href={`#stream-${streamEnVivo.id}`} onClick={() => trackValueEvent('live_click', { entityType: 'consignataria', entitySlug: profile.canonicalSlug })} className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xxs font-terminal uppercase tracking-wider text-positive border border-positive/30 rounded-terminal hover:bg-positive/10 transition-colors">
+                          &#9654; {liveNow ? 'Ver en vivo acá' : 'Ver acá'}
+                        </a>
+                      )
+                    }
                     return (
                       <a href={live.url} target="_blank" rel="noopener noreferrer" onClick={() => { trackOutboundClick(live.url, 'youtube'); trackValueEvent('live_click', { entityType: 'consignataria', entitySlug: profile.canonicalSlug }) }} className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xxs font-terminal uppercase tracking-wider text-positive border border-positive/30 rounded-terminal hover:bg-positive/10 transition-colors">
                         &#9654; {liveNow ? 'En vivo ahora' : 'En vivo'}

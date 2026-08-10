@@ -6,6 +6,10 @@ import { consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
 import { normalizeUrl } from '@/lib/utils/url'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { resolveYoutubeUrl } from '@/lib/youtube-live'
+import { resolverStream, contactoClicable } from '@/lib/streams'
+import StreamWall, { type StreamItem } from '@/components/remates/StreamWall'
+import { createServiceClient } from '@/lib/supabase'
+import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import { Calendar, Clock, MapPin, Users, Play, FileText, Video, Youtube, Radio } from 'lucide-react'
 import LiveRemateTicker from '@/components/LiveRemateTicker'
 
@@ -93,13 +97,35 @@ interface Remate {
   status: string
 }
 
+/** Clave estable para el ancla del stream. NO se usa remate.id: se reasigna en
+ *  cada scrape, así que un link compartido apuntaría a otro remate mañana. */
+function claveStream(r: { consignatariaSlug: string; date: string; time: string | null }): string {
+  return `${r.consignatariaSlug}-${r.date}${r.time ? '-' + r.time.replace(':', '') : ''}`
+}
+
+/** Teléfono y WhatsApp de las firmas que hoy transmiten, para el botón de contacto. */
+async function traerContactos(slugs: string[]): Promise<Map<string, { phone: string | null; whatsapp: string | null }>> {
+  const salida = new Map<string, { phone: string | null; whatsapp: string | null }>()
+  const db = createServiceClient()
+  if (!db || slugs.length === 0) return salida
+  const { data } = await db
+    .from('consignatarias')
+    .select('canonical_slug, phone, whatsapp')
+    .in('canonical_slug', slugs)
+  for (const row of data ?? []) {
+    const r = row as { canonical_slug: string; phone: string | null; whatsapp: string | null }
+    salida.set(r.canonical_slug, { phone: r.phone, whatsapp: r.whatsapp })
+  }
+  return salida
+}
+
 function extractYouTubeId(url: string): string | null {
   const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
   const match = url.match(regExp)
   return (match && match[7]?.length === 11) ? match[7] : null
 }
 
-function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl }: { remate: Remate; isToday: boolean; isLive: boolean; confidence: 'confirmed' | 'probable'; watchUrl: string }) {
+function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl, anclaStream }: { remate: Remate; isToday: boolean; isLive: boolean; confidence: 'confirmed' | 'probable'; watchUrl: string; anclaStream?: string | null }) {
   const typeColors: Record<string, string> = {
     invernada: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
     cria: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
@@ -216,21 +242,35 @@ function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl }: { rem
 
         {/* Actions */}
         <div className="flex flex-wrap gap-2 pt-2 border-t border-zinc-800">
-          <a
-            href={watchUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded transition-colors ${
-              isLive
-                ? 'bg-red-600 text-white hover:bg-red-500'
-                : isProbable
+          {/* Si la transmisión se puede ver acá arriba, el botón NO sale del sitio:
+              lleva al reproductor de la pared, que se abre solo con el ancla. */}
+          {anclaStream ? (
+            <a
+              href={`#stream-${anclaStream}`}
+              className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded transition-colors ${
+                isLive
+                  ? 'bg-red-600 text-white hover:bg-red-500'
+                  : 'bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20'
+              }`}
+            >
+              <Play className="w-4 h-4" />
+              {isLive ? 'Ver ahora acá' : 'Ver acá'}
+            </a>
+          ) : (
+            <a
+              href={watchUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded transition-colors ${
+                isProbable
                   ? 'bg-zinc-800 text-zinc-200 border border-zinc-700 hover:bg-zinc-700'
                   : 'bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20'
-            }`}
-          >
-            <Youtube className="w-4 h-4" />
-            {isLive ? 'Ver ahora' : isProbable ? 'Ir al canal' : 'Ver transmisión'}
-          </a>
+              }`}
+            >
+              <Youtube className="w-4 h-4" />
+              {isProbable ? 'Ir al canal' : 'Ver transmisión'}
+            </a>
+          )}
           {remate.catalogUrl && (
             <a
               href={normalizeUrl(remate.catalogUrl) || '#'}
@@ -291,6 +331,37 @@ export default async function RematesEnVivoPage() {
   const confirmedCount = liveRemates.filter(r => r.confidence === 'confirmed').length
   const probableCount = liveRemates.filter(r => r.confidence === 'probable').length
   const todayCount = liveRemates.filter(r => r.date === todayStr).length
+
+  // La pared de transmisiones: solo las de HOY, que son las que se pueden mirar.
+  // Un remate de la semana que viene no tiene nada que reproducir todavía.
+  const deHoy = liveRemates.filter((r) => r.date === todayStr)
+  const contactos = await traerContactos(
+    Array.from(new Set(deHoy.map((r) => getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug))),
+  )
+  const streams: StreamItem[] = deHoy
+    .map((r): StreamItem | null => {
+      const emb = resolverStream(r)
+      if (!emb) return null
+      const canonical = getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug
+      const c = contactos.get(canonical)
+      const { tel, wa, visible } = contactoClicable(c?.phone, c?.whatsapp)
+      return {
+        id: claveStream(r),
+        titulo: r.title,
+        firma: r.consignatariaName,
+        slug: canonical,
+        perfilHref: consignatariaProfilePath(r.consignatariaSlug),
+        embedUrl: emb.embedUrl,
+        watchUrl: emb.watchUrl,
+        confianza: emb.confianza,
+        hora: r.time,
+        lugar: r.province || null,
+        tel,
+        wa,
+        telVisible: visible,
+      }
+    })
+    .filter((s): s is StreamItem => s !== null)
 
   // Group by date
   const byDate = liveRemates.reduce((acc, r) => {
@@ -424,6 +495,7 @@ export default async function RematesEnVivoPage() {
           </div>
         ) : (
           <div className="space-y-8">
+            <StreamWall streams={streams} />
             {Object.entries(byDate).map(([date, dateRemates]) => {
               const isToday = date === todayStr
               const dateLabel = isToday ? '🔴 Hoy' : formatDate(date)
@@ -445,6 +517,11 @@ export default async function RematesEnVivoPage() {
                         isLive={isToday && remate.status === 'live' && remate.confidence === 'confirmed'}
                         confidence={remate.confidence}
                         watchUrl={remate.watchUrl}
+                        anclaStream={
+                          isToday && streams.some((s) => s.id === claveStream(remate))
+                            ? claveStream(remate)
+                            : null
+                        }
                       />
                     ))}
                   </div>
