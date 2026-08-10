@@ -652,6 +652,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
     const waNum = profile.whatsapp ? profile.whatsapp.replace(/\D/g, '') : null
     return {
       id: `${profile.canonicalSlug}-${proximo.date}${proximo.time ? '-' + proximo.time.replace(':', '') : ''}`,
+      enVivoAhora: liveNow,
       titulo: proximo.title,
       firma: profile.displayName,
       slug: profile.canonicalSlug,
@@ -802,7 +803,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
             íconos, pausable). Distingue el perfil PRO del común. */}
         {/* En vivo AHORA manda sobre el video del último remate: si está rematando,
             es lo que el productor quiere ver, y con el teléfono al lado. */}
-        {streamEnVivo ? (
+        {streamEnVivo?.enVivoAhora ? (
           <div className="px-panel pt-3 pb-1 border-b border-terminal-border">
             <StreamWall streams={[streamEnVivo]} titulo="Transmisión en vivo" />
           </div>

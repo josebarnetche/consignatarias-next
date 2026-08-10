@@ -7,6 +7,7 @@ import { normalizeUrl } from '@/lib/utils/url'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { resolveYoutubeUrl } from '@/lib/youtube-live'
 import { resolverStream, contactoClicable } from '@/lib/streams'
+import { getEffectiveStatus } from '@/lib/ui/tokens'
 import StreamWall, { type StreamItem } from '@/components/remates/StreamWall'
 import { createServiceClient } from '@/lib/supabase'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
@@ -347,6 +348,9 @@ export default async function RematesEnVivoPage() {
       const { tel, wa, visible } = contactoClicable(c?.phone, c?.whatsapp)
       return {
         id: claveStream(r),
+        // Al aire de verdad, según hora ART: es lo que decide si hay algo que
+        // reproducir. Un embed de canal fuera de horario devuelve negro.
+        enVivoAhora: getEffectiveStatus(r.date, r.time, todayStr) === 'live',
         titulo: r.title,
         firma: r.consignatariaName,
         slug: canonical,

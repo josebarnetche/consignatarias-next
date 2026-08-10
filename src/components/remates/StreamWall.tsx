@@ -27,6 +27,9 @@ export interface StreamItem {
   embedUrl: string
   watchUrl: string
   confianza: 'confirmed' | 'probable'
+  /** Si NO está al aire, abrir el player muestra un cuadro negro: el embed de
+   *  canal solo reproduce lo que se está transmitiendo en ese momento. */
+  enVivoAhora: boolean
   hora?: string | null
   lugar?: string | null
   tel?: string | null
@@ -41,7 +44,12 @@ export default function StreamWall({
   streams: StreamItem[]
   titulo?: string
 }) {
-  const [abiertos, setAbiertos] = useState<string[]>(() => streams.slice(0, 1).map((s) => s.id))
+  // Solo se abre solo lo que está AL AIRE. Abrir un remate que empieza a las
+  // 13:30 a las 3 de la mañana daba un cuadro negro, que es peor que no mostrar
+  // nada: parece que el sitio está roto.
+  const [abiertos, setAbiertos] = useState<string[]>(() =>
+    streams.filter((s) => s.enVivoAhora).slice(0, 1).map((s) => s.id),
+  )
 
   // Las tarjetas de abajo linkean a #stream-<id>. Al entrar por ahí, el player
   // se abre solo: si el usuario hizo un click que dice "ver", tiene que ver.
@@ -68,6 +76,9 @@ export default function StreamWall({
   }
   const cerrar = (id: string) => setAbiertos((prev) => prev.filter((x) => x !== id))
 
+  const hayEnVivo = streams.some((s) => s.enVivoAhora)
+  const proxima = streams.find((s) => !s.enVivoAhora) ?? null
+
   const enPantalla = abiertos
     .map((id) => streams.find((s) => s.id === id))
     .filter((s): s is StreamItem => !!s)
@@ -85,7 +96,11 @@ export default function StreamWall({
         <p className="text-zinc-500 text-xs">
           {enPantalla.length > 0
             ? `${enPantalla.length} en pantalla · podés abrir varios a la vez`
-            : 'Elegí una transmisión para verla acá'}
+            : hayEnVivo
+              ? 'Elegí una transmisión para verla acá'
+              : proxima
+                ? `Ninguna está al aire todavía. La primera arranca ${proxima.hora ? `a las ${proxima.hora}` : 'más tarde'}.`
+                : 'Ninguna está al aire en este momento.'}
         </p>
       </div>
 
@@ -116,6 +131,12 @@ export default function StreamWall({
                 </button>
               </div>
 
+              {!s.enVivoAhora && (
+                <p className="px-3 py-2 text-xxs text-amber-300/90 bg-amber-500/[0.06] border-b border-amber-500/20">
+                  Todavía no arrancó{s.hora ? ` — está anunciada para las ${s.hora}` : ''}. Si la firma no
+                  está transmitiendo en este momento, el reproductor va a verse vacío.
+                </p>
+              )}
               <div className="relative w-full aspect-video bg-black">
                 <iframe
                   src={s.embedUrl}
@@ -201,8 +222,10 @@ export default function StreamWall({
                   <Maximize2 className="w-3 h-3" />
                   {s.firma}
                   {s.hora ? <span className="text-zinc-600 font-mono">{s.hora}</span> : null}
-                  {s.confianza === 'probable' && (
-                    <span className="text-zinc-600 text-xxs">(canal)</span>
+                  {s.enVivoAhora ? (
+                    <span className="text-red-400 text-xxs">● al aire</span>
+                  ) : (
+                    <span className="text-zinc-600 text-xxs">no empezó</span>
                   )}
                 </button>
               ))}
