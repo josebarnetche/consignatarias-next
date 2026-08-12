@@ -1838,7 +1838,7 @@
   "categories": {
     "novillos": {
       "current": 4390.64,
-      "prev": 4391,
+      "prev": 4390.64,
       "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
@@ -1846,39 +1846,39 @@
     },
     "novillitos": {
       "current": 4767.26,
-      "prev": 4171,
-      "change": 14.3,
+      "prev": 4767.26,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 1801
     },
     "vaquillonas": {
       "current": 4441.2,
-      "prev": 3952,
-      "change": 12.4,
+      "prev": 4441.2,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 2062
     },
     "vacas": {
       "current": 3081.92,
-      "prev": 3161,
-      "change": -2.5,
+      "prev": 3081.92,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "latestVolume": 2475
     },
     "toros": {
       "current": 3360.36,
-      "prev": 2854,
-      "change": 17.7,
+      "prev": 3360.36,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 125
     },
     "terneros": {
       "current": 4537,
-      "prev": 4830,
-      "change": -6.1,
+      "prev": 4537,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
@@ -1891,8 +1891,8 @@
   },
   "usdBlue": {
     "current": 1535,
-    "prev": 1550,
-    "change": -1,
+    "prev": 1535,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
