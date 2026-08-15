@@ -13282,25 +13282,6 @@
     "status": "scheduled"
   },
   {
-    "title": "GORDOS y CONSERVA",
-    "consignatariaName": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
-    "consignatariaSlug": "agricultores-federados-argentinos-soc-coop-lt",
-    "date": "2026-08-20",
-    "time": "10:00",
-    "location": "MARCOS JUAREZ, CORDOBA",
-    "province": "CORDOBA",
-    "type": "general",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "GORDOS y CONSERVA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.afascl.com",
-    "id": 700,
-    "status": "scheduled"
-  },
-  {
     "title": "AFA | Marcos Juarez | Gordos y Conservas",
     "consignatariaName": "AFA",
     "consignatariaSlug": "afa",
@@ -13317,7 +13298,26 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled",
-    "id": 701
+    "id": 700
+  },
+  {
+    "title": "GORDOS y CONSERVA",
+    "consignatariaName": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
+    "consignatariaSlug": "agricultores-federados-argentinos-soc-coop-lt",
+    "date": "2026-08-20",
+    "time": "10:00",
+    "location": "MARCOS JUAREZ, CORDOBA",
+    "province": "CORDOBA",
+    "type": "general",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "GORDOS y CONSERVA",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.afascl.com",
+    "id": 701,
+    "status": "scheduled"
   },
   {
     "title": "Faena, Invernada y Cria - 11.00hs.",
@@ -13396,6 +13396,25 @@
     "id": 705
   },
   {
+    "title": "Paz Hnos. | Las Tranqueras",
+    "consignatariaName": "Paz Hnos.",
+    "consignatariaSlug": "paz-hnos",
+    "date": "2026-08-20",
+    "time": "14:00",
+    "location": "",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Paz Hnos. | Las Tranqueras",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6493-paz-hnos-las-tranqueras",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled",
+    "id": 706
+  },
+  {
     "title": "Cabaña TRES MARÍAS Auspicia Angus Por Canal Rural",
     "consignatariaName": "ALFREDO SEBASTIÁN MONDINO",
     "consignatariaSlug": "alfredo-sebastian-mondino",
@@ -13411,7 +13430,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "alfredosmondino.com",
-    "id": 706,
+    "id": 707,
     "status": "scheduled"
   },
   {
@@ -13430,7 +13449,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.jaureguilorda.com.ar",
-    "id": 707,
+    "id": 708,
     "status": "scheduled"
   },
   {
@@ -13449,27 +13468,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/e5eeb581-09fc-4786-97b8-aa017b391470",
-    "id": 708,
+    "id": 709,
     "status": "scheduled"
-  },
-  {
-    "title": "Paz Hnos. | Las Tranqueras",
-    "consignatariaName": "Paz Hnos.",
-    "consignatariaSlug": "paz-hnos",
-    "date": "2026-08-20",
-    "time": "14:00",
-    "location": "",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Paz Hnos. | Las Tranqueras",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6493-paz-hnos-las-tranqueras",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled",
-    "id": 709
   },
   {
     "title": "LA LEONOR Fortín Quieto - Angus / Limangus Por Canal Rural",
