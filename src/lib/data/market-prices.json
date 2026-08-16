@@ -1838,39 +1838,39 @@
   "categories": {
     "novillos": {
       "current": 4266,
-      "prev": 4263.43,
-      "change": 0.1,
+      "prev": 4266,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1055
     },
     "novillitos": {
       "current": 4053,
-      "prev": 4599.74,
-      "change": -11.9,
+      "prev": 4053,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1179
     },
     "vaquillonas": {
       "current": 3840,
-      "prev": 4214.17,
-      "change": -8.9,
+      "prev": 3840,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1019
     },
     "vacas": {
       "current": 3072,
-      "prev": 2973.73,
-      "change": 3.3,
+      "prev": 3072,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 2324
     },
     "toros": {
       "current": 2773,
-      "prev": 3074.65,
-      "change": -9.8,
+      "prev": 2773,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 311
