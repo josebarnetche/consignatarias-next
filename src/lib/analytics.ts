@@ -8,6 +8,7 @@
  * for custom events and dimensions.
  */
 
+import { hmuClientTrack } from './hmu-client'
 import type { ValueEvent, ValueEntityType, ValueSource } from './value-events'
 
 declare global {
@@ -60,6 +61,7 @@ function captureForTest(eventName: string, params?: Record<string, unknown>) {
  * Called by the AnalyticsProvider on every route change.
  */
 export function trackPageView(url: string) {
+  hmuClientTrack('page.viewed', { path: url.split('?')[0] })
   gtag('event', 'page_view', {
     page_path: url,
     page_location:

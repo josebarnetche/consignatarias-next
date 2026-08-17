@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { hmuTrack } from '@/lib/hmu'
 
 // Same-origin relative path only. Rejects:
 //   - absolute URLs ("https://evil.tld/x")
@@ -50,6 +51,15 @@ export async function GET(request: Request) {
         ? new Date(data.user.created_at).getTime()
         : 0
       const isNewUser = createdAt > 0 && Date.now() - createdAt < 5 * 60 * 1000
+
+      // howmuchusers.wtf: usuario real nuevo (server-side, secret key). UUID = id no personal.
+      if (data.user?.id) {
+        hmuTrack(
+          isNewUser
+            ? { event: 'user.created', user_id: data.user.id, created_at: data.user.created_at, idempotency_key: `signup:${data.user.id}` }
+            : { event: 'session.started', user_id: data.user.id },
+        )
+      }
 
       const dest = new URL(next, origin)
       if (isNewUser) dest.searchParams.set('signup', '1')
