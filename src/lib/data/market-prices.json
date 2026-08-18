@@ -1883,9 +1883,9 @@
     }
   },
   "corn": {
-    "current": 234.5,
+    "current": 233.5,
     "prev": 234.5,
-    "change": 0,
+    "change": -0.4,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
@@ -2188,133 +2188,16 @@
     }
   },
   "consignatarioEntry": {
-    "date": "14/07/2026",
+    "date": "18/08/2026",
     "entries": [
       {
-        "remitente": "CHISPALA SOC. DE HECHO",
-        "localidad": "DAIREAUX",
-        "provincia": "BUE",
-        "enPie": 40,
+        "remitente": "SALVADORI HECTOR DANIEL",
+        "localidad": "QUEMU QUEMU",
+        "provincia": "LPA",
+        "enPie": 41,
         "muertos": 0,
         "caidos": 0,
-        "total": 40
-      },
-      {
-        "remitente": "LA PRIMAVERA SACIFIA",
-        "localidad": "LOBERIA",
-        "provincia": "BUE",
-        "enPie": 35,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 35
-      },
-      {
-        "remitente": "LA PRIMAVERA SACIFIA",
-        "localidad": "NECOCHEA",
-        "provincia": "BUE",
-        "enPie": 34,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 34
-      },
-      {
-        "remitente": "GIALONARDO ROBERTO JORGE",
-        "localidad": "25 DE MAYO",
-        "provincia": "BUE",
-        "enPie": 33,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 33
-      },
-      {
-        "remitente": "S.A.C.A.G.A.M.",
-        "localidad": "CHIVILCOY",
-        "provincia": "BUE",
-        "enPie": 26,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 26
-      },
-      {
-        "remitente": "DELFINO LLOBET S.R.L.",
-        "localidad": "GRAL. GUIDO",
-        "provincia": "BUE",
-        "enPie": 24,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 24
-      },
-      {
-        "remitente": "EL OSO INVERSORA S.A.",
-        "localidad": "9 DE JULIO",
-        "provincia": "BUE",
-        "enPie": 23,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 23
-      },
-      {
-        "remitente": "RENT-A-BULL S.A.",
-        "localidad": "CA�UELAS",
-        "provincia": "BUE",
-        "enPie": 16,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 16
-      },
-      {
-        "remitente": "FARFALLE S.R.L.",
-        "localidad": "9 DE JULIO",
-        "provincia": "BUE",
-        "enPie": 8,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 8
-      },
-      {
-        "remitente": "BADANO JOSE LORENZO",
-        "localidad": "CHIVILCOY",
-        "provincia": "BUE",
-        "enPie": 4,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 4
-      },
-      {
-        "remitente": "DELFINO LLOBET S.R.L.",
-        "localidad": "GRAL. GUIDO",
-        "provincia": "BUE",
-        "enPie": 4,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 4
-      },
-      {
-        "remitente": "GOUGY JUAN BAUTISTA S.A.",
-        "localidad": "9 DE JULIO",
-        "provincia": "BUE",
-        "enPie": 3,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 3
-      },
-      {
-        "remitente": "BESTARD MONICA CECILIA",
-        "localidad": "9 DE JULIO",
-        "provincia": "BUE",
-        "enPie": 1,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 1
-      },
-      {
-        "remitente": "S.A.C.A.G.A.M.",
-        "localidad": "CHIVILCOY",
-        "provincia": "BUE",
-        "enPie": 1,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 1
+        "total": 41
       }
     ]
   },
@@ -2327,11 +2210,11 @@
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
-    "current": 470.67,
+    "current": 481.33,
     "prev": 470.67,
-    "change": 0,
+    "change": 2.3,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
-    "date": "2026-08-14"
+    "date": "2026-08-18"
   }
 }
