@@ -36,24 +36,6 @@
     "liveLink": null
   },
   {
-    "title": "Remate por Internet - Invernada y Cria - 9.30hs.",
-    "consignatariaName": "Wallace Sa",
-    "consignatariaSlug": "wallace-sa",
-    "date": "2026-08-19",
-    "time": "09:30",
-    "location": "Azul, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": 500,
-    "description": "Azul Remate por Internet - Invernada y Cria - 9.30hs.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "liveLink": null
-  },
-  {
     "title": "Especial de Invernada y Cria - 14.00hs.",
     "consignatariaName": "Colombo y Magliano S.A.",
     "consignatariaSlug": "colombo-y-magliano-s-a",
@@ -227,6 +209,24 @@
     "mainCategory": "mixto",
     "estimatedHeads": 400,
     "description": "Tres Arroyos. Faena, Invernada y Cria",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "liveLink": null
+  },
+  {
+    "title": "Remate por Internet - 8.30hs.",
+    "consignatariaName": "Wallace Sa",
+    "consignatariaSlug": "wallace-sa",
+    "date": "2026-08-20",
+    "time": "08:30",
+    "location": "Azul, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": 500,
+    "description": "Azul Remate por Internet - 8.30hs.",
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
@@ -1242,24 +1242,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
-    "consignatariaName": "Consignaciones Córdoba",
-    "consignatariaSlug": "consignaciones-cordoba",
-    "date": "2026-08-17",
-    "time": "10:30",
-    "location": "",
-    "province": "CORDOBA",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6504-sociedad-rural-de-jesus-maria-consignaciones-cordoba",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "live"
-  },
-  {
     "title": "AFA | Totoras | Gordos, Conserva e Invernada",
     "consignatariaName": "AFA",
     "consignatariaSlug": "afa",
@@ -1275,7 +1257,25 @@
     "catalogUrl": "https://remates.elrural.com/remate/6432-afa-totoras-gordos-conserva-e-invernada",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
+  },
+  {
+    "title": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
+    "consignatariaName": "Consignaciones Córdoba",
+    "consignatariaSlug": "consignaciones-cordoba",
+    "date": "2026-08-18",
+    "time": "10:30",
+    "location": "",
+    "province": "CORDOBA",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6504-sociedad-rural-de-jesus-maria-consignaciones-cordoba",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "live"
   },
   {
     "title": "Colombo y Magliano | Remate Cabañas San Marcos",
@@ -1293,7 +1293,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6398-colombo-y-magliano-remate-cabanas-san-marcos",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "O'Farrell | Especial San Alejo",
@@ -1311,7 +1311,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6451-ofarrell-especial-san-alejo",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Colombo y Magliano | Invernada y cría",
@@ -1422,24 +1422,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
-    "consignatariaName": "Consignaciones Córdoba",
-    "consignatariaSlug": "consignaciones-cordoba",
-    "date": "2026-08-17",
-    "time": "10:30",
-    "location": "",
-    "province": "CORDOBA",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6504-sociedad-rural-de-jesus-maria-consignaciones-cordoba",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "live"
-  },
-  {
     "title": "AFA | Totoras | Gordos, Conserva e Invernada",
     "consignatariaName": "AFA",
     "consignatariaSlug": "afa",
@@ -1455,7 +1437,25 @@
     "catalogUrl": "https://remates.elrural.com/remate/6432-afa-totoras-gordos-conserva-e-invernada",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
+  },
+  {
+    "title": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
+    "consignatariaName": "Consignaciones Córdoba",
+    "consignatariaSlug": "consignaciones-cordoba",
+    "date": "2026-08-18",
+    "time": "10:30",
+    "location": "",
+    "province": "CORDOBA",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6504-sociedad-rural-de-jesus-maria-consignaciones-cordoba",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "live"
   },
   {
     "title": "Colombo y Magliano | Remate Cabañas San Marcos",
@@ -1473,7 +1473,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6398-colombo-y-magliano-remate-cabanas-san-marcos",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "O'Farrell | Especial San Alejo",
@@ -1491,7 +1491,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6451-ofarrell-especial-san-alejo",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Colombo y Magliano | Invernada y cría",
