@@ -54,6 +54,7 @@ la captura en caja**: instrumentar, sembrar la oferta, y cruzar el gate del prim
 | **v1.190** | PRO Consignataria **self-serve** | Onboarding automático (reclamar → featured → recibe leads) sin intervención del founder — el "PRO v2" del plan |
 | **v1.191** | Prueba B2B en el outreach | Contadores **"N productores siguen tus remates · N leads de tu zona"** en el mail y el perfil — la evidencia que cierra PRO |
 | **v1.192** | 1% operacionalizado | Registrar operación cerrada → fee en la board; primeros **testimonios** de firmas |
+| **v1.196** ✅ | La cuenta en el medio del camino | **Gate de login** en el detalle (contacto, catálogo, histórico, herramientas, valuación, descargas) con el preview indexable intacto; `LoginGate` + `requireLoginForDownload()`. El productor sigue gratis: lo que cambia es que deja de ser anónimo, y cada alta se cuenta en el marcador público (howmuchusers.wtf) |
 
 **Gate del horizonte** *(plan §22, Días 31–90)*: **≥7 PRO pagando + ~ARS 3M MRR + 60% renueva.**
 ⚠️ Si tras ~50 conversaciones **<5 firmas pagan y ningún B2B paga por datos** → **pivotar** a medio/autoridad o
@@ -215,7 +216,8 @@ El tren de julio movió el modelo de negocio y la cara del producto:
 
 - **Pricing API-first + retiro de PRO Usuario.** El productor va **GRATIS** (des-gate app-wide:
   `ProReveal`/`RequirePro` passthrough; /pro y /upgrade redirigen; código muerto de checkout eliminado
-  en v1.98). Revenue = **Enterprise API/MCP** (Starter USD 49 / Growth USD 299 / Scale a medida) +
+  en v1.98). *(Actualizado en v1.196: `ProReveal` volvió a ser gate — de cuenta, no de plan. La
+  herramienta sigue sin costo; pide entrar.)* Revenue = **Enterprise API/MCP** (Starter USD 49 / Growth USD 299 / Scale a medida) +
   **PRO Consignataria** (alcance). `/planes` reescrito por segmento.
 - **MCP live** — 10 tools sobre `/api/mcp`, listado en el registry oficial como
   `ar.com.consignatarias/cattle-market`. El AI-traffic (326 referrals/mes) es el moat de autoridad.

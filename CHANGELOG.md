@@ -7,6 +7,120 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.196.0] — 2026-08-19
+
+### La cuenta, en el medio del camino
+
+Las acciones clave dejan de ser anónimas. El modelo es **preview + detalle bajo
+login**: la página sigue siendo indexable con lo básico —fecha, lugar, tipo,
+cabezas, identidad de la firma, número del día— y el detalle pide cuenta. Google
+ve exactamente lo mismo que un visitante anónimo, así que no hay contenido
+servido distinto al bot.
+
+Piden cuenta desde ahora: el catálogo, el calendario y la fuente de cada remate,
+más su referencia INMAG y el precio por categoría; los **datos de contacto** de
+consignatarias y frigoríficos y los medios de pago; la serie histórica del
+novillo, el histórico por categoría y la década completa del INMAG; el resultado
+de las herramientas del productor (neto en mano, ¿vendo ahora?, spread,
+estacionalidad); el desglose de la valuación de campos; y la consulta por un
+campo publicado.
+
+La primitiva es `LoginGate` (`src/components/LoginGate.tsx`) — cliente a
+propósito, porque leer la cookie en el server volvería dinámicas las landings
+SSG. Su prop `preview` conserva la forma de la página para el anónimo, y un
+placeholder de altura fija evita el salto de layout mientras resuelve la sesión.
+`ProReveal` deja de ser el passthrough en que había quedado al retirarse PRO
+Usuario y vuelve a ser gate: ahora de cuenta, no de plan. Las herramientas del
+productor siguen siendo gratis — gratis no es lo mismo que anónimo.
+
+Dos cosas quedaron **fuera** del gate a propósito. Los precios observados de cada
+firma, porque van con `DatasetSchema` y son una de las piezas citables del plan
+GEO: taparlos mientras el schema los declara es inconsistente y regala la cita.
+Y los bloques de relacionados de la ficha de remate, que son los caminos de
+rastreo entre las ~2.700 URLs: cerrarlos rompe el enlazado interno, no la
+conversión.
+
+Las descargas se cierran del lado del servidor, no de la interfaz:
+`src/lib/gate.ts` gatea el CSV de remates y el PDF de reporte —navegación del
+browser a `/login?next=…`, fetch a 401 `needsAuth`— y deja pasar los requests con
+API key, que ya tienen su propia autenticación y cuota. `/exportar` y
+`/calendario-exportar` pasan de pedir un email a pedir la cuenta. Los feeds
+`webcal://` siguen abiertos: los descargan los servidores de Google Calendar y
+Apple, sin cookies, y gatearlos rompería todas las suscripciones vivas.
+
+Límite conocido: en las landings estáticas el gate es de interfaz. El contenido
+tapado viaja igual en el payload de la página, porque no hay sesión en build
+time. Alcanza para el objetivo —que el productor cree cuenta— pero para el dato
+de contacto, donde el lead es nuestro, falta sacarlo del payload estático y
+servirlo desde un endpoint con sesión.
+
+Segundo cambio de fondo: **el marcador vuelve a contar**. La integración con
+howmuchusers.wtf de v1.195.2 perdía todos los `user.created`. El POST salía como promise
+descartado con `void` justo antes del redirect de `/auth/callback`, y Vercel mata
+el fetch en vuelo cuando la función devuelve su respuesta —el mismo motivo por el
+que `ops.logEvent` usa `waitUntil()` desde v1.14.0—. El tablero mostraba 33
+usuarios (la base importada) contra 34 en `auth.users`. Ahora el envío va dentro
+de `waitUntil()` y loguea el rechazo en vez de fallar en silencio.
+
+---
+
+## [1.195.2] — 2026-08-17
+
+### El marcador público
+
+La plataforma reporta sus usuarios reales a **howmuchusers.wtf**, el marcador
+donde una startup publica crecimiento verificado en lugar de números declarados.
+`src/lib/hmu.ts` (secret key, server) manda `user.created` en cada alta y
+`session.started` en cada login desde `/auth/callback`, con clave de
+idempotencia por usuario; `src/lib/hmu-client.ts` (public key, browser) manda
+`page.viewed`. `scripts/hmu-import-users.mjs` sembró la base histórica de
+`auth.users` — **solo UUID y fecha de alta; ningún dato personal sale del
+proyecto**. Tres variables nuevas en Vercel: `HMU_SECRET_KEY`, `HMU_PUBLIC_KEY`
+y `NEXT_PUBLIC_HMU_PUBLIC_KEY`.
+
+*(El envío de eventos server-side nació roto y se corrigió en v1.196.0.)*
+
+---
+
+## [1.195.1] — 2026-08-10
+
+### Que no haya cuadro negro
+
+Tres correcciones sobre el remate en vivo, todas del mismo linaje: fallar en
+silencio se ve como un sitio roto.
+
+**El reproductor mostraba una caja negra.** `/remates/en-vivo` auto-abría la
+primera transmisión del día sin mirar si estaba al aire — a las 3 de la mañana,
+con el remate anunciado para las 13:30, el embed de canal devuelve negro con
+HTTP 200 y sin error de consola. Ahora la pared auto-abre solo lo que está al
+aire (`enVivoAhora`, calculado con `getEffectiveStatus` en hora argentina, la
+misma función que decide el badge del resto del sitio) y, si no hay nada, lo
+dice y avisa a qué hora arranca la primera.
+
+**Y aun estando al aire, el canal podía no estar transmitiendo.** Los streams
+"probables" eran una suposición nuestra: que un remate figure a las 13:30 no
+significa que la firma esté transmitiendo — puede arrancar tarde, ir por otro
+lado o no transmitir esa feria. Para los remates de hoy —un puñado, no
+doscientos— ahora se le pregunta a YouTube si el canal tiene transmisión en
+curso y se embebe **ese** videoId; si no lo hay, la tarjeta cae al link del
+canal, que es la respuesta honesta.
+
+**El capturador nunca escribía el transcript, y se colgaba sin decirlo.** El
+Sink tenía `heartbeat()` y `emit_lots()` y nada más: la migración y el lado que
+lo muestra estaban hechos, el que lo guarda no —por eso `live_remate_transcript`
+estaba en cero—. Se sumó `emit_transcript()`, el latido salió del bucle de
+chunks (una captura sin audio dejaba `last_seen` congelado y la sesión "live"
+para siempre) y una captura muerta ahora se detecta, informa los códigos de
+salida de yt-dlp y ffmpeg, marca la sesión en `error` y sale con código 1.
+
+De paso, `database.types.ts` se regeneró desde prod (86 tablas): el DRIFT de
+`live_remate_transcript` era falso —la tabla existe, el archivo de tipos estaba
+viejo— y `/remates/en-vivo` pasó a resolver el video en vivo desde nuestra
+propia señal (`live_remate_session` con `last_seen` fresco de 20 min) antes de
+sondear el canal de YouTube.
+
+---
+
 ## [1.195.0] — 2026-08-10
 
 ### La puja como ticker de mercado

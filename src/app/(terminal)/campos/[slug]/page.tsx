@@ -5,6 +5,7 @@ import { createServiceClient } from '@/lib/supabase'
 import { APTITUD_LABEL, capacidadEstimada, fmtArs, fmtHa, fmtUsd, precioVenta, tituloCampo, type Aptitud, type Campo } from '@/lib/campos'
 import { canonEnPlata, valuarCampo } from '@/lib/valuacion-campos'
 import ConsultarCampoForm from '@/components/campos/ConsultarCampoForm'
+import LoginGate from '@/components/LoginGate'
 import { consignatariaProfilePath, getAllProfiles } from '@/lib/data/consignataria-slugs'
 
 export const revalidate = 1800
@@ -176,7 +177,9 @@ export default async function CampoPage({ params }: { params: Promise<{ slug: st
 
       <section className="mb-8">
         <h2 className="text-zinc-200 text-lg font-medium mb-3">Consultar por este campo</h2>
-        <ConsultarCampoForm campoId={c.id} resumen={`${fmtHa(c.hectareas)} en ${c.partido || c.provincia}`} />
+        <LoginGate feature="La consulta por este campo" minHeight={180} redirectTo={`/campos/${c.slug}`}>
+          <ConsultarCampoForm campoId={c.id} resumen={`${fmtHa(c.hectareas)} en ${c.partido || c.provincia}`} />
+        </LoginGate>
       </section>
 
       <div className="border-t border-zinc-800 pt-4 flex flex-wrap gap-4 text-xs">

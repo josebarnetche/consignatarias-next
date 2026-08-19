@@ -33,6 +33,7 @@ import ConsignatariaProfileClient from './ConsignatariaProfileClient'
 import LiveRemateFichaStrip from '@/components/LiveRemateFichaStrip'
 import SubscribeStrip from '@/components/SubscribeStrip'
 import { MediosPagoSection } from '@/components/consignataria/MediosPagoSection'
+import LoginGate from '@/components/LoginGate'
 import type { YouTubeChannelData } from './ConsignatariaProfileClient'
 import type { ConsignatariaVideo } from '@/components/video/VideoGallery'
 
@@ -553,10 +554,12 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
         rematesEspeciales={rematesEspeciales}
         mediosPagoSlot={
           <div key="medios-pago" className="max-w-6xl mx-auto px-4">
+            <LoginGate feature="Los medios de pago" minHeight={140} redirectTo={`/consignatarias/${canonical}`}>
             <MediosPagoSection
               mediosPago={enrichedProfile.mediosPago || []}
               consignatariaName={enrichedProfile.displayName}
             />
+            </LoginGate>
           </div>
         }
       />

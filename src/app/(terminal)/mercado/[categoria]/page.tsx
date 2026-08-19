@@ -5,6 +5,7 @@ import marketData from '@/lib/data/market-prices.json'
 import Breadcrumb from '@/components/ui/Breadcrumb'
 import VentaLeadCapture from '@/components/leads/VentaLeadCapture'
 import { CategoryPriceHistory } from '@/components/market/CategoryPriceHistory'
+import LoginGate from '@/components/LoginGate'
 import { PriceRangeTable } from '@/components/market/PriceRangeTable'
 import { PriceCTA } from '@/components/PriceCTA'
 import { Stat, Delta } from '@/components/ui'
@@ -492,7 +493,9 @@ export default async function CategoriaPage({
 
         {/* Chart — evolución histórica del precio $/kg vivo de la categoría */}
         <div className="mb-8">
+          <LoginGate feature="El histórico de la categoría" minHeight={320}>
           <CategoryPriceHistory category={config.namePlural} currentPrice={price} />
+          </LoginGate>
         </div>
 
         {/* Observed sub-category price ranges (real MAG rueda data) */}

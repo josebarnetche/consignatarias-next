@@ -3,6 +3,7 @@ import Link from 'next/link'
 import MercadoClient from './MercadoClient'
 import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { LongTermChart } from '@/components/market/LongTermChart'
+import LoginGate from '@/components/LoginGate'
 import { SeasonalPattern } from '@/components/market/SeasonalPattern'
 import { CategoryComparison } from '@/components/market/CategoryComparison'
 import { YearOverYearBlock } from '@/components/market/YearOverYearBlock'
@@ -199,7 +200,9 @@ export default function MercadoPage() {
 
       {/* Long-term historical data */}
       <div className="px-4 py-4 max-w-6xl mx-auto space-y-6">
+        <LoginGate feature="La serie histórica del novillo" minHeight={320}>
         <LongTermChart />
+        </LoginGate>
         <CategoryComparison />
         <SeasonalPattern />
       </div>

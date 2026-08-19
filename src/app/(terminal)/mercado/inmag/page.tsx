@@ -13,6 +13,7 @@ import CierreMensualSubscribe from '@/components/CierreMensualSubscribe'
 import SellZoneAlertSignup from '@/components/SellZoneAlertSignup'
 import SellZoneBadge from '@/components/SellZoneBadge'
 import { InmagDecadaCompleta } from '@/components/market/InmagDecadaCompleta'
+import LoginGate from '@/components/LoginGate'
 import { MarketHero, type MarketHeroStat } from '@/components/market'
 import { Delta, DataTable, PriceCell, type DataColumn } from '@/components/ui'
 import { signedTone, SEMANTIC_HEX } from '@/lib/ui/tokens'
@@ -495,7 +496,9 @@ export default function InmagPage() {
             mes contra mes, sin el ruido de la inflación — más la serie completa en CSV.
           </p>
           <Suspense fallback={<div className="h-[420px] bg-zinc-900/30 rounded-2xl animate-pulse" />}>
+            <LoginGate feature="La década completa del INMAG" minHeight={360}>
             <InmagDecadaCompleta />
+            </LoginGate>
           </Suspense>
         </section>
 

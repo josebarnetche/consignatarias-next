@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
+import LoginGate from '@/components/LoginGate'
 import { TIERRA_PROVINCIAS, tierraDe, zonasDe, valuarCampo, precioSoja, type Valuacion } from '@/lib/valuacion-campos'
 
 /**
@@ -227,8 +228,9 @@ export default function ValuacionCampo({
         )}
       </div>
 
-      {/* Las dos vías */}
+      {/* Las dos vías — el desglose de cómo se llega al número, bajo login */}
       {!compacto && (
+        <LoginGate feature="El desglose de la valuación" minHeight={200} redirectTo="/campos/valuar">
         <div className="p-6 space-y-4">
           <p className="text-zinc-500 text-xs uppercase tracking-[0.16em]">Cómo se llega</p>
 
@@ -339,6 +341,7 @@ export default function ValuacionCampo({
             No reemplaza una tasación profesional.
           </p>
         </div>
+        </LoginGate>
       )}
     </div>
   )

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
+import { useSessionTier } from '@/lib/use-session-tier'
 import HeroNumber from '@/components/pro/HeroNumber'
 import MultiSelectList from '@/components/calendario/MultiSelectList'
 import {
@@ -31,6 +32,8 @@ const PRE_FILTER_SELECT =
   'w-full px-3 py-2 bg-zinc-900 border border-terminal-border rounded text-data font-terminal text-zinc-200 focus:border-accent focus:outline-none'
 
 export default function CalendarExportClient() {
+  // Bajar el .ics es acción clave: requiere cuenta.
+  const { loggedIn } = useSessionTier()
   const [email, setEmail] = useState('')
   const [provincia, setProvincia] = useState('')
   const [tipo, setTipo] = useState('')
@@ -104,6 +107,10 @@ export default function CalendarExportClient() {
   // ---- Export (client-side .ics over ALL selected localidades) ----
   async function handleExport() {
     if (selected.size === 0) return
+    if (!loggedIn) {
+      window.location.href = '/login?next=/calendario-exportar'
+      return
+    }
 
     if (email.trim()) {
       try {

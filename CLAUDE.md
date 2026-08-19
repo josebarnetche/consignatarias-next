@@ -3,7 +3,7 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.192.0 (2026-08-10). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+**Current version:** v1.196.0 (2026-08-19). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
 
 ---
 
@@ -64,8 +64,8 @@ neto en mano, comparador, spread, seasonality, INMAG history) are free. The prod
 | Public Enterprise endpoints (auth-gated) | 2 — `/api/precios`, `/api/lots` | |
 | Consignatarias (canonical) | 107 | `src/lib/data/consignataria-slugs.ts` (`getAllProfiles().length` — the public count) |
 | Consignatarias (DB row count) | 111 | `consignatarias` table |
-| Frigorificos | 1.103 | SENASA/MAGYP data |
-| Remates indexed | ~800 total · ~310 upcoming | `src/lib/data/remates.json` (daily scrape) |
+| Frigorificos | 1.110 | SENASA/MAGYP data (870 activos · 240 sin verificación, refresh 17-ago-2026) |
+| Remates indexed | 918 total · 263 upcoming | `src/lib/data/remates.json` (daily scrape) |
 | Provincias | 12 | |
 | MAG consignatarias (master list) | 44 | `mag_consignatarias` table |
 | INMAG daily series | 2237 rows (2015→today) | `mag_inmag_history` table |
@@ -147,6 +147,8 @@ docs/                                 Current strategic docs (Oráculo, Corredor
 - **Admin gate** = `user_roles.role='admin'`. The owner email (`agro@memola.com.ar`) AND the founder personal (`jose.barnetche19@gmail.com`) both have admin.
 - **Observability**: every authenticated request to `/api/precios`, `/api/lots` writes a row to `ops_events`. Visible at `/admin/ops`.
 - **No secrets in mailto: links** — `mailto:agro@memola.com.ar` is correct; it's a real inbox. The Resend sender must use `@consignatarias.com` (only verified domain).
+- **El gate de login es de cuenta, no de plan.** Desde v1.196.0 el detalle pide sesión: la primitiva de UI es `LoginGate` (`src/components/LoginGate.tsx`, cliente — leer la cookie en el server volvería dinámicas las landings SSG) y `ProReveal` la usa para todas las herramientas del productor. Las descargas se gatean del lado del servidor con `requireLoginForDownload()` (`src/lib/gate.ts`), que deja pasar los requests con API key. **Lo que queda siempre público** —y no se cierra sin sacar también su schema o su enlazado— es el número del día, los precios observados de cada firma (van con `DatasetSchema`, son cita GEO), los bloques de relacionados y los feeds `webcal://` (los baja Google Calendar sin cookies). Gratis ≠ anónimo: el productor sigue sin pagar.
+- **Todo evento server-side va dentro de `waitUntil()`.** Vercel mata el fetch en vuelo cuando la función devuelve su respuesta, así que un `void fetch(...)` antes de un redirect se pierde en silencio. Vale para `ops.logEvent`, para `hmuTrack` (howmuchusers.wtf) y para cualquier tracker nuevo.
 - **MCP surfaces stay in sync.** Any change to MCP tools (add/remove/gating/pricing) must update ALL FOUR surfaces in the same PR: (1) `src/app/api/mcp/route.ts` — tool descriptions + the `instructions` string in `initialize`, (2) `/mcp` page — `TOOLS` array + footnote copy, (3) `src/app/llms.txt/route.ts` — tool list + access/pricing paragraph, (4) `src/app/llms-full.txt/route.ts` — the MCP callout. x402 pricing (US$0.05 tropa / US$0.10 arrendamiento / PRO al blue) lives in the endpoint specs under `src/app/api/x402/` — if it changes, the copy in all four surfaces changes with it.
 - **El manifiesto del registry es la QUINTA superficie, y es la única que un humano lee al navegar un directorio.** Vive en `mcp-registry/server.json` (+ `server.json` y `public/.well-known/mcp/server.json`). Si se agregan tools que cambian *de qué se trata* el server, subir `version` y republicar (`mcp-registry/PUBLISH-RUNBOOK.md`). **Límite duro: 100 caracteres de descripción.** La clave privada vive en `~/.mcp-keys/consignatarias-mcp.pem` — sin ella no se puede republicar, pero el namespace está anclado al DOMINIO (TXT en el apex), así que siempre se puede regenerar.
 

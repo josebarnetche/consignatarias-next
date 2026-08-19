@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireLoginForDownload } from '@/lib/gate'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 
@@ -14,6 +15,10 @@ function escapeCSV(value: string | number | null | undefined): string {
 }
 
 export async function GET(request: NextRequest) {
+  // Acción clave: bajarse el dataset de remates requiere cuenta.
+  const gate = await requireLoginForDownload(request, '/exportar')
+  if (gate) return gate
+
   const { searchParams } = new URL(request.url)
   const provincia = searchParams.get('provincia')?.toUpperCase()
   const tipo = searchParams.get('tipo')

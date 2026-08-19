@@ -295,6 +295,8 @@ Public data (auctions, frigorificos, market prices) works without any env vars �
 - **API keys (`cnsg_live_*`)** require `API_KEY_PEPPER` env var. Never rotate the pepper without invalidating all keys.
 - **Webhook secrets** are env vars; HMAC verification uses `crypto.timingSafeEqual`.
 - **Admin gate** = `user_roles.role = 'admin'`. Owner email (`agro@memola.com.ar`) has admin.
+- **Login gate (v1.196.0)** — the detail of every key surface requires an account; the indexable preview does not. UI primitive: `LoginGate` (`src/components/LoginGate.tsx`), a client component on purpose — reading the session cookie server-side would turn the SSG landings dynamic. `ProReveal` wraps it for every producer tool. Downloads are gated server-side by `requireLoginForDownload()` (`src/lib/gate.ts`): browser navigation redirects to `/login?next=…`, fetch gets `401 needsAuth`, and requests carrying an API key pass through to `api-auth.ts` and its own quota. Deliberately ungated: the day's number, each firm's observed prices (they carry `DatasetSchema` and are a GEO citation asset), the related-content blocks (internal crawl paths) and the `webcal://` feeds (Google/Apple fetch them without cookies). On static pages the gate is UI-level — the hidden content still travels in the page payload; moving contact data behind a session-checked endpoint is the pending hardening.
+- **Server-side events must go through `waitUntil()`** — Vercel kills in-flight fetches once the function returns its response, so a `void fetch(...)` before a redirect is silently dropped. Applies to `ops.logEvent`, `hmuTrack` (howmuchusers.wtf) and any new tracker.
 
 ---
 

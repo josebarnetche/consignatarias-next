@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useSessionTier } from '@/lib/use-session-tier'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 
 const PROVINCIAS = [
@@ -25,6 +26,8 @@ export default function ExportarClient() {
   const [hasta, setHasta] = useState('')
   const [format, setFormat] = useState<'csv' | 'json'>('csv')
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready'>('idle')
+  // Descargar el dataset es acción de usuario con cuenta: sin sesión no se exporta.
+  const { loggedIn, loading: sessionLoading } = useSessionTier()
 
   const today = new Date().toISOString().slice(0, 10)
 
@@ -209,13 +212,23 @@ export default function ExportarClient() {
           </div>
 
           {/* Submit */}
-          <button
-            type="submit"
-            disabled={status === 'loading'}
-            className="w-full py-3 bg-zinc-100 hover:bg-white text-zinc-900 text-sm font-medium rounded transition-colors disabled:opacity-50"
-          >
-            {status === 'loading' ? 'Preparando...' : 'Generar Descarga'}
-          </button>
+          {loggedIn ? (
+            <button
+              type="submit"
+              disabled={status === 'loading'}
+              className="w-full py-3 bg-zinc-100 hover:bg-white text-zinc-900 text-sm font-medium rounded transition-colors disabled:opacity-50"
+            >
+              {status === 'loading' ? 'Preparando...' : 'Generar Descarga'}
+            </button>
+          ) : (
+            <Link
+              href="/login?next=/exportar"
+              aria-disabled={sessionLoading}
+              className="block w-full py-3 bg-zinc-100 hover:bg-white text-zinc-900 text-sm font-medium rounded transition-colors text-center"
+            >
+              Ingresá para exportar
+            </Link>
+          )}
         </form>
       ) : (
         <div className="terminal-panel">
@@ -226,8 +239,8 @@ export default function ExportarClient() {
             </p>
             
             <a
-              href={buildDownloadUrl()}
-              download
+              href={loggedIn ? buildDownloadUrl() : '/login?next=/exportar'}
+              download={loggedIn}
               className="inline-flex items-center gap-2 px-6 py-3 bg-zinc-100 hover:bg-white text-zinc-900 text-sm font-medium rounded transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -16,6 +16,7 @@ import { normalizeUrl } from '@/lib/utils/url'
 import { BreadcrumbSchema, EventSchema, VideoObjectSchema } from '@/components/seo/JsonLd'
 import { AddToCalendarButton } from '@/components/ui/AddToCalendarButton'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
+import LoginGate from '@/components/LoginGate'
 // DteCTA inline implementation for remate pages (lock-in strategy)
 import { 
   Calendar, 
@@ -635,8 +636,10 @@ export default async function RemateDetailPage({ params }: Props) {
               </div>
             )}
             
-            {/* Action buttons */}
-            <div className="px-6 pb-6 flex flex-wrap gap-3">
+            {/* Action buttons — catálogo / calendario / fuente: bajo login */}
+            <div className="px-6 pb-6">
+            <LoginGate feature="El catálogo, el calendario y la fuente" minHeight={88}>
+            <div className="flex flex-wrap gap-3">
               {remate.catalogUrl && (
                 <a
                   href={normalizeUrl(remate.catalogUrl) || '#'}
@@ -672,11 +675,15 @@ export default async function RemateDetailPage({ params }: Props) {
                 </a>
               )}
             </div>
+            </LoginGate>
+            </div>
           </div>
-          
-          {/* INMAG market context — real observed reference price */}
+
+          {/* INMAG market context — real observed reference price (bajo login) */}
           {inmagRef && (
-            <div className="mt-8 bg-slate-900 rounded-xl border border-slate-800 p-6">
+            <div className="mt-8">
+            <LoginGate feature="La referencia de mercado" minHeight={200}>
+            <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
               <h2 className="text-xl font-bold text-white mb-1">Referencia de mercado</h2>
               <p className="text-sm text-slate-500 mb-4">
                 INMAG — Índice Novillo Mercado Agroganadero ({INMAG_UNIT})
@@ -709,12 +716,16 @@ export default async function RemateDetailPage({ params }: Props) {
                 <Link href="/mercado/inmag" className="text-sky-400 hover:underline">Ver evolución del INMAG →</Link>
               </p>
             </div>
+            </LoginGate>
+            </div>
           )}
 
           {/* Contexto del remate — data-derived summary + per-category price + breed */}
           <div className="mt-8 bg-slate-900 rounded-xl border border-slate-800 p-6">
             <h2 className="text-xl font-bold text-white mb-3">Contexto del remate</h2>
             <p className="text-slate-300 leading-relaxed">{summary}</p>
+            <LoginGate feature="El precio por categoría y el contexto de la zona" minHeight={110}>
+            <>
             {catPrice?.current ? (
               <p className="text-slate-400 text-sm mt-3">
                 Referencia de precio para <span className="text-slate-200">{categoryLabel}</span>:{' '}
@@ -737,6 +748,8 @@ export default async function RemateDetailPage({ params }: Props) {
                 <span className="text-slate-600"> · SENASA {existencias.year}</span>
               </p>
             )}
+            </>
+            </LoginGate>
           </div>
 
           {/* Consignataria profile card */}

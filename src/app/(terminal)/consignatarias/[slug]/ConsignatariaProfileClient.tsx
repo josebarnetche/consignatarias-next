@@ -11,6 +11,7 @@ import type { EntityTier } from '@/lib/features'
 import type { AuctionResult } from './page'
 import FeatureGate from '@/components/FeatureGate'
 import ContactlessLeadForm from '@/components/ContactlessLeadForm'
+import LoginGate from '@/components/LoginGate'
 import { normalizeUrl } from '@/lib/utils/url'
 import { resolveYoutubeUrl } from '@/lib/youtube-live'
 import { resolverStream } from '@/lib/streams'
@@ -912,6 +913,8 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           <div id="contacto" className="rounded-terminal border border-terminal-border bg-terminal-bg/40 p-3 flex flex-col scroll-mt-20">
             <div className="text-xxs uppercase tracking-widest text-zinc-500 mb-2">Seguir / contactar</div>
             {(profile.whatsapp || profile.phone || profile.email || profile.website) ? (
+              // El dato de contacto es el activo: se muestra a quien tiene cuenta.
+              <LoginGate feature="Los datos de contacto de la firma" minHeight={96} redirectTo={`/consignatarias/${profile.canonicalSlug}`}>
               <div className="flex flex-col gap-1.5">
                 {profile.whatsapp && (
                   // Contacto = evento-plata: botón primario legible, no un link diminuto.
@@ -934,6 +937,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                   </a>
                 )}
               </div>
+              </LoginGate>
             ) : (
               <ContactlessLeadForm slug={profile.canonicalSlug} consignatariaName={profile.displayName} />
             )}

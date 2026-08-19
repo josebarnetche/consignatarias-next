@@ -9,6 +9,7 @@ import { getFrigorificoPlanStatus, frigorificoPuedeInterprovincial } from '@/lib
 import { createServiceClient } from '@/lib/supabase'
 import CompraMayorista, { type VitrinaProduct } from './CompraMayorista'
 import BadgeConfianza from '@/components/frigorifico/BadgeConfianza'
+import LoginGate from '@/components/LoginGate'
 import FrigorificoLeadCapture from '@/components/leads/FrigorificoLeadCapture'
 import SubscribeStrip from '@/components/SubscribeStrip'
 import { BreadcrumbSchema, QAPageSchema } from '@/components/seo/JsonLd'
@@ -681,6 +682,7 @@ export default async function FrigorificoDetailPage({
           <div className="terminal-panel-header">
             <span className="text-zinc-200 text-label tracking-widest">CONTACTO</span>
           </div>
+          <LoginGate feature="Los datos de contacto de la planta" minHeight={120} redirectTo={`/frigorificos/${slug}`}>
           <div className="divide-y divide-terminal-border">
             {phone && (
               <div className="px-panel py-2.5 flex items-center justify-between">
@@ -721,6 +723,7 @@ export default async function FrigorificoDetailPage({
               </div>
             )}
           </div>
+          </LoginGate>
         </div>
       )}
 

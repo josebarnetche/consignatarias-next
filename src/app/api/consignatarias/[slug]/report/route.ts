@@ -3,6 +3,7 @@ import { getCanonicalSlug, getAuctionsForProfile } from '@/lib/data/consignatari
 import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
 import { getConsignatariaPlanStatus } from '@/lib/features'
 import { generateConsignatariaPDF } from '@/lib/pdf/generateConsignatariaPDF'
+import { requireLoginForDownload } from '@/lib/gate'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 
@@ -19,6 +20,10 @@ type Props = { params: Promise<{ slug: string }> }
 
 export async function GET(req: NextRequest, { params }: Props) {
   const { slug } = await params
+
+  // Acción clave: el PDF del reporte requiere cuenta.
+  const gate = await requireLoginForDownload(req, `/consignatarias/${slug}`)
+  if (gate) return gate
   
   const canonical = getCanonicalSlug(slug)
   if (!canonical) {
