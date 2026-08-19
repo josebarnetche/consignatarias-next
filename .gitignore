@@ -110,3 +110,4 @@ scripts/archive/value-events-report.js
 
 # Clave privada del registry MCP: vive en ~/.mcp-keys/, nunca acá.
 *.pem
+.env*

@@ -9,6 +9,8 @@
  * Fire-and-forget: nunca bloquea ni rompe el request. Sin key → no-op.
  */
 
+import { waitUntil } from '@vercel/functions'
+
 const HMU_BASE = 'https://howmuchusers.wtf/api/v1'
 
 export type HmuEvent =
@@ -45,12 +47,29 @@ async function post(path: string, key: string, body: unknown, timeoutMs = 4000) 
   }
 }
 
-/** Server-side. Un evento o batch (≤100). Nunca lanza. */
+/**
+ * Server-side. Un evento o batch (≤100). Nunca lanza.
+ *
+ * El POST va dentro de `waitUntil()`: en Vercel la función puede devolver su
+ * respuesta (p. ej. el redirect de /auth/callback) antes de que un promise
+ * descartado con `void` termine, y el runtime mata el fetch en vuelo — el
+ * evento se pierde. waitUntil lo hace esperar después de enviar la respuesta.
+ * Fuera de Vercel waitUntil tira; el promise igual corre en proceso.
+ */
 export function hmuTrack(input: HmuEventInput | HmuEventInput[]): void {
   const key = process.env.HMU_SECRET_KEY
   if (!key) return
   const body = Array.isArray(input) ? { events: input } : input
-  void post('/events', key, body).catch(() => {})
+  const promise = post('/events', key, body)
+    .then(async (res) => {
+      if (!res.ok) console.error('[hmu] evento rechazado:', res.status, await res.text())
+    })
+    .catch((err) => console.error('[hmu] evento no enviado:', err))
+  try {
+    waitUntil(promise)
+  } catch {
+    /* fuera de Vercel: el promise resuelve igual */
+  }
 }
 
 /** Server-side. Import histórico (≤1000 por request, 20 req/h). Devuelve la respuesta cruda. */
