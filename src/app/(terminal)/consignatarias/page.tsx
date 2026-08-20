@@ -1,3 +1,4 @@
+import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import { Metadata } from 'next'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
@@ -158,6 +159,12 @@ export default async function ConsignatariasDirectoryPage() {
       <SectionBreadcrumbSchema section="consignatarias" sectionName="Consignatarias" />
       <FAQPageSchema items={CONSIGNATARIAS_FAQ} />
       <ConsignatariasItemListSchema entries={entries} />
+
+      {/* Es el mejor calce de audiencia del sitio: el que mira el directorio de
+          firmas o está eligiendo con quién operar, o está pensando en abrir una. */}
+      <div className="px-4 pt-4 max-w-4xl">
+        <PromoGuiaBanner origen="directorio" />
+      </div>
       
       {/* SEO-optimized intro section — fondo: el buscador (render de marca) */}
       <section className="relative overflow-hidden">

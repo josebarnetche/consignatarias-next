@@ -19,7 +19,8 @@ export const metadata: Metadata = {
     'matrícula martillero hacienda', 'habilitar local de remate feria',
   ],
   openGraph: {
-    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+    // Sin `images`: la ruta opengraph-image.tsx de esta misma carpeta genera la
+    // tarjeta propia y Next la resuelve. Declararla acá la pisaría con la genérica.
     title: 'Cómo Abrir una Consignataria de Hacienda — Guía 2026 Actualizada',
     description:
       'Matrícula, SIOCAL, ARCA, SENASA, capital y clientela: los seis frentes que hay que resolver para abrir una consignataria.',

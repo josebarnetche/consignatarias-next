@@ -1,3 +1,4 @@
+import { getGuiaPremium } from '@/lib/guias-premium'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
 import marketData from '@/lib/data/market-prices.json'
 import frigorificos from '@/lib/data/frigorificos.json'
@@ -16,6 +17,7 @@ export const revalidate = 86400
  */
 export function GET() {
   const consignatarias = getAllProfiles().length
+  const guiaPages = getGuiaPremium('abrir-una-consignataria')?.pages ?? 0
   const frig = (frigorificos as unknown[]).length
   const inmag = marketData.inmag as { current: number; prev: number; change: number; series?: Array<{ date: string }> }
   const lastDate = inmag.series?.[inmag.series.length - 1]?.date ?? marketData.lastUpdate
@@ -95,6 +97,7 @@ Todos los tools son públicos y gratis. Las valuaciones tienen cupo diario grati
 1. **Productor — free.** The whole observatory is free for cattle producers: INMAG, prices, remates, directory, calculators, alerts. They are the audience that makes the data authoritative (the moat), not a revenue line.
 2. **Enterprise API + MCP** (\`cnsg_live_*\` keys, Bearer auth) — \`/api/precios\`, \`/api/lots\` + the MCP server. Tiers **Starter ARS 74.000, Growth ARS 451.000, Scale a medida** (por volumen, facturado en ARS). This is the revenue: apps, AI agents, agtech, frigoríficos, traders, funds, banks pay for programmatic access.
 3. **PRO Consignataria** (ARS 45.000/mes, facturado en ARS vía Rebill) — reach: promote auctions to the producer base + featured profile.
+4. **Guía paga** (ARS 100.000, compra única, no suscripción) — *Cómo abrir tu consignataria de hacienda*, edición 2026: ${guiaPages} páginas sobre matrícula de martillero, SIOCAL (el registro que reemplazó al RUCA por Res. SAGyP 50/2025, con los Anexos sustituidos por la Res. SAGyP 103/2026), Registro Fiscal RG 3873, habilitación SENASA de predios (Res. 924/2020), el riesgo de cobranza bajo los arts. 1.337/1.339/1.341/1.343 del CCyC, la liquidación con los códigos de gasto del WSLSP, y posicionamiento para firmas en actividad.
 
 ## Current reference reading (as of ${lastDate})
 
@@ -118,6 +121,7 @@ Todos los tools son públicos y gratis. Las valuaciones tienen cupo diario grati
 - [INMAG](https://www.consignatarias.com.ar/mercado/inmag) — the reference price, daily, with USD overlay + methodology
 - [El Oráculo](https://www.consignatarias.com.ar/el-oraculo) — founding manifesto + bibliography (FCV-UBA, Iriarte/CACG, Diez/UNS, Scoponi)
 - [El Corredor](https://www.consignatarias.com.ar/el-corredor) — monthly market closing report (current: ${edition})
+- [Cómo abrir una consignataria](https://www.consignatarias.com.ar/como-abrir-una-consignataria) — the six fronts (matrícula, sociedad+ARCA, SIOCAL, SENASA, capital, clientela) with every governing norm linked to its official text. Free page; the step-by-step guide is the paid product.
 - [Metodología](https://www.consignatarias.com.ar/metodologia) — index methodology
 - [Glosario](https://www.consignatarias.com.ar/glosario) — 39 terms of the trade
 - [Preguntas frecuentes](https://www.consignatarias.com.ar/preguntas-frecuentes) — FAQ

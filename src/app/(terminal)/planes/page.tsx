@@ -1,3 +1,5 @@
+import Link from 'next/link'
+import { getGuiaPremium, formatArs } from '@/lib/guias-premium'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 import PlanesTracker from './PlanesTracker'
@@ -72,6 +74,8 @@ const FAQ_ITEMS = [
   },
 ]
 
+const GUIA = getGuiaPremium('abrir-una-consignataria')!
+
 export const metadata: Metadata = {
   title: 'Planes y Precios',
   description:
@@ -105,14 +109,15 @@ export default function PlanesPage() {
           </h1>
           <p className="text-zinc-400 text-sm max-w-2xl">
             Todo el mercado ganadero es <strong className="text-zinc-200">gratis</strong> para el productor:
-            precios, remates, directorio y alertas. Solo pagan dos: las{' '}
+            precios, remates, directorio y alertas. Se paga por tres cosas: las{' '}
             <strong className="text-amber-300">consignatarias</strong> que quieren que más productores vean
-            sus remates, y las <strong className="text-zinc-200">empresas o IAs</strong> que usan nuestros
-            datos por API.
+            sus remates, las <strong className="text-zinc-200">empresas o IAs</strong> que usan nuestros
+            datos por API, y la <strong className="text-accent">guía</strong> para abrir y dirigir una
+            consignataria, que es una compra única y no una suscripción.
           </p>
 
           {/* Por qué pagar — por segmento */}
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl">
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-w-4xl">
             <div className="rounded-lg border border-terminal-border bg-terminal-panel p-3">
               <p className="text-xxs font-terminal uppercase tracking-widest text-accent mb-1">Productor · gratis</p>
               <p className="text-data text-zinc-400">Datos, remates, directorio y alertas. No pagás nada.</p>
@@ -125,6 +130,10 @@ export default function PlanesPage() {
               <p className="text-xxs font-terminal uppercase tracking-widest text-sky-300 mb-1">Empresa · IA</p>
               <p className="text-data text-zinc-400">La data por API + MCP para tus apps y agentes.</p>
             </div>
+            <div className="rounded-lg border border-terminal-border bg-terminal-panel p-3">
+              <p className="text-xxs font-terminal uppercase tracking-widest text-accent mb-1">Guía · pago único</p>
+              <p className="text-data text-zinc-400">Cómo abrir y dirigir una consignataria. Se compra una vez, no vence.</p>
+            </div>
           </div>
 
           <PlatformStats />
@@ -134,6 +143,37 @@ export default function PlanesPage() {
         <Suspense fallback={<div className="h-[400px]" aria-hidden />}>
           <PlanesToggle />
         </Suspense>
+
+        {/* La guía. Va DESPUÉS de los planes y visualmente separada: es otro tipo de
+            compra —una sola vez, sin cuenta, sin renovación— y mezclarla con las
+            suscripciones haría que el lector la evalúe con la vara equivocada. */}
+        <section className="mt-8 terminal-panel border-accent/40">
+          <div className="terminal-panel-header text-accent flex items-center justify-between">
+            <span>Compra única · no es una suscripción</span>
+            <span className="text-zinc-500">{formatArs(GUIA.priceArs)}</span>
+          </div>
+          <div className="px-panel py-5 grid md:grid-cols-[1fr_auto] gap-5 items-center">
+            <div>
+              <h2 className="text-zinc-100 text-base font-heading mb-1">{GUIA.title}</h2>
+              <p className="text-zinc-400 text-data leading-relaxed mb-3">
+                {GUIA.pages} páginas en siete partes: matrícula de martillero, SIOCAL, ARCA,
+                SENASA, el riesgo de cobranza con los artículos del Código y seis defaults
+                reales, la liquidación con los códigos que define ARCA, los números del
+                negocio y el plan de marketing. Más un módulo de posicionamiento para la
+                firma que ya opera.
+              </p>
+              <p className="text-zinc-500 text-xxs font-terminal uppercase tracking-wider">
+                Edición {GUIA.edicion} · actualizada al {GUIA.updatedAt} · factura A a pedido
+              </p>
+            </div>
+            <Link
+              href={`${GUIA.landing}?ref=planes`}
+              className="shrink-0 bg-accent text-zinc-950 font-semibold text-sm rounded px-5 py-3 hover:brightness-110 text-center"
+            >
+              Ver la guía
+            </Link>
+          </div>
+        </section>
 
         {/* Trust badges — universales */}
         <div className="mt-6 flex flex-wrap justify-center gap-4 md:gap-6">

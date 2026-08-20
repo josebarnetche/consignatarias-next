@@ -56,8 +56,10 @@ Modelo de negocio: **el productor no paga nada** — todas las herramientas del
 productor (¿vendo ahora?, neto en mano, comparador, canon de arrendamiento, histórico
 INMAG) son gratis. Se monetiza por (1) el **Enterprise API + servidor MCP**
 (data-as-a-service para instituciones: bancos, frigoríficos exportadores, fintech,
-software agropecuario) y (2) **PRO Consignataria** (alcance y perfil destacado para
-las casas de remate). Propietario: Memola Medios SAS (agro@memola.com.ar).
+software agropecuario), (2) **PRO Consignataria** (alcance y perfil destacado para
+las casas de remate) y (3) una **guía profesional paga** de compra única sobre cómo
+abrir y dirigir una consignataria de hacienda, con la normativa vigente citada por
+artículo. Propietario: Memola Medios SAS (agro@memola.com.ar).
 
 ---
 

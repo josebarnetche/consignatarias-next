@@ -1,3 +1,4 @@
+import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import { FAQPageSchema } from '@/components/seo/JsonLd'
@@ -201,6 +202,14 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
       <FAQPageSchema items={faqItems} />
 
       <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 space-y-0">
+        {/* Las páginas de provincia de frigoríficos son el cluster de más tráfico
+            del sitio (GA4, 19-20 ago): Córdoba, Chaco, Santa Fe y Corrientes juntas
+            duplican al hub. El calce de audiencia es medio, pero el volumen es el
+            que hay: el banner mide su propio origen y se saca si no rinde. */}
+        <div className="pb-3">
+          <PromoGuiaBanner origen="frigorificos-provincia" />
+        </div>
+
         <Breadcrumb
           className="mb-2"
           items={[
