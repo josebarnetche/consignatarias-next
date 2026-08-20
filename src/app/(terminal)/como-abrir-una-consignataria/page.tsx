@@ -60,9 +60,9 @@ const FRENTES = [
 ]
 
 const INDICE = [
-  { parte: 'Parte I — El terreno', items: ['Qué es y qué no es una consignataria', 'Los cuatro modelos de negocio (feria, directo, invernada, cabaña) y cuál conviene según tu zona', 'Cómo se forma la comisión y qué queda de neto'] },
+  { parte: 'Parte I — El terreno', items: ['Qué es y qué no es una consignataria, y qué dicen exactamente los arts. 1.337, 1.339 y 1.341 sobre quién debe la plata', 'Los cuatro modelos de negocio (feria, directo, invernada, cabaña) y cuál conviene según tu zona', 'Cómo se forma la comisión y qué queda de neto'] },
   { parte: 'Parte II — Habilitarse', items: ['Matrícula de martillero: título, colegio, fianza, juramento (con costos y plazos reales)', 'La figura societaria: SAS vs SRL vs unipersonal, cuadro comparado', 'ARCA paso a paso: alta, códigos de actividad, IVA, Ganancias, IIBB y Convenio Multilateral', 'SIOCAL: cada pantalla del trámite, la documentación exacta y los errores que hacen que te lo archiven', 'Registro Fiscal de Operadores de Hacienda y Carnes (RG 3873): por qué estar afuera te cuesta plata en cada operación', 'SENASA: habilitación del predio bajo Res. 924/2020, plano, infraestructura y el aviso de 48 horas'] },
-  { parte: 'Parte III — Operar', items: ['El circuito completo de un remate feria, día por día', 'DT-e, RENSPA y guías: quién es responsable de qué', 'La liquidación al productor, renglón por renglón', 'Cobranza, plazos y el descalce financiero explicado con números', 'Los seis modos de perder plata en una consignataria (y cómo se tapan)'] },
+  { parte: 'Parte III — Operar', items: ['El circuito completo de un remate feria, día por día', 'DT-e, RENSPA y guías: quién responde por qué, con el circuito de identificación electrónica vigente desde enero de 2026', 'La liquidación renglón por renglón: cómo se llama de verdad el comprobante y los 17 códigos de gasto que define ARCA', 'El IPCVA: qué es ese renglón, quién lo paga y por qué puede cambiar sin tocar la ley', 'Cobranza, plazos y el descalce financiero explicado con números', 'Los seis modos de perder plata en una consignataria (y cómo se tapan)'] },
   { parte: 'Parte IV — Conseguir hacienda', items: ['El plan de marketing digital, según cómo lo arma Memola', 'Qué publicar cada semana y quién lo produce', 'La ficha del remate: el formato que se comparte solo', 'WhatsApp como CRM: el circuito de la consulta a la consignación', 'Presupuesto de marketing para el año uno, en tres escenarios'] },
   { parte: 'Parte V — Para la que ya existe', items: ['Auditoría de posicionamiento: las seis preguntas que ordenan una firma con años de historia', 'Las escaleras mentales del productor y en cuál estás', 'Cómo se encuentra el créneau que nadie ocupa en tu zona', 'El concepto único: una palabra que la firma pueda poseer', 'Cómo se reposiciona al líder de tu plaza sin pelearle de frente', 'Plantillas para completar con tu propia firma'] },
 ]
@@ -87,9 +87,27 @@ const NORMAS = [
   },
   {
     norma: 'Resolución SAGyP 50/2025',
-    url: 'https://www.argentina.gob.ar/normativa',
+    url: 'https://www.argentina.gob.ar/normativa/nacional/resoluci%C3%B3n-50-2025-411749/texto',
     regula: 'Crea el SIOCAL y reemplaza al RUCA para ganados y carnes',
     donde: 'El registro nacional',
+  },
+  {
+    norma: 'Resolución SAGyP 103/2026',
+    url: 'https://www.argentina.gob.ar/normativa/nacional/norma-427453/texto',
+    regula: 'Sustituye los Anexos I, II y III de la 50/2025 — es el texto que rige hoy',
+    donde: 'El registro nacional',
+  },
+  {
+    norma: 'Ley 25.507',
+    url: 'https://www.argentina.gob.ar/normativa/nacional/ley-25507-71134/texto',
+    regula: 'Crea el IPCVA y su régimen de aportes de productores e industria',
+    donde: 'Un renglón de cada liquidación',
+  },
+  {
+    norma: 'Resolución SENASA 841/2025',
+    url: 'https://www.argentina.gob.ar/normativa',
+    regula: 'Identificación electrónica obligatoria para cerrar el DT-e desde enero de 2026',
+    donde: 'Cada movimiento de hacienda',
   },
   {
     norma: 'RG AFIP 3873/2016',
@@ -206,9 +224,14 @@ export default function ComoAbrirUnaConsignatariaPage() {
       <div className="terminal-panel border-warning/40 mb-8">
         <div className="terminal-panel-header text-warning">Por qué dice 2026</div>
         <p className="px-4 py-3 text-sm text-zinc-300 leading-relaxed">
-          {GUIA.actualizacion} La mayoría del material que circula —apuntes, notas,
-          instructivos— sigue explicando el registro viejo. Esta edición cita el Anexo I
-          punto por punto, con la documentación exacta y los plazos que hoy rigen.
+          {GUIA.actualizacion}
+        </p>
+        <p className="px-4 pb-3 text-sm text-zinc-400 leading-relaxed">
+          El material que circula está desactualizado <strong className="text-zinc-200">dos veces</strong>:
+          quien habla de RUCA quedó viejo en abril de 2025, y quien cita los Anexos originales
+          de la Res. 50/2025 quedó viejo el 6 de julio de 2026, cuando la Res. SAGyP 103/2026
+          los sustituyó íntegramente —sacó a los lácteos del sistema y agregó un requisito nuevo,
+          el punto 1.5.6. Esta edición cita el texto que rige hoy, punto por punto.
         </p>
       </div>
 

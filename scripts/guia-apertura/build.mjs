@@ -36,9 +36,9 @@ const OUT_DIR = path.join(ROOT, 'private/guias')
 const OUT_FILE = path.join(OUT_DIR, 'abrir-una-consignataria-v1.pdf')
 const TMP = path.join(ROOT, '.guia-build')
 
-const VERSION = '1.0'
+const VERSION = '1.1'
 const EDICION = '2026'
-const FECHA = '19 de agosto de 2026'
+const FECHA = '20 de agosto de 2026'
 
 /**
  * Snapshot de mercado usado en los capítulos de economía. Es DATO, no adorno:
@@ -47,7 +47,7 @@ const FECHA = '19 de agosto de 2026'
  * desde consignatarias.com.ar/mercado y subir la fecha.
  */
 const MERCADO = {
-  fecha: '19 de agosto de 2026',
+  fecha: '19 de agosto de 2026', // el snapshot de precios; la guía cierra el 20
   inmag: '$4.212 / kg vivo',
   novillos: '$4.384 / kg · 576 cab',
   vacas: '$3.129 / kg · 1.327 cab',

@@ -25,7 +25,9 @@ export const PARTE_I = {
 
 <div class="callout">
   <div class="callout-title">La consecuencia que casi nadie ve venir</div>
-  <p>Si el comprador no paga, el productor igual le reclama a la consignataria. Actuaste en nombre propio. La cobranza es tu problema, no el del que te entregó los novillos. Ese es el riesgo central del negocio y el capítulo 13 está dedicado enteramente a él.</p>
+  <p>El <strong>artículo 1.337</strong> es tajante: el consignatario queda <em>directamente obligado</em> hacia las personas con quienes contrata, y esas personas no tienen acción contra el consignante ni él contra ellas. Traducido: el productor no le puede reclamar al frigorífico que se llevó su hacienda. Su único deudor sos vos.</p>
+  <p>Ahora bien —y acá casi todo el rubro lo cuenta al revés— eso <strong>no</strong> significa que respondas automáticamente por la insolvencia del comprador. El <strong>artículo 1.341</strong> fija la regla supletoria: sin comisión de garantía convenida, respondés por el crédito que otorgaste <em>sin la diligencia exigida por las circunstancias</em>. Es responsabilidad por mala praxis crediticia, no un seguro. Pero ojo con el <strong>1.339</strong>: si diste plazos mayores a los de uso en la plaza, o contra las instrucciones del consignante, quedás <em>directamente obligado al pago del precio</em> en el momento en que hubiera correspondido cobrarlo.</p>
+  <p>De esos tres artículos sale la regla operativa más barata de todo este negocio: <strong>el plazo de pago, por escrito, en cada consignación</strong>. Es la diferencia entre discutir tu diligencia y deber la plata sin discusión. El capítulo 13 desarrolla el riesgo completo.</p>
 </div>
 
 <h3>Lo que la consignataria no es</h3>
@@ -225,8 +227,9 @@ export const PARTE_II = {
       titulo: 'SIOCAL: el registro nacional (ex RUCA)',
       html: `
 <div class="alerta">
-  <div class="alerta-title">Esto cambió en 2025 y casi ningún material lo dice</div>
-  <p>El RUCA —Registro Único de Operadores de la Cadena Agroindustrial— dejó de ser el registro de ganados y carnes. La <strong>Resolución SAGyP 50/2025</strong>, del 11 de abril de 2025, creó el <strong>SIOCAL</strong> (Sistema de Información de Operadores de Carnes y Lácteos) para los rubros ganados, carnes y lácteos, y el SISA quedó para granos. Las inscripciones vigentes y las solicitudes en trámite se migraron sin necesidad de reinscribirse. Si estás leyendo un instructivo que habla de RUCA para hacienda, está desactualizado.</p>
+  <div class="alerta-title">Esto cambió DOS veces, y casi ningún material lo dice</div>
+  <p><strong>Primer salto (abril de 2025).</strong> El RUCA —Registro Único de Operadores de la Cadena Agroindustrial— dejó de ser el registro de ganados y carnes. La <strong>Resolución SAGyP 50/2025</strong>, del 11 de abril de 2025, creó el <strong>SIOCAL</strong> y el SISA quedó para granos. Las inscripciones vigentes y las solicitudes en trámite se migraron sin reinscribirse.</p>
+  <p><strong>Segundo salto (julio de 2026).</strong> La <strong>Resolución SAGyP 103/2026</strong>, publicada el 6 de julio de 2026, <strong>sustituyó íntegramente los Anexos I, II y III</strong> de la 50/2025. El régimen que rige hoy es el del Anexo I de la 103/2026: mantiene la denominación SIOCAL y la numeración de los puntos, <strong>excluye del sistema a los operadores del rubro lácteos</strong> y suma un requisito nuevo (punto 1.5.6). Quien cite RUCA está viejo desde 2025; quien cite los Anexos originales de la 50/2025 está viejo desde julio de 2026.</p>
 </div>
 
 <h3>Qué categoría te corresponde</h3>
@@ -241,7 +244,7 @@ export const PARTE_II = {
 <ul>
   <li>La inscripción es <strong>obligatoria para ejercer</strong> la actividad (punto 1.2).</li>
   <li><strong>No vence</strong> mientras se mantengan vigentes los requisitos que la otorgaron (punto 1.3).</li>
-  <li>La solicitud se genera en línea en <strong>www.ruca.magyp.gob.ar</strong> —que hoy redirige al portal del SIOCAL— con <strong>Clave Fiscal nivel 3</strong> (punto 1.4).</li>
+  <li>La solicitud se genera en línea en <strong>www.siocal.magyp.gob.ar</strong> con <strong>Clave Fiscal nivel 3</strong> (punto 1.4). El Anexo original decía <em>ruca.magyp.gob.ar</em>; el texto vigente ya nombra el dominio nuevo, y la vieja URL redirige.</li>
   <li>Todo se presenta en carácter de <strong>declaración jurada</strong>. Falsear u omitir datos no es un error administrativo.</li>
   <li>Si el análisis detecta deficiencias, te intiman a subsanarlas en <strong>10 días hábiles</strong> desde la notificación, bajo apercibimiento de archivar la solicitud sin más trámite (punto 1.6.1). Ese plazo corre desde el envío del correo, no desde que lo leés.</li>
 </ul>
@@ -258,6 +261,7 @@ export const PARTE_II = {
   <li><strong>Habilitación sanitaria</strong> del establecimiento o local a nombre del titular, emitida por la autoridad competente, si resulta exigible según la actividad y el ámbito de comercialización. No se exige adjuntarla para establecimientos habilitados por SENASA ni para jurisdicciones que publiquen sus habilitaciones en línea de manera actualizada.</li>
   <li><strong>Título de dominio o escritura</strong> del establecimiento si sos propietario. Si el predio no es propio, los instrumentos que acrediten posesión, tenencia o uso y goce, autenticados por escribano público o autoridad judicial.</li>
   <li><strong>Inscripción vigente ante ARCA</strong> en el código de actividad que corresponda a lo que estás pidiendo (punto 1.5.5).</li>
+  <li><strong>Inscripción vigente ante el órgano de contralor societario</strong> que corresponda al tipo de persona jurídica y al ámbito de comercialización (punto 1.5.6). <strong>Este requisito NO estaba en el Anexo original</strong>: lo agregó la Res. 103/2026. En la práctica: IGJ para una sociedad porteña, el registro público provincial para el resto, y la constancia tiene que estar vigente, no la del día de la constitución.</li>
   <li><strong>Domicilio electrónico constituido</strong> y, para las actividades que lo requieran, domicilio y <strong>geolocalización</strong> de la planta o establecimiento.</li>
 </ol>
 
@@ -289,8 +293,8 @@ export const PARTE_II = {
 
 <h3>Las alícuotas que tenés que tener claras</h3>
 <ul>
-  <li>La <strong>venta de hacienda en pie</strong> tributa IVA a la alícuota reducida.</li>
-  <li>Tu <strong>comisión</strong> es un servicio y tributa a la alícuota general.</li>
+  <li>La <strong>venta de hacienda en pie</strong> tributa IVA a la <strong>alícuota reducida del 10,5%</strong> (art. 28, Ley 23.349). Eso no se discute.</li>
+  <li>Tu <strong>comisión</strong>, en cambio, sí se discute, y conviene que lo sepas antes de facturar. El criterio intuitivo —"es un servicio, va al 21%"— no es el que sostiene la doctrina fiscal para el consignatario. El <strong>Dictamen DAL 59/2002</strong> concluyó que comisiones, fletes, garantía, control y entrega, certificados y guías facturados <em>en ocasión de la comercialización de bovino en pie</em> quedan alcanzados por la alícuota reducida, con la excepción de los gastos de financiación, que son hecho imponible autónomo al 21%. El <strong>Dictamen 6/2005</strong> agrega la distinción que decide el caso: el <em>consignatario</em>, que factura a nombre propio, arrastra el 10,5%; el <em>mandatario</em>, que factura su comisión por separado, va al 21%. <strong>No copies ninguna de las dos versiones de esta guía a tu facturación</strong>: llevale los dos dictámenes a tu contador y que él defina tu encuadre por escrito. Facturar mal esto durante un año es un ajuste, no un error de tipeo.</li>
   <li>Sobre los pagos que hacés hay retenciones de <strong>Ganancias</strong> (régimen general de la RG 830) y, según jurisdicción, de <strong>Ingresos Brutos</strong>. Si sos agente de retención, retenés y depositás; no es tu plata, y el fisco no distingue entre "no la deposité" y "la usé para tapar un descubierto".</li>
 </ul>
 

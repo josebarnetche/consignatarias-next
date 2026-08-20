@@ -42,6 +42,11 @@ export const PARTE_III = {
       html: `
 <p>Toda hacienda que se mueve necesita un <strong>DT-e</strong>, el Documento de Tránsito electrónico que reemplazó al DTA en papel. Es el "número de tropa" que ampara cada movimiento: del campo al remate, del remate al comprador, del comprador a faena. Se emite en el sistema SIGSA de SENASA.</p>
 
+<div class="alerta">
+  <div class="alerta-title">Enero de 2026 cambió el circuito</div>
+  <p>Desde el <strong>1 de enero de 2026</strong> el DT-e ya no se cierra sin la <strong>lectura de los identificadores electrónicos</strong>: la tropa se arma en origen y se confirma en destino contra los números que efectivamente llegaron. La venta de caravanas visuales quedó prohibida desde diciembre de 2025, y cada identificación se declara dentro de los diez días hábiles. Cualquier descripción del circuito anterior a 2026 —y hay mucha dando vueltas— está vieja. Para vos significa una cosa concreta: <strong>si los números que bajan del camión no coinciden con los que salieron, el movimiento no cierra</strong>, y el problema aparece con la hacienda ya en tu corral.</p>
+</div>
+
 <h3>Qué hace falta para emitirlo</h3>
 <ul>
   <li><strong>RENSPA vigente</strong> en origen y en destino. El RENSPA identifica la relación productor–establecimiento; sin él no hay movimiento posible.</li>
@@ -74,6 +79,36 @@ export const PARTE_III = {
       html: `
 <p>La liquidación es el único documento del negocio que el productor lee entero. Es también donde se pierde o se gana la confianza. Una liquidación bien hecha tiene cinco bloques y ningún renglón que necesite explicación telefónica.</p>
 
+<h3>Primero: cómo se llama de verdad</h3>
+<p>El comprobante que el consignatario le emite al vendedor se llama <strong>Cuenta de Venta y Líquido Producto – Sector Pecuario</strong>: código <strong>180</strong> si es clase A, <strong>182</strong> si es clase B. Se autoriza por el web service <strong>WSLSP</strong> de ARCA. Al comprador, en cambio, se le emite una <strong>Liquidación de Compra</strong> (códigos 183 y 185).</p>
+<div class="alerta">
+  <div class="alerta-title">No le digas "liquidación primaria"</div>
+  <p>"Liquidación primaria" es nomenclatura del sector <strong>granos</strong> (el ex formulario C-1116 "C"). Usarla para hacienda delante de un contador del rubro te cuesta credibilidad en la primera frase. En pecuario el documento es la Cuenta de Venta y Líquido Producto.</p>
+</div>
+
+<h3>Los renglones no los inventás vos: los define ARCA</h3>
+<p>El WSLSP tiene una tabla cerrada de conceptos de gasto. Es el mapa de todo lo que se le puede descontar legítimamente a un productor, y conviene tenerlo a mano porque cargar un concepto en el código equivocado es un error auditable:</p>
+<table>
+  <thead><tr><th>Cód.</th><th>Concepto</th><th>Cód.</th><th>Concepto</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Fondo de garantía</td><td>9</td><td>Arancel feria</td></tr>
+    <tr><td>2</td><td>Gastos de frigorífico</td><td>10</td><td>Arancel remate</td></tr>
+    <tr><td>3</td><td>Guía</td><td>11</td><td>Sellos</td></tr>
+    <tr><td>4</td><td>Flete</td><td>12</td><td>PSTA / DTA</td></tr>
+    <tr><td>5</td><td>Derecho de registro</td><td>13</td><td>DT-e</td></tr>
+    <tr><td>6</td><td><strong>IPCVA</strong></td><td>14</td><td>Caravana</td></tr>
+    <tr><td>7</td><td>Servicio de faena</td><td>15</td><td>Control y entrega</td></tr>
+    <tr><td>8</td><td>Etiquetado</td><td>16</td><td>Comisión</td></tr>
+    <tr><td colspan="4">99 · Otros — el cajón donde termina lo que no se supo clasificar. Cuantos menos renglones tengas acá, mejor liquidación hacés.</td></tr>
+  </tbody>
+</table>
+<p>Las retenciones y percepciones van en una tabla <em>distinta</em>, la de tributos, con su propio código por régimen: retención de Ganancias RG 830, retención y percepción de IVA de la RG 3873, Ingresos Brutos, y así.</p>
+
+<div class="callout">
+  <div class="callout-title">El detalle que ordena todo el capítulo</div>
+  <p>Fijate dónde está el IPCVA: en la tabla de <strong>gastos</strong>, código 6 — no en la de tributos. No es una retención impositiva: es un gasto que se le deduce al comitente. Por eso no lleva IVA. Cargarlo como tributo, o meterlo en "Otros", es exactamente el tipo de error que un contador detecta al primer vistazo.</p>
+</div>
+
 <table>
   <thead><tr><th>Bloque</th><th>Qué muestra</th><th>Error típico</th></tr></thead>
   <tbody>
@@ -89,6 +124,31 @@ export const PARTE_III = {
   <div class="box-title">El test de la liquidación</div>
   <p>Mandale tu modelo de liquidación a un productor que no sea cliente y pedile que te diga, sin ayuda, cuánto le descontaron y por qué. Si tarda más de un minuto o pregunta algo, el documento está mal hecho. No es un problema de diseño: es un problema de negocio, porque cada duda es una llamada y cada llamada es una consignación en riesgo.</p>
 </div>
+`,
+    },
+    {
+      titulo: 'El IPCVA: el renglón que casi nadie sabe explicar',
+      html: `
+<p>En la tabla de gastos del capítulo anterior hay un código 6 que dice <strong>IPCVA</strong>. Es el aporte al Instituto de Promoción de la Carne Vacuna Argentina, creado por la <strong>Ley 25.507</strong>, y todo consignatario lo va a ver aparecer en sus liquidaciones. Vale entender qué es, porque es el renglón que más preguntas del productor genera y el que peor se explica en el mostrador.</p>
+
+<h3>Qué es y quién lo paga</h3>
+<p>Lo aportan <strong>los dos lados de la cadena</strong>: el productor ganadero y la industria frigorífica, como porcentaje del valor índice de res vacuna en plaza de faena. El instituto se financia con fondos privados: no es un impuesto que recauda el Estado, es un aporte del propio sector para promocionar la carne argentina adentro y afuera.</p>
+
+<div class="alerta">
+  <div class="alerta-title">El dato que nadie mira, y que puede cambiar</div>
+  <p>Las alícuotas vigentes <strong>no están en la ley</strong>. El artículo 14 de la Ley 25.507 fija <em>topes</em> —del orden del 0,20% para el productor y 0,09% para la industria— y la <strong>Asamblea de Representantes del Instituto fija el valor efectivo dentro de esos límites</strong>. Los valores que se aplican hoy están varias veces por debajo del tope. Consecuencia práctica: sin tocar una coma de la ley, el aporte del productor puede subir de manera significativa por decisión de la Asamblea. Antes de imprimir un porcentaje en tu liquidación, <strong>confirmá el valor vigente</strong> con el Instituto o con tu cámara.</p>
+</div>
+
+<h3>Las tres cosas que hay que tener claras al liquidarlo</h3>
+<ol>
+  <li><strong>Es un gasto, no un tributo.</strong> Va en el código 6 de la tabla de gastos del WSLSP, no en la de tributos, y por eso no lleva IVA.</li>
+  <li><strong>Corresponde a la hacienda con destino a faena.</strong> En un remate feria mixto, cargarlo sobre los lotes de invernada que siguen su vida productiva es un error de liquidación. El destino lo define el DT-e.</li>
+  <li><strong>Al productor hay que poder explicárselo en treinta segundos.</strong> "Es el aporte del sector a la promoción de la carne, lo pagamos productores e industria, sale de la Ley 25.507." El que no lo sabe explicar termina discutiendo un renglón que no es suyo.</li>
+</ol>
+
+<h3>Por qué te conviene entender la discusión, y no solo el renglón</h3>
+<p>En agosto de 2026 el Ministerio de Desregulación y Transformación del Estado difundió un anteproyecto para reemplazar el aporte obligatorio por un <strong>arancelamiento voluntario</strong>. Toda la cadena —las entidades de la producción y las cámaras de la industria frigorífica que integran el Consejo de Representantes— firmó una declaración conjunta rechazándolo, con el argumento de que un aporte voluntario equivale, en los hechos, a la desaparición del Instituto.</p>
+<p>Al consignatario esto lo toca por dos lados. Uno administrativo: si el esquema cambia, cambia un renglón de todas tus liquidaciones. El otro es más de fondo y conviene verlo: <strong>las cámaras de consignatarios integran el Consejo Asesor del IPCVA</strong>. La capa gremial del rubro no es decorativa —es donde se discute esto—, y el capítulo sobre cámaras explica en cuál te conviene estar.</p>
 `,
     },
     {

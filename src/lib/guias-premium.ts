@@ -42,14 +42,14 @@ export const GUIAS_PREMIUM: GuiaPremium[] = [
     title: 'Cómo abrir tu consignataria de hacienda — Guía 2026',
     edicion: '2026',
     actualizacion:
-      'Actualizada a agosto de 2026: el RUCA ya no rige para ganados y carnes. El trámite va por SIOCAL (Res. SAGyP 50/2025).',
+      'Actualizada al 20 de agosto de 2026: el RUCA ya no rige, y los Anexos del SIOCAL fueron sustituidos por la Res. SAGyP 103/2026 el 6 de julio. Incluye el circuito de DT-e con identificación electrónica vigente desde enero de 2026.',
     tagline:
       'El paso a paso real —matrícula, SIOCAL, ARCA, SENASA, plata y marketing— para poner una consignataria a operar en Argentina.',
     priceArs: 100000,
     file: 'abrir-una-consignataria-v1.pdf',
-    pages: 53, // lo imprime scripts/guia-apertura/build.mjs al regenerar el maestro
-    version: '1.0',
-    updatedAt: '2026-08-19',
+    pages: 58, // lo imprime scripts/guia-apertura/build.mjs al regenerar el maestro
+    version: '1.1',
+    updatedAt: '2026-08-20',
     landing: '/como-abrir-una-consignataria',
   },
 ]

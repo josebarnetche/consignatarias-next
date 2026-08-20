@@ -241,10 +241,15 @@ export const ANEXOS = {
 <table>
   <thead><tr><th>Norma</th><th>Qué regula</th><th>Dónde aparece en esta guía</th></tr></thead>
   <tbody>
-    <tr><td><strong>Código Civil y Comercial, arts. 1.335 y ss.</strong></td><td>Contrato de consignación</td><td>Cap. 1 y definición de la categoría en SIOCAL</td></tr>
+    <tr><td><strong>Código Civil y Comercial, arts. 1.335, 1.337, 1.339, 1.341 y 1.343</strong></td><td>Contrato de consignación: obligación directa, plazos, diligencia y comisión de garantía</td><td>Cap. 1 y definición de la categoría en SIOCAL</td></tr>
     <tr><td><strong>Decreto-Ley 20.266/73</strong></td><td>Régimen legal de martilleros</td><td>Cap. 4 — matrícula, fianza (art. 3 inc. d), libros (art. 17)</td></tr>
     <tr><td><strong>Ley 25.028</strong></td><td>Reforma del régimen de martilleros y corredores; exigencia de título universitario</td><td>Cap. 4</td></tr>
-    <tr><td><strong>Resolución SAGyP 50/2025</strong> (11-abr-2025)</td><td>Crea el SIOCAL en reemplazo del RUCA para ganados, carnes y lácteos</td><td>Cap. 6 — Anexo I, puntos 1.2 a 1.6 y 2.5 / 2.9</td></tr>
+    <tr><td><strong>Resolución SAGyP 50/2025</strong> (11-abr-2025)</td><td>Crea el SIOCAL en reemplazo del RUCA para ganados y carnes</td><td>Cap. 6 — Anexo I, puntos 1.2 a 1.6 y 2.5 / 2.9</td></tr>
+    <tr><td><strong>Resolución SAGyP 103/2026</strong> (BO 6-jul-2026)</td><td><strong>Sustituye íntegramente los Anexos I, II y III</strong> de la Res. 50/2025. Es el texto que rige hoy: excluye a los lácteos y agrega el requisito 1.5.6</td><td>Cap. 6 — el régimen vigente</td></tr>
+    <tr><td><strong>Ley 25.507</strong></td><td>Crea el IPCVA y su régimen de aportes (art. 14: topes de alícuota; la Asamblea fija el valor)</td><td>Cap. 13 — el renglón del IPCVA</td></tr>
+    <tr><td><strong>RG (AFIP) 3964/2016</strong> y manual WSLSP</td><td>Cuenta de Venta y Líquido Producto – Sector Pecuario: códigos de comprobante, de gastos y de tributos</td><td>Cap. 12 — la liquidación</td></tr>
+    <tr><td><strong>Resolución SENASA 841/2025</strong></td><td>Identificación electrónica obligatoria para cerrar el DT-e desde el 1-ene-2026</td><td>Cap. 11 — DT-e</td></tr>
+    <tr><td><strong>Dictámenes DAL 59/2002 y 6/2005</strong></td><td>Alícuota de IVA aplicable a la comisión y gastos del consignatario de hacienda</td><td>Cap. 7 — el IVA del negocio</td></tr>
     <tr><td><strong>RG AFIP 3873/2016</strong></td><td>Registro Fiscal de Operadores de la Cadena de Producción y Comercialización de Haciendas y Carnes Bovinas y Bubalinas</td><td>Cap. 7</td></tr>
     <tr><td><strong>Resolución SENASA 924/2020</strong></td><td>Habilitación y rehabilitación de predios feriales, mercados concentradores y lugares de concentración de animales</td><td>Cap. 8</td></tr>
     <tr><td><strong>Resolución SENASA 723/2025</strong></td><td>Documento de Tránsito electrónico (DT-e)</td><td>Cap. 11</td></tr>
