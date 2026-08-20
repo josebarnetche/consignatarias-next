@@ -7,6 +7,50 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.197.0] — 2026-08-19
+
+### La guía que se vende
+
+Primera línea de ingreso **no recurrente** del sitio: *Cómo abrir tu consignataria
+de hacienda*, un PDF de 53 páginas a **ARS 100.000**, comprable por Rebill sin
+necesidad de tener cuenta.
+
+Hay 107 consignatarias con actividad relevada en el país y ninguna publicó nunca
+cómo se abre una. La guía cubre los seis frentes —matrícula de martillero,
+sociedad y ARCA, **SIOCAL** (el registro que reemplazó al RUCA en abril de 2025 y
+que casi ningún material del rubro refleja todavía), Registro Fiscal RG 3873,
+habilitación SENASA del predio bajo Res. 924/2020, y la plata— más el circuito
+del remate, la liquidación renglón por renglón, el descalce financiero, el plan
+de marketing digital, y un módulo de posicionamiento (auditoría Ries & Trout +
+concepto único) para las firmas que ya operan.
+
+**Cómo funciona la plata.** El sales page `/como-abrir-una-consignataria` publica
+gratis el mapa completo —los seis frentes, con la normativa citada por artículo—
+y cobra el paso a paso. El checkout es email-first: `POST /api/guias-premium/checkout`
+crea un payment-link `isSingleUse` con `metadata.kind='guia_purchase'`, y la
+Branch 3 del webhook de Rebill deja la fila en `guia_purchases`, que **es** el
+entitlement. La descarga va por `/api/guias-premium/[slug]/download`: exige sesión
+con el mismo email que compró, lee el maestro de `private/guias/` —nunca de
+`/public`— y estampa *"Licencia personal de \<email\>"* al pie de cada página con
+pdf-lib. Las compras aparecen en `/cuenta/guias`.
+
+**Edición 2026 y factura A.** La guía se vende por estar al día: la tapa lleva el
+sello *Edición 2026 · actualizada al 19 de agosto*, el sales page abre con el
+bloque "por qué dice 2026", y el catálogo guarda `edicion` y `actualizacion` como
+campos del producto. Cuando salga una edición nueva, el comprador la baja desde el
+mismo link sin volver a pagar: el acceso está atado a su email, no al archivo.
+En el checkout se pueden cargar **razón social y CUIT** para **factura A emitida por
+Memola Medios SAS** — viajan en la metadata de Rebill y quedan en `guia_purchases.meta`,
+así la emisión no depende de rastrear un mail. La guía se ofrece destacada arriba
+del hub `/guias`, entre las 52 gratis.
+
+El maestro se regenera con `pnpm guia:apertura` (Chrome del sistema vía Playwright;
+tapa a sangre y cuerpo numerado pegados con pdf-lib). El contenido vive en
+`scripts/guia-apertura/`, y `docs/guia-apertura/README.md` documenta el circuito
+completo y cómo publicar una versión nueva.
+
+---
+
 ## [1.196.0] — 2026-08-19
 
 ### La cuenta, en el medio del camino

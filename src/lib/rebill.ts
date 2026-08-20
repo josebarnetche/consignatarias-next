@@ -335,3 +335,64 @@ export async function createEnterpriseStarterLink(
   }
   return JSON.parse(responseText)
 }
+
+/**
+ * createGuiaPurchaseLink — pago ÚNICO de una guía premium (PDF).
+ *
+ * A diferencia de los links de arriba, esto no otorga tier ni suscripción: es
+ * `isSingleUse: true` y el webhook (Branch 3, kind='guia_purchase') deja una fila
+ * en `guia_purchases`, que es el entitlement de descarga. El email viaja en la
+ * metadata porque la compra es email-first (no exige cuenta) y ES la llave con la
+ * que después se sirve el PDF estampado.
+ */
+export async function createGuiaPurchaseLink(opts: {
+  guiaSlug: string
+  title: string
+  amountArs: number
+  customerEmail: string
+  /** Datos de factura A (opcionales) — la emite Memola Medios SAS. */
+  razonSocial?: string
+  cuit?: string
+}) {
+  const secretKey = process.env.REBILL_SECRET_KEY
+  if (!secretKey) {
+    throw new Error('REBILL_SECRET_KEY is not configured')
+  }
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
+
+  const payload = {
+    // Punto medio, no raya: el título del catálogo ya trae una ("… — Guía 2026")
+    // y dos rayas en el resumen del checkout se leen como un error.
+    title: [{ language: 'es', text: `${opts.title} · consignatarias.com.ar` }],
+    paymentMethods: [{ methods: ['card'], currency: 'ARS' }],
+    prices: [{ amount: opts.amountArs, currency: 'ARS' }],
+    metadata: {
+      kind: 'guia_purchase',
+      guiaSlug: opts.guiaSlug,
+      customerEmail: opts.customerEmail,
+      ...(opts.razonSocial ? { razonSocial: opts.razonSocial } : {}),
+      ...(opts.cuit ? { cuit: opts.cuit } : {}),
+    },
+    redirectUrls: {
+      approved: `${appUrl}/cuenta/guias?comprada=${encodeURIComponent(opts.guiaSlug)}`,
+    },
+    isSingleUse: true,
+  }
+
+  const res = await fetch(`${REBILL_API}/payment-links`, {
+    method: 'POST',
+    headers: {
+      'x-api-key': secretKey,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  const responseText = await res.text()
+  if (!res.ok) {
+    console.error('Rebill guia purchase error:', res.status, responseText)
+    throw new Error(`Rebill error: ${res.status} ${responseText}`)
+  }
+  return JSON.parse(responseText)
+}

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { requireServiceClient } from '@/lib/supabase'
-import { sendEnterpriseWelcome, sendConsignatariaProWelcome } from '@/lib/email'
+import { sendEnterpriseWelcome, sendConsignatariaProWelcome, sendGuiaPurchaseDelivery } from '@/lib/email'
+import { getGuiaPremium } from '@/lib/guias-premium'
 import { getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import crypto from 'crypto'
 
@@ -116,10 +117,13 @@ export async function POST(request: NextRequest) {
         // (conversiones infladas en renovaciones). Best-effort: nunca frena el
         // otorgamiento de entitlement.
         {
-          const entitySlug: string | null =
-            metadata?.entitySlug ?? metadata?.userId ?? null
-          const entityType: string =
-            metadata?.entityType ?? (kind && String(kind).startsWith('enterprise') ? 'global' : 'consignataria')
+          const isGuia = kind === 'guia_purchase'
+          const entitySlug: string | null = isGuia
+            ? (metadata?.guiaSlug ?? null)
+            : (metadata?.entitySlug ?? metadata?.userId ?? null)
+          const entityType: string = isGuia
+            ? 'guia'
+            : metadata?.entityType ?? (kind && String(kind).startsWith('enterprise') ? 'global' : 'consignataria')
           // ¿Ya registramos la conversión de ESTA suscripción? (renovación → skip)
           let alreadyCounted = false
           if (subscription_id) {
@@ -134,7 +138,7 @@ export async function POST(request: NextRequest) {
             const { error } = await service
               .from('value_events')
               .insert({
-                event: 'subscription_paid',
+                event: isGuia ? 'guia_purchased' : 'subscription_paid',
                 weight: 100,
                 entity_type: entityType,
                 entity_slug: entitySlug ? String(entitySlug).slice(0, 200) : null,
@@ -218,6 +222,65 @@ export async function POST(request: NextRequest) {
             } catch (err) {
               console.error('Enterprise welcome email failed:', err)
             }
+          }
+
+          break
+        }
+
+        // Branch 3 — compra única de una guía premium (PDF pago).
+        // No otorga tier ni suscripción: deja la fila de `guia_purchases` que ES
+        // el entitlement de descarga. Anclada al email porque el checkout es
+        // email-first (sin cuenta); si después el comprador se loguea con ese
+        // mismo email, /cuenta/guias se la atribuye.
+        if (kind === 'guia_purchase') {
+          const guiaSlug = metadata?.guiaSlug
+          const customerEmail = metadata?.customerEmail
+          if (!guiaSlug || !customerEmail) {
+            console.error('Rebill webhook: guia_purchase sin guiaSlug o customerEmail', { guiaSlug, customerEmail })
+            break
+          }
+
+          const guia = getGuiaPremium(String(guiaSlug))
+          if (!guia) {
+            console.error(`Rebill webhook: guia_purchase con slug desconocido (${guiaSlug}). No se otorga.`)
+            break
+          }
+
+          const email = String(customerEmail).trim().toLowerCase()
+          {
+            const { error: grantErr } = await service
+              .from('guia_purchases')
+              .upsert(
+                {
+                  guia_slug: guia.slug,
+                  email,
+                  status: 'paid',
+                  amount_ars: guia.priceArs,
+                  rebill_payment_id: data?.id ?? subscription_id ?? null,
+                  rebill_customer_id: customer_id ?? null,
+                  purchased_at: new Date().toISOString(),
+                  // Datos de factura A si el comprador los cargó. Quedan acá para
+                  // que la emisión desde Memola no dependa de buscar el mail.
+                  meta: (metadata?.razonSocial || metadata?.cuit)
+                    ? {
+                        facturacion: {
+                          razonSocial: metadata?.razonSocial ?? null,
+                          cuit: metadata?.cuit ?? null,
+                        },
+                      }
+                    : null,
+                },
+                { onConflict: 'guia_slug,email' },
+              )
+            if (grantErr) throw new Error(`guia entitlement grant failed: ${grantErr.message}`)
+          }
+
+          // Mail de entrega (best-effort): el comprador tiene que poder bajar el
+          // PDF sin volver a buscar la pestaña del checkout.
+          try {
+            await sendGuiaPurchaseDelivery({ to: email, guia })
+          } catch (err) {
+            console.error('Guia delivery email failed:', err)
           }
 
           break

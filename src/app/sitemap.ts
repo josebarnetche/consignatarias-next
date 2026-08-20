@@ -286,6 +286,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
+      url: `${baseUrl}/como-abrir-una-consignataria`,
+      lastModified: buildDate,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
       url: `${baseUrl}/quienes-somos`,
       lastModified: buildDate,
       changeFrequency: 'monthly',

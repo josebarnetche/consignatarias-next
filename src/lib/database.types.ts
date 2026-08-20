@@ -1434,6 +1434,57 @@ export type Database = {
         }
         Relationships: []
       }
+      guia_purchases: {
+        Row: {
+          amount_ars: number | null
+          created_at: string
+          download_count: number
+          email: string
+          guia_slug: string
+          id: number
+          last_downloaded_at: string | null
+          meta: Json | null
+          purchased_at: string
+          rebill_customer_id: string | null
+          rebill_payment_id: string | null
+          refunded_at: string | null
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          amount_ars?: number | null
+          created_at?: string
+          download_count?: number
+          email: string
+          guia_slug: string
+          id?: never
+          last_downloaded_at?: string | null
+          meta?: Json | null
+          purchased_at?: string
+          rebill_customer_id?: string | null
+          rebill_payment_id?: string | null
+          refunded_at?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount_ars?: number | null
+          created_at?: string
+          download_count?: number
+          email?: string
+          guia_slug?: string
+          id?: never
+          last_downloaded_at?: string | null
+          meta?: Json | null
+          purchased_at?: string
+          rebill_customer_id?: string | null
+          rebill_payment_id?: string | null
+          refunded_at?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       inmag_monthly_close: {
         Row: {
           cabezas: number | null

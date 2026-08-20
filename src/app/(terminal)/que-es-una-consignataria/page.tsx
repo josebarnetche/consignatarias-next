@@ -226,6 +226,9 @@ export default function QueEsUnaConsignatariaPage() {
           <Link href="/como-elegir-consignataria" className="text-zinc-500 hover:text-accent transition-colors">
             Cómo elegir una consignataria
           </Link>
+          <Link href="/como-abrir-una-consignataria" className="text-zinc-500 hover:text-accent transition-colors">
+            Cómo abrir una consignataria
+          </Link>
           <Link href="/remates" className="text-zinc-500 hover:text-accent transition-colors">
             Calendario de remates
           </Link>

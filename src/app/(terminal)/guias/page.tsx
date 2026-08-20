@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { GUIAS, TOTAL_GUIAS } from '@/lib/data/guias'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import { getGuiaPremium, formatArs } from '@/lib/guias-premium'
 
 export const revalidate = 86400
 
@@ -32,6 +33,8 @@ export default function GuiasPage() {
           Lo que hay que saber para operar, escrito sin vueltas: qué se paga, quién cobra qué, cuánto vale
           la tierra y qué papel hace falta para cada cosa. {TOTAL_GUIAS} guías, ordenadas por tema.
         </p>
+
+        <GuiaPremiumDestacada />
 
         <nav className="flex flex-wrap gap-x-4 gap-y-2 text-xs mb-10 pb-6 border-b border-zinc-800">
           {GUIAS.map((g) => (
@@ -81,5 +84,35 @@ export default function GuiasPage() {
         </div>
       </div>
     </>
+  )
+}
+
+/**
+ * La única guía paga del sitio, ofrecida dentro del hub de las gratis. Va arriba
+ * y se distingue del resto a propósito: las 52 guías son el cuerpo indexable que
+ * trae al productor, y esta es el producto que se le vende al que quiere abrir
+ * una firma. Mezclarla en la grilla la haría invisible; ponerla aparte la hace
+ * legible como lo que es.
+ */
+function GuiaPremiumDestacada() {
+  const guia = getGuiaPremium('abrir-una-consignataria')
+  if (!guia) return null
+  return (
+    <Link
+      href={guia.landing}
+      className="block border border-accent/30 hover:border-accent bg-accent/5 rounded-lg p-5 mb-8 transition-colors group"
+    >
+      <div className="flex items-center justify-between mb-2 text-xxs font-terminal uppercase tracking-wider">
+        <span className="text-accent">Guía paga · edición {guia.edicion}</span>
+        <span className="text-zinc-500">{formatArs(guia.priceArs)} · PDF {guia.pages} pág.</span>
+      </div>
+      <p className="text-zinc-100 text-base mb-1 group-hover:text-accent transition-colors">
+        {guia.title}
+      </p>
+      <p className="text-zinc-400 text-sm leading-relaxed">
+        {guia.tagline} Incluye el módulo de posicionamiento para firmas que ya operan.
+        Factura A a pedido.
+      </p>
+    </Link>
   )
 }

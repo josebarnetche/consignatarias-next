@@ -12,6 +12,10 @@ const nextConfig = {
   // Esto fuerza a incluir las fuentes en toda ruta opengraph-image.
   outputFileTracingIncludes: {
     '/**/opengraph-image': ['./src/fonts/JetBrainsMono-Bold.ttf', './src/fonts/JetBrainsMono-Medium.ttf'],
+    // Las guías pagas se leen de `private/guias/` en runtime (nunca de /public:
+    // ahí serían descargables sin comprar). Sin este include el Lambda no las
+    // trae y la descarga responde 503 file_unavailable.
+    '/api/guias-premium/**': ['./private/guias/**'],
   },
 
   // Security headers (redirects + cache headers handled by vercel.json)

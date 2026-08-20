@@ -3,7 +3,7 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.196.0 (2026-08-19). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+**Current version:** v1.197.0 (2026-08-19). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
 
 ---
 
@@ -15,7 +15,7 @@ layer (INMAG since 2015 in ARS and USD, category panel, derivatives, methodology
 of consignatarias/frigoríficos and the auction calendar are surfaces on top of it, not the product.
 Positioning thesis: [`docs/strategy/POSITIONING-THESIS.md`](docs/strategy/POSITIONING-THESIS.md).
 
-Two revenue lines coexist on top of the free, indexable, citable data layer. **The producer pays
+Three revenue lines coexist on top of the free, indexable, citable data layer. **The producer pays
 nothing** — PRO Usuario (ARS 7.900) was retired in July 2026; all producer tools (¿vendo ahora?,
 neto en mano, comparador, spread, seasonality, INMAG history) are free. The producer IS the value:
 
@@ -27,6 +27,11 @@ neto en mano, comparador, spread, seasonality, INMAG history) are free. The prod
 2. **PRO Consignataria** (sales-led B2B, **ARS 45.000/mes**) — featured listings, claimed profile,
    leads, email reach. Producto DISTINTO del API (en /planes va en ámbar, el color de su badge;
    el API va en cielo) — no mezclar precios ni copy entre ambos
+3. **Guías premium** (one-time, **ARS 100.000**) — *Cómo abrir tu consignataria de hacienda*,
+   PDF de 53 páginas. NO es suscripción: el entitlement es una fila en `guia_purchases`
+   anclada al EMAIL del comprador, el maestro vive en `private/guias/` (jamás en `/public`)
+   y la descarga sale estampada con el email. Catálogo en `src/lib/guias-premium.ts`;
+   circuito completo en [`docs/guia-apertura/README.md`](docs/guia-apertura/README.md)
 
 **Live:** https://www.consignatarias.com.ar
 **Owner:** Memola Medios SAS (`agro@memola.com.ar`)

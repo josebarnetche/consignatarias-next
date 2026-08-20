@@ -90,6 +90,7 @@ export const GUIAS: GrupoGuias[] = [
     guias: [
       { href: '/que-es-una-consignataria', label: 'Qué es una consignataria', hint: 'Y cuánto cobra' },
       { href: '/como-elegir-consignataria', label: 'Cómo elegir una consignataria', hint: 'Qué mirar antes de entregar hacienda' },
+      { href: '/como-abrir-una-consignataria', label: 'Cómo abrir una consignataria', hint: 'Matrícula, SIOCAL, SENASA y capital' },
       { href: '/como-funciona-un-remate-ganadero', label: 'Cómo funciona un remate', hint: 'Pujas, comisión y gastos' },
       { href: '/que-es-el-mag', label: 'Qué es el MAG', hint: 'Cañuelas, y por qué ya no es Liniers' },
       { href: '/que-es-el-rosgan', label: 'Qué es el ROSGAN', hint: 'Remate televisado y catálogo' },

@@ -74,6 +74,9 @@ research/
 # ...except El Corredor editions, which MUST deploy (manifest references them).
 # Without this, `git add public/el-corredor/` silently dropped each month's PDF → 404.
 !public/el-corredor/*.pdf
+# ...y las guías pagas, que también TIENEN que deployar: la ruta de descarga las
+# lee de private/guias/ en runtime. Si no se commitean, el Lambda responde 503.
+!private/guias/*.pdf
 rosgan_auctions_2026.json
 NEA-REMATES-CALENDAR-2026.json
 NEA-REMATES-CALENDAR-2026.md
@@ -111,3 +114,6 @@ scripts/archive/value-events-report.js
 # Clave privada del registry MCP: vive en ~/.mcp-keys/, nunca acá.
 *.pem
 .env*
+
+# artefacto temporal del render de guías
+.guia-build/

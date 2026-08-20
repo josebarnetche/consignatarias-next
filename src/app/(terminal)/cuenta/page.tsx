@@ -270,6 +270,24 @@ export default async function CuentaPage({ searchParams }: PageProps) {
         </Link>
       )}
 
+      {/* Siempre visible: la guía se compra sin cuenta, así que el que entra a
+          buscarla puede no tener ningún plan. */}
+      <Link
+        href="/cuenta/guias"
+        className="block border border-zinc-800 hover:border-sky-500/40 bg-zinc-900/40 hover:bg-sky-500/5 rounded-lg p-5 mb-4 transition-colors"
+      >
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-xxs font-mono uppercase tracking-widest text-zinc-500">
+            Guías
+          </span>
+          <span className="text-zinc-500 text-xs font-mono">→</span>
+        </div>
+        <p className="text-zinc-200 font-mono text-sm mb-1">Mis guías</p>
+        <p className="text-zinc-500 font-mono text-xs">
+          Las guías que compraste, en PDF. Se bajan cuantas veces quieras.
+        </p>
+      </Link>
+
       {hasEnterprise && (
         <Link
           href="/cuenta/api-keys"

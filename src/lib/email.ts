@@ -3348,3 +3348,33 @@ export async function sendFrigorificoLeadAlert(opts: {
     return { success: false, error: e2 instanceof Error ? e2.message : String(e2) }
   }
 }
+
+/**
+ * sendGuiaPurchaseDelivery — entrega de una guía premium recién comprada.
+ *
+ * Transaccional (FROM noreply): el comprador acaba de pagar y necesita el link
+ * de descarga sin depender de la pestaña del checkout. El link NO es el archivo:
+ * apunta a la ruta gated, que valida la compra y estampa el PDF con su email.
+ */
+export async function sendGuiaPurchaseDelivery(opts: {
+  to: string
+  guia: { slug: string; title: string; tagline: string }
+}) {
+  const resend = await getResend()
+  if (!resend) return
+  const { to, guia } = opts
+  const url = `${APP_URL}/api/guias-premium/${guia.slug}/download`
+  await resend.emails.send({
+    from: FROM,
+    to,
+    subject: `Tu guía: ${guia.title}`,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Compra confirmada</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 12px">${escapeHtml(guia.title)}</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">${escapeHtml(guia.tagline)}</p>
+      <p style="margin:0 0 20px"><a href="${url}" style="display:inline-block;background:#38bdf8;color:#0a0a0a;font-weight:700;font-size:13px;text-decoration:none;padding:11px 18px;border-radius:6px">Descargar el PDF</a></p>
+      <p style="color:#a1a1aa;font-size:12px;line-height:1.7;margin:0 0 8px">El link es tuyo y no vence: entrá con <strong style="color:#fafafa">${escapeHtml(to)}</strong> y bajala las veces que quieras desde <a href="${APP_URL}/cuenta/guias" style="color:#38bdf8">tu cuenta</a>. Cada copia va marcada con tu email.</p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">¿Necesitás <strong style="color:#a1a1aa">factura A</strong>? La emite Memola Medios SAS (CUIT 30-71863222-2), que opera consignatarias.com.ar. Si no cargaste los datos al comprar, respondé este mail con razón social y CUIT y te la emitimos.</p>
+    `),
+  })
+}
