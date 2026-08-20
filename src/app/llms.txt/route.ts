@@ -139,7 +139,7 @@ The site's editorial position: the INMAG is the price the market follows, but it
 ## Full context
 
 - Extended, citable definitional dump: https://www.consignatarias.com.ar/llms-full.txt
-- Machine-readable daily price snapshot (CC-BY): https://www.consignatarias.com.ar/precios.json
+- Machine-readable daily price snapshot (CC-BY): https://www.consignatarias.com.ar/precios.json — INMAG del día en ARS y en USD (blue), las 6 categorías, dólar blue y la referencia de Chicago (CME live cattle y feeder en USD/kg vivo, con la brecha del novillo local contra Chicago)
 - Machine-readable land-value dataset, 15 provinces + 52 zones (CC-BY): https://www.consignatarias.com.ar/valor-tierra.json
 
 ## Valor de la tierra y compraventa de campos
