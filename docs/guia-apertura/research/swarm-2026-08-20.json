@@ -1,0 +1,689 @@
+{
+  "sintesis": {
+    "capitulos_nuevos": [
+      {
+        "titulo": "Anatomía de una liquidación: los 17 renglones que ARCA reconoce (y los 20 tributos)",
+        "parte": "III — Operar",
+        "por_que": "Es el capítulo que convierte la guía en herramienta de trabajo y el más difícil de encontrar en otro lado. La v1 explica la liquidación en prosa; acá se publica la tabla cerrada que el propio Fisco define en el web service WSLSP, con los códigos que hay que cargar. Cargar el IPCVA en 'OTROS' (99) en vez de en el 6 es un error auditable; el productor que audita su liquidación no tiene ninguna otra referencia pública de qué se le puede descontar legítimamente.",
+        "contenido_clave": [
+          "Tabla completa de GASTOS (método consultarGastos): 1 FONDO DE GARANTIA, 2 GASTOS DE FRIGORIFICO, 3 GUIA, 4 FLETE, 5 DERECHO DE REGISTRO, 6 IPCVA, 7 SERVICIO DE FAENA, 8 ETIQUETADO, 9 ARANCEL FERIA, 10 ARANCEL REMATE, 11 SELLOS, 12 PSTA/DTA, 13 DTE, 14 CARAVANA, 15 CONTROL Y ENTREGA, 16 COMISION, 99 OTROS.",
+          "Tabla completa de TRIBUTOS (consultarTributos), la versión larga y no la truncada: 1 nacionales, 2 provinciales, 3 municipales, 4 internos, 5 IIBB, 6 Percepción IVA, 7 Percepción IIBB, 8 Percepciones por Impuestos Municipales, 9 Otras Percepciones, 14 Retención IIGG RG 830, 15 Retención IVA RG 3873, 16 Pago a cuenta IVA RG 3873, 17 Percepción IVA RG 3873, 18 Retención IVA RG 2616/2009, 19 Retención Ganancias RG 2616/2009, 20 Percepción RG 2126/06, 21 Pago a cuenta IVA RG 4199, 22 Percepción IVA RG 4199, 23 Retención IVA RG 4199, 99 Otros.",
+          "El punto jurídico que ordena todo: el IPCVA está en la tabla de GASTOS, no en la de TRIBUTOS. Viaja como gasto deducido al comitente, no como retención impositiva — por eso no lleva IVA (art. 19, Ley 25.507).",
+          "Códigos de comprobante y quién emite cada uno: 180/182 Cuenta de Venta y Líquido Producto A/B – Sector Pecuario (la emite el consignatario al vendedor); 183/185 Liquidación de Compra (la emite el consignatario al comprador); 186/188/189 Liquidación de Compra Directa (la emite el comprador); 190/191 Liquidación de Venta Directa (la emite el vendedor). Tipos de operación 1 a 6, y 101 a 106 para porcinos.",
+          "Regla práctica con ejemplo numérico: en remate feria mixto, el renglón IPCVA solo corresponde a los lotes con DT-e con destino a faena. Cobrarlo sobre invernada es error de liquidación (art. 14 inc. a, Ley 25.507).",
+          "Una liquidación modelo desarmada renglón por renglón, con las dos bases imponibles de IVA conviviendo en el mismo comprobante."
+        ],
+        "fuentes": [
+          "https://www.afip.gob.ar/ws/WSLSP/manual_wslsp_2.0.3.pdf (manual oficial WSLSP v2.0.3, secciones 2.7.15 y 2.7.16)",
+          "RG (AFIP) 3964/2016, arts. 2 a 5 — https://www.argentina.gob.ar/normativa/nacional/norma-269507/actualizacion",
+          "RG (AFIP) 4250/2018",
+          "Ley 25.507 arts. 14 y 19 — InfoLEG"
+        ]
+      },
+      {
+        "titulo": "Quién pone la plata cuando el comprador no paga",
+        "parte": "Nueva Parte VI — El riesgo (o capítulo central de la Parte III)",
+        "por_que": "Es el agujero más grande de la v1 y probablemente el motivo por el que el producto se lee superficial. La v1 explica el descalce como problema de caja; el problema real es de derecho y de patrimonio: el consignatario es principal frente al productor y está dando crédito al matarife con su propio balance. Ninguna guía del sector lo dice con la norma y los casos.",
+        "contenido_clave": [
+          "Art. 1337 CCyC, textual: el consignatario queda directamente obligado hacia las personas con quienes contrata, sin que éstas tengan acción contra el consignante ni éste contra aquéllas. El productor no puede demandar al frigorífico: su único deudor es la casa.",
+          "Art. 1341 CCyC (la regla supletoria, que la v1 y buena parte del sector cuentan al revés): sin comisión de garantía, el consignatario responde por el crédito otorgado SIN la diligencia exigida por las circunstancias — no responde automáticamente por la insolvencia del comprador.",
+          "Art. 1339 CCyC: quien otorga plazos superiores a los de uso en la plaza o contra instrucciones del consignante queda directamente obligado al pago del precio en el momento en que hubiera correspondido. Regla operativa que se desprende: instrucción de plazo por escrito en cada consignación.",
+          "Tabla de defaults 2021-2026 con nombre, fecha y monto: Ecoser/Tivey Partners $225M (237 cheques, ene-2022); GAEC SRL ~$200M en 4 provincias (2021); Palumbo $1.200M + Prida $1.000M en el MAG (sep-2024, repartidos entre ~12 de 40 casas); CARFRIC/Cooperativa Familias Argentinas, concurso 19-dic-2025, Juzgado Civil y Comercial N°1 de Junín, con Consignataria Serrano SA damnificada por $360M; Frigorífico General Pico, concurso 31-mar-2026, 1.152 cheques rechazados por más de $15.800M; La Taba SRL, quiebra indirecta mar-2026, expediente SAC 13821695; GISISA/Andelino Fernández, 429 cheques y ~$5.000M a productores patagónicos (abr-may 2026).",
+          "La cronología del deterioro, con fechas: Frigorífico General Pico acumuló deuda desde noviembre de 2025, tenía 1.033 cheques rechazados al 24-ene-2026 y concursó el 31-mar-2026. Cinco meses entre la primera señal pública y el default formal — ese es el tiempo real para cortar el crédito.",
+          "El patrón de la estafa: razón social nueva, historial limpio en el BCRA, escalada de volumen. Ecoser pasó de una jaula en enero de 2021 a 1.954 novillos en septiembre. El chequeo bancario no la detecta.",
+          "La regla de concentración, con caso: GISISA llegó a mover el 50% de la hacienda del norte patagónico pagando hasta 10% por encima de mercado. Un comprador que paga arriba y se lleva media plaza no es un buen cliente, es la exposición."
+        ],
+        "fuentes": [
+          "Código Civil y Comercial, Ley 26.994, arts. 1337, 1338, 1339, 1341 y 1343",
+          "https://bichosdecampo.com/el-mercado-de-canuelas-y-sus-consignatarios-estan-muy-sanos-avisan-que-esta-en-vias-de-solucion-la-pequena-crisis-con-dos-matarifes-que-no-pudieron-pagar-2-200-millones-de-pesos/",
+          "https://ansol.com.ar/economia/estafa-cooperativa-deudas-4/ (CARFRIC / Consignataria Serrano)",
+          "https://www.ambito.com/negocios/el-frigorifico-del-creador-paty-entro-concurso-deudas-millonarias-y-fuerte-pelea-acreedores-n6261906",
+          "https://www.infobae.com/economia/2026/03/31/quebro-un-frigorifico-en-cordoba-y-hay-preocupacion-por-50-puestos-de-trabajo/",
+          "https://bichosdecampo.com/la-nueva-gran-estafa-un-consignatario-de-hacienda-denuncio-una-maniobra-fraudulenta-por-225-millones-de-pesos-en-cheques-sin-fondos/",
+          "https://cholilaonline.ar/2026/05/alerta-en-la-patagonia-por-millonaria-cesacion-de-pagos-de-un-empresario-ganadero.html"
+        ]
+      },
+      {
+        "titulo": "Cobrar por el riesgo que ya estás tomando: el art. 1343 y el código de gasto 1",
+        "parte": "Nueva Parte VI — El riesgo",
+        "por_que": "Es contenido diferencial puro: hay una figura legal para poner precio al del credere, hay un renglón codificado por ARCA para facturarlo, y hay ferias que ya lo desagregan en su reglamento público. Nadie lo junta. Convierte un capítulo defensivo en una recomendación de pricing.",
+        "contenido_clave": [
+          "Art. 1343 CCyC: la comisión 'de garantía' está expresamente prevista; convenida, corren por cuenta del consignatario los riesgos de la cobranza y queda directamente obligado a pagar el precio en los plazos convenidos.",
+          "El renglón existe en el sistema del Fisco: código de gasto 1, FONDO DE GARANTIA, en la tabla del WSLSP.",
+          "La desagregación real de una feria de plaza, publicada en su reglamento de condiciones de venta: al VENDEDOR 2% comisión + 2% garantía + 1% sistema informático de terceros + gastos de ley = 5%; al COMPRADOR 2% comisión + 1,50% fondo compensatorio + 0,50% control y entrega = 4%. La comisión pura del rematador es 2%; el otro 3% es prima de riesgo y sistema.",
+          "Contraste: Rosgan cobra 5% al comitente y 4% al comprador sin desdoblar el del credere, y su reglamento dice textual que 'El Mercado no garantiza en modo alguno' el cumplimiento de los compradores.",
+          "Lo que NO cubre: el seguro de caución no cubre falta de pago (las coberturas de crédito puramente financiero están prohibidas en caución en Argentina). El seguro de crédito comercial existe (Coface TradeLiner, Solunion) pero no se comercializa para hacienda.",
+          "La garantía del martillero tampoco: Ley 20.266, arts. 3 inc. d y 6 — es inembargable y responde por daños y perjuicios, sumas de las que sea declarado responsable y multas. No es cobertura de precio.",
+          "Herramientas que sí funcionan, copiadas del único reglamento público que las escribe: límite de compra por comprador, garantía bancaria o aval de SGR, cheque de pago diferido avalado dentro de los 3 días hábiles, multa contractual del 10% del precio de la hacienda subastada. Y el Pagaré Producto de Rosgan, ajustado por Índice Futuro Ternero, que corre el plazo largo al mercado de capitales en vez de al balance de la casa."
+        ],
+        "fuentes": [
+          "Código Civil y Comercial, Ley 26.994, art. 1343",
+          "https://www.rosgan.com.ar/reglamento",
+          "https://www.rosgan.com.ar/financiamiento/pagare-producto-frigorifico",
+          "https://feriasrauch.plazaganadera.com/a/HAC009/1/5 y https://martinyalonso.plazaganadera.com/a/APP030/1/5",
+          "Ley 20.266, arts. 3 inc. d y 6",
+          "https://www.afip.gob.ar/ws/WSLSP/manual_wslsp_2.0.3.pdf (código de gasto 1)"
+        ]
+      },
+      {
+        "titulo": "La consignataria como agente del fisco: percepción, retención y recaudación",
+        "parte": "II — Habilitarse / III — Operar",
+        "por_que": "La v1 trata a la consignataria como intermediaria neutral. El Estado la convirtió en agente de percepción de IVA por norma y, según el volumen, en agente de recaudación de IIBB en provincia. Es el capítulo que reordena todo el bloque impositivo y el que hace que un contador ajeno al rubro deje de improvisar.",
+        "contenido_clave": [
+          "Tabla oficial de ARCA vigente desde el 01/05/2026, reproducida completa: pago a cuenta faenador $9.278 (activo) / $13.145 (pleno); usuario de faena $7.414 / $11.202; consignatario DIRECTO $7.414 / $11.202 por animal consignado apto para faena; retención consignatario de carnes $36 / $51 por kg; curtiembre $87 / $133 por unidad; percepción del consignatario de hacienda a compradores SIN sujetos autorizados declarados $535 por cabeza (mismo importe activo y pleno).",
+          "Códigos de régimen: percepción 583, retención 584 (hacienda en pie), retención 585 (cueros).",
+          "La cuenta que importa: estar fuera del registro le cuesta a un faenador $3.867 más por cabeza y a un consignatario directo $3.788 más. Sobre 500 cabezas, casi $1,9 millones adelantados por tropa.",
+          "Las tres situaciones del vendedor, textuales de la tabla: RI incluido en el registro CON CBU declarada → no se retiene, el IVA se deposita en su CBU; RI incluido SIN CBU → se retiene la totalidad del IVA; RI no incluido en el registro, con o sin CBU → se retiene la totalidad del IVA. Checklist previo a cerrar la operación: CUIT, estado en el Registro Fiscal, CBU declarada.",
+          "Los importes se actualizan dos veces al año, mayo y noviembre. Renglón fijo del calendario operativo: recargar valores.",
+          "Ganancias RG 830, código de régimen 25 (comisionista, rematador, consignatario y demás auxiliares de comercio): retención s/escala para inscriptos, 28% no inscriptos, monto no sujeto a retención $16.830, retención mínima $240. La escala termina en 'más de $96.000 → $18.640 + 31%'. Sobre una comisión de $2.000.000 la retención efectiva es prácticamente el 31% del excedente, todo el año inmovilizado.",
+          "Sellos como agente de recaudación en PBA: el antecedente documentado del conflicto con la Cámara Argentina de Feedlot, con dos consignatarias recaudando $78.000.000 y $81.208.843 en un año para ARBA. El consignatario retiene decenas de millones que no son suyos y el cliente le reclama a él.",
+          "El beneficio que además es disciplina de caja: Dto. 897/2021 + RG (AFIP) 5145/2022 eximen del impuesto al cheque a la cuenta usada en forma exclusiva para fondos de terceros del consignatario de ganado. La cuenta separada es la primera defensa contra usar la plata del productor como capital de trabajo."
+        ],
+        "fuentes": [
+          "https://www.afip.gob.ar/actividadesAgropecuarias/sector-pecuario/registros/documentos/valores-bovinos-bubalinos-actuales.pdf (vigente desde 01/05/2026)",
+          "RG (AFIP) 3873/2016 y modificatorias (RG 3963/2016, RG 4090/2017)",
+          "Anexo VIII RG 830, texto sustituido por RG 5423/2023 — biblioteca ARCA",
+          "Decreto 897/2021 y RG (AFIP) 5145/2022",
+          "https://www.lanacion.com.ar/economia/campo/pelea-impuesto-feedloteros-consignatarios-medio-disputa-tributaria-nid2221567/"
+        ]
+      },
+      {
+        "titulo": "El mapa fiscal provincial: Ingresos Brutos, Sellos y el Convenio Multilateral que cambió hace dos días",
+        "parte": "II — Habilitarse",
+        "por_que": "Una guía que se vende en todo el país no puede tener un solo capítulo fiscal nacional. Y hay un dato de valor comercial excepcional: la Comisión Arbitral acaba de restringir el régimen del art. 11 justo sobre la figura del consignatario. Ninguna competencia lo tiene.",
+        "contenido_clave": [
+          "Base imponible de IIBB: para comisionistas y consignatarios es la diferencia entre los ingresos y los importes que corresponda transferir a los comitentes. Se tributa sobre la comisión, no sobre el valor de la hacienda. Excepción expresa del Código Fiscal de PBA: no aplica a las cooperativas o secciones que actúen como consignatarias de hacienda — trampa específica del sector.",
+          "Los reintegros de gastos efectuados por cuenta de terceros no integran la base imponible.",
+          "Córdoba, Ley Impositiva 11.090 (2026), art. 15: la intermediación en GRANOS tiene código propio (461019) al 3,00%; la intermediación en hacienda no está nombrada y cae en el residual del 6,50% 'en tanto no tenga tratamiento especial en el Anexo I'. Más del doble, por no estar nombrado.",
+          "Convenio Multilateral art. 11: la jurisdicción donde están radicados los bienes grava el 80% y la sede el 20%. RG (CA) 4/2021: con varias oficinas centrales, el 20% se reparte por gastos soportados; si la sede coincide con la ubicación de los bienes, esa jurisdicción se lleva el 100%.",
+          "RG (CA) 7/2026, dictada el 12-ago-2026 y publicada el 18-ago-2026: acota el régimen a quien 'interviene entre oferente y demandante sin adquirir la propiedad ni el riesgo económico'; comprende solo los ingresos que remuneran de manera directa la función de intermediación, y 'quedan excluidos del mismo los servicios, los intangibles y los derechos'; la condición debe acreditarse operación por operación con documentación respaldatoria. Consecuencia operativa: control y entrega, guías, fondo de garantía y arancel de feria salen del 80/20 y van al régimen general del art. 2. Una firma multiprovincial tiene que partir su facturación en dos bolsas.",
+          "Sellos, ficha por provincia. Buenos Aires (Ley Impositiva 2026): 10,5‰ para compraventa de frutos del país y semovientes, y para los contratos de comisión o consignación, siempre que se registren en Bolsas, Mercados o Cámaras; alícuota general 12‰. Santa Fe: 0,5‰ si la operación se registra en la Bolsa de Comercio de Santa Fe o de Rosario formalizada por comisionistas o intermediarios en los formularios oficiales, 1‰ si no. Sobre una operación de $300 millones, registrar vale $150.000 de diferencia.",
+          "Córdoba, la zona gris: el punto 11.1.1 de la Ley 11.090 resolvió expresamente que en la consignación de GRANOS la base de Sellos es la retribución del intermediario. No hay disposición espejo para la Cuenta de Venta y Líquido Producto pecuaria. Se muestra el hecho y el lector saca la conclusión.",
+          "ARBA, RN 7/2026: piso general de $7.800.000.000 de ingresos brutos operativos del año anterior para quedar obligado como agente de recaudación de IIBB; el alta vence el último día hábil de febrero y las obligaciones empiezan el 1° de marzo."
+        ],
+        "fuentes": [
+          "Convenio Multilateral art. 11 — https://www.ca.gob.ar/convenio-multilateral",
+          "RG (CA) 7/2026 (publicada 18-08-2026) y RG (CA) 4/2021",
+          "Ley 11.090, Ley Impositiva Anual 2026 de Córdoba, art. 15 y punto 11.1.1 — https://www.rentascordoba.gob.ar/cms/wp-content/uploads/2025/12/ley_n%C2%B0_11090_%E2%80%93_ley_impositiva_anual_2026.pdf",
+          "Cuadro de alícuotas de Sellos PBA 2026 — https://www.bolsacombblanca.com.ar/pdf/sellos/2026/buenos-aires.pdf",
+          "Cuadro de alícuotas de Sellos Santa Fe 2026",
+          "Código Fiscal PBA, Ley 10.397",
+          "RN (ARBA) 7/2026"
+        ]
+      },
+      {
+        "titulo": "¿Puedo rematar en otra provincia?",
+        "parte": "II — Habilitarse",
+        "por_que": "Es la pregunta práctica número uno de cualquier firma de zona de frontera y la v1 no la contesta. Además contiene una multa evitable con un dato en el flyer, que es exactamente el tipo de contenido por el que se paga.",
+        "contenido_clave": [
+          "Ley 20.266 (t.o. Ley 25.028), art. 3: hay que inscribirse en la matrícula de la jurisdicción en que se va a desempeñar, con domicilio constituido en esa jurisdicción y garantía a la orden del organismo que controla la matrícula.",
+          "No hay reciprocidad: no se encontró en Buenos Aires (10.973), Santa Fe (7547) ni Corrientes (5954) matrícula transitoria, habilitación por acto único ni convenio interprovincial. Los 'convenios de reciprocidad' que aparecen buscando son previsionales y no habilitan a ejercer.",
+          "Buenos Aires, Ley 10.973 art. 80 inc. d): se sanciona al martillero o corredor con matrícula de extraña jurisdicción o sin colegiarse que realice actos reservados, con multa de diez a treinta cuotas anuales, agravada por reincidencia. Prestar la bandera está sancionado.",
+          "Dentro de una provincia sí hay unidad: PBA art. 5 — la inscripción en cualquier Colegio Departamental habilita en todo el territorio provincial sin más trámite, y no se puede estar inscripto en más de un Colegio. Santa Fe: tres colegios (Santa Fe, Rosario, Venado Tuerto), se matricula en el del domicilio real y se ejerce en toda la provincia. Corrientes: colegio único provincial.",
+          "La asimetría que nadie cuenta: la habilitación no cruza la frontera, pero la sanción sí. Corrientes, Ley 5954 art. 44 inc. f): se cancela la matrícula al excluido del ejercicio por resolución judicial o sanción del organismo que gobierne la matrícula 'de cualquier jurisdicción que ellas fueran'.",
+          "La multa evitable: Ley 5954 de Corrientes, art. 6° — toda publicidad de un acto de remate debe informar la matrícula del profesional; el incumplimiento se sanciona con una multa de un SMVM a favor del Colegio, hasta el décuplo por reincidencia. Cada flyer, cada post, cada aviso.",
+          "Mora en la cuota del colegio: art. 44 inc. c) — se cancela la matrícula por seis períodos consecutivos o doce alternados impagos; arts. 10-11, la mora es automática y el Colegio ejecuta por juicio de apremio con la liquidación firmada por Presidente y Secretario como título suficiente.",
+          "Las federaciones nacionales (FAEMCI, CO.FE.CI, FePro.B.M.yC.) no otorgan ni convalidan matrícula, y están sesgadas a lo inmobiliario. Para el martillero de hacienda el interlocutor es el colegio provincial y la cámara de consignatarios."
+        ],
+        "fuentes": [
+          "Ley 20.266 (t.o. Ley 25.028), art. 3 — https://www.argentina.gob.ar/normativa/nacional/ley-20266-56724/texto",
+          "Ley PBA 10.973, arts. 5, 19 y 80 — https://normas.gba.gob.ar/documentos/0vQdAieV.html",
+          "Ley 5954 de Corrientes, arts. 6, 10, 11 y 44 — https://hcdcorrientes.gov.ar/wp-content/uploads/2022/02/Ley5954.pdf",
+          "Ley 7547 de Santa Fe, art. 3"
+        ]
+      },
+      {
+        "titulo": "La capa gremial: a qué cámara pertenecés y cuánto pesa",
+        "parte": "I — El terreno",
+        "por_que": "El error típico de quien abre firma es preguntar 'a qué cámara me asocio' como si hubiera una. Son tres, no compiten, y se reparten por tipo de operatoria. Y el capítulo cierra con el dato político que nadie usa: el gremio carga el renglón en la liquidación y adelanta la caja, pero no vota.",
+        "contenido_clave": [
+          "Las tres entidades y a qué operatoria corresponde cada una: CACG — Cámara Argentina de Consignatarios de Ganado (Lima 87 3° piso, CABA; remate feria, mercados físicos del interior, remates por TV e internet y operaciones particulares); CCPP — Centro de Consignatarios de Productos del País (San Martín 483 piso 10, CABA; las casas del mercado concentrador, Liniers → MAG Cañuelas); CCDH — Centro de Consignatarios Directos de Hacienda (Uruguay 775 piso 12 'B', CABA; hacienda directa a frigorífico sin pasar por mercado). Una firma puede estar en más de una.",
+          "Lo que compra la cuota, cuando se puede medir: la CACG publica el boletín mensual de precios de invernada y cría de remate feria e internet/TV, desagregado por categoría y rango de peso, con promedio, máximo y mínimo por kilo y al bulto. El de julio de 2026 relevó 124.111 machos y 62.872 hembras. Esa serie no existe en ninguna fuente pública oficial. El CCDH publica índice semanal de kg de carne novillo.",
+          "Lo que la cámara NO hace: no hay fondo de garantía, aval ni tribunal arbitral en ninguna de las tres. El servicio que justifica la cuota es el informe comercial previo. Quien garantiza al productor es la propia casa — el MAG lo escribe: el consignatario 'se constituye de hecho en entidad financiera garante de sus clientes'.",
+          "La silla en el IPCVA, en texto de ley. Art. 11, Ley 25.507: el sector consignatario tiene UN representante en el Consejo Asesor, designado por acuerdo entre las tres cámaras nombradas. Art. 12: la opinión del Consejo Asesor 'sólo tendrá el carácter de asesoramiento y opinión no vinculante'. En los órganos que deciden — la Asamblea de Representantes (art. 4) y el Consejo de Representantes (art. 6, ocho vocales) — no hay silla consignataria.",
+          "La foto de julio de 2026: la declaración conjunta contra el anteproyecto de desregulación la firmaron nueve entidades (Coninagro, CRA, FAA, SRA, ABC, CADIF, CICCRA, FIFRA, UNICA) — exactamente las que tienen silla. Ninguna cámara de consignatarios firmó.",
+          "Y el sector no está unido: el 12-ago-2026 productores de Azul, Tapalqué, Rauch, Olavarría y Tandil pidieron públicamente terminar con el aporte obligatorio y que lo asuman los exportadores."
+        ],
+        "fuentes": [
+          "Ley 25.507, arts. 4, 6, 11 y 12 — InfoLEG",
+          "https://cacg.org.ar/ y https://cacg.org.ar/precios",
+          "https://ccdh.org.ar/institucional/",
+          "https://www.mercadoagroganadero.com.ar/dll/acerca-de-consignatarios.html",
+          "https://www.infocampo.com.ar/disputa-por-el-ipcva-la-mesa-de-enlace-y-entidades-frigorificas-rechazan-un-cambio-que-impulsa-el-gobierno/",
+          "https://www.lanacion.com.ar/economia/campo/ipcva-productores-piden-terminar-con-el-aporte-obligatorio-y-que-los-exportadores-asuman-el-costo-de-nid12082026/"
+        ]
+      },
+      {
+        "titulo": "Cómo se pierde la matrícula (y qué pasa si te labran un acta)",
+        "parte": "II — Habilitarse",
+        "por_que": "El régimen que gobierna la matrícula se reescribió entero el 6 de julio de 2026 y tiene seis semanas de vida. Toda guía, instructivo o checklist anterior a esa fecha describe anexos derogados. Además el riesgo máximo no es plata: son cinco años sin operar.",
+        "contenido_clave": [
+          "Línea de tiempo de dos derogaciones: Res. 21/2017 creó el RUCA; la Res. SAGyP 50/2025 lo eliminó y creó el SIOCAL, vigente desde el 6-may-2025 (art. 11), con migración automática de matrículas vigentes y trámites en curso, salvo las suspendidas; la Res. SAGyP 103/2026 (BO 6-jul-2026) sustituyó ÍNTEGRAMENTE los Anexos I, II y III de la 50/2025 y sacó a los lácteos del sistema. El acceso hoy es siocal.magyp.gob.ar (la vieja URL redirige).",
+          "Requisitos de inscripción según el Anexo I hoy vigente: formulario y categoría, domicilio electrónico constituido, domicilio y geolocalización de planta, DNI o estatutos, habilitación sanitaria vigente, certificado de dominio o contrato de uso, inscripción vigente en ARCA e inscripción ante el órgano de contralor. Hallazgo por ausencia, verificado contra el anexo vigente: no se exige garantía bancaria, seguro de caución, capital mínimo ni acreditación de solvencia patrimonial para Consignatario de Ganados ni Consignatario Directo. La barrera de entrada regulatoria es documental; la barrera real es privada.",
+          "La baja que ocurre sin hacer nada: el plazo de inactividad del rubro carnes pasó de SESENTA (60) días corridos (Anexo II de la 50/2025) a CIENTO OCHENTA (180) días corridos (Anexo II sustituido por la 103/2026), sin intimación previa. Se triplicó — para una firma estacional o de zona seca es la diferencia entre re-tramitar la matrícula y no.",
+          "Escala sancionatoria del Anexo II vigente: verificaciones presenciales y/o virtuales, suspensión preventiva, sanciones, revocación de la inscripción y cancelación del operador y/o del establecimiento por un plazo de hasta CINCO (5) años, más denuncia penal. No hace falta que vaya un inspector.",
+          "El reloj del sumario: Res. SAGyP 89/2026 (BO 25-jun-2026) aprueba el Instructivo del Procedimiento Administrativo para el Tratamiento de Infracciones ante la DNCCA. 20 días desde la fiscalización para archivar o intimar, 5 días para información complementaria, 10 días para el descargo. Se presenta por legales_dncca@magyp.gob.ar y/o TAD, y la notificación electrónica se practica en el domicilio registrado en SIOCAL. Mantener actualizado ese mail es una obligación de defensa, no un trámite.",
+          "De dónde sale la facultad de sancionar: la Ley 21.740 no fue derogada. La Junta Nacional de Carnes está muerta desde el Decreto 2284/1991, pero su ley vive y es la que habilita a la DNCCA. Art. 27: apercibimiento, multa, suspensión o cancelación de la inscripción, decomiso. Art. 24: operar sin inscribirse no exime de responsabilidad ni impide el control.",
+          "La multa fantasma, que es el hallazgo publicable: el art. 27 fija el tope 'hasta $17.000' con actualización semestral en la redacción de la Ley 22.845 (1983). La última actualización fue la Res. JNC 28/1991 (BO 21-01-1991), que lo llevó a A 349.000.000. Con la disolución de la Junta el mecanismo quedó sin órgano que lo ejecute. No hay tope de multa vigente publicable — y decir eso vale más que inventar una cifra.",
+          "Por qué el registro de carnes NO se va a desregular: en junio de 2026 el Gobierno eliminó el Registro de Operadores Lácteos (Res. SAGyP 81/2026) con fundamento explícito en que la ausencia de régimen sancionatorio volvía el control 'jurídicamente inviable'. Carnes se queda porque la Ley 21.740 le da dientes."
+        ],
+        "fuentes": [
+          "Res. SAGyP 103/2026 — https://www.argentina.gob.ar/normativa/nacional/norma-427453/texto",
+          "Res. SAGyP 50/2025 — https://www.argentina.gob.ar/normativa/nacional/resoluci%C3%B3n-50-2025-411749/texto",
+          "Res. SAGyP 89/2026 — https://www.cira.org.ar/es/servicios/normativas-servicios/resolucion/resolucion-89-2026/",
+          "Ley 21.740, texto actualizado y nota InfoLeg al art. 27 (Res. JNC 28/1991) — https://www.argentina.gob.ar/normativa/nacional/ley-21740-23564/actualizacion",
+          "Res. SAGyP 81/2026 — https://www.argentina.gob.ar/normativa/nacional/norma-426615/texto"
+        ]
+      },
+      {
+        "titulo": "El DT-e en 2026: RFID, TRI y el movimiento que no cierra",
+        "parte": "III — Operar",
+        "por_que": "Es el mayor cambio operativo del año y la v1 lo trata con el circuito anterior. No es un tema sanitario: es logística de venta. Si la tropa llega con dispositivos ilegibles el movimiento queda abierto y el problema es de quien organizó el remate.",
+        "contenido_clave": [
+          "Res. SENASA 841/2025 (BO 3-nov-2025), complementando la Res. 530/2025: identificación individual electrónica voluntaria hasta el 31-dic-2025 y OBLIGATORIA desde el 1-ene-2026 para bovinos, bubalinos y cérvidos. Dispositivos admitidos: caravana electrónica, bolo ruminal o microchip inyectable, con numeración única asociada al RENSPA.",
+          "La operatoria: en origen el productor arma la TRI (Tarjeta de Registro Individual de Tropa) en SIGSA con los números aplicados y gestiona el DT-e; en destino, al cerrar el DT-e, el receptor confirma la TRI con los números efectivamente arribados. Sin lectura de los dispositivos no se cierra el DT-e.",
+          "Cada identificación se declara ante SENASA dentro de los 10 días hábiles de aplicada, por autogestión en SIGSA, en oficina local o por la app SIGBIOTRAZA. Desde diciembre de 2025 está prohibida la venta de caravanas visuales.",
+          "Faltas tipificadas, listadas: reaplicar dispositivos usados, no registrar compras o colocaciones, mover animales sin identificación o con DT-e/TRI inconsistentes, demorar más de 10 días las declaraciones, diferencias relevantes entre existencias SIGSA y dispositivos a campo, no recuperar o destruir identificadores en faena.",
+          "El papel que hay que tener firmado antes del primer remate: cuando interviene un consignatario, el DT-e se tramita obligatoriamente por autogestión (Res. SENASA 162/2018, vigente desde el 1-jul-2018). El productor presenta en la oficina local el formulario 'Autorización a consignatarios para emisión de DT-e y cierre de movimientos en SIGSA'. Sin eso la firma no mueve hacienda.",
+          "La consecuencia de caja que casi nadie une: si el consignatario emite el DT-e por autogestión, es él quien materialmente paga la percepción del aporte IPCVA en ese acto y después la recupera del comitente como gasto código 6. Legalmente no es agente de retención; operativamente adelanta la plata.",
+          "Checklist previo a carga, según Res. SENASA 723/2025 (BO 19-sep-2025): autorización de transporte vigente, libreta sanitaria oficial del conductor, condiciones de carga por especie. Titular y conductor tienen obligación de denunciar enfermedades de notificación obligatoria.",
+          "Y en la otra punta de la cadena: Res. 40/2026 del Ministerio de Economía (BO 27-ene-2026), Sistema Integral de Faena, con registro digital, 1 año de conservación de las Autorizaciones de Faena y 24 horas para notificar discrepancias."
+        ],
+        "fuentes": [
+          "Res. SENASA 841/2025 y Res. SENASA 530/2025",
+          "Res. SENASA 162/2018 — https://www.senasa.gob.ar/senasa-comunica/noticias/los-consignatarios-de-hacienda-deberan-autogestionar-el-dt-e",
+          "Res. SENASA 723/2025 — BO 19-09-2025",
+          "Res. ME 40/2026 — https://www.boletinoficial.gob.ar/detalleAviso/primera/337796/20260127",
+          "Ley 25.507, art. 14"
+        ]
+      },
+      {
+        "titulo": "Dimensionar el negocio antes de abrirlo: cuánto mercado hay realmente",
+        "parte": "I — El terreno",
+        "por_que": "Cambia la tesis del producto, no agrega color. La v1 arma el punto de equilibrio sobre remate feria de gordo con predio propio; el Estado mide que por remate feria pasa el 4-5% de la hacienda con destino a faena. Quien planifica sobre ese canal planifica sobre una vigésima parte del mercado — y el activo más caro (el predio) es el que menos crece.",
+        "contenido_clave": [
+          "Cuántas consignatarias hay, con el número oficial: descarga directa del padrón SIOCAL rubro Carnes, 20-ago-2026 (12.777 filas). Estado VIGENTE: Consignatario y/o Comisionista de Ganados 1.026; Consignatario Directo 35. Total 1.061 matrículas sobre 1.044 CUIT únicos. Comparación de escala en el mismo padrón: Matarife Abastecedor 5.520, Matarife Carnicero 2.564, Matadero Frigorífico 372. El padrón no trae provincia ni volumen: la matrícula no es el activo.",
+          "Participación medida por el Estado, no estimada. SIO Carnes semana 7/2026, textual: 'El Mercado de Cañuelas comercializó el 11% de la hacienda registrada en el SIO CARNES, mientras que los remate feria el 4,2%' (MAG 18.237 cabezas sobre 165.571). Semana 32/2026: MAG 14.794 sobre 184.392 = 8,0%; remates feria 9.846 = 5,3%. Advertencia metodológica que hay que dejar escrita: SIO Carnes registra hacienda con destino a faena — la invernada y la cría por remate feria no están en ese universo.",
+          "El argumento comercial para captar comitentes, con número: en la semana 32/2026 el novillo de remate feria promedió $4.514/kg vivo contra un INMAG de 4.364 puntos y $4.361,7 en el MAG. La feria pagó 3,5% arriba.",
+          "Tamaño del denominador: 13,4-13,6 millones de cabezas faenadas en 2025; 6,02 millones en el primer semestre de 2026 según CICCRA, -8,9% interanual y -17,8% contra el pico de 2023.",
+          "Dónde crece el volumen: Rosgan marcó récord en marzo de 2026 con 53.666 cabezas y 41.933 en abril, con 11 firmas operadoras y más de 5 millones de cabezas históricas; Expoagro 2026 concentró más de 170.000 cabezas en remates televisados y por streaming entre 11 consignatarias; el Congreso Aapresid 2026 sumó tres remates con más de 7.500. En la semana 32/2026, 14 de 18 remates feria estuvieron disponibles en streaming.",
+          "La consecuencia de inversión: para vender por Rosgan hay que ser firma operadora o pasar por una — la puerta es societaria, no un formulario. Pero no hace falta predio ferial propio, que es el activo más caro y el canal que menos crece.",
+          "El MAG, en cambio, no publica reglamento, aranceles, plazos de pago ni padrón. El contraste con Rosgan, que publica todo, es un hallazgo en sí: en Cañuelas no hay reglamento que leer, hay gente a la que preguntar."
+        ],
+        "fuentes": [
+          "Padrón SIOCAL rubro Carnes, export completo — https://siocal.magyp.gob.ar/ws/consultaPadronCompleto/1 (descargado 20-ago-2026)",
+          "Informes SIO Carnes semanas 7 y 32 de 2026 — Secretaría de Agricultura / Subsecretaría de Mercados Agropecuarios",
+          "CICCRA, informes de junio y primer semestre 2026",
+          "https://www.rosgan.com.ar/integrantes-y-empresas/ y https://www.rosgan.com.ar/reglamento",
+          "https://www.mercadoagroganadero.com.ar/dll/acerca-de-funcionamiento.html"
+        ]
+      },
+      {
+        "titulo": "Cuánto cuesta el equipo: convenio, escala y encuadre",
+        "parte": "III — Operar",
+        "por_que": "Es la pregunta literal de quien va a abrir y la v1 la resuelve con estimaciones. Ahora se contesta con el texto del convenio, que nombra la actividad, y con la escala publicada. Además evita un error de encuadre caro: no es UATRE ni Sindicato de la Carne.",
+        "contenido_clave": [
+          "El CCT 130/75 de Empleados de Comercio lista en su ámbito de aplicación, inciso c), las actividades afectadas a 'CONSIGNATARIOS DE HACIENDA, Cereales y/o Frutos del País' y 'REMATES-FERIA'. Está escrito en el propio convenio, no es interpretación.",
+          "Entre las cámaras empresarias firmantes figuran la Cámara Argentina de Consignatarios de Ganado (Lima 87, Capital) y el Centro de Consignatarios de Productos del País (San Martín 483, Capital). El domicilio de la CACG queda corroborado por el propio texto del convenio.",
+          "Encuadre: personal administrativo y de venta con OSECAC y aportes FAECYS. Las 20 clasificaciones (Maestranza A-C, Administrativo A-F, Cajero A-C, Vendedor A-D, auxiliares especializados) y los adicionales de convenio: antigüedad 1% por año y presentismo 8,33%.",
+          "Cómo se arma la nómina: básico de convenio del mes correspondiente + antigüedad + presentismo + cargas + contribución a OSECAC. La escala se publica por acuerdo paritario y hay que citarla con el mes al que corresponde, no con un rango anual.",
+          "Costo de sistemas como línea propia: la liquidación se emite por web service (WSLSP), no por factura común. De ahí sale el 1% de 'sistema informático de terceros' que las ferias cobran al vendedor."
+        ],
+        "fuentes": [
+          "Texto oficial CCT 130/75 — https://www.argentina.gob.ar/sites/default/files/mteyss-ese-conveniocolectivodetrabajo-comercio-130-75.pdf",
+          "Acuerdo paritario FAECYS-cámaras 2026 (verificar vigencia y mes de la escala antes de imprimir)",
+          "RG (AFIP) 3964/2016 y manual WSLSP"
+        ]
+      },
+      {
+        "titulo": "El calendario del consignatario: doce meses de vencimientos y dos años de cambios",
+        "parte": "Nueva Parte VII — Calendario y vigencias",
+        "por_que": "Es lo que convierte un PDF en un documento vivo y justifica una actualización paga. La v1 no tiene ningún mecanismo de caducidad. Este capítulo es además el argumento de venta de la v3.",
+        "contenido_clave": [
+          "Mayo y noviembre: se actualizan los importes del Anexo II de la RG 3873. Recargar valores en el sistema.",
+          "Último día hábil de febrero: alta como agente de recaudación de IIBB en ARBA si se superó el piso del año anterior; obligaciones desde el 1° de marzo.",
+          "Habilitación SENASA del predio ferial: vigencia de DOS (2) años desde su otorgamiento y renovación dentro de los TREINTA (30) días anteriores al vencimiento (Res. 924/2020, arts. 5 y 6). Una consignataria que usa el predio de una rural tiene que saber ese vencimiento tanto como el dueño del predio.",
+          "Cambio de trámite que ya ocurrió: la Res. SENASA 233/2026 (BO 20-mar-2026) eliminó la exigencia de presentar la habilitación municipal o provincial como documentación previa ante SENASA, y derogó el punto 3 del Anexo I de la 924/2020. Advertencia: que no te lo pidan no significa que no lo necesites — el municipio lo sigue exigiendo.",
+          "Colegio de martilleros: el derecho de ejercicio profesional. En Corrientes, seis períodos consecutivos o doce alternados impagos cancelan la matrícula, con mora automática y ejecución por apremio.",
+          "Lo que puede cambiar en los próximos catorce meses: el anteproyecto de desregulación que vuelve voluntario el aporte al IPCVA. Cronograma reportado por prensa que dice haber accedido al borrador: régimen actual hasta el 30-abr-2027; del 1-may-2027 al 30-sep-2027 topes transitorios de 0,035% y 0,015%; desde el 1-oct-2027, fin de las contribuciones obligatorias, con devolución en 60 días de lo recaudado después de abril de 2027. Estado al 20-ago-2026: ANTEPROYECTO, sin número de expediente, sin estado parlamentario. La ley no cambió: hoy el aporte se liquida igual.",
+          "El mecanismo que ya está en la ley y nadie usa en el debate: art. 21 de la Ley 25.507 — cada tres años la Asamblea de Representantes evalúa la continuidad del Instituto y del Fondo, y decidida la no continuidad se liquida y todo pasa al patrimonio del INTA. No hace falta ley nueva para cerrar el IPCVA."
+        ],
+        "fuentes": [
+          "RG (AFIP) 3873/2016, Anexo II",
+          "RN (ARBA) 7/2026",
+          "Res. SENASA 924/2020, arts. 4, 5 y 6 — https://www.boletinoficial.gob.ar/detalleAviso/primera/239331/20201230",
+          "Res. SENASA 233/2026 — https://www.boletinoficial.gob.ar/detalleAviso/primera/339743/20260320",
+          "Ley 5954 de Corrientes, arts. 10, 11 y 44",
+          "Ley 25.507, art. 21",
+          "https://www.todoagro.com.ar/el-nuevo-esquema-de-contribuciones-que-puede-hacer-desaparecer-al-ipcva/"
+        ]
+      },
+      {
+        "titulo": "Due diligence del comprador: cómo verificar antes de entregar",
+        "parte": "Nueva Parte VI — El riesgo (anexo operativo)",
+        "por_que": "Es el capítulo accionable que cierra el bloque de riesgo, y contiene la corrección más útil del producto: el chequeo estándar del sector se hace hoy en un registro derogado y no detecta al perfil que efectivamente estafa.",
+        "contenido_clave": [
+          "Dónde se verifica hoy a un operador: SIOCAL (siocal.magyp.gob.ar), no RUCA. Y el Registro Fiscal de la RG 3873 de ARCA, que es OTRO registro, con otra autoridad y otra consecuencia. Estar en SIOCAL no evita los valores plenos de retención y percepción.",
+          "Por qué el chequeo bancario no alcanza, con el caso: Ecoser chequeó la situación financiera de Tivey Partners antes de operar, pero al ser una razón social nueva no figuraba en el registro de deudores. Lo mismo en GAEC SRL, que al momento de operar no registraba cheques rechazados ni deudas en el BCRA.",
+          "La señal que sí funciona es el patrón de escalada, con la serie del caso: enero 2021 una jaula, mayo 150 novillos, junio 336, julio 882, agosto 1.666, septiembre 1.954. Primer rechazo el 24 de septiembre.",
+          "Checklist previo a cerrar: CUIT y estado en el Registro Fiscal RG 3873, CBU declarada, matrícula SIOCAL vigente y su categoría, RENSPA y CUIG, informe comercial de cámara, límite de crédito por comprador expresado en cabezas y en pesos, instrucción de plazo por escrito del comitente.",
+          "Herramientas de cobertura, en orden de eficacia: límite de compra por comprador; cheque de pago diferido avalado por SGR (Aval Rural SGR, Campo Aval SGR) dentro de los 3 días hábiles; garantía real ex ante en vez de ex post.",
+          "Qué hacer en las primeras 72 horas de un incumplimiento, con la medida que se pidió en un caso real de 2026: inhibición general de bienes, congelamiento de cuentas y suspensión del RENSPA del deudor. Bloquear el RENSPA congela el activo — sin RENSPA activo no hay DT-e y la hacienda no se mueve ni se faena. Es más eficaz que un embargo genérico sobre un deudor que puede vaciar el rodeo en una semana.",
+          "La distinción concursal que se cuenta mal: el art. 138 LCQ permite pedir la restitución de bienes entregados al fallido 'por título no destinado a transferirle el dominio' — sirve para hacienda en consignación o en depósito, no para hacienda ya vendida, donde el dominio se transfirió con la tradición y el vendedor concurre como acreedor (art. 139 y siguientes). Publicarlo mal le dice al productor que puede recuperar hacienda que ya vendió."
+        ],
+        "fuentes": [
+          "Res. SAGyP 50/2025 y Res. SAGyP 103/2026",
+          "Tabla oficial ARCA RG 3873 vigente desde 01/05/2026",
+          "https://bichosdecampo.com/la-nueva-gran-estafa-un-consignatario-de-hacienda-denuncio-una-maniobra-fraudulenta-por-225-millones-de-pesos-en-cheques-sin-fondos/",
+          "https://bichosdecampo.com/alerta-estafadores-la-firma-gaec-srl-compro-hacienda-con-cheques-sin-fondos-en-al-menos-tres-provincias/",
+          "https://cholilaonline.ar/2026/05/alerta-en-la-patagonia-por-millonaria-cesacion-de-pagos-de-un-empresario-ganadero.html",
+          "Ley 24.522, arts. 138, 139 y 188",
+          "https://www.rosgan.com.ar/reglamento"
+        ]
+      },
+      {
+        "titulo": "Marketing con la vara del sector: qué funciona, qué no y cuánto sale",
+        "parte": "IV — Conseguir hacienda (reescritura profunda)",
+        "por_que": "La v1 propone un plan digital genérico. El relevamiento propio muestra que la vara del sector está muy baja y que el canal donde pasa el negocio (WhatsApp) es el único que nadie trata como canal. Cambia el orden de prioridades y el presupuesto.",
+        "contenido_clave": [
+          "El terreno: 36,5% de los hogares rurales dispersos tiene internet fija contra 80% de los urbanos, y 70% de esa población accede por celular. El acceso es predominantemente móvil y con conectividad mala — 67% de los productores encuestados por INTA la califica entre regular y mala. Lo que se abre en el celular llega; el PDF de 40 MB y el streaming HD de tres horas se caen justo donde vive el consignante.",
+          "YouTube no es medio, es catálogo. Relevamiento propio del 19-20 de agosto de 2026: Colombo y Magliano tiene 4.300 suscriptores y publica videos individuales por lote ('CERT 6401') con 3 a 16 vistas; Sáenz Valiente Bullrich 1.920 suscriptores con 8 a 118 vistas por lote; el programa diario de ROSGAN mide entre 36 y 95 vistas. Presupuestar producción audiovisual esperando alcance es tirar plata; presupuestarla como catálogo de lotes tiene retorno directo en la venta.",
+          "Instagram sí concentra audiencia y fija la vara: Colombo y Magliano 32.000 seguidores, Sáenz Valiente Bullrich 31.000, y la mayoría del sector debajo de 5.000. Pero un medio como Bichos de Campo (100.000) o Agrofy News (141.000) tiene tres a cuatro veces más que la consignataria más grande: salir en la nota vale más que el posteo propio.",
+          "La vara del sitio web está en el piso. Relevamiento propio del 20-ago-2026 de firmas activas en el MAG: svb.com.ar y alzagaunzue.com.ar no respondieron por HTTPS, vicar.com.ar devolvió 403 a un navegador estándar, monasteriotattersall.com.ar no resolvió. Una firma nueva con un sitio liviano que cargue en el celular, con WhatsApp visible, calendario de remates y catálogo descargable ya queda arriba del promedio de las casas que más hacienda mueven.",
+          "WhatsApp es donde pasa el negocio — la oferta, la seña, la liquidación — y casi ninguna firma lo trata como canal con lista, segmentación y cadencia. Ahí está el hueco más barato de tapar: lista de difusión por zona y categoría, catálogo liviano, aviso 72/24/2 horas antes del remate. Se dice con honestidad: no hay medición sectorial publicada de su penetración.",
+          "Lo que compra la TV rural es encuadre, no clicks: Canal Rural tiene 94.000 seguidores en Instagram y 26.500 en YouTube con notas diarias de 8 a 41 vistas. 'Rematamos por Canal Rural' es legitimación institucional. Decirlo así en la propuesta en vez de vender alcance inventado.",
+          "El calendario anual de vidriera con números: Expoagro (marzo, más de 170.000 cabezas rematadas entre 11 consignatarias), Las Nacionales (mayo, más de 55.000 anunciadas; ROSGAN colocó 10.000 con 78% de colocación), Palermo (julio, 1,3 millones de visitantes, 40 remates, más de 170.000 cabezas), Aapresid (agosto).",
+          "El dato que ordena la estrategia: 92% de los productores usa apps y plataformas en alguna etapa de la producción, pero solo 8,5% compra insumos online de manera regular y 70% nunca compró. Lo digital informa, muestra el lote y sostiene el vínculo; el cierre sigue siendo por teléfono. Un plan que prometa cerrar consignaciones desde un formulario web contradice la evidencia.",
+          "Y el diferencial competitivo que ya está en juego: los entrantes no compiten por comisión más barata, compiten por rendición de cuentas ('queremos que el productor tenga información clara y detallada de lo que sucede con su hacienda'). El reporte al productor es producto, no trámite administrativo."
+        ],
+        "fuentes": [
+          "Informe 'Radiografía de la conectividad rural en Argentina', Fundación Tejido Urbano sobre Censo 2022 e investigación INTA (jun-2026)",
+          "Relevamiento propio de canales de YouTube, perfiles de Instagram y sitios web de consignatarias, 19-20 de agosto de 2026",
+          "ENPA, Centro de Agronegocios y Alimentos, Universidad Austral (datos 2021 — marcar vigencia)",
+          "https://www.lanacion.com.ar/economia/campo/expoagro-se-viene-una-semana-de-remates-con-mas-de-100000-cabezas-nid03032026/",
+          "https://www.infocampo.com.ar/los-numeros-finales-de-la-rural-2026-movilizo-mas-de-25-000-millones-en-operaciones-comerciales/",
+          "https://news.agrofy.com.ar/noticia/215491/nuevo-concepto-postventa-ganadera-buscan-redefinir-negocio-carne-queremos-que"
+        ]
+      }
+    ],
+    "correcciones_v1": [
+      {
+        "capitulo": "II — Habilitarse (matrícula nacional)",
+        "dice_ahora": "Inscribite en el RUCA (Registro Único de Operadores de la Cadena Agroindustrial)",
+        "deberia_decir": "La matrícula es SIOCAL desde el 6-may-2025 (Res. SAGyP 50/2025, art. 11), y el régimen operativo hoy es el de los Anexos I, II y III SUSTITUIDOS ÍNTEGRAMENTE por la Res. SAGyP 103/2026 (BO 6-jul-2026). El acceso es siocal.magyp.gob.ar; la vieja URL ruca.magyp.gob.ar redirige. Está desactualizado dos veces, no una: quien cite RUCA está viejo desde abril de 2025 y quien cite los anexos de la 50/2025 está viejo desde julio de 2026.",
+        "gravedad": "critica",
+        "fuente": "https://www.argentina.gob.ar/normativa/nacional/resoluci%C3%B3n-50-2025-411749/texto y https://www.argentina.gob.ar/normativa/nacional/norma-427453/texto"
+      },
+      {
+        "capitulo": "III — Operar (la liquidación renglón por renglón)",
+        "dice_ahora": "El consignatario emite la liquidación primaria / Liquidación de Compra-Venta Primaria para el Sector Pecuario",
+        "deberia_decir": "El comprobante se llama CUENTA DE VENTA Y LÍQUIDO PRODUCTO – Sector Pecuario, códigos 180 (clase A) y 182 (clase B), autorizada por el web service WSLSP. 'Liquidación Primaria' es nomenclatura de GRANOS (ex formulario C-1116 'C', RG 3419/2012). Decir 'liquidación primaria' delante de un contador del rubro pierde credibilidad en la primera página.",
+        "gravedad": "critica",
+        "fuente": "Manual oficial WSLSP v2.0.3 y RG (AFIP) 3964/2016, art. 2"
+      },
+      {
+        "capitulo": "III — Operar / costos por cabeza (IPCVA)",
+        "dice_ahora": "El aporte al IPCVA es 0,07% del productor y 0,03% de la industria",
+        "deberia_decir": "0,07% el productor y 0,02% la industria, esta última con vigencia declarada al mes de marzo de 2026. Y siempre con el contexto: esas alícuotas NO surgen de la ley — el art. 14 de la Ley 25.507 fija TOPES de 0,20% y 0,09%, y la Asamblea de Representantes fija el valor dentro de esos límites. Sin tocar la ley, el aporte del productor puede casi triplicarse.",
+        "gravedad": "critica",
+        "fuente": "https://www.agrositio.com.ar/noticia/247445-consejo-del-ipcva-el-aporte-del-007-sostiene-la-promocion-interna-y-externa-de-la-carne.html + Ley 25.507 art. 14 (InfoLEG)"
+      },
+      {
+        "capitulo": "III — Operar / tabla de costos por cabeza",
+        "dice_ahora": "El aporte al IPCVA es de $1.185 por cabeza (productor) y $535 por cabeza (industria)",
+        "deberia_decir": "Los $535 NO son aporte IPCVA: son la percepción de IVA por cabeza de la RG 3873 que practica el consignatario a compradores sin sujetos autorizados declarados, según la tabla oficial de ARCA vigente desde el 01/05/2026. Son dos regímenes que no tienen relación. La aritmética lo confirma: si $1.185 equivale al 0,07%, el 0,02% del mismo índice da ≈$339. El $1.185 del productor viene de prensa y no está en acta ni resolución del Instituto: publicarlo solo con esa atribución explícita.",
+        "gravedad": "critica",
+        "fuente": "https://www.afip.gob.ar/actividadesAgropecuarias/sector-pecuario/registros/documentos/valores-bovinos-bubalinos-actuales.pdf"
+      },
+      {
+        "capitulo": "III — Operar / el descalce",
+        "dice_ahora": "La consignataria administra hacienda ajena y le debe el precio al productor aunque no haya cobrado",
+        "deberia_decir": "Dos correcciones. (1) La consignataria es PRINCIPAL, no intermediaria: art. 1337 CCyC — queda directamente obligada hacia quienes contrata y el productor no tiene acción contra el comprador. (2) Pero la regla supletoria es al revés de como se cuenta: sin comisión de garantía convenida (art. 1343), el consignatario responde por el crédito otorgado SIN la diligencia exigida por las circunstancias (art. 1341), no automáticamente por la insolvencia del comprador. Y si otorgó plazos superiores a los de uso de plaza o contra instrucciones, ahí sí queda directamente obligado al pago (art. 1339).",
+        "gravedad": "critica",
+        "fuente": "Código Civil y Comercial, Ley 26.994, arts. 1337, 1339, 1341 y 1343"
+      },
+      {
+        "capitulo": "III — Operar / IVA de la liquidación",
+        "dice_ahora": "La hacienda va al 10,5% y la comisión y los gastos del consignatario al 21%",
+        "deberia_decir": "Corregir con advertencia. La hacienda en pie va al 10,5% (art. 28 inc. a pto. 1, Ley 23.349) — eso no se discute. Pero la doctrina fiscal dice lo contrario sobre la comisión: el Dictamen DAL 59/2002 concluyó que comisiones, fletes, garantía, control y entrega, certificados y guías facturados en ocasión de la comercialización de bovino en pie quedan alcanzados por la alícuota REDUCIDA, EXCEPTO los gastos de financiación, hecho imponible autónomo al 21%. El Dictamen 6/2005 agrega la distinción que decide el caso: el CONSIGNATARIO, que factura a nombre propio, arrastra el 10,5%; el MANDATARIO, que factura su comisión por separado, va al 21%. NO IMPRIMIR ninguna de las dos versiones sin leer el texto primario de los dictámenes.",
+        "gravedad": "critica",
+        "fuente": "Dictámenes DAL 59/2002, DAT 77/05 y 6/2005; tesis UNLP (Bellante), 'Consignatarios de Hacienda' — http://catalogo.econo.unlp.edu.ar/meran/getDocument.pl?id=1347"
+      },
+      {
+        "capitulo": "III — Operar / DT-e y RENSPA",
+        "dice_ahora": "El DT-e se emite en SIGSA con la documentación sanitaria de la tropa",
+        "deberia_decir": "Desde el 1-ene-2026 el DT-e no se cierra sin lectura de los identificadores electrónicos (Res. SENASA 841/2025): la TRI se arma en origen y se confirma en destino con los números efectivamente arribados. Prohibida la venta de caravanas visuales desde diciembre de 2025; declaración de cada identificación dentro de los 10 días hábiles por SIGSA, oficina local o SIGBIOTRAZA. Cualquier descripción del circuito anterior a 2026 está desactualizada.",
+        "gravedad": "critica",
+        "fuente": "Res. SENASA 841/2025 y Res. SENASA 530/2025"
+      },
+      {
+        "capitulo": "I — El terreno / de dónde sale la plata",
+        "dice_ahora": "La consignataria cobra una comisión del 5% al vendedor y 4% al comprador",
+        "deberia_decir": "Desagregar, porque el 5% no es margen. En los reglamentos de condiciones de venta publicados por firmas de plaza: VENDEDOR 2% comisión + 2% garantía + 1% sistema informático de terceros = 5%; COMPRADOR 2% comisión + 1,50% fondo compensatorio + 0,50% control y entrega = 4%. La comisión pura del rematador es 2%; el 2% de garantía es prima de riesgo y el 1% es costo de sistemas que se traslada. Rosgan cobra el mismo 5%/4% sin desdoblarlo.",
+        "gravedad": "media",
+        "fuente": "https://feriasrauch.plazaganadera.com/a/HAC009/1/5 ; https://martinyalonso.plazaganadera.com/a/APP030/1/5 ; https://www.rosgan.com.ar/reglamento"
+      },
+      {
+        "capitulo": "III — Operar / punto de equilibrio",
+        "dice_ahora": "Proyección de facturación basada en volumen de remate feria de gordo con predio ferial propio",
+        "deberia_decir": "Rehacer el modelo. Según los informes SIO Carnes de 2026, por remate feria pasa entre el 4,2% y el 5,3% de la hacienda con destino a faena, y por el Mercado Agroganadero entre el 8% y el 11%. El resto va por venta directa. Sobre 13 millones de cabezas anuales, el gordo por feria es del orden de 650.000 cabezas repartidas entre cientos de firmas. Y el canal que crece es el remate televisado y por streaming, que es de INVERNADA y no exige predio propio: en la semana 32/2026, 14 de 18 remates feria estuvieron en streaming.",
+        "gravedad": "critica",
+        "fuente": "Informes SIO Carnes semanas 7 y 32 de 2026, MAGyP; CICCRA primer semestre 2026"
+      },
+      {
+        "capitulo": "II — Habilitarse / capital y garantías",
+        "dice_ahora": "Para inscribirse hay que acreditar solvencia / constituir garantía",
+        "deberia_decir": "Leído contra el Anexo I hoy vigente (sustituido por la Res. 103/2026), no se exige garantía bancaria, seguro de caución, capital mínimo ni acreditación de solvencia patrimonial para Consignatario de Ganados ni Consignatario Directo. El control es documental. Redactarlo como afirmación por ausencia y fechado ('al 20-ago-2026'), no como 'nadie pide garantías': la barrera real es privada — capital de trabajo, aceptación de la plaza y relación con compradores.",
+        "gravedad": "media",
+        "fuente": "Anexo I de la Res. SAGyP 103/2026 — https://www.argentina.gob.ar/normativa/nacional/norma-427453/texto"
+      },
+      {
+        "capitulo": "II — Habilitarse / SENASA 924/2020 (predio ferial)",
+        "dice_ahora": "Entre la documentación del trámite hay que presentar la habilitación municipal o provincial del predio",
+        "deberia_decir": "La Res. SENASA 233/2026 (BO 20-mar-2026) eliminó esa exigencia como documentación previa ante SENASA y derogó el punto 3 del Anexo I de la 924/2020, además de sustituir los requisitos de eliminación de cadáveres (composta preferentemente). Advertencia obligatoria: SENASA ya no lo pide, el municipio lo sigue exigiendo. No te lo piden ≠ no lo necesitás. Se mantienen los dos números que hacen que un remate se caiga o no: vigencia de 2 años y renovación dentro de los 30 días previos.",
+        "gravedad": "media",
+        "fuente": "https://www.boletinoficial.gob.ar/detalleAviso/primera/339743/20260320"
+      },
+      {
+        "capitulo": "II — Habilitarse / marco legal del sancionatorio",
+        "dice_ahora": "La multa de la Ley 21.740 es de hasta $17.000 actualizable semestralmente",
+        "deberia_decir": "Esa cifra es nominal de la redacción de la Ley 22.845 (1983), en pesos argentinos, y no refleja ningún valor actual. La última actualización fue la Res. JNC 28/1991 (BO 21-01-1991), que fijó el tope en A 349.000.000; con la disolución de la Junta Nacional de Carnes (Dto. 2284/1991) el mecanismo de actualización semestral quedó sin órgano que lo ejecute. No hay tope de multa vigente publicable: decirlo así, y aclarar que el riesgo real no es la multa sino la suspensión, la cancelación de inscripción por hasta 5 años y el decomiso. Corregir además la fecha: la Ley 21.740 fue sancionada y promulgada el 27-ene-1978 y publicada en el BO el 7-feb-1978.",
+        "gravedad": "media",
+        "fuente": "https://www.argentina.gob.ar/normativa/nacional/ley-21740-23564/actualizacion (nota InfoLeg al art. 27)"
+      },
+      {
+        "capitulo": "III — Operar / costos de operar en Cañuelas",
+        "dice_ahora": "La guía municipal de Cañuelas cuesta $4.409,75 por cabeza",
+        "deberia_decir": "Escribirlo en pasado y como disputado. Entre enero y noviembre de 2025 la tasa pasó de $1.965 a $4.409,75 sin IVA según CAMyA (+124,4%); el propio MAG midió el mismo aumento en 66%, hasta $3.266,48. El municipio respondió que ajusta por precio de la hacienda y que la tasa quedaba congelada hasta junio de 2026 — plazo vencido, sin valor posterior verificado. Además, la cuenta de los '$400 millones por mes' se apoya en ~100.000 cabezas mensuales, cuando los informes SIO Carnes miden el MAG en 14.794-18.237 cabezas por semana (~64.000-79.000 al mes).",
+        "gravedad": "media",
+        "fuente": "Notas de nov-dic 2025 (La Nación, Bichos de Campo, El Bonaerense) contrastadas con informes SIO Carnes 2026"
+      },
+      {
+        "capitulo": "I — El terreno / mapa institucional",
+        "dice_ahora": "El consignatario está representado en el IPCVA / la cámara del sector",
+        "deberia_decir": "Precisar dos cosas. (1) No hay UNA cámara: son tres y se reparten por operatoria — CACG (remate feria, mercados del interior, TV/internet), Centro de Consignatarios de Productos del País (mercado concentrador) y CCDH (consignatarios directos). El nombre correcto de la segunda es 'de Productos del País', como figura entre las cámaras firmantes del CCT 130/75. (2) La representación en el IPCVA es un solo asiento COMPARTIDO entre las tres, en el Consejo ASESOR (art. 11), cuya opinión es explícitamente no vinculante (art. 12). En la Asamblea de Representantes (art. 4) y en el Consejo de Representantes (art. 6, ocho vocales) no hay silla consignataria.",
+        "gravedad": "media",
+        "fuente": "Ley 25.507, arts. 4, 6, 11 y 12; CCT 130/75, cámaras firmantes"
+      },
+      {
+        "capitulo": "III — Operar / obligaciones del consignatario",
+        "dice_ahora": "El consignatario retiene el aporte del IPCVA al productor",
+        "deberia_decir": "El consignatario NO es agente de retención del IPCVA por designación legal. El art. 14 de la Ley 25.507 pone la percepción a cargo del SENASA, que la cobra al emitir el documento sanitario de traslado con destino a faena. Lo que hace el consignatario es trasladar ese costo al comitente como gasto código 6 de la liquidación. El matiz operativo que sí importa: como con consignatario el DT-e va obligatoriamente por autogestión (Res. 162/2018), en los hechos la casa adelanta la plata y la recupera en la liquidación. Y el art. 15 deja abierta la puerta a que la Secretaría designe agentes de percepción.",
+        "gravedad": "media",
+        "fuente": "Ley 25.507, arts. 14 y 15; Res. SENASA 162/2018"
+      },
+      {
+        "capitulo": "IV — Conseguir hacienda (plan digital)",
+        "dice_ahora": "Plan de contenidos con YouTube y redes como canales de alcance para captar consignantes",
+        "deberia_decir": "Reordenar por evidencia. YouTube en este negocio es catálogo de lotes, no medio: los videos por lote de las firmas líderes miden entre 3 y 118 vistas. El canal donde efectivamente pasa el negocio es WhatsApp (oferta, seña, liquidación) y casi ninguna firma lo trabaja con lista, segmentación y cadencia. El sitio web tiene que ser liviano y móvil: 36,5% de los hogares rurales dispersos tiene internet fija y 70% de esa población accede por celular. Y el cierre no es digital: 92% de los productores usa apps, pero solo 8,5% compra online de manera regular.",
+        "gravedad": "media",
+        "fuente": "Relevamiento propio 19-20-ago-2026; informe Fundación Tejido Urbano sobre Censo 2022 e INTA; ENPA Universidad Austral"
+      },
+      {
+        "capitulo": "II — Habilitarse / RG 3873",
+        "dice_ahora": "Los valores de la RG 3873 son [cifras de un semestre anterior]",
+        "deberia_decir": "Reemplazar por la tabla vigente desde el 01/05/2026 y agregar la regla de caducidad: los importes se actualizan semestralmente, en mayo y noviembre. Y dejar planteado un hallazgo que hay que verificar antes de imprimir: el texto de la RG fija la actualización 'en la proporción del incremento del Índice General Mercado de Liniers (I.G.M.L.)', y el Mercado de Liniers cerró en 2022 — hay que confirmar qué índice aplica ARCA hoy o señalar el desfasaje.",
+        "gravedad": "media",
+        "fuente": "https://www.afip.gob.ar/actividadesAgropecuarias/sector-pecuario/registros/documentos/valores-bovinos-bubalinos-actuales.pdf"
+      },
+      {
+        "capitulo": "II — Habilitarse / checklist",
+        "dice_ahora": "Con la inscripción en el registro de operadores queda cubierto el frente registral",
+        "deberia_decir": "Son DOS registros distintos, con dos autoridades y dos consecuencias. SIOCAL depende de la Secretaría de Agricultura (DNCCA); el Registro Fiscal de Operadores de la RG 3873 depende de ARCA. Estar en SIOCAL no reemplaza estar activo en el Registro Fiscal ni evita los valores plenos de retención y percepción, ni la retención del 100% del IVA facturado al vendedor sin CBU declarada.",
+        "gravedad": "critica",
+        "fuente": "Res. SAGyP 50/2025 y tabla oficial ARCA RG 3873 vigente 01/05/2026"
+      },
+      {
+        "capitulo": "III — Operar / recursos ante el incumplimiento",
+        "dice_ahora": "En caso de quiebra del comprador puede pedirse la restitución de la hacienda entregada y no pagada (art. 138 LCQ)",
+        "deberia_decir": "El art. 138 LCQ alcanza a bienes entregados al fallido 'por título NO destinado a transferirle el dominio' — consignación, depósito, comodato. En una compraventa el dominio se transfirió con la entrega: ese caso va por el art. 139 (readquisición de la posesión), con requisitos mucho más estrictos, y en la práctica el vendedor concurre como acreedor. Publicarlo como está le dice al productor que puede recuperar hacienda que ya vendió.",
+        "gravedad": "critica",
+        "fuente": "Ley 24.522, arts. 138, 139 y 188"
+      },
+      {
+        "capitulo": "II — Habilitarse / marco normativo de la faena",
+        "dice_ahora": "Res. SAGyP 40/2026 — Sistema Integral de Faena",
+        "deberia_decir": "Es la Resolución 40/2026 del MINISTERIO DE ECONOMÍA (firmada por Luis Caputo), publicada el 27-ene-2026, con vigencia desde el 1-ene-2026 salvo el inciso d) del art. 11 (identificación electrónica). Citarla como 'Res. ME 40/2026'. Y precisar que reemplaza el Sistema Integral de Faena existente desde 2015, además de derogar resoluciones de la ex Junta Nacional de Carnes.",
+        "gravedad": "menor",
+        "fuente": "https://www.boletinoficial.gob.ar/detalleAviso/primera/337796/20260127"
+      },
+      {
+        "capitulo": "I — El terreno / contexto institucional",
+        "dice_ahora": "El Decreto 697/2026 disolvió el INAL",
+        "deberia_decir": "El texto del Decreto 697/2026 (BO 3-ago-2026) no menciona ni disuelve expresamente al INAL: sustituye el art. 4° del Decreto 815/1999 dejando el Sistema Nacional de Control de Alimentos integrado por la Secretaría de Gestión Sanitaria del Ministerio de Salud y el SENASA, transfiere a este último registro, control e inspección, y fija 45 días hábiles para resolver modificaciones del Código Alimentario. 'Disolución del INAL' y 'ventanilla única' son formulaciones de la comunicación oficial y periodística. Para una consignataria el impacto es marginal: si se menciona, va como contexto de una línea.",
+        "gravedad": "menor",
+        "fuente": "https://www.boletinoficial.gob.ar/detalleAviso/primera/345309/20260803"
+      },
+      {
+        "capitulo": "IV — Conseguir hacienda / presupuesto de marketing",
+        "dice_ahora": "Un stand llave en mano en Expoagro arranca en ARS 5.350.000 + IVA",
+        "deberia_decir": "Presentarlo como referencia histórica y con el rango completo: según el tarifario de opcionales de Expoagro 2026 – Edición YPF Agro (febrero 2026, evento del 10 al 13 de marzo de 2026, ya realizado), los kits llave en mano iban desde ARS 2.125.000, con escalones de $12.300.000, $15.187.500, $37.732.500 y líneas mayores, sin IVA y sin incluir el alquiler del espacio, que se cotiza aparte. El tarifario tenía cláusula de reajuste si el tipo de cambio oficial superaba los $1.600. Para decidir participación, pedir el tarifario de la edición 2027.",
+        "gravedad": "menor",
+        "fuente": "https://www.expoagro.com.ar/wp-content/uploads/Tarifario-EA-YPF-2026-opcionales-26-2-26.pdf"
+      }
+    ],
+    "contenido_seo": [
+      {
+        "url_sugerida": "/como-abrir-una-consignataria",
+        "titulo": "Cómo abrir una consignataria de hacienda en Argentina (2026)",
+        "query_objetivo": "como abrir una consignataria de hacienda / requisitos consignatario de ganado",
+        "por_que_nadie_lo_tiene": "Todo lo que se encuentra buscando esa query habla del RUCA, que dejó de existir el 6 de mayo de 2025, y del régimen de la Res. 50/2025, cuyos tres Anexos fueron sustituidos íntegramente el 6 de julio de 2026. Está desactualizado dos veces. Esta página abre con la línea de tiempo de las dos derogaciones y justifica sola el precio de la guía.",
+        "datos_exclusivos": [
+          "Línea de tiempo Res. 21/2017 (RUCA) → Res. 50/2025 (SIOCAL, vigencia 6-may-2025) → Res. 103/2026 (anexos sustituidos, 6-jul-2026)",
+          "Los requisitos del Anexo I hoy vigente, listados, y el hallazgo por ausencia: no se exige garantía, caución, capital mínimo ni solvencia patrimonial",
+          "Los dos registros distintos que casi todos confunden: SIOCAL (SAGyP/DNCCA) y Registro Fiscal RG 3873 (ARCA)",
+          "Padrón oficial descargado el 20-ago-2026: 1.026 matrículas vigentes de Consignatario y/o Comisionista de Ganados y 35 de Consignatario Directo",
+          "Checklist de apertura con los cuatro frentes: matrícula de martillero provincial, sociedad y ARCA, SIOCAL, Registro Fiscal RG 3873"
+        ]
+      },
+      {
+        "url_sugerida": "/guias/ruca-siocal-2026",
+        "titulo": "El RUCA ya no existe: cómo se inscribe hoy un consignatario de ganado",
+        "query_objetivo": "RUCA 2026 / SIOCAL inscripción / reemplazo del RUCA",
+        "por_que_nadie_lo_tiene": "Es la corrección de vigencia más buscada del rubro y ninguna fuente incorpora la segunda capa (Res. 103/2026). Además tiene el detalle que ahorra un trámite completo y que no aparece en ninguna guía gratuita: la migración fue automática SALVO las matrículas suspendidas, que sí deben rehacer el trámite.",
+        "datos_exclusivos": [
+          "Res. SAGyP 103/2026 sustituyó íntegramente los Anexos I, II y III y sacó a los lácteos del SIOCAL",
+          "La baja automática por inactividad del rubro carnes pasó de 60 a 180 días corridos, sin intimación previa — se triplicó, no se duplicó",
+          "Cancelación de matrícula por hasta 5 años en casos graves o reiterados, con verificaciones presenciales y/o virtuales",
+          "Por qué el registro de carnes no se cae con la desregulación: lácteos salió por no tener régimen sancionatorio (Res. 81/2026); carnes se queda porque la Ley 21.740 le da dientes",
+          "La URL vieja ruca.magyp.gob.ar redirige a siocal.magyp.gob.ar"
+        ]
+      },
+      {
+        "url_sugerida": "/guias/cuenta-de-venta-y-liquido-producto",
+        "titulo": "Qué comprobante emite una consignataria de hacienda (y los 17 renglones que ARCA reconoce)",
+        "query_objetivo": "cuenta de venta y liquido producto / que factura un consignatario de hacienda / codigos de gasto liquidacion hacienda",
+        "por_que_nadie_lo_tiene": "La tabla de códigos del web service WSLSP está enterrada en un PDF técnico de ARCA que nadie del sector abrió. Publicarla completa —gastos y tributos— convierte la página en la única referencia pública de qué se le puede descontar legítimamente a un comitente. Es imán de productores auditando su liquidación y de consignatarios armando su plantilla.",
+        "datos_exclusivos": [
+          "Los 17 códigos de gasto completos, con IPCVA en el 6 y FONDO DE GARANTIA en el 1",
+          "La tabla completa de tributos, con Retención IIGG RG 830 (14), Retención IVA RG 3873 (15), Pago a cuenta (16) y Percepción (17)",
+          "La corrección terminológica: 'liquidación primaria' es de GRANOS; el comprobante pecuario es la Cuenta de Venta y Líquido Producto, códigos 180 y 182",
+          "Los nueve códigos de comprobante y quién emite cada uno",
+          "El punto jurídico: el IPCVA está en la tabla de gastos, no en la de tributos"
+        ]
+      },
+      {
+        "url_sugerida": "/guias/ipcva-por-cabeza",
+        "titulo": "Cuánto se paga de IPCVA por cabeza y quién lo cobra",
+        "query_objetivo": "cuanto se paga de IPCVA por cabeza / aporte IPCVA 2026 / quien retiene el IPCVA",
+        "por_que_nadie_lo_tiene": "Toda la prensa repite '0,07% y 0,03%' sin decir que la ley solo fija topes, y varias fuentes se contradicen entre 0,02% y 0,03%. Esta página dice la forma segura: los topes legales son 0,20% y 0,09%, la alícuota vigente la fija la Asamblea, y el aporte solo lo paga la hacienda con destino a faena.",
+        "datos_exclusivos": [
+          "Art. 14 de la Ley 25.507 textual: topes de 0,20% (productor) y 0,09% (industria); la Asamblea fija el valor dentro de esos límites",
+          "Alícuotas vigentes: 0,07% productor y 0,02% industria, esta última desde marzo de 2026",
+          "Quién percibe: SENASA, al emitir el documento sanitario de traslado con destino a faena; el consignatario no es agente de retención, lo traslada como gasto código 6",
+          "La invernada NO paga: no hay hecho imponible en movimientos que no sean a faena",
+          "Art. 21: la propia ley permite cerrar el Instituto por decisión trienal de la Asamblea, con los bienes pasando al INTA — no hace falta ley nueva"
+        ]
+      },
+      {
+        "url_sugerida": "/guias/no-me-pagaron-la-hacienda",
+        "titulo": "No me pagaron la hacienda: a quién le reclamo",
+        "query_objetivo": "no me pagan la hacienda / a quien reclamo si el frigorifico no paga / consignatario no paga al productor",
+        "por_que_nadie_lo_tiene": "Es la búsqueda desesperada del productor y no hay una sola página que la conteste con la norma. El art. 1337 CCyC define la respuesta en una línea y nadie la publicó aplicada a hacienda. Es la puerta de entrada natural al capítulo de riesgo de la guía paga.",
+        "datos_exclusivos": [
+          "Art. 1337 CCyC: el productor no tiene acción contra el comprador — su único deudor es la consignataria",
+          "Art. 1339: si la casa otorgó plazos superiores a los de uso de plaza o contra instrucciones, queda directamente obligada al pago",
+          "Art. 1343: existe la comisión de garantía, y cuando está convenida los riesgos de cobranza corren por cuenta del consignatario",
+          "La medida cautelar que sirve de verdad, pedida en un caso real de 2026: suspensión del RENSPA del deudor — sin RENSPA activo no hay DT-e y la hacienda no se mueve",
+          "La distinción concursal: art. 138 LCQ para hacienda en consignación o depósito; art. 139 para la vendida y no pagada"
+        ]
+      },
+      {
+        "url_sugerida": "/guias/defaults-hacienda-2024-2026",
+        "titulo": "Cuando el comprador no paga: los defaults de la cadena ganadera, 2021-2026",
+        "query_objetivo": "cheques rechazados hacienda / matarifes que no pagaron / frigorifico concurso preventivo 2026",
+        "por_que_nadie_lo_tiene": "Los casos están dispersos en siete medios distintos y nadie los puso en una sola tabla con fecha, monto, cantidad de cheques y desenlace. Es el material que le pone número al riesgo que todo el sector prefiere no nombrar — ninguna entrevista publicada tiene a un consignatario hablando de sus márgenes o sus incobrables.",
+        "datos_exclusivos": [
+          "Tabla 2021-2026 con nombre, fecha, monto y cheques: Ecoser/Tivey $225M; GAEC ~$200M; Palumbo+Prida $2.200M en el MAG; CARFRIC concurso 19-dic-2025 con Consignataria Serrano damnificada por $360M; Frigorífico General Pico concurso 31-mar-2026 con 1.152 cheques por más de $15.800M; La Taba SRL quiebra mar-2026; GISISA 429 cheques y ~$5.000M",
+          "La cronología del deterioro de General Pico: cinco meses entre la primera señal pública y el concurso",
+          "El patrón de escalada de Ecoser: de una jaula en enero a 1.954 novillos en septiembre, con historial bancario limpio hasta el primer rechazo",
+          "El mecanismo aguas abajo, en palabras del presidente de CAMyA: 'de cada media res que se descarga se cobra entre el 75% y el 80%'"
+        ]
+      },
+      {
+        "url_sugerida": "/guias/rematar-en-otra-provincia",
+        "titulo": "¿Puedo rematar en otra provincia? La matrícula de martillero, provincia por provincia",
+        "query_objetivo": "matricula martillero otra provincia / rematar en otra provincia / colegio de martilleros reciprocidad",
+        "por_que_nadie_lo_tiene": "Los resultados que aparecen hoy son de colegios inmobiliarios y confunden la reciprocidad previsional con la habilitación profesional. Esta página separa las dos cosas y agrega la asimetría que nadie explica: la habilitación no cruza la frontera, la sanción sí.",
+        "datos_exclusivos": [
+          "Ley 20.266 art. 3: matrícula en la jurisdicción donde se va a desempeñar, con domicilio constituido allí",
+          "Ley PBA 10.973 art. 80 inc. d): multa de 10 a 30 cuotas anuales por ejercer con matrícula de extraña jurisdicción",
+          "Dentro de la provincia sí hay unidad (PBA art. 5; Santa Fe art. 3), y no se puede estar inscripto en más de un Colegio",
+          "Ley 5954 de Corrientes art. 44 inc. f): una sanción de CUALQUIER jurisdicción cancela la matrícula correntina",
+          "Las federaciones nacionales no otorgan ni convalidan matrícula"
+        ]
+      },
+      {
+        "url_sugerida": "/guias/publicidad-remate-matricula",
+        "titulo": "Publicar un remate sin la matrícula en el aviso: la multa evitable",
+        "query_objetivo": "publicidad de remate requisitos / matricula en el flyer de remate / ley 5954 corrientes martilleros",
+        "por_que_nadie_lo_tiene": "Es una obligación escrita en una ley provincial de 2010 que ningún material del sector menciona, y se incumple todos los días en cada flyer y cada posteo. Contenido corto, de altísimo valor práctico y con gancho: una multa que se evita con un dato en el arte.",
+        "datos_exclusivos": [
+          "Ley 5954 de Corrientes art. 6° textual: toda publicidad debe informar la matrícula del profesional; multa de un SMVM a favor del Colegio, hasta el décuplo por reincidencia",
+          "Art. 44 inc. c): seis períodos consecutivos o doce alternados impagos cancelan la matrícula",
+          "Arts. 10-11: mora automática y ejecución por juicio de apremio con la liquidación firmada por Presidente y Secretario como título suficiente",
+          "Checklist de arte de remate: matrícula, fecha, lugar, condiciones de venta, medio de transmisión"
+        ]
+      },
+      {
+        "url_sugerida": "/guias/dte-trazabilidad-2026",
+        "titulo": "Cerrar el DT-e en 2026: RFID, TRI y qué pasa si la caravana no lee",
+        "query_objetivo": "cerrar DT-e trazabilidad 2026 / SIGBIOTRAZA / TRI SENASA / caravana electronica obligatoria",
+        "por_que_nadie_lo_tiene": "Es el mayor cambio operativo del año y la cobertura existente lo trata como noticia sanitaria, no como logística de venta. Nadie explicó que el movimiento queda abierto si la tropa llega con dispositivos ilegibles, ni de quién es el problema cuando eso pasa en un remate.",
+        "datos_exclusivos": [
+          "Obligatorio desde el 1-ene-2026 para bovinos, bubalinos y cérvidos (Res. SENASA 841/2025); dispositivos admitidos: caravana electrónica, bolo ruminal o microchip",
+          "TRI armada en origen y confirmada en destino: sin lectura no se cierra el DT-e",
+          "Declaración dentro de los 10 días hábiles por SIGSA, oficina local o SIGBIOTRAZA; prohibida la venta de caravanas visuales desde diciembre de 2025",
+          "Las faltas tipificadas, listadas una por una",
+          "El formulario que hay que tener firmado por cada comitente: 'Autorización a consignatarios para emisión de DT-e y cierre de movimientos en SIGSA' (Res. 162/2018)"
+        ]
+      },
+      {
+        "url_sugerida": "/guias/cuantas-consignatarias-hay-en-argentina",
+        "titulo": "Cuántas consignatarias de hacienda hay en Argentina",
+        "query_objetivo": "cuantas consignatarias hay en argentina / padron consignatarios de ganado / listado consignatarias",
+        "por_que_nadie_lo_tiene": "El número no está publicado en ningún lado y se responde con el padrón oficial descargado, no con estimaciones. Es la pieza que además demuestra capacidad de datos del sitio y alimenta directamente el producto de la capa B2B.",
+        "datos_exclusivos": [
+          "Padrón SIOCAL rubro Carnes, descarga del 20-ago-2026: 12.777 filas, estado VIGENTE",
+          "Consignatario y/o Comisionista de Ganados 1.026; Consignatario Directo 35; total 1.061 matrículas sobre 1.044 CUIT únicos",
+          "La escala comparada del padrón: Matarife Abastecedor 5.520, Matarife Carnicero 2.564, Abastecedor 959, Exportador 444, Matadero Frigorífico 372",
+          "La brecha entre matrícula y actividad: el padrón no trae provincia ni volumen; la matrícula no es el activo"
+        ]
+      },
+      {
+        "url_sugerida": "/guias/canales-de-venta-de-hacienda",
+        "titulo": "Por dónde se vende realmente la hacienda: los canales, medidos por el Estado",
+        "query_objetivo": "canales de comercializacion de hacienda / cuanto pasa por el mercado de cañuelas / participacion remate feria",
+        "por_que_nadie_lo_tiene": "Los datos que circulan son de Liniers 2020 y del Censo 2018 y hablan de un mercado que se mudó en 2022. Esta página usa los informes semanales SIO Carnes de 2026 y agrega el argumento comercial que sirve para captar comitentes: la feria pagó por encima del índice.",
+        "datos_exclusivos": [
+          "SIO Carnes semana 7/2026, textual: MAG 11% de la hacienda registrada, remates feria 4,2%",
+          "SIO Carnes semana 32/2026: MAG 8,0% y remates feria 5,3%, recalculado sobre las cabezas del propio informe",
+          "Novillo de remate feria a $4.514/kg vivo contra $4.361,7 del MAG y un INMAG de 4.364: +3,5%",
+          "La advertencia metodológica que nadie hace: SIO Carnes registra solo hacienda con destino a faena — invernada y cría por feria quedan fuera del universo",
+          "14 de 18 remates feria disponibles en streaming en la semana 32 de 2026"
+        ]
+      },
+      {
+        "url_sugerida": "/guias/ingresos-brutos-consignatario",
+        "titulo": "Ingresos Brutos del consignatario: la base es la comisión, no la hacienda",
+        "query_objetivo": "ingresos brutos consignatario de hacienda / convenio multilateral articulo 11 rematadores / alicuota intermediacion cordoba",
+        "por_que_nadie_lo_tiene": "Contiene una norma de dos días de antigüedad que cambia el reparto de un consignatario multiprovincial y que ninguna publicación del sector incorporó, más un contraste provincial que expone un castigo por omisión.",
+        "datos_exclusivos": [
+          "RG (CA) 7/2026, publicada el 18-ago-2026: solo la retribución directa de la intermediación entra en el 80/20; 'quedan excluidos del mismo los servicios, los intangibles y los derechos'; acreditación operación por operación",
+          "Consecuencia operativa: control y entrega, guías, fondo de garantía y arancel de feria salen del art. 11 y van al régimen general del art. 2",
+          "Córdoba, Ley 11.090 art. 15: intermediación en granos con código propio al 3,00%; la de hacienda no está nombrada y cae en el residual del 6,50%",
+          "Base imponible: diferencia entre ingresos e importes a transferir a los comitentes, con la excepción expresa de las cooperativas que actúan como consignatarias de hacienda",
+          "RG (CA) 4/2021: si la sede coincide con la ubicación de los bienes, esa jurisdicción se lleva el 100%"
+        ]
+      },
+      {
+        "url_sugerida": "/guias/sellos-venta-de-hacienda",
+        "titulo": "¿Paga sellos la venta de hacienda? Buenos Aires, Santa Fe y la zona gris de Córdoba",
+        "query_objetivo": "impuesto de sellos venta de hacienda / sellos semovientes buenos aires 2026 / sellos consignacion",
+        "por_que_nadie_lo_tiene": "El contrato de comisión o consignación está NOMBRADO en el inciso bonaerense y nadie lo publicó aplicado a hacienda. Y el hallazgo negativo de Córdoba —normó la base de Sellos para la consignación de granos y no para la pecuaria— es exactamente la zona gris que un consignatario cordobés tiene que plantearle a su contador antes de que se la plantee Rentas.",
+        "datos_exclusivos": [
+          "PBA: 10,5‰ para frutos del país y semovientes y para los contratos de comisión o consignación, siempre que se registren en Bolsas, Mercados o Cámaras; alícuota general 12‰",
+          "Santa Fe: 0,5‰ registrado en la Bolsa de Comercio de Santa Fe o de Rosario, formalizado por comisionistas o intermediarios en formularios oficiales; 1‰ si no se registra",
+          "Córdoba: el punto 11.1.1 de la Ley 11.090 fija la base sobre la retribución del intermediario solo para la Liquidación Primaria de Granos; no hay disposición espejo para la Cuenta de Venta y Líquido Producto pecuaria",
+          "La cuenta: sobre una operación de $300 millones, registrar en bolsa en Santa Fe vale $150.000 de diferencia"
+        ]
+      },
+      {
+        "url_sugerida": "/guias/precios-invernada-remate-feria",
+        "titulo": "Precios de invernada y cría de remate feria: quién los publica y cómo leerlos",
+        "query_objetivo": "precios invernada remate feria / precio del ternero / indice invernada argentina",
+        "por_que_nadie_lo_tiene": "Es tráfico de intención comercial pura y sirve para mostrar el mapa de índices, que hoy nadie ordena: INMAG, índice semanal del CCDH, boletín mensual de la CACG y el Índice Futuro Ternero de Rosgan son cuatro cosas distintas que miden cosas distintas.",
+        "datos_exclusivos": [
+          "El boletín mensual de la CACG de invernada y cría de remate feria e internet/TV, desagregado por categoría y rango de peso, con promedio, máximo y mínimo por kilo y al bulto — 124.111 machos y 62.872 hembras relevados en julio de 2026",
+          "El índice semanal de kg de carne novillo del CCDH y en qué se diferencia del INMAG, que es de hacienda en pie",
+          "El Índice Futuro Ternero de Rosgan, que es el que ajusta el Pagaré Producto",
+          "Por qué el índice del concentrador se forma sobre una base cada vez más chica: el MAG operó 14.794 cabezas en la semana 32 de 2026, con jornadas de 5.000-6.000 vacunos"
+        ]
+      }
+    ],
+    "joyas": [
+      "Los 17 códigos de gasto y los 20 códigos de tributo del web service WSLSP de ARCA, transcriptos completos. El IPCVA es el código de gasto 6 — está en la tabla de GASTOS, no en la de TRIBUTOS, y esa distinción explica por qué el renglón no lleva IVA. Es la única lista pública de qué se le puede descontar legítimamente a un comitente, y cargar el IPCVA en 'OTROS' (99) es un error de liquidación auditable.",
+      "La tabla de ARCA RG 3873 vigente desde el 01/05/2026, con los importes exactos: estar fuera del Registro Fiscal le cuesta a un faenador $3.867 más por cabeza y a un consignatario directo $3.788 más. Sobre una tropa de 500 cabezas son casi $1,9 millones adelantados. Y sin CBU declarada, al productor le retienen el 100% del IVA facturado.",
+      "El padrón SIOCAL descargado del endpoint oficial el 20 de agosto de 2026: 1.026 matrículas vigentes de Consignatario y/o Comisionista de Ganados y 35 de Consignatario Directo, sobre 1.044 CUIT únicos. Es el número que nadie publicó, sacado del dato y no de una estimación.",
+      "La baja automática de la matrícula por inactividad en el rubro carnes pasó de 60 a 180 días corridos, sin intimación previa, cuando la Res. SAGyP 103/2026 sustituyó íntegramente los Anexos de la Res. 50/2025 el 6 de julio de 2026. Toda la prensa contable dijo 'de 90 a 180'; el texto de la 50/2025 decía SESENTA para carnes. Se triplicó, no se duplicó.",
+      "La comisión de garantía existe en tres capas y nadie las junta: figura legal (art. 1343 CCyC), renglón codificado por el Fisco (FONDO DE GARANTIA, código de gasto 1) y práctica escrita en el reglamento de una feria de plaza (2% comisión + 2% garantía + 1% sistema al vendedor). La comisión pura del rematador es 2%; el resto es prima de riesgo que casi nadie cobra como tal.",
+      "El tope de multa de la Ley 21.740 se actualizó por última vez con la Res. JNC 28/1991 (BO 21-01-1991), que lo dejó en A 349.000.000 australes. La Junta Nacional de Carnes se disolvió ese mismo año y el mecanismo de actualización semestral quedó sin órgano que lo ejecute. No hay tope de multa vigente publicable — y el riesgo real no es la multa, es la cancelación de la matrícula por hasta cinco años.",
+      "La RG (CA) 7/2026 de la Comisión Arbitral, publicada el 18 de agosto de 2026 — dos días antes del corte de esta investigación — acota el régimen del art. 11 del Convenio Multilateral: solo entra en el 80/20 la retribución directa de la intermediación, y 'quedan excluidos del mismo los servicios, los intangibles y los derechos', con acreditación operación por operación. Una firma que remata en varias provincias tiene que partir su facturación en dos bolsas y no lo sabe.",
+      "El art. 1337 del Código Civil y Comercial define en una línea todo el riesgo del negocio: el consignatario queda directamente obligado hacia quienes contrata, sin que éstas tengan acción contra el consignante ni éste contra aquéllas. El productor no puede demandar al frigorífico. Y el art. 21 de la Ley 25.507 tiene el gemelo institucional: la propia ley ya prevé cerrar el IPCVA por decisión trienal de la Asamblea, con los bienes pasando al INTA, sin necesidad de ley nueva.",
+      "El Estado mide que por remate feria pasa entre el 4,2% y el 5,3% de la hacienda con destino a faena y por el Mercado Agroganadero entre el 8% y el 11% (informes SIO Carnes, semanas 7 y 32 de 2026). Quien monta una consignataria alrededor del gordo por feria con predio propio está montándola sobre una vigésima parte del mercado y sobre el activo más caro. En la misma semana 32, el novillo de feria promedió $4.514/kg vivo contra un INMAG de 4.364 — pagó 3,5% arriba.",
+      "El CCT 130/75 nombra en su ámbito de aplicación, inciso c), a los 'CONSIGNATARIOS DE HACIENDA' y a los 'REMATES-FERIA', y entre sus cámaras firmantes figuran la Cámara Argentina de Consignatarios de Ganado y el Centro de Consignatarios de Productos del País. El encuadre no es UATRE ni Sindicato de la Carne: es Empleados de Comercio, con OSECAC y FAECYS, y está escrito en el propio convenio."
+    ],
+    "huecos_pendientes": [
+      "ANTES DE IMPRIMIR — texto primario de los Dictámenes DAL 59/2002, DAT 77/05 y 6/2005 sobre la alícuota de IVA de la comisión y los gastos del consignatario. El paquete de investigación se contradice a sí mismo (10,5% vs 21%) y es el dato más expuesto de toda la guía: define cómo se factura cada operación. Pedirle a un contador con suscripción a Errepar o La Ley que baje los textos completos. Hasta entonces, no publicar ninguna de las dos versiones como afirmación cerrada.",
+      "Alícuota vigente del IPCVA para la industria y monto por cabeza en pesos: pedir al IPCVA el acta de la Asamblea o Consejo de Representantes que fija las alícuotas y dónde se publica, más la memoria y balance (que la ley obliga a publicar, art. 20) para citar recaudación y presupuesto auditados en vez de cifras de prensa. Los $1.185 y los $535 que circulan no reconcilian aritméticamente con 0,07%/0,02%, y $535 coincide exactamente con la percepción de IVA de la RG 3873.",
+      "La publicación del 'valor índice de res vacuna en plaza de faena' en el Boletín Oficial, que el art. 14 de la Ley 25.507 manda publicar. Si hace años que no se publica, las alícuotas en pesos estarían fijadas sin la base legal actualizada — sería un hallazgo grande. Buscar por ese texto exacto en el buscador del BO o preguntar a la Dirección Nacional de Control Comercial Agropecuario.",
+      "Qué índice usa hoy ARCA para la actualización semestral del Anexo II de la RG 3873: el texto dice 'Índice General Mercado de Liniers (I.G.M.L.)' y el Mercado de Liniers cerró en 2022. Confirmar si la RG fue modificada en ese punto o si sigue citando un índice que no se publica.",
+      "Quién PAGA materialmente la percepción IPCVA cuando el consignatario emite el DT-e por autogestión: ¿adelanta la plata y la descuenta en la liquidación, o la carga el productor en su cuenta SIGSA? ¿El renglón sale por importe exacto ($ × cabezas con destino a faena) o prorrateado sobre el total? Confirmar por teléfono con dos o tres consignatarios y conseguir una liquidación real anonimizada.",
+      "Comisión efectiva vigente por plaza y por tipo de operación. Solo hay porcentajes publicados de Rosgan (5%/4%) y de dos ferias bonaerenses en Plaza Ganadera. Falta: comisión en el MAG, en venta directa a frigorífico (¿sobre kilo vivo o kilo gancho?), en reproductores/cabaña (se dice 7-10% sin respaldo), y si la banda 2%+2%+1% se replica en NEA/NOA. Llamar a 5-6 firmas de Corrientes, Chaco, Salta, Córdoba y Santa Fe.",
+      "Reglamento, aranceles y condiciones de admisión del Mercado Agroganadero de Cañuelas: si hay padrón cerrado o cupo, si hace falta comprar acciones de Mercado Agroganadero S.A., qué garantía o depósito exige, quién aprueba el alta, cuánto cobra por cabeza o por camión, y cuál es el plazo de pago del comprador. Nada está publicado. Tel. (54-11) 5368-9272. También: valor actualizado de la guía municipal de Cañuelas, cuyo congelamiento venció en junio de 2026 (ordenanza tarifaria del municipio o CAMyA).",
+      "Cuotas societarias y requisitos de admisión de las tres cámaras — ninguna publica el monto ni el estatuto. CACG (011) 2152-8600 / correo@cacg.org.ar; CCDH +54 9 11 6197-3684 / info@ccdh.org.ar; CCPP contactos@ccpp.com.ar (el sitio no respondió). Preguntar además si existe algún mecanismo de mediación o fondo de garantía: la conclusión 'no existe' es por ausencia de evidencia, no por evidencia de ausencia, y en un producto pago eso hay que confirmarlo con un socio.",
+      "Arancel de matrícula y cuota anual de los colegios de martilleros por provincia (Buenos Aires, Corrientes, Santa Fe, Entre Ríos, Córdoba, La Pampa), y monto vigente de la garantía del art. 3 inc. d) de la Ley 20.266 en cada jurisdicción — el único dato hallado son $500 de la Res. IGJ 1/2000, de hace 26 años y solo para CABA. Además: estado 2026 del proyecto de Colegio de Martilleros de Entre Ríos con arancel diferencial para no residentes (chequear en hcder.gov.ar).",
+      "Aranceles concretos del SENASA: los montos de la Res. 54/2026 (Anexo I, IF-2026-40597599-APN-DSAYF#SENASA) y de la Res. 135/2026 están solo en los PDF de anexos del Boletín Oficial. Falta el arancel puntual de habilitación y renovación de predio ferial / mercado concentrador. Descargar el anexo o pedirlo en la oficina local.",
+      "Vigencia de la Res. SENASA 162/2018 (DT-e por autogestión con consignatario) dentro del esquema DT-e + TRI de 2026: no se verificó si fue absorbida o modificada por la Res. 841/2025. Consultar a SIGSA, (011) 4121-5415 / 5252. Y leer la RESOL-2025-11-APN-PRES#SENASA (9-ene-2025), que complementó la 924/2020 y cuyo contenido no se abrió.",
+      "Alícuotas de IIBB 2026 para intermediación/consignación pecuaria en Buenos Aires, Santa Fe, Entre Ríos, Corrientes y La Pampa: bajar el PDF de cada Ley Impositiva 2026 y buscar el código NAES correspondiente. El 6% de PBA que circula sale de la Ley Tarifaria 2013. Y revisar el Anexo I completo de la Ley 11.090 de Córdoba, por si el código de venta mayorista de animales vivos desplaza el residual del 6,50%. También: si el Régimen Especial agropecuario de ARBA designa nominalmente al consignatario de hacienda como agente de recaudación, y con qué alícuota.",
+      "Sellos en Entre Ríos, Corrientes y La Pampa (solo se verificaron PBA, Santa Fe y Córdoba), y la pregunta que decide todo: si la Cuenta de Venta y Líquido Producto constituye 'instrumento' a los fines del impuesto de sellos en cada provincia. No se encontró doctrina ni fallo que lo resuelva para hacienda. También verificar la vigencia 2026 de la RN ARBA 35/2017 sobre sellos en operaciones de hacienda.",
+      "La quiebra de una CONSIGNATARIA propiamente dicha, con nombre, expediente y monto, dejando productores sin cobrar. Es la pieza más buscada del capítulo de riesgo y no aparece en prensa abierta: buscar en boletines oficiales provinciales o preguntar en la CACG y el CCDH. Y el desenlace judicial de los casos abiertos: Ecoser/Tivey, GAEC, GISISA y el cumplimiento del plan de cuotas de Palumbo y Prida.",
+      "Texto oficial del anteproyecto de Ley de Desregulación: todo lo referido a números de artículo, topes transitorios de 0,035%/0,015%, devolución en 60 días y derogación de los arts. 16 y 17 de la Ley 25.507 viene de prensa que dice haber accedido a un borrador. Pedirlo al Ministerio de Desregulación, a la SRA o a CICCRA. Y confirmar su estado parlamentario antes de fechar cualquier cosa.",
+      "Escala salarial vigente del CCT 130/75: el paquete de investigación trae un período de vigencia implausible (cinco años) y dos juegos de básicos incompatibles para 2026. Reconstruirla con una sola fuente, consignando el mes exacto. Además, dotación típica de una firma chica: no hay ninguna fuente publicada — hay que armarla por entrevista a tres casas, preguntando cuántos empleados tienen y en qué categoría los encuadran.",
+      "Tarifarios de pauta del ecosistema agro: ninguno publica media kit (Infocampo, Agrofy News, Bichos de Campo, Agrositio, Canal Rural). Falta también el costo de un remate televisado por Canal Rural, el alquiler del espacio en Expoagro 2027 (ventas@exponenciar.com.ar) y el arancel de expositor de Palermo. Sin eso, cualquier número de costo por impresión en la Parte IV sería inventado. Y no hay rating de radio agropecuaria publicado posterior a 2022.",
+      "Medición de audiencia de los remates transmitidos en vivo por streaming propio (espectadores concurrentes, postores registrados a distancia, % de lotes adjudicados a compradores remotos): no lo publica nadie. Pedirlo a ROSGAN, Plaza Ganadera y Colombo y Magliano. Y verificar si la Res. SAGyP 103/2026 impone alguna leyenda o identificación obligatoria del operador en la comunicación comercial — si existe, condiciona cada pieza publicitaria de la Parte IV."
+    ]
+  },
+  "frentes": [
+    "IPCVA — la pelea institucional de agosto 2026 (Ley 25.507, mecánica de cobro y el anteproyecto de desregulación)",
+    "La capa gremial: cámaras de consignatarios y colegios de martilleros — a cuál se pertenece, qué da, qué cuesta y si la matrícula cruza la frontera provincial",
+    "Cómo se opera realmente en el Mercado Agroganadero de Cañuelas (MAG): acceso al padrón, pagos y garantías, el caso de los $2.200 millones, costos, Rosgan y el traslado desde Liniers",
+    "Riesgo de crédito en la consignación de hacienda: casos reales, plazos, cobertura y recursos legales del productor",
+    "Detalle fiscal fino de una consignataria de hacienda (IVA, RG 3873, Ganancias RG 830, IIBB/Convenio Multilateral, Sellos, IPCVA, comprobantes)",
+    "Estado normativo real del negocio de consignatarios de hacienda en Argentina — corte 20 de agosto de 2026",
+    "La economía real de una consignataria de hacienda en Argentina, anclada en fuentes publicadas (agosto 2026)",
+    "La verdad incómoda del rubro consignatario, según la prensa sectorial (ventana: ago-2024 a ago-2026)",
+    "Cómo se consiguen consignantes hoy: canales, audiencias reales y costos — evidencia para la Parte IV (plan de marketing digital)"
+  ],
+  "totalHallazgos": 144
+}

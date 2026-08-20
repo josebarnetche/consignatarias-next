@@ -70,6 +70,11 @@ src/lib/data/auction-results/
 
 # research artifacts (not part of the app)
 research/
+# ...pero la investigación de las guías pagas SÍ va al repo: es el insumo con el
+# que se escribe la próxima edición (y el README de la guía la referencia). Sin
+# esta excepción, la regla `research/` de arriba se la comía en silencio.
+!docs/guia-apertura/research/
+!docs/guia-apertura/research/**
 *.pdf
 # ...except El Corredor editions, which MUST deploy (manifest references them).
 # Without this, `git add public/el-corredor/` silently dropped each month's PDF → 404.
