@@ -1,3 +1,4 @@
+import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import { Metadata } from 'next'
 import { PROVINCIAS_CON_DATO } from '@/lib/campos-seo'
 import Link from 'next/link'
@@ -437,6 +438,13 @@ export default async function ArrendamientoPage() {
         </MarketHero>
           </div>
         </section>
+
+        {/* Promo interna de la guía paga: debajo del número-hero, nunca encima.
+            La persona vino por el dato — primero se lo damos. */}
+        <div className="px-4 pt-4">
+          <PromoGuiaBanner origen="arrendamiento" />
+        </div>
+
 
         {/* Captura ÚNICA, en el slot de alta intención (apenas debajo del número-hero).
             El visitante —mayormente desde IA/Google— acaba de ver el número del

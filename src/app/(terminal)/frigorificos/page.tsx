@@ -1,3 +1,4 @@
+import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 import FrigorificosClient from './FrigorificosClient'
@@ -171,6 +172,12 @@ export default function FrigorificosPage() {
       />
 
       {/* SEO-optimized intro section — answer-first */}
+      {/* Promo interna de la guía paga. Es el lander con más engagement del sitio
+          (411s de media) y hasta ahora no pedía nada. */}
+      <div className="px-4 pt-4 max-w-4xl">
+        <PromoGuiaBanner origen="frigorificos" />
+      </div>
+
       <section className="px-4 pt-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-4xl">
         <h1 className="text-zinc-100 text-xl font-semibold mb-3">
           Listado de frigoríficos habilitados por SENASA en Argentina

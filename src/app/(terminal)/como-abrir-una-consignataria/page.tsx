@@ -181,7 +181,7 @@ export default function ComoAbrirUnaConsignatariaPage() {
               <h2 className="text-lg font-heading text-zinc-100 mb-2">{GUIA.title}</h2>
               <p className="text-zinc-400 text-sm leading-relaxed mb-4">{GUIA.tagline}</p>
               <ul className="text-sm text-zinc-300 space-y-2 mb-4">
-                <li>· {totalItems} capítulos en cinco partes, con capturas de cada trámite.</li>
+                <li>· {totalItems} temas en cinco partes, con capturas de los portales oficiales.</li>
                 <li>· La normativa vigente citada por artículo, no “consultá a tu contador”.</li>
                 <li>· Estructura de costos y capital de trabajo con números del mercado de hoy.</li>
                 <li>· Plan de marketing digital completo, con presupuesto anual en tres escenarios.</li>

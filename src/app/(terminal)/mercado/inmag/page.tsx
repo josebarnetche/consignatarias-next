@@ -1,3 +1,4 @@
+import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
@@ -324,6 +325,13 @@ export default function InmagPage() {
         </MarketHero>
           </div>
         </section>
+
+        {/* Promo interna de la guía paga: debajo del número-hero, nunca encima.
+            La persona vino por el dato — primero se lo damos. */}
+        <div className="px-4 pt-4">
+          <PromoGuiaBanner origen="inmag" />
+        </div>
+
 
         {/* Alerta de ZONA DE VENTA — FASE 1, con motor real (cron sell-zone-alerts).
             Intención de "inmag hoy": quieren saber cuándo conviene vender. Esta es la

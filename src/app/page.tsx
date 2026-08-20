@@ -1,3 +1,4 @@
+import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
@@ -444,6 +445,13 @@ export default async function LandingPage() {
             </div>
           </div>
         </section>
+
+        {/* ============================================================ */}
+        {/*  PROMO — la guía paga (novedad)                               */}
+        {/* ============================================================ */}
+        <div className="relative z-10 max-w-4xl mx-auto px-6 pt-2 pb-6">
+          <PromoGuiaBanner origen="home" />
+        </div>
 
         {/* ============================================================ */}
         {/*  VALUATION WIDGET — Aha Moment                                */}
