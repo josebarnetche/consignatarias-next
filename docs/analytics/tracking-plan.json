@@ -11,10 +11,10 @@
     "ga4_auto": "Enhanced Measurement de GA4 (no instrumentado por nosotros): session_start, first_visit, user_engagement, page_view(auto off), scroll, click, form_start, form_submit."
   },
   "ga4_key_events": [
-    "purchase",
-    "profile_view",
+    "auction_click",
     "outbound_click",
-    "auction_click"
+    "profile_view",
+    "purchase"
   ],
   "field_legend": {
     "fire": "trackEvent=GA4 | trackValueEvent=GA4+ledger | emitValueBeacon=solo ledger | raw_gtag=window.gtag directo (bypassa helper) | ga4_auto=Enhanced Measurement | server=backend",
@@ -1341,6 +1341,103 @@
       "seen90": 0,
       "status": "dead",
       "note": "DEFINIDO (w3) pero sin emisor."
+    },
+    {
+      "n": "guia_view",
+      "fire": "trackEvent+ledger",
+      "wrapper": "trackGuiaView",
+      "def": "analytics.ts (bloque GUÍA PAGA)",
+      "sites": [
+        "como-abrir-una-consignataria/GuiaViewTracker.tsx"
+      ],
+      "params": [
+        "guia_slug",
+        "conversion_source"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "guia_view",
+        "weight": 6,
+        "group": "funnel"
+      },
+      "seen90": 0,
+      "status": "gap",
+      "note": "El arribo con ?ref=banner-* ES la medición del clic en el banner interno: los banners viven en landers SSG y no se les manda JS por un clic. conversion_source distingue home/inmag/arrendamiento/frigorificos/direct."
+    },
+    {
+      "n": "begin_checkout",
+      "fire": "trackEvent",
+      "wrapper": "trackGuiaCheckoutStart",
+      "def": "analytics.ts (bloque GUÍA PAGA)",
+      "sites": [
+        "como-abrir-una-consignataria/ComprarGuia.tsx"
+      ],
+      "params": [
+        "guia_slug",
+        "value",
+        "currency",
+        "conversion_source",
+        "con_factura",
+        "items"
+      ],
+      "key": false,
+      "val": null,
+      "seen90": 0,
+      "status": "gap",
+      "note": "Evento recomendado por GA4, emitido junto a guia_checkout_start para que la monetización entre en los informes estándar."
+    },
+    {
+      "n": "guia_checkout_start",
+      "fire": "trackEvent+ledger",
+      "wrapper": "trackGuiaCheckoutStart",
+      "def": "analytics.ts (bloque GUÍA PAGA)",
+      "sites": [
+        "como-abrir-una-consignataria/ComprarGuia.tsx"
+      ],
+      "params": [
+        "guia_slug",
+        "value",
+        "currency",
+        "conversion_source",
+        "con_factura",
+        "items"
+      ],
+      "key": false,
+      "val": {
+        "ledger": "guia_checkout_start",
+        "weight": 30,
+        "group": "funnel"
+      },
+      "seen90": 0,
+      "status": "gap",
+      "note": "Dispara con el payment-link YA creado, no en el submit: cuenta intenciones que llegan a Rebill, no errores de la API. con_factura mide cuántos compradores necesitan factura A."
+    },
+    {
+      "n": "purchase (guía)",
+      "fire": "trackEvent",
+      "wrapper": "trackGuiaPurchase",
+      "def": "analytics.ts (bloque GUÍA PAGA)",
+      "sites": [
+        "cuenta/guias/GuiaPurchaseTracker.tsx (solo con fila en guia_purchases)"
+      ],
+      "params": [
+        "transaction_id",
+        "value",
+        "currency",
+        "guia_slug",
+        "conversion_source",
+        "items"
+      ],
+      "key": true,
+      "val": {
+        "ledger": "guia_purchased",
+        "weight": 100,
+        "group": "conversion",
+        "emitted_by": "server (webhook rebill, Branch 3)"
+      },
+      "seen90": 0,
+      "status": "gap",
+      "note": "Misma doctrina que el purchase de PRO: nunca con el ?comprada= pelado, solo con la compra confirmada en base. conversion_source se recupera de sessionStorage para atribuirle la venta al banner que la trajo, que si no se pierde en el salto a Rebill."
     }
   ],
   "out_of_scope": {

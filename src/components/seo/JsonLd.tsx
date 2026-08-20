@@ -907,3 +907,96 @@ export function WebApplicationSchema({
     />
   );
 }
+
+/* ------------------------------------------------------------------ */
+/*  GUÍA PAGA — Product + Offer                                        */
+/* ------------------------------------------------------------------ */
+
+interface GuiaPremiumSchemaProps {
+  name: string;
+  description: string;
+  url: string;
+  price: number;
+  pages: number;
+  edicion: string;
+  fechaActualizacion: string;
+  /** Normas que la guía cita: le dice al buscador (y a la IA) de qué habla de verdad. */
+  citations?: { name: string; url?: string }[];
+}
+
+/**
+ * Product + Offer de la guía paga, más el Book/DigitalDocument que describe qué
+ * se entrega. Un `Product` pelado con precio es lo mínimo para que aparezca el
+ * precio en el SERP; el `Book` con numberOfPages y datePublished es lo que hace
+ * que un motor de IA pueda decir QUÉ es y CUÁN actualizada está — que es el
+ * argumento de venta entero.
+ */
+export function GuiaPremiumSchema({
+  name,
+  description,
+  url,
+  price,
+  pages,
+  edicion,
+  fechaActualizacion,
+  citations = [],
+}: GuiaPremiumSchemaProps) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    '@id': `${url}#producto`,
+    name,
+    description,
+    url,
+    image: 'https://www.consignatarias.com.ar/og-image.png',
+    brand: { '@type': 'Organization', name: 'Consignatarias.com.ar' },
+    category: 'Guía profesional — ganadería y comercialización de hacienda',
+    inLanguage: 'es-AR',
+    releaseDate: fechaActualizacion,
+    isRelatedTo: {
+      '@type': 'Book',
+      name,
+      bookFormat: 'https://schema.org/EBook',
+      numberOfPages: pages,
+      inLanguage: 'es-AR',
+      datePublished: fechaActualizacion,
+      version: edicion,
+      author: { '@type': 'Organization', name: 'Consignatarias.com.ar' },
+      publisher: { '@type': 'Organization', name: 'Memola Medios SAS' },
+      ...(citations.length > 0 && {
+        citation: citations.map((c) => ({
+          '@type': 'Legislation',
+          name: c.name,
+          ...(c.url && { url: c.url }),
+        })),
+      }),
+    },
+    offers: {
+      '@type': 'Offer',
+      price,
+      priceCurrency: 'ARS',
+      availability: 'https://schema.org/InStock',
+      url,
+      // Compra única: sin renovación ni suscripción que declarar.
+      category: 'https://schema.org/Purchase',
+      seller: {
+        '@type': 'Organization',
+        name: 'Memola Medios SAS',
+        taxID: '30-71863222-2',
+      },
+      priceValidUntil: '2026-12-31',
+      eligibleRegion: { '@type': 'Country', name: 'Argentina' },
+    },
+    audience: {
+      '@type': 'BusinessAudience',
+      name: 'Martilleros, consignatarios de hacienda y productores ganaderos',
+    },
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}

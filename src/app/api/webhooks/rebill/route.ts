@@ -3,6 +3,7 @@ import { revalidatePath } from 'next/cache'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendEnterpriseWelcome, sendConsignatariaProWelcome, sendGuiaPurchaseDelivery } from '@/lib/email'
 import { getGuiaPremium } from '@/lib/guias-premium'
+import { eventWeight } from '@/lib/value-events'
 import { getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import crypto from 'crypto'
 
@@ -139,7 +140,9 @@ export async function POST(request: NextRequest) {
               .from('value_events')
               .insert({
                 event: isGuia ? 'guia_purchased' : 'subscription_paid',
-                weight: 100,
+                // El peso lo manda el catálogo (src/lib/value-events.ts), no un
+                // literal acá: dos fuentes de verdad para lo mismo se despegan.
+                weight: eventWeight(isGuia ? 'guia_purchased' : 'subscription_paid'),
                 entity_type: entityType,
                 entity_slug: entitySlug ? String(entitySlug).slice(0, 200) : null,
                 source: 'direct',

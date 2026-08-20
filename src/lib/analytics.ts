@@ -625,3 +625,60 @@ export function emitValueBeacon(
     /* best-effort: nunca romper la navegación por instrumentar */
   }
 }
+
+/* ------------------------------------------------------------------ */
+/*  GUÍA PAGA (compra única) — embudo propio                           */
+/*  view → checkout_start → purchase. Es un embudo DISTINTO del de     */
+/*  suscripción: no hay plan ni renovación, y el origen (?ref=) es la  */
+/*  única forma de saber qué superficie vende.                         */
+/* ------------------------------------------------------------------ */
+
+/** Llegada al sales page. `source` sale de ?ref= (banner-inmag, banner-home, …)
+ *  o es 'direct'. Un arribo con ref ES el clic del banner: no instrumentamos el
+ *  clic aparte para no mandarle JavaScript a landers que son SSG. */
+export function trackGuiaView(slug: string, source: string) {
+  trackEvent('guia_view', { guia_slug: slug, conversion_source: source })
+  emitValueBeacon('guia_view', { meta: { slug, source } })
+}
+
+/** Clic en "Comprar" — se creó el payment-link y el usuario sale a Rebill.
+ *  Emite además el `begin_checkout` recomendado por GA4 para que la plata
+ *  entre en los informes de monetización. */
+export function trackGuiaCheckoutStart(
+  slug: string,
+  price: number,
+  opts: { source?: string; conFactura?: boolean } = {},
+) {
+  const params = {
+    guia_slug: slug,
+    value: price,
+    currency: 'ARS',
+    conversion_source: opts.source || 'direct',
+    con_factura: opts.conFactura ? 'si' : 'no',
+    items: [{ item_id: slug, item_name: slug, price, quantity: 1 }],
+  }
+  trackEvent('begin_checkout', params)
+  trackEvent('guia_checkout_start', params)
+  emitValueBeacon('guia_checkout_start', {
+    meta: { slug, price, source: opts.source, con_factura: !!opts.conFactura },
+  })
+}
+
+/** Compra CONFIRMADA en base (fila en guia_purchases), nunca el `?comprada=`
+ *  pelado: se puede llegar a esa URL sin que el webhook haya otorgado nada.
+ *  Dispara el `purchase` de GA4 para que revenue/ARPU se enciendan. */
+export function trackGuiaPurchase(
+  slug: string,
+  price: number,
+  source: string | null,
+  transactionId?: string | null,
+) {
+  trackEvent('purchase', {
+    transaction_id: transactionId || undefined,
+    value: price,
+    currency: 'ARS',
+    guia_slug: slug,
+    conversion_source: source || 'direct',
+    items: [{ item_id: slug, item_name: slug, price, quantity: 1 }],
+  })
+}

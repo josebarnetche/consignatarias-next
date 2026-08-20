@@ -67,8 +67,16 @@ export const VALUE_EVENTS = {
   signup: { weight: 15, group: 'funnel', label: 'Alta de cuenta' },
   checkout_start: { weight: 30, group: 'funnel', label: 'Inició checkout' },
 
+  // --- Funnel de la guía paga (compra única, ARS 100.000) ---
+  // Nota: NO hay evento de clic en el banner. El banner es un server component en
+  // landers SSG y no vale mandarles JS por un clic: el arribo al sales page con
+  // ?ref=banner-* ES la medición del clic, y es la que importa.
+  guia_view: { weight: 6, group: 'funnel', label: 'Vio el sales page de la guía' },
+  guia_checkout_start: { weight: 30, group: 'funnel', label: 'Inició checkout de la guía' },
+
   // --- Conversión (la plata) ---
   subscription_paid: { weight: 100, group: 'conversion', label: 'Pago confirmado' },
+  guia_purchased: { weight: 100, group: 'conversion', label: 'Guía paga comprada' },
 
   // --- Descubrimiento (origen AI — la tesis de citabilidad) ---
   ai_referral: { weight: 3, group: 'discovery', label: 'Llegó desde un motor de IA' },

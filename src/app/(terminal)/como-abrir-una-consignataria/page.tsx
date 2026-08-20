@@ -1,8 +1,10 @@
 import { Metadata } from 'next'
+import { Suspense } from 'react'
 import Link from 'next/link'
-import { SectionBreadcrumbSchema, HowToSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, HowToSchema, FAQPageSchema, GuiaPremiumSchema } from '@/components/seo/JsonLd'
 import { getGuiaPremium, formatArs } from '@/lib/guias-premium'
 import { ComprarGuia } from './ComprarGuia'
+import { GuiaViewTracker } from './GuiaViewTracker'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
 const GUIA = getGuiaPremium('abrir-una-consignataria')!
@@ -65,6 +67,56 @@ const INDICE = [
   { parte: 'Parte V — Para la que ya existe', items: ['Auditoría de posicionamiento: las seis preguntas que ordenan una firma con años de historia', 'Las escaleras mentales del productor y en cuál estás', 'Cómo se encuentra el créneau que nadie ocupa en tu zona', 'El concepto único: una palabra que la firma pueda poseer', 'Cómo se reposiciona al líder de tu plaza sin pelearle de frente', 'Plantillas para completar con tu propia firma'] },
 ]
 
+/**
+ * La normativa que rige el negocio, con su URL oficial. Es la tabla más útil de
+ * la página gratis y, de paso, alimenta el `citation` del schema: le dice al
+ * buscador y a los motores de IA sobre qué normas habla esta página realmente.
+ */
+const NORMAS = [
+  {
+    norma: 'Decreto-Ley 20.266/73',
+    url: 'https://www.argentina.gob.ar/normativa/nacional/ley-20266-70316/texto',
+    regula: 'Régimen legal de martilleros: condiciones, matrícula, fianza y libros',
+    donde: 'La persona que remata',
+  },
+  {
+    norma: 'Ley 25.028',
+    url: 'https://www.argentina.gob.ar/normativa/nacional/ley-25028-61719/texto',
+    regula: 'Reforma del régimen: exige título universitario de Martillero y Corredor Público',
+    donde: 'La persona que remata',
+  },
+  {
+    norma: 'Resolución SAGyP 50/2025',
+    url: 'https://www.argentina.gob.ar/normativa',
+    regula: 'Crea el SIOCAL y reemplaza al RUCA para ganados y carnes',
+    donde: 'El registro nacional',
+  },
+  {
+    norma: 'RG AFIP 3873/2016',
+    url: 'https://www.afip.gob.ar/actividadesagropecuarias/documentos/ganadoyCarnes04092017.pdf',
+    regula: 'Registro Fiscal de Operadores de Haciendas y Carnes Bovinas y Bubalinas',
+    donde: 'El IVA de cada operación',
+  },
+  {
+    norma: 'Resolución SENASA 924/2020',
+    url: 'https://www.argentina.gob.ar/normativa/nacional/resoluci%C3%B3n-924-2020-345804/actualizacion',
+    regula: 'Habilitación de predios feriales y lugares de concentración de animales',
+    donde: 'El predio del remate',
+  },
+  {
+    norma: 'Resolución SENASA 723/2025',
+    url: 'https://www.argentina.gob.ar/normativa/nacional/resoluci%C3%B3n-723-2025-417744/texto',
+    regula: 'Documento de Tránsito electrónico (DT-e)',
+    donde: 'El movimiento de cada tropa',
+  },
+  {
+    norma: 'Código Civil y Comercial, arts. 1.335 y ss.',
+    url: 'https://www.argentina.gob.ar/normativa/nacional/ley-26994-235975/texto',
+    regula: 'Contrato de consignación: actuar en nombre propio por cuenta ajena',
+    donde: 'Toda la responsabilidad del negocio',
+  },
+] as const
+
 const FAQS = [
   {
     question: '¿Hace falta ser martillero para abrir una consignataria de hacienda?',
@@ -109,12 +161,25 @@ export default function ComoAbrirUnaConsignatariaPage() {
   return (
     <div className="px-4 py-6 max-w-4xl mx-auto">
       <SectionBreadcrumbSchema section="guias" sectionName="Guías" />
+      <Suspense fallback={null}>
+        <GuiaViewTracker slug={GUIA.slug} />
+      </Suspense>
       <HowToSchema
         name="Cómo abrir una consignataria de hacienda en Argentina"
         description="Los seis frentes que hay que resolver para poner en marcha una consignataria de hacienda: matrícula, sociedad, SIOCAL, SENASA, capital y clientela."
         steps={FRENTES}
       />
       <FAQPageSchema items={FAQS} />
+      <GuiaPremiumSchema
+        name={GUIA.title}
+        description={GUIA.tagline}
+        url={`${APP_URL}${GUIA.landing}`}
+        price={GUIA.priceArs}
+        pages={GUIA.pages}
+        edicion={GUIA.edicion}
+        fechaActualizacion={GUIA.updatedAt}
+        citations={NORMAS.map((n) => ({ name: n.norma, url: n.url }))}
+      />
 
       <header className="mb-8">
         <div className="text-xxs font-terminal uppercase tracking-wider text-zinc-500 mb-2">
@@ -161,13 +226,47 @@ export default function ComoAbrirUnaConsignatariaPage() {
             </li>
           ))}
         </ol>
-        <p className="text-zinc-500 text-xs mt-4 leading-relaxed">
-          Normativa citada: Ley 20.266 y Ley 25.028 (martilleros y corredores);
-          Resolución SAGyP 50/2025 (SIOCAL, reemplaza al RUCA); Resolución SENASA
-          924/2020 (habilitación de predios de concentración); RG AFIP 3873/2016
-          (Registro Fiscal de Operadores de Hacienda y Carnes); arts. 1.335 y ss.
-          del Código Civil y Comercial (consignación).
+      </section>
+
+      {/* La normativa, abierta y enlazada. Es el dato más útil que se puede
+          publicar gratis en esta categoría: hoy no existe en ningún lado la lista
+          de qué norma rige cada tramo del negocio, con el link oficial al lado. */}
+      <section className="mb-10">
+        <h2 className="text-lg font-heading text-zinc-100 mb-1">La normativa que rige, con su link</h2>
+        <p className="text-zinc-400 text-sm mb-4 max-w-2xl">
+          Seis normas y un artículo del Código gobiernan todo el negocio. Están acá,
+          enlazadas al texto oficial, para que no dependas de un resumen de nadie —
+          esta guía incluida.
         </p>
+        <div className="terminal-panel overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-xxs font-terminal uppercase tracking-wider text-zinc-500 border-b border-terminal-border">
+                <th className="text-left px-4 py-2 font-normal">Norma</th>
+                <th className="text-left px-4 py-2 font-normal">Qué regula</th>
+                <th className="text-left px-4 py-2 font-normal">Dónde pega</th>
+              </tr>
+            </thead>
+            <tbody>
+              {NORMAS.map((n) => (
+                <tr key={n.norma} className="border-b border-terminal-border/50 last:border-0">
+                  <td className="px-4 py-2.5 align-top">
+                    <a
+                      href={n.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accent hover:underline"
+                    >
+                      {n.norma}
+                    </a>
+                  </td>
+                  <td className="px-4 py-2.5 align-top text-zinc-400">{n.regula}</td>
+                  <td className="px-4 py-2.5 align-top text-zinc-500 whitespace-nowrap">{n.donde}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       {/* La oferta */}
@@ -195,7 +294,7 @@ export default function ComoAbrirUnaConsignatariaPage() {
               </p>
             </div>
             <div className="md:border-l md:border-terminal-border md:pl-6">
-              <ComprarGuia slug={GUIA.slug} priceLabel={formatArs(GUIA.priceArs)} />
+              <ComprarGuia slug={GUIA.slug} priceLabel={formatArs(GUIA.priceArs)} priceArs={GUIA.priceArs} />
             </div>
           </div>
         </div>

@@ -3,7 +3,9 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getCurrentSession } from '@/lib/user-tier'
 import { requireServiceClient } from '@/lib/supabase'
+import { Suspense } from 'react'
 import { GUIAS_PREMIUM, formatArs } from '@/lib/guias-premium'
+import { GuiaPurchaseTracker } from './GuiaPurchaseTracker'
 
 export const metadata: Metadata = {
   title: 'Mis guías',
@@ -55,8 +57,26 @@ export default async function MisGuiasPage() {
 
   const compradas = new Map(rows.map((r) => [r.guia_slug, r]))
 
+  // La conversión se dispara solo con la compra CONFIRMADA en base. Una fila por
+  // guía alcanza: el tracker filtra por el ?comprada= que dejó el redirect de Rebill.
+  const trackers = rows.map((r) => {
+    const guia = GUIAS_PREMIUM.find((g) => g.slug === r.guia_slug)
+    if (!guia) return null
+    return (
+      <GuiaPurchaseTracker
+        key={r.id}
+        confirmed
+        slug={guia.slug}
+        priceArs={guia.priceArs}
+        dedupeId={r.id}
+      />
+    )
+  })
+
   return (
     <div className="px-4 py-6 max-w-4xl mx-auto">
+      <Suspense fallback={null}>{trackers}</Suspense>
+
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-2 text-xxs font-terminal uppercase tracking-wider text-zinc-500">
           <Link href="/cuenta" className="hover:text-zinc-300">

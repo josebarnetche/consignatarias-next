@@ -1,10 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import { trackGuiaCheckoutStart } from '@/lib/analytics'
 
 interface Props {
   slug: string
   priceLabel: string
+  /** Precio numérico — el valor de conversión que viaja a GA4. */
+  priceArs: number
 }
 
 /**
@@ -16,7 +19,7 @@ interface Props {
  * personal no los ve; el que necesita computar el gasto los abre y los carga en
  * el mismo paso, sin tener que escribir después pidiéndola.
  */
-export function ComprarGuia({ slug, priceLabel }: Props) {
+export function ComprarGuia({ slug, priceLabel, priceArs }: Props) {
   const [email, setEmail] = useState('')
   const [quiereFactura, setQuiereFactura] = useState(false)
   const [razonSocial, setRazonSocial] = useState('')
@@ -50,6 +53,18 @@ export function ComprarGuia({ slug, priceLabel }: Props) {
         window.location.href = '/cuenta/guias'
         return
       }
+      // Se dispara con el link ya creado, no en el submit: así el evento cuenta
+      // intenciones que de verdad llegan a Rebill y no errores de la API.
+      let source: string | null = null
+      try {
+        source = sessionStorage.getItem(`guia_source:${slug}`)
+      } catch {
+        /* ignore */
+      }
+      trackGuiaCheckoutStart(slug, priceArs, {
+        source: source || 'direct',
+        conFactura: quiereFactura,
+      })
       window.location.href = json.checkoutUrl
     } catch {
       setError('No pudimos abrir el checkout. Probá de nuevo.')
