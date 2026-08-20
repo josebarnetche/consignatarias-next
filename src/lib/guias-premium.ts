@@ -42,13 +42,13 @@ export const GUIAS_PREMIUM: GuiaPremium[] = [
     title: 'Cómo abrir tu consignataria de hacienda — Guía 2026',
     edicion: '2026',
     actualizacion:
-      'Actualizada al 20 de agosto de 2026: el RUCA ya no rige, y los Anexos del SIOCAL fueron sustituidos por la Res. SAGyP 103/2026 el 6 de julio. Incluye el circuito de DT-e con identificación electrónica vigente desde enero de 2026.',
+      'Actualizada al 20 de agosto de 2026: el RUCA ya no rige, los Anexos del SIOCAL fueron sustituidos por la Res. SAGyP 103/2026 el 6 de julio, y desde enero el DT-e no cierra sin identificación electrónica.',
     tagline:
-      'El paso a paso real —matrícula, SIOCAL, ARCA, SENASA, plata y marketing— para poner una consignataria a operar en Argentina.',
+      'El paso a paso real —matrícula, SIOCAL, ARCA, SENASA, el riesgo de cobranza, los números y el marketing— para poner una consignataria a operar en Argentina.',
     priceArs: 100000,
     file: 'abrir-una-consignataria-v1.pdf',
-    pages: 58, // lo imprime scripts/guia-apertura/build.mjs al regenerar el maestro
-    version: '1.1',
+    pages: 81, // lo imprime scripts/guia-apertura/build.mjs al regenerar el maestro
+    version: '2.0',
     updatedAt: '2026-08-20',
     landing: '/como-abrir-una-consignataria',
   },

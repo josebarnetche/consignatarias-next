@@ -63,8 +63,10 @@ const INDICE = [
   { parte: 'Parte I — El terreno', items: ['Qué es y qué no es una consignataria, y qué dicen exactamente los arts. 1.337, 1.339 y 1.341 sobre quién debe la plata', 'Los cuatro modelos de negocio (feria, directo, invernada, cabaña) y cuál conviene según tu zona', 'Cómo se forma la comisión y qué queda de neto'] },
   { parte: 'Parte II — Habilitarse', items: ['Matrícula de martillero: título, colegio, fianza, juramento (con costos y plazos reales)', 'La figura societaria: SAS vs SRL vs unipersonal, cuadro comparado', 'ARCA paso a paso: alta, códigos de actividad, IVA, Ganancias, IIBB y Convenio Multilateral', 'SIOCAL: cada pantalla del trámite, la documentación exacta y los errores que hacen que te lo archiven', 'Registro Fiscal de Operadores de Hacienda y Carnes (RG 3873): por qué estar afuera te cuesta plata en cada operación', 'SENASA: habilitación del predio bajo Res. 924/2020, plano, infraestructura y el aviso de 48 horas'] },
   { parte: 'Parte III — Operar', items: ['El circuito completo de un remate feria, día por día', 'DT-e, RENSPA y guías: quién responde por qué, con el circuito de identificación electrónica vigente desde enero de 2026', 'La liquidación renglón por renglón: cómo se llama de verdad el comprobante y los 17 códigos de gasto que define ARCA', 'El IPCVA: qué es ese renglón, quién lo paga y por qué puede cambiar sin tocar la ley', 'Cobranza, plazos y el descalce financiero explicado con números', 'Los seis modos de perder plata en una consignataria (y cómo se tapan)'] },
-  { parte: 'Parte IV — Conseguir hacienda', items: ['El plan de marketing digital, según cómo lo arma Memola', 'Qué publicar cada semana y quién lo produce', 'La ficha del remate: el formato que se comparte solo', 'WhatsApp como CRM: el circuito de la consulta a la consignación', 'Presupuesto de marketing para el año uno, en tres escenarios'] },
-  { parte: 'Parte V — Para la que ya existe', items: ['Auditoría de posicionamiento: las seis preguntas que ordenan una firma con años de historia', 'Las escaleras mentales del productor y en cuál estás', 'Cómo se encuentra el créneau que nadie ocupa en tu zona', 'El concepto único: una palabra que la firma pueda poseer', 'Cómo se reposiciona al líder de tu plaza sin pelearle de frente', 'Plantillas para completar con tu propia firma'] },
+  { parte: 'Parte V — Conseguir hacienda', items: ['El plan de marketing digital, según cómo lo arma Memola', 'Qué publicar cada semana y quién lo produce', 'La ficha del remate: el formato que se comparte solo', 'WhatsApp como CRM: el circuito de la consulta a la consignación', 'Presupuesto de marketing para el año uno, en tres escenarios'] },
+  { parte: 'Parte IV — El riesgo', items: ['Quién pone la plata cuando el comprador no paga: los arts. 1.337, 1.339, 1.341 y 1.343 del Código, en orden', 'Seis defaults con nombre, fecha y monto, y los cuatro patrones que se repiten en todos', 'Cobrar por el riesgo que ya estás tomando: cómo desagrega el del credere un reglamento de plaza', 'Due diligence del comprador: la rutina de diez minutos, y el monitoreo mensual que casi nadie hace'] },
+  { parte: 'Parte VII — Vigencias', items: ['Los dieciocho meses que cambiaron el tablero, fecha por fecha', 'Lo que esta guía NO puede responder por vos: ocho llamados, con a quién se le pregunta'] },
+  { parte: 'Parte VI — Para la que ya existe', items: ['Auditoría de posicionamiento: las seis preguntas que ordenan una firma con años de historia', 'Las escaleras mentales del productor y en cuál estás', 'Cómo se encuentra el créneau que nadie ocupa en tu zona', 'El concepto único: una palabra que la firma pueda poseer', 'Cómo se reposiciona al líder de tu plaza sin pelearle de frente', 'Plantillas para completar con tu propia firma'] },
 ]
 
 /**
@@ -303,9 +305,11 @@ export default function ComoAbrirUnaConsignatariaPage() {
               <h2 className="text-lg font-heading text-zinc-100 mb-2">{GUIA.title}</h2>
               <p className="text-zinc-400 text-sm leading-relaxed mb-4">{GUIA.tagline}</p>
               <ul className="text-sm text-zinc-300 space-y-2 mb-4">
-                <li>· {totalItems} temas en cinco partes, con capturas de los portales oficiales.</li>
-                <li>· La normativa vigente citada por artículo, no “consultá a tu contador”.</li>
-                <li>· Estructura de costos y capital de trabajo con números del mercado de hoy.</li>
+                <li>· {totalItems} temas en siete partes, {GUIA.pages} páginas, con capturas de los portales oficiales.</li>
+                <li>· La normativa vigente citada por artículo, con las tres resoluciones de 2026 que casi nadie reflejó todavía.</li>
+                <li>· Una parte entera sobre el riesgo de cobranza: los cuatro artículos del Código que definen quién pone la plata, y seis defaults reales con nombre, fecha y monto.</li>
+                <li>· Los 17 códigos de gasto que ARCA define para la liquidación —el mapa de lo que se le puede descontar a un productor— y cómo se llama de verdad el comprobante.</li>
+                <li>· Estructura de costos y punto de equilibrio, contrastados contra el tamaño real de cada canal.</li>
                 <li>· Plan de marketing digital completo, con presupuesto anual en tres escenarios.</li>
                 <li>· Módulo de posicionamiento para consignatarias que ya operan.</li>
                 <li>· Actualizada a {GUIA.updatedAt}: SIOCAL, no RUCA.</li>

@@ -28,6 +28,7 @@ import { PDFDocument } from 'pdf-lib'
 import { PARTE_I, PARTE_II } from './contenido-1.mjs'
 import { PARTE_III, PARTE_IV } from './contenido-2.mjs'
 import { PARTE_V, ANEXOS } from './contenido-3.mjs'
+import { PARTE_VI, ANEXO_VIGENCIAS } from './contenido-4.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '../..')
@@ -36,7 +37,7 @@ const OUT_DIR = path.join(ROOT, 'private/guias')
 const OUT_FILE = path.join(OUT_DIR, 'abrir-una-consignataria-v1.pdf')
 const TMP = path.join(ROOT, '.guia-build')
 
-const VERSION = '1.1'
+const VERSION = '2.0'
 const EDICION = '2026'
 const FECHA = '20 de agosto de 2026'
 
@@ -54,7 +55,24 @@ const MERCADO = {
   terneros: '$4.633 / kg',
 }
 
-const PARTES = [PARTE_I, PARTE_II, PARTE_III, PARTE_IV, PARTE_V, ANEXOS]
+// El riesgo va DESPUÉS de operar y ANTES de conseguir hacienda: es la consecuencia
+// de operar, no un apéndice. Posicionamiento cierra el cuerpo, y las vigencias y los
+// anexos quedan como material de consulta al final.
+//
+// El número de parte lo asigna el ORDEN, no cada archivo: al reordenar las partes
+// para la v2 quedaron dos "VI" y una "IV" en cuarto lugar. Con esto, mover una parte
+// de lugar no puede volver a romper la numeración ni el índice.
+const ROMANOS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X']
+const PARTES = [
+  PARTE_I,
+  PARTE_II,
+  PARTE_III,
+  PARTE_VI,
+  PARTE_IV,
+  PARTE_V,
+  ANEXO_VIGENCIAS,
+  ANEXOS,
+].map((parte, i) => ({ ...parte, numero: ROMANOS[i] }))
 
 /* ------------------------------------------------------------------ */
 /*  Sustituciones                                                      */

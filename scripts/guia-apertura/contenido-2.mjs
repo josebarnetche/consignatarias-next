@@ -75,6 +75,48 @@ export const PARTE_III = {
 `,
     },
     {
+      titulo: 'La consignataria como agente del fisco',
+      html: `
+<p>Hay una parte del trabajo que nadie te cuenta cuando abrís: <strong>una porción grande de la plata que pasa por tus manos no es tuya ni del productor — es del fisco</strong>, y vos sos quien la retiene, la percibe y la deposita. Manejarlo mal no es un error contable: es plata ajena en tu cuenta.</p>
+
+<h3>El Registro Fiscal decide cuánto te cuesta cada operación</h3>
+<p>La RG 3873 —que sigue plenamente vigente— no es un trámite: es el interruptor que define los importes de todos los regímenes de IVA de la cadena. Los valores se actualizan <strong>semestralmente, en mayo y en noviembre</strong>, y ARCA publica la tabla. Con los valores vigentes desde el 1 de mayo de 2026, el orden de magnitud es este:</p>
+
+<table>
+  <thead><tr><th>Régimen</th><th>Sujeto</th><th>Activo en el registro</th><th>Valor pleno</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="3">Pago a cuenta</td><td>Establecimiento faenador (por cabeza apta para faena)</td><td>$9.278</td><td>$13.145</td></tr>
+    <tr><td>Usuario de faena (por cabeza)</td><td>$7.414</td><td>$11.202</td></tr>
+    <tr><td>Consignatario directo (por animal consignado apto para faena)</td><td>$7.414</td><td>$11.202</td></tr>
+    <tr><td>Retención</td><td>Consignatario de carnes (por kg de carne)</td><td>$36</td><td>$51</td></tr>
+    <tr><td>Percepción</td><td>Consignatario de hacienda, a compradores <strong>sin</strong> sujetos autorizados declarados (por cabeza)</td><td colspan="2">$535</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <div class="callout-title">La cuenta que conviene hacer una sola vez</div>
+  <p>Mirá la diferencia entre las dos columnas. Para un faenador son <strong>$3.867 más por cabeza</strong> estar afuera del registro; para un consignatario directo, <strong>$3.788 más</strong>. Sobre una tropa de 500 cabezas son casi $1,9 millones adelantados que salen de tu caja y vuelven meses después. Estar activo en el Registro Fiscal no es "cumplir": es capital de trabajo.</p>
+</div>
+
+<h3>La CBU del productor: el detalle que puede arruinar una relación</h3>
+<p>En la compra de hacienda en pie hay tres situaciones posibles, y solo una es indolora:</p>
+<ol>
+  <li>Productor responsable inscripto, <strong>incluido en el registro y con CBU declarada</strong> → no se retiene: el IVA se deposita en su CBU.</li>
+  <li>Incluido en el registro pero <strong>sin CBU declarada</strong> → se retiene <strong>la totalidad del IVA facturado</strong>.</li>
+  <li><strong>No incluido</strong> en el registro → se retiene la totalidad del IVA, haya CBU o no.</li>
+</ol>
+<p>El productor que cae en el caso 2 o 3 se entera cuando ve su liquidación, y el que se lo explica sos vos. Convertilo en parte de tu alta de comitentes: preguntá por el registro y por la CBU <em>antes</em> del primer remate, no después de la primera discusión. Es un servicio real y no le cuesta nada a la firma.</p>
+
+<h3>Ganancias: tu comisión tiene su propio código</h3>
+<p>En el régimen general de retención de Ganancias, la comisión del consignatario no va por el código de servicios genérico: existe un <strong>código específico</strong> para "comisiones u otras retribuciones derivadas de la actividad de comisionista, rematador, consignatario y demás auxiliares de comercio", que se retiene por escala para inscriptos. Y la venta de la hacienda en sí encuadra en otro código distinto, con su propia alícuota y su propio mínimo no sujeto a retención.</p>
+
+<div class="box">
+  <div class="box-title">Llevale esto a tu contador</div>
+  <p>Tres códigos distintos conviven en una misma operación: el de tu comisión, el de la venta de la hacienda y el de las locaciones de servicios de los gastos. Los mínimos no sujetos a retención de esos códigos están desactualizados hace años, así que en la práctica casi todo retiene. Que tu sistema los tenga bien cargados desde el día uno te ahorra el ajuste que aparece dos años después.</p>
+</div>
+`,
+    },
+    {
       titulo: 'La liquidación, renglón por renglón',
       html: `
 <p>La liquidación es el único documento del negocio que el productor lee entero. Es también donde se pierde o se gana la confianza. Una liquidación bien hecha tiene cinco bloques y ningún renglón que necesite explicación telefónica.</p>
@@ -134,9 +176,14 @@ export const PARTE_III = {
 <h3>Qué es y quién lo paga</h3>
 <p>Lo aportan <strong>los dos lados de la cadena</strong>: el productor ganadero y la industria frigorífica, como porcentaje del valor índice de res vacuna en plaza de faena. El instituto se financia con fondos privados: no es un impuesto que recauda el Estado, es un aporte del propio sector para promocionar la carne argentina adentro y afuera.</p>
 
+<h3>Quién lo cobra, que no es lo mismo que quién lo paga</h3>
+<p>Acá está el detalle que casi nadie tiene claro, y que te saca un peso de encima: <strong>el aporte del productor lo percibe SENASA al emitir el documento sanitario que autoriza el traslado del animal con destino a faena</strong>. La propia ley lo dice: para ese caso el aporte "se liquidará y abonará en el momento en que se produzca la emisión" del documento, mediante <em>un régimen de percepción que estará a cargo de ese organismo</em>. El aporte de la industria, en cambio, va por declaración jurada mensual. Los fondos se depositan quincenalmente en una cuenta del Banco Nación a nombre del Instituto y, por ley, no pueden ser apropiados por el Tesoro.</p>
+<p>Traducido a tu operación: <strong>vos no sos el agente de percepción del IPCVA</strong>. Se cobra en el DT-e. Lo que sí hacés es reflejarlo en la liquidación como gasto deducido al comitente —por eso existe el código 6— porque es plata que salió por la tropa que vendiste.</p>
+
 <div class="alerta">
   <div class="alerta-title">El dato que nadie mira, y que puede cambiar</div>
-  <p>Las alícuotas vigentes <strong>no están en la ley</strong>. El artículo 14 de la Ley 25.507 fija <em>topes</em> —del orden del 0,20% para el productor y 0,09% para la industria— y la <strong>Asamblea de Representantes del Instituto fija el valor efectivo dentro de esos límites</strong>. Los valores que se aplican hoy están varias veces por debajo del tope. Consecuencia práctica: sin tocar una coma de la ley, el aporte del productor puede subir de manera significativa por decisión de la Asamblea. Antes de imprimir un porcentaje en tu liquidación, <strong>confirmá el valor vigente</strong> con el Instituto o con tu cámara.</p>
+  <p>Las alícuotas vigentes <strong>no están en la ley</strong>. El artículo 14 de la Ley 25.507 fija <em>topes</em> —hasta 0,20% por animal destinado a faena, a cargo del propietario, y hasta 0,09% por animal faenado, a cargo del frigorífico— y el valor efectivo lo decide el Instituto dentro de esos límites. Los valores que las entidades de la cadena citaron en su comunicado de julio de 2026 son <strong>0,07% el productor y 0,02% la industria</strong>: bastante por debajo del tope.</p>
+  <p>Consecuencia práctica: <strong>sin tocar una coma de la ley, el aporte del productor puede casi triplicarse</strong> por decisión del Instituto. Y hay una simetría que casi nadie leyó: el artículo 21 de la misma ley ya prevé cerrar el IPCVA por decisión trienal de la Asamblea, con los bienes pasando al INTA, sin necesidad de una ley nueva. Antes de imprimir un porcentaje o un monto por cabeza en tu liquidación, <strong>confirmá el valor vigente</strong>: los importes en pesos que circulan en prensa no reconcilian entre sí, y uno de los que más se repite es en realidad la percepción de IVA de otro régimen.</p>
 </div>
 
 <h3>Las tres cosas que hay que tener claras al liquidarlo</h3>
@@ -192,9 +239,42 @@ export const PARTE_III = {
 `,
     },
     {
+      titulo: 'Cuánto cuesta el equipo, y bajo qué convenio',
+      html: `
+<p>Antes de calcular el punto de equilibrio hay que resolver una pregunta que se contesta mal muy seguido: <strong>¿bajo qué convenio se encuadra el personal de una consignataria?</strong> La intuición dice UATRE, porque es el campo, o Sindicato de la Carne, porque es hacienda. Las dos están equivocadas.</p>
+
+<div class="callout">
+  <div class="callout-title">Es Empleados de Comercio, y está escrito en el propio convenio</div>
+  <p>El CCT 130/75 nombra expresamente en su ámbito de aplicación, inciso c), a los <strong>"consignatarios de hacienda"</strong> y a los <strong>"remates-feria"</strong>. Y entre sus cámaras firmantes figuran la Cámara Argentina de Consignatarios de Ganado y el Centro de Consignatarios de Productos del País. Obra social OSECAC, entidad sindical FAECYS. No hace falta interpretar: está en el texto.</p>
+</div>
+
+<p>La consecuencia es de costo y de calendario: escalas y acuerdos salariales de comercio, aportes de comercio, y las paritarias que se actualizan varias veces al año. Si tu proyección de costos fijos usó otro convenio, está mal desde la primera fila.</p>
+
+<h3>La dotación mínima, por modelo</h3>
+<table>
+  <thead><tr><th>Modelo</th><th>Quién no puede faltar</th><th>Se puede tercerizar</th></tr></thead>
+  <tbody>
+    <tr><td>Venta directa / operador en plaza ajena</td><td>El que opera (a menudo el dueño) + administración y liquidaciones</td><td>Contabilidad, sistema, diseño</td></tr>
+    <tr><td>Remate feria en predio alquilado</td><td>Lo anterior + martillero + personal de corral el día del remate</td><td>Corral por evento, balanza, catering</td></tr>
+    <tr><td>Remate feria con predio propio</td><td>Lo anterior + mantenimiento y personal permanente del predio</td><td>Menos: el predio propio es estructura fija</td></tr>
+  </tbody>
+</table>
+
+<div class="box">
+  <div class="box-title">El dato que no está publicado</div>
+  <p>No existe ninguna fuente pública con la dotación típica de una consignataria por tamaño. Lo honesto es decirlo: para tener ese número hay que preguntárselo a tres casas de tu plaza —cuántos empleados tienen y en qué categoría los encuadran—. Es uno de los ocho llamados del anexo de vigencias, y probablemente el más útil de todos.</p>
+</div>
+`,
+    },
+    {
       titulo: 'Estructura de costos y punto de equilibrio',
       html: `
 <p>Todo lo anterior se resume en una pregunta: cuántas cabezas por mes hacen falta para que esto se sostenga. La respuesta depende del modelo, y la forma de calcularla es siempre la misma.</p>
+
+<div class="alerta">
+  <div class="alerta-title">Contrastá el resultado contra el mercado, no contra tu entusiasmo</div>
+  <p>Cuando tengas el número de cabezas por mes, volvé al capítulo 4 y ponelo al lado del tamaño real de tu canal: por remate feria pasa entre el 4,2% y el 5,3% de la hacienda a faena, y por el mercado concentrador entre el 8% y el 11%. Si tu equilibrio exige capturar una porción de tu zona que ninguna firma de la zona tiene hoy, el problema no es el esfuerzo comercial: es la estructura que elegiste.</p>
+</div>
 
 <h3>Paso 1 — Ordená los costos fijos mensuales</h3>
 <p>Listá los tuyos con montos reales de tu plaza. Las líneas que siempre aparecen:</p>
@@ -271,6 +351,12 @@ export const PARTE_IV = {
       titulo: 'Los cinco activos mínimos',
       html: `
 <p>Antes de publicar nada, hay que tener cinco cosas. Sin ellas, publicar es tirar plata.</p>
+
+<div class="alerta">
+  <div class="alerta-title">Antes de elegir canal: el campo es mobile, no web</div>
+  <p>Un relevamiento sobre datos del INTA y del censo nacional difundido en junio de 2026 mide que <strong>solo el 36,5% de los hogares rurales dispersos tiene internet fija</strong>, contra el 80% de los urbanos — pero <strong>el 70% de esa misma población tiene internet en el celular</strong>. Y computadora en el hogar: 58,9% urbano contra 25,9% rural. En algunas provincias del norte, la brecha supera los 40 puntos.</p>
+  <p>Consecuencia directa sobre todo lo que sigue: tu productor te va a leer <strong>parado en el corral, con una mano, en un teléfono y con señal mala</strong>. Un PDF pesado, una web que tarda o un video en alta definición no son "un detalle de UX": son una pieza que no se abre.</p>
+</div>
 
 <h3>1. Una página propia que responda las tres preguntas</h3>
 <p>No hace falta un sitio grande. Hace falta una página que diga: quiénes somos, qué rematamos, cuándo es el próximo remate, cómo se cobra, y un teléfono que atiende. Con el número de matrícula visible: es la prueba de que estás habilitado y lo puede verificar en el padrón público.</p>
@@ -370,6 +456,23 @@ export const PARTE_IV = {
     {
       titulo: 'Qué medir y qué ignorar',
       html: `
+<h3>Primero, la vara del sector — que es más baja de lo que te van a decir</h3>
+<p>Conviene calibrar contra lo que realmente miden las firmas líderes, no contra lo que promete una agencia. Relevamiento de perfiles públicos de agosto de 2026:</p>
+<table>
+  <thead><tr><th>Canal</th><th>Lo que miden las firmas líderes</th><th>Lectura</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Instagram</strong></td><td>Las dos casas más grandes rondan los <strong>31.000 y 32.000 seguidores</strong>. La mayoría del sector no llega a 5.000.</td><td>Es donde está la audiencia. Y la vara para una firma nueva es de miles, no de decenas de miles.</td></tr>
+    <tr><td><strong>YouTube</strong></td><td>Canales de 1.900 a 4.300 suscriptores, con videos de lote que miden <strong>entre 3 y 118 vistas</strong>.</td><td>No es un canal de audiencia: es un <strong>depósito de videos de lote</strong> para linkear. Usalo como tal y no esperes alcance.</td></tr>
+    <tr><td><strong>Medios del sector</strong></td><td>Los portales agro grandes están entre 100.000 y 141.000 seguidores; el canal de TV rural, en 94.000.</td><td>Salir en un medio del sector te presta una audiencia que no vas a construir sola en años.</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <div class="callout-title">Lo que este cuadro te ahorra</div>
+  <p>La frustración de los primeros seis meses. Si la casa más grande del país tiene 32.000 seguidores y sus videos de lote miden decenas de vistas, tu firma nueva con 800 seguidores y 40 vistas <strong>no está fallando</strong>: está en la escala del rubro. Lo que hay que mirar es otra cosa.</p>
+</div>
+
+<h3>Y ahora sí, qué mirar</h3>
 <table>
   <thead><tr><th>Mirá esto</th><th>Ignorá esto</th></tr></thead>
   <tbody>
@@ -388,6 +491,11 @@ export const PARTE_IV = {
       titulo: 'Presupuesto del año uno, en tres escenarios',
       html: `
 <p>Ordenado por lo que hace falta, no por lo que se puede gastar. Los montos son de tu plaza y de tu momento: lo que fija esta tabla es el <em>reparto</em>, que es lo que casi siempre se hace mal.</p>
+
+<div class="box">
+  <div class="box-title">Un ancla de costo real, para que la palabra "ofensivo" tenga escala</div>
+  <p>El tarifario oficial de la exposición agroindustrial más grande del país, edición 2026, cotiza los kits de stand llave en mano <strong>desde ARS 2.125.000 hasta ARS 37.732.500 más IVA — y eso NO incluye el alquiler del espacio</strong>. En esa misma semana, once consignatarias remataron más de 170.000 cabezas por televisión y streaming. Los dos datos juntos dicen todo: la vidriera grande existe, es cara, y el negocio que se hace ahí es de volumen. Para el año uno de una firma nueva, la partida de presencia es <em>visitar</em>, no exponer.</p>
+</div>
 
 <table>
   <thead><tr><th>Partida</th><th>Mínimo</th><th>Estándar</th><th>Ofensivo</th></tr></thead>

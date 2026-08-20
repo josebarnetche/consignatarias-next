@@ -86,6 +86,77 @@ export const PARTE_I = {
 `,
     },
     {
+      titulo: 'Cuánto mercado hay realmente',
+      html: `
+<p>Antes de elegir modelo conviene mirar por dónde pasa la hacienda de verdad. Los informes oficiales del sector miden, para la hacienda con destino a faena, que <strong>por remate feria pasa entre el 4,2% y el 5,3%</strong> y <strong>por el Mercado Agroganadero entre el 8% y el 11%</strong>. Todo el resto —la enorme mayoría— va por <strong>venta directa</strong>, de campo a frigorífico o de campo a campo, sin pista y sin público.</p>
+
+<div class="alerta">
+  <div class="alerta-title">Leé esto antes de tasar un predio ferial</div>
+  <p>Montar la consignataria alrededor del gordo por remate feria con predio propio es montarla sobre <strong>una vigésima parte del mercado</strong>, y sobre el activo más caro de los cuatro modelos. Puede ser una gran decisión —si tenés la plaza, la zona y los productores—, pero tiene que ser una decisión tomada con este número a la vista y no con la imagen del remate del pueblo en la cabeza.</p>
+</div>
+
+<h3>El canal que crece no necesita predio</h3>
+<p>El remate televisado y por streaming es de <strong>invernada</strong>, no de gordo, y no exige fierros propios: se apoya en la plataforma de un tercero. En una semana cualquiera de 2026, catorce de dieciocho remates feria relevados se transmitieron por streaming. El remate electrónico federal bate récords de cabezas por subasta. Para una firma nueva eso significa algo concreto: <strong>hay un canal en expansión cuya barrera de entrada es comercial, no de capital</strong>.</p>
+
+<h3>Cuántos son los que ya están</h3>
+<p>El padrón público del registro nacional tiene, al momento de cerrar esta edición, del orden de <strong>1.026 matrículas vigentes</strong> de <em>Consignatario y/o Comisionista de Ganados</em> y <strong>35</strong> de <em>Consignatario Directo</em>. Ese es el universo real de competidores habilitados del país. Es un número que nadie publica y que podés verificar vos mismo: el padrón es público y se consulta sin clave.</p>
+
+<div class="box">
+  <div class="box-title">El ejercicio de dimensionamiento, en cuatro renglones</div>
+  <p>Antes de seguir leyendo, escribí: (1) cuántas cabezas se comercializan por año en tu zona de influencia; (2) cuántas firmas habilitadas operan ahí, según el padrón; (3) qué porcentaje de esas cabezas podrías capturar en el año tres, siendo pesimista; (4) cuántas cabezas por mes te da eso. Guardá ese número: es el que vas a contrastar contra el punto de equilibrio del capítulo 15.</p>
+</div>
+`,
+    },
+    {
+      titulo: 'La capa gremial: a qué cámara pertenecés',
+      html: `
+<p>La v1 de esta guía no tenía este capítulo y era un hueco grande, porque la pregunta aparece apenas abrís: <em>¿de qué cámara hay que ser?</em> La respuesta corta es que no hay una: hay tres entidades nacionales, y <strong>no compiten entre sí — se reparten por tipo de operatoria</strong>.</p>
+
+<table>
+  <thead><tr><th>Entidad</th><th>A quién nuclea</th><th>Desde</th><th>Qué produce</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>CACG</strong><br>Cámara Argentina de Consignatarios de Ganado</td>
+      <td>Firmas de <strong>remate feria</strong>, mercados físicos del interior, remates por TV e internet y operaciones particulares</td>
+      <td>1921</td>
+      <td>Boletín mensual de precios de invernada y cría de remates feria, desagregado por categoría y rango de peso, con máximo, mínimo y promedio</td>
+    </tr>
+    <tr>
+      <td><strong>CCPP</strong><br>Centro de Consignatarios de Productos del País</td>
+      <td>Las casas que operan el <strong>mercado concentrador</strong> (Liniers, hoy Cañuelas)</td>
+      <td>histórica</td>
+      <td>Representación en la plaza concentradora</td>
+    </tr>
+    <tr>
+      <td><strong>CCDH</strong><br>Centro de Consignatarios Directos de Hacienda</td>
+      <td>Los <strong>consignatarios directos</strong>: hacienda directo a frigorífico, sin pasar por mercado</td>
+      <td>1973</td>
+      <td>Índice semanal de precios de carne y hacienda</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Una firma con varias actividades puede estar en más de una. La regla práctica para elegir: <strong>fijate cuál publica el índice que vos vas a usar todas las semanas</strong>. Esa es la que te sirve.</p>
+
+<h3>Lo que la cámara NO hace, y conviene saberlo antes</h3>
+<ul>
+  <li><strong>No habilita.</strong> Habilita el Estado, por SIOCAL. Ninguna cámara interviene en la matrícula.</li>
+  <li><strong>No garantiza cobranzas.</strong> En el default de los $2.200 millones en Cañuelas ninguna cámara intervino formalmente: la solución fue negociación bilateral entre las casas y los deudores.</li>
+  <li><strong>No decide en el IPCVA.</strong> Y este punto es fino: el Consejo de <em>Representantes</em> del Instituto —el que decide— se integra con entidades de productores, cámaras de la industria frigorífica y el Estado. <strong>Ninguna cámara de consignatarios lo integra.</strong> Los consignatarios tienen <em>un</em> representante en el Consejo <em>Asesor</em>, designado por acuerdo entre las cámaras, que sesiona mensualmente y cuya opinión, por la propia ley, <strong>solo tiene carácter de asesoramiento no vinculante</strong>.</li>
+</ul>
+
+<div class="callout">
+  <div class="callout-title">Por qué esto importa más de lo que parece</div>
+  <p>Cuando en julio de 2026 toda la cadena firmó el comunicado conjunto en defensa del IPCVA, las entidades firmantes fueron las de la producción, las de la industria y la Secretaría. <strong>Las cámaras de consignatarios no estaban entre los firmantes.</strong> El eslabón que emite las liquidaciones donde aparece el renglón del IPCVA no tiene voto en la decisión. Es un dato del mapa de poder del rubro, y explica por qué la capa gremial se discute poco y se sufre bastante.</p>
+</div>
+
+<div class="box">
+  <div class="box-title">Lo que no pudimos publicar</div>
+  <p>Ninguna de las tres publica cuota societaria ni estatuto, y no hay evidencia pública de que exista un mecanismo de mediación o un fondo de garantía entre socios. Que no lo encontremos publicado no prueba que no exista: preguntalo directamente antes de asociarte. Los contactos están en el anexo de vigencias.</p>
+</div>
+`,
+    },
+    {
       titulo: 'De dónde sale la plata',
       html: `
 <p>Cinco fuentes de ingreso, en orden de importancia real:</p>
@@ -337,6 +408,57 @@ export const PARTE_II = {
   <div class="box-title">Si no vas a tener predio propio</div>
   <p>Alquilar el predio de otra firma o de la sociedad rural local es la forma normal de arrancar. Cuidado con un punto: la habilitación es del predio y de su titular. Antes de anunciar tu primer remate, pedí copia del certificado vigente y confirmá quién hace el aviso de 48 horas. Si el titular no lo hace, el remate no se autoriza, y el que va a quedar mal con 40 productores sos vos.</p>
 </div>
+`,
+    },
+    {
+      titulo: '¿Puedo rematar en otra provincia?',
+      html: `
+<p>Es la pregunta que aparece apenas la firma cruza un límite provincial, y la respuesta corta es incómoda: <strong>la matrícula de martillero es provincial y no hay reciprocidad automática</strong>. Rematar en una jurisdicción donde no estás matriculado es una infracción, no un detalle administrativo.</p>
+
+<p>La Ley 20.266 lo dice de entrada: quien pretenda ejercer la actividad debe inscribirse <em>en la matrícula de la jurisdicción correspondiente</em>. Cada provincia organiza esa matrícula con su propia ley y su propio colegio, y cada colegio decide bajo qué condiciones admite —o no— a un matriculado de otra provincia.</p>
+
+<h3>Lo que hay que resolver antes de anunciar un remate afuera</h3>
+<ol>
+  <li><strong>Preguntá en el colegio de la provincia de destino</strong>, no en el tuyo. Es el que va a controlar y el que eventualmente labra el acta.</li>
+  <li><strong>Preguntá por la figura exacta</strong>: hay jurisdicciones con matrícula plena, otras con inscripción para actuación transitoria, otras con arancel diferencial para no residentes.</li>
+  <li><strong>Resolvé quién firma.</strong> La salida habitual y limpia es asociarse con un martillero matriculado en esa provincia, que firma el remate. Es más rápido que una matrícula nueva y suele ser más barato.</li>
+  <li><strong>Ojo con la publicidad.</strong> Varias jurisdicciones exigen que el número de matrícula figure en toda comunicación del remate. Es el tipo de incumplimiento que se detecta con un flyer.</li>
+</ol>
+
+<div class="callout">
+  <div class="callout-title">El costo de no preguntar</div>
+  <p>La inscripción nacional en SIOCAL es única y vale para todo el país: eso confunde. Pero la <strong>matrícula de martillero no es nacional</strong>. Se puede estar perfectamente habilitado como consignatario ante la Nación y, aun así, no poder bajar el martillo en la provincia de al lado.</p>
+</div>
+`,
+    },
+    {
+      titulo: 'Cómo se pierde todo esto',
+      html: `
+<p>Habilitarse es la mitad. La otra mitad es no perder la habilitación, y hasta 2026 el procedimiento no estaba escrito en ningún lado. Ahora sí.</p>
+
+<h3>El procedimiento sancionatorio, desde junio de 2026</h3>
+<p>La Res. SAGyP 89/2026, del 25 de junio de 2026, aprobó el instructivo del procedimiento administrativo para el tratamiento de infracciones ante la Dirección Nacional de Control Comercial Agropecuario. No crea obligaciones nuevas: <strong>ordena los plazos</strong>, que es justamente lo que faltaba.</p>
+<table>
+  <thead><tr><th>Etapa</th><th>Plazo</th></tr></thead>
+  <tbody>
+    <tr><td>Desde la fiscalización, para que la DNCCA archive o intime</td><td>20 días</td></tr>
+    <tr><td>Para aportar información complementaria</td><td>5 días</td></tr>
+    <tr><td>Para presentar el descargo formal tras la notificación</td><td><strong>10 días</strong></td></tr>
+  </tbody>
+</table>
+<p>El descargo se presenta por correo electrónico a la dirección de legales de la DNCCA o por la plataforma de Trámites a Distancia. <strong>La notificación se practica en el domicilio electrónico registrado en SIOCAL</strong>: si nadie mira esa casilla, los plazos corren igual. Una multa firme se ejecuta judicialmente por título ejecutivo.</p>
+
+<h3>La escala de sanciones</h3>
+<p>La ley de fondo sigue siendo la Ley 21.740, que no fue derogada. Su artículo 27 fija la escala: <strong>apercibimiento, multa, suspensión o cancelación de la inscripción</strong> —con cierre del establecimiento— y <strong>decomiso</strong> de mercadería cuando no se justifique el origen lícito, haya documentación falsa o violación sanitaria. La norma permite además adicionar a la multa el beneficio ilícito obtenido.</p>
+
+<div class="alerta">
+  <div class="alerta-title">El riesgo real no es la multa</div>
+  <p>El tope de multa de esa ley se actualizó por última vez en 1991, en australes, y el organismo que debía actualizarlo semestralmente se disolvió ese mismo año. En los hechos <strong>no hay un tope de multa vigente publicable</strong>. Lo que sí es concreto y devastador es lo otro: la <strong>cancelación de la inscripción</strong>. Sin matrícula nacional no hay actividad, y el negocio no cierra la persiana por una multa — cierra por quedar afuera del registro.</p>
+</div>
+
+<h3>La baja que llega sola, sin que nadie te acuse de nada</h3>
+<p>Con la sustitución de los Anexos en julio de 2026, la <strong>baja automática por inactividad</strong> en el rubro carnes quedó en <strong>180 días corridos</strong>, sin intimación previa. Buena parte de la prensa contable tituló "de 90 a 180 días"; el texto anterior decía <strong>sesenta</strong>. No se duplicó: se triplicó.</p>
+<p>Para una firma que se inscribe con tiempo y después tarda en arrancar —el caso típico de quien está esperando el juramento del colegio o la habilitación del predio— eso significa algo muy concreto: <strong>si pasás medio año sin registrar operaciones, la matrícula se cae sola</strong>, y hay que empezar de nuevo.</p>
 `,
     },
     {
