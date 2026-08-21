@@ -1838,47 +1838,47 @@
   "categories": {
     "novillos": {
       "current": 4312,
-      "prev": 4211.63,
-      "change": 2.4,
+      "prev": 4312,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 751
     },
     "novillitos": {
       "current": 4097,
-      "prev": 4704.32,
-      "change": -12.9,
+      "prev": 4097,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 702
     },
     "vaquillonas": {
       "current": 3881,
-      "prev": 4408.97,
-      "change": -12,
+      "prev": 3881,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1186
     },
     "vacas": {
       "current": 3105,
-      "prev": 3010.21,
-      "change": 3.1,
+      "prev": 3105,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 2591
     },
     "toros": {
       "current": 2803,
-      "prev": 3029.6,
-      "change": -7.5,
+      "prev": 2803,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 162
     },
     "terneros": {
       "current": 4743,
-      "prev": 4633,
-      "change": 2.4,
+      "prev": 4743,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
@@ -2193,16 +2193,61 @@
     }
   },
   "consignatarioEntry": {
-    "date": "18/08/2026",
+    "date": "21/08/2026",
     "entries": [
       {
-        "remitente": "SALVADORI HECTOR DANIEL",
-        "localidad": "QUEMU QUEMU",
-        "provincia": "LPA",
-        "enPie": 41,
+        "remitente": "EST. LA DORITA S.A.",
+        "localidad": "CARLOS CASARES",
+        "provincia": "BUE",
+        "enPie": 29,
         "muertos": 0,
         "caidos": 0,
-        "total": 41
+        "total": 29
+      },
+      {
+        "remitente": "EST. LA DORITA S.A.",
+        "localidad": "9 DE JULIO",
+        "provincia": "BUE",
+        "enPie": 11,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 11
+      },
+      {
+        "remitente": "BOTTARO LUIS MARIA",
+        "localidad": "MONTE",
+        "provincia": "BUE",
+        "enPie": 8,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 8
+      },
+      {
+        "remitente": "FESGAN S.A.",
+        "localidad": "MONTE",
+        "provincia": "BUE",
+        "enPie": 5,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 5
+      },
+      {
+        "remitente": "SANTA ROSA DEL MONTE S.A.",
+        "localidad": "MONTE",
+        "provincia": "BUE",
+        "enPie": 4,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 4
+      },
+      {
+        "remitente": "EST. EL SOL S.A.",
+        "localidad": "MONTE",
+        "provincia": "BUE",
+        "enPie": 1,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 1
       }
     ]
   },
