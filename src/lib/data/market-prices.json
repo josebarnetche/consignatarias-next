@@ -1838,7 +1838,7 @@
   "categories": {
     "novillos": {
       "current": 4312.21,
-      "prev": 4312,
+      "prev": 4312.21,
       "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
@@ -1846,31 +1846,31 @@
     },
     "novillitos": {
       "current": 4523.73,
-      "prev": 4097,
-      "change": 10.4,
+      "prev": 4523.73,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 1018
     },
     "vaquillonas": {
       "current": 4128.26,
-      "prev": 3881,
-      "change": 6.4,
+      "prev": 4128.26,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 1253
     },
     "vacas": {
       "current": 3074.53,
-      "prev": 3105,
-      "change": -1,
+      "prev": 3074.53,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "latestVolume": 2420
     },
     "toros": {
       "current": 3070.12,
-      "prev": 2803,
-      "change": 9.5,
+      "prev": 3070.12,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 237

@@ -13586,63 +13586,6 @@
     "status": "scheduled"
   },
   {
-    "title": "GORDOS, CONSERVA e INVERNADA",
-    "consignatariaName": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
-    "consignatariaSlug": "agricultores-federados-argentinos-soc-coop-lt",
-    "date": "2026-08-26",
-    "time": "10:00",
-    "location": "PROVIDENCIA, SANTA FE",
-    "province": "SANTA FE",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "GORDOS, CONSERVA e INVERNADA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.afascl.com",
-    "id": 716,
-    "status": "scheduled"
-  },
-  {
-    "title": "ESPECIAL ANIVERSARIO de REPRODUCTORES y FAENA",
-    "consignatariaName": "CONSIGNATARIA HASENKAMP S.R.L.",
-    "consignatariaSlug": "consignataria-hasenkamp-s-r-l",
-    "date": "2026-08-26",
-    "time": "10:00",
-    "location": "HASENKAMP, ENTRE RÍOS",
-    "province": "ENTRE RIOS",
-    "type": "reproductores",
-    "mainCategory": "toros",
-    "estimatedHeads": null,
-    "description": "ESPECIAL ANIVERSARIO \r\nde REPRODUCTORES y FAENA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.chsrl.com.ar",
-    "id": 717,
-    "status": "scheduled"
-  },
-  {
-    "title": "GORDO - INVERNADA - CRIA",
-    "consignatariaName": "FRACCAROLLI Y RONCONI S.R.L.",
-    "consignatariaSlug": "fraccarolli-y-ronconi-s-r-l",
-    "date": "2026-08-26",
-    "time": "10:00",
-    "location": "URDINARRAIN, ENTRE RÍOS",
-    "province": "ENTRE RIOS",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "GORDO - INVERNADA - CRIA\r\n",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.facebook.com/fraccarollironconi",
-    "id": 718,
-    "status": "scheduled"
-  },
-  {
     "title": "Alfredo S. Mondino | Feria Mensual Olavarría",
     "consignatariaName": "Alfredo S. Mondino",
     "consignatariaSlug": "alfredo-s-mondino",
@@ -13659,7 +13602,7 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled",
-    "id": 719
+    "id": 716
   },
   {
     "title": "AFA | Providencia | Gordos, Conserva e Invernada",
@@ -13678,7 +13621,64 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled",
-    "id": 720
+    "id": 717
+  },
+  {
+    "title": "GORDOS, CONSERVA e INVERNADA",
+    "consignatariaName": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
+    "consignatariaSlug": "agricultores-federados-argentinos-soc-coop-lt",
+    "date": "2026-08-26",
+    "time": "10:00",
+    "location": "PROVIDENCIA, SANTA FE",
+    "province": "SANTA FE",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "GORDOS, CONSERVA e INVERNADA",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.afascl.com",
+    "id": 718,
+    "status": "scheduled"
+  },
+  {
+    "title": "ESPECIAL ANIVERSARIO de REPRODUCTORES y FAENA",
+    "consignatariaName": "CONSIGNATARIA HASENKAMP S.R.L.",
+    "consignatariaSlug": "consignataria-hasenkamp-s-r-l",
+    "date": "2026-08-26",
+    "time": "10:00",
+    "location": "HASENKAMP, ENTRE RÍOS",
+    "province": "ENTRE RIOS",
+    "type": "reproductores",
+    "mainCategory": "toros",
+    "estimatedHeads": null,
+    "description": "ESPECIAL ANIVERSARIO \r\nde REPRODUCTORES y FAENA",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.chsrl.com.ar",
+    "id": 719,
+    "status": "scheduled"
+  },
+  {
+    "title": "GORDO - INVERNADA - CRIA",
+    "consignatariaName": "FRACCAROLLI Y RONCONI S.R.L.",
+    "consignatariaSlug": "fraccarolli-y-ronconi-s-r-l",
+    "date": "2026-08-26",
+    "time": "10:00",
+    "location": "URDINARRAIN, ENTRE RÍOS",
+    "province": "ENTRE RIOS",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "GORDO - INVERNADA - CRIA\r\n",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.facebook.com/fraccarollironconi",
+    "id": 720,
+    "status": "scheduled"
   },
   {
     "title": "Especial de Invernada y Cria por Internet - 10.30hs.",
@@ -13795,6 +13795,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Bellamar y El Bonete | 52º Remate MIRAMAR",
+    "consignatariaName": "Bellamar Estancias",
+    "consignatariaSlug": "bellamar-estancias",
+    "date": "2026-08-26",
+    "time": "14:00",
+    "location": "",
+    "province": "",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Bellamar y El Bonete | 52º Remate MIRAMAR",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6476-bellamar-y-el-bonete-52o-remate-miramar",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled",
+    "id": 727
+  },
+  {
     "title": "Remate Especial de Reproductores Macho y Hembra de Cabaña La FLorida de Flia. Ispizua",
     "consignatariaName": "CONSIGNATARIA GALARRAGA S.A.",
     "consignatariaSlug": "consignataria-galarraga-s-a",
@@ -13810,7 +13829,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.consignatariagalarraga.com",
-    "id": 727,
+    "id": 728,
     "status": "scheduled"
   },
   {
@@ -13829,7 +13848,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.gananorpujol.com",
-    "id": 728,
+    "id": 729,
     "status": "scheduled"
   },
   {
@@ -13848,7 +13867,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.hre.com.ar",
-    "id": 729,
+    "id": 730,
     "status": "scheduled"
   },
   {
@@ -13867,7 +13886,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.pedronoelireysrl.com.ar",
-    "id": 730,
+    "id": 731,
     "status": "scheduled"
   },
   {
@@ -13886,7 +13905,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "pkf.com.ar/",
-    "id": 731,
+    "id": 732,
     "status": "scheduled"
   },
   {
@@ -13905,7 +13924,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.reggiycia-srl.com.ar",
-    "id": 732,
+    "id": 733,
     "status": "scheduled"
   },
   {
@@ -13924,7 +13943,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 733,
+    "id": 734,
     "status": "scheduled"
   },
   {
@@ -13943,7 +13962,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/1857e708-81fe-47b7-ad23-5f216f573996",
-    "id": 734,
+    "id": 735,
     "status": "scheduled"
   },
   {
@@ -13962,25 +13981,6 @@
     "catalogUrl": null,
     "source": "tv",
     "sourceUrl": "https://reggiycia.com/remate/31276",
-    "status": "scheduled",
-    "id": 735
-  },
-  {
-    "title": "Bellamar y El Bonete | 52º Remate MIRAMAR",
-    "consignatariaName": "Bellamar Estancias",
-    "consignatariaSlug": "bellamar-estancias",
-    "date": "2026-08-26",
-    "time": "14:00",
-    "location": "",
-    "province": "",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Bellamar y El Bonete | 52º Remate MIRAMAR",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6476-bellamar-y-el-bonete-52o-remate-miramar",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled",
     "id": 736
   },
