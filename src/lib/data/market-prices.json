@@ -1833,7 +1833,7 @@
       }
     ],
     "latestVolume": 5889,
-    "periodVolume": 155098
+    "periodVolume": 149956
   },
   "categories": {
     "novillos": {
@@ -1890,20 +1890,20 @@
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1550,
+    "current": 1565,
     "prev": 1550,
-    "change": 0,
+    "change": 1,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
-    "current": 1520,
+    "current": 1530,
     "prev": 1520,
-    "change": 0,
+    "change": 0.7,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-08-23",
+  "lastUpdate": "2026-08-24",
   "provinceEntry": {
     "date": "2026-08-21",
     "totalCabezas": 5859,
