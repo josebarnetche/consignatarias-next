@@ -1883,23 +1883,23 @@
     }
   },
   "corn": {
-    "current": 238.5,
+    "current": 239.9,
     "prev": 238.5,
-    "change": 0,
+    "change": 0.6,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
     "current": 1565,
-    "prev": 1550,
-    "change": 1,
+    "prev": 1565,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
     "current": 1530,
-    "prev": 1520,
-    "change": 0.7,
+    "prev": 1530,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
@@ -2260,11 +2260,11 @@
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
-    "current": 491.67,
+    "current": 487.67,
     "prev": 491.67,
-    "change": 0,
+    "change": -0.8,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
-    "date": "2026-08-21"
+    "date": "2026-08-24"
   }
 }
