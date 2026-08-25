@@ -1545,6 +1545,47 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_activity: {
+        Row: {
+          actor: string | null
+          body: string | null
+          created_at: string
+          id: number
+          kind: string
+          lead_id: number
+          meta: Json | null
+          outcome: string | null
+        }
+        Insert: {
+          actor?: string | null
+          body?: string | null
+          created_at?: string
+          id?: never
+          kind: string
+          lead_id: number
+          meta?: Json | null
+          outcome?: string | null
+        }
+        Update: {
+          actor?: string | null
+          body?: string | null
+          created_at?: string
+          id?: never
+          kind?: string
+          lead_id?: number
+          meta?: Json | null
+          outcome?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_activity_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "producer_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       live_remate_lot: {
         Row: {
           audio_t: number | null
@@ -2653,6 +2694,51 @@ export type Database = {
           referrer?: string | null
           user_agent?: string | null
           viewed_at?: string | null
+        }
+        Relationships: []
+      }
+      promotion_campaigns: {
+        Row: {
+          canal: string
+          clics: number
+          consignataria_slug: string
+          created_at: string
+          destinatarios: number
+          id: number
+          leads: number
+          meta: Json | null
+          ref: string | null
+          remate_date: string | null
+          remate_id: number | null
+          remate_title: string | null
+        }
+        Insert: {
+          canal: string
+          clics?: number
+          consignataria_slug: string
+          created_at?: string
+          destinatarios?: number
+          id?: never
+          leads?: number
+          meta?: Json | null
+          ref?: string | null
+          remate_date?: string | null
+          remate_id?: number | null
+          remate_title?: string | null
+        }
+        Update: {
+          canal?: string
+          clics?: number
+          consignataria_slug?: string
+          created_at?: string
+          destinatarios?: number
+          id?: never
+          leads?: number
+          meta?: Json | null
+          ref?: string | null
+          remate_date?: string | null
+          remate_id?: number | null
+          remate_title?: string | null
         }
         Relationships: []
       }
