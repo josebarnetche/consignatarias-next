@@ -85,6 +85,7 @@ export async function POST(req: NextRequest) {
 
     if (!dryRun) {
       await sendOvejeroDigest({
+        claims: r.claimsEnEspera.map((c) => ({ slug: c.slug, email: c.email, dias: c.dias, urgente: c.urgente })),
         matches: r.matches.map((m) => {
           const zonaOfrece = m.ofrece.zona ?? m.ofrece.province ?? ''
           const zonaBusca = m.busca.zona ?? m.busca.province ?? ''

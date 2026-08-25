@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import Image from 'next/image'
 import { getCanonicalSlug, getProfile, getAuctionsForProfile, getAllCanonicalSlugs } from '@/lib/data/consignataria-slugs'
+import { getOwnerAuctionsBySlug, mergeAuctions, normalizeOwnerAuction } from '@/lib/dal/auctions'
+import { createServiceClient } from '@/lib/supabase'
 import { normalizeUrl } from '@/lib/utils/url'
 import { getConsignatariaProfile, getFollowerCount } from '@/lib/dal/consignatarias'
 import { getEntityTier } from '@/lib/features'
@@ -107,12 +109,21 @@ export default async function GoLandingPage({ params }: Props) {
   const tier = await getEntityTier('consignataria', canonical)
   const isPro = tier === 'pro' || tier === 'enterprise'
 
-  const profileAuctions = getAuctionsForProfile(auctions, canonical)
+  // Agenda completa: scrape + lo que cargó la firma desde su panel.
+  //
+  // Esta página es SSG con `revalidate = false`, así que el merge corre en el BUILD:
+  // un remate que la firma cargue hoy aparece acá en el próximo rebuild (el scrape
+  // diario lo dispara, ~24 h). Se usa el fetch en lote —una query para las 107
+  // páginas— porque `dynamicParams = false` las genera todas de una y consultar
+  // firma por firma serían 107 consultas por build.
+  const ownerBySlug = await getOwnerAuctionsBySlug(createServiceClient())
+  const profileAuctions = mergeAuctions(
+    getAuctionsForProfile(auctions, canonical),
+    (ownerBySlug.get(canonical) ?? []).map((r) => normalizeOwnerAuction(r, profile.displayName, canonical)),
+  )
   const today = new Date().toISOString().slice(0, 10)
-  const upcoming = profileAuctions
-    .filter(a => a.date >= today)
-    .sort((a, b) => a.date.localeCompare(b.date))
-  
+  const upcoming = profileAuctions.filter(a => a.date >= today)
+
   const nextRemate = upcoming[0]
   const moreRemates = upcoming.slice(1, 4)
 

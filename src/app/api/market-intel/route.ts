@@ -88,21 +88,39 @@ export async function GET(req: NextRequest) {
     const maxDate: string | undefined = latest?.[0]?.date
     const anchorMs = maxDate ? new Date(maxDate + 'T00:00').getTime() : Date.now()
     const desde = new Date(anchorMs - days * 86400000).toISOString().slice(0, 10)
-    const { data: lots } = await db
-      .from('mag_consignataria_sales_lots')
-      .select('mag_consignataria_id, head_count, price')
-      .in('mag_consignataria_id', magIds)
-      .gte('date', desde)
-      .limit(50000)
-    for (const r of (lots || []) as Array<{ mag_consignataria_id: number; head_count: number | null; price: number | string | null }>) {
-      const a = aggByMagId.get(r.mag_consignataria_id) || { cabezas: 0, priceSum: 0, priceN: 0 }
-      a.cabezas += r.head_count || 0
-      const p = r.price != null ? Number(r.price) : 0
-      if (p > 0) {
-        a.priceSum += p
-        a.priceN++
+    // PAGINADO, y no es opcional.
+    //
+    // PostgREST corta en 1.000 filas por respuesta y `.limit(50000)` no lo cambia:
+    // no falla, devuelve menos y no avisa. Acá el efecto era absurdo y visible —
+    // **el total de una firma cambiaba según a quién más siguieras**. Blanes sola
+    // daba 1.499 cabezas; agregando Colombo (que aporta miles de lotes) los suyos
+    // desplazaban a los de Blanes dentro del corte y pasaba a 1.377. Un número que
+    // se mueve por mirar a otro no es un número.
+    const PAGINA = 1000
+    for (let offset = 0; ; offset += PAGINA) {
+      const { data: lots, error } = await db
+        .from('mag_consignataria_sales_lots')
+        .select('mag_consignataria_id, head_count, price')
+        .in('mag_consignataria_id', magIds)
+        .gte('date', desde)
+        .order('id', { ascending: true })
+        .range(offset, offset + PAGINA - 1)
+
+      if (error) break
+      const pagina = (lots || []) as Array<{ mag_consignataria_id: number; head_count: number | null; price: number | string | null }>
+      for (const r of pagina) {
+        const a = aggByMagId.get(r.mag_consignataria_id) || { cabezas: 0, priceSum: 0, priceN: 0 }
+        a.cabezas += r.head_count || 0
+        const p = r.price != null ? Number(r.price) : 0
+        if (p > 0) {
+          a.priceSum += p
+          a.priceN++
+        }
+        aggByMagId.set(r.mag_consignataria_id, a)
       }
-      aggByMagId.set(r.mag_consignataria_id, a)
+      if (pagina.length < PAGINA) break
+      // Tope de seguridad: 90 días de TODAS las casas son ~13.000 lotes.
+      if (offset > 60_000) break
     }
   }
 

@@ -536,13 +536,29 @@ const TOOLS: Tool[] = [
       const categoria = typeof args.categoria === 'string' ? args.categoria.toUpperCase().trim() : ''
       const limite = Math.min(typeof args.limite === 'number' ? args.limite : 15, 45)
 
-      let qb = service
-        .from('mag_consignataria_sales_lots')
-        .select('mag_consignataria_id, head_count, price')
-        .gte('date', desde)
-        .lte('date', hasta)
-      if (categoria) qb = qb.ilike('category', `%${categoria}%`)
-      const { data, error } = await qb.limit(50000)
+      // PAGINADO. PostgREST corta en 1.000 filas por respuesta y `.limit(50000)` no
+      // lo cambia: no falla, devuelve menos y no avisa. En 30 días hay ~3.800 lotes,
+      // así que el ranking de actividad salía calculado sobre el 26% del mercado —
+      // en una herramienta que se cobra. Mismo bug que había en /api/market-intel,
+      // donde era visible porque el total de una firma cambiaba según a quién más
+      // siguieras.
+      type LoteMcp = { mag_consignataria_id: number; head_count: number | null; price: number | string | null }
+      const data: LoteMcp[] = []
+      let error: unknown = null
+      for (let offset = 0; ; offset += 1000) {
+        let qb = service
+          .from('mag_consignataria_sales_lots')
+          .select('mag_consignataria_id, head_count, price')
+          .gte('date', desde)
+          .lte('date', hasta)
+        if (categoria) qb = qb.ilike('category', `%${categoria}%`)
+        const { data: pagina, error: err } = await qb.order('id', { ascending: true }).range(offset, offset + 999)
+        if (err) { error = err; break }
+        const filas = (pagina ?? []) as LoteMcp[]
+        data.push(...filas)
+        if (filas.length < 1000) break
+        if (data.length >= 60_000) break
+      }
       if (error) return fail('Error consultando la actividad del mercado.')
       if (!data || data.length === 0)
         return ok(

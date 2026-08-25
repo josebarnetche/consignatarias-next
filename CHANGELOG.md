@@ -7,6 +7,72 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.198.0] — 2026-08-24
+
+### El panel de la consignataria deja de estar vacío
+
+Hasta acá, una casa que entraba veía ceros: el sitio le contaba lo que pasaba *en el
+sitio*, no en su negocio. Esta versión le muestra lo que su propio sistema no puede
+darle — el cruce contra el resto del mercado.
+
+**Para las 22 casas del Mercado Agroganadero** (`lib/reports/`):
+- **Tu cartera** — qué remitentes dejaron de consignar comparado contra *su propio*
+  ritmo, y cuáles están operando en otra casa. La regla ingenua ("45 días sin operar")
+  daba 147 alertas para una firma; contra la cadencia de cada cliente da 8.
+- **Cómo vendiste contra el mercado** — precio por categoría contra el promedio de las
+  22 casas. Nunca promedios generales: una casa que vende más terneros tiene un $/kg
+  más alto sin vender mejor.
+- **Tu lugar en el Mercado** — cuota sobre cabezas operadas y puesto entre las 22.
+
+**Para las 109 del interior**, que no rematan en Cañuelas y no tenían nada:
+- **Tu agenda en la zona** — con qué casas compartís fecha, qué días están libres en tu
+  provincia y quién más remata cerca. Gratis: es lo que le demuestra a una casa del
+  interior que el panel la mira a ella.
+
+**Bandeja de entrada** — todas las señales en una lista ordenada por lo que está en
+juego, no por fecha. Iconografía de marca.
+
+### Cuatro bugs que devolvían números equivocados sin fallar
+
+`.limit(50000)` **no anula el tope de 1.000 filas de PostgREST**: no da error, devuelve
+menos y no avisa. Estaba en cuatro lugares y en todos producía un número plausible y
+falso:
+- **Intel de mercado** — el total de una firma cambiaba según a quién más siguieras
+  (Blanes daba 1.499 sola y 1.377 con Colombo).
+- **MCP `actividad_consignatarias`** — el ranking salía del 26% del mercado, en una
+  herramienta que se cobra.
+- **Benchmark de precios** — promedios calculados sobre el 12% de los lotes.
+- **Lista de firmas del MAG** — devolvía 2 de 22.
+
+### Otros arreglos
+
+- **Los links de WhatsApp no abrían**: faltaba el 9 de celular argentino. Afectaba a
+  todo el outreach del Ovejero desde el 1-ago.
+- **El registro estaba partido**: 26 perfiles públicos sin fila en la base — entre
+  ellos Arzuaga, que no podía recibir un lead. Ahora son 0.
+- **El clic de WhatsApp no dejaba lead**: 2.245 vistas de perfil y una sola fila
+  registrada. La sesión existía y no se guardaba.
+- **"+500 productores"** era falso por 5,5× (la lista tiene 90). Reemplazado en los
+  seis lugares donde estaba por lo que el código hace de verdad.
+- **La Ñ perdida en el scrape**: `CABAï¿½A` → `CABAÑA` (208 lotes).
+- **Ids de remate colisionaban** entre los cargados por la firma y los scrapeados.
+
+### Autoservicio
+
+- Una firma cuyo email coincide con el del registro **abre su panel sola**, sin
+  aprobación manual. Cubre al 78%; el resto sigue pasando por revisión.
+- El Ovejero vigila los claims pendientes y los pone primeros en el digest.
+- `lead_activity` — bitácora append-only por lead, con export CSV.
+- `promotion_campaigns` — distribución auditable: a cuántos les llegó cada remate.
+
+### Gate
+
+El contacto de un lead y los bloques del Mercado son PRO. Una firma FREE ve la **forma**
+de cada bloque con datos de ejemplo, no los suyos difuminados: el blur deja el dato real
+en el HTML, y acá son nombres de terceros.
+
+---
+
 ## [1.197.0] — 2026-08-19
 
 ### La guía que se vende

@@ -4,6 +4,9 @@ import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
 import { getConsignatariaPlanStatus } from '@/lib/features'
 import { generateConsignatariaPDF } from '@/lib/pdf/generateConsignatariaPDF'
 import { requireLoginForDownload } from '@/lib/gate'
+import { createServiceClient } from '@/lib/supabase'
+import { getPerformance, rematesPorMes, aResumenPDF } from '@/lib/reports/performance'
+import { getMergedAuctionsForConsignataria } from '@/lib/dal/auctions'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 
@@ -35,8 +38,14 @@ export async function GET(req: NextRequest, { params }: Props) {
     return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
   }
 
-  // Get all auctions for this consignataria
-  const profileAuctions = getAuctionsForProfile(auctions, canonical)
+  // Agenda completa: scrape + lo que cargó la firma. El reporte es el documento que
+  // ella reenvía, así que no puede faltarle el remate que publicó desde su panel.
+  const profileAuctions = await getMergedAuctionsForConsignataria(
+    createServiceClient(),
+    canonical,
+    profile.displayName,
+    getAuctionsForProfile(auctions, canonical),
+  )
   const today = new Date().toISOString().slice(0, 10)
   
   // Upcoming remates
@@ -60,6 +69,22 @@ export async function GET(req: NextRequest, { params }: Props) {
   // Estado PRO desde la fuente única (honra featured=true y valida el período).
   const { isPro } = await getConsignatariaPlanStatus(canonical)
 
+  // Performance del mes (Epic E): lo que convierte este PDF de ficha institucional
+  // en un reporte que la firma puede reenviar. Best-effort — si falla, el PDF sale
+  // igual con lo de siempre en vez de no salir.
+  let performance = null
+  try {
+    const service = createServiceClient()
+    if (service) {
+      const p = await getPerformance(service as unknown as Parameters<typeof getPerformance>[0], canonical, {
+        rematesPorMes: rematesPorMes(auctions as Array<{ consignatariaSlug?: string; date?: string }>, canonical),
+      })
+      performance = aResumenPDF(p)
+    }
+  } catch (e) {
+    console.error('[report] performance falló, sale la ficha sin el bloque:', e)
+  }
+
   // Generate PDF
   const doc = generateConsignatariaPDF({
     consignataria: {
@@ -81,6 +106,7 @@ export async function GET(req: NextRequest, { params }: Props) {
       types,
     },
     upcomingRemates,
+    performance,
     generatedAt: new Date().toLocaleDateString('es-AR', { 
       day: '2-digit', 
       month: 'long', 

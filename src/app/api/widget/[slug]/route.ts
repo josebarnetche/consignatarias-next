@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getCanonicalSlug, getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
+import { getMergedAuctionsForConsignataria } from '@/lib/dal/auctions'
+import { createServiceClient } from '@/lib/supabase'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 
@@ -42,9 +44,17 @@ export async function GET(req: NextRequest, { params }: Props) {
 
   // Get upcoming auctions
   const today = new Date().toISOString().slice(0, 10)
-  const upcoming = getAuctionsForProfile(auctions, canonical)
+  // El widget es lo que la firma embebe en SU sitio. Si el remate que cargó en el
+  // panel no aparece acá, el producto queda desmentido en su propia página.
+  const upcoming = (
+    await getMergedAuctionsForConsignataria(
+      createServiceClient(),
+      canonical,
+      profile.displayName,
+      getAuctionsForProfile(auctions, canonical),
+    )
+  )
     .filter(a => a.date >= today)
-    .sort((a, b) => a.date.localeCompare(b.date))
     .slice(0, max)
 
   const html = generateWidgetHTML(profile.displayName, canonical, upcoming, theme)

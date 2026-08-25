@@ -122,3 +122,12 @@ scripts/archive/value-events-report.js
 
 # artefacto temporal del render de guías
 .guia-build/
+
+# Login de desarrollo: crea sesiones sin email. Es inerte en producción (404 por
+# NODE_ENV) pero es una ruta que MINTA SESIONES y este repo es público, así que no
+# se publica ni se despliega. Vive solo en la máquina de quien desarrolla.
+src/app/api/dev/
+
+# Genera magic links de login para cualquier cuenta. Necesita la service-role key
+# para funcionar, pero es una utilidad de desarrollo y este repo es público.
+scripts/dev-magic-link.mts

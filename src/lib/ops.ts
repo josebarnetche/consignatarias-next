@@ -314,3 +314,24 @@ export async function getCronHealth(): Promise<CronHealthRow[]> {
 
   return rows
 }
+
+/**
+ * Deja una promesa corriendo después de devolver la respuesta.
+ *
+ * En Vercel la función se muere apenas responde, así que un `void promesa` suelto
+ * se pierde en silencio. Eso ya había pasado con el aviso de lead a la firma: el
+ * mail se "mandaba" con `void` y podía no salir nunca sin dejar rastro.
+ *
+ * Fuera de Vercel (dev, scripts) `waitUntil` tira, y la promesa igual se resuelve
+ * en proceso — por eso el catch vacío es seguro.
+ */
+export function enviarEnSegundoPlano(promesa: Promise<unknown>): void {
+  const seguro = promesa.catch((e) => {
+    console.error('[enviarEnSegundoPlano] falló:', e)
+  })
+  try {
+    waitUntil(seguro)
+  } catch {
+    /* dev/scripts: la promesa se resuelve igual en proceso */
+  }
+}

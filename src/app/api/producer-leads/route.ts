@@ -3,6 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { requireServiceClient } from '@/lib/supabase'
 import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limit-db'
 import { estimateOperation, matchConsignatarias, whatsappLink, DEFAULT_FEE_PCT } from '@/lib/leads/routing'
+import { triageLead, dedupeKey, DEDUPE_WINDOW_HOURS } from '@/lib/leads/triage'
 import { sendProducerLeadOps, sendProducerLeadConfirmation, sendFrigorificoLeadAlert } from '@/lib/email'
 import { getFrigorificoProfile } from '@/lib/dal/frigorificos'
 import { z } from 'zod'
@@ -70,6 +71,44 @@ export async function POST(req: NextRequest) {
     const ipHash = crypto.createHash('sha256').update(ip + d.name).digest('hex').slice(0, 16)
 
     const supabase = db()
+
+    // DEDUP — el mismo contacto, con la misma intención, dentro de las 24 h es un
+    // solo lead. Pasó de verdad: el par 13/14 (mismo mail, mismo pedido, mismo día)
+    // y el 11/12. Se responde 200 con el id existente para que el formulario no le
+    // muestre un error a alguien que simplemente apretó enviar dos veces.
+    const dkey = dedupeKey({ email: d.email, phone: d.phone, intent: d.intent })
+    if (dkey) {
+      const desde = new Date(Date.now() - DEDUPE_WINDOW_HOURS * 3600 * 1000).toISOString()
+      const { data: previos } = await supabase
+        .from('producer_leads')
+        .select('id, email, phone, intent')
+        .eq('intent', d.intent)
+        .gte('created_at', desde)
+        .limit(50)
+
+      const yaEsta = (previos || []).find(
+        (p: { email: string | null; phone: string | null; intent: string }) =>
+          dedupeKey({ email: p.email, phone: p.phone, intent: p.intent }) === dkey,
+      ) as { id: number } | undefined
+
+      if (yaEsta) {
+        return NextResponse.json({ ok: true, leadId: yaEsta.id, duplicate: true }, { status: 200 })
+      }
+    }
+
+    // TRIAGE — lo que no se puede rutear no entra como 'new', entra como
+    // 'needs_review' para que lo mire una persona. Ni el Ovejero ni el ruteo
+    // automático tocan un lead en revisión. Nunca se descarta solo.
+    const triage = triageLead({
+      intent: d.intent,
+      province: d.province,
+      zona: d.zona,
+      headCount: d.headCount,
+      hectareas: d.hectareas,
+      message: d.message,
+      name: d.name,
+    })
+
     const { data: inserted, error } = await supabase
       .from('producer_leads')
       .insert({
@@ -88,7 +127,8 @@ export async function POST(req: NextRequest) {
         estimated_value_ars: estimatedValueArs,
         fee_pct: feePct,
         fee_ars: feeArs,
-        status: 'new',
+        status: triage.status,
+        notes: triage.motivo,
         ip_hash: ipHash,
       })
       .select('id')
@@ -141,36 +181,43 @@ export async function POST(req: NextRequest) {
 
     // Match de firmas de la zona + ops-alert a Jose (driver del ruteo).
     // No bloquea la respuesta al usuario si el mail falla.
-    try {
-      const matches = await matchConsignatarias(supabase, { province: d.province, limit: 5 })
-      const waText = `Hola, tengo un productor interesado (${d.intent}${d.headCount ? `, ${d.headCount} cab` : ''}${d.zona ? `, ${d.zona}` : ''}) vía consignatarias.com. ¿Te lo paso?`
-      await sendProducerLeadOps({
-        leadId,
-        intent: d.intent,
-        category: d.category,
-        headCount: isArrendamiento ? undefined : d.headCount,
-        hectareas: isArrendamiento ? (d.hectareas ?? d.headCount) : d.hectareas,
-        desiredPriceArs: d.desiredPriceArs,
-        province: d.province,
-        zona: d.zona,
-        source: d.source,
-        lead: { name: d.name, phone: d.phone, email: d.email, message: d.message },
-        estimatedValueArs,
-        feeArs,
-        feePct,
-        matches: matches.map((m) => ({
-          displayName: m.displayName,
-          slug: m.slug,
-          province: m.province,
-          location: m.location,
-          featured: m.featured,
-          contactable: m.contactable,
-          phone: m.phone,
-          waLink: whatsappLink(m.whatsapp || m.phone, waText),
-        })),
-      })
-    } catch (e) {
-      console.error('producer_lead ops-alert error:', e)
+    //
+    // Un lead en revisión NO dispara el alert: el alert existe para prearmar el
+    // WhatsApp a una consignataria, y no se le prearma un mensaje a una firma por
+    // un lead que todavía no sabemos si es un lead. Queda visible en /admin/leads
+    // con su motivo en `notes`, que es donde se revisa.
+    if (triage.status === 'new') {
+      try {
+        const matches = await matchConsignatarias(supabase, { province: d.province, zona: d.zona, limit: 5 })
+        const waText = `Hola, tengo un productor interesado (${d.intent}${d.headCount ? `, ${d.headCount} cab` : ''}${d.zona ? `, ${d.zona}` : ''}) vía consignatarias.com. ¿Te lo paso?`
+        await sendProducerLeadOps({
+          leadId,
+          intent: d.intent,
+          category: d.category,
+          headCount: isArrendamiento ? undefined : d.headCount,
+          hectareas: isArrendamiento ? (d.hectareas ?? d.headCount) : d.hectareas,
+          desiredPriceArs: d.desiredPriceArs,
+          province: d.province,
+          zona: d.zona,
+          source: d.source,
+          lead: { name: d.name, phone: d.phone, email: d.email, message: d.message },
+          estimatedValueArs,
+          feeArs,
+          feePct,
+          matches: matches.map((m) => ({
+            displayName: m.displayName,
+            slug: m.slug,
+            province: m.province,
+            location: m.location,
+            featured: m.featured,
+            contactable: m.contactable,
+            phone: m.phone,
+            waLink: whatsappLink(m.whatsapp || m.phone, waText),
+          })),
+        })
+      } catch (e) {
+        console.error('producer_lead ops-alert error:', e)
+      }
     }
 
     return NextResponse.json({ success: true, message: 'Listo. Te contactamos a la brevedad.' })

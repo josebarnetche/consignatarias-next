@@ -20,6 +20,7 @@ import {
   synthesizeProfile,
 } from '@/lib/data/consignataria-slugs'
 import { getConsignatariaProfile, getRelatedConsignatarias } from '@/lib/dal/consignatarias'
+import { getMergedAuctionsForConsignataria } from '@/lib/dal/auctions'
 import { getApprovedReviewsForSlug, getReviewStatsForSlug } from '@/lib/dal/reviews'
 import { getEntityTier } from '@/lib/features'
 import { createServiceClient } from '@/lib/supabase'
@@ -343,55 +344,27 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
     ),
   ])
 
-  // Merge scraped auctions + owner-created auctions from Supabase
+  // Agenda completa: lo scrapeado + lo que cargó la firma. El merge vive en
+  // `lib/dal/auctions` para que TODAS las superficies vean lo mismo — antes estaba
+  // escrito acá nomás, así que el remate cargado por el dueño salía en su perfil y
+  // en ningún otro lado.
+  //
+  // Dos cambios respecto de la versión inline: el dedup compara fecha+localidad en
+  // vez de fecha+título (el scraper y el dueño casi nunca escriben el mismo título,
+  // así que el dedup viejo casi nunca disparaba y la página mostraba el remate dos
+  // veces), y cuando coinciden gana el del dueño, que conoce la hora, las cabezas y
+  // el catálogo mejor que nuestro parser.
   const scrapedAuctions = getAuctionsForProfile(auctions, canonical)
-
-  let ownerAuctions: Auction[] = []
-  try {
-    const service2 = createServiceClient()
-    if (!service2) throw new Error('Supabase not available')
-
-    const ownerQuery = service2
-      .from('consignataria_auctions')
-      .select('*')
-      .eq('consignataria_slug', canonical)
-      .order('date', { ascending: true })
-    const { data: dbAuctions } = await withTimeout(
-      ownerQuery as unknown as Promise<{ data: Record<string, unknown>[] | null }>,
-      3500,
-      { data: null },
-    )
-
-    if (dbAuctions) {
-      ownerAuctions = dbAuctions.map((a: Record<string, unknown>, idx: number) => ({
-        id: 100000 + (a.id as number) + idx,
-        title: a.title as string,
-        consignatariaName: enrichedProfile.displayName,
-        consignatariaSlug: canonical,
-        date: (a.date as string).slice(0, 10),
-        time: (a.time as string) || null,
-        location: (a.location as string) || '',
-        province: (a.province as string) || '',
-        type: (a.type as Auction['type']) || 'general',
-        mainCategory: (a.main_category as Auction['mainCategory']) || 'mixto',
-        estimatedHeads: (a.estimated_heads as number) || null,
-        description: (a.description as string) || '',
-        youtubeUrl: (a.youtube_url as string) || null,
-        catalogUrl: (a.catalog_url as string) || null,
-        source: 'manual' as const,
-        sourceUrl: null,
-        status: (a.status as Auction['status']) || 'scheduled',
-      }))
-    }
-  } catch {
-    // Fallback to scraped only
-  }
-
-  // Deduplicate: if a scraped auction has same date+title, prefer scraped
-  const scrapedKeys = new Set(scrapedAuctions.map(a => `${a.date}|${a.title.toLowerCase()}`))
-  const uniqueOwner = ownerAuctions.filter(a => !scrapedKeys.has(`${a.date}|${a.title.toLowerCase()}`))
-  const profileAuctions = [...scrapedAuctions, ...uniqueOwner]
-    .sort((a, b) => a.date.localeCompare(b.date))
+  const profileAuctions = await withTimeout(
+    getMergedAuctionsForConsignataria(
+      createServiceClient(),
+      canonical,
+      enrichedProfile.displayName,
+      scrapedAuctions,
+    ),
+    3500,
+    scrapedAuctions,
+  )
 
   // Derive location info from auctions
   const provinces = [...new Set(profileAuctions.map(a => a.province).filter(Boolean))]

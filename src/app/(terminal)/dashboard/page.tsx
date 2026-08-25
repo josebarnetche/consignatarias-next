@@ -1,10 +1,18 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase'
-import { getFrigorificoPlanStatus } from '@/lib/features'
+import { getFrigorificoPlanStatus, getConsignatariaPlanStatus } from '@/lib/features'
 import DashboardClient, { type FrigoProduct, type FrigoRfq } from './DashboardClient'
 import ProductorDashboard from './ProductorDashboard'
 import rematesData from '@/lib/data/remates.json'
+import { getPerformance, rematesPorMes, type Performance } from '@/lib/reports/performance'
+import { getDistribucion, type ResumenDistribucion } from '@/lib/promotion'
+import { getBenchmark, type Benchmark } from '@/lib/reports/benchmark'
+import { getCartera, type Cartera } from '@/lib/reports/cartera'
+import { getParticipacion, type Participacion } from '@/lib/reports/participacion'
+import { construirBandeja, type Bandeja } from '@/lib/reports/bandeja'
+import { getAgendaRegional, type AgendaRegional } from '@/lib/reports/agenda-regional'
+import { intentarAutoAprobar } from '@/lib/claims/auto-approve'
 import marketPrices from '@/lib/data/market-prices.json'
 
 export const dynamic = 'force-dynamic'
@@ -29,6 +37,18 @@ export default async function DashboardPage() {
     .select('*, consignatarias(display_name, canonical_slug)')
     .eq('claimant_email', user.email!)
     .order('created_at', { ascending: false })
+
+  // AUTO-HABILITACIÓN. Si el usuario que acaba de iniciar sesión tiene un claim
+  // pendiente y su email prueba que es de la firma (coincide con el del registro, o
+  // comparte el dominio propio de la casa), el panel se abre solo. Antes esto pedía
+  // que una persona aprobara a mano desde /admin/claims, así que una firma que
+  // reclamaba un domingo esperaba al lunes.
+  //
+  // Corre ANTES de leer la consignataria: si aprueba, la lectura de abajo ya la
+  // encuentra reclamada y el panel aparece completo en la misma carga.
+  if (user.email) {
+    await intentarAutoAprobar(service as unknown as Parameters<typeof intentarAutoAprobar>[0], user.email, user.id)
+  }
 
   // Get user's verified consignataria (if any)
   const { data: consignataria } = await service
@@ -217,6 +237,91 @@ export default async function DashboardPage() {
     }
   }
 
+  // Performance del mes vs el anterior (Epic E). Es lo único del panel que responde
+  // "¿esto me sirvió?" con una serie y no con una foto — y lo hace sin declarar
+  // mejoras que no se distinguen del ruido.
+  let performance: Performance | null = null
+  if (consignataria) {
+    try {
+      performance = await getPerformance(service as unknown as Parameters<typeof getPerformance>[0], consignataria.canonical_slug, {
+        // Cuenta los remates de las DOS fuentes. Con sólo el scrape, una firma que
+        // cargaba su remate desde el panel leía después "no tenés ningún remate
+        // publicado este mes" en su propio reporte — la contradicción más directa
+        // posible entre lo que hizo y lo que le decimos que hizo.
+        rematesPorMes: rematesPorMes(
+          [
+            ...(rematesData as Array<{ consignatariaSlug?: string; date?: string }>),
+            ...ownerAuctions.map((a) => ({
+              consignatariaSlug: consignataria.canonical_slug,
+              date: a.date,
+            })),
+          ],
+          consignataria.canonical_slug,
+        ),
+      })
+    } catch (e) {
+      // El panel no se cae por el bloque de performance.
+      console.error('[dashboard] performance falló:', e)
+    }
+  }
+
+  // Distribución auditable (Epic D): a cuántos les llegaron sus remates.
+  let distribucion: ResumenDistribucion | null = null
+  if (consignataria) {
+    distribucion = await getDistribucion(
+      service as unknown as Parameters<typeof getDistribucion>[0],
+      consignataria.canonical_slug,
+    )
+  }
+
+  // Benchmark contra el mercado de Cañuelas. Es lo único del panel que su propio
+  // CRM no puede reemplazar: su sistema tiene sus liquidaciones, no las de las otras
+  // 21 casas. Devuelve null si la firma no opera en el MAG (la mayoría del interior).
+  let benchmark: Benchmark | null = null
+  let cartera: Cartera | null = null
+  let participacion: Participacion | null = null
+  if (consignataria) {
+    // En paralelo: son tres lecturas del MAG y no dependen entre sí.
+    ;[benchmark, cartera, participacion] = await Promise.all([
+      getBenchmark(service as unknown as Parameters<typeof getBenchmark>[0], consignataria.canonical_slug),
+      getCartera(service as unknown as Parameters<typeof getCartera>[0], consignataria.canonical_slug),
+      getParticipacion(service as unknown as Parameters<typeof getParticipacion>[0], consignataria.canonical_slug),
+    ])
+  }
+
+  // AGENDA REGIONAL — el bloque de las 109 casas que NO rematan en Cañuelas y para
+  // las que no hay dato transaccional. Sale del calendario, así que sirve para todas;
+  // se calcula siempre porque la pregunta que responde (con quién comparto fecha) es
+  // distinta de la del MAG.
+  let agenda: AgendaRegional | null = null
+  if (consignataria) {
+    agenda = await getAgendaRegional(
+      service as unknown as Parameters<typeof getAgendaRegional>[0],
+      consignataria.canonical_slug,
+      rematesData as Parameters<typeof getAgendaRegional>[2],
+    )
+  }
+
+  // BANDEJA — junta todas las señales en una sola lista ordenada por lo que está en
+  // juego. Va última en el cálculo porque consume lo que los demás bloques ya
+  // resolvieron; es una función pura, no vuelve a consultar nada.
+  let bandeja: Bandeja | null = null
+  if (consignataria) {
+    bandeja = construirBandeja({
+      cartera,
+      benchmark,
+      participacion,
+      leadsNuevos: leads
+        .filter((l) => (l.status ?? 'new') === 'new')
+        .slice(0, 10)
+        .map((l) => ({ id: l.id, name: l.name, created_at: l.created_at, message: l.message })),
+      proximosRemates: ownerAuctions
+        .filter((a) => a.date >= today)
+        .map((a) => ({ title: a.title, date: a.date })),
+      faltaWhatsapp: !consignataria.whatsapp,
+    })
+  }
+
   // Get total remate watchers (demand signal)
   // Demanda directa: productores que SIGUEN a la casa (user_favorites, del
   // FollowButton del perfil) y marcas en sus remates (remate_marks).
@@ -336,6 +441,47 @@ export default async function DashboardPage() {
     subscription = sub
   }
 
+  // GATE DE CONTACTO — el teléfono y el email de un lead son LO que se paga, así
+  // que no pueden salir del server si la firma no es PRO. Enmascararlos sólo al
+  // renderizar no alcanza: los props de un client component viajan en el HTML y se
+  // leen desde el inspector. Acá se borran antes de cruzar el límite.
+  //
+  // Lo que SÍ viaja: nombre, fecha, mensaje y origen. Eso prueba que el lead es
+  // real —que es lo que hace que valga la pena pagar— sin entregar lo accionable.
+  //
+  // Lo mismo vale para los bloques del Mercado: la cartera trae nombres de los
+  // productores que le consignan a esa casa —datos de terceros— y es justo lo que se
+  // cobra. Al FREE se le muestra la FORMA del bloque con datos de ejemplo
+  // (`lib/reports/muestras.ts`), así que el dato verdadero directamente no sale de
+  // acá. `hayDatosMag` le dice al cliente si la firma opera en Cañuelas, para saber
+  // si tiene sentido ofrecerle la muestra o no mostrar nada.
+  let hayDatosMag = false
+  if (consignataria) {
+    const { isPro } = await getConsignatariaPlanStatus(consignataria.canonical_slug)
+    hayDatosMag = !!(cartera || benchmark || participacion)
+    if (!isPro) {
+      leads = leads.map((l) => ({ ...l, phone: null, email: null }))
+      cartera = null
+      benchmark = null
+      participacion = null
+      // La bandeja se rearma sin las señales del MAG: sus entradas citan nombres de
+      // remitentes y cifras de la cartera.
+      bandeja = construirBandeja({
+        cartera: null,
+        benchmark: null,
+        participacion: null,
+        leadsNuevos: leads
+          .filter((l) => (l.status ?? 'new') === 'new')
+          .slice(0, 10)
+          .map((l) => ({ id: l.id, name: l.name, created_at: l.created_at, message: l.message })),
+        proximosRemates: ownerAuctions
+          .filter((a) => a.date >= today)
+          .map((a) => ({ title: a.title, date: a.date })),
+        faltaWhatsapp: !consignataria.whatsapp,
+      })
+    }
+  }
+
   // Compute completed fields for onboarding checklist
   const completedFields = consignataria
     ? {
@@ -420,6 +566,14 @@ export default async function DashboardPage() {
       frigoProducts={frigoProducts}
       frigoRfqs={frigoRfqs}
       frigoIsPro={frigoIsPro}
+      performance={performance}
+      benchmark={benchmark}
+      cartera={cartera}
+      participacion={participacion}
+      bandeja={bandeja}
+      hayDatosMag={hayDatosMag}
+      agenda={agenda}
+      distribucion={distribucion}
       dteCount={dteCount}
       alreadyRedeemed={alreadyRedeemed}
     />

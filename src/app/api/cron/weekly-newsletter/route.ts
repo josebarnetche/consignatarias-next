@@ -6,6 +6,7 @@ import { capForFreePlan } from '@/lib/email-limits'
 import { trackCron } from '@/lib/ops'
 import { authorizeCron } from '@/lib/cron-auth'
 import rematesData from '@/lib/data/remates.json'
+import { registrarCampanas } from '@/lib/promotion'
 import type { Auction } from '@/lib/db/schema'
 
 /**
@@ -96,6 +97,30 @@ export async function POST(req: NextRequest) {
       } catch (err) {
         errors.push(`${sub.email}: ${err}`)
       }
+    }
+
+    // DISTRIBUCIÓN AUDITABLE — una fila por firma que salió en este envío.
+    //
+    // Va DESPUÉS del bucle y usa `sent`, no `subscribers.length`: se registra a
+    // cuántos les llegó de verdad, no cuántos había en la lista. Ése es el número
+    // que la firma puede auditar cuando pregunte "¿a cuántos les llegó mi remate?".
+    //
+    // Una fila por (firma, remate): si una casa aparece con dos remates, son dos
+    // filas, porque son dos cosas distintas que se distribuyeron.
+    if (sent > 0) {
+      const ref = `weekly-${new Date().toISOString().slice(0, 10)}`
+      await registrarCampanas(
+        supabase as unknown as Parameters<typeof registrarCampanas>[0],
+        featuredRemates.map((r) => ({
+          canal: 'newsletter' as const,
+          consignatariaSlug: r.slug,
+          remateTitle: r.title,
+          remateDate: r.date,
+          destinatarios: sent,
+          ref,
+          meta: { isPro: r.isPro, weekRange },
+        })),
+      )
     }
 
     const body = {

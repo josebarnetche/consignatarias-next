@@ -29,6 +29,22 @@ interface ConsignatariaReportData {
   }
   upcomingRemates: RemateData[]
   generatedAt: string
+  /**
+   * Performance del mes. Opcional: sin esto el PDF sigue siendo la ficha
+   * institucional de antes, que es lo correcto para una firma sin datos propios
+   * todavía (recién reclamada, sin tráfico).
+   */
+  performance?: PerformanceResumen | null
+}
+
+/** Lo que el PDF necesita de `lib/reports/performance` — sin acoplarse al módulo. */
+export interface PerformanceResumen {
+  mesActual: string
+  mesAnterior: string
+  filas: Array<{ titulo: string; actual: number; anterior: number; leyenda: string; esSeñal: boolean; sube: boolean }>
+  porCanal: Array<{ canal: string; n: number }>
+  ranking: string | null
+  recomendaciones: string[]
 }
 
 function fmt(n: number): string {
@@ -133,6 +149,106 @@ export function generateConsignatariaPDF(data: ConsignatariaReportData): jsPDF {
   doc.text('Provincias', margin + statWidth * 3.5, y + 14, { align: 'center' })
 
   y += 22
+
+  // ============================================
+  // TU MES — performance vs el mes anterior
+  // ============================================
+  // Va antes que todo lo demás a propósito: los remates y las provincias la firma
+  // ya los sabe. Lo que no sabe —y lo único que justifica pagar— es si la miraron
+  // más o menos que el mes pasado. Este bloque es el que la firma le muestra a su
+  // socio, así que no dice "+100%" cuando pasó de 2 a 4: dice lo que se puede
+  // afirmar y nada más.
+  const perf = data.performance
+  if (perf) {
+    doc.setTextColor(...grayColor)
+    doc.setFontSize(7)
+    doc.setFont('helvetica', 'bold')
+    doc.text(`TU MES — ${perf.mesActual.toUpperCase()} vs ${perf.mesAnterior.toUpperCase()}`, margin, y)
+    y += 5
+
+    const colW = contentWidth / perf.filas.length
+    for (let i = 0; i < perf.filas.length; i++) {
+      const f = perf.filas[i]
+      const x = margin + colW * i
+
+      doc.setDrawColor(230, 230, 230)
+      doc.setFillColor(250, 250, 250)
+      doc.rect(x + 1, y, colW - 2, 20, 'FD')
+
+      doc.setFontSize(13)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(30, 30, 30)
+      doc.text(fmt(f.actual), x + 4, y + 8)
+
+      // El delta se pinta con color SÓLO si superó el ruido. Gris = "se movió,
+      // pero todavía no se puede afirmar que cambió".
+      const delta = f.actual - f.anterior
+      if (f.esSeñal) {
+        if (f.sube) doc.setTextColor(22, 140, 90)
+        else doc.setTextColor(190, 60, 50)
+      } else {
+        doc.setTextColor(150, 150, 150)
+      }
+      doc.setFontSize(8)
+      doc.text(`${delta > 0 ? '+' : ''}${delta}`, x + 4 + doc.getTextWidth(fmt(f.actual)) + 3, y + 8)
+
+      doc.setFontSize(6)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(...grayColor)
+      doc.text(f.titulo.toUpperCase(), x + 4, y + 12.5)
+
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(5.5)
+      doc.setTextColor(130, 130, 130)
+      for (const [k, linea] of doc.splitTextToSize(f.leyenda, colW - 8).slice(0, 3).entries()) {
+        doc.text(linea as string, x + 4, y + 15.5 + k * 2.4)
+      }
+    }
+    y += 24
+
+    if (perf.porCanal.length > 0) {
+      doc.setFontSize(6)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(...grayColor)
+      doc.text(`Cómo te contactaron: ${perf.porCanal.map((c) => `${c.canal} ${c.n}`).join('  ·  ')}`, margin, y)
+      y += 5
+    }
+
+    if (perf.ranking) {
+      doc.setFontSize(7)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(...accentColor)
+      doc.text(perf.ranking, margin, y)
+      y += 6
+    }
+
+    if (perf.recomendaciones.length > 0) {
+      doc.setFontSize(6.5)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(90, 90, 90)
+      for (const r of perf.recomendaciones.slice(0, 4)) {
+        for (const linea of doc.splitTextToSize(`•  ${r}`, contentWidth)) {
+          doc.text(linea as string, margin, y)
+          y += 3.2
+        }
+        y += 1
+      }
+      y += 2
+    }
+
+    // La nota metodológica no es adorno: es lo que hace que el número resista que
+    // el socio lo mire de cerca.
+    doc.setFontSize(5)
+    doc.setTextColor(160, 160, 160)
+    for (const linea of doc.splitTextToSize(
+      'Un cambio se marca en verde o rojo sólo cuando supera la variación normal de un mes a otro. Si la leyenda dice que se mantiene o que hay pocos datos, el número se movió pero todavía no alcanza para afirmar que algo cambió.',
+      contentWidth,
+    )) {
+      doc.text(linea as string, margin, y)
+      y += 2.2
+    }
+    y += 5
+  }
 
   // ============================================
   // TIPOS DE REMATE

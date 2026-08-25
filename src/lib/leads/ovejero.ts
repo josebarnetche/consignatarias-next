@@ -129,7 +129,26 @@ async function estadoPorLead(db: SupabaseClient, leadIds: number[]): Promise<Map
   return mapa
 }
 
+/**
+ * Una firma que pidió su perfil y sigue esperando.
+ *
+ * Es lo más cerca de una venta que existe en todo el sistema: alguien de la casa se
+ * tomó el trabajo de reclamar. La aprobación es manual (la revisa una persona en
+ * /admin/claims), así que sin esta vigilancia el pedido depende de que alguien
+ * abra un mail. El Ovejero ya vigila el SLA de los leads; los claims no los
+ * vigilaba nadie.
+ */
+export interface ClaimEnEspera {
+  id: string
+  slug: string
+  email: string
+  dias: number
+  /** A los 2 días avisa; a los 5 grita. Mismo criterio que el SLA de leads. */
+  urgente: boolean
+}
+
 export interface ReporteOvejero {
+  claimsEnEspera: ClaimEnEspera[]
   matches: MatchArrendamiento[]
   pendientes: LeadPendiente[]
   zonasSinOferta: ZonaSinOferta[]
@@ -305,7 +324,7 @@ async function firmasParaConsultar(
   db: SupabaseClient,
   lead: LeadRow,
 ): Promise<Array<{ slug: string; displayName: string; email: string }>> {
-  const candidatas = await matchConsignatarias(db, { province: lead.province, limit: 25 })
+  const candidatas = await matchConsignatarias(db, { province: lead.province, zona: lead.zona, limit: 25 })
   if (candidatas.length === 0) return []
 
   const { data: contactos } = await db
@@ -573,14 +592,31 @@ export async function correrOvejero(db: SupabaseClient): Promise<ReporteOvejero>
     .select('id', { count: 'exact', head: true })
     .eq('status', 'active')
 
+  // Claims sin resolver. Van PRIMERO en el digest: una firma esperando vale más que
+  // un lead de productor, porque es la que puede terminar pagando.
+  const { data: claimsPend } = await db
+    .from('consignataria_claims')
+    .select('id, consignataria_slug, claimant_email, created_at')
+    .eq('status', 'pending')
+    .order('created_at', { ascending: true })
+    .limit(50)
+
+  const claimsEnEspera: ClaimEnEspera[] = (claimsPend ?? []).map((c: {
+    id: string; consignataria_slug: string; claimant_email: string; created_at: string
+  }) => {
+    const dias = Math.floor((Date.now() - new Date(c.created_at).getTime()) / 86_400_000)
+    return { id: c.id, slug: c.consignataria_slug, email: c.claimant_email, dias, urgente: dias >= 2 }
+  })
+
   return {
+    claimsEnEspera,
     matches,
     pendientes,
     zonasSinOferta,
     ranking: rankearLeads(leads),
     consultas: [],
     sinRespuesta: [],
-    hayAlgoQueHacer: matches.length > 0 || pendientes.length > 0 || zonasSinOferta.length > 0,
+    hayAlgoQueHacer: claimsEnEspera.length > 0 || matches.length > 0 || pendientes.length > 0 || zonasSinOferta.length > 0,
     totales: { leadsActivos: leads.length, demandasActivas: demandasActivas ?? 0 },
   }
 }

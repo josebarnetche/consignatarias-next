@@ -3,6 +3,7 @@ import { requireServiceClient } from '@/lib/supabase'
 import { claimSchema } from '@/lib/validators/claim'
 import { sendClaimNotificationToAdmin } from '@/lib/email'
 import { getProfile } from '@/lib/data/consignataria-slugs'
+import { verificarPosesion } from '@/lib/claims/auto-approve'
 import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limit-db'
 
 export async function POST(req: NextRequest) {
@@ -35,10 +36,10 @@ export async function POST(req: NextRequest) {
     // for those, seed a minimal row from the static registry so the real owner can claim
     // instead of hitting a 404. Only canonical_slug + display_name are required — the
     // rest of the columns carry DB defaults (verified=false, featured=false, etc.).
-    let consignataria: { canonical_slug: string; display_name: string; claimed_at: string | null } | null = null
+    let consignataria: { canonical_slug: string; display_name: string; claimed_at: string | null; email?: string | null } | null = null
     const { data: existing } = await supabase
       .from('consignatarias')
-      .select('canonical_slug, display_name, claimed_at')
+      .select('canonical_slug, display_name, claimed_at, email')
       .eq('canonical_slug', consignataria_slug)
       .maybeSingle()
     consignataria = existing
@@ -57,7 +58,7 @@ export async function POST(req: NextRequest) {
           { canonical_slug: staticProfile.canonicalSlug, display_name: staticProfile.displayName },
           { onConflict: 'canonical_slug' },
         )
-        .select('canonical_slug, display_name, claimed_at')
+        .select('canonical_slug, display_name, claimed_at, email')
         .single()
       if (seedError || !seeded) {
         return NextResponse.json(
@@ -76,16 +77,18 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // SECURITY: insert as PENDING (not approved). The magic-link send below
-    // is harmless — it lands in the real owner's inbox if the email is correct,
-    // or in the attacker's if not. Approval (status='approved' + consignataria
-    // verified flag + role assignment) is gated by the admin claims UI.
+    // SEGURIDAD: entra siempre como PENDING. Enviar el magic link es inofensivo —
+    // cae en el inbox del dueño real si el email es correcto, o en el del atacante
+    // si no—, y por eso completar este formulario NUNCA aprueba nada por sí solo.
     //
-    // TODO v1.15 — add /api/claims/[id]/confirm endpoint that flips
-    // status='approved' + verified=true when the magic-link recipient
-    // completes their first session for this email. Today, admin reviews
-    // pending claims in /admin/claims and uses the existing approval flow
-    // (see src/app/api/admin/claims/[id]/route.ts).
+    // La aprobación ocurre recién cuando alguien ABRE ese link y entra al panel:
+    // ahí `intentarAutoAprobar()` (lib/claims/auto-approve.ts) comprueba que el
+    // email de la sesión coincida con el que el registro ya tenía para esa firma, o
+    // que comparta su dominio propio. Abrir el inbox es la prueba de posesión; el
+    // formulario, no. Lo que no se puede verificar así sigue yendo a /admin/claims.
+    //
+    // (Esto reemplaza el viejo TODO v1.15 de un endpoint /confirm: la confirmación
+    // pasa al cargar el panel, así funciona sin importar cómo llegó el usuario.)
     const { error: insertError } = await supabase
       .from('consignataria_claims')
       .insert({
@@ -109,6 +112,7 @@ export async function POST(req: NextRequest) {
     // Send magic link so the (presumed) owner can prove possession of the
     // inbox. We do NOT create the auth user or assign 'owner' role here —
     // that happens on admin approval.
+    const consignatariaEmail = consignataria.email ?? null
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
 
     // Send magic link via OTP (this actually sends the email)
@@ -143,10 +147,17 @@ export async function POST(req: NextRequest) {
       console.error('[claims] admin notification FAILED — review pending claim manually:', consignataria_slug, e)
     }
 
+    // El mensaje cambia según si el panel se va a abrir solo o no. Antes decía
+    // siempre "revisaremos el reclamo", que desde la auto-habilitación es falso
+    // para el 78% de las firmas: entran con el link, sin que nadie las apruebe.
+    const seAbreSolo = verificarPosesion(consignatariaEmail, claimant_email).aprobar
+
     return NextResponse.json(
       {
-        message:
-          'Solicitud recibida. Revisaremos el reclamo y, una vez aprobado, podrás acceder a tu panel desde el link que enviamos por email.',
+        message: seAbreSolo
+          ? 'Listo. Te mandamos un link por email: al abrirlo entrás directo a tu panel.'
+          : 'Solicitud recibida. Como el email no coincide con el que tenemos registrado, la revisamos a mano y te avisamos apenas esté.',
+        autoAprobable: seAbreSolo,
       },
       { status: 201 },
     )

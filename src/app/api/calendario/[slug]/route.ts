@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getCanonicalSlug, getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
+import { getMergedAuctionsForConsignataria } from '@/lib/dal/auctions'
+import { createServiceClient } from '@/lib/supabase'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 
@@ -33,9 +35,18 @@ export async function GET(req: NextRequest, { params }: Props) {
 
   // Get upcoming auctions
   const today = new Date().toISOString().slice(0, 10)
-  const profileAuctions = getAuctionsForProfile(auctions, canonical)
+  // Agenda completa (scrape + lo que cargó la firma). Sin el merge, el remate que
+  // el dueño publica desde su panel nunca llegaba al calendario que el productor se
+  // suscribió — que es exactamente la distribución que le vendemos.
+  const profileAuctions = (
+    await getMergedAuctionsForConsignataria(
+      createServiceClient(),
+      canonical,
+      profile.displayName,
+      getAuctionsForProfile(auctions, canonical),
+    )
+  )
     .filter(a => a.date >= today)
-    .sort((a, b) => a.date.localeCompare(b.date))
     .slice(0, 50) // Limit to 50 events
 
   // Generate ICS content

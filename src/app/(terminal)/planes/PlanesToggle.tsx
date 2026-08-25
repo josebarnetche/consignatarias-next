@@ -173,15 +173,24 @@ export default function PlanesToggle() {
         </div>
         <div className="px-panel py-5 flex flex-col md:flex-row md:items-center gap-6">
           <div className="flex-1">
-            <p className="text-zinc-300 text-data mb-4">
-              Cada vez que publicás un remate, se lo avisamos por email a toda la base de productores.
-              Y tu firma queda destacada en el directorio.
+            {/* El titular cambió: antes vendía alcance ("le avisamos a la base"), que
+                con una lista de 90 suscriptores no sostiene una reunión. Ahora
+                encabeza lo que su propio sistema no puede darle — el cruce contra las
+                otras 21 casas de Cañuelas. */}
+            <p className="text-zinc-200 text-base leading-snug mb-1">
+              Tu sistema sabe a quién le facturaste. No sabe qué hizo el resto del mercado.
+            </p>
+            <p className="text-zinc-400 text-sm leading-relaxed mb-4">
+              Cruzamos las operaciones que el Mercado Agroganadero publica lote por lote —las
+              22 casas, todos los días de remate— contra las tuyas.
             </p>
             <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2">
               {[
-                'Avisamos cada remate tuyo por email a más de 500 productores',
-                'Tu perfil destacado, con distintivo dorado en el directorio',
-                'Ves cuántos productores miran tu perfil',
+                'Qué remitentes dejaron de consignarte, y cuáles están operando en otra casa',
+                'Si vendés arriba o abajo del promedio del mercado, categoría por categoría',
+                'Tu cuota sobre las cabezas operadas y tu puesto entre las 22 casas',
+                'Los productores que te consultan por el sitio, con nombre y teléfono',
+                'Tus remates primero en el newsletter semanal, y tu perfil destacado',
                 'Tu propia página y código QR para tus catálogos',
               ].map((f) => (
                 <li key={f} className="flex items-start gap-2 text-data text-zinc-300">

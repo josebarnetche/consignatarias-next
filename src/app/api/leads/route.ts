@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendLeadAlert, LEAD_ALERT_TO } from '@/lib/email'
+import { enviarEnSegundoPlano } from '@/lib/ops'
+import { getConsignatariaPlanStatus } from '@/lib/features'
 import { z } from 'zod'
 import crypto from 'crypto'
 
@@ -94,26 +96,42 @@ export async function POST(req: NextRequest) {
         .maybeSingle()
       const owner = (cons as { display_name?: string; claimed_by_email?: string | null; featured?: boolean } | null)
       const consignataria = owner?.display_name || slug
+
       if (owner?.claimed_by_email) {
+        // El estado PRO sale de la fuente ÚNICA, no de `featured` a secas: una firma
+        // que PAGA pero no está destacada a mano tiene `featured=false`, y con el
+        // chequeo viejo recibía su propio lead ENMASCARADO. Es el mismo bug de
+        // "fuente PRO duplicada" que se corrigió en el resto del código en julio y
+        // que acá había quedado vivo.
+        const { isPro } = await getConsignatariaPlanStatus(slug)
+
         // Firma reclamada: le llega a ella (gated PRO) y Jose queda copiado en bcc.
-        void sendLeadAlert({
-          to: owner.claimed_by_email,
-          bcc: LEAD_ALERT_TO,
-          consignataria,
-          slug,
-          isPro: !!owner.featured,
-          lead: { name, phone, email, message },
-        })
+        //
+        // Va dentro de `waitUntil`: en Vercel la función muere al devolver la
+        // respuesta y un `void` suelto pierde el envío en silencio — o sea, el aviso
+        // del lead podía no llegarle nunca a la firma sin que nadie se enterara.
+        enviarEnSegundoPlano(
+          sendLeadAlert({
+            to: owner.claimed_by_email,
+            bcc: LEAD_ALERT_TO,
+            consignataria,
+            slug,
+            isPro,
+            lead: { name, phone, email, message },
+          }),
+        )
       } else {
         // Sin reclamar: no hay inbox de la firma → el lead va directo a Jose, con
         // contacto completo (es alerta interna, no la ve la firma).
-        void sendLeadAlert({
-          to: LEAD_ALERT_TO,
-          consignataria,
-          slug,
-          isPro: true,
-          lead: { name, phone, email, message },
-        })
+        enviarEnSegundoPlano(
+          sendLeadAlert({
+            to: LEAD_ALERT_TO,
+            consignataria,
+            slug,
+            isPro: true,
+            lead: { name, phone, email, message },
+          }),
+        )
       }
     } catch (e) {
       console.error('Lead alert error:', e)

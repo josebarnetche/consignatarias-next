@@ -1,9 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { RefreshCw, Phone, Mail, MapPin, TrendingUp } from 'lucide-react'
+import { RefreshCw, Phone, Mail, MapPin, TrendingUp, Download } from 'lucide-react'
 import { EmptyState } from '@/components/ui'
 import { computeSpread } from '@/lib/leads/spread'
+import LeadActivity from '@/components/admin/LeadActivity'
+import { KIND_LABEL, OUTCOME_LABEL, type ActivityRow } from '@/lib/leads/activity'
 
 interface Lead {
   id: number
@@ -37,15 +39,25 @@ interface Stats {
 
 const STATUS_META: Record<string, { label: string; cls: string }> = {
   new: { label: 'Nuevo', cls: 'bg-sky-500/20 text-sky-300 border-sky-500/30' },
+  needs_review: { label: 'A revisar', cls: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
   routed: { label: 'Ruteado', cls: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' },
   contacted: { label: 'Contactado', cls: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
   won: { label: 'Ganado', cls: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
   lost: { label: 'Perdido', cls: 'bg-zinc-600/20 text-zinc-400 border-zinc-600/30' },
+  discarded: { label: 'Descartado', cls: 'bg-zinc-700/20 text-zinc-500 border-zinc-700/30' },
 }
 const INTENT_LABEL: Record<string, string> = {
   vender: 'Vender', comprar: 'Comprar', arrendar: 'Arrendar', consignar: 'Consignar', tasar: 'Tasar',
+  arrendar_busco: 'Busca campo', arrendar_ofrezco: 'Ofrece campo',
 }
-const NEXT_STATUS = ['new', 'routed', 'contacted', 'won', 'lost']
+const NEXT_STATUS = ['new', 'needs_review', 'routed', 'contacted', 'won', 'lost', 'discarded']
+
+/**
+ * Los estados que sacan un lead de la mesa de trabajo. Se colapsan por defecto para
+ * que la lista muestre lo que hay que mover, no el archivo — al 21-ago, cinco de
+ * doce filas estaban descartadas y tapaban a las tres que importaban.
+ */
+const CERRADOS = ['discarded', 'lost']
 
 const ars = (n: number | null | undefined) => (n ? '$' + Math.round(n).toLocaleString('es-AR') : '—')
 function fmtDate(s: string) {
@@ -57,16 +69,76 @@ export default function AdminLeadsPage() {
   const [stats, setStats] = useState<Stats | null>(null)
   const [loading, setLoading] = useState(true)
   const [savingId, setSavingId] = useState<number | null>(null)
+  const [activity, setActivity] = useState<Record<number, ActivityRow[]>>({})
+  const [verCerrados, setVerCerrados] = useState(false)
 
   async function load() {
     setLoading(true)
     try {
       const res = await fetch('/api/admin/leads')
       const j = await res.json()
-      if (res.ok) { setLeads(j.leads || []); setStats(j.stats || null) }
+      if (res.ok) {
+        setLeads(j.leads || [])
+        setStats(j.stats || null)
+        setActivity(j.activity || {})
+      }
     } finally {
       setLoading(false)
     }
+  }
+
+  /**
+   * Export CSV — la copia local del pipeline.
+   *
+   * Una fila por ACTIVIDAD, no por lead: el lead solo dice dónde quedó; lo que hace
+   * falta llevarse es el trabajo. Un lead sin actividad igual sale, con las columnas
+   * de bitácora vacías, para que el export sea el pipeline completo y no sólo lo
+   * que se trabajó.
+   */
+  function exportCsv() {
+    const esc = (v: unknown) => {
+      const s = v == null ? '' : String(v)
+      return /[",\n;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+    }
+    const cols = [
+      'lead_id', 'fecha_lead', 'estado', 'intent', 'categoria', 'cabezas', 'hectareas',
+      'provincia', 'zona', 'nombre', 'telefono', 'email', 'mensaje', 'origen',
+      'valor_estimado_ars', 'fee_ars', 'ruteado_a', 'notas',
+      'act_fecha', 'act_tipo', 'act_resultado', 'act_detalle', 'act_actor',
+    ]
+    const filas: string[] = [cols.join(',')]
+
+    for (const l of leads) {
+      const base = [
+        l.id, l.created_at, l.status, l.intent, l.category, l.head_count, l.hectareas,
+        l.province, l.zona, l.name, l.phone, l.email, l.message, l.source,
+        l.estimated_value_ars, l.fee_ars, l.routed_to_slug, l.notes,
+      ]
+      const acts = (activity[l.id] ?? []).slice().reverse() // cronológico en el archivo
+      if (acts.length === 0) {
+        filas.push([...base, '', '', '', '', ''].map(esc).join(','))
+        continue
+      }
+      for (const a of acts) {
+        filas.push([
+          ...base,
+          a.created_at,
+          KIND_LABEL[a.kind] ?? a.kind,
+          a.outcome ? OUTCOME_LABEL[a.outcome] : '',
+          a.body,
+          a.actor,
+        ].map(esc).join(','))
+      }
+    }
+
+    // BOM para que Excel en Windows no rompa los acentos.
+    const blob = new Blob(['﻿' + filas.join('\n')], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `leads-${new Date().toISOString().slice(0, 10)}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
   }
   useEffect(() => { load() }, [])
 
@@ -132,9 +204,19 @@ export default function AdminLeadsPage() {
           <h1 className="text-xl font-semibold text-white">Leads de productores</h1>
           <p className="text-sm text-zinc-500">Máquina de lead-gen a performance · ruteá por WhatsApp, cobrás {leads[0]?.fee_pct ?? 1}% al cierre</p>
         </div>
-        <button onClick={load} className="flex items-center gap-2 rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800">
-          <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} /> Actualizar
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={exportCsv}
+            disabled={leads.length === 0}
+            title="Descarga el pipeline completo con la bitácora de cada lead"
+            className="flex items-center gap-2 rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 disabled:opacity-40"
+          >
+            <Download className="h-4 w-4" /> CSV
+          </button>
+          <button onClick={load} className="flex items-center gap-2 rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800">
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} /> Actualizar
+          </button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -230,7 +312,22 @@ export default function AdminLeadsPage() {
         <EmptyState icon="glifo-novillo" title="Todavía no hay leads" sub="Cuando un productor use las herramientas y pida ser contactado, aparece acá." />
       ) : (
         <div className="space-y-3">
-          {leads.map((l) => {
+          {(() => {
+            const cerrados = leads.filter((l) => CERRADOS.includes(l.status)).length
+            if (cerrados === 0) return null
+            return (
+              <button
+                onClick={() => setVerCerrados((v) => !v)}
+                className="text-xs text-zinc-500 hover:text-zinc-300"
+              >
+                {verCerrados ? '▾' : '▸'} {cerrados} descartado{cerrados === 1 ? '' : 's'} o perdido{cerrados === 1 ? '' : 's'}
+                {verCerrados ? ' (ocultar)' : ' (mostrar)'}
+              </button>
+            )
+          })()}
+          {leads
+            .filter((l) => verCerrados || !CERRADOS.includes(l.status))
+            .map((l) => {
             const meta = STATUS_META[l.status] || STATUS_META.new
             return (
               <div key={l.id} className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
@@ -305,6 +402,12 @@ export default function AdminLeadsPage() {
                   />
                   {savingId === l.id && <span className="text-xs text-zinc-500">guardando…</span>}
                 </div>
+
+                <LeadActivity
+                  leadId={l.id}
+                  initial={activity[l.id] ?? []}
+                  onLogged={(rows) => setActivity((prev) => ({ ...prev, [l.id]: rows }))}
+                />
               </div>
             )
           })}

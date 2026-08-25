@@ -65,7 +65,10 @@ export default function MarketIntelPanel() {
   useEffect(() => {
     // Lista COMPLETA (con o sin remates), no el ranking — así el droplist incluye
     // a todas las firmas, no solo las que tienen remates cargados.
-    fetch('/api/consignatarias/list')
+    // ?mag=1 — sólo las que operan en Cañuelas. El intel se calcula sobre los
+    // lotes del MAG: seguir a una casa del interior devolvía una fila vacía para
+    // siempre y parecía un producto roto.
+    fetch('/api/consignatarias/list?mag=1')
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
         // /api/consignatarias/ranking devuelve { data: [{ slug, nombre, ... }] }.
@@ -206,7 +209,7 @@ export default function MarketIntelPanel() {
               onChange={(e) => setPick(e.target.value)}
               className="flex-1 bg-zinc-900 border border-terminal-border text-zinc-300 text-xxs font-terminal px-2 py-1 rounded-[2px]"
             >
-              <option value="">Agregar una firma a seguir…</option>
+              <option value="">Agregar una casa del Mercado a seguir…</option>
               {options.map((f) => (
                 <option key={f.slug} value={f.slug}>
                   {f.name}
@@ -224,6 +227,14 @@ export default function MarketIntelPanel() {
           </div>
         )}
         {msg && <p className="text-amber-400 text-xxs mt-2">{msg}</p>}
+
+        {/* La lista es corta a propósito y conviene decir por qué: si no, parece que
+            falta la mitad del padrón. */}
+        <p className="text-zinc-600 text-[10px] leading-snug mt-2">
+          Sólo se pueden seguir las casas que operan en el Mercado Agroganadero de
+          Cañuelas: es el único lugar donde las operaciones se publican lote por lote.
+          Fuera de ahí no hay cabezas ni precios que mostrar.
+        </p>
       </div>
     </div>
   )

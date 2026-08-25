@@ -102,37 +102,48 @@ export default function PlanesPage() {
       <SectionBreadcrumbSchema section="planes" sectionName="Planes y Precios" />
 
       <div className="px-4 py-6 max-w-5xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-xl font-heading text-zinc-100 mb-2">
-            Planes y Precios
+        {/* Header.
+            Sin tipografía de terminal ni chips en versalita: acá llega alguien que
+            está decidiendo si paga, y el bloque tiene que leerse como una página que
+            explica, no como la salida de una consola. El H1 dice de qué se trata —
+            "Planes y Precios" es la categoría, no la propuesta. */}
+        <div className="mb-10">
+          <h1 className="max-w-3xl text-3xl font-heading leading-tight text-zinc-50 sm:text-4xl">
+            El mercado es gratis para el productor.
+            <span className="block text-zinc-400">Se paga por lo que no se ve desde afuera.</span>
           </h1>
-          <p className="text-zinc-400 text-sm max-w-2xl">
-            Todo el mercado ganadero es <strong className="text-zinc-200">gratis</strong> para el productor:
-            precios, remates, directorio y alertas. Se paga por tres cosas: las{' '}
-            <strong className="text-amber-300">consignatarias</strong> que quieren que más productores vean
-            sus remates, las <strong className="text-zinc-200">empresas o IAs</strong> que usan nuestros
-            datos por API, y la <strong className="text-accent">guía</strong> para abrir y dirigir una
-            consignataria, que es una compra única y no una suscripción.
+
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-zinc-400">
+            Precios, remates, directorio y alertas no cuestan nada y no van a costar nada.
+            Lo que se cobra es el cruce del dato: lo que una{' '}
+            <strong className="font-medium text-amber-200">consignataria</strong> no puede ver
+            de su propio negocio, y el acceso por{' '}
+            <strong className="font-medium text-sky-200">API</strong> para empresas y agentes.
           </p>
 
-          {/* Por qué pagar — por segmento */}
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-w-4xl">
-            <div className="rounded-lg border border-terminal-border bg-terminal-panel p-3">
-              <p className="text-xxs font-terminal uppercase tracking-widest text-accent mb-1">Productor · gratis</p>
-              <p className="text-data text-zinc-400">Datos, remates, directorio y alertas. No pagás nada.</p>
+          <div className="mt-6 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="rounded-xl border border-terminal-border bg-terminal-panel p-4">
+              <p className="text-sm font-semibold text-zinc-100">Productor</p>
+              <p className="mt-0.5 text-xs font-medium text-accent">Gratis, siempre</p>
+              <p className="mt-2 text-sm leading-snug text-zinc-400">
+                Precios del día, calendario de remates, directorio y alertas. Con cuenta,
+                sin tarjeta.
+              </p>
             </div>
-            <div className="rounded-lg border border-terminal-border bg-terminal-panel p-3">
-              <p className="text-xxs font-terminal uppercase tracking-widest text-amber-300 mb-1">Consignataria</p>
-              <p className="text-data text-zinc-400">Que más productores vean tus remates: se lo avisamos a toda la base + tu perfil destacado.</p>
+            <div className="rounded-xl border border-amber-500/30 bg-amber-500/[0.04] p-4">
+              <p className="text-sm font-semibold text-zinc-100">Consignataria</p>
+              <p className="mt-0.5 text-xs font-medium text-amber-300">ARS 45.000/mes</p>
+              <p className="mt-2 text-sm leading-snug text-zinc-400">
+                Qué remitentes dejaron de consignarte y a qué casa se fueron, y si vendés
+                arriba o abajo del mercado en cada categoría.
+              </p>
             </div>
-            <div className="rounded-lg border border-terminal-border bg-terminal-panel p-3">
-              <p className="text-xxs font-terminal uppercase tracking-widest text-sky-300 mb-1">Empresa · IA</p>
-              <p className="text-data text-zinc-400">La data por API + MCP para tus apps y agentes.</p>
-            </div>
-            <div className="rounded-lg border border-terminal-border bg-terminal-panel p-3">
-              <p className="text-xxs font-terminal uppercase tracking-widest text-accent mb-1">Guía · pago único</p>
-              <p className="text-data text-zinc-400">Cómo abrir y dirigir una consignataria. Se compra una vez, no vence.</p>
+            <div className="rounded-xl border border-terminal-border bg-terminal-panel p-4">
+              <p className="text-sm font-semibold text-zinc-100">Empresa o IA</p>
+              <p className="mt-0.5 text-xs font-medium text-sky-300">Desde ARS 74.000/mes</p>
+              <p className="mt-2 text-sm leading-snug text-zinc-400">
+                La serie completa por API y MCP, para tus sistemas y tus agentes.
+              </p>
             </div>
           </div>
 

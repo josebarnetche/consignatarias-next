@@ -15,6 +15,23 @@ import MarketIntelPanel from '@/components/MarketIntelPanel'
 import MagPulse from '@/components/MagPulse'
 import { trackEvent } from '@/lib/analytics'
 import { EmptyState } from '@/components/ui'
+import PerformanceMes from '@/components/dashboard/PerformanceMes'
+import Distribucion from '@/components/dashboard/Distribucion'
+import BenchmarkMercado from '@/components/dashboard/BenchmarkMercado'
+import type { Benchmark } from '@/lib/reports/benchmark'
+import CarteraPanel from '@/components/dashboard/CarteraPanel'
+import type { Cartera } from '@/lib/reports/cartera'
+import ParticipacionMercado from '@/components/dashboard/ParticipacionMercado'
+import type { Participacion } from '@/lib/reports/participacion'
+import BandejaEntrada from '@/components/dashboard/BandejaEntrada'
+import type { Bandeja } from '@/lib/reports/bandeja'
+import AgendaRegionalPanel from '@/components/dashboard/AgendaRegionalPanel'
+import type { AgendaRegional } from '@/lib/reports/agenda-regional'
+import MuestraPro from '@/components/dashboard/MuestraPro'
+import { CARTERA_MUESTRA, BENCHMARK_MUESTRA, PARTICIPACION_MUESTRA } from '@/lib/reports/muestras'
+import type { ResumenDistribucion } from '@/lib/promotion'
+import { whatsappLink } from '@/lib/leads/routing'
+import type { Performance } from '@/lib/reports/performance'
 
 interface Consignataria {
   display_name: string
@@ -151,6 +168,22 @@ interface Lead {
 
 interface Props {
   email: string
+  /** Performance del mes vs el anterior. Null si no se pudo calcular. */
+  performance?: Performance | null
+  /** Distribución de sus remates. Null si todavía no salió en ningún canal. */
+  distribucion?: ResumenDistribucion | null
+  /** Cómo vendió vs el mercado de Cañuelas. Null si no opera en el MAG. */
+  benchmark?: Benchmark | null
+  /** Su cartera de remitentes en el MAG: fugas, capturas y concentración. */
+  cartera?: Cartera | null
+  /** Cuota de mercado en Cañuelas y si está creciendo. */
+  participacion?: Participacion | null
+  /** Todo lo que hay que atender hoy, en una lista ordenada. */
+  bandeja?: Bandeja | null
+  /** ¿La firma opera en el MAG? Si no, no se le ofrece lo que no vamos a darle. */
+  hayDatosMag?: boolean
+  /** Su agenda contra la del resto de la provincia. Sirve también fuera del MAG. */
+  agenda?: AgendaRegional | null
   consignataria: Consignataria | null
   claims: Claim[]
   scrapedAuctions: ScrapedAuction[]
@@ -188,9 +221,8 @@ export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
   auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, marksCount = 0, leads = [], totalWatchers, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
   frigoProducts = [], frigoRfqs = [], frigoIsPro = false,
-  dteCount = 0, alreadyRedeemed = false,
+  dteCount = 0, alreadyRedeemed = false, performance = null, distribucion = null, benchmark = null, cartera = null, participacion = null, bandeja = null, hayDatosMag = false, agenda = null,
 }: Props) {
-  const showChecklist = consignataria && completedFields && Object.values(completedFields).filter(Boolean).length < 5
   const searchParams = useSearchParams()
   const justUpgraded = searchParams.get('upgraded') === 'true'
   const tabParam = searchParams.get('tab') as TabKey | null
@@ -199,6 +231,15 @@ export default function DashboardClient({
   const [upgradePollCount, setUpgradePollCount] = useState(0)
   const [activeTab, setActiveTab] = useState<TabKey>(tabParam || 'resumen')
   const [ownerAuctions, setOwnerAuctions] = useState(initialOwnerAuctions)
+
+  // Se muestra mientras falte algo esencial (WhatsApp, un remate, teléfono). Antes
+  // exigía los 5 campos del perfil, y como la descripción no la tiene NINGUNA firma
+  // (0 de 130), el bloque quedaba pegado en el panel para siempre.
+  const showChecklist = !!consignataria && !!completedFields && (
+    !completedFields.whatsapp || !completedFields.phone ||
+    (ownerAuctions.length === 0 && scrapedAuctions.length === 0)
+  )
+
 
   // Points redemption state
   const [isRedeeming, setIsRedeeming] = useState(false)
@@ -341,15 +382,85 @@ export default function DashboardClient({
             )}
           </div>
         </div>
-        <div className="px-panel py-3 space-y-1">
-          <span className="text-xxs text-zinc-500 font-terminal">{email}</span>
-          {consignataria && (
-            <div className="flex items-center gap-3">
-              <span className="text-data font-terminal text-zinc-200">{consignataria.display_name}</span>
-              <Link href={`/consignatarias/${consignataria.canonical_slug}`} className="text-xxs text-accent font-terminal hover:underline">
-                Ver perfil publico →
-              </Link>
+        {/* IDENTIDAD DE LA FIRMA.
+            Antes era una línea de texto con el nombre y un enlace. Ahora la casa se
+            reconoce al entrar: su logo, cómo se ve su perfil público, y el próximo
+            remate que encontramos en el calendario — que es la prueba concreta de que
+            la estamos siguiendo, aunque todavía no haya recibido una sola consulta. */}
+        <div className="px-panel py-4">
+          {consignataria ? (
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+              <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-terminal border border-terminal-border bg-zinc-100">
+                {consignataria.logo_url ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={consignataria.logo_url}
+                    alt={consignataria.display_name}
+                    className="h-full w-full object-contain p-1"
+                  />
+                ) : (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src="/marca/iconos-color/casa-remates.png" alt="" className="h-8 w-8" />
+                )}
+              </span>
+
+              <div className="min-w-0 flex-1">
+                <h2 className="text-lg font-semibold leading-tight text-zinc-50">
+                  {consignataria.display_name}
+                </h2>
+                <p className="mt-0.5 text-xxs font-terminal text-zinc-500">{email}</p>
+
+                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+                  <Link
+                    href={`/consignatarias/${consignataria.canonical_slug}`}
+                    className="text-xs font-medium text-accent hover:underline"
+                  >
+                    Ver tu perfil público →
+                  </Link>
+                  {!consignataria.logo_url && (
+                    <button
+                      onClick={() => setActiveTab('editar')}
+                      className="text-xs text-amber-300 hover:underline"
+                    >
+                      Subí tu logo
+                    </button>
+                  )}
+                </div>
+
+                {/* Próximo remate encontrado en el calendario. Sale del scrape, así
+                    que aparece sin que la firma haya cargado nada. */}
+                {(() => {
+                  const prox = [...ownerAuctions.map((a) => ({ date: a.date, title: a.title, location: a.location })),
+                                ...scrapedAuctions.map((a) => ({ date: a.date, title: a.title, location: a.location }))]
+                    .filter((a) => a.date >= new Date().toISOString().slice(0, 10))
+                    .sort((a, b) => a.date.localeCompare(b.date))[0]
+                  if (!prox) {
+                    return (
+                      <p className="mt-2 text-xs text-zinc-500">
+                        No tenemos ningún remate próximo tuyo en el calendario.{' '}
+                        <button onClick={() => setActiveTab('remates')} className="text-accent hover:underline">
+                          Cargá uno
+                        </button>
+                        .
+                      </p>
+                    )
+                  }
+                  const cuando = new Date(prox.date + 'T12:00:00').toLocaleDateString('es-AR', {
+                    weekday: 'long', day: '2-digit', month: 'long',
+                  })
+                  return (
+                    <p className="mt-2 text-xs leading-snug text-zinc-400">
+                      <span className="text-zinc-500">Tu próximo remate:</span>{' '}
+                      <span className="text-zinc-200">{cuando}</span>
+                      {prox.location ? ` · ${prox.location}` : ''}
+                      {prox.title ? ` — ${prox.title}` : ''}
+                    </p>
+                  )
+                })()}
+              </div>
             </div>
+          ) : (
+            <span className="text-xxs font-terminal text-zinc-500">{email}</span>
           )}
         </div>
       </div>
@@ -407,7 +518,7 @@ export default function DashboardClient({
           )}
 
           {showChecklist && completedFields && consignataria && (
-            <WelcomeChecklist profileSlug={consignataria.canonical_slug} displayName={consignataria.display_name} completedFields={completedFields} />
+            <WelcomeChecklist profileSlug={consignataria.canonical_slug} displayName={consignataria.display_name} completedFields={completedFields} tieneRemate={ownerAuctions.length > 0 || scrapedAuctions.length > 0} />
           )}
 
           {/* Points Progress Tracker */}
@@ -451,6 +562,72 @@ export default function DashboardClient({
                 )}
               </div>
               <div className="px-panel py-4">
+                {/* Mes contra mes. Va ARRIBA del grid de 30 días a propósito: la
+                    firma pregunta "¿mejoró?", y eso lo contesta una serie, no una
+                    foto. El grid de abajo queda como el detalle del período. */}
+                {/* El benchmark va PRIMERO: es la respuesta a "¿para qué me sirve
+                    esto si ya tengo mi sistema?". Lo demás es del sitio; esto es
+                    de su negocio. */}
+                {/* La BANDEJA primero: qué hay que hacer hoy. Los bloques de abajo
+                    son el detrás de cada línea, para el que quiera abrir el dato. */}
+                {bandeja && <BandejaEntrada b={bandeja} />}
+
+                {/* La agenda va antes que los bloques del MAG: le sirve a las 130
+                    casas, y decide algo que la firma todavía puede cambiar (la
+                    fecha del próximo remate). Es gratis a propósito — es lo que le
+                    demuestra a una casa del interior que el panel la mira a ella. */}
+                {agenda && <AgendaRegionalPanel a={agenda} />}
+
+                {/* Los tres bloques del Mercado.
+                    Una firma FREE ve la FORMA de cada uno con datos de ejemplo, no
+                    los suyos difuminados: el blur es maquillaje y el dato real
+                    seguiría en el HTML —y acá son nombres de terceros y es justo lo
+                    que se cobra—. Sólo se muestran si la firma opera en el MAG: a las
+                    22 de Cañuelas les sirve; al resto no se les ofrece algo que no
+                    vamos a poder darles.
+
+                    La cartera va antes que el precio: lo primero es a quién hay que
+                    llamar hoy, después cómo se vendió. */}
+                {hayDatosMag && (
+                  <MuestraPro
+                    esPro={tierLabel !== 'FREE'}
+                    titulo="Tu cartera en el Mercado"
+                    beneficio="Quién dejó de consignarte y hace cuánto, a quién le sacaste un cliente a la competencia, y de qué remitentes dependés."
+                    muestra={<CarteraPanel c={CARTERA_MUESTRA} />}
+                  >
+                    {cartera && <CarteraPanel c={cartera} />}
+                  </MuestraPro>
+                )}
+
+                {hayDatosMag && (
+                  <MuestraPro
+                    esPro={tierLabel !== 'FREE'}
+                    titulo="Cómo vendiste contra el mercado"
+                    beneficio="Tu precio por categoría contra el promedio de las 22 casas de Cañuelas. El número que usás para pelear una consignación."
+                    muestra={<BenchmarkMercado b={BENCHMARK_MUESTRA} />}
+                  >
+                    {benchmark && <BenchmarkMercado b={benchmark} />}
+                  </MuestraPro>
+                )}
+
+                {hayDatosMag && (
+                  <MuestraPro
+                    esPro={tierLabel !== 'FREE'}
+                    titulo="Tu lugar en el Mercado"
+                    beneficio="Tu cuota sobre las cabezas operadas, tu puesto entre las 22 casas, y si estás creciendo o perdiendo terreno."
+                    muestra={<ParticipacionMercado p={PARTICIPACION_MUESTRA} />}
+                  >
+                    {participacion && <ParticipacionMercado p={participacion} />}
+                  </MuestraPro>
+                )}
+
+                {performance && <PerformanceMes perf={performance} />}
+
+                {/* Distribución: sólo PRO, y sólo si hubo. Es literalmente lo que
+                    se paga —"a cuántos les llegó mi remate"— así que no se regala.
+                    Un cero tampoco se muestra: se leería como error del sistema. */}
+                {distribucion && tierLabel !== 'FREE' && <Distribucion dist={distribucion} />}
+
                 {/* Stats grid - always show all 4 metrics */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
                   {/* Seguidores — el dato B2B: productores suscriptos a tus remates */}
@@ -561,7 +738,11 @@ export default function DashboardClient({
                   </div>
                 )}
 
-                {/* Stats grid for PRO users - additional metrics */}
+                {/* Extras PRO.
+                    NOTA: estos tres son derivados de las vistas (una división, un
+                    percentil y un ranking) y no son lo que sostiene el plan. Lo que
+                    lo sostiene son los leads con contacto, la distribución auditable
+                    y el reporte mes a mes. Se dejan como color, no como argumento. */}
                 {tierLabel !== 'FREE' && (
                   <div className="grid grid-cols-3 gap-3 pt-3 border-t border-terminal-border mt-3">
                     <div className="bg-zinc-800/50 rounded-terminal p-2.5">
@@ -598,7 +779,7 @@ export default function DashboardClient({
                       🔒 Tu perfil es visible pero no destaca
                     </p>
                     <p className="text-xxs font-terminal text-zinc-500 mb-3">
-                      Con PRO: cada remate llega a +500 productores por email, analytics de vistas, badge dorado, landing con QR.
+                      Con PRO: tus remates van primero en el newsletter semanal, ves quién te contactó con nombre y teléfono, y medís a cuántos les llegó cada uno.
                     </p>
                     <Link
                       href="/planes?audience=consignataria&from=dashboard"
@@ -812,13 +993,7 @@ export default function DashboardClient({
             </div>
           )}
 
-          {!hasVerified && hasPendingClaim && (
-            <div className="terminal-panel border-warning/20">
-              <div className="px-panel py-4 text-center space-y-2">
-                <p className="text-xxs font-terminal text-warning">Tu solicitud esta siendo revisada.</p>
-              </div>
-            </div>
-          )}
+          {!hasVerified && hasPendingClaim && <ClaimEnEspera claims={claims} />}
 
           {!consignataria && !frigorifico && claims.length === 0 && frigoClaims.length === 0 && (
             <div className="terminal-panel">
@@ -866,7 +1041,7 @@ export default function DashboardClient({
                   <div>
                     <p className="text-data font-terminal text-zinc-400">Publicá tus remates</p>
                     <p className="text-xxs font-terminal text-zinc-600 mt-1">
-                      Aparecen en el calendario y se envían a +500 productores activos.
+                      Aparecen en el calendario, en tu widget y en el newsletter semanal.
                     </p>
                   </div>
                 </div>
@@ -902,40 +1077,36 @@ export default function DashboardClient({
               />
             </div>
           ) : (
-            <div className="divide-y divide-terminal-border rounded-terminal border border-terminal-border bg-terminal-panel">
-              {leads.map((l) => {
-                const wa = l.phone ? `https://wa.me/${l.phone.replace(/\D/g, '')}` : null
-                const fecha = new Date(l.created_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: '2-digit' })
-                return (
-                  <div key={l.id} className="p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <div className="min-w-0">
-                      <div className="text-sm font-semibold text-zinc-100">
-                        {l.name}
-                        <span className="ml-2 text-xxs uppercase tracking-wider text-zinc-500">{fecha}</span>
-                      </div>
-                      <div className="text-xs text-zinc-400">
-                        {l.phone && <span className="mr-2">{l.phone}</span>}
-                        {l.email && <span className="mr-2">{l.email}</span>}
-                        {l.source && <span className="text-zinc-600">· {l.source}</span>}
-                      </div>
-                      {l.message && <div className="text-xs text-zinc-500 mt-1 truncate">{l.message}</div>}
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      {wa && (
-                        <a href={wa} target="_blank" rel="noopener noreferrer" className="rounded-terminal bg-emerald-500 hover:bg-emerald-400 px-3 py-1.5 text-xs font-semibold text-white transition-colors">
-                          WhatsApp
-                        </a>
-                      )}
-                      {l.email && (
-                        <a href={`mailto:${l.email}`} className="rounded-terminal border border-terminal-border px-3 py-1.5 text-xs text-zinc-200 hover:border-accent transition-colors">
-                          Email
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+            <>
+              {/* GATE — el contacto del lead es LO que se paga.
+                  Se muestra siempre que el lead existe, con su fecha y su mensaje:
+                  eso prueba que la demanda es real. Lo que se guarda hasta que
+                  pague es el teléfono y el email, que es lo accionable. Soft-gate,
+                  nunca muro: la firma ve exactamente lo que se está perdiendo. */}
+              {tierLabel === 'FREE' && (
+                <div className="rounded-terminal border border-accent/30 bg-accent/5 p-3">
+                  <p className="text-sm font-terminal text-zinc-100">
+                    {leads.length === 1
+                      ? 'Hay 1 productor que te buscó y todavía no le escribiste.'
+                      : `Hay ${leads.length} productores que te buscaron y todavía no les escribiste.`}
+                  </p>
+                  <p className="mt-1 text-xxs font-terminal text-zinc-400">
+                    Con PRO ves el teléfono y el email de cada uno, y les escribís desde acá.
+                  </p>
+                  <Link
+                    href="/planes?audience=consignataria&from=leads"
+                    className="mt-2 inline-block rounded-terminal bg-accent px-3 py-1.5 text-xs font-semibold text-terminal-bg"
+                  >
+                    Ver PRO
+                  </Link>
+                </div>
+              )}
+              <div className="divide-y divide-terminal-border rounded-terminal border border-terminal-border bg-terminal-panel">
+                {leads.map((l) => (
+                  <LeadRow key={l.id} lead={l} bloqueado={tierLabel === 'FREE'} />
+                ))}
+              </div>
+            </>
           )}
         </div>
       )}
@@ -1581,6 +1752,152 @@ function FrigorificoEditForm({ cuit, initial }: { cuit: string; initial: { phone
 /*  FRIGORIFICO — ACTIVAR PRO (vitrina de carne + RFQ)                 */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Lo que ve una firma que reclamó su perfil y está esperando la aprobación.
+ *
+ * Antes decía una sola línea —"Tu solicitud esta siendo revisada"— y nada más: sin
+ * plazo, sin qué hacer mientras tanto y sin forma de apurarlo. Es el momento más
+ * frágil del onboarding: la firma ya hizo el esfuerzo de reclamar y queda en una
+ * pantalla muerta. Al 23-ago-2026 el flujo **nunca fue usado por una firma real**
+ * (los dos claims de la base son pruebas del founder), así que esto es la primera
+ * versión que va a ver alguien de verdad.
+ *
+ * Tres cosas concretas: qué pasa después, su perfil público para que vea que ya
+ * existe, y un atajo para destrabarlo por WhatsApp. La aprobación es manual, así que
+ * el atajo no es un adorno: es el camino rápido de verdad.
+ */
+function ClaimEnEspera({ claims }: { claims: Claim[] }) {
+  const pendiente = claims.find((c) => c.status === 'pending')
+  if (!pendiente) return null
+
+  const nombre = pendiente.consignatarias?.display_name ?? pendiente.consignataria_slug
+  const slug = pendiente.consignatarias?.canonical_slug ?? pendiente.consignataria_slug
+  const dias = Math.floor((Date.now() - new Date(pendiente.created_at).getTime()) / 86_400_000)
+
+  const wa = `https://wa.me/5493773418130?text=${encodeURIComponent(
+    `Hola, soy de ${nombre}. Reclamé el perfil en consignatarias.com.ar y quería saber cómo va la verificación.`,
+  )}`
+
+  return (
+    <div className="terminal-panel border-warning/20">
+      <div className="terminal-panel-header">
+        <span className="text-zinc-200 text-label tracking-widest">VERIFICANDO TU FIRMA</span>
+      </div>
+      <div className="px-panel py-4 space-y-3">
+        <p className="text-data font-terminal text-zinc-300">
+          Estamos verificando que <span className="text-zinc-100">{nombre}</span> es tuya.
+          {dias === 0
+            ? ' La pedimos hoy.'
+            : ` La pediste hace ${dias} ${dias === 1 ? 'día' : 'días'}.`}
+        </p>
+
+        <ul className="space-y-1.5 text-xxs font-terminal text-zinc-400">
+          <li>· Cuando la aprobemos te llega un email y el panel se abre solo.</li>
+          <li>· Ahí vas a poder cargar remates, editar tus datos y ver quién te buscó.</li>
+          <li>· Mientras tanto tu perfil ya está publicado y recibiendo visitas.</li>
+        </ul>
+
+        {/* Se revisa a mano, así que el atajo por WhatsApp no es decorativo: es
+            literalmente la forma más rápida de destrabarlo. */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 pt-1">
+          <a
+            href={wa}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-terminal bg-emerald-500 px-3 py-1.5 text-xxs font-semibold text-white hover:bg-emerald-400 transition-colors"
+          >
+            Apurar por WhatsApp
+          </a>
+          <Link
+            href={`/consignatarias/${slug}`}
+            className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors"
+          >
+            Ver tu perfil público →
+          </Link>
+        </div>
+
+        {dias >= 2 && (
+          <p className="text-[10px] leading-snug text-warning/80">
+            Está tardando más de lo normal. Escribinos y lo resolvemos en el momento.
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Una fila de la bandeja de leads.
+ *
+ * `bloqueado` = plan FREE. En ese caso se ve QUE el lead existe (nombre corto,
+ * fecha, lo que escribió) pero no CÓMO contactarlo. El mensaje se muestra entero
+ * a propósito: es lo que prueba que la demanda es real y lo que hace que valga la
+ * pena pagar. Los datos de contacto nunca llegan al cliente cuando está bloqueado
+ * —se enmascaran acá, no se ocultan con CSS— así que no se leen desde el inspector.
+ */
+function LeadRow({ lead: l, bloqueado }: { lead: Lead; bloqueado: boolean }) {
+  const fecha = new Date(l.created_at).toLocaleDateString('es-AR', {
+    day: '2-digit', month: '2-digit', year: '2-digit',
+  })
+
+  // "Juan Carlos Fleitas" → "Juan C." — identifica sin entregar.
+  const nombreCorto = (() => {
+    const partes = l.name.trim().split(/\s+/)
+    return partes.length === 1 ? partes[0] : `${partes[0]} ${partes[1][0].toUpperCase()}.`
+  })()
+
+  const wa = whatsappLink(l.phone, `Hola ${l.name.split(' ')[0]}, te contacto desde consignatarias.com.ar.`)
+
+  return (
+    <div className="p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div className="min-w-0">
+        <div className="text-sm font-semibold text-zinc-100">
+          {bloqueado ? nombreCorto : l.name}
+          <span className="ml-2 text-xxs uppercase tracking-wider text-zinc-500">{fecha}</span>
+        </div>
+        <div className="text-xs text-zinc-400">
+          {bloqueado ? (
+            <span className="mr-2 font-terminal text-zinc-600">
+              {l.phone ? '·· ···· ····' : ''}{l.phone && l.email ? '  ' : ''}{l.email ? '·······@·····' : ''}
+            </span>
+          ) : (
+            <>
+              {l.phone && <span className="mr-2">{l.phone}</span>}
+              {l.email && <span className="mr-2">{l.email}</span>}
+            </>
+          )}
+          {l.source && <span className="text-zinc-600">· {l.source}</span>}
+        </div>
+        {l.message && <div className="text-xs text-zinc-500 mt-1 truncate">{l.message}</div>}
+      </div>
+
+      <div className="flex items-center gap-2 shrink-0">
+        {bloqueado ? (
+          <Link
+            href="/planes?audience=consignataria&from=leads"
+            className="rounded-terminal border border-accent/40 px-3 py-1.5 text-xs font-semibold text-accent hover:bg-accent/10 transition-colors"
+          >
+            Ver contacto
+          </Link>
+        ) : (
+          <>
+            {wa && (
+              <a href={wa} target="_blank" rel="noopener noreferrer" className="rounded-terminal bg-emerald-500 hover:bg-emerald-400 px-3 py-1.5 text-xs font-semibold text-white transition-colors">
+                WhatsApp
+              </a>
+            )}
+            {l.email && (
+              <a href={`mailto:${l.email}`} className="rounded-terminal border border-terminal-border px-3 py-1.5 text-xs text-zinc-200 hover:border-accent transition-colors">
+                Email
+              </a>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function FrigoProCTA({ cuit, email, isPro }: { cuit: string; email: string; isPro: boolean }) {
   const [loading, setLoading] = useState(false)
   const [err, setErr] = useState<string | null>(null)
@@ -1929,7 +2246,7 @@ function SubscriptionPanel({ tier, subscription }: { tier: string; subscription:
             
             <div className="flex items-center gap-2 mb-2">
               <span className="text-amber-400 text-base">📧</span>
-              <p className="text-xs font-terminal text-zinc-200 font-medium">Cada remate tuyo → +500 productores</p>
+              <p className="text-xs font-terminal text-zinc-200 font-medium">Tu remate, primero en el newsletter</p>
             </div>
             <p className="text-xxs font-terminal text-zinc-500">Tu plan actual es gratuito. Con PRO:</p>
             <ul className="text-xxs font-terminal text-zinc-400 space-y-1 list-none">

@@ -246,7 +246,7 @@ export default async function CuentaPage({ searchParams }: PageProps) {
           <p className="text-zinc-500 font-mono text-xs">
             {isConsigPro
               ? 'Suscripción activa. Gestioná tu perfil destacado, remates y badge PRO.'
-              : 'Activá PRO Consignataria para promo por email a +500 productores, badge dorado y analytics.'}
+              : 'Activá PRO Consignataria: tu remate va primero en el newsletter semanal, badge dorado y analytics.'}
           </p>
         </Link>
       )}

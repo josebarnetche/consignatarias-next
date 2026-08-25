@@ -2514,6 +2514,8 @@ export async function sendOvejeroDigest(opts: {
   consultas?: Array<{ firma: string; leadResumen: string; email: string }>
   sinRespuesta?: Array<{ nombre: string; resumen: string; diagnostico: string; agotado: boolean; wa: string | null }>
   ranking?: Array<{ nombre: string; resumen: string; score: number; porQue: string }>
+  /** Firmas que reclamaron su perfil y siguen esperando aprobación. */
+  claims?: Array<{ slug: string; email: string; dias: number; urgente: boolean }>
 }) {
   const resend = await getResend()
   if (!resend) return
@@ -2521,9 +2523,28 @@ export async function sendOvejeroDigest(opts: {
   const consultas = opts.consultas ?? []
   const sinRespuesta = opts.sinRespuesta ?? []
   const ranking = opts.ranking ?? []
+  const claims = opts.claims ?? []
 
   const bloque = (titulo: string, cuerpo: string) =>
     `<h3 style="color:#fafafa;font-size:15px;font-weight:700;margin:26px 0 10px">${titulo}</h3>${cuerpo}`
+
+  // Los claims van PRIMEROS en el digest. Una firma esperando su perfil es lo más
+  // cerca de una venta que hay en todo el sistema, y la aprobación es manual: si
+  // nadie mira, la firma se queda esperando sin que se entere nadie.
+  const claimsHtml = claims.length
+    ? bloque(
+        `🔑 ${claims.length} ${claims.length === 1 ? 'firma espera' : 'firmas esperan'} que le abras el panel`,
+        claims
+          .map(
+            (c) => `<div style="background:#18181b;border:1px solid #27272a;border-left:3px solid ${c.urgente ? '#ef4444' : '#f59e0b'};border-radius:2px;padding:14px;margin-bottom:10px">
+              <p style="color:#fafafa;font-size:14px;margin:0 0 4px"><strong>${escapeHtml(c.slug)}</strong> — ${c.dias === 0 ? 'reclamó hoy' : `espera hace ${c.dias} ${c.dias === 1 ? 'día' : 'días'}`}</p>
+              <p style="color:#a1a1aa;font-size:12px;margin:0 0 8px">${escapeHtml(c.email)}</p>
+              <a href="https://www.consignatarias.com.ar/admin/claims" style="color:#10b981;font-size:12px">Revisar y aprobar &rarr;</a>
+            </div>`,
+          )
+          .join(''),
+      )
+    : ''
 
   const matchesHtml = matches.length
     ? bloque(
@@ -2619,7 +2640,7 @@ export async function sendOvejeroDigest(opts: {
       <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">El Ovejero &middot; parte del día</p>
       <h2 style="color:#fafafa;font-size:20px;font-weight:700;margin:0 0 4px">Lo que hice y lo que te dejo</h2>
       <p style="color:#71717a;font-size:12px;margin:0 0 4px">Solo te escribo cuando hay algo para hacer.</p>
-      ${consultasHtml}${sinRespuestaHtml}${matchesHtml}${pendientesHtml}${zonasHtml}${rankingHtml}
+      ${claimsHtml}${consultasHtml}${sinRespuestaHtml}${matchesHtml}${pendientesHtml}${zonasHtml}${rankingHtml}
       <p style="margin:26px 0 0"><a href="${APP_URL}/admin/leads" style="color:#38bdf8;font-size:13px">Abrir el board de leads &rarr;</a></p>
     `),
   }).catch(() => {})
