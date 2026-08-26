@@ -14042,6 +14042,44 @@
     "status": "scheduled"
   },
   {
+    "title": "Ganadera Salliquelo SA | Villa Iris",
+    "consignatariaName": "Ganadera Salliqueló S.A.",
+    "consignatariaSlug": "ganadera-salliquelo-s-a",
+    "date": "2026-08-27",
+    "time": "14:00",
+    "location": "",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Ganadera Salliquelo SA | Villa Iris",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6502-ganadera-salliquelo-sa-villa-iris",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled",
+    "id": 740
+  },
+  {
+    "title": "Talano Hnos. | Cabaña Los Nogales",
+    "consignatariaName": "Talano Hnos. S.A.",
+    "consignatariaSlug": "talano-hnos-s-a",
+    "date": "2026-08-27",
+    "time": "14:00",
+    "location": "",
+    "province": "CORDOBA",
+    "type": "reproductores",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Talano Hnos. | Cabaña Los Nogales",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6540-talano-hnos-cabana-los-nogales",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled",
+    "id": 741
+  },
+  {
     "title": "Remate Especial REPRODUCTORES La Morenita - Salentein - La Concepción - Rincón de Guayaibi - Mi Querencia SA - Radi SA - Por Canal Rural",
     "consignatariaName": "AGUERRE S.R.L.",
     "consignatariaSlug": "aguerre-s-r-l",
@@ -14057,7 +14095,7 @@
     "catalogUrl": "https://www.aguerresrl.com.ar/wp-content/uploads/2026/08/Publicacion-Feed-Remate-27-de-Agosto-2026-scaled.jpg",
     "source": "web",
     "sourceUrl": "www.aguerresrl.com.ar",
-    "id": 740,
+    "id": 742,
     "status": "scheduled"
   },
   {
@@ -14076,7 +14114,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6527-alfredo-s-mondino-el-viejo-zorzal",
     "source": "web",
     "sourceUrl": "alfredosmondino.com",
-    "id": 741,
+    "id": 743,
     "status": "scheduled"
   },
   {
@@ -14095,7 +14133,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6516-colombo-y-magliano-el-impenetrable",
     "source": "web",
     "sourceUrl": "www.colomboymagliano.com.ar",
-    "id": 742,
+    "id": 744,
     "status": "scheduled"
   },
   {
@@ -14114,7 +14152,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.colomboymagliano.com.ar",
-    "id": 743,
+    "id": 745,
     "status": "scheduled"
   },
   {
@@ -14133,7 +14171,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.danielblancosa.com.ar",
-    "id": 744,
+    "id": 746,
     "status": "scheduled"
   },
   {
@@ -14152,7 +14190,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.madelan.com.ar",
-    "id": 745,
+    "id": 747,
     "status": "scheduled"
   },
   {
@@ -14171,7 +14209,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.madelan.com.ar",
-    "id": 746,
+    "id": 748,
     "status": "scheduled"
   },
   {
@@ -14190,7 +14228,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.reggiycia-srl.com.ar",
-    "id": 747,
+    "id": 749,
     "status": "scheduled"
   },
   {
@@ -14209,7 +14247,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 748,
+    "id": 750,
     "status": "scheduled"
   },
   {
@@ -14228,7 +14266,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/c93000b0-ffca-4640-ac95-4a3c2a0defe4",
-    "id": 749,
+    "id": 751,
     "status": "scheduled"
   },
   {
@@ -14247,44 +14285,6 @@
     "catalogUrl": null,
     "source": "tv",
     "sourceUrl": "https://reggiycia.com/remate/31273",
-    "status": "scheduled",
-    "id": 750
-  },
-  {
-    "title": "Ganadera Salliquelo SA | Villa Iris",
-    "consignatariaName": "Ganadera Salliqueló S.A.",
-    "consignatariaSlug": "ganadera-salliquelo-s-a",
-    "date": "2026-08-27",
-    "time": "14:00",
-    "location": "",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Ganadera Salliquelo SA | Villa Iris",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6502-ganadera-salliquelo-sa-villa-iris",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled",
-    "id": 751
-  },
-  {
-    "title": "Talano Hnos. | Cabaña Los Nogales",
-    "consignatariaName": "Talano Hnos. S.A.",
-    "consignatariaSlug": "talano-hnos-s-a",
-    "date": "2026-08-27",
-    "time": "14:00",
-    "location": "",
-    "province": "CORDOBA",
-    "type": "reproductores",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Talano Hnos. | Cabaña Los Nogales",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6540-talano-hnos-cabana-los-nogales",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled",
     "id": 752
   },
@@ -15714,25 +15714,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Remate selección productiva",
-    "consignatariaName": "Reggi & Cía",
-    "consignatariaSlug": "reggi-y-cia",
-    "date": "2026-09-08",
-    "time": "14:00",
-    "location": "Curuzú Cuatiá, CORRIENTES",
-    "province": "CORRIENTES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Rte. — Remate selección productiva",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://reggiycia.com/remate/31588",
-    "status": "scheduled",
-    "id": 828
-  },
-  {
     "title": "REMATE FERIA EN SOCIEDAD RURAL LA PAZ",
     "consignatariaName": "Coop. La Ganadera",
     "consignatariaSlug": "coop-la-ganadera",
@@ -15748,6 +15729,25 @@
     "catalogUrl": "https://ftp.rural-server.com/remates/images/YEqDrlGsSCLDckGP.png",
     "source": "web",
     "sourceUrl": "https://clicrural.com.ar/remate/31301",
+    "status": "scheduled",
+    "id": 828
+  },
+  {
+    "title": "Haciendas generales",
+    "consignatariaName": "Reggi & Cía",
+    "consignatariaSlug": "reggi-y-cia",
+    "date": "2026-09-08",
+    "time": "17:00",
+    "location": "Curuzú Cuatiá, CORRIENTES",
+    "province": "CORRIENTES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Rte. — Haciendas generales",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://reggiycia.com/remate/31587",
     "status": "scheduled",
     "id": 829
   },
