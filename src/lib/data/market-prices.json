@@ -1837,43 +1837,43 @@
   },
   "categories": {
     "novillos": {
-      "current": 4349.19,
+      "current": 4113.13,
       "prev": 4349.19,
-      "change": 0,
+      "change": -5.4,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 848
+      "latestVolume": 661
     },
     "novillitos": {
-      "current": 4657.64,
+      "current": 4651.5,
       "prev": 4657.64,
-      "change": 0,
+      "change": -0.1,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1091
+      "latestVolume": 991
     },
     "vaquillonas": {
-      "current": 4630.61,
+      "current": 4287.38,
       "prev": 4630.61,
-      "change": 0,
+      "change": -7.4,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 2067
+      "latestVolume": 1185
     },
     "vacas": {
-      "current": 3048.12,
+      "current": 3005.82,
       "prev": 3048.12,
-      "change": 0,
+      "change": -1.4,
       "source": "mercadoagroganadero.com.ar (observed)",
-      "latestVolume": 2383
+      "latestVolume": 1900
     },
     "toros": {
-      "current": 3116.12,
+      "current": 3263.74,
       "prev": 3116.12,
-      "change": 0,
+      "change": 4.7,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 356
+      "latestVolume": 253
     },
     "terneros": {
       "current": 4524,
@@ -1884,8 +1884,8 @@
   },
   "corn": {
     "current": 247.7,
-    "prev": 243.75,
-    "change": 1.6,
+    "prev": 247.7,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
@@ -1903,9 +1903,9 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-08-26",
+  "lastUpdate": "2026-08-27",
   "provinceEntry": {
-    "date": "2026-08-26",
+    "date": "2026-08-27",
     "totalCabezas": 5105,
     "provinces": [
       {
@@ -1941,7 +1941,7 @@
     ]
   },
   "detailedCategories": {
-    "date": "2026-08-26",
+    "date": "2026-08-27",
     "categories": [
       {
         "category": "NOVILLOS Esp.Joven + 430",
@@ -2079,7 +2079,7 @@
     ]
   },
   "auctionDayEntries": {
-    "date": "2026-08-26",
+    "date": "2026-08-27",
     "consignatarias": {
       "umc-haciendas-villaguay": {
         "magId": "48",
@@ -2110,7 +2110,7 @@
             "cabezas": 5
           }
         ],
-        "period": "27/07/2026 - 26/08/2026"
+        "period": "28/07/2026 - 27/08/2026"
       }
     }
   },
@@ -2183,8 +2183,8 @@
   },
   "soy": {
     "current": 501.33,
-    "prev": 492.67,
-    "change": 1.8,
+    "prev": 501.33,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
     "date": "2026-08-26"
