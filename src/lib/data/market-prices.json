@@ -1838,7 +1838,7 @@
   "categories": {
     "novillos": {
       "current": 4113,
-      "prev": 4113.13,
+      "prev": 4113,
       "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
@@ -1846,31 +1846,31 @@
     },
     "novillitos": {
       "current": 3907,
-      "prev": 4651.5,
-      "change": -16,
+      "prev": 3907,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 991
     },
     "vaquillonas": {
       "current": 3702,
-      "prev": 4287.38,
-      "change": -13.7,
+      "prev": 3702,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1185
     },
     "vacas": {
       "current": 2961,
-      "prev": 3005.82,
-      "change": -1.5,
+      "prev": 2961,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 1900
     },
     "toros": {
       "current": 2674,
-      "prev": 3263.74,
-      "change": -18.1,
+      "prev": 2674,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 253
@@ -1884,8 +1884,8 @@
   },
   "corn": {
     "current": 244.3,
-    "prev": 247.7,
-    "change": -1.4,
+    "prev": 244.3,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
@@ -1905,38 +1905,38 @@
   },
   "lastUpdate": "2026-08-28",
   "provinceEntry": {
-    "date": "2026-08-27",
-    "totalCabezas": 5105,
+    "date": "2026-08-28",
+    "totalCabezas": 3220,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 4430,
-        "total": 4447,
-        "percentage": 87.11
+        "enPie": 2641,
+        "total": 2645,
+        "percentage": 82.14
       },
       {
         "province": "LA PAMPA",
-        "enPie": 275,
-        "total": 276,
-        "percentage": 5.41
+        "enPie": 247,
+        "total": 247,
+        "percentage": 7.67
       },
       {
         "province": "ENTRE RIOS",
-        "enPie": 171,
-        "total": 171,
-        "percentage": 3.35
-      },
-      {
-        "province": "CORDOBA",
-        "enPie": 144,
-        "total": 145,
-        "percentage": 2.84
+        "enPie": 122,
+        "total": 122,
+        "percentage": 3.79
       },
       {
         "province": "SANTA FE",
-        "enPie": 66,
-        "total": 66,
-        "percentage": 1.29
+        "enPie": 113,
+        "total": 113,
+        "percentage": 3.51
+      },
+      {
+        "province": "SAN LUIS",
+        "enPie": 93,
+        "total": 93,
+        "percentage": 2.89
       }
     ]
   },
@@ -2079,38 +2079,118 @@
     ]
   },
   "auctionDayEntries": {
-    "date": "2026-08-27",
+    "date": "2026-08-28",
     "consignatarias": {
-      "umc-haciendas-villaguay": {
-        "magId": "48",
-        "totalCabezas": 50,
+      "gananor-pujol": {
+        "magId": "520",
+        "totalCabezas": 72,
         "entries": [
           {
-            "remitente": "JAUREGUIBERRY DANIEL ANTONIO",
-            "localidad": "GRAL. MADARIAGA",
+            "remitente": "AGROP. SCARAFIA S.H.",
+            "localidad": "SALTO",
             "provincia": "BUE",
-            "cabezas": 11
+            "cabezas": 3
           },
           {
-            "remitente": "LA PRIMITIVA DE MADARIAGA SRL",
-            "localidad": "GRAL. MADARIAGA",
+            "remitente": "MAETI PECUARIA S.A.",
+            "localidad": "BARADERO",
             "provincia": "BUE",
-            "cabezas": 2
+            "cabezas": 45
           },
           {
-            "remitente": "VALLO CARLOS FRANCISCO",
-            "localidad": "GRAL. MADARIAGA",
+            "remitente": "MANZIONE AGROPECUARIA",
+            "localidad": "SALTO",
             "provincia": "BUE",
-            "cabezas": 32
+            "cabezas": 15
           },
           {
-            "remitente": "VALLO CARLOS FRANCISCO",
-            "localidad": "GRAL. MADARIAGA",
+            "remitente": "NIVEN FEDERICO JUAN",
+            "localidad": "CARLOS CASARES",
             "provincia": "BUE",
-            "cabezas": 5
+            "cabezas": 9
           }
         ],
-        "period": "28/07/2026 - 27/08/2026"
+        "period": "29/07/2026 - 28/08/2026"
+      },
+      "umc-haciendas-villaguay": {
+        "magId": "48",
+        "totalCabezas": 28,
+        "entries": [
+          {
+            "remitente": "BERFOF CESAR EMANUEL",
+            "localidad": "A. ALSINA",
+            "provincia": "BUE",
+            "cabezas": 4
+          },
+          {
+            "remitente": "DON MARINO S.H.",
+            "localidad": "A. ALSINA",
+            "provincia": "BUE",
+            "cabezas": 3
+          },
+          {
+            "remitente": "FRITZ MAURO",
+            "localidad": "A. ALSINA",
+            "provincia": "BUE",
+            "cabezas": 8
+          },
+          {
+            "remitente": "GOISEN JULIO Y MANUEL S.H.",
+            "localidad": "A. ALSINA",
+            "provincia": "BUE",
+            "cabezas": 5
+          },
+          {
+            "remitente": "GOLDIN MOISES Y GOLDIN LAPACO",
+            "localidad": "A. ALSINA",
+            "provincia": "BUE",
+            "cabezas": 4
+          },
+          {
+            "remitente": "PAMPA GOLONDRINA SA",
+            "localidad": "GRAL. CAMPOS  -L.P.-",
+            "provincia": "LPA",
+            "cabezas": 4
+          }
+        ],
+        "period": "29/07/2026 - 28/08/2026"
+      },
+      "colombo-y-magliano": {
+        "magId": "165",
+        "totalCabezas": 215,
+        "entries": [
+          {
+            "remitente": "AGROALMERIA S.A.",
+            "localidad": "PEHUAJO",
+            "provincia": "BUE",
+            "cabezas": 30
+          },
+          {
+            "remitente": "BRAVO JORGE OSCAR",
+            "localidad": "RIVADAVIA         B",
+            "provincia": "BUE",
+            "cabezas": 51
+          },
+          {
+            "remitente": "FRIGORIFICO ANGELANI S.A.",
+            "localidad": "SALADILLO",
+            "provincia": "BUE",
+            "cabezas": 50
+          },
+          {
+            "remitente": "SIMON MARCELO ALBERTO",
+            "localidad": "BENITO JUAREZ",
+            "provincia": "BUE",
+            "cabezas": 46
+          },
+          {
+            "remitente": "VISBER AGROP. S.R.L.",
+            "localidad": "BALCARCE",
+            "provincia": "BUE",
+            "cabezas": 38
+          }
+        ],
+        "period": "29/07/2026 - 28/08/2026"
       }
     }
   },
@@ -2183,8 +2263,8 @@
   },
   "soy": {
     "current": 502.33,
-    "prev": 501.33,
-    "change": 0.2,
+    "prev": 502.33,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
     "date": "2026-08-27"
