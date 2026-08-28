@@ -1837,41 +1837,41 @@
   },
   "categories": {
     "novillos": {
-      "current": 4113.13,
-      "prev": 4349.19,
-      "change": -5.4,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "current": 4113,
+      "prev": 4113.13,
+      "change": 0,
+      "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 661
     },
     "novillitos": {
-      "current": 4651.5,
-      "prev": 4657.64,
-      "change": -0.1,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "current": 3907,
+      "prev": 4651.5,
+      "change": -16,
+      "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 991
     },
     "vaquillonas": {
-      "current": 4287.38,
-      "prev": 4630.61,
-      "change": -7.4,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "current": 3702,
+      "prev": 4287.38,
+      "change": -13.7,
+      "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1185
     },
     "vacas": {
-      "current": 3005.82,
-      "prev": 3048.12,
-      "change": -1.4,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "current": 2961,
+      "prev": 3005.82,
+      "change": -1.5,
+      "source": "MAG (derived from INMAG)",
       "latestVolume": 1900
     },
     "toros": {
-      "current": 3263.74,
-      "prev": 3116.12,
-      "change": 4.7,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "current": 2674,
+      "prev": 3263.74,
+      "change": -18.1,
+      "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 253
     },
@@ -1883,9 +1883,9 @@
     }
   },
   "corn": {
-    "current": 247.7,
+    "current": 244.3,
     "prev": 247.7,
-    "change": 0,
+    "change": -1.4,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
@@ -1903,7 +1903,7 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-08-27",
+  "lastUpdate": "2026-08-28",
   "provinceEntry": {
     "date": "2026-08-27",
     "totalCabezas": 5105,
@@ -2182,11 +2182,11 @@
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
-    "current": 501.33,
+    "current": 502.33,
     "prev": 501.33,
-    "change": 0,
+    "change": 0.2,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
-    "date": "2026-08-26"
+    "date": "2026-08-27"
   }
 }
