@@ -682,3 +682,56 @@ export function trackGuiaPurchase(
     items: [{ item_id: slug, item_name: slug, price, quantity: 1 }],
   })
 }
+
+/**
+ * Informes de datos — inicio de checkout.
+ *
+ * Espeja a `trackGuiaCheckoutStart` a propósito: mismo par de eventos (`begin_checkout`
+ * estándar de GA4 + uno propio para poder segmentar), mismo `value`/`currency` para que la
+ * conversión valga lo mismo en los dos productos, y el mismo beacon interno — que es el que
+ * no depende de que el visitante acepte cookies.
+ *
+ * Se dispara con el link de Rebill YA CREADO, no en el submit: así cuenta intenciones que
+ * de verdad llegaron al checkout y no errores de la API.
+ */
+export function trackInformeCheckoutStart(
+  slug: string,
+  price: number,
+  opts: { variante?: string; source?: string; conFactura?: boolean } = {},
+) {
+  const params = {
+    informe_slug: slug,
+    informe_variante: opts.variante || '',
+    value: price,
+    currency: 'ARS',
+    conversion_source: opts.source || 'direct',
+    con_factura: opts.conFactura ? 'si' : 'no',
+    items: [
+      {
+        item_id: opts.variante ? `${slug}:${opts.variante}` : slug,
+        item_name: slug,
+        item_variant: opts.variante || undefined,
+        price,
+        quantity: 1,
+      },
+    ],
+  }
+  trackEvent('begin_checkout', params)
+  trackEvent('informe_checkout_start', params)
+  emitValueBeacon('informe_checkout_start', {
+    meta: { slug, variante: opts.variante, price, source: opts.source, con_factura: !!opts.conFactura },
+  })
+}
+
+/** El sales page de un informe se vio. Es el escalón anterior del embudo. */
+export function trackInformeView(slug: string, price: number) {
+  const params = {
+    informe_slug: slug,
+    value: price,
+    currency: 'ARS',
+    items: [{ item_id: slug, item_name: slug, price, quantity: 1 }],
+  }
+  trackEvent('view_item', params)
+  trackEvent('informe_view', params)
+  emitValueBeacon('informe_view', { meta: { slug, price } })
+}

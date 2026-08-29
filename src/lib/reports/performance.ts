@@ -14,6 +14,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { aWinAnsi } from '@/lib/pdf/winansi'
 
 /** Eventos de `value_events` que son un contacto real hacia la firma. */
 const EVENTOS_CONTACTO = [
@@ -314,22 +315,6 @@ const CANAL_LABEL: Record<string, string> = {
   contact_email: 'Email',
 }
 
-/**
- * Reemplaza los caracteres que las fuentes core de jsPDF no saben dibujar.
- *
- * jsPDF con Helvetica codifica en WinAnsi, que no tiene flecha ni comillas
- * tipográficas: la leyenda "46 → 30 visitas" salía impresa como "46 ! 30 visitas"
- * en el PDF que la firma le muestra a su socio. Los acentos y la ñ sí entran, así
- * que sólo hay que tocar estos.
- */
-function aWinAnsi(s: string): string {
-  return s
-    .replace(/→/g, 'a')
-    .replace(/[–—]/g, '-')
-    .replace(/[“”]/g, '"')
-    .replace(/[‘’]/g, "'")
-    .replace(/…/g, '...')
-}
 
 /**
  * Adapta una `Performance` a lo que el PDF necesita.

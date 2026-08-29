@@ -110,19 +110,23 @@ body{margin:0;color:var(--tinta);font-family:'Source Serif 4',Georgia,serif;font
 h1,h2,h3,.mono,th,figcaption{font-family:Inter,system-ui,sans-serif}
 .mono,.kicker,figcaption,th,.dato-label,.url{font-family:'JetBrains Mono',ui-monospace,monospace}
 
-/* ---------- tapa ---------- */
-.tapa{width:210mm;height:297mm;position:relative;overflow:hidden;background:#09090b;color:#fafafa;page-break-after:always}
-.tapa img.fondo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;filter:grayscale(.15) contrast(1.05)}
-.tapa .velo{position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,9,11,.35) 0%,rgba(9,9,11,.78) 52%,#09090b 100%)}
-.tapa .contenido{position:relative;padding:26mm 22mm;height:100%;display:flex;flex-direction:column}
-.tapa .marca{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11pt;letter-spacing:.02em}
+/* ---------- tapa ----------
+   IMPRIMIBLE. La tapa era 210x297 mm de #09090b a sangre: una hoja entera de tinta
+   negra en una impresora hogareña, que es donde el productor imprime esto. Ahora la
+   foto ocupa la mitad de arriba y el bloque de texto va sobre papel blanco. Se ve
+   igual de bien en pantalla y se puede imprimir sin vaciar el cartucho. */
+.tapa{width:210mm;height:297mm;position:relative;overflow:hidden;background:#fff;color:#18202f;page-break-after:always}
+.tapa img.fondo{position:absolute;top:0;left:0;right:0;height:118mm;width:100%;object-fit:cover;opacity:1;filter:grayscale(.15) contrast(1.03)}
+.tapa .velo{position:absolute;top:0;left:0;right:0;height:118mm;background:linear-gradient(180deg,rgba(9,9,11,.18) 0%,rgba(9,9,11,.42) 100%)}
+.tapa .contenido{position:relative;padding:22mm 22mm 26mm;height:100%;display:flex;flex-direction:column}
+.tapa .marca{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11pt;letter-spacing:.02em;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.55)}
 .tapa .marca img{width:22px;height:22px}
 .tapa .marca b{font-weight:700}
 .tapa .marca .punto{color:#38bdf8}
-.tapa .kicker{margin-top:auto;font-size:8.5pt;letter-spacing:.24em;text-transform:uppercase;color:#38bdf8}
+.tapa .kicker{margin-top:auto;font-size:8.5pt;letter-spacing:.24em;text-transform:uppercase;color:#075973;font-weight:700}
 .tapa h1{font-size:40pt;line-height:1.04;margin:6mm 0 0;font-weight:700;letter-spacing:-.02em}
-.tapa .bajada{font-size:12.5pt;line-height:1.5;color:#d4d4d8;margin-top:7mm;max-width:135mm}
-.tapa .sello{margin-top:8mm;border:1px solid #38bdf8;color:#e0f2fe;padding:3.5mm 4mm;font-family:'JetBrains Mono',monospace;font-size:8pt;line-height:1.7;letter-spacing:.02em;max-width:135mm}
+.tapa .bajada{font-size:12.5pt;line-height:1.5;color:#586476;margin-top:7mm;max-width:135mm}
+.tapa .sello{margin-top:8mm;border:1px solid #075973;color:#18202f;background:#f0f8fc;padding:3.5mm 4mm;font-family:'JetBrains Mono',monospace;font-size:8pt;line-height:1.7;letter-spacing:.02em;max-width:135mm}
 .tapa .sello b{color:#38bdf8;font-weight:700}
 .tapa .pie{margin-top:8mm;padding-top:5mm;border-top:1px solid #3f3f46;display:flex;justify-content:space-between;
   font-family:'JetBrains Mono',monospace;font-size:8pt;color:#a1a1aa;letter-spacing:.06em;text-transform:uppercase}
@@ -161,7 +165,9 @@ em{font-style:italic}
 table{width:100%;border-collapse:collapse;margin:0 0 5mm;font-size:9pt}
 thead{display:table-header-group}
 tr{page-break-inside:avoid}
-th{background:var(--tinta);color:#fff;text-align:left;padding:2mm 2.5mm;font-size:7.5pt;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+/* Encabezado de tabla sin relleno sólido: en 81 páginas con tablas, la barra de tinta
+   por cada una se acumula. Una línea gruesa abajo separa igual y no gasta. */
+th{background:var(--hueso);color:var(--tinta);border-bottom:1.5pt solid var(--tinta);text-align:left;padding:2mm 2.5mm;font-size:7.5pt;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
 td{border-bottom:1px solid var(--linea);padding:2mm 2.5mm;vertical-align:top;line-height:1.45}
 tbody tr:nth-child(even) td{background:var(--hueso)}
 .blank-cell{height:8mm;background:#fff !important}
@@ -176,7 +182,7 @@ tbody tr:nth-child(even) td{background:var(--hueso)}
 .alerta-title{font-family:Inter,sans-serif;font-weight:700;font-size:9.5pt;margin-bottom:1.5mm;color:var(--ambar)}
 .alerta p{margin:0;font-size:9.5pt}
 .regla{font-family:Inter,sans-serif;font-weight:700;font-size:13pt;line-height:1.35;border-top:2px solid var(--tinta);border-bottom:2px solid var(--tinta);padding:4mm 0;margin:0 0 5mm;text-align:center}
-.formula{font-family:'JetBrains Mono',monospace;font-size:9.5pt;background:var(--tinta);color:#fafafa;padding:3mm 4mm;margin:0 0 5mm;text-align:center}
+.formula{font-family:'JetBrains Mono',monospace;font-size:9.5pt;background:var(--hueso);color:var(--tinta);border:1px solid var(--linea);border-left:3px solid var(--cielo);padding:3mm 4mm;margin:0 0 5mm;text-align:center}
 
 .datos{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--linea);margin:0 0 5mm}
 .dato{padding:2.5mm 3mm;border-right:1px solid var(--linea);border-bottom:1px solid var(--linea);display:flex;flex-direction:column;gap:1mm}

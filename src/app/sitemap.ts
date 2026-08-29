@@ -8,6 +8,8 @@ import frigorificosData from '@/lib/data/frigorificos.json'
 import marketPrices from '@/lib/data/market-prices.json'
 import { getQualitySegments, CABEZAS_INDEX_THRESHOLD } from '@/lib/data/quality-segments'
 import { BPG_TEMAS } from '@/lib/data/bpg-ganaderas'
+import { PRODUCTOS_DATOS } from '@/lib/productos-datos'
+import { getProveedoresPublicados } from '@/lib/proveedores'
 
 /* ------------------------------------------------------------------ */
 /*  PROVINCE SLUG MAP (must match [provincia]/page.tsx)                 */
@@ -127,6 +129,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/campos/publicar`, lastModified: buildDate, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/campos/valuar`, lastModified: buildDate, changeFrequency: 'weekly', priority: 0.85 },
     { url: `${baseUrl}/guias`, lastModified: buildDate, changeFrequency: 'weekly', priority: 0.75 },
+    // Informes de datos — el hub y cada sales page. Prioridad alta: son las páginas
+    // que cobran, y su descubrimiento por búsqueda es el canal de A5 y A7 del plan
+    // de monetización. Sólo lo que el catálogo marca como `publicado`.
+    { url: `${baseUrl}/informes`, lastModified: buildDate, changeFrequency: 'weekly', priority: 0.85 },
+    // Guía de proveedores: el hub y una ficha por empresa. Captura búsquedas de rubro
+    // ("etiquetas para frigoríficos") que hoy no tienen ninguna página nuestra.
+    { url: `${baseUrl}/proveedores`, lastModified: buildDate, changeFrequency: 'weekly', priority: 0.7 },
+    ...getProveedoresPublicados().map((p) => ({
+      url: `${baseUrl}/proveedores/${p.slug}`,
+      lastModified: buildDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.65,
+    })),
+    // Las publicadas van con prioridad alta; las que todavía no se venden entran
+    // igual, más abajo: su sales page captura la lista de espera y es la audiencia
+    // del producto el día que salga.
+    ...PRODUCTOS_DATOS.map((p) => ({
+      url: `${baseUrl}${p.landing}`,
+      lastModified: buildDate,
+      changeFrequency: 'monthly' as const,
+      priority: p.publicado ? 0.8 : 0.6,
+    })),
     { url: `${baseUrl}/valor-tierra.json`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${baseUrl}/como-comprar-un-campo`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/como-vender-un-campo`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.8 },

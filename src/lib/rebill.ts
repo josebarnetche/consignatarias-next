@@ -396,3 +396,130 @@ export async function createGuiaPurchaseLink(opts: {
   }
   return JSON.parse(responseText)
 }
+
+/**
+ * createInformePurchaseLink — pago ÚNICO de un informe de datos.
+ *
+ * Igual que `createGuiaPurchaseLink` en lo esencial (single use, email-first, el precio lo
+ * pone el servidor), con dos diferencias que importan:
+ *
+ *  1. **`variante`**. El mismo producto tiene muchos entregables — un informe por zona, por
+ *     departamento o por provincia. La variante viaja en la metadata y termina siendo la
+ *     coordenada del entitlement: comprar el de Mercedes no habilita el de Curuzú Cuatiá.
+ *
+ *  2. **Los tres `redirectUrls`**. Los links viejos declaran sólo `approved`, así que una
+ *     tarjeta rechazada deja al comprador varado en Rebill sin señal de vuelta. Acá se
+ *     declaran también el rechazo y la cancelación, que caen en una página que le explica
+ *     qué pasó y cómo seguir. Es el escenario más probable con una tarjeta del exterior.
+ */
+export async function createInformePurchaseLink(opts: {
+  productoSlug: string
+  title: string
+  amountArs: number
+  customerEmail: string
+  variante?: string
+  varianteLabel?: string
+  razonSocial?: string
+  cuit?: string
+}) {
+  const secretKey = process.env.REBILL_SECRET_KEY
+  if (!secretKey) {
+    throw new Error('REBILL_SECRET_KEY is not configured')
+  }
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
+  const titulo = opts.varianteLabel ? `${opts.title} · ${opts.varianteLabel}` : opts.title
+
+  const payload = {
+    title: [{ language: 'es', text: `${titulo} · consignatarias.com.ar` }],
+    paymentMethods: [{ methods: ['card'], currency: 'ARS' }],
+    prices: [{ amount: opts.amountArs, currency: 'ARS' }],
+    metadata: {
+      kind: 'informe_purchase',
+      productoSlug: opts.productoSlug,
+      ...(opts.variante ? { variante: opts.variante } : {}),
+      ...(opts.varianteLabel ? { varianteLabel: opts.varianteLabel } : {}),
+      customerEmail: opts.customerEmail,
+      ...(opts.razonSocial ? { razonSocial: opts.razonSocial } : {}),
+      ...(opts.cuit ? { cuit: opts.cuit } : {}),
+    },
+    redirectUrls: {
+      approved: `${appUrl}/cuenta/informes?comprado=${encodeURIComponent(opts.productoSlug)}`,
+      rejected: `${appUrl}/informes/pago-no-completado?motivo=rechazado&p=${encodeURIComponent(opts.productoSlug)}`,
+      cancelled: `${appUrl}/informes/pago-no-completado?motivo=cancelado&p=${encodeURIComponent(opts.productoSlug)}`,
+    },
+    isSingleUse: true,
+  }
+
+  const res = await fetch(`${REBILL_API}/payment-links`, {
+    method: 'POST',
+    headers: { 'x-api-key': secretKey, 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+
+  const responseText = await res.text()
+  if (!res.ok) {
+    console.error('Rebill informe purchase error:', res.status, responseText)
+    throw new Error(`Rebill error: ${res.status} ${responseText}`)
+  }
+  return JSON.parse(responseText)
+}
+
+/**
+ * createProductoSubscriptionLink — alta de suscripción a un producto de datos.
+ *
+ * Diferencia con `createInformePurchaseLink`: `isSingleUse: false`. Rebill cobra el
+ * primer período al aprobar y después renueva solo, mandando `payment.success` en cada
+ * ciclo — que es lo que corre `current_period_end` hacia adelante en el webhook.
+ *
+ * Lleva los tres `redirectUrls`, no sólo `approved`: una tarjeta rechazada en una alta de
+ * suscripción es igual de probable que en una compra, y sin la vuelta el interesado queda
+ * varado sin que nos enteremos.
+ */
+export async function createProductoSubscriptionLink(opts: {
+  productoSlug: string
+  title: string
+  amountArs: number
+  customerEmail: string
+  razonSocial?: string
+  cuit?: string
+}) {
+  const secretKey = process.env.REBILL_SECRET_KEY
+  if (!secretKey) {
+    throw new Error('REBILL_SECRET_KEY is not configured')
+  }
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
+
+  const payload = {
+    title: [{ language: 'es', text: `${opts.title} · consignatarias.com.ar` }],
+    paymentMethods: [{ methods: ['card'], currency: 'ARS' }],
+    prices: [{ amount: opts.amountArs, currency: 'ARS' }],
+    metadata: {
+      kind: 'producto_subscription',
+      productoSlug: opts.productoSlug,
+      customerEmail: opts.customerEmail,
+      ...(opts.razonSocial ? { razonSocial: opts.razonSocial } : {}),
+      ...(opts.cuit ? { cuit: opts.cuit } : {}),
+    },
+    redirectUrls: {
+      approved: `${appUrl}/cuenta/informes?suscripto=${encodeURIComponent(opts.productoSlug)}`,
+      rejected: `${appUrl}/informes/pago-no-completado?motivo=rechazado&p=${encodeURIComponent(opts.productoSlug)}`,
+      cancelled: `${appUrl}/informes/pago-no-completado?motivo=cancelado&p=${encodeURIComponent(opts.productoSlug)}`,
+    },
+    isSingleUse: false, // suscripción recurrente
+  }
+
+  const res = await fetch(`${REBILL_API}/payment-links`, {
+    method: 'POST',
+    headers: { 'x-api-key': secretKey, 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+
+  const responseText = await res.text()
+  if (!res.ok) {
+    console.error('Rebill producto subscription error:', res.status, responseText)
+    throw new Error(`Rebill error: ${res.status} ${responseText}`)
+  }
+  return JSON.parse(responseText)
+}

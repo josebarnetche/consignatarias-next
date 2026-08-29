@@ -131,3 +131,7 @@ src/app/api/dev/
 # Genera magic links de login para cualquier cuenta. Necesita la service-role key
 # para funcionar, pero es una utilidad de desarrollo y este repo es público.
 scripts/dev-magic-link.mts
+
+# Bases con datos personales (emails de suscriptores y usuarios). Repo PUBLICO:
+# esto no se sube nunca.
+private/bases/

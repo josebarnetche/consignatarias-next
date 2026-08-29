@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { requireServiceClient } from '@/lib/supabase'
-import { sendEnterpriseWelcome, sendConsignatariaProWelcome, sendGuiaPurchaseDelivery } from '@/lib/email'
+import {
+  sendEnterpriseWelcome,
+  sendConsignatariaProWelcome,
+  sendGuiaPurchaseDelivery,
+  sendInformePurchaseDelivery,
+  sendProductoSubscriptionWelcome,
+} from '@/lib/email'
 import { getGuiaPremium } from '@/lib/guias-premium'
+import { getProducto } from '@/lib/productos-datos'
 import { eventWeight } from '@/lib/value-events'
 import { getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import crypto from 'crypto'
@@ -289,6 +296,159 @@ export async function POST(request: NextRequest) {
           break
         }
 
+        // Branch 3b — compra única de un INFORME DE DATOS (catálogo en
+        // `productos-datos.ts`). Igual que la guía en la mecánica, con una diferencia:
+        // el mismo producto tiene muchas variantes (una por zona, departamento o
+        // provincia), así que el entitlement lleva una coordenada más y el índice único
+        // que sostiene este upsert es (producto, variante, email). Comprar el informe de
+        // Mercedes no habilita el de Curuzú Cuatiá.
+        if (kind === 'informe_purchase') {
+          const productoSlug = metadata?.productoSlug
+          const customerEmail = metadata?.customerEmail
+          if (!productoSlug || !customerEmail) {
+            console.error('Rebill webhook: informe_purchase sin productoSlug o customerEmail', {
+              productoSlug,
+              customerEmail,
+            })
+            break
+          }
+
+          const producto = getProducto(String(productoSlug))
+          if (!producto) {
+            console.error(`Rebill webhook: informe_purchase con slug desconocido (${productoSlug}). No se otorga.`)
+            break
+          }
+
+          const email = String(customerEmail).trim().toLowerCase()
+          // Cadena vacía y no null: `variante_slug` es NOT NULL y forma parte del índice
+          // único. Un producto sin variantes usa '' como su única coordenada.
+          const varianteSlug = metadata?.variante ? String(metadata.variante) : ''
+          const varianteLabel = metadata?.varianteLabel ? String(metadata.varianteLabel) : null
+
+          const { error: grantErr } = await service.from('informe_purchases').upsert(
+            {
+              producto_slug: producto.slug,
+              variante_slug: varianteSlug,
+              variante_label: varianteLabel,
+              email,
+              status: 'paid',
+              amount_ars: producto.precio,
+              rebill_payment_id: data?.id ?? subscription_id ?? null,
+              rebill_customer_id: customer_id ?? null,
+              purchased_at: new Date().toISOString(),
+              // Los datos de factura van en columnas y no en `meta`: así la cola de
+              // facturas pendientes es una consulta y no una lectura de jsonb a ojo.
+              factura_razon_social: metadata?.razonSocial ? String(metadata.razonSocial) : null,
+              factura_cuit: metadata?.cuit ? String(metadata.cuit) : null,
+              factura_tipo: metadata?.cuit ? 'A' : null,
+            },
+            { onConflict: 'producto_slug,variante_slug,email' },
+          )
+          if (grantErr) throw new Error(`informe entitlement grant failed: ${grantErr.message}`)
+
+          // Mail de entrega (best-effort) + acuse de que salió. Si el cupo de Resend
+          // está agotado, `delivery_email_at` queda en null y la consulta de
+          // "pagaron y no se enteraron" los encuentra.
+          try {
+            await sendInformePurchaseDelivery({
+              to: email,
+              producto,
+              variante: varianteSlug || null,
+              varianteLabel,
+            })
+            await service
+              .from('informe_purchases')
+              .update({ delivery_email_at: new Date().toISOString() })
+              .eq('producto_slug', producto.slug)
+              .eq('variante_slug', varianteSlug)
+              .eq('email', email)
+          } catch (err) {
+            console.error('Informe delivery email failed:', err)
+          }
+
+          // El evento de conversión, con el valor real cobrado.
+          try {
+            await service.from('value_events').insert({
+              event: 'informe_purchased',
+              entity_type: 'global',
+              entity_slug: producto.slug,
+              weight: eventWeight('informe_purchased'),
+              meta: { producto: producto.slug, variante: varianteSlug, amount_ars: producto.precio },
+            })
+          } catch (err) {
+            console.error('informe value_event failed:', err)
+          }
+
+          break
+        }
+
+        // Branch 3c — SUSCRIPCIÓN a un producto de datos (parte semanal, etc).
+        //
+        // El mismo evento sirve para el alta y para cada renovación: Rebill manda
+        // `payment.success` en cada ciclo y acá se corre `current_period_end` un mes
+        // hacia adelante. El upsert contra el índice (producto, email) hace que una
+        // renovación actualice la fila en vez de crear otra.
+        if (kind === 'producto_subscription') {
+          const productoSlug = metadata?.productoSlug
+          const customerEmail = metadata?.customerEmail
+          if (!productoSlug || !customerEmail) {
+            console.error('Rebill webhook: producto_subscription sin datos', { productoSlug, customerEmail })
+            break
+          }
+
+          const producto = getProducto(String(productoSlug))
+          if (!producto) {
+            console.error(`Rebill webhook: producto_subscription desconocido (${productoSlug}). No se otorga.`)
+            break
+          }
+
+          const email = String(customerEmail).trim().toLowerCase()
+          // Un mes desde hoy. Si Rebill deja de renovar, esta fecha vence sola y el
+          // acceso cae sin que haya que enterarse de nada.
+          const periodEnd = new Date()
+          periodEnd.setMonth(periodEnd.getMonth() + 1)
+
+          const { error: subErr } = await service.from('producto_subscriptions').upsert(
+            {
+              producto_slug: producto.slug,
+              email,
+              status: 'active',
+              current_period_end: periodEnd.toISOString(),
+              amount_ars: producto.precio,
+              rebill_subscription_id: subscription_id ?? null,
+              rebill_customer_id: customer_id ?? null,
+              updated_at: new Date().toISOString(),
+              // Una renovación después de una cancelación limpia la marca: si volvió a
+              // pagar, no está cancelada.
+              cancelled_at: null,
+              factura_razon_social: metadata?.razonSocial ? String(metadata.razonSocial) : null,
+              factura_cuit: metadata?.cuit ? String(metadata.cuit) : null,
+            },
+            { onConflict: 'producto_slug,email' },
+          )
+          if (subErr) throw new Error(`producto subscription grant failed: ${subErr.message}`)
+
+          try {
+            await sendProductoSubscriptionWelcome({ to: email, producto })
+          } catch (err) {
+            console.error('Producto subscription welcome failed:', err)
+          }
+
+          try {
+            await service.from('value_events').insert({
+              event: 'subscription_paid',
+              entity_type: 'global',
+              entity_slug: producto.slug,
+              weight: eventWeight('subscription_paid'),
+              meta: { kind: 'producto_subscription', producto: producto.slug, amount_ars: producto.precio },
+            })
+          } catch (err) {
+            console.error('producto subscription value_event failed:', err)
+          }
+
+          break
+        }
+
         // Branch 1 — user PRO subscription (productor / contador / broker)
         if (kind === 'user_pro_subscription') {
           const userId = metadata?.userId
@@ -448,6 +608,26 @@ export async function POST(request: NextRequest) {
       case 'subscription.cancelled': {
         const { subscription_id } = data
         if (!subscription_id) break
+
+        // Suscripción a un producto de datos. Se marca cancelada pero NO se toca
+        // `current_period_end`: el período está pagado y el acceso se honra hasta ahí
+        // (ver `src/lib/informes/acceso.ts`). Misma gracia que el resto del repo.
+        const { data: prodSub } = await service
+          .from('producto_subscriptions')
+          .select('id')
+          .eq('rebill_subscription_id', subscription_id)
+          .maybeSingle()
+        if (prodSub) {
+          await service
+            .from('producto_subscriptions')
+            .update({
+              status: 'cancelled',
+              cancelled_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', prodSub.id)
+          break
+        }
 
         // Try entity table first
         const { data: entSub } = await service

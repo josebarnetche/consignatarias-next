@@ -79,6 +79,7 @@ const NAV_GROUPS: NavGroup[] = [
     match: "/consignatarias",
     items: [
       { label: "Frigoríficos", href: "/frigorificos", hint: "1.102 plantas SENASA" },
+      { label: "Proveedores", href: "/proveedores", hint: "Quién le vende a la industria", tag: "new" },
       { label: "Consignatarias", href: "/consignatarias", hint: "104 firmas" },
       { label: "Sumá tu firma", href: "/para-consignatarias", hint: "PRO · más alcance para tus remates" },
     ],
@@ -105,6 +106,7 @@ const NAV_GROUPS: NavGroup[] = [
     match: "/guias",
     items: [
       { label: "Todas las guías", href: "/guias", hint: "El índice completo, por tema", tag: "new" },
+      { label: "Informes por zona", href: "/informes", hint: "El dato de tu zona, en PDF", tag: "new" },
       { label: "Cómo vender hacienda", href: "/vender-hacienda-guia", hint: "Consignación, remate o venta directa" },
       { label: "Cómo comprar un campo", href: "/como-comprar-un-campo", hint: "Papeles y qué mirar antes de señar" },
       { label: "Cómo vender un campo", href: "/como-vender-un-campo", hint: "Precio, carpeta y tiempos reales" },
@@ -133,6 +135,7 @@ const MOBILE_NAV: MobileNavLink[] = [
   { label: "CONSIGNAT.", href: "/consignatarias" },
   { label: "CALCULAR", href: "/calculadora" },
   { label: "GUÍAS", href: "/guias" },
+  { label: "INFORMES", href: "/informes" },
   { label: "PLANES", href: "/planes", tag: "pro" },
 ];
 
@@ -518,6 +521,7 @@ const FOOTER_COLUMNS: FooterColumn[] = [
       { label: "Remates", href: "/remates" },
       { label: "Consignatarias", href: "/consignatarias" },
       { label: "Frigoríficos", href: "/frigorificos" },
+      { label: "Proveedores", href: "/proveedores" },
       { label: "Calculadora", href: "/calculadora" },
       { label: "Comparar", href: "/comparar" },
       { label: "Exportar", href: "/exportar" },

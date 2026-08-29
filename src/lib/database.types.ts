@@ -1485,6 +1485,90 @@ export type Database = {
         }
         Relationships: []
       }
+      informe_purchases: {
+        Row: {
+          amount_ars: number | null
+          created_at: string
+          dataset_generado: string | null
+          delivery_email_at: string | null
+          download_count: number
+          email: string
+          factura_cuit: string | null
+          factura_emitida_at: string | null
+          factura_numero: string | null
+          factura_razon_social: string | null
+          factura_tipo: string | null
+          generador_version: string | null
+          id: number
+          last_downloaded_at: string | null
+          meta: Json | null
+          producto_slug: string
+          purchased_at: string
+          rebill_customer_id: string | null
+          rebill_payment_id: string | null
+          refund_motivo: string | null
+          refunded_at: string | null
+          status: string
+          user_id: string | null
+          variante_label: string | null
+          variante_slug: string
+        }
+        Insert: {
+          amount_ars?: number | null
+          created_at?: string
+          dataset_generado?: string | null
+          delivery_email_at?: string | null
+          download_count?: number
+          email: string
+          factura_cuit?: string | null
+          factura_emitida_at?: string | null
+          factura_numero?: string | null
+          factura_razon_social?: string | null
+          factura_tipo?: string | null
+          generador_version?: string | null
+          id?: never
+          last_downloaded_at?: string | null
+          meta?: Json | null
+          producto_slug: string
+          purchased_at?: string
+          rebill_customer_id?: string | null
+          rebill_payment_id?: string | null
+          refund_motivo?: string | null
+          refunded_at?: string | null
+          status?: string
+          user_id?: string | null
+          variante_label?: string | null
+          variante_slug: string
+        }
+        Update: {
+          amount_ars?: number | null
+          created_at?: string
+          dataset_generado?: string | null
+          delivery_email_at?: string | null
+          download_count?: number
+          email?: string
+          factura_cuit?: string | null
+          factura_emitida_at?: string | null
+          factura_numero?: string | null
+          factura_razon_social?: string | null
+          factura_tipo?: string | null
+          generador_version?: string | null
+          id?: never
+          last_downloaded_at?: string | null
+          meta?: Json | null
+          producto_slug?: string
+          purchased_at?: string
+          rebill_customer_id?: string | null
+          rebill_payment_id?: string | null
+          refund_motivo?: string | null
+          refunded_at?: string | null
+          status?: string
+          user_id?: string | null
+          variante_label?: string | null
+          variante_slug?: string
+        }
+        Relationships: []
+      }
       inmag_monthly_close: {
         Row: {
           cabezas: number | null
@@ -2670,6 +2754,72 @@ export type Database = {
         }
         Relationships: []
       }
+      producto_subscriptions: {
+        Row: {
+          amount_ars: number | null
+          cancelled_at: string | null
+          created_at: string
+          current_period_end: string | null
+          delivery_count: number
+          email: string
+          factura_cuit: string | null
+          factura_emitida_at: string | null
+          factura_razon_social: string | null
+          id: number
+          last_delivered_at: string | null
+          meta: Json | null
+          producto_slug: string
+          rebill_customer_id: string | null
+          rebill_subscription_id: string | null
+          started_at: string
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount_ars?: number | null
+          cancelled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          delivery_count?: number
+          email: string
+          factura_cuit?: string | null
+          factura_emitida_at?: string | null
+          factura_razon_social?: string | null
+          id?: never
+          last_delivered_at?: string | null
+          meta?: Json | null
+          producto_slug: string
+          rebill_customer_id?: string | null
+          rebill_subscription_id?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount_ars?: number | null
+          cancelled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          delivery_count?: number
+          email?: string
+          factura_cuit?: string | null
+          factura_emitida_at?: string | null
+          factura_razon_social?: string | null
+          id?: never
+          last_delivered_at?: string | null
+          meta?: Json | null
+          producto_slug?: string
+          rebill_customer_id?: string | null
+          rebill_subscription_id?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profile_views: {
         Row: {
           entity_slug: string
@@ -2739,6 +2889,36 @@ export type Database = {
           remate_date?: string | null
           remate_id?: number | null
           remate_title?: string | null
+        }
+        Relationships: []
+      }
+      proveedor_contactos: {
+        Row: {
+          consentimiento: string
+          contacto_email: string | null
+          contacto_nombre: string
+          contacto_telefono: string | null
+          created_at: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          consentimiento: string
+          contacto_email?: string | null
+          contacto_nombre: string
+          contacto_telefono?: string | null
+          created_at?: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          consentimiento?: string
+          contacto_email?: string | null
+          contacto_nombre?: string
+          contacto_telefono?: string | null
+          created_at?: string
+          slug?: string
+          updated_at?: string
         }
         Relationships: []
       }

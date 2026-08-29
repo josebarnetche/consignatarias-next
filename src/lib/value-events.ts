@@ -46,6 +46,9 @@ export const VALUE_EVENTS = {
   // Form "pedí que te contacten" enviado (firmas sin contacto público). Lead
   // capturado de verdad — pesa como un WhatsApp.
   lead_form: { weight: 10, group: 'lead', label: 'Form de contacto enviado' },
+  // Pidió que un proveedor de la guía lo contacte. Pesa como un lead directo: es una
+  // intención de compra hacia un tercero, con datos propios entregados.
+  proveedor_contacto: { weight: 10, group: 'lead', label: 'Pidió contacto con un proveedor' },
   // Motor de lead-gen a performance (herramientas gratis → producer_lead ruteado).
   lead_capture_open: { weight: 4, group: 'lead', label: 'Abrió "que me contacten"' },
   lead_capture_submit: { weight: 12, group: 'lead', label: 'Lead de productor enviado' },
@@ -74,9 +77,20 @@ export const VALUE_EVENTS = {
   guia_view: { weight: 6, group: 'funnel', label: 'Vio el sales page de la guía' },
   guia_checkout_start: { weight: 30, group: 'funnel', label: 'Inició checkout de la guía' },
 
+  // --- Funnel de los informes de datos (catálogo en `productos-datos.ts`) ---
+  // Mismos pesos que la guía: son el mismo escalón del embudo con distinto producto.
+  // `informe_view` pesa poco porque el sales page se ve mucho y decide poco; el
+  // checkout pesa 30 porque ahí el visitante ya escribió su mail y llegó a Rebill.
+  informe_view: { weight: 6, group: 'funnel', label: 'Vio el sales page de un informe' },
+  // Dejó el mail en un producto que todavía no se entrega. Pesa como una suscripción
+  // al newsletter (8): es la misma acción, con intención de compra declarada encima.
+  informe_waitlist: { weight: 10, group: 'recurrencia', label: 'Se anotó a la espera de un informe' },
+  informe_checkout_start: { weight: 30, group: 'funnel', label: 'Inició checkout de un informe' },
+
   // --- Conversión (la plata) ---
   subscription_paid: { weight: 100, group: 'conversion', label: 'Pago confirmado' },
   guia_purchased: { weight: 100, group: 'conversion', label: 'Guía paga comprada' },
+  informe_purchased: { weight: 100, group: 'conversion', label: 'Informe de datos comprado' },
 
   // --- Descubrimiento (origen AI — la tesis de citabilidad) ---
   ai_referral: { weight: 3, group: 'discovery', label: 'Llegó desde un motor de IA' },

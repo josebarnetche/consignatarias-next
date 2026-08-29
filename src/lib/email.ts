@@ -3399,3 +3399,131 @@ export async function sendGuiaPurchaseDelivery(opts: {
     `),
   })
 }
+
+/**
+ * Entrega de un informe de datos comprado.
+ *
+ * Espeja a `sendGuiaPurchaseDelivery` con dos diferencias:
+ *  · El link lleva la VARIANTE (la zona, el departamento, la provincia): el mismo
+ *    producto tiene muchos entregables y el mail tiene que apuntar al que se compró.
+ *  · Le dice al comprador que el informe se regenera con el dato del día. No es un
+ *    archivo congelado: si vuelve en marzo, baja el precio de marzo. Eso es una razón
+ *    para volver, así que se dice.
+ *
+ * Best-effort dentro del webhook: si Resend está sin cupo (~100/día) la compra ya quedó
+ * otorgada igual, y `informe_purchases.delivery_email_at` en null delata a quién no le
+ * llegó.
+ */
+export async function sendInformePurchaseDelivery(opts: {
+  to: string
+  producto: { slug: string; nombre: string; tagline: string }
+  variante?: string | null
+  varianteLabel?: string | null
+}) {
+  const resend = await getResend()
+  if (!resend) return
+  const { to, producto, variante, varianteLabel } = opts
+  const url = `${APP_URL}/api/informes/${producto.slug}/download${
+    variante ? `?variante=${encodeURIComponent(variante)}` : ''
+  }`
+  const titulo = varianteLabel ? `${producto.nombre} — ${varianteLabel}` : producto.nombre
+
+  await resend.emails.send({
+    from: FROM,
+    to,
+    subject: `Tu informe: ${titulo}`,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Compra confirmada</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 12px">${escapeHtml(titulo)}</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">${escapeHtml(producto.tagline)}</p>
+      <p style="margin:0 0 20px"><a href="${url}" style="display:inline-block;background:#38bdf8;color:#0a0a0a;font-weight:700;font-size:13px;text-decoration:none;padding:11px 18px;border-radius:6px">Descargar el PDF</a></p>
+      <p style="color:#a1a1aa;font-size:12px;line-height:1.7;margin:0 0 8px">Entrá con <strong style="color:#fafafa">${escapeHtml(to)}</strong> y bajalo las veces que quieras desde <a href="${APP_URL}/cuenta/informes" style="color:#38bdf8">tu cuenta</a>. No vence.</p>
+      <p style="color:#a1a1aa;font-size:12px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Se actualiza solo.</strong> El informe se arma con el precio del día, así que si volvés en unos meses lo bajás con los números de ese momento, sin pagar de nuevo.</p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">¿Necesitás <strong style="color:#a1a1aa">factura A</strong>? La emite Memola Medios SAS (CUIT 30-71863222-2), que opera consignatarias.com.ar. Si no cargaste los datos al comprar, respondé este mail con razón social y CUIT y te la emitimos.</p>
+    `),
+  })
+}
+
+/**
+ * Bienvenida a una suscripción a un producto de datos.
+ *
+ * Se manda en el alta y en cada renovación (el webhook no distingue: es el mismo evento
+ * de Rebill). Es intencional decir en el propio mail que llega uno por mes, así el
+ * segundo no se lee como un cobro duplicado.
+ */
+export async function sendProductoSubscriptionWelcome(opts: {
+  to: string
+  producto: { slug: string; nombre: string; tagline: string; precio: number }
+}) {
+  const resend = await getResend()
+  if (!resend) return
+  const { to, producto } = opts
+  const url = `${APP_URL}/api/informes/${producto.slug}/download`
+
+  await resend.emails.send({
+    from: FROM,
+    to,
+    subject: `Tu suscripción: ${producto.nombre}`,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Suscripción activa</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 12px">${escapeHtml(producto.nombre)}</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">${escapeHtml(producto.tagline)}</p>
+      <p style="margin:0 0 20px"><a href="${url}" style="display:inline-block;background:#38bdf8;color:#0a0a0a;font-weight:700;font-size:13px;text-decoration:none;padding:11px 18px;border-radius:6px">Bajar el último</a></p>
+      <p style="color:#a1a1aa;font-size:12px;line-height:1.7;margin:0 0 8px">Está pensado para imprimir: fondo blanco, dos hojas. Entrá con <strong style="color:#fafafa">${escapeHtml(to)}</strong> y bajalo cuando quieras desde <a href="${APP_URL}/cuenta/informes" style="color:#38bdf8">tu cuenta</a>.</p>
+      <p style="color:#a1a1aa;font-size:12px;line-height:1.7;margin:0 0 8px">Se renueva solo por ARS ${producto.precio.toLocaleString('es-AR')} por mes, y <strong style="color:#fafafa">lo cancelás cuando quieras</strong> desde tu cuenta, sin llamar a nadie. Si cancelás, seguís teniéndolo hasta que termine el mes que ya pagaste.</p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">¿Necesitás <strong style="color:#a1a1aa">factura A</strong>? La emite Memola Medios SAS (CUIT 30-71863222-2). Respondé este mail con razón social y CUIT si no los cargaste al suscribirte.</p>
+    `),
+  })
+}
+
+/**
+ * Derivación de un interesado a un proveedor de la guía.
+ *
+ * Va al email del proveedor, que **nunca aparece publicado**: éste es el único lugar
+ * donde se usa. El asunto dice de dónde viene para que no se lea como spam frío, y el
+ * cuerpo trae los datos del interesado y nada más — el proveedor lo contacta directo, sin
+ * nosotros en el medio.
+ */
+export async function sendProveedorLead(opts: {
+  proveedor: { empresa: string; contactoNombre: string; contactoEmail: string; slug: string }
+  interesado: {
+    nombre: string
+    telefono?: string
+    email?: string
+    empresa?: string
+    mensaje?: string
+  }
+}) {
+  const resend = await getResend()
+  if (!resend) return
+  const { proveedor, interesado } = opts
+
+  const filas = [
+    ['Nombre', interesado.nombre],
+    ['Empresa', interesado.empresa],
+    ['Teléfono', interesado.telefono],
+    ['Email', interesado.email],
+    ['Consulta', interesado.mensaje],
+  ]
+    .filter(([, v]) => v)
+    .map(
+      ([k, v]) =>
+        `<tr><td style="color:#71717a;font-size:12px;padding:4px 14px 4px 0;vertical-align:top;white-space:nowrap">${escapeHtml(String(k))}</td><td style="color:#fafafa;font-size:13px;padding:4px 0">${escapeHtml(String(v))}</td></tr>`,
+    )
+    .join('')
+
+  await resend.emails.send({
+    from: FROM,
+    to: proveedor.contactoEmail,
+    replyTo: interesado.email || undefined,
+    subject: `Consulta para ${proveedor.empresa} desde consignatarias.com.ar`,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Nueva consulta</p>
+      <h2 style="color:#fafafa;font-size:18px;font-weight:700;margin:0 0 12px">Alguien quiere que lo contacten</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">${escapeHtml(proveedor.contactoNombre)}: dejaron esta consulta para <strong style="color:#fafafa">${escapeHtml(proveedor.empresa)}</strong> en la guía de proveedores de consignatarias.com.ar.</p>
+      <table style="border-collapse:collapse;margin:0 0 18px">${filas}</table>
+      <p style="color:#a1a1aa;font-size:12px;line-height:1.7;margin:0 0 8px">Contactalo directo — nosotros no intervenimos en la conversación. Si respondés a este mail, la respuesta le llega a quien consultó${interesado.email ? '' : ' sólo si dejó email; en este caso dejó teléfono'}.</p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Aparecés en la guía porque diste tu conformidad. Si querés salir o cambiar cómo figura tu empresa, respondé este mail y lo hacemos.</p>
+    `),
+  })
+}
