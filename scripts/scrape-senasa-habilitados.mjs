@@ -12,7 +12,7 @@
  *     "scrapedAt": "2026-05-18T...",
  *     "ciclos": ["CICLO I", "CICLO II", "CICLO III"],
  *     "byCuit": {
- *       "30707283250": { tipo, propietario, cuit, nombre, domicilio, provincia,
+ *       "30707283250": { tipo, propietario, cuit, nombre, provincia,
  *                         partido, localidad, nroOficial, actividades: [...] }
  *     }
  *   }
@@ -133,7 +133,11 @@ async function main() {
     process.stderr.write(`  ${rows.length} rows\n`)
     totalRows += rows.length
     for (const r of rows) {
-      const [tipo, propietario, cuitRaw, nombre, domicilio, provincia, partido, localidad, nroOficial, actividadesRaw] = r
+      // `domicilio` se lee de la planilla y se DESCARTA a propósito: ninguna vista lo
+      // usa y este repositorio es público — un padrón de 870 domicilios con su titular
+      // al lado no tiene por qué quedar versionado. El resto del registro sí se publica:
+      // es información pública de SENASA y es lo que le da contenido propio a cada ficha.
+      const [tipo, propietario, cuitRaw, nombre, , provincia, partido, localidad, nroOficial, actividadesRaw] = r
       const cuit = normalizeCuit(cuitRaw)
       if (!cuit) {
         unparsableCuits++
@@ -148,7 +152,6 @@ async function main() {
           tipo: String(tipo || '').trim(),
           propietario: String(propietario || '').trim(),
           nombre: String(nombre || '').trim(),
-          domicilio: String(domicilio || '').trim(),
           provincia: String(provincia || '').trim(),
           partido: String(partido || '').trim(),
           localidad: String(localidad || '').trim(),

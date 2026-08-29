@@ -7,6 +7,15 @@
  * across Ciclo I/II/III, normalizes CUIT to 11-digit string, and writes
  * `senasa-habilitados.json` keyed by CUIT.
  *
+ * PRIVACIDAD: el snapshot NO guarda el domicilio de cada establecimiento. Es el único
+ * campo del registro que ninguna vista usa, y este repositorio es público: un padrón de
+ * 870 domicilios con su titular al lado no tiene por qué estar acá. El resto —propietario,
+ * nombre, partido, actividades— es el registro público de SENASA y la ficha lo muestra a
+ * propósito: es lo que hace que cada página tenga contenido propio.
+ *
+ * Si el scraper vuelve a traer el campo, `scripts/scrape-senasa-habilitados.mjs` lo tiene
+ * que descartar antes de escribir.
+ *
  * Use:
  *   getSenasaRecord(cuit)       → SenasaRecord | null
  *   getSenasaScrapedAt()        → ISO string ("YYYY-MM-DDThh:mm:ssZ")
@@ -20,7 +29,6 @@ export interface SenasaRecord {
   tipo: string
   propietario: string
   nombre: string
-  domicilio: string
   provincia: string
   partido: string
   localidad: string
