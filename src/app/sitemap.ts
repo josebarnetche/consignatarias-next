@@ -10,6 +10,10 @@ import { getQualitySegments, CABEZAS_INDEX_THRESHOLD } from '@/lib/data/quality-
 import { BPG_TEMAS } from '@/lib/data/bpg-ganaderas'
 import { PRODUCTOS_DATOS } from '@/lib/productos-datos'
 import { getProveedoresPublicados } from '@/lib/proveedores'
+import { getDepartamentosPublicables, ultimoAnio } from '@/lib/productividad/panel'
+
+/** Los departamentos con ficha propia. La fuente se refresca una vez al año, en abril. */
+const fichasProductividad = getDepartamentosPublicables().filter((d) => d.serie[ultimoAnio()])
 
 /* ------------------------------------------------------------------ */
 /*  PROVINCE SLUG MAP (must match [provincia]/page.tsx)                 */
@@ -136,6 +140,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Guía de proveedores: el hub y una ficha por empresa. Captura búsquedas de rubro
     // ("etiquetas para frigoríficos") que hoy no tienen ninguna página nuestra.
     { url: `${baseUrl}/proveedores`, lastModified: buildDate, changeFrequency: 'weekly', priority: 0.7 },
+    // Productividad por departamento: el hub, 23 provinciales y 455 fichas. Es el activo
+    // de búsqueda del proyecto — cada ficha publica un indicador (terneros/vaca por
+    // partido) que no está en ninguna otra fuente, y deriva al informe pago.
+    { url: `${baseUrl}/productividad`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.8 },
+    ...[...new Set(fichasProductividad.map((d) => d.slugProvincia))].map((slug) => ({
+      url: `${baseUrl}/productividad/${slug}`,
+      lastModified: buildDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
+    ...fichasProductividad.map((d) => ({
+      url: `${baseUrl}/productividad/${d.slugProvincia}/${d.slugDepartamento}`,
+      lastModified: buildDate,
+      changeFrequency: 'yearly' as const,
+      priority: 0.6,
+    })),
     ...getProveedoresPublicados().map((p) => ({
       url: `${baseUrl}/proveedores/${p.slug}`,
       lastModified: buildDate,
