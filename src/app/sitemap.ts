@@ -143,6 +143,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Productividad por departamento: el hub, 23 provinciales y 455 fichas. Es el activo
     // de búsqueda del proyecto — cada ficha publica un indicador (terneros/vaca por
     // partido) que no está en ninguna otra fuente, y deriva al informe pago.
+    // Artículos que explican los productos: contenido gratis que captura búsqueda
+    // conceptual ("cómo se tasa un campo", "relación maíz novillo") y deriva a la
+    // herramienta o al informe correspondiente.
+    ...['/como-se-tasa-un-campo', '/senal-o-ruido-precio-hacienda', '/terneros-por-vaca-de-tu-zona', '/relacion-maiz-novillo'].map(
+      (ruta) => ({
+        url: `${baseUrl}${ruta}`,
+        lastModified: buildDate,
+        changeFrequency: 'monthly' as const,
+        priority: 0.75,
+      }),
+    ),
     { url: `${baseUrl}/productividad`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.8 },
     ...[...new Set(fichasProductividad.map((d) => d.slugProvincia))].map((slug) => ({
       url: `${baseUrl}/productividad/${slug}`,
