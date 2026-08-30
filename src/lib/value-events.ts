@@ -81,6 +81,13 @@ export const VALUE_EVENTS = {
   // Mismos pesos que la guía: son el mismo escalón del embudo con distinto producto.
   // `informe_view` pesa poco porque el sales page se ve mucho y decide poco; el
   // checkout pesa 30 porque ahí el visitante ya escribió su mail y llegó a Rebill.
+  // Las 478 fichas publicas de productividad. Pesan poco por unidad —son tráfico de
+  // búsqueda, no intención— pero son el escalón que alimenta todo el embudo, y sin
+  // medirlas el activo entero es invisible para nuestra propia medición.
+  ficha_productividad_view: { weight: 2, group: 'discovery', label: 'Vio una ficha de productividad' },
+  // El clic de una ficha al informe. ES el número que dice si las fichas trabajan para
+  // el producto o sólo traen visitas que se van.
+  informe_cta_click: { weight: 8, group: 'funnel', label: 'Clic al informe desde una ficha' },
   informe_view: { weight: 6, group: 'funnel', label: 'Vio el sales page de un informe' },
   // Dejó el mail en un producto que todavía no se entrega. Pesa como una suscripción
   // al newsletter (8): es la misma acción, con intención de compra declarada encima.

@@ -11,6 +11,7 @@ import {
   META,
 } from '@/lib/productividad/panel'
 import { getProducto } from '@/lib/productos-datos'
+import { CtaInformeTracker } from '@/components/productos/FichaTracker'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
 const INFORME = getProducto('informe-productivo-departamento')!
@@ -187,12 +188,14 @@ export default function ProductividadPage() {
           rodeo abierto por categoría, la serie año por año, todo el ranking de la provincia
           y lo que INTA publicó sobre ese ambiente. En PDF, para imprimir.
         </p>
-        <Link
-          href={INFORME.landing}
-          className="mt-5 inline-block rounded bg-sky-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-sky-500"
-        >
-          Ver el informe · ARS {INFORME.precio.toLocaleString('es-AR')}
-        </Link>
+        <CtaInformeTracker desde="hub:productividad">
+          <Link
+            href={INFORME.landing}
+            className="mt-5 inline-block rounded bg-sky-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-sky-500"
+          >
+            Ver el informe · ARS {INFORME.precio.toLocaleString('es-AR')}
+          </Link>
+        </CtaInformeTracker>
       </section>
 
       <section className="mt-10 border-t border-slate-800 pt-6">

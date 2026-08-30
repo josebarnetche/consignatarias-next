@@ -16,6 +16,7 @@ import {
   META,
 } from '@/lib/productividad/panel'
 import { getProducto } from '@/lib/productos-datos'
+import { FichaTracker, CtaInformeTracker } from '@/components/productos/FichaTracker'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
 const INFORME = getProducto('informe-productivo-departamento')!
@@ -107,6 +108,7 @@ export default async function Page({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
+      <FichaTracker provincia={d.slugProvincia} departamento={d.slugDepartamento} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -297,12 +299,14 @@ export default async function Page({
           la bibliografía de INTA dice que mueve la aguja en este ambiente. En PDF,
           pensado para imprimir.
         </p>
-        <Link
-          href={INFORME.landing}
-          className="mt-5 inline-block rounded bg-sky-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-sky-500"
-        >
-          Ver el informe · ARS {INFORME.precio.toLocaleString('es-AR')}
-        </Link>
+        <CtaInformeTracker desde={`ficha:${d.slugProvincia}/${d.slugDepartamento}`}>
+          <Link
+            href={INFORME.landing}
+            className="mt-5 inline-block rounded bg-sky-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-sky-500"
+          >
+            Ver el informe · ARS {INFORME.precio.toLocaleString('es-AR')}
+          </Link>
+        </CtaInformeTracker>
       </section>
 
       <section className="mt-10 border-t border-slate-800 pt-6">
