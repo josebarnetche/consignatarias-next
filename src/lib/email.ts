@@ -3527,3 +3527,43 @@ export async function sendProveedorLead(opts: {
     `),
   })
 }
+
+/**
+ * La alerta del novillo en dólares.
+ *
+ * Transaccional 1:1, no campaña: sale unas cinco veces por año y sólo a quien se anotó.
+ * El cuerpo llega ya redactado desde `lib/alertas/novillo-usd.ts` — el texto es parte de
+ * la regla, no de la plantilla, porque incluye el párrafo de lo que la alerta NO dice.
+ */
+export async function sendAlertaNovilloUsd(opts: {
+  to: string
+  asunto: string
+  cuerpo: string
+  delta: number
+}) {
+  const resend = await getResend()
+  if (!resend) return
+  const { to, asunto, cuerpo, delta } = opts
+  const parrafos = cuerpo
+    .split('\n\n')
+    .map(
+      (p) =>
+        `<p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 14px">${escapeHtml(p)}</p>`,
+    )
+    .join('')
+
+  await resend.emails.send({
+    from: FROM,
+    to,
+    subject: asunto,
+    html: darkEmailShell(`
+      <p style="color:${delta >= 0 ? '#4ade80' : '#fbbf24'};font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Alerta · Novillo en dólares</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 14px">${escapeHtml(asunto)}</h2>
+      ${parrafos}
+      <p style="margin:18px 0 20px">
+        <a href="${APP_URL}/mercado/inmag-dolares" style="display:inline-block;background:#38bdf8;color:#0a0a0a;font-weight:700;font-size:13px;text-decoration:none;padding:11px 18px;border-radius:6px">Ver la serie completa</a>
+      </p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Esta alerta suena sola: no hay nada que configurar y no llega otra en 30 días. Si no la querés más, <a href="${APP_URL}/unsubscribe?tipo=alerta-novillo&email=${encodeURIComponent(to)}" style="color:#71717a">date de baja acá</a>.</p>
+    `),
+  })
+}

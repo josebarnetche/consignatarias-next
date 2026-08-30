@@ -37,6 +37,10 @@ export const VALUE_EVENTS = {
   calendar_download: { weight: 6, group: 'recurrencia', label: 'Descargó .ics de un remate' },
   newsletter_subscribe: { weight: 8, group: 'recurrencia', label: 'Suscripción a newsletter' },
   alert_create: { weight: 8, group: 'recurrencia', label: 'Alerta creada' },
+  // La alerta del novillo en dólares. Pesa más que `alert_create` a propósito: aquélla
+  // exige que el usuario fije un umbral —y tiene 0 usos en 48 usuarios—, ésta sólo pide
+  // el mail. Es la señal de recurrencia más barata que tenemos.
+  alerta_novillo_subscribe: { weight: 12, group: 'recurrencia', label: 'Se anotó a la alerta del novillo en USD' },
 
   // --- Lead / contacto (intención directa) ---
   contact_whatsapp: { weight: 10, group: 'lead', label: 'Clic WhatsApp' },

@@ -4,6 +4,7 @@ import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema, SpeakableSchema 
 import { fetchInmagUsdJoined, aggregateMonthly } from '@/lib/charts/data'
 import { PriceLineChart } from '@/components/charts/PriceLineChart'
 import ProChartGate from '@/components/market/ProChartGate'
+import { SuscribirAlertaNovillo } from '@/components/alertas/SuscribirAlertaNovillo'
 
 export const revalidate = 86400 // 1 day — rebuilt nightly by SSG cron
 
@@ -362,6 +363,12 @@ export default async function InmagDolaresPage() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* La alerta va acá y no en una página propia: quien mira la serie en dólares
+            ES la persona a la que le interesa que le avisen cuando se mueva. */}
+        <div className="max-w-2xl mx-auto">
+          <SuscribirAlertaNovillo source="inmag-dolares" />
         </div>
 
         <p className="text-zinc-500 text-xxs text-center">

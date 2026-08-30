@@ -88,6 +88,69 @@ export type Database = {
           },
         ]
       }
+      alerta_novillo_usd_disparos: {
+        Row: {
+          delta: number
+          destinatarios: number
+          disparada_at: string
+          enviados: number
+          fecha_corte: string
+          id: number
+          meta: Json | null
+          promedio_actual: number
+          promedio_previo: number
+        }
+        Insert: {
+          delta: number
+          destinatarios?: number
+          disparada_at?: string
+          enviados?: number
+          fecha_corte: string
+          id?: never
+          meta?: Json | null
+          promedio_actual: number
+          promedio_previo: number
+        }
+        Update: {
+          delta?: number
+          destinatarios?: number
+          disparada_at?: string
+          enviados?: number
+          fecha_corte?: string
+          id?: never
+          meta?: Json | null
+          promedio_actual?: number
+          promedio_previo?: number
+        }
+        Relationships: []
+      }
+      alerta_novillo_usd_suscriptores: {
+        Row: {
+          created_at: string
+          email: string
+          id: number
+          source: string | null
+          unsubscribed_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: never
+          source?: string | null
+          unsubscribed_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: never
+          source?: string | null
+          unsubscribed_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       alertas: {
         Row: {
           created_at: string | null
