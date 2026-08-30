@@ -7,6 +7,147 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.199.0] — 2026-08-30
+
+### El sitio empieza a cobrar por el dato
+
+Hasta acá el ingreso recurrente era **cero**: la única PRO activa estaba otorgada a mano,
+las cuatro API keys vivas no facturaban, y `guia_purchases` tenía cero filas. Esta versión
+arma el circuito de cobro completo y le pone encima seis productos, cada uno con meta en
+pesos y fecha de muerte escrita antes de lanzarlo.
+
+**El panel productivo departamental** (`scripts/build-panel-productivo.mjs` →
+`lib/productividad/panel.ts`). La serie oficial de MAGyP/SIGSA persistida: 502
+departamentos, 24 jurisdicciones, 2012-2025. De ahí sale el **índice terneros/vaca por
+departamento**, que no está publicado como serie en ninguna fuente.
+
+El origen está sucio y el script lo declara en vez de disimularlo:
+- La columna "sin tilde" **lleva tildes** (`ENTRE RÍOS` sólo en 2025) y tiene errores de
+  tipeo vigentes: `BIEDMA` por Viedma, `MBUCURUYA`, `USUHAIA`, `RIO SENGUERR`.
+- **25 departamentos renombrados a mitad de serie** — `9 de Julio` → `Nueve de Julio`,
+  `Coronel de Marina Leonardo Rosales` → `Coronel Rosales`. Sin mapearlos, Nueve de Julio
+  de Santa Fe (2.158 establecimientos) quedaba partido en dos mitades.
+- **Capitán Sarmiento 2012-2018** trae dos filas por año: la chica es General Sarmiento
+  mal etiquetada. Se suman y el ruido queda declarado, no escondido.
+
+Un guard falla el build si aparece un renombre nuevo sin mapear.
+
+**El límite biológico del indicador.** En 33 de los 455 partidos publicables el cociente
+supera lo que un rodeo puede parir: ahí los terneros se compran. La Cocha daría *417 % de
+destete*. Esos partidos se marcan como invernada, no calculan destete y **quedan fuera del
+ranking de eficiencia** — antes salían primeros en un indicador que no les corresponde.
+
+**478 fichas públicas** (`/productividad/…`) con `Dataset` en el schema. Es el activo de
+búsqueda, no el producto: publica gratis lo que nadie publica y deriva al informe.
+
+### Seis productos, con kill switch en el código
+
+`lib/productos-datos.ts` — cada uno nace con su meta en pesos, su fecha de corte y **qué se
+hace si no llega, escrito de antemano**. Panel en `/admin/productos`. Existe porque en este
+repo ya había dos features con cero uso en 48 usuarios que nunca se apagaron: nunca hubo un
+criterio escrito para apagarlas.
+
+| Producto | Precio | Corte |
+|---|---|---|
+| Canon de arrendamiento · 49 zonas | 19.900 | 24-oct |
+| Productivo departamental · 455 partidos | 19.900 | 21-nov |
+| Valuación de campo · 67 zonas | 24.900 | 30-nov |
+| Prospección provincial · 22 provincias | 65.000 | 21-nov |
+| Parte semanal del mercado | 9.900/mes | 28-nov |
+| PRO abierto | 9.900/mes | 31-dic |
+
+Un test impide publicar un producto sin generador de PDF: **no se cobra lo que no se puede
+entregar**. Otro impide que el sitemap declare una landing sin página.
+
+### El cobro, de punta a punta
+
+- **Compra única** (`informe_purchases`) — entitlement por email, PDF estampado, no vence.
+- **Suscripción** (`producto_subscriptions`) — con la regla del repo: cancelar **no corta
+  el acceso**, se honra hasta `current_period_end`. La decisión vive en un solo lugar
+  (`lib/informes/acceso.ts`) porque hay dos vías para tener un entregable y mezclarlas en
+  cada ruta es como se cuelan los agujeros.
+- **La baja en Rebill, resuelta.** El endpoint es `PATCH /v3/subscriptions/{id}` — se
+  encontró sondeando la API: es el único verbo que responde *"Subscription not found"* en
+  vez de *"Cannot PATCH"*. Como el body no se puede inferir sin documentación, la
+  implementación **prueba y verifica**: intenta los shapes probables y **confirma por GET
+  que la suscripción dejó de estar activa**. Un 200 no alcanza — si la API acepta el PATCH
+  e ignora un campo que no conoce, seguiría cobrando. Si no se puede confirmar, sale un
+  mail a operaciones con el id.
+- `redirectUrls` completos (rechazo y cancelación), que antes sólo tenían `approved`: una
+  tarjeta rechazada dejaba a la persona varada sin señal de vuelta.
+
+### PRO abierto, y qué NO se gatea
+
+`lib/plan-pro.ts` — un plan personal que puede contratar cualquiera, sobre tres funciones:
+histórico profundo, exportación y alertas más allá de la primera.
+
+**Nada de lo que estaba abierto se cerró.** Queda gratis y con un test que lo sostiene: el
+número del día, los precios por firma con su `DatasetSchema`, los feeds `webcal`, las 56
+guías, el comparador y `/mercado/spread`. Esa superficie es el motor de descubrimiento —799
+sesiones de Copilot y ChatGPT en diez semanas— y `/mercado/spread` es la página más leída
+del sitio, con 5,7 % de conversión.
+
+Hay **dos gates distintos y no se mezclan**: `ProReveal`/`useSessionTier` es el de login y
+sigue forzando `pro` para todos; `PremiumGate`/`usePremium` es el de pago. El CSV mantuvo
+su desbloqueo por coins de karma y PRO se sumó como segunda llave, no como reemplazo.
+
+### La alerta que casi nunca suena
+
+Suena cuando el promedio de 20 ruedas del novillo en dólares se aparta más de ±12 % del de
+las 20 anteriores; después calla 30 días. **Backtest corriendo la regla día por día sobre
+1.729 ruedas: 46 disparos en 11,6 años = 4,0 por año.**
+
+Ataca el precedente: la feature de alertas configurables tiene **0 usos en 48 usuarios**. La
+diferencia es que acá el umbral no lo pone el usuario — lo fijamos, lo publicamos y decimos
+cuántas veces al año va a sonar antes de que se anote.
+
+### PDF imprimibles
+
+`lib/pdf/estilo-impreso.ts`: ningún bloque relleno de más de 15 mm. La tapa de la guía de
+apertura era **una hoja A4 entera de negro**; la cabecera del informe de canon, una barra de
+42 mm. `aWinAnsi` salió a módulo propio y se amplió a `≥ ≤ × ÷ ≈`: un símbolo sin sanear se
+imprime como `!` en un PDF que alguien pagó.
+
+### PRO Territorio y el padrón de partidos
+
+`lib/territorio/partidos.ts` — `mag_consignataria_sales_lots.localidad` **no son
+localidades: son partidos**, con las abreviaturas del mercado. 38 de 117 no matcheaban;
+ahora resuelven 115 (98,3 %) y los 2 restantes no son bonaerenses y se descartan declarados.
+
+Verificado sobre las casas más grandes: *"Trenque Lauquen: 79 productores mandan al MAG
+desde ahí y ninguno es tuyo"*. Y Colombo y Magliano tiene **1 de 68 remitentes en Adolfo
+Alsina** — 1 % de cuota en un partido donde ya opera.
+
+También se reparó la **Ñ que el origen sirve rota**: 195 filas donde `CAÑUELAS` entraba como
+una localidad distinta de sí misma. No era nuestro decoder — son los bytes de U+FFFD que
+publica el MAG.
+
+### Guía de proveedores
+
+`/proveedores` — empresas que le venden a la cadena. **El contacto del proveedor no se
+publica ni vive en el código**: el repo es público y quedaría indexado en GitHub. Va en
+`proveedor_contactos` (service-role) y se lee sólo al derivar un lead.
+
+### Cuatro artículos que explican los productos
+
+`/como-se-tasa-un-campo`, `/senal-o-ruido-precio-hacienda`,
+`/terneros-por-vaca-de-tu-zona`, `/relacion-maiz-novillo`. Enseñan algo verificable y dicen
+también lo que **no** se puede afirmar con ese dato. De 52 guías a 56.
+
+### Privacidad
+
+- `mag-remitentes-history.json` **borrado** — 496 remitentes con nombre, ningún módulo lo
+  importaba.
+- `senasa-habilitados.json` — **domicilio podado** del snapshot, del tipo y del scraper.
+  Eran 870 domicilios con su titular al lado, que ninguna vista usaba. El resto es el
+  registro público de SENASA y la ficha lo muestra a propósito.
+- El panel departamental publica sólo partidos con **≥ 10 unidades productivas**: San
+  Isidro tiene 1 UP y 2 cabezas, y ahí el agregado describe un establecimiento concreto.
+
+De 3.700 a **4.193 páginas**. 287 tests.
+
+---
+
 ## [1.198.0] — 2026-08-24
 
 ### El panel de la consignataria deja de estar vacío
