@@ -12,6 +12,7 @@ import { getCartera, type Cartera } from '@/lib/reports/cartera'
 import { construirTerritorio, titularTerritorio, type Territorio } from '@/lib/reports/territorio'
 import { magIdDeSlug } from '@/lib/reports/mag-lotes'
 import { TerritorioPanel } from '@/components/dashboard/TerritorioPanel'
+import { PrimerosPasos } from '@/components/onboarding/PrimerosPasos'
 import { getParticipacion, type Participacion } from '@/lib/reports/participacion'
 import { construirBandeja, type Bandeja } from '@/lib/reports/bandeja'
 import { getAgendaRegional, type AgendaRegional } from '@/lib/reports/agenda-regional'
@@ -116,14 +117,21 @@ export default async function DashboardPage() {
       }))
 
     return (
-      <ProductorDashboard
-        email={user.email ?? ''}
-        herdValueArs={herdValueArs}
-        herdCabezas={herdCabezas}
-        followedCount={followedSlugs.size}
-        upcoming={upcoming}
-        marksCount={marksCount ?? 0}
-      />
+      <>
+        {/* Los primeros pasos van ARRIBA del panel y sólo para el productor: es quien
+            llega sin saber qué hay. Se auto-oculta cuando lo descarta. */}
+        <div className="mx-auto max-w-5xl px-4 pt-6">
+          <PrimerosPasos nombre={user.email?.split('@')[0] ?? null} />
+        </div>
+        <ProductorDashboard
+          email={user.email ?? ''}
+          herdValueArs={herdValueArs}
+          herdCabezas={herdCabezas}
+          followedCount={followedSlugs.size}
+          upcoming={upcoming}
+          marksCount={marksCount ?? 0}
+        />
+      </>
     )
   }
 

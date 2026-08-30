@@ -5,6 +5,7 @@ import { getProducto } from '@/lib/productos-datos'
 import { ComoSePaga } from '@/components/productos/ComoSePaga'
 import { ComprarInforme } from '@/components/productos/ComprarInforme'
 import tierra from '@/lib/data/tierra-por-kilo.json'
+import { MuestraGratis } from '@/components/productos/MuestraGratis'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
 const P = getProducto('informe-canon-arrendamiento')!
@@ -206,6 +207,10 @@ export default function Page() {
       </section>
 
       <div className="mt-12">
+        <MuestraGratis />
+      </div>
+
+      <div className="mt-6">
         <ComprarInforme slug={P.slug} nombre={P.nombre} precio={P.precio} />
       </div>
 

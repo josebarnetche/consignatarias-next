@@ -1,21 +1,21 @@
 'use client'
 
-import { useState } from 'react'
-import KarmaUnlockButton from '@/components/KarmaUnlockButton'
 import Link from 'next/link'
 import { usePremium } from '@/lib/use-premium'
 
 /**
  * Descarga del histórico INMAG completo (2015 → hoy) en CSV.
  *
- * DOS LLAVES PARA LA MISMA PUERTA:
- *  · **Coins del karma** — se ganan usando la terminal, sin pagar. El que le da uso al
- *    sitio se lo gana.
- *  · **PRO** — el que lo quiere ya, lo paga.
+ * UNA SOLA LLAVE: PRO.
  *
- * Se suman, no se reemplazan: agregar PRO no le saca nada a quien venía juntando coins,
- * y le da salida a quien no quiere esperar. (Dato que lo respalda: `karma_ledger` tiene
- * 1.138 movimientos y `point_redemptions` está en cero — la gente acumula y no canjea.)
+ * Hasta agosto de 2026 esto se desbloqueaba gastando coins de karma. Se retiró ese
+ * camino, no por ideología sino por el dato: `karma_ledger` acumulaba **1.138
+ * movimientos y `point_redemptions` estaba en cero**. Nadie canjeaba nunca. Un
+ * mecanismo de desbloqueo que no se ejerce no es un gate — es una función muerta que
+ * además le suma una puerta más al que entra por primera vez y tiene que entender
+ * cómo funciona el sitio.
+ *
+ * El karma sigue existiendo como medición de uso; lo que se retiró es su rol de llave.
  *
  * El precio del día y la serie reciente siguen gratis para todos: lo que se cobra es el
  * DATASET completo, no el número.
@@ -32,9 +32,7 @@ export default function InmagHistoryExport({
   rowCount: number
   fromYear: number
 }) {
-  const [unlocked, setUnlocked] = useState(false)
   const { premium } = usePremium()
-  const abierto = unlocked || premium
 
   // El "preview" es estructura, no datos: nombres de columna + recuento de filas.
   const datasetShape = (
@@ -56,7 +54,7 @@ export default function InmagHistoryExport({
     </div>
   )
 
-  if (abierto) {
+  if (premium) {
     return (
       <div className="terminal-panel" style={{ borderColor: 'rgba(56, 189, 248, 0.4)' }}>
         {header}
@@ -82,22 +80,18 @@ export default function InmagHistoryExport({
       {header}
       <div className="px-panel py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {datasetShape}
-        <div className="shrink-0">
-          <KarmaUnlockButton
-            unlock="inmag_history_deep"
-            label="el histórico completo"
-            onUnlocked={() => setUnlocked(true)}
-          />
-        </div>
+        <Link
+          href="/pro?desde=export-inmag"
+          className="shrink-0 inline-flex items-center whitespace-nowrap px-4 py-2 text-xxs font-terminal uppercase tracking-wider"
+          style={{ background: 'rgba(56, 189, 248, 0.9)', color: '#000', borderRadius: '2px' }}
+        >
+          Desbloquear con PRO
+        </Link>
       </div>
       <div className="px-panel pb-4 -mt-1">
         <p className="text-xxs text-zinc-600 font-terminal leading-relaxed">
-          El precio del día es gratis. El dataset completo ({fromYear}→) lo desbloqueás con los coins
-          que ganás usando la terminal — sin pagar — o directamente con{' '}
-          <Link href="/pro?desde=export-inmag" className="text-sky-400 underline underline-offset-2">
-            PRO
-          </Link>
-          , si lo querés ahora.
+          El precio del día y la serie reciente son gratis. Lo que se cobra es el dataset
+          completo ({fromYear}→) para bajarlo y trabajarlo en tu planilla.
         </p>
       </div>
     </div>

@@ -77,6 +77,13 @@ export const VALUE_EVENTS = {
   premium_gate_view: { weight: 2, group: 'funnel', label: 'Topó con un muro PRO' },
   premium_gate_click: { weight: 10, group: 'funnel', label: 'Clic desde un muro PRO' },
   signup: { weight: 15, group: 'funnel', label: 'Alta de cuenta' },
+  // El puente entre el alta y el segundo dia, que es donde hoy se pierde el 91 %.
+  // `paso_click` pesa mas que la vista porque es la primera accion real de la cuenta.
+  onboarding_view: { weight: 1, group: 'funnel', label: 'Vio los primeros pasos' },
+  onboarding_paso_click: { weight: 6, group: 'funnel', label: 'Hizo un primer paso' },
+  // Se bajo el informe completo de muestra. Es el escalon mas alto del embudo gratuito:
+  // esa persona ya tiene el producto en la mano y sabe exactamente que se vende.
+  informe_muestra_descarga: { weight: 14, group: 'funnel', label: 'Bajo el informe de muestra' },
   checkout_start: { weight: 30, group: 'funnel', label: 'Inició checkout' },
 
   // --- Funnel de la guía paga (compra única, ARS 100.000) ---

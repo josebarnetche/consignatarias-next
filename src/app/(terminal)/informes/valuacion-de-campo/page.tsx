@@ -6,6 +6,7 @@ import { ComoSePaga } from '@/components/productos/ComoSePaga'
 import { SelectorVariante } from '@/components/productos/SelectorVariante'
 import { ListaDeEspera } from '@/components/productos/ListaDeEspera'
 import { zonasValuables, armarInformeValuacion } from '@/lib/informes/valuacion'
+import { MuestraGratis } from '@/components/productos/MuestraGratis'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
 const P = getProducto('informe-valuacion-campo')!
@@ -215,6 +216,10 @@ export default function Page() {
       </section>
 
       <div className="mt-12">
+        <MuestraGratis />
+      </div>
+
+      <div className="mt-6">
         {P.publicado ? (
           <SelectorVariante
             slug={P.slug}
