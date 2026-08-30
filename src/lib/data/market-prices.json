@@ -1833,45 +1833,45 @@
       }
     ],
     "latestVolume": 3398,
-    "periodVolume": 159499
+    "periodVolume": 152079
   },
   "categories": {
     "novillos": {
-      "current": 4433.12,
+      "current": 4433,
       "prev": 4433.12,
       "change": 0,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 456
     },
     "novillitos": {
-      "current": 4727.45,
+      "current": 4211,
       "prev": 4727.45,
-      "change": 0,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "change": -10.9,
+      "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 671
     },
     "vaquillonas": {
-      "current": 4465.1,
+      "current": 3990,
       "prev": 4465.1,
-      "change": 0,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "change": -10.6,
+      "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 765
     },
     "vacas": {
-      "current": 2995.48,
+      "current": 3192,
       "prev": 2995.48,
-      "change": 0,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "change": 6.6,
+      "source": "MAG (derived from INMAG)",
       "latestVolume": 1263
     },
     "toros": {
-      "current": 2997.04,
+      "current": 2882,
       "prev": 2997.04,
-      "change": 0,
-      "source": "mercadoagroganadero.com.ar (observed)",
+      "change": -3.8,
+      "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 180
     },
@@ -1903,7 +1903,7 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-08-29",
+  "lastUpdate": "2026-08-30",
   "provinceEntry": {
     "date": "2026-08-29",
     "totalCabezas": 3398,
@@ -2262,9 +2262,9 @@
   "arrendamientoOficial": {
     "date": "2026-08-28",
     "index": 4519.701,
-    "periodStart": "2026-08-19",
+    "periodStart": "2026-08-21",
     "periodEnd": "2026-08-28",
-    "periodIndex": 4362.741,
+    "periodIndex": 4382.428,
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
