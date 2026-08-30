@@ -122,6 +122,50 @@ export async function POST(req: NextRequest) {
     console.error('[alertas/precio] getCurrentPrice:', e)
   }
 
+  /**
+   * Una alerta por umbral es gratis; de la segunda en adelante, PRO.
+   *
+   * El límite vive acá y no en la UI porque el alta es email-first, sin sesión: en el
+   * navegador no hay forma de saber si esa persona paga. Y la primera queda gratis
+   * a propósito — es la que captura el email, que es el activo. Lo que se cobra es
+   * tener varias.
+   *
+   * La alerta del novillo en dólares NO cuenta para este límite: es otro circuito
+   * (`/api/alertas/novillo-usd`) y es gratis siempre, porque es el imán.
+   */
+  {
+    const { count } = await (supabase as unknown as SupabaseClient)
+      .from('price_alerts')
+      .select('id', { count: 'exact', head: true })
+      .eq('email', email)
+
+    if ((count ?? 0) >= 1) {
+      const { data: sub } = await (supabase as unknown as SupabaseClient)
+        .from('producto_subscriptions')
+        .select('status, current_period_end')
+        .eq('producto_slug', 'pro-abierto')
+        .eq('email', email)
+        .in('status', ['active', 'cancelled'])
+        .maybeSingle()
+
+      const vigente =
+        sub &&
+        (sub.status === 'active' ||
+          (sub.current_period_end && new Date(sub.current_period_end) > new Date()))
+
+      if (!vigente) {
+        return NextResponse.json(
+          {
+            error: 'Ya tenés una alerta con este mail. Con PRO podés tener todas las que quieras.',
+            necesitaPro: true,
+            proUrl: '/pro?desde=alertas',
+          },
+          { status: 402 },
+        )
+      }
+    }
+  }
+
   const { error } = await (supabase as unknown as SupabaseClient).from('price_alerts').insert({
     email,
     category,

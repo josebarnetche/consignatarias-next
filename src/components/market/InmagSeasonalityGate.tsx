@@ -1,7 +1,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import { ProReveal } from '@/components/pro'
+import { PremiumGate } from '@/components/pro/PremiumGate'
 
 interface Props {
   recentSvg: string // last ~3 years — free gancho
@@ -94,19 +94,23 @@ export default function InmagSeasonalityGate({
 
       {/* ---- CAPA PRO: el ranking completo de la década ---- */}
       <div className="px-panel pb-2">
-        <ProReveal
-          from="/mercado/inmag"
-          title={`La década completa — ranking mes a mes (${fullFromYear}–${toYear})`}
-          benefit={`El z-score promedio de los 12 meses sobre ${toYear - fullFromYear + 1} años: cuánto suele estar cada mes por encima o por debajo de su propio año. Es la lectura que decide retener o vender.`}
+        {/* Gate de PAGO, no de login: el heatmap de los últimos años y el número del
+            día siguen abiertos para todos — es lo que nos hace citables. Lo que se cobra
+            es la profundidad: once años de patrón estacional. */}
+        <PremiumGate
+          from="historico-profundo"
+          titulo={`La década completa — ranking mes a mes (${fullFromYear}–${toYear})`}
+          beneficio={`El z-score promedio de los 12 meses sobre ${toYear - fullFromYear + 1} años: cuánto suele estar cada mes por encima o por debajo de su propio año. Es la lectura que decide retener o vender.`}
+          preview={fullPanel}
         >
           {fullPanel}
-        </ProReveal>
+        </PremiumGate>
       </div>
 
       {/* Nota: estás viendo los recientes; PRO abre la década. Solo informativo;
           el gate real es el panel de arriba. */}
       <div className="px-panel pb-2 text-zinc-600 text-xxs">
-        El heatmap muestra los últimos {recentYears} años. El ranking PRO usa la
+        El heatmap muestra los últimos {recentYears} años. El ranking de PRO usa la
         década completa ({fullFromYear}–{toYear}).
       </div>
     </>

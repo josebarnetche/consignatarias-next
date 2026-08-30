@@ -223,7 +223,7 @@ export const PRODUCTOS_DATOS: ProductoDatos[] = [
       'cierre semanal hacienda',
       'informe semanal precios ganado',
     ],
-    publicado: false, // se publica cuando exista el cobro por suscripción
+    publicado: true,
   },  {
     slug: 'informe-valuacion-campo',
     nombre: 'Informe de valuación de tu zona',
@@ -278,7 +278,7 @@ export const PRODUCTOS_DATOS: ProductoDatos[] = [
       'alertas de precio hacienda',
       'datos históricos mercado ganadero',
     ],
-    publicado: false, // se publica cuando Rebill permita dar de baja el debito
+    publicado: true,
   },
 ]
 

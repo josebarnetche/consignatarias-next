@@ -523,3 +523,108 @@ export async function createProductoSubscriptionLink(opts: {
   }
   return JSON.parse(responseText)
 }
+
+/**
+ * Estado de una suscripción en Rebill.
+ *
+ * `PATCH /v3/subscriptions/{id}` es el endpoint que existe —se verificó sondeando la API:
+ * es el único verbo que responde "Subscription {id} not found" en vez de "Cannot PATCH",
+ * lo que distingue una ruta real de una inexistente. DELETE, PUT y `/cancel` no existen.
+ */
+export async function getRebillSubscription(
+  subscriptionId: string,
+): Promise<{ status?: string; [k: string]: unknown } | null> {
+  const secretKey = process.env.REBILL_SECRET_KEY
+  if (!secretKey) throw new Error('REBILL_SECRET_KEY is not configured')
+
+  const res = await fetch(`${REBILL_API}/subscriptions/${encodeURIComponent(subscriptionId)}`, {
+    headers: { 'x-api-key': secretKey },
+  })
+  if (!res.ok) return null
+  return (await res.json()) as { status?: string }
+}
+
+/** Estados que consideramos "ya no cobra". Se compara en mayúsculas. */
+const ESTADOS_INACTIVOS = ['CANCELLED', 'CANCELED', 'INACTIVE', 'PAUSED', 'FINISHED', 'EXPIRED']
+
+/**
+ * Cancela el débito de una suscripción en Rebill.
+ *
+ * POR QUÉ ESTÁ ESCRITO ASÍ
+ * La documentación pública de Rebill no es accesible (su sitio de docs es una SPA y no
+ * expone OpenAPI), y el `PATCH` valida la existencia del recurso ANTES que el body, así
+ * que no se puede inferir el nombre del campo sondeando con un id falso. Sin poder leer
+ * el contrato, la opción honesta no es adivinar y confiar: es **probar y verificar**.
+ *
+ * Entonces: se intentan los shapes más probables en orden y, sobre todo, **se comprueba el
+ * efecto con un GET**. Un 200 no alcanza — si la API acepta el PATCH pero ignora un campo
+ * que no conoce, la suscripción sigue cobrando y nosotros creeríamos que la dimos de baja.
+ * Eso es exactamente el incidente que hay que evitar.
+ *
+ * Devuelve `verificada: true` sólo si el GET posterior confirma que dejó de estar activa.
+ * Cuando no se puede confirmar, el llamador tiene que tratarlo como baja pendiente y
+ * avisar — nunca como éxito.
+ */
+export async function cancelarSuscripcionRebill(subscriptionId: string): Promise<{
+  ok: boolean
+  verificada: boolean
+  estadoFinal: string | null
+  intento: string | null
+  detalle: string
+}> {
+  const secretKey = process.env.REBILL_SECRET_KEY
+  if (!secretKey) throw new Error('REBILL_SECRET_KEY is not configured')
+
+  const url = `${REBILL_API}/subscriptions/${encodeURIComponent(subscriptionId)}`
+  const headers = { 'x-api-key': secretKey, 'Content-Type': 'application/json' }
+
+  // De más probable a menos. El orden importa poco porque igual se verifica el efecto.
+  const intentos: Array<[string, Record<string, unknown>]> = [
+    ['status=CANCELLED', { status: 'CANCELLED' }],
+    ['status=cancelled', { status: 'cancelled' }],
+    ['status=CANCELED', { status: 'CANCELED' }],
+    ['status=INACTIVE', { status: 'INACTIVE' }],
+    ['cancel=true', { cancel: true }],
+    ['active=false', { active: false }],
+  ]
+
+  const errores: string[] = []
+
+  for (const [nombre, body] of intentos) {
+    let res: Response
+    try {
+      res = await fetch(url, { method: 'PATCH', headers, body: JSON.stringify(body) })
+    } catch (err) {
+      errores.push(`${nombre}: ${err instanceof Error ? err.message : 'fetch falló'}`)
+      continue
+    }
+
+    if (!res.ok) {
+      errores.push(`${nombre}: HTTP ${res.status}`)
+      continue
+    }
+
+    // Aceptó. Ahora la única pregunta que importa: ¿dejó de cobrar?
+    const sub = await getRebillSubscription(subscriptionId)
+    const estado = String(sub?.status ?? '').toUpperCase()
+    if (estado && ESTADOS_INACTIVOS.includes(estado)) {
+      return {
+        ok: true,
+        verificada: true,
+        estadoFinal: estado,
+        intento: nombre,
+        detalle: `Cancelada y verificada con ${nombre}.`,
+      }
+    }
+
+    errores.push(`${nombre}: aceptado pero el estado quedó en "${estado || 'desconocido'}"`)
+  }
+
+  return {
+    ok: false,
+    verificada: false,
+    estadoFinal: null,
+    intento: null,
+    detalle: `Ningún intento dio de baja el débito. ${errores.join(' · ')}`,
+  }
+}

@@ -2,14 +2,23 @@
 
 import { useState } from 'react'
 import KarmaUnlockButton from '@/components/KarmaUnlockButton'
+import Link from 'next/link'
+import { usePremium } from '@/lib/use-premium'
 
 /**
  * Descarga del histórico INMAG completo (2015 → hoy) en CSV.
  *
- * Gating por COINS (Fase 3 del karma): el precio del día y la serie reciente son
- * gratis; el DATASET completo (bulk CSV) se desbloquea gastando los coins que el
- * usuario gana usando la terminal — sin pagar plata. Anónimo/free ve la FORMA del
- * dataset (columnas + filas, estructura pública, no cifras) y el botón de desbloqueo.
+ * DOS LLAVES PARA LA MISMA PUERTA:
+ *  · **Coins del karma** — se ganan usando la terminal, sin pagar. El que le da uso al
+ *    sitio se lo gana.
+ *  · **PRO** — el que lo quiere ya, lo paga.
+ *
+ * Se suman, no se reemplazan: agregar PRO no le saca nada a quien venía juntando coins,
+ * y le da salida a quien no quiere esperar. (Dato que lo respalda: `karma_ledger` tiene
+ * 1.138 movimientos y `point_redemptions` está en cero — la gente acumula y no canjea.)
+ *
+ * El precio del día y la serie reciente siguen gratis para todos: lo que se cobra es el
+ * DATASET completo, no el número.
  *
  * `rowCount` es real (cuenta de mag_inmag_history), pasado desde el server.
  *
@@ -24,6 +33,8 @@ export default function InmagHistoryExport({
   fromYear: number
 }) {
   const [unlocked, setUnlocked] = useState(false)
+  const { premium } = usePremium()
+  const abierto = unlocked || premium
 
   // El "preview" es estructura, no datos: nombres de columna + recuento de filas.
   const datasetShape = (
@@ -45,7 +56,7 @@ export default function InmagHistoryExport({
     </div>
   )
 
-  if (unlocked) {
+  if (abierto) {
     return (
       <div className="terminal-panel" style={{ borderColor: 'rgba(56, 189, 248, 0.4)' }}>
         {header}
@@ -82,7 +93,11 @@ export default function InmagHistoryExport({
       <div className="px-panel pb-4 -mt-1">
         <p className="text-xxs text-zinc-600 font-terminal leading-relaxed">
           El precio del día es gratis. El dataset completo ({fromYear}→) lo desbloqueás con los coins
-          que ganás usando la terminal — sin pagar.
+          que ganás usando la terminal — sin pagar — o directamente con{' '}
+          <Link href="/pro?desde=export-inmag" className="text-sky-400 underline underline-offset-2">
+            PRO
+          </Link>
+          , si lo querés ahora.
         </p>
       </div>
     </div>

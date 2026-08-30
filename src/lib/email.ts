@@ -3567,3 +3567,36 @@ export async function sendAlertaNovilloUsd(opts: {
     `),
   })
 }
+
+/**
+ * Aviso interno: alguien se dio de baja y NO pudimos confirmar que el débito se cortó.
+ *
+ * Va a la casilla de operaciones, no al usuario. Es el único caso del circuito donde
+ * puede haber un cobro que no corresponde, así que no alcanza con un log: tiene que
+ * llegarle a alguien que pueda entrar al panel de Rebill y cortarlo a mano.
+ */
+export async function sendBajaSinConfirmar(opts: {
+  producto: string
+  email: string
+  rebillSubscriptionId: string | null
+  detalle: string
+}) {
+  const resend = await getResend()
+  if (!resend) return
+  await resend.emails.send({
+    from: FROM,
+    to: 'agro@memola.com.ar',
+    subject: `⚠ Baja sin confirmar en Rebill — ${opts.producto}`,
+    html: darkEmailShell(`
+      <p style="color:#fbbf24;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Accion requerida</p>
+      <h2 style="color:#fafafa;font-size:18px;font-weight:700;margin:0 0 12px">Hay que cortar un débito a mano</h2>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 14px">Se dio de baja de <strong style="color:#fafafa">${escapeHtml(opts.producto)}</strong> y no pudimos confirmar que Rebill haya dejado de cobrarle. <strong style="color:#fafafa">Si no se corta desde el panel, le van a seguir debitando.</strong></p>
+      <table style="border-collapse:collapse;margin:0 0 16px">
+        <tr><td style="color:#71717a;font-size:12px;padding:4px 14px 4px 0">Email</td><td style="color:#fafafa;font-size:13px;padding:4px 0">${escapeHtml(opts.email)}</td></tr>
+        <tr><td style="color:#71717a;font-size:12px;padding:4px 14px 4px 0">Suscripción</td><td style="color:#fafafa;font-size:13px;padding:4px 0">${escapeHtml(opts.rebillSubscriptionId ?? 'sin id')}</td></tr>
+        <tr><td style="color:#71717a;font-size:12px;padding:4px 14px 4px 0;vertical-align:top">Qué pasó</td><td style="color:#a1a1aa;font-size:12px;padding:4px 0">${escapeHtml(opts.detalle)}</td></tr>
+      </table>
+      <p style="color:#52525b;font-size:11px;margin:20px 0 0;border-top:1px solid #27272a;padding-top:12px">La baja de nuestro lado ya está hecha: la persona conserva el acceso hasta que termine el período pagado y no se le renueva. Lo único pendiente es el débito en Rebill.</p>
+    `),
+  })
+}

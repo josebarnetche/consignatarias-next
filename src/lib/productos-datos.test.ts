@@ -112,6 +112,9 @@ describe('nada se cobra sin entregable', () => {
     'parte-semanal-mercado',
     'informe-prospeccion-provincial',
     'informe-valuacion-campo',
+    // PRO no entrega un PDF: es un tier sobre la cuenta. Su "entregable" son las
+    // funciones que desbloquea, no un archivo.
+    'pro-abierto',
   ])
 
   it('todo producto publicado tiene generador de PDF', () => {
