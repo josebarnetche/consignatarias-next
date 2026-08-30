@@ -26,6 +26,8 @@ export type Audiencia =
   | 'A3-newsletter'
   | 'A4-registrados'
   | 'A5-trafico-arrendamiento'
+  /** El tráfico de `/campos/valuar`: 28 usos de herramienta en 90 días, mediana de 73 s. */
+  | 'A6-trafico-valuacion'
   | 'A7-busqueda-departamento'
 
 export interface ProductoDatos {
@@ -218,6 +220,34 @@ export const PRODUCTOS_DATOS: ProductoDatos[] = [
       'informe semanal precios ganado',
     ],
     publicado: false, // se publica cuando exista el cobro por suscripción
+  },  {
+    slug: 'informe-valuacion-campo',
+    nombre: 'Informe de valuación de tu zona',
+    tagline:
+      'Cuánto vale la hectárea donde está tu campo, por las dos vías que usa una tasación seria, con la banda real en la que se opera y sobre cuántos casos.',
+    pregunta: '¿Lo que me ofrecen por mi campo está dentro de lo que se paga?',
+    audiencia: 'A6-trafico-valuacion',
+    modalidad: 'compra-unica',
+    precioMin: 15000,
+    precioMax: 30000,
+    precio: 24900,
+    landing: '/informes/valuacion-de-campo',
+    icono: '/marca/iconos-color/arrendamiento.png',
+    ilustracion: '/marca/ilus/ilu-pampa.jpg',
+    ilustracionAlt: 'Campo abierto con alambrado al atardecer',
+    metaArs: 300000,
+    fechaCorte: '2026-11-30',
+    siNoLlega:
+      'Se retira el pago y la calculadora de /campos/valuar queda gratis como imán de suscripción, que es lo que ya es. La herramienta tiene 28 usos medidos en 90 días: sirve igual sin cobrar.',
+    keywords: [
+      'cuánto vale una hectárea',
+      'precio de la hectárea por zona',
+      'valor de campos ganaderos',
+      'tasación de campo',
+      'cuánto vale mi campo',
+      'precio del campo en dólares',
+    ],
+    publicado: true,
   },
 ]
 

@@ -111,6 +111,7 @@ describe('nada se cobra sin entregable', () => {
     'informe-productivo-departamento',
     'parte-semanal-mercado',
     'informe-prospeccion-provincial',
+    'informe-valuacion-campo',
   ])
 
   it('todo producto publicado tiene generador de PDF', () => {

@@ -11,6 +11,8 @@ import { armarInformeDepartamental } from '@/lib/informes/departamental'
 import { generateInformeDepartamentalPDF } from '@/lib/pdf/generateInformeDepartamentalPDF'
 import { armarInformeProvincial } from '@/lib/informes/provincial'
 import { generateInformeProvincialPDF } from '@/lib/pdf/generateInformeProvincialPDF'
+import { armarInformeValuacion } from '@/lib/informes/valuacion'
+import { generateInformeValuacionPDF } from '@/lib/pdf/generateInformeValuacionPDF'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -105,6 +107,10 @@ function construir(productoSlug: string, variante: string, email: string) {
   if (productoSlug === 'informe-prospeccion-provincial') {
     const data = armarInformeProvincial(variante, email)
     return data ? generateInformeProvincialPDF(data) : null
+  }
+  if (productoSlug === 'informe-valuacion-campo') {
+    const data = armarInformeValuacion(variante, email)
+    return data ? generateInformeValuacionPDF(data) : null
   }
   if (productoSlug === 'parte-semanal-mercado') {
     // Sin variante: el parte es uno solo por semana, el mismo para todos. Se regenera
