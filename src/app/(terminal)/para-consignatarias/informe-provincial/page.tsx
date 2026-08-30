@@ -3,6 +3,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getProducto, rangoPrecio } from '@/lib/productos-datos'
 import { ListaDeEspera } from '@/components/productos/ListaDeEspera'
+import { SelectorVariante } from '@/components/productos/SelectorVariante'
+import { provinciasDisponibles } from '@/lib/informes/provincial'
 import { getDepartamentosPublicables, getProvincias, ultimoAnio, META } from '@/lib/productividad/panel'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
@@ -167,7 +169,18 @@ export default function Page() {
       </section>
 
       <div className="mt-8">
-        <ListaDeEspera slug={P.slug} nombre={P.nombre} />
+        {P.publicado ? (
+          <SelectorVariante
+            slug={P.slug}
+            nombre={P.nombre}
+            precio={P.precio}
+            modalidad={P.modalidad}
+            opciones={provinciasDisponibles()}
+            etiqueta="Elegí tu provincia"
+          />
+        ) : (
+          <ListaDeEspera slug={P.slug} nombre={P.nombre} />
+        )}
       </div>
 
       <section className="mt-12 border-t border-slate-800 pt-6">

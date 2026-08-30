@@ -190,7 +190,7 @@ export const PRODUCTOS_DATOS: ProductoDatos[] = [
       'dónde hay hacienda en mi provincia',
       'informe ganadero provincial',
     ],
-    publicado: false, // sin generador de PDF todavía: no se cobra lo que no se entrega
+    publicado: true,
   },  {
     slug: 'parte-semanal-mercado',
     nombre: 'Parte semanal del mercado',

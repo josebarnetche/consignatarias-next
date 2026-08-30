@@ -110,6 +110,7 @@ describe('nada se cobra sin entregable', () => {
     'informe-canon-arrendamiento',
     'informe-productivo-departamento',
     'parte-semanal-mercado',
+    'informe-prospeccion-provincial',
   ])
 
   it('todo producto publicado tiene generador de PDF', () => {
