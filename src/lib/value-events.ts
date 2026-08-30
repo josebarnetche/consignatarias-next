@@ -71,6 +71,11 @@ export const VALUE_EVENTS = {
   pro_prompt_view: { weight: 1, group: 'funnel', label: 'Vio el muro PRO' },
   pro_prompt_click: { weight: 6, group: 'funnel', label: 'Clic en el muro PRO' },
   planes_view: { weight: 8, group: 'funnel', label: 'Vio /planes' },
+  // Los muros de PRO abierto. `view` mide qué función topea con el límite y `click` cuál
+  // de esas paredes empuja de verdad — sin los dos, no hay forma de saber si se está
+  // gateando lo que la gente quiere o lo que a nosotros nos parece.
+  premium_gate_view: { weight: 2, group: 'funnel', label: 'Topó con un muro PRO' },
+  premium_gate_click: { weight: 10, group: 'funnel', label: 'Clic desde un muro PRO' },
   signup: { weight: 15, group: 'funnel', label: 'Alta de cuenta' },
   checkout_start: { weight: 30, group: 'funnel', label: 'Inició checkout' },
 

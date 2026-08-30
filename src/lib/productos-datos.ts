@@ -17,6 +17,8 @@
  * eso cada producto declara `precioMin`/`precioMax` además del que efectivamente se cobra.
  */
 
+import { PRO_ABIERTO } from './plan-pro'
+
 export type Modalidad = 'suscripcion' | 'compra-unica'
 
 /** Las audiencias del plan de monetización. Ningún producto comparte audiencia en el mismo sprint. */
@@ -28,6 +30,8 @@ export type Audiencia =
   | 'A5-trafico-arrendamiento'
   /** El tráfico de `/campos/valuar`: 28 usos de herramienta en 90 días, mediana de 73 s. */
   | 'A6-trafico-valuacion'
+  /** Quien topa con un muro PRO: ya usa la herramienta y quiere más profundidad. */
+  | 'A8-topo-con-muro'
   | 'A7-busqueda-departamento'
 
 export interface ProductoDatos {
@@ -248,6 +252,33 @@ export const PRODUCTOS_DATOS: ProductoDatos[] = [
       'precio del campo en dólares',
     ],
     publicado: true,
+  },  {
+    // El plan personal, definido en `plan-pro.ts` (qué se gatea y qué no). Entra al
+    // catálogo para reusar el circuito de suscripción, la meta y el kill switch — es un
+    // producto más, no una excepción.
+    slug: PRO_ABIERTO.slug,
+    nombre: PRO_ABIERTO.nombre,
+    tagline: PRO_ABIERTO.tagline,
+    pregunta: '¿Dónde cae el número de hoy en su propia historia?',
+    audiencia: 'A8-topo-con-muro',
+    modalidad: 'suscripcion',
+    precioMin: PRO_ABIERTO.precioMin,
+    precioMax: PRO_ABIERTO.precioMax,
+    precio: PRO_ABIERTO.precio,
+    landing: '/pro',
+    icono: '/marca/iconos-color/indice.png',
+    ilustracion: '/marca/ilus/ilu-sec-mercado.jpg',
+    ilustracionAlt: 'Pantalla de precios del mercado ganadero',
+    metaArs: PRO_ABIERTO.metaArs,
+    fechaCorte: PRO_ABIERTO.fechaCorte,
+    siNoLlega: PRO_ABIERTO.siNoLlega,
+    keywords: [
+      'serie histórica precio del novillo',
+      'exportar precios ganaderos csv',
+      'alertas de precio hacienda',
+      'datos históricos mercado ganadero',
+    ],
+    publicado: false, // se publica cuando Rebill permita dar de baja el debito
   },
 ]
 
