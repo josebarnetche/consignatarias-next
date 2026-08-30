@@ -50,16 +50,30 @@ function parseNumberEs(s: string | undefined | null): number | null {
 }
 
 function decodeMagText(s: string): string {
-  return s
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&aacute;/gi, 'á')
-    .replace(/&eacute;/gi, 'é')
-    .replace(/&iacute;/gi, 'í')
-    .replace(/&oacute;/gi, 'ó')
-    .replace(/&uacute;/gi, 'ú')
-    .replace(/&ntilde;/gi, 'ñ')
-    .replace(/\s+/g, ' ')
-    .trim()
+  return (
+    s
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&aacute;/gi, 'á')
+      .replace(/&eacute;/gi, 'é')
+      .replace(/&iacute;/gi, 'í')
+      .replace(/&oacute;/gi, 'ó')
+      .replace(/&uacute;/gi, 'ú')
+      .replace(/&ntilde;/gi, 'ñ')
+      /**
+       * La Ñ que el ORIGEN ya sirve rota.
+       *
+       * `ï¿½` son los bytes EF BF BD —el carácter de reemplazo U+FFFD— leídos como
+       * Latin-1. No es un error de nuestro decoder: el MAG ya publica ese reemplazo, así
+       * que ninguna elección de encoding lo arregla y hay que repararlo acá.
+       *
+       * En la práctica siempre es una Ñ: CAÑUELAS, CHAÑAR LADEADO, PEÑA, VILLA CAÑÁS,
+       * CARCARAÑÁ, CAÑADA DE GÓMEZ. Sin esto, CAÑUELAS entra como una localidad distinta
+       * de sí misma y el cruce con el padrón de partidos la pierde.
+       */
+      .replace(/ï¿½|�/g, 'Ñ')
+      .replace(/\s+/g, ' ')
+      .trim()
+  )
 }
 
 /** Parses "CONSIGNATARIO: 50 ASOC. DE COOP. ARGENTINAS C.L. ... TIPO: FAENA" */

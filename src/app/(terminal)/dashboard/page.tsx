@@ -9,6 +9,9 @@ import { getPerformance, rematesPorMes, type Performance } from '@/lib/reports/p
 import { getDistribucion, type ResumenDistribucion } from '@/lib/promotion'
 import { getBenchmark, type Benchmark } from '@/lib/reports/benchmark'
 import { getCartera, type Cartera } from '@/lib/reports/cartera'
+import { construirTerritorio, titularTerritorio, type Territorio } from '@/lib/reports/territorio'
+import { magIdDeSlug } from '@/lib/reports/mag-lotes'
+import { TerritorioPanel } from '@/components/dashboard/TerritorioPanel'
 import { getParticipacion, type Participacion } from '@/lib/reports/participacion'
 import { construirBandeja, type Bandeja } from '@/lib/reports/bandeja'
 import { getAgendaRegional, type AgendaRegional } from '@/lib/reports/agenda-regional'
@@ -289,6 +292,24 @@ export default async function DashboardPage() {
     ])
   }
 
+  // TERRITORIO — el mapa de dónde la firma NO tiene remitentes, sobre productores que ya
+  // van a Cañuelas. Es lo que su propio sistema no puede contestar: el CRM tiene a los
+  // que ya son clientes. Sólo Buenos Aires, que es donde el origen del lote se resuelve
+  // a partido con precisión.
+  let territorio: Territorio | null = null
+  if (consignataria) {
+    const magId = await magIdDeSlug(
+      service as unknown as Parameters<typeof magIdDeSlug>[0],
+      consignataria.canonical_slug,
+    )
+    if (magId != null) {
+      territorio = await construirTerritorio(
+        service as unknown as Parameters<typeof construirTerritorio>[0],
+        magId,
+      )
+    }
+  }
+
   // AGENDA REGIONAL — el bloque de las 109 casas que NO rematan en Cañuelas y para
   // las que no hay dato transaccional. Sale del calendario, así que sirve para todas;
   // se calcula siempre porque la pregunta que responde (con quién comparto fecha) es
@@ -464,6 +485,7 @@ export default async function DashboardPage() {
       cartera = null
       benchmark = null
       participacion = null
+      territorio = null
       // La bandeja se rearma sin las señales del MAG: sus entradas citan nombres de
       // remitentes y cifras de la cartera.
       bandeja = construirBandeja({
@@ -569,6 +591,8 @@ export default async function DashboardPage() {
       performance={performance}
       benchmark={benchmark}
       cartera={cartera}
+      territorio={territorio}
+      territorioTitular={territorio ? titularTerritorio(territorio) : ''}
       participacion={participacion}
       bandeja={bandeja}
       hayDatosMag={hayDatosMag}

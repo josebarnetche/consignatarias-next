@@ -13,6 +13,7 @@
 import type { Cartera } from './cartera'
 import type { Benchmark } from './benchmark'
 import type { Participacion } from './participacion'
+import type { Territorio } from './territorio'
 
 export const CARTERA_MUESTRA: Cartera = {
   slug: 'ejemplo',
@@ -103,5 +104,31 @@ export const PARTICIPACION_MUESTRA: Participacion = {
     { nombre: 'Tercera casa del Mercado', cabezas: 2013, cuota: 7.1, esMia: false },
     { nombre: 'Tu casa', cabezas: 1939, cuota: 6.8, esMia: true },
     { nombre: 'Quinta casa del Mercado', cabezas: 1766, cuota: 6.2, esMia: false },
+  ],
+}
+
+/**
+ * Muestra del territorio para las firmas que todavía no son PRO.
+ *
+ * Los partidos son reales y los tamaños de rodeo también —salen del padrón— pero la
+ * cartera es inventada: es una firma de ejemplo, no una casa concreta. Se elige a
+ * propósito un caso con una cuota muy baja donde ya opera, porque es la situación que
+ * más rápido se reconoce: "en esa zona yo tengo dos y va medio partido".
+ */
+export const TERRITORIO_MUESTRA: Territorio = {
+  magId: 0,
+  desde: '2026-05-23',
+  hasta: '2026-08-30',
+  totalRemitentesPropios: 186,
+  totalPartidosConActividad: 106,
+  presencia: [
+    { partido: 'Rauch', slugProvincia: 'buenos-aires', slugDepartamento: 'rauch', propios: 2, totales: 63, cuota: 2 / 63, casas: 12, cabezasPropias: 148, stock: 455760, establecimientos: 1685, escalaMedia: 270, indice: 0.62 },
+    { partido: 'Olavarría', slugProvincia: 'buenos-aires', slugDepartamento: 'olavarria', propios: 5, totales: 53, cuota: 5 / 53, casas: 13, cabezasPropias: 412, stock: 699253, establecimientos: 1634, escalaMedia: 428, indice: 0.6 },
+    { partido: 'Las Flores', slugProvincia: 'buenos-aires', slugDepartamento: 'las-flores', propios: 21, totales: 52, cuota: 21 / 52, casas: 9, cabezasPropias: 1840, stock: 386412, establecimientos: 1102, escalaMedia: 351, indice: 0.63 },
+  ],
+  oportunidades: [
+    { partido: 'Ayacucho', slugProvincia: 'buenos-aires', slugDepartamento: 'ayacucho', propios: 0, totales: 64, cuota: 0, casas: 9, cabezasPropias: 0, stock: 817651, establecimientos: 1854, escalaMedia: 441, indice: 0.61 },
+    { partido: 'Trenque Lauquen', slugProvincia: 'buenos-aires', slugDepartamento: 'trenque-lauquen', propios: 0, totales: 79, cuota: 0, casas: 11, cabezasPropias: 0, stock: 361889, establecimientos: 724, escalaMedia: 500, indice: 0.66 },
+    { partido: 'Adolfo Alsina', slugProvincia: 'buenos-aires', slugDepartamento: 'adolfo-alsina', propios: 0, totales: 68, cuota: 0, casas: 8, cabezasPropias: 0, stock: 245349, establecimientos: 812, escalaMedia: 302, indice: 0.64 },
   ],
 }

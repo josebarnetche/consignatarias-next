@@ -21,6 +21,9 @@ import BenchmarkMercado from '@/components/dashboard/BenchmarkMercado'
 import type { Benchmark } from '@/lib/reports/benchmark'
 import CarteraPanel from '@/components/dashboard/CarteraPanel'
 import type { Cartera } from '@/lib/reports/cartera'
+import type { Territorio } from '@/lib/reports/territorio'
+import { TerritorioPanel } from '@/components/dashboard/TerritorioPanel'
+import { TERRITORIO_MUESTRA } from '@/lib/reports/muestras'
 import ParticipacionMercado from '@/components/dashboard/ParticipacionMercado'
 import type { Participacion } from '@/lib/reports/participacion'
 import BandejaEntrada from '@/components/dashboard/BandejaEntrada'
@@ -176,6 +179,10 @@ interface Props {
   benchmark?: Benchmark | null
   /** Su cartera de remitentes en el MAG: fugas, capturas y concentración. */
   cartera?: Cartera | null
+  /** El mapa de partidos: dónde tiene remitentes y dónde no. */
+  territorio?: Territorio | null
+  /** El titular del territorio, ya redactado en el servidor. */
+  territorioTitular?: string
   /** Cuota de mercado en Cañuelas y si está creciendo. */
   participacion?: Participacion | null
   /** Todo lo que hay que atender hoy, en una lista ordenada. */
@@ -221,7 +228,7 @@ export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
   auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, marksCount = 0, leads = [], totalWatchers, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
   frigoProducts = [], frigoRfqs = [], frigoIsPro = false,
-  dteCount = 0, alreadyRedeemed = false, performance = null, distribucion = null, benchmark = null, cartera = null, participacion = null, bandeja = null, hayDatosMag = false, agenda = null,
+  dteCount = 0, alreadyRedeemed = false, performance = null, distribucion = null, benchmark = null, cartera = null, territorio = null, territorioTitular = '', participacion = null, bandeja = null, hayDatosMag = false, agenda = null,
 }: Props) {
   const searchParams = useSearchParams()
   const justUpgraded = searchParams.get('upgraded') === 'true'
@@ -588,6 +595,20 @@ export default function DashboardClient({
 
                     La cartera va antes que el precio: lo primero es a quién hay que
                     llamar hoy, después cómo se vendió. */}
+                {/* El territorio va PRIMERO: la cartera dice a quién no perder, esto
+                    dice a quién ir a buscar. Para una casa que quiere crecer, la segunda
+                    pregunta es la que mueve al comercial. */}
+                {hayDatosMag && (
+                  <MuestraPro
+                    esPro={tierLabel !== 'FREE'}
+                    titulo="Tu territorio"
+                    beneficio="En qué partidos no tenés un solo remitente, sobre productores que ya mandan hacienda a Cañuelas con otra casa."
+                    muestra={<TerritorioPanel t={TERRITORIO_MUESTRA} titular="Ayacucho: 64 productores mandan al MAG desde ahí y ninguno es tuyo. 1.854 establecimientos en el partido." />}
+                  >
+                    {territorio && <TerritorioPanel t={territorio} titular={territorioTitular} />}
+                  </MuestraPro>
+                )}
+
                 {hayDatosMag && (
                   <MuestraPro
                     esPro={tierLabel !== 'FREE'}
