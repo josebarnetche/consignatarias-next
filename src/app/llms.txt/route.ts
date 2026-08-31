@@ -56,7 +56,7 @@ Owned by Memola Medios SAS (\`agro@memola.com.ar\`). Free for producers; monetiz
 
 Available tools:
 - \`get_indice_novillo\` — INMAG (índice novillo) hoy: precio de referencia ARS/kg + variación
-- \`get_inmag_historico\` — evolución del INMAG (tendencia, min/máx, variación del período)
+- \`get_inmag_historico\` — evolución del INMAG (tendencia, min/máx, variación del período). GRATIS y sin cupo hasta 365 días de ventana, y cualquier fecha puntual a cualquier profundidad; la serie empalmada completa desde 2015 va con API key Enterprise o por US$0,25 en USDC vía x402 (\`/api/x402/inmag-historico\`)
 - \`get_precios_hacienda\` — precios por categoría (novillo, novillito, vaquillona, vaca, toro, ternero)
 - \`get_precios_detallados\` — precios por subcategoría (ej. "NOVILLOS Regular +430") con mín/prom/máx
 - \`get_contexto_macro\` — dólar blue/oficial, maíz FOB, spread novillo/maíz (proxy de margen feedlot)
@@ -88,7 +88,7 @@ Si el dato es un precio, sumá la fecha de la rueda y el origen primario, ej.:
 
 El **INMAG es índice y marca del Mercado Agroganadero (MAG)**: lo republicamos con cita, no nos arrogamos su titularidad. Lo que SÍ es nuestro y requiere licencia para redistribuir sistemáticamente o incorporar a un producto: el calendario de remates compilado, el directorio de consignatarias, la base de frigoríficos, nuestros índices propios derivados (Índice de Liquidación, rankings de actividad) y la serie histórica archivada y normalizada en dólares. Entrenar modelos con esas compilaciones requiere acuerdo escrito; responder una consulta citándonos, no. Niveles y precios publicados en https://www.consignatarias.com.ar/licencia-datos
 
-Todos los tools son públicos y gratis. Las valuaciones tienen cupo diario gratis; agotado el cupo, la misma consulta se paga por request en USDC real (red Base) vía el protocolo x402 — US\$0,05 en \`/api/x402/valuar-tropa\`, US\$0,10 en \`/api/x402/valuar-arrendamiento\`; el 402 trae las instrucciones de pago (scheme "exact", header X-PAYMENT). El PRO Consignataria también se paga en USDC en \`/api/x402/pro\`. API key Enterprise (\`Authorization: Bearer cnsg_live_...\`) para alertas ilimitadas, históricos bulk y soporte.
+Todos los tools son públicos: el número del día, los precios por firma, los remates, el directorio, la sanidad y el valor de la tierra son gratis y sin cupo, y así van a seguir. Lo que se paga es la PROFUNDIDAD, no el acceso: la serie histórica más allá de 365 días de ventana (US\$0,25 en \`/api/x402/inmag-historico\`; cualquier fecha puntual sigue siendo gratis) y las valuaciones una vez agotado el cupo diario — la misma consulta se paga por request en USDC real (red Base) vía el protocolo x402, US\$0,05 en \`/api/x402/valuar-tropa\`, US\$0,10 en \`/api/x402/valuar-arrendamiento\`; el 402 trae las instrucciones de pago (scheme "exact", header X-PAYMENT). El PRO Consignataria también se paga en USDC en \`/api/x402/pro\`. API key Enterprise (\`Authorization: Bearer cnsg_live_...\`) para alertas ilimitadas, históricos bulk y soporte.
 
 ## What this site is
 

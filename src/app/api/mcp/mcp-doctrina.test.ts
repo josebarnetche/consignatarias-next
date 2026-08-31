@@ -56,3 +56,36 @@ describe('doctrina del server MCP', () => {
     expect(ROUTE).not.toMatch(/origen:\s*(ip|clientIp)/)
   })
 })
+
+/**
+ * El techo de profundidad histórica es lo ÚNICO que el server cobra en la superficie
+ * de lectura. Se puso el 31-ago-2026 con el dato en la mano: toca 6 de 350 llamadas
+ * reales. Las reglas de acá abajo son las que lo hacen tolerable — sin ellas es
+ * simplemente una puerta cerrada, y una puerta cerrada nos saca de las citas.
+ */
+describe('el techo de profundidad histórica', () => {
+  it('recorta y lo declara: nunca niega la consulta', () => {
+    // Si esto se vuelve un `fail(...)`, el agente se queda sin nada que mostrar y
+    // deja de llamar la tool. El preview recortado es la única forma que vende.
+    expect(ROUTE).toContain('notaDeRecorte')
+    expect(ROUTE).toContain('recortado: true')
+  })
+
+  it('marca el recorte en el JSON, no sólo en la prosa', () => {
+    // Un agente no debería tener que parsear castellano para saber que la serie
+    // que recibió está incompleta.
+    expect(ROUTE).toContain('ruedas_ocultas')
+    expect(ROUTE).toContain('desde_pedido')
+  })
+
+  it('una key inválida no degrada a gratis en silencio', () => {
+    expect(ROUTE).toContain('autorizacionEnterprise')
+    expect(ROUTE).toContain("if ('error' in auth) return fail(auth.error)")
+  })
+
+  it('el techo no se aplica a ninguna otra tool de lectura', () => {
+    // La profundidad de la serie es la excepción, no el comienzo de una tendencia.
+    const usos = ROUTE.match(/aplicarTecho\(/g) ?? []
+    expect(usos.length).toBe(1)
+  })
+})

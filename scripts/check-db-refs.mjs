@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * check-db-refs — enforcement de la fuente de verdad del esquema.
  *

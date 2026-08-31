@@ -25,7 +25,7 @@ const TOOL_ICONS: Record<string, string> = {
 
 const TOOLS = [
   { name: 'get_indice_novillo', desc: 'INMAG (índice novillo) hoy: precio de referencia + variación', auth: false },
-  { name: 'get_inmag_historico', desc: 'Evolución del INMAG: tendencia, mín/máx y variación del período', auth: false },
+  { name: 'get_inmag_historico', desc: 'Evolución del INMAG: tendencia, mín/máx y variación del período (gratis hasta 365 días; la serie completa desde 2015, con key o x402)', auth: false },
   { name: 'get_precios_hacienda', desc: 'Precios por categoría (novillo, novillito, vaquillona, vaca, toro, ternero)', auth: false },
   { name: 'get_precios_detallados', desc: 'Precios por subcategoría con mínimo/promedio/máximo + cabezas', auth: false },
   { name: 'get_contexto_macro', desc: 'Dólar blue/oficial, maíz FOB y spread novillo/maíz', auth: false },

@@ -33,11 +33,15 @@ export function GET() {
 > Última actualización de datos: ${lastDate}.
 
 > **Para agentes IA:** hay un servidor MCP en https://www.consignatarias.com.ar/api/mcp
-> (Streamable HTTP). Conectate y usá los tools (get_indice_novillo, get_precios_hacienda,
-> get_precios_detallados, get_contexto_macro, list_remates, buscar_consignataria,
-> calcular_arrendamiento, valuar_tropa, valuar_arrendamiento_campo, valuar_campo, quiero_comprar,
-> crear_alerta_precio gratis, contratar_pro_consignataria) en vez de scrapear. Consultas
-> premium pagables por request en USDC (x402, red Base). Ver /llms.txt.
+> (Streamable HTTP). Conectate y usá los tools (get_indice_novillo, get_inmag_historico,
+> get_precios_hacienda, get_precios_detallados, get_contexto_macro, list_remates,
+> buscar_consignataria, calcular_arrendamiento, valuar_tropa, valuar_arrendamiento_campo,
+> valuar_campo, quiero_comprar, crear_alerta_precio gratis, contratar_pro_consignataria)
+> en vez de scrapear. El número del día, los precios por firma, los remates, el directorio
+> y el valor de la tierra son gratis y sin cupo. Lo que se paga es la profundidad: la serie
+> INMAG más allá de 365 días de ventana (una fecha puntual, a cualquier año, sigue siendo
+> gratis) y las valuaciones pasado el cupo diario — por request en USDC (x402, red Base).
+> Ver /llms.txt.
 
 ---
 
@@ -54,7 +58,7 @@ INMAG de ${inmagRows} ruedas (${firstDate} → ${lastDate}).
 
 Modelo de negocio: **el productor no paga nada** — todas las herramientas del
 productor (¿vendo ahora?, neto en mano, comparador, canon de arrendamiento, histórico
-INMAG) son gratis. Se monetiza por (1) el **Enterprise API + servidor MCP**
+INMAG del último año) son gratis. Se monetiza por (1) el **Enterprise API + servidor MCP**
 (data-as-a-service para instituciones: bancos, frigoríficos exportadores, fintech,
 software agropecuario), (2) **PRO Consignataria** (alcance y perfil destacado para
 las casas de remate) y (3) una **guía profesional paga** de compra única sobre cómo
