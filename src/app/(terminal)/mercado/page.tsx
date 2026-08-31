@@ -12,6 +12,7 @@ import { ElCorredorCTA } from '@/components/ElCorredorCTA'
 import { ChicagoReference } from '@/components/market/ChicagoReference'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 
 export const revalidate = 86400 // daily rebuild via Vercel
 
@@ -205,6 +206,20 @@ export default function MercadoPage() {
         </LoginGate>
         <CategoryComparison />
         <SeasonalPattern />
+
+        {/* El parte semanal. Va al final: la página ya dio el precio, la serie, la
+            comparación por categoría y la estacionalidad. */}
+        <OfrecerInforme
+          producto="parte-semanal-mercado"
+          desde="/mercado"
+          titulo="El movimiento de la semana, resumido y en tu casilla"
+          loQueAgrega={[
+            'Qué se movió y por qué, cada lunes, sin que tengas que entrar a mirar.',
+            'El número del novillo en pesos y en dólares, con la variación de la semana.',
+            'Las categorías que se apartaron de su promedio — que es donde suele estar la oportunidad.',
+          ]}
+          gratisAca="El precio del día, la serie y los gráficos de esta página son gratis y van a seguir siéndolo."
+        />
       </div>
     </>
   )

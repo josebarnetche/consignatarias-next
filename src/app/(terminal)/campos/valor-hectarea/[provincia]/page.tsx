@@ -13,6 +13,7 @@ import { anosDeArrendamiento, promedioMesAnterior } from '@/lib/valuacion-campos
 import ValuacionCampo from '@/components/campos/ValuacionCampo'
 import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
 import { FAQPageSchema, DatasetSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 
 export const revalidate = 3600
 export const dynamicParams = false
@@ -340,6 +341,19 @@ export default async function ValorHectareaProvincia({
             compacto
           />
         </section>
+
+        <OfrecerInforme
+          producto="informe-valuacion-campo"
+          desde="/campos/valor-hectarea/[provincia]"
+          titulo="¿Lo que te ofrecen está dentro de lo que se paga?"
+          loQueAgrega={[
+            'La banda real de operaciones de la zona —p25 a p75— y sobre cuántos casos se calculó.',
+            'Las dos vías por separado, renta y comparables, y qué significa que se aparten.',
+            'Los dos plazos de repago: años de arrendamiento y años de producción del campo.',
+            'Las zonas comparables de al lado, con la fuente de cada número.',
+          ]}
+          gratisAca="El valor por zona y el tasador de esta página son gratis y van a seguir siéndolo."
+        />
 
         <section className="border-t border-zinc-800 pt-4">
           <h2 className="text-zinc-500 text-xs uppercase tracking-[0.16em] mb-3">Otras provincias</h2>

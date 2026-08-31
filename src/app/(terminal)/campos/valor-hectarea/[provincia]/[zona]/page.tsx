@@ -14,6 +14,7 @@ import { anosDeArrendamiento } from '@/lib/valuacion-campos'
 import ValuacionCampo from '@/components/campos/ValuacionCampo'
 import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
 import { FAQPageSchema, DatasetSchema, SpeakableSchema, BreadcrumbSchema } from '@/components/seo/JsonLd'
+import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 
 export const revalidate = 3600
 export const dynamicParams = false
@@ -316,6 +317,19 @@ export default async function ValorHectareaZona({
             </div>
           </section>
         )}
+
+        <OfrecerInforme
+          producto="informe-valuacion-campo"
+          desde="/campos/valor-hectarea/[zona]"
+          titulo="¿Lo que te ofrecen está dentro de lo que se paga?"
+          loQueAgrega={[
+            'La banda real de operaciones de la zona —p25 a p75— y sobre cuántos casos se calculó.',
+            'Las dos vías por separado, renta y comparables, y qué significa que se aparten.',
+            'Los dos plazos de repago: años de arrendamiento y años de producción del campo.',
+            'Las zonas comparables de al lado, con la fuente de cada número.',
+          ]}
+          gratisAca="El valor de esta zona y el tasador son gratis y van a seguir siéndolo."
+        />
       </div>
     </>
   )

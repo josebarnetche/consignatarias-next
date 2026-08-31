@@ -19,6 +19,7 @@ import { Delta, DataTable, PriceCell, type DataColumn } from '@/components/ui'
 import { signedTone, SEMANTIC_HEX } from '@/lib/ui/tokens'
 import { MarketHero, type MarketHeroStat } from '@/components/market'
 import rematesData from '@/lib/data/remates.json'
+import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 
 const inmag = marketData.inmag
 const series = inmag.series as Array<{ date: string; value: number; volume?: number }>
@@ -604,6 +605,23 @@ export default async function ArrendamientoPage() {
             </div>
           </div>
         </section>
+
+        {/* El informe por zona. Va acá —después del índice, la serie y el histórico— y no
+            antes: la página entrega su valor completo primero. */}
+        <div className="max-w-6xl mx-auto px-4 pb-4">
+          <OfrecerInforme
+            producto="informe-canon-arrendamiento"
+            desde="/mercado/arrendamiento"
+            titulo="¿Lo que te ofrecen está dentro de lo que se paga en tu zona?"
+            loQueAgrega={[
+              'La dispersión de tu zona: qué paga el cuartil de abajo y qué el de arriba, y sobre cuántos casos se calculó.',
+              'Las zonas limítrofes, para ver si conviene mirar más allá del alambrado.',
+              'Cuántos kilos por hectárea produce la zona — que es contra lo que se mide si el canon es razonable.',
+              'Los años de arrendamiento que hacen falta para recuperar el valor de la tierra.',
+            ]}
+            gratisAca="El índice, la serie y el histórico de esta página son gratis y van a seguir siéndolo."
+          />
+        </div>
 
         {/* FAQ Section */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
