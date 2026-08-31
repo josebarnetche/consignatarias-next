@@ -7,6 +7,53 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.201.0] — 2026-08-31
+
+### Lo primero que el MCP cobra: la profundidad, no el acceso
+
+La serie INMAG empalmada Liniers→MAG —2.237 ruedas diarias desde 2015— es el activo del
+sitio: es el gráfico que una consultora agropecuaria compra o dibuja a mano. Pasa a ser
+**lo único que el server MCP cobra en la superficie de lectura**. Todo lo demás sigue
+abierto: el número del día, los precios por firma, los remates, el directorio, la sanidad
+y el valor de la tierra son gratis y sin cupo.
+
+**El corte va en la ventana pedida, no en la antigüedad del dato.** Medido sobre las 350
+llamadas reales de julio-agosto, un techo de 365 días toca **6 de 350 (1,7 %)**: las que
+piden `dias: 5000`. Los rangos cortos no cambian, y la consulta de fecha puntual vieja
+—`desde=hasta=2020-03-20`, 13 llamadas— sigue pasando gratis, que es lo correcto: un punto
+suelto es una cita, la serie larga es el producto.
+
+**Y no niega: recorta.** Pedir 5.000 días devuelve los últimos 365 con su análisis
+completo —inicio, fin, variación, mínimo, máximo, muestra— y recién entonces avisa que
+quedaron **1.592 ruedas** atrás (contadas contra la tabla, no estimadas), hasta el
+2015-01-05. Marca `recortado: true` en el JSON para que un agente no tenga que parsear
+castellano ni presente el tramo abierto como la serie entera, ofrece las dos salidas
+—API key Enterprise o US$0,25 en USDC vía x402— y cierra diciendo qué sigue gratis. Sin
+esa última línea el recorte se lee como "ahora todo es pago" y se va también el que venía
+usando la tool. Es la misma doctrina que el muro de pago del sitio: un muro que no deja
+ver nada no vende, espanta.
+
+Una **key inválida es un error, no un free tier**: si degradáramos en silencio, quien cree
+estar autenticado se llevaría una serie recortada creyéndola completa y la citaría como
+tal.
+
+La lógica vive en `lib/inmag-historico.ts` y la comparten la tool gratuita y el endpoint
+pago `/api/x402/inmag-historico`, para que **la versión paga no pueda despegarse de la
+gratis sin que nadie lo note**. El endpoint valida el rango antes del 402 — nadie paga por
+args inválidos— y devuelve la serie entera, no la muestra de ocho puntos: es lo que se
+pagó.
+
+**24 tests** cubren el techo, incluidas su idempotencia y que no prometa datos anteriores
+al inicio de la serie; **cuatro más** en `mcp-doctrina.test.ts` fijan que recorte en vez de
+negar, que el recorte viaje en el JSON, y que `aplicarTecho` se use **una sola vez** en
+todo el server: la profundidad es la excepción, no el comienzo de una tendencia.
+
+De paso, `scripts/check-db-refs.mjs` tenía un shebang que node acepta y vite no: sus **9
+tests no corrían desde que existen**. Siempre se invoca con `node`, nunca como ejecutable.
+Suite completa en verde por primera vez: 28 archivos, 329 tests.
+
+---
+
 ## [1.200.0] — 2026-08-31
 
 ### El MCP deja de ser ciego
