@@ -45,7 +45,7 @@ const TOOLS = [
   { name: 'sanidad_dte_tropa', desc: 'DT-e y número de tropa: qué son y cómo se leen', auth: false },
   { name: 'buenas_practicas', desc: 'Buenas Prácticas Ganaderas: 14 temas de la Guía Red BPA', auth: false },
   { name: 'quiero_comprar', desc: 'Publicá qué hacienda buscás → remates que matchean + aviso de cada remate nuevo', auth: false },
-  { name: 'crear_alerta_precio', desc: 'Alerta cuando un precio cruza un umbral → webhook (gratis: 3 activas por origen)', auth: false },
+  { name: 'crear_alerta_precio', desc: 'Alerta cuando un precio cruza un umbral → email o webhook (gratis: 3 activas por origen)', auth: false },
   { name: 'contratar_pro_consignataria', desc: 'Cotizá y activá PRO Consignataria pagando en USDC (x402), sin formularios', auth: false },
 ]
 
@@ -291,7 +291,7 @@ export default function McpPage() {
           <div>
             <h2 className="text-lg font-semibold text-white">¿Construís sobre datos ganaderos?</h2>
             <p className="text-sm text-zinc-400 mt-1">
-              La lectura es libre. Para alertas por webhook y volumen, una API key de un plan.
+              La lectura es libre. Las alertas avisan por email o webhook. Para volumen y alertas sin límite, una API key de un plan.
             </p>
           </div>
           <div className="mt-4 sm:mt-0 flex gap-3 shrink-0">

@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { authenticate } from '@/lib/api-auth'
@@ -1042,17 +1043,18 @@ const TOOLS: Tool[] = [
   {
     name: 'crear_alerta_precio',
     description:
-      'Crea una alerta: cuando el precio de una categoría cruza el umbral, avisa a tu webhook https (POST price.threshold_crossed). Única tool de escritura (el resto lee). GRATIS sin API key (hasta 3 alertas activas por origen); con key Enterprise (Bearer cnsg_live_… o param api_key) sin límite. Params: categoria (inmag=índice diario; resto semanal), umbral ARS/kg vivo, direccion above|below (def above), webhook_url. Devuelve id y precio.',
+      'Crea una alerta: cuando el precio de una categoría cruza el umbral, avisa POR EMAIL al productor (o a un webhook https, para integraciones). Única tool de escritura (el resto lee). GRATIS sin API key (hasta 3 alertas activas por origen); con key Enterprise (Bearer cnsg_live_… o param api_key) sin límite. Params: categoria (inmag=índice diario; resto semanal), umbral ARS/kg vivo, direccion above|below (def above), y email O webhook_url (al menos uno; para una persona usá email). Devuelve id y precio.',
     inputSchema: {
       type: 'object',
       properties: {
         categoria: { type: 'string', enum: ['inmag', ...CATEGORY_VALUES.filter((c) => c !== 'inmag')] },
         umbral: { type: 'number', description: 'Umbral en ARS/kg vivo (ej. 5000)' },
         direccion: { type: 'string', enum: ['above', 'below'], description: 'Cruzar hacia arriba o abajo (default above)' },
-        webhook_url: { type: 'string', description: 'URL https pública que recibe el POST cuando cruza' },
+        email: { type: 'string', description: 'Email al que avisar cuando cruce el umbral. Es la opción para una persona: pedíselo al usuario. Alternativa a webhook_url.' },
+        webhook_url: { type: 'string', description: 'URL https pública que recibe el POST cuando cruza. Para integraciones; para una persona usá email.' },
         api_key: { type: 'string', description: 'API key del plan (cnsg_live_...). Opcional si ya la pasás por el header Authorization: Bearer.' },
       },
-      required: ['categoria', 'umbral', 'webhook_url'],
+      required: ['categoria', 'umbral'],
       additionalProperties: false,
     },
     async run(args, req) {
@@ -1084,12 +1086,27 @@ const TOOLS: Tool[] = [
       const umbral = Number(args.umbral)
       const direccion = args.direccion === 'below' ? 'below' : 'above'
       const webhook = String(args.webhook_url || '').trim()
+      const email = String(args.email || '').trim().toLowerCase()
       if (!isValidCategory(categoria)) return fail(`Categoría inválida. Válidas: ${CATEGORY_VALUES.join(', ')}`)
       if (!Number.isFinite(umbral) || umbral <= 0) return fail('Umbral inválido.')
-      let host = ''
-      try { host = new URL(webhook).hostname.toLowerCase() } catch { return fail('webhook_url inválida.') }
-      if (!webhook.startsWith('https://') || host === 'localhost' || /^(127\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host))
-        return fail('webhook_url debe ser una URL https pública.')
+
+      // Email O webhook. Exigir webhook —como se hacía hasta el 31-ago-2026— dejaba la
+      // ÚNICA tool de captura del server fuera del alcance de un productor hablando con
+      // un asistente: nadie tiene un endpoint https a mano. Se notaba en el uso: 3
+      // llamadas en dos meses contra 429 de la tool de consulta más pedida.
+      if (!email && !webhook) {
+        return fail(
+          'Falta a dónde avisarte. Si sos una persona, pasá tu email (param email). ' +
+            'Si estás integrando un sistema, pasá webhook_url (https pública).',
+        )
+      }
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail('El email no parece válido.')
+      if (webhook) {
+        let host = ''
+        try { host = new URL(webhook).hostname.toLowerCase() } catch { return fail('webhook_url inválida.') }
+        if (!webhook.startsWith('https://') || host === 'localhost' || /^(127\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host))
+          return fail('webhook_url debe ser una URL https pública.')
+      }
 
       const service = requireServiceClient()
       const ip = clientIp(req)
@@ -1113,18 +1130,85 @@ const TOOLS: Tool[] = [
       try { current = await getCurrentPrice(service, categoria) } catch { /* best-effort */ }
       const { data, error } = await service
         .from('price_alerts')
-        .insert({ user_id: userId, origin_ip: userId ? null : ip, webhook_url: webhook, category: categoria, threshold: umbral, direction: direccion, last_value: current, status: 'active', source: 'api' })
+        .insert({ user_id: userId, origin_ip: userId ? null : ip, email: email || null, webhook_url: webhook || null, category: categoria, threshold: umbral, direction: direccion, last_value: current, status: 'active', source: 'mcp' })
         .select('id')
         .single()
       if (error) return fail('No se pudo crear la alerta.')
       return ok(
-        `Alerta creada (#${data.id}). Te aviso al webhook cuando el ${categoryLabel(categoria)} ` +
+        `Alerta creada (#${data.id}). Te aviso ${email ? `a ${email}` : 'al webhook'} cuando el ${categoryLabel(categoria)} ` +
           `${direccion === 'above' ? 'cruce' : 'baje de'} ${fmt(umbral)}. Precio hoy: ${current != null ? fmt(current) : 's/d'}.` +
           (userId ? '' : '\n\nFree tier: hasta 3 alertas activas por origen. ¿Más alertas + históricos bulk + soporte? Key Enterprise: https://www.consignatarias.com.ar/planes'),
       )
     },
   },
 ]
+
+// ── El puente de vuelta al sitio ─────────────────────────────────────────────
+/**
+ * Cada respuesta de lectura cierra con la página de la que salió el dato.
+ *
+ * POR QUÉ EXISTE
+ * Hasta el 31-ago-2026 las tools devolvían el número y nada más: ni una URL, y cero
+ * UTMs en todo el server. El agente absorbía el dato, se lo daba a su usuario y
+ * nosotros desaparecíamos — 3.240 llamadas en dos meses sin una sola visita
+ * atribuible, mientras el embudo que sí cobra (informes por zona, PRO) vive en el
+ * sitio.
+ *
+ * La cuenta que ordena la prioridad: cobrar la llamada son centavos (3.240 × US$0,05
+ * = US$162 en dos meses); convertirla en visita la pone frente a productos de ARS
+ * 19.900. El puente vale más que el peaje.
+ *
+ * Es una línea de FUENTE, no un anuncio: le da al asistente la cita que igual quiere
+ * mostrar, y al humano un lugar donde seguir. Ensuciar la respuesta con oferta sería
+ * contraproducente — un agente que recibe ruido comercial deja de citarnos, y la
+ * superficie abierta es justamente lo que nos hace citables.
+ */
+const PAGINA_DE_LA_TOOL: Record<string, string> = {
+  get_indice_novillo: '/mercado/inmag',
+  get_inmag_historico: '/mercado/inmag',
+  get_precios_hacienda: '/mercado',
+  get_precios_detallados: '/mercado',
+  get_contexto_macro: '/mercado',
+  get_indice_liquidacion: '/mercado/liquidacion',
+  list_remates: '/remates',
+  buscar_consignataria: '/consignatarias',
+  actividad_consignatarias: '/mercado/actividad',
+  buscar_frigorifico: '/frigorificos',
+  calcular_arrendamiento: '/campos/arrendar',
+  valuar_campo: '/campos/valor-hectarea',
+  valuar_arrendamiento_campo: '/campos/arrendar',
+  valuar_tropa: '/mercado',
+  buenas_practicas: '/guias',
+  sanidad_plan: '/guias',
+  sanidad_calendario_aftosa: '/guias',
+  sanidad_requisitos_movimiento: '/guias',
+  sanidad_renspa: '/guias',
+  sanidad_dte_tropa: '/guias',
+}
+
+function lineaDeFuente(tool: string): string | null {
+  const path = PAGINA_DE_LA_TOOL[tool]
+  if (!path) return null
+  return `
+
+Fuente: https://www.consignatarias.com.ar${path}?utm_source=mcp&utm_medium=agente&utm_campaign=${tool}`
+}
+
+/** Agrega la fuente al último bloque de texto. No toca respuestas de error. */
+function conFuente(result: ToolResult, tool: string): ToolResult {
+  if (result.isError) return result
+  const linea = lineaDeFuente(tool)
+  if (!linea) return result
+  const bloques = result.content
+  const i = bloques.map((b) => b.type).lastIndexOf('text')
+  if (i < 0) return result
+  const texto = bloques[i].text
+  if (texto.includes('utm_source=mcp')) return result
+  return {
+    ...result,
+    content: bloques.map((b, n) => (n === i ? { ...b, text: texto + linea } : b)),
+  }
+}
 
 // ── JSON-RPC 2.0 handler ─────────────────────────────────────────────────────
 // ── Prompts (plantillas reutilizables que el cliente MCP ofrece al usuario) ──
@@ -1262,7 +1346,35 @@ function reqMeta(req: NextRequest) {
     ua: req.headers.get('user-agent')?.slice(0, 200) ?? null,
     ip: (req.headers.get('x-forwarded-for') || '').split(',')[0].trim().slice(0, 64) || null,
     has_auth: !!req.headers.get('authorization'),
+    origen: origenId(req),
   }
+}
+
+/**
+ * Identificador estable del origen de una llamada MCP.
+ *
+ * POR QUÉ EXISTE
+ * El server es stateless: `initialize` trae `clientInfo` (quién es), pero los
+ * `tools/call` que siguen NO lo traen. Medido el 30-ago-2026, eso dejó las 3.240
+ * llamadas reales a herramientas **completamente huérfanas** — sin `user_id`, sin
+ * `api_key_id` y sin cliente— mientras los 97.290 handshakes sí tenían nombre y
+ * resultaron ser ~20 crawlers de registries (`glimind-probe`, `Siglume MCP Router`,
+ * `mcpbeat`, `glama`…), todos con CERO uso.
+ *
+ * Sin poder unir las dos puntas no se sabe quién usa el server, así que tampoco se
+ * le puede ofrecer nada. `origen` es un hash de (ip + user-agent) que permite hacer
+ * ese join en SQL: el `initialize` aporta el nombre del cliente y los `tools/call`
+ * comparten el mismo `origen`.
+ *
+ * Es un hash truncado y con sal de servidor: agrupa sesiones, no identifica personas,
+ * y no es reversible a la IP. Si falta la sal, degrada a un hash simple — perder
+ * atribución es peor que perder el salado.
+ */
+function origenId(req: NextRequest): string {
+  const ip = (req.headers.get('x-forwarded-for') || '').split(',')[0].trim()
+  const ua = req.headers.get('user-agent') || ''
+  const sal = process.env.API_KEY_PEPPER || 'mcp'
+  return createHash('sha256').update(`${sal}|${ip}|${ua}`).digest('hex').slice(0, 16)
 }
 // Nunca logueamos la api_key: la redactamos de los argumentos de la tool.
 function redactArgs(args: unknown): Record<string, unknown> | null {
@@ -1324,7 +1436,7 @@ export async function POST(req: NextRequest) {
           '• Buenas Prácticas Ganaderas (14 temas, Guía Red BPA): buenas_practicas.\n' +
           '• Valor de la tierra: valuar_campo ("¿cuánto vale la hectárea en Corrientes?", "¿cuánto vale un campo de 800 has en la cuenca del Salado?") — relevamiento propio de 15 provincias y 52 zonas, con rango, arrendamiento típico en kg de novillo, años de arrendamiento equivalentes y la fuente fechada de cada dato. Distingue campo ganadero de agrícola: la tierra agrícola NO se tasa con canon de hacienda. GRATIS y sin cupo. Si no tenemos la provincia lo dice en vez de estimar.\n' +
           '• Valuaciones: valuar_tropa ("¿cuánto valen 350 novillos en Formosa?") y valuar_arrendamiento_campo ("¿cuánto cuesta arrendar 3.500 has en Corrientes?") — total en ARS y USD con fuente fechada. Gratis con cupo diario; sin cupo, la misma consulta se paga por request en USDC real (x402 en red Base mainnet, centavos: US$0,05-0,10) en /api/x402/valuar-tropa y /api/x402/valuar-arrendamiento.\n' +
-          '• Alertas: crear_alerta_precio avisa a tu webhook cuando el precio cruza tu umbral. GRATIS sin key (3 alertas activas por origen); con API key Enterprise sin límite.\n' +
+          '• Alertas: crear_alerta_precio avisa cuando el precio cruza tu umbral. Si estás atendiendo a una persona pedile el EMAIL y pasalo en el param email — es la vía natural para un productor; webhook_url es para integraciones. GRATIS sin key (3 alertas activas por origen); con API key Enterprise sin límite.\n' +
           '• PRO Consignataria pagable en USDC: contratar_pro_consignataria cotiza (ARS 45.000/mes al blue del día) y da el endpoint x402 (/api/x402/pro) — activación inmediata del perfil destacado al liquidarse el pago.\n' +
           '• Comprar hacienda: quiero_comprar ("quiero comprar 300 terneros en Corrientes") devuelve YA los remates programados que matchean y deja la búsqueda activa — avisamos por email/webhook de cada remate nuevo que matchee. Gratis.\n' +
           'Todos los tools son públicos y de lectura salvo crear_alerta_precio (escritura, free tier). Key Enterprise (Bearer cnsg_live_... o param api_key) para alertas ilimitadas, históricos bulk y soporte: https://www.consignatarias.com.ar/cuenta/api-keys',
@@ -1353,7 +1465,7 @@ export async function POST(req: NextRequest) {
       }
       const args = (params?.arguments as Record<string, unknown>) || {}
       try {
-        const result = await tool.run(args, req)
+        const result = conFuente(await tool.run(args, req), name)
         logMcp({ method: 'tools/call', ok: !result.isError, startedAt, meta: { ...rmeta, tool: name, args: redactArgs(args), is_error: result.isError ?? false } })
         return rpcResult(id, result, pv)
       } catch (err) {

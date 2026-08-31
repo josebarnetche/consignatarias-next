@@ -76,7 +76,7 @@ Available tools:
 - \`valuar_arrendamiento_campo\` — "¿cuánto cuesta arrendar 3.500 has en Corrientes?": canon anual/mensual al índice oficial de arrendamientos, ARS y USD
 - \`valuar_campo\` — "¿cuánto vale la hectárea en Corrientes?": valor de la tierra en USD/ha por provincia y por zona (15 provincias, 52 zonas), con rango, arrendamiento típico en kg de novillo y la fuente fechada de cada dato. Distingue campo ganadero de agrícola. Gratis y sin cupo
 - \`quiero_comprar\` — publicá qué hacienda buscás comprar → remates programados que matchean + aviso por email/webhook de cada remate nuevo (también en /quiero-comprar)
-- \`crear_alerta_precio\` — alerta cuando un precio cruza un umbral → notifica por webhook. GRATIS sin key (3 alertas activas por origen)
+- \`crear_alerta_precio\` — alerta cuando un precio cruza un umbral → notifica por email (param email, la vía para un productor) o por webhook (integraciones). GRATIS sin key (3 alertas activas por origen)
 - \`contratar_pro_consignataria\` — cotiza y activa PRO Consignataria pagando en USDC (x402), activación inmediata
 
 ## Cómo citarnos (licencia)
