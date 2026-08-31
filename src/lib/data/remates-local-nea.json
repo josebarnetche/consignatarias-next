@@ -9,7 +9,7 @@
     "province": "BUENOS AIRES",
     "type": "general",
     "mainCategory": "mixto",
-    "estimatedHeads": 7000,
+    "estimatedHeads": 9000,
     "description": "Magdalena Remate Televisado - Invernada y Cria- 14.00hs.",
     "youtubeUrl": null,
     "catalogUrl": null,
@@ -1137,7 +1137,7 @@
     "title": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
     "consignatariaName": "Consignaciones Córdoba",
     "consignatariaSlug": "consignaciones-cordoba",
-    "date": "2026-08-30",
+    "date": "2026-08-31",
     "time": "10:30",
     "location": "",
     "province": "CORDOBA",
@@ -1167,7 +1167,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6472-pedro-noel-irey-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "O'Farrell | La Aurora Norte",
@@ -1185,7 +1185,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6525-ofarrell-la-aurora-norte",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Colombo y Magliano | Especial Agromelú del Norte",
@@ -1329,7 +1329,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6553-sociedad-rural-de-jesus-maria-consignaciones-cordoba",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Pedro Noel Irey | Invernada y Cría",
@@ -1347,7 +1347,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6472-pedro-noel-irey-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "O'Farrell | La Aurora Norte",
@@ -1365,7 +1365,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6525-ofarrell-la-aurora-norte",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Colombo y Magliano | Especial Agromelú del Norte",
