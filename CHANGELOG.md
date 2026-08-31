@@ -7,6 +7,63 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.202.0] — 2026-08-31
+
+### Los productos, enlazados desde donde está la gente
+
+Dos meses de analítica dieron el diagnóstico de por qué el sitio no factura, y no era el
+que esperábamos.
+
+| Tema | Sesiones | Landing que lo vende | Sesiones |
+|---|---|---|---|
+| **Arrendamiento** | **1.839** | `/informes/canon-de-arrendamiento` | **1** |
+| Consignatarias | 1.191 | `/informes/prospeccion-provincial` | 0 |
+| Mercado | 1.177 | `/informes/parte-semanal` | 0 |
+| Valor de la tierra | 96 | `/informes/valuacion-de-campo` | 0 |
+
+10.211 sesiones, 145 vieron `/planes`, 34 se registraron, **1 inició un pago, 0
+compraron**. `informe_purchases`, `guia_purchases`, `producto_subscriptions` y
+`processed_webhook_events` en cero las cuatro; las 53 filas de `user_subscriptions` sin un
+solo `rebill_subscription_id` — las dos pagas otorgadas a mano. No pasó plata nunca.
+
+**No fallaba nada.** Los siete productos existían con landing, FAQ, imágenes, JSON-LD y
+circuito de pago —probado en vivo el 31-ago: Rebill devuelve un link real y el webhook
+rechaza con 401 los POST sin firma—. `/mercado/arrendamiento`, la página más visitada del
+sitio con 1.497 sesiones y 71 segundos de lectura, tiene 903 líneas y **no mencionaba el
+informe ni una sola vez**. Eso no rompe ningún build: se ve sólo mirando analítica dos
+meses después.
+
+**Y no era un problema de mensaje.** Con n=1, una explicación perfecta y una pésima son
+indistinguibles. Reescribir las landings habría sido optimizar algo que nadie lee.
+
+`OfrecerInforme` es el puente. Va **después** de que la página entregó su valor, nunca
+antes; presenta el informe como lo que la pantalla no puede dar —la dispersión con su
+muestra, las zonas de al lado, los dos plazos de repago, la fuente de cada cifra— y cierra
+diciendo **qué sigue siendo gratis**, sin lo cual se lee como "ahora esto se paga" y se va
+también el que ya usaba la herramienta. Respeta la modalidad (pago único / suscripción) y
+no se dibuja si el producto no está publicado: no se ofrece lo que no se puede entregar.
+
+Colocado en las tres páginas cuya audiencia coincide con un producto. **No en
+`/consignatarias`**, a pesar de sus 1.191 sesiones: ahí el visitante es un productor
+buscando con quién vender, y el informe de prospección es para las casas del interior —
+sería un desajuste de audiencia, no una oportunidad.
+
+`productos-enlazados.test.ts` fija la regla: todo producto publicado tiene que estar
+ofrecido desde alguna página fuera de su propia landing, o declarado B2B con el motivo
+escrito. **Un producto que se puede comprar y del que nadie se entera es igual a un
+producto que no existe.**
+
+Cada bloque emite `informe_cta_click` y deja la atribución en `sessionStorage`. La
+conversión tema→producto era 1 sobre 4.303 (0,02 %); ahora se puede medir si se mueve.
+
+Aparecieron además dos ventas que no necesitan código: **26 firmas** recibieron 47 clics
+de contacto sobre 2.516 vistas de perfil —eso *es* PRO Consignataria, ARS 45.000/mes— y la
+key `changa` lleva 2.464 llamadas en 77 días sin facturar. Y un dato incómodo: 124 gestos
+de contacto (58 por WhatsApp) contra 1 intento de compra. Análisis completo en
+`docs/strategy/POR-QUE-NO-MONETIZAMOS.md`.
+
+---
+
 ## [1.201.0] — 2026-08-31
 
 ### Lo primero que el MCP cobra: la profundidad, no el acceso
