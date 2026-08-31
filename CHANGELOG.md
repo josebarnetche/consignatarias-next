@@ -7,6 +7,57 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.200.0] — 2026-08-31
+
+### El MCP deja de ser ciego
+
+Primera medición seria del server MCP, y desmiente el número que veníamos repitiendo.
+De **100.526** llamadas en 56 días, **97.290 (96,8 %) son handshake de protocolo** —
+`initialize`, `tools/list`, `notifications/initialized`— todas con latencia 0 ms y
+repartidas planas por las 24 horas. No son tráfico: son **~20 crawlers de registries**
+con nombre propio (`glimind-probe` 13.057, `Siglume MCP Router` 6.729, `mcpbeat` 2.470,
+`glama` 1.383, `MCPScoringEngine`…), **todos con cero llamadas a tools**.
+
+El uso real son **3.240 llamadas a herramientas**, y ésas sí crecen: de **9 a 909 por
+semana en ocho semanas**, 24 tools distintas, actividad los 55 días, con ráfagas de hasta
+42 llamadas por minuto. La comparación honesta no es 97.000 contra 2.470: es **3.240 MCP
+contra 2.464 de la API, que son de una sola persona** (la key `changa`, 77 días activos,
+un endpoint, sin facturar).
+
+Tres agujeros impedían monetizar ese crecimiento, y los tres están tapados:
+
+**Las llamadas útiles eran anónimas.** El server es stateless: `initialize` trae
+`clientInfo`, los `tools/call` no. Las 3.240 llamadas reales no tenían `user_id`,
+`api_key_id` ni cliente — mientras los handshakes de los bots sí tenían nombre. Se agrega
+`origen`, hash con sal de (ip + user-agent) truncado a 16, que permite unir las dos puntas
+en SQL. Agrupa sesiones; no identifica personas ni es reversible a la IP.
+
+**La única puerta de captura estaba cerrada para su público.** `crear_alerta_precio` —la
+única tool de escritura— exigía `webhook_url`. Un productor hablando con un asistente no
+tiene un endpoint https, así que la única forma de dejar un dato de contacto era
+inaccesible para quien debía usarla. Se veía en el uso: **3 llamadas en dos meses** contra
+429 de la tool de consulta más pedida. Ahora acepta `email` —la tabla y el cron ya lo
+soportaban— y nace con `source: 'mcp'` para poder medir si el canal convierte
+(`20260831_price_alerts_source_mcp.sql`).
+
+**Las respuestas no llevaban al sitio.** Cero UTMs en todo el server, y la tool más usada
+devolvía el número y nada más: el agente se quedaba con el dato y nosotros
+desaparecíamos. Cada tool de lectura cierra ahora con la página de la que salió el dato,
+con UTM, resuelto en el dispatcher (un lugar, 20 tools). Es una **línea de fuente, no un
+anuncio**: le da al asistente la cita que igual quiere mostrar. Ensuciar la respuesta con
+oferta sería contraproducente — un agente que recibe ruido comercial deja de citarnos.
+
+La cuenta que ordenó la prioridad: cobrar la llamada son centavos (3.240 × US$0,05 =
+**US$162** en dos meses); convertirla en visita la pone frente a informes de ARS 19.900.
+**El puente vale más que el peaje**, así que no se cerró nada de lo que estaba abierto.
+
+`mcp-doctrina.test.ts` sostiene las reglas —la alerta no vuelve a exigir webhook, las
+respuestas no pierden la fuente, ninguna tool de lectura queda sin destino—: se rompen
+solas con un cambio bienintencionado y no se nota, porque el server sigue respondiendo
+200. Las cuatro superficies MCP quedan sincronizadas.
+
+---
+
 ## [1.199.0] — 2026-08-30
 
 ### El sitio empieza a cobrar por el dato
