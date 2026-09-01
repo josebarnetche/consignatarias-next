@@ -153,18 +153,24 @@ export default function Page() {
                 }`}
               >
                 <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                  <p className="font-medium text-zinc-100">
-                    {r.slug ? (
-                      <Link
-                        href={consignatariaProfilePath(r.slug)}
-                        className="underline decoration-zinc-700 underline-offset-4 hover:text-accent hover:decoration-accent"
-                      >
-                        {r.firma}
-                      </Link>
-                    ) : (
-                      r.firma
-                    )}
-                  </p>
+                  <div className="min-w-0">
+                    {/* Primero qué se vende, después quién lo baja: en un remate de
+                        cabaña el productor busca la genética, no la casa. */}
+                    {r.cabania && <p className="font-medium text-zinc-100">{r.cabania}</p>}
+                    <p className={r.cabania ? 'text-sm text-zinc-400' : 'font-medium text-zinc-100'}>
+                      {r.cabania && <span className="text-zinc-500">Rematan </span>}
+                      {r.slug ? (
+                        <Link
+                          href={consignatariaProfilePath(r.slug)}
+                          className="underline decoration-zinc-700 underline-offset-4 hover:text-accent hover:decoration-accent"
+                        >
+                          {r.firma}
+                        </Link>
+                      ) : (
+                        r.firma
+                      )}
+                    </p>
+                  </div>
                   <p className="font-mono text-xs uppercase tracking-wide text-zinc-500">
                     {fechaLarga(r.fecha)}
                     {r.hora && ` · ${r.hora}`}

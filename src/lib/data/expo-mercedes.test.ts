@@ -7,6 +7,7 @@ import {
   plazasPorConcentracion,
   posicionNacional,
   expoVigente,
+  esMercedesCorrientes,
 } from './expo-mercedes'
 
 describe('la rueda de remates de la Expo de Mercedes', () => {
@@ -80,5 +81,14 @@ describe('el destacado se apaga solo', () => {
     // Un evento vencido en la portada de remates envejece todo lo demás.
     expect(expoVigente(new Date('2026-09-18T12:00:00Z'))).toBe(false)
     expect(expoVigente(new Date('2026-12-01T12:00:00Z'))).toBe(false)
+  })
+})
+
+describe('los tres Mercedes del calendario', () => {
+  it('distingue Corrientes de Buenos Aires y de Villa Mercedes', () => {
+    expect(esMercedesCorrientes('MERCEDES, CORRIENTES')).toBe(true)
+    expect(esMercedesCorrientes('Mercedes, Corrientes')).toBe(true)
+    expect(esMercedesCorrientes('Mercedes, BUENOS AIRES')).toBe(false)
+    expect(esMercedesCorrientes('VILLA MERCEDES, SAN LUIS')).toBe(false)
   })
 })

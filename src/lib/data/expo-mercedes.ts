@@ -7,13 +7,16 @@ import rematesData from './remates.json'
  * Medido contra nuestra propia base de 1.009 remates, agrupando por sede y buscando la
  * ventana de 14 días con más firmas distintas, Mercedes queda **tercera del país**:
  *
- *   1. Palermo (Capital Federal) .... 11 firmas / 15 remates  ← Expo Rural nacional
- *   2. San Nicolás .................. 9 firmas / 10 remates   ← Expoagro
+ *   1. San Nicolás .................. 15 firmas / 16 remates  ← Expoagro
+ *   2. Capital Federal .............. 11 firmas / 15 remates  ← Palermo
  *   3. MERCEDES ..................... 6 firmas / 7 remates
- *   4. Rauch ........................ 4 firmas / 6 remates
+ *   4. Azul ......................... 4 firmas / 7 remates
  *
  * Las dos que la superan son las megamuestras nacionales. Entre las sociedades rurales
  * del interior no hay nada parecido: la siguiente junta cuatro firmas.
+ *
+ * OJO CON EL NOMBRE: el calendario tiene tres Mercedes —Corrientes, Buenos Aires y Villa
+ * Mercedes de San Luis— y son plazas distintas. Ver `esMercedesCorrientes()`.
  *
  * El número NO se escribe a mano — `posicionNacional()` lo recalcula desde `remates.json`
  * en cada build. Si el año que viene Rauch junta ocho firmas, la página lo va a decir.
@@ -33,10 +36,20 @@ export type Modalidad = 'televisado' | 'streaming' | 'fisico'
 
 export interface RemateExpo {
   fecha: string
-  /** Cómo se lo nombra en el cronograma. */
+  /**
+   * Quién REMATA: la consignataria. Es lo que cuenta para decir cuántas firmas
+   * convoca la plaza.
+   */
   firma: string
   /** Perfil en nuestro directorio, cuando la firma está. */
   slug?: string
+  /**
+   * Quién VENDE, cuando el remate es de una cabaña con nombre propio. La distinción
+   * importa y se confunde fácil: "RDI" en el cronograma no era una consignataria sino
+   * la Cabaña Rincón del Iberá, que rematan UMC y Haciendas Villaguay. Contarla como
+   * firma habría inflado el número que sostiene toda la página.
+   */
+  cabania?: string
   modalidad: Modalidad
   categoria?: string
   hora?: string
@@ -45,9 +58,9 @@ export interface RemateExpo {
   /**
    * De dónde salió el dato. `campana` = cronograma de la SRM, que es fuente primaria
    * porque la campaña la operamos nosotros; `plan-vivo` = además publicado y verificable
-   * en srm-expo117-plan.vercel.app.
+   * en srm-expo117-plan.vercel.app; `calendario` = nuestro propio scrape de la firma.
    */
-  fuente: 'plan-vivo' | 'campana'
+  fuente: 'plan-vivo' | 'campana' | 'calendario'
 }
 
 /**
@@ -57,9 +70,13 @@ export interface RemateExpo {
 export const REMATES_EXPO: RemateExpo[] = [
   {
     fecha: '2026-09-04',
-    firma: 'RDI',
-    modalidad: 'televisado',
-    fuente: 'campana',
+    firma: 'Haciendas Villaguay y UMC',
+    slug: 'umc-villaguay',
+    cabania: 'Cabaña Rincón del Iberá',
+    modalidad: 'fisico',
+    categoria: 'reproductores',
+    nota: 'Abre la temporada, casi una semana antes de la muestra.',
+    fuente: 'calendario',
   },
   {
     fecha: '2026-09-09',
@@ -74,7 +91,7 @@ export const REMATES_EXPO: RemateExpo[] = [
   {
     fecha: '2026-09-10',
     firma: 'Javier U. Ávalos y UMC',
-    slug: 'umc-villaguay',
+    slug: 'javier-ulises-avalos',
     modalidad: 'streaming',
     categoria: 'especial',
     hora: '18:00',
@@ -92,16 +109,18 @@ export const REMATES_EXPO: RemateExpo[] = [
   },
   {
     fecha: '2026-09-12',
-    firma: 'Remate de reproductores de la 117ª',
+    firma: 'Reggi y Cía.',
+    slug: 'reggi',
     modalidad: 'fisico',
     categoria: 'reproductores',
+    hora: '14:30',
     nota: 'El remate de la Expo, en el predio: lo que se juró esa semana sale a la venta.',
-    fuente: 'plan-vivo',
+    fuente: 'calendario',
   },
   {
     fecha: '2026-09-16',
     firma: 'Javier U. Ávalos y UMC',
-    slug: 'umc-villaguay',
+    slug: 'javier-ulises-avalos',
     modalidad: 'fisico',
     nota: 'El mismo binomio que remató por streaming el 10, ahora en pista.',
     fuente: 'campana',
@@ -225,7 +244,23 @@ export interface PosicionNacional {
  */
 export function posicionNacional(): PosicionNacional {
   const firmas = new Set(REMATES_EXPO.map((r) => r.firma)).size
-  const otras = plazasPorConcentracion().filter((p) => !/mercedes/i.test(p.sede))
+  // Sólo se excluye Mercedes de Corrientes. Hay al menos tres "Mercedes" en el
+  // calendario —Corrientes, Buenos Aires y Villa Mercedes de San Luis, esta última una
+  // plaza propia donde Travaglia remata quincenal— y descartarlas a todas por el nombre
+  // borraba competidoras legítimas de la comparación.
+  const otras = plazasPorConcentracion().filter((p) => !esMercedesCorrientes(p.sede))
   const porEncima = otras.filter((p) => p.firmas > firmas)
   return { puesto: porEncima.length + 1, firmas, remates: REMATES_EXPO.length, porEncima }
+}
+
+/**
+ * ¿Esta sede es Mercedes de Corrientes?
+ *
+ * Ojo con el nombre: el calendario tiene Mercedes (Corrientes), Mercedes (Buenos Aires)
+ * y Villa Mercedes (San Luis), que son tres plazas distintas. Un `includes('mercedes')`
+ * las mezcla y arruina cualquier comparación.
+ */
+export function esMercedesCorrientes(sede: string): boolean {
+  const s = normalizarSede(sede)
+  return s.includes('mercedes') && s.includes('corrientes') && !s.includes('villa mercedes')
 }
