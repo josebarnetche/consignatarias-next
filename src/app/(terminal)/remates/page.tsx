@@ -7,6 +7,7 @@ import { getAllProfiles, getCanonicalSlug } from '@/lib/data/consignataria-slugs
 import { SectionBreadcrumbSchema, FAQPageSchema, RematesListSchema, DatasetSchema } from '@/components/seo/JsonLd'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { Breadcrumb } from '@/components/ui'
+import { EXPO, REMATES_EXPO, expoVigente, posicionNacional } from '@/lib/data/expo-mercedes'
 
 // Regenerate hourly for fresh TODAY
 export const revalidate = 3600
@@ -138,6 +139,27 @@ export default function RematesPage() {
           {totalAuctions} remates de hacienda de {totalProfiles} consignatarias en {totalProvinces} provincias,
           actualizado todos los días a las 14:00. Filtrá abajo por provincia, tipo, fecha o consignataria.
         </p>
+
+        {/* Destacado de la Expo de Mercedes. Va acá arriba —no al pie— porque un
+            destacado bajo el fold no lo ve nadie, y se apaga solo pasado el último
+            remate: un evento vencido en la portada envejece todo lo demás. */}
+        {expoVigente() && (
+          <Link
+            href="/remates/expo-rural-mercedes"
+            className="mt-4 block rounded-lg border border-accent/40 bg-accent/[0.05] p-4 transition-colors hover:bg-accent/[0.09]"
+          >
+            <p className="text-xs uppercase tracking-[0.16em] text-accent">
+              {EXPO.entidad} · {EXPO.provincia}
+            </p>
+            <p className="mt-1.5 text-base font-medium text-zinc-100">
+              {REMATES_EXPO.length} remates de {posicionNacional().firmas} firmas en dos semanas
+            </p>
+            <p className="mt-1 text-sm text-zinc-400">
+              La rueda de la {EXPO.edicion}ª Expo de Mercedes: fuera de Palermo y Expoagro, la mayor
+              concentración de consignatarias del país. Ver el cronograma completo →
+            </p>
+          </Link>
+        )}
 
         {/* Explorar (links SEO a páginas dedicadas). El filtrado interactivo vive en
             la barra de abajo — acá solo navegación a las páginas indexables. */}

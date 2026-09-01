@@ -273,6 +273,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.85,
     },
     {
+      // La rueda de la Expo de Mercedes: la mayor concentración de firmas del interior.
+      url: `${baseUrl}/remates/expo-rural-mercedes`,
+      lastModified: latestRemateDate,
+      changeFrequency: 'daily',
+      priority: 0.85,
+    },
+    {
       url: `${baseUrl}/remates/anteriores`,
       lastModified: latestRemateDate,
       changeFrequency: 'daily',
