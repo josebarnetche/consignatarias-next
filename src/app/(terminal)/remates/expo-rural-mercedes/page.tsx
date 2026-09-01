@@ -221,6 +221,35 @@ export default function Page() {
         </p>
       </section>
 
+      <section className="mt-10 rounded-lg border border-zinc-800 bg-zinc-900/30 p-5">
+        <h2 className="text-sm font-medium text-zinc-200">De dónde sale cada dato</h2>
+        <ul className="mt-3 space-y-2 text-sm leading-relaxed text-zinc-400">
+          <li>
+            <span className="text-zinc-300">Los remates del 9 al 12</span> — cronograma de la{' '}
+            {EXPO.entidad}. El del miércoles 9 es <strong className="text-zinc-200">HK Agro a las
+            18:00</strong>; el programa que todavía figura en algunos lados lo da a las 14:00 a
+            nombre de otra firma, y ese dato quedó viejo.
+          </li>
+          <li>
+            <span className="text-zinc-300">Los del 4 y el 12</span> — publicados por las propias
+            consignatarias y recogidos por nuestro calendario.
+          </li>
+          <li>
+            <span className="text-zinc-300">Trumil y La Morenita</span> — figuran como cabañas de
+            Corrientes, en Mocoretá y Curuzú Cuatiá, en el padrón de cabañas de Braford Argentina.
+            Quién remata sus lotes el 17 todavía no está confirmado y por eso no se nombra: ese
+            remate queda fuera del programa oficial de la muestra.
+          </li>
+        </ul>
+        <p className="mt-3 text-xs text-zinc-500">
+          Si tenés el dato del 17 o ves algo que no cierra,{' '}
+          <a href="mailto:agro@memola.com.ar" className="text-accent underline underline-offset-2">
+            escribinos
+          </a>
+          .
+        </p>
+      </section>
+
       <section className="mt-12 border-t border-zinc-800 pt-6">
         <h2 className="text-base font-semibold text-zinc-200">Seguir de cerca</h2>
         <ul className="mt-3 space-y-2 text-sm">
