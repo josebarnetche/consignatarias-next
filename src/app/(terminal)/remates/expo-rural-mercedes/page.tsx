@@ -11,7 +11,7 @@ import {
   type RemateExpo,
 } from '@/lib/data/expo-mercedes'
 import { consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
-import { getLogoUrl } from '@/lib/data/logo-map'
+import { getLogoUrl, getBrandWhiteLogo, getBrandColor } from '@/lib/data/logo-map'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
@@ -62,13 +62,25 @@ function esDeMuestra(r: RemateExpo): boolean {
   return r.fecha >= EXPO.muestraDesde && r.fecha <= EXPO.muestraHasta
 }
 
+/**
+ * El fondo que le corresponde a cada logo.
+ *
+ * Casi todos están hechos para fondo claro y van sobre chip hueso. La excepción son los
+ * logos BLANCOS —Reggi es uno— que sobre hueso desaparecen: ésos van sobre su propio
+ * color de marca. Es la misma regla que aplica IdentityMark en las fichas.
+ */
+function fondoDeLogo(slug: string): string {
+  if (getBrandWhiteLogo(slug)) return getBrandColor(slug) ?? '#0b0b0e'
+  return '#f4f4f5'
+}
+
 /** Las firmas con logo, en el orden en que aparecen en la rueda, sin repetir. */
-function firmasConLogo(): Array<{ slug: string; nombre: string; logo: string }> {
-  const vistas = new Map<string, { slug: string; nombre: string; logo: string }>()
+function firmasConLogo(): Array<{ slug: string; nombre: string; logo: string; fondo: string }> {
+  const vistas = new Map<string, { slug: string; nombre: string; logo: string; fondo: string }>()
   for (const r of REMATES_EXPO) {
     if (!r.slug || vistas.has(r.slug)) continue
     const logo = getLogoUrl(r.slug)
-    if (logo) vistas.set(r.slug, { slug: r.slug, nombre: r.firma, logo })
+    if (logo) vistas.set(r.slug, { slug: r.slug, nombre: r.firma, logo, fondo: fondoDeLogo(r.slug) })
   }
   return [...vistas.values()]
 }
@@ -161,7 +173,8 @@ export default function Page() {
               <Link
                 key={f.slug}
                 href={consignatariaProfilePath(f.slug)}
-                className="group flex h-24 items-center justify-center rounded-lg border border-zinc-800 bg-[#f4f4f5] p-4 transition-all hover:border-accent/50 hover:shadow-[0_0_24px_rgba(56,189,248,0.15)]"
+                className="group flex h-24 items-center justify-center rounded-lg border border-zinc-800 p-4 transition-all hover:border-accent/50 hover:shadow-[0_0_24px_rgba(56,189,248,0.15)]"
+                style={{ background: f.fondo }}
                 title={f.nombre}
               >
                 {/* Los logos vienen en fondos y proporciones distintas; el contenedor
@@ -301,7 +314,10 @@ export default function Page() {
                   </div>
 
                   {logo && (
-                    <div className="hidden w-24 shrink-0 items-center justify-center rounded bg-[#f4f4f5] p-2 sm:flex">
+                    <div
+                      className="hidden w-24 shrink-0 items-center justify-center rounded p-2 sm:flex"
+                      style={{ background: fondoDeLogo(r.slug!) }}
+                    >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={logo}
