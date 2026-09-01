@@ -152,6 +152,24 @@ export default function MercadoPage() {
         <ElCorredorCTA variant="card" context="mercado" />
       </div>
 
+      {/* El parte semanal, inmediatamente después de El Corredor: es el escalón siguiente
+          de la misma escalera —mensual gratis, semanal pago— y el copy lo dice en vez de
+          disimularlo. Estuvo al final de la página, debajo de tres gráficos y de un
+          LoginGate: nadie llegaba. La posición manda más que el copy. */}
+      <div className="px-4 pt-2 pb-2 max-w-6xl mx-auto">
+        <OfrecerInforme
+          producto="parte-semanal-mercado"
+          desde="/mercado"
+          titulo="¿Necesitás la semana, no el mes?"
+          loQueAgrega={[
+            'El Corredor es el cierre mensual y es gratis. Esto es lo mismo, cada lunes.',
+            'Qué se movió y por qué, sin que tengas que entrar a mirar.',
+            'Las categorías que se apartaron de su promedio — donde suele estar la oportunidad.',
+          ]}
+          gratisAca="El precio del día, la serie, los gráficos y El Corredor mensual son gratis y van a seguir siéndolo."
+        />
+      </div>
+
       {/* Year-over-year + USD landing teaser */}
       <div className="px-4 pt-2 pb-4 max-w-6xl mx-auto">
         <YearOverYearBlock />
@@ -206,20 +224,6 @@ export default function MercadoPage() {
         </LoginGate>
         <CategoryComparison />
         <SeasonalPattern />
-
-        {/* El parte semanal. Va al final: la página ya dio el precio, la serie, la
-            comparación por categoría y la estacionalidad. */}
-        <OfrecerInforme
-          producto="parte-semanal-mercado"
-          desde="/mercado"
-          titulo="El movimiento de la semana, resumido y en tu casilla"
-          loQueAgrega={[
-            'Qué se movió y por qué, cada lunes, sin que tengas que entrar a mirar.',
-            'El número del novillo en pesos y en dólares, con la variación de la semana.',
-            'Las categorías que se apartaron de su promedio — que es donde suele estar la oportunidad.',
-          ]}
-          gratisAca="El precio del día, la serie y los gráficos de esta página son gratis y van a seguir siéndolo."
-        />
       </div>
     </>
   )

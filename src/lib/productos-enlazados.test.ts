@@ -84,3 +84,30 @@ describe('los productos publicados se ofrecen desde el sitio', () => {
     expect(fantasmas, `excepciones para productos inexistentes: ${fantasmas.join(', ')}`).toEqual([])
   })
 })
+
+/**
+ * Estar enlazado no alcanza: hay que estar donde se ve. Pero eso NO se puede verificar
+ * acá, y conviene decirlo en vez de fingir que sí.
+ *
+ * El 31-ago-2026 los cuatro bloques se colocaron al final de su página —"después de que
+ * la página entrega su valor", que suena bien— y en `/mercado/arrendamiento` eso resultó
+ * ser **7,4 pantallas de scroll** (4.732 px de 7.731), con 71 segundos de lectura
+ * promedio. Invisible. Lo llamativo es que la propia página ya tenía la lección escrita
+ * en un comentario de julio sobre otra oferta: "convertía 0 por estar bajo el fold".
+ *
+ * La primera versión de este test medía la posición en líneas de JSX. Se descartó porque
+ * al calibrarla contra el error real dio **48 %** — habría pasado sin chistar. Las líneas
+ * no son píxeles: el FAQ y las tablas ocupan muchas líneas y mucho alto, los helpers no
+ * ocupan ninguno. Un test que no atrapa el caso que motivó su escritura es peor que
+ * ninguno: da seguridad falsa.
+ *
+ * CÓMO SE VERIFICA DE VERDAD — en el navegador, contra producción:
+ *
+ *   const vh = document.documentElement.clientHeight
+ *   const el = [...document.querySelectorAll('p')].find(n => n.textContent.trim() === 'Informe por zona')
+ *   const top = el.getBoundingClientRect().top + document.documentElement.scrollTop
+ *   ;({ pantallas: (top / vh).toFixed(1) })
+ *
+ * Referencia: **por debajo de 2 pantallas** está bien; más de 3 es sospechoso; 7 es lo que
+ * había. Vale la pena correrlo cada vez que se agrega un bloque o se reordena una página.
+ */

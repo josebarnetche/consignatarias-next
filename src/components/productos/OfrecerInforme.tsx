@@ -61,9 +61,9 @@ export function OfrecerInforme({ producto, desde, titulo, loQueAgrega, gratisAca
   }
 
   return (
-    <section className="mt-12 rounded-lg border border-sky-900/50 bg-sky-950/10 p-6">
-      <p className="text-xs uppercase tracking-widest text-sky-500">Informe por zona</p>
-      <h2 className="mt-2 text-xl font-semibold text-slate-100">{titulo}</h2>
+    <section className="my-8 rounded-lg border border-sky-700/60 bg-sky-950/30 p-6 shadow-lg shadow-sky-950/20">
+      <p className="text-xs font-medium uppercase tracking-widest text-sky-400">Informe por zona</p>
+      <h2 className="mt-2 text-xl font-semibold text-slate-50 sm:text-2xl">{titulo}</h2>
 
       <ul className="mt-4 space-y-2 text-sm leading-relaxed text-slate-300">
         {loQueAgrega.map((t) => (

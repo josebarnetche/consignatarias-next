@@ -257,6 +257,22 @@ export default async function ValorHectareaZona({
           <ValuacionCampo provinciaInicial={z.provincia} hectareasInicial={500} kgHaMesInicial={null} />
         </section>
 
+        {/* El informe, inmediatamente después del tasador: el visitante acaba de sacar su
+            número y es justo cuando quiere el respaldo. Estaba al final de la página,
+            debajo del FAQ — la posición manda más que el copy. */}
+        <OfrecerInforme
+          producto="informe-valuacion-campo"
+          desde="/campos/valor-hectarea/[zona]"
+          titulo="¿Lo que te ofrecen está dentro de lo que se paga?"
+          loQueAgrega={[
+            'La banda real de operaciones de la zona —p25 a p75— y sobre cuántos casos se calculó.',
+            'Las dos vías por separado, renta y comparables, y qué significa que se aparten.',
+            'Los dos plazos de repago: años de arrendamiento y años de producción del campo.',
+            'Las zonas comparables de al lado, con la fuente de cada número.',
+          ]}
+          gratisAca="El valor de esta zona y el tasador son gratis y van a seguir siéndolo."
+        />
+
         <section className="border border-accent/40 rounded-lg bg-accent/[0.04] p-5 mb-6">
           <p className="text-zinc-100 text-base font-medium mb-1">¿Tenés un campo en {z.zona}?</p>
           <p className="text-zinc-400 mb-4">
@@ -317,19 +333,6 @@ export default async function ValorHectareaZona({
             </div>
           </section>
         )}
-
-        <OfrecerInforme
-          producto="informe-valuacion-campo"
-          desde="/campos/valor-hectarea/[zona]"
-          titulo="¿Lo que te ofrecen está dentro de lo que se paga?"
-          loQueAgrega={[
-            'La banda real de operaciones de la zona —p25 a p75— y sobre cuántos casos se calculó.',
-            'Las dos vías por separado, renta y comparables, y qué significa que se aparten.',
-            'Los dos plazos de repago: años de arrendamiento y años de producción del campo.',
-            'Las zonas comparables de al lado, con la fuente de cada número.',
-          ]}
-          gratisAca="El valor de esta zona y el tasador son gratis y van a seguir siéndolo."
-        />
       </div>
     </>
   )

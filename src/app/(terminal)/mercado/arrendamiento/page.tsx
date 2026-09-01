@@ -459,6 +459,30 @@ export default async function ArrendamientoPage() {
           <ArrendamientoLiquidacionSignup priceToday={inmag.current} page="/mercado/arrendamiento" />
         </section>
 
+        {/* El informe de canon, inmediatamente después de la captura: es el paso pago del
+            mismo embudo —dato → tu canon por email → el informe de tu zona— y comparte su
+            audiencia.
+
+            VIVÍA ABAJO Y NO SE VEÍA. Estuvo antes del FAQ, a 4.732 px del inicio: **7,4
+            pantallas de scroll**, con 71 segundos de lectura promedio en la página. Es
+            exactamente el error que el comentario de acá arriba ya advertía sobre la
+            oferta profunda —"convertía 0 por estar bajo el fold"—, y volvió a pasar. La
+            posición manda más que el copy. */}
+        <section className="max-w-3xl mx-auto px-4">
+          <OfrecerInforme
+            producto="informe-canon-arrendamiento"
+            desde="/mercado/arrendamiento"
+            titulo="¿Lo que te ofrecen está dentro de lo que se paga en tu zona?"
+            loQueAgrega={[
+              'La dispersión de tu zona: qué paga el cuartil de abajo y qué el de arriba, y sobre cuántos casos se calculó.',
+              'Las zonas limítrofes, para ver si conviene mirar más allá del alambrado.',
+              'Cuántos kilos por hectárea produce la zona — que es contra lo que se mide si el canon es razonable.',
+              'Los años de arrendamiento que hacen falta para recuperar el valor de la tierra.',
+            ]}
+            gratisAca="El índice, la serie y el histórico de esta página son gratis y van a seguir siéndolo."
+          />
+        </section>
+
         {/* What is the Index */}
         <section className="max-w-6xl mx-auto px-4 py-12">
           <div className="bg-gradient-to-br from-sky-500/5 to-transparent border border-sky-500/10 rounded-2xl p-6 lg:p-8">
@@ -605,23 +629,6 @@ export default async function ArrendamientoPage() {
             </div>
           </div>
         </section>
-
-        {/* El informe por zona. Va acá —después del índice, la serie y el histórico— y no
-            antes: la página entrega su valor completo primero. */}
-        <div className="max-w-6xl mx-auto px-4 pb-4">
-          <OfrecerInforme
-            producto="informe-canon-arrendamiento"
-            desde="/mercado/arrendamiento"
-            titulo="¿Lo que te ofrecen está dentro de lo que se paga en tu zona?"
-            loQueAgrega={[
-              'La dispersión de tu zona: qué paga el cuartil de abajo y qué el de arriba, y sobre cuántos casos se calculó.',
-              'Las zonas limítrofes, para ver si conviene mirar más allá del alambrado.',
-              'Cuántos kilos por hectárea produce la zona — que es contra lo que se mide si el canon es razonable.',
-              'Los años de arrendamiento que hacen falta para recuperar el valor de la tierra.',
-            ]}
-            gratisAca="El índice, la serie y el histórico de esta página son gratis y van a seguir siéndolo."
-          />
-        </div>
 
         {/* FAQ Section */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
