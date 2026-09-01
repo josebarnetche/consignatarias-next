@@ -6,6 +6,8 @@ import {
   REMATES_EXPO,
   plazasPorConcentracion,
   posicionNacional,
+  casasConfirmadas,
+  esMercedesCorrientes,
   type Modalidad,
   type RemateExpo,
 } from '@/lib/data/expo-mercedes'
@@ -62,7 +64,7 @@ function esDeMuestra(r: RemateExpo): boolean {
 export default function Page() {
   const pos = posicionNacional()
   const siguiente = plazasPorConcentracion().find(
-    (p) => p.firmas <= pos.firmas && !/mercedes/i.test(p.sede),
+    (p) => p.firmas <= pos.firmas && !esMercedesCorrientes(p.sede),
   )
 
   return (
@@ -83,9 +85,10 @@ export default function Page() {
           Siete remates, seis firmas, dos semanas
         </h1>
         <p className="mt-4 text-lg leading-relaxed text-zinc-300">
-          Alrededor de la {EXPO.edicion}ª Exposición de Mercedes se arma una rueda de remates que no
-          tiene equivalente en el interior del país: seis consignatarias distintas rematando en la
-          misma plaza, entre el 4 y el 17 de septiembre.
+          Alrededor de la {EXPO.edicion}ª Exposición de Mercedes se arma una rueda de remates que
+          no tiene equivalente en el interior del país: {casasConfirmadas().length} casas distintas
+          bajando el martillo en la misma plaza, entre el 4 y el 17 de septiembre, con invernada y
+          reproductores Braford saliendo la misma semana.
         </p>
       </header>
 
@@ -157,19 +160,25 @@ export default function Page() {
                     {/* Primero qué se vende, después quién lo baja: en un remate de
                         cabaña el productor busca la genética, no la casa. */}
                     {r.cabania && <p className="font-medium text-zinc-100">{r.cabania}</p>}
-                    <p className={r.cabania ? 'text-sm text-zinc-400' : 'font-medium text-zinc-100'}>
-                      {r.cabania && <span className="text-zinc-500">Rematan </span>}
-                      {r.slug ? (
-                        <Link
-                          href={consignatariaProfilePath(r.slug)}
-                          className="underline decoration-zinc-700 underline-offset-4 hover:text-accent hover:decoration-accent"
-                        >
-                          {r.firma}
-                        </Link>
-                      ) : (
-                        r.firma
-                      )}
-                    </p>
+                    {r.firma ? (
+                      <p className={r.cabania ? 'text-sm text-zinc-400' : 'font-medium text-zinc-100'}>
+                        {r.cabania && <span className="text-zinc-500">Rematan </span>}
+                        {r.slug ? (
+                          <Link
+                            href={consignatariaProfilePath(r.slug)}
+                            className="underline decoration-zinc-700 underline-offset-4 hover:text-accent hover:decoration-accent"
+                          >
+                            {r.firma}
+                          </Link>
+                        ) : (
+                          r.firma
+                        )}
+                      </p>
+                    ) : (
+                      // Sin consignataria confirmada se dice, no se completa: atribuirle
+                      // el remate a una firma real equivocada es peor que el hueco.
+                      <p className="text-sm text-zinc-500">Consignataria a confirmar</p>
+                    )}
                   </div>
                   <p className="font-mono text-xs uppercase tracking-wide text-zinc-500">
                     {fechaLarga(r.fecha)}

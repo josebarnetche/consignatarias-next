@@ -8,6 +8,7 @@ import {
   posicionNacional,
   expoVigente,
   esMercedesCorrientes,
+  casasConfirmadas,
 } from './expo-mercedes'
 
 describe('la rueda de remates de la Expo de Mercedes', () => {
@@ -42,9 +43,28 @@ describe('el dato que sostiene el destacado', () => {
    */
   const pos = posicionNacional()
 
-  it('Mercedes junta seis firmas en siete remates', () => {
+  it('cuenta casas distintas, no etiquetas ni cabañas', () => {
+    // Seis razones sociales confirmadas sobre siete remates. Las cabañas (Rincón del
+    // Iberá, Trumil, La Morenita) NO suman: venden, no rematan.
+    expect(casasConfirmadas()).toEqual([
+      'Gananor Pujol S.A.',
+      'HK Agro S.R.L.',
+      'Haciendas Villaguay S.R.L.',
+      'Javier U. Ávalos',
+      'Reggi y Cía. S.R.L.',
+      'UMC S.A.',
+    ])
     expect(pos.firmas).toBe(6)
     expect(pos.remates).toBe(7)
+  })
+
+  it('el remate sin consignataria confirmada no infla el número', () => {
+    // El del 17 tiene las cabañas verificadas en el padrón de Braford pero todavía no
+    // se sabe quién baja el martillo. Hasta saberlo, no suma.
+    const sinConfirmar = REMATES_EXPO.filter((r) => r.casas.length === 0)
+    expect(sinConfirmar).toHaveLength(1)
+    expect(sinConfirmar[0].fecha).toBe('2026-09-17')
+    expect(sinConfirmar[0].cabania).toBeTruthy()
   })
 
   it('sólo la superan las dos megamuestras nacionales', () => {

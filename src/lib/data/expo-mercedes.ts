@@ -41,6 +41,16 @@ export interface RemateExpo {
    * convoca la plaza.
    */
   firma: string
+  /**
+   * Las razones sociales que bajan el martillo, una por una.
+   *
+   * `firma` es la etiqueta que se lee ("Javier U. Ávalos y UMC"); `casas` es lo que se
+   * cuenta. Hacen falta las dos porque en esta plaza se remata en binomios variables
+   * —UMC va con Haciendas Villaguay el 4 y con Ávalos el 10— y contar etiquetas daría
+   * un número distinto al de casas distintas, que es lo que la página afirma.
+   * Vacío cuando todavía no se confirmó quién remata.
+   */
+  casas: string[]
   /** Perfil en nuestro directorio, cuando la firma está. */
   slug?: string
   /**
@@ -71,6 +81,7 @@ export const REMATES_EXPO: RemateExpo[] = [
   {
     fecha: '2026-09-04',
     firma: 'Haciendas Villaguay y UMC',
+    casas: ['Haciendas Villaguay S.R.L.', 'UMC S.A.'],
     slug: 'umc-villaguay',
     cabania: 'Cabaña Rincón del Iberá',
     modalidad: 'fisico',
@@ -81,6 +92,7 @@ export const REMATES_EXPO: RemateExpo[] = [
   {
     fecha: '2026-09-09',
     firma: 'HK Agro',
+    casas: ['HK Agro S.R.L.'],
     slug: 'hk-agro',
     modalidad: 'televisado',
     categoria: 'invernada',
@@ -91,6 +103,7 @@ export const REMATES_EXPO: RemateExpo[] = [
   {
     fecha: '2026-09-10',
     firma: 'Javier U. Ávalos y UMC',
+    casas: ['Javier U. Ávalos', 'UMC S.A.'],
     slug: 'javier-ulises-avalos',
     modalidad: 'streaming',
     categoria: 'especial',
@@ -101,6 +114,7 @@ export const REMATES_EXPO: RemateExpo[] = [
   {
     fecha: '2026-09-11',
     firma: 'Gananor Pujol',
+    casas: ['Gananor Pujol S.A.'],
     slug: 'gananor-pujol',
     modalidad: 'televisado',
     categoria: 'especial',
@@ -110,6 +124,7 @@ export const REMATES_EXPO: RemateExpo[] = [
   {
     fecha: '2026-09-12',
     firma: 'Reggi y Cía.',
+    casas: ['Reggi y Cía. S.R.L.'],
     slug: 'reggi',
     modalidad: 'fisico',
     categoria: 'reproductores',
@@ -120,6 +135,7 @@ export const REMATES_EXPO: RemateExpo[] = [
   {
     fecha: '2026-09-16',
     firma: 'Javier U. Ávalos y UMC',
+    casas: ['Javier U. Ávalos', 'UMC S.A.'],
     slug: 'javier-ulises-avalos',
     modalidad: 'fisico',
     nota: 'El mismo binomio que remató por streaming el 10, ahora en pista.',
@@ -127,10 +143,15 @@ export const REMATES_EXPO: RemateExpo[] = [
   },
   {
     fecha: '2026-09-17',
-    firma: 'Trumil / La Morenita',
+    // La consignataria todavía no está confirmada y no se inventa: atribuirle el remate
+    // a una firma real equivocada es peor que dejar el renglón incompleto. La ficha
+    // muestra las cabañas, que sí están verificadas, y omite el "rematan" hasta saberlo.
+    firma: '',
+    casas: [],
+    cabania: 'Cabañas Trumil y La Morenita',
     modalidad: 'fisico',
     categoria: 'reproductores',
-    nota: 'Cierra la rueda.',
+    nota: 'Dos cabañas Braford correntinas —Trumil, de Mocoretá, y La Morenita, de Curuzú Cuatiá— cierran la rueda.',
     fuente: 'campana',
   },
 ]
@@ -243,7 +264,7 @@ export interface PosicionNacional {
  * versión incompleta de sí misma.
  */
 export function posicionNacional(): PosicionNacional {
-  const firmas = new Set(REMATES_EXPO.map((r) => r.firma)).size
+  const firmas = casasConfirmadas().length
   // Sólo se excluye Mercedes de Corrientes. Hay al menos tres "Mercedes" en el
   // calendario —Corrientes, Buenos Aires y Villa Mercedes de San Luis, esta última una
   // plaza propia donde Travaglia remata quincenal— y descartarlas a todas por el nombre
@@ -263,4 +284,18 @@ export function posicionNacional(): PosicionNacional {
 export function esMercedesCorrientes(sede: string): boolean {
   const s = normalizarSede(sede)
   return s.includes('mercedes') && s.includes('corrientes') && !s.includes('villa mercedes')
+}
+
+
+/**
+ * Las casas distintas que ya está confirmado que rematan en la rueda.
+ *
+ * Es el número que sostiene el título de la página, así que se calcula de los datos y
+ * excluye lo no confirmado: el remate del 17 tiene las cabañas verificadas pero todavía
+ * no la consignataria, y hasta saberlo no suma. Preferimos un número más chico y cierto.
+ */
+export function casasConfirmadas(): string[] {
+  const vistas = new Set<string>()
+  for (const r of REMATES_EXPO) for (const c of r.casas) vistas.add(c)
+  return [...vistas].sort()
 }
