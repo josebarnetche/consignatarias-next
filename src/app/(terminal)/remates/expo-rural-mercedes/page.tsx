@@ -161,16 +161,19 @@ export default function Page() {
               <Link
                 key={f.slug}
                 href={consignatariaProfilePath(f.slug)}
-                className="group flex h-24 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/40 p-4 transition-colors hover:border-accent/40 hover:bg-zinc-900/70"
+                className="group flex h-24 items-center justify-center rounded-lg border border-zinc-800 bg-[#f4f4f5] p-4 transition-all hover:border-accent/50 hover:shadow-[0_0_24px_rgba(56,189,248,0.15)]"
                 title={f.nombre}
               >
                 {/* Los logos vienen en fondos y proporciones distintas; el contenedor
-                    fija el alto y `object-contain` respeta cada marca sin recortarla. */}
+                    fija el alto y `object-contain` respeta cada marca sin recortarla. El chip
+                    va HUESO, no oscuro: casi todos los logos están hechos para fondo claro y
+                    sobre carbón se apagan (el de Ávalos es azul marino, se perdía). Es la misma
+                    regla que aplica IdentityMark en las fichas. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={f.logo}
                   alt={f.nombre}
-                  className="max-h-12 w-auto max-w-full object-contain opacity-80 transition-opacity group-hover:opacity-100"
+                  className="max-h-14 w-auto max-w-full object-contain"
                   loading="lazy"
                 />
               </Link>
@@ -298,12 +301,12 @@ export default function Page() {
                   </div>
 
                   {logo && (
-                    <div className="hidden w-24 shrink-0 items-center justify-end sm:flex">
+                    <div className="hidden w-24 shrink-0 items-center justify-center rounded bg-[#f4f4f5] p-2 sm:flex">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={logo}
                         alt=""
-                        className="max-h-10 w-auto max-w-full object-contain opacity-60"
+                        className="max-h-8 w-auto max-w-full object-contain"
                         loading="lazy"
                       />
                     </div>
