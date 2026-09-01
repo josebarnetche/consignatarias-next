@@ -245,7 +245,32 @@ function normalizarFirma(nombre: string | undefined): string {
 export function expoVigente(hoy = new Date()): boolean {
   const ultimo = REMATES_EXPO[REMATES_EXPO.length - 1]?.fecha
   if (!ultimo) return false
-  return hoy.toISOString().slice(0, 10) <= ultimo
+  return hoyEnArgentina(hoy) <= sumarDias(ultimo, DIAS_DE_GRACIA)
+}
+
+/**
+ * Días que el destacado sobrevive al último remate.
+ *
+ * Uno, y no cero, porque al día siguiente la gente busca **cómo salió**: si el bloque se
+ * apaga a la medianoche, el que entra el 18 a buscar el resultado del remate del 17 no
+ * encuentra ni la puerta.
+ */
+const DIAS_DE_GRACIA = 1
+
+/**
+ * La fecha de hoy en Buenos Aires, no en UTC.
+ *
+ * `toISOString()` devuelve UTC, y Argentina va tres horas atrás: con eso, a las 21:01 del
+ * 17 el server ya creía que era 18 y apagaba el destacado **antes de que terminara el día
+ * del último remate**. `en-CA` es el locale que formatea como YYYY-MM-DD, que es lo que
+ * permite comparar fechas como texto.
+ */
+function hoyEnArgentina(d: Date): string {
+  return d.toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' })
+}
+
+function sumarDias(fecha: string, dias: number): string {
+  return new Date(Date.parse(`${fecha}T00:00:00Z`) + dias * DIA_MS).toISOString().slice(0, 10)
 }
 
 export interface PosicionNacional {

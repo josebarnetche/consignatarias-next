@@ -91,15 +91,30 @@ describe('el dato que sostiene el destacado', () => {
   })
 })
 
-describe('el destacado se apaga solo', () => {
-  it('está vigente durante la rueda', () => {
+describe('el destacado se apaga solo, pero NUNCA antes de tiempo', () => {
+  it('está vigente durante toda la rueda', () => {
     expect(expoVigente(new Date('2026-09-01T12:00:00Z'))).toBe(true)
+    expect(expoVigente(new Date('2026-09-10T12:00:00Z'))).toBe(true)
     expect(expoVigente(new Date('2026-09-17T12:00:00Z'))).toBe(true)
   })
 
-  it('se apaga el día después del último remate', () => {
+  it('aguanta la noche del último remate — el bug de UTC', () => {
+    // Argentina va 3 h detrás de UTC. Con toISOString() el server creía que a las 21:01
+    // del 17 ya era 18 y apagaba el destacado ANTES de que terminara el día del último
+    // remate. Estas tres horas son justo las de después de un remate de tarde.
+    expect(expoVigente(new Date('2026-09-17T23:00:00Z'))).toBe(true) // 20:00 ART
+    expect(expoVigente(new Date('2026-09-18T00:01:00Z'))).toBe(true) // 21:01 ART del 17
+    expect(expoVigente(new Date('2026-09-18T02:59:00Z'))).toBe(true) // 23:59 ART del 17
+  })
+
+  it('sobrevive el día siguiente: ahí se busca cómo salió', () => {
+    expect(expoVigente(new Date('2026-09-18T15:00:00Z'))).toBe(true) // 12:00 ART del 18
+    expect(expoVigente(new Date('2026-09-19T02:59:00Z'))).toBe(true) // 23:59 ART del 18
+  })
+
+  it('recién se apaga pasados dos días', () => {
     // Un evento vencido en la portada de remates envejece todo lo demás.
-    expect(expoVigente(new Date('2026-09-18T12:00:00Z'))).toBe(false)
+    expect(expoVigente(new Date('2026-09-19T15:00:00Z'))).toBe(false)
     expect(expoVigente(new Date('2026-12-01T12:00:00Z'))).toBe(false)
   })
 })
