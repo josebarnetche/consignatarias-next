@@ -3600,3 +3600,134 @@ export async function sendBajaSinConfirmar(opts: {
     `),
   })
 }
+
+/* ------------------------------------------------------------------ */
+/*  AVISO PUNTUAL — la rueda de remates de la Expo de Mercedes          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Un aviso de una sola vez: siete remates en Mercedes entre el 4 y el 17.
+ *
+ * POR QUÉ NO ES UN CRON
+ * No es contenido periódico: es una noticia con fecha de vencimiento. La edición de
+ * agosto de El Corredor salió el 1-sep y no menciona Mercedes ni una vez, así que la
+ * lista se enteró del cierre del mes pero no de que la mayor rueda de remates del
+ * interior arranca tres días después.
+ *
+ * Va sin adjunto y sin gráfica: el cronograma entero entra en una tabla, y lo que se
+ * quiere es el clic a la página, no que lean el mail dos veces.
+ *
+ * Se manda desde la dirección personal, no desde noreply: es una recomendación
+ * editorial, no una notificación automática.
+ */
+export interface ExpoMercedesAvisoOpts {
+  to: string
+  remates: Array<{
+    fecha: string
+    firma: string
+    cabania?: string
+    hora?: string
+    modalidad: string
+    categoria?: string
+  }>
+  casas: number
+  url: string
+}
+
+export const ASUNTO_EXPO_MERCEDES = 'Siete remates en Mercedes, del 4 al 17'
+
+/**
+ * El cuerpo del aviso, separado del envío para poder MIRARLO antes de mandarlo.
+ * Un correo a medio centenar de instituciones se revisa renderizado, no leyendo
+ * el template.
+ */
+export function buildExpoMercedesAvisoHtml(opts: ExpoMercedesAvisoOpts): string {
+  const { to, remates, casas, url } = opts
+
+  const dia = (iso: string) => {
+    const [a, m, d] = iso.split('-').map(Number)
+    const f = new Date(Date.UTC(a, m - 1, d))
+    return {
+      n: String(d),
+      sem: f.toLocaleDateString('es-AR', { weekday: 'short', timeZone: 'UTC' }).replace('.', ''),
+    }
+  }
+
+  const filas = remates
+    .map((r) => {
+      const d = dia(r.fecha)
+      // Si no se sabe quién remata, se dice. Este mail va a las propias casas del
+      // rubro: dejar el renglón mudo se lee como que lo omitimos a propósito.
+      const quien = r.cabania
+        ? `${r.cabania}${r.firma ? ` · ${r.firma}` : ' · consignataria a confirmar'}`
+        : r.firma || 'Consignataria a confirmar'
+      const detalle = [r.hora, r.modalidad, r.categoria].filter(Boolean).join(' · ')
+      return `
+      <tr>
+        <td style="padding:9px 10px 9px 0;border-bottom:1px solid #27272a;white-space:nowrap;vertical-align:top">
+          <span style="font-size:17px;color:#fafafa">${d.n}</span>
+          <span style="font-size:11px;color:#71717a"> ${d.sem}</span>
+        </td>
+        <td style="padding:9px 0;border-bottom:1px solid #27272a">
+          <div style="font-size:13px;color:#e4e4e7">${quien}</div>
+          <div style="font-size:11px;color:#71717a;margin-top:2px">${detalle}</div>
+        </td>
+      </tr>`
+    })
+    .join('')
+
+  const inner = `
+    <p style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#38bdf8;margin:0 0 10px">
+      Sociedad Rural de Mercedes · Corrientes
+    </p>
+    <h1 style="font-size:23px;line-height:1.25;font-weight:600;color:#fafafa;margin:0 0 14px">
+      Siete remates en Mercedes, del 4 al 17
+    </h1>
+    <p style="font-size:14px;line-height:1.65;color:#a1a1aa;margin:0 0 6px">
+      Alrededor de la 117ª Exposición se rematan siete veces en la misma plaza, con
+      ${casas} casas distintas. Cruzamos nuestro calendario completo: fuera de Palermo y
+      Expoagro, no hay en el país una quincena que junte tantas firmas.
+    </p>
+    <p style="font-size:14px;line-height:1.65;color:#a1a1aa;margin:0 0 20px">
+      Invernada y reproductores Braford, en pista y por pantalla.
+    </p>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+           style="border-top:1px solid #27272a;margin:0 0 22px">
+      ${filas}
+    </table>
+
+    <a href="${url}"
+       style="display:inline-block;background:#38bdf8;color:#09090b;font-family:${EMAIL_MONO};
+              font-size:13px;font-weight:600;text-decoration:none;padding:12px 22px;border-radius:5px">
+      Ver el cronograma completo
+    </a>
+
+    <p style="font-size:12px;line-height:1.6;color:#71717a;margin:26px 0 0;
+              padding-top:16px;border-top:1px solid #27272a">
+      Te llega porque estás suscripto a El Corredor o al resumen de remates. Es un aviso
+      puntual por la Expo; el boletín mensual sigue saliendo el día 1 como siempre.
+      <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}"
+         style="color:#71717a;text-decoration:underline">Darte de baja</a>.
+    </p>
+  `
+
+  return darkEmailShell(inner)
+}
+
+export async function sendExpoMercedesAviso(opts: ExpoMercedesAvisoOpts) {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'Resend not configured' }
+  try {
+    await resend.emails.send({
+      from: FROM_PERSONAL,
+      to: opts.to,
+      subject: ASUNTO_EXPO_MERCEDES,
+      html: buildExpoMercedesAvisoHtml(opts),
+      headers: listUnsubHeaders(opts.to, 'expo-mercedes-2026'),
+    })
+    return { success: true }
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : 'unknown' }
+  }
+}
