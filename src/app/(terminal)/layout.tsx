@@ -62,6 +62,9 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Hoy", href: "/remates/hoy" },
       { label: "Esta semana", href: "/remates/semana" },
       { label: "En vivo", href: "/remates/en-vivo", tag: "live" },
+      // La rueda de la Expo de Mercedes mientras dura. Se saca después del 17-sep:
+      // un evento vencido en el menú envejece toda la navegación.
+      { label: "Expo de Mercedes", href: "/remates/expo-rural-mercedes", hint: "7 remates de 6 firmas · 4 al 17 de septiembre", tag: "new" },
       { label: "Anteriores", href: "/remates/anteriores", hint: "Resultados de los que ya pasaron" },
     ],
   },

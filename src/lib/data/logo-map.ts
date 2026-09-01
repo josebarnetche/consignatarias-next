@@ -76,6 +76,7 @@ export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string;
   'ganaderos-de-formosa': { logo: 'ganaderos-de-formosa.png', color: '#487830' },
   'ildarraz-hnos': { logo: 'ildarraz-hnos.png', color: '#f01800' },
   'javier-ulises-avalos': { logo: 'javier-ulises-avalos.png', color: '#001860' },
+  'umc-villaguay': { logo: 'umc-villaguay.png', color: '#0b5c3a' },
   'la-ganadera': { logo: 'la-ganadera.svg', color: '#059146' },
   'lalor': { logo: 'lalor.png', color: '#183060', whiteLogo: true, wordmark: true },
   'monasterio-tattersall': { logo: 'monasterio-tattersall.png', color: '#186030' },
