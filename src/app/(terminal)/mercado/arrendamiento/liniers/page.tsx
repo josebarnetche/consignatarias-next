@@ -50,7 +50,7 @@ const TERMS = [
 ]
 
 export const metadata: Metadata = {
-  title: `Índice Novillo Arrendamiento Mercado de Liniers Hoy: $${fmt(arrendamiento.index)}/kg`,
+  title: `Índice Arrendamiento Liniers: dónde se publica hoy — $${fmt(arrendamiento.index)}/kg`,
   description: `El índice novillo para arrendamiento de referencia Mercado de Liniers es de $${fmt(arrendamiento.index)}/kg al ${arrendamiento.date}. Tras el cierre de Liniers, la referencia migró al Mercado Agroganadero (Cañuelas): este INMAG es su sucesor operativo. Calculá el canon de tu campo.`,
   keywords: [
     'precio novillo arrendamiento mercado de liniers',
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
-    title: `Índice Novillo Arrendamiento Mercado de Liniers: $${fmt(arrendamiento.index)}/kg`,
+    title: `Índice Arrendamiento Liniers: dónde se publica hoy — $${fmt(arrendamiento.index)}/kg`,
     description: `Referencia Liniers/Mercado Agroganadero para arrendamientos rurales: $${fmt(arrendamiento.index)}/kg al ${arrendamiento.date}. El sucesor operativo del viejo índice de Liniers.`,
     url: URL,
     type: 'website',

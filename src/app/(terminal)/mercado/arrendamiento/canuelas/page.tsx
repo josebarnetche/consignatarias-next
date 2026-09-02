@@ -136,7 +136,7 @@ function ArrendamientoCanuelasDataset() {
 }
 
 export const metadata: Metadata = {
-  title: `Índice Novillo Arrendamiento Cañuelas: $${fmt(arrendamientoOficial.index)}/kg`,
+  title: `Arrendamiento en Cañuelas: cómo se forma el índice — $${fmt(arrendamientoOficial.index)}/kg`,
   description: `Índice novillo arrendamiento del Mercado Agroganadero de Cañuelas: $${fmt(arrendamientoOficial.index)}/kg vivo al ${arrendamientoOficial.date}. Se basa en el INMAG ($${fmt(inmag.current)}/kg, ${inmagChangeStr}). Cómo calcular el canon en kg/ha/mes.`,
   keywords: [
     'indice novillo arrendamiento mercado de cañuelas',
@@ -149,7 +149,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
-    title: `Índice Novillo Arrendamiento Cañuelas: $${fmt(arrendamientoOficial.index)}/kg`,
+    title: `Arrendamiento en Cañuelas: cómo se forma el índice — $${fmt(arrendamientoOficial.index)}/kg`,
     description: `Índice de arrendamiento del Mercado Agroganadero de Cañuelas al ${arrendamientoOficial.date}. Basado en el INMAG. Cálculo del canon en kg/ha/mes.`,
     url: PAGE_URL,
     type: 'website',
