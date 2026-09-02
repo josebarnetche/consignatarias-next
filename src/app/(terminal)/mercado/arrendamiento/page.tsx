@@ -457,28 +457,41 @@ export default async function ArrendamientoPage() {
         <section className="max-w-3xl mx-auto px-4 pt-6">
           <div className="rounded-xl border border-terminal-border bg-terminal-panel/40 p-5">
             <h2 className="text-zinc-100 text-lg font-medium mb-2">
-              Índice novillo arrendamiento mensual: ${fmt(arr.periodIndex)}/kg
+              Índice novillo arrendamiento mensual: ${fmt(cierre ? cierre.inmag : arr.periodIndex)}/kg
             </h2>
             <p className="speakable-content text-zinc-200 text-base leading-relaxed mb-3">
-              El índice novillo arrendamiento mensual vigente es de{' '}
-              <strong className="text-white">${fmt(arr.periodIndex)} por kilo vivo</strong>, promedio
-              del período {fmtFecha(arr.periodStart)}–{fmtFecha(arr.periodEnd)}. Ese es el valor con
-              el que se liquidan los contratos de arrendamiento rural: se usa el promedio del
-              período y no el precio de un día suelto, para que la volatilidad diaria no cambie el
-              canon de un mes a otro.
+              {cierre ? (
+                <>
+                  El índice novillo arrendamiento mensual de{' '}
+                  <strong className="text-white">{cierre.label}</strong> cerró en{' '}
+                  <strong className="text-white">${fmt(cierre.inmag)} por kilo vivo</strong> —el
+                  valor oficial que publica el Mercado Agroganadero para el mes completo, sobre{' '}
+                  {cierre.cabezas?.toLocaleString('es-AR') ?? '—'} cabezas—. Ese es el número con el que se
+                  liquidan los contratos de arrendamiento rural: se usa el cierre del mes y no el
+                  precio de un día suelto, para que la volatilidad diaria no cambie el canon.
+                </>
+              ) : (
+                <>
+                  El índice novillo arrendamiento mensual vigente es de{' '}
+                  <strong className="text-white">${fmt(arr.periodIndex)} por kilo vivo</strong>,
+                  promedio del período {fmtFecha(arr.periodStart)}–{fmtFecha(arr.periodEnd)}. Ese es
+                  el valor con el que se liquidan los contratos: se usa el promedio del período y no
+                  el precio de un día suelto.
+                </>
+              )}
             </p>
             <p className="text-zinc-300 text-sm leading-relaxed mb-3">
               El cálculo es directo:{' '}
               <strong className="text-zinc-100">
-                canon mensual = kilos de novillo por hectárea × ${fmt(arr.periodIndex)} × hectáreas
+                canon mensual = kilos de novillo por hectárea × ${fmt(cierre ? cierre.inmag : arr.periodIndex)} × hectáreas
               </strong>
               . Un campo de 500 ha pactado en 8 kg/ha por mes liquida{' '}
               <strong className="text-zinc-100">
-                ${fmt(Math.round(8 * arr.periodIndex * 500))}
+                ${fmt(Math.round(8 * (cierre ? cierre.inmag : arr.periodIndex) * 500))}
               </strong>{' '}
               este período, y{' '}
               <strong className="text-zinc-100">
-                ${fmt(Math.round(8 * arr.periodIndex * 500 * 12))}
+                ${fmt(Math.round(8 * (cierre ? cierre.inmag : arr.periodIndex) * 500 * 12))}
               </strong>{' '}
               al año si el canon se mantiene.
             </p>
