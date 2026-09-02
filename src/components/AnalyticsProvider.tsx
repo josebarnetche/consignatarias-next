@@ -43,7 +43,14 @@ function PageViewTracker() {
 const AI_ENGINES: Array<[RegExp, string]> = [
   [/(^|\.)chatgpt\.com$|(^|\.)chat\.openai\.com$|(^|\.)openai\.com$/i, 'chatgpt'],
   [/(^|\.)perplexity\.ai$/i, 'perplexity'],
-  [/(^|\.)copilot\.microsoft\.com$|(^|\.)copilot\.com$|(^|\.)bing\.com$/i, 'copilot'],
+  // OJO: `bing.com` NO va acá. Estuvo hasta el 02-09-2026 y arruinaba la medición: el
+  // 96 % del tráfico de bing.com es búsqueda orgánica del buscador, no Copilot, que vive
+  // en copilot.microsoft.com. Con esa regla, 521 visitas de Bing en 30 días se contaban
+  // como "IA generativa" e inflaban el canal 4× — y de paso movían esas sesiones de
+  // `organic` a `ai` en value_events, ensuciando las dos series a la vez.
+  // El costo de sacarlo es subestimar un poco Copilot (algunas de sus citas referencian
+  // bing.com); es preferible a llamar IA a media búsqueda de Bing.
+  [/(^|\.)copilot\.microsoft\.com$|(^|\.)copilot\.com$/i, 'copilot'],
   [/(^|\.)gemini\.google\.com$|(^|\.)bard\.google\.com$/i, 'gemini'],
   [/(^|\.)claude\.ai$/i, 'claude'],
   [/(^|\.)grok\.com$|(^|\.)x\.ai$/i, 'grok'],
