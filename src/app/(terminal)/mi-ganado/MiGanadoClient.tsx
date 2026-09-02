@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useGanado, type GanadoItem } from '@/hooks/useGanado'
 import { PriceSparkline } from '@/components/PriceSparkline'
+import { HistorialLote } from '@/components/ganado/HistorialLote'
+import type { PuntoHistorial } from '@/lib/ganado-historial'
 
 interface InmagSeed {
   current: number
@@ -219,6 +221,11 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
   const [draft, setDraft] = useState<GanadoItem[]>([])
   const [wizardOpen, setWizardOpen] = useState(false)
   const [wizardKey, setWizardKey] = useState(0)
+  const [histSerie, setHistSerie] = useState<PuntoHistorial[]>([])
+  const [histMetodo, setHistMetodo] = useState<string | null>(null)
+  const [histLoading, setHistLoading] = useState(false)
+  // Feedback del opt-in semanal: sin esto el checkbox se marca y no dice si guardó.
+  const [alertSaved, setAlertSaved] = useState(false)
   const [dirty, setDirty] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -315,6 +322,28 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
     }
   }
 
+  /* ---- El historial de verdad: el rodeo de hoy valuado contra los precios de cada
+         fecha. No son los snapshots guardados; ver lib/ganado-historial.ts.
+         Va acá arriba, con los demás efectos, porque después vienen returns
+         condicionales y un hook no puede quedar detrás de uno. ---- */
+  useEffect(() => {
+    if (!isLoggedIn || isLoading || items.length === 0) return
+    let vivo = true
+    setHistLoading(true)
+    fetch('/api/ganado/historial')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!vivo || !d) return
+        setHistSerie(Array.isArray(d.serie) ? d.serie : [])
+        setHistMetodo(typeof d.metodo === 'string' ? d.metodo : null)
+      })
+      .catch(() => { /* el panel cae al texto de siempre */ })
+      .finally(() => { if (vivo) setHistLoading(false) })
+    return () => { vivo = false }
+    // Depende del rodeo GUARDADO (`items`), no del borrador: no se recalcula con cada
+    // tecla mientras el usuario edita.
+  }, [isLoggedIn, isLoading, items])
+
   /* ---- Loading ---- */
   if (isLoading) {
     return (
@@ -355,6 +384,21 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
       </div>
     )
   }
+
+  // A qué remate mandar: manda la categoría con más kilos del rodeo. Terneros y
+  // novillitos van a invernada; el resto, a los generales.
+  const tipoRemate = (() => {
+    let mejor = ''
+    let masKilos = 0
+    for (const it of draft) {
+      const k = (it.cabezas || 0) * (it.peso || 0)
+      if (k > masKilos) { masKilos = k; mejor = it.categoria }
+    }
+    if (mejor === 'terneros' || mejor === 'novillitos') {
+      return { label: 'invernada', href: '/remates/tipo/invernada' }
+    }
+    return { label: 'hacienda', href: '/remates' }
+  })()
 
   const isUp = (prices.inmag.change ?? 0) >= 0
   const empty = draft.length === 0
@@ -507,19 +551,18 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
       {/* Registro de valor — evolution + weekly alert opt-in */}
       {hasRow && !empty && (
         <div className="terminal-panel mt-6">
-          <div className="terminal-panel-header">Registro de valor</div>
+          <div className="terminal-panel-header">La evolución de tu hacienda</div>
           <div className="px-panel py-5">
-            {realSeries.length > 1 ? (
-              <>
-                <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-2">
-                  La evolución de tu hacienda
-                </div>
-                <PriceSparkline data={realSeries} height={90} />
-              </>
+            {histLoading && histSerie.length === 0 ? (
+              <p className="text-sm text-zinc-500">Calculando la evolución de tu rodeo…</p>
+            ) : histSerie.length > 1 ? (
+              <HistorialLote serie={histSerie} metodo={histMetodo ?? undefined} />
+            ) : realSeries.length > 1 ? (
+              // Respaldo: si el recálculo no vino, se muestra lo que había.
+              <PriceSparkline data={realSeries} height={90} />
             ) : (
               <p className="text-sm text-zinc-400">
-                Tu primer registro quedó guardado hoy. Cada vez que vuelvas, sumamos un punto y
-                vas a ver crecer la curva de tu hacienda.
+                Cargá tu hacienda y vas a ver acá cuánto valía en cada fecha, hasta dos años atrás.
               </p>
             )}
 
@@ -527,23 +570,41 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
               <input
                 type="checkbox"
                 checked={alertsOptIn}
-                onChange={(e) => setAlerts(e.target.checked)}
+                onChange={async (e) => {
+                  await setAlerts(e.target.checked)
+                  // Se guarda solo, pero hay que decirlo: un checkbox mudo deja al
+                  // usuario sin saber si quedó, y el reflejo es buscar un botón.
+                  setAlertSaved(true)
+                  setTimeout(() => setAlertSaved(false), 2600)
+                }}
                 className="w-4 h-4 accent-accent"
               />
               <span className="text-sm text-zinc-300">
                 Avisame cada lunes cuánto vale mi hacienda
-                <span className="block text-xxs text-zinc-500">Un mail con el valor y cuánto cambió en la semana. Cancelás cuando quieras.</span>
+                <span className="block text-xxs text-zinc-500">
+                  Un mail con el valor y cuánto cambió en la semana. Cancelás cuando quieras.
+                </span>
               </span>
+              {alertSaved && (
+                <span className="ml-auto whitespace-nowrap text-xxs text-positive">
+                  ✓ {alertsOptIn ? 'Guardado' : 'Cancelado'}
+                </span>
+              )}
             </label>
           </div>
         </div>
       )}
 
-      {/* Consignar — entry to the directory (permiso flow llega en la próxima fase) */}
+      {/* Vender — lleva a lo que corresponde a ESTE rodeo, no al catálogo entero.
+          Decía "consignatarias en tu zona" y abría el directorio completo: el lote no
+          guarda provincia, así que la zona era una promesa que no cumplíamos. Lo que sí
+          sabemos es la categoría, y con eso se puede mandar al remate que le sirve. */}
       <div className="terminal-panel mt-6">
         <div className="px-panel py-4 flex items-center justify-between flex-wrap gap-3">
-          <p className="text-sm text-zinc-400">¿Pensás vender? Encontrá consignatarias en tu zona.</p>
-          <Link href="/consignatarias" className="text-sm text-accent hover:text-accent-bright transition-colors whitespace-nowrap">Ver directorio →</Link>
+          <p className="text-sm text-zinc-400">
+            ¿Pensás vender? Mirá los próximos remates de {tipoRemate.label}.
+          </p>
+          <Link href={tipoRemate.href} className="text-sm text-accent hover:text-accent-bright transition-colors whitespace-nowrap">Ver remates →</Link>
         </div>
       </div>
 
