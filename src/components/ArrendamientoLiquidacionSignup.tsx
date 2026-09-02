@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import DecimalNumberInput from '@/components/ui/DecimalNumberInput'
-import { trackAlertSubscribe } from '@/lib/analytics'
+import { trackAlertSubscribe, trackEvent, emitValueBeacon } from '@/lib/analytics'
 
 /**
  * Captura liderada por la LIQUIDACIÓN (no por "novedades").
@@ -111,8 +111,11 @@ export default function ArrendamientoLiquidacionSignup({
         </p>
 
         {state === 'ok' ? (
-          <div className="flex items-center gap-2 text-positive font-medium">
-            <span className="text-lg">✓</span><span>{msg}</span>
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-positive font-medium">
+              <span className="text-lg">✓</span><span>{msg}</span>
+            </div>
+            <CuantosCampos email={email} />
           </div>
         ) : (
           <form onSubmit={submit} className="space-y-3">
@@ -176,6 +179,67 @@ export default function ArrendamientoLiquidacionSignup({
             Sin cuenta. Un email al cierre de cada mes. Te podés desuscribir cuando quieras.
           </p>
         )}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * La pregunta que decide si existe un producto de cartera.
+ *
+ * De los 12 contratos declarados hasta hoy, la MEDIANA es de 68,5 hectáreas: campos
+ * chicos, un contrato cada uno, un canon por mes. Ese productor no paga una suscripción
+ * y hace bien: la cuenta la hace una vez y le sale.
+ *
+ * El que sí tendría problema es el que liquida MUCHOS —inmobiliaria rural, administrador
+ * de campos, estudio contable del interior—: para ése el mismo dato vale por cartera y no
+ * por campo, y hacer doce cuentas cada mes con respaldo para adjuntar a la factura sí es
+ * un trabajo que se terceriza.
+ *
+ * No sabemos si esa gente está en nuestro tráfico o hay que ir a buscarla afuera. Esta
+ * pregunta lo contesta, y va DESPUÉS del alta a propósito: sumarla al formulario habría
+ * costado conversión en un embudo que ya captura el 0,87 %.
+ */
+function CuantosCampos({ email }: { email: string }) {
+  const [enviado, setEnviado] = useState<string | null>(null)
+
+  async function responder(rango: string) {
+    setEnviado(rango)
+    trackEvent('cartera_declarada', { rango })
+    emitValueBeacon('cartera_declarada', { meta: { rango } })
+    try {
+      await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          source: 'arrendamiento-liquidacion',
+          captureContext: `campos:${rango}`,
+        }),
+      })
+    } catch {
+      /* la respuesta ya quedó en el evento; el re-POST es best-effort */
+    }
+  }
+
+  if (enviado) {
+    return <p className="text-xs text-zinc-500">Gracias — nos sirve para saber qué construir.</p>
+  }
+
+  return (
+    <div className="border-t border-zinc-800 pt-3">
+      <p className="text-xs text-zinc-400 mb-2">¿Cuántos campos liquidás por mes?</p>
+      <div className="flex flex-wrap gap-2">
+        {['1', '2 a 5', '6 a 20', 'más de 20'].map((r) => (
+          <button
+            key={r}
+            type="button"
+            onClick={() => responder(r)}
+            className="rounded border border-zinc-700 px-3 py-1.5 text-xs text-zinc-300 transition-colors hover:border-accent/60 hover:text-white"
+          >
+            {r}
+          </button>
+        ))}
       </div>
     </div>
   )

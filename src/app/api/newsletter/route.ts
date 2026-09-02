@@ -15,9 +15,17 @@ export async function POST(request: NextRequest) {
     })
     if (!rl.ok) return rateLimitedResponse(rl.retryAfter)
 
-    const { email, source = 'homepage', kgHa, hectareas } = await request.json()
+    const { email, source = 'homepage', kgHa, hectareas, captureContext } = await request.json()
 
     // Arriendo guardado (opcional, desde el calculador): personaliza el cierre mensual.
+    // `captureContext` guarda respuestas cortas que llegan DESPUÉS del alta —hoy,
+    // cuántos campos liquida por mes—. Va junto al suscriptor y no en un evento suelto
+    // para poder segmentar después: sin el email al lado, saber que "alguien administra
+    // veinte campos" no sirve para escribirle.
+    const contextField = typeof captureContext === 'string' && captureContext.trim()
+      ? { capture_context: captureContext.trim().slice(0, 120) }
+      : null
+
     const leaseFields = (typeof kgHa === 'number' && kgHa > 0 && typeof hectareas === 'number' && hectareas > 0)
       ? { lease_kg_ha: kgHa, lease_hectareas: hectareas }
       : null
@@ -61,7 +69,7 @@ export async function POST(request: NextRequest) {
       // Reactivate if unsubscribed
       await supabase
         .from('newsletter_subscribers')
-        .update({ status: 'active', ...(leaseFields || {}) })
+        .update({ status: 'active', ...(leaseFields || {}), ...(contextField || {}) })
         .eq('id', existing.id)
 
       return NextResponse.json({
@@ -80,6 +88,7 @@ export async function POST(request: NextRequest) {
         status: 'active',
         subscribed_at: new Date().toISOString(),
         ...(leaseFields || {}),
+        ...(contextField || {}),
       })
 
     if (error) {

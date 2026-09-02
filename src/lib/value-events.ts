@@ -109,6 +109,11 @@ export const VALUE_EVENTS = {
   // de sesiones de una sola vista: contestan tan bien que nadie sigue. Este evento es el
   // único que dice si el bloque de "con tus números" abre el callejón o no.
   siguiente_paso_click: { weight: 6, group: 'funnel', label: 'Pasó de una respuesta a la herramienta' },
+  // Cuántos campos liquida por mes quien deja su contrato. No es una conversión: es la
+  // pregunta que decide si existe un producto de cartera. La mediana declarada hasta hoy
+  // es de 68,5 ha —un campo, un canon— y ése no paga suscripción; el que liquida veinte,
+  // tal vez sí. Sin este dato, construirlo sería adivinar.
+  cartera_declarada: { weight: 4, group: 'discovery', label: 'Declaró cuántos campos liquida' },
   // Dejó el mail en un producto que todavía no se entrega. Pesa como una suscripción
   // al newsletter (8): es la misma acción, con intención de compra declarada encima.
   informe_waitlist: { weight: 10, group: 'recurrencia', label: 'Se anotó a la espera de un informe' },
