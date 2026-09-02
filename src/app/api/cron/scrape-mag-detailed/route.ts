@@ -20,6 +20,15 @@ export const maxDuration = 60
 
 const USER_AGENT = 'consignatarias.com.ar scraper (contact: agro@memola.com.ar)'
 const URL_BASE_DETAILED = 'https://www.mercadoagroganadero.com.ar/dll/hacienda1.dll/haciinfo000502'
+/**
+ * El MAG opera martes, miércoles y viernes. Un scrape vacío un jueves es normal; un
+ * scrape vacío un miércoles significa que algo se rompió.
+ */
+function esDiaDeRueda(iso: string): boolean {
+  const dia = new Date(`${iso}T12:00:00Z`).getUTCDay() // 0=domingo
+  return dia === 2 || dia === 3 || dia === 5
+}
+
 const URL_BASE_INMAG = 'https://www.mercadoagroganadero.com.ar/dll/hacienda2.dll/haciinfo000011'
 const URL_DOLAR_BLUE = 'https://dolarapi.com/v1/dolares/blue'
 const URL_DOLAR_OFICIAL = 'https://dolarapi.com/v1/dolares/oficial'
@@ -191,9 +200,22 @@ export async function POST(req: NextRequest) {
     const [y, m, d] = dateParam.split('-')
     targetDateMag = `${d}/${m}/${y}`
   } else {
-    const now = new Date()
-    targetDateIso = now.toISOString().slice(0, 10)
-    targetDateMag = ddmmyyyy(now)
+    // La fecha va en hora de BUENOS AIRES, no en UTC.
+    //
+    // El cron está agendado 22:37 UTC (19:37 ART), pero GitHub Actions lo retrasa seguido
+    // y desde el 27-ago-2026 viene ejecutando entre las 00:30 y las 06:18 UTC. Con
+    // `toISOString()` eso significaba pedirle al MAG el día SIGUIENTE al que corresponde
+    // en Argentina — una fecha en la que todavía no hubo rueda—, así que el scrape volvía
+    // vacío. Ocho días sin INMAG, incluidas las dos últimas ruedas de agosto.
+    //
+    // Los runs hasta el 25-ago corrían 22:56-22:59 UTC y funcionaban; el bug estuvo
+    // latente todo ese tiempo esperando que Actions se demorara media hora.
+    const hoyArg = new Date().toLocaleDateString('en-CA', {
+      timeZone: 'America/Argentina/Buenos_Aires',
+    })
+    targetDateIso = hoyArg
+    const [y, m, d] = hoyArg.split('-')
+    targetDateMag = `${d}/${m}/${y}`
   }
 
   const supabase = requireServiceClient()
@@ -245,6 +267,13 @@ export async function POST(req: NextRequest) {
         .upsert(inmagRows, { onConflict: 'date' })
       if (error) result.errors.push(`inmag upsert: ${error.message}`)
       else result.inmag_upserted = inmagRows.length
+    } else if (esDiaDeRueda(targetDateIso)) {
+      // Cero filas en un día de rueda ES un error. Sin esto el cron devolvía
+      // `{ok:true, inmag_upserted:0, errors:[]}` y el tablero daba verde mientras la
+      // serie se congelaba: ocho días sin que nadie se enterara.
+      result.errors.push(
+        `inmag: 0 filas para ${targetDateMag}, que es día de rueda — ¿cambió el DLL o la fecha está corrida?`,
+      )
     }
   } catch (err) {
     result.errors.push(
