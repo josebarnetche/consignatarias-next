@@ -40,10 +40,25 @@ describe('cobertura de Dataset en las páginas de datos', () => {
   })
 
   it('la página madre dice qué mide, desde cuándo y dónde bajarlo', () => {
+    // Su Dataset es inline (ArrendamientoSchema), no el componente: tiene TRES
+    // variableMeasured con measurementTechnique cada uno. Agregarle el componente
+    // encima duplicaba el schema — pasó el 2-sep y se revirtió.
     const src = readFileSync(join(APP, 'mercado/arrendamiento/page.tsx'), 'utf8')
     expect(src, 'falta variableMeasured: sin esto se cita el número sin unidad').toContain('variableMeasured')
     expect(src, 'falta temporalCoverage: sin esto no se sabe desde cuándo').toContain('temporalCoverage')
-    expect(src, 'falta distribution: sin esto no hay de dónde bajar la serie').toContain('distribution')
+    expect(src, 'falta measurementTechnique: sin esto no se sabe cómo se calcula').toContain('measurementTechnique')
+  })
+
+  it('ninguna página emite dos Dataset a la vez', () => {
+    // Dos Dataset en la misma URL se pisan y el buscador elige por su cuenta.
+    for (const [rel] of PAGINAS_DE_SERIE) {
+      const ruta = join(APP, rel)
+      if (!existsSync(ruta)) continue
+      const src = readFileSync(ruta, 'utf8')
+      const inline = (src.match(/'@type': 'Dataset'/g) ?? []).length
+      const componente = (src.match(/<DatasetSchema/g) ?? []).length
+      expect(inline + componente, `${rel} emite ${inline + componente} Dataset, tiene que ser 1`).toBe(1)
+    }
   })
 
   it('el helper soporta los campos que hacen citable un dataset', () => {

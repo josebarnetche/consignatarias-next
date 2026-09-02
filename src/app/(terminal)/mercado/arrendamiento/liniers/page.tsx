@@ -91,6 +91,14 @@ export default function ArrendamientoLiniersPage() {
           'mercado agroganadero',
         ]}
         dateModified={arrendamiento.date}
+        variableMeasured={{
+          name: 'Índice novillo para arrendamiento',
+          unitText: 'ARS/kg vivo',
+          value: arrendamiento.index,
+          observationDate: arrendamiento.date,
+        }}
+        temporalCoverage="2015-01-05/.."
+        updateFrequency="daily"
       />
       <DefinedTermSetSchema
         name="Arrendamiento rural en kg de novillo"
