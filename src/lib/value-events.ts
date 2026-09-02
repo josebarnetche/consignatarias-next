@@ -105,6 +105,10 @@ export const VALUE_EVENTS = {
   // el producto o sólo traen visitas que se van.
   informe_cta_click: { weight: 8, group: 'funnel', label: 'Clic al informe desde una ficha' },
   informe_view: { weight: 6, group: 'funnel', label: 'Vio el sales page de un informe' },
+  // La salida de una página-respuesta. Esas páginas rankean primeras y terminan en 93-95%
+  // de sesiones de una sola vista: contestan tan bien que nadie sigue. Este evento es el
+  // único que dice si el bloque de "con tus números" abre el callejón o no.
+  siguiente_paso_click: { weight: 6, group: 'funnel', label: 'Pasó de una respuesta a la herramienta' },
   // Dejó el mail en un producto que todavía no se entrega. Pesa como una suscripción
   // al newsletter (8): es la misma acción, con intención de compra declarada encima.
   informe_waitlist: { weight: 10, group: 'recurrencia', label: 'Se anotó a la espera de un informe' },

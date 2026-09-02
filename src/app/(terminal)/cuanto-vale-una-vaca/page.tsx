@@ -8,6 +8,7 @@ import {
   DefinedTermSetSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { SiguientePaso } from '@/components/seo/SiguientePaso'
 
 export const revalidate = 86400 // daily rebuild via Vercel
 
@@ -132,6 +133,14 @@ export default function CuantoValeUnaVacaPage() {
           de multiplicar el precio por kilo por el peso del animal, conviene mirar el rango por
           peso.
         </p>
+
+        <SiguientePaso
+          desde="/cuanto-vale-una-vaca"
+          titulo="¿Y tu tropa cuánto vale?"
+          detalle="Poné categoría, cabezas y peso y sale el total a precio del Mercado Agroganadero de hoy, en pesos y en dólares."
+          href="/calculadora"
+          accion="Valuar mi tropa"
+        />
 
         <h2 className="text-zinc-100 text-lg font-medium mb-2">
           Cuánto vale una vaca según su peso

@@ -9,6 +9,7 @@ import {
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { SiguientePaso } from '@/components/seo/SiguientePaso'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -187,6 +188,14 @@ export default function CuantoCuestaElFleteDeHaciendaPage() {
           porcentaje bajo en viajes cortos y más sensible en la media y larga distancia; siempre se
           descuenta como un gasto de comercialización más para llegar al precio neto de tranquera.
         </p>
+
+        <SiguientePaso
+          desde="/cuanto-cuesta-el-flete-de-hacienda"
+          titulo="¿Cuánto te queda después del flete?"
+          detalle="El neto en mano descuenta flete, comisión, IVA y gastos de la venta: lo que entra a la cuenta, no lo que sale en la pizarra."
+          href="/calculadora"
+          accion="Calcular mi neto"
+        />
 
         <h2 className="text-zinc-100 text-lg font-medium mb-2">
           Cómo se cobra el flete: por km, por piso de jaula y por cabeza

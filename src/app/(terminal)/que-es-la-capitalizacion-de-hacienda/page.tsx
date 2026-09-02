@@ -9,6 +9,7 @@ import {
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { SiguientePaso } from '@/components/seo/SiguientePaso'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -235,6 +236,14 @@ export default function QueEsLaCapitalizacionDeHaciendaPage() {
           aparcería. Esta página es información de referencia conceptual; la instrumentación de cada
           contrato se acuerda entre las partes y con asesoramiento profesional.
         </p>
+
+        <SiguientePaso
+          desde="/que-es-la-capitalizacion-de-hacienda"
+          titulo="¿Cuánto debería rendir tu campo?"
+          detalle="El canon de arrendamiento de tu zona en kilos de novillo por hectárea, al índice oficial del MAG — es contra lo que se compara cualquier acuerdo de capitalización."
+          href="/mercado/arrendamiento"
+          accion="Ver el canon de mi zona"
+        />
 
         <h2 className="text-zinc-100 text-lg font-medium mb-2">Quién pone qué</h2>
         <p className="mb-4">
