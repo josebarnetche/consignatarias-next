@@ -8,7 +8,7 @@ import marketData from '@/lib/data/market-prices.json'
 import { createAdminClient } from '@/lib/supabase-server'
 import ArrendamientoCalculator from './ArrendamientoCalculator'
 import LeadCapture from '@/components/leads/LeadCapture'
-import { SectionBreadcrumbSchema, SpeakableSchema, QAPageSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, SpeakableSchema, QAPageSchema, DatasetSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import ArrendamientoLiquidacionSignup from '@/components/ArrendamientoLiquidacionSignup'
 import HerramientasCTA from '@/components/HerramientasCTA'
@@ -361,6 +361,43 @@ export default async function ArrendamientoPage() {
   return (
     <>
       <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
+
+      {/* Dataset con la variable declarada. La página es la #1 del sitio en
+          impresiones (~2.200 por semana en las consultas de arrendamiento) y estaba
+          en posición 6,2 con 0,78 % de CTR: cinco veces por debajo de lo que rinde
+          esa posición. El diagnóstico es que la respuesta se da arriba y el clic no
+          baja, así que la jugada no es pelear el clic sino ser la fuente que se cita
+          — y para eso hace falta decir QUÉ se mide, en qué unidad, desde cuándo y
+          dónde se baja la serie. Sin `variableMeasured` un modelo ve datos pero no
+          sabe qué son, y termina citando el número sin unidad ni fecha. */}
+      <DatasetSchema
+        name="Índice Novillo Arrendamiento — Mercado Agroganadero"
+        description="Serie diaria del índice novillo usado como referencia para el canon de arrendamiento rural en Argentina, en pesos por kilo vivo. Fuente: Mercado Agroganadero (Cañuelas); empalmada con Mercado de Liniers para el tramo previo a mayo de 2022."
+        url="https://www.consignatarias.com.ar/mercado/arrendamiento"
+        keywords={[
+          'indice novillo arrendamiento',
+          'precio novillo arrendamiento',
+          'canon de arrendamiento rural',
+          'kg de novillo por hectarea',
+          'mercado agroganadero',
+        ]}
+        dateModified={arr.date}
+        variableMeasured={{
+          name: 'Índice novillo para arrendamiento',
+          unitText: 'ARS/kg vivo',
+          value: arr.index,
+          observationDate: arr.date,
+        }}
+        temporalCoverage="2015-01-05/.."
+        updateFrequency="daily"
+        distribution={[
+          {
+            url: 'https://www.consignatarias.com.ar/api/market/history?days=365&format=csv',
+            encodingFormat: 'text/csv',
+            name: 'Serie del último año en CSV',
+          },
+        ]}
+      />
       <ArrendamientoSchema />
       <ArrendamientoDefinedTermSchema />
       <FAQSchema />

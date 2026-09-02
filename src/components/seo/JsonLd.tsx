@@ -114,6 +114,26 @@ interface DatasetSchemaProps {
   keywords?: string[];
   dateModified?: string;
   creator?: string;
+  /**
+   * La variable que la serie mide, con su valor de hoy y su unidad.
+   *
+   * Es el campo que convierte un Dataset declarativo en uno citable: sin esto, un
+   * modelo sabe que la página tiene datos pero no qué mide ni en qué unidad, y termina
+   * citando el número suelto del cuerpo sin la unidad ni la fecha.
+   */
+  variableMeasured?: {
+    name: string;
+    unitText: string;
+    value?: number;
+    /** Fecha del valor, cuando no coincide con la de actualización. */
+    observationDate?: string;
+  };
+  /** Rango que cubre la serie, en formato ISO 8601 ("2015-01-05/..") . */
+  temporalCoverage?: string;
+  /** Dónde se puede bajar la serie: API, CSV, endpoint. */
+  distribution?: Array<{ url: string; encodingFormat: string; name?: string }>;
+  /** Cada cuánto se actualiza, como frecuencia legible ("daily", "weekly"). */
+  updateFrequency?: string;
 }
 
 export function DatasetSchema({
@@ -123,6 +143,10 @@ export function DatasetSchema({
   keywords = [],
   dateModified = new Date().toISOString().slice(0, 10),
   creator = 'Memola Medios SAS',
+  variableMeasured,
+  temporalCoverage,
+  distribution,
+  updateFrequency,
 }: DatasetSchemaProps) {
   const schema = {
     '@context': 'https://schema.org',
@@ -142,6 +166,31 @@ export function DatasetSchema({
       '@type': 'Place',
       name: 'Argentina',
     },
+    ...(variableMeasured
+      ? {
+          variableMeasured: {
+            '@type': 'PropertyValue',
+            name: variableMeasured.name,
+            unitText: variableMeasured.unitText,
+            ...(variableMeasured.value != null ? { value: variableMeasured.value } : {}),
+            ...(variableMeasured.observationDate
+              ? { observationDate: variableMeasured.observationDate }
+              : {}),
+          },
+        }
+      : {}),
+    ...(temporalCoverage ? { temporalCoverage } : {}),
+    ...(updateFrequency ? { datasetTimeInterval: updateFrequency } : {}),
+    ...(distribution?.length
+      ? {
+          distribution: distribution.map((d) => ({
+            '@type': 'DataDownload',
+            contentUrl: d.url,
+            encodingFormat: d.encodingFormat,
+            ...(d.name ? { name: d.name } : {}),
+          })),
+        }
+      : {}),
   };
 
   return (

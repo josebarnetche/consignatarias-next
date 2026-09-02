@@ -3,6 +3,7 @@ import Link from 'next/link'
 import marketPrices from '@/lib/data/market-prices.json'
 import {
   SectionBreadcrumbSchema,
+  DatasetSchema,
   FAQPageSchema,
   SpeakableSchema,
   DefinedTermSetSchema,
@@ -161,6 +162,22 @@ export default function ArrendamientoCanuelasPage() {
   return (
     <>
       <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
+
+      {/* Declara la serie de esta plaza como Dataset citable. Ver el comentario de
+          la página madre: buena posición, CTR bajo, la respuesta se da arriba — la
+          jugada es ser la fuente que se cita, no pelear el clic. */}
+      <DatasetSchema
+        name="Índice novillo para arrendamiento — Cañuelas"
+        description="Serie del índice novillo usado como referencia del canon de arrendamiento rural, en pesos por kilo vivo. Fuente: Mercado Agroganadero de Cañuelas."
+        url="https://www.consignatarias.com.ar/mercado/arrendamiento/canuelas"
+        keywords={[
+          'indice arrendamiento cañuelas',
+          'precio novillo arrendamiento cañuelas',
+          'canon de arrendamiento rural',
+        ]}
+        temporalCoverage="2015-01-05/.."
+        updateFrequency="daily"
+      />
       <ArrendamientoCanuelasDataset />
       <DefinedTermSetSchema
         name="Índice de arrendamiento y Mercado de Cañuelas"
