@@ -107,7 +107,7 @@ export const metadata: Metadata = {
   // palabra "índice" (sí estaba en OG/keywords/H1, pero Google pesa el <title>). Se agrega
   // "e Índice" sin perder precio/hoy/$número. ~52 chars, no trunca. v1.40 + jul-2026 CTR pass.
   title: `Precio e Índice Novillo Arrendamiento Hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg`,
-  description: `Precio del novillo para arrendamiento hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg — índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero (período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)}, act. ${fmtFecha(arr.date)}). INMAG novillo diario: $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1)}%). Calculá el canon de tu campo en kg/ha.`,
+  description: `Precio del novillo para arrendamiento hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg — índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero (período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)}, act. ${fmtFecha(arr.date)}). Índice mensual (el que se liquida): $${arr.periodIndex.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg. Calculá el canon de tu campo en kg/ha.`,
   keywords: [
     'índice novillo arrendamiento',
     'indice novillo arrendamiento hoy',
@@ -437,6 +437,55 @@ export default async function ArrendamientoPage() {
             </div>
           </div>
         </MarketHero>
+          </div>
+        </section>
+
+        {/* ── El valor MENSUAL, con encabezado propio ──────────────────────────
+            De las 28.711 impresiones del cluster arrendamiento, 3.650 (13 %) piden
+            explícitamente el valor "mensual" — y son las que MEJOR rinden: CTR 2,03 %
+            contra 1,0-1,3 % del resto, y posición 5,2 contra 6,5-7,0.
+
+            No tenían encabezado propio. La página entera está armada alrededor del
+            valor del día (el AnswerBlock del hero dice "hoy" y menciona el promedio
+            entre paréntesis), mientras nuestro propio FAQ aclara que "para liquidar
+            contratos suele usarse el promedio mensual, no el valor de un día".
+
+            Es un desajuste de intención: la consulta que mejor rinde pregunta por un
+            número que mostrábamos subordinado. Acá tiene su H2, su respuesta
+            answer-first y el cálculo hecho — que es lo que se cita.
+            ─────────────────────────────────────────────────────────────────────── */}
+        <section className="max-w-3xl mx-auto px-4 pt-6">
+          <div className="rounded-xl border border-terminal-border bg-terminal-panel/40 p-5">
+            <h2 className="text-zinc-100 text-lg font-medium mb-2">
+              Índice novillo arrendamiento mensual: ${fmt(arr.periodIndex)}/kg
+            </h2>
+            <p className="speakable-content text-zinc-200 text-base leading-relaxed mb-3">
+              El índice novillo arrendamiento mensual vigente es de{' '}
+              <strong className="text-white">${fmt(arr.periodIndex)} por kilo vivo</strong>, promedio
+              del período {fmtFecha(arr.periodStart)}–{fmtFecha(arr.periodEnd)}. Ese es el valor con
+              el que se liquidan los contratos de arrendamiento rural: se usa el promedio del
+              período y no el precio de un día suelto, para que la volatilidad diaria no cambie el
+              canon de un mes a otro.
+            </p>
+            <p className="text-zinc-300 text-sm leading-relaxed mb-3">
+              El cálculo es directo:{' '}
+              <strong className="text-zinc-100">
+                canon mensual = kilos de novillo por hectárea × ${fmt(arr.periodIndex)} × hectáreas
+              </strong>
+              . Un campo de 500 ha pactado en 8 kg/ha por mes liquida{' '}
+              <strong className="text-zinc-100">
+                ${fmt(Math.round(8 * arr.periodIndex * 500))}
+              </strong>{' '}
+              este período, y{' '}
+              <strong className="text-zinc-100">
+                ${fmt(Math.round(8 * arr.periodIndex * 500 * 12))}
+              </strong>{' '}
+              al año si el canon se mantiene.
+            </p>
+            <p className="text-zinc-500 text-xs">
+              El valor del día ―${fmt(arr.index)}/kg― sirve de referencia y para seguir la
+              tendencia, pero no es el que se liquida.
+            </p>
           </div>
         </section>
 
