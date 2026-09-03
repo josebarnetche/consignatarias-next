@@ -15258,25 +15258,6 @@
     "status": "scheduled"
   },
   {
-    "title": "92ª EXPOSICIÓN SOCIEDAD RURAL DE RÍO CUARTO Remate",
-    "consignatariaName": "TALANO HERMANOS S.R.L.",
-    "consignatariaSlug": "talano-hermanos-s-r-l",
-    "date": "2026-09-06",
-    "time": "11:00",
-    "location": "RIO CUARTO, CORDOBA",
-    "province": "CORDOBA",
-    "type": "especial",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "92ª EXPOSICIÓN SOCIEDAD RURAL\r\nDE RÍO CUARTO\r\nRemate",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.talanohermanos.com.ar",
-    "id": 804,
-    "status": "scheduled"
-  },
-  {
     "title": "Talano Hnos. | Expo Rural de Río Cuarto | Especial reproductores",
     "consignatariaName": "Talano Hnos. S.A.",
     "consignatariaSlug": "talano-hnos-s-a",
@@ -15293,7 +15274,26 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled",
-    "id": 805
+    "id": 804
+  },
+  {
+    "title": "92ª EXPOSICIÓN SOCIEDAD RURAL DE RÍO CUARTO Remate",
+    "consignatariaName": "TALANO HERMANOS S.R.L.",
+    "consignatariaSlug": "talano-hermanos-s-r-l",
+    "date": "2026-09-06",
+    "time": "11:00",
+    "location": "RIO CUARTO, CORDOBA",
+    "province": "CORDOBA",
+    "type": "especial",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "92ª EXPOSICIÓN SOCIEDAD RURAL\r\nDE RÍO CUARTO\r\nRemate",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.talanohermanos.com.ar",
+    "id": 805,
+    "status": "scheduled"
   },
   {
     "title": "Daniel Blanco & Cía | 61º Expo Rural | Coronel Dorrego",
