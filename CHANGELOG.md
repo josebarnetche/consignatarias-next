@@ -7,6 +7,41 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.203.0] — 2026-09-04
+
+### La serie que se cobra tenía once agujeros, y el tablero daba verde
+
+`mag_inmag_history` es la fuente de `/api/precios` (el producto Enterprise pago), de
+`get_inmag_historico` en el MCP, del export, del novillo en dólares y del historial de
+mi-ganado. Al 4-sep tenía **2.278 ruedas contra las 2.289 que publica el MAG**: faltaban
+once, y diez eran de 2026 — siete de junio (2, 3, 10, 12, 16, 17 y 18), el 1-sep y el
+4-sep. El sitio mostraba el INMAG del día correcto todo ese tiempo, porque la home lo lee
+de `market-prices.json`, que lo scrapea por otra vía. **La serie gratis estaba entera; la
+que se factura, no.**
+
+La causa es de diseño, no de código roto: el cron pedía al MAG **una sola fecha, la de
+hoy**. Si GitHub Actions retrasaba el run pasada la medianoche ART, o si el MAG publicaba
+la rueda después de las 19:37, esa rueda no se volvía a pedir nunca. El fix del 2-sep
+(v1.199.0, UTC → ART) corrió el umbral pero no lo sacó: los runs de esta semana entraron
+21:21 ART, a dos horas y media de volver a romperse.
+
+Ahora el scrape pide una **ventana de 10 días** en vez de un día. El DLL acepta rango,
+`parseInmag` ya leía la fecha de cada fila y el upsert es `onConflict: 'date'` — así que
+cada corrida vuelve a barrer los últimos diez días y rellena sola cualquier rueda perdida
+por un retraso, una publicación tardía o una caída. El mismo cambio va para
+`mag_novillito_history`, que tenía el defecto idéntico.
+
+Y el cron **falla cuando falla**. Devolvía HTTP 200 con `ok:false` en el cuerpo; el
+workflow sólo mira el código HTTP, así que ocho días sin INMAG habían pasado en verde.
+Ahora un error devuelve 500. La validación también cambió de sentido: antes preguntaba si
+la respuesta venía vacía, que con ventana ya no significa nada; ahora pregunta si falta
+**la rueda del propio día** en un día de rueda.
+
+Las once ruedas faltantes se recuperaron desde el MAG y se verificaron contra la fuente:
+la tabla cierra en 2.289 filas, sin huecos, hasta el 4-sep. RC=0 no era valor.
+
+---
+
 ## [1.202.0] — 2026-08-31
 
 ### Los productos, enlazados desde donde está la gente

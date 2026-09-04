@@ -62,10 +62,29 @@ function normalizeSubcat(raw: string): string {
   return raw.replace(/\s+/g, ' ').trim()
 }
 
-function ddmmyyyy(date: Date): string {
-  const d = String(date.getUTCDate()).padStart(2, '0')
-  const m = String(date.getUTCMonth() + 1).padStart(2, '0')
-  return `${d}/${m}/${date.getUTCFullYear()}`
+function ddmmyyyy(iso: string): string {
+  const [y, m, d] = iso.split('-')
+  return `${d}/${m}/${y}`
+}
+
+/**
+ * El scrape de un solo día no perdona: si Actions retrasa el run pasada la
+ * medianoche ART, o si el MAG publica la rueda después de las 19:37, esa rueda
+ * no se pide nunca más y el agujero queda para siempre. Al 04-sep-2026 la serie
+ * tenía 11 ruedas faltantes contra el MAG (2.278 de 2.289), diez de ellas de
+ * 2026: siete de junio, el 01-sep y el 04-sep. Todas se perdieron así.
+ *
+ * Pedir una ventana en vez de un día hace el cron auto-reparable: el DLL acepta
+ * rango, `parseInmag` lee la fecha de cada fila y el upsert es onConflict:'date',
+ * así que cada corrida vuelve a barrer los últimos días y rellena lo que falte.
+ * Diez días cubren un fin de semana largo más un par de corridas fallidas.
+ */
+const LOOKBACK_DAYS = 10
+
+function isoMinusDays(iso: string, days: number): string {
+  const d = new Date(`${iso}T12:00:00Z`)
+  d.setUTCDate(d.getUTCDate() - days)
+  return d.toISOString().slice(0, 10)
 }
 
 function parseNumber(s: string): number | null {
@@ -218,9 +237,14 @@ export async function POST(req: NextRequest) {
     targetDateMag = `${d}/${m}/${y}`
   }
 
+  // La ventana que se vuelve a barrer en cada corrida (ver LOOKBACK_DAYS).
+  const windowStartIso = isoMinusDays(targetDateIso, LOOKBACK_DAYS)
+  const windowStartMag = ddmmyyyy(windowStartIso)
+
   const supabase = requireServiceClient()
   const result = {
     date: targetDateIso,
+    window: `${windowStartIso}..${targetDateIso}`,
     detailed_upserted: 0,
     inmag_upserted: 0,
     novillito_upserted: 0,
@@ -255,7 +279,7 @@ export async function POST(req: NextRequest) {
   //    mag_inmag_history current going forward after the one-shot backfill.
   try {
     const urlInmag =
-      `${URL_BASE_INMAG}?txtFECHAINI=${encodeURIComponent(targetDateMag)}` +
+      `${URL_BASE_INMAG}?txtFECHAINI=${encodeURIComponent(windowStartMag)}` +
       `&txtFECHAFIN=${encodeURIComponent(targetDateMag)}&CP=&LISTADO=SI`
     const res = await fetch(urlInmag, { headers: { 'User-Agent': USER_AGENT } })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -267,12 +291,13 @@ export async function POST(req: NextRequest) {
         .upsert(inmagRows, { onConflict: 'date' })
       if (error) result.errors.push(`inmag upsert: ${error.message}`)
       else result.inmag_upserted = inmagRows.length
-    } else if (esDiaDeRueda(targetDateIso)) {
-      // Cero filas en un día de rueda ES un error. Sin esto el cron devolvía
-      // `{ok:true, inmag_upserted:0, errors:[]}` y el tablero daba verde mientras la
-      // serie se congelaba: ocho días sin que nadie se enterara.
+    }
+    if (esDiaDeRueda(targetDateIso) && !inmagRows.some((r) => r.date === targetDateIso)) {
+      // Que falte la rueda del propio día en un día de rueda ES un error. Sin esto el
+      // cron devolvía `{ok:true, inmag_upserted:0, errors:[]}` y el tablero daba verde
+      // mientras la serie se congelaba: ocho días sin que nadie se enterara.
       result.errors.push(
-        `inmag: 0 filas para ${targetDateMag}, que es día de rueda — ¿cambió el DLL o la fecha está corrida?`,
+        `inmag: la ventana ${windowStartMag}..${targetDateMag} no trajo la rueda de ${targetDateMag}, que es día de rueda — ¿publicó tarde el MAG o cambió el DLL?`,
       )
     }
   } catch (err) {
@@ -288,7 +313,7 @@ export async function POST(req: NextRequest) {
   try {
     const urlNov =
       `https://www.mercadoagroganadero.com.ar/dll/hacienda6.dll/haciinfo000307` +
-      `?txtFECHAINI=${encodeURIComponent(targetDateMag)}` +
+      `?txtFECHAINI=${encodeURIComponent(windowStartMag)}` +
       `&txtFECHAFIN=${encodeURIComponent(targetDateMag)}`
     const res = await fetch(urlNov, { headers: { 'User-Agent': USER_AGENT } })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -398,13 +423,15 @@ export async function POST(req: NextRequest) {
     result.detailed_upserted === 0 &&
     result.inmag_upserted === 0 &&
     result.usd_upserted === 0
+  // HTTP 500 cuando hubo errores: el workflow solo mira el http_code, así que un 200
+  // con `ok:false` daba verde mientras la serie se congelaba. RC=0 no es valor.
   return NextResponse.json({
     ok: result.errors.length === 0,
     ...result,
     ...(allEmpty
       ? { note: 'No data — likely a non-trading day (MAG operates martes/miércoles/viernes).' }
       : {}),
-  })
+  }, { status: result.errors.length > 0 ? 500 : 200 })
 }
 
 export const GET = POST
