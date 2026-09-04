@@ -11,6 +11,7 @@ import CompraMayorista, { type VitrinaProduct } from './CompraMayorista'
 import BadgeConfianza from '@/components/frigorifico/BadgeConfianza'
 import LoginGate from '@/components/LoginGate'
 import FrigorificoLeadCapture from '@/components/leads/FrigorificoLeadCapture'
+import FrigorificoConsultaGeneral from '@/components/leads/FrigorificoConsultaGeneral'
 import SubscribeStrip from '@/components/SubscribeStrip'
 import { BreadcrumbSchema, QAPageSchema } from '@/components/seo/JsonLd'
 import {
@@ -857,24 +858,14 @@ export default async function FrigorificoDetailPage({
         </div>
       )}
 
-      {/* Contact/Inquiry form for lead gen */}
+      {/* Contact/Inquiry form for lead gen — reemplaza el mailto crudo (perdía
+          consultas reales sin registrar ninguna, ver FrigorificoConsultaGeneral) */}
       {!hasContact && !verified && (
-        <div className="terminal-panel">
-          <div className="terminal-panel-header">
-            <span className="text-zinc-200 text-label tracking-widest">CONSULTAR ESTE FRIGORIFICO</span>
-          </div>
-          <div className="px-panel py-4">
-            <p className="text-data font-terminal text-zinc-500 mb-3">
-              ¿Necesitás contactar a este frigorífico? Dejá tu consulta y te conectamos.
-            </p>
-            <a
-              href={`mailto:agro@memola.com.ar?subject=Consulta%20Frigorifico%20${encodeURIComponent(name)}%20(Mat.%20${basicF.matricula})&body=Hola,%20necesito%20contactar%20al%20frigorifico%20${encodeURIComponent(name)}.%0A%0AMi%20consulta:%20`}
-              className="inline-block px-4 py-2 bg-accent/10 border border-accent/30 text-accent text-data font-terminal rounded-terminal hover:bg-accent/20 transition-colors"
-            >
-              Enviar consulta
-            </a>
-          </div>
-        </div>
+        <FrigorificoConsultaGeneral
+          source={`frigorifico:${slug}:otra-consulta`}
+          frigorificoName={name}
+          province={province}
+        />
       )}
 
       {/* Captura — reporte mensual de faena. El visitante de un perfil de planta
