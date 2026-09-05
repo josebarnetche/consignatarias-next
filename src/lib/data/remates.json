@@ -14669,25 +14669,6 @@
     "status": "live"
   },
   {
-    "title": "UMC HV — Remate Feria",
-    "consignatariaName": "UMC SA - Haciendas Villaguay SRL",
-    "consignatariaSlug": "umc-haciendas-villaguay",
-    "date": "2026-09-05",
-    "time": "11:00",
-    "location": "Villaguay, Entre Rios",
-    "province": "ENTRE RIOS",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate feria UMC Haciendas Villaguay",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://umchv.ar/auctions/view/b5c3c51d-c932-4ecc-a979-57731d7c51f1",
-    "id": 773,
-    "status": "live"
-  },
-  {
     "title": "Talano Hnos. | Expo Rural de Río Cuarto | Especial reproductores",
     "consignatariaName": "Talano Hnos. S.A.",
     "consignatariaSlug": "talano-hnos-s-a",
@@ -14704,7 +14685,26 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "live",
-    "id": 774
+    "id": 773
+  },
+  {
+    "title": "UMC HV — Remate Feria",
+    "consignatariaName": "UMC SA - Haciendas Villaguay SRL",
+    "consignatariaSlug": "umc-haciendas-villaguay",
+    "date": "2026-09-05",
+    "time": "11:00",
+    "location": "Villaguay, Entre Rios",
+    "province": "ENTRE RIOS",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Remate feria UMC Haciendas Villaguay",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://umchv.ar/auctions/view/b5c3c51d-c932-4ecc-a979-57731d7c51f1",
+    "id": 774,
+    "status": "live"
   },
   {
     "title": "Sábado 5 y Domingo 6 Especial EXPO GUALEGUAY",
@@ -15144,25 +15144,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Remate selección productiva",
-    "consignatariaName": "Reggi & Cía",
-    "consignatariaSlug": "reggi-y-cia",
-    "date": "2026-09-08",
-    "time": "14:00",
-    "location": "Curuzú Cuatiá, CORRIENTES",
-    "province": "CORRIENTES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Rte. Físico streaming — Remate selección productiva",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "tv",
-    "sourceUrl": "https://reggiycia.com/remate/31588",
-    "status": "scheduled",
-    "id": 798
-  },
-  {
     "title": "Colombo y Magliano | Litorangus 2026",
     "consignatariaName": "Colombo y Magliano S.A.",
     "consignatariaSlug": "colombo-y-magliano-s-a",
@@ -15179,7 +15160,7 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled",
-    "id": 799
+    "id": 798
   },
   {
     "title": "REMATE FERIA EN SOCIEDAD RURAL LA PAZ",
@@ -15197,6 +15178,25 @@
     "catalogUrl": "https://ftp.rural-server.com/remates/images/YEqDrlGsSCLDckGP.png",
     "source": "web",
     "sourceUrl": "https://clicrural.com.ar/remate/31301",
+    "status": "scheduled",
+    "id": 799
+  },
+  {
+    "title": "Haciendas generales",
+    "consignatariaName": "Reggi & Cía",
+    "consignatariaSlug": "reggi-y-cia",
+    "date": "2026-09-08",
+    "time": "17:00",
+    "location": "Curuzú Cuatiá, CORRIENTES",
+    "province": "CORRIENTES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Rte. Físico — Haciendas generales",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://reggiycia.com/remate/31587",
     "status": "scheduled",
     "id": 800
   },
@@ -15334,25 +15334,6 @@
     "status": "scheduled"
   },
   {
-    "title": "HACIENDAS GENERALES",
-    "consignatariaName": "FRACCAROLLI Y RONCONI S.R.L.",
-    "consignatariaSlug": "fraccarolli-y-ronconi-s-r-l",
-    "date": "2026-09-09",
-    "time": "10:00",
-    "location": "URDINARRAIN, ENTRE RÍOS",
-    "province": "ENTRE RIOS",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "GORDO - INVERNADA Y CRIA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.facebook.com/fraccarollironconi",
-    "id": 808,
-    "status": "scheduled"
-  },
-  {
     "title": "Remate MAG | Especial exportación",
     "consignatariaName": "MAG",
     "consignatariaSlug": "mag",
@@ -15369,7 +15350,26 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled",
-    "id": 809
+    "id": 808
+  },
+  {
+    "title": "HACIENDAS GENERALES",
+    "consignatariaName": "FRACCAROLLI Y RONCONI S.R.L.",
+    "consignatariaSlug": "fraccarolli-y-ronconi-s-r-l",
+    "date": "2026-09-09",
+    "time": "10:00",
+    "location": "URDINARRAIN, ENTRE RÍOS",
+    "province": "ENTRE RIOS",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "GORDO - INVERNADA Y CRIA",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.facebook.com/fraccarollironconi",
+    "id": 809,
+    "status": "scheduled"
   },
   {
     "title": "Faena, Invernada y Cria - 11.30hs.",
@@ -15391,25 +15391,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Invernada y Cría",
-    "consignatariaName": "GANADEROS DE ELORDI S.A.",
-    "consignatariaSlug": "ganaderos-de-elordi-s-a",
-    "date": "2026-09-09",
-    "time": "11:30",
-    "location": "VICTORICA, LA PAMPA",
-    "province": "LA PAMPA",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Invernada y Cría",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.ganaderoselordi.com.ar",
-    "id": 811,
-    "status": "scheduled"
-  },
-  {
     "title": "Invernada y Cria - 11.30hs.",
     "consignatariaName": "Elordi",
     "consignatariaSlug": "elordi",
@@ -15425,6 +15406,25 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 811,
+    "status": "scheduled"
+  },
+  {
+    "title": "Invernada y Cría",
+    "consignatariaName": "GANADEROS DE ELORDI S.A.",
+    "consignatariaSlug": "ganaderos-de-elordi-s-a",
+    "date": "2026-09-09",
+    "time": "11:30",
+    "location": "VICTORICA, LA PAMPA",
+    "province": "LA PAMPA",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Invernada y Cría",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.ganaderoselordi.com.ar",
     "id": 812,
     "status": "scheduled"
   },
