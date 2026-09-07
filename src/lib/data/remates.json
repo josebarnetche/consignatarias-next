@@ -14745,23 +14745,23 @@
     "id": 776
   },
   {
-    "title": "UMC y Haciendas Villaguay | 8º Remate en Conjunto",
-    "consignatariaName": "UMC - Haciendas Villaguay",
+    "title": "UMC HV — 8vo Remate Conjunto",
+    "consignatariaName": "UMC SA - Haciendas Villaguay SRL",
     "consignatariaSlug": "umc-haciendas-villaguay",
     "date": "2026-09-07",
     "time": "19:00",
-    "location": "",
-    "province": "",
+    "location": "Villaguay, Entre Rios",
+    "province": "ENTRE RIOS",
     "type": "general",
     "mainCategory": "mixto",
     "estimatedHeads": null,
-    "description": "UMC y Haciendas Villaguay | 8º Remate en Conjunto",
+    "description": "Remate feria UMC Haciendas Villaguay",
     "youtubeUrl": null,
     "catalogUrl": "https://remates.elrural.com/remate/6561-umc-y-haciendas-villaguay-8o-remate-en-conjunto",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "live",
-    "id": 777
+    "source": "web",
+    "sourceUrl": "https://umchv.ar/auctions/view/98d8df3a-8521-4224-8967-279a4d83c7be",
+    "id": 777,
+    "status": "live"
   },
   {
     "title": "Faena, Invernada y cria",
