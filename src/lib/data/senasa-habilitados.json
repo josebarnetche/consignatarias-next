@@ -1,13 +1,13 @@
 {
-  "scrapedAt": "2026-08-31T15:11:27.239Z",
+  "scrapedAt": "2026-09-07T13:33:54.030Z",
   "source": "https://aps2.senasa.gov.ar/registros/faces/publico/establecimientos/tc_frigorificospublico.jsp",
   "ciclos": [
     "CICLO I - MAT.FRIG.",
     "CICLO II - ELABORADOR",
     "CICLO III - DADOR DE FRIO"
   ],
-  "totalRowsScraped": 1008,
-  "distinctCuits": 871,
+  "totalRowsScraped": 1010,
+  "distinctCuits": 872,
   "unparsableCuits": 0,
   "byCuit": {
     "30707283250": {
@@ -4736,7 +4736,7 @@
       "nombre": "AVICOLA PIMPOLLO S.R.L",
       "provincia": "BUENOS AIRES",
       "partido": "LA PLATA",
-      "localidad": "SAN CARLOS",
+      "localidad": "LA PLATA",
       "nroOficial": "5718",
       "actividades": [
         "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
@@ -5315,21 +5315,19 @@
       "tipo": "CICLO II - ELABORADOR",
       "propietario": "CENCOSUD S A",
       "nombre": "CENCOSUD S A",
-      "provincia": "CORDOBA",
-      "partido": "CAPITAL",
-      "localidad": "CORDOBA",
-      "nroOficial": "4881",
+      "provincia": "BUENOS AIRES",
+      "partido": "EZEIZA",
+      "localidad": "EL JAGUEL",
+      "nroOficial": "3776",
       "actividades": [
-        "XXI - DEPOSITO, ACOPIO O DISTRIBUCION DE CABRITOS, LECHONES, ETC.",
+        "II - FABRICA DE CHACINADOS Y AFINES",
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
         "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
         "L - LOCAL HABILITADO P/DEPOSITO CONSERVA DE PESCADO",
-        "LII - ESTABLECIMIENTO COMIDAS SEMIELABORADAS Y PREPARADAS",
         "LXIII - IMPORTACION PRODUCTOS DE LA PESCA EN CONSERVAS",
-        "II - 3. SOLO ELABORACIÓN FETEADO DE CHACINADOS",
-        "XII - 4. DESPOSTADA BOVINA",
-        "XII - 6. DESPOSTADA DE AVES",
-        "XXX -  DEPOSITO PRODUCTOS CARNEOS"
+        "XXX -  DEPOSITO PRODUCTOS CARNEOS",
+        "LXVI - IMPORTACION DE CHACINADOS Y SALAZONES",
+        "II - 26 FRACCIONAMIENTO Y/O ENVASADO DE TERCEROS"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR",
@@ -5348,6 +5346,23 @@
       "actividades": [
         "II - FABRICA DE CHACINADOS Y AFINES",
         "XVI A - ELABORACION DE CONSERVAS"
+      ],
+      "ciclos": [
+        "CICLO II - ELABORADOR"
+      ]
+    },
+    "30719403766": {
+      "cuit": "30719403766",
+      "tipo": "CICLO II - ELABORADOR",
+      "propietario": "CHACINADOS GUADALUPE S. A. S.",
+      "nombre": "CHACINADOS GUADALUPE S.A.S.",
+      "provincia": "ENTRE RIOS",
+      "partido": "PARANA",
+      "localidad": "SEGUI",
+      "nroOficial": "5531",
+      "actividades": [
+        "XII - 3. DESPOSTADA PORCINA",
+        "II - 21. ELABORACION DE EMBUTIDOS FRESCOS, SECOS Y COCIDOS"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -6267,23 +6282,6 @@
         "CICLO II - ELABORADOR"
       ]
     },
-    "20078864002": {
-      "cuit": "20078864002",
-      "tipo": "CICLO II - ELABORADOR",
-      "propietario": "DOME RICARDO JOSE",
-      "nombre": "DOME RICARDO JOSE",
-      "provincia": "ENTRE RIOS",
-      "partido": "PARANA",
-      "localidad": "SEGUI",
-      "nroOficial": "5531",
-      "actividades": [
-        "XII - 3. DESPOSTADA PORCINA",
-        "II - 21. ELABORACION DE EMBUTIDOS FRESCOS, SECOS Y COCIDOS"
-      ],
-      "ciclos": [
-        "CICLO II - ELABORADOR"
-      ]
-    },
     "30663829153": {
       "cuit": "30663829153",
       "tipo": "CICLO II - ELABORADOR",
@@ -7021,6 +7019,27 @@
         "XI - PREPARACION CUEROS CURTIDOS",
         "XXVIII - DEPOSITO / BARRACA P/CUEROS",
         "XXVIII - 3. DEPÓSITO/BARRACA DE CUERO/SALADERO"
+      ],
+      "ciclos": [
+        "CICLO II - ELABORADOR"
+      ]
+    },
+    "30714483702": {
+      "cuit": "30714483702",
+      "tipo": "CICLO II - ELABORADOR",
+      "propietario": "LAMMAN S.A.",
+      "nombre": "FIAMBRES KALBER de LAMMAN S.A.",
+      "provincia": "SAN LUIS",
+      "partido": "GENERAL PEDERNERA",
+      "localidad": "VILLA MERCEDES",
+      "nroOficial": "5063",
+      "actividades": [
+        "II - FABRICA DE CHACINADOS Y AFINES",
+        "IX - CARNES SALADAS Y/O CURADAS",
+        "IX - 1. SOLO JAMON CRUDO",
+        "IX - 2. SOLO BONDIOLA",
+        "II - 24. ELABORACION DE CHACINADOS CRUDOS Y SECOS",
+        "II - 25. ELABORACION DE CHACINADOS COCIDOS"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
