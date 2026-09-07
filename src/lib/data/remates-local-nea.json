@@ -1116,42 +1116,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Talano Hnos. | Expo Rural de Río Cuarto | Especial reproductores",
-    "consignatariaName": "Talano Hnos. S.A.",
-    "consignatariaSlug": "talano-hnos-s-a",
-    "date": "2026-09-06",
-    "time": "11:00",
-    "location": "",
-    "province": null,
-    "type": "reproductores",
-    "mainCategory": "toros",
-    "estimatedHeads": null,
-    "description": "Talano Hnos. | Expo Rural de Río Cuarto | Especial reproductores",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6592-talano-hnos-expo-rural-de-rio-cuarto-especial-reproductores",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "live"
-  },
-  {
-    "title": "Daniel Blanco & Cía | 61º Expo Rural | Coronel Dorrego",
-    "consignatariaName": "Daniel Blanco y Cía S.A.",
-    "consignatariaSlug": "daniel-blanco-y-cia-s-a",
-    "date": "2026-09-06",
-    "time": "14:00",
-    "location": "",
-    "province": null,
-    "type": "especial",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Daniel Blanco & Cía | 61º Expo Rural | Coronel Dorrego",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6595-daniel-blanco-cia-61o-expo-rural-coronel-dorrego",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "live"
-  },
-  {
     "title": "Sociedad Rural de Jesús María - Consignaciones Córdoba",
     "consignatariaName": "Sociedad Rural de Jesús Maria",
     "consignatariaSlug": "sociedad-rural-de-jesus-maria",
@@ -1167,7 +1131,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6598-sociedad-rural-de-jesus-maria-consignaciones-cordoba",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Alfredo S. Mondino | Especial Rústicos Máxima Selección Genética",
@@ -1185,7 +1149,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6563-alfredo-s-mondino-especial-rusticos-maxima-seleccion-genetica",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "UMC y Haciendas Villaguay | 8º Remate en Conjunto",
@@ -1203,7 +1167,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6561-umc-y-haciendas-villaguay-8o-remate-en-conjunto",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "AFA | Totoras | Gordos y Conserva",
@@ -1296,40 +1260,40 @@
     "status": "scheduled"
   },
   {
-    "title": "Talano Hnos. | Expo Rural de Río Cuarto | Especial reproductores",
-    "consignatariaName": "Talano Hnos. S.A.",
-    "consignatariaSlug": "talano-hnos-s-a",
-    "date": "2026-09-06",
-    "time": "11:00",
-    "location": "",
-    "province": null,
-    "type": "reproductores",
-    "mainCategory": "toros",
-    "estimatedHeads": null,
-    "description": "Talano Hnos. | Expo Rural de Río Cuarto | Especial reproductores",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6592-talano-hnos-expo-rural-de-rio-cuarto-especial-reproductores",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "live"
-  },
-  {
-    "title": "Daniel Blanco & Cía | 61º Expo Rural | Coronel Dorrego",
-    "consignatariaName": "Daniel Blanco y Cía S.A.",
-    "consignatariaSlug": "daniel-blanco-y-cia-s-a",
-    "date": "2026-09-06",
+    "title": "Colombo y Magliano | Chascomús | Invernada y Faena",
+    "consignatariaName": "Colombo y Magliano S.A.",
+    "consignatariaSlug": "colombo-y-magliano-s-a",
+    "date": "2026-09-09",
     "time": "14:00",
     "location": "",
     "province": null,
-    "type": "especial",
-    "mainCategory": "mixto",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
     "estimatedHeads": null,
-    "description": "Daniel Blanco & Cía | 61º Expo Rural | Coronel Dorrego",
+    "description": "Colombo y Magliano | Chascomús | Invernada y Faena",
     "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6595-daniel-blanco-cia-61o-expo-rural-coronel-dorrego",
+    "catalogUrl": "https://remates.elrural.com/remate/6601-colombo-y-magliano-chascomus-invernada-y-faena",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "live"
+    "status": "scheduled"
+  },
+  {
+    "title": "Esteban Abelenda | Invernada y Cría",
+    "consignatariaName": "Esteban I. Abelenda",
+    "consignatariaSlug": "esteban-i-abelenda",
+    "date": "2026-09-10",
+    "time": "10:00",
+    "location": "",
+    "province": null,
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Esteban Abelenda | Invernada y Cría",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6567-esteban-abelenda-invernada-y-cria",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled"
   },
   {
     "title": "Sociedad Rural de Jesús María - Consignaciones Córdoba",
@@ -1347,7 +1311,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6598-sociedad-rural-de-jesus-maria-consignaciones-cordoba",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Alfredo S. Mondino | Especial Rústicos Máxima Selección Genética",
@@ -1365,7 +1329,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6563-alfredo-s-mondino-especial-rusticos-maxima-seleccion-genetica",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "UMC y Haciendas Villaguay | 8º Remate en Conjunto",
@@ -1383,7 +1347,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6561-umc-y-haciendas-villaguay-8o-remate-en-conjunto",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "AFA | Totoras | Gordos y Conserva",
@@ -1471,6 +1435,42 @@
     "description": "O´Farrell | Cabaña Ceibalito",
     "youtubeUrl": null,
     "catalogUrl": "https://remates.elrural.com/remate/6555-ofarrell-cabana-ceibalito",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled"
+  },
+  {
+    "title": "Colombo y Magliano | Chascomús | Invernada y Faena",
+    "consignatariaName": "Colombo y Magliano S.A.",
+    "consignatariaSlug": "colombo-y-magliano-s-a",
+    "date": "2026-09-09",
+    "time": "14:00",
+    "location": "",
+    "province": null,
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "Colombo y Magliano | Chascomús | Invernada y Faena",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6601-colombo-y-magliano-chascomus-invernada-y-faena",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled"
+  },
+  {
+    "title": "Esteban Abelenda | Invernada y Cría",
+    "consignatariaName": "Esteban I. Abelenda",
+    "consignatariaSlug": "esteban-i-abelenda",
+    "date": "2026-09-10",
+    "time": "10:00",
+    "location": "",
+    "province": null,
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Esteban Abelenda | Invernada y Cría",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6567-esteban-abelenda-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled"
