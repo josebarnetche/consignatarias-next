@@ -1838,54 +1838,54 @@
   "categories": {
     "novillos": {
       "current": 4341,
-      "prev": 4035,
-      "change": 7.6,
+      "prev": 4341,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 588
     },
     "novillitos": {
       "current": 4124,
-      "prev": 3834,
-      "change": 7.6,
+      "prev": 4124,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 738
     },
     "vaquillonas": {
       "current": 3907,
-      "prev": 3632,
-      "change": 7.6,
+      "prev": 3907,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1212
     },
     "vacas": {
       "current": 3126,
-      "prev": 2906,
-      "change": 7.6,
+      "prev": 3126,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 1704
     },
     "toros": {
       "current": 2822,
-      "prev": 2623,
-      "change": 7.6,
+      "prev": 2822,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 185
     },
     "terneros": {
       "current": 4775,
-      "prev": 4439,
-      "change": 7.6,
+      "prev": 4775,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
-    "current": 243.7,
+    "current": 241.9,
     "prev": 243.7,
-    "change": 0,
+    "change": -0.7,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
@@ -2030,7 +2030,7 @@
         "category": "VACAS Regular",
         "minPrice": 2400,
         "maxPrice": 3900,
-        "avgPrice": 3096.48,
+        "avgPrice": 3099.3,
         "cabezas": 903
       },
       {
@@ -2079,7 +2079,7 @@
         "category": "Totales",
         "minPrice": 0,
         "maxPrice": 0,
-        "avgPrice": 4012.41,
+        "avgPrice": 4012.76,
         "cabezas": 8180
       }
     ]
@@ -2417,11 +2417,11 @@
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
-    "current": 518,
+    "current": 521,
     "prev": 518,
-    "change": 0,
+    "change": 0.6,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
-    "date": "2026-09-07"
+    "date": "2026-09-08"
   }
 }
