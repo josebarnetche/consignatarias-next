@@ -1,0 +1,52 @@
+name: gsc-historico
+
+# Baja la serie diaria completa de Search Console (16 meses disponibles en la API) y la
+# commitea como CSV en reports/gsc/. Manual: es para análisis de tendencia y proyección,
+# no para el pulso semanal (de eso se ocupa gsc-weekly-report.yml).
+#
+# Corre acá y no en local porque las credenciales de GSC viven como secretos del repo.
+
+on:
+  workflow_dispatch:
+    inputs:
+      from:
+        description: 'Fecha de inicio YYYY-MM-DD (default 2026-01-01)'
+        required: false
+        default: '2026-01-01'
+
+permissions:
+  contents: write
+
+jobs:
+  historico:
+    runs-on: ubuntu-latest
+    env:
+      GSC_SA_KEY: ${{ secrets.GSC_SA_KEY }}
+      GA4_SA_KEY: ${{ secrets.GA4_SA_KEY }}
+      GSC_OAUTH_CREDENTIALS: ${{ secrets.GSC_OAUTH_CREDENTIALS }}
+      GSC_OAUTH_TOKEN: ${{ secrets.GSC_OAUTH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar googleapis
+        run: npm install googleapis --no-save
+
+      - name: Bajar serie histórica
+        run: node scripts/gsc-historico.mjs --from "${{ github.event.inputs.from || '2026-01-01' }}"
+
+      - name: Commitear CSVs
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add reports/gsc/historico-diario.csv reports/gsc/historico-por-pagina.csv
+          if git diff --staged --quiet; then
+            echo "sin cambios"
+          else
+            git commit -m "data: serie histórica GSC desde ${{ github.event.inputs.from || '2026-01-01' }}"
+            git pull --rebase --autostash origin main
+            git push
+          fi
