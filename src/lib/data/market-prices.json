@@ -1884,8 +1884,8 @@
   },
   "corn": {
     "current": 241.3,
-    "prev": 241.9,
-    "change": -0.2,
+    "prev": 241.3,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
@@ -2713,8 +2713,8 @@
   },
   "soy": {
     "current": 517.5,
-    "prev": 521,
-    "change": -0.7,
+    "prev": 517.5,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
     "date": "2026-09-09"
