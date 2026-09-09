@@ -18336,6 +18336,25 @@
     "id": 965
   },
   {
+    "title": "Haciendas Generales",
+    "consignatariaName": "Javier Bardin",
+    "consignatariaSlug": "javier-bardin",
+    "date": "2026-09-29",
+    "time": null,
+    "location": "General La Madrid, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "General La Madrid Haciendas Generales",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 966,
+    "status": "scheduled"
+  },
+  {
     "title": "Remate 4x4 - Reproductores",
     "consignatariaName": "GANADEROS DE CERES COOPERATIVA LTDA.",
     "consignatariaSlug": "ganaderos-de-ceres-cooperativa-ltda",
@@ -18351,7 +18370,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "ganaderosdeceres.com.ar",
-    "id": 966,
+    "id": 967,
     "status": "scheduled"
   },
   {
@@ -18370,25 +18389,6 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 967,
-    "status": "scheduled"
-  },
-  {
-    "title": "Haciendas Generales",
-    "consignatariaName": "Javier Bardin",
-    "consignatariaSlug": "javier-bardin",
-    "date": "2026-09-29",
-    "time": null,
-    "location": "General La Madrid, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "General La Madrid Haciendas Generales",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 968,
     "status": "scheduled"
   },
