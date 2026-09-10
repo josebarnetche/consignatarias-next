@@ -15334,25 +15334,6 @@
     "status": "scheduled"
   },
   {
-    "title": "GORDOS, CONSERVA e INVERNADA",
-    "consignatariaName": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
-    "consignatariaSlug": "agricultores-federados-argentinos-soc-coop-lt",
-    "date": "2026-09-11",
-    "time": "10:00",
-    "location": "JUNIN, CORRIENTES",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "GORDOS, CONSERVA e INVERNADA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.afascl.com",
-    "id": 808,
-    "status": "scheduled"
-  },
-  {
     "title": "AFA | Junín | Gordos, conserva e invernada",
     "consignatariaName": "AFA",
     "consignatariaSlug": "afa",
@@ -15369,7 +15350,26 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled",
-    "id": 809
+    "id": 808
+  },
+  {
+    "title": "GORDOS, CONSERVA e INVERNADA",
+    "consignatariaName": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
+    "consignatariaSlug": "agricultores-federados-argentinos-soc-coop-lt",
+    "date": "2026-09-11",
+    "time": "10:00",
+    "location": "JUNIN, CORRIENTES",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "GORDOS, CONSERVA e INVERNADA",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.afascl.com",
+    "id": 809,
+    "status": "scheduled"
   },
   {
     "title": "Faena, Invernada y Cria - 10.30hs.",
@@ -15429,6 +15429,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Pepa Knubel y Ferrero | Invernada y cría",
+    "consignatariaName": "Pepa, Knubel y Ferrero S.R.L.",
+    "consignatariaSlug": "pepa-knubel-y-ferrero-s-r-l",
+    "date": "2026-09-11",
+    "time": "14:00",
+    "location": "",
+    "province": "",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Pepa Knubel y Ferrero | Invernada y cría",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6557-pepa-knubel-y-ferrero-invernada-y-cria",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled",
+    "id": 813
+  },
+  {
     "title": "Estancia San Carlos - LA PRIMAVERA TRAFUL Angus Colorado Auspicia Angus Por Canal Rural",
     "consignatariaName": "ALFREDO SEBASTIÁN MONDINO",
     "consignatariaSlug": "alfredo-sebastian-mondino",
@@ -15444,7 +15463,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6570-alfredo-s-mondino-la-primavera-de-traful",
     "source": "web",
     "sourceUrl": "alfredosmondino.com",
-    "id": 813,
+    "id": 814,
     "status": "scheduled"
   },
   {
@@ -15463,7 +15482,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "facebook.com/siveroycia/?loc",
-    "id": 814,
+    "id": 815,
     "status": "scheduled"
   },
   {
@@ -15482,7 +15501,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.haciendasvillaguay.com.ar",
-    "id": 815,
+    "id": 816,
     "status": "scheduled"
   },
   {
@@ -15501,7 +15520,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.umcsa.net/",
-    "id": 816,
+    "id": 817,
     "status": "scheduled"
   },
   {
@@ -15520,7 +15539,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6569-ofarrell-invernada-y-cria",
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 817,
+    "id": 818,
     "status": "scheduled"
   },
   {
@@ -15539,27 +15558,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/d9eb197c-5177-43d1-a3fc-b9b1807d98bf",
-    "id": 818,
+    "id": 819,
     "status": "scheduled"
-  },
-  {
-    "title": "Pepa Knubel y Ferrero | Invernada y cría",
-    "consignatariaName": "Pepa, Knubel y Ferrero S.R.L.",
-    "consignatariaSlug": "pepa-knubel-y-ferrero-s-r-l",
-    "date": "2026-09-11",
-    "time": "14:00",
-    "location": "",
-    "province": "",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Pepa Knubel y Ferrero | Invernada y cría",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6557-pepa-knubel-y-ferrero-invernada-y-cria",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled",
-    "id": 819
   },
   {
     "id": 820,
