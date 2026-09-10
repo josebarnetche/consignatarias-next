@@ -9,6 +9,7 @@ import {
   expoVigente,
   esMercedesCorrientes,
   casasConfirmadas,
+  esConcentradorPermanente,
 } from './expo-mercedes'
 
 describe('la rueda de remates de la Expo de Mercedes', () => {
@@ -77,8 +78,14 @@ describe('el dato que sostiene el destacado', () => {
   })
 
   it('la siguiente plaza del interior junta bastantes menos', () => {
+    // Cañuelas no cuenta: es el mercado concentrador, opera todas las semanas y junta
+    // firmas por mecánica propia, no porque haya una muestra. El 10-sep-2026 llegó a 6
+    // —las mismas que la rueda— y hacía fallar este test comparando cosas distintas.
     const siguiente = plazasPorConcentracion().find(
-      (p) => p.firmas <= pos.firmas && !/mercedes/i.test(p.sede),
+      (p) =>
+        p.firmas <= pos.firmas &&
+        !/mercedes/i.test(p.sede) &&
+        !esConcentradorPermanente(p.sede),
     )
     expect(siguiente).toBeDefined()
     expect(siguiente!.firmas).toBeLessThan(pos.firmas)

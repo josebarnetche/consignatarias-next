@@ -311,6 +311,24 @@ export function esMercedesCorrientes(sede: string): boolean {
   return s.includes('mercedes') && s.includes('corrientes') && !s.includes('villa mercedes')
 }
 
+/**
+ * ¿Esta sede es un mercado concentrador permanente, y no una plaza del interior?
+ *
+ * Cañuelas (el MAG) opera todas las semanas del año: en cualquier ventana de catorce días
+ * junta firmas por su propia mecánica, no porque haya una muestra. Compararlo contra la
+ * rueda anual de una sociedad rural es comparar cosas distintas — y el 10-sep-2026 el
+ * empate llegó: Cañuelas apareció con 6 firmas, las mismas que la rueda de Mercedes, y
+ * rompió el test que afirma que "la siguiente plaza del interior junta bastantes menos".
+ *
+ * El claim del sitio no cambia —Palermo y Expoagro siguen siendo las únicas por encima, y
+ * la siguiente rural del interior es Azul con 4— pero la comparación tiene que excluir a
+ * los concentradores para decir lo que dice que dice.
+ */
+export function esConcentradorPermanente(sede: string): boolean {
+  const s = normalizarSede(sede)
+  return s.includes('canuelas') || s.includes('cañuelas')
+}
+
 
 /**
  * Las casas distintas que ya está confirmado que rematan en la rueda.
