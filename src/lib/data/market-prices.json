@@ -2490,8 +2490,8 @@
   },
   "soy": {
     "current": 514,
-    "prev": 525.67,
-    "change": -2.2,
+    "prev": 514,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
     "date": "2026-09-11"
