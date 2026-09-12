@@ -15562,25 +15562,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Remate Feria de Haciendas Generales",
-    "consignatariaName": "ESTEBAN ABELENDA S.A.",
-    "consignatariaSlug": "esteban-abelenda-s-a",
-    "date": "2026-09-15",
-    "time": "10:00",
-    "location": "VERA, SANTA FE",
-    "province": "SANTA FE",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate Feria de Haciendas Generales",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.estebanabelenda.com.ar",
-    "id": 820,
-    "status": "scheduled"
-  },
-  {
     "title": "Esteban Abelenda | Feria La Guampita",
     "consignatariaName": "Esteban I. Abelenda",
     "consignatariaSlug": "esteban-i-abelenda",
@@ -15597,7 +15578,26 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled",
-    "id": 821
+    "id": 820
+  },
+  {
+    "title": "Remate Feria de Haciendas Generales",
+    "consignatariaName": "ESTEBAN ABELENDA S.A.",
+    "consignatariaSlug": "esteban-abelenda-s-a",
+    "date": "2026-09-15",
+    "time": "10:00",
+    "location": "VERA, SANTA FE",
+    "province": "SANTA FE",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Remate Feria de Haciendas Generales",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.estebanabelenda.com.ar",
+    "id": 821,
+    "status": "scheduled"
   },
   {
     "title": "haciendas gorda, invernada y cría",
@@ -15638,6 +15638,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Bellamar, El Bonete y Corral de Guardia | 10° Remate RIO CUARTO",
+    "consignatariaName": "Bellamar Estancias",
+    "consignatariaSlug": "bellamar-estancias",
+    "date": "2026-09-15",
+    "time": "14:00",
+    "location": "",
+    "province": "",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Bellamar, El Bonete y Corral de Guardia | 10° Remate RIO CUARTO",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6477-bellamar-el-bonete-y-corral-de-guardia-10-remate-rio-cuarto",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled",
+    "id": 824
+  },
+  {
     "title": "Gordo, invernada y cría",
     "consignatariaName": "DANIEL BLANCO Y CÍA. S.A.",
     "consignatariaSlug": "daniel-blanco-y-cia-s-a",
@@ -15653,7 +15672,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.danielblancosa.com.ar",
-    "id": 824,
+    "id": 825,
     "status": "scheduled"
   },
   {
@@ -15672,7 +15691,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "ganaderosdeceres.com.ar",
-    "id": 825,
+    "id": 826,
     "status": "scheduled"
   },
   {
@@ -15691,7 +15710,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.pedronoelireysrl.com.ar",
-    "id": 826,
+    "id": 827,
     "status": "scheduled"
   },
   {
@@ -15710,7 +15729,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 827,
+    "id": 828,
     "status": "scheduled"
   },
   {
@@ -15729,27 +15748,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 828,
+    "id": 829,
     "status": "scheduled"
-  },
-  {
-    "title": "Bellamar, El Bonete y Corral de Guardia | 10° Remate RIO CUARTO",
-    "consignatariaName": "Bellamar Estancias",
-    "consignatariaSlug": "bellamar-estancias",
-    "date": "2026-09-15",
-    "time": "14:00",
-    "location": "",
-    "province": "",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Bellamar, El Bonete y Corral de Guardia | 10° Remate RIO CUARTO",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6477-bellamar-el-bonete-y-corral-de-guardia-10-remate-rio-cuarto",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled",
-    "id": 829
   },
   {
     "title": "Faena",
@@ -15980,6 +15980,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Campos Bajos SRL | Gordo, invernada y cría",
+    "consignatariaName": "Campos Bajos SRL",
+    "consignatariaSlug": "campos-bajos-srl",
+    "date": "2026-09-16",
+    "time": "14:00",
+    "location": "",
+    "province": "",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "Campos Bajos SRL | Gordo, invernada y cría",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6613-campos-bajos-srl-gordo-invernada-y-cria",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled",
+    "id": 842
+  },
+  {
     "title": "Remate de Cabaña Arandú",
     "consignatariaName": "MONASTERIO TATTERSALL S.A.",
     "consignatariaSlug": "monasterio-tattersall-s-a",
@@ -15995,7 +16014,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.monasterio-tattersall.com",
-    "id": 842,
+    "id": 843,
     "status": "scheduled"
   },
   {
@@ -16014,7 +16033,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.umcsa.net/",
-    "id": 843,
+    "id": 844,
     "status": "scheduled"
   },
   {
@@ -16033,27 +16052,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 844,
+    "id": 845,
     "status": "scheduled"
-  },
-  {
-    "title": "Campos Bajos SRL | Gordo, invernada y cría",
-    "consignatariaName": "Campos Bajos SRL",
-    "consignatariaSlug": "campos-bajos-srl",
-    "date": "2026-09-16",
-    "time": "14:00",
-    "location": "",
-    "province": "",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "Campos Bajos SRL | Gordo, invernada y cría",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6613-campos-bajos-srl-gordo-invernada-y-cria",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled",
-    "id": 845
   },
   {
     "title": "Gordo, Invernada y Cría.",
