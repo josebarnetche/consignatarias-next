@@ -1,13 +1,13 @@
 {
-  "scrapedAt": "2026-09-07T13:33:54.030Z",
+  "scrapedAt": "2026-09-14T14:13:36.277Z",
   "source": "https://aps2.senasa.gov.ar/registros/faces/publico/establecimientos/tc_frigorificospublico.jsp",
   "ciclos": [
     "CICLO I - MAT.FRIG.",
     "CICLO II - ELABORADOR",
     "CICLO III - DADOR DE FRIO"
   ],
-  "totalRowsScraped": 1010,
-  "distinctCuits": 872,
+  "totalRowsScraped": 1008,
+  "distinctCuits": 869,
   "unparsableCuits": 0,
   "byCuit": {
     "30707283250": {
@@ -6826,6 +6826,29 @@
         "CICLO II - ELABORADOR"
       ]
     },
+    "30706334250": {
+      "cuit": "30706334250",
+      "tipo": "CICLO II - ELABORADOR",
+      "propietario": "EURO S A",
+      "nombre": "EURO S.A.",
+      "provincia": "SANTA FE",
+      "partido": "ROSARIO",
+      "localidad": "VILLA GOBERNADOR GALVEZ",
+      "nroOficial": "4115",
+      "actividades": [
+        "VI - TRIPERIA",
+        "XXII - ELABORACION DE MENUDENCIAS",
+        "XXV - PREPARACION PRODUCTOS QUIMICOS Y FARMACOLOGICOS C/MATERIA PRIMA DE ANIMALES",
+        "XXXII - DEPOSITO PARA TRIPAS ELABORADAS C/S FRACCIONAMIENTO",
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+        "XIX - 3. SOLO ENTRETENIMIENTO P/MASCOTAS",
+        "XXV - 4.  PREP. PROD. QUIM./FARMAC. C/MAT.PRIMA ORIGEN ANIMAL Y DEPOSITO BILIS DE  TERCEROS"
+      ],
+      "ciclos": [
+        "CICLO II - ELABORADOR",
+        "CICLO III - DADOR DE FRIO"
+      ]
+    },
     "30537620893": {
       "cuit": "30537620893",
       "tipo": "CICLO II - ELABORADOR",
@@ -10035,24 +10058,6 @@
         "CICLO II - ELABORADOR"
       ]
     },
-    "27352881789": {
-      "cuit": "27352881789",
-      "tipo": "CICLO II - ELABORADOR",
-      "propietario": "PAREDES MARIA GRACIELA",
-      "nombre": "\"MERCADITO LA RIOJA\" de MARIA GRACIELA PAREDES (DNI Nº: 35.288.178)",
-      "provincia": "FORMOSA",
-      "partido": "PILCOMAYO",
-      "localidad": "CLORINDA",
-      "nroOficial": "5659",
-      "actividades": [
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
-        "II - 6. SOLO ELABORACIÓN EMBUTIDOS COCIDOS",
-        "XII - 13. CUARTEO"
-      ],
-      "ciclos": [
-        "CICLO II - ELABORADOR"
-      ]
-    },
     "30503063871": {
       "cuit": "30503063871",
       "tipo": "CICLO II - ELABORADOR",
@@ -10076,15 +10081,17 @@
       "tipo": "CICLO II - ELABORADOR",
       "propietario": "MILLAN S A",
       "nombre": "MILLAN S A",
-      "provincia": "MENDOZA",
-      "partido": "LAS HERAS",
-      "localidad": "LAS HERAS",
-      "nroOficial": "5025",
+      "provincia": "CORDOBA",
+      "partido": "RIO CUARTO",
+      "localidad": "SANTA CATALINA (HOLMBERG)",
+      "nroOficial": "5208",
       "actividades": [
         "II - FABRICA DE CHACINADOS Y AFINES",
+        "XXII - ELABORACION DE MENUDENCIAS",
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
-        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
-        "LXIII - IMPORTACION PRODUCTOS DE LA PESCA EN CONSERVAS"
+        "XII - 4. DESPOSTADA BOVINA",
+        "II - 19. ELABORACION DE MILANESAS ENFRIADAS Y CONGELADAS",
+        "XII - 15. ELABORACION DE CARNE PICADA"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -12565,22 +12572,6 @@
         "CICLO II - ELABORADOR"
       ]
     },
-    "30509479115": {
-      "cuit": "30509479115",
-      "tipo": "CICLO II - ELABORADOR",
-      "propietario": "ESTANCIAS FERRO S A",
-      "nombre": "VALDES CREEK (ESTANCIAS FERRO S. A.)",
-      "provincia": "CHUBUT",
-      "partido": "BIEDMA",
-      "localidad": "PUERTO PIRAMIDES",
-      "nroOficial": "9002",
-      "actividades": [
-        "XXVIII - 4. BARRACA P/LANAS"
-      ],
-      "ciclos": [
-        "CICLO II - ELABORADOR"
-      ]
-    },
     "30687827518": {
       "cuit": "30687827518",
       "tipo": "CICLO II - ELABORADOR",
@@ -12676,22 +12667,6 @@
       "nroOficial": "4792",
       "actividades": [
         "XIX - 3. SOLO ENTRETENIMIENTO P/MASCOTAS"
-      ],
-      "ciclos": [
-        "CICLO II - ELABORADOR"
-      ]
-    },
-    "30716876787": {
-      "cuit": "30716876787",
-      "tipo": "CICLO II - ELABORADOR",
-      "propietario": "VML ALVEAR S.A.S.",
-      "nombre": "VML ALVEAR S.A.S.",
-      "provincia": "MENDOZA",
-      "partido": "GENERAL ALVEAR",
-      "localidad": "GENERAL ALVEAR",
-      "nroOficial": "3795",
-      "actividades": [
-        "III A - GRASERIA COMESTIBLE"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -13424,10 +13399,10 @@
       "tipo": "CICLO III - DADOR DE FRIO",
       "propietario": "CAROSSIO VAIROLATTI Y CIA SOC DE RESP LTDA",
       "nombre": "CAROSSIO VAIROLATTI Y CIA SOC DE RESP LTDA",
-      "provincia": "CORDOBA",
-      "partido": "CAPITAL",
-      "localidad": "CORDOBA",
-      "nroOficial": "4141",
+      "provincia": "CIUDAD AUTONOMA DE BUENOS AIRES",
+      "partido": "CIUDAD AUTONOMA DE BUENOS AIRES",
+      "localidad": "CORTEJARENA JOSE A. 2601/3600",
+      "nroOficial": "3322",
       "actividades": [
         "XXX - DEPOSITO PRODUCTOS CARNEOS",
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
@@ -14461,24 +14436,6 @@
         "CICLO III - DADOR DE FRIO"
       ]
     },
-    "30706334250": {
-      "cuit": "30706334250",
-      "tipo": "CICLO III - DADOR DE FRIO",
-      "propietario": "EURO S A",
-      "nombre": "EURO S A",
-      "provincia": "SANTA FE",
-      "partido": "ROSARIO",
-      "localidad": "VILLA GOBERNADOR GALVEZ",
-      "nroOficial": "5028",
-      "actividades": [
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
-        "XXV - 1. CONCENTRADO DE BILIS BOVINA",
-        "XXV - 2. ACONDICIONAMIENTO Y DEPÓSITO PRODUCTOS USO OPOTERÁPICO"
-      ],
-      "ciclos": [
-        "CICLO III - DADOR DE FRIO"
-      ]
-    },
     "30696719884": {
       "cuit": "30696719884",
       "tipo": "CICLO III - DADOR DE FRIO",
@@ -15401,10 +15358,10 @@
       "tipo": "CICLO III - DADOR DE FRIO",
       "propietario": "LOGISTICA LA SERENISIMA SA",
       "nombre": "LOGISTICA LA SERENISIMA S.A.",
-      "provincia": "NEUQUEN",
-      "partido": "CONFLUENCIA",
-      "localidad": "NEUQUEN",
-      "nroOficial": "3129",
+      "provincia": "SANTA FE",
+      "partido": "ROSARIO",
+      "localidad": "ROSARIO",
+      "nroOficial": "5586",
       "actividades": [
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
       ],
@@ -15657,12 +15614,14 @@
       "tipo": "CICLO III - DADOR DE FRIO",
       "propietario": "MATTINA HNOS S.A.C.I.A.N.",
       "nombre": "MATTINA HERMANOS SOCIEDAD ANONIMA COMERCIAL",
-      "provincia": "CHUBUT",
-      "partido": "BIEDMA",
-      "localidad": "PUERTO MADRYN",
-      "nroOficial": "5034",
+      "provincia": "CIUDAD AUTONOMA DE BUENOS AIRES",
+      "partido": "CIUDAD AUTONOMA DE BUENOS AIRES",
+      "localidad": "ARAOZ DE LAMADRID 101/1200",
+      "nroOficial": "4691",
       "actividades": [
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+        "L - LOCAL HABILITADO P/DEPOSITO CONSERVA DE PESCADO"
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
@@ -16444,11 +16403,12 @@
       "tipo": "CICLO III - DADOR DE FRIO",
       "propietario": "TRANSPORTES NUEVO HORIZONTE SOCIEDAD DE RESPONSABILIDAD LIMI",
       "nombre": "TRANSPORTE NUEVO HORIZONTE S.R.L.",
-      "provincia": "BUENOS AIRES",
-      "partido": "LA MATANZA",
-      "localidad": "LOMAS DEL MIRADOR",
-      "nroOficial": "1198",
+      "provincia": "CHUBUT",
+      "partido": "ESCALANTE",
+      "localidad": "COMODORO RIVADAVIA",
+      "nroOficial": "3961",
       "actividades": [
+        "XXX - 1. DEPOSITO Y TRANSBORDO DE MERCADERIAS",
         "XXX -  DEPOSITO PRODUCTOS CARNEOS"
       ],
       "ciclos": [
@@ -16531,12 +16491,13 @@
       "tipo": "CICLO III - DADOR DE FRIO",
       "propietario": "TRANSPORTES VESPRINI S A",
       "nombre": "TRANSPORTES VESPRINI S.A.",
-      "provincia": "CHUBUT",
-      "partido": "BIEDMA",
-      "localidad": "PUERTO MADRYN",
-      "nroOficial": "4939",
+      "provincia": "BUENOS AIRES",
+      "partido": "BAHIA BLANCA",
+      "localidad": "BAHIA BLANCA",
+      "nroOficial": "4838",
       "actividades": [
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+        "XXXIII - 1. SÓLO CÁMARA P/DEPÓSITO DE PESCADOS"
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
