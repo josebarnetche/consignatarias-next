@@ -1,23 +1,5 @@
 [
   {
-    "title": "Faena, Invernada y Cria - 13.00hs.",
-    "consignatariaName": "Goenaga",
-    "consignatariaSlug": "goenaga",
-    "date": "2026-09-15",
-    "time": "13:00",
-    "location": "Azul, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": 2000,
-    "description": "Azul Faena, Invernada y Cria - 13.00hs.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "liveLink": null
-  },
-  {
     "title": "Remate Virtual - 9.30hs.",
     "consignatariaName": "Madelán y Cía.",
     "consignatariaSlug": "madelan-y-cia",
@@ -27,7 +9,7 @@
     "province": "BUENOS AIRES",
     "type": "general",
     "mainCategory": "mixto",
-    "estimatedHeads": 2000,
+    "estimatedHeads": 1740,
     "description": "Capital Federal Remate Virtual - 9.30hs.",
     "youtubeUrl": null,
     "catalogUrl": null,
@@ -81,7 +63,7 @@
     "province": "BUENOS AIRES",
     "type": "invernada",
     "mainCategory": "mixto",
-    "estimatedHeads": 800,
+    "estimatedHeads": 1000,
     "description": "Bolivar. Faena, Invernada y Cria - 13.00hs.",
     "youtubeUrl": null,
     "catalogUrl": null,
@@ -153,7 +135,7 @@
     "province": "BUENOS AIRES",
     "type": "general",
     "mainCategory": "mixto",
-    "estimatedHeads": 1000,
+    "estimatedHeads": 1200,
     "description": "General La Madrid Haciendas Generales - 13.30hs.",
     "youtubeUrl": null,
     "catalogUrl": null,
@@ -171,7 +153,7 @@
     "province": "BUENOS AIRES",
     "type": "general",
     "mainCategory": "mixto",
-    "estimatedHeads": 500,
+    "estimatedHeads": 700,
     "description": "Huanguelen Faena - 10.30hs.",
     "youtubeUrl": null,
     "catalogUrl": null,
@@ -353,6 +335,24 @@
     "mainCategory": "mixto",
     "estimatedHeads": null,
     "description": "Macachín Haciendas Generales - 14.30hs.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "liveLink": null
+  },
+  {
+    "title": "Faena, Invernada y Cria",
+    "consignatariaName": "Hourcade Albelo y Cía.",
+    "consignatariaSlug": "hourcade-albelo-y-cia",
+    "date": "2026-09-22",
+    "time": null,
+    "location": "Rauch, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Rauch Faena, Invernada y Cria",
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
@@ -1134,24 +1134,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Colombo y Magliano | Especial Tres Cruces",
-    "consignatariaName": "Colombo y Magliano S.A.",
-    "consignatariaSlug": "colombo-y-magliano-s-a",
-    "date": "2026-09-14",
-    "time": "14:00",
-    "location": "",
-    "province": null,
-    "type": "especial",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Colombo y Magliano | Especial Tres Cruces",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6572-colombo-y-magliano-especial-tres-cruces",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "live"
-  },
-  {
     "title": "Esteban Abelenda | Feria La Guampita",
     "consignatariaName": "Esteban I. Abelenda",
     "consignatariaSlug": "esteban-i-abelenda",
@@ -1167,7 +1149,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6594-esteban-abelenda-feria-la-guampita",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Sociedad Rural de Jesús María - Consignaciones Córdoba",
@@ -1185,7 +1167,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6620-sociedad-rural-de-jesus-maria-consignaciones-cordoba",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Bellamar, El Bonete y Corral de Guardia | 10° Remate RIO CUARTO",
@@ -1203,7 +1185,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6477-bellamar-el-bonete-y-corral-de-guardia-10-remate-rio-cuarto",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Colombo y Magliano | Especial ExpoBra Invernada y cría",
@@ -1314,22 +1296,22 @@
     "status": "scheduled"
   },
   {
-    "title": "Colombo y Magliano | Especial Tres Cruces",
+    "title": "Colombo y Magliano | Especial Reproductores ExpoBra 2026",
     "consignatariaName": "Colombo y Magliano S.A.",
     "consignatariaSlug": "colombo-y-magliano-s-a",
-    "date": "2026-09-14",
+    "date": "2026-09-17",
     "time": "14:00",
     "location": "",
     "province": null,
-    "type": "especial",
-    "mainCategory": "mixto",
+    "type": "reproductores",
+    "mainCategory": "toros",
     "estimatedHeads": null,
-    "description": "Colombo y Magliano | Especial Tres Cruces",
+    "description": "Colombo y Magliano | Especial Reproductores ExpoBra 2026",
     "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6572-colombo-y-magliano-especial-tres-cruces",
+    "catalogUrl": "https://remates.elrural.com/remate/6578-colombo-y-magliano-especial-reproductores-expobra-2026",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "live"
+    "status": "scheduled"
   },
   {
     "title": "Esteban Abelenda | Feria La Guampita",
@@ -1347,7 +1329,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6594-esteban-abelenda-feria-la-guampita",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Sociedad Rural de Jesús María - Consignaciones Córdoba",
@@ -1365,7 +1347,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6620-sociedad-rural-de-jesus-maria-consignaciones-cordoba",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Bellamar, El Bonete y Corral de Guardia | 10° Remate RIO CUARTO",
@@ -1383,7 +1365,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6477-bellamar-el-bonete-y-corral-de-guardia-10-remate-rio-cuarto",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Colombo y Magliano | Especial ExpoBra Invernada y cría",
@@ -1489,6 +1471,24 @@
     "description": "Sociedad Rural de Rauch | Zar toros",
     "youtubeUrl": null,
     "catalogUrl": "https://remates.elrural.com/remate/6623-sociedad-rural-de-rauch-zar-toros",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled"
+  },
+  {
+    "title": "Colombo y Magliano | Especial Reproductores ExpoBra 2026",
+    "consignatariaName": "Colombo y Magliano S.A.",
+    "consignatariaSlug": "colombo-y-magliano-s-a",
+    "date": "2026-09-17",
+    "time": "14:00",
+    "location": "",
+    "province": null,
+    "type": "reproductores",
+    "mainCategory": "toros",
+    "estimatedHeads": null,
+    "description": "Colombo y Magliano | Especial Reproductores ExpoBra 2026",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6578-colombo-y-magliano-especial-reproductores-expobra-2026",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled"
