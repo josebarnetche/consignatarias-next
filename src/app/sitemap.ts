@@ -117,6 +117,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/cuanto-vale-un-toro`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/mercado/arrendamiento/liniers`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/mercado/arrendamiento/canuelas`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.8 },
+    // Índice MENSUAL (cierres oficiales mes a mes) — la intención "mensual" tenía 4.000 impr/mes sin página propia (GSC 09-2026).
+    { url: `${baseUrl}/mercado/arrendamiento/mensual`, lastModified: priceDate, changeFrequency: 'weekly', priority: 0.85 },
     // Tanda 2 — answer-pages informacionales de alto volumen.
     { url: `${baseUrl}/categorias-de-hacienda`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/razas-bovinas-argentina`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.8 },

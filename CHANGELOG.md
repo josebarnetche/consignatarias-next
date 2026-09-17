@@ -7,6 +7,27 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.204.0] — 2026-09-16
+
+### SEO desde Search Console: la página del índice MENSUAL y el título de precios por animal
+
+Auditoría de las 20 propiedades de GSC (`C:/Users/Usuario/proyectos/memola-tools/gsc-radar/auditorias/2026-09-16/`):
+consignatarias es el 87 % de las impresiones de la cuenta (254k/28d) con CTR 1,7 % en posición 6,4, estable
+día a día. Los títulos ya llevan el valor y la fecha, así que el margen no está en el snippet: está en
+cubrir intenciones que hoy caen en la página equivocada.
+
+- **`/mercado/arrendamiento/mensual`** (nueva): la intención "índice/precio novillo arrendamiento *mensual*"
+  sumaba ~4.000 impresiones/mes (pos 5,8–7,8) y aterrizaba en la página del valor DIARIO. Los sitios que
+  ganan esa búsqueda tienen archivo mes a mes; ahora nosotros también: todos los cierres oficiales de
+  `inmag_monthly_close` con variación mensual e interanual, promedio y extremos de 12 meses, liquidación de
+  ejemplo, FAQ, Dataset + FAQPage + Speakable. Enlazada desde la tabla mensual de `/mercado/arrendamiento`
+  y en el sitemap (prioridad 0,85).
+- **Título de `/precios/[categoria]`** pasa de "Precio Kilo Vivo Ternero Hoy: $X" a
+  "Precio Ternero Hoy: $X/kg vivo · 180 kg ≈ $Y": "precio ternero 180 kg hoy" (515 impr, CTR 0,2 %) busca
+  el animal, no el kilo. Mismo patrón para las 6 categorías.
+- Línea base para medir el efecto (no con intención): CTR por página y por query del 17-08 al 13-09 en
+  `gsc-audit-raw.json` de la auditoría. Releer a los 28 días con el modelo Zibecchi antes de afirmar nada.
+
 ## [1.203.0] — 2026-09-04
 
 ### La serie que se cobra tenía once agujeros, y el tablero daba verde

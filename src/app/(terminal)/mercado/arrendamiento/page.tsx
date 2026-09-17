@@ -678,7 +678,9 @@ export default async function ArrendamientoPage() {
             />
 
             <div className="px-6 py-4 border-t border-zinc-800/50 bg-zinc-900/50 flex items-center justify-between">
-              <span className="text-xs text-zinc-600">Últimos 12 meses</span>
+              <Link href="/mercado/arrendamiento/mensual" className="text-xs text-accent hover:text-accent-bright transition-colors">
+                Índice mensual: histórico completo mes a mes →
+              </Link>
               <Link 
                 href="/api/market/history?days=365&format=csv"
                 className="text-xs text-accent hover:text-accent-bright transition-colors flex items-center gap-1"
