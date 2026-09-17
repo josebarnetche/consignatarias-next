@@ -551,6 +551,14 @@ const FOOTER_COLUMNS: FooterColumn[] = [
       { label: "API", href: "/api-docs" },
       { label: "MCP para IAs", href: "/mcp" },
       { label: "Acceso institucional", href: "/enterprise#acceso-institucional" },
+      // Red de dominios de Memola (GSC 16-09-2026): la.com.ar, bovinos, ganado y semen tienen sus
+      // páginas en "URL is unknown to Google" / "Discovered - not indexed" porque ningún sitio
+      // rastreado las enlaza. Este footer sale en ~2.700 páginas que Google recorre a diario.
+      { label: "LA CADENA — tokenización", href: "https://la.com.ar/" },
+      { label: "bovinos.com.ar", href: "https://bovinos.com.ar/" },
+      { label: "ganado.com.ar", href: "https://ganado.com.ar/" },
+      { label: "semen.com.ar", href: "https://semen.com.ar/" },
+      { label: "Memola Medios", href: "https://memola.com.ar/" },
     ],
   },
   {
