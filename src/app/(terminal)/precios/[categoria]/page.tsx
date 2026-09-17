@@ -158,7 +158,9 @@ export async function generateMetadata({
   const changeStr = `${c.change >= 0 ? '+' : ''}${c.change}%`
   const lastUpdate = marketPrices.lastUpdate
 
-  const title = `Precio Kilo Vivo ${c.title} Hoy: $${fmt(price)} (INMAG ${INMAG_DATE})`
+  // GSC 09-2026: "precio ternero 180 kg hoy" (515 impr, pos 7,8, CTR 0,2 %) — el que busca quiere el
+  // animal entero, no sólo el kilo. El total del promedio va en el título, no sólo en la description.
+  const title = `Precio ${c.title} Hoy: $${fmt(price)}/kg vivo · ${c.promedioKg} kg ≈ $${fmt(price * c.promedioKg)} (INMAG ${INMAG_DATE})`
   const description = `Precio del kilo vivo de ${c.singular} hoy: $${fmt(price)} (${changeStr} semanal). Un ${c.singular} promedio de ${c.promedioKg} kg ronda los $${fmt(price * c.promedioKg)}. Actualizado ${lastUpdate} desde Mercado Agroganadero.`
 
   return {
@@ -177,7 +179,7 @@ export async function generateMetadata({
     ],
     openGraph: {
       images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
-      title: `Precio Kilo Vivo ${c.title} Hoy $${fmt(price)} — INMAG ${INMAG_DATE}`,
+      title: `Precio ${c.title} Hoy $${fmt(price)}/kg · ${c.promedioKg} kg ≈ $${fmt(price * c.promedioKg)} — INMAG ${INMAG_DATE}`,
       description,
       url: `https://www.consignatarias.com.ar/precios/${categoria}`,
       type: 'website',
