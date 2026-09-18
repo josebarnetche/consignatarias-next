@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { trackInformeCheckoutStart, trackInformeView } from '@/lib/analytics'
+import { emitValueBeacon, trackEvent, trackInformeCheckoutStart, trackInformeView } from '@/lib/analytics'
 
 interface Props {
   slug: string
@@ -44,10 +44,32 @@ export function ComprarInforme({ slug, nombre, precio, modalidad = 'compra-unica
     trackInformeView(slug, precio)
   }, [slug, precio])
 
+  function fallo(msg: string, status: number | null) {
+    // Apretó comprar y no abrió: eso es lo que hay que ver en el embudo. Entre el 31-ago y
+    // el 17-sep la API devolvió 500 en cada intento y no quedó rastro de ninguno.
+    trackEvent('informe_checkout_error', { informe_slug: slug, informe_variante: variante || '', status: status ?? 'network' })
+    emitValueBeacon('informe_checkout_error', { meta: { slug, variante, status, msg: msg.slice(0, 200) } })
+    setError(msg)
+    setLoading(false)
+  }
+
   async function comprar(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
     setLoading(true)
+    // El inicio del checkout es el clic, no la respuesta de Rebill. Si se cuenta recién
+    // después del éxito, un checkout roto se ve igual que una página que nadie compra.
+    let source: string | null = null
+    try {
+      source = sessionStorage.getItem(`informe_source:${slug}`)
+    } catch {
+      /* sin sessionStorage no pasa nada: el evento va como 'direct' */
+    }
+    trackInformeCheckoutStart(slug, precio, {
+      variante,
+      source: source || 'direct',
+      conFactura: quiereFactura,
+    })
     try {
       const res = await fetch(esSub ? '/api/informes/suscribir' : '/api/informes/checkout', {
         method: 'POST',
@@ -59,32 +81,22 @@ export function ComprarInforme({ slug, nombre, precio, modalidad = 'compra-unica
           ...(quiereFactura ? { razonSocial: razonSocial.trim(), cuit: cuit.trim() } : {}),
         }),
       })
-      const json = await res.json()
+      const json = await res.json().catch(() => null)
       if (!res.ok) {
-        setError(json?.error || 'No pudimos abrir el checkout. Probá de nuevo en un minuto.')
-        setLoading(false)
+        fallo(json?.error || 'No pudimos abrir el checkout. Probá de nuevo en un minuto.', res.status)
         return
       }
-      if (json.alreadyOwned) {
+      if (json?.alreadyOwned) {
         window.location.href = '/cuenta/informes'
         return
       }
-      // Con el link ya creado: cuenta intenciones que llegaron a Rebill, no errores nuestros.
-      let source: string | null = null
-      try {
-        source = sessionStorage.getItem(`informe_source:${slug}`)
-      } catch {
-        /* sin sessionStorage no pasa nada: el evento va como 'direct' */
+      if (!json?.checkoutUrl) {
+        fallo('No pudimos abrir el checkout. Probá de nuevo en un minuto.', res.status)
+        return
       }
-      trackInformeCheckoutStart(slug, precio, {
-        variante,
-        source: source || 'direct',
-        conFactura: quiereFactura,
-      })
       window.location.href = json.checkoutUrl
     } catch {
-      setError('No pudimos abrir el checkout. Probá de nuevo en un minuto.')
-      setLoading(false)
+      fallo('No pudimos abrir el checkout. Probá de nuevo en un minuto.', null)
     }
   }
 
@@ -175,7 +187,11 @@ export function ComprarInforme({ slug, nombre, precio, modalidad = 'compra-unica
         disabled={loading || !email.trim()}
         className="mt-6 w-full rounded bg-sky-600 px-4 py-3 font-medium text-white transition hover:bg-sky-500 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {loading ? 'Abriendo el pago…' : esSub ? 'Suscribirme con tarjeta' : 'Comprar con tarjeta'}
+        {loading
+          ? 'Abriendo el pago…'
+          : esSub
+            ? `Suscribirme · ARS ${precio.toLocaleString('es-AR')}/mes`
+            : `Comprar el informe · ARS ${precio.toLocaleString('es-AR')}`}
       </button>
 
       <p className="mt-3 text-center text-xs text-slate-500">

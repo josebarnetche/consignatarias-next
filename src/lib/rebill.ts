@@ -409,8 +409,14 @@ export async function createGuiaPurchaseLink(opts: {
  *
  *  2. **Los tres `redirectUrls`**. Los links viejos declaran sólo `approved`, así que una
  *     tarjeta rechazada deja al comprador varado en Rebill sin señal de vuelta. Acá se
- *     declaran también el rechazo y la cancelación, que caen en una página que le explica
+ *     declaran también el rechazo y el pago pendiente, que caen en una página que le explica
  *     qué pasó y cómo seguir. Es el escenario más probable con una tarjeta del exterior.
+ *
+ *     Las claves que Rebill v3 acepta en `redirectUrls` son EXACTAMENTE `approved`,
+ *     `rejected` y `pending` (verificado contra la API el 18-sep-2026). Mandar
+ *     `cancelled` devuelve 400 "property cancelled should not exist" y el checkout entero
+ *     muere antes de llegar a Rebill: así estuvo desde el alta de los informes hasta hoy,
+ *     con 0 ventas.
  */
 export async function createInformePurchaseLink(opts: {
   productoSlug: string
@@ -446,7 +452,7 @@ export async function createInformePurchaseLink(opts: {
     redirectUrls: {
       approved: `${appUrl}/cuenta/informes?comprado=${encodeURIComponent(opts.productoSlug)}`,
       rejected: `${appUrl}/informes/pago-no-completado?motivo=rechazado&p=${encodeURIComponent(opts.productoSlug)}`,
-      cancelled: `${appUrl}/informes/pago-no-completado?motivo=cancelado&p=${encodeURIComponent(opts.productoSlug)}`,
+      pending: `${appUrl}/informes/pago-no-completado?motivo=pendiente&p=${encodeURIComponent(opts.productoSlug)}`,
     },
     isSingleUse: true,
   }
@@ -472,7 +478,7 @@ export async function createInformePurchaseLink(opts: {
  * primer período al aprobar y después renueva solo, mandando `payment.success` en cada
  * ciclo — que es lo que corre `current_period_end` hacia adelante en el webhook.
  *
- * Lleva los tres `redirectUrls`, no sólo `approved`: una tarjeta rechazada en una alta de
+ * Lleva los tres `redirectUrls` (approved/rejected/pending, los únicos que Rebill acepta), no sólo `approved`: una tarjeta rechazada en una alta de
  * suscripción es igual de probable que en una compra, y sin la vuelta el interesado queda
  * varado sin que nos enteremos.
  */
@@ -505,7 +511,7 @@ export async function createProductoSubscriptionLink(opts: {
     redirectUrls: {
       approved: `${appUrl}/cuenta/informes?suscripto=${encodeURIComponent(opts.productoSlug)}`,
       rejected: `${appUrl}/informes/pago-no-completado?motivo=rechazado&p=${encodeURIComponent(opts.productoSlug)}`,
-      cancelled: `${appUrl}/informes/pago-no-completado?motivo=cancelado&p=${encodeURIComponent(opts.productoSlug)}`,
+      pending: `${appUrl}/informes/pago-no-completado?motivo=pendiente&p=${encodeURIComponent(opts.productoSlug)}`,
     },
     isSingleUse: false, // suscripción recurrente
   }

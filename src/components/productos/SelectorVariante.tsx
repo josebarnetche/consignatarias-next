@@ -27,6 +27,10 @@ export function SelectorVariante({
   modalidad,
   opciones,
   etiqueta = 'Elegí tu departamento',
+  placeholder = 'Mercedes, Curuzú Cuatiá, Ayacucho…',
+  textoCalculando = 'Calculando productividad de',
+  sinResultados = 'No encontramos esa zona. Puede que tenga menos de diez establecimientos, y en ese caso no la publicamos: con esa escala el dato dejaría de ser un agregado.',
+  mostrarTodas = false,
 }: {
   slug: string
   nombre: string
@@ -34,6 +38,16 @@ export function SelectorVariante({
   modalidad?: 'compra-unica' | 'suscripcion'
   opciones: OpcionVariante[]
   etiqueta?: string
+  placeholder?: string
+  /** "Calculando X…" — lo que se le dice que está pasando mientras aparece el formulario. */
+  textoCalculando?: string
+  sinResultados?: string
+  /**
+   * Con pocas opciones (el canon tiene decenas de zonas, no 455 departamentos) se muestra
+   * la lista entera sin obligar a adivinar cómo escribimos la zona. El buscador sigue
+   * filtrando encima.
+   */
+  mostrarTodas?: boolean
 }) {
   const [busqueda, setBusqueda] = useState('')
   const [elegida, setElegida] = useState<OpcionVariante | null>(null)
@@ -45,7 +59,7 @@ export function SelectorVariante({
       .replace(/[̀-ͯ]/g, '')
       .toLowerCase()
       .trim()
-    if (!q) return []
+    if (!q) return mostrarTodas ? opciones : []
     return opciones
       .filter((o) =>
         o.label
@@ -54,8 +68,8 @@ export function SelectorVariante({
           .toLowerCase()
           .includes(q),
       )
-      .slice(0, 8)
-  }, [busqueda, opciones])
+      .slice(0, mostrarTodas ? opciones.length : 8)
+  }, [busqueda, opciones, mostrarTodas])
 
   function elegir(o: OpcionVariante) {
     setElegida(o)
@@ -107,7 +121,7 @@ export function SelectorVariante({
           setBusqueda(e.target.value)
           setElegida(null)
         }}
-        placeholder="Mercedes, Curuzú Cuatiá, Ayacucho…"
+        placeholder={placeholder}
         autoComplete="off"
         disabled={calculando}
         className="mt-3 w-full rounded border border-slate-700 bg-slate-900 px-3 py-2.5 text-slate-100 placeholder:text-slate-600 focus:border-sky-600 focus:outline-none disabled:opacity-60"
@@ -116,12 +130,12 @@ export function SelectorVariante({
       {calculando && (
         <p className="mt-4 flex items-center gap-2 text-sm text-sky-300">
           <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-sky-700 border-t-sky-300" />
-          Calculando productividad de {elegida?.label}…
+          {textoCalculando} {elegida?.label}…
         </p>
       )}
 
       {!calculando && filtradas.length > 0 && (
-        <ul className="mt-2 divide-y divide-slate-800 overflow-hidden rounded border border-slate-800">
+        <ul className="mt-2 max-h-72 divide-y divide-slate-800 overflow-y-auto rounded border border-slate-800">
           {filtradas.map((o) => (
             <li key={o.slug}>
               <button
@@ -138,8 +152,7 @@ export function SelectorVariante({
 
       {!calculando && busqueda.trim().length > 1 && filtradas.length === 0 && (
         <p className="mt-3 text-sm text-slate-400">
-          No encontramos esa zona. Puede que tenga menos de diez establecimientos, y en ese
-          caso no la publicamos: con esa escala el dato dejaría de ser un agregado.
+          {sinResultados}
         </p>
       )}
     </div>

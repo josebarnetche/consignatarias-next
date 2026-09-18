@@ -118,6 +118,10 @@ export const VALUE_EVENTS = {
   // al newsletter (8): es la misma acción, con intención de compra declarada encima.
   informe_waitlist: { weight: 10, group: 'recurrencia', label: 'Se anotó a la espera de un informe' },
   informe_checkout_start: { weight: 30, group: 'funnel', label: 'Inició checkout de un informe' },
+  // Apretó comprar y el checkout no abrió (nuestra API o Rebill fallaron). Pesa casi nada
+  // porque no es valor: es la alarma. Entre el 31-ago y el 17-sep el checkout devolvió 500
+  // en cada intento y no quedó rastro, porque el start se emitía recién después del éxito.
+  informe_checkout_error: { weight: 1, group: 'funnel', label: 'El checkout de un informe no abrió' },
 
   // --- Conversión (la plata) ---
   subscription_paid: { weight: 100, group: 'conversion', label: 'Pago confirmado' },

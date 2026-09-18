@@ -54,6 +54,18 @@ export function zonasConCanon(): FilaTierra[] {
   return FILAS.filter((f) => f.kg_ha_mes_canon && f.kg_ha_mes_canon > 0)
 }
 
+/**
+ * Las opciones del "elegí tu zona" del sales page. El slug es la variante del entitlement
+ * (`slugZona`), que es lo mismo que espera `armarInformeCanon` al bajar el PDF: sin esta
+ * elección antes de pagar, la compra quedaba con variante vacía y la descarga no tenía
+ * zona que armar.
+ */
+export function variantesDisponibles(): Array<{ slug: string; label: string }> {
+  return zonasConCanon()
+    .map((f) => ({ slug: slugZona(f), label: nombreZona(f) }))
+    .sort((a, b) => a.label.localeCompare(b.label, 'es'))
+}
+
 export function buscarZona(slug: string): FilaTierra | null {
   return zonasConCanon().find((f) => slugZona(f) === slug) ?? null
 }
