@@ -28,9 +28,12 @@ jobs:
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
     steps:
       - uses: actions/checkout@v4
+      # Node 22, no 20: `@supabase/supabase-js` v2 exige WebSocket nativo y en Node 20
+      # aborta con "Node.js 20 detected without native WebSocket support". Local andaba
+      # porque la máquina tiene 22.17 — por eso el workflow se prueba, no se supone.
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Instalar cliente de Supabase
         run: npm install @supabase/supabase-js --no-save
