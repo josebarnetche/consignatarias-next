@@ -56,7 +56,6 @@ jobs:
           [ -n "${{ github.event.inputs.refresh }}" ] && ARGS="$ARGS --refresh ${{ github.event.inputs.refresh }}"
           node scripts/gsc-indexacion.mjs $ARGS
 
-<<<<<<< HEAD
       # `if: always()` porque el paso anterior consume cuota real de la API (2.000
       # inspecciones por día y propiedad). Sin esto, cancelar el job —o que se pase del
       # timeout— tira a la basura todo lo inspeccionado: el script guarda cada 50 URLs,
@@ -65,9 +64,6 @@ jobs:
       # y `main` nunca recibió el archivo.
       - name: Commitear resultados
         if: always()
-=======
-      - name: Commitear resultados
->>>>>>> origin/seo/gsc-portfolio-report
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

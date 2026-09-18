@@ -7,53 +7,6 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-## [1.205.0] — 2026-09-17
-
-### Los 604 términos "rozando la primera página", agrupados por intención — y las tres que caían en la página equivocada
-
-Radar GSC del 17-09 (`C:/Users/Usuario/proyectos/memola-tools/gsc-radar/reportes/consignatarias-com-ar/ultimo.md`,
-28 días al 15-09): 604 términos en posición 4-20 con ≥30 impresiones. Agrupados por intención sobre el crudo
-de la auditoría del 16-09 (555 términos con el corte de la auditoría, 79.168 impresiones, 786 clics): arrendamiento
-45.960 impr (58 %), CUIT 7.553, precio por categoría 6.828, consignatarias por nombre 6.382, glosario 3.221,
-frigoríficos 2.050, Cañuelas-precios 1.909, hectárea 74. El crudo no trae el cruce query×página (sólo totales por
-cada dimensión), así que la página que recibe cada intención se infirió por contenido; el cruce real con la API
-quedó bloqueado por permisos de credenciales en esta sesión.
-
-Tres intenciones tenían página, pero no la página que la búsqueda pide. Se mejoró la existente en cada caso —
-ninguna página nueva, para no canibalizar:
-
-- **`/mercado/canuelas`, rehecha como tablero de precios.** "mercado de cañuelas precios (hoy)", "precio hacienda
-  cañuelas", "precio mercado de cañuelas", "mercado de hacienda de cañuelas precios hoy": 23 términos, 1.909
-  impresiones/mes, posición 9-10, 25 clics. La página era la explicación de qué es Cañuelas con un solo número
-  (el INMAG). Ahora es la rueda completa: las 18 categorías del MAG (haciinfo000502) con mínimo, máximo, promedio y
-  cabezas desde `detailedCategories` del scraper, variación contra la rueda anterior desde `mag_prices_detailed`
-  (Supabase, `adminClientOpcional` → sin base la columna no aparece, nunca se inventa), promedio general y
-  cabezas de la rueda, procedencia por provincia (`provinceEntry`), seis tarjetas enlazadas a `/precios/[categoria]`,
-  FAQ con los números y los días de rueda, Dataset + FAQPage + Speakable. Título pasa a
-  "Precios Mercado de Cañuelas Hoy: novillo $X/kg · vaca $Y/kg".
-- **`/mercado/arrendamiento`, encabezado para "índice de arrendamiento" a secas.** "indice de arrendamiento"
-  (1.675 impr, pos 7,9, 3 clics), "indice arrendamiento" (1.049, pos 6,4, 7), "indice de arrendamiento rural"
-  (367), "indice arrendamiento novillo" (474): ~3.500 impresiones que llegaban a una página cuyo H1, título y
-  primer párrafo dicen "índice NOVILLO arrendamiento" — la frase escrita no aparecía en ningún encabezado y el
-  CTR quedaba en 0,2-0,7 %. Se agrega un H2 answer-first con el número del día y el del período, una FAQ
-  (visible y en el FAQPage) y las keywords. Sin tocar el título.
-- **`/campos/valuar`, respuesta nacional para "cuánto vale una hectárea en Argentina".** 74 impresiones en
-  posición 7 sin clics (más ~250 en variantes: "cuanto vale una hectarea", "…de campo", "precio de una hectarea
-  en argentina"). La página tenía la tabla de las 15 provincias pero el H1 y el título eran los del tasador
-  ("¿Cuánto vale mi campo?", búsqueda con cero impresiones en GSC). Ahora el H1 es la pregunta, el primer párrafo
-  responde con el rango real calculado de `tierra-por-kilo.json` (provincia más barata y más cara, zona más cara
-  y más barata; cambia solo cuando cambie el relevamiento), el título lleva el rango, y van Dataset + Speakable.
-  No se creó `/campos/valor-hectarea` como hub: habría duplicado esta tabla.
-
-Lo que se vio y no se tocó: los 25 términos con CTR bajo en top 3 ("cuanto vale una vaca viva en pesos
-argentinos", 504 impr, pos 2,9, CTR 0,6 %) son respuestas directas de Google o citas de IA — no es el título;
-los 90 términos de CUIT (7.553 impr) caen en fichas de frigoríficos y son búsquedas de verificación de
-contraparte (producto, no SEO); "feedlot"/"renspa" (3.221 impr, pos 8-10) ya tienen su página y lo que falta es
-autoridad, no contenido. Medición: releer el radar a los 28 días, por query, y pasar por Zibecchi antes de
-afirmar nada.
-=======
 ## [1.207.0] — 2026-09-17
 
 ### Fichas de frigoríficos: responder a quien pegó un CUIT
@@ -98,8 +51,7 @@ teníamos la localidad escondida en el registro SENASA al pie y 4 de las 5 ficha
   los 28 días con el modelo Zibecchi antes de afirmar nada.
 
 ---
->>>>>>> origin/seo/frigorificos-cuit
-=======
+
 ## [1.206.0] — 2026-09-17
 
 ### El tráfico SEO, medido y conectado a lo que se vende
@@ -146,7 +98,52 @@ corte antes que a su meta, y la mitad del rango alto es venta directa (PRO Consi
 las 49 firmas con clics, Frigorífico Destacado) que el tráfico señala pero no cierra.
 
 ---
->>>>>>> origin/feat/monetizar-trafico-seo
+
+## [1.205.0] — 2026-09-17
+
+### Los 604 términos "rozando la primera página", agrupados por intención — y las tres que caían en la página equivocada
+
+Radar GSC del 17-09 (`C:/Users/Usuario/proyectos/memola-tools/gsc-radar/reportes/consignatarias-com-ar/ultimo.md`,
+28 días al 15-09): 604 términos en posición 4-20 con ≥30 impresiones. Agrupados por intención sobre el crudo
+de la auditoría del 16-09 (555 términos con el corte de la auditoría, 79.168 impresiones, 786 clics): arrendamiento
+45.960 impr (58 %), CUIT 7.553, precio por categoría 6.828, consignatarias por nombre 6.382, glosario 3.221,
+frigoríficos 2.050, Cañuelas-precios 1.909, hectárea 74. El crudo no trae el cruce query×página (sólo totales por
+cada dimensión), así que la página que recibe cada intención se infirió por contenido; el cruce real con la API
+quedó bloqueado por permisos de credenciales en esta sesión.
+
+Tres intenciones tenían página, pero no la página que la búsqueda pide. Se mejoró la existente en cada caso —
+ninguna página nueva, para no canibalizar:
+
+- **`/mercado/canuelas`, rehecha como tablero de precios.** "mercado de cañuelas precios (hoy)", "precio hacienda
+  cañuelas", "precio mercado de cañuelas", "mercado de hacienda de cañuelas precios hoy": 23 términos, 1.909
+  impresiones/mes, posición 9-10, 25 clics. La página era la explicación de qué es Cañuelas con un solo número
+  (el INMAG). Ahora es la rueda completa: las 18 categorías del MAG (haciinfo000502) con mínimo, máximo, promedio y
+  cabezas desde `detailedCategories` del scraper, variación contra la rueda anterior desde `mag_prices_detailed`
+  (Supabase, `adminClientOpcional` → sin base la columna no aparece, nunca se inventa), promedio general y
+  cabezas de la rueda, procedencia por provincia (`provinceEntry`), seis tarjetas enlazadas a `/precios/[categoria]`,
+  FAQ con los números y los días de rueda, Dataset + FAQPage + Speakable. Título pasa a
+  "Precios Mercado de Cañuelas Hoy: novillo $X/kg · vaca $Y/kg".
+- **`/mercado/arrendamiento`, encabezado para "índice de arrendamiento" a secas.** "indice de arrendamiento"
+  (1.675 impr, pos 7,9, 3 clics), "indice arrendamiento" (1.049, pos 6,4, 7), "indice de arrendamiento rural"
+  (367), "indice arrendamiento novillo" (474): ~3.500 impresiones que llegaban a una página cuyo H1, título y
+  primer párrafo dicen "índice NOVILLO arrendamiento" — la frase escrita no aparecía en ningún encabezado y el
+  CTR quedaba en 0,2-0,7 %. Se agrega un H2 answer-first con el número del día y el del período, una FAQ
+  (visible y en el FAQPage) y las keywords. Sin tocar el título.
+- **`/campos/valuar`, respuesta nacional para "cuánto vale una hectárea en Argentina".** 74 impresiones en
+  posición 7 sin clics (más ~250 en variantes: "cuanto vale una hectarea", "…de campo", "precio de una hectarea
+  en argentina"). La página tenía la tabla de las 15 provincias pero el H1 y el título eran los del tasador
+  ("¿Cuánto vale mi campo?", búsqueda con cero impresiones en GSC). Ahora el H1 es la pregunta, el primer párrafo
+  responde con el rango real calculado de `tierra-por-kilo.json` (provincia más barata y más cara, zona más cara
+  y más barata; cambia solo cuando cambie el relevamiento), el título lleva el rango, y van Dataset + Speakable.
+  No se creó `/campos/valor-hectarea` como hub: habría duplicado esta tabla.
+
+Lo que se vio y no se tocó: los 25 términos con CTR bajo en top 3 ("cuanto vale una vaca viva en pesos
+argentinos", 504 impr, pos 2,9, CTR 0,6 %) son respuestas directas de Google o citas de IA — no es el título;
+los 90 términos de CUIT (7.553 impr) caen en fichas de frigoríficos y son búsquedas de verificación de
+contraparte (producto, no SEO); "feedlot"/"renspa" (3.221 impr, pos 8-10) ya tienen su página y lo que falta es
+autoridad, no contenido. Medición: releer el radar a los 28 días, por query, y pasar por Zibecchi antes de
+afirmar nada.
+
 
 ## [1.204.0] — 2026-09-16
 
