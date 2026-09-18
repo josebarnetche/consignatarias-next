@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { OfrecerGuia } from '@/components/guias/OfrecerGuia'
 import {
   SectionBreadcrumbSchema,
   DefinedTermSetSchema,
@@ -330,6 +331,18 @@ export default function ComoFuncionaUnRemateGanaderoPage() {
             </div>
           ))}
         </dl>
+
+        <OfrecerGuia
+          desde="como-funciona-un-remate"
+          titulo="Cómo se arma el remate desde adentro: abrir una consignataria"
+          loQueAgrega={[
+            'El circuito completo de un remate feria, día por día, desde la habilitación del predio (SENASA, Res. 924/2020) hasta la liquidación.',
+            'Matrícula de martillero, sociedad y ARCA, SIOCAL (ex RUCA): el trámite pantalla por pantalla, con costos y plazos.',
+            'Cobranza, plazos y el descalce entre lo que se cobra al comprador y lo que se paga al productor, con números.',
+            'Tres escenarios de capital de trabajo con precios de hoy y un plan para conseguir los primeros consignantes.',
+          ]}
+          gratisAca="Lo de arriba sigue siendo gratis: cómo funciona el remate, qué se descuenta y las preguntas frecuentes. La guía es para el que quiere organizarlos."
+        />
 
         {/* Enlazado interno denso a páginas hermanas */}
         <div className="border border-terminal-border bg-terminal-panel/40 px-panel py-3 space-y-2">
