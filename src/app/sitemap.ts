@@ -110,6 +110,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // listing/detail pages can reference scheduled auctions months ahead, so clamp any
   // data-derived date to today — these pages are rebuilt daily anyway.
   const todayStr = new Date().toISOString().slice(0, 10)
+  /** Corte de la ventana móvil de remates en el sitemap (ver el filtro más abajo). */
+  const hace90Dias = new Date(Date.now() - 90 * 864e5).toISOString().slice(0, 10)
   const clampToday = (d: string) => new Date(d > todayStr ? todayStr : d)
   const maxRemate = (rematesData as { date: string }[]).reduce((max, r) => (r.date > max ? r.date : max), '0000-00-00')
   const latestRemateDate = clampToday(maxRemate)
@@ -727,6 +729,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     status: string
   }[])
     .filter((r) => r.status === 'scheduled' || r.status === 'completed')
+    // Ventana móvil: un remate de hace más de 90 días no lo busca nadie y no puede
+    // convertir, pero seguía en el sitemap para siempre —no había ningún corte temporal—.
+    // Al 17-sep-2026 eran 566 fichas pasadas mudas: el 17% del sitemap gastando
+    // presupuesto de rastreo que necesitan las secciones que sí aparecen. La página no se
+    // borra ni se redirige: sigue viva para quien llegue por un enlace; sólo sale del
+    // sitemap.
+    .filter((r) => r.date >= hace90Dias)
     .map((r) => {
       const slug = [
         r.consignatariaSlug || 'remate',
@@ -734,11 +743,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         r.province?.toLowerCase().replace(/\s+/g, '-') || 'argentina',
         r.date,
       ].join('-')
+      // Un remate que todavía no ocurrió es el que contesta "¿a qué remate voy?" y es el
+      // único con valor comercial. Iban todos con priority 0.5 fija, el de la semana que
+      // viene igual que uno de marzo: 148 de los 213 remates futuros (69% de la agenda)
+      // no tenían una sola impresión en 28 días.
+      const futuro = r.date >= todayStr
       return {
         url: `${baseUrl}/remates/${slug}`,
         lastModified: clampToday(r.date),
-        changeFrequency: 'weekly' as const,
-        priority: 0.5,
+        changeFrequency: futuro ? ('daily' as const) : ('monthly' as const),
+        priority: futuro ? 0.9 : 0.3,
       }
     })
 
