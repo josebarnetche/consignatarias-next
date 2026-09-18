@@ -1838,61 +1838,61 @@
   "categories": {
     "novillos": {
       "current": 3979,
-      "prev": 4033.59,
-      "change": -1.4,
+      "prev": 3979,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 887
     },
     "novillitos": {
       "current": 3780,
-      "prev": 4436.73,
-      "change": -14.8,
+      "prev": 3780,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 831
     },
     "vaquillonas": {
       "current": 3581,
-      "prev": 4093.42,
-      "change": -12.5,
+      "prev": 3581,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 1329
     },
     "vacas": {
       "current": 2865,
-      "prev": 2977.47,
-      "change": -3.8,
+      "prev": 2865,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "latestVolume": 2212
     },
     "toros": {
       "current": 2586,
-      "prev": 3223.87,
-      "change": -19.8,
+      "prev": 2586,
+      "change": 0,
       "source": "MAG (derived from INMAG)",
       "sioWeek": "Sem 9",
       "latestVolume": 256
     },
     "terneros": {
       "current": 4377,
-      "prev": 4437,
-      "change": -1.4,
+      "prev": 4377,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
-    "current": 243.93,
+    "current": 242.64,
     "prev": 243.93,
-    "change": 0,
+    "change": -0.5,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
     "current": 1550,
-    "prev": 1555,
-    "change": -0.3,
+    "prev": 1550,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
@@ -2489,11 +2489,11 @@
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
-    "current": 521.67,
+    "current": 515,
     "prev": 521.67,
-    "change": 0,
+    "change": -1.3,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
-    "date": "2026-09-17"
+    "date": "2026-09-18"
   }
 }
