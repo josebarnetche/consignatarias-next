@@ -1,14 +1,29 @@
 {
-  "generado": "2026-09-18T04:00:01.279Z",
+  "generado": "2026-09-18T12:56:24.282Z",
   "ventanaDias": 30,
   "minimoPublicable": 8,
   "totales": {
-    "fichasConDato": 81,
+    "fichasConDato": 80,
     "fichasVistas": 799,
-    "visitas": 2878,
+    "visitas": 2879,
     "consultas": 11
   },
   "fichas": {
+    "cooperativa-guillermo-lehmann": {
+      "tipo": "consignataria",
+      "visitas": 26,
+      "consultas": 0
+    },
+    "daniel-blanco": {
+      "tipo": "consignataria",
+      "visitas": 9,
+      "consultas": 0
+    },
+    "30708327162": {
+      "tipo": "frigorifico",
+      "visitas": 14,
+      "consultas": 0
+    },
     "mondino": {
       "tipo": "consignataria",
       "visitas": 11,
@@ -31,7 +46,7 @@
     },
     "ganaderos-de-formosa": {
       "tipo": "consignataria",
-      "visitas": 14,
+      "visitas": 12,
       "consultas": 0
     },
     "gananor-pujol": {
@@ -71,17 +86,12 @@
     },
     "30707283250": {
       "tipo": "frigorifico",
-      "visitas": 46,
+      "visitas": 45,
       "consultas": 0
     },
     "30708202025": {
       "tipo": "frigorifico",
       "visitas": 11,
-      "consultas": 0
-    },
-    "30605624010": {
-      "tipo": "frigorifico",
-      "visitas": 8,
       "consultas": 0
     },
     "umc-villaguay": {
@@ -121,17 +131,12 @@
     },
     "33626365669": {
       "tipo": "frigorifico",
-      "visitas": 17,
+      "visitas": 16,
       "consultas": 0
     },
     "30587438182": {
       "tipo": "frigorifico",
       "visitas": 8,
-      "consultas": 0
-    },
-    "cooperativa-guillermo-lehmann": {
-      "tipo": "consignataria",
-      "visitas": 25,
       "consultas": 0
     },
     "hasenkamp": {
@@ -147,11 +152,6 @@
     "30715845101": {
       "tipo": "frigorifico",
       "visitas": 8,
-      "consultas": 0
-    },
-    "daniel-blanco": {
-      "tipo": "consignataria",
-      "visitas": 9,
       "consultas": 0
     },
     "30695160417": {
@@ -184,14 +184,9 @@
       "visitas": 8,
       "consultas": 0
     },
-    "30708327162": {
-      "tipo": "frigorifico",
-      "visitas": 14,
-      "consultas": 0
-    },
     "30708330295": {
       "tipo": "frigorifico",
-      "visitas": 14,
+      "visitas": 13,
       "consultas": 0
     },
     "reggi": {
