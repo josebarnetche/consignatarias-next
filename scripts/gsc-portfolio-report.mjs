@@ -65,11 +65,18 @@ const EMPTY = { clicks: 0, impressions: 0, ctr: 0, position: 0 }
 async function porPropiedad(sc, site, r) {
   const q = (body) => sc.searchanalytics.query({ siteUrl: site, requestBody: { ...body, type: 'web' } }).then((x) => x.data.rows || []).catch(() => [])
   const tot = (s, e) => ({ startDate: s, endDate: e, dimensions: [] })
-  const [curT, prevT, m28T, queries, pages] = await Promise.all([
+  const [curT, prevT, m28T, queries, pages, q28] = await Promise.all([
     q(tot(r.start, r.end)), q(tot(r.pstart, r.pend)), q(tot(r.m28, r.end)),
     q({ startDate: r.start, endDate: r.end, dimensions: ['query'], rowLimit: 3 }),
     q({ startDate: r.m28, endDate: r.end, dimensions: ['page'], rowLimit: 5000 }),
+    q({ startDate: r.m28, endDate: r.end, dimensions: ['query'], rowLimit: 1000 }),
   ])
+  // "Rozando la primera página" (criterio del gsc-radar): posición 4-20 con muestra real en
+  // 28 días. Es donde un cambio de contenido rinde más: no hay que crear demanda, hay que
+  // subir dos escalones. Top 5 por impresiones. ⚠ = en 28 días no recibió ni un clic.
+  const rozando = q28.filter((x) => x.impressions >= 30 && x.position >= 4 && x.position <= 20)
+    .sort((a, b) => b.impressions - a.impressions).slice(0, 5)
+    .map((x) => ({ q: x.keys[0], impr: x.impressions, clicks: x.clicks, pos: x.position }))
   let inspect = null
   try {
     // La home cuenta la historia de indexación del dominio; en las propiedades de dominio, la
@@ -83,7 +90,7 @@ async function porPropiedad(sc, site, r) {
   return {
     site, label: label(site),
     cur: curT[0] || EMPTY, prev: prevT[0] || EMPTY, m28: m28T[0] || EMPTY,
-    queries, pagesConImpr: pages.length, pagesConClic: pages.filter((p) => p.clicks > 0).length,
+    queries, rozando, pagesConImpr: pages.length, pagesConClic: pages.filter((p) => p.clicks > 0).length,
     home: inspect ? { verdict: inspect.verdict, coverage: inspect.coverageState, lastCrawl: (inspect.lastCrawlTime || '').slice(0, 10) } : null,
     sitemaps: sitemaps.map((s) => ({ path: s.path, errors: Number(s.errors || 0), warnings: Number(s.warnings || 0), lastDownloaded: (s.lastDownloaded || '').slice(0, 10) })),
   }
@@ -138,6 +145,13 @@ function buildHtml({ r, props, total, prevTotal, alerts, week }) {
     for (const p of conQueries) body += `<tr><td style="padding:7px 10px;border-top:1px solid ${C.line};font-size:12px;color:${C.ink}"><b>${esc(p.label)}</b> — ${p.queries.map((q) => `${esc(q.keys[0])} <span style="color:${C.muted}">(${nf(q.clicks)} clics · pos ${q.position.toFixed(1)})</span>`).join(' · ')}</td></tr>`
     body += `</table></td></tr>`
   }
+  const conRozando = props.filter((p) => p.rozando.length)
+  if (conRozando.length) {
+    body += `<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:18px 8px 4px"><div style="font-size:15px;font-weight:700;color:${C.carbon}">Rozando la primera página · 28 días</div><div style="font-size:12px;color:${C.muted}">Posición 4-20 con impresiones reales: subir dos escalones vale más que crear demanda. ⚠ = cero clics.</div></td></tr>`
+    body += `<tr><td style="padding:0 8px"><table width="100%" cellpadding="0" cellspacing="0" style="background:#fff;border:1px solid ${C.line};border-radius:10px">`
+    for (const p of conRozando) body += `<tr><td style="padding:7px 10px;border-top:1px solid ${C.line};font-size:12px;color:${C.ink}"><b>${esc(p.label)}</b> — ${p.rozando.map((x) => `${x.clicks === 0 ? '⚠ ' : ''}${esc(x.q)} <span style="color:${C.muted}">(${nf(x.impr)} impr · ${nf(x.clicks)} clics · pos ${x.pos.toFixed(1)})</span>`).join(' · ')}</td></tr>`
+    body += `</table></td></tr></table>`
+  }
   body += `</table>`
   return `<!doctype html><html><body style="margin:0;background:${C.bg};font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif"><table width="100%" cellpadding="0" cellspacing="0" style="background:${C.bg}"><tr><td align="center" style="padding:24px 12px"><table width="640" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%">
     <tr><td style="background:${C.carbon};border-radius:12px 12px 0 0;padding:20px 24px"><div style="color:#fff;font-size:18px;font-weight:700">Memola Medios <span style="color:${C.cielo}">·</span> Search Console</div><div style="color:#94a3b8;font-size:13px;margin-top:2px">Portfolio semanal · ${props.length} propiedades · ${week}</div></td></tr>
@@ -154,6 +168,8 @@ function buildMd({ r, props, total, prevTotal, alerts, week }) {
   for (const p of props) L.push(`| ${p.label} | ${nf(p.cur.clicks)} | ${pct(p.cur.clicks, p.prev.clicks)}% | ${nf(p.cur.impressions)} | ${(p.cur.ctr * 100).toFixed(1)}% | ${p.cur.position ? p.cur.position.toFixed(1) : '—'} | ${nf(p.pagesConImpr)} | ${p.home ? p.home.coverage : '—'} | ${p.sitemaps.length ? p.sitemaps.map((s) => `${s.errors ? '⚠️ ' : ''}${s.path.replace(/^https?:\/\/[^/]+/, '')}`).join(', ') : '—'} |`)
   L.push(``, `## Top queries de la semana`, ``)
   for (const p of props) if (p.queries.length && p.cur.clicks > 0) L.push(`- **${p.label}**: ${p.queries.map((q) => `${q.keys[0]} (${nf(q.clicks)} clics, pos ${q.position.toFixed(1)})`).join(' · ')}`)
+  L.push(``, `## Rozando la primera página (28 días, pos 4-20, ≥30 impr; ⚠ = cero clics)`, ``)
+  for (const p of props) if (p.rozando.length) L.push(`- **${p.label}**: ${p.rozando.map((x) => `${x.clicks === 0 ? '⚠ ' : ''}${x.q} (${nf(x.impr)} impr · ${nf(x.clicks)} clics · pos ${x.pos.toFixed(1)})`).join(' · ')}`)
   return L.join('\n') + '\n'
 }
 
