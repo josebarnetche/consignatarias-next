@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 import marketPrices from '@/lib/data/market-prices.json'
 import {
   SectionBreadcrumbSchema,
@@ -293,6 +294,22 @@ export default function ArrendamientoCanuelasPage() {
               </details>
             ))}
           </div>
+        </section>
+
+        {/* Ver nota en la página de Liniers: el puente faltaba en las dos plazas. */}
+        <section className="mb-10">
+          <OfrecerInforme
+            producto="informe-canon-arrendamiento"
+            desde="/mercado/arrendamiento/canuelas"
+            titulo="Ya sabés cómo se forma el índice. ¿Y cuánto se paga en tu zona?"
+            loQueAgrega={[
+              'La dispersión de tu zona: el piso, el techo y sobre cuántos casos se calculó.',
+              'Las zonas limítrofes, para comparar más allá del alambrado.',
+              'Los kilos por hectárea que produce la zona, que es contra lo que se mide si el canon cierra.',
+              'Los años de arrendamiento necesarios para recuperar el valor de la tierra.',
+            ]}
+            gratisAca="El cierre mensual, la serie y la metodología de esta página son gratis y van a seguir siéndolo."
+          />
         </section>
 
         {/* Links internos fuertes */}

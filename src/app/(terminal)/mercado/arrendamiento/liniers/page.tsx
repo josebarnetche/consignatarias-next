@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 import marketPrices from '@/lib/data/market-prices.json'
 import {
   SectionBreadcrumbSchema,
@@ -221,6 +222,25 @@ export default function ArrendamientoLiniersPage() {
               </details>
             ))}
           </div>
+        </section>
+
+        {/* El puente al informe faltaba en las dos plazas: el 44% de las impresiones del
+            tema (35.119 en 28 días) caía en páginas sin salida comercial, mientras el
+            componente vivía sólo en la página madre. Va DESPUÉS de que la página entregó
+            su respuesta, y declara qué sigue siendo gratis. */}
+        <section className="mb-10">
+          <OfrecerInforme
+            producto="informe-canon-arrendamiento"
+            desde="/mercado/arrendamiento/liniers"
+            titulo="Tu contrato dice Liniers. ¿Sabés contra qué número se liquida hoy?"
+            loQueAgrega={[
+              'Qué paga tu zona de verdad: el rango entre el cuartil de abajo y el de arriba, y sobre cuántos casos sale.',
+              'Cómo se traduce una cláusula escrita para Liniers al índice que hoy publica el Mercado Agroganadero.',
+              'Las zonas vecinas, para saber si el canon que te ofrecen está adentro o afuera de lo que se paga alrededor.',
+              'Cuántos años de arrendamiento hacen falta para recuperar el valor de la hectárea en esa zona.',
+            ]}
+            gratisAca="El índice del día, la serie y la explicación de esta página son gratis y van a seguir siéndolo."
+          />
         </section>
 
         {/* Related */}
