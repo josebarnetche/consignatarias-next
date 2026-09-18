@@ -96,11 +96,22 @@ async function main() {
     }
   }
 
+  // Slugs canónicos de firma, para descartar las páginas de PROVINCIA.
+  // `/consignatarias/<slug>` sirve dos cosas distintas: la ficha de una firma y el listado
+  // provincial (`/consignatarias/buenos-aires` = "64 activas con remates"). La expresión
+  // de arriba no las distingue, así que la primera versión de este JSON publicó
+  // "buenos-aires" como si fuera una consignataria con 23 visitas.
+  const { data: firmas, error: eFirmas } = await db.from('consignatarias').select('canonical_slug')
+  if (eFirmas) throw new Error(`consignatarias: ${eFirmas.message}`)
+  const slugsFirma = new Set((firmas || []).map((f) => f.canonical_slug).filter(Boolean))
+
   const fichas = {}
   for (const [path, sesiones] of vistas) {
     const visitas = sesiones.size
     if (visitas < MINIMO_PUBLICABLE) continue
     const clave = path.replace(/^\/(frigorificos|consignatarias)\//, '')
+    // Una página de provincia no es una ficha: no tiene dueño a quien mostrarle su demanda.
+    if (path.startsWith('/consignatarias') && !slugsFirma.has(clave)) continue
     fichas[clave] = {
       tipo: path.startsWith('/frigorificos') ? 'frigorifico' : 'consignataria',
       visitas,

@@ -1,14 +1,34 @@
 {
-  "generado": "2026-09-18T12:56:24.282Z",
+  "generado": "2026-09-18T15:00:14.998Z",
   "ventanaDias": 30,
   "minimoPublicable": 8,
   "totales": {
-    "fichasConDato": 80,
-    "fichasVistas": 799,
-    "visitas": 2879,
+    "fichasConDato": 77,
+    "fichasVistas": 796,
+    "visitas": 2864,
     "consultas": 11
   },
   "fichas": {
+    "30718914104": {
+      "tipo": "frigorifico",
+      "visitas": 17,
+      "consultas": 0
+    },
+    "pastore": {
+      "tipo": "consignataria",
+      "visitas": 21,
+      "consultas": 0
+    },
+    "jauregui-lorda": {
+      "tipo": "consignataria",
+      "visitas": 17,
+      "consultas": 0
+    },
+    "30711928649": {
+      "tipo": "frigorifico",
+      "visitas": 8,
+      "consultas": 0
+    },
     "cooperativa-guillermo-lehmann": {
       "tipo": "consignataria",
       "visitas": 26,
@@ -59,11 +79,6 @@
       "visitas": 9,
       "consultas": 0
     },
-    "buenos-aires": {
-      "tipo": "consignataria",
-      "visitas": 23,
-      "consultas": 0
-    },
     "la-ganadera": {
       "tipo": "consignataria",
       "visitas": 21,
@@ -81,7 +96,7 @@
     },
     "30707810692": {
       "tipo": "frigorifico",
-      "visitas": 18,
+      "visitas": 17,
       "consultas": 0
     },
     "30707283250": {
@@ -104,11 +119,6 @@
       "visitas": 9,
       "consultas": 0
     },
-    "jauregui-lorda": {
-      "tipo": "consignataria",
-      "visitas": 16,
-      "consultas": 0
-    },
     "30707521992": {
       "tipo": "frigorifico",
       "visitas": 9,
@@ -119,14 +129,9 @@
       "visitas": 9,
       "consultas": 0
     },
-    "pastore": {
-      "tipo": "consignataria",
-      "visitas": 20,
-      "consultas": 0
-    },
     "30716286823": {
       "tipo": "frigorifico",
-      "visitas": 26,
+      "visitas": 25,
       "consultas": 0
     },
     "33626365669": {
@@ -141,7 +146,7 @@
     },
     "hasenkamp": {
       "tipo": "consignataria",
-      "visitas": 29,
+      "visitas": 28,
       "consultas": 0
     },
     "30716497778": {
@@ -177,11 +182,6 @@
     "pedro-noel-irey": {
       "tipo": "consignataria",
       "visitas": 23,
-      "consultas": 0
-    },
-    "30714227102": {
-      "tipo": "frigorifico",
-      "visitas": 8,
       "consultas": 0
     },
     "30708330295": {
@@ -266,7 +266,7 @@
     },
     "30535168608": {
       "tipo": "frigorifico",
-      "visitas": 9,
+      "visitas": 8,
       "consultas": 0
     },
     "30656459502": {
@@ -316,7 +316,7 @@
     },
     "30517307099": {
       "tipo": "frigorifico",
-      "visitas": 17,
+      "visitas": 16,
       "consultas": 0
     },
     "30690043226": {
@@ -349,11 +349,6 @@
       "visitas": 8,
       "consultas": 0
     },
-    "30718914104": {
-      "tipo": "frigorifico",
-      "visitas": 17,
-      "consultas": 0
-    },
     "30666277550": {
       "tipo": "frigorifico",
       "visitas": 11,
@@ -361,7 +356,7 @@
     },
     "30711856141": {
       "tipo": "frigorifico",
-      "visitas": 26,
+      "visitas": 25,
       "consultas": 1
     },
     "30709051632": {
@@ -372,11 +367,6 @@
     "30636345454": {
       "tipo": "frigorifico",
       "visitas": 13,
-      "consultas": 0
-    },
-    "entre-rios": {
-      "tipo": "consignataria",
-      "visitas": 20,
       "consultas": 0
     },
     "30708126191": {
@@ -391,17 +381,12 @@
     },
     "lalor": {
       "tipo": "consignataria",
-      "visitas": 20,
+      "visitas": 19,
       "consultas": 0
     },
     "30712060677": {
       "tipo": "frigorifico",
       "visitas": 9,
-      "consultas": 0
-    },
-    "30710138911": {
-      "tipo": "frigorifico",
-      "visitas": 8,
       "consultas": 0
     },
     "30718189221": {
