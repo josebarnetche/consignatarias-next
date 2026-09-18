@@ -35,8 +35,12 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Instalar cliente de Supabase
-        run: npm install @supabase/supabase-js --no-save
+      # `npm install <paquete> --no-save` sobre un arbol manejado por pnpm rompe con
+      # "Cannot read properties of null (reading 'edgesOut')". Se instala el proyecto
+      # entero con --legacy-peer-deps, que es lo que ya hacen scrape-auctions y el resto:
+      # @supabase/supabase-js ^2.98.0 ya es dependencia del repo, no hace falta sumarla.
+      - name: Instalar dependencias
+        run: npm install --legacy-peer-deps
 
       - name: Calcular demanda por ficha
         run: node scripts/demanda-fichas.mjs
