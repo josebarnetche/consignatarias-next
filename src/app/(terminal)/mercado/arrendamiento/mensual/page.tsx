@@ -6,6 +6,8 @@ import { adminClientOpcional } from '@/lib/supabase-server'
 import { SectionBreadcrumbSchema, DatasetSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { Delta, DataTable, PriceCell, type DataColumn } from '@/components/ui'
 import { signedTone } from '@/lib/ui/tokens'
+import ArrendamientoLiquidacionSignup from '@/components/ArrendamientoLiquidacionSignup'
+import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 
 // SSG con rebuild diario: los cierres mensuales cambian una vez por mes (cron monthly-close),
 // el período vigente lo actualiza el scraper 14:00 ART → git commit → Vercel.
@@ -278,6 +280,38 @@ export default async function ArrendamientoMensualPage() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Captura + informe, pegados al número — no al final.
+            Esta página nació el 16-sep sin ninguna oferta ni captura (v1.204.0): entregaba
+            los 32 cierres y despedía al visitante. El que llega acá buscó "índice novillo
+            arrendamiento mensual" (~4.000 impresiones/mes en GSC): es la persona que liquida
+            un canon, la misma audiencia de la página diaria. Ahí, medido el 31-ago, los
+            bloques al final del documento quedaban a 7,4 pantallas y nadie los veía; a 2,1
+            pantallas empezaron a registrar clics. Por eso van acá, después de que las tres
+            tarjetas ya dieron el número, y ANTES de la tabla. `page`/`desde` distintos de la
+            página diaria para poder medir cuál de las dos trabaja para el producto.
+            El canon en vivo se calcula con el ÚLTIMO CIERRE MENSUAL, que es lo que esta
+            página promete: el número que se liquida, no el del día. */}
+        <section className="mb-6">
+          <ArrendamientoLiquidacionSignup
+            priceToday={last?.inmag ?? arr.periodIndex}
+            page="/mercado/arrendamiento/mensual"
+          />
+        </section>
+        <div className="mb-10">
+          <OfrecerInforme
+            producto="informe-canon-arrendamiento"
+            desde="/mercado/arrendamiento/mensual"
+            titulo="El cierre dice a cuánto se liquida el kilo. No dice cuántos kilos se pagan en tu zona."
+            loQueAgrega={[
+              'Cuántos kilos de novillo por hectárea paga tu zona: el cuartil de abajo, el de arriba y sobre cuántos casos se calculó.',
+              'Las zonas limítrofes, para saber si el canon que te proponen está en línea o corrido.',
+              'Cuántos kilos por hectárea produce la zona, que es contra lo que se mide si el canon es razonable.',
+              'La serie de cierres mensuales de esta página, en el PDF, con la fuente de cada cifra.',
+            ]}
+            gratisAca="Los cierres mensuales, el histórico y el aviso por email de esta página son gratis y van a seguir siéndolo."
+          />
         </div>
 
         <section className="mb-10">

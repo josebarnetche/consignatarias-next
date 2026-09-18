@@ -7,6 +7,53 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.206.0] — 2026-09-17
+
+### El tráfico SEO, medido y conectado a lo que se vende
+
+Dieciocho días después del arreglo #1 (v1.202.0), el embudo del informe de canon dice esto
+(`value_events`, `informe_purchases`, `newsletter_subscribers`, 31-ago → 17-sep): 478 sesiones
+con evento en `/mercado/arrendamiento` → **4 clics al informe** (3 sesiones) → **15 sesiones**
+en la landing (había sido 1 en dos meses) → 3 descargas del informe de muestra → **0 inicios
+de pago → 0 compras**. Altas nuevas al aviso de cierre mensual: **0** (dos intentos, los dos
+de emails ya anotados). No pasó plata: `informe_purchases`, `guia_purchases`,
+`processed_webhook_events` y las suscripciones con Rebill siguen en cero. El puente trabaja
+como puente; el paso siguiente todavía no.
+
+Y la página nueva del índice mensual (v1.204.0, 16-sep) había salido **sin ninguna oferta ni
+captura**: el error del 31-ago repetido en la página recién nacida para ~4.000 impresiones
+mensuales de "índice novillo arrendamiento mensual".
+
+- **`/mercado/arrendamiento/mensual`**: `ArrendamientoLiquidacionSignup` (el canon en vivo se
+  calcula con el ÚLTIMO CIERRE MENSUAL, que es lo que la página promete) + `OfrecerInforme`
+  del canon, después de las tres tarjetas y antes de la tabla. `page` y `desde` propios para
+  saber cuál de las dos páginas trabaja para el producto. Medido en píxeles: 0,9 y 1,1 pantallas.
+- **`/precios/[categoria]`** (26.590 impresiones como PRODUCT_SNIPPETS en GSC, dos `PriceCTA` y
+  ninguna captura): `SellZoneBadge` + `SellZoneAlertSignup` debajo de la cotización —el motor
+  existe, `sell-zone-alerts`— y `OfrecerInforme` del parte semanal después de la descripción.
+  0,9 y 1,4 pantallas.
+- **`/mercado/[categoria]`**: `OfrecerInforme` del parte semanal después de los rangos
+  observados; tenía alerta y captura de venta pero ningún puente al producto de mercado. 1,4.
+- **Fichas de frigorífico** (70.008 impresiones, 1.424 clics, todas búsquedas de CUIT; 1.388
+  sesiones y **0 reclamos** en 18 días): `ReclamarFichaStrip` debajo de la identidad en las
+  fichas no verificadas, que emite `claim_cta_click` con el CUIT como entidad y lleva al
+  circuito de reclamo que ya existía (`frigorifico_claims`). El bloque viejo seguía al pie, a
+  **3,3 pantallas**, como Link de servidor sin medición. 0,5 pantallas.
+- **No** se agregó "verificar este proveedor": `producer_leads` sólo admite intenciones de
+  productor y **reenvía a la planta** todo lead con `source` `frigorifico:<cuit>`. Un pedido
+  de verificación de contraparte llegaría al verificado. Es un producto nuevo, no un bloque.
+
+Plan completo —tráfico por intención, producto, precio, conversión supuesta (0,5–2 % visita →
+lead, 5–15 % lead → pago, declarados como benchmark y no como medida) e ingreso a 30 y 90
+días en rango (**ARS 0–195.000 / ARS 85.000–1.050.000**)— en
+`docs/strategy/MONETIZAR-TRAFICO-SEO-2026-09.md` (carpeta local, fuera del repo público como
+todos los docs de estrategia). La conclusión incómoda: ni en el techo el
+tráfico paga solo; la meta del informe de canon (ARS 400.000 al 24-oct) llega a su fecha de
+corte antes que a su meta, y la mitad del rango alto es venta directa (PRO Consignataria a
+las 49 firmas con clics, Frigorífico Destacado) que el tráfico señala pero no cierra.
+
+---
+
 ## [1.204.0] — 2026-09-16
 
 ### SEO desde Search Console: la página del índice MENSUAL y el título de precios por animal
