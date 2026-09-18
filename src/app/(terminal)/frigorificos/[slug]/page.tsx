@@ -12,6 +12,7 @@ import BadgeConfianza from '@/components/frigorifico/BadgeConfianza'
 import LoginGate from '@/components/LoginGate'
 import FrigorificoLeadCapture from '@/components/leads/FrigorificoLeadCapture'
 import FrigorificoConsultaGeneral from '@/components/leads/FrigorificoConsultaGeneral'
+import { getDemandaFicha, VENTANA_DIAS } from '@/lib/demanda-fichas'
 import SubscribeStrip from '@/components/SubscribeStrip'
 import { BreadcrumbSchema, QAPageSchema } from '@/components/seo/JsonLd'
 import {
@@ -329,6 +330,8 @@ export default async function FrigorificoDetailPage({
   const website = profile?.website || null
   const description = profile?.description || null
   const verified = profile?.verified || false
+  /** Demanda medida de ESTA planta (agregado, últimos 30 días). Ver src/lib/demanda-fichas.ts */
+  const demanda = getDemandaFicha('frigorifico', cuit)
   const logoUrl = profile?.logoUrl || null
   const whatsapp = profile?.whatsapp || null
   const habilitacionNivel = profile?.habilitacionNivel || null
@@ -830,6 +833,25 @@ export default async function FrigorificoDetailPage({
             <span className="text-accent text-label tracking-widest">¿ES TU FRIGORIFICO?</span>
           </div>
           <div className="px-panel py-4 space-y-3">
+            {demanda ? (
+              /* La evidencia primero. Un dueño de planta no necesita que le prometan
+                 visibilidad: necesita ver cuánta ya tiene y no está aprovechando. */
+              <p className="text-data font-terminal text-zinc-200">
+                En los últimos {VENTANA_DIAS} días,{' '}
+                <strong className="text-accent">{demanda.visitas} personas</strong> miraron esta ficha
+                {demanda.consultas > 0 ? (
+                  <>
+                    {' '}y{' '}
+                    <strong className="text-accent">
+                      {demanda.consultas === 1 ? 'una dejó una consulta' : `${demanda.consultas} dejaron una consulta`}
+                    </strong>{' '}
+                    que no pudimos derivarte porque no tenemos tu contacto.
+                  </>
+                ) : (
+                  <> y no encontraron un teléfono al que llamarte.</>
+                )}
+              </p>
+            ) : null}
             <p className="text-data font-terminal text-zinc-300">
               Reclamá este perfil gratis y actualizá tu información de contacto para que compradores te encuentren.
             </p>

@@ -496,9 +496,15 @@ interface ConsignatariaProfileClientProps {
   latestRemateSummary?: { fuente: string; fecha: string; top: Array<{ label: string; mid: number }> } | null
   /** Remates especiales (cabañas/expositores premium) operados por esta firma. */
   rematesEspeciales?: RemateEspecial[]
+  /**
+   * Demanda medida de esta ficha (agregado de 30 días) o null si no llega al piso.
+   * Convierte el CTA de reclamo de una promesa en un hecho verificable por la firma.
+   */
+  demanda?: { visitas: number; consultas: number } | null
+  ventanaDias?: number
 }
 
-export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [], relatedConsignatarias = [], externalResources = [], magEntry, mediosPagoSlot, reviews = [], reviewStats = { count: 0, avgRating: null }, latestRemateSummary = null, rematesEspeciales = [] }: ConsignatariaProfileClientProps) {
+export default function ConsignatariaProfileClient({ profile, auctions, tier, auctionResults, youtubeChannel, videos = [], relatedConsignatarias = [], externalResources = [], magEntry, mediosPagoSlot, reviews = [], reviewStats = { count: 0, avgRating: null }, latestRemateSummary = null, rematesEspeciales = [], demanda = null, ventanaDias = 30 }: ConsignatariaProfileClientProps) {
   const today = getEffectiveToday()
 
   useEffect(() => {
@@ -1097,6 +1103,23 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           completitud + el panel de beneficios viven ahora en el flujo de /verificar. */}
       {!profile.claimedAt && (
         <div className="mt-px px-panel py-2.5 text-center">
+          {demanda ? (
+            /* El número medido de ESTA firma antes del pedido: es lo único que el
+               martillero puede contrastar con su propia intuición. */
+            <p className="text-xxs text-zinc-300 font-terminal mb-1.5">
+              En los últimos {ventanaDias} días,{' '}
+              <strong className="text-accent">{demanda.visitas} personas</strong> miraron esta ficha
+              {demanda.consultas > 0 && (
+                <>
+                  {' '}y{' '}
+                  <strong className="text-accent">
+                    {demanda.consultas === 1 ? 'una dejó una consulta' : `${demanda.consultas} dejaron una consulta`}
+                  </strong>
+                </>
+              )}
+              .
+            </p>
+          ) : null}
           <span className="text-xxs text-zinc-500 font-terminal">
             ¿Operás en {profile.displayName}?{' '}
             <Link

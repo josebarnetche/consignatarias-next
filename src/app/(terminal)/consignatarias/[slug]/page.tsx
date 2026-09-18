@@ -31,6 +31,7 @@ import consignatariaResources from '@/lib/data/consignataria-resources.json'
 import { getProfileSEO } from '@/lib/data/profile-seo'
 import { getRematesEspecialesForSlug } from '@/lib/data/remates-especiales'
 import ConsignatariaProfileClient from './ConsignatariaProfileClient'
+import { getDemandaFicha, VENTANA_DIAS } from '@/lib/demanda-fichas'
 import LiveRemateFichaStrip from '@/components/LiveRemateFichaStrip'
 import SubscribeStrip from '@/components/SubscribeStrip'
 import { MediosPagoSection } from '@/components/consignataria/MediosPagoSection'
@@ -512,6 +513,8 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
       {/* Ficha interactiva — encabeza la página: lo primero que ve el productor
           es la identidad (logo + nombre grande) y los 3 jobs, no un bloque de texto. */}
       <ConsignatariaProfileClient
+        demanda={getDemandaFicha('consignataria', canonical)}
+        ventanaDias={VENTANA_DIAS}
         profile={enrichedProfile}
         auctions={profileAuctions}
         tier={tier}
