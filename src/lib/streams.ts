@@ -49,12 +49,17 @@ function paramsComunes(origen: string): string {
  * si no hay ninguna devuelve una página sin videoId. Preguntarle es barato
  * cuando se hace solo con los remates DE HOY: son un puñado, no doscientos.
  */
-export async function videoEnVivoDelCanal(channelId: string): Promise<string | null> {
+export async function videoEnVivoDelCanal(
+  channelId: string,
+  frescuraSegundos = 900,
+): Promise<string | null> {
   try {
     const r = await fetch(`https://www.youtube.com/embed/live_stream?channel=${channelId}`, {
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; consignatarias.com.ar)' },
-      // Se revalida con la página (1 h). No hace falta más frescura que eso.
-      next: { revalidate: 900 },
+      // La página se conforma con 15 minutos porque su HTML ya viene cacheado.
+      // El endpoint del muro pide 30 s: es lo que hace que un remate aparezca
+      // al aire solo, sin que nadie recargue.
+      next: { revalidate: frescuraSegundos },
     })
     if (!r.ok) return null
     const html = await r.text()

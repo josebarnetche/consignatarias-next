@@ -6,32 +6,29 @@ import { consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
 import { normalizeUrl } from '@/lib/utils/url'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { resolveYoutubeUrl } from '@/lib/youtube-live'
-import { resolverStream, contactoClicable, videoEnVivoDelCanal, idDeVideo } from '@/lib/streams'
+import MuroEnVivo from '@/components/remates/MuroEnVivo'
+import {
+  claveStream,
+  construirPared,
+  hoyArgentina,
+  rematesTransmitibles,
+  type RemateResuelto,
+} from '@/lib/remates-en-vivo'
 import { getEffectiveStatus } from '@/lib/ui/tokens'
-import StreamWall, { type StreamItem } from '@/components/remates/StreamWall'
-import { createServiceClient } from '@/lib/supabase'
-import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import { Calendar, Clock, MapPin, Users, Play, FileText, Video, Youtube, Radio } from 'lucide-react'
 import LiveRemateTicker from '@/components/LiveRemateTicker'
 
-// Regenerate hourly for fresh data
-export const revalidate = 3600
-
 /**
- * Hoy en Argentina.
+ * Cinco minutos, no una hora.
  *
- * La versión anterior hacía la cuenta a mano —`-3*60` contra `getTimezoneOffset()`—
- * con el signo invertido: `getTimezoneOffset()` devuelve UTC menos local, así que
- * para ART da +180, no -180. En Vercel salía bien de casualidad porque el servidor
- * corre en UTC y el término se anulaba; en cualquier máquina que no fuera UTC daba
- * un día equivocado. Es el mismo error de huso que tuvo el worker de lotes MAG y
- * que costó tres semanas de feed. `en-CA` devuelve YYYY-MM-DD.
+ * Esto es sólo la PRIMERA pintada: apenas carga, el muro toma el mando y
+ * repregunta cada 30 s contra `/api/remates/en-vivo/estado`. Lo único que decide
+ * este número es qué tan viejo puede ser el HTML que llega antes de que el
+ * JavaScript arranque, y en una página que se abre a media tarde eso importa.
  */
-function getTodayStr(): string {
-  return new Date().toLocaleDateString('en-CA', {
-    timeZone: 'America/Argentina/Buenos_Aires',
-  })
-}
+export const revalidate = 300
+
+const getTodayStr = hoyArgentina
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr + 'T12:00:00')
@@ -101,55 +98,6 @@ interface Remate {
   catalogUrl: string | null
   sourceUrl: string | null
   status: string
-}
-
-/** Clave estable para el ancla del stream. NO se usa remate.id: se reasigna en
- *  cada scrape, así que un link compartido apuntaría a otro remate mañana. */
-function claveStream(r: { consignatariaSlug: string; date: string; time: string | null }): string {
-  return `${r.consignatariaSlug}-${r.date}${r.time ? '-' + r.time.replace(':', '') : ''}`
-}
-
-/**
- * Sesiones que NUESTRO capturador declara en vivo ahora mismo.
- *
- * Es mejor señal que preguntarle a YouTube: cuando el pipeline está siguiendo un
- * remate ya sabe qué video es, y lo sabe antes de que el endpoint de canal lo
- * resuelva. Se exige `last_seen` fresco: una sesión que quedó en 'live' porque
- * el proceso se cayó no es una transmisión, es un registro huérfano.
- */
-const SESION_FRESCA_MIN = 20
-
-async function sesionesEnVivo(): Promise<Map<string, string>> {
-  const salida = new Map<string, string>()
-  const db = createServiceClient()
-  if (!db) return salida
-  const desde = new Date(Date.now() - SESION_FRESCA_MIN * 60_000).toISOString()
-  const { data } = await db
-    .from('live_remate_session')
-    .select('consignataria_slug, youtube_url, last_seen')
-    .eq('status', 'live')
-    .gte('last_seen', desde)
-  for (const row of data ?? []) {
-    const r = row as { consignataria_slug: string | null; youtube_url: string | null }
-    if (r.consignataria_slug && r.youtube_url) salida.set(r.consignataria_slug, r.youtube_url)
-  }
-  return salida
-}
-
-/** Teléfono y WhatsApp de las firmas que hoy transmiten, para el botón de contacto. */
-async function traerContactos(slugs: string[]): Promise<Map<string, { phone: string | null; whatsapp: string | null }>> {
-  const salida = new Map<string, { phone: string | null; whatsapp: string | null }>()
-  const db = createServiceClient()
-  if (!db || slugs.length === 0) return salida
-  const { data } = await db
-    .from('consignatarias')
-    .select('canonical_slug, phone, whatsapp')
-    .in('canonical_slug', slugs)
-  for (const row of data ?? []) {
-    const r = row as { canonical_slug: string; phone: string | null; whatsapp: string | null }
-    salida.set(r.canonical_slug, { phone: r.phone, whatsapp: r.whatsapp })
-  }
-  return salida
 }
 
 function extractYouTubeId(url: string): string | null {
@@ -327,114 +275,44 @@ function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl, anclaSt
   )
 }
 
-interface LiveRemateView extends Remate {
-  confidence: 'confirmed' | 'probable'
-  watchUrl: string
-}
-
 export default async function RematesEnVivoPage() {
   const todayStr = getTodayStr()
 
-  // Resolve every upcoming/today remate to a YouTube URL — direct video if
-  // we have one (confirmed), channel /streams if we only know the channel
-  // (probable). 0→80+ upcoming streams after this match.
-  const liveRemates: LiveRemateView[] = (remates as Remate[])
-    .filter(r => r.date >= todayStr)
-    .map(r => {
-      const resolved = resolveYoutubeUrl(r)
-      if (!resolved) return null
-      return { ...r, confidence: resolved.confidence, watchUrl: resolved.url }
-    })
-    .filter((r): r is LiveRemateView => r !== null)
-    .sort((a, b) => {
-      // Today first, then confirmed before probable, then by date, then by time
-      if (a.date === todayStr && b.date !== todayStr) return -1
-      if (b.date === todayStr && a.date !== todayStr) return 1
-      if (a.confidence !== b.confidence) {
-        return a.confidence === 'confirmed' ? -1 : 1
-      }
-      const dateCompare = a.date.localeCompare(b.date)
-      if (dateCompare !== 0) return dateCompare
-      const timeA = a.time || '23:59'
-      const timeB = b.time || '23:59'
-      return timeA.localeCompare(timeB)
-    })
+  // Todo lo transmisible de hoy en adelante. La cuenta vive en
+  // `src/lib/remates-en-vivo.ts` porque el endpoint del muro hace la misma.
+  const liveRemates = rematesTransmitibles(todayStr)
 
   const count = liveRemates.length
   const confirmedCount = liveRemates.filter(r => r.confidence === 'confirmed').length
   const probableCount = liveRemates.filter(r => r.confidence === 'probable').length
   const todayCount = liveRemates.filter(r => r.date === todayStr).length
 
-  // La pared de transmisiones: solo las de HOY, que son las que se pueden mirar.
-  // Un remate de la semana que viene no tiene nada que reproducir todavía.
-  const deHoy = liveRemates.filter((r) => r.date === todayStr)
-  const contactos = await traerContactos(
-    Array.from(new Set(deHoy.map((r) => getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug))),
-  )
-  // Para los de hoy preguntamos a YouTube si el canal está realmente al aire.
-  // Son un puñado, y convierte una suposición ("debería estar transmitiendo")
-  // en un hecho ("está transmitiendo este video").
-  const enVivoPropio = await sesionesEnVivo()
-  const canalesDeHoy = new Map<string, string | null>()
-  await Promise.all(
-    deHoy.map(async (r) => {
-      if (r.youtubeUrl) return
-      const canonical = getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug
-      if (enVivoPropio.has(canonical)) return // ya lo sabemos por nuestra sesión
-      const emb = resolverStream(r)
-      if (!emb || emb.tipo !== 'canal') return
-      const chId = emb.embedUrl.match(/channel=([^&]+)/)?.[1]
-      if (!chId || canalesDeHoy.has(chId)) return
-      canalesDeHoy.set(chId, await videoEnVivoDelCanal(chId))
-    }),
-  )
+  // La pared de HOY, con lo que está efectivamente al aire. Es sólo la primera
+  // pintada: desde que carga, el muro se refresca solo contra el endpoint.
+  const pared = await construirPared(todayStr, 900)
 
-  const streams: StreamItem[] = deHoy
-    .map((r): StreamItem | null => {
-      const emb = resolverStream(r)
-      if (!emb) return null
-      const canonicalR = getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug
-      // Canal sin transmisión en curso: no hay nada que reproducir. Fuera.
-      let embedUrl = emb.embedUrl
-      const propio = idDeVideo(enVivoPropio.get(canonicalR) ?? null)
-      if (propio) {
-        embedUrl = `https://www.youtube-nocookie.com/embed/${propio}?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1`
-      } else if (emb.tipo === 'canal') {
-        const chId = emb.embedUrl.match(/channel=([^&]+)/)?.[1]
-        const vid = chId ? canalesDeHoy.get(chId) : null
-        if (!vid) return null
-        embedUrl = `https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1`
-      }
-      const canonical = getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug
-      const c = contactos.get(canonical)
-      const { tel, wa, visible } = contactoClicable(c?.phone, c?.whatsapp)
-      return {
-        id: claveStream(r),
-        // Al aire de verdad, según hora ART: es lo que decide si hay algo que
-        // reproducir. Un embed de canal fuera de horario devuelve negro.
-        enVivoAhora: getEffectiveStatus(r.date, r.time, todayStr) === 'live',
-        titulo: r.title,
-        firma: r.consignatariaName,
-        slug: canonical,
-        perfilHref: consignatariaProfilePath(r.consignatariaSlug),
-        embedUrl,
-        watchUrl: emb.watchUrl,
-        confianza: emb.confianza,
-        hora: r.time,
-        lugar: r.province || null,
-        tel,
-        wa,
-        telVisible: visible,
-      }
-    })
-    .filter((s): s is StreamItem => s !== null)
+  // Las de hoy que todavía no salieron al aire: el muro les pone la cuenta
+  // regresiva. Se excluyen las que ya están en la pared para no duplicarlas.
+  const yaEnPared = new Set(pared.map((s) => s.id))
+  const porVenir = liveRemates
+    .filter((r) => r.date === todayStr)
+    .filter((r) => !yaEnPared.has(claveStream(r)))
+    .filter((r) => getEffectiveStatus(r.date, r.time, todayStr) !== 'completed')
+    .map((r) => ({
+      id: claveStream(r),
+      firma: r.consignatariaName,
+      hora: r.time,
+      perfilHref: consignatariaProfilePath(r.consignatariaSlug),
+    }))
 
-  // Group by date
-  const byDate = liveRemates.reduce((acc, r) => {
+  // El listado por fecha queda para los días QUE VIENEN: hoy entero —lo que
+  // está al aire y lo que falta— lo maneja el muro, y tenerlo dos veces en la
+  // misma pantalla obligaba a mirar cuál de las dos versiones era la buena.
+  const byDate = liveRemates.filter((r) => r.date > todayStr).reduce((acc, r) => {
     if (!acc[r.date]) acc[r.date] = []
     acc[r.date].push(r)
     return acc
-  }, {} as Record<string, LiveRemateView[]>)
+  }, {} as Record<string, RemateResuelto[]>)
 
   // Schema data — only include confirmed streams (probable is editorial UX,
   // not factual enough for ItemList markup)
@@ -561,57 +439,33 @@ export default async function RematesEnVivoPage() {
           </div>
         ) : (
           <div className="space-y-8">
-            <StreamWall streams={streams} />
-            {Object.entries(byDate).map(([date, dateRemates]) => {
-              const isToday = date === todayStr
-              const dateLabel = isToday ? '🔴 Hoy' : formatDate(date)
-              
-              return (
-                <section key={date}>
-                  <h2 className={`text-lg font-medium mb-4 flex items-center gap-2 ${
-                    isToday ? 'text-red-400' : 'text-zinc-300'
-                  }`}>
-                    {dateLabel}
-                    <span className="text-sm text-zinc-600">({dateRemates.length} transmisiones)</span>
-                  </h2>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    {dateRemates.map(remate => {
-                      // EN VIVO afirma que el remate se está transmitiendo AHORA, así
-                      // que se enciende con lo único que lo prueba: que haya un video
-                      // efectivamente al aire en la pared de transmisiones.
-                      //
-                      // Antes la condición era `remate.status === 'live'` y el cartel no
-                      // se encendía nunca. `status` sale de remates.json, que el scraper
-                      // commitea una vez por día: ningún remate del día llega con 'live'
-                      // —los únicos que lo tienen son los de ayer, que este listado ya
-                      // filtró por fecha—. Hoy 18-sep había 20 remates al aire a las
-                      // 15:30 y cero con ese campo en 'live'.
-                      //
-                      // Tampoco alcanza `confidence === 'confirmed'`: eso sólo dice que
-                      // la fila del JSON traía una URL de YouTube, no que se esté
-                      // transmitiendo. Hoy ninguna la traía y el cartel habría seguido
-                      // apagado con los 20 remates en curso. La pared, en cambio, ya
-                      // resolvió contra YouTube y contra nuestras propias sesiones de
-                      // captura qué video está efectivamente corriendo.
-                      const enPared = isToday
-                        ? streams.find((s) => s.id === claveStream(remate))
-                        : undefined
-                      return (
-                        <LiveRemateCard
-                          key={remate.id}
-                          remate={remate}
-                          isToday={isToday}
-                          isLive={enPared?.enVivoAhora === true}
-                          confidence={remate.confidence}
-                          watchUrl={remate.watchUrl}
-                          anclaStream={enPared ? claveStream(remate) : null}
-                        />
-                      )
-                    })}
-                  </div>
-                </section>
-              )
-            })}
+            <MuroEnVivo inicial={pared} porVenir={porVenir} />
+
+            {/* De acá para abajo, los días que vienen. Hoy no se repite: lo
+                muestra el muro, que es el único que sabe qué está al aire. */}
+            {Object.entries(byDate).map(([date, dateRemates]) => (
+              <section key={date}>
+                <h2 className="text-lg font-medium mb-4 flex items-center gap-2 text-zinc-300">
+                  {formatDate(date)}
+                  <span className="text-sm text-zinc-600">({dateRemates.length} transmisiones)</span>
+                </h2>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {dateRemates.map(remate => (
+                    <LiveRemateCard
+                      key={remate.id}
+                      remate={remate}
+                      isToday={false}
+                      // Un remate de otro día nunca está al aire ahora. El cartel
+                      // EN VIVO lo enciende el muro, con un video corriendo.
+                      isLive={false}
+                      confidence={remate.confidence}
+                      watchUrl={remate.watchUrl}
+                      anclaStream={null}
+                    />
+                  ))}
+                </div>
+              </section>
+            ))}
           </div>
         )}
 
