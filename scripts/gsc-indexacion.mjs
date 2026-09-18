@@ -179,7 +179,21 @@ async function main() {
 
   const previo = leerPrevio()
   let urls = await sitemapUrls()
-  if (only) urls = urls.filter((u) => u.includes(only))
+  // Un sitemap vacío es SIEMPRE un error, nunca "no hay nada que inspeccionar". Pasó el
+  // 18-sep: la corrida cayó justo durante un deploy, el fetch trajo 0 URLs y el script
+  // informó alegremente "inspeccionadas 0 de 0" con exit 0, pisando el resumen anterior.
+  // Fallar acá cuesta una corrida; no fallar cuesta el dato y encima miente.
+  if (urls.length === 0) {
+    console.error('ERROR: el sitemap devolvió 0 URLs (¿deploy en curso?). No se inspecciona nada.')
+    process.exit(1)
+  }
+  if (only) {
+    urls = urls.filter((u) => u.includes(only))
+    if (urls.length === 0) {
+      console.error(`ERROR: el filtro --only "${only}" no coincide con ninguna URL del sitemap.`)
+      process.exit(1)
+    }
+  }
 
   const corte = refreshDias ? Date.now() - refreshDias * 864e5 : null
   const pendientes = urls.filter((u) => {

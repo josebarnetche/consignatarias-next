@@ -28,8 +28,26 @@ function ddmmyyyy(iso: string): string {
   return `${d}/${m}/${y}`
 }
 
+/**
+ * La fecha de hoy en BUENOS AIRES, no en UTC.
+ *
+ * Mismo bug que tumbó el INMAG en agosto, en otro cron. El workflow está agendado 22:42
+ * UTC (19:42 ART), pero GitHub Actions lo retrasa seguido: las cargas sanas tienen
+ * `scraped_at` ~23:05 UTC y las vacías ~00:36-00:53 UTC. Pasada la medianoche UTC,
+ * `toISOString()` devuelve el día SIGUIENTE en Argentina —una fecha sin rueda— así que la
+ * cola se arma para un día que no existe, los 128 items se procesan, devuelven cero filas
+ * y se marcan `done` sin error.
+ *
+ * Efecto medido al 17-sep-2026: `mag_consignataria_sales_lots` venía de 241/324/286/400
+ * filas por rueda hasta el 25-ago y desde el 26 quedó en CERO durante diez ruedas
+ * seguidas, con dos días de 2 filas de residuo. Tres semanas con el workflow en verde.
+ * Esa tabla alimenta `/api/lots`, uno de los dos endpoints Enterprise pagos: se estuvo
+ * ofreciendo acceso a un feed vacío.
+ */
 function todayIso(): string {
-  return new Date().toISOString().slice(0, 10)
+  return new Date().toLocaleDateString('en-CA', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+  })
 }
 
 function parseInt2(s: string | undefined | null): number | null {
