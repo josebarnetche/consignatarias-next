@@ -34,10 +34,13 @@ const RESUMEN = join(OUT_DIR, 'indexacion-resumen.md')
 const SITE = process.env.GSC_SITE || 'sc-domain:consignatarias.com.ar'
 const SITEMAP = 'https://www.consignatarias.com.ar/sitemap.xml'
 const CONCURRENCIA = 4
+<<<<<<< HEAD
 /** 429 seguidos que se toleran antes de dar la cuota diaria por agotada. */
 const LIMITE_CUOTA_SEGUIDA = 8
 /** Salto de línea del CSV. */
 const SALTO = '\n'
+=======
+>>>>>>> origin/seo/gsc-portfolio-report
 
 const arg = (n, def = null) => {
   const i = process.argv.indexOf(n)
@@ -154,10 +157,16 @@ async function inspeccionar(sc, url) {
     } catch (e) {
       const code = e?.code || e?.response?.status
       if (code === 429) {
+<<<<<<< HEAD
         // Dos intentos con espera corta; si insiste, es cuota diaria y no de minuto:
         // devolver CUOTA para que el bucle corte en vez de dormir 1.800 veces.
         if (intento < 1) { await new Promise((r) => setTimeout(r, 15000)); continue }
         return { url, verdict: 'CUOTA', inspectedAt: new Date().toISOString() }
+=======
+        // cuota por minuto: esperar y reintentar
+        await new Promise((r) => setTimeout(r, 20000))
+        continue
+>>>>>>> origin/seo/gsc-portfolio-report
       }
       if (code === 403) throw e // cuota diaria agotada o sin permiso: cortar
       return { url, verdict: 'ERROR', coverageState: String(e?.message || e).slice(0, 120), inspectedAt: new Date().toISOString() }
@@ -179,6 +188,7 @@ async function main() {
 
   const previo = leerPrevio()
   let urls = await sitemapUrls()
+<<<<<<< HEAD
   // Un sitemap vacío es SIEMPRE un error, nunca "no hay nada que inspeccionar". Pasó el
   // 18-sep: la corrida cayó justo durante un deploy, el fetch trajo 0 URLs y el script
   // informó alegremente "inspeccionadas 0 de 0" con exit 0, pisando el resumen anterior.
@@ -194,6 +204,9 @@ async function main() {
       process.exit(1)
     }
   }
+=======
+  if (only) urls = urls.filter((u) => u.includes(only))
+>>>>>>> origin/seo/gsc-portfolio-report
 
   const corte = refreshDias ? Date.now() - refreshDias * 864e5 : null
   const pendientes = urls.filter((u) => {
@@ -207,6 +220,7 @@ async function main() {
   const lote = pendientes.slice(0, limit)
 
   let hechas = 0
+<<<<<<< HEAD
   let cuotaSeguida = 0
   const cola = [...lote]
   const guardar = () => {
@@ -224,6 +238,15 @@ async function main() {
       // Guardar cada 50: una corrida cancelada o cortada por timeout no puede perder
       // todo lo inspeccionado. Escribir al final era tirar una hora de cuota a la basura.
       if (++hechas % 50 === 0) { guardar(); console.error(`  ${hechas}/${lote.length} (guardado)`) }
+=======
+  const cola = [...lote]
+  async function worker() {
+    while (cola.length) {
+      const u = cola.shift()
+      const row = await inspeccionar(sc, u)
+      previo.set(u, row)
+      if (++hechas % 100 === 0) console.error(`  ${hechas}/${lote.length}`)
+>>>>>>> origin/seo/gsc-portfolio-report
     }
   }
   try {
@@ -231,9 +254,12 @@ async function main() {
   } catch (e) {
     console.error('Corte por cuota o permiso:', e?.message || e)
   }
+<<<<<<< HEAD
   if (cuotaSeguida >= LIMITE_CUOTA_SEGUIDA) {
     console.error(`Cuota agotada: ${LIMITE_CUOTA_SEGUIDA} respuestas 429 seguidas. Se corta y se guarda lo hecho; mañana sigue.`)
   }
+=======
+>>>>>>> origin/seo/gsc-portfolio-report
 
   const filas = [...previo.values()]
   writeFileSync(CSV, [COLS.join(','), ...filas.map((r) => COLS.map((c) => esc(r[c])).join(','))].join('\n') + '\n')
