@@ -8,6 +8,7 @@ import { getFrigorificoPlanStatus, frigorificoPuedeInterprovincial } from '@/lib
 import { createServiceClient } from '@/lib/supabase'
 import CompraMayorista, { type VitrinaProduct } from './CompraMayorista'
 import BadgeConfianza from '@/components/frigorifico/BadgeConfianza'
+import ReclamarFichaStrip from '@/components/frigorifico/ReclamarFichaStrip'
 import LoginGate from '@/components/LoginGate'
 import FrigorificoLeadCapture from '@/components/leads/FrigorificoLeadCapture'
 import FrigorificoConsultaGeneral from '@/components/leads/FrigorificoConsultaGeneral'
@@ -472,6 +473,11 @@ export default async function FrigorificoDetailPage({
           </div>
         </div>
       </div>
+
+      {/* Reclamo de la ficha, arriba y medido (ver ReclamarFichaStrip). El bloque largo
+          del final queda para el que lee toda la ficha; éste es para el que googleó su
+          propio CUIT y ya vio que es el suyo. */}
+      {!verified && <ReclamarFichaStrip cuit={cuit} name={name} />}
 
       {/* Vitrina de carne + RFQ mayorista — sólo si el frigorífico es PRO y cargó
           productos. El gate de envío interprovincial se pasa al form (§3.3). */}

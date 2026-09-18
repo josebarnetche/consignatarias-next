@@ -8,6 +8,7 @@ import { CategoryPriceHistory } from '@/components/market/CategoryPriceHistory'
 import LoginGate from '@/components/LoginGate'
 import { PriceRangeTable } from '@/components/market/PriceRangeTable'
 import { PriceCTA } from '@/components/PriceCTA'
+import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 import { Stat, Delta } from '@/components/ui'
 import SellZoneAlertSignup from '@/components/SellZoneAlertSignup'
 import SellZoneBadge from '@/components/SellZoneBadge'
@@ -500,6 +501,24 @@ export default async function CategoriaPage({
 
         {/* Observed sub-category price ranges (real MAG rueda data) */}
         <PriceRangeTable categoria={categoria} namePlural={config.namePlural} />
+
+        {/* El parte semanal, después del precio, el semáforo y los rangos observados: la
+            página ya entregó su valor. Esta familia tenía alerta y captura de venta pero
+            ningún puente al producto de mercado (medido 31-ago: /informes/parte-semanal, 0
+            sesiones). Regla de OfrecerInforme: lo que la pantalla no da, y qué sigue gratis. */}
+        <div className="mb-6">
+          <OfrecerInforme
+            producto="parte-semanal-mercado"
+            desde={`/mercado/${categoria}`}
+            titulo={`¿Lo del ${config.name.toLowerCase()} esta semana fue señal o ruido?`}
+            loQueAgrega={[
+              'El cierre de la semana en PDF, cada lunes, con la lectura de si el movimiento fue señal o ruido.',
+              `Dónde quedó el ${config.name.toLowerCase()} contra su propio promedio, y qué categorías se apartaron del suyo.`,
+              'Once años de contexto y los remates de los próximos siete días.',
+            ]}
+            gratisAca="El precio del día, el semáforo, los rangos observados y la alerta de zona de venta de esta página son gratis y van a seguir siéndolo."
+          />
+        </div>
 
         <PriceCTA />
 

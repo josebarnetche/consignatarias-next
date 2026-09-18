@@ -14,6 +14,9 @@ import { CitaBlock } from '@/components/seo/CitaBlock'
 import PriceWhatsAppShare from '@/components/share/PriceWhatsAppShare'
 import { getDetailedRowsForCategory, CATEGORY_PREFIX } from '@/components/market/PriceRangeTable'
 import { PriceCTA } from '@/components/PriceCTA'
+import SellZoneBadge from '@/components/SellZoneBadge'
+import SellZoneAlertSignup from '@/components/SellZoneAlertSignup'
+import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 
 /* ============================================================
    /precios/[categoria] — captures high-intent "precio del kilo
@@ -435,6 +438,20 @@ export default async function PreciosCategoriaPage({
           </div>
         </div>
 
+        {/* Semáforo + alerta de zona de venta, debajo del número y ANTES de la descripción.
+            Search Console (28 días al 13-sep): /precios/* y /mercado/* suman 26.590 impresiones
+            como PRODUCT_SNIPPETS y 175 clics. Estas páginas tenían dos PriceCTA (calculadora y
+            directorio) y ninguna captura: el que llegó por "precio ternero hoy" veía el número y
+            se iba sin dejar nada. Es el mismo par que ya corre en /mercado/[categoria] (señal
+            gratis + retorno por email) y el motor existe (cron sell-zone-alerts), así que la
+            promesa se cumple. Las seis categorías de /precios están en ALERT_CATS. */}
+        <div className="mb-4">
+          <SellZoneBadge categoriaLabel={c.singular} className="w-full sm:w-auto sm:inline-block" />
+        </div>
+        <div className="mb-6">
+          <SellZoneAlertSignup categoria={categoria} categoriaLabel={c.singular} page={`/precios/${categoria}`} />
+        </div>
+
         {/* Descripción */}
         <div className="terminal-panel mb-6">
           <div className="terminal-panel-header">Sobre {c.title}</div>
@@ -442,6 +459,21 @@ export default async function PreciosCategoriaPage({
             <p className="text-zinc-300 text-sm leading-relaxed">{c.descripcion}</p>
           </div>
         </div>
+
+        {/* El parte semanal, después del número y la descripción (la página ya entregó lo suyo).
+            Regla de OfrecerInforme: lo que la pantalla no da, y qué sigue gratis. `desde` lleva
+            la categoría para saber cuál de las seis páginas trabaja para el producto. */}
+        <OfrecerInforme
+          producto="parte-semanal-mercado"
+          desde={`/precios/${categoria}`}
+          titulo={`¿Lo del ${c.singular} esta semana fue señal o ruido?`}
+          loQueAgrega={[
+            'El cierre de la semana en PDF, cada lunes, con la lectura de si el movimiento fue señal o ruido.',
+            `Dónde quedó el ${c.singular} contra su propio promedio, y qué categorías se apartaron del suyo.`,
+            'Once años de contexto y los remates de los próximos siete días.',
+          ]}
+          gratisAca="El precio del día, la variación semanal y la alerta de zona de venta de esta página son gratis y van a seguir siéndolo."
+        />
 
         {/* Serie histórica 20 años en USD (solo novillos/novillitos) */}
         {(categoria === 'novillos' || categoria === 'novillitos') && (
