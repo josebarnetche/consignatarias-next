@@ -710,6 +710,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     'CHUBUT': 'chubut',
     'SANTA CRUZ': 'santa-cruz',
     'TIERRA DEL FUEGO': 'tierra-del-fuego',
+    'CIUDAD AUTONOMA DE BUENOS AIRES': 'ciudad-autonoma-de-buenos-aires',
+    'LA RIOJA': 'la-rioja',
   }
 
   const provincesWithFrigorificos = new Set(

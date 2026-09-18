@@ -7,6 +7,7 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+<<<<<<< HEAD
 ## [1.205.0] — 2026-09-17
 
 ### Los 604 términos "rozando la primera página", agrupados por intención — y las tres que caían en la página equivocada
@@ -51,6 +52,52 @@ los 90 términos de CUIT (7.553 impr) caen en fichas de frigoríficos y son bús
 contraparte (producto, no SEO); "feedlot"/"renspa" (3.221 impr, pos 8-10) ya tienen su página y lo que falta es
 autoridad, no contenido. Medición: releer el radar a los 28 días, por query, y pasar por Zibecchi antes de
 afirmar nada.
+=======
+## [1.207.0] — 2026-09-17
+
+### Fichas de frigoríficos: responder a quien pegó un CUIT
+
+Search Console, 28 días al 13-09-2026: las 1.095 fichas `/frigorificos/[cuit]` reciben 70.008 impresiones y
+1.424 clics (CTR 2,0 %, posición media 6,7). Las búsquedas que las traen son de CUIT ("30500120882" 687 impr,
+"cuit 30517307099", "granja tres arroyos cuit"): gente verificando una empresa, no buscando dónde faenar. Un
+buscador de CUIT (cuitonline) responde razón social, domicilio, estado y actividad en la primera línea; nosotros
+teníamos la localidad escondida en el registro SENASA al pie y 4 de las 5 fichas con más impresiones decían
+"BUENOS AIRES" en título y description cuando el padrón ya tenía "Colon" o "Gonzalez Catan".
+
+- **`src/lib/frigorificos/ficha.ts`** (nuevo): una sola estructura por CUIT que fusiona `frigorificos.json`
+  + `frigorificos-enriched.json` (363) + `senasa-habilitados.json` (869): razón social, titular SENASA si
+  difiere, CUIT en los dos formatos, localidad/partido (perfil reclamado > enriquecido > padrón), estado en
+  el padrón **con fecha** (vigente al DD/MM/AAAA · no figura, figuró hasta DD/MM/AAAA), matrícula, nº
+  oficial, categoría y ciclos SENASA, actividades autorizadas, capacidad de faena. Si un campo no está en
+  ninguna fuente, no se muestra.
+- **Parte alta de la ficha** rediseñada: bloque **FICHA DE LA EMPRESA** (`<dl>` con esos campos) y **QUÉ
+  SABEMOS DE SU ACTIVIDAD** (ciclos, capacidad de faena, perfil comercial, actividades autorizadas) antes
+  de los formularios. El panel HABILITACIÓN SENASA conserva el veredicto con fecha y deja de duplicar los
+  campos del registro.
+- **Meta description** con la forma de respuesta de un buscador de CUIT: `CUIT 30-51730709-9 · <razón
+  social> · Colon, Buenos Aires · habilitación SENASA vigente al 14/09/2026 · Elaborador, Mat. 1036`. El
+  título mantiene el CUIT adelante (con la razón social primero el CTR era ~0) y ahora lleva la localidad
+  real cuando existe.
+- **JSON-LD `LocalBusiness`** enriquecido: `identifier` con el CUIT en ambos formatos, `taxID`/`vatID`,
+  `legalName` (titular SENASA), `address` con localidad real, `memberOf` (grupo), `knowsAbout`
+  (actividades) y `additionalProperty` (matrícula, nº oficial, categoría, ciclos, estado en el padrón con
+  fecha, capacidad de faena). Se quitó `priceRange: "$$"`, que no venía de ninguna fuente. El `QAPage` "¿A
+  qué empresa corresponde el CUIT N?" responde con titular, lugar y estado con fecha.
+- **Enlazado interno**: "otros frigoríficos de la provincia" recorre el directorio completo (antes sólo los
+  363 enriquecidos) y prioriza el mismo partido SENASA; el enlace a la página de provincia sale de
+  `frigorificoProvinceSlugFor()` y sólo se emite si la página existe. **Nuevas páginas de provincia**
+  `/frigorificos/ciudad-autonoma-de-buenos-aires` (85 fichas) y `/frigorificos/la-rioja` (4): hasta hoy
+  89 fichas enlazaban a URLs que en producción respondían "Frigorifico no encontrado". Ambas entran al
+  sitemap.
+- Lo que NO se agregó por falta de dato en el repo: faena por planta, remates o consignatarias vinculadas
+  a un frigorífico (`remates.json` no menciona frigoríficos), actividad AFIP, domicilio fiscal, condición
+  IVA y fecha de inscripción (lo que sí muestra un buscador de CUIT).
+- Línea base para medir: CTR por ficha y por query del 17-08 al 13-09 en
+  `C:/Users/Usuario/proyectos/memola-tools/gsc-radar/auditorias/2026-09-16/gsc-audit-raw.json`. Releer a
+  los 28 días con el modelo Zibecchi antes de afirmar nada.
+
+---
+>>>>>>> origin/seo/frigorificos-cuit
 
 ## [1.204.0] — 2026-09-16
 

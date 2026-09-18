@@ -2,7 +2,6 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
-import frigorificosEnrichedData from '@/lib/data/frigorificos-enriched.json'
 import existenciasData from '@/lib/data/existencias-bovinas.json'
 import { getFrigorificoProfile } from '@/lib/dal/frigorificos'
 import { getFrigorificoPlanStatus, frigorificoPuedeInterprovincial } from '@/lib/features'
@@ -21,9 +20,19 @@ import {
 } from '@/lib/data/senasa-habilitados'
 import { getCurrentSession } from '@/lib/user-tier'
 import {
+  getFichaFrigorifico,
+  estadoSenasaTexto,
+  fechaAR,
+  formatCuit,
+  frigorificosRelacionados,
+  type FichaFrigorifico,
+} from '@/lib/frigorificos/ficha'
+import {
   isFrigorificoProvinceSlug,
   frigorificoProvinceSlugs,
   frigorificoProvinceMetadata,
+  frigorificoProvinceSlugFor,
+  frigorificoProvinceCount,
   FrigorificoProvinceView,
 } from '../_views/FrigorificoProvinceView'
 
@@ -40,12 +49,6 @@ interface BasicFrigorifico {
 
 const frigorificos = frigorificosData as BasicFrigorifico[]
 
-interface EnrichedFrig {
-  cuit: string; name: string; matricula: string; province: string; stage: number
-  grupoEmpresario: string | null; tipo: string | null; localidad: string | null
-  direccion: string | null; volumenFaena: number | string | null; notas: string | null
-}
-const frigorificosEnriched = frigorificosEnrichedData as EnrichedFrig[]
 const EXISTENCIAS = existenciasData as unknown as Record<string, { total: number; year: number }>
 
 // Cattle stock for a province ("Existencias bovinas en X: N cabezas").
@@ -80,32 +83,16 @@ function frigorificoSummary(f: {
   return s
 }
 
-// Other frigoríficos in the same province (unique anchors + internal links).
-function relatedFrigorificos(cuit: string, province: string, cap = 6): EnrichedFrig[] {
-  const seen = new Set<string>([cuit])
-  const out: EnrichedFrig[] = []
-  for (const f of frigorificosEnriched) {
-    if (f.province !== province || seen.has(f.cuit)) continue
-    seen.add(f.cuit)
-    out.push(f)
-  }
-  out.sort((a, b) => (b.localidad ? 1 : 0) - (a.localidad ? 1 : 0) || a.name.localeCompare(b.name))
-  return out.slice(0, cap)
-}
-function relatedFrigAnchor(r: EnrichedFrig, i: number): string {
-  const lugar = r.localidad || r.province
+// Other frigoríficos in the same province: anclas variadas sobre el directorio completo
+// (antes recorría sólo los 363 enriquecidos; ahora prioriza el mismo partido SENASA).
+function relatedFrigAnchor(r: { nombre: string; matricula: string; localidad: string | null; provincia: string }, i: number): string {
+  const lugar = r.localidad || r.provincia
   switch (i % 4) {
-    case 0: return r.name
-    case 1: return `${r.name} — Mat. ${r.matricula}`
-    case 2: return `${r.name} (${lugar})`
-    default: return `${r.name}, frigorífico en ${lugar}`
+    case 0: return r.nombre
+    case 1: return `${r.nombre} — Mat. ${r.matricula}`
+    case 2: return `${r.nombre} (${lugar})`
+    default: return `${r.nombre}, frigorífico en ${lugar}`
   }
-}
-function formatCuit(cuit: string): string {
-  if (cuit.length === 11) {
-    return `${cuit.slice(0, 2)}-${cuit.slice(2, 10)}-${cuit.slice(10)}`
-  }
-  return cuit
 }
 
 function stageName(stage: number): string {
@@ -187,12 +174,21 @@ export async function generateMetadata({
   const f = frigorificos.find((x) => x.cuit === cuit)
   if (!f) return { title: 'Frigorifico no encontrado' }
 
-  const localidadStr = (f as { localidad?: string }).localidad || f.province
+  // La localidad sale de la ficha (perfil enriquecido o padrón SENASA): antes se leía un
+  // campo `localidad` que frigorificos.json no tiene, así que 4 de las 5 fichas con más
+  // impresiones decían "BUENOS AIRES" donde el padrón ya tenía "Colon" o "Gonzalez Catan".
+  const ficha = getFichaFrigorifico(cuit)
+  const localidadStr = ficha?.lugar || f.province
   // El usuario pega el CUIT crudo (ej "30500120882") y la ficha rankea, pero si el título
   // muestra sólo la razón social no reconoce el match → CTR ~0. Arrancamos el título con el
   // CUIT formateado (el número pegado aparece literal en el SERP) seguido de la razón social.
   const title = `CUIT ${formatCuit(f.cuit)} — ${f.name} (Frigorífico SENASA, ${localidadStr})`
-  const description = `${f.name} en ${localidadStr}: frigorífico habilitado SENASA, ${stageName(f.stage)}, Mat. ${f.matricula}, CUIT ${formatCuit(f.cuit)}. Datos oficiales MAGYP/SENASA, actualizado 2026.`
+  // Description con la forma de respuesta de un buscador de CUIT: identificador, razón social,
+  // lugar, estado con fecha. La búsqueda es "a quién pertenece este CUIT", no "dónde faenar".
+  const estado = ficha ? estadoSenasaTexto(ficha) : 'según padrón'
+  const description = ficha
+    ? `CUIT ${ficha.cuitFormateado} · ${f.name} · ${localidadStr} · habilitación SENASA ${estado} · ${ficha.categoria ?? stageName(f.stage)}, Mat. ${f.matricula}. Datos oficiales SENASA/MAGYP.`
+    : `CUIT ${formatCuit(f.cuit)} · ${f.name} · ${localidadStr} · ${stageName(f.stage)}, Mat. ${f.matricula}. Datos oficiales SENASA/MAGYP.`
 
   return {
     title,
@@ -210,58 +206,60 @@ export async function generateMetadata({
   }
 }
 
-function LocalBusinessSchema({ 
-  name, 
-  cuit, 
-  province, 
-  localidad, 
-  phone, 
-  email, 
+// LocalBusiness (subtipo de Organization) con la ficha completa: identificador fiscal en los
+// dos formatos, razón social/titular, dirección hasta donde el dato llega, y las propiedades
+// registrales (matrícula, ciclos, estado en el padrón con fecha) como additionalProperty.
+// Sin priceRange ni ningún valor que no venga de una fuente.
+function LocalBusinessSchema({
+  ficha,
+  phone,
+  email,
   website,
-  direccion,
-  stage 
-}: { 
-  name: string
-  cuit: string
-  province: string
-  localidad: string | null
+}: {
+  ficha: FichaFrigorifico
   phone: string | null
   email: string | null
   website: string | null
-  direccion: string | null
-  stage: number
 }) {
+  const url = `https://www.consignatarias.com.ar/frigorificos/${ficha.cuit}`
+  const prop = (name: string, value: string) => ({ '@type': 'PropertyValue', name, value })
+  const additionalProperty = [
+    prop('Matrícula SENASA/MAGYP', ficha.matricula),
+    ...(ficha.nroOficial ? [prop('Nº oficial SENASA', ficha.nroOficial)] : []),
+    ...(ficha.categoria ? [prop('Categoría SENASA', ficha.categoria)] : []),
+    ...(ficha.ciclos.length ? [prop('Ciclos habilitados', ficha.ciclos.join('; '))] : []),
+    prop('Estado en el padrón SENASA', `Habilitación ${estadoSenasaTexto(ficha)}`),
+    ...(ficha.volumenFaena ? [prop('Capacidad de faena declarada (cabezas/mes)', String(ficha.volumenFaena))] : []),
+  ]
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
-    '@id': `https://www.consignatarias.com.ar/frigorificos/${cuit}`,
-    name,
-    description: `Frigorífico ${stage === 1 ? 'de faena y desposte' : stage === 2 ? 'de desposte' : 'depósito'} en ${localidad || province}, Argentina. Matricula SENASA/MAGYP.`,
-    url: `https://www.consignatarias.com.ar/frigorificos/${cuit}`,
+    '@id': url,
+    name: ficha.nombre,
+    ...(ficha.propietario && { legalName: ficha.propietario, alternateName: ficha.propietario }),
+    description: `${ficha.nombre}, CUIT ${ficha.cuitFormateado}: ${ficha.categoria ?? stageName(ficha.stage)} en ${ficha.lugar}, Argentina. Habilitación SENASA ${estadoSenasaTexto(ficha)}, matrícula ${ficha.matricula}.`,
+    url,
     // Asociación número→entidad: el CUIT como identificador fiscal de la empresa,
-    // para que una búsqueda por el CUIT crudo resuelva a este establecimiento.
-    taxID: cuit,
-    vatID: cuit,
-    identifier: {
-      '@type': 'PropertyValue',
-      propertyID: 'CUIT',
-      value: cuit,
-    },
+    // para que una búsqueda por el CUIT crudo (o con guiones) resuelva a esta ficha.
+    taxID: ficha.cuitFormateado,
+    vatID: ficha.cuit,
+    identifier: [
+      { '@type': 'PropertyValue', propertyID: 'CUIT', value: ficha.cuit },
+      { '@type': 'PropertyValue', propertyID: 'CUIT', value: ficha.cuitFormateado },
+    ],
     ...(phone && { telephone: phone }),
     ...(email && { email }),
     ...(website && { sameAs: website.startsWith('http') ? website : `https://${website}` }),
     address: {
       '@type': 'PostalAddress',
-      addressLocality: localidad || province,
-      addressRegion: province,
+      ...(ficha.localidad && { addressLocality: ficha.localidad }),
+      addressRegion: ficha.provinciaDisplay,
       addressCountry: 'AR',
-      ...(direccion && { streetAddress: direccion }),
+      ...(ficha.direccion && { streetAddress: ficha.direccion }),
     },
-    areaServed: {
-      '@type': 'Country',
-      name: 'Argentina',
-    },
-    priceRange: '$$',
+    ...(ficha.grupoEmpresario && { memberOf: { '@type': 'Organization', name: ficha.grupoEmpresario } }),
+    ...(ficha.actividades.length > 0 && { knowsAbout: ficha.actividades }),
+    additionalProperty,
   }
   return (
     <script
@@ -274,29 +272,15 @@ function LocalBusinessSchema({
 // QAPage inline: responde literalmente "¿a qué empresa corresponde el CUIT NNN?".
 // El número crudo aparece en la pregunta (head-query) y la respuesta trae el dato
 // exacto (razón social + habilitación) para que la IA/SERP cite la asociación.
-function CuitQAPageSchema({
-  cuit,
-  name,
-  localidad,
-  province,
-  stage,
-  matricula,
-}: {
-  cuit: string
-  name: string
-  localidad: string | null
-  province: string
-  stage: number
-  matricula: string
-}) {
-  const localidadStr = localidad || province
-  const answer = `El CUIT ${formatCuit(cuit)} corresponde a ${name}, un frigorífico habilitado por SENASA (${stageName(stage)}, matrícula ${matricula}) con sede en ${localidadStr}, Argentina. Datos oficiales MAGYP/SENASA.`
+function CuitQAPageSchema({ ficha }: { ficha: FichaFrigorifico }) {
+  const titular = ficha.propietario ? ` (titular según SENASA: ${ficha.propietario})` : ''
+  const answer = `El CUIT ${ficha.cuitFormateado} corresponde a ${ficha.nombre}${titular}, ${ficha.categoria ? `${ficha.categoria.toLowerCase()} ` : 'frigorífico '}con sede en ${ficha.lugar}, Argentina. Habilitación SENASA ${estadoSenasaTexto(ficha)}, matrícula ${ficha.matricula}. Datos oficiales SENASA/MAGYP.`
   return (
     <QAPageSchema
-      question={`¿A qué empresa corresponde el CUIT ${cuit}?`}
+      question={`¿A qué empresa corresponde el CUIT ${ficha.cuit}?`}
       answer={answer}
-      url={`https://www.consignatarias.com.ar/frigorificos/${cuit}`}
-      id={`https://www.consignatarias.com.ar/frigorificos/${cuit}#qapage`}
+      url={`https://www.consignatarias.com.ar/frigorificos/${ficha.cuit}`}
+      id={`https://www.consignatarias.com.ar/frigorificos/${ficha.cuit}#qapage`}
     />
   )
 }
@@ -324,7 +308,6 @@ export default async function FrigorificoDetailPage({
   // Use enriched data if available, fallback to basic
   const name = profile?.name || basicF.name
   const province = profile?.province || basicF.province
-  const localidad = profile?.localidad || null
   const phone = profile?.phone || null
   const email = profile?.email || null
   const website = profile?.website || null
@@ -375,34 +358,29 @@ export default async function FrigorificoDetailPage({
   }
   const tieneVitrina = ownerPlan.isPro && vitrinaProducts.length > 0
 
+  // Ficha de la empresa: una sola estructura (directorio + enriquecido + padrón SENASA) que
+  // alimenta el bloque alto, la meta description y el JSON-LD. La localidad del perfil
+  // reclamado pisa a la del padrón.
+  const ficha = getFichaFrigorifico(cuit, profile?.localidad ?? null)
+  if (!ficha) notFound()
+
   // Enrichment: data-derived summary, province neighbours, cattle stock.
-  const summary = frigorificoSummary({ name, matricula: basicF.matricula, stage: basicF.stage, localidad, province, grupoEmpresario, tipo, volumenFaena })
-  const relatedFrigs = relatedFrigorificos(cuit, province)
-  const provinceSlug = (province || '').toLowerCase().replace(/\s+/g, '-')
+  const summary = frigorificoSummary({ name, matricula: basicF.matricula, stage: basicF.stage, localidad: ficha.localidad, province, grupoEmpresario, tipo, volumenFaena })
+  const relatedFrigs = frigorificosRelacionados(cuit, province)
+  // Sólo enlazamos la página de provincia si existe (CABA y La Rioja recién se sumaron;
+  // "SIN DETERMINAR" no tiene página y no la va a tener).
+  const provinceSlug = frigorificoProvinceSlugFor(province)
+  const provinceCount = frigorificoProvinceCount(province)
   const existencias = existenciasFor(province)
-  const localidadStr = localidad || province
+  const localidadStr = ficha.lugar
+  const rowClass = 'px-panel py-2.5 flex items-start justify-between gap-3'
+  const labelClass = 'text-xxs font-terminal text-zinc-500 uppercase tracking-wider shrink-0'
+  const valueClass = 'text-data font-terminal text-zinc-200 text-right'
 
   return (
     <>
-      <LocalBusinessSchema
-        name={name}
-        cuit={cuit}
-        province={province}
-        localidad={localidad}
-        phone={phone}
-        email={email}
-        website={website}
-        direccion={direccion}
-        stage={basicF.stage}
-      />
-      <CuitQAPageSchema
-        cuit={cuit}
-        name={name}
-        localidad={localidad}
-        province={province}
-        stage={basicF.stage}
-        matricula={basicF.matricula}
-      />
+      <LocalBusinessSchema ficha={ficha} phone={phone} email={email} website={website} />
+      <CuitQAPageSchema ficha={ficha} />
       <BreadcrumbSchema items={[
         { name: 'Inicio', url: 'https://www.consignatarias.com.ar' },
         { name: 'Frigoríficos', url: 'https://www.consignatarias.com.ar/frigorificos' },
@@ -472,22 +450,23 @@ export default async function FrigorificoDetailPage({
             {/* Answer-first: reconocimiento del CUIT crudo como primera oración citable —
                 el dato exacto (razón social + habilitación) en la 1ª frase de la ficha. */}
             <p className="text-data font-terminal text-zinc-300 leading-relaxed mt-2.5">
-              El CUIT <span className="text-zinc-100 tabular-nums">{formatCuit(basicF.cuit)}</span> corresponde a{' '}
-              <span className="text-zinc-100">{name}</span>, frigorífico habilitado SENASA ({stageName(basicF.stage)}, Mat. {basicF.matricula}) en {localidadStr}.
+              El CUIT <span className="text-zinc-100 tabular-nums">{ficha.cuitFormateado}</span> corresponde a{' '}
+              <span className="text-zinc-100">{name}</span>, {ficha.categoria ? ficha.categoria.toLowerCase() : 'frigorífico'} con sede en {localidadStr}.
+              Habilitación SENASA <span className={senasaVigente ? 'text-positive' : 'text-zinc-100'}>{estadoSenasaTexto(ficha)}</span>, Mat. {basicF.matricula}.
             </p>
             <div className="flex items-center gap-x-2 gap-y-1 flex-wrap mt-2.5 text-xxs font-terminal">
               <span className="px-1.5 py-0.5 border border-terminal-border text-zinc-400 rounded-terminal">
-                {localidad ? `${localidad}, ${province}` : province}
+                {localidadStr}
               </span>
               <span className="px-1.5 py-0.5 border border-terminal-border text-zinc-400 rounded-terminal tabular-nums">
                 Mat. {basicF.matricula}
               </span>
               <span
-                className={`px-1.5 py-0.5 border rounded-terminal ${
+                className={`px-1.5 py-0.5 border rounded-terminal tabular-nums ${
                   senasaVigente ? 'border-positive/30 text-positive' : 'border-zinc-700 text-zinc-500'
                 }`}
               >
-                {senasaVigente ? 'SENASA vigente' : 'SENASA s/registro'}
+                {senasaVigente ? `SENASA vigente · ${fechaAR(ficha.senasa.fechaPadron)}` : `SENASA s/registro · ${fechaAR(ficha.senasa.fechaPadron)}`}
               </span>
             </div>
           </div>
@@ -510,56 +489,143 @@ export default async function FrigorificoDetailPage({
           intención de venderle. Lo conectamos (comisión), no publicamos su dato. */}
       <FrigorificoLeadCapture source={`frigorifico:${slug}`} frigorificoName={name} />
 
-      {/* Data grid */}
-      <div className="terminal-panel">
-        <div className="terminal-panel-header">
-          <span className="text-zinc-200 text-label tracking-widest">DATOS REGISTRALES</span>
+      {/* FICHA DE LA EMPRESA — lo que el que pegó un CUIT quiere en 3 segundos: razón social,
+          CUIT en los dos formatos, dónde está, estado SENASA con fecha, matrícula, ciclo.
+          Cada fila aparece sólo si el dato existe en alguna fuente. */}
+      <div className="terminal-panel" id="ficha">
+        <div className="terminal-panel-header flex items-center justify-between">
+          <span className="text-zinc-200 text-label tracking-widest">FICHA DE LA EMPRESA</span>
+          <span className="text-xxs font-terminal text-zinc-500 tabular-nums">padrón SENASA {fechaAR(ficha.senasa.fechaPadron)}</span>
         </div>
-        <div className="divide-y divide-terminal-border">
-          <div className="px-panel py-2.5 flex items-center justify-between">
-            <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">CUIT</span>
-            <span className="text-data font-terminal text-zinc-200 tabular-nums">{formatCuit(basicF.cuit)}</span>
+        <dl className="divide-y divide-terminal-border">
+          <div className={rowClass}>
+            <dt className={labelClass}>Razón social</dt>
+            <dd className={valueClass}>{ficha.nombre}</dd>
           </div>
-          <div className="px-panel py-2.5 flex items-center justify-between">
-            <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Matricula</span>
-            <span className="text-data font-terminal text-zinc-200 tabular-nums">{basicF.matricula}</span>
-          </div>
-          <div className="px-panel py-2.5 flex items-center justify-between">
-            <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Provincia</span>
-            <span className="text-data font-terminal text-zinc-200">{province}</span>
-          </div>
-          <div className="px-panel py-2.5 flex items-center justify-between">
-            <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Etapa</span>
-            <span className={`text-data font-terminal ${stageColor(basicF.stage)}`}>
-              {stageName(basicF.stage)}
-            </span>
-          </div>
-          {grupoEmpresario && (
-            <div className="px-panel py-2.5 flex items-center justify-between">
-              <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Grupo</span>
-              <span className="text-data font-terminal text-zinc-200">{grupoEmpresario}</span>
+          {ficha.propietario && (
+            <div className={rowClass}>
+              <dt className={labelClass}>Titular (SENASA)</dt>
+              <dd className={valueClass}>{ficha.propietario}</dd>
             </div>
           )}
-          {tipo && (
-            <div className="px-panel py-2.5 flex items-center justify-between">
-              <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Tipo</span>
-              <span className="text-data font-terminal text-zinc-200">{tipo.replace(/_/g, ' ')}</span>
+          <div className={rowClass}>
+            <dt className={labelClass}>CUIT</dt>
+            <dd className={`${valueClass} tabular-nums`}>
+              {ficha.cuitFormateado}
+              <span className="block text-xxs text-zinc-500">{ficha.cuit}</span>
+            </dd>
+          </div>
+          {ficha.localidad && (
+            <div className={rowClass}>
+              <dt className={labelClass}>Localidad</dt>
+              <dd className={valueClass}>{ficha.localidad}</dd>
             </div>
           )}
+          {ficha.partido && (
+            <div className={rowClass}>
+              <dt className={labelClass}>Partido / Depto.</dt>
+              <dd className={valueClass}>{ficha.partido}</dd>
+            </div>
+          )}
+          <div className={rowClass}>
+            <dt className={labelClass}>Provincia</dt>
+            <dd className={valueClass}>
+              {provinceSlug ? (
+                <Link href={`/frigorificos/${provinceSlug}`} className="text-accent hover:underline">{ficha.provinciaDisplay}</Link>
+              ) : (
+                ficha.provinciaDisplay
+              )}
+            </dd>
+          </div>
           {direccion && (
-            <div className="px-panel py-2.5 flex items-center justify-between">
-              <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Direccion</span>
-              <span className="text-data font-terminal text-zinc-200 text-right max-w-[60%]">{direccion}</span>
+            <div className={rowClass}>
+              <dt className={labelClass}>Dirección</dt>
+              <dd className={valueClass}>{direccion}</dd>
             </div>
           )}
-          {volumenFaena && (
-            <div className="px-panel py-2.5 flex items-center justify-between">
-              <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Capacidad de faena</span>
-              <span className="text-data font-terminal text-zinc-200 text-right max-w-[60%]">{volumenFaena}</span>
+          <div className={rowClass}>
+            <dt className={labelClass}>Estado SENASA</dt>
+            <dd className={`${valueClass} ${senasaVigente ? 'text-positive' : 'text-zinc-300'}`}>
+              {senasaVigente ? 'Habilitación vigente' : 'No figura en el padrón'}
+              <span className="block text-xxs text-zinc-500 tabular-nums">
+                {senasaVigente
+                  ? `padrón del ${fechaAR(ficha.senasa.fechaPadron)}`
+                  : ficha.senasa.ultimaVez
+                    ? `consultado el ${fechaAR(ficha.senasa.fechaPadron)} · figuró hasta el ${fechaAR(ficha.senasa.ultimaVez)}`
+                    : `consultado el ${fechaAR(ficha.senasa.fechaPadron)}`}
+              </span>
+            </dd>
+          </div>
+          <div className={rowClass}>
+            <dt className={labelClass}>Matrícula</dt>
+            <dd className={`${valueClass} tabular-nums`}>
+              {ficha.matricula}
+              {ficha.nroOficial && <span className="block text-xxs text-zinc-500">Nº oficial SENASA {ficha.nroOficial}</span>}
+            </dd>
+          </div>
+          <div className={rowClass}>
+            <dt className={labelClass}>Etapa</dt>
+            <dd className={`${valueClass} ${stageColor(basicF.stage)}`}>{stageName(basicF.stage)}</dd>
+          </div>
+          {ficha.categoria && (
+            <div className={rowClass}>
+              <dt className={labelClass}>Categoría SENASA</dt>
+              <dd className={valueClass}>{ficha.categoria}</dd>
             </div>
           )}
-        </div>
+          {grupoEmpresario && (
+            <div className={rowClass}>
+              <dt className={labelClass}>Grupo</dt>
+              <dd className={valueClass}>{grupoEmpresario}</dd>
+            </div>
+          )}
+        </dl>
       </div>
+
+      {/* QUÉ SABEMOS DE SU ACTIVIDAD — ciclos y actividades autorizadas del padrón SENASA,
+          capacidad de faena y perfil comercial cuando el enriquecido los tiene. No hay dato de
+          faena por planta ni de remates/consignatarias vinculadas en el repo: no se muestra. */}
+      {(ficha.ciclos.length > 0 || ficha.actividades.length > 0 || ficha.volumenFaena || tipo) && (
+        <div className="terminal-panel">
+          <div className="terminal-panel-header">
+            <span className="text-zinc-200 text-label tracking-widest">QUÉ SABEMOS DE SU ACTIVIDAD</span>
+          </div>
+          <div className="divide-y divide-terminal-border">
+            {ficha.ciclos.length > 0 && (
+              <div className="px-panel py-2.5">
+                <span className={`${labelClass} block mb-1.5`}>Ciclos habilitados ({ficha.ciclos.length})</span>
+                <div className="flex flex-wrap gap-1">
+                  {ficha.ciclos.map((c) => (
+                    <span key={c} className="text-xxs font-terminal px-1.5 py-0.5 border border-positive/30 text-positive rounded-terminal">{c}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {ficha.volumenFaena && (
+              <div className={rowClass}>
+                <span className={labelClass}>Capacidad de faena declarada</span>
+                <span className={`${valueClass} tabular-nums`}>{ficha.volumenFaena.toLocaleString('es-AR')} cabezas/mes</span>
+              </div>
+            )}
+            {tipo && (
+              <div className={rowClass}>
+                <span className={labelClass}>Perfil comercial</span>
+                <span className={valueClass}>{TIPO_FRASE[tipo] ?? tipo.replace(/_/g, ' ')}</span>
+              </div>
+            )}
+            {ficha.actividades.length > 0 && (
+              <div className="px-panel py-2.5">
+                <span className={`${labelClass} block mb-1.5`}>Actividades autorizadas por SENASA ({ficha.actividades.length})</span>
+                <ul className="space-y-1">
+                  {ficha.actividades.map((a) => (
+                    <li key={a} className="text-data font-terminal text-zinc-300 leading-relaxed">· {a}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Data-derived summary + cattle stock (unique per establishment / province) */}
       <div className="terminal-panel">
@@ -603,55 +669,13 @@ export default async function FrigorificoDetailPage({
                   ? ` (${senasaRecord!.ciclos.length} ciclos)`
                   : ''}.
               </p>
-              {/* Registry data is public SENASA info — shown to everyone so the
-                  page carries real, per-establishment unique content (indexable).
-                  PRO is reserved for the value-add layer (alerts, exports, comparador). */}
-              <div className="mt-3 pt-3 border-t border-terminal-border divide-y divide-terminal-border">
-                  {senasaRecord!.propietario && (
-                    <div className="py-2 flex items-start justify-between gap-3">
-                      <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Propietario</span>
-                      <span className="text-data font-terminal text-zinc-200 text-right">{senasaRecord!.propietario}</span>
-                    </div>
-                  )}
-                  {senasaRecord!.partido && (
-                    <div className="py-2 flex items-start justify-between gap-3">
-                      <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Partido</span>
-                      <span className="text-data font-terminal text-zinc-200 text-right">{senasaRecord!.partido}</span>
-                    </div>
-                  )}
-                  {senasaRecord!.localidad && (
-                    <div className="py-2 flex items-start justify-between gap-3">
-                      <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Localidad</span>
-                      <span className="text-data font-terminal text-zinc-200 text-right">{senasaRecord!.localidad}</span>
-                    </div>
-                  )}
-                  {senasaRecord!.nroOficial && (
-                    <div className="py-2 flex items-start justify-between gap-3">
-                      <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">Nº Oficial</span>
-                      <span className="text-data font-terminal text-zinc-200 tabular-nums">{senasaRecord!.nroOficial}</span>
-                    </div>
-                  )}
-                  {senasaRecord!.ciclos.length > 0 && (
-                    <div className="py-2">
-                      <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider block mb-1.5">Ciclos habilitados</span>
-                      <div className="flex flex-wrap gap-1">
-                        {senasaRecord!.ciclos.map(c => (
-                          <span key={c} className="text-xxs font-terminal px-1.5 py-0.5 border border-positive/30 text-positive rounded-terminal">{c}</span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {senasaRecord!.actividades.length > 0 && (
-                    <div className="py-2">
-                      <span className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider block mb-1.5">Actividades autorizadas ({senasaRecord!.actividades.length})</span>
-                      <ul className="space-y-1">
-                        {senasaRecord!.actividades.map(a => (
-                          <li key={a} className="text-data font-terminal text-zinc-300 leading-relaxed">· {a}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-              </div>
+              {/* Los campos del registro (titular, partido, localidad, nº oficial, ciclos,
+                  actividades) viven arriba, en FICHA DE LA EMPRESA y QUÉ SABEMOS DE SU
+                  ACTIVIDAD. Acá queda el veredicto con fecha y el ancla al bloque. */}
+              <p className="text-xxs font-terminal text-zinc-500 leading-relaxed mt-2">
+                Titular, partido, ciclos y actividades autorizadas: ver{' '}
+                <a href="#ficha" className="text-accent hover:underline">la ficha de la empresa</a>.
+              </p>
               {!isPro && (
                 <div className="mt-3 pt-3 border-t border-terminal-border">
                   <p className="text-xxs font-terminal text-zinc-500 leading-relaxed">
@@ -785,16 +809,18 @@ export default async function FrigorificoDetailPage({
               <Link key={r.cuit} href={`/frigorificos/${r.cuit}`} className="block px-panel py-2.5 hover:bg-zinc-800/40 transition-colors">
                 <span className="text-data font-terminal text-accent hover:underline">{relatedFrigAnchor(r, i)}</span>
                 <span className="block text-xxs font-terminal text-zinc-500 mt-0.5">
-                  Mat. SENASA {r.matricula}{r.localidad ? ` · ${r.localidad}` : ` · ${r.province}`}
+                  Mat. SENASA {r.matricula}{r.localidad ? ` · ${r.localidad}` : ` · ${r.provincia}`}{r.mismoPartido ? ' · mismo partido' : ''}
                 </span>
               </Link>
             ))}
           </div>
-          <div className="px-panel py-2 border-t border-terminal-border">
-            <Link href={`/frigorificos/${provinceSlug}`} className="text-xxs font-terminal text-accent hover:underline">
-              Ver todos los frigoríficos de {province} →
-            </Link>
-          </div>
+          {provinceSlug && (
+            <div className="px-panel py-2 border-t border-terminal-border">
+              <Link href={`/frigorificos/${provinceSlug}`} className="text-xxs font-terminal text-accent hover:underline">
+                Ver los {provinceCount} frigoríficos de {ficha.provinciaDisplay} →
+              </Link>
+            </div>
+          )}
         </div>
       )}
 
