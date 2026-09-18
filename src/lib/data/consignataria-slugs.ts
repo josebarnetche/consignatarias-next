@@ -198,13 +198,107 @@ export function synthesizeProfile(slug: string, displayName: string): Consignata
   return { canonicalSlug: slug, displayName: displayName.trim() || slug, allSlugs: [slug] }
 }
 
+/** Localidad comparable: sin acentos, sin mayúsculas, sin espacios de borde. */
+function normalizarLocalidad(loc: string | null | undefined): string {
+  return (loc || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().trim()
+}
+
+/** `null`, `''` y `'00:00'` significan lo mismo: no sabemos la hora. */
+function horaDesconocida(t: string | null | undefined): boolean {
+  return !t || t === '00:00'
+}
+
+function minutosDelDia(t: string | null | undefined): number | null {
+  if (horaDesconocida(t)) return null
+  const m = /^(\d{2}):(\d{2})/.exec(t as string)
+  return m ? Number(m[1]) * 60 + Number(m[2]) : null
+}
+
+/**
+ * Dos horarios a menos de una hora son el mismo remate contado dos veces.
+ *
+ * Una firma no arranca dos subastas en el mismo pueblo con cuarenta minutos de
+ * diferencia: lo que difiere es el criterio de cada sitio para anotar la hora de
+ * inicio. UMC publica su venta de genética a las 14:00 en un sitio y a las 14:30
+ * en el otro. En cambio Madelán, el mismo día y el mismo pueblo, tiene una
+ * invernada a las 10:00 y un programa genético a las 14:00, que son dos remates
+ * de verdad. Al 18-sep-2026 los datos separan los dos casos con holgura —los
+ * pares son de 30 minutos o de 240, sin nada en el medio—, así que el umbral no
+ * está sosteniendo ninguna decisión fina.
+ */
+const TOLERANCIA_MINUTOS = 60
+
+/** Cuánta información trae una fila, para elegir cuál sobrevive a un empate. */
+function riqueza(a: Auction): number {
+  return (
+    (horaDesconocida(a.time) ? 0 : 4) +
+    (a.catalogUrl ? 2 : 0) +
+    (a.youtubeUrl ? 2 : 0) +
+    (a.estimatedHeads ? 1 : 0) +
+    (a.description ? 1 : 0)
+  )
+}
+
+/**
+ * Colapsa la MISMA subasta publicada por dos sitios distintos de la misma firma.
+ *
+ * POR QUÉ HACE FALTA ACÁ. `mergeAuctions()` (src/lib/dal/auctions.ts) dedupea lo
+ * scrapeado contra lo que carga el dueño, pero nunca scrapeado contra scrapeado:
+ * hasta que una firma tuvo dos slugs variante con fuente propia, el caso no existía.
+ * UMC publica en `umcsa.net` y en `umchv.ar`, y su venta de genética del 17-sep en
+ * Mercedes entraba dos veces, con dos títulos distintos. En la ficha eso infla el
+ * historial de la firma delante de la única persona que se lo sabe de memoria.
+ *
+ * REGLA DELIBERADAMENTE ANGOSTA — sólo colapsa si se cumple TODO:
+ *   1. las dos filas vienen de slugs variante DISTINTOS (dos fuentes, no una),
+ *   2. misma fecha y misma localidad,
+ *   3. horarios a menos de `TOLERANCIA_MINUTOS`, o una de las dos sin hora.
+ *
+ * El punto 3 es el que la hace segura: con horas conocidas y lejanas —Madelán, ver
+ * arriba— acá NO se toca nada y el duplicado queda a la vista para que lo resuelva
+ * una persona. Es deliberado: el calendario es el activo, así que ante la duda se
+ * prefiere mostrar de más y que se note, antes que borrar un remate real en silencio.
+ */
+function colapsarDuplicadosDeFuente(filas: Auction[]): Auction[] {
+  const porLugarYDia = new Map<string, Auction[]>()
+  for (const a of filas) {
+    const clave = `${a.date}|${normalizarLocalidad(a.location)}`
+    porLugarYDia.set(clave, [...(porLugarYDia.get(clave) ?? []), a])
+  }
+
+  const descartadas = new Set<Auction>()
+  for (const grupo of porLugarYDia.values()) {
+    if (grupo.length < 2) continue
+    for (let i = 0; i < grupo.length; i++) {
+      for (let j = i + 1; j < grupo.length; j++) {
+        const a = grupo[i]
+        const b = grupo[j]
+        if (descartadas.has(a) || descartadas.has(b)) continue
+        if (a.consignatariaSlug === b.consignatariaSlug) continue
+        const ma = minutosDelDia(a.time)
+        const mb = minutosDelDia(b.time)
+        const mismoHorario =
+          ma === null || mb === null || Math.abs(ma - mb) <= TOLERANCIA_MINUTOS
+        if (!mismoHorario) continue
+        // Gana la fila con más información; a igualdad, el id menor, para que el
+        // build sea determinista y la key de React no baile entre deploys.
+        const pierde =
+          riqueza(a) !== riqueza(b) ? (riqueza(a) < riqueza(b) ? a : b) : a.id > b.id ? a : b
+        descartadas.add(pierde)
+      }
+    }
+  }
+
+  return descartadas.size === 0 ? filas : filas.filter(a => !descartadas.has(a))
+}
+
 /** Get all auctions that belong to a canonical slug (merges all variant slugs). */
 export function getAuctionsForProfile(auctions: Auction[], canonicalSlug: string): Auction[] {
   const profile = canonicalToProfile.get(canonicalSlug)
   // Curated profile: merge across all its variant slugs.
   if (profile) {
     const slugSet = new Set(profile.allSlugs)
-    return auctions.filter(a => slugSet.has(a.consignatariaSlug))
+    return colapsarDuplicadosDeFuente(auctions.filter(a => slugSet.has(a.consignatariaSlug)))
   }
   // Uncurated consignataria (synthesized profile): match the slug directly so
   // the on-demand page still shows its auctions.
