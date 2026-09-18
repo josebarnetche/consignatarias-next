@@ -17,15 +17,20 @@ import LiveRemateTicker from '@/components/LiveRemateTicker'
 // Regenerate hourly for fresh data
 export const revalidate = 3600
 
-// Get today's date in Argentina timezone
+/**
+ * Hoy en Argentina.
+ *
+ * La versión anterior hacía la cuenta a mano —`-3*60` contra `getTimezoneOffset()`—
+ * con el signo invertido: `getTimezoneOffset()` devuelve UTC menos local, así que
+ * para ART da +180, no -180. En Vercel salía bien de casualidad porque el servidor
+ * corre en UTC y el término se anulaba; en cualquier máquina que no fuera UTC daba
+ * un día equivocado. Es el mismo error de huso que tuvo el worker de lotes MAG y
+ * que costó tres semanas de feed. `en-CA` devuelve YYYY-MM-DD.
+ */
 function getTodayStr(): string {
-  const now = new Date()
-  // Argentina is UTC-3
-  const argentinaOffset = -3 * 60
-  const localOffset = now.getTimezoneOffset()
-  const diff = argentinaOffset - localOffset
-  const argentinaTime = new Date(now.getTime() + diff * 60 * 1000)
-  return argentinaTime.toISOString().split('T')[0]
+  return new Date().toLocaleDateString('en-CA', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+  })
 }
 
 function formatDate(dateStr: string): string {
@@ -570,21 +575,39 @@ export default async function RematesEnVivoPage() {
                     <span className="text-sm text-zinc-600">({dateRemates.length} transmisiones)</span>
                   </h2>
                   <div className="grid gap-4 md:grid-cols-2">
-                    {dateRemates.map(remate => (
-                      <LiveRemateCard
-                        key={remate.id}
-                        remate={remate}
-                        isToday={isToday}
-                        isLive={isToday && remate.status === 'live' && remate.confidence === 'confirmed'}
-                        confidence={remate.confidence}
-                        watchUrl={remate.watchUrl}
-                        anclaStream={
-                          isToday && streams.some((s) => s.id === claveStream(remate))
-                            ? claveStream(remate)
-                            : null
-                        }
-                      />
-                    ))}
+                    {dateRemates.map(remate => {
+                      // EN VIVO afirma que el remate se está transmitiendo AHORA, así
+                      // que se enciende con lo único que lo prueba: que haya un video
+                      // efectivamente al aire en la pared de transmisiones.
+                      //
+                      // Antes la condición era `remate.status === 'live'` y el cartel no
+                      // se encendía nunca. `status` sale de remates.json, que el scraper
+                      // commitea una vez por día: ningún remate del día llega con 'live'
+                      // —los únicos que lo tienen son los de ayer, que este listado ya
+                      // filtró por fecha—. Hoy 18-sep había 20 remates al aire a las
+                      // 15:30 y cero con ese campo en 'live'.
+                      //
+                      // Tampoco alcanza `confidence === 'confirmed'`: eso sólo dice que
+                      // la fila del JSON traía una URL de YouTube, no que se esté
+                      // transmitiendo. Hoy ninguna la traía y el cartel habría seguido
+                      // apagado con los 20 remates en curso. La pared, en cambio, ya
+                      // resolvió contra YouTube y contra nuestras propias sesiones de
+                      // captura qué video está efectivamente corriendo.
+                      const enPared = isToday
+                        ? streams.find((s) => s.id === claveStream(remate))
+                        : undefined
+                      return (
+                        <LiveRemateCard
+                          key={remate.id}
+                          remate={remate}
+                          isToday={isToday}
+                          isLive={enPared?.enVivoAhora === true}
+                          confidence={remate.confidence}
+                          watchUrl={remate.watchUrl}
+                          anclaStream={enPared ? claveStream(remate) : null}
+                        />
+                      )
+                    })}
                   </div>
                 </section>
               )
