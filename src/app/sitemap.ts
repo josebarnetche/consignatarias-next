@@ -671,6 +671,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }))
 
+  // Calendario por consignataria (/calendario/<slug>) — las 52 páginas que ya rankean
+  // SIN estar en el sitemap. Medido al 17-sep-2026: 649 impresiones y 28 clics en 28 días,
+  // el doble de tráfico que las 479 fichas de /productividad. Son `webcal://`+ICS: el que
+  // busca "calendario de remates de <firma>" llega y se suscribe. Se aplica el MISMO filtro
+  // de thin que los perfiles: si la firma no tiene al menos 2 remates ni SEO propio, su
+  // calendario tampoco tiene con qué sostener una página.
+  const calendarioPages: MetadataRoute.Sitemap = getAllCanonicalSlugs()
+    .filter((slug) => getAuctionsForProfile(auctionsForSitemap, slug).length >= 2 || getProfileSEO(slug))
+    .map((slug) => ({
+      url: `${baseUrl}/calendario/${slug}`,
+      lastModified: latestRemateDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }))
+
   // Frigorificos by province landing pages
   const FRIGORIFICO_PROVINCE_SLUGS: Record<string, string> = {
     'BUENOS AIRES': 'buenos-aires',
@@ -728,7 +743,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     date: string
     status: string
   }[])
-    .filter((r) => r.status === 'scheduled' || r.status === 'completed')
+    // 'live' es el estado del dia del remate; sin el, la ficha del dia quedaba fuera del
+    // sitemap ademas de dar 404 (ver el comentario en remates/[slug]/page.tsx).
+    .filter((r) => r.status === 'scheduled' || r.status === 'completed' || r.status === 'live')
     // Ventana móvil: un remate de hace más de 90 días no lo busca nadie y no puede
     // convertir, pero seguía en el sitemap para siempre —no había ningún corte temporal—.
     // Al 17-sep-2026 eran 566 fichas pasadas mudas: el 17% del sitemap gastando
@@ -851,6 +868,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...typePages,
     ...provinceTypePages,
     ...consignatariaPages,
+    ...calendarioPages,
     ...frigorificosByProvincePages,
     ...frigorificoPages,
     ...remateDetailPages,

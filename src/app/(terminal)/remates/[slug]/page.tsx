@@ -242,8 +242,14 @@ export const dynamicParams = false
 export async function generateStaticParams() {
   // Merged route: individual remate slugs + province slugs (province match
   // discriminated at runtime via isRemateProvinceSlug).
+  // 'live' TIENE que estar. Es el estado que toma el remate el dia que ocurre, y estaba
+  // afuera de este filtro: con dynamicParams=false, la ficha devolvia 404 en el edge
+  // exactamente el dia de mayor intencion de busqueda ("remate hoy", "en vivo"), y volvia
+  // al dia siguiente al pasar a 'completed'. Verificado en produccion el 17-sep-2026:
+  // /remates/darwash-s-a-invernada-buenos-aires-2026-09-17 → 404 con el remate en curso.
+  // Son ~25 URLs por dia, todos los dias.
   const remateSlugs = rematesData
-    .filter(r => r.status === 'scheduled' || r.status === 'completed')
+    .filter(r => r.status === 'scheduled' || r.status === 'completed' || r.status === 'live')
     .map(remate => generateRemateSlug(remate))
   const provinceSlugs = rematesProvinceSlugsWithAuctions()
   const all = Array.from(new Set([...remateSlugs, ...provinceSlugs]))
