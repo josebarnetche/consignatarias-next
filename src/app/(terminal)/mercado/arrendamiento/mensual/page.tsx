@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import marketPrices from '@/lib/data/market-prices.json'
-import { createAdminClient } from '@/lib/supabase-server'
+import { adminClientOpcional } from '@/lib/supabase-server'
 import { SectionBreadcrumbSchema, DatasetSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { Delta, DataTable, PriceCell, type DataColumn } from '@/components/ui'
 import { signedTone } from '@/lib/ui/tokens'
@@ -51,7 +51,8 @@ interface MonthClose {
  * MAG; es el número con el que se liquidan los arrendamientos. Serie completa, más nueva arriba.
  */
 async function getMonthlyCloses(): Promise<MonthClose[]> {
-  const db = createAdminClient() as unknown as SupabaseClient
+  const db = adminClientOpcional() as unknown as SupabaseClient | null
+  if (!db) return []
   const { data } = await db
     .from('inmag_monthly_close')
     .select('year, month, inmag, cabezas')

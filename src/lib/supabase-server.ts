@@ -14,6 +14,35 @@ export function createAdminClient(): ServiceClient {
   return requireServiceClient()
 }
 
+/**
+ * Igual que `createAdminClient()`, pero devuelve `null` en vez de explotar cuando el
+ * entorno no tiene la service-role key.
+ *
+ * POR QUÉ: `SUPABASE_SERVICE_ROLE_KEY` está cargada en Vercel SÓLO en Production. Toda
+ * página estática que consulte la base durante el build funciona en producción y tira
+ * abajo el build de PREVIEW. Al 17-sep-2026 los 4 deploys fallados de los últimos 20 eran
+ * previews y murieron exactamente así; los 16 de producción pasaron todos.
+ *
+ * En PRODUCCIÓN sigue siendo un error duro: si falta la variable ahí, hay un problema real
+ * y tiene que verse. Sólo afloja en preview/desarrollo, donde la página debe renderizar su
+ * estado vacío en lugar de voltear el deploy entero.
+ *
+ * Sólo para páginas PRERENDERIZADAS. Una ruta de API o una página dinámica que necesite la
+ * base debe seguir usando `createAdminClient()` y fallar fuerte.
+ */
+export function adminClientOpcional(): ServiceClient | null {
+  try {
+    return requireServiceClient()
+  } catch (err) {
+    if (process.env.VERCEL_ENV === 'production') throw err
+    console.warn(
+      '[supabase] sin service-role en este build; se prerenderiza el estado vacío:',
+      err instanceof Error ? err.message : err,
+    )
+    return null
+  }
+}
+
 export async function createClient() {
   const cookieStore = await cookies()
 

@@ -12,7 +12,7 @@
  * Una participación de hembras alta señala LIQUIDACIÓN (descarga de vientres);
  * baja señala RETENCIÓN (armado de rodeo).
  */
-import { requireServiceClient } from '@/lib/supabase'
+import { adminClientOpcional } from '@/lib/supabase-server'
 import historicoRaw from './faena-hembras-nacional-historico.json'
 import trimestralRaw from './faena-hembras-nacional-trimestral.json'
 import actualRaw from './faena-hembras-nacional-actual.json'
@@ -49,7 +49,11 @@ export const SERIE_NACIONAL: PuntoHembras[] = (() => {
  * Hembras = vacas + vaquillonas (regex ^VAC|^VAQ en el RPC).
  */
 export async function getCanuelasHembrasMensual(): Promise<PuntoHembras[]> {
-  const service = requireServiceClient()
+  // Sin service-role —el caso de todo build de Preview— se devuelve vacío en vez de
+  // voltear el deploy; en producción `adminClientOpcional` sigue lanzando. Ver el porqué
+  // completo en `src/lib/supabase-server.ts`.
+  const service = adminClientOpcional()
+  if (!service) return []
   // Cast: el RPC es nuevo (migración 20260713) y aún no está en los tipos generados.
   const { data, error } = await service.rpc('get_canuelas_hembras_mensual' as never)
   if (error || !data) return []

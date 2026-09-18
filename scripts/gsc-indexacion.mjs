@@ -34,6 +34,10 @@ const RESUMEN = join(OUT_DIR, 'indexacion-resumen.md')
 const SITE = process.env.GSC_SITE || 'sc-domain:consignatarias.com.ar'
 const SITEMAP = 'https://www.consignatarias.com.ar/sitemap.xml'
 const CONCURRENCIA = 4
+/** 429 seguidos que se toleran antes de dar la cuota diaria por agotada. */
+const LIMITE_CUOTA_SEGUIDA = 8
+/** Salto de línea del CSV. */
+const SALTO = '\n'
 
 const arg = (n, def = null) => {
   const i = process.argv.indexOf(n)
@@ -150,9 +154,10 @@ async function inspeccionar(sc, url) {
     } catch (e) {
       const code = e?.code || e?.response?.status
       if (code === 429) {
-        // cuota por minuto: esperar y reintentar
-        await new Promise((r) => setTimeout(r, 20000))
-        continue
+        // Dos intentos con espera corta; si insiste, es cuota diaria y no de minuto:
+        // devolver CUOTA para que el bucle corte en vez de dormir 1.800 veces.
+        if (intento < 1) { await new Promise((r) => setTimeout(r, 15000)); continue }
+        return { url, verdict: 'CUOTA', inspectedAt: new Date().toISOString() }
       }
       if (code === 403) throw e // cuota diaria agotada o sin permiso: cortar
       return { url, verdict: 'ERROR', coverageState: String(e?.message || e).slice(0, 120), inspectedAt: new Date().toISOString() }
@@ -188,19 +193,32 @@ async function main() {
   const lote = pendientes.slice(0, limit)
 
   let hechas = 0
+  let cuotaSeguida = 0
   const cola = [...lote]
+  const guardar = () => {
+    const filas = [...previo.values()]
+    writeFileSync(CSV, [COLS.join(','), ...filas.map((r) => COLS.map((c) => esc(r[c])).join(','))].join(SALTO) + SALTO)
+  }
   async function worker() {
     while (cola.length) {
+      if (cuotaSeguida >= LIMITE_CUOTA_SEGUIDA) { cola.length = 0; break }
       const u = cola.shift()
       const row = await inspeccionar(sc, u)
+      if (row.verdict === 'CUOTA') { cuotaSeguida++; continue }
+      cuotaSeguida = 0
       previo.set(u, row)
-      if (++hechas % 100 === 0) console.error(`  ${hechas}/${lote.length}`)
+      // Guardar cada 50: una corrida cancelada o cortada por timeout no puede perder
+      // todo lo inspeccionado. Escribir al final era tirar una hora de cuota a la basura.
+      if (++hechas % 50 === 0) { guardar(); console.error(`  ${hechas}/${lote.length} (guardado)`) }
     }
   }
   try {
     await Promise.all(Array.from({ length: CONCURRENCIA }, worker))
   } catch (e) {
     console.error('Corte por cuota o permiso:', e?.message || e)
+  }
+  if (cuotaSeguida >= LIMITE_CUOTA_SEGUIDA) {
+    console.error(`Cuota agotada: ${LIMITE_CUOTA_SEGUIDA} respuestas 429 seguidas. Se corta y se guarda lo hecho; mañana sigue.`)
   }
 
   const filas = [...previo.values()]

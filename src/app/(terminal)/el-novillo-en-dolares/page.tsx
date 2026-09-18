@@ -114,31 +114,56 @@ const FIXED: { date: string; label: string; ctx: string }[] = [
 type RpcDay = { date: string; inmag: number | null; blue: number | null; usd_blue: number | null; usd_oficial: number | null }
 
 export default async function ElNovilloEnDolaresPage() {
-  const db = createAdminClient() as unknown as SupabaseClient
+  /**
+   * El build de PREVIEW no tiene `SUPABASE_SERVICE_ROLE_KEY` —está cargada sólo en
+   * Production—, así que esta página tiraba abajo TODOS los deploys de rama. Al
+   * 17-sep-2026: de los últimos 20 deploys, los 4 que fallaron eran Preview y los 4
+   * murieron acá con "Supabase service client unavailable"; los de producción pasaron
+   * todos. Un build no puede depender de un secreto que ese entorno no tiene por diseño.
+   *
+   * Se degrada en esta página y NO en `requireServiceClient()` para no aflojar el contrato
+   * global: si falta la variable en un build de PRODUCCIÓN, tiene que seguir explotando.
+   * Sin datos, más abajo ya está el cartel de "no se pudo cargar la serie".
+   */
+  let totalDays: number | null = null
+  let series: NovilloPoint[] = []
+  let curated: { date: string; label: string; ctx: string }[] = []
+  let byDate = new Map<string, RpcDay>()
 
-  const { count: totalDays } = await createAdminClient()
-    .from('mag_inmag_history')
-    .select('*', { count: 'exact', head: true })
-    .not('inmag_value', 'is', null)
+  try {
+    const db = createAdminClient() as unknown as SupabaseClient
 
-  const { data: seriesRaw } = await db.rpc('novillo_usd_series')
-  const series: NovilloPoint[] = ((seriesRaw as { date: string; usd: number }[] | null) || []).map((p) => ({
-    date: p.date,
-    usd: Number(p.usd),
-  }))
-  const hoy = series.length ? series[series.length - 1].date : '2026-07-03'
+    const { count } = await db
+      .from('mag_inmag_history')
+      .select('*', { count: 'exact', head: true })
+      .not('inmag_value', 'is', null)
+    totalDays = count ?? null
 
-  const curated = [
-    ...FIXED,
-    {
-      date: hoy,
-      label: 'Hoy · el récord',
-      ctx: 'El novillo argentino nunca valió tanto en dólares en toda la serie. De 446 a más de 1.200 dólares — la misma hacienda, otro país.',
-    },
-  ]
+    const { data: seriesRaw } = await db.rpc('novillo_usd_series')
+    series = ((seriesRaw as { date: string; usd: number }[] | null) || []).map((p) => ({
+      date: p.date,
+      usd: Number(p.usd),
+    }))
+    const hoy = series.length ? series[series.length - 1].date : '2026-07-03'
 
-  const { data: daysRaw } = await db.rpc('novillo_usd_days', { p_dates: curated.map((c) => c.date) })
-  const byDate = new Map(((daysRaw as RpcDay[] | null) || []).map((r) => [r.date, r]))
+    curated = [
+      ...FIXED,
+      {
+        date: hoy,
+        label: 'Hoy · el récord',
+        ctx: 'El novillo argentino nunca valió tanto en dólares en toda la serie. De 446 a más de 1.200 dólares — la misma hacienda, otro país.',
+      },
+    ]
+
+    const { data: daysRaw } = await db.rpc('novillo_usd_days', { p_dates: curated.map((c) => c.date) })
+    byDate = new Map(((daysRaw as RpcDay[] | null) || []).map((r) => [r.date, r]))
+  } catch (err) {
+    if (process.env.VERCEL_ENV === 'production') throw err
+    console.warn(
+      '[el-novillo-en-dolares] sin Supabase en este build; se prerenderiza el estado vacío:',
+      err instanceof Error ? err.message : err,
+    )
+  }
 
   const days: NovilloDay[] = curated
     .map((c) => {
