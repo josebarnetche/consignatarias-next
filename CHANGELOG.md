@@ -7,6 +7,144 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.207.0] — 2026-09-17
+
+### Fichas de frigoríficos: responder a quien pegó un CUIT
+
+Search Console, 28 días al 13-09-2026: las 1.095 fichas `/frigorificos/[cuit]` reciben 70.008 impresiones y
+1.424 clics (CTR 2,0 %, posición media 6,7). Las búsquedas que las traen son de CUIT ("30500120882" 687 impr,
+"cuit 30517307099", "granja tres arroyos cuit"): gente verificando una empresa, no buscando dónde faenar. Un
+buscador de CUIT (cuitonline) responde razón social, domicilio, estado y actividad en la primera línea; nosotros
+teníamos la localidad escondida en el registro SENASA al pie y 4 de las 5 fichas con más impresiones decían
+"BUENOS AIRES" en título y description cuando el padrón ya tenía "Colon" o "Gonzalez Catan".
+
+- **`src/lib/frigorificos/ficha.ts`** (nuevo): una sola estructura por CUIT que fusiona `frigorificos.json`
+  + `frigorificos-enriched.json` (363) + `senasa-habilitados.json` (869): razón social, titular SENASA si
+  difiere, CUIT en los dos formatos, localidad/partido (perfil reclamado > enriquecido > padrón), estado en
+  el padrón **con fecha** (vigente al DD/MM/AAAA · no figura, figuró hasta DD/MM/AAAA), matrícula, nº
+  oficial, categoría y ciclos SENASA, actividades autorizadas, capacidad de faena. Si un campo no está en
+  ninguna fuente, no se muestra.
+- **Parte alta de la ficha** rediseñada: bloque **FICHA DE LA EMPRESA** (`<dl>` con esos campos) y **QUÉ
+  SABEMOS DE SU ACTIVIDAD** (ciclos, capacidad de faena, perfil comercial, actividades autorizadas) antes
+  de los formularios. El panel HABILITACIÓN SENASA conserva el veredicto con fecha y deja de duplicar los
+  campos del registro.
+- **Meta description** con la forma de respuesta de un buscador de CUIT: `CUIT 30-51730709-9 · <razón
+  social> · Colon, Buenos Aires · habilitación SENASA vigente al 14/09/2026 · Elaborador, Mat. 1036`. El
+  título mantiene el CUIT adelante (con la razón social primero el CTR era ~0) y ahora lleva la localidad
+  real cuando existe.
+- **JSON-LD `LocalBusiness`** enriquecido: `identifier` con el CUIT en ambos formatos, `taxID`/`vatID`,
+  `legalName` (titular SENASA), `address` con localidad real, `memberOf` (grupo), `knowsAbout`
+  (actividades) y `additionalProperty` (matrícula, nº oficial, categoría, ciclos, estado en el padrón con
+  fecha, capacidad de faena). Se quitó `priceRange: "$$"`, que no venía de ninguna fuente. El `QAPage` "¿A
+  qué empresa corresponde el CUIT N?" responde con titular, lugar y estado con fecha.
+- **Enlazado interno**: "otros frigoríficos de la provincia" recorre el directorio completo (antes sólo los
+  363 enriquecidos) y prioriza el mismo partido SENASA; el enlace a la página de provincia sale de
+  `frigorificoProvinceSlugFor()` y sólo se emite si la página existe. **Nuevas páginas de provincia**
+  `/frigorificos/ciudad-autonoma-de-buenos-aires` (85 fichas) y `/frigorificos/la-rioja` (4): hasta hoy
+  89 fichas enlazaban a URLs que en producción respondían "Frigorifico no encontrado". Ambas entran al
+  sitemap.
+- Lo que NO se agregó por falta de dato en el repo: faena por planta, remates o consignatarias vinculadas
+  a un frigorífico (`remates.json` no menciona frigoríficos), actividad AFIP, domicilio fiscal, condición
+  IVA y fecha de inscripción (lo que sí muestra un buscador de CUIT).
+- Línea base para medir: CTR por ficha y por query del 17-08 al 13-09 en
+  `C:/Users/Usuario/proyectos/memola-tools/gsc-radar/auditorias/2026-09-16/gsc-audit-raw.json`. Releer a
+  los 28 días con el modelo Zibecchi antes de afirmar nada.
+
+---
+
+## [1.206.0] — 2026-09-17
+
+### El tráfico SEO, medido y conectado a lo que se vende
+
+Dieciocho días después del arreglo #1 (v1.202.0), el embudo del informe de canon dice esto
+(`value_events`, `informe_purchases`, `newsletter_subscribers`, 31-ago → 17-sep): 478 sesiones
+con evento en `/mercado/arrendamiento` → **4 clics al informe** (3 sesiones) → **15 sesiones**
+en la landing (había sido 1 en dos meses) → 3 descargas del informe de muestra → **0 inicios
+de pago → 0 compras**. Altas nuevas al aviso de cierre mensual: **0** (dos intentos, los dos
+de emails ya anotados). No pasó plata: `informe_purchases`, `guia_purchases`,
+`processed_webhook_events` y las suscripciones con Rebill siguen en cero. El puente trabaja
+como puente; el paso siguiente todavía no.
+
+Y la página nueva del índice mensual (v1.204.0, 16-sep) había salido **sin ninguna oferta ni
+captura**: el error del 31-ago repetido en la página recién nacida para ~4.000 impresiones
+mensuales de "índice novillo arrendamiento mensual".
+
+- **`/mercado/arrendamiento/mensual`**: `ArrendamientoLiquidacionSignup` (el canon en vivo se
+  calcula con el ÚLTIMO CIERRE MENSUAL, que es lo que la página promete) + `OfrecerInforme`
+  del canon, después de las tres tarjetas y antes de la tabla. `page` y `desde` propios para
+  saber cuál de las dos páginas trabaja para el producto. Medido en píxeles: 0,9 y 1,1 pantallas.
+- **`/precios/[categoria]`** (26.590 impresiones como PRODUCT_SNIPPETS en GSC, dos `PriceCTA` y
+  ninguna captura): `SellZoneBadge` + `SellZoneAlertSignup` debajo de la cotización —el motor
+  existe, `sell-zone-alerts`— y `OfrecerInforme` del parte semanal después de la descripción.
+  0,9 y 1,4 pantallas.
+- **`/mercado/[categoria]`**: `OfrecerInforme` del parte semanal después de los rangos
+  observados; tenía alerta y captura de venta pero ningún puente al producto de mercado. 1,4.
+- **Fichas de frigorífico** (70.008 impresiones, 1.424 clics, todas búsquedas de CUIT; 1.388
+  sesiones y **0 reclamos** en 18 días): `ReclamarFichaStrip` debajo de la identidad en las
+  fichas no verificadas, que emite `claim_cta_click` con el CUIT como entidad y lleva al
+  circuito de reclamo que ya existía (`frigorifico_claims`). El bloque viejo seguía al pie, a
+  **3,3 pantallas**, como Link de servidor sin medición. 0,5 pantallas.
+- **No** se agregó "verificar este proveedor": `producer_leads` sólo admite intenciones de
+  productor y **reenvía a la planta** todo lead con `source` `frigorifico:<cuit>`. Un pedido
+  de verificación de contraparte llegaría al verificado. Es un producto nuevo, no un bloque.
+
+Plan completo —tráfico por intención, producto, precio, conversión supuesta (0,5–2 % visita →
+lead, 5–15 % lead → pago, declarados como benchmark y no como medida) e ingreso a 30 y 90
+días en rango (**ARS 0–195.000 / ARS 85.000–1.050.000**)— en
+`docs/strategy/MONETIZAR-TRAFICO-SEO-2026-09.md` (carpeta local, fuera del repo público como
+todos los docs de estrategia). La conclusión incómoda: ni en el techo el
+tráfico paga solo; la meta del informe de canon (ARS 400.000 al 24-oct) llega a su fecha de
+corte antes que a su meta, y la mitad del rango alto es venta directa (PRO Consignataria a
+las 49 firmas con clics, Frigorífico Destacado) que el tráfico señala pero no cierra.
+
+---
+
+## [1.205.0] — 2026-09-17
+
+### Los 604 términos "rozando la primera página", agrupados por intención — y las tres que caían en la página equivocada
+
+Radar GSC del 17-09 (`C:/Users/Usuario/proyectos/memola-tools/gsc-radar/reportes/consignatarias-com-ar/ultimo.md`,
+28 días al 15-09): 604 términos en posición 4-20 con ≥30 impresiones. Agrupados por intención sobre el crudo
+de la auditoría del 16-09 (555 términos con el corte de la auditoría, 79.168 impresiones, 786 clics): arrendamiento
+45.960 impr (58 %), CUIT 7.553, precio por categoría 6.828, consignatarias por nombre 6.382, glosario 3.221,
+frigoríficos 2.050, Cañuelas-precios 1.909, hectárea 74. El crudo no trae el cruce query×página (sólo totales por
+cada dimensión), así que la página que recibe cada intención se infirió por contenido; el cruce real con la API
+quedó bloqueado por permisos de credenciales en esta sesión.
+
+Tres intenciones tenían página, pero no la página que la búsqueda pide. Se mejoró la existente en cada caso —
+ninguna página nueva, para no canibalizar:
+
+- **`/mercado/canuelas`, rehecha como tablero de precios.** "mercado de cañuelas precios (hoy)", "precio hacienda
+  cañuelas", "precio mercado de cañuelas", "mercado de hacienda de cañuelas precios hoy": 23 términos, 1.909
+  impresiones/mes, posición 9-10, 25 clics. La página era la explicación de qué es Cañuelas con un solo número
+  (el INMAG). Ahora es la rueda completa: las 18 categorías del MAG (haciinfo000502) con mínimo, máximo, promedio y
+  cabezas desde `detailedCategories` del scraper, variación contra la rueda anterior desde `mag_prices_detailed`
+  (Supabase, `adminClientOpcional` → sin base la columna no aparece, nunca se inventa), promedio general y
+  cabezas de la rueda, procedencia por provincia (`provinceEntry`), seis tarjetas enlazadas a `/precios/[categoria]`,
+  FAQ con los números y los días de rueda, Dataset + FAQPage + Speakable. Título pasa a
+  "Precios Mercado de Cañuelas Hoy: novillo $X/kg · vaca $Y/kg".
+- **`/mercado/arrendamiento`, encabezado para "índice de arrendamiento" a secas.** "indice de arrendamiento"
+  (1.675 impr, pos 7,9, 3 clics), "indice arrendamiento" (1.049, pos 6,4, 7), "indice de arrendamiento rural"
+  (367), "indice arrendamiento novillo" (474): ~3.500 impresiones que llegaban a una página cuyo H1, título y
+  primer párrafo dicen "índice NOVILLO arrendamiento" — la frase escrita no aparecía en ningún encabezado y el
+  CTR quedaba en 0,2-0,7 %. Se agrega un H2 answer-first con el número del día y el del período, una FAQ
+  (visible y en el FAQPage) y las keywords. Sin tocar el título.
+- **`/campos/valuar`, respuesta nacional para "cuánto vale una hectárea en Argentina".** 74 impresiones en
+  posición 7 sin clics (más ~250 en variantes: "cuanto vale una hectarea", "…de campo", "precio de una hectarea
+  en argentina"). La página tenía la tabla de las 15 provincias pero el H1 y el título eran los del tasador
+  ("¿Cuánto vale mi campo?", búsqueda con cero impresiones en GSC). Ahora el H1 es la pregunta, el primer párrafo
+  responde con el rango real calculado de `tierra-por-kilo.json` (provincia más barata y más cara, zona más cara
+  y más barata; cambia solo cuando cambie el relevamiento), el título lleva el rango, y van Dataset + Speakable.
+  No se creó `/campos/valor-hectarea` como hub: habría duplicado esta tabla.
+
+Lo que se vio y no se tocó: los 25 términos con CTR bajo en top 3 ("cuanto vale una vaca viva en pesos
+argentinos", 504 impr, pos 2,9, CTR 0,6 %) son respuestas directas de Google o citas de IA — no es el título;
+los 90 términos de CUIT (7.553 impr) caen en fichas de frigoríficos y son búsquedas de verificación de
+contraparte (producto, no SEO); "feedlot"/"renspa" (3.221 impr, pos 8-10) ya tienen su página y lo que falta es
+autoridad, no contenido. Medición: releer el radar a los 28 días, por query, y pasar por Zibecchi antes de
+afirmar nada.
+
+
 ## [1.204.0] — 2026-09-16
 
 ### SEO desde Search Console: la página del índice MENSUAL y el título de precios por animal

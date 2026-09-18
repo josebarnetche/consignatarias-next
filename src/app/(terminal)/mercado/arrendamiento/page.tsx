@@ -110,6 +110,9 @@ export const metadata: Metadata = {
   description: `Precio del novillo para arrendamiento hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg — índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero (período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)}, act. ${fmtFecha(arr.date)}). Índice mensual (el que se liquida): $${arr.periodIndex.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg. Calculá el canon de tu campo en kg/ha.`,
   keywords: [
     'índice novillo arrendamiento',
+    'indice de arrendamiento',
+    'indice arrendamiento',
+    'indice de arrendamiento rural',
     'indice novillo arrendamiento hoy',
     'indice novillo arrendamiento cañuelas',
     'indice novillo arrendamiento mensual liniers',
@@ -144,6 +147,13 @@ function FAQSchema() {
     {
       question: '¿Qué es el índice novillo arrendamiento?',
       answer: 'El índice novillo arrendamiento es el valor de referencia utilizado para calcular el canon de los contratos de arrendamiento rural en Argentina. Se basa en el precio del novillo en el Mercado Agroganadero de Buenos Aires (INMAG) y permite ajustar el valor del alquiler de campos de manera objetiva y transparente según las condiciones del mercado ganadero.'
+    },
+    {
+      // "indice de arrendamiento" / "indice arrendamiento" a secas: ~3.000 impr/mes en
+      // posición 6-8 con CTR 0,2-0,7 % (GSC 09-2026). La página respondía "índice novillo
+      // arrendamiento"; quien busca sin el "novillo" no encontraba su frase en el snippet.
+      question: '¿Qué es el índice de arrendamiento y cuánto vale hoy?',
+      answer: `El índice de arrendamiento (índice de arrendamiento rural, o índice novillo arrendamiento) es el precio del kilo vivo de novillo que publica el Mercado Agroganadero como referencia para pasar a pesos los contratos rurales pactados en kilos de novillo por hectárea. Hoy vale $${fmt(arr.index)} por kilo (período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)}, actualizado el ${fmtFecha(arr.date)}) y el promedio del período, que es el que se liquida, $${fmt(arr.periodIndex)}/kg. No es un índice agrícola en quintales de soja: es la referencia ganadera que usan los contratos de campo en toda la Argentina.`,
     },
     {
       question: '¿Cuál es el índice novillo arrendamiento mensual?',
@@ -502,6 +512,39 @@ export default async function ArrendamientoPage() {
           </div>
         </section>
 
+        {/* ── "Índice de arrendamiento" a secas ─────────────────────────────────
+            GSC (28 días al 13-09-2026): "indice de arrendamiento" (1.675 impr, pos 7,9,
+            3 clics), "indice arrendamiento" (1.049, pos 6,4, 7 clics), "indice de
+            arrendamiento rural" (367), "indice arrendamiento novillo" (474). Son ~3.500
+            impresiones que llegan a esta página, cuyo H1 y título dicen "índice NOVILLO
+            arrendamiento": la frase que la persona escribió no aparecía en ningún
+            encabezado ni en el primer párrafo, y el CTR quedaba en 0,2-0,7 %. No es otra
+            página (canibalizaría a ésta): es el encabezado que faltaba, con el número.
+            ─────────────────────────────────────────────────────────────────────── */}
+        <section className="max-w-3xl mx-auto px-4 pt-6">
+          <div className="rounded-xl border border-terminal-border bg-terminal-panel/40 p-5">
+            <h2 className="text-zinc-100 text-lg font-medium mb-2">
+              Índice de arrendamiento hoy: ${fmt(arr.index)}/kg
+            </h2>
+            <p className="speakable-content text-zinc-200 text-base leading-relaxed mb-3">
+              El <strong className="text-white">índice de arrendamiento</strong> —índice de arrendamiento
+              rural, o índice novillo arrendamiento— es el precio del kilo vivo de novillo que publica el
+              Mercado Agroganadero para pasar a pesos los contratos de campo pactados en kilos de novillo
+              por hectárea. Hoy vale <strong className="text-white">${fmt(arr.index)} por kilo</strong>{' '}
+              (actualizado el {fmtFecha(arr.date)}); el promedio del período, que es el que se liquida,{' '}
+              <strong className="text-white">${fmt(arr.periodIndex)}/kg</strong>.
+            </p>
+            <p className="text-zinc-500 text-xs">
+              No es un índice agrícola en quintales de soja: es la referencia ganadera de los contratos
+              rurales en toda la Argentina. El histórico mes a mes está en el{' '}
+              <Link href="/mercado/arrendamiento/mensual" className="text-accent hover:underline">índice
+              mensual</Link>; cómo se forma en Cañuelas, en{' '}
+              <Link href="/mercado/arrendamiento/canuelas" className="text-accent hover:underline">arrendamiento
+              en Cañuelas</Link>.
+            </p>
+          </div>
+        </section>
+
         {/* Promo interna de la guía paga: debajo del número-hero, nunca encima.
             La persona vino por el dato — primero se lo damos. */}
         <div className="px-4 pt-4">
@@ -703,6 +746,10 @@ export default async function ArrendamientoPage() {
               {
                 q: '¿Qué es el índice novillo arrendamiento?',
                 a: 'El índice novillo arrendamiento es el valor de referencia utilizado para calcular el canon de los contratos de arrendamiento rural en Argentina. Se basa en el precio del novillo en el Mercado Agroganadero de Buenos Aires (INMAG) y permite ajustar el valor del alquiler de campos de manera objetiva y transparente según las condiciones del mercado ganadero.'
+              },
+              {
+                q: '¿Qué es el índice de arrendamiento y cuánto vale hoy?',
+                a: `El índice de arrendamiento (índice de arrendamiento rural, o índice novillo arrendamiento) es el precio del kilo vivo de novillo que publica el Mercado Agroganadero como referencia para pasar a pesos los contratos rurales pactados en kilos de novillo por hectárea. Hoy vale $${fmt(arr.index)} por kilo (actualizado el ${fmtFecha(arr.date)}) y el promedio del período, que es el que se liquida, $${fmt(arr.periodIndex)}/kg. No es un índice agrícola en quintales de soja: es la referencia ganadera que usan los contratos de campo en toda la Argentina.`
               },
               {
                 q: '¿Cuál es el índice novillo arrendamiento mensual?',
