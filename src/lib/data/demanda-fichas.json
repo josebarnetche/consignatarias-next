@@ -1,14 +1,19 @@
 {
-  "generado": "2026-09-18T02:31:04.005Z",
+  "generado": "2026-09-18T04:00:01.279Z",
   "ventanaDias": 30,
   "minimoPublicable": 8,
   "totales": {
     "fichasConDato": 81,
     "fichasVistas": 799,
-    "visitas": 2879,
+    "visitas": 2878,
     "consultas": 11
   },
   "fichas": {
+    "mondino": {
+      "tipo": "consignataria",
+      "visitas": 11,
+      "consultas": 0
+    },
     "saenz-valiente-bullrich": {
       "tipo": "consignataria",
       "visitas": 24,
@@ -387,11 +392,6 @@
     "talano-hermanos": {
       "tipo": "consignataria",
       "visitas": 12,
-      "consultas": 0
-    },
-    "mondino": {
-      "tipo": "consignataria",
-      "visitas": 10,
       "consultas": 0
     },
     "lalor": {
