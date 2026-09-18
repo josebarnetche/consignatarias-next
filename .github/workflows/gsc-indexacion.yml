@@ -1,0 +1,70 @@
+name: gsc-indexacion
+
+# Inspecciona el estado de indexación real de las URLs del sitemap (URL Inspection API) y
+# commitea reports/gsc/indexacion.csv + indexacion-resumen.md.
+#
+# La cuota es de 2.000 inspecciones por día y por propiedad, así que corre a diario y es
+# incremental: cada corrida sigue por donde quedó la anterior. Cuando termina de recorrer
+# el sitemap entero, `refresh` vuelve a mirar lo más viejo.
+
+on:
+  schedule:
+    - cron: '20 7 * * *' # 04:20 ART, fuera de la ventana de los scrapes de datos
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Máximo de inspecciones en esta corrida (cuota diaria 2000)'
+        required: false
+        default: '1800'
+      only:
+        description: 'Inspeccionar solo URLs que contengan este texto (ej: /productividad/)'
+        required: false
+        default: ''
+      refresh:
+        description: 'Revisitar lo inspeccionado hace más de N días'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gsc-indexacion
+  cancel-in-progress: false
+
+jobs:
+  inspeccionar:
+    runs-on: ubuntu-latest
+    env:
+      GSC_SA_KEY: ${{ secrets.GSC_SA_KEY }}
+      GA4_SA_KEY: ${{ secrets.GA4_SA_KEY }}
+      GSC_OAUTH_CREDENTIALS: ${{ secrets.GSC_OAUTH_CREDENTIALS }}
+      GSC_OAUTH_TOKEN: ${{ secrets.GSC_OAUTH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar googleapis
+        run: npm install googleapis --no-save
+
+      - name: Inspeccionar
+        run: |
+          ARGS="--limit ${{ github.event.inputs.limit || '1800' }}"
+          [ -n "${{ github.event.inputs.only }}" ] && ARGS="$ARGS --only ${{ github.event.inputs.only }}"
+          [ -n "${{ github.event.inputs.refresh }}" ] && ARGS="$ARGS --refresh ${{ github.event.inputs.refresh }}"
+          node scripts/gsc-indexacion.mjs $ARGS
+
+      - name: Commitear resultados
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add reports/gsc/indexacion.csv reports/gsc/indexacion-resumen.md
+          if git diff --staged --quiet; then
+            echo "sin cambios"
+          else
+            git commit -m "data: estado de indexación GSC"
+            git pull --rebase --autostash origin main
+            git push
+          fi
