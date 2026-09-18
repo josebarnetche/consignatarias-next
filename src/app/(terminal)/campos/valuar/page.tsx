@@ -3,42 +3,59 @@ import Link from 'next/link'
 import ValuacionCampo from '@/components/campos/ValuacionCampo'
 import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
 import { TIERRA, TIERRA_PROVINCIAS } from '@/lib/valuacion-campos'
-import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 
 export const revalidate = 3600
 
 const BASE_URL = 'https://www.consignatarias.com.ar'
+const PAGE_URL = `${BASE_URL}/campos/valuar`
+
+const fmtUsd = (n: number) => 'US$' + Math.round(n).toLocaleString('es-AR')
+
+// ── El número nacional, calculado del relevamiento (no escrito a mano) ────────
+// "cuanto vale una hectarea en argentina" (GSC 09-2026: 74 impr, pos 7,0, 0 clics, más
+// ~250 impresiones en variantes) no tenía respuesta directa: esta página la cubría con el
+// título del tasador ("¿Cuánto vale mi campo?", una búsqueda que no existe en GSC) y el
+// dato quedaba en la tabla, sin encabezado. Se responde arriba con el rango real que sale
+// de tierra-por-kilo.json, para que cambie solo cuando cambie el relevamiento.
+const PROV_ORDENADAS = [...TIERRA_PROVINCIAS].sort((a, b) => b.usd_ha - a.usd_ha)
+const provMasCara = PROV_ORDENADAS[0]
+const provMasBarata = PROV_ORDENADAS[PROV_ORDENADAS.length - 1]
+const ZONAS_ORDENADAS = TIERRA.filter((t) => !!t.zona).sort((a, b) => b.usd_ha - a.usd_ha)
+const zonaMasCara = ZONAS_ORDENADAS[0]
+const zonaMasBarata = ZONAS_ORDENADAS[ZONAS_ORDENADAS.length - 1]
+const FECHAS = TIERRA.map((t) => t.fecha).filter((f): f is string => !!f).sort()
+const fechaRelevamiento = FECHAS[FECHAS.length - 1]
 
 export const metadata: Metadata = {
-  title: '¿Cuánto vale mi campo? — tasador de campos en dólares',
-  description:
-    'Calculá cuánto vale tu campo en dólares por hectárea. Cruza lo que renta de arrendamiento con los precios relevados en tu provincia, y te muestra dónde cae tu campo dentro del rango real de la zona.',
+  title: `¿Cuánto vale una hectárea en Argentina? ${fmtUsd(provMasBarata.usd_ha)}–${fmtUsd(provMasCara.usd_ha)} por provincia`,
+  description: `Valor de la hectárea de campo en Argentina: de ${fmtUsd(provMasBarata.usd_ha)} (${provMasBarata.provincia}) a ${fmtUsd(provMasCara.usd_ha)} (${provMasCara.provincia}) de referencia provincial, y hasta ${fmtUsd(zonaMasCara.usd_ha)} en ${zonaMasCara.zona}. Tabla por provincia y por zona con fuente y fecha, y un tasador que cruza lo que el campo renta con lo que se paga.`,
   keywords: [
-    'cuanto vale mi campo',
-    'tasar campo',
+    'cuanto vale una hectarea en argentina',
+    'cuanto vale una hectarea',
+    'cuanto vale una hectarea de campo',
     'valor de la hectarea',
     'precio hectarea campo argentina',
+    'precio de una hectarea en argentina',
+    'cuanto vale mi campo',
+    'tasar campo',
     'tasacion de campos',
     'valor campo ganadero',
-    'cuanto vale una hectarea',
-    'cuanto cuesta mi campo',
     'tasador de campos',
-    'valor de mi campo en dolares',
   ],
   openGraph: {
-    title: '¿Cuánto vale mi campo?',
-    description: 'Tasador de campos: lo que renta cruzado con lo que se paga en tu provincia.',
-    url: `${BASE_URL}/campos/valuar`,
+    title: `¿Cuánto vale una hectárea en Argentina? De ${fmtUsd(provMasBarata.usd_ha)} a ${fmtUsd(provMasCara.usd_ha)} por provincia`,
+    description: 'Valor de la hectárea por provincia y por zona, con fuente y fecha, y el tasador de campos.',
+    url: PAGE_URL,
     type: 'website',
   },
-  alternates: { canonical: `${BASE_URL}/campos/valuar` },
+  alternates: { canonical: PAGE_URL },
 }
 
 const FAQ = [
   {
     question: '¿Cuánto vale una hectárea de campo en Argentina?',
-    answer:
-      'Depende muchísimo de la zona, y mucho más de lo que la gente supone. Dentro de la misma provincia de Buenos Aires, la hectárea de la zona núcleo ronda los US$18.500 y la de la cuenca del Salado, que es campo de cría, unos US$3.200: casi seis veces menos. En el NEA se mueve entre US$850 y US$1.900, en el semiárido pampeano unos US$780, y en la estepa patagónica baja a US$90. En campo ganadero lo que explica la diferencia es cuánto pasto produce; en campo agrícola, cuántos quintales.',
+    answer: `Depende de la provincia y, mucho más, de la zona. Entre las ${TIERRA_PROVINCIAS.length} provincias relevadas, el valor de referencia va de ${fmtUsd(provMasBarata.usd_ha)} por hectárea en ${provMasBarata.provincia} a ${fmtUsd(provMasCara.usd_ha)} en ${provMasCara.provincia}. Dentro de una misma provincia la diferencia es todavía mayor: la zona más cara relevada, ${zonaMasCara.zona} (${zonaMasCara.provincia}), vale ${fmtUsd(zonaMasCara.usd_ha)} y la más barata, ${zonaMasBarata.zona} (${zonaMasBarata.provincia}), ${fmtUsd(zonaMasBarata.usd_ha)}. En campo ganadero lo que explica la diferencia es cuánto pasto produce; en campo agrícola, cuántos quintales.`,
   },
   {
     question: '¿Cómo se calcula el valor de un campo?',
@@ -68,18 +85,42 @@ export default function ValuarCampoPage() {
     <>
       <SectionBreadcrumbSchema section="campos" sectionName="Campos" />
       <FAQPageSchema items={FAQ} />
+      <DatasetSchema
+        name="Valor de la hectárea de campo en Argentina, por provincia y por zona"
+        description={`Relevamiento propio del valor de la hectárea de campo en ${TIERRA_PROVINCIAS.length} provincias y ${ZONAS_ORDENADAS.length} zonas de Argentina: valor de referencia, rango p25-p75, aptitud, canon de arrendamiento en kg de novillo, fuente y fecha de cada dato. De ${fmtUsd(provMasBarata.usd_ha)} (${provMasBarata.provincia}) a ${fmtUsd(provMasCara.usd_ha)} (${provMasCara.provincia}) por provincia.`}
+        url={PAGE_URL}
+        keywords={['valor hectarea argentina', 'precio de la tierra', 'cuanto vale una hectarea', 'campos', 'tasación de campos']}
+        dateModified={fechaRelevamiento}
+        updateFrequency="monthly"
+        variableMeasured={{
+          name: 'Valor de referencia de la hectárea de campo (provincia más cara relevada)',
+          value: provMasCara.usd_ha,
+          unitText: 'USD/ha',
+        }}
+      />
+      <SpeakableSchema url={PAGE_URL} headline="¿Cuánto vale una hectárea de campo en Argentina?" />
 
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         <Link href="/campos" className="text-zinc-500 hover:text-accent text-xs">
           ← Campos
         </Link>
 
-        <h1 className="text-zinc-100 text-2xl font-medium mt-4 mb-3">¿Cuánto vale tu campo?</h1>
-        <p className="text-zinc-300 text-base mb-6">
-          Poné la provincia, la superficie y lo que se paga de arrendamiento por hectárea. Cruzamos lo que
-          el campo <strong className="text-zinc-100">renta</strong> con lo que se{' '}
-          <strong className="text-zinc-100">paga</strong> en tu zona, y te mostramos dónde cae dentro del
-          rango real de la provincia.
+        <h1 className="text-zinc-100 text-2xl font-medium mt-4 mb-3">¿Cuánto vale una hectárea de campo en Argentina?</h1>
+        {/* Respuesta directa arriba de todo, con el rango real del relevamiento. */}
+        <p className="speakable-content text-zinc-300 text-base mb-4">
+          Una hectárea de campo en Argentina vale de{' '}
+          <strong className="text-zinc-100">{fmtUsd(provMasBarata.usd_ha)}</strong> ({provMasBarata.provincia}) a{' '}
+          <strong className="text-zinc-100">{fmtUsd(provMasCara.usd_ha)}</strong> ({provMasCara.provincia}) de
+          referencia provincial, y dentro de cada provincia la zona manda: {zonaMasCara.zona} ({zonaMasCara.provincia})
+          está en {fmtUsd(zonaMasCara.usd_ha)} y {zonaMasBarata.zona} ({zonaMasBarata.provincia}) en{' '}
+          {fmtUsd(zonaMasBarata.usd_ha)}. Abajo, la tabla de las {TIERRA_PROVINCIAS.length} provincias y las{' '}
+          {ZONAS_ORDENADAS.length} zonas relevadas, con la fuente y la fecha de cada dato.
+        </p>
+        <p className="text-zinc-400 text-base mb-6">
+          Para tasar un campo concreto: poné la provincia, la superficie y lo que se paga de arrendamiento por
+          hectárea. Cruzamos lo que el campo <strong className="text-zinc-200">renta</strong> con lo que se{' '}
+          <strong className="text-zinc-200">paga</strong> en tu zona, y te mostramos dónde cae dentro del rango
+          real de la provincia.
         </p>
 
         <div className="mb-8">
@@ -87,7 +128,7 @@ export default function ValuarCampoPage() {
         </div>
 
         <section className="mb-8">
-          <h2 className="text-zinc-200 text-lg font-medium mb-3">Lo que vale la hectárea, por zona</h2>
+          <h2 className="text-zinc-200 text-lg font-medium mb-3">Cuánto vale la hectárea, provincia por provincia</h2>
           <p className="text-zinc-400 mb-4">
             Valores de referencia para campo ganadero, provincia por provincia. La última columna es la que
             explica todo: cuántos dólares se pagan por cada kilo de novillo que el campo produce al año.
