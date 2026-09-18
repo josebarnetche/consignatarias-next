@@ -10,7 +10,7 @@ import { getQualitySegments, CABEZAS_INDEX_THRESHOLD } from '@/lib/data/quality-
 import { BPG_TEMAS } from '@/lib/data/bpg-ganaderas'
 import { PRODUCTOS_DATOS } from '@/lib/productos-datos'
 import { getProveedoresPublicados } from '@/lib/proveedores'
-import { getDepartamentosPublicables, ultimoAnio } from '@/lib/productividad/panel'
+import { getDepartamentosPublicables, ultimoAnio, META as PRODUCTIVIDAD_META } from '@/lib/productividad/panel'
 
 /** Los departamentos con ficha propia. La fuente se refresca una vez al año, en abril. */
 const fichasProductividad = getDepartamentosPublicables().filter((d) => d.serie[ultimoAnio()])
@@ -92,6 +92,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
      Per-remate detail pages and closed INMAG year pages get their own true date.
      ---------------------------------------------------------------- */
   const buildDate = new Date()
+  /**
+   * `lastModified` tiene que ser la fecha en que cambió EL CONTENIDO, no la del build.
+   *
+   * Al 17-sep-2026, 1.856 de las 3.326 URLs del sitemap declaraban el mismo timestamp —el
+   * del build— y se renovaba todos los días porque los commits de datos disparan deploy.
+   * Una ficha de productividad con serie anual anunciando "modificada hoy" cada día, y
+   * encima con changefreq 'yearly', le enseña al buscador a ignorar el campo entero.
+   *
+   * Cada grupo usa ahora la fecha de SU dato: las fichas de productividad, la del panel
+   * oficial (`META.generado`); cada frigorífico, la última vez que se lo vio en el padrón
+   * de SENASA. El resto sigue con buildDate porque su contenido sí se rehace en el build.
+   */
+  const productividadDate = new Date(PRODUCTIVIDAD_META.generado)
   const priceDate = new Date(marketPrices.lastUpdate)
   // <lastmod> must never be in the future (Google ignores future lastmod). Remate
   // listing/detail pages can reference scheduled auctions months ahead, so clamp any
@@ -156,16 +169,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.75,
       }),
     ),
-    { url: `${baseUrl}/productividad`, lastModified: buildDate, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/productividad`, lastModified: productividadDate, changeFrequency: 'monthly', priority: 0.8 },
     ...[...new Set(fichasProductividad.map((d) => d.slugProvincia))].map((slug) => ({
       url: `${baseUrl}/productividad/${slug}`,
-      lastModified: buildDate,
+      lastModified: productividadDate,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     })),
     ...fichasProductividad.map((d) => ({
       url: `${baseUrl}/productividad/${d.slugProvincia}/${d.slugDepartamento}`,
-      lastModified: buildDate,
+      lastModified: productividadDate,
       changeFrequency: 'yearly' as const,
       priority: 0.6,
     })),
@@ -695,9 +708,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
 
   // Frigorifico detail pages
-  const frigorificoPages: MetadataRoute.Sitemap = (frigorificosData as { cuit: string }[]).map((f) => ({
+  const frigorificoPages: MetadataRoute.Sitemap = (
+    frigorificosData as { cuit: string; senasaLastSeen?: string | null }[]
+  ).map((f) => ({
     url: `${baseUrl}/frigorificos/${f.cuit}`,
-    lastModified: buildDate,
+    lastModified: f.senasaLastSeen ? new Date(f.senasaLastSeen) : buildDate,
     changeFrequency: 'monthly' as const,
     priority: 0.5,
   }))

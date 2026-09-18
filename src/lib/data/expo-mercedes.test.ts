@@ -68,13 +68,25 @@ describe('el dato que sostiene el destacado', () => {
     expect(sinConfirmar[0].cabania).toBeTruthy()
   })
 
-  it('sólo la superan las dos megamuestras nacionales', () => {
-    expect(pos.puesto).toBe(3)
-    expect(pos.porEncima).toHaveLength(2)
+  it('sólo la superan megamuestras nacionales o el mercado concentrador', () => {
+    // El 17-sep-2026 Cañuelas llegó a 9 firmas y pasó a la rueda: el puesto bajó de 3º a
+    // 4º. No es una rural que nos haya superado — es el concentrador, que opera todas las
+    // semanas del año (ver esConcentradorPermanente). La página muestra `pos.puesto`
+    // calculado, así que dice la verdad sola; lo que este test fija es que NINGUNA
+    // exposición del interior nos pase por arriba. El día que eso ocurra, hay que revisar
+    // el claim de la página, no el test.
+    expect(pos.porEncima.length).toBeGreaterThanOrEqual(2)
 
     const sedes = pos.porEncima.map((p) => p.sede.toLowerCase()).join(' | ')
     expect(sedes).toContain('capital federal') // Palermo
     expect(sedes).toContain('san nicolas') // Expoagro
+
+    const intrusas = pos.porEncima.filter(
+      (p) =>
+        !esConcentradorPermanente(p.sede) &&
+        !/capital federal|san nicolas/i.test(p.sede),
+    )
+    expect(intrusas).toHaveLength(0)
   })
 
   it('la siguiente plaza del interior junta bastantes menos', () => {
