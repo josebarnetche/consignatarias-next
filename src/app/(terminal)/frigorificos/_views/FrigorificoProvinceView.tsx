@@ -41,9 +41,24 @@ const PROVINCES: ProvinceConfig[] = [
   { slug: 'chubut', name: 'CHUBUT', displayName: 'Chubut', intro: 'Chubut cuenta con establecimientos frigoríficos habilitados por MAGYP, especializados en el procesamiento de ganado ovino y bovino patagónico. Los frigoríficos chubutenses operan bajo estándares sanitarios rigurosos, con capacidad exportadora para productos de alta calidad como el cordero patagónico.' },
   { slug: 'santa-cruz', name: 'SANTA CRUZ', displayName: 'Santa Cruz', intro: 'Santa Cruz posee plantas frigoríficas habilitadas por MAGYP especializadas en el procesamiento de ganado ovino. Los establecimientos operan bajo estándares sanitarios nacionales e internacionales, con capacidad de exportación de cordero patagónico a mercados exigentes.' },
   { slug: 'tierra-del-fuego', name: 'TIERRA DEL FUEGO', displayName: 'Tierra del Fuego', intro: 'Tierra del Fuego cuenta con establecimientos frigoríficos habilitados por MAGYP para el procesamiento de hacienda ovina. Los frigoríficos fueguinos operan bajo estándares sanitarios nacionales, atendiendo el mercado local y la producción de cordero fueguino.' },
+  // CABA y La Rioja existían en el directorio pero no tenían página: 85 + 4 fichas enlazaban a
+  // /frigorificos/ciudad-autonoma-de-buenos-aires y /la-rioja, que caían en "no encontrado".
+  { slug: 'ciudad-autonoma-de-buenos-aires', name: 'CIUDAD AUTONOMA DE BUENOS AIRES', displayName: 'Ciudad Autónoma de Buenos Aires', intro: 'La Ciudad Autónoma de Buenos Aires concentra establecimientos habilitados por SENASA/MAGYP de los tres ciclos: salas de desposte y elaboradores que abastecen al mayor mercado de consumo del país, depósitos y dadores de frío de la cadena logística, y las sedes fiscales de grupos frigoríficos con plantas en el interior. Por eso muchos CUIT registrados en CABA corresponden a la razón social y no al lugar físico de faena. Cada ficha muestra el ciclo, la matrícula y el estado en el padrón SENASA a la fecha de la última consulta.' },
+  { slug: 'la-rioja', name: 'LA RIOJA', displayName: 'La Rioja', intro: 'La Rioja cuenta con establecimientos frigoríficos habilitados por SENASA/MAGYP para el procesamiento y la conservación de carnes destinadas al mercado provincial y regional. Cada ficha muestra el ciclo de habilitación, la matrícula y el estado en el padrón SENASA a la fecha de la última consulta.' },
 ]
 
 const PROVINCE_MAP = new Map(PROVINCES.map(p => [p.slug, p]))
+const PROVINCE_BY_NAME = new Map(PROVINCES.map(p => [p.name, p]))
+
+/** Slug de la página de provincia para el nombre tal como viene en frigorificos.json ("ENTRE RIOS" → "entre-rios"), o null si no hay página. */
+export function frigorificoProvinceSlugFor(provinceName: string): string | null {
+  return PROVINCE_BY_NAME.get(provinceName)?.slug ?? null
+}
+
+/** Cantidad de frigoríficos del directorio en esa provincia (para el enlace "ver los N de <provincia>"). */
+export function frigorificoProvinceCount(provinceName: string): number {
+  return frigorificos.filter(f => f.province === provinceName).length
+}
 
 interface Frigorifico {
   cuit: string
