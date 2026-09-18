@@ -7,6 +7,29 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.209.0] — 2026-09-18
+
+### La guía paga, ofrecida donde la gente la busca
+
+Search Console (28 días al 16-sep): "consignatario de hacienda" 216 impresiones en posición 2,4;
+"consignataria de hacienda" 123 en 2,5; "qué es una consignataria" y variantes ~60 más. Esa
+demanda cae en `/que-es-una-consignataria` (883 impr.), `/como-funciona-un-remate-ganadero`
+(1.151), `/consignatarias` (544) y `/como-vender-hacienda`. En producción, sólo el directorio
+ofrecía la guía "Cómo abrir tu consignataria de hacienda", y como banner de una línea antes del
+contenido. `guia_purchases` = 0 en toda la historia con 34 `guia_view` en 18 días.
+
+- **`OfrecerGuia`** (`src/components/guias/OfrecerGuia.tsx`) — el puente entre una página de
+  tema y la guía paga, con la misma regla que `OfrecerInforme`: va después de que la página
+  entregó su valor, presenta la guía como lo que la pantalla no puede dar y cierra diciendo qué
+  sigue siendo gratis. Server component; la atribución viaja en `?ref=oferta-<desde>` y la lee
+  `GuiaViewTracker` en el sales page.
+- **`/que-es-una-consignataria`** — nueva sección "Cómo se abre una consignataria" con los cinco
+  pasos reales (matrícula, sociedad y ARCA, SIOCAL, SENASA, capital y consignantes), tomados del
+  esqueleto del sales page; termina en la oferta.
+- **`/consignatarias`**, **`/como-vender-hacienda`**, **`/como-funciona-un-remate-ganadero`** —
+  oferta al pie, después del directorio / de las FAQ, cada una con un `desde` propio para poder
+  leer en GA4 qué página trabaja para la guía.
+
 ## [1.208.0] — 2026-09-18
 
 ### Informes: el checkout estaba roto y el comprador del canon nunca elegía su zona
@@ -45,6 +68,7 @@ con un POST al checkout de producción, y el embudo no tenía fuga: tenía dos p
 
 Sin cambios de precio, producto ni meta. Lo que no tenía cuenta de login antes sigue sin
 tenerla: la compra es email-first, como las guías.
+
 
 ## [1.207.0] — 2026-09-17
 

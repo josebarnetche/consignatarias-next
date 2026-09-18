@@ -1,4 +1,5 @@
 import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
+import { OfrecerGuia } from '@/components/guias/OfrecerGuia'
 import { Metadata } from 'next'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
@@ -194,6 +195,21 @@ export default async function ConsignatariasDirectoryPage() {
       </section>
       
       <ConsignatariasDirectoryClient entries={entries} provinceLinks={provinceLinks} />
+
+      {/* Después del directorio: el que recorrió las firmas y piensa en abrir la suya */}
+      <div className="px-4 max-w-4xl">
+        <OfrecerGuia
+          desde="directorio"
+          titulo="¿Pensás abrir la tuya? Lo que el directorio no muestra"
+          loQueAgrega={[
+            'El paso a paso para habilitarse: matrícula de martillero, sociedad y ARCA, SIOCAL (ex RUCA) y SENASA, con costos y plazos.',
+            'El circuito completo de un remate feria, día por día, y la liquidación renglón por renglón.',
+            'Cobranza, plazos y el descalce financiero explicado con números; seis defaults reales con nombre, fecha y monto.',
+            'Un plan de marketing digital para conseguir los primeros consignantes.',
+          ]}
+          gratisAca="El directorio, los perfiles y el calendario de remates siguen siendo gratis. La guía es para el que quiere estar en esta lista con firma propia."
+        />
+      </div>
     </>
   )
 }

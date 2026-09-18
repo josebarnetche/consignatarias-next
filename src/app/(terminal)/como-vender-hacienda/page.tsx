@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { OfrecerGuia } from '@/components/guias/OfrecerGuia'
 import {
   SectionBreadcrumbSchema,
   DefinedTermSetSchema,
@@ -305,6 +306,18 @@ export default function ComoVenderHaciendaPage() {
             </div>
           ))}
         </dl>
+
+        <OfrecerGuia
+          desde="como-vender-hacienda"
+          titulo="Del otro lado del mostrador: cómo se abre una consignataria"
+          loQueAgrega={[
+            'Qué hace falta para ser la firma que vende: matrícula, sociedad y ARCA, SIOCAL (ex RUCA), SENASA.',
+            'La liquidación renglón por renglón: los 17 códigos de gasto que ARCA define y cómo se llama de verdad el comprobante.',
+            'DT-e, RENSPA y guías: quién responde por qué, con el circuito de identificación electrónica vigente desde enero de 2026.',
+            'Cobranza y descalce financiero con números, y los seis modos de perder plata en una consignataria.',
+          ]}
+          gratisAca="Todo lo de arriba sigue gratis: cómo vender, cuánto se descuenta y qué documentación hace falta. La guía es para el que quiere estar del lado que liquida."
+        />
 
         {/* Links internos — al negocio */}
         <div className="border-t border-zinc-800 pt-4 flex flex-wrap gap-4 text-xs">
