@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import GuiaConsignatariaDownload from '@/components/GuiaConsignatariaDownload'
+import { OfrecerGuia } from '@/components/guias/OfrecerGuia'
 import {
   SectionBreadcrumbSchema,
   DefinedTermSetSchema,
@@ -74,6 +75,40 @@ const FAQ = [
     question: '¿Qué es la comisión de venta?',
     answer:
       'La comisión de venta es el honorario que cobra la consignataria por intermediar la operación: un porcentaje sobre el valor de venta de la hacienda, habitualmente 2–4% (frecuentemente ~3%), a veces hasta 5%, más IVA. Es distinta de los gastos de remate (fletes, sanidad, guías, sellados), que también se descuentan de la liquidación al productor.',
+  },
+]
+
+
+/* ------------------------------------------------------------------ */
+/*  Cómo se abre — los cinco pasos, en el orden en que se resuelven.   */
+/*  Es el esqueleto gratis (mismo dato que el sales page de la guía);  */
+/*  el trámite pantalla por pantalla y los costos están en el PDF.     */
+/* ------------------------------------------------------------------ */
+const PASOS_APERTURA = [
+  {
+    titulo: 'Matrícula de martillero y corredor público',
+    texto:
+      'El remate lo hace una persona matriculada, no una sociedad. Título de Martillero y Corredor Público (Ley 20.266, reformada por la Ley 25.028), inscripción en el colegio departamental del domicilio y la fianza del art. 3 inc. d) del Decreto-Ley 20.266/73. Los juramentos se toman en fechas fijas del año.',
+  },
+  {
+    titulo: 'La sociedad y ARCA',
+    texto:
+      'SAS, SRL o unipersonal, con el código de actividad correcto, IVA responsable inscripto, Ganancias, Ingresos Brutos y Convenio Multilateral si opera en más de una provincia. Sin la inscripción vigente en ARCA, la inscripción nacional se cae (punto 1.5.5 del Anexo I de la Res. SAGyP 50/2025).',
+  },
+  {
+    titulo: 'SIOCAL, el registro nacional (ex RUCA)',
+    texto:
+      'Desde abril de 2025 el RUCA dejó de existir para ganados y carnes: la Res. SAGyP 50/2025 creó el SIOCAL. La inscripción como Consignatario y/o Comisionista de Ganados es obligatoria, se hace en línea con Clave Fiscal nivel 3, es gratuita y no vence mientras se mantengan los requisitos. Una solicitud observada tiene 10 días hábiles para subsanarse.',
+  },
+  {
+    titulo: 'SENASA y el predio de remate feria',
+    texto:
+      'Si la firma va a concentrar hacienda (remate feria, predio ferial, mercado), el predio tiene que estar habilitado por SENASA bajo la Res. 924/2020: cerco perimetral, manga, embarcadero, corral lazareto, bebederos y plano. La habilitación dura dos años y cada remate se avisa a la oficina local con 48 horas.',
+  },
+  {
+    titulo: 'Capital de trabajo y primeros consignantes',
+    texto:
+      'La consignataria no vive de la comisión: vive del calce entre lo que le cobra al comprador y lo que le paga al productor. Hay que dimensionar cuánto capital inmoviliza cada remate y qué pasa si un comprador no paga. Y lo que decide si existe en tres años es si consigue hacienda para vender.',
   },
 ]
 
@@ -203,6 +238,39 @@ export default function QueEsUnaConsignatariaPage() {
           autorizada legalmente para operar y responder por las operaciones que intermedia. Sin esa
           habilitación, la actividad de consignación de ganado no es legal.
         </p>
+
+        {/* Cómo se abre: el esqueleto gratis; termina en la guía, que es lo que la pantalla no puede dar */}
+        <h2 className="text-zinc-200 text-lg font-medium mb-3">Cómo se abre una consignataria</h2>
+        <p className="text-zinc-400 mb-4">
+          Cinco frentes, en el orden en que se resuelven. Ninguno se saltea: la matrícula habilita a
+          la persona, ARCA y el SIOCAL habilitan a la firma, SENASA habilita el predio, y el capital
+          y la clientela deciden si el negocio existe.
+        </p>
+        <ol className="mb-6 space-y-4 list-none pl-0">
+          {PASOS_APERTURA.map((paso, i) => (
+            <li key={paso.titulo} className="flex gap-3">
+              <span className="shrink-0 w-6 h-6 rounded-full border border-accent/50 text-accent text-xs font-terminal flex items-center justify-center mt-0.5">
+                {i + 1}
+              </span>
+              <div>
+                <p className="text-zinc-200 font-medium mb-1">{paso.titulo}</p>
+                <p className="text-zinc-400">{paso.texto}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <OfrecerGuia
+          desde="que-es-una-consignataria"
+          titulo="Los cinco pasos, con el trámite adentro"
+          loQueAgrega={[
+            'Cada pantalla del trámite en SIOCAL, la documentación exacta y los errores que hacen que lo archiven.',
+            'Los costos y plazos reales de la matrícula, y el cuadro comparado SAS / SRL / unipersonal.',
+            'La liquidación renglón por renglón con los 17 códigos de gasto que define ARCA.',
+            'Seis defaults reales de cobranza con nombre, fecha y monto, y tres escenarios de capital de trabajo con precios de hoy.',
+          ]}
+          gratisAca="Lo de arriba sigue siendo gratis: la definición, la comisión de referencia, el ejemplo con precio INMAG y el mapa de los cinco pasos. La guía es para el que ya decidió abrir."
+        />
 
         {/* FAQ visible (refuerza el schema y da respuesta extraíble) */}
         <h2 className="text-zinc-200 text-lg font-medium mb-3">Preguntas frecuentes</h2>
