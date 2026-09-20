@@ -7,6 +7,69 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.209.0] — 2026-09-18
+
+### La guía paga, ofrecida donde la gente la busca
+
+Search Console (28 días al 16-sep): "consignatario de hacienda" 216 impresiones en posición 2,4;
+"consignataria de hacienda" 123 en 2,5; "qué es una consignataria" y variantes ~60 más. Esa
+demanda cae en `/que-es-una-consignataria` (883 impr.), `/como-funciona-un-remate-ganadero`
+(1.151), `/consignatarias` (544) y `/como-vender-hacienda`. En producción, sólo el directorio
+ofrecía la guía "Cómo abrir tu consignataria de hacienda", y como banner de una línea antes del
+contenido. `guia_purchases` = 0 en toda la historia con 34 `guia_view` en 18 días.
+
+- **`OfrecerGuia`** (`src/components/guias/OfrecerGuia.tsx`) — el puente entre una página de
+  tema y la guía paga, con la misma regla que `OfrecerInforme`: va después de que la página
+  entregó su valor, presenta la guía como lo que la pantalla no puede dar y cierra diciendo qué
+  sigue siendo gratis. Server component; la atribución viaja en `?ref=oferta-<desde>` y la lee
+  `GuiaViewTracker` en el sales page.
+- **`/que-es-una-consignataria`** — nueva sección "Cómo se abre una consignataria" con los cinco
+  pasos reales (matrícula, sociedad y ARCA, SIOCAL, SENASA, capital y consignantes), tomados del
+  esqueleto del sales page; termina en la oferta.
+- **`/consignatarias`**, **`/como-vender-hacienda`**, **`/como-funciona-un-remate-ganadero`** —
+  oferta al pie, después del directorio / de las FAQ, cada una con un `desde` propio para poder
+  leer en GA4 qué página trabaja para la guía.
+
+## [1.208.0] — 2026-09-18
+
+### Informes: el checkout estaba roto y el comprador del canon nunca elegía su zona
+
+Hecho medido (31-ago → 17-sep): 15 sesiones en `/informes/canon-de-arrendamiento`, 3 bajaron la
+muestra, 0 `informe_checkout_start`, 0 compras. Se hizo el recorrido del comprador de verdad,
+con un POST al checkout de producción, y el embudo no tenía fuga: tenía dos paredes.
+
+**Bugs de producción**
+- **Rebill rechazaba todos los links de informes.** `createInformePurchaseLink` y
+  `createProductoSubscriptionLink` mandaban `redirectUrls.cancelled`, y Rebill v3 sólo acepta
+  `approved`, `rejected` y `pending` (verificado contra la API): 400 "property cancelled should
+  not exist" → nuestra API respondía 500 en cada intento, para informes Y suscripciones de datos.
+  Reemplazado por `pending`, que cae en `/informes/pago-no-completado?motivo=pendiente` con su
+  propio texto. Probado: el checkout local devuelve `https://pay.rebill.com/memola/pl_…`.
+- **El canon se vendía sin zona.** La landing montaba `ComprarInforme` sin `variante`, pero el
+  entitlement y el PDF se arman por zona (`armarInformeCanon(slugDeZona)`): una compra
+  hubiera quedado con variante vacía y la descarga sin nada que generar. Ahora la landing usa
+  `SelectorVariante` con `variantesDisponibles()` de `src/lib/informes/canon.ts` (una opción por
+  zona con canon relevado, listadas enteras porque son decenas y no 455).
+- **El checkout roto era invisible.** `informe_checkout_start` se emitía recién después de que
+  Rebill respondiera bien, así que una API caída se veía igual que una página que nadie compra.
+  Ahora se emite al apretar el botón, y si el checkout no abre se registra
+  `informe_checkout_error` (nuevo en `value-events`, peso 1: es alarma, no valor).
+
+**Fricción**
+- Precio y CTA en la primera pantalla de la landing ("Comprar el informe de tu zona · ARS
+  19.900", ancla a `#comprar`). Antes el precio aparecía por primera vez debajo de la tabla, la
+  lista de contenidos, la advertencia y la muestra gratis: ~4 pantallas de celular.
+- La muestra gratis pasa DEBAJO del bloque de compra: responde "quiero ver qué compro", no
+  compite con el botón.
+- El botón dice qué se compra y cuánto cuesta ("Comprar el informe · ARS 19.900";
+  "Suscribirme · ARS X/mes"), en vez de "Comprar con tarjeta".
+- `SelectorVariante` acepta `placeholder`, `textoCalculando`, `sinResultados` y `mostrarTodas`
+  para no hablar de "productividad" y "departamentos" cuando vende zonas de canon.
+
+Sin cambios de precio, producto ni meta. Lo que no tenía cuenta de login antes sigue sin
+tenerla: la compra es email-first, como las guías.
+
+
 ## [1.207.0] — 2026-09-17
 
 ### Fichas de frigoríficos: responder a quien pegó un CUIT

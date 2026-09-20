@@ -407,18 +407,16 @@ export async function createGuiaPurchaseLink(opts: {
  *     departamento o por provincia. La variante viaja en la metadata y termina siendo la
  *     coordenada del entitlement: comprar el de Mercedes no habilita el de Curuzú Cuatiá.
  *
- *  2. **`approved` + `rejected`, y NO `cancelled`**. Los links viejos declaran sólo
- *     `approved`, así que una tarjeta rechazada deja al comprador varado en Rebill sin
- *     señal de vuelta; acá se declara también el rechazo, que cae en una página que le
- *     explica qué pasó.
+ *  2. **Los tres `redirectUrls`**. Los links viejos declaran sólo `approved`, así que una
+ *     tarjeta rechazada deja al comprador varado en Rebill sin señal de vuelta. Acá se
+ *     declaran también el rechazo y el pago pendiente, que caen en una página que le explica
+ *     qué pasó y cómo seguir. Es el escenario más probable con una tarjeta del exterior.
  *
- *     ⚠️ `cancelled` estuvo declarado hasta el 18-sep-2026 y **rompía el checkout entero**:
- *     Rebill v3 responde `Validation failed · "redirectUrls.property cancelled should not
- *     exist"` y el link no se crea nunca. O sea que `POST /api/informes/checkout` devolvía
- *     500 desde que existe y **nadie pudo comprar un informe aunque quisiera** — el cero de
- *     `informe_purchases` no era falta de demanda, era esto. Fue código escrito con buena
- *     intención y nunca probado contra la API real. Si mañana hace falta la vuelta de
- *     cancelación, primero se verifica el campo contra Rebill y recién después se agrega.
+ *     Las claves que Rebill v3 acepta en `redirectUrls` son EXACTAMENTE `approved`,
+ *     `rejected` y `pending` (verificado contra la API el 18-sep-2026). Mandar
+ *     `cancelled` devuelve 400 "property cancelled should not exist" y el checkout entero
+ *     muere antes de llegar a Rebill: así estuvo desde el alta de los informes hasta hoy,
+ *     con 0 ventas.
  */
 export async function createInformePurchaseLink(opts: {
   productoSlug: string
@@ -454,6 +452,7 @@ export async function createInformePurchaseLink(opts: {
     redirectUrls: {
       approved: `${appUrl}/cuenta/informes?comprado=${encodeURIComponent(opts.productoSlug)}`,
       rejected: `${appUrl}/informes/pago-no-completado?motivo=rechazado&p=${encodeURIComponent(opts.productoSlug)}`,
+      pending: `${appUrl}/informes/pago-no-completado?motivo=pendiente&p=${encodeURIComponent(opts.productoSlug)}`,
     },
     isSingleUse: true,
   }
@@ -479,10 +478,9 @@ export async function createInformePurchaseLink(opts: {
  * primer período al aprobar y después renueva solo, mandando `payment.success` en cada
  * ciclo — que es lo que corre `current_period_end` hacia adelante en el webhook.
  *
- * Lleva `approved` + `rejected`, no sólo `approved`: una tarjeta rechazada en una alta de
+ * Lleva los tres `redirectUrls` (approved/rejected/pending, los únicos que Rebill acepta), no sólo `approved`: una tarjeta rechazada en una alta de
  * suscripción es igual de probable que en una compra, y sin la vuelta el interesado queda
- * varado sin que nos enteremos. `cancelled` NO va — Rebill v3 lo rechaza y tira abajo la
- * creación del link (ver la nota en `createInformePurchaseLink`).
+ * varado sin que nos enteremos.
  */
 export async function createProductoSubscriptionLink(opts: {
   productoSlug: string
@@ -513,6 +511,7 @@ export async function createProductoSubscriptionLink(opts: {
     redirectUrls: {
       approved: `${appUrl}/cuenta/informes?suscripto=${encodeURIComponent(opts.productoSlug)}`,
       rejected: `${appUrl}/informes/pago-no-completado?motivo=rechazado&p=${encodeURIComponent(opts.productoSlug)}`,
+      pending: `${appUrl}/informes/pago-no-completado?motivo=pendiente&p=${encodeURIComponent(opts.productoSlug)}`,
     },
     isSingleUse: false, // suscripción recurrente
   }

@@ -3,7 +3,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getProducto } from '@/lib/productos-datos'
 import { ComoSePaga } from '@/components/productos/ComoSePaga'
-import { ComprarInforme } from '@/components/productos/ComprarInforme'
+import { SelectorVariante } from '@/components/productos/SelectorVariante'
+import { variantesDisponibles } from '@/lib/informes/canon'
 import tierra from '@/lib/data/tierra-por-kilo.json'
 import { MuestraGratis } from '@/components/productos/MuestraGratis'
 
@@ -38,6 +39,7 @@ interface Zona {
 
 const ZONAS = (tierra as Zona[]).filter((z) => z.kg_ha_mes_canon)
 const MUESTRA = ZONAS.sort((a, b) => b.n - a.n).slice(0, 6)
+const PRECIO = `ARS ${P.precio.toLocaleString('es-AR')}`
 
 const FAQ = [
   {
@@ -132,6 +134,22 @@ export default function Page() {
           en tu zona, sobre cuántos casos relevados, y con qué dispersión entre el que menos
           paga y el que más.
         </p>
+
+        {/* El precio y el botón van en la primera pantalla. Antes estaban debajo de la
+            tabla, la lista, la advertencia y la muestra gratis: en el celular, cuatro
+            pantallas más abajo. 15 sesiones en 18 días y ninguna llegó a apretar. */}
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <a
+            href="#comprar"
+            className="inline-flex items-center justify-center rounded bg-sky-600 px-5 py-3 font-medium text-white transition hover:bg-sky-500"
+          >
+            Comprar el informe de tu zona · {PRECIO}
+          </a>
+          <p className="text-sm text-slate-400">
+            Pago único con tarjeta. PDF al instante, sin crear cuenta.{' '}
+            <span className="text-slate-500">{ZONAS.length} zonas disponibles.</span>
+          </p>
+        </div>
       </header>
 
       <section className="mt-10">
@@ -206,15 +224,30 @@ export default function Page() {
         </p>
       </section>
 
-      <div className="mt-12">
+      {/* La zona se elige ANTES de pagar: es la variante del entitlement y lo que arma el
+          PDF. Sin esto la compra quedaba sin zona y la descarga no tenía qué generar. */}
+      <div className="mt-12 scroll-mt-24" id="comprar">
+        <SelectorVariante
+          slug={P.slug}
+          nombre={P.nombre}
+          precio={P.precio}
+          modalidad={P.modalidad}
+          opciones={variantesDisponibles()}
+          etiqueta="Elegí tu zona"
+          placeholder="Corrientes, Salado, Chaco…"
+          textoCalculando="Armando el canon de"
+          sinResultados="Esa zona todavía no tiene canon relevado. Escribinos a agro@memola.com.ar y te avisamos cuando lo tengamos."
+          mostrarTodas
+        />
+      </div>
+
+      {/* La muestra gratis va DESPUÉS del botón de compra: es la respuesta a "quiero ver qué
+          compro", no la primera oferta. Arriba del formulario competía con él. */}
+      <div className="mt-6">
         <MuestraGratis />
       </div>
 
-      <div className="mt-6">
-        <ComprarInforme slug={P.slug} nombre={P.nombre} precio={P.precio} />
-      </div>
-
-      <ComoSePaga precio={`ARS ${P.precio.toLocaleString('es-AR')}`} modalidad={P.modalidad} />
+      <ComoSePaga precio={PRECIO} modalidad={P.modalidad} />
 
       <section className="mt-12">
         <h2 className="text-xl font-semibold text-slate-100">Preguntas</h2>

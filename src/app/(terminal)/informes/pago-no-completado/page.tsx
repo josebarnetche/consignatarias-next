@@ -28,20 +28,23 @@ export default async function PagoNoCompletado({
   const { motivo, p } = await searchParams
   const producto = p ? getProducto(p) : null
   const cancelado = motivo === 'cancelado'
+  const pendiente = motivo === 'pendiente'
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-16">
       <h1 className="text-2xl font-semibold text-slate-100">
-        {cancelado ? 'Cancelaste el pago' : 'El pago no se completó'}
+        {cancelado ? 'Cancelaste el pago' : pendiente ? 'El pago quedó pendiente' : 'El pago no se completó'}
       </h1>
 
       <p className="mt-4 text-base leading-relaxed text-slate-300">
         {cancelado
           ? 'No se te cobró nada. Podés volver cuando quieras.'
-          : 'No se te cobró nada. El banco no autorizó la operación, y eso puede pasar por varios motivos.'}
+          : pendiente
+            ? 'El banco todavía no confirmó la operación. Apenas se acredite, el informe queda en tu cuenta y te avisamos por mail. No hace falta que vuelvas a pagar.'
+            : 'No se te cobró nada. El banco no autorizó la operación, y eso puede pasar por varios motivos.'}
       </p>
 
-      {!cancelado && (
+      {!cancelado && !pendiente && (
         <div className="mt-8 rounded-lg border border-slate-800 bg-slate-950/60 p-5">
           <h2 className="text-sm font-semibold text-slate-200">Lo más común</h2>
           <ul className="mt-3 space-y-2 text-sm leading-relaxed text-slate-400">
