@@ -114,7 +114,14 @@ function alertas(props, sinVerificar) {
     // esperado, no una alerta: sus búsquedas las recibe la propiedad canónica.
     if (p.m28.impressions === 0 && !espejo) A.push({ nivel: 'warn', txt: `${p.label}: cero impresiones en 28 días` })
   }
-  for (const s of sinVerificar) A.push({ nivel: 'warn', txt: `${label(s)}: propiedad sin verificar (no se puede leer)` })
+  // Una propiedad sin verificar cuyo dominio YA se lee por otra propiedad verificada (caso
+  // sc-domain:proactiverecovery.com.ar vs https://proactiverecovery.com.ar/) no pierde dato:
+  // no es alerta. Las demás sí, con la acción al lado.
+  const hostsLeidos = new Set(props.map((p) => p.label.replace(/^www\./, '')))
+  for (const s of sinVerificar) {
+    if (hostsLeidos.has(label(s).replace(/^www\./, ''))) continue
+    A.push({ nivel: 'warn', txt: `${label(s)}: propiedad sin verificar — verificar por DNS o con la meta etiqueta desde el panel del sitio` })
+  }
   return A
 }
 
