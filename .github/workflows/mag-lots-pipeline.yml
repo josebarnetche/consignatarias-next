@@ -143,6 +143,11 @@ jobs:
     needs: enqueue-and-process
     if: always()
     runs-on: ubuntu-latest
+    # Sin esto el GITHUB_TOKEN es read-only y el push da 403. Como el job es
+    # continue-on-error, el 403 pasaría inadvertido y las bandas quedarían
+    # congeladas mientras todas las superficies las presentan como vigentes.
+    permissions:
+      contents: write
     timeout-minutes: 10
     continue-on-error: true
     steps:

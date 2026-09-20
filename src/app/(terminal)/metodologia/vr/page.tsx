@@ -166,6 +166,20 @@ export default function MetodologiaVrPage() {
           y se calculan los percentiles 10, 50 y 90 por interpolación lineal sobre la distribución de precios por kilo.
           La amplitud publicada es <code className="text-zinc-300">P90 / P10 − 1</code>.
         </p>
+        <div className="border border-amber-900/50 rounded p-4 mb-6">
+          <p className="text-zinc-300 mb-2">
+            El VR y el precio de categoría del MAG no son la misma medida — y a veces difieren mucho.
+          </p>
+          <p className="text-zinc-400 text-xs">
+            El MAG publica una observación semanal de un corte determinado; la mediana del VR sale de{' '}
+            <em>todos</em> los lotes de la categoría en la ventana. La brecha es chica en vaca (~1%) y
+            llega a ~25% en novillito, vaquillona y toro. Ninguna de las dos está mal: miden cosas
+            distintas. El VR usa la mediana de lote porque es el precio al que efectivamente se opera,
+            y cuando la brecha supera el 5% lo declara en la propia respuesta de la API y del MCP,
+            junto con el precio MAG para que se puedan comparar.
+          </p>
+        </div>
+
         <p className="text-zinc-400 mb-8">
           <span className="text-zinc-200">Cada lote pesa igual, no se pondera por cabezas.</span> Es deliberado:
           el VR describe la dispersión de <em>operaciones</em>, que es lo que enfrenta quien vende una tropa.

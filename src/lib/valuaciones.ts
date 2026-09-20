@@ -8,8 +8,15 @@
  * escenarios EXPLÍCITOS, nunca con un número inventado.
  *
  * `valuarTropa` devuelve tres puntas (p10/mediana/p90) cuando hay base de lotes, y
- * colapsa en el precio MAG cuando no la hay. `total_ars` sigue siendo el central de
- * siempre, para no romper a los callers viejos.
+ * colapsa en el precio MAG cuando no la hay.
+ *
+ * CAMBIO DE CONTRATO, no es retrocompatible en el VALOR: cuando hay banda,
+ * `total_ars` se calcula con la MEDIANA DE LOTE y no con el precio de categoría
+ * del MAG. Las dos medidas difieren hasta ~25% (novillito, vaquillona, toro)
+ * porque miden cosas distintas: el MAG publica una observación semanal de un
+ * corte, la mediana sale de todos los lotes de la categoría. Se eligió la
+ * mediana porque es el precio al que efectivamente se opera. El valor anterior
+ * no se pierde: va en `precio_kg_mag`, y la brecha en `brecha_vs_mag_pct`.
  */
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
@@ -62,10 +69,25 @@ export function valuarTropa(opts: {
   const ref = getReferencia(categoria, opts.provincia)
   const v = valuarConBanda(ref, kg, opts.cabezas, precioKg)
 
+  // El precio EFECTIVAMENTE usado para el total. Con banda es la mediana de lote;
+  // sin banda, el precio MAG. Se expone como tal para que la respuesta cierre:
+  // precio_kg_usado × kg × cabezas === total_ars, siempre.
+  const precioKgUsado = v.usó_banda ? ref.banda!.mediana : precioKg
   const totalArs = v.central
   const totalUsdBlue = totalArs / mp.usdBlue.current
   const totalUsdOficial = totalArs / mp.usdOficial.current
   const porCabezaArs = Math.round(totalArs / opts.cabezas)
+
+  // La mediana de lote y el precio de categoría del MAG NO son la misma medida:
+  // el MAG publica una observación semanal de un corte determinado, la mediana
+  // sale de todos los lotes de la categoría. La brecha llega a ~25% en novillito,
+  // vaquillona y toro. Callarla sería el peor de los dos mundos, así que cuando
+  // es material se declara en la respuesta.
+  const brechaPct = precioKg > 0 ? ((precioKgUsado / precioKg) - 1) * 100 : 0
+  const notaBrecha =
+    v.usó_banda && Math.abs(brechaPct) >= 5
+      ? `La mediana de lote (${fmtArs(precioKgUsado)}/kg) está ${brechaPct > 0 ? 'por encima' : 'por debajo'} del precio de categoría del MAG (${fmtArs(precioKg)}/kg) en ${Math.abs(brechaPct).toFixed(0)}%: son medidas distintas — el MAG publica una observación semanal de un corte, la mediana sale de todos los lotes de la categoría.`
+      : null
 
   const bloqueBanda = v.usó_banda
     ? `Banda observada: ${fmtArs(ref.banda!.p10)} – ${fmtArs(ref.banda!.p90)}/kg (mediana ${fmtArs(ref.banda!.mediana)}), ` +
@@ -79,7 +101,7 @@ export function valuarTropa(opts: {
     bloqueBanda +
     `Por cabeza: ${fmtArs(porCabezaArs)}\n` +
     `En dólares: ${fmtUsd(totalUsdBlue)} (blue ${fmtArs(mp.usdBlue.current)}) · ${fmtUsd(totalUsdOficial)} (oficial ${fmtArs(mp.usdOficial.current)})\n\n` +
-    ref.limites.map((l) => `· ${l}`).join('\n') +
+    [...ref.limites, ...(notaBrecha ? [notaBrecha] : [])].map((l) => `· ${l}`).join('\n') +
     `\nMetodología: ${ref.metodologia} — ${ref.url_metodologia}\n` +
     `El precio final lo define el remate. Para venderla: https://www.consignatarias.com.ar/consignatarias`
 
@@ -90,8 +112,15 @@ export function valuarTropa(opts: {
       cabezas: opts.cabezas,
       kg_promedio: kg,
       kg_asumido: kgAsumido,
-      precio_kg_ars: precioKg,
-      // Retrocompat: `total_ars` sigue siendo el número central de siempre.
+      // `precio_kg_ars` es el precio con el que se calculó el total, para que la
+      // respuesta cierre sola. El de categoría del MAG va aparte, no se pierde.
+      precio_kg_ars: precioKgUsado,
+      precio_kg_mag: precioKg,
+      brecha_vs_mag_pct: v.usó_banda ? Number(brechaPct.toFixed(1)) : 0,
+      // OJO: con banda, `total_ars` pasó a ser la MEDIANA DE LOTE, no el precio
+      // MAG × kg. No es retrocompatible en el valor (hasta ~25% de diferencia);
+      // sí lo es en forma. El cambio es deliberado: la mediana de lote es el
+      // precio al que se opera. `precio_kg_mag` conserva la medida anterior.
       total_ars: Math.round(totalArs),
       total_usd_blue: Math.round(totalUsdBlue),
       total_usd_oficial: Math.round(totalUsdOficial),

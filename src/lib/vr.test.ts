@@ -8,6 +8,7 @@ import {
   getOrigenPorSlug,
   getBandasPublicas,
   vrCobertura,
+  SLUGS_CONOCIDOS,
   MIN_LOTES_AJUSTE_ORIGEN,
   MIN_LOTES_BANDA_COMPLETA,
   VR_METODOLOGIA,
@@ -157,5 +158,48 @@ describe('superficie pública (páginas /vr y /mercado)', () => {
     expect(c.desde <= c.hasta).toBe(true)
     expect(c.lotes).toBeGreaterThan(0)
     expect(c.cabezas).toBeGreaterThan(0)
+  })
+})
+
+describe('regresiones de la auditoría', () => {
+  it('SLUGS_CONOCIDOS es superset de los que hoy tienen banda', () => {
+    // Si se invirtiera, una URL indexada pasaría a 404 al caer la base.
+    for (const s of getSlugsConBanda()) expect(SLUGS_CONOCIDOS).toContain(s)
+    expect(SLUGS_CONOCIDOS.length).toBeGreaterThanOrEqual(getSlugsConBanda().length)
+  })
+
+  it('una banda colapsada no puede declarar amplitud', () => {
+    for (const cat of ['vacas', 'novillos', 'terneros', 'toros', 'vaquillonas']) {
+      const r = getReferencia(cat)
+      if (r.banda && r.banda.p10 === r.banda.p90) {
+        expect(r.banda.amplitud_pct).toBe(0)
+      }
+    }
+  })
+})
+
+describe('valuarTropa — coherencia interna de la respuesta', () => {
+  it('precio_kg_ars × kg × cabezas === total_ars, con y sin banda', async () => {
+    const { valuarTropa } = await import('./valuaciones')
+    for (const [cat, cabezas] of [['vacas', 350], ['novillos', 120], ['terneros', 100]] as const) {
+      const d = valuarTropa({ categoria: cat, cabezas }).data as Record<string, number>
+      expect(d.total_ars).toBe(Math.round(d.precio_kg_ars * d.kg_promedio * cabezas))
+    }
+  })
+
+  it('conserva el precio MAG y declara la brecha cuando difiere', async () => {
+    const { valuarTropa } = await import('./valuaciones')
+    const d = valuarTropa({ categoria: 'vaquillonas', cabezas: 10 }).data as Record<string, number>
+    // vaquillona es el caso donde mediana de lote y precio MAG más se separan.
+    expect(d.precio_kg_mag).toBeGreaterThan(0)
+    expect(Math.abs(d.brecha_vs_mag_pct)).toBeGreaterThan(5)
+    expect(d.precio_kg_ars).not.toBe(d.precio_kg_mag)
+  })
+
+  it('sin banda no hay brecha que declarar', async () => {
+    const { valuarTropa } = await import('./valuaciones')
+    const d = valuarTropa({ categoria: 'terneros', cabezas: 10 }).data as Record<string, number>
+    expect(d.brecha_vs_mag_pct).toBe(0)
+    expect(d.precio_kg_ars).toBe(d.precio_kg_mag)
   })
 })

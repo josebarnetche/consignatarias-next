@@ -53,6 +53,9 @@ async function traerLotes(sb, desde) {
       .select('date, category, provincia, price, head_count')
       .gte('date', desde)
       .gt('price', 0)
+      // El orden NO es cosmético: sin ORDER BY, LIMIT/OFFSET puede repetir o
+      // saltear filas entre páginas, y son ~19 páginas sobre 18k+ lotes.
+      .order('id', { ascending: true })
       .range(offset, offset + PAGE - 1)
     if (error) throw new Error(`Supabase: ${error.message}`)
     if (!data || data.length === 0) break
@@ -92,12 +95,19 @@ async function main() {
   const desdeBanda = isoHaceDias(VENTANA_DIAS)
 
   const todas = await traerLotes(sb, desdeOrigen)
-  if (todas.length === 0) {
-    console.error('Sin lotes en la ventana — no se reescribe el archivo.')
+  const deBanda = todas.filter((f) => f.date >= desdeBanda)
+
+  // El guard mira la ventana de la BANDA, no la de origen: si el pipeline estuvo
+  // caído varias semanas, `todas` puede traer datos viejos mientras `deBanda`
+  // queda vacío. Reescribir con categorias:{} tiraría 404 las seis páginas /vr
+  // y dejaría temporalCoverage en "undefined/undefined". Mejor no tocar nada:
+  // una banda vieja se declara por su fecha, un archivo vacío miente.
+  if (deBanda.length === 0) {
+    console.error(
+      `Sin lotes en los últimos ${VENTANA_DIAS} días — se conserva el archivo anterior.`,
+    )
     process.exit(1)
   }
-
-  const deBanda = todas.filter((f) => f.date >= desdeBanda)
 
   const categorias = {}
   for (const cat of new Set(deBanda.map((f) => f.category))) {

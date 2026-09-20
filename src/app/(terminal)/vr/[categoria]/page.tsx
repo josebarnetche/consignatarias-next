@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { DatasetSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import {
+  SLUGS_CONOCIDOS,
   getSlugsConBanda,
   getBandaPorSlug,
   getOrigenPorSlug,
@@ -21,10 +22,20 @@ import {
  * duplicadas, que es justo lo que el sitemap del sitio excluye. Una URL estable
  * por categoría se indexa, se cita y se puede linkear desde una respuesta de IA.
  */
+/**
+ * Se generan TODOS los slugs conocidos, no solo los que hoy tienen banda.
+ *
+ * Con `generateStaticParams` atado a `getSlugsConBanda()`, una categoría que cae
+ * bajo el mínimo (MEJ está en 128 lotes, no sobra tanto) haría que su URL —ya
+ * indexada y citada por schema— pase a 404 duro de un build al otro. Un 404 en
+ * una URL citada es la peor degradación posible: rompe la cita en vez de
+ * declarar que falta base. Así que la página existe siempre y, sin banda,
+ * muestra el estado degradado y se marca noindex hasta que vuelva el dato.
+ */
 export const dynamicParams = false
 
 export async function generateStaticParams() {
-  return getSlugsConBanda().map((categoria) => ({ categoria }))
+  return SLUGS_CONOCIDOS.map((categoria) => ({ categoria }))
 }
 
 const fmt = (n: number) => '$' + n.toLocaleString('es-AR')
@@ -36,8 +47,16 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { categoria } = await params
   const b = getBandaPorSlug(categoria)
-  if (!b) return {}
   const url = `https://www.consignatarias.com.ar/vr/${categoria}`
+  if (!b) {
+    // Sin base: la URL sigue viva (no rompemos la cita) pero sale del índice
+    // hasta que vuelva el dato.
+    return {
+      title: 'Valor de Referencia — sin base suficiente esta semana',
+      robots: { index: false, follow: true },
+      alternates: { canonical: url },
+    }
+  }
   const title = `A cuánto se vendió ${b.categoria.toLowerCase()}: ${fmt(b.p10)} a ${fmt(b.p90)} por kilo`
   const description =
     `Banda de precio observada para ${b.categoria.toLowerCase()} en el Mercado Agroganadero: mínimo ${fmt(b.p10)}, ` +
@@ -57,10 +76,45 @@ export default async function VrCategoriaPage({
   params: Promise<{ categoria: string }>
 }) {
   const { categoria } = await params
+  if (!SLUGS_CONOCIDOS.includes(categoria)) notFound()
   const b = getBandaPorSlug(categoria)
-  if (!b) notFound()
-
   const cob = vrCobertura()
+
+  if (!b) {
+    // Degradar, no negar: misma doctrina que el resto del VR.
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
+        <nav className="text-xs text-zinc-500 mb-4">
+          <Link href="/mercado" className="hover:text-sky-400">Mercado</Link>
+          <span className="mx-2">/</span>
+          <span className="text-zinc-400">Valor de Referencia</span>
+        </nav>
+        <h1 className="text-zinc-100 text-2xl font-medium mb-3">
+          Sin base suficiente para publicar una banda
+        </h1>
+        <p className="text-zinc-400 mb-4">
+          Esta categoría no reunió operaciones suficientes en los últimos {VR_VENTANA_DIAS} días
+          como para publicar un rango que el dato sostenga. Preferimos decirlo antes que
+          mostrar un número inventado — es la misma regla que gobierna toda la metodología.
+        </p>
+        <p className="text-zinc-400 mb-6">
+          Categorías con banda vigente al {cob.hasta}:{' '}
+          {getSlugsConBanda().map((s, i, arr) => (
+            <span key={s}>
+              <Link href={`/vr/${s}`} className="text-sky-400 hover:underline">{s}</Link>
+              {i < arr.length - 1 ? ' · ' : ''}
+            </span>
+          ))}
+        </p>
+        <p className="text-zinc-500 text-xs">
+          <Link href="/metodologia/vr" className="text-sky-400 hover:underline">
+            Cómo se calcula ({VR_METODOLOGIA}) y cuándo no se publica
+          </Link>
+        </p>
+      </div>
+    )
+  }
+
   const origen = getOrigenPorSlug(categoria)
   const url = `https://www.consignatarias.com.ar/vr/${categoria}`
   const nombre = b.categoria.toLowerCase()

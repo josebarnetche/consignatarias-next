@@ -150,7 +150,9 @@ export function getReferencia(categoria: string, provincia?: string): VrReferenc
     return {
       ...base,
       confianza: 'baja',
-      banda: { ...banda, p10: banda.mediana, p90: banda.mediana },
+      // La banda colapsa en la mediana, así que la amplitud es 0. Dejar la
+      // original diría "rango nulo" y "53% de dispersión" en la misma respuesta.
+      banda: { ...banda, p10: banda.mediana, p90: banda.mediana, amplitud_pct: 0 },
       origen: null,
       limites: [
         LIMITE_BASE,
@@ -292,7 +294,15 @@ const SLUG_A_CODIGO: Record<string, string> = {
   mej: 'MEJ',
 }
 
-/** Slugs con banda publicable. Es la fuente de `generateStaticParams` y del sitemap. */
+/**
+ * Todos los slugs que el producto reconoce, tengan banda hoy o no.
+ * `generateStaticParams` usa ESTA lista para que una URL ya indexada nunca pase
+ * a 404 por una caída temporal de base; el sitemap usa `getSlugsConBanda()`,
+ * que sí exige banda vigente.
+ */
+export const SLUGS_CONOCIDOS = Object.keys(SLUG_A_CODIGO)
+
+/** Slugs con banda publicable. Es la fuente del sitemap. */
 export function getSlugsConBanda(): string[] {
   return Object.entries(SLUG_A_CODIGO)
     .filter(([, codigo]) => (archivo.categorias[codigo]?.lotes ?? 0) >= MIN_LOTES_BANDA_COMPLETA)
