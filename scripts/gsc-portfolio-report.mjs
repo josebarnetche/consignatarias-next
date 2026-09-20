@@ -110,7 +110,9 @@ function alertas(props, sinVerificar) {
     const espejo = /redirect|Alternate page/i.test(p.home?.coverage || '')
     if (p.home && p.home.verdict !== 'PASS' && !espejo) A.push({ nivel: 'neg', txt: `${p.label}: home "${p.home.coverage}"${p.home.lastCrawl ? ` (rastreada ${p.home.lastCrawl})` : ''}` })
     for (const s of p.sitemaps) if (s.errors > 0) A.push({ nivel: 'warn', txt: `${p.label}: sitemap con ${s.errors} error(es) — ${s.path}` })
-    if (p.m28.impressions === 0) A.push({ nivel: 'warn', txt: `${p.label}: cero impresiones en 28 días` })
+    // Una propiedad espejo (www / .com que redirige a la canónica) con cero impresiones es lo
+    // esperado, no una alerta: sus búsquedas las recibe la propiedad canónica.
+    if (p.m28.impressions === 0 && !espejo) A.push({ nivel: 'warn', txt: `${p.label}: cero impresiones en 28 días` })
   }
   for (const s of sinVerificar) A.push({ nivel: 'warn', txt: `${label(s)}: propiedad sin verificar (no se puede leer)` })
   return A
