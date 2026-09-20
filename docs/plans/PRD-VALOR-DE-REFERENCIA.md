@@ -1,6 +1,6 @@
 # PRD — Valor de Referencia (VR): de calculadora a oráculo de precio
 
-**Fecha:** 2026-09-20 · **Propietario:** Memola Medios SAS · **Estado:** PRD para aprobación (no implementado).
+**Fecha:** 2026-09-20 · **Propietario:** Memola Medios SAS · **Estado:** ✅ **IMPLEMENTADO** (Sprints 1–4). Ver §12 para lo entregado y las correcciones al plan original.
 **Origen:** `docs/strategy/TOKENIZACION-GANADERA-AGFINTECH-2026.md` §5.2 (jugadas 1 y 2) — *gitignorado, no está en el repo público*.
 **Construye sobre:** `POSITIONING-THESIS.md` §1.1 (CEPEA/B3), `PLAN-DE-NEGOCIOS-2026.md` §24 (Motor 2), `docs/METODOLOGIA-INDICE-CONSIGNATARIAS.md` (v1.0 borrador — este PRD lo reemplaza).
 
@@ -225,3 +225,41 @@ No propone tokenizar. El doc de estrategia (§5.1) lo descarta y este PRD lo res
 1. **Nombre.** "Valor de Referencia (VR)" es descriptivo y aburrido, que para un índice es una virtud (CEPEA no se llama nada). Alternativas: mantenerlo dentro de la familia INMAG, o un nombre propio tipo "Proof of Land" de Landtoken.
 2. **¿La banda va pública o es el diferencial pago?** §5 propone pública por doctrina CEPEA/IBLI. Es la decisión de negocio más importante del PRD y es reversible en una dirección sola (publicar y después cerrar quema autoridad).
 3. **¿Reemplazamos `METODOLOGIA-INDICE-CONSIGNATARIAS.md` o convive?** Ese doc describe un "IPC" con ponderaciones que hoy no se calcula. Mi recomendación: **archivarlo** y que VR v1.0 sea la metodología única, para no tener dos índices que no se hablan.
+
+
+---
+
+## 12. Estado de entrega (cierre 2026-09-20)
+
+### Lo que se construyó
+
+| Sprint | Entregable | Estado |
+|---|---|---|
+| 1 | `src/lib/vr.ts` + regla de degradación + `valuarTropa()` retrocompatible | ✅ |
+| 1 | `scripts/compute-vr-bandas.mjs` + job en `mag-lots-pipeline.yml` | ✅ |
+| 2 | `/metodologia/vr` pública e indexable + enlace desde `/metodologia` | ✅ |
+| 2 | Banda visible en `/mercado` (`VrBandas`, sin login) | ✅ |
+| 3 | Sitemap + las 4 superficies MCP sincronizadas | ✅ |
+| 3 | Permalinks citables | ✅ **con corrección — ver abajo** |
+| 4 | `?vr=1` en `/api/precios` | ✅ |
+| 4 | Export CSV/JSON gated | ❌ **no hecho — ver pendientes** |
+
+**Decisiones tomadas (§11 resuelto):** banda **pública** (doctrina CEPEA/IBLI); nombre **Valor de Referencia (VR)**; `METODOLOGIA-INDICE-CONSIGNATARIAS.md` queda **archivado de hecho** — la metodología viva es `/metodologia/vr` + la página general `/metodologia` (v1.3), que ya estaba a mejor nivel que el borrador.
+
+### Corrección al plan: permalinks por categoría, no por valuación
+
+El §3.1 proponía `/vr/[id]` con un id hasheado por valuación (`vr_2026-09-20_vaca_a1b2c3`). **Se descartó al implementar.** Una URL por consulta generaría miles de páginas casi duplicadas y de contenido fino — exactamente lo que el sitemap del sitio ya excluye para los perfiles thin. Peor: para que un permalink de ese tipo funcione hay que **persistir cada valuación**, lo que agrega una tabla, un ciclo de vida y una superficie de datos nueva para un beneficio que nadie pidió.
+
+Lo entregado es **`/vr/[categoria]`**: `/vr/vaca`, `/vr/novillo`, `/vr/vaquillona`, `/vr/novillito`, `/vr/toro`, `/vr/mej`. Seis URLs estables, SSG, con `DatasetSchema` + `FAQPageSchema`, que es lo que un motor de IA cita. `generateStaticParams` sale de `getSlugsConBanda()`, así que **el sitemap nunca emite una página sin dato**: la regla de degradación gobierna también qué se publica.
+
+El objeto `Valuación` del §3.1 sigue siendo correcto en todo lo demás (banda, n, metodología versionada); lo único que cambia es que `permalink` apunta a la categoría, no a la consulta.
+
+### Pendientes conscientes
+
+1. **Export CSV/JSON gated.** No se hizo. Hoy no hay a qué colgarlo: no existe una superficie de descarga del VR. Cuando exista, va con `requireLoginForDownload()`.
+2. **La serie histórica de dispersión.** `?vr=1` devuelve la banda **vigente**, no su evolución. Es lo que un modelador compraría y todavía no existe: requiere persistir las bandas diarias, no solo la última. Es el siguiente producto real, y sale barato porque el cálculo ya está.
+3. **`mag-lots-pipeline.yml` corre Mar/Mié/Vie.** Las bandas se refrescan con esa cadencia, no a diario. Está declarado en la metodología (`updateFrequency`).
+
+### Qué queda por validar (la métrica que decide, §7)
+
+Nada de lo anterior prueba que alguien pague. La kill hypothesis #3 sigue abierta y el criterio de muerte del §9.4 sigue en pie: **si a los 90 días no hay ≥2 conversaciones Enterprise citando el VR, se congela como activo de autoridad y no se invierte más.**

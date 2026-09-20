@@ -1,0 +1,227 @@
+import { Metadata } from 'next'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { DatasetSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import {
+  getSlugsConBanda,
+  getBandaPorSlug,
+  getOrigenPorSlug,
+  vrCobertura,
+  PROVINCIA_NOMBRE,
+  VR_METODOLOGIA,
+  VR_VENTANA_DIAS,
+  VR_VENTANA_ORIGEN_DIAS,
+} from '@/lib/vr'
+
+/**
+ * Página citable por categoría: /vr/vaca, /vr/novillo…
+ *
+ * Es el "permalink" del VR. Deliberadamente POR CATEGORÍA y no por valuación
+ * individual: una URL por consulta generaría miles de páginas thin y casi
+ * duplicadas, que es justo lo que el sitemap del sitio excluye. Una URL estable
+ * por categoría se indexa, se cita y se puede linkear desde una respuesta de IA.
+ */
+export const dynamicParams = false
+
+export async function generateStaticParams() {
+  return getSlugsConBanda().map((categoria) => ({ categoria }))
+}
+
+const fmt = (n: number) => '$' + n.toLocaleString('es-AR')
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ categoria: string }>
+}): Promise<Metadata> {
+  const { categoria } = await params
+  const b = getBandaPorSlug(categoria)
+  if (!b) return {}
+  const url = `https://www.consignatarias.com.ar/vr/${categoria}`
+  const title = `A cuánto se vendió ${b.categoria.toLowerCase()}: ${fmt(b.p10)} a ${fmt(b.p90)} por kilo`
+  const description =
+    `Banda de precio observada para ${b.categoria.toLowerCase()} en el Mercado Agroganadero: mínimo ${fmt(b.p10)}, ` +
+    `mediana ${fmt(b.mediana)} y máximo ${fmt(b.p90)} por kilo vivo, sobre ${b.lotes.toLocaleString('es-AR')} operaciones ` +
+    `de los últimos ${VR_VENTANA_DIAS} días. Metodología ${VR_METODOLOGIA}.`
+  return {
+    title,
+    description,
+    openGraph: { title, description, url, type: 'website', images: [{ url: '/og-image.png', width: 1200, height: 630 }] },
+    alternates: { canonical: url },
+  }
+}
+
+export default async function VrCategoriaPage({
+  params,
+}: {
+  params: Promise<{ categoria: string }>
+}) {
+  const { categoria } = await params
+  const b = getBandaPorSlug(categoria)
+  if (!b) notFound()
+
+  const cob = vrCobertura()
+  const origen = getOrigenPorSlug(categoria)
+  const url = `https://www.consignatarias.com.ar/vr/${categoria}`
+  const nombre = b.categoria.toLowerCase()
+
+  const faqs = [
+    {
+      question: `¿A cuánto se está vendiendo ${nombre}?`,
+      answer:
+        `En el Mercado Agroganadero, ${nombre} se vendió entre ${fmt(b.p10)} y ${fmt(b.p90)} por kilo vivo en los últimos ` +
+        `${VR_VENTANA_DIAS} días, con mediana de ${fmt(b.mediana)}. La banda surge de ${b.lotes.toLocaleString('es-AR')} operaciones ` +
+        `de lote que suman ${b.cabezas.toLocaleString('es-AR')} cabezas, al ${cob.hasta}. La amplitud entre el mínimo y el máximo ` +
+        `es de ${b.amplitud_pct}%, así que un precio único sería engañoso.`,
+    },
+    {
+      question: `¿Por qué hay tanta diferencia de precio en ${nombre}?`,
+      answer:
+        `Porque el precio depende de la calidad y composición del lote, no solo de la categoría. En ${nombre} la diferencia entre ` +
+        `el percentil 10 y el 90 es de ${b.amplitud_pct}%. El origen del remitente influye mucho menos: los ajustes por provincia ` +
+        `medidos sobre nuestra base se mueven en pocos puntos porcentuales.`,
+    },
+    {
+      question: `¿De dónde sale este precio de ${nombre}?`,
+      answer:
+        `De las planillas de lote del Mercado Agroganadero de Cañuelas (haciinfo000007), donde cada fila es una pesada real: ` +
+        `remitente, consignataria, categoría, cabezas, kilos y precio. Es dato de operación observada, no una encuesta. ` +
+        `La metodología completa está publicada en consignatarias.com.ar/metodologia/vr.`,
+    },
+  ]
+
+  return (
+    <>
+      <DatasetSchema
+        name={`Valor de Referencia — ${b.categoria} (banda de precio observado)`}
+        description={
+          `Percentil 10 (${fmt(b.p10)}), mediana (${fmt(b.mediana)}) y percentil 90 (${fmt(b.p90)}) del precio en ARS por kilo ` +
+          `vivo de ${nombre}, observados en ${b.lotes.toLocaleString('es-AR')} operaciones de lote del Mercado Agroganadero ` +
+          `en una ventana de ${VR_VENTANA_DIAS} días.`
+        }
+        url={url}
+        keywords={[`precio ${nombre}`, `${nombre} precio kilo vivo`, 'mercado agroganadero', 'hacienda en pie', 'ganadería argentina']}
+        dateModified={cob.hasta}
+        temporalCoverage={`${cob.desde}/${cob.hasta}`}
+        variableMeasured={{
+          name: `Precio de ${nombre} — mediana observada`,
+          unitText: 'ARS/kg vivo',
+          value: b.mediana,
+          observationDate: cob.hasta,
+        }}
+        updateFrequency="Martes, miércoles y viernes, tras el cierre de operaciones del MAG"
+      />
+      <FAQPageSchema items={faqs} />
+      <SpeakableSchema url={url} headline={`A cuánto se vendió ${nombre} en el Mercado Agroganadero`} />
+
+      <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
+        <nav className="text-xs text-zinc-500 mb-4">
+          <Link href="/mercado" className="hover:text-sky-400">Mercado</Link>
+          <span className="mx-2">/</span>
+          <span className="text-zinc-400">Valor de Referencia — {b.categoria}</span>
+        </nav>
+
+        <h1 className="text-zinc-100 text-2xl font-medium mb-1">
+          A cuánto se vendió {nombre}
+        </h1>
+        <p className="text-zinc-500 text-xs mb-6">
+          Banda observada en el Mercado Agroganadero · ventana de {VR_VENTANA_DIAS} días al {cob.hasta} · {VR_METODOLOGIA}
+        </p>
+
+        {/* La banda, que es el número */}
+        <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="border border-zinc-800 rounded p-4 text-center">
+            <div className="text-zinc-500 text-xs mb-1">Mínimo (P10)</div>
+            <div className="text-zinc-300 text-xl tabular-nums">{fmt(b.p10)}</div>
+          </div>
+          <div className="border border-sky-900 rounded p-4 text-center">
+            <div className="text-zinc-500 text-xs mb-1">Mediana</div>
+            <div className="text-zinc-100 text-xl tabular-nums font-medium">{fmt(b.mediana)}</div>
+          </div>
+          <div className="border border-zinc-800 rounded p-4 text-center">
+            <div className="text-zinc-500 text-xs mb-1">Máximo (P90)</div>
+            <div className="text-zinc-300 text-xl tabular-nums">{fmt(b.p90)}</div>
+          </div>
+        </div>
+        <p className="text-zinc-400 mb-8">
+          Pesos por kilo vivo. La amplitud entre el mínimo y el máximo es de{' '}
+          <span className="text-amber-400">{b.amplitud_pct}%</span>, sobre{' '}
+          <span className="text-zinc-200">{b.lotes.toLocaleString('es-AR')} operaciones</span> que suman{' '}
+          <span className="text-zinc-200">{b.cabezas.toLocaleString('es-AR')} cabezas</span>.
+        </p>
+
+        <h2 className="text-zinc-100 text-lg font-medium mb-2">Por qué es una banda y no un precio</h2>
+        <p className="text-zinc-400 mb-8">
+          Un precio único de {nombre} sugiere una precisión que el mercado no tiene. Dos lotes de la misma
+          categoría, el mismo día y en el mismo mercado pueden diferir un {b.amplitud_pct}% según calidad,
+          terminación y composición. Publicar la banda —y la cantidad de operaciones que la sostiene— es la
+          única forma honesta de responder &ldquo;¿cuánto vale?&rdquo;. Si vas a vender, el número que te
+          importa es dónde cae <em>tu</em> lote dentro de este rango.
+        </p>
+
+        {origen.length > 0 && (
+          <>
+            <h2 className="text-zinc-100 text-lg font-medium mb-2">Según la provincia de origen</h2>
+            <p className="text-zinc-400 mb-3">
+              No existe una serie oficial de precios por provincia. Esto es lo que se mide en nuestra propia
+              base: cuánto se desvía la mediana de cada origen respecto de la nacional, sobre{' '}
+              {VR_VENTANA_ORIGEN_DIAS} días y solo donde hay suficientes operaciones.
+            </p>
+            <div className="overflow-x-auto mb-3">
+              <table className="w-full text-xs border-collapse">
+                <thead>
+                  <tr className="text-zinc-500 border-b border-zinc-800">
+                    <th className="text-left py-2 font-normal">Origen</th>
+                    <th className="text-right py-2 font-normal">Mediana ajustada</th>
+                    <th className="text-right py-2 font-normal">vs. nacional</th>
+                    <th className="text-right py-2 font-normal">Lotes</th>
+                  </tr>
+                </thead>
+                <tbody className="text-zinc-300">
+                  {origen.map((o) => {
+                    const delta = (o.factor - 1) * 100
+                    return (
+                      <tr key={o.provincia} className="border-b border-zinc-900">
+                        <td className="py-2 text-zinc-200">{PROVINCIA_NOMBRE[o.provincia] ?? o.provincia}</td>
+                        <td className="py-2 text-right tabular-nums">{fmt(Math.round(b.mediana * o.factor))}</td>
+                        <td className={`py-2 text-right tabular-nums ${delta > 0.5 ? 'text-emerald-400' : delta < -0.5 ? 'text-red-400' : 'text-zinc-500'}`}>
+                          {delta >= 0 ? '+' : ''}{delta.toFixed(1)}%
+                        </td>
+                        <td className="py-2 text-right tabular-nums text-zinc-500">{o.lotes.toLocaleString('es-AR')}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-zinc-500 text-xs mb-8">
+              El efecto del origen es real pero chico comparado con la amplitud de la banda ({b.amplitud_pct}%):
+              en este mercado la varianza grande es de calidad de lote, no geográfica.
+            </p>
+          </>
+        )}
+
+        <div className="border-t border-zinc-800 pt-6 mt-10 text-xs text-zinc-500">
+          <p className="mb-2">
+            Es una referencia de mercado observada, no una tasación: el precio final lo define el remate.{' '}
+            <Link href="/metodologia/vr" className="text-sky-400 hover:underline">Cómo se calcula ({VR_METODOLOGIA})</Link>
+          </p>
+          <p className="mb-2">
+            Otras categorías:{' '}
+            {getSlugsConBanda()
+              .filter((s) => s !== categoria)
+              .map((s, i, arr) => (
+                <span key={s}>
+                  <Link href={`/vr/${s}`} className="text-sky-400 hover:underline">{s}</Link>
+                  {i < arr.length - 1 ? ' · ' : ''}
+                </span>
+              ))}
+          </p>
+          <p>
+            ¿Querés venderla? <Link href="/consignatarias" className="text-sky-400 hover:underline">Consignatarias por provincia</Link>
+          </p>
+        </div>
+      </div>
+    </>
+  )
+}

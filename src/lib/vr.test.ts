@@ -3,7 +3,13 @@ import {
   getReferencia,
   valuarConBanda,
   normalizarProvincia,
+  getSlugsConBanda,
+  getBandaPorSlug,
+  getOrigenPorSlug,
+  getBandasPublicas,
+  vrCobertura,
   MIN_LOTES_AJUSTE_ORIGEN,
+  MIN_LOTES_BANDA_COMPLETA,
   VR_METODOLOGIA,
 } from './vr'
 
@@ -104,5 +110,52 @@ describe('valuarConBanda', () => {
     expect(v.conservador).toBe(v.central)
     expect(v.optimista).toBe(v.central)
     expect(v.central).toBe(5000 * 220 * 100)
+  })
+})
+
+describe('superficie pública (páginas /vr y /mercado)', () => {
+  it('solo publica slugs que pasan el mínimo de la regla de degradación', () => {
+    const slugs = getSlugsConBanda()
+    expect(slugs.length).toBeGreaterThan(0)
+    for (const s of slugs) {
+      const b = getBandaPorSlug(s)
+      expect(b).not.toBeNull()
+      expect(b!.lotes).toBeGreaterThanOrEqual(MIN_LOTES_BANDA_COMPLETA)
+    }
+  })
+
+  it('ternero no tiene página: no hay banda que publicar', () => {
+    expect(getSlugsConBanda()).not.toContain('ternero')
+    expect(getBandaPorSlug('ternero')).toBeNull()
+  })
+
+  it('un slug inventado no explota ni fabrica una página', () => {
+    expect(getBandaPorSlug('unicornio')).toBeNull()
+    expect(getOrigenPorSlug('unicornio')).toEqual([])
+  })
+
+  it('getBandasPublicas ordena por cabezas y coincide con los slugs', () => {
+    const pub = getBandasPublicas()
+    const cabezas = pub.map((b) => b.cabezas)
+    expect([...cabezas].sort((a, b) => b - a)).toEqual(cabezas)
+    expect(pub.length).toBe(getSlugsConBanda().length)
+  })
+
+  it('los ajustes de origen publicados superan el mínimo', () => {
+    for (const s of getSlugsConBanda()) {
+      for (const o of getOrigenPorSlug(s)) {
+        expect(o.lotes).toBeGreaterThanOrEqual(MIN_LOTES_AJUSTE_ORIGEN)
+        // Un factor fuera de ±50% sería un bug de cálculo, no un dato de mercado.
+        expect(o.factor).toBeGreaterThan(0.5)
+        expect(o.factor).toBeLessThan(1.5)
+      }
+    }
+  })
+
+  it('la cobertura declara fechas coherentes y totales positivos', () => {
+    const c = vrCobertura()
+    expect(c.desde <= c.hasta).toBe(true)
+    expect(c.lotes).toBeGreaterThan(0)
+    expect(c.cabezas).toBeGreaterThan(0)
   })
 })

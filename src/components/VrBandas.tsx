@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { getBandasPublicas, vrCobertura, VR_VENTANA_DIAS, VR_METODOLOGIA } from '@/lib/vr'
+import { getBandasPublicas, getSlugsConBanda, vrCobertura, VR_VENTANA_DIAS, VR_METODOLOGIA } from '@/lib/vr'
 
 /**
  * La banda de precio observada por categoría — el dato que hoy no publica nadie
@@ -15,6 +15,7 @@ import { getBandasPublicas, vrCobertura, VR_VENTANA_DIAS, VR_METODOLOGIA } from 
 export default function VrBandas() {
   const bandas = getBandasPublicas()
   const cob = vrCobertura()
+  const slugs = getSlugsConBanda()
   if (bandas.length === 0) return null
 
   return (
@@ -48,7 +49,15 @@ export default function VrBandas() {
           <tbody className="text-zinc-300">
             {bandas.map((b) => (
               <tr key={b.codigo} className="border-b border-zinc-900">
-                <td className="py-2 text-zinc-200">{b.categoria}</td>
+                <td className="py-2 text-zinc-200">
+                  {slugs.includes(b.codigo.toLowerCase()) ? (
+                    <Link href={`/vr/${b.codigo.toLowerCase()}`} className="hover:text-sky-400">
+                      {b.categoria}
+                    </Link>
+                  ) : (
+                    b.categoria
+                  )}
+                </td>
                 <td className="py-2 text-right tabular-nums">${b.p10.toLocaleString('es-AR')}</td>
                 <td className="py-2 text-right tabular-nums text-zinc-100 font-medium">
                   ${b.mediana.toLocaleString('es-AR')}

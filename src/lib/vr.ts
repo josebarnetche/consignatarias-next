@@ -281,3 +281,50 @@ export function vrCobertura(): { desde: string; hasta: string; lotes: number; ca
     cabezas: todas.reduce((s, b) => s + b.cabezas, 0),
   }
 }
+
+/** Slug público por categoría: /vr/vaca, /vr/novillo… */
+const SLUG_A_CODIGO: Record<string, string> = {
+  novillo: 'NOVILLO',
+  novillito: 'NOVILLITO',
+  vaquillona: 'VAQUILLONA',
+  vaca: 'VACA',
+  toro: 'TORO',
+  mej: 'MEJ',
+}
+
+/** Slugs con banda publicable. Es la fuente de `generateStaticParams` y del sitemap. */
+export function getSlugsConBanda(): string[] {
+  return Object.entries(SLUG_A_CODIGO)
+    .filter(([, codigo]) => (archivo.categorias[codigo]?.lotes ?? 0) >= MIN_LOTES_BANDA_COMPLETA)
+    .map(([slug]) => slug)
+}
+
+/** La banda de un slug público, o null si ese slug no tiene base publicable. */
+export function getBandaPorSlug(slug: string): VrBandaPublica | null {
+  const codigo = SLUG_A_CODIGO[slug.toLowerCase()]
+  if (!codigo) return null
+  const b = archivo.categorias[codigo]
+  if (!b || b.lotes < MIN_LOTES_BANDA_COMPLETA) return null
+  return { ...b, codigo, categoria: ETIQUETA[codigo] ?? codigo }
+}
+
+/** Ajustes por origen de una categoría, para mostrarlos en su página. */
+export function getOrigenPorSlug(slug: string): VrOrigen[] {
+  const codigo = SLUG_A_CODIGO[slug.toLowerCase()]
+  if (!codigo) return []
+  return archivo.origen[codigo] ?? []
+}
+
+/** Nombre legible de provincia para el código de 3 letras del dato de lote. */
+export const PROVINCIA_NOMBRE: Record<string, string> = {
+  BUE: 'Buenos Aires',
+  CBA: 'Córdoba',
+  SFE: 'Santa Fe',
+  ERI: 'Entre Ríos',
+  LPA: 'La Pampa',
+  SLU: 'San Luis',
+  SGO: 'Santiago del Estero',
+  COR: 'Corrientes',
+  CHA: 'Chaco',
+  FOR: 'Formosa',
+}

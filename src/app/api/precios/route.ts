@@ -3,6 +3,7 @@ import marketPrices from '@/lib/data/market-prices.json'
 import { authenticate, setQuotaHeaders } from '@/lib/api-auth'
 import { createAdminClient } from '@/lib/supabase-server'
 import { logEvent } from '@/lib/ops'
+import { getReferencia, vrCobertura, VR_METODOLOGIA, VR_METODOLOGIA_URL, VR_VENTANA_DIAS } from '@/lib/vr'
 
 // Valid categories
 const VALID_CATEGORIES = ['novillos', 'novillitos', 'vaquillonas', 'vacas', 'toros', 'terneros'] as const
@@ -14,6 +15,20 @@ interface PrecioItem {
   precio_kg: number
   moneda: 'ARS'
   variacion_semanal: string
+  /**
+   * Banda observada (VR v1.0), solo con ?vr=1. Es `null` cuando la categoría no
+   * tiene base suficiente de lotes — nunca se omite el campo ni se rellena con
+   * el precio puntual, para que el consumidor distinga "sin base" de "no pediste".
+   */
+  vr?: {
+    p10: number
+    mediana: number
+    p90: number
+    amplitud_pct: number
+    lotes: number
+    cabezas: number
+    confianza: string
+  } | null
 }
 
 interface SuccessResponse {
@@ -84,6 +99,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const { searchParams } = new URL(request.url)
     const categoriaParam = searchParams.get('categoria')?.toLowerCase() || null
     const detallado = searchParams.get('detallado') === 'true'
+    // ?vr=1 adjunta la banda observada a cada categoría (VR v1.0). Aditivo:
+    // sin el flag la respuesta es byte-por-byte la de siempre.
+    const conVr = searchParams.get('vr') === '1' || searchParams.get('vr') === 'true'
     const historicoParam = searchParams.get('historico')
     const historicoDays = historicoParam
       // Tope 7700 días (~21 años): la serie novillitos 401/420 arranca en 2006.
@@ -328,11 +346,19 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const precios: PrecioItem[] = requestedCategories.map(cat => {
       const data = categories[cat]
       const changeStr = data.change >= 0 ? `+${data.change}%` : `${data.change}%`
-      return {
+      const base: PrecioItem = {
         categoria: cat,
         precio_kg: data.current,
         moneda: 'ARS' as const,
         variacion_semanal: changeStr
+      }
+      if (!conVr) return base
+      const ref = getReferencia(cat)
+      return {
+        ...base,
+        vr: ref.banda
+          ? { ...ref.banda, confianza: ref.confianza }
+          : null,
       }
     })
 
@@ -353,6 +379,30 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         // (haciinfo000013). null hasta que el scrape diario lo traiga.
         indice_arrendamiento_oficial:
           (marketPrices as { arrendamientoOficial?: { index: number; date: string; periodIndex?: number | null; source?: string } }).arrendamientoOficial ?? null,
+        // Metadata del VR, solo con ?vr=1. Va al lado de la banda para que la
+        // respuesta sea auto-descriptiva: quién la calculó, con qué ventana y
+        // contra qué metodología, sin tener que leer la doc.
+        ...(conVr
+          ? {
+              vr: (() => {
+                const cob = vrCobertura()
+                return {
+                  metodologia: VR_METODOLOGIA,
+                  url_metodologia: VR_METODOLOGIA_URL,
+                  ventana_dias: VR_VENTANA_DIAS,
+                  fecha_dato_desde: cob.desde,
+                  fecha_dato_hasta: cob.hasta,
+                  base_lotes: cob.lotes,
+                  base_cabezas: cob.cabezas,
+                  unidad: 'ARS/kg vivo',
+                  limites: [
+                    'Referencia de mercado observada en el MAG (Cañuelas), no es una tasación ni una cotización en firme.',
+                    'Una categoría con vr:null no tiene base suficiente de lotes — usá precio_kg y decilo.',
+                  ],
+                }
+              })(),
+            }
+          : {}),
         fuente: 'INMAG - Mercado Agroganadero',
         fecha_actualizacion: marketPrices.lastUpdate
       },
