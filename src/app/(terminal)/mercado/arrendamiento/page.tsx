@@ -332,6 +332,13 @@ export default async function ArrendamientoPage() {
   ]
 
   // Cierres mensuales OFICIALES del MAG (el número para liquidar), variación mes a mes.
+  const ultimasRuedas = series.slice(-13).map((pt, i, arrSerie) => ({
+    date: pt.date,
+    value: pt.value,
+    volume: pt.volume ?? null,
+    change: i > 0 ? ((pt.value - arrSerie[i - 1].value) / arrSerie[i - 1].value) * 100 : null,
+  })).slice(1).reverse()
+
   const monthlyRows = closes.map((m, i) => {
     const prev = closes[i + 1]
     return {
@@ -426,7 +433,7 @@ export default async function ArrendamientoPage() {
               <span className="text-sm text-zinc-500">Mercado Agroganadero</span>
             </div>
             <h1 className="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-3">
-              Índice Novillo
+              Índice Novillo{' '}
               <span className="block text-accent">Arrendamiento</span>
             </h1>
             <p className="text-zinc-400 max-w-xl text-lg">
@@ -668,6 +675,47 @@ export default async function ArrendamientoPage() {
             queda el próximo-paso para la entrada #1 (57% bounce). */}
         <section className="max-w-6xl mx-auto px-4 pt-4 pb-8">
           <HerramientasCTA />
+        </section>
+
+        {/* Últimas ruedas: la tabla con FECHAS que la búsqueda "…hoy" espera. GSC 20-09-2026: la
+            página no tenía una sola fecha en el cuerpo; los que rankean arriba son archivos por fecha. */}
+        <section className="max-w-6xl mx-auto px-4 pb-12">
+          <h2 className="text-xl font-semibold text-white mb-2">Precio del novillo para arrendamiento: últimas ruedas</h2>
+          <p className="text-zinc-500 text-sm mb-4">
+            INMAG del novillo por rueda en el Mercado Agroganadero, la base del índice. El valor sugerido vigente para
+            arrendamientos es <strong className="text-zinc-300">${fmt(arr.index)}/kg</strong> ({fmtFecha(arr.date)}); el que se
+            liquida es el{' '}
+            <Link href="/mercado/arrendamiento/mensual" className="text-accent hover:underline">índice novillo arrendamiento mensual</Link>.
+          </p>
+          <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-xxs uppercase tracking-wider text-zinc-500">
+                  <th className="px-5 py-3 font-medium">Rueda</th>
+                  <th className="px-5 py-3 font-medium text-right">INMAG novillo</th>
+                  <th className="px-5 py-3 font-medium text-right">vs. rueda anterior</th>
+                  <th className="px-5 py-3 font-medium text-right">Cabezas</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ultimasRuedas.map((r) => (
+                  <tr key={r.date} className="border-t border-zinc-800/50">
+                    <td className="px-5 py-2.5 text-zinc-300"><time dateTime={r.date}>{fmtFecha(r.date)}</time></td>
+                    <td className="px-5 py-2.5 text-right tabular-nums text-white">${fmt(r.value)}/kg</td>
+                    <td className={`px-5 py-2.5 text-right tabular-nums ${r.change == null ? 'text-zinc-600' : r.change >= 0 ? 'text-positive' : 'text-negative'}`}>
+                      {r.change == null ? '—' : `${r.change >= 0 ? '+' : ''}${r.change.toFixed(1)}%`}
+                    </td>
+                    <td className="px-5 py-2.5 text-right tabular-nums text-zinc-500">{r.volume ? fmt(r.volume) : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-zinc-600 text-xxs mt-3">
+            Referencias por plaza:{' '}
+            <Link href="/mercado/arrendamiento/liniers" className="text-accent hover:underline">índice arrendamiento Mercado de Liniers</Link>{' · '}
+            <Link href="/mercado/arrendamiento/canuelas" className="text-accent hover:underline">índice arrendamiento Mercado de Cañuelas</Link>
+          </p>
         </section>
 
         {/* Cierre mensual oficial (el número para facturar) + tabla */}

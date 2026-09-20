@@ -515,7 +515,8 @@ const FOOTER_COLUMNS: FooterColumn[] = [
       { label: "Hacienda en pie", href: "/precios/hacienda-en-pie" },
       { label: "Maíz / Novillo", href: "/mercado/spread" },
       { label: "Categorías", href: "/mercado" },
-      { label: "Arrendamiento", href: "/mercado/arrendamiento" },
+      // Anchor exacto en ~2.700 páginas: la señal interna más barata para la búsqueda madre.
+      { label: "Índice novillo arrendamiento", href: "/mercado/arrendamiento" },
       { label: "Valor de la hectárea", href: "/campos/valuar" },
     ],
   },

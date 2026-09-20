@@ -55,16 +55,10 @@ const FAQ: { question: string; answer: string }[] = [
     answer: 'El Mercado Agroganadero de Cañuelas es el sucesor operativo del histórico Mercado de Liniers: cuando Liniers cerró, la operatoria de hacienda en pie se trasladó a Cañuelas. El INMAG que hoy publica Cañuelas es la referencia vigente para los contratos que históricamente se ataban a "Liniers". Por eso muchos contratos viejos dicen Liniers y hoy se liquidan con el índice de Cañuelas.',
   },
   {
-    question: '¿Cómo se calcula el canon de un arrendamiento en kg de novillo por hectárea?',
-    answer: `El canon se pacta en kilos de novillo por hectárea por mes. El cálculo es: canon MENSUAL = kg/ha/mes × índice novillo × hectáreas. Por ejemplo, un contrato de ${EXAMPLE_KG_HA} kg/ha/mes sobre ${EXAMPLE_HA} ha, al índice de Cañuelas de $${fmt(arrendamientoOficial.index)}/kg, da un canon mensual de $${fmt(exampleCanon)} (el canon anual = canon mensual × 12). El valor en kg/ha/mes depende de la aptitud del campo: agrícola de zona núcleo 8–12 kg/ha/mes, ganadero marginal 3–6 kg/ha/mes.`,
-  },
-  {
-    question: '¿Se usa el índice de un día o un promedio del período?',
-    answer: `Para liquidar arrendamientos se usa el promedio del período, no el valor de una sola jornada, porque el índice diario es volátil. El índice sugerido para arrendamientos que publica el Mercado Agroganadero al ${arrendamientoOficial.date} es de $${fmt(arrendamientoOficial.index)}/kg, calculado sobre el período ${arrendamientoOficial.periodStart} al ${arrendamientoOficial.periodEnd}. Fuente: ${arrendamientoOficial.source}.`,
-  },
-  {
-    question: '¿Cada cuánto se actualiza el índice de arrendamiento de Cañuelas?',
-    answer: `Se actualiza cada día hábil con operaciones en el Mercado Agroganadero de Cañuelas. El último valor cargado corresponde al ${lastUpdate}. Los contratos suelen ajustar con el promedio mensual o del período para evitar la volatilidad diaria.`,
+    // 20-09-2026: las tres preguntas genéricas (cómo se calcula el canon, día o promedio, cada cuánto
+    // se actualiza) duplicaban las de /mercado/arrendamiento y hacían competir a las dos páginas.
+    question: '¿Dónde están el valor del día, la calculadora y el cierre mensual?',
+    answer: 'En la página del índice novillo arrendamiento están el valor del día, la serie y la calculadora de canon; en la del índice novillo arrendamiento mensual, el cierre oficial con el que se liquida cada mes. Esta página explica cómo se forma el índice en el Mercado Agroganadero de Cañuelas.',
   },
 ]
 
@@ -204,6 +198,13 @@ export default function ArrendamientoCanuelasPage() {
           {arrendamientoOficial.date}; se basa en el{' '}
           <Link href="/mercado/inmag" className="text-accent hover:underline">INMAG</Link>{' '}
           (${fmt(inmag.current)}/kg, {inmagChangeStr}).
+        </p>
+
+        <p className="text-zinc-400 leading-relaxed max-w-2xl mt-4">
+          El valor del día con su serie y la calculadora están en{' '}
+          <Link href="/mercado/arrendamiento" className="text-accent hover:underline">índice novillo arrendamiento hoy</Link>; el
+          cierre que se liquida, en{' '}
+          <Link href="/mercado/arrendamiento/mensual" className="text-accent hover:underline">índice novillo arrendamiento mensual</Link>.
         </p>
 
         {/* Número-hero */}
