@@ -7,6 +7,28 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.210.0] — 2026-09-20
+
+### SEO de posición: dejamos de competir contra nosotros mismos en arrendamiento
+
+Search Console, cruce query × página (21-08 → 17-09): en **69 búsquedas de arrendamiento compiten dos o
+tres URLs nuestras**. En las genéricas ("índice novillo arrendamiento" 3.016 impr, "índice de arrendamiento"
+1.708) `/liniers` recibe tantas impresiones como la página madre y las dos quedan en 7-8. Cada subpágina
+rinde mejor justo en su intención propia (Cañuelas 4,7 · Liniers 5,3). Los que rankean arriba tienen menos
+contenido que nosotros (400-700 palabras, sin tablas): no falta contenido, falta foco.
+
+- **Una URL por intención.** `/liniers` y `/canuelas` pierden las preguntas genéricas que duplicaban a la
+  madre (una en Liniers, tres en Cañuelas) y ganan, arriba, enlaces con anchor exacto a
+  "índice novillo arrendamiento hoy" y "índice novillo arrendamiento mensual".
+- **H1 de la madre**: "Índice Novillo<span>Arrendamiento" salía sin espacio en el texto
+  ("NovilloArrendamiento"). Ahora lleva el espacio.
+- **Tabla "últimas ruedas"** en la madre: 12 ruedas con fecha, valor, variación y cabezas. La página que
+  compite por "…hoy" no tenía una sola fecha en el cuerpo.
+- **Footer**: "Arrendamiento" → "Índice novillo arrendamiento" (anchor exacto en ~2.700 páginas; de los
+  30 enlaces internos a la madre, 23 no tenían texto y sólo 1 era exacto).
+- Línea base para medir: `C:/Users/Usuario/proyectos/memola-tools/gsc-radar/auditorias/2026-09-16/CANIBALIZACION-ARRENDAMIENTO-2026-09-20.md`.
+  Éxito = las genéricas se concentran en la madre (hoy 50-60 % de sus impresiones) y su posición baja de 7.
+
 ## [1.209.0] — 2026-09-18
 
 ### La guía paga, ofrecida donde la gente la busca

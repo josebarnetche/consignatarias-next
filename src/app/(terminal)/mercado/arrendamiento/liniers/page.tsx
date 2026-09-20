@@ -32,8 +32,10 @@ const FAQ = [
     answer: `No como mercado físico: el Mercado de Liniers cerró y sus operaciones migraron al Mercado Agroganadero (MAG) de Cañuelas, que hoy es la referencia sucesora. El índice novillo para arrendamiento de referencia Liniers/MAG es de $${fmt(arrendamiento.index)}/kg al ${arrendamiento.date}. Cuando un contrato dice "índice novillo Liniers", en la práctica se liquida con el INMAG del Mercado Agroganadero, que hoy cotiza el kilo vivo de novillo a $${fmt(inmag.current)} (${inmag.change >= 0 ? '+' : ''}${inmag.change}% respecto de la jornada previa).`,
   },
   {
-    question: '¿Cuánto es el arrendamiento por kg hoy?',
-    answer: `El índice novillo para arrendamiento es de $${fmt(arrendamiento.index)}/kg al ${arrendamiento.date}, con la referencia Liniers/Mercado Agroganadero. Para calcular el canon: canon mensual = kilos de novillo pactados por hectárea × $${fmt(arrendamiento.index)} × cantidad de hectáreas. Para liquidar contratos se usa el promedio mensual del índice, no el valor de un día. Actualizado el ${lastUpdate}.`,
+    // 20-09-2026: esta pregunta era genérica ("¿Cuánto es el arrendamiento por kg hoy?") y hacía que
+    // esta página compitiera con /mercado/arrendamiento por las búsquedas sin plaza. Ahora es de Liniers.
+    question: '¿Con qué valor se liquida un contrato que dice "índice Liniers"?',
+    answer: `Con el índice sugerido para arrendamientos del Mercado Agroganadero, que es el sucesor operativo de Liniers: $${fmt(arrendamiento.index)}/kg al ${arrendamiento.date}, y para la factura el cierre mensual. El valor del día con su serie está en la página del índice novillo arrendamiento; el cierre que se liquida, en la del índice mensual.`,
   },
   {
     question: '¿Por qué el índice de Liniers hoy es el del Mercado Agroganadero?',
@@ -84,7 +86,7 @@ export default function ArrendamientoLiniersPage() {
         description={`Serie del índice del novillo usado como referencia para contratos de arrendamiento rural. Sucesor operativo del índice del Mercado de Liniers tras su cierre. Valor vigente: $${fmt(arrendamiento.index)}/kg al ${arrendamiento.date}.`}
         url={URL}
         keywords={[
-          'índice novillo arrendamiento',
+          'índice arrendamiento liniers',
           'mercado de liniers',
           'INMAG',
           'arrendamiento rural',
@@ -143,6 +145,14 @@ export default function ArrendamientoLiniersPage() {
           Agroganadero</Link> (Cañuelas), y este índice —el <Link href="/mercado/inmag" className="text-accent hover:underline">INMAG</Link>— es
           su <strong className="text-white">sucesor operativo</strong>: cuando un contrato cita el
           &ldquo;índice novillo Liniers&rdquo;, en la práctica se liquida con este valor.
+        </p>
+
+        <p className="text-zinc-400 leading-relaxed mb-6">
+          El valor del día, la serie y la calculadora están en{' '}
+          <Link href="/mercado/arrendamiento" className="text-accent hover:underline">índice novillo arrendamiento hoy</Link>; el
+          cierre con el que se factura, en{' '}
+          <Link href="/mercado/arrendamiento/mensual" className="text-accent hover:underline">índice novillo arrendamiento mensual</Link>.
+          Esta página responde una sola cosa: qué pasó con la referencia de Liniers.
         </p>
 
         {/* Número-hero */}
