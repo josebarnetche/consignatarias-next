@@ -132,3 +132,52 @@ jobs:
         run: |
           ST="ok"; [ "${{ job.status }}" != "success" ] && ST="error"
           curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" -H "Content-Type: application/json" -d "{\"workflow_name\":\"mag-lots-pipeline\",\"phase\":\"finish\",\"run_id\":${{ steps.cronstart.outputs.run_id }},\"status\":\"$ST\"}" || true
+
+  # Recalcula las bandas del VR (src/lib/data/vr-bandas.json) con los lotes recién
+  # ingestados. Va en un job aparte y con continue-on-error a propósito: el pipeline
+  # de ingesta es el activo crítico y NUNCA puede fallar por el post-proceso. Si esto
+  # se cae, el JSON queda con las bandas del día anterior — que es exactamente el
+  # comportamiento correcto (`vr.ts` lo lee síncrono y la fecha del dato va en la
+  # respuesta, así que una banda vieja se declara, no se disfraza de fresca).
+  compute-vr-bandas:
+    needs: enqueue-and-process
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install deps
+        run: npm i @supabase/supabase-js --no-save
+
+      - name: Compute bands
+        run: node scripts/compute-vr-bandas.mjs
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Commit and push
+        run: |
+          if git diff --quiet -- src/lib/data/vr-bandas.json; then
+            echo "Sin cambios en las bandas — nada que commitear."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/lib/data/vr-bandas.json
+          git commit -m "data: recompute VR bands — $(date -u +%Y-%m-%d)"
+          # Misma carrera non-fast-forward que en scrape-auctions: rebase y reintento.
+          for attempt in 1 2 3 4 5; do
+            if git push; then
+              echo "✓ push OK (intento $attempt)"; exit 0
+            fi
+            git pull --rebase --autostash origin main || true
+            sleep $((attempt * 3))
+          done
+          echo "::error::git push falló tras 5 intentos."
+          exit 1

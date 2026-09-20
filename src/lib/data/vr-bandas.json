@@ -1,0 +1,55 @@
+{
+  "generado": "2026-09-20T00:00:00.000Z",
+  "ventana_dias": 30,
+  "ventana_origen_dias": 90,
+  "fecha_dato_desde": "2026-08-21",
+  "fecha_dato_hasta": "2026-09-18",
+  "categorias": {
+    "VACA": { "p10": 2500, "mediana": 2900, "p90": 3600, "amplitud_pct": 44, "lotes": 1956, "cabezas": 10422 },
+    "VAQUILLONA": { "p10": 3500, "mediana": 4500, "p90": 5000, "amplitud_pct": 42.9, "lotes": 746, "cabezas": 8162 },
+    "NOVILLITO": { "p10": 3750, "mediana": 4700, "p90": 5100, "amplitud_pct": 36, "lotes": 538, "cabezas": 5745 },
+    "NOVILLO": { "p10": 3600, "mediana": 4300, "p90": 4600, "amplitud_pct": 27.8, "lotes": 406, "cabezas": 3960 },
+    "TORO": { "p10": 2700, "mediana": 3200, "p90": 3700, "amplitud_pct": 37, "lotes": 596, "cabezas": 1313 },
+    "MEJ": { "p10": 3070, "mediana": 4000, "p90": 4700, "amplitud_pct": 53.1, "lotes": 128, "cabezas": 732 }
+  },
+  "origen": {
+    "VACA": [
+      { "provincia": "BUE", "factor": 0.9892, "lotes": 5039 },
+      { "provincia": "SFE", "factor": 1.0072, "lotes": 292 },
+      { "provincia": "LPA", "factor": 1.0791, "lotes": 279 },
+      { "provincia": "CBA", "factor": 1.0791, "lotes": 148 },
+      { "provincia": "ERI", "factor": 1.0252, "lotes": 71 },
+      { "provincia": "SLU", "factor": 0.9353, "lotes": 66 }
+    ],
+    "VAQUILLONA": [
+      { "provincia": "BUE", "factor": 0.9778, "lotes": 1588 },
+      { "provincia": "SFE", "factor": 1.0444, "lotes": 302 },
+      { "provincia": "LPA", "factor": 0.9611, "lotes": 130 },
+      { "provincia": "ERI", "factor": 1.0333, "lotes": 95 },
+      { "provincia": "CBA", "factor": 1.0444, "lotes": 69 }
+    ],
+    "NOVILLITO": [
+      { "provincia": "BUE", "factor": 1, "lotes": 1001 },
+      { "provincia": "SFE", "factor": 1.0287, "lotes": 268 },
+      { "provincia": "ERI", "factor": 1.0213, "lotes": 97 },
+      { "provincia": "LPA", "factor": 0.9681, "lotes": 96 },
+      { "provincia": "CBA", "factor": 1.0213, "lotes": 54 }
+    ],
+    "NOVILLO": [
+      { "provincia": "BUE", "factor": 1, "lotes": 1020 },
+      { "provincia": "LPA", "factor": 0.9545, "lotes": 82 },
+      { "provincia": "SFE", "factor": 0.9795, "lotes": 57 },
+      { "provincia": "CBA", "factor": 1.0227, "lotes": 55 },
+      { "provincia": "ERI", "factor": 0.9943, "lotes": 44 }
+    ],
+    "TORO": [
+      { "provincia": "BUE", "factor": 1, "lotes": 1325 },
+      { "provincia": "LPA", "factor": 1.0667, "lotes": 99 },
+      { "provincia": "SFE", "factor": 1.0667, "lotes": 62 }
+    ],
+    "MEJ": [
+      { "provincia": "BUE", "factor": 1, "lotes": 227 },
+      { "provincia": "SFE", "factor": 1.075, "lotes": 37 }
+    ]
+  }
+}

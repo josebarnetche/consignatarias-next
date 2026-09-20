@@ -1,12 +1,19 @@
 /**
  * Valuaciones para agentes: tropa de hacienda y arrendamiento de campo.
- * REGLA (datos reales): todo sale de market-prices.json (MAG + dolarapi del
- * scrape diario). No hay precios provinciales de hacienda ni canon regional
- * "oficial" por provincia — cuando falta el dato, se responde con la
- * referencia nacional o con escenarios EXPLÍCITOS, nunca con un número inventado.
+ *
+ * REGLA (datos reales): todo sale de market-prices.json (MAG + dolarapi del scrape
+ * diario) y, para la BANDA de la tropa, de vr-bandas.json (dato de lote observado —
+ * ver `vr.ts`). No hay precios provinciales de hacienda ni canon regional "oficial"
+ * por provincia — cuando falta el dato, se responde con la referencia nacional o con
+ * escenarios EXPLÍCITOS, nunca con un número inventado.
+ *
+ * `valuarTropa` devuelve tres puntas (p10/mediana/p90) cuando hay base de lotes, y
+ * colapsa en el precio MAG cuando no la hay. `total_ars` sigue siendo el central de
+ * siempre, para no romper a los callers viejos.
  */
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { getReferencia, valuarConBanda } from '@/lib/vr'
 
 const mp = marketPrices as unknown as {
   inmag: { current: number }
@@ -49,24 +56,32 @@ export function valuarTropa(opts: {
   const kg = opts.kgPromedio && opts.kgPromedio > 50 && opts.kgPromedio < 1200 ? opts.kgPromedio : KG_DEFAULT[categoria] ?? 400
   const kgAsumido = !(opts.kgPromedio && opts.kgPromedio > 50 && opts.kgPromedio < 1200)
   const precioKg = cat.current
-  const totalArs = precioKg * kg * opts.cabezas
+
+  // VR: la banda observada en el dato de lote. Cuando no hay base, `banda` viene
+  // null y las tres puntas colapsan en el precio MAG — nunca se inventa un rango.
+  const ref = getReferencia(categoria, opts.provincia)
+  const v = valuarConBanda(ref, kg, opts.cabezas, precioKg)
+
+  const totalArs = v.central
   const totalUsdBlue = totalArs / mp.usdBlue.current
   const totalUsdOficial = totalArs / mp.usdOficial.current
-  const porCabezaArs = precioKg * kg
+  const porCabezaArs = Math.round(totalArs / opts.cabezas)
 
-  const notaProvincia = opts.provincia
-    ? `\nNota: no existe una serie oficial de precios por provincia — esta valuación usa la referencia nacional del MAG (Cañuelas), que es el precio de referencia del mercado también para ${opts.provincia}.`
-    : ''
+  const bloqueBanda = v.usó_banda
+    ? `Banda observada: ${fmtArs(ref.banda!.p10)} – ${fmtArs(ref.banda!.p90)}/kg (mediana ${fmtArs(ref.banda!.mediana)}), ` +
+      `sobre ${ref.banda!.lotes.toLocaleString('es-AR')} lotes y ${ref.banda!.cabezas.toLocaleString('es-AR')} cabezas de los últimos ${ref.ventana_dias} días.\n` +
+      `Conservador: ${fmtArs(v.conservador)} · CENTRAL: ${fmtArs(v.central)} · Optimista: ${fmtArs(v.optimista)}\n`
+    : `Precio de referencia: ${fmtArs(precioKg)}/kg vivo (MAG, categoría ${categoria}, obs. semanal; INMAG del ${INMAG_DATE})\n` +
+      `TOTAL TROPA: ${fmtArs(totalArs)}\n`
 
   const texto =
     `Valuación de tropa — ${opts.cabezas} ${categoria} × ${kg} kg${kgAsumido ? ' (peso típico asumido; pasá kg_promedio para afinar)' : ''}\n\n` +
-    `Precio de referencia: ${fmtArs(precioKg)}/kg vivo (MAG, categoría ${categoria}, obs. semanal; INMAG del ${INMAG_DATE})\n` +
+    bloqueBanda +
     `Por cabeza: ${fmtArs(porCabezaArs)}\n` +
-    `TOTAL TROPA: ${fmtArs(totalArs)}\n` +
-    `En dólares: ${fmtUsd(totalUsdBlue)} (blue ${fmtArs(mp.usdBlue.current)}) · ${fmtUsd(totalUsdOficial)} (oficial ${fmtArs(mp.usdOficial.current)})\n` +
-    `${notaProvincia}\n` +
-    `Es una valuación de referencia, no una cotización: el precio final lo define el remate. ` +
-    `Para venderla: https://www.consignatarias.com.ar/consignatarias`
+    `En dólares: ${fmtUsd(totalUsdBlue)} (blue ${fmtArs(mp.usdBlue.current)}) · ${fmtUsd(totalUsdOficial)} (oficial ${fmtArs(mp.usdOficial.current)})\n\n` +
+    ref.limites.map((l) => `· ${l}`).join('\n') +
+    `\nMetodología: ${ref.metodologia} — ${ref.url_metodologia}\n` +
+    `El precio final lo define el remate. Para venderla: https://www.consignatarias.com.ar/consignatarias`
 
   return {
     texto,
@@ -76,6 +91,7 @@ export function valuarTropa(opts: {
       kg_promedio: kg,
       kg_asumido: kgAsumido,
       precio_kg_ars: precioKg,
+      // Retrocompat: `total_ars` sigue siendo el número central de siempre.
       total_ars: Math.round(totalArs),
       total_usd_blue: Math.round(totalUsdBlue),
       total_usd_oficial: Math.round(totalUsdOficial),
@@ -84,6 +100,14 @@ export function valuarTropa(opts: {
       fecha_indice: INMAG_DATE,
       fuente: 'Mercado Agroganadero (MAG) + dolarapi.com',
       provincia: opts.provincia ?? null,
+      // VR v1.0
+      referencia: ref,
+      valuacion: {
+        conservador_ars: v.conservador,
+        central_ars: v.central,
+        optimista_ars: v.optimista,
+        uso_banda: v.usó_banda,
+      },
     },
   }
 }
