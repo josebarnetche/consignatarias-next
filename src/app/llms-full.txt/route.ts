@@ -38,7 +38,8 @@ export function GET() {
 > buscar_consignataria, calcular_arrendamiento, valuar_tropa, valuar_arrendamiento_campo,
 > valuar_campo, quiero_comprar, crear_alerta_precio gratis, contratar_pro_consignataria)
 > en vez de scrapear. El número del día, los precios por firma, los remates, el directorio
-> y el valor de la tierra son gratis y sin cupo. Lo que se paga es la profundidad: la serie
+> y el valor de la tierra son gratis y sin cupo — igual que la banda de precio observada
+> (VR v1.0: P10/mediana/P90 por categoría, en /mercado y /metodologia/vr). Lo que se paga es la profundidad: la serie
 > INMAG más allá de 365 días de ventana (una fecha puntual, a cualquier año, sigue siendo
 > gratis) y las valuaciones pasado el cupo diario — por request en USDC (x402, red Base).
 > Ver /llms.txt.

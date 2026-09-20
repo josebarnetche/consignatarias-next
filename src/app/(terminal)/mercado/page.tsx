@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import MercadoClient from './MercadoClient'
+import VrBandas from '@/components/VrBandas'
 import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { LongTermChart } from '@/components/market/LongTermChart'
 import LoginGate from '@/components/LoginGate'
@@ -118,6 +119,9 @@ export default function MercadoPage() {
         </p>
       </section>
       <MercadoClient />
+
+      {/* VR — la banda observada. Va antes de la referencia internacional: es dato propio. */}
+      <VrBandas />
 
       {/* Referencia internacional — futuros de hacienda de Chicago (CME) en USD/kg */}
       <div className="px-4 pt-3 pb-1 max-w-6xl mx-auto">

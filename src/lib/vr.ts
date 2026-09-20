@@ -40,6 +40,12 @@ import bandas from '@/lib/data/vr-bandas.json'
 export const VR_METODOLOGIA = 'VR v1.0'
 export const VR_METODOLOGIA_URL = 'https://www.consignatarias.com.ar/metodologia/vr'
 
+interface VrArchivoShape { ventana_dias: number; ventana_origen_dias: number }
+
+/** Ventanas del cálculo. Expuestas porque la página de metodología las declara. */
+export const VR_VENTANA_DIAS = (bandas as unknown as VrArchivoShape).ventana_dias
+export const VR_VENTANA_ORIGEN_DIAS = (bandas as unknown as VrArchivoShape).ventana_origen_dias
+
 /** Mínimos de la regla de degradación. */
 export const MIN_LOTES_BANDA = 10
 export const MIN_LOTES_BANDA_COMPLETA = 30
@@ -232,5 +238,46 @@ export function valuarConBanda(
     central: Math.round(ref.banda.mediana * unidades),
     optimista: Math.round(ref.banda.p90 * unidades),
     usó_banda: true,
+  }
+}
+
+/* ── Superficie pública: lo que lee la página de metodología y /mercado ────── */
+
+/** Etiquetas legibles para las categorías del dato de lote. */
+const ETIQUETA: Record<string, string> = {
+  NOVILLO: 'Novillo',
+  NOVILLITO: 'Novillito',
+  VAQUILLONA: 'Vaquillona',
+  VACA: 'Vaca',
+  TORO: 'Toro',
+  MEJ: 'MEJ (mejorado)',
+}
+
+export interface VrBandaPublica extends VrBanda {
+  /** Código del dato de lote (NOVILLO, VACA…). */
+  codigo: string
+  /** Etiqueta legible. */
+  categoria: string
+}
+
+/**
+ * Las bandas publicables, ordenadas por volumen de cabezas. Solo las que pasan el
+ * mínimo de la regla de degradación — una banda que no se puede sostener no se muestra.
+ */
+export function getBandasPublicas(): VrBandaPublica[] {
+  return Object.entries(archivo.categorias)
+    .filter(([, b]) => b.lotes >= MIN_LOTES_BANDA_COMPLETA)
+    .map(([codigo, b]) => ({ ...b, codigo, categoria: ETIQUETA[codigo] ?? codigo }))
+    .sort((a, b) => b.cabezas - a.cabezas)
+}
+
+/** Cobertura de la ventana vigente: fechas y totales que sostienen las bandas. */
+export function vrCobertura(): { desde: string; hasta: string; lotes: number; cabezas: number } {
+  const todas = Object.values(archivo.categorias)
+  return {
+    desde: archivo.fecha_dato_desde,
+    hasta: archivo.fecha_dato_hasta,
+    lotes: todas.reduce((s, b) => s + b.lotes, 0),
+    cabezas: todas.reduce((s, b) => s + b.cabezas, 0),
   }
 }

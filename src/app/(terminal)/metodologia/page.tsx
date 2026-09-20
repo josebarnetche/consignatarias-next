@@ -72,6 +72,20 @@ export default function MetodologiaPage() {
           <span className="text-zinc-200">trazabilidad</span>.
         </p>
 
+        {/* El VR tiene metodología propia: es dato de lote observado, no la serie del MAG. */}
+        <div className="border border-zinc-800 rounded p-4 mb-8">
+          <p className="text-zinc-300 mb-1">
+            <Link href="/metodologia/vr" className="text-sky-400 hover:underline">
+              Metodología del Valor de Referencia (VR) →
+            </Link>
+          </p>
+          <p className="text-zinc-500 text-xs">
+            El precio de referencia es un punto; el mercado es un rango. El VR publica la banda de
+            precio realmente observada por categoría (P10 / mediana / P90), con la cantidad de
+            operaciones que la sostiene y la regla que impide inventar precisión cuando la base no alcanza.
+          </p>
+        </div>
+
         {/* Quick Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
           <div className="border border-zinc-800 rounded p-3 text-center">
