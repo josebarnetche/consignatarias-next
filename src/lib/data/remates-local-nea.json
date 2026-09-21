@@ -126,17 +126,17 @@
     "liveLink": null
   },
   {
-    "title": "Faena, Invernada y Cria - 11.00HS.",
+    "title": "diferido al Miércoles 23/ 09",
     "consignatariaName": "Pedro Y Raul Alopnso",
     "consignatariaSlug": "pedro-y-raul-alopnso",
     "date": "2026-09-22",
-    "time": "11:00",
+    "time": null,
     "location": "Tandil, Buenos Aires",
     "province": "BUENOS AIRES",
-    "type": "invernada",
+    "type": "general",
     "mainCategory": "mixto",
     "estimatedHeads": 600,
-    "description": "Tandil Faena, Invernada y Cria - 11.00HS.",
+    "description": "Tandil diferido al Miércoles 23/ 09",
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
@@ -245,6 +245,24 @@
     "mainCategory": "mixto",
     "estimatedHeads": null,
     "description": "Olavarría Faena, Invernada y Cria",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "liveLink": null
+  },
+  {
+    "title": ". Faena, Invernada y Cria - 10.00hs.",
+    "consignatariaName": "Pedro Y Raul Alopnso",
+    "consignatariaSlug": "pedro-y-raul-alopnso",
+    "date": "2026-09-23",
+    "time": "10:00",
+    "location": "Tandil, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": 700,
+    "description": "Tandil. Faena, Invernada y Cria - 10.00hs.",
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
@@ -1134,6 +1152,24 @@
     "liveLink": null
   },
   {
+    "title": "Faena, Invernada y Cria",
+    "consignatariaName": "Mondino",
+    "consignatariaSlug": "mondino",
+    "date": "2026-10-30",
+    "time": null,
+    "location": "San Antonio de Areco, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "San Antonio de Areco Faena, Invernada y Cria",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "liveLink": null
+  },
+  {
     "title": "58º Remate Virtual",
     "consignatariaName": "A. Mendizábal",
     "consignatariaSlug": "a-mendizabal",
@@ -1227,7 +1263,7 @@
     "title": "Saenz Valiente Bullrich | Especial Angus de Primavera",
     "consignatariaName": "Saenz Valiente Bullrich 2020",
     "consignatariaSlug": "saenz-valiente-bullrich-2020",
-    "date": "2026-09-20",
+    "date": "2026-09-21",
     "time": "10:00",
     "location": "",
     "province": null,
@@ -1257,7 +1293,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6650-sociedad-rural-de-jesus-maria-consignaciones-cordoba",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Gananor Pujol | Especial Angus de Primavera",
@@ -1275,7 +1311,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6586-gananor-pujol-especial-angus-de-primavera",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Alfredo S. Mondino | Especial Angus de Primavera | FaenarTV",
@@ -1419,7 +1455,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6581-saenz-valiente-bullrich-especial-angus-de-primavera",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
@@ -1437,7 +1473,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6650-sociedad-rural-de-jesus-maria-consignaciones-cordoba",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Gananor Pujol | Especial Angus de Primavera",
@@ -1455,7 +1491,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6586-gananor-pujol-especial-angus-de-primavera",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Alfredo S. Mondino | Especial Angus de Primavera | FaenarTV",
