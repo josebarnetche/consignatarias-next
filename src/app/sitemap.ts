@@ -409,6 +409,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     },
+    {
+      // El hub del producto: todas las bandas + Mi Ganado + metodología.
+      url: `${baseUrl}/vr`,
+      lastModified: buildDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
     // Una URL citable por categoría (/vr/vaca, /vr/novillo…). Solo las que
     // tienen banda publicable — getSlugsConBanda() aplica la regla de
     // degradación, así que el sitemap nunca emite una página sin dato.

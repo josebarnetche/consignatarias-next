@@ -7,6 +7,52 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.211.0] — 2026-09-21
+
+### Cuánto vale tu hacienda hoy, medido en lo que realmente se vendió
+
+El sitio deja de presentarse como directorio y dice qué resuelve: el **Valor de Referencia** de la
+hacienda (la banda de precio observada en los lotes del Mercado Agroganadero) y **Mi Ganado**, el rodeo
+del productor valuado contra esa banda. Decisión, evidencia y comparación con deCampoPagos en
+[`docs/strategy/DECISION-PRODUCTO-2026-09-21.md`](docs/strategy/DECISION-PRODUCTO-2026-09-21.md).
+Incorpora entero el PR #38 (PRD Valor de Referencia, sprints 1-4: `lib/vr.ts`, `/metodologia/vr`,
+`/vr/[categoria]`, `?vr=1` y `?vr=historico` en `/api/precios`, serie `vr_bandas_history` — tabla ya
+presente en producción con 234 filas).
+
+**El hallazgo que ordena todo.** `market-prices.json → categories`, que alimentaba la cinta de la home,
+la calculadora de la portada y Mi Ganado, alternaba entre dos fuentes: los días de rueda, el promedio
+observado del MAG; los demás, un **ratio fijo sobre el INMAG** (novillito ×0,95, vaca ×0,72…). El
+novillito pasó de 4.331 $/kg (19-sep, observado) a 3.780 (20-sep, ratio). El ternero es SIEMPRE INMAG ×
+1,10: el MAG no opera terneros. La calculadora de la portada arrancaba en terneros.
+
+- **Banda por rango de peso.** `compute-vr-bandas.mjs` agrega `por_peso` (rangos de 50 kg, publicados con
+  30+ lotes). Medido: vaca 250-299 kg mediana 2.400 $/kg contra 3.200 a 500-549 kg; el peso mueve el
+  precio más que el origen. `getReferenciaPorPeso()` usa el rango si tiene base, si no la categoría, y
+  dice cuál. `VR_SIN_SERIE=1` corre el script sin escribir en producción.
+- **Mi Ganado valuado contra el VR** (`lib/rodeo-vr.ts`): tres puntas por lote y total, "qué lo
+  sostiene" lote por lote, terneros **sin valuar y declarado**. El historial se ancla al VR del rodeo y
+  se mueve con el INMAG; una categoría sin referencia ya no vale "el índice".
+- **Fuera la serie de snapshots.** Se quitó la rama de respaldo que redibujaba `realSeries` (el falso
+  "−93,1 %"), y `snapshotValue()` dejó de escribir `ganado_value_snapshots` (tabla y filas intactas). Se
+  quitó también el "Δ desde tu última visita", que era otra foto.
+- **El aviso de los lunes existe.** El opt-in se guardaba desde mayo y ningún cron lo leía (3 anotados).
+  `/api/cron/mi-ganado-semanal` + `mi-ganado-semanal.yml` (lunes 11:00 ART), `?dry=1` sin envío. Un
+  rodeo sin ningún lote con precio observado no recibe mail.
+- **Home:** H1 "Cuánto vale tu hacienda hoy, medido en lo que realmente se vendió.", bandas con su n en
+  el hero, CTA "Valuar mi rodeo gratis", cinta con medianas del VR, calculadora con peso y sin terneros,
+  bloque de consignatarias y guía paga movidos después del directorio, bloque de IA reescrito como la
+  oferta para empresas (sin el ejemplo inventado "$4.154/kg"). Título SEO sin cambios.
+- **Navegación:** grupo **VALOR** primero (Valor de Referencia, Mi Ganado, Metodología); en mobile,
+  VALOR REF. y MI GANADO al frente. **`/vr`** nuevo: el hub del producto.
+- **`/planes`:** "El Valor de Referencia es gratis para el productor. Se paga por usarlo dentro de un
+  negocio." Las compras sueltas (informes, PRO abierto, guía) en una línea, sin contradecir a `/pro`.
+- **Scraper:** los días sin rueda conserva el último precio observado de cada categoría, con
+  `observedDate`, en vez de pisarlo con el ratio.
+- **Correcciones al PR #38:** `getReferencia('mej')` daba sin base; "Mínimo (P10)"/"Máximo (P90)" →
+  P10/P90; "MEJ (mejorado)" → Macho Entero Joven.
+- Tests: `rodeo-vr.test.ts` (15, con bandas fijas por `vi.mock`), `mi-ganado-semanal.test.ts` (6),
+  `ganado-historial.test.ts` actualizado. 442 tests en verde.
+
 ## [1.210.0] — 2026-09-20
 
 ### SEO de posición: dejamos de competir contra nosotros mismos en arrendamiento

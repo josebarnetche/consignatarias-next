@@ -231,6 +231,14 @@ export default function EnterprisePage() {
             planes según la vertical: apps agtech en desarrollo, productos en
             producción y operadores de alto volumen.
           </p>
+          <p className="text-zinc-300 text-sm max-w-3xl leading-relaxed mt-3">
+            Si valuás hacienda —como garantía, para asegurarla o dentro de tu app—, lo que vas a usar es el{' '}
+            <Link href="/vr" className="text-accent hover:text-accent-bright">Valor de Referencia</Link>: la banda
+            de precio observada por categoría (P10, mediana, P90) con los lotes que la sostienen y su{' '}
+            <Link href="/metodologia/vr" className="text-accent hover:text-accent-bright">metodología versionada</Link>,
+            por <code className="text-zinc-200">/api/precios?vr=1</code> y la serie histórica con{' '}
+            <code className="text-zinc-200">?vr=historico</code>.
+          </p>
         </div>
       </section>
 

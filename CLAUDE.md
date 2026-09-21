@@ -3,11 +3,23 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.210.0 (2026-09-20). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+**Current version:** v1.211.0 (2026-09-21). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
 
 ---
 
 ## What this product is
+
+> **Desde v1.211.0 (2026-09-21), la promesa en una frase:** *cuánto vale tu hacienda hoy, medido en lo
+> que realmente se vendió.* El núcleo es el **Valor de Referencia** (`src/lib/vr.ts`, hub `/vr`: banda
+> P10/mediana/P90 por categoría **y por rango de peso**, de los lotes del MAG) y **Mi Ganado** (el rodeo
+> del productor valuado contra esa banda, `src/lib/rodeo-vr.ts`). Decisión y evidencia:
+> [`docs/strategy/DECISION-PRODUCTO-2026-09-21.md`](docs/strategy/DECISION-PRODUCTO-2026-09-21.md).
+> ⚠️ `market-prices.json → categories` NO es un precio observado confiable para valuar: los días sin rueda
+> era un ratio fijo sobre el INMAG (el scraper ahora conserva el último observado) y `terneros` es SIEMPRE
+> INMAG × 1,10 (el MAG no opera terneros). Para valuar hacienda, usar `getReferenciaPorPeso()`.
+> ⚠️ `ganado_value_snapshots` ya no se lee ni se escribe: el historial del rodeo se RECALCULA.
+> Nota: "PRO Usuario retired" de abajo quedó parcialmente viejo — existe **PRO abierto** (ARS 9.900/mes,
+> `lib/plan-pro.ts`, v1.199.0) con fecha de corte en `lib/productos-datos.ts`.
 
 **The market-intelligence infrastructure of the Argentine cattle market** — aiming to be *the
 reference price* (`el precio de referencia del ganado argentino`). The spine is the data + index

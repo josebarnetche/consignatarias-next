@@ -7,6 +7,7 @@ import {
   getSlugsConBanda,
   getBandaPorSlug,
   getOrigenPorSlug,
+  getRangosPesoPorSlug,
   vrCobertura,
   PROVINCIA_NOMBRE,
   VR_METODOLOGIA,
@@ -59,8 +60,8 @@ export async function generateMetadata({
   }
   const title = `A cuánto se vendió ${b.categoria.toLowerCase()}: ${fmt(b.p10)} a ${fmt(b.p90)} por kilo`
   const description =
-    `Banda de precio observada para ${b.categoria.toLowerCase()} en el Mercado Agroganadero: mínimo ${fmt(b.p10)}, ` +
-    `mediana ${fmt(b.mediana)} y máximo ${fmt(b.p90)} por kilo vivo, sobre ${b.lotes.toLocaleString('es-AR')} operaciones ` +
+    `Banda de precio observada para ${b.categoria.toLowerCase()} en el Mercado Agroganadero: P10 ${fmt(b.p10)}, ` +
+    `mediana ${fmt(b.mediana)} y P90 ${fmt(b.p90)} por kilo vivo, sobre ${b.lotes.toLocaleString('es-AR')} operaciones ` +
     `de los últimos ${VR_VENTANA_DIAS} días. Metodología ${VR_METODOLOGIA}.`
   return {
     title,
@@ -116,6 +117,7 @@ export default async function VrCategoriaPage({
   }
 
   const origen = getOrigenPorSlug(categoria)
+  const rangosPeso = getRangosPesoPorSlug(categoria)
   const url = `https://www.consignatarias.com.ar/vr/${categoria}`
   const nombre = b.categoria.toLowerCase()
 
@@ -125,15 +127,16 @@ export default async function VrCategoriaPage({
       answer:
         `En el Mercado Agroganadero, ${nombre} se vendió entre ${fmt(b.p10)} y ${fmt(b.p90)} por kilo vivo en los últimos ` +
         `${VR_VENTANA_DIAS} días, con mediana de ${fmt(b.mediana)}. La banda surge de ${b.lotes.toLocaleString('es-AR')} operaciones ` +
-        `de lote que suman ${b.cabezas.toLocaleString('es-AR')} cabezas, al ${cob.hasta}. La amplitud entre el mínimo y el máximo ` +
+        `de lote que suman ${b.cabezas.toLocaleString('es-AR')} cabezas, al ${cob.hasta}. La amplitud entre el P10 y el P90 ` +
         `es de ${b.amplitud_pct}%, así que un precio único sería engañoso.`,
     },
     {
       question: `¿Por qué hay tanta diferencia de precio en ${nombre}?`,
       answer:
-        `Porque el precio depende de la calidad y composición del lote, no solo de la categoría. En ${nombre} la diferencia entre ` +
-        `el percentil 10 y el 90 es de ${b.amplitud_pct}%. El origen del remitente influye mucho menos: los ajustes por provincia ` +
-        `medidos sobre nuestra base se mueven en pocos puntos porcentuales.`,
+        `Porque el precio depende del peso, la calidad y la composición del lote, no solo de la categoría. En ${nombre} la diferencia ` +
+        `entre el percentil 10 y el 90 es de ${b.amplitud_pct}%. El peso explica una parte grande: por eso publicamos también la ` +
+        `banda por rango de peso. El origen del remitente influye mucho menos: los ajustes por provincia medidos sobre nuestra base ` +
+        `se mueven en pocos puntos porcentuales.`,
     },
     {
       question: `¿De dónde sale este precio de ${nombre}?`,
@@ -170,9 +173,9 @@ export default async function VrCategoriaPage({
 
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         <nav className="text-xs text-zinc-500 mb-4">
-          <Link href="/mercado" className="hover:text-sky-400">Mercado</Link>
+          <Link href="/vr" className="hover:text-sky-400">Valor de Referencia</Link>
           <span className="mx-2">/</span>
-          <span className="text-zinc-400">Valor de Referencia — {b.categoria}</span>
+          <span className="text-zinc-400">{b.categoria}</span>
         </nav>
 
         <h1 className="text-zinc-100 text-2xl font-medium mb-1">
@@ -185,7 +188,7 @@ export default async function VrCategoriaPage({
         {/* La banda, que es el número */}
         <div className="grid grid-cols-3 gap-3 mb-4">
           <div className="border border-zinc-800 rounded p-4 text-center">
-            <div className="text-zinc-500 text-xs mb-1">Mínimo (P10)</div>
+            <div className="text-zinc-500 text-xs mb-1">P10 · el 10 % más barato</div>
             <div className="text-zinc-300 text-xl tabular-nums">{fmt(b.p10)}</div>
           </div>
           <div className="border border-sky-900 rounded p-4 text-center">
@@ -193,12 +196,12 @@ export default async function VrCategoriaPage({
             <div className="text-zinc-100 text-xl tabular-nums font-medium">{fmt(b.mediana)}</div>
           </div>
           <div className="border border-zinc-800 rounded p-4 text-center">
-            <div className="text-zinc-500 text-xs mb-1">Máximo (P90)</div>
+            <div className="text-zinc-500 text-xs mb-1">P90 · el 10 % más caro</div>
             <div className="text-zinc-300 text-xl tabular-nums">{fmt(b.p90)}</div>
           </div>
         </div>
         <p className="text-zinc-400 mb-8">
-          Pesos por kilo vivo. La amplitud entre el mínimo y el máximo es de{' '}
+          Pesos por kilo vivo. La amplitud entre P10 y P90 es de{' '}
           <span className="text-amber-400">{b.amplitud_pct}%</span>, sobre{' '}
           <span className="text-zinc-200">{b.lotes.toLocaleString('es-AR')} operaciones</span> que suman{' '}
           <span className="text-zinc-200">{b.cabezas.toLocaleString('es-AR')} cabezas</span>.
@@ -212,6 +215,46 @@ export default async function VrCategoriaPage({
           única forma honesta de responder &ldquo;¿cuánto vale?&rdquo;. Si vas a vender, el número que te
           importa es dónde cae <em>tu</em> lote dentro de este rango.
         </p>
+
+        {rangosPeso.length > 0 && (
+          <>
+            <h2 className="text-zinc-100 text-lg font-medium mb-2">Según el peso</h2>
+            <p className="text-zinc-400 mb-3">
+              Dentro de la misma categoría, el peso mueve el precio por kilo. Esta es la banda de {nombre} por rango
+              de peso promedio del lote, sobre la misma ventana de {VR_VENTANA_DIAS} días. Se publica un rango sólo
+              si tiene al menos 30 lotes.
+            </p>
+            <div className="overflow-x-auto mb-3">
+              <table className="w-full text-xs border-collapse">
+                <thead>
+                  <tr className="text-zinc-500 border-b border-zinc-800">
+                    <th className="text-left py-2 font-normal">Peso por cabeza</th>
+                    <th className="text-right py-2 font-normal">P10</th>
+                    <th className="text-right py-2 font-normal">Mediana</th>
+                    <th className="text-right py-2 font-normal">P90</th>
+                    <th className="text-right py-2 font-normal">Lotes</th>
+                  </tr>
+                </thead>
+                <tbody className="text-zinc-300">
+                  {rangosPeso.map((r) => (
+                    <tr key={r.desde_kg} className="border-b border-zinc-900">
+                      <td className="py-2 text-zinc-200">{r.desde_kg}–{r.hasta_kg} kg</td>
+                      <td className="py-2 text-right tabular-nums">{fmt(r.p10)}</td>
+                      <td className="py-2 text-right tabular-nums text-zinc-100 font-medium">{fmt(r.mediana)}</td>
+                      <td className="py-2 text-right tabular-nums">{fmt(r.p90)}</td>
+                      <td className="py-2 text-right tabular-nums text-zinc-500">{r.lotes.toLocaleString('es-AR')}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-zinc-500 text-xs mb-8">
+              ¿Tenés {nombre}?{' '}
+              <Link href="/mi-ganado" className="text-sky-400 hover:underline">Cargá tu rodeo en Mi Ganado</Link>{' '}
+              y lo valuamos contra el rango de su peso, gratis.
+            </p>
+          </>
+        )}
 
         {origen.length > 0 && (
           <>

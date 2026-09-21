@@ -55,7 +55,7 @@ const FAQ_ITEMS = [
   {
     question: '¿Qué es gratis y qué se paga?',
     answer:
-      'El observatorio del productor es 100% gratis: precios INMAG, remates, directorio, calculadoras y alertas por email. Se paga solo el acceso programático a los datos (API + MCP) para apps, agentes IA, agtech, frigoríficos, traders, fondos y bancos; y opcionalmente el plan de alcance para consignatarias que quieren promocionar sus remates.',
+      'Para el productor es gratis: el Valor de Referencia, Mi Ganado, precios INMAG, remates, directorio, calculadoras, el aviso semanal de tu rodeo y la alerta del novillo en dólares. Se paga el acceso programático al dato (API + MCP) para apps, agentes IA, agtech, frigoríficos, fondos, bancos y aseguradoras; el plan PRO Consignataria para firmas; y, como compras sueltas, los informes por zona y el PRO abierto (series completas, exportación y alertas sin límite).',
   },
   {
     question: '¿Cómo funciona el pago?',
@@ -79,7 +79,7 @@ const GUIA = getGuiaPremium('abrir-una-consignataria')!
 export const metadata: Metadata = {
   title: 'Planes y Precios',
   description:
-    'El observatorio es gratis para el productor. La API/MCP del mercado ganadero argentino desde ARS 74.000/mes, para apps, agentes IA, agtech y análisis.',
+    'El Valor de Referencia y Mi Ganado son gratis para el productor. El dato por API y MCP, para empresas y agentes de IA, desde ARS 74.000/mes; PRO Consignataria ARS 45.000/mes.',
   openGraph: {
     images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     title: 'Planes y Precios',
@@ -109,16 +109,17 @@ export default function PlanesPage() {
             "Planes y Precios" es la categoría, no la propuesta. */}
         <div className="mb-10">
           <h1 className="max-w-3xl text-3xl font-heading leading-tight text-zinc-50 sm:text-4xl">
-            El mercado es gratis para el productor.
-            <span className="block text-zinc-400">Se paga por lo que no se ve desde afuera.</span>
+            El Valor de Referencia es gratis para el productor.
+            <span className="block text-zinc-400">Se paga por usarlo dentro de un negocio.</span>
           </h1>
 
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-zinc-400">
-            Precios, remates, directorio y alertas no cuestan nada y no van a costar nada.
-            Lo que se cobra es el cruce del dato: lo que una{' '}
-            <strong className="font-medium text-amber-200">consignataria</strong> no puede ver
-            de su propio negocio, y el acceso por{' '}
-            <strong className="font-medium text-sky-200">API</strong> para empresas y agentes.
+            Cuánto vale tu hacienda (el <Link href="/vr" className="text-accent hover:text-accent-bright">Valor de Referencia</Link>),
+            tu rodeo valuado en <Link href="/mi-ganado" className="text-accent hover:text-accent-bright">Mi Ganado</Link>,
+            los remates y el directorio no cuestan nada y no van a costar nada. Se paga en dos casos: si sos una{' '}
+            <strong className="font-medium text-sky-200">empresa</strong> que usa el dato en su sistema (por API o MCP),
+            o si sos una <strong className="font-medium text-amber-200">consignataria</strong> que quiere ver lo que no
+            ve de su propio negocio.
           </p>
 
           <div className="mt-6 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-3">
@@ -126,8 +127,8 @@ export default function PlanesPage() {
               <p className="text-sm font-semibold text-zinc-100">Productor</p>
               <p className="mt-0.5 text-xs font-medium text-accent">Gratis, siempre</p>
               <p className="mt-2 text-sm leading-snug text-zinc-400">
-                Precios del día, calendario de remates, directorio y alertas. Con cuenta,
-                sin tarjeta.
+                Valor de Referencia, Mi Ganado con aviso semanal, remates, directorio y la
+                alerta del novillo en dólares. Con cuenta, sin tarjeta.
               </p>
             </div>
             <div className="rounded-xl border border-amber-500/30 bg-amber-500/[0.04] p-4">
@@ -142,10 +143,18 @@ export default function PlanesPage() {
               <p className="text-sm font-semibold text-zinc-100">Empresa o IA</p>
               <p className="mt-0.5 text-xs font-medium text-sky-300">Desde ARS 74.000/mes</p>
               <p className="mt-2 text-sm leading-snug text-zinc-400">
-                La serie completa por API y MCP, para tus sistemas y tus agentes.
+                El Valor de Referencia por API y MCP —banda por categoría, serie histórica de
+                dispersión— y el INMAG desde 2015, para tus sistemas y tus agentes.
               </p>
             </div>
           </div>
+
+          <p className="mt-4 max-w-3xl text-xs leading-relaxed text-zinc-500">
+            Además, compras sueltas para quien necesita algo puntual:{' '}
+            <Link href="/informes" className="text-zinc-300 hover:text-accent">informes por zona</Link> (compra única),{' '}
+            <Link href="/pro" className="text-zinc-300 hover:text-accent">PRO abierto</Link> (series completas, exportar y
+            alertas sin límite, ARS 9.900/mes) y la guía para abrir una consignataria (abajo).
+          </p>
 
           <PlatformStats />
         </div>

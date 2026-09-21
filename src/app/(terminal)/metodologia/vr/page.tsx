@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { DatasetSchema, TechArticleSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
-import { getBandasPublicas, VR_METODOLOGIA, VR_VENTANA_DIAS, VR_VENTANA_ORIGEN_DIAS, MIN_LOTES_BANDA, MIN_LOTES_BANDA_COMPLETA, MIN_LOTES_AJUSTE_ORIGEN, vrCobertura } from '@/lib/vr'
+import { getBandasPublicas, VR_METODOLOGIA, VR_VENTANA_DIAS, VR_VENTANA_ORIGEN_DIAS, MIN_LOTES_BANDA, MIN_LOTES_BANDA_COMPLETA, MIN_LOTES_AJUSTE_ORIGEN, VR_RANGO_PESO_KG, vrCobertura } from '@/lib/vr'
 
 const URL = 'https://www.consignatarias.com.ar/metodologia/vr'
 
@@ -227,8 +227,25 @@ export default function MetodologiaVrPage() {
           dice. Preferimos responder menos antes que fabricar un rango que el dato no sostiene.
         </p>
 
+        {/* ── Peso ── */}
+        <h2 className="text-zinc-100 text-lg font-medium mt-10 mb-3">5. Banda por rango de peso</h2>
+        <p className="text-zinc-400 mb-4">
+          Dentro de una misma categoría, el peso promedio del lote mueve el precio por kilo. Medido sobre la ventana
+          vigente: una vaca de 250–299 kg se vendió a una mediana de 2.400 $/kg y una de 500–549 kg a 3.200 (+33 %);
+          en vaquillona la relación se invierte y la liviana vale más por kilo. Por eso, además de la banda de la
+          categoría, se publica la banda de cada rango de {VR_RANGO_PESO_KG} kg, con la misma ventana y los mismos
+          percentiles.
+        </p>
+        <p className="text-zinc-400 mb-8">
+          Un rango se publica sólo con {MIN_LOTES_BANDA_COMPLETA} lotes o más. Cuando se valúa un lote concreto —en{' '}
+          <Link href="/mi-ganado" className="text-sky-400 hover:underline">Mi Ganado</Link> o en la calculadora de la
+          portada— se usa la banda de su rango de peso si tiene esa base; si no, la de toda la categoría, y se dice
+          cuál se usó. Un lote de una categoría sin banda (el ternero) queda sin valuar: no se completa con un ratio
+          ni con el INMAG.
+        </p>
+
         {/* ── Origen ── */}
-        <h2 className="text-zinc-100 text-lg font-medium mt-10 mb-3">5. Ajuste por provincia de origen</h2>
+        <h2 className="text-zinc-100 text-lg font-medium mt-10 mb-3">6. Ajuste por provincia de origen</h2>
         <p className="text-zinc-400 mb-4">
           <span className="text-zinc-200">No existe una serie oficial de precios de hacienda por provincia.</span>{' '}
           Lo que sí se puede medir es si el origen del remitente mueve el precio dentro de nuestra propia base.
@@ -244,7 +261,7 @@ export default function MetodologiaVrPage() {
         </p>
 
         {/* ── Límites ── */}
-        <h2 className="text-zinc-100 text-lg font-medium mt-10 mb-3">6. Límites</h2>
+        <h2 className="text-zinc-100 text-lg font-medium mt-10 mb-3">7. Límites</h2>
         <ul className="text-zinc-400 space-y-2 mb-8 list-disc pl-5">
           <li>
             <span className="text-zinc-200">Cobertura.</span> El VR observa el Mercado Agroganadero de Cañuelas,
@@ -267,7 +284,7 @@ export default function MetodologiaVrPage() {
         </ul>
 
         {/* ── Versionado ── */}
-        <h2 className="text-zinc-100 text-lg font-medium mt-10 mb-3">7. Versionado</h2>
+        <h2 className="text-zinc-100 text-lg font-medium mt-10 mb-3">8. Versionado</h2>
         <p className="text-zinc-400 mb-8">
           Esta metodología es <span className="text-zinc-200">{VR_METODOLOGIA}</span>. Cualquier cambio en el
           cálculo incrementa la versión, y las valuaciones emitidas bajo una versión anterior siguen siendo

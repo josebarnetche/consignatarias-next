@@ -268,6 +268,17 @@ Nada de lo anterior prueba que alguien pague. La kill hypothesis #3 sigue abiert
 
 ---
 
+## 14. Revisión del 21-sep-2026 (v1.211.0) — leer primero
+
+Este PRD quedó incorporado a la rama `feat/valor-de-referencia-v1`, que lo convierte en el núcleo del
+producto junto con Mi Ganado. Las correcciones medidas contra el dato —banda por rango de peso, `mej` en
+`getReferencia`, etiquetas P10/P90, MEJ = Macho Entero Joven, y `VR_SIN_SERIE` para no escribir la serie
+desde una PC— están en `docs/strategy/DECISION-PRODUCTO-2026-09-21.md` §4. El "fuera de v1" de la
+valuación de rodeo multi-categoría (§4) se revirtió: Mi Ganado ya existía con rodeos cargados y es la
+superficie recurrente del productor.
+
+---
+
 ## 13. La serie de dispersión (entregado)
 
 ### Qué es y por qué es el producto que se vende

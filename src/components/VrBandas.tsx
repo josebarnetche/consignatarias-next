@@ -38,9 +38,9 @@ export default function VrBandas() {
           <thead>
             <tr className="text-zinc-500 border-b border-zinc-800">
               <th className="text-left py-2 font-normal">Categoría</th>
-              <th className="text-right py-2 font-normal">Mínimo (P10)</th>
+              <th className="text-right py-2 font-normal">P10</th>
               <th className="text-right py-2 font-normal">Mediana</th>
-              <th className="text-right py-2 font-normal">Máximo (P90)</th>
+              <th className="text-right py-2 font-normal">P90</th>
               <th className="text-right py-2 font-normal">Amplitud</th>
               <th className="text-right py-2 font-normal hidden sm:table-cell">Lotes</th>
               <th className="text-right py-2 font-normal hidden sm:table-cell">Cabezas</th>
@@ -77,7 +77,7 @@ export default function VrBandas() {
       </div>
 
       <p className="text-zinc-500 text-xs mt-2">
-        ARS por kilo vivo. Ventana del {cob.desde} al {cob.hasta}, sobre{' '}
+        ARS por kilo vivo. P10 y P90: el precio del 10 % más barato y del 10 % más caro de los lotes. Ventana del {cob.desde} al {cob.hasta}, sobre{' '}
         {cob.lotes.toLocaleString('es-AR')} lotes y {cob.cabezas.toLocaleString('es-AR')} cabezas.
         Es una referencia de mercado observada, no una tasación: el precio final lo define el remate.
       </p>
