@@ -2,9 +2,15 @@
  * Precomputa las bandas del VR (Valor de Referencia) desde el dato de lote del MAG
  * y las escribe en src/lib/data/vr-bandas.json.
  *
- * Corre una vez por día, después de mag-lots-pipeline.yml. El resultado se commitea:
- * `src/lib/vr.ts` lo lee síncrono para no meter una query de percentiles en el
- * camino caliente del MCP ni volver dinámicas las páginas SSG.
+ * Corre una vez por día, después de mag-lots-pipeline.yml. Hace dos cosas:
+ *
+ *  1. Escribe `src/lib/data/vr-bandas.json` con la banda VIGENTE. Se commitea, y
+ *     `src/lib/vr.ts` lo lee síncrono para no meter una query de percentiles en el
+ *     camino caliente del MCP ni volver dinámicas las páginas SSG.
+ *  2. Inserta esa misma banda en `vr_bandas_history`, que es la SERIE. El JSON se
+ *     pisa en cada corrida; la tabla acumula. Sin el paso 2 no hay forma de
+ *     responder "¿se está abriendo la dispersión?", que es lo que compra quien
+ *     modela riesgo.
  *
  * Env:
  *   SUPABASE_URL o NEXT_PUBLIC_SUPABASE_URL
@@ -30,6 +36,11 @@ const VENTANA_ORIGEN_DIAS = 90
 
 const MIN_LOTES_BANDA = 10
 const MIN_LOTES_AJUSTE_ORIGEN = 30
+
+/** Versión de metodología. Forma parte de la PK de la serie: un cambio de cálculo
+ *  crea una serie nueva en vez de pisar la vieja. Debe coincidir con VR_METODOLOGIA
+ *  de src/lib/vr.ts. */
+const METODOLOGIA = 'VR v1.0'
 
 /** Categorías que nunca deben llegar a una respuesta (precio 0, casos de descarte). */
 const CATEGORIAS_EXCLUIDAS = new Set(['VAC.MUERTA', 'VAC.CAIDAS'])
@@ -144,6 +155,41 @@ async function main() {
     fecha_dato_hasta: fechas[fechas.length - 1],
     categorias,
     origen,
+  }
+
+  // La serie, fechada en la ÚLTIMA RUEDA del dato y no en "hoy": así una corrida
+  // que se ejecuta un día sin operaciones no inventa un punto nuevo, y un re-run
+  // del mismo día es idempotente por la PK.
+  const fechaSerie = salida.fecha_dato_hasta
+  const filas = Object.entries(categorias).map(([category, b]) => ({
+    date: fechaSerie,
+    category,
+    metodologia: METODOLOGIA,
+    p10: b.p10,
+    mediana: b.mediana,
+    p90: b.p90,
+    amplitud_pct: b.amplitud_pct,
+    lotes: b.lotes,
+    cabezas: b.cabezas,
+    ventana_dias: VENTANA_DIAS,
+  }))
+  // Los CHECK de la tabla rechazarían una banda desordenada o sin base; filtrar
+  // acá evita que una fila mala aborte el upsert entera y deje la serie sin el día.
+  const validas = filas.filter((f) => f.p10 > 0 && f.p10 <= f.mediana && f.mediana <= f.p90 && f.lotes >= 10)
+  if (validas.length !== filas.length) {
+    console.warn(`Descartadas ${filas.length - validas.length} bandas que no pasan los invariantes.`)
+  }
+  if (validas.length > 0) {
+    const { error } = await sb
+      .from('vr_bandas_history')
+      .upsert(validas, { onConflict: 'date,category,metodologia' })
+    if (error) {
+      // No aborta: el JSON de la banda vigente es lo que sirven las superficies,
+      // y perder un punto de la serie es recuperable con un re-run.
+      console.error(`No se pudo escribir la serie histórica: ${error.message}`)
+    } else {
+      console.log(`vr_bandas_history — ${validas.length} filas al ${fechaSerie}`)
+    }
   }
 
   writeFileSync(OUT, JSON.stringify(salida, null, 2) + '\n')

@@ -338,3 +338,32 @@ export const PROVINCIA_NOMBRE: Record<string, string> = {
   CHA: 'Chaco',
   FOR: 'Formosa',
 }
+
+/**
+ * Traduce cualquier nombre de categoría que el producto acepte al código del
+ * dato de lote ("NOVILLO"). Resuelve las tres formas que circulan:
+ * la de `market-prices` ("novillos"), su singular ("novillo") y el slug
+ * público ("mej", que NO existe en market-prices pero sí tiene banda y página).
+ *
+ * Consulta los DOS mapas a propósito. Cuando solo miraba `CATEGORIA_A_LOTE`,
+ * `/vr/mej` publicaba banda y tenía filas en la serie, pero
+ * `?vr=historico&categoria=mej` respondía 400 — dos mapas que no se hablaban.
+ * Que esto sea una sola función es lo que impide que vuelvan a divergir.
+ */
+export function categoriaALote(categoria: string): string | null {
+  const c = categoria.trim().toLowerCase()
+  if (CATEGORIA_A_LOTE[c]) return CATEGORIA_A_LOTE[c]
+  if (SLUG_A_CODIGO[c]) return SLUG_A_CODIGO[c]
+  // Singular → plural: "novillo" → "novillos".
+  const plural = c.endsWith('s') ? c : `${c}s`
+  return CATEGORIA_A_LOTE[plural] ?? null
+}
+
+/**
+ * Los nombres de categoría que `categoriaALote` resuelve. Es lo que el endpoint
+ * ofrece cuando rechaza una categoría, así que no puede prometer más de lo que
+ * la función acepta (hay un test que lo verifica).
+ */
+export const CATEGORIAS_CON_LOTE = Array.from(
+  new Set([...Object.keys(CATEGORIA_A_LOTE), ...Object.keys(SLUG_A_CODIGO)]),
+).filter((c) => CATEGORIA_A_LOTE[c] || SLUG_A_CODIGO[c])

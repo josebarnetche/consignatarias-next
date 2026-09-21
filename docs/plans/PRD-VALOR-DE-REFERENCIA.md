@@ -242,6 +242,7 @@ No propone tokenizar. El doc de estrategia (§5.1) lo descarta y este PRD lo res
 | 3 | Sitemap + las 4 superficies MCP sincronizadas | ✅ |
 | 3 | Permalinks citables | ✅ **con corrección — ver abajo** |
 | 4 | `?vr=1` en `/api/precios` | ✅ |
+| 4 | `?vr=historico` + tabla `vr_bandas_history` | ✅ **(ver §13)** |
 | 4 | Export CSV/JSON gated | ❌ **no hecho — ver pendientes** |
 
 **Decisiones tomadas (§11 resuelto):** banda **pública** (doctrina CEPEA/IBLI); nombre **Valor de Referencia (VR)**; `METODOLOGIA-INDICE-CONSIGNATARIAS.md` queda **archivado de hecho** — la metodología viva es `/metodologia/vr` + la página general `/metodologia` (v1.3), que ya estaba a mejor nivel que el borrador.
@@ -257,9 +258,49 @@ El objeto `Valuación` del §3.1 sigue siendo correcto en todo lo demás (banda,
 ### Pendientes conscientes
 
 1. **Export CSV/JSON gated.** No se hizo. Hoy no hay a qué colgarlo: no existe una superficie de descarga del VR. Cuando exista, va con `requireLoginForDownload()`.
-2. **La serie histórica de dispersión.** `?vr=1` devuelve la banda **vigente**, no su evolución. Es lo que un modelador compraría y todavía no existe: requiere persistir las bandas diarias, no solo la última. Es el siguiente producto real, y sale barato porque el cálculo ya está.
+2. ~~**La serie histórica de dispersión.**~~ **Hecho — ver §13.**
 3. **`mag-lots-pipeline.yml` corre Mar/Mié/Vie.** Las bandas se refrescan con esa cadencia, no a diario. Está declarado en la metodología (`updateFrequency`).
 
 ### Qué queda por validar (la métrica que decide, §7)
 
 Nada de lo anterior prueba que alguien pague. La kill hypothesis #3 sigue abierta y el criterio de muerte del §9.4 sigue en pie: **si a los 90 días no hay ≥2 conversaciones Enterprise citando el VR, se congela como activo de autoridad y no se invierte más.**
+
+
+---
+
+## 13. La serie de dispersión (entregado)
+
+### Qué es y por qué es el producto que se vende
+
+`vr-bandas.json` guarda la banda **vigente** y se pisa en cada corrida. Eso responde *"¿cuánto vale hoy?"*. No responde *"¿se está abriendo o cerrando la dispersión?"* — que es la pregunta de quien modela riesgo o calcula una prima, y la que el precio puntual **no puede** contestar por definición.
+
+`vr_bandas_history` es esa serie. Backfill: **234 filas, 39 ruedas, 6 categorías, 2026-06-19 → 2026-09-18**, calculadas con la misma ventana móvil de 30 días que la banda vigente.
+
+**Y la dispersión se mueve, que es lo que valida el producto:**
+
+| Categoría | Amplitud mín. | Amplitud máx. | Recorrido | Variación de la mediana |
+|---|---:|---:|---:|---:|
+| MEJ | 34,8% | 74,9% | 40,1 pts | 7,5% |
+| VACA | 44,0% | 60,0% | 16,0 pts | 20,8% |
+| VAQUILLONA | 38,9% | 52,9% | 14,0 pts | 6,5% |
+| TORO | 37,0% | 50,0% | 13,0 pts | 23,1% |
+| NOVILLITO | 30,0% | 42,2% | 12,2 pts | 3,7% |
+| NOVILLO | 25,0% | 33,8% | 8,8 pts | 5,2% |
+
+**El dato que importa:** amplitud y mediana **se mueven independientemente**. En vaca la mediana subió 20,8% mientras la amplitud se abría 16 puntos; en novillito la mediana casi no se movió (3,7%) y la amplitud recorrió 12 puntos. Una dispersión que se abre mientras el precio hace otra cosa es exactamente la señal de riesgo que un asegurador o un prestamista necesita, y **no se puede derivar del precio**. Ese es el argumento de venta.
+
+### Decisiones de diseño
+
+- **PK `(date, category, metodologia)`.** La versión de metodología es parte de la identidad de la fila, no un atributo. Cuando VR v1.1 cambie el cálculo, la serie nueva **convive** con la v1.0 en vez de pisarla — es lo que promete `/metodologia/vr` §7 sobre reproducibilidad.
+- **`CHECK` en la base, no solo en el código:** `p10 <= mediana <= p90`, `lotes >= 10`, `p10 > 0`. Los invariantes de la metodología viven donde no se pueden saltear.
+- **Fechado en la última rueda del dato, no en "hoy".** Una corrida en un día sin operaciones no inventa un punto, y un re-run del mismo día es idempotente por la PK.
+- **Escribir la serie no puede voltear la corrida.** Si el upsert falla, el script loguea y sigue: el JSON de la banda vigente es lo que sirven todas las superficies, y un punto perdido se recupera con un re-run.
+- **Paginado obligatorio en el endpoint.** PostgREST devuelve 1000 filas por request; 6 categorías × 3650 días son ~22.000. Un `.limit()` alto truncaría **en silencio**, que en una serie es el peor error posible.
+
+### Límite honesto, que va en la respuesta
+
+Cada punto es una **ventana móvil de 30 días**: dos puntos consecutivos comparten la mayor parte de sus lotes, así que la serie está autocorrelacionada por construcción y no debe leerse como observaciones independientes. Y arranca en junio de 2026: **no cubre un ciclo ganadero ni estacionalidad.** Ambas cosas van en `limites[]` de la respuesta, no en una nota al pie.
+
+### Pendiente identificado
+
+Un tool MCP para la serie (`get_vr_historico`) sería la superficie natural para agentes. **No se agregó**: una tool nueva cambia *de qué se trata* el server y obliga a republicar el manifiesto del registry (`mcp-registry/PUBLISH-RUNBOOK.md`), y la clave privada vive en `~/.mcp-keys/` — fuera de esta sesión. Queda como la próxima entrega, con republicación incluida.

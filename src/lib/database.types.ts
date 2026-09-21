@@ -3836,6 +3836,48 @@ export type Database = {
           },
         ]
       }
+      vr_bandas_history: {
+        Row: {
+          amplitud_pct: number
+          cabezas: number
+          category: string
+          computed_at: string
+          date: string
+          lotes: number
+          mediana: number
+          metodologia: string
+          p10: number
+          p90: number
+          ventana_dias: number
+        }
+        Insert: {
+          amplitud_pct: number
+          cabezas: number
+          category: string
+          computed_at?: string
+          date: string
+          lotes: number
+          mediana: number
+          metodologia?: string
+          p10: number
+          p90: number
+          ventana_dias: number
+        }
+        Update: {
+          amplitud_pct?: number
+          cabezas?: number
+          category?: string
+          computed_at?: string
+          date?: string
+          lotes?: number
+          mediana?: number
+          metodologia?: string
+          p10?: number
+          p90?: number
+          ventana_dias?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       consignataria_followers: {

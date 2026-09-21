@@ -9,6 +9,8 @@ import {
   getBandasPublicas,
   vrCobertura,
   SLUGS_CONOCIDOS,
+  categoriaALote,
+  CATEGORIAS_CON_LOTE,
   MIN_LOTES_AJUSTE_ORIGEN,
   MIN_LOTES_BANDA_COMPLETA,
   VR_METODOLOGIA,
@@ -201,5 +203,40 @@ describe('valuarTropa — coherencia interna de la respuesta', () => {
     const d = valuarTropa({ categoria: 'terneros', cabezas: 10 }).data as Record<string, number>
     expect(d.brecha_vs_mag_pct).toBe(0)
     expect(d.precio_kg_ars).toBe(d.precio_kg_mag)
+  })
+})
+
+describe('categoriaALote — el filtro de la serie histórica depende de esto', () => {
+  it('traduce plural y singular al código del dato de lote', () => {
+    expect(categoriaALote('novillos')).toBe('NOVILLO')
+    expect(categoriaALote('novillo')).toBe('NOVILLO')
+    expect(categoriaALote('vacas')).toBe('VACA')
+    expect(categoriaALote('vaca')).toBe('VACA')
+    expect(categoriaALote('vaquillona')).toBe('VAQUILLONA')
+    expect(categoriaALote('toro')).toBe('TORO')
+  })
+
+  it('tolera mayúsculas y espacios', () => {
+    expect(categoriaALote('  Novillos ')).toBe('NOVILLO')
+    expect(categoriaALote('VACA')).toBe('VACA')
+  })
+
+  it('devuelve null en vez de un código inventado', () => {
+    expect(categoriaALote('unicornio')).toBeNull()
+    expect(categoriaALote('')).toBeNull()
+  })
+
+  it('toda categoría anunciada como disponible se traduce', () => {
+    // Si esto falla, el mensaje de error del endpoint ofrecería categorías
+    // que después el filtro rechaza.
+    for (const c of CATEGORIAS_CON_LOTE) expect(categoriaALote(c)).not.toBeNull()
+  })
+
+  it('todo slug público tiene traducción desde su categoría de producto', () => {
+    // El slug /vr/vaca y la categoría "vacas" tienen que apuntar al mismo código.
+    for (const slug of getSlugsConBanda()) {
+      const b = getBandaPorSlug(slug)!
+      expect(categoriaALote(slug)).toBe(b.codigo)
+    }
   })
 })
