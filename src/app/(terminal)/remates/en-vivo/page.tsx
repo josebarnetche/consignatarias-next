@@ -10,12 +10,15 @@ import MuroEnVivo from '@/components/remates/MuroEnVivo'
 import {
   claveStream,
   construirPared,
+  nombreDeFirma,
   hoyArgentina,
   rematesTransmitibles,
+  repeticionesRecientes,
   type RemateResuelto,
 } from '@/lib/remates-en-vivo'
 import { getEffectiveStatus } from '@/lib/ui/tokens'
-import { Calendar, Clock, MapPin, Users, Play, FileText, Video, Youtube, Radio } from 'lucide-react'
+import { getBandasPublicas, vrCobertura } from '@/lib/vr'
+import { Calendar, Clock, MapPin, Users, Play, FileText, Youtube, Radio } from 'lucide-react'
 import LiveRemateTicker from '@/components/LiveRemateTicker'
 
 /**
@@ -282,14 +285,25 @@ export default async function RematesEnVivoPage() {
   // `src/lib/remates-en-vivo.ts` porque el endpoint del muro hace la misma.
   const liveRemates = rematesTransmitibles(todayStr)
 
-  const count = liveRemates.length
-  const confirmedCount = liveRemates.filter(r => r.confidence === 'confirmed').length
-  const probableCount = liveRemates.filter(r => r.confidence === 'probable').length
-  const todayCount = liveRemates.filter(r => r.date === todayStr).length
 
   // La pared de HOY, con lo que está efectivamente al aire. Es sólo la primera
   // pintada: desde que carga, el muro se refresca solo contra el endpoint.
-  const pared = await construirPared(todayStr, 900)
+  const [pared, repeticiones] = await Promise.all([
+    construirPared(todayStr, 900),
+    repeticionesRecientes(todayStr, 8),
+  ])
+
+  // Qué se pagó en las últimas semanas, al lado del martillo. Es el Valor de
+  // Referencia (lotes vendidos en el MAG), no el panel de categorías de
+  // market-prices.json, que los días sin rueda era un ratio fijo sobre el INMAG.
+  const cobertura = vrCobertura()
+  const referencia = {
+    bandas: getBandasPublicas()
+      .slice(0, 4)
+      .map((b) => ({ categoria: b.categoria, p10: b.p10, mediana: b.mediana, p90: b.p90 })),
+    desde: cobertura.desde,
+    hasta: cobertura.hasta,
+  }
 
   // Las de hoy que todavía no salieron al aire: el muro les pone la cuenta
   // regresiva. Se excluyen las que ya están en la pared para no duplicarlas.
@@ -300,10 +314,13 @@ export default async function RematesEnVivoPage() {
     .filter((r) => getEffectiveStatus(r.date, r.time, todayStr) !== 'completed')
     .map((r) => ({
       id: claveStream(r),
-      firma: r.consignatariaName,
+      firma: nombreDeFirma(r),
       hora: r.time,
       perfilHref: consignatariaProfilePath(r.consignatariaSlug),
     }))
+    // Una firma con dos remates a la misma hora (Sáenz Valiente tenía dos a las
+    // 10:00 el 21-sep) se veía como un botón repetido: para "qué viene" alcanza uno.
+    .filter((p, i, todos) => todos.findIndex((q) => q.firma === p.firma && q.hora === p.hora) === i)
 
   // El listado por fecha queda para los días QUE VIENEN: hoy entero —lo que
   // está al aire y lo que falta— lo maneja el muro, y tenerlo dos veces en la
@@ -337,109 +354,40 @@ export default async function RematesEnVivoPage() {
       <SectionBreadcrumbSchema section="remates/en-vivo" sectionName="Remates en Vivo" />
       {schemaRemates.length > 0 && <RematesListSchema remates={schemaRemates} />}
 
-      {/* Hero — render de marca de los remates en vivo (universo v2.0) */}
-      <section className="relative overflow-hidden">
-        <img
-          src="/marca/features/feat-remates-vivo.jpg"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover object-[70%_center] opacity-40"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/80 to-[#09090b]/25" aria-hidden="true" />
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-[#09090b]" aria-hidden="true" />
-        <div className="relative px-4 pt-6 pb-6 max-w-5xl mx-auto">
-          {/* Breadcrumb */}
-          <nav className="text-xs text-zinc-500 mb-4">
-            <Link href="/" className="hover:text-zinc-300">Inicio</Link>
-            <span className="mx-2">›</span>
-            <Link href="/remates" className="hover:text-zinc-300">Remates</Link>
-            <span className="mx-2">›</span>
-            <span className="text-zinc-400">En Vivo</span>
-          </nav>
+      {/* Encabezado CHICO a propósito. Antes había un hero, un párrafo y una barra de
+          cuatro números ("confirmadas", "probables"…) que son categorías nuestras, no
+          del usuario: en un teléfono el reproductor quedaba debajo del pliegue, y la
+          mediana de permanencia era de 20 segundos. Lo primero que se ve es el remate. */}
+      <div className="px-4 pt-4 max-w-5xl mx-auto">
+        <nav className="text-xs text-zinc-500 mb-2">
+          <Link href="/" className="hover:text-zinc-300">Inicio</Link>
+          <span className="mx-2">›</span>
+          <Link href="/remates" className="hover:text-zinc-300">Remates</Link>
+          <span className="mx-2">›</span>
+          <span className="text-zinc-400">En Vivo</span>
+        </nav>
 
-          {/* Ticker de transcripción del remate en vivo (lo llena el worker off-Vercel).
-              Se auto-oculta si no hay sesión activa, así que es seguro montarlo siempre. */}
-          <LiveRemateTicker />
+        {/* Ticker de transcripción del remate en vivo (lo llena el worker off-Vercel).
+            Se auto-oculta si no hay sesión activa, así que es seguro montarlo siempre. */}
+        <LiveRemateTicker />
 
-          {/* Header */}
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-2xl font-semibold text-zinc-100">
-                🔴 Remates Ganaderos en Vivo
-              </h1>
-              {todayCount > 0 && (
-                <span className="flex items-center gap-1.5 px-2 py-1 bg-red-600 rounded text-sm font-medium text-white">
-                  <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                  {todayCount} hoy
-                </span>
-              )}
-            </div>
-            <p className="text-zinc-400">
-              Remates de hacienda con transmisión por YouTube. Confirmados con video directo o vía
-              el canal habitual de la consignataria. Participá de las subastas desde cualquier lugar.
-            </p>
-          </div>
-        </div>
-      </section>
+        <h1 className="text-xl md:text-2xl font-semibold text-zinc-100">Remates ganaderos en vivo</h1>
+        <p className="hidden sm:block text-zinc-500 text-sm mt-1">
+          Todas las ferias que se están transmitiendo, juntas, con el teléfono de cada consignataria a un toque.
+        </p>
+      </div>
 
-      <div className="px-4 py-6 max-w-5xl mx-auto">
-        {/* Stats bar */}
-        <div className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-zinc-900/50 border border-zinc-800 rounded-lg">
-          <div className="flex items-center gap-2">
-            <Radio className="w-4 h-4 text-red-400" />
-            <span className="text-zinc-400 text-sm">
-              <strong className="text-zinc-200">{count}</strong> transmisiones
-            </span>
-          </div>
-          <span className="text-zinc-700">|</span>
-          <div className="flex items-center gap-2">
-            <Youtube className="w-4 h-4 text-red-400" />
-            <span className="text-zinc-400 text-sm">
-              <strong className="text-zinc-200">{confirmedCount}</strong> confirmadas
-            </span>
-          </div>
-          <span className="text-zinc-700">|</span>
-          <div className="flex items-center gap-2">
-            <Radio className="w-4 h-4 text-zinc-500" />
-            <span className="text-zinc-400 text-sm">
-              <strong className="text-zinc-300">{probableCount}</strong> probables
-            </span>
-          </div>
-          <span className="text-zinc-700">|</span>
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-accent" />
-            <span className="text-zinc-400 text-sm">
-              <strong className="text-zinc-200">{todayCount}</strong> hoy
-            </span>
-          </div>
-        </div>
+      <div className="px-4 py-4 max-w-5xl mx-auto">
+        {/* El muro va SIEMPRE, haya o no remates por venir: cuando nadie transmite
+            lo sostienen los remates grabados, y una pantalla con algo para mirar
+            retiene más que el cartel de "no hay transmisiones" que había acá. */}
+        <MuroEnVivo inicial={pared} porVenir={porVenir} repeticiones={repeticiones} referencia={referencia} />
 
-        {/* Content */}
-        {count === 0 ? (
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-8 text-center">
-            <div className="text-zinc-500 mb-4">
-              <Video className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p className="text-lg">No hay remates con transmisión programados</p>
-              <p className="text-sm mt-2">Muchas consignatarias transmiten sus remates por YouTube.</p>
-            </div>
-            <div className="flex flex-wrap justify-center gap-3 mt-6">
-              <Link
-                href="/remates"
-                className="px-4 py-2 bg-sky-500/10 border border-sky-500/30 text-accent text-sm font-medium rounded hover:bg-sky-500/20 transition-colors"
-              >
-                Ver todos los remates
-              </Link>
-              <Link
-                href="/consignatarias"
-                className="px-4 py-2 bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-medium rounded hover:bg-zinc-700 transition-colors"
-              >
-                Explorar consignatarias
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-8">
-            <MuroEnVivo inicial={pared} porVenir={porVenir} />
+        {Object.keys(byDate).length > 0 && (
+          <div className="space-y-8 mt-10">
+            <h2 className="text-zinc-200 text-lg font-medium border-t border-zinc-800 pt-6">
+              Próximos días con transmisión
+            </h2>
 
             {/* De acá para abajo, los días que vienen. Hoy no se repite: lo
                 muestra el muro, que es el único que sabe qué está al aire. */}

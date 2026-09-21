@@ -1,5 +1,5 @@
 import remates from '@/lib/data/remates.json'
-import { consignatariaProfilePath, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { consignatariaProfilePath, getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import { resolveYoutubeUrl } from '@/lib/youtube-live'
 import { resolverStream, contactoClicable, videoEnVivoDelCanal, idDeVideo } from '@/lib/streams'
 import { getEffectiveStatus } from '@/lib/ui/tokens'
@@ -51,6 +51,18 @@ export interface RemateBase {
  */
 export function claveStream(r: { consignatariaSlug: string; date: string; time: string | null }): string {
   return `${r.consignatariaSlug}-${r.date}${r.time ? '-' + r.time.replace(':', '') : ''}`
+}
+
+/**
+ * El nombre de la firma como figura en su ficha, no como vino del scraper.
+ *
+ * El scraper guarda lo que dice cada sitio, y a veces eso es "Saenz Valiente
+ * Bullrich 2020" —con el año del nombre de la campaña pegado— o una razón social
+ * cortada. En un cartel de "próxima transmisión" eso se lee como un error nuestro.
+ */
+export function nombreDeFirma(r: { consignatariaSlug: string; consignatariaName: string }): string {
+  const canonical = getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug
+  return getProfile(canonical)?.displayName ?? r.consignatariaName
 }
 
 /** Minutos desde medianoche, o null si no sabemos la hora. */
@@ -152,31 +164,48 @@ export async function construirPared(hoy: string, frescuraSegundos = 900): Promi
     }),
   )
 
-  return deHoy
-    .map((r): StreamItem | null => {
+  const ahoraMin = minutosAhoraArgentina()
+  const items = deHoy
+    .map((r): (StreamItem & { _distancia: number }) | null => {
       const emb = resolverStream(r)
       if (!emb) return null
       const canonical = getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug
 
       let embedUrl = emb.embedUrl
+      let videoId = idDeVideo(embedUrl)
+      // `alAireConfirmado` = alguien que NO es nuestra agenda dice que está al aire:
+      // nuestro capturador o el propio YouTube.
+      let alAireConfirmado = false
       const propio = idDeVideo(enVivoPropio.get(canonical) ?? null)
       if (propio) {
-        embedUrl = `https://www.youtube-nocookie.com/embed/${propio}?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1`
+        embedUrl = embedDe(propio)
+        videoId = propio
+        alAireConfirmado = true
       } else if (emb.tipo === 'canal') {
         const chId = emb.embedUrl.match(/channel=([^&]+)/)?.[1]
         const vid = chId ? canalesDeHoy.get(chId) : null
         // Canal sin transmisión en curso: no hay nada que reproducir. Fuera.
         if (!vid) return null
-        embedUrl = `https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1`
+        embedUrl = embedDe(vid)
+        videoId = vid
+        alAireConfirmado = true
       }
 
       const c = contactos.get(canonical)
       const { tel, wa, visible } = contactoClicable(c?.phone, c?.whatsapp)
+      const inicio = minutosDeHora(r.time)
       return {
         id: claveStream(r),
-        enVivoAhora: getEffectiveStatus(r.date, r.time, hoy) === 'live',
+        // EL HECHO LE GANA AL HORARIO. La agenda supone que un remate dura tres
+        // horas, y las ferias grandes se pasan: con la regla de la agenda sola,
+        // a las tres horas justas el muro le sacaba el player de adelante a quien
+        // lo estaba mirando, con el martillo todavía bajando. Si YouTube o nuestro
+        // capturador dicen que está al aire, está al aire. La agenda decide sólo
+        // cuando no hay nadie más que lo sepa (el video directo del JSON).
+        enVivoAhora: alAireConfirmado || getEffectiveStatus(r.date, r.time, hoy) === 'live',
+        videoId,
         titulo: r.title,
-        firma: r.consignatariaName,
+        firma: nombreDeFirma(r),
         slug: canonical,
         perfilHref: consignatariaProfilePath(r.consignatariaSlug),
         embedUrl,
@@ -187,7 +216,107 @@ export async function construirPared(hoy: string, frescuraSegundos = 900): Promi
         tel,
         wa,
         telVisible: visible,
+        _distancia: inicio === null ? 9999 : Math.abs(ahoraMin - inicio),
       }
     })
-    .filter((s): s is StreamItem => s !== null)
+    .filter((s): s is StreamItem & { _distancia: number } => s !== null)
+
+  // UN RECUADRO POR VIDEO. Una firma con tres remates el mismo día en el mismo
+  // canal —UMC tenía tres el 18-sep— resolvía los tres al mismo video en vivo, y
+  // el muro mostraba la misma transmisión tres veces. Queda el remate cuyo
+  // horario está más cerca de ahora, que es el que se está rematando.
+  return unoPorVideo(items).map(({ _distancia, ...s }) => {
+    void _distancia
+    return s
+  })
+}
+
+/**
+ * Deja un solo item por video: el de horario más cercano a ahora (`_distancia`
+ * menor). Los que no tienen video se conservan todos. Exportada para testearla.
+ */
+export function unoPorVideo<T extends { videoId?: string | null; _distancia: number }>(items: T[]): T[] {
+  const porVideo = new Map<string, T>()
+  const sinVideo: T[] = []
+  for (const it of items) {
+    if (!it.videoId) {
+      sinVideo.push(it)
+      continue
+    }
+    const previo = porVideo.get(it.videoId)
+    if (!previo || it._distancia < previo._distancia) porVideo.set(it.videoId, it)
+  }
+  return [...porVideo.values(), ...sinVideo]
+}
+
+function embedDe(videoId: string): string {
+  return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1`
+}
+
+function minutosAhoraArgentina(): number {
+  const art = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }))
+  return art.getHours() * 60 + art.getMinutes()
+}
+
+/** Un remate que ya pasó y quedó grabado. Es lo que llena el muro cuando nadie transmite. */
+export interface Repeticion {
+  id: string
+  videoId: string
+  firma: string
+  titulo: string
+  fecha: string
+  perfilHref: string
+  watchUrl: string
+  tel: string | null
+  wa: string | null
+  telVisible: string | null
+}
+
+/**
+ * Los últimos remates grabados, del más nuevo al más viejo.
+ *
+ * POR QUÉ. El estado más común de esta página es "no hay nada al aire": un lunes
+ * hay tres remates, y de noche ninguno. Hasta ahora eso era un recuadro vacío, y
+ * un recuadro vacío es la puerta de salida: la mediana de permanencia en la página
+ * era de 20 segundos. Un remate grabado es contenido de verdad —de una a tres
+ * horas de hacienda entrando a la pista, con el teléfono de la firma al lado—, y
+ * es exactamente lo que alguien que vino a ver un remate quiere ver.
+ *
+ * Sólo remates con video DIRECTO en la base (el scraper lo adjunta después de la
+ * transmisión). No se inventa nada: si no hay grabaciones, no hay sección.
+ */
+export async function repeticionesRecientes(hoy: string, cuantas = 8): Promise<Repeticion[]> {
+  const vistos = new Set<string>()
+  const pasados = (remates as RemateBase[])
+    .filter((r) => r.date < hoy && r.youtubeUrl)
+    .sort((a, b) => b.date.localeCompare(a.date) || (b.time || '').localeCompare(a.time || ''))
+    .map((r) => ({ r, videoId: idDeVideo(r.youtubeUrl) }))
+    .filter((x): x is { r: RemateBase; videoId: string } => {
+      if (!x.videoId || vistos.has(x.videoId)) return false
+      vistos.add(x.videoId)
+      return true
+    })
+    .slice(0, cuantas)
+  if (pasados.length === 0) return []
+
+  const contactos = await traerContactos(
+    Array.from(new Set(pasados.map(({ r }) => getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug))),
+  )
+  return pasados.map(({ r, videoId }) => {
+    const canonical = getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug
+    const c = contactos.get(canonical)
+    const { tel, wa, visible } = contactoClicable(c?.phone, c?.whatsapp)
+    return {
+      id: `rep-${videoId}`,
+      videoId,
+      firma: nombreDeFirma(r),
+      titulo: r.title,
+      fecha: r.date,
+      perfilHref: consignatariaProfilePath(r.consignatariaSlug),
+      watchUrl: `https://www.youtube.com/watch?v=${videoId}`,
+      tel,
+      wa,
+      telVisible: visible,
+    }
+  })
 }

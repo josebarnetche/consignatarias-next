@@ -30,6 +30,8 @@ export interface StreamItem {
   /** Si NO está al aire, abrir el player muestra un cuadro negro: el embed de
    *  canal solo reproduce lo que se está transmitiendo en ese momento. */
   enVivoAhora: boolean
+  /** Id del video de YouTube, para la miniatura. Null si sólo conocemos el canal. */
+  videoId?: string | null
   hora?: string | null
   lugar?: string | null
   tel?: string | null

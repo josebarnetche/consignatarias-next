@@ -60,6 +60,13 @@ export const VALUE_EVENTS = {
   // --- Engagement con un remate ---
   catalog_click: { weight: 5, group: 'engagement', label: 'Abrir catálogo' },
   live_click: { weight: 5, group: 'engagement', label: 'Abrir transmisión en vivo' },
+  // Latido del muro de /remates/en-vivo: uno cada 5 minutos con la pestaña visible y
+  // al menos un player en pantalla, con `meta.minutos` acumulados. Existe porque
+  // `time_on_page` dispara una sola vez, al primer cambio de pestaña, y DESCARTA todo
+  // lo que pase de una hora: en una página de remates de tres horas, las mejores
+  // sesiones eran justo las que nunca se registraban. El máximo de `minutos` por
+  // sesión es la permanencia real mirando hacienda.
+  live_watch: { weight: 1, group: 'engagement', label: 'Siguió mirando el muro en vivo (5 min)' },
   youtube_channel_click: { weight: 3, group: 'engagement', label: 'Abrir canal de YouTube' },
 
   // --- Señales de engagement pasivo (first-party, ligadas al visitor_id) ---

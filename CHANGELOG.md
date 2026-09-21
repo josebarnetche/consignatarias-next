@@ -7,6 +7,46 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.213.0] — 2026-09-21
+
+### El muro en vivo: nunca vacío, nunca te saca el remate, y se mide lo que dura
+
+Línea de base medida antes de tocar nada (`time_on_page`, 30 días): en `/remates/en-vivo` la
+mediana de permanencia era **20 s** y sólo el **7,6 %** pasaba los dos minutos — por debajo del
+promedio del sitio (24 s / 10,1 %), en la página que debería ser la más pegajosa. El 70 % de las
+visitas llegaba en horario de remates: no entraban cuando no había nada, entraban y no encontraban
+motivo para quedarse.
+
+- **Se arregla un 429 en producción.** `/api/remates/en-vivo/estado` caía bajo el prefijo
+  `/api/remates`, con límite anónimo de 1 req/min por IP; el muro consulta cada 30 s. La segunda
+  consulta seguida ya rebotaba (verificado contra producción), y en celulares con IP compartida
+  (CGNAT) el muro quedaba congelado. Se excluye del rate-limit, como `/api/calendario`.
+- **Nunca una pantalla vacía.** Cuando nadie transmite, el muro pone solo el último remate grabado
+  (REPETICIÓN, con fecha) y avisa cuándo arranca el próximo; cuando arranca, la repetición le cede el
+  lugar. Hay 37 remates con video en la base: `repeticionesRecientes()`.
+- **Nunca te saca el player.** El hecho le gana al horario: si YouTube o nuestro capturador dicen que
+  está al aire, está al aire (antes, a las 3 h justas de la agenda, el muro le quitaba el player a
+  quien lo miraba). Si se corta, el recuadro queda como TERMINÓ con el teléfono de la firma.
+- **Una transmisión, un recuadro** (`unoPorVideo`): tres remates del mismo canal ya no se ven tres veces.
+- **Peso**: 1 player a la vez en el teléfono, 2 en tablet, 4 en escritorio; el resto como miniatura
+  con el cuadro EN VIVO del momento. En la primera pintada, uno solo.
+- **Escritorio con un player**: columna lateral con lo que viene hoy, *Qué se pagó* (Valor de
+  Referencia, lotes del MAG) y los remates grabados. **Teléfono**: encabezado corto (el player sube de
+  383 a 307 px) y barra fija de *Llamar* / WhatsApp.
+- **La pestaña trabaja**: `(N) 🔴 En vivo` en el título, y "Arrancó X" si empieza uno con la pestaña
+  en segundo plano (el refresco sigue, cada 2 min, en vez de apagarse).
+- Nombre de la firma desde la ficha (`nombreDeFirma`), no el del scraper ("…Bullrich 2020").
+- Fuera la barra de "confirmadas / probables": eran categorías nuestras, no del usuario.
+- **Medición nueva: `live_watch`**, un latido cada 5 min con la pestaña visible y un player en
+  pantalla. `time_on_page` descarta todo lo que pasa de una hora y dispara una sola vez: las mejores
+  sesiones de una página de remates de tres horas eran justo las que no se registraban.
+
+Probado en Chromium real (escritorio 1440 y teléfono 390): 21 verificaciones, incluidas la
+simulación de un remate que arranca y otro que se corta, y que el refresco respete la repetición
+que eligió el usuario.
+
+---
+
 ## [1.212.0] — 2026-09-21
 
 ### La home, al servicio de la promesa

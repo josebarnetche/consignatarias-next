@@ -190,6 +190,15 @@ function isPublicApiRoute(pathname: string): boolean {
   // NOTA: /api/calendario (feeds ICS de suscripción) NO se rate-limita: las apps de
   // calendario y Google los poletean repetidamente; el límite anónimo de 1 req/min los
   // rompía con un mensaje de "Activá Enterprise". Son públicos, livianos y cacheados 1h.
+  //
+  // Lo mismo, y por la misma razón, el estado del muro en vivo. Cae bajo el prefijo
+  // `/api/remates`, así que heredaba el límite de 1 req/min por IP, y el muro consulta
+  // cada 30 s: la mitad de los refrescos volvían 429 (verificado en producción el
+  // 21-sep: la segunda consulta seguida ya rebotaba). En celulares es peor, porque las
+  // operadoras comparten una IP entre muchos usuarios (CGNAT) y el muro quedaba
+  // congelado para todos. No es una API de datos: es el latido de una página. El
+  // costo lo acota el CDN (s-maxage 20 s) y la sonda a YouTube, cacheada 30 s.
+  if (pathname.startsWith('/api/remates/en-vivo/')) return false
   return publicRoutes.some(route => pathname.startsWith(route))
 }
 
