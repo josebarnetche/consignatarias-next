@@ -114,6 +114,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // PostgREST capa CADA request en 1000 filas (max-rows del proyecto) — para
     // series largas hay que paginar con .range(). El .limit() solo no alcanza.
+    // El tope está por encima del caso más grande de la serie VR (6 categorías ×
+    // 3650 días ≈ 22.000 filas) para que el rango máximo entre entero.
+    const MAX_PAGINADO = 60_000
     type PageQuery<T> = (from: number, to: number) => PromiseLike<{ data: T[] | null; error: { message: string } | null }>
     const pageAll = async <T,>(q: PageQuery<T>): Promise<{ data: T[]; error: string | null }> => {
       const out: T[] = []
@@ -123,7 +126,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         if (!data || data.length === 0) break
         out.push(...data)
         if (data.length < 1000) break
-        if (from > 20000) break // backstop
+        if (from > MAX_PAGINADO) {
+          // Antes esto devolvía error:null y truncaba en silencio, que en una
+          // serie es peor que fallar: el caller recibe un `hasta` equivocado y
+          // no tiene forma de saberlo. Ahora lo declara.
+          return { data: out, error: `Resultado demasiado grande (>${MAX_PAGINADO + 1000} filas). Acotá el rango con ?dias= o filtrá por ?categoria=.` }
+        }
       }
       return { data: out, error: null }
     }
@@ -157,6 +165,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           .from('vr_bandas_history')
           .select('date, category, p10, mediana, p90, amplitud_pct, lotes, cabezas, ventana_dias, metodologia')
           .gte('date', desde.toISOString().slice(0, 10))
+          // Filtrar la metodología NO es opcional: la PK es (date, category,
+          // metodologia) justamente para que VR v1.1 conviva con v1.0. Sin este
+          // filtro, el día que exista v1.1 la serie devolvería puntos duplicados
+          // por fecha y (date, category) dejaría de ser un orden total, con lo
+          // que el paginado por .range() podría repetir o saltear filas.
+          .eq('metodologia', VR_METODOLOGIA)
           // Orden estable y total: sin el desempate por categoría, dos filas del
           // mismo día podrían repartirse mal entre páginas.
           .order('date', { ascending: true })
@@ -171,9 +185,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         }, { status: 500 }))
       }
       if (!data || data.length === 0) {
+        // Distinguir "esta categoría nunca tuvo serie" de "no hay datos en ESTE
+        // rango": culpar al rango por una condición que ningún rango arregla
+        // manda al consumidor a reintentar para siempre. Ternero es el caso real:
+        // está en CATEGORIAS_CON_LOTE pero no aparece en el dato de lote del MAG.
+        const msg = cod
+          ? `Sin serie de banda para "${categoriaParam}". Puede que esa categoría no tenga suficientes operaciones de lote en el MAG para publicar banda; probá sin el filtro de categoría para ver cuáles sí tienen serie.`
+          : 'Sin serie de banda para ese rango.'
         return finalize(NextResponse.json({
           success: false,
-          error: { code: 'NO_VR_HISTORY', message: 'Sin serie de banda para ese rango.' },
+          error: { code: 'NO_VR_HISTORY', message: msg },
         }, { status: 503 }))
       }
 

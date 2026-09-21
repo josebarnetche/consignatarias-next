@@ -38,6 +38,13 @@ const PUNTOS_TENDENCIA = 12
 
 const MIN_LOTES_BANDA = 10
 const MIN_LOTES_AJUSTE_ORIGEN = 30
+/**
+ * Piso de la SERIE. Es 30 y no 10 a propósito: `getReferencia` colapsa las bandas
+ * de menos de 30 lotes en la mediana con amplitud 0. Si la serie aceptara 10, la
+ * misma categoría y fecha daría amplitud 0 por `?vr=1` y una banda ancha por
+ * `?vr=historico`. Debe coincidir con MIN_LOTES_BANDA_COMPLETA de src/lib/vr.ts.
+ */
+const MIN_LOTES_SERIE = 30
 
 /** Versión de metodología. Forma parte de la PK de la serie: un cambio de cálculo
  *  crea una serie nueva en vez de pisar la vieja. Debe coincidir con VR_METODOLOGIA
@@ -97,6 +104,11 @@ function isoHaceDias(n) {
   return new Date(Date.now() - n * 86_400_000).toISOString().slice(0, 10)
 }
 
+/** Resta días a una fecha ISO sin pasar por la zona horaria local. */
+function isoRestar(iso, dias) {
+  return new Date(Date.parse(`${iso}T00:00:00Z`) - dias * 86_400_000).toISOString().slice(0, 10)
+}
+
 async function main() {
   if (!SUPABASE_URL || !SUPABASE_KEY) {
     console.error('Faltan SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY')
@@ -105,10 +117,17 @@ async function main() {
   const sb = createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: false } })
 
   const desdeOrigen = isoHaceDias(VENTANA_ORIGEN_DIAS)
-  const desdeBanda = isoHaceDias(VENTANA_DIAS)
-
   const todas = await traerLotes(sb, desdeOrigen)
-  const deBanda = todas.filter((f) => f.date >= desdeBanda)
+
+  // La ventana se ancla en la ÚLTIMA RUEDA CON DATO, no en el reloj de la corrida.
+  // Si se anclara en "hoy", una corrida fuera de cron (o un día sin operaciones)
+  // recalcularía el MISMO punto de la serie con una ventana distinta y lo pisaría:
+  // la PK promete reproducibilidad y esto la rompía en silencio. Pasó de verdad —
+  // el primer backfill quedó con fecha 2026-09-18 y ventana arrancando el 08-21
+  // en vez del 08-19, porque se generó un domingo.
+  const ultimaRueda = todas.reduce((max, f) => (f.date > max ? f.date : max), '')
+  const desdeBanda = isoRestar(ultimaRueda, VENTANA_DIAS)
+  const deBanda = todas.filter((f) => f.date > desdeBanda && f.date <= ultimaRueda)
 
   // El guard mira la ventana de la BANDA, no la de origen: si el pipeline estuvo
   // caído varias semanas, `todas` puede traer datos viejos mientras `deBanda`
@@ -162,7 +181,7 @@ async function main() {
   // La serie, fechada en la ÚLTIMA RUEDA del dato y no en "hoy": así una corrida
   // que se ejecuta un día sin operaciones no inventa un punto nuevo, y un re-run
   // del mismo día es idempotente por la PK.
-  const fechaSerie = salida.fecha_dato_hasta
+  const fechaSerie = ultimaRueda
   const filas = Object.entries(categorias).map(([category, b]) => ({
     date: fechaSerie,
     category,
@@ -177,9 +196,13 @@ async function main() {
   }))
   // Los CHECK de la tabla rechazarían una banda desordenada o sin base; filtrar
   // acá evita que una fila mala aborte el upsert entera y deje la serie sin el día.
-  const validas = filas.filter((f) => f.p10 > 0 && f.p10 <= f.mediana && f.mediana <= f.p90 && f.lotes >= 10)
+  const validas = filas.filter(
+    (f) => f.p10 > 0 && f.p10 <= f.mediana && f.mediana <= f.p90 && f.lotes >= MIN_LOTES_SERIE,
+  )
   if (validas.length !== filas.length) {
-    console.warn(`Descartadas ${filas.length - validas.length} bandas que no pasan los invariantes.`)
+    console.warn(
+      `Descartadas ${filas.length - validas.length} bandas de la serie (invariantes o menos de ${MIN_LOTES_SERIE} lotes).`,
+    )
   }
   if (validas.length > 0) {
     const { error } = await sb
