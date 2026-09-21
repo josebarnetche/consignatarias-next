@@ -5,51 +5,571 @@
   "fecha_dato_desde": "2026-08-21",
   "fecha_dato_hasta": "2026-09-18",
   "categorias": {
-    "VACA": { "p10": 2500, "mediana": 2900, "p90": 3600, "amplitud_pct": 44, "lotes": 1956, "cabezas": 10422 },
-    "VAQUILLONA": { "p10": 3500, "mediana": 4500, "p90": 5000, "amplitud_pct": 42.9, "lotes": 746, "cabezas": 8162 },
-    "NOVILLITO": { "p10": 3750, "mediana": 4700, "p90": 5100, "amplitud_pct": 36, "lotes": 538, "cabezas": 5745 },
-    "NOVILLO": { "p10": 3600, "mediana": 4300, "p90": 4600, "amplitud_pct": 27.8, "lotes": 406, "cabezas": 3960 },
-    "TORO": { "p10": 2700, "mediana": 3200, "p90": 3700, "amplitud_pct": 37, "lotes": 596, "cabezas": 1313 },
-    "MEJ": { "p10": 3070, "mediana": 4000, "p90": 4700, "amplitud_pct": 53.1, "lotes": 128, "cabezas": 732 }
+    "VACA": {
+      "p10": 2500,
+      "mediana": 2900,
+      "p90": 3600,
+      "amplitud_pct": 44,
+      "lotes": 1956,
+      "cabezas": 10422
+    },
+    "VAQUILLONA": {
+      "p10": 3500,
+      "mediana": 4500,
+      "p90": 5000,
+      "amplitud_pct": 42.9,
+      "lotes": 746,
+      "cabezas": 8162
+    },
+    "NOVILLITO": {
+      "p10": 3750,
+      "mediana": 4700,
+      "p90": 5100,
+      "amplitud_pct": 36,
+      "lotes": 538,
+      "cabezas": 5745
+    },
+    "NOVILLO": {
+      "p10": 3600,
+      "mediana": 4300,
+      "p90": 4600,
+      "amplitud_pct": 27.8,
+      "lotes": 406,
+      "cabezas": 3960
+    },
+    "TORO": {
+      "p10": 2700,
+      "mediana": 3200,
+      "p90": 3700,
+      "amplitud_pct": 37,
+      "lotes": 596,
+      "cabezas": 1313
+    },
+    "MEJ": {
+      "p10": 3070,
+      "mediana": 4000,
+      "p90": 4700,
+      "amplitud_pct": 53.1,
+      "lotes": 128,
+      "cabezas": 732
+    }
   },
   "origen": {
     "VACA": [
-      { "provincia": "BUE", "factor": 0.9892, "lotes": 5039 },
-      { "provincia": "SFE", "factor": 1.0072, "lotes": 292 },
-      { "provincia": "LPA", "factor": 1.0791, "lotes": 279 },
-      { "provincia": "CBA", "factor": 1.0791, "lotes": 148 },
-      { "provincia": "ERI", "factor": 1.0252, "lotes": 71 },
-      { "provincia": "SLU", "factor": 0.9353, "lotes": 66 }
+      {
+        "provincia": "BUE",
+        "factor": 0.9892,
+        "lotes": 5039
+      },
+      {
+        "provincia": "SFE",
+        "factor": 1.0072,
+        "lotes": 292
+      },
+      {
+        "provincia": "LPA",
+        "factor": 1.0791,
+        "lotes": 279
+      },
+      {
+        "provincia": "CBA",
+        "factor": 1.0791,
+        "lotes": 148
+      },
+      {
+        "provincia": "ERI",
+        "factor": 1.0252,
+        "lotes": 71
+      },
+      {
+        "provincia": "SLU",
+        "factor": 0.9353,
+        "lotes": 66
+      }
     ],
     "VAQUILLONA": [
-      { "provincia": "BUE", "factor": 0.9778, "lotes": 1588 },
-      { "provincia": "SFE", "factor": 1.0444, "lotes": 302 },
-      { "provincia": "LPA", "factor": 0.9611, "lotes": 130 },
-      { "provincia": "ERI", "factor": 1.0333, "lotes": 95 },
-      { "provincia": "CBA", "factor": 1.0444, "lotes": 69 }
+      {
+        "provincia": "BUE",
+        "factor": 0.9778,
+        "lotes": 1588
+      },
+      {
+        "provincia": "SFE",
+        "factor": 1.0444,
+        "lotes": 302
+      },
+      {
+        "provincia": "LPA",
+        "factor": 0.9611,
+        "lotes": 130
+      },
+      {
+        "provincia": "ERI",
+        "factor": 1.0333,
+        "lotes": 95
+      },
+      {
+        "provincia": "CBA",
+        "factor": 1.0444,
+        "lotes": 69
+      }
     ],
     "NOVILLITO": [
-      { "provincia": "BUE", "factor": 1, "lotes": 1001 },
-      { "provincia": "SFE", "factor": 1.0287, "lotes": 268 },
-      { "provincia": "ERI", "factor": 1.0213, "lotes": 97 },
-      { "provincia": "LPA", "factor": 0.9681, "lotes": 96 },
-      { "provincia": "CBA", "factor": 1.0213, "lotes": 54 }
+      {
+        "provincia": "BUE",
+        "factor": 1,
+        "lotes": 1001
+      },
+      {
+        "provincia": "SFE",
+        "factor": 1.0287,
+        "lotes": 268
+      },
+      {
+        "provincia": "ERI",
+        "factor": 1.0213,
+        "lotes": 97
+      },
+      {
+        "provincia": "LPA",
+        "factor": 0.9681,
+        "lotes": 96
+      },
+      {
+        "provincia": "CBA",
+        "factor": 1.0213,
+        "lotes": 54
+      }
     ],
     "NOVILLO": [
-      { "provincia": "BUE", "factor": 1, "lotes": 1020 },
-      { "provincia": "LPA", "factor": 0.9545, "lotes": 82 },
-      { "provincia": "SFE", "factor": 0.9795, "lotes": 57 },
-      { "provincia": "CBA", "factor": 1.0227, "lotes": 55 },
-      { "provincia": "ERI", "factor": 0.9943, "lotes": 44 }
+      {
+        "provincia": "BUE",
+        "factor": 1,
+        "lotes": 1020
+      },
+      {
+        "provincia": "LPA",
+        "factor": 0.9545,
+        "lotes": 82
+      },
+      {
+        "provincia": "SFE",
+        "factor": 0.9795,
+        "lotes": 57
+      },
+      {
+        "provincia": "CBA",
+        "factor": 1.0227,
+        "lotes": 55
+      },
+      {
+        "provincia": "ERI",
+        "factor": 0.9943,
+        "lotes": 44
+      }
     ],
     "TORO": [
-      { "provincia": "BUE", "factor": 1, "lotes": 1325 },
-      { "provincia": "LPA", "factor": 1.0667, "lotes": 99 },
-      { "provincia": "SFE", "factor": 1.0667, "lotes": 62 }
+      {
+        "provincia": "BUE",
+        "factor": 1,
+        "lotes": 1325
+      },
+      {
+        "provincia": "LPA",
+        "factor": 1.0667,
+        "lotes": 99
+      },
+      {
+        "provincia": "SFE",
+        "factor": 1.0667,
+        "lotes": 62
+      }
     ],
     "MEJ": [
-      { "provincia": "BUE", "factor": 1, "lotes": 227 },
-      { "provincia": "SFE", "factor": 1.075, "lotes": 37 }
+      {
+        "provincia": "BUE",
+        "factor": 1,
+        "lotes": 227
+      },
+      {
+        "provincia": "SFE",
+        "factor": 1.075,
+        "lotes": 37
+      }
+    ]
+  },
+  "tendencia": {
+    "VACA": [
+      {
+        "date": "2026-08-25",
+        "amplitud": 50,
+        "mediana": 2800
+      },
+      {
+        "date": "2026-08-26",
+        "amplitud": 50,
+        "mediana": 2800
+      },
+      {
+        "date": "2026-08-28",
+        "amplitud": 50,
+        "mediana": 2850
+      },
+      {
+        "date": "2026-09-01",
+        "amplitud": 50,
+        "mediana": 2900
+      },
+      {
+        "date": "2026-09-02",
+        "amplitud": 50,
+        "mediana": 2900
+      },
+      {
+        "date": "2026-09-04",
+        "amplitud": 50,
+        "mediana": 2850
+      },
+      {
+        "date": "2026-09-08",
+        "amplitud": 50,
+        "mediana": 2800
+      },
+      {
+        "date": "2026-09-09",
+        "amplitud": 50,
+        "mediana": 2835
+      },
+      {
+        "date": "2026-09-11",
+        "amplitud": 46.9,
+        "mediana": 2850
+      },
+      {
+        "date": "2026-09-15",
+        "amplitud": 46.9,
+        "mediana": 2900
+      },
+      {
+        "date": "2026-09-16",
+        "amplitud": 46.9,
+        "mediana": 2900
+      },
+      {
+        "date": "2026-09-18",
+        "amplitud": 44,
+        "mediana": 2900
+      }
+    ],
+    "VAQUILLONA": [
+      {
+        "date": "2026-08-25",
+        "amplitud": 45.7,
+        "mediana": 4550
+      },
+      {
+        "date": "2026-08-26",
+        "amplitud": 45.7,
+        "mediana": 4500
+      },
+      {
+        "date": "2026-08-28",
+        "amplitud": 45.7,
+        "mediana": 4500
+      },
+      {
+        "date": "2026-09-01",
+        "amplitud": 44.9,
+        "mediana": 4500
+      },
+      {
+        "date": "2026-09-02",
+        "amplitud": 44.3,
+        "mediana": 4500
+      },
+      {
+        "date": "2026-09-04",
+        "amplitud": 42.9,
+        "mediana": 4500
+      },
+      {
+        "date": "2026-09-08",
+        "amplitud": 42.9,
+        "mediana": 4500
+      },
+      {
+        "date": "2026-09-09",
+        "amplitud": 42.9,
+        "mediana": 4500
+      },
+      {
+        "date": "2026-09-11",
+        "amplitud": 42.9,
+        "mediana": 4500
+      },
+      {
+        "date": "2026-09-15",
+        "amplitud": 38.9,
+        "mediana": 4500
+      },
+      {
+        "date": "2026-09-16",
+        "amplitud": 42.9,
+        "mediana": 4500
+      },
+      {
+        "date": "2026-09-18",
+        "amplitud": 42.9,
+        "mediana": 4500
+      }
+    ],
+    "NOVILLITO": [
+      {
+        "date": "2026-08-25",
+        "amplitud": 36.8,
+        "mediana": 4800
+      },
+      {
+        "date": "2026-08-26",
+        "amplitud": 36.8,
+        "mediana": 4800
+      },
+      {
+        "date": "2026-08-28",
+        "amplitud": 36.8,
+        "mediana": 4800
+      },
+      {
+        "date": "2026-09-01",
+        "amplitud": 35.5,
+        "mediana": 4800
+      },
+      {
+        "date": "2026-09-02",
+        "amplitud": 35.5,
+        "mediana": 4750
+      },
+      {
+        "date": "2026-09-04",
+        "amplitud": 34.2,
+        "mediana": 4700
+      },
+      {
+        "date": "2026-09-08",
+        "amplitud": 34.6,
+        "mediana": 4750
+      },
+      {
+        "date": "2026-09-09",
+        "amplitud": 34.2,
+        "mediana": 4750
+      },
+      {
+        "date": "2026-09-11",
+        "amplitud": 37.7,
+        "mediana": 4700
+      },
+      {
+        "date": "2026-09-15",
+        "amplitud": 36,
+        "mediana": 4700
+      },
+      {
+        "date": "2026-09-16",
+        "amplitud": 36.5,
+        "mediana": 4700
+      },
+      {
+        "date": "2026-09-18",
+        "amplitud": 36,
+        "mediana": 4700
+      }
+    ],
+    "NOVILLO": [
+      {
+        "date": "2026-08-25",
+        "amplitud": 27,
+        "mediana": 4450
+      },
+      {
+        "date": "2026-08-26",
+        "amplitud": 29.3,
+        "mediana": 4425
+      },
+      {
+        "date": "2026-08-28",
+        "amplitud": 30.6,
+        "mediana": 4400
+      },
+      {
+        "date": "2026-09-01",
+        "amplitud": 29.9,
+        "mediana": 4400
+      },
+      {
+        "date": "2026-09-02",
+        "amplitud": 29.2,
+        "mediana": 4400
+      },
+      {
+        "date": "2026-09-04",
+        "amplitud": 29.2,
+        "mediana": 4300
+      },
+      {
+        "date": "2026-09-08",
+        "amplitud": 28.3,
+        "mediana": 4400
+      },
+      {
+        "date": "2026-09-09",
+        "amplitud": 27.8,
+        "mediana": 4400
+      },
+      {
+        "date": "2026-09-11",
+        "amplitud": 27.8,
+        "mediana": 4350
+      },
+      {
+        "date": "2026-09-15",
+        "amplitud": 27.8,
+        "mediana": 4330
+      },
+      {
+        "date": "2026-09-16",
+        "amplitud": 27.8,
+        "mediana": 4300
+      },
+      {
+        "date": "2026-09-18",
+        "amplitud": 27.8,
+        "mediana": 4300
+      }
+    ],
+    "TORO": [
+      {
+        "date": "2026-08-25",
+        "amplitud": 48,
+        "mediana": 3000
+      },
+      {
+        "date": "2026-08-26",
+        "amplitud": 48,
+        "mediana": 3000
+      },
+      {
+        "date": "2026-08-28",
+        "amplitud": 42.3,
+        "mediana": 3200
+      },
+      {
+        "date": "2026-09-01",
+        "amplitud": 42.3,
+        "mediana": 3200
+      },
+      {
+        "date": "2026-09-02",
+        "amplitud": 42.3,
+        "mediana": 3200
+      },
+      {
+        "date": "2026-09-04",
+        "amplitud": 42.3,
+        "mediana": 3200
+      },
+      {
+        "date": "2026-09-08",
+        "amplitud": 42.3,
+        "mediana": 3200
+      },
+      {
+        "date": "2026-09-09",
+        "amplitud": 40.4,
+        "mediana": 3200
+      },
+      {
+        "date": "2026-09-11",
+        "amplitud": 39.6,
+        "mediana": 3200
+      },
+      {
+        "date": "2026-09-15",
+        "amplitud": 37,
+        "mediana": 3200
+      },
+      {
+        "date": "2026-09-16",
+        "amplitud": 37,
+        "mediana": 3200
+      },
+      {
+        "date": "2026-09-18",
+        "amplitud": 37,
+        "mediana": 3200
+      }
+    ],
+    "MEJ": [
+      {
+        "date": "2026-08-25",
+        "amplitud": 45.5,
+        "mediana": 4300
+      },
+      {
+        "date": "2026-08-26",
+        "amplitud": 46.3,
+        "mediana": 4300
+      },
+      {
+        "date": "2026-08-28",
+        "amplitud": 44.6,
+        "mediana": 4300
+      },
+      {
+        "date": "2026-09-01",
+        "amplitud": 50,
+        "mediana": 4200
+      },
+      {
+        "date": "2026-09-02",
+        "amplitud": 54.3,
+        "mediana": 4200
+      },
+      {
+        "date": "2026-09-04",
+        "amplitud": 58.4,
+        "mediana": 4100
+      },
+      {
+        "date": "2026-09-08",
+        "amplitud": 56.7,
+        "mediana": 4100
+      },
+      {
+        "date": "2026-09-09",
+        "amplitud": 53.6,
+        "mediana": 4100
+      },
+      {
+        "date": "2026-09-11",
+        "amplitud": 56.7,
+        "mediana": 4000
+      },
+      {
+        "date": "2026-09-15",
+        "amplitud": 55.6,
+        "mediana": 4000
+      },
+      {
+        "date": "2026-09-16",
+        "amplitud": 51.6,
+        "mediana": 4000
+      },
+      {
+        "date": "2026-09-18",
+        "amplitud": 53.1,
+        "mediana": 4000
+      }
     ]
   }
 }
