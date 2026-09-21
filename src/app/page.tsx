@@ -8,7 +8,7 @@ import rematesData from "@/lib/data/remates.json";
 import corredorManifest from "../../public/el-corredor/manifest.json";
 import { getAllProfiles } from "@/lib/data/consignataria-slugs";
 import { resolveYoutubeUrl } from "@/lib/youtube-live";
-import { getLogoUrl, getBrandColor, getBrandKeepColor } from "@/lib/data/logo-map";
+import { getLogoUrl, getBrandColor, getBrandKeepColor, getBrandSolidLogo } from "@/lib/data/logo-map";
 import { getFeaturedSlugs } from "@/lib/featured";
 import ConsignatariasShowcase from "@/components/landing/ConsignatariasShowcase";
 import CalendarioSanitario from "@/components/landing/CalendarioSanitario";
@@ -286,7 +286,7 @@ export default async function LandingPage() {
     .filter(s => !activeSlugs.has(s))
     .map(s => ({ slug: s, name: getAllProfiles().find(p => p.canonicalSlug === s)?.displayName ?? s }))
   const showcaseItems = [...activeConsignatarias, ...featured]
-    .map(c => ({ slug: c.slug, name: c.name, logoUrl: getLogoUrl(c.slug), brandColor: getBrandColor(c.slug), keepColor: getBrandKeepColor(c.slug), isPro: proSlugs.has(c.slug) }))
+    .map(c => ({ slug: c.slug, name: c.name, logoUrl: getLogoUrl(c.slug), brandColor: getBrandColor(c.slug), keepColor: getBrandKeepColor(c.slug), solidLogo: getBrandSolidLogo(c.slug), isPro: proSlugs.has(c.slug) }))
     .filter(c => c.logoUrl && c.brandColor)
     // PRO firms first — paying firms appear with priority on the wall.
     .sort((a, b) => Number(b.isPro) - Number(a.isPro))
@@ -364,7 +364,7 @@ export default async function LandingPage() {
         {/* ============================================================ */}
         {/*  HERO                                                        */}
         {/* ============================================================ */}
-        <section className="relative max-w-7xl mx-auto px-6 pt-16 pb-32">
+        <section className="relative max-w-7xl mx-auto px-6 pt-16 pb-16">
           {/* Foto de marca: la panorámica del amanecer (banco marca/), detrás de todo */}
           <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
             {/* WebP + variante mobile (60% del tráfico): 298KB JPG → 59KB/24KB webp.
@@ -422,25 +422,6 @@ export default async function LandingPage() {
             ventanaDias={VR_VENTANA_DIAS}
           />
 
-          {/* Buscador por nombre — el usuario de IA suele llegar sabiendo el
-              nombre de una firma y no tenía dónde tipearlo. */}
-          <ConsignatariaSearch
-            items={getAllProfiles().map((p) => ({ slug: p.canonicalSlug, name: p.displayName }))}
-          />
-
-          {/* Cobertura — mapa estilizado por provincia (reemplaza la grilla de texto). */}
-          <div className="relative z-10 mt-20">
-            <div className="mb-6">
-              <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-1">
-                Dónde cubrimos
-              </div>
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-normal text-zinc-100 tracking-tight leading-tight">
-                Consignatarias de hacienda y remates en <span className="text-accent">cada provincia</span>.
-              </h2>
-            </div>
-            <CoverageMap counts={provinceRemateCounts} />
-          </div>
-
         </section>
 
         {/* ============================================================ */}
@@ -452,23 +433,21 @@ export default async function LandingPage() {
           {/* Par productor: ya sabe cuánto vale su hacienda (widget) → ahora, ¿conviene
               venderla hoy? El semáforo gratis + el camino a la decisión completa. Primera
               vez que el valor PRO Usuario aparece en la puerta de entrada. */}
-          <div className="mt-6 rounded-lg border border-sky-500/20 bg-sky-950/10 p-5 flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className="shrink-0">
-              <SellZoneBadge categoriaLabel="novillo" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm text-zinc-300 leading-relaxed">
+          <div className="mt-6 rounded-lg border border-sky-500/20 bg-sky-950/10 p-5 space-y-4">
+            <SellZoneBadge categoriaLabel="novillo" />
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <p className="flex-1 min-w-0 text-sm text-zinc-300 leading-relaxed">
                 Sabés cuánto vale — <span className="text-zinc-100 font-medium">¿conviene venderla hoy?</span>{" "}
                 Compará tu lote contra los últimos 365 días.
               </p>
+              <Link
+                href="/mercado/vender-ahora"
+                className="shrink-0 inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-100 border border-sky-500/40 hover:border-sky-400 hover:text-white transition-colors rounded py-2.5 px-5 whitespace-nowrap"
+              >
+                ¿Vendo ahora?
+                <IconArrowRight />
+              </Link>
             </div>
-            <Link
-              href="/mercado/vender-ahora"
-              className="shrink-0 inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-950 bg-accent hover:bg-sky-300 transition-colors rounded py-2.5 px-5 whitespace-nowrap"
-            >
-              ¿Vendo ahora?
-              <IconArrowRight />
-            </Link>
           </div>
         </section>
 
@@ -477,7 +456,7 @@ export default async function LandingPage() {
         {/* ============================================================ */}
         {/*  COMO FUNCIONA                                                */}
         {/* ============================================================ */}
-        <section id="como-funciona" className="max-w-7xl mx-auto px-6 pt-32 pb-32">
+        <section id="como-funciona" className="max-w-7xl mx-auto px-6 pt-24 pb-24">
           <h2 className="text-2xl md:text-3xl font-medium text-zinc-100 tracking-tight text-center mb-16">
             Cómo funciona
           </h2>
@@ -518,15 +497,29 @@ export default async function LandingPage() {
         <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
 
         {/* ============================================================ */}
-        {/*  CALENDARIO SANITARIO — SENASA (aftosa/brucelosis/movimiento) */}
+        {/*  ¿Y DÓNDE LA VENDO? — el directorio como paso siguiente       */}
+        {/*  (v1.212: buscador y mapa salen del hero; el hero es valuar)  */}
         {/* ============================================================ */}
-        <CalendarioSanitario />
+        <section id="donde-vender" className="max-w-7xl mx-auto px-6 pt-24">
+          <div className="max-w-2xl">
+            <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2">Cuando decidas vender</div>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-normal text-zinc-100 tracking-tight leading-tight">
+              ¿Y dónde la vendo? <span className="text-accent">{totalConsignatarias} consignatarias</span> y {fmt(rematesData.length)} remates, por provincia.
+            </h2>
+          </div>
+          {/* Buscador por nombre — el usuario de IA suele llegar sabiendo el
+              nombre de una firma y no tenía dónde tipearlo. */}
+          <ConsignatariaSearch
+            items={getAllProfiles().map((p) => ({ slug: p.canonicalSlug, name: p.displayName }))}
+          />
 
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
+          {/* Cobertura — mapa estilizado por provincia (reemplaza la grilla de texto). */}
+          <div className="relative z-10 mt-10">
+            <CoverageMap counts={provinceRemateCounts} />
+          </div>
+        </section>
 
-        {/* ============================================================ */}
-        {/*  CONSIGNATARIAS SHOWCASE — wall of active consignatarias      */}
-        {/* ============================================================ */}
+        {/* CONSIGNATARIAS SHOWCASE — wall of active consignatarias */}
         <ConsignatariasShowcase items={showcaseItems} />
 
         {/* Para las firmas: va DESPUÉS del directorio. Antes estaba en el hero, antes que
@@ -567,6 +560,16 @@ export default async function LandingPage() {
         <div className="relative z-10 max-w-4xl mx-auto px-6 pt-2 pb-6">
           <PromoGuiaBanner origen="home" />
         </div>
+
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
+
+        {/* ============================================================ */}
+        {/*  CALENDARIO SANITARIO — SENASA (aftosa/brucelosis/movimiento) */}
+        {/* ============================================================ */}
+        <CalendarioSanitario />
+
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
+
 
 
         {/* ============================================================ */}

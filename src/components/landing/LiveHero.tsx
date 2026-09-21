@@ -94,8 +94,7 @@ export default function LiveHero(p: LiveHeroProps) {
       <p className={`text-base md:text-lg text-zinc-400 mb-9 max-w-2xl leading-relaxed ${reveal(120)}`}>
         El <strong className="text-zinc-200 font-medium">Valor de Referencia</strong> de cada categoría y peso sale de{' '}
         {ar(p.lotesVentana)} lotes vendidos en el Mercado Agroganadero en los últimos {p.ventanaDias} días, con el rango
-        y los lotes a la vista. Cargá tu rodeo y seguilo gratis. Y cuando quieras vender: {ar(p.rematesIndexados)} remates
-        indexados y {p.consignatarias} consignatarias en un solo lugar.
+        y los lotes a la vista. Cargá tu rodeo y seguilo gratis.
       </p>
 
       {/* readout vivo — no card grid: línea de mercado tipo tape */}
@@ -145,7 +144,9 @@ export default function LiveHero(p: LiveHeroProps) {
         </div>
       </div>
 
-      {/* CTAs */}
+      {/* CTAs — una acción principal (valuar) y una de consulta (VR). Lo de vender
+          (directorio, remates, calendario) va en una fila de enlaces: es el paso
+          siguiente, no compite con la promesa. Antes había 5 botones. */}
       <div className={`flex flex-col sm:flex-row flex-wrap gap-3 ${reveal(240)}`}>
         <Link
           href="/mi-ganado"
@@ -162,30 +163,22 @@ export default function LiveHero(p: LiveHeroProps) {
         >
           Ver el Valor de Referencia
         </Link>
+      </div>
+      <div className={`mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-zinc-500 ${reveal(240)}`}>
+        <span>¿Querés vender?</span>
         <Link
           href="/consignatarias"
           onClick={() => trackCTA('ver_directorio', 'hero', { context: 'landing-hero', variant: 'vr' })}
-          className="inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-400 hover:text-zinc-200 transition-colors py-3 px-3"
+          className="text-zinc-300 underline decoration-zinc-700 underline-offset-4 hover:text-white hover:decoration-zinc-400 transition-colors"
         >
-          Buscar consignataria
+          {p.consignatarias} consignatarias
         </Link>
-        {p.enVivo > 0 && (
-          <Link
-            href="/remates/en-vivo"
-            onClick={() => trackCTA('en_vivo', 'hero', { context: 'landing-hero', variant: 'default' })}
-            className="inline-flex items-center justify-center gap-2 text-sm font-medium text-white bg-[#dc2626] hover:bg-[#ef4444] transition-colors rounded py-3 px-6"
-          >
-            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-            {p.enVivo} en vivo
-          </Link>
-        )}
         <Link
           href="/remates/semana"
           onClick={() => trackCTA('calendario_semana', 'hero', { context: 'landing-hero', variant: 'default' })}
-          className="group inline-flex items-center justify-center gap-1 text-sm font-medium text-zinc-400 hover:text-zinc-200 transition-colors py-3 px-3"
+          className="text-zinc-300 underline decoration-zinc-700 underline-offset-4 hover:text-white hover:decoration-zinc-400 transition-colors"
         >
-          Calendario de la semana
-          <span className="inline-block transition-transform duration-200 ease-out group-hover:translate-x-1">→</span>
+          Remates de la semana
         </Link>
       </div>
     </div>
