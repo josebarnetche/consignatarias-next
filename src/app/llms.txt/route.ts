@@ -72,7 +72,7 @@ Available tools:
 - \`sanidad_renspa\` — valida y decodifica un código RENSPA (17 dígitos, 00.000.0.00000.00) en sus segmentos
 - \`sanidad_dte_tropa\` — explica el DT-e / número de tropa (qué ampara, requisitos para emitirlo) — referencia
 - \`buenas_practicas\` — Buenas Prácticas Ganaderas (14 temas de la Guía Red BPA): cómo implementar salud, bienestar, manejo de rodeo, alimentación, agua, etc.
-- \`valuar_tropa\` — "¿cuánto valen 350 novillos en Formosa?": total en ARS y USD (blue y oficial) a precio MAG del día
+- \`valuar_tropa\` — "¿cuánto valen 350 novillos en Formosa?": la banda de precio realmente observada en las operaciones de lote del MAG (P10 / mediana / P90, VR v1.0) con los lotes y cabezas que la sostienen, en ARS y USD (blue y oficial). Sin base suficiente cae a la referencia nacional y lo declara. Metodología en /metodologia/vr
 - \`valuar_arrendamiento_campo\` — "¿cuánto cuesta arrendar 3.500 has en Corrientes?": canon anual/mensual al índice oficial de arrendamientos, ARS y USD
 - \`valuar_campo\` — "¿cuánto vale la hectárea en Corrientes?": valor de la tierra en USD/ha por provincia y por zona (15 provincias, 52 zonas), con rango, arrendamiento típico en kg de novillo y la fuente fechada de cada dato. Distingue campo ganadero de agrícola. Gratis y sin cupo
 - \`quiero_comprar\` — publicá qué hacienda buscás comprar → remates programados que matchean + aviso por email/webhook de cada remate nuevo (también en /quiero-comprar)
@@ -95,7 +95,7 @@ Todos los tools son públicos: el número del día, los precios por firma, los r
 \`consignatarias.com.ar\` is the **price-discovery / reference-index layer** of the Argentine cattle market — the public, citable reference the country never institutionalized (the role CEPEA/B3 plays in Brazil, MPR in the US, the OYCI in Australia). Business model:
 
 1. **Productor — free.** The whole observatory is free for cattle producers: INMAG, prices, remates, directory, calculators, alerts. They are the audience that makes the data authoritative (the moat), not a revenue line.
-2. **Enterprise API + MCP** (\`cnsg_live_*\` keys, Bearer auth) — \`/api/precios\`, \`/api/lots\` + the MCP server. Tiers **Starter ARS 74.000, Growth ARS 451.000, Scale a medida** (por volumen, facturado en ARS). This is the revenue: apps, AI agents, agtech, frigoríficos, traders, funds, banks pay for programmatic access.
+2. **Enterprise API + MCP** (\`cnsg_live_*\` keys, Bearer auth) — \`/api/precios\` (con \`?vr=1\` la banda observada por categoría y con \`?vr=historico\` la serie de esa banda), \`/api/lots\` + the MCP server. Tiers **Starter ARS 74.000, Growth ARS 451.000, Scale a medida** (por volumen, facturado en ARS). This is the revenue: apps, AI agents, agtech, frigoríficos, traders, funds, banks pay for programmatic access.
 3. **PRO Consignataria** (ARS 45.000/mes, facturado en ARS vía Rebill) — reach: promote auctions to the producer base + featured profile.
 4. **Guía paga** (ARS 100.000, compra única, no suscripción) — *Cómo abrir tu consignataria de hacienda*, edición 2026: ${guiaPages} páginas sobre matrícula de martillero, SIOCAL (el registro que reemplazó al RUCA por Res. SAGyP 50/2025, con los Anexos sustituidos por la Res. SAGyP 103/2026), Registro Fiscal RG 3873, habilitación SENASA de predios (Res. 924/2020), el riesgo de cobranza bajo los arts. 1.337/1.339/1.341/1.343 del CCyC, la liquidación con los códigos de gasto del WSLSP, y posicionamiento para firmas en actividad.
 

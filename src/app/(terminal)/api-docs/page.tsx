@@ -68,6 +68,18 @@ const ENDPOINTS = [
   },
   {
     method: 'GET',
+    path: '/api/precios?vr=1',
+    description: 'Adjunta a cada categoría la banda de precio OBSERVADA en las operaciones de lote del MAG (VR v1.0): p10, mediana, p90, amplitud y el n de lotes y cabezas que la sostiene. Una categoría sin base suficiente viene con vr:null — nunca se rellena con el precio puntual. Aditivo: sin el flag la respuesta no cambia.',
+    auth: true,
+  },
+  {
+    method: 'GET',
+    path: '/api/precios?vr=historico&dias=90',
+    description: 'La SERIE de la banda, no la foto de hoy: cómo evolucionó la dispersión por categoría. Params ?dias=N (7-3650) y ?categoria=. Responde la pregunta que el precio puntual no puede — si el mercado se está abriendo o cerrando. Ojo: cada punto es una ventana móvil de 30 días, así que dos puntos consecutivos comparten lotes.',
+    auth: true,
+  },
+  {
+    method: 'GET',
     path: '/api/account',
     description: 'Tu cuenta — plan, cupo mensual, uso, remaining y fecha de reset. Bearer auth devuelve metadata de la key usada. Sin Bearer y con cookie de sesión devuelve estado del user logueado. Útil para monitorear desde scripts.',
     auth: true,

@@ -3,6 +3,7 @@ import marketPrices from '@/lib/data/market-prices.json'
 import { authenticate, setQuotaHeaders } from '@/lib/api-auth'
 import { createAdminClient } from '@/lib/supabase-server'
 import { logEvent } from '@/lib/ops'
+import { getReferencia, categoriaALote, CATEGORIAS_CON_LOTE, vrCobertura, VR_METODOLOGIA, VR_METODOLOGIA_URL, VR_VENTANA_DIAS } from '@/lib/vr'
 
 // Valid categories
 const VALID_CATEGORIES = ['novillos', 'novillitos', 'vaquillonas', 'vacas', 'toros', 'terneros'] as const
@@ -14,6 +15,20 @@ interface PrecioItem {
   precio_kg: number
   moneda: 'ARS'
   variacion_semanal: string
+  /**
+   * Banda observada (VR v1.0), solo con ?vr=1. Es `null` cuando la categoría no
+   * tiene base suficiente de lotes — nunca se omite el campo ni se rellena con
+   * el precio puntual, para que el consumidor distinga "sin base" de "no pediste".
+   */
+  vr?: {
+    p10: number
+    mediana: number
+    p90: number
+    amplitud_pct: number
+    lotes: number
+    cabezas: number
+    confianza: string
+  } | null
 }
 
 interface SuccessResponse {
@@ -84,11 +99,107 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const { searchParams } = new URL(request.url)
     const categoriaParam = searchParams.get('categoria')?.toLowerCase() || null
     const detallado = searchParams.get('detallado') === 'true'
+    // ?vr=1 adjunta la banda observada a cada categoría (VR v1.0). Aditivo:
+    // sin el flag la respuesta es byte-por-byte la de siempre.
+    const conVr = searchParams.get('vr') === '1' || searchParams.get('vr') === 'true'
+    // ?vr=historico devuelve la SERIE de la banda en vez de la foto de hoy.
+    // Es el dato que compra quien modela riesgo: no "cuánto vale" sino "se está
+    // abriendo o cerrando la dispersión".
+    const vrHistorico = searchParams.get('vr') === 'historico'
     const historicoParam = searchParams.get('historico')
     const historicoDays = historicoParam
       // Tope 7700 días (~21 años): la serie novillitos 401/420 arranca en 2006.
       ? Math.max(7, Math.min(7700, parseInt(historicoParam, 10) || 90))
       : null
+
+    // PostgREST capa CADA request en 1000 filas (max-rows del proyecto) — para
+    // series largas hay que paginar con .range(). El .limit() solo no alcanza.
+    type PageQuery<T> = (from: number, to: number) => PromiseLike<{ data: T[] | null; error: { message: string } | null }>
+    const pageAll = async <T,>(q: PageQuery<T>): Promise<{ data: T[]; error: string | null }> => {
+      const out: T[] = []
+      for (let from = 0; ; from += 1000) {
+        const { data, error } = await q(from, from + 999)
+        if (error) return { data: out, error: error.message }
+        if (!data || data.length === 0) break
+        out.push(...data)
+        if (data.length < 1000) break
+        if (from > 20000) break // backstop
+      }
+      return { data: out, error: null }
+    }
+
+    // VR histórico — serie de la banda desde vr_bandas_history.
+    if (vrHistorico) {
+      const dias = Math.max(7, Math.min(3650, parseInt(searchParams.get('dias') || '90', 10) || 90))
+      const desde = new Date()
+      desde.setUTCDate(desde.getUTCDate() - dias)
+      const admin = createAdminClient()
+
+      // La categoría llega en plural o singular ("novillos"/"novillo") y la serie
+      // guarda el código del dato de lote ("NOVILLO"). Sin esta traducción el
+      // filtro no pega y la respuesta vendría vacía sin explicar por qué.
+      let cod: string | null = null
+      if (categoriaParam) {
+        cod = categoriaALote(categoriaParam)
+        if (!cod) {
+          return finalize(NextResponse.json({
+            success: false,
+            error: { code: 'INVALID_CATEGORY', message: `La categoría "${categoriaParam}" no tiene serie de banda. Con serie: ${CATEGORIAS_CON_LOTE.join(', ')}.` },
+          }, { status: 400 }))
+        }
+      }
+
+      // Paginado obligatorio: 6 categorías × 3650 días son ~22.000 filas y
+      // PostgREST devuelve 1000 por request. Un .limit() alto truncaría en
+      // silencio, que en una serie es el peor error posible.
+      const { data, error } = await pageAll((from, to) => {
+        let q = admin
+          .from('vr_bandas_history')
+          .select('date, category, p10, mediana, p90, amplitud_pct, lotes, cabezas, ventana_dias, metodologia')
+          .gte('date', desde.toISOString().slice(0, 10))
+          // Orden estable y total: sin el desempate por categoría, dos filas del
+          // mismo día podrían repartirse mal entre páginas.
+          .order('date', { ascending: true })
+          .order('category', { ascending: true })
+        if (cod) q = q.eq('category', cod)
+        return q.range(from, to)
+      })
+      if (error) {
+        return finalize(NextResponse.json({
+          success: false,
+          error: { code: 'VR_HISTORY_FAILED', message: error },
+        }, { status: 500 }))
+      }
+      if (!data || data.length === 0) {
+        return finalize(NextResponse.json({
+          success: false,
+          error: { code: 'NO_VR_HISTORY', message: 'Sin serie de banda para ese rango.' },
+        }, { status: 503 }))
+      }
+
+      const response = NextResponse.json({
+        success: true,
+        data: {
+          dias,
+          desde: data[0].date,
+          hasta: data[data.length - 1].date,
+          serie: data,
+          metodologia: VR_METODOLOGIA,
+          url_metodologia: VR_METODOLOGIA_URL,
+          unidad: 'ARS/kg vivo',
+          fuente: 'Mercado Agroganadero — dato de lote (haciinfo000007)',
+          limites: [
+            'Cada punto es la banda de una ventana móvil, no una observación puntual: dos puntos consecutivos comparten la mayor parte de sus lotes.',
+            'La serie arranca cuando hubo ventana completa de lotes; no cubre un ciclo ganadero ni estacionalidad.',
+            'Referencia de mercado observada en el MAG (Cañuelas), no es una tasación.',
+          ],
+        },
+        timestamp: new Date().toISOString(),
+      })
+      response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=600')
+      if (auth) setQuotaHeaders(response, auth)
+      return finalize(response)
+    }
 
     // Detailed mode — return 16 sub-categories from mag_prices_detailed
     if (detallado) {
@@ -125,22 +236,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=600')
       if (auth) setQuotaHeaders(response, auth)
       return finalize(response)
-    }
-
-    // PostgREST capa CADA request en 1000 filas (max-rows del proyecto) — para
-    // series largas hay que paginar con .range(). El .limit() solo no alcanza.
-    type PageQuery<T> = (from: number, to: number) => PromiseLike<{ data: T[] | null; error: { message: string } | null }>
-    const pageAll = async <T,>(q: PageQuery<T>): Promise<{ data: T[]; error: string | null }> => {
-      const out: T[] = []
-      for (let from = 0; ; from += 1000) {
-        const { data, error } = await q(from, from + 999)
-        if (error) return { data: out, error: error.message }
-        if (!data || data.length === 0) break
-        out.push(...data)
-        if (data.length < 1000) break
-        if (from > 20000) break // backstop
-      }
-      return { data: out, error: null }
     }
 
     // Historical mode — serie=novillitos devuelve la serie Novillitos 401/420
@@ -328,11 +423,19 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const precios: PrecioItem[] = requestedCategories.map(cat => {
       const data = categories[cat]
       const changeStr = data.change >= 0 ? `+${data.change}%` : `${data.change}%`
-      return {
+      const base: PrecioItem = {
         categoria: cat,
         precio_kg: data.current,
         moneda: 'ARS' as const,
         variacion_semanal: changeStr
+      }
+      if (!conVr) return base
+      const ref = getReferencia(cat)
+      return {
+        ...base,
+        vr: ref.banda
+          ? { ...ref.banda, confianza: ref.confianza }
+          : null,
       }
     })
 
@@ -353,6 +456,30 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         // (haciinfo000013). null hasta que el scrape diario lo traiga.
         indice_arrendamiento_oficial:
           (marketPrices as { arrendamientoOficial?: { index: number; date: string; periodIndex?: number | null; source?: string } }).arrendamientoOficial ?? null,
+        // Metadata del VR, solo con ?vr=1. Va al lado de la banda para que la
+        // respuesta sea auto-descriptiva: quién la calculó, con qué ventana y
+        // contra qué metodología, sin tener que leer la doc.
+        ...(conVr
+          ? {
+              vr: (() => {
+                const cob = vrCobertura()
+                return {
+                  metodologia: VR_METODOLOGIA,
+                  url_metodologia: VR_METODOLOGIA_URL,
+                  ventana_dias: VR_VENTANA_DIAS,
+                  fecha_dato_desde: cob.desde,
+                  fecha_dato_hasta: cob.hasta,
+                  base_lotes: cob.lotes,
+                  base_cabezas: cob.cabezas,
+                  unidad: 'ARS/kg vivo',
+                  limites: [
+                    'Referencia de mercado observada en el MAG (Cañuelas), no es una tasación ni una cotización en firme.',
+                    'Una categoría con vr:null no tiene base suficiente de lotes — usá precio_kg y decilo.',
+                  ],
+                }
+              })(),
+            }
+          : {}),
         fuente: 'INMAG - Mercado Agroganadero',
         fecha_actualizacion: marketPrices.lastUpdate
       },
