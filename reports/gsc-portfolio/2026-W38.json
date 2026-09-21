@@ -1,39 +1,27 @@
 {
   "range": {
-    "start": "2026-09-11",
-    "end": "2026-09-17",
-    "pstart": "2026-09-04",
-    "pend": "2026-09-10",
-    "m28": "2026-08-21"
+    "start": "2026-09-12",
+    "end": "2026-09-18",
+    "pstart": "2026-09-05",
+    "pend": "2026-09-11",
+    "m28": "2026-08-22"
   },
   "total": {
-    "clicks": 1950,
-    "impressions": 82977
+    "clicks": 1918,
+    "impressions": 83026
   },
   "prevTotal": {
-    "clicks": 1673,
-    "impressions": 79177
+    "clicks": 1709,
+    "impressions": 78502
   },
   "alerts": [
-    {
-      "nivel": "warn",
-      "txt": "platerialossada.com: cero impresiones en 28 días"
-    },
-    {
-      "nivel": "neg",
-      "txt": "la.com.ar: home \"Crawled - currently not indexed\" (rastreada 2026-08-10)"
-    },
     {
       "nivel": "warn",
       "txt": "la.com.ar: cero impresiones en 28 días"
     },
     {
       "nivel": "warn",
-      "txt": "proactiverecovery.com.ar: propiedad sin verificar (no se puede leer)"
-    },
-    {
-      "nivel": "warn",
-      "txt": "joyitas.ar: propiedad sin verificar (no se puede leer)"
+      "txt": "joyitas.ar: propiedad sin verificar — verificar por DNS o con la meta etiqueta desde el panel del sitio"
     }
   ],
   "props": [
@@ -41,86 +29,86 @@
       "site": "sc-domain:consignatarias.com.ar",
       "label": "consignatarias.com.ar",
       "cur": {
-        "clicks": 1193,
-        "impressions": 72687,
-        "ctr": 0.016412838609379945,
-        "position": 5.9688114793566935
+        "clicks": 1213,
+        "impressions": 73107,
+        "ctr": 0.01659211840179463,
+        "position": 5.976240305305922
       },
       "prev": {
-        "clicks": 1160,
-        "impressions": 69171,
-        "ctr": 0.016770033684636625,
-        "position": 6.32103048965607
+        "clicks": 1143,
+        "impressions": 68293,
+        "ctr": 0.01673670800814139,
+        "position": 6.266923403569912
       },
       "m28": {
-        "clicks": 4556,
-        "impressions": 274054,
-        "ctr": 0.016624460872674728,
-        "position": 6.290577769344727
+        "clicks": 4601,
+        "impressions": 275812,
+        "ctr": 0.016681652719968673,
+        "position": 6.282500398822386
       },
       "queries": [
         {
           "keys": [
-            "precio novillo arrendamiento mercado de liniers"
-          ],
-          "clicks": 8,
-          "impressions": 195,
-          "ctr": 0.041025641025641026,
-          "position": 6.5025641025641026
-        },
-        {
-          "keys": [
-            "novillo arrendamiento"
-          ],
-          "clicks": 6,
-          "impressions": 400,
-          "ctr": 0.015,
-          "position": 7.1825
-        },
-        {
-          "keys": [
             "precio novillo arrendamiento mercado de cañuelas"
           ],
-          "clicks": 6,
-          "impressions": 346,
-          "ctr": 0.017341040462427744,
-          "position": 6.7398843930635834
+          "clicks": 9,
+          "impressions": 339,
+          "ctr": 0.02654867256637168,
+          "position": 6.778761061946903
+        },
+        {
+          "keys": [
+            "precio novillo arrendamiento mercado de liniers"
+          ],
+          "clicks": 9,
+          "impressions": 208,
+          "ctr": 0.04326923076923077,
+          "position": 6.639423076923077
+        },
+        {
+          "keys": [
+            "indice novillo arrendamiento"
+          ],
+          "clicks": 7,
+          "impressions": 774,
+          "ctr": 0.00904392764857881,
+          "position": 6.987080103359173
         }
       ],
       "rozando": [
         {
           "q": "precio novillo para arrendamiento hoy",
-          "impr": 3069,
+          "impr": 3040,
           "clicks": 40,
-          "pos": 6.084718149234278
+          "pos": 6.13125
         },
         {
           "q": "indice novillo arrendamiento",
-          "impr": 2935,
-          "clicks": 20,
-          "pos": 7.6531516183986374
+          "impr": 2974,
+          "clicks": 22,
+          "pos": 7.634835238735709
         },
         {
           "q": "precio novillo arrendamiento",
-          "impr": 2411,
-          "clicks": 18,
-          "pos": 7.439651596847781
+          "impr": 2413,
+          "clicks": 19,
+          "pos": 7.457936179030253
         },
         {
           "q": "indice novillo arrendamiento mensual",
-          "impr": 2080,
+          "impr": 2067,
           "clicks": 13,
-          "pos": 7.897115384615384
+          "pos": 7.904692791485244
         },
         {
-          "q": "precio novillo arrendamiento mensual",
-          "impr": 1903,
-          "clicks": 33,
-          "pos": 5.851812926957436
+          "q": "precio novillo arrendamiento mercado de cañuelas",
+          "impr": 1894,
+          "clicks": 48,
+          "pos": 6.665258711721225
         }
       ],
-      "pagesConImpr": 2352,
-      "pagesConClic": 861,
+      "pagesConImpr": 2371,
+      "pagesConClic": 866,
       "home": {
         "verdict": "PASS",
         "coverage": "Submitted and indexed",
@@ -131,7 +119,7 @@
           "path": "https://www.consignatarias.com.ar/sitemap.xml",
           "errors": 0,
           "warnings": 0,
-          "lastDownloaded": "2026-09-20"
+          "lastDownloaded": "2026-09-21"
         }
       ]
     },
@@ -139,50 +127,50 @@
       "site": "https://ethics.ar/",
       "label": "ethics.ar",
       "cur": {
-        "clicks": 452,
-        "impressions": 675,
-        "ctr": 0.6696296296296296,
-        "position": 3.8414814814814813
+        "clicks": 414,
+        "impressions": 638,
+        "ctr": 0.6489028213166145,
+        "position": 3.8793103448275863
       },
       "prev": {
-        "clicks": 224,
-        "impressions": 369,
-        "ctr": 0.6070460704607046,
-        "position": 4.8130081300813
+        "clicks": 258,
+        "impressions": 423,
+        "ctr": 0.6099290780141844,
+        "position": 4.347517730496454
       },
       "m28": {
-        "clicks": 1107,
-        "impressions": 1777,
-        "ctr": 0.6229600450196962,
-        "position": 6.347777152504221
+        "clicks": 1128,
+        "impressions": 1828,
+        "ctr": 0.6170678336980306,
+        "position": 6.142231947483588
       },
       "queries": [
         {
           "keys": [
             "ethics"
           ],
-          "clicks": 261,
-          "impressions": 335,
-          "ctr": 0.7791044776119403,
-          "position": 2.4776119402985075
+          "clicks": 243,
+          "impressions": 315,
+          "ctr": 0.7714285714285715,
+          "position": 2.4190476190476193
         },
         {
           "keys": [
             "ethics ropa"
           ],
-          "clicks": 75,
-          "impressions": 87,
-          "ctr": 0.8620689655172413,
+          "clicks": 69,
+          "impressions": 78,
+          "ctr": 0.8846153846153846,
           "position": 1
         },
         {
           "keys": [
             "ethics ar"
           ],
-          "clicks": 25,
-          "impressions": 33,
-          "ctr": 0.7575757575757576,
-          "position": 1.303030303030303
+          "clicks": 21,
+          "impressions": 30,
+          "ctr": 0.7,
+          "position": 1.3333333333333333
         }
       ],
       "rozando": [
@@ -190,7 +178,7 @@
           "q": "ethic",
           "impr": 57,
           "clicks": 2,
-          "pos": 8.982456140350877
+          "pos": 8.947368421052632
         }
       ],
       "pagesConImpr": 36,
@@ -206,86 +194,86 @@
       "site": "https://platerialossada.com.ar/",
       "label": "platerialossada.com.ar",
       "cur": {
-        "clicks": 106,
-        "impressions": 1024,
-        "ctr": 0.103515625,
-        "position": 5.33203125
+        "clicks": 99,
+        "impressions": 1001,
+        "ctr": 0.0989010989010989,
+        "position": 5.481518481518481
       },
       "prev": {
-        "clicks": 129,
-        "impressions": 1122,
-        "ctr": 0.11497326203208556,
-        "position": 6.311942959001782
+        "clicks": 137,
+        "impressions": 1128,
+        "ctr": 0.12145390070921985,
+        "position": 6.044326241134752
       },
       "m28": {
-        "clicks": 428,
-        "impressions": 4857,
-        "ctr": 0.08812023883055384,
-        "position": 6.27527280214124
+        "clicks": 426,
+        "impressions": 4784,
+        "ctr": 0.08904682274247491,
+        "position": 6.244983277591973
       },
       "queries": [
         {
           "keys": [
             "plateria lossada"
           ],
-          "clicks": 36,
-          "impressions": 44,
-          "ctr": 0.8181818181818182,
-          "position": 1.0454545454545454
+          "clicks": 30,
+          "impressions": 37,
+          "ctr": 0.8108108108108109,
+          "position": 1.054054054054054
         },
         {
           "keys": [
             "lossada plateria"
           ],
-          "clicks": 10,
-          "impressions": 11,
-          "ctr": 0.9090909090909091,
+          "clicks": 9,
+          "impressions": 9,
+          "ctr": 1,
           "position": 1
         },
         {
           "keys": [
             "plateria losada"
           ],
-          "clicks": 6,
-          "impressions": 10,
-          "ctr": 0.6,
-          "position": 1.1
+          "clicks": 8,
+          "impressions": 12,
+          "ctr": 0.6666666666666666,
+          "position": 1.0833333333333333
         }
       ],
       "rozando": [
         {
           "q": "mate personalizado",
-          "impr": 586,
+          "impr": 527,
           "clicks": 3,
-          "pos": 8.95221843003413
+          "pos": 9.026565464895636
         },
         {
           "q": "bombillas personalizadas",
-          "impr": 339,
+          "impr": 333,
           "clicks": 1,
-          "pos": 11.182890855457227
+          "pos": 11.2012012012012
         },
         {
           "q": "bombilla personalizada",
-          "impr": 135,
-          "clicks": 1,
-          "pos": 5.822222222222222
-        },
-        {
-          "q": "bombillas para mate personalizadas",
-          "impr": 35,
+          "impr": 127,
           "clicks": 0,
-          "pos": 11.057142857142857
+          "pos": 5.897637795275591
         },
         {
           "q": "bombillas grabadas personalizadas",
           "impr": 33,
           "clicks": 0,
           "pos": 11.212121212121213
+        },
+        {
+          "q": "logo mate",
+          "impr": 33,
+          "clicks": 0,
+          "pos": 6.393939393939394
         }
       ],
-      "pagesConImpr": 209,
-      "pagesConClic": 25,
+      "pagesConImpr": 207,
+      "pagesConClic": 24,
       "home": {
         "verdict": "PASS",
         "coverage": "Submitted and indexed",
@@ -296,13 +284,13 @@
           "path": "https://platerialossada.com.ar/sitemap_blog.xml",
           "errors": 0,
           "warnings": 0,
-          "lastDownloaded": "2026-09-20"
+          "lastDownloaded": "2026-09-21"
         },
         {
           "path": "https://platerialossada.com.ar/sitemap.xml",
           "errors": 0,
           "warnings": 0,
-          "lastDownloaded": "2026-09-20"
+          "lastDownloaded": "2026-09-21"
         }
       ]
     },
@@ -310,86 +298,86 @@
       "site": "sc-domain:siagro.com.ar",
       "label": "siagro.com.ar",
       "cur": {
-        "clicks": 85,
-        "impressions": 5391,
-        "ctr": 0.015767019105917268,
-        "position": 6.870339454646634
+        "clicks": 86,
+        "impressions": 5379,
+        "ctr": 0.01598810187767243,
+        "position": 7.024539877300613
       },
       "prev": {
-        "clicks": 80,
-        "impressions": 5568,
-        "ctr": 0.014367816091954023,
-        "position": 7.607579022988506
+        "clicks": 77,
+        "impressions": 5561,
+        "ctr": 0.01384643049811185,
+        "position": 7.490379428160403
       },
       "m28": {
-        "clicks": 316,
-        "impressions": 21375,
-        "ctr": 0.014783625730994152,
-        "position": 7.3681403508771925
+        "clicks": 321,
+        "impressions": 21451,
+        "ctr": 0.014964337326931145,
+        "position": 7.389399095613258
       },
       "queries": [
         {
           "keys": [
             "siagro"
           ],
-          "clicks": 3,
-          "impressions": 20,
-          "ctr": 0.15,
-          "position": 24.6
-        },
-        {
-          "keys": [
-            "la ponedora"
-          ],
-          "clicks": 2,
-          "impressions": 16,
-          "ctr": 0.125,
-          "position": 5.375
+          "clicks": 6,
+          "impressions": 26,
+          "ctr": 0.23076923076923078,
+          "position": 25.115384615384617
         },
         {
           "keys": [
             "siagro srl"
           ],
           "clicks": 2,
-          "impressions": 7,
-          "ctr": 0.2857142857142857,
-          "position": 1.2857142857142856
+          "impressions": 6,
+          "ctr": 0.3333333333333333,
+          "position": 1
+        },
+        {
+          "keys": [
+            "calcio magnesiado 40"
+          ],
+          "clicks": 1,
+          "impressions": 3,
+          "ctr": 0.3333333333333333,
+          "position": 1
         }
       ],
       "rozando": [
         {
           "q": "albendazol precio",
-          "impr": 333,
+          "impr": 325,
           "clicks": 0,
-          "pos": 8.12912912912913
+          "pos": 8.141538461538461
         },
         {
           "q": "comida seca para perros",
-          "impr": 243,
+          "impr": 244,
           "clicks": 0,
-          "pos": 6.518518518518518
+          "pos": 6.463114754098361
         },
         {
           "q": "imazapir",
-          "impr": 169,
+          "impr": 168,
           "clicks": 1,
-          "pos": 7.6982248520710055
+          "pos": 7.642857142857143
         },
         {
           "q": "bolsa de maiz precio",
-          "impr": 136,
+          "impr": 134,
           "clicks": 0,
-          "pos": 6.676470588235294
+          "pos": 6.582089552238806
         },
         {
           "q": "promectina plus 3.15",
-          "impr": 130,
+          "impr": 124,
           "clicks": 0,
-          "pos": 5.9
+          "pos": 5.903225806451613
         }
       ],
-      "pagesConImpr": 193,
-      "pagesConClic": 77,
+      "pagesConImpr": 195,
+      "pagesConClic": 76,
       "home": {
         "verdict": "PASS",
         "coverage": "Submitted and indexed",
@@ -408,82 +396,82 @@
       "site": "https://memola.com.ar/",
       "label": "memola.com.ar",
       "cur": {
-        "clicks": 76,
-        "impressions": 2253,
-        "ctr": 0.033732800710164226,
-        "position": 6.258766089658233
+        "clicks": 62,
+        "impressions": 1984,
+        "ctr": 0.03125,
+        "position": 6.43195564516129
       },
       "prev": {
-        "clicks": 50,
-        "impressions": 1849,
-        "ctr": 0.02704164413196322,
-        "position": 6.7236343969713355
+        "clicks": 62,
+        "impressions": 2012,
+        "ctr": 0.030815109343936383,
+        "position": 6.499502982107356
       },
       "m28": {
         "clicks": 205,
-        "impressions": 7059,
-        "ctr": 0.02904094064315059,
-        "position": 6.634650800396657
+        "impressions": 7030,
+        "ctr": 0.029160739687055477,
+        "position": 6.635846372688478
       },
       "queries": [
         {
           "keys": [
             "expo mercedes 2026"
           ],
-          "clicks": 6,
-          "impressions": 38,
-          "ctr": 0.15789473684210525,
-          "position": 3.5526315789473686
-        },
-        {
-          "keys": [
-            "expo rural mercedes corrientes 2026"
-          ],
-          "clicks": 3,
-          "impressions": 33,
-          "ctr": 0.09090909090909091,
-          "position": 1.9393939393939394
+          "clicks": 4,
+          "impressions": 27,
+          "ctr": 0.14814814814814814,
+          "position": 3.3703703703703702
         },
         {
           "keys": [
             "rural de mercedes corrientes 2026"
           ],
           "clicks": 3,
-          "impressions": 21,
-          "ctr": 0.14285714285714285,
-          "position": 1.8571428571428572
+          "impressions": 15,
+          "ctr": 0.2,
+          "position": 2
+        },
+        {
+          "keys": [
+            "rural mercedes corrientes 2026"
+          ],
+          "clicks": 3,
+          "impressions": 19,
+          "ctr": 0.15789473684210525,
+          "position": 1.3157894736842106
         }
       ],
       "rozando": [
         {
           "q": "plateria lossada",
-          "impr": 166,
+          "impr": 163,
           "clicks": 0,
-          "pos": 6.885542168674699
+          "pos": 6.858895705521473
         },
         {
           "q": "rural de mercedes corrientes",
-          "impr": 136,
+          "impr": 134,
           "clicks": 6,
-          "pos": 6.742647058823529
+          "pos": 6.753731343283582
         },
         {
           "q": "rural mercedes corrientes",
           "impr": 109,
           "clicks": 2,
-          "pos": 6.807339449541284
+          "pos": 6.761467889908257
         },
         {
           "q": "memola",
-          "impr": 84,
+          "impr": 87,
           "clicks": 10,
-          "pos": 6.404761904761905
+          "pos": 6.459770114942529
         },
         {
           "q": "sociedad rural de mercedes corrientes",
-          "impr": 77,
+          "impr": 78,
           "clicks": 3,
-          "pos": 8.233766233766234
+          "pos": 8.23076923076923
         }
       ],
       "pagesConImpr": 49,
@@ -512,50 +500,50 @@
       "site": "https://proactiverecovery.com.ar/",
       "label": "proactiverecovery.com.ar",
       "cur": {
-        "clicks": 26,
-        "impressions": 676,
-        "ctr": 0.038461538461538464,
-        "position": 7.476331360946745
+        "clicks": 32,
+        "impressions": 670,
+        "ctr": 0.04776119402985075,
+        "position": 7.402985074626866
       },
       "prev": {
-        "clicks": 19,
-        "impressions": 809,
-        "ctr": 0.023485784919653894,
-        "position": 8.26328800988875
+        "clicks": 22,
+        "impressions": 799,
+        "ctr": 0.02753441802252816,
+        "position": 8.145181476846059
       },
       "m28": {
-        "clicks": 97,
-        "impressions": 2731,
-        "ctr": 0.0355181252288539,
-        "position": 8.454412303185645
+        "clicks": 107,
+        "impressions": 2772,
+        "ctr": 0.0386002886002886,
+        "position": 8.375901875901876
       },
       "queries": [
         {
           "keys": [
             "proactive recovery"
           ],
-          "clicks": 6,
-          "impressions": 14,
-          "ctr": 0.42857142857142855,
-          "position": 4.571428571428571
+          "clicks": 8,
+          "impressions": 16,
+          "ctr": 0.5,
+          "position": 2.9375
         },
         {
           "keys": [
             "pileta de crioterapia"
           ],
           "clicks": 1,
-          "impressions": 11,
-          "ctr": 0.09090909090909091,
-          "position": 3.727272727272727
+          "impressions": 7,
+          "ctr": 0.14285714285714285,
+          "position": 4.142857142857142
         },
         {
           "keys": [
             "pro active"
           ],
           "clicks": 1,
-          "impressions": 2,
-          "ctr": 0.5,
-          "position": 6
+          "impressions": 3,
+          "ctr": 0.3333333333333333,
+          "position": 17
         }
       ],
       "rozando": [
@@ -563,25 +551,25 @@
           "q": "proactive",
           "impr": 90,
           "clicks": 4,
-          "pos": 8.011111111111111
+          "pos": 7.844444444444444
         },
         {
           "q": "crioterapia en casa",
-          "impr": 55,
+          "impr": 54,
           "clicks": 0,
-          "pos": 12
-        },
-        {
-          "q": "pileta de crioterapia",
-          "impr": 52,
-          "clicks": 2,
-          "pos": 6.673076923076923
+          "pos": 11.5
         },
         {
           "q": "proactive recovery",
-          "impr": 49,
-          "clicks": 22,
-          "pos": 6.142857142857143
+          "impr": 51,
+          "clicks": 24,
+          "pos": 5.9411764705882355
+        },
+        {
+          "q": "pileta de crioterapia",
+          "impr": 50,
+          "clicks": 2,
+          "pos": 6.5
         },
         {
           "q": "pileta crioterapia",
@@ -590,8 +578,8 @@
           "pos": 5.970588235294118
         }
       ],
-      "pagesConImpr": 72,
-      "pagesConClic": 24,
+      "pagesConImpr": 73,
+      "pagesConClic": 25,
       "home": {
         "verdict": "PASS",
         "coverage": "Submitted and indexed",
@@ -602,7 +590,7 @@
           "path": "https://proactiverecovery.com.ar/sitemap.xml",
           "errors": 0,
           "warnings": 0,
-          "lastDownloaded": "2026-09-20"
+          "lastDownloaded": "2026-09-21"
         }
       ]
     },
@@ -611,21 +599,21 @@
       "label": "kyl.com.ar",
       "cur": {
         "clicks": 6,
-        "impressions": 58,
-        "ctr": 0.10344827586206896,
-        "position": 6.310344827586207
+        "impressions": 54,
+        "ctr": 0.1111111111111111,
+        "position": 7.7592592592592595
       },
       "prev": {
-        "clicks": 1,
-        "impressions": 47,
-        "ctr": 0.02127659574468085,
-        "position": 7.148936170212766
+        "clicks": 0,
+        "impressions": 49,
+        "ctr": 0,
+        "position": 6.979591836734694
       },
       "m28": {
         "clicks": 8,
-        "impressions": 128,
-        "ctr": 0.0625,
-        "position": 6.9296875
+        "impressions": 133,
+        "ctr": 0.06015037593984962,
+        "position": 7.330827067669173
       },
       "queries": [
         {
@@ -678,21 +666,21 @@
       "label": "estudiozaracho.com.ar",
       "cur": {
         "clicks": 3,
-        "impressions": 64,
-        "ctr": 0.046875,
-        "position": 4.765625
+        "impressions": 59,
+        "ctr": 0.05084745762711865,
+        "position": 5.203389830508475
       },
       "prev": {
-        "clicks": 6,
-        "impressions": 69,
-        "ctr": 0.08695652173913043,
-        "position": 4.9855072463768115
+        "clicks": 5,
+        "impressions": 76,
+        "ctr": 0.06578947368421052,
+        "position": 4.802631578947368
       },
       "m28": {
-        "clicks": 9,
-        "impressions": 142,
-        "ctr": 0.06338028169014084,
-        "position": 4.725352112676056
+        "clicks": 10,
+        "impressions": 151,
+        "ctr": 0.06622516556291391,
+        "position": 4.801324503311259
       },
       "queries": [
         {
@@ -709,9 +697,9 @@
             "estudio contable"
           ],
           "clicks": 0,
-          "impressions": 3,
+          "impressions": 1,
           "ctr": 0,
-          "position": 6
+          "position": 11
         },
         {
           "keys": [
@@ -747,28 +735,28 @@
         "clicks": 2,
         "impressions": 42,
         "ctr": 0.047619047619047616,
-        "position": 5.285714285714286
+        "position": 5.380952380952381
       },
       "prev": {
-        "clicks": 2,
-        "impressions": 25,
-        "ctr": 0.08,
-        "position": 12.92
+        "clicks": 3,
+        "impressions": 19,
+        "ctr": 0.15789473684210525,
+        "position": 11.105263157894736
       },
       "m28": {
         "clicks": 15,
-        "impressions": 126,
-        "ctr": 0.11904761904761904,
-        "position": 10.761904761904763
+        "impressions": 122,
+        "ctr": 0.12295081967213115,
+        "position": 10.90983606557377
       },
       "queries": [
         {
           "keys": [
             "energia srl"
           ],
-          "clicks": 1,
+          "clicks": 0,
           "impressions": 2,
-          "ctr": 0.5,
+          "ctr": 0,
           "position": 1
         },
         {
@@ -805,21 +793,21 @@
       "label": "semen.com.ar",
       "cur": {
         "clicks": 1,
-        "impressions": 11,
-        "ctr": 0.09090909090909091,
-        "position": 12.909090909090908
+        "impressions": 8,
+        "ctr": 0.125,
+        "position": 11.75
       },
       "prev": {
         "clicks": 0,
-        "impressions": 8,
+        "impressions": 7,
         "ctr": 0,
-        "position": 5.5
+        "position": 10.285714285714286
       },
       "m28": {
         "clicks": 2,
-        "impressions": 36,
-        "ctr": 0.05555555555555555,
-        "position": 9.86111111111111
+        "impressions": 35,
+        "ctr": 0.05714285714285714,
+        "position": 9.857142857142858
       },
       "queries": [
         {
@@ -849,28 +837,35 @@
         "coverage": "Submitted and indexed",
         "lastCrawl": "2026-09-14"
       },
-      "sitemaps": []
+      "sitemaps": [
+        {
+          "path": "https://semen.com.ar/sitemap.xml",
+          "errors": 0,
+          "warnings": 0,
+          "lastDownloaded": "2026-09-20"
+        }
+      ]
     },
     {
       "site": "sc-domain:rincondeurunday.com.ar",
       "label": "rincondeurunday.com.ar",
       "cur": {
         "clicks": 0,
-        "impressions": 39,
+        "impressions": 30,
         "ctr": 0,
-        "position": 10.282051282051283
+        "position": 13.433333333333334
       },
       "prev": {
         "clicks": 0,
-        "impressions": 51,
+        "impressions": 55,
         "ctr": 0,
-        "position": 23.274509803921568
+        "position": 18.89090909090909
       },
       "m28": {
         "clicks": 1,
-        "impressions": 167,
-        "ctr": 0.005988023952095809,
-        "position": 19.604790419161677
+        "impressions": 169,
+        "ctr": 0.005917159763313609,
+        "position": 19.78698224852071
       },
       "queries": [
         {
@@ -893,12 +888,12 @@
         },
         {
           "keys": [
-            "carnicería el rincón"
+            "cuanto carbon por kg de carne"
           ],
           "clicks": 0,
           "impressions": 1,
           "ctr": 0,
-          "position": 10
+          "position": 67
         }
       ],
       "rozando": [],
@@ -907,7 +902,7 @@
       "home": {
         "verdict": "PASS",
         "coverage": "Submitted and indexed",
-        "lastCrawl": "2026-09-09"
+        "lastCrawl": "2026-09-18"
       },
       "sitemaps": [
         {
@@ -919,96 +914,27 @@
       ]
     },
     {
-      "site": "https://sociedadrural.com.ar/",
-      "label": "sociedadrural.com.ar",
-      "cur": {
-        "clicks": 0,
-        "impressions": 23,
-        "ctr": 0,
-        "position": 51.56521739130435
-      },
-      "prev": {
-        "clicks": 0,
-        "impressions": 55,
-        "ctr": 0,
-        "position": 48.61818181818182
-      },
-      "m28": {
-        "clicks": 0,
-        "impressions": 149,
-        "ctr": 0,
-        "position": 48.785234899328856
-      },
-      "queries": [
-        {
-          "keys": [
-            "cuenta rural"
-          ],
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "position": 58
-        },
-        {
-          "keys": [
-            "la rural comodoro rivadavia"
-          ],
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "position": 77
-        },
-        {
-          "keys": [
-            "la rural trenque lauquen"
-          ],
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "position": 58
-        }
-      ],
-      "rozando": [],
-      "pagesConImpr": 2,
-      "pagesConClic": 0,
-      "home": {
-        "verdict": "PASS",
-        "coverage": "Submitted and indexed",
-        "lastCrawl": "2026-09-19"
-      },
-      "sitemaps": []
-    },
-    {
       "site": "https://golfstats.com.ar/",
       "label": "golfstats.com.ar",
       "cur": {
         "clicks": 0,
-        "impressions": 22,
+        "impressions": 21,
         "ctr": 0,
-        "position": 10.181818181818182
+        "position": 10.142857142857142
       },
       "prev": {
         "clicks": 2,
-        "impressions": 18,
-        "ctr": 0.1111111111111111,
-        "position": 14.444444444444445
+        "impressions": 21,
+        "ctr": 0.09523809523809523,
+        "position": 13.333333333333334
       },
       "m28": {
         "clicks": 2,
-        "impressions": 41,
-        "ctr": 0.04878048780487805,
-        "position": 11.853658536585366
+        "impressions": 44,
+        "ctr": 0.045454545454545456,
+        "position": 11.409090909090908
       },
       "queries": [
-        {
-          "keys": [
-            "cuantas canchas de golf hay en argentina"
-          ],
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "position": 9
-        },
         {
           "keys": [
             "pcc golf"
@@ -1041,30 +967,90 @@
           "path": "https://golfstats.com.ar/sitemap.xml",
           "errors": 0,
           "warnings": 0,
-          "lastDownloaded": "2026-09-15"
+          "lastDownloaded": "2026-09-20"
         }
       ]
+    },
+    {
+      "site": "https://sociedadrural.com.ar/",
+      "label": "sociedadrural.com.ar",
+      "cur": {
+        "clicks": 0,
+        "impressions": 21,
+        "ctr": 0,
+        "position": 50.95238095238095
+      },
+      "prev": {
+        "clicks": 0,
+        "impressions": 41,
+        "ctr": 0,
+        "position": 46.8780487804878
+      },
+      "m28": {
+        "clicks": 0,
+        "impressions": 148,
+        "ctr": 0,
+        "position": 48.817567567567565
+      },
+      "queries": [
+        {
+          "keys": [
+            "cuenta rural"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 53.5
+        },
+        {
+          "keys": [
+            "la rural comodoro rivadavia"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 77
+        },
+        {
+          "keys": [
+            "la rural trenque lauquen"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 58
+        }
+      ],
+      "rozando": [],
+      "pagesConImpr": 2,
+      "pagesConClic": 0,
+      "home": {
+        "verdict": "PASS",
+        "coverage": "Submitted and indexed",
+        "lastCrawl": "2026-09-19"
+      },
+      "sitemaps": []
     },
     {
       "site": "https://www.platerialossada.com.ar/",
       "label": "www.platerialossada.com.ar",
       "cur": {
         "clicks": 0,
+        "impressions": 7,
+        "ctr": 0,
+        "position": 8.857142857142858
+      },
+      "prev": {
+        "clicks": 0,
         "impressions": 8,
         "ctr": 0,
         "position": 7.375
       },
-      "prev": {
-        "clicks": 0,
-        "impressions": 6,
-        "ctr": 0,
-        "position": 8.833333333333332
-      },
       "m28": {
         "clicks": 1,
-        "impressions": 31,
-        "ctr": 0.03225806451612903,
-        "position": 7.064516129032258
+        "impressions": 30,
+        "ctr": 0.03333333333333333,
+        "position": 6.933333333333334
       },
       "queries": [],
       "rozando": [],
@@ -1082,9 +1068,9 @@
       "label": "ganado.com.ar",
       "cur": {
         "clicks": 0,
-        "impressions": 3,
+        "impressions": 4,
         "ctr": 0,
-        "position": 5.333333333333333
+        "position": 6.25
       },
       "prev": {
         "clicks": 0,
@@ -1096,7 +1082,7 @@
         "clicks": 0,
         "impressions": 17,
         "ctr": 0,
-        "position": 5.117647058823529
+        "position": 5.588235294117647
       },
       "queries": [],
       "rozando": [],
@@ -1183,7 +1169,7 @@
       "home": {
         "verdict": "NEUTRAL",
         "coverage": "Page with redirect",
-        "lastCrawl": "2026-09-19"
+        "lastCrawl": "2026-09-21"
       },
       "sitemaps": []
     },
@@ -1213,23 +1199,23 @@
       "pagesConImpr": 0,
       "pagesConClic": 0,
       "home": {
-        "verdict": "NEUTRAL",
-        "coverage": "Crawled - currently not indexed",
-        "lastCrawl": "2026-08-10"
+        "verdict": "PASS",
+        "coverage": "Submitted and indexed",
+        "lastCrawl": "2026-09-20"
       },
       "sitemaps": [
         {
           "path": "https://la.com.ar/sitemap.xml",
           "errors": 0,
           "warnings": 0,
-          "lastDownloaded": ""
+          "lastDownloaded": "2026-09-20"
         }
       ]
     }
   ],
   "sinVerificar": [
-    "sc-domain:proactiverecovery.com.ar",
-    "sc-domain:joyitas.ar"
+    "sc-domain:joyitas.ar",
+    "sc-domain:proactiverecovery.com.ar"
   ],
-  "generated": "2026-09-20T21:47:53.611Z"
+  "generated": "2026-09-21T18:39:09.566Z"
 }
