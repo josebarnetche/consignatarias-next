@@ -17,7 +17,8 @@ import {
  * Qué es consignatarias.com.ar en una frase: cuánto vale tu hacienda hoy, medido en lo
  * que realmente se vendió. Esta página es esa frase con los números abajo: la banda de
  * cada categoría, la banda por peso, el camino al rodeo propio (Mi Ganado, gratis) y el
- * camino al uso institucional (API, pago). Ver docs/strategy/DECISION-PRODUCTO-2026-09-21.md.
+ * camino al uso institucional (API, pago). Ver docs/strategy/DECISION-PRODUCTO-2026-09-21.md
+ * (interno, gitignorado) y el resumen en CHANGELOG 1.211.0.
  *
  * Todo sale de `vr-bandas.json` (SSG, sin queries). Si una categoría no tiene base, no
  * aparece: la regla de degradación gobierna también qué se publica.
