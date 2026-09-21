@@ -119,7 +119,9 @@ const LIMITE_BASE =
  * inventa un número ni se tira un error.
  */
 export function getReferencia(categoria: string, provincia?: string): VrReferencia {
-  const cat = CATEGORIA_A_LOTE[categoria.toLowerCase()]
+  // `categoriaALote` resuelve plural, singular y slug ("mej"). Con el mapa de plurales
+  // solo, `getReferencia('mej')` daba sin_base aunque MEJ tiene banda y página propia.
+  const cat = categoriaALote(categoria)
   const banda = cat ? archivo.categorias[cat] : undefined
 
   const base: Omit<VrReferencia, 'confianza' | 'banda' | 'origen' | 'limites'> = {
@@ -161,7 +163,7 @@ export function getReferencia(categoria: string, provincia?: string): VrReferenc
     }
   }
 
-  const origen = resolverOrigen(cat, provincia)
+  const origen = resolverOrigen(cat ?? '', provincia)
   const limites = [LIMITE_BASE]
 
   if (provincia && !origen) {
@@ -252,7 +254,7 @@ const ETIQUETA: Record<string, string> = {
   VAQUILLONA: 'Vaquillona',
   VACA: 'Vaca',
   TORO: 'Toro',
-  MEJ: 'MEJ (mejorado)',
+  MEJ: 'MEJ (macho entero joven)',
 }
 
 export interface VrBandaPublica extends VrBanda {
@@ -367,3 +369,121 @@ export function categoriaALote(categoria: string): string | null {
 export const CATEGORIAS_CON_LOTE = Array.from(
   new Set([...Object.keys(CATEGORIA_A_LOTE), ...Object.keys(SLUG_A_CODIGO)]),
 ).filter((c) => CATEGORIA_A_LOTE[c] || SLUG_A_CODIGO[c])
+
+/* ── Banda por rango de peso: la que usa el rodeo del productor ───────────── */
+
+/**
+ * Una banda calculada sólo con los lotes de un rango de peso (50 kg) de la categoría.
+ *
+ * Por qué existe: medido el 21-sep-2026 sobre 30 días de lotes, dentro de la misma
+ * categoría el peso mueve la mediana más que el origen. Vaca de 250-299 kg: mediana
+ * 2.400 $/kg; de 500-549 kg: 3.200 (+33 %). Vaquillona: 4.850 a 250-299 kg y 4.000 a
+ * 450-499 (−18 %). El productor que carga su rodeo sabe cuánto pesa su hacienda: valuarla
+ * contra la banda de toda la categoría tira una información que tiene.
+ */
+export interface VrRangoPeso extends VrBanda {
+  desde_kg: number
+  hasta_kg: number
+}
+
+interface VrArchivoPeso {
+  rango_peso_kg?: number
+  por_peso?: Record<string, VrRangoPeso[]>
+}
+
+const archivoPeso = bandas as unknown as VrArchivoPeso
+
+/** Ancho del rango de peso. Lo declara la metodología. */
+export const VR_RANGO_PESO_KG = archivoPeso.rango_peso_kg ?? 50
+
+/** De dónde sale la banda que se usó para valuar un lote. */
+export type VrBasePeso = 'rango_peso' | 'categoria'
+
+export interface VrReferenciaPeso {
+  /** Código del dato de lote (VACA, NOVILLO…) o null si la categoría no existe en el MAG. */
+  codigo: string | null
+  kg: number
+  /** null = no hay referencia observada: ese lote NO se valúa. */
+  banda: VrBanda | null
+  base: VrBasePeso | null
+  rango: { desde_kg: number; hasta_kg: number } | null
+  confianza: VrConfianza
+  ventana_dias: number
+  fecha_dato: string
+  metodologia: string
+  limites: string[]
+}
+
+/**
+ * La referencia para un lote concreto: categoría + peso promedio por cabeza.
+ *
+ * Orden de preferencia, y siempre se dice cuál se usó:
+ *  1. el rango de peso del lote, si tiene 30+ lotes en la ventana;
+ *  2. la banda de toda la categoría (misma regla de degradación que `getReferencia`);
+ *  3. nada — y el lote queda sin valuar. No se interpola, no se cae al INMAG, no se usa
+ *     un ratio: un número inventado en la valuación de un rodeo es exactamente lo que
+ *     el Valor de Referencia existe para evitar.
+ */
+export function getReferenciaPorPeso(categoria: string, kg: number): VrReferenciaPeso {
+  const codigo = categoriaALote(categoria)
+  const general = getReferencia(categoria)
+  const base = {
+    codigo,
+    kg,
+    ventana_dias: archivo.ventana_dias,
+    fecha_dato: archivo.fecha_dato_hasta,
+    metodologia: VR_METODOLOGIA,
+  }
+
+  if (!general.banda) {
+    return { ...base, banda: null, base: null, rango: null, confianza: 'sin_base', limites: general.limites }
+  }
+
+  const rango =
+    codigo && kg > 0
+      ? (archivoPeso.por_peso?.[codigo] ?? []).find(
+          (r) => kg >= r.desde_kg && kg <= r.hasta_kg && r.lotes >= MIN_LOTES_BANDA_COMPLETA,
+        )
+      : undefined
+
+  if (rango) {
+    const { desde_kg, hasta_kg, ...banda } = rango
+    return {
+      ...base,
+      banda,
+      base: 'rango_peso',
+      rango: { desde_kg, hasta_kg },
+      confianza: banda.lotes >= 100 ? 'alta' : 'media',
+      limites: [
+        LIMITE_BASE,
+        `Banda de los lotes de ${desde_kg}–${hasta_kg} kg: ${banda.lotes} lotes en ${archivo.ventana_dias} días.`,
+      ],
+    }
+  }
+
+  return {
+    ...base,
+    banda: general.banda,
+    base: 'categoria',
+    rango: null,
+    confianza: general.confianza,
+    limites: [
+      ...general.limites,
+      kg > 0
+        ? `No hay ${MIN_LOTES_BANDA_COMPLETA} lotes de ese peso (${kg} kg) en ${archivo.ventana_dias} días: se usa la banda de toda la categoría, que es más ancha.`
+        : 'Sin peso cargado: se usa la banda de toda la categoría.',
+    ],
+  }
+}
+
+/** Los rangos de peso publicados de una categoría (para /vr/[categoria]). */
+export function getRangosPesoPorSlug(slug: string): VrRangoPeso[] {
+  const codigo = SLUG_A_CODIGO[slug.toLowerCase()]
+  if (!codigo) return []
+  return (archivoPeso.por_peso?.[codigo] ?? []).filter((r) => r.lotes >= MIN_LOTES_BANDA_COMPLETA)
+}
+
+/** Ventana de fechas de la banda vigente, para anclar el histórico del rodeo. */
+export function vrVentana(): { desde: string; hasta: string } {
+  return { desde: archivo.fecha_dato_desde, hasta: archivo.fecha_dato_hasta }
+}

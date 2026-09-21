@@ -15,6 +15,9 @@
  * Env:
  *   SUPABASE_URL o NEXT_PUBLIC_SUPABASE_URL
  *   SUPABASE_SERVICE_ROLE_KEY
+ *   VR_SIN_SERIE=1   → escribe sólo el JSON y NO toca `vr_bandas_history`. Es el modo
+ *                      para correrlo a mano desde una máquina de desarrollo: la serie
+ *                      es de producción y la escribe únicamente el workflow.
  *
  * Uso: node scripts/compute-vr-bandas.mjs
  */
@@ -36,6 +39,18 @@ const VENTANA_ORIGEN_DIAS = 90
 
 const MIN_LOTES_BANDA = 10
 const MIN_LOTES_AJUSTE_ORIGEN = 30
+
+/**
+ * Banda por rango de peso. Medido el 21-sep sobre 30 días de lotes: dentro de una misma
+ * categoría el peso mueve la mediana más que el origen — vaca de 250-299 kg a 2.400 $/kg
+ * contra 3.200 a 500-549 kg (+33 %); vaquillona 4.850 → 3.500 entre 250 y 500 kg (−28 %).
+ * El productor que carga su rodeo SABE el peso, así que valuarlo contra toda la categoría
+ * tira información que tiene. Rangos de 50 kg; se publica un rango sólo con la misma base
+ * que la banda completa (30 lotes). Con menos, `vr.ts` cae a la banda de la categoría y
+ * lo dice.
+ */
+const RANGO_PESO_KG = 50
+const MIN_LOTES_RANGO_PESO = 30
 
 /** Versión de metodología. Forma parte de la PK de la serie: un cambio de cálculo
  *  crea una serie nueva en vez de pisar la vieja. Debe coincidir con VR_METODOLOGIA
@@ -61,7 +76,7 @@ async function traerLotes(sb, desde) {
   for (let offset = 0; ; offset += PAGE) {
     const { data, error } = await sb
       .from('mag_consignataria_sales_lots')
-      .select('date, category, provincia, price, head_count')
+      .select('date, category, provincia, price, head_count, kg_avg')
       .gte('date', desde)
       .gt('price', 0)
       // El orden NO es cosmético: sin ORDER BY, LIMIT/OFFSET puede repetir o
@@ -127,6 +142,25 @@ async function main() {
     categorias[cat] = bandaDe(filas)
   }
 
+  // Banda por rango de peso, sobre la misma ventana que la banda de la categoría.
+  const por_peso = {}
+  for (const cat of Object.keys(categorias)) {
+    const grupos = new Map()
+    for (const f of deBanda) {
+      if (f.category !== cat) continue
+      const kg = Number(f.kg_avg)
+      if (!(kg > 0)) continue
+      const desde = Math.floor(kg / RANGO_PESO_KG) * RANGO_PESO_KG
+      if (!grupos.has(desde)) grupos.set(desde, [])
+      grupos.get(desde).push(f)
+    }
+    const rangos = [...grupos.entries()]
+      .filter(([, filas]) => filas.length >= MIN_LOTES_RANGO_PESO)
+      .map(([desde, filas]) => ({ desde_kg: desde, hasta_kg: desde + RANGO_PESO_KG - 1, ...bandaDe(filas) }))
+      .sort((a, b) => a.desde_kg - b.desde_kg)
+    if (rangos.length) por_peso[cat] = rangos
+  }
+
   // Ajuste por origen: mediana provincial / mediana nacional, sobre la ventana larga.
   const origen = {}
   for (const cat of Object.keys(categorias)) {
@@ -151,9 +185,11 @@ async function main() {
     generado: new Date().toISOString(),
     ventana_dias: VENTANA_DIAS,
     ventana_origen_dias: VENTANA_ORIGEN_DIAS,
+    rango_peso_kg: RANGO_PESO_KG,
     fecha_dato_desde: fechas[0],
     fecha_dato_hasta: fechas[fechas.length - 1],
     categorias,
+    por_peso,
     origen,
   }
 
@@ -179,7 +215,9 @@ async function main() {
   if (validas.length !== filas.length) {
     console.warn(`Descartadas ${filas.length - validas.length} bandas que no pasan los invariantes.`)
   }
-  if (validas.length > 0) {
+  if (process.env.VR_SIN_SERIE === '1') {
+    console.log('VR_SIN_SERIE=1 — no se escribe vr_bandas_history.')
+  } else if (validas.length > 0) {
     const { error } = await sb
       .from('vr_bandas_history')
       .upsert(validas, { onConflict: 'date,category,metodologia' })
