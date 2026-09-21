@@ -1,6 +1,6 @@
 import "./globals.css";
 import { Metadata } from 'next';
-// TEMP local-only — se revierte tras el build.
+import { Inter } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Script from 'next/script';
 import AnalyticsProvider from '@/components/AnalyticsProvider';
@@ -10,7 +10,11 @@ import AccountNudge from '@/components/AccountNudge';
 import SubscribeModal from '@/components/SubscribeModal';
 import rematesData from '@/lib/data/remates.json';
 
-const inter = { className: '', variable: '--font-inter' };
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 const GA_ID = 'G-6CZMZH9S6Y';
 
