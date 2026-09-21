@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
   kilosPorCategoria,
-  ratiosContraInmag,
   valuarHistorico,
   recortar,
   resumir,
@@ -48,18 +47,6 @@ describe('el rodeo en kilos', () => {
   })
 })
 
-describe('la relación entre categorías y el índice', () => {
-  it('saca el ratio de cada categoría contra el INMAG de hoy', () => {
-    const r = ratiosContraInmag({ novillos: { current: 5000 }, terneros: { current: 5750 } }, 5000)
-    expect(r.get('novillos')).toBe(1)
-    expect(r.get('terneros')).toBe(1.15)
-  })
-
-  it('con INMAG en cero no inventa ratios', () => {
-    expect(ratiosContraInmag({ novillos: { current: 5000 } }, 0).size).toBe(0)
-  })
-})
-
 describe('valuar el rodeo actual hacia atrás', () => {
   const ratios = new Map([['novillos', 1], ['terneros', 1.15]])
   const serie = valuarHistorico({ lote: LOTE, inmag: INMAG, blue: BLUE, ratios })
@@ -98,14 +85,29 @@ describe('valuar el rodeo actual hacia atrás', () => {
     expect(valuarHistorico({ lote: [], inmag: INMAG, blue: BLUE, ratios })).toEqual([])
   })
 
-  it('una categoría sin ratio vale el índice, no cero', () => {
+  it('una categoría sin referencia observada queda afuera: ni el índice ni cero', () => {
+    // Antes valía el INMAG (ratio 1). Para el ternero, que el MAG no opera, eso era
+    // valuar con un precio que nadie observó.
     const s = valuarHistorico({
-      lote: [{ categoria: 'inventada', cabezas: 1, peso: 100 }],
+      lote: [
+        { categoria: 'novillos', cabezas: 1, peso: 100 },
+        { categoria: 'inventada', cabezas: 1, peso: 100 },
+      ],
       inmag: [{ date: '2026-09-01', value: 5000 }],
+      blue: BLUE,
+      ratios: new Map([['novillos', 1]]),
+    })
+    expect(s[0].ars).toBe(100 * 5000)
+  })
+
+  it('si ninguna categoría tiene referencia, no hay curva', () => {
+    const s = valuarHistorico({
+      lote: [{ categoria: 'terneros', cabezas: 10, peso: 180 }],
+      inmag: INMAG,
       blue: BLUE,
       ratios: new Map(),
     })
-    expect(s[0].ars).toBe(100 * 5000)
+    expect(s).toEqual([])
   })
 })
 

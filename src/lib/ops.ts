@@ -78,6 +78,7 @@ export const EXPECTED_CRONS: Record<string, number> = {
   // Semanales (168h) — lunes
   'quota-alerts': 168,              // (era 24, mal: corre solo los lunes)
   'weekly-newsletter': 168,
+  'mi-ganado-semanal': 168,         // Lunes 11:00 ART — Valor de Referencia del rodeo (v1.211.0)
   // scrape-senasa-habilitados: movido de mensual a semanal (lunes). GitHub salteaba
   // el cron mensual (no disparó jun ni jul-2026); cambia poco → casi siempre no-op.
   'scrape-senasa-habilitados': 168,

@@ -3,23 +3,22 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useGanado, type GanadoItem } from '@/hooks/useGanado'
-import { PriceSparkline } from '@/components/PriceSparkline'
 import { HistorialLote } from '@/components/ganado/HistorialLote'
 import type { PuntoHistorial } from '@/lib/ganado-historial'
+import { valuarRodeo, type LoteValuado } from '@/lib/rodeo-vr'
+import { getReferenciaPorPeso, VR_METODOLOGIA } from '@/lib/vr'
 
-interface InmagSeed {
-  current: number
-  prev: number
-  change: number
-  series?: { date: string; value: number }[]
+interface Props {
+  inmag: { current: number; change: number }
+  usdBlue: { current: number }
+  lastUpdate: string
 }
 
-interface MarketPrices {
-  inmag: InmagSeed
-  categories: Record<string, { current: number; prev: number; change: number }>
-  usdBlue: { current: number; prev: number; change: number }
-}
-
+/**
+ * Las categorías que el productor puede cargar. Terneros queda: es la hacienda que más
+ * tiene un criador. Pero el Mercado Agroganadero no opera terneros, así que NO tiene
+ * Valor de Referencia y la página lo dice en vez de valuarlo con un ratio.
+ */
 const CATEGORIAS = [
   { value: 'novillos', label: 'Novillos', defaultPeso: 450 },
   { value: 'novillitos', label: 'Novillitos', defaultPeso: 350 },
@@ -29,85 +28,49 @@ const CATEGORIAS = [
   { value: 'terneros', label: 'Terneros', defaultPeso: 180 },
 ]
 
+function labelDe(cat: string): string {
+  return CATEGORIAS.find((c) => c.value === cat)?.label ?? cat
+}
 function fmt(n: number): string {
   return n.toLocaleString('es-AR', { maximumFractionDigits: 0 })
 }
 function fmtCurrency(n: number): string {
   return '$' + fmt(n)
 }
-function fmtDate(iso: string | null): string {
-  if (!iso) return ''
-  return new Date(iso).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })
+function fmtFechaCorta(iso: string): string {
+  const [y, m, d] = iso.split('-').map(Number)
+  if (!y || !m || !d) return iso
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', timeZone: 'UTC' })
 }
 
-function valueOf(items: GanadoItem[], prices: MarketPrices) {
-  let cabezas = 0, kilos = 0, ars = 0
-  for (const it of items) {
-    const precio = prices.categories[it.categoria]?.current ?? prices.inmag.current
-    const k = (it.cabezas || 0) * (it.peso || 0)
-    cabezas += it.cabezas || 0
-    kilos += k
-    ars += k * precio
+/** Qué banda se usó para un lote, en palabras. */
+function baseDe(l: LoteValuado): string {
+  if (!l.ref.banda) return 'Sin referencia observada'
+  if (l.ref.base === 'rango_peso' && l.ref.rango) {
+    return `Lotes de ${l.ref.rango.desde_kg}–${l.ref.rango.hasta_kg} kg · ${fmt(l.ref.banda.lotes)} lotes`
   }
-  return { cabezas, kilos, ars, usd: ars / prices.usdBlue.current }
-}
-
-/** Animate a number from 0 → target with easeOutCubic, once per target change. */
-function useCountUp(target: number, durationMs = 900): number {
-  const [val, setVal] = useState(0)
-  const fromRef = useRef(0)
-  const rafRef = useRef<number | undefined>(undefined)
-  useEffect(() => {
-    const from = fromRef.current
-    const to = target
-    if (from === to) return
-    const start = performance.now()
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / durationMs)
-      const eased = 1 - Math.pow(1 - t, 3)
-      setVal(from + (to - from) * eased)
-      if (t < 1) {
-        rafRef.current = requestAnimationFrame(tick)
-      } else {
-        fromRef.current = to
-        setVal(to)
-      }
-    }
-    rafRef.current = requestAnimationFrame(tick)
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
-  }, [target, durationMs])
-  return val
-}
-
-function lotValue(it: GanadoItem, prices: MarketPrices): number {
-  const price = prices.categories[it.categoria]?.current ?? prices.inmag.current
-  return (it.cabezas || 0) * (it.peso || 0) * price
+  return `Toda la categoría · ${fmt(l.ref.banda.lotes)} lotes`
 }
 
 /**
  * Onboarding progresivo: una pregunta por pantalla.
- * ¿Qué hacienda? → ¿Cuántas? → ¿Qué peso? → Calculando… → Valor + ¿agregar otra?
+ * ¿Qué hacienda? → ¿Cuántas? → ¿Qué peso? → Valor de Referencia + ¿agregar otra?
  */
-function GanadoWizard({ prices, isFirst, onComplete, onCancel }: {
-  prices: MarketPrices
+function GanadoWizard({ usdBlue, isFirst, onComplete, onCancel }: {
+  usdBlue: number
   isFirst: boolean
   onComplete: (lot: GanadoItem, addAnother: boolean) => void
   onCancel: () => void
 }) {
-  const [step, setStep] = useState<'cat' | 'count' | 'weight' | 'calc' | 'result'>('cat')
+  const [step, setStep] = useState<'cat' | 'count' | 'weight' | 'result'>('cat')
   const [categoria, setCategoria] = useState('')
   const [label, setLabel] = useState('')
   const [cabezas, setCabezas] = useState(50)
   const [peso, setPeso] = useState(450)
 
-  useEffect(() => {
-    if (step !== 'calc') return
-    const t = setTimeout(() => setStep('result'), 1300)
-    return () => clearTimeout(t)
-  }, [step])
-
-  const value = lotValue({ categoria, cabezas, peso }, prices)
-  const stepNum = step === 'cat' ? 1 : step === 'count' ? 2 : step === 'weight' ? 3 : 3
+  const ref = useMemo(() => getReferenciaPorPeso(categoria || 'x', peso), [categoria, peso])
+  const kilos = cabezas * peso
+  const stepNum = step === 'cat' ? 1 : step === 'count' ? 2 : 3
 
   const Dots = () => (
     <div className="flex items-center justify-center gap-2 mb-8">
@@ -119,7 +82,7 @@ function GanadoWizard({ prices, isFirst, onComplete, onCancel }: {
 
   return (
     <div className="max-w-md mx-auto px-4 py-12">
-      {step !== 'calc' && step !== 'result' && <Dots />}
+      {step !== 'result' && <Dots />}
 
       {step === 'cat' && (
         <div className="text-center">
@@ -149,13 +112,13 @@ function GanadoWizard({ prices, isFirst, onComplete, onCancel }: {
           <h1 className="text-2xl font-terminal text-zinc-100 mb-2">¿Cuántas cabezas?</h1>
           <p className="text-zinc-500 text-sm mb-8">{label}.</p>
           <div className="flex items-center justify-center gap-4 mb-8">
-            <button onClick={() => setCabezas(Math.max(1, cabezas - 10))} className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-700 text-zinc-300 text-xl hover:border-accent">−</button>
+            <button onClick={() => setCabezas(Math.max(1, cabezas - 10))} className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-700 text-zinc-300 text-xl hover:border-accent" aria-label="Diez cabezas menos">−</button>
             <input
               type="number" min={1} value={cabezas}
               onChange={e => setCabezas(Math.max(1, parseInt(e.target.value) || 0))}
               className="w-32 text-center text-4xl font-mono bg-transparent text-zinc-100 border-b-2 border-terminal-border focus:border-accent outline-none py-1"
             />
-            <button onClick={() => setCabezas(cabezas + 10)} className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-700 text-zinc-300 text-xl hover:border-accent">+</button>
+            <button onClick={() => setCabezas(cabezas + 10)} className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-700 text-zinc-300 text-xl hover:border-accent" aria-label="Diez cabezas más">+</button>
           </div>
           <button onClick={() => setStep('weight')} className="w-full py-3 bg-accent hover:bg-accent-bright text-terminal-bg font-medium rounded-lg transition-colors">Seguir →</button>
           <button onClick={() => setStep('cat')} className="text-xxs text-zinc-500 hover:text-zinc-300 mt-4">← Volver</button>
@@ -165,7 +128,7 @@ function GanadoWizard({ prices, isFirst, onComplete, onCancel }: {
       {step === 'weight' && (
         <div className="text-center">
           <h1 className="text-2xl font-terminal text-zinc-100 mb-2">¿De qué peso aproximado?</h1>
-          <p className="text-zinc-500 text-sm mb-8">Promedio por cabeza, en kilos.</p>
+          <p className="text-zinc-500 text-sm mb-8">Promedio por cabeza, en kilos. El peso cambia el precio por kilo: lo usamos para buscar lotes parecidos al tuyo.</p>
           <div className="flex items-center justify-center gap-2 mb-4">
             <input
               type="number" min={50} max={1000} value={peso}
@@ -179,43 +142,52 @@ function GanadoWizard({ prices, isFirst, onComplete, onCancel }: {
               <button key={d} onClick={() => setPeso(Math.max(1, peso + d))} className="px-3 py-1 text-xs bg-zinc-900 border border-zinc-700 rounded text-zinc-400 hover:border-accent">{d > 0 ? `+${d}` : d}</button>
             ))}
           </div>
-          <button onClick={() => setStep('calc')} className="w-full py-3 bg-accent hover:bg-accent-bright text-terminal-bg font-medium rounded-lg transition-colors">Calcular valor</button>
+          <button onClick={() => setStep('result')} className="w-full py-3 bg-accent hover:bg-accent-bright text-terminal-bg font-medium rounded-lg transition-colors">Ver su Valor de Referencia</button>
           <button onClick={() => setStep('count')} className="text-xxs text-zinc-500 hover:text-zinc-300 mt-4">← Volver</button>
-        </div>
-      )}
-
-      {step === 'calc' && (
-        <div className="text-center py-16">
-          <div className="inline-block w-10 h-10 border-2 border-accent border-t-transparent rounded-full animate-spin mb-6" />
-          <p className="text-zinc-300 font-terminal text-lg">Calculando…</p>
-          <p className="text-zinc-500 text-xs mt-2">{cabezas} {label.toLowerCase()} · {peso} kg · al INMAG ${fmt(prices.inmag.current)}/kg</p>
         </div>
       )}
 
       {step === 'result' && (
         <div className="text-center">
-          <p className="text-zinc-500 text-xs uppercase tracking-wider mb-2">{cabezas} {label.toLowerCase()} de ~{peso} kg valen</p>
-          <div className="text-4xl text-positive font-mono font-medium mb-1 tabular-nums">{fmtCurrency(value)}</div>
-          <div className="text-zinc-400 font-mono text-sm mb-6">≈ USD {fmt(value / prices.usdBlue.current)}</div>
-          <div className="terminal-panel mb-8">
-            <div className="px-panel py-4 text-sm text-zinc-400 flex items-start gap-2 text-left">
-              <span className="text-accent mt-0.5">✓</span>
-              <span>Guardamos este valor en tu cuenta automáticamente. Cuando vuelvas, va a estar actualizado al precio del día.</span>
+          <p className="text-zinc-500 text-xs uppercase tracking-wider mb-2">{cabezas} {label.toLowerCase()} de ~{peso} kg</p>
+          {ref.banda ? (
+            <>
+              <div className="text-4xl text-positive font-mono font-medium mb-1 tabular-nums">{fmtCurrency(ref.banda.mediana * kilos)}</div>
+              <div className="text-zinc-400 font-mono text-sm mb-1">
+                entre {fmtCurrency(ref.banda.p10 * kilos)} y {fmtCurrency(ref.banda.p90 * kilos)}
+              </div>
+              <div className="text-zinc-500 font-mono text-xs mb-6">≈ USD {fmt((ref.banda.mediana * kilos) / usdBlue)}</div>
+              <div className="terminal-panel mb-8">
+                <div className="px-panel py-4 text-xs text-zinc-400 text-left leading-relaxed">
+                  Es la mediana de lo que se pagó por kilo en {ref.base === 'rango_peso' && ref.rango
+                    ? `lotes de ${label.toLowerCase()} de ${ref.rango.desde_kg}–${ref.rango.hasta_kg} kg`
+                    : `lotes de ${label.toLowerCase()} de todos los pesos`} en el Mercado Agroganadero,
+                  {' '}{fmt(ref.banda.lotes)} lotes en {ref.ventana_dias} días. El rango va del 10 % más barato al 10 % más caro.
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="terminal-panel mb-8">
+              <div className="px-panel py-4 text-sm text-zinc-300 text-left leading-relaxed">
+                <strong className="text-amber-300">No tenemos un precio observado para {label.toLowerCase()}.</strong>{' '}
+                El Mercado Agroganadero no opera esa categoría y no vamos a inventarle un valor. Lo guardamos en tu rodeo
+                y lo mostramos sin valuar.
+              </div>
             </div>
-          </div>
+          )}
           <button onClick={() => onComplete({ categoria, cabezas, peso }, true)} className="w-full py-3 bg-zinc-900 border border-zinc-700 hover:border-accent text-zinc-200 rounded-lg mb-3 transition-colors">+ Agregar otra categoría</button>
-          <button onClick={() => onComplete({ categoria, cabezas, peso }, false)} className="w-full py-3 bg-accent hover:bg-accent-bright text-terminal-bg font-medium rounded-lg transition-colors">Listo, ver mi hacienda →</button>
+          <button onClick={() => onComplete({ categoria, cabezas, peso }, false)} className="w-full py-3 bg-accent hover:bg-accent-bright text-terminal-bg font-medium rounded-lg transition-colors">Listo, ver mi rodeo →</button>
         </div>
       )}
     </div>
   )
 }
 
-export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketPrices; lastUpdate: string }) {
+export default function MiGanadoClient({ inmag, usdBlue, lastUpdate }: Props) {
   const {
-    items, lastSeenValue, lastSeenAt, alertsOptIn, history,
+    items, alertsOptIn,
     isLoading, isLoggedIn, hasRow,
-    saveGanado, markSeen, snapshotValue, setAlerts,
+    saveGanado, markSeen, setAlerts,
   } = useGanado()
 
   const [draft, setDraft] = useState<GanadoItem[]>([])
@@ -236,58 +208,32 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
     if (!isLoading) setDraft(items)
   }, [isLoading, items])
 
-  const totals = useMemo(() => valueOf(draft, prices), [draft, prices])
-  const animatedArs = useCountUp(totals.ars)
+  const rodeo = useMemo(() => valuarRodeo(draft), [draft])
 
-  // Δ since last visit — computed against the SAVED value (not the draft), and
-  // only meaningful when nothing is being edited.
-  const savedTotals = useMemo(() => valueOf(items, prices), [items, prices])
-  const delta = lastSeenValue != null && !dirty ? savedTotals.ars - lastSeenValue : null
-  const deltaPct = delta != null && lastSeenValue ? (delta / lastSeenValue) * 100 : null
-
-  // 30-day shape of what the herd would have been worth, tracking the INMAG.
-  // Honest illustration: today's herd composition valued at each day's index.
-  const herdSeries = useMemo(() => {
-    const series = prices.inmag.series ?? []
-    const cur = prices.inmag.current
-    const last = series.slice(-30)
-    if (!last.length || !cur || totals.ars <= 0) return []
-    return last.map(p => ({ date: p.date, value: totals.ars * (p.value / cur) }))
-  }, [prices.inmag, totals.ars])
-
-  // Real evolution of THIS producer's herd value, from saved snapshots.
-  const realSeries = useMemo(
-    () => history.map(s => ({ date: s.snapshot_date, value: s.value_ars })),
-    [history],
-  )
-
-  // Stamp the value the producer is seeing now, once per mount, so the next
-  // visit can show "Δ desde tu última visita" — and write today's snapshot so
-  // the evolution chart grows.
+  // Registra el valor central que el productor está viendo (lo lee /admin/ops). Una vez
+  // por montaje. Ya no se escriben snapshots diarios: ver useGanado.
   useEffect(() => {
     if (!isLoading && isLoggedIn && hasRow && items.length > 0 && !stampedRef.current) {
       stampedRef.current = true
-      const v = valueOf(items, prices)
-      markSeen(v.ars)
-      snapshotValue(v.ars, v.cabezas, v.kilos, prices.inmag.current)
+      const v = valuarRodeo(items)
+      if (v.total) markSeen(v.total.central)
     }
-  }, [isLoading, isLoggedIn, hasRow, items, prices, markSeen, snapshotValue])
+  }, [isLoading, isLoggedIn, hasRow, items, markSeen])
 
   function addItem() {
     setDraft([...draft, { categoria: 'novillos', cabezas: 50, peso: 450 }])
     setDirty(true); setSaved(false)
   }
   function openWizard() { setWizardKey(k => k + 1); setWizardOpen(true) }
-  // Wizard agregó una tropa: la sumamos, guardamos auto, y stampeamos el valor.
+  // Wizard agregó una tropa: la sumamos y guardamos automáticamente.
   async function handleWizardComplete(lot: GanadoItem, addAnother: boolean) {
     const next = [...draft, lot]
     setDraft(next); setDirty(false)
     const { error } = await saveGanado(next)
     if (!error) {
       stampedRef.current = true
-      const v = valueOf(next, prices)
-      markSeen(v.ars)
-      snapshotValue(v.ars, v.cabezas, v.kilos, prices.inmag.current)
+      const v = valuarRodeo(next)
+      if (v.total) markSeen(v.total.central)
     }
     if (addAnother) setWizardKey(k => k + 1)
     else setWizardOpen(false)
@@ -315,17 +261,16 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
     if (!error) {
       setDirty(false); setSaved(true)
       stampedRef.current = true
-      const v = valueOf(draft, prices)
-      markSeen(v.ars) // reset the baseline to what was just saved
-      snapshotValue(v.ars, v.cabezas, v.kilos, prices.inmag.current)
+      const v = valuarRodeo(draft)
+      if (v.total) markSeen(v.total.central)
       setTimeout(() => setSaved(false), 4000)
     }
   }
 
-  /* ---- El historial de verdad: el rodeo de hoy valuado contra los precios de cada
-         fecha. No son los snapshots guardados; ver lib/ganado-historial.ts.
-         Va acá arriba, con los demás efectos, porque después vienen returns
-         condicionales y un hook no puede quedar detrás de uno. ---- */
+  /* ---- El historial: el rodeo de hoy, anclado a su Valor de Referencia y movido con
+         el INMAG de cada fecha. Se RECALCULA; no hay snapshots. Ver
+         lib/ganado-historial.ts. Va acá arriba, con los demás efectos, porque después
+         vienen returns condicionales y un hook no puede quedar detrás de uno. ---- */
   useEffect(() => {
     if (!isLoggedIn || isLoading || items.length === 0) return
     let vivo = true
@@ -337,7 +282,7 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
         setHistSerie(Array.isArray(d.serie) ? d.serie : [])
         setHistMetodo(typeof d.metodo === 'string' ? d.metodo : null)
       })
-      .catch(() => { /* el panel cae al texto de siempre */ })
+      .catch(() => { /* el panel cae al texto explicativo, nunca a una serie guardada */ })
       .finally(() => { if (vivo) setHistLoading(false) })
     return () => { vivo = false }
     // Depende del rodeo GUARDADO (`items`), no del borrador: no se recalcula con cada
@@ -357,29 +302,30 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
   if (!isLoggedIn) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12">
-        <h1 className="text-2xl font-terminal text-zinc-100 mb-3">Mi Ganado</h1>
+        <h1 className="text-2xl font-terminal text-zinc-100 mb-3">Mi Ganado: cuánto vale tu rodeo</h1>
         <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-          Cargá tu hacienda una vez y mirá cuánto vale <strong className="text-zinc-200">hoy al INMAG</strong>,
-          actualizado cada día hábil. Volvé cuando quieras: tu rodeo queda guardado y el valor se
-          mueve solo con el mercado.
+          Cargá tu hacienda una vez —categoría, cabezas y peso— y la ves valuada a su{' '}
+          <Link href="/vr" className="text-accent hover:text-accent-bright">Valor de Referencia</Link>:
+          lo que realmente se pagó por lotes parecidos al tuyo en el Mercado Agroganadero, con el rango
+          y la cantidad de lotes que lo sostienen.
         </p>
         <div className="terminal-panel mb-6">
           <div className="terminal-panel-header">¿Qué vas a ver?</div>
           <ul className="px-panel py-4 space-y-2 text-sm text-zinc-400">
-            <li>· El valor total de tu hacienda en pesos y dólares, al precio del día.</li>
-            <li>· Cuánto cambió <strong className="text-zinc-200">desde tu última visita</strong>.</li>
-            <li>· La evolución de tu rodeo y un aviso cada lunes con cuánto vale.</li>
+            <li>· El valor de tu rodeo en pesos y dólares, con el rango de lo que se pagó (no un número solo).</li>
+            <li>· Qué lotes lo sostienen: categoría, rango de peso y cuántos lotes se vendieron así.</li>
+            <li>· Cómo se movió ese mismo rodeo en el tiempo, y un mail cada lunes con su valor.</li>
           </ul>
         </div>
         <Link
-          href="/login"
+          href="/login?next=/mi-ganado"
           className="inline-block py-3 px-6 bg-accent hover:bg-accent-bright text-terminal-bg text-sm font-medium rounded transition-colors"
         >
-          Ingresá para guardar tu ganado →
+          Valuar mi rodeo gratis →
         </Link>
         <p className="text-xxs text-zinc-500 mt-4">
-          Gratis. Solo necesitás tu email. ¿Querés una estimación rápida sin cuenta?{' '}
-          <Link href="/calculadora" className="text-accent hover:text-accent-bright">Usá la calculadora</Link>.
+          Gratis. Solo necesitás tu email. ¿Querés mirar primero los precios?{' '}
+          <Link href="/vr" className="text-accent hover:text-accent-bright">Ver el Valor de Referencia por categoría</Link>.
         </p>
       </div>
     )
@@ -400,7 +346,7 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
     return { label: 'hacienda', href: '/remates' }
   })()
 
-  const isUp = (prices.inmag.change ?? 0) >= 0
+  const isUp = (inmag.change ?? 0) >= 0
   const empty = draft.length === 0
 
   /* ---- Onboarding progresivo (primera vez) o "agregar" guiado ---- */
@@ -408,7 +354,7 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
     return (
       <GanadoWizard
         key={wizardKey}
-        prices={prices}
+        usdBlue={usdBlue.current}
         isFirst={draft.length === 0}
         onComplete={handleWizardComplete}
         onCancel={() => setWizardOpen(false)}
@@ -423,56 +369,94 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
         <div>
           <h1 className="text-2xl font-terminal text-zinc-100 mb-1">Mi Ganado</h1>
           <p className="text-zinc-500 text-xxs font-terminal uppercase tracking-wider">
-            Valuado al INMAG ${fmt(prices.inmag.current)}/kg · act. {fmtDate(lastUpdate)}
+            Valor de Referencia · lotes del MAG {fmtFechaCorta(rodeo.ventana.desde)} → {fmtFechaCorta(rodeo.ventana.hasta)} · {VR_METODOLOGIA}
           </p>
         </div>
         <span className={`text-xxs font-terminal px-2 py-1 rounded inline-flex items-center gap-1.5 ${isUp ? 'text-positive bg-positive/10' : 'text-negative bg-negative/10'}`}>
-          <span className={`inline-block w-1.5 h-1.5 rounded-full ${isUp ? 'bg-positive' : 'bg-negative'} animate-pulse`} />
-          INMAG {isUp ? '+' : ''}{(prices.inmag.change ?? 0).toFixed(1)}% hoy
+          INMAG ${fmt(inmag.current)} · {isUp ? '+' : ''}{(inmag.change ?? 0).toFixed(1)}% · {fmtFechaCorta(lastUpdate)}
         </span>
       </div>
 
-      {/* Hero valuation — the aha moment */}
+      {/* El número: Valor de Referencia del rodeo, con su rango */}
       {!empty && (
         <div className="terminal-panel mb-6">
-          <div className="terminal-panel-header text-accent">Valor de tu hacienda hoy</div>
+          <div className="terminal-panel-header text-accent">Valor de Referencia de tu rodeo</div>
           <div className="px-panel py-6">
-            <div className="text-4xl text-positive font-mono font-medium mb-1 tabular-nums">
-              {fmtCurrency(animatedArs)}
-            </div>
-            <div className="text-lg text-zinc-400 font-mono mb-4">
-              ≈ USD {fmt(animatedArs / prices.usdBlue.current)} <span className="text-xxs text-zinc-500">(blue ${fmt(prices.usdBlue.current)})</span>
-            </div>
-
-            {delta != null && (
-              <div className={`inline-flex items-center gap-2 text-sm font-mono px-3 py-1.5 rounded ${delta >= 0 ? 'text-positive bg-positive/10' : 'text-negative bg-negative/10'}`}>
-                <span>{delta >= 0 ? '↑' : '↓'}</span>
-                <span>{delta >= 0 ? '+' : '−'}{fmtCurrency(Math.abs(delta))}</span>
-                {deltaPct != null && <span className="opacity-80">({deltaPct >= 0 ? '+' : ''}{deltaPct.toFixed(1)}%)</span>}
-                <span className="text-zinc-500 text-xxs">desde tu última visita{lastSeenAt ? ` · ${fmtDate(lastSeenAt)}` : ''}</span>
-              </div>
+            {rodeo.total ? (
+              <>
+                <div className="text-4xl text-positive font-mono font-medium mb-1 tabular-nums">
+                  {fmtCurrency(rodeo.total.central)}
+                </div>
+                <div className="text-sm text-zinc-300 font-mono mb-1">
+                  entre {fmtCurrency(rodeo.total.conservador)} y {fmtCurrency(rodeo.total.optimista)}
+                </div>
+                <div className="text-xs text-zinc-500 font-mono mb-4">
+                  ≈ USD {fmt(rodeo.total.central / usdBlue.current)} <span className="text-zinc-600">(blue ${fmt(usdBlue.current)})</span>
+                </div>
+                <p className="text-xxs text-zinc-500 leading-relaxed">
+                  El número grande es la mediana de lo que se pagó por kilo en lotes de la misma categoría y peso
+                  que los tuyos; el rango va del 10 % más barato al 10 % más caro de esos lotes.{' '}
+                  <Link href="/metodologia/vr" className="text-accent hover:text-accent-bright">Cómo se calcula</Link>.
+                </p>
+              </>
+            ) : (
+              <p className="text-sm text-zinc-300">
+                Ninguna de las categorías que cargaste tiene un precio observado en el Mercado Agroganadero,
+                así que no mostramos un valor. Preferimos no inventarlo.
+              </p>
             )}
 
-            {/* 30-day shape, tracking the index */}
-            {herdSeries.length > 1 && (
-              <div className="mt-6">
-                <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-2">
-                  Tu hacienda los últimos 30 días (al índice)
-                </div>
-                <PriceSparkline data={herdSeries} height={90} lineColor="#4ade80" areaColor="rgba(74,222,128,0.12)" />
-              </div>
+            {rodeo.sinValuar.cabezas > 0 && (
+              <p className="mt-4 text-xs text-amber-300/90 bg-amber-500/5 border border-amber-500/20 rounded px-3 py-2 leading-relaxed">
+                {fmt(rodeo.sinValuar.cabezas)} cabezas ({rodeo.sinValuar.categorias.map(labelDe).join(', ').toLowerCase()}) quedan
+                sin valuar: el Mercado Agroganadero no opera esa categoría y no tenemos un precio observado con qué medirlas.
+              </p>
             )}
 
             <div className="grid grid-cols-2 gap-6 mt-6 pt-6 border-t border-terminal-border">
               <div>
-                <div className="text-xxs text-zinc-500 uppercase mb-1">Total cabezas</div>
-                <div className="text-2xl text-zinc-100 font-mono">{fmt(totals.cabezas)}</div>
+                <div className="text-xxs text-zinc-500 uppercase mb-1">Cabezas valuadas</div>
+                <div className="text-2xl text-zinc-100 font-mono">{fmt(rodeo.valuado.cabezas)}</div>
               </div>
               <div>
-                <div className="text-xxs text-zinc-500 uppercase mb-1">Total kilos</div>
-                <div className="text-2xl text-zinc-100 font-mono">{fmt(totals.kilos)} kg</div>
+                <div className="text-xxs text-zinc-500 uppercase mb-1">Kilos valuados</div>
+                <div className="text-2xl text-zinc-100 font-mono">{fmt(rodeo.valuado.kilos)} kg</div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Qué sostiene el número: lote por lote */}
+      {!empty && rodeo.lotes.length > 0 && (
+        <div className="terminal-panel mb-6">
+          <div className="terminal-panel-header flex items-center justify-between">
+            <span>Qué lo sostiene</span>
+            <span className="text-xxs text-zinc-500">$/kg · P10 · mediana · P90</span>
+          </div>
+          <div className="divide-y divide-terminal-border">
+            {rodeo.lotes.map((l, i) => (
+              <div key={i} className="px-panel py-3 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-1 sm:gap-4 items-baseline">
+                <div>
+                  <div className="text-sm text-zinc-200">
+                    {fmt(l.cabezas)} {labelDe(l.categoria).toLowerCase()} · {fmt(l.peso)} kg
+                  </div>
+                  <div className="text-xxs text-zinc-500">{baseDe(l)}</div>
+                </div>
+                <div className="text-right font-mono tabular-nums">
+                  {l.ref.banda && l.central != null ? (
+                    <>
+                      <div className="text-sm text-zinc-100">{fmtCurrency(l.central)}</div>
+                      <div className="text-xxs text-zinc-500">
+                        {fmt(l.ref.banda.p10)} · <span className="text-zinc-300">{fmt(l.ref.banda.mediana)}</span> · {fmt(l.ref.banda.p90)}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-xxs text-amber-300/80">sin valuar</div>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -548,21 +532,22 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
         </button>
       )}
 
-      {/* Registro de valor — evolution + weekly alert opt-in */}
+      {/* Evolución (recalculada) + aviso semanal */}
       {hasRow && !empty && (
         <div className="terminal-panel mt-6">
-          <div className="terminal-panel-header">La evolución de tu hacienda</div>
+          <div className="terminal-panel-header">Cómo se movió este mismo rodeo</div>
           <div className="px-panel py-5">
             {histLoading && histSerie.length === 0 ? (
               <p className="text-sm text-zinc-500">Calculando la evolución de tu rodeo…</p>
             ) : histSerie.length > 1 ? (
               <HistorialLote serie={histSerie} metodo={histMetodo ?? undefined} />
-            ) : realSeries.length > 1 ? (
-              // Respaldo: si el recálculo no vino, se muestra lo que había.
-              <PriceSparkline data={realSeries} height={90} />
             ) : (
+              // Sin serie recalculada no se dibuja nada: la vieja serie de visitas
+              // guardadas producía caídas que no ocurrieron (el "−93,1 %").
               <p className="text-sm text-zinc-400">
-                Cargá tu hacienda y vas a ver acá cuánto valía en cada fecha, hasta dos años atrás.
+                {rodeo.total
+                  ? 'Guardá tu hacienda y vas a ver acá cuánto valía este mismo rodeo en cada fecha, hasta 2015.'
+                  : 'La evolución necesita al menos un lote con precio observado.'}
               </p>
             )}
 
@@ -580,9 +565,9 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
                 className="w-4 h-4 accent-accent"
               />
               <span className="text-sm text-zinc-300">
-                Avisame cada lunes cuánto vale mi hacienda
+                Mandame cada lunes el Valor de Referencia de mi rodeo
                 <span className="block text-xxs text-zinc-500">
-                  Un mail con el valor y cuánto cambió en la semana. Cancelás cuando quieras.
+                  Un mail con el valor, su rango y cuánto se movió en la semana. Lo apagás desde acá cuando quieras.
                 </span>
               </span>
               {alertSaved && (
@@ -595,10 +580,7 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
         </div>
       )}
 
-      {/* Vender — lleva a lo que corresponde a ESTE rodeo, no al catálogo entero.
-          Decía "consignatarias en tu zona" y abría el directorio completo: el lote no
-          guarda provincia, así que la zona era una promesa que no cumplíamos. Lo que sí
-          sabemos es la categoría, y con eso se puede mandar al remate que le sirve. */}
+      {/* Vender — lleva a lo que corresponde a ESTE rodeo, dentro del sitio. */}
       <div className="terminal-panel mt-6">
         <div className="px-panel py-4 flex items-center justify-between flex-wrap gap-3">
           <p className="text-sm text-zinc-400">
@@ -609,8 +591,9 @@ export default function MiGanadoClient({ prices, lastUpdate }: { prices: MarketP
       </div>
 
       <p className="text-xxs text-zinc-500 mt-6">
-        * Valores referenciales al precio INMAG por categoría. El precio final depende de calidad,
-        ubicación, condiciones de pago y negociación. Tu hacienda queda guardada en tu cuenta.
+        * Referencia de mercado observada en el Mercado Agroganadero (Cañuelas): no es una tasación ni una
+        cotización en firme. El precio final depende de calidad, ubicación, condiciones de pago y negociación.
+        Tu hacienda queda guardada en tu cuenta.
       </p>
     </div>
   )

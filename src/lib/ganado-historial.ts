@@ -19,12 +19,13 @@
  * año?"— y funciona desde el primer día, sin esperar a juntar visitas.
  *
  * EL PROXY, DECLARADO
- * Tenemos el INMAG diario desde 2015 (1.731 ruedas) pero los precios POR CATEGORÍA sólo
- * desde mayo de 2026. Para ir más atrás se usa el INMAG como base y se mantiene la
- * relación de hoy entre cada categoría y el índice: si el ternero está hoy a 1,15 veces
- * el INMAG, se asume esa relación hacia atrás. Es un proxy y la página lo dice — la
+ * Tenemos el INMAG diario desde 2015 pero la banda observada por categoría y peso sólo
+ * de la ventana vigente. Para ir más atrás se ancla el rodeo a su Valor de Referencia de
+ * hoy (`lib/rodeo-vr.ts → ratiosDesdeRodeo`) y se lo mueve con el INMAG, manteniendo la
+ * relación de hoy entre cada lote y el índice. Es un proxy y la página lo dice — la
  * relación entre categorías cambia con el ciclo, así que la curva muestra la tendencia
- * del mercado sobre tu composición, no una reconstrucción exacta de precios.
+ * del mercado sobre tu composición, no una reconstrucción exacta de precios. Un lote sin
+ * referencia observada (el ternero) no entra en la curva, igual que no entra en el total.
  */
 
 export interface LoteItem {
@@ -66,24 +67,6 @@ export function kilosPorCategoria(lote: LoteItem[]): Map<string, number> {
 }
 
 /**
- * La relación de hoy entre el precio de cada categoría y el INMAG.
- *
- * Es lo que permite proyectar hacia atrás: el INMAG lo tenemos desde 2015, los precios por
- * categoría no. Una categoría sin precio publicado cae a 1 (vale el índice).
- */
-export function ratiosContraInmag(
-  precios: Record<string, { current: number }>,
-  inmagHoy: number,
-): Map<string, number> {
-  const m = new Map<string, number>()
-  if (!(inmagHoy > 0)) return m
-  for (const [cat, p] of Object.entries(precios)) {
-    if (p?.current > 0) m.set(cat, p.current / inmagHoy)
-  }
-  return m
-}
-
-/**
  * Valúa el rodeo actual contra la serie de INMAG.
  *
  * `blue` mapea fecha → dólar; si falta la del día se usa la última conocida (forward-fill),
@@ -101,8 +84,16 @@ export function valuarHistorico(opts: {
 
   // Kilos "equivalentes INMAG": aplicar el ratio de cada categoría una sola vez y sumar.
   // Después, el valor de cualquier fecha es una multiplicación.
+  //
+  // Una categoría SIN ratio queda afuera. Antes valía "el índice" (ratio 1): para el
+  // ternero, que el MAG no opera, eso era valuar con un precio que nadie observó. El
+  // historial tiene que sumar lo mismo que la valuación de hoy, y hoy ese lote no se valúa.
   let kilosEquivalentes = 0
-  for (const [cat, k] of kilos) kilosEquivalentes += k * (ratios.get(cat) ?? 1)
+  for (const [cat, k] of kilos) {
+    const r = ratios.get(cat)
+    if (r != null && r > 0) kilosEquivalentes += k * r
+  }
+  if (kilosEquivalentes <= 0) return []
 
   const serieBlue = [...blue].sort((a, b) => a.date.localeCompare(b.date))
   let bi = 0

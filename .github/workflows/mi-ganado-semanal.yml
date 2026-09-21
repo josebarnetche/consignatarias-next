@@ -1,0 +1,45 @@
+name: Mi Ganado — resumen de los lunes
+
+# Manda el Valor de Referencia del rodeo a cada usuario que lo pidió en /mi-ganado
+# (user_ganado.alerts_opt_in). El opt-in existía desde mayo de 2026 y el envío no: al
+# 21-sep había 3 usuarios anotados a un mail que nunca salía.
+#
+# Lunes 11:00 ART: la banda vigente es la del viernes (mag-lots-pipeline corre Mar/Mié/Vie)
+# y el INMAG del viernes ya está en la tabla.
+on:
+  schedule:
+    - cron: '0 14 * * 1' # 11:00 ART, lunes
+  workflow_dispatch:
+
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: cron-hook start
+        id: cronstart
+        run: |
+          RUN_ID=$(curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" -H "Content-Type: application/json" -d '{"workflow_name":"mi-ganado-semanal","phase":"start"}' | jq -r '.run_id // empty')
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Enviar resúmenes
+        run: |
+          response=$(curl -sL -w "\n%{http_code}" -X POST \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            "https://www.consignatarias.com.ar/api/cron/mi-ganado-semanal")
+
+          http_code=$(echo "$response" | tail -1)
+          body=$(echo "$response" | head -n -1)
+
+          echo "Response: $body"
+          echo "HTTP Code: $http_code"
+
+          if [ "$http_code" -ne 200 ]; then
+            echo "Error: el resumen fallo con HTTP $http_code"
+            exit 1
+          fi
+
+      - name: cron-hook finish
+        if: always() && steps.cronstart.outputs.run_id != ''
+        run: |
+          ST="ok"; [ "${{ job.status }}" != "success" ] && ST="error"
+          curl -s -X POST "https://www.consignatarias.com.ar/api/internal/cron-hook" -H "Authorization: Bearer ${{ secrets.INTERNAL_API_SECRET }}" -H "Content-Type: application/json" -d "{\"workflow_name\":\"mi-ganado-semanal\",\"phase\":\"finish\",\"run_id\":${{ steps.cronstart.outputs.run_id }},\"status\":\"$ST\"}" || true

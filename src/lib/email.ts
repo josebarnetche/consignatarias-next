@@ -3569,6 +3569,54 @@ export async function sendAlertaNovilloUsd(opts: {
 }
 
 /**
+ * El mail de los lunes de Mi Ganado (v1.211.0). Lo arma `lib/mi-ganado-semanal.ts` con
+ * valores recalculados en el momento; acá sólo se presenta. La baja es el mismo checkbox
+ * de /mi-ganado que dio el alta.
+ */
+export async function sendResumenRodeo(opts: {
+  to: string
+  asunto: string
+  central: number
+  conservador: number
+  optimista: number
+  cambioSemanaPct: number | null
+  valuadoCabezas: number
+  sinValuarCabezas: number
+  fechaDato: string
+}) {
+  const resend = await getResend()
+  if (!resend) return
+  const ars = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
+  const cab = (n: number) => Math.round(n).toLocaleString('es-AR')
+  const cambio =
+    opts.cambioSemanaPct == null
+      ? ''
+      : `<p style="color:${opts.cambioSemanaPct >= 0 ? '#4ade80' : '#f87171'};font-size:13px;margin:0 0 14px">${opts.cambioSemanaPct >= 0 ? '▲' : '▼'} ${Math.abs(opts.cambioSemanaPct).toFixed(1).replace('.', ',')} % en la última semana, movido con el INMAG.</p>`
+  const sinValuar =
+    opts.sinValuarCabezas > 0
+      ? `<p style="color:#fbbf24;font-size:12px;line-height:1.6;margin:0 0 14px">${cab(opts.sinValuarCabezas)} cabezas quedan sin valuar: son de una categoría que el Mercado Agroganadero no opera (terneros) y no tenemos un precio observado con qué medirlas.</p>`
+      : ''
+
+  await resend.emails.send({
+    from: FROM,
+    to: opts.to,
+    subject: opts.asunto,
+    html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Mi Ganado · Valor de Referencia</p>
+      <h2 style="color:#fafafa;font-size:26px;font-weight:700;margin:0 0 4px">${ars(opts.central)}</h2>
+      <p style="color:#d4d4d8;font-size:13px;margin:0 0 14px">entre ${ars(opts.conservador)} y ${ars(opts.optimista)} · ${cab(opts.valuadoCabezas)} cabezas valuadas</p>
+      ${cambio}
+      ${sinValuar}
+      <p style="color:#a1a1aa;font-size:12px;line-height:1.7;margin:0 0 14px">Es la mediana de lo que se pagó por kilo en lotes de la misma categoría y peso que los tuyos en el Mercado Agroganadero (lotes al ${escapeHtml(opts.fechaDato)}); el rango va del 10 % más barato al 10 % más caro. No es una tasación.</p>
+      <p style="margin:18px 0 20px">
+        <a href="${APP_URL}/mi-ganado" style="display:inline-block;background:#38bdf8;color:#0a0a0a;font-weight:700;font-size:13px;text-decoration:none;padding:11px 18px;border-radius:6px">Ver mi rodeo</a>
+      </p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Te llega porque lo pediste en Mi Ganado. Para no recibirlo más, destildá “Mandame cada lunes…” en <a href="${APP_URL}/mi-ganado" style="color:#71717a">tu rodeo</a>.</p>
+    `),
+  })
+}
+
+/**
  * Aviso interno: alguien se dio de baja y NO pudimos confirmar que el débito se cortó.
  *
  * Va a la casilla de operaciones, no al usuario. Es el único caso del circuito donde

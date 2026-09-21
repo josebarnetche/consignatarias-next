@@ -128,7 +128,6 @@ export default function OverviewClient() {
           <MiGanadoWidget
             inmagSeries={inmagRawSeries.slice(-8)}
             inmagCurrent={inmag.current}
-            categories={marketPrices.categories}
             usdBlue={usd.current}
           />
         </section>
