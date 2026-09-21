@@ -1,20 +1,22 @@
-# Indexación — 2026-09-20
+# Indexación — 2026-09-21
 
-Inspeccionadas 3083 de 3079 URLs del sitemap.
+Inspeccionadas 3134 de 3120 URLs del sitemap.
 
 | Sección | Inspeccionadas | Indexadas | NO indexadas | % |
 |---|---:|---:|---:|---:|
 | /productividad | 479 | 168 | 311 | 65% |
-| /remates | 971 | 810 | 161 | 17% |
+| /remates | 1014 | 831 | 183 | 18% |
 | /consignatarias | 86 | 70 | 16 | 19% |
 | /frigorificos | 1138 | 1128 | 10 | 1% |
 | /calendario | 74 | 68 | 6 | 8% |
 | /precios | 114 | 112 | 2 | 2% |
+| /vr | 7 | 5 | 2 | 29% |
 | /campos | 70 | 69 | 1 | 1% |
 | /informes | 5 | 4 | 1 | 20% |
 | /como-se-tasa-un-campo | 1 | 0 | 1 | 100% |
 | /valor-tierra.json | 1 | 0 | 1 | 100% |
 | /que-es-la-invernada | 1 | 0 | 1 | 100% |
+| /metodologia | 2 | 1 | 1 | 50% |
 | /el-oraculo | 1 | 0 | 1 | 100% |
 | /precios.json | 1 | 0 | 1 | 100% |
 | /precio-de-la-vaca-en-pie | 1 | 1 | 0 | 0% |
@@ -84,7 +86,6 @@ Inspeccionadas 3083 de 3079 URLs del sitemap.
 | /planes | 1 | 1 | 0 | 0% |
 | /enterprise | 1 | 1 | 0 | 0% |
 | /calidad | 1 | 1 | 0 | 0% |
-| /metodologia | 1 | 1 | 0 | 0% |
 | /glosario | 1 | 1 | 0 | 0% |
 | /preguntas-frecuentes | 1 | 1 | 0 | 0% |
 | /el-corredor | 1 | 1 | 0 | 0% |
@@ -109,12 +110,12 @@ Inspeccionadas 3083 de 3079 URLs del sitemap.
 
 | Motivo | URLs |
 |---|---:|
-| Enviada e indexada | 2570 |
-| Descubierta: actualmente sin indexar | 371 |
-| Google no reconoce esta URL | 86 |
+| Enviada e indexada | 2596 |
+| Descubierta: actualmente sin indexar | 387 |
+| Google no reconoce esta URL | 93 |
 | Rastreada: actualmente sin indexar | 34 |
 | Excluida por una etiqueta "noindex" | 15 |
 | No se ha encontrado (404) | 3 |
+| Página con redirección | 3 |
 | Soft 404 | 2 |
 | Internal error encountered. | 1 |
-| Página con redirección | 1 |
