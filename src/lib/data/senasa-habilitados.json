@@ -1,13 +1,13 @@
 {
-  "scrapedAt": "2026-09-14T14:13:36.277Z",
+  "scrapedAt": "2026-09-21T14:18:59.807Z",
   "source": "https://aps2.senasa.gov.ar/registros/faces/publico/establecimientos/tc_frigorificospublico.jsp",
   "ciclos": [
     "CICLO I - MAT.FRIG.",
     "CICLO II - ELABORADOR",
     "CICLO III - DADOR DE FRIO"
   ],
-  "totalRowsScraped": 1008,
-  "distinctCuits": 869,
+  "totalRowsScraped": 1001,
+  "distinctCuits": 863,
   "unparsableCuits": 0,
   "byCuit": {
     "30707283250": {
@@ -1873,8 +1873,7 @@
         "LI H - 20. MATERIA PRIMA P/ELAB. ALIMENTOS P/MASCOTAS"
       ],
       "ciclos": [
-        "CICLO I - MAT.FRIG.",
-        "CICLO II - ELABORADOR"
+        "CICLO I - MAT.FRIG."
       ]
     },
     "30537869158": {
@@ -2036,6 +2035,8 @@
         "XII - 8. DESPOSTADA CAPRINA",
         "XII - 9. DESPOSTADA DE LIEBRES",
         "XII - 9. DESPOSTADA DE LIEBRES",
+        "LXIV - 2. IMPORTACION DE CARNE DE CORDERO",
+        "LXIV - 3. IMPORTACION DE CARNE OVINA",
         "XXVIII - 7. BARRACA / DEPÓSITO DE CUEROS BOVINOS, OVINOS Y LANAS"
       ],
       "ciclos": [
@@ -2924,31 +2925,6 @@
         "I A - CABEZA DE BOVINO FAENADO",
         "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
         "I A - 1. SOLO BUBALINOS"
-      ],
-      "ciclos": [
-        "CICLO I - MAT.FRIG."
-      ]
-    },
-    "30707735135": {
-      "cuit": "30707735135",
-      "tipo": "CICLO I - MAT.FRIG.",
-      "propietario": "LA TABA S.R.L.",
-      "nombre": "LA TABA S.R.L.",
-      "provincia": "CORDOBA",
-      "partido": "CRUZ DEL EJE",
-      "localidad": "CRUZ DEL EJE",
-      "nroOficial": "5621",
-      "actividades": [
-        "I A - CABEZA DE BOVINO FAENADO",
-        "I A - CABEZA DE BOVINO FAENADO",
-        "XXII - ELABORACION DE MENUDENCIAS",
-        "XXII - ELABORACION DE MENUDENCIAS",
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
-        "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
-        "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
-        "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
-        "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG."
@@ -4285,25 +4261,6 @@
         "CICLO II - ELABORADOR"
       ]
     },
-    "30714968102": {
-      "cuit": "30714968102",
-      "tipo": "CICLO II - ELABORADOR",
-      "propietario": "ABASTECEDORA AREQUITO S.R.L.",
-      "nombre": "ABASTECEDORA AREQUITO S.R.L.",
-      "provincia": "SANTA FE",
-      "partido": "CASEROS",
-      "localidad": "AREQUITO",
-      "nroOficial": "5386",
-      "actividades": [
-        "II - FABRICA DE CHACINADOS Y AFINES",
-        "II - FABRICA DE CHACINADOS Y AFINES",
-        "XII - 3. DESPOSTADA PORCINA",
-        "XII - 3. DESPOSTADA PORCINA"
-      ],
-      "ciclos": [
-        "CICLO II - ELABORADOR"
-      ]
-    },
     "30618545365": {
       "cuit": "30618545365",
       "tipo": "CICLO II - ELABORADOR",
@@ -5201,6 +5158,23 @@
         "CICLO II - ELABORADOR"
       ]
     },
+    "30716136716": {
+      "cuit": "30716136716",
+      "tipo": "CICLO II - ELABORADOR",
+      "propietario": "CARNICERIA SOLIERI S.R.L.",
+      "nombre": "CARNICERIA EDGARDO SOLIERI E HIJOS S.R.L.",
+      "provincia": "BUENOS AIRES",
+      "partido": "SAN PEDRO",
+      "localidad": "SAN PEDRO",
+      "nroOficial": "5723",
+      "actividades": [
+        "II - FABRICA DE CHACINADOS Y AFINES",
+        "XII - 2. DESPOSTADA BOVINA Y PORCINA"
+      ],
+      "ciclos": [
+        "CICLO II - ELABORADOR"
+      ]
+    },
     "30716048558": {
       "cuit": "30716048558",
       "tipo": "CICLO II - ELABORADOR",
@@ -5654,22 +5628,6 @@
         "CICLO II - ELABORADOR"
       ]
     },
-    "30717334295": {
-      "cuit": "30717334295",
-      "tipo": "CICLO II - ELABORADOR",
-      "propietario": "CONGELADOS SUDAMERICANOS S. R. L.",
-      "nombre": "CONGELADOS SUDAMERICANOS S. R. L.",
-      "provincia": "SANTA FE",
-      "partido": "ROSARIO",
-      "localidad": "ROSARIO",
-      "nroOficial": "5550",
-      "actividades": [
-        "LII - ESTABLECIMIENTO COMIDAS SEMIELABORADAS Y PREPARADAS"
-      ],
-      "ciclos": [
-        "CICLO II - ELABORADOR"
-      ]
-    },
     "30708886595": {
       "cuit": "30708886595",
       "tipo": "CICLO II - ELABORADOR",
@@ -5769,14 +5727,15 @@
       "nombre": "COOPERATIVA OBRERA LIMITADA DE CONSUMO Y VIVIENDA",
       "provincia": "BUENOS AIRES",
       "partido": "BAHIA BLANCA",
-      "localidad": "CABILDO",
-      "nroOficial": "4227",
+      "localidad": "BAHIA BLANCA",
+      "nroOficial": "5377",
       "actividades": [
-        "II - FABRICA DE CHACINADOS Y AFINES",
-        "III A - GRASERIA COMESTIBLE",
-        "IX - CARNES SALADAS Y/O CURADAS",
-        "XII - 4. DESPOSTADA BOVINA",
-        "LII - 9. ELABORACION DE MILANESAS CONGELADAS Y ENFRIADAS"
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+        "L - LOCAL HABILITADO P/DEPOSITO CONSERVA DE PESCADO",
+        "LXIII - IMPORTACION PRODUCTOS DE LA PESCA EN CONSERVAS",
+        "II - 3. SOLO ELABORACIÓN FETEADO DE CHACINADOS",
+        "XXX -  DEPOSITO PRODUCTOS CARNEOS"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -5917,25 +5876,6 @@
       "nroOficial": "5494",
       "actividades": [
         "XI - PREPARACION CUEROS CURTIDOS"
-      ],
-      "ciclos": [
-        "CICLO II - ELABORADOR"
-      ]
-    },
-    "30559697857": {
-      "cuit": "30559697857",
-      "tipo": "CICLO II - ELABORADOR",
-      "propietario": "CURTIEMBRES FONSECA SA",
-      "nombre": "CURTIEMBRES FONSECA  SA",
-      "provincia": "BUENOS AIRES",
-      "partido": "LANUS",
-      "localidad": "LANUS ESTE",
-      "nroOficial": "3612",
-      "actividades": [
-        "III B - SEBERIA INCOMESTIBLE",
-        "XI - PREPARACION CUEROS CURTIDOS",
-        "XXVIII - DEPOSITO / BARRACA P/CUEROS",
-        "XIX - 20. ELABORACIÓN DE EXPELLER"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -6167,6 +6107,25 @@
       "ciclos": [
         "CICLO II - ELABORADOR",
         "CICLO III - DADOR DE FRIO"
+      ]
+    },
+    "30586889199": {
+      "cuit": "30586889199",
+      "tipo": "CICLO II - ELABORADOR",
+      "propietario": "DISTRIBUIDORA JOTA BE SOC ANONIMA",
+      "nombre": "DISTRIBUIDORA JOTA BE S.A.",
+      "provincia": "CORRIENTES",
+      "partido": "CAPITAL",
+      "localidad": "CORRIENTES",
+      "nroOficial": "4938",
+      "actividades": [
+        "XXX - DEPOSITO PRODUCTOS CARNEOS",
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+        "II - 3. SOLO ELABORACIÓN FETEADO DE CHACINADOS"
+      ],
+      "ciclos": [
+        "CICLO II - ELABORADOR"
       ]
     },
     "30592088130": {
@@ -9593,22 +9552,6 @@
         "CICLO II - ELABORADOR"
       ]
     },
-    "30715508946": {
-      "cuit": "30715508946",
-      "tipo": "CICLO II - ELABORADOR",
-      "propietario": "LEANDRO RAUL FUSTER Y MIRTA SUSANA ANAYA SS",
-      "nombre": "LEANDRO RAUL FUSTER Y MIRTA SUSANA ANAYA SS",
-      "provincia": "BUENOS AIRES",
-      "partido": "AVELLANEDA",
-      "localidad": "AVELLANEDA",
-      "nroOficial": "5537",
-      "actividades": [
-        "XXVIII - 3. DEPÓSITO/BARRACA DE CUERO/SALADERO"
-      ],
-      "ciclos": [
-        "CICLO II - ELABORADOR"
-      ]
-    },
     "20101163505": {
       "cuit": "20101163505",
       "tipo": "CICLO II - ELABORADOR",
@@ -11081,6 +11024,7 @@
       "nroOficial": "3781",
       "actividades": [
         "IX - CARNES SALADAS Y/O CURADAS",
+        "XXXIII - 2. SÓLO CÁMARA P/DEPÓSITO DE CHACINADOS",
         "XII - 3. DESPOSTADA PORCINA"
       ],
       "ciclos": [
@@ -11225,6 +11169,24 @@
       "nroOficial": "4040",
       "actividades": [
         "XIX - 10. MOLIENDA Y FRACCIONAMIENTO DE EXPELLER DE CHICHARRON ANIMAL"
+      ],
+      "ciclos": [
+        "CICLO II - ELABORADOR"
+      ]
+    },
+    "30715643363": {
+      "cuit": "30715643363",
+      "tipo": "CICLO II - ELABORADOR",
+      "propietario": "PROTEGRAS SRL",
+      "nombre": "PROTEGRAS S.R.L.",
+      "provincia": "ENTRE RIOS",
+      "partido": "DIAMANTE",
+      "localidad": "DIAMANTE",
+      "nroOficial": "5309",
+      "actividades": [
+        "XIX - 2. SOLO HARINA DE CARNE Y HUESO",
+        "XIX - 14. ELABORACIÓN HARINAS DE VÍSCERAS Y PLUMAS",
+        "XIX - 19. ELABORACIÓN ACEITE DE VISCERAS"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -11872,23 +11834,6 @@
       "ciclos": [
         "CICLO II - ELABORADOR",
         "CICLO III - DADOR DE FRIO"
-      ]
-    },
-    "30716022257": {
-      "cuit": "30716022257",
-      "tipo": "CICLO II - ELABORADOR",
-      "propietario": "SHANGRI-LA INTERNACIONAL SRL",
-      "nombre": "SHANGRI-LA INTERNACIONAL SRL",
-      "provincia": "CHACO",
-      "partido": "LIBERTAD",
-      "localidad": "PUERTO TIROL",
-      "nroOficial": "5449",
-      "actividades": [
-        "XXVIII - 3. DEPÓSITO/BARRACA DE CUERO/SALADERO",
-        "XXVIII - 3. DEPÓSITO/BARRACA DE CUERO/SALADERO"
-      ],
-      "ciclos": [
-        "CICLO II - ELABORADOR"
       ]
     },
     "30701518396": {
@@ -13399,10 +13344,10 @@
       "tipo": "CICLO III - DADOR DE FRIO",
       "propietario": "CAROSSIO VAIROLATTI Y CIA SOC DE RESP LTDA",
       "nombre": "CAROSSIO VAIROLATTI Y CIA SOC DE RESP LTDA",
-      "provincia": "CIUDAD AUTONOMA DE BUENOS AIRES",
-      "partido": "CIUDAD AUTONOMA DE BUENOS AIRES",
-      "localidad": "CORTEJARENA JOSE A. 2601/3600",
-      "nroOficial": "3322",
+      "provincia": "CORDOBA",
+      "partido": "CAPITAL",
+      "localidad": "CORDOBA",
+      "nroOficial": "4141",
       "actividades": [
         "XXX - DEPOSITO PRODUCTOS CARNEOS",
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
@@ -13637,22 +13582,6 @@
         "CICLO III - DADOR DE FRIO"
       ]
     },
-    "30710464584": {
-      "cuit": "30710464584",
-      "tipo": "CICLO III - DADOR DE FRIO",
-      "propietario": "COMUNIDAD ABORIGEN DE CORRAL BLANCO CIENEGUILLAS & AZUL KASA  - DEPARTAMENTO YAVI",
-      "nombre": "COMUNIDAD ABORIGEN DE CORRAL BLANCO CIENEGUILLAS & AZUL KASA",
-      "provincia": "JUJUY",
-      "partido": "YAVI",
-      "localidad": "YAVI",
-      "nroOficial": "5540",
-      "actividades": [
-        "XXVIII - DEPOSITO / BARRACA P/CUEROS"
-      ],
-      "ciclos": [
-        "CICLO III - DADOR DE FRIO"
-      ]
-    },
     "30698890556": {
       "cuit": "30698890556",
       "tipo": "CICLO III - DADOR DE FRIO",
@@ -13785,15 +13714,13 @@
       "propietario": "DIA ARGENTINA S A",
       "nombre": "DIA ARGENTINA  S.A.",
       "provincia": "BUENOS AIRES",
-      "partido": "VICENTE LOPEZ",
-      "localidad": "FLORIDA",
-      "nroOficial": "4346",
+      "partido": "ALMIRANTE BROWN",
+      "localidad": "BURZACO",
+      "nroOficial": "4459",
       "actividades": [
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
         "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
-        "L - LOCAL HABILITADO P/DEPOSITO CONSERVA DE PESCADO",
-        "LXIII - IMPORTACION PRODUCTOS DE LA PESCA EN CONSERVAS",
-        "XXXIII - 1. SÓLO CÁMARA P/DEPÓSITO DE PESCADOS",
-        "XXX -  DEPOSITO PRODUCTOS CARNEOS"
+        "LXIII - IMPORTACION PRODUCTOS DE LA PESCA EN CONSERVAS"
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
@@ -14014,24 +13941,6 @@
       "nroOficial": "4865",
       "actividades": [
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
-      ],
-      "ciclos": [
-        "CICLO III - DADOR DE FRIO"
-      ]
-    },
-    "30586889199": {
-      "cuit": "30586889199",
-      "tipo": "CICLO III - DADOR DE FRIO",
-      "propietario": "DISTRIBUIDORA JOTA BE SOC ANONIMA",
-      "nombre": "DISTRIBUIDORA JOTA BE S.A.",
-      "provincia": "CORRIENTES",
-      "partido": "CAPITAL",
-      "localidad": "CORRIENTES",
-      "nroOficial": "4938",
-      "actividades": [
-        "XXX - DEPOSITO PRODUCTOS CARNEOS",
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
-        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC."
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
@@ -14557,23 +14466,6 @@
       "nroOficial": "5248",
       "actividades": [
         "XXX - 1. DEPOSITO Y TRANSBORDO DE MERCADERIAS"
-      ],
-      "ciclos": [
-        "CICLO III - DADOR DE FRIO"
-      ]
-    },
-    "30708208988": {
-      "cuit": "30708208988",
-      "tipo": "CICLO III - DADOR DE FRIO",
-      "propietario": "FIZBAY LOGISTICA SA",
-      "nombre": "FIZBAY LOGISTICA SA",
-      "provincia": "BUENOS AIRES",
-      "partido": "LANUS",
-      "localidad": "VALENTIN ALSINA",
-      "nroOficial": "4523",
-      "actividades": [
-        "XXX - DEPOSITO PRODUCTOS CARNEOS",
-        "XXX - 6. DEPOSITO DE MARCADERIA EN TRANSITO CONSERVADO EN GENERAL"
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
@@ -15691,7 +15583,8 @@
         "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
         "LXII - IMPORTACION DE POLLOS",
         "XXXIII - 6. DEPÓSITO FRIGORÍFICO DE PESCADOS Y MARISCOS FRESCOS Y CONGELADOS",
-        "LXIV - 1. IMPORTACION DE CHACINADOS Y FIAMBRES"
+        "LXIV - 1. IMPORTACION DE CHACINADOS Y FIAMBRES",
+        "LXVII - IMPORTACION DE CARNE BOVINA"
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
@@ -16273,7 +16166,7 @@
     "33659119329": {
       "cuit": "33659119329",
       "tipo": "CICLO III - DADOR DE FRIO",
-      "propietario": "TERMINAL PANAMERICANA S A",
+      "propietario": "TERMINAL PANAMERICANA S. A.",
       "nombre": "TERMINAL PANAMERICANA S.A.",
       "provincia": "BUENOS AIRES",
       "partido": "MALVINAS ARGENTINAS",
@@ -16491,13 +16384,13 @@
       "tipo": "CICLO III - DADOR DE FRIO",
       "propietario": "TRANSPORTES VESPRINI S A",
       "nombre": "TRANSPORTES VESPRINI S.A.",
-      "provincia": "BUENOS AIRES",
-      "partido": "BAHIA BLANCA",
-      "localidad": "BAHIA BLANCA",
-      "nroOficial": "4838",
+      "provincia": "RIO NEGRO",
+      "partido": "ADOLFO ALSINA",
+      "localidad": "VIEDMA",
+      "nroOficial": "5708",
       "actividades": [
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
-        "XXXIII - 1. SÓLO CÁMARA P/DEPÓSITO DE PESCADOS"
+        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC."
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
