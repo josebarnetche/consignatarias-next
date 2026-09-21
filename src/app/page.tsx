@@ -22,6 +22,7 @@ import LiveHero from "@/components/landing/LiveHero";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import { CoverageMap } from "@/components/landing/CoverageMap";
 import SellZoneBadge from "@/components/SellZoneBadge";
+import { getBandasPublicas, getSlugsConBanda, vrCobertura, VR_VENTANA_DIAS } from "@/lib/vr";
 
 /* ================================================================== */
 /*  SVG ICONS                                                          */
@@ -135,7 +136,18 @@ function fmt(n: number, d = 0) {
 }
 
 
+// Bandas del Valor de Referencia (lib/vr): el número que la home pone arriba de todo.
+const SLUGS_VR = new Set(getSlugsConBanda());
+const BANDAS_HOME = getBandasPublicas()
+  .map((b) => ({ ...b, slug: b.codigo.toLowerCase() }))
+  .filter((b) => SLUGS_VR.has(b.slug));
+const VR_COBERTURA = vrCobertura();
+
 const FAQ_ITEMS = [
+  {
+    question: "¿Qué es el Valor de Referencia?",
+    answer: `Es el rango de precio al que realmente se vendió cada categoría de hacienda en el Mercado Agroganadero en los últimos ${VR_VENTANA_DIAS} días: el precio del 10 % más barato de los lotes, la mediana y el del 10 % más caro, con la cantidad de lotes que lo sostienen (${fmt(VR_COBERTURA.lotes)} en la ventana vigente). Se calcula también por rango de peso, porque el peso mueve el precio por kilo. No es una tasación ni una cotización en firme: es lo que se pagó, publicado con su metodología.`,
+  },
   {
     question: "¿Qué es una consignataria de hacienda?",
     answer: "Una consignataria de hacienda es una empresa intermediaria autorizada que organiza remates ganaderos, actuando como nexo entre compradores y vendedores de ganado. En Argentina están reguladas por la Cámara Argentina de Consignatarios de Ganado (CACG) y operan en ferias y remates presenciales o televisados.",
@@ -170,7 +182,7 @@ const FAQ_ITEMS = [
   },
   {
     question: "¿Consignatarias.com.ar es gratis?",
-    answer: "Sí. El acceso al calendario de remates, directorio de consignatarias, base de frigoríficos y precios de mercado es completamente libre y sin registro. Ofrecemos planes PRO para consignatarias que quieran destacar sus remates y acceder a herramientas de gestión avanzadas.",
+    answer: "Para el productor, sí: el Valor de Referencia, Mi Ganado (con tu cuenta), el calendario de remates, el directorio y los precios son gratis. Pagan las empresas que usan el dato en sus sistemas —bancos, aseguradoras, agtech, frigoríficos y agentes de IA— por el acceso por API y la serie histórica, y las consignatarias que quieren destacar su firma (PRO Consignataria).",
   },
   {
     question: "¿De dónde obtienen los datos de remates?",
@@ -189,7 +201,9 @@ export const metadata: Metadata = {
   // previously buried as the domain at the title's end), then remates + precios. Description
   // injects the live INMAG price as a freshness hook. v1.40 CTR pass.
   title: "Consignatarias de Hacienda Argentina | Remates y Precios",
-  description: `Directorio de ${totalConsignatarias}+ consignatarias de hacienda y calendario de ${rematesProximos.length} remates ganaderos. Precios INMAG ($${fmt(marketPrices.inmag.current)}/kg) actualizados hoy. Acceso libre.`,
+  // El título se queda (es la query de marca que más rinde); la descripción ahora dice
+  // primero qué resuelve el sitio: cuánto vale la hacienda, medido en lo que se vendió.
+  description: `Cuánto vale tu hacienda hoy: el Valor de Referencia por categoría y peso, medido en ${fmt(VR_COBERTURA.lotes)} lotes vendidos en el Mercado Agroganadero. Directorio de ${totalConsignatarias} consignatarias de hacienda y ${rematesProximos.length} remates próximos. Gratis.`,
   alternates: {
     canonical: 'https://www.consignatarias.com.ar',
   },
@@ -277,12 +291,17 @@ export default async function LandingPage() {
     // PRO firms first — paying firms appear with priority on the wall.
     .sort((a, b) => Number(b.isPro) - Number(a.isPro))
 
-  // Cinta de mercado en vivo (data real). Categorías + INMAG + USD + actividad.
-  const catLabel: Record<string, string> = { novillos: 'Novillo', novillitos: 'Novillito', vaquillonas: 'Vaquillona', vacas: 'Vaca', terneros: 'Ternero', toros: 'Toro' }
-  const catMap = marketPrices.categories as Record<string, { current: number; change: number }>
-  const catItems: TapeItem[] = (['novillos', 'vacas', 'vaquillonas', 'terneros'] as const)
-    .filter((k) => catMap[k])
-    .map((k) => ({ label: catLabel[k], value: `$${fmt(catMap[k].current)}`, change: catMap[k].change, href: '/precios' }))
+  // Cinta de mercado. Las categorías salen del Valor de Referencia (mediana observada de
+  // los lotes del MAG), NO de `market-prices.json → categories`: ese campo alterna entre
+  // el precio observado y un ratio fijo sobre el INMAG según el día, y el del ternero es
+  // siempre un ratio (el MAG no opera terneros). Sin variación diaria: la banda es de una
+  // ventana de 30 días y un "▲ 0,0 %" no le dice nada a nadie.
+  const catItems: TapeItem[] = BANDAS_HOME.slice(0, 4).map((b) => ({
+    label: `${b.categoria} · VR`,
+    value: `$${fmt(b.mediana)}`,
+    change: null,
+    href: `/vr/${b.slug}`,
+  }))
   const tapeItems: TapeItem[] = [
     { label: 'INMAG', value: `$${fmt(marketPrices.inmag.current)}/kg`, change: marketPrices.inmag.change, href: '/mercado/inmag' },
     ...catItems,
@@ -311,7 +330,8 @@ export default async function LandingPage() {
           </div>
 
           <div className="hidden md:flex items-center gap-8 text-sm font-normal text-zinc-400">
-            <Link href="/consignatarias" className="hover:text-zinc-100 transition-colors">Directorio</Link>
+            <Link href="/vr" className="hover:text-zinc-100 transition-colors">Valor de Referencia</Link>
+            <Link href="/mi-ganado" className="hover:text-zinc-100 transition-colors">Mi Ganado</Link>
             <Link href="/remates" className="hover:text-zinc-100 transition-colors">Remates</Link>
             <Link
               href="/remates/en-vivo"
@@ -321,16 +341,16 @@ export default async function LandingPage() {
               En Vivo
               {enVivoCount > 0 && <span className="text-xs text-red-500">({enVivoCount})</span>}
             </Link>
-            <Link href="/frigorificos" className="hover:text-zinc-100 transition-colors">Frigoríficos</Link>
+            <Link href="/consignatarias" className="hover:text-zinc-100 transition-colors">Consignatarias</Link>
             <Link href="/mercado" className="hover:text-zinc-100 transition-colors">Mercado</Link>
             <Link href="/planes" className="hover:text-zinc-100 transition-colors">Planes</Link>
           </div>
 
           <Link
-            href="/overview"
-            className="text-xs font-medium text-zinc-900 bg-zinc-100 hover:bg-white transition-colors rounded py-2 px-4"
+            href="/mi-ganado"
+            className="text-xs font-medium text-zinc-950 bg-accent hover:bg-sky-300 transition-colors rounded py-2 px-4"
           >
-            Acceder al Terminal
+            Valuar mi rodeo
           </Link>
         </div>
       </nav>
@@ -396,6 +416,10 @@ export default async function LandingPage() {
             frigorificos={frigorificosSummary.total}
             provincias={13}
             dateLabel={dateLabel}
+            rematesIndexados={rematesData.length}
+            bandas={BANDAS_HOME}
+            lotesVentana={VR_COBERTURA.lotes}
+            ventanaDias={VR_VENTANA_DIAS}
           />
 
           {/* Buscador por nombre — el usuario de IA suele llegar sabiendo el
@@ -411,47 +435,13 @@ export default async function LandingPage() {
                 Dónde cubrimos
               </div>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-normal text-zinc-100 tracking-tight leading-tight">
-                Remates en <span className="text-accent">cada provincia</span>.
+                Consignatarias de hacienda y remates en <span className="text-accent">cada provincia</span>.
               </h2>
             </div>
             <CoverageMap counts={provinceRemateCounts} />
           </div>
 
-          {/* Conversion block — shown after value proofs */}
-          <div className="relative z-10 mt-20 rounded-lg border border-sky-500/20 bg-gradient-to-br from-sky-950/30 via-zinc-900/60 to-zinc-900/60 p-8 md:p-10 backdrop-blur-sm">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-              <div className="max-w-2xl">
-                <div className="inline-flex items-center gap-2 text-[0.65rem] text-accent/80 uppercase tracking-widest mb-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                  Para consignatarias y martilleros
-                </div>
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-normal text-zinc-100 tracking-tight leading-tight mb-3">
-                  ¿Querés estar acá?
-                </h2>
-                <p className="text-base md:text-lg text-zinc-400 leading-relaxed">
-                  Sumá tu consignataria al directorio más visitado del mercado ganadero argentino. Reservá una reunión y te mostramos cómo.
-                </p>
-              </div>
-              <a
-                href="https://calendar.app.google/gr2BXY1ooDMki8TK7"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative flex items-center justify-center gap-3 text-base md:text-lg font-medium text-zinc-950 bg-gradient-to-br from-sky-300 via-sky-400 to-sky-500 hover:from-sky-200 hover:via-sky-300 hover:to-sky-400 transition-all rounded-md py-5 px-10 shadow-[0_0_40px_rgba(56,189,248,0.35)] hover:shadow-[0_0_60px_rgba(56,189,248,0.55)] whitespace-nowrap shrink-0"
-              >
-                <span className="w-2 h-2 rounded-full bg-black/70 animate-pulse" />
-                Reservar reunión
-                <IconArrowRight />
-              </a>
-            </div>
-          </div>
         </section>
-
-        {/* ============================================================ */}
-        {/*  PROMO — la guía paga (novedad)                               */}
-        {/* ============================================================ */}
-        <div className="relative z-10 max-w-4xl mx-auto px-6 pt-2 pb-6">
-          <PromoGuiaBanner origen="home" />
-        </div>
 
         {/* ============================================================ */}
         {/*  VALUATION WIDGET — Aha Moment                                */}
@@ -496,9 +486,9 @@ export default async function LandingPage() {
             <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-8 relative">
               <div className="text-5xl font-bold text-zinc-800 absolute top-4 right-6 select-none">1</div>
               <div className="relative z-10">
-                <div className="text-xs font-medium text-accent uppercase tracking-widest mb-3">Recopilamos</div>
+                <div className="text-xs font-medium text-accent uppercase tracking-widest mb-3">Observamos</div>
                 <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
-                  Datos de {totalConsignatarias}+ consignatarias, cada día
+                  Cada lote vendido en el Mercado Agroganadero: categoría, peso, cabezas y precio. {fmt(VR_COBERTURA.lotes)} lotes en los últimos {VR_VENTANA_DIAS} días.
                 </p>
               </div>
             </div>
@@ -506,9 +496,9 @@ export default async function LandingPage() {
             <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-8 relative">
               <div className="text-5xl font-bold text-zinc-800 absolute top-4 right-6 select-none">2</div>
               <div className="relative z-10">
-                <div className="text-xs font-medium text-accent uppercase tracking-widest mb-3">Estructuramos</div>
+                <div className="text-xs font-medium text-accent uppercase tracking-widest mb-3">Medimos</div>
                 <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
-                  Fecha, provincia, tipo, cabezas, links
+                  La banda de cada categoría y peso: el 10 % más barato, la mediana y el 10 % más caro. Con el n a la vista y la metodología publicada.
                 </p>
               </div>
             </div>
@@ -516,9 +506,9 @@ export default async function LandingPage() {
             <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-8 relative">
               <div className="text-5xl font-bold text-zinc-800 absolute top-4 right-6 select-none">3</div>
               <div className="relative z-10">
-                <div className="text-xs font-medium text-accent uppercase tracking-widest mb-3">Vos filtrás</div>
+                <div className="text-xs font-medium text-accent uppercase tracking-widest mb-3">Vos valuás</div>
                 <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
-                  Y tenés todo el mercado en una pantalla
+                  Tu rodeo, gratis, en Mi Ganado. Y cuando decidís vender: {fmt(rematesData.length)} remates indexados y {totalConsignatarias} consignatarias.
                 </p>
               </div>
             </div>
@@ -539,6 +529,46 @@ export default async function LandingPage() {
         {/* ============================================================ */}
         <ConsignatariasShowcase items={showcaseItems} />
 
+        {/* Para las firmas: va DESPUÉS del directorio. Antes estaba en el hero, antes que
+            cualquier cosa para el productor: la home le hablaba primero a quien no la usa. */}
+        <section className="max-w-7xl mx-auto px-6">
+          {/* Conversion block — shown after value proofs */}
+          <div className="relative z-10 mt-8 rounded-lg border border-sky-500/20 bg-gradient-to-br from-sky-950/30 via-zinc-900/60 to-zinc-900/60 p-8 md:p-10 backdrop-blur-sm">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div className="max-w-2xl">
+                <div className="inline-flex items-center gap-2 text-[0.65rem] text-accent/80 uppercase tracking-widest mb-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                  Para consignatarias y martilleros
+                </div>
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-normal text-zinc-100 tracking-tight leading-tight mb-3">
+                  ¿Querés estar acá?
+                </h2>
+                <p className="text-base md:text-lg text-zinc-400 leading-relaxed">
+                  Sumá tu consignataria al directorio más visitado del mercado ganadero argentino. Reservá una reunión y te mostramos cómo.
+                </p>
+              </div>
+              <a
+                href="https://calendar.app.google/gr2BXY1ooDMki8TK7"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex items-center justify-center gap-3 text-base md:text-lg font-medium text-zinc-950 bg-gradient-to-br from-sky-300 via-sky-400 to-sky-500 hover:from-sky-200 hover:via-sky-300 hover:to-sky-400 transition-all rounded-md py-5 px-10 shadow-[0_0_40px_rgba(56,189,248,0.35)] hover:shadow-[0_0_60px_rgba(56,189,248,0.55)] whitespace-nowrap shrink-0"
+              >
+                <span className="w-2 h-2 rounded-full bg-black/70 animate-pulse" />
+                Reservar reunión
+                <IconArrowRight />
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* ============================================================ */}
+        {/*  PROMO — la guía paga (novedad)                               */}
+        {/* ============================================================ */}
+        <div className="relative z-10 max-w-4xl mx-auto px-6 pt-2 pb-6">
+          <PromoGuiaBanner origen="home" />
+        </div>
+
+
         {/* ============================================================ */}
         {/*  AI-READY — MCP                                               */}
         {/* ============================================================ */}
@@ -547,16 +577,16 @@ export default async function LandingPage() {
             <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 items-center">
               <div>
                 <span className="inline-flex items-center gap-2 rounded-full border border-sky-500/40 bg-sky-500/[0.08] px-3 py-1 text-xs font-mono uppercase tracking-widest text-sky-300">
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent" /> AI-ready · MCP
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Para empresas · API y MCP
                 </span>
                 <h2 className="mt-5 text-3xl sm:text-4xl font-bold text-white leading-tight">
-                  Hecho para que las IAs lo usen
+                  El Valor de Referencia, dentro de tu sistema
                 </h2>
                 <p className="mt-4 text-zinc-400 leading-relaxed max-w-xl">
-                  Consignatarias expone un <strong className="text-zinc-200">servidor MCP</strong>: Claude, ChatGPT,
-                  Cursor o cualquier agente se conecta y consulta precios (INMAG), remates, consignatarias, frigoríficos
-                  y arrendamiento en tiempo real — con nuestra data, en vez de scrapear. La referencia del ganado
-                  argentino, ahora como herramienta nativa para agentes.
+                  Para bancos, aseguradoras, agtech, frigoríficos y agentes de IA que necesitan valuar hacienda y
+                  <strong className="text-zinc-200"> citar de dónde sale el número</strong>: la banda por categoría,
+                  la serie histórica de dispersión, el INMAG desde 2015 y el calendario de remates, por API y por
+                  servidor MCP. Esto es lo que se paga; el productor no paga nada.
                 </p>
                 <div className="mt-7 flex flex-wrap gap-3">
                   <Link
@@ -566,10 +596,10 @@ export default async function LandingPage() {
                     Ver el MCP y sus tools
                   </Link>
                   <Link
-                    href="/api-docs"
+                    href="/enterprise"
                     className="rounded-lg border border-zinc-700 px-5 py-2.5 text-sm text-zinc-200 hover:border-zinc-500 transition-colors"
                   >
-                    API Enterprise
+                    Planes para empresas
                   </Link>
                 </div>
               </div>
@@ -580,9 +610,13 @@ export default async function LandingPage() {
     "url": "https://www.consignatarias.com.ar/api/mcp"
   }
 }`}</pre>
-                <p className="text-sky-300 mt-4">get_indice_novillo() → $4.154/kg</p>
+                {BANDAS_HOME[0] && (
+                  <p className="text-sky-300 mt-4">
+                    valuar_tropa(&quot;{BANDAS_HOME[0].categoria.toLowerCase()}&quot;) → mediana ${fmt(BANDAS_HOME[0].mediana)}/kg · P10–P90 {fmt(BANDAS_HOME[0].p10)}–{fmt(BANDAS_HOME[0].p90)} · {fmt(BANDAS_HOME[0].lotes)} lotes
+                  </p>
+                )}
                 <p className="text-sky-300">get_precios_hacienda(&quot;vacas&quot;)</p>
-                <p className="text-sky-300">crear_alerta_precio(novillo &gt; 5000)</p>
+                <p className="text-sky-300">get_inmag_historico(desde, hasta)</p>
               </div>
             </div>
           </div>

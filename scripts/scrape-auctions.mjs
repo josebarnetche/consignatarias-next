@@ -1975,11 +1975,24 @@ async function main() {
         // Use real observed price
         newVal = realCategories[key].current;
         source = "mercadoagroganadero.com.ar (observed)";
-        
+        market.categories[key].observedDate = categoryPrices?.date || null;
+
         // Store volume if available
         if (realCategories[key].cabezas) {
           market.categories[key].latestVolume = realCategories[key].cabezas;
         }
+      } else if (
+        market.categories[key]?.source === "mercadoagroganadero.com.ar (observed)" &&
+        market.categories[key]?.current > 0
+      ) {
+        // Día sin rueda (o el MAG no respondió): se CONSERVA el último precio observado,
+        // con su fecha. Antes se pisaba con el ratio fijo de abajo, así que el precio de
+        // cada categoría alternaba entre observado y sintético según el día — el
+        // novillito pasaba de 4.331 $/kg (19-sep, observado) a 3.780 (20-sep, ×0,95 del
+        // INMAG) sin que el mercado se moviera. Un precio viejo con fecha se declara; uno
+        // inventado no.
+        console.log(`  ${key}: sin dato nuevo — se conserva el último observado (${market.categories[key].observedDate || 'fecha desconocida'})`);
+        continue;
       } else {
         // Fallback to synthetic ratio
         newVal = Math.round(inmagValue * fallbackRatio);

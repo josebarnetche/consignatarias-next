@@ -11,6 +11,7 @@ import { BPG_TEMAS } from '@/lib/data/bpg-ganaderas'
 import { PRODUCTOS_DATOS } from '@/lib/productos-datos'
 import { getProveedoresPublicados } from '@/lib/proveedores'
 import { getDepartamentosPublicables, ultimoAnio, META as PRODUCTIVIDAD_META } from '@/lib/productividad/panel'
+import { getSlugsConBanda } from '@/lib/vr'
 
 /** Los departamentos con ficha propia. La fuente se refresca una vez al año, en abril. */
 const fichasProductividad = getDepartamentosPublicables().filter((d) => d.serie[ultimoAnio()])
@@ -400,6 +401,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     },
+    {
+      // Metodología del VR: la página que decide si un motor de IA nos trata
+      // como fuente primaria de la banda de precio. Cambia con cada recálculo.
+      url: `${baseUrl}/metodologia/vr`,
+      lastModified: buildDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    },
+    {
+      // El hub del producto: todas las bandas + Mi Ganado + metodología.
+      url: `${baseUrl}/vr`,
+      lastModified: buildDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+    // Una URL citable por categoría (/vr/vaca, /vr/novillo…). Solo las que
+    // tienen banda publicable — getSlugsConBanda() aplica la regla de
+    // degradación, así que el sitemap nunca emite una página sin dato.
+    ...getSlugsConBanda().map((slug) => ({
+      url: `${baseUrl}/vr/${slug}`,
+      lastModified: buildDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    })),
     {
       url: `${baseUrl}/glosario`,
       lastModified: buildDate,

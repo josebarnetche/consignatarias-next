@@ -38,6 +38,18 @@ interface NavLink {
 
 // Dropdowns agrupados. El logo (→ /overview) reemplaza al viejo link TERMINAL.
 const NAV_GROUPS: NavGroup[] = [
+  // El producto va primero (v1.211.0): cuánto vale tu hacienda, medido en lo que se
+  // vendió, y tu rodeo valuado contra eso. Antes Mi Ganado estaba enterrado como el
+  // ítem 4 de HERRAMIENTAS y el Valor de Referencia no estaba en el nav.
+  {
+    label: "VALOR",
+    match: "/vr",
+    items: [
+      { label: "Valor de Referencia", href: "/vr", hint: "Lo que se pagó por categoría y peso", tag: "new" },
+      { label: "Mi Ganado", href: "/mi-ganado", hint: "Tu rodeo valuado · gratis con tu cuenta" },
+      { label: "Metodología", href: "/metodologia/vr", hint: "Cómo se calcula y qué no dice" },
+    ],
+  },
   {
     label: "MERCADO",
     match: "/mercado",
@@ -95,7 +107,6 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Pre-ofertas", href: "/preofertas", hint: "Pre-ofertá lotes de remates de cabaña · el puente al martillo" },
       { label: "Calculadora", href: "/calculadora", hint: "Neto en mano · ¿vendo ahora? · ahora gratis" },
       { label: "Comparar", href: "/comparar", hint: "Quién remata más seguido · gratis" },
-      { label: "Mi Ganado", href: "/mi-ganado", hint: "Valor de tu rodeo · ahora gratis" },
       { label: "Validar RENSPA", href: "/renspa", hint: "Decodificá el código de tu establecimiento" },
       { label: "Sanidad / SENASA", href: "/sanidad", hint: "Vacunación · requisitos de movimiento" },
       { label: "Quiero comprar", href: "/quiero-comprar", hint: "Decinos qué buscás y te avisamos del remate" },
@@ -131,6 +142,8 @@ interface MobileNavLink extends NavLink {
   tag?: NavLeaf["tag"];
 }
 const MOBILE_NAV: MobileNavLink[] = [
+  { label: "VALOR REF.", href: "/vr" },
+  { label: "MI GANADO", href: "/mi-ganado" },
   { label: "INMAG", href: "/mercado/inmag", tag: "live" },
   { label: "ARRIENDO", href: "/mercado/arrendamiento" },
   { label: "PRECIOS", href: "/precios" },
