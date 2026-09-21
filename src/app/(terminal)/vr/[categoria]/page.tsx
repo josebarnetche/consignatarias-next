@@ -2,9 +2,12 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { DatasetSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { PriceSparkline } from '@/components/PriceSparkline'
 import {
   SLUGS_CONOCIDOS,
   getSlugsConBanda,
+  getTendenciaPorSlug,
+  getMovimiento,
   getBandaPorSlug,
   getOrigenPorSlug,
   getRangosPesoPorSlug,
@@ -40,6 +43,15 @@ export async function generateStaticParams() {
 }
 
 const fmt = (n: number) => '$' + n.toLocaleString('es-AR')
+
+/** "2026-08-25" → "25-ago". Se parsea a mano: `new Date('2026-08-25')` es UTC
+ *  y en ART se corre un día para atrás. */
+const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
+const fmtFecha = (iso: string) => {
+  const [, m, d] = iso.split('-')
+  const mes = MESES[Number(m) - 1]
+  return mes ? `${Number(d)}-${mes}` : iso
+}
 
 export async function generateMetadata({
   params,
@@ -118,6 +130,8 @@ export default async function VrCategoriaPage({
 
   const origen = getOrigenPorSlug(categoria)
   const rangosPeso = getRangosPesoPorSlug(categoria)
+  const tendencia = getTendenciaPorSlug(categoria)
+  const mov = getMovimiento(categoria)
   const url = `https://www.consignatarias.com.ar/vr/${categoria}`
   const nombre = b.categoria.toLowerCase()
 
@@ -252,6 +266,49 @@ export default async function VrCategoriaPage({
               ¿Tenés {nombre}?{' '}
               <Link href="/mi-ganado" className="text-sky-400 hover:underline">Cargá tu rodeo en Mi Ganado</Link>{' '}
               y lo valuamos contra el rango de su peso, gratis.
+            </p>
+          </>
+        )}
+
+        {tendencia.length >= 2 && mov && (
+          <>
+            <h2 className="text-zinc-100 text-lg font-medium mb-2">Cómo se viene moviendo la dispersión</h2>
+            <p className="text-zinc-400 mb-3">
+              {mov.direccion === 'abriendo' && (
+                <>
+                  La dispersión <span className="text-amber-400">se está abriendo</span>: la amplitud pasó de{' '}
+                  {mov.amplitudInicial}% a {mov.amplitudFinal}% ({mov.deltaPuntos > 0 ? '+' : ''}
+                  {mov.deltaPuntos} puntos) entre el {fmtFecha(mov.desde)} y el {fmtFecha(mov.hasta)}. Dos lotes de {nombre} se
+                  parecen menos entre sí que hace unas semanas.
+                </>
+              )}
+              {mov.direccion === 'cerrando' && (
+                <>
+                  La dispersión <span className="text-emerald-400">se está cerrando</span>: la amplitud pasó de{' '}
+                  {mov.amplitudInicial}% a {mov.amplitudFinal}% ({mov.deltaPuntos} puntos) entre el {fmtFecha(mov.desde)} y
+                  el {fmtFecha(mov.hasta)}. El mercado de {nombre} está más parejo que hace unas semanas.
+                </>
+              )}
+              {mov.direccion === 'estable' && (
+                <>
+                  La dispersión está <span className="text-zinc-200">estable</span>: la amplitud se movió menos de
+                  un punto ({mov.amplitudInicial}% → {mov.amplitudFinal}%) entre el {fmtFecha(mov.desde)} y el {fmtFecha(mov.hasta)}.
+                </>
+              )}
+            </p>
+            <div className="border border-zinc-800 rounded p-3 mb-3">
+              <div className="text-zinc-500 text-xs mb-2">Amplitud P10–P90, últimos {tendencia.length} puntos</div>
+              <PriceSparkline
+                data={tendencia.map((t) => ({ date: t.date, value: t.amplitud }))}
+                width={640}
+                height={110}
+              />
+            </div>
+            <p className="text-zinc-500 text-xs mb-8">
+              Cada punto es una ventana móvil de {VR_VENTANA_DIAS} días, así que dos puntos consecutivos
+              comparten la mayor parte de sus lotes: la curva es suave por construcción y no hay que leerla
+              como observaciones independientes. La serie completa, por categoría y rango, está en la{' '}
+              <Link href="/api-docs" className="text-sky-400 hover:underline">API</Link>.
             </p>
           </>
         )}

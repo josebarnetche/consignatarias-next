@@ -11,6 +11,8 @@ import {
   SLUGS_CONOCIDOS,
   categoriaALote,
   CATEGORIAS_CON_LOTE,
+  getTendenciaPorSlug,
+  getMovimiento,
   MIN_LOTES_AJUSTE_ORIGEN,
   MIN_LOTES_BANDA_COMPLETA,
   VR_METODOLOGIA,
@@ -237,6 +239,52 @@ describe('categoriaALote — el filtro de la serie histórica depende de esto', 
     for (const slug of getSlugsConBanda()) {
       const b = getBandaPorSlug(slug)!
       expect(categoriaALote(slug)).toBe(b.codigo)
+    }
+  })
+})
+
+describe('tendencia de dispersión', () => {
+  it('toda categoría con banda tiene tendencia, y en orden cronológico', () => {
+    for (const slug of getSlugsConBanda()) {
+      const pts = getTendenciaPorSlug(slug)
+      expect(pts.length).toBeGreaterThanOrEqual(2)
+      const fechas = pts.map((p) => p.date)
+      expect([...fechas].sort()).toEqual(fechas)
+    }
+  })
+
+  it('los puntos traen amplitud y mediana usables', () => {
+    for (const p of getTendenciaPorSlug('vaca')) {
+      expect(p.amplitud).toBeGreaterThan(0)
+      expect(p.mediana).toBeGreaterThan(0)
+      expect(p.date).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    }
+  })
+
+  it('un slug sin tendencia devuelve lista vacía, no explota', () => {
+    expect(getTendenciaPorSlug('ternero')).toEqual([])
+    expect(getTendenciaPorSlug('unicornio')).toEqual([])
+    expect(getMovimiento('unicornio')).toBeNull()
+  })
+
+  it('el movimiento coincide con las puntas de la serie', () => {
+    const pts = getTendenciaPorSlug('vaca')
+    const m = getMovimiento('vaca')!
+    expect(m.amplitudInicial).toBe(pts[0].amplitud)
+    expect(m.amplitudFinal).toBe(pts[pts.length - 1].amplitud)
+    expect(m.desde).toBe(pts[0].date)
+    expect(m.hasta).toBe(pts[pts.length - 1].date)
+    expect(m.deltaPuntos).toBeCloseTo(pts[pts.length - 1].amplitud - pts[0].amplitud, 1)
+  })
+
+  it('un movimiento menor a un punto NO se anuncia como tendencia', () => {
+    // El umbral existe para no vender ruido de redondeo como señal.
+    for (const slug of getSlugsConBanda()) {
+      const m = getMovimiento(slug)
+      if (!m) continue
+      if (Math.abs(m.deltaPuntos) <= 1) expect(m.direccion).toBe('estable')
+      if (m.direccion === 'abriendo') expect(m.deltaPuntos).toBeGreaterThan(1)
+      if (m.direccion === 'cerrando') expect(m.deltaPuntos).toBeLessThan(-1)
     }
   })
 })

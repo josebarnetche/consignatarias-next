@@ -77,6 +77,14 @@ interface VrArchivo {
   fecha_dato_hasta: string
   categorias: Record<string, VrBanda>
   origen: Record<string, VrOrigen[]>
+  /** Últimos puntos de la serie, embebidos para la sparkline pública (ver `getTendencia`). */
+  tendencia?: Record<string, VrPuntoTendencia[]>
+}
+
+export interface VrPuntoTendencia {
+  date: string
+  amplitud: number
+  mediana: number
 }
 
 const archivo = bandas as unknown as VrArchivo
@@ -486,4 +494,51 @@ export function getRangosPesoPorSlug(slug: string): VrRangoPeso[] {
 /** Ventana de fechas de la banda vigente, para anclar el histórico del rodeo. */
 export function vrVentana(): { desde: string; hasta: string } {
   return { desde: archivo.fecha_dato_desde, hasta: archivo.fecha_dato_hasta }
+}
+
+/**
+ * Los últimos puntos de la serie de dispersión para una categoría.
+ *
+ * Viene embebido en el JSON, no de la base: así `/vr/[categoria]` sigue siendo
+ * SSG puro. La serie COMPLETA es Enterprise (`/api/precios?vr=historico`); acá
+ * va solo la ventana corta, que es la misma doctrina de siempre — el número se
+ * ve, la profundidad se paga.
+ */
+export function getTendenciaPorSlug(slug: string): VrPuntoTendencia[] {
+  const codigo = SLUG_A_CODIGO[slug.toLowerCase()]
+  if (!codigo) return []
+  return archivo.tendencia?.[codigo] ?? []
+}
+
+export interface VrMovimiento {
+  /** Puntos porcentuales que se movió la amplitud entre el primer y el último punto. */
+  deltaPuntos: number
+  direccion: 'abriendo' | 'cerrando' | 'estable'
+  desde: string
+  hasta: string
+  amplitudInicial: number
+  amplitudFinal: number
+}
+
+/**
+ * Cómo se movió la dispersión en la ventana de tendencia.
+ *
+ * Umbral de 1 punto porcentual para llamarlo movimiento: por debajo de eso la
+ * diferencia es ruido del redondeo de percentiles y anunciarla como tendencia
+ * sería exactamente el tipo de falsa precisión que el resto del VR evita.
+ */
+export function getMovimiento(slug: string): VrMovimiento | null {
+  const pts = getTendenciaPorSlug(slug)
+  if (pts.length < 2) return null
+  const a = pts[0]
+  const z = pts[pts.length - 1]
+  const delta = Number((z.amplitud - a.amplitud).toFixed(1))
+  return {
+    deltaPuntos: delta,
+    direccion: delta > 1 ? 'abriendo' : delta < -1 ? 'cerrando' : 'estable',
+    desde: a.date,
+    hasta: z.date,
+    amplitudInicial: a.amplitud,
+    amplitudFinal: z.amplitud,
+  }
 }

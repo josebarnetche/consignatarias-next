@@ -36,6 +36,8 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 const VENTANA_DIAS = 30
 /** El ajuste de origen necesita más base, así que mira más atrás. */
 const VENTANA_ORIGEN_DIAS = 90
+/** Puntos de tendencia que se embeben en el JSON para la sparkline pública. */
+const PUNTOS_TENDENCIA = 12
 
 const MIN_LOTES_BANDA = 10
 const MIN_LOTES_AJUSTE_ORIGEN = 30
@@ -228,6 +230,40 @@ async function main() {
     } else {
       console.log(`vr_bandas_history — ${validas.length} filas al ${fechaSerie}`)
     }
+  }
+
+  // Tendencia para la sparkline pública: los últimos N puntos de la serie, leídos
+  // de vuelta de la tabla. Se embeben en el JSON a propósito — así las páginas /vr
+  // siguen siendo SSG puro y no agregan una query de build ni un fetch de runtime.
+  // Que la serie completa sea Enterprise y la tendencia corta sea pública es la
+  // misma doctrina de siempre: el número se ve, la profundidad se paga.
+  const { data: hist, error: errHist } = await sb
+    .from('vr_bandas_history')
+    .select('date, category, amplitud_pct, mediana')
+    .eq('metodologia', METODOLOGIA)
+    .order('date', { ascending: false })
+    .limit(PUNTOS_TENDENCIA * 20)
+  if (errHist) {
+    console.error(`No se pudo leer la tendencia: ${errHist.message}`)
+  } else if (hist) {
+    const porCat = {}
+    for (const r of hist) {
+      const arr = (porCat[r.category] ??= [])
+      if (arr.length < PUNTOS_TENDENCIA) arr.push(r)
+    }
+    salida.tendencia = Object.fromEntries(
+      Object.entries(porCat).map(([cat, filas]) => [
+        cat,
+        filas
+          .slice()
+          .reverse()
+          .map((f) => ({
+            date: f.date,
+            amplitud: Number(f.amplitud_pct),
+            mediana: Number(f.mediana),
+          })),
+      ]),
+    )
   }
 
   writeFileSync(OUT, JSON.stringify(salida, null, 2) + '\n')
