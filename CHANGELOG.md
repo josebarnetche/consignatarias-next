@@ -14,7 +14,7 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 El sitio deja de presentarse como directorio y dice qué resuelve: el **Valor de Referencia** de la
 hacienda (la banda de precio observada en los lotes del Mercado Agroganadero) y **Mi Ganado**, el rodeo
 del productor valuado contra esa banda. Decisión, evidencia y comparación con deCampoPagos en
-[`docs/strategy/DECISION-PRODUCTO-2026-09-21.md`](docs/strategy/DECISION-PRODUCTO-2026-09-21.md).
+`docs/strategy/DECISION-PRODUCTO-2026-09-21.md` (interno, gitignorado como todo `docs/strategy/`).
 Incorpora entero el PR #38 (PRD Valor de Referencia, sprints 1-4: `lib/vr.ts`, `/metodologia/vr`,
 `/vr/[categoria]`, `?vr=1` y `?vr=historico` en `/api/precios`, serie `vr_bandas_history` — tabla ya
 presente en producción con 234 filas).

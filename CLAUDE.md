@@ -13,7 +13,7 @@
 > que realmente se vendió.* El núcleo es el **Valor de Referencia** (`src/lib/vr.ts`, hub `/vr`: banda
 > P10/mediana/P90 por categoría **y por rango de peso**, de los lotes del MAG) y **Mi Ganado** (el rodeo
 > del productor valuado contra esa banda, `src/lib/rodeo-vr.ts`). Decisión y evidencia:
-> [`docs/strategy/DECISION-PRODUCTO-2026-09-21.md`](docs/strategy/DECISION-PRODUCTO-2026-09-21.md).
+> `docs/strategy/DECISION-PRODUCTO-2026-09-21.md` (interno, gitignorado como todo `docs/strategy/`).
 > ⚠️ `market-prices.json → categories` NO es un precio observado confiable para valuar: los días sin rueda
 > era un ratio fijo sobre el INMAG (el scraper ahora conserva el último observado) y `terneros` es SIEMPRE
 > INMAG × 1,10 (el MAG no opera terneros). Para valuar hacienda, usar `getReferenciaPorPeso()`.
