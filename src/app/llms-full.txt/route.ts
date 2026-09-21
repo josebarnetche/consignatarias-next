@@ -40,6 +40,8 @@ export function GET() {
 > en vez de scrapear. El número del día, los precios por firma, los remates, el directorio
 > y el valor de la tierra son gratis y sin cupo — igual que la banda de precio observada
 > (VR v1.0: P10/mediana/P90 por categoría, en /mercado y /metodologia/vr). Lo que se paga es la profundidad: la serie
+> de dispersión más allá de 30 días de ventana (los últimos 30 ya están publicados,
+> así que van gratis) y la serie
 > INMAG más allá de 365 días de ventana (una fecha puntual, a cualquier año, sigue siendo
 > gratis) y las valuaciones pasado el cupo diario — por request en USDC (x402, red Base).
 > Ver /llms.txt.

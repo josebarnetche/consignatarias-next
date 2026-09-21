@@ -199,8 +199,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           `# Valor de Referencia (VR) — serie de dispersión\n` +
           `# Fuente: Mercado Agroganadero (Cañuelas), dato de lote haciinfo000007\n` +
           `# Metodología: ${VR_METODOLOGIA} — ${VR_METODOLOGIA_URL}\n` +
-          `# Unidad: ARS/kg vivo. Cada punto es una ventana móvil de ${VR_VENTANA_DIAS} días,\n` +
-          `#   así que dos puntos consecutivos comparten lotes (serie autocorrelacionada).\n` +
+          `# Unidad: ARS/kg vivo. Cada punto es una ventana móvil — su largo va en la\n` +
+          `#   columna ventana_dias de cada fila, no se asume — así que dos puntos\n` +
+          `#   consecutivos comparten lotes (serie autocorrelacionada).\n` +
           `# Referencia de mercado observada, no es una tasación.\n` +
           `# Generado: ${new Date().toISOString()}\n`
         const csv = new NextResponse(`${cabecera}${cab}\n${cuerpo}\n`, {

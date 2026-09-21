@@ -279,7 +279,11 @@ export default function McpPage() {
           ))}
         </div>
         <p className="text-xs text-zinc-500 mt-3">
-          Todos los tools son públicos y gratis. Las valuaciones tienen cupo diario; sin cupo, la misma consulta cuesta
+          Todos los tools son públicos y gratis. Lo que tiene techo es la PROFUNDIDAD histórica, no el acceso:{' '}
+          <code className="text-zinc-400">get_inmag_historico</code> es libre hasta 365 días de ventana y{' '}
+          <code className="text-zinc-400">get_vr_historico</code> hasta 30 (los últimos 30 son los que ya publicamos
+          en <code className="text-zinc-400">/mercado</code> y <code className="text-zinc-400">/vr</code>); más allá
+          recortan y lo declaran, nunca niegan. Las valuaciones tienen cupo diario; sin cupo, la misma consulta cuesta
           centavos en USDC real (red Base) vía <code className="text-zinc-400">x402</code> — el protocolo de pagos para
           agentes. Con una API key Enterprise (<code className="text-zinc-400">Bearer cnsg_live_…</code>): alertas
           ilimitadas, históricos bulk y soporte.

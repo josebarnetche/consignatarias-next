@@ -26,6 +26,7 @@ import {
 import {
   leerSerieVr,
   resumirSerieVr,
+  rangoSerieVr,
   vrIsoRestar,
   categoriaALote,
   CATEGORIAS_CON_LOTE,
@@ -914,10 +915,13 @@ const TOOLS: Tool[] = [
       })
       if (error) return fail(error)
       if (rows.length === 0) {
-        return fail(
+        // Respuesta normal, NO isError: "sin datos en este rango" es una
+        // respuesta válida, igual que en get_inmag_historico. La tool dice
+        // "nunca niega" y devolver un error la contradecía.
+        return ok(
           cod
-            ? `Sin serie de banda para "${args.categoria}" en los últimos ${dias} días. Puede que esa categoría no reúna operaciones de lote suficientes para publicar banda; probá sin el filtro.`
-            : `Sin serie de banda en los últimos ${dias} días.`,
+            ? `Sin serie de banda para "${args.categoria}" en los últimos ${dias} días. Puede que esa categoría no reúna operaciones de lote suficientes para publicar banda — probá sin el filtro para ver cuáles sí tienen serie.\nMetodología: ${VR_METODOLOGIA} — ${VR_METODOLOGIA_URL}`
+            : `Sin serie de banda en los últimos ${dias} días. La serie de lote arranca en mayo de 2026 y solo hay punto en días de rueda.\nMetodología: ${VR_METODOLOGIA} — ${VR_METODOLOGIA_URL}`,
         )
       }
 
@@ -932,8 +936,9 @@ const TOOLS: Tool[] = [
         ? `\n\nRECORTADO: pediste ${pedidos} días y esta respuesta trae ${dias}. La serie completa va con API key Enterprise (https://www.consignatarias.com.ar/enterprise). No presentes este tramo como la serie entera.`
         : ''
 
+      const rango = rangoSerieVr(rows)
       return ok(
-        `Dispersión observada — últimos ${dias} días (${resumen[0].desde} → ${resumen[0].hasta})\n\n` +
+        `Dispersión observada — últimos ${dias} días (${rango!.desde} → ${rango!.hasta})\n\n` +
           lineas.join('\n') +
           `\n\nCada punto es una ventana móvil de 30 días: dos puntos consecutivos comparten la mayor parte de sus lotes, así que la serie está autocorrelacionada por construcción y no son observaciones independientes. Referencia observada en el MAG (Cañuelas), no es una tasación.` +
           `\nMetodología: ${VR_METODOLOGIA} — ${VR_METODOLOGIA_URL}` +

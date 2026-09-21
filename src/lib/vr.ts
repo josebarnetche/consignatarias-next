@@ -391,6 +391,20 @@ export function getTendenciaPorSlug(slug: string): VrPuntoTendencia[] {
   return archivo.tendencia?.[codigo] ?? []
 }
 
+/**
+ * Umbral para llamar "movimiento" a un cambio de amplitud. Debajo de un punto
+ * porcentual es ruido del redondeo de percentiles, no tendencia.
+ * Una sola constante para las dos superficies (página y MCP): estaba duplicada
+ * y el PRD ya afirmaba que no, que es peor que duplicarla y saberlo.
+ */
+export const VR_UMBRAL_MOVIMIENTO_PTS = 1
+
+export function vrDireccion(deltaPuntos: number): VrMovimiento['direccion'] {
+  if (deltaPuntos > VR_UMBRAL_MOVIMIENTO_PTS) return 'abriendo'
+  if (deltaPuntos < -VR_UMBRAL_MOVIMIENTO_PTS) return 'cerrando'
+  return 'estable'
+}
+
 export interface VrMovimiento {
   /** Puntos porcentuales que se movió la amplitud entre el primer y el último punto. */
   deltaPuntos: number
@@ -404,9 +418,9 @@ export interface VrMovimiento {
 /**
  * Cómo se movió la dispersión en la ventana de tendencia.
  *
- * Umbral de 1 punto porcentual para llamarlo movimiento: por debajo de eso la
- * diferencia es ruido del redondeo de percentiles y anunciarla como tendencia
- * sería exactamente el tipo de falsa precisión que el resto del VR evita.
+ * El umbral vive en `VR_UMBRAL_MOVIMIENTO_PTS` y lo comparte con la serie:
+ * anunciar como tendencia algo por debajo de eso sería exactamente el tipo de
+ * falsa precisión que el resto del VR evita.
  */
 export function getMovimiento(slug: string): VrMovimiento | null {
   const pts = getTendenciaPorSlug(slug)
@@ -416,7 +430,7 @@ export function getMovimiento(slug: string): VrMovimiento | null {
   const delta = Number((z.amplitud - a.amplitud).toFixed(1))
   return {
     deltaPuntos: delta,
-    direccion: delta > 1 ? 'abriendo' : delta < -1 ? 'cerrando' : 'estable',
+    direccion: vrDireccion(delta),
     desde: a.date,
     hasta: z.date,
     amplitudInicial: a.amplitud,
@@ -501,6 +515,21 @@ export function vrIsoRestar(iso: string, dias: number): string {
 }
 
 /** Resumen de una serie para presentarla sin volcar cientos de puntos. */
+/** Rango real que cubren las filas. `resumen[0]` NO sirve: `resumirSerieVr`
+ *  ordena por magnitud del movimiento, así que su primera entrada es una
+ *  categoría cualquiera y con coberturas desparejas declararía un rango más
+ *  angosto que el dato devuelto. */
+export function rangoSerieVr(rows: VrPuntoSerie[]): { desde: string; hasta: string } | null {
+  if (rows.length === 0) return null
+  let desde = rows[0].date
+  let hasta = rows[0].date
+  for (const r of rows) {
+    if (r.date < desde) desde = r.date
+    if (r.date > hasta) hasta = r.date
+  }
+  return { desde, hasta }
+}
+
 export function resumirSerieVr(rows: VrPuntoSerie[]): {
   category: string
   puntos: number
@@ -532,9 +561,7 @@ export function resumirSerieVr(rows: VrPuntoSerie[]): {
         amplitudInicial: a.amplitud_pct,
         amplitudFinal: z.amplitud_pct,
         deltaPuntos: delta,
-        // Mismo umbral de 1 punto que `getMovimiento`: debajo de eso es ruido
-        // de redondeo de percentiles, no tendencia.
-        direccion: (delta > 1 ? 'abriendo' : delta < -1 ? 'cerrando' : 'estable') as VrMovimiento['direccion'],
+        direccion: vrDireccion(delta),
         medianaInicial: a.mediana,
         medianaFinal: z.mediana,
       }
