@@ -34,6 +34,7 @@
  * —40 lotes, precio 0— es la prueba de que la regla hace falta: hay categorías
  * basura que no pueden llegar a una respuesta.
  */
+import type { SupabaseClient } from '@supabase/supabase-js'
 import bandas from '@/lib/data/vr-bandas.json'
 
 /** Versión de la metodología. Cambia el cálculo → cambia esto. */
@@ -421,4 +422,122 @@ export function getMovimiento(slug: string): VrMovimiento | null {
     amplitudInicial: a.amplitud,
     amplitudFinal: z.amplitud,
   }
+}
+
+
+/* ── Lectura de la serie histórica ─────────────────────────────────────────── */
+
+/**
+ * Ventana gratuita de la serie. Misma doctrina que `inmag-historico.ts`: no se
+ * niega, se RECORTA y se declara. 30 días es la ventana de la banda vigente, así
+ * que quien no paga ve exactamente lo que ya está publicado en /vr y /mercado.
+ */
+export const VR_SERIE_VENTANA_GRATIS_DIAS = 30
+
+/** Tope de filas de una lectura de serie, holgado sobre el caso máximo
+ *  (6 categorías × 3650 días ≈ 22.000). Existe para que un rango absurdo falle
+ *  declarándolo en vez de truncar en silencio. */
+export const VR_SERIE_MAX_FILAS = 60_000
+
+export interface VrPuntoSerie {
+  date: string
+  category: string
+  p10: number
+  mediana: number
+  p90: number
+  amplitud_pct: number
+  lotes: number
+  cabezas: number
+  ventana_dias: number
+  metodologia: string
+}
+
+/**
+ * Lee la serie de dispersión, paginando.
+ *
+ * Vive acá y no en el route handler porque la consumen DOS superficies que deben
+ * devolver lo mismo: `/api/precios?vr=historico` y la tool MCP `get_vr_historico`.
+ * La lección ya la pagamos con `categoriaALote`: dos copias de la misma consulta
+ * se desincronizan sin que nadie lo note.
+ *
+ * Filtra `metodologia` siempre: la PK es (date, category, metodologia) justamente
+ * para que VR v1.1 conviva con v1.0, así que sin el filtro la serie devolvería
+ * puntos duplicados por fecha y (date, category) dejaría de ser orden total,
+ * rompiendo el paginado.
+ */
+export async function leerSerieVr(
+  sb: SupabaseClient,
+  opts: { desde: string; categoriaCodigo?: string | null },
+): Promise<{ rows: VrPuntoSerie[]; error: string | null }> {
+  const out: VrPuntoSerie[] = []
+  for (let from = 0; ; from += 1000) {
+    let q = sb
+      .from('vr_bandas_history')
+      .select('date, category, p10, mediana, p90, amplitud_pct, lotes, cabezas, ventana_dias, metodologia')
+      .gte('date', opts.desde)
+      .eq('metodologia', VR_METODOLOGIA)
+      .order('date', { ascending: true })
+      .order('category', { ascending: true })
+    if (opts.categoriaCodigo) q = q.eq('category', opts.categoriaCodigo)
+
+    const { data, error } = await q.range(from, from + 999)
+    if (error) return { rows: out, error: error.message }
+    if (!data || data.length === 0) break
+    out.push(...(data as VrPuntoSerie[]))
+    if (data.length < 1000) break
+    if (from >= VR_SERIE_MAX_FILAS) {
+      return {
+        rows: out,
+        error: `Resultado demasiado grande (>${VR_SERIE_MAX_FILAS} filas). Acotá el rango o filtrá por categoría.`,
+      }
+    }
+  }
+  return { rows: out, error: null }
+}
+
+/** Resta días a una fecha ISO sin pasar por la zona horaria local. */
+export function vrIsoRestar(iso: string, dias: number): string {
+  return new Date(Date.parse(`${iso}T00:00:00Z`) - dias * 86_400_000).toISOString().slice(0, 10)
+}
+
+/** Resumen de una serie para presentarla sin volcar cientos de puntos. */
+export function resumirSerieVr(rows: VrPuntoSerie[]): {
+  category: string
+  puntos: number
+  desde: string
+  hasta: string
+  amplitudInicial: number
+  amplitudFinal: number
+  deltaPuntos: number
+  direccion: 'abriendo' | 'cerrando' | 'estable'
+  medianaInicial: number
+  medianaFinal: number
+}[] {
+  const porCat = new Map<string, VrPuntoSerie[]>()
+  for (const r of rows) {
+    const arr = porCat.get(r.category) ?? []
+    arr.push(r)
+    porCat.set(r.category, arr)
+  }
+  return [...porCat.entries()]
+    .map(([category, pts]) => {
+      const a = pts[0]
+      const z = pts[pts.length - 1]
+      const delta = Number((z.amplitud_pct - a.amplitud_pct).toFixed(1))
+      return {
+        category,
+        puntos: pts.length,
+        desde: a.date,
+        hasta: z.date,
+        amplitudInicial: a.amplitud_pct,
+        amplitudFinal: z.amplitud_pct,
+        deltaPuntos: delta,
+        // Mismo umbral de 1 punto que `getMovimiento`: debajo de eso es ruido
+        // de redondeo de percentiles, no tendencia.
+        direccion: (delta > 1 ? 'abriendo' : delta < -1 ? 'cerrando' : 'estable') as VrMovimiento['direccion'],
+        medianaInicial: a.mediana,
+        medianaFinal: z.mediana,
+      }
+    })
+    .sort((a, b) => Math.abs(b.deltaPuntos) - Math.abs(a.deltaPuntos))
 }

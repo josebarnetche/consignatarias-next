@@ -72,6 +72,7 @@ Available tools:
 - \`sanidad_renspa\` — valida y decodifica un código RENSPA (17 dígitos, 00.000.0.00000.00) en sus segmentos
 - \`sanidad_dte_tropa\` — explica el DT-e / número de tropa (qué ampara, requisitos para emitirlo) — referencia
 - \`buenas_practicas\` — Buenas Prácticas Ganaderas (14 temas de la Guía Red BPA): cómo implementar salud, bienestar, manejo de rodeo, alimentación, agua, etc.
+- \`get_vr_historico\` — "¿se está abriendo o cerrando la dispersión?": serie de la banda P10–P90 por categoría, con cuánto se movió la amplitud y en qué dirección. Es lo que el precio puntual no puede contestar. Gratis los últimos 30 días; más profundidad con API key Enterprise (recorta y lo declara, no niega)
 - \`valuar_tropa\` — "¿cuánto valen 350 novillos en Formosa?": la banda de precio realmente observada en las operaciones de lote del MAG (P10 / mediana / P90, VR v1.0) con los lotes y cabezas que la sostienen, en ARS y USD (blue y oficial). Sin base suficiente cae a la referencia nacional y lo declara. Metodología en /metodologia/vr
 - \`valuar_arrendamiento_campo\` — "¿cuánto cuesta arrendar 3.500 has en Corrientes?": canon anual/mensual al índice oficial de arrendamientos, ARS y USD
 - \`valuar_campo\` — "¿cuánto vale la hectárea en Corrientes?": valor de la tierra en USD/ha por provincia y por zona (15 provincias, 52 zonas), con rango, arrendamiento típico en kg de novillo y la fuente fechada de cada dato. Distingue campo ganadero de agrícola. Gratis y sin cupo

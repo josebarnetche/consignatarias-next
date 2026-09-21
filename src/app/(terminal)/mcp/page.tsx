@@ -35,6 +35,7 @@ const TOOLS = [
   { name: 'actividad_consignatarias', desc: 'Ranking de cabezas y precio promedio por firma en el MAG de referencia (Cañuelas)', auth: false },
   { name: 'buscar_frigorifico', desc: 'Frigoríficos habilitados MAGYP/SENASA (1.100+ plantas)', auth: false },
   { name: 'calcular_arrendamiento', desc: 'Canon de arrendamiento rural indexado al novillo', auth: false },
+  { name: 'get_vr_historico', desc: '"¿Se está abriendo la dispersión?" — serie de la banda P10–P90 por categoría; 30 días gratis', auth: false },
   { name: 'valuar_tropa', desc: '"¿Cuánto valen 350 novillos?" — banda observada (P10/mediana/P90) con el n de lotes, en ARS y USD', auth: false },
   { name: 'valuar_arrendamiento_campo', desc: 'Canon de arrendamiento ganadero al índice oficial, anual y mensual, ARS y USD', auth: false },
   { name: 'valuar_campo', desc: 'Cuánto vale la hectárea: 15 provincias y 52 zonas, con rango, canon típico y fuente fechada', auth: false },

@@ -243,7 +243,7 @@ No propone tokenizar. El doc de estrategia (§5.1) lo descarta y este PRD lo res
 | 3 | Permalinks citables | ✅ **con corrección — ver abajo** |
 | 4 | `?vr=1` en `/api/precios` | ✅ |
 | 4 | `?vr=historico` + tabla `vr_bandas_history` | ✅ **(ver §13)** |
-| 4 | Export CSV/JSON gated | ❌ **no hecho — ver pendientes** |
+| 4 | Export CSV gated | ✅ `?vr=historico&formato=csv` |
 
 **Decisiones tomadas (§11 resuelto):** banda **pública** (doctrina CEPEA/IBLI); nombre **Valor de Referencia (VR)**; `METODOLOGIA-INDICE-CONSIGNATARIAS.md` queda **archivado de hecho** — la metodología viva es `/metodologia/vr` + la página general `/metodologia` (v1.3), que ya estaba a mejor nivel que el borrador.
 
@@ -257,7 +257,7 @@ El objeto `Valuación` del §3.1 sigue siendo correcto en todo lo demás (banda,
 
 ### Pendientes conscientes
 
-1. **Export CSV/JSON gated.** No se hizo. Hoy no hay a qué colgarlo: no existe una superficie de descarga del VR. Cuando exista, va con `requireLoginForDownload()`.
+1. ~~**Export CSV/JSON gated.**~~ **Hecho.** Cuelga de `/api/precios?vr=historico&formato=csv`, no de un endpoint nuevo: así reusa la auth Enterprise, la cuota y el `ops_event` que ya tiene. No usa `requireLoginForDownload()` porque ese gate es más débil que el que ya aplica ahí — la serie es Enterprise, no "gratis pero con cuenta".
 2. ~~**La serie histórica de dispersión.**~~ **Hecho — ver §13.**
 3. **`mag-lots-pipeline.yml` corre Mar/Mié/Vie.** Las bandas se refrescan con esa cadencia, no a diario. Está declarado en la metodología (`updateFrequency`).
 
@@ -304,3 +304,30 @@ Cada punto es una **ventana móvil de 30 días**: dos puntos consecutivos compar
 ### Pendiente identificado
 
 Un tool MCP para la serie (`get_vr_historico`) sería la superficie natural para agentes. **No se agregó**: una tool nueva cambia *de qué se trata* el server y obliga a republicar el manifiesto del registry (`mcp-registry/PUBLISH-RUNBOOK.md`), y la clave privada vive en `~/.mcp-keys/` — fuera de esta sesión. Queda como la próxima entrega, con republicación incluida.
+
+
+---
+
+## 14. Cierre
+
+**Todo el alcance del §4 está entregado**, más la serie (§13) y el tool MCP, que no estaban en el plan original.
+
+### Las cinco superficies MCP, sincronizadas
+
+`get_vr_historico` responde si la dispersión se abre o se cierra. Gratis los últimos 30 días —la ventana que ya está publicada en `/mercado` y `/vr`, así que no regala nada nuevo— y con API key Enterprise la serie entera. **Recorta y lo declara**, nunca niega: misma doctrina que `get_inmag_historico`, y una key inválida no degrada a gratis en silencio.
+
+La **quinta superficie sí cambió** esta vez, al revés que con la banda en `valuar_tropa`: el manifiesto describía "INMAG, precios, remates, directorio y valor de la hectárea", y la dispersión es un tipo de dato nuevo que esa lista no cubre — es, de hecho, lo más distintivo que el server ofrece hoy. Los tres `server.json` van en **v1.4.0** con descripción nueva (99 de los 100 caracteres permitidos).
+
+> ⚠️ **Falta publicarlo.** `mcp-publisher publish` necesita la clave de `~/.mcp-keys/consignatarias-mcp.pem`, que no está en la sesión donde se hizo este trabajo. El repo queda listo; el comando lo corre quien tenga la clave (`mcp-registry/PUBLISH-RUNBOOK.md`). **Hasta que se publique, el directorio muestra la descripción vieja** — el server funciona igual, pero un humano navegando el registry no se entera de que existe la banda.
+
+### Una decisión que se repitió tres veces
+
+Cada vez que una misma lógica iba a vivir en dos lugares, se unificó en `lib/vr.ts`: el mapa de categorías (`categoriaALote`), el lector de la serie (`leerSerieVr`) y el umbral de movimiento. **No es prolijidad, es la lección de un bug real:** cuando el mapa de categorías estaba duplicado, `/vr/mej` publicaba banda y `?categoria=mej` devolvía 400, y nadie se habría enterado hasta que un cliente lo reportara.
+
+### Lo que NO está verificado
+
+`?vr=historico` y `get_vr_historico` **nunca se ejercitaron contra la base con un request real**: el entorno donde se construyeron no tiene `SUPABASE_SERVICE_ROLE_KEY`. Se validó la consulta por separado contra Supabase y la lógica con tests, pero **el primer `curl` con una API key de verdad hay que hacerlo en preview antes de ofrecerle esto a nadie.**
+
+### La métrica sigue abierta
+
+Nada de esto prueba que alguien pague. El criterio de muerte del §9.4 sigue vigente: **≥2 conversaciones Enterprise citando el VR a los 90 días, o se congela como activo de autoridad.**

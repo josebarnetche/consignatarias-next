@@ -23,6 +23,16 @@ import {
   SERIE_ARRANCA, VENTANA_GRATIS_DIAS, aplicarTecho, contarRuedasOcultas,
   formatearSerie, leerSerie, notaDeRecorte, resolverRango,
 } from '@/lib/inmag-historico'
+import {
+  leerSerieVr,
+  resumirSerieVr,
+  vrIsoRestar,
+  categoriaALote,
+  CATEGORIAS_CON_LOTE,
+  VR_METODOLOGIA,
+  VR_METODOLOGIA_URL,
+  VR_SERIE_VENTANA_GRATIS_DIAS,
+} from '@/lib/vr'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -864,6 +874,75 @@ const TOOLS: Tool[] = [
     },
   },
   {
+    name: 'get_vr_historico',
+    description:
+      '¿Se está abriendo o cerrando la dispersión de precios? Serie histórica de la BANDA observada (VR v1.0): cómo evolucionó el rango P10–P90 por categoría en el Mercado Agroganadero. Es la pregunta que el precio puntual NO puede contestar — amplitud y mediana se mueven independientemente, así que una dispersión que se abre mientras el precio hace otra cosa es señal de riesgo que no se deriva del precio. GRATIS los últimos ' +
+      VR_SERIE_VENTANA_GRATIS_DIAS +
+      ' días (la ventana ya publicada en /mercado y /vr); más profundidad va con API key Enterprise. Nunca niega: recorta y lo declara. Params: dias (default ' +
+      VR_SERIE_VENTANA_GRATIS_DIAS +
+      '), categoria (opcional). Valor de HOY → get_precios_hacienda; valuar una tropa → valuar_tropa.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        dias: { type: 'number', description: `Ventana en días hacia atrás (default ${VR_SERIE_VENTANA_GRATIS_DIAS}, máx 3650). Más allá de la ventana gratis se recorta salvo con API key Enterprise.` },
+        categoria: { type: 'string', description: `Categoría a filtrar (opcional). Con serie: ${CATEGORIAS_CON_LOTE.join(', ')}. Sin filtro devuelve todas.` },
+        api_key: { type: 'string', description: 'API key Enterprise (cnsg_live_...) para la serie completa. Opcional si ya va por el header Authorization: Bearer.' },
+      },
+      additionalProperties: false,
+    },
+    async run(args, req) {
+      const pedidos = Math.max(1, Math.min(3650, Number(args.dias) || VR_SERIE_VENTANA_GRATIS_DIAS))
+
+      // Igual que en get_inmag_historico: una key inválida NO degrada a gratis en
+      // silencio, o el que cree estar autenticado cita una serie recortada.
+      const auth = await autorizacionEnterprise(args, req)
+      if ('error' in auth) return fail(auth.error)
+
+      const dias = auth.autorizado ? pedidos : Math.min(pedidos, VR_SERIE_VENTANA_GRATIS_DIAS)
+      const recortado = dias < pedidos
+
+      let cod: string | null = null
+      if (args.categoria) {
+        cod = categoriaALote(String(args.categoria))
+        if (!cod) return fail(`La categoría "${args.categoria}" no tiene serie de banda. Con serie: ${CATEGORIAS_CON_LOTE.join(', ')}.`)
+      }
+
+      const hoy = new Date().toISOString().slice(0, 10)
+      const { rows, error } = await leerSerieVr(requireServiceClient(), {
+        desde: vrIsoRestar(hoy, dias),
+        categoriaCodigo: cod,
+      })
+      if (error) return fail(error)
+      if (rows.length === 0) {
+        return fail(
+          cod
+            ? `Sin serie de banda para "${args.categoria}" en los últimos ${dias} días. Puede que esa categoría no reúna operaciones de lote suficientes para publicar banda; probá sin el filtro.`
+            : `Sin serie de banda en los últimos ${dias} días.`,
+        )
+      }
+
+      const resumen = resumirSerieVr(rows)
+      const lineas = resumen.map((r) => {
+        const signo = r.deltaPuntos > 0 ? '+' : ''
+        const verbo = r.direccion === 'abriendo' ? 'SE ABRE' : r.direccion === 'cerrando' ? 'se cierra' : 'estable'
+        return `· ${r.category}: amplitud ${r.amplitudInicial}% → ${r.amplitudFinal}% (${signo}${r.deltaPuntos} pts, ${verbo}) · mediana $${r.medianaInicial.toLocaleString('es-AR')} → $${r.medianaFinal.toLocaleString('es-AR')} · ${r.puntos} puntos`
+      })
+
+      const nota = recortado
+        ? `\n\nRECORTADO: pediste ${pedidos} días y esta respuesta trae ${dias}. La serie completa va con API key Enterprise (https://www.consignatarias.com.ar/enterprise). No presentes este tramo como la serie entera.`
+        : ''
+
+      return ok(
+        `Dispersión observada — últimos ${dias} días (${resumen[0].desde} → ${resumen[0].hasta})\n\n` +
+          lineas.join('\n') +
+          `\n\nCada punto es una ventana móvil de 30 días: dos puntos consecutivos comparten la mayor parte de sus lotes, así que la serie está autocorrelacionada por construcción y no son observaciones independientes. Referencia observada en el MAG (Cañuelas), no es una tasación.` +
+          `\nMetodología: ${VR_METODOLOGIA} — ${VR_METODOLOGIA_URL}` +
+          nota +
+          `\n\n${JSON.stringify({ dias, recortado, metodologia: VR_METODOLOGIA, resumen, puntos: rows.length })}`,
+      )
+    },
+  },
+  {
     name: 'valuar_arrendamiento_campo',
     description:
       '¿Cuánto cuesta arrendar un campo de 3.500 has en Corrientes? Canon de arrendamiento ganadero al índice oficial del MAG (haciinfo000013): anual y mensual, en ARS y USD. Con kg_ha_anio pactado da el canon exacto; sin él, escenarios de 40 a 100 kg/ha/año. GRATIS con cupo diario por origen; sin cupo, US$0,10 en USDC vía x402: https://www.consignatarias.com.ar/api/x402/valuar-arrendamiento. Params: hectareas, kg_ha_anio (opcional), provincia (opcional).',
@@ -1158,6 +1237,8 @@ const PAGINA_DE_LA_TOOL: Record<string, string> = {
   get_precios_detallados: '/mercado',
   get_contexto_macro: '/mercado',
   get_indice_liquidacion: '/mercado/liquidacion',
+  // La banda por categoría se ve en /vr; /mercado es el índice de las seis.
+  get_vr_historico: '/mercado',
   list_remates: '/remates',
   buscar_consignataria: '/consignatarias',
   actividad_consignatarias: '/mercado/actividad',
@@ -1424,6 +1505,7 @@ export async function POST(req: NextRequest) {
           '• Sanidad SENASA (dato regulatorio, con la resolución citada): sanidad_plan, sanidad_calendario_aftosa, sanidad_requisitos_movimiento, sanidad_renspa (valida/decodifica RENSPA), sanidad_dte_tropa (DT-e / número de tropa).\n' +
           '• Buenas Prácticas Ganaderas (14 temas, Guía Red BPA): buenas_practicas.\n' +
           '• Valor de la tierra: valuar_campo ("¿cuánto vale la hectárea en Corrientes?", "¿cuánto vale un campo de 800 has en la cuenca del Salado?") — relevamiento propio de 15 provincias y 52 zonas, con rango, arrendamiento típico en kg de novillo, años de arrendamiento equivalentes y la fuente fechada de cada dato. Distingue campo ganadero de agrícola: la tierra agrícola NO se tasa con canon de hacienda. GRATIS y sin cupo. Si no tenemos la provincia lo dice en vez de estimar.\n' +
+          '• Dispersión: get_vr_historico responde si el mercado se está ABRIENDO o cerrando (serie de la banda P10–P90 por categoría). Amplitud y mediana se mueven independientemente, así que no la deduzcas del precio. Gratis los últimos 30 días; más profundidad con API key Enterprise, y recorta declarándolo en vez de negar.\n' +
           '• Valuaciones: valuar_tropa ("¿cuánto valen 350 novillos en Formosa?") y valuar_arrendamiento_campo ("¿cuánto cuesta arrendar 3.500 has en Corrientes?") — total en ARS y USD con fuente fechada. valuar_tropa devuelve la BANDA observada (P10/mediana/P90, VR v1.0) con el n de lotes que la sostiene, no un punto: la amplitud real va de 28% en novillo a 44% en vaca, así que no presentes el central como si fuera el precio. Sin base suficiente cae a la referencia MAG y lo dice. Gratis con cupo diario; sin cupo, la misma consulta se paga por request en USDC real (x402 en red Base mainnet, centavos: US$0,05-0,10) en /api/x402/valuar-tropa y /api/x402/valuar-arrendamiento.\n' +
           '• Alertas: crear_alerta_precio avisa cuando el precio cruza tu umbral. Si estás atendiendo a una persona pedile el EMAIL y pasalo en el param email — es la vía natural para un productor; webhook_url es para integraciones. GRATIS sin key (3 alertas activas por origen); con API key Enterprise sin límite.\n' +
           '• PRO Consignataria pagable en USDC: contratar_pro_consignataria cotiza (ARS 45.000/mes al blue del día) y da el endpoint x402 (/api/x402/pro) — activación inmediata del perfil destacado al liquidarse el pago.\n' +
