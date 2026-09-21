@@ -19,6 +19,7 @@ export type ShowcaseItem = {
   logoUrl: string | null;
   brandColor: string | null;
   keepColor?: boolean;
+  solidLogo?: boolean;
   isPro?: boolean;
 };
 
@@ -229,7 +230,11 @@ function Tile({ item, nameIndex }: { item: ShowcaseItem; nameIndex: number }) {
           loading="lazy"
           className={
             "relative z-[1] max-h-14 max-w-[86%] w-auto object-contain transition-transform duration-300 group-hover:scale-[1.07] " +
-            (item.keepColor ? "" : "[filter:brightness(0)_invert(1)]")
+            (item.keepColor
+              ? ""
+              : item.solidLogo
+                ? "[filter:grayscale(1)_invert(1)_brightness(1.4)] mix-blend-screen"
+                : "[filter:brightness(0)_invert(1)]")
           }
         />
       </Link>

@@ -7,6 +7,28 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.212.0] — 2026-09-21
+
+### La home, al servicio de la promesa
+
+Revisión de la landing en producción (capturas de escritorio y móvil) después de v1.211.0.
+
+- **Hero con una sola acción.** De cinco botones a dos: *Valuar mi rodeo gratis* y *Ver el Valor de
+  Referencia*. Directorio y remates de la semana pasan a una fila de enlaces (*¿Querés vender?*); el
+  "en vivo" queda en la línea de mercado. El párrafo de bajada se acorta a la promesa.
+- **La calculadora sube a la primera pantalla siguiente.** El buscador de firmas y el mapa de
+  cobertura salían dentro del hero y empujaban la calculadora a ~1.600 px. Ahora viven en una sección
+  nueva, **¿Y dónde la vendo?** (`#donde-vender`), justo antes de la grilla de consignatarias.
+- **Semáforo de venta:** el texto quedaba aplastado a una palabra por línea en escritorio (el badge
+  `shrink-0` se comía el ancho). Badge arriba a todo el ancho; texto y botón abajo. El botón pasa a
+  secundario para no competir con *Guardá tu rodeo*.
+- **Logos que eran manchas blancas.** El filtro `brightness(0) invert(1)` convertía en silueta los PNG
+  con relleno o fondo opaco (10 firmas). Nuevo flag `solidLogo` en `logo-map.ts` (gris invertido, que
+  conserva el dibujo) para 9; Raúl Mendizábal va con `keepColor`.
+- Calendario sanitario baja después de la guía; menos aire muerto en *Cómo funciona*.
+
+---
+
 ## [1.211.0] — 2026-09-21
 
 ### Cuánto vale tu hacienda hoy, medido en lo que realmente se vendió

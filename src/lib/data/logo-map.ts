@@ -11,13 +11,16 @@
  * (they render as plain name tiles and are slated to be dropped from the wall).
  */
 
+// solidLogo: el PNG trae formas rellenas o fondo opaco → la silueta blanca
+// (brightness 0 + invert) lo vuelve una mancha. En la grilla de la home va en
+// escala de grises invertida, que conserva el dibujo interno.
 // keepColor: render the logo in its own colors instead of forcing it white
 // (for multicolor marks that read fine on the black tile, e.g. UMC's mascot).
 // whiteLogo: el logo es BLANCO/monocromo claro → en el avatar (IdentityMark) va
 // sobre el COLOR DE MARCA, no sobre la tarjeta clara (donde un logo blanco
 // desaparece). Regla de Jose: el bg del avatar puede ser el color de la firma
 // cuando el logotipo es blanco.
-export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string; keepColor?: boolean; whiteLogo?: boolean; wordmark?: boolean }> = {
+export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string; keepColor?: boolean; whiteLogo?: boolean; wordmark?: boolean; solidLogo?: boolean }> = {
   'colombo-y-magliano': { logo: 'colombo-y-magliano.svg', color: '#215732', whiteLogo: true },
   'colombo-y-colombo': { logo: 'colombo-y-colombo.png', color: '#b30738', whiteLogo: true },
   'bressan-y-cia': { logo: 'bressan-y-cia.png', color: '#a99134' },
@@ -35,19 +38,19 @@ export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string;
   'consignataria-vittori': { logo: 'consignataria-vittori.png', color: '#906030' },
   'cooperativa-portena': { logo: 'cooperativa-portena.png', color: '#007830', wordmark: true },
   'ferialvarez': { logo: 'ferialvarez.png', color: '#16403e', wordmark: true },
-  'ferias-lito-araneta': { logo: 'ferias-lito-araneta.png', color: '#1f3a5f' },
-  'ganaderos-de-ceres': { logo: 'ganaderos-de-ceres.png', color: '#016087' },
-  'goenaga': { logo: 'goenaga.png', color: '#1f3a5f', wordmark: true },
-  'gregorio-aberasturi': { logo: 'gregorio-aberasturi.png', color: '#006030', wordmark: true },
+  'ferias-lito-araneta': { logo: 'ferias-lito-araneta.png', color: '#1f3a5f', solidLogo: true },
+  'ganaderos-de-ceres': { logo: 'ganaderos-de-ceres.png', color: '#016087', solidLogo: true },
+  'goenaga': { logo: 'goenaga.png', color: '#1f3a5f', wordmark: true, solidLogo: true },
+  'gregorio-aberasturi': { logo: 'gregorio-aberasturi.png', color: '#006030', wordmark: true, solidLogo: true },
   'herrero-hnos': { logo: 'herrero-hnos.png', color: '#1a9e75' },
   'hourcade-albelo': { logo: 'hourcade-albelo.png', color: '#003018', wordmark: true },
   'javier-bardin': { logo: 'javier-bardin.png', color: '#530903', whiteLogo: true, wordmark: true },
   'lartirigoyen': { logo: 'lartirigoyen.png', color: '#004b2a', whiteLogo: true, wordmark: true },
-  'martin-y-alonso': { logo: 'martin-y-alonso.png', color: '#906048', wordmark: true },
+  'martin-y-alonso': { logo: 'martin-y-alonso.png', color: '#906048', wordmark: true, solidLogo: true },
   'melicura': { logo: 'melicura.png', color: '#187830', wordmark: true },
   'melicur-ganados': { logo: 'melicura.png', color: '#187830', wordmark: true },
-  'oregui': { logo: 'oregui.png', color: '#c09060' },
-  'raul-mendizabal': { logo: 'raul-mendizabal.png', color: '#737342', wordmark: true },
+  'oregui': { logo: 'oregui.png', color: '#c09060', solidLogo: true },
+  'raul-mendizabal': { logo: 'raul-mendizabal.png', color: '#737342', wordmark: true, keepColor: true },
   'ofarrell': { logo: 'ofarrell.svg', color: '#183048' },
   'cooperativa-guillermo-lehmann': { logo: 'cooperativa-guillermo-lehmann.png', color: '#00924d', whiteLogo: true, wordmark: true },
   'ferias-rauch': { logo: 'ferias-rauch.png', color: '#936f54' },
@@ -71,12 +74,12 @@ export const CONSIGNATARIA_BRANDS: Record<string, { logo: string; color: string;
   'talano-hermanos': { logo: 'talano-hermanos.png', color: '#a81818' },
   'casa-usandizaga': { logo: 'casa-usandizaga.png', color: '#d81818', whiteLogo: true, wordmark: true },
   'darwash': { logo: 'darwash.svg', color: '#0d6c79', whiteLogo: true },
-  'ganadera-salliquelo': { logo: 'ganadera-salliquelo.png', color: '#a08020' },
-  'ganaderos-de-elordi': { logo: 'ganaderos-de-elordi.png', color: '#a81830' },
+  'ganadera-salliquelo': { logo: 'ganadera-salliquelo.png', color: '#a08020', solidLogo: true },
+  'ganaderos-de-elordi': { logo: 'ganaderos-de-elordi.png', color: '#a81830', solidLogo: true },
   'ganaderos-de-formosa': { logo: 'ganaderos-de-formosa.png', color: '#487830' },
   'ildarraz-hnos': { logo: 'ildarraz-hnos.png', color: '#f01800' },
   'javier-ulises-avalos': { logo: 'javier-ulises-avalos.png', color: '#001860' },
-  'umc-villaguay': { logo: 'umc-villaguay.png', color: '#0b5c3a' },
+  'umc-villaguay': { logo: 'umc-villaguay.png', color: '#0b5c3a', solidLogo: true },
   'la-ganadera': { logo: 'la-ganadera.svg', color: '#059146' },
   'lalor': { logo: 'lalor.png', color: '#183060', whiteLogo: true, wordmark: true },
   'monasterio-tattersall': { logo: 'monasterio-tattersall.png', color: '#186030' },
@@ -166,4 +169,9 @@ export function getBrandWordmark(slug: string): boolean {
 /** Check if a logo exists for the given slug. */
 export function hasLogo(slug: string): boolean {
   return slug in LOGO_MAP
+}
+
+// PNG con relleno/fondo opaco → en la grilla no se fuerza a silueta blanca.
+export function getBrandSolidLogo(slug: string): boolean {
+  return CONSIGNATARIA_BRANDS[slug]?.solidLogo ?? false
 }
