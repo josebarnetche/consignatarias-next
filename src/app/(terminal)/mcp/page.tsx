@@ -35,6 +35,7 @@ const TOOLS = [
   { name: 'actividad_consignatarias', desc: 'Ranking de cabezas y precio promedio por firma en el MAG de referencia (Cañuelas)', auth: false },
   { name: 'buscar_frigorifico', desc: 'Frigoríficos habilitados MAGYP/SENASA (1.100+ plantas)', auth: false },
   { name: 'calcular_arrendamiento', desc: 'Canon de arrendamiento rural indexado al novillo', auth: false },
+  { name: 'get_vr_historico', desc: '"¿Se está abriendo la dispersión?" — serie de la banda P10–P90 por categoría; 30 días gratis', auth: false },
   { name: 'valuar_tropa', desc: '"¿Cuánto valen 350 novillos?" — banda observada (P10/mediana/P90) con el n de lotes, en ARS y USD', auth: false },
   { name: 'valuar_arrendamiento_campo', desc: 'Canon de arrendamiento ganadero al índice oficial, anual y mensual, ARS y USD', auth: false },
   { name: 'valuar_campo', desc: 'Cuánto vale la hectárea: 15 provincias y 52 zonas, con rango, canon típico y fuente fechada', auth: false },
@@ -278,7 +279,11 @@ export default function McpPage() {
           ))}
         </div>
         <p className="text-xs text-zinc-500 mt-3">
-          Todos los tools son públicos y gratis. Las valuaciones tienen cupo diario; sin cupo, la misma consulta cuesta
+          Todos los tools son públicos y gratis. Lo que tiene techo es la PROFUNDIDAD histórica, no el acceso:{' '}
+          <code className="text-zinc-400">get_inmag_historico</code> es libre hasta 365 días de ventana y{' '}
+          <code className="text-zinc-400">get_vr_historico</code> hasta 30 (los últimos 30 son los que ya publicamos
+          en <code className="text-zinc-400">/mercado</code> y <code className="text-zinc-400">/vr</code>); más allá
+          recortan y lo declaran, nunca niegan. Las valuaciones tienen cupo diario; sin cupo, la misma consulta cuesta
           centavos en USDC real (red Base) vía <code className="text-zinc-400">x402</code> — el protocolo de pagos para
           agentes. Con una API key Enterprise (<code className="text-zinc-400">Bearer cnsg_live_…</code>): alertas
           ilimitadas, históricos bulk y soporte.

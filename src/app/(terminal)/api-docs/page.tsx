@@ -80,6 +80,12 @@ const ENDPOINTS = [
   },
   {
     method: 'GET',
+    path: '/api/precios?vr=historico&formato=csv',
+    description: 'La misma serie en CSV, con la procedencia (fuente, metodología, unidad y límites) como comentarios en la cabecera para que el archivo no se cite suelto. Mismos params que el JSON.',
+    auth: true,
+  },
+  {
+    method: 'GET',
     path: '/api/account',
     description: 'Tu cuenta — plan, cupo mensual, uso, remaining y fecha de reset. Bearer auth devuelve metadata de la key usada. Sin Bearer y con cookie de sesión devuelve estado del user logueado. Útil para monitorear desde scripts.',
     auth: true,

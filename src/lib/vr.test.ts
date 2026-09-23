@@ -13,9 +13,16 @@ import {
   CATEGORIAS_CON_LOTE,
   getTendenciaPorSlug,
   getMovimiento,
+  leerSerieVr,
+  resumirSerieVr,
+  rangoSerieVr,
+  vrIsoRestar,
+  vrDireccion,
+  VR_UMBRAL_MOVIMIENTO_PTS,
+  VR_METODOLOGIA,
+  type VrPuntoSerie,
   MIN_LOTES_AJUSTE_ORIGEN,
   MIN_LOTES_BANDA_COMPLETA,
-  VR_METODOLOGIA,
 } from './vr'
 
 describe('getReferencia — banda', () => {
@@ -286,5 +293,118 @@ describe('tendencia de dispersión', () => {
       if (m.direccion === 'abriendo') expect(m.deltaPuntos).toBeGreaterThan(1)
       if (m.direccion === 'cerrando') expect(m.deltaPuntos).toBeLessThan(-1)
     }
+  })
+})
+
+/* ── Serie histórica ──────────────────────────────────────────────────────── */
+
+const punto = (date: string, category: string, amplitud: number, mediana = 3000): VrPuntoSerie => ({
+  date, category, p10: 2500, mediana, p90: 3600,
+  amplitud_pct: amplitud, lotes: 100, cabezas: 500,
+  ventana_dias: 30, metodologia: 'VR v1.0',
+})
+
+describe('vrIsoRestar', () => {
+  it('resta días sin correrse por zona horaria', () => {
+    expect(vrIsoRestar('2026-09-18', 30)).toBe('2026-08-19')
+    expect(vrIsoRestar('2026-01-01', 1)).toBe('2025-12-31')
+    expect(vrIsoRestar('2026-03-01', 1)).toBe('2026-02-28')
+  })
+})
+
+describe('vrDireccion — un solo umbral para página y MCP', () => {
+  it('respeta el umbral en ambos sentidos', () => {
+    expect(vrDireccion(VR_UMBRAL_MOVIMIENTO_PTS + 0.1)).toBe('abriendo')
+    expect(vrDireccion(-VR_UMBRAL_MOVIMIENTO_PTS - 0.1)).toBe('cerrando')
+    expect(vrDireccion(VR_UMBRAL_MOVIMIENTO_PTS)).toBe('estable')
+    expect(vrDireccion(-VR_UMBRAL_MOVIMIENTO_PTS)).toBe('estable')
+    expect(vrDireccion(0)).toBe('estable')
+  })
+
+  it('getMovimiento usa el mismo umbral que la serie', () => {
+    for (const slug of getSlugsConBanda()) {
+      const m = getMovimiento(slug)
+      if (m) expect(m.direccion).toBe(vrDireccion(m.deltaPuntos))
+    }
+  })
+})
+
+describe('rangoSerieVr', () => {
+  it('cubre TODAS las filas, no solo la primera categoría', () => {
+    // El bug real: resumirSerieVr ordena por magnitud del movimiento, así que
+    // tomar resumen[0] declaraba un rango más angosto que el dato devuelto.
+    const rows = [
+      punto('2026-09-01', 'VACA', 44), punto('2026-09-18', 'VACA', 50),
+      punto('2026-08-01', 'NOVILLO', 27), punto('2026-09-20', 'NOVILLO', 28),
+    ]
+    expect(rangoSerieVr(rows)).toEqual({ desde: '2026-08-01', hasta: '2026-09-20' })
+  })
+
+  it('sin filas devuelve null en vez de romper', () => {
+    expect(rangoSerieVr([])).toBeNull()
+  })
+})
+
+describe('resumirSerieVr', () => {
+  it('resume por categoría y ordena por magnitud del movimiento', () => {
+    const rows = [
+      punto('2026-09-01', 'VACA', 44), punto('2026-09-18', 'VACA', 60),
+      punto('2026-09-01', 'NOVILLO', 27), punto('2026-09-18', 'NOVILLO', 27.5),
+    ]
+    const r = resumirSerieVr(rows)
+    expect(r.map((x) => x.category)).toEqual(['VACA', 'NOVILLO'])
+    expect(r[0].deltaPuntos).toBe(16)
+    expect(r[0].direccion).toBe('abriendo')
+    expect(r[1].direccion).toBe('estable')
+    expect(r[0].puntos).toBe(2)
+  })
+})
+
+describe('leerSerieVr', () => {
+  /** Cliente falso: registra los filtros aplicados y pagina lo que le pasen. */
+  function fakeSb(paginas: VrPuntoSerie[][], espia: Record<string, unknown> = {}) {
+    let i = 0
+    const q: Record<string, unknown> = {}
+    const chain = {
+      select: () => chain,
+      gte: (_c: string, v: string) => { espia.desde = v; return chain },
+      eq: (c: string, v: string) => { espia[c] = v; return chain },
+      order: (c: string) => {
+        if (!espia.orden) espia.orden = []
+        ;(espia.orden as string[]).push(c)
+        return chain
+      },
+      range: async () => ({ data: paginas[i++] ?? [], error: null }),
+    }
+    void q
+    return { from: (t: string) => { espia.tabla = t; return chain } } as never
+  }
+
+  it('filtra metodología y ordena de forma total', async () => {
+    const espia: Record<string, unknown> = {}
+    await leerSerieVr(fakeSb([[punto('2026-09-18', 'VACA', 44)]], espia), { desde: '2026-08-19' })
+    expect(espia.tabla).toBe('vr_bandas_history')
+    expect(espia.desde).toBe('2026-08-19')
+    // Sin el filtro de metodología, VR v1.1 duplicaría puntos por fecha.
+    expect(espia.metodologia).toBe(VR_METODOLOGIA)
+    // Sin el desempate por categoría el paginado deja de ser estable.
+    expect(espia.orden).toEqual(['date', 'category'])
+  })
+
+  it('aplica el filtro de categoría solo cuando se pide', async () => {
+    const conFiltro: Record<string, unknown> = {}
+    await leerSerieVr(fakeSb([[]], conFiltro), { desde: '2026-01-01', categoriaCodigo: 'VACA' })
+    expect(conFiltro.category).toBe('VACA')
+
+    const sinFiltro: Record<string, unknown> = {}
+    await leerSerieVr(fakeSb([[]], sinFiltro), { desde: '2026-01-01', categoriaCodigo: null })
+    expect(sinFiltro.category).toBeUndefined()
+  })
+
+  it('concatena páginas hasta que una viene incompleta', async () => {
+    const llena = Array.from({ length: 1000 }, (_, k) => punto('2026-09-18', `C${k}`, 40))
+    const { rows, error } = await leerSerieVr(fakeSb([llena, [punto('2026-09-19', 'VACA', 44)]]), { desde: '2026-01-01' })
+    expect(error).toBeNull()
+    expect(rows.length).toBe(1001)
   })
 })

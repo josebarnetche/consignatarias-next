@@ -47,10 +47,11 @@ const fmt = (n: number) => '$' + n.toLocaleString('es-AR')
 /** "2026-08-25" → "25-ago". Se parsea a mano: `new Date('2026-08-25')` es UTC
  *  y en ART se corre un día para atrás. */
 const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
-const fmtFecha = (iso: string) => {
-  const [, m, d] = iso.split('-')
+const fmtFecha = (iso: string, conAnio = false) => {
+  const [y, m, d] = iso.split('-')
   const mes = MESES[Number(m) - 1]
-  return mes ? `${Number(d)}-${mes}` : iso
+  if (!mes) return iso
+  return conAnio ? `${Number(d)}-${mes}-${y}` : `${Number(d)}-${mes}`
 }
 
 export async function generateMetadata({
@@ -196,7 +197,8 @@ export default async function VrCategoriaPage({
           A cuánto se vendió {nombre}
         </h1>
         <p className="text-zinc-500 text-xs mb-6">
-          Banda observada en el Mercado Agroganadero · ventana de {VR_VENTANA_DIAS} días al {cob.hasta} · {VR_METODOLOGIA}
+          Banda observada en el Mercado Agroganadero · ventana de {VR_VENTANA_DIAS} días al{' '}
+          {fmtFecha(cob.hasta, true)} · {VR_METODOLOGIA}
         </p>
 
         {/* La banda, que es el número */}
@@ -298,11 +300,22 @@ export default async function VrCategoriaPage({
             </p>
             <div className="border border-zinc-800 rounded p-3 mb-3">
               <div className="text-zinc-500 text-xs mb-2">Amplitud P10–P90, últimos {tendencia.length} puntos</div>
+              {/* showLabels={false} NO es cosmético: PriceSparkline formatea sus
+                  etiquetas como PESOS ($50) y colorea la suba de verde. Acá el
+                  valor son puntos porcentuales de amplitud, y subir es MALO —
+                  las etiquetas por defecto contradecían el párrafo de arriba.
+                  Además sus fechas pasan por new Date(iso), el off-by-one UTC
+                  que `fmtFecha` existe para evitar (y un hydration mismatch). */}
               <PriceSparkline
                 data={tendencia.map((t) => ({ date: t.date, value: t.amplitud }))}
                 width={640}
                 height={110}
+                showLabels={false}
               />
+              <div className="flex justify-between text-xs text-zinc-500 mt-1 tabular-nums">
+                <span>{fmtFecha(tendencia[0].date)} · {tendencia[0].amplitud}%</span>
+                <span>{fmtFecha(tendencia[tendencia.length - 1].date)} · {tendencia[tendencia.length - 1].amplitud}%</span>
+              </div>
             </div>
             <p className="text-zinc-500 text-xs mb-8">
               Cada punto es una ventana móvil de {VR_VENTANA_DIAS} días, así que dos puntos consecutivos

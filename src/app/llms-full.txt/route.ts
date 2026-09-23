@@ -35,11 +35,13 @@ export function GET() {
 > **Para agentes IA:** hay un servidor MCP en https://www.consignatarias.com.ar/api/mcp
 > (Streamable HTTP). Conectate y usá los tools (get_indice_novillo, get_inmag_historico,
 > get_precios_hacienda, get_precios_detallados, get_contexto_macro, list_remates,
-> buscar_consignataria, calcular_arrendamiento, valuar_tropa, valuar_arrendamiento_campo,
+> buscar_consignataria, calcular_arrendamiento, get_vr_historico, valuar_tropa, valuar_arrendamiento_campo,
 > valuar_campo, quiero_comprar, crear_alerta_precio gratis, contratar_pro_consignataria)
 > en vez de scrapear. El número del día, los precios por firma, los remates, el directorio
 > y el valor de la tierra son gratis y sin cupo — igual que la banda de precio observada
 > (VR v1.0: P10/mediana/P90 por categoría, en /mercado y /metodologia/vr). Lo que se paga es la profundidad: la serie
+> de dispersión más allá de 30 días de ventana (los últimos 30 ya están publicados,
+> así que van gratis) y la serie
 > INMAG más allá de 365 días de ventana (una fecha puntual, a cualquier año, sigue siendo
 > gratis) y las valuaciones pasado el cupo diario — por request en USDC (x402, red Base).
 > Ver /llms.txt.

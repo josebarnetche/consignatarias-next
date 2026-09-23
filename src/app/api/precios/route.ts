@@ -3,7 +3,7 @@ import marketPrices from '@/lib/data/market-prices.json'
 import { authenticate, setQuotaHeaders } from '@/lib/api-auth'
 import { createAdminClient } from '@/lib/supabase-server'
 import { logEvent } from '@/lib/ops'
-import { getReferencia, categoriaALote, CATEGORIAS_CON_LOTE, vrCobertura, VR_METODOLOGIA, VR_METODOLOGIA_URL, VR_VENTANA_DIAS } from '@/lib/vr'
+import { getReferencia, categoriaALote, CATEGORIAS_CON_LOTE, leerSerieVr, vrCobertura, VR_METODOLOGIA, VR_METODOLOGIA_URL, VR_VENTANA_DIAS } from '@/lib/vr'
 
 // Valid categories
 const VALID_CATEGORIES = ['novillos', 'novillitos', 'vaquillonas', 'vacas', 'toros', 'terneros'] as const
@@ -114,6 +114,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // PostgREST capa CADA request en 1000 filas (max-rows del proyecto) — para
     // series largas hay que paginar con .range(). El .limit() solo no alcanza.
+    // El tope está por encima del caso más grande de la serie VR (6 categorías ×
+    // 3650 días ≈ 22.000 filas) para que el rango máximo entre entero.
+    const MAX_PAGINADO = 60_000
     type PageQuery<T> = (from: number, to: number) => PromiseLike<{ data: T[] | null; error: { message: string } | null }>
     const pageAll = async <T,>(q: PageQuery<T>): Promise<{ data: T[]; error: string | null }> => {
       const out: T[] = []
@@ -123,7 +126,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         if (!data || data.length === 0) break
         out.push(...data)
         if (data.length < 1000) break
-        if (from > 20000) break // backstop
+        if (from > MAX_PAGINADO) {
+          // Antes esto devolvía error:null y truncaba en silencio, que en una
+          // serie es peor que fallar: el caller recibe un `hasta` equivocado y
+          // no tiene forma de saberlo. Ahora lo declara.
+          return { data: out, error: `Resultado demasiado grande (>${MAX_PAGINADO + 1000} filas). Acotá el rango con ?dias= o filtrá por ?categoria=.` }
+        }
       }
       return { data: out, error: null }
     }
@@ -149,20 +157,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         }
       }
 
-      // Paginado obligatorio: 6 categorías × 3650 días son ~22.000 filas y
-      // PostgREST devuelve 1000 por request. Un .limit() alto truncaría en
-      // silencio, que en una serie es el peor error posible.
-      const { data, error } = await pageAll((from, to) => {
-        let q = admin
-          .from('vr_bandas_history')
-          .select('date, category, p10, mediana, p90, amplitud_pct, lotes, cabezas, ventana_dias, metodologia')
-          .gte('date', desde.toISOString().slice(0, 10))
-          // Orden estable y total: sin el desempate por categoría, dos filas del
-          // mismo día podrían repartirse mal entre páginas.
-          .order('date', { ascending: true })
-          .order('category', { ascending: true })
-        if (cod) q = q.eq('category', cod)
-        return q.range(from, to)
+      // El lector vive en lib/vr.ts y lo comparte la tool MCP `get_vr_historico`:
+      // dos copias de esta consulta se desincronizarían sin que nadie lo note.
+      const { rows: data, error } = await leerSerieVr(admin, {
+        desde: desde.toISOString().slice(0, 10),
+        categoriaCodigo: cod,
       })
       if (error) {
         return finalize(NextResponse.json({
@@ -171,10 +170,49 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         }, { status: 500 }))
       }
       if (!data || data.length === 0) {
+        // Distinguir "esta categoría nunca tuvo serie" de "no hay datos en ESTE
+        // rango": culpar al rango por una condición que ningún rango arregla
+        // manda al consumidor a reintentar para siempre. Ternero es el caso real:
+        // está en CATEGORIAS_CON_LOTE pero no aparece en el dato de lote del MAG.
+        const msg = cod
+          ? `Sin serie de banda para "${categoriaParam}". Puede que esa categoría no tenga suficientes operaciones de lote en el MAG para publicar banda; probá sin el filtro de categoría para ver cuáles sí tienen serie.`
+          : 'Sin serie de banda para ese rango.'
         return finalize(NextResponse.json({
           success: false,
-          error: { code: 'NO_VR_HISTORY', message: 'Sin serie de banda para ese rango.' },
+          error: { code: 'NO_VR_HISTORY', message: msg },
         }, { status: 503 }))
+      }
+
+      // ?formato=csv — lo que un modelador abre en su herramienta sin escribir un
+      // parser. No abre superficie nueva: cuelga del mismo endpoint, con la misma
+      // auth Enterprise, la misma cuota y el mismo ops_event que el JSON.
+      if (searchParams.get('formato') === 'csv') {
+        const cab = 'date,category,p10,mediana,p90,amplitud_pct,lotes,cabezas,ventana_dias,metodologia'
+        const cuerpo = data
+          .map((r) =>
+            [r.date, r.category, r.p10, r.mediana, r.p90, r.amplitud_pct, r.lotes, r.cabezas, r.ventana_dias, r.metodologia].join(','),
+          )
+          .join('\n')
+        // Los límites viajan como comentarios: un CSV sin procedencia se cita
+        // suelto y a los seis meses nadie sabe de dónde salió.
+        const cabecera =
+          `# Valor de Referencia (VR) — serie de dispersión\n` +
+          `# Fuente: Mercado Agroganadero (Cañuelas), dato de lote haciinfo000007\n` +
+          `# Metodología: ${VR_METODOLOGIA} — ${VR_METODOLOGIA_URL}\n` +
+          `# Unidad: ARS/kg vivo. Cada punto es una ventana móvil — su largo va en la\n` +
+          `#   columna ventana_dias de cada fila, no se asume — así que dos puntos\n` +
+          `#   consecutivos comparten lotes (serie autocorrelacionada).\n` +
+          `# Referencia de mercado observada, no es una tasación.\n` +
+          `# Generado: ${new Date().toISOString()}\n`
+        const csv = new NextResponse(`${cabecera}${cab}\n${cuerpo}\n`, {
+          headers: {
+            'Content-Type': 'text/csv; charset=utf-8',
+            'Content-Disposition': `attachment; filename="vr-serie-${data[0].date}_${data[data.length - 1].date}.csv"`,
+            'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+          },
+        })
+        if (auth) setQuotaHeaders(csv, auth)
+        return finalize(csv)
       }
 
       const response = NextResponse.json({
