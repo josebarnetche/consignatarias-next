@@ -16854,6 +16854,25 @@
     "status": "scheduled"
   },
   {
+    "title": "AFA | Cañada Rosquín | Gordos, conserva e invernada",
+    "consignatariaName": "AFA",
+    "consignatariaSlug": "afa",
+    "date": "2026-09-24",
+    "time": "10:00",
+    "location": "",
+    "province": "SANTA FE",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "AFA | Cañada Rosquín | Gordos, conserva e invernada",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6533-afa-canada-rosquin-gordos-conserva-e-invernada",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled",
+    "id": 888
+  },
+  {
     "title": "GORDOS, CONSERVA e INVERNADA",
     "consignatariaName": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
     "consignatariaSlug": "agricultores-federados-argentinos-soc-coop-lt",
@@ -16869,7 +16888,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 888,
+    "id": 889,
     "status": "scheduled"
   },
   {
@@ -16888,27 +16907,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "epastore.com.ar",
-    "id": 889,
+    "id": 890,
     "status": "scheduled"
-  },
-  {
-    "title": "AFA | Cañada Rosquín | Gordos, conserva e invernada",
-    "consignatariaName": "AFA",
-    "consignatariaSlug": "afa",
-    "date": "2026-09-24",
-    "time": "10:00",
-    "location": "",
-    "province": "SANTA FE",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "AFA | Cañada Rosquín | Gordos, conserva e invernada",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6533-afa-canada-rosquin-gordos-conserva-e-invernada",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled",
-    "id": 890
   },
   {
     "title": ". Faena, invernada y cria. 11.00 hs.",
@@ -17063,6 +17063,25 @@
     "id": 898
   },
   {
+    "title": "Brandemann | Cabaña La Margarita",
+    "consignatariaName": "Brandemann Consignataria S.R.L.",
+    "consignatariaSlug": "brandemann-consignataria-s-r-l",
+    "date": "2026-09-24",
+    "time": "14:00",
+    "location": "",
+    "province": "",
+    "type": "reproductores",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Brandemann | Cabaña La Margarita",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6634-brandemann-cabana-la-margarita",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled",
+    "id": 899
+  },
+  {
     "title": "Remate de Cía. General de Hacienda Gordo, Invernada y Cría",
     "consignatariaName": "ALFREDO SEBASTIÁN MONDINO",
     "consignatariaSlug": "alfredo-sebastian-mondino",
@@ -17078,7 +17097,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "alfredosmondino.com",
-    "id": 899,
+    "id": 900,
     "status": "scheduled"
   },
   {
@@ -17097,7 +17116,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.jaureguilorda.com.ar",
-    "id": 900,
+    "id": 901,
     "status": "scheduled"
   },
   {
@@ -17116,27 +17135,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 901,
+    "id": 902,
     "status": "scheduled"
-  },
-  {
-    "title": "Brandemann | Cabaña La Margarita",
-    "consignatariaName": "Brandemann Consignataria S.R.L.",
-    "consignatariaSlug": "brandemann-consignataria-s-r-l",
-    "date": "2026-09-24",
-    "time": "14:00",
-    "location": "",
-    "province": "",
-    "type": "reproductores",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Brandemann | Cabaña La Margarita",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6634-brandemann-cabana-la-margarita",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled",
-    "id": 902
   },
   {
     "title": "Faena, Invernada y Cria - 14.30hs.",

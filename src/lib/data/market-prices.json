@@ -1838,7 +1838,7 @@
   "categories": {
     "novillos": {
       "current": 4216.06,
-      "prev": 4216,
+      "prev": 4216.06,
       "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
@@ -1847,8 +1847,8 @@
     },
     "novillitos": {
       "current": 4637.88,
-      "prev": 4005,
-      "change": 15.8,
+      "prev": 4637.88,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 848,
@@ -1856,8 +1856,8 @@
     },
     "vaquillonas": {
       "current": 4408.86,
-      "prev": 3794,
-      "change": 16.2,
+      "prev": 4408.86,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 1971,
@@ -1865,16 +1865,16 @@
     },
     "vacas": {
       "current": 3145.32,
-      "prev": 3036,
-      "change": 3.6,
+      "prev": 3145.32,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "latestVolume": 1074,
       "observedDate": "22/09/2026"
     },
     "toros": {
       "current": 3472.12,
-      "prev": 2740,
-      "change": 26.7,
+      "prev": 3472.12,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 119,
@@ -1882,22 +1882,22 @@
     },
     "terneros": {
       "current": 4689,
-      "prev": 4638,
-      "change": 1.1,
+      "prev": 4689,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
-    "current": 246.1,
+    "current": 242.75,
     "prev": 246.1,
-    "change": 0,
+    "change": -1.4,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
     "current": 1560,
-    "prev": 1555,
-    "change": 0.3,
+    "prev": 1560,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
@@ -2481,11 +2481,11 @@
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
-    "current": 521,
+    "current": 518,
     "prev": 521,
-    "change": 0,
+    "change": -0.6,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
-    "date": "2026-09-22"
+    "date": "2026-09-23"
   }
 }
