@@ -72,17 +72,14 @@ curl -s "https://registry.modelcontextprotocol.io/v0/servers?search=consignatari
 
 - Subir `version` en server.json y volver a `mcp-publisher publish` (mismo login DNS).
 - **Las tres copias tienen que quedar coherentes** (`mcp-registry/server.json`, `server.json`,
-  `public/.well-known/mcp/server.json`). Chequeo rápido antes de publicar:
+  `public/.well-known/mcp/server.json`). Hay un check automático, incluido en `pnpm check`:
 
 ```bash
-cd <repo> && python3 - <<'EOF'
-import json, pathlib
-for f in ['mcp-registry/server.json','server.json','public/.well-known/mcp/server.json']:
-    d = json.loads(pathlib.Path(f).read_text())
-    cap = '' if f.startswith('public/') else ('  ⚠ >100' if len(d['description']) > 100 else '  ok<=100')
-    print(f"{f:44} v{d['version']:8} desc={len(d['description']):4}{cap}")
-EOF
+node scripts/check-mcp-manifests.mjs
 ```
+
+  Falla si las versiones no coinciden, si la descripción del que se publica pasa de 100
+  caracteres, o si la del `.well-known` quedó pisada con la corta. Corrélo antes de publicar.
 
 - **El cap de 100 caracteres es del REGISTRY, no del `.well-known`.** Ese último es la superficie
   de descubrimiento que lee un cliente MCP y admite una descripción larga: en 2026-09 se pisó por

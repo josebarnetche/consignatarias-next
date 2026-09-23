@@ -11,7 +11,7 @@
     "check:db-refs": "node scripts/check-db-refs.mjs",
     "guia:apertura": "node scripts/guia-apertura/build.mjs",
     "test": "vitest run",
-    "check": "tsc --noEmit && eslint . && node scripts/check-db-refs.mjs && vitest run",
+    "check": "tsc --noEmit && eslint . && node scripts/check-db-refs.mjs && node scripts/check-mcp-manifests.mjs && vitest run",
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "dependencies": {
