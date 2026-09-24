@@ -16854,6 +16854,25 @@
     "id": 887
   },
   {
+    "title": "Cooperativa de Patagones y Viedma | Especial de Primavera Angus Don Fioto",
+    "consignatariaName": "Cooperativa de Patagones y Viedma",
+    "consignatariaSlug": "cooperativa-de-patagones-y-viedma",
+    "date": "2026-09-24",
+    "time": "14:00",
+    "location": "",
+    "province": "",
+    "type": "especial",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Cooperativa de Patagones y Viedma | Especial de Primavera Angus Don Fioto",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6648-cooperativa-de-patagones-y-viedma-especial-de-primavera-angus-don-fioto",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "live",
+    "id": 888
+  },
+  {
     "title": "Remate de Cía. General de Hacienda Gordo, Invernada y Cría",
     "consignatariaName": "ALFREDO SEBASTIÁN MONDINO",
     "consignatariaSlug": "alfredo-sebastian-mondino",
@@ -16869,7 +16888,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6587-alfredo-s-mondino-especial-compania-gral-de-hacienda",
     "source": "web",
     "sourceUrl": "alfredosmondino.com",
-    "id": 888,
+    "id": 889,
     "status": "live"
   },
   {
@@ -16888,7 +16907,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.jaureguilorda.com.ar",
-    "id": 889,
+    "id": 890,
     "status": "live"
   },
   {
@@ -16907,27 +16926,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 890,
+    "id": 891,
     "status": "live"
-  },
-  {
-    "title": "Cooperativa de Patagones y Viedma | Especial de Primavera Angus Don Fioto",
-    "consignatariaName": "Cooperativa de Patagones y Viedma",
-    "consignatariaSlug": "cooperativa-de-patagones-y-viedma",
-    "date": "2026-09-24",
-    "time": "14:00",
-    "location": "",
-    "province": "",
-    "type": "especial",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Cooperativa de Patagones y Viedma | Especial de Primavera Angus Don Fioto",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6648-cooperativa-de-patagones-y-viedma-especial-de-primavera-angus-don-fioto",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "live",
-    "id": 891
   },
   {
     "title": "Faena, Invernada y Cria - 14.30hs.",
@@ -17205,7 +17205,7 @@
     "province": "BUENOS AIRES",
     "type": "general",
     "mainCategory": "mixto",
-    "estimatedHeads": 11000,
+    "estimatedHeads": 12000,
     "description": "Cañuelas Especial Angus - Expo Angus Primavera - 14.00 hs.",
     "youtubeUrl": null,
     "catalogUrl": null,
