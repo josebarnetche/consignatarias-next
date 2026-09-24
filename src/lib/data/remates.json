@@ -17205,7 +17205,7 @@
     "province": "BUENOS AIRES",
     "type": "general",
     "mainCategory": "mixto",
-    "estimatedHeads": 12000,
+    "estimatedHeads": 11000,
     "description": "Cañuelas Especial Angus - Expo Angus Primavera - 14.00 hs.",
     "youtubeUrl": null,
     "catalogUrl": null,
@@ -17956,25 +17956,6 @@
     "status": "scheduled"
   },
   {
-    "title": "UMC HV — LOTES PARTICULARES",
-    "consignatariaName": "UMC SA - Haciendas Villaguay SRL",
-    "consignatariaSlug": "umc-haciendas-villaguay",
-    "date": "2026-09-30",
-    "time": "19:00",
-    "location": "Villaguay, Entre Rios",
-    "province": "ENTRE RIOS",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate feria UMC Haciendas Villaguay",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://umchv.ar/auctions/view/83f0155f-7b1d-406b-9c05-b4fcabe93c9d",
-    "id": 946,
-    "status": "scheduled"
-  },
-  {
     "title": "Remate Televisado",
     "consignatariaName": "Campos y Ganados",
     "consignatariaSlug": "campos-y-ganados",
@@ -17990,7 +17971,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 947,
+    "id": 946,
     "status": "scheduled"
   },
   {
@@ -18009,7 +17990,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 948,
+    "id": 947,
     "status": "scheduled"
   },
   {
@@ -18028,7 +18009,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 949,
+    "id": 948,
     "status": "scheduled"
   },
   {
@@ -18047,7 +18028,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 950,
+    "id": 949,
     "status": "scheduled"
   },
   {
@@ -18066,7 +18047,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 951,
+    "id": 950,
     "status": "scheduled"
   },
   {
@@ -18085,7 +18066,7 @@
     "catalogUrl": "https://www.aguerresrl.com.ar/wp-content/uploads/2026/09/WhatsApp-Image-2026-09-08-at-07.15.38.jpeg",
     "source": "web",
     "sourceUrl": "www.aguerresrl.com.ar",
-    "id": 952,
+    "id": 951,
     "status": "scheduled"
   },
   {
@@ -18104,7 +18085,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
-    "id": 953,
+    "id": 952,
     "status": "scheduled"
   },
   {
@@ -18123,7 +18104,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 954,
+    "id": 953,
     "status": "scheduled"
   },
   {
@@ -18142,7 +18123,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 955,
+    "id": 954,
     "status": "scheduled"
   },
   {
@@ -18161,7 +18142,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 956,
+    "id": 955,
     "status": "scheduled"
   },
   {
@@ -18180,7 +18161,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 957,
+    "id": 956,
     "status": "scheduled"
   },
   {
@@ -18199,7 +18180,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 958,
+    "id": 957,
     "status": "scheduled"
   },
   {
@@ -18219,10 +18200,10 @@
     "source": "web",
     "sourceUrl": "https://reggiycia.com/remate/31810",
     "status": "scheduled",
-    "id": 959
+    "id": 958
   },
   {
-    "id": 960,
+    "id": 959,
     "title": "Expo Reproductores Dia 1",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -18241,7 +18222,7 @@
     "status": "scheduled"
   },
   {
-    "id": 961,
+    "id": 960,
     "title": "Rosgan Remate Habitual",
     "consignatariaName": "Rosgan",
     "consignatariaSlug": "rosgan",
@@ -18260,7 +18241,7 @@
     "status": "scheduled"
   },
   {
-    "id": 962,
+    "id": 961,
     "title": "Expo Reproductores Dia 2",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -18294,6 +18275,25 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
+    "id": 962,
+    "status": "scheduled"
+  },
+  {
+    "title": "UMC HV — TV 216",
+    "consignatariaName": "UMC SA - Haciendas Villaguay SRL",
+    "consignatariaSlug": "umc-haciendas-villaguay",
+    "date": "2026-10-05",
+    "time": "14:00",
+    "location": "Villaguay, Entre Rios",
+    "province": "ENTRE RIOS",
+    "type": "especial",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Remate televisado UMC Haciendas Villaguay",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://umchv.ar/auctions/view/a3c102dc-ef71-49d7-acb5-66f51419f1c9",
     "id": 963,
     "status": "scheduled"
   },
@@ -19799,6 +19799,25 @@
     "status": "scheduled"
   },
   {
+    "title": "UMC HV — LOTES PARTICULARES",
+    "consignatariaName": "UMC SA - Haciendas Villaguay SRL",
+    "consignatariaSlug": "umc-haciendas-villaguay",
+    "date": "2026-10-31",
+    "time": "19:00",
+    "location": "Villaguay, Entre Rios",
+    "province": "ENTRE RIOS",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Remate feria UMC Haciendas Villaguay",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://umchv.ar/auctions/view/83f0155f-7b1d-406b-9c05-b4fcabe93c9d",
+    "id": 1043,
+    "status": "scheduled"
+  },
+  {
     "title": "Feria Maria Dolores",
     "consignatariaName": "Etchevehere Rural",
     "consignatariaSlug": "etchevehere-rural",
@@ -19815,7 +19834,7 @@
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/29278",
     "status": "scheduled",
-    "id": 1043
+    "id": 1044
   },
   {
     "title": "gordo invernada y cría",
@@ -19833,7 +19852,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1044,
+    "id": 1045,
     "status": "scheduled"
   },
   {
@@ -19852,11 +19871,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 1045,
+    "id": 1046,
     "status": "scheduled"
   },
   {
-    "id": 1046,
+    "id": 1047,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -19890,11 +19909,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1047,
+    "id": 1048,
     "status": "scheduled"
   },
   {
-    "id": 1048,
+    "id": 1049,
     "title": "Rosgan Remate Habitual",
     "consignatariaName": "Rosgan",
     "consignatariaSlug": "rosgan",
@@ -19929,7 +19948,7 @@
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/29279",
     "status": "scheduled",
-    "id": 1049
+    "id": 1050
   },
   {
     "title": "hacienda gorda invernada y cría",
@@ -19947,7 +19966,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1050,
+    "id": 1051,
     "status": "scheduled"
   },
   {
@@ -19966,11 +19985,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 1051,
+    "id": 1052,
     "status": "scheduled"
   },
   {
-    "id": 1052,
+    "id": 1053,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -19989,7 +20008,7 @@
     "status": "scheduled"
   },
   {
-    "id": 1053,
+    "id": 1054,
     "title": "Gordo, Invernada y Cria",
     "consignatariaName": "Ferias Rauch SA",
     "consignatariaSlug": "ferias-rauch",
@@ -20008,7 +20027,7 @@
     "status": "scheduled"
   },
   {
-    "id": 1054,
+    "id": 1055,
     "title": "9° Remate Aniversario Federal",
     "consignatariaName": "Etchevehere Rural SRL",
     "consignatariaSlug": "etchevehere-rural",
@@ -20027,7 +20046,7 @@
     "status": "scheduled"
   },
   {
-    "id": 1055,
+    "id": 1056,
     "title": "Invernada y Cria",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -20062,7 +20081,7 @@
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/29280",
     "status": "scheduled",
-    "id": 1056
+    "id": 1057
   },
   {
     "title": "Feria Maria Dolores",
@@ -20081,7 +20100,7 @@
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/29281",
     "status": "scheduled",
-    "id": 1057
+    "id": 1058
   },
   {
     "title": "Hacienda gorda invernada y cría",
@@ -20099,7 +20118,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1058,
+    "id": 1059,
     "status": "scheduled"
   },
   {
@@ -20118,11 +20137,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1059,
+    "id": 1060,
     "status": "scheduled"
   },
   {
-    "id": 1060,
+    "id": 1061,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -20156,7 +20175,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1061,
+    "id": 1062,
     "status": "scheduled"
   },
   {
@@ -20176,10 +20195,10 @@
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/29282",
     "status": "scheduled",
-    "id": 1062
+    "id": 1063
   },
   {
-    "id": 1063,
+    "id": 1064,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -20213,7 +20232,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1064,
+    "id": 1065,
     "status": "scheduled"
   },
   {
@@ -20232,7 +20251,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.feriasrauch.com",
-    "id": 1065,
+    "id": 1066,
     "status": "scheduled"
   },
   {
@@ -20251,7 +20270,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 1066,
+    "id": 1067,
     "status": "scheduled"
   },
   {
@@ -20270,7 +20289,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1067,
+    "id": 1068,
     "status": "scheduled"
   },
   {
@@ -20289,7 +20308,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 1068,
+    "id": 1069,
     "status": "scheduled"
   },
   {
@@ -20308,11 +20327,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1069,
+    "id": 1070,
     "status": "scheduled"
   },
   {
-    "id": 1070,
+    "id": 1071,
     "title": "Gordo, Invernada y Cria",
     "consignatariaName": "Ferias Rauch SA",
     "consignatariaSlug": "ferias-rauch",
@@ -20346,7 +20365,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1071,
+    "id": 1072,
     "status": "scheduled"
   },
   {
@@ -20365,7 +20384,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.feriasrauch.com",
-    "id": 1072,
+    "id": 1073,
     "status": "scheduled"
   },
   {
@@ -20384,7 +20403,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1073,
+    "id": 1074,
     "status": "scheduled"
   },
   {
@@ -20403,7 +20422,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1074,
+    "id": 1075,
     "status": "scheduled"
   },
   {
@@ -20422,7 +20441,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1075,
+    "id": 1076,
     "status": "scheduled"
   },
   {
@@ -20441,7 +20460,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1076,
+    "id": 1077,
     "status": "scheduled"
   },
   {
@@ -20460,7 +20479,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.ferialvarez.com.ar",
-    "id": 1077,
+    "id": 1078,
     "status": "scheduled"
   }
 ]
