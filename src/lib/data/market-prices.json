@@ -1,16 +1,11 @@
 {
   "inmag": {
-    "current": 4263.15,
-    "prev": 4216.06,
-    "change": 1.1,
+    "current": 4068.21,
+    "prev": 4263.15,
+    "change": -4.6,
     "unit": "$/kg vivo",
     "source": "mercadoagroganadero.com.ar",
     "series": [
-      {
-        "date": "2024-03-20",
-        "value": 1753.46,
-        "volume": 6443
-      },
       {
         "date": "2024-03-22",
         "value": 1735.33,
@@ -1830,10 +1825,15 @@
         "date": "2026-09-23",
         "value": 4263.15,
         "volume": 4717
+      },
+      {
+        "date": "2026-09-25",
+        "value": 4068.21,
+        "volume": 6316
       }
     ],
-    "latestVolume": 4717,
-    "periodVolume": 150108
+    "latestVolume": 6316,
+    "periodVolume": 156424
   },
   "categories": {
     "novillos": {
@@ -1881,9 +1881,9 @@
       "observedDate": "23/09/2026"
     },
     "terneros": {
-      "current": 4689,
+      "current": 4475,
       "prev": 4689,
-      "change": 0,
+      "change": -4.6,
       "source": "MAG (derived from INMAG)"
     }
   },
@@ -1902,370 +1902,479 @@
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
-    "current": 1540,
+    "current": 1545,
     "prev": 1540,
-    "change": 0,
+    "change": 0.3,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-09-24",
+  "lastUpdate": "2026-09-25",
   "provinceEntry": {
-    "date": "2026-09-23",
-    "totalCabezas": 4717,
+    "date": "2026-09-25",
+    "totalCabezas": 6316,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 4023,
-        "total": 4029,
-        "percentage": 85.41
-      },
-      {
-        "province": "LA PAMPA",
-        "enPie": 279,
-        "total": 279,
-        "percentage": 5.91
-      },
-      {
-        "province": "SANTA FE",
-        "enPie": 147,
-        "total": 147,
-        "percentage": 3.12
+        "enPie": 5548,
+        "total": 5556,
+        "percentage": 87.97
       },
       {
         "province": "ENTRE RIOS",
-        "enPie": 133,
-        "total": 133,
-        "percentage": 2.82
+        "enPie": 259,
+        "total": 259,
+        "percentage": 4.1
+      },
+      {
+        "province": "SANTA FE",
+        "enPie": 235,
+        "total": 235,
+        "percentage": 3.72
       },
       {
         "province": "CORDOBA",
-        "enPie": 111,
-        "total": 112,
-        "percentage": 2.37
+        "enPie": 162,
+        "total": 162,
+        "percentage": 2.56
       },
       {
-        "province": "SAN LUIS",
-        "enPie": 17,
-        "total": 17,
-        "percentage": 0.36
+        "province": "LA PAMPA",
+        "enPie": 72,
+        "total": 72,
+        "percentage": 1.14
+      },
+      {
+        "province": "RIO NEGRO",
+        "enPie": 32,
+        "total": 32,
+        "percentage": 0.51
       }
     ]
   },
   "detailedCategories": {
-    "date": "2026-09-23",
+    "date": "2026-09-25",
     "categories": [
       {
         "category": "NOVILLOS Esp.Joven + 430",
-        "minPrice": 3400,
-        "maxPrice": 4700,
-        "avgPrice": 4308.43,
-        "cabezas": 856
+        "minPrice": 3500,
+        "maxPrice": 4650,
+        "avgPrice": 4120.71,
+        "cabezas": 830
       },
       {
         "category": "NOVILLOS Regular h 430",
-        "minPrice": 4150,
-        "maxPrice": 4150,
-        "avgPrice": 3509.57,
-        "cabezas": 11
+        "minPrice": 3650,
+        "maxPrice": 4100,
+        "avgPrice": 3874.82,
+        "cabezas": 44
       },
       {
         "category": "NOVILLOS Regular + 430",
-        "minPrice": 3200,
-        "maxPrice": 4300,
-        "avgPrice": 3624.42,
-        "cabezas": 46
+        "minPrice": 3500,
+        "maxPrice": 4000,
+        "avgPrice": 3596.83,
+        "cabezas": 73
       },
       {
         "category": "NOVILLITOS Esp. h 390",
-        "minPrice": 4300,
-        "maxPrice": 5000,
-        "avgPrice": 4614.12,
-        "cabezas": 350
+        "minPrice": 3700,
+        "maxPrice": 5200,
+        "avgPrice": 4607.07,
+        "cabezas": 619
       },
       {
         "category": "NOVILLITOS Esp. + 390",
-        "minPrice": 3750,
+        "minPrice": 3800,
         "maxPrice": 4800,
-        "avgPrice": 4516.99,
-        "cabezas": 378
+        "avgPrice": 4466.31,
+        "cabezas": 396
       },
       {
         "category": "NOVILLITOS Regular",
-        "minPrice": 3000,
-        "maxPrice": 3900,
-        "avgPrice": 3206.54,
-        "cabezas": 60
+        "minPrice": 3500,
+        "maxPrice": 4700,
+        "avgPrice": 3982.17,
+        "cabezas": 106
       },
       {
         "category": "VAQUILLONAS Esp. h 390",
-        "minPrice": 2900,
-        "maxPrice": 5100,
-        "avgPrice": 4523.87,
-        "cabezas": 492
+        "minPrice": 3400,
+        "maxPrice": 5000,
+        "avgPrice": 4320.46,
+        "cabezas": 835
       },
       {
         "category": "VAQUILLONAS Esp. + 390",
-        "minPrice": 3400,
-        "maxPrice": 4200,
-        "avgPrice": 3965.67,
-        "cabezas": 138
+        "minPrice": 2400,
+        "maxPrice": 4370,
+        "avgPrice": 3609.74,
+        "cabezas": 248
       },
       {
         "category": "VAQUILLONAS Regular",
-        "minPrice": 2800,
-        "maxPrice": 4200,
-        "avgPrice": 3463.76,
-        "cabezas": 114
+        "minPrice": 3100,
+        "maxPrice": 4750,
+        "avgPrice": 3736.75,
+        "cabezas": 189
       },
       {
         "category": "VACAS Esp.Joven h 430",
-        "minPrice": 2800,
-        "maxPrice": 3900,
-        "avgPrice": 3310.75,
-        "cabezas": 134
+        "minPrice": 2600,
+        "maxPrice": 3800,
+        "avgPrice": 3070.89,
+        "cabezas": 89
       },
       {
         "category": "VACAS Esp.Joven + 430",
-        "minPrice": 2700,
-        "maxPrice": 4000,
-        "avgPrice": 3482.64,
-        "cabezas": 760
+        "minPrice": 2500,
+        "maxPrice": 3900,
+        "avgPrice": 3248.99,
+        "cabezas": 1024
       },
       {
         "category": "VACAS Regular",
-        "minPrice": 2400,
-        "maxPrice": 3900,
-        "avgPrice": 3040.84,
-        "cabezas": 720
+        "minPrice": 2100,
+        "maxPrice": 4100,
+        "avgPrice": 2989.4,
+        "cabezas": 1064
       },
       {
         "category": "VACAS Conserva Buena",
-        "minPrice": 2400,
-        "maxPrice": 2900,
-        "avgPrice": 2614.46,
-        "cabezas": 156
+        "minPrice": 2500,
+        "maxPrice": 3000,
+        "avgPrice": 2567.22,
+        "cabezas": 180
       },
       {
         "category": "VACAS Conserva Inferior",
         "minPrice": 2000,
-        "maxPrice": 2800,
-        "avgPrice": 2434.2,
-        "cabezas": 64
+        "maxPrice": 2750,
+        "avgPrice": 2455.03,
+        "cabezas": 78
       },
       {
         "category": "TOROS Esp.",
-        "minPrice": 2000,
-        "maxPrice": 4050,
-        "avgPrice": 3448.64,
-        "cabezas": 207
+        "minPrice": 3000,
+        "maxPrice": 4000,
+        "avgPrice": 3543.97,
+        "cabezas": 251
       },
       {
         "category": "TOROS Regular",
         "minPrice": 2700,
-        "maxPrice": 3950,
-        "avgPrice": 3344.52,
-        "cabezas": 82
+        "maxPrice": 3720,
+        "avgPrice": 3229.07,
+        "cabezas": 94
       },
       {
         "category": "MEJ Esp. h 430",
-        "minPrice": 3550,
-        "maxPrice": 4800,
-        "avgPrice": 4021.27,
-        "cabezas": 125
+        "minPrice": 3100,
+        "maxPrice": 4900,
+        "avgPrice": 4064.92,
+        "cabezas": 137
       },
       {
         "category": "MEJ Regular",
-        "minPrice": 3500,
-        "maxPrice": 3500,
-        "avgPrice": 3165.86,
-        "cabezas": 8
+        "minPrice": 3000,
+        "maxPrice": 3950,
+        "avgPrice": 3607.67,
+        "cabezas": 48
       },
       {
         "category": "Totales",
         "minPrice": 0,
         "maxPrice": 0,
-        "avgPrice": 3765.38,
-        "cabezas": 4701
+        "avgPrice": 3661.12,
+        "cabezas": 6305
       }
     ]
   },
   "auctionDayEntries": {
-    "date": "2026-09-23",
+    "date": "2026-09-25",
     "consignatarias": {
-      "colombo-y-magliano": {
-        "magId": "165",
-        "totalCabezas": 470,
+      "monasterio-tattersall-s-a": {
+        "magId": "465",
+        "totalCabezas": 1064,
         "entries": [
           {
-            "remitente": "AGROP. LA LIBERTAD S.R.L.",
-            "localidad": "CASTELLI",
-            "provincia": "BUE",
-            "cabezas": 5
-          },
-          {
-            "remitente": "ARRIOLA RAUL A.",
-            "localidad": "CHASCOMUS",
-            "provincia": "BUE",
-            "cabezas": 18
-          },
-          {
-            "remitente": "BERASTEGUI MIGUEL Y MONICA",
-            "localidad": "CHIVILCOY",
-            "provincia": "BUE",
-            "cabezas": 1
-          },
-          {
-            "remitente": "BERASTEGUI MIGUEL Y MONICA",
-            "localidad": "CHIVILCOY",
-            "provincia": "BUE",
-            "cabezas": 12
-          },
-          {
-            "remitente": "BERTERO GUSTAVO",
-            "localidad": "CASILDA      S.FE",
-            "provincia": "SFE",
-            "cabezas": 11
-          },
-          {
-            "remitente": "BERTERO HECTOR MIGUEL",
-            "localidad": "CASILDA      S.FE",
-            "provincia": "SFE",
-            "cabezas": 8
-          },
-          {
-            "remitente": "BRAVO JORGE OSCAR",
+            "remitente": "AGROP. LA CRIOLLA S.A.",
             "localidad": "RIVADAVIA         B",
-            "provincia": "BUE",
-            "cabezas": 65
-          },
-          {
-            "remitente": "CASTAGNOLA TAMARA SUSANA",
-            "localidad": "CNEL. SUAREZ",
-            "provincia": "BUE",
-            "cabezas": 5
-          },
-          {
-            "remitente": "DO�A JULIA S.A.",
-            "localidad": "CASTELLI",
-            "provincia": "BUE",
-            "cabezas": 5
-          },
-          {
-            "remitente": "EL PIQUILLIN SAS",
-            "localidad": "CHASCOMUS",
-            "provincia": "BUE",
-            "cabezas": 2
-          },
-          {
-            "remitente": "EST.GAN.SAN ANTONIO S.A.",
-            "localidad": "CNEL. SUAREZ",
-            "provincia": "BUE",
-            "cabezas": 36
-          },
-          {
-            "remitente": "GARCIA CARLOS ALBERTO",
-            "localidad": "CARLOS TEJEDOR",
-            "provincia": "BUE",
-            "cabezas": 16
-          },
-          {
-            "remitente": "GAYNOR JOSE LUIS Y PEDRO R.",
-            "localidad": "ALBERTI",
-            "provincia": "BUE",
-            "cabezas": 10
-          },
-          {
-            "remitente": "GOLPE DE AGUA SCA",
-            "localidad": "TRENQUE LAUQUEN",
-            "provincia": "BUE",
-            "cabezas": 42
-          },
-          {
-            "remitente": "GONZALEZ NORBERTO. E",
-            "localidad": "PUAN",
-            "provincia": "BUE",
-            "cabezas": 1
-          },
-          {
-            "remitente": "JOSE RICARDO KLING",
-            "localidad": "BRAGADO",
             "provincia": "BUE",
             "cabezas": 40
           },
           {
-            "remitente": "LA ALAMBRADA S.A.S",
-            "localidad": "VENADO TUERTO",
-            "provincia": "SFE",
+            "remitente": "ALESSIO ESTEBAN",
+            "localidad": "TANDIL",
+            "provincia": "BUE",
+            "cabezas": 2
+          },
+          {
+            "remitente": "ALGARRA HNOS. S.H.",
+            "localidad": "DAIREAUX",
+            "provincia": "BUE",
+            "cabezas": 24
+          },
+          {
+            "remitente": "ALGARRA HNOS. S.H.",
+            "localidad": "DAIREAUX",
+            "provincia": "BUE",
+            "cabezas": 28
+          },
+          {
+            "remitente": "BARRIOS BARON CARLOS DAVID",
+            "localidad": "RIVADAVIA         B",
+            "provincia": "BUE",
+            "cabezas": 25
+          },
+          {
+            "remitente": "BESPA S.A.",
+            "localidad": "CNEL. SUAREZ",
+            "provincia": "BUE",
+            "cabezas": 40
+          },
+          {
+            "remitente": "BESPA S.A.",
+            "localidad": "CNEL. SUAREZ",
+            "provincia": "BUE",
+            "cabezas": 50
+          },
+          {
+            "remitente": "BESTAKUR S.A.",
+            "localidad": "TRENQUE LAUQUEN",
+            "provincia": "BUE",
+            "cabezas": 12
+          },
+          {
+            "remitente": "CALCAGNO GIOVO RAFAEL S.A.",
+            "localidad": "BOLIVAR",
+            "provincia": "BUE",
+            "cabezas": 14
+          },
+          {
+            "remitente": "CESTONA FRANCISCO MANUEL",
+            "localidad": "AYACUCHO           B",
+            "provincia": "BUE",
+            "cabezas": 7
+          },
+          {
+            "remitente": "COLAGIOIA MIGUEL O.",
+            "localidad": "DAIREAUX",
+            "provincia": "BUE",
+            "cabezas": 12
+          },
+          {
+            "remitente": "DO�A INES S.A.",
+            "localidad": "CONCORDIA",
+            "provincia": "ERI",
+            "cabezas": 36
+          },
+          {
+            "remitente": "EL ARRAIGO S.R.L.",
+            "localidad": "BENITO JUAREZ",
+            "provincia": "BUE",
+            "cabezas": 7
+          },
+          {
+            "remitente": "EL LEGADO SOCIEDAD SIMPLE",
+            "localidad": "DAIREAUX",
+            "provincia": "BUE",
+            "cabezas": 22
+          },
+          {
+            "remitente": "EL LLORON S.A.",
+            "localidad": "DAIREAUX",
+            "provincia": "BUE",
+            "cabezas": 73
+          },
+          {
+            "remitente": "ERCOM S.A.",
+            "localidad": "BOLIVAR",
+            "provincia": "BUE",
+            "cabezas": 30
+          },
+          {
+            "remitente": "ESIDLE S.A.",
+            "localidad": "LA PAZ",
+            "provincia": "ERI",
+            "cabezas": 47
+          },
+          {
+            "remitente": "EST. LA QUINUA S.C.C.",
+            "localidad": "GRAL. GUIDO",
+            "provincia": "BUE",
+            "cabezas": 39
+          },
+          {
+            "remitente": "FIDEICOMISO EL ALTRUISTA",
+            "localidad": "DAIREAUX",
+            "provincia": "BUE",
+            "cabezas": 31
+          },
+          {
+            "remitente": "FRANCO CAMPOAMOR",
+            "localidad": "BENITO JUAREZ",
+            "provincia": "BUE",
+            "cabezas": 6
+          },
+          {
+            "remitente": "GANADERA SAN JUSTO",
+            "localidad": "TAPALQUE",
+            "provincia": "BUE",
+            "cabezas": 14
+          },
+          {
+            "remitente": "GARCIA HUGO",
+            "localidad": "DAIREAUX",
+            "provincia": "BUE",
+            "cabezas": 38
+          },
+          {
+            "remitente": "GOERENS TEODORO LUIS",
+            "localidad": "RIVADAVIA         B",
+            "provincia": "BUE",
+            "cabezas": 27
+          },
+          {
+            "remitente": "INSUA WELBERS S.A.",
+            "localidad": "RIVADAVIA         B",
+            "provincia": "BUE",
+            "cabezas": 2
+          },
+          {
+            "remitente": "INSUA WELBERS S.A.",
+            "localidad": "RIVADAVIA         B",
+            "provincia": "BUE",
+            "cabezas": 12
+          },
+          {
+            "remitente": "INSUA WELBERS S.A.",
+            "localidad": "RIVADAVIA         B",
+            "provincia": "BUE",
+            "cabezas": 12
+          },
+          {
+            "remitente": "IRIGOYEN MERCEDES",
+            "localidad": "AZUL",
+            "provincia": "BUE",
+            "cabezas": 5
+          },
+          {
+            "remitente": "IRIGOYEN NESTOR ALBERTO",
+            "localidad": "AZUL",
+            "provincia": "BUE",
+            "cabezas": 5
+          },
+          {
+            "remitente": "JUASI HERMANOS SA",
+            "localidad": "MAIPU",
+            "provincia": "BUE",
+            "cabezas": 9
+          },
+          {
+            "remitente": "LA MAGDALENA S.H.",
+            "localidad": "RIVADAVIA         B",
+            "provincia": "BUE",
+            "cabezas": 12
+          },
+          {
+            "remitente": "LARRALDE DIEGO",
+            "localidad": "BENITO JUAREZ",
+            "provincia": "BUE",
+            "cabezas": 1
+          },
+          {
+            "remitente": "LARRALDE FLAVIA MANUELA",
+            "localidad": "BENITO JUAREZ",
+            "provincia": "BUE",
+            "cabezas": 1
+          },
+          {
+            "remitente": "LASTIRI JORGE LUIS",
+            "localidad": "TANDIL",
+            "provincia": "BUE",
+            "cabezas": 22
+          },
+          {
+            "remitente": "LAZCANO CARLOS ALBERTO",
+            "localidad": "GRAL. GUIDO",
+            "provincia": "BUE",
+            "cabezas": 1
+          },
+          {
+            "remitente": "LAZCANO CARLOS ALBERTO",
+            "localidad": "GRAL. GUIDO",
+            "provincia": "BUE",
             "cabezas": 8
           },
           {
-            "remitente": "LOS LOPEZ S.A.",
-            "localidad": "GRAL. VIAMONTE",
+            "remitente": "LOS MIOS S.A.",
+            "localidad": "LOBERIA",
             "provincia": "BUE",
-            "cabezas": 32
+            "cabezas": 35
           },
           {
-            "remitente": "MARTINEZ ROBERTO LUIS",
-            "localidad": "REALICO",
-            "provincia": "LPA",
+            "remitente": "MARIA DEL CARMEN S.R.L.",
+            "localidad": "LINCOLN",
+            "provincia": "BUE",
+            "cabezas": 38
+          },
+          {
+            "remitente": "NARD S.A",
+            "localidad": "LAPRIDA",
+            "provincia": "BUE",
+            "cabezas": 52
+          },
+          {
+            "remitente": "PAGANO MIGUEL ANGEL",
+            "localidad": "PEHUAJO",
+            "provincia": "BUE",
+            "cabezas": 10
+          },
+          {
+            "remitente": "SALENTINOS S.A.",
+            "localidad": "TRENQUE LAUQUEN",
+            "provincia": "BUE",
+            "cabezas": 31
+          },
+          {
+            "remitente": "SUC. DE RAUL IRIGOYEN S.C.",
+            "localidad": "AZUL",
+            "provincia": "BUE",
+            "cabezas": 20
+          },
+          {
+            "remitente": "TATTERSALL ARGENTINO S.A.",
+            "localidad": "RIVADAVIA         B",
+            "provincia": "BUE",
             "cabezas": 70
           },
           {
-            "remitente": "NEWMANN CLAUDIO O.",
-            "localidad": "PUAN",
+            "remitente": "TERESA JOSEFINA S.C.A.",
+            "localidad": "RIVADAVIA         B",
             "provincia": "BUE",
-            "cabezas": 7
+            "cabezas": 52
           },
           {
-            "remitente": "NEWMANN CLAUDIO O.",
-            "localidad": "PUAN",
+            "remitente": "WALTER LUIS S. ECKERT",
+            "localidad": "GRAL. LA MADRID",
             "provincia": "BUE",
-            "cabezas": 2
-          },
-          {
-            "remitente": "OYARBIDE AMALIA TERESA",
-            "localidad": "CASTELLI",
-            "provincia": "BUE",
-            "cabezas": 7
-          },
-          {
-            "remitente": "RICCIO ANDRES HORACIO",
-            "localidad": "CHIVILCOY",
-            "provincia": "BUE",
-            "cabezas": 2
-          },
-          {
-            "remitente": "RICCIO ANDRES HORACIO",
-            "localidad": "CHIVILCOY",
-            "provincia": "BUE",
-            "cabezas": 8
-          },
-          {
-            "remitente": "SCANDALUPPI FABIO ERNESTO",
-            "localidad": "PUAN",
-            "provincia": "BUE",
-            "cabezas": 3
-          },
-          {
-            "remitente": "VENARIA LETICIA RITA",
-            "localidad": "VENADO TUERTO",
-            "provincia": "SFE",
-            "cabezas": 18
-          },
-          {
-            "remitente": "VOLPI ALEJANDRO JOSE",
-            "localidad": "BOLIVAR",
-            "provincia": "BUE",
-            "cabezas": 17
-          },
-          {
-            "remitente": "YUYO VERDE S.A.",
-            "localidad": "LINCOLN",
-            "provincia": "BUE",
-            "cabezas": 19
+            "cabezas": 42
           }
         ],
-        "period": "24/08/2026 - 23/09/2026"
+        "period": "26/08/2026 - 25/09/2026"
+      },
+      "umc-haciendas-villaguay": {
+        "magId": "48",
+        "totalCabezas": 12,
+        "entries": [
+          {
+            "remitente": "RISSO DANIEL ALBERTO",
+            "localidad": "LAS FLORES",
+            "provincia": "BUE",
+            "cabezas": 12
+          }
+        ],
+        "period": "26/08/2026 - 25/09/2026"
       }
     }
   },
@@ -2473,11 +2582,11 @@
     ]
   },
   "arrendamientoOficial": {
-    "date": "2026-09-23",
-    "index": 4304.076,
+    "date": "2026-09-25",
+    "index": 4166.214,
     "periodStart": "2026-09-15",
-    "periodEnd": "2026-09-23",
-    "periodIndex": 4197.467,
+    "periodEnd": "2026-09-25",
+    "periodIndex": 4191.932,
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
