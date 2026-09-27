@@ -1833,7 +1833,7 @@
       }
     ],
     "latestVolume": 6316,
-    "periodVolume": 156424
+    "periodVolume": 149554
   },
   "categories": {
     "novillos": {
@@ -1908,7 +1908,7 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-09-26",
+  "lastUpdate": "2026-09-27",
   "provinceEntry": {
     "date": "2026-09-25",
     "totalCabezas": 6316,
@@ -2584,9 +2584,9 @@
   "arrendamientoOficial": {
     "date": "2026-09-25",
     "index": 4166.214,
-    "periodStart": "2026-09-16",
+    "periodStart": "2026-09-18",
     "periodEnd": "2026-09-25",
-    "periodIndex": 4171.245,
+    "periodIndex": 4184.505,
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
