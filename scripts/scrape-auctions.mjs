@@ -19,6 +19,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { scrapeNEA } from "./scrapers/nea.mjs";
+import { parseOFarrellHtml } from "./ofarrell-parse.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = resolve(__dirname, "../src/lib/data");
@@ -163,6 +164,8 @@ const CITY_PROVINCE_MAP = {
   "BUENOS AIRES": "BUENOS AIRES",
   "CAPITAL FEDERAL": "CAPITAL FEDERAL",
   "CABA": "CAPITAL FEDERAL",
+  // "Chaco" solo (sin localidad) lo resolvía georef como una localidad homónima de SANTA FE.
+  "CHACO": "CHACO",
   // BUENOS AIRES
   "AYACUCHO": "BUENOS AIRES",
   "AZUL": "BUENOS AIRES",
@@ -301,6 +304,28 @@ async function georefProvince(city) {
  * Resuelve la provincia de cada subasta por la localidad del evento.
  * Pre-resuelve las localidades nuevas con georef (cachea), después aplica sync.
  */
+// Localidades homónimas en más de una provincia: el mapa curado sólo desempata cuando el
+// texto de la localidad NO trae una provincia explícita ("Mercedes, Buenos Aires" != Corrientes).
+const AMBIGUOUS_CITIES = new Set(["MERCEDES", "BELLA VISTA", "SAUCE", "LA PAZ"]);
+const PROVINCE_NAMES = new Set(Object.values(PROVINCE_MAP));
+
+function explicitProvince(location) {
+  const parts = (location || "").split(",");
+  if (parts.length < 2) return null;
+  const p = normalizeProvince(parts[parts.length - 1]);
+  return PROVINCE_NAMES.has(p) ? p : null;
+}
+
+// Reescribe el sufijo de provincia de la localidad, respetando el estilo (MAYÚSCULAS o Título).
+function withProvinceSuffix(location, prov) {
+  const parts = location.split(",");
+  const old = parts.pop().trim();
+  const nuevo = old === old.toUpperCase()
+    ? prov
+    : prov.toLowerCase().replace(/(^|\s)\S/g, (c) => c.toUpperCase());
+  return `${parts.join(",").trim()}, ${nuevo}`;
+}
+
 async function enrichProvinces(auctions) {
   const unique = [...new Set(auctions.map((a) => normCity(a.location)).filter(Boolean))];
   let resolved = 0;
@@ -322,11 +347,16 @@ async function enrichProvinces(auctions) {
       a.location = venue.location;
       continue;
     }
-    const prov = CITY_PROVINCE_MAP[city] || LOCALITY_CACHE[city];
+    const explicit = explicitProvince(a.location);
+    let prov = CITY_PROVINCE_MAP[city] || LOCALITY_CACHE[city];
+    if (AMBIGUOUS_CITIES.has(city) && explicit) prov = explicit;
     if (prov && prov !== a.province) {
       console.log(`  [GEO] ${a.location}: ${a.province} → ${prov}`);
       a.province = prov;
     }
+    // El sufijo de la localidad lo armó la fuente con SU provincia: si georef/mapa la
+    // corrigió, el texto tiene que acompañar (evita "JUNIN, CORRIENTES" con BUENOS AIRES).
+    if (prov && explicit && explicit !== prov) a.location = withProvinceSuffix(a.location, prov);
   }
   console.log(`  Georef: ${resolved} localidades nuevas resueltas (cache: ${Object.keys(LOCALITY_CACHE).length})`);
 }
@@ -570,54 +600,29 @@ async function scrapeOFarrell() {
   const html = await fetchHTML("https://www.ivanofarrell.com.ar/remates");
   if (!html) return [];
 
-  const auctions = [];
-  // Look for date patterns like DD/MM/YYYY or YYYY-MM-DD
-  const datePattern = /(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/g;
-  let match;
-  const seen = new Set();
-
-  while ((match = datePattern.exec(html)) !== null) {
-    const [, d, m, y] = match;
-    const date = `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
-    if (seen.has(date) || date < todayISO()) continue;
-    seen.add(date);
-
-    // Try to extract context around the match
-    const start = Math.max(0, match.index - 200);
-    const end = Math.min(html.length, match.index + 200);
-    const context = html.slice(start, end).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
-
-    const isTv = context.toLowerCase().includes("televisado");
-    const location = context.toLowerCase().includes("machagai")
-      ? "Machagai, Chaco"
-      : context.toLowerCase().includes("san martin") || context.toLowerCase().includes("zapallar")
-      ? "Gral. San Martín, Chaco"
-      : context.toLowerCase().includes("santa sylvina")
-      ? "Santa Sylvina, Chaco"
-      : context.toLowerCase().includes("campo gallo")
-      ? "Campo Gallo, Santiago del Estero"
-      : "Chaco";
-
-    auctions.push({
-      title: isTv ? "Remate Televisado O'Farrell" : "Remate General O'Farrell",
+  const auctions = parseOFarrellHtml(html)
+    .filter((r) => r.date >= todayISO())
+    .map((r) => ({
+      title: r.tv ? "Remate Televisado O'Farrell" : (r.title || "Remate O'Farrell"),
       consignatariaName: "Ivan L. O'Farrell Consignataria",
       consignatariaSlug: "ofarrell",
-      date,
-      time: "14:00",
-      location,
-      province: location.includes("Santiago") ? "SANTIAGO DEL ESTERO" : "CHACO",
+      date: r.date,
+      time: r.time,
+      // Sin sede publicada ("A definir") no se inventa localidad: el resolver cae a la
+      // provincia de domicilio de la consignataria (Chaco), como prevé HOME_PROVINCE.
+      location: r.location || "",
+      province: r.province || homeProvinceFor("ofarrell") || "CHACO",
       type: "general",
       mainCategory: "mixto",
-      estimatedHeads: isTv ? 5500 : null,
-      description: isTv
+      estimatedHeads: r.tv ? 5500 : null,
+      description: r.tv
         ? "Remate Televisado por Canal Rural"
-        : "Remate general presencial y streaming",
+        : (r.sede ? `Remate presencial y streaming — ${r.sede}` : "Remate presencial y streaming"),
       youtubeUrl: null,
       catalogUrl: null,
       source: "web",
       sourceUrl: "https://www.ivanofarrell.com.ar/remates",
-    });
-  }
+    }));
 
   console.log(`  Found ${auctions.length} O'Farrell auctions`);
   return auctions;
