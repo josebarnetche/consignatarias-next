@@ -1,13 +1,13 @@
 {
-  "scrapedAt": "2026-09-21T14:18:59.807Z",
+  "scrapedAt": "2026-09-28T15:37:18.263Z",
   "source": "https://aps2.senasa.gov.ar/registros/faces/publico/establecimientos/tc_frigorificospublico.jsp",
   "ciclos": [
     "CICLO I - MAT.FRIG.",
     "CICLO II - ELABORADOR",
     "CICLO III - DADOR DE FRIO"
   ],
-  "totalRowsScraped": 1001,
-  "distinctCuits": 863,
+  "totalRowsScraped": 1000,
+  "distinctCuits": 862,
   "unparsableCuits": 0,
   "byCuit": {
     "30707283250": {
@@ -365,7 +365,7 @@
     "30564189657": {
       "cuit": "30564189657",
       "tipo": "CICLO I - MAT.FRIG.",
-      "propietario": "BUSTOS Y BELTRAN S A S. A.",
+      "propietario": "BUSTOS Y BELTRAN S. A.",
       "nombre": "BUSTOS Y BELTRAN S.A.",
       "provincia": "CORDOBA",
       "partido": "COLON",
@@ -2665,7 +2665,7 @@
     "30504677032": {
       "cuit": "30504677032",
       "tipo": "CICLO I - MAT.FRIG.",
-      "propietario": "INDUSTRIAS FRIGORIFICAS RECREO S A I C",
+      "propietario": "INDUSTRIAS FRIGORIFICAS RECREO S. A.",
       "nombre": "INDUSTRIAS FRIGORIFICAS RECREO SAIC",
       "provincia": "SANTA FE",
       "partido": "LA CAPITAL",
@@ -2923,8 +2923,10 @@
       "nroOficial": "4177",
       "actividades": [
         "I A - CABEZA DE BOVINO FAENADO",
+        "XXVIII - DEPOSITO / BARRACA P/CUEROS",
         "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
-        "I A - 1. SOLO BUBALINOS"
+        "I A - 1. SOLO BUBALINOS",
+        "XXVIII - 1. SALADERO DE CUEROS"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG."
@@ -3351,14 +3353,13 @@
       "propietario": "MEATEX S. A.",
       "nombre": "MEATEX S. A.",
       "provincia": "SANTA FE",
-      "partido": "ROSARIO",
-      "localidad": "VILLA GOBERNADOR GALVEZ",
-      "nroOficial": "2086",
+      "partido": "CASEROS",
+      "localidad": "CASILDA",
+      "nroOficial": "2620",
       "actividades": [
         "I A - CABEZA DE BOVINO FAENADO",
         "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
-        "I A - 1. SOLO BUBALINOS",
-        "LI A - 5. CUARTEO"
+        "LI A - 12. CUARTEO BOVINO DE PROPIA FAENA"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG.",
@@ -3666,18 +3667,18 @@
       "provincia": "SANTA FE",
       "partido": "ROSARIO",
       "localidad": "VILLA GOBERNADOR GALVEZ",
-      "nroOficial": "2095",
+      "nroOficial": "1130",
       "actividades": [
-        "I A - CABEZA DE BOVINO FAENADO",
         "I B - CABEZA DE PORCINO FAENADO",
+        "I F - CABEZA DE LECHON FAENADO",
+        "II - FABRICA DE CHACINADOS Y AFINES",
         "XII - CARNES EN TROZOS O CORTES",
         "XXX - DEPOSITO PRODUCTOS CARNEOS",
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
         "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+        "LI D - MATADERO Y FRIGORIFICO C/FAENA. FABRICA DE CHACINADOS Y AFINES",
         "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
-        "LI F - MATADERO Y FRIGORIFICO C/FAENA. GRASERIAS, PRODUCCION, COMERCIALIZACION",
-        "LI G - MATADERO Y FRIGORIFICO C/FAENA. SEBERIA INCOMESTIBLE",
-        "LI H - MATADERO Y FRIGORIFICO C/FAENA HARINA CARNE/HUESO"
+        "LXIV - IMPORTACION DE CARNE PORCINA"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG.",
@@ -3752,7 +3753,7 @@
     "30583438412": {
       "cuit": "30583438412",
       "tipo": "CICLO I - MAT.FRIG.",
-      "propietario": "PILOTTI SOCIEDAD ANONIMA EMPRESA FRIGORIFICA",
+      "propietario": "PILOTTI SOCIEDAD ANONIMA EMPRESA FRIGORIFICA S. A.",
       "nombre": "PILOTTI SOCIEDAD ANÓNIMA EMPRESA FRIGORÍFICA",
       "provincia": "LA PAMPA",
       "partido": "CALEU CALEU",
@@ -6582,22 +6583,6 @@
         "CICLO II - ELABORADOR"
       ]
     },
-    "30677835881": {
-      "cuit": "30677835881",
-      "tipo": "CICLO II - ELABORADOR",
-      "propietario": "ENZIMAS S A",
-      "nombre": "ENZIMAS  S.A.",
-      "provincia": "BUENOS AIRES",
-      "partido": "LUJAN",
-      "localidad": "LUJAN",
-      "nroOficial": "1297",
-      "actividades": [
-        "XXV - PREPARACION PRODUCTOS QUIMICOS Y FARMACOLOGICOS C/MATERIA PRIMA DE ANIMALES"
-      ],
-      "ciclos": [
-        "CICLO II - ELABORADOR"
-      ]
-    },
     "30702275101": {
       "cuit": "30702275101",
       "tipo": "CICLO II - ELABORADOR",
@@ -6675,14 +6660,18 @@
       "tipo": "CICLO II - ELABORADOR",
       "propietario": "ESTABLECIMIENTO LOS CALVOS S R L",
       "nombre": "ESTABLECIMIENTO LOS CALVOS  S.R.L.",
-      "provincia": "CIUDAD AUTONOMA DE BUENOS AIRES",
-      "partido": "CIUDAD AUTONOMA DE BUENOS AIRES",
-      "localidad": "ALBERDI JUAN BAUTISTA 1/1100",
-      "nroOficial": "42",
+      "provincia": "BUENOS AIRES",
+      "partido": "LA MATANZA",
+      "localidad": "SAN JUSTO",
+      "nroOficial": "3252",
       "actividades": [
-        "II - FABRICA DE CHACINADOS Y AFINES",
         "IX - CARNES SALADAS Y/O CURADAS",
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+        "LXII - IMPORTACION DE POLLOS",
+        "LXIV - IMPORTACION DE CARNE PORCINA",
+        "XII - 3. DESPOSTADA PORCINA",
+        "LXV - IMPORTACION DE TRIPAS (NATURALES Y SINTÉTICAS)"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -6836,6 +6825,7 @@
       "localidad": "PUERTO GENERAL SAN MARTIN",
       "nroOficial": "5388",
       "actividades": [
+        "III B - SEBERIA INCOMESTIBLE",
         "XIX - 18. ELABORACION DE SUBPRODUCTOS"
       ],
       "ciclos": [
@@ -12994,7 +12984,8 @@
         "LXIII - IMPORTACION PRODUCTOS DE LA PESCA EN CONSERVAS",
         "LXIV - IMPORTACION DE CARNE PORCINA",
         "XXXIII - 1. SÓLO CÁMARA P/DEPÓSITO DE PESCADOS",
-        "XXX -  DEPOSITO PRODUCTOS CARNEOS"
+        "XXX -  DEPOSITO PRODUCTOS CARNEOS",
+        "LXVII - IMPORTACION DE CARNE BOVINA"
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
@@ -14880,7 +14871,7 @@
     "33707965849": {
       "cuit": "33707965849",
       "tipo": "CICLO III - DADOR DE FRIO",
-      "propietario": "HELACOR SA",
+      "propietario": "HELACOR S. A.",
       "nombre": "HELACOR SA",
       "provincia": "CORDOBA",
       "partido": "CAPITAL",
