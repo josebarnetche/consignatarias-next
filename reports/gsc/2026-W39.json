@@ -1,0 +1,367 @@
+{
+  "range": {
+    "start": "2026-09-19",
+    "end": "2026-09-25",
+    "pstart": "2026-09-12",
+    "pend": "2026-09-18"
+  },
+  "gsc": {
+    "cur": {
+      "clicks": 1165,
+      "impressions": 68261,
+      "ctr": 0.01706684636908337,
+      "position": 6.073643808323933
+    },
+    "prev": {
+      "clicks": 1213,
+      "impressions": 73107,
+      "ctr": 0.01659211840179463,
+      "position": 5.976240305305922
+    },
+    "queries": [
+      {
+        "keys": [
+          "agroindustrias quilmes"
+        ],
+        "clicks": 6,
+        "impressions": 15,
+        "ctr": 0.4,
+        "position": 1.8666666666666667
+      },
+      {
+        "keys": [
+          "precio novillo para arrendamiento hoy"
+        ],
+        "clicks": 6,
+        "impressions": 619,
+        "ctr": 0.009693053311793215,
+        "position": 6.384491114701131
+      },
+      {
+        "keys": [
+          "consignatario de hacienda"
+        ],
+        "clicks": 4,
+        "impressions": 62,
+        "ctr": 0.06451612903225806,
+        "position": 1.8064516129032258
+      },
+      {
+        "keys": [
+          "cuánto sale una vaca en argentina 2026"
+        ],
+        "clicks": 4,
+        "impressions": 53,
+        "ctr": 0.07547169811320754,
+        "position": 1.6603773584905661
+      },
+      {
+        "keys": [
+          "indice novillo arrendamiento"
+        ],
+        "clicks": 4,
+        "impressions": 712,
+        "ctr": 0.0056179775280898875,
+        "position": 7.304775280898877
+      },
+      {
+        "keys": [
+          "precio novillo arrendamiento mensual"
+        ],
+        "clicks": 4,
+        "impressions": 202,
+        "ctr": 0.019801980198019802,
+        "position": 5.846534653465347
+      },
+      {
+        "keys": [
+          "precio novillo arrendamiento mercado de cañuelas"
+        ],
+        "clicks": 4,
+        "impressions": 316,
+        "ctr": 0.012658227848101266,
+        "position": 6.443037974683544
+      },
+      {
+        "keys": [
+          "remates ganaderos hoy"
+        ],
+        "clicks": 4,
+        "impressions": 10,
+        "ctr": 0.4,
+        "position": 2.9
+      },
+      {
+        "keys": [
+          "colombo y colombo"
+        ],
+        "clicks": 3,
+        "impressions": 109,
+        "ctr": 0.027522935779816515,
+        "position": 6.568807339449541
+      },
+      {
+        "keys": [
+          "consignatarias de hacienda en argentina"
+        ],
+        "clicks": 3,
+        "impressions": 8,
+        "ctr": 0.375,
+        "position": 1.25
+      },
+      {
+        "keys": [
+          "frigorifico la brava corrientes"
+        ],
+        "clicks": 3,
+        "impressions": 5,
+        "ctr": 0.6,
+        "position": 2
+      },
+      {
+        "keys": [
+          "lanusse santillan y cia"
+        ],
+        "clicks": 3,
+        "impressions": 19,
+        "ctr": 0.15789473684210525,
+        "position": 5.105263157894737
+      },
+      {
+        "keys": [
+          "precio del kg de novillo para arrendamiento diario la nacion"
+        ],
+        "clicks": 3,
+        "impressions": 68,
+        "ctr": 0.04411764705882353,
+        "position": 8.191176470588236
+      },
+      {
+        "keys": [
+          "30678138300"
+        ],
+        "clicks": 2,
+        "impressions": 56,
+        "ctr": 0.03571428571428571,
+        "position": 4.875
+      },
+      {
+        "keys": [
+          "agropecuaria transur s.a"
+        ],
+        "clicks": 2,
+        "impressions": 27,
+        "ctr": 0.07407407407407407,
+        "position": 2.814814814814815
+      }
+    ],
+    "pages": [
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/mercado/arrendamiento"
+        ],
+        "clicks": 50,
+        "impressions": 7515,
+        "ctr": 0.00665335994677312,
+        "position": 6.975249500998004
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/mercado/arrendamiento/liniers"
+        ],
+        "clicks": 46,
+        "impressions": 4331,
+        "ctr": 0.010621103671207574,
+        "position": 5.969752943892866
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/cuanto-cuesta-el-flete-de-hacienda"
+        ],
+        "clicks": 39,
+        "impressions": 617,
+        "ctr": 0.06320907617504051,
+        "position": 4.311183144246353
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/frigorificos"
+        ],
+        "clicks": 28,
+        "impressions": 897,
+        "ctr": 0.03121516164994426,
+        "position": 6.569676700111483
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/cuanto-vale-una-vaca"
+        ],
+        "clicks": 24,
+        "impressions": 2579,
+        "ctr": 0.009305932531989143,
+        "position": 4.14540519581233
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/"
+        ],
+        "clicks": 22,
+        "impressions": 517,
+        "ctr": 0.0425531914893617,
+        "position": 3.97678916827853
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/como-funciona-un-remate-ganadero"
+        ],
+        "clicks": 22,
+        "impressions": 437,
+        "ctr": 0.05034324942791762,
+        "position": 4.0983981693363845
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/mercado/arrendamiento/canuelas"
+        ],
+        "clicks": 20,
+        "impressions": 1557,
+        "ctr": 0.012845215157353885,
+        "position": 6.195889531149647
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/mercado"
+        ],
+        "clicks": 18,
+        "impressions": 2284,
+        "ctr": 0.00788091068301226,
+        "position": 6.817425569176883
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/mercado/arrendamiento/mensual"
+        ],
+        "clicks": 17,
+        "impressions": 665,
+        "ctr": 0.02556390977443609,
+        "position": 5.2706766917293235
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/frigorificos/santa-fe"
+        ],
+        "clicks": 16,
+        "impressions": 469,
+        "ctr": 0.03411513859275053,
+        "position": 6.471215351812367
+      },
+      {
+        "keys": [
+          "https://www.consignatarias.com.ar/cuanto-pesa-una-media-res"
+        ],
+        "clicks": 15,
+        "impressions": 2724,
+        "ctr": 0.005506607929515419,
+        "position": 4.624082232011748
+      }
+    ]
+  },
+  "traffic": {
+    "range": {
+      "current_from": "2026-09-21T19:54:57.756Z",
+      "previous_from": "2026-09-14T19:54:57.756Z"
+    },
+    "traffic": {
+      "cur": {
+        "visitantes": 1886,
+        "aiVisits": 35
+      },
+      "prev": {
+        "visitantes": 2234,
+        "aiVisits": 32
+      }
+    },
+    "aiEngines": [
+      {
+        "engine": "chatgpt",
+        "visits": 25
+      },
+      {
+        "engine": "gemini",
+        "visits": 7
+      },
+      {
+        "engine": "copilot",
+        "visits": 2
+      },
+      {
+        "engine": "claude",
+        "visits": 1
+      }
+    ],
+    "topProfiles": [
+      {
+        "slug": "ofarrell",
+        "type": "consignataria",
+        "views": 12
+      },
+      {
+        "slug": "umc-villaguay",
+        "type": "consignataria",
+        "views": 11
+      },
+      {
+        "slug": "ganaderos-de-formosa",
+        "type": "consignataria",
+        "views": 8
+      },
+      {
+        "slug": "colombo-y-magliano",
+        "type": "consignataria",
+        "views": 7
+      },
+      {
+        "slug": "madelan",
+        "type": "consignataria",
+        "views": 7
+      },
+      {
+        "slug": "etchevehere-rural",
+        "type": "consignataria",
+        "views": 6
+      },
+      {
+        "slug": "colombo-y-colombo",
+        "type": "consignataria",
+        "views": 6
+      },
+      {
+        "slug": "mondino",
+        "type": "consignataria",
+        "views": 6
+      },
+      {
+        "slug": "saenz-valiente-bullrich",
+        "type": "consignataria",
+        "views": 6
+      },
+      {
+        "slug": "lanusse-santillan",
+        "type": "consignataria",
+        "views": 5
+      },
+      {
+        "slug": "la-ganadera",
+        "type": "consignataria",
+        "views": 5
+      },
+      {
+        "slug": "sivero",
+        "type": "consignataria",
+        "views": 4
+      }
+    ],
+    "profileViewsTotal": 158
+  },
+  "generated": "2026-09-28T19:54:57.388Z"
+}
