@@ -135,3 +135,4 @@ scripts/dev-magic-link.mts
 # Bases con datos personales (emails de suscriptores y usuarios). Repo PUBLICO:
 # esto no se sube nunca.
 private/bases/
+.claude/worktrees/
