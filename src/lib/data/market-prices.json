@@ -1833,7 +1833,7 @@
       }
     ],
     "latestVolume": 6316,
-    "periodVolume": 149554
+    "periodVolume": 144058
   },
   "categories": {
     "novillos": {
@@ -1888,16 +1888,16 @@
     }
   },
   "corn": {
-    "current": 243.9,
+    "current": 242.33,
     "prev": 243.9,
-    "change": 0,
+    "change": -0.6,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1560,
+    "current": 1565,
     "prev": 1560,
-    "change": 0,
+    "change": 0.3,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
@@ -1908,7 +1908,7 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-09-27",
+  "lastUpdate": "2026-09-28",
   "provinceEntry": {
     "date": "2026-09-25",
     "totalCabezas": 6316,
@@ -2590,11 +2590,11 @@
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
-    "current": 521.5,
+    "current": 511.5,
     "prev": 521.5,
-    "change": 0,
+    "change": -1.9,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
-    "date": "2026-09-25"
+    "date": "2026-09-28"
   }
 }
