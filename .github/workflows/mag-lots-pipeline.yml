@@ -143,13 +143,17 @@ jobs:
     needs: enqueue-and-process
     if: always()
     runs-on: ubuntu-latest
-    # Sin esto el GITHUB_TOKEN es read-only y el push da 403. Como el job es
-    # continue-on-error, el 403 pasaría inadvertido y las bandas quedarían
-    # congeladas mientras todas las superficies las presentan como vigentes.
+    # Sin esto el GITHUB_TOKEN es read-only y el push da 403, y las bandas
+    # quedarían congeladas mientras todas las superficies las presentan como vigentes.
     permissions:
       contents: write
     timeout-minutes: 10
-    continue-on-error: true
+    # NO lleva continue-on-error. Lo tenía, con el argumento de que "la ingesta es
+    # el activo crítico y no puede fallar por el post-proceso" — pero este es un
+    # JOB APARTE que corre DESPUÉS: cuando llega acá la ingesta ya terminó, así que
+    # su falla no puede tocarla. Lo único que compraba el flag era silencio: las
+    # corridas del 22, 24 y 26-sep fallaron acá y el workflow reportó success las
+    # tres veces, con las bandas clavadas en el 18-sep.
     steps:
       - uses: actions/checkout@v5
 
@@ -157,8 +161,12 @@ jobs:
         with:
           node-version: '22'
 
+      # `npm i <paquete> --no-save` sobre un árbol manejado por pnpm rompe con
+      # "Cannot read properties of null (reading 'edgesOut')" — es exactamente lo
+      # que ya estaba documentado en demanda-fichas.yml y que este job repitió.
+      # @supabase/supabase-js ^2.98.0 ya es dependencia del repo: no hay que sumarla.
       - name: Install deps
-        run: npm i @supabase/supabase-js --no-save
+        run: npm install --legacy-peer-deps
 
       - name: Compute bands
         run: node scripts/compute-vr-bandas.mjs
