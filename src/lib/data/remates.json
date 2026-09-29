@@ -17022,7 +17022,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 896,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "REMATE ANIVERSARIO",
@@ -17041,7 +17041,7 @@
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
     "id": 897,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "28 de Septiembre - Maria Grande",
@@ -17059,7 +17059,7 @@
     "catalogUrl": "https://ftp.rural-server.com/remates/images/4BAn8EfkXXvkrEkQ.png",
     "source": "web",
     "sourceUrl": "https://clicrural.com.ar/remate/31316",
-    "status": "live",
+    "status": "completed",
     "id": 898
   },
   {
@@ -17079,7 +17079,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 899,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Remate 4x4 - Reproductores",
@@ -17098,7 +17098,7 @@
     "source": "web",
     "sourceUrl": "ganaderosdeceres.com.ar",
     "id": 900,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "GORDO, INVERNADA y CRÍA",
@@ -17117,7 +17117,7 @@
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
     "id": 901,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Feria Maria Dolores",
@@ -17135,7 +17135,7 @@
     "catalogUrl": "https://ftp.rural-server.com/remates/images/WeOJaTCfvNmQQkGu.jpg",
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/29268",
-    "status": "scheduled",
+    "status": "live",
     "id": 902
   },
   {
@@ -17155,7 +17155,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 903,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "GORDOS e INVERNADA",
@@ -17174,7 +17174,7 @@
     "source": "web",
     "sourceUrl": "www.ganadosremates.com.ar",
     "id": 904,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Faena, Invernada y Cria - 11.30hs.",
@@ -17193,7 +17193,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 905,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "GORDO, INVERNADA Y CRÍA",
@@ -17212,7 +17212,7 @@
     "source": "web",
     "sourceUrl": "www.feriasrauch.com",
     "id": 906,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Estancias DON PASTOR",
@@ -17231,7 +17231,7 @@
     "source": "web",
     "sourceUrl": "www.colomboymagliano.com.ar",
     "id": 907,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Faena, Invernada y Cria - 14.00hs.",
@@ -17250,7 +17250,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 908,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "AFA | Totoras | Especial Inv y cría",
@@ -17268,7 +17268,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6536-afa-totoras-especial-inv-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled",
+    "status": "live",
     "id": 909
   },
   {
@@ -17288,7 +17288,7 @@
     "source": "web",
     "sourceUrl": "www.afascl.com",
     "id": 910,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Faena",
@@ -17307,7 +17307,7 @@
     "source": "web",
     "sourceUrl": "facebook.com/siveroycia/?loc",
     "id": 911,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Remate Televisado O'Farrell",
@@ -17326,7 +17326,7 @@
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
     "id": 912,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": ". Faena, Invernada y Cría - 14.30hs.",
@@ -17345,7 +17345,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 913,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Especial NEA-NOa - Invernada y Cria - 14.30hs.",
@@ -17364,7 +17364,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 914,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Remate Especial Cabaña La Constancia",
@@ -17383,7 +17383,7 @@
     "source": "web",
     "sourceUrl": "www.pedronoelireysrl.com.ar",
     "id": 915,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Faena, Invernada y Cria - 15.00hs.",
@@ -17402,7 +17402,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 916,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Faena, Invernada y Cria",
@@ -19989,25 +19989,6 @@
     "status": "scheduled"
   },
   {
-    "title": "GORDO, INVERNADA y CRÍA",
-    "consignatariaName": "SÁENZ VALIENTE, BULLRICH Y CIA. S.A.",
-    "consignatariaSlug": "saenz-valiente-bullrich-y-cia-s-a",
-    "date": "2026-10-28",
-    "time": null,
-    "location": "CORONEL SUAREZ, BUENOS AIRES",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "GORDO, INVERNADA y CRÍA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1053,
-    "status": "scheduled"
-  },
-  {
     "title": ". Faena, Invernda y Cria",
     "consignatariaName": "Monasterio",
     "consignatariaSlug": "monasterio",
@@ -20023,6 +20004,25 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1053,
+    "status": "scheduled"
+  },
+  {
+    "title": "GORDO, INVERNADA y CRÍA",
+    "consignatariaName": "SÁENZ VALIENTE, BULLRICH Y CIA. S.A.",
+    "consignatariaSlug": "saenz-valiente-bullrich-y-cia-s-a",
+    "date": "2026-10-28",
+    "time": null,
+    "location": "CORONEL SUAREZ, BUENOS AIRES",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "GORDO, INVERNADA y CRÍA",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.saenz-valiente.com.ar",
     "id": 1054,
     "status": "scheduled"
   },
