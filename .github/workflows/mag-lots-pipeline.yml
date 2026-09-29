@@ -189,7 +189,12 @@ jobs:
             if git push; then
               echo "✓ push OK (intento $attempt)"; exit 0
             fi
-            git pull --rebase --autostash origin main || true
+            # Rebase sobre LA RAMA QUE SE ESTÁ CONSTRUYENDO, no sobre main.
+            # Lo copié de scrape-auctions, donde `main` hardcodeado es correcto
+            # porque ese workflow solo corre en main. Este tiene workflow_dispatch
+            # y puede correr en cualquier rama — de hecho ya corrió en una — así
+            # que en una carrera de push le habría metido commits de main adentro.
+            git pull --rebase --autostash origin "$(git rev-parse --abbrev-ref HEAD)" || true
             sleep $((attempt * 3))
           done
           echo "::error::git push falló tras 5 intentos."
