@@ -26,6 +26,10 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
   link de Rebill con el monto y la zona correctos), así que la caída está entre ver la página y
   escribir el mail. Nuevo evento `informe_variante_select`: si sube y `informe_checkout_start`
   sigue en cero, la barrera es el formulario; si no sube, la barrera son las 49 zonas.
+- **Un test que dependía del precio del día.** `vr.test.ts` exigía que la brecha entre la
+  mediana de lote y el precio MAG de la vaquillona fuera >5%: el 21-sep lo era, el 30-sep fue
+  1,5% y CI se puso en rojo sin que nada se hubiera roto. Ahora verifica la coherencia (la
+  brecha declarada es la que separa a los dos precios publicados), no un umbral fijo.
 - **Test que impide perder una métrica en silencio** (`src/lib/value-events.test.ts`): recorre
   el código y exige que todo `emitValueBeacon('x')` esté declarado en `VALUE_EVENTS`. Un nombre
   no declarado hoy lo rechaza `/api/track/event` sin avisar.
