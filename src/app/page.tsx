@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
 import marketPrices from "@/lib/data/market-prices.json";
-import frigorificosSummary from "@/lib/data/frigorificos-summary.json";
+import frigorificosData from "@/lib/data/frigorificos.json";
 import rematesData from "@/lib/data/remates.json";
 import corredorManifest from "../../public/el-corredor/manifest.json";
 import { getAllProfiles } from "@/lib/data/consignataria-slugs";
@@ -23,6 +23,8 @@ import ScrollReveal from "@/components/landing/ScrollReveal";
 import { CoverageMap } from "@/components/landing/CoverageMap";
 import SellZoneBadge from "@/components/SellZoneBadge";
 import { getBandasPublicas, getSlugsConBanda, vrCobertura, VR_VENTANA_DIAS } from "@/lib/vr";
+import { getEffectiveStatus } from "@/lib/ui/tokens";
+import { rematesDesdeHoy } from "@/lib/remates-conteo";
 
 /* ================================================================== */
 /*  SVG ICONS                                                          */
@@ -40,11 +42,20 @@ function IconArrowRight({ className = "" }: { className?: string }) {
 /* ================================================================== */
 const TODAY = new Date().toISOString().slice(0, 10);
 
-const rematesProximos = rematesData.filter(
-  (r) => r.date >= TODAY && r.status === "scheduled"
-);
+// El criterio vive en `lib/remates-conteo` para que haya uno solo, con test: la home
+// filtraba sólo `scheduled` y se comía los remates de HOY, que el scraper marca `live`.
+const rematesProximos = rematesDesdeHoy(rematesData, TODAY);
 const totalHeads = rematesProximos.reduce((s, r) => s + (r.estimatedHeads ?? 0), 0);
-const provinciasConFrigo = Object.keys(frigorificosSummary.byProvince).length;
+// `frigorificos-summary.json` quedó congelado en 364 desde febrero mientras el
+// directorio indexaba 1.115: la home subdeclaraba la cobertura en dos tercios. Se
+// cuenta de la misma fuente que lee /frigorificos, y se dice HABILITADAS, que es el
+// número honesto (el total indexado incluye históricos sin verificación vigente).
+const frigorificosHabilitados = (frigorificosData as { senasaActive?: boolean }[]).filter(
+  (f) => f.senasaActive === true,
+).length;
+const provinciasConFrigo = new Set(
+  (frigorificosData as { province?: string | null }[]).map((f) => f.province).filter(Boolean),
+).size;
 const totalConsignatarias = getAllProfiles().length;
 
 /* --- Regional grid: top consignatarios by upcoming-remate count, bucketed by region.
@@ -119,7 +130,12 @@ const activeConsignatarias = consigCards
 // En Vivo: remates con transmisión resolvible — video directo (confirmada) o
 // canal habitual de la consignataria (estimada). Mismo criterio que /remates/en-vivo,
 // donde antes la home solo contaba youtubeUrl directo y daba casi siempre 0.
+// SÓLO las de HOY: contar todo lo transmisible de acá a fin de año daba 116 bajo un
+// punto rojo que decía "en vivo", y el clic caía en "Nadie está transmitiendo ahora".
+// Mismo criterio que el muro de /remates/en-vivo, que trabaja sobre el día.
 const rematesEnVivo = rematesProximos
+  .filter((r) => r.date === TODAY)
+  .filter((r) => getEffectiveStatus(r.date, r.time, TODAY) !== "completed")
   .map((r) => {
     const resolved = resolveYoutubeUrl(r);
     return resolved ? { remate: r, confidence: resolved.confidence } : null;
@@ -178,7 +194,7 @@ const FAQ_ITEMS = [
   },
   {
     question: "¿Qué es un frigorífico?",
-    answer: `Un frigorífico es una planta habilitada por SENASA y MAGYP para la faena y procesamiento de carne vacuna. En nuestra base de datos tenemos ${fmt(frigorificosSummary.total)} plantas habilitadas en ${provinciasConFrigo} provincias, con datos de CUIT, matrícula y clasificación por ciclo (Tránsito, Ciclo II, Ciclo III).`,
+    answer: `Un frigorífico es una planta habilitada por SENASA y MAGYP para la faena y procesamiento de carne vacuna. En nuestra base de datos tenemos ${fmt(frigorificosHabilitados)} plantas habilitadas en ${provinciasConFrigo} provincias, con datos de CUIT, matrícula y clasificación por ciclo (Tránsito, Ciclo II, Ciclo III).`,
   },
   {
     question: "¿Consignatarias.com.ar es gratis?",
@@ -310,7 +326,7 @@ export default async function LandingPage() {
       : { label: 'USD blue', value: `$${fmt(marketPrices.usdBlue.current)}`, change: marketPrices.usdBlue.change, href: '/mercado' },
     { label: 'Remates', value: `${rematesProximos.length}`, change: null, href: '/remates' },
     ...(enVivoCount > 0 ? [{ label: 'En vivo', value: `${enVivoCount}`, change: null, live: true, href: '/remates/en-vivo' } as TapeItem] : []),
-    { label: 'Plantas SENASA', value: `${fmt(frigorificosSummary.total)}`, change: null, href: '/frigorificos' },
+    { label: 'Plantas SENASA', value: `${fmt(frigorificosHabilitados)}`, change: null, href: '/frigorificos' },
   ]
   const dateLabel = new Date().toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })
 
@@ -413,7 +429,7 @@ export default async function LandingPage() {
             inmag={marketPrices.inmag.current}
             inmagChange={marketPrices.inmag.change}
             usdBlue={marketPrices.usdBlue.current}
-            frigorificos={frigorificosSummary.total}
+            frigorificos={frigorificosHabilitados}
             provincias={13}
             dateLabel={dateLabel}
             rematesIndexados={rematesData.length}
@@ -777,7 +793,7 @@ export default async function LandingPage() {
               El mercado ganadero, en una sola pantalla
             </h2>
             <p className="text-sm text-zinc-400 mb-8 max-w-lg mx-auto">
-              {rematesProximos.length} remates de {totalConsignatarias}+ consignatarias. {fmt(frigorificosSummary.total)} frigoríficos habilitados. Precios de 6 categorías y referencias macro. Acceso libre. Sin registro. Actualizado todos los días.
+              {rematesProximos.length} remates de {totalConsignatarias}+ consignatarias. {fmt(frigorificosHabilitados)} frigoríficos habilitados. Precios de 6 categorías y referencias macro. Acceso libre. Sin registro. Actualizado todos los días.
             </p>
             <Link
               href="/overview"
