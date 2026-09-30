@@ -80,7 +80,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     resp.headers.set('X-Request-Id', requestId)
     void logEvent({
       eventType: 'api_call',
-      status: resp.status >= 400 ? 'error' : 'ok',
+      // 401 = llegó sin credenciales: sonda, no falla del servidor (ver OpsStatus).
+      status: resp.status === 401 ? 'probe' : resp.status >= 400 ? 'error' : 'ok',
       requestId,
       route: ROUTE,
       latencyMs: Date.now() - t0,

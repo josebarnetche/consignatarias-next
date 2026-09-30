@@ -723,6 +723,15 @@ export function trackInformeCheckoutStart(
   })
 }
 
+/**
+ * Eligió la zona/variante del informe. Es el paso previo al formulario: si esto sube y
+ * `informe_checkout_start` sigue en cero, la barrera es el mail, no la zona.
+ */
+export function trackInformeVarianteSelect(slug: string, variante: string, label: string) {
+  trackEvent('informe_variante_select', { informe_slug: slug, informe_variante: variante })
+  emitValueBeacon('informe_variante_select', { meta: { slug, variante, label } })
+}
+
 /** El sales page de un informe se vio. Es el escalón anterior del embudo. */
 export function trackInformeView(slug: string, price: number) {
   const params = {

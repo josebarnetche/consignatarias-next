@@ -124,6 +124,9 @@ export const VALUE_EVENTS = {
   // Dejó el mail en un producto que todavía no se entrega. Pesa como una suscripción
   // al newsletter (8): es la misma acción, con intención de compra declarada encima.
   informe_waitlist: { weight: 10, group: 'recurrencia', label: 'Se anotó a la espera de un informe' },
+  // El escalón que faltaba: entre ver el sales page y escribir el mail hay que elegir
+  // zona. Sin esto, 25 vistas y 0 checkouts no dicen SI la zona es la barrera.
+  informe_variante_select: { weight: 10, group: 'funnel', label: 'Eligió zona del informe' },
   informe_checkout_start: { weight: 30, group: 'funnel', label: 'Inició checkout de un informe' },
   // Apretó comprar y el checkout no abrió (nuestra API o Rebill fallaron). Pesa casi nada
   // porque no es valor: es la alarma. Entre el 31-ago y el 17-sep el checkout devolvió 500
