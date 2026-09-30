@@ -7,6 +7,35 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.214.0] — 2026-09-30
+
+### El panel decía 705 errores y ninguno era un error
+
+- **CI en rojo desde el 27-sep, por un archivo mal nombrado.** `scripts/ofarrell-parse.test.mjs`
+  es una herramienta de consola que se corre a mano con un HTML como argumento, pero el patrón
+  `scripts/**/*.test.mjs` de vitest la levantaba como test y moría en `readFileSync(undefined)`.
+  Los 461 tests reales pasaban. Renombrada a `ofarrell-parse.check.mjs`.
+- **`status: 'probe'` en `ops_events`.** De los 714 "errores" de los últimos 9 días, **705 eran
+  crawlers**: `server/discover` (486), que no existe en la spec MCP y lo piden los directorios,
+  sondas de liveness y tools llamadas con `slug: "test"`. Los 9 restantes eran 401 en
+  `/api/precios` y `/api/lots`: requests sin clave. Nada de eso es una falla, y contarlo como
+  tal es lo que hace que una falla real no se vea. Ahora van como `probe` y quedan fuera de
+  "errores recientes" en `/admin/ops`.
+- **El escalón que faltaba en el embudo del informe.** 25 vistas del sales page, 24 clics desde
+  fichas y **0 checkouts** en 30 días. Se verificó a mano que el checkout funciona (POST 200 →
+  link de Rebill con el monto y la zona correctos), así que la caída está entre ver la página y
+  escribir el mail. Nuevo evento `informe_variante_select`: si sube y `informe_checkout_start`
+  sigue en cero, la barrera es el formulario; si no sube, la barrera son las 49 zonas.
+- **Un test que dependía del precio del día.** `vr.test.ts` exigía que la brecha entre la
+  mediana de lote y el precio MAG de la vaquillona fuera >5%: el 21-sep lo era, el 30-sep fue
+  1,5% y CI se puso en rojo sin que nada se hubiera roto. Ahora verifica la coherencia (la
+  brecha declarada es la que separa a los dos precios publicados), no un umbral fijo.
+- **Test que impide perder una métrica en silencio** (`src/lib/value-events.test.ts`): recorre
+  el código y exige que todo `emitValueBeacon('x')` esté declarado en `VALUE_EVENTS`. Un nombre
+  no declarado hoy lo rechaza `/api/track/event` sin avisar.
+
+---
+
 ## [1.213.0] — 2026-09-21
 
 ### El muro en vivo: nunca vacío, nunca te saca el remate, y se mide lo que dura

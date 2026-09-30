@@ -1,4 +1,4 @@
-// Prueba offline: node scripts/ofarrell-parse.test.mjs <cartelera.html>
+// Prueba offline: node scripts/ofarrell-parse.check.mjs <cartelera.html>
 import { readFileSync } from "node:fs";
 import { parseOFarrellHtml } from "./ofarrell-parse.mjs";
 const r = parseOFarrellHtml(readFileSync(process.argv[2], "utf-8"));

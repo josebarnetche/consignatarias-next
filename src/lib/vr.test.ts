@@ -198,13 +198,16 @@ describe('valuarTropa — coherencia interna de la respuesta', () => {
     }
   })
 
-  it('conserva el precio MAG y declara la brecha cuando difiere', async () => {
+  it('conserva el precio MAG y la brecha que declara es la que hay', async () => {
     const { valuarTropa } = await import('./valuaciones')
     const d = valuarTropa({ categoria: 'vaquillonas', cabezas: 10 }).data as Record<string, number>
-    // vaquillona es el caso donde mediana de lote y precio MAG más se separan.
     expect(d.precio_kg_mag).toBeGreaterThan(0)
-    expect(Math.abs(d.brecha_vs_mag_pct)).toBeGreaterThan(5)
-    expect(d.precio_kg_ars).not.toBe(d.precio_kg_mag)
+    // La brecha entre la mediana de lote y el precio MAG la fijan los datos del día:
+    // el 21-sep era >5% y el 30-sep fue 1,5%, y el test de umbral fijo puso CI en rojo
+    // sin que nada se hubiera roto. Lo que SÍ tiene que valer siempre es la coherencia:
+    // la brecha declarada es exactamente la que separa a los dos precios publicados.
+    const esperada = ((d.precio_kg_ars - d.precio_kg_mag) / d.precio_kg_mag) * 100
+    expect(d.brecha_vs_mag_pct).toBeCloseTo(esperada, 1)
   })
 
   it('sin banda no hay brecha que declarar', async () => {

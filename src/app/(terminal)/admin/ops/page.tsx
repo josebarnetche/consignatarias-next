@@ -20,6 +20,7 @@ export const revalidate = 0
  *   - Crons: per-workflow last_run_at, age, status (from getCronHealth())
  *   - Recent events: last 50 ops_events rows
  *   - Recent errors: last 20 ops_events rows where status='error'
+ *     (status='probe' queda afuera a propósito: son crawlers y requests sin clave)
  *
  * No charts, no alerting (v1.15). Just flat tables.
  */
@@ -169,6 +170,7 @@ function statusColor(status: string | null): string {
   if (status === 'ok') return 'text-positive'
   if (status === 'error') return 'text-negative'
   if (status === 'timeout') return 'text-warning'
+  if (status === 'probe') return 'text-zinc-600'
   if (status === 'running') return 'text-accent'
   return 'text-zinc-500'
 }

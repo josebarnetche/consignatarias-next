@@ -1457,10 +1457,12 @@ function redactArgs(args: unknown): Record<string, unknown> | null {
   if ('api_key' in clone) clone.api_key = '[redacted]'
   return clone
 }
-function logMcp(opts: { method?: string; ok: boolean; startedAt: number; meta?: Record<string, unknown> }) {
+function logMcp(opts: { method?: string; ok: boolean; probe?: boolean; startedAt: number; meta?: Record<string, unknown> }) {
   void logEvent({
     eventType: 'mcp_call',
-    status: opts.ok ? 'ok' : 'error',
+    // `probe`: un cliente pidió algo que no existe (método/tool/prompt) o mandó JSON roto.
+    // Es tráfico de crawlers, no una falla nuestra — ver OpsStatus en lib/ops.ts.
+    status: opts.ok ? 'ok' : opts.probe ? 'probe' : 'error',
     route: '/api/mcp',
     statusCode: opts.ok ? 200 : 400,
     latencyMs: Date.now() - opts.startedAt,
@@ -1478,7 +1480,7 @@ export async function POST(req: NextRequest) {
   try {
     msg = await req.json()
   } catch {
-    logMcp({ method: 'parse_error', ok: false, startedAt, meta: rmeta })
+    logMcp({ method: 'parse_error', ok: false, probe: true, startedAt, meta: rmeta })
     return rpcError(null, -32700, 'Parse error', pv)
   }
   const { id, method, params } = msg
@@ -1536,7 +1538,7 @@ export async function POST(req: NextRequest) {
       const name = params?.name as string
       const tool = TOOLS.find((t) => t.name === name)
       if (!tool) {
-        logMcp({ method: 'tools/call', ok: false, startedAt, meta: { ...rmeta, tool: name ?? null, error: 'unknown_tool' } })
+        logMcp({ method: 'tools/call', ok: false, probe: true, startedAt, meta: { ...rmeta, tool: name ?? null, error: 'unknown_tool' } })
         return rpcError(id, -32602, `Tool desconocida: ${name}`, pv)
       }
       const args = (params?.arguments as Record<string, unknown>) || {}
@@ -1562,7 +1564,7 @@ export async function POST(req: NextRequest) {
       const pname = params?.name as string
       const prompt = PROMPTS.find((p) => p.name === pname)
       if (!prompt) {
-        logMcp({ method: 'prompts/get', ok: false, startedAt, meta: { ...rmeta, error: 'unknown_prompt', prompt: pname ?? null } })
+        logMcp({ method: 'prompts/get', ok: false, probe: true, startedAt, meta: { ...rmeta, error: 'unknown_prompt', prompt: pname ?? null } })
         return rpcError(id, -32602, `Prompt desconocido: ${pname}`, pv)
       }
       const pargs = (params?.arguments as Record<string, string>) || {}
@@ -1580,7 +1582,7 @@ export async function POST(req: NextRequest) {
       return rpcResult(id, { resourceTemplates: [] }, pv)
 
     default:
-      logMcp({ method: method ?? 'unknown', ok: false, startedAt, meta: { ...rmeta, error: 'unsupported_method' } })
+      logMcp({ method: method ?? 'unknown', ok: false, probe: true, startedAt, meta: { ...rmeta, error: 'unsupported_method' } })
       return rpcError(id, -32601, `Método no soportado: ${method}`, pv)
   }
 }
