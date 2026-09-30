@@ -7,6 +7,36 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.216.0] — 2026-09-30
+
+### Las fallas que salían en verde
+
+Auditoría de CI/CD, crons y circuitos. Nada de esto se veía desde afuera.
+
+- **El Valor de Referencia estaba congelado hacía 9 días y el workflow figuraba en
+  verde.** El job `compute-vr-bandas` falló 4 de las últimas 5 corridas, tapado por un
+  `continue-on-error: true` puesto para proteger la ingesta — pero es un job aparte que
+  corre DESPUÉS, así que lo único que compraba era silencio. Causa: `npm i <paquete>
+  --no-save` sobre un árbol pnpm (`Cannot read properties of null (reading 'edgesOut')`),
+  el mismo bug ya diagnosticado y curado en `demanda-fichas.yml` el 18-sep. Rescata el
+  trabajo de la rama `claude/fix-vr-bandas-cron`, que tenía el arreglo y nunca abrió PR.
+- **La misma bomba estaba armada en otros dos workflows**: `gsc-indexacion.yml` (diario) y
+  `gsc-historico.yml`. No habían explotado por suerte, no por diseño.
+- **Cuatro workflows de `disabled/` conservaban su `schedule:` sin comentar.** Hoy son
+  inertes porque GitHub no lee subcarpetas, pero la única barrera entre 106 correos a
+  firmas y nada era la ubicación de un archivo: un `git mv` los reactivaba con su horario
+  intacto. Quedan comentados, como los otros tres del directorio.
+- **La página que le vende PRO a las consignatarias contaba de una tabla muerta.** La
+  tabla `remates` quedó en 36 filas el 9-mar-2026; el sitio corre sobre `remates.json`
+  (1.110). A la firma que estamos por cobrarle le mostrábamos una plataforma 30 veces más
+  chica. El fallback era `?? 62`, un número que no salía de ningún lado.
+- **Los dos webhooks entrantes fallaban sin dejar rastro.** Rebill y Resend rechazan antes
+  de escribir cualquier tabla: con 0 compras y `email_events` vacía, no había forma de
+  distinguir "nadie compró nunca" de "viene reintentando hace meses y lo rechazamos por
+  firma". Ahora cada rechazo —y cada firma válida— escribe en `ops_events`.
+
+---
+
 ## [1.215.0] — 2026-09-30
 
 ### Los números de la home no eran los del sitio

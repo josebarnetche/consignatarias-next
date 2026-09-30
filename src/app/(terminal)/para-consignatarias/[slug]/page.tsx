@@ -2,6 +2,10 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase-server'
 import { getAiCitationStats } from '@/lib/ai-citations'
+import remates from '@/lib/data/remates.json'
+import { rematesDesdeHoy } from '@/lib/remates-conteo'
+import { hoyArgentina } from '@/lib/remates-en-vivo'
+import { getAllProfiles } from '@/lib/data/consignataria-slugs'
 import ConsignatariaShowcase, { type Firm } from '@/components/ConsignatariaShowcase'
 
 export const dynamic = 'force-dynamic'
@@ -34,14 +38,15 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     .maybeSingle()
   if (!c) notFound()
 
-  const [ct, r, ai] = await Promise.all([
+  const [ct, ai] = await Promise.all([
     db.from('consignatarias').select('id', { count: 'exact', head: true }),
-    db.from('remates').select('id', { count: 'exact', head: true }),
     getAiCitationStats(),
   ])
   const stats = {
-    consignatarias: ct.count ?? 113,
-    remates: r.count ?? 62,
+    consignatarias: ct.count ?? getAllProfiles().length,
+    // Misma corrección que en la página madre: la tabla `remates` está congelada
+    // desde el 9-mar-2026 (36 filas) y el sitio corre sobre remates.json.
+    remates: rematesDesdeHoy(remates, hoyArgentina()).length,
     aiRefsMes: ai.aiRefsMes,
     firmsCitadas: ai.firmsCitadas,
   }

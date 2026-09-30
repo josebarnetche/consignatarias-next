@@ -13,6 +13,7 @@ import { getProducto } from '@/lib/productos-datos'
 import { eventWeight } from '@/lib/value-events'
 import { getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import crypto from 'crypto'
+import { logEvent } from '@/lib/ops'
 
 // Verify Rebill webhook signature (HMAC-SHA256)
 function verifySignature(payload: string, signature: string | null, secret: string): boolean {
@@ -52,14 +53,40 @@ export async function POST(request: NextRequest) {
       || request.headers.get('x-webhook-signature')
     const webhookSecret = process.env.REBILL_WEBHOOK_SECRET
 
+    // Un webhook rechazado NO dejaba rastro en ninguna tabla: ni `ops_events`, ni
+    // `processed_webhook_events` (que se escribe después). Con 0 compras en la
+    // historia, no había forma de distinguir "nadie compró nunca" de "Rebill viene
+    // reintentando hace meses contra una firma que no validamos". Ahora cada rechazo
+    // queda escrito, y se ve en /admin/ops como lo que es: una falla nuestra.
     if (!webhookSecret) {
       console.error('REBILL_WEBHOOK_SECRET is not configured — rejecting webhook')
+      logEvent({
+        eventType: 'webhook_received',
+        status: 'error',
+        route: '/api/webhooks/rebill',
+        statusCode: 503,
+        metadata: { motivo: 'secret_sin_configurar' },
+      })
       return NextResponse.json({ error: 'not_configured' }, { status: 503 })
     }
     if (!verifySignature(rawBody, signature, webhookSecret)) {
       console.error('Webhook signature verification failed')
+      logEvent({
+        eventType: 'webhook_received',
+        status: 'error',
+        route: '/api/webhooks/rebill',
+        statusCode: 401,
+        metadata: { motivo: 'firma_invalida', con_header: Boolean(signature) },
+      })
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
+    logEvent({
+      eventType: 'webhook_received',
+      status: 'ok',
+      route: '/api/webhooks/rebill',
+      statusCode: 200,
+      metadata: { motivo: 'firma_valida' },
+    })
     
     const payload = JSON.parse(rawBody)
     const { event, data } = payload

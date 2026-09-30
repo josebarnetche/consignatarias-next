@@ -32,8 +32,12 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Instalar googleapis
-        run: npm install googleapis --no-save
+      # `npm install <paquete> --no-save` sobre un árbol manejado por pnpm rompe con
+      # "Cannot read properties of null (reading 'edgesOut')". Ya había roto el cron de
+      # bandas (4 de 5 corridas) y estaba documentado en demanda-fichas.yml desde el
+      # 18-sep; quedaba armado acá. Se instala el proyecto entero, que ya trae googleapis.
+      - name: Instalar dependencias
+        run: npm install --legacy-peer-deps
 
       - name: Bajar serie histórica
         run: node scripts/gsc-historico.mjs --from "${{ github.event.inputs.from || '2026-01-01' }}"

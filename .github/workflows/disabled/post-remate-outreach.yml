@@ -2,9 +2,12 @@ name: Post-Remate Outreach (Pedido de Promedios)
 
 # Every hour 14:00-22:00 UTC (11:00-19:00 ART) every day
 # Endpoint skips when no auctions finished ~3h ago, so cost is minimal.
+# DESHABILITADO: vive en disabled/, que GitHub Actions no lee. El horario queda
+# comentado además de la carpeta: mover el archivo a la raíz no lo debe poner a
+# correr solo — sobre todo los de outreach, que salen a mandar correo a firmas.
 on:
-  schedule:
-    - cron: '0 14-22 * * *'
+  # schedule:
+  #   - cron: '0 14-22 * * *'
   workflow_dispatch: # Manual trigger anytime
 
 jobs:
