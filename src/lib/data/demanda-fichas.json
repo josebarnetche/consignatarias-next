@@ -1,17 +1,87 @@
 {
-  "generado": "2026-09-29T14:49:34.035Z",
+  "generado": "2026-09-30T14:53:23.973Z",
   "ventanaDias": 30,
   "minimoPublicable": 8,
   "totales": {
-    "fichasConDato": 90,
-    "fichasVistas": 850,
-    "visitas": 3152,
+    "fichasConDato": 101,
+    "fichasVistas": 1060,
+    "visitas": 3826,
     "consultas": 9
   },
   "fichas": {
-    "30666277550": {
+    "33626365669": {
       "tipo": "frigorifico",
-      "visitas": 12,
+      "visitas": 16,
+      "consultas": 0
+    },
+    "30707168370": {
+      "tipo": "frigorifico",
+      "visitas": 8,
+      "consultas": 0
+    },
+    "33707751059": {
+      "tipo": "frigorifico",
+      "visitas": 39,
+      "consultas": 0
+    },
+    "30715845896": {
+      "tipo": "frigorifico",
+      "visitas": 18,
+      "consultas": 0
+    },
+    "30707283250": {
+      "tipo": "frigorifico",
+      "visitas": 42,
+      "consultas": 0
+    },
+    "30690043226": {
+      "tipo": "frigorifico",
+      "visitas": 8,
+      "consultas": 0
+    },
+    "30708327162": {
+      "tipo": "frigorifico",
+      "visitas": 30,
+      "consultas": 1
+    },
+    "30711439893": {
+      "tipo": "frigorifico",
+      "visitas": 10,
+      "consultas": 0
+    },
+    "30707985468": {
+      "tipo": "frigorifico",
+      "visitas": 9,
+      "consultas": 0
+    },
+    "30711083312": {
+      "tipo": "frigorifico",
+      "visitas": 9,
+      "consultas": 0
+    },
+    "ofarrell": {
+      "tipo": "consignataria",
+      "visitas": 27,
+      "consultas": 0
+    },
+    "30710802617": {
+      "tipo": "frigorifico",
+      "visitas": 8,
+      "consultas": 0
+    },
+    "30535168608": {
+      "tipo": "frigorifico",
+      "visitas": 9,
+      "consultas": 0
+    },
+    "colombo-y-magliano": {
+      "tipo": "consignataria",
+      "visitas": 39,
+      "consultas": 0
+    },
+    "pedro-noel-irey": {
+      "tipo": "consignataria",
+      "visitas": 13,
       "consultas": 0
     },
     "30716286823": {
@@ -19,39 +89,214 @@
       "visitas": 24,
       "consultas": 0
     },
+    "30718308204": {
+      "tipo": "frigorifico",
+      "visitas": 14,
+      "consultas": 0
+    },
+    "30718885740": {
+      "tipo": "frigorifico",
+      "visitas": 8,
+      "consultas": 0
+    },
+    "30671536130": {
+      "tipo": "frigorifico",
+      "visitas": 13,
+      "consultas": 0
+    },
+    "30663060259": {
+      "tipo": "frigorifico",
+      "visitas": 14,
+      "consultas": 0
+    },
+    "30716497778": {
+      "tipo": "frigorifico",
+      "visitas": 16,
+      "consultas": 0
+    },
+    "30709340243": {
+      "tipo": "frigorifico",
+      "visitas": 8,
+      "consultas": 0
+    },
+    "30712060677": {
+      "tipo": "frigorifico",
+      "visitas": 10,
+      "consultas": 0
+    },
+    "20273942875": {
+      "tipo": "frigorifico",
+      "visitas": 12,
+      "consultas": 0
+    },
+    "30718914104": {
+      "tipo": "frigorifico",
+      "visitas": 17,
+      "consultas": 0
+    },
+    "30709038008": {
+      "tipo": "frigorifico",
+      "visitas": 15,
+      "consultas": 0
+    },
+    "33707877389": {
+      "tipo": "frigorifico",
+      "visitas": 8,
+      "consultas": 0
+    },
+    "30709141267": {
+      "tipo": "frigorifico",
+      "visitas": 10,
+      "consultas": 0
+    },
+    "30710865821": {
+      "tipo": "frigorifico",
+      "visitas": 8,
+      "consultas": 0
+    },
+    "30611921086": {
+      "tipo": "frigorifico",
+      "visitas": 9,
+      "consultas": 0
+    },
+    "30690466984": {
+      "tipo": "frigorifico",
+      "visitas": 10,
+      "consultas": 0
+    },
+    "30561051794": {
+      "tipo": "frigorifico",
+      "visitas": 12,
+      "consultas": 0
+    },
+    "kofman-y-lissarrague": {
+      "tipo": "consignataria",
+      "visitas": 12,
+      "consultas": 0
+    },
+    "j-s-russo": {
+      "tipo": "consignataria",
+      "visitas": 11,
+      "consultas": 0
+    },
+    "33565794049": {
+      "tipo": "frigorifico",
+      "visitas": 8,
+      "consultas": 0
+    },
+    "30707810692": {
+      "tipo": "frigorifico",
+      "visitas": 14,
+      "consultas": 1
+    },
+    "30718380703": {
+      "tipo": "frigorifico",
+      "visitas": 12,
+      "consultas": 0
+    },
+    "30608708347": {
+      "tipo": "frigorifico",
+      "visitas": 13,
+      "consultas": 0
+    },
+    "ferias-rauch": {
+      "tipo": "consignataria",
+      "visitas": 9,
+      "consultas": 0
+    },
+    "rosgan": {
+      "tipo": "consignataria",
+      "visitas": 11,
+      "consultas": 0
+    },
+    "de-la-serna": {
+      "tipo": "consignataria",
+      "visitas": 9,
+      "consultas": 0
+    },
+    "hasenkamp": {
+      "tipo": "consignataria",
+      "visitas": 29,
+      "consultas": 0
+    },
+    "afa": {
+      "tipo": "consignataria",
+      "visitas": 10,
+      "consultas": 0
+    },
+    "lartirigoyen": {
+      "tipo": "consignataria",
+      "visitas": 8,
+      "consultas": 0
+    },
+    "colombo-y-colombo": {
+      "tipo": "consignataria",
+      "visitas": 16,
+      "consultas": 0
+    },
+    "bressan-y-cia": {
+      "tipo": "consignataria",
+      "visitas": 10,
+      "consultas": 0
+    },
+    "ganaderos-de-formosa": {
+      "tipo": "consignataria",
+      "visitas": 17,
+      "consultas": 0
+    },
+    "talano-hermanos": {
+      "tipo": "consignataria",
+      "visitas": 11,
+      "consultas": 0
+    },
+    "lalor": {
+      "tipo": "consignataria",
+      "visitas": 9,
+      "consultas": 0
+    },
+    "etchevehere-rural": {
+      "tipo": "consignataria",
+      "visitas": 21,
+      "consultas": 0
+    },
+    "pastore": {
+      "tipo": "consignataria",
+      "visitas": 17,
+      "consultas": 0
+    },
+    "sivero": {
+      "tipo": "consignataria",
+      "visitas": 18,
+      "consultas": 0
+    },
+    "30710178484": {
+      "tipo": "frigorifico",
+      "visitas": 10,
+      "consultas": 0
+    },
     "cooperativa-guillermo-lehmann": {
       "tipo": "consignataria",
       "visitas": 25,
       "consultas": 0
     },
-    "30707810692": {
+    "30504131889": {
       "tipo": "frigorifico",
-      "visitas": 13,
-      "consultas": 1
-    },
-    "30663060259": {
-      "tipo": "frigorifico",
-      "visitas": 13,
+      "visitas": 8,
       "consultas": 0
     },
-    "30707283250": {
+    "saenz-valiente-bullrich": {
+      "tipo": "consignataria",
+      "visitas": 35,
+      "consultas": 0
+    },
+    "30666277550": {
       "tipo": "frigorifico",
-      "visitas": 41,
+      "visitas": 11,
       "consultas": 0
     },
     "30711952841": {
       "tipo": "frigorifico",
-      "visitas": 14,
-      "consultas": 0
-    },
-    "30709038008": {
-      "tipo": "frigorifico",
-      "visitas": 14,
-      "consultas": 0
-    },
-    "ofarrell": {
-      "tipo": "consignataria",
-      "visitas": 24,
+      "visitas": 13,
       "consultas": 0
     },
     "30708126191": {
@@ -74,44 +319,14 @@
       "visitas": 12,
       "consultas": 0
     },
-    "30712060677": {
-      "tipo": "frigorifico",
-      "visitas": 9,
-      "consultas": 0
-    },
     "33639585889": {
       "tipo": "frigorifico",
-      "visitas": 10,
-      "consultas": 0
-    },
-    "colombo-y-colombo": {
-      "tipo": "consignataria",
-      "visitas": 15,
-      "consultas": 0
-    },
-    "saenz-valiente-bullrich": {
-      "tipo": "consignataria",
-      "visitas": 34,
-      "consultas": 0
-    },
-    "33707751059": {
-      "tipo": "frigorifico",
-      "visitas": 33,
+      "visitas": 9,
       "consultas": 0
     },
     "30636345454": {
       "tipo": "frigorifico",
       "visitas": 14,
-      "consultas": 0
-    },
-    "30718914104": {
-      "tipo": "frigorifico",
-      "visitas": 17,
-      "consultas": 0
-    },
-    "30718308204": {
-      "tipo": "frigorifico",
-      "visitas": 13,
       "consultas": 0
     },
     "30708330295": {
@@ -126,7 +341,7 @@
     },
     "lanusse-santillan": {
       "tipo": "consignataria",
-      "visitas": 16,
+      "visitas": 15,
       "consultas": 0
     },
     "30715616153": {
@@ -134,59 +349,19 @@
       "visitas": 12,
       "consultas": 0
     },
-    "30711083312": {
-      "tipo": "frigorifico",
-      "visitas": 8,
-      "consultas": 0
-    },
     "30656459502": {
       "tipo": "frigorifico",
       "visitas": 13,
       "consultas": 0
     },
-    "30718380703": {
-      "tipo": "frigorifico",
-      "visitas": 10,
-      "consultas": 0
-    },
-    "30608708347": {
-      "tipo": "frigorifico",
-      "visitas": 12,
-      "consultas": 0
-    },
     "30708202025": {
       "tipo": "frigorifico",
-      "visitas": 11,
-      "consultas": 0
-    },
-    "30715845896": {
-      "tipo": "frigorifico",
-      "visitas": 17,
+      "visitas": 10,
       "consultas": 0
     },
     "30714594598": {
       "tipo": "frigorifico",
       "visitas": 9,
-      "consultas": 0
-    },
-    "30708327162": {
-      "tipo": "frigorifico",
-      "visitas": 28,
-      "consultas": 1
-    },
-    "colombo-y-magliano": {
-      "tipo": "consignataria",
-      "visitas": 33,
-      "consultas": 0
-    },
-    "30690466984": {
-      "tipo": "frigorifico",
-      "visitas": 8,
-      "consultas": 0
-    },
-    "20273942875": {
-      "tipo": "frigorifico",
-      "visitas": 11,
       "consultas": 0
     },
     "30711100950": {
@@ -204,11 +379,6 @@
       "visitas": 14,
       "consultas": 0
     },
-    "etchevehere-rural": {
-      "tipo": "consignataria",
-      "visitas": 20,
-      "consultas": 0
-    },
     "33684058679": {
       "tipo": "frigorifico",
       "visitas": 8,
@@ -219,24 +389,14 @@
       "visitas": 9,
       "consultas": 0
     },
-    "30710178484": {
-      "tipo": "frigorifico",
-      "visitas": 8,
-      "consultas": 0
-    },
     "30718189221": {
       "tipo": "frigorifico",
-      "visitas": 11,
-      "consultas": 0
-    },
-    "sivero": {
-      "tipo": "consignataria",
-      "visitas": 18,
+      "visitas": 9,
       "consultas": 0
     },
     "reggi": {
       "tipo": "consignataria",
-      "visitas": 26,
+      "visitas": 24,
       "consultas": 0
     },
     "30707521992": {
@@ -244,19 +404,9 @@
       "visitas": 8,
       "consultas": 0
     },
-    "30711439893": {
-      "tipo": "frigorifico",
-      "visitas": 9,
-      "consultas": 0
-    },
     "ildarraz-hnos": {
       "tipo": "consignataria",
       "visitas": 8,
-      "consultas": 0
-    },
-    "hasenkamp": {
-      "tipo": "consignataria",
-      "visitas": 27,
       "consultas": 0
     },
     "la-ganadera": {
@@ -276,11 +426,6 @@
     },
     "jauregui-lorda": {
       "tipo": "consignataria",
-      "visitas": 13,
-      "consultas": 0
-    },
-    "rosgan": {
-      "tipo": "consignataria",
       "visitas": 10,
       "consultas": 0
     },
@@ -294,37 +439,12 @@
       "visitas": 11,
       "consultas": 0
     },
-    "lalor": {
-      "tipo": "consignataria",
-      "visitas": 9,
-      "consultas": 0
-    },
-    "30716497778": {
-      "tipo": "frigorifico",
-      "visitas": 16,
-      "consultas": 0
-    },
-    "ganaderos-de-formosa": {
-      "tipo": "consignataria",
-      "visitas": 16,
-      "consultas": 0
-    },
-    "30671536130": {
-      "tipo": "frigorifico",
-      "visitas": 12,
-      "consultas": 0
-    },
     "30597318584": {
-      "tipo": "frigorifico",
-      "visitas": 9,
-      "consultas": 0
-    },
-    "30643859544": {
       "tipo": "frigorifico",
       "visitas": 8,
       "consultas": 0
     },
-    "30535168608": {
+    "30643859544": {
       "tipo": "frigorifico",
       "visitas": 8,
       "consultas": 0
@@ -336,22 +456,7 @@
     },
     "30715492616": {
       "tipo": "frigorifico",
-      "visitas": 13,
-      "consultas": 0
-    },
-    "33626365669": {
-      "tipo": "frigorifico",
       "visitas": 12,
-      "consultas": 0
-    },
-    "ferias-rauch": {
-      "tipo": "consignataria",
-      "visitas": 8,
-      "consultas": 0
-    },
-    "30709141267": {
-      "tipo": "frigorifico",
-      "visitas": 8,
       "consultas": 0
     },
     "daniel-blanco": {
@@ -360,16 +465,6 @@
       "consultas": 0
     },
     "30587438182": {
-      "tipo": "frigorifico",
-      "visitas": 8,
-      "consultas": 0
-    },
-    "30561051794": {
-      "tipo": "frigorifico",
-      "visitas": 11,
-      "consultas": 0
-    },
-    "30611921086": {
       "tipo": "frigorifico",
       "visitas": 8,
       "consultas": 0
@@ -384,11 +479,6 @@
       "visitas": 8,
       "consultas": 0
     },
-    "30716689022": {
-      "tipo": "frigorifico",
-      "visitas": 8,
-      "consultas": 0
-    },
     "30678138300": {
       "tipo": "frigorifico",
       "visitas": 8,
@@ -396,27 +486,17 @@
     },
     "30707502505": {
       "tipo": "frigorifico",
-      "visitas": 12,
-      "consultas": 0
-    },
-    "pastore": {
-      "tipo": "consignataria",
-      "visitas": 16,
+      "visitas": 11,
       "consultas": 0
     },
     "30711856141": {
       "tipo": "frigorifico",
-      "visitas": 17,
+      "visitas": 16,
       "consultas": 0
     },
     "33614072429": {
       "tipo": "frigorifico",
       "visitas": 8,
-      "consultas": 0
-    },
-    "30717318346": {
-      "tipo": "frigorifico",
-      "visitas": 9,
       "consultas": 0
     },
     "30710915969": {
@@ -429,34 +509,9 @@
       "visitas": 9,
       "consultas": 0
     },
-    "bressan-y-cia": {
-      "tipo": "consignataria",
-      "visitas": 9,
-      "consultas": 0
-    },
-    "kofman-y-lissarrague": {
-      "tipo": "consignataria",
-      "visitas": 11,
-      "consultas": 0
-    },
     "gananor-pujol": {
       "tipo": "consignataria",
-      "visitas": 9,
-      "consultas": 0
-    },
-    "pedro-noel-irey": {
-      "tipo": "consignataria",
-      "visitas": 17,
-      "consultas": 0
-    },
-    "j-s-russo": {
-      "tipo": "consignataria",
-      "visitas": 10,
-      "consultas": 0
-    },
-    "talano-hermanos": {
-      "tipo": "consignataria",
-      "visitas": 10,
+      "visitas": 8,
       "consultas": 0
     }
   }
