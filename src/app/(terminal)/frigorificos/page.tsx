@@ -199,7 +199,7 @@ export default function FrigorificosPage() {
 
         {/* Listados provinciales — completa el cluster /frigorificos/{provincia} */}
         <nav aria-label="Frigoríficos por provincia" className="mt-4">
-          <h2 className="text-zinc-300 text-sm font-medium mb-2">Frigoríficos habilitados por provincia</h2>
+          <h2 className="text-zinc-300 text-sm font-medium mb-2">Frigoríficos indexados por provincia</h2>
           <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5">
             {provinceGrid.map((p) => (
               <li key={p.slug}>

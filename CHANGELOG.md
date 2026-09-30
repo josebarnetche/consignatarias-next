@@ -7,6 +7,33 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.215.0] — 2026-09-30
+
+### Los números de la home no eran los del sitio
+
+Auditoría de producción (294 URLs del sitemap, todas 200; cero errores de JS y cero
+llamadas a `/api/*` con 4xx/5xx). Nada estaba caído: lo que estaba mal eran las cifras.
+
+- **"116 en vivo" con un punto rojo, y el clic caía en "Nadie está transmitiendo ahora".**
+  La home contaba TODO lo transmisible de hoy a fin de año. Ahora cuenta sólo los remates
+  del día que todavía no terminaron — el mismo criterio que el muro de `/remates/en-vivo`.
+- **"364 plantas SENASA" durante siete meses.** `frigorificos-summary.json` se escribió a
+  mano en feb-2026 y nadie lo volvió a derivar, mientras el directorio llegaba a 1.115. La
+  home publicaba 364 y `/frigorificos` 1.115, en el mismo sitio. Nuevo
+  `scripts/build-frigorificos-summary.mjs` (con `--check`), enganchado al cron mensual de
+  SENASA, y la home dice **862 habilitados**, que es el número honesto.
+- **Las páginas provinciales llamaban "habilitados" al total indexado** (Buenos Aires: 398
+  cuando son 343). Ahora separan las dos cosas, en el `<h1>`, en las FAQ y en el schema.
+- **La home se comía los remates de HOY.** El scraper los marca `live` y el filtro tomaba
+  sólo `scheduled`: publicaba 181 en vez de 195. El criterio pasa a `lib/remates-conteo.ts`,
+  con test, para que haya uno solo.
+- **El gráfico de largo plazo tenía "Dic 24" escrito a mano** al lado de paneles en vivo.
+  El rótulo ahora sale del dato: si la serie no se actualiza, el atraso queda a la vista.
+- Tests nuevos: el resumen de frigoríficos tiene que ser un derivado al día de su fuente,
+  y los remates del día no pueden quedar fuera de la cuenta de próximos.
+
+---
+
 ## [1.214.0] — 2026-09-30
 
 ### El panel decía 705 errores y ninguno era un error

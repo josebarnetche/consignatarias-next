@@ -15,6 +15,18 @@ const series = monthlyData.series as SeriesPoint[];
 // Calculate stats
 const latestValue = series[series.length - 1]?.value ?? 0;
 
+// El rótulo decía "Dic 24" escrito a mano. La serie efectivamente termina ahí —son 21
+// meses de atraso— y el cartel quedaba al lado de paneles en vivo del INMAG, así que
+// se leía como dato de hoy. Ahora sale del dato: si la serie se actualiza, el rótulo
+// se mueve solo; si no, el atraso queda a la vista.
+const MESES_ES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+const ultimoPeriodo = series[series.length - 1]?.period ?? '';
+const ultimoLabel = (() => {
+  const [anio, mes] = ultimoPeriodo.split('-');
+  const i = Number(mes) - 1;
+  return MESES_ES[i] ? `${MESES_ES[i]} ${anio}` : ultimoPeriodo;
+})();
+
 function fmt(n: number, decimals = 0): string {
   return n.toLocaleString('es-AR', {
     minimumFractionDigits: decimals,
@@ -77,7 +89,7 @@ export function LongTermChart() {
         {/* Stats row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div>
-            <div className="text-xxs text-zinc-500 uppercase mb-1">Último (Dic 24)</div>
+            <div className="text-xxs text-zinc-500 uppercase mb-1">Último ({ultimoLabel})</div>
             <div className="text-xl font-terminal tabular-nums text-zinc-100">
               {fmt(latestValue, 2)}
             </div>

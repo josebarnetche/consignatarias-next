@@ -66,6 +66,9 @@ interface Frigorifico {
   matricula: string
   province: string
   stage: number
+  /** Habilitación vigente en el último relevamiento SENASA. El directorio también
+   *  indexa establecimientos históricos que ya no figuran: esos NO son habilitados. */
+  senasaActive?: boolean
 }
 
 const frigorificos = frigorificosData as Frigorifico[]
@@ -85,6 +88,9 @@ export async function frigorificoProvinceMetadata(provincia: string) {
   const config = PROVINCE_MAP.get(provincia)
   if (!config) return null
   const provinceFrigorificos = frigorificos.filter(f => f.province === config.name)
+  // El directorio indexa más de los que tienen habilitación vigente: decir
+  // "N habilitados" con el total es inflar el número (398 vs 343 en Buenos Aires).
+  const habilitados = provinceFrigorificos.filter(f => f.senasaActive === true).length
   return {
     // Kept under ~60 chars so Google doesn't truncate the "(2026)" freshness
     // tail in the SERP — the old title (~72 chars) lost "SENASA/MAGYP (2026)".
@@ -92,7 +98,7 @@ export async function frigorificoProvinceMetadata(provincia: string) {
     // "Habilitados SENASA". This class (e.g. /buenos-aires: 2.8k imp, ~1.0%
     // CTR at pos ~7) is the site's worst CTR offender. MAGYP stays in the desc.
     title: `Frigoríficos en ${config.displayName}: ${provinceFrigorificos.length} Habilitados SENASA (2026)`,
-    description: `¿Dónde faenar en ${config.displayName}? ${provinceFrigorificos.length} frigoríficos y mataderos habilitados por SENASA/MAGYP, con matrícula, CUIT y ciclo de habilitación (I/II/III). Directorio oficial actualizado en 2026.`,
+    description: `¿Dónde faenar en ${config.displayName}? ${habilitados} frigoríficos y mataderos habilitados por SENASA/MAGYP, con matrícula, CUIT y ciclo de habilitación (I/II/III). Directorio oficial actualizado en 2026.`,
     keywords: [
       `frigoríficos ${config.displayName.toLowerCase()}`,
       `plantas frigoríficas ${config.displayName.toLowerCase()}`,
@@ -103,7 +109,7 @@ export async function frigorificoProvinceMetadata(provincia: string) {
     ],
     openGraph: {
       title: `Frigoríficos en ${config.displayName}`,
-      description: `${provinceFrigorificos.length} frigoríficos habilitados por MAGYP en ${config.displayName}. Directorio oficial con matrícula y datos de contacto.`,
+      description: `${habilitados} frigoríficos habilitados por MAGYP en ${config.displayName}. Directorio oficial con matrícula y datos de contacto.`,
       url: `https://www.consignatarias.com.ar/frigorificos/${provincia}`,
       type: 'website' as const,
     },
@@ -167,6 +173,8 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
   const provinceFrigorificos = frigorificos
     .filter(f => f.province === config.name)
     .sort((a, b) => a.name.localeCompare(b.name))
+  const habilitados = provinceFrigorificos.filter(f => f.senasaActive === true).length
+  const sinVigencia = provinceFrigorificos.length - habilitados
 
   const stageCount = provinceFrigorificos.reduce((acc, f) => {
     acc[f.stage] = (acc[f.stage] || 0) + 1
@@ -180,7 +188,7 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
   const faqItems = [
     {
       question: `¿Cuántos frigoríficos hay habilitados en ${config.displayName}?`,
-      answer: `Según el registro de SENASA/MAGYP hay ${provinceFrigorificos.length} ${provinceFrigorificos.length === 1 ? 'planta frigorífica habilitada' : 'plantas frigoríficas habilitadas'} en ${config.displayName}, listadas con su matrícula, CUIT y ciclo de habilitación.`,
+      answer: `Según el último relevamiento de SENASA/MAGYP hay ${habilitados} ${habilitados === 1 ? 'planta frigorífica habilitada' : 'plantas frigoríficas habilitadas'} en ${config.displayName}, listadas con su matrícula, CUIT y ciclo de habilitación. El directorio indexa además ${sinVigencia} ${sinVigencia === 1 ? 'establecimiento' : 'establecimientos'} sin habilitación vigente en ese relevamiento.`,
     },
     {
       question: '¿Qué significa el ciclo I, II o III de un frigorífico?',
@@ -188,7 +196,7 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
     },
     {
       question: `¿Dónde faenar hacienda en ${config.displayName}?`,
-      answer: `${config.displayName} cuenta con ${provinceFrigorificos.length} ${provinceFrigorificos.length === 1 ? 'frigorífico habilitado' : 'frigoríficos habilitados'} por SENASA/MAGYP${stageList.length ? ` (${stageList.join(', ')})` : ''}. El listado completo, con matrícula y CUIT de cada planta, está disponible en esta página.`,
+      answer: `${config.displayName} cuenta con ${habilitados} ${habilitados === 1 ? 'frigorífico habilitado' : 'frigoríficos habilitados'} por SENASA/MAGYP${stageList.length ? ` (${stageList.join(', ')})` : ''}. El listado completo, con matrícula y CUIT de cada planta, está disponible en esta página.`,
     },
   ]
 
@@ -196,7 +204,7 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: `Frigoríficos en ${config.displayName}`,
-    description: `Directorio de ${provinceFrigorificos.length} frigoríficos habilitados por MAGYP en ${config.displayName}, Argentina`,
+    description: `Directorio de ${habilitados} frigoríficos habilitados por MAGYP en ${config.displayName}, Argentina`,
     numberOfItems: provinceFrigorificos.length,
     itemListElement: provinceFrigorificos.slice(0, 50).map((frigorifico, index) => ({
       '@type': 'ListItem',
@@ -261,7 +269,7 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
           </div>
 
           <div className="border-b border-terminal-border px-panel py-4">
-            <h1 className="text-lg font-terminal text-zinc-200 mb-3">Frigoríficos habilitados en {config.displayName}: {provinceFrigorificos.length} plantas</h1>
+            <h1 className="text-lg font-terminal text-zinc-200 mb-3">Frigoríficos en {config.displayName}: {habilitados} habilitados de {provinceFrigorificos.length} indexados</h1>
             <p className="text-sm text-zinc-400 leading-relaxed">{config.intro}</p>
           </div>
 
