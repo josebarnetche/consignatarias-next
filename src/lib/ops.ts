@@ -26,7 +26,13 @@ export type OpsEventType =
   | 'x402_payment'
   | 'error'
 
-export type OpsStatus = 'ok' | 'error' | 'timeout'
+/**
+ * `probe` = la petición se contestó bien, pero nunca fue de un usuario: crawlers de
+ * directorios MCP pidiendo métodos que no existen (`server/discover`), sondas de
+ * liveness, requests sin credenciales. En 9 días eran 705 de los 714 "errores" del
+ * panel: contarlos como fallas es lo que hace que una falla real no se vea.
+ */
+export type OpsStatus = 'ok' | 'error' | 'timeout' | 'probe'
 
 export interface LogEventInput {
   eventType: OpsEventType

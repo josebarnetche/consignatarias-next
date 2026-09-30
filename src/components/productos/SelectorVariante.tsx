@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { ComprarInforme } from './ComprarInforme'
+import { trackInformeVarianteSelect } from '@/lib/analytics'
 
 export interface OpcionVariante {
   slug: string
@@ -72,6 +73,7 @@ export function SelectorVariante({
   }, [busqueda, opciones, mostrarTodas])
 
   function elegir(o: OpcionVariante) {
+    trackInformeVarianteSelect(slug, o.slug, o.label)
     setElegida(o)
     setBusqueda(o.label)
     setCalculando(true)
