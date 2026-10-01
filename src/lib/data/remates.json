@@ -17576,6 +17576,25 @@
     "status": "live"
   },
   {
+    "title": "Vittori Ercazti | El Palenque de Beltrán",
+    "consignatariaName": "El Palenque de Beltrán Hnos.",
+    "consignatariaSlug": "el-palenque-de-beltran-hnos",
+    "date": "2026-10-01",
+    "time": "14:00",
+    "location": "",
+    "province": "",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Vittori Ercazti | El Palenque de Beltrán",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6691-vittori-ercazti-el-palenque-de-beltran",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "live",
+    "id": 926
+  },
+  {
     "title": "GORDO, INVERNADA y CRÍA Remate Televisado por Canal Rural",
     "consignatariaName": "CAMPOS y GANADOS S.A.",
     "consignatariaSlug": "campos-y-ganados-s-a",
@@ -17591,7 +17610,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.camposyganados.com",
-    "id": 926,
+    "id": 927,
     "status": "live"
   },
   {
@@ -17610,7 +17629,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.pedronoelireysrl.com.ar",
-    "id": 927,
+    "id": 928,
     "status": "live"
   },
   {
@@ -17629,27 +17648,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 928,
+    "id": 929,
     "status": "live"
-  },
-  {
-    "title": "Vittori Ercazti | El Palenque de Beltrán",
-    "consignatariaName": "El Palenque de Beltrán Hnos.",
-    "consignatariaSlug": "el-palenque-de-beltran-hnos",
-    "date": "2026-10-01",
-    "time": "14:00",
-    "location": "",
-    "province": "",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Vittori Ercazti | El Palenque de Beltrán",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6691-vittori-ercazti-el-palenque-de-beltran",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "live",
-    "id": 929
   },
   {
     "title": "DIFERIDO AL 2/10",
@@ -18488,6 +18488,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Faena, Invernada y Cria",
+    "consignatariaName": "Brivio y Arzoz",
+    "consignatariaSlug": "brivio-y-arzoz",
+    "date": "2026-10-06",
+    "time": null,
+    "location": "Tres Arroyos, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": 600,
+    "description": "Tres Arroyos Faena, Invernada y Cria",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 974,
+    "status": "scheduled"
+  },
+  {
     "title": "GORDO, INVERNADA y CRÍA",
     "consignatariaName": "SÁENZ VALIENTE, BULLRICH Y CIA. S.A.",
     "consignatariaSlug": "saenz-valiente-bullrich-y-cia-s-a",
@@ -18503,7 +18522,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 974,
+    "id": 975,
     "status": "scheduled"
   },
   {
@@ -18522,7 +18541,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 975,
+    "id": 976,
     "status": "scheduled"
   },
   {
@@ -18537,25 +18556,6 @@
     "mainCategory": "mixto",
     "estimatedHeads": null,
     "description": "Brandsen. Invernada, cria y consumo",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 976,
-    "status": "scheduled"
-  },
-  {
-    "title": "Faena, Invernada y Cria",
-    "consignatariaName": "Brivio y Arzoz",
-    "consignatariaSlug": "brivio-y-arzoz",
-    "date": "2026-10-06",
-    "time": null,
-    "location": "Tres Arroyos, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": 600,
-    "description": "Tres Arroyos Faena, Invernada y Cria",
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
@@ -19495,25 +19495,6 @@
     "status": "scheduled"
   },
   {
-    "title": "- Gordo - Invernada y Cría -",
-    "consignatariaName": "S. L. LEDESMA Y CÍA. S.A.",
-    "consignatariaSlug": "s-l-ledesma-y-cia-s-a",
-    "date": "2026-10-09",
-    "time": "10:30",
-    "location": "TANDIL, BUENOS AIRES",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": 900,
-    "description": "Destacando:\r\n30 Vacas NUEVAS Neg. y Col. Insem. Marca Liq.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "ledesmaycia.com.ar",
-    "id": 1027,
-    "status": "scheduled"
-  },
-  {
     "title": "Faena, Invernada y Cria - 10.30hs.",
     "consignatariaName": "Martin Y Alonso",
     "consignatariaSlug": "martin-y-alonso",
@@ -19529,6 +19510,25 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1027,
+    "status": "scheduled"
+  },
+  {
+    "title": "- Gordo - Invernada y Cría -",
+    "consignatariaName": "S. L. LEDESMA Y CÍA. S.A.",
+    "consignatariaSlug": "s-l-ledesma-y-cia-s-a",
+    "date": "2026-10-09",
+    "time": "10:30",
+    "location": "TANDIL, BUENOS AIRES",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": 900,
+    "description": "Destacando:\r\n30 Vacas NUEVAS Neg. y Col. Insem. Marca Liq.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "ledesmaycia.com.ar",
     "id": 1028,
     "status": "scheduled"
   },
