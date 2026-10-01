@@ -1838,8 +1838,8 @@
   "categories": {
     "novillos": {
       "current": 4186.31,
-      "prev": 4241.9,
-      "change": -1.3,
+      "prev": 4186.31,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 207,
@@ -1847,8 +1847,8 @@
     },
     "novillitos": {
       "current": 4446.85,
-      "prev": 4688.53,
-      "change": -5.2,
+      "prev": 4446.85,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 342,
@@ -1856,8 +1856,8 @@
     },
     "vaquillonas": {
       "current": 4299.82,
-      "prev": 4432.2,
-      "change": -3,
+      "prev": 4299.82,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 1038,
@@ -1865,16 +1865,16 @@
     },
     "vacas": {
       "current": 3225.55,
-      "prev": 3274.94,
-      "change": -1.5,
+      "prev": 3225.55,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "latestVolume": 564,
       "observedDate": "30/09/2026"
     },
     "toros": {
       "current": 3350.97,
-      "prev": 3445.76,
-      "change": -2.8,
+      "prev": 3350.97,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 93,
@@ -1888,54 +1888,36 @@
     }
   },
   "corn": {
-    "current": 235.33,
+    "current": 235.7,
     "prev": 235.33,
-    "change": 0,
+    "change": 0.2,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1560,
+    "current": 1555,
     "prev": 1560,
-    "change": 0,
+    "change": -0.3,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
-    "current": 1540,
+    "current": 1545,
     "prev": 1540,
-    "change": 0,
+    "change": 0.3,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
   "lastUpdate": "2026-10-01",
   "provinceEntry": {
     "date": "2026-10-01",
-    "totalCabezas": 2284,
+    "totalCabezas": 196,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 1515,
-        "total": 1515,
-        "percentage": 66.33
-      },
-      {
-        "province": "LA PAMPA",
-        "enPie": 484,
-        "total": 484,
-        "percentage": 21.19
-      },
-      {
-        "province": "SANTA FE",
-        "enPie": 245,
-        "total": 245,
-        "percentage": 10.73
-      },
-      {
-        "province": "CORDOBA",
-        "enPie": 40,
-        "total": 40,
-        "percentage": 1.75
+        "enPie": 195,
+        "total": 196,
+        "percentage": 100
       }
     ]
   },
@@ -2392,11 +2374,11 @@
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
-    "current": 513.5,
+    "current": 508.5,
     "prev": 513.5,
-    "change": 0,
+    "change": -1,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
-    "date": "2026-09-30"
+    "date": "2026-10-01"
   }
 }
