@@ -8,9 +8,12 @@ name: Sell-Zone Alerts
 # correr diario: la mayoría de los días no manda nada.
 # Cada mail: 1 CTA + List-Unsubscribe (RFC 8058). Para armar: mover a
 # .github/workflows/. Para frenar: mover de vuelta a disabled/.
+# DESHABILITADO: vive en disabled/, que GitHub Actions no lee. El horario queda
+# comentado además de la carpeta: mover el archivo a la raíz no lo debe poner a
+# correr solo — sobre todo los de outreach, que salen a mandar correo a firmas.
 on:
-  schedule:
-    - cron: '30 21 * * 1-5' # 18:30 ART (~UTC-3) lun-vie, después del cierre del MAG
+  # schedule:
+  #   - cron: '30 21 * * 1-5' # 18:30 ART (~UTC-3) lun-vie, después del cierre del MAG
   workflow_dispatch: # trigger manual
 
 jobs:

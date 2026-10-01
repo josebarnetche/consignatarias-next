@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import type { Json } from '@/lib/database.types'
 import crypto from 'crypto'
+import { logEvent } from '@/lib/ops'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -55,17 +56,42 @@ export async function POST(req: NextRequest) {
   const rawBody = await req.text()
 
   // ── Verificación de firma ──
+  // `email_events` está vacía y es esta ruta la única que la escribe: el panel de
+  // salud de emails del admin muestra cero permanente aunque salgan cientos de mails.
+  // Cero filas puede significar "el webhook nunca llegó" o "llega y lo rechazamos", y
+  // hasta ahora un rechazo no dejaba rastro en ningún lado. Ahora sí.
   const secret = process.env.RESEND_WEBHOOK_SECRET
   if (!secret) {
     console.error('[resend-webhook] RESEND_WEBHOOK_SECRET no configurado')
+    logEvent({
+      eventType: 'webhook_received',
+      status: 'error',
+      route: '/api/webhooks/resend',
+      statusCode: 500,
+      metadata: { motivo: 'secret_sin_configurar' },
+    })
     return NextResponse.json({ error: 'not_configured' }, { status: 500 })
   }
   const svixId = req.headers.get('svix-id') || ''
   const svixTs = req.headers.get('svix-timestamp') || ''
   const svixSig = req.headers.get('svix-signature') || ''
   if (!svixId || !svixTs || !svixSig || !verifySvix(secret, svixId, svixTs, rawBody, svixSig)) {
+    logEvent({
+      eventType: 'webhook_received',
+      status: 'error',
+      route: '/api/webhooks/resend',
+      statusCode: 401,
+      metadata: { motivo: 'firma_invalida', con_headers: Boolean(svixId && svixTs && svixSig) },
+    })
     return NextResponse.json({ error: 'invalid_signature' }, { status: 401 })
   }
+  logEvent({
+    eventType: 'webhook_received',
+    status: 'ok',
+    route: '/api/webhooks/resend',
+    statusCode: 200,
+    metadata: { motivo: 'firma_valida' },
+  })
 
   // Replay window: reject signed events older/newer than 5 min (Svix spec).
   // Dedup on svix-id stops honest retries; this bounds captured-event replay.

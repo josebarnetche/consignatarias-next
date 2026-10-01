@@ -5,9 +5,12 @@ name: Remate Reminders
 # último "en vivo" sólo si hay youtubeUrl), con dedup persistente (outreach_log,
 # 1 por remate+timing+email, ventana 7d) — por eso es seguro correr cada hora.
 # Cada mail: 1 CTA + UTM + List-Unsubscribe. Para frenar: mover a disabled/.
+# DESHABILITADO: vive en disabled/, que GitHub Actions no lee. El horario queda
+# comentado además de la carpeta: mover el archivo a la raíz no lo debe poner a
+# correr solo — sobre todo los de outreach, que salen a mandar correo a firmas.
 on:
-  schedule:
-    - cron: '0 * * * *' # cada hora (necesario para capturar la ventana T-1h; el dedup evita repetir)
+  # schedule:
+  #   - cron: '0 * * * *' # cada hora (necesario para capturar la ventana T-1h; el dedup evita repetir)
   workflow_dispatch: # trigger manual
 
 jobs:

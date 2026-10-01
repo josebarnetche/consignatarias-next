@@ -5,9 +5,12 @@ name: PRO Consignataria Outreach (warm, goteo 1/día)
 # 1/día, ≥10 vistas/30d, no-ya-PRO, suppress de bajas, outreach_log (1/slug + cooldown 30d),
 # List-Unsubscribe RFC 8058 + identificación legal Memola Medios SAS. Secrets viven en Vercel.
 # Preview: workflow_dispatch con dry=1, o curl ?dry=1. Para frenar: volver a mover a disabled/.
+# DESHABILITADO: vive en disabled/, que GitHub Actions no lee. El horario queda
+# comentado además de la carpeta: mover el archivo a la raíz no lo debe poner a
+# correr solo — sobre todo los de outreach, que salen a mandar correo a firmas.
 on:
-  schedule:
-    - cron: '0 13 * * 1-5' # Lun-Vie 10:00 ART (goteo; el route capea a 1 envío/corrida)
+  # schedule:
+  #   - cron: '0 13 * * 1-5' # Lun-Vie 10:00 ART (goteo; el route capea a 1 envío/corrida)
   workflow_dispatch:
     inputs:
       min:
