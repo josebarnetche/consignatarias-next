@@ -30,6 +30,8 @@ Auditoría de CI/CD, crons y circuitos. Nada de esto se veía desde afuera.
   tabla `remates` quedó en 36 filas el 9-mar-2026; el sitio corre sobre `remates.json`
   (1.110). A la firma que estamos por cobrarle le mostrábamos una plataforma 30 veces más
   chica. El fallback era `?? 62`, un número que no salía de ningún lado.
+- **`package.json` quedó cinco releases atrás** (decía 1.211.0 con el CHANGELOG en 1.216.0).
+  `docs/VERSIONING.md` dice que la versión vive ahí: queda sincronizada y tagueada.
 - **Los dos webhooks entrantes fallaban sin dejar rastro.** Rebill y Resend rechazan antes
   de escribir cualquier tabla: con 0 compras y `email_events` vacía, no había forma de
   distinguir "nadie compró nunca" de "viene reintentando hace meses y lo rechazamos por
