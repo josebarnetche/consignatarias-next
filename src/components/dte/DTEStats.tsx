@@ -181,7 +181,7 @@ export function DTEStats({ dtes }: DTEStatsProps) {
               </div>
               <div>
                 <p className="text-sm text-gray-400">Próximo logro</p>
-                <p className="text-lg font-bold text-white">{stats.nextDteMilestone} guías</p>
+                <p className="text-lg font-bold text-ink">{stats.nextDteMilestone} guías</p>
               </div>
             </div>
             
@@ -209,7 +209,7 @@ export function DTEStats({ dtes }: DTEStatsProps) {
               </div>
               <div>
                 <p className="text-sm text-gray-400">Próximo hito</p>
-                <p className="text-lg font-bold text-white">{stats.nextCabezasMilestone.toLocaleString('es-AR')} cabezas</p>
+                <p className="text-lg font-bold text-ink">{stats.nextCabezasMilestone.toLocaleString('es-AR')} cabezas</p>
               </div>
             </div>
             
@@ -232,11 +232,11 @@ export function DTEStats({ dtes }: DTEStatsProps) {
         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
           <div className="flex items-center gap-3 mb-3">
             <Calendar className="w-5 h-5 text-sky-400" />
-            <h3 className="font-semibold text-white">Este mes</h3>
+            <h3 className="font-semibold text-ink">Este mes</h3>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-2xl font-bold text-white">{stats.thisMonthDtes}</p>
+              <p className="text-2xl font-bold text-ink">{stats.thisMonthDtes}</p>
               <p className="text-sm text-gray-400">guías subidas</p>
             </div>
             <div>
@@ -255,7 +255,7 @@ export function DTEStats({ dtes }: DTEStatsProps) {
               <Sparkles className="w-5 h-5 text-purple-400" />
             </div>
             <div>
-              <h3 className="font-semibold text-white">Tu perfil ganadero</h3>
+              <h3 className="font-semibold text-ink">Tu perfil ganadero</h3>
               <p className="text-xs text-gray-400">Basado en {stats.activeMonths} meses de datos</p>
             </div>
           </div>
@@ -267,7 +267,7 @@ export function DTEStats({ dtes }: DTEStatsProps) {
                 <BarChart3 className="w-4 h-4 text-purple-400" />
               </div>
               <div>
-                <p className="text-lg font-bold text-white">
+                <p className="text-lg font-bold text-ink">
                   {stats.avgMonthlyCabezas.toLocaleString('es-AR')}
                 </p>
                 <p className="text-xs text-gray-400">cabezas promedio/mes</p>
@@ -281,7 +281,7 @@ export function DTEStats({ dtes }: DTEStatsProps) {
                   <Trophy className="w-4 h-4 text-amber-400" />
                 </div>
                 <div>
-                  <p className="text-lg font-bold text-white">{stats.peakMonth.name}</p>
+                  <p className="text-lg font-bold text-ink">{stats.peakMonth.name}</p>
                   <p className="text-xs text-gray-400">
                     mes récord ({stats.peakMonth.cabezas.toLocaleString('es-AR')} cab)
                   </p>
@@ -296,7 +296,7 @@ export function DTEStats({ dtes }: DTEStatsProps) {
                   <Target className="w-4 h-4 text-emerald-400" />
                 </div>
                 <div>
-                  <p className="text-lg font-bold text-white capitalize">{stats.topCategory.name}s</p>
+                  <p className="text-lg font-bold text-ink capitalize">{stats.topCategory.name}s</p>
                   <p className="text-xs text-gray-400">
                     categoría principal ({stats.topCategory.percentage}% del total)
                   </p>
@@ -316,7 +316,7 @@ export function DTEStats({ dtes }: DTEStatsProps) {
                 <div>
                   <p className={`text-lg font-bold ${
                     stats.trend === 'up' ? 'text-emerald-400' : 
-                    stats.trend === 'down' ? 'text-red-400' : 'text-white'
+                    stats.trend === 'down' ? 'text-red-400' : 'text-ink'
                   }`}>
                     {stats.trend === 'up' ? 'En alza' : 
                      stats.trend === 'down' ? 'En baja' : 'Estable'}
@@ -332,7 +332,7 @@ export function DTEStats({ dtes }: DTEStatsProps) {
       {/* Category Breakdown (visual lock-in - shows value of data) */}
       {sortedCategories.length > 0 && (
         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
-          <h3 className="font-semibold text-white mb-4">Tu composición de hacienda</h3>
+          <h3 className="font-semibold text-ink mb-4">Tu composición de hacienda</h3>
           <div className="space-y-3">
             {sortedCategories.map(([category, count]) => (
               <div key={category}>
@@ -357,7 +357,7 @@ export function DTEStats({ dtes }: DTEStatsProps) {
         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
           <div className="flex items-center gap-3 mb-4">
             <Trophy className="w-5 h-5 text-amber-500" />
-            <h3 className="font-semibold text-white">Tus logros</h3>
+            <h3 className="font-semibold text-ink">Tus logros</h3>
           </div>
           <div className="flex flex-wrap gap-2">
             {stats.achievedDteMilestones.map(milestone => (

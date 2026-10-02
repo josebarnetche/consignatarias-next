@@ -303,7 +303,7 @@ export default async function MercadoCanuelasPage() {
         <div className="grid sm:grid-cols-3 gap-4 mb-8">
           <div className="bg-gradient-to-br from-sky-500/10 to-transparent border border-sky-500/20 rounded-2xl p-6">
             <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Novillo (INMAG)</div>
-            <div className="text-3xl font-bold text-white tabular-nums">
+            <div className="text-3xl font-bold text-ink tabular-nums">
               ${fmt(inmag.current)}<span className="text-lg text-zinc-500">/kg</span>
             </div>
             <div className={`text-xs mt-1 ${isPositive ? 'text-emerald-500' : 'text-red-500'}`}>
@@ -312,14 +312,14 @@ export default async function MercadoCanuelasPage() {
           </div>
           <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl p-6">
             <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Promedio general de la rueda</div>
-            <div className="text-3xl font-bold text-white tabular-nums">
+            <div className="text-3xl font-bold text-ink tabular-nums">
               {totales ? <>${fmt(totales.avgPrice)}<span className="text-lg text-zinc-500">/kg</span></> : '—'}
             </div>
             <div className="text-xs text-zinc-500 mt-1">todas las categorías, ponderado por kilos</div>
           </div>
           <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl p-6">
             <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Cabezas vendidas</div>
-            <div className="text-3xl font-bold text-white tabular-nums">{totales ? fmt(totales.cabezas) : '—'}</div>
+            <div className="text-3xl font-bold text-ink tabular-nums">{totales ? fmt(totales.cabezas) : '—'}</div>
             <div className="text-xs text-zinc-500 mt-1">rueda del {detallado.date}</div>
           </div>
         </div>
@@ -348,7 +348,7 @@ export default async function MercadoCanuelasPage() {
 
         {/* El tablero de la rueda */}
         <section className="mb-10">
-          <h2 className="text-xl font-semibold text-white mb-2">
+          <h2 className="text-xl font-semibold text-ink mb-2">
             Precios por categoría — rueda del {fmtFecha(detallado.date)}
           </h2>
           <p className="text-zinc-500 text-sm mb-4">
@@ -379,7 +379,7 @@ export default async function MercadoCanuelasPage() {
         {/* Procedencia */}
         {entradas.provinces.length > 0 && (
           <section className="mb-10">
-            <h2 className="text-xl font-semibold text-white mb-2">De dónde vino la hacienda</h2>
+            <h2 className="text-xl font-semibold text-ink mb-2">De dónde vino la hacienda</h2>
             <p className="text-zinc-500 text-sm mb-4">
               Entrada del {fmtFecha(entradas.date)}: {fmt(entradas.totalCabezas)} cabezas, por provincia de origen.
             </p>
@@ -436,12 +436,12 @@ export default async function MercadoCanuelasPage() {
 
         {/* FAQ */}
         <section className="mb-10">
-          <h2 className="text-xl font-semibold text-white mb-6">Preguntas frecuentes</h2>
+          <h2 className="text-xl font-semibold text-ink mb-6">Preguntas frecuentes</h2>
           <div className="space-y-4">
             {faq.map((f, i) => (
               <details key={i} className="group bg-zinc-900/30 border border-zinc-800/50 rounded-xl overflow-hidden">
                 <summary className="flex items-center justify-between p-5 cursor-pointer hover:bg-zinc-800/20 transition-colors">
-                  <h3 className="text-white font-medium pr-4">{f.question}</h3>
+                  <h3 className="text-ink font-medium pr-4">{f.question}</h3>
                   <svg className="w-5 h-5 text-zinc-500 flex-shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -457,15 +457,15 @@ export default async function MercadoCanuelasPage() {
         {/* Relacionados */}
         <section className="grid sm:grid-cols-3 gap-4 mb-10">
           <Link href="/mercado/arrendamiento/canuelas" className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 hover:border-sky-500/30 transition-all group">
-            <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-accent-bright transition-colors">Arrendamiento en Cañuelas</h3>
+            <h3 className="text-lg font-semibold text-ink mb-1 group-hover:text-accent-bright transition-colors">Arrendamiento en Cañuelas</h3>
             <p className="text-sm text-zinc-500">Cómo se forma el índice novillo arrendamiento con el INMAG.</p>
           </Link>
           <Link href="/mercado/inmag" className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 hover:border-sky-500/30 transition-all group">
-            <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-accent-bright transition-colors">INMAG en vivo</h3>
+            <h3 className="text-lg font-semibold text-ink mb-1 group-hover:text-accent-bright transition-colors">INMAG en vivo</h3>
             <p className="text-sm text-zinc-500">La serie del novillo desde 2015, en pesos y en dólares.</p>
           </Link>
           <Link href="/mercado/liniers" className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 hover:border-sky-500/30 transition-all group">
-            <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-accent-bright transition-colors">Mercado de Liniers</h3>
+            <h3 className="text-lg font-semibold text-ink mb-1 group-hover:text-accent-bright transition-colors">Mercado de Liniers</h3>
             <p className="text-sm text-zinc-500">Qué pasó con Liniers y con qué se reemplazó su precio.</p>
           </Link>
         </section>

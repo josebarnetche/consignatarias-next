@@ -368,10 +368,10 @@ export default async function PreciosCategoriaPage({
           question={`Precio del kilo vivo de ${c.singular} hoy`}
           answer={
             <>
-              El kilo vivo de {c.singular} cotiza <strong className="text-white">${fmt(price)}/kg</strong> de
+              El kilo vivo de {c.singular} cotiza <strong className="text-ink">${fmt(price)}/kg</strong> de
               referencia (INMAG, Mercado Agroganadero de Cañuelas; {INMAG_DATE}, {changeStr} semanal).{' '}
               {`${c.articulo.charAt(0).toUpperCase()}${c.articulo.slice(1)}`} {c.singular} promedio de {c.promedioKg} kg
-              ronda los <strong className="text-white">${fmt(promedioPeso)}</strong>. El precio realizado varía según
+              ronda los <strong className="text-ink">${fmt(promedioPeso)}</strong>. El precio realizado varía según
               peso, terminación y la plaza o remate donde se venda.
             </>
           }
@@ -382,7 +382,7 @@ export default async function PreciosCategoriaPage({
             answer={
               <>
                 El {c.singular} {cleanName(headline.category).toLowerCase()} promedió{' '}
-                <strong className="text-white">${fmt(Math.round(headline.avgPrice))}/kg</strong> (rango ${fmt(headline.minPrice)}–${fmt(headline.maxPrice)},{' '}
+                <strong className="text-ink">${fmt(Math.round(headline.avgPrice))}/kg</strong> (rango ${fmt(headline.minPrice)}–${fmt(headline.maxPrice)},{' '}
                 {fmt(headline.cabezas)} cabezas) en el remate observado del Mercado Agroganadero del {magDetailDate}. Es el
                 promedio realizado por categoría, distinto del INMAG de referencia (${fmt(price)}/kg).
               </>

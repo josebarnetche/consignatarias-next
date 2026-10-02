@@ -3,7 +3,18 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.216.0 (2026-09-30). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+**Current version:** v1.217.0 (2026-10-02). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+
+> **Tema claro (desde v1.217.0, Fases 1-2 de [docs/PLAN-TEMA-WHITE.md](docs/PLAN-TEMA-WHITE.md)):**
+> el sitio abre en **claro** (blanco puro, acento `blue-700`), con un botón en el header
+> (`src/components/ThemeToggle.tsx`) para pasar al terminal **oscuro** de siempre —
+> pixel a pixel igual, sus variables llevan los hex de antes. Mecanismo: `src/app/globals.css`
+> define dos juegos de variables CSS (`:root` = claro/default, `[data-theme="dark"]` = oscuro)
+> que `tailwind.config.js` consume (`zinc`, `terminal.*`, `positive/negative/warning/accent/live`,
+> y el token nuevo `ink` para texto fuerte que SÍ invierte). Elección en `localStorage.theme`,
+> aplicada por un script inline en `<head>` antes de pintar — sin librería de temas. **El color
+> se escribe con tokens (`zinc-*`, `terminal-*`, semánticos, `ink`), nunca con un hex nuevo** —
+> un hex literal no responde al toggle y rompe en uno de los dos temas.
 
 ---
 

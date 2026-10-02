@@ -83,7 +83,7 @@ export default async function LiquidacionPage() {
 
       <header className="mt-4 mb-6">
         <p className="text-xxs uppercase tracking-widest text-accent mb-2">Mercado · Familia de índices</p>
-        <h1 className="text-2xl sm:text-3xl font-semibold text-white text-balance">Índice de Liquidación</h1>
+        <h1 className="text-2xl sm:text-3xl font-semibold text-ink text-balance">Índice de Liquidación</h1>
         <p className="mt-3 text-zinc-400 max-w-2xl">
           La participación de hembras en la hacienda: el indicador adelantado de <strong className="text-zinc-200">liquidación</strong> (descarga
           de vientres) vs. <strong className="text-zinc-200">retención</strong> (armado de rodeo) del ganado argentino.
@@ -96,7 +96,7 @@ export default async function LiquidacionPage() {
         {actual ? (
           <>
             <div className="mt-2 flex items-baseline gap-3">
-              <span className="text-4xl sm:text-5xl font-semibold text-white tabular-nums">{actual.pct}%</span>
+              <span className="text-4xl sm:text-5xl font-semibold text-ink tabular-nums">{actual.pct}%</span>
               <span className="text-data text-zinc-400">hembras · {actual.mes}</span>
             </div>
             <p className="mt-3 text-data text-zinc-200">{interpretacion}</p>
@@ -119,7 +119,7 @@ export default async function LiquidacionPage() {
 
       {/* Contexto histórico nacional */}
       <section className="mt-10">
-        <h2 className="text-lg font-semibold text-white mb-1">El contexto: faena de hembras nacional, 1998-2025</h2>
+        <h2 className="text-lg font-semibold text-ink mb-1">El contexto: faena de hembras nacional, 1998-2025</h2>
         <p className="text-data text-zinc-500 mb-4">
           El arco de largo plazo del ciclo ganadero argentino. Mensual 1998-2019 (MAGyP/DNCCA) + trimestral 2019-2025 (IPCVA), la misma métrica unida.
         </p>
@@ -142,7 +142,7 @@ export default async function LiquidacionPage() {
             <p className="text-xxs uppercase tracking-widest text-zinc-500 mb-1">Ancla nacional actual</p>
             <p className="text-data text-zinc-200">
               Faena de hembras nacional, acumulado a <span className="text-zinc-100">{nacionalActual.mes_informe}</span>:{' '}
-              <span className="text-white font-semibold">{nacionalActual.pct_hembras}%</span>
+              <span className="text-ink font-semibold">{nacionalActual.pct_hembras}%</span>
               {nacionalActual.pct_hembras_anio_previo != null && (
                 <span className="text-zinc-500"> (vs {nacionalActual.pct_hembras_anio_previo}% el año previo)</span>
               )}
@@ -162,7 +162,7 @@ export default async function LiquidacionPage() {
 
       {/* Metodología */}
       <section className="mt-10">
-        <h2 className="text-lg font-semibold text-white mb-3">Metodología</h2>
+        <h2 className="text-lg font-semibold text-ink mb-3">Metodología</h2>
         <ul className="space-y-2 text-data text-zinc-300">
           <li className="flex gap-3"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent/60" /><span><strong className="text-zinc-100">Hembras</strong> = vacas + vaquillonas (incluye sus estados), sobre el total de cabezas operadas.</span></li>
           <li className="flex gap-3"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent/60" /><span><strong className="text-zinc-100">Lectura Cañuelas</strong> (2026→): hacienda operada en el Mercado Agroganadero, mercado concentrador de referencia (~12% de la faena nacional). Es un indicador <strong className="text-zinc-100">adelantado</strong>, más granular y propietario.</span></li>
@@ -172,7 +172,7 @@ export default async function LiquidacionPage() {
 
       {/* FAQ */}
       <section className="mt-10">
-        <h2 className="text-lg font-semibold text-white mb-4">Preguntas frecuentes</h2>
+        <h2 className="text-lg font-semibold text-ink mb-4">Preguntas frecuentes</h2>
         <div className="space-y-3">
           {faqs.map((f) => (
             <details key={f.question} className="rounded-terminal border border-terminal-border bg-terminal-panel p-4">

@@ -105,7 +105,7 @@ export default function LiveHero(p: LiveHeroProps) {
           {p.bandas.slice(0, 4).map((b) => (
             <Link key={b.slug} href={`/vr/${b.slug}`} className="group block">
               <div className="text-[11px] font-terminal uppercase tracking-[0.18em] text-zinc-500 mb-1">{b.categoria}</div>
-              <div className="font-terminal tabular-nums text-2xl md:text-3xl text-zinc-100 leading-none group-hover:text-white transition-colors">
+              <div className="font-terminal tabular-nums text-2xl md:text-3xl text-zinc-100 leading-none group-hover:text-ink transition-colors">
                 ${ar(b.mediana)}<span className="text-zinc-600 text-xs">/kg</span>
               </div>
               <div className="text-[11px] font-terminal tabular-nums text-zinc-500 mt-1">
@@ -159,7 +159,7 @@ export default function LiveHero(p: LiveHeroProps) {
         <Link
           href="/vr"
           onClick={() => trackCTA('ver_vr', 'hero', { context: 'landing-hero', variant: 'vr' })}
-          className="inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-200 border border-zinc-700 hover:border-zinc-500 hover:text-white transition-colors rounded py-3 px-6"
+          className="inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-200 border border-zinc-700 hover:border-zinc-500 hover:text-ink transition-colors rounded py-3 px-6"
         >
           Ver el Valor de Referencia
         </Link>
@@ -169,14 +169,14 @@ export default function LiveHero(p: LiveHeroProps) {
         <Link
           href="/consignatarias"
           onClick={() => trackCTA('ver_directorio', 'hero', { context: 'landing-hero', variant: 'vr' })}
-          className="text-zinc-300 underline decoration-zinc-700 underline-offset-4 hover:text-white hover:decoration-zinc-400 transition-colors"
+          className="text-zinc-300 underline decoration-zinc-700 underline-offset-4 hover:text-ink hover:decoration-zinc-400 transition-colors"
         >
           {p.consignatarias} consignatarias
         </Link>
         <Link
           href="/remates/semana"
           onClick={() => trackCTA('calendario_semana', 'hero', { context: 'landing-hero', variant: 'default' })}
-          className="text-zinc-300 underline decoration-zinc-700 underline-offset-4 hover:text-white hover:decoration-zinc-400 transition-colors"
+          className="text-zinc-300 underline decoration-zinc-700 underline-offset-4 hover:text-ink hover:decoration-zinc-400 transition-colors"
         >
           Remates de la semana
         </Link>

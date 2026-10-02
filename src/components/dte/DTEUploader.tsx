@@ -128,7 +128,7 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
         >
           <input {...getInputProps()} />
           <Upload className="w-12 h-12 mx-auto mb-4 text-gray-500" />
-          <p className="text-lg font-medium text-white mb-2">
+          <p className="text-lg font-medium text-ink mb-2">
             {isDragActive ? 'Soltá la imagen aquí' : 'Arrastrá tu DT-e o hacé clic'}
           </p>
           <p className="text-sm text-gray-400">
@@ -183,7 +183,7 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
               </div>
             </div>
           )}
-          <p className="text-lg font-medium text-white mb-2">
+          <p className="text-lg font-medium text-ink mb-2">
             Extrayendo datos...
           </p>
           <div className="w-full bg-gray-800 rounded-full h-2 mb-2">
@@ -255,7 +255,7 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
 
           {/* Form */}
           <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">
+            <h3 className="text-lg font-semibold text-ink mb-4">
               Confirmá los datos
             </h3>
             <DTEForm 
@@ -275,7 +275,7 @@ export function DTEUploader({ onSave }: DTEUploaderProps) {
       <div className="w-full max-w-2xl mx-auto">
         <div className="bg-gray-900/50 border border-emerald-500/30 rounded-xl p-8 text-center">
           <CheckCircle2 className="w-16 h-16 mx-auto mb-4 text-emerald-500" />
-          <h3 className="text-xl font-semibold text-white mb-2">
+          <h3 className="text-xl font-semibold text-ink mb-2">
             ¡Guía guardada!
           </h3>
           <p className="text-gray-400 mb-6">

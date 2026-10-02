@@ -233,7 +233,7 @@ export function DTEPeriodCompare({ dtes }: DTEPeriodCompareProps) {
             <GitCompare className="w-5 h-5 text-indigo-400" />
           </div>
           <div className="text-left">
-            <h3 className="font-semibold text-white">Comparar períodos</h3>
+            <h3 className="font-semibold text-ink">Comparar períodos</h3>
             <p className="text-xs text-gray-400">Analizá tu evolución mes a mes</p>
           </div>
         </div>
@@ -250,7 +250,7 @@ export function DTEPeriodCompare({ dtes }: DTEPeriodCompareProps) {
                 value={period1}
                 onChange={(e) => setPeriod1(e.target.value)}
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg
-                           text-white text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                           text-ink text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               >
                 {periodOptions.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -263,7 +263,7 @@ export function DTEPeriodCompare({ dtes }: DTEPeriodCompareProps) {
                 value={period2}
                 onChange={(e) => setPeriod2(e.target.value)}
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg
-                           text-white text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                           text-ink text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               >
                 {periodOptions.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -282,7 +282,7 @@ export function DTEPeriodCompare({ dtes }: DTEPeriodCompareProps) {
                     <ChangeIndicator change={comparison.dtes} />
                   </div>
                   <div className="flex items-center justify-center gap-2 text-lg font-bold">
-                    <span className="text-white">{stats1.totalDtes}</span>
+                    <span className="text-ink">{stats1.totalDtes}</span>
                     <span className="text-gray-500">vs</span>
                     <span className="text-gray-400">{stats2.totalDtes}</span>
                   </div>
@@ -341,7 +341,7 @@ export function DTEPeriodCompare({ dtes }: DTEPeriodCompareProps) {
                           <div key={cat} className="flex items-center justify-between text-sm">
                             <span className="text-gray-300 capitalize">{cat}s</span>
                             <div className="flex items-center gap-3">
-                              <span className="text-white">{v1.toLocaleString('es-AR')}</span>
+                              <span className="text-ink">{v1.toLocaleString('es-AR')}</span>
                               <span className="text-gray-600">vs</span>
                               <span className="text-gray-400">{v2.toLocaleString('es-AR')}</span>
                               <ChangeIndicator change={change} />

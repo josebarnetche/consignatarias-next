@@ -90,7 +90,7 @@ export default function SubscribeStrip({
           </span>
         </div>
 
-        <h3 className="mb-1 font-mono text-lg font-bold tracking-tight text-white">{title}</h3>
+        <h3 className="mb-1 font-mono text-lg font-bold tracking-tight text-ink">{title}</h3>
         <p className="mb-4 max-w-xl font-mono text-sm leading-relaxed text-zinc-400">{body}</p>
 
         {state === 'success' ? (
@@ -117,7 +117,7 @@ export default function SubscribeStrip({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={state === 'submitting'}
-                className="flex-1 rounded border border-zinc-700 bg-zinc-900 px-4 py-2.5 font-mono text-sm text-white placeholder:text-zinc-600 transition-colors focus:border-sky-400 focus:outline-none focus:ring-1 focus:ring-sky-400 disabled:opacity-60"
+                className="flex-1 rounded border border-zinc-700 bg-zinc-900 px-4 py-2.5 font-mono text-sm text-ink placeholder:text-zinc-600 transition-colors focus:border-sky-400 focus:outline-none focus:ring-1 focus:ring-sky-400 disabled:opacity-60"
               />
               <button
                 type="submit"

@@ -122,7 +122,7 @@ export function ActivationChecklist({ dteCount }: ActivationChecklistProps) {
           </p>
         </div>
         <div className="text-right">
-          <span className="text-2xl font-bold text-white">{completedCount}</span>
+          <span className="text-2xl font-bold text-ink">{completedCount}</span>
           <span className="text-gray-500">/{items.length}</span>
         </div>
       </div>
@@ -153,7 +153,7 @@ export function ActivationChecklist({ dteCount }: ActivationChecklistProps) {
             )}
             
             <div className="flex-1 min-w-0">
-              <p className={`font-medium ${item.completed ? 'text-emerald-400 line-through' : 'text-white'}`}>
+              <p className={`font-medium ${item.completed ? 'text-emerald-400 line-through' : 'text-ink'}`}>
                 {item.label}
               </p>
               <p className="text-xs text-gray-500 truncate">{item.description}</p>

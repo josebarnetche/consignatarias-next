@@ -164,12 +164,12 @@ export default async function ElCorredorLanding() {
                 </span>
               </div>
 
-              <h1 className="font-mono font-bold uppercase tracking-tight text-white text-5xl lg:text-7xl leading-[0.95] mb-6">
+              <h1 className="font-mono font-bold uppercase tracking-tight text-ink text-5xl lg:text-7xl leading-[0.95] mb-6">
                 El Corredor
               </h1>
 
               <p className="text-lg lg:text-xl text-zinc-300 leading-relaxed mb-8 max-w-2xl font-mono">
-                El cierre mensual del mercado bovino argentino. <span className="text-white">12 páginas</span> con
+                El cierre mensual del mercado bovino argentino. <span className="text-ink">12 páginas</span> con
                 INMAG en USD reales, comparable interanual, 18 categorías de hacienda del MAG, lectura del ciclo y tesis del
                 mes próximo. <span className="text-sky-400">PDF gratuito con email.</span>
               </p>
@@ -180,7 +180,7 @@ export default async function ElCorredorLanding() {
                 <span className="text-sm font-mono text-zinc-300">{ED_LABEL}</span>
                 <span className="text-zinc-700">·</span>
                 <span className="text-sm font-mono text-zinc-300">
-                  INMAG cerró <span className="text-white font-semibold">{closeFmt}</span>
+                  INMAG cerró <span className="text-ink font-semibold">{closeFmt}</span>
                 </span>
 
               </div>
@@ -222,7 +222,7 @@ export default async function ElCorredorLanding() {
             <div className="text-xs font-mono uppercase tracking-[0.22em] text-sky-400 font-semibold mb-4">
               · 12 secciones por edición
             </div>
-            <h2 className="text-3xl lg:text-4xl font-mono font-bold text-white tracking-tight max-w-3xl">
+            <h2 className="text-3xl lg:text-4xl font-mono font-bold text-ink tracking-tight max-w-3xl">
               Lo que vas a leer en cada cierre
             </h2>
           </div>
@@ -232,7 +232,7 @@ export default async function ElCorredorLanding() {
               <div key={it.num} className="bg-zinc-950 p-6 hover:bg-zinc-900/50 transition-colors">
                 <div className="flex items-baseline gap-3 mb-2">
                   <span className="text-sky-400 font-mono text-sm font-medium">{it.num}</span>
-                  <h3 className="text-white font-mono font-semibold">{it.title}</h3>
+                  <h3 className="text-ink font-mono font-semibold">{it.title}</h3>
                 </div>
                 <p className="text-zinc-400 text-sm font-mono leading-relaxed">{it.body}</p>
               </div>
@@ -249,13 +249,13 @@ export default async function ElCorredorLanding() {
               <div className="text-xs font-mono uppercase tracking-[0.22em] text-sky-400 font-semibold mb-4">
                 · Dato transaccional del MAG · {consigStats.label}
               </div>
-              <h2 className="text-3xl lg:text-4xl font-mono font-bold text-white tracking-tight max-w-3xl">
+              <h2 className="text-3xl lg:text-4xl font-mono font-bold text-ink tracking-tight max-w-3xl">
                 Cabezas operadas por consignatario
               </h2>
               <p className="text-zinc-400 text-sm font-mono leading-relaxed mt-4 max-w-2xl">
                 Operación por operación en el Mercado Agroganadero de Cañuelas.{' '}
-                <span className="text-white font-semibold">{consigStats.firmsCount}</span> firmas ·{' '}
-                <span className="text-white font-semibold">{consigStats.total.toLocaleString('es-AR')}</span> cabezas ·{' '}
+                <span className="text-ink font-semibold">{consigStats.firmsCount}</span> firmas ·{' '}
+                <span className="text-ink font-semibold">{consigStats.total.toLocaleString('es-AR')}</span> cabezas ·{' '}
                 {consigStats.days} jornada{consigStats.days !== 1 ? 's' : ''}.
               </p>
             </div>
@@ -270,7 +270,7 @@ export default async function ElCorredorLanding() {
                       <span className="text-zinc-600 font-mono text-xs w-5 shrink-0 text-right">{i + 1}</span>
                       <span className="text-zinc-200 font-mono text-sm truncate">{f.name}</span>
                     </span>
-                    <span className="relative text-white font-mono text-sm font-semibold tabular-nums shrink-0 ml-3">
+                    <span className="relative text-ink font-mono text-sm font-semibold tabular-nums shrink-0 ml-3">
                       {f.cabezas.toLocaleString('es-AR')}
                     </span>
                   </div>
@@ -294,7 +294,7 @@ export default async function ElCorredorLanding() {
               <div className="text-xs font-mono uppercase tracking-[0.22em] text-sky-400 font-semibold mb-4">
                 · Marco institucional
               </div>
-              <h2 className="text-2xl lg:text-3xl font-mono font-bold text-white tracking-tight mb-6">
+              <h2 className="text-2xl lg:text-3xl font-mono font-bold text-ink tracking-tight mb-6">
                 Datos oficiales. Bibliografía citada. Metodología abierta.
               </h2>
               <p className="text-zinc-300 font-mono leading-relaxed mb-4">
@@ -312,22 +312,22 @@ export default async function ElCorredorLanding() {
             <div className="grid grid-cols-2 gap-px bg-zinc-800 border border-zinc-800 rounded">
               <div className="bg-zinc-950 p-6">
                 <div className="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-2">Cobertura</div>
-                <div className="text-2xl font-mono font-bold text-white">14 provincias</div>
+                <div className="text-2xl font-mono font-bold text-ink">14 provincias</div>
                 <div className="text-xs font-mono text-zinc-500 mt-1">+84 consignatarias</div>
               </div>
               <div className="bg-zinc-950 p-6">
                 <div className="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-2">Histórico</div>
-                <div className="text-2xl font-mono font-bold text-white">337 días</div>
+                <div className="text-2xl font-mono font-bold text-ink">337 días</div>
                 <div className="text-xs font-mono text-zinc-500 mt-1">INMAG diario archivo</div>
               </div>
               <div className="bg-zinc-950 p-6">
                 <div className="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-2">Cadencia</div>
-                <div className="text-2xl font-mono font-bold text-white">Mensual</div>
+                <div className="text-2xl font-mono font-bold text-ink">Mensual</div>
                 <div className="text-xs font-mono text-zinc-500 mt-1">primer hábil del mes</div>
               </div>
               <div className="bg-zinc-950 p-6">
                 <div className="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-2">Formato</div>
-                <div className="text-2xl font-mono font-bold text-white">PDF · 12 pp</div>
+                <div className="text-2xl font-mono font-bold text-ink">PDF · 12 pp</div>
                 <div className="text-xs font-mono text-zinc-500 mt-1">A4 · descargable</div>
               </div>
             </div>
@@ -341,7 +341,7 @@ export default async function ElCorredorLanding() {
           <div className="text-xs font-mono uppercase tracking-[0.22em] text-sky-400 font-semibold mb-4 text-center">
             · Preguntas frecuentes
           </div>
-          <h2 className="text-3xl lg:text-4xl font-mono font-bold text-white tracking-tight mb-12 text-center">
+          <h2 className="text-3xl lg:text-4xl font-mono font-bold text-ink tracking-tight mb-12 text-center">
             Antes de suscribirte
           </h2>
 
@@ -351,7 +351,7 @@ export default async function ElCorredorLanding() {
                 key={f.q}
                 className="group bg-zinc-900/40 border border-zinc-800 rounded overflow-hidden hover:border-zinc-700 transition-colors"
               >
-                <summary className="px-6 py-4 cursor-pointer list-none flex items-center justify-between text-white font-mono font-medium text-sm">
+                <summary className="px-6 py-4 cursor-pointer list-none flex items-center justify-between text-ink font-mono font-medium text-sm">
                   <span>{f.q}</span>
                   <svg
                     className="w-4 h-4 text-zinc-500 transition-transform group-open:rotate-180"
@@ -372,7 +372,7 @@ export default async function ElCorredorLanding() {
       {/* CTA FINAL */}
       <section className="border-b border-zinc-800">
         <div className="max-w-4xl mx-auto px-4 py-20 lg:py-28 text-center">
-          <h2 className="text-3xl lg:text-5xl font-mono font-bold text-white tracking-tight mb-6 leading-tight">
+          <h2 className="text-3xl lg:text-5xl font-mono font-bold text-ink tracking-tight mb-6 leading-tight">
             Recibí <span className="text-sky-400">El Corredor</span><br />cada mes.
           </h2>
           <p className="text-zinc-400 font-mono mb-10 max-w-2xl mx-auto">

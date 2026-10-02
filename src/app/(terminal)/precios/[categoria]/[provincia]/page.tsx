@@ -221,10 +221,10 @@ export default async function PrecioCategoriaProvinciaPage({
           question={`Precio del ${cat.singular} en ${prov.display} hoy`}
           answer={
             <>
-              El kilo vivo de {cat.singular} cotiza <strong className="text-white">${fmt(price)}/kg</strong> de
+              El kilo vivo de {cat.singular} cotiza <strong className="text-ink">${fmt(price)}/kg</strong> de
               referencia nacional (INMAG, formado en el Mercado Agroganadero de Cañuelas; {INMAG_DATE}, {changeStr}{' '}
               semanal). En {prov.display}, a ~{fmt(prov.km)} km del mercado, el valor estimado en origen es{' '}
-              <strong className="text-white">~${fmt(basis.localEstimate)}/kg</strong> (≈ −{basis.discountPct}%), por
+              <strong className="text-ink">~${fmt(basis.localEstimate)}/kg</strong> (≈ −{basis.discountPct}%), por
               flete y costos de comercialización. El precio real se forma en los remates en origen.
             </>
           }

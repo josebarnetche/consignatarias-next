@@ -201,9 +201,9 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
 
   if (isLoading) {
     return (
-      <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-12 text-center">
+      <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-12 text-center">
         <Loader2 className="w-8 h-8 mx-auto mb-4 text-accent animate-spin" />
-        <p className="text-gray-400">Cargando historial...</p>
+        <p className="text-zinc-400">Cargando historial...</p>
       </div>
     );
   }
@@ -219,9 +219,9 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
 
   if (dtes.length === 0) {
     return (
-      <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 border border-gray-700 rounded-xl overflow-hidden">
+      <div className="bg-gradient-to-br from-zinc-900/80 to-zinc-800/50 border border-zinc-700 rounded-xl overflow-hidden">
         {/* Hero section */}
-        <div className="border-b border-gray-700/50">
+        <div className="border-b border-zinc-700/50">
           <EmptyState
             icon="guia-dte"
             title="Tu historial está vacío"
@@ -230,27 +230,27 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
         </div>
         
         {/* Benefits grid */}
-        <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-700/50">
+        <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-zinc-700/50">
           <div className="p-6 text-center">
             <div className="text-2xl mb-2">📸</div>
-            <p className="text-sm font-medium text-white mb-1">Foto → Datos</p>
-            <p className="text-xs text-gray-500">OCR automático extrae toda la info</p>
+            <p className="text-sm font-medium text-ink mb-1">Foto → Datos</p>
+            <p className="text-xs text-zinc-500">OCR automático extrae toda la info</p>
           </div>
           <div className="p-6 text-center">
             <div className="text-2xl mb-2">📊</div>
-            <p className="text-sm font-medium text-white mb-1">Analytics gratis</p>
-            <p className="text-xs text-gray-500">Cabezas por mes, categorías, tendencias</p>
+            <p className="text-sm font-medium text-ink mb-1">Analytics gratis</p>
+            <p className="text-xs text-zinc-500">Cabezas por mes, categorías, tendencias</p>
           </div>
           <div className="p-6 text-center">
             <div className="text-2xl mb-2">🔒</div>
-            <p className="text-sm font-medium text-white mb-1">Tus datos, tu control</p>
-            <p className="text-xs text-gray-500">Exportá cuando quieras, 100% privado</p>
+            <p className="text-sm font-medium text-ink mb-1">Tus datos, tu control</p>
+            <p className="text-xs text-zinc-500">Exportá cuando quieras, 100% privado</p>
           </div>
         </div>
 
         {/* CTA */}
-        <div className="p-6 bg-gray-800/30 text-center">
-          <p className="text-sm text-gray-400 mb-3">
+        <div className="p-6 bg-zinc-800/30 text-center">
+          <p className="text-sm text-zinc-400 mb-3">
             👆 Usá el formulario de arriba para subir tu primera guía
           </p>
           <a
@@ -273,17 +273,17 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
     <div className="space-y-6">
       {/* Quick Stats */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
-          <p className="text-2xl font-bold text-white">{stats.totalDtes}</p>
-          <p className="text-sm text-gray-400">Guías totales</p>
+        <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-4 text-center">
+          <p className="text-2xl font-bold text-ink">{stats.totalDtes}</p>
+          <p className="text-sm text-zinc-400">Guías totales</p>
         </div>
-        <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
+        <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-4 text-center">
           <p className="text-2xl font-bold text-accent">{stats.totalCabezas.toLocaleString('es-AR')}</p>
-          <p className="text-sm text-gray-400">Cabezas movidas</p>
+          <p className="text-sm text-zinc-400">Cabezas movidas</p>
         </div>
-        <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
+        <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-4 text-center">
           <p className="text-2xl font-bold text-emerald-500">{stats.thisMonth}</p>
-          <p className="text-sm text-gray-400">Este mes</p>
+          <p className="text-sm text-zinc-400">Este mes</p>
         </div>
       </div>
 
@@ -294,15 +294,15 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
       <DTEPeriodCompare dtes={dtes} />
 
       {/* History list */}
-      <div className="bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden">
+      <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl overflow-hidden">
         {/* Header with export */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-gray-800/30">
-          <h3 className="text-sm font-medium text-gray-300">Historial de guías</h3>
+        <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-800/30">
+          <h3 className="text-sm font-medium text-zinc-300">Historial de guías</h3>
           <button
             onClick={exportToCSV}
             className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium
-                       text-gray-300 bg-gray-700/50 border border-gray-600 rounded-lg
-                       hover:bg-gray-700 hover:text-white transition-all"
+                       text-zinc-300 bg-zinc-700/50 border border-zinc-600 rounded-lg
+                       hover:bg-zinc-700 hover:text-ink transition-all"
           >
             <Download className="w-3.5 h-3.5" />
             Exportar CSV
@@ -310,36 +310,36 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-800/50">
+            <thead className="bg-zinc-800/50">
               <tr>
-                <th className="text-left px-4 py-3 text-gray-400 font-medium">Fecha</th>
-                <th className="text-left px-4 py-3 text-gray-400 font-medium">N° DT-e</th>
-                <th className="text-left px-4 py-3 text-gray-400 font-medium">Origen</th>
-                <th className="text-left px-4 py-3 text-gray-400 font-medium">Destino</th>
-                <th className="text-right px-4 py-3 text-gray-400 font-medium">Cabezas</th>
-                <th className="text-left px-4 py-3 text-gray-400 font-medium">Motivo</th>
-                <th className="text-right px-4 py-3 text-gray-400 font-medium">Acciones</th>
+                <th className="text-left px-4 py-3 text-zinc-400 font-medium">Fecha</th>
+                <th className="text-left px-4 py-3 text-zinc-400 font-medium">N° DT-e</th>
+                <th className="text-left px-4 py-3 text-zinc-400 font-medium">Origen</th>
+                <th className="text-left px-4 py-3 text-zinc-400 font-medium">Destino</th>
+                <th className="text-right px-4 py-3 text-zinc-400 font-medium">Cabezas</th>
+                <th className="text-left px-4 py-3 text-zinc-400 font-medium">Motivo</th>
+                <th className="text-right px-4 py-3 text-zinc-400 font-medium">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800">
+            <tbody className="divide-y divide-zinc-800">
               {dtes.map((dte) => (
-                <tr key={dte.id} className="hover:bg-gray-800/30 transition-colors">
-                  <td className="px-4 py-3 text-white">
+                <tr key={dte.id} className="hover:bg-zinc-800/30 transition-colors">
+                  <td className="px-4 py-3 text-ink">
                     {formatDate(dte.fecha_movimiento)}
                   </td>
-                  <td className="px-4 py-3 text-gray-300 font-mono text-xs">
+                  <td className="px-4 py-3 text-zinc-300 font-mono text-xs">
                     {dte.numero_dte || '—'}
                   </td>
                   <td className="px-4 py-3">
-                    <div className="text-white text-sm">{dte.establecimiento_origen || dte.titular_origen || '—'}</div>
+                    <div className="text-ink text-sm">{dte.establecimiento_origen || dte.titular_origen || '—'}</div>
                     {dte.renspa_origen && (
-                      <div className="text-gray-500 text-xs">{dte.renspa_origen}</div>
+                      <div className="text-zinc-500 text-xs">{dte.renspa_origen}</div>
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    <div className="text-white text-sm">{dte.establecimiento_destino || dte.titular_destino || '—'}</div>
+                    <div className="text-ink text-sm">{dte.establecimiento_destino || dte.titular_destino || '—'}</div>
                     {dte.renspa_destino && (
-                      <div className="text-gray-500 text-xs">{dte.renspa_destino}</div>
+                      <div className="text-zinc-500 text-xs">{dte.renspa_destino}</div>
                     )}
                   </td>
                   <td className="px-4 py-3 text-right text-accent font-medium">
@@ -347,7 +347,7 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
                   </td>
                   <td className="px-4 py-3">
                     {dte.motivo && (
-                      <span className="px-2 py-1 rounded-full text-xs bg-gray-800 text-gray-300 capitalize">
+                      <span className="px-2 py-1 rounded-full text-xs bg-zinc-800 text-zinc-300 capitalize">
                         {dte.motivo}
                       </span>
                     )}
@@ -357,10 +357,10 @@ export function DTEHistory({ onEdit }: DTEHistoryProps) {
                       {onEdit && (
                         <button
                           onClick={() => onEdit(dte)}
-                          className="p-1.5 hover:bg-gray-700 rounded-lg transition-colors"
+                          className="p-1.5 hover:bg-zinc-700 rounded-lg transition-colors"
                           title="Editar"
                         >
-                          <Edit2 className="w-4 h-4 text-gray-400" />
+                          <Edit2 className="w-4 h-4 text-zinc-400" />
                         </button>
                       )}
                       <button

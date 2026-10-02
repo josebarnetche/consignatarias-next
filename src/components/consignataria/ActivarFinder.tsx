@@ -42,7 +42,7 @@ export default function ActivarFinder({
           onChange={(e) => setQ(e.target.value)}
           autoFocus
           placeholder="Escribí el nombre de tu consignataria…"
-          className="w-full bg-zinc-950 border border-zinc-700 rounded px-3 py-2.5 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-amber-500/60 font-terminal"
+          className="w-full bg-zinc-950 border border-zinc-700 rounded px-3 py-2.5 text-sm text-ink outline-none placeholder:text-zinc-600 focus:border-amber-500/60 font-terminal"
         />
 
         {q.trim().length >= 2 && (

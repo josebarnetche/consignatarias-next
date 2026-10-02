@@ -158,7 +158,7 @@ export function SubscribeForm({ source = 'el-corredor-landing', userEmail }: Pro
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={state === 'submitting'}
-            className="flex-1 bg-zinc-900 border border-zinc-700 rounded px-4 py-3 text-white font-mono placeholder:text-zinc-600 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-colors disabled:opacity-60"
+            className="flex-1 bg-zinc-900 border border-zinc-700 rounded px-4 py-3 text-ink font-mono placeholder:text-zinc-600 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-colors disabled:opacity-60"
           />
           <button
             type="submit"
@@ -190,7 +190,7 @@ function SuccessBox({ email }: { email: string }) {
             Listo · revisá tu inbox
           </div>
           <p className="text-zinc-300 font-mono text-sm leading-relaxed">
-            Te enviamos <strong>El Corredor</strong> a <strong className="text-white">{email}</strong>.
+            Te enviamos <strong>El Corredor</strong> a <strong className="text-ink">{email}</strong>.
             Si no llega en 2 minutos, mirá en spam.
           </p>
           <p className="text-zinc-500 font-mono text-xs mt-3">

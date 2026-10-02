@@ -44,14 +44,14 @@ export default async function BpgTemaPage({ params }: { params: Promise<{ slug: 
         <p className="text-xxs uppercase tracking-widest text-accent mb-2">
           {t.bloque} · Tema {String(t.n).padStart(2, '0')}
         </p>
-        <h1 className="text-2xl sm:text-3xl font-semibold text-white text-balance">{t.titulo}</h1>
+        <h1 className="text-2xl sm:text-3xl font-semibold text-ink text-balance">{t.titulo}</h1>
         <p className="mt-3 text-zinc-400">{t.intro}</p>
       </header>
 
       <div className="space-y-8">
         {t.secciones.map((s) => (
           <section key={s.subtitulo}>
-            <h2 className="text-base font-semibold text-white mb-3">{s.subtitulo}</h2>
+            <h2 className="text-base font-semibold text-ink mb-3">{s.subtitulo}</h2>
             <ul className="space-y-2">
               {s.practicas.map((p, i) => (
                 <li key={i} className="flex gap-3 text-data text-zinc-300">

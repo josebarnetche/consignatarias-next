@@ -123,7 +123,7 @@ export default function LeadActivity({
             <select
               value={kind}
               onChange={(e) => setKind(e.target.value as ActivityKind)}
-              className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-sm text-white outline-none focus:border-sky-500/60"
+              className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-sm text-ink outline-none focus:border-sky-500/60"
             >
               {HUMAN_KINDS.map((k) => (
                 <option key={k} value={k}>{KIND_LABEL[k]}</option>
@@ -132,7 +132,7 @@ export default function LeadActivity({
             <select
               value={outcome}
               onChange={(e) => setOutcome(e.target.value as ActivityOutcome | '')}
-              className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-sm text-white outline-none focus:border-sky-500/60"
+              className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-sm text-ink outline-none focus:border-sky-500/60"
             >
               <option value="">— resultado —</option>
               {ACTIVITY_OUTCOMES.map((o) => (

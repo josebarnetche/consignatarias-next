@@ -114,7 +114,7 @@ export function HistorialLote({ serie, metodo }: { serie: PuntoHistorial[]; meto
               disabled={m === 'usd' && !hayUsd}
               onClick={() => setMoneda(m)}
               className={`px-3 py-1 text-xs transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
-                moneda === m ? 'bg-zinc-700 text-white' : 'text-zinc-400 hover:text-zinc-200'
+                moneda === m ? 'bg-zinc-700 text-ink' : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
               {m === 'ars' ? 'ARS' : 'USD'}

@@ -201,7 +201,7 @@ export default function AdminLeadsPage() {
     <div className="py-4">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-white">Leads de productores</h1>
+          <h1 className="text-xl font-semibold text-ink">Leads de productores</h1>
           <p className="text-sm text-zinc-500">Máquina de lead-gen a performance · ruteá por WhatsApp, cobrás {leads[0]?.fee_pct ?? 1}% al cierre</p>
         </div>
         <div className="flex items-center gap-2">
@@ -224,7 +224,7 @@ export default function AdminLeadsPage() {
         <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-3">
             <p className="text-xs text-zinc-500">Total leads</p>
-            <p className="text-2xl font-semibold text-white">{stats.total}</p>
+            <p className="text-2xl font-semibold text-ink">{stats.total}</p>
           </div>
           <div className="rounded-lg border border-sky-500/20 bg-sky-500/5 p-3">
             <p className="text-xs text-zinc-500">Vivos (new+ruteado+contactado)</p>
@@ -282,22 +282,22 @@ export default function AdminLeadsPage() {
               {cattleMatches.map(({ s, b }, i) => (
                 <div key={`c${i}`} className="flex flex-wrap items-center gap-2 text-sm">
                   <span className="rounded bg-emerald-500/20 px-2 py-0.5 text-xs text-emerald-300">VENDE</span>
-                  <span className="text-white">{s.name}</span>
+                  <span className="text-ink">{s.name}</span>
                   <span className="text-zinc-500">{s.head_count ? `${s.head_count} ${s.category}` : s.category}{s.desired_price_ars ? ` · pide ${ars(s.desired_price_ars)}` : ''}</span>
                   <span className="text-amber-400">↔</span>
                   <span className="rounded bg-sky-500/20 px-2 py-0.5 text-xs text-sky-300">COMPRA</span>
-                  <span className="text-white">{b.name}</span>
+                  <span className="text-ink">{b.name}</span>
                   <span className="text-zinc-500">{b.category}{b.province ? ` · ${b.province}` : ''}</span>
                 </div>
               ))}
               {landMatches.map(({ o, k }, i) => (
                 <div key={`l${i}`} className="flex flex-wrap items-center gap-2 text-sm">
                   <span className="rounded bg-emerald-500/20 px-2 py-0.5 text-xs text-emerald-300">OFRECE campo</span>
-                  <span className="text-white">{o.name}</span>
+                  <span className="text-ink">{o.name}</span>
                   <span className="text-zinc-500">{o.hectareas ? `${o.hectareas} ha` : ''} · {o.province}</span>
                   <span className="text-amber-400">↔</span>
                   <span className="rounded bg-sky-500/20 px-2 py-0.5 text-xs text-sky-300">BUSCA campo</span>
-                  <span className="text-white">{k.name}</span>
+                  <span className="text-ink">{k.name}</span>
                   <span className="text-zinc-500">{k.hectareas ? `${k.hectareas} ha` : ''} · {k.province}</span>
                 </div>
               ))}
@@ -353,7 +353,7 @@ export default function AdminLeadsPage() {
                       })()}
                       <span className="text-xs text-zinc-600">#{l.id} · {fmtDate(l.created_at)}{l.source ? ` · ${l.source}` : ''}</span>
                     </div>
-                    <p className="mt-2 font-semibold text-white">{l.name}</p>
+                    <p className="mt-2 font-semibold text-ink">{l.name}</p>
                     <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
                       {l.phone && <a href={`tel:${l.phone}`} className="flex items-center gap-1 text-sky-400"><Phone className="h-3.5 w-3.5" />{l.phone}</a>}
                       {l.email && <a href={`mailto:${l.email}`} className="flex items-center gap-1 text-sky-400"><Mail className="h-3.5 w-3.5" />{l.email}</a>}
@@ -375,7 +375,7 @@ export default function AdminLeadsPage() {
                     value={l.status}
                     onChange={(e) => patch(l.id, { status: e.target.value })}
                     disabled={savingId === l.id}
-                    className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-sm text-white outline-none focus:border-sky-500/60"
+                    className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-sm text-ink outline-none focus:border-sky-500/60"
                   >
                     {NEXT_STATUS.map((s) => <option key={s} value={s}>{STATUS_META[s].label}</option>)}
                   </select>
@@ -383,7 +383,7 @@ export default function AdminLeadsPage() {
                     defaultValue={l.routed_to_slug || ''}
                     placeholder="rutear a (slug de firma)"
                     onBlur={(e) => { const v = e.target.value.trim(); if (v !== (l.routed_to_slug || '')) patch(l.id, { routed_to_slug: v }) }}
-                    className="w-48 rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-sm text-white outline-none focus:border-sky-500/60"
+                    className="w-48 rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-sm text-ink outline-none focus:border-sky-500/60"
                   />
                   {l.status === 'won' && (
                     <input

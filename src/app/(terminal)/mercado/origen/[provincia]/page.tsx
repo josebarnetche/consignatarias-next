@@ -151,8 +151,8 @@ export default async function OrigenProvinciaPage({ params }: { params: Promise<
           question={`¿De qué zona provino la hacienda de ${config.display} operada en el Mercado Agroganadero?`}
           answer={
             <>
-              {config.display} aportó el <strong className="text-white">{row.percentage}%</strong> de la hacienda
-              operada en el Mercado Agroganadero en la última rueda (<strong className="text-white">{fmt(row.total)} cabezas</strong>,{' '}
+              {config.display} aportó el <strong className="text-ink">{row.percentage}%</strong> de la hacienda
+              operada en el Mercado Agroganadero en la última rueda (<strong className="text-ink">{fmt(row.total)} cabezas</strong>,{' '}
               {date}){localidades.length ? <>, con origen principal en {topLoc}</> : null}. El precio se forma en
               Cañuelas (INMAG); este dato indica de dónde viajó la hacienda.
             </>

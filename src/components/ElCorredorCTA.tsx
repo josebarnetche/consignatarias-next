@@ -54,7 +54,7 @@ export function ElCorredorCTA({ variant = 'card', context = 'unknown' }: Props) 
               <div className="text-xs font-mono uppercase tracking-widest text-sky-400 mb-0.5 truncate">
                 Mesa de hacienda · cierre mensual
               </div>
-              <div className="text-sm font-mono text-white truncate">
+              <div className="text-sm font-mono text-ink truncate">
                 <strong>El Corredor</strong>
                 <span className="text-zinc-500 mx-1.5">·</span>
                 <span className="text-zinc-300">Edición {EDITION} disponible</span>
@@ -86,7 +86,7 @@ export function ElCorredorCTA({ variant = 'card', context = 'unknown' }: Props) 
             </span>
           </div>
 
-          <h3 className="text-2xl lg:text-3xl font-mono font-bold text-white tracking-tight mb-2">
+          <h3 className="text-2xl lg:text-3xl font-mono font-bold text-ink tracking-tight mb-2">
             El Corredor
           </h3>
 

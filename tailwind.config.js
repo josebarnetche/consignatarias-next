@@ -7,18 +7,40 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        terminal: {
-          bg: '#0a0a0f',       // tinted zinc-950 (slight blue)
-          panel: '#16161d',    // tinted zinc-900
-          border: '#27272a',   // zinc-800 - borders
-          'border-light': '#3f3f46', // zinc-700 - hover borders
+        // Todos estos leen variables CSS (src/app/globals.css: :root = tema
+        // claro default, [data-theme=dark] = tema oscuro, hex idénticos a los
+        // de siempre). Formato de canal suelto para que sigan funcionando los
+        // /NN de opacidad (docs/PLAN-TEMA-WHITE.md).
+        zinc: {
+          50: 'rgb(var(--z-50) / <alpha-value>)',
+          100: 'rgb(var(--z-100) / <alpha-value>)',
+          200: 'rgb(var(--z-200) / <alpha-value>)',
+          300: 'rgb(var(--z-300) / <alpha-value>)',
+          400: 'rgb(var(--z-400) / <alpha-value>)',
+          500: 'rgb(var(--z-500) / <alpha-value>)',
+          600: 'rgb(var(--z-600) / <alpha-value>)',
+          700: 'rgb(var(--z-700) / <alpha-value>)',
+          800: 'rgb(var(--z-800) / <alpha-value>)',
+          900: 'rgb(var(--z-900) / <alpha-value>)',
+          950: 'rgb(var(--z-950) / <alpha-value>)',
         },
-        positive: '#34d399',   // emerald-400 - gains, up
-        negative: '#f87171',   // red-400 - losses, down
-        warning: '#fbbf24',    // amber-400 - warnings, neutral
-        accent: '#38bdf8',     // sky-400 - links, interactive
-        'accent-bright': '#0ea5e9', // sky-500 - active states
-        live: '#10b981',       // emerald-500 - live states
+        // Texto "fuerte" que SÍ debe invertir (blanco en oscuro, casi negro en
+        // claro) — reemplaza a los `text-white` que estaban sobre superficies
+        // temáticas (terminal-bg/terminal-panel/zinc). Los `text-white` sobre
+        // chrome no temático (video, WhatsApp, scrims) se dejaron literales.
+        ink: 'rgb(var(--ink) / <alpha-value>)',
+        terminal: {
+          bg: 'rgb(var(--t-bg) / <alpha-value>)',
+          panel: 'rgb(var(--t-panel) / <alpha-value>)',
+          border: 'rgb(var(--t-border) / <alpha-value>)',
+          'border-light': 'rgb(var(--t-border-light) / <alpha-value>)',
+        },
+        positive: 'rgb(var(--positive) / <alpha-value>)',
+        negative: 'rgb(var(--negative) / <alpha-value>)',
+        warning: 'rgb(var(--warning) / <alpha-value>)',
+        accent: 'rgb(var(--accent) / <alpha-value>)',
+        'accent-bright': 'rgb(var(--accent-bright) / <alpha-value>)',
+        live: 'rgb(var(--live) / <alpha-value>)',
       },
       fontFamily: {
         terminal: [
@@ -132,18 +154,18 @@ module.exports = {
         'thin': '0.5px',
       },
       boxShadow: {
-        'panel': '0 0 0 1px rgba(39, 39, 42, 0.5)',
-        'panel-hover': '0 0 0 1px rgba(56, 189, 248, 0.3)',
-        'glow-green': '0 0 8px rgba(52, 211, 153, 0.15)',
-        'glow-red': '0 0 8px rgba(248, 113, 113, 0.15)',
+        'panel': '0 0 0 1px rgb(var(--t-border) / 0.5)',
+        'panel-hover': '0 0 0 1px rgb(var(--accent) / 0.3)',
+        'glow-green': '0 0 8px rgb(var(--positive) / 0.15)',
+        'glow-red': '0 0 8px rgb(var(--negative) / 0.15)',
         'glow-white': '0 0 20px rgba(255, 255, 255, 0.1)',
         'glow-white-sm': '0 0 15px rgba(255, 255, 255, 0.05)',
         'glow-bar': '0 0 10px rgba(255, 255, 255, 0.3)',
         'glow-bar-sm': '0 0 15px rgba(255, 255, 255, 0.2)',
-        'live-glow': '0 0 12px rgba(16, 185, 129, 0.2)',
-        'live-glow-lg': '0 0 20px rgba(16, 185, 129, 0.3)',
-        'amber-glow': '0 0 12px rgba(251, 191, 36, 0.15)',
-        'sky-glow': '0 0 12px rgba(56, 189, 248, 0.15)',
+        'live-glow': '0 0 12px rgb(var(--live) / 0.2)',
+        'live-glow-lg': '0 0 20px rgb(var(--live) / 0.3)',
+        'amber-glow': '0 0 12px rgb(var(--warning) / 0.15)',
+        'sky-glow': '0 0 12px rgb(var(--accent) / 0.15)',
       },
     },
   },

@@ -65,8 +65,8 @@ export default function PriceThresholdAlertSignup({
       <div className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-6 text-center">
         <p className="text-emerald-400 font-semibold mb-1">✓ Alerta activada</p>
         <p className="text-zinc-400 text-sm">
-          Te avisamos a <span className="text-white">{email}</span> cuando el {categoryLabel} cruce{' '}
-          <span className="text-white font-mono">{fmt(threshold)}</span>. Revisá tu casilla para confirmar.
+          Te avisamos a <span className="text-ink">{email}</span> cuando el {categoryLabel} cruce{' '}
+          <span className="text-ink font-mono">{fmt(threshold)}</span>. Revisá tu casilla para confirmar.
         </p>
       </div>
     )
@@ -79,12 +79,12 @@ export default function PriceThresholdAlertSignup({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/marca/iconos-color/alerta.png" alt="" className="w-5 h-5" />
         </span>
-        <h3 className="text-xl font-bold text-white">
+        <h3 className="text-xl font-bold text-ink">
           ¿Seguís el {categoryLabel.toLowerCase()}? Te aviso cuando cruce un precio
         </h3>
       </div>
       <p className="text-zinc-400 text-sm mb-4">
-        Hoy está en <span className="text-white font-mono">{fmt(currentPrice)}/kg</span>. Elegí un umbral y te
+        Hoy está en <span className="text-ink font-mono">{fmt(currentPrice)}/kg</span>. Elegí un umbral y te
         mandamos <strong className="text-zinc-300">un solo mail</strong> cuando lo cruce.
       </p>
 
@@ -110,7 +110,7 @@ export default function PriceThresholdAlertSignup({
               min={1}
               value={threshold}
               onChange={(e) => setThreshold(Number(e.target.value))}
-              className="w-24 bg-transparent py-1.5 text-white font-mono outline-none"
+              className="w-24 bg-transparent py-1.5 text-ink font-mono outline-none"
               aria-label="Umbral personalizado"
             />
           </div>
@@ -125,7 +125,7 @@ export default function PriceThresholdAlertSignup({
             placeholder="tu@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="flex-1 bg-transparent px-3 py-2 text-white outline-none placeholder:text-zinc-600"
+            className="flex-1 bg-transparent px-3 py-2 text-ink outline-none placeholder:text-zinc-600"
           />
           <button
             type="submit"

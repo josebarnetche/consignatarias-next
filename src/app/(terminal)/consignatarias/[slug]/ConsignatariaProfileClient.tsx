@@ -340,9 +340,9 @@ function CalendarHeatmap({ auctions }: { auctions: Auction[] }) {
                   height: count > 0 ? `${Math.max(pct, 8)}%` : '2px',
                   background: count > 0
                     ? isCurrent
-                      ? `linear-gradient(to top, ${SEMANTIC_HEX.accent}, var(--accent-bright, #67e8f9))`
+                      ? `linear-gradient(to top, ${SEMANTIC_HEX.accent}, rgb(var(--accent-bright)))`
                       : `linear-gradient(to top, ${SEMANTIC_HEX.live}, ${SEMANTIC_HEX.positive})`
-                    : '#27272a',
+                    : 'rgb(var(--t-border))',
                 }}
               />
             </div>
@@ -364,9 +364,9 @@ function CalendarHeatmap({ auctions }: { auctions: Auction[] }) {
  *  canónico (SEMANTIC_HEX) alineado al mismo tono que TYPE_COLORS. */
 const TYPE_GRADIENT_MAP: Record<string, string> = {
   invernada:     `linear-gradient(to right, ${SEMANTIC_HEX.live}, ${SEMANTIC_HEX.positive})`,
-  cria:          `linear-gradient(to right, ${SEMANTIC_HEX.accent}, var(--accent-bright, #67e8f9))`,
+  cria:          `linear-gradient(to right, ${SEMANTIC_HEX.accent}, rgb(var(--accent-bright)))`,
   reproductores: `linear-gradient(to right, ${SEMANTIC_HEX.warning}, #fde68a)`,
-  general:       `linear-gradient(to right, #71717a, ${SEMANTIC_HEX.neutral})`,
+  general:       `linear-gradient(to right, rgb(var(--z-500)), ${SEMANTIC_HEX.neutral})`,
   especial:      `linear-gradient(to right, ${SEMANTIC_HEX.negative}, #fca5a5)`,
 }
 

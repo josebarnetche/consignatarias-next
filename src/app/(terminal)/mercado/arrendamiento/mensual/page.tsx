@@ -228,14 +228,14 @@ export default async function ArrendamientoMensualPage() {
           <span className="text-sm text-zinc-500">Cierres oficiales del Mercado Agroganadero</span>
         </div>
 
-        <h1 className="text-3xl lg:text-4xl font-bold text-white tracking-tight mb-6">
+        <h1 className="text-3xl lg:text-4xl font-bold text-ink tracking-tight mb-6">
           Índice Novillo Arrendamiento Mensual
         </h1>
 
         <p className="speakable-content text-lg text-zinc-300 leading-relaxed mb-6">
           {last ? (
             <>
-              El cierre mensual oficial de <strong className="text-white capitalize">{last.label}</strong> fue{' '}
+              El cierre mensual oficial de <strong className="text-ink capitalize">{last.label}</strong> fue{' '}
               <strong className="text-accent">${fmt3(last.inmag)}/kg</strong>
               {last.changeMoM != null && (
                 <>
@@ -243,7 +243,7 @@ export default async function ArrendamientoMensualPage() {
                 </>
               )}
               . Es el promedio ponderado del mes en el Mercado Agroganadero —importe total dividido kilos
-              vendidos— y es <strong className="text-white">el número con el que se liquida el canon</strong> de
+              vendidos— y es <strong className="text-ink">el número con el que se liquida el canon</strong> de
               un arrendamiento pactado en kilos de novillo.
             </>
           ) : (
@@ -257,21 +257,21 @@ export default async function ArrendamientoMensualPage() {
         <div className="grid sm:grid-cols-3 gap-4 mb-10">
           <div className="bg-gradient-to-br from-sky-500/10 to-transparent border border-sky-500/20 rounded-2xl p-6">
             <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Último cierre mensual</div>
-            <div className="text-3xl font-bold text-white tabular-nums">
+            <div className="text-3xl font-bold text-ink tabular-nums">
               ${last ? fmt(last.inmag) : '—'}<span className="text-lg text-zinc-500">/kg</span>
             </div>
             <div className="text-xs text-zinc-500 mt-1 capitalize">{last?.label ?? 'sin dato'}</div>
           </div>
           <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl p-6">
             <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Período vigente (sugerido)</div>
-            <div className="text-3xl font-bold text-white tabular-nums">
+            <div className="text-3xl font-bold text-ink tabular-nums">
               ${fmt(arr.periodIndex)}<span className="text-lg text-zinc-500">/kg</span>
             </div>
             <div className="text-xs text-zinc-500 mt-1">{arr.periodStart} al {arr.periodEnd}</div>
           </div>
           <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl p-6">
             <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Promedio últimos 12 meses</div>
-            <div className="text-3xl font-bold text-white tabular-nums">
+            <div className="text-3xl font-bold text-ink tabular-nums">
               ${promedio12 ? fmt(promedio12) : '—'}<span className="text-lg text-zinc-500">/kg</span>
             </div>
             {max12 && min12 && (
@@ -315,7 +315,7 @@ export default async function ArrendamientoMensualPage() {
         </div>
 
         <section className="mb-10">
-          <h2 className="text-xl font-semibold text-white mb-2">Histórico mes a mes</h2>
+          <h2 className="text-xl font-semibold text-ink mb-2">Histórico mes a mes</h2>
           <p className="text-zinc-500 text-sm mb-4">
             Cada fila es el cierre oficial publicado por el Mercado Agroganadero. La variación interanual compara
             contra el mismo mes del año anterior.
@@ -342,7 +342,7 @@ export default async function ArrendamientoMensualPage() {
         </section>
 
         <section className="mb-10 bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-white mb-3">Cómo se liquida el canon con el cierre mensual</h2>
+          <h2 className="text-lg font-semibold text-ink mb-3">Cómo se liquida el canon con el cierre mensual</h2>
           <p className="text-zinc-200 font-medium mb-3">
             Canon mensual = kg de novillo por hectárea × cierre mensual del índice × hectáreas
           </p>
@@ -365,12 +365,12 @@ export default async function ArrendamientoMensualPage() {
         </section>
 
         <section className="mb-10">
-          <h2 className="text-xl font-semibold text-white mb-6">Preguntas frecuentes</h2>
+          <h2 className="text-xl font-semibold text-ink mb-6">Preguntas frecuentes</h2>
           <div className="space-y-4">
             {faq.map((f, i) => (
               <details key={i} className="group bg-zinc-900/30 border border-zinc-800/50 rounded-xl overflow-hidden">
                 <summary className="flex items-center justify-between p-5 cursor-pointer hover:bg-zinc-800/20 transition-colors">
-                  <h3 className="text-white font-medium pr-4">{f.question}</h3>
+                  <h3 className="text-ink font-medium pr-4">{f.question}</h3>
                   <svg className="w-5 h-5 text-zinc-500 flex-shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -385,15 +385,15 @@ export default async function ArrendamientoMensualPage() {
 
         <section className="grid sm:grid-cols-3 gap-4 mb-10">
           <Link href="/mercado/arrendamiento" className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 hover:border-sky-500/30 transition-all group">
-            <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-accent-bright transition-colors">Índice del día</h3>
+            <h3 className="text-lg font-semibold text-ink mb-1 group-hover:text-accent-bright transition-colors">Índice del día</h3>
             <p className="text-sm text-zinc-500">El valor diario, la serie y la calculadora de canon.</p>
           </Link>
           <Link href="/mercado/arrendamiento/canuelas" className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 hover:border-sky-500/30 transition-all group">
-            <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-accent-bright transition-colors">Cañuelas</h3>
+            <h3 className="text-lg font-semibold text-ink mb-1 group-hover:text-accent-bright transition-colors">Cañuelas</h3>
             <p className="text-sm text-zinc-500">Cómo se forma el índice en el Mercado Agroganadero.</p>
           </Link>
           <Link href="/mercado/arrendamiento/liniers" className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 hover:border-sky-500/30 transition-all group">
-            <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-accent-bright transition-colors">Referencia Liniers</h3>
+            <h3 className="text-lg font-semibold text-ink mb-1 group-hover:text-accent-bright transition-colors">Referencia Liniers</h3>
             <p className="text-sm text-zinc-500">Qué pasó con el índice de Liniers y con qué se liquida hoy.</p>
           </Link>
         </section>

@@ -1,6 +1,12 @@
 /**
  * Server-rendered SVG chart primitives. Zero client JS, fully SSG-friendly,
  * indexable as inline content by Google. Style matches the terminal aesthetic.
+ *
+ * El chrome (grillas, ejes, fondo) usa `rgb(var(--token))` en vez de hex fijo:
+ * el SVG se inyecta inline (dangerouslySetInnerHTML) en el DOM de la página,
+ * así que hereda la cascada CSS — los var() resuelven según `data-theme` en
+ * <html> sin JS ni re-render, incluso en páginas SSG. Las series (`s.color`)
+ * las resuelve cada caller — ver SEMANTIC_HEX en lib/ui/tokens.ts.
  */
 
 export interface SeriesPoint {
@@ -67,10 +73,10 @@ export function lineChartSvg(props: LineChartProps): string {
     const v = yMin + ((yMax - yMin) * i) / yTicks
     const py = y(v)
     gridLines.push(
-      `<line x1="${P.left}" x2="${W - P.right}" y1="${py}" y2="${py}" stroke="#27272a" stroke-width="0.5" />`,
+      `<line x1="${P.left}" x2="${W - P.right}" y1="${py}" y2="${py}" stroke="rgb(var(--t-border))" stroke-width="0.5" />`,
     )
     yLabels.push(
-      `<text x="${P.left - 6}" y="${py + 3}" font-size="10" fill="#71717a" text-anchor="end" font-family="ui-monospace,Menlo,monospace">${fmt(v)}</text>`,
+      `<text x="${P.left - 6}" y="${py + 3}" font-size="10" fill="rgb(var(--z-500))" text-anchor="end" font-family="ui-monospace,Menlo,monospace">${fmt(v)}</text>`,
     )
   }
 
@@ -83,7 +89,7 @@ export function lineChartSvg(props: LineChartProps): string {
     const px = P.left + (innerW * i) / xTicks
     const label = d.toLocaleDateString('es-AR', { month: 'short', year: '2-digit' })
     xLabels.push(
-      `<text x="${px}" y="${H - P.bottom + 14}" font-size="10" fill="#71717a" text-anchor="middle" font-family="ui-monospace,Menlo,monospace">${label}</text>`,
+      `<text x="${px}" y="${H - P.bottom + 14}" font-size="10" fill="rgb(var(--z-500))" text-anchor="middle" font-family="ui-monospace,Menlo,monospace">${label}</text>`,
     )
   }
 
@@ -104,13 +110,13 @@ export function lineChartSvg(props: LineChartProps): string {
       (s, i) =>
         `<g transform="translate(${W - P.right - 120}, ${P.top + 4 + i * 16})">
           <rect width="10" height="10" fill="${s.color}" />
-          <text x="14" y="9" font-size="10" fill="#a1a1aa" font-family="ui-monospace,Menlo,monospace">${escapeXml(s.label)}</text>
+          <text x="14" y="9" font-size="10" fill="rgb(var(--z-400))" font-family="ui-monospace,Menlo,monospace">${escapeXml(s.label)}</text>
         </g>`,
     )
     .join('\n')
 
   const yLabelText = props.yLabel
-    ? `<text x="${P.left}" y="${P.top - 4}" font-size="10" fill="#71717a" font-family="ui-monospace,Menlo,monospace">${escapeXml(props.yLabel)}</text>`
+    ? `<text x="${P.left}" y="${P.top - 4}" font-size="10" fill="rgb(var(--z-500))" font-family="ui-monospace,Menlo,monospace">${escapeXml(props.yLabel)}</text>`
     : ''
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="100%" height="${H}" role="img" aria-label="${escapeXml(props.series.map((s) => s.label).join(', '))}">
@@ -130,7 +136,7 @@ export function sparklineSvg(
 ): string {
   const W = options.width ?? 120
   const H = options.height ?? 32
-  const color = options.color ?? '#38bdf8'
+  const color = options.color ?? 'rgb(var(--accent))'
   if (values.length < 2) return emptyChart(W, H, '—')
 
   const minVal = options.baseline === 'zero' ? 0 : Math.min(...values)
@@ -201,27 +207,27 @@ export function heatmapSvg(
   const monthHeaders = monthLabels
     .map(
       (m, i) =>
-        `<text x="${yLabelW + i * cellSize + cellSize / 2}" y="${xLabelH - 4}" font-size="10" fill="#71717a" text-anchor="middle" font-family="ui-monospace,Menlo,monospace">${m}</text>`,
+        `<text x="${yLabelW + i * cellSize + cellSize / 2}" y="${xLabelH - 4}" font-size="10" fill="rgb(var(--z-500))" text-anchor="middle" font-family="ui-monospace,Menlo,monospace">${m}</text>`,
     )
     .join('\n')
 
   const rows = years
     .map((year, yi) => {
       const rowY = xLabelH + yi * cellSize
-      const yearLabel = `<text x="${yLabelW - 6}" y="${rowY + cellSize / 2 + 3}" font-size="10" fill="#a1a1aa" text-anchor="end" font-family="ui-monospace,Menlo,monospace">${year}</text>`
+      const yearLabel = `<text x="${yLabelW - 6}" y="${rowY + cellSize / 2 + 3}" font-size="10" fill="rgb(var(--z-400))" text-anchor="end" font-family="ui-monospace,Menlo,monospace">${year}</text>`
       const yearCells = monthLabels
         .map((_, mi) => {
           const month = mi + 1
           const c = cellMap.get(`${year}-${month}`)
           if (!c) {
-            return `<rect x="${yLabelW + mi * cellSize}" y="${rowY}" width="${cellSize - 1}" height="${cellSize - 1}" fill="#0a0a0f" stroke="#27272a" stroke-width="0.5" />`
+            return `<rect x="${yLabelW + mi * cellSize}" y="${rowY}" width="${cellSize - 1}" height="${cellSize - 1}" fill="rgb(var(--t-bg))" stroke="rgb(var(--t-border))" stroke-width="0.5" />`
           }
           const fill = scale(c.zScore ?? 0)
           const txt = fmtCell(c)
-          return `<rect x="${yLabelW + mi * cellSize}" y="${rowY}" width="${cellSize - 1}" height="${cellSize - 1}" fill="${fill}" stroke="#27272a" stroke-width="0.5">
+          return `<rect x="${yLabelW + mi * cellSize}" y="${rowY}" width="${cellSize - 1}" height="${cellSize - 1}" fill="${fill}" stroke="rgb(var(--t-border))" stroke-width="0.5">
             <title>${year}-${String(month).padStart(2, '0')}: ${escapeXml(txt)} (z=${(c.zScore ?? 0).toFixed(2)})</title>
           </rect>
-          <text x="${yLabelW + mi * cellSize + cellSize / 2}" y="${rowY + cellSize / 2 + 3}" font-size="9" fill="#e4e4e7" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" pointer-events="none">${escapeXml(txt)}</text>`
+          <text x="${yLabelW + mi * cellSize + cellSize / 2}" y="${rowY + cellSize / 2 + 3}" font-size="9" fill="rgb(var(--z-200))" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" pointer-events="none">${escapeXml(txt)}</text>`
         })
         .join('\n')
       return `${yearLabel}\n${yearCells}`
@@ -236,7 +242,7 @@ export function heatmapSvg(
 
 function emptyChart(w: number, h: number, text: string): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="100%" height="${h}">
-    <text x="${w / 2}" y="${h / 2}" font-size="11" fill="#52525b" text-anchor="middle" font-family="ui-monospace,Menlo,monospace">${escapeXml(text)}</text>
+    <text x="${w / 2}" y="${h / 2}" font-size="11" fill="rgb(var(--z-600))" text-anchor="middle" font-family="ui-monospace,Menlo,monospace">${escapeXml(text)}</text>
   </svg>`
 }
 

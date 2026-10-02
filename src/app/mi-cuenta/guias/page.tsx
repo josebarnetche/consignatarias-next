@@ -117,19 +117,19 @@ export default function MisGuiasPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen bg-zinc-950">
       {/* Navigation breadcrumb */}
-      <div className="bg-gray-900/80 border-b border-gray-800 px-4 py-3">
+      <div className="bg-zinc-900/80 border-b border-zinc-800 px-4 py-3">
         <div className="max-w-6xl mx-auto flex items-center gap-4">
           <Link 
             href="/dashboard"
-            className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-sm text-zinc-400 hover:text-ink transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Volver a Mi Panel</span>
           </Link>
-          <span className="text-gray-700">/</span>
-          <span className="text-white font-medium">Mis Guías DT-e</span>
+          <span className="text-zinc-700">/</span>
+          <span className="text-ink font-medium">Mis Guías DT-e</span>
         </div>
       </div>
       
@@ -142,12 +142,12 @@ export default function MisGuiasPage() {
       />
       
       {/* Header */}
-      <div className="bg-gradient-to-b from-gray-900 to-gray-950 border-b border-gray-800">
+      <div className="bg-gradient-to-b from-zinc-900 to-zinc-950 border-b border-zinc-800">
         <div className="max-w-6xl mx-auto px-4 py-12">
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-3xl font-bold text-ink mb-2">
             Mis Guías DT-e
           </h1>
-          <p className="text-gray-400 mb-4">
+          <p className="text-zinc-400 mb-4">
             Subí tus documentos de tránsito y construí tu historial de movimientos.
           </p>
           {/* Social proof */}
@@ -163,7 +163,7 @@ export default function MisGuiasPage() {
         )}
 
         {/* How it works - Step by step visual guide */}
-        <div className="mb-12 bg-gradient-to-r from-sky-900/20 to-gray-900/50 border border-sky-800/30 rounded-xl p-6">
+        <div className="mb-12 bg-gradient-to-r from-sky-900/20 to-zinc-900/50 border border-sky-800/30 rounded-xl p-6">
           <h2 className="text-lg font-semibold text-accent mb-4 flex items-center gap-2">
             <Zap className="w-5 h-5" />
             ¿Cómo funciona?
@@ -175,20 +175,20 @@ export default function MisGuiasPage() {
                 <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-accent flex items-center justify-center text-xs font-bold text-zinc-950">
                   {index + 1}
                 </div>
-                <div className="bg-gray-900/60 border border-gray-800 rounded-lg p-4 h-full">
+                <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-4 h-full">
                   <div className="flex items-start gap-2 mb-2">
                     {index === 0 && <Camera className="w-4 h-4 text-accent shrink-0 mt-0.5" />}
                     {index === 1 && <FileText className="w-4 h-4 text-accent shrink-0 mt-0.5" />}
                     {index === 2 && <Zap className="w-4 h-4 text-accent shrink-0 mt-0.5" />}
                     {index === 3 && <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" />}
-                    <h3 className="text-sm font-medium text-white">{step.name}</h3>
+                    <h3 className="text-sm font-medium text-ink">{step.name}</h3>
                   </div>
-                  <p className="text-xs text-gray-400 leading-relaxed">{step.text}</p>
+                  <p className="text-xs text-zinc-400 leading-relaxed">{step.text}</p>
                 </div>
               </div>
             ))}
           </div>
-          <p className="mt-4 text-xs text-gray-500 flex items-center gap-1">
+          <p className="mt-4 text-xs text-zinc-500 flex items-center gap-1">
             <Shield className="w-3 h-3" />
             Tus datos se guardan de forma privada y segura. Solo vos podés verlos.
           </p>
@@ -196,24 +196,24 @@ export default function MisGuiasPage() {
 
         {/* Benefits */}
         <div className="grid md:grid-cols-3 gap-4 mb-12">
-          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
             <FileText className="w-8 h-8 text-accent mb-3" />
-            <h3 className="font-semibold text-white mb-1">Extracción automática</h3>
-            <p className="text-sm text-gray-400">
+            <h3 className="font-semibold text-ink mb-1">Extracción automática</h3>
+            <p className="text-sm text-zinc-400">
               Subí una foto y extraemos los datos automáticamente.
             </p>
           </div>
-          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
             <History className="w-8 h-8 text-accent mb-3" />
-            <h3 className="font-semibold text-white mb-1">Historial completo</h3>
-            <p className="text-sm text-gray-400">
+            <h3 className="font-semibold text-ink mb-1">Historial completo</h3>
+            <p className="text-sm text-zinc-400">
               Todas tus guías en un solo lugar, buscables y exportables.
             </p>
           </div>
-          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
             <TrendingUp className="w-8 h-8 text-accent mb-3" />
-            <h3 className="font-semibold text-white mb-1">Analytics</h3>
-            <p className="text-sm text-gray-400">
+            <h3 className="font-semibold text-ink mb-1">Analytics</h3>
+            <p className="text-sm text-zinc-400">
               Visualizá tu operación: cabezas por mes, categorías, tendencias.
             </p>
           </div>
@@ -221,7 +221,7 @@ export default function MisGuiasPage() {
 
         {/* Uploader */}
         <div className="mb-12">
-          <h2 className="text-xl font-semibold text-white mb-6">
+          <h2 className="text-xl font-semibold text-ink mb-6">
             Subir nueva guía
           </h2>
           <DTEUploader onSave={handleSave} />
@@ -230,12 +230,12 @@ export default function MisGuiasPage() {
         {/* History */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-white">
+            <h2 className="text-xl font-semibold text-ink">
               Mi historial
             </h2>
             <button
               onClick={() => setRefreshKey(k => k + 1)}
-              className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-400 hover:text-white transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-400 hover:text-ink transition-colors"
             >
               <RefreshCw className="w-4 h-4" />
               Actualizar

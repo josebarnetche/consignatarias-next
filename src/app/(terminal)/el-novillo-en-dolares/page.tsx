@@ -238,7 +238,7 @@ export default async function ElNovilloEnDolaresPage() {
           en la Argentina.
         </p>
 
-        <h2 className="text-white text-lg md:text-xl font-bold tracking-tight mb-4">
+        <h2 className="text-ink text-lg md:text-xl font-bold tracking-tight mb-4">
           Preguntas sobre el novillo en dólares
         </h2>
         <dl className="space-y-5 mb-10">

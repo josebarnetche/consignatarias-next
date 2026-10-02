@@ -84,7 +84,7 @@ export default async function CalendarioPage({ params }: Props) {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="text-4xl mb-4">📅</div>
-          <h1 className="text-2xl font-bold text-white mb-2">
+          <h1 className="text-2xl font-bold text-ink mb-2">
             Calendario de {profile.displayName}
           </h1>
           <p className="text-zinc-400">
@@ -97,7 +97,7 @@ export default async function CalendarioPage({ params }: Props) {
 
         {/* Instructions */}
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 mb-8">
-          <h2 className="font-medium text-white mb-3">¿Cómo funciona?</h2>
+          <h2 className="font-medium text-ink mb-3">¿Cómo funciona?</h2>
           <ol className="text-sm text-zinc-400 space-y-2 list-decimal list-inside">
             <li>Elegí tu calendario (Google, Apple u Outlook)</li>
             <li>Aceptá la suscripción cuando tu app lo pida</li>
@@ -116,7 +116,7 @@ export default async function CalendarioPage({ params }: Props) {
               {upcoming.map((a, i) => (
                 <div key={i} className="px-4 py-3 flex justify-between items-center">
                   <div>
-                    <div className="text-sm text-white">{a.title}</div>
+                    <div className="text-sm text-ink">{a.title}</div>
                     <div className="text-xs text-zinc-500">{a.location}</div>
                   </div>
                   <div className="text-right">
@@ -133,7 +133,7 @@ export default async function CalendarioPage({ params }: Props) {
         <div className="text-center space-y-3">
           <Link
             href={`/go/${canonical}`}
-            className="text-sm text-zinc-400 hover:text-white transition-colors"
+            className="text-sm text-zinc-400 hover:text-ink transition-colors"
           >
             ← Volver al perfil
           </Link>

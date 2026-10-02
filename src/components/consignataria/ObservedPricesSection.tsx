@@ -52,7 +52,7 @@ export function ObservedPricesSection({ slug }: { slug: string }) {
   return (
     <section className="max-w-6xl mx-auto px-4 pt-10" id="precios-observados">
       <div className="flex items-baseline justify-between flex-wrap gap-2 mb-1">
-        <h2 className="text-lg font-semibold text-white">
+        <h2 className="text-lg font-semibold text-ink">
           Precios del remate · {origen}
         </h2>
         <span className="text-xs text-slate-500 tabular-nums">{fechaLarga(remate.fecha)}</span>
@@ -93,7 +93,7 @@ export function ObservedPricesSection({ slug }: { slug: string }) {
                         <td className="py-1.5 pr-4 text-slate-300">{c.label}</td>
                         <td className="py-1.5 px-3 text-right text-slate-500 tabular-nums">{ars(c.min)}</td>
                         <td className="py-1.5 px-3 text-right text-slate-500 tabular-nums">{ars(c.max)}</td>
-                        <td className="py-1.5 pl-3 text-right text-white tabular-nums font-medium">{ars(mid)}</td>
+                        <td className="py-1.5 pl-3 text-right text-ink tabular-nums font-medium">{ars(mid)}</td>
                       </tr>
                     )
                   })}

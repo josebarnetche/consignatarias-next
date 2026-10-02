@@ -111,7 +111,7 @@ export default function NovilloAlertSignup({
               step={currency === 'usd' ? 0.1 : 10}
               value={threshold}
               onChange={(e) => setThreshold(Math.max(0, parseFloat(e.target.value) || 0))}
-              className="w-full bg-transparent text-white font-mono text-lg outline-none"
+              className="w-full bg-transparent text-ink font-mono text-lg outline-none"
               aria-label="Umbral de precio"
             />
             <span className="text-zinc-500 text-sm whitespace-nowrap">/kg</span>
@@ -147,7 +147,7 @@ export default function NovilloAlertSignup({
               setEmail(e.target.value)
               if (state === 'error') setState('idle')
             }}
-            className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-sky-500/60"
+            className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-ink text-sm outline-none focus:border-sky-500/60"
           />
           <button
             type="submit"

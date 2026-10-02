@@ -128,7 +128,7 @@ export default async function GoLandingPage({ params }: Props) {
   const moreRemates = upcoming.slice(1, 4)
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-900 to-black">
+    <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-900 to-zinc-950">
       {/* SEO Schema */}
       <ConsignatariaProfileSchema
         name={profile.displayName}
@@ -175,7 +175,7 @@ export default async function GoLandingPage({ params }: Props) {
               </div>
             )}
             
-            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-ink mb-2">
               {profile.displayName}
             </h1>
             
@@ -204,7 +204,7 @@ export default async function GoLandingPage({ params }: Props) {
             <div className="bg-zinc-800/50 border border-zinc-700 rounded-2xl p-6 mb-6 backdrop-blur">
               <div className="text-xs text-zinc-500 uppercase tracking-wider mb-2">Próximo Remate</div>
               
-              <h2 className="text-xl font-semibold text-white mb-3">{nextRemate.title}</h2>
+              <h2 className="text-xl font-semibold text-ink mb-3">{nextRemate.title}</h2>
               
               <div className="flex flex-wrap gap-4 text-sm text-zinc-300 mb-4">
                 <div className="flex items-center gap-2">
@@ -278,7 +278,7 @@ export default async function GoLandingPage({ params }: Props) {
                 {moreRemates.map((r, i) => (
                   <div key={i} className="flex items-center justify-between py-2 border-b border-zinc-700/50 last:border-0">
                     <div>
-                      <div className="text-sm text-white">{r.title}</div>
+                      <div className="text-sm text-ink">{r.title}</div>
                       <div className="text-xs text-zinc-500">{r.location}</div>
                     </div>
                     <div className="text-right">

@@ -67,7 +67,7 @@ export function ElCorredorInlineForm({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={state === 'submitting'}
-          className="flex-1 bg-zinc-900 border border-zinc-700 rounded px-4 py-2.5 text-white font-mono text-sm placeholder:text-zinc-600 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-colors disabled:opacity-60"
+          className="flex-1 bg-zinc-900 border border-zinc-700 rounded px-4 py-2.5 text-ink font-mono text-sm placeholder:text-zinc-600 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-colors disabled:opacity-60"
         />
         <button
           type="submit"

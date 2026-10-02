@@ -96,7 +96,7 @@ export default function LeadCaptureModal({
             /* Success State */
             <div className="text-center py-8">
               <div className="text-4xl mb-4">✅</div>
-              <h3 className="text-xl font-semibold text-white mb-2">
+              <h3 className="text-xl font-semibold text-ink mb-2">
                 ¡Consulta enviada!
               </h3>
               <p className="text-zinc-400 mb-4">
@@ -111,7 +111,7 @@ export default function LeadCaptureModal({
             <>
               <div className="text-center mb-6">
                 <div className="text-3xl mb-3">💬</div>
-                <h3 className="text-xl font-semibold text-white mb-1">
+                <h3 className="text-xl font-semibold text-ink mb-1">
                   Contactar a {consignatariaName}
                 </h3>
                 <p className="text-sm text-zinc-400">
@@ -131,7 +131,7 @@ export default function LeadCaptureModal({
                     onChange={(e) => setName(e.target.value)}
                     required
                     placeholder="Juan Pérez"
-                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:border-accent transition-colors"
+                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-ink placeholder:text-zinc-600 focus:outline-none focus:border-accent transition-colors"
                   />
                 </div>
 
@@ -145,7 +145,7 @@ export default function LeadCaptureModal({
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+54 9 11 1234-5678"
-                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:border-accent transition-colors"
+                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-ink placeholder:text-zinc-600 focus:outline-none focus:border-accent transition-colors"
                   />
                 </div>
 
@@ -159,7 +159,7 @@ export default function LeadCaptureModal({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="juan@ejemplo.com"
-                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:border-accent transition-colors"
+                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-ink placeholder:text-zinc-600 focus:outline-none focus:border-accent transition-colors"
                   />
                 </div>
 
@@ -173,7 +173,7 @@ export default function LeadCaptureModal({
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Quisiera consultar sobre..."
                     rows={2}
-                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder:text-zinc-600 focus:outline-none focus:border-accent transition-colors resize-none"
+                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-ink placeholder:text-zinc-600 focus:outline-none focus:border-accent transition-colors resize-none"
                   />
                 </div>
 

@@ -6,28 +6,51 @@ import type { Auction } from '@/lib/db/schema'
 /* ================================================================== */
 
 /**
- * Canonical hex per semantic tone. This is the SINGLE source of truth for
+ * Canonical color per semantic tone. This is the SINGLE source of truth for
  * data/value color across the product. Components (HeroNumber, StatPill,
  * Delta, charts, …) import from here — they MUST NOT hardcode a local map.
  *
  * Hard rules (DESIGN-SYSTEM.md §2.1):
- *  - `neutral` (#a1a1aa) y `emphasis` (#f4f4f5) son tokens DISTINTOS. Resuelve
+ *  - `neutral` (zinc-400) y `emphasis` (zinc-100) son tokens DISTINTOS. Resuelve
  *    la colisión histórica: HeroNumber usaba #f4f4f5 y StatPill #a1a1aa para
  *    el mismo 'neutral'. Ahora `neutral` = dato sin tendencia (zinc-400) y
  *    `emphasis` = texto fuerte / número-hero (zinc-100).
  *  - Estado ≠ marca: `accent` = interactivo/enlace/foco; `positive/negative/
  *    warning` = valor/dato; `live` = tiempo real. Un número que sube usa
  *    `positive`, jamás `accent`.
- *  - Los charts reciben `SEMANTIC_HEX.positive`, nunca el literal '#34d399'.
+ *  - Los charts reciben `SEMANTIC_HEX.positive`, nunca un literal '#34d399'.
+ *
+ * Desde el tema claro (docs/PLAN-TEMA-WHITE.md) estos NO son hex fijos: son
+ * `rgb(var(--tono))`, la misma variable CSS que lee tailwind.config.js. Un
+ * SVG/estilo inline que los usa se repinta solo según `data-theme` en <html>
+ * — sin JS, incluso en páginas SSG — porque hereda la cascada CSS de la
+ * página. Si de verdad hace falta el hex (ej. exportar a PNG/canvas donde no
+ * hay cascada CSS), usar `SEMANTIC_HEX_STATIC[tema][tono]` más abajo.
  */
 export const SEMANTIC_HEX = {
-  neutral:  '#a1a1aa', // zinc-400 — dato sin tendencia
-  emphasis: '#f4f4f5', // zinc-100 — texto fuerte / número-hero (NO es 'neutral')
-  positive: '#34d399', // emerald-400 — sube / ganancia
-  negative: '#f87171', // red-400 — baja / pérdida
-  warning:  '#fbbf24', // amber-400 — alerta
-  accent:   '#38bdf8', // sky-400 — interactivo / enlace / foco
-  live:     '#10b981', // emerald-500 — tiempo real
+  neutral:  'rgb(var(--z-400))', // dato sin tendencia
+  emphasis: 'rgb(var(--z-100))', // texto fuerte / número-hero (NO es 'neutral')
+  positive: 'rgb(var(--positive))', // sube / ganancia
+  negative: 'rgb(var(--negative))', // baja / pérdida
+  warning:  'rgb(var(--warning))',  // alerta
+  accent:   'rgb(var(--accent))',   // interactivo / enlace / foco
+  live:     'rgb(var(--live))',     // tiempo real
+} as const
+
+/**
+ * Hex ESTÁTICO por tema — para los pocos consumidores que no corren dentro
+ * de la cascada CSS de la página (canvas, export a imagen, generación donde
+ * no hay <html data-theme>) y necesitan un valor concreto, no una var().
+ */
+export const SEMANTIC_HEX_STATIC = {
+  dark: {
+    neutral: '#a1a1aa', emphasis: '#f4f4f5', positive: '#34d399',
+    negative: '#f87171', warning: '#fbbf24', accent: '#38bdf8', live: '#10b981',
+  },
+  light: {
+    neutral: '#a1a1aa', emphasis: '#18181b', positive: '#059669',
+    negative: '#dc2626', warning: '#d97706', accent: '#1d4ed8', live: '#047857',
+  },
 } as const
 
 export type SemanticTone = keyof typeof SEMANTIC_HEX
