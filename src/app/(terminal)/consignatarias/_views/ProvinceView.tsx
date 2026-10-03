@@ -5,6 +5,8 @@ import type { Auction } from '@/lib/db/schema'
 import { getAllProfiles, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import { BreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
+import { CAT_LABELS, getCity, nombrePropio } from '@/lib/ui/tokens'
+import { remateAnchor, remateHref, tipoNombre } from '@/lib/remates-enlaces'
 
 /* ============================================================
    PROVINCE VIEW — used when /consignatarias/[slug] matches a
@@ -43,6 +45,83 @@ export const PROVINCE_DISPLAY: Record<string, string> = {
   'santa-fe': 'Santa Fe',
   'santiago-del-estero': 'Santiago del Estero',
   'tucuman': 'Tucumán',
+}
+
+const TIPO_PLURAL: Record<string, string> = {
+  invernada: 'de invernada',
+  cria: 'de cría',
+  general: 'generales',
+  especial: 'especiales',
+  reproductores: 'de reproductores',
+}
+
+function contar<T>(items: T[], clave: (x: T) => string | null | undefined): [string, number][] {
+  const m = new Map<string, number>()
+  for (const it of items) {
+    const k = clave(it)
+    if (k) m.set(k, (m.get(k) ?? 0) + 1)
+  }
+  return [...m.entries()].sort((a, b) => b[1] - a[1])
+}
+
+function enumerar(xs: string[]): string {
+  if (xs.length <= 1) return xs.join('')
+  return `${xs.slice(0, -1).join(', ')} y ${xs[xs.length - 1]}`
+}
+
+/**
+ * Párrafo propio de cada provincia, armado con los remates de remates.json:
+ * plazas con más remates, firmas que más rematan, tipo de remate y categoría
+ * que predominan y el próximo remate. Son datos de la provincia, no plantilla:
+ * dos provincias nunca dicen lo mismo.
+ */
+function resumenProvincia(
+  provinceAuctions: Auction[],
+  firmas: { displayName: string; auctionCount: number }[],
+  provinceDisplay: string,
+  today: string,
+) {
+  if (provinceAuctions.length === 0) return null
+  const plazas = contar(provinceAuctions, (a) => nombrePropio(getCity(a.location || '')))
+    .filter(([nombre]) => nombre.toLowerCase() !== provinceDisplay.toLowerCase())
+    .slice(0, 3)
+  const tipos = contar(provinceAuctions, (a) => a.type)
+  const categorias = contar(provinceAuctions, (a) => (a.mainCategory && a.mainCategory !== 'mixto' ? a.mainCategory : null))
+  const total = provinceAuctions.length
+  const proximo = provinceAuctions
+    .filter((a) => a.date >= today && a.status === 'scheduled')
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? ''))[0]
+
+  const partes: string[] = []
+  partes.push(
+    `En ${provinceDisplay} registramos ${total} ${total === 1 ? 'remate' : 'remates'} de ${firmas.length} ${firmas.length === 1 ? 'consignataria' : 'consignatarias'}.`,
+  )
+  if (plazas.length) {
+    const [primera, ...resto] = plazas
+    partes.push(
+      plazas.length === 1
+        ? `La plaza con más actividad es ${primera[0]} (${primera[1]} ${primera[1] === 1 ? 'remate' : 'remates'}).`
+        : `Las plazas con más actividad son ${primera[0]} (${primera[1]} remates), ${enumerar(resto.map(([n]) => n))}.`,
+    )
+  }
+  const top = firmas.slice(0, 3)
+  if (top.length) {
+    partes.push(
+      top.length === 1
+        ? `La firma que más remata en la provincia es ${nombrePropio(top[0].displayName)}.`
+        : `Las firmas que más rematan en la provincia son ${nombrePropio(top[0].displayName)} (${top[0].auctionCount} remates), ${enumerar(top.slice(1).map((f) => nombrePropio(f.displayName)))}.`,
+    )
+  }
+  if (tipos.length) {
+    const [t1, n1] = tipos[0]
+    const pct = Math.round((n1 / total) * 100)
+    const segundo = tipos[1] ? `, seguidos por los ${TIPO_PLURAL[tipos[1][0]] ?? tipos[1][0]}` : ''
+    partes.push(`Predominan los remates ${TIPO_PLURAL[t1] ?? t1} (${pct}% del total)${segundo}.`)
+  }
+  if (categorias.length) {
+    partes.push(`Cuando el remate declara una categoría principal, la que más aparece es ${(CAT_LABELS[categorias[0][0] as Auction['mainCategory']] ?? categorias[0][0]).toLowerCase()}.`)
+  }
+  return { texto: partes.join(' '), proximo }
 }
 
 export function isProvinceSlug(slug: string): boolean {
@@ -152,6 +231,13 @@ export async function ProvinceView({ provincia }: { provincia: string }) {
 
   const totalRemates = entries.reduce((sum, e) => sum + e.auctionCount, 0)
   const totalUpcoming = entries.reduce((sum, e) => sum + e.upcoming, 0)
+  const resumen = resumenProvincia(
+    auctions.filter((a) => a.province === provinceName),
+    entries,
+    provinceDisplay,
+    today,
+  )
+  const proximoHref = resumen?.proximo ? remateHref(resumen.proximo) : null
 
   const topConsignatarias = entries.slice(0, 6).map((e) => e.displayName)
   const faqItems = [
@@ -197,12 +283,38 @@ export async function ProvinceView({ provincia }: { provincia: string }) {
         </h1>
         <p className="text-zinc-400 text-sm leading-relaxed mb-3">
           Directorio de <strong className="text-zinc-200">{entries.length} consignatarias</strong> con
-          actividad en {provinceDisplay}. En total hay <strong className="text-zinc-200">{totalRemates} remates</strong> programados
+          actividad en {provinceDisplay}. En total hay <strong className="text-zinc-200">{totalRemates} remates</strong> registrados
           en la provincia{totalUpcoming > 0 && <>, de los cuales <strong className="text-zinc-200">{totalUpcoming}</strong> son próximos</>}.
         </p>
+        {resumen && (
+          <div className="text-zinc-400 text-sm leading-relaxed mb-3 space-y-2">
+            <p>{resumen.texto}</p>
+            {resumen.proximo && (
+              <p>
+                Próximo remate:{' '}
+                {proximoHref ? (
+                  <Link href={proximoHref} className="text-accent hover:underline">
+                    {remateAnchor(resumen.proximo)}
+                  </Link>
+                ) : (
+                  remateAnchor(resumen.proximo)
+                )}
+                .
+              </p>
+            )}
+          </div>
+        )}
+        <p className="text-sm mb-3 flex flex-wrap gap-x-4 gap-y-1">
+          <Link href={`/remates/${provincia}`} className="text-accent hover:underline">
+            Ver el calendario de remates en {provinceDisplay} →
+          </Link>
+          <Link href="/vr" className="text-accent hover:underline">
+            Cuánto vale tu hacienda hoy →
+          </Link>
+        </p>
         <p className="text-zinc-500 text-xs mb-6">
-          Cada consignataria opera en múltiples localidades. Hacé clic en cualquiera para ver su
-          calendario completo de remates, provincias de operación y más información.
+          Cada consignataria opera en varias localidades. Entrá a cualquiera para ver su
+          calendario completo de remates, las provincias donde opera y más información.
         </p>
       </section>
 
@@ -215,7 +327,7 @@ export async function ProvinceView({ provincia }: { provincia: string }) {
               className="flex items-center justify-between p-3 rounded-lg bg-zinc-900/50 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900 transition-colors"
             >
               <div>
-                <div className="text-zinc-100 font-medium">{c.displayName}</div>
+                <div className="text-zinc-100 font-medium">{nombrePropio(c.displayName)}</div>
                 <div className="text-zinc-500 text-sm">
                   {c.auctionCount} remates en {provinceDisplay}
                   {c.upcoming > 0 && <span className="text-emerald-400"> · {c.upcoming} próximos</span>}
@@ -225,9 +337,9 @@ export async function ProvinceView({ provincia }: { provincia: string }) {
                 {c.types.slice(0, 3).map((type) => (
                   <span
                     key={type}
-                    className="px-2 py-0.5 text-xs rounded bg-zinc-800 text-zinc-400 capitalize"
+                    className="px-2 py-0.5 text-xs rounded bg-zinc-800 text-zinc-400"
                   >
-                    {type}
+                    {tipoNombre(type)}
                   </span>
                 ))}
               </div>

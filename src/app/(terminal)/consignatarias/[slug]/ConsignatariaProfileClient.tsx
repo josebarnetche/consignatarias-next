@@ -13,6 +13,7 @@ import FeatureGate from '@/components/FeatureGate'
 import ContactlessLeadForm from '@/components/ContactlessLeadForm'
 import LoginGate from '@/components/LoginGate'
 import { normalizeUrl } from '@/lib/utils/url'
+import { remateAnchor, remateHref } from '@/lib/remates-enlaces'
 import { resolveYoutubeUrl } from '@/lib/youtube-live'
 import { resolverStream } from '@/lib/streams'
 import StreamWall, { type StreamItem } from '@/components/remates/StreamWall'
@@ -166,23 +167,30 @@ function ProfileAuctionRow({ auction, today, especial }: { auction: Auction; tod
   const city = getCity(auction.location)
   const sourceUrl = normalizeUrl(auction.sourceUrl)
   const catalogUrl = normalizeUrl(auction.catalogUrl)
-  const href = sourceUrl || catalogUrl || null
-
-  function handleRowClick() {
-    if (href) {
-      trackOutboundClick(href, sourceUrl ? 'source' : 'catalog')
-      window.open(href, '_blank', 'noopener,noreferrer')
-    }
-  }
+  const youtubeUrl = normalizeUrl(auction.youtubeUrl)
+  // El remate lleva a su ficha (enlace real, se estira sobre toda la fila); la
+  // web de la firma y el catálogo quedan como acciones aparte.
+  const ficha = remateHref(auction)
+  const anchor = ficha ? remateAnchor(auction) : auction.title
+  const titulo = ficha ? (
+    <Link
+      href={ficha}
+      aria-label={anchor}
+      title={anchor}
+      className="text-data font-terminal text-zinc-200 truncate group-hover:text-accent transition-colors after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
+    >
+      {auction.title}
+    </Link>
+  ) : (
+    <span className="text-data font-terminal text-zinc-200 truncate" title={auction.title}>
+      {auction.title}
+    </span>
+  )
 
   return (
     <div
-      role={href ? 'link' : undefined}
-      tabIndex={href ? 0 : undefined}
-      onClick={href ? handleRowClick : undefined}
-      onKeyDown={href ? (e) => { if (e.key === 'Enter') handleRowClick() } : undefined}
-      className={`group border-b border-terminal-border transition-colors duration-75 ${
-        href ? 'hover:bg-zinc-800/50 cursor-pointer' : ''
+      className={`group relative border-b border-terminal-border transition-colors duration-75 ${
+        ficha ? 'hover:bg-zinc-800/50 focus-within:bg-zinc-800/50' : ''
       } ${isToday ? 'bg-positive/[0.02]' : ''} ${isPast ? 'opacity-50' : ''}`}
     >
       {/* --- MOBILE CARD --- */}
@@ -199,10 +207,8 @@ function ProfileAuctionRow({ auction, today, especial }: { auction: Auction; tod
           <StatusBadge date={auction.date} time={auction.time} today={today} />
         </div>
         <div className="flex items-center gap-1.5 min-w-0">
-          <span className="text-data font-terminal text-zinc-200 group-hover:text-accent transition-colors truncate">
-            {auction.title}
-          </span>
-          {especial && <ExpositorBadge especial={especial} />}
+          {titulo}
+          {especial && <span className="relative z-[1]"><ExpositorBadge especial={especial} /></span>}
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-xxs text-zinc-500">{city}</span>
@@ -217,21 +223,26 @@ function ProfileAuctionRow({ auction, today, especial }: { auction: Auction; tod
             </span>
           )}
         </div>
-        <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
-          {auction.catalogUrl && (
-            <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
-              onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
-              className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors" aria-label="Descargar catalogo">Catalogo</a>
+        <div className="relative z-[1] flex items-center gap-3">
+          {catalogUrl && (
+            <a href={catalogUrl} target="_blank" rel="noopener noreferrer"
+              onClick={() => trackOutboundClick(catalogUrl, 'catalog')}
+              className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors" aria-label="Descargar catálogo">Catálogo</a>
           )}
-          {auction.youtubeUrl && (
-            <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
-              onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
-              className="text-xxs font-terminal text-negative hover:text-negative/80 motion-hover" aria-label="Ver transmision">YouTube</a>
+          {youtubeUrl && (
+            <a href={youtubeUrl} target="_blank" rel="noopener noreferrer"
+              onClick={() => trackOutboundClick(youtubeUrl, 'youtube')}
+              className="text-xxs font-terminal text-negative hover:text-negative/80 motion-hover" aria-label="Ver transmisión">YouTube</a>
           )}
           {rowLiveChannel && (
             <a href={rowLiveChannel.url} target="_blank" rel="noopener noreferrer"
               onClick={() => trackOutboundClick(rowLiveChannel.url, 'youtube')}
               className="text-xxs font-terminal text-negative hover:text-negative/80 motion-hover" aria-label="En vivo ahora">&#9679; EN VIVO</a>
+          )}
+          {sourceUrl && sourceUrl !== catalogUrl && (
+            <a href={sourceUrl} target="_blank" rel="noopener noreferrer"
+              onClick={() => trackOutboundClick(sourceUrl, 'source')}
+              className="text-xxs font-terminal text-zinc-500 hover:text-zinc-400 transition-colors">Web de la firma</a>
           )}
         </div>
       </div>
@@ -252,10 +263,8 @@ function ProfileAuctionRow({ auction, today, especial }: { auction: Auction; tod
             )}
           </span>
           <span className="flex-1 min-w-0 flex items-center gap-1.5">
-            <span className="text-data font-terminal text-zinc-200 truncate group-hover:text-accent transition-colors" title={auction.title}>
-              {auction.title}
-            </span>
-            {especial && <ExpositorBadge especial={especial} />}
+            {titulo}
+            {especial && <span className="relative z-[1]"><ExpositorBadge especial={especial} /></span>}
           </span>
           <span className="w-[140px] flex-shrink-0 text-data font-terminal text-zinc-500 truncate text-right pr-2">
             {city}
@@ -278,26 +287,26 @@ function ProfileAuctionRow({ auction, today, especial }: { auction: Auction; tod
             <StatusBadge date={auction.date} time={auction.time} today={today} />
           </span>
           <span className="flex-1" />
-          <span className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-            {auction.catalogUrl && (
-              <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
-                onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
-                className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors" aria-label="Descargar catalogo" title="Catalogo">CAT</a>
+          <span className="relative z-[1] flex items-center gap-2">
+            {catalogUrl && (
+              <a href={catalogUrl} target="_blank" rel="noopener noreferrer"
+                onClick={() => trackOutboundClick(catalogUrl, 'catalog')}
+                className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors" aria-label="Descargar catálogo" title="Catálogo">Catálogo</a>
             )}
-            {auction.youtubeUrl && (
-              <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
-                onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
-                className="text-xxs font-terminal text-negative hover:text-negative/80 motion-hover" aria-label="Ver transmision" title="YouTube">YT</a>
+            {youtubeUrl && (
+              <a href={youtubeUrl} target="_blank" rel="noopener noreferrer"
+                onClick={() => trackOutboundClick(youtubeUrl, 'youtube')}
+                className="text-xxs font-terminal text-negative hover:text-negative/80 motion-hover" aria-label="Ver transmisión" title="YouTube">YouTube</a>
             )}
             {rowLiveChannel && (
               <a href={rowLiveChannel.url} target="_blank" rel="noopener noreferrer"
                 onClick={() => trackOutboundClick(rowLiveChannel.url, 'youtube')}
                 className="text-xxs font-terminal text-negative hover:text-negative/80 motion-hover" aria-label="En vivo ahora" title="En vivo ahora">&#9679; EN VIVO</a>
             )}
-            {auction.sourceUrl && (
-              <a href={normalizeUrl(auction.sourceUrl) || '#'} target="_blank" rel="noopener noreferrer"
-                onClick={() => trackOutboundClick(normalizeUrl(auction.sourceUrl) || '', 'source')}
-                className="text-xxs font-terminal text-zinc-500 hover:text-zinc-400 transition-colors" aria-label="Ver fuente" title="Fuente">SRC</a>
+            {sourceUrl && sourceUrl !== catalogUrl && (
+              <a href={sourceUrl} target="_blank" rel="noopener noreferrer"
+                onClick={() => trackOutboundClick(sourceUrl, 'source')}
+                className="text-xxs font-terminal text-zinc-500 hover:text-zinc-400 transition-colors" title="Web de la firma">Web de la firma</a>
             )}
           </span>
         </div>
@@ -836,7 +845,15 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                 <div className="text-data text-zinc-100 font-medium mt-1.5">
                   {fmtDate(upcoming[0].date)}{upcoming[0].time ? ` · ${upcoming[0].time}` : ''}
                 </div>
-                <div className="text-xxs text-zinc-300 mt-0.5 leading-snug">{upcoming[0].title}</div>
+                <div className="text-xxs text-zinc-300 mt-0.5 leading-snug">
+                  {remateHref(upcoming[0]) ? (
+                    <Link href={remateHref(upcoming[0])!} title={remateAnchor(upcoming[0])} className="hover:text-accent hover:underline">
+                      {upcoming[0].title}
+                    </Link>
+                  ) : (
+                    upcoming[0].title
+                  )}
+                </div>
                 {(getCity(upcoming[0].location) || upcoming[0].province) && (
                   <div className="text-xxs text-zinc-500 mt-0.5">
                     {getCity(upcoming[0].location)}{upcoming[0].province ? `, ${upcoming[0].province}` : ''}
@@ -882,7 +899,11 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                     {upcoming.slice(1, 4).map((a, i) => (
                       <div key={`${a.date}-${i}`} className="flex items-baseline gap-2 text-xxs">
                         <span className="text-zinc-400 tabular-nums shrink-0">{fmtDate(a.date)}</span>
-                        <span className="text-zinc-500 truncate">{a.title}</span>
+                        {remateHref(a) ? (
+                          <Link href={remateHref(a)!} title={remateAnchor(a)} className="text-zinc-500 truncate hover:text-accent hover:underline">{a.title}</Link>
+                        ) : (
+                          <span className="text-zinc-500 truncate">{a.title}</span>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -908,7 +929,10 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                     </span>
                   ))}
                 </div>
-                <a href="#precios-observados" className="text-xxs text-accent hover:text-accent-bright mt-2 inline-block">Ver tabla completa &rarr;</a>
+                <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+                  <a href="#precios-observados" className="text-xxs text-accent hover:text-accent-bright inline-block">Ver tabla completa &rarr;</a>
+                  <Link href="/vr" className="text-xxs text-accent hover:text-accent-bright inline-block">Cuánto vale tu hacienda hoy &rarr;</Link>
+                </div>
               </>
             ) : (
               <div className="text-xxs text-zinc-600 leading-relaxed">Los precios $/kg por categoría aparecen acá cuando la firma reporta su próximo remate.</div>

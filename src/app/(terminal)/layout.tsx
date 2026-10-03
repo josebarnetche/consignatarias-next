@@ -10,6 +10,13 @@ import OnboardingPrompt from "@/components/onboarding/OnboardingPrompt";
 import PageTransition from "@/components/ui/PageTransition";
 import SmartWelcome from "@/components/SmartWelcome";
 import { createClient } from "@/lib/supabase-browser";
+import { getAllProfiles } from "@/lib/data/consignataria-slugs";
+import frigorificosResumen from "@/lib/data/frigorificos-summary.json";
+
+// Cifras del menú calculadas desde los datos: escritas a mano quedaban viejas
+// ("1.102 plantas", "104 firmas") apenas cambiaba el padrón o el directorio.
+const TOTAL_FIRMAS = getAllProfiles().length;
+const PLANTAS_HABILITADAS = (frigorificosResumen as { habilitados: number }).habilitados;
 
 /* ------------------------------------------------------------------ */
 /*  NAV TREE  (DESIGN-SYSTEM.md §3.1 — agrupar por modelo mental)      */
@@ -38,7 +45,7 @@ interface NavLink {
   href: string;
 }
 
-// Dropdowns agrupados. El logo (→ /overview) reemplaza al viejo link TERMINAL.
+// Dropdowns agrupados. El logo lleva a la portada (/), que es la que dice la promesa.
 const NAV_GROUPS: NavGroup[] = [
   // El producto va primero (v1.211.0): cuánto vale tu hacienda, medido en lo que se
   // vendió, y tu rodeo valuado contra eso. Antes Mi Ganado estaba enterrado como el
@@ -47,7 +54,8 @@ const NAV_GROUPS: NavGroup[] = [
     label: "Valor",
     match: "/vr",
     items: [
-      { label: "Valor de Referencia", href: "/vr", hint: "Lo que se pagó por categoría y peso", tag: "new" },
+      { label: "Precio por categoría y peso", href: "/vr", hint: "Lo que se pagó de verdad, hoy", tag: "new" },
+      { label: "Cuánto vale mi hacienda", href: "/valuar-hacienda", hint: "Cómo se calcula, con un ejemplo" },
       { label: "Mi Ganado", href: "/mi-ganado", hint: "Tu rodeo valuado · gratis con tu cuenta" },
       { label: "Metodología", href: "/metodologia/vr", hint: "Cómo se calcula y qué no dice" },
     ],
@@ -76,9 +84,6 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Hoy", href: "/remates/hoy" },
       { label: "Esta semana", href: "/remates/semana" },
       { label: "En vivo", href: "/remates/en-vivo", tag: "live" },
-      // La rueda de la Expo de Mercedes mientras dura. Se saca después del 17-sep:
-      // un evento vencido en el menú envejece toda la navegación.
-      { label: "Expo de Mercedes", href: "/remates/expo-rural-mercedes", hint: "7 remates de 6 firmas · 4 al 17 de septiembre", tag: "new" },
       { label: "Anteriores", href: "/remates/anteriores", hint: "Resultados de los que ya pasaron" },
     ],
   },
@@ -96,9 +101,9 @@ const NAV_GROUPS: NavGroup[] = [
     label: "Directorio",
     match: "/consignatarias",
     items: [
-      { label: "Frigoríficos", href: "/frigorificos", hint: "1.102 plantas SENASA" },
+      { label: "Frigoríficos", href: "/frigorificos", hint: `${PLANTAS_HABILITADAS.toLocaleString("es-AR")} plantas habilitadas por SENASA` },
       { label: "Proveedores", href: "/proveedores", hint: "Quién le vende a la industria", tag: "new" },
-      { label: "Consignatarias", href: "/consignatarias", hint: "104 firmas" },
+      { label: "Consignatarias", href: "/consignatarias", hint: `${TOTAL_FIRMAS} firmas` },
       { label: "Sumá tu firma", href: "/para-consignatarias", hint: "PRO · más alcance para tus remates" },
     ],
   },
@@ -124,7 +129,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: "Todas las guías", href: "/guias", hint: "El índice completo, por tema", tag: "new" },
       { label: "Informes por zona", href: "/informes", hint: "El dato de tu zona, en PDF", tag: "new" },
-      { label: "Cómo vender hacienda", href: "/vender-hacienda-guia", hint: "Consignación, remate o venta directa" },
+      { label: "Cómo vender hacienda", href: "/vender-hacienda-guia", hint: "Paso a paso, de la decisión al cobro" },
       { label: "Cómo comprar un campo", href: "/como-comprar-un-campo", hint: "Papeles y qué mirar antes de señar" },
       { label: "Cómo vender un campo", href: "/como-vender-un-campo", hint: "Precio, carpeta y tiempos reales" },
       { label: "Impuestos de la venta de un campo", href: "/impuestos-por-la-venta-de-un-campo", hint: "El ITI está derogado" },
@@ -144,7 +149,7 @@ interface MobileNavLink extends NavLink {
   tag?: NavLeaf["tag"];
 }
 const MOBILE_NAV: MobileNavLink[] = [
-  { label: "Valor ref.", href: "/vr" },
+  { label: "Cuánto vale", href: "/vr" },
   { label: "Mi Ganado", href: "/mi-ganado" },
   { label: "INMAG", href: "/mercado/inmag", tag: "live" },
   { label: "Arriendo", href: "/mercado/arrendamiento" },
@@ -389,7 +394,7 @@ export default function TerminalLayout({
         <div className="flex items-center justify-between px-4 h-10 claro:h-14 claro:px-6">
           {/* -- LEFT: Logo (marca — mono, minúscula, punto en accent) -- */}
           <div className="flex items-center gap-4">
-            <Link href="/overview" className="flex items-center gap-1.5 group" title="consignatarias.com.ar">
+            <Link href="/" className="flex items-center gap-1.5 group" title="consignatarias.com.ar — inicio">
               <span className="live-indicator-accent flex-shrink-0" />
               <span className="font-terminal text-[13px] claro:text-base font-semibold tracking-tight text-zinc-100 lowercase group-hover:text-accent transition-colors">
                 consignatarias<span className="text-accent">.</span>com
@@ -538,6 +543,8 @@ const FOOTER_COLUMNS: FooterColumn[] = [
     title: "Datos",
     emphasis: true,
     links: [
+      { label: "Precio por categoría y peso", href: "/vr" },
+      { label: "Cuánto vale mi hacienda", href: "/valuar-hacienda" },
       { label: "INMAG hoy", href: "/mercado/inmag" },
       { label: "INMAG en USD", href: "/mercado/inmag-dolares" },
       { label: "Precios hoy", href: "/precios" },

@@ -28,7 +28,7 @@ const cob = vrCobertura()
 const fmt = (n: number) => n.toLocaleString('es-AR')
 
 export const metadata: Metadata = {
-  title: 'Valor de Referencia de la hacienda — lo que realmente se pagó, por categoría y peso',
+  title: { absolute: 'Cuánto vale tu hacienda hoy: precio por categoría y peso' },
   description:
     `El rango de precio al que se vendió cada categoría de hacienda en el Mercado Agroganadero en los últimos ${VR_VENTANA_DIAS} días, ` +
     `por categoría y por peso, con los ${fmt(cob.lotes)} lotes que lo sostienen. Metodología ${VR_METODOLOGIA} publicada. Gratis.`,
@@ -91,8 +91,9 @@ export default function VrHubPage() {
         <p className="text-[11px] font-terminal uppercase tracking-[0.18em] text-zinc-500 mb-3">
           Valor de Referencia · {VR_METODOLOGIA} · lotes del {cob.desde} al {cob.hasta}
         </p>
+        {/* H1 propio: el de la portada dice la promesa; este dice qué hay en la página. */}
         <h1 className="text-3xl md:text-4xl text-zinc-100 font-normal tracking-tight leading-tight mb-4 max-w-3xl">
-          Cuánto vale tu hacienda hoy, <span className="text-accent">medido en lo que realmente se vendió.</span>
+          Precio de la hacienda por categoría y peso: <span className="text-accent">lo que realmente se pagó.</span>
         </h1>
         <p className="text-zinc-400 text-base leading-relaxed max-w-3xl mb-6">
           El precio de referencia es un punto; el mercado es un rango. Acá está el rango: a cuánto se vendió cada
@@ -113,6 +114,13 @@ export default function VrHubPage() {
             Cómo se calcula
           </Link>
         </div>
+        <p className="text-sm text-zinc-500 mt-3">
+          ¿Primera vez?{' '}
+          <Link href="/valuar-hacienda" className="text-accent hover:underline">
+            Cómo calcular cuánto vale tu hacienda, con un ejemplo
+          </Link>
+          .
+        </p>
       </div>
 
       <VrBandas />
