@@ -1,3 +1,4 @@
+import { ImagenTema, PictureTema } from '@/components/ui/ImagenTema'
 import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import ThemeToggle from "@/components/ThemeToggle";
 import Link from "next/link";
@@ -392,27 +393,19 @@ export default async function LandingPage() {
             {/* WebP + variante mobile (60% del tráfico): 298KB JPG → 59KB/24KB webp.
                 Decorativa (opacity-35, detrás de gradientes) → compresión agresiva.
                 Baja el LCP mobile que PSI medía en ~5s. JPG queda de fallback. */}
-            <picture>
-              <source
-                media="(max-width: 768px)"
-                srcSet="/marca/hero-pampa-mobile.webp"
-                type="image/webp"
-              />
-              <source srcSet="/marca/hero-pampa.webp" type="image/webp" />
-              <img
+            <PictureTema
+              fuentes={[{ srcSet: '/marca/hero-pampa-mobile.webp', media: '(max-width: 768px)', type: 'image/webp' }, { srcSet: '/marca/hero-pampa.webp', type: 'image/webp' }]}
                 src="/marca/hero-pampa.jpg"
                 alt=""
                 className="w-full h-full object-cover object-[center_35%] opacity-35"
                 fetchPriority="high"
               />
-            </picture>
             <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/70 to-zinc-950/30" />
             <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/60 via-transparent to-zinc-950" />
           </div>
           {/* El martillazo — motivo animado de marca (golpe → onda → dato → sonda) */}
           <div className="absolute bottom-6 right-6 z-[1] w-[340px] xl:w-[420px] opacity-70 pointer-events-none hidden lg:block" aria-hidden="true">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/marca/martillazo.svg" alt="" className="w-full h-auto" />
+            <ImagenTema src="/marca/martillazo.svg" alt="" className="w-full h-auto" />
           </div>
           {/* Background Grid */}
           <div

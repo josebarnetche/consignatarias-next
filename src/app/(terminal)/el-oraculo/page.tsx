@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import type { Metadata } from 'next'
 import { promises as fs } from 'fs'
 import path from 'path'
@@ -330,7 +331,7 @@ export default async function ElOraculoPage() {
 
       {/* Hero — el monolito del Oráculo (render 3D del universo de marca) */}
       <section className="relative overflow-hidden">
-        <img
+        <ImagenTema
           src="/marca/renders/r3d-oraculo-monolito.jpg"
           alt=""
           aria-hidden="true"

@@ -1,5 +1,6 @@
 'use client'
 
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { trackSinceLastVisitShown, trackSinceLastVisitClick } from '@/lib/analytics'
@@ -93,8 +94,7 @@ export default function SinceLastVisit({ snapshot }: { snapshot: SinceLastVisitS
     >
       <span className="status-dot-live flex-shrink-0" />
       <span className="inline-flex w-5 h-5 rounded bg-zinc-100 items-center justify-center select-none flex-shrink-0" aria-hidden="true">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/marca/iconos-color/onda.png" alt="" className="w-3.5 h-3.5" />
+                <ImagenTema src="/marca/iconos-color/onda.png" alt="" className="w-3.5 h-3.5" />
       </span>
       <span className="hidden sm:inline uppercase tracking-widest text-zinc-500 flex-shrink-0">Desde tu última visita</span>
       <span className="sm:hidden uppercase tracking-widest text-zinc-500 flex-shrink-0">Última visita</span>

@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { Metadata } from 'next'
 import { SectionBreadcrumbSchema, OrganizationSchema } from '@/components/seo/JsonLd'
 
@@ -23,7 +24,7 @@ export default function QuienesSomosPage() {
       <OrganizationSchema />
       {/* Hero — el arreo (linocut del universo de marca) */}
       <section className="relative overflow-hidden">
-        <img
+        <ImagenTema
           src="/marca/ilus/ilu-hero-arreo.jpg"
           alt=""
           aria-hidden="true"
@@ -101,7 +102,7 @@ export default function QuienesSomosPage() {
         </ul>
 
         {/* Imagen editorial — la marca a fuego (linocut del universo de marca) */}
-        <img
+        <ImagenTema
           src="/marca/ilus/ilu-c-marca-fuego.jpg"
           alt=""
           aria-hidden="true"

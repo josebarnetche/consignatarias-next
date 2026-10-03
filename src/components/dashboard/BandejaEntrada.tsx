@@ -1,5 +1,6 @@
 'use client'
 
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import Link from 'next/link'
 import { useState } from 'react'
 import type { Bandeja, EntradaBandeja, TipoEntrada, Urgencia } from '@/lib/reports/bandeja'
@@ -44,8 +45,7 @@ function Fila({ e }: { e: EntradaBandeja }) {
         className="inline-flex h-8 w-8 shrink-0 select-none items-center justify-center rounded bg-zinc-100"
         aria-hidden="true"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`/marca/iconos-color/${ICONO[e.tipo]}`} alt="" className="h-5 w-5" />
+                <ImagenTema src={`/marca/iconos-color/${ICONO[e.tipo]}`} alt="" className="h-5 w-5" />
       </span>
 
       <span className="min-w-0 flex-1">
@@ -84,8 +84,7 @@ export default function BandejaEntrada({ b }: { b: Bandeja }) {
       <div className="mb-4 rounded-terminal border border-terminal-border bg-terminal-bg/40 p-4">
         <div className="mb-2 flex items-center gap-2">
           <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-zinc-100" aria-hidden="true">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/marca/iconos-color/campana.png" alt="" className="h-4 w-4" />
+                        <ImagenTema src="/marca/iconos-color/campana.png" alt="" className="h-4 w-4" />
           </span>
           <h3 className="text-sm font-terminal uppercase tracking-widest text-zinc-300">Bandeja</h3>
         </div>
@@ -102,8 +101,7 @@ export default function BandejaEntrada({ b }: { b: Bandeja }) {
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-terminal-border px-4 py-2.5">
         <div className="flex items-center gap-2">
           <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-zinc-100" aria-hidden="true">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/marca/iconos-color/campana.png" alt="" className="h-4 w-4" />
+                        <ImagenTema src="/marca/iconos-color/campana.png" alt="" className="h-4 w-4" />
           </span>
           <h3 className="text-sm font-terminal uppercase tracking-widest text-zinc-200">
             Bandeja de entrada

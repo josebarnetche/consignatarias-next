@@ -1,5 +1,6 @@
 'use client'
 
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
@@ -162,7 +163,7 @@ export default function CalendarExportClient() {
         </Link>
         <h1 className="mb-2 text-2xl font-terminal text-zinc-100">
           <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
-            <img src="/marca/iconos-color/calendario.png" alt="" className="w-6 h-6" />
+            <ImagenTema src="/marca/iconos-color/calendario.png" alt="" className="w-6 h-6" />
           </span>
           Exportar Calendario de Remates
         </h1>

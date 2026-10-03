@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema } from '@/components/seo/JsonLd'
@@ -100,7 +101,7 @@ export default async function NovilloHistoricoPage() {
 
       {/* Hero — la luna sobre el campo (linocut), fondo sutil */}
       <div className="relative overflow-hidden rounded-xl mb-8">
-        <img
+        <ImagenTema
           src="/marca/ilus/ilu-c-luna.jpg"
           alt=""
           aria-hidden="true"

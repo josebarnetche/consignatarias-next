@@ -1,5 +1,6 @@
 'use client'
 
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -406,8 +407,7 @@ export default function DashboardClient({
                     className="h-full w-full object-contain p-1"
                   />
                 ) : (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img src="/marca/iconos-color/casa-remates.png" alt="" className="h-8 w-8" />
+                  <ImagenTema src="/marca/iconos-color/casa-remates.png" alt="" className="h-8 w-8" />
                 )}
               </span>
 

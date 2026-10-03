@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
+import { ImageTema } from '@/components/ui/ImagenTema'
 import { trackValueEvent } from '@/lib/analytics'
 
 const PDF_URL = '/descargas/que-es-una-consignataria.pdf'
@@ -66,7 +66,7 @@ export default function GuiaConsignatariaDownload() {
     <div className="border border-zinc-800 rounded-lg bg-zinc-900/50 overflow-hidden">
       <div className="flex flex-col sm:flex-row items-stretch">
         <div className="sm:w-64 shrink-0 border-b sm:border-b-0 sm:border-r border-zinc-800 bg-zinc-950 flex items-center">
-          <Image
+          <ImageTema
             src="/marca/educativas/educativa-01-definicion.png"
             alt="Primera lámina de la guía: qué es una consignataria"
             width={512}

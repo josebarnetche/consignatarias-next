@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import Link from 'next/link'
 
 /**
@@ -34,8 +35,7 @@ export default function HerramientasCTA({
             className="flex items-start gap-2.5 rounded-terminal border border-terminal-border bg-terminal-panel p-3 hover:border-accent transition-colors"
           >
             <span className="inline-flex w-8 h-8 rounded bg-zinc-100 items-center justify-center select-none shrink-0" aria-hidden="true">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={t.icon} alt="" className="w-5 h-5" />
+                            <ImagenTema src={t.icon} alt="" className="w-5 h-5" />
             </span>
             <div className="min-w-0">
               <div className="text-sm font-semibold text-zinc-100">{t.title}</div>

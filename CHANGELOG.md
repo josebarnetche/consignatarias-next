@@ -7,6 +7,50 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.221.0] — 2026-10-03
+
+### Imágenes de marca con variante para el tema claro
+
+La identidad v2.0 se dibujó para el terminal oscuro: xilografías en blanco sobre negro,
+renders nocturnos, íconos mono blancos y logos de IA blancos. Sobre la página blanca eso
+quedaba como manchas negras, o directamente no se veía. Ahora **cada imagen de
+`public/marca/` tiene su variante `-claro`** (125 archivos) y el sitio muestra la del
+tema activo.
+
+- **`scripts/marca-variantes-claro.sh`** (ImageMagick, idempotente, unos 10 s) las
+  regenera todas. Hay un tratamiento por familia, elegido mirando hojas de contacto:
+  - **tinta**: invierte solo la luminosidad (canal L de Lab). Blanco sobre negro pasa
+    a tinta sobre papel y el acento cielo queda azul. Se aplica a xilografías
+    (`ilus/`), patrones, infografías (`educativas/`), íconos y glifos mono, y logos
+    de IA.
+  - **niebla**: para los renders 3D nocturnos (`renders/`, `features/`, `hero-pampa`).
+    Invertirlos los volvía un negativo de foto, así que se aclaran con más luz,
+    menos saturación y un velo del color de la página.
+  - **acento**: íconos y glifos COLOR. El negro ya sirve sobre blanco; el cielo
+    `#38bdf8` (2:1 sobre blanco) pasa al azul del tema claro.
+  - **`martillazo-claro.svg`**: se cambian los hex y el fondo queda transparente.
+  - Las variantes usan la misma calidad JPEG que el original.
+- **`<ImagenTema>`**, con `ImageTema` (next/image) y `PictureTema` (`<picture>`), en
+  `src/components/ui/ImagenTema.tsx`.
+  - Pone las dos imágenes en el HTML y CSS oculta la que no corresponde (`.solo-claro`
+    / `.solo-oscuro`, por `<html data-theme>`), sin JS y sin parpadeo.
+  - Van con `loading="lazy"`, y una imagen lazy oculta no se descarga: cada visitante
+    baja solo las de su tema. Verificado con Playwright: en claro, 26 claras y 0
+    oscuras; en oscuro, 26 oscuras y solo la cabecera clara, que es prioritaria.
+  - Sin variante conocida (logos de consignatarias, flyers) es un `<img>` común.
+- 66 imágenes migradas en 54 archivos: home, `/mcp`, `/quienes-somos`, `/login`,
+  `/mercado/*`, `/informes/*`, `/para-consignatarias/*`, estados vacíos, onboarding y
+  dashboard.
+- `srcClaro()` (`src/lib/ui/marca-claro.ts`), con test. El test también **falla si una
+  imagen de marca no tiene su `-claro`** en disco: si se agrega una, hay que correr el
+  script.
+- De paso, en claro: la franja "Funciona con tu asistente" de `/mcp` perdía su banda
+  gris, y la tarjeta de `/login` era negra fija. Las dos pasan a `terminal-panel` con
+  la variante `claro:`, así que el oscuro no cambia.
+- **No se tocan**, porque no tienen `<html data-theme>` o no son nuestras: imágenes
+  OG, favicons, isotipos de mail, tapas de El Corredor, logos de consignatarias y el
+  flyer promocional.
+
 ## [1.220.0] — 2026-10-03
 
 ### Remates y directorio rediseñados para el productor

@@ -1,5 +1,6 @@
 'use client'
 
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { useState } from 'react'
 import { trackAlertSubscribe } from '@/lib/analytics'
 import { requestAccountNudge } from '@/lib/account-nudge'
@@ -72,8 +73,7 @@ export default function SellZoneAlertSignup({
     >
       <div className="flex items-start gap-2 mb-1.5">
         <span className="inline-flex w-6 h-6 rounded bg-zinc-100 items-center justify-center select-none shrink-0" aria-hidden="true">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/marca/iconos-color/alerta.png" alt="" className="w-4 h-4" />
+                    <ImagenTema src="/marca/iconos-color/alerta.png" alt="" className="w-4 h-4" />
         </span>
         <h3 className="text-zinc-100 text-sm font-medium">
           {enZonaDeVenta

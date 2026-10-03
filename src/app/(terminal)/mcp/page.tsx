@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import marketPrices from '@/lib/data/market-prices.json'
@@ -157,7 +158,7 @@ export default function McpPage() {
     <div className="min-h-screen">
       {/* Hero + CTA arriba (patrón blueprint) — fondo: el ovejero digital arreando el dato */}
       <section className="relative overflow-hidden">
-        <img
+        <ImagenTema
           src="/marca/feat-mcp.jpg"
           alt=""
           aria-hidden="true"
@@ -192,7 +193,7 @@ export default function McpPage() {
       </section>
 
       {/* Funciona con — carousel de logos IA (blanco, marquee infinito) */}
-      <section className="border-y border-terminal-border/60 bg-black/20 py-5 overflow-hidden">
+      <section className="border-y border-terminal-border/60 bg-black/20 claro:bg-terminal-panel py-5 overflow-hidden">
         <p className="text-center text-xxs font-terminal uppercase tracking-widest text-zinc-600 mb-4">
           Funciona con tu asistente
         </p>
@@ -201,7 +202,7 @@ export default function McpPage() {
             {[0, 1].map((dup) => (
               <div key={dup} className="flex items-center gap-14" aria-hidden={dup === 1}>
                 {['claude', 'openai', 'perplexity', 'googlegemini', 'githubcopilot', 'cursor', 'windsurf', 'mistralai', 'ollama'].map((l) => (
-                  <img
+                  <ImagenTema
                     key={l}
                     src={`/marca/ai/${l}.png`}
                     alt={dup === 0 ? l : ''}
@@ -228,7 +229,7 @@ export default function McpPage() {
 
       {/* Connect — el alambrado que lleva la corriente del dato, de fondo */}
       <section id="conectar" className="relative scroll-mt-16 py-10 overflow-hidden">
-        <img
+        <ImagenTema
           src="/marca/rel-alambrado.jpg"
           alt=""
           aria-hidden="true"
@@ -262,7 +263,7 @@ export default function McpPage() {
           {TOOLS.map((t) => (
             <div key={t.name} className="bg-terminal-panel p-4 flex items-start justify-between gap-4">
               <span className="w-10 h-10 shrink-0 rounded bg-zinc-100 flex items-center justify-center select-none" aria-hidden="true">
-                <img src={`/marca/iconos-color/${TOOL_ICONS[t.name] ?? 'onda'}.png`} alt="" className="w-7 h-7" />
+                <ImagenTema src={`/marca/iconos-color/${TOOL_ICONS[t.name] ?? 'onda'}.png`} alt="" className="w-7 h-7" />
               </span>
               <div className="min-w-0 flex-1">
                 <code className="text-sky-300 font-mono text-sm">{t.name}</code>

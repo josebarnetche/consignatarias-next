@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
@@ -44,7 +45,7 @@ export default async function InternacionalPage() {
       <SectionBreadcrumbSchema section="mercado/internacional" sectionName="Referencia internacional" />
       <div className="px-4 py-6 max-w-3xl mx-auto space-y-6">
         <div className="relative overflow-hidden rounded-xl">
-          <img
+          <ImagenTema
             src="/marca/ilus/ilu-c-tropa-aerea.jpg"
             alt=""
             aria-hidden="true"
@@ -61,7 +62,7 @@ export default async function InternacionalPage() {
             </Link>
             <h1 className="text-2xl md:text-3xl font-heading text-zinc-100 mt-2 mb-1 leading-tight">
               <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
-                <img src="/marca/iconos-color/dolar-billete.png" alt="" className="w-6 h-6" />
+                <ImagenTema src="/marca/iconos-color/dolar-billete.png" alt="" className="w-6 h-6" />
               </span>
               Precio internacional de la hacienda — Chicago (CME)
             </h1>

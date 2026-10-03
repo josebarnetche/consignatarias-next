@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
+import { ImageTema } from '@/components/ui/ImagenTema'
 import { getProducto, rangoPrecio } from '@/lib/productos-datos'
 import { ListaDeEspera } from '@/components/productos/ListaDeEspera'
 
@@ -72,7 +72,7 @@ export default function Page() {
       </nav>
 
       <div className="overflow-hidden rounded-lg border border-slate-800">
-        <Image
+        <ImageTema
           src={P.ilustracion}
           alt={P.ilustracionAlt}
           width={1200}

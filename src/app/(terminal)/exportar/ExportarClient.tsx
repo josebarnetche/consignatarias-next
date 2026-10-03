@@ -1,5 +1,6 @@
 'use client'
 
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { useState } from 'react'
 import Link from 'next/link'
 import { useSessionTier } from '@/lib/use-session-tier'
@@ -67,7 +68,7 @@ export default function ExportarClient() {
     <div className="max-w-2xl mx-auto px-4 py-8">
       {/* Header — fondo sutil: el archivo histórico (universo de marca) */}
       <div className="relative overflow-hidden rounded-xl mb-8">
-        <img
+        <ImagenTema
           src="/marca/features/feat-archivo-historico.jpg"
           alt=""
           aria-hidden="true"
@@ -81,7 +82,7 @@ export default function ExportarClient() {
         </Link>
         <h1 className="text-2xl font-terminal text-zinc-100 mb-3">
           <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
-            <img src="/marca/iconos-color/indice.png" alt="" className="w-6 h-6" />
+            <ImagenTema src="/marca/iconos-color/indice.png" alt="" className="w-6 h-6" />
           </span>
           Exportar Datos de Remates
         </h1>

@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -354,7 +355,7 @@ export default async function PreciosCategoriaPage({
         </div>
 
         <span className="float-right ml-4 mt-1 w-24 md:w-32 rounded-md bg-zinc-100 p-2 flex items-center justify-center select-none pointer-events-none" aria-hidden="true">
-          <img src={`/marca/glifos-color/${GLIFOS[categoria]}.png`} alt="" className="w-full h-auto" />
+          <ImagenTema src={`/marca/glifos-color/${GLIFOS[categoria]}.png`} alt="" className="w-full h-auto" />
         </span>
         <h1 className="text-2xl md:text-3xl font-heading text-zinc-100 mb-1 leading-tight">
           Precio del kilo vivo de {c.singular} hoy:{' '}

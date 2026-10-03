@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
 import { signedTone } from '@/lib/ui/tokens'
@@ -77,7 +78,7 @@ const categoryColumns: DataColumn<CategoryRow>[] = [
     cell: (cat) => (
       <Link href={`/mercado/${cat.name.toLowerCase()}`} className="inline-flex items-center gap-2 font-semibold text-zinc-200 motion-hover hover:text-accent">
         <span className="hidden sm:flex w-7 h-6 rounded-sm bg-zinc-100 items-center justify-center select-none" aria-hidden="true">
-          <img
+          <ImagenTema
             src={`/marca/glifos-color/glifo-${cat.name.toLowerCase().replace(/s$/, '')}.png`}
             alt=""
             className="h-4 w-auto"
@@ -137,7 +138,7 @@ export default function MercadoPage() {
 
       {/* ── Page header — banda guarda-C del universo de marca, sutil ── */}
       <div className="terminal-panel relative overflow-hidden">
-        <img
+        <ImagenTema
           src="/marca/patterns/24-guarda-c.jpg"
           alt=""
           aria-hidden="true"

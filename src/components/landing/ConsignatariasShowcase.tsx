@@ -1,5 +1,6 @@
 "use client";
 
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import Link from "next/link";
 import { useCallback, useEffect, useRef } from "react";
 import ProBadge from "@/components/badges/ProBadge";
@@ -263,8 +264,7 @@ export default function ConsignatariasShowcase({ items }: { items: ShowcaseItem[
       <div className="text-center mb-10">
         <div className="flex items-center justify-center gap-2.5">
           <span className="inline-flex w-8 h-8 rounded bg-zinc-100 items-center justify-center select-none shrink-0" aria-hidden="true">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/marca/iconos-color/casa-remates.png" alt="" className="w-5 h-5" />
+                        <ImagenTema src="/marca/iconos-color/casa-remates.png" alt="" className="w-5 h-5" />
           </span>
           <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-zinc-900 border border-ink/10 text-zinc-400">
             El directorio

@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema, HowToSchema } from '@/components/seo/JsonLd'
@@ -107,7 +108,7 @@ export default function DTEPage() {
 
       {/* Hero — render de marca de las guías (universo v2.0) */}
       <section className="relative overflow-hidden">
-        <img
+        <ImagenTema
           src="/marca/features/feat-guias.jpg"
           alt=""
           aria-hidden="true"

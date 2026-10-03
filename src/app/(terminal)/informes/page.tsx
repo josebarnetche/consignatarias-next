@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
+import { ImageTema } from '@/components/ui/ImagenTema'
 import { getProductosPublicados, rangoPrecio, type ProductoDatos } from '@/lib/productos-datos'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
@@ -136,7 +136,7 @@ function Seccion({
             className="group flex flex-col rounded-lg border border-slate-800 bg-slate-950/60 p-5 transition hover:border-sky-800 hover:bg-slate-900/60"
           >
             <div className="flex items-start gap-3">
-              <Image
+              <ImageTema
                 src={p.icono}
                 alt=""
                 width={40}

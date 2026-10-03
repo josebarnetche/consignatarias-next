@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import type { AgendaRegional } from '@/lib/reports/agenda-regional'
 
 /**
@@ -25,8 +26,7 @@ export default function AgendaRegionalPanel({ a }: { a: AgendaRegional }) {
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
         <h3 className="flex items-center gap-2 text-sm font-terminal uppercase tracking-widest text-zinc-300">
           <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-zinc-100" aria-hidden="true">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/marca/iconos-color/calendario.png" alt="" className="h-4 w-4" />
+                        <ImagenTema src="/marca/iconos-color/calendario.png" alt="" className="h-4 w-4" />
           </span>
           Tu agenda en {a.provincia}
         </h3>

@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import Link from "next/link";
 import marketPrices from "@/lib/data/market-prices.json";
 import rematesData from "@/lib/data/remates.json";
@@ -34,7 +35,7 @@ const totalHeadsWeek = [...rematesToday, ...rematesWeek].reduce((s, r) => s + (r
 function IconChip({ icon, size = "w-5 h-5", img = "w-3.5 h-3.5" }: { icon: string; size?: string; img?: string }) {
   return (
     <span className={`${size} rounded-sm bg-zinc-100 inline-flex items-center justify-center select-none`} aria-hidden="true">
-      <img src={`/marca/iconos-color/${icon}.png`} alt="" className={img} />
+      <ImagenTema src={`/marca/iconos-color/${icon}.png`} alt="" className={img} />
     </span>
   );
 }
@@ -202,7 +203,7 @@ export default function OverviewClient() {
               className="group flex flex-col items-center text-center gap-2 px-3 py-4 motion-hover hover:bg-accent/[0.04] active:bg-accent/[0.07]"
             >
               <span className="w-14 h-12 rounded bg-zinc-100 flex items-center justify-center select-none" aria-hidden="true">
-                <img src={`/marca/glifos-color/glifo-${r.key.replace(/s$/, "")}.png`} alt="" className="h-9 w-auto" />
+                <ImagenTema src={`/marca/glifos-color/glifo-${r.key.replace(/s$/, "")}.png`} alt="" className="h-9 w-auto" />
               </span>
               <span className="text-xxs text-zinc-400 uppercase tracking-wider group-hover:text-accent motion-hover">{r.name}</span>
               <span className="text-lg text-zinc-100 font-mono tabular-nums leading-none">${fmt(r.current)}</span>

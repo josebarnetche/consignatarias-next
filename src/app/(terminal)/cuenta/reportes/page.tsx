@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -60,7 +61,7 @@ export default async function ReportesPage() {
         </div>
         <h1 className="text-xl font-heading text-zinc-100 mb-2">
           <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
-            <img src="/marca/iconos-color/guia-dte.png" alt="" className="w-6 h-6" />
+            <ImagenTema src="/marca/iconos-color/guia-dte.png" alt="" className="w-6 h-6" />
           </span>
           Mis reportes
         </h1>
