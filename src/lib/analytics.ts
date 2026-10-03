@@ -93,7 +93,7 @@ export function trackAuctionClick(auction: {
   type: string
   date: string
   featured?: boolean
-}, destination: 'source' | 'catalog' | 'youtube' | 'profile') {
+}, destination: 'source' | 'catalog' | 'youtube' | 'profile' | 'detail') {
   trackEvent('auction_click', {
     auction_id: auction.id,
     consignataria: auction.consignatariaName,

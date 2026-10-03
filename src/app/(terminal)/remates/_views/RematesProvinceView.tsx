@@ -15,7 +15,9 @@ import {
   TYPE_LABELS,
   TYPE_COLORS,
   CAT_LABELS,
+  nombrePropio,
 } from '@/lib/ui/tokens'
+import { remateAnchor, remateHref } from '@/lib/remates-enlaces'
 
 /* ------------------------------------------------------------------ */
 /*  PROVINCE MAPPING                                                    */
@@ -111,6 +113,16 @@ const PROVINCES: ProvinceConfig[] = [
 
 const PROVINCE_MAP = new Map(PROVINCES.map(p => [p.slug, p]))
 
+/** Mismo slug que /remates/ciudad/[ciudad] (normalizeCity de esa página). */
+function slugCiudad(location: string): string {
+  return location
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
 function slugToProvince(slug: string): ProvinceConfig | undefined {
   return PROVINCE_MAP.get(slug)
 }
@@ -178,6 +190,9 @@ function AuctionRowStatic({ auction }: { auction: Auction }) {
   const city = getCity(auction.location)
   const profileSlug = getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug
   const isFeatured = !!(auction as Auction & { featured?: boolean }).featured
+  // La ficha del remate es el destino principal; sin ficha, el perfil de la firma.
+  const ficha = remateHref(auction)
+  const anchor = ficha ? remateAnchor(auction) : `Consignataria ${nombrePropio(auction.consignatariaName)}`
 
   return (
     <div className={`border-b ${isFeatured ? 'border-sky-500/30 bg-sky-500/[0.04]' : 'border-terminal-border hover:bg-zinc-800/50'} transition-colors relative`}>
@@ -201,10 +216,12 @@ function AuctionRowStatic({ auction }: { auction: Auction }) {
         </div>
         <div>
           <Link
-            href={`/consignatarias/${profileSlug}`}
+            href={ficha ?? `/consignatarias/${profileSlug}`}
+            aria-label={anchor}
+            title={anchor}
             className={`font-terminal font-medium text-data hover:underline ${isFeatured ? 'text-sky-200' : 'text-zinc-200 hover:text-accent'} transition-colors`}
           >
-            {auction.consignatariaName}
+            {nombrePropio(auction.consignatariaName)}
           </Link>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
@@ -241,10 +258,12 @@ function AuctionRowStatic({ auction }: { auction: Auction }) {
         </span>
         <span className="flex-1 min-w-0 text-data font-terminal truncate">
           <Link
-            href={`/consignatarias/${profileSlug}`}
+            href={ficha ?? `/consignatarias/${profileSlug}`}
+            aria-label={anchor}
+            title={anchor}
             className={`hover:underline transition-colors ${isFeatured ? 'text-sky-200 font-medium hover:text-sky-100' : 'text-zinc-200 hover:text-accent'}`}
           >
-            {auction.consignatariaName}
+            {nombrePropio(auction.consignatariaName)}
           </Link>
         </span>
         <span className={`w-[140px] flex-shrink-0 text-data font-terminal truncate text-right pr-2 ${isFeatured ? 'text-sky-400/50' : 'text-zinc-500'}`}>
@@ -285,6 +304,22 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
   const cities = new Set(provinceAuctions.map(a => getCity(a.location)).filter(Boolean))
   const types = new Set(provinceAuctions.map(a => a.type))
   const totalHeads = provinceAuctions.reduce((s, a) => s + (a.estimatedHeads ?? 0), 0)
+
+  // Plazas con 3 o más remates y alguno por venir: las que tienen página de
+  // ciudad con contenido (mismo slug que /remates/ciudad/[ciudad]).
+  const porPlaza = new Map<string, { slug: string; nombre: string; total: number; proximos: number }>()
+  for (const a of provinceAuctions) {
+    if (!a.location) continue
+    const slug = slugCiudad(a.location)
+    const actual = porPlaza.get(slug) ?? { slug, nombre: nombrePropio(getCity(a.location)), total: 0, proximos: 0 }
+    actual.total++
+    if (a.date >= today && a.status === 'scheduled') actual.proximos++
+    porPlaza.set(slug, actual)
+  }
+  const plazas = [...porPlaza.values()]
+    .filter((c) => c.total >= 3 && c.proximos > 0 && c.nombre)
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 12)
 
   // Live market numbers (reused from metadata; interpolated at build, revalida diario)
   const novillo = Math.round(
@@ -457,6 +492,29 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
             <p className="text-sm text-zinc-400 leading-relaxed">
               {config.intro}
             </p>
+            {consignatarias.size > 0 && (
+              <p className="mt-3 text-sm">
+                <Link href={`/consignatarias/${provincia}`} className="text-accent hover:text-accent-bright hover:underline">
+                  Las {consignatarias.size} consignatarias que rematan en {config.displayName} →
+                </Link>
+              </p>
+            )}
+            {plazas.length > 0 && (
+              <nav aria-label={`Plazas de remate en ${config.displayName}`} className="mt-3">
+                <h2 className="text-sm text-zinc-300 mb-2">Remates por ciudad</h2>
+                <div className="flex flex-wrap gap-2">
+                  {plazas.map((c) => (
+                    <Link
+                      key={c.slug}
+                      href={`/remates/ciudad/${c.slug}`}
+                      className="inline-flex items-center rounded border border-terminal-border px-3 py-1.5 text-xs text-zinc-300 hover:border-accent/50 hover:text-accent transition-colors"
+                    >
+                      Remates en {c.nombre} ({c.total})
+                    </Link>
+                  ))}
+                </div>
+              </nav>
+            )}
           </div>
 
           {/* Upcoming auctions section */}
@@ -464,7 +522,7 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
             <>
               <div className="border-b border-terminal-border px-panel py-1.5 bg-terminal-panel">
                 <span className="text-xxs font-terminal text-accent uppercase tracking-wider">
-                  Proximos remates ({upcomingAuctions.length})
+                  Próximos remates ({upcomingAuctions.length})
                 </span>
               </div>
 
@@ -522,7 +580,7 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
               {provinceAuctions.length} resultado{provinceAuctions.length !== 1 ? 's' : ''} en {config.displayName}
             </span>
             <span className="text-xxs text-zinc-700 font-terminal hidden sm:inline">
-              Proxima fecha primero
+              Próxima fecha primero
             </span>
           </div>
         </div>

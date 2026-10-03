@@ -12,6 +12,8 @@ export interface NextRemate {
   time?: string
   province?: string
   slug?: string
+  /** Ficha del remate; si está, el enlace va ahí en vez de al perfil. */
+  href?: string
 }
 
 /** Convierte date+time del remate a un timestamp local (ms). */
@@ -70,8 +72,9 @@ export default function NextRemateCountdown({ nextRemate }: { nextRemate: NextRe
   const cls =
     'inline-flex items-center text-xxs font-terminal text-zinc-400 hover:text-zinc-200 motion-hover'
 
-  return nextRemate.slug ? (
-    <Link href={`/consignatarias/${nextRemate.slug}`} className={cls}>
+  const destino = nextRemate.href ?? (nextRemate.slug ? `/consignatarias/${nextRemate.slug}` : null)
+  return destino ? (
+    <Link href={destino} className={cls}>
       {body}
     </Link>
   ) : (

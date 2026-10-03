@@ -6,6 +6,7 @@ import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { normalizeUrl } from '@/lib/utils/url'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { remateHref, remateAnchor, remateUrlAbsoluta, tieneFicha } from '@/lib/remates-enlaces'
 import {
   TYPE_LABELS,
   CAT_LABELS,
@@ -44,7 +45,7 @@ function getWhatsAppShareUrl(auction: Auction): string {
     auction.estimatedHeads ? `🔢 ${auction.estimatedHeads.toLocaleString('es-AR')} cabezas` : null,
     `🏢 ${auction.consignatariaName}`,
     '',
-    `👉 Ver más: https://consignatarias.com.ar/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`,
+    `👉 Ver más: ${tieneFicha(auction) ? remateUrlAbsoluta(auction) : `https://www.consignatarias.com.ar/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`}`,
   ].filter(Boolean)
   return `https://wa.me/?text=${encodeURIComponent(parts.join('\n'))}`
 }
@@ -57,15 +58,10 @@ type Period = 'hoy' | 'proximos' | 'pasados'
 /*  HELPERS                                                            */
 /* ------------------------------------------------------------------ */
 
-/** Get the best link for an auction row click */
+/** Ficha propia del remate; si no tiene, el perfil de la consignataria. Nunca
+ *  una web externa: el click en la tarjeta se queda en el sitio. */
 function getAuctionHref(auction: Auction): string {
-  const sourceUrl = normalizeUrl(auction.sourceUrl)
-  const catalogUrl = normalizeUrl(auction.catalogUrl)
-  return sourceUrl || catalogUrl || `/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`
-}
-
-function isExternalLink(href: string): boolean {
-  return href.startsWith('http')
+  return remateHref(auction) ?? `/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`
 }
 
 /* ------------------------------------------------------------------ */
@@ -139,10 +135,12 @@ function AuctionRow({ auction, today, index }: { auction: Auction; today: string
   const city = nombrePropio(getCity(auction.location))
   const province = provinciaNombre(auction.province)
   const href = getAuctionHref(auction)
-  const external = isExternalLink(href)
+  const aFicha = href.startsWith('/remates/')
+  const anchor = aFicha ? remateAnchor(auction) : `Consignataria ${nombrePropio(auction.consignatariaName)}`
   const profileHref = `/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`
   const catalog = normalizeUrl(auction.catalogUrl)
   const youtube = normalizeUrl(auction.youtubeUrl)
+  const webFirma = normalizeUrl(auction.sourceUrl)
   const yaPaso = auction.date <= today
 
   const detalle = [
@@ -151,23 +149,9 @@ function AuctionRow({ auction, today, index }: { auction: Auction; today: string
     auction.estimatedHeads != null ? `~${auction.estimatedHeads.toLocaleString('es-AR')} cabezas` : null,
   ].filter(Boolean)
 
-  function handleRowClick() {
-    const dest = href.includes('/consignatarias/') ? 'profile' as const : 'source' as const
-    trackAuctionClick(auction as Auction & { featured?: boolean }, dest)
-    if (external) {
-      window.open(href, '_blank', 'noopener,noreferrer')
-    } else {
-      window.location.href = href
-    }
-  }
-
   return (
-    <div
-      role="link"
-      tabIndex={0}
-      onClick={handleRowClick}
-      onKeyDown={(e) => { if (e.key === 'Enter') handleRowClick() }}
-      className={`group relative flex gap-4 border-b border-terminal-border px-panel py-4 cursor-pointer transition-colors duration-75 focus-visible:outline-none focus-visible:bg-zinc-900 hover:bg-zinc-900/60 ${
+    <article
+      className={`group relative flex gap-4 border-b border-terminal-border px-panel py-4 transition-colors duration-75 focus-within:bg-zinc-900 hover:bg-zinc-900/60 ${
         isFeatured ? 'bg-accent/[0.04]' : ''
       }${index < 20 ? ' row-enter' : ''}`}
       style={index < 20 ? { animationDelay: `${index * 30}ms` } : undefined}
@@ -188,11 +172,20 @@ function AuctionRow({ auction, today, index }: { auction: Auction; today: string
 
       <div className="min-w-0 flex-1 space-y-1.5">
         <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1.5">
-          <div className="flex min-w-0 items-center gap-2" onClick={(e) => e.stopPropagation()}>
-            <a href={profileHref} className="text-base font-semibold text-ink hover:text-accent hover:underline sm:text-lg">
+          <div className="flex min-w-0 items-center gap-2">
+            {/* Enlace principal a la ficha. El ::after lo estira sobre toda la
+                tarjeta, así el click en cualquier lado es un enlace real (lo
+                sigue Google y funciona sin JavaScript). */}
+            <Link
+              href={href}
+              aria-label={anchor}
+              title={anchor}
+              onClick={() => trackAuctionClick(auction as Auction & { featured?: boolean }, aFicha ? 'detail' : 'profile')}
+              className="text-base font-semibold text-ink after:absolute after:inset-0 after:content-[''] hover:text-accent hover:underline focus-visible:outline-none sm:text-lg"
+            >
               {nombrePropio(auction.consignatariaName)}
-            </a>
-            {isFeatured && <ProBadge verified={true} size="sm" className="flex-shrink-0" />}
+            </Link>
+            {isFeatured && <ProBadge verified={true} size="sm" className="relative flex-shrink-0" />}
           </div>
           <StatusBadge date={auction.date} time={auction.time} today={today} />
         </div>
@@ -202,7 +195,8 @@ function AuctionRow({ auction, today, index }: { auction: Auction; today: string
         </p>
         <p className="text-sm text-zinc-300 sm:text-base">{detalle.join(' · ')}</p>
 
-        <div className="flex flex-wrap items-center gap-2 pt-1.5" onClick={(e) => e.stopPropagation()}>
+        {/* Acciones secundarias: por encima del enlace estirado (relative z-[1]) */}
+        <div className="relative z-[1] flex flex-wrap items-center gap-2 pt-1.5">
           {youtube && (
             <a href={youtube} target="_blank" rel="noopener noreferrer"
               onClick={() => trackOutboundClick(youtube, 'youtube')}
@@ -218,6 +212,18 @@ function AuctionRow({ auction, today, index }: { auction: Auction; today: string
               Ver catálogo
             </a>
           )}
+          {webFirma && webFirma !== catalog && (
+            <a href={webFirma} target="_blank" rel="noopener noreferrer"
+              onClick={() => trackAuctionClick(auction as Auction & { featured?: boolean }, 'source')}
+              className={`${actionBtn} text-zinc-300 hover:text-accent`}>
+              Web de la firma
+            </a>
+          )}
+          {aFicha && (
+            <Link href={profileHref} className={`${actionBtn} text-zinc-300 hover:text-accent`}>
+              Ver la consignataria
+            </Link>
+          )}
           <a href={getWhatsAppShareUrl(auction)} target="_blank" rel="noopener noreferrer"
             className={`${actionBtn} text-zinc-300 hover:text-live`} aria-label="Compartir por WhatsApp">
             Compartir por WhatsApp
@@ -228,7 +234,7 @@ function AuctionRow({ auction, today, index }: { auction: Auction; today: string
           )}
         </div>
       </div>
-    </div>
+    </article>
   )
 }
 
@@ -454,7 +460,9 @@ export default function RematesPage() {
       startDate: auction.date,
       startTime: auction.time || undefined,
       durationHours: 4,
-      url: `https://consignatarias.com.ar/remates/${auction.id}`,
+      url: tieneFicha(auction)
+        ? remateUrlAbsoluta(auction)
+        : `https://www.consignatarias.com.ar/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`,
       organizer: auction.consignatariaName,
     }))
     
@@ -623,7 +631,7 @@ export default function RematesPage() {
                 >
                   Borrar filtros
                 </button>
-                <Link href="/alertas" className="terminal-btn min-h-[44px] px-4 inline-flex items-center">
+                <Link href="/remates#recibir-remates" className="terminal-btn min-h-[44px] px-4 inline-flex items-center">
                   Avisame por mail
                 </Link>
               </div>

@@ -8,11 +8,14 @@ import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import {
   formatDateShort,
   getCity,
-  getProvinceCode,
   TYPE_LABELS,
   TYPE_COLORS,
   CAT_LABELS,
+  nombrePropio,
+  provinciaNombre,
 } from '@/lib/ui/tokens'
+import { remateAnchor, remateHref } from '@/lib/remates-enlaces'
+import { isRemateProvinceSlug } from '../../_views/RematesProvinceView'
 import { EmptyState } from '@/components/ui'
 
 /* ------------------------------------------------------------------ */
@@ -137,11 +140,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 function AuctionCard({ auction }: { auction: Auction }) {
-  const slug = getCanonicalSlug(auction.consignatariaName)
+  const perfil = getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug
+  const ficha = remateHref(auction)
+  const href = ficha ?? `/consignatarias/${perfil}`
+  const anchor = ficha ? remateAnchor(auction) : `Consignataria ${nombrePropio(auction.consignatariaName)}`
 
   return (
     <Link
-      href={slug ? `/consignatarias/${slug}` : '#'}
+      href={href}
+      aria-label={anchor}
+      title={anchor}
       className="block bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 hover:border-zinc-700 transition-colors"
     >
       <div className="flex items-start justify-between gap-4">
@@ -156,8 +164,8 @@ function AuctionCard({ auction }: { auction: Auction }) {
               </span>
             )}
           </div>
-          <h3 className="text-ink font-medium truncate">{auction.consignatariaName}</h3>
-          <p className="text-sm text-zinc-400">{getCity(auction.location)}, {getProvinceCode(auction.province)}</p>
+          <h3 className="text-ink font-medium truncate">{nombrePropio(auction.consignatariaName)}</h3>
+          <p className="text-sm text-zinc-400">{[nombrePropio(getCity(auction.location)), provinciaNombre(auction.province)].filter(Boolean).join(', ')}</p>
         </div>
         <div className="text-right shrink-0">
           <div className="text-sm font-medium text-ink">{formatDateShort(auction.date)}</div>
@@ -200,6 +208,8 @@ export default async function TipoRematesPage({ params }: Props) {
           <nav className="flex items-center gap-2 text-sm text-zinc-500 mb-4">
             <Link href="/" className="hover:text-zinc-300">Inicio</Link>
             <span>/</span>
+            <Link href="/remates" className="hover:text-zinc-300">Remates</Link>
+            <span>/</span>
             <span className="text-zinc-300">Remates de {config.displayName}</span>
           </nav>
 
@@ -239,7 +249,7 @@ export default async function TipoRematesPage({ params }: Props) {
           
           {upcoming.length > 0 ? (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {upcoming.slice(0, 30).map((auction) => (
+              {upcoming.map((auction) => (
                 <AuctionCard key={auction.id} auction={auction} />
               ))}
             </div>
@@ -248,23 +258,13 @@ export default async function TipoRematesPage({ params }: Props) {
               icon="martillo"
               title={`No hay remates de ${config.name} programados próximamente.`}
               cta={
-                <Link href="/" className="text-sky-500 hover:text-sky-400 inline-block">
+                <Link href="/remates" className="text-sky-500 hover:text-sky-400 inline-block">
                   Ver todos los remates →
                 </Link>
               }
             />
           )}
 
-          {upcoming.length > 30 && (
-            <div className="mt-6 text-center">
-              <Link 
-                href={`/?tipo=${config.name}`}
-                className="inline-flex items-center gap-2 text-sky-500 hover:text-sky-400"
-              >
-                Ver todos los {upcoming.length} remates de {config.name} →
-              </Link>
-            </div>
-          )}
         </section>
 
         {/* FAQ Section */}
@@ -305,8 +305,9 @@ export default async function TipoRematesPage({ params }: Props) {
             return acc
           }, {} as Record<string, number>)
           
+          // Solo las provincias con página de remates: las demás darían 404.
           const topProvinces = Object.entries(provinceCounts)
-            .filter(([, count]) => count >= 2)
+            .filter(([province, count]) => count >= 2 && isRemateProvinceSlug(province.toLowerCase().replace(/\s+/g, '-')))
             .sort((a, b) => b[1] - a[1])
             .slice(0, 8)
           
@@ -326,7 +327,7 @@ export default async function TipoRematesPage({ params }: Props) {
                       href={`/remates/${provinceSlug}/${config.slug}`}
                       className="flex items-center justify-between px-4 py-3 bg-zinc-900/50 border border-zinc-800 rounded-lg hover:border-zinc-700 transition-colors"
                     >
-                      <span className="text-zinc-300">{province}</span>
+                      <span className="text-zinc-300">{provinciaNombre(province)}</span>
                       <span className="text-xs text-zinc-500 bg-zinc-800 px-2 py-0.5 rounded-full">
                         {count} remates
                       </span>

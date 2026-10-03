@@ -1,5 +1,7 @@
 import { Metadata } from 'next'
 import { remateSlug } from '@/lib/remate-slug'
+import { remateTitulo, tipoFrase, diasDesde } from '@/lib/remates-enlaces'
+import { nombrePropio, provinciaNombre } from '@/lib/ui/tokens'
 import { notFound } from 'next/navigation'
 import {
   isRemateProvinceSlug,
@@ -266,16 +268,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   }
   
-  const provinceName = PROVINCE_NAMES[remate.province ?? ''] || remate.province || ''
+  const provinceName = provinciaNombre(remate.province)
   const typeName = TYPE_LABELS[remate.type] || remate.type
-  const dateFormatted = formatDate(remate.date)
-  
-  const title = `${remate.title} — ${typeName} en ${provinceName}`
-  const description = `Remate ${typeName.toLowerCase()} el ${dateFormatted} en ${remate.location}. Organizado por ${remate.consignatariaName}. ${remate.estimatedHeads ? `Aproximadamente ${remate.estimatedHeads} cabezas.` : ''}`
-  
+  const profile = getAllProfiles().find(p => p.canonicalSlug === remate.consignatariaSlug || p.allSlugs.includes(remate.consignatariaSlug))
+  const firma = profile?.displayName ?? nombrePropio(remate.consignatariaName)
+
+  const title = remateTitulo(remate, firma)
+  const lugar = [nombrePropio(cityOf(remate)), provinceName].filter((x, i, a) => x && a.indexOf(x) === i).join(', ')
+  const description = [
+    `Remate ${tipoFrase(remate.type)} de ${firma} el ${formatDate(remate.date).toLowerCase()}${remate.time ? ` a las ${remate.time} hs` : ''}${lugar ? ` en ${lugar}` : ''}.`,
+    remate.estimatedHeads ? `Unas ${remate.estimatedHeads.toLocaleString('es-AR')} cabezas.` : null,
+    'Lugar, catálogo y transmisión.',
+  ].filter(Boolean).join(' ')
+  // Pasados 90 días el remate ya salió del sitemap: la ficha sigue para quien
+  // llega por un enlace, pero no compite en Google con los próximos.
+  const viejo = diasDesde(remate.date) > 90
+
   return {
     title,
     description,
+    ...(viejo ? { robots: { index: false, follow: true } } : {}),
     keywords: [
       'remate ganadero',
       `remate ${typeName.toLowerCase()}`,
@@ -341,7 +353,9 @@ export default async function RemateDetailPage({ params }: Props) {
     return p?.canonicalSlug ?? r.consignatariaSlug
   }
   const currentCity = cityOf(remate)
-  const provinceHub = `/remates/${remate.province?.toLowerCase().replace(/\s+/g, '-') || ''}`
+  // Solo 13 provincias tienen página de remates: a las demás no se enlaza.
+  const provinceSlug = remate.province?.toLowerCase().replace(/\s+/g, '-') || ''
+  const provinceHub = isRemateProvinceSlug(provinceSlug) ? `/remates/${provinceSlug}` : null
   const pool: Remate[] = rematesData
     .filter(r => r.id !== remate.id && r.status === 'scheduled' && r.date >= today)
     .sort((a, b) => a.date.localeCompare(b.date))
@@ -732,7 +746,11 @@ export default async function RemateDetailPage({ params }: Props) {
                 {typeof catPrice.change === 'number' && (
                   <span className={catPrice.change >= 0 ? 'text-emerald-400' : 'text-red-400'}> ({catPrice.change >= 0 ? '+' : ''}{catPrice.change.toFixed(1)}%)</span>
                 )}
-                {MAG_DATE && <span className="text-slate-600"> · MAG, {MAG_DATE}</span>}
+                {priceKey === 'terneros' ? (
+                  <span className="text-slate-600"> · estimado: INMAG × 1,10 — el Mercado Agroganadero no opera terneros, no es un precio observado</span>
+                ) : (
+                  MAG_DATE && <span className="text-slate-600"> · MAG, {MAG_DATE}</span>
+                )}
               </p>
             ) : null}
             {breed && (
@@ -830,9 +848,11 @@ export default async function RemateDetailPage({ params }: Props) {
                   />
                 ))}
               </div>
-              <Link href={provinceHub} className="inline-block mt-3 text-sky-400 text-sm hover:underline">
-                Ver el calendario de remates en {provinceName} →
-              </Link>
+              {provinceHub && (
+                <Link href={provinceHub} className="inline-block mt-3 text-sky-400 text-sm hover:underline">
+                  Ver el calendario de remates en {provinceName} →
+                </Link>
+              )}
             </div>
           )}
 

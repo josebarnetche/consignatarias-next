@@ -16,7 +16,8 @@ import {
   repeticionesRecientes,
   type RemateResuelto,
 } from '@/lib/remates-en-vivo'
-import { getEffectiveStatus } from '@/lib/ui/tokens'
+import { getEffectiveStatus, getCity, nombrePropio, provinciaNombre } from '@/lib/ui/tokens'
+import { remateAnchor, remateHref } from '@/lib/remates-enlaces'
 import { getBandasPublicas, vrCobertura } from '@/lib/vr'
 import { Calendar, Clock, MapPin, Users, Play, FileText, Youtube, Radio } from 'lucide-react'
 import LiveRemateTicker from '@/components/LiveRemateTicker'
@@ -121,6 +122,8 @@ function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl, anclaSt
   const typeColor = typeColors[remate.type?.toLowerCase()] || typeColors.general
   const isProbable = confidence === 'probable'
   const videoId = remate.youtubeUrl ? extractYouTubeId(remate.youtubeUrl) : null
+  const ficha = remateHref(remate)
+  const catalogo = normalizeUrl(remate.catalogUrl)
 
   return (
     <article className={`bg-zinc-900/50 border rounded-lg overflow-hidden hover:border-zinc-600 transition-colors ${
@@ -189,14 +192,16 @@ function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl, anclaSt
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex-1 min-w-0">
             <Link
-              href={consignatariaProfilePath(remate.consignatariaSlug)}
+              href={ficha ?? consignatariaProfilePath(remate.consignatariaSlug)}
+              aria-label={ficha ? remateAnchor(remate) : undefined}
+              title={ficha ? remateAnchor(remate) : undefined}
               className="text-lg font-medium text-zinc-100 hover:text-accent transition-colors line-clamp-1"
             >
-              {remate.consignatariaName}
+              {nombrePropio(remate.consignatariaName)}
             </Link>
             <div className="flex items-center gap-2 mt-1 text-sm text-zinc-500">
               <MapPin className="w-3.5 h-3.5" />
-              <span>{remate.location}, {remate.province}</span>
+              <span>{[nombrePropio(getCity(remate.location)), provinciaNombre(remate.province)].filter(Boolean).join(', ')}</span>
             </div>
           </div>
           <span className={`px-2 py-1 text-xs font-medium border rounded ${typeColor} shrink-0`}>
@@ -255,9 +260,9 @@ function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl, anclaSt
               {isProbable ? 'Ir al canal' : 'Ver transmisión'}
             </a>
           )}
-          {remate.catalogUrl && (
+          {catalogo && (
             <a
-              href={normalizeUrl(remate.catalogUrl) || '#'}
+              href={catalogo}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium bg-zinc-800 text-zinc-300 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors"
