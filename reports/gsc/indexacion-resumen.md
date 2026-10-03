@@ -1,16 +1,17 @@
-# Indexación — 2026-10-02
+# Indexación — 2026-10-03
 
-Inspeccionadas 3376 de 3145 URLs del sitemap.
+Inspeccionadas 3389 de 3159 URLs del sitemap.
 
 | Sección | Inspeccionadas | Indexadas | NO indexadas | % |
 |---|---:|---:|---:|---:|
 | /productividad | 479 | 168 | 311 | 65% |
-| /remates | 1251 | 953 | 298 | 24% |
+| /remates | 1263 | 960 | 303 | 24% |
 | /consignatarias | 86 | 70 | 16 | 19% |
 | /frigorificos | 1140 | 1129 | 11 | 1% |
 | /calendario | 74 | 68 | 6 | 8% |
 | /precios | 117 | 114 | 3 | 3% |
 | /vr | 7 | 5 | 2 | 29% |
+| /mercado | 39 | 38 | 1 | 3% |
 | /campos | 70 | 69 | 1 | 1% |
 | /informes | 5 | 4 | 1 | 20% |
 | /como-se-tasa-un-campo | 1 | 0 | 1 | 100% |
@@ -24,7 +25,6 @@ Inspeccionadas 3376 de 3145 URLs del sitemap.
 | /(home) | 1 | 1 | 0 | 0% |
 | /cuanto-vale-una-vaca | 1 | 1 | 0 | 0% |
 | /cuanto-vale-un-toro | 1 | 1 | 0 | 0% |
-| /mercado | 38 | 38 | 0 | 0% |
 | /categorias-de-hacienda | 1 | 1 | 0 | 0% |
 | /razas-bovinas-argentina | 1 | 1 | 0 | 0% |
 | /precio-de-la-carne-hoy | 1 | 1 | 0 | 0% |
@@ -110,12 +110,12 @@ Inspeccionadas 3376 de 3145 URLs del sitemap.
 
 | Motivo | URLs |
 |---|---:|
-| Enviada e indexada | 2721 |
-| Descubierta: actualmente sin indexar | 447 |
-| Google no reconoce esta URL | 141 |
+| Enviada e indexada | 2728 |
+| Descubierta: actualmente sin indexar | 451 |
+| Google no reconoce esta URL | 142 |
 | Rastreada: actualmente sin indexar | 38 |
 | Excluida por una etiqueta "noindex" | 16 |
+| No se ha encontrado (404) | 5 |
 | Soft 404 | 5 |
-| No se ha encontrado (404) | 4 |
 | Página con redirección | 3 |
 | Internal error encountered. | 1 |
