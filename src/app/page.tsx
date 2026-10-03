@@ -337,7 +337,7 @@ export default async function LandingPage() {
       {/* ============================================================ */}
       {/*  NAVBAR                                                       */}
       {/* ============================================================ */}
-      <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-[#09090b]/80 backdrop-blur-md">
+      <nav className="fixed top-0 w-full z-50 border-b border-ink/5 bg-zinc-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Image src="/icon-32.png" alt="Consignatarias.com.ar" width={32} height={32} className="rounded" />
@@ -404,8 +404,8 @@ export default async function LandingPage() {
                 fetchPriority="high"
               />
             </picture>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/70 to-[#09090b]/30" />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#09090b]/60 via-transparent to-[#09090b]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/70 to-zinc-950/30" />
+            <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/60 via-transparent to-zinc-950" />
           </div>
           {/* El martillazo — motivo animado de marca (golpe → onda → dato → sonda) */}
           <div className="absolute bottom-6 right-6 z-[1] w-[340px] xl:w-[420px] opacity-70 pointer-events-none hidden lg:block" aria-hidden="true">
@@ -421,7 +421,7 @@ export default async function LandingPage() {
               backgroundSize: "64px 64px",
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#09090b]/80 to-[#09090b]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/80 to-zinc-950" />
           </div>
 
           <LiveHero
@@ -830,7 +830,7 @@ export default async function LandingPage() {
       {/* ============================================================ */}
       {/*  FOOTER                                                       */}
       {/* ============================================================ */}
-      <footer className="border-t border-zinc-800 bg-[#09090b]">
+      <footer className="border-t border-zinc-800 bg-zinc-950">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">

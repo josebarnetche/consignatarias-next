@@ -12,11 +12,11 @@ export interface TapeItem {
 
 function Cell({ it, decorative = false }: { it: TapeItem; decorative?: boolean }) {
   const tone =
-    it.change == null ? 'text-zinc-400' : it.change >= 0 ? 'text-[#34d399]' : 'text-[#f87171]'
+    it.change == null ? 'text-zinc-400' : it.change >= 0 ? 'text-positive' : 'text-negative'
   const arrow = it.change == null ? '' : it.change >= 0 ? '▲' : '▼'
   const body = (
     <span className="inline-flex items-baseline gap-2 whitespace-nowrap px-5">
-      {it.live && <span className="w-1.5 h-1.5 rounded-full bg-[#f87171] animate-pulse self-center" />}
+      {it.live && <span className="w-1.5 h-1.5 rounded-full bg-negative animate-pulse self-center" />}
       <span className="text-[10px] uppercase tracking-[0.18em] text-zinc-400">{it.label}</span>
       <span className="font-terminal tabular-nums text-zinc-100 text-[13px]">{it.value}</span>
       {it.change != null && (
@@ -47,10 +47,10 @@ function Cell({ it, decorative = false }: { it: TapeItem; decorative?: boolean }
 export default function MarketTape({ items }: { items: TapeItem[] }) {
   if (!items.length) return null
   return (
-    <div className="relative w-full overflow-hidden border-y border-zinc-800/80 bg-[#0b0b0e]">
+    <div className="relative w-full overflow-hidden border-y border-zinc-800/80 bg-zinc-950">
       {/* fades laterales */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-16 z-10 bg-gradient-to-r from-[#0b0b0e] to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-16 z-10 bg-gradient-to-l from-[#0b0b0e] to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-16 z-10 bg-gradient-to-r from-zinc-950 to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-16 z-10 bg-gradient-to-l from-zinc-950 to-transparent" />
       <div className="flex w-max tape-track py-2" aria-hidden={false}>
         {/* duplicado x2 para loop sin costura */}
         {[0, 1].map((dup) => (

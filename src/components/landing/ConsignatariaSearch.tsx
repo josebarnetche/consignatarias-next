@@ -41,10 +41,10 @@ export default function ConsignatariaSearch({ items }: { items: Item[] }) {
         onChange={(e) => setQ(e.target.value)}
         placeholder="Buscá tu consignataria por nombre…"
         autoComplete="off"
-        className="w-full rounded-lg border border-white/10 bg-[#0a0a0f]/80 px-4 py-3 text-base text-zinc-100 placeholder:text-zinc-500 outline-none backdrop-blur-md focus:border-sky-400/60"
+        className="w-full rounded-lg border border-ink/10 bg-terminal-bg/80 px-4 py-3 text-base text-zinc-100 placeholder:text-zinc-500 outline-none backdrop-blur-md focus:border-sky-400/60"
       />
       {matches.length > 0 && (
-        <ul className="absolute left-0 right-0 top-full z-30 mt-1.5 overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0f]/95 shadow-xl backdrop-blur-md">
+        <ul className="absolute left-0 right-0 top-full z-30 mt-1.5 overflow-hidden rounded-lg border border-ink/10 bg-terminal-bg/95 shadow-xl backdrop-blur-md">
           {matches.map((it) => (
             <li key={it.slug}>
               <Link
@@ -58,7 +58,7 @@ export default function ConsignatariaSearch({ items }: { items: Item[] }) {
         </ul>
       )}
       {nq.length >= 2 && matches.length === 0 && (
-        <div className="absolute left-0 right-0 top-full z-30 mt-1.5 rounded-lg border border-white/10 bg-[#0a0a0f]/95 backdrop-blur-md">
+        <div className="absolute left-0 right-0 top-full z-30 mt-1.5 rounded-lg border border-ink/10 bg-terminal-bg/95 backdrop-blur-md">
           <EmptyState
             icon="buscador-lupa"
             compact

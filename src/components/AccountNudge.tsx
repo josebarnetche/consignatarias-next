@@ -151,7 +151,7 @@ export default function AccountNudge() {
       className="fixed inset-x-3 bottom-3 z-[60] mx-auto max-w-sm sm:inset-x-auto sm:left-4 sm:mx-0"
     >
       <div
-        className={`terminal-panel rounded-xl bg-[#0b0b0e]/95 p-4 shadow-2xl backdrop-blur-sm ${
+        className={`terminal-panel rounded-xl bg-zinc-950/95 p-4 shadow-2xl backdrop-blur-sm ${
           strong ? 'border border-sky-500/40' : 'border border-zinc-700/80'
         }`}
       >

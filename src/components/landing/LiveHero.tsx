@@ -135,8 +135,8 @@ export default function LiveHero(p: LiveHeroProps) {
           {p.enVivo > 0 && (
             <>
               <span className="text-zinc-800">|</span>
-              <Link href="/remates/en-vivo" className="inline-flex items-center gap-1.5 text-[#f87171] hover:text-[#fca5a5] transition-colors">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#f87171] animate-pulse" />
+              <Link href="/remates/en-vivo" className="inline-flex items-center gap-1.5 text-negative hover:text-negative/80 transition-colors">
+                <span className="w-1.5 h-1.5 rounded-full bg-negative animate-pulse" />
                 <span className="tabular-nums">{p.enVivo}</span> en vivo
               </Link>
             </>
@@ -151,7 +151,7 @@ export default function LiveHero(p: LiveHeroProps) {
         <Link
           href="/mi-ganado"
           onClick={() => trackCTA('valuar_rodeo', 'hero', { context: 'landing-hero', variant: 'vr' })}
-          className="group inline-flex items-center justify-center gap-2 text-sm font-medium text-[#0b0b0e] bg-accent hover:bg-sky-300 transition-colors rounded py-3 px-6"
+          className="group inline-flex items-center justify-center gap-2 text-sm font-medium text-terminal-bg bg-accent hover:bg-accent-bright transition-colors rounded py-3 px-6"
         >
           Valuar mi rodeo gratis
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-200 ease-out group-hover:translate-x-1"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
