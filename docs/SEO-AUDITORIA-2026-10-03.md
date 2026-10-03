@@ -140,8 +140,10 @@ Las tres etapas del plan quedaron hechas, salvo lo que sigue.
 - **142 páginas delgadas** (menos de 150 palabras): sobre todo `/calendario/*`
   (69 firmas) y `/remates/{provincia}/{tipo}` (34). Siguen indexables porque tienen
   remates próximos. Engordarlas es trabajo de contenido.
-- **`images.unoptimized: true` queda.** Activar el optimizador de Vercel se factura por
-  imagen. Las imágenes de marca ya se sirven en WebP y con su tamaño.
+- **`images.unoptimized: true` queda, por ahora.** Activar el optimizador de Vercel se
+  factura por imagen. Las imágenes de marca son JPG y PNG (246 archivos, con sus
+  `-claro`). Convertirlas a WebP una vez, con el mismo script de ImageMagick, da casi
+  todo el beneficio sin costo por pedido. Queda como tarea aparte.
 - **IndexNow:** queda andando en cuanto `public/<clave>.txt` esté en producción.
 
 ## GA4 y Search Console
