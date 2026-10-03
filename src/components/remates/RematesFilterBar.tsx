@@ -1,7 +1,7 @@
 'use client'
 
 import { type ReactNode } from 'react'
-import { TYPE_LABELS } from '@/lib/ui/tokens'
+import { TYPE_LABELS, provinciaNombre } from '@/lib/ui/tokens'
 import { Badge } from '@/components/ui'
 
 /* ------------------------------------------------------------------ */
@@ -21,6 +21,12 @@ import { Badge } from '@/components/ui'
 
 export type Period = 'hoy' | 'proximos' | 'pasados'
 
+/** "INVERNADA" → "Invernada" (los TYPE_LABELS están en mayúsculas de terminal). */
+export function typeLabel(t: string): string {
+  const l = (TYPE_LABELS[t] || t).toLowerCase()
+  return l === 'cria' ? 'Cría' : l.charAt(0).toUpperCase() + l.slice(1)
+}
+
 /* ---- Terminal-styled native <select> faceta ---------------------- */
 function FacetSelect({
   value,
@@ -39,18 +45,18 @@ function FacetSelect({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       aria-label={placeholder}
-      className={`terminal-input text-xxs py-1.5 px-3 pr-7 appearance-none cursor-pointer min-h-[40px] sm:min-h-0 sm:py-1.5 focus:border-accent focus:outline-none transition-colors ${
+      className={`terminal-input w-full min-h-[44px] text-base sm:text-sm py-2 px-3 pr-8 rounded-terminal appearance-none cursor-pointer focus:border-accent focus:outline-none transition-colors ${
         active
           ? 'border-accent text-accent bg-accent/5'
-          : 'bg-terminal-panel text-zinc-400'
+          : 'bg-terminal-panel text-zinc-300'
       }`}
       style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='${
           active ? '%2338bdf8' : '%2371717a'
         }' d='M0 2l4 4 4-4z'/%3E%3C/svg%3E")`,
         backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'right 8px center',
-        backgroundSize: '8px',
+        backgroundPosition: 'right 12px center',
+        backgroundSize: '10px',
       }}
     >
       <option value="">{placeholder}</option>
@@ -78,7 +84,7 @@ function FilterChip({
   const live = tone === 'live'
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-xxs rounded-terminal border font-terminal ${
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-sm rounded-full border ${
         live
           ? 'bg-negative/15 text-negative border-negative/30'
           : 'bg-accent/10 text-accent border-accent/25'
@@ -88,7 +94,7 @@ function FilterChip({
       <span>{children}</span>
       <button
         onClick={onRemove}
-        className={`min-h-[20px] min-w-[20px] -mr-1 flex items-center justify-center text-sm leading-none transition-colors motion-hover ${
+        className={`min-h-[28px] min-w-[28px] -mr-1.5 flex items-center justify-center text-sm leading-none transition-colors motion-hover ${
           live ? 'hover:text-red-300' : 'hover:text-accent-bright'
         }`}
         aria-label={ariaLabel}
@@ -165,19 +171,24 @@ export default function RematesFilterBar({
   const showProBadge = !sessionLoading && !isPro
   const anyChip = !!(filterProvince || filterType || filterEnVivo || searchQuery)
 
+  // Pestañas con nombre completo y el conteo al lado: "¿qué hay hoy?" es la
+  // pregunta más frecuente, así que va primero (antes: HOY/PROXIMOS/PASADOS).
   const TABS: { key: Period; label: string }[] = [
-    { key: 'hoy', label: 'HOY' },
-    { key: 'proximos', label: 'PROXIMOS' },
-    { key: 'pasados', label: 'PASADOS' },
+    { key: 'hoy', label: 'Hoy' },
+    { key: 'proximos', label: 'Próximos' },
+    { key: 'pasados', label: 'Anteriores' },
   ]
 
   return (
     <>
-      {/* ── ONE control row — period (nav) · En Vivo | facets · actions ── */}
-      <div className="border-b border-terminal-border px-panel py-2 flex items-center justify-between flex-wrap gap-x-3 gap-y-2">
-        {/* LEFT: temporal navigation (above facets) + the lone red faceta */}
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <div className="flex items-center gap-1" role="tablist" aria-label="Período">
+      <div className="border-b border-terminal-border px-panel py-3 space-y-3">
+        {/* ── Cuándo: pestañas grandes, fáciles de tocar en el celular ── */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <div
+            className="inline-flex rounded-terminal border border-terminal-border bg-terminal-bg/60 p-1"
+            role="tablist"
+            aria-label="Cuándo"
+          >
             {TABS.map((tab) => {
               const on = period === tab.key
               return (
@@ -186,8 +197,10 @@ export default function RematesFilterBar({
                   role="tab"
                   aria-selected={on}
                   onClick={() => onPeriodChange(tab.key)}
-                  className={`terminal-btn text-xxs px-3 py-1.5 min-h-[40px] sm:min-h-0 sm:py-1 motion-hover ${
-                    on ? 'border-accent text-accent bg-accent/5' : ''
+                  className={`min-h-[44px] rounded-terminal px-4 text-sm font-medium transition-colors motion-hover ${
+                    on
+                      ? 'bg-terminal-panel text-ink shadow-panel'
+                      : 'text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
                   {tab.label}
@@ -199,120 +212,120 @@ export default function RematesFilterBar({
             })}
           </div>
 
-          {/* En Vivo — the ONLY red faceta; binary toggle with live count */}
           {enVivoCount > 0 && (
             <button
               onClick={onToggleEnVivo}
               aria-pressed={filterEnVivo}
-              className={`terminal-btn text-xxs px-3 py-1.5 min-h-[40px] sm:min-h-0 sm:py-1 flex items-center gap-1.5 ml-1 motion-hover ${
+              className={`min-h-[44px] rounded-terminal border px-4 text-sm font-medium flex items-center gap-2 transition-colors motion-hover ${
                 filterEnVivo
-                  ? 'border-negative text-white bg-red-600 hover:bg-red-500'
-                  : 'border-negative/40 text-negative bg-negative/10 hover:bg-negative/20 hover:border-negative/60'
+                  ? 'border-negative bg-negative text-white'
+                  : 'border-negative/40 bg-negative/10 text-negative hover:bg-negative/20'
               }`}
-              title={filterEnVivo ? 'Mostrando solo remates con transmisión en vivo' : 'Filtrar remates con transmisión en vivo'}
+              title={filterEnVivo ? 'Mostrando solo los que se transmiten en vivo' : 'Ver solo los que se transmiten en vivo'}
             >
               <span className={`w-2 h-2 rounded-full ${filterEnVivo ? 'bg-white' : 'bg-negative'} animate-pulse`} />
-              EN VIVO
-              <span className={`tabular-nums ${filterEnVivo ? 'text-red-200' : 'text-negative'}`}>{enVivoCount}</span>
+              Se transmiten en vivo
+              <span className="tabular-nums">{enVivoCount}</span>
             </button>
           )}
         </div>
 
-        {/* RIGHT: refinement facets + actions */}
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* Search */}
-          <div className="relative">
+        {/* ── Qué y dónde: buscador ancho + provincia y tipo ── */}
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-[minmax(0,1fr)_200px_200px]">
+          <div className="relative col-span-2 md:col-span-1">
+            <svg
+              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5-5m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
             <input
-              type="text"
+              type="search"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Buscar consignataria, plaza…"
-              className={`terminal-input text-xxs w-32 sm:w-44 pl-2 pr-6 py-1.5 min-h-[40px] sm:min-h-0 sm:py-1 rounded-terminal focus:border-accent focus:outline-none placeholder:text-zinc-600 ${
-                searchQuery ? 'border-accent text-accent' : 'border-terminal-border'
-              }`}
+              placeholder="Buscar consignataria o localidad"
+              className="terminal-input w-full min-h-[44px] pl-9 pr-9 text-base sm:text-sm rounded-terminal focus:border-accent focus:outline-none placeholder:text-zinc-500"
               aria-label="Buscar remates"
             />
             {searchQuery && (
               <button
                 onClick={() => onSearchChange('')}
-                className="absolute right-1 top-1/2 -translate-y-1/2 min-h-[28px] min-w-[28px] flex items-center justify-center text-zinc-500 hover:text-negative text-sm"
-                aria-label="Limpiar búsqueda"
+                className="absolute right-1 top-1/2 -translate-y-1/2 min-h-[40px] min-w-[40px] flex items-center justify-center text-zinc-500 hover:text-negative text-lg"
+                aria-label="Borrar búsqueda"
               >
                 ×
               </button>
             )}
           </div>
-
           <FacetSelect
             value={filterProvince}
             onChange={onProvinceChange}
-            options={provinces.map((p) => ({ value: p, label: p }))}
-            placeholder="Provincia"
+            options={provinces.map((p) => ({ value: p, label: provinciaNombre(p) }))}
+            placeholder="Todas las provincias"
           />
           <FacetSelect
             value={filterType}
             onChange={onTypeChange}
-            options={types.map((t) => ({ value: t, label: TYPE_LABELS[t] || t.toUpperCase() }))}
-            placeholder="Tipo"
+            options={types.map((t) => ({ value: t, label: typeLabel(t) }))}
+            placeholder="Todos los tipos"
           />
+        </div>
 
+        {/* ── Extras, en segundo plano ── */}
+        <div className="flex items-center gap-x-4 gap-y-2 flex-wrap text-sm">
           {hasActiveFilters && (
             <button
               onClick={onClearAll}
-              className="text-xxs text-zinc-500 hover:text-negative font-terminal transition-colors px-2 py-1.5 min-h-[40px] sm:min-h-0 sm:py-1"
-              title="Limpiar todos los filtros"
+              className="min-h-[36px] font-medium text-accent hover:text-accent-bright transition-colors"
             >
-              LIMPIAR
+              Borrar filtros
             </button>
           )}
-
-          {/* FILTROS+ — advanced facets behind PRO */}
           <button
             onClick={onToggleAdvanced}
             aria-pressed={showAdvanced && isPro}
-            className={`terminal-btn text-xxs px-2.5 py-1.5 min-h-[40px] sm:min-h-0 sm:py-1 flex items-center gap-1.5 motion-hover hover:border-accent hover:text-accent ${
-              advancedActive ? 'border-accent text-accent bg-accent/5' : ''
+            className={`min-h-[36px] flex items-center gap-1.5 transition-colors hover:text-accent ${
+              advancedActive ? 'text-accent' : 'text-zinc-400'
             }`}
-            title={
-              isPro
-                ? 'Filtros avanzados: rango de fechas, cabezas mínimas'
-                : 'Filtros avanzados (PRO): rango de fechas, cabezas mínimas'
-            }
+            title="Rango de fechas y cantidad mínima de cabezas"
           >
-            <span className="hidden sm:inline">FILTROS+</span>
-            <span className="sm:hidden">+</span>
-            {showProBadge && <Badge tone="pro" className="ml-0.5">PRO</Badge>}
+            Más filtros
+            {showProBadge && <Badge tone="pro">PRO</Badge>}
           </button>
-
-          {/* EXPORTAR — bulk .ics behind PRO */}
           {canExport && (
             <button
               onClick={onExport}
-              className="terminal-btn text-xxs px-2.5 py-1.5 min-h-[40px] sm:min-h-0 sm:py-1 flex items-center gap-1.5 motion-hover hover:border-accent hover:text-accent"
+              className="min-h-[36px] flex items-center gap-1.5 text-zinc-400 transition-colors hover:text-accent"
               title={
                 isPro
-                  ? `Exportar ${exportCount} remates al calendario`
-                  : 'Exportar el calendario es PRO. Click para suscribirte.'
+                  ? `Agregar ${exportCount} remates a tu calendario`
+                  : 'Agregar al calendario es PRO. Tocá para suscribirte.'
               }
             >
-              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
-              <span className="hidden sm:inline">EXPORTAR</span>
-              <span className="tabular-nums text-zinc-500">{exportCount}</span>
-              {showProBadge && <Badge tone="pro" className="ml-1">PRO</Badge>}
+              Agregar a mi calendario
+              {showProBadge && <Badge tone="pro">PRO</Badge>}
             </button>
           )}
+          <span className="ml-auto text-zinc-500 tabular-nums">
+            {resultCount} remate{resultCount !== 1 ? 's' : ''}
+          </span>
         </div>
       </div>
 
-      {/* ── Applied-filter chips (unified feedback) ─────────────────── */}
+      {/* ── Filtros aplicados ─────────────────── */}
       {anyChip && (
-        <div className="border-b border-terminal-border px-panel py-1.5 flex items-center gap-2 flex-wrap">
-          <span className="text-xxs text-zinc-500 font-terminal uppercase tracking-wider">Filtros</span>
+        <div className="border-b border-terminal-border px-panel py-2 flex items-center gap-2 flex-wrap">
+          <span className="text-sm text-zinc-500">Mostrando:</span>
           {filterEnVivo && (
             <FilterChip tone="live" onRemove={onToggleEnVivo} ariaLabel="Quitar filtro en vivo">
-              En Vivo
+              En vivo
             </FilterChip>
           )}
           {searchQuery && (
@@ -322,17 +335,14 @@ export default function RematesFilterBar({
           )}
           {filterProvince && (
             <FilterChip onRemove={() => onProvinceChange('')} ariaLabel="Quitar filtro provincia">
-              {filterProvince}
+              {provinciaNombre(filterProvince)}
             </FilterChip>
           )}
           {filterType && (
             <FilterChip onRemove={() => onTypeChange('')} ariaLabel="Quitar filtro tipo">
-              {TYPE_LABELS[filterType] || filterType.toUpperCase()}
+              {typeLabel(filterType)}
             </FilterChip>
           )}
-          <span className="text-xxs text-zinc-600 font-terminal tabular-nums ml-auto">
-            {resultCount} resultado{resultCount !== 1 ? 's' : ''}
-          </span>
         </div>
       )}
     </>

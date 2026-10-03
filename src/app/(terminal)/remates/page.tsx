@@ -74,7 +74,6 @@ const FAQ_ITEMS = [
 ]
 
 export default function RematesPage() {
-  const totalAuctions = rematesData.length
   const totalProfiles = getAllProfiles().length
   const provinces = new Set(rematesData.map((r) => r.province))
   const totalProvinces = provinces.size
@@ -125,152 +124,107 @@ export default function RematesPage() {
       />
       {/* Breadcrumb visual (§3.2). El JSON-LD ya lo emite SectionBreadcrumbSchema
           arriba, así que acá schema={false} para no duplicar structured data. */}
-      <div className="px-4 pt-3">
+      <div className="mx-auto max-w-5xl px-4 pt-3 sm:px-6">
         <Breadcrumb items={[{ name: 'Remates' }]} schema={false} />
       </div>
-      {nextRemate && (
-        <div className="px-4 pt-2">
-          <NextRemateCountdown nextRemate={nextRemate} />
-        </div>
-      )}
-      <section className="px-4 pt-3 pb-2 text-zinc-400 text-sm leading-relaxed max-w-3xl">
-        <h2 className="text-zinc-200 text-lg font-medium mb-1">Calendario de remates ganaderos de Argentina</h2>
-        <p>
-          {totalAuctions} remates de hacienda de {totalProfiles} consignatarias en {totalProvinces} provincias,
-          actualizado todos los días a las 14:00. Filtrá abajo por provincia, tipo, fecha o consignataria.
+      {/* Encabezado: qué es esta página en una línea. Los accesos por provincia,
+          tipo y el newsletter bajaron al pie — siguen enlazados para Google, pero
+          ya no se interponen entre el productor y la lista. */}
+      <header className="mx-auto max-w-5xl px-4 pt-4 pb-2 sm:px-6">
+        <h1 className="text-2xl font-semibold text-ink sm:text-3xl">Remates de hacienda</h1>
+        <p className="mt-2 max-w-2xl text-base leading-relaxed text-zinc-400">
+          Los remates de todo el país con día, hora y lugar. {totalProfiles} consignatarias en{' '}
+          {totalProvinces} provincias, actualizado todos los días.
         </p>
+        {nextRemate && (
+          <div className="mt-3">
+            <NextRemateCountdown nextRemate={nextRemate} />
+          </div>
+        )}
 
-        {/* Accesos por momento. Hasta el 02-10-2026 estos cuatro destinos existían
-            SOLO dentro del desplegable de escritorio: desde el teléfono no había
-            ninguna forma de llegar a "en vivo" sin conocer la URL. Van arriba, antes
-            de los filtros por provincia y tipo, porque "¿qué hay ahora?" es la
-            pregunta más frecuente al entrar al calendario. */}
-        <nav aria-label="Remates por momento" className="mt-4 flex flex-wrap gap-2">
-          {[
-            { href: "/remates/en-vivo", label: "En vivo", live: true },
-            { href: "/remates/hoy", label: "Hoy" },
-            { href: "/remates/semana", label: "Esta semana" },
-            { href: "/remates/anteriores", label: "Anteriores" },
-          ].map((s) => (
-            <Link
-              key={s.href}
-              href={s.href}
-              className="inline-flex items-center gap-1.5 rounded-full border border-terminal-border px-3 py-1.5 text-xs text-zinc-300 transition-colors hover:border-accent/50 hover:text-accent"
-            >
-              {s.live && <span className="status-dot-live" />}
-              {s.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Destacado de la Expo de Mercedes. Va acá arriba —no al pie— porque un
-            destacado bajo el fold no lo ve nadie, y se apaga solo pasado el último
-            remate: un evento vencido en la portada envejece todo lo demás. */}
+        {/* Destacado de la Expo de Mercedes: se apaga solo pasado el último remate. */}
         {expoVigente() && (
           <Link
             href="/remates/expo-rural-mercedes"
-            className="mt-4 block rounded-lg border border-accent/40 bg-accent/[0.05] p-4 transition-colors hover:bg-accent/[0.09]"
+            className="mt-4 block rounded-terminal border border-accent/40 bg-accent/[0.05] p-4 transition-colors hover:bg-accent/[0.09]"
           >
-            <p className="text-xs uppercase tracking-[0.16em] text-accent">
+            <p className="text-sm font-medium text-accent">
               {EXPO.entidad} · {EXPO.provincia}
             </p>
-            <p className="mt-1.5 text-base font-medium text-zinc-100">
+            <p className="mt-1 text-base font-semibold text-ink">
               {REMATES_EXPO.length} remates de {posicionNacional().firmas} firmas en dos semanas
             </p>
             <p className="mt-1 text-sm text-zinc-400">
-              La rueda de la {EXPO.edicion}ª Expo de Mercedes: fuera de Palermo y Expoagro, la mayor
-              concentración de consignatarias del país. Ver el cronograma completo →
+              La rueda de la {EXPO.edicion}ª Expo de Mercedes. Ver el cronograma completo →
             </p>
           </Link>
         )}
+      </header>
 
-        {/* Explorar (links SEO a páginas dedicadas). El filtrado interactivo vive en
-            la barra de abajo — acá solo navegación a las páginas indexables. */}
-        <div className="flex flex-wrap gap-2 mt-3">
-          <span className="text-zinc-500 text-xs self-center mr-1">Por provincia:</span>
-          <Link
-            href="/remates/buenos-aires"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
-          >
-            Buenos Aires
-          </Link>
-          <Link
-            href="/remates/cordoba"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
-          >
-            Córdoba
-          </Link>
-          <Link
-            href="/remates/santa-fe"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
-          >
-            Santa Fe
-          </Link>
-          <Link
-            href="/remates/entre-rios"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
-          >
-            Entre Ríos
-          </Link>
-          <Link
-            href="/remates/corrientes"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
-          >
-            Corrientes
-          </Link>
-        </div>
-        
-        {/* Type quick links */}
-        <div className="flex flex-wrap gap-2 mt-2">
-          <span className="text-zinc-500 text-xs self-center mr-1">Por tipo:</span>
-          <Link
-            href="/remates/tipo/invernada"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
-          >
-            Invernada
-          </Link>
-          <Link
-            href="/remates/tipo/cria"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
-          >
-            Cría
-          </Link>
-          <Link
-            href="/remates/tipo/general"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
-          >
-            General
-          </Link>
-          <Link
-            href="/remates/tipo/reproductores"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
-          >
-            Reproductores
-          </Link>
-          <Link
-            href="/remates/tipo/especial"
-            className="px-2.5 py-1 bg-zinc-800/30 hover:bg-zinc-700/40 border border-zinc-700/50 rounded text-xs text-zinc-400 hover:text-zinc-300 motion-hover"
-          >
-            Especial
-          </Link>
-        </div>
-      </section>
-      
-      {/* Email capture for remates */}
-      <section className="px-4 py-3 border-b border-zinc-800">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-          <span className="text-zinc-400 text-sm whitespace-nowrap">Recibí el resumen semanal de remates:</span>
-          <NewsletterSignup 
-            source="remates" 
-            buttonText="Suscribirme"
-            placeholder="tu@email.com"
-            compact
-          />
-        </div>
-      </section>
       {/* RematesClient ya no usa useSearchParams → renderiza SSR (lista en el
           HTML servido, visible para crawlers). Sin Suspense/fallback. */}
       <RematesClient />
+
+      {/* Pie: navegación a las páginas indexables + newsletter */}
+      <section className="mx-auto max-w-5xl px-4 pb-10 sm:px-6">
+        <div className="terminal-panel p-panel space-y-5">
+          {[
+            {
+              titulo: 'Remates por momento',
+              links: [
+                { href: '/remates/en-vivo', label: 'En vivo' },
+                { href: '/remates/hoy', label: 'Hoy' },
+                { href: '/remates/manana', label: 'Mañana' },
+                { href: '/remates/semana', label: 'Esta semana' },
+                { href: '/remates/fin-de-semana', label: 'Fin de semana' },
+                { href: '/remates/anteriores', label: 'Anteriores' },
+              ],
+            },
+            {
+              titulo: 'Remates por provincia',
+              links: [
+                { href: '/remates/buenos-aires', label: 'Buenos Aires' },
+                { href: '/remates/cordoba', label: 'Córdoba' },
+                { href: '/remates/santa-fe', label: 'Santa Fe' },
+                { href: '/remates/entre-rios', label: 'Entre Ríos' },
+                { href: '/remates/corrientes', label: 'Corrientes' },
+              ],
+            },
+            {
+              titulo: 'Remates por tipo',
+              links: [
+                { href: '/remates/tipo/invernada', label: 'Invernada' },
+                { href: '/remates/tipo/cria', label: 'Cría' },
+                { href: '/remates/tipo/general', label: 'General' },
+                { href: '/remates/tipo/reproductores', label: 'Reproductores' },
+                { href: '/remates/tipo/especial', label: 'Especial' },
+              ],
+            },
+          ].map((g) => (
+            <nav key={g.titulo} aria-label={g.titulo}>
+              <h2 className="text-sm font-semibold text-ink">{g.titulo}</h2>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {g.links.map((l) => (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    className="inline-flex min-h-[40px] items-center rounded-full border border-terminal-border px-3.5 text-sm text-zinc-300 transition-colors hover:border-accent/50 hover:text-accent"
+                  >
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+            </nav>
+          ))}
+
+          <div className="border-t border-terminal-border pt-5">
+            <h2 className="text-sm font-semibold text-ink">Recibí los remates de la semana por mail</h2>
+            <div className="mt-2">
+              <NewsletterSignup source="remates" buttonText="Suscribirme" placeholder="tu@email.com" compact />
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   )
 }

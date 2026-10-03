@@ -7,6 +7,52 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.220.0] — 2026-10-03
+
+### Remates y directorio rediseñados para el productor
+
+Partimos de una pregunta: ¿qué hace un productor de 40 años, poco amigo de la tecnología, cuando
+entra desde el celular? Busca **qué remates hay, cuándo y dónde**, o **una firma**. Las dos páginas
+anteponían otras cosas: el aviso de una guía para *abrir* una consignataria, un título largo de SEO
+con dos párrafos de relleno, franjas de estadísticas y un listado con siglas ("ESPEC", "SRC WA",
+"PROX", "REPROD"). El cambio de estructura aplica a los dos temas; los colores siguen por tokens.
+
+**`/remates`**
+- Arriba solo un título ("Remates de hacienda"), una línea que dice qué es y la cuenta regresiva
+  del próximo remate.
+- Pestañas grandes: "Hoy", "Próximos", "Anteriores", con el conteo al lado. Botón "Se transmiten en
+  vivo". Buscador ancho y listas "Todas las provincias" / "Todos los tipos", con 44px de alto para
+  el dedo. "Más filtros" y "Agregar a mi calendario" (PRO) quedan en segundo plano.
+- La lista va **agrupada por día** ("Hoy · sábado 3 de octubre", "Mañana · …"), con el encabezado
+  fijo al hacer scroll. Cada remate es una tarjeta:
+  - la hora grande, el nombre de la firma, "Localidad, Provincia";
+  - "Tipo · Categoría · ~N cabezas", escrito en palabras;
+  - botones con nombre: "Ver transmisión", "Ver catálogo", "Compartir por WhatsApp".
+    "Estuve" solo aparece el día del remate o después.
+- Fuera: el encabezado "REMATES — Cronograma…", la franja de estadísticas, la leyenda de siglas,
+  el sello de fuente (WEB/CACG), los códigos de categoría y las localidades de remitentes. También
+  el estado "Programado"/"Finalizado" en cada fila, que ya lo dice el grupo del día.
+- "+ AGREGAR" pasa al pie, como "¿Falta un remate o hay un dato mal? Avisanos".
+- Los accesos por momento, provincia y tipo, y el newsletter, bajan al pie. Siguen enlazados para
+  Google y se suman "Mañana" y "Fin de semana".
+
+**`/consignatarias`**
+- Sale el banner de la guía premium de arriba de todo. La oferta sigue al pie (`OfrecerGuia`).
+- Título "Consignatarias de hacienda" y una línea. El texto SEO baja a "Sobre este directorio".
+- Buscador grande, orden por lista desplegable (default: "Con remates próximos") y provincias como
+  enlaces indexables. En el celular las provincias van en una fila que se desliza de costado.
+- Tarjetas con:
+  - el logo y el nombre completo (sin cortar);
+  - "Provincia, Provincia y N más" y "N remates próximos" en verde;
+  - "Remates de invernada, cría…".
+
+**Texto para personas**
+- `nombrePropio()` y `provinciaNombre()` en `src/lib/ui/tokens.ts`, con test. Pasan los datos que
+  vienen en MAYÚSCULAS ("ILDARRAZ HNOS. S.A.", "CHAJARI", "ENTRE RIOS") a "Ildarraz Hnos. S.A.",
+  "Chajari", "Entre Ríos". Respetan siglas societarias y lo que ya viene con minúsculas.
+- El filtro de provincia ignora los 42 remates sin provincia cargada: generaban una opción vacía y
+  el desplegable se veía en blanco.
+
 ## [1.219.0] — 2026-10-03
 
 ### Tema claro — lenguaje propio (sin tipografía de terminal) + fix del celular
