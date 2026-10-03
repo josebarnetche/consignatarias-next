@@ -19,6 +19,12 @@
    rgb(var(--x) / <alpha-value>) y sigan funcionando los /NN de opacidad.
    ============================================================ */
 :root {
+  /* Declara el esquema: sin esto, Chrome/Samsung Internet en Android con el
+     teléfono en modo oscuro aplican su "oscurecido automático" y pintan de negro
+     una página que el CSS dice blanca. Junto con <meta name="color-scheme"
+     content="only light"> (layout.tsx) es lo que lo apaga. */
+  color-scheme: only light;
+
   /* escala zinc — invertida (claro) */
   --z-50: 9 9 11;
   --z-100: 24 24 27;
@@ -52,6 +58,8 @@
 }
 
 [data-theme='dark'] {
+  color-scheme: dark;
+
   /* escala zinc — tal cual estaba (sin invertir) */
   --z-50: 250 250 250;
   --z-100: 244 244 245;
