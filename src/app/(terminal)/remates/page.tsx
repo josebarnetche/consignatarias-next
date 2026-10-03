@@ -140,6 +140,29 @@ export default function RematesPage() {
           actualizado todos los días a las 14:00. Filtrá abajo por provincia, tipo, fecha o consignataria.
         </p>
 
+        {/* Accesos por momento. Hasta el 02-10-2026 estos cuatro destinos existían
+            SOLO dentro del desplegable de escritorio: desde el teléfono no había
+            ninguna forma de llegar a "en vivo" sin conocer la URL. Van arriba, antes
+            de los filtros por provincia y tipo, porque "¿qué hay ahora?" es la
+            pregunta más frecuente al entrar al calendario. */}
+        <nav aria-label="Remates por momento" className="mt-4 flex flex-wrap gap-2">
+          {[
+            { href: "/remates/en-vivo", label: "En vivo", live: true },
+            { href: "/remates/hoy", label: "Hoy" },
+            { href: "/remates/semana", label: "Esta semana" },
+            { href: "/remates/anteriores", label: "Anteriores" },
+          ].map((s) => (
+            <Link
+              key={s.href}
+              href={s.href}
+              className="inline-flex items-center gap-1.5 rounded-full border border-terminal-border px-3 py-1.5 text-xs text-zinc-300 transition-colors hover:border-accent/50 hover:text-accent"
+            >
+              {s.live && <span className="status-dot-live" />}
+              {s.label}
+            </Link>
+          ))}
+        </nav>
+
         {/* Destacado de la Expo de Mercedes. Va acá arriba —no al pie— porque un
             destacado bajo el fold no lo ve nadie, y se apaga solo pasado el último
             remate: un evento vencido en la portada envejece todo lo demás. */}

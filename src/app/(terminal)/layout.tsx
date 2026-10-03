@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import AuthButton from "@/components/auth/AuthButton";
 import ThemeToggle from "@/components/ThemeToggle";
+import MobileMenu from "@/components/nav/MobileMenu";
 import OnboardingPrompt from "@/components/onboarding/OnboardingPrompt";
 import PageTransition from "@/components/ui/PageTransition";
 import SmartWelcome from "@/components/SmartWelcome";
@@ -149,6 +150,10 @@ const MOBILE_NAV: MobileNavLink[] = [
   { label: "ARRIENDO", href: "/mercado/arrendamiento" },
   { label: "PRECIOS", href: "/precios" },
   { label: "REMATES", href: "/remates" },
+  // 02-10-2026: EN VIVO y FRIGORÍFICOS no tenían ninguna puerta de entrada desde el
+  // teléfono; solo vivían dentro de un desplegable de escritorio.
+  { label: "EN VIVO", href: "/remates/en-vivo", tag: "live" },
+  { label: "FRIGORÍFICOS", href: "/frigorificos" },
   { label: "CAMPOS", href: "/campos/valuar" },
   { label: "CONSIGNAT.", href: "/consignatarias" },
   { label: "CALCULAR", href: "/calculadora" },
@@ -427,9 +432,13 @@ export default function TerminalLayout({
           </div>
         </div>
 
-        {/* -- Mobile nav -- */}
+        {/* -- Mobile nav: menú fijo + tira de accesos rápidos que se desplaza -- */}
+        <div className="md:hidden flex items-stretch border-t border-terminal-border">
+          <div className="flex items-center border-r border-terminal-border">
+            <MobileMenu groups={NAV_GROUPS} />
+          </div>
         <nav
-          className="md:hidden relative flex items-center border-t border-terminal-border px-2 h-11 gap-0 overflow-x-auto"
+          className="relative flex flex-1 min-w-0 items-center px-2 h-11 gap-0 overflow-x-auto"
           style={{ WebkitOverflowScrolling: "touch" }}
         >
           {/* Left gradient shadow for swipe hint */}
@@ -481,6 +490,7 @@ export default function TerminalLayout({
             );
           })}
         </nav>
+        </div>
       </header>
 
       {/* -- MAIN CONTENT ----------------------------------------- */}

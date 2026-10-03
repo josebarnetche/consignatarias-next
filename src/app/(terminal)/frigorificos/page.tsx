@@ -197,6 +197,45 @@ export default function FrigorificosPage() {
           (Tránsito Federal, Ciclo I, Ciclo II, Ciclo III). Fuente: Registro Nacional de Establecimientos SENASA/MAGYP.
         </p>
 
+      </section>
+
+      {/* SENASA verification transparency banner */}
+      <section className="px-4 mb-3 max-w-6xl mx-auto">
+        <div className="terminal-panel">
+          <div className="px-panel py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-positive animate-pulse-live" />
+                <span className="text-xxs font-terminal uppercase tracking-wider text-positive">
+                  Verificación SENASA · al {getSenasaScrapedDate()}
+                </span>
+              </div>
+              <p className="text-data font-terminal text-zinc-400 mt-1 leading-relaxed">
+                <span className="text-positive tabular-nums">{senasaActiveCount.toLocaleString('es-AR')}</span> habilitados activos ·{' '}
+                <span className="text-zinc-500 tabular-nums">{senasaInactiveCount.toLocaleString('es-AR')}</span> sin verificación (CUIT no aparece hoy en el registro oficial Ciclo I/II/III).
+              </p>
+              <div className="mt-1.5">
+                <FreshnessStamp updatedAt={marketPrices.lastUpdate} />
+              </div>
+            </div>
+            <Link
+              href="/planes"
+              className="text-xxs font-terminal uppercase tracking-wider text-accent hover:text-accent-bright border border-accent/30 rounded-terminal px-3 py-1.5 shrink-0 transition-colors hover:bg-accent/10"
+            >
+              Detalle SENASA con PRO →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <FrigorificosClient />
+
+      {/* Listados por provincia y suscripción, DEBAJO del directorio (02-10-2026).
+          Estaban entre el encabezado y el buscador: en un teléfono empujaban el
+          buscador casi una pantalla y media hacia abajo. Siguen siendo los mismos
+          enlaces internos, con el mismo encabezado y el mismo texto: solo cambia
+          dónde aparecen. */}
+      <section className="px-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-4xl">
         {/* Listados provinciales — completa el cluster /frigorificos/{provincia} */}
         <nav aria-label="Frigoríficos por provincia" className="mt-4">
           <h2 className="text-zinc-300 text-sm font-medium mb-2">Frigoríficos indexados por provincia</h2>
@@ -235,49 +274,25 @@ export default function FrigorificosPage() {
           </div>
         </div>
         
+      </section>
+
+      {/* Contexto del mercado DESPUÉS del directorio (reordenado el 02-10-2026).
+          Antes abrían la página: en un teléfono, el que entra a buscar una planta
+          se comía dos gráficos, el intro y la suscripción antes de llegar al
+          buscador. El contexto sigue valiendo, pero es contexto: va detrás de lo
+          que la persona vino a hacer. No se tocó ninguna URL, encabezado ni enlace:
+          es solo el orden de los bloques. */}
+      <section className="px-4 mb-6 max-w-6xl mx-auto">
         {/* Faena nacional — fuente oficial (datos.gob.ar) */}
-        <div className="mt-4">
-          <Suspense fallback={<div className="h-32 animate-pulse bg-zinc-900/50 rounded-lg" />}>
-            <FaenaStats />
-          </Suspense>
-        </div>
+        <Suspense fallback={<div className="h-32 animate-pulse bg-zinc-900/50 rounded-lg" />}>
+          <FaenaStats />
+        </Suspense>
 
         {/* Actividad MAG — nuestro relevamiento diario (scrapeado) */}
         <div className="mt-4">
           <MagActivity />
         </div>
       </section>
-
-      {/* SENASA verification transparency banner */}
-      <section className="px-4 mb-3 max-w-6xl mx-auto">
-        <div className="terminal-panel">
-          <div className="px-panel py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-positive animate-pulse-live" />
-                <span className="text-xxs font-terminal uppercase tracking-wider text-positive">
-                  Verificación SENASA · al {getSenasaScrapedDate()}
-                </span>
-              </div>
-              <p className="text-data font-terminal text-zinc-400 mt-1 leading-relaxed">
-                <span className="text-positive tabular-nums">{senasaActiveCount.toLocaleString('es-AR')}</span> habilitados activos ·{' '}
-                <span className="text-zinc-500 tabular-nums">{senasaInactiveCount.toLocaleString('es-AR')}</span> sin verificación (CUIT no aparece hoy en el registro oficial Ciclo I/II/III).
-              </p>
-              <div className="mt-1.5">
-                <FreshnessStamp updatedAt={marketPrices.lastUpdate} />
-              </div>
-            </div>
-            <Link
-              href="/planes"
-              className="text-xxs font-terminal uppercase tracking-wider text-accent hover:text-accent-bright border border-accent/30 rounded-terminal px-3 py-1.5 shrink-0 transition-colors hover:bg-accent/10"
-            >
-              Detalle SENASA con PRO →
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <FrigorificosClient />
 
       {/* Captura de la demanda real que llega a agro@ buscando datos de frigoríficos:
           productores que quieren venderle a una planta. Lo estructuramos como lead. */}
