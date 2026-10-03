@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { DatasetSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { FaqList } from '@/components/seo/FaqList'
+import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import { PriceSparkline } from '@/components/PriceSparkline'
 import {
   SLUGS_CONOCIDOS,
@@ -44,6 +46,22 @@ export async function generateStaticParams() {
 
 const fmt = (n: number) => '$' + n.toLocaleString('es-AR')
 
+/**
+ * Nombre de la categoría con artículo, para títulos legibles: "el novillo",
+ * "la vaca", "el macho entero joven (MEJ)". Antes salía "A cuánto se vendió mej
+ * (macho entero joven)", con la sigla en minúscula adelante.
+ */
+const CON_ARTICULO: Record<string, string> = {
+  NOVILLO: 'el novillo',
+  NOVILLITO: 'el novillito',
+  VAQUILLONA: 'la vaquillona',
+  VACA: 'la vaca',
+  TORO: 'el toro',
+  MEJ: 'el macho entero joven (MEJ)',
+}
+const conArticulo = (b: { codigo: string; categoria: string }) =>
+  CON_ARTICULO[b.codigo] ?? b.categoria.toLowerCase()
+
 /** "2026-08-25" → "25-ago". Se parsea a mano: `new Date('2026-08-25')` es UTC
  *  y en ART se corre un día para atrás. */
 const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
@@ -71,7 +89,7 @@ export async function generateMetadata({
       alternates: { canonical: url },
     }
   }
-  const title = `A cuánto se vendió ${b.categoria.toLowerCase()}: ${fmt(b.p10)} a ${fmt(b.p90)} por kilo`
+  const title = `A cuánto se vendió ${conArticulo(b)}: ${fmt(b.p10)} a ${fmt(b.p90)} por kilo`
   const description =
     `Banda de precio observada para ${b.categoria.toLowerCase()} en el Mercado Agroganadero: P10 ${fmt(b.p10)}, ` +
     `mediana ${fmt(b.mediana)} y P90 ${fmt(b.p90)} por kilo vivo, sobre ${b.lotes.toLocaleString('es-AR')} operaciones ` +
@@ -182,9 +200,13 @@ export default async function VrCategoriaPage({
           observationDate: cob.hasta,
         }}
         updateFrequency="Martes, miércoles y viernes, tras el cierre de operaciones del MAG"
+        license={LICENCIA_PROPIA}
       />
       <FAQPageSchema items={faqs} />
-      <SpeakableSchema url={url} headline={`A cuánto se vendió ${nombre} en el Mercado Agroganadero`} />
+      {/* Speakable solo al h1: la página no tiene bloque .speakable-content. */}
+      <SpeakableSchema url={url} headline={`A cuánto se vendió ${nombre} en el Mercado Agroganadero`}
+        cssSelectors={['h1']}
+      />
 
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         <nav className="text-xs text-zinc-500 mb-4">
@@ -194,7 +216,7 @@ export default async function VrCategoriaPage({
         </nav>
 
         <h1 className="text-zinc-100 text-2xl font-medium mb-1">
-          A cuánto se vendió {nombre}
+          A cuánto se vendió {conArticulo(b)}
         </h1>
         <p className="text-zinc-500 text-xs mb-6">
           Banda observada en el Mercado Agroganadero · ventana de {VR_VENTANA_DIAS} días al{' '}
@@ -367,6 +389,9 @@ export default async function VrCategoriaPage({
             </p>
           </>
         )}
+
+        {/* Las mismas preguntas del FAQPageSchema, visibles. */}
+        <FaqList items={faqs} />
 
         <div className="border-t border-zinc-800 pt-6 mt-10 text-xs text-zinc-500">
           <p className="mb-2">

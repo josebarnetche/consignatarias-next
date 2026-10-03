@@ -91,7 +91,7 @@ const FAQ = [
 
 export const metadata: Metadata = {
   title: `Cuánto cobra de comisión una consignataria de hacienda (${lastUpdate.slice(0, 4)})`,
-  description: `La comisión de venta de una consignataria de hacienda se ubica habitualmente en torno al 2% al 4% del importe de la operación —a veces hasta el 5%—, típicamente cerca del 3% más IVA, y la fija cada firma, no esta página. Comisión de venta vs compra, gastos de comercialización y ejemplo sobre un lote al precio de referencia (novillo $${fmt(novillo)}/kg vivo, ${lastUpdate}).`,
+  description: `La comisión de una consignataria de hacienda ronda el 2% al 4% de la venta (típico 3% + IVA) y la fija cada firma. Venta vs compra, gastos y un ejemplo con un lote real.`,
   keywords: [
     'cuanto cobra de comision una consignataria de hacienda',
     'cuanto cobra una consignataria',
@@ -138,8 +138,7 @@ export default function CuantoCobraDeComisionUnaConsignatariaPage() {
         name="Cuánto cobra de comisión una consignataria de hacienda"
         description="Rangos habituales de la comisión de venta y de compra de una consignataria de hacienda, gastos de comercialización y ejemplo sobre un lote testigo, con precio de referencia del mercado (INMAG/MAG)."
         url={PAGE_URL}
-        datePublished="2024-01-01"
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           {
             name: 'Mercado Agroganadero de Cañuelas (MAG) — precios de referencia',

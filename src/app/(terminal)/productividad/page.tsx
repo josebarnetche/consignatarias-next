@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
@@ -78,7 +79,7 @@ export default function ProductividadPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLd({
             '@context': 'https://schema.org',
             '@type': 'Dataset',
             name: 'Productividad ganadera por departamento — Argentina',
@@ -86,7 +87,7 @@ export default function ProductividadPage() {
             url: `${APP_URL}/productividad`,
             temporalCoverage: `2012/${anio}`,
             spatialCoverage: { '@type': 'Country', name: 'Argentina' },
-            creator: { '@type': 'Organization', name: 'Consignatarias.com.ar' },
+            creator: { '@id': 'https://www.consignatarias.com.ar/#org' },
             isBasedOn: META.organismo,
             license: `${APP_URL}/licencia-datos`,
           }),

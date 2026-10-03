@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { GuiasVentaHacienda } from '@/components/guias/GuiasVentaHacienda'
 import {
   SectionBreadcrumbSchema,
   DefinedTermSetSchema,
@@ -86,7 +87,8 @@ const FAQ = [
 ]
 
 export const metadata: Metadata = {
-  title: `Vender en remate, venta directa o consignación: comparativa (${lastUpdate.slice(0, 4)})`,
+  // COMPARATIVA lado a lado. Elegir canal: /como-vender-hacienda; paso a paso: /vender-hacienda-guia.
+  title: 'Remate, venta directa o consignación: comparativa de costos',
   description: `Los tres canales para vender hacienda —remate, venta directa y consignación— comparados por comisión, transparencia en la formación de precio y velocidad de cobro, con el novillo de referencia a $${fmt(novillo)}/kg vivo (${lastUpdate}).`,
   keywords: [
     'vender en remate o directo',
@@ -101,7 +103,7 @@ export const metadata: Metadata = {
     'formación de precio de la hacienda',
   ],
   openGraph: {
-    title: 'Vender en remate, venta directa o consignación: comparativa',
+    title: 'Remate, venta directa o consignación: comparativa de costos',
     description: `Tres canales para vender hacienda comparados por comisión, transparencia y velocidad de cobro, con precio de referencia por kilo vivo (${lastUpdate}).`,
     url: PAGE_URL,
     type: 'article',
@@ -134,8 +136,7 @@ export default function VenderEnRemateVsVentaDirectaVsConsignacionPage() {
         name="Vender en remate, venta directa o consignación: comparativa de canales"
         description="Comparativa de los tres canales de venta de hacienda en Argentina —remate, venta directa y consignación— por quién fija el precio, comisión, transparencia y velocidad de cobro."
         url={PAGE_URL}
-        datePublished="2024-01-01"
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           { name: 'Mercado Agroganadero (INMAG)', url: 'https://www.mercadoagroganadero.com.ar' },
           { name: 'ROSGAN — Mercado Ganadero de Rosario', url: 'https://www.rosgan.com.ar' },
@@ -151,7 +152,7 @@ export default function VenderEnRemateVsVentaDirectaVsConsignacionPage() {
         </nav>
 
         <h1 className="text-zinc-100 text-2xl font-medium mb-3">
-          Vender en remate, venta directa o consignación
+          Remate, venta directa o consignación: la comparativa lado a lado
         </h1>
 
         {/* Answer-first: primera oración autocontenida y citable */}
@@ -375,6 +376,8 @@ export default function VenderEnRemateVsVentaDirectaVsConsignacionPage() {
           </Link>
           .
         </p>
+
+        <GuiasVentaHacienda actual="/vender-en-remate-vs-venta-directa-vs-consignacion" />
 
         {/* FAQ visible — mismo array que el schema */}
         <h2 className="text-zinc-100 text-lg font-medium mb-2">Preguntas frecuentes</h2>

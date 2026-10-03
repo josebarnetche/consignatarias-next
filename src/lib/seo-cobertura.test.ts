@@ -62,7 +62,10 @@ describe('cobertura de Dataset en las páginas de datos', () => {
   })
 
   it('el helper soporta los campos que hacen citable un dataset', () => {
-    const src = readFileSync(join(process.cwd(), 'src/components/seo/JsonLd.tsx'), 'utf8')
+    // El componente vive en JsonLd.tsx y la construcción del objeto en src/lib/seo/schemas.ts.
+    const src =
+      readFileSync(join(process.cwd(), 'src/components/seo/JsonLd.tsx'), 'utf8') +
+      readFileSync(join(process.cwd(), 'src/lib/seo/schemas.ts'), 'utf8')
     for (const campo of ['variableMeasured', 'temporalCoverage', 'distribution', 'unitText']) {
       expect(src, `DatasetSchema no soporta ${campo}`).toContain(campo)
     }

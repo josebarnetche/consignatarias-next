@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import { ImagenTema } from '@/components/ui/ImagenTema'
 import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import { Metadata } from 'next'
@@ -6,10 +7,10 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import marketData from '@/lib/data/market-prices.json'
-import { createAdminClient } from '@/lib/supabase-server'
+import { adminClientOpcional } from '@/lib/supabase-server'
 import ArrendamientoCalculator from './ArrendamientoCalculator'
 import LeadCapture from '@/components/leads/LeadCapture'
-import { SectionBreadcrumbSchema, SpeakableSchema, QAPageSchema } from '@/components/seo/JsonLd'
+import { SpeakableSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import ArrendamientoLiquidacionSignup from '@/components/ArrendamientoLiquidacionSignup'
 import HerramientasCTA from '@/components/HerramientasCTA'
@@ -75,7 +76,10 @@ function getMonthlyAverages(data: typeof series) {
 
 const monthlyAverages = getMonthlyAverages(series)
 
-export const dynamic = 'force-dynamic'
+// Antes force-dynamic: la página no lee cookies, headers ni searchParams. Lo único vivo
+// son los cierres mensuales de Supabase, que cambian una vez por mes — ISR alcanza y la
+// página deja de renderizarse en cada visita (es de las que más tráfico orgánico traen).
+export const revalidate = 3600
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 
@@ -85,7 +89,10 @@ const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', '
  * el MAG (ej. junio 2026 = 4.164,558), a diferencia del promedio simple de la serie.
  */
 async function getMonthlyCloses() {
-  const db = createAdminClient() as unknown as SupabaseClient
+  // Opcional: en un build de preview sin service-role se prerenderiza sin la tabla de
+  // cierres (la página ya contempla ese caso) en vez de voltear el build.
+  const db = adminClientOpcional() as unknown as SupabaseClient | null
+  if (!db) return []
   const { data } = await db
     .from('inmag_monthly_close')
     .select('year, month, inmag, cabezas')
@@ -107,8 +114,15 @@ export const metadata: Metadata = {
   // "indice novillo arrendamiento*" a CTR 0,5-1,1% porque el <title> no contenía la
   // palabra "índice" (sí estaba en OG/keywords/H1, pero Google pesa el <title>). Se agrega
   // "e Índice" sin perder precio/hoy/$número. ~52 chars, no trunca. v1.40 + jul-2026 CTR pass.
-  title: `Precio e Índice Novillo Arrendamiento Hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg`,
-  description: `Precio del novillo para arrendamiento hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg — índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero (período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)}, act. ${fmtFecha(arr.date)}). Índice mensual (el que se liquida): $${arr.periodIndex.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg. Calculá el canon de tu campo en kg/ha.`,
+  // Oct-2026 (GSC W29→W39): el CTR del hub cayó de 1,7 % a 0,95 % mientras crecían
+  // /liniers, /canuelas y /mensual. Title absoluto (sin el sufijo de marca, que lo
+  // cortaba) y con el mes del índice que se liquida, para diferenciarlo de las hijas.
+  title: {
+    absolute: `Precio e índice novillo arrendamiento hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg · ${MESES[new Date(arr.date + 'T12:00:00').getMonth()].toLowerCase()}`,
+  },
+  // ≤160 caracteres con el dato primero: Google cortaba la anterior (~330) antes del
+  // índice mensual, que es el que se liquida.
+  description: `Índice novillo arrendamiento hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg (MAG, ${fmtFecha(arr.date)}). Mensual, el que se liquida: $${arr.periodIndex.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg. Calculá tu canon.`,
   keywords: [
     'índice novillo arrendamiento',
     'indice de arrendamiento',
@@ -133,71 +147,6 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.consignatarias.com.ar/mercado/arrendamiento' },
 }
 
-// FAQPage Schema
-function FAQSchema() {
-  const hoyStr = inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 0 })
-  const chgStr = `${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1)}%`
-  const faqs = [
-    {
-      // La query #1 del sitio en Search Console es "precio novillo (para) arrendamiento
-      // hoy". Esta FAQ la responde con el NÚMERO VIVO → es lo que una IA cita cuando
-      // le preguntan el precio de hoy (antes ninguna FAQ tenía el valor actual).
-      question: '¿Cuál es el precio del novillo para arrendamiento hoy?',
-      answer: `El precio del novillo para arrendamiento hoy es $${fmt(arr.index)} por kilo vivo, según el índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero (haciinfo000013), correspondiente al período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)} y actualizado el ${fmtFecha(arr.date)}; el promedio del período es $${fmt(arr.periodIndex)}/kg. Como referencia, el INMAG del novillo diario cotiza a $${hoyStr}/kg (${chgStr} respecto de la jornada previa). Para calcular el canon de un arrendamiento se multiplica: canon mensual = kilos de novillo pactados por hectárea × precio del índice × cantidad de hectáreas. Para liquidar contratos suele usarse el promedio mensual del índice, no el valor de un día.`,
-    },
-    {
-      question: '¿Qué es el índice novillo arrendamiento?',
-      answer: 'El índice novillo arrendamiento es el valor de referencia utilizado para calcular el canon de los contratos de arrendamiento rural en Argentina. Se basa en el precio del novillo en el Mercado Agroganadero de Buenos Aires (INMAG) y permite ajustar el valor del alquiler de campos de manera objetiva y transparente según las condiciones del mercado ganadero.'
-    },
-    {
-      // "indice de arrendamiento" / "indice arrendamiento" a secas: ~3.000 impr/mes en
-      // posición 6-8 con CTR 0,2-0,7 % (GSC 09-2026). La página respondía "índice novillo
-      // arrendamiento"; quien busca sin el "novillo" no encontraba su frase en el snippet.
-      question: '¿Qué es el índice de arrendamiento y cuánto vale hoy?',
-      answer: `El índice de arrendamiento (índice de arrendamiento rural, o índice novillo arrendamiento) es el precio del kilo vivo de novillo que publica el Mercado Agroganadero como referencia para pasar a pesos los contratos rurales pactados en kilos de novillo por hectárea. Hoy vale $${fmt(arr.index)} por kilo (período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)}, actualizado el ${fmtFecha(arr.date)}) y el promedio del período, que es el que se liquida, $${fmt(arr.periodIndex)}/kg. No es un índice agrícola en quintales de soja: es la referencia ganadera que usan los contratos de campo en toda la Argentina.`,
-    },
-    {
-      question: '¿Cuál es el índice novillo arrendamiento mensual?',
-      answer: `Para los contratos de arrendamiento se usa el índice novillo arrendamiento mensual —el promedio del período, no el valor de un solo día— para evitar la volatilidad diaria. El promedio mensual vigente del índice oficial (haciinfo000013) es $${fmt(arr.periodIndex)} por kilo vivo, correspondiente al período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)}. El canon mensual se calcula como kilos de novillo por hectárea × ese promedio mensual × cantidad de hectáreas; el canon anual es ese valor multiplicado por 12.`
-    },
-    {
-      question: '¿Cómo se calcula el arrendamiento con el índice novillo?',
-      answer: 'El cálculo típico es: Canon mensual = Kilos de novillo pactados × Precio índice novillo × Hectáreas. Por ejemplo, si el contrato establece 4 kg de novillo por hectárea, y el campo tiene 500 ha, con un índice de $4.329/kg, el canon mensual sería aproximadamente $8.658.000. Los contratos suelen estipular un promedio mensual del índice.'
-    },
-    {
-      question: '¿Por qué se usa el índice novillo para arrendamientos?',
-      answer: 'El índice novillo es la referencia más utilizada porque: 1) Es un valor objetivo publicado diariamente por el Mercado Agroganadero, 2) Refleja las condiciones reales del mercado ganadero, 3) Protege tanto al propietario como al arrendatario de la inflación, 4) Es ampliamente aceptado y tiene transparencia en su cálculo.'
-    },
-    {
-      question: '¿Cuál es la diferencia entre el índice Liniers y Cañuelas?',
-      answer: 'Ambos mercados operan bajo el Mercado Agroganadero de Buenos Aires y contribuyen al cálculo del INMAG. Liniers históricamente fue el mercado más importante, mientras que Cañuelas tomó protagonismo en los últimos años. El índice novillo arrendamiento que publicamos es el INMAG oficial que integra ambos mercados.'
-    },
-    {
-      question: '¿Cada cuánto se actualiza el índice novillo arrendamiento?',
-      answer: 'El índice se actualiza cada día hábil con operaciones en el Mercado Agroganadero. Para contratos de arrendamiento, generalmente se utiliza el promedio mensual del índice para evitar la volatilidad diaria y simplificar las liquidaciones.'
-    },
-    {
-      question: '¿Cómo se pacta el valor del arrendamiento en kilos de novillo?',
-      answer: 'El valor en kilos de novillo por hectárea depende de la calidad del campo, ubicación, mejoras, y aptitud productiva. Campos agrícolas de primera en zona núcleo pueden pactarse entre 8-12 kg/ha/mes, mientras que campos ganaderos en zonas marginales pueden estar entre 3-6 kg/ha/mes. Es fundamental evaluar cada caso particular.'
-    }
-  ]
-  
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqs.map(faq => ({
-      '@type': 'Question',
-      name: faq.question,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: faq.answer
-      }
-    }))
-  }
-  
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-}
-
 // Dataset Schema
 function ArrendamientoSchema() {
   const schema = {
@@ -208,9 +157,12 @@ function ArrendamientoSchema() {
     url: 'https://www.consignatarias.com.ar/mercado/arrendamiento',
     keywords: ['índice novillo', 'arrendamiento rural', 'índice arrendamiento', 'INMAG', 'precio ganado', 'mercado ganadero'],
     // C11: entidad única MAG Cañuelas (coherente con /mercado/inmag y mercado/canuelas).
-    creator: { '@type': 'Organization', name: 'Mercado Agroganadero de Cañuelas', sameAs: 'https://www.mercadoagroganadero.com.ar' },
+    // Serie ajena: se cita, no se licencia (ver /licencia-datos). Nosotros, publisher.
+    creator: { '@type': 'Organization', name: 'Mercado Agroganadero de Cañuelas', url: 'https://www.mercadoagroganadero.com.ar' },
+    sourceOrganization: { '@type': 'Organization', name: 'Mercado Agroganadero de Cañuelas', url: 'https://www.mercadoagroganadero.com.ar' },
+    isBasedOn: 'https://www.mercadoagroganadero.com.ar',
+    publisher: { '@id': 'https://www.consignatarias.com.ar/#org' },
     temporalCoverage: `${series[0]?.date}/${series[series.length - 1]?.date}`,
-    license: 'https://creativecommons.org/licenses/by/4.0/',
     isAccessibleForFree: true,
     spatialCoverage: { '@type': 'Place', name: 'Argentina' },
     // Los valores VIGENTES dentro del Dataset → una IA que lee el structured data tiene el
@@ -247,7 +199,7 @@ function ArrendamientoSchema() {
     },
     dateModified: arr.date,
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 }
 
 // DefinedTerm — define la ENTIDAD "índice novillo arrendamiento" (paridad con el
@@ -264,23 +216,7 @@ function ArrendamientoDefinedTermSchema() {
     inDefinedTermSet: 'https://www.consignatarias.com.ar/glosario#set',
     url: 'https://www.consignatarias.com.ar/mercado/arrendamiento',
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-}
-
-// QAPage — refuerza el snippet de la query head "precio novillo para arrendamiento hoy"
-// (además del FAQPage). El QAPage tiene una única Question con su acceptedAnswer dateada,
-// señal directa de que la página responde ESA pregunta con el número y su fecha.
-function ArrendamientoQAPageSchema() {
-  const answer = `El precio del novillo para arrendamiento hoy es $${fmt(arr.index)} por kilo vivo, según el índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero (período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)}, actualizado el ${fmtFecha(arr.date)}). El promedio del período —el valor que se usa para liquidar— es $${fmt(arr.periodIndex)}/kg. El canon se calcula como kilos de novillo pactados por hectárea × precio del índice × cantidad de hectáreas.`
-  return (
-    <QAPageSchema
-      question="¿Cuál es el precio del novillo para arrendamiento hoy?"
-      questionText="¿Cuál es el precio del novillo para arrendamiento hoy y cómo se calcula el canon?"
-      answer={answer}
-      url="https://www.consignatarias.com.ar/mercado/arrendamiento"
-      id="https://www.consignatarias.com.ar/mercado/arrendamiento#qapage"
-    />
-  )
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 }
 
 function fmt(n: number): string {
@@ -376,13 +312,55 @@ export default async function ArrendamientoPage() {
     },
   ]
 
+  // Preguntas frecuentes: la misma lista alimenta la sección visible y el FAQPage.
+  const faqs: Array<{ q: string; a: string }> = [
+    {
+      // La query #1 del sitio en Search Console es "precio novillo (para) arrendamiento
+      // hoy": la responde con el NÚMERO VIVO, y es lo que cita una IA.
+      q: '¿Cuál es el precio del novillo para arrendamiento hoy?',
+      a: `El precio del novillo para arrendamiento hoy es $${fmt(arr.index)} por kilo vivo, según el índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero (haciinfo000013), correspondiente al período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)} y actualizado el ${fmtFecha(arr.date)}; el promedio del período es $${fmt(arr.periodIndex)}/kg. Como referencia, el INMAG del novillo diario cotiza a $${fmt(inmag.current)}/kg (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1)}% respecto de la jornada previa). Para calcular el canon: kilos de novillo pactados por hectárea × precio del índice × cantidad de hectáreas. Para liquidar contratos suele usarse el promedio mensual del índice, no el valor de un día.`,
+    },
+    {
+      q: '¿Qué es el índice novillo arrendamiento?',
+      a: 'El índice novillo arrendamiento es el valor de referencia utilizado para calcular el canon de los contratos de arrendamiento rural en Argentina. Se basa en el precio del novillo en el Mercado Agroganadero de Buenos Aires (INMAG) y permite ajustar el valor del alquiler de campos de manera objetiva y transparente según las condiciones del mercado ganadero.'
+    },
+    {
+      q: '¿Qué es el índice de arrendamiento y cuánto vale hoy?',
+      a: `El índice de arrendamiento (índice de arrendamiento rural, o índice novillo arrendamiento) es el precio del kilo vivo de novillo que publica el Mercado Agroganadero como referencia para pasar a pesos los contratos rurales pactados en kilos de novillo por hectárea. Hoy vale $${fmt(arr.index)} por kilo (actualizado el ${fmtFecha(arr.date)}) y el promedio del período, que es el que se liquida, $${fmt(arr.periodIndex)}/kg. No es un índice agrícola en quintales de soja: es la referencia ganadera que usan los contratos de campo en toda la Argentina.`
+    },
+    {
+      q: '¿Cuál es el índice novillo arrendamiento mensual?',
+      a: `Para los contratos de arrendamiento se usa el índice novillo arrendamiento mensual —el promedio del período, no el valor de un solo día— para evitar la volatilidad diaria. El promedio mensual vigente del índice oficial es $${fmt(arr.periodIndex)} por kilo vivo. El canon mensual se calcula como kilos de novillo por hectárea × ese promedio mensual × cantidad de hectáreas; el canon anual es ese valor multiplicado por 12.`
+    },
+    {
+      q: '¿Cómo se calcula el arrendamiento con el índice novillo?',
+      a: `El cálculo típico es: Canon mensual = Kilos de novillo pactados × Precio índice novillo × Hectáreas. Por ejemplo, si el contrato establece 4 kg de novillo por hectárea, y el campo tiene 500 ha, con el índice actual de $${fmt(inmag.current)}/kg, el canon mensual sería de $${fmt(exampleCanon)}.`
+    },
+    {
+      q: '¿Por qué se usa el índice novillo para arrendamientos?',
+      a: 'El índice novillo es la referencia más utilizada porque: 1) Es un valor objetivo publicado diariamente por el Mercado Agroganadero, 2) Refleja las condiciones reales del mercado ganadero, 3) Protege tanto al propietario como al arrendatario de la inflación, 4) Es ampliamente aceptado y tiene transparencia en su cálculo.'
+    },
+    {
+      q: '¿Cuál es la diferencia entre el índice Liniers y Cañuelas?',
+      a: 'Ambos mercados operan bajo el Mercado Agroganadero de Buenos Aires y contribuyen al cálculo del INMAG. Liniers históricamente fue el mercado más importante, mientras que Cañuelas tomó protagonismo en los últimos años. El índice novillo arrendamiento que publicamos es el INMAG oficial que integra ambos mercados.'
+    },
+    {
+      q: '¿Cada cuánto se actualiza el índice novillo arrendamiento?',
+      a: 'El índice se actualiza cada día hábil con operaciones en el Mercado Agroganadero. Para contratos de arrendamiento, generalmente se utiliza el promedio mensual del índice para evitar la volatilidad diaria y simplificar las liquidaciones.'
+    },
+    {
+      q: '¿Cómo se pacta el valor del arrendamiento en kilos de novillo?',
+      a: 'El valor en kilos de novillo por hectárea depende de la calidad del campo, ubicación, mejoras, y aptitud productiva. Campos agrícolas de primera en zona núcleo pueden pactarse entre 8-12 kg/ha/mes, mientras que campos ganaderos en zonas marginales pueden estar entre 3-6 kg/ha/mes.'
+    }
+  ]
+
   return (
     <>
-      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
       <ArrendamientoSchema />
       <ArrendamientoDefinedTermSchema />
-      <FAQSchema />
-      <ArrendamientoQAPageSchema />
+      {/* Un solo FAQPage, con las MISMAS preguntas que la sección visible (antes el
+          schema tenía una pregunta que no se veía y además un QAPage armado a mano). */}
+      <FAQPageSchema items={faqs.map((f) => ({ question: f.q, answer: f.a }))} />
       <SpeakableSchema
         url="https://www.consignatarias.com.ar/mercado/arrendamiento"
         headline={`Precio novillo arrendamiento hoy: $${fmt(arr.index)}/kg`}
@@ -665,6 +643,7 @@ export default async function ArrendamientoPage() {
           <Suspense fallback={<div className="h-[380px] bg-zinc-900/30 rounded-2xl animate-pulse" />}>
             <InteractivePriceChart 
               data={recentSeries} 
+              rangoInicial="90d"
               height={380}
               accentColor={SEMANTIC_HEX.accent}
               showVolume={true}
@@ -791,40 +770,7 @@ export default async function ArrendamientoPage() {
           <h2 className="text-xl font-semibold text-ink mb-6">Preguntas Frecuentes</h2>
           
           <div className="space-y-4">
-            {[
-              {
-                q: '¿Qué es el índice novillo arrendamiento?',
-                a: 'El índice novillo arrendamiento es el valor de referencia utilizado para calcular el canon de los contratos de arrendamiento rural en Argentina. Se basa en el precio del novillo en el Mercado Agroganadero de Buenos Aires (INMAG) y permite ajustar el valor del alquiler de campos de manera objetiva y transparente según las condiciones del mercado ganadero.'
-              },
-              {
-                q: '¿Qué es el índice de arrendamiento y cuánto vale hoy?',
-                a: `El índice de arrendamiento (índice de arrendamiento rural, o índice novillo arrendamiento) es el precio del kilo vivo de novillo que publica el Mercado Agroganadero como referencia para pasar a pesos los contratos rurales pactados en kilos de novillo por hectárea. Hoy vale $${fmt(arr.index)} por kilo (actualizado el ${fmtFecha(arr.date)}) y el promedio del período, que es el que se liquida, $${fmt(arr.periodIndex)}/kg. No es un índice agrícola en quintales de soja: es la referencia ganadera que usan los contratos de campo en toda la Argentina.`
-              },
-              {
-                q: '¿Cuál es el índice novillo arrendamiento mensual?',
-                a: `Para los contratos de arrendamiento se usa el índice novillo arrendamiento mensual —el promedio del período, no el valor de un solo día— para evitar la volatilidad diaria. El promedio mensual vigente del índice oficial es $${fmt(arr.periodIndex)} por kilo vivo. El canon mensual se calcula como kilos de novillo por hectárea × ese promedio mensual × cantidad de hectáreas; el canon anual es ese valor multiplicado por 12.`
-              },
-              {
-                q: '¿Cómo se calcula el arrendamiento con el índice novillo?',
-                a: `El cálculo típico es: Canon mensual = Kilos de novillo pactados × Precio índice novillo × Hectáreas. Por ejemplo, si el contrato establece 4 kg de novillo por hectárea, y el campo tiene 500 ha, con el índice actual de $${fmt(inmag.current)}/kg, el canon mensual sería de $${fmt(exampleCanon)}.`
-              },
-              {
-                q: '¿Por qué se usa el índice novillo para arrendamientos?',
-                a: 'El índice novillo es la referencia más utilizada porque: 1) Es un valor objetivo publicado diariamente por el Mercado Agroganadero, 2) Refleja las condiciones reales del mercado ganadero, 3) Protege tanto al propietario como al arrendatario de la inflación, 4) Es ampliamente aceptado y tiene transparencia en su cálculo.'
-              },
-              {
-                q: '¿Cuál es la diferencia entre el índice Liniers y Cañuelas?',
-                a: 'Ambos mercados operan bajo el Mercado Agroganadero de Buenos Aires y contribuyen al cálculo del INMAG. Liniers históricamente fue el mercado más importante, mientras que Cañuelas tomó protagonismo en los últimos años. El índice novillo arrendamiento que publicamos es el INMAG oficial que integra ambos mercados.'
-              },
-              {
-                q: '¿Cada cuánto se actualiza el índice novillo arrendamiento?',
-                a: 'El índice se actualiza cada día hábil con operaciones en el Mercado Agroganadero. Para contratos de arrendamiento, generalmente se utiliza el promedio mensual del índice para evitar la volatilidad diaria y simplificar las liquidaciones.'
-              },
-              {
-                q: '¿Cómo se pacta el valor del arrendamiento en kilos de novillo?',
-                a: 'El valor en kilos de novillo por hectárea depende de la calidad del campo, ubicación, mejoras, y aptitud productiva. Campos agrícolas de primera en zona núcleo pueden pactarse entre 8-12 kg/ha/mes, mientras que campos ganaderos en zonas marginales pueden estar entre 3-6 kg/ha/mes.'
-              }
-            ].map((faq, i) => (
+            {faqs.map((faq, i) => (
               <details 
                 key={i} 
                 className="group bg-zinc-900/30 border border-zinc-800/50 rounded-xl overflow-hidden"

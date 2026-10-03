@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -54,7 +55,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLd({
             '@context': 'https://schema.org',
             '@type': 'Organization',
             name: p.empresa,

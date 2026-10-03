@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
@@ -99,13 +100,17 @@ function ArrendamientoCanuelasDataset() {
       'canon arrendamiento rural',
       'precio novillo cañuelas',
     ].join(', '),
-    creator: {
-      '@type': 'Organization',
-      name: 'Mercado Agroganadero de Cañuelas',
-      sameAs: 'https://www.mercadoagroganadero.com.ar',
-    },
+    // Serie ajena: se cita, no se licencia (ver /licencia-datos). Nosotros, publisher.
+    creator: { '@type': 'Organization', name: 'Mercado Agroganadero de Cañuelas', url: 'https://www.mercadoagroganadero.com.ar' },
+    sourceOrganization: { '@type': 'Organization', name: 'Mercado Agroganadero de Cañuelas', url: 'https://www.mercadoagroganadero.com.ar' },
+    isBasedOn: 'https://www.mercadoagroganadero.com.ar',
+    publisher: { '@id': 'https://www.consignatarias.com.ar/#org' },
     temporalCoverage: `${arrendamientoOficial.periodStart}/${arrendamientoOficial.periodEnd}`,
-    license: 'https://creativecommons.org/licenses/by/4.0/',
+    distribution: {
+      '@type': 'DataDownload',
+      encodingFormat: 'application/json',
+      contentUrl: 'https://www.consignatarias.com.ar/precios.json',
+    },
     isAccessibleForFree: true,
     spatialCoverage: { '@type': 'Place', name: 'Cañuelas, Buenos Aires, Argentina' },
     variableMeasured: [
@@ -127,7 +132,7 @@ function ArrendamientoCanuelasDataset() {
     ],
     dateModified: arrendamientoOficial.date,
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 }
 
 export const metadata: Metadata = {
@@ -155,7 +160,7 @@ export const metadata: Metadata = {
 export default function ArrendamientoCanuelasPage() {
   return (
     <>
-      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
+      <SectionBreadcrumbSchema section="mercado/arrendamiento" sectionName="Arrendamiento" pageName="Cañuelas" pagePath="/mercado/arrendamiento/canuelas" />
       <ArrendamientoCanuelasDataset />
       <DefinedTermSetSchema
         name="Índice de arrendamiento y Mercado de Cañuelas"

@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { armarParteSemanal } from '@/lib/informes/semanal'
@@ -49,7 +50,7 @@ export default function Page() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLd({
             '@context': 'https://schema.org',
             '@graph': [
               {
@@ -58,8 +59,8 @@ export default function Page() {
                 description:
                   'Cómo distinguir un movimiento real del ruido normal de la serie de precios.',
                 url: `${APP_URL}/senal-o-ruido-precio-hacienda`,
-                author: { '@type': 'Organization', name: 'Consignatarias.com.ar' },
-                publisher: { '@type': 'Organization', name: 'Memola Medios S.A.S.' },
+                author: { '@id': 'https://www.consignatarias.com.ar/#org' },
+                publisher: { '@id': 'https://www.consignatarias.com.ar/#org' },
                 inLanguage: 'es-AR',
               },
               {

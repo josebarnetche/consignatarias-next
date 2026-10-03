@@ -1,10 +1,11 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import { ImagenTema } from '@/components/ui/ImagenTema'
 import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import marketData from '@/lib/data/market-prices.json'
-import { FAQPageSchema, SpeakableSchema, QAPageSchema } from '@/components/seo/JsonLd'
+import { FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import Breadcrumb from '@/components/ui/Breadcrumb'
 import { CitaBlock } from '@/components/seo/CitaBlock'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
@@ -38,7 +39,13 @@ export const metadata: Metadata = {
   // + variation arrow up front. Shorter than the old descriptor-heavy title that truncated
   // at ~95 chars. The "Índice Novillo Mercado Agroganadero" descriptor moves to the
   // description (still cited) so the title is a clean answer. v1.40 CTR pass.
-  title: `INMAG hoy: $${inmag.current.toLocaleString('es-AR')}/kg vivo (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1)}%)`,
+  // Oct-2026: los clics de "inmag" cayeron 96 % entre junio y septiembre. Parte de la
+  // causa probable era interna: /overview se titulaba "…Hoy: INMAG $X" y el logo de todo
+  // el terminal le pasaba autoridad (ya corregido). Acá: title absoluto y con el nombre
+  // completo del índice, que es como lo busca el que no conoce la sigla.
+  title: {
+    absolute: `INMAG hoy: $${inmag.current.toLocaleString('es-AR')}/kg vivo (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1).replace('.', ',')} %) · Índice Novillo`,
+  },
   description: `INMAG hoy: $${inmag.current.toLocaleString('es-AR')} ARS/kg vivo (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(2)}% vs. anterior). Índice Novillo del Mercado Agroganadero de Cañuelas. Histórico desde 2015, en pesos y dólares.`,
   keywords: [
     'INMAG', 'inmag precio', 'inmag hoy', 'inmag actual',
@@ -89,21 +96,9 @@ const INMAG_FAQS = [
   },
 ]
 
-// QAPage — one canonical Q&A that fuses the definitional intent ("qué es INMAG")
-// with the value intent ("inmag hoy"). Distinct from FAQPage: QAPage marks a
-// single accepted answer, which maximizes snippet eligibility for the head term
-// "inmag" (pos ~7 → target 1) and "inmag hoy". Answer leads with the live number.
-function InmagQAPageSchema() {
-  return (
-    <QAPageSchema
-      id="https://www.consignatarias.com.ar/mercado/inmag#qapage"
-      question="¿Qué es el INMAG y cuánto vale hoy?"
-      questionText="¿Qué es el INMAG y cuánto vale hoy el kilo vivo de novillo?"
-      url="https://www.consignatarias.com.ar/mercado/inmag"
-      answer={`El INMAG es el Índice Novillo del Mercado Agroganadero de Cañuelas (ex Liniers): el precio promedio ponderado del novillo, en pesos por kilo vivo, publicado al cierre de cada día hábil. Hoy vale $${inmag.current.toLocaleString('es-AR')} por kilo vivo (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(2)}% vs. el cierre anterior), actualizado el ${marketData.lastUpdate}. Es la referencia de precio más usada del mercado ganadero argentino, con histórico desde 2015 en pesos y dólares.`}
-    />
-  )
-}
+// (Sin QAPage: es para foros con respuestas de usuarios, y acá iba armado a mano con
+// upvoteCount/answerCount fijos. "¿Qué es el INMAG?" y "¿Cuánto vale hoy?" ya están
+// en INMAG_FAQS — FAQPage + lista visible.)
 
 // JSON-LD Schema
 function InmagSchema() {
@@ -116,8 +111,11 @@ function InmagSchema() {
     description: 'Índice de precios del novillo en el Mercado Agroganadero de Cañuelas, Argentina.',
     url: 'https://www.consignatarias.com.ar/mercado/inmag',
     keywords: ['INMAG', 'índice novillo', 'precio ganado', 'mercado ganadero'],
-    creator: { '@type': 'Organization', name: 'Mercado Agroganadero de Cañuelas', sameAs: 'https://www.mercadoagroganadero.com.ar' },
-    publisher: { '@type': 'Organization', name: 'consignatarias.com.ar', url: 'https://www.consignatarias.com.ar' },
+    // Serie ajena: la crea el MAG (se cita, no se licencia — ver /licencia-datos).
+    creator: { '@type': 'Organization', name: 'Mercado Agroganadero de Cañuelas', url: 'https://www.mercadoagroganadero.com.ar' },
+    sourceOrganization: { '@type': 'Organization', name: 'Mercado Agroganadero de Cañuelas', url: 'https://www.mercadoagroganadero.com.ar' },
+    isBasedOn: 'https://www.mercadoagroganadero.com.ar',
+    publisher: { '@id': 'https://www.consignatarias.com.ar/#org' },
     temporalCoverage: `${series[0]?.date}/${series[series.length - 1]?.date}`,
     // Freshness + structured current value → AI/Google cite it as a live reference price.
     dateModified: series[series.length - 1]?.date,
@@ -136,16 +134,15 @@ function InmagSchema() {
       },
       {
         '@type': 'DataDownload',
-        name: 'Snapshot diario público (CC-BY)',
+        name: 'Snapshot diario público',
         encodingFormat: 'application/json',
         contentUrl: 'https://www.consignatarias.com.ar/precios.json',
       },
     ],
-    license: 'https://creativecommons.org/licenses/by/4.0/',
     isAccessibleForFree: true,
     spatialCoverage: { '@type': 'Place', name: 'Argentina' },
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 }
 
 // DefinedTerm — entity-level "¿qué es el INMAG?" definition. More precise than
@@ -163,7 +160,7 @@ function InmagDefinedTermSchema() {
     inDefinedTermSet: 'https://www.consignatarias.com.ar/glosario#set',
     url: 'https://www.consignatarias.com.ar/mercado/inmag',
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 }
 
 function fmt(n: number): string {
@@ -249,7 +246,6 @@ export default function InmagPage() {
       <InmagSchema />
       <InmagDefinedTermSchema />
       <FAQPageSchema items={INMAG_FAQS} />
-      <InmagQAPageSchema />
       <SpeakableSchema
         url="https://www.consignatarias.com.ar/mercado/inmag"
         headline="INMAG hoy — Índice Novillo del Mercado Agroganadero"

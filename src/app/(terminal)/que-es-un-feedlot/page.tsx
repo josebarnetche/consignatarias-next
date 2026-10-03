@@ -98,9 +98,9 @@ const FAQ = [
 ]
 
 export const metadata: Metadata = {
-  title: `Qué es un Feedlot y Cómo Funciona (Engorde a Corral) — maíz US$${fmt(cornUsd)}/tn`,
+  title: 'Qué es un feedlot: cómo funciona y cuánto cuesta engordar',
   description:
-    'Un feedlot es un sistema de engorde a corral donde el ganado se alimenta con una dieta rica en grano (maíz) para ganar 1 a 1,5 kg por día y llegar en pocos meses al peso de faena. Cómo funciona, cuánto cuesta, cuánto maíz consume y feedlot vs invernada a campo, con precios de mercado.',
+    `El feedlot engorda a corral con maíz: 1 a 1,5 kg por día hasta el peso de faena. Cómo funciona, cuánto maíz come y cuánto cuesta, con el maíz a US$${fmt(cornUsd)}/tn.`,
   keywords: [
     'qué es un feedlot',
     'que es un feedlot y como funciona',
@@ -171,7 +171,7 @@ export default function QueEsUnFeedlotPage() {
         <h2 className="text-zinc-200 text-lg font-medium mb-3">Cómo funciona el engorde a corral</h2>
         <p className="text-zinc-400 mb-4">
           El circuito es simple: se compran terneros o novillitos livianos —hoy el ternero de
-          reposición ronda ${fmt(ternero)}/kg y el novillito ${fmt(novillito)}/kg (INMAG del{' '}
+          reposición ronda ${fmt(ternero)}/kg (estimado) y el novillito ${fmt(novillito)}/kg (INMAG del{' '}
           {INMAG_DATE})—, se los agrupa por peso y categoría en corrales y se los alimenta con una
           ración balanceada varias veces por día. La dieta se arranca con más fibra y se va cargando
           de grano en el período de acostumbramiento para evitar trastornos digestivos (acidosis).

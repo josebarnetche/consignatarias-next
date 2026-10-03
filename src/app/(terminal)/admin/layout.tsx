@@ -2,6 +2,12 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase'
 import AdminNav from './AdminNav'
+import type { Metadata } from 'next'
+
+// Varias páginas de admin no declaran metadata y heredaban el index del layout raíz.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()

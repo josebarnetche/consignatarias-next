@@ -150,7 +150,7 @@ export default function ConvieneVenderLaHaciendaAhoraOEsperarPage() {
         description="Marco para decidir entre vender la hacienda hoy o retenerla: precio actual, tendencia del mercado (INMAG) y costo de retención. Información de referencia, no una recomendación de compraventa."
         url={PAGE_URL}
         proficiencyLevel="Beginner"
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           { name: 'Mercado Agroganadero — INMAG', url: 'https://www.mercadoagroganadero.com.ar' },
         ]}
@@ -230,7 +230,7 @@ export default function ConvieneVenderLaHaciendaAhoraOEsperarPage() {
                 </td>
               </tr>
               <tr className="align-top">
-                <td className="px-3 py-2 text-zinc-200 font-medium">Ternero</td>
+                <td className="px-3 py-2 text-zinc-200 font-medium">Ternero (estimado)</td>
                 <td className="px-3 py-2 text-right text-zinc-300">${fmt(ternero)}</td>
                 <td className="px-3 py-2 text-zinc-400">
                   <Link

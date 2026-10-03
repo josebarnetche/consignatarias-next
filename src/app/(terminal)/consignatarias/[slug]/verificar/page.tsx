@@ -1,18 +1,20 @@
 import { Metadata } from 'next'
 import { notFound, permanentRedirect } from 'next/navigation'
 import {
+  getAllCanonicalSlugs,
   getCanonicalSlug,
   getProfile,
 } from '@/lib/data/consignataria-slugs'
 import ClaimForm from '@/components/claims/ClaimForm'
-import { mergedSlugStaticParams } from '../../_views/sluglist'
 
 /* ------------------------------------------------------------------ */
 /*  STATIC PARAMS                                                      */
 /* ------------------------------------------------------------------ */
 
+// Solo firmas: los slugs de provincia (/consignatarias/buenos-aires) no tienen perfil, y
+// prerenderizados salían como not-found con status 200 y dos meta robots.
 export function generateStaticParams() {
-  return mergedSlugStaticParams()
+  return getAllCanonicalSlugs().map((slug) => ({ slug }))
 }
 
 /* ------------------------------------------------------------------ */
@@ -24,10 +26,10 @@ type Props = { params: Promise<{ slug: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const canonical = getCanonicalSlug(slug)
-  if (!canonical) return {}
+  if (!canonical) return { robots: { index: false, follow: false } }
 
   const profile = getProfile(canonical)
-  if (!profile) return {}
+  if (!profile) return { robots: { index: false, follow: false } }
 
   return {
     title: `Verificar perfil — ${profile.displayName}`,

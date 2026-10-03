@@ -7,6 +7,7 @@ import {
   SpeakableSchema,
   DatasetSchema,
 } from '@/components/seo/JsonLd'
+import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 
@@ -156,7 +157,7 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿Cuáles son las categorías de hacienda bovina en Argentina?',
-    answer: `Las categorías de hacienda bovina en Argentina son ternero/a, novillito, novillo, vaquillona, vaca, toro y MEJ (Macho Entero Joven), y se clasifican por sexo, edad y peso. Hoy (${lastUpdate}), el precio de referencia por kilo vivo en el Mercado Agroganadero va desde $${fmt(vaca)}/kg (vaca) hasta $${fmt(ternero)}/kg (ternero), pasando por novillo $${fmt(novillo)}, novillito $${fmt(novillito)}, vaquillona $${fmt(vaquillona)} y toro $${fmt(toro)}. Son valores de referencia del mercado, no fijados por esta página.`,
+    answer: `Las categorías de hacienda bovina en Argentina son ternero/a, novillito, novillo, vaquillona, vaca, toro y MEJ (Macho Entero Joven), y se clasifican por sexo, edad y peso. Hoy (${lastUpdate}), el precio de referencia por kilo vivo en el Mercado Agroganadero va desde $${fmt(vaca)}/kg (vaca) hasta $${fmt(ternero)}/kg (estimado) (ternero), pasando por novillo $${fmt(novillo)}, novillito $${fmt(novillito)}, vaquillona $${fmt(vaquillona)} y toro $${fmt(toro)}. Son valores de referencia del mercado, no fijados por esta página.`,
   },
   {
     question: '¿Qué es un MEJ?',
@@ -168,13 +169,13 @@ const FAQ = [
   },
   {
     question: '¿Qué categoría de hacienda vale más por kilo?',
-    answer: `El ternero suele ser la categoría que más vale por kilo vivo: hoy cotiza a $${fmt(ternero)}/kg en el Mercado Agroganadero (${lastUpdate}), por encima del novillo ($${fmt(novillo)}), el novillito ($${fmt(novillito)}), la vaquillona ($${fmt(vaquillona)}), la vaca ($${fmt(vaca)}) y el toro ($${fmt(toro)}). Se paga más caro porque es hacienda de invernada con potencial de crecimiento por delante, no un animal terminado para faena.`,
+    answer: `En los remates de invernada el ternero suele ser la categoría que más vale por kilo vivo. El Mercado Agroganadero no opera terneros; nuestra estimación de hoy es $${fmt(ternero)}/kg (INMAG × 1,10, ${lastUpdate}). Como referencia, en el Mercado Agroganadero cotizan el novillo ($${fmt(novillo)}), el novillito ($${fmt(novillito)}), la vaquillona ($${fmt(vaquillona)}), la vaca ($${fmt(vaca)}) y el toro ($${fmt(toro)}). Se paga más caro porque es hacienda de invernada con potencial de crecimiento por delante, no un animal terminado para faena.`,
   },
 ]
 
 export const metadata: Metadata = {
   title: `Categorías de Hacienda Bovina en Argentina: Peso, Edad y Precio ${lastUpdate.slice(0, 4)}`,
-  description: `Las categorías de hacienda bovina son ternero, novillito, novillo, vaquillona, vaca, toro y MEJ, clasificadas por sexo, edad y peso. Precio de referencia por kilo vivo hoy (${INMAG_DATE}): desde $${fmt(vaca)}/kg (vaca) hasta $${fmt(ternero)}/kg (ternero) según el INMAG.`,
+  description: `Las categorías de hacienda bovina son ternero, novillito, novillo, vaquillona, vaca, toro y MEJ, clasificadas por sexo, edad y peso. Precio de referencia por kilo vivo hoy (${INMAG_DATE}): desde $${fmt(vaca)}/kg (vaca) hasta $${fmt(ternero)}/kg (estimado) (ternero) según el INMAG.`,
   keywords: [
     'categorias de hacienda',
     'categorias de hacienda ganado bovino',
@@ -219,7 +220,11 @@ export default function CategoriasDeHaciendaPage() {
         description={`Precio de referencia por kilo vivo de cada categoría de hacienda bovina en el Mercado Agroganadero de Buenos Aires al ${lastUpdate}: novillo $${fmt(novillo)}, novillito $${fmt(novillito)}, vaquillona $${fmt(vaquillona)}, vaca $${fmt(vaca)}, toro $${fmt(toro)}, ternero $${fmt(ternero)} ($/kg vivo).`}
         url={PAGE_URL}
         keywords={['categorias de hacienda', 'novillo', 'ternero', 'vaca', 'precio kilo vivo', 'mercado agroganadero', 'INMAG']}
-        dateModified={lastUpdate}
+        dateModified={INMAG_DATE}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_PRECIOS]}
+        temporalCoverage={INMAG_DATE}
       />
 
       <article className="px-4 pt-4 pb-8 max-w-3xl mx-auto text-zinc-300 text-sm leading-relaxed">
@@ -239,7 +244,7 @@ export default function CategoriasDeHaciendaPage() {
           Las categorías de hacienda bovina en Argentina son <strong>ternero, novillito, novillo,
           vaquillona, vaca, toro y MEJ</strong>, y se clasifican por sexo, edad y peso; hoy (
           {INMAG_DATE}) van desde <strong>${fmt(vaca)}/kg</strong> (vaca) hasta{' '}
-          <strong>${fmt(ternero)}/kg</strong> (ternero) según el INMAG.
+          <strong>${fmt(ternero)}/kg (estimado)</strong> (ternero) según el INMAG.
         </p>
 
         <p className="mb-4">
@@ -323,7 +328,7 @@ export default function CategoriasDeHaciendaPage() {
           Qué categoría vale más por kilo
         </h2>
         <p className="mb-4">
-          Hoy el <strong>ternero</strong> lidera el precio por kilo vivo (${fmt(ternero)}/kg,{' '}
+          En los remates de invernada el <strong>ternero</strong> suele liderar el precio por kilo vivo (${fmt(ternero)}/kg (estimado),{' '}
           {lastUpdate}) porque es hacienda de invernada: se compra por su potencial de crecimiento,
           no por carne terminada. Le siguen el novillo (${fmt(novillo)}), el novillito (
           ${fmt(novillito)}) y la vaquillona (${fmt(vaquillona)}); la <strong>vaca</strong> (

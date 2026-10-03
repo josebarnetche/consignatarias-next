@@ -1,4 +1,7 @@
 import { Metadata } from 'next'
+import { remateSlug } from '@/lib/remate-slug'
+import { remateTitulo, tipoFrase, diasDesde } from '@/lib/remates-enlaces'
+import { nombrePropio, provinciaNombre } from '@/lib/ui/tokens'
 import { notFound } from 'next/navigation'
 import {
   isRemateProvinceSlug,
@@ -32,16 +35,8 @@ import {
 
 type Remate = typeof rematesData[0]
 
-// Generate slug from remate data
-function generateRemateSlug(remate: typeof rematesData[0]): string {
-  const parts = [
-    remate.consignatariaSlug || 'remate',
-    remate.type || 'general',
-    remate.province?.toLowerCase().replace(/\s+/g, '-') || 'argentina',
-    remate.date,
-  ]
-  return parts.join('-')
-}
+// Slug de la ficha: la fórmula vive en src/lib/remate-slug.ts (única fuente).
+const generateRemateSlug = (remate: typeof rematesData[0]): string => remateSlug(remate)
 
 // Parse slug back to search params
 function parseRemateSlug(slug: string): { consignatariaSlug: string; type: string; province: string; date: string } | null {
@@ -273,16 +268,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   }
   
-  const provinceName = PROVINCE_NAMES[remate.province ?? ''] || remate.province || ''
+  const provinceName = provinciaNombre(remate.province)
   const typeName = TYPE_LABELS[remate.type] || remate.type
-  const dateFormatted = formatDate(remate.date)
-  
-  const title = `${remate.title} — ${typeName} en ${provinceName}`
-  const description = `Remate ${typeName.toLowerCase()} el ${dateFormatted} en ${remate.location}. Organizado por ${remate.consignatariaName}. ${remate.estimatedHeads ? `Aproximadamente ${remate.estimatedHeads} cabezas.` : ''}`
-  
+  const profile = getAllProfiles().find(p => p.canonicalSlug === remate.consignatariaSlug || p.allSlugs.includes(remate.consignatariaSlug))
+  const firma = profile?.displayName ?? nombrePropio(remate.consignatariaName)
+
+  const title = remateTitulo(remate, firma)
+  const lugar = [nombrePropio(cityOf(remate)), provinceName].filter((x, i, a) => x && a.indexOf(x) === i).join(', ')
+  const description = [
+    `Remate ${tipoFrase(remate.type)} de ${firma} el ${formatDate(remate.date).toLowerCase()}${remate.time ? ` a las ${remate.time} hs` : ''}${lugar ? ` en ${lugar}` : ''}.`,
+    remate.estimatedHeads ? `Unas ${remate.estimatedHeads.toLocaleString('es-AR')} cabezas.` : null,
+    'Lugar, catálogo y transmisión.',
+  ].filter(Boolean).join(' ')
+  // Pasados 90 días el remate ya salió del sitemap: la ficha sigue para quien
+  // llega por un enlace, pero no compite en Google con los próximos.
+  const viejo = diasDesde(remate.date) > 90
+
   return {
-    title,
+    // Absoluto: remateTitulo ya ronda los 60 caracteres y el sufijo de marca lo cortaba.
+    title: { absolute: title },
     description,
+    ...(viejo ? { robots: { index: false, follow: true } } : {}),
     keywords: [
       'remate ganadero',
       `remate ${typeName.toLowerCase()}`,
@@ -348,7 +354,11 @@ export default async function RemateDetailPage({ params }: Props) {
     return p?.canonicalSlug ?? r.consignatariaSlug
   }
   const currentCity = cityOf(remate)
-  const provinceHub = `/remates/${remate.province?.toLowerCase().replace(/\s+/g, '-') || ''}`
+  // Hub de la provincia solo si tiene página (ver rematesProvinceSlugsWithAuctions).
+  const provinceSlug = remate.province?.toLowerCase().trim().replace(/\s+/g, '-') || ''
+  const provinceHub = provinceSlug && rematesProvinceSlugsWithAuctions().includes(provinceSlug)
+    ? `/remates/${provinceSlug}`
+    : null
   const pool: Remate[] = rematesData
     .filter(r => r.id !== remate.id && r.status === 'scheduled' && r.date >= today)
     .sort((a, b) => a.date.localeCompare(b.date))
@@ -394,43 +404,33 @@ export default async function RemateDetailPage({ params }: Props) {
         items={[
           { name: 'Inicio', url: 'https://www.consignatarias.com.ar' },
           { name: 'Remates', url: 'https://www.consignatarias.com.ar/remates' },
-          { name: provinceName, url: `https://www.consignatarias.com.ar/remates/${remate.province?.toLowerCase().replace(/\s+/g, '-') || ''}` },
+          // El nivel provincia solo si esa provincia TIENE página: 7 provincias con
+          // remates no la tienen (dynamicParams=false → 404) y 42 remates no traen
+          // provincia (quedaba un ítem vacío con URL /remates/).
+          ...(provinceHub ? [{ name: provinceName, url: `https://www.consignatarias.com.ar${provinceHub}` }] : []),
           { name: remate.title, url: `https://www.consignatarias.com.ar/remates/${slug}` },
         ]}
       />
 
       <EventSchema
-        name={remate.title}
+        remate={remate}
         description={remate.description || `Remate ${typeName.toLowerCase()} organizado por ${remate.consignatariaName}`}
-        startDate={`${remate.date}T${remate.time || '10:00'}:00-03:00`}
-        endDate={`${remate.date}T${remate.time ? String(parseInt(remate.time.split(':')[0]) + 4).padStart(2, '0') + ':00' : '16:00'}:00-03:00`}
-        location={{
-          name: remate.location?.trim() || provinceName || 'Argentina',
-          address: `${remate.location}, ${provinceName}, Argentina`,
-        }}
-        organizer={remate.consignatariaName}
         url={`https://www.consignatarias.com.ar/remates/${slug}`}
-        eventAttendanceMode="offline"
+        organizerUrl={`https://www.consignatarias.com.ar${consignatariaProfilePath(remate.consignatariaSlug)}`}
       />
 
-      {/* Video/live schema for remates with a YouTube stream. isLive is gated to
-          non-past dates so we never claim a BroadcastEvent for a finished auction. */}
-      {remate.youtubeUrl && (() => {
-        const m = remate.youtubeUrl.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/)
-        const videoId = m && m[7]?.length === 11 ? m[7] : null
-        return (
-          <VideoObjectSchema
-            name={`Remate ${typeName}: ${remate.title}`}
-            description={remate.description || `Transmisión del remate ${typeName.toLowerCase()} organizado por ${remate.consignatariaName} en ${provinceName}.`}
-            thumbnailUrl={videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : 'https://www.consignatarias.com.ar/og-image.png'}
-            uploadDate={`${remate.date}T${remate.time || '10:00'}:00-03:00`}
-            contentUrl={normalizeUrl(remate.youtubeUrl) || remate.youtubeUrl}
-            embedUrl={videoId ? `https://www.youtube.com/embed/${videoId}` : undefined}
-            publisher={remate.consignatariaName}
-            isLive={!isPast}
-          />
-        )
-      })()}
+      {/* VideoObject de la transmisión: solo con un ID de video real; isLiveBroadcast
+          solo el día del remate y en horario (lo decide buildRemateVideo). */}
+      {remate.youtubeUrl && (
+        <VideoObjectSchema
+          name={`Remate ${typeName}: ${remate.title}`}
+          description={remate.description || `Transmisión del remate ${typeName.toLowerCase()} organizado por ${remate.consignatariaName}${provinceName ? ` en ${provinceName}` : ''}.`}
+          youtubeUrl={remate.youtubeUrl}
+          date={remate.date}
+          time={remate.time}
+          publisherName={remate.consignatariaName}
+        />
+      )}
 
       <main className="min-h-screen bg-slate-950">
         <div className="max-w-4xl mx-auto px-4 py-8">
@@ -739,7 +739,11 @@ export default async function RemateDetailPage({ params }: Props) {
                 {typeof catPrice.change === 'number' && (
                   <span className={catPrice.change >= 0 ? 'text-emerald-400' : 'text-red-400'}> ({catPrice.change >= 0 ? '+' : ''}{catPrice.change.toFixed(1)}%)</span>
                 )}
-                {MAG_DATE && <span className="text-slate-600"> · MAG, {MAG_DATE}</span>}
+                {priceKey === 'terneros' ? (
+                  <span className="text-slate-600"> · estimado: INMAG × 1,10 — el Mercado Agroganadero no opera terneros, no es un precio observado</span>
+                ) : (
+                  MAG_DATE && <span className="text-slate-600"> · MAG, {MAG_DATE}</span>
+                )}
               </p>
             ) : null}
             {breed && (
@@ -837,9 +841,11 @@ export default async function RemateDetailPage({ params }: Props) {
                   />
                 ))}
               </div>
-              <Link href={provinceHub} className="inline-block mt-3 text-sky-400 text-sm hover:underline">
-                Ver el calendario de remates en {provinceName} →
-              </Link>
+              {provinceHub && (
+                <Link href={provinceHub} className="inline-block mt-3 text-sky-400 text-sm hover:underline">
+                  Ver el calendario de remates en {provinceName} →
+                </Link>
+              )}
             </div>
           )}
 

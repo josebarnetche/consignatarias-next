@@ -95,7 +95,7 @@ export default function ComoComprarCampoPage() {
   const baratas = [...PROVINCIAS_CON_DATO].sort((a, b) => a.usd_ha - b.usd_ha).slice(0, 6)
   return (
     <>
-      <SectionBreadcrumbSchema section="campos" sectionName="Campos" />
+      <SectionBreadcrumbSchema section="campos" sectionName="Campos" pageName="Cómo comprar un campo" pagePath="/como-comprar-un-campo" />
       <FAQPageSchema items={FAQ} />
 
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">

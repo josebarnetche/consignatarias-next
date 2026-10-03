@@ -55,9 +55,12 @@ export default function Breadcrumb({
     ? items
     : [{ name: 'Inicio', href: '/' }, ...items]
 
+  // El último ítem (la página actual) sin href va SIN `item` en el ListItem: válido
+  // para Google. Antes caía a la home (`href ?? '/'`), así que el breadcrumb de cada
+  // página terminaba apuntando a la portada.
   const schemaItems = trail.map((it) => ({
     name: it.name,
-    url: toAbsolute(it.href ?? '/'),
+    url: it.href ? toAbsolute(it.href) : null,
   }))
 
   return (

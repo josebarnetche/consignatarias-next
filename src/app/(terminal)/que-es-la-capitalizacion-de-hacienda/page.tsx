@@ -148,7 +148,7 @@ const FAQ = [
   },
   {
     question: '¿Cómo se reparte en la capitalización de hacienda?',
-    answer: `Se reparte el aumento de kilos —la diferencia entre la pesada de salida y la de entrada— según el porcentaje pactado al inicio, habitualmente 50/50 o 60/40 a favor del campo. Si esos kilos se valorizan, se toma un precio de referencia del mercado (por ejemplo el novillo a $${fmt(novillo)}/kg vivo o el ternero a $${fmt(ternero)}/kg, INMAG/MAG al ${INMAG_DATE}, no fijado por esta página). El capitalizador retira su hacienda con más peso y el dueño del campo cobra su parte del kilo producido sin haber comprado los animales.`,
+    answer: `Se reparte el aumento de kilos —la diferencia entre la pesada de salida y la de entrada— según el porcentaje pactado al inicio, habitualmente 50/50 o 60/40 a favor del campo. Si esos kilos se valorizan, se toma un precio de referencia del mercado (por ejemplo el novillo a $${fmt(novillo)}/kg vivo o el ternero a $${fmt(ternero)}/kg (estimado), INMAG/MAG al ${INMAG_DATE}, no fijado por esta página). El capitalizador retira su hacienda con más peso y el dueño del campo cobra su parte del kilo producido sin haber comprado los animales.`,
   },
   {
     question: '¿Cuál es la diferencia con el pastoreo y con la aparcería?',
@@ -188,7 +188,7 @@ export const metadata: Metadata = {
 export default function QueEsLaCapitalizacionDeHaciendaPage() {
   return (
     <>
-      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
+      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" pageName="Qué es la capitalización de hacienda" pagePath="/que-es-la-capitalizacion-de-hacienda" />
       <DefinedTermSetSchema
         name="Capitalización de hacienda, pastoreo y engorde — definiciones"
         description="Definiciones citables de capitalización de hacienda, contrato de pastoreo, hotelería de hacienda, aumento de peso, porcentaje de reparto e invernador en el marco de los contratos de engorde ganadero argentino."
@@ -279,7 +279,7 @@ export default function QueEsLaCapitalizacionDeHaciendaPage() {
         </div>
         <p className="text-xxs text-zinc-500 mb-4">
           Cuadro conceptual de referencia. El aumento de kilos se valoriza a precio de referencia del
-          mercado (INMAG/MAG; novillo hoy ${fmt(novillo)}/kg vivo, ternero ${fmt(ternero)}/kg al{' '}
+          mercado (INMAG/MAG; novillo hoy ${fmt(novillo)}/kg vivo, ternero ${fmt(ternero)}/kg (estimado) al{' '}
           {INMAG_DATE}, no fijado por esta página). Cada capitalización se instrumenta según lo que
           acuerden las partes.
         </p>

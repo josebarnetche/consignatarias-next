@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -14,12 +15,13 @@ import FrigorificoLeadCapture from '@/components/leads/FrigorificoLeadCapture'
 import FrigorificoConsultaGeneral from '@/components/leads/FrigorificoConsultaGeneral'
 import { getDemandaFicha, VENTANA_DIAS } from '@/lib/demanda-fichas'
 import SubscribeStrip from '@/components/SubscribeStrip'
-import { BreadcrumbSchema, QAPageSchema } from '@/components/seo/JsonLd'
+import { BreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import {
   getSenasaRecord,
   getSenasaScrapedDate,
 } from '@/lib/data/senasa-habilitados'
-import { getCurrentSession } from '@/lib/user-tier'
+import OcultarSiPremium from './OcultarSiPremium'
+import { tituloFicha, descripcionFicha, estadoSenasaCorto } from '@/lib/frigorificos/metadata-ficha'
 import {
   getFichaFrigorifico,
   estadoSenasaTexto,
@@ -146,7 +148,17 @@ function stageBorderColor(stage: number): string {
   return 'border-negative/30'
 }
 
-export const dynamicParams = true
+// Estáticas con ISR. Antes la página leía la sesión con cookies (`getCurrentSession`) y eso
+// volvía dinámicas las 1.115 fichas: SSR contra Supabase en cada visita de bot y la metadata
+// llegando dentro del <body> por el streaming de Next 15. Lo único que dependía del visitante
+// era el aviso PRO, que ahora resuelve `OcultarSiPremium` en el cliente.
+// Lo que viene de Supabase (perfil reclamado, logo, vitrina, plan del dueño) cambia por
+// acciones del dueño o del webhook de Rebill, y todas esas rutas ya llaman a
+// `revalidatePath('/frigorificos/<cuit>')`; el revalidate diario es solo la red de seguridad.
+// Todos los CUIT válidos salen de frigorificos.json, así que lo que no está se 404ea sin
+// renderizar.
+export const revalidate = 86400
+export const dynamicParams = false
 
 export function generateStaticParams() {
   // Merged route: CUIT slugs + province slugs.
@@ -180,19 +192,23 @@ export async function generateMetadata({
   // impresiones decían "BUENOS AIRES" donde el padrón ya tenía "Colon" o "Gonzalez Catan".
   const ficha = getFichaFrigorifico(cuit)
   const localidadStr = ficha?.lugar || f.province
-  // El usuario pega el CUIT crudo (ej "30500120882") y la ficha rankea, pero si el título
-  // muestra sólo la razón social no reconoce el match → CTR ~0. Arrancamos el título con el
-  // CUIT formateado (el número pegado aparece literal en el SERP) seguido de la razón social.
-  const title = `CUIT ${formatCuit(f.cuit)} — ${f.name} (Frigorífico SENASA, ${localidadStr})`
-  // Description con la forma de respuesta de un buscador de CUIT: identificador, razón social,
-  // lugar, estado con fecha. La búsqueda es "a quién pertenece este CUIT", no "dónde faenar".
-  const estado = ficha ? estadoSenasaTexto(ficha) : 'según padrón'
-  const description = ficha
-    ? `CUIT ${ficha.cuitFormateado} · ${f.name} · ${localidadStr} · habilitación SENASA ${estado} · ${ficha.categoria ?? stageName(f.stage)}, Mat. ${f.matricula}. Datos oficiales SENASA/MAGYP.`
-    : `CUIT ${formatCuit(f.cuit)} · ${f.name} · ${localidadStr} · ${stageName(f.stage)}, Mat. ${f.matricula}. Datos oficiales SENASA/MAGYP.`
+  // Search Console (sep-2026): las fichas son la familia con más clics del sitio, pero las
+  // búsquedas por CUIT tienen CTR de 0,15 %. El title anterior arrancaba con el número y
+  // pasaba de 90 caracteres con la marca: Google lo cortaba antes de la razón social, que es
+  // lo que el usuario reconoce. Ahora va la razón social legible, el CUIT con guiones y la
+  // habilitación; `absolute` porque el sufijo de marca no entra en 65.
+  const title = tituloFicha(f.name, formatCuit(f.cuit), ficha?.localidad || ficha?.provinciaDisplay || f.province)
+  // Description con lo que decide el clic adelante (estado SENASA, etapa, lugar) y lo
+  // accesorio solo si entra en 155.
+  const description = descripcionFicha(
+    [ficha ? estadoSenasaCorto(ficha) : null, ficha?.categoria ?? stageName(f.stage), localidadStr]
+      .filter(Boolean)
+      .join(' · '),
+    [`${f.name}, CUIT ${formatCuit(f.cuit)}`, `Mat. ${f.matricula}`, 'Datos oficiales SENASA/MAGYP'],
+  )
 
   return {
-    title,
+    title: { absolute: title },
     description,
     openGraph: {
       images: [{ url: '/og-frigorificos.png', width: 1200, height: 630 }],
@@ -265,24 +281,20 @@ function LocalBusinessSchema({
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: jsonLd(schema) }}
     />
   )
 }
 
-// QAPage inline: responde literalmente "¿a qué empresa corresponde el CUIT NNN?".
-// El número crudo aparece en la pregunta (head-query) y la respuesta trae el dato
-// exacto (razón social + habilitación) para que la IA/SERP cite la asociación.
-function CuitQAPageSchema({ ficha }: { ficha: FichaFrigorifico }) {
+// FAQPage de una pregunta: "¿a qué empresa corresponde el CUIT NNN?". El número crudo
+// aparece en la pregunta (head-query) y la respuesta trae el dato exacto (razón social +
+// habilitación), el mismo que la ficha muestra en su primera oración. Antes era un
+// QAPage con upvoteCount/answerCount puestos a mano: QAPage es para foros.
+function CuitFaqSchema({ ficha }: { ficha: FichaFrigorifico }) {
   const titular = ficha.propietario ? ` (titular según SENASA: ${ficha.propietario})` : ''
   const answer = `El CUIT ${ficha.cuitFormateado} corresponde a ${ficha.nombre}${titular}, ${ficha.categoria ? `${ficha.categoria.toLowerCase()} ` : 'frigorífico '}con sede en ${ficha.lugar}, Argentina. Habilitación SENASA ${estadoSenasaTexto(ficha)}, matrícula ${ficha.matricula}. Datos oficiales SENASA/MAGYP.`
   return (
-    <QAPageSchema
-      question={`¿A qué empresa corresponde el CUIT ${ficha.cuit}?`}
-      answer={answer}
-      url={`https://www.consignatarias.com.ar/frigorificos/${ficha.cuit}`}
-      id={`https://www.consignatarias.com.ar/frigorificos/${ficha.cuit}#qapage`}
-    />
+    <FAQPageSchema items={[{ question: `¿A qué empresa corresponde el CUIT ${ficha.cuit}?`, answer }]} />
   )
 }
 
@@ -328,13 +340,9 @@ export default async function FrigorificoDetailPage({
   const hasContact = phone || email || website || whatsapp
 
   // SENASA habilitación check: cross-reference with current registry snapshot.
-  // Free users see the verdict (vigente/no encontrada). PRO users get the
-  // full record (propietario + actividades + partido/localidad).
   const senasaRecord = getSenasaRecord(cuit)
   const senasaVigente = senasaRecord !== null
   const senasaScrapedDate = getSenasaScrapedDate()
-  const session = await getCurrentSession()
-  const isPro = session.tier === 'pro'
 
   // Vitrina de carne: el gate es el plan del DUEÑO del frigorífico (no el del
   // visitante). Sólo se muestra el catálogo + RFQ si el frigorífico es PRO y
@@ -381,7 +389,7 @@ export default async function FrigorificoDetailPage({
   return (
     <>
       <LocalBusinessSchema ficha={ficha} phone={phone} email={email} website={website} />
-      <CuitQAPageSchema ficha={ficha} />
+      <CuitFaqSchema ficha={ficha} />
       <BreadcrumbSchema items={[
         { name: 'Inicio', url: 'https://www.consignatarias.com.ar' },
         { name: 'Frigoríficos', url: 'https://www.consignatarias.com.ar/frigorificos' },
@@ -682,7 +690,7 @@ export default async function FrigorificoDetailPage({
                 Titular, partido, ciclos y actividades autorizadas: ver{' '}
                 <a href="#ficha" className="text-accent hover:underline">la ficha de la empresa</a>.
               </p>
-              {!isPro && (
+              <OcultarSiPremium>
                 <div className="mt-3 pt-3 border-t border-terminal-border">
                   <p className="text-xxs font-terminal text-zinc-500 leading-relaxed">
                     <span className="text-accent">PRO:</span> alertas de cambios de habilitación,
@@ -690,7 +698,7 @@ export default async function FrigorificoDetailPage({
                     <Link href="/planes" rel="nofollow" className="text-accent hover:underline">Ver planes →</Link>
                   </p>
                 </div>
-              )}
+              </OcultarSiPremium>
             </>
           ) : (
             <>

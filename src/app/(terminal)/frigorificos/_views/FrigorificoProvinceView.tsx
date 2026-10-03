@@ -1,7 +1,9 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import { FAQPageSchema } from '@/components/seo/JsonLd'
+import { FaqList } from '@/components/seo/FaqList'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 import Breadcrumb from '@/components/ui/Breadcrumb'
 
@@ -112,6 +114,7 @@ export async function frigorificoProvinceMetadata(provincia: string) {
       description: `${habilitados} frigoríficos habilitados por MAGYP en ${config.displayName}. Directorio oficial con matrícula y datos de contacto.`,
       url: `https://www.consignatarias.com.ar/frigorificos/${provincia}`,
       type: 'website' as const,
+      images: [{ url: '/og-frigorificos.png', width: 1200, height: 630 }],
     },
     alternates: {
       canonical: `https://www.consignatarias.com.ar/frigorificos/${provincia}`,
@@ -126,42 +129,27 @@ const STAGE_COLORS: Record<number, string> = {
   3: 'border-yellow-500 text-yellow-400',
 }
 
+// Una sola maquetación que se reacomoda por CSS. Antes cada fila venía dos veces (móvil y
+// escritorio) y Buenos Aires, con 398 plantas, pesaba 1,3 MB de HTML.
 function FrigorificoRow({ frigorifico }: { frigorifico: Frigorifico }) {
+  const ciclo = STAGE_LABELS[frigorifico.stage] || `Etapa ${frigorifico.stage}`
   return (
-    <div className="border-b border-terminal-border hover:bg-zinc-800/50 transition-colors">
-      <div className="md:hidden p-3 space-y-1.5">
-        <div>
-          <Link
-            href={`/frigorificos/${frigorifico.cuit}`}
-            className="font-terminal font-medium text-data text-zinc-200 hover:text-accent transition-colors hover:underline"
-          >
-            {frigorifico.name}
-          </Link>
-        </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xxs text-zinc-500">CUIT: {frigorifico.cuit}</span>
-          <span className="text-xxs text-zinc-500">Mat: {frigorifico.matricula}</span>
-          <span className={`terminal-tag ${STAGE_COLORS[frigorifico.stage] || 'border-zinc-500 text-zinc-400'} text-[10px]`}>
-            {STAGE_LABELS[frigorifico.stage] || `Etapa ${frigorifico.stage}`}
-          </span>
-        </div>
-      </div>
-      <div className="hidden md:flex items-center gap-0 px-cell py-1.5">
-        <span className="flex-1 min-w-0 text-data font-terminal truncate">
-          <Link href={`/frigorificos/${frigorifico.cuit}`} className="text-zinc-200 hover:text-accent hover:underline transition-colors">
-            {frigorifico.name}
-          </Link>
-        </span>
-        <span className="w-[130px] flex-shrink-0 text-data tabular-nums font-terminal text-zinc-400">
-          {frigorifico.cuit}
-        </span>
-        <span className="w-[80px] flex-shrink-0 text-data tabular-nums font-terminal text-zinc-400 text-right pr-4">
-          {frigorifico.matricula}
-        </span>
-        <span className={`terminal-tag ${STAGE_COLORS[frigorifico.stage] || 'border-zinc-500 text-zinc-400'} text-[10px] w-[70px] text-center`}>
-          {STAGE_LABELS[frigorifico.stage] || `Etapa ${frigorifico.stage}`}
-        </span>
-      </div>
+    <div className="border-b border-terminal-border hover:bg-zinc-800/50 transition-colors p-3 md:px-cell md:py-1.5 flex flex-wrap md:flex-nowrap items-center gap-x-2 gap-y-1.5 md:gap-0">
+      <Link
+        href={`/frigorificos/${frigorifico.cuit}`}
+        className="w-full md:w-auto md:flex-1 min-w-0 md:truncate font-terminal font-medium md:font-normal text-data text-zinc-200 hover:text-accent hover:underline transition-colors"
+      >
+        {frigorifico.name}
+      </Link>
+      <span className="text-xxs md:text-data md:w-[130px] md:flex-shrink-0 tabular-nums font-terminal text-zinc-500 md:text-zinc-400">
+        <span className="md:hidden">CUIT: </span>{frigorifico.cuit}
+      </span>
+      <span className="text-xxs md:text-data md:w-[80px] md:flex-shrink-0 tabular-nums font-terminal text-zinc-500 md:text-zinc-400 md:text-right md:pr-4">
+        <span className="md:hidden">Mat: </span>{frigorifico.matricula}
+      </span>
+      <span className={`terminal-tag ${STAGE_COLORS[frigorifico.stage] || 'border-zinc-500 text-zinc-400'} text-[10px] md:w-[70px] md:text-center`}>
+        {ciclo}
+      </span>
     </div>
   )
 }
@@ -205,23 +193,20 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
     '@type': 'ItemList',
     name: `Frigoríficos en ${config.displayName}`,
     description: `Directorio de ${habilitados} frigoríficos habilitados por MAGYP en ${config.displayName}, Argentina`,
-    numberOfItems: provinceFrigorificos.length,
+    // Lista "resumen": ListItem con url + name (la entidad completa, con dirección,
+    // vive en cada ficha). numberOfItems = los que se emiten.
+    numberOfItems: Math.min(provinceFrigorificos.length, 50),
     itemListElement: provinceFrigorificos.slice(0, 50).map((frigorifico, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      item: {
-        '@type': 'LocalBusiness',
-        name: frigorifico.name,
-        identifier: frigorifico.cuit,
-        url: `https://www.consignatarias.com.ar/frigorificos/${frigorifico.cuit}`,
-        address: { '@type': 'PostalAddress', addressRegion: config.displayName, addressCountry: 'AR' },
-      },
+      name: frigorifico.name,
+      url: `https://www.consignatarias.com.ar/frigorificos/${frigorifico.cuit}`,
     })),
   }
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(itemListSchema) }} />
       <FAQPageSchema items={faqItems} />
 
       <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 space-y-0">
@@ -352,6 +337,9 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
               ))}
           </div>
         </div>
+
+        {/* Las mismas preguntas del FAQPageSchema, visibles. */}
+        <FaqList items={faqItems} className="mt-4" />
 
         <ProvinceCluster province={config.name} exclude="frigorificos" />
 

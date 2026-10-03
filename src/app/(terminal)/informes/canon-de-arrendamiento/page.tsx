@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ImageTema } from '@/components/ui/ImagenTema'
@@ -70,7 +71,7 @@ export default function Page() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLd({
             '@context': 'https://schema.org',
             '@graph': [
               {
@@ -78,14 +79,14 @@ export default function Page() {
                 name: P.nombre,
                 description: P.tagline,
                 url: `${APP_URL}${P.landing}`,
-                brand: { '@type': 'Brand', name: 'Consignatarias.com.ar' },
+                brand: { '@type': 'Brand', name: 'consignatarias.com.ar' },
                 offers: {
                   '@type': 'Offer',
                   price: P.precio,
                   priceCurrency: 'ARS',
                   availability: 'https://schema.org/InStock',
                   url: `${APP_URL}${P.landing}`,
-                  seller: { '@type': 'Organization', name: 'Memola Medios S.A.S.' },
+                  seller: { '@id': 'https://www.consignatarias.com.ar/#org' },
                 },
               },
               {

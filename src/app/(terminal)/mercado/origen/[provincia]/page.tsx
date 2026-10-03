@@ -3,10 +3,12 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import marketPrices from '@/lib/data/market-prices.json'
 import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema, DatasetSchema } from '@/components/seo/JsonLd'
+import { FUENTE_MAG } from '@/lib/seo/schemas'
 import { AnswerBlock } from '@/components/seo/AnswerBlock'
 import { DataStamp } from '@/components/seo/DataStamp'
 import { PriceCTA } from '@/components/PriceCTA'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
+import { PROVINCIAS_ORIGEN, getOrigenSlugs } from '@/lib/mercado-origen'
 
 /* ============================================================
    /mercado/origen/[provincia] — de qué provincia provino la hacienda
@@ -15,14 +17,7 @@ import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
    remitente (privacidad). Gated a las provincias con ProvinceCluster.
    ============================================================ */
 
-const PROVINCES: Record<string, { name: string; display: string }> = {
-  'buenos-aires': { name: 'BUENOS AIRES', display: 'Buenos Aires' },
-  'santa-fe': { name: 'SANTA FE', display: 'Santa Fe' },
-  'la-pampa': { name: 'LA PAMPA', display: 'La Pampa' },
-  'cordoba': { name: 'CORDOBA', display: 'Córdoba' },
-  'san-luis': { name: 'SAN LUIS', display: 'San Luis' },
-  'entre-rios': { name: 'ENTRE RIOS', display: 'Entre Ríos' },
-}
+const PROVINCES = PROVINCIAS_ORIGEN
 
 // Province codes used inside auctionDayEntries.entries[].provincia.
 const CODE_MAP: Record<string, string> = {
@@ -31,19 +26,13 @@ const CODE_MAP: Record<string, string> = {
   TUC: 'TUCUMAN', CHA: 'CHACO', SDE: 'SANTIAGO DEL ESTERO', FOR: 'FORMOSA', MIS: 'MISIONES', CTE: 'CORRIENTES',
 }
 
-const NAME_TO_SLUG: Record<string, string> = Object.fromEntries(
-  Object.entries(PROVINCES).map(([slug, v]) => [v.name, slug]),
-)
-
 const fmt = (n: number) => n.toLocaleString('es-AR', { maximumFractionDigits: 0 })
 
 interface ProvinceRow { province: string; enPie: number; total: number; percentage: number }
 interface Entry { remitente?: string; localidad?: string; provincia?: string; cabezas?: number }
 
 export function generateStaticParams() {
-  return (marketPrices.provinceEntry.provinces as ProvinceRow[])
-    .filter((p) => NAME_TO_SLUG[p.province])
-    .map((p) => ({ provincia: NAME_TO_SLUG[p.province] }))
+  return getOrigenSlugs().map((provincia) => ({ provincia }))
 }
 
 export const dynamicParams = false
@@ -131,7 +120,11 @@ export default async function OrigenProvinciaPage({ params }: { params: Promise<
         description={`Participación de ${config.display} (${row.percentage}%, ${fmt(row.total)} cabezas) en la oferta del Mercado Agroganadero, rueda del ${date}.`}
         url={`https://www.consignatarias.com.ar/mercado/origen/${provincia}`}
         keywords={['origen hacienda', 'procedencia ganado', `hacienda ${config.display.toLowerCase()}`, 'mercado agroganadero']}
-        dateModified={lastUpdate}
+        dateModified={date}
+        temporalCoverage={date}
+        spatialCoverage={config.display}
+        license={null}
+        fuente={FUENTE_MAG}
       />
 
       <div className="px-4 py-6 max-w-4xl mx-auto">

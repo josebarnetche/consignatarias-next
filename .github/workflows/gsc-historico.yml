@@ -1,12 +1,15 @@
 name: gsc-historico
 
 # Baja la serie diaria completa de Search Console (16 meses disponibles en la API) y la
-# commitea como CSV en reports/gsc/. Manual: es para análisis de tendencia y proyección,
-# no para el pulso semanal (de eso se ocupa gsc-weekly-report.yml).
+# commitea como CSV en reports/gsc/. Es para análisis de tendencia y proyección, no para
+# el pulso semanal (de eso se ocupa gsc-weekly-report.yml). Corre solo los martes (hasta
+# oct-2026 era solo manual y la serie quedaba semanas atrasada) y se puede disparar a mano.
 #
 # Corre acá y no en local porque las credenciales de GSC viven como secretos del repo.
 
 on:
+  schedule:
+    - cron: '17 12 * * 2' # martes 12:17 UTC = 09:17 ART
   workflow_dispatch:
     inputs:
       from:

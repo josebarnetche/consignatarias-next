@@ -51,7 +51,9 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       console.error('value_event insert error:', error)
-      // tabla puede no existir en algún entorno — no romper la navegación.
+      // No rompe la navegación (el beacon no espera respuesta), pero tampoco
+      // miente: antes devolvía success:true y la pérdida del evento era invisible.
+      return NextResponse.json({ success: false, error: 'insert_failed' }, { status: 503 })
     }
 
     // Karma (Fase 2): el usuario logueado gana karma por sus eventos de valor

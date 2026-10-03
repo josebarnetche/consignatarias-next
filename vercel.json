@@ -25,7 +25,7 @@
       "permanent": false
     },
     {
-      "source": "/:path((?!_next|api|favicon|robots|sitemap|manifest|icon|og).*)*",
+      "source": "/:path((?!_next/|api/|favicon\\.ico|robots\\.txt|sitemap\\.xml|manifest\\.json|icon-|og-).*)*",
       "has": [
         {
           "type": "host",

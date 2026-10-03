@@ -1,12 +1,13 @@
 import { Metadata } from 'next'
 import Breadcrumb from '@/components/ui/Breadcrumb'
 import { DatasetSchema, SpeakableSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import { getLiquidacion, LIQUIDACION_CAVEAT, type PuntoHembras } from '@/lib/data/liquidacion'
 
 export const revalidate = 43200 // 12h — la serie de Cañuelas se actualiza con el scraper diario
 
 export const metadata: Metadata = {
-  title: 'Índice de Liquidación — participación de hembras en la hacienda | Consignatarias',
+  title: 'Índice de Liquidación: participación de hembras en la hacienda',
   description:
     'La participación de hembras (vacas + vaquillonas) en la hacienda operada en el Mercado Agroganadero: el indicador adelantado de liquidación vs. retención del rodeo argentino. Con el contexto histórico de la faena nacional de hembras (1998-2025, MAGyP).',
   keywords: [
@@ -194,6 +195,7 @@ export default async function LiquidacionPage() {
         description="Participación de hembras (vacas + vaquillonas) en la hacienda operada en el Mercado Agroganadero (2026→), con el contexto histórico de la faena nacional de hembras (1998-2025)."
         url="https://www.consignatarias.com.ar/mercado/liquidacion"
         keywords={['índice de liquidación', 'participación de hembras', 'faena de hembras', 'ciclo ganadero', 'retención de vientres']}
+        license={LICENCIA_PROPIA}
       />
       <SpeakableSchema url="https://www.consignatarias.com.ar/mercado/liquidacion" headline="Índice de Liquidación — participación de hembras en la hacienda argentina" cssSelectors={['h1', 'section p']} />
       <FAQPageSchema items={faqs} />

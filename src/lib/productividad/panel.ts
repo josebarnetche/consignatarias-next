@@ -114,6 +114,28 @@ export function getDepartamentosPublicables(): Departamento[] {
   return getDepartamentos().filter((d) => d.publicable)
 }
 
+/**
+ * Umbral de INDEXACIÓN de la ficha (no de publicación: la ficha sigue viva).
+ *
+ * Con menos de 30 establecimientos o menos de 500 vacas, el índice terneros/vaca de un
+ * departamento salta de un año a otro por un par de rodeos y la ficha dice poco más que
+ * un número inestable. Esas 30 (de 455, panel 2025) van noindex y fuera del sitemap.
+ *
+ * Calibración contra GSC (indexacion.csv, sep-2026): el estado de indexación de las
+ * fichas NO se correlaciona con el tamaño del departamento — indexan entre 30 % y 43 %
+ * en todos los tramos de cabezas, establecimientos y vacas. El 65 % sin indexar es
+ * "descubierta: actualmente sin indexar" (Google no llegó a rastrearlas), así que el
+ * umbral apunta a sacar las fichas más flacas para concentrar el rastreo, no a explicar
+ * ese 65 %. Las que salen sumaron 11 de 267 impresiones de fichas en el histórico.
+ */
+export const MIN_UP_INDEXABLE = 30
+export const MIN_VACAS_INDEXABLE = 500
+
+export function fichaIndexable(d: Departamento, anio = ultimoAnio()): boolean {
+  const f = d.serie[anio]
+  return !!f && (d.up ?? 0) >= MIN_UP_INDEXABLE && f.vacas >= MIN_VACAS_INDEXABLE
+}
+
 export function getProvincias(): Provincia[] {
   return CRUDO.provincias
 }

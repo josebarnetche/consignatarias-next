@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
 import { SectionBreadcrumbSchema, DatasetSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { FUENTE_MAG, LICENCIA_PROPIA } from '@/lib/seo/schemas'
+import { INMAG_DATE } from '@/lib/inmag'
 import { ShareBadge } from '@/components/share/ShareBadge'
 
 /* ============================================================
@@ -13,7 +15,6 @@ import { ShareBadge } from '@/components/share/ShareBadge'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
 const inmag = marketData.inmag as { current: number }
-const lastUpdate = (marketData as { lastUpdate?: string }).lastUpdate
 
 const BADGE_CATS = marketData.categories as Record<string, { current: number }>
 const BADGES = [
@@ -23,7 +24,7 @@ const BADGES = [
   { slug: 'vaquillonas', label: 'Vaquillona', value: BADGE_CATS.vaquillonas.current, href: '/mercado/vaquillonas' },
   { slug: 'vacas', label: 'Vaca', value: BADGE_CATS.vacas.current, href: '/mercado/vacas' },
   { slug: 'toros', label: 'Toro', value: BADGE_CATS.toros.current, href: '/mercado/toros' },
-  { slug: 'terneros', label: 'Ternero', value: BADGE_CATS.terneros.current, href: '/mercado/terneros' },
+  { slug: 'terneros', label: 'Ternero (estimado)', value: BADGE_CATS.terneros.current, href: '/mercado/terneros' },
 ]
 
 export const metadata: Metadata = {
@@ -54,11 +55,14 @@ interface IndexDef {
   cadence: string
   href: string
   keywords: string[]
+  /** Índice propio (licenciable) o serie del MAG (se cita, no se licencia). */
+  propio: boolean
 }
 
 const FAMILY: IndexDef[] = [
   {
     name: 'INMAG',
+    propio: false,
     tagline: 'Índice Novillo Mercado Agroganadero',
     what: 'El precio promedio ponderado por volumen del novillo tipo exportación en el Mercado Agroganadero de Cañuelas (ex Liniers). La referencia de precio más usada del mercado ganadero argentino.',
     methodology: 'Promedio ponderado por cabezas y kilos vivos de los lotes operados cada día hábil. Serie histórica diaria mantenida desde 2015.',
@@ -68,6 +72,7 @@ const FAMILY: IndexDef[] = [
   },
   {
     name: 'INMAG en dólares',
+    propio: false,
     tagline: 'El novillo en USD reales',
     what: 'El INMAG deflactado por el dólar blue: el precio del kilo vivo en dólares, para comparar el poder de compra real del ganado a través del tiempo sin el ruido de la inflación. Es el overlay que ningún otro publica.',
     methodology: 'INMAG diario ÷ cotización del dólar blue (venta) del mismo día, con forward-fill en feriados cambiarios. Serie desde 2015.',
@@ -77,6 +82,7 @@ const FAMILY: IndexDef[] = [
   },
   {
     name: 'Panel de categorías',
+    propio: false,
     tagline: 'Novillo, novillito, vaquillona, vaca, toro, ternero',
     what: 'El precio de referencia diario de las seis categorías principales de hacienda, más 16 subcategorías del MAG. Permite seguir la estructura del mercado, no solo el novillo.',
     methodology: 'Precios diarios por categoría publicados por el Mercado Agroganadero, normalizados y servidos vía API.',
@@ -86,6 +92,7 @@ const FAMILY: IndexDef[] = [
   },
   {
     name: 'Índice de arrendamiento',
+    propio: false,
     tagline: 'INMAG aplicado al alquiler de campo',
     what: 'El valor del arrendamiento rural expresado en kilos de novillo (INMAG), la unidad en que se pactan habitualmente los contratos de alquiler de campo ganadero.',
     methodology: 'Conversión del INMAG mensual a la unidad kilos-de-novillo usada en contratos de arrendamiento.',
@@ -95,6 +102,7 @@ const FAMILY: IndexDef[] = [
   },
   {
     name: 'Spread maíz–novillo',
+    propio: true,
     tagline: 'Proxy de rentabilidad de invernada',
     what: 'La relación entre el precio del kilo vivo del novillo y el del maíz: una de las palancas centrales de la decisión de retener o vender hacienda y de la rentabilidad del feedlot.',
     methodology: 'Cociente novillo INMAG (USD) / maíz FOB (USD). Serie histórica mensual desde 2015 + lectura diaria en vivo.',
@@ -104,6 +112,7 @@ const FAMILY: IndexDef[] = [
   },
   {
     name: 'Índice de Liquidación',
+    propio: true,
     tagline: 'Participación de hembras en la hacienda',
     what: 'La proporción de hembras (vacas + vaquillonas) en la hacienda operada: el indicador adelantado de liquidación (descarga de vientres) vs. retención (armado de rodeo) del ciclo ganadero. Un dato de estructura que nadie más publica como índice.',
     methodology: 'Hembras sobre total de cabezas operadas en el Mercado Agroganadero (serie propia, 2026→), con el contexto histórico de la faena de hembras nacional (MAGyP, 1998-2019).',
@@ -133,9 +142,11 @@ export default function IndicesPage() {
     <>
       <SectionBreadcrumbSchema section="indices" sectionName="Índices del mercado" />
       <FAQPageSchema items={FAQS} />
+      {/* Speakable solo al h1: la página no tiene bloque .speakable-content. */}
       <SpeakableSchema
         url="https://www.consignatarias.com.ar/indices"
         headline="Familia de índices de referencia del mercado ganadero argentino"
+        cssSelectors={['h1']}
       />
       {FAMILY.map((idx) => (
         <DatasetSchema
@@ -144,7 +155,8 @@ export default function IndicesPage() {
           description={idx.what}
           url={`${APP_URL}${idx.href}`}
           keywords={idx.keywords}
-          {...(lastUpdate ? { dateModified: lastUpdate } : {})}
+          dateModified={INMAG_DATE}
+          {...(idx.propio ? { license: LICENCIA_PROPIA } : { license: null, fuente: FUENTE_MAG })}
         />
       ))}
 

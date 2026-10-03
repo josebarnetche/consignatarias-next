@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import { OfrecerGuia } from '@/components/guias/OfrecerGuia'
 import { Metadata } from 'next'
 import rematesData from '@/lib/data/remates.json'
@@ -6,6 +7,8 @@ import { getAllProfiles, getAuctionsForProfile } from '@/lib/data/consignataria-
 import { getFeaturedSlugs } from '@/lib/featured'
 import ConsignatariasDirectoryClient from './ConsignatariasDirectoryClient'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { FaqList } from '@/components/seo/FaqList'
+import { FECHA_DATOS, fechaLarga } from '@/lib/datos-frescura'
 import {
   PROVINCE_MAP as CONSIG_PROVINCE_MAP,
   PROVINCE_DISPLAY as CONSIG_PROVINCE_DISPLAY,
@@ -101,7 +104,7 @@ function ConsignatariasItemListSchema({ entries }: { entries: Array<{ slug: stri
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: jsonLd(schema) }}
     />
   )
 }
@@ -128,13 +131,17 @@ export default async function ConsignatariasDirectoryPage() {
       isPro: featured.has(p.canonicalSlug),
     }
   }).sort((a, b) =>
-    // PRO firms first; preserve the existing secondary order (auctionCount desc).
-    (Number(b.isPro) - Number(a.isPro)) || (b.auctionCount - a.auctionCount)
+    // Mismo orden que la vista por defecto del directorio (sortBy 'upcoming' en
+    // ConsignatariasDirectoryClient): PRO, próximos remates, remates totales.
+    // El ItemList del schema toma los primeros de acá y tiene que coincidir con
+    // lo que el usuario ve arriba.
+    (Number(b.isPro) - Number(a.isPro)) || (b.upcoming - a.upcoming) || (b.auctionCount - a.auctionCount)
   )
 
   // Calculate stats for intro
   const totalRemates = entries.reduce((sum, e) => sum + e.auctionCount, 0)
   const totalUpcoming = entries.reduce((sum, e) => sum + e.upcoming, 0)
+  const actualizado = fechaLarga()
 
   // SSG-crawleable province links: count consignatarias per province (only the
   // 13 provinces with real /consignatarias/[provincia] pages). A count > 0
@@ -165,11 +172,16 @@ export default async function ConsignatariasDirectoryPage() {
           una consignataria, no al productor que busca con quién operar. La oferta
           de la guía sigue al pie (OfrecerGuia), después del directorio. */}
       <header className="mx-auto max-w-5xl px-4 pt-6 pb-2 sm:px-6">
-        <h1 className="text-2xl font-semibold text-ink sm:text-3xl">Consignatarias de hacienda</h1>
+        <h1 className="text-2xl font-semibold text-ink sm:text-3xl">Consignatarias de hacienda en Argentina</h1>
         <p className="mt-2 max-w-2xl text-base leading-relaxed text-zinc-400">
-          {totalConsignatarias} firmas de todo el país, cada una con su calendario de remates.
-          Buscá por nombre o por provincia.
+          Las {totalConsignatarias} consignatarias que rematan hacienda en el país, con su próximo remate y
+          dónde operan. Buscá por nombre o elegí tu provincia.
         </p>
+        {actualizado && (
+          <p className="mt-1 text-sm text-zinc-500">
+            Actualizado el <time dateTime={FECHA_DATOS ?? undefined}>{actualizado}</time>.
+          </p>
+        )}
       </header>
 
       <ConsignatariasDirectoryClient entries={entries} provinceLinks={provinceLinks} />
@@ -186,9 +198,13 @@ export default async function ConsignatariasDirectoryPage() {
           <p>
             Cada consignataria tiene un perfil con su calendario anual de remates, los tipos que hace (general,
             especial, invernada, reproductores), las provincias donde opera y el cronograma completo. Los datos se
-            actualizan todos los días desde fuentes públicas.
+            actualizan todos los días desde fuentes públicas{actualizado ? ` (última actualización: ${actualizado})` : ''}.
           </p>
         </div>
+      </section>
+
+      <section className="mx-auto max-w-5xl px-4 pb-4 sm:px-6">
+        <FaqList items={CONSIGNATARIAS_FAQ} />
       </section>
 
       {/* Después del directorio: el que recorrió las firmas y piensa en abrir la suya */}

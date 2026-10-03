@@ -2,7 +2,9 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { fetchInmagUsdJoined } from '@/lib/charts/data'
+import { aniosInmag } from '@/lib/seo/indexacion'
 import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema } from '@/components/seo/JsonLd'
+import { DESCARGA_SERIE_INMAG, FUENTE_MAG } from '@/lib/seo/schemas'
 
 /* ============================================================
    /mercado/inmag/[anio] — historical INMAG by year, in pesos AND
@@ -12,12 +14,15 @@ import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema } from '@/compone
    ============================================================ */
 
 const APP_URL = 'https://www.consignatarias.com.ar'
-const FIRST_YEAR = 2015
-const CURRENT_YEAR = 2026 // build-time anchor; partial-year pages are honest about it
-
-const YEARS = Array.from({ length: CURRENT_YEAR - FIRST_YEAR + 1 }, (_, i) => FIRST_YEAR + i)
+// Desde el arranque de la serie hasta el año del último dato; el mismo set que emite el
+// sitemap. El año en curso es parcial y la página lo dice.
+const YEARS = aniosInmag()
+const CURRENT_YEAR = YEARS[YEARS.length - 1]
 
 export const revalidate = 86400
+// Solo los años de la lista: antes /mercado/inmag/2020abc respondía 200 (parseInt
+// leía 2020) y generaba una URL duplicada por cada sufijo.
+export const dynamicParams = false
 
 export function generateStaticParams() {
   return YEARS.map((y) => ({ anio: String(y) }))
@@ -26,8 +31,7 @@ export function generateStaticParams() {
 const fmt = (n: number, max = 0) => n.toLocaleString('es-AR', { maximumFractionDigits: max })
 
 function isValidYear(anio: string): boolean {
-  const y = parseInt(anio, 10)
-  return YEARS.includes(y)
+  return /^\d{4}$/.test(anio) && YEARS.includes(Number(anio))
 }
 
 interface YearStats {
@@ -149,6 +153,9 @@ export default async function InmagYearPage({
         description={`Serie y estadísticas anuales del INMAG (precio del kilo vivo de novillo en el Mercado Agroganadero) para ${year}, en pesos y en dólares blue. Promedio, mínimo y máximo.`}
         url={`${APP_URL}/mercado/inmag/${anio}`}
         keywords={[`precio novillo ${anio}`, `INMAG ${anio}`, `novillo dólares ${anio}`]}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_SERIE_INMAG]}
       />
 
       <div className="px-4 py-6 max-w-4xl mx-auto">

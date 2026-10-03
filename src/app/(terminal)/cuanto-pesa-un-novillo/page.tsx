@@ -7,6 +7,7 @@ import {
   DatasetSchema,
   DefinedTermSetSchema,
 } from '@/components/seo/JsonLd'
+import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 
@@ -32,7 +33,7 @@ const precios = {
 
 // Tabla de peso por categoría. `ref` = peso representativo del rango para estimar el valor.
 const PESOS = [
-  { cat: 'Ternero', rango: '160 – 200 kg', ref: 180, precio: precios.ternero },
+  { cat: 'Ternero (precio estimado)', rango: '160 – 200 kg', ref: 180, precio: precios.ternero },
   { cat: 'Novillito', rango: '300 – 390 kg', ref: 345, precio: precios.novillito },
   { cat: 'Novillo', rango: '400 – 500+ kg', ref: 450, precio: precios.novillo },
   { cat: 'Vaquillona', rango: '300 – 380 kg', ref: 340, precio: precios.vaquillona },
@@ -137,6 +138,7 @@ export default function CuantoPesaUnNovilloPage() {
         url={PAGE_URL}
         keywords={['peso novillo', 'peso vivo', 'categorías de hacienda', 'mercado agroganadero', 'Argentina']}
         dateModified={lastUpdate}
+        license={LICENCIA_PROPIA}
       />
 
       <article className="px-4 pt-4 pb-8 max-w-3xl mx-auto text-zinc-300 text-sm leading-relaxed">

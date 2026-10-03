@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { DESCARGA_SERIE_INMAG, FUENTE_MAG } from '@/lib/seo/schemas'
 import { fetchInmagUsdJoined, aggregateMonthly } from '@/lib/charts/data'
 import { PriceLineChart } from '@/components/charts/PriceLineChart'
 import ProChartGate from '@/components/market/ProChartGate'
@@ -160,21 +161,29 @@ export default async function InmagDolaresPage() {
     <>
       <SectionBreadcrumbSchema section="mercado/inmag-dolares" sectionName="INMAG en dólares" />
       <FAQPageSchema items={faq} />
+      {/* Speakable solo al h1: la página no tiene bloque .speakable-content. */}
       <SpeakableSchema
         url="https://www.consignatarias.com.ar/mercado/inmag-dolares"
         headline="INMAG en dólares: precio del novillo argentino en USD, serie histórica"
+        cssSelectors={['h1']}
       />
       <DatasetSchema
         name="INMAG en dólares — precio del novillo argentino en USD (serie histórica)"
         description="Serie diaria del INMAG (precio del kilo vivo de novillo en el Mercado Agroganadero) deflactado por el dólar blue, desde 2015. Permite comparar el poder de compra real del kilo vivo a través del tiempo, sin el ruido de la inflación."
         url="https://www.consignatarias.com.ar/mercado/inmag-dolares"
         keywords={['INMAG en dólares', 'precio novillo dólares', 'hacienda en dólares Argentina', 'kilo vivo USD histórico']}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_SERIE_INMAG]}
       />
       <DatasetSchema
         name="INMAG — Índice Novillo Mercado Agroganadero (serie diaria 2015→)"
         description="Serie histórica diaria del INMAG, el precio promedio ponderado por volumen del novillo en el Mercado Agroganadero de Cañuelas, en pesos por kilo vivo. Referencia del mercado ganadero argentino."
         url="https://www.consignatarias.com.ar/mercado/inmag"
         keywords={['INMAG', 'índice novillo', 'precio hacienda Argentina', 'mercado agroganadero']}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_SERIE_INMAG]}
       />
 
       <div className="px-4 py-6 max-w-5xl mx-auto">

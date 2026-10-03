@@ -131,7 +131,7 @@ export default function QueEsUnaTropaDeHaciendaPage() {
         description="Una tropa de hacienda es un conjunto de animales homogéneos que se comercializa o traslada como una unidad. Diferencia con lote y tropa de faena, criterios de homogeneidad y documentación con DT-e y guía."
         url={PAGE_URL}
         proficiencyLevel="Beginner"
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           { name: 'SENASA — Documento de Tránsito Electrónico (DT-e)', url: 'https://www.senasa.gob.ar' },
         ]}

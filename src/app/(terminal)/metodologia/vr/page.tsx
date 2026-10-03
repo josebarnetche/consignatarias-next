@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { DatasetSchema, TechArticleSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { FaqList } from '@/components/seo/FaqList'
+import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import { getBandasPublicas, VR_METODOLOGIA, VR_VENTANA_DIAS, VR_VENTANA_ORIGEN_DIAS, MIN_LOTES_BANDA, MIN_LOTES_BANDA_COMPLETA, MIN_LOTES_AJUSTE_ORIGEN, VR_RANGO_PESO_KG, vrCobertura } from '@/lib/vr'
 
 const URL = 'https://www.consignatarias.com.ar/metodologia/vr'
@@ -64,6 +66,7 @@ export default function MetodologiaVrPage() {
         name={`Metodología del Valor de Referencia (${VR_METODOLOGIA})`}
         description="Banda de precio observado (P10/mediana/P90) por categoría de hacienda, calculada sobre el dato de lote del Mercado Agroganadero, con regla de degradación por número de operaciones y ajuste por provincia de origen."
         url={URL}
+        dateModified="2026-09-25"
       />
       <DatasetSchema
         name="Valor de Referencia (VR) — banda de precio observado de hacienda en pie"
@@ -82,9 +85,13 @@ export default function MetodologiaVrPage() {
           { url: 'https://www.consignatarias.com.ar/api/lots', encodingFormat: 'application/json', name: 'API de lote (dato base del VR)' },
         ]}
         updateFrequency="Martes, miércoles y viernes, tras el cierre de operaciones del MAG"
+        license={LICENCIA_PROPIA}
       />
       <FAQPageSchema items={VR_FAQS} />
-      <SpeakableSchema url={URL} headline="Cómo se calcula el Valor de Referencia del ganado argentino" />
+      {/* Speakable solo al h1: la página no tiene bloque .speakable-content. */}
+      <SpeakableSchema url={URL} headline="Cómo se calcula el Valor de Referencia del ganado argentino"
+        cssSelectors={['h1']}
+      />
 
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         <nav className="text-xs text-zinc-500 mb-4">
@@ -291,6 +298,9 @@ export default function MetodologiaVrPage() {
           reproducibles con la metodología con la que se emitieron. El número de versión viaja en cada
           respuesta de la API y del servidor MCP.
         </p>
+
+        {/* Las mismas preguntas del FAQPageSchema, visibles. */}
+        <FaqList items={VR_FAQS} />
 
         <div className="border-t border-zinc-800 pt-6 mt-10 text-xs text-zinc-500">
           <p className="mb-2">

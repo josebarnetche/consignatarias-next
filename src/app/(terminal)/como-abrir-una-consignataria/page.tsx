@@ -181,7 +181,7 @@ export default function ComoAbrirUnaConsignatariaPage() {
 
   return (
     <div className="px-4 py-6 max-w-4xl mx-auto">
-      <SectionBreadcrumbSchema section="guias" sectionName="Guías" />
+      <SectionBreadcrumbSchema section="guias" sectionName="Guías" pageName="Cómo abrir una consignataria" pagePath="/como-abrir-una-consignataria" />
       <Suspense fallback={null}>
         <GuiaViewTracker slug={GUIA.slug} />
       </Suspense>

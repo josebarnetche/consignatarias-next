@@ -67,13 +67,18 @@ function ranges() {
 async function gscAnalytics(sc, r) {
   const q = (body) => sc.searchanalytics.query({ siteUrl: SITE, requestBody: body }).then((x) => x.data.rows || [])
   const tot = (s, e) => ({ startDate: s, endDate: e, dimensions: [], type: 'web' })
-  const [curT, prevT, queries, pages] = await Promise.all([
+  // Ventana de 28 días para el cruce consulta × página (la semana sola es muy chica
+  // para ver qué URLs comparten una consulta).
+  const s28 = new Date(r.end + 'T00:00:00Z'); s28.setUTCDate(s28.getUTCDate() - 27)
+  const [curT, prevT, queries, pages, queryPage] = await Promise.all([
     q(tot(r.start, r.end)), q(tot(r.pstart, r.pend)),
-    q({ startDate: r.start, endDate: r.end, dimensions: ['query'], rowLimit: 15 }),
-    q({ startDate: r.start, endDate: r.end, dimensions: ['page'], rowLimit: 12 }),
+    // 500 y no 15: el top 15 dejaba afuera ~80 % del dato (el mail sigue mostrando 12).
+    q({ startDate: r.start, endDate: r.end, dimensions: ['query'], rowLimit: 500 }),
+    q({ startDate: r.start, endDate: r.end, dimensions: ['page'], rowLimit: 500 }),
+    q({ startDate: iso(s28), endDate: r.end, dimensions: ['query', 'page'], rowLimit: 25000 }),
   ])
   const t = (rows) => rows[0] || { clicks: 0, impressions: 0, ctr: 0, position: 0 }
-  return { cur: t(curT), prev: t(prevT), queries, pages }
+  return { cur: t(curT), prev: t(prevT), queries, pages, queryPage, queryPageRange: { start: iso(s28), end: r.end } }
 }
 
 // Tráfico del sitio (endpoint interno). Soft-fail → null.
@@ -212,7 +217,14 @@ async function main() {
   const md = buildMd({ r, gsc, tr, week })
   mkdirSync(OUT_DIR, { recursive: true })
   writeFileSync(join(OUT_DIR, `${week}.md`), md)
-  writeFileSync(join(OUT_DIR, `${week}.json`), JSON.stringify({ range: r, gsc, traffic: tr, generated: now.toISOString() }, null, 2))
+  // El cruce consulta × página va aparte (CSV, se pisa cada semana): es lo que permite
+  // ver canibalización real — una misma consulta repartida entre 2+ URLs del sitio.
+  const { queryPage, queryPageRange, ...gscResumen } = gsc
+  const csvCell = (v) => (/[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v))
+  const qpCsv = ['consulta,pagina,clics,impresiones,ctr,posicion', ...queryPage.map((x) =>
+    [x.keys[0], x.keys[1], x.clicks, x.impressions, x.ctr.toFixed(4), x.position.toFixed(2)].map(csvCell).join(','))].join('\n')
+  writeFileSync(join(OUT_DIR, 'consulta-pagina-28d.csv'), `# ${queryPageRange.start} → ${queryPageRange.end}\n${qpCsv}\n`)
+  writeFileSync(join(OUT_DIR, `${week}.json`), JSON.stringify({ range: r, gsc: gscResumen, traffic: tr, generated: now.toISOString() }, null, 2))
   writeFileSync(join(OUT_DIR, 'latest.md'), md)
   writeFileSync(join(OUT_DIR, 'latest.html'), html)
   console.log(`\n✓ reports/gsc/${week}.{md,json} + latest.{md,html}`)

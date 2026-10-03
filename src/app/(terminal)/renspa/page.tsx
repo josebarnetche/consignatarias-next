@@ -4,7 +4,7 @@ import Breadcrumb from '@/components/ui/Breadcrumb'
 import RenspaValidator from '@/components/sanidad/RenspaValidator'
 
 export const metadata: Metadata = {
-  title: 'Validador de RENSPA — decodificá el código de tu establecimiento | Consignatarias',
+  title: 'Validador de RENSPA: decodificá tu código',
   description:
     'Pegá un RENSPA (Registro Nacional Sanitario de Productores Agropecuarios) y decodificá sus 17 caracteres (00.000.0.00000.00) en provincia, departamento, jurisdicción, establecimiento y productor. Valida la estructura al instante.',
   keywords: [

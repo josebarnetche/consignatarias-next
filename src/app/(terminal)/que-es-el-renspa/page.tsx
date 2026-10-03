@@ -112,9 +112,9 @@ const FAQ = [
 ]
 
 export const metadata: Metadata = {
-  title: 'Qué es el RENSPA y cómo sacarlo (SENASA): alta gratis paso a paso',
+  title: 'Qué es el RENSPA y cómo sacarlo gratis en SENASA, paso a paso',
   description:
-    'El RENSPA es el código obligatorio de SENASA que vincula al productor con el campo donde tiene su hacienda; se tramita gratis y sin él no se puede mover ni vender ganado en Argentina. Qué es, para qué sirve, cómo darse de alta paso a paso y diferencia con CUIG y marca.',
+    'El RENSPA es el código de SENASA que une al productor con su campo: sin él no podés mover ni vender hacienda. Se saca gratis. Cómo darte de alta, paso a paso.',
   keywords: [
     'qué es el renspa',
     'qué es el renspa y cómo sacarlo',

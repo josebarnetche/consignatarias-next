@@ -9,11 +9,15 @@ import {
   zonasDeProvincia,
   slugZona,
   SUPERFICIES_TIPICAS,
+  anioDelDato,
+  observacionesTexto,
+  zonaIndexable,
 } from '@/lib/campos-seo'
 import { anosDeArrendamiento } from '@/lib/valuacion-campos'
 import ValuacionCampo from '@/components/campos/ValuacionCampo'
 import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
 import { FAQPageSchema, DatasetSchema, SpeakableSchema, BreadcrumbSchema } from '@/components/seo/JsonLd'
+import { DESCARGA_VALOR_TIERRA, LICENCIA_CC_BY } from '@/lib/seo/schemas'
 import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 
 export const revalidate = 3600
@@ -46,11 +50,14 @@ export async function generateMetadata({
   const { provincia, zona } = await params
   const z = zonaPorSlug(provincia, zona)
   if (!z) return { title: 'Zona no encontrada' }
-  const titulo = `¿Cuánto vale la hectárea en ${z.zona}, ${z.provincia}? — ${fmtUsd(z.usd_ha)}`
+  // El año del title es el del DATO, no el del calendario: una zona relevada en 2024
+  // no puede prometer "en 2026".
+  const anio = anioDelDato(z.fecha)
+  const titulo = `¿Cuánto vale la hectárea en ${z.zona}, ${z.provincia}${anio ? ` en ${anio}` : ''}?`
   const partidos = partidosDeZona(z.provincia, z.zona as string)
   return {
     title: titulo,
-    description: `La hectárea de campo en ${z.zona} (${z.provincia}) vale ${fmtUsd(z.usd_ha)} de referencia, con rango de ${fmtUsd(z.p25)} a ${fmtUsd(z.p75)}. Zona ${APTITUD[z.aptitud ?? 'ganadera']}${partidos.length ? `: ${partidos.slice(0, 5).join(', ')}` : ''}. Fuente y fecha del dato.`,
+    description: `La hectárea en ${z.zona} (${z.provincia}) vale ${fmtUsd(z.usd_ha)} de referencia, rango ${fmtUsd(z.p25)}–${fmtUsd(z.p75)}. Zona ${APTITUD[z.aptitud ?? 'ganadera']}; dato ${z.fecha ?? 's/f'}, ${observacionesTexto(z.n)}.`,
     keywords: [
       `cuanto vale la hectarea en ${z.zona}`,
       `valor hectarea ${z.zona}`,
@@ -62,8 +69,10 @@ export async function generateMetadata({
       title: titulo,
       url: `${BASE_URL}/campos/valor-hectarea/${provincia}/${zona}`,
       type: 'article',
+      images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     },
     alternates: { canonical: `${BASE_URL}/campos/valor-hectarea/${provincia}/${zona}` },
+    ...(!zonaIndexable(z) && { robots: { index: false, follow: true } }),
   }
 }
 
@@ -136,6 +145,9 @@ export default async function ValorHectareaZona({
         url={url}
         keywords={[`valor hectarea ${z.zona}`, z.provincia, 'precio de la tierra']}
         dateModified={z.fecha ?? undefined}
+        spatialCoverage={`${z.zona}, ${z.provincia}`}
+        license={LICENCIA_CC_BY}
+        distribution={[DESCARGA_VALOR_TIERRA]}
       />
       <SpeakableSchema url={url} headline={`¿Cuánto vale la hectárea en ${z.zona}?`} />
 
@@ -184,10 +196,12 @@ export default async function ValorHectareaZona({
               </>
             )}
           </p>
+          <p className="text-zinc-500 text-xs mt-1">
+            Dato {z.fecha ?? 'sin fecha'} · {observacionesTexto(z.n)}
+          </p>
           {z.fuente && (
             <p className="text-zinc-600 text-xxs mt-1">
               {z.fuente}
-              {z.fecha ? ` · ${z.fecha}` : ''}
             </p>
           )}
         </div>

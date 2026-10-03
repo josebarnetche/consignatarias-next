@@ -1,7 +1,7 @@
 import marketData from '@/lib/data/market-prices.json'
 import { fetchChicagoCattle } from '@/lib/markets/chicago'
 
-// Public, machine-readable daily price snapshot (CC-BY) — a crawlable citation surface
+// Public, machine-readable daily price snapshot — a crawlable citation surface
 // for agents / answer engines. Mirrors the llms.txt route: regenerated on each daily data
 // rebuild (the data JSON is committed daily → Vercel rebuild). Honest by construction:
 // `as_of` comes from the data, never Date.now(), so it never claims false freshness.
@@ -58,8 +58,10 @@ export async function GET() {
   const body = {
     schema: 'https://consignatarias.com.ar/precios.json',
     as_of: lastDate,
-    license: 'CC-BY-4.0',
-    license_url: 'https://creativecommons.org/licenses/by/4.0/',
+    // Los precios son del Mercado Agroganadero: se citan, no se licencian (ver
+    // /licencia-datos). Hasta oct-2026 este feed declaraba CC-BY sobre datos ajenos.
+    license: null,
+    terms_url: 'https://www.consignatarias.com.ar/licencia-datos',
     attribution: 'INMAG (Mercado Agroganadero Argentino), vía consignatarias.com.ar',
     source: 'Mercado Agroganadero de Cañuelas (ex-Liniers)',
     citation: `INMAG (Mercado Agroganadero Argentino), vía consignatarias.com.ar, ${lastDate}`,
@@ -78,6 +80,8 @@ export async function GET() {
       prev: v.prev,
       change_pct: v.change,
       moneda: 'ARS',
+      // El MAG no opera terneros: el número es INMAG × 1,10, no un precio observado.
+      ...(categoria === 'terneros' ? { estimado: true, metodo: 'INMAG × 1,10 (el Mercado Agroganadero no opera terneros)' } : {}),
     })),
     usd_blue: {
       value: usd.current,

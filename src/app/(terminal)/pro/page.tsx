@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { FUNCIONES_PREMIUM, PRO_ABIERTO } from '@/lib/plan-pro'
@@ -42,20 +43,20 @@ export default function ProPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLd({
             '@context': 'https://schema.org',
             '@type': 'Product',
             name: 'PRO — Consignatarias.com.ar',
             description: PRO_ABIERTO.tagline,
             url: `${APP_URL}/pro`,
-            brand: { '@type': 'Brand', name: 'Consignatarias.com.ar' },
+            brand: { '@type': 'Brand', name: 'consignatarias.com.ar' },
             offers: {
               '@type': 'Offer',
               price: PRO_ABIERTO.precio,
               priceCurrency: 'ARS',
               availability: 'https://schema.org/InStock',
               url: `${APP_URL}/pro`,
-              seller: { '@type': 'Organization', name: 'Memola Medios S.A.S.' },
+              seller: { '@id': 'https://www.consignatarias.com.ar/#org' },
             },
           }),
         }}

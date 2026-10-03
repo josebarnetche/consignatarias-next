@@ -7,6 +7,7 @@ import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
 import { consignatariaProfilePath, getAllProfiles } from '@/lib/data/consignataria-slugs'
 import { PROVINCIAS_CON_DATO } from '@/lib/campos-seo'
+import { fechaLarga } from '@/lib/datos-frescura'
 
 export const revalidate = 1800
 
@@ -137,6 +138,9 @@ export default async function CamposPage() {
               promedio del mes anterior — y nosotros lo pasamos a pesos y dólares. Así comparás dos campos
               de verdad, sin hacer la cuenta a mano.
             </p>
+            {fechaLarga() && (
+              <p className="mt-1 text-xs text-zinc-500">Precios del mercado actualizados al {fechaLarga()}.</p>
+            )}
           </div>
           <div className="shrink-0 flex flex-col gap-2">
             <Link href="/campos/publicar" className="px-4 py-2 text-xs bg-accent hover:bg-accent-bright text-zinc-950 font-medium rounded transition-colors text-center">

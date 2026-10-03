@@ -168,7 +168,7 @@ export default function FeedlotVsPastorilPage() {
         description="Comparativa de los dos sistemas de terminación de hacienda —feedlot (engorde a corral) y engorde pastoril— por costo por kilo producido, tiempo de terminación, inversión y riesgo climático."
         url={PAGE_URL}
         proficiencyLevel="Beginner"
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           { name: 'INTA — Instituto Nacional de Tecnología Agropecuaria', url: 'https://www.argentina.gob.ar/inta' },
         ]}
@@ -281,7 +281,7 @@ export default function FeedlotVsPastorilPage() {
 
         <p className="mb-4">
           El punto de partida de ambos sistemas es la misma hacienda de reposición —el ternero, que
-          hoy se referencia en ${fmt(ternero)}/kg vivo ({lastUpdate})— que viene de la{' '}
+          hoy se referencia en ${fmt(ternero)}/kg vivo (estimado) ({lastUpdate})— que viene de la{' '}
           <Link href="/que-es-la-cria-y-recria" className="text-accent hover:text-accent-bright transition-colors">
             cría y recría
           </Link>

@@ -1,9 +1,10 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import remates from '@/lib/data/remates.json'
-import { consignatariaProfilePath, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
-import { Calendar, Clock, MapPin, Users, CheckCircle, History } from 'lucide-react'
+import { Calendar, History } from 'lucide-react'
+import { rematePath } from '@/lib/remate-slug'
 
 // Regenerate hourly for fresh TODAY
 export const revalidate = false // Cost optimization: static at build time
@@ -16,13 +17,6 @@ function getTodayStr(): string {
   const diff = argentinaOffset - localOffset
   const argentinaTime = new Date(now.getTime() + diff * 60 * 1000)
   return argentinaTime.toISOString().split('T')[0]
-}
-
-function formatDate(dateStr: string): string {
-  const date = new Date(dateStr + 'T12:00:00')
-  const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
-  const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
-  return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]}`
 }
 
 function formatDateLong(dateStr: string): string {
@@ -96,81 +90,31 @@ interface Remate {
   status: string
 }
 
-function RemateCard({ remate }: { remate: Remate }) {
-  const typeColors: Record<string, string> = {
-    invernada: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-    cria: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-    general: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/30',
-    especial: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
-    reproductores: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
-  }
-
-  const typeColor = typeColors[remate.type?.toLowerCase()] || typeColors.general
-
+// Fila liviana en vez de tarjeta: con ~220 remates por mes, cada tarjeta (cinco íconos
+// SVG, descripción, dos enlaces) viajaba dos veces —HTML y payload RSC— y la página
+// llegaba a 1,6 MB. El enlace principal va a la ficha del remate; el perfil queda al lado.
+function RemateFila({ remate }: { remate: Remate }) {
+  const detalle = [
+    `${remate.location}, ${remate.province}`,
+    remate.time ? `${remate.time} hs` : null,
+    remate.estimatedHeads ? `~${remate.estimatedHeads.toLocaleString('es-AR')} cabezas` : null,
+    remate.mainCategory || null,
+  ].filter(Boolean).join(' · ')
   return (
-    <article className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 hover:border-zinc-700 transition-colors opacity-80">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <Link
-              href={consignatariaProfilePath(remate.consignatariaSlug)}
-              className="text-lg font-medium text-zinc-200 hover:text-accent transition-colors line-clamp-1"
-            >
-              {remate.consignatariaName}
-            </Link>
-            <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
-          </div>
-          <div className="flex items-center gap-2 mt-1 text-sm text-zinc-500">
-            <MapPin className="w-3.5 h-3.5" />
-            <span>{remate.location}, {remate.province}</span>
-          </div>
-        </div>
-        <span className={`px-2 py-1 text-xs font-medium border rounded ${typeColor} shrink-0`}>
-          {remate.type}
-        </span>
-      </div>
-
-      {/* Details */}
-      <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-500 mb-3">
-        <div className="flex items-center gap-1.5">
-          <Calendar className="w-3.5 h-3.5" />
-          <span>{formatDate(remate.date)}</span>
-        </div>
-        {remate.time && (
-          <div className="flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5" />
-            <span>{remate.time} hs</span>
-          </div>
-        )}
-        {remate.estimatedHeads && (
-          <div className="flex items-center gap-1.5">
-            <Users className="w-3.5 h-3.5" />
-            <span>~{remate.estimatedHeads.toLocaleString('es-AR')} cabezas</span>
-          </div>
-        )}
-        {remate.mainCategory && (
-          <span className="text-zinc-600">• {remate.mainCategory}</span>
-        )}
-      </div>
-
-      {/* Description */}
-      {remate.description && (
-        <p className="text-sm text-zinc-600 line-clamp-2 mb-3">
-          {remate.description}
-        </p>
-      )}
-
-      {/* Link to consignataria */}
-      <div className="pt-2 border-t border-zinc-800">
-        <Link
-          href={consignatariaProfilePath(remate.consignatariaSlug)}
-          className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
-        >
-          Ver más remates de {remate.consignatariaName} →
+    <li className="py-2.5 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
+      <div className="min-w-0">
+        <Link href={rematePath(remate)} className="text-zinc-200 hover:text-accent transition-colors font-medium">
+          {remate.consignatariaName} — remate {remate.type ? remate.type.toLowerCase() : 'general'}
         </Link>
+        <p className="text-xs text-zinc-500">{detalle}</p>
       </div>
-    </article>
+      <Link
+        href={consignatariaProfilePath(remate.consignatariaSlug)}
+        className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors shrink-0"
+      >
+        Perfil de la firma →
+      </Link>
+    </li>
   )
 }
 
@@ -205,23 +149,14 @@ export default function RematesAnterioresPage() {
   }, {} as Record<string, number>)
 
   // Schema data - only include top 10 for structured data
-  const schemaRemates = completedRemates.slice(0, 10).map(r => ({
-    id: r.id,
-    name: `Remate ${r.type} - ${r.consignatariaName}`,
-    date: r.date,
-    time: r.time || undefined,
-    location: r.location,
-    province: r.province,
-    consignatariaName: r.consignatariaName,
-    type: r.type,
-    estimatedHeads: r.estimatedHeads || undefined,
-    url: `https://www.consignatarias.com.ar/consignatarias/${getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug}`,
-  }))
+  // Cada Event con la URL de SU ficha (/remates/[slug]) y el perfil de la firma como
+  // organizer.url — antes todos apuntaban al perfil. La regla vive en buildRemateEvent.
+  const schemaRemates = completedRemates.slice(0, 10)
 
   return (
     <>
       <SectionBreadcrumbSchema section="remates/anteriores" sectionName="Remates Anteriores" />
-      {schemaRemates.length > 0 && <RematesListSchema remates={schemaRemates} />}
+      {schemaRemates.length > 0 && <RematesListSchema remates={schemaRemates} name="Remates ganaderos anteriores en Argentina" />}
 
       <div className="px-4 py-6 max-w-4xl mx-auto">
         {/* Breadcrumb */}
@@ -309,11 +244,11 @@ export default function RematesAnterioresPage() {
                     {formatDateLong(date)}
                     <span className="text-sm text-zinc-600">({dateRemates.length})</span>
                   </h2>
-                  <div className="space-y-3">
+                  <ul className="divide-y divide-zinc-800">
                     {dateRemates.map(remate => (
-                      <RemateCard key={remate.id} remate={remate} />
+                      <RemateFila key={remate.id} remate={remate} />
                     ))}
-                  </div>
+                  </ul>
                 </section>
               ))}
           </div>

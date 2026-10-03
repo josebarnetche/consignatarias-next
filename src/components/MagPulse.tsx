@@ -2,25 +2,21 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { EmptyState } from '@/components/ui'
-
-interface Firm {
-  name: string
-  cabezas: number
-}
-interface PulseData {
-  date: string | null
-  total_cabezas: number
-  firms: Firm[]
-  acumulado_lotes: number
-}
+import type { PulsoFirma as Firm, PulsoMercado as PulseData } from '@/lib/market-pulse'
 
 /** Count-up animado con ease-out cúbico (dopamina de ver el número subir). */
-function useCountUp(target: number, duration = 1200, run = true): number {
-  const [val, setVal] = useState(0)
+function useCountUp(target: number, duration = 1200, run = true, estatico = false): number {
+  // Estático = el dato vino del server: se pinta el número final desde el primer render
+  // para que esté en el HTML, sin animación que arranque en 0.
+  const [val, setVal] = useState(estatico ? target : 0)
   const raf = useRef<number | undefined>(undefined)
   useEffect(() => {
+    if (estatico) {
+      setVal(target)
+      return
+    }
     if (!run || target <= 0) {
-      setVal(target > 0 ? 0 : 0)
+      setVal(0)
       return
     }
     let start: number | null = null
@@ -35,19 +31,20 @@ function useCountUp(target: number, duration = 1200, run = true): number {
     return () => {
       if (raf.current) cancelAnimationFrame(raf.current)
     }
-  }, [target, duration, run])
+  }, [target, duration, run, estatico])
   return val
 }
 
 const fmt = (n: number) => n.toLocaleString('es-AR')
 
-function PulseRow({ firm, max, rank }: { firm: Firm; max: number; rank: number }) {
-  const [shown, setShown] = useState(false)
-  const c = useCountUp(firm.cabezas, 900, shown)
+function PulseRow({ firm, max, rank, estatico }: { firm: Firm; max: number; rank: number; estatico: boolean }) {
+  const [shown, setShown] = useState(estatico)
+  const c = useCountUp(firm.cabezas, 900, shown, estatico)
   useEffect(() => {
+    if (estatico) return
     const id = setTimeout(() => setShown(true), 20)
     return () => clearTimeout(id)
-  }, [])
+  }, [estatico])
   const pct = max ? Math.max(4, (firm.cabezas / max) * 100) : 0
   return (
     <div
@@ -79,21 +76,27 @@ function PulseRow({ firm, max, rank }: { firm: Firm; max: number; rank: number }
  * Pulso del mercado — dripea la actividad de Cañuelas del último día con datos:
  * cabezas por consignatario, con count-up y reveal escalonado. Dopamínico, con
  * sensación de progreso (el acumulado histórico también cuenta hacia arriba).
+ *
+ * Con `inicial` (lo calcula el server en /mercado/pulso) se pinta todo de una, sin fetch
+ * ni drip: el número tiene que estar en el HTML que leen buscadores e IAs. Sin `inicial`
+ * (dashboard, o build sin base) se pide a /api/market-pulse y se anima como siempre.
  */
-export default function MagPulse() {
-  const [data, setData] = useState<PulseData | null>(null)
-  const [visible, setVisible] = useState(0)
+export default function MagPulse({ inicial = null }: { inicial?: PulseData | null }) {
+  const estatico = inicial !== null
+  const [data, setData] = useState<PulseData | null>(inicial)
+  const [visible, setVisible] = useState(inicial?.firms.length ?? 0)
 
   useEffect(() => {
+    if (estatico) return
     fetch('/api/market-pulse')
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => setData(d))
       .catch(() => {})
-  }, [])
+  }, [estatico])
 
   // Drip: revelar las firmas de a una.
   useEffect(() => {
-    if (!data?.firms?.length) return
+    if (estatico || !data?.firms?.length) return
     setVisible(0)
     const iv = setInterval(() => {
       setVisible((v) => {
@@ -105,10 +108,10 @@ export default function MagPulse() {
       })
     }, 320)
     return () => clearInterval(iv)
-  }, [data])
+  }, [data, estatico])
 
-  const total = useCountUp(data?.total_cabezas || 0, 1600, !!data)
-  const acum = useCountUp(data?.acumulado_lotes || 0, 1800, !!data)
+  const total = useCountUp(data?.total_cabezas || 0, 1600, !!data, estatico)
+  const acum = useCountUp(data?.acumulado_lotes || 0, 1800, !!data, estatico)
 
   if (data && !data.date) {
     return (
@@ -156,7 +159,7 @@ export default function MagPulse() {
 
         <div className="space-y-0.5">
           {shownFirms.map((f, i) => (
-            <PulseRow key={f.name} firm={f} max={max} rank={i + 1} />
+            <PulseRow key={f.name} firm={f} max={max} rank={i + 1} estatico={estatico} />
           ))}
         </div>
 

@@ -155,7 +155,7 @@ export default function QueEsLaInvernadaPage() {
           Es la fase que agrega kilos: el productor que la realiza —el <span className="text-zinc-300">invernador</span>—
           compra o recibe el ternero flaco al destete y lo vende gordo para faena. Su negocio está en
           el valor que suma entre esos dos momentos. A precio de mercado actual, el ternero se paga
-          alrededor de ${fmt(terneroKg)}/kg vivo y el novillo terminado ${fmt(novilloKg)}/kg
+          alrededor de ${fmt(terneroKg)}/kg vivo (estimado) y el novillo terminado ${fmt(novilloKg)}/kg
           (Mercado Agroganadero, INMAG del {INMAG_DATE}); estos son valores de referencia del mercado,
           no precios fijados por esta página.
         </p>
@@ -231,7 +231,7 @@ export default function QueEsLaInvernadaPage() {
             <tbody>
               <tr className="border-b border-terminal-border/60">
                 <td className="px-3 py-2 text-zinc-300">
-                  Compra: ternero de {PESO_ENTRADA} kg a ${fmt(terneroKg)}/kg
+                  Compra: ternero de {PESO_ENTRADA} kg a ${fmt(terneroKg)}/kg (estimado)
                 </td>
                 <td className="px-3 py-2 text-right text-zinc-200">${fmt(compraTernero)}</td>
               </tr>
@@ -251,7 +251,7 @@ export default function QueEsLaInvernadaPage() {
           </table>
         </div>
         <p className="text-xxs text-zinc-500 mb-4">
-          Ternero ${fmt(terneroKg)}/kg y novillo ${fmt(novilloKg)}/kg (Mercado Agroganadero, INMAG del{' '}
+          Ternero ${fmt(terneroKg)}/kg (estimado) y novillo ${fmt(novilloKg)}/kg (Mercado Agroganadero, INMAG del{' '}
           {INMAG_DATE}). Valores de referencia del mercado.
         </p>
         <p className="text-zinc-400 mb-8">

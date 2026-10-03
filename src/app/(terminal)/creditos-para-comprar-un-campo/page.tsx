@@ -49,7 +49,7 @@ const FAQ = [
 export default function CreditosCampoPage() {
   return (
     <>
-      <SectionBreadcrumbSchema section="campos" sectionName="Campos" />
+      <SectionBreadcrumbSchema section="campos" sectionName="Campos" pageName="Créditos para comprar un campo" pagePath="/creditos-para-comprar-un-campo" />
       <FAQPageSchema items={FAQ} />
 
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">

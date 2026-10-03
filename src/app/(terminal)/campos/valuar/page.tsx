@@ -4,6 +4,7 @@ import ValuacionCampo from '@/components/campos/ValuacionCampo'
 import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
 import { TIERRA, TIERRA_PROVINCIAS } from '@/lib/valuacion-campos'
 import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { DESCARGA_VALOR_TIERRA, LICENCIA_CC_BY } from '@/lib/seo/schemas'
 
 export const revalidate = 3600
 
@@ -29,7 +30,7 @@ const fechaRelevamiento = FECHAS[FECHAS.length - 1]
 
 export const metadata: Metadata = {
   title: `¿Cuánto vale una hectárea en Argentina? ${fmtUsd(provMasBarata.usd_ha)}–${fmtUsd(provMasCara.usd_ha)} por provincia`,
-  description: `Valor de la hectárea de campo en Argentina: de ${fmtUsd(provMasBarata.usd_ha)} (${provMasBarata.provincia}) a ${fmtUsd(provMasCara.usd_ha)} (${provMasCara.provincia}) de referencia provincial, y hasta ${fmtUsd(zonaMasCara.usd_ha)} en ${zonaMasCara.zona}. Tabla por provincia y por zona con fuente y fecha, y un tasador que cruza lo que el campo renta con lo que se paga.`,
+  description: `Valor de la hectárea en Argentina: de ${fmtUsd(provMasBarata.usd_ha)} (${provMasBarata.provincia}) a ${fmtUsd(provMasCara.usd_ha)} (${provMasCara.provincia}), hasta ${fmtUsd(zonaMasCara.usd_ha)} en ${zonaMasCara.zona}. Por provincia y zona, con fuente y tasador.`,
   keywords: [
     'cuanto vale una hectarea en argentina',
     'cuanto vale una hectarea',
@@ -83,7 +84,7 @@ const ZONAS = TIERRA.filter((t) => !!t.zona).sort(
 export default function ValuarCampoPage() {
   return (
     <>
-      <SectionBreadcrumbSchema section="campos" sectionName="Campos" />
+      <SectionBreadcrumbSchema section="campos" sectionName="Campos" pageName="Valuar un campo" pagePath="/campos/valuar" />
       <FAQPageSchema items={FAQ} />
       <DatasetSchema
         name="Valor de la hectárea de campo en Argentina, por provincia y por zona"
@@ -97,6 +98,8 @@ export default function ValuarCampoPage() {
           value: provMasCara.usd_ha,
           unitText: 'USD/ha',
         }}
+        license={LICENCIA_CC_BY}
+        distribution={[DESCARGA_VALOR_TIERRA]}
       />
       <SpeakableSchema url={PAGE_URL} headline="¿Cuánto vale una hectárea de campo en Argentina?" />
 

@@ -4,9 +4,10 @@ import Link from 'next/link'
 import remates from '@/lib/data/remates.json'
 import { RematesListSchema, BreadcrumbSchema } from '@/components/seo/JsonLd'
 import { Calendar, ArrowLeft, ArrowRight, ChevronRight } from 'lucide-react'
-import AuctionCard from '@/components/remates/auction-card'
+import { RemateFila } from '@/components/remates/RemateFila'
 import type { Auction } from '@/lib/db/schema'
 import { EmptyState } from '@/components/ui'
+import { MESES, mesIndexable, mesPasado, rematesDelMes } from '@/lib/seo/indexacion'
 
 const auctions = remates as Auction[]
 
@@ -14,20 +15,7 @@ const auctions = remates as Auction[]
 /*  MONTH CONFIG                                                       */
 /* ================================================================== */
 
-const MONTHS: Record<string, { name: string; number: number }> = {
-  enero: { name: 'Enero', number: 1 },
-  febrero: { name: 'Febrero', number: 2 },
-  marzo: { name: 'Marzo', number: 3 },
-  abril: { name: 'Abril', number: 4 },
-  mayo: { name: 'Mayo', number: 5 },
-  junio: { name: 'Junio', number: 6 },
-  julio: { name: 'Julio', number: 7 },
-  agosto: { name: 'Agosto', number: 8 },
-  septiembre: { name: 'Septiembre', number: 9 },
-  octubre: { name: 'Octubre', number: 10 },
-  noviembre: { name: 'Noviembre', number: 11 },
-  diciembre: { name: 'Diciembre', number: 12 },
-}
+const MONTHS = MESES
 
 const MONTH_SLUGS = Object.keys(MONTHS)
 
@@ -43,17 +31,8 @@ function getCurrentMonth(): number {
   return new Date().getMonth() + 1
 }
 
-function getAuctionsForMonth(monthSlug: string, year?: number): Auction[] {
-  const monthConfig = MONTHS[monthSlug]
-  if (!monthConfig) return []
-
-  const targetYear = year || getCurrentYear()
-  const monthNum = monthConfig.number.toString().padStart(2, '0')
-  const prefix = `${targetYear}-${monthNum}`
-
-  return auctions
-    .filter(a => a.date.startsWith(prefix) && a.status === 'scheduled')
-    .sort((a, b) => a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || ''))
+function getAuctionsForMonth(monthSlug: string): Auction[] {
+  return rematesDelMes(auctions, monthSlug)
 }
 
 function getMonthStats(auctionList: Auction[]) {
@@ -104,11 +83,17 @@ export async function generateMetadata({ params }: { params: Promise<{ mes: stri
   }
 
   const year = getCurrentYear()
-  const auctionList = getAuctionsForMonth(mes, year)
+  const auctionList = getAuctionsForMonth(mes)
   const stats = getMonthStats(auctionList)
+  const pasado = mesPasado(mes)
 
-  const title = `Remates Ganaderos ${monthConfig.name} ${year} | ${stats.count} Subastas Programadas`
-  const description = `Calendario de ${stats.count} remates ganaderos en ${monthConfig.name} ${year}. ${stats.totalHeads > 0 ? `${fmt(stats.totalHeads)} cabezas estimadas. ` : ''}Invernada, cría, reproductores en ${stats.provinces} provincias argentinas.`
+  // Sin el conteo en el title: con "| 0 Subastas Programadas" + la marca pasaba los 80
+  // caracteres, y en un mes que ya pasó "programadas" era falso.
+  const title = `Remates ganaderos de ${monthConfig.name} ${year}`
+  const cabezas = stats.totalHeads > 0 ? `${fmt(stats.totalHeads)} cabezas estimadas. ` : ''
+  const description = pasado
+    ? `Los ${stats.count} remates ganaderos de ${monthConfig.name} ${year}: fechas, consignatarias y lugares. ${cabezas}Invernada, cría y reproductores.`
+    : `Calendario de ${stats.count} remates ganaderos programados en ${monthConfig.name} ${year}. ${cabezas}Invernada, cría y reproductores en ${stats.provinces} provincias.`
 
   return {
     title,
@@ -125,7 +110,7 @@ export async function generateMetadata({ params }: { params: Promise<{ mes: stri
     ],
     openGraph: {
       images: [{ url: '/og-remates.png', width: 1200, height: 630 }],
-      title: `Remates Ganaderos ${monthConfig.name} ${year} — ${stats.count} Subastas`,
+      title,
       description,
       url: `https://www.consignatarias.com.ar/remates/mes/${mes}`,
       type: 'website',
@@ -133,6 +118,9 @@ export async function generateMetadata({ params }: { params: Promise<{ mes: stri
     alternates: {
       canonical: `https://www.consignatarias.com.ar/remates/mes/${mes}`,
     },
+    // Mismo umbral que el sitemap: un mes con un puñado de remates (o ninguno) no
+    // sostiene una página propia en el índice.
+    ...(!mesIndexable(auctions, mes) && { robots: { index: false, follow: true } }),
   }
 }
 
@@ -150,7 +138,7 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
 
   const year = getCurrentYear()
   const currentMonth = getCurrentMonth()
-  const auctionList = getAuctionsForMonth(mes, year)
+  const auctionList = getAuctionsForMonth(mes)
   const stats = getMonthStats(auctionList)
   const { prev, next } = getAdjacentMonths(mes)
 
@@ -169,17 +157,9 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
   const isPastMonth = monthConfig.number < currentMonth
 
   // Prepare schema data
-  const schemaRemates = auctionList.slice(0, 20).map(r => ({
-    id: r.id,
-    name: `Remate ${r.type} - ${r.consignatariaName}`,
-    date: r.date,
-    time: r.time || undefined,
-    location: r.location || r.province,
-    province: r.province,
-    consignatariaName: r.consignatariaName || 'Consignataria',
-    type: r.type || 'General',
-    estimatedHeads: r.estimatedHeads || undefined,
-  }))
+  // Cada Event con la URL de SU ficha (/remates/[slug]) y el perfil de la firma como
+  // organizer.url — antes todos apuntaban al perfil. La regla vive en buildRemateEvent.
+  const schemaRemates = auctionList.slice(0, 20)
 
   return (
     <main className="min-h-screen bg-zinc-950">
@@ -189,7 +169,7 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
         { name: 'Remates', url: 'https://www.consignatarias.com.ar/remates' },
         { name: `${monthConfig.name} ${year}`, url: `https://www.consignatarias.com.ar/remates/mes/${mes}` },
       ]} />
-      {auctionList.length > 0 && <RematesListSchema remates={schemaRemates} />}
+      {auctionList.length > 0 && <RematesListSchema remates={schemaRemates} name={`Remates ganaderos de ${monthConfig.name} ${year}`} max={20} />}
 
       {/* Hero */}
       <section className="border-b border-zinc-800 bg-gradient-to-b from-zinc-900 to-zinc-950">
@@ -227,7 +207,7 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
 
           <p className="text-lg text-zinc-400 max-w-2xl mb-8">
             {isPastMonth ? (
-              `Calendario histórico de remates ganaderos de ${monthConfig.name} ${year}.`
+              `Remates de ${monthConfig.name} ${year}: ${stats.count} realizados.`
             ) : isCurrentMonth ? (
               `${stats.count} remates programados este mes. Calendario actualizado de subastas ganaderas en Argentina.`
             ) : (
@@ -266,7 +246,7 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
         {stats.count === 0 ? (
           <EmptyState
             icon="calendario"
-            title={`No hay remates programados para ${monthConfig.name}`}
+            title={isPastMonth ? `No hay remates registrados en ${monthConfig.name} ${year}` : `No hay remates programados para ${monthConfig.name}`}
             sub={
               isPastMonth
                 ? 'Este mes ya pasó. Consultá el calendario actual.'
@@ -300,11 +280,15 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
                         ({weekAuctions.length} remates)
                       </span>
                     </h2>
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                      {weekAuctions.map(auction => (
-                        <AuctionCard key={auction.id} auction={auction} />
-                      ))}
-                    </div>
+                    {/* Filas livianas: con ~200 remates por mes, la grilla de tarjetas pasaba de 1 MB. */}
+                    <ul className="divide-y divide-zinc-800 rounded-lg border border-zinc-800 px-4">
+                      {weekAuctions
+                        .slice()
+                        .sort((a, b) => a.date.localeCompare(b.date))
+                        .map(auction => (
+                          <RemateFila key={auction.id} remate={auction} conFecha />
+                        ))}
+                    </ul>
                   </div>
                 )
               })}
@@ -317,7 +301,7 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
           <div className="flex flex-wrap gap-2">
             {MONTH_SLUGS.map(m => {
               const isActive = m === mes
-              const monthAuctions = getAuctionsForMonth(m, year)
+              const monthAuctions = getAuctionsForMonth(m)
               return (
                 <Link
                   key={m}

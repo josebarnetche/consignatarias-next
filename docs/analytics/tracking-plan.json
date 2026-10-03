@@ -1,6 +1,6 @@
 {
   "$schema_note": "Tracking plan = fuente de verdad del instrumentado de consignatarias.com.ar. Fase A del trabajo de tracking (metodología analyze→schema→verify adaptada del skill analytics-tracking-automation, SIN GTM: acá se usa gtag.js directo + ledger propio value_events).",
-  "generated": "2026-07-09",
+  "generated": "2026-10-03",
   "ga4_property": "481391781",
   "ga4_measurement_id": "G-6CZMZH9S6Y",
   "uses_gtm": false,
@@ -1438,10 +1438,317 @@
       "seen90": 0,
       "status": "gap",
       "note": "Misma doctrina que el purchase de PRO: nunca con el ?comprada= pelado, solo con la compra confirmada en base. conversion_source se recupera de sessionStorage para atribuirle la venta al banner que la trajo, que si no se pierde en el salto a Rebill."
+    },
+    {
+      "n": "ficha_productividad_view",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/productos/FichaTracker.tsx:43",
+      "sites": [
+        "components/productos/FichaTracker.tsx:43"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "informe_cta_click",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/productos/FichaTracker.tsx:79",
+      "sites": [
+        "components/productos/FichaTracker.tsx:79",
+        "components/productos/OfrecerInforme.tsx:54"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "informe_waitlist",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/productos/ListaDeEspera.tsx:36",
+      "sites": [
+        "components/productos/ListaDeEspera.tsx:36"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "informe_muestra_descarga",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/productos/MuestraGratis.tsx:27",
+      "sites": [
+        "components/productos/MuestraGratis.tsx:27"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "informe_checkout_error",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/productos/ComprarInforme.tsx:50",
+      "sites": [
+        "components/productos/ComprarInforme.tsx:50"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "proveedor_contacto",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/productos/ContactarProveedor.tsx:53",
+      "sites": [
+        "components/productos/ContactarProveedor.tsx:53"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "subscribe_modal_view",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/SubscribeModal.tsx:111",
+      "sites": [
+        "components/SubscribeModal.tsx:111"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "subscribe_modal_dismiss",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/SubscribeModal.tsx:155",
+      "sites": [
+        "components/SubscribeModal.tsx:155"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "premium_gate_view",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/pro/PremiumGate.tsx:42",
+      "sites": [
+        "components/pro/PremiumGate.tsx:42"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "premium_gate_click",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/pro/PremiumGate.tsx:65",
+      "sites": [
+        "components/pro/PremiumGate.tsx:65"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "alerta_novillo_subscribe",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/alertas/SuscribirAlertaNovillo.tsx:38",
+      "sites": [
+        "components/alertas/SuscribirAlertaNovillo.tsx:38"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "cartera_declarada",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/ArrendamientoLiquidacionSignup.tsx:208",
+      "sites": [
+        "components/ArrendamientoLiquidacionSignup.tsx:208"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "siguiente_paso_click",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/seo/SiguientePaso.tsx:53",
+      "sites": [
+        "components/seo/SiguientePaso.tsx:53"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "onboarding_view",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/onboarding/PrimerosPasos.tsx:76",
+      "sites": [
+        "components/onboarding/PrimerosPasos.tsx:76"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "onboarding_dismiss",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/onboarding/PrimerosPasos.tsx:87",
+      "sites": [
+        "components/onboarding/PrimerosPasos.tsx:87"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "onboarding_paso_click",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "components/onboarding/PrimerosPasos.tsx:131",
+      "sites": [
+        "components/onboarding/PrimerosPasos.tsx:131"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "informe_checkout_start",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "lib/analytics.ts:720",
+      "sites": [
+        "lib/analytics.ts:720"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "informe_variante_select",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "lib/analytics.ts:731",
+      "sites": [
+        "lib/analytics.ts:731"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "view_item",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "lib/analytics.ts:743",
+      "sites": [
+        "lib/analytics.ts:743"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
+    },
+    {
+      "n": "informe_view",
+      "fire": "trackEvent",
+      "wrapper": null,
+      "def": "lib/analytics.ts:744",
+      "sites": [
+        "lib/analytics.ts:744"
+      ],
+      "params": [],
+      "key": false,
+      "val": null,
+      "seen90": null,
+      "status": "sin_dato",
+      "note": "Agregado al plan el 2026-10-03: el código ya lo emitía. Sin dato GA4 (el último export es de jul-2026). Completar params y decidir si es key event."
     }
   ],
   "out_of_scope": {
     "trackCron": "src/lib/ops.ts:215 — instrumentación server-side de crons (ops_events), NO es GA4/analytics de producto. 8 call-sites en /api/cron/*. Fuera del tracking plan de front."
   },
-  "last_fixed": "2026-07-09: P0-1 (calendar_download), P0-2 (contact_phone/email/web), P1-6 (pro_prompt params)."
+  "last_fixed": [
+    "2026-07-09: P0-1 (calendar_download), P0-2 (contact_phone/email/web), P1-6 (pro_prompt params).",
+    "2026-10-03: gtag.js lazyOnload → afterInteractive (GA4 subestimaba sesiones móviles: 42 % vs 58 % de clics móviles en GSC).",
+    "2026-10-03: pro_checkout_start unificado en checkout_start (trackCheckoutStart, context=pro).",
+    "2026-10-03: /api/track/event devuelve 503 + success:false si falla el insert (antes success:true).",
+    "2026-10-03: 20 eventos que el código emitía y faltaban en el plan, agregados con status sin_dato."
+  ]
 }

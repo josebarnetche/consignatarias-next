@@ -1,24 +1,59 @@
-'use client';
+import { jsonLd } from '@/lib/seo/json-ld'
+import { consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
+import {
+  SITE,
+  ORG_ID,
+  ORG_REF,
+  WEBSITE_ID,
+  MARCA,
+  RAZON_SOCIAL,
+  buildBreadcrumbList,
+  buildDataset,
+  buildRemateEvent,
+  buildRematesItemList,
+  buildRemateVideo,
+  finDelAnioSiguiente,
+  type BreadcrumbNodo,
+  type DatasetInput,
+  type RemateEventInput,
+  type RemateEventOpts,
+} from '@/lib/seo/schemas'
+
+// Server components: ninguno usa hooks ni estado. Sin 'use client' el JSON-LD sale
+// una sola vez en el HTML (con 'use client' los props viajaban además en el payload
+// RSC: cada FAQ, cada remate, dos veces). La lógica de cada schema vive en
+// src/lib/seo/schemas.ts, que es lo que se testea.
+
+function Ld({ data }: { data: unknown }) {
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(data) }} />
+}
 
 interface OrganizationSchemaProps {
-  name?: string;
   url?: string;
   logo?: string;
   description?: string;
   email?: string;
 }
 
+/**
+ * LA Organization del sitio, con `@id` estable (`/#org`). La emite solo el layout
+ * raíz; el resto de los schemas la referencian con `{ '@id': ORG_ID }` en
+ * publisher/author/creator en vez de repetirla con un nombre distinto cada vez.
+ * Marca: "consignatarias.com.ar". Razón social: legalName.
+ */
 export function OrganizationSchema({
-  name = 'Consignatarias.com.ar',
-  url = 'https://www.consignatarias.com.ar',
-  logo = 'https://www.consignatarias.com.ar/logo.png',
+  url = SITE,
+  logo = `${SITE}/logo.png`,
   description = 'Plataforma de inteligencia del mercado ganadero argentino. Calendario unificado de remates, directorio de frigoríficos y precios INMAG.',
   email = 'agro@memola.com.ar',
 }: OrganizationSchemaProps) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name,
+    '@id': ORG_ID,
+    name: MARCA,
+    legalName: RAZON_SOCIAL,
+    taxID: '30-71863222-2',
     url,
     logo: {
       '@type': 'ImageObject',
@@ -33,11 +68,6 @@ export function OrganizationSchema({
       '@type': 'Person',
       name: 'José Barnetche',
     },
-    parentOrganization: {
-      '@type': 'Organization',
-      name: 'Memola Medios S.A.S.',
-      url: 'https://memola.com.ar',
-    },
     areaServed: {
       '@type': 'Country',
       name: 'Argentina',
@@ -50,8 +80,8 @@ export function OrganizationSchema({
     // QUÉ es autoridad este sitio. Linkea a los entes de Wikidata para que la IA
     // reconozca la entidad, no solo el string. Refuerza la citación en GEO/AEO.
     knowsAbout: [
-      { '@type': 'DefinedTerm', name: 'INMAG', alternateName: 'Índice Novillo Mercado Agroganadero', url: 'https://www.consignatarias.com.ar/mercado/inmag' },
-      { '@type': 'DefinedTerm', name: 'Índice Novillo Arrendamiento', url: 'https://www.consignatarias.com.ar/mercado/arrendamiento' },
+      { '@type': 'DefinedTerm', name: 'INMAG', alternateName: 'Índice Novillo Mercado Agroganadero', url: `${SITE}/mercado/inmag` },
+      { '@type': 'DefinedTerm', name: 'Índice Novillo Arrendamiento', url: `${SITE}/mercado/arrendamiento` },
       { '@type': 'Thing', name: 'Precio del novillo en Argentina' },
       { '@type': 'Thing', name: 'Mercado Agroganadero de Cañuelas' },
       { '@type': 'Thing', name: 'Arrendamiento rural en Argentina' },
@@ -66,12 +96,7 @@ export function OrganizationSchema({
     },
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <Ld data={schema} />;
 }
 
 interface WebSiteSchemaProps {
@@ -80,15 +105,18 @@ interface WebSiteSchemaProps {
 }
 
 export function WebSiteSchema({
-  url = 'https://www.consignatarias.com.ar',
-  name = 'Consignatarias.com.ar',
+  url = SITE,
+  name = MARCA,
 }: WebSiteSchemaProps) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': WEBSITE_ID,
     url,
     name,
     description: 'Calendario unificado de remates ganaderos argentinos',
+    publisher: ORG_REF,
+    inLanguage: 'es-AR',
     potentialAction: {
       '@type': 'SearchAction',
       target: {
@@ -99,173 +127,37 @@ export function WebSiteSchema({
     },
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <Ld data={schema} />;
 }
 
-interface DatasetSchemaProps {
-  name: string;
-  description: string;
-  url: string;
-  keywords?: string[];
-  dateModified?: string;
-  creator?: string;
-  /**
-   * La variable que la serie mide, con su valor de hoy y su unidad.
-   *
-   * Es el campo que convierte un Dataset declarativo en uno citable: sin esto, un
-   * modelo sabe que la página tiene datos pero no qué mide ni en qué unidad, y termina
-   * citando el número suelto del cuerpo sin la unidad ni la fecha.
-   */
-  variableMeasured?: {
-    name: string;
-    unitText: string;
-    value?: number;
-    /** Fecha del valor, cuando no coincide con la de actualización. */
-    observationDate?: string;
-  };
-  /** Rango que cubre la serie, en formato ISO 8601 ("2015-01-05/..") . */
-  temporalCoverage?: string;
-  /** Dónde se puede bajar la serie: API, CSV, endpoint. */
-  distribution?: Array<{ url: string; encodingFormat: string; name?: string }>;
-  /** Cada cuánto se actualiza, como frecuencia legible ("daily", "weekly"). */
-  updateFrequency?: string;
+/**
+ * Dataset. `license` es OBLIGATORIA (antes todos heredaban CC-BY, que contradecía
+ * /licencia-datos):
+ * - compilación o índice propio → LICENCIA_PROPIA;
+ * - publicado declaradamente abierto (/valor-tierra.json) → LICENCIA_CC_BY;
+ * - serie ajena (INMAG, MAG) → `null` + `fuente={FUENTE_MAG}`: se cita, no se licencia.
+ *
+ * Campos que lo hacen citable: variableMeasured (con unitText), temporalCoverage,
+ * distribution. `dateModified` es la fecha REAL del dato; sin ella se omite.
+ */
+type DatasetSchemaProps = DatasetInput & {
+  variableMeasured?: DatasetInput['variableMeasured'];
+  temporalCoverage?: DatasetInput['temporalCoverage'];
+  distribution?: DatasetInput['distribution'];
+};
+
+export function DatasetSchema(props: DatasetSchemaProps) {
+  return <Ld data={buildDataset(props)} />;
 }
 
-export function DatasetSchema({
-  name,
-  description,
-  url,
-  keywords = [],
-  dateModified = new Date().toISOString().slice(0, 10),
-  creator = 'Memola Medios SAS',
-  variableMeasured,
-  temporalCoverage,
-  distribution,
-  updateFrequency,
-}: DatasetSchemaProps) {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'Dataset',
-    name,
-    description,
-    url,
-    keywords: keywords.join(', '),
-    dateModified,
-    creator: {
-      '@type': 'Organization',
-      name: creator,
-    },
-    license: 'https://creativecommons.org/licenses/by/4.0/',
-    isAccessibleForFree: true,
-    spatialCoverage: {
-      '@type': 'Place',
-      name: 'Argentina',
-    },
-    ...(variableMeasured
-      ? {
-          variableMeasured: {
-            '@type': 'PropertyValue',
-            name: variableMeasured.name,
-            unitText: variableMeasured.unitText,
-            ...(variableMeasured.value != null ? { value: variableMeasured.value } : {}),
-            ...(variableMeasured.observationDate
-              ? { observationDate: variableMeasured.observationDate }
-              : {}),
-          },
-        }
-      : {}),
-    ...(temporalCoverage ? { temporalCoverage } : {}),
-    ...(updateFrequency ? { datasetTimeInterval: updateFrequency } : {}),
-    ...(distribution?.length
-      ? {
-          distribution: distribution.map((d) => ({
-            '@type': 'DataDownload',
-            contentUrl: d.url,
-            encodingFormat: d.encodingFormat,
-            ...(d.name ? { name: d.name } : {}),
-          })),
-        }
-      : {}),
-  };
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
-}
-
-interface EventSchemaProps {
-  name: string;
-  description?: string;
-  startDate: string;
-  endDate?: string;
-  location: {
-    name: string;
-    address: string;
-  };
-  organizer?: string;
-  url?: string;
-  eventAttendanceMode?: 'offline' | 'online' | 'mixed';
-}
-
-export function EventSchema({
-  name,
-  description,
-  startDate,
-  endDate,
-  location,
-  organizer,
-  url,
-  eventAttendanceMode = 'offline',
-}: EventSchemaProps) {
-  const attendanceModeMap = {
-    offline: 'https://schema.org/OfflineEventAttendanceMode',
-    online: 'https://schema.org/OnlineEventAttendanceMode',
-    mixed: 'https://schema.org/MixedEventAttendanceMode',
-  };
-
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'Event',
-    name,
-    description,
-    startDate,
-    endDate: endDate || startDate,
-    eventAttendanceMode: attendanceModeMap[eventAttendanceMode],
-    eventStatus: 'https://schema.org/EventScheduled',
-    location: {
-      '@type': 'Place',
-      // Place.name requerido: si la firma no cargó ciudad, caemos a la dirección
-      // (que ya incluye provincia/país) o a 'Argentina'. Nunca vacío.
-      name: location.name?.trim() || location.address?.trim() || 'Argentina',
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: location.address,
-        addressCountry: 'AR',
-      },
-    },
-    organizer: organizer
-      ? {
-          '@type': 'Organization',
-          name: organizer,
-        }
-      : undefined,
-    url,
-  };
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+/**
+ * Event de un remate. Toda la regla (URL única de la ficha, -03:00, endDate con
+ * aritmética de fecha, dirección sin campos vacíos, modo mixto con VirtualLocation
+ * cuando hay transmisión) vive en buildRemateEvent.
+ */
+export function EventSchema({ remate, ...opts }: { remate: RemateEventInput } & RemateEventOpts) {
+  const organizerUrl = opts.organizerUrl ?? `${SITE}${consignatariaProfilePath(remate.consignatariaSlug)}`;
+  return <Ld data={{ '@context': 'https://schema.org', ...buildRemateEvent(remate, { ...opts, organizerUrl }) }} />;
 }
 
 interface LocalBusinessSchemaProps {
@@ -273,15 +165,20 @@ interface LocalBusinessSchemaProps {
   description?: string;
   address: {
     streetAddress?: string;
-    addressLocality: string;
-    addressRegion: string;
+    addressLocality?: string;
+    addressRegion?: string;
   };
   telephone?: string;
   url?: string;
   image?: string;
+  logo?: string;
+  /** Sitio propio, redes: solo URLs http(s); el resto se descarta. */
+  sameAs?: Array<string | null | undefined>;
   areaServed?: string;
   cuit?: string; // se emite como identifier PropertyValue (señal de autoridad de entidad)
 }
+
+const esHttpUrl = (u: string | null | undefined): u is string => !!u && /^https?:\/\/[^\s]+$/i.test(u.trim());
 
 export function LocalBusinessSchema({
   name,
@@ -290,64 +187,48 @@ export function LocalBusinessSchema({
   telephone,
   url,
   image,
+  logo,
+  sameAs,
   areaServed,
   cuit,
 }: LocalBusinessSchemaProps) {
+  const links = (sameAs ?? []).filter(esHttpUrl).map((u) => u.trim());
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': url,
     name,
     description,
-    ...(image ? { image } : {}),
+    ...(image || logo ? { image: image || logo } : {}),
+    ...(logo ? { logo } : {}),
+    // Sin campos vacíos: un addressLocality "" es peor que no declararlo.
     address: {
       '@type': 'PostalAddress',
-      streetAddress: address.streetAddress,
-      addressLocality: address.addressLocality,
-      addressRegion: address.addressRegion,
+      ...(address.streetAddress?.trim() ? { streetAddress: address.streetAddress.trim() } : {}),
+      ...(address.addressLocality?.trim() ? { addressLocality: address.addressLocality.trim() } : {}),
+      ...(address.addressRegion?.trim() ? { addressRegion: address.addressRegion.trim() } : {}),
       addressCountry: 'AR',
     },
     ...(areaServed ? { areaServed: { '@type': 'AdministrativeArea', name: areaServed } } : {}),
     ...(cuit ? { identifier: { '@type': 'PropertyValue', propertyID: 'CUIT', value: cuit } } : {}),
-    telephone,
+    ...(telephone?.trim() ? { telephone: telephone.trim() } : {}),
+    ...(links.length ? { sameAs: links } : {}),
     url,
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <Ld data={schema} />;
 }
 
-// Breadcrumb Schema
-interface BreadcrumbItem {
-  name: string;
-  url: string;
+/**
+ * BreadcrumbList. El último nivel (la página actual) puede ir sin `url`: Google lo
+ * acepta, y es mejor que repetir la home.
+ */
+export function BreadcrumbSchema({ items }: { items: BreadcrumbNodo[] }) {
+  return <Ld data={buildBreadcrumbList(items)} />;
 }
 
-export function BreadcrumbSchema({ items }: { items: BreadcrumbItem[] }) {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: items.map((item, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: item.name,
-      item: item.url,
-    })),
-  };
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
-}
-
-// FAQ Page Schema
+// FAQ Page Schema — SIEMPRE junto con <FaqList items={...} /> (mismo array): el
+// markup tiene que describir preguntas que el usuario ve.
 interface FAQItem {
   question: string;
   answer: string;
@@ -367,56 +248,11 @@ export function FAQPageSchema({ items }: { items: FAQItem[] }) {
     })),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <Ld data={schema} />;
 }
 
-// QAPage Schema — una única Question con su acceptedAnswer, para páginas que
-// responden literalmente UNA pregunta cabecera (CUIT, "qué es INMAG", etc.).
-// Incluye TODOS los campos que Google pide/recomienda para el resultado Q&A:
-// answerCount (obligatorio) + author, datePublished, upvoteCount, url, text.
-const QA_AUTHOR = { '@type': 'Organization', name: 'consignatarias.com.ar', url: 'https://www.consignatarias.com.ar' } as const
-// Fecha de publicación estable (con zona ART) — no usar now() para no generar
-// "churn" de fechas en cada build. Representa cuándo se publicó el Q&A.
-const QA_DEFAULT_DATE = '2025-06-01T00:00:00-03:00'
-
-export interface QAItem {
-  question: string        // título de la pregunta (name)
-  questionText?: string   // texto completo de la pregunta (default: question)
-  answer: string          // texto de la respuesta aceptada
-  url: string             // URL canónica de la respuesta/página
-  datePublished?: string  // ISO con zona horaria (default: QA_DEFAULT_DATE)
-  id?: string             // @id opcional
-}
-
-export function QAPageSchema({ question, questionText, answer, url, datePublished = QA_DEFAULT_DATE, id }: QAItem) {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'QAPage',
-    ...(id ? { '@id': id } : {}),
-    mainEntity: {
-      '@type': 'Question',
-      name: question,
-      text: questionText ?? question,
-      answerCount: 1,
-      author: QA_AUTHOR,
-      datePublished,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: answer,
-        url,
-        author: QA_AUTHOR,
-        datePublished,
-        upvoteCount: 0,
-      },
-    },
-  }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-}
+// (QAPageSchema se eliminó: QAPage es para foros con respuestas de usuarios, y acá
+// se armaba a mano con upvoteCount/answerCount fijos. Esas páginas usan FAQPageSchema.)
 
 // DefinedTermSet — the glossary as a machine-readable set of citable entities.
 // Each term becomes a schema.org DefinedTerm with a stable @id (URL#term) so AI
@@ -463,41 +299,38 @@ export function DefinedTermSetSchema({
     })),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <Ld data={schema} />;
 }
 
-// Section Breadcrumb Schema — reusable for top-level section pages
-export function SectionBreadcrumbSchema({ section, sectionName }: { section: string; sectionName: string }) {
-  const data = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Inicio',
-        item: 'https://www.consignatarias.com.ar',
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: sectionName,
-        item: `https://www.consignatarias.com.ar/${section}`,
-      },
-    ],
-  };
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  );
+/**
+ * Breadcrumb de sección: Inicio → sección. En una página que NO es la sección
+ * (una guía que cuelga de /campos, /mercado/arrendamiento/liniers, …) pasá
+ * `pageName` + `pagePath`: agrega el nivel de la propia página. Sin eso, la ruta
+ * terminaba en la sección padre como si la página fuera esa sección.
+ */
+export function SectionBreadcrumbSchema({
+  section,
+  sectionName,
+  pageName,
+  pagePath,
+}: {
+  section: string;
+  sectionName: string;
+  pageName?: string;
+  /** Ruta de la página (`/como-vender-un-campo`), o URL absoluta. */
+  pagePath?: string;
+}) {
+  const items: BreadcrumbNodo[] = [
+    { name: 'Inicio', url: SITE },
+    { name: sectionName, url: `${SITE}/${section}` },
+  ];
+  if (pageName) {
+    items.push({
+      name: pageName,
+      url: pagePath ? (pagePath.startsWith('http') ? pagePath : `${SITE}${pagePath}`) : null,
+    });
+  }
+  return <Ld data={buildBreadcrumbList(items)} />;
 }
 
 // Consignataria Profile Schema — for individual /consignatarias/[slug] pages
@@ -519,24 +352,24 @@ export function ConsignatariaProfileSchema({
   provincia,
   localidad,
   totalRemates,
-  isPro = false,
   description,
   telephone,
   email,
 }: ConsignatariaProfileSchemaProps) {
-  const url = `https://www.consignatarias.com.ar/consignatarias/${slug}`;
-  
+  const url = `${SITE}/consignatarias/${slug}`;
+  const ciudad = (localidad || '').split(',')[0].trim();
+
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': url,
     name,
-    description: description || `${name} - Consignataria de hacienda en ${localidad || provincia}, Argentina. ${totalRemates} remates publicados.`,
+    description: description || `${name} - Consignataria de hacienda en ${ciudad || provincia}, Argentina. ${totalRemates} remates publicados.`,
     url,
     address: {
       '@type': 'PostalAddress',
-      addressLocality: localidad || provincia,
-      addressRegion: provincia,
+      ...(ciudad ? { addressLocality: ciudad } : {}),
+      ...(provincia && provincia !== 'Argentina' ? { addressRegion: provincia } : {}),
       addressCountry: 'AR',
     },
     ...(telephone && { telephone }),
@@ -548,159 +381,67 @@ export function ConsignatariaProfileSchema({
         '@type': 'Service',
         name: 'Remates Ganaderos',
         description: `Servicios de consignación y remate de hacienda en ${provincia}`,
-        provider: {
-          '@type': 'Organization',
-          name,
-        },
+        provider: { '@id': url },
       },
     },
     // Industry classification
     additionalType: 'https://www.wikidata.org/wiki/Q728937', // Livestock auction
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <Ld data={schema} />;
 }
 
-// VideoObject Schema for live-streamed auctions
-interface VideoObjectSchemaProps {
+/**
+ * VideoObject de la transmisión de un remate (YouTube). Sin ID de video real no se
+ * emite. Reglas en buildRemateVideo: sin contentUrl (no es el archivo), sin duration
+ * inventada, uploadDate nunca futuro, isLiveBroadcast solo el día y en horario.
+ */
+export function VideoObjectSchema(props: {
   name: string;
   description: string;
-  thumbnailUrl?: string;
-  uploadDate: string;
-  contentUrl?: string;
-  embedUrl?: string;
-  duration?: string; // ISO 8601 format: PT2H for 2 hours
-  publisher?: string;
-  isLive?: boolean;
-}
-
-export function VideoObjectSchema({
-  name,
-  description,
-  thumbnailUrl,
-  uploadDate,
-  contentUrl,
-  embedUrl,
-  duration = 'PT2H', // Default 2 hours for livestock auctions
-  publisher,
-  isLive = false,
-}: VideoObjectSchemaProps) {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'VideoObject',
-    name,
-    description,
-    thumbnailUrl: thumbnailUrl || 'https://www.consignatarias.com.ar/og-image.png',
-    uploadDate,
-    duration,
-    contentUrl,
-    embedUrl,
-    publication: isLive ? {
-      '@type': 'BroadcastEvent',
-      isLiveBroadcast: true,
-      startDate: uploadDate,
-    } : undefined,
-    publisher: publisher ? {
-      '@type': 'Organization',
-      name: publisher,
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://www.consignatarias.com.ar/logo.png',
-      },
-    } : undefined,
-  };
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
-}
-
-// ItemList Schema for remates listing (helps Google understand it's a list of events)
-interface RemateListItem {
-  id: string | number;
-  name: string;
+  youtubeUrl?: string | null;
   date: string;
-  time?: string;
-  location: string;
-  province: string | null;
-  consignatariaName: string;
-  type: string;
-  estimatedHeads?: number;
-  url?: string;
+  time?: string | null;
+  publisherName?: string;
+}) {
+  const video = buildRemateVideo(props);
+  return video ? <Ld data={video} /> : null;
 }
 
-export function RematesListSchema({ remates }: { remates: RemateListItem[] }) {
-  // Only include first 10 remates to keep schema size reasonable
-  const topRemates = remates.slice(0, 10);
-  
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: 'Próximos Remates Ganaderos en Argentina',
-    description: `Calendario de ${remates.length} remates ganaderos programados`,
-    numberOfItems: remates.length,
-    itemListElement: topRemates.map((remate, index) => {
-      // Con offset ART (-03:00): sin zona, Google marca la fecha como ambigua.
-      const startDateTime = remate.time
-        ? `${remate.date}T${remate.time}:00-03:00`
-        : `${remate.date}T10:00:00-03:00`;
+/** Un remate para el ItemList: el Auction de remates.json sirve tal cual. */
+type RemateListItem = RemateEventInput & {
+  /** undefined → la ficha del remate; null → sin url. */
+  url?: string | null;
+  organizerUrl?: string;
+};
 
-      // Place.name es requerido por schema.org. Muchas firmas no cargan `location`
-      // (solo la provincia) → sin fallback, JSON.stringify dropea el campo y GSC
-      // avisa "Falta el campo name (en location)". Fallback para el NOMBRE: ciudad →
-      // provincia → país. Para la localidad NO inventamos "Argentina" (no es una
-      // localidad): se omite si no hay ciudad/provincia real.
-      const cityOrProvince = remate.location?.trim() || remate.province?.trim() || undefined;
-      const placeName = cityOrProvince || 'Argentina';
-
-      return {
-        '@type': 'ListItem',
-        position: index + 1,
-        item: {
-          '@type': 'Event',
-          name: `Remate ${remate.type} - ${remate.consignatariaName}`,
-          description: `Remate de ${remate.type} organizado por ${remate.consignatariaName}${remate.estimatedHeads ? ` (~${remate.estimatedHeads} cabezas)` : ''}`,
-          startDate: startDateTime,
-          // Las ferias son presenciales; Mixed/Online exige VirtualLocation.url
-          // (que no tenemos por lote de lista) → Offline es lo correcto y válido.
-          eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-          eventStatus: 'https://schema.org/EventScheduled',
-          location: {
-            '@type': 'Place',
-            name: placeName,
-            address: {
-              '@type': 'PostalAddress',
-              addressLocality: cityOrProvince,
-              addressRegion: remate.province?.trim() || undefined,
-              addressCountry: 'AR',
-            },
-          },
-          organizer: {
-            '@type': 'Organization',
-            name: remate.consignatariaName,
-          },
-          // URL única por evento o se omite: compartir /remates entre todos degrada
-          // el rich result (Google prefiere una URL única por Event, o ninguna).
-          ...(remate.url ? { url: remate.url } : {}),
-        },
-      };
-    }),
-  };
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+/**
+ * ItemList de Events. `name` según el contexto (próximos / anteriores / en vivo…),
+ * `numberOfItems` = los que se emiten (máx. `max`), y cada Event con la URL de SU
+ * ficha y el perfil de la consignataria como organizer.url.
+ */
+export function RematesListSchema({
+  remates,
+  name = 'Próximos remates ganaderos en Argentina',
+  description,
+  max = 10,
+}: {
+  remates: RemateListItem[];
+  name?: string;
+  description?: string;
+  max?: number;
+}) {
+  const schema = buildRematesItemList(
+    remates.map((r) => ({
+      remate: r,
+      opts: {
+        url: r.url,
+        organizerUrl: r.organizerUrl ?? `${SITE}${consignatariaProfilePath(r.consignatariaSlug)}`,
+      },
+    })),
+    { name, description, max },
   );
+  return <Ld data={schema} />;
 }
 
 // SaaS Product/Pricing Schema for /planes page
@@ -719,7 +460,7 @@ export function SaaSPricingSchema({ plans }: { plans: PricingPlan[] }) {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     '@id': 'https://www.consignatarias.com.ar/planes',
-    name: 'Planes y Precios - Consignatarias.com.ar',
+    name: `Planes y Precios - ${MARCA}`,
     description: 'Planes de suscripción para consignatarias y frigoríficos argentinos',
     mainEntity: {
       '@type': 'ItemList',
@@ -731,32 +472,25 @@ export function SaaSPricingSchema({ plans }: { plans: PricingPlan[] }) {
           name: `Plan ${plan.name}`,
           description: plan.description,
           image: 'https://www.consignatarias.com.ar/og-image.png',
-          brand: {
-            '@type': 'Organization',
-            name: 'Consignatarias.com.ar',
-          },
+          brand: ORG_REF,
           // Plan "a medida": price es piso → priceSpecification.minPrice, no un
           // precio fijo (evita mostrar un precio engañoso). Los demás, precio fijo.
           offers: {
             '@type': 'Offer',
             priceCurrency: plan.currency || 'ARS',
             availability: 'https://schema.org/InStock',
-            url: 'https://www.consignatarias.com.ar/planes',
+            url: `${SITE}/planes`,
+            seller: ORG_REF,
             ...(plan.custom
               ? { priceSpecification: { '@type': 'PriceSpecification', minPrice: plan.price, priceCurrency: plan.currency || 'ARS' } }
-              : { price: plan.price, priceValidUntil: '2026-12-31' }), // estable: sin churn
+              : { price: plan.price, priceValidUntil: finDelAnioSiguiente() }), // fin del año siguiente: nunca vence solo
           },
         },
       })),
     },
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <Ld data={schema} />;
 }
 
 // Speakable Schema for voice search optimization (Google Assistant, etc.)
@@ -783,12 +517,7 @@ export function SpeakableSchema({
     url,
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <Ld data={schema} />;
 }
 
 // HowTo Schema for instructional content
@@ -826,12 +555,7 @@ export function HowToSchema({
     })),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <Ld data={schema} />;
 }
 
 // TechArticle Schema for technical documentation (API docs, developer guides)
@@ -839,8 +563,15 @@ interface TechArticleSchemaProps {
   name: string;
   description: string;
   url: string;
+  /** Fecha real de publicación. Sin ella se omite (antes '2024-01-01' por defecto). */
   datePublished?: string;
-  dateModified?: string;
+  /**
+   * OBLIGATORIA y explícita: la última edición REAL del texto (una constante en la
+   * página). Nunca la fecha del build ni la del precio del día: eso simula frescura.
+   */
+  dateModified: string;
+  /** Imagen de la sección (su og). Por defecto, la og genérica. */
+  image?: string;
   proficiencyLevel?: 'Beginner' | 'Expert';
   /** Named author (editorial byline). Falls back to the org author. */
   authorName?: string;
@@ -852,8 +583,9 @@ export function TechArticleSchema({
   name,
   description,
   url,
-  datePublished = '2024-01-01',
-  dateModified = new Date().toISOString().split('T')[0],
+  datePublished,
+  dateModified,
+  image = `${SITE}/og-image.png`,
   proficiencyLevel = 'Beginner',
   authorName,
   citations,
@@ -864,7 +596,8 @@ export function TechArticleSchema({
     headline: name,
     description,
     url,
-    datePublished,
+    image,
+    ...(datePublished ? { datePublished } : {}),
     dateModified,
     proficiencyLevel,
     inLanguage: 'es-AR',
@@ -872,21 +605,10 @@ export function TechArticleSchema({
       ? {
           '@type': 'Person',
           name: authorName,
-          worksFor: { '@type': 'Organization', name: 'Consignatarias.com.ar' },
+          worksFor: ORG_REF,
         }
-      : {
-          '@type': 'Organization',
-          name: 'Consignatarias.com.ar',
-          url: 'https://www.consignatarias.com.ar',
-        },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Memola Medios S.A.S.',
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://www.consignatarias.com.ar/logo.png',
-      },
-    },
+      : ORG_REF,
+    publisher: ORG_REF,
     ...(citations && citations.length
       ? {
           citation: citations.map((c) => ({
@@ -902,12 +624,7 @@ export function TechArticleSchema({
     },
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <Ld data={schema} />;
 }
 
 // WebApplication Schema for interactive tools (calculators, comparators)
@@ -942,19 +659,10 @@ export function WebApplicationSchema({
     ...(features.length > 0 && {
       featureList: features.join(', '),
     }),
-    provider: {
-      '@type': 'Organization',
-      name: 'Consignatarias.com.ar',
-      url: 'https://www.consignatarias.com.ar',
-    },
+    provider: ORG_REF,
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <Ld data={schema} />;
 }
 
 /* ------------------------------------------------------------------ */
@@ -997,8 +705,8 @@ export function GuiaPremiumSchema({
     name,
     description,
     url,
-    image: 'https://www.consignatarias.com.ar/og-image.png',
-    brand: { '@type': 'Organization', name: 'Consignatarias.com.ar' },
+    image: `${SITE}/og-image.png`,
+    brand: ORG_REF,
     category: 'Guía profesional — ganadería y comercialización de hacienda',
     inLanguage: 'es-AR',
     releaseDate: fechaActualizacion,
@@ -1010,8 +718,8 @@ export function GuiaPremiumSchema({
       inLanguage: 'es-AR',
       datePublished: fechaActualizacion,
       version: edicion,
-      author: { '@type': 'Organization', name: 'Consignatarias.com.ar' },
-      publisher: { '@type': 'Organization', name: 'Memola Medios SAS' },
+      author: ORG_REF,
+      publisher: ORG_REF,
       ...(citations.length > 0 && {
         citation: citations.map((c) => ({
           '@type': 'Legislation',
@@ -1028,12 +736,8 @@ export function GuiaPremiumSchema({
       url,
       // Compra única: sin renovación ni suscripción que declarar.
       category: 'https://schema.org/Purchase',
-      seller: {
-        '@type': 'Organization',
-        name: 'Memola Medios SAS',
-        taxID: '30-71863222-2',
-      },
-      priceValidUntil: '2026-12-31',
+      seller: ORG_REF,
+      priceValidUntil: finDelAnioSiguiente(),
       eligibleRegion: { '@type': 'Country', name: 'Argentina' },
     },
     audience: {
@@ -1042,10 +746,5 @@ export function GuiaPremiumSchema({
     },
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <Ld data={schema} />;
 }

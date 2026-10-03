@@ -3,8 +3,6 @@
 import { ImagenTema } from '@/components/ui/ImagenTema'
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import rematesData from '@/lib/data/remates.json'
-import type { Auction } from '@/lib/db/schema'
 import { useSessionTier } from '@/lib/use-session-tier'
 import HeroNumber from '@/components/pro/HeroNumber'
 import MultiSelectList from '@/components/calendario/MultiSelectList'
@@ -12,9 +10,8 @@ import {
   buildLocalidadTree,
   matchesSelection,
   buildIcal,
+  type RemateCalendario,
 } from '@/components/calendario/multiSelectUtils'
-
-const auctions = rematesData as Auction[]
 
 const PROVINCIAS = [
   'BUENOS AIRES', 'SANTA FE', 'CORDOBA', 'CHACO', 'SAN LUIS',
@@ -32,7 +29,8 @@ const TIPOS = [
 const PRE_FILTER_SELECT =
   'w-full px-3 py-2 bg-zinc-900 border border-terminal-border rounded text-data font-terminal text-zinc-200 focus:border-accent focus:outline-none'
 
-export default function CalendarExportClient() {
+/** `auctions`: remates desde hoy, ya proyectados en el server (ver page.tsx). */
+export default function CalendarExportClient({ auctions }: { auctions: RemateCalendario[] }) {
   // Bajar el .ics es acción clave: requiere cuenta.
   const { loggedIn } = useSessionTier()
   const [email, setEmail] = useState('')
@@ -54,7 +52,7 @@ export default function CalendarExportClient() {
       if (tipo && a.type !== tipo) return false
       return true
     })
-  }, [provincia, tipo, dias])
+  }, [auctions, provincia, tipo, dias])
 
   const groups = useMemo(() => buildLocalidadTree(filteredAuctions), [filteredAuctions])
   const totalLocalidades = useMemo(

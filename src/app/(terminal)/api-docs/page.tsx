@@ -150,6 +150,7 @@ export default function ApiDocsPage() {
         description="Documentación de la API pública del mercado ganadero argentino. Endpoints para remates, precios INMAG, consignatarias y frigoríficos."
         url="https://www.consignatarias.com.ar/api-docs"
         proficiencyLevel="Beginner"
+        dateModified="2026-10-03"
       />
       
       <div className="max-w-4xl mx-auto px-4 py-8">

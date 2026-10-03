@@ -14,6 +14,10 @@ import {
 import { consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
 import { getLogoUrl, getBrandWhiteLogo, getBrandColor } from '@/lib/data/logo-map'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
+import rematesData from '@/lib/data/remates.json'
+import { jsonLd } from '@/lib/seo/json-ld'
+import { rematePath } from '@/lib/remate-slug'
+import { buildRemateEvent, OG_REMATES } from '@/lib/seo/schemas'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
 const RUTA = '/remates/expo-rural-mercedes'
@@ -84,6 +88,59 @@ function firmasConLogo(): Array<{ slug: string; nombre: string; logo: string; fo
     if (logo) vistas.set(r.slug, { slug: r.slug, nombre: r.firma, logo, fondo: fondoDeLogo(r.slug) })
   }
   return [...vistas.values()]
+}
+
+/**
+ * EventSeries de la Expo: un subEvent por remate del cronograma. Si el remate está en
+ * remates.json (misma firma y fecha) lleva la URL de su ficha; si no —los que salen
+ * del cronograma de la Sociedad Rural y no del scrape— va sin url.
+ */
+function ExpoEventSeriesSchema() {
+  const fechas = REMATES_EXPO.map((r) => r.fecha).sort()
+  const subEvent = REMATES_EXPO.map((r) => {
+    const enCalendario = r.slug
+      ? rematesData.find(
+          (x) => x.date === r.fecha && consignatariaProfilePath(x.consignatariaSlug) === `/consignatarias/${r.slug}`,
+        )
+      : undefined
+    const nombre = `${r.cabania ? `${r.cabania} — ` : ''}Remate ${r.categoria ?? 'especial'} de ${r.firma} · ${EXPO.edicion}ª Expo Rural de Mercedes`
+    return buildRemateEvent(
+      enCalendario ?? {
+        consignatariaName: r.firma,
+        date: r.fecha,
+        time: r.hora ?? null,
+        location: 'Mercedes',
+        province: 'CORRIENTES',
+        type: r.categoria ?? 'especial',
+      },
+      {
+        name: nombre,
+        description: r.nota ?? nombre,
+        url: enCalendario ? `${APP_URL}${rematePath(enCalendario)}` : null,
+        ...(r.slug ? { organizerUrl: `${APP_URL}${consignatariaProfilePath(r.slug)}` } : {}),
+      },
+    )
+  })
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'EventSeries',
+    name: `Remates de la ${EXPO.edicion}ª Expo Rural de Mercedes ${EXPO.anio}`,
+    description: `Cronograma de remates alrededor de la ${EXPO.nombre}, ${EXPO.entidad}, ${EXPO.provincia}.`,
+    url: `${APP_URL}${RUTA}`,
+    image: [OG_REMATES],
+    startDate: fechas[0],
+    endDate: fechas[fechas.length - 1],
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    location: {
+      '@type': 'Place',
+      name: EXPO.entidad,
+      address: { '@type': 'PostalAddress', addressLocality: 'Mercedes', addressRegion: EXPO.provincia, addressCountry: 'AR' },
+    },
+    organizer: { '@type': 'Organization', name: EXPO.entidad },
+    subEvent,
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 }
 
 export default function Page() {
@@ -160,7 +217,8 @@ export default function Page() {
         </div>
       </section>
 
-      <SectionBreadcrumbSchema section="remates" sectionName="Remates" />
+      <SectionBreadcrumbSchema section="remates" sectionName="Remates" pageName="Expo Rural Mercedes" pagePath="/remates/expo-rural-mercedes" />
+      <ExpoEventSeriesSchema />
 
       {/* ── Las firmas, con su logo. Es la prueba visual del titular. ─────────── */}
       <section className="border-b border-zinc-800/60 bg-zinc-950/40">

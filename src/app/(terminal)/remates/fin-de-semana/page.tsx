@@ -1,10 +1,9 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import remates from '@/lib/data/remates.json'
-import { consignatariaProfilePath, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
-import { normalizeUrl } from '@/lib/utils/url'
+import { RemateCardSimple } from '@/components/remates/RemateCardSimple'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
-import { Calendar, Clock, MapPin, Users, ExternalLink, Play, FileText } from 'lucide-react'
+import { Calendar } from 'lucide-react'
 import { EmptyState } from '@/components/ui'
 
 // Regenerate hourly for fresh TODAY
@@ -111,108 +110,7 @@ interface Remate {
 }
 
 function RemateCard({ remate }: { remate: Remate }) {
-  const typeColors: Record<string, string> = {
-    invernada: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-    cria: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-    general: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/30',
-    especial: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
-    reproductores: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
-  }
-
-  const typeColor = typeColors[remate.type?.toLowerCase()] || typeColors.general
-
-  return (
-    <article className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 hover:border-zinc-700 transition-colors">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <div className="flex-1 min-w-0">
-          <Link
-            href={consignatariaProfilePath(remate.consignatariaSlug)}
-            className="text-lg font-medium text-zinc-100 hover:text-accent transition-colors line-clamp-1"
-          >
-            {remate.consignatariaName}
-          </Link>
-          <div className="flex items-center gap-2 mt-1 text-sm text-zinc-500">
-            <MapPin className="w-3.5 h-3.5" />
-            <span>{remate.location}, {remate.province}</span>
-          </div>
-        </div>
-        <span className={`px-2 py-1 text-xs font-medium border rounded ${typeColor} shrink-0`}>
-          {remate.type}
-        </span>
-      </div>
-
-      {/* Details */}
-      <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-400 mb-3">
-        <div className="flex items-center gap-1.5 text-accent/80">
-          <Calendar className="w-3.5 h-3.5" />
-          <span className="font-medium">{formatDateShort(remate.date)}</span>
-        </div>
-        {remate.time && (
-          <div className="flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5" />
-            <span>{remate.time} hs</span>
-          </div>
-        )}
-        {remate.estimatedHeads && (
-          <div className="flex items-center gap-1.5">
-            <Users className="w-3.5 h-3.5" />
-            <span>~{remate.estimatedHeads.toLocaleString('es-AR')} cabezas</span>
-          </div>
-        )}
-      </div>
-
-      {/* Description */}
-      {remate.description && (
-        <p className="text-sm text-zinc-500 line-clamp-2 mb-3">
-          {remate.description}
-        </p>
-      )}
-
-      {/* Actions */}
-      <div className="flex flex-wrap gap-2 pt-2 border-t border-zinc-800">
-        {remate.youtubeUrl && (
-          <a
-            href={normalizeUrl(remate.youtubeUrl) || '#'}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/30 rounded hover:bg-red-500/20 transition-colors"
-          >
-            <Play className="w-3 h-3" />
-            Ver en vivo
-          </a>
-        )}
-        {remate.catalogUrl && (
-          <a
-            href={normalizeUrl(remate.catalogUrl) || '#'}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-zinc-800 text-zinc-300 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors"
-          >
-            <FileText className="w-3 h-3" />
-            Catálogo
-          </a>
-        )}
-        {remate.sourceUrl && (
-          <a
-            href={normalizeUrl(remate.sourceUrl) || '#'}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-zinc-800 text-zinc-300 border border-zinc-700 rounded hover:bg-zinc-700 transition-colors"
-          >
-            <ExternalLink className="w-3 h-3" />
-            Más info
-          </a>
-        )}
-        <Link
-          href={consignatariaProfilePath(remate.consignatariaSlug)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-zinc-500 hover:text-zinc-300 transition-colors ml-auto"
-        >
-          Ver consignataria →
-        </Link>
-      </div>
-    </article>
-  )
+  return <RemateCardSimple remate={remate} fecha={formatDateShort(remate.date)} />
 }
 
 export default function RematesFinDeSemanaPage() {
@@ -245,23 +143,14 @@ export default function RematesFinDeSemanaPage() {
   }, {} as Record<string, number>)
 
   // Schema data
-  const schemaRemates = weekendRemates.slice(0, 10).map(r => ({
-    id: r.id,
-    name: `Remate ${r.type} - ${r.consignatariaName}`,
-    date: r.date,
-    time: r.time || undefined,
-    location: r.location,
-    province: r.province,
-    consignatariaName: r.consignatariaName,
-    type: r.type,
-    estimatedHeads: r.estimatedHeads || undefined,
-    url: `https://www.consignatarias.com.ar/consignatarias/${getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug}`,
-  }))
+  // Cada Event con la URL de SU ficha (/remates/[slug]) y el perfil de la firma como
+  // organizer.url — antes todos apuntaban al perfil. La regla vive en buildRemateEvent.
+  const schemaRemates = weekendRemates.slice(0, 10)
 
   return (
     <>
       <SectionBreadcrumbSchema section="remates/fin-de-semana" sectionName="Remates Fin de Semana" />
-      {schemaRemates.length > 0 && <RematesListSchema remates={schemaRemates} />}
+      {schemaRemates.length > 0 && <RematesListSchema remates={schemaRemates} name="Remates ganaderos del fin de semana en Argentina" />}
 
       <div className="px-4 py-6 max-w-4xl mx-auto">
         {/* Header */}

@@ -229,7 +229,7 @@ export default function RazasBovinasArgentinaPage() {
         name="Razas bovinas de Argentina: Angus, Hereford, Braford y Brangus"
         description="Guía de referencia de las razas bovinas dominantes en Argentina: las británicas Angus y Hereford para el clima templado y la calidad de carne, y las sintéticas Braford y Brangus para el norte por su resistencia al calor y la garrapata. Origen, aptitud, zona y uso de cada raza."
         url={PAGE_URL}
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           { name: 'Asociación Argentina de Angus', url: 'https://www.angus.org.ar' },
           { name: 'Asociación Argentina Criadores de Hereford', url: 'https://www.hereford.org.ar' },
@@ -343,7 +343,7 @@ export default function RazasBovinasArgentinaPage() {
           valúa por kilo de carne sino por su valor genético, muy por encima del toro de faena —que hoy (
           {lastUpdate}) cotiza a <strong>${fmt(toro)}/kg</strong> vivo en el Mercado Agroganadero como
           categoría de manufactura. La cría que ese toro genera se comercializa después como ternero de
-          invernada, la categoría que suele liderar el precio por kilo (hoy ${fmt(ternero)}/kg). Son
+          invernada, la categoría que suele liderar el precio por kilo (hoy ${fmt(ternero)}/kg (estimado)). Son
           valores de referencia del mercado, no fijados por esta página.
         </p>
 

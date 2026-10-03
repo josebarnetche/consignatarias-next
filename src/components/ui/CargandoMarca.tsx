@@ -1,9 +1,14 @@
 import { ImagenTema } from '@/components/ui/ImagenTema'
 /**
- * Loading global — la sonda respirando (curva de marca --ease-decay).
+ * Estado de carga — la sonda respirando (curva de marca --ease-decay).
  * Pictograma COLOR "onda" en chip hueso, como manda el manual.
+ *
+ * Ya no es el loading.tsx raíz: ese hacía que casi todo HTML prerenderizado abriera
+ * con "Cargando el mercado…" y dejara el contenido en un <div hidden>, que un
+ * rastreador sin JS no lee. Se usa solo en segmentos privados y dinámicos
+ * (cuenta, dashboard) vía su loading.tsx.
  */
-export default function Loading() {
+export default function CargandoMarca() {
   return (
     <div className="min-h-[50vh] flex flex-col items-center justify-center gap-4 py-24">
       <style>{`

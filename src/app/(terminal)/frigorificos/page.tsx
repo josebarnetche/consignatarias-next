@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
@@ -7,16 +8,19 @@ import frigorificosData from '@/lib/data/frigorificos.json'
 import marketPrices from '@/lib/data/market-prices.json'
 import rematesData from '@/lib/data/remates.json'
 import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema, DatasetSchema } from '@/components/seo/JsonLd'
+import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import FrigorificoLeadCapture from '@/components/leads/FrigorificoLeadCapture'
 import { FaenaStats } from '@/components/FaenaStats'
 import { MagActivity } from '@/components/MagActivity'
 import { getSenasaScrapedDate, getSenasaHabilitadosCount } from '@/lib/data/senasa-habilitados'
 import { frigorificoProvinceSlugs } from './_views/FrigorificoProvinceView'
+import { listadoFrigorificos } from '@/lib/frigorificos/listado'
 import SinceLastVisit from '@/components/landing/SinceLastVisit'
 import FreshnessStamp from '@/components/landing/FreshnessStamp'
 
 const totalFrigorificos = frigorificosData.length
+const listado = listadoFrigorificos()
 
 // Answer-first number for the money query "listado de frigoríficos habilitados por SENASA".
 // N = conteo del dataset SENASA (CUIT distintos en el registro oficial Ciclo I/II/III),
@@ -122,24 +126,22 @@ function FrigorificosItemListSchema() {
     '@type': 'ItemList',
     name: 'Frigoríficos habilitados por SENASA en Argentina',
     description: `Listado de ${habilitadosCount} frigoríficos y mataderos con habilitación vigente SENASA/MAGYP (Ciclo I/II/III) en Argentina`,
-    numberOfItems: habilitadosCount,
-    itemListElement: topItems.map((f: { cuit: string; name: string; matricula: string }, index: number) => ({
+    // Lista "resumen": ListItem con url + name. Antes eran 50 LocalBusiness con solo
+    // name/url/identifier — sin address, que Google exige para LocalBusiness. La
+    // entidad completa (dirección, CUIT, habilitación) vive en cada ficha.
+    numberOfItems: topItems.length,
+    itemListElement: topItems.map((f: { cuit: string; name: string }, index: number) => ({
       '@type': 'ListItem',
       position: index + 1,
-      item: {
-        '@type': 'LocalBusiness',
-        '@id': `https://www.consignatarias.com.ar/frigorificos/${f.cuit}`,
-        name: f.name,
-        url: `https://www.consignatarias.com.ar/frigorificos/${f.cuit}`,
-        identifier: f.matricula,
-      },
+      name: f.name,
+      url: `https://www.consignatarias.com.ar/frigorificos/${f.cuit}`,
     })),
   }
 
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: jsonLd(schema) }}
     />
   )
 }
@@ -163,6 +165,7 @@ export default function FrigorificosPage() {
         url="https://www.consignatarias.com.ar/frigorificos"
         keywords={['frigorificos argentina', 'plantas faena', 'MAGYP']}
         dateModified="2026-07-01"
+        license={LICENCIA_PROPIA}
       />
       <FrigorificosItemListSchema />
       <FAQPageSchema items={FRIGORIFICOS_FAQ} />
@@ -228,7 +231,7 @@ export default function FrigorificosPage() {
         </div>
       </section>
 
-      <FrigorificosClient />
+      <FrigorificosClient filas={listado.filas} provincias={listado.provincias} />
 
       {/* Listados por provincia y suscripción, DEBAJO del directorio (02-10-2026).
           Estaban entre el encabezado y el buscador: en un teléfono empujaban el

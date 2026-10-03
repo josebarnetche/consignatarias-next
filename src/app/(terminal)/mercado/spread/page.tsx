@@ -6,9 +6,11 @@ import {
   SpeakableSchema,
   DatasetSchema,
 } from '@/components/seo/JsonLd'
+import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import maizNovilloHist from '@/lib/data/maiz-novillo-historico.json'
 import SpreadClient from './SpreadClient'
+import { calcularSpread } from '@/lib/market/spread'
 import CompraLeadCapture from '@/components/leads/CompraLeadCapture'
 
 export const revalidate = 86400
@@ -132,7 +134,7 @@ export default function SpreadPage() {
   return (
     <>
       {/* ── Capa AEO (server-rendered, número vivo interpolado en build) ──── */}
-      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
+      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" pageName="Relación Maíz/Novillo" pagePath="/mercado/spread" />
       <FAQPageSchema items={FAQ} />
       <SpeakableSchema
         url={PAGE_URL}
@@ -151,6 +153,7 @@ export default function SpreadPage() {
           'engorde a corral',
         ]}
         dateModified={lastUpdate}
+        license={LICENCIA_PROPIA}
       />
 
       {/* ── Bloque answer-first (respuesta citable a la head-query) ───────── */}
@@ -227,7 +230,7 @@ export default function SpreadPage() {
       })()}
 
       {/* Herramienta interactiva: la relación en vivo + decisión operativa */}
-      <SpreadClient />
+      <SpreadClient data={calcularSpread()} />
 
       {/* Captura del lado COMPRADOR — la página del spread es territorio de feedlots
           (compran invernada para engordar). Alimenta la otra punta del matching. */}

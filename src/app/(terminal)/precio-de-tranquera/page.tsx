@@ -136,7 +136,7 @@ export default function PrecioDeTranqueraPage() {
         description="El precio de tranquera es el neto que recibe el productor una vez descontados desbaste, comisión, flete y gastos; el precio de pizarra o de mercado es el valor bruto de referencia. Cómo se pasa del bruto al neto."
         url={PAGE_URL}
         proficiencyLevel="Beginner"
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           { name: 'Mercado Agroganadero (INMAG/MAG)', url: 'https://www.mercadoagroganadero.com.ar' },
         ]}

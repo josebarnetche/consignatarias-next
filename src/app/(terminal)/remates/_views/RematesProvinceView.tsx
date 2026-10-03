@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { ciudadEnSitemap } from '@/lib/seo/indexacion'
 import rematesData from '@/lib/data/remates.json'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 import type { Auction } from '@/lib/db/schema'
-import { BreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { BreadcrumbSchema, FAQPageSchema, SpeakableSchema, RematesListSchema } from '@/components/seo/JsonLd'
+import { FaqList } from '@/components/seo/FaqList'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import { EmptyState } from '@/components/ui'
@@ -14,7 +16,9 @@ import {
   TYPE_LABELS,
   TYPE_COLORS,
   CAT_LABELS,
+  nombrePropio,
 } from '@/lib/ui/tokens'
+import { remateAnchor, remateHref } from '@/lib/remates-enlaces'
 
 /* ------------------------------------------------------------------ */
 /*  PROVINCE MAPPING                                                    */
@@ -110,6 +114,16 @@ const PROVINCES: ProvinceConfig[] = [
 
 const PROVINCE_MAP = new Map(PROVINCES.map(p => [p.slug, p]))
 
+/** Mismo slug que /remates/ciudad/[ciudad] (normalizeCity de esa página). */
+function slugCiudad(location: string): string {
+  return location
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
 function slugToProvince(slug: string): ProvinceConfig | undefined {
   return PROVINCE_MAP.get(slug)
 }
@@ -124,6 +138,11 @@ export function isRemateProvinceSlug(slug: string): boolean {
   return PROVINCES.some(p => p.slug === slug)
 }
 
+/**
+ * Slugs de provincia que TIENEN página (/remates/[provincia]): las de PROVINCES con al
+ * menos un remate. Es lo mismo que emite generateStaticParams con dynamicParams=false,
+ * así que cualquier enlace o breadcrumb a una provincia fuera de esta lista es un 404.
+ */
 export function rematesProvinceSlugsWithAuctions(): string[] {
   const provincesWithAuctions = new Set(auctions.map(a => a.province))
   return PROVINCES
@@ -177,6 +196,9 @@ function AuctionRowStatic({ auction }: { auction: Auction }) {
   const city = getCity(auction.location)
   const profileSlug = getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug
   const isFeatured = !!(auction as Auction & { featured?: boolean }).featured
+  // La ficha del remate es el destino principal; sin ficha, el perfil de la firma.
+  const ficha = remateHref(auction)
+  const anchor = ficha ? remateAnchor(auction) : `Consignataria ${nombrePropio(auction.consignatariaName)}`
 
   return (
     <div className={`border-b ${isFeatured ? 'border-sky-500/30 bg-sky-500/[0.04]' : 'border-terminal-border hover:bg-zinc-800/50'} transition-colors relative`}>
@@ -200,10 +222,12 @@ function AuctionRowStatic({ auction }: { auction: Auction }) {
         </div>
         <div>
           <Link
-            href={`/consignatarias/${profileSlug}`}
+            href={ficha ?? `/consignatarias/${profileSlug}`}
+            aria-label={anchor}
+            title={anchor}
             className={`font-terminal font-medium text-data hover:underline ${isFeatured ? 'text-sky-200' : 'text-zinc-200 hover:text-accent'} transition-colors`}
           >
-            {auction.consignatariaName}
+            {nombrePropio(auction.consignatariaName)}
           </Link>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
@@ -240,10 +264,12 @@ function AuctionRowStatic({ auction }: { auction: Auction }) {
         </span>
         <span className="flex-1 min-w-0 text-data font-terminal truncate">
           <Link
-            href={`/consignatarias/${profileSlug}`}
+            href={ficha ?? `/consignatarias/${profileSlug}`}
+            aria-label={anchor}
+            title={anchor}
             className={`hover:underline transition-colors ${isFeatured ? 'text-sky-200 font-medium hover:text-sky-100' : 'text-zinc-200 hover:text-accent'}`}
           >
-            {auction.consignatariaName}
+            {nombrePropio(auction.consignatariaName)}
           </Link>
         </span>
         <span className={`w-[140px] flex-shrink-0 text-data font-terminal truncate text-right pr-2 ${isFeatured ? 'text-sky-400/50' : 'text-zinc-500'}`}>
@@ -285,6 +311,22 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
   const types = new Set(provinceAuctions.map(a => a.type))
   const totalHeads = provinceAuctions.reduce((s, a) => s + (a.estimatedHeads ?? 0), 0)
 
+  // Plazas con página de ciudad indexable (mismo slug que /remates/ciudad/[ciudad]).
+  const porPlaza = new Map<string, { slug: string; nombre: string; total: number; proximos: number }>()
+  for (const a of provinceAuctions) {
+    if (!a.location) continue
+    const slug = slugCiudad(a.location)
+    const actual = porPlaza.get(slug) ?? { slug, nombre: nombrePropio(getCity(a.location)), total: 0, proximos: 0 }
+    actual.total++
+    if (a.date >= today && a.status === 'scheduled') actual.proximos++
+    porPlaza.set(slug, actual)
+  }
+  const plazas = [...porPlaza.values()]
+    // Mismo criterio que el sitemap (ciudadEnSitemap): toda ciudad indexable recibe enlace.
+    .filter((c) => c.nombre && ciudadEnSitemap(auctions, c.slug))
+    // Sin tope: cortar en 12 dejaba huérfanas (sin ningún enlace) a 38 ciudades del sitemap.
+    .sort((a, b) => b.total - a.total)
+
   // Live market numbers (reused from metadata; interpolated at build, revalida diario)
   const novillo = Math.round(
     (marketPrices.categories as Record<string, { current: number }>).novillos.current,
@@ -319,40 +361,6 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
     },
   ]
 
-  // JSON-LD ItemList
-  const itemListSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: `Remates Ganaderos en ${config.displayName}`,
-    description: `Calendario de remates ganaderos en ${config.displayName}, Argentina`,
-    numberOfItems: provinceAuctions.length,
-    itemListElement: upcomingAuctions.slice(0, 20).map((auction, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      item: {
-        '@type': 'Event',
-        name: auction.title,
-        description: auction.description,
-        startDate: auction.time ? `${auction.date}T${auction.time}:00-03:00` : auction.date,
-        location: {
-          '@type': 'Place',
-          // Place.name requerido: si no hay ciudad, caemos a la provincia (config).
-          name: getCity(auction.location) || config.displayName || 'Argentina',
-          address: {
-            '@type': 'PostalAddress',
-            addressLocality: getCity(auction.location) || config.displayName || 'Argentina',
-            addressRegion: config.displayName,
-            addressCountry: 'AR',
-          },
-        },
-        organizer: {
-          '@type': 'Organization',
-          name: auction.consignatariaName,
-        },
-      },
-    })),
-  }
-
   return (
     <>
       {/* JSON-LD: Breadcrumb */}
@@ -364,11 +372,16 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
         ]}
       />
 
-      {/* JSON-LD: ItemList of Events */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
-      />
+      {/* JSON-LD: ItemList de Events — cada uno con la URL de su ficha, dirección sin
+          campos vacíos y numberOfItems = los que se emiten (antes declaraba el total
+          de la provincia, pasados incluidos, y listaba 20 sin url). */}
+      {upcomingAuctions.length > 0 && (
+        <RematesListSchema
+          remates={upcomingAuctions}
+          name={`Próximos remates ganaderos en ${config.displayName}`}
+          max={20}
+        />
+      )}
 
       {/* JSON-LD: FAQ */}
       <FAQPageSchema items={faqItems} />
@@ -456,6 +469,38 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
             <p className="text-sm text-zinc-400 leading-relaxed">
               {config.intro}
             </p>
+            {consignatarias.size > 0 && (
+              <p className="mt-3 text-sm">
+                <Link href={`/consignatarias/${provincia}`} className="text-accent hover:text-accent-bright hover:underline">
+                  Las {consignatarias.size} consignatarias que rematan en {config.displayName} →
+                </Link>
+              </p>
+            )}
+            {plazas.length > 0 && (
+              <nav aria-label={`Plazas de remate en ${config.displayName}`} className="mt-3">
+                <h2 className="text-sm text-zinc-300 mb-2">Remates por ciudad</h2>
+                <div className="flex flex-wrap gap-2">
+                  {plazas.map((c) => (
+                    <Link
+                      key={c.slug}
+                      href={`/remates/ciudad/${c.slug}`}
+                      className="inline-flex items-center rounded border border-terminal-border px-3 py-1.5 text-xs text-zinc-300 hover:border-accent/50 hover:text-accent transition-colors"
+                    >
+                      Remates en {c.nombre} ({c.total})
+                    </Link>
+                  ))}
+                </div>
+              </nav>
+            )}
+            {/* La Expo de Mercedes está en el sitemap todo el año; el destacado de /remates se
+                apaga pasada la rueda y la dejaba sin enlaces entrantes. */}
+            {config.slug === 'corrientes' && (
+              <p className="mt-3 text-sm">
+                <Link href="/remates/expo-rural-mercedes" className="text-accent hover:underline">
+                  Remates de la Expo Rural de Mercedes →
+                </Link>
+              </p>
+            )}
           </div>
 
           {/* Upcoming auctions section */}
@@ -463,7 +508,7 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
             <>
               <div className="border-b border-terminal-border px-panel py-1.5 bg-terminal-panel">
                 <span className="text-xxs font-terminal text-accent uppercase tracking-wider">
-                  Proximos remates ({upcomingAuctions.length})
+                  Próximos remates ({upcomingAuctions.length})
                 </span>
               </div>
 
@@ -521,7 +566,7 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
               {provinceAuctions.length} resultado{provinceAuctions.length !== 1 ? 's' : ''} en {config.displayName}
             </span>
             <span className="text-xxs text-zinc-700 font-terminal hidden sm:inline">
-              Proxima fecha primero
+              Próxima fecha primero
             </span>
           </div>
         </div>
@@ -568,6 +613,9 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
             </div>
           )
         })()}
+
+        {/* Las mismas preguntas del FAQPageSchema, visibles (pautas de Google). */}
+        <FaqList items={faqItems} className="mt-4" />
 
         <ProvinceCluster province={config.name} exclude="remates" />
 

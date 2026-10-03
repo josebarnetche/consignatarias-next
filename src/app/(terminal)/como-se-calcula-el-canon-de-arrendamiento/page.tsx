@@ -8,6 +8,7 @@ import {
   HowToSchema,
   DatasetSchema,
 } from '@/components/seo/JsonLd'
+import { FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 
 export const revalidate = 86400 // daily rebuild via Vercel
@@ -150,7 +151,8 @@ export default function ComoSeCalculaElCanonDeArrendamientoPage() {
         url={PAGE_URL}
         keywords={['arrendamiento rural', 'kg de novillo', 'canon de arrendamiento', 'índice arrendamiento', 'Mercado Agroganadero', 'Argentina']}
         dateModified={arr.date}
-        creator="Mercado Agroganadero"
+        license={null}
+        fuente={FUENTE_MAG}
       />
 
       <article className="px-4 pt-4 pb-8 max-w-3xl mx-auto text-zinc-300 text-sm leading-relaxed">

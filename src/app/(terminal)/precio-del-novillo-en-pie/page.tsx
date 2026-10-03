@@ -7,6 +7,7 @@ import {
   FAQPageSchema,
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
+import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 
@@ -111,7 +112,9 @@ const FAQ = [
 ]
 
 export const metadata: Metadata = {
-  title: `Precio del novillo en pie hoy: $${fmt(inmagPrice)}/kg vivo (${INMAG_DATE}) — Liniers/Cañuelas`,
+  // Página informativa: dónde y cómo se forma el precio del novillo. "Precio del
+  // novillo hoy" lo responde /precios/novillos (la canónica); el title no promete el número.
+  title: 'Precio del novillo en pie: cómo se forma, de Liniers a Cañuelas',
   description: `A cuánto está el kilo de novillo en pie hoy (${INMAG_DATE}): $${fmt(inmagPrice)} por kilo vivo según el INMAG del Mercado Agroganadero (ex-Liniers, Cañuelas). Precio de referencia en pesos, actualizado a diario. Novillo de panel $${fmt(novillo)}/kg.`,
   keywords: [
     'a cuanto esta el kilo de novillo en pie hoy',
@@ -156,7 +159,11 @@ export default function PrecioDelNovilloEnPiePage() {
         description={`Precio de referencia del novillo en pie en pesos por kilo vivo según el INMAG (Índice Novillo Mercado Agroganadero). Al ${INMAG_DATE}: $${fmt(inmagPrice)}/kg vivo. Serie diaria del Mercado Agroganadero de Cañuelas (ex-Liniers).`}
         url={PAGE_URL}
         keywords={['precio del novillo en pie', 'novillo', 'kilo vivo', 'INMAG', 'mercado agroganadero', 'cañuelas', 'liniers']}
-        dateModified={lastUpdate}
+        dateModified={INMAG_DATE}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_PRECIOS]}
+        temporalCoverage={INMAG_DATE}
       />
       <FAQPageSchema items={FAQ} />
       <SpeakableSchema
@@ -293,13 +300,21 @@ export default function PrecioDelNovilloEnPiePage() {
               Todos los índices →
             </Link>
           </p>
+          <p className="text-data text-zinc-300 flex flex-wrap gap-x-3 gap-y-1">
+            <Link href="/precios/novillos" className="text-accent hover:text-accent-bright transition-colors">
+              Precio del novillo hoy →
+            </Link>
+            <Link href="/vr/novillo" className="text-accent hover:text-accent-bright transition-colors">
+              A cuánto se vendió el novillo, por peso →
+            </Link>
+          </p>
           <p className="text-data text-zinc-300 pt-1">
             <Link href="/que-es-el-mag" className="text-accent hover:text-accent-bright transition-colors">
               ¿Qué es el MAG? →
             </Link>{' '}
             ·{' '}
             <Link href="/mercado/novillos" className="text-accent hover:text-accent-bright transition-colors">
-              Novillo en vivo →
+              Evolución del precio y estacionalidad →
             </Link>{' '}
             ·{' '}
             <Link href="/categorias-de-hacienda" className="text-accent hover:text-accent-bright transition-colors">

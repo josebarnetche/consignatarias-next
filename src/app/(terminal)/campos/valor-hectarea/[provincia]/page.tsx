@@ -8,11 +8,14 @@ import {
   zonasDeProvincia,
   slugZona,
   SUPERFICIES_TIPICAS,
+  anioDelDato,
+  observacionesTexto,
 } from '@/lib/campos-seo'
 import { anosDeArrendamiento, promedioMesAnterior } from '@/lib/valuacion-campos'
 import ValuacionCampo from '@/components/campos/ValuacionCampo'
 import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
 import { FAQPageSchema, DatasetSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { DESCARGA_VALOR_TIERRA, LICENCIA_CC_BY } from '@/lib/seo/schemas'
 import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 
 export const revalidate = 3600
@@ -45,7 +48,9 @@ export async function generateMetadata({
   const { provincia } = await params
   const t = provinciaPorSlug(provincia)
   if (!t) return { title: 'Provincia no encontrada' }
-  const titulo = `¿Cuánto vale la hectárea en ${t.provincia}? — ${fmtUsd(t.usd_ha)} por hectárea`
+  // El año es el del dato (Córdoba sigue con el relevamiento 2024), no el del calendario.
+  const anio = anioDelDato(t.fecha)
+  const titulo = `¿Cuánto vale la hectárea en ${t.provincia}${anio ? ` en ${anio}` : ''}? ${fmtUsd(t.usd_ha)}/ha`
   return {
     title: titulo,
     description: `Valor de la hectárea de campo en ${t.provincia}: ${fmtUsd(t.usd_ha)} de referencia, con rango de ${fmtUsd(t.p25)} a ${fmtUsd(t.p75)}. Relevamiento propio por zona, con la fuente y la fecha de cada dato.`,
@@ -57,7 +62,7 @@ export async function generateMetadata({
       `tasar campo en ${t.provincia}`,
       `campos en venta en ${t.provincia}`,
     ],
-    openGraph: { title: titulo, url: `${BASE_URL}/campos/valor-hectarea/${provincia}`, type: 'article' },
+    openGraph: { title: titulo, url: `${BASE_URL}/campos/valor-hectarea/${provincia}`, type: 'article', images: [{ url: '/og-image.png', width: 1200, height: 630 }] },
     alternates: { canonical: `${BASE_URL}/campos/valor-hectarea/${provincia}` },
   }
 }
@@ -114,6 +119,9 @@ export default async function ValorHectareaProvincia({
         url={`${BASE_URL}/campos/valor-hectarea/${provincia}`}
         keywords={[`valor hectarea ${t.provincia}`, 'precio de la tierra', 'campos', 'Argentina']}
         dateModified={t.fecha ?? undefined}
+        spatialCoverage={t.provincia}
+        license={LICENCIA_CC_BY}
+        distribution={[DESCARGA_VALOR_TIERRA]}
       />
       <SpeakableSchema
         url={`${BASE_URL}/campos/valor-hectarea/${provincia}`}
@@ -248,6 +256,7 @@ export default async function ValorHectareaProvincia({
                       <td className="py-2 pl-3 text-zinc-600 font-sans text-xxs">
                         {z.fuente}
                         {z.fecha ? ` · ${z.fecha}` : ''}
+                        {` · ${observacionesTexto(z.n)}`}
                       </td>
                     </tr>
                   ))}

@@ -4,6 +4,7 @@
  */
 
 import Link from 'next/link'
+import { PRO_ABIERTO } from '@/lib/plan-pro'
 import ProPromptView from './ProPromptView'
 import ValueLink from './ValueLink'
 
@@ -23,8 +24,8 @@ interface PaywallProps {
  */
 export function PaywallCard({ loggedIn, feature, redirectTo }: PaywallProps) {
   const upgradeHref = redirectTo
-    ? `/upgrade?next=${encodeURIComponent(redirectTo)}`
-    : '/upgrade'
+    ? `/pro?next=${encodeURIComponent(redirectTo)}`
+    : '/pro'
   const loginHref = redirectTo
     ? `/login?next=${encodeURIComponent(redirectTo)}`
     : '/login'
@@ -57,7 +58,7 @@ export function PaywallCard({ loggedIn, feature, redirectTo }: PaywallProps) {
           <p className="text-zinc-200 font-mono text-sm mb-1.5">{headline}</p>
           <p className="text-zinc-400 font-mono text-xs leading-relaxed mb-4">
             PRO te da acceso ilimitado al detalle de remates, perfiles, filtros avanzados
-            y descargas premium. ARS $7.900/mes ·
+            y descargas premium. ARS ${PRO_ABIERTO.precio.toLocaleString('es-AR')}/mes ·
             cancelás cuando quieras.
           </p>
           {loggedIn ? (

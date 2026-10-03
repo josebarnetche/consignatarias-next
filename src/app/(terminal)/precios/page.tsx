@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { BreadcrumbSchema, FAQPageSchema, SpeakableSchema, DatasetSchema } from '@/components/seo/JsonLd'
+import { INMAG_DATE } from '@/lib/inmag'
+import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import HerramientasCTA from '@/components/HerramientasCTA'
 import PriceThresholdAlertSignup from '@/components/PriceThresholdAlertSignup'
 import marketPrices from '@/lib/data/market-prices.json'
@@ -27,21 +29,24 @@ const inmagChange = inmag.change
 const inmagChangeStr = `${inmagChange >= 0 ? '+' : ''}${inmagChange}%`
 const novilloLive = Math.round(marketPrices.categories.novillos.current)
 const vacaLive = Math.round(marketPrices.categories.vacas.current)
+const vaquillonaLive = Math.round(marketPrices.categories.vaquillonas.current)
+// El ternero NO va en el número citable: es INMAG × 1,10 (el MAG no opera terneros),
+// no un precio observado. En la grilla aparece rotulado como estimación.
 const terneroLive = Math.round(marketPrices.categories.terneros.current)
 
 // 1ª oración citable — head-query "precios de hacienda hoy" respondida con el número exacto y su fecha.
-const ANSWER_LEAD = `Hoy en el Mercado Agroganadero: novillo $${fmt(novilloLive)}/kg, vaca $${fmt(vacaLive)}/kg, ternero $${fmt(terneroLive)}/kg vivo. INMAG $${fmt(inmag.current)} (${inmagChangeStr}). Actualizado ${lastUpdate}.`
+const ANSWER_LEAD = `Hoy en el Mercado Agroganadero: novillo $${fmt(novilloLive)}/kg, vaquillona $${fmt(vaquillonaLive)}/kg, vaca $${fmt(vacaLive)}/kg vivo. INMAG $${fmt(inmag.current)} (${inmagChangeStr}). Actualizado ${lastUpdate}.`
 
 export const metadata: Metadata = {
-  title: `Precios de Hacienda Hoy — Novillo $${fmt(novilloLive)}, Vaca $${fmt(vacaLive)}, Ternero $${fmt(terneroLive)}/kg · INMAG`,
-  description: `Precios de hacienda al ${lastUpdate}: novillo $${fmt(novilloLive)}/kg, vaca $${fmt(vacaLive)}/kg, ternero $${fmt(terneroLive)}/kg vivo. INMAG $${fmt(inmag.current)} (${inmagChangeStr}). Kilo vivo en ARS desde el Mercado Agroganadero, con histórico y panel de categorías. Consulta libre.`,
+  title: `Precios de hacienda hoy: novillo $${fmt(novilloLive)} y vaca $${fmt(vacaLive)} por kilo vivo`,
+  description: `Precios de hacienda al ${lastUpdate}: novillo $${fmt(novilloLive)}/kg, vaquillona $${fmt(vaquillonaLive)}/kg, vaca $${fmt(vacaLive)}/kg vivo. INMAG $${fmt(inmag.current)} (${inmagChangeStr}). Kilo vivo en pesos del Mercado Agroganadero y lo que realmente se pagó por categoría y peso.`,
   alternates: {
     canonical: 'https://www.consignatarias.com.ar/precios',
   },
   openGraph: {
     images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
     title: `Precios de Hacienda Hoy — Novillo $${fmt(novilloLive)}/kg`,
-    description: `Precios de hacienda al ${lastUpdate}: novillo $${fmt(novilloLive)}/kg, vaca $${fmt(vacaLive)}/kg, ternero $${fmt(terneroLive)}/kg vivo. INMAG $${fmt(inmag.current)}. Actualizado diariamente desde MAG.`,
+    description: `Precios de hacienda al ${lastUpdate}: novillo $${fmt(novilloLive)}/kg, vaquillona $${fmt(vaquillonaLive)}/kg, vaca $${fmt(vacaLive)}/kg vivo. INMAG $${fmt(inmag.current)}. Actualizado todos los días desde el Mercado Agroganadero.`,
     url: 'https://www.consignatarias.com.ar/precios',
     type: 'website',
   },
@@ -58,7 +63,7 @@ const FAQ_PRECIOS = [
   },
   {
     question: '¿Cuánto vale el ternero hoy?',
-    answer: `El kilo vivo de ternero cotiza a $${fmt(terneroLive)} en el Mercado Agroganadero. El ternero de invernada suele cotizar por encima del gordo por la demanda de recría y engorde. Actualizado el ${lastUpdate}.`,
+    answer: `No hay un precio observado del ternero en el Mercado Agroganadero, porque ahí no se operan terneros. Publicamos una estimación: $${fmt(terneroLive)} por kilo vivo (INMAG × 1,10, ${lastUpdate}). El precio real se forma en los remates de invernada.`,
   },
   {
     question: '¿Dónde se actualizan los precios?',
@@ -105,10 +110,14 @@ export default function PreciosHubPage() {
       />
       <DatasetSchema
         name={`Precios de hacienda por categoría — Mercado Agroganadero (${lastUpdate})`}
-        description={`Kilo vivo en ARS por categoría (novillo, novillito, vaquillona, vaca, toro, ternero) y referencia INMAG del novillo de exportación, publicados por el Mercado Agroganadero (MAG-Cañuelas). Unidad: $/kg vivo. Fecha: ${lastUpdate}.`}
+        description={`Kilo vivo en ARS por categoría (novillo, novillito, vaquillona, vaca, toro) y referencia INMAG del novillo de exportación, publicados por el Mercado Agroganadero (MAG-Cañuelas); el ternero es una estimación propia (INMAG × 1,10). Unidad: $/kg vivo. Fecha: ${lastUpdate}.`}
         url="https://www.consignatarias.com.ar/precios"
         keywords={['precios hacienda', 'novillo', 'vaca', 'ternero', 'INMAG', 'kilo vivo', 'Mercado Agroganadero', 'MAG']}
-        dateModified={lastUpdate}
+        dateModified={INMAG_DATE}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_PRECIOS]}
+        temporalCoverage={INMAG_DATE}
       />
 
       <main className="max-w-4xl mx-auto px-4 py-8 text-zinc-300">
@@ -141,8 +150,8 @@ export default function PreciosHubPage() {
               <dd className="text-xl font-terminal tabular-nums text-zinc-100">${fmt(vacaLive)}</dd>
             </div>
             <div className="bg-terminal-panel p-3">
-              <dt className="text-xxs uppercase tracking-wider text-zinc-500">Ternero</dt>
-              <dd className="text-xl font-terminal tabular-nums text-zinc-100">${fmt(terneroLive)}</dd>
+              <dt className="text-xxs uppercase tracking-wider text-zinc-500">Vaquillona</dt>
+              <dd className="text-xl font-terminal tabular-nums text-zinc-100">${fmt(vaquillonaLive)}</dd>
             </div>
           </dl>
           <p className="mt-3 text-xxs uppercase tracking-wider text-zinc-500">
@@ -153,10 +162,16 @@ export default function PreciosHubPage() {
           Kilo vivo en ARS desde el Mercado Agroganadero (MAG-Cañuelas). Actualizado: <span className="text-zinc-200 tabular-nums">{lastUpdate}</span>.
         </p>
         {inmagPrice && (
-          <p className="text-sm text-zinc-400 mb-6">
+          <p className="text-sm text-zinc-400 mb-2">
             INMAG (novillo de exportación): <span className="text-positive tabular-nums font-terminal">${fmt(inmagPrice)}/kg</span>
           </p>
         )}
+        <p className="text-sm text-zinc-400 mb-6">
+          El precio de referencia es un número; el mercado es un rango.{' '}
+          <Link href="/vr" className="text-accent hover:underline">
+            Mirá a cuánto se vendió de verdad cada categoría, por peso →
+          </Link>
+        </p>
 
         {/* Category grid */}
         <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-px bg-terminal-border mb-8">
@@ -164,6 +179,7 @@ export default function PreciosHubPage() {
             const data = cats[c.slug]
             if (!data) return null
             const positive = data.change >= 0
+            const estimado = c.slug === 'terneros'
             return (
               <Link
                 key={c.slug}
@@ -171,7 +187,7 @@ export default function PreciosHubPage() {
                 className="bg-terminal-panel p-4 hover:bg-terminal-panel/70 transition-colors group"
               >
                 <div className="flex items-baseline justify-between mb-1">
-                  <span className="text-xxs uppercase tracking-wider text-zinc-500">{c.title}</span>
+                  <span className="text-xxs uppercase tracking-wider text-zinc-500">{c.title}{estimado ? ' (estimado)' : ''}</span>
                   <span className={`text-xxs tabular-nums font-terminal ${positive ? 'val-positive' : 'val-negative'}`}>
                     {positive ? '+' : ''}{data.change.toFixed(1)}%
                   </span>
@@ -179,7 +195,9 @@ export default function PreciosHubPage() {
                 <div className="text-2xl font-terminal tabular-nums text-zinc-100 group-hover:text-positive transition-colors">
                   ${fmt(data.current)}
                 </div>
-                <div className="text-xxs text-zinc-500 mt-1">por kg vivo</div>
+                <div className="text-xxs text-zinc-500 mt-1">
+                  {estimado ? 'INMAG × 1,10 · el Mercado Agroganadero no opera terneros' : 'por kg vivo'}
+                </div>
               </Link>
             )
           })}

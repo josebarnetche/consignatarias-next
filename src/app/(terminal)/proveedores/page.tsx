@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getProveedoresPublicados, aPublico } from '@/lib/proveedores'
@@ -44,7 +45,7 @@ export default function ProveedoresPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLd({
             '@context': 'https://schema.org',
             '@type': 'ItemList',
             name: 'Proveedores de la industria frigorífica y ganadera',

@@ -1,49 +1,17 @@
 'use client'
 
 import { ImagenTema } from '@/components/ui/ImagenTema'
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema } from '@/components/seo/JsonLd'
 import { ProReveal, HeroNumber, StatPill } from '@/components/pro'
-
-interface SpreadData {
-  novilloArs: number
-  novilloUsd: number
-  cornUsd: number
-  usdBlue: number
-  spread: number
-  profitabilityThreshold: number
-  isProfitable: boolean
-  lastUpdate: string
-}
+import type { SpreadData } from '@/lib/market/spread'
 
 const FROM = '/mercado/spread'
 
-export default function SpreadClient() {
-  const [data, setData] = useState<SpreadData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
-
-  useEffect(() => {
-    let cancelled = false
-    async function fetchData() {
-      try {
-        const res = await fetch('/api/market/spread')
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        const json = (await res.json()) as SpreadData
-        if (!cancelled) setData(json)
-      } catch (e) {
-        console.error('Failed to fetch spread data:', e)
-        if (!cancelled) setError(true)
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    }
-    fetchData()
-    return () => {
-      cancelled = true
-    }
-  }, [])
+// El dato llega por props desde el server (antes, fetch a /api/market/spread: el HTML
+// inicial y los bots veían un spinner). `loading`/`error` quedan fijos para no tocar el JSX.
+export default function SpreadClient({ data }: { data: SpreadData }) {
+  const loading = false
+  const error = false
 
   const faqs = [
     {
@@ -66,15 +34,8 @@ export default function SpreadClient() {
 
   return (
     <>
-      <SectionBreadcrumbSchema section="mercado/spread" sectionName="Relación Maíz/Novillo" />
-      <FAQPageSchema items={faqs} />
-      <DatasetSchema
-        name="Relación Maíz/Novillo Argentina"
-        description="Indicador de rentabilidad feedlot: ratio entre precio de novillo INMAG y maíz FOB. Actualizado diariamente."
-        url="https://www.consignatarias.com.ar/mercado/spread"
-        keywords={['relación maíz novillo', 'rentabilidad feedlot', 'spread ganadero', 'costo engorde']}
-      />
-
+      {/* Sin JSON-LD acá: BreadcrumbList, FAQPage y Dataset los emite la página
+          server (page.tsx). Duplicados en la misma URL se pisan entre sí. */}
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="text-xs text-zinc-500 mb-4 flex items-center gap-1">
@@ -87,12 +48,12 @@ export default function SpreadClient() {
 
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-2">
+          <h2 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-2">
             <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
               <ImagenTema src="/marca/iconos-color/indice.png" alt="" className="w-6 h-6" />
             </span>
             Relación Maíz/Novillo
-          </h1>
+          </h2>
           <p className="text-zinc-400 text-sm">
             Indicador de rentabilidad para feedlots argentinos. Actualizado diariamente.
           </p>
