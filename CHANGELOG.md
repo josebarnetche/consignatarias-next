@@ -7,6 +7,72 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.222.0] — 2026-10-03
+
+### Arreglos de la auditoría SEO, revisión de GA4 y Search Console
+
+Re-rastreo de las 3.013 URLs del sitemap, sobre un build local, antes y después:
+
+| Métrica | Antes | Después |
+|---|---|---|
+| URLs que no devuelven 200 | 1 | 0 |
+| Canonical ausente o equivocado | 73 | 0 |
+| Titles duplicados | 93 (456 URLs) | 2 (4 URLs: remates duplicados por el scraper) |
+| Páginas sin H1 o con más de uno | 5 | 0 |
+| Metadata servida dentro del `<body>` | 1.120 | 0 |
+| Enlaces internos rotos | 6 | 0 |
+| Páginas huérfanas | 808 | 3 |
+| Titles de más de 65 caracteres | 1.412 | 460 |
+| Sin og:image | 505 | 28 |
+| `lastmod` = día del build | 1.220 | 702 |
+| HTML de `/remates/mes/*` · `/remates/en-vivo` | 1,2 MB · 1,5 MB | 384 KB · 490 KB |
+
+- **Indexación:**
+  - fuera el canonical heredado del layout raíz y el `loading.tsx` de la raíz (escondía
+    el contenido detrás de "Cargando…");
+  - `htmlLimitedBots`: la metadata vuelve al `<head>`;
+  - robots deja rastrear `/_next/` y `/go/` y suma los bots de búsqueda de IA;
+  - umbrales de noindex compartidos con el sitemap (`src/lib/seo/indexacion.ts`);
+  - `lastmod` honesto;
+  - title template `'%s | Consignatarias'`.
+- **Datos estructurados** (`src/lib/seo/schemas.ts`):
+  - FAQ siempre visibles (`FaqList`);
+  - fuera Product/Offer y QAPage;
+  - Dataset con la licencia propia;
+  - un Event por ficha, en modo mixto cuando hay stream;
+  - Organization con `@id`;
+  - breadcrumbs sin duplicados.
+- **Contenido:**
+  - el ternero rotulado como estimación (también en `/precios.json`);
+  - `/valuar-hacienda`;
+  - `/quienes-somos` reescrita;
+  - titles con el dato del día en home, `/vr`, INMAG y arrendamiento;
+  - el logo lleva a `/`.
+- **Enlazado:**
+  - fichas de remate enlazadas desde todos los listados (`src/lib/remate-slug.ts`,
+    `src/lib/remates-enlaces.ts`);
+  - `ProvinceCluster` cruza precios × provincia y mercado en origen;
+  - las plazas de provincia, sin tope;
+  - páginas por calidad enlazadas desde `/precios/[categoria]`;
+  - sin enlaces a provincias sin página;
+  - Paywall directo a `/planes`.
+- **Rendimiento:**
+  - fichas de frigorífico estáticas (ISR diario);
+  - datos de pulso y spread desde el server;
+  - filas livianas (`RemateFila`) en los meses;
+  - `/remates/en-vivo` muestra solo la semana que viene.
+- **IndexNow:** clave en `public/` y aviso al final de `scrape-auctions.yml`
+  (`scripts/indexnow-ping.mjs`), para Bing y otros buscadores.
+- **GA4 y GSC:**
+  - gtag en `afterInteractive`: con `lazyOnload`, GA4 contaba 42 % de celular contra
+    58 % en GSC;
+  - checkout PRO con su slug y precio;
+  - `/api/track/event` devuelve 503 si no guarda;
+  - `gsc-report` baja consulta × página (para detectar canibalización);
+  - histórico de GSC semanal programado;
+  - tracking-plan con los 20 eventos que faltaban.
+- Incluye los PR #52 (escape de `</script>` en JSON-LD) y #53 (README y auditoría).
+
 ## [1.221.1] — 2026-10-03
 
 ### README al día y auditoría SEO integral

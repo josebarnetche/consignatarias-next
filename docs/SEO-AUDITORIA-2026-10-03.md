@@ -110,3 +110,74 @@ Informe navegable: https://claude.ai/artifact/52eyF9FF6A6vjXjhfXjCVE (privado, d
   - bundles más livianos;
   - `llms.txt`, robots y Bing/IndexNow;
   - `/quienes-somos`.
+
+## Resultado (v1.222.0)
+
+Re-rastreo de las 3.013 URLs del sitemap sobre un build local. La tabla completa está en
+el CHANGELOG 1.222.0. En resumen:
+
+| Métrica | Antes | Después |
+|---|---|---|
+| Canonical malo | 73 | 0 |
+| Metadata en el body | 1.120 | 0 |
+| Enlaces rotos | 6 | 0 |
+| Páginas huérfanas | 808 | 3 |
+| H1 faltante o doble | 5 | 0 |
+| Titles duplicados | 93 | 2 |
+| Sin og:image | 505 | 28 |
+
+Las tres etapas del plan quedaron hechas, salvo lo que sigue.
+
+### Lo que queda, y por qué
+
+- **2 titles duplicados.** Son el mismo remate cargado dos veces por el scraper, bajo
+  dos slugs de firma (Elordi, Campos y Ganados/CyG). Se arregla deduplicando en el
+  scraper, no en la página.
+- **3 huérfanas:** ciudades de provincias sin página de remates (Jujuy, Capital
+  Federal). Salen del sitemap cuando bajan del umbral.
+- **460 titles de más de 65 caracteres**, la mayoría por el sufijo `| Consignatarias`.
+  Google corta por píxeles y el sufijo es lo que se pierde, no el dato.
+- **142 páginas delgadas** (menos de 150 palabras): sobre todo `/calendario/*`
+  (69 firmas) y `/remates/{provincia}/{tipo}` (34). Siguen indexables porque tienen
+  remates próximos. Engordarlas es trabajo de contenido.
+- **`images.unoptimized: true` queda.** Activar el optimizador de Vercel se factura por
+  imagen. Las imágenes de marca ya se sirven en WebP y con su tamaño.
+- **IndexNow:** queda andando en cuanto `public/<clave>.txt` esté en producción.
+
+## GA4 y Search Console
+
+Sin conectores en vivo. La lectura sale de lo que el repo ya guarda: `reports/gsc/*`,
+`indexacion.csv`, los históricos y el plan de medición.
+
+- **GSC, semanas 36-39 contra 32-35:**
+  - clics +43,9 %, impresiones +30,5 %;
+  - CTR 1,71 % y posición media 6,2;
+  - **el cuello de botella es el CTR, no el ranking.** Por eso los titles nuevos
+    llevan el dato del día.
+- **Qué trae los clics:** los frigoríficos traen el 27 % y el arrendamiento el 22 %.
+  `/mercado/inmag` perdió el 96 % de sus clics entre junio y septiembre; ahora lleva
+  el dato en el title.
+- **Indexación:**
+  - 2.721 páginas indexadas y 447 descubiertas sin indexar;
+  - `/productividad` tiene el 65 % sin indexar, y ahora entra con umbral;
+  - las páginas de calendario estaban indexadas pese al canonical malo.
+- **GA4:**
+  - datos desde julio;
+  - subestimaba el celular (gtag en `lazyOnload`, corregido);
+  - el embudo PRO marca 0 compras. El evento de checkout no llevaba slug ni precio
+    (corregido).
+  - Siguen abiertos: los eventos de email no están cableados, y `profile_view` sale de
+    dos fuentes.
+
+### Lo que necesita a una persona
+
+1. **Exportar GA4 sin intervención:** crear una cuenta de servicio con acceso de
+   lectura a la propiedad y cargar `GA4_SA_KEY` y `GA4_PROPERTY_ID` como secretos del
+   repo.
+2. **Eventos clave:** marcar en la administración de GA4 `checkout_start`,
+   `purchase` y `signup` como eventos clave.
+3. **Consolidar con 301:** con `reports/gsc/consulta-pagina-28d.csv`, que se genera
+   desde esta versión, decidir qué páginas se canibalizan.
+4. **Validar en producción:** pasar el Rich Results Test a una ficha de remate, una de
+   frigorífico y `/precios/novillos`. En GSC, pedir la indexación de `/valuar-hacienda`
+   y reenviar el sitemap.

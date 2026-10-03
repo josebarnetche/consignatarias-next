@@ -3,7 +3,7 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.221.1 (2026-10-03). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+**Current version:** v1.222.0 (2026-10-03). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
 
 > **Tema claro (desde v1.217.0, Fases 1-2 de [docs/PLAN-TEMA-WHITE.md](docs/PLAN-TEMA-WHITE.md)):**
 > el sitio abre en **claro** (blanco puro, acento `blue-700`), con un botón en el header
@@ -35,6 +35,13 @@
 > cada archivo de `public/marca/` tiene su `-claro` (`scripts/marca-variantes-claro.sh`, ImageMagick); en el código
 > se usan con `<ImagenTema>` / `ImageTema` / `PictureTema` (`src/components/ui/ImagenTema.tsx`), nunca `<img>` pelado.
 > Imagen de marca nueva → correr el script (un test falla si falta la variante).
+> **SEO (desde v1.222.0, auditoría `docs/SEO-AUDITORIA-2026-10-03.md`):** el slug y el enlace de una ficha de
+> remate salen SOLO de `src/lib/remate-slug.ts` / `src/lib/remates-enlaces.ts`; todo `FAQPageSchema` va con su
+> `<FaqList>` visible; JSON-LD nuevo con los helpers de `src/lib/seo/schemas.ts` (vía `jsonLd()`); un noindex
+> nuevo usa los umbrales de `src/lib/seo/indexacion.ts` (el sitemap lee los mismos). Title template
+> `'%s | Consignatarias'` (usar `title.absolute` si el title ya es largo). Sin `loading.tsx` en la raíz ni
+> canonical en el layout raíz: cada página declara el suyo. gtag en `afterInteractive`. Listados largos de
+> remates con `RemateFila`, no con tarjetas.
 
 ---
 

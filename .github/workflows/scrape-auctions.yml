@@ -110,6 +110,11 @@ jobs:
           echo "::error::git push falló tras 5 intentos (carrera persistente en main)."
           exit 1
 
+      - name: Avisar a IndexNow (Bing y otros)
+        if: success()
+        continue-on-error: true
+        run: node scripts/indexnow-ping.mjs
+
       - name: cron-hook finish
         if: always() && steps.cronstart.outputs.run_id != ''
         run: |
