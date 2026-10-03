@@ -35,3 +35,44 @@ jobs:
             exit 1
           fi
           echo "✓ El pipeline corrió hoy o ayer — data fresca."
+
+      # El VR es la promesa principal del producto ("cuánto vale tu hacienda hoy,
+      # medido en lo que realmente se vendió") y Mi Ganado valúa el rodeo contra
+      # esta banda, así que una banda vieja es una valuación equivocada en la
+      # portada, no un detalle de un dashboard.
+      #
+      # POR QUÉ ESTE CHEQUEO EXISTE: entre el 22 y el 26-sep-2026 el job
+      # compute-vr-bandas falló tres veces seguidas en "Install deps" y, por un
+      # continue-on-error, el workflow reportó success las tres. Las bandas
+      # quedaron clavadas 11 días y nadie se enteró. Lo que falló no fue el
+      # código: fue que nadie estaba mirando.
+      #
+      # Se mira `fecha_dato_hasta` del JSON y no la fecha del commit: el commit
+      # dice "el job corrió", el dato dice "la banda es fresca". El segundo
+      # también atrapa el caso de que el MAG deje de publicar, que es el que no
+      # se nota.
+      - name: Check the VR bands are fresh
+        run: |
+          python3 - <<'EOF'
+          import json, datetime, os, sys
+          # Tolerancia 6 días. El pipeline de lotes corre Mar/Mié/Vie, así que el
+          # hueco legítimo más largo es Vie→Mar: el lunes el dato tiene 3 días, y
+          # si el cron del martes se atrasa a la madrugada del miércoles llega a 5.
+          # A los 6 ya no hay cadencia que lo explique. El apagón de 11 días habría
+          # saltado al sexto.
+          TOLERANCIA = 6
+          d = json.load(open('src/lib/data/vr-bandas.json'))
+          hasta = datetime.date.fromisoformat(d['fecha_dato_hasta'])
+          hoy = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=-3))).date()
+          edad = (hoy - hasta).days
+          print(f"Banda VR al {hasta} · hoy (ART) {hoy} · atraso {edad} día(s) · tolerancia {TOLERANCIA}")
+          if edad > TOLERANCIA:
+              msg = (f"La banda del VR tiene {edad} días de atraso (dato al {hasta}). "
+                     f"/vr, /mercado y Mi Ganado están valuando con eso. "
+                     f"Revisá el job compute-vr-bandas de mag-lots-pipeline (¿falló?) "
+                     f"y si corrió bien, puede que el MAG haya dejado de publicar lotes. "
+                     f"Disparalo: gh workflow run mag-lots-pipeline.yml")
+              print(f"::error::{msg}")
+              sys.exit(1)
+          print("✓ Banda del VR fresca.")
+          EOF
