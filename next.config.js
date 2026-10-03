@@ -1,7 +1,57 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports -- next.config.js es CommonJS
+const rematesData = require('./src/lib/data/remates.json')
+
+// Slugs de las fichas de remate vigentes, para los redirects del middleware. Antes el
+// middleware importaba remates.json entero (~700 KB dentro del bundle de edge) solo para
+// armar este Set. Calculado acá queda siempre en sync con el build (lee el mismo JSON
+// que generateStaticParams) y viaja como un string de ~60 KB.
+// La fórmula TIENE que ser la de src/lib/remate-slug.ts (no se puede importar TS desde
+// acá); src/lib/remate-slug.test.ts compara las dos.
+function slugsRematesVigentes() {
+  const slugs = new Set()
+  for (const r of rematesData) {
+    slugs.add(
+      [
+        r.consignatariaSlug || 'remate',
+        r.type || 'general',
+        (r.province && r.province.toLowerCase().replace(/\s+/g, '-')) || 'argentina',
+        r.date,
+      ].join('-'),
+    )
+  }
+  return [...slugs].join('\n')
+}
+
+// Bots que reciben la metadata bloqueante en el <head> en vez de streameada en el <body>
+// (Next 15.2+). La lista por defecto de Next no trae a los crawlers de IA ni a Googlebot
+// "pelado" (solo los Google-*). Se sobreescribe entera, así que incluye la de Next.
+const HTML_LIMITED_BOTS = new RegExp(
+  [
+    'Googlebot', '[\\w-]+-Google', 'Google-[\\w-]+', 'Google-Extended', 'Chrome-Lighthouse',
+    'Bingbot', 'BingPreview', 'Slurp', 'DuckDuckBot', 'baiduspider', 'yandex', 'sogou', 'Applebot',
+    'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'Claude-User',
+    'anthropic-ai', 'PerplexityBot', 'Perplexity-User', 'CCBot', 'facebookexternalhit',
+    'facebookcatalog', 'Twitterbot', 'WhatsApp', 'LinkedInBot', 'Slackbot', 'Discordbot',
+    'TelegramBot', 'redditbot', 'SkypeUriPreview', 'bitlybot', 'ia_archiver', 'Yeti', 'googleweblight',
+  ].join('|'),
+  'i',
+)
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Se deja así a propósito (auditoría SEO 2026-10-03): hay 12 usos de next/image, el
+  // hero de la home ya sale en WebP con variante mobile, y las cabeceras de features/ son
+  // JPG de 64-94 KB decorativos (opacidad 30-40 %, detrás de gradientes); en WebP
+  // ahorrarían ~40 KB por página. Activar la optimización de Vercel cambia las URLs y se
+  // cobra por imagen: no lo justifica.
   images: {
     unoptimized: true,
+  },
+
+  htmlLimitedBots: HTML_LIMITED_BOTS,
+
+  env: {
+    REMATE_SLUGS_VIGENTES: slugsRematesVigentes(),
   },
 
   trailingSlash: false,

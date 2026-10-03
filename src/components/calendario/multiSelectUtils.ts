@@ -1,5 +1,23 @@
 import type { Auction } from '@/lib/db/schema'
 
+/** Lo único que la exportación lee de un remate. La página lo proyecta en el server para
+ * no mandar remates.json entero (700 KB) al cliente. */
+export type RemateCalendario = Pick<
+  Auction,
+  | 'id'
+  | 'title'
+  | 'consignatariaName'
+  | 'consignatariaSlug'
+  | 'date'
+  | 'time'
+  | 'location'
+  | 'province'
+  | 'type'
+  | 'estimatedHeads'
+  | 'catalogUrl'
+  | 'youtubeUrl'
+>
+
 // ---------------------------------------------------------------------------
 // Localidad / provincia grouping helpers for the multi-localidad calendar export.
 // All data comes from remates.json (real source). Nothing is fabricated here.
@@ -47,7 +65,7 @@ export interface ProvinceGroup {
 /** Build the province → localidad tree from a list of (already date-filtered)
  * auctions. Localidades are deduped by canonical key, label = first seen with the
  * cleanest casing. Sorted: provinces A→Z, localidades A→Z. */
-export function buildLocalidadTree(auctions: Auction[]): ProvinceGroup[] {
+export function buildLocalidadTree(auctions: RemateCalendario[]): ProvinceGroup[] {
   // province -> (localidadKey -> { label, count })
   const tree = new Map<string, Map<string, { label: string; count: number }>>()
 
@@ -81,7 +99,7 @@ export function buildLocalidadTree(auctions: Auction[]): ProvinceGroup[] {
 
 /** Map a selection id back to the (province, localidadKey) pair used to match
  * auctions. */
-export function matchesSelection(auction: Auction, selectedIds: Set<string>): boolean {
+export function matchesSelection(auction: RemateCalendario, selectedIds: Set<string>): boolean {
   const province = (auction.province || 'SIN PROVINCIA').trim().toUpperCase()
   const id = `${province}::${localidadKey(auction.location)}`
   return selectedIds.has(id)
@@ -118,7 +136,7 @@ function dtEndFor(date: string, time: string | null): string {
 
 /** Build a VCALENDAR string from the given auctions. Same shape/fields as the
  * server route so subscribed calendars stay consistent. */
-export function buildIcal(auctions: Auction[]): string {
+export function buildIcal(auctions: RemateCalendario[]): string {
   const lines: string[] = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',

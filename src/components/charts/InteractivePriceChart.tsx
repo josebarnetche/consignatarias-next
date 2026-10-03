@@ -19,7 +19,10 @@ interface ChartPoint {
 }
 
 interface InteractivePriceChartProps {
+  /** Serie del rango inicial, calculada en el server: es la que queda en el HTML. */
   data: DataPoint[]
+  /** Rango que cubre `data`. Los rangos más cortos se recortan de ahí sin ir a la API. */
+  rangoInicial?: TimeRange
   height?: number
   accentColor?: string
   showVolume?: boolean
@@ -38,23 +41,33 @@ const RANGE_CONFIG: Record<TimeRange, { label: string; days: number | null }> = 
 
 export function InteractivePriceChart({ 
   data: initialData, 
+  rangoInicial = '30d',
   height = 320,
   accentColor = '#38bdf8',
   showVolume = true,
   className = '',
 }: InteractivePriceChartProps) {
-  const [range, setRange] = useState<TimeRange>('30d')
+  const [range, setRange] = useState<TimeRange>(rangoInicial)
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [data, setData] = useState(initialData)
   const [loading, setLoading] = useState(false)
   const svgRef = useRef<SVGSVGElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Fetch data when range changes
+  // Fetch data when range changes. Lo que entra en la serie inicial se recorta en el
+  // cliente: solo los rangos más largos van a /api/market/history.
   useEffect(() => {
     const days = RANGE_CONFIG[range].days
-    if (days === 30) {
-      setData(initialData)
+    const diasIniciales = RANGE_CONFIG[rangoInicial].days
+    if (days !== null && (diasIniciales === null || days <= diasIniciales)) {
+      const ultima = initialData[initialData.length - 1]?.date
+      if (!ultima || days === diasIniciales) {
+        setData(initialData)
+        return
+      }
+      const corte = new Date(ultima)
+      corte.setDate(corte.getDate() - days)
+      setData(initialData.filter((d) => new Date(d.date) >= corte))
       return
     }
     
@@ -72,7 +85,7 @@ export function InteractivePriceChart({
     }
     
     fetchData()
-  }, [range, initialData])
+  }, [range, initialData, rangoInicial])
 
   // Chart dimensions — memoized so it's a stable dependency for the path useMemo below
   const padding = useMemo(

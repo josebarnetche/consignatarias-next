@@ -2,6 +2,9 @@ import { ImagenTema } from '@/components/ui/ImagenTema'
 import type { Metadata } from 'next'
 import MagPulse from '@/components/MagPulse'
 import MarketIntelPanel from '@/components/MarketIntelPanel'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { adminClientOpcional } from '@/lib/supabase-server'
+import { calcularPulsoMercado, type PulsoMercado } from '@/lib/market-pulse'
 
 export const metadata: Metadata = {
   title: 'Pulso del mercado — Cañuelas en vivo',
@@ -10,9 +13,24 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.consignatarias.com.ar/mercado/pulso' },
 }
 
-export const dynamic = 'force-dynamic'
+// El pulso se calcula en el server y viaja en el HTML; antes la página era force-dynamic
+// y aun así el dato llegaba solo por fetch a /api/ (bloqueado en robots). Los lotes del MAG
+// entran Mar/Mié/Vie a las 16:00: una hora de ISR alcanza y sobra.
+export const revalidate = 3600
 
-export default function PulsoPage() {
+async function pulsoInicial(): Promise<PulsoMercado | null> {
+  const db = adminClientOpcional()
+  if (!db) return null
+  try {
+    return await calcularPulsoMercado(db as unknown as SupabaseClient)
+  } catch {
+    // Sin base no se cae la página: MagPulse lo pide al cargar, como antes.
+    return null
+  }
+}
+
+export default async function PulsoPage() {
+  const pulso = await pulsoInicial()
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="relative overflow-hidden rounded-xl mb-4">
@@ -33,7 +51,7 @@ export default function PulsoPage() {
           </p>
         </div>
       </div>
-      <MagPulse />
+      <MagPulse inicial={pulso} />
       <div className="mt-5">
         <MarketIntelPanel />
       </div>

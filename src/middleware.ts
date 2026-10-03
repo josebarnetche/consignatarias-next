@@ -2,7 +2,6 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { checkRateLimit, getClientId, addRateLimitHeaders } from '@/lib/rate-limit'
 import { getVariantSlugRedirects, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
-import rematesData from '@/lib/data/remates.json'
 
 // Build variant→canonical map once at module load (edge cold start)
 const VARIANT_TO_CANONICAL = new Map<string, string>(getVariantSlugRedirects())
@@ -10,21 +9,13 @@ const VARIANT_TO_CANONICAL = new Map<string, string>(getVariantSlugRedirects())
 // Current valid remate slugs — anything not in this set is an archived auction
 // that returns 404 because [slug]/page.tsx uses `dynamicParams = false`. We
 // redirect those to the consignataria profile to preserve link equity.
-const CURRENT_REMATE_SLUGS: Set<string> = (() => {
-  const set = new Set<string>()
-  for (const r of rematesData as Array<{
-    consignatariaSlug?: string
-    type?: string
-    province?: string
-    date?: string
-  }>) {
-    const consig = r.consignatariaSlug || 'remate'
-    const type = r.type || 'general'
-    const prov = (r.province || 'argentina').toLowerCase().replace(/\s+/g, '-')
-    set.add(`${consig}-${type}-${prov}-${r.date}`)
-  }
-  return set
-})()
+// La lista la arma next.config.js en el build (env REMATE_SLUGS_VIGENTES): importar
+// remates.json acá metía ~700 KB en el bundle de edge. Si la variable no está (no
+// debería pasar), no se redirige nada: mejor un 404 que mandar una ficha vigente al perfil.
+const REMATE_SLUGS_VIGENTES = process.env.REMATE_SLUGS_VIGENTES
+const CURRENT_REMATE_SLUGS: Set<string> | null = REMATE_SLUGS_VIGENTES
+  ? new Set(REMATE_SLUGS_VIGENTES.split('\n'))
+  : null
 
 // Matches the remate detail slug shape: {anything}-YYYY-MM-DD
 const REMATE_SLUG_PATTERN = /^(.+)-\d{4}-\d{2}-\d{2}$/
@@ -44,7 +35,7 @@ export async function middleware(request: NextRequest) {
     const m = slug.match(REMATE_SLUG_PATTERN)
     // Only act on detail-shaped slugs (ending in date). Sibling routes like
     // /remates/en-vivo, /remates/hoy, /remates/mes/<mes> fall through.
-    if (m && !CURRENT_REMATE_SLUGS.has(slug)) {
+    if (m && CURRENT_REMATE_SLUGS && !CURRENT_REMATE_SLUGS.has(slug)) {
       // Extract the consignataria portion: everything before -{type}-{prov}-{date}.
       // The slug shape is `{consig}-{type}-{province}-{date}` where type is one
       // of invernada|cria|general|especial|reproductores. Anchor on the type.
@@ -132,9 +123,18 @@ export async function middleware(request: NextRequest) {
 
   let supabaseResponse = NextResponse.next({ request })
 
+  // Sin credenciales (preview sin variables, sandbox local) createServerClient tira y se
+  // caían /api, /admin, /dashboard, /login y /mi-cuenta enteros. Se sigue sin refrescar la
+  // sesión: cada ruta que necesita auth ya la valida por su cuenta.
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return conVisitorId(request, supabaseResponse)
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
@@ -156,11 +156,15 @@ export async function middleware(request: NextRequest) {
   // Refresh session — do NOT remove this
   await supabase.auth.getUser()
 
-  // First-party visitor ID (cookie propia `cid`, anónima). Base de la capa de datos
-  // first-party: atribución + stitching a la cuenta al loguearse. httpOnly (la lee el
-  // server en /api/track/*); 1 año. Solo se setea si no existe.
+  return conVisitorId(request, supabaseResponse)
+}
+
+// First-party visitor ID (cookie propia `cid`, anónima). Base de la capa de datos
+// first-party: atribución + stitching a la cuenta al loguearse. httpOnly (la lee el
+// server en /api/track/*); 1 año. Solo se setea si no existe.
+function conVisitorId(request: NextRequest, response: NextResponse): NextResponse {
   if (!request.cookies.get('cid')) {
-    supabaseResponse.cookies.set('cid', crypto.randomUUID(), {
+    response.cookies.set('cid', crypto.randomUUID(), {
       httpOnly: true,
       secure: true,
       sameSite: 'lax',
@@ -168,8 +172,7 @@ export async function middleware(request: NextRequest) {
       path: '/',
     })
   }
-
-  return supabaseResponse
+  return response
 }
 
 /**

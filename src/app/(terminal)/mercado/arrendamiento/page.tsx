@@ -666,6 +666,7 @@ export default async function ArrendamientoPage() {
           <Suspense fallback={<div className="h-[380px] bg-zinc-900/30 rounded-2xl animate-pulse" />}>
             <InteractivePriceChart 
               data={recentSeries} 
+              rangoInicial="90d"
               height={380}
               accentColor={SEMANTIC_HEX.accent}
               showVolume={true}
