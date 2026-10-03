@@ -7,6 +7,7 @@
  * del motor comisionista). Entra por MCP (agentes) o /quiero-comprar (web).
  */
 import rematesData from '@/lib/data/remates.json'
+import { remateSlug as slugDeRemate } from '@/lib/remate-slug'
 import type { Auction } from '@/lib/db/schema'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendDemandaLeadInternal, sendDemandaMatchAlert } from '@/lib/email'
@@ -32,18 +33,11 @@ export function normalizarCategoria(raw: unknown): CategoriaDemanda | null {
   return CATEGORIA_ALIASES[k] ?? null
 }
 
-// Misma fórmula que /remates/[slug]/page.tsx (generateRemateSlug). Este slug es
-// además la CLAVE ESTABLE de notificación: los `id` numéricos de remates.json se
-// reasignan en cada scrape (¡no son estables!) y usarlos de clave re-avisaba
-// remates ya vistos — el bug de los 20+ mails del 28-jul.
-function remateSlug(r: Auction): string {
-  return [
-    r.consignatariaSlug || 'remate',
-    r.type || 'general',
-    r.province?.toLowerCase().replace(/\s+/g, '-') || 'argentina',
-    r.date,
-  ].join('-')
-}
+// Slug de la ficha (src/lib/remate-slug.ts). Es además la CLAVE ESTABLE de
+// notificación: los `id` numéricos de remates.json se reasignan en cada scrape
+// (¡no son estables!) y usarlos de clave re-avisaba remates ya vistos — el bug de
+// los 20+ mails del 28-jul.
+const remateSlug = (r: Auction): string => slugDeRemate(r)
 
 function remateUrl(r: Auction): string {
   return `${BASE_URL}/remates/${remateSlug(r)}`

@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { remateSlug } from '@/lib/remate-slug'
 import { notFound } from 'next/navigation'
 import {
   isRemateProvinceSlug,
@@ -32,16 +33,8 @@ import {
 
 type Remate = typeof rematesData[0]
 
-// Generate slug from remate data
-function generateRemateSlug(remate: typeof rematesData[0]): string {
-  const parts = [
-    remate.consignatariaSlug || 'remate',
-    remate.type || 'general',
-    remate.province?.toLowerCase().replace(/\s+/g, '-') || 'argentina',
-    remate.date,
-  ]
-  return parts.join('-')
-}
+// Slug de la ficha: la fórmula vive en src/lib/remate-slug.ts (única fuente).
+const generateRemateSlug = (remate: typeof rematesData[0]): string => remateSlug(remate)
 
 // Parse slug back to search params
 function parseRemateSlug(slug: string): { consignatariaSlug: string; type: string; province: string; date: string } | null {
