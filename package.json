@@ -1,6 +1,6 @@
 {
   "name": "consignatarias-next",
-  "version": "1.217.0",
+  "version": "1.218.0",
   "private": true,
   "packageManager": "pnpm@10.30.2",
   "scripts": {
@@ -9,9 +9,10 @@
     "start": "next start",
     "lint": "eslint .",
     "check:db-refs": "node scripts/check-db-refs.mjs",
+    "check:no-hardcoded-hex": "node scripts/check-no-hardcoded-hex.mjs",
     "guia:apertura": "node scripts/guia-apertura/build.mjs",
     "test": "vitest run",
-    "check": "tsc --noEmit && eslint . && node scripts/check-db-refs.mjs && node scripts/check-mcp-manifests.mjs && vitest run",
+    "check": "tsc --noEmit && eslint . && node scripts/check-db-refs.mjs && node scripts/check-mcp-manifests.mjs && node scripts/check-no-hardcoded-hex.mjs && vitest run",
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "dependencies": {

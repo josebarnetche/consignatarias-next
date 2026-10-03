@@ -163,8 +163,8 @@ export default function McpPage() {
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover object-[70%_center] opacity-55"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/80 to-[#09090b]/20" aria-hidden="true" />
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#09090b]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-zinc-950/20" aria-hidden="true" />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-zinc-950" aria-hidden="true" />
         <div className="relative max-w-4xl mx-auto px-4 pt-16 pb-14">
         <span className="inline-flex items-center gap-2 rounded-full border border-sky-500/40 bg-sky-500/[0.07] px-3 py-1 text-xxs font-terminal uppercase tracking-widest text-sky-300">
           <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Servidor MCP oficial
@@ -234,7 +234,7 @@ export default function McpPage() {
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover opacity-25"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#09090b] via-[#09090b]/60 to-[#09090b]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-zinc-950/60 to-zinc-950" aria-hidden="true" />
         <div className="relative max-w-4xl mx-auto px-4">
         <div className="terminal-panel rounded-xl p-5 sm:p-6 bg-[#0b0b0e]/90 backdrop-blur-sm">
           <p className="text-label tracking-widest text-zinc-400 mb-3">CONECTAR</p>

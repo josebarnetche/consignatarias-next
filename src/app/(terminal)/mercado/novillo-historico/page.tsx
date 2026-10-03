@@ -106,7 +106,7 @@ export default async function NovilloHistoricoPage() {
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover opacity-20"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#09090b]/40 via-[#09090b]/70 to-[#09090b]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/40 via-zinc-950/70 to-zinc-950" aria-hidden="true" />
         <div className="relative py-4">
           <p className="text-xxs font-terminal text-zinc-500 uppercase tracking-widest mb-2">
             <Link href="/mercado" className="text-accent hover:text-accent-bright">Mercado</Link> / Novillo histórico

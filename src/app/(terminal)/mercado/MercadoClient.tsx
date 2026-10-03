@@ -144,7 +144,7 @@ export default function MercadoPage() {
           loading="lazy"
           className="absolute inset-0 h-full w-full object-cover opacity-15"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#09090b]/80 via-[#09090b]/50 to-[#09090b]/80" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/80 via-zinc-950/50 to-zinc-950/80" aria-hidden="true" />
         <div className="relative terminal-panel-header flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
           <h1 className="section-heading">
             MERCADO <span className="text-zinc-500 mx-1">&mdash;</span> INDICES Y PRECIOS DE REFERENCIA

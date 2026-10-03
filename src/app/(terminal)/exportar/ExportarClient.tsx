@@ -74,7 +74,7 @@ export default function ExportarClient() {
           loading="lazy"
           className="absolute inset-0 h-full w-full object-cover opacity-15"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#09090b]/40 via-[#09090b]/70 to-[#09090b]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/40 via-zinc-950/70 to-zinc-950" aria-hidden="true" />
         <div className="relative py-3">
         <Link href="/remates" className="text-xxs font-terminal text-accent hover:text-accent-bright mb-4 inline-block">
           ← Volver a remates

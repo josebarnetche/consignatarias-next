@@ -336,8 +336,8 @@ export default async function ElOraculoPage() {
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover object-[70%_center] opacity-40"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/80 to-[#09090b]/25" aria-hidden="true" />
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-[#09090b]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-zinc-950/25" aria-hidden="true" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-zinc-950" aria-hidden="true" />
         <div className="relative max-w-3xl mx-auto px-4 pt-16 pb-10 text-sm leading-relaxed">
           <h1 className="text-zinc-100 text-2xl font-medium mb-2">El Oráculo</h1>
           <p className="text-zinc-500 text-xs mb-6">
