@@ -14,10 +14,12 @@ import { FaenaStats } from '@/components/FaenaStats'
 import { MagActivity } from '@/components/MagActivity'
 import { getSenasaScrapedDate, getSenasaHabilitadosCount } from '@/lib/data/senasa-habilitados'
 import { frigorificoProvinceSlugs } from './_views/FrigorificoProvinceView'
+import { listadoFrigorificos } from '@/lib/frigorificos/listado'
 import SinceLastVisit from '@/components/landing/SinceLastVisit'
 import FreshnessStamp from '@/components/landing/FreshnessStamp'
 
 const totalFrigorificos = frigorificosData.length
+const listado = listadoFrigorificos()
 
 // Answer-first number for the money query "listado de frigoríficos habilitados por SENASA".
 // N = conteo del dataset SENASA (CUIT distintos en el registro oficial Ciclo I/II/III),
@@ -229,7 +231,7 @@ export default function FrigorificosPage() {
         </div>
       </section>
 
-      <FrigorificosClient />
+      <FrigorificosClient filas={listado.filas} provincias={listado.provincias} />
 
       {/* Listados por provincia y suscripción, DEBAJO del directorio (02-10-2026).
           Estaban entre el encabezado y el buscador: en un teléfono empujaban el

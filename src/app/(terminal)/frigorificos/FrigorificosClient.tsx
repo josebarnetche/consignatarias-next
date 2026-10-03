@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import frigorificosData from '@/lib/data/frigorificos.json'
+import type { FilaFrigorifico } from '@/lib/frigorificos/listado'
 import summaryData from '@/lib/data/frigorificos-summary.json'
 import { trackSearch, trackFilterApply } from '@/lib/analytics'
 import { ProvinceLinkGrid } from '@/components/seo/ProvinceLinkGrid'
@@ -18,11 +18,7 @@ interface Frigorifico {
   province: string
   stage: number
   /** True if cuit appears in the current SENASA snapshot (Ciclo I/II/III). */
-  senasaActive?: boolean
-  /** YYYY-MM-DD of the SENASA snapshot stamp, or null if never verified. */
-  senasaLastSeen?: string | null
-  /** "senasa" for rows imported from the SENASA registry vs the original curated list. */
-  source?: string
+  senasaActive: boolean
 }
 
 interface ProvinceSummary {
@@ -34,7 +30,6 @@ interface ProvinceSummary {
 /* ------------------------------------------------------------------ */
 /*  DATA                                                               */
 /* ------------------------------------------------------------------ */
-const frigorificos = frigorificosData as Frigorifico[]
 const summary = summaryData as {
   total: number
   byProvince: Record<string, number>
@@ -191,7 +186,31 @@ function SortHeader({
 /* ================================================================== */
 /*  PAGE COMPONENT                                                     */
 /* ================================================================== */
-export default function FrigorificosPage() {
+/** Filas que se pintan de entrada. La tabla entera eran ~1 MB de HTML; las fichas
+    siguen enlazadas una por una desde las páginas de provincia. */
+const FILAS_INICIALES = 100
+
+export default function FrigorificosPage({
+  filas,
+  provincias,
+}: {
+  filas: FilaFrigorifico[]
+  provincias: string[]
+}) {
+  const frigorificos = useMemo<Frigorifico[]>(
+    () =>
+      filas.map(([cuit, name, matricula, prov, stage, activo]) => ({
+        cuit,
+        name,
+        matricula,
+        province: provincias[prov] ?? '',
+        stage,
+        senasaActive: activo === 1,
+      })),
+    [filas, provincias],
+  )
+  const [limite, setLimite] = useState(FILAS_INICIALES)
+
   /* -- Filter state ------------------------------------------------ */
   const [search, setSearch] = useState('')
   const [filterProvince, setFilterProvince] = useState('')
@@ -253,7 +272,7 @@ export default function FrigorificosPage() {
       trackSearch(q, count, 'frigorificos')
     }, 800)
     return () => { if (searchTimer.current) clearTimeout(searchTimer.current) }
-  }, [search])
+  }, [search, frigorificos])
 
   /* -- Filtered + sorted data -------------------------------------- */
   const filtered = useMemo(() => {
@@ -273,7 +292,7 @@ export default function FrigorificosPage() {
     }
 
     return [...result].sort(compareFn(sortField, sortDir))
-  }, [search, filterProvince, filterStage, sortField, sortDir])
+  }, [frigorificos, search, filterProvince, filterStage, sortField, sortDir])
 
   /* -- Stage stats ------------------------------------------------- */
   const maxProvince = summary.topProvinces[0]?.count ?? 1
@@ -575,7 +594,7 @@ export default function FrigorificosPage() {
                     </td>
                   </tr>
                 ) : (
-                  filtered.map((f, i) => (
+                  filtered.slice(0, limite).map((f, i) => (
                     <tr
                       key={f.cuit}
                       className={`hover:bg-accent/[0.03] transition-colors cursor-pointer ${
@@ -621,6 +640,17 @@ export default function FrigorificosPage() {
                 )}
               </tbody>
             </table>
+            {filtered.length > limite && (
+              <div className="border-t border-terminal-border px-4 py-2 text-center">
+                <button
+                  type="button"
+                  onClick={() => setLimite(filtered.length)}
+                  className="px-3 py-1.5 text-xxs text-accent hover:text-accent-bright font-terminal transition-colors border border-accent/30 rounded hover:bg-accent/10"
+                >
+                  Ver los {filtered.length - limite} restantes
+                </button>
+              </div>
+            )}
           </div>
 
           {/* ── FOOTER STATUS BAR ──────────────────────────────────── */}

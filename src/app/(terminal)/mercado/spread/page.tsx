@@ -9,6 +9,7 @@ import {
 import marketPrices from '@/lib/data/market-prices.json'
 import maizNovilloHist from '@/lib/data/maiz-novillo-historico.json'
 import SpreadClient from './SpreadClient'
+import { calcularSpread } from '@/lib/market/spread'
 import CompraLeadCapture from '@/components/leads/CompraLeadCapture'
 
 export const revalidate = 86400
@@ -227,7 +228,7 @@ export default function SpreadPage() {
       })()}
 
       {/* Herramienta interactiva: la relación en vivo + decisión operativa */}
-      <SpreadClient />
+      <SpreadClient data={calcularSpread()} />
 
       {/* Captura del lado COMPRADOR — la página del spread es territorio de feedlots
           (compran invernada para engordar). Alimenta la otra punta del matching. */}

@@ -1,49 +1,18 @@
 'use client'
 
 import { ImagenTema } from '@/components/ui/ImagenTema'
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema } from '@/components/seo/JsonLd'
 import { ProReveal, HeroNumber, StatPill } from '@/components/pro'
-
-interface SpreadData {
-  novilloArs: number
-  novilloUsd: number
-  cornUsd: number
-  usdBlue: number
-  spread: number
-  profitabilityThreshold: number
-  isProfitable: boolean
-  lastUpdate: string
-}
+import type { SpreadData } from '@/lib/market/spread'
 
 const FROM = '/mercado/spread'
 
-export default function SpreadClient() {
-  const [data, setData] = useState<SpreadData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
-
-  useEffect(() => {
-    let cancelled = false
-    async function fetchData() {
-      try {
-        const res = await fetch('/api/market/spread')
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        const json = (await res.json()) as SpreadData
-        if (!cancelled) setData(json)
-      } catch (e) {
-        console.error('Failed to fetch spread data:', e)
-        if (!cancelled) setError(true)
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    }
-    fetchData()
-    return () => {
-      cancelled = true
-    }
-  }, [])
+// El dato llega por props desde el server (antes, fetch a /api/market/spread: el HTML
+// inicial y los bots veían un spinner). `loading`/`error` quedan fijos para no tocar el JSX.
+export default function SpreadClient({ data }: { data: SpreadData }) {
+  const loading = false
+  const error = false
 
   const faqs = [
     {
