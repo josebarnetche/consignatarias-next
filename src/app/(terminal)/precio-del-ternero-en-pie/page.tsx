@@ -175,7 +175,7 @@ export default function PrecioDelTerneroEnPiePage() {
       />
       <DatasetSchema
         name="Precio del ternero en pie — Mercado Agroganadero"
-        description={`Precio de referencia por kilo vivo del ternero de invernada en el Mercado Agroganadero de Buenos Aires al ${INMAG_DATE}: $${fmt(ternero)}/kg vivo. Comparado con novillito ($${fmt(novillito)}), novillo ($${fmt(novillo)}), vaquillona ($${fmt(vaquillona)}) y vaca ($${fmt(vaca)}). Fuente INMAG/MAG.`}
+        description={`Estimación del kilo vivo del ternero de invernada al ${INMAG_DATE}: $${fmt(ternero)}/kg vivo (INMAG × 1,10; el Mercado Agroganadero no opera terneros, no es un precio observado). Comparado con novillito ($${fmt(novillito)}), novillo ($${fmt(novillo)}), vaquillona ($${fmt(vaquillona)}) y vaca ($${fmt(vaca)}). Base: INMAG del Mercado Agroganadero.`}
         url={PAGE_URL}
         keywords={['precio ternero', 'ternero en pie', 'kilo vivo', 'invernada', 'zafra de terneros', 'mercado agroganadero', 'INMAG']}
         dateModified={INMAG_DATE}

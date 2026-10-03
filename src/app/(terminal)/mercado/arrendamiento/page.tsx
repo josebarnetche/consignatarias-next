@@ -114,7 +114,12 @@ export const metadata: Metadata = {
   // "indice novillo arrendamiento*" a CTR 0,5-1,1% porque el <title> no contenía la
   // palabra "índice" (sí estaba en OG/keywords/H1, pero Google pesa el <title>). Se agrega
   // "e Índice" sin perder precio/hoy/$número. ~52 chars, no trunca. v1.40 + jul-2026 CTR pass.
-  title: `Precio e Índice Novillo Arrendamiento Hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg`,
+  // Oct-2026 (GSC W29→W39): el CTR del hub cayó de 1,7 % a 0,95 % mientras crecían
+  // /liniers, /canuelas y /mensual. Title absoluto (sin el sufijo de marca, que lo
+  // cortaba) y con el mes del índice que se liquida, para diferenciarlo de las hijas.
+  title: {
+    absolute: `Precio e índice novillo arrendamiento hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg · ${MESES[new Date(arr.date + 'T12:00:00').getMonth()].toLowerCase()}`,
+  },
   // ≤160 caracteres con el dato primero: Google cortaba la anterior (~330) antes del
   // índice mensual, que es el que se liquida.
   description: `Índice novillo arrendamiento hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg (MAG, ${fmtFecha(arr.date)}). Mensual, el que se liquida: $${arr.periodIndex.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg. Calculá tu canon.`,

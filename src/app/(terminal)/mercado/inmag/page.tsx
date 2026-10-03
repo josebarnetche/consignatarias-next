@@ -39,7 +39,13 @@ export const metadata: Metadata = {
   // + variation arrow up front. Shorter than the old descriptor-heavy title that truncated
   // at ~95 chars. The "Índice Novillo Mercado Agroganadero" descriptor moves to the
   // description (still cited) so the title is a clean answer. v1.40 CTR pass.
-  title: `INMAG hoy: $${inmag.current.toLocaleString('es-AR')}/kg vivo (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1)}%)`,
+  // Oct-2026: los clics de "inmag" cayeron 96 % entre junio y septiembre. Parte de la
+  // causa probable era interna: /overview se titulaba "…Hoy: INMAG $X" y el logo de todo
+  // el terminal le pasaba autoridad (ya corregido). Acá: title absoluto y con el nombre
+  // completo del índice, que es como lo busca el que no conoce la sigla.
+  title: {
+    absolute: `INMAG hoy: $${inmag.current.toLocaleString('es-AR')}/kg vivo (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(1).replace('.', ',')} %) · Índice Novillo`,
+  },
   description: `INMAG hoy: $${inmag.current.toLocaleString('es-AR')} ARS/kg vivo (${inmag.change >= 0 ? '+' : ''}${inmag.change.toFixed(2)}% vs. anterior). Índice Novillo del Mercado Agroganadero de Cañuelas. Histórico desde 2015, en pesos y dólares.`,
   keywords: [
     'INMAG', 'inmag precio', 'inmag hoy', 'inmag actual',

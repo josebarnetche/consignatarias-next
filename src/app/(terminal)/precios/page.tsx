@@ -110,7 +110,7 @@ export default function PreciosHubPage() {
       />
       <DatasetSchema
         name={`Precios de hacienda por categoría — Mercado Agroganadero (${lastUpdate})`}
-        description={`Kilo vivo en ARS por categoría (novillo, novillito, vaquillona, vaca, toro, ternero) y referencia INMAG del novillo de exportación, publicados por el Mercado Agroganadero (MAG-Cañuelas). Unidad: $/kg vivo. Fecha: ${lastUpdate}.`}
+        description={`Kilo vivo en ARS por categoría (novillo, novillito, vaquillona, vaca, toro) y referencia INMAG del novillo de exportación, publicados por el Mercado Agroganadero (MAG-Cañuelas); el ternero es una estimación propia (INMAG × 1,10). Unidad: $/kg vivo. Fecha: ${lastUpdate}.`}
         url="https://www.consignatarias.com.ar/precios"
         keywords={['precios hacienda', 'novillo', 'vaca', 'ternero', 'INMAG', 'kilo vivo', 'Mercado Agroganadero', 'MAG']}
         dateModified={INMAG_DATE}

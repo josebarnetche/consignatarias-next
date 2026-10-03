@@ -188,6 +188,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/campos`, lastModified: editado('/campos'), changeFrequency: 'daily', priority: 0.9 },
     { url: `${baseUrl}/campos/publicar`, lastModified: editado('/campos/publicar'), changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/campos/valuar`, lastModified: editado('/campos/valuar'), changeFrequency: 'weekly', priority: 0.85 },
+    // Landing indexable de "cuánto vale mi hacienda" (/mi-ganado es noindex): muestra la
+    // banda del día, así que su fecha es la del precio.
+    { url: `${baseUrl}/valuar-hacienda`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.9 },
     { url: `${baseUrl}/guias`, lastModified: editado('/guias'), changeFrequency: 'weekly', priority: 0.75 },
     // Informes de datos — el hub y cada sales page. Prioridad alta: son las páginas
     // que cobran, y su descubrimiento por búsqueda es el canal de A5 y A7 del plan
