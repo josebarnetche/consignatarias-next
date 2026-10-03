@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import { ImagenTema } from '@/components/ui/ImagenTema'
 import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import { Metadata } from 'next'
@@ -145,7 +146,7 @@ function InmagSchema() {
     isAccessibleForFree: true,
     spatialCoverage: { '@type': 'Place', name: 'Argentina' },
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 }
 
 // DefinedTerm — entity-level "¿qué es el INMAG?" definition. More precise than
@@ -163,7 +164,7 @@ function InmagDefinedTermSchema() {
     inDefinedTermSet: 'https://www.consignatarias.com.ar/glosario#set',
     url: 'https://www.consignatarias.com.ar/mercado/inmag',
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 }
 
 function fmt(n: number): string {

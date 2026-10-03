@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import { ImagenTema } from '@/components/ui/ImagenTema'
 import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import { Metadata } from 'next'
@@ -195,7 +196,7 @@ function FAQSchema() {
     }))
   }
   
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 }
 
 // Dataset Schema
@@ -247,7 +248,7 @@ function ArrendamientoSchema() {
     },
     dateModified: arr.date,
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 }
 
 // DefinedTerm — define la ENTIDAD "índice novillo arrendamiento" (paridad con el
@@ -264,7 +265,7 @@ function ArrendamientoDefinedTermSchema() {
     inDefinedTermSet: 'https://www.consignatarias.com.ar/glosario#set',
     url: 'https://www.consignatarias.com.ar/mercado/arrendamiento',
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 }
 
 // QAPage — refuerza el snippet de la query head "precio novillo para arrendamiento hoy"

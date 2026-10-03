@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
@@ -119,7 +120,7 @@ function ProvinceConsignatariasSchema({
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: jsonLd(schema) }}
     />
   )
 }

@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import { OfrecerGuia } from '@/components/guias/OfrecerGuia'
 import { Metadata } from 'next'
 import rematesData from '@/lib/data/remates.json'
@@ -101,7 +102,7 @@ function ConsignatariasItemListSchema({ entries }: { entries: Array<{ slug: stri
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: jsonLd(schema) }}
     />
   )
 }

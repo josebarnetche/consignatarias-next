@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
@@ -127,7 +128,7 @@ function ArrendamientoCanuelasDataset() {
     ],
     dateModified: arrendamientoOficial.date,
   }
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 }
 
 export const metadata: Metadata = {

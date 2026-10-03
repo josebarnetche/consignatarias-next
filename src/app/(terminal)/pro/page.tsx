@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { FUNCIONES_PREMIUM, PRO_ABIERTO } from '@/lib/plan-pro'
@@ -42,7 +43,7 @@ export default function ProPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLd({
             '@context': 'https://schema.org',
             '@type': 'Product',
             name: 'PRO — Consignatarias.com.ar',

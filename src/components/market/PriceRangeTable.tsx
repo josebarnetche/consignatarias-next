@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import marketData from '@/lib/data/market-prices.json'
 
 /* ------------------------------------------------------------------
@@ -106,7 +107,7 @@ export function PriceRangeTable({ categoria, namePlural }: { categoria: string; 
           </tbody>
         </table>
       </div>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(itemList) }} />
     </section>
   )
 }

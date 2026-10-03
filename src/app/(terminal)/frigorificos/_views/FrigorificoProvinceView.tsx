@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
@@ -221,7 +222,7 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(itemListSchema) }} />
       <FAQPageSchema items={faqItems} />
 
       <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 space-y-0">

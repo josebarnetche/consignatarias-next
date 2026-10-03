@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/seo/json-ld'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
@@ -367,7 +368,7 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
       {/* JSON-LD: ItemList of Events */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(itemListSchema) }}
       />
 
       {/* JSON-LD: FAQ */}
