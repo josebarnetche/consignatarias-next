@@ -3,7 +3,7 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.218.0 (2026-10-03). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+**Current version:** v1.219.0 (2026-10-03). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
 
 > **Tema claro (desde v1.217.0, Fases 1-2 de [docs/PLAN-TEMA-WHITE.md](docs/PLAN-TEMA-WHITE.md)):**
 > el sitio abre en **claro** (blanco puro, acento `blue-700`), con un botón en el header
@@ -25,7 +25,11 @@
 > quedaba negro en claro con el texto ya invertido — corregido a `zinc-950` en todas; el resto
 > del barrido (fichas de remate/consignataria, cuenta, admin) está bloqueado en este sandbox por
 > falta de credenciales de Supabase (`src/middleware.ts` las exige sin guard) — ver v1.218.0 en
-> CHANGELOG.md.
+> CHANGELOG.md. **Lenguaje del claro (desde v1.219.0):** `font-terminal`/`font-mono` leen
+> `--font-ui` (Inter en claro, mono en oscuro; `pre/code` siempre mono vía `--font-code`), en claro
+> `.uppercase` no transforma y los títulos de panel son rótulos; radios/sombras por variables
+> (`--radius-ui`, `--radius-ctl`, `--shadow-panel`). Para lo que difiere de verdad entre temas hay
+> variantes `claro:` y `oscuro:` (el `dark:` de Tailwind NO aplica — el tema es `data-theme`).
 
 ---
 

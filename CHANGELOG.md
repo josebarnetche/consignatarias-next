@@ -7,6 +7,44 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.219.0] — 2026-10-03
+
+### Tema claro — lenguaje propio (sin tipografía de terminal) + fix del celular
+
+El claro dejaba ver que era la terminal oscura con los colores invertidos: mono en
+todo el texto, mayúsculas espaciadas, esquinas de 2px y paneles chatos sobre blanco.
+Ahora cada tema tiene su lenguaje; **el oscuro no cambia** (verificado con capturas
+lado a lado, escritorio y Pixel 7).
+
+- **Tipografía por tema.** `font-terminal` y `font-mono` leen `--font-ui`: Inter en
+  claro, el stack mono de siempre en oscuro. El código real (`pre`, `code`, `kbd`,
+  `samp`) usa `--font-code`, que es mono en los dos.
+- **Mayúsculas y tracking.** En claro, `.uppercase` no transforma el texto, y
+  `tracking-wide/wider/widest` leen `--tracking-*`, más cerrados en una sans.
+  - Excepción: los títulos de panel (`.terminal-panel-header`) pasan a **rótulo**
+    (12px, peso 600, gris, versalitas). Su `h2`/`.section-heading`/`.text-label`
+    heredan ese estilo, porque muchos están escritos en MAYÚSCULAS en el código y
+    en negrita grande gritaban.
+  - Tablas, tags, botones y nav sin versalitas.
+- **Superficies.** En claro, fondo gris muy claro (`--t-bg` 245 246 248) con paneles
+  blancos, `--radius-ui` de 10px y `--shadow-panel` sutil; los controles usan
+  `--radius-ctl` de 6px. En oscuro: 2px y sin sombra, como siempre.
+- **Header.** Etiquetas del nav en minúscula ("Valor", "Mercado"…; el oscuro las sigue
+  mostrando en mayúsculas vía `uppercase`), 56px de alto, ítem activo con fondo de
+  acento suave, sin separadores `|`/`/` ni reloj.
+- **Variantes de Tailwind `claro:` y `oscuro:`** (plugin en `tailwind.config.js`). El
+  tema vive en `<html data-theme>`, así que el `dark:` de Tailwind no aplica. Sirven
+  para lo que difiere entre temas; los colores ya invierten solos vía tokens.
+- **Celular (antes PR #48).** En Android con el teléfono en modo oscuro, Chrome y
+  Samsung Internet oscurecían el claro: se agrega `color-scheme: only light` (CSS +
+  meta) y `theme-color` sincronizado con el tema. También se corrigen el banner de
+  cookies, que era negro fijo, y el isotipo de la home, que desaparecía.
+- Incluye la Fase 3 parcial y la Fase 4 (antes PR #47, ver 1.218.0).
+
+**Pendiente:** el rediseño por plantilla (home, listado de remates, directorio, fichas)
+siguiendo la maqueta. Las tablas densas todavía usan siglas de terminal ("ESPEC",
+"SRC WA"), que piden su propio componente.
+
 ## [1.218.0] — 2026-10-03
 
 ### Tema claro — Fase 3 (barrido visual) y Fase 4 (guardarraíl)

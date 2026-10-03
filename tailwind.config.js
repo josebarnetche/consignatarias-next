@@ -43,17 +43,10 @@ module.exports = {
         live: 'rgb(var(--live) / <alpha-value>)',
       },
       fontFamily: {
-        terminal: [
-          'SF Mono',
-          'Cascadia Code',
-          'JetBrains Mono',
-          'Fira Code',
-          'Consolas',
-          'Monaco',
-          'Liberation Mono',
-          'Courier New',
-          'monospace',
-        ],
+        // font-terminal y font-mono leen --font-ui (globals.css): mono en el tema
+        // oscuro, Inter en el claro. El código real (pre/code) fuerza --font-code.
+        terminal: ['var(--font-ui)'],
+        mono: ['var(--font-ui)'],
         heading: [
           'var(--font-inter)',
           'system-ui',
@@ -93,7 +86,14 @@ module.exports = {
         'panel': '16px',  // panel internal padding
       },
       borderRadius: {
-        'terminal': '2px',
+        'terminal': 'var(--radius-ctl)', // 2px en oscuro, 6px en claro
+      },
+      // El tracking ancho de la terminal en mono se ve "gritón" en una sans:
+      // en claro baja (ver --tracking-* en globals.css); en oscuro, los de siempre.
+      letterSpacing: {
+        wide: 'var(--tracking-wide)',
+        wider: 'var(--tracking-wider)',
+        widest: 'var(--tracking-widest)',
       },
       animation: {
         'pulse-live': 'pulse-live 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -169,5 +169,15 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // Variantes por tema: `claro:` y `oscuro:` (ej. `oscuro:uppercase`). El tema
+    // vive en <html data-theme>, no en una clase `dark`, así que el `dark:` de
+    // Tailwind no aplica. Usar para lo que difiere de verdad entre temas (la
+    // terminal en mayúsculas vs. el claro en minúsculas), no para colores: los
+    // colores ya invierten solos vía tokens.
+    function ({ addVariant }) {
+      addVariant('claro', 'html:not([data-theme="dark"]) &')
+      addVariant('oscuro', 'html[data-theme="dark"] &')
+    },
+  ],
 }

@@ -44,7 +44,7 @@ const NAV_GROUPS: NavGroup[] = [
   // vendió, y tu rodeo valuado contra eso. Antes Mi Ganado estaba enterrado como el
   // ítem 4 de HERRAMIENTAS y el Valor de Referencia no estaba en el nav.
   {
-    label: "VALOR",
+    label: "Valor",
     match: "/vr",
     items: [
       { label: "Valor de Referencia", href: "/vr", hint: "Lo que se pagó por categoría y peso", tag: "new" },
@@ -53,7 +53,7 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: "MERCADO",
+    label: "Mercado",
     match: "/mercado",
     items: [
       { label: "INMAG hoy", href: "/mercado/inmag", hint: "Precio de referencia", tag: "live" },
@@ -69,7 +69,7 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: "REMATES",
+    label: "Remates",
     match: "/remates",
     items: [
       { label: "Calendario", href: "/remates", hint: "Todos los remates" },
@@ -83,7 +83,7 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: "CAMPOS",
+    label: "Campos",
     match: "/campos",
     items: [
       { label: "Índice de arrendamiento", href: "/mercado/arrendamiento", hint: "Kg de novillo por hectárea, al índice oficial" },
@@ -93,7 +93,7 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: "DIRECTORIO",
+    label: "Directorio",
     match: "/consignatarias",
     items: [
       { label: "Frigoríficos", href: "/frigorificos", hint: "1.102 plantas SENASA" },
@@ -103,7 +103,7 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: "HERRAMIENTAS",
+    label: "Herramientas",
     match: "/calculadora",
     items: [
       { label: "Pre-ofertas", href: "/preofertas", hint: "Pre-ofertá lotes de remates de cabaña · el puente al martillo" },
@@ -119,7 +119,7 @@ const NAV_GROUPS: NavGroup[] = [
     // Cincuenta páginas explicativas vivían sin ningún lugar desde donde
     // llegar: se entraba por búsqueda y se salía. El hub las junta y les da
     // los enlaces internos que las vuelven un cuerpo y no hojas sueltas.
-    label: "GUÍAS",
+    label: "Guías",
     match: "/guias",
     items: [
       { label: "Todas las guías", href: "/guias", hint: "El índice completo, por tema", tag: "new" },
@@ -144,22 +144,22 @@ interface MobileNavLink extends NavLink {
   tag?: NavLeaf["tag"];
 }
 const MOBILE_NAV: MobileNavLink[] = [
-  { label: "VALOR REF.", href: "/vr" },
-  { label: "MI GANADO", href: "/mi-ganado" },
+  { label: "Valor ref.", href: "/vr" },
+  { label: "Mi Ganado", href: "/mi-ganado" },
   { label: "INMAG", href: "/mercado/inmag", tag: "live" },
-  { label: "ARRIENDO", href: "/mercado/arrendamiento" },
-  { label: "PRECIOS", href: "/precios" },
-  { label: "REMATES", href: "/remates" },
+  { label: "Arriendo", href: "/mercado/arrendamiento" },
+  { label: "Precios", href: "/precios" },
+  { label: "Remates", href: "/remates" },
   // 02-10-2026: EN VIVO y FRIGORÍFICOS no tenían ninguna puerta de entrada desde el
   // teléfono; solo vivían dentro de un desplegable de escritorio.
-  { label: "EN VIVO", href: "/remates/en-vivo", tag: "live" },
-  { label: "FRIGORÍFICOS", href: "/frigorificos" },
-  { label: "CAMPOS", href: "/campos/valuar" },
-  { label: "CONSIGNAT.", href: "/consignatarias" },
-  { label: "CALCULAR", href: "/calculadora" },
-  { label: "GUÍAS", href: "/guias" },
-  { label: "INFORMES", href: "/informes" },
-  { label: "PLANES", href: "/planes", tag: "pro" },
+  { label: "En vivo", href: "/remates/en-vivo", tag: "live" },
+  { label: "Frigoríficos", href: "/frigorificos" },
+  { label: "Campos", href: "/campos/valuar" },
+  { label: "Consignat.", href: "/consignatarias" },
+  { label: "Calcular", href: "/calculadora" },
+  { label: "Guías", href: "/guias" },
+  { label: "Informes", href: "/informes" },
+  { label: "Planes", href: "/planes", tag: "pro" },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -292,8 +292,10 @@ function NavDropdown({
           setOpen((v) => !v);
         }}
         onFocus={() => setOpen(true)}
-        className={`relative flex items-center px-2 py-1.5 text-xxs font-terminal uppercase tracking-widest motion-hover ${
-          active || open ? "text-accent" : "text-zinc-500 hover:text-zinc-100"
+        className={`relative flex items-center px-2 py-1.5 text-xxs font-terminal uppercase tracking-widest motion-hover claro:text-sm claro:font-medium claro:px-3 claro:rounded-terminal ${
+          active || open
+            ? "text-accent claro:bg-accent/[0.07]"
+            : "text-zinc-500 hover:text-zinc-100 claro:text-zinc-300 claro:hover:bg-zinc-900"
         }`}
       >
         {group.label}
@@ -384,23 +386,23 @@ export default function TerminalLayout({
     <div className="bg-terminal-bg text-zinc-100 min-h-screen flex flex-col font-terminal text-sm">
       {/* -- HEADER BAR ------------------------------------------- */}
       <header className="border-b border-terminal-border bg-terminal-panel flex-shrink-0">
-        <div className="flex items-center justify-between px-4 h-10">
+        <div className="flex items-center justify-between px-4 h-10 claro:h-14 claro:px-6">
           {/* -- LEFT: Logo (marca — mono, minúscula, punto en accent) -- */}
           <div className="flex items-center gap-4">
             <Link href="/overview" className="flex items-center gap-1.5 group" title="consignatarias.com.ar">
               <span className="live-indicator-accent flex-shrink-0" />
-              <span className="font-terminal text-[13px] font-semibold tracking-tight text-zinc-100 lowercase group-hover:text-accent transition-colors">
+              <span className="font-terminal text-[13px] claro:text-base font-semibold tracking-tight text-zinc-100 lowercase group-hover:text-accent transition-colors">
                 consignatarias<span className="text-accent">.</span>com
               </span>
             </Link>
 
             {/* -- NAV (desktop) — dropdowns del mundo del productor -- */}
-            <nav className="hidden md:flex items-center">
-              <span className="text-terminal-border mr-1">|</span>
+            <nav className="hidden md:flex items-center claro:ml-2 claro:gap-0.5">
+              <span className="claro:hidden text-terminal-border mr-1">|</span>
               {NAV_GROUPS.map((group, i) => (
                 <span key={group.label} className="flex items-center">
                   {i > 0 && (
-                    <span className="text-terminal-border mx-1 text-xxs select-none">
+                    <span className="claro:hidden text-terminal-border mx-1 text-xxs select-none">
                       /
                     </span>
                   )}
@@ -417,15 +419,17 @@ export default function TerminalLayout({
           <div className="flex items-center gap-3">
             <Link
               href="/planes"
-              className={`text-xxs font-terminal uppercase tracking-wider transition-colors hidden sm:inline ${
+              className={`text-xxs claro:text-sm claro:font-medium font-terminal uppercase tracking-wider transition-colors hidden sm:inline ${
                 matchPath(pathname, "/planes") ? "text-amber-300" : "text-zinc-500 hover:text-amber-300"
               }`}
             >
               Planes
             </Link>
-            <span className="text-terminal-border hidden sm:inline">|</span>
-            <TerminalClock />
-            <span className="text-terminal-border hidden sm:inline">|</span>
+            <span className="claro:hidden text-terminal-border hidden sm:inline">|</span>
+            <span className="claro:hidden">
+              <TerminalClock />
+            </span>
+            <span className="claro:hidden text-terminal-border hidden sm:inline">|</span>
             <ThemeToggle />
             <OnboardingPrompt />
             <AuthButton />
@@ -465,7 +469,7 @@ export default function TerminalLayout({
             return (
               <span key={item.href} className="flex items-center flex-shrink-0">
                 {i > 0 && (
-                  <span className="text-terminal-border mx-0.5 text-xxs select-none">
+                  <span className="claro:hidden text-terminal-border mx-0.5 text-xxs select-none">
                     /
                   </span>
                 )}
@@ -661,7 +665,7 @@ function SystemFooter() {
             </svg>
             Compartir
           </a>
-          <span className="text-terminal-border">|</span>
+          <span className="claro:hidden text-terminal-border">|</span>
           <span>agro@memola.com.ar</span>
         </div>
       </div>
