@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { GuiasVentaHacienda } from '@/components/guias/GuiasVentaHacienda'
 import {
   SectionBreadcrumbSchema,
   DefinedTermSetSchema,
@@ -115,7 +116,9 @@ const FAQ = [
 ]
 
 export const metadata: Metadata = {
-  title: `Cómo vender hacienda: guía del productor ganadero (novillo $${fmt(novillo)}/kg)`,
+  // Guía PASO A PASO (ya decidí vender). Elegir canal: /como-vender-hacienda;
+  // comparar canales: /vender-en-remate-vs-venta-directa-vs-consignacion.
+  title: 'Cómo vender hacienda paso a paso: papeles, gastos y cobro',
   description:
     `Guía completa para vender hacienda en Argentina: los tres canales de venta (remate, venta directa y consignación), cómo se compone el precio de tranquera, el desbaste, los gastos de comercialización y la documentación obligatoria (RENSPA, DT-e, guía, boleto de marca). Novillo de referencia a $${fmt(novillo)}/kg vivo (${lastUpdate}).`,
   keywords: [
@@ -131,7 +134,7 @@ export const metadata: Metadata = {
     'vender hacienda en remate o venta directa',
   ],
   openGraph: {
-    title: 'Cómo vender hacienda: guía del productor ganadero',
+    title: 'Cómo vender hacienda paso a paso: papeles, gastos y cobro',
     description:
       `Los tres canales de venta, la composición del precio de tranquera, el desbaste, los gastos de comercialización y la documentación obligatoria. Novillo de referencia a $${fmt(novillo)}/kg vivo (${lastUpdate}).`,
     url: PAGE_URL,
@@ -179,7 +182,7 @@ export default function VenderHaciendaGuiaPage() {
         </nav>
 
         <h1 className="text-zinc-100 text-2xl font-medium mb-3">
-          Cómo vender hacienda: guía del productor ganadero
+          Cómo vender hacienda paso a paso: de la tropa al cobro
         </h1>
 
         {/* Answer-first: primera oración autocontenida y citable por asistentes IA */}
@@ -370,6 +373,8 @@ export default function VenderHaciendaGuiaPage() {
           Los trámites sanitarios oficiales se realizan en senasa.gob.ar y ante la autoridad
           provincial; esta página es informativa.
         </p>
+
+        <GuiasVentaHacienda actual="/vender-hacienda-guia" />
 
         {/* FAQ visible — refuerza el schema y da respuesta extraíble */}
         <h2 className="text-zinc-100 text-lg font-medium mb-3">Preguntas frecuentes</h2>

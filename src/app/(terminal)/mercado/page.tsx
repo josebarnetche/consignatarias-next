@@ -60,7 +60,7 @@ export const metadata: Metadata = {
   // canónica por categoría) y "INMAG hoy" /mercado/inmag: este title es de hub para
   // no competir con ninguna de las dos.
   title: 'Mercado ganadero hoy: INMAG, categorías y dólar',
-  description: `El mercado ganadero en una pantalla: INMAG, novillo $${fmt(novillo)}, vaquillona $${fmt(vaquillona)} y vaca $${fmt(vaca)} por kilo vivo, lo que realmente se pagó por categoría, maíz, dólar y Chicago. Actualizado ${lastUpdate}.`,
+  description: `Hoy: novillo $${fmt(novillo)}, vaquillona $${fmt(vaquillona)} y vaca $${fmt(vaca)} el kilo vivo, el INMAG, lo que se pagó por peso, el maíz y el dólar. Gratis.`,
   keywords: [
     'precio kilo vivo novillo',
     'cuanto esta el kilo vivo de novillo',

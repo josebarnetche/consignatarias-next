@@ -98,9 +98,9 @@ const FAQ = [
 ]
 
 export const metadata: Metadata = {
-  title: `Qué es un Feedlot y Cómo Funciona (Engorde a Corral) — maíz US$${fmt(cornUsd)}/tn`,
+  title: 'Qué es un feedlot: cómo funciona y cuánto cuesta engordar',
   description:
-    'Un feedlot es un sistema de engorde a corral donde el ganado se alimenta con una dieta rica en grano (maíz) para ganar 1 a 1,5 kg por día y llegar en pocos meses al peso de faena. Cómo funciona, cuánto cuesta, cuánto maíz consume y feedlot vs invernada a campo, con precios de mercado.',
+    `El feedlot engorda a corral con maíz: 1 a 1,5 kg por día hasta el peso de faena. Cómo funciona, cuánto maíz come y cuánto cuesta, con el maíz a US$${fmt(cornUsd)}/tn.`,
   keywords: [
     'qué es un feedlot',
     'que es un feedlot y como funciona',

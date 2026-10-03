@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { getBandaPorSlug } from '@/lib/vr'
 import {
   SectionBreadcrumbSchema,
   FAQPageSchema,
@@ -169,12 +170,17 @@ export async function generateMetadata({
   // animal entero, no sólo el kilo. El total del promedio va en el título, no sólo en la description.
   // Esta es LA página de "precio del X hoy" (las de /mercado/[cat] y /precio-del-*-en-pie apuntan acá).
   // El ternero no se promete como dato del Mercado Agroganadero: es una estimación (INMAG × 1,10).
+  const banda = PRECIO_A_VR[categoria] ? getBandaPorSlug(PRECIO_A_VR[categoria]!) : null
   const title = categoria === 'terneros'
-    ? 'Precio del ternero: estimación diaria y remates de invernada'
-    : `Precio del ${c.singular} hoy: $${fmt(price)}/kg vivo · ${c.promedioKg} kg ≈ $${fmt(price * c.promedioKg)}`
+    ? 'Precio del ternero hoy: estimación y remates de invernada'
+    : categoria === 'vacas'
+      ? `Precio de la vaca hoy: $${fmt(price)} el kilo vivo y lo que se pagó`
+      : `Precio del ${c.singular} hoy: $${fmt(price)}/kg vivo · ${c.promedioKg} kg ≈ $${fmt(price * c.promedioKg)}`
   const description = categoria === 'terneros'
-    ? `El Mercado Agroganadero no opera terneros: publicamos una estimación (INMAG × 1,10 ≈ $${fmt(price)}/kg vivo) y los próximos remates de invernada, donde se forma el precio real.`
-    : `Precio del kilo vivo de ${c.singular} hoy: $${fmt(price)} (${changeStr} semanal). Un ${c.singular} de ${c.promedioKg} kg ronda los $${fmt(price * c.promedioKg)}. Y a cuánto se vendió de verdad, por peso. Actualizado ${lastUpdate}.`
+    ? `El Mercado Agroganadero no opera terneros: estimamos $${fmt(price)}/kg vivo (INMAG × 1,10). El precio real, en los próximos remates de invernada que te listamos.`
+    : banda
+      ? `Hoy $${fmt(price)} por kilo vivo de ${c.singular}. Los lotes se vendieron de $${fmt(banda.p10)} a $${fmt(banda.p90)}; uno de ${c.promedioKg} kg ronda $${fmt(price * c.promedioKg)}.`
+      : `Hoy $${fmt(price)} por kilo vivo de ${c.singular} (${changeStr} semanal). Uno de ${c.promedioKg} kg ronda los $${fmt(price * c.promedioKg)}. Actualizado ${lastUpdate}.`
 
   return {
     title,
@@ -396,6 +402,13 @@ export default async function PreciosCategoriaPage({
           <p className="text-zinc-400 text-sm mb-4">
             <DataStamp isoDate={lastUpdate} /> desde el Mercado Agroganadero (INMAG) ·{' '}
             <span className={changeClass}>{changeStr} semanal</span>
+          </p>
+        )}
+        {categoria === 'toros' && (
+          <p className="mb-4 text-sm">
+            <Link href="/mercado/toros" className="font-medium text-accent hover:underline">
+              Cuánto vale un toro hoy, con el histórico del precio →
+            </Link>
           </p>
         )}
         <BandaVrCategoria categoria={categoria} nombre={esEstimado ? 'el ternero' : `${c.articulo === 'una' ? 'la' : 'el'} ${c.singular}`} />

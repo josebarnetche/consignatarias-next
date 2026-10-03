@@ -56,10 +56,11 @@ const VACA_TERMS = [
 export const metadata: Metadata = {
   // Gana el cluster "cuanto sale/cuesta/vale una vaca (viva) en argentina 2026".
   // Distinta de /mercado/vacas y /precios/vacas (intención mayorista/serie) para no canibalizar.
-  // Intención informativa: el valor del animal entero por peso. El precio del kilo
-  // de hoy lo responde /precios/vacas (la canónica); el title no promete ese número.
-  title: 'Cuánto vale una vaca viva: el valor del animal entero según su peso',
-  description: `Una vaca viva vale hoy $${fmt(vacaKg)} el kilo vivo, en pesos (Mercado Agroganadero, ${lastUpdate}): una de 420 kg ronda los $${fmt(vaca420)}, unos USD ${fmt(Math.round(vaca420 / usdBlue))}.`,
+  // Search Console (28 días a sep-2026): esta página GANA "cuánto vale una vaca"
+  // (posición 4,7, 12.629 impresiones) con CTR de 0,72 %. Se queda con la intención de
+  // precio; el title lleva el número del día y "kg vivo, hoy" para subir el CTR.
+  title: { absolute: `Cuánto vale una vaca hoy: $${fmt(vacaKg)} el kg vivo` },
+  description: `Una vaca de 420 kg vale hoy unos $${fmt(vaca420)} (US$ ${fmt(Math.round(vaca420 / usdBlue))}): $${fmt(vacaKg)} el kilo vivo en el Mercado Agroganadero. Tabla por peso, de 380 a 450 kg.`,
   keywords: [
     'cuanto vale una vaca',
     'cuanto sale una vaca viva en argentina',
@@ -73,7 +74,7 @@ export const metadata: Metadata = {
     'precio vaca kilo vivo',
   ],
   openGraph: {
-    title: 'Cuánto vale una vaca viva: el valor del animal entero según su peso',
+    title: `Cuánto vale una vaca hoy: $${fmt(vacaKg)} el kg vivo`,
     description: `Una vaca de 420 kg ronda los $${fmt(vaca420)} al valor del Mercado Agroganadero (${lastUpdate}). Tabla por peso + valor en dólares.`,
     url: PAGE_URL,
     type: 'article',

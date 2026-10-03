@@ -209,6 +209,31 @@ const CATEGORY_CONFIG: Record<string, CategoryConfig> = {
 
 const VALID_CATEGORIES = Object.keys(CATEGORY_CONFIG)
 
+const fmtTitulo = (n: number) => n.toLocaleString('es-AR')
+
+/** Title, description y H1 por categoría. Cortos (≤60 / ≤155) y con el dato concreto. */
+function tituloMercado(categoria: string, config: CategoryConfig, price: number) {
+  if (categoria === 'toros') {
+    return {
+      title: `Precio del toro hoy: $${fmtTitulo(price)}/kg vivo y cuánto vale uno`,
+      description: `Cuánto vale un toro hoy: $${fmtTitulo(price)} por kilo vivo en el Mercado Agroganadero; uno de 600 kg ronda los $${fmtTitulo(price * 600)}. Qué mueve el precio y cómo vino el año.`,
+      h1: `Precio del toro hoy: $${fmtTitulo(price)}/kg vivo`,
+    }
+  }
+  if (categoria === 'terneros') {
+    return {
+      title: 'Precio del ternero en el año: la zafra y cuándo vender',
+      description: 'En qué meses baja y sube el precio del ternero, por qué la zafra de marzo a mayo lo aprieta y dónde se forma el precio de verdad: los remates de invernada.',
+      h1: 'Terneros: cómo se mueve el precio en el año',
+    }
+  }
+  return {
+    title: `${config.namePlural}: evolución del precio y estacionalidad`,
+    description: `Cómo se movió el precio del ${config.name.toLowerCase()} en el Mercado Agroganadero, qué lo mueve y en qué meses suele subir o bajar. Con el precio de hoy.`,
+    h1: `${config.namePlural}: evolución del precio y estacionalidad`,
+  }
+}
+
 /* ================================================================== */
 /*  METADATA                                                           */
 /* ================================================================== */
@@ -226,13 +251,15 @@ export async function generateMetadata({
   const config = CATEGORY_CONFIG[categoria]
   if (!config) return {}
 
+  const cat = marketData.categories[categoria as keyof typeof marketData.categories]
+  const price = Math.round(cat?.current ?? 0)
+
   // Esta página es la de histórico y estacionalidad. "Precio del X hoy" lo
-  // responde /precios/[categoria] (la canónica, con la banda de lo que se pagó):
-  // antes este title decía "¿Cuánto vale un X? $Y/kg hoy" y competía con ella.
-  const title = `${config.namePlural}: evolución del precio y estacionalidad`
-  const description = categoria === 'terneros'
-    ? 'Cómo se mueve el precio del ternero a lo largo del año, qué lo empuja y por qué se forma en los remates de invernada y no en el Mercado Agroganadero.'
-    : `Cómo se movió el precio del ${config.name.toLowerCase()} en el Mercado Agroganadero, qué lo mueve y en qué meses suele subir o bajar. Con el precio de hoy y lo que realmente se pagó.`
+  // responde /precios/[categoria] (la canónica, con la banda de lo que se pagó).
+  // Excepción: TOROS. Search Console (28 días a sep-2026) muestra que /mercado/toros
+  // es la que gana "precio del toro" (3.746 impresiones, posición 4,7) y /precios/toros
+  // casi no aparece: esa se queda con la intención de precio.
+  const { title, description } = tituloMercado(categoria, config, price)
 
   return {
     title,
@@ -446,7 +473,7 @@ export default async function CategoriaPage({
           />
 
           <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-2">
-            {config.namePlural}: evolución del precio y estacionalidad
+            {tituloMercado(categoria, config, Math.round(price)).h1}
           </h1>
 
           {/* Answer-first: la respuesta a "¿cuánto sale/cuesta ...?" en la 1ª oración,
@@ -459,9 +486,12 @@ export default async function CategoriaPage({
             {config.description}
           </p>
           <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
-            <Link href={`/precios/${categoria}`} className="font-medium text-accent hover:underline">
-              Precio {article === 'una' ? 'de la' : 'del'} {nameLower} hoy →
-            </Link>
+            {/* En toros esta página ES la de "precio de hoy" (ver tituloMercado). */}
+            {categoria !== 'toros' && (
+              <Link href={`/precios/${categoria}`} className="font-medium text-accent hover:underline">
+                Precio {article === 'una' ? 'de la' : 'del'} {nameLower} hoy →
+              </Link>
+            )}
             <Link href={slugVr ? `/vr/${slugVr}` : '/vr'} className="text-accent hover:underline">
               {slugVr ? `A cuánto se vendió ${article === 'una' ? 'la' : 'el'} ${nameLower}, por peso →` : 'Lo que realmente se pagó, por categoría y peso →'}
             </Link>
