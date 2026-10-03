@@ -137,7 +137,7 @@ export default function QueEsLaGuiaDeHaciendaPage() {
         description="La guía de hacienda es el documento municipal o provincial que acredita el traslado y la propiedad del ganado, distinto del DT-e sanitario de SENASA. Diferencia entre guía y DT-e, cuándo se necesita y cómo se tramita."
         url={PAGE_URL}
         proficiencyLevel="Beginner"
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           { name: 'SENASA — DT-e (Documento de Tránsito Electrónico)', url: 'https://www.senasa.gob.ar' },
         ]}

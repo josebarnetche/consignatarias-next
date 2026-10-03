@@ -49,7 +49,7 @@ const FAQ = [
 export default function InmobiliariasRuralesPage() {
   return (
     <>
-      <SectionBreadcrumbSchema section="campos" sectionName="Campos" />
+      <SectionBreadcrumbSchema section="campos" sectionName="Campos" pageName="Inmobiliarias rurales" pagePath="/inmobiliarias-rurales" />
       <FAQPageSchema items={FAQ} />
 
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">

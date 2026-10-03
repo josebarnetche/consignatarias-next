@@ -50,7 +50,7 @@ const FAQ = [
 export default function ImpuestosVentaCampoPage() {
   return (
     <>
-      <SectionBreadcrumbSchema section="campos" sectionName="Campos" />
+      <SectionBreadcrumbSchema section="campos" sectionName="Campos" pageName="Impuestos por la venta de un campo" pagePath="/impuestos-por-la-venta-de-un-campo" />
       <FAQPageSchema items={FAQ} />
 
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">

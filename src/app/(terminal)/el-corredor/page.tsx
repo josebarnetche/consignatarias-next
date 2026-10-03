@@ -144,6 +144,7 @@ export default async function ElCorredorLanding() {
           { name: 'INDEC — índices de precios', url: 'https://www.indec.gob.ar' },
           { name: 'BCRA / mercado paralelo — cotización del dólar' },
         ]}
+        dateModified="2026-10-02"
       />
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-zinc-800">

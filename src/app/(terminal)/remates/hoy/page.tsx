@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import remates from '@/lib/data/remates.json'
-import { consignatariaProfilePath, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
 import { normalizeUrl } from '@/lib/utils/url'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { Calendar, Clock, MapPin, Users, ExternalLink, Play, FileText } from 'lucide-react'
@@ -208,23 +208,14 @@ export default async function RematesHoyPage() {
   }, {} as Record<string, Remate[]>)
 
   // Schema data
-  const schemaRemates = todaysRemates.slice(0, 10).map(r => ({
-    id: r.id,
-    name: `Remate ${r.type} - ${r.consignatariaName}`,
-    date: r.date,
-    time: r.time || undefined,
-    location: r.location,
-    province: r.province,
-    consignatariaName: r.consignatariaName,
-    type: r.type,
-    estimatedHeads: r.estimatedHeads || undefined,
-    url: `https://www.consignatarias.com.ar/consignatarias/${getCanonicalSlug(r.consignatariaSlug) ?? r.consignatariaSlug}`,
-  }))
+  // Cada Event con la URL de SU ficha (/remates/[slug]) y el perfil de la firma como
+  // organizer.url — antes todos apuntaban al perfil. La regla vive en buildRemateEvent.
+  const schemaRemates = todaysRemates.slice(0, 10)
 
   return (
     <>
       <SectionBreadcrumbSchema section="remates/hoy" sectionName="Remates Hoy" />
-      {schemaRemates.length > 0 && <RematesListSchema remates={schemaRemates} />}
+      {schemaRemates.length > 0 && <RematesListSchema remates={schemaRemates} name="Remates ganaderos de hoy en Argentina" />}
 
       <div className="px-4 py-6 max-w-4xl mx-auto">
         {/* Breadcrumb */}

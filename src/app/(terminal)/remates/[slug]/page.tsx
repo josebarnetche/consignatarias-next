@@ -341,7 +341,11 @@ export default async function RemateDetailPage({ params }: Props) {
     return p?.canonicalSlug ?? r.consignatariaSlug
   }
   const currentCity = cityOf(remate)
-  const provinceHub = `/remates/${remate.province?.toLowerCase().replace(/\s+/g, '-') || ''}`
+  // Hub de la provincia solo si tiene página (ver rematesProvinceSlugsWithAuctions).
+  const provinceSlug = remate.province?.toLowerCase().trim().replace(/\s+/g, '-') || ''
+  const provinceHub = provinceSlug && rematesProvinceSlugsWithAuctions().includes(provinceSlug)
+    ? `/remates/${provinceSlug}`
+    : null
   const pool: Remate[] = rematesData
     .filter(r => r.id !== remate.id && r.status === 'scheduled' && r.date >= today)
     .sort((a, b) => a.date.localeCompare(b.date))
@@ -387,43 +391,33 @@ export default async function RemateDetailPage({ params }: Props) {
         items={[
           { name: 'Inicio', url: 'https://www.consignatarias.com.ar' },
           { name: 'Remates', url: 'https://www.consignatarias.com.ar/remates' },
-          { name: provinceName, url: `https://www.consignatarias.com.ar/remates/${remate.province?.toLowerCase().replace(/\s+/g, '-') || ''}` },
+          // El nivel provincia solo si esa provincia TIENE página: 7 provincias con
+          // remates no la tienen (dynamicParams=false → 404) y 42 remates no traen
+          // provincia (quedaba un ítem vacío con URL /remates/).
+          ...(provinceHub ? [{ name: provinceName, url: `https://www.consignatarias.com.ar${provinceHub}` }] : []),
           { name: remate.title, url: `https://www.consignatarias.com.ar/remates/${slug}` },
         ]}
       />
 
       <EventSchema
-        name={remate.title}
+        remate={remate}
         description={remate.description || `Remate ${typeName.toLowerCase()} organizado por ${remate.consignatariaName}`}
-        startDate={`${remate.date}T${remate.time || '10:00'}:00-03:00`}
-        endDate={`${remate.date}T${remate.time ? String(parseInt(remate.time.split(':')[0]) + 4).padStart(2, '0') + ':00' : '16:00'}:00-03:00`}
-        location={{
-          name: remate.location?.trim() || provinceName || 'Argentina',
-          address: `${remate.location}, ${provinceName}, Argentina`,
-        }}
-        organizer={remate.consignatariaName}
         url={`https://www.consignatarias.com.ar/remates/${slug}`}
-        eventAttendanceMode="offline"
+        organizerUrl={`https://www.consignatarias.com.ar${consignatariaProfilePath(remate.consignatariaSlug)}`}
       />
 
-      {/* Video/live schema for remates with a YouTube stream. isLive is gated to
-          non-past dates so we never claim a BroadcastEvent for a finished auction. */}
-      {remate.youtubeUrl && (() => {
-        const m = remate.youtubeUrl.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/)
-        const videoId = m && m[7]?.length === 11 ? m[7] : null
-        return (
-          <VideoObjectSchema
-            name={`Remate ${typeName}: ${remate.title}`}
-            description={remate.description || `Transmisión del remate ${typeName.toLowerCase()} organizado por ${remate.consignatariaName} en ${provinceName}.`}
-            thumbnailUrl={videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : 'https://www.consignatarias.com.ar/og-image.png'}
-            uploadDate={`${remate.date}T${remate.time || '10:00'}:00-03:00`}
-            contentUrl={normalizeUrl(remate.youtubeUrl) || remate.youtubeUrl}
-            embedUrl={videoId ? `https://www.youtube.com/embed/${videoId}` : undefined}
-            publisher={remate.consignatariaName}
-            isLive={!isPast}
-          />
-        )
-      })()}
+      {/* VideoObject de la transmisión: solo con un ID de video real; isLiveBroadcast
+          solo el día del remate y en horario (lo decide buildRemateVideo). */}
+      {remate.youtubeUrl && (
+        <VideoObjectSchema
+          name={`Remate ${typeName}: ${remate.title}`}
+          description={remate.description || `Transmisión del remate ${typeName.toLowerCase()} organizado por ${remate.consignatariaName}${provinceName ? ` en ${provinceName}` : ''}.`}
+          youtubeUrl={remate.youtubeUrl}
+          date={remate.date}
+          time={remate.time}
+          publisherName={remate.consignatariaName}
+        />
+      )}
 
       <main className="min-h-screen bg-slate-950">
         <div className="max-w-4xl mx-auto px-4 py-8">
@@ -830,9 +824,11 @@ export default async function RemateDetailPage({ params }: Props) {
                   />
                 ))}
               </div>
-              <Link href={provinceHub} className="inline-block mt-3 text-sky-400 text-sm hover:underline">
-                Ver el calendario de remates en {provinceName} →
-              </Link>
+              {provinceHub && (
+                <Link href={provinceHub} className="inline-block mt-3 text-sky-400 text-sm hover:underline">
+                  Ver el calendario de remates en {provinceName} →
+                </Link>
+              )}
             </div>
           )}
 

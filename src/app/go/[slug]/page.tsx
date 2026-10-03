@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import Image from 'next/image'
 import { getCanonicalSlug, getProfile, getAuctionsForProfile, getAllCanonicalSlugs } from '@/lib/data/consignataria-slugs'
-import { getOwnerAuctionsBySlug, mergeAuctions, normalizeOwnerAuction } from '@/lib/dal/auctions'
+import { getOwnerAuctionsBySlug, mergeAuctions, normalizeOwnerAuction, OWNER_ID_OFFSET } from '@/lib/dal/auctions'
 import { createServiceClient } from '@/lib/supabase'
 import { normalizeUrl } from '@/lib/utils/url'
 import { getConsignatariaProfile, getFollowerCount } from '@/lib/dal/consignatarias'
@@ -145,14 +145,15 @@ export default async function GoLandingPage({ params }: Props) {
         { name: profile.displayName, url: `https://www.consignatarias.com.ar/go/${canonical}` },
       ]} />
       {nextRemate && (
+        // URL de la ficha del remate (no la de /go), -03:00 y, con transmisión, modo
+        // mixto con VirtualLocation (antes "mixed" sin VirtualLocation: inválido). Los
+        // remates cargados por la firma desde su panel no tienen ficha → sin url.
         <EventSchema
+          remate={nextRemate}
           name={`Remate ${nextRemate.type} - ${profile.displayName}`}
-          description={nextRemate.title}
-          startDate={nextRemate.time ? `${nextRemate.date}T${nextRemate.time}:00` : `${nextRemate.date}T10:00:00`}
-          location={{ name: nextRemate.location || 'Argentina', address: nextRemate.province || 'Argentina' }}
-          organizer={profile.displayName}
-          url={`https://www.consignatarias.com.ar/go/${canonical}`}
-          eventAttendanceMode={nextRemate.youtubeUrl ? 'mixed' : 'offline'}
+          description={nextRemate.title || undefined}
+          url={nextRemate.id >= OWNER_ID_OFFSET ? null : undefined}
+          organizerUrl={`https://www.consignatarias.com.ar/consignatarias/${canonical}`}
         />
       )}
 

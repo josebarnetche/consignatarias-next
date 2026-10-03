@@ -15,7 +15,7 @@ import FrigorificoLeadCapture from '@/components/leads/FrigorificoLeadCapture'
 import FrigorificoConsultaGeneral from '@/components/leads/FrigorificoConsultaGeneral'
 import { getDemandaFicha, VENTANA_DIAS } from '@/lib/demanda-fichas'
 import SubscribeStrip from '@/components/SubscribeStrip'
-import { BreadcrumbSchema, QAPageSchema } from '@/components/seo/JsonLd'
+import { BreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import {
   getSenasaRecord,
   getSenasaScrapedDate,
@@ -286,19 +286,15 @@ function LocalBusinessSchema({
   )
 }
 
-// QAPage inline: responde literalmente "¿a qué empresa corresponde el CUIT NNN?".
-// El número crudo aparece en la pregunta (head-query) y la respuesta trae el dato
-// exacto (razón social + habilitación) para que la IA/SERP cite la asociación.
-function CuitQAPageSchema({ ficha }: { ficha: FichaFrigorifico }) {
+// FAQPage de una pregunta: "¿a qué empresa corresponde el CUIT NNN?". El número crudo
+// aparece en la pregunta (head-query) y la respuesta trae el dato exacto (razón social +
+// habilitación), el mismo que la ficha muestra en su primera oración. Antes era un
+// QAPage con upvoteCount/answerCount puestos a mano: QAPage es para foros.
+function CuitFaqSchema({ ficha }: { ficha: FichaFrigorifico }) {
   const titular = ficha.propietario ? ` (titular según SENASA: ${ficha.propietario})` : ''
   const answer = `El CUIT ${ficha.cuitFormateado} corresponde a ${ficha.nombre}${titular}, ${ficha.categoria ? `${ficha.categoria.toLowerCase()} ` : 'frigorífico '}con sede en ${ficha.lugar}, Argentina. Habilitación SENASA ${estadoSenasaTexto(ficha)}, matrícula ${ficha.matricula}. Datos oficiales SENASA/MAGYP.`
   return (
-    <QAPageSchema
-      question={`¿A qué empresa corresponde el CUIT ${ficha.cuit}?`}
-      answer={answer}
-      url={`https://www.consignatarias.com.ar/frigorificos/${ficha.cuit}`}
-      id={`https://www.consignatarias.com.ar/frigorificos/${ficha.cuit}#qapage`}
-    />
+    <FAQPageSchema items={[{ question: `¿A qué empresa corresponde el CUIT ${ficha.cuit}?`, answer }]} />
   )
 }
 
@@ -393,7 +389,7 @@ export default async function FrigorificoDetailPage({
   return (
     <>
       <LocalBusinessSchema ficha={ficha} phone={phone} email={email} website={website} />
-      <CuitQAPageSchema ficha={ficha} />
+      <CuitFaqSchema ficha={ficha} />
       <BreadcrumbSchema items={[
         { name: 'Inicio', url: 'https://www.consignatarias.com.ar' },
         { name: 'Frigoríficos', url: 'https://www.consignatarias.com.ar/frigorificos' },

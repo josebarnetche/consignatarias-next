@@ -17,6 +17,7 @@ import { anosDeArrendamiento } from '@/lib/valuacion-campos'
 import ValuacionCampo from '@/components/campos/ValuacionCampo'
 import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
 import { FAQPageSchema, DatasetSchema, SpeakableSchema, BreadcrumbSchema } from '@/components/seo/JsonLd'
+import { DESCARGA_VALOR_TIERRA, LICENCIA_CC_BY } from '@/lib/seo/schemas'
 import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 
 export const revalidate = 3600
@@ -143,6 +144,9 @@ export default async function ValorHectareaZona({
         url={url}
         keywords={[`valor hectarea ${z.zona}`, z.provincia, 'precio de la tierra']}
         dateModified={z.fecha ?? undefined}
+        spatialCoverage={`${z.zona}, ${z.provincia}`}
+        license={LICENCIA_CC_BY}
+        distribution={[DESCARGA_VALOR_TIERRA]}
       />
       <SpeakableSchema url={url} headline={`¿Cuánto vale la hectárea en ${z.zona}?`} />
 

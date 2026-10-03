@@ -1,8 +1,8 @@
-import { jsonLd } from '@/lib/seo/json-ld'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import marketData from '@/lib/data/market-prices.json'
+import { INMAG_DATE } from '@/lib/inmag'
 import Breadcrumb from '@/components/ui/Breadcrumb'
 import VentaLeadCapture from '@/components/leads/VentaLeadCapture'
 import { CategoryPriceHistory } from '@/components/market/CategoryPriceHistory'
@@ -13,7 +13,9 @@ import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 import { Stat, Delta } from '@/components/ui'
 import SellZoneAlertSignup from '@/components/SellZoneAlertSignup'
 import SellZoneBadge from '@/components/SellZoneBadge'
-import { FAQPageSchema, DefinedTermSetSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { FAQPageSchema, DefinedTermSetSchema, SpeakableSchema, DatasetSchema } from '@/components/seo/JsonLd'
+import { DESCARGA_PRECIOS, FUENTE_MAG, LICENCIA_PROPIA } from '@/lib/seo/schemas'
+import { FaqList } from '@/components/seo/FaqList'
 
 export const revalidate = 86400 // daily rebuild via Vercel (mirrors scraper cadence)
 
@@ -254,96 +256,24 @@ export async function generateMetadata({
 /*  SCHEMA                                                             */
 /* ================================================================== */
 
-function CategoryPriceSchema({ config, price, change }: { config: CategoryConfig; price: number; change: number }) {
-  const today = new Date().toISOString().split('T')[0]
-  const validUntil = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-
-  // Dataset schema for data attribution
-  const datasetSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Dataset',
-    name: `Precio ${config.name} Argentina`,
-    description: `Cotización diaria de ${config.namePlural.toLowerCase()} en el Mercado Agroganadero de Cañuelas. ${config.definition}`,
-    url: `https://www.consignatarias.com.ar/mercado/${config.slug}`,
-    keywords: config.keywords.join(', '),
-    creator: {
-      '@type': 'Organization',
-      name: 'Mercado Agroganadero de Cañuelas',
-    },
-    variableMeasured: {
-      '@type': 'PropertyValue',
-      name: `Precio ${config.name}`,
-      value: price,
-      unitText: 'ARS/kg vivo',
-    },
-    license: 'https://creativecommons.org/licenses/by/4.0/',
-    isAccessibleForFree: true,
-    spatialCoverage: { '@type': 'Place', name: 'Argentina' },
-  }
-
-  // Product + Offer schema for price rich snippets
-  const productSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: `${config.name} - Precio por Kilo Vivo Argentina`,
-    description: config.definition,
-    url: `https://www.consignatarias.com.ar/mercado/${config.slug}`,
-    category: 'Livestock/Cattle',
-    brand: {
-      '@type': 'Organization',
-      name: 'Mercado Agroganadero de Cañuelas',
-    },
-    offers: {
-      '@type': 'Offer',
-      url: `https://www.consignatarias.com.ar/mercado/${config.slug}`,
-      priceCurrency: 'ARS',
-      price: price,
-      priceValidUntil: validUntil,
-      availability: 'https://schema.org/InStock',
-      itemCondition: 'https://schema.org/NewCondition',
-      priceSpecification: {
-        '@type': 'UnitPriceSpecification',
-        price: price,
-        priceCurrency: 'ARS',
-        unitCode: 'KGM',
-        unitText: 'kg vivo',
-        referenceQuantity: {
-          '@type': 'QuantitativeValue',
-          value: 1,
-          unitCode: 'KGM',
-        },
-      },
-      seller: {
-        '@type': 'Organization',
-        name: 'Mercado Agroganadero de Cañuelas',
-        url: 'https://www.mercadoagroganadero.com.ar',
-      },
-    },
-    additionalProperty: [
-      {
-        '@type': 'PropertyValue',
-        name: 'Variación Diaria',
-        value: `${change >= 0 ? '+' : ''}${change.toFixed(1)}%`,
-      },
-      {
-        '@type': 'PropertyValue',
-        name: 'Fecha de Cotización',
-        value: today,
-      },
-    ],
-  }
-
+// Dataset del precio de la categoría. Antes iba además un Product/Offer con seller
+// MAG, InStock y NewCondition: el sitio no vende hacienda (markup engañoso, riesgo de
+// acción manual), y su "Variación Diaria" contradecía el texto ("semanal"). El
+// ternero es una estimación propia (el MAG no opera terneros): no se atribuye al MAG.
+function CategoryPriceSchema({ config, price }: { config: CategoryConfig; price: number }) {
+  const esEstimacion = config.slug === 'terneros'
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLd(datasetSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLd(productSchema) }}
-      />
-    </>
+    <DatasetSchema
+      name={esEstimacion ? `Precio ${config.name} Argentina — estimación de referencia` : `Precio ${config.name} Argentina`}
+      description={`Cotización diaria de ${config.namePlural.toLowerCase()}${esEstimacion ? ' (estimación derivada del INMAG)' : ' en el Mercado Agroganadero de Cañuelas'}. ${config.definition}`}
+      url={`https://www.consignatarias.com.ar/mercado/${config.slug}`}
+      keywords={config.keywords}
+      dateModified={INMAG_DATE}
+      temporalCoverage={INMAG_DATE}
+      variableMeasured={{ name: `Precio ${config.name}`, unitText: 'ARS/kg vivo', value: price, observationDate: INMAG_DATE }}
+      distribution={[DESCARGA_PRECIOS]}
+      {...(esEstimacion ? { license: LICENCIA_PROPIA } : { license: null, fuente: FUENTE_MAG })}
+    />
   )
 }
 
@@ -413,7 +343,7 @@ export default async function CategoriaPage({
 
   return (
     <>
-      <CategoryPriceSchema config={config} price={price} change={change} />
+      <CategoryPriceSchema config={config} price={price} />
       <FAQPageSchema items={faqItems} />
       <DefinedTermSetSchema
         name={`Precio ${config.name} — Argentina`}
@@ -562,6 +492,9 @@ export default async function CategoriaPage({
             ))}
           </ul>
         </section>
+
+        {/* Las mismas preguntas del FAQPageSchema, visibles. */}
+        <FaqList items={faqItems} className="mb-8" />
 
         {/* Related Links */}
         <section className="border-t border-zinc-800 pt-6">

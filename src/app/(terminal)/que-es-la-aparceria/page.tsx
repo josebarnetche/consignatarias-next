@@ -172,7 +172,7 @@ export const metadata: Metadata = {
 export default function QueEsLaAparceriaPage() {
   return (
     <>
-      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
+      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" pageName="Qué es la aparcería" pagePath="/que-es-la-aparceria" />
       <DefinedTermSetSchema
         name="Aparcería, arrendamiento y capitalización — definiciones"
         description="Definiciones citables de aparcería (agrícola y pecuaria), arrendamiento rural, capitalización de hacienda, canon y Ley 13.246 en el marco de los contratos rurales argentinos."
@@ -190,7 +190,7 @@ export default function QueEsLaAparceriaPage() {
         description="La aparcería como contrato rural de reparto de frutos por porcentaje, frente al arrendamiento (canon fijo) y la capitalización de hacienda. Marco de la Ley 13.246."
         url={PAGE_URL}
         datePublished="2026-07-10"
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           {
             name: 'Ley 13.246 de Arrendamientos y Aparcerías Rurales',

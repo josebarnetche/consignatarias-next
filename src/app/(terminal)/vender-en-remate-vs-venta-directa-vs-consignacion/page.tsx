@@ -134,8 +134,7 @@ export default function VenderEnRemateVsVentaDirectaVsConsignacionPage() {
         name="Vender en remate, venta directa o consignación: comparativa de canales"
         description="Comparativa de los tres canales de venta de hacienda en Argentina —remate, venta directa y consignación— por quién fija el precio, comisión, transparencia y velocidad de cobro."
         url={PAGE_URL}
-        datePublished="2024-01-01"
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           { name: 'Mercado Agroganadero (INMAG)', url: 'https://www.mercadoagroganadero.com.ar' },
           { name: 'ROSGAN — Mercado Ganadero de Rosario', url: 'https://www.rosgan.com.ar' },

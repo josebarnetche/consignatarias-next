@@ -138,8 +138,7 @@ export default function CuantoCobraDeComisionUnaConsignatariaPage() {
         name="Cuánto cobra de comisión una consignataria de hacienda"
         description="Rangos habituales de la comisión de venta y de compra de una consignataria de hacienda, gastos de comercialización y ejemplo sobre un lote testigo, con precio de referencia del mercado (INMAG/MAG)."
         url={PAGE_URL}
-        datePublished="2024-01-01"
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           {
             name: 'Mercado Agroganadero de Cañuelas (MAG) — precios de referencia',

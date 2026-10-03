@@ -7,6 +7,7 @@ import {
   FAQPageSchema,
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
+import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 
@@ -162,7 +163,7 @@ export const metadata: Metadata = {
 export default function PrecioDelTerneroEnPiePage() {
   return (
     <>
-      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
+      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" pageName="Precio del ternero en pie" pagePath="/precio-del-ternero-en-pie" />
       <DefinedTermSetSchema
         name="Precio del ternero en pie — definiciones"
         description="Definiciones citables de ternero, ternera, invernada, destete, zafra de terneros y kilo vivo en el mercado ganadero argentino."
@@ -174,7 +175,11 @@ export default function PrecioDelTerneroEnPiePage() {
         description={`Precio de referencia por kilo vivo del ternero de invernada en el Mercado Agroganadero de Buenos Aires al ${INMAG_DATE}: $${fmt(ternero)}/kg vivo. Comparado con novillito ($${fmt(novillito)}), novillo ($${fmt(novillo)}), vaquillona ($${fmt(vaquillona)}) y vaca ($${fmt(vaca)}). Fuente INMAG/MAG.`}
         url={PAGE_URL}
         keywords={['precio ternero', 'ternero en pie', 'kilo vivo', 'invernada', 'zafra de terneros', 'mercado agroganadero', 'INMAG']}
-        dateModified={lastUpdate}
+        dateModified={INMAG_DATE}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_PRECIOS]}
+        temporalCoverage={INMAG_DATE}
       />
       <FAQPageSchema items={FAQ} />
       <SpeakableSchema

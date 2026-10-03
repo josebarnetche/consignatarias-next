@@ -4,6 +4,7 @@ import ValuacionCampo from '@/components/campos/ValuacionCampo'
 import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
 import { TIERRA, TIERRA_PROVINCIAS } from '@/lib/valuacion-campos'
 import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { DESCARGA_VALOR_TIERRA, LICENCIA_CC_BY } from '@/lib/seo/schemas'
 
 export const revalidate = 3600
 
@@ -83,7 +84,7 @@ const ZONAS = TIERRA.filter((t) => !!t.zona).sort(
 export default function ValuarCampoPage() {
   return (
     <>
-      <SectionBreadcrumbSchema section="campos" sectionName="Campos" />
+      <SectionBreadcrumbSchema section="campos" sectionName="Campos" pageName="Valuar un campo" pagePath="/campos/valuar" />
       <FAQPageSchema items={FAQ} />
       <DatasetSchema
         name="Valor de la hectárea de campo en Argentina, por provincia y por zona"
@@ -97,6 +98,8 @@ export default function ValuarCampoPage() {
           value: provMasCara.usd_ha,
           unitText: 'USD/ha',
         }}
+        license={LICENCIA_CC_BY}
+        distribution={[DESCARGA_VALOR_TIERRA]}
       />
       <SpeakableSchema url={PAGE_URL} headline="¿Cuánto vale una hectárea de campo en Argentina?" />
 

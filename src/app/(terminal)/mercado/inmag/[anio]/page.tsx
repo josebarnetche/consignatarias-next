@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { fetchInmagUsdJoined } from '@/lib/charts/data'
 import { aniosInmag } from '@/lib/seo/indexacion'
 import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema } from '@/components/seo/JsonLd'
+import { DESCARGA_SERIE_INMAG, FUENTE_MAG } from '@/lib/seo/schemas'
 
 /* ============================================================
    /mercado/inmag/[anio] — historical INMAG by year, in pesos AND
@@ -152,6 +153,9 @@ export default async function InmagYearPage({
         description={`Serie y estadísticas anuales del INMAG (precio del kilo vivo de novillo en el Mercado Agroganadero) para ${year}, en pesos y en dólares blue. Promedio, mínimo y máximo.`}
         url={`${APP_URL}/mercado/inmag/${anio}`}
         keywords={[`precio novillo ${anio}`, `INMAG ${anio}`, `novillo dólares ${anio}`]}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_SERIE_INMAG]}
       />
 
       <div className="px-4 py-6 max-w-4xl mx-auto">

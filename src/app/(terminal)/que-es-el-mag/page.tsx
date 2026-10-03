@@ -8,6 +8,7 @@ import {
   SpeakableSchema,
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
+import { DESCARGA_SERIE_INMAG, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 
@@ -132,8 +133,10 @@ export default function QueEsElMagPage() {
         description={`Precio de referencia del novillo en pie en el Mercado Agroganadero de Cañuelas (MAG) al ${INMAG_DATE}: $${inmagCurrent}/kg vivo (rueda previa $${inmagPrev}, variación ${inmagChange > 0 ? '+' : ''}${inmagChange}%). Serie diaria por oferta y demanda a la vista. Precio de referencia del mercado, no fijado por esta página.`}
         url={`${BASE_URL}/mercado/inmag`}
         keywords={['INMAG', 'mercado agroganadero', 'cañuelas', 'novillo en pie', 'precio del ganado', 'MAG', 'liniers']}
-        dateModified={lastUpdate}
-        creator={inmagSource}
+        dateModified={INMAG_DATE}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_SERIE_INMAG]}
       />
       <FAQPageSchema items={FAQ} />
       <SpeakableSchema
@@ -145,7 +148,7 @@ export default function QueEsElMagPage() {
         name="Qué es el MAG (Mercado Agroganadero de Cañuelas): historia, MAG vs Liniers y precio"
         description="El Mercado Agroganadero de Cañuelas (MAG) como sucesor del Mercado de Liniers en la formación del precio de referencia del ganado argentino (INMAG), por oferta y demanda a la vista."
         url={PAGE_URL}
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         proficiencyLevel="Beginner"
       />
 

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import marketPrices from '@/lib/data/market-prices.json'
 import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema, DatasetSchema } from '@/components/seo/JsonLd'
+import { FUENTE_MAG } from '@/lib/seo/schemas'
 import { AnswerBlock } from '@/components/seo/AnswerBlock'
 import { DataStamp } from '@/components/seo/DataStamp'
 import { PriceCTA } from '@/components/PriceCTA'
@@ -119,7 +120,11 @@ export default async function OrigenProvinciaPage({ params }: { params: Promise<
         description={`Participación de ${config.display} (${row.percentage}%, ${fmt(row.total)} cabezas) en la oferta del Mercado Agroganadero, rueda del ${date}.`}
         url={`https://www.consignatarias.com.ar/mercado/origen/${provincia}`}
         keywords={['origen hacienda', 'procedencia ganado', `hacienda ${config.display.toLowerCase()}`, 'mercado agroganadero']}
-        dateModified={lastUpdate}
+        dateModified={date}
+        temporalCoverage={date}
+        spatialCoverage={config.display}
+        license={null}
+        fuente={FUENTE_MAG}
       />
 
       <div className="px-4 py-6 max-w-4xl mx-auto">

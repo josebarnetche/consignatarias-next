@@ -7,6 +7,7 @@ import {
   DatasetSchema,
   DefinedTermSetSchema,
 } from '@/components/seo/JsonLd'
+import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 
@@ -137,6 +138,7 @@ export default function CuantoPesaUnNovilloPage() {
         url={PAGE_URL}
         keywords={['peso novillo', 'peso vivo', 'categorías de hacienda', 'mercado agroganadero', 'Argentina']}
         dateModified={lastUpdate}
+        license={LICENCIA_PROPIA}
       />
 
       <article className="px-4 pt-4 pb-8 max-w-3xl mx-auto text-zinc-300 text-sm leading-relaxed">

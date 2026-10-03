@@ -45,7 +45,7 @@ export default function ComoPublicarCampoPage() {
   const { etiqueta } = promedioMesAnterior()
   return (
     <>
-      <SectionBreadcrumbSchema section="campos" sectionName="Campos" />
+      <SectionBreadcrumbSchema section="campos" sectionName="Campos" pageName="Cómo publicar un campo" pagePath="/como-publicar-un-campo" />
       <FAQPageSchema items={FAQ} />
 
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">

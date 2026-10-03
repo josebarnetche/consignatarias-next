@@ -54,7 +54,7 @@ export default function Page() {
             name: P.nombre,
             description: P.tagline,
             url: `${APP_URL}${P.landing}`,
-            brand: { '@type': 'Brand', name: 'Consignatarias.com.ar' },
+            brand: { '@type': 'Brand', name: 'consignatarias.com.ar' },
             offers: {
               '@type': 'Offer',
               price: P.precio,
@@ -63,7 +63,7 @@ export default function Page() {
                 ? 'https://schema.org/InStock'
                 : 'https://schema.org/PreOrder',
               url: `${APP_URL}${P.landing}`,
-              seller: { '@type': 'Organization', name: 'Memola Medios S.A.S.' },
+              seller: { '@id': 'https://www.consignatarias.com.ar/#org' },
             },
           }),
         }}

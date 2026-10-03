@@ -9,6 +9,7 @@ import {
   SpeakableSchema,
   DefinedTermSetSchema,
 } from '@/components/seo/JsonLd'
+import { FUENTE_MAG } from '@/lib/seo/schemas'
 
 // SSG con rebuild diario — el JSON estático lo actualiza el scraper 14:00 ART → git commit → Vercel.
 export const revalidate = 86400
@@ -80,7 +81,7 @@ export default function ArrendamientoLiniersPage() {
 
   return (
     <>
-      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
+      <SectionBreadcrumbSchema section="mercado/arrendamiento" sectionName="Arrendamiento" pageName="Liniers" pagePath="/mercado/arrendamiento/liniers" />
       <DatasetSchema
         name="Índice Novillo Arrendamiento — Referencia Liniers / Mercado Agroganadero"
         description={`Serie del índice del novillo usado como referencia para contratos de arrendamiento rural. Sucesor operativo del índice del Mercado de Liniers tras su cierre. Valor vigente: $${fmt(arrendamiento.index)}/kg al ${arrendamiento.date}.`}
@@ -102,6 +103,8 @@ export default function ArrendamientoLiniersPage() {
         }}
         temporalCoverage="2015-01-05/.."
         updateFrequency="daily"
+        license={null}
+        fuente={FUENTE_MAG}
       />
       <DefinedTermSetSchema
         name="Arrendamiento rural en kg de novillo"

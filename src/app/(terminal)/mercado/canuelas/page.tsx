@@ -4,6 +4,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import marketData from '@/lib/data/market-prices.json'
 import { adminClientOpcional } from '@/lib/supabase-server'
 import { SectionBreadcrumbSchema, DatasetSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import { Delta, DataTable, PriceCell, type DataColumn } from '@/components/ui'
 import { signedTone } from '@/lib/ui/tokens'
 
@@ -253,7 +254,7 @@ export default async function MercadoCanuelasPage() {
         description={`Precios de la rueda del ${fmtFecha(detallado.date)} del Mercado Agroganadero de Cañuelas: mínimo, máximo, promedio y cabezas de cada categoría de hacienda en pie, más el índice INMAG del novillo ($${fmt(inmag.current)}/kg vivo) y la procedencia por provincia.`}
         url={URL}
         keywords={['mercado de cañuelas precios', 'precio hacienda cañuelas', 'mercado agroganadero', 'INMAG', 'precio novillo', 'hacienda en pie']}
-        dateModified={lastUpdate}
+        dateModified={detallado.date}
         temporalCoverage={detallado.date}
         updateFrequency="daily"
         variableMeasured={{
@@ -262,6 +263,9 @@ export default async function MercadoCanuelasPage() {
           unitText: 'ARS/kg vivo',
           observationDate: detallado.date,
         }}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_PRECIOS]}
       />
       <FAQPageSchema items={faq} />
       <SpeakableSchema url={URL} headline={`Precios del Mercado de Cañuelas hoy: novillo $${fmt(inmag.current)}/kg`} />

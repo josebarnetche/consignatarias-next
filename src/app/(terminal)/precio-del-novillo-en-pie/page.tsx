@@ -7,6 +7,7 @@ import {
   FAQPageSchema,
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
+import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 
@@ -156,7 +157,11 @@ export default function PrecioDelNovilloEnPiePage() {
         description={`Precio de referencia del novillo en pie en pesos por kilo vivo según el INMAG (Índice Novillo Mercado Agroganadero). Al ${INMAG_DATE}: $${fmt(inmagPrice)}/kg vivo. Serie diaria del Mercado Agroganadero de Cañuelas (ex-Liniers).`}
         url={PAGE_URL}
         keywords={['precio del novillo en pie', 'novillo', 'kilo vivo', 'INMAG', 'mercado agroganadero', 'cañuelas', 'liniers']}
-        dateModified={lastUpdate}
+        dateModified={INMAG_DATE}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_PRECIOS]}
+        temporalCoverage={INMAG_DATE}
       />
       <FAQPageSchema items={FAQ} />
       <SpeakableSchema

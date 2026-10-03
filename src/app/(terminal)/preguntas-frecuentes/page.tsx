@@ -109,7 +109,7 @@ export default function FAQPage() {
       <SpeakableSchema
         url="https://www.consignatarias.com.ar/preguntas-frecuentes"
         headline="Preguntas Frecuentes — Remates Ganaderos Argentina"
-        cssSelectors={['h1', 'h2', '.faq-question', '.faq-answer']}
+        cssSelectors={['h1', 'h2']}
       />
       
       <div className="min-h-screen bg-zinc-950">

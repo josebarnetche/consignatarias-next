@@ -164,7 +164,7 @@ export default function VenderHaciendaGuiaPage() {
         description="Guía completa de la venta de hacienda en Argentina: canales de venta, composición del precio de tranquera, desbaste, gastos de comercialización y documentación obligatoria."
         url={PAGE_URL}
         proficiencyLevel="Beginner"
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           { name: 'SENASA — Servicio Nacional de Sanidad y Calidad Agroalimentaria', url: 'https://www.senasa.gob.ar' },
         ]}

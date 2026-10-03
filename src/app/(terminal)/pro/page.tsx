@@ -49,14 +49,14 @@ export default function ProPage() {
             name: 'PRO — Consignatarias.com.ar',
             description: PRO_ABIERTO.tagline,
             url: `${APP_URL}/pro`,
-            brand: { '@type': 'Brand', name: 'Consignatarias.com.ar' },
+            brand: { '@type': 'Brand', name: 'consignatarias.com.ar' },
             offers: {
               '@type': 'Offer',
               price: PRO_ABIERTO.precio,
               priceCurrency: 'ARS',
               availability: 'https://schema.org/InStock',
               url: `${APP_URL}/pro`,
-              seller: { '@type': 'Organization', name: 'Memola Medios S.A.S.' },
+              seller: { '@id': 'https://www.consignatarias.com.ar/#org' },
             },
           }),
         }}

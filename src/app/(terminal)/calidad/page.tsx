@@ -25,6 +25,7 @@ export default function CalidadPage() {
         name="Calidad de Datos y Metodología"
         description="Fuentes de datos, metodología de recolección, validación y frescura de la información ganadera en Consignatarias.com.ar. 9 fuentes oficiales, actualización diaria."
         url="https://www.consignatarias.com.ar/calidad"
+        dateModified="2026-03-01"
       />
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         {/* Title */}

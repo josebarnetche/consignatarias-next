@@ -333,26 +333,17 @@ export default async function RematesEnVivoPage() {
 
   // Schema data — only include confirmed streams (probable is editorial UX,
   // not factual enough for ItemList markup)
+  // URL = la ficha del remate; el stream (watchUrl) va como VirtualLocation del Event
+  // (modo mixto). Antes la url del Event era la del stream externo.
   const schemaRemates = liveRemates
     .filter(r => r.confidence === 'confirmed')
     .slice(0, 10)
-    .map(r => ({
-      id: r.id,
-      name: `🔴 ${r.consignatariaName} - ${r.type}`,
-      date: r.date,
-      time: r.time || undefined,
-      location: r.location,
-      province: r.province,
-      consignatariaName: r.consignatariaName,
-      type: r.type,
-      estimatedHeads: r.estimatedHeads || undefined,
-      url: r.watchUrl,
-    }))
+    .map(r => ({ ...r, youtubeUrl: r.watchUrl }))
 
   return (
     <>
       <SectionBreadcrumbSchema section="remates/en-vivo" sectionName="Remates en Vivo" />
-      {schemaRemates.length > 0 && <RematesListSchema remates={schemaRemates} />}
+      {schemaRemates.length > 0 && <RematesListSchema remates={schemaRemates} name="Remates ganaderos en vivo y con transmisión" />}
 
       {/* Encabezado CHICO a propósito. Antes había un hero, un párrafo y una barra de
           cuatro números ("confirmadas", "probables"…) que son categorías nuestras, no

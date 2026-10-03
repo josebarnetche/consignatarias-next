@@ -327,6 +327,7 @@ export default async function ElOraculoPage() {
           { name: 'Cámara Argentina de Consignatarios de Ganado (CACG)' },
           { name: 'Universidad Nacional del Sur (UNS)' },
         ]}
+        dateModified="2026-10-03"
       />
 
       {/* Hero — el monolito del Oráculo (render 3D del universo de marca) */}

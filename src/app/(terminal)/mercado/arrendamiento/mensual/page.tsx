@@ -4,6 +4,8 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import marketPrices from '@/lib/data/market-prices.json'
 import { adminClientOpcional } from '@/lib/supabase-server'
 import { SectionBreadcrumbSchema, DatasetSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { INMAG_DATE } from '@/lib/inmag'
+import { FUENTE_MAG } from '@/lib/seo/schemas'
 import { Delta, DataTable, PriceCell, type DataColumn } from '@/components/ui'
 import { signedTone } from '@/lib/ui/tokens'
 import ArrendamientoLiquidacionSignup from '@/components/ArrendamientoLiquidacionSignup'
@@ -190,13 +192,13 @@ export default async function ArrendamientoMensualPage() {
 
   return (
     <>
-      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
+      <SectionBreadcrumbSchema section="mercado/arrendamiento" sectionName="Arrendamiento" pageName="Índice mensual" pagePath="/mercado/arrendamiento/mensual" />
       <DatasetSchema
         name="Índice Novillo Arrendamiento Mensual — cierres oficiales del Mercado Agroganadero"
         description={`Serie mensual del índice novillo para arrendamiento: promedio ponderado de cada mes publicado por el Mercado Agroganadero de Cañuelas, el valor con el que se liquidan los contratos de arrendamiento rural en Argentina.${last ? ` Último cierre: ${last.label}, $${fmt(last.inmag)}/kg.` : ''}`}
         url={URL}
         keywords={['índice novillo arrendamiento mensual', 'cierre mensual INMAG', 'arrendamiento rural', 'canon en kg de novillo', 'mercado agroganadero', 'serie histórica']}
-        dateModified={lastUpdate}
+        dateModified={INMAG_DATE}
         temporalCoverage={first && last ? `${first.key}/${last.key}` : undefined}
         updateFrequency="monthly"
         variableMeasured={{
@@ -205,6 +207,8 @@ export default async function ArrendamientoMensualPage() {
           unitText: 'ARS/kg vivo',
           observationDate: last ? `${last.key}-01` : undefined,
         }}
+        license={null}
+        fuente={FUENTE_MAG}
       />
       <FAQPageSchema items={faq} />
       <SpeakableSchema

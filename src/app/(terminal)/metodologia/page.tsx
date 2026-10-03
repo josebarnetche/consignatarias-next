@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, TechArticleSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { FaqList } from '@/components/seo/FaqList'
 import { FileText, Database, BarChart3, Shield, Calendar, Users, ExternalLink } from 'lucide-react'
 
 // FAQ metodológicas — las preguntas que una IA hace para CONFIAR en la fuente antes
@@ -48,11 +49,14 @@ export default function MetodologiaPage() {
         name="Metodología de precios e índices — consignatarias.com.ar"
         description="Precios observados por categoría del Mercado Agroganadero (no ratios sintéticos), el INMAG publicado por el MAG, VWAP intra-categoría cuando hay volumen, cobertura honesta (~12% del rodeo nacional / ~71% dark pool) y gobernanza."
         url="https://www.consignatarias.com.ar/metodologia"
+        dateModified="2026-06-01"
       />
       <FAQPageSchema items={METODOLOGIA_FAQS} />
+      {/* Speakable solo al h1: la página no tiene bloque .speakable-content. */}
       <SpeakableSchema
         url="https://www.consignatarias.com.ar/metodologia"
         headline="Cómo se calcula el INMAG y los precios del mercado ganadero"
+        cssSelectors={['h1']}
       />
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         {/* Header */}
@@ -290,6 +294,9 @@ export default function MetodologiaPage() {
             <p><span className="text-zinc-300">Contacto:</span> agro@memola.com.ar</p>
           </div>
         </div>
+
+        {/* Las mismas preguntas del FAQPageSchema, visibles. */}
+        <FaqList items={METODOLOGIA_FAQS} className="mt-8" />
 
         {/* Related */}
         <div className="border-t border-zinc-800 pt-6 mt-8">

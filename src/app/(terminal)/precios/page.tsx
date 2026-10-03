@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { BreadcrumbSchema, FAQPageSchema, SpeakableSchema, DatasetSchema } from '@/components/seo/JsonLd'
+import { INMAG_DATE } from '@/lib/inmag'
+import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import HerramientasCTA from '@/components/HerramientasCTA'
 import PriceThresholdAlertSignup from '@/components/PriceThresholdAlertSignup'
 import marketPrices from '@/lib/data/market-prices.json'
@@ -108,7 +110,11 @@ export default function PreciosHubPage() {
         description={`Kilo vivo en ARS por categoría (novillo, novillito, vaquillona, vaca, toro, ternero) y referencia INMAG del novillo de exportación, publicados por el Mercado Agroganadero (MAG-Cañuelas). Unidad: $/kg vivo. Fecha: ${lastUpdate}.`}
         url="https://www.consignatarias.com.ar/precios"
         keywords={['precios hacienda', 'novillo', 'vaca', 'ternero', 'INMAG', 'kilo vivo', 'Mercado Agroganadero', 'MAG']}
-        dateModified={lastUpdate}
+        dateModified={INMAG_DATE}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_PRECIOS]}
+        temporalCoverage={INMAG_DATE}
       />
 
       <main className="max-w-4xl mx-auto px-4 py-8 text-zinc-300">
