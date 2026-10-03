@@ -259,3 +259,47 @@ export function getEffectiveStatus(
   if (nowMinutes >= 1200) return 'completed' // after 20:00
   return 'live'
 }
+
+/* ------------------------------------------------------------------ */
+/*  Texto para personas (rediseño de listados, v1.220.0)               */
+/* ------------------------------------------------------------------ */
+
+const ABREV: Record<string, string> = {
+  's.a.': 'S.A.', 'sa': 'SA', 's.a': 'S.A.', 'srl': 'SRL', 's.r.l.': 'S.R.L.', 's.a.s.': 'S.A.S.', 'sas': 'SAS',
+  'sacif': 'SACIF', 's.c.': 'S.C.', 'sh': 'SH', 's.h.': 'S.H.', 'umc': 'UMC', 'cia.': 'Cía.', 'cia': 'Cía.',
+  'hnos.': 'Hnos.', 'hnos': 'Hnos.', 'coop.': 'Coop.', 'ltda.': 'Ltda.', 'ltda': 'Ltda.',
+}
+const MINUSCULAS = new Set(['y', 'e', 'de', 'del', 'la', 'las', 'los', 'el'])
+
+/**
+ * Los datos de origen vienen muchas veces en MAYÚSCULAS ("ILDARRAZ HNOS. S.A.",
+ * "CHAJARI"): para un productor eso se lee como un grito. Si el texto está
+ * entero en mayúsculas lo pasa a nombre propio; si ya tiene minúsculas, lo deja
+ * como está (respeta cómo lo escribió la firma).
+ */
+export function nombrePropio(s: string | null | undefined): string {
+  const t = (s || '').trim()
+  if (!t || t !== t.toUpperCase() || !/[A-ZÁÉÍÓÚÑ]/.test(t)) return t
+  return t
+    .toLowerCase()
+    .split(/(\s+)/)
+    .map((w, i) => {
+      if (/^\s+$/.test(w)) return w
+      if (ABREV[w]) return ABREV[w]
+      if (i > 0 && MINUSCULAS.has(w)) return w
+      return w.replace(/(^|[-(/])([a-záéíóúñ])/g, (_m, p, c) => p + c.toUpperCase())
+    })
+    .join('')
+}
+
+const PROVINCIAS_CON_TILDE: Record<string, string> = {
+  'ENTRE RIOS': 'Entre Ríos', 'CORDOBA': 'Córdoba', 'TUCUMAN': 'Tucumán', 'NEUQUEN': 'Neuquén',
+  'RIO NEGRO': 'Río Negro', 'CAPITAL FEDERAL': 'CABA',
+}
+
+/** "ENTRE RIOS" → "Entre Ríos". Vacío si no hay provincia. */
+export function provinciaNombre(p: string | null | undefined): string {
+  const k = (p || '').trim().toUpperCase()
+  if (!k) return ''
+  return PROVINCIAS_CON_TILDE[k] ?? nombrePropio(k)
+}

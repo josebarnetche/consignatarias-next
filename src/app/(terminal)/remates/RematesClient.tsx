@@ -3,28 +3,24 @@
 import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
-import marketData from '@/lib/data/market-prices.json'
 import type { Auction } from '@/lib/db/schema'
 import { normalizeUrl } from '@/lib/utils/url'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import {
-  TYPE_COLORS,
   TYPE_LABELS,
-  TYPE_LABELS_SHORT,
   CAT_LABELS,
-  CAT_CODES,
-  formatDateShort,
   getCity,
-  getProvinceCode,
+  nombrePropio,
+  provinciaNombre,
   getEffectiveToday,
   getEffectiveStatus,
 } from '@/lib/ui/tokens'
 import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge from '@/components/badges/ProBadge'
-import RematesFilterBar from '@/components/remates/RematesFilterBar'
+import RematesFilterBar, { typeLabel } from '@/components/remates/RematesFilterBar'
 import RemateMarkButton from '@/components/RemateMarkButton'
 import { RemateMarksProvider } from '@/components/RemateMarksContext'
-import { Badge, EmptyState } from '@/components/ui'
+import { EmptyState } from '@/components/ui'
 import { trackAuctionClick, trackFilterApply, trackOutboundClick, trackBulkIcsExport } from '@/lib/analytics'
 import { downloadBulkICSFile } from '@/lib/utils/ics'
 import { useSessionTier } from '@/lib/use-session-tier'
@@ -58,61 +54,8 @@ const rawAuctions = rematesData as Auction[]
 type Period = 'hoy' | 'proximos' | 'pasados'
 
 /* ------------------------------------------------------------------ */
-/*  MAG REMITENTE DATA — Supply Chain Intelligence                     */
-/* ------------------------------------------------------------------ */
-
-type MagEntry = { remitente: string; localidad: string; provincia: string; cabezas: number }
-type MagConsigData = { magId: string; totalCabezas: number; entries: MagEntry[]; period?: string }
-type MarketDataType = { auctionDayEntries?: { consignatarias: Record<string, MagConsigData> } }
-
-const magConsignatarias = (marketData as MarketDataType).auctionDayEntries?.consignatarias || {}
-
-/** Get top 3 unique localities by volume for a consignataria */
-function getTopLocalidades(slug: string): string[] {
-  const canonical = getCanonicalSlug(slug) || slug
-  const data = magConsignatarias[canonical]
-  if (!data?.entries?.length) return []
-  
-  // Aggregate by localidad
-  const byLocalidad = data.entries.reduce((acc, e) => {
-    acc[e.localidad] = (acc[e.localidad] || 0) + e.cabezas
-    return acc
-  }, {} as Record<string, number>)
-  
-  // Sort by volume descending, take top 3
-  return Object.entries(byLocalidad)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(([loc]) => loc)
-}
-
-/* ------------------------------------------------------------------ */
 /*  HELPERS                                                            */
 /* ------------------------------------------------------------------ */
-
-/** Derive a short source badge label */
-function getSourceBadge(auction: Auction): string {
-  if (auction.sourceUrl?.includes('cacg.org.ar')) return 'CACG'
-  const slug = auction.consignatariaSlug
-  if (slug === 'colombo-y-colombo') return 'CYC'
-  if (slug === 'ofarrell') return 'OFAR'
-  if (slug === 'coop-lehmann') return 'LEHM'
-  if (slug === 'madelan') return 'MADL'
-  if (slug === 'umc-haciendas-villaguay') return 'UMCHV'
-  if (auction.source === 'manual') return 'MAN'
-  return 'WEB'
-}
-
-/** Freshness label for past auctions (relative to today) */
-function getFreshnessLabel(auctionDate: string, today: string): { text: string; className: string } | null {
-  const d = new Date(auctionDate + 'T12:00:00')
-  const t = new Date(today + 'T12:00:00')
-  const diff = Math.round((t.getTime() - d.getTime()) / 86400000)
-  if (diff <= 0) return null // future or same-day handled separately
-  if (diff === 1) return { text: 'AYER', className: 'text-zinc-400' }
-  if (diff <= 7) return { text: `HACE ${diff} DÍAS`, className: 'text-zinc-500' }
-  return null
-}
 
 /** Get the best link for an auction row click */
 function getAuctionHref(auction: Auction): string {
@@ -126,68 +69,87 @@ function isExternalLink(href: string): boolean {
 }
 
 /* ------------------------------------------------------------------ */
-/*  STATUS INDICATOR                                                   */
+/*  ESTADO                                                             */
 /* ------------------------------------------------------------------ */
 
 /**
- * Status indicator — alineado con el StatusBadge de la ficha de consignataria
- * (cronograma) para que el mismo estado se lea igual en las dos superficies:
- * `live` = status-dot-live + text-positive · HOY = dot positive pulsante ·
- * PROGRAMADO = accent · FINALIZADO = offline. Colores siempre desde token.
+ * Solo se muestra lo que cambia la decisión: "en vivo ahora" o la cuenta
+ * regresiva del día. "Programado" y "Finalizado" ya los dice el grupo del día
+ * (próximos / anteriores), así que no ocupan lugar en cada tarjeta.
  */
 function StatusBadge({ date, time, today }: { date: string; time: string | null; today: string }) {
   const effectiveStatus = getEffectiveStatus(date, time, today)
-  const isToday = date === today
-
   if (effectiveStatus === 'live') {
     return (
-      <span className="inline-flex items-center gap-1.5" role="img" aria-label="En vivo">
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-positive/10 px-2.5 py-1 text-sm font-medium text-positive" role="img" aria-label="En vivo ahora">
         <span className="status-dot-live" />
-        <span className="text-positive font-terminal text-xxs">EN VIVO</span>
+        En vivo ahora
       </span>
     )
   }
-
-  if (effectiveStatus === 'completed') {
-    return (
-      <span className="inline-flex items-center gap-1.5" role="img" aria-label="Finalizado">
-        <span className="status-dot-offline" />
-        <span className="text-zinc-500 font-terminal text-xxs">FINALIZADO</span>
-      </span>
-    )
-  }
-
-  // scheduled
-  const scheduledBadge = (
-    <span className="inline-flex items-center gap-1.5" role="img" aria-label={isToday ? 'Hoy' : 'Programado'}>
-      <span className={`status-dot ${isToday ? 'bg-positive animate-pulse-live' : 'bg-accent'}`} />
-      <span className={`font-terminal text-xxs ${isToday ? 'text-positive' : 'text-accent'}`}>
-        {isToday ? 'HOY' : 'PROGRAMADO'}
-      </span>
+  if (effectiveStatus === 'completed' || date !== today) return null
+  const hoy = (
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-positive/10 px-2.5 py-1 text-sm font-medium text-positive">
+      <span className="status-dot bg-positive animate-pulse-live" />
+      Hoy
     </span>
   )
-  if (isToday && time) {
-    return <CountdownBadge auctionDate={date} auctionTime={time} fallback={scheduledBadge} />
-  }
-  return scheduledBadge
+  return time ? <CountdownBadge auctionDate={date} auctionTime={time} fallback={hoy} /> : hoy
 }
 
 /* ------------------------------------------------------------------ */
-/*  AUCTION ROW — responsive: card on mobile, dense on desktop         */
+/*  AGRUPADO POR DÍA                                                   */
 /* ------------------------------------------------------------------ */
 
-function AuctionRow({ auction, today, index, period }: { auction: Auction; today: string; index: number; period: Period }) {
-  const isToday = auction.date === today
+const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']
+const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+
+/** "Hoy · viernes 3 de octubre" — nombres armados a mano (no toLocaleDateString)
+ *  para que el SSR y el navegador escriban exactamente lo mismo. */
+function dayHeading(date: string, today: string): string {
+  const d = new Date(date + 'T12:00:00')
+  const t = new Date(today + 'T12:00:00')
+  const diff = Math.round((d.getTime() - t.getTime()) / 86400000)
+  const larga = `${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`
+  const rel = diff === 0 ? 'Hoy' : diff === 1 ? 'Mañana' : diff === -1 ? 'Ayer' : null
+  if (rel) return `${rel} · ${larga}`
+  const base = larga.charAt(0).toUpperCase() + larga.slice(1)
+  return d.getFullYear() !== t.getFullYear() ? `${base} de ${d.getFullYear()}` : base
+}
+
+function groupByDay(list: Auction[]): { date: string; items: Auction[] }[] {
+  const groups: { date: string; items: Auction[] }[] = []
+  for (const a of list) {
+    const last = groups[groups.length - 1]
+    if (last && last.date === a.date) last.items.push(a)
+    else groups.push({ date: a.date, items: [a] })
+  }
+  return groups
+}
+
+/* ------------------------------------------------------------------ */
+/*  TARJETA DE REMATE — una sola forma en celular y escritorio          */
+/* ------------------------------------------------------------------ */
+
+const actionBtn =
+  'inline-flex min-h-[40px] items-center gap-1.5 rounded-terminal border border-terminal-border px-3 text-sm font-medium transition-colors motion-hover'
+
+function AuctionRow({ auction, today, index }: { auction: Auction; today: string; index: number }) {
   const isFeatured = !!(auction as Auction & { featured?: boolean }).featured
-  const city = getCity(auction.location)
+  const city = nombrePropio(getCity(auction.location))
+  const province = provinciaNombre(auction.province)
   const href = getAuctionHref(auction)
   const external = isExternalLink(href)
-  const sourceBadge = getSourceBadge(auction)
-  const freshness = period === 'pasados' ? getFreshnessLabel(auction.date, today) : null
-  // "HOY" freshness for pasados tab (same-day completed)
-  const isTodayPast = period === 'pasados' && auction.date === today
-  // MAG supply chain intel - top remitente localities
-  const topLocalidades = getTopLocalidades(auction.consignatariaSlug)
+  const profileHref = `/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`
+  const catalog = normalizeUrl(auction.catalogUrl)
+  const youtube = normalizeUrl(auction.youtubeUrl)
+  const yaPaso = auction.date <= today
+
+  const detalle = [
+    typeLabel(auction.type),
+    auction.mainCategory && auction.mainCategory !== 'mixto' ? CAT_LABELS[auction.mainCategory] : null,
+    auction.estimatedHeads != null ? `~${auction.estimatedHeads.toLocaleString('es-AR')} cabezas` : null,
+  ].filter(Boolean)
 
   function handleRowClick() {
     const dest = href.includes('/consignatarias/') ? 'profile' as const : 'source' as const
@@ -199,346 +161,71 @@ function AuctionRow({ auction, today, index, period }: { auction: Auction; today
     }
   }
 
-  /* ---- FEATURED / PRO ROW ---- */
-  if (isFeatured) {
-    return (
-      <div
-        role="link"
-        tabIndex={0}
-        onClick={handleRowClick}
-        onKeyDown={(e) => { if (e.key === 'Enter') handleRowClick() }}
-        className={`group border-b-2 border-sky-500/30 bg-sky-500/[0.04] hover:bg-sky-500/[0.08] focus-visible:outline-none focus-visible:bg-sky-500/[0.10] focus-visible:shadow-[inset_2px_0_0_#38bdf8] transition-colors duration-75 cursor-pointer relative overflow-hidden shadow-sky-glow${index < 20 ? ' row-enter' : ''}`}
-        style={index < 20 ? { animationDelay: `${index * 30}ms` } : undefined}
-      >
-        {/* Amber left accent bar */}
-        <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-sky-400" />
-
-        {/* --- MOBILE CARD (shown below md) --- */}
-        <div className="md:hidden p-3 pl-4 space-y-1.5 rounded-terminal shadow-panel">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <ProBadge verified={true} size="sm" />
-              <span className="text-data tabular-nums font-terminal text-sky-300 font-medium">
-                {formatDateShort(auction.date)}
-              </span>
-              {auction.time && (
-                <span className="text-data tabular-nums font-terminal text-sky-300/70">{auction.time}</span>
-              )}
-            </div>
-            <div className="flex items-center gap-1.5">
-              <StatusBadge date={auction.date} time={auction.time} today={today} />
-              {auction.youtubeUrl && (
-                <span className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-negative/15 border border-negative/30 rounded-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-negative animate-pulse" />
-                  <span className="text-negative font-terminal text-[9px] font-bold">LIVE</span>
-                </span>
-              )}
-            </div>
-          </div>
-          <div onClick={(e) => e.stopPropagation()}>
-            <a
-              href={`/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`}
-              className="text-sky-200 font-terminal font-medium text-data hover:underline"
-            >
-              {auction.consignatariaName}
-            </a>
-          </div>
-          <div className="text-xxs font-terminal text-sky-300/60 truncate">{auction.title}</div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xxs text-sky-400/50">{city}</span>
-            <span className="text-xxs text-sky-500/40">{auction.province}</span>
-            <span className={`terminal-tag border-sky-500 text-sky-400 text-[10px]`}>
-              {TYPE_LABELS[auction.type] || auction.type.toUpperCase()}
-            </span>
-            <span className="text-xxs text-sky-400/60">{CAT_LABELS[auction.mainCategory]}</span>
-            {auction.estimatedHeads != null && (
-              <span className="text-data font-terminal tabular-nums text-sky-300 font-medium">
-                ~{auction.estimatedHeads.toLocaleString('es-AR')} cab
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-[9px] font-terminal text-sky-500/50 px-1 py-0.5 border border-sky-500/20 rounded-sm">{sourceBadge}</span>
-            {isTodayPast && <span className="text-[9px] font-terminal text-positive">HOY</span>}
-            {freshness && <span className={`text-[9px] font-terminal ${freshness.className}`}>{freshness.text}</span>}
-          </div>
-          {/* Supply chain intel - top remitente localities */}
-          {topLocalidades.length > 0 && (
-            <div className="flex items-center gap-1 text-[10px] text-sky-400/40 font-terminal">
-              <span>🏠</span>
-              <span>{topLocalidades.join(', ')}</span>
-            </div>
-          )}
-          {/* Links */}
-          <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
-          <RemateMarkButton remateId={String(auction.id)} markType="attended" label="Estuve" labelMarked="Fui ✓" />
-            {auction.catalogUrl && (
-              <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
-                onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
-                className="text-xxs font-terminal text-sky-400 hover:text-sky-200 transition-colors" aria-label="Descargar catálogo">Catálogo</a>
-            )}
-            {auction.youtubeUrl && (
-              <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
-                onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
-                className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión">YouTube</a>
-            )}
-            <a href={getWhatsAppShareUrl(auction)} target="_blank" rel="noopener noreferrer"
-              className="text-xxs font-terminal text-live hover:text-positive motion-hover" aria-label="Compartir en WhatsApp">WhatsApp</a>
-          </div>
-        </div>
-
-        {/* --- DESKTOP ROW (hidden below md) --- */}
-        <div className="hidden md:block">
-          {/* Line 1 */}
-          <div className="flex items-center gap-0 px-cell py-px2 pl-4">
-            <span className="mr-2 flex-shrink-0">
-              <ProBadge verified={true} size="sm" />
-            </span>
-            <span className="w-[56px] flex-shrink-0 text-data tabular-nums font-terminal text-sky-300 font-medium">
-              {formatDateShort(auction.date)}
-            </span>
-            <span className="w-[52px] flex-shrink-0 text-data tabular-nums font-terminal">
-              {auction.time ? (
-                <span className="text-sky-300/70">{auction.time}</span>
-              ) : (
-                <span className="text-sky-500/30">&mdash;</span>
-              )}
-            </span>
-            <span className="flex-1 min-w-0 text-data font-terminal truncate" onClick={(e) => e.stopPropagation()}>
-              <a
-                href={`/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`}
-                className="text-sky-200 font-medium hover:text-sky-100 hover:underline transition-colors"
-                title={auction.consignatariaName}
-              >
-                {auction.consignatariaName}
-              </a>
-            </span>
-            <span className="w-[140px] flex-shrink-0 text-data font-terminal text-sky-400/50 truncate text-right pr-2">
-              {city}
-            </span>
-            <span className="w-[36px] flex-shrink-0 text-xxs font-terminal text-sky-500/50 text-right">
-              {getProvinceCode(auction.province)}
-            </span>
-          </div>
-          {/* Line 2 */}
-          <div className="flex items-center gap-0 px-cell pl-4 pb-px">
-            <span className="text-xxs font-terminal text-sky-300/60 truncate">{auction.title}</span>
-          </div>
-          {/* Line 3 */}
-          <div className="flex items-center gap-0 px-cell pl-4 pb-1.5">
-            <span className="terminal-tag border-sky-500 text-sky-400 mr-1.5 text-[10px]">
-              {TYPE_LABELS_SHORT[auction.type] || auction.type.toUpperCase()}
-            </span>
-            <span className="w-[42px] flex-shrink-0 text-xxs font-terminal text-sky-400/60">
-              {CAT_CODES[auction.mainCategory]}
-            </span>
-            <span className="text-[9px] font-terminal text-sky-500/50 px-1 py-0.5 border border-sky-500/20 rounded-sm mr-1.5">{sourceBadge}</span>
-            {isTodayPast && <span className="text-[9px] font-terminal text-positive mr-1.5">HOY</span>}
-            {freshness && <span className={`text-[9px] font-terminal ${freshness.className} mr-1.5`}>{freshness.text}</span>}
-            {/* Supply chain intel */}
-            {topLocalidades.length > 0 && (
-              <span className="text-[9px] font-terminal text-sky-400/40 mr-1.5 flex items-center gap-0.5">
-                <span>🏠</span>
-                <span>{topLocalidades.join(', ')}</span>
-              </span>
-            )}
-            <span className="w-[60px] flex-shrink-0 text-data font-terminal tabular-nums text-sky-300 text-right font-medium">
-              {auction.estimatedHeads != null ? `~${auction.estimatedHeads.toLocaleString('es-AR')}` : '—'}
-            </span>
-            <span className="w-[80px] flex-shrink-0 ml-2">
-              <StatusBadge date={auction.date} time={auction.time} today={today} />
-            </span>
-            <span className="flex-1 min-w-0 ml-2 text-xxs font-terminal text-sky-400/40 truncate">
-              {auction.description}
-            </span>
-            <span className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-              {auction.catalogUrl && (
-                <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
-                  onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
-                  className="text-xxs font-terminal text-sky-400 hover:text-sky-200 transition-colors" aria-label="Descargar catálogo" title="Catálogo">CAT</a>
-              )}
-              {auction.youtubeUrl && (
-                <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
-                  onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
-                  className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión en YouTube" title="YouTube">YT</a>
-              )}
-              <a href={getWhatsAppShareUrl(auction)} target="_blank" rel="noopener noreferrer"
-                className="text-xxs font-terminal text-live hover:text-positive motion-hover" aria-label="Compartir en WhatsApp" title="Compartir">WA</a>
-            </span>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  /* ---- REGULAR ROW ---- */
   return (
     <div
       role="link"
       tabIndex={0}
       onClick={handleRowClick}
       onKeyDown={(e) => { if (e.key === 'Enter') handleRowClick() }}
-      className={`group border-b border-terminal-border hover:bg-zinc-800/50 focus-visible:outline-none focus-visible:bg-zinc-800/60 focus-visible:shadow-[inset_2px_0_0_#38bdf8] transition-colors duration-75 cursor-pointer ${
-        isToday ? 'bg-sky-500/[0.03]' : ''
+      className={`group relative flex gap-4 border-b border-terminal-border px-panel py-4 cursor-pointer transition-colors duration-75 focus-visible:outline-none focus-visible:bg-zinc-900 hover:bg-zinc-900/60 ${
+        isFeatured ? 'bg-accent/[0.04]' : ''
       }${index < 20 ? ' row-enter' : ''}`}
       style={index < 20 ? { animationDelay: `${index * 30}ms` } : undefined}
     >
-      {/* --- MOBILE CARD (shown below md) --- */}
-      <div className="md:hidden p-3 space-y-1.5 rounded-terminal shadow-panel">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className={`text-data tabular-nums font-terminal ${isToday ? 'text-positive font-medium' : 'text-zinc-300'}`}>
-              {formatDateShort(auction.date)}
-            </span>
-            {auction.time && (
-              <span className="text-data tabular-nums font-terminal text-zinc-400">{auction.time}</span>
-            )}
-          </div>
-          <div className="flex items-center gap-1.5">
-            <StatusBadge date={auction.date} time={auction.time} today={today} />
-            {auction.youtubeUrl && (
-              <span className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-negative/15 border border-negative/30 rounded-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-negative animate-pulse" />
-                <span className="text-negative font-terminal text-[9px] font-bold">LIVE</span>
-              </span>
-            )}
-          </div>
-        </div>
-        <div onClick={(e) => e.stopPropagation()}>
-          <a
-            href={`/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`}
-            className="text-zinc-200 font-terminal font-medium text-data hover:text-accent hover:underline transition-colors"
-          >
-            {auction.consignatariaName}
-          </a>
-        </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xxs text-zinc-500">{city}</span>
-          <span className="text-xxs text-zinc-500">{auction.province}</span>
-          <span className={`terminal-tag ${TYPE_COLORS[auction.type] || 'border-zinc-500 text-zinc-400'} text-[10px]`}>
-            {TYPE_LABELS[auction.type] || auction.type.toUpperCase()}
-          </span>
-          <span className="text-xxs text-zinc-500">{CAT_LABELS[auction.mainCategory]}</span>
-          {auction.estimatedHeads != null && (
-            <span className="text-data font-terminal tabular-nums text-zinc-400">
-              ~{auction.estimatedHeads.toLocaleString('es-AR')} cab
-            </span>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[9px] font-terminal text-zinc-500 px-1 py-0.5 border border-zinc-800 rounded-sm">{sourceBadge}</span>
-          {isTodayPast && <span className="text-[9px] font-terminal text-positive">HOY</span>}
-          {freshness && <span className={`text-[9px] font-terminal ${freshness.className}`}>{freshness.text}</span>}
-        </div>
-        {/* Supply chain intel - top remitente localities */}
-        {topLocalidades.length > 0 && (
-          <div className="flex items-center gap-1 text-[10px] text-zinc-500 font-terminal">
-            <span>🏠</span>
-            <span>{topLocalidades.join(', ')}</span>
-          </div>
+      {isFeatured && <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-accent" />}
+
+      {/* Hora: lo primero que se busca */}
+      <div className="w-14 flex-shrink-0 pt-0.5 text-center sm:w-16">
+        {auction.time ? (
+          <>
+            <div className="text-lg font-semibold tabular-nums text-ink sm:text-xl">{auction.time}</div>
+            <div className="text-xs text-zinc-500">hs</div>
+          </>
+        ) : (
+          <div className="text-xs leading-tight text-zinc-500">Hora a confirmar</div>
         )}
-        {/* Links */}
-        <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
-          <RemateMarkButton remateId={String(auction.id)} markType="attended" label="Estuve" labelMarked="Fui ✓" />
-          {auction.catalogUrl && (
-            <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
-              onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
-              className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors" aria-label="Descargar catálogo">Catálogo</a>
-          )}
-          {auction.youtubeUrl && (
-            <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
-              onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
-              className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión">YouTube</a>
-          )}
-          <a href={getWhatsAppShareUrl(auction)} target="_blank" rel="noopener noreferrer"
-            className="text-xxs font-terminal text-live hover:text-positive motion-hover" aria-label="Compartir en WhatsApp">WhatsApp</a>
-        </div>
       </div>
 
-      {/* --- DESKTOP ROW (hidden below md) --- */}
-      <div className="hidden md:block">
-        {/* Line 1: date time consignataria location province */}
-        <div className="flex items-center gap-0 px-cell py-px2">
-          <span
-            className={`w-[56px] flex-shrink-0 text-data tabular-nums font-terminal ${
-              isToday ? 'text-positive font-medium' : 'text-zinc-300'
-            }`}
-          >
-            {formatDateShort(auction.date)}
-          </span>
-          <span className="w-[52px] flex-shrink-0 text-data tabular-nums font-terminal">
-            {auction.time ? (
-              <span className="text-zinc-300">{auction.time}</span>
-            ) : auction.sourceUrl ? (
-              <span className="text-accent text-xxs cursor-pointer" title="Ver horario en fuente">
-                VER &rarr;
-              </span>
-            ) : (
-              <span className="text-zinc-500">&mdash;</span>
-            )}
-          </span>
-          <span className="flex-1 min-w-0 text-data font-terminal truncate" onClick={(e) => e.stopPropagation()}>
-            <a
-              href={`/consignatarias/${getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug}`}
-              className="text-zinc-200 hover:text-accent hover:underline transition-colors"
-              title={auction.consignatariaName}
-            >
-              {auction.consignatariaName}
+      <div className="min-w-0 flex-1 space-y-1.5">
+        <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1.5">
+          <div className="flex min-w-0 items-center gap-2" onClick={(e) => e.stopPropagation()}>
+            <a href={profileHref} className="text-base font-semibold text-ink hover:text-accent hover:underline sm:text-lg">
+              {nombrePropio(auction.consignatariaName)}
             </a>
-          </span>
-          <span className="w-[140px] flex-shrink-0 text-data font-terminal text-zinc-500 truncate text-right pr-2">
-            {city}
-          </span>
-          <span className="w-[36px] flex-shrink-0 text-xxs font-terminal text-zinc-500 text-right">
-            {getProvinceCode(auction.province)}
-          </span>
+            {isFeatured && <ProBadge verified={true} size="sm" className="flex-shrink-0" />}
+          </div>
+          <StatusBadge date={auction.date} time={auction.time} today={today} />
         </div>
 
-        {/* Line 2: type badge, category, source, freshness, heads, status, links */}
-        <div className="flex items-center gap-0 px-cell pb-1">
-          <span className={`terminal-tag ${TYPE_COLORS[auction.type] || 'border-zinc-500 text-zinc-400'} mr-1.5 text-[10px]`}>
-            {TYPE_LABELS_SHORT[auction.type] || auction.type.toUpperCase()}
-          </span>
-          <span className="w-[42px] flex-shrink-0 text-xxs font-terminal text-zinc-500">
-            {CAT_CODES[auction.mainCategory]}
-          </span>
-          <span className="text-[9px] font-terminal text-zinc-500 px-1 py-0.5 border border-zinc-800 rounded-sm mr-1.5">{sourceBadge}</span>
-          {isTodayPast && <span className="text-[9px] font-terminal text-positive mr-1.5">HOY</span>}
-          {freshness && <span className={`text-[9px] font-terminal ${freshness.className} mr-1.5`}>{freshness.text}</span>}
-          {/* Supply chain intel */}
-          {topLocalidades.length > 0 && (
-            <span className="text-[9px] font-terminal text-zinc-500 mr-1.5 flex items-center gap-0.5">
-              <span>🏠</span>
-              <span>{topLocalidades.join(', ')}</span>
-            </span>
+        <p className="text-sm text-zinc-400 sm:text-base">
+          {[city, province].filter(Boolean).join(', ')}
+        </p>
+        <p className="text-sm text-zinc-300 sm:text-base">{detalle.join(' · ')}</p>
+
+        <div className="flex flex-wrap items-center gap-2 pt-1.5" onClick={(e) => e.stopPropagation()}>
+          {youtube && (
+            <a href={youtube} target="_blank" rel="noopener noreferrer"
+              onClick={() => trackOutboundClick(youtube, 'youtube')}
+              className={`${actionBtn} border-negative/40 text-negative hover:bg-negative/10`}>
+              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden><path d="M8 5v14l11-7z" /></svg>
+              Ver transmisión
+            </a>
           )}
-          <span className="w-[60px] flex-shrink-0 text-data font-terminal tabular-nums text-zinc-400 text-right">
-            {auction.estimatedHeads != null ? `~${auction.estimatedHeads.toLocaleString('es-AR')}` : '—'}
-          </span>
-          <span className="w-[80px] flex-shrink-0 ml-2">
-            <StatusBadge date={auction.date} time={auction.time} today={today} />
-          </span>
-          <span className="flex-1" />
-          <span className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+          {catalog && (
+            <a href={catalog} target="_blank" rel="noopener noreferrer"
+              onClick={() => trackOutboundClick(catalog, 'catalog')}
+              className={`${actionBtn} text-accent hover:bg-accent/10`}>
+              Ver catálogo
+            </a>
+          )}
+          <a href={getWhatsAppShareUrl(auction)} target="_blank" rel="noopener noreferrer"
+            className={`${actionBtn} text-zinc-300 hover:text-live`} aria-label="Compartir por WhatsApp">
+            Compartir por WhatsApp
+          </a>
+          {/* "Estuve" solo tiene sentido el día del remate o después */}
+          {yaPaso && (
             <RemateMarkButton remateId={String(auction.id)} markType="attended" label="Estuve" labelMarked="Fui ✓" />
-            {auction.catalogUrl && (
-              <a href={normalizeUrl(auction.catalogUrl) || '#'} target="_blank" rel="noopener noreferrer"
-                onClick={() => trackOutboundClick(normalizeUrl(auction.catalogUrl) || '', 'catalog')}
-                className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors" aria-label="Descargar catálogo" title="Catálogo">CAT</a>
-            )}
-            {auction.youtubeUrl && (
-              <a href={normalizeUrl(auction.youtubeUrl) || '#'} target="_blank" rel="noopener noreferrer"
-                onClick={() => trackOutboundClick(normalizeUrl(auction.youtubeUrl) || '', 'youtube')}
-                className="text-xxs font-terminal text-negative hover:text-red-300 transition-colors" aria-label="Ver transmisión" title="YouTube">YT</a>
-            )}
-            {auction.sourceUrl && (
-              <a href={normalizeUrl(auction.sourceUrl) || '#'} target="_blank" rel="noopener noreferrer"
-                onClick={() => trackOutboundClick(normalizeUrl(auction.sourceUrl) || '', 'source')}
-                className="text-xxs font-terminal text-zinc-500 hover:text-zinc-400 transition-colors" aria-label="Ver fuente" title="Fuente">SRC</a>
-            )}
-            <a href={getWhatsAppShareUrl(auction)} target="_blank" rel="noopener noreferrer"
-              className="text-xxs font-terminal text-live hover:text-positive motion-hover" aria-label="Compartir en WhatsApp" title="Compartir">WA</a>
-          </span>
+          )}
         </div>
       </div>
     </div>
@@ -742,12 +429,9 @@ export default function RematesPage() {
   )
 
   /* ---- Dropdown options ---- */
-  const provinces = useMemo(() => [...new Set(auctions.map((a) => a.province))].sort(), [auctions])
+  const provinces = useMemo(() => [...new Set(auctions.map((a) => a.province))].filter(Boolean).sort(), [auctions])
   const types = useMemo(() => [...new Set(auctions.map((a) => a.type))].sort(), [auctions])
 
-  /* ---- Summary stats ---- */
-  const totalHeads = auctions.reduce((s, a) => s + (a.estimatedHeads ?? 0), 0)
-  const uniqueProvinces = new Set(auctions.map((a) => a.province)).size
 
   /* ---- Bulk ICS Export handler ---- */
   const handleBulkExport = () => {
@@ -831,75 +515,12 @@ export default function RematesPage() {
   }
 
   /* ---- Render ---- */
+  const groups = groupByDay(filteredAuctions)
+  let rowIndex = 0
   return (
     <RemateMarksProvider>
-    <div className="max-w-6xl mx-auto px-2 sm:px-4 py-3 space-y-0">
+    <div className="max-w-5xl mx-auto px-2 sm:px-4 py-3">
       <div className="terminal-panel">
-        {/* -- Panel header ----------------------------------------- */}
-        <div className="terminal-panel-header flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center gap-3">
-            <span className="section-heading text-zinc-200 text-label tracking-widest">REMATES</span>
-            <span className="text-terminal-border hidden sm:inline">&mdash;</span>
-            <span className="text-xxs text-zinc-500 uppercase tracking-wider hidden sm:inline">
-              Cronograma de Remates Ganaderos
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="terminal-btn-primary text-xxs px-3 py-1"
-            >
-              + AGREGAR
-            </button>
-            <span className="text-xxs tabular-nums text-zinc-500 font-terminal hidden sm:inline">
-              {auctions.length} registros
-            </span>
-          </div>
-        </div>
-
-        {/* -- Summary stats strip (hidden on mobile) --------------- */}
-        <div className="border-b border-terminal-border px-panel py-1.5 hidden md:flex items-center gap-6 flex-wrap">
-          <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-500 uppercase">Total:</span>
-            <span className="stat-countup text-data tabular-nums text-zinc-300 font-terminal" style={{ animationDelay: '0ms' }}>{auctions.length}</span>
-            <span className="text-xxs text-zinc-500">remates</span>
-          </div>
-          <div className="text-terminal-border text-xxs select-none">|</div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-500 uppercase">Cabezas est.:</span>
-            <span className="stat-countup text-data tabular-nums text-zinc-300 font-terminal" style={{ animationDelay: '60ms' }}>
-              ~{totalHeads.toLocaleString('es-AR')}
-            </span>
-          </div>
-          <div className="text-terminal-border text-xxs select-none">|</div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-500 uppercase">Provincias:</span>
-            <span className="stat-countup text-data tabular-nums text-zinc-300 font-terminal" style={{ animationDelay: '120ms' }}>{uniqueProvinces}</span>
-          </div>
-          <div className="text-terminal-border text-xxs select-none">|</div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-xxs text-zinc-500 uppercase">Hoy:</span>
-            <span className={`stat-countup text-data tabular-nums font-terminal ${todayAuctions.length > 0 ? 'text-positive' : 'text-zinc-500'}`} style={{ animationDelay: '180ms' }}>
-              {todayAuctions.length}
-            </span>
-          </div>
-          {/* En Vivo count - prominent */}
-          {enVivoCount > 0 && (
-            <>
-              <div className="text-terminal-border text-xxs select-none">|</div>
-              <button 
-                onClick={() => setFilterEnVivo(!filterEnVivo)}
-                className="flex items-center gap-1.5 hover:opacity-80 transition-opacity cursor-pointer"
-              >
-                <span className="w-2 h-2 rounded-full bg-negative animate-pulse" />
-                <span className="text-xxs text-negative uppercase font-medium">En Vivo:</span>
-                <span className="text-data tabular-nums font-terminal text-negative">{enVivoCount}</span>
-              </button>
-            </>
-          )}
-        </div>
-
-        {/* -- Unified filter bar + applied chips ------------------- */}
         <RematesFilterBar
           period={period}
           counts={counts}
@@ -928,30 +549,29 @@ export default function RematesPage() {
           resultCount={filteredAuctions.length}
         />
 
-        {/* -- Advanced filters panel (PRO) -------------------------- */}
+        {/* -- Filtros avanzados (PRO) -------------------------- */}
         {showAdvanced && session.tier === 'pro' && (
-          <div className="border-b border-terminal-border px-panel py-2 flex items-end flex-wrap gap-3 bg-zinc-900/40">
-            <span className="text-xxs text-zinc-500 font-terminal uppercase tracking-widest">Avanzado:</span>
-            <label className="flex flex-col text-xxs text-zinc-400 font-terminal">
-              <span className="mb-0.5">Desde</span>
+          <div className="border-b border-terminal-border px-panel py-3 flex items-end flex-wrap gap-3 bg-zinc-900/40">
+            <label className="flex flex-col gap-1 text-sm text-zinc-400">
+              Desde
               <input
                 type="date"
                 value={filterDateFrom}
                 onChange={(e) => setFilterDateFrom(e.target.value)}
-                className="bg-zinc-900 border border-terminal-border rounded-terminal px-2 py-1 text-xxs text-zinc-200 focus:border-accent focus:outline-none"
+                className="terminal-input min-h-[44px] rounded-terminal px-3 text-base sm:text-sm"
               />
             </label>
-            <label className="flex flex-col text-xxs text-zinc-400 font-terminal">
-              <span className="mb-0.5">Hasta</span>
+            <label className="flex flex-col gap-1 text-sm text-zinc-400">
+              Hasta
               <input
                 type="date"
                 value={filterDateTo}
                 onChange={(e) => setFilterDateTo(e.target.value)}
-                className="bg-zinc-900 border border-terminal-border rounded-terminal px-2 py-1 text-xxs text-zinc-200 focus:border-accent focus:outline-none"
+                className="terminal-input min-h-[44px] rounded-terminal px-3 text-base sm:text-sm"
               />
             </label>
-            <label className="flex flex-col text-xxs text-zinc-400 font-terminal">
-              <span className="mb-0.5">Cabezas mín.</span>
+            <label className="flex flex-col gap-1 text-sm text-zinc-400">
+              Cabezas mínimas
               <input
                 type="number"
                 min={0}
@@ -959,154 +579,83 @@ export default function RematesPage() {
                 value={filterMinHeads}
                 onChange={(e) => setFilterMinHeads(e.target.value)}
                 placeholder="ej. 500"
-                className="bg-zinc-900 border border-terminal-border rounded-terminal px-2 py-1 text-xxs text-zinc-200 w-24 focus:border-accent focus:outline-none placeholder:text-zinc-600"
+                className="terminal-input min-h-[44px] w-32 rounded-terminal px-3 text-base sm:text-sm placeholder:text-zinc-500"
               />
             </label>
           </div>
         )}
 
-        {/* -- LIVE NOW Banner (when streams today) --------------- */}
+        {/* -- En vivo hoy: aviso arriba de la lista --------------- */}
         {todayLiveStreams.length > 0 && !filterEnVivo && (
-          <div className="border-b border-red-800/50 bg-gradient-to-r from-red-950/80 via-red-900/60 to-red-950/80 px-panel py-3">
+          <div className="border-b border-terminal-border bg-negative/[0.06] px-panel py-3">
             <div className="flex items-center justify-between flex-wrap gap-3">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="relative flex h-3 w-3">
-                    <span className="animate-ring-pulse absolute inline-flex h-full w-full rounded-full bg-red-400"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                  </span>
-                  <span className="text-sm font-bold text-white uppercase tracking-wide">
-                    🔴 {todayLiveStreams.length} {todayLiveStreams.length === 1 ? 'Remate' : 'Remates'} en Vivo Hoy
-                  </span>
-                </div>
-                <div className="hidden sm:flex items-center gap-2 text-xs text-red-300/80">
-                  {todayLiveStreams.slice(0, 2).map((r, i) => (
-                    <span key={r.id} className="flex items-center gap-1">
-                      {i > 0 && <span className="text-red-700">•</span>}
-                      <span>{r.consignatariaName}</span>
-                      {r.time && <span className="text-red-400/60">({r.time}hs)</span>}
-                    </span>
-                  ))}
-                  {todayLiveStreams.length > 2 && (
-                    <span className="text-red-400/60">+{todayLiveStreams.length - 2} más</span>
-                  )}
-                </div>
+              <div className="flex items-center gap-2.5">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ring-pulse absolute inline-flex h-full w-full rounded-full bg-negative" />
+                  <span className="relative inline-flex h-3 w-3 rounded-full bg-negative" />
+                </span>
+                <span className="text-base font-semibold text-ink">
+                  Hoy se transmiten {todayLiveStreams.length} {todayLiveStreams.length === 1 ? 'remate' : 'remates'} en vivo
+                </span>
               </div>
               <Link
                 href="/remates/en-vivo"
-                className="flex items-center gap-2 px-4 py-1.5 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded transition-colors shadow-lg shadow-red-900/50"
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-terminal bg-negative px-4 text-sm font-semibold text-white transition-opacity hover:opacity-90"
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z"/>
-                </svg>
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden><path d="M8 5v14l11-7z" /></svg>
                 Ver transmisiones
               </Link>
             </div>
           </div>
         )}
 
-        {/* -- Column headers (desktop only) ----------------------- */}
-        <div className="border-b border-terminal-border px-cell py-px2 hidden md:flex items-center gap-0 bg-terminal-panel">
-          <span className="w-[56px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">
-            Fecha
-          </span>
-          <span className="w-[52px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">
-            Hora
-          </span>
-          <span className="flex-1 min-w-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal">
-            Consignataria
-          </span>
-          <span className="w-[140px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right pr-2">
-            Plaza
-          </span>
-          <span className="w-[36px] flex-shrink-0 text-xxs font-medium uppercase tracking-wider text-zinc-500 font-terminal text-right">
-            Prv
-          </span>
-        </div>
-
-        {/* -- Auction rows ----------------------------------------- */}
-        <div className="divide-y-0">
-          {filteredAuctions.length === 0 ? (
-            <EmptyState
-              icon="calendario"
-              title="No hay remates para este período"
-              sub="Probá ajustando los filtros o el rango de fechas"
-              cta={
-                <div className="flex items-center justify-center gap-3">
-                  <button
-                    onClick={() => {
-                      setFilterProvince('')
-                      setFilterType('')
-                    }}
-                    className="px-3 py-1.5 text-xxs text-accent hover:text-accent-bright font-terminal transition-colors border border-accent/30 rounded hover:bg-accent/10"
-                  >
-                    LIMPIAR FILTROS
-                  </button>
-                  <Link
-                    href="/alertas"
-                    className="px-3 py-1.5 text-xxs text-zinc-400 hover:text-zinc-300 font-terminal transition-colors border border-zinc-700 rounded hover:bg-zinc-800/50"
-                  >
-                    📧 RECIBIR ALERTAS
-                  </Link>
-                </div>
-              }
-            />
-          ) : (
-            filteredAuctions.map((auction, index) => (
-              <AuctionRow key={auction.id} auction={auction} today={today} index={index} period={period} />
-            ))
-          )}
-        </div>
-
-        {/* -- Panel footer ----------------------------------------- */}
-        <div className="border-t border-terminal-border px-panel py-1.5 flex items-center justify-between">
-          <span className="text-xxs text-zinc-500 font-terminal">
-            {filteredAuctions.length} resultado{filteredAuctions.length !== 1 ? 's' : ''}
-            {(filterProvince || filterType) && (
-              <span className="text-zinc-700"> (filtrado)</span>
-            )}
-          </span>
-          <span className="text-xxs text-zinc-700 font-terminal hidden sm:inline">
-            {period === 'pasados' ? 'Mas reciente primero' : 'Proxima fecha primero'}
-          </span>
-        </div>
+        {/* -- Remates, agrupados por día ----------------------- */}
+        {filteredAuctions.length === 0 ? (
+          <EmptyState
+            icon="calendario"
+            title="No encontramos remates con esos filtros"
+            sub="Probá con otra provincia, otro tipo o borrá la búsqueda"
+            cta={
+              <div className="flex items-center justify-center gap-3 flex-wrap">
+                <button
+                  onClick={handleClearAll}
+                  className="terminal-btn-primary min-h-[44px] px-4"
+                >
+                  Borrar filtros
+                </button>
+                <Link href="/alertas" className="terminal-btn min-h-[44px] px-4 inline-flex items-center">
+                  Avisame por mail
+                </Link>
+              </div>
+            }
+          />
+        ) : (
+          groups.map((g) => (
+            <section key={g.date} aria-label={dayHeading(g.date, today)}>
+              <h2 className="sticky top-0 z-[1] flex items-baseline justify-between gap-3 border-b border-terminal-border bg-terminal-bg/95 px-panel py-2.5 backdrop-blur-sm">
+                <span className={`text-sm font-semibold sm:text-base ${g.date === today ? 'text-positive' : 'text-ink'}`}>
+                  {dayHeading(g.date, today)}
+                </span>
+                <span className="text-sm text-zinc-500 tabular-nums">
+                  {g.items.length} {g.items.length === 1 ? 'remate' : 'remates'}
+                </span>
+              </h2>
+              {g.items.map((auction) => (
+                <AuctionRow key={auction.id} auction={auction} today={today} index={rowIndex++} />
+              ))}
+            </section>
+          ))
+        )}
       </div>
 
-      {/* ============================================================ */}
-      {/*  LEGEND / KEY (simplified)                                    */}
-      {/* ============================================================ */}
-      <div className="terminal-panel mt-px">
-        <div className="px-panel py-1.5 flex items-center flex-wrap gap-x-4 gap-y-1">
-          <Badge tone="pro" className="mr-3">
-            <span aria-hidden>★</span>
-            PRO
-          </Badge>
-          <span className="text-xxs text-zinc-500 font-terminal mr-1">TIPOS:</span>
-          {(Object.entries(TYPE_COLORS)).map(([type, cls]) => (
-            <span key={type} className="flex items-center gap-1">
-              <span className={`terminal-tag ${cls} text-[10px]`}>{TYPE_LABELS_SHORT[type] || type}</span>
-            </span>
-          ))}
+      {/* ¿Falta un remate? — antes era un botón "+ AGREGAR" arriba de todo */}
+      <p className="px-2 py-4 text-sm text-zinc-500">
+        ¿Falta un remate o hay un dato mal?{' '}
+        <button onClick={() => setShowAddModal(true)} className="font-medium text-accent hover:text-accent-bright">
+          Avisanos
+        </button>
+      </p>
 
-          <span className="text-terminal-border text-xxs select-none hidden sm:inline">|</span>
-
-          <span className="text-xxs text-zinc-500 font-terminal mr-1 hidden sm:inline">STATUS:</span>
-          <span className="flex items-center gap-1.5 hidden sm:flex">
-            <span className="status-dot bg-accent" />
-            <span className="text-xxs text-zinc-500 font-terminal">Programado</span>
-          </span>
-          <span className="flex items-center gap-1.5 hidden sm:flex">
-            <span className="status-dot-live" />
-            <span className="text-xxs text-zinc-500 font-terminal">En vivo</span>
-          </span>
-          <span className="flex items-center gap-1.5 hidden sm:flex">
-            <span className="status-dot-offline" />
-            <span className="text-xxs text-zinc-500 font-terminal">Finalizado</span>
-          </span>
-        </div>
-      </div>
-
-      {/* ADD REMATE MODAL */}
       {showAddModal && <AddRemateModal onClose={() => setShowAddModal(false)} />}
     </div>
     </RemateMarksProvider>

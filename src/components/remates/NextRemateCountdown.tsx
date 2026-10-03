@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { nombrePropio, provinciaNombre } from '@/lib/ui/tokens'
 
 export interface NextRemate {
   consignatariaName: string
@@ -60,8 +61,8 @@ export default function NextRemateCountdown({ nextRemate }: { nextRemate: NextRe
       <span className="font-terminal tabular-nums">
         Próximo remate en {label}
         <span className="text-zinc-500"> · </span>
-        <span className="text-zinc-300">{nextRemate.consignatariaName}</span>
-        {nextRemate.province && <span className="text-zinc-500"> · {nextRemate.province}</span>}
+        <span className="text-zinc-300">{nombrePropio(nextRemate.consignatariaName)}</span>
+        {nextRemate.province && <span className="text-zinc-500"> · {provinciaNombre(nextRemate.province)}</span>}
       </span>
     </span>
   )

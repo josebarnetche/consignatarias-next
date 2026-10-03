@@ -1,4 +1,3 @@
-import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import { OfrecerGuia } from '@/components/guias/OfrecerGuia'
 import { Metadata } from 'next'
 import rematesData from '@/lib/data/remates.json'
@@ -161,43 +160,39 @@ export default async function ConsignatariasDirectoryPage() {
       <FAQPageSchema items={CONSIGNATARIAS_FAQ} />
       <ConsignatariasItemListSchema entries={entries} />
 
-      {/* Es el mejor calce de audiencia del sitio: el que mira el directorio de
-          firmas o está eligiendo con quién operar, o está pensando en abrir una. */}
-      <div className="px-4 pt-4 max-w-4xl">
-        <PromoGuiaBanner origen="directorio" />
-      </div>
-      
-      {/* SEO-optimized intro section — fondo: el buscador (render de marca) */}
-      <section className="relative overflow-hidden">
-        <img
-          src="/marca/features/feat-buscador.jpg"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover object-[70%_center] opacity-30"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-zinc-950/25" aria-hidden="true" />
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-zinc-950" aria-hidden="true" />
-        <div className="relative px-4 pt-6 pb-4 text-zinc-400 text-sm leading-relaxed max-w-4xl">
-        <h1 className="text-zinc-100 text-xl font-semibold mb-3">
-          Directorio de Consignatarias de Hacienda en Argentina
-        </h1>
-        <p className="mb-3">
-          Listado completo de <strong className="text-zinc-200">{totalConsignatarias} consignatarias de hacienda</strong> con 
-          actividad en Argentina. Actualmente hay <strong className="text-zinc-200">{totalRemates} remates programados</strong> en 
-          el sistema, con <strong className="text-zinc-200">{totalUpcoming} próximos</strong> a realizarse.
+      {/* Encabezado: qué es y qué hacer, en una línea. El banner de la guía de
+          apertura que iba arriba de todo se fue: le hablaba al que quiere ABRIR
+          una consignataria, no al productor que busca con quién operar. La oferta
+          de la guía sigue al pie (OfrecerGuia), después del directorio. */}
+      <header className="mx-auto max-w-5xl px-4 pt-6 pb-2 sm:px-6">
+        <h1 className="text-2xl font-semibold text-ink sm:text-3xl">Consignatarias de hacienda</h1>
+        <p className="mt-2 max-w-2xl text-base leading-relaxed text-zinc-400">
+          {totalConsignatarias} firmas de todo el país, cada una con su calendario de remates.
+          Buscá por nombre o por provincia.
         </p>
-        <p className="text-zinc-500 text-xs">
-          Cada consignataria tiene un perfil dedicado con calendario anual de remates, distribución por tipo 
-          (general, especial, invernada, reproductores), provincias de operación y cronograma completo. 
-          Datos actualizados diariamente desde fuentes públicas.
-        </p>
-        </div>
-      </section>
-      
+      </header>
+
       <ConsignatariasDirectoryClient entries={entries} provinceLinks={provinceLinks} />
 
+      {/* Texto descriptivo (SEO): abajo, para el que quiera leerlo. */}
+      <section className="mx-auto max-w-5xl px-4 pb-4 sm:px-6">
+        <div className="terminal-panel p-panel text-sm leading-relaxed text-zinc-400">
+          <h2 className="mb-2 text-base font-semibold text-ink">Sobre este directorio</h2>
+          <p className="mb-2">
+            Listado de <strong className="text-zinc-200">{totalConsignatarias} consignatarias de hacienda</strong> con
+            actividad en Argentina: hay <strong className="text-zinc-200">{totalRemates} remates</strong> en el
+            sistema, <strong className="text-zinc-200">{totalUpcoming} próximos</strong>.
+          </p>
+          <p>
+            Cada consignataria tiene un perfil con su calendario anual de remates, los tipos que hace (general,
+            especial, invernada, reproductores), las provincias donde opera y el cronograma completo. Los datos se
+            actualizan todos los días desde fuentes públicas.
+          </p>
+        </div>
+      </section>
+
       {/* Después del directorio: el que recorrió las firmas y piensa en abrir la suya */}
-      <div className="px-4 max-w-4xl">
+      <div className="mx-auto max-w-5xl px-4 pb-8 sm:px-6">
         <OfrecerGuia
           desde="directorio"
           titulo="¿Pensás abrir la tuya? Lo que el directorio no muestra"
