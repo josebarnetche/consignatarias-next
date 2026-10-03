@@ -76,7 +76,7 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
       r.type?.toLowerCase() === typeConfig.name
   )
 
-  const title = `Remates de ${typeConfig.displayName} en ${provinceConfig.displayName} — ${remates.length} subastas | consignatarias.com.ar`
+  const title = `Remates de ${typeConfig.displayName} en ${provinceConfig.displayName}`
   const description = `Calendario completo de remates de ${typeConfig.displayName.toLowerCase()} en ${provinceConfig.displayName}. ${remates.length} subastas programadas de consignatarias verificadas.`
 
   return {

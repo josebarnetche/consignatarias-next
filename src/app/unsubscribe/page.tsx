@@ -3,7 +3,7 @@ import Link from 'next/link'
 import UnsubscribeConfirm from './UnsubscribeConfirm'
 
 export const metadata: Metadata = {
-  title: 'Darse de baja — consignatarias.com.ar',
+  title: 'Darse de baja',
   robots: { index: false, follow: false },
 }
 

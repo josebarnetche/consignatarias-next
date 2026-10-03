@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase-server';
 
 export const metadata: Metadata = {
-  title: 'Mis Guías DT-e | Consignatarias',
+  title: 'Mis Guías DT-e',
   description: 'Subí tus documentos de tránsito electrónico y llevá un historial de todos tus movimientos de hacienda.',
   robots: 'noindex', // Private page
 };

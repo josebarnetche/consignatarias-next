@@ -29,7 +29,7 @@ const fechaRelevamiento = FECHAS[FECHAS.length - 1]
 
 export const metadata: Metadata = {
   title: `¿Cuánto vale una hectárea en Argentina? ${fmtUsd(provMasBarata.usd_ha)}–${fmtUsd(provMasCara.usd_ha)} por provincia`,
-  description: `Valor de la hectárea de campo en Argentina: de ${fmtUsd(provMasBarata.usd_ha)} (${provMasBarata.provincia}) a ${fmtUsd(provMasCara.usd_ha)} (${provMasCara.provincia}) de referencia provincial, y hasta ${fmtUsd(zonaMasCara.usd_ha)} en ${zonaMasCara.zona}. Tabla por provincia y por zona con fuente y fecha, y un tasador que cruza lo que el campo renta con lo que se paga.`,
+  description: `Valor de la hectárea en Argentina: de ${fmtUsd(provMasBarata.usd_ha)} (${provMasBarata.provincia}) a ${fmtUsd(provMasCara.usd_ha)} (${provMasCara.provincia}), hasta ${fmtUsd(zonaMasCara.usd_ha)} en ${zonaMasCara.zona}. Por provincia y zona, con fuente y tasador.`,
   keywords: [
     'cuanto vale una hectarea en argentina',
     'cuanto vale una hectarea',

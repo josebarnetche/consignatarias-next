@@ -38,7 +38,9 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.consignatarias.com.ar'),
   title: {
     default: 'Remates Ganaderos Argentina 2026 | Consignatarias.com.ar',
-    template: '%s | Consignatarias.com.ar',
+    // Sufijo corto: Google corta el title cerca de los 60 caracteres y la marca
+    // larga se comía 25. Un hijo que ya trae la marca usa `title.absolute`.
+    template: '%s | Consignatarias',
   },
   description:
     `Calendario unificado de remates ganaderos de múltiples consignatarias argentinas. ${rematesCount} remates, 1.102 frigoríficos MAGYP, precios INMAG en tiempo real. Acceso libre.`,
@@ -68,13 +70,13 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  // Sin url, title ni description: lo que se pone acá lo hereda toda página que no
+  // declare su propio openGraph, y 118 URLs se compartían con el og:url y el título
+  // de la portada. La home declara el suyo en src/app/page.tsx.
   openGraph: {
     type: 'website',
     locale: 'es_AR',
-    url: 'https://www.consignatarias.com.ar',
     siteName: 'Consignatarias.com.ar',
-    title: 'Remates Ganaderos Argentina | Calendario 2026 | Consignatarias.com.ar',
-    description: `Calendario unificado de ${rematesCount} remates ganaderos, 1.102 frigoríficos y precios INMAG. La plataforma de inteligencia del mercado ganadero argentino.`,
     images: [
       {
         url: '/og-image.png',
@@ -88,15 +90,11 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@consignatarias',
     creator: '@memola_onbase',
-    title: 'Remates Ganaderos Argentina | Calendario 2026',
-    description: `Calendario unificado de ${rematesCount} remates ganaderos, 1.102 frigoríficos y precios INMAG. Inteligencia del mercado ganadero argentino.`,
     images: ['/og-image.png'],
   },
+  // Ni canonical ni languages acá: se heredaban y dejaban a /calendario/* y otras
+  // apuntando a la portada. Cada página declara su canonical.
   alternates: {
-    canonical: 'https://www.consignatarias.com.ar',
-    languages: {
-      'es-AR': 'https://www.consignatarias.com.ar',
-    },
     types: {
       'application/rss+xml': 'https://www.consignatarias.com.ar/rss.xml',
       'application/json': 'https://www.consignatarias.com.ar/precios.json',

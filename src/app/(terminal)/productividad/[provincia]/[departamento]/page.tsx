@@ -14,6 +14,7 @@ import {
   tendencia,
   aniosConRuido,
   ultimoAnio,
+  fichaIndexable,
   META,
 } from '@/lib/productividad/panel'
 import { getProducto } from '@/lib/productos-datos'
@@ -56,10 +57,16 @@ export async function generateMetadata({
 
   const f = d.serie[anio]
   const cabezas = f.total.toLocaleString('es-AR')
+  // El dato propio va en la description: es lo que no tiene ninguna otra fuente. En
+  // zonas que compran terneros el cociente no mide cría, así que no se lo exhibe.
+  const indice = indiceTernerosVaca(f)
+  const datoPropio = indice != null && !hayCompraDeTerneros(f)
+    ? `${indice.toLocaleString('es-AR', { maximumFractionDigits: 2 })} terneros por vaca`
+    : 'terneros por vaca'
 
   return {
-    title: `Ganadería en ${d.nombre}, ${d.provinciaNombre} — ${cabezas} cabezas`,
-    description: `${cabezas} cabezas en ${d.nombre} al cierre de ${anio}, en ${f.up?.toLocaleString('es-AR') ?? '—'} establecimientos. Terneros por vaca, evolución del rodeo desde 2012 y comparación con el resto de ${d.provinciaNombre}. Datos oficiales.`,
+    title: `Ganadería en ${d.nombre}, ${d.provinciaNombre}: ${cabezas} cabezas`,
+    description: `${d.nombre} (${d.provinciaNombre}) cerró ${anio} con ${cabezas} cabezas y ${datoPropio}. Serie desde 2012 y puesto en la provincia. Datos oficiales.`,
     keywords: [
       `ganadería en ${d.nombre}`,
       `cabezas de ganado ${d.nombre}`,
@@ -76,6 +83,8 @@ export async function generateMetadata({
     alternates: {
       canonical: `${APP_URL}/productividad/${d.slugProvincia}/${d.slugDepartamento}`,
     },
+    // Mismo umbral que el sitemap (ver fichaIndexable).
+    ...(!fichaIndexable(d, anio) && { robots: { index: false, follow: true } }),
   }
 }
 

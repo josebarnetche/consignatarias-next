@@ -3,9 +3,18 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
-import rematesData from '@/lib/data/remates.json'
 import existencias from '@/lib/data/existencias-bovinas.json'
+import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
+import { rematePath } from '@/lib/remate-slug'
+import {
+  CATEGORIAS_GEO,
+  CATEGORIAS_GEO_SLUGS,
+  PROVINCIAS_GEO,
+  PROVINCIAS_GEO_SLUGS,
+  proximosRematesGeo,
+  type CategoriaGeoSlug,
+} from '@/lib/precios-geo'
 import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 import { AnswerBlock } from '@/components/seo/AnswerBlock'
@@ -24,38 +33,12 @@ import { EmptyState } from '@/components/ui'
    (existencias, supply share at MAG, local remates, consignatarias).
    ============================================================ */
 
-type CategorySlug = 'novillos' | 'novillitos' | 'vaquillonas' | 'vacas' | 'toros' | 'terneros'
+type CategorySlug = CategoriaGeoSlug
 
-const CATEGORIES: Record<CategorySlug, { singular: string; title: string; promedioKg: number; remateTypes: string[] }> = {
-  novillos: { singular: 'novillo', title: 'Novillo', promedioKg: 430, remateTypes: ['general', 'especial'] },
-  novillitos: { singular: 'novillito', title: 'Novillito', promedioKg: 280, remateTypes: ['general', 'invernada'] },
-  vaquillonas: { singular: 'vaquillona', title: 'Vaquillona', promedioKg: 320, remateTypes: ['invernada', 'cria', 'especial'] },
-  vacas: { singular: 'vaca', title: 'Vaca', promedioKg: 380, remateTypes: ['general', 'especial'] },
-  toros: { singular: 'toro', title: 'Toro', promedioKg: 600, remateTypes: ['reproductores', 'especial', 'general'] },
-  terneros: { singular: 'ternero', title: 'Ternero', promedioKg: 180, remateTypes: ['invernada', 'cria'] },
-}
-
-/* `km` = distancia carretera aproximada de una zona ganadera representativa de la
-   provincia al Mercado Agroganadero (Cañuelas). Alimenta el diferencial regional
-   estimado (ver `regionalBasis`). Buenos Aires es el mercado de referencia → km bajo. */
-const PROVINCES: Record<string, { name: string; display: string; km: number }> = {
-  'buenos-aires': { name: 'BUENOS AIRES', display: 'Buenos Aires', km: 150 },
-  cordoba: { name: 'CORDOBA', display: 'Córdoba', km: 700 },
-  'santa-fe': { name: 'SANTA FE', display: 'Santa Fe', km: 480 },
-  'entre-rios': { name: 'ENTRE RIOS', display: 'Entre Ríos', km: 475 },
-  corrientes: { name: 'CORRIENTES', display: 'Corrientes', km: 1000 },
-  'la-pampa': { name: 'LA PAMPA', display: 'La Pampa', km: 610 },
-  chaco: { name: 'CHACO', display: 'Chaco', km: 1050 },
-  'san-luis': { name: 'SAN LUIS', display: 'San Luis', km: 790 },
-  'santiago-del-estero': { name: 'SANTIAGO DEL ESTERO', display: 'Santiago del Estero', km: 1000 },
-  formosa: { name: 'FORMOSA', display: 'Formosa', km: 1200 },
-  misiones: { name: 'MISIONES', display: 'Misiones', km: 1100 },
-  neuquen: { name: 'NEUQUEN', display: 'Neuquén', km: 1170 },
-  tucuman: { name: 'TUCUMAN', display: 'Tucumán', km: 1080 },
-}
-
-const ALL_CATEGORIES = Object.keys(CATEGORIES) as CategorySlug[]
-const ALL_PROVINCES = Object.keys(PROVINCES)
+const CATEGORIES = CATEGORIAS_GEO
+const PROVINCES = PROVINCIAS_GEO
+const ALL_CATEGORIES = CATEGORIAS_GEO_SLUGS
+const ALL_PROVINCES = PROVINCIAS_GEO_SLUGS
 const fmt = (n: number) => n.toLocaleString('es-AR')
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -90,7 +73,8 @@ function isValid(categoria: string, provincia: string): boolean {
   return ALL_CATEGORIES.includes(categoria as CategorySlug) && provincia in PROVINCES
 }
 
-const auctions = rematesData as Auction[]
+const provinciaAuctions = (name: string) => (rematesData as Auction[]).filter((a) => a.province === name)
+
 const existenciasMap = existencias as unknown as Record<string, { total: number; year: number } | undefined>
 
 function getContext(categoria: CategorySlug, provincia: string) {
@@ -98,7 +82,6 @@ function getContext(categoria: CategorySlug, provincia: string) {
   const prov = PROVINCES[provincia]
   const priceData = (marketPrices.categories as Record<string, { current: number; prev: number; change: number }>)[categoria]
   const price = Math.round(priceData.current)
-  const today = new Date().toISOString().slice(0, 10)
 
   // Province supply share at the MAG (origin of cattle sold at Cañuelas)
   const supply = (marketPrices.provinceEntry?.provinces as { province: string; percentage: number }[] | undefined)?.find(
@@ -107,15 +90,23 @@ function getContext(categoria: CategorySlug, provincia: string) {
   const existencia = existenciasMap[prov.name]?.total ?? null
 
   // Local remate activity for this category's relevant sale-types
-  const provAuctions = auctions.filter((a) => a.province === prov.name)
-  const relevant = provAuctions.filter((a) => cat.remateTypes.includes(a.type))
-  const upcoming = relevant.filter((a) => a.date >= today).sort((x, y) => x.date.localeCompare(y.date))
+  const upcoming = proximosRematesGeo(categoria, provincia)
+  const provAuctions = provinciaAuctions(prov.name)
   const consignatarias = [...new Set(provAuctions.map((a) => a.consignatariaName).filter(Boolean))] as string[]
+  // Lo local de verdad: cuánta actividad de remates tuvo la provincia en los últimos
+  // 90 días. El precio es nacional; la plaza no.
+  const hoy = new Date().toISOString().slice(0, 10)
+  const hace90 = new Date(Date.now() - 90 * 864e5).toISOString().slice(0, 10)
+  const recientes = provAuctions.filter((a) => a.date >= hace90 && a.date < hoy)
+  const recientesCategoria = recientes.filter((a) => cat.remateTypes.includes(a.type)).length
 
   // Diferencial regional estimado (descuento vs referencia nacional por distancia)
   const basis = regionalBasis(price, prov.km)
 
-  return { cat, prov, price, change: priceData.change, supply, existencia, upcoming, consignatarias, basis }
+  return {
+    cat, prov, price, change: priceData.change, supply, existencia, upcoming, consignatarias, basis,
+    recientes: recientes.length, recientesCategoria,
+  }
 }
 
 export async function generateMetadata({
@@ -125,10 +116,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { categoria, provincia } = await params
   if (!isValid(categoria, provincia)) return { title: 'No encontrado' }
-  const { cat, prov, price } = getContext(categoria as CategorySlug, provincia)
+  const { cat, prov, price, basis } = getContext(categoria as CategorySlug, provincia)
 
-  const title = `Precio del ${cat.singular} en ${prov.display} hoy: $${fmt(price)}/kg (INMAG)`
-  const description = `Precio de referencia del kilo vivo de ${cat.singular} en ${prov.display}: $${fmt(price)}/kg (INMAG, ${INMAG_DATE}). El precio se forma a nivel nacional en el Mercado Agroganadero; en ${prov.display} la hacienda se comercializa en remates en origen. Próximos remates y consignatarias que operan en la provincia.`
+  // El número es el INMAG NACIONAL: el title no lo presenta como si fuera el precio de
+  // la provincia. La description lo dice con nombre propio y suma el estimado en origen.
+  const title = `Precio del ${cat.singular} en ${prov.display}: referencia y valor en origen`
+  const description = `${cat.title} en ${prov.display}: referencia nacional $${fmt(price)}/kg (INMAG, ${INMAG_DATE}) y estimado en origen ~$${fmt(basis.localEstimate)}/kg. Remates y consignatarias.`
 
   return {
     title,
@@ -159,7 +152,7 @@ export default async function PrecioCategoriaProvinciaPage({
   const { categoria, provincia } = await params
   if (!isValid(categoria, provincia)) notFound()
 
-  const { cat, prov, price, change, supply, existencia, upcoming, consignatarias, basis } = getContext(
+  const { cat, prov, price, change, supply, existencia, upcoming, consignatarias, basis, recientes, recientesCategoria } = getContext(
     categoria as CategorySlug,
     provincia,
   )
@@ -198,7 +191,7 @@ export default async function PrecioCategoriaProvinciaPage({
       <FAQPageSchema items={faqItems} />
       <SpeakableSchema
         url={`https://www.consignatarias.com.ar/precios/${categoria}/${provincia}`}
-        headline={`Precio del ${cat.singular} en ${prov.display} hoy`}
+        headline={`Precio del ${cat.singular} en ${prov.display}: referencia nacional y valor estimado en origen`}
       />
 
       <div className="px-4 py-6 max-w-4xl mx-auto">
@@ -211,8 +204,7 @@ export default async function PrecioCategoriaProvinciaPage({
         </div>
 
         <h1 className="text-2xl md:text-3xl font-heading text-zinc-100 mb-1 leading-tight">
-          Precio del {cat.singular} en {prov.display} hoy:{' '}
-          <span style={{ color: '#fbbf24' }}>${fmt(price)}/kg</span>
+          Precio del {cat.singular} en {prov.display}: referencia nacional y valor estimado en origen
         </h1>
         <p className="text-zinc-400 text-sm mb-3">
           <DataStamp isoDate={lastUpdate} /> · INMAG, Mercado Agroganadero
@@ -321,6 +313,14 @@ export default async function PrecioCategoriaProvinciaPage({
                 (existencias SENASA{existenciasMap[prov.name]?.year ? ` ${existenciasMap[prov.name]!.year}` : ''}).
               </p>
             )}
+            {recientes > 0 && (
+              <p>
+                Remates en la provincia en los últimos 90 días:{' '}
+                <strong className="text-zinc-200">{fmt(recientes)}</strong>
+                {recientesCategoria > 0 && <> ({fmt(recientesCategoria)} de los tipos donde se vende {cat.singular})</>}
+                .
+              </p>
+            )}
             {supply && (
               <p>
                 Aporte a la oferta del Mercado Agroganadero en la última rueda:{' '}
@@ -348,7 +348,7 @@ export default async function PrecioCategoriaProvinciaPage({
               {upcoming.slice(0, 8).map((a) => (
                 <Link
                   key={a.id}
-                  href={`/remates/${[a.consignatariaSlug || 'remate', a.type || 'general', a.province?.toLowerCase().replace(/\s+/g, '-') || 'argentina', a.date].join('-')}`}
+                  href={rematePath(a)}
                   className="px-panel py-3 flex items-center justify-between hover:bg-zinc-900/50 transition-colors"
                 >
                   <span className="text-zinc-300 text-data truncate">

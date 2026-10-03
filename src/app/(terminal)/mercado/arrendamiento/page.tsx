@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import marketData from '@/lib/data/market-prices.json'
-import { createAdminClient } from '@/lib/supabase-server'
+import { adminClientOpcional } from '@/lib/supabase-server'
 import ArrendamientoCalculator from './ArrendamientoCalculator'
 import LeadCapture from '@/components/leads/LeadCapture'
 import { SectionBreadcrumbSchema, SpeakableSchema, QAPageSchema } from '@/components/seo/JsonLd'
@@ -76,7 +76,10 @@ function getMonthlyAverages(data: typeof series) {
 
 const monthlyAverages = getMonthlyAverages(series)
 
-export const dynamic = 'force-dynamic'
+// Antes force-dynamic: la página no lee cookies, headers ni searchParams. Lo único vivo
+// son los cierres mensuales de Supabase, que cambian una vez por mes — ISR alcanza y la
+// página deja de renderizarse en cada visita (es de las que más tráfico orgánico traen).
+export const revalidate = 3600
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 
@@ -86,7 +89,10 @@ const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', '
  * el MAG (ej. junio 2026 = 4.164,558), a diferencia del promedio simple de la serie.
  */
 async function getMonthlyCloses() {
-  const db = createAdminClient() as unknown as SupabaseClient
+  // Opcional: en un build de preview sin service-role se prerenderiza sin la tabla de
+  // cierres (la página ya contempla ese caso) en vez de voltear el build.
+  const db = adminClientOpcional() as unknown as SupabaseClient | null
+  if (!db) return []
   const { data } = await db
     .from('inmag_monthly_close')
     .select('year, month, inmag, cabezas')
@@ -109,7 +115,9 @@ export const metadata: Metadata = {
   // palabra "índice" (sí estaba en OG/keywords/H1, pero Google pesa el <title>). Se agrega
   // "e Índice" sin perder precio/hoy/$número. ~52 chars, no trunca. v1.40 + jul-2026 CTR pass.
   title: `Precio e Índice Novillo Arrendamiento Hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg`,
-  description: `Precio del novillo para arrendamiento hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg — índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero (período ${fmtFecha(arr.periodStart)}–${fmtFecha(arr.periodEnd)}, act. ${fmtFecha(arr.date)}). Índice mensual (el que se liquida): $${arr.periodIndex.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg. Calculá el canon de tu campo en kg/ha.`,
+  // ≤160 caracteres con el dato primero: Google cortaba la anterior (~330) antes del
+  // índice mensual, que es el que se liquida.
+  description: `Índice novillo arrendamiento hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg (MAG, ${fmtFecha(arr.date)}). Mensual, el que se liquida: $${arr.periodIndex.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg. Calculá tu canon.`,
   keywords: [
     'índice novillo arrendamiento',
     'indice de arrendamiento',

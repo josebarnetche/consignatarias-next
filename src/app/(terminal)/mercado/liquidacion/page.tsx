@@ -6,7 +6,7 @@ import { getLiquidacion, LIQUIDACION_CAVEAT, type PuntoHembras } from '@/lib/dat
 export const revalidate = 43200 // 12h — la serie de Cañuelas se actualiza con el scraper diario
 
 export const metadata: Metadata = {
-  title: 'Índice de Liquidación — participación de hembras en la hacienda | Consignatarias',
+  title: 'Índice de Liquidación: participación de hembras en la hacienda',
   description:
     'La participación de hembras (vacas + vaquillonas) en la hacienda operada en el Mercado Agroganadero: el indicador adelantado de liquidación vs. retención del rodeo argentino. Con el contexto histórico de la faena nacional de hembras (1998-2025, MAGyP).',
   keywords: [

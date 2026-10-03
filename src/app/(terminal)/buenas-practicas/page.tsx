@@ -4,7 +4,7 @@ import Breadcrumb from '@/components/ui/Breadcrumb'
 import { BPG_FUENTE, BPG_INTRO, BLOQUES, temasPorBloque } from '@/lib/data/bpg-ganaderas'
 
 export const metadata: Metadata = {
-  title: 'Buenas Prácticas Ganaderas (BPG) — guía para vacunos de carne | Consignatarias',
+  title: 'Buenas Prácticas Ganaderas (BPG) en vacunos de carne',
   description:
     'Las Buenas Prácticas Ganaderas para la producción de ganado vacuno de carne, resumidas: 14 temas en 4 bloques (personas, infraestructura, ambiente y animal), cada uno con cómo implementarlo. Basado en la Guía de la Red BPA.',
   keywords: [
