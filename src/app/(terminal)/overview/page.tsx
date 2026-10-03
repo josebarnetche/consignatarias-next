@@ -18,8 +18,10 @@ const corn = marketPrices.corn.current
 const fmt = (n: number) => n.toLocaleString('es-AR')
 
 export const metadata: Metadata = {
-  title: `Mercado Ganadero Argentina Hoy: INMAG $${fmt(inmag)}`,
-  description: `INMAG $${fmt(inmag)}/kg vivo (${changeStr}), dólar blue $${fmt(usdBlue)}, maíz USD ${corn}/tn. Terminal del mercado ganadero argentino actualizada diariamente con remates, precios y frigoríficos.`,
+  // Distinto de /mercado/inmag ("INMAG hoy") y de /mercado (hub de precios): esta
+  // es la pantalla de trabajo que junta precios, remates y el rodeo propio.
+  title: 'Panel del mercado ganadero hoy: precios, remates y tu rodeo',
+  description: `Todo en una pantalla: INMAG $${fmt(inmag)}/kg vivo (${changeStr}), los remates que vienen, el dólar blue $${fmt(usdBlue)}, el maíz USD ${corn}/tn y lo que vale tu rodeo con Mi Ganado.`,
   keywords: [
     'mercado ganadero argentina',
     'kilo de novillo',
@@ -32,8 +34,8 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     images: [{ url: '/og-image.png', width: 1200, height: 630 }],
-    title: `Mercado Ganadero Hoy — INMAG $${fmt(inmag)} (${changeStr})`,
-    description: `Terminal unificada del mercado bovino argentino. Remates, INMAG diario, frigoríficos y referencias macro.`,
+    title: 'Panel del mercado ganadero hoy: precios, remates y tu rodeo',
+    description: 'Precios, remates que vienen, dólar, maíz y tu rodeo valuado, en una sola pantalla.',
     url: 'https://www.consignatarias.com.ar/overview',
     type: 'website',
   },
@@ -77,6 +79,12 @@ export default function OverviewPage() {
           'Estadísticas de mercado',
         ]}
       />
+      {/* H1 en el server: la pantalla es un tablero, pero la página es indexable y
+          sin H1 no decía de qué se trata. */}
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 pt-4">
+        <h1 className="text-lg font-semibold text-ink">Panel del mercado ganadero</h1>
+        <p className="text-sm text-zinc-500">Precios, remates que vienen y tu rodeo, en una sola pantalla.</p>
+      </div>
       <div className="max-w-6xl mx-auto px-3 sm:px-4 pt-4">
         <PreofertasActivas />
       </div>

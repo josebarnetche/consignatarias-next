@@ -32,7 +32,7 @@ const precios = {
 
 // Tabla de peso por categoría. `ref` = peso representativo del rango para estimar el valor.
 const PESOS = [
-  { cat: 'Ternero', rango: '160 – 200 kg', ref: 180, precio: precios.ternero },
+  { cat: 'Ternero (precio estimado)', rango: '160 – 200 kg', ref: 180, precio: precios.ternero },
   { cat: 'Novillito', rango: '300 – 390 kg', ref: 345, precio: precios.novillito },
   { cat: 'Novillo', rango: '400 – 500+ kg', ref: 450, precio: precios.novillo },
   { cat: 'Vaquillona', rango: '300 – 380 kg', ref: 340, precio: precios.vaquillona },

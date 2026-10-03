@@ -123,8 +123,10 @@ const FAQ = [
 ]
 
 export const metadata: Metadata = {
-  title: `Precio de la Vaca en Pie Hoy: $${fmt(vaca)}/kg vivo (${anio})`,
-  description: `A cuánto está el kilo de vaca en pie hoy (${lastUpdate}): ~$${fmt(vaca)}/kg vivo según el Mercado Agroganadero. Vaca de conserva $${fmt(vacaConserva)}, manufactura $${fmt(vacaManufactura)} y buena $${fmt(vacaBuena)} por kilo. Precio de referencia, no fijado por esta página.`,
+  // Página informativa (cómo se forma el precio de la vaca). "Precio de la vaca hoy"
+  // lo responde /precios/vacas, la canónica: el title no promete el número del día.
+  title: 'Precio de la vaca en pie: conserva, manufactura y por qué vale menos por kilo',
+  description: `Cómo se forma el precio de la vaca en pie: vaca de conserva, manufactura y vaca buena, por qué paga menos por kilo que el novillo y cómo pasar del precio por kilo al valor del animal. Referencia de hoy: ~$${fmt(vaca)}/kg vivo (${lastUpdate}).`,
   keywords: [
     'precio de la vaca en pie',
     'a cuanto esta el kilo de vaca en pie 2026',
@@ -181,7 +183,7 @@ export default function PrecioDeLaVacaEnPiePage() {
         </nav>
 
         <h1 className="text-zinc-100 text-2xl font-medium mb-3">
-          Precio de la vaca en pie hoy: $/kg vivo
+          {vaca > 0 ? `Precio de la vaca en pie hoy: $${fmt(vaca)}/kg vivo` : 'Precio de la vaca en pie hoy'}
         </h1>
 
         {/* Answer-first: primera oración autocontenida y citable con el número vivo */}
@@ -296,10 +298,19 @@ export default function PrecioDeLaVacaEnPiePage() {
             Seguir con el dato
           </p>
           <p className="text-data text-zinc-300">
-            <Link href="/mercado/vacas" className="text-accent hover:text-accent-bright transition-colors">
-              Precio de la vaca en el Mercado Agroganadero →
+            <Link href="/precios/vacas" className="text-accent hover:text-accent-bright transition-colors">
+              Precio de la vaca hoy →
             </Link>{' '}
-            serie diaria del kilo vivo, histórico y variación.
+            el número del día y el rango de lo que se pagó.
+          </p>
+          <p className="text-data text-zinc-300">
+            <Link href="/vr/vaca" className="text-accent hover:text-accent-bright transition-colors">
+              A cuánto se vendió la vaca, por peso →
+            </Link>{' '}
+            ·{' '}
+            <Link href="/mercado/vacas" className="text-accent hover:text-accent-bright transition-colors">
+              Evolución del precio y estacionalidad →
+            </Link>
           </p>
           <p className="text-data text-zinc-300 flex flex-wrap gap-x-3 gap-y-1">
             <Link href="/cuanto-vale-una-vaca" className="text-accent hover:text-accent-bright transition-colors">

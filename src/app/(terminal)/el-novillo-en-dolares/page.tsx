@@ -181,9 +181,21 @@ export default async function ElNovilloEnDolaresPage() {
     .filter((d) => d.usd_blue > 0)
 
   if (days.length === 0 || series.length === 0) {
+    // Sin datos la página igual tiene que decir qué es: H1 y el número de hoy
+    // salen del JSON del build, que no depende de Supabase.
     return (
-      <div className="max-w-3xl mx-auto px-4 py-24 text-center text-zinc-400 font-mono text-sm">
-        No se pudo cargar la serie histórica en este momento.
+      <div className="max-w-3xl mx-auto px-4 py-16 text-zinc-400 font-mono text-sm">
+        <h1 className="text-3xl md:text-4xl font-bold text-ink tracking-tight mb-4">
+          El novillo argentino, en dólares
+        </h1>
+        <p className="speakable-content text-zinc-200 text-base mb-4">
+          El novillo cotiza hoy ({lastUpdate}) unos <strong className="text-accent">US${novilloUsd.toFixed(2)}/kg vivo</strong>:
+          el INMAG en pesos (${fmt(novillo)}/kg) dividido por el dólar de referencia (${fmt(usd)}).
+        </p>
+        <p className="mb-6">No se pudo cargar la serie histórica en este momento.</p>
+        <p>
+          <Link href="/mercado/inmag-dolares" className="text-accent hover:underline">INMAG en dólares →</Link>
+        </p>
       </div>
     )
   }

@@ -171,7 +171,7 @@ const FAQ = [
   },
   {
     question: '¿Qué categoría es más cara por kilo?',
-    answer: `El ternero es la categoría más cara por kilo vivo: hoy cotiza a $${fmt(ternero)}/kg en el Mercado Agroganadero (${lastUpdate}), por encima del novillo ($${fmt(novillo)}), el novillito ($${fmt(novillito)}), la vaquillona ($${fmt(vaquillona)}), la vaca ($${fmt(vaca)}) y el toro ($${fmt(toro)}). Se paga más caro porque es hacienda de invernada con potencial de crecimiento por delante, no un animal terminado para faena.`,
+    answer: `En los remates de invernada el ternero suele ser la categoría más cara por kilo vivo. El Mercado Agroganadero no opera terneros; nuestra estimación de hoy es $${fmt(ternero)}/kg (INMAG × 1,10, ${lastUpdate}). Como referencia, en el Mercado Agroganadero cotizan el novillo ($${fmt(novillo)}), el novillito ($${fmt(novillito)}), la vaquillona ($${fmt(vaquillona)}), la vaca ($${fmt(vaca)}) y el toro ($${fmt(toro)}). Se paga más caro porque es hacienda de invernada con potencial de crecimiento por delante, no un animal terminado para faena.`,
   },
   {
     question: '¿A qué edad pasa de ternero a novillito?',
@@ -181,7 +181,7 @@ const FAQ = [
 
 export const metadata: Metadata = {
   title: `Novillo, novillito, vaquillona, ternero y vaca: diferencias y precios ${lastUpdate.slice(0, 4)}`,
-  description: `Sexo, edad y peso definen cada categoría de hacienda. Novillo (macho castrado +2 años, 400–500 kg) $${fmt(novillo)}/kg, novillito (1–2 años) $${fmt(novillito)}/kg, vaquillona (hembra sin parir) $${fmt(vaquillona)}/kg, ternero $${fmt(ternero)}/kg y vaca $${fmt(vaca)}/kg vivo, con precio de referencia del INMAG (${INMAG_DATE}).`,
+  description: `Sexo, edad y peso definen cada categoría de hacienda. Novillo (macho castrado +2 años, 400–500 kg) $${fmt(novillo)}/kg, novillito (1–2 años) $${fmt(novillito)}/kg, vaquillona (hembra sin parir) $${fmt(vaquillona)}/kg, ternero $${fmt(ternero)}/kg (estimado) y vaca $${fmt(vaca)}/kg vivo, con precio de referencia del INMAG (${INMAG_DATE}).`,
   keywords: [
     'diferencia entre novillo novillito vaquillona ternero y vaca',
     'diferencia entre novillo y novillito',
@@ -250,7 +250,7 @@ export default function NovilloVsVaquillonaPage() {
           <strong>sexo, la edad y el peso</strong>: esos tres criterios definen la categoría y su
           destino —faena liviana, faena pesada, exportación o reproducción—. Hoy ({lastUpdate}) el
           precio de referencia por kilo vivo va desde <strong>${fmt(vaca)}/kg</strong> (vaca) hasta{' '}
-          <strong>${fmt(ternero)}/kg</strong> (ternero) según el INMAG.
+          <strong>${fmt(ternero)}/kg (estimado)</strong> (ternero) según el INMAG.
         </p>
 
         <p className="mb-4">
@@ -359,7 +359,7 @@ export default function NovilloVsVaquillonaPage() {
         <p className="mb-4">
           El <strong>ternero</strong> es la cría de menos de 1 año al destete (160–200 kg), macho o
           hembra, y es hacienda de <strong>invernada</strong>: se compra por su potencial de
-          crecimiento, no por carne terminada, por eso lidera el precio por kilo (hoy ${fmt(ternero)}
+          crecimiento, no por carne terminada, por eso lidera el precio por kilo (hoy ${fmt(ternero)} (estimado)
           /kg vivo). Alrededor del año, destetado y castrado, el macho pasa a{' '}
           <strong>novillito</strong> (1–2 años, 300–390 kg); a partir de los 2 años y 400 kg ya es
           novillo. No es un día exacto sino el tramo de peso y terminación lo que define el salto de

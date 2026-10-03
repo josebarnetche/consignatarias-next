@@ -171,7 +171,7 @@ export default function QueEsUnFeedlotPage() {
         <h2 className="text-zinc-200 text-lg font-medium mb-3">Cómo funciona el engorde a corral</h2>
         <p className="text-zinc-400 mb-4">
           El circuito es simple: se compran terneros o novillitos livianos —hoy el ternero de
-          reposición ronda ${fmt(ternero)}/kg y el novillito ${fmt(novillito)}/kg (INMAG del{' '}
+          reposición ronda ${fmt(ternero)}/kg (estimado) y el novillito ${fmt(novillito)}/kg (INMAG del{' '}
           {INMAG_DATE})—, se los agrupa por peso y categoría en corrales y se los alimenta con una
           ración balanceada varias veces por día. La dieta se arranca con más fibra y se va cargando
           de grano en el período de acostumbramiento para evitar trastornos digestivos (acidosis).

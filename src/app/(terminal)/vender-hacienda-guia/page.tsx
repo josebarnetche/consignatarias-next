@@ -199,7 +199,7 @@ export default function VenderHaciendaGuiaPage() {
           comparan, de qué se compone el precio que finalmente percibe el productor, y qué
           documentación resulta obligatoria para que la hacienda pueda circular y venderse dentro del
           circuito legal. Cada tramo enlaza a la página específica del tema. La vaca de referencia se
-          ubica en ${fmt(vaca)}/kg y el ternero en ${fmt(ternero)}/kg vivo ({lastUpdate}); son
+          ubica en ${fmt(vaca)}/kg y el ternero en ${fmt(ternero)}/kg vivo (estimado) ({lastUpdate}); son
           valores de referencia del mercado, no cotizaciones fijadas por esta página.
         </p>
 

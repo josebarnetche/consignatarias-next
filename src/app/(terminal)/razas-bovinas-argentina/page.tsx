@@ -343,7 +343,7 @@ export default function RazasBovinasArgentinaPage() {
           valúa por kilo de carne sino por su valor genético, muy por encima del toro de faena —que hoy (
           {lastUpdate}) cotiza a <strong>${fmt(toro)}/kg</strong> vivo en el Mercado Agroganadero como
           categoría de manufactura. La cría que ese toro genera se comercializa después como ternero de
-          invernada, la categoría que suele liderar el precio por kilo (hoy ${fmt(ternero)}/kg). Son
+          invernada, la categoría que suele liderar el precio por kilo (hoy ${fmt(ternero)}/kg (estimado)). Son
           valores de referencia del mercado, no fijados por esta página.
         </p>
 

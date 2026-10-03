@@ -87,12 +87,12 @@ export default function SpreadClient() {
 
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-2">
+          <h2 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-2">
             <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
               <ImagenTema src="/marca/iconos-color/indice.png" alt="" className="w-6 h-6" />
             </span>
             Relación Maíz/Novillo
-          </h1>
+          </h2>
           <p className="text-zinc-400 text-sm">
             Indicador de rentabilidad para feedlots argentinos. Actualizado diariamente.
           </p>

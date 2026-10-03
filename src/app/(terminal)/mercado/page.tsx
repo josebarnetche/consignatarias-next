@@ -31,7 +31,7 @@ const fmt = (n: number) => n.toLocaleString('es-AR')
 const MERCADO_FAQ = [
   {
     question: '¿Cuánto está el kilo vivo de novillo hoy?',
-    answer: `Hoy el kilo vivo de novillo cotiza a $${fmt(novillo)} en el Mercado Agroganadero (INMAG ${inmagChangeStr} semanal). Vaquillona $${fmt(vaquillona)}, vaca $${fmt(vaca)}, ternero $${fmt(ternero)}. Actualizado el ${lastUpdate}.`,
+    answer: `Hoy el kilo vivo de novillo cotiza a $${fmt(novillo)} en el Mercado Agroganadero (INMAG ${inmagChangeStr} semanal). Vaquillona $${fmt(vaquillona)}, vaca $${fmt(vaca)}. Actualizado el ${lastUpdate}.`,
   },
   {
     question: '¿Cuál es el precio del kilo vivo de novillo en Argentina?',
@@ -39,7 +39,7 @@ const MERCADO_FAQ = [
   },
   {
     question: '¿Cuánto sale un ternero vivo en Argentina 2026?',
-    answer: `El kilo vivo de ternero está a $${fmt(ternero)} (${lastUpdate}). Un ternero promedio de 180 kg ronda los $${fmt(ternero * 180)} a precio de mercado. La categoría ternero suele cotizar 10% por encima del novillo por menor disponibilidad y mayor demanda de feedlots.`,
+    answer: `No hay un precio observado del ternero en el Mercado Agroganadero, porque ahí no se operan terneros. Nuestra estimación es $${fmt(ternero)} por kilo vivo (INMAG × 1,10, ${lastUpdate}): un ternero de 180 kg rondaría los $${fmt(ternero * 180)}. El precio real lo marcan los remates de invernada.`,
   },
   {
     question: '¿Qué es el índice INMAG?',
@@ -56,11 +56,11 @@ const MERCADO_FAQ = [
 ]
 
 export const metadata: Metadata = {
-  // Owns the "precio kilo vivo (de) novillo hoy" cluster — deliberately distinct from
-  // /mercado/inmag (which owns "inmag hoy") to avoid cannibalization. Dropped the raw
-  // date from the title (looked like noise in the SERP), added the live variation arrow.
-  title: `Precio Kilo Vivo Novillo Hoy: $${fmt(novillo)}/kg (${inmagChangeStr})`,
-  description: `Precio del kilo vivo de novillo hoy: $${fmt(novillo)} (INMAG ${inmagChangeStr}). Ternero $${fmt(ternero)}, vaquillona $${fmt(vaquillona)}, vaca $${fmt(vaca)}. Actualizado ${lastUpdate} desde Mercado Agroganadero.`,
+  // Hub del mercado. "Precio del novillo hoy" lo responde /precios/novillos (la
+  // canónica por categoría) y "INMAG hoy" /mercado/inmag: este title es de hub para
+  // no competir con ninguna de las dos.
+  title: 'Mercado ganadero hoy: INMAG, categorías y dólar',
+  description: `El mercado ganadero en una pantalla: INMAG, novillo $${fmt(novillo)}, vaquillona $${fmt(vaquillona)} y vaca $${fmt(vaca)} por kilo vivo, lo que realmente se pagó por categoría, maíz, dólar y Chicago. Actualizado ${lastUpdate}.`,
   keywords: [
     'precio kilo vivo novillo',
     'cuanto esta el kilo vivo de novillo',
@@ -78,8 +78,8 @@ export const metadata: Metadata = {
     'cotizacion hacienda',
   ],
   openGraph: {
-    title: `Precio Kilo Vivo Novillo Hoy $${fmt(novillo)} — INMAG ${INMAG_DATE}`,
-    description: `Novillo $${fmt(novillo)} · Ternero $${fmt(ternero)} · Vaquillona $${fmt(vaquillona)} · Vaca $${fmt(vaca)}. Mercado Agroganadero argentino actualizado diariamente.`,
+    title: 'Mercado ganadero hoy: INMAG, categorías y dólar',
+    description: `Novillo $${fmt(novillo)} · Vaquillona $${fmt(vaquillona)} · Vaca $${fmt(vaca)} por kilo vivo. INMAG del ${INMAG_DATE}. Mercado Agroganadero, actualizado todos los días.`,
     url: 'https://www.consignatarias.com.ar/mercado',
     type: 'website',
     images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
@@ -99,23 +99,26 @@ export default function MercadoPage() {
         headline="Precios del mercado ganadero argentino hoy: novillo, categorías y dólar"
       />
       <section className="px-4 pt-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-3xl">
-        <h2 className="text-zinc-200 text-lg font-medium mb-2">Precios del mercado ganadero argentino</h2>
+        <h1 className="text-zinc-100 text-xl font-medium mb-2">Precios del mercado ganadero hoy: INMAG, categorías y dólar</h1>
         <p className="mb-2">
-          El Indice Novillo del Mercado Agroganadero (INMAG) es el precio promedio del novillo en el
+          El Índice Novillo del Mercado Agroganadero (INMAG) es el precio promedio del novillo en el
           Mercado Agroganadero de Buenos Aires, expresado en pesos por kilo vivo. Es la referencia
           principal del mercado de hacienda argentino y se publica diariamente por el Mercado
           Agroganadero (mercadoagroganadero.com.ar).
         </p>
         <p className="mb-2">
-          Los precios por categoria (novillos, novillitos, vaquillonas, vacas, toros) son{' '}
-          <strong>precios observados</strong> del Mercado Agroganadero, no ratios sinteticos.
-          El maiz FOB (USD/tn) se obtiene del Ministerio de Agricultura (MAGYP) y las
-          cotizaciones del dolar blue y oficial de dolarapi.com. Como referencia
+          Los precios por categoría (novillos, novillitos, vaquillonas, vacas, toros) son{' '}
+          <strong>precios observados</strong> del Mercado Agroganadero. El ternero no: el Mercado
+          Agroganadero no lo opera, y el valor que mostramos es una estimación (INMAG × 1,10).
+          Para ver a cuánto se vendió de verdad cada categoría, por peso, mirá el{' '}
+          <Link href="/vr" className="text-accent hover:underline">precio por categoría y peso</Link>.
+          El maíz FOB (USD/tn) se obtiene del Ministerio de Agricultura (MAGYP) y las
+          cotizaciones del dólar blue y oficial de dolarapi.com. Como referencia
           internacional sumamos los futuros de hacienda de Chicago (CME) — novillo
           gordo (Live Cattle) e invernada (Feeder Cattle) — convertidos a USD/kg vivo.
         </p>
         <p>
-          Todos los datos se actualizan automaticamente cada dia habil.
+          Todos los datos se actualizan automáticamente cada día hábil.
         </p>
       </section>
       <MercadoClient />
