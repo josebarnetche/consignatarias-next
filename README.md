@@ -11,6 +11,11 @@ de remates, una **API pública** y un **servidor MCP** para agentes IA (registry
 PRO Consignataria para operadores y Enterprise API/MCP para integradores.
 Live: **[www.consignatarias.com.ar](https://www.consignatarias.com.ar)**.
 
+**La promesa, en una frase:** *cuánto vale tu hacienda hoy, medido en lo que realmente se vendió.*
+El núcleo es el **Valor de Referencia** ([`/vr`](https://www.consignatarias.com.ar/vr)): la banda
+P10 / mediana / P90 por categoría y por rango de peso, calculada con los lotes vendidos en el
+Mercado Agroganadero. Con **Mi Ganado** el productor ve su rodeo valuado contra esa banda.
+
 ### Campos: el valor de la tierra, medido
 
 Relevamiento propio del **valor de la hectárea en 15 provincias y 52 zonas**, cruzando tasadores con
@@ -127,13 +132,21 @@ Si lo que querés es comprar o vender hacienda:
 - [`/remates/semana`](https://www.consignatarias.com.ar/remates/semana) · planificación semanal
 - [`/remates/en-vivo`](https://www.consignatarias.com.ar/remates/en-vivo) · streamings activos (canal-match con YouTube)
 - [`/precios`](https://www.consignatarias.com.ar/precios) · cotización diaria de las 6 categorías + INMAG
-- [`/mi-ganado`](https://www.consignatarias.com.ar/mi-ganado) · **la libreta del campo**: cargá tu hacienda una vez y mirá cuánto vale **hoy al INMAG** (ARS + USD), con la variación desde tu última visita y la curva de cómo evoluciona tu rodeo en el tiempo. Gratis con tu cuenta; queda guardado y el valor se mueve solo con el mercado
+- [`/vr`](https://www.consignatarias.com.ar/vr) · **Valor de Referencia**: cuánto se pagó de verdad por cada categoría y rango de peso, con el rango a la vista
+- [`/mi-ganado`](https://www.consignatarias.com.ar/mi-ganado) · **la libreta del campo**: cargá tu hacienda una vez y mirá cuánto vale **hoy, contra el Valor de Referencia** (ARS + USD), con la variación desde tu última visita y la curva de cómo evoluciona tu rodeo. Gratis con tu cuenta; queda guardado y el valor se mueve solo con el mercado
 - [`/mercado`](https://www.consignatarias.com.ar/mercado) · análisis de tendencia con USD blue / oficial
 - [`/overview`](https://www.consignatarias.com.ar/overview) · **la terminal** — home estilo broker: mercado hoy, tu ganado valuado (7d), remates de hoy y la semana, precios por categoría
 - [`/comparar`](https://www.consignatarias.com.ar/comparar) · comparador de consignatarias — actividad, frecuencia y quién remata más seguido
 - [`/calendario-exportar`](https://www.consignatarias.com.ar/calendario-exportar) · exportá a tu calendario (`.ics`) los remates de **varias localidades a la vez** (checkboxes por provincia)
-- [`/consignatarias`](https://www.consignatarias.com.ar/consignatarias) · grilla por región (Pampa Húmeda · Centro · Mesopotamia · NEA · NOA · Cuyo · Patagonia)
+- [`/remates`](https://www.consignatarias.com.ar/remates) · el calendario completo, agrupado por día: hora, firma, lugar, tipo y cabezas, con botones para ver la transmisión, el catálogo o compartir por WhatsApp
+- [`/consignatarias`](https://www.consignatarias.com.ar/consignatarias) · el directorio: buscador por nombre o provincia, y cada firma con sus provincias y cuántos remates tiene por delante
 - [`/frigorificos`](https://www.consignatarias.com.ar/frigorificos) · 1.110 plantas con badge SENASA · vigente / sin verificación
+
+**Pensado para el que entra desde el celular.** El sitio abre en un **tema claro** (blanco, letra
+legible, botones grandes) y tiene un botón para pasar al **terminal oscuro** de siempre; la elección
+queda guardada. Los listados de remates y consignatarias se diseñaron para un productor que busca
+qué remate hay, cuándo y dónde: sin siglas, con los nombres escritos como se leen y con la tarea
+primero (desde v1.220.0).
 
 **Todo gratis para el productor** (desde jul-2026 — PRO Usuario fue retirado): **¿Vendo ahora?**
 (percentil de 30 y 365 días en dólares reales), **Neto en mano**, **Comparador**, **Spread**,
@@ -171,7 +184,7 @@ Planes:
 Facturación mensual en ARS vía Rebill (anual –15%; exterior: transferencia o USDT al equivalente).
 
 También como **servidor MCP** para agentes IA: endpoint `https://www.consignatarias.com.ar/api/mcp`
-(**23 tools**; listado en el registry oficial como `ar.com.consignatarias/cattle-market` v1.3.0, y en
+(**24 tools**; listado en el registry oficial como `ar.com.consignatarias/cattle-market` v1.4.0, y en
 Glama — quality A — y Forge). Demo animada con los datos del día en [`/mcp`](https://www.consignatarias.com.ar/mcp).
 Cubre mercado (INMAG, precios por categoría, macro, **Índice de Liquidación** = % hembras), remates,
 directorio de consignatarias y frigoríficos, **valuaciones** (hacienda, arrendamiento y **valor de la
@@ -219,6 +232,12 @@ Cubre architecture · data pipeline · sources · tech stack · pages & routes �
 
 Release history: [**CHANGELOG.md**](./CHANGELOG.md).
 
+Interfaz: dos temas por variables CSS (`src/app/globals.css`: `:root` = claro, `[data-theme="dark"]`
+= oscuro) que consume `tailwind.config.js`. El color se escribe con tokens (`zinc-*`, `terminal-*`,
+semánticos, `ink`), nunca con un hex nuevo: `scripts/check-no-hardcoded-hex.mjs` (parte de
+`pnpm check`) lo controla. Las imágenes de `public/marca/` tienen su variante `-claro`
+(`scripts/marca-variantes-claro.sh`) y se usan con `<ImagenTema>`. Detalle en [`CLAUDE.md`](./CLAUDE.md).
+
 API contract: [**/api-docs**](https://www.consignatarias.com.ar/api-docs).
 
 ---
@@ -231,4 +250,4 @@ Operadores comerciales que construyen infraestructura propietaria — no agencia
 
 ---
 
-v1.196.0 · 2026-08-19 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0
+v1.221.0 · 2026-10-03 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0

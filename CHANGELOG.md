@@ -7,6 +7,24 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.221.1] — 2026-10-03
+
+### README al día y auditoría SEO integral
+
+- **README** actualizado:
+  - la promesa (Valor de Referencia, `/vr`) y Mi Ganado valuado contra la banda;
+  - `/remates` y `/consignatarias` como quedaron tras el rediseño;
+  - el tema claro con botón al oscuro;
+  - MCP con 24 tools (registry v1.4.0);
+  - para developers: temas por variables CSS, guardarraíl de hex e imágenes `-claro`;
+  - pie en v1.221.0.
+- **Auditoría SEO** en [`docs/SEO-AUDITORIA-2026-10-03.md`](docs/SEO-AUDITORIA-2026-10-03.md).
+  - Alcance: un build completo, rastreo de las 3.159 URLs del sitemap y revisión del
+    código en tres frentes (indexación, datos estructurados, contenido y enlazado).
+  - Los hallazgos van priorizados, con un plan de tres etapas.
+  - El hallazgo de seguridad (JSON-LD sin escapar `</script>`) se arregló aparte, en
+    el PR #52.
+
 ## [1.221.0] — 2026-10-03
 
 ### Imágenes de marca con variante para el tema claro
