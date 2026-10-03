@@ -34,7 +34,8 @@ export default function ProUpgradePrompt({
   ctaText = 'Activar PRO · ARS $7.900/mes →',
   variant = 'inline',
 }: ProUpgradePromptProps) {
-  const href = `/upgrade?from=${encodeURIComponent(context)}`
+  // Directo a /planes: /upgrade solo redirige ahí (307) y el salto costaba un rastreo por página.
+  const href = `/planes?from=${encodeURIComponent(context)}`
   const hasTrackedImpression = useRef(false)
   const { tier, loading } = useSessionTier()
 

@@ -330,7 +330,13 @@ export default async function RematesEnVivoPage() {
   // El listado por fecha queda para los días QUE VIENEN: hoy entero —lo que
   // está al aire y lo que falta— lo maneja el muro, y tenerlo dos veces en la
   // misma pantalla obligaba a mirar cuál de las dos versiones era la buena.
-  const byDate = liveRemates.filter((r) => r.date > todayStr).reduce((acc, r) => {
+  // Solo la semana que viene: con el calendario entero eran ~130 tarjetas y la página
+  // pesaba 1,5 MB (HTML + payload RSC). El resto está en /remates.
+  const tope = new Date(`${todayStr}T12:00:00`)
+  tope.setDate(tope.getDate() + 7)
+  const topeStr = tope.toISOString().slice(0, 10)
+  const masAdelante = liveRemates.filter((r) => r.date > topeStr).length
+  const byDate = liveRemates.filter((r) => r.date > todayStr && r.date <= topeStr).reduce((acc, r) => {
     if (!acc[r.date]) acc[r.date] = []
     acc[r.date].push(r)
     return acc
@@ -410,6 +416,12 @@ export default async function RematesEnVivoPage() {
                 </div>
               </section>
             ))}
+            {masAdelante > 0 && (
+              <p className="text-sm text-zinc-500">
+                {masAdelante} transmisiones más adelante.{' '}
+                <Link href="/remates" className="text-accent hover:underline">Ver el calendario completo →</Link>
+              </p>
+            )}
           </div>
         )}
 

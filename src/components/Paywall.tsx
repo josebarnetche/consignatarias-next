@@ -23,8 +23,8 @@ interface PaywallProps {
  */
 export function PaywallCard({ loggedIn, feature, redirectTo }: PaywallProps) {
   const upgradeHref = redirectTo
-    ? `/upgrade?next=${encodeURIComponent(redirectTo)}`
-    : '/upgrade'
+    ? `/planes?next=${encodeURIComponent(redirectTo)}`
+    : '/planes'
   const loginHref = redirectTo
     ? `/login?next=${encodeURIComponent(redirectTo)}`
     : '/login'

@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 import { getBandaPorSlug } from '@/lib/vr'
+import { getQualitySegments } from '@/lib/data/quality-segments'
 import {
   SectionBreadcrumbSchema,
   FAQPageSchema,
@@ -512,6 +513,27 @@ export default async function PreciosCategoriaPage({
               <span className="text-sky-400 text-xl font-mono shrink-0" aria-hidden="true">↗</span>
             </div>
           </Link>
+        )}
+
+        {/* Por calidad: cada sub-categoría del MAG tiene su página y solo se llegaba por el sitemap. */}
+        {getQualitySegments().some((q) => q.categoria === categoria) && (
+          <nav className="terminal-panel mb-6" aria-label={`Precio del ${c.singular} por calidad`}>
+            <div className="terminal-panel-header">Precio del {c.singular} por calidad</div>
+            <div className="divide-y divide-terminal-border">
+              {getQualitySegments()
+                .filter((q) => q.categoria === categoria)
+                .map((q) => (
+                  <Link
+                    key={q.segmento}
+                    href={`/precios/${q.categoria}/calidad/${q.segmento}`}
+                    className="px-panel py-3 flex items-center justify-between hover:bg-zinc-900/50 transition-colors"
+                  >
+                    <span className="text-zinc-300 text-data">{q.label.includes(' ') ? q.label.slice(q.label.indexOf(' ') + 1) : q.label}</span>
+                    <span className="text-zinc-400 font-terminal tabular-nums text-data">${fmt(Math.round(q.avgPrice))} /kg</span>
+                  </Link>
+                ))}
+            </div>
+          </nav>
         )}
 
         {/* Otras categorías */}

@@ -324,8 +324,8 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
   const plazas = [...porPlaza.values()]
     // Mismo criterio que el sitemap (ciudadEnSitemap): toda ciudad indexable recibe enlace.
     .filter((c) => c.nombre && ciudadEnSitemap(auctions, c.slug))
+    // Sin tope: cortar en 12 dejaba huérfanas (sin ningún enlace) a 38 ciudades del sitemap.
     .sort((a, b) => b.total - a.total)
-    .slice(0, 12)
 
   // Live market numbers (reused from metadata; interpolated at build, revalida diario)
   const novillo = Math.round(
@@ -491,6 +491,15 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
                   ))}
                 </div>
               </nav>
+            )}
+            {/* La Expo de Mercedes está en el sitemap todo el año; el destacado de /remates se
+                apaga pasada la rueda y la dejaba sin enlaces entrantes. */}
+            {config.slug === 'corrientes' && (
+              <p className="mt-3 text-sm">
+                <Link href="/remates/expo-rural-mercedes" className="text-accent hover:underline">
+                  Remates de la Expo Rural de Mercedes →
+                </Link>
+              </p>
             )}
           </div>
 

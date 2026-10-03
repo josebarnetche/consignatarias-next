@@ -4,6 +4,7 @@ import rematesData from '@/lib/data/remates.json'
 import frigorificosSummary from '@/lib/data/frigorificos-summary.json'
 import { PROVINCIAS_CON_DATO } from '@/lib/campos-seo'
 import { getDepartamentosPublicables, ultimoAnio } from '@/lib/productividad/panel'
+import { getOrigenSlugs } from '@/lib/mercado-origen'
 
 /**
  * Red de enlaces por provincia. Va en cada página de provincia (remates,
@@ -116,6 +117,9 @@ export function ProvinceCluster({
   }
   if (provinciasConProductividad().has(slug)) {
     links.push({ key: 'productividad', silo: 'productividad', href: `/productividad/${slug}`, label: `Terneros por vaca en ${name}` })
+  }
+  if (getOrigenSlugs().includes(slug)) {
+    links.push({ key: 'origen', silo: 'mercado', href: `/mercado/origen/${slug}`, label: `Hacienda de ${name} en el Mercado Agroganadero` })
   }
   links.push({ key: 'vr', silo: 'mercado', href: '/vr', label: 'Cuánto vale tu hacienda hoy' })
 
