@@ -64,8 +64,8 @@ export default function Page() {
                 description:
                   'Renta y comparables: qué mide cada vía y qué significa que se aparten entre sí.',
                 url: `${APP_URL}/como-se-tasa-un-campo`,
-                author: { '@type': 'Organization', name: 'Consignatarias.com.ar' },
-                publisher: { '@type': 'Organization', name: 'Memola Medios S.A.S.' },
+                author: { '@id': 'https://www.consignatarias.com.ar/#org' },
+                publisher: { '@id': 'https://www.consignatarias.com.ar/#org' },
                 inLanguage: 'es-AR',
               },
               {

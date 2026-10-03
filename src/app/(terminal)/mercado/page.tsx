@@ -3,6 +3,7 @@ import Link from 'next/link'
 import MercadoClient from './MercadoClient'
 import VrBandas from '@/components/VrBandas'
 import { SectionBreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { FaqList } from '@/components/seo/FaqList'
 import { LongTermChart } from '@/components/market/LongTermChart'
 import LoginGate from '@/components/LoginGate'
 import { SeasonalPattern } from '@/components/market/SeasonalPattern'
@@ -94,9 +95,11 @@ export default function MercadoPage() {
     <>
       <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
       <FAQPageSchema items={MERCADO_FAQ} />
+      {/* Speakable solo al h1: la página no tiene bloque .speakable-content. */}
       <SpeakableSchema
         url="https://www.consignatarias.com.ar/mercado"
         headline="Precios del mercado ganadero argentino hoy: novillo, categorías y dólar"
+        cssSelectors={['h1']}
       />
       <section className="px-4 pt-4 pb-2 text-zinc-400 text-sm leading-relaxed max-w-3xl">
         <h2 className="text-zinc-200 text-lg font-medium mb-2">Precios del mercado ganadero argentino</h2>
@@ -228,6 +231,8 @@ export default function MercadoPage() {
         </LoginGate>
         <CategoryComparison />
         <SeasonalPattern />
+        {/* Las mismas preguntas del FAQPageSchema, visibles. */}
+        <FaqList items={MERCADO_FAQ} />
       </div>
     </>
   )

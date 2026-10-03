@@ -7,6 +7,7 @@ import {
   SpeakableSchema,
   DatasetSchema,
 } from '@/components/seo/JsonLd'
+import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 
@@ -219,7 +220,11 @@ export default function CategoriasDeHaciendaPage() {
         description={`Precio de referencia por kilo vivo de cada categoría de hacienda bovina en el Mercado Agroganadero de Buenos Aires al ${lastUpdate}: novillo $${fmt(novillo)}, novillito $${fmt(novillito)}, vaquillona $${fmt(vaquillona)}, vaca $${fmt(vaca)}, toro $${fmt(toro)}, ternero $${fmt(ternero)} ($/kg vivo).`}
         url={PAGE_URL}
         keywords={['categorias de hacienda', 'novillo', 'ternero', 'vaca', 'precio kilo vivo', 'mercado agroganadero', 'INMAG']}
-        dateModified={lastUpdate}
+        dateModified={INMAG_DATE}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_PRECIOS]}
+        temporalCoverage={INMAG_DATE}
       />
 
       <article className="px-4 pt-4 pb-8 max-w-3xl mx-auto text-zinc-300 text-sm leading-relaxed">

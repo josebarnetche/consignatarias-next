@@ -169,17 +169,9 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
   const isPastMonth = monthConfig.number < currentMonth
 
   // Prepare schema data
-  const schemaRemates = auctionList.slice(0, 20).map(r => ({
-    id: r.id,
-    name: `Remate ${r.type} - ${r.consignatariaName}`,
-    date: r.date,
-    time: r.time || undefined,
-    location: r.location || r.province,
-    province: r.province,
-    consignatariaName: r.consignatariaName || 'Consignataria',
-    type: r.type || 'General',
-    estimatedHeads: r.estimatedHeads || undefined,
-  }))
+  // Cada Event con la URL de SU ficha (/remates/[slug]) y el perfil de la firma como
+  // organizer.url — antes todos apuntaban al perfil. La regla vive en buildRemateEvent.
+  const schemaRemates = auctionList.slice(0, 20)
 
   return (
     <main className="min-h-screen bg-zinc-950">
@@ -189,7 +181,7 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
         { name: 'Remates', url: 'https://www.consignatarias.com.ar/remates' },
         { name: `${monthConfig.name} ${year}`, url: `https://www.consignatarias.com.ar/remates/mes/${mes}` },
       ]} />
-      {auctionList.length > 0 && <RematesListSchema remates={schemaRemates} />}
+      {auctionList.length > 0 && <RematesListSchema remates={schemaRemates} name={`Remates ganaderos de ${monthConfig.name} ${year}`} max={20} />}
 
       {/* Hero */}
       <section className="border-b border-zinc-800 bg-gradient-to-b from-zinc-900 to-zinc-950">

@@ -174,7 +174,7 @@ export const metadata: Metadata = {
 export default function ComoFuncionaUnRemateGanaderoPage() {
   return (
     <>
-      <SectionBreadcrumbSchema section="remates" sectionName="Remates" />
+      <SectionBreadcrumbSchema section="remates" sectionName="Remates" pageName="Cómo funciona un remate ganadero" pagePath="/como-funciona-un-remate-ganadero" />
       <DefinedTermSetSchema
         name="Glosario del remate de hacienda"
         description="Términos del remate de hacienda argentino: remate, martillero/consignatario, puja, lote, comisión, gastos de remate, remate físico, remate televisado y ROSGAN."

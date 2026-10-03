@@ -72,8 +72,8 @@ export default function Page() {
                 headline: 'Relación maíz / novillo: qué es y cómo se lee',
                 description: MN.metrica,
                 url: `${APP_URL}/relacion-maiz-novillo`,
-                author: { '@type': 'Organization', name: 'Consignatarias.com.ar' },
-                publisher: { '@type': 'Organization', name: 'Memola Medios S.A.S.' },
+                author: { '@id': 'https://www.consignatarias.com.ar/#org' },
+                publisher: { '@id': 'https://www.consignatarias.com.ar/#org' },
                 inLanguage: 'es-AR',
               },
               {

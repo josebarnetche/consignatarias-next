@@ -149,7 +149,7 @@ export default function QueEsSenasaPage() {
         description="El SENASA regula la sanidad animal, la trazabilidad de la hacienda y la habilitación de establecimientos en Argentina: RENSPA, DT-e, campañas sanitarias y habilitación de frigoríficos."
         url={PAGE_URL}
         proficiencyLevel="Beginner"
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           { name: 'SENASA — Servicio Nacional de Sanidad y Calidad Agroalimentaria', url: 'https://www.senasa.gob.ar' },
         ]}

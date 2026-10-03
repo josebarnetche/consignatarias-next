@@ -6,6 +6,7 @@ import {
   SpeakableSchema,
   DatasetSchema,
 } from '@/components/seo/JsonLd'
+import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import maizNovilloHist from '@/lib/data/maiz-novillo-historico.json'
 import SpreadClient from './SpreadClient'
@@ -132,7 +133,7 @@ export default function SpreadPage() {
   return (
     <>
       {/* ── Capa AEO (server-rendered, número vivo interpolado en build) ──── */}
-      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
+      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" pageName="Relación Maíz/Novillo" pagePath="/mercado/spread" />
       <FAQPageSchema items={FAQ} />
       <SpeakableSchema
         url={PAGE_URL}
@@ -151,6 +152,7 @@ export default function SpreadPage() {
           'engorde a corral',
         ]}
         dateModified={lastUpdate}
+        license={LICENCIA_PROPIA}
       />
 
       {/* ── Bloque answer-first (respuesta citable a la head-query) ───────── */}

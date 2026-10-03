@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { DatasetSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { FaqList } from '@/components/seo/FaqList'
+import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import { PriceSparkline } from '@/components/PriceSparkline'
 import {
   SLUGS_CONOCIDOS,
@@ -182,9 +184,13 @@ export default async function VrCategoriaPage({
           observationDate: cob.hasta,
         }}
         updateFrequency="Martes, miércoles y viernes, tras el cierre de operaciones del MAG"
+        license={LICENCIA_PROPIA}
       />
       <FAQPageSchema items={faqs} />
-      <SpeakableSchema url={url} headline={`A cuánto se vendió ${nombre} en el Mercado Agroganadero`} />
+      {/* Speakable solo al h1: la página no tiene bloque .speakable-content. */}
+      <SpeakableSchema url={url} headline={`A cuánto se vendió ${nombre} en el Mercado Agroganadero`}
+        cssSelectors={['h1']}
+      />
 
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         <nav className="text-xs text-zinc-500 mb-4">
@@ -367,6 +373,9 @@ export default async function VrCategoriaPage({
             </p>
           </>
         )}
+
+        {/* Las mismas preguntas del FAQPageSchema, visibles. */}
+        <FaqList items={faqs} />
 
         <div className="border-t border-zinc-800 pt-6 mt-10 text-xs text-zinc-500">
           <p className="mb-2">

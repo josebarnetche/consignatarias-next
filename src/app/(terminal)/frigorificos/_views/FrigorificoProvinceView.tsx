@@ -3,6 +3,7 @@ import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import { FAQPageSchema } from '@/components/seo/JsonLd'
+import { FaqList } from '@/components/seo/FaqList'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 import Breadcrumb from '@/components/ui/Breadcrumb'
 
@@ -206,17 +207,14 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
     '@type': 'ItemList',
     name: `Frigoríficos en ${config.displayName}`,
     description: `Directorio de ${habilitados} frigoríficos habilitados por MAGYP en ${config.displayName}, Argentina`,
-    numberOfItems: provinceFrigorificos.length,
+    // Lista "resumen": ListItem con url + name (la entidad completa, con dirección,
+    // vive en cada ficha). numberOfItems = los que se emiten.
+    numberOfItems: Math.min(provinceFrigorificos.length, 50),
     itemListElement: provinceFrigorificos.slice(0, 50).map((frigorifico, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      item: {
-        '@type': 'LocalBusiness',
-        name: frigorifico.name,
-        identifier: frigorifico.cuit,
-        url: `https://www.consignatarias.com.ar/frigorificos/${frigorifico.cuit}`,
-        address: { '@type': 'PostalAddress', addressRegion: config.displayName, addressCountry: 'AR' },
-      },
+      name: frigorifico.name,
+      url: `https://www.consignatarias.com.ar/frigorificos/${frigorifico.cuit}`,
     })),
   }
 
@@ -353,6 +351,9 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
               ))}
           </div>
         </div>
+
+        {/* Las mismas preguntas del FAQPageSchema, visibles. */}
+        <FaqList items={faqItems} className="mt-4" />
 
         <ProvinceCluster province={config.name} exclude="frigorificos" />
 

@@ -9,6 +9,8 @@ import {
   SpeakableSchema,
   DatasetSchema,
 } from '@/components/seo/JsonLd'
+import { INMAG_DATE } from '@/lib/inmag'
+import { DESCARGA_SERIE_INMAG, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 
 export const revalidate = 3600
@@ -191,7 +193,7 @@ export default async function ElNovilloEnDolaresPage() {
   return (
     <>
       {/* Capa AEO — schemas primero, sin tocar la lógica de la serie/gráfico */}
-      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
+      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" pageName="El novillo en dólares" pagePath="/el-novillo-en-dolares" />
       <FAQPageSchema items={FAQ} />
       <SpeakableSchema
         url={PAGE_URL}
@@ -211,8 +213,10 @@ export default async function ElNovilloEnDolaresPage() {
           'hacienda en dolares',
           'Argentina',
         ]}
-        dateModified={lastUpdate}
-        creator="INMAG / Mercado Agroganadero"
+        dateModified={INMAG_DATE}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_SERIE_INMAG]}
       />
 
       <NovilloEnDolares days={days} series={series} totalDays={totalDays ?? 2254} />

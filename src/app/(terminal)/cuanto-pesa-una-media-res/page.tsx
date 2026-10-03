@@ -7,6 +7,7 @@ import {
   DatasetSchema,
   DefinedTermSetSchema,
 } from '@/components/seo/JsonLd'
+import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 
 export const revalidate = 86400 // daily rebuild via Vercel
@@ -160,6 +161,7 @@ export default function CuantoPesaUnaMediaResPage() {
         url={PAGE_URL}
         keywords={['media res', 'res', 'rinde al gancho', 'peso vivo', 'novillo', 'vaca', 'ternero']}
         dateModified={lastUpdate}
+        license={LICENCIA_PROPIA}
       />
 
       <article className="px-4 pt-4 pb-8 max-w-3xl mx-auto text-zinc-300 text-sm leading-relaxed">

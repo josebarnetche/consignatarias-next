@@ -1,6 +1,6 @@
 import { ImagenTema } from '@/components/ui/ImagenTema'
 import { Metadata } from 'next'
-import { SectionBreadcrumbSchema, OrganizationSchema } from '@/components/seo/JsonLd'
+import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Quienes Somos',
@@ -21,7 +21,7 @@ export default function QuienesSomosPage() {
   return (
     <>
       <SectionBreadcrumbSchema section="quienes-somos" sectionName="Quienes Somos" />
-      <OrganizationSchema />
+      {/* La Organization (con @id /#org) la emite el layout raíz en todas las páginas: repetirla acá la duplicaba. */}
       {/* Hero — el arreo (linocut del universo de marca) */}
       <section className="relative overflow-hidden">
         <ImagenTema

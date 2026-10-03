@@ -4,6 +4,7 @@ import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { getAllProfiles, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import { BreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { FaqList } from '@/components/seo/FaqList'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 
 /* ============================================================
@@ -105,16 +106,14 @@ function ProvinceConsignatariasSchema({
     '@type': 'ItemList',
     name: `Consignatarias de Hacienda en ${provinceDisplay}`,
     description: `Directorio de ${entries.length} consignatarias operando en ${provinceDisplay}`,
-    numberOfItems: entries.length,
+    // Lista "resumen": ListItem con url + name y nada más (la entidad completa vive
+    // en la ficha de cada firma). numberOfItems = los que se emiten.
+    numberOfItems: Math.min(entries.length, 10),
     itemListElement: entries.slice(0, 10).map((c, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      item: {
-        '@type': 'Organization',
-        '@id': `https://www.consignatarias.com.ar/consignatarias/${c.slug}`,
-        name: c.displayName,
-        url: `https://www.consignatarias.com.ar/consignatarias/${c.slug}`,
-      },
+      name: c.displayName,
+      url: `https://www.consignatarias.com.ar/consignatarias/${c.slug}`,
     })),
   }
   return (
@@ -249,6 +248,11 @@ export async function ProvinceView({ provincia }: { provincia: string }) {
             </Link>
           ))}
         </div>
+      </section>
+
+      {/* Las mismas preguntas del FAQPageSchema, visibles. */}
+      <section className="px-4 pb-8 max-w-4xl">
+        <FaqList items={faqItems} />
       </section>
 
       <section className="px-4 pb-8 max-w-4xl">

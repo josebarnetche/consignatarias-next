@@ -184,7 +184,7 @@ export default async function TipoRematesPage({ params }: Props) {
 
   const breadcrumbs = [
     { name: 'Inicio', url: 'https://www.consignatarias.com.ar' },
-    { name: 'Remates', url: 'https://www.consignatarias.com.ar' },
+    { name: 'Remates', url: 'https://www.consignatarias.com.ar/remates' },
     { name: `Remates de ${config.displayName}`, url: `https://www.consignatarias.com.ar/remates/tipo/${config.slug}` },
   ]
 

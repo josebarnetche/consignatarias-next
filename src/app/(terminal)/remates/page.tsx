@@ -5,6 +5,7 @@ import NextRemateCountdown from '@/components/remates/NextRemateCountdown'
 import rematesData from '@/lib/data/remates.json'
 import { getAllProfiles, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import { SectionBreadcrumbSchema, FAQPageSchema, RematesListSchema, DatasetSchema } from '@/components/seo/JsonLd'
+import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { Breadcrumb } from '@/components/ui'
 import { EXPO, REMATES_EXPO, expoVigente, posicionNacional } from '@/lib/data/expo-mercedes'
@@ -121,6 +122,7 @@ export default function RematesPage() {
         description="Base de datos actualizada de remates ganaderos de múltiples consignatarias argentinas"
         url="https://www.consignatarias.com.ar/remates"
         keywords={['remates ganaderos', 'subastas hacienda', 'consignatarias argentina']}
+        license={LICENCIA_PROPIA}
       />
       {/* Breadcrumb visual (§3.2). El JSON-LD ya lo emite SectionBreadcrumbSchema
           arriba, así que acá schema={false} para no duplicar structured data. */}

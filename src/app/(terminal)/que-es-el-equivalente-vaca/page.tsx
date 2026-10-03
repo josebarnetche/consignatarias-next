@@ -181,7 +181,7 @@ export default function QueEsElEquivalenteVacaPage() {
         description="El equivalente vaca (EV) es la unidad que mide el requerimiento de una vaca de cría de 400 kg y permite comparar el consumo de las categorías de un rodeo, con coeficientes de referencia por categoría."
         url={PAGE_URL}
         proficiencyLevel="Beginner"
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           { name: 'INTA — Instituto Nacional de Tecnología Agropecuaria', url: 'https://www.argentina.gob.ar/inta' },
         ]}

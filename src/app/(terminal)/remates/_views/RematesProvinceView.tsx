@@ -1,11 +1,11 @@
-import { jsonLd } from '@/lib/seo/json-ld'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 import type { Auction } from '@/lib/db/schema'
-import { BreadcrumbSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { BreadcrumbSchema, FAQPageSchema, SpeakableSchema, RematesListSchema } from '@/components/seo/JsonLd'
+import { FaqList } from '@/components/seo/FaqList'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import { EmptyState } from '@/components/ui'
@@ -125,6 +125,11 @@ export function isRemateProvinceSlug(slug: string): boolean {
   return PROVINCES.some(p => p.slug === slug)
 }
 
+/**
+ * Slugs de provincia que TIENEN página (/remates/[provincia]): las de PROVINCES con al
+ * menos un remate. Es lo mismo que emite generateStaticParams con dynamicParams=false,
+ * así que cualquier enlace o breadcrumb a una provincia fuera de esta lista es un 404.
+ */
 export function rematesProvinceSlugsWithAuctions(): string[] {
   const provincesWithAuctions = new Set(auctions.map(a => a.province))
   return PROVINCES
@@ -320,40 +325,6 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
     },
   ]
 
-  // JSON-LD ItemList
-  const itemListSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: `Remates Ganaderos en ${config.displayName}`,
-    description: `Calendario de remates ganaderos en ${config.displayName}, Argentina`,
-    numberOfItems: provinceAuctions.length,
-    itemListElement: upcomingAuctions.slice(0, 20).map((auction, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      item: {
-        '@type': 'Event',
-        name: auction.title,
-        description: auction.description,
-        startDate: auction.time ? `${auction.date}T${auction.time}:00-03:00` : auction.date,
-        location: {
-          '@type': 'Place',
-          // Place.name requerido: si no hay ciudad, caemos a la provincia (config).
-          name: getCity(auction.location) || config.displayName || 'Argentina',
-          address: {
-            '@type': 'PostalAddress',
-            addressLocality: getCity(auction.location) || config.displayName || 'Argentina',
-            addressRegion: config.displayName,
-            addressCountry: 'AR',
-          },
-        },
-        organizer: {
-          '@type': 'Organization',
-          name: auction.consignatariaName,
-        },
-      },
-    })),
-  }
-
   return (
     <>
       {/* JSON-LD: Breadcrumb */}
@@ -365,11 +336,16 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
         ]}
       />
 
-      {/* JSON-LD: ItemList of Events */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLd(itemListSchema) }}
-      />
+      {/* JSON-LD: ItemList de Events — cada uno con la URL de su ficha, dirección sin
+          campos vacíos y numberOfItems = los que se emiten (antes declaraba el total
+          de la provincia, pasados incluidos, y listaba 20 sin url). */}
+      {upcomingAuctions.length > 0 && (
+        <RematesListSchema
+          remates={upcomingAuctions}
+          name={`Próximos remates ganaderos en ${config.displayName}`}
+          max={20}
+        />
+      )}
 
       {/* JSON-LD: FAQ */}
       <FAQPageSchema items={faqItems} />
@@ -569,6 +545,9 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
             </div>
           )
         })()}
+
+        {/* Las mismas preguntas del FAQPageSchema, visibles (pautas de Google). */}
+        <FaqList items={faqItems} className="mt-4" />
 
         <ProvinceCluster province={config.name} exclude="remates" />
 

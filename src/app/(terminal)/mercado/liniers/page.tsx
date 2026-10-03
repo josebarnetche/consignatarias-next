@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, TechArticleSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { FaqList } from '@/components/seo/FaqList'
 import { TrendingUp, TrendingDown, Building2, MapPin, ExternalLink, BarChart3 } from 'lucide-react'
 import marketData from '@/lib/data/market-prices.json'
 
@@ -20,6 +21,31 @@ export const metadata: Metadata = {
   },
 }
 
+// Preguntas frecuentes: el mismo array alimenta el FAQPageSchema y la lista visible
+// (antes el schema tenía 5 preguntas y la página mostraba 3, con otras respuestas).
+const LINIERS_FAQ = [
+  {
+    question: '¿Qué es el Mercado de Liniers?',
+    answer: 'El Mercado de Liniers funcionó 117 años en el barrio de Mataderos (CABA) hasta su cierre en 2018, cuando su operatoria se mudó a Cañuelas como Mercado Agroganadero (MAG). Históricamente fue la referencia de precios de hacienda del país; hoy esa referencia es el Mercado de Cañuelas, medido por el índice INMAG.'
+  },
+  {
+    question: '¿Cada cuánto se actualizan los precios?',
+    answer: 'Los precios se actualizan diariamente a las 14:00 hora argentina, reflejando las operaciones del día anterior.'
+  },
+  {
+    question: '¿Qué categorías de hacienda se cotizan?',
+    answer: 'Las principales categorías son: novillos, novillitos, vaquillonas, vacas, toros y terneros. Cada una tiene su precio por kilogramo vivo.'
+  },
+  {
+    question: '¿Qué es el índice INMAG?',
+    answer: 'El INMAG (Índice del Mercado Agroganadero) integra datos de múltiples fuentes incluyendo operaciones del Mercado de Liniers y remates en todo el país, ofreciendo una referencia nacional del precio de la hacienda.'
+  },
+  {
+    question: '¿Cómo se relaciona Liniers con los remates en origen?',
+    answer: 'Aunque el volumen del Mercado de Liniers ha disminuido con la aparición de remates en origen y ferias locales, sigue siendo un indicador clave. Los precios de Liniers sirven como referencia para los remates regionales.'
+  }
+]
+
 export const revalidate = false // Cost optimization: static at build time
 
 export default function MercadoLiniersPage() {
@@ -35,29 +61,9 @@ export default function MercadoLiniersPage() {
         name="Mercado de Liniers - Precios de Hacienda"
         description="Cotización actualizada del Mercado de Liniers, referencia del mercado ganadero argentino. Precios de novillos, vacas, terneros, vaquillonas y toros."
         url="https://www.consignatarias.com.ar/mercado/liniers"
+        dateModified="2026-09-25"
       />
-      <FAQPageSchema items={[
-        {
-          question: '¿Qué es el Mercado de Liniers?',
-          answer: 'El Mercado de Liniers funcionó 117 años en el barrio de Mataderos (CABA) hasta su cierre en 2018, cuando su operatoria se mudó a Cañuelas como Mercado Agroganadero (MAG). Históricamente fue la referencia de precios de hacienda del país; hoy esa referencia es el Mercado de Cañuelas, medido por el índice INMAG.'
-        },
-        {
-          question: '¿Cada cuánto se actualizan los precios?',
-          answer: 'Los precios se actualizan diariamente a las 14:00 hora argentina, reflejando las operaciones del día anterior.'
-        },
-        {
-          question: '¿Qué categorías de hacienda se cotizan?',
-          answer: 'Las principales categorías son: novillos, novillitos, vaquillonas, vacas, toros y terneros. Cada una tiene su precio por kilogramo vivo.'
-        },
-        {
-          question: '¿Qué es el índice INMAG?',
-          answer: 'El INMAG (Índice del Mercado Agroganadero) integra datos de múltiples fuentes incluyendo operaciones del Mercado de Liniers y remates en todo el país, ofreciendo una referencia nacional del precio de la hacienda.'
-        },
-        {
-          question: '¿Cómo se relaciona Liniers con los remates en origen?',
-          answer: 'Aunque el volumen del Mercado de Liniers ha disminuido con la aparición de remates en origen y ferias locales, sigue siendo un indicador clave. Los precios de Liniers sirven como referencia para los remates regionales.'
-        }
-      ]} />
+      <FAQPageSchema items={LINIERS_FAQ} />
       
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
@@ -192,44 +198,8 @@ export default function MercadoLiniersPage() {
           </div>
         </div>
 
-        {/* FAQ */}
-        <div className="border-t border-zinc-800 pt-6 mt-6">
-          <h3 className="text-zinc-300 font-medium mb-4">Preguntas frecuentes</h3>
-          
-          <div className="space-y-4 text-sm">
-            <details className="group">
-              <summary className="text-zinc-200 cursor-pointer hover:text-zinc-100">
-                ¿Qué es el Mercado de Liniers?
-              </summary>
-              <p className="text-zinc-400 mt-2 pl-4">
-                Funcionó 117 años en Mataderos (CABA) hasta 2018, cuando se mudó a Cañuelas como Mercado
-                Agroganadero (MAG). Hoy la referencia de precios es el{' '}
-                <Link href="/mercado/canuelas" className="text-accent hover:text-accent-bright">Mercado de Cañuelas</Link>,
-                medido por el índice INMAG.
-              </p>
-            </details>
-            
-            <details className="group">
-              <summary className="text-zinc-200 cursor-pointer hover:text-zinc-100">
-                ¿Cada cuánto se actualizan los precios?
-              </summary>
-              <p className="text-zinc-400 mt-2 pl-4">
-                Los precios se actualizan diariamente a las 14:00 hora argentina, reflejando las operaciones 
-                del día anterior.
-              </p>
-            </details>
-            
-            <details className="group">
-              <summary className="text-zinc-200 cursor-pointer hover:text-zinc-100">
-                ¿Qué categorías de hacienda se cotizan?
-              </summary>
-              <p className="text-zinc-400 mt-2 pl-4">
-                Las principales categorías son: novillos, novillitos, vaquillonas, vacas, toros y terneros. 
-                Cada una tiene su precio por kilogramo vivo.
-              </p>
-            </details>
-          </div>
-        </div>
+        {/* FAQ — las mismas preguntas del FAQPageSchema */}
+        <FaqList items={LINIERS_FAQ} className="mt-6" />
       </div>
     </>
   )

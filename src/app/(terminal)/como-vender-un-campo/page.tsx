@@ -50,7 +50,7 @@ const FAQ = [
 export default function ComoVenderCampoPage() {
   return (
     <>
-      <SectionBreadcrumbSchema section="campos" sectionName="Campos" />
+      <SectionBreadcrumbSchema section="campos" sectionName="Campos" pageName="Cómo vender un campo" pagePath="/como-vender-un-campo" />
       <FAQPageSchema items={FAQ} />
 
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">

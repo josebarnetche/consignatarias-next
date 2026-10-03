@@ -1,4 +1,3 @@
-import { jsonLd } from '@/lib/seo/json-ld'
 import marketData from '@/lib/data/market-prices.json'
 
 /* ------------------------------------------------------------------
@@ -43,9 +42,11 @@ const fmt = (n: number) => n.toLocaleString('es-AR', { maximumFractionDigits: 0 
 /**
  * Observed MAG sub-category price ranges as a semantic, snippet-extractable
  * <table>. Every cell is a real observed value from the latest MAG rueda — no
- * estimate — so the caption names the source + date (brand rule #1). Emits an
- * ItemList/AggregateOffer JSON-LD (low/high = the real min/max range). Returns
- * null when the category has no observed rows (e.g. terneros).
+ * estimate — so the caption names the source + date (brand rule #1). Sin JSON-LD
+ * propio: antes emitía un ItemList de Product/AggregateOffer (el sitio no vende
+ * hacienda, y con lowPrice 0 donde la tabla muestra "—"); el dato ya lo declara el
+ * Dataset de la página. Returns null when the category has no observed rows
+ * (e.g. terneros).
  */
 export function PriceRangeTable({ categoria, namePlural }: { categoria: string; namePlural?: string }) {
   const rows = getDetailedRowsForCategory(categoria)
@@ -53,28 +54,6 @@ export function PriceRangeTable({ categoria, namePlural }: { categoria: string; 
 
   const date = (marketData.detailedCategories as { date?: string })?.date ?? marketData.lastUpdate
   const label = namePlural ?? categoria
-
-  const itemList = {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: `Precios por subcategoría — ${label}`,
-    numberOfItems: rows.length,
-    itemListElement: rows.map((r, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      item: {
-        '@type': 'Product',
-        name: r.category,
-        offers: {
-          '@type': 'AggregateOffer',
-          lowPrice: r.minPrice,
-          highPrice: r.maxPrice,
-          priceCurrency: 'ARS',
-          offerCount: r.cabezas,
-        },
-      },
-    })),
-  }
 
   return (
     <section className="mb-8">
@@ -107,7 +86,6 @@ export function PriceRangeTable({ categoria, namePlural }: { categoria: string; 
           </tbody>
         </table>
       </div>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(itemList) }} />
     </section>
   )
 }

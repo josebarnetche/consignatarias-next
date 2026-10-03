@@ -1,4 +1,3 @@
-import { jsonLd } from '@/lib/seo/json-ld'
 import { ImagenTema } from '@/components/ui/ImagenTema'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -9,7 +8,9 @@ import {
   SectionBreadcrumbSchema,
   FAQPageSchema,
   SpeakableSchema,
+  DatasetSchema,
 } from '@/components/seo/JsonLd'
+import { DESCARGA_PRECIOS, FUENTE_MAG, LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import { AnswerBlock } from '@/components/seo/AnswerBlock'
 import { DataStamp } from '@/components/seo/DataStamp'
 import { CitaBlock } from '@/components/seo/CitaBlock'
@@ -195,72 +196,6 @@ export async function generateMetadata({
   }
 }
 
-function ProductSchema({
-  name,
-  price,
-}: {
-  name: string
-  price: number
-}) {
-  const json = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name,
-    description: `Cotización de referencia del kilo vivo de ${name.toLowerCase()} según el INMAG.`,
-    category: 'Ganado bovino en pie',
-    offers: {
-      '@type': 'Offer',
-      price: price,
-      priceCurrency: 'ARS',
-      priceValidUntil: new Date(Date.now() + 86400000).toISOString().slice(0, 10),
-      availability: 'https://schema.org/InStock',
-      eligibleQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'KGM' },
-      seller: {
-        '@type': 'Organization',
-        name: 'Mercado Agroganadero',
-      },
-    },
-  }
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: jsonLd(json) }}
-    />
-  )
-}
-
-function ArticleSchema({
-  headline,
-  description,
-}: {
-  headline: string
-  description: string
-}) {
-  const json = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline,
-    description,
-    datePublished: marketPrices.lastUpdate,
-    dateModified: marketPrices.lastUpdate,
-    author: { '@type': 'Organization', name: 'Consignatarias.com.ar' },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Consignatarias.com.ar',
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://www.consignatarias.com.ar/logo.png',
-      },
-    },
-  }
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: jsonLd(json) }}
-    />
-  )
-}
-
 export default async function PreciosCategoriaPage({
   params,
 }: {
@@ -330,12 +265,33 @@ export default async function PreciosCategoriaPage({
 
   return (
     <>
-      <SectionBreadcrumbSchema section={`precios/${categoria}`} sectionName={`Precio ${c.title}`} />
+      <SectionBreadcrumbSchema
+        section="precios"
+        sectionName="Precios"
+        pageName={`Precio ${c.title}`}
+        pagePath={`/precios/${categoria}`}
+      />
       <FAQPageSchema items={faqItems} />
-      <ProductSchema name={`${c.title} en pie`} price={price} />
-      <ArticleSchema
-        headline={`Precio del kilo vivo de ${c.singular} hoy: $${fmt(price)}`}
-        description={`Cotización diaria del kilo vivo de ${c.singular} en Argentina, INMAG ${INMAG_DATE}.`}
+      {/* Dataset, no Product/Offer: el sitio no vende hacienda (un Offer con seller
+          MAG e InStock es markup engañoso). Ni Article con datePublished = fecha del
+          scrape. El ternero es una estimación propia (el MAG no opera terneros): se
+          declara como tal, sin atribuírsela al MAG. */}
+      <DatasetSchema
+        name={categoria === 'terneros' ? 'Precio del ternero en pie — estimación de referencia' : `Precio del kilo vivo de ${c.singular} — Mercado Agroganadero`}
+        description={
+          categoria === 'terneros'
+            ? `Estimación del kilo vivo de ternero derivada del INMAG al ${INMAG_DATE}: $${fmt(price)}/kg. El Mercado Agroganadero no opera terneros; para precios observados, ver los remates de invernada.`
+            : `Precio de referencia del kilo vivo de ${c.singular} en el Mercado Agroganadero al ${INMAG_DATE}: $${fmt(price)}/kg vivo.`
+        }
+        url={`https://www.consignatarias.com.ar/precios/${categoria}`}
+        keywords={[`precio ${c.singular}`, `kilo vivo ${c.singular}`, 'hacienda en pie', 'INMAG']}
+        dateModified={INMAG_DATE}
+        temporalCoverage={INMAG_DATE}
+        variableMeasured={{ name: `Precio del kilo vivo de ${c.singular}`, unitText: 'ARS/kg vivo', value: price, observationDate: INMAG_DATE }}
+        distribution={[DESCARGA_PRECIOS]}
+        {...(categoria === 'terneros'
+          ? { license: LICENCIA_PROPIA }
+          : { license: null, fuente: FUENTE_MAG })}
       />
       <SpeakableSchema
         url={`https://www.consignatarias.com.ar/precios/${categoria}`}

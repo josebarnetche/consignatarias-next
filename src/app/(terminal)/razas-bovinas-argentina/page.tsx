@@ -229,7 +229,7 @@ export default function RazasBovinasArgentinaPage() {
         name="Razas bovinas de Argentina: Angus, Hereford, Braford y Brangus"
         description="Guía de referencia de las razas bovinas dominantes en Argentina: las británicas Angus y Hereford para el clima templado y la calidad de carne, y las sintéticas Braford y Brangus para el norte por su resistencia al calor y la garrapata. Origen, aptitud, zona y uso de cada raza."
         url={PAGE_URL}
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           { name: 'Asociación Argentina de Angus', url: 'https://www.angus.org.ar' },
           { name: 'Asociación Argentina Criadores de Hereford', url: 'https://www.hereford.org.ar' },

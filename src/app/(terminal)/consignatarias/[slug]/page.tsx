@@ -20,11 +20,12 @@ import {
   synthesizeProfile,
 } from '@/lib/data/consignataria-slugs'
 import { getConsignatariaProfile, getRelatedConsignatarias } from '@/lib/dal/consignatarias'
-import { getMergedAuctionsForConsignataria } from '@/lib/dal/auctions'
+import { getMergedAuctionsForConsignataria, OWNER_ID_OFFSET } from '@/lib/dal/auctions'
 import { getApprovedReviewsForSlug, getReviewStatsForSlug } from '@/lib/dal/reviews'
 import { getEntityTier } from '@/lib/features'
 import { createServiceClient } from '@/lib/supabase'
 import { BreadcrumbSchema, LocalBusinessSchema, EventSchema, VideoObjectSchema, DatasetSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { FaqList } from '@/components/seo/FaqList'
 import { ObservedPricesSection, getLatestRemate } from '@/components/consignataria/ObservedPricesSection'
 import youtubeChannelsData from '@/lib/data/youtube-channels.json'
 import consignatariaResources from '@/lib/data/consignataria-resources.json'
@@ -399,6 +400,19 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
     .sort((a, b) => a.date.localeCompare(b.date))
     .slice(0, 3)
 
+  // Datos de contacto de la firma para el LocalBusiness (solo lo que exista y sea
+  // válido: el sitio tiene que ser http(s), el logo se pasa a URL absoluta).
+  const contacto = enrichedProfile as { phone?: string | null; website?: string | null; logoUrl?: string | null }
+  const firmaPhone = contacto.phone?.trim() || undefined
+  const firmaWebsite = contacto.website && /^https?:\/\/\S+$/i.test(contacto.website.trim()) ? contacto.website.trim() : undefined
+  const firmaLogo = contacto.logoUrl
+    ? contacto.logoUrl.startsWith('/')
+      ? `https://www.consignatarias.com.ar${contacto.logoUrl}`
+      : /^https?:\/\//i.test(contacto.logoUrl)
+        ? contacto.logoUrl
+        : undefined
+    : undefined
+
   // Observed prices reported by the firm for its latest auction (named source).
   const latestRemate = getLatestRemate(canonical)
   const observedFaq = latestRemate
@@ -464,47 +478,43 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
         description={enrichedProfile.description || `Consignataria de hacienda. ${profileAuctions.length} remates programados en ${provinces.join(', ')}.`}
         address={{
           addressLocality: primaryCity,
-          addressRegion: primaryProvince,
+          // 'Argentina' es el fallback sin dato: no es una provincia.
+          addressRegion: primaryProvince !== 'Argentina' ? primaryProvince : undefined,
         }}
         url={`https://www.consignatarias.com.ar/consignatarias/${canonical}`}
-        image="https://www.consignatarias.com.ar/og-image.png"
+        // El logo de la firma si lo tiene; si no, la og del sitio.
+        image={firmaLogo ?? 'https://www.consignatarias.com.ar/og-image.png'}
+        logo={firmaLogo}
+        telephone={firmaPhone}
+        sameAs={[firmaWebsite]}
         areaServed={primaryProvince}
         cuit={bodyCuit ? formatCuit(bodyCuit) : undefined}
       />
+      {/* Un Event por remate próximo, con la URL de SU ficha (antes todos apuntaban
+          al perfil). Los cargados por la firma desde su panel no tienen ficha. */}
       {upcomingAuctions.map(auction => (
         <EventSchema
           key={auction.id}
-          name={auction.title}
-          description={auction.description}
-          startDate={auction.time ? `${auction.date}T${auction.time}:00-03:00` : auction.date}
-          location={{
-            name: (auction.location || '').split(',')[0].trim() || primaryCity,
-            address: auction.location || primaryCity,
-          }}
-          organizer={enrichedProfile.displayName}
-          url={`https://www.consignatarias.com.ar/consignatarias/${canonical}`}
+          remate={auction}
+          url={auction.id >= OWNER_ID_OFFSET ? null : undefined}
+          organizerUrl={`https://www.consignatarias.com.ar/consignatarias/${canonical}`}
         />
       ))}
-      {/* VideoObject schema for auctions with live streaming */}
+      {/* VideoObject de las transmisiones (solo con ID de video real). */}
       {upcomingAuctions
         .filter(a => a.youtubeUrl)
         .slice(0, 3)
-        .map(auction => {
-          const videoId = auction.youtubeUrl?.match(/(?:v=|youtu\.be\/|\/live\/)([a-zA-Z0-9_-]{11})/)?.[1]
-          return (
-            <VideoObjectSchema
-              key={`video-${auction.id}`}
-              name={`${auction.title} — Remate en Vivo`}
-              description={`Transmisión en vivo del remate ganadero ${auction.title} organizado por ${enrichedProfile.displayName}. ${auction.description || ''}`}
-              thumbnailUrl={videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : undefined}
-              uploadDate={auction.date}
-              contentUrl={auction.youtubeUrl || undefined}
-              embedUrl={videoId ? `https://www.youtube.com/embed/${videoId}` : undefined}
-              publisher={enrichedProfile.displayName}
-              isLive={auction.date >= today}
-            />
-          )
-        })}
+        .map(auction => (
+          <VideoObjectSchema
+            key={`video-${auction.id}`}
+            name={`${auction.title} — Remate en Vivo`}
+            description={`Transmisión del remate ganadero ${auction.title} organizado por ${enrichedProfile.displayName}. ${auction.description || ''}`.trim()}
+            youtubeUrl={auction.youtubeUrl}
+            date={auction.date}
+            time={auction.time}
+            publisherName={enrichedProfile.displayName}
+          />
+        ))}
 
       {/* Remate en vivo de ESTA firma — solo renderiza si hay sesión activa
           con su slug (client-side, polling; no afecta el SSG de la ficha). */}
@@ -549,10 +559,26 @@ export default async function ConsignatariaProfilePage({ params }: Props) {
             url={`https://www.consignatarias.com.ar/consignatarias/${canonical}#precios-observados`}
             keywords={['precio hacienda', latestRemate.remate.provincia, latestRemate.remate.plaza, 'precio ternero', 'precio novillo', 'remate ganadero']}
             dateModified={latestRemate.remate.fecha}
-            creator={latestRemate.fuente}
+            temporalCoverage={latestRemate.remate.fecha}
+            spatialCoverage={`${latestRemate.remate.plaza}, ${latestRemate.remate.provincia}`}
+            // Los precios los declara la firma: es su dato, no una compilación nuestra.
+            license={null}
+            fuente={{
+              name: latestRemate.fuente,
+              url: firmaWebsite ?? `https://www.consignatarias.com.ar/consignatarias/${canonical}`,
+            }}
           />
           {observedFaq.length > 0 && <FAQPageSchema items={observedFaq} />}
           <ObservedPricesSection slug={canonical} />
+          {observedFaq.length > 0 && (
+            <div className="max-w-6xl mx-auto px-4 pt-4">
+              <FaqList
+                items={observedFaq}
+                titulo={`Preguntas sobre el remate de ${latestRemate.fuente}`}
+                id="preguntas-precios-observados"
+              />
+            </div>
+          )}
         </>
       )}
 

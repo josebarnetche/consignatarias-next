@@ -7,6 +7,7 @@ import {
   SpeakableSchema,
   DatasetSchema,
 } from '@/components/seo/JsonLd'
+import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 
@@ -158,7 +159,7 @@ export const metadata: Metadata = {
 export default function CuantoValeUnToroPage() {
   return (
     <>
-      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
+      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" pageName="Cuánto vale un toro" pagePath="/cuanto-vale-un-toro" />
       <DefinedTermSetSchema
         name="Toro reproductor y toro de faena — categorías del mercado ganadero argentino"
         description="Definiciones de toro, toro reproductor, PC/pedigrí, EPD, circunferencia escrotal y toro de refugo, con los dos mercados en que se comercializa el toro bovino en Argentina."
@@ -175,7 +176,11 @@ export default function CuantoValeUnToroPage() {
         description={`Precio del kilo vivo del toro de faena / descarte en el panel de categorías del Mercado Agroganadero de Buenos Aires: $${fmt(toroKg)}/kg (≈ USD ${toroUsdKg}/kg) al ${lastUpdate}. Referencia mayorista del animal en pie para faena de manufactura.`}
         url={PAGE_URL}
         keywords={['toro', 'toro de faena', 'precio kilo vivo', 'mercado agroganadero', 'INMAG', 'hacienda', 'Argentina']}
-        dateModified={lastUpdate}
+        dateModified={INMAG_DATE}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_PRECIOS]}
+        temporalCoverage={INMAG_DATE}
       />
 
       <article className="px-4 pt-4 pb-8 max-w-3xl mx-auto text-zinc-300 text-sm leading-relaxed">

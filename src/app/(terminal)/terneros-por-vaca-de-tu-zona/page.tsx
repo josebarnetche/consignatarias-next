@@ -75,8 +75,8 @@ export default function Page() {
                 description:
                   'Qué mide el índice de terneros por vaca, en qué se diferencia del destete y cuándo no es interpretable.',
                 url: `${APP_URL}/terneros-por-vaca-de-tu-zona`,
-                author: { '@type': 'Organization', name: 'Consignatarias.com.ar' },
-                publisher: { '@type': 'Organization', name: 'Memola Medios S.A.S.' },
+                author: { '@id': 'https://www.consignatarias.com.ar/#org' },
+                publisher: { '@id': 'https://www.consignatarias.com.ar/#org' },
                 inLanguage: 'es-AR',
               },
               {

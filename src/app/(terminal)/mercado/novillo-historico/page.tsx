@@ -2,6 +2,7 @@ import { ImagenTema } from '@/components/ui/ImagenTema'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema } from '@/components/seo/JsonLd'
+import { FUENTE_MAG } from '@/lib/seo/schemas'
 import { fetchNovillitoUsdJoined, aggregateMonthly } from '@/lib/charts/data'
 import { PriceLineChart } from '@/components/charts/PriceLineChart'
 
@@ -97,6 +98,8 @@ export default async function NovilloHistoricoPage() {
         description="Precio promedio diario del Novillito 401/420 kg (Mercado de Liniers → Mercado Agroganadero) desde 2006, con conversión a dólar oficial y blue."
         url="https://www.consignatarias.com.ar/mercado/novillo-historico"
         keywords={['novillito', 'precio novillo historico', 'hacienda dolares', 'INMAG', 'Liniers', 'Cañuelas']}
+        license={null}
+        fuente={FUENTE_MAG}
       />
 
       {/* Hero — la luna sobre el campo (linocut), fondo sutil */}

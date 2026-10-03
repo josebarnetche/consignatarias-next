@@ -168,7 +168,7 @@ export default function FeedlotVsPastorilPage() {
         description="Comparativa de los dos sistemas de terminación de hacienda —feedlot (engorde a corral) y engorde pastoril— por costo por kilo producido, tiempo de terminación, inversión y riesgo climático."
         url={PAGE_URL}
         proficiencyLevel="Beginner"
-        dateModified={lastUpdate}
+        dateModified="2026-09-25"
         citations={[
           { name: 'INTA — Instituto Nacional de Tecnología Agropecuaria', url: 'https://www.argentina.gob.ar/inta' },
         ]}

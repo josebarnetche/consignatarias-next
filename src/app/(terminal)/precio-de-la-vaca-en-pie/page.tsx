@@ -7,6 +7,7 @@ import {
   FAQPageSchema,
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
+import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 
@@ -164,7 +165,11 @@ export default function PrecioDeLaVacaEnPiePage() {
         description={`Precio de referencia por kilo vivo de la vaca de faena en el Mercado Agroganadero de Buenos Aires al ${lastUpdate}: referencia $${fmt(vaca)}/kg, vaca de conserva $${fmt(vacaConserva)}/kg, manufactura $${fmt(vacaManufactura)}/kg y vaca buena $${fmt(vacaBuena)}/kg ($/kg vivo).`}
         url={PAGE_URL}
         keywords={['vaca en pie', 'precio kilo vivo', 'vaca de conserva', 'vaca de manufactura', 'mercado agroganadero', 'INMAG']}
-        dateModified={lastUpdate}
+        dateModified={INMAG_DATE}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_PRECIOS]}
+        temporalCoverage={INMAG_DATE}
       />
       <FAQPageSchema items={FAQ} />
       <SpeakableSchema

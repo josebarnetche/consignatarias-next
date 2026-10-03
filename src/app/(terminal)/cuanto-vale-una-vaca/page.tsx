@@ -7,6 +7,9 @@ import {
   DatasetSchema,
   DefinedTermSetSchema,
 } from '@/components/seo/JsonLd'
+import { FaqList } from '@/components/seo/FaqList'
+import { INMAG_DATE } from '@/lib/inmag'
+import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { SiguientePaso } from '@/components/seo/SiguientePaso'
 
@@ -102,7 +105,11 @@ export default function CuantoValeUnaVacaPage() {
         description={`Precio del kilo vivo de vaca en el Mercado Agroganadero de Buenos Aires: $${fmt(vacaKg)}/kg al ${lastUpdate}. Referencia mayorista del animal en pie para faena.`}
         url={PAGE_URL}
         keywords={['vaca', 'precio kilo vivo', 'mercado agroganadero', 'hacienda', 'Argentina']}
-        dateModified={lastUpdate}
+        dateModified={INMAG_DATE}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_PRECIOS]}
+        temporalCoverage={INMAG_DATE}
       />
 
       <article className="px-4 pt-4 pb-8 max-w-3xl mx-auto text-zinc-300 text-sm leading-relaxed">
@@ -200,6 +207,9 @@ export default function CuantoValeUnaVacaPage() {
           transporte, el desposte y los márgenes de frigorífico y comercio. El kilo de carne al
           público es varias veces el kilo vivo del animal.
         </p>
+
+        {/* Las mismas preguntas del FAQPageSchema, visibles. */}
+        <FaqList items={VACA_FAQ} className="mb-4" />
 
         <div className="border border-terminal-border bg-terminal-panel/40 px-panel py-3 space-y-2">
           <p className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">

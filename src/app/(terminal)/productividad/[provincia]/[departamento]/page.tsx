@@ -128,7 +128,7 @@ export default async function Page({
                   '@type': 'AdministrativeArea',
                   name: `${d.nombre}, ${d.provinciaNombre}, Argentina`,
                 },
-                creator: { '@type': 'Organization', name: 'Consignatarias.com.ar' },
+                creator: { '@id': 'https://www.consignatarias.com.ar/#org' },
                 isBasedOn: META.organismo,
                 license: `${APP_URL}/licencia-datos`,
                 variableMeasured: [

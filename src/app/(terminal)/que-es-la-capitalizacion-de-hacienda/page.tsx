@@ -188,7 +188,7 @@ export const metadata: Metadata = {
 export default function QueEsLaCapitalizacionDeHaciendaPage() {
   return (
     <>
-      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
+      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" pageName="Qué es la capitalización de hacienda" pagePath="/que-es-la-capitalizacion-de-hacienda" />
       <DefinedTermSetSchema
         name="Capitalización de hacienda, pastoreo y engorde — definiciones"
         description="Definiciones citables de capitalización de hacienda, contrato de pastoreo, hotelería de hacienda, aumento de peso, porcentaje de reparto e invernador en el marco de los contratos de engorde ganadero argentino."

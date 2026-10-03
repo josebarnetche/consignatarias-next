@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import VrBandas from '@/components/VrBandas'
 import { DatasetSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import {
   getBandasPublicas,
   getSlugsConBanda,
@@ -84,6 +85,7 @@ export default function VrHubPage() {
         dateModified={cob.hasta}
         temporalCoverage={`${cob.desde}/${cob.hasta}`}
         updateFrequency="Martes, miércoles y viernes, tras el cierre de operaciones del MAG"
+        license={LICENCIA_PROPIA}
       />
       <FAQPageSchema items={FAQS} />
 

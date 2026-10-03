@@ -3,7 +3,6 @@
 import { ImagenTema } from '@/components/ui/ImagenTema'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { SectionBreadcrumbSchema, FAQPageSchema, DatasetSchema } from '@/components/seo/JsonLd'
 import { ProReveal, HeroNumber, StatPill } from '@/components/pro'
 
 interface SpreadData {
@@ -66,15 +65,8 @@ export default function SpreadClient() {
 
   return (
     <>
-      <SectionBreadcrumbSchema section="mercado/spread" sectionName="Relación Maíz/Novillo" />
-      <FAQPageSchema items={faqs} />
-      <DatasetSchema
-        name="Relación Maíz/Novillo Argentina"
-        description="Indicador de rentabilidad feedlot: ratio entre precio de novillo INMAG y maíz FOB. Actualizado diariamente."
-        url="https://www.consignatarias.com.ar/mercado/spread"
-        keywords={['relación maíz novillo', 'rentabilidad feedlot', 'spread ganadero', 'costo engorde']}
-      />
-
+      {/* Sin JSON-LD acá: BreadcrumbList, FAQPage y Dataset los emite la página
+          server (page.tsx). Duplicados en la misma URL se pisan entre sí. */}
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="text-xs text-zinc-500 mb-4 flex items-center gap-1">

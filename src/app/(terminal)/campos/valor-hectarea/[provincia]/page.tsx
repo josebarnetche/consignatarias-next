@@ -13,6 +13,7 @@ import { anosDeArrendamiento, promedioMesAnterior } from '@/lib/valuacion-campos
 import ValuacionCampo from '@/components/campos/ValuacionCampo'
 import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
 import { FAQPageSchema, DatasetSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { DESCARGA_VALOR_TIERRA, LICENCIA_CC_BY } from '@/lib/seo/schemas'
 import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 
 export const revalidate = 3600
@@ -114,6 +115,9 @@ export default async function ValorHectareaProvincia({
         url={`${BASE_URL}/campos/valor-hectarea/${provincia}`}
         keywords={[`valor hectarea ${t.provincia}`, 'precio de la tierra', 'campos', 'Argentina']}
         dateModified={t.fecha ?? undefined}
+        spatialCoverage={t.provincia}
+        license={LICENCIA_CC_BY}
+        distribution={[DESCARGA_VALOR_TIERRA]}
       />
       <SpeakableSchema
         url={`${BASE_URL}/campos/valor-hectarea/${provincia}`}

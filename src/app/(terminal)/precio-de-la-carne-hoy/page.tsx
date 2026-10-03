@@ -8,6 +8,7 @@ import {
   SpeakableSchema,
   HowToSchema,
 } from '@/components/seo/JsonLd'
+import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 
@@ -144,7 +145,7 @@ export const metadata: Metadata = {
 export default function PrecioDeLaCarneHoyPage() {
   return (
     <>
-      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" />
+      <SectionBreadcrumbSchema section="mercado" sectionName="Mercado" pageName="Precio de la carne hoy" pagePath="/precio-de-la-carne-hoy" />
       <DefinedTermSetSchema
         name="Cómo se forma el precio de la carne: del animal en pie al mostrador"
         description="Los términos que explican la formación del precio de la carne en Argentina —precio en pie, precio al gancho, media res, spread, kilo vivo vs. kilo gancho y desbaste— desde el animal en pie hasta el mostrador."
@@ -156,7 +157,11 @@ export default function PrecioDeLaCarneHoyPage() {
         description={`Precio de referencia de la carne por eslabón al ${INMAG_DATE}: animal en pie (INMAG) $${fmt(enPie)}/kg vivo, res en gancho ~$${fmt(precioGancho)}/kg, y mostrador de referencia entre $${fmt(mostradorMin)} y $${fmt(mostradorMax)}/kg. Precios de referencia del mercado (INMAG/MAG), no fijados por esta página.`}
         url={PAGE_URL}
         keywords={['precio de la carne', 'animal en pie', 'INMAG', 'media res', 'spread', 'kilo vivo', 'mostrador']}
-        dateModified={lastUpdate}
+        dateModified={INMAG_DATE}
+        license={null}
+        fuente={FUENTE_MAG}
+        distribution={[DESCARGA_PRECIOS]}
+        temporalCoverage={INMAG_DATE}
       />
       <FAQPageSchema items={FAQ} />
       <SpeakableSchema
