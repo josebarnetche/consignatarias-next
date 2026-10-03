@@ -7,6 +7,50 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.223.0] — 2026-10-03
+
+### De-gateo: el MCP deja de cobrar la consulta y pasa a cobrar la descarga
+
+Decisión de Jose con la medición de 89 días en la mano. El techo de profundidad, puesto el
+31-ago, **tocó 22 llamadas de 11.231 (0,2 %), y las 22 fueron de 4 orígenes que son escáneres
+de directorios**. La serie de dispersión, gateada a 30 días: **nadie pidió nunca más de la
+ventana gratis, ni una vez**. El cupo de valuaciones rechazó 44 llamadas en 4 ventanas IP-día
+y ninguna se convirtió en un pago x402 — de hecho **x402 no registra un solo intento de pago**
+desde que existe, con la plomería encendida y cotizando bien en producción.
+
+Lo que la misma medición mostró del otro lado: de las 11.231 llamadas a tools, el **98,2 % es
+anónimo**, y los clientes identificables son `agentstatus-probe`, `honestas-mcp-scanner`,
+`audit-probe`, `mcpbeat`, `glimind`. El uso de agentes reales es de un dígito en tres meses
+(`claude-code` 7, `claude-ai` 2). **No hay demanda a la que cobrarle: hay un catálogo que
+nos auditan.** Un techo que no defiende nada y sí nos saca de las citas, se saca.
+
+**Qué queda abierto ahora:** las 24 tools, a cualquier profundidad y sin cupo. `get_inmag_historico`
+devuelve el análisis de cualquier ventana desde 2015-01-05; `get_vr_historico`, la serie completa
+de la banda; `valuar_tropa` y `valuar_arrendamiento_campo`, sin tope diario.
+
+**Qué se sigue cobrando, y es lo único:** la **descarga masiva fila por fila** (`/api/x402/*` y
+los exports Enterprise) y la **redistribución** (`/licencia-datos`). Es la frontera correcta y es
+la que usa el sector: NYSE cobra US$1.000/mes por redistribuir contra US$50 el asiento individual.
+Protege el activo que sí es nuestro —la serie empalmada Liniers→MAG desde 2015 y la banda VR—
+sin cobrarle a quien solo quiere citarnos. `aplicarTecho()` queda en `src/lib/inmag-historico.ts`
+porque el endpoint pago lo sigue usando.
+
+**Los cupos de ESCRITURA no se tocaron**: `crear_alerta_precio` (3 activas por origen, 10 por día)
+y `quiero_comprar` (5 por día) crean filas y mandan mail. De-gatear la lectura no es abrir el spam.
+
+**Y de paso, el server dejó de mentir su versión.** `serverInfo` devolvía `1.0.0` mientras el
+registry publicaba 1.4.0: para cualquiera que evaluara el server sin conectarse, **nada de lo
+construido entre julio y hoy existía** — ni la banda de dispersión, ni el valor de la hectárea en
+52 zonas, ni la sanidad con resolución citada. Ahora los cuatro números son el mismo (1.5.0) y
+`server-card.json`, congelado en 18 tools, quedó con las 24 reales y con la nota de acceso al día.
+Las cinco superficies van sincronizadas en el mismo commit (route, `/mcp`, llms.txt, llms-full.txt,
+manifiestos) y `mcp-doctrina.test.ts` cambió de doctrina: seis tests fijan que no haya techo ni
+cupo, que la key inválida siga siendo error y que la frontera del bulk no desaparezca de la copia.
+
+Suite: 48 archivos, 513 tests en verde.
+
+---
+
 ## [1.222.0] — 2026-10-03
 
 ### Arreglos de la auditoría SEO, revisión de GA4 y Search Console

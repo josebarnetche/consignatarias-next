@@ -58,34 +58,52 @@ describe('doctrina del server MCP', () => {
 })
 
 /**
- * El techo de profundidad histórica es lo ÚNICO que el server cobra en la superficie
- * de lectura. Se puso el 31-ago-2026 con el dato en la mano: toca 6 de 350 llamadas
- * reales. Las reglas de acá abajo son las que lo hacen tolerable — sin ellas es
- * simplemente una puerta cerrada, y una puerta cerrada nos saca de las citas.
+ * DE-GATEO (03-10-2026, decisión de Jose). El server ya no cobra NADA en la superficie
+ * de consulta. El techo de profundidad existió entre el 31-ago y el 03-oct: la medición
+ * de 89 días mostró que tocaba 22 llamadas de 11.231 (4 orígenes, todos escáneres de
+ * directorios), y que el 98,2% del uso era anónimo sin un solo pago. Un techo que no
+ * defiende nada y sí nos saca de las citas se saca.
+ *
+ * Lo que SÍ se sigue cobrando es la DESCARGA MASIVA fila por fila (/api/x402/* y los
+ * exports Enterprise) y la REDISTRIBUCIÓN (/licencia-datos): es donde cobra el sector
+ * (NYSE US$1.000/mes de redistribución contra US$50 el asiento), y es lo único que
+ * protege el activo propio — la serie empalmada desde 2015 y la banda VR.
  */
-describe('el techo de profundidad histórica', () => {
-  it('recorta y lo declara: nunca niega la consulta', () => {
-    // Si esto se vuelve un `fail(...)`, el agente se queda sin nada que mostrar y
-    // deja de llamar la tool. El preview recortado es la única forma que vende.
-    expect(ROUTE).toContain('notaDeRecorte')
-    expect(ROUTE).toContain('recortado: true')
+describe('las tools responden sin techo ni cupo (de-gateo)', () => {
+  it('ninguna tool de lectura recorta por profundidad', () => {
+    // aplicarTecho queda invocado con autorizado=true: la consulta va completa para
+    // cualquiera. Si alguien vuelve a pasarle el flag de auth, esto se rompe.
+    expect(ROUTE).toContain('aplicarTecho(pedido, true)')
+    expect(ROUTE).not.toMatch(/aplicarTecho\(\s*pedido\s*,\s*auth\.autorizado\s*\)/)
   })
 
-  it('marca el recorte en el JSON, no sólo en la prosa', () => {
-    // Un agente no debería tener que parsear castellano para saber que la serie
-    // que recibió está incompleta.
-    expect(ROUTE).toContain('ruedas_ocultas')
-    expect(ROUTE).toContain('desde_pedido')
+  it('la serie de dispersión va completa', () => {
+    expect(ROUTE).not.toMatch(/auth\.autorizado\s*\?\s*pedidos\s*:\s*Math\.min/)
+  })
+
+  it('las valuaciones no tienen cupo diario', () => {
+    // El cálculo es local y sin I/O: el tope solo nos quitaba uso.
+    expect(ROUTE).not.toContain("action: 'mcp_valuacion'")
+    expect(ROUTE).not.toContain('cupoValuacionMsg')
   })
 
   it('una key inválida no degrada a gratis en silencio', () => {
+    // Sigue valiendo: el que cree estar autenticado tiene que enterarse de que no lo está.
     expect(ROUTE).toContain('autorizacionEnterprise')
     expect(ROUTE).toContain("if ('error' in auth) return fail(auth.error)")
   })
 
-  it('el techo no se aplica a ninguna otra tool de lectura', () => {
-    // La profundidad de la serie es la excepción, no el comienzo de una tendencia.
-    const usos = ROUTE.match(/aplicarTecho\(/g) ?? []
-    expect(usos.length).toBe(1)
+  it('la descarga masiva y la redistribución siguen siendo lo pago', () => {
+    // Es la única frontera que queda. Si desaparece de la copia, el activo propio
+    // (serie empalmada 2015→, banda VR) queda sin ninguna defensa declarada.
+    expect(ROUTE).toContain('/api/x402/inmag-historico')
+    expect(ROUTE).toMatch(/descarga masiva/i)
+  })
+
+  it('los cupos anti-abuso de ESCRITURA siguen en pie', () => {
+    // De-gatear la lectura no es abrir la escritura: alertas y demanda crean filas,
+    // mandan mail y se pueden usar para spamear.
+    expect(ROUTE).toContain("action: 'mcp_alerta_free'")
+    expect(ROUTE).toContain("action: 'demanda_compra'")
   })
 })

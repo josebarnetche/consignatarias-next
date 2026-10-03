@@ -9,7 +9,7 @@ import { INMAG_DATE } from '@/lib/inmag'
 export const metadata: Metadata = {
   title: { absolute: 'MCP de Consignatarias para agentes IA' },
   description:
-    'Servidor MCP oficial (Model Context Protocol): el mercado ganadero argentino como tools para agentes IA. Precios INMAG, remates, consignatarias, valuaciones de tropa y arrendamiento, búsqueda de hacienda para comprar, alertas gratis y pagos por consulta en USDC (x402) — conectás Claude, Cursor o cualquier agente y operás en tiempo real.',
+    'Servidor MCP oficial (Model Context Protocol): el mercado ganadero argentino como tools para agentes IA. Precios INMAG, remates, consignatarias, valuaciones de tropa y arrendamiento sin cupo, búsqueda de hacienda para comprar y alertas gratis — conectás Claude, Cursor o cualquier agente y operás en tiempo real.',
   alternates: { canonical: 'https://www.consignatarias.com.ar/mcp' },
 }
 
@@ -26,7 +26,7 @@ const TOOL_ICONS: Record<string, string> = {
 
 const TOOLS = [
   { name: 'get_indice_novillo', desc: 'INMAG (índice novillo) hoy: precio de referencia + variación', auth: false },
-  { name: 'get_inmag_historico', desc: 'Evolución del INMAG: tendencia, mín/máx y variación del período (gratis hasta 365 días; la serie completa desde 2015, con key o x402)', auth: false },
+  { name: 'get_inmag_historico', desc: 'Evolución del INMAG: tendencia, mín/máx y variación del período — gratis y sin techo, desde 2015', auth: false },
   { name: 'get_precios_hacienda', desc: 'Precios por categoría (novillo, novillito, vaquillona, vaca, toro, ternero)', auth: false },
   { name: 'get_precios_detallados', desc: 'Precios por subcategoría con mínimo/promedio/máximo + cabezas', auth: false },
   { name: 'get_contexto_macro', desc: 'Dólar blue/oficial, maíz FOB y spread novillo/maíz', auth: false },
@@ -36,7 +36,7 @@ const TOOLS = [
   { name: 'actividad_consignatarias', desc: 'Ranking de cabezas y precio promedio por firma en el MAG de referencia (Cañuelas)', auth: false },
   { name: 'buscar_frigorifico', desc: 'Frigoríficos habilitados MAGYP/SENASA (1.100+ plantas)', auth: false },
   { name: 'calcular_arrendamiento', desc: 'Canon de arrendamiento rural indexado al novillo', auth: false },
-  { name: 'get_vr_historico', desc: '"¿Se está abriendo la dispersión?" — serie de la banda P10–P90 por categoría; 30 días gratis', auth: false },
+  { name: 'get_vr_historico', desc: '"¿Se está abriendo la dispersión?" — serie de la banda P10–P90 por categoría, completa y gratis', auth: false },
   { name: 'valuar_tropa', desc: '"¿Cuánto valen 350 novillos?" — banda observada (P10/mediana/P90) con el n de lotes, en ARS y USD', auth: false },
   { name: 'valuar_arrendamiento_campo', desc: 'Canon de arrendamiento ganadero al índice oficial, anual y mensual, ARS y USD', auth: false },
   { name: 'valuar_campo', desc: 'Cuánto vale la hectárea: 15 provincias y 52 zonas, con rango, canon típico y fuente fechada', auth: false },

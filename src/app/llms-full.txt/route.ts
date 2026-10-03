@@ -43,8 +43,9 @@ export function GET() {
 > (VR v1.0: P10/mediana/P90 por categoría, en /mercado y /metodologia/vr). Lo que se paga es la profundidad: la serie
 > de dispersión más allá de 30 días de ventana (los últimos 30 ya están publicados,
 > así que van gratis) y la serie
-> INMAG más allá de 365 días de ventana (una fecha puntual, a cualquier año, sigue siendo
-> gratis) y las valuaciones pasado el cupo diario — por request en USDC (x402, red Base).
+> INMAG y la de dispersión van completas y gratis, y las valuaciones no tienen cupo. Lo que
+> se paga es la descarga masiva fila por fila y la redistribución — por request en USDC
+> (x402, red Base) o con API key Enterprise.
 > Ver /llms.txt.
 
 ---

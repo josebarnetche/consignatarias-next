@@ -49,10 +49,10 @@ export const maxDuration = 60
  * Redis: el subset que necesita un tool-server es chico — initialize / tools/list /
  * tools/call. TODOS los tools son públicos: `crear_alerta_precio` tiene free tier
  * (3 alertas activas por origen sin key; con key Enterprise sin límite) y las
- * valuaciones tienen cupo diario gratis con overflow pago vía x402 (/api/x402/*).
+ * las 24 tools responden gratis y sin cupo; lo pago es la descarga masiva (/api/x402/*, exports Enterprise).
  */
 
-const SERVER_INFO = { name: 'consignatarias', version: '1.0.0' }
+const SERVER_INFO = { name: 'consignatarias', version: '1.5.0' }
 // Versiones del protocolo MCP que soportamos. Somos tools-only + stateless, así que
 // la compatibilidad es hacia adelante: negociamos la que pida el cliente si la conocemos.
 // Si pide una desconocida NO devolvemos la última a ciegas: un cliente que pide
@@ -182,20 +182,6 @@ async function autorizacionEnterprise(
   return { autorizado: true }
 }
 
-// Mensaje al agotar el cupo diario gratis de valuaciones: si x402 está configurado,
-// ofrece la misma consulta paga en centavos (USDC/Base); si no, el reset diario.
-function cupoValuacionMsg(endpoint: 'valuar-tropa' | 'valuar-arrendamiento', precio: string): string {
-  const base = 'Cupo diario gratis de valuaciones agotado para este origen (se resetea cada 24 h).'
-  if (!getX402Config()) {
-    return `${base} Volvé mañana o pedí una API key Enterprise (sin límites): https://www.consignatarias.com.ar/planes`
-  }
-  return (
-    `${base}\n\nPara seguir SIN esperar: la misma consulta cuesta ${precio} en USDC (red Base) vía x402 — ` +
-    `misma query como GET a https://www.consignatarias.com.ar/api/x402/${endpoint} (mismos params). ` +
-    `La respuesta 402 trae las instrucciones de pago (scheme "exact", header X-PAYMENT); ` +
-    `cualquier cliente x402-aware (@x402/fetch, etc.) lo resuelve solo.`
-  )
-}
 const fmt = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
 
 // Ubicación limpia: evita duplicar la provincia cuando ya viene en location
@@ -253,15 +239,15 @@ const TOOLS: Tool[] = [
   {
     name: 'get_inmag_historico',
     description:
-      'Serie histórica del Índice Novillo (INMAG) — TENDENCIA. Serie diaria desde 2015-01-05: MAG/Cañuelas desde may-2022, antes era Mercado de Liniers (índice empalmado; la respuesta lo aclara cuando el rango cruza esa frontera). Devuelve valor inicial y final, variación %, mínimo, máximo, nº de ruedas y una muestra (~8 puntos). Índice DIARIO ponderado por volumen. Rango: dias (ventana atrás, default 30) o desde/hasta (YYYY-MM-DD, exacto — sirve para una fecha puntual: desde=hasta, GRATIS a cualquier profundidad). moneda: ars (default) o usd (dólar blue venta, último valor conocido a cada fecha). GRATIS y sin cupo hasta 365 días de ventana; pedir más devuelve igual los últimos 365 con su análisis completo, avisa cuántas ruedas quedaron atrás (recortado:true en el JSON) y ofrece la serie entera con API key Enterprise o por US$0,25 en USDC vía x402 (/api/x402/inmag-historico). Valor de HOY → get_indice_novillo; por categoría (semanal) → get_precios_hacienda, no comparar 1:1.',
+      'Serie histórica del Índice Novillo (INMAG) — TENDENCIA. Serie diaria desde 2015-01-05: MAG/Cañuelas desde may-2022, antes era Mercado de Liniers (índice empalmado; la respuesta lo aclara cuando el rango cruza esa frontera). Devuelve valor inicial y final, variación %, mínimo, máximo, nº de ruedas y una muestra (~8 puntos). Índice DIARIO ponderado por volumen. Rango: dias (ventana atrás, default 30) o desde/hasta (YYYY-MM-DD, exacto — sirve para una fecha puntual: desde=hasta, GRATIS a cualquier profundidad). moneda: ars (default) o usd (dólar blue venta, último valor conocido a cada fecha). GRATIS y sin cupo a CUALQUIER profundidad, desde 2015-01-05: la consulta no tiene techo. Devuelve el análisis completo (inicio, fin, variación, mínimo, máximo) con una muestra de ~8 puntos. Si lo que necesitás es la serie fila por fila para cargarla en tu propio modelo, eso va por API key Enterprise o US$0,25 en USDC vía x402 (/api/x402/inmag-historico) — se cobra la descarga masiva y la redistribución, no la consulta. Valor de HOY → get_indice_novillo; por categoría (semanal) → get_precios_hacienda, no comparar 1:1.',
     inputSchema: {
       type: 'object',
       properties: {
-        dias: { type: 'number', description: 'Ventana en días hacia atrás (default 30, máx 5000; la serie arranca 2015-01-05). Más de 365 se recorta salvo con API key. Ignorado si se pasa desde/hasta.' },
+        dias: { type: 'number', description: 'Ventana en días hacia atrás (default 30, máx 5000; la serie arranca 2015-01-05). Sin techo: cualquier ventana responde gratis. Ignorado si se pasa desde/hasta.' },
         desde: { type: 'string', description: 'Fecha inicial YYYY-MM-DD (opcional; la serie arranca 2015-01-05)' },
         hasta: { type: 'string', description: 'Fecha final YYYY-MM-DD (opcional; default hoy). desde=hasta consulta una fecha puntual.' },
         moneda: { type: 'string', enum: ['ars', 'usd'], description: 'ars (default) o usd — conversión por dólar blue venta, último valor conocido a cada fecha (regla de /mercado/inmag-dolares)' },
-        api_key: { type: 'string', description: 'API key Enterprise (cnsg_live_...) para la serie completa sin el techo de 365 días. Opcional si ya va por el header Authorization: Bearer.' },
+        api_key: { type: 'string', description: 'API key Enterprise (cnsg_live_...). Opcional y ya no necesaria para la consulta: sirve para la descarga masiva fila por fila y los exports. Si ya va por el header Authorization: Bearer, no hace falta acá.' },
       },
       additionalProperties: false,
     },
@@ -272,13 +258,16 @@ const TOOLS: Tool[] = [
       const pedido = resolverRango(args, hoy)
       if ('error' in pedido) return fail(pedido.error)
 
-      // El techo de profundidad sólo corre para quien no pagó. Una key inválida NO
-      // degrada a gratis en silencio: el que cree estar autenticado tiene que
-      // enterarse, o va a citar una serie recortada creyéndola completa.
+      // DE-GATEADO (03-10-2026): la CONSULTA no tiene techo de profundidad. Esta tool
+      // devuelve análisis + una muestra de ~8 puntos a cualquier ventana; lo que sigue
+      // detrás de la key o del x402 es la DESCARGA MASIVA fila por fila
+      // (/api/x402/inmag-historico y el export Enterprise), que es donde el sector
+      // cobra: redistribución, no consulta. Ver mcp-doctrina.test.ts.
+      // Una key inválida sigue siendo error y no degrada en silencio.
       const auth = await autorizacionEnterprise(args, req)
       if ('error' in auth) return fail(auth.error)
 
-      const { rango, recorte } = aplicarTecho(pedido, auth.autorizado)
+      const { rango, recorte } = aplicarTecho(pedido, true)
 
       const service = requireServiceClient()
       const serie = await leerSerie(service, rango, moneda)
@@ -845,7 +834,7 @@ const TOOLS: Tool[] = [
   {
     name: 'valuar_tropa',
     description:
-      '¿Cuánto valen 350 novillos en Formosa? Valúa una tropa de hacienda con la BANDA de precio realmente observada en las operaciones de lote del MAG (VR v1.0): conservador (P10), central (mediana) y optimista (P90), con la cantidad de lotes y cabezas que la sostiene, más el total en USD (blue y oficial) y la fuente fechada. Cuando una categoría no tiene base suficiente de lotes cae a la referencia nacional del MAG y lo declara — nunca inventa un rango. Metodología: https://www.consignatarias.com.ar/metodologia/vr. GRATIS con cupo diario por origen; sin cupo, la misma consulta cuesta US$0,05 en USDC vía x402: https://www.consignatarias.com.ar/api/x402/valuar-tropa. Params: categoria, cabezas, kg_promedio (opcional, si no se asume el peso típico de venta), provincia (opcional).',
+      '¿Cuánto valen 350 novillos en Formosa? Valúa una tropa de hacienda con la BANDA de precio realmente observada en las operaciones de lote del MAG (VR v1.0): conservador (P10), central (mediana) y optimista (P90), con la cantidad de lotes y cabezas que la sostiene, más el total en USD (blue y oficial) y la fuente fechada. Cuando una categoría no tiene base suficiente de lotes cae a la referencia nacional del MAG y lo declara — nunca inventa un rango. Metodología: https://www.consignatarias.com.ar/metodologia/vr. GRATIS y sin cupo. Params: categoria, cabezas, kg_promedio (opcional, si no se asume el peso típico de venta), provincia (opcional).',
     inputSchema: {
       type: 'object',
       properties: {
@@ -857,9 +846,10 @@ const TOOLS: Tool[] = [
       required: ['categoria', 'cabezas'],
       additionalProperties: false,
     },
-    async run(args, req) {
-      const rl = await enforceRateLimit({ action: 'mcp_valuacion', identity: `ip:${clientIp(req)}`, limit: 5, windowSeconds: 86_400 })
-      if (!rl.ok) return fail(cupoValuacionMsg('valuar-tropa', 'US$0,05'))
+    async run(args) {
+      // Sin cupo: ver la doctrina de de-gateo en mcp-doctrina.test.ts. El cálculo es
+      // local (0-4 ms, sin I/O), así que el costo directo de servirlo es nulo y el
+      // tope solo nos quitaba uso. Lo que se cobra es la descarga masiva, no la consulta.
       try {
         return ok(
           valuarTropa({
@@ -879,15 +869,15 @@ const TOOLS: Tool[] = [
     description:
       '¿Se está abriendo o cerrando la dispersión de precios? Serie histórica de la BANDA observada (VR v1.0): cómo evolucionó el rango P10–P90 por categoría en el Mercado Agroganadero. Es la pregunta que el precio puntual NO puede contestar — amplitud y mediana se mueven independientemente, así que una dispersión que se abre mientras el precio hace otra cosa es señal de riesgo que no se deriva del precio. GRATIS los últimos ' +
       VR_SERIE_VENTANA_GRATIS_DIAS +
-      ' días (la ventana ya publicada en /mercado y /vr); más profundidad va con API key Enterprise. Nunca niega: recorta y lo declara. Params: dias (default ' +
+      ' días y también hacia atrás sin techo, gratis y sin cupo (la ventana publicada en /mercado y /vr es solo el default). Params: dias (default ' +
       VR_SERIE_VENTANA_GRATIS_DIAS +
       '), categoria (opcional). Valor de HOY → get_precios_hacienda; valuar una tropa → valuar_tropa.',
     inputSchema: {
       type: 'object',
       properties: {
-        dias: { type: 'number', description: `Ventana en días hacia atrás (default ${VR_SERIE_VENTANA_GRATIS_DIAS}, máx 3650). Más allá de la ventana gratis se recorta salvo con API key Enterprise.` },
+        dias: { type: 'number', description: `Ventana en días hacia atrás (default ${VR_SERIE_VENTANA_GRATIS_DIAS}, máx 3650). Sin techo: cualquier ventana responde gratis.` },
         categoria: { type: 'string', description: `Categoría a filtrar (opcional). Con serie: ${CATEGORIAS_CON_LOTE.join(', ')}. Sin filtro devuelve todas.` },
-        api_key: { type: 'string', description: 'API key Enterprise (cnsg_live_...) para la serie completa. Opcional si ya va por el header Authorization: Bearer.' },
+        api_key: { type: 'string', description: 'API key Enterprise (cnsg_live_...). Opcional: la serie va completa sin key; la key es para la descarga masiva y los exports.' },
       },
       additionalProperties: false,
     },
@@ -899,8 +889,11 @@ const TOOLS: Tool[] = [
       const auth = await autorizacionEnterprise(args, req)
       if ('error' in auth) return fail(auth.error)
 
-      const dias = auth.autorizado ? pedidos : Math.min(pedidos, VR_SERIE_VENTANA_GRATIS_DIAS)
-      const recortado = dias < pedidos
+      // DE-GATEADO (03-10-2026): la serie de dispersión va completa a cualquiera. En
+      // 89 días nadie pidió más de la ventana gratis, así que el techo no defendía
+      // nada; lo que se cobra es la descarga masiva, no la consulta.
+      const dias = pedidos
+      const recortado = false
 
       let cod: string | null = null
       if (args.categoria) {
@@ -950,7 +943,7 @@ const TOOLS: Tool[] = [
   {
     name: 'valuar_arrendamiento_campo',
     description:
-      '¿Cuánto cuesta arrendar un campo de 3.500 has en Corrientes? Canon de arrendamiento ganadero al índice oficial del MAG (haciinfo000013): anual y mensual, en ARS y USD. Con kg_ha_anio pactado da el canon exacto; sin él, escenarios de 40 a 100 kg/ha/año. GRATIS con cupo diario por origen; sin cupo, US$0,10 en USDC vía x402: https://www.consignatarias.com.ar/api/x402/valuar-arrendamiento. Params: hectareas, kg_ha_anio (opcional), provincia (opcional).',
+      '¿Cuánto cuesta arrendar un campo de 3.500 has en Corrientes? Canon de arrendamiento ganadero al índice oficial del MAG (haciinfo000013): anual y mensual, en ARS y USD. Con kg_ha_anio pactado da el canon exacto; sin él, escenarios de 40 a 100 kg/ha/año. GRATIS y sin cupo. Params: hectareas, kg_ha_anio (opcional), provincia (opcional).',
     inputSchema: {
       type: 'object',
       properties: {
@@ -961,9 +954,8 @@ const TOOLS: Tool[] = [
       required: ['hectareas'],
       additionalProperties: false,
     },
-    async run(args, req) {
-      const rl = await enforceRateLimit({ action: 'mcp_valuacion', identity: `ip:${clientIp(req)}`, limit: 5, windowSeconds: 86_400 })
-      if (!rl.ok) return fail(cupoValuacionMsg('valuar-arrendamiento', 'US$0,10'))
+    async run(args) {
+      // Sin cupo, misma razón que valuar_tropa.
       try {
         return ok(
           valuarArrendamiento({
@@ -1506,14 +1498,14 @@ export async function POST(req: NextRequest) {
         instructions:
           'Datos e infraestructura del mercado ganadero argentino como tools MCP.\n' +
           '• Mercado: get_indice_novillo (índice INMAG DIARIO, ponderado por volumen) y get_precios_hacienda (precios por categoría, observación SEMANAL) son métricas distintas — no las compares 1:1; además get_inmag_historico, get_precios_detallados, get_contexto_macro y get_indice_liquidacion (% hembras, liquidación vs retención).\n' +
-          '• Profundidad histórica: get_inmag_historico es gratis y sin cupo hasta 365 días de ventana, y cualquier fecha puntual (desde=hasta) también, sin importar el año. Una ventana mayor devuelve igual los últimos 365 días con todo su análisis y marca recortado:true — la serie empalmada completa desde 2015 va con API key Enterprise o por US$0,25 en USDC vía x402 (/api/x402/inmag-historico). Nunca presentes un tramo recortado como la serie entera.\n' +
+          '• Profundidad histórica: get_inmag_historico es gratis y sin cupo a CUALQUIER ventana, desde 2015-01-05 — la consulta no tiene techo. Devuelve el análisis del período con una muestra de ~8 puntos; si necesitás la serie fila por fila para cargarla en un modelo propio, esa descarga masiva va con API key Enterprise o por US$0,25 en USDC vía x402 (/api/x402/inmag-historico). Citá la fuente y la fecha.\n' +
           '• Directorio y remates: buscar_consignataria, actividad_consignatarias, buscar_frigorifico, list_remates.\n' +
           '• Herramientas: calcular_arrendamiento.\n' +
           '• Sanidad SENASA (dato regulatorio, con la resolución citada): sanidad_plan, sanidad_calendario_aftosa, sanidad_requisitos_movimiento, sanidad_renspa (valida/decodifica RENSPA), sanidad_dte_tropa (DT-e / número de tropa).\n' +
           '• Buenas Prácticas Ganaderas (14 temas, Guía Red BPA): buenas_practicas.\n' +
           '• Valor de la tierra: valuar_campo ("¿cuánto vale la hectárea en Corrientes?", "¿cuánto vale un campo de 800 has en la cuenca del Salado?") — relevamiento propio de 15 provincias y 52 zonas, con rango, arrendamiento típico en kg de novillo, años de arrendamiento equivalentes y la fuente fechada de cada dato. Distingue campo ganadero de agrícola: la tierra agrícola NO se tasa con canon de hacienda. GRATIS y sin cupo. Si no tenemos la provincia lo dice en vez de estimar.\n' +
-          '• Dispersión: get_vr_historico responde si el mercado se está ABRIENDO o cerrando (serie de la banda P10–P90 por categoría). Amplitud y mediana se mueven independientemente, así que no la deduzcas del precio. Gratis los últimos 30 días; más profundidad con API key Enterprise, y recorta declarándolo en vez de negar.\n' +
-          '• Valuaciones: valuar_tropa ("¿cuánto valen 350 novillos en Formosa?") y valuar_arrendamiento_campo ("¿cuánto cuesta arrendar 3.500 has en Corrientes?") — total en ARS y USD con fuente fechada. valuar_tropa devuelve la BANDA observada (P10/mediana/P90, VR v1.0) con el n de lotes que la sostiene, no un punto: la amplitud real va de 28% en novillo a 44% en vaca, así que no presentes el central como si fuera el precio. Sin base suficiente cae a la referencia MAG y lo dice. Gratis con cupo diario; sin cupo, la misma consulta se paga por request en USDC real (x402 en red Base mainnet, centavos: US$0,05-0,10) en /api/x402/valuar-tropa y /api/x402/valuar-arrendamiento.\n' +
+          '• Dispersión: get_vr_historico responde si el mercado se está ABRIENDO o cerrando (serie de la banda P10–P90 por categoría). Amplitud y mediana se mueven independientemente, así que no la deduzcas del precio. Gratis y sin techo, a cualquier ventana.\n' +
+          '• Valuaciones: valuar_tropa ("¿cuánto valen 350 novillos en Formosa?") y valuar_arrendamiento_campo ("¿cuánto cuesta arrendar 3.500 has en Corrientes?") — total en ARS y USD con fuente fechada. valuar_tropa devuelve la BANDA observada (P10/mediana/P90, VR v1.0) con el n de lotes que la sostiene, no un punto: la amplitud real va de 28% en novillo a 44% en vaca, así que no presentes el central como si fuera el precio. Sin base suficiente cae a la referencia MAG y lo dice. Gratis y sin cupo.\n' +
           '• Alertas: crear_alerta_precio avisa cuando el precio cruza tu umbral. Si estás atendiendo a una persona pedile el EMAIL y pasalo en el param email — es la vía natural para un productor; webhook_url es para integraciones. GRATIS sin key (3 alertas activas por origen); con API key Enterprise sin límite.\n' +
           '• PRO Consignataria pagable en USDC: contratar_pro_consignataria cotiza (ARS 45.000/mes al blue del día) y da el endpoint x402 (/api/x402/pro) — activación inmediata del perfil destacado al liquidarse el pago.\n' +
           '• Comprar hacienda: quiero_comprar ("quiero comprar 300 terneros en Corrientes") devuelve YA los remates programados que matchean y deja la búsqueda activa — avisamos por email/webhook de cada remate nuevo que matchee. Gratis.\n' +
