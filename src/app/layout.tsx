@@ -182,14 +182,15 @@ export default function RootLayout({
             AccountNudge vía overlay-bus para que nunca aparezcan los dos. */}
         <SubscribeModal />
         <SpeedInsights />
-        {/* gtag.js download deferred to browser idle (lazyOnload) — keeps ~157 KiB of
-            third-party JS off the mobile critical path (TBT/INP). The inline stub in
-            <head> already defines gtag() and queues events; this only processes the
-            dataLayer queue once loaded, so the pro_upgrade conversion still registers. */}
+        {/* gtag.js después de hidratar (afterInteractive). Con lazyOnload (hasta el
+            3-oct-2026) el script esperaba al idle del navegador y en el celular muchas
+            visitas cortas se iban antes de que cargara: GA4 daba 42 % de sesiones móviles
+            contra 58 % de clics móviles en Search Console en la misma ventana. El stub
+            inline del <head> sigue encolando eventos en dataLayer desde el primer momento. */}
         {ANALYTICS_ENABLED && (
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-            strategy="lazyOnload"
+            strategy="afterInteractive"
           />
         )}
       </body>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { PRO_ABIERTO } from '@/lib/plan-pro'
-import { trackEvent, emitValueBeacon } from '@/lib/analytics'
+import { trackCheckoutStart } from '@/lib/analytics'
 
 /**
  * Alta a PRO abierto.
@@ -43,8 +43,9 @@ export function SuscribirPro() {
         window.location.href = '/cuenta/informes'
         return
       }
-      trackEvent('pro_checkout_start', { plan: PRO_ABIERTO.slug, value: PRO_ABIERTO.precio })
-      emitValueBeacon('checkout_start', { meta: { plan: PRO_ABIERTO.slug } })
+      // Mismo evento que /planes (checkout_start): antes este paso salía como
+      // pro_checkout_start y GA4 tenía dos nombres para el mismo escalón del funnel.
+      trackCheckoutStart(PRO_ABIERTO.slug, PRO_ABIERTO.precio, { context: 'pro' })
       window.location.href = json.checkoutUrl
     } catch {
       setError('No pudimos abrir el pago. Probá de nuevo en un minuto.')
