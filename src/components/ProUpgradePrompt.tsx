@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { PRO_ABIERTO } from '@/lib/plan-pro'
 import { useEffect, useRef } from 'react'
 import { trackProPromptView, trackProPromptClick } from '@/lib/analytics'
 import { useSessionTier } from '@/lib/use-session-tier'
@@ -31,11 +32,11 @@ interface ProUpgradePromptProps {
 export default function ProUpgradePrompt({
   benefit,
   context = 'unknown',
-  ctaText = 'Activar PRO · ARS $7.900/mes →',
+  ctaText = `Activar PRO · ARS $${PRO_ABIERTO.precio.toLocaleString('es-AR')}/mes →`,
   variant = 'inline',
 }: ProUpgradePromptProps) {
-  // Directo a /planes: /upgrade solo redirige ahí (307) y el salto costaba un rastreo por página.
-  const href = `/planes?from=${encodeURIComponent(context)}`
+  // Directo a /pro, donde se activa PRO abierto (/upgrade era un 307 a /planes).
+  const href = `/pro?from=${encodeURIComponent(context)}`
   const hasTrackedImpression = useRef(false)
   const { tier, loading } = useSessionTier()
 

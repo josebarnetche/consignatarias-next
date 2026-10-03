@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { PRO_ABIERTO } from '@/lib/plan-pro'
 import { HeroNumber } from '@/components/pro'
 import { PRO_TOOLS, type ProTool } from './proTools'
 
@@ -98,7 +99,7 @@ export default function ProHighlights(data: ProHighlightsData) {
             color: '#38bdf8',
           }}
         >
-          PRO Usuario · ARS $7.900/mes
+          PRO · ARS ${PRO_ABIERTO.precio.toLocaleString('es-AR')}/mes
         </span>
         <h2 className="text-2xl md:text-3xl font-medium text-zinc-100 tracking-tight mb-3">
           Las cinco decisiones del que vende hacienda

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { PRO_ABIERTO } from '@/lib/plan-pro'
 import { useSessionTier } from '@/lib/use-session-tier'
 import { trackProPromptClick, trackProPromptView } from '@/lib/analytics'
 import { useEffect, useRef } from 'react'
@@ -39,7 +40,7 @@ export default function SeasonalityView({ recentSvg, fullSvg, recentYears, fullF
       {!loading && !isPro && (
         <div className="px-panel pb-4">
           <Link
-            href="/planes?from=seasonality"
+            href="/pro?from=seasonality"
             onClick={() => trackProPromptClick('seasonality', 'inline')}
             className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border border-amber-500/30 bg-amber-500/[0.04] rounded px-4 py-3 hover:border-amber-500/50 transition-colors"
           >
@@ -48,7 +49,7 @@ export default function SeasonalityView({ recentSvg, fullSvg, recentYears, fullF
               <span className="text-amber-400">Desbloqueá la década completa ({fullFromYear}→)</span> con PRO.
             </span>
             <span className="text-[11px] font-terminal uppercase tracking-wider text-amber-400 whitespace-nowrap">
-              PRO · ARS $7.900/mes →
+              PRO · ARS ${PRO_ABIERTO.precio.toLocaleString('es-AR')}/mes →
             </span>
           </Link>
         </div>

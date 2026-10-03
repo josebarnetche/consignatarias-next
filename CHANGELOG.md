@@ -71,6 +71,10 @@ Re-rastreo de las 3.013 URLs del sitemap, sobre un build local, antes y después
   - `gsc-report` baja consulta × página (para detectar canibalización);
   - histórico de GSC semanal programado;
   - tracking-plan con los 20 eventos que faltaban.
+- **Precio de PRO en los avisos:** `ProUpgradePrompt`, `Paywall`, `SeasonalityView` y
+  `ProHighlights` decían "ARS $7.900" (el PRO Usuario retirado) y mandaban a `/planes`.
+  Ahora toman el precio de `PRO_ABIERTO` y llevan a `/pro`, donde se activa. `/cuenta` sigue
+  mostrando 7.900 a quien tiene el PRO Usuario viejo, que es lo que paga.
 - Incluye los PR #52 (escape de `</script>` en JSON-LD) y #53 (README y auditoría).
 
 ## [1.221.1] — 2026-10-03
