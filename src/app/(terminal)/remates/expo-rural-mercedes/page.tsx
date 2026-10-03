@@ -108,8 +108,8 @@ export default function Page() {
               fetchPriority="high"
             />
           </picture>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/75 to-[#09090b]/40" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#09090b]/50 via-transparent to-[#09090b]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/75 to-zinc-950/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/50 via-transparent to-zinc-950" />
         </div>
         <div
           className="pointer-events-none absolute inset-0 z-0 opacity-20"
@@ -119,7 +119,7 @@ export default function Page() {
             backgroundSize: '64px 64px',
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#09090b]/80 to-[#09090b]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/80 to-zinc-950" />
         </div>
 
         <div className="relative z-10 mx-auto max-w-5xl px-4 py-16 md:py-20">

@@ -602,7 +602,7 @@ export default function MuroEnVivo({ inicial, porVenir, repeticiones, referencia
       {/* Teléfono: la llamada fija abajo, al alcance del pulgar. */}
       {paraLlamar && (
         <div
-          className="md:hidden fixed inset-x-0 bottom-0 z-40 border-t border-zinc-800 bg-[#09090b]/95 backdrop-blur px-4 pt-2.5 flex items-center gap-2"
+          className="md:hidden fixed inset-x-0 bottom-0 z-40 border-t border-zinc-800 bg-zinc-950/95 backdrop-blur px-4 pt-2.5 flex items-center gap-2"
           style={{ paddingBottom: 'calc(0.625rem + env(safe-area-inset-bottom, 0px))' }}
         >
           <div className="min-w-0 flex-1">
