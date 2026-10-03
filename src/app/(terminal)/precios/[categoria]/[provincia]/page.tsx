@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { rematesProvinceSlugsWithAuctions } from '../../../remates/_views/RematesProvinceView'
 import { notFound } from 'next/navigation'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
@@ -120,7 +121,7 @@ export async function generateMetadata({
 
   // El número es el INMAG NACIONAL: el title no lo presenta como si fuera el precio de
   // la provincia. La description lo dice con nombre propio y suma el estimado en origen.
-  const title = `Precio del ${cat.singular} en ${prov.display}: referencia y valor en origen`
+  const title = `${cat.singular.charAt(0).toUpperCase() + cat.singular.slice(1)} en ${prov.display}: precio de referencia y en origen`
   const description = `${cat.title} en ${prov.display}: referencia nacional $${fmt(price)}/kg (INMAG, ${INMAG_DATE}) y estimado en origen ~$${fmt(basis.localEstimate)}/kg. Remates y consignatarias.`
 
   return {
@@ -151,6 +152,8 @@ export default async function PrecioCategoriaProvinciaPage({
 }) {
   const { categoria, provincia } = await params
   if (!isValid(categoria, provincia)) notFound()
+  // Solo 13 provincias tienen página de remates (Neuquén y Tucumán no): no enlazar a un 404.
+  const remateProvinciaConPagina = rematesProvinceSlugsWithAuctions().includes(provincia)
 
   const { cat, prov, price, change, supply, existencia, upcoming, consignatarias, basis, recientes, recientesCategoria } = getContext(
     categoria as CategorySlug,
@@ -297,7 +300,9 @@ export default async function PrecioCategoriaProvinciaPage({
               <strong className="text-zinc-500">Iriarte 2008</strong> (precio interior = precio Liniers − flete −
               gastos de comercialización). Es una <strong className="text-zinc-500">estimación propia</strong>, no un
               precio transado: surge de un dato puntual extrapolado por distancia. El precio real se forma en los{' '}
-              <Link href={`/remates/${provincia}`} className="text-accent/80 hover:text-accent-bright underline underline-offset-2">remates en origen</Link>{' '}
+              {remateProvinciaConPagina ? (
+                <Link href={`/remates/${provincia}`} className="text-accent/80 hover:text-accent-bright underline underline-offset-2">remates en origen</Link>
+              ) : 'remates en origen'}{' '}
               y depende de kilaje, terminación y demanda del día.
             </MethodologyMicroBlock>
           </div>
@@ -364,9 +369,15 @@ export default async function PrecioCategoriaProvinciaPage({
               compact
               title={`No hay remates de ${cat.title.toLowerCase()} programados en ${prov.display} en este momento.`}
               cta={
-                <Link href={`/remates/${provincia}`} className="text-accent hover:text-accent-bright">
-                  Ver todos los remates en {prov.display} →
-                </Link>
+                remateProvinciaConPagina ? (
+                  <Link href={`/remates/${provincia}`} className="text-accent hover:text-accent-bright">
+                    Ver todos los remates en {prov.display} →
+                  </Link>
+                ) : (
+                  <Link href="/remates" className="text-accent hover:text-accent-bright">
+                    Ver el calendario de remates de todo el país →
+                  </Link>
+                )
               }
             />
           )}

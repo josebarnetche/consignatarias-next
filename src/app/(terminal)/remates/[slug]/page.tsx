@@ -285,7 +285,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const viejo = diasDesde(remate.date) > 90
 
   return {
-    title,
+    // Absoluto: remateTitulo ya ronda los 60 caracteres y el sufijo de marca lo cortaba.
+    title: { absolute: title },
     description,
     ...(viejo ? { robots: { index: false, follow: true } } : {}),
     keywords: [

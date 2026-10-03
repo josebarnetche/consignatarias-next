@@ -114,6 +114,7 @@ export async function frigorificoProvinceMetadata(provincia: string) {
       description: `${habilitados} frigoríficos habilitados por MAGYP en ${config.displayName}. Directorio oficial con matrícula y datos de contacto.`,
       url: `https://www.consignatarias.com.ar/frigorificos/${provincia}`,
       type: 'website' as const,
+      images: [{ url: '/og-frigorificos.png', width: 1200, height: 630 }],
     },
     alternates: {
       canonical: `https://www.consignatarias.com.ar/frigorificos/${provincia}`,

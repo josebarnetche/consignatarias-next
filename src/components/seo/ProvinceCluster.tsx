@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { PROVINCIAS_GEO_SLUGS } from '@/lib/precios-geo'
 import rematesData from '@/lib/data/remates.json'
 import frigorificosSummary from '@/lib/data/frigorificos-summary.json'
 import { PROVINCIAS_CON_DATO } from '@/lib/campos-seo'
@@ -94,8 +95,6 @@ export function ProvinceCluster({
   const slug = PROVINCE_SLUGS[key]
   if (!slug) return null
   const name = PROVINCE_DISPLAY[slug]
-  const today = new Date().toISOString().slice(0, 10)
-  const proximos = REMATES.filter((r) => r.province === key && r.date >= today && r.status === 'scheduled')
 
   const links: { key: string; silo: Silo | 'mercado'; href: string; label: string }[] = []
   if (PROVINCIAS_CON_REMATES.has(key)) {
@@ -105,8 +104,10 @@ export function ProvinceCluster({
   if ((FRIGORIFICOS_POR_PROVINCIA[key] ?? 0) > 0) {
     links.push({ key: 'frigorificos', silo: 'frigorificos', href: `/frigorificos/${slug}`, label: `Frigoríficos de ${name}` })
   }
-  for (const c of PRECIO_CATEGORIAS) {
-    if (proximos.some((r) => c.tipos.includes(r.type))) {
+  // Todas las páginas precio × provincia son indexables (rinden mejor que la nacional en
+  // GSC: 2,35 % de CTR): se enlazan todas las que existen, haya o no remates próximos.
+  if (PROVINCIAS_GEO_SLUGS.includes(slug)) {
+    for (const c of PRECIO_CATEGORIAS) {
       links.push({ key: `precio-${c.slug}`, silo: 'precios', href: `/precios/${c.slug}/${slug}`, label: `Precio del ${c.nombre} en ${name}` })
     }
   }

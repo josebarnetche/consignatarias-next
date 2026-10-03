@@ -4,7 +4,7 @@ import Link from 'next/link'
 import remates from '@/lib/data/remates.json'
 import { RematesListSchema, BreadcrumbSchema } from '@/components/seo/JsonLd'
 import { Calendar, ArrowLeft, ArrowRight, ChevronRight } from 'lucide-react'
-import AuctionCard from '@/components/remates/auction-card'
+import { RemateFila } from '@/components/remates/RemateFila'
 import type { Auction } from '@/lib/db/schema'
 import { EmptyState } from '@/components/ui'
 import { MESES, mesIndexable, mesPasado, rematesDelMes } from '@/lib/seo/indexacion'
@@ -280,11 +280,15 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
                         ({weekAuctions.length} remates)
                       </span>
                     </h2>
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                      {weekAuctions.map(auction => (
-                        <AuctionCard key={auction.id} auction={auction} />
-                      ))}
-                    </div>
+                    {/* Filas livianas: con ~200 remates por mes, la grilla de tarjetas pasaba de 1 MB. */}
+                    <ul className="divide-y divide-zinc-800 rounded-lg border border-zinc-800 px-4">
+                      {weekAuctions
+                        .slice()
+                        .sort((a, b) => a.date.localeCompare(b.date))
+                        .map(auction => (
+                          <RemateFila key={auction.id} remate={auction} conFecha />
+                        ))}
+                    </ul>
                   </div>
                 )
               })}

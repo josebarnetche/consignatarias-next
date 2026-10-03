@@ -62,7 +62,7 @@ export async function generateMetadata({
       `tasar campo en ${t.provincia}`,
       `campos en venta en ${t.provincia}`,
     ],
-    openGraph: { title: titulo, url: `${BASE_URL}/campos/valor-hectarea/${provincia}`, type: 'article' },
+    openGraph: { title: titulo, url: `${BASE_URL}/campos/valor-hectarea/${provincia}`, type: 'article', images: [{ url: '/og-image.png', width: 1200, height: 630 }] },
     alternates: { canonical: `${BASE_URL}/campos/valor-hectarea/${provincia}` },
   }
 }

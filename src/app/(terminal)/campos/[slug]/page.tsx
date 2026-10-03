@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: titulo,
     description: `${fmtHa(c.hectareas)} en ${c.partido ? `${c.partido}, ` : ''}${c.provincia}${c.aptitud ? `, aptitud ${APTITUD_LABEL[c.aptitud as Aptitud].toLowerCase()}` : ''}. Precio: ${precio}. Consultá por el campo en consignatarias.com.ar.`,
-    openGraph: { title: titulo, url: `${BASE_URL}/campos/${slug}`, type: 'article' },
+    openGraph: { title: titulo, url: `${BASE_URL}/campos/${slug}`, type: 'article', images: [{ url: '/og-image.png', width: 1200, height: 630 }] },
     alternates: { canonical: `${BASE_URL}/campos/${slug}` },
   }
 }

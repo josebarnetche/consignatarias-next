@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { provinciaNombre } from '@/lib/ui/tokens'
+import { rematesProvinceSlugsWithAuctions } from '../../_views/RematesProvinceView'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
@@ -77,8 +79,10 @@ export async function generateMetadata({ params }: { params: Promise<{ ciudad: s
   // El conteo no va en el title: "— 0 Próximos" en 87 ciudades era la peor carta de
   // presentación posible en el resultado de búsqueda.
   const canonicalUrl = `https://www.consignatarias.com.ar/remates/ciudad/${ciudadCanonica(ciudad)}`
+  const provinciaTitulo = provinciaNombre(cityAuctions.find((a) => !!a.province)?.province)
   return {
-    title: `Remates de hacienda en ${cityOnly}`,
+    // Con la provincia: hay ciudades homónimas (Mercedes de Corrientes y de Buenos Aires).
+    title: `Remates de hacienda en ${cityOnly}${provinciaTitulo ? `, ${provinciaTitulo}` : ''}`,
     description: upcomingCount > 0
       ? `Calendario de remates de hacienda en ${displayName}: ${upcomingCount} remates próximos. Invernada, cría, reproductores y más.`
       : `Remates de hacienda en ${displayName}: ${cityAuctions.length} registrados, consignatarias que operan y los próximos cuando se publiquen.`,
@@ -110,6 +114,8 @@ export default async function CityRematesPage({ params }: { params: Promise<{ ci
   const cityOnly = displayName.split(',')[0].trim()
   const cityAuctions = getAuctionsForCity(ciudad)
   const province = cityAuctions.find(a => !!a.province)?.province?.trim() || ''
+  // Solo 13 provincias tienen página de remates: a las demás no se enlaza (daba 404).
+  const provinciaConPagina = !!province && rematesProvinceSlugsWithAuctions().includes(normalizeCity(province))
   
   const today = new Date().toISOString().slice(0, 10)
   const upcomingAuctions = cityAuctions
@@ -153,7 +159,7 @@ export default async function CityRematesPage({ params }: { params: Promise<{ ci
           <span>/</span>
           <Link href="/remates" className="hover:text-zinc-300">Remates</Link>
           <span>/</span>
-          {province && (
+          {province && provinciaConPagina && (
             <>
               <Link href={`/remates/${normalizeCity(province)}`} className="hover:text-zinc-300">{province}</Link>
               <span>/</span>
@@ -259,8 +265,8 @@ export default async function CityRematesPage({ params }: { params: Promise<{ ci
               Más remates en {province}
             </h2>
             
-            {/* Province link */}
-            <Link
+            {/* Province link (solo si la provincia tiene página de remates) */}
+            {provinciaConPagina && <Link
               href={`/remates/${normalizeCity(province)}`}
               className="flex items-center justify-between w-full p-4 bg-sky-500/10 border border-sky-500/30 rounded-lg hover:bg-sky-500/20 transition-colors mb-4"
             >
@@ -269,7 +275,7 @@ export default async function CityRematesPage({ params }: { params: Promise<{ ci
                 <span className="text-accent font-medium">Ver todos los remates en {province}</span>
               </div>
               <span className="text-accent">→</span>
-            </Link>
+            </Link>}
             
             {/* Other cities in province */}
             <div className="flex flex-wrap gap-2">

@@ -65,7 +65,7 @@ export async function generateMetadata({
     : 'terneros por vaca'
 
   return {
-    title: `Ganadería en ${d.nombre}, ${d.provinciaNombre}: ${cabezas} cabezas`,
+    title: { absolute: `Ganadería en ${d.nombre}, ${d.provinciaNombre}: ${cabezas} cabezas` },
     description: `${d.nombre} (${d.provinciaNombre}) cerró ${anio} con ${cabezas} cabezas y ${datoPropio}. Serie desde 2012 y puesto en la provincia. Datos oficiales.`,
     keywords: [
       `ganadería en ${d.nombre}`,
@@ -79,6 +79,8 @@ export async function generateMetadata({
       description: `${cabezas} cabezas y ${f.up?.toLocaleString('es-AR') ?? '—'} establecimientos. Serie desde 2012.`,
       url: `${APP_URL}/productividad/${d.slugProvincia}/${d.slugDepartamento}`,
       type: 'website',
+      // Un openGraph propio reemplaza entero el del layout: sin images, la tarjeta salía vacía.
+      images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
     },
     alternates: {
       canonical: `${APP_URL}/productividad/${d.slugProvincia}/${d.slugDepartamento}`,

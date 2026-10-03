@@ -69,6 +69,7 @@ export async function generateMetadata({
       title: titulo,
       url: `${BASE_URL}/campos/valor-hectarea/${provincia}/${zona}`,
       type: 'article',
+      images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     },
     alternates: { canonical: `${BASE_URL}/campos/valor-hectarea/${provincia}/${zona}` },
     ...(!zonaIndexable(z) && { robots: { index: false, follow: true } }),

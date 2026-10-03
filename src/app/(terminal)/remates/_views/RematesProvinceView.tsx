@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { ciudadEnSitemap } from '@/lib/seo/indexacion'
 import rematesData from '@/lib/data/remates.json'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
@@ -310,8 +311,7 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
   const types = new Set(provinceAuctions.map(a => a.type))
   const totalHeads = provinceAuctions.reduce((s, a) => s + (a.estimatedHeads ?? 0), 0)
 
-  // Plazas con 3 o más remates y alguno por venir: las que tienen página de
-  // ciudad con contenido (mismo slug que /remates/ciudad/[ciudad]).
+  // Plazas con página de ciudad indexable (mismo slug que /remates/ciudad/[ciudad]).
   const porPlaza = new Map<string, { slug: string; nombre: string; total: number; proximos: number }>()
   for (const a of provinceAuctions) {
     if (!a.location) continue
@@ -322,7 +322,8 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
     porPlaza.set(slug, actual)
   }
   const plazas = [...porPlaza.values()]
-    .filter((c) => c.total >= 3 && c.proximos > 0 && c.nombre)
+    // Mismo criterio que el sitemap (ciudadEnSitemap): toda ciudad indexable recibe enlace.
+    .filter((c) => c.nombre && ciudadEnSitemap(auctions, c.slug))
     .sort((a, b) => b.total - a.total)
     .slice(0, 12)
 

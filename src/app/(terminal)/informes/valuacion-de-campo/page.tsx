@@ -261,7 +261,7 @@ export default function Page() {
             <span className="text-slate-500"> — el número, sin el contexto</span>
           </li>
           <li>
-            <Link href="/campos/valor-hectarea" className="text-sky-400 underline underline-offset-2">
+            <Link href="/campos" className="text-sky-400 underline underline-offset-2">
               El valor por zona
             </Link>
             <span className="text-slate-500"> — {zonas.length} zonas relevadas</span>

@@ -274,7 +274,7 @@ export default function Page() {
             </Link>
           </li>
           <li>
-            <Link href="/campos/valor-hectarea" className="text-sky-400 underline underline-offset-2">
+            <Link href="/campos" className="text-sky-400 underline underline-offset-2">
               Valor de la hectárea por zona
             </Link>
           </li>
