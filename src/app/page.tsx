@@ -225,6 +225,25 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://www.consignatarias.com.ar',
   },
+  // El layout raíz ya no trae og:url ni og:title (los heredaban todas las páginas):
+  // la portada declara el suyo completo.
+  openGraph: {
+    type: 'website',
+    locale: 'es_AR',
+    url: 'https://www.consignatarias.com.ar',
+    siteName: 'Consignatarias.com.ar',
+    title: 'Consignatarias de Hacienda Argentina | Remates y Precios',
+    description: `Cuánto vale tu hacienda hoy, medido en lo que realmente se vendió. ${totalConsignatarias} consignatarias y ${rematesProximos.length} remates próximos.`,
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Consignatarias.com.ar - Inteligencia del Mercado Ganadero' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@consignatarias',
+    creator: '@memola_onbase',
+    title: 'Consignatarias de Hacienda Argentina | Remates y Precios',
+    description: `Cuánto vale tu hacienda hoy, medido en lo que realmente se vendió. ${totalConsignatarias} consignatarias y ${rematesProximos.length} remates próximos.`,
+    images: ['/og-image.png'],
+  },
 };
 
 /* ================================================================== */

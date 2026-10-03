@@ -96,3 +96,24 @@ export function partidosDeZona(provincia: string, zona: string): string[] {
 
 /** Superficies típicas de operación, para responder "campos de N hectáreas en X". */
 export const SUPERFICIES_TIPICAS = [100, 200, 500, 1000, 2000, 5000]
+
+/** Año del dato: "2026-08" → 2026, "2024" → 2024. */
+export function anioDelDato(fecha: string | null | undefined): number | null {
+  const anio = Number((fecha ?? '').slice(0, 4))
+  return Number.isFinite(anio) && anio > 2000 ? anio : null
+}
+
+/** "1 observación" / "17 observaciones", para mostrar junto al número. */
+export function observacionesTexto(n: number): string {
+  return n === 1 ? '1 observación' : `${n.toLocaleString('es-AR')} observaciones`
+}
+
+/**
+ * Una zona sostenida por UNA sola observación de antes de 2025 (los relevamientos de
+ * Córdoba 2024 y San Luis 2023) es un número viejo y frágil: la página sigue viva para
+ * quien la busque, pero va noindex y fuera del sitemap hasta que haya dato nuevo.
+ */
+export function zonaIndexable(z: { n: number; fecha?: string | null }): boolean {
+  const anio = anioDelDato(z.fecha)
+  return !(z.n <= 1 && (anio === null || anio < 2025))
+}

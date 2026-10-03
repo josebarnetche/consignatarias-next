@@ -7,7 +7,7 @@ import { getProductosPublicados, rangoPrecio, type ProductoDatos } from '@/lib/p
 const APP_URL = 'https://www.consignatarias.com.ar'
 
 export const metadata: Metadata = {
-  title: 'Informes de datos ganaderos — comprá el de tu zona | Consignatarias',
+  title: 'Informes de datos ganaderos de tu zona',
   description:
     'Informes hechos con datos oficiales: canon de arrendamiento por zona, productividad de tu departamento, prospección provincial. Se pagan con tarjeta, en pesos, y se descargan al instante.',
   keywords: [

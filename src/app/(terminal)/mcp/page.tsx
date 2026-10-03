@@ -7,7 +7,7 @@ import McpShowcase, { type ShowcaseData } from './McpShowcase'
 import { INMAG_DATE } from '@/lib/inmag'
 
 export const metadata: Metadata = {
-  title: 'MCP — Consignatarias para agentes IA | consignatarias.com.ar',
+  title: { absolute: 'MCP de Consignatarias para agentes IA' },
   description:
     'Servidor MCP oficial (Model Context Protocol): el mercado ganadero argentino como tools para agentes IA. Precios INMAG, remates, consignatarias, valuaciones de tropa y arrendamiento, búsqueda de hacienda para comprar, alertas gratis y pagos por consulta en USDC (x402) — conectás Claude, Cursor o cualquier agente y operás en tiempo real.',
   alternates: { canonical: 'https://www.consignatarias.com.ar/mcp' },

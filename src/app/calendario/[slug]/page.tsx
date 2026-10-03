@@ -1,7 +1,8 @@
 import { Metadata } from 'next'
-import { notFound, redirect } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import Link from 'next/link'
-import { getAllCanonicalSlugs, getCanonicalSlug, getProfile, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
+import { getAllCanonicalSlugs, getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
+import { calendarioIndexable, proximosRematesDeFirma } from '@/lib/seo/indexacion'
 import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { BreadcrumbSchema, WebApplicationSchema } from '@/components/seo/JsonLd'
@@ -27,9 +28,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const profile = getProfile(canonical)
   if (!profile) return {}
 
+  const url = `https://www.consignatarias.com.ar/calendario/${canonical}`
+  const title = `Calendario de remates de ${profile.displayName}`
+  const description = `Suscribite al calendario de remates de ${profile.displayName}. Recibí notificaciones automáticas en Google Calendar, Apple o Outlook.`
+  // Sin remates próximos ni recientes la página es solo el botón de suscripción: queda
+  // fuera del índice (y del sitemap, con el mismo cálculo) hasta que la firma vuelva.
+  const indexable = calendarioIndexable(auctions, canonical)
+
   return {
-    title: `Calendario de ${profile.displayName} — Consignatarias`,
-    description: `Suscribite al calendario de remates de ${profile.displayName}. Recibí notificaciones automáticas en Google Calendar, Apple o Outlook.`,
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: { title, description, url, type: 'website', images: [{ url: '/og-remates.png', width: 1200, height: 630 }] },
+    ...(!indexable && { robots: { index: false, follow: true } }),
   }
 }
 
@@ -45,17 +56,13 @@ export default async function CalendarioPage({ params }: Props) {
   if (!canonical) notFound()
 
   if (slug !== canonical) {
-    redirect(`/calendario/${canonical}`)
+    permanentRedirect(`/calendario/${canonical}`)
   }
 
   const profile = getProfile(canonical)
   if (!profile) notFound()
 
-  const today = new Date().toISOString().slice(0, 10)
-  const upcoming = getAuctionsForProfile(auctions, canonical)
-    .filter(a => a.date >= today)
-    .sort((a, b) => a.date.localeCompare(b.date))
-    .slice(0, 5)
+  const upcoming = proximosRematesDeFirma(auctions, canonical).slice(0, 5)
 
   // webcal:// = SUSCRIPCIÓN (sincroniza y se actualiza solo → recurrencia), no descarga
   // de un snapshot. Host canónico www para no pegar contra el 307 que rompe a Google.

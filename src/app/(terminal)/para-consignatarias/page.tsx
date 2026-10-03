@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { createAdminClient } from '@/lib/supabase-server'
+import { adminClientOpcional } from '@/lib/supabase-server'
 import { getAiCitationStats } from '@/lib/ai-citations'
 import remates from '@/lib/data/remates.json'
 import { rematesDesdeHoy } from '@/lib/remates-conteo'
@@ -14,13 +14,19 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.consignatarias.com.ar/para-consignatarias' },
 }
 
-export const dynamic = 'force-dynamic'
+// Antes force-dynamic: no lee cookies ni headers. Las cifras (firmas, citas de IAs del
+// mes) se mueven de a poco; con ISR horario la página sale de caché.
+export const revalidate = 3600
+
+const SIN_CITAS = { aiRefsMes: 0, firmsCitadas: 0, citadas: [] }
 
 export default async function ParaConsignatariasPage() {
-  const db = createAdminClient()
+  // Opcional: un build de preview sin service-role prerenderiza con los conteos de
+  // respaldo en lugar de voltear el build.
+  const db = adminClientOpcional()
   const [c, ai] = await Promise.all([
-    db.from('consignatarias').select('id', { count: 'exact', head: true }),
-    getAiCitationStats(),
+    db ? db.from('consignatarias').select('id', { count: 'exact', head: true }) : Promise.resolve({ count: null }),
+    db ? getAiCitationStats() : Promise.resolve(SIN_CITAS),
   ])
 
   const stats = {

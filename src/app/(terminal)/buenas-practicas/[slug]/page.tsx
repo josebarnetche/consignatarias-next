@@ -13,9 +13,9 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const t = temaPorSlug(slug)
-  if (!t) return { title: 'Buenas Prácticas Ganaderas | Consignatarias' }
+  if (!t) return { title: 'Buenas Prácticas Ganaderas' }
   return {
-    title: `${t.titulo} — cómo implementarlo (Buenas Prácticas Ganaderas) | Consignatarias`,
+    title: `${t.titulo}: cómo implementarlo (BPG)`,
     description: t.resumen,
     alternates: { canonical: `https://www.consignatarias.com.ar/buenas-practicas/${t.slug}` },
   }

@@ -7,18 +7,10 @@ import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { MapPin, Calendar, Building2 } from 'lucide-react'
 import AuctionCard from '@/components/remates/auction-card'
 import { EmptyState } from '@/components/ui'
+import { ciudadCanonica, ciudadIndexable, normalizeCity, rematesDeCiudad } from '@/lib/seo/indexacion'
 
 const auctions = rematesData as Auction[]
 
-// Normalize city name for URL (lowercase, no accents, spaces to hyphens)
-function normalizeCity(city: string): string {
-  return city
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-}
 
 // Get display name from slug
 function getDisplayName(slug: string, cities: string[]): string | null {
@@ -48,12 +40,9 @@ function getAllCities(): string[] {
   return Array.from(seen.values())
 }
 
-// Get auctions for a city
+// Get auctions for a city (sumando sus alias: ver CIUDAD_ALIAS)
 function getAuctionsForCity(citySlug: string): Auction[] {
-  return auctions.filter(a => {
-    if (!a.location) return false
-    return normalizeCity(a.location) === citySlug
-  })
+  return rematesDeCiudad(auctions, citySlug)
 }
 
 // Map each location slug to its province (from the auction's province field,
@@ -85,19 +74,27 @@ export async function generateMetadata({ params }: { params: Promise<{ ciudad: s
   const cityAuctions = getAuctionsForCity(ciudad)
   const upcomingCount = cityAuctions.filter(a => a.date >= new Date().toISOString().slice(0, 10)).length
 
+  // El conteo no va en el title: "— 0 Próximos" en 87 ciudades era la peor carta de
+  // presentación posible en el resultado de búsqueda.
+  const canonicalUrl = `https://www.consignatarias.com.ar/remates/ciudad/${ciudadCanonica(ciudad)}`
   return {
-    title: `Remates de Hacienda en ${cityOnly} — ${upcomingCount} Próximos`,
-    description: `Calendario de remates de hacienda en ${displayName}. ${upcomingCount} remates próximos. Invernada, cría, reproductores y más.`,
+    title: `Remates de hacienda en ${cityOnly}`,
+    description: upcomingCount > 0
+      ? `Calendario de remates de hacienda en ${displayName}: ${upcomingCount} remates próximos. Invernada, cría, reproductores y más.`
+      : `Remates de hacienda en ${displayName}: ${cityAuctions.length} registrados, consignatarias que operan y los próximos cuando se publiquen.`,
     keywords: [`remates ${cityOnly.toLowerCase()}`, `remates hacienda ${cityOnly.toLowerCase()}`, `ganado ${cityOnly.toLowerCase()}`, 'remates ganaderos'],
     openGraph: {
       images: [{ url: '/og-remates.png', width: 1200, height: 630 }],
       title: `Remates en ${cityOnly}`,
       description: `${upcomingCount} remates de hacienda próximos en ${displayName}`,
-      url: `https://www.consignatarias.com.ar/remates/ciudad/${ciudad}`,
+      url: canonicalUrl,
     },
     alternates: {
-      canonical: `https://www.consignatarias.com.ar/remates/ciudad/${ciudad}`,
+      canonical: canonicalUrl,
     },
+    // Mismo criterio que el sitemap: alias, "localidades" que no lo son, o ciudades
+    // con menos de 3 remates o sin ninguno próximo quedan fuera del índice.
+    ...(!ciudadIndexable(auctions, ciudad) && { robots: { index: false, follow: true } }),
   }
 }
 

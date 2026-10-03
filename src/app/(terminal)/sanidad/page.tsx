@@ -9,7 +9,7 @@ import {
 } from '@/lib/data/senasa-sanidad'
 
 export const metadata: Metadata = {
-  title: 'Sanidad ganadera SENASA — vacunación, planes y requisitos de movimiento | Consignatarias',
+  title: 'Sanidad ganadera SENASA: vacunación y movimientos',
   description:
     'Régimen sanitario del ganado argentino, codificado desde resoluciones SENASA públicas y citado: calendario de vacunación antiaftosa 2026, brucelosis, tuberculosis y garrapata, zonas con/sin vacunación, y requisitos sanitarios para mover hacienda (RENSPA, DT-e, serología).',
   keywords: [

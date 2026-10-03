@@ -90,6 +90,9 @@ export async function provinceMetadata(provincia: string) {
     alternates: {
       canonical: `https://www.consignatarias.com.ar/consignatarias/${provincia}`,
     },
+    // Neuquén y Tucumán no tienen firmas con remates en el calendario: la página es un
+    // directorio vacío. Queda viva (tiene enlaces) pero fuera del índice y del sitemap.
+    ...(count === 0 && { robots: { index: false, follow: true } }),
   }
 }
 
